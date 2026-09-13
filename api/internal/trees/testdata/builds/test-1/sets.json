@@ -1,0 +1,4 @@
+[
+  { "id": 901, "name": "Test Battlegear", "item_ids": [16963],
+    "bonuses": [ { "pieces": 2, "description": "Increases Strength by 10." } ] }
+]
