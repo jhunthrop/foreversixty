@@ -20,7 +20,7 @@ const tools = toolsData as Tool[];
 const changelog = (await getCollection('changelog'))
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
   .slice(0, 4);
-const updated = changelog[0]?.data.updated ?? new Date();
+const updated = changelog[0]?.data.updated;
 
 const icons: Record<string, string> = {
   talents: '<circle cx="12" cy="5" r="2"/><circle cx="6" cy="12" r="2"/><circle cx="18" cy="12" r="2"/><circle cx="12" cy="19" r="2"/><path d="M12 7v10M8 11l3-4M16 11l-3-4M8 13l3 4M16 13l-3 4"/>',
@@ -37,73 +37,75 @@ const popular = [
 ] as const;
 ---
 <Base title="Forever Sixty" description="Fan-run reference for World of Warcraft: Forever. Every fact dated and sourced." path="/">
-  <SkyBand>
-    <div class="grid grid-cols-12 gap-8 items-start px-12 pt-7 pb-10">
-      <div class="col-span-7 flex flex-col gap-[18px]">
-        <p class="label text-gold">World of Warcraft: Forever · fan reference · every fact dated and sourced</p>
-        <SearchBox client:idle />
-        <p class="flex flex-wrap gap-[10px] text-[13px]">
-          <span class="text-muted">Popular:</span>
-          {popular.map(([label, href], i) => (<><a href={href}>{label}</a>{i < popular.length - 1 && <span class="text-muted">·</span>}</>))}
-        </p>
+  <main class="flex flex-col">
+    <SkyBand>
+      <div class="grid grid-cols-12 gap-8 items-start px-12 pt-7 pb-10">
+        <div class="col-span-7 flex flex-col gap-[18px]">
+          <p class="label text-gold">World of Warcraft: Forever · fan reference · every fact dated and sourced</p>
+          <SearchBox client:idle />
+          <p class="flex flex-wrap gap-[10px] text-[13px]">
+            <span class="text-muted">Popular:</span>
+            {popular.map(([label, href], i) => (<><a href={href}>{label}</a>{i < popular.length - 1 && <span class="text-muted">·</span>}</>))}
+          </p>
+        </div>
+        <div class="col-span-5">
+          <StatePanel title="Right now" updated={updated} rows={dates.map(({ key, value, note, highlight }) => ({ key, value, note, highlight }))} />
+        </div>
       </div>
-      <div class="col-span-5">
-        <StatePanel title="Right now" updated={updated} rows={dates.map(({ key, value, note, highlight }) => ({ key, value, note, highlight }))} />
-      </div>
-    </div>
-  </SkyBand>
+    </SkyBand>
 
-  <main class="flex flex-col gap-8 px-12 pt-9 pb-8">
-    <section class="flex flex-col gap-4">
-      <div class="flex items-baseline justify-between">
-        <h2 class="section-title">Tools</h2>
-        <span class="text-[13px] text-muted">Each one says when its data is real.</span>
-      </div>
-      <div class="grid grid-cols-4 gap-4">
-        {tools.map((t) => (
-          <ToolCard title={t.title} description={t.description} href={t.href} status={t.status}>
-            <svg slot="icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons[t.icon]} />
-          </ToolCard>
-        ))}
-      </div>
-    </section>
+    <div class="flex flex-col gap-8 px-12 pt-9 pb-8">
+      <section class="flex flex-col gap-4">
+        <div class="flex items-baseline justify-between">
+          <h2 class="section-title">Tools</h2>
+          <span class="text-[13px] text-muted">Each one says when its data is real.</span>
+        </div>
+        <div class="grid grid-cols-4 gap-4">
+          {tools.map((t) => (
+            <ToolCard title={t.title} description={t.description} href={t.href} status={t.status}>
+              <svg slot="icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons[t.icon]} />
+            </ToolCard>
+          ))}
+        </div>
+      </section>
 
-    <div class="grid grid-cols-12 gap-8">
-      <Panel title="What changed" class="col-span-8">
-        <a slot="aside" href="/changelog" class="text-[13px] font-semibold">Full changelog</a>
-        {changelog.map((e, i) => (
-          <FeedRow date={e.data.date} kind={e.data.kind} title={e.data.title} href={`/changelog#${e.id}`} note={e.data.note} last={i === changelog.length - 1} />
-        ))}
-      </Panel>
-      <div class="col-span-4 flex flex-col gap-8">
-        <Panel title="Still unknown">
-          {unknowns.map((u, i) => (
-            <div class={`flex flex-col gap-[3px] px-[18px] py-[14px] text-[14px] ${i < unknowns.length - 1 ? 'border-b border-line-soft' : ''}`}>
-              <span class="text-strong font-semibold">{u.title}</span>
-              <span class="text-[13px] text-muted">{u.note}</span>
-            </div>
+      <div class="grid grid-cols-12 gap-8">
+        <Panel title="What changed" class="col-span-8">
+          <a slot="aside" href="/changelog" class="text-[13px] font-semibold">Full changelog</a>
+          {changelog.map((e, i) => (
+            <FeedRow date={e.data.date} kind={e.data.kind} title={e.data.title} href={`/changelog#${e.id}`} note={e.data.note} last={i === changelog.length - 1} />
           ))}
         </Panel>
-        <Panel title="Help build this">
-          <div class="flex flex-col gap-3 p-[18px]">
-            <p class="text-[14px] leading-relaxed">Every page here is written and checked by players. Spot a wrong level range, a missing quest, a bad route? Fix it, or tell us.</p>
-            <div class="flex gap-[10px]">
-              <a href="https://github.com/PLACEHOLDER/forever/issues/new?template=error.yml" class="inline-flex items-center h-[38px] px-[14px] border border-line-warm-strong rounded-control text-[13px] font-semibold tracking-[0.06em] uppercase text-text">Report an error</a>
-              <a href="https://github.com/PLACEHOLDER/forever/issues/new?template=guide.yml" class="inline-flex items-center h-[38px] px-[14px] border border-line-warm-strong rounded-control text-[13px] font-semibold tracking-[0.06em] uppercase text-text">Write a guide</a>
+        <div class="col-span-4 flex flex-col gap-8">
+          <Panel title="Still unknown">
+            {unknowns.map((u, i) => (
+              <div class={`flex flex-col gap-[3px] px-[18px] py-[14px] text-[14px] ${i < unknowns.length - 1 ? 'border-b border-line-soft' : ''}`}>
+                <span class="text-strong font-semibold">{u.title}</span>
+                <span class="text-[13px] text-muted">{u.note}</span>
+              </div>
+            ))}
+          </Panel>
+          <Panel title="Help build this">
+            <div class="flex flex-col gap-3 p-[18px]">
+              <p class="text-[14px] leading-relaxed">Every page here is written and checked by players. Spot a wrong level range, a missing quest, a bad route? Fix it, or tell us.</p>
+              <div class="flex gap-[10px]">
+                <a href="https://github.com/PLACEHOLDER/forever/issues/new?template=error.yml" class="inline-flex items-center h-[38px] px-[14px] border border-line-warm-strong rounded-control text-[13px] font-semibold tracking-[0.06em] uppercase text-text">Report an error</a>
+                <a href="https://github.com/PLACEHOLDER/forever/issues/new?template=guide.yml" class="inline-flex items-center h-[38px] px-[14px] border border-line-warm-strong rounded-control text-[13px] font-semibold tracking-[0.06em] uppercase text-text">Write a guide</a>
+              </div>
             </div>
-          </div>
-        </Panel>
+          </Panel>
+        </div>
       </div>
-    </div>
 
-    <section class="flex flex-col gap-4">
-      <div class="flex items-baseline justify-between">
-        <h2 class="section-title">Guides by class</h2>
-        <span class="text-[13px] text-muted">Leveling, talents, pre-raid gear. Written after we play it, not before.</span>
-      </div>
-      <div class="grid grid-cols-9 gap-3">
-        {classes.map((c) => <ClassTile name={c.name} slug={c.slug} />)}
-      </div>
-    </section>
+      <section class="flex flex-col gap-4">
+        <div class="flex items-baseline justify-between">
+          <h2 class="section-title">Guides by class</h2>
+          <span class="text-[13px] text-muted">Leveling, talents, pre-raid gear. Written after we play it, not before.</span>
+        </div>
+        <div class="grid grid-cols-9 gap-3">
+          {classes.map((c) => <ClassTile name={c.name} slug={c.slug} />)}
+        </div>
+      </section>
+    </div>
   </main>
 </Base>
