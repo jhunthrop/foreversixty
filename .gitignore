@@ -27,3 +27,10 @@ data/builds/*/raw/
 
 # git worktrees for parallel plan execution
 .worktrees/
+
+# python
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.coverage
