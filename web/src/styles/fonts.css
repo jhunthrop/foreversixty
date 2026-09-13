@@ -1,0 +1,54 @@
+/* web/src/styles/fonts.css */
+/* The three self-hosted faces, in one place because two pages load them by two different
+   routes: src/layouts/Base.astro for every page of the static site, and
+   src/planner-island.ts for the standalone bundle the Go API links from its server-rendered
+   /b/{id}. That page links planner-island.css and nothing else, so without this the header,
+   footer and planner it renders fall back to Georgia and Arial on the very domain every
+   share link points at. One module rather than two import lists: two would drift the moment
+   someone adds a weight.
+
+   Cinzel (display), Barlow (body), and JetBrains Mono (numbers) are the three faces
+   design/DESIGN-SYSTEM.md specifies -- see that doc for the exact weight ranges and where
+   each is used. All three carry `font-display: swap`, so first paint always uses the
+   fallback stack in tokens.css and the real face swaps in once it downloads, rather than
+   blocking render or being skipped entirely.
+
+   Every import below uses Fontsource's `latin-*` subset file (one @font-face rule, no
+   unicode-range split across latin/latin-ext/vietnamese/etc.) instead of the combined `*.css`
+   entry point. The app is English-only, so the extra subsets are dead weight -- and with
+   `inlineStylesheets: 'always'` shipping this CSS inside every HTML document, that weight was
+   inflating the document itself (not just an external, cacheable request), which cost real
+   LCP time under lighthouserc.json's mobile budget.
+
+   No font is preloaded. Both `<link rel="preload">` strategies in the task-11 fix-round-1
+   review (Barlow preloaded/Cinzel not, and the reverse) measured within noise of preloading
+   nothing at all once all five font files (Cinzel 700, Barlow 400/600/700, JetBrains Mono
+   500) are in play -- see that fix report for the full measurement table. Preloading only
+   mattered back when two or three font files were competing for bandwidth; at five files the
+   bottleneck is the total bytes needed before paint, which preloading doesn't reduce. */
+@import '@fontsource/cinzel/latin-700.css';
+@import '@fontsource/barlow/latin-400.css';
+@import '@fontsource/barlow/latin-600.css';
+@import '@fontsource/barlow/latin-700.css';
+@import '@fontsource/jetbrains-mono/latin-500.css';
+
+/* Barlow needs a size-adjusted fallback face: it is the family behind the LCP-candidate text
+   on every audited page (the homepage's hero label, a dungeon page's lead paragraph), and a
+   naive swap reflows that text once Barlow loads -- different fallback vs. Barlow glyph
+   metrics change the line's width and height -- which fails the CLS budget in
+   lighthouserc.json. `Barlow Fallback` is Helvetica Neue/Arial with `size-adjust` and the
+   three `*-override` descriptors tuned so its em-box matches Barlow's, computed with
+   @capsizecss/unpack against the actual Barlow woff2 and the system Helvetica Neue/Arial.
+   Barlow's ascent/descent/lineGap are identical across its 400/600/700 weights, so one
+   fallback face covers all three. With this in place `font-display: swap` never triggers a
+   visible reflow, so the real faces need neither preloading nor blocking: text paints in the
+   fallback immediately (which is what the simulated-mobile LCP snapshot measures) and swaps
+   in place once Barlow arrives. tokens.css names it in --font-body, right after 'Barlow'. */
+@font-face {
+  font-family: 'Barlow Fallback';
+  src: local('Helvetica Neue'), local('Arial');
+  size-adjust: 95.78%;
+  ascent-override: 104.41%;
+  descent-override: 20.88%;
+  line-gap-override: 0%;
+}

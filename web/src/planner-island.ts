@@ -3,16 +3,19 @@
 // page: <div id="planner" data-build='…' data-tree-version="…"> plus
 // <script type="module" src="https://foreversixty.gg/planner-island.js">.
 //
-// Importing global.css here is deliberate, and load-bearing rather than incidental:
+// The two stylesheet imports are deliberate, and load-bearing rather than incidental:
 // planner-island.css is the only stylesheet that page links, and it renders the site's
 // header and footer alongside the planner. The emitted file therefore has to carry the same
-// tokens, base rules and utilities the site uses, so the API page matches instead of keeping
-// a second copy of the design system. src/planner-island.test.ts holds it to that.
+// tokens, base rules and utilities the site uses (global.css) and the same self-hosted faces
+// (fonts.css, shared with src/layouts/Base.astro), so the API page matches the site instead
+// of keeping a second copy of the design system or falling back to Georgia and Arial.
+// src/planner-island.test.ts holds it to both.
 import { mount } from 'svelte';
 import Planner from './components/planner/Planner.svelte';
 import { DEFAULT_CLASS_SLUG } from './lib/planner/config';
 import { loadReference } from './lib/planner/load';
 import type { BuildRecord } from './lib/planner/types';
+import './styles/fonts.css';
 import './styles/global.css';
 
 const MOUNT_ID = 'planner';
