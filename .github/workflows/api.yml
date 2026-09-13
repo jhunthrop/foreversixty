@@ -1,0 +1,48 @@
+name: api
+on:
+  push:
+    branches: [main]
+    paths: ['api/**', '.github/workflows/api.yml']
+  pull_request:
+    paths: ['api/**', '.github/workflows/api.yml']
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: api } }
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env: { POSTGRES_USER: forever, POSTGRES_PASSWORD: forever, POSTGRES_DB: forever_test }
+        ports: ['5433:5432']
+        options: >-
+          --health-cmd "pg_isready -U forever" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgres://forever:forever@localhost:5433/forever_test?sslmode=disable
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with: { go-version-file: api/go.mod, cache-dependency-path: api/go.sum }
+      - run: go vet ./...
+      - run: go test -race -cover ./...
+  deploy:
+    needs: test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions: { contents: read, id-token: write }
+    env:
+      IMAGE: us-east1-docker.pkg.dev/foreversixty/api/api:${{ github.sha }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
+          service_account: ${{ vars.GCP_DEPLOYER_SA }}
+      - uses: google-github-actions/setup-gcloud@v2
+      - run: gcloud auth configure-docker us-east1-docker.pkg.dev --quiet
+      - run: docker build --build-arg VERSION=${{ github.sha }} -t $IMAGE api
+      - run: docker push $IMAGE
+      - uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: api
+          region: us-east1
+          image: ${{ env.IMAGE }}
