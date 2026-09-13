@@ -14,6 +14,9 @@ def build_parser() -> argparse.ArgumentParser:
     n = sub.add_parser("normalize", help="normalize raw CSVs into JSON")
     n.add_argument("--build", required=True)
 
+    i = sub.add_parser("icons", help="download and convert the icons a build refers to")
+    i.add_argument("--build", required=True)
+
     d = sub.add_parser("diff", help="diff two normalized builds")
     d.add_argument("--from", dest="from_build", required=True)
     d.add_argument("--to", dest="to_build", required=True)
@@ -31,6 +34,10 @@ def main(argv: list[str] | None = None) -> int:
         from pipeline.normalize import normalize_build
 
         normalize_build(args.build)
+    elif args.command == "icons":
+        from pipeline.icons import icons_for_build
+
+        icons_for_build(args.build)
     elif args.command == "diff":
         from pipeline.diff import diff_builds
 

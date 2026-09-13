@@ -8,10 +8,14 @@ pipeline writes one 64x64 WebP per icon into `builds/<build>/icons/`.
 from __future__ import annotations
 
 import io
+import json
 import logging
 from pathlib import Path
 
+import httpx
 from PIL import Image
+
+from pipeline.wago import BASE_URL, USER_AGENT
 
 logger = logging.getLogger(__name__)
 
@@ -37,3 +41,94 @@ def blp_to_webp(blp: bytes, size: int = ICON_SIZE) -> bytes:
     buffer = io.BytesIO()
     square.save(buffer, "WEBP", quality=90, method=6)
     return buffer.getvalue()
+
+
+def download_icons(
+    wanted: dict[int, str],
+    out_dir: Path,
+    cache_dir: Path = CACHE_DIR,
+    client: httpx.Client | None = None,
+) -> int:
+    """Write out_dir/<name>.webp for each file id. Returns the number written.
+
+    Downloads land in cache_dir/<file id>.blp first, so a rerun after the
+    output directory is cleared costs nothing, and an icon that is already
+    converted is left alone.
+    """
+    own = client is None
+    client = client or httpx.Client(base_url=BASE_URL, headers={"User-Agent": USER_AGENT})
+    out_dir.mkdir(parents=True, exist_ok=True)
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    written = 0
+    try:
+        for file_id, name in sorted(wanted.items()):
+            target = out_dir / f"{name}.webp"
+            if target.exists():
+                continue
+            cached = cache_dir / f"{file_id}.blp"
+            if not cached.exists():
+                response = client.get(f"/api/casc/{file_id}", timeout=60)
+                if response.status_code == 404:
+                    logger.warning("icon %s (%s) is not in CASC; skipping", file_id, name)
+                    continue
+                response.raise_for_status()
+                cached.write_bytes(response.content)
+            target.write_bytes(blp_to_webp(cached.read_bytes()))
+            written += 1
+    finally:
+        if own:
+            client.close()
+    return written
+
+
+def wanted_icons(
+    build_dir: Path,
+    misc_rows: list[dict[str, str]],
+    item_rows: list[dict[str, str]],
+    names: dict[int, str],
+) -> dict[int, str]:
+    """The icons the already-normalised JSON under build_dir refers to."""
+    spell_icons = {
+        int(r["SpellID"]): int(r["SpellIconFileDataID"])
+        for r in misc_rows
+        if r.get("DifficultyID", "0") == "0"
+    }
+    item_icons = {int(r["ID"]): int(r["IconFileDataID"]) for r in item_rows}
+    file_ids: set[int] = set()
+    for path in sorted((build_dir / "talents").glob("*.json")):
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        for tree in payload["trees"]:
+            for talent in tree["talents"]:
+                file_ids.add(spell_icons.get(talent["ranks"][0]["spell_id"], 0))
+    for path in sorted((build_dir / "items").glob("*.json")):
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        for item in payload["items"]:
+            file_ids.add(item_icons.get(item["id"], 0))
+    file_ids.discard(0)
+    missing = sorted(i for i in file_ids if i not in names)
+    if missing:
+        logger.warning(
+            "%d icon file ids are not in ManifestInterfaceData: %s", len(missing), missing[:10]
+        )
+    return {file_id: names[file_id] for file_id in sorted(file_ids) if file_id in names}
+
+
+def icons_for_build(
+    build: str,
+    root: Path = Path("builds"),
+    cache_dir: Path = CACHE_DIR,
+    client: httpx.Client | None = None,
+) -> int:
+    from pipeline.csvio import read_csv
+
+    build_dir = root / build
+    raw = build_dir / "raw"
+    if not raw.exists():
+        raise SystemExit(f"no raw data at {raw}; run `python -m pipeline fetch` first")
+    names = icon_names(read_csv(raw / "ManifestInterfaceData.csv"))
+    wanted = wanted_icons(
+        build_dir, read_csv(raw / "SpellMisc.csv"), read_csv(raw / "Item.csv"), names
+    )
+    written = download_icons(wanted, build_dir / "icons", cache_dir, client)
+    print(f"{written} icons written, {len(wanted)} referenced")
+    return written
