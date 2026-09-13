@@ -192,6 +192,11 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Envelope' }
+        '500':
+          description: "Unexpected store error; envelope with code internal"
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Envelope' }
   /b/{id}:
     get:
       summary: The shared build page

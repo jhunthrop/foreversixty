@@ -169,3 +169,14 @@ func TestValidateAcceptsAFullyLoadedBuild(t *testing.T) {
 		t.Fatalf("fields = %#v, want nil", got)
 	}
 }
+
+// TestValidateWithoutTreeData pins the nil contract Describe already has:
+// a Validate with no tree data loaded reports the tree_version message
+// rather than panicking.
+func TestValidateWithoutTreeData(t *testing.T) {
+	got := Validate(nil, Input{ClassID: 1, RaceID: 1, TreeVersion: "test-1"})
+	want := map[string]string{"tree_version": "No talent data for tree version test-1"}
+	if !reflect.DeepEqual(got, want) {
+		t.Fatalf("fields = %#v, want %#v", got, want)
+	}
+}

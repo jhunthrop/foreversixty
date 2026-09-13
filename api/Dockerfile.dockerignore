@@ -6,6 +6,7 @@
 # data/builds.
 .git
 .github
+.superpowers
 .worktrees
 .ruff_cache
 design

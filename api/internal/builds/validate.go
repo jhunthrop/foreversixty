@@ -22,7 +22,7 @@ func Validate(data *trees.Data, in Input) map[string]string {
 	in = in.Normalize()
 	fields := map[string]string{}
 
-	b, ok := data.Build(in.TreeVersion)
+	b, ok := buildData(data, in.TreeVersion)
 	if !ok {
 		fields["tree_version"] = fmt.Sprintf("No talent data for tree version %s", in.TreeVersion)
 		return fields

@@ -27,8 +27,9 @@ type ViewAdder interface {
 
 // Views counts build page views off the request path. Handlers call Record,
 // which never blocks and never fails; one goroutine batches the counts and
-// writes them on a ticker. Close drains what is pending so a shutdown does
-// not discard the current window.
+// writes them on a ticker. Close asks for one last flush, but it is not a
+// guarantee: a shutdown cut short before that flush finishes drops the
+// pending window, which the counter's drop policy allows.
 type Views struct {
 	ch    chan string
 	done  chan struct{}

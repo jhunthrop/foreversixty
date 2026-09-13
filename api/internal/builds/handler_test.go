@@ -4,6 +4,9 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
+	"io"
+	"log/slog"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -52,7 +55,12 @@ func testRouter(t *testing.T, store Storer) http.Handler {
 		t.Fatal(err)
 	}
 	mux := http.NewServeMux()
-	Mount(mux, &Service{Store: store, Data: data, PublicBaseURL: "https://foreversixty.gg"}, 1)
+	Mount(mux, &Service{
+		Store:         store,
+		Data:          data,
+		PublicBaseURL: "https://foreversixty.gg",
+		Log:           slog.New(slog.NewTextHandler(io.Discard, nil)),
+	}, 1)
 	return mux
 }
 
@@ -182,4 +190,58 @@ func TestFetchReturns404InTheEnvelope(t *testing.T) {
 	if !strings.Contains(body, `"ok":false`) || !strings.Contains(body, `"code":"not_found"`) {
 		t.Fatalf("body = %s", body)
 	}
+}
+
+// The two tests below drive the handlers' 500 branches through fakeStore's
+// err field, which is the only way either branch is reached: every other
+// path either succeeds or reports ErrNotFound.
+
+func TestSaveReports500WhenTheStoreFails(t *testing.T) {
+	store := newFakeStore()
+	store.err = errors.New("database is down")
+	h := testRouter(t, store)
+
+	rec := postBuild(t, h, validBody)
+	if rec.Code != http.StatusInternalServerError {
+		t.Fatalf("code = %d body = %s", rec.Code, rec.Body.String())
+	}
+	if code := errorCode(t, rec); code != "internal" {
+		t.Fatalf("error.code = %q, want internal", code)
+	}
+	if store.saves != 0 {
+		t.Fatalf("saves = %d, want 0: a failing store stores nothing", store.saves)
+	}
+}
+
+func TestFetchReports500WhenTheStoreFails(t *testing.T) {
+	store := newFakeStore()
+	store.err = errors.New("database is down")
+	h := testRouter(t, store)
+
+	rec := httptest.NewRecorder()
+	h.ServeHTTP(rec, httptest.NewRequest(http.MethodGet, "/v1/builds/znorjmts", nil))
+	if rec.Code != http.StatusInternalServerError {
+		t.Fatalf("code = %d body = %s", rec.Code, rec.Body.String())
+	}
+	if code := errorCode(t, rec); code != "internal" {
+		t.Fatalf("error.code = %q, want internal", code)
+	}
+}
+
+// errorCode reads the envelope's error.code.
+func errorCode(t *testing.T, rec *httptest.ResponseRecorder) string {
+	t.Helper()
+	var env struct {
+		OK    bool `json:"ok"`
+		Error struct {
+			Code string `json:"code"`
+		} `json:"error"`
+	}
+	if err := json.Unmarshal(rec.Body.Bytes(), &env); err != nil {
+		t.Fatalf("body is not an envelope: %v (%s)", err, rec.Body.String())
+	}
+	if env.OK {
+		t.Fatalf("ok = true on an error response: %s", rec.Body.String())
+	}
+	return env.Error.Code
 }
