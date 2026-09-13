@@ -24,11 +24,14 @@
     timer = setTimeout(run, 120);
   }
 
+  let seq = 0;
   async function run() {
     if (query.trim().length < 2) { results = []; open = false; return; }
+    const mine = ++seq;
     await load();
     const res = await pagefind!.search(query);
     const top = await Promise.all(res.results.slice(0, 8).map((r) => r.data()));
+    if (mine !== seq) return;
     results = top.map((d) => ({ url: d.url.replace(/\.html$/, ''), title: d.meta.title, excerpt: d.excerpt }));
     active = results.length ? 0 : -1;
     open = results.length > 0;
@@ -68,6 +71,7 @@
       aria-label="Search the site"
       aria-expanded={open}
       aria-controls="search-results"
+      aria-activedescendant={open && active >= 0 ? `search-opt-${active}` : undefined}
       class="flex-1 bg-transparent text-[17px] text-text placeholder:text-muted outline-none"
       oninput={onInput}
       onkeydown={onKey}
@@ -78,7 +82,7 @@
   {#if open}
     <ul id="search-results" role="listbox" class="absolute left-0 right-0 top-full mt-2 bg-raised border border-line rounded-panel overflow-hidden z-10">
       {#each results as r, i}
-        <li role="option" aria-selected={i === active}>
+        <li id={`search-opt-${i}`} role="option" aria-selected={i === active}>
           <a href={r.url} class={`flex flex-col gap-1 px-4 py-3 border-b border-line-soft last:border-b-0 ${i === active ? 'bg-card-top' : ''}`} onmouseenter={() => (active = i)}>
             <span class="text-[15px] font-semibold text-strong">{r.title}</span>
             <span class="text-[13px] text-muted">{@html r.excerpt}</span>
