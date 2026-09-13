@@ -194,3 +194,32 @@ func TestRateLimitPerHourAllowsTheBudgetThenReturns429(t *testing.T) {
 		t.Fatalf("other IP: code = %d, want 200", rec.Code)
 	}
 }
+
+func TestRateLimitExceptLetsAnExemptPathPastTheSpentBudget(t *testing.T) {
+	exempt := func(r *http.Request) bool {
+		return r.Method == http.MethodGet && strings.HasPrefix(r.URL.Path, "/b/")
+	}
+	h := Chain(okHandler(), RequestID(), RateLimitExcept(120, 1, exempt))
+	get := func(path string) int {
+		rec := httptest.NewRecorder()
+		req := httptest.NewRequest("GET", path, nil)
+		req.RemoteAddr = "10.0.0.7:1234"
+		h.ServeHTTP(rec, req)
+		return rec.Code
+	}
+
+	// Spend the whole 120-per-minute budget from one address.
+	for i := 0; i < 120; i++ {
+		if code := get("/version"); code != 200 {
+			t.Fatalf("request %d code = %d, want 200", i+1, code)
+		}
+	}
+	// The 121st request is served when it is exempt...
+	if code := get("/b/x"); code != 200 {
+		t.Fatalf("exempt request past the budget code = %d, want 200", code)
+	}
+	// ...and rejected when it is not.
+	if code := get("/version"); code != 429 {
+		t.Fatalf("non-exempt request past the budget code = %d, want 429", code)
+	}
+}

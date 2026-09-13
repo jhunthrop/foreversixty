@@ -158,6 +158,25 @@ func RateLimit(perMinute, trustedHops int) func(http.Handler) http.Handler {
 	return RateLimitPer(perMinute, time.Minute, trustedHops)
 }
 
+// RateLimitExcept rate-limits per client IP to perMinute per minute exactly
+// as RateLimit does, except for requests where exempt reports true: those are
+// passed straight to next, neither counted against the bucket nor rejected by
+// it. A nil exempt exempts nothing. The caller owns the predicate, and with it
+// the reason a route may skip the limiter.
+func RateLimitExcept(perMinute, trustedHops int, exempt func(*http.Request) bool) func(http.Handler) http.Handler {
+	limit := RateLimit(perMinute, trustedHops)
+	return func(next http.Handler) http.Handler {
+		limited := limit(next)
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if exempt != nil && exempt(r) {
+				next.ServeHTTP(w, r)
+				return
+			}
+			limited.ServeHTTP(w, r)
+		})
+	}
+}
+
 // RateLimitPer rate-limits each client IP to n requests per window, with a
 // burst of n: a fresh IP may spend the whole allowance at once, and the
 // bucket then refills at n per window. Used with an hour-long window for

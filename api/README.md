@@ -62,6 +62,10 @@ make test
 | `GET /b/{id}` | The server-rendered build page, with the site's chrome, Open Graph tags, and the record inlined for the planner island. A missing or unloadable build gets an HTML message page (404 or 500) linking to the planner instead. |
 | `GET /b/{id}/card.png` | 1200×630 preview PNG, cached a week. A build whose own card cannot be drawn falls back to the static card, cached five minutes. |
 
+Both `GET /b/...` routes are exempt from the router-wide per-IP rate limit: they reach this service
+through the site's Cloudflare Worker, whose egress IP would otherwise collapse every visitor into one
+bucket, and they are read-only and cached.
+
 Builds are validated against the tree data for their `tree_version` before they are stored; the rules
 are in `internal/builds/validate.go` and come from the Phase 1 interface contract, which has the web
 planner mirror them in `web/src/lib/planner/rules.ts`.
