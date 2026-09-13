@@ -1,0 +1,19 @@
+---
+// web/src/pages/404.astro — served by Workers static assets for any path that has no file
+// (see `not_found_handling` in wrangler.jsonc).
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Page not found" description="No page exists at this address." path="/404">
+  <main
+    id="main"
+    tabindex="-1"
+    class="max-w-[820px] w-full mx-auto px-[18px] md:px-12 py-10 flex flex-col gap-4"
+  >
+    <h1 class="text-[28px] font-bold">No page here</h1>
+    <p class="text-[15px] text-muted">
+      Nothing exists at this address. It may have moved as the game changes. Try <a href="/search">search</a>,
+      or browse <a href="/dungeons">dungeons</a>, <a href="/zones">zones</a>, or <a href="/guides">guides</a>.
+    </p>
+  </main>
+</Base>

@@ -1,0 +1,18 @@
+{
+  // Cloudflare Workers static-assets deployment for foreversixty.gg.
+  // Pages has been folded into Workers; the site is served as assets with no Worker code.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "foreversixty",
+  "compatibility_date": "2026-09-01",
+  "assets": {
+    "directory": "./dist",
+    // build.format 'file' emits dungeons.html; auto-trailing-slash serves it at /dungeons.
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page",
+  },
+  "workers_dev": true,
+  "routes": [
+    { "pattern": "foreversixty.gg", "custom_domain": true },
+    { "pattern": "www.foreversixty.gg", "custom_domain": true },
+  ],
+}

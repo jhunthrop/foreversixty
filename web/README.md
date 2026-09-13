@@ -53,18 +53,28 @@ web/
 └── package.json
 ```
 
-## Deploy (Cloudflare Pages)
+## Deploy (Cloudflare Workers, static assets)
 
-1. Cloudflare dashboard → Workers & Pages → Create → Pages → Connect to Git → this repo.
-2. Build settings: framework preset Astro; root directory `web`; build command `npm run build`; output directory `dist`; Node version env `NODE_VERSION=22`. A `.node-version` file (`22.12.0`) is also checked in at `web/.node-version` — Cloudflare Pages reads it automatically, and the `NODE_VERSION` env var is the fallback if it doesn't.
-3. Custom domains: add `foreversixty.gg` (apex) and `www.foreversixty.gg`.
-4. Enable Web Analytics on the Pages project (dashboard toggle; no script is added to the repo).
+The site is served by Cloudflare Workers as static assets with no Worker code; `wrangler.jsonc` holds the
+config (asset directory `dist`, `auto-trailing-slash` so `dungeons.html` answers at `/dungeons`, the
+`404.html` page for unknown paths, and the two custom domains `foreversixty.gg` and `www.foreversixty.gg`).
+Cloudflare Pages was the original plan; it has since been folded into Workers and new projects cannot be
+created through the API, so the site deploys with wrangler instead.
 
-Community links (Discord invite, GitHub repo, issue templates) live in `src/data/links.json`. A build with `CF_PAGES` set (that is, a Cloudflare Pages build) fails and names the offending keys if any value still contains `PLACEHOLDER`; local and CI builds are unaffected.
+- Every push to `main` that touches `web/**` runs the verify job and then `wrangler deploy` (see
+  `.github/workflows/web.yml`). It needs two repository secrets: `CLOUDFLARE_API_TOKEN` (Workers Scripts
+  Edit, Zone DNS Edit for the custom domains) and `CLOUDFLARE_ACCOUNT_ID`.
+- Manual deploy from this directory: `CLOUDFLARE_API_TOKEN=... npm run deploy` (`npm run build` then
+  `wrangler deploy`). The workers.dev preview is https://foreversixty.jhunthrop.workers.dev.
+- Node is pinned by `web/.node-version` (`22.12.0`); CI reads it with `node-version-file`.
+
+Community links (Discord invite, GitHub repo, issue templates) live in `src/data/links.json`. The deploy
+job builds with `CF_PAGES=1`, which makes the build fail and name the offending keys if any value still
+contains `PLACEHOLDER`; local and CI verify builds are unaffected.
 
 ## Redirect foreversixty.com → foreversixty.gg
 
-1. Add `foreversixty.com` as a zone in the same Cloudflare account; point registrar nameservers at Cloudflare.
+1. Add `foreversixty.com` as a zone in the same Cloudflare account; point the Namecheap nameservers at Cloudflare (done 2026-09-13: coby and lady .ns.cloudflare.com).
 2. DNS: `A @ 192.0.2.1` proxied and `CNAME www foreversixty.com` proxied (placeholders so the proxy answers).
 3. Rules → Redirect Rules → create: when hostname matches `foreversixty.com` or `www.foreversixty.com`, redirect 301 to `https://foreversixty.gg${uri}` preserving path and query.
 
