@@ -11,3 +11,14 @@ test('search finds a dungeon page and navigates to it', async ({ page }) => {
   await result.click();
   await expect(page).toHaveURL(/\/dungeons\/hall-of-thanes$/);
 });
+
+test('no keystrokes are dropped when typing immediately after the "/" shortcut', async ({ page }) => {
+  await page.goto('/');
+  await page.keyboard.press('/');
+  const box = page.getByRole('searchbox');
+  await expect(box).toBeFocused();
+  await page.keyboard.type('Thanes', { delay: 10 });
+  await expect(box).toHaveValue('Thanes');
+  const result = page.getByRole('option', { name: /Hall of Thanes/ });
+  await expect(result).toBeVisible();
+});
