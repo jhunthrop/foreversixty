@@ -154,6 +154,18 @@
        value here is set a hair under what was measured, because under costs a pixel of
        movement and over leaves dead space below the ready planner for good.
 
+       Task 16 asked whether this still earns its keep, now that the ready planner is tall
+       enough that the footer is below the fold in both states. It does, and the numbers are
+       here so the question does not have to be re-opened blind: removing it entirely takes
+       /planner.html's CLS from 0.002 to a median 0.176 and its performance score from 0.98 to
+       0.91, because without it the *loading* state is short enough to leave the footer on
+       screen, and the swap then hauls it 1400px down from inside the viewport. Nor is the
+       answer a smaller number tuned to the audit: a 700px reserve scores an identical 0.0009
+       CLS purely because it clears Lighthouse's emulated 640px fold, while still moving the
+       footer 712px on the 800px-tall phone tests/e2e/planner-phone.spec.ts drives -- which is
+       what those two footer assertions are for, and they fail it. The reserve has to cover the
+       ready height, not the audit's viewport.
+
        The phone figure is deliberately the one measured at 360px, the narrowest width the
        site designs for and the width Lighthouse emulates (lighthouserc.json). It is the
        tallest: the toolbar row wraps one button further at 360 than it does from 390px up,
