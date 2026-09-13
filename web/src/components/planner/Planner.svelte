@@ -9,6 +9,7 @@
   import { DATA_LOAD_FAILED, loadReference, loadSets, loadTalents } from '../../lib/planner/load';
   import { createPlannerStore } from '../../lib/planner/store.svelte';
   import type { BuildRecord } from '../../lib/planner/types';
+  import OrderStrip from './OrderStrip.svelte';
   import SummaryBar from './SummaryBar.svelte';
   import TreeGrid from './TreeGrid.svelte';
 
@@ -49,6 +50,9 @@
 
   let status = $state<'loading' | 'ready' | 'failed'>('loading');
   let attempt = $state(0);
+  // Reset asks in the toolbar rather than through window.confirm: a browser dialog cannot be
+  // styled, cannot say what it is about to clear, and reads badly on phone.
+  let confirmingReset = $state(false);
 
   async function load(): Promise<void> {
     status = 'loading';
@@ -62,6 +66,11 @@
       status = 'failed';
     }
   }
+
+  // design/DESIGN-SYSTEM.md "Secondary button": warm border, uppercase 12px 700 at 0.06em
+  // tracking, 36px tall -- 44px on phone, where it has to clear the hit-target minimum.
+  const secondaryButton =
+    'rounded-control inline-flex h-11 items-center border px-4 text-[12px] font-bold tracking-[0.06em] uppercase md:h-9';
 
   // Re-runs whenever the class changes (selectClass drops the loaded trees) or Retry bumps
   // `attempt`. Reading both synchronously here is what registers them as dependencies; the
@@ -90,7 +99,7 @@
       </p>
       <button
         type="button"
-        class="border-line-warm-strong rounded-control text-text inline-flex h-11 w-fit items-center border px-4 text-[13px] font-bold tracking-[0.06em] uppercase"
+        class="{secondaryButton} border-line-warm-strong text-text w-fit"
         onclick={() => (attempt += 1)}
       >
         Retry
@@ -108,5 +117,41 @@
         </section>
       {/each}
     </div>
+
+    <div class="flex flex-wrap items-center gap-3 px-[18px] md:px-0" data-testid="planner-toolbar">
+      {#if confirmingReset}
+        <span class="text-muted text-[13px]">Clear every point in this build?</span>
+        <!-- Reset leaves the DOM the moment it is pressed, so the keyboard lands on the
+             question it just asked rather than back at the top of the document. -->
+        <button
+          type="button"
+          class="{secondaryButton} border-line-warm-strong text-gold"
+          {@attach (node) => node.focus()}
+          onclick={() => {
+            store.reset();
+            confirmingReset = false;
+          }}
+        >
+          Clear all points
+        </button>
+        <button
+          type="button"
+          class="{secondaryButton} border-line-warm text-text"
+          onclick={() => (confirmingReset = false)}
+        >
+          Keep the build
+        </button>
+      {:else}
+        <button
+          type="button"
+          class="{secondaryButton} border-line-warm text-text"
+          onclick={() => (confirmingReset = true)}
+        >
+          Reset
+        </button>
+      {/if}
+    </div>
+
+    <OrderStrip {store} />
   {/if}
 </div>

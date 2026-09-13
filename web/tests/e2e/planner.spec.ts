@@ -148,3 +148,60 @@ test('a long press that also raises a context menu removes one point, not two', 
   await expect(talent).toHaveAttribute('data-rank', '0');
   await expect(page.getByTestId('planner-spent')).toHaveText('0/51');
 });
+
+test('the order strip lists every point with the level it was spent at', async ({ page }) => {
+  await page.goto('/planner');
+  for (let i = 0; i < 3; i += 1) await page.getByTestId('talent-1001').click();
+  const points = page.getByTestId('order-strip').getByRole('listitem');
+  await expect(points).toHaveCount(3);
+  await expect(points.nth(0)).toContainText('10');
+  await expect(points.nth(1)).toContainText('11');
+  await expect(points.nth(2)).toContainText('12');
+  await expect(points.nth(0)).toContainText('Improved Heroic Strike');
+});
+
+test('the order strip collapses and reopens', async ({ page }) => {
+  await page.goto('/planner');
+  await page.getByTestId('talent-1001').click();
+  const toggle = page.getByRole('button', { name: 'Hide point order' });
+  await toggle.click();
+  await expect(page.getByTestId('order-strip').getByRole('list')).toBeHidden();
+  await page.getByRole('button', { name: 'Show point order' }).click();
+  await expect(page.getByTestId('order-strip').getByRole('list')).toBeVisible();
+});
+
+test('reset asks before it clears the build', async ({ page }) => {
+  await page.goto('/planner');
+  for (let i = 0; i < 2; i += 1) await page.getByTestId('talent-1001').click();
+  await page.getByRole('button', { name: 'Reset' }).click();
+  await expect(page.getByTestId('planner-spent')).toHaveText('2/51');
+  await page.getByRole('button', { name: 'Keep the build' }).click();
+  await expect(page.getByTestId('planner-spent')).toHaveText('2/51');
+
+  await page.getByRole('button', { name: 'Reset' }).click();
+  await page.getByRole('button', { name: 'Clear all points' }).click();
+  await expect(page.getByTestId('planner-spent')).toHaveText('0/51');
+  await expect(page.getByTestId('talent-1001')).toHaveAttribute('data-rank', '0');
+  await expect(page.getByTestId('order-strip').getByRole('listitem')).toHaveCount(0);
+});
+
+// The strip is the one part of the planner that grows without bound, and the phone layout
+// budget (tests/e2e/layout.spec.ts) allows no sideways page scroll at 360px.
+test('a long point order scrolls inside the strip, not across the page', async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 800 });
+  await page.goto('/planner');
+  for (let i = 0; i < 3; i += 1) await page.getByTestId('talent-1001').click();
+  for (let i = 0; i < 5; i += 1) await page.getByTestId('talent-1002').click();
+  await expect(page.getByTestId('order-strip').getByRole('listitem')).toHaveCount(8);
+  const widths = await page.evaluate(() => {
+    const list = document.querySelector('[data-testid="order-strip"] ol');
+    return {
+      pageScroll: document.documentElement.scrollWidth,
+      pageClient: document.documentElement.clientWidth,
+      listScroll: list?.scrollWidth ?? 0,
+      listClient: list?.clientWidth ?? 0,
+    };
+  });
+  expect(widths.listScroll).toBeGreaterThan(widths.listClient);
+  expect(widths.pageScroll).toBeLessThanOrEqual(widths.pageClient);
+});
