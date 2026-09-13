@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "name": "Human",
+    "slug": "human",
+    "faction": "alliance"
+  },
+  {
+    "id": 2,
+    "name": "Orc",
+    "slug": "orc",
+    "faction": "horde"
+  },
+  {
+    "id": 24,
+    "name": "Pandaren",
+    "slug": "pandaren",
+    "faction": "neutral"
+  }
+]

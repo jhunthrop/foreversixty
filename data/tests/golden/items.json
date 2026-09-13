@@ -1,0 +1,22 @@
+[
+  {
+    "id": 2589,
+    "name": "Linen Cloth",
+    "quality": 1,
+    "item_level": 5,
+    "required_level": 1,
+    "class_id": 7,
+    "subclass_id": 5,
+    "inventory_type": 0
+  },
+  {
+    "id": 19019,
+    "name": "Thunderfury Blessed Blade of the Windseeker",
+    "quality": 5,
+    "item_level": 80,
+    "required_level": 60,
+    "class_id": 2,
+    "subclass_id": 7,
+    "inventory_type": 13
+  }
+]
