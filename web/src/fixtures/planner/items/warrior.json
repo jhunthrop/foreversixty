@@ -1,0 +1,101 @@
+{
+  "build": "1.15.9.69722",
+  "class_slug": "warrior",
+  "items": [
+    {
+      "id": 12640,
+      "name": "Lionheart Helm",
+      "icon": "fixture_item_lionheart_helm",
+      "slot": "head",
+      "quality": 4,
+      "required_level": 60,
+      "item_level": 65,
+      "armor": 565,
+      "stats": {
+        "strength": 18,
+        "crit": 2,
+        "hit": 2
+      },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 16963,
+      "name": "Helm of Wrath",
+      "icon": "fixture_item_helm_of_wrath",
+      "slot": "head",
+      "quality": 4,
+      "required_level": 60,
+      "item_level": 76,
+      "armor": 610,
+      "stats": {
+        "strength": 25,
+        "stamina": 20
+      },
+      "set_id": 550,
+      "unique": false
+    },
+    {
+      "id": 16966,
+      "name": "Spaulders of Wrath",
+      "icon": "fixture_item_spaulders_of_wrath",
+      "slot": "shoulder",
+      "quality": 4,
+      "required_level": 60,
+      "item_level": 76,
+      "armor": 500,
+      "stats": {
+        "strength": 20,
+        "stamina": 18
+      },
+      "set_id": 550,
+      "unique": false
+    },
+    {
+      "id": 12784,
+      "name": "Arcanite Reaper",
+      "icon": "fixture_item_arcanite_reaper",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 60,
+      "item_level": 63,
+      "armor": 0,
+      "stats": {
+        "attack_power": 62
+      },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 19325,
+      "name": "Band of Accuria",
+      "icon": "fixture_item_band_of_accuria",
+      "slot": "finger",
+      "quality": 4,
+      "required_level": 60,
+      "item_level": 78,
+      "armor": 0,
+      "stats": {
+        "strength": 19,
+        "hit": 2
+      },
+      "set_id": null,
+      "unique": true
+    },
+    {
+      "id": 13968,
+      "name": "Snakestone Charm",
+      "icon": "fixture_item_snakestone_charm",
+      "slot": "trinket",
+      "quality": 3,
+      "required_level": 55,
+      "item_level": 60,
+      "armor": 0,
+      "stats": {
+        "defense": 7
+      },
+      "set_id": null,
+      "unique": false
+    }
+  ]
+}

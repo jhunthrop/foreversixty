@@ -1,0 +1,165 @@
+[
+  {
+    "id": 1,
+    "name": "Human",
+    "slug": "human",
+    "faction": "alliance",
+    "forever_changes": [
+      {
+        "text": "Human racials are unchanged.",
+        "sources": [
+          {
+            "label": "Blizzard, World of Warcraft at BlizzCon 2026",
+            "url": "https://news.blizzard.com/en-us/article/24301145/world-of-warcraft-at-blizzcon-2026-discover-whats-next",
+            "kind": "blizzard"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Orc",
+    "slug": "orc",
+    "faction": "horde",
+    "forever_changes": [
+      {
+        "text": "Orc racials are unchanged.",
+        "sources": [
+          {
+            "label": "Blizzard, World of Warcraft at BlizzCon 2026",
+            "url": "https://news.blizzard.com/en-us/article/24301145/world-of-warcraft-at-blizzcon-2026-discover-whats-next",
+            "kind": "blizzard"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Dwarf",
+    "slug": "dwarf",
+    "faction": "alliance",
+    "forever_changes": [
+      {
+        "text": "Dwarf racials are unchanged.",
+        "sources": [
+          {
+            "label": "Blizzard, World of Warcraft at BlizzCon 2026",
+            "url": "https://news.blizzard.com/en-us/article/24301145/world-of-warcraft-at-blizzcon-2026-discover-whats-next",
+            "kind": "blizzard"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Night Elf",
+    "slug": "night-elf",
+    "faction": "alliance",
+    "forever_changes": [
+      {
+        "text": "Night Elf racials are unchanged.",
+        "sources": [
+          {
+            "label": "Blizzard, World of Warcraft at BlizzCon 2026",
+            "url": "https://news.blizzard.com/en-us/article/24301145/world-of-warcraft-at-blizzcon-2026-discover-whats-next",
+            "kind": "blizzard"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "name": "Undead",
+    "slug": "undead",
+    "faction": "horde",
+    "forever_changes": [
+      {
+        "text": "Undead gain access to Paladin.",
+        "sources": [
+          {
+            "label": "Blizzard, World of Warcraft at BlizzCon 2026",
+            "url": "https://news.blizzard.com/en-us/article/24301145/world-of-warcraft-at-blizzcon-2026-discover-whats-next",
+            "kind": "blizzard"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "name": "Tauren",
+    "slug": "tauren",
+    "faction": "horde",
+    "forever_changes": [
+      {
+        "text": "Tauren racials are unchanged.",
+        "sources": [
+          {
+            "label": "Blizzard, World of Warcraft at BlizzCon 2026",
+            "url": "https://news.blizzard.com/en-us/article/24301145/world-of-warcraft-at-blizzcon-2026-discover-whats-next",
+            "kind": "blizzard"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "name": "Gnome",
+    "slug": "gnome",
+    "faction": "alliance",
+    "forever_changes": [
+      {
+        "text": "Gnome racials are unchanged.",
+        "sources": [
+          {
+            "label": "Blizzard, World of Warcraft at BlizzCon 2026",
+            "url": "https://news.blizzard.com/en-us/article/24301145/world-of-warcraft-at-blizzcon-2026-discover-whats-next",
+            "kind": "blizzard"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "name": "Troll",
+    "slug": "troll",
+    "faction": "horde",
+    "forever_changes": [
+      {
+        "text": "Troll racials are unchanged.",
+        "sources": [
+          {
+            "label": "Blizzard, World of Warcraft at BlizzCon 2026",
+            "url": "https://news.blizzard.com/en-us/article/24301145/world-of-warcraft-at-blizzcon-2026-discover-whats-next",
+            "kind": "blizzard"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "name": "Skyborne",
+    "slug": "skyborne",
+    "faction": "neutral",
+    "forever_changes": [
+      {
+        "text": "New neutral race; faction is chosen at character creation.",
+        "sources": [
+          {
+            "label": "Wowhead, Skyborne First Look",
+            "url": "https://www.wowhead.com/forever/news/skyborne-first-look-new-neutral-race-in-world-of-warcraft-forever-382829",
+            "kind": "community"
+          }
+        ]
+      }
+    ],
+    "placeholder": true
+  }
+]
