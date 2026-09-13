@@ -2,25 +2,20 @@
 // web/src/pages/dungeons/index.astro
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import EntryTable from '../../components/EntryTable.astro';
 const dungeons = (await getCollection('dungeons')).sort((a, b) => a.data.order - b.data.order);
-const range = (d: (typeof dungeons)[number]) => d.data.levelMin && d.data.levelMax ? `${d.data.levelMin}–${d.data.levelMax}` : '—';
-const color = (min?: number) => !min ? 'text-muted' : min >= 55 ? 'text-rarity-epic' : min >= 30 ? 'text-rarity-rare' : 'text-rarity-uncommon';
+const rows = dungeons.map((d) => ({
+  href: `/dungeons/${d.id}`,
+  title: d.data.title,
+  meta: d.data.zone,
+  levelMin: d.data.levelMin,
+  levelMax: d.data.levelMax,
+}));
 ---
 <Base title="Dungeons" description="The nine new dungeons in World of Warcraft: Forever, with what is known about each." path="/dungeons">
   <main class="max-w-[1000px] w-full mx-auto px-6 py-10 flex flex-col gap-5">
     <h1 class="text-[28px] font-bold tracking-[0.02em]">Dungeons</h1>
     <p class="text-muted text-[14px]">Level ranges are reported by one outlet and not yet confirmed by Blizzard.</p>
-    <div class="bg-raised border border-line rounded-panel">
-      <div class="grid grid-cols-[1fr_180px_110px] gap-3 px-4 py-[10px] label text-muted border-b border-line">
-        <span>Dungeon</span><span>Zone</span><span>Level</span>
-      </div>
-      {dungeons.map((d, i) => (
-        <a href={`/dungeons/${d.id}`} class={`grid grid-cols-[1fr_180px_110px] gap-3 px-4 py-[14px] text-[15px] items-center hover:bg-card-top ${i < dungeons.length - 1 ? 'border-b border-line-soft' : ''}`}>
-          <span class="font-semibold text-strong">{d.data.title}</span>
-          <span class="text-muted">{d.data.zone}</span>
-          <span class={`font-mono tabular ${color(d.data.levelMin)}`}>{range(d)}</span>
-        </a>
-      ))}
-    </div>
+    <EntryTable nameHeading="Dungeon" metaHeading="Zone" rows={rows} />
   </main>
 </Base>

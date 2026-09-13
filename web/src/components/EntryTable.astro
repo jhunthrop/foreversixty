@@ -1,0 +1,31 @@
+---
+// web/src/components/EntryTable.astro
+// The dungeon and zone indexes are the same table with different column headings, so they
+// share one component: name, one piece of context (zone / continent), and a level range.
+import { levelColorClass, levelRange } from '../lib/levels';
+
+export interface EntryRow {
+  href: string;
+  title: string;
+  meta: string;
+  levelMin?: number;
+  levelMax?: number;
+}
+
+interface Props { nameHeading: string; metaHeading: string; rows: EntryRow[] }
+const { nameHeading, metaHeading, rows } = Astro.props;
+
+const columns = 'grid-cols-[1fr_180px_110px]';
+---
+<div class="bg-raised border border-line rounded-panel">
+  <div class={`grid ${columns} gap-3 px-4 py-[10px] label text-muted border-b border-line`}>
+    <span>{nameHeading}</span><span>{metaHeading}</span><span>Level</span>
+  </div>
+  {rows.map((row, i) => (
+    <a href={row.href} class={`grid ${columns} gap-3 px-4 py-[14px] text-[15px] items-center hover:bg-card-top ${i < rows.length - 1 ? 'border-b border-line-soft' : ''}`}>
+      <span class="font-semibold text-strong">{row.title}</span>
+      <span class="text-muted">{row.meta}</span>
+      <span class={`font-mono tabular ${levelColorClass(row.levelMin)}`}>{levelRange(row.levelMin, row.levelMax)}</span>
+    </a>
+  ))}
+</div>
