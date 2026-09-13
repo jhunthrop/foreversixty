@@ -44,7 +44,7 @@ Phase 0 is small on purpose. It exists so that Phase 1 (build planner, from Sept
 6. **Go API skeleton** in `api/`: HTTP service with health, version, and a single `POST /v1/subscribe` endpoint (email capture into Postgres, double opt-in). Structured logging, request IDs, rate limiting, migrations. Deployed so that Phase 1 endpoints have a home.
 7. **Hosting and DNS**: Astro output on Cloudflare Pages at foreversixty.gg; .com redirects with 301; Go container on Google Cloud Run (scale to zero, one region, Postgres on Neon) at api.foreversixty.gg; Cloudflare DNS in front of both. Privacy-respecting analytics (Cloudflare Web Analytics) with no cookie banner. Decided 2026-09-12 after considering Fly.io and Vercel: Cloud Run is the natural home for a Go container and Cloudflare does not meter static bandwidth.
 8. **SEO and sharing basics**: titles, descriptions, canonical URLs, sitemap, Open Graph images generated per page, `robots.txt`.
-9. **Performance budget** enforced in CI with Lighthouse CI: mobile performance 95+, LCP under 1.2s on a throttled run, zero JavaScript on content pages, islands only where declared.
+9. **Performance budget** enforced in CI with Lighthouse CI: mobile performance 95+, LCP under 1.6s on a Lighthouse mobile-throttled run (the three self-hosted typefaces cost about 0.3–0.6 s of simulated LCP and were kept by decision), zero JavaScript on content pages, islands only where declared.
 10. **Legal and trust**: disclaimer footer, an About page explaining who runs the site and how facts are sourced, a Sources page, a Changelog page.
 
 ### Out (deferred to later phases)
