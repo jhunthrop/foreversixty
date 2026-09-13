@@ -6,10 +6,18 @@
 <script lang="ts">
   import { untrack } from 'svelte';
   import { DEFAULT_CLASS_SLUG, ERA_DATA_NOTICE } from '../../lib/planner/config';
-  import { DATA_LOAD_FAILED, loadReference, loadSets, loadTalents } from '../../lib/planner/load';
+  import {
+    DATA_LOAD_FAILED,
+    DataLoadError,
+    loadItems,
+    loadReference,
+    loadSets,
+    loadTalents,
+  } from '../../lib/planner/load';
   import { createPlannerStore } from '../../lib/planner/store.svelte';
   import { SECONDARY_BUTTON } from '../../lib/planner/styles';
   import type { BuildRecord } from '../../lib/planner/types';
+  import GearPanel from './GearPanel.svelte';
   import OrderStrip from './OrderStrip.svelte';
   import SharePanel from './SharePanel.svelte';
   import SummaryBar from './SummaryBar.svelte';
@@ -80,6 +88,17 @@
       store.setReference(reference);
       store.setTalents(await loadTalents(store.treeVersion, store.classSlug));
       store.setSets(await loadSets(store.treeVersion));
+      // Gear is optional in the same way sets are: a build whose item table did not
+      // normalize ships no items/<class>.json, and the planner is complete without a gear
+      // panel. Only a 404 means that. A 5xx, an unreachable network or a malformed file is a
+      // broken build rather than an absent one, so it is rethrown into the failure state --
+      // the same line loadSets draws, for the same reason.
+      try {
+        store.setItems(await loadItems(store.treeVersion, store.classSlug));
+      } catch (error) {
+        if (!(error instanceof DataLoadError) || error.status !== 404) throw error;
+        store.setItems({ build: store.treeVersion, class_slug: store.classSlug, items: [] });
+      }
       status = 'ready';
     } catch {
       status = 'failed';
@@ -115,8 +134,8 @@
   <p class="text-muted px-[18px] text-[13px] md:px-0">{ERA_DATA_NOTICE}</p>
 
   <!-- The three states below swap in place once the talent data arrives over the network, and
-       they are wildly different heights: one line of status text against a planner the better
-       part of a thousand pixels tall. Whatever is under the planner -- the footer, mainly --
+       they are wildly different heights: one line of status text against a planner fourteen
+       hundred pixels tall on a phone. Whatever is under the planner -- the footer, mainly --
        moves by that difference, which Lighthouse measured as 0.185 of /planner.html's 0.186
        CLS against the 0.05 lighthouserc.json budget. This min-height reserves the room up
        front so the swap moves nothing below it.
@@ -125,33 +144,43 @@
        swap. The reserve is one number; the ready height is not. These two come from the
        loaded layout of the default class, so a class whose trees run to more tiers grows past
        them and still moves the footer -- by the difference rather than by the whole planner.
+       A class the build ships no items for is the same story in the other direction: no gear
+       panel, so its ready state comes in some 680px under this and leaves that much dead
+       space. Both are bounded by the reserve; neither is the whole-planner jump it replaces.
        Re-derive them by loading /planner, setting this element's min-height to 0, and reading
-       its `getBoundingClientRect().height` below and above the md breakpoint. They measured
-       727 (728 at 360px) and 616 once Task 10's SharePanel joined the toolbar row -- its
-       `w-full` section always forces its own line, so the reserve grew by that section's
-       height even before a build is ever saved. Each value here is set a hair under what was
-       measured, because under costs a pixel of movement and over leaves dead space below the
-       ready planner for good.
+       its `getBoundingClientRect().height` below and above the md breakpoint. They measure
+       1412.5 at 360px and 1038.5 from md up, now that Task 16's gear panel -- seventeen slot
+       buttons two to a row, plus the totals and sets columns -- has joined the column. Each
+       value here is set a hair under what was measured, because under costs a pixel of
+       movement and over leaves dead space below the ready planner for good.
+
+       The phone figure is deliberately the one measured at 360px, the narrowest width the
+       site designs for and the width Lighthouse emulates (lighthouserc.json). It is the
+       tallest: the toolbar row wraps one button further at 360 than it does from 390px up,
+       which is 57px, so above 360 the ready planner comes in under this reserve and the
+       reserve is what the region measures in all three states. That is dead space rather
+       than movement, and it is the safe direction to err.
 
        It wraps the swapping branches only, not the planner as a whole, and that is what lets
        one number hold: the summary bar and the notice above are in all three states and
        reflow with the viewport width, so keeping them outside the reserve takes their
        wrapping out of the figure. Inside it every part is a fixed height -- the tab strip,
-       the toolbar (now including the always-visible title field and Share button), the order
-       strip's reserved row, and a tree grid sized by tier count rather than by width. The md
-       value is the smaller one because desktop drops the tab strip and lays the trees out side
-       by side, so the tallest tree sets the height, not their sum.
+       the toolbar (including the always-visible title field and Share button), the order
+       strip's reserved row, a tree grid sized by tier count rather than by width, and a gear
+       panel whose slot grid is a fixed count of fixed-height rows and whose totals and sets
+       columns start on their one-line empty state. The md value is the smaller one because
+       desktop drops the tab strip, lays the trees out side by side and puts the slots four to
+       a row, so the tallest tree sets the height, not their sum.
 
-       Re-derived again for Task 11's Fork branch and unchanged: 728 and 616, the same as
-       before. Fork replaces Reset and drops the SharePanel section, but only on the read-only
-       mount -- the editable toolbar this measures is untouched. The read-only mount is the
-       shorter one, 646 and 539, so it sits about 80px under the reserve and leaves that much
-       space above the footer on the API's /b/:id. Reserving the taller figure in both is
-       deliberate: Fork grows the toolbar back to the editable height, and a reserve that
+       Fork replaces Reset and drops the SharePanel section, but only on the read-only mount --
+       the editable toolbar this measures is untouched. The read-only mount is the shorter one,
+       1331 and 962, so it sits about 80px under the reserve and leaves that much space above
+       the footer on the API's /b/:id. Reserving the taller figure in both is deliberate:
+       Fork grows the toolbar back to the editable height, and a reserve that
        tracked `readOnly` would spend that growth shoving the footer down the moment it is
        pressed. /b/:id carries no CLS budget of its own -- it is server-rendered, so the
        island's whole planner arrives after first paint regardless of what this reserves. -->
-  <div class="flex min-h-[726px] flex-col gap-[22px] md:min-h-[615px] md:gap-8">
+  <div class="flex min-h-[1411px] flex-col gap-[22px] md:min-h-[1037px] md:gap-8">
     {#if status === 'loading'}
       <!-- The planner's own panel chrome rather than a bare line on a blank reserve: a
            viewport of empty space reads as a broken page, and the frame reads as the planner
@@ -293,6 +322,12 @@
       </div>
 
       <OrderStrip {store} />
+
+      <!-- Gear is the optional half of a build. A build with no item file has an empty index
+           and no panel at all, rather than seventeen slots nothing can ever fill. -->
+      {#if store.itemIndex.size > 0}
+        <GearPanel {store} />
+      {/if}
     {/if}
   </div>
 </div>

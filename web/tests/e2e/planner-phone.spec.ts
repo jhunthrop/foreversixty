@@ -116,14 +116,20 @@ test.describe('planner on a phone', () => {
     expect(Math.abs((await footerTop(page)) - loading)).toBeLessThanOrEqual(SETTLED_PX);
   });
 
-  test('every talent cell, tab and button clears 44px', async ({ page }) => {
+  test('every talent cell, tab, button and gear target clears 44px', async ({ page }) => {
     await page.goto('/planner');
+    // A gear slot and an item row are hit with a finger like everything else here, and the
+    // rows are the narrowest thing the planner asks anyone to tap, so the picker is opened
+    // for the measurement rather than left out of it.
+    await page.getByTestId('slot-head').click();
     for (const locator of [
       page.getByTestId('talent-1001'),
       page.getByRole('tab').first(),
       page.getByRole('button', { name: 'Reset' }),
       page.getByRole('button', { name: 'Hide point order' }),
       page.getByLabel('Class'),
+      page.getByTestId('slot-head'),
+      page.getByTestId('item-16963'),
     ]) {
       const box = await locator.boundingBox();
       expect(box?.height ?? 0).toBeGreaterThanOrEqual(44);

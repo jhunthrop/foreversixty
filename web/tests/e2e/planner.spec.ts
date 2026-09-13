@@ -211,6 +211,46 @@ test('a long point order scrolls inside the strip, not across the page', async (
   expect(widths.pageScroll).toBeLessThanOrEqual(widths.pageClient);
 });
 
+// Gear is the optional half of a build and the only part of the planner that reads the item
+// data. The set bonus is the assertion that carries the most: it appears only once both
+// pieces of the set are on, so it exercises the whole chain from a click to activeSetBonuses.
+test('equipping gear fills the slot, sums the stats and unlocks the set bonus', async ({ page }) => {
+  await page.goto('/planner');
+  await page.getByTestId('slot-head').click();
+  await page.getByTestId('item-16963').click();
+  await expect(page.getByTestId('slot-head')).toHaveAccessibleName('Head: Helm of Wrath');
+  await expect(page.getByTestId('item-picker')).toBeHidden();
+
+  await page.getByTestId('slot-shoulder').click();
+  await page.getByTestId('item-16966').click();
+
+  const totals = page.getByTestId('gear-totals');
+  await expect(totals).toContainText(/Armor\s*1110/);
+  await expect(totals).toContainText(/Strength\s*45/);
+  await expect(totals).toContainText(/Stamina\s*38/);
+
+  const sets = page.getByTestId('gear-sets');
+  await expect(sets).toContainText('Battlegear of Wrath');
+  await expect(sets).toContainText('(2/2)');
+  await expect(sets).toContainText('Increases your chance to parry an attack by 1%.');
+});
+
+test('the item picker filters by name, and the slot can be cleared again', async ({ page }) => {
+  await page.goto('/planner');
+  await page.getByTestId('slot-head').click();
+  const rows = page.getByTestId('item-picker').getByRole('listitem');
+  await expect(rows).toHaveCount(2);
+  await page.getByLabel('Filter Head items').fill('lionheart');
+  await expect(rows).toHaveCount(1);
+  await page.getByTestId('item-12640').click();
+  await expect(page.getByTestId('slot-head')).toHaveAccessibleName('Head: Lionheart Helm');
+
+  await page.getByTestId('slot-head').click();
+  await page.getByRole('button', { name: 'Clear slot' }).click();
+  await expect(page.getByTestId('slot-head')).toHaveAccessibleName('Head: empty');
+  await expect(page.getByTestId('gear-totals')).toContainText('Nothing equipped.');
+});
+
 // Switching class empties the build by itself, and the class selector stays reachable while the
 // confirm is open, so a confirm that survived the switch would ask about points already gone.
 test('a class switch drops a reset confirm that is still open', async ({ page }) => {
