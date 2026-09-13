@@ -103,3 +103,60 @@ def test_cross_spell_reference_reads_the_other_spell():
         }
     )
     assert text.describe(1) == "Stuns for 3 sec and again for $9s1 sec."
+
+
+def test_duration_token_stays_verbatim_when_duration_is_none():
+    from pipeline.spelltext import SpellRow, SpellText
+
+    text = SpellText(
+        {1: SpellRow(description="Lasts $d.", duration_ms=None, icon_file_id=0, effects={})}
+    )
+    assert text.describe(1) == "Lasts $d."
+
+
+def test_missing_effect_index_stays_verbatim():
+    from pipeline.spelltext import Effect, SpellRow, SpellText
+
+    text = SpellText(
+        {
+            1: SpellRow(
+                description="Extra effect: $s3.",
+                duration_ms=None,
+                icon_file_id=0,
+                effects={0: Effect(base_points=1, die_sides=1, period_ms=0)},
+            )
+        }
+    )
+    assert text.describe(1) == "Extra effect: $s3."
+
+
+def test_t_token_renders_the_tick_period_in_seconds():
+    from pipeline.spelltext import Effect, SpellRow, SpellText
+
+    text = SpellText(
+        {
+            1: SpellRow(
+                description="Ticks every $t1 sec.",
+                duration_ms=None,
+                icon_file_id=0,
+                effects={0: Effect(base_points=1, die_sides=1, period_ms=3000)},
+            )
+        }
+    )
+    assert text.describe(1) == "Ticks every 3 sec."
+
+
+def test_divisor_duration_form_divides_the_duration():
+    from pipeline.spelltext import SpellRow, SpellText
+
+    text = SpellText(
+        {
+            1: SpellRow(
+                description="Lasts $/1000;d sec.",
+                duration_ms=10000,
+                icon_file_id=0,
+                effects={},
+            )
+        }
+    )
+    assert text.describe(1) == "Lasts 10 sec."
