@@ -161,15 +161,16 @@ def test_wanted_icons_reads_the_emitted_json(tmp_path: Path):
     )
     (tmp_path / "items").mkdir()
     (tmp_path / "items" / "warrior.json").write_text(
-        json.dumps({"build": "1.0.0.1", "class_slug": "warrior", "items": [{"id": 25}]})
+        json.dumps(
+            {
+                "build": "1.0.0.1",
+                "class_slug": "warrior",
+                "items": [{"id": 25, "icon": "inv_sword_04"}],
+            }
+        )
     )
     names = icon_names(read_csv(HERE / "fixtures/ManifestInterfaceData.csv"))
-    wanted = wanted_icons(
-        tmp_path,
-        read_csv(HERE / "fixtures/SpellMisc.csv"),
-        [{"ID": "25", "ClassID": "2", "SubclassID": "7", "IconFileDataID": "135274"}],
-        names,
-    )
+    wanted = wanted_icons(tmp_path, names)
     assert wanted == {132154: "ability_golemthunderclap", 135274: "inv_sword_04"}
 
 
@@ -177,9 +178,8 @@ def test_icons_for_build_downloads_what_the_build_refers_to(tmp_path: Path, monk
     build_dir = tmp_path / "builds" / "1.0.0.1"
     raw = build_dir / "raw"
     raw.mkdir(parents=True)
-    for table in ("SpellMisc", "ManifestInterfaceData"):
-        (raw / f"{table}.csv").write_text((HERE / "fixtures" / f"{table}.csv").read_text())
-    (raw / "Item.csv").write_text("ID,ClassID,SubclassID,IconFileDataID\n25,2,7,135274\n")
+    manifest = HERE / "fixtures" / "ManifestInterfaceData.csv"
+    (raw / manifest.name).write_text(manifest.read_text())
     (build_dir / "talents").mkdir()
     (build_dir / "talents" / "warrior.json").write_text(
         json.dumps(
@@ -260,7 +260,7 @@ def test_download_icons_creates_and_closes_its_own_client(tmp_path: Path, monkey
     assert calls == ["/api/casc/132154"]
 
 
-def test_wanted_icons_skips_a_file_id_absent_from_the_manifest(tmp_path: Path, caplog):
+def test_wanted_icons_skips_an_icon_name_absent_from_the_manifest(tmp_path: Path, caplog):
     (tmp_path / "talents").mkdir(parents=True)
     (tmp_path / "talents" / "warrior.json").write_text(
         json.dumps(
@@ -296,55 +296,44 @@ def test_wanted_icons_skips_a_file_id_absent_from_the_manifest(tmp_path: Path, c
         json.dumps({"build": "1.0.0.1", "class_slug": "warrior", "items": []})
     )
     names = icon_names(read_csv(HERE / "fixtures/ManifestInterfaceData.csv"))
-    misc_rows = read_csv(HERE / "fixtures/SpellMisc.csv") + [
-        {
-            "SpellID": "99999",
-            "DifficultyID": "0",
-            "DurationIndex": "0",
-            "SpellIconFileDataID": "999999",
-        }
-    ]
     with caplog.at_level("WARNING"):
-        wanted = wanted_icons(tmp_path, misc_rows, [], names)
-    assert 999999 not in wanted
-    assert any("999999" in record.getMessage() for record in caplog.records)
+        wanted = wanted_icons(tmp_path, names)
+    assert "whatever" not in wanted.values()
+    assert any("whatever" in record.getMessage() for record in caplog.records)
 
 
-def test_wanted_icons_downloads_the_placeholder_for_an_item_with_no_icon(tmp_path: Path):
-    """Items with IconFileDataID 0 are emitted pointing at PLACEHOLDER_ICON, so its
-    file has to be fetched too, or the output would reference a missing image."""
-    (tmp_path / "items").mkdir(parents=True)
+def write_items(tmp_path: Path, icons: list[str]) -> None:
+    (tmp_path / "items").mkdir(parents=True, exist_ok=True)
     (tmp_path / "items" / "warrior.json").write_text(
         json.dumps(
             {
                 "build": "1.0.0.1",
                 "class_slug": "warrior",
-                "items": [{"id": 25}, {"id": 26}],
+                "items": [{"id": 25 + n, "icon": icon} for n, icon in enumerate(icons)],
             }
         )
     )
-    names = {135274: "inv_sword_04", 134400: PLACEHOLDER_ICON}
-    wanted = wanted_icons(
-        tmp_path,
-        [],
-        [
-            {"ID": "25", "ClassID": "2", "SubclassID": "7", "IconFileDataID": "135274"},
-            {"ID": "26", "ClassID": "2", "SubclassID": "7", "IconFileDataID": "0"},
-        ],
-        names,
-    )
+
+
+def test_wanted_icons_downloads_the_placeholder_for_an_item_with_no_icon(tmp_path: Path):
+    """Items the client has no art for are emitted pointing at PLACEHOLDER_ICON, so its
+    file has to be fetched too, or the output would reference a missing image."""
+    write_items(tmp_path, ["inv_sword_04", PLACEHOLDER_ICON])
+    wanted = wanted_icons(tmp_path, {135274: "inv_sword_04", 134400: PLACEHOLDER_ICON})
     assert wanted == {135274: "inv_sword_04", 134400: PLACEHOLDER_ICON}
 
 
 def test_wanted_icons_needs_no_placeholder_when_every_item_has_one(tmp_path: Path):
-    (tmp_path / "items").mkdir(parents=True)
-    (tmp_path / "items" / "warrior.json").write_text(
-        json.dumps({"build": "1.0.0.1", "class_slug": "warrior", "items": [{"id": 25}]})
-    )
-    wanted = wanted_icons(
-        tmp_path,
-        [],
-        [{"ID": "25", "ClassID": "2", "SubclassID": "7", "IconFileDataID": "135274"}],
-        {135274: "inv_sword_04", 134400: PLACEHOLDER_ICON},
-    )
+    write_items(tmp_path, ["inv_sword_04"])
+    wanted = wanted_icons(tmp_path, {135274: "inv_sword_04", 134400: PLACEHOLDER_ICON})
     assert wanted == {135274: "inv_sword_04"}
+
+
+def test_wanted_icons_keeps_the_lowest_file_id_for_a_shared_name(tmp_path: Path, caplog):
+    """Two file ids can claim one lowercase name; the site addresses icons by name,
+    so exactly one file wins, and it is the same one download_icons would write."""
+    write_items(tmp_path, ["inv_sword_04"])
+    with caplog.at_level("WARNING"):
+        wanted = wanted_icons(tmp_path, {135274: "inv_sword_04", 99: "inv_sword_04"})
+    assert wanted == {99: "inv_sword_04"}
+    assert any("inv_sword_04" in record.getMessage() for record in caplog.records)

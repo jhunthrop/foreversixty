@@ -2,11 +2,37 @@
 
 from __future__ import annotations
 
+import logging
+
+from pipeline.icons import resolve_icon
 from pipeline.models import ClassTalents, TalentEntry, TalentRank, TalentTree
 from pipeline.normalize.classes import slugify
 from pipeline.spelltext import SpellText
 
+logger = logging.getLogger(__name__)
+
 RANK_COLUMNS = [f"SpellRank_{i}" for i in range(9)]
+
+#: Shown when the client has no `SpellName` row for a talent's first rank. The
+#: planner never invents a name, and "" would render a nameless cell, so the
+#: talent id goes on screen instead: obviously not a real spell name, and it
+#: says exactly which row to go and look at.
+UNKNOWN_TALENT_NAME = "Unknown talent"
+
+
+def _talent_name(talent_id: int, spell_id: int, spell_names: dict[int, str]) -> str:
+    """The first rank's spell name, or a placeholder that names the missing row."""
+    name = spell_names.get(spell_id)
+    if name:
+        return name
+    placeholder = f"{UNKNOWN_TALENT_NAME} {talent_id}"
+    logger.warning(
+        "talent %s has no name: spell %s is not in SpellName; using %r",
+        talent_id,
+        spell_id,
+        placeholder,
+    )
+    return placeholder
 
 
 def _rank_spell_ids(row: dict[str, str]) -> list[int]:
@@ -43,10 +69,15 @@ def build_talent_trees(
         prereq_talent_id = int(row.get("PrereqTalent_0", "0") or 0) or None
         # PrereqRank_0 is a 0-based rank index; the contract wants a point count.
         prereq_rank = int(row.get("PrereqRank_0", "0") or 0) + 1 if prereq_talent_id else None
+        talent_id = int(row["ID"])
         entry = TalentEntry(
-            id=int(row["ID"]),
-            name=spell_names.get(ranks[0], ""),
-            icon=icons.get(spell_text.icon_file_id(ranks[0]), ""),
+            id=talent_id,
+            name=_talent_name(talent_id, ranks[0], spell_names),
+            icon=resolve_icon(
+                spell_text.icon_file_id(ranks[0]),
+                icons,
+                f"talent {talent_id} (spell {ranks[0]})",
+            ),
             max_rank=len(ranks),
             tier=int(row["TierID"]),
             column=int(row["ColumnIndex"]),

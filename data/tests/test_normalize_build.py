@@ -2,6 +2,7 @@ import json
 import shutil
 from pathlib import Path
 
+from pipeline.__main__ import main
 from pipeline.normalize import normalize_build
 from pipeline.wago import TABLES
 
@@ -22,7 +23,11 @@ def prepare(tmp_path: Path) -> Path:
 
 
 def run(tmp_path: Path) -> Path:
-    return normalize_build("1.0.0.1", root=prepare(tmp_path), curated_dir=HERE / "fixtures/curated")
+    result = normalize_build(
+        "1.0.0.1", root=prepare(tmp_path), curated_dir=HERE / "fixtures/curated"
+    )
+    assert result.skipped == ()
+    return result.build_dir
 
 
 def test_phase_0_entities_still_match_golden(tmp_path: Path):
@@ -68,11 +73,50 @@ def test_a_rerun_is_byte_identical_and_clears_stale_class_files(tmp_path: Path):
     assert after == before
 
 
-def test_items_are_skipped_when_the_item_table_is_unreadable(tmp_path: Path, caplog):
-    root = prepare(tmp_path)
+def break_the_item_table(root: Path) -> None:
+    """Give one ItemSparse row a stat modifier id the normalizer will not guess at."""
     sparse = root / "1.0.0.1" / "raw" / "ItemSparse.csv"
     sparse.write_text(sparse.read_text().replace(",7,4,35,15", ",99,4,35,15"))
-    out = normalize_build("1.0.0.1", root=root, curated_dir=HERE / "fixtures/curated")
-    assert not (out / "items").exists()
-    assert (out / "sets.json").exists()
+
+
+def test_items_are_skipped_when_the_item_table_is_unreadable(tmp_path: Path, caplog):
+    root = prepare(tmp_path)
+    break_the_item_table(root)
+    result = normalize_build("1.0.0.1", root=root, curated_dir=HERE / "fixtures/curated")
+    assert not (result.build_dir / "items").exists()
+    assert (result.build_dir / "sets.json").exists()
     assert "unknown stat modifier id 99" in caplog.text
+
+
+def test_a_skipped_output_is_reported_in_the_result(tmp_path: Path):
+    """normalize_build stays soft, but it says what it could not emit."""
+    root = prepare(tmp_path)
+    break_the_item_table(root)
+    result = normalize_build("1.0.0.1", root=root, curated_dir=HERE / "fixtures/curated")
+    assert len(result.skipped) == 1
+    assert result.skipped[0].startswith("items/: ")
+
+
+def cli_workspace(tmp_path: Path, monkeypatch) -> Path:
+    """A working directory the CLI's default `builds/` and `curated/` paths resolve in."""
+    root = prepare(tmp_path / "builds")
+    shutil.copytree(HERE / "fixtures/curated", tmp_path / "curated")
+    monkeypatch.chdir(tmp_path)
+    return root / "1.0.0.1"
+
+
+def test_the_cli_exits_non_zero_when_the_items_files_were_skipped(tmp_path: Path, monkeypatch):
+    """A build directory with no items/ must never reach the commit step of CI."""
+    build_dir = cli_workspace(tmp_path, monkeypatch)
+    break_the_item_table(build_dir.parent)
+    assert main(["normalize", "--build", "1.0.0.1"]) == 1
+    assert not (build_dir / "items").exists()
+    # Everything else is still emitted: the run is soft, only its exit code is not.
+    assert (build_dir / "sets.json").exists()
+    assert (build_dir / "talents" / "warrior.json").exists()
+
+
+def test_the_cli_exits_zero_when_every_output_was_emitted(tmp_path: Path, monkeypatch):
+    build_dir = cli_workspace(tmp_path, monkeypatch)
+    assert main(["normalize", "--build", "1.0.0.1"]) == 0
+    assert (build_dir / "items" / "warrior.json").exists()

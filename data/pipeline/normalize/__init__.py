@@ -2,12 +2,28 @@ import json
 import logging
 import shutil
 from collections.abc import Sequence
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
 from pydantic import BaseModel
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass(frozen=True)
+class NormalizeResult:
+    """What one normalize run produced, and what it could not.
+
+    `skipped` is empty on a complete run and otherwise holds one human-readable
+    reason per output the run could not emit. A caller that wants the soft
+    behaviour (keep every other file, do not raise) just uses `build_dir` and
+    ignores it; the CLI turns a non-empty `skipped` into a non-zero exit, so an
+    incomplete build directory can never be committed by a green CI run.
+    """
+
+    build_dir: Path
+    skipped: tuple[str, ...] = ()
 
 
 def _write(payload: Any, path: Path) -> None:
@@ -39,7 +55,7 @@ def normalize_build(
     build: str,
     root: Path = Path("builds"),
     curated_dir: Path = Path("curated"),
-) -> Path:
+) -> NormalizeResult:
     from pipeline.csvio import read_csv
     from pipeline.curated import merge_curated
     from pipeline.icons import icon_names
@@ -81,10 +97,12 @@ def normalize_build(
     item_sets = build_item_sets(t("ItemSet"), t("ItemSetSpell"), spell_text)
     write_json(item_sets, build_dir / "sets.json")
     shutil.rmtree(build_dir / "items", ignore_errors=True)
+    skipped: list[str] = []
     try:
         class_items = build_class_items(t("ItemSparse"), t("Item"), class_rows, icons, build)
     except ItemDataError as error:
         logger.warning("items not emitted for build %s: %s", build, error)
+        skipped.append(f"items/: {error}")
     else:
         for record in class_items:
             write_model(record, build_dir / "items" / f"{record.class_slug}.json")
@@ -101,4 +119,4 @@ def normalize_build(
     write_manifest(
         build_dir, build=meta["build"], product=meta["product"], fetched_at=meta["fetched_at"]
     )
-    return build_dir
+    return NormalizeResult(build_dir=build_dir, skipped=tuple(skipped))

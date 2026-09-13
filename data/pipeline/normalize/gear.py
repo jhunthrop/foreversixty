@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 
-from pipeline.icons import PLACEHOLDER_ICON
+from pipeline.icons import resolve_icon
 from pipeline.models import ClassItems, GearItem, ItemSetBonus, ItemSetRecord
 from pipeline.normalize.classes import slugify
 from pipeline.proficiency import can_equip
@@ -96,17 +96,32 @@ def _column(row: dict[str, str], column: str) -> str:
     """One column's value, or ItemDataError if the row does not supply one.
 
     csv.DictReader pads a short row with None rather than dropping the key, so
-    a present key with no value means a truncated ItemSparse row, and a missing
-    key here means a header that pairs a bonusStat column with no bonusAmount.
-    Both are unreadable, and this module raises rather than guess at them.
+    a present key with no value means a truncated row, and a missing key means a
+    header that does not carry the column at all (for instance a bonusStat
+    column with no paired bonusAmount). Both are unreadable, and this module
+    raises rather than guess at them. Every ItemSparse and Item column read on
+    the build_class_items path goes through here or through _int, so a
+    malformed row is always the ItemDataError the orchestrator catches, never a
+    KeyError or TypeError that takes the whole run down with it.
     """
     value = row.get(column)
     if value is None:
         raise ItemDataError(
-            f"item {row['ID']} has no readable {column}; "
-            f"the ItemSparse row or header is malformed"
+            f"item {row.get('ID', '?')} has no readable {column}; "
+            f"the item row or its header is malformed"
         )
     return value
+
+
+def _int(row: dict[str, str], column: str) -> int:
+    """One column's value as an int, or ItemDataError if it is not readable as one."""
+    value = _column(row, column)
+    try:
+        return int(value)
+    except ValueError as error:
+        raise ItemDataError(
+            f"item {row.get('ID', '?')} has a non-numeric {column} {value!r}"
+        ) from error
 
 
 def _stats(row: dict[str, str]) -> dict[str, int]:
@@ -119,7 +134,7 @@ def _stats(row: dict[str, str]) -> dict[str, int]:
         # truncated row, which _column turns into an error.
         if stat_column not in row:
             break
-        stat_id = int(_column(row, stat_column))
+        stat_id = _int(row, stat_column)
         if stat_id < 0:
             continue
         if stat_id not in STAT_BY_MODIFIER_ID:
@@ -128,12 +143,12 @@ def _stats(row: dict[str, str]) -> dict[str, int]:
                 f"add it to STAT_BY_MODIFIER_ID in pipeline/normalize/gear.py"
             )
         key = STAT_BY_MODIFIER_ID[stat_id]
-        amount = int(_column(row, f"StatModifier_bonusAmount_{index}"))
+        amount = _int(row, f"StatModifier_bonusAmount_{index}")
         if key is None or amount == 0:
             continue
         stats[key] = stats.get(key, 0) + amount
     for index, key in RESISTANCE_KEYS.items():
-        amount = int(row[f"Resistances_{index}"])
+        amount = _int(row, f"Resistances_{index}")
         if amount:
             stats[key] = stats.get(key, 0) + amount
     return stats
@@ -142,24 +157,14 @@ def _stats(row: dict[str, str]) -> dict[str, int]:
 def _icon_name(item_row: dict[str, str], icons: dict[int, str], display_name: str) -> str:
     """The item's icon name, falling back to the client's placeholder art.
 
-    Some client rows carry `IconFileDataID` 0, meaning the client itself has no
-    icon for the item. Emitting "" there would put `icons/.webp` in the output
-    and 404 in the site, so those items point at PLACEHOLDER_ICON instead. A
-    nonzero id that names no file takes the same branch: either way the client
-    gave us nothing to resolve, and a placeholder beats a broken reference.
+    Some client rows carry `IconFileDataID` 0, meaning the client itself ships
+    no art for the item; see `pipeline.icons.resolve_icon` for what happens then.
     """
-    file_id = int(item_row["IconFileDataID"])
-    name = icons.get(file_id)
-    if name is not None:
-        return name
-    logger.warning(
-        "item %s (%s) has no icon in the client (IconFileDataID %s); using placeholder %r",
-        item_row["ID"],
-        display_name,
-        file_id,
-        PLACEHOLDER_ICON,
+    return resolve_icon(
+        _int(item_row, "IconFileDataID"),
+        icons,
+        f"item {item_row.get('ID', '?')} ({display_name})",
     )
-    return PLACEHOLDER_ICON
 
 
 def build_class_items(
@@ -170,40 +175,40 @@ def build_class_items(
     build: str,
 ) -> list[ClassItems]:
     """One equippable item list per class. Raises ItemDataError if a row is unreadable."""
-    by_id = {int(row["ID"]): row for row in item_rows}
+    by_id = {_int(row, "ID"): row for row in item_rows}
     candidates: list[tuple[GearItem, int, int, int]] = []
     for row in sparse_rows:
-        inventory_type = int(row["InventoryType"])
-        slot = SLOT_BY_INVENTORY_TYPE.get(inventory_type)
+        slot = SLOT_BY_INVENTORY_TYPE.get(_int(row, "InventoryType"))
         if slot is None:
             continue
-        if int(row["RequiredLevel"]) > MAX_PLAYER_LEVEL:
+        required_level = _int(row, "RequiredLevel")
+        if required_level > MAX_PLAYER_LEVEL:
             continue
-        item_id = int(row["ID"])
+        item_id = _int(row, "ID")
         item_row = by_id.get(item_id)
         if item_row is None:
             logger.warning("item %s is in ItemSparse but not in Item; skipping it", item_id)
             continue
-        set_id = int(row["ItemSet"]) or None
+        display_name = _column(row, "Display_lang")
         item = GearItem(
             id=item_id,
-            name=row["Display_lang"],
-            icon=_icon_name(item_row, icons, row["Display_lang"]),
+            name=display_name,
+            icon=_icon_name(item_row, icons, display_name),
             slot=slot,
-            quality=int(row["OverallQualityID"]),
-            required_level=int(row["RequiredLevel"]),
-            item_level=int(row["ItemLevel"]),
-            armor=int(row["Resistances_0"]),
+            quality=_int(row, "OverallQualityID"),
+            required_level=required_level,
+            item_level=_int(row, "ItemLevel"),
+            armor=_int(row, "Resistances_0"),
             stats=_stats(row),
-            set_id=set_id,
-            unique=int(row["MaxCount"]) == 1,
+            set_id=_int(row, "ItemSet") or None,
+            unique=_int(row, "MaxCount") == 1,
         )
         candidates.append(
             (
                 item,
-                int(row["AllowableClass"]),
-                int(item_row["ClassID"]),
-                int(item_row["SubclassID"]),
+                _int(row, "AllowableClass"),
+                _int(item_row, "ClassID"),
+                _int(item_row, "SubclassID"),
             )
         )
     records: list[ClassItems] = []

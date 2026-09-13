@@ -232,3 +232,66 @@ def test_a_nonzero_icon_id_that_names_no_file_also_falls_back(caplog):
 def test_every_emitted_item_icon_is_a_usable_file_name():
     """No item may carry an empty icon: the site builds icons/<icon>.webp from it."""
     assert all(i.icon for record in build_all() for i in record.items)
+
+
+def build_with_sparse(rows: list[dict[str, str]]):
+    return build_class_items(
+        rows,
+        read_csv(HERE / "fixtures/Item.csv"),
+        read_csv(HERE / "fixtures/ChrClasses.csv"),
+        fixture_icons(),
+        "1.0.0.1",
+    )
+
+
+def sparse_rows_with(column: str, value: str | None) -> list[dict[str, str]]:
+    """The fixture ItemSparse rows with one column of the Helm of Might row overridden."""
+    rows = read_csv(HERE / "fixtures/ItemSparse.csv")
+    for row in rows:
+        if row["ID"] == "16866":
+            row[column] = value  # type: ignore[assignment]
+    return rows
+
+
+@pytest.mark.parametrize(
+    "column",
+    [
+        "Display_lang",
+        "InventoryType",
+        "RequiredLevel",
+        "OverallQualityID",
+        "ItemLevel",
+        "MaxCount",
+        "ItemSet",
+        "AllowableClass",
+        "Resistances_0",
+        "Resistances_4",
+    ],
+)
+def test_a_row_truncated_in_any_read_column_is_an_item_data_error(column: str):
+    """Every column this module reads goes through _column, so an unreadable row is the
+    single-valued ItemDataError the orchestrator catches, never a KeyError or TypeError
+    that takes the whole run down with it."""
+    with pytest.raises(ItemDataError, match=column):
+        build_with_sparse(sparse_rows_with(column, None))
+
+
+def test_a_non_numeric_value_in_a_numeric_column_is_an_item_data_error():
+    with pytest.raises(ItemDataError, match="ItemLevel"):
+        build_with_sparse(sparse_rows_with("ItemLevel", "sixty-six"))
+
+
+def test_a_malformed_item_table_row_is_an_item_data_error_too():
+    """The Item side of the join is read the same way as the ItemSparse side."""
+    item_rows = read_csv(HERE / "fixtures/Item.csv")
+    for row in item_rows:
+        if row["ID"] == "16866":
+            row["SubclassID"] = None  # type: ignore[assignment]
+    with pytest.raises(ItemDataError, match="SubclassID"):
+        build_class_items(
+            read_csv(HERE / "fixtures/ItemSparse.csv"),
+            item_rows,
+            read_csv(HERE / "fixtures/ChrClasses.csv"),
+            fixture_icons(),
+            "1.0.0.1",
+        )

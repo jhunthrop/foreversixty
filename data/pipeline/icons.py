@@ -32,6 +32,28 @@ _BLP_SUFFIX = ".blp"
 PLACEHOLDER_ICON = "inv_misc_questionmark"
 
 
+def resolve_icon(file_id: int, names: dict[int, str], owner: str) -> str:
+    """The icon name for a file data id, or the client's placeholder art.
+
+    A file data id of 0 means the client itself has no icon for the thing, and a
+    nonzero id that names no file in `ManifestInterfaceData` is the same story
+    from the other side: either way the client gave us nothing to resolve.
+    Emitting "" there would put `icons/.webp` in the output and 404 in the site,
+    so both branches point at PLACEHOLDER_ICON and say so in the log. `owner`
+    names the row that wanted the icon, e.g. "item 16866 (Helm of Might)".
+    """
+    name = names.get(file_id)
+    if name is not None:
+        return name
+    logger.warning(
+        "%s has no icon in the client (file data id %s); using placeholder %r",
+        owner,
+        file_id,
+        PLACEHOLDER_ICON,
+    )
+    return PLACEHOLDER_ICON
+
+
 def icon_names(manifest_rows: list[dict[str, str]]) -> dict[int, str]:
     """File data id -> lowercase icon name with no extension."""
     names: dict[int, str] = {}
@@ -118,45 +140,44 @@ def download_icons(
     return written
 
 
-def wanted_icons(
-    build_dir: Path,
-    misc_rows: list[dict[str, str]],
-    item_rows: list[dict[str, str]],
-    names: dict[int, str],
-) -> dict[int, str]:
-    """The icons the already-normalised JSON under build_dir refers to."""
-    spell_icons = {
-        int(r["SpellID"]): int(r["SpellIconFileDataID"])
-        for r in misc_rows
-        if r.get("DifficultyID", "0") == "0"
-    }
-    item_icons = {int(r["ID"]): int(r["IconFileDataID"]) for r in item_rows}
-    file_ids: set[int] = set()
+def _referenced_names(build_dir: Path) -> set[str]:
+    """Every icon name the already-emitted JSON under build_dir refers to.
+
+    The normalizers already resolved each talent's and each item's icon (and
+    already substituted PLACEHOLDER_ICON where the client had nothing), so the
+    emitted `icon` is the single source of truth for what has to be downloaded.
+    Re-deriving it from the client tables here would be a second copy of that
+    rule, free to drift from the one the site actually reads.
+    """
+    names: set[str] = set()
     for path in sorted((build_dir / "talents").glob("*.json")):
         payload = json.loads(path.read_text(encoding="utf-8"))
         for tree in payload["trees"]:
             for talent in tree["talents"]:
-                file_ids.add(spell_icons.get(talent["ranks"][0]["spell_id"], 0))
-    # Items the client gives no icon for are emitted pointing at PLACEHOLDER_ICON
-    # (see pipeline.normalize.gear), so its file must be downloaded too. Resolve
-    # the id from the client's own table rather than hardcoding it, and pick the
-    # lowest on a name collision, the same rule download_icons applies.
-    placeholder_id = min(
-        (file_id for file_id, name in names.items() if name == PLACEHOLDER_ICON),
-        default=0,
-    )
+                names.add(talent["icon"])
     for path in sorted((build_dir / "items").glob("*.json")):
         payload = json.loads(path.read_text(encoding="utf-8"))
         for item in payload["items"]:
-            file_id = item_icons.get(item["id"], 0)
-            file_ids.add(file_id if file_id in names else placeholder_id)
-    file_ids.discard(0)
-    missing = sorted(i for i in file_ids if i not in names)
+            names.add(item["icon"])
+    return names
+
+
+def wanted_icons(build_dir: Path, names: dict[int, str]) -> dict[int, str]:
+    """File id -> icon name for every icon the emitted JSON under build_dir refers to."""
+    referenced = _referenced_names(build_dir)
+    candidates = {file_id: name for file_id, name in names.items() if name in referenced}
+    _warn_about_name_collisions(candidates)
+    by_name: dict[str, list[int]] = {}
+    for file_id, name in candidates.items():
+        by_name.setdefault(name, []).append(file_id)
+    missing = sorted(referenced - set(by_name))
     if missing:
         logger.warning(
-            "%d icon file ids are not in ManifestInterfaceData: %s", len(missing), missing[:10]
+            "%d icon names are not in ManifestInterfaceData: %s", len(missing), missing[:10]
         )
-    return {file_id: names[file_id] for file_id in sorted(file_ids) if file_id in names}
+    # Lowest file id wins a shared name, the same rule download_icons applies.
+    wanted = {min(ids): name for name, ids in by_name.items()}
+    return {file_id: wanted[file_id] for file_id in sorted(wanted)}
 
 
 def icons_for_build(
@@ -172,9 +193,7 @@ def icons_for_build(
     if not raw.exists():
         raise SystemExit(f"no raw data at {raw}; run `python -m pipeline fetch` first")
     names = icon_names(read_csv(raw / "ManifestInterfaceData.csv"))
-    wanted = wanted_icons(
-        build_dir, read_csv(raw / "SpellMisc.csv"), read_csv(raw / "Item.csv"), names
-    )
+    wanted = wanted_icons(build_dir, names)
     written = download_icons(wanted, build_dir / "icons", cache_dir, client)
     print(f"{written} icons written, {len(wanted)} referenced")
     return written

@@ -33,7 +33,13 @@ def main(argv: list[str] | None = None) -> int:
     elif args.command == "normalize":
         from pipeline.normalize import normalize_build
 
-        normalize_build(args.build)
+        result = normalize_build(args.build)
+        if result.skipped:
+            # The build directory is incomplete. Exiting non-zero stops the CI
+            # job before it can commit and push a build the site cannot render.
+            for reason in result.skipped:
+                logging.getLogger("pipeline").error("build %s is missing %s", args.build, reason)
+            return 1
     elif args.command == "icons":
         from pipeline.icons import icons_for_build
 
