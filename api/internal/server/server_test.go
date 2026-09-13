@@ -20,3 +20,19 @@ func TestHealthAndVersion(t *testing.T) {
 		}
 	}
 }
+
+func TestUnknownRouteReturnsEnvelope(t *testing.T) {
+	h := NewRouter(Deps{Version: "test-1"})
+	rec := httptest.NewRecorder()
+	h.ServeHTTP(rec, httptest.NewRequest(http.MethodGet, "/nope", nil))
+	if rec.Code != http.StatusNotFound {
+		t.Fatalf("code = %d", rec.Code)
+	}
+	if ct := rec.Header().Get("Content-Type"); !strings.HasPrefix(ct, "application/json") {
+		t.Fatalf("content-type = %q", ct)
+	}
+	body := rec.Body.String()
+	if !strings.Contains(body, `"ok":false`) || !strings.Contains(body, `"code":"not_found"`) {
+		t.Fatalf("unexpected body: %s", body)
+	}
+}
