@@ -62,10 +62,12 @@ func main() {
 	log.Info("trees", "dir", cfg.TreeDataDir, "versions", treeData.Versions())
 
 	buildStore := &builds.Store{Pool: pool}
+	views := builds.NewViews(buildStore, log)
 	siteDeps := &site.Deps{
 		Store:         buildStore,
 		Data:          treeData,
 		PublicBaseURL: cfg.PublicBaseURL,
+		Views:         views,
 		Log:           log,
 	}
 	buildsSvc := &builds.Service{
@@ -123,5 +125,6 @@ func main() {
 		<-serveErr // wait for the listener goroutine to actually return
 	}
 	svc.Wait()
+	views.Close()
 	log.Info("stopped")
 }
