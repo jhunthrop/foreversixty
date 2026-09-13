@@ -41,6 +41,16 @@ jobs:
           BUILD=$(uv run python -m pipeline fetch "${ARGS[@]}" | tail -1)
           echo "BUILD=$BUILD" >> "$GITHUB_ENV"
           echo "PRODUCT=$PRODUCT" >> "$GITHUB_ENV"
+      - name: Restore the icon cache
+        uses: actions/cache@v4
+        with:
+          path: data/.icon-cache
+          key: icon-cache-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: icon-cache-${{ runner.os }}-
+      - run: uv run python -m pipeline normalize --build "$BUILD"
+      - run: uv run python -m pipeline icons --build "$BUILD"
+      # Re-run the offline normalize so manifest.json also covers the icons
+      # the step above just wrote.
       - run: uv run python -m pipeline normalize --build "$BUILD"
       - run: |
           PREV=$(ls builds | grep -vx "$BUILD" | sort -V | tail -1)
