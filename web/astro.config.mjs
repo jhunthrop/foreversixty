@@ -22,5 +22,12 @@ export default defineConfig({
   trailingSlash: 'never',
   build: { format: 'file', inlineStylesheets: 'always' },
   integrations: [svelte(), sitemap(), pagefind(), interactionDirective],
-  vite: { plugins: [tailwindcss()] },
+  vite: {
+    plugins: [tailwindcss()],
+    // astro-pagefind writes /pagefind/pagefind.js into dist/ *after* the bundle is generated,
+    // so the search island's dynamic import of it can never be resolved at build time. Marking
+    // the path external tells Rollup to emit the import untouched in both the client and the
+    // SSR bundle instead of failing with UNRESOLVED_IMPORT.
+    build: { rollupOptions: { external: [/^\/pagefind\//] } },
+  },
 });

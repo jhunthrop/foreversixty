@@ -22,3 +22,20 @@ test('no keystrokes are dropped when typing immediately after the "/" shortcut',
   const result = page.getByRole('option', { name: /Hall of Thanes/ });
   await expect(result).toBeVisible();
 });
+
+test('arriving at /search?q= seeds the box from the URL and shows results', async ({ page }) => {
+  await page.goto('/search?q=Thanes');
+  await expect(page.getByRole('searchbox')).toHaveValue('Thanes');
+  await expect(page.getByRole('option', { name: /Hall of Thanes/ })).toBeVisible();
+});
+
+test('Enter before the debounce resolves submits the query to the results page', async ({ page }) => {
+  await page.goto('/');
+  await page.keyboard.press('/');
+  await expect(page.getByRole('searchbox')).toBeFocused();
+  await page.keyboard.type('Thanes');
+  await page.keyboard.press('Enter');
+  await expect(page).toHaveURL(/\/search\?q=Thanes$/);
+  await expect(page.getByRole('searchbox')).toHaveValue('Thanes');
+  await expect(page.getByRole('option', { name: /Hall of Thanes/ })).toBeVisible();
+});

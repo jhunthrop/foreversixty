@@ -1,10 +1,11 @@
 <!-- web/src/components/SearchBox.svelte -->
 <script lang="ts">
+  import { onMount } from 'svelte';
+
   type Result = { url: string; title: string; excerpt: string };
   type Pagefind = { init: () => Promise<void>; search: (q: string) => Promise<{ results: Array<{ data: () => Promise<{ url: string; meta: { title: string }; excerpt: string }> }> }> };
 
-  let { initial = '' }: { initial?: string } = $props();
-  let query = $state(initial);
+  let query = $state('');
   let results = $state<Result[]>([]);
   let active = $state(-1);
   let open = $state(false);
@@ -51,9 +52,17 @@
     }
   }
 
-  $effect(() => {
+  // /search is prerendered, so the page cannot read ?q= at build time and hand it down as a
+  // prop -- the island seeds itself from the URL instead. Every arrival at /search?q=... has
+  // to show the query and its results: a shared link, a no-JS form submit, or Enter pressed
+  // before the debounce resolved (which submits the form rather than opening a result).
+  onMount(() => {
     window.addEventListener('keydown', globalKey);
-    if (initial) run();
+    const seeded = new URLSearchParams(window.location.search).get('q') ?? '';
+    if (seeded) {
+      query = seeded;
+      run();
+    }
     return () => window.removeEventListener('keydown', globalKey);
   });
 </script>
