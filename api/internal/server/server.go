@@ -4,6 +4,7 @@ import (
 	"log/slog"
 	"net/http"
 
+	"github.com/jhunthrop/foreversixty/api/internal/builds"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/api/internal/subscribe"
 )
@@ -13,6 +14,7 @@ type Deps struct {
 	Log              *slog.Logger
 	AllowedOrigin    string
 	Subscribe        *subscribe.Service
+	Builds           *builds.Service
 	TrustedProxyHops int
 }
 
@@ -29,6 +31,9 @@ func NewRouter(d Deps) http.Handler {
 	})
 	if d.Subscribe != nil {
 		subscribe.Mount(mux, d.Subscribe, d.Log, d.TrustedProxyHops)
+	}
+	if d.Builds != nil {
+		builds.Mount(mux, d.Builds, d.TrustedProxyHops)
 	}
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such route", nil)

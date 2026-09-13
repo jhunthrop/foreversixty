@@ -132,7 +132,7 @@ func TestClientIPFallsBackToRemoteAddrWhenListShorterThanHops(t *testing.T) {
 }
 
 func TestIPLimiterSweepEvictsIdleEntryAfterTenMinutes(t *testing.T) {
-	l := newIPLimiter(10)
+	l := newIPLimiter(10, time.Minute)
 	now := time.Now()
 
 	// Seed one entry that is already 11 minutes idle relative to `now`.
@@ -163,5 +163,34 @@ func TestCORSAllowsConfiguredOrigin(t *testing.T) {
 	h.ServeHTTP(rec, req)
 	if rec.Code != 204 || rec.Header().Get("Access-Control-Allow-Origin") != "https://foreversixty.gg" {
 		t.Fatalf("code=%d origin=%q", rec.Code, rec.Header().Get("Access-Control-Allow-Origin"))
+	}
+}
+
+func TestRateLimitPerHourAllowsTheBudgetThenReturns429(t *testing.T) {
+	h := Chain(okHandler(), RequestID(), RateLimitPer(3, time.Hour, 1))
+	for i := 0; i < 3; i++ {
+		rec := httptest.NewRecorder()
+		req := httptest.NewRequest("POST", "/v1/builds", nil)
+		req.RemoteAddr = "10.0.0.1:1234"
+		h.ServeHTTP(rec, req)
+		if rec.Code != 200 {
+			t.Fatalf("request %d: code = %d, want 200", i+1, rec.Code)
+		}
+	}
+	rec := httptest.NewRecorder()
+	req := httptest.NewRequest("POST", "/v1/builds", nil)
+	req.RemoteAddr = "10.0.0.1:1234"
+	h.ServeHTTP(rec, req)
+	if rec.Code != http.StatusTooManyRequests {
+		t.Fatalf("fourth request: code = %d, want 429", rec.Code)
+	}
+
+	// A different IP has its own hourly budget.
+	rec = httptest.NewRecorder()
+	req = httptest.NewRequest("POST", "/v1/builds", nil)
+	req.RemoteAddr = "10.0.0.2:1234"
+	h.ServeHTTP(rec, req)
+	if rec.Code != 200 {
+		t.Fatalf("other IP: code = %d, want 200", rec.Code)
 	}
 }
