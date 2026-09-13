@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 
+from pipeline.icons import PLACEHOLDER_ICON
 from pipeline.models import ClassItems, GearItem, ItemSetBonus, ItemSetRecord
 from pipeline.normalize.classes import slugify
 from pipeline.proficiency import can_equip
@@ -138,6 +139,29 @@ def _stats(row: dict[str, str]) -> dict[str, int]:
     return stats
 
 
+def _icon_name(item_row: dict[str, str], icons: dict[int, str], display_name: str) -> str:
+    """The item's icon name, falling back to the client's placeholder art.
+
+    Some client rows carry `IconFileDataID` 0, meaning the client itself has no
+    icon for the item. Emitting "" there would put `icons/.webp` in the output
+    and 404 in the site, so those items point at PLACEHOLDER_ICON instead. A
+    nonzero id that names no file takes the same branch: either way the client
+    gave us nothing to resolve, and a placeholder beats a broken reference.
+    """
+    file_id = int(item_row["IconFileDataID"])
+    name = icons.get(file_id)
+    if name is not None:
+        return name
+    logger.warning(
+        "item %s (%s) has no icon in the client (IconFileDataID %s); using placeholder %r",
+        item_row["ID"],
+        display_name,
+        file_id,
+        PLACEHOLDER_ICON,
+    )
+    return PLACEHOLDER_ICON
+
+
 def build_class_items(
     sparse_rows: list[dict[str, str]],
     item_rows: list[dict[str, str]],
@@ -164,7 +188,7 @@ def build_class_items(
         item = GearItem(
             id=item_id,
             name=row["Display_lang"],
-            icon=icons.get(int(item_row["IconFileDataID"]), ""),
+            icon=_icon_name(item_row, icons, row["Display_lang"]),
             slot=slot,
             quality=int(row["OverallQualityID"]),
             required_level=int(row["RequiredLevel"]),

@@ -28201,7 +28201,7 @@
     {
       "id": 227688,
       "name": "Gorehowl",
-      "icon": "",
+      "icon": "inv_misc_questionmark",
       "slot": "main_hand",
       "quality": 1,
       "required_level": 1,
@@ -28487,7 +28487,7 @@
     {
       "id": 240742,
       "name": "Monster - 1H, Shortsword, Red",
-      "icon": "",
+      "icon": "inv_misc_questionmark",
       "slot": "main_hand",
       "quality": 0,
       "required_level": 1,
@@ -30164,7 +30164,7 @@
     {
       "id": 3350,
       "name": "Monster - Item, Bone",
-      "icon": "",
+      "icon": "inv_misc_questionmark",
       "slot": "main_hand",
       "quality": 0,
       "required_level": 1,
@@ -34077,7 +34077,7 @@
     {
       "id": 240217,
       "name": "Monster Item - Stave_2H_Jeweled_A_02 - Red",
-      "icon": "",
+      "icon": "inv_misc_questionmark",
       "slot": "main_hand",
       "quality": 0,
       "required_level": 1,
@@ -62461,7 +62461,7 @@
     {
       "id": 209423,
       "name": "Flowing Scarf",
-      "icon": "",
+      "icon": "inv_misc_questionmark",
       "slot": "back",
       "quality": 3,
       "required_level": 25,
@@ -63912,7 +63912,7 @@
     {
       "id": 209526,
       "name": "TEST Darkwater Talwar",
-      "icon": "",
+      "icon": "inv_misc_questionmark",
       "slot": "main_hand",
       "quality": 3,
       "required_level": 25,
@@ -144263,7 +144263,7 @@
     {
       "id": 235868,
       "name": "Bulwark of Ire",
-      "icon": "",
+      "icon": "inv_misc_questionmark",
       "slot": "off_hand",
       "quality": 4,
       "required_level": 60,
@@ -144988,7 +144988,7 @@
     {
       "id": 235882,
       "name": "Clattering Steps",
-      "icon": "",
+      "icon": "inv_misc_questionmark",
       "slot": "feet",
       "quality": 4,
       "required_level": 60,
@@ -145695,7 +145695,7 @@
     {
       "id": 235888,
       "name": "Clobberclub",
-      "icon": "",
+      "icon": "inv_misc_questionmark",
       "slot": "main_hand",
       "quality": 4,
       "required_level": 60,
@@ -145725,7 +145725,7 @@
     {
       "id": 235871,
       "name": "Clutching Death Helm",
-      "icon": "",
+      "icon": "inv_misc_questionmark",
       "slot": "head",
       "quality": 4,
       "required_level": 60,
@@ -146461,7 +146461,7 @@
     {
       "id": 235873,
       "name": "Crypt's Keepers",
-      "icon": "",
+      "icon": "inv_misc_questionmark",
       "slot": "wrist",
       "quality": 4,
       "required_level": 60,
@@ -146735,7 +146735,7 @@
     {
       "id": 235874,
       "name": "Cultist's Handwraps",
-      "icon": "",
+      "icon": "inv_misc_questionmark",
       "slot": "hands",
       "quality": 4,
       "required_level": 60,
@@ -147079,7 +147079,7 @@
     {
       "id": 235892,
       "name": "Darkrider's Spine",
-      "icon": "",
+      "icon": "inv_misc_questionmark",
       "slot": "ranged",
       "quality": 4,
       "required_level": 60,
@@ -148546,7 +148546,7 @@
     {
       "id": 235881,
       "name": "Dreaded Treaders",
-      "icon": "",
+      "icon": "inv_misc_questionmark",
       "slot": "feet",
       "quality": 4,
       "required_level": 60,
@@ -150286,7 +150286,7 @@
     {
       "id": 235877,
       "name": "Fanatic's Gauntlets",
-      "icon": "",
+      "icon": "inv_misc_questionmark",
       "slot": "hands",
       "quality": 4,
       "required_level": 60,
@@ -153830,7 +153830,7 @@
     {
       "id": 235875,
       "name": "Gravedigger's Gloves",
-      "icon": "",
+      "icon": "inv_misc_questionmark",
       "slot": "hands",
       "quality": 4,
       "required_level": 60,
@@ -158804,7 +158804,7 @@
     {
       "id": 236645,
       "name": "Lightwielder's Gauntlets",
-      "icon": "",
+      "icon": "inv_misc_questionmark",
       "slot": "hands",
       "quality": 4,
       "required_level": 60,
@@ -159166,7 +159166,7 @@
     {
       "id": 235878,
       "name": "Malefic Belt",
-      "icon": "",
+      "icon": "inv_misc_questionmark",
       "slot": "waist",
       "quality": 4,
       "required_level": 60,
@@ -160211,7 +160211,7 @@
     {
       "id": 236642,
       "name": "Mender's Handwraps",
-      "icon": "",
+      "icon": "inv_misc_questionmark",
       "slot": "hands",
       "quality": 4,
       "required_level": 60,
@@ -160623,7 +160623,7 @@
     {
       "id": 236644,
       "name": "Mourner's Handguards",
-      "icon": "",
+      "icon": "inv_misc_questionmark",
       "slot": "hands",
       "quality": 4,
       "required_level": 60,
@@ -161033,7 +161033,7 @@
     {
       "id": 236643,
       "name": "Nightwatcher's Gloves",
-      "icon": "",
+      "icon": "inv_misc_questionmark",
       "slot": "hands",
       "quality": 4,
       "required_level": 60,
@@ -161048,7 +161048,7 @@
     {
       "id": 235879,
       "name": "Nimble Links",
-      "icon": "",
+      "icon": "inv_misc_questionmark",
       "slot": "legs",
       "quality": 4,
       "required_level": 60,
@@ -161326,7 +161326,7 @@
     {
       "id": 235891,
       "name": "Ol' Reliable",
-      "icon": "",
+      "icon": "inv_misc_questionmark",
       "slot": "main_hand",
       "quality": 4,
       "required_level": 60,
@@ -161903,7 +161903,7 @@
     {
       "id": 235880,
       "name": "Pauper Soles",
-      "icon": "",
+      "icon": "inv_misc_questionmark",
       "slot": "feet",
       "quality": 4,
       "required_level": 60,
@@ -163400,7 +163400,7 @@
     {
       "id": 235870,
       "name": "Rattlechain Helm",
-      "icon": "",
+      "icon": "inv_misc_questionmark",
       "slot": "head",
       "quality": 4,
       "required_level": 60,
@@ -166801,7 +166801,7 @@
     {
       "id": 235889,
       "name": "Servant's Quarterstaff",
-      "icon": "",
+      "icon": "inv_misc_questionmark",
       "slot": "main_hand",
       "quality": 4,
       "required_level": 60,
@@ -166914,7 +166914,7 @@
     {
       "id": 235890,
       "name": "Shadow Weaver's Needle",
-      "icon": "",
+      "icon": "inv_misc_questionmark",
       "slot": "main_hand",
       "quality": 4,
       "required_level": 60,
@@ -166981,7 +166981,7 @@
     {
       "id": 235893,
       "name": "Shadowbound Grimoire",
-      "icon": "",
+      "icon": "inv_misc_questionmark",
       "slot": "off_hand",
       "quality": 4,
       "required_level": 60,
@@ -168320,7 +168320,7 @@
     {
       "id": 235876,
       "name": "Sinner's Handguards",
-      "icon": "",
+      "icon": "inv_misc_questionmark",
       "slot": "hands",
       "quality": 4,
       "required_level": 60,
@@ -169309,7 +169309,7 @@
     {
       "id": 235872,
       "name": "Stalker's Bands",
-      "icon": "",
+      "icon": "inv_misc_questionmark",
       "slot": "wrist",
       "quality": 4,
       "required_level": 60,
@@ -170874,7 +170874,7 @@
     {
       "id": 235869,
       "name": "The Master's Cowl",
-      "icon": "",
+      "icon": "inv_misc_questionmark",
       "slot": "head",
       "quality": 4,
       "required_level": 60,
@@ -172533,7 +172533,7 @@
     {
       "id": 235883,
       "name": "Well Diver's Stumble",
-      "icon": "",
+      "icon": "inv_misc_questionmark",
       "slot": "feet",
       "quality": 4,
       "required_level": 60,

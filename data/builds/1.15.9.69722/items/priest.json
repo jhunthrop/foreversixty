@@ -16374,7 +16374,7 @@
     {
       "id": 3350,
       "name": "Monster - Item, Bone",
-      "icon": "",
+      "icon": "inv_misc_questionmark",
       "slot": "main_hand",
       "quality": 0,
       "required_level": 1,
@@ -18194,7 +18194,7 @@
     {
       "id": 240217,
       "name": "Monster Item - Stave_2H_Jeweled_A_02 - Red",
-      "icon": "",
+      "icon": "inv_misc_questionmark",
       "slot": "main_hand",
       "quality": 0,
       "required_level": 1,
@@ -30823,7 +30823,7 @@
     {
       "id": 209423,
       "name": "Flowing Scarf",
-      "icon": "",
+      "icon": "inv_misc_questionmark",
       "slot": "back",
       "quality": 3,
       "required_level": 25,
@@ -67569,7 +67569,7 @@
     {
       "id": 235888,
       "name": "Clobberclub",
-      "icon": "",
+      "icon": "inv_misc_questionmark",
       "slot": "main_hand",
       "quality": 4,
       "required_level": 60,
@@ -67986,7 +67986,7 @@
     {
       "id": 235874,
       "name": "Cultist's Handwraps",
-      "icon": "",
+      "icon": "inv_misc_questionmark",
       "slot": "hands",
       "quality": 4,
       "required_level": 60,
@@ -68474,7 +68474,7 @@
     {
       "id": 235894,
       "name": "Doomsayer's Demise",
-      "icon": "",
+      "icon": "inv_misc_questionmark",
       "slot": "ranged",
       "quality": 4,
       "required_level": 60,
@@ -73990,7 +73990,7 @@
     {
       "id": 235878,
       "name": "Malefic Belt",
-      "icon": "",
+      "icon": "inv_misc_questionmark",
       "slot": "waist",
       "quality": 4,
       "required_level": 60,
@@ -74832,7 +74832,7 @@
     {
       "id": 236642,
       "name": "Mender's Handwraps",
-      "icon": "",
+      "icon": "inv_misc_questionmark",
       "slot": "hands",
       "quality": 4,
       "required_level": 60,
@@ -75692,7 +75692,7 @@
     {
       "id": 235880,
       "name": "Pauper Soles",
-      "icon": "",
+      "icon": "inv_misc_questionmark",
       "slot": "feet",
       "quality": 4,
       "required_level": 60,
@@ -78535,7 +78535,7 @@
     {
       "id": 235889,
       "name": "Servant's Quarterstaff",
-      "icon": "",
+      "icon": "inv_misc_questionmark",
       "slot": "main_hand",
       "quality": 4,
       "required_level": 60,
@@ -78583,7 +78583,7 @@
     {
       "id": 235890,
       "name": "Shadow Weaver's Needle",
-      "icon": "",
+      "icon": "inv_misc_questionmark",
       "slot": "main_hand",
       "quality": 4,
       "required_level": 60,
@@ -78650,7 +78650,7 @@
     {
       "id": 235893,
       "name": "Shadowbound Grimoire",
-      "icon": "",
+      "icon": "inv_misc_questionmark",
       "slot": "off_hand",
       "quality": 4,
       "required_level": 60,

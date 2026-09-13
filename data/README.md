@@ -71,3 +71,11 @@ fields from that entry (keeping only `slug` and `forever_changes`) once it does.
   what the client states in a column is emitted.
 - Armour and weapon proficiency is not in the client tables; `pipeline/proficiency.py`
   holds the Classic 1.x proficiencies and must be revisited for Forever.
+- Some items have `IconFileDataID` 0 in `Item.csv`, meaning the client itself ships no art
+  for them. Those items are emitted with `PLACEHOLDER_ICON` (`inv_misc_questionmark`, the
+  client's own placeholder) rather than an empty name, which would resolve to
+  `icons/.webp` and 404. On `wow_classic_era` 1.15.9.69722 this affects **33 items across
+  174 per-class records** — mostly `Monster - Item` rows, but also real items such as
+  Gorehowl (227688) and Flowing Scarf (209423). Each one logs a warning naming the item.
+  An item whose `IconFileDataID` is nonzero but absent from `ManifestInterfaceData` takes
+  the same fallback; no Era item currently does.

@@ -24,6 +24,13 @@ ICON_SIZE = 64
 CACHE_DIR = Path(".icon-cache")
 _BLP_SUFFIX = ".blp"
 
+#: The client's own placeholder art, shown for anything the client itself has no
+#: icon for. This is a real `ManifestInterfaceData` row shipped in the game data,
+#: not a name this pipeline invented: items whose `IconFileDataID` is 0 (or names
+#: no file) are emitted pointing here so that every `icon` in the output resolves
+#: to an image, rather than to an empty name the site would request as `.webp`.
+PLACEHOLDER_ICON = "inv_misc_questionmark"
+
 
 def icon_names(manifest_rows: list[dict[str, str]]) -> dict[int, str]:
     """File data id -> lowercase icon name with no extension."""
@@ -130,10 +137,19 @@ def wanted_icons(
         for tree in payload["trees"]:
             for talent in tree["talents"]:
                 file_ids.add(spell_icons.get(talent["ranks"][0]["spell_id"], 0))
+    # Items the client gives no icon for are emitted pointing at PLACEHOLDER_ICON
+    # (see pipeline.normalize.gear), so its file must be downloaded too. Resolve
+    # the id from the client's own table rather than hardcoding it, and pick the
+    # lowest on a name collision, the same rule download_icons applies.
+    placeholder_id = min(
+        (file_id for file_id, name in names.items() if name == PLACEHOLDER_ICON),
+        default=0,
+    )
     for path in sorted((build_dir / "items").glob("*.json")):
         payload = json.loads(path.read_text(encoding="utf-8"))
         for item in payload["items"]:
-            file_ids.add(item_icons.get(item["id"], 0))
+            file_id = item_icons.get(item["id"], 0)
+            file_ids.add(file_id if file_id in names else placeholder_id)
     file_ids.discard(0)
     missing = sorted(i for i in file_ids if i not in names)
     if missing:

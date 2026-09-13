@@ -6,7 +6,14 @@ import httpx
 from PIL import Image
 
 from pipeline.csvio import read_csv
-from pipeline.icons import blp_to_webp, download_icons, icon_names, icons_for_build, wanted_icons
+from pipeline.icons import (
+    PLACEHOLDER_ICON,
+    blp_to_webp,
+    download_icons,
+    icon_names,
+    icons_for_build,
+    wanted_icons,
+)
 
 HERE = Path(__file__).parent
 
@@ -301,3 +308,43 @@ def test_wanted_icons_skips_a_file_id_absent_from_the_manifest(tmp_path: Path, c
         wanted = wanted_icons(tmp_path, misc_rows, [], names)
     assert 999999 not in wanted
     assert any("999999" in record.getMessage() for record in caplog.records)
+
+
+def test_wanted_icons_downloads_the_placeholder_for_an_item_with_no_icon(tmp_path: Path):
+    """Items with IconFileDataID 0 are emitted pointing at PLACEHOLDER_ICON, so its
+    file has to be fetched too, or the output would reference a missing image."""
+    (tmp_path / "items").mkdir(parents=True)
+    (tmp_path / "items" / "warrior.json").write_text(
+        json.dumps(
+            {
+                "build": "1.0.0.1",
+                "class_slug": "warrior",
+                "items": [{"id": 25}, {"id": 26}],
+            }
+        )
+    )
+    names = {135274: "inv_sword_04", 134400: PLACEHOLDER_ICON}
+    wanted = wanted_icons(
+        tmp_path,
+        [],
+        [
+            {"ID": "25", "ClassID": "2", "SubclassID": "7", "IconFileDataID": "135274"},
+            {"ID": "26", "ClassID": "2", "SubclassID": "7", "IconFileDataID": "0"},
+        ],
+        names,
+    )
+    assert wanted == {135274: "inv_sword_04", 134400: PLACEHOLDER_ICON}
+
+
+def test_wanted_icons_needs_no_placeholder_when_every_item_has_one(tmp_path: Path):
+    (tmp_path / "items").mkdir(parents=True)
+    (tmp_path / "items" / "warrior.json").write_text(
+        json.dumps({"build": "1.0.0.1", "class_slug": "warrior", "items": [{"id": 25}]})
+    )
+    wanted = wanted_icons(
+        tmp_path,
+        [],
+        [{"ID": "25", "ClassID": "2", "SubclassID": "7", "IconFileDataID": "135274"}],
+        {135274: "inv_sword_04", 134400: PLACEHOLDER_ICON},
+    )
+    assert wanted == {135274: "inv_sword_04"}

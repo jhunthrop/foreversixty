@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 
 from pipeline.csvio import read_csv
-from pipeline.icons import icon_names
+from pipeline.icons import PLACEHOLDER_ICON, icon_names
 from pipeline.models import ItemSetBonus
 from pipeline.normalize import write_json, write_model
 from pipeline.normalize.gear import ItemDataError, build_class_items, build_item_sets
@@ -186,3 +186,49 @@ def test_set_bonuses_are_sorted_by_piece_count_with_resolved_text():
         (3, "Increases the block value of your shield by 31."),
         (5, "Gives you a $h% chance to generate an additional Rage point."),
     ]
+
+
+def _item_rows_with_icon(item_id: str, icon_file_data_id: str) -> list[dict[str, str]]:
+    """The fixture Item rows with one row's IconFileDataID overridden in memory."""
+    rows = read_csv(HERE / "fixtures/Item.csv")
+    for row in rows:
+        if row["ID"] == item_id:
+            row["IconFileDataID"] = icon_file_data_id
+    return rows
+
+
+def test_an_item_the_client_has_no_icon_for_falls_back_to_the_placeholder(caplog):
+    """IconFileDataID 0 means the client itself has no art; "" would 404 as icons/.webp."""
+    with caplog.at_level("WARNING"):
+        records = build_class_items(
+            read_csv(HERE / "fixtures/ItemSparse.csv"),
+            _item_rows_with_icon("16866", "0"),
+            read_csv(HERE / "fixtures/ChrClasses.csv"),
+            fixture_icons(),
+            "1.0.0.1",
+        )
+    helm = {i.id: i for r in records for i in r.items}[16866]
+    assert helm.icon == PLACEHOLDER_ICON
+    assert helm.icon != ""
+    messages = [record.getMessage() for record in caplog.records]
+    assert any("16866" in m and "Helm of Might" in m for m in messages)
+
+
+def test_a_nonzero_icon_id_that_names_no_file_also_falls_back(caplog):
+    """Same branch: the client gave an id, but nothing in the manifest resolves it."""
+    with caplog.at_level("WARNING"):
+        records = build_class_items(
+            read_csv(HERE / "fixtures/ItemSparse.csv"),
+            _item_rows_with_icon("16866", "99999999"),
+            read_csv(HERE / "fixtures/ChrClasses.csv"),
+            fixture_icons(),
+            "1.0.0.1",
+        )
+    helm = {i.id: i for r in records for i in r.items}[16866]
+    assert helm.icon == PLACEHOLDER_ICON
+    assert any("99999999" in record.getMessage() for record in caplog.records)
+
+
+def test_every_emitted_item_icon_is_a_usable_file_name():
+    """No item may carry an empty icon: the site builds icons/<icon>.webp from it."""
+    assert all(i.icon for record in build_all() for i in record.items)
