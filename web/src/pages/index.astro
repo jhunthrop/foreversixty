@@ -13,6 +13,7 @@ import dates from '../data/dates.json';
 import toolsData from '../data/tools.json';
 import unknowns from '../data/unknowns.json';
 import classes from '../data/classes.json';
+import communityLinks from '../data/links.json';
 
 interface Tool { title: string; description: string; href: string; status: { label: string; kind: 'site' | 'community' }; icon: string }
 const tools = toolsData as Tool[];
@@ -89,8 +90,8 @@ const popular = [
             <div class="flex flex-col gap-3 p-[18px]">
               <p class="text-[14px] leading-relaxed">Every page here is written and checked by players. Spot a wrong level range, a missing quest, a bad route? Fix it, or tell us.</p>
               <div class="flex gap-[10px]">
-                <a href="https://github.com/PLACEHOLDER/forever/issues/new?template=error.yml" class="inline-flex items-center h-[38px] px-[14px] border border-line-warm-strong rounded-control text-[13px] font-semibold tracking-[0.06em] uppercase text-text">Report an error</a>
-                <a href="https://github.com/PLACEHOLDER/forever/issues/new?template=guide.yml" class="inline-flex items-center h-[38px] px-[14px] border border-line-warm-strong rounded-control text-[13px] font-semibold tracking-[0.06em] uppercase text-text">Write a guide</a>
+                <a href={communityLinks.reportErrorIssue} class="inline-flex items-center h-[38px] px-[14px] border border-line-warm-strong rounded-control text-[13px] font-semibold tracking-[0.06em] uppercase text-text">Report an error</a>
+                <a href={communityLinks.writeGuideIssue} class="inline-flex items-center h-[38px] px-[14px] border border-line-warm-strong rounded-control text-[13px] font-semibold tracking-[0.06em] uppercase text-text">Write a guide</a>
               </div>
             </div>
           </Panel>

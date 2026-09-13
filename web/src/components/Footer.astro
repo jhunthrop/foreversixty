@@ -1,15 +1,17 @@
 ---
 // web/src/components/Footer.astro
-const links = [
+import communityLinks from '../data/links.json';
+
+const footerLinks = [
   ['About', '/about'],
   ['Sources', '/sources'],
   ['Changelog', '/changelog'],
-  ['Contribute', 'https://github.com/PLACEHOLDER/forever/issues'],
+  ['Contribute', `${communityLinks.githubRepo}/issues`],
 ] as const;
 ---
 <footer class="mt-auto flex items-center justify-between gap-8 px-12 py-7 border-t border-line text-[13px]">
   <p class="max-w-[720px] leading-relaxed text-muted">Forever Sixty is a fan-run reference. Not affiliated with or endorsed by Blizzard Entertainment. World of Warcraft and Warcraft are trademarks of Blizzard Entertainment, Inc.</p>
   <nav class="flex gap-[18px]">
-    {links.map(([label, href]) => <a href={href} class="text-nav hover:text-strong">{label}</a>)}
+    {footerLinks.map(([label, href]) => <a href={href} class="text-nav hover:text-strong">{label}</a>)}
   </nav>
 </footer>
