@@ -66,7 +66,7 @@ export function createPlannerStore(init: PlannerInit) {
   let raceSlug = $state(init.raceSlug);
   let order = $state<number[]>(init.order ? [...init.order] : []);
   let gear = $state<Gear>({ ...(init.gear ?? {}) });
-  let title = $state(init.title ?? '');
+  let title = $state((init.title ?? '').trim().slice(0, MAX_TITLE_LENGTH));
   let readOnly = $state(init.readOnly ?? false);
   let sourceId = $state<string | null>(init.sourceId ?? null);
   let refusal = $state<string | null>(null);
@@ -97,6 +97,18 @@ export function createPlannerStore(init: PlannerInit) {
     if (!readOnly) return true;
     refusal = READ_ONLY_REASON;
     return false;
+  }
+
+  /**
+   * Moves `raceSlug` to the first race legal for `classId` if the current one is not (or is
+   * unresolvable). Leaves `raceSlug` alone when no legal race exists. Used by data loading
+   * (`setReference`) and by class switches (`selectClass`) so the two never drift apart.
+   */
+  function repairRaceForClass(classId: number): void {
+    const currentRaceId = races.find((r) => r.slug === raceSlug)?.id ?? -1;
+    if (comboIsLegal(combos, currentRaceId, classId)) return;
+    const first = races.find((race) => comboIsLegal(combos, race.id, classId));
+    if (first) raceSlug = first.slug;
   }
 
   return {
@@ -187,10 +199,7 @@ export function createPlannerStore(init: PlannerInit) {
       races = data.races;
       combos = data.combos;
       const current = classes.find((c) => c.slug === classSlug);
-      if (current && !comboIsLegal(combos, races.find((r) => r.slug === raceSlug)?.id ?? -1, current.id)) {
-        const first = races.find((race) => comboIsLegal(combos, race.id, current.id));
-        if (first) raceSlug = first.slug;
-      }
+      if (current) repairRaceForClass(current.id);
     },
 
     setTalents(file: TalentFile): void {
@@ -207,6 +216,7 @@ export function createPlannerStore(init: PlannerInit) {
 
     /** Switching class discards the build: its talent ids belong to the old class. */
     selectClass(slug: string): void {
+      if (!editable()) return;
       if (slug === classSlug) return;
       classSlug = slug;
       talents = null;
@@ -215,14 +225,11 @@ export function createPlannerStore(init: PlannerInit) {
       gear = {};
       refusal = null;
       const next = classes.find((c) => c.slug === slug);
-      const race = races.find((r) => r.slug === raceSlug);
-      if (next && race && !comboIsLegal(combos, race.id, next.id)) {
-        const first = races.find((candidate) => comboIsLegal(combos, candidate.id, next.id));
-        if (first) raceSlug = first.slug;
-      }
+      if (next) repairRaceForClass(next.id);
     },
 
     selectRace(slug: string): void {
+      if (!editable()) return;
       raceSlug = slug;
     },
 
@@ -263,13 +270,13 @@ export function createPlannerStore(init: PlannerInit) {
 
     unequip(slot: Slot): void {
       if (!editable()) return;
-      const next: Gear = { ...gear };
-      delete next[slot];
-      gear = next;
+      const { [slot]: _dropped, ...rest } = gear;
+      gear = rest;
       refusal = null;
     },
 
     setTitle(text: string): void {
+      if (!editable()) return;
       title = text.trim().slice(0, MAX_TITLE_LENGTH);
     },
 
@@ -293,9 +300,11 @@ export function createPlannerStore(init: PlannerInit) {
     },
 
     toDraft(): BuildDraft {
+      if (!classRow) throw new Error(`toDraft: no class found for slug "${classSlug}"`);
+      if (!raceRow) throw new Error(`toDraft: no race found for slug "${raceSlug}"`);
       const draft: BuildDraft = {
-        class_id: classRow?.id ?? 0,
-        race_id: raceRow?.id ?? 0,
+        class_id: classRow.id,
+        race_id: raceRow.id,
         tree_version: init.treeVersion,
         point_order: [...order],
         gear: { ...gear },

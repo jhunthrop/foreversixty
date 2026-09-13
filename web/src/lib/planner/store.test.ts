@@ -117,6 +117,34 @@ describe('read-only builds, fork and reset', () => {
     expect(store.order).toEqual([1001]);
   });
 
+  it('refuses class, race and title changes while read-only', () => {
+    const store = loaded({
+      treeVersion: BUILD,
+      classSlug: 'warrior',
+      raceSlug: 'human',
+      order: [1001],
+      title: 'Original',
+      readOnly: true,
+      sourceId: 'k7x2qm4a',
+    });
+
+    store.selectClass('paladin');
+    expect(store.classSlug).toBe('warrior');
+    expect(store.refusal).toBe(READ_ONLY_REASON);
+
+    store.clearRefusal();
+    store.selectRace('dwarf');
+    expect(store.raceSlug).toBe('human');
+    expect(store.refusal).toBe(READ_ONLY_REASON);
+
+    store.clearRefusal();
+    store.setTitle('New title');
+    expect(store.title).toBe('Original');
+    expect(store.refusal).toBe(READ_ONLY_REASON);
+
+    expect(store.order).toEqual([1001]);
+  });
+
   it('fork makes the same build editable and drops the source id and title', () => {
     const store = loaded({
       treeVersion: BUILD,
@@ -198,5 +226,10 @@ describe('toDraft', () => {
     expect(store.toDraft().title).toBeUndefined();
     store.setTitle('x'.repeat(80));
     expect(store.toDraft().title).toHaveLength(60);
+  });
+
+  it('throws rather than silently drafting a build with no resolved class or race', () => {
+    const store = createPlannerStore({ treeVersion: BUILD, classSlug: 'warrior', raceSlug: 'human' });
+    expect(() => store.toDraft()).toThrow('no class found for slug "warrior"');
   });
 });
