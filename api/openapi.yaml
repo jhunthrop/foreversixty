@@ -76,7 +76,7 @@ paths:
             application/json:
               schema: { $ref: '#/components/schemas/Envelope' }
         '500':
-          description: "Internal error; envelope with code internal"
+          description: "Unexpected store error; envelope with code internal. Mail is sent asynchronously after the response, so this is never a mail-provider failure."
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Envelope' }

@@ -9,10 +9,11 @@ import (
 )
 
 type Deps struct {
-	Version       string
-	Log           *slog.Logger
-	AllowedOrigin string
-	Subscribe     *subscribe.Service
+	Version          string
+	Log              *slog.Logger
+	AllowedOrigin    string
+	Subscribe        *subscribe.Service
+	TrustedProxyHops int
 }
 
 func NewRouter(d Deps) http.Handler {
@@ -27,10 +28,10 @@ func NewRouter(d Deps) http.Handler {
 		httpx.WriteOK(w, r, http.StatusOK, map[string]string{"version": d.Version})
 	})
 	if d.Subscribe != nil {
-		subscribe.Mount(mux, d.Subscribe, d.Log)
+		subscribe.Mount(mux, d.Subscribe, d.Log, d.TrustedProxyHops)
 	}
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such route", nil)
 	})
-	return httpx.Chain(mux, httpx.RequestID(), httpx.Recover(d.Log), httpx.Logger(d.Log), httpx.CORS(d.AllowedOrigin), httpx.RateLimit(120))
+	return httpx.Chain(mux, httpx.RequestID(), httpx.Recover(d.Log), httpx.Logger(d.Log), httpx.CORS(d.AllowedOrigin), httpx.RateLimit(120, d.TrustedProxyHops))
 }

@@ -21,7 +21,7 @@ func discardLogger() *slog.Logger {
 func newTestHandler() http.Handler {
 	s := &Service{Store: &memStore{rows: map[string]memRow{"known@example.com": {token: "tok", unsubscribeToken: "utok"}}}, Mailer: &mail.Fake{}, PublicBaseURL: "https://foreversixty.gg", APIBaseURL: "https://api.foreversixty.gg"}
 	mux := http.NewServeMux()
-	Mount(mux, s, discardLogger())
+	Mount(mux, s, discardLogger(), 0)
 	return mux
 }
 
@@ -73,12 +73,30 @@ func TestUnsubscribeRedirects(t *testing.T) {
 	}
 }
 
-func TestPostSubscribe500OnMailErrorLogsIt(t *testing.T) {
+func TestPostSubscribeReturns202EvenWhenMailFailsAndLogsAsync(t *testing.T) {
 	var buf bytes.Buffer
 	log := slog.New(slog.NewTextHandler(&buf, nil))
-	s := &Service{Store: &memStore{rows: map[string]memRow{}}, Mailer: &mail.Fake{Err: errors.New("boom")}, PublicBaseURL: "https://foreversixty.gg", APIBaseURL: "https://api.foreversixty.gg"}
+	s := &Service{Store: &memStore{rows: map[string]memRow{}}, Mailer: &mail.Fake{Err: errors.New("boom")}, PublicBaseURL: "https://foreversixty.gg", APIBaseURL: "https://api.foreversixty.gg", Logger: log}
 	mux := http.NewServeMux()
-	Mount(mux, s, log)
+	Mount(mux, s, log, 0)
+	rec := httptest.NewRecorder()
+	mux.ServeHTTP(rec, httptest.NewRequest("POST", "/v1/subscribe", strings.NewReader(`{"email":"new@example.com"}`)))
+	if rec.Code != 202 {
+		t.Fatalf("code=%d body=%s", rec.Code, rec.Body.String())
+	}
+	s.Wait()
+	logOutput := buf.String()
+	if !strings.Contains(logOutput, "op=subscribe") || !strings.Contains(logOutput, "stage=mail") {
+		t.Fatalf("expected async log with op=subscribe stage=mail, got %q", logOutput)
+	}
+}
+
+func TestPostSubscribe500OnStoreErrorLogsIt(t *testing.T) {
+	var buf bytes.Buffer
+	log := slog.New(slog.NewTextHandler(&buf, nil))
+	s := &Service{Store: &erroringStore{err: errors.New("db down")}, Mailer: &mail.Fake{}, PublicBaseURL: "https://foreversixty.gg", APIBaseURL: "https://api.foreversixty.gg"}
+	mux := http.NewServeMux()
+	Mount(mux, s, log, 0)
 	rec := httptest.NewRecorder()
 	mux.ServeHTTP(rec, httptest.NewRequest("POST", "/v1/subscribe", strings.NewReader(`{"email":"new@example.com"}`)))
 	if rec.Code != 500 {
@@ -91,18 +109,19 @@ func TestPostSubscribe500OnMailErrorLogsIt(t *testing.T) {
 
 type erroringStore struct{ err error }
 
-func (e *erroringStore) Upsert(_ context.Context, _, _, _, _ string) (bool, string, bool, error) {
-	return false, "", false, e.err
+func (e *erroringStore) Upsert(_ context.Context, _, _, _, _ string) (UpsertResult, error) {
+	return UpsertResult{}, e.err
 }
-func (e *erroringStore) Confirm(_ context.Context, _ string) (bool, error)     { return false, e.err }
-func (e *erroringStore) Unsubscribe(_ context.Context, _ string) (bool, error) { return false, e.err }
+func (e *erroringStore) MarkConfirmationSent(_ context.Context, _ string) error { return e.err }
+func (e *erroringStore) Confirm(_ context.Context, _ string) (bool, error)      { return false, e.err }
+func (e *erroringStore) Unsubscribe(_ context.Context, _ string) (bool, error)  { return false, e.err }
 
 func TestConfirmStoreErrorRedirectsInvalidAndLogs(t *testing.T) {
 	var buf bytes.Buffer
 	log := slog.New(slog.NewTextHandler(&buf, nil))
 	s := &Service{Store: &erroringStore{err: errors.New("db down")}, Mailer: &mail.Fake{}, PublicBaseURL: "https://foreversixty.gg", APIBaseURL: "https://api.foreversixty.gg"}
 	mux := http.NewServeMux()
-	Mount(mux, s, log)
+	Mount(mux, s, log, 0)
 	rec := httptest.NewRecorder()
 	mux.ServeHTTP(rec, httptest.NewRequest("GET", "/v1/subscribe/confirm?token=tok", nil))
 	if rec.Code != 302 || rec.Header().Get("Location") != "https://foreversixty.gg/subscribe-invalid" {
@@ -118,7 +137,7 @@ func TestUnsubscribeStoreErrorRedirectsInvalidAndLogs(t *testing.T) {
 	log := slog.New(slog.NewTextHandler(&buf, nil))
 	s := &Service{Store: &erroringStore{err: errors.New("db down")}, Mailer: &mail.Fake{}, PublicBaseURL: "https://foreversixty.gg", APIBaseURL: "https://api.foreversixty.gg"}
 	mux := http.NewServeMux()
-	Mount(mux, s, log)
+	Mount(mux, s, log, 0)
 	rec := httptest.NewRecorder()
 	mux.ServeHTTP(rec, httptest.NewRequest("GET", "/v1/subscribe/unsubscribe?token=tok", nil))
 	if rec.Code != 302 || rec.Header().Get("Location") != "https://foreversixty.gg/subscribe-invalid" {

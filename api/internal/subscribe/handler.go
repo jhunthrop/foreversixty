@@ -9,8 +9,8 @@ import (
 	"github.com/PLACEHOLDER/forever/api/internal/httpx"
 )
 
-func Mount(mux *http.ServeMux, s *Service, log *slog.Logger) {
-	limited := httpx.RateLimit(10)
+func Mount(mux *http.ServeMux, s *Service, log *slog.Logger, trustedProxyHops int) {
+	limited := httpx.RateLimit(10, trustedProxyHops)
 	mux.Handle("POST /v1/subscribe", limited(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var body struct {
 			Email string `json:"email"`
@@ -19,6 +19,9 @@ func Mount(mux *http.ServeMux, s *Service, log *slog.Logger) {
 			httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "body must be JSON with an email field", map[string]string{"email": "required"})
 			return
 		}
+		// Subscribe only touches the store on the request path; mail is sent
+		// afterward (see Service.Subscribe), so an error here is always an
+		// unexpected store error, never a mail failure.
 		err := s.Subscribe(r.Context(), body.Email)
 		switch {
 		case errors.Is(err, ErrInvalidEmail):

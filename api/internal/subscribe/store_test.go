@@ -4,6 +4,7 @@ import (
 	"context"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/PLACEHOLDER/forever/api/internal/db"
 )
@@ -31,35 +32,84 @@ func testStore(t *testing.T) *Store {
 func TestStoreUpsertDedupesByNormalizedEmail(t *testing.T) {
 	s := testStore(t)
 	ctx := context.Background()
-	existing, existingToken, confirmed, err := s.Upsert(ctx, "Player@Example.com", "player@example.com", "tok1", "utok1")
-	if err != nil || existing || existingToken != "" || confirmed {
-		t.Fatalf("first upsert: existing=%v existingToken=%q confirmed=%v err=%v", existing, existingToken, confirmed, err)
+	first, err := s.Upsert(ctx, "Player@Example.com", "player@example.com", "tok1", "utok1")
+	if err != nil || first.Existing || first.Token != "" || first.Confirmed {
+		t.Fatalf("first upsert: %+v err=%v", first, err)
 	}
-	existing, existingToken, confirmed, err = s.Upsert(ctx, "Player@Example.com", "player@example.com", "tok2", "utok2")
-	if err != nil || !existing || existingToken != "tok1" || confirmed {
-		t.Fatalf("second upsert: existing=%v existingToken=%q confirmed=%v err=%v", existing, existingToken, confirmed, err)
+	second, err := s.Upsert(ctx, "Player@Example.com", "player@example.com", "tok2", "utok2")
+	if err != nil || !second.Existing || second.Token != "tok1" || second.Confirmed {
+		t.Fatalf("second upsert: %+v err=%v", second, err)
 	}
 }
 
 func TestStoreUpsertReportsConfirmedOnExistingRow(t *testing.T) {
 	s := testStore(t)
 	ctx := context.Background()
-	if _, _, _, err := s.Upsert(ctx, "a@example.com", "a@example.com", "tok", "utok"); err != nil {
+	if _, err := s.Upsert(ctx, "a@example.com", "a@example.com", "tok", "utok"); err != nil {
 		t.Fatal(err)
 	}
 	if found, err := s.Confirm(ctx, "tok"); err != nil || !found {
 		t.Fatalf("confirm: found=%v err=%v", found, err)
 	}
-	existing, existingToken, confirmed, err := s.Upsert(ctx, "a@example.com", "a@example.com", "tok2", "utok2")
-	if err != nil || !existing || existingToken != "tok" || !confirmed {
-		t.Fatalf("upsert after confirm: existing=%v existingToken=%q confirmed=%v err=%v", existing, existingToken, confirmed, err)
+	res, err := s.Upsert(ctx, "a@example.com", "a@example.com", "tok2", "utok2")
+	if err != nil || !res.Existing || res.Token != "tok" || !res.Confirmed || res.Unsubscribed {
+		t.Fatalf("upsert after confirm: %+v err=%v", res, err)
+	}
+}
+
+func TestStoreUpsertReportsUnsubscribedOnExistingRow(t *testing.T) {
+	s := testStore(t)
+	ctx := context.Background()
+	if _, err := s.Upsert(ctx, "a@example.com", "a@example.com", "tok", "utok"); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := s.Confirm(ctx, "tok"); err != nil {
+		t.Fatal(err)
+	}
+	if found, err := s.Unsubscribe(ctx, "utok"); err != nil || !found {
+		t.Fatalf("unsubscribe: found=%v err=%v", found, err)
+	}
+	res, err := s.Upsert(ctx, "a@example.com", "a@example.com", "tok2", "utok2")
+	if err != nil || !res.Existing || !res.Confirmed || !res.Unsubscribed {
+		t.Fatalf("upsert after unsubscribe: %+v err=%v", res, err)
+	}
+}
+
+func TestStoreMarkConfirmationSentRecordsTimestamp(t *testing.T) {
+	s := testStore(t)
+	ctx := context.Background()
+	if _, err := s.Upsert(ctx, "a@example.com", "a@example.com", "tok", "utok"); err != nil {
+		t.Fatal(err)
+	}
+	fresh, err := s.Upsert(ctx, "a@example.com", "a@example.com", "tok2", "utok2")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if fresh.ConfirmationSentAt != nil {
+		t.Fatalf("confirmation_sent_at should start nil, got %v", fresh.ConfirmationSentAt)
+	}
+
+	before := time.Now().Add(-time.Second)
+	if err := s.MarkConfirmationSent(ctx, "a@example.com"); err != nil {
+		t.Fatal(err)
+	}
+
+	after, err := s.Upsert(ctx, "a@example.com", "a@example.com", "tok3", "utok3")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if after.ConfirmationSentAt == nil {
+		t.Fatal("expected confirmation_sent_at to be set after MarkConfirmationSent")
+	}
+	if after.ConfirmationSentAt.Before(before) {
+		t.Fatalf("confirmation_sent_at = %v, want at/after %v", after.ConfirmationSentAt, before)
 	}
 }
 
 func TestStoreConfirmAndUnsubscribe(t *testing.T) {
 	s := testStore(t)
 	ctx := context.Background()
-	if _, _, _, err := s.Upsert(ctx, "a@example.com", "a@example.com", "tok", "utok"); err != nil {
+	if _, err := s.Upsert(ctx, "a@example.com", "a@example.com", "tok", "utok"); err != nil {
 		t.Fatal(err)
 	}
 	if found, err := s.Confirm(ctx, "tok"); err != nil || !found {
@@ -77,5 +127,30 @@ func TestStoreConfirmAndUnsubscribe(t *testing.T) {
 	// unsubscribing via the confirm token must not work: tokens are separate.
 	if found, err := s.Unsubscribe(ctx, "tok"); err != nil || found {
 		t.Fatalf("unsubscribe with confirm token: found=%v err=%v", found, err)
+	}
+}
+
+func TestStoreConfirmClearsUnsubscribed(t *testing.T) {
+	s := testStore(t)
+	ctx := context.Background()
+	if _, err := s.Upsert(ctx, "a@example.com", "a@example.com", "tok", "utok"); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := s.Confirm(ctx, "tok"); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := s.Unsubscribe(ctx, "utok"); err != nil {
+		t.Fatal(err)
+	}
+	res, err := s.Upsert(ctx, "a@example.com", "a@example.com", "tok2", "utok2")
+	if err != nil || !res.Unsubscribed {
+		t.Fatalf("expected unsubscribed before re-confirm: %+v err=%v", res, err)
+	}
+	if found, err := s.Confirm(ctx, "tok"); err != nil || !found {
+		t.Fatalf("re-confirm: found=%v err=%v", found, err)
+	}
+	res, err = s.Upsert(ctx, "a@example.com", "a@example.com", "tok3", "utok3")
+	if err != nil || res.Unsubscribed {
+		t.Fatalf("expected unsubscribed cleared by Confirm: %+v err=%v", res, err)
 	}
 }

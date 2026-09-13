@@ -6,7 +6,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 )
+
+// resendClientTimeout bounds a Resend API call when NewResend is not given
+// an explicit client, so a slow or hanging provider can't tie up a caller
+// indefinitely.
+const resendClientTimeout = 10 * time.Second
 
 type Resend struct {
 	apiKey   string
@@ -17,7 +23,7 @@ type Resend struct {
 
 func NewResend(apiKey, from string, client *http.Client) *Resend {
 	if client == nil {
-		client = http.DefaultClient
+		client = &http.Client{Timeout: resendClientTimeout}
 	}
 	return &Resend{apiKey: apiKey, from: from, client: client, endpoint: "https://api.resend.com/emails"}
 }
