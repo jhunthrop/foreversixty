@@ -369,12 +369,28 @@ function buildItems() {
   };
 }
 
+// Only the paths this script writes. src/fixtures/planner/ also holds fixture.test.ts, a
+// tracked, hand-written file that must survive regeneration, so we never wipe the directory
+// wholesale.
+const GENERATED_PATHS = [
+  'talents',
+  'items',
+  'icons',
+  'sets.json',
+  'classes.json',
+  'races.json',
+  'combos.json',
+  'manifest.json',
+];
+
 async function main() {
   const talents = buildTalents();
   const { classes, races, combos } = buildReference();
   const items = buildItems();
 
-  await rm(OUT, { recursive: true, force: true });
+  for (const rel of GENERATED_PATHS) {
+    await rm(path.join(OUT, rel), { recursive: true, force: true });
+  }
   await mkdir(path.join(OUT, 'talents'), { recursive: true });
   await mkdir(path.join(OUT, 'items'), { recursive: true });
   await mkdir(path.join(OUT, 'icons'), { recursive: true });
