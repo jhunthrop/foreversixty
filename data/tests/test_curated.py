@@ -165,3 +165,49 @@ def test_the_real_curated_directory_is_valid():
     _classes, merged_races, combos = merge_curated(classes, races, Path("curated"))
     assert "skyborne" in {race.slug for race in merged_races}
     assert len(combos) == 40
+
+
+def test_a_duplicate_class_slug_fails(tmp_path: Path):
+    sourced = [{"label": "l", "url": "https://e.test", "kind": "blizzard"}]
+    (tmp_path / "classes.json").write_text(
+        json.dumps(
+            [
+                {"slug": "warrior", "forever_changes": [{"text": "First.", "sources": sourced}]},
+                {"slug": "warrior", "forever_changes": [{"text": "Second.", "sources": sourced}]},
+            ]
+        )
+    )
+    (tmp_path / "races.json").write_text("[]")
+    (tmp_path / "combos.json").write_text("[]")
+    classes, races = client_rows()
+    with pytest.raises(CuratedError, match="class slug 'warrior' twice"):
+        merge_curated(classes, races, tmp_path)
+
+
+def test_a_duplicate_race_slug_fails(tmp_path: Path):
+    (tmp_path / "classes.json").write_text("[]")
+    (tmp_path / "races.json").write_text(
+        json.dumps(
+            [{"slug": "human", "forever_changes": []}, {"slug": "human", "forever_changes": []}]
+        )
+    )
+    (tmp_path / "combos.json").write_text("[]")
+    classes, races = client_rows()
+    with pytest.raises(CuratedError, match="race slug 'human' twice"):
+        merge_curated(classes, races, tmp_path)
+
+
+def test_a_duplicate_combo_pair_fails(tmp_path: Path):
+    (tmp_path / "classes.json").write_text("[]")
+    (tmp_path / "races.json").write_text("[]")
+    (tmp_path / "combos.json").write_text(
+        json.dumps(
+            [
+                {"race_id": 1, "class_id": 1, "new_in_forever": False},
+                {"race_id": 1, "class_id": 1, "new_in_forever": False},
+            ]
+        )
+    )
+    classes, races = client_rows()
+    with pytest.raises(CuratedError, match="race_id 1 class_id 1 twice"):
+        merge_curated(classes, races, tmp_path)

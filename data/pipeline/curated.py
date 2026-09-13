@@ -73,6 +73,8 @@ def _merge_classes(classes: list[PlayableClass], curated: list[dict]) -> list[Pl
         slug = entry["slug"]
         if slug not in by_slug:
             raise CuratedError(f"curated classes.json names unknown class slug {slug!r}")
+        if slug in changes_by_slug:
+            raise CuratedError(f"curated classes.json names class slug {slug!r} twice")
         changes_by_slug[slug] = _changes(entry.get("forever_changes", []), f"class {slug}")
     return sorted(
         (
@@ -90,8 +92,12 @@ def _merge_races(races: list[PlayableRace], curated: list[dict]) -> list[Playabl
         record.slug: record.model_copy(update={"forever_changes": [], "placeholder": False})
         for record in races
     }
+    seen: set[str] = set()
     for entry in curated:
         slug = entry["slug"]
+        if slug in seen:
+            raise CuratedError(f"curated races.json names race slug {slug!r} twice")
+        seen.add(slug)
         changes = _changes(entry.get("forever_changes", []), f"race {slug}")
         if slug in by_slug:
             merged[slug] = merged[slug].model_copy(update={"forever_changes": changes})
@@ -122,6 +128,7 @@ def _build_combos(
     class_ids = {record.id for record in classes}
     race_ids = {record.id for record in races}
     combos = []
+    seen: set[tuple[int, int]] = set()
     for entry in curated:
         race_id, class_id = int(entry["race_id"]), int(entry["class_id"])
         where = f"combo race_id {race_id} class_id {class_id}"
@@ -129,6 +136,9 @@ def _build_combos(
             raise CuratedError(f"{where} names unknown race_id {race_id}")
         if class_id not in class_ids:
             raise CuratedError(f"{where} names unknown class_id {class_id}")
+        if (race_id, class_id) in seen:
+            raise CuratedError(f"curated combos.json names {where} twice")
+        seen.add((race_id, class_id))
         new_in_forever = bool(entry.get("new_in_forever", False))
         if new_in_forever:
             _sources(entry.get("sources", []), where)
