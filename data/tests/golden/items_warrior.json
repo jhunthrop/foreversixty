@@ -18,6 +18,32 @@
       "unique": false
     },
     {
+      "id": 2825,
+      "name": "Bow of Searing Arrows",
+      "icon": "inv_weapon_bow_08",
+      "slot": "ranged",
+      "quality": 4,
+      "required_level": 37,
+      "item_level": 42,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 12798,
+      "name": "Annihilator",
+      "icon": "inv_axe_12",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 58,
+      "item_level": 63,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 19325,
       "name": "Don Julio's Band",
       "icon": "inv_shield_09",

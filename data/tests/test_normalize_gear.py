@@ -12,6 +12,7 @@ from pipeline.normalize.gear import (
     build_item_sets,
     is_junk_name,
 )
+from pipeline.proficiency import WEAPON
 from pipeline.spelltext import load_spell_text
 
 HERE = Path(__file__).parent
@@ -139,13 +140,37 @@ def test_junk_named_rows_are_dropped_but_a_near_miss_name_is_kept():
     assert 13315 in ids  # Testament of Hope survives the "test" pattern
 
 
-def test_an_item_with_no_armor_and_no_stats_is_dropped():
-    """Bow of Searing Arrows is a real uncommon-or-better weapon whose only value is
-    its damage, which this pipeline does not emit, so the planner cannot rank it."""
+def test_a_damage_only_weapon_survives_the_no_armour_no_stats_clause():
+    """Annihilator is a real one-hand axe carrying no armour and no stat: its whole
+    value is its damage, which this pipeline does not emit yet. `Item.ClassID` 2
+    exempts it from the clause, so it survives on quality and name alone. Bow of
+    Searing Arrows is the same case in a second slot."""
+    warrior = {i.id: i for i in by_slug()["warrior"].items}
+    annihilator = warrior[12798]
+    assert annihilator.armor == 0
+    assert annihilator.stats == {}
+    assert annihilator.slot == "main_hand"
+    assert warrior[2825].slot == "ranged"
+
+
+def test_a_stat_less_armour_piece_is_still_dropped():
+    """The exemption is weapons only. Featureless Cloth Vest is a quality-2 cloth
+    chest with no armour and no stat, so the planner has nothing to compare it on and
+    the clause still drops it."""
     ids = {i.id for record in build_all() for i in record.items}
-    assert 2825 not in ids
+    assert 99002 not in ids
+
+
+def test_only_weapons_may_be_emitted_with_neither_armour_nor_stats():
+    weapon_ids = {
+        int(row["ID"])
+        for row in read_csv(HERE / "fixtures/Item.csv")
+        if int(row["ClassID"]) == WEAPON
+    }
     for record in build_all():
         for item in record.items:
+            if item.id in weapon_ids:
+                continue
             assert item.armor != 0 or any(item.stats.values()), item.id
 
 

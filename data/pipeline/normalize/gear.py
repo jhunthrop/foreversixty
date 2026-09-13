@@ -8,7 +8,7 @@ import re
 from pipeline.icons import resolve_icon
 from pipeline.models import ClassItems, GearItem, ItemSetBonus, ItemSetRecord
 from pipeline.normalize.classes import slugify
-from pipeline.proficiency import can_equip
+from pipeline.proficiency import WEAPON, can_equip
 from pipeline.spelltext import SpellText
 
 logger = logging.getLogger(__name__)
@@ -181,13 +181,21 @@ def is_junk_name(name: str) -> bool:
     return JUNK_NAME_PATTERN.search(name) is not None
 
 
-def _has_gear_value(armor: int, stats: dict[str, int]) -> bool:
+def _has_gear_value(armor: int, stats: dict[str, int], item_class_id: int) -> bool:
     """True when the item carries something the planner can compare.
 
     An item with no armour and no non-zero stat gives the planner nothing to
-    reason about. Real weapons whose whole value is their damage fall here too,
-    because this pipeline does not emit weapon damage.
+    reason about, so it is dropped -- for armour and for every other item class.
+
+    Weapons (`Item.ClassID` 2) are exempt. A weapon's value is its damage, and
+    this pipeline does not emit damage yet, so judging a weapon on armour and
+    stats alone drops real gear: Annihilator, Arcanite Champion and the Hakkari
+    warblades all carry nothing but their damage. A weapon therefore survives on
+    the quality and junk-name clauses alone. Remove the exemption once weapon
+    damage is emitted and a damage-less weapon really is valueless.
     """
+    if item_class_id == WEAPON:
+        return True
     return armor != 0 or any(stats.values())
 
 
@@ -231,9 +239,10 @@ def build_class_items(
         if item_row is None:
             logger.warning("item %s is in ItemSparse but not in Item; skipping it", item_id)
             continue
+        item_class_id = _int(item_row, "ClassID")
         armor = _int(row, "Resistances_0")
         stats = _stats(row)
-        if not _has_gear_value(armor, stats):
+        if not _has_gear_value(armor, stats, item_class_id):
             continue
         item = GearItem(
             id=item_id,
@@ -252,7 +261,7 @@ def build_class_items(
             (
                 item,
                 _int(row, "AllowableClass"),
-                _int(item_row, "ClassID"),
+                item_class_id,
                 _int(item_row, "SubclassID"),
             )
         )

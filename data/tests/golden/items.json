@@ -40,6 +40,16 @@
     "inventory_type": 13
   },
   {
+    "id": 12798,
+    "name": "Annihilator",
+    "quality": 3,
+    "item_level": 63,
+    "required_level": 58,
+    "class_id": 2,
+    "subclass_id": 0,
+    "inventory_type": 21
+  },
+  {
     "id": 13315,
     "name": "Testament of Hope",
     "quality": 2,
@@ -108,5 +118,15 @@
     "class_id": 4,
     "subclass_id": 2,
     "inventory_type": 1
+  },
+  {
+    "id": 99002,
+    "name": "Featureless Cloth Vest",
+    "quality": 2,
+    "item_level": 40,
+    "required_level": 35,
+    "class_id": 4,
+    "subclass_id": 1,
+    "inventory_type": 5
   }
 ]

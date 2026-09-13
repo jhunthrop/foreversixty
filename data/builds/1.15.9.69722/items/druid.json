@@ -698,6 +698,19 @@
       "unique": false
     },
     {
+      "id": 15783,
+      "name": "Beasthunter Dagger",
+      "icon": "inv_weapon_shortblade_14",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 0,
+      "item_level": 60,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 5355,
       "name": "Beastmaster's Girdle",
       "icon": "inv_belt_04",
@@ -710,6 +723,19 @@
         "stamina": 5,
         "agility": 5
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 11906,
+      "name": "Beastsmasher",
+      "icon": "inv_hammer_23",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 0,
+      "item_level": 55,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -873,6 +899,19 @@
       "unique": true
     },
     {
+      "id": 6831,
+      "name": "Black Menace",
+      "icon": "inv_sword_13",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 0,
+      "item_level": 44,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 4511,
       "name": "Black Water Hammer",
       "icon": "inv_hammer_07",
@@ -915,6 +954,19 @@
         "strength": 2,
         "agility": 3
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 24071,
+      "name": "Bland Dagger",
+      "icon": "inv_sword_12",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 0,
+      "item_level": 69,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -2533,6 +2585,19 @@
       "unique": false
     },
     {
+      "id": 13984,
+      "name": "Darrowspike",
+      "icon": "inv_weapon_shortblade_21",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 0,
+      "item_level": 63,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 22070,
       "name": "Deathmist Belt",
       "icon": "inv_belt_12",
@@ -3411,6 +3476,32 @@
         "stamina": 8,
         "intellect": 8
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 10697,
+      "name": "Enchanted Azsharite Felbane Dagger",
+      "icon": "inv_sword_31",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 0,
+      "item_level": 60,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 10698,
+      "name": "Enchanted Azsharite Felbane Staff",
+      "icon": "inv_staff_13",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 0,
+      "item_level": 60,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -5342,6 +5433,19 @@
       "unique": false
     },
     {
+      "id": 5815,
+      "name": "Glacial Stone",
+      "icon": "inv_mace_09",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 0,
+      "item_level": 31,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 21178,
       "name": "Gloves of Earthen Power",
       "icon": "inv_gauntlets_18",
@@ -5932,6 +6036,19 @@
         "strength": 15,
         "agility": 15
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 9651,
+      "name": "Gryphon Rider's Stormhammer",
+      "icon": "inv_hammer_01",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 0,
+      "item_level": 53,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -7702,6 +7819,19 @@
       "unique": false
     },
     {
+      "id": 22458,
+      "name": "Moonshadow Stave",
+      "icon": "inv_staff_28",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 0,
+      "item_level": 52,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 6751,
       "name": "Mourning Shawl",
       "icon": "inv_misc_cape_11",
@@ -8977,6 +9107,19 @@
       "unique": false
     },
     {
+      "id": 17743,
+      "name": "Resurgence Rod",
+      "icon": "inv_staff_goldfeathered_01",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 0,
+      "item_level": 53,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 3750,
       "name": "Ribbed Breastplate",
       "icon": "inv_chest_leather_09",
@@ -9274,6 +9417,19 @@
         "stamina": 15,
         "intellect": 10
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 4983,
+      "name": "Rock Pulverizer",
+      "icon": "inv_hammer_17",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 0,
+      "item_level": 42,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -9844,6 +10000,19 @@
       "unique": false
     },
     {
+      "id": 4548,
+      "name": "Servomechanic Sledgehammer",
+      "icon": "inv_hammer_04",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 0,
+      "item_level": 41,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 11869,
       "name": "Sha'ni's Ring",
       "icon": "inv_jewelry_ring_06",
@@ -10032,6 +10201,19 @@
         "intellect": 6,
         "spirit": 6
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 15418,
+      "name": "Shimmering Platinum Warhammer",
+      "icon": "inv_hammer_07",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 0,
+      "item_level": 63,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -10241,6 +10423,19 @@
         "intellect": 17,
         "stamina": 8
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 12062,
+      "name": "Skilled Fighting Blade",
+      "icon": "inv_sword_21",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 0,
+      "item_level": 60,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -11262,6 +11457,19 @@
         "stamina": 2,
         "agility": 6
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 11964,
+      "name": "Swiftstrike Cudgel",
+      "icon": "inv_mace_08",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 0,
+      "item_level": 55,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -13365,6 +13573,19 @@
       "unique": false
     },
     {
+      "id": 2140,
+      "name": "Carving Knife",
+      "icon": "inv_weapon_shortblade_01",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 6,
+      "item_level": 11,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 10554,
       "name": "Foreman Pants",
       "icon": "inv_pants_07",
@@ -13598,6 +13819,19 @@
       "unique": false
     },
     {
+      "id": 2075,
+      "name": "Priest's Mace",
+      "icon": "inv_mace_06",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 7,
+      "item_level": 12,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 6239,
       "name": "Red Linen Vest",
       "icon": "inv_chest_cloth_40",
@@ -13747,6 +13981,19 @@
       "unique": false
     },
     {
+      "id": 4564,
+      "name": "Spiked Club",
+      "icon": "inv_mace_14",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 8,
+      "item_level": 13,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 2266,
       "name": "Stonesplinter Dagger",
       "icon": "inv_weapon_shortblade_08",
@@ -13758,6 +14005,19 @@
       "stats": {
         "agility": 1
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 4566,
+      "name": "Sturdy Quarterstaff",
+      "icon": "inv_staff_08",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 8,
+      "item_level": 13,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -13805,6 +14065,19 @@
       "stats": {
         "spirit": 3
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 2632,
+      "name": "Curved Dagger",
+      "icon": "inv_weapon_shortblade_01",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 9,
+      "item_level": 14,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -13872,6 +14145,19 @@
       "required_level": 9,
       "item_level": 14,
       "armor": 23,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 4569,
+      "name": "Staunch Hammer",
+      "icon": "inv_hammer_08",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 9,
+      "item_level": 14,
+      "armor": 0,
       "stats": {},
       "set_id": null,
       "unique": false
@@ -13960,6 +14246,19 @@
       "required_level": 10,
       "item_level": 15,
       "armor": 30,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 4570,
+      "name": "Birchwood Maul",
+      "icon": "inv_hammer_15",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 10,
+      "item_level": 15,
+      "armor": 0,
       "stats": {},
       "set_id": null,
       "unique": false
@@ -14359,6 +14658,19 @@
       "required_level": 10,
       "item_level": 15,
       "armor": 28,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 1933,
+      "name": "Staff of Conjuring",
+      "icon": "inv_staff_13",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 10,
+      "item_level": 15,
+      "armor": 0,
       "stats": {},
       "set_id": null,
       "unique": false
@@ -15097,6 +15409,19 @@
       "unique": false
     },
     {
+      "id": 2079,
+      "name": "Sergeant's Warhammer",
+      "icon": "inv_hammer_11",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 12,
+      "item_level": 17,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 820,
       "name": "Slicer Blade",
       "icon": "inv_weapon_shortblade_01",
@@ -15154,6 +15479,19 @@
       "stats": {
         "intellect": 5
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 4571,
+      "name": "War Knife",
+      "icon": "inv_weapon_shortblade_15",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 12,
+      "item_level": 17,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -15891,6 +16229,19 @@
       "unique": false
     },
     {
+      "id": 15222,
+      "name": "Barbed Club",
+      "icon": "inv_hammer_08",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 14,
+      "item_level": 19,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 6552,
       "name": "Bard's Tunic",
       "icon": "inv_shirt_11",
@@ -16110,6 +16461,19 @@
       "unique": false
     },
     {
+      "id": 4575,
+      "name": "Medicine Staff",
+      "icon": "inv_staff_31",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 14,
+      "item_level": 19,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 5444,
       "name": "Miner's Cape",
       "icon": "inv_misc_cape_11",
@@ -16284,6 +16648,19 @@
       "stats": {
         "spirit": 6
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 899,
+      "name": "Venom Web Fang",
+      "icon": "inv_misc_monsterfang_01",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 14,
+      "item_level": 19,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -16665,6 +17042,19 @@
       "unique": false
     },
     {
+      "id": 3184,
+      "name": "Hook Dagger",
+      "icon": "inv_weapon_shortblade_01",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 15,
+      "item_level": 20,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 14745,
       "name": "Hulking Cloak",
       "icon": "inv_misc_cape_20",
@@ -16989,6 +17379,19 @@
       "unique": false
     },
     {
+      "id": 3194,
+      "name": "Black Malice",
+      "icon": "inv_mace_01",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 16,
+      "item_level": 21,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 1296,
       "name": "Blackrock Mace",
       "icon": "inv_mace_06",
@@ -17218,6 +17621,19 @@
         "stamina": 2,
         "intellect": 4
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 3193,
+      "name": "Oak Mallet",
+      "icon": "inv_hammer_15",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 16,
+      "item_level": 21,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -17931,6 +18347,19 @@
       "unique": false
     },
     {
+      "id": 789,
+      "name": "Stout Battlehammer",
+      "icon": "inv_hammer_08",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 17,
+      "item_level": 22,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 1215,
       "name": "Support Girdle",
       "icon": "inv_belt_09",
@@ -18077,6 +18506,19 @@
       "required_level": 18,
       "item_level": 23,
       "armor": 82,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 3198,
+      "name": "Battering Hammer",
+      "icon": "inv_hammer_16",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 18,
+      "item_level": 23,
+      "armor": 0,
       "stats": {},
       "set_id": null,
       "unique": false
@@ -18813,6 +19255,19 @@
       "unique": false
     },
     {
+      "id": 880,
+      "name": "Staff of Horrors",
+      "icon": "inv_staff_25",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 18,
+      "item_level": 23,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 2271,
       "name": "Staff of the Blessed Seer",
       "icon": "inv_staff_31",
@@ -19082,6 +19537,19 @@
       "unique": false
     },
     {
+      "id": 15223,
+      "name": "Jagged Star",
+      "icon": "inv_hammer_08",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 19,
+      "item_level": 24,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 4706,
       "name": "Lambent Scale Cloak",
       "icon": "inv_misc_cape_06",
@@ -19237,6 +19705,19 @@
       "unique": false
     },
     {
+      "id": 2256,
+      "name": "Skeletal Club",
+      "icon": "inv_misc_bone_elfskull_01",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 19,
+      "item_level": 24,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 3074,
       "name": "Smoldering Gloves",
       "icon": "inv_gauntlets_05",
@@ -19266,6 +19747,19 @@
         "stamina": 4,
         "intellect": 3
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 6472,
+      "name": "Stinging Viper",
+      "icon": "inv_wand_10",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 19,
+      "item_level": 24,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -19400,6 +19894,19 @@
       "stats": {
         "strength": 4
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 15224,
+      "name": "Battlesmasher",
+      "icon": "inv_hammer_08",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 20,
+      "item_level": 25,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -19765,6 +20272,19 @@
         "stamina": 3,
         "spirit": 3
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 15259,
+      "name": "Hefty Battlehammer",
+      "icon": "inv_hammer_16",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 20,
+      "item_level": 25,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -20342,6 +20862,19 @@
       "unique": false
     },
     {
+      "id": 15241,
+      "name": "Battle Knife",
+      "icon": "inv_weapon_shortblade_01",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 21,
+      "item_level": 26,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 6593,
       "name": "Battleforge Cloak",
       "icon": "inv_misc_cape_18",
@@ -20696,6 +21229,19 @@
       "unique": false
     },
     {
+      "id": 2942,
+      "name": "Iron Knuckles",
+      "icon": "inv_gauntlets_04",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 21,
+      "item_level": 26,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 9795,
       "name": "Ivycloth Gloves",
       "icon": "inv_gauntlets_27",
@@ -21025,6 +21571,19 @@
       "unique": false
     },
     {
+      "id": 5752,
+      "name": "Wyvern Tailspike",
+      "icon": "inv_weapon_shortblade_16",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 21,
+      "item_level": 26,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 4999,
       "name": "Azora's Will",
       "icon": "inv_belt_29",
@@ -21174,6 +21733,19 @@
         "spirit": 4,
         "intellect": 3
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 2072,
+      "name": "Dwarven Magestaff",
+      "icon": "inv_staff_04",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 22,
+      "item_level": 27,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -21350,6 +21922,19 @@
         "stamina": 4,
         "strength": 4
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 4449,
+      "name": "Naraxis' Fang",
+      "icon": "inv_misc_monsterfang_01",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 22,
+      "item_level": 27,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -21553,6 +22138,19 @@
       "unique": false
     },
     {
+      "id": 2549,
+      "name": "Staff of the Shade",
+      "icon": "inv_staff_25",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 22,
+      "item_level": 27,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 9806,
       "name": "Superior Gloves",
       "icon": "inv_gauntlets_05",
@@ -21699,6 +22297,32 @@
       "unique": false
     },
     {
+      "id": 6904,
+      "name": "Bite of Serra'kis",
+      "icon": "inv_misc_monsterfang_01",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 23,
+      "item_level": 28,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 13057,
+      "name": "Bloodpike",
+      "icon": "inv_spear_02",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 23,
+      "item_level": 28,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 7027,
       "name": "Boots of Darkness",
       "icon": "inv_boots_05",
@@ -21742,6 +22366,19 @@
         "agility": 7,
         "stamina": 6
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 2819,
+      "name": "Cross Dagger",
+      "icon": "inv_weapon_shortblade_05",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 23,
+      "item_level": 28,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -22466,6 +23103,19 @@
       "unique": false
     },
     {
+      "id": 3336,
+      "name": "Flesh Piercer",
+      "icon": "inv_weapon_shortblade_10",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 24,
+      "item_level": 29,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 6901,
       "name": "Glowing Thresher Cape",
       "icon": "inv_misc_monsterscales_03",
@@ -22582,6 +23232,32 @@
       },
       "set_id": null,
       "unique": false
+    },
+    {
+      "id": 2077,
+      "name": "Magician Staff",
+      "icon": "inv_wand_06",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 24,
+      "item_level": 29,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 6220,
+      "name": "Meteor Shard",
+      "icon": "inv_weapon_shortblade_25",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 24,
+      "item_level": 29,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": true
     },
     {
       "id": 13099,
@@ -23128,6 +23804,19 @@
       "unique": false
     },
     {
+      "id": 209436,
+      "name": "Chipped Bite of Serra'kis",
+      "icon": "inv_misc_monsterfang_01",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 25,
+      "item_level": 35,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 209675,
       "name": "Clamweave Tunic",
       "icon": "inv_shirt_red_01",
@@ -23175,6 +23864,19 @@
         "spirit": 5,
         "frost_res": 5
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 209579,
+      "name": "Crashing Thunder",
+      "icon": "inv_gauntlets_04",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 25,
+      "item_level": 30,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -23498,6 +24200,19 @@
       "unique": false
     },
     {
+      "id": 209580,
+      "name": "Gusting Wind",
+      "icon": "inv_gauntlets_04",
+      "slot": "off_hand",
+      "quality": 3,
+      "required_level": 25,
+      "item_level": 33,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 209560,
       "name": "Hammer of Righteous Judgement",
       "icon": "inv_hammer_21",
@@ -23572,6 +24287,19 @@
         "agility": 4,
         "strength": 7
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 15242,
+      "name": "Honed Stiletto",
+      "icon": "inv_weapon_shortblade_01",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 25,
+      "item_level": 30,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -24551,6 +25279,19 @@
       "unique": false
     },
     {
+      "id": 209691,
+      "name": "Vampiric Boot Knife",
+      "icon": "inv_weapon_shortblade_02",
+      "slot": "off_hand",
+      "quality": 3,
+      "required_level": 25,
+      "item_level": 33,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 211502,
       "name": "Void-Touched Leather Gauntlets",
       "icon": "inv_gauntlets_24",
@@ -24965,6 +25706,19 @@
       "required_level": 26,
       "item_level": 31,
       "armor": 22,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 865,
+      "name": "Leaden Mace",
+      "icon": "inv_mace_03",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 26,
+      "item_level": 31,
+      "armor": 0,
       "stats": {},
       "set_id": null,
       "unique": false
@@ -25911,6 +26665,19 @@
       "unique": false
     },
     {
+      "id": 9453,
+      "name": "Toxic Revenger",
+      "icon": "inv_weapon_shortblade_02",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 27,
+      "item_level": 32,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": true
+    },
+    {
       "id": 6204,
       "name": "Tribal Worg Helm",
       "icon": "inv_helmet_17",
@@ -26050,6 +26817,19 @@
       },
       "set_id": null,
       "unique": true
+    },
+    {
+      "id": 1998,
+      "name": "Bloodscalp Channeling Staff",
+      "icon": "inv_staff_18",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 28,
+      "item_level": 33,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
     },
     {
       "id": 19533,
@@ -27068,6 +27848,19 @@
       "unique": true
     },
     {
+      "id": 15225,
+      "name": "Sequoia Hammer",
+      "icon": "inv_hammer_08",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 28,
+      "item_level": 33,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 9448,
       "name": "Spidertank Oilrag",
       "icon": "inv_misc_bandage_09",
@@ -27135,6 +27928,19 @@
       "required_level": 28,
       "item_level": 33,
       "armor": 25,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 3185,
+      "name": "Acrobatic Staff",
+      "icon": "inv_staff_10",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 29,
+      "item_level": 34,
+      "armor": 0,
       "stats": {},
       "set_id": null,
       "unique": false
@@ -27213,6 +28019,19 @@
         "stamina": 7,
         "intellect": 12
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 7730,
+      "name": "Cobalt Crusher",
+      "icon": "inv_hammer_04",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 29,
+      "item_level": 34,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -27785,6 +28604,19 @@
         "agility": 8,
         "stamina": 7
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 7682,
+      "name": "Torturing Poker",
+      "icon": "inv_spear_01",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 29,
+      "item_level": 34,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -28573,6 +29405,32 @@
       "unique": false
     },
     {
+      "id": 23168,
+      "name": "Scorn's Focal Dagger",
+      "icon": "inv_weapon_shortblade_07",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 30,
+      "item_level": 35,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 238350,
+      "name": "Scorn's Focal Dagger",
+      "icon": "inv_weapon_shortblade_07",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 30,
+      "item_level": 35,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 23169,
       "name": "Scorn's Icy Choker",
       "icon": "inv_jewelry_necklace_03",
@@ -28852,6 +29710,19 @@
       "unique": false
     },
     {
+      "id": 1990,
+      "name": "Ballast Maul",
+      "icon": "inv_mace_06",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 31,
+      "item_level": 36,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 10582,
       "name": "Briar Tredders",
       "icon": "inv_boots_08",
@@ -28956,6 +29827,19 @@
       "unique": false
     },
     {
+      "id": 15243,
+      "name": "Deadly Kris",
+      "icon": "inv_weapon_shortblade_01",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 31,
+      "item_level": 36,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 14229,
       "name": "Embersilk Cloak",
       "icon": "inv_misc_cape_08",
@@ -28967,6 +29851,19 @@
       "stats": {},
       "set_id": null,
       "unique": false
+    },
+    {
+      "id": 9386,
+      "name": "Excavator's Brand",
+      "icon": "inv_torch_lit",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 31,
+      "item_level": 36,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": true
     },
     {
       "id": 3011,
@@ -29063,6 +29960,19 @@
       "unique": false
     },
     {
+      "id": 12259,
+      "name": "Glinting Steel Dagger",
+      "icon": "inv_weapon_shortblade_05",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 31,
+      "item_level": 36,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 4259,
       "name": "Green Leather Bracers",
       "icon": "inv_bracer_12",
@@ -29140,6 +30050,19 @@
       "unique": false
     },
     {
+      "id": 6331,
+      "name": "Howling Blade",
+      "icon": "inv_weapon_shortblade_15",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 31,
+      "item_level": 36,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": true
+    },
+    {
       "id": 1523,
       "name": "Huge Stone Club",
       "icon": "inv_mace_14",
@@ -29183,6 +30106,19 @@
         "strength": 12,
         "stamina": 5
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 7710,
+      "name": "Loksey's Training Stick",
+      "icon": "inv_staff_18",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 31,
+      "item_level": 36,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -29247,6 +30183,19 @@
         "intellect": 7,
         "spirit": 3
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 1726,
+      "name": "Poison-tipped Bone Spear",
+      "icon": "inv_spear_02",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 31,
+      "item_level": 36,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -29818,6 +30767,32 @@
       "unique": false
     },
     {
+      "id": 15226,
+      "name": "Giant Club",
+      "icon": "inv_hammer_16",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 32,
+      "item_level": 37,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 16792,
+      "name": "Giant Club",
+      "icon": "inv_mace_10",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 32,
+      "item_level": 37,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 4059,
       "name": "Glyphed Bracers",
       "icon": "inv_bracer_09",
@@ -30048,6 +31023,19 @@
         "intellect": 10,
         "spirit": 9
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 5756,
+      "name": "Sliverblade",
+      "icon": "inv_weapon_shortblade_24",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 32,
+      "item_level": 37,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -30299,6 +31287,19 @@
       "stats": {
         "spirit": 4
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 937,
+      "name": "Black Duskwood Staff",
+      "icon": "inv_staff_13",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 33,
+      "item_level": 38,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -30807,6 +31808,19 @@
       "unique": false
     },
     {
+      "id": 15260,
+      "name": "Stone Hammer",
+      "icon": "inv_hammer_17",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 33,
+      "item_level": 38,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 14410,
       "name": "Stonecloth Circlet",
       "icon": "inv_belt_26",
@@ -30852,6 +31866,19 @@
         "stamina": 3,
         "spirit": 13
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 1465,
+      "name": "Tigerbane",
+      "icon": "inv_weapon_shortblade_15",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 33,
+      "item_level": 38,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -31318,6 +32345,19 @@
       "unique": false
     },
     {
+      "id": 1207,
+      "name": "Murphstar",
+      "icon": "inv_mace_15",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 34,
+      "item_level": 39,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 15155,
       "name": "Nocturnal Gloves",
       "icon": "inv_gauntlets_25",
@@ -31389,6 +32429,19 @@
         "stamina": 8,
         "strength": 19
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 12260,
+      "name": "Searing Golden Blade",
+      "icon": "inv_weapon_shortblade_05",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 34,
+      "item_level": 39,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -31545,6 +32598,19 @@
         "strength": 8,
         "agility": 8
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 8006,
+      "name": "The Ziggler",
+      "icon": "inv_weapon_shortblade_25",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 34,
+      "item_level": 39,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -31818,6 +32884,19 @@
         "stamina": 11,
         "intellect": 10
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 13054,
+      "name": "Grim Reaper",
+      "icon": "inv_spear_02",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 35,
+      "item_level": 40,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -32107,6 +33186,19 @@
       "required_level": 35,
       "item_level": 40,
       "armor": 110,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 15261,
+      "name": "Sequoia Branch",
+      "icon": "inv_hammer_16",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 35,
+      "item_level": 40,
+      "armor": 0,
       "stats": {},
       "set_id": null,
       "unique": false
@@ -33207,6 +34299,19 @@
       "unique": false
     },
     {
+      "id": 1664,
+      "name": "Spellforce Rod",
+      "icon": "inv_staff_28",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 36,
+      "item_level": 41,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 15359,
       "name": "Trickster's Vest",
       "icon": "inv_chest_cloth_08",
@@ -33519,6 +34624,19 @@
       "unique": false
     },
     {
+      "id": 866,
+      "name": "Monk's Staff",
+      "icon": "inv_staff_08",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 37,
+      "item_level": 42,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 8192,
       "name": "Nightscape Shoulders",
       "icon": "inv_shoulder_07",
@@ -33599,6 +34717,19 @@
       "required_level": 37,
       "item_level": 42,
       "armor": 86,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 15244,
+      "name": "Razor Blade",
+      "icon": "inv_weapon_shortblade_01",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 37,
+      "item_level": 42,
+      "armor": 0,
       "stats": {},
       "set_id": null,
       "unique": false
@@ -34138,6 +35269,19 @@
       },
       "set_id": null,
       "unique": true
+    },
+    {
+      "id": 8194,
+      "name": "Goblin Nutcracker",
+      "icon": "inv_hammer_06",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 38,
+      "item_level": 43,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
     },
     {
       "id": 20095,
@@ -34891,6 +36035,19 @@
       "unique": false
     },
     {
+      "id": 10761,
+      "name": "Coldrage Dagger",
+      "icon": "inv_sword_34",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 39,
+      "item_level": 44,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 14246,
       "name": "Darkmist Wizard Hat",
       "icon": "inv_helmet_11",
@@ -35188,6 +36345,19 @@
       "unique": false
     },
     {
+      "id": 3187,
+      "name": "Sacrificial Kris",
+      "icon": "inv_weapon_shortblade_03",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 39,
+      "item_level": 44,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 14656,
       "name": "Scorpashi Cape",
       "icon": "inv_misc_cape_10",
@@ -35266,6 +36436,19 @@
         "spirit": 5,
         "intellect": 16
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 1613,
+      "name": "Spiritchaser Staff",
+      "icon": "inv_staff_03",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 39,
+      "item_level": 44,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -36150,6 +37333,19 @@
       "unique": false
     },
     {
+      "id": 2164,
+      "name": "Gut Ripper",
+      "icon": "inv_sword_13",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 40,
+      "item_level": 45,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 213348,
       "name": "Gyromatic Experiment 420b",
       "icon": "inv_gizmo_05",
@@ -36180,6 +37376,19 @@
       },
       "set_id": null,
       "unique": false
+    },
+    {
+      "id": 8708,
+      "name": "Hammer of Expertise",
+      "icon": "inv_hammer_24",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 40,
+      "item_level": 50,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": true
     },
     {
       "id": 13026,
@@ -37228,6 +38437,19 @@
       "unique": false
     },
     {
+      "id": 9423,
+      "name": "The Jackhammer",
+      "icon": "inv_hammer_07",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 40,
+      "item_level": 45,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 213542,
       "name": "The Necro-Gnomicon",
       "icon": "inv_misc_book_05",
@@ -37275,6 +38497,19 @@
       },
       "set_id": null,
       "unique": false
+    },
+    {
+      "id": 213291,
+      "name": "Toxic Revenger II",
+      "icon": "inv_weapon_shortblade_02",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 40,
+      "item_level": 45,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": true
     },
     {
       "id": 9921,
@@ -37638,6 +38873,19 @@
       "unique": false
     },
     {
+      "id": 9419,
+      "name": "Galgann's Firehammer",
+      "icon": "inv_hammer_17",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 41,
+      "item_level": 46,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 8346,
       "name": "Gauntlets of the Sea",
       "icon": "inv_gauntlets_30",
@@ -37687,6 +38935,19 @@
       "required_level": 41,
       "item_level": 46,
       "armor": 45,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 15262,
+      "name": "Greater Maul",
+      "icon": "inv_hammer_19",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 41,
+      "item_level": 46,
+      "armor": 0,
       "stats": {},
       "set_id": null,
       "unique": false
@@ -37800,6 +39061,19 @@
         "stamina": 3,
         "intellect": 9
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 4090,
+      "name": "Mug O' Hurt",
+      "icon": "inv_drink_03",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 41,
+      "item_level": 46,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -38116,6 +39390,19 @@
       "unique": false
     },
     {
+      "id": 10627,
+      "name": "Bludgeon of the Grinning Dog",
+      "icon": "inv_staff_28",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 42,
+      "item_level": 47,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 7529,
       "name": "Cabalist Helm",
       "icon": "inv_helmet_18",
@@ -38200,6 +39487,19 @@
         "intellect": 4,
         "stamina": 5
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 4088,
+      "name": "Dreadblade",
+      "icon": "inv_sword_41",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 42,
+      "item_level": 47,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -38289,6 +39589,32 @@
       "stats": {},
       "set_id": null,
       "unique": false
+    },
+    {
+      "id": 9467,
+      "name": "Gahz'rilla Fang",
+      "icon": "inv_misc_monsterfang_01",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 42,
+      "item_level": 47,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": true
+    },
+    {
+      "id": 223527,
+      "name": "Gahz'rilla Fang",
+      "icon": "inv_misc_monsterfang_01",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 42,
+      "item_level": 47,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": true
     },
     {
       "id": 7520,
@@ -38383,6 +39709,19 @@
       },
       "set_id": null,
       "unique": false
+    },
+    {
+      "id": 5616,
+      "name": "Gutwrencher",
+      "icon": "inv_sword_31",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 42,
+      "item_level": 47,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": true
     },
     {
       "id": 8116,
@@ -38754,6 +40093,19 @@
       "unique": false
     },
     {
+      "id": 1608,
+      "name": "Skullcrusher Mace",
+      "icon": "inv_misc_bone_elfskull_01",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 42,
+      "item_level": 47,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 5029,
       "name": "Talisman of the Naga Lord",
       "icon": "inv_jewelry_necklace_09",
@@ -38766,6 +40118,19 @@
         "strength": 2,
         "stamina": 10
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 7954,
+      "name": "The Shatterer",
+      "icon": "inv_hammer_18",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 42,
+      "item_level": 47,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -39024,6 +40389,19 @@
       "required_level": 43,
       "item_level": 48,
       "armor": 56,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 3208,
+      "name": "Conk Hammer",
+      "icon": "inv_mace_04",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 43,
+      "item_level": 48,
+      "armor": 0,
       "stats": {},
       "set_id": null,
       "unique": false
@@ -39353,6 +40731,19 @@
       "unique": false
     },
     {
+      "id": 9639,
+      "name": "The Hand of Antu'sul",
+      "icon": "inv_mace_11",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 43,
+      "item_level": 48,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 9924,
       "name": "Tracker's Tunic",
       "icon": "inv_chest_leather_08",
@@ -39599,6 +40990,32 @@
       "stats": {
         "spirit": 15
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 9475,
+      "name": "Diabolic Skiver",
+      "icon": "inv_spear_01",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 44,
+      "item_level": 49,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 15227,
+      "name": "Diamond-Tip Bludgeon",
+      "icon": "inv_mace_15",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 44,
+      "item_level": 49,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -39944,6 +41361,19 @@
       "unique": false
     },
     {
+      "id": 10625,
+      "name": "Stealthblade",
+      "icon": "inv_sword_41",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 44,
+      "item_level": 49,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": true
+    },
+    {
       "id": 10038,
       "name": "Stormcloth Shoulders",
       "icon": "inv_shoulder_25",
@@ -40151,6 +41581,19 @@
         "stamina": 15,
         "fire_res": 5
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 7959,
+      "name": "Blight",
+      "icon": "inv_spear_07",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 45,
+      "item_level": 50,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -40617,6 +42060,45 @@
       "unique": false
     },
     {
+      "id": 10626,
+      "name": "Ragehammer",
+      "icon": "inv_hammer_06",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 45,
+      "item_level": 50,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 15263,
+      "name": "Royal Mallet",
+      "icon": "inv_hammer_11",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 45,
+      "item_level": 50,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 17752,
+      "name": "Satyr's Lash",
+      "icon": "inv_weapon_shortblade_09",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 45,
+      "item_level": 50,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": true
+    },
+    {
       "id": 17755,
       "name": "Satyrmane Sash",
       "icon": "inv_belt_24",
@@ -40776,6 +42258,19 @@
       "unique": false
     },
     {
+      "id": 9477,
+      "name": "The Chief's Enforcer",
+      "icon": "inv_staff_goldfeathered_01",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 45,
+      "item_level": 50,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 14441,
       "name": "Venomshroud Mask",
       "icon": "inv_helmet_32",
@@ -40789,6 +42284,19 @@
         "stamina": 10,
         "nature_res": 4
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 15245,
+      "name": "Vorpal Dagger",
+      "icon": "inv_weapon_shortblade_03",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 45,
+      "item_level": 50,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -41480,6 +42988,19 @@
       "unique": false
     },
     {
+      "id": 12531,
+      "name": "Searing Needle",
+      "icon": "inv_weapon_shortblade_03",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 46,
+      "item_level": 51,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": true
+    },
+    {
       "id": 10630,
       "name": "Soulcatcher Halo",
       "icon": "inv_crown_01",
@@ -41504,6 +43025,19 @@
       "required_level": 46,
       "item_level": 51,
       "armor": 33,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 11603,
+      "name": "Vilerend Slicer",
+      "icon": "ability_whirlwind",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 46,
+      "item_level": 51,
+      "armor": 0,
       "stats": {},
       "set_id": null,
       "unique": false
@@ -41656,6 +43190,19 @@
       "unique": false
     },
     {
+      "id": 17738,
+      "name": "Claw of Celebras",
+      "icon": "ability_whirlwind",
+      "slot": "off_hand",
+      "quality": 3,
+      "required_level": 47,
+      "item_level": 52,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 13008,
       "name": "Dalewind Trousers",
       "icon": "inv_pants_06",
@@ -41684,6 +43231,19 @@
       "stats": {
         "shadow_res": 7
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 15274,
+      "name": "Diviner Long Staff",
+      "icon": "inv_staff_26",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 47,
+      "item_level": 52,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -42158,6 +43718,32 @@
       "required_level": 47,
       "item_level": 52,
       "armor": 60,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 2915,
+      "name": "Taran Icebreaker",
+      "icon": "inv_hammer_02",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 47,
+      "item_level": 52,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 12528,
+      "name": "The Judge's Gavel",
+      "icon": "inv_hammer_07",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 47,
+      "item_level": 52,
+      "armor": 0,
       "stats": {},
       "set_id": null,
       "unique": false
@@ -42641,6 +44227,32 @@
         "stamina": 11,
         "spirit": 5
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 17943,
+      "name": "Fist of Stone",
+      "icon": "inv_hammer_17",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 48,
+      "item_level": 53,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 223524,
+      "name": "Fist of Stone",
+      "icon": "inv_hammer_17",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 48,
+      "item_level": 56,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -43260,6 +44872,32 @@
       "unique": false
     },
     {
+      "id": 2163,
+      "name": "Shadowblade",
+      "icon": "inv_sword_12",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 48,
+      "item_level": 53,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": true
+    },
+    {
+      "id": 15228,
+      "name": "Smashing Star",
+      "icon": "inv_misc_bone_elfskull_01",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 48,
+      "item_level": 53,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 10186,
       "name": "Swashbuckler's Gloves",
       "icon": "inv_gauntlets_03",
@@ -43345,6 +44983,32 @@
       "stats": {
         "stamina": 6
       },
+      "set_id": null,
+      "unique": true
+    },
+    {
+      "id": 17780,
+      "name": "Blade of Eternal Darkness",
+      "icon": "inv_sword_09",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 49,
+      "item_level": 54,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": true
+    },
+    {
+      "id": 223964,
+      "name": "Blade of Eternal Darkness",
+      "icon": "inv_sword_09",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 49,
+      "item_level": 54,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": true
     },
@@ -43580,6 +45244,19 @@
       "unique": false
     },
     {
+      "id": 10804,
+      "name": "Fist of the Damned",
+      "icon": "inv_hammer_11",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 49,
+      "item_level": 54,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 17707,
       "name": "Gemshard Heart",
       "icon": "inv_stone_01",
@@ -43646,6 +45323,19 @@
       "unique": false
     },
     {
+      "id": 810,
+      "name": "Hammer of the Northern Wind",
+      "icon": "inv_hammer_11",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 49,
+      "item_level": 54,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 14452,
       "name": "Highborne Pauldrons",
       "icon": "inv_shoulder_24",
@@ -43660,6 +45350,19 @@
       },
       "set_id": null,
       "unique": false
+    },
+    {
+      "id": 11635,
+      "name": "Hookfang Shanker",
+      "icon": "inv_weapon_shortblade_10",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 49,
+      "item_level": 54,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": true
     },
     {
       "id": 15661,
@@ -43880,6 +45583,19 @@
       "unique": false
     },
     {
+      "id": 17766,
+      "name": "Princess Theradras' Scepter",
+      "icon": "inv_hammer_10",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 49,
+      "item_level": 54,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 15091,
       "name": "Runic Leather Gauntlets",
       "icon": "inv_gauntlets_31",
@@ -44032,6 +45748,19 @@
       "required_level": 49,
       "item_level": 54,
       "armor": 97,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 15275,
+      "name": "Thaumaturgist Staff",
+      "icon": "inv_staff_03",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 49,
+      "item_level": 54,
+      "armor": 0,
       "stats": {},
       "set_id": null,
       "unique": false
@@ -44317,6 +46046,32 @@
       "unique": true
     },
     {
+      "id": 12791,
+      "name": "Barman Shanker",
+      "icon": "inv_drink_10",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 50,
+      "item_level": 55,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 15229,
+      "name": "Blesswind Hammer",
+      "icon": "inv_hammer_02",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 50,
+      "item_level": 55,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 12552,
       "name": "Blisterbane Wrap",
       "icon": "inv_misc_cape_18",
@@ -44330,6 +46085,19 @@
         "stamina": 3,
         "shadow_res": 6
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 220569,
+      "name": "Blistering Ragehammer",
+      "icon": "inv_hammer_06",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 50,
+      "item_level": 53,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -44634,6 +46402,19 @@
       "unique": false
     },
     {
+      "id": 220588,
+      "name": "Cobra Fang Claw",
+      "icon": "inv_weapon_hand_01",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 50,
+      "item_level": 55,
+      "armor": 0,
+      "stats": {},
+      "set_id": 1651,
+      "unique": false
+    },
+    {
       "id": 18697,
       "name": "Coldstone Slippers",
       "icon": "inv_boots_fabric_01",
@@ -44727,6 +46508,19 @@
       "unique": false
     },
     {
+      "id": 11608,
+      "name": "Dark Iron Pulverizer",
+      "icon": "inv_hammer_09",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 50,
+      "item_level": 55,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 13122,
       "name": "Dark Phantom Cape",
       "icon": "inv_misc_cape_21",
@@ -44786,6 +46580,19 @@
         "intellect": 9,
         "spirit": 9
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 220674,
+      "name": "Debased Stealthblade",
+      "icon": "inv_sword_41",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 50,
+      "item_level": 53,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -45579,6 +47386,19 @@
       "unique": false
     },
     {
+      "id": 220578,
+      "name": "Fist of the Forsaken",
+      "icon": "inv_hammer_11",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 50,
+      "item_level": 53,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 19589,
       "name": "Forest Stalker's Bracers",
       "icon": "inv_bracer_12",
@@ -45843,6 +47663,19 @@
         "stamina": 9,
         "intellect": 8
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 6660,
+      "name": "Julie's Dagger",
+      "icon": "inv_weapon_shortblade_07",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 50,
+      "item_level": 55,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -47346,6 +49179,19 @@
       "unique": false
     },
     {
+      "id": 15264,
+      "name": "Backbreaker",
+      "icon": "inv_hammer_16",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 51,
+      "item_level": 56,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 18289,
       "name": "Barbed Thorn Necklace",
       "icon": "inv_jewelry_necklace_09",
@@ -47358,6 +49204,19 @@
         "stamina": 7,
         "intellect": 6
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 11744,
+      "name": "Bloodfist",
+      "icon": "inv_gauntlets_11",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 51,
+      "item_level": 56,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -47491,6 +49350,32 @@
       "unique": false
     },
     {
+      "id": 12776,
+      "name": "Enchanted Battlehammer",
+      "icon": "inv_hammer_05",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 51,
+      "item_level": 56,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 11809,
+      "name": "Flame Wrath",
+      "icon": "inv_spear_01",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 51,
+      "item_level": 56,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 11803,
       "name": "Force of Magma",
       "icon": "inv_hammer_09",
@@ -47502,6 +49387,19 @@
       "stats": {
         "strength": 14
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 13056,
+      "name": "Frenzied Striker",
+      "icon": "inv_spear_07",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 51,
+      "item_level": 56,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -48893,6 +50791,19 @@
       "unique": false
     },
     {
+      "id": 12781,
+      "name": "Serenity",
+      "icon": "inv_mace_02",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 52,
+      "item_level": 57,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 13118,
       "name": "Serpentine Sash",
       "icon": "inv_belt_25",
@@ -48964,6 +50875,19 @@
       "required_level": 52,
       "item_level": 57,
       "armor": 35,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 11923,
+      "name": "The Hammer of Grace",
+      "icon": "inv_hammer_07",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 52,
+      "item_level": 57,
+      "armor": 0,
       "stats": {},
       "set_id": null,
       "unique": false
@@ -49719,6 +51643,19 @@
       "unique": false
     },
     {
+      "id": 15276,
+      "name": "Magus Long Staff",
+      "icon": "inv_staff_14",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 53,
+      "item_level": 58,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 18700,
       "name": "Malefic Bracers",
       "icon": "inv_bracer_07",
@@ -49861,6 +51798,19 @@
       "stats": {
         "intellect": 7
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 15265,
+      "name": "Painbringer",
+      "icon": "inv_hammer_10",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 53,
+      "item_level": 58,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -50191,6 +52141,19 @@
         "spirit": 12,
         "stamina": 21
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 12792,
+      "name": "Volcanic Hammer",
+      "icon": "inv_hammer_06",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 53,
+      "item_level": 58,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -50739,6 +52702,19 @@
       "unique": false
     },
     {
+      "id": 14531,
+      "name": "Frightskull Shaft",
+      "icon": "inv_hammer_13",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 54,
+      "item_level": 59,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 227994,
       "name": "Frightskull Shaft",
       "icon": "inv_hammer_13",
@@ -50800,6 +52776,19 @@
         "spirit": 5,
         "shadow_res": 10
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 13399,
+      "name": "Gargoyle Shredder Talons",
+      "icon": "inv_gauntlets_11",
+      "slot": "off_hand",
+      "quality": 3,
+      "required_level": 54,
+      "item_level": 59,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -51430,6 +53419,32 @@
         "intellect": 7,
         "spirit": 7
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 18725,
+      "name": "Peacemaker",
+      "icon": "inv_spear_07",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 54,
+      "item_level": 59,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 228516,
+      "name": "Peacemaker",
+      "icon": "inv_spear_07",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 54,
+      "item_level": 59,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -52074,6 +54089,19 @@
       "unique": false
     },
     {
+      "id": 12795,
+      "name": "Blood Talon",
+      "icon": "inv_weapon_shortblade_27",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 55,
+      "item_level": 60,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 14303,
       "name": "Bonecaster's Shroud",
       "icon": "inv_chest_cloth_38",
@@ -52191,6 +54219,19 @@
       },
       "set_id": null,
       "unique": true
+    },
+    {
+      "id": 12802,
+      "name": "Darkspear",
+      "icon": "inv_spear_08",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 55,
+      "item_level": 60,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
     },
     {
       "id": 15062,
@@ -52394,6 +54435,19 @@
         "frost_res": 6,
         "arcane_res": 6
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 227880,
+      "name": "Finely-Enchanted Battlehammer",
+      "icon": "inv_hammer_05",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 55,
+      "item_level": 60,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -52672,6 +54726,19 @@
       "unique": false
     },
     {
+      "id": 13198,
+      "name": "Hurd Smasher",
+      "icon": "inv_gauntlets_11",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 55,
+      "item_level": 60,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 18451,
       "name": "Hyena Hide Belt",
       "icon": "inv_belt_16",
@@ -52734,6 +54801,19 @@
       "unique": false
     },
     {
+      "id": 11684,
+      "name": "Ironfoe",
+      "icon": "spell_frost_frostbrand",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 55,
+      "item_level": 60,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": true
+    },
+    {
       "id": 18462,
       "name": "Jagged Bone Fist",
       "icon": "inv_gauntlets_13",
@@ -52763,6 +54843,19 @@
         "spirit": 10,
         "stamina": 8
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 12582,
+      "name": "Keris of Zul'Serak",
+      "icon": "inv_weapon_shortblade_12",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 55,
+      "item_level": 60,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -53349,6 +55442,19 @@
       "unique": true
     },
     {
+      "id": 15278,
+      "name": "Solstice Staff",
+      "icon": "inv_staff_03",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 55,
+      "item_level": 60,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 13374,
       "name": "Soulstealer Mantle",
       "icon": "inv_shoulder_02",
@@ -53655,6 +55761,19 @@
       "unique": false
     },
     {
+      "id": 13060,
+      "name": "The Needler",
+      "icon": "inv_spear_08",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 55,
+      "item_level": 60,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 18346,
       "name": "Threadbare Trousers",
       "icon": "inv_pants_09",
@@ -53717,6 +55836,32 @@
       },
       "set_id": null,
       "unique": false
+    },
+    {
+      "id": 13183,
+      "name": "Venomspitter",
+      "icon": "inv_wand_10",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 55,
+      "item_level": 60,
+      "armor": 0,
+      "stats": {},
+      "set_id": 65,
+      "unique": true
+    },
+    {
+      "id": 228573,
+      "name": "Venomspitter",
+      "icon": "inv_wand_10",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 55,
+      "item_level": 60,
+      "armor": 0,
+      "stats": {},
+      "set_id": 1783,
+      "unique": true
     },
     {
       "id": 23126,
@@ -54162,6 +56307,32 @@
       "unique": false
     },
     {
+      "id": 13148,
+      "name": "Chillpike",
+      "icon": "inv_spear_05",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 56,
+      "item_level": 61,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 228586,
+      "name": "Chillpike",
+      "icon": "inv_spear_05",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 56,
+      "item_level": 61,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 13956,
       "name": "Clutch of Andros",
       "icon": "inv_belt_12",
@@ -54562,6 +56733,32 @@
       "unique": false
     },
     {
+      "id": 13218,
+      "name": "Fang of the Crystal Spider",
+      "icon": "inv_weapon_shortblade_16",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 56,
+      "item_level": 61,
+      "armor": 0,
+      "stats": {},
+      "set_id": 65,
+      "unique": true
+    },
+    {
+      "id": 228592,
+      "name": "Fang of the Crystal Spider",
+      "icon": "inv_weapon_shortblade_16",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 56,
+      "item_level": 61,
+      "armor": 0,
+      "stats": {},
+      "set_id": 1783,
+      "unique": true
+    },
+    {
       "id": 13530,
       "name": "Fangdrip Runners",
       "icon": "inv_boots_05",
@@ -54592,6 +56789,19 @@
       "unique": false
     },
     {
+      "id": 15266,
+      "name": "Fierce Mauler",
+      "icon": "inv_hammer_08",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 56,
+      "item_level": 61,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 16980,
       "name": "Flarecore Mantle",
       "icon": "inv_shoulder_23",
@@ -54606,6 +56816,19 @@
         "stamina": 9,
         "fire_res": 24
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 14024,
+      "name": "Frightalon",
+      "icon": "inv_weapon_shortblade_16",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 56,
+      "item_level": 61,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -54972,6 +57195,19 @@
         "stamina": 11
       },
       "set_id": 1670,
+      "unique": false
+    },
+    {
+      "id": 13393,
+      "name": "Malown's Slam",
+      "icon": "inv_mace_01",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 56,
+      "item_level": 61,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
       "unique": false
     },
     {
@@ -55680,6 +57916,32 @@
         "intellect": 5,
         "frost_res": 15
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 13401,
+      "name": "The Cruel Hand of Timmy",
+      "icon": "inv_misc_bone_elfskull_01",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 56,
+      "item_level": 61,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 22322,
+      "name": "The Jaw Breaker",
+      "icon": "inv_mace_15",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 56,
+      "item_level": 61,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -56420,6 +58682,32 @@
       "unique": false
     },
     {
+      "id": 14487,
+      "name": "Bonechill Hammer",
+      "icon": "inv_hammer_13",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 57,
+      "item_level": 62,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 13368,
+      "name": "Bonescraper",
+      "icon": "inv_weapon_shortblade_12",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 57,
+      "item_level": 62,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 18507,
       "name": "Boots of the Full Moon",
       "icon": "inv_boots_05",
@@ -56752,6 +59040,19 @@
       "unique": false
     },
     {
+      "id": 15246,
+      "name": "Demon Blade",
+      "icon": "inv_weapon_shortblade_03",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 57,
+      "item_level": 62,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 16693,
       "name": "Devout Crown",
       "icon": "inv_crown_01",
@@ -56812,6 +59113,32 @@
       "stats": {
         "stamina": 16
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 18392,
+      "name": "Distracting Dagger",
+      "icon": "inv_weapon_shortblade_05",
+      "slot": "off_hand",
+      "quality": 3,
+      "required_level": 57,
+      "item_level": 62,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 228472,
+      "name": "Distracting Dagger",
+      "icon": "inv_weapon_shortblade_05",
+      "slot": "off_hand",
+      "quality": 3,
+      "required_level": 57,
+      "item_level": 62,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -57642,6 +59969,19 @@
       "unique": false
     },
     {
+      "id": 12794,
+      "name": "Masterwork Stormhammer",
+      "icon": "inv_hammer_04",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 57,
+      "item_level": 63,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 10150,
       "name": "Mighty Helmet",
       "icon": "inv_helmet_54",
@@ -58178,6 +60518,19 @@
         "agility": 27,
         "strength": 15
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 18758,
+      "name": "Specter's Blade",
+      "icon": "inv_weapon_shortblade_18",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 57,
+      "item_level": 62,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -59101,6 +61454,19 @@
       "unique": true
     },
     {
+      "id": 12583,
+      "name": "Blackhand Doomsaw",
+      "icon": "inv_weapon_halberd_04",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 58,
+      "item_level": 63,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 228603,
       "name": "Blackhand Doomsaw",
       "icon": "inv_weapon_halberd_04",
@@ -59390,6 +61756,19 @@
       "stats": {
         "stamina": 8
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 15267,
+      "name": "Brutehammer",
+      "icon": "inv_hammer_10",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 58,
+      "item_level": 63,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -59925,6 +62304,32 @@
       "unique": false
     },
     {
+      "id": 12590,
+      "name": "Felstriker",
+      "icon": "inv_weapon_shortblade_25",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 58,
+      "item_level": 63,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 228757,
+      "name": "Felstriker",
+      "icon": "inv_weapon_shortblade_25",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 58,
+      "item_level": 63,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": true
+    },
+    {
       "id": 13369,
       "name": "Fire Striders",
       "icon": "inv_boots_05",
@@ -59955,6 +62360,19 @@
       },
       "set_id": null,
       "unique": true
+    },
+    {
+      "id": 227962,
+      "name": "Flarethorn",
+      "icon": "inv_spear_01",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 58,
+      "item_level": 63,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
     },
     {
       "id": 19105,
@@ -60341,6 +62759,19 @@
       },
       "set_id": null,
       "unique": false
+    },
+    {
+      "id": 227991,
+      "name": "Ironfoe",
+      "icon": "spell_frost_frostbrand",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 58,
+      "item_level": 63,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": true
     },
     {
       "id": 16422,
@@ -60839,6 +63270,32 @@
       "unique": false
     },
     {
+      "id": 22384,
+      "name": "Persuader",
+      "icon": "inv_hammer_08",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 58,
+      "item_level": 63,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 12709,
+      "name": "Pip's Skinner",
+      "icon": "inv_sword_33",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 58,
+      "item_level": 63,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 19514,
       "name": "Protector's Band",
       "icon": "inv_jewelry_ring_10",
@@ -61215,6 +63672,19 @@
       "unique": false
     },
     {
+      "id": 12969,
+      "name": "Seeping Willow",
+      "icon": "inv_hammer_17",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 58,
+      "item_level": 63,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 228666,
       "name": "Seeping Willow",
       "icon": "inv_hammer_17",
@@ -61370,6 +63840,19 @@
         "stamina": 15
       },
       "set_id": 1677,
+      "unique": false
+    },
+    {
+      "id": 17074,
+      "name": "Shadowstrike",
+      "icon": "inv_spear_08",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 58,
+      "item_level": 63,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
       "unique": false
     },
     {
@@ -61587,6 +64070,19 @@
       "unique": false
     },
     {
+      "id": 17223,
+      "name": "Thunderstrike",
+      "icon": "inv_spear_08",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 58,
+      "item_level": 63,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 228273,
       "name": "Thunderstrike",
       "icon": "inv_spear_08",
@@ -61631,6 +64127,19 @@
         "stamina": 11,
         "intellect": 18
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 211944,
+      "name": "Tojara's Karma",
+      "icon": "inv_weapon_halberd_04",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 58,
+      "item_level": 63,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -61860,6 +64369,19 @@
       "unique": false
     },
     {
+      "id": 211941,
+      "name": "Windwalker's Yari",
+      "icon": "inv_weapon_halberd_04",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 58,
+      "item_level": 66,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 227986,
       "name": "Wristguards of Renown",
       "icon": "inv_bracer_10",
@@ -62019,6 +64541,19 @@
       "unique": false
     },
     {
+      "id": 15247,
+      "name": "Bloodstrike Dagger",
+      "icon": "inv_weapon_shortblade_03",
+      "slot": "main_hand",
+      "quality": 2,
+      "required_level": 59,
+      "item_level": 64,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 12058,
       "name": "Demonic Bone Ring",
       "icon": "inv_jewelry_ring_01",
@@ -62032,6 +64567,19 @@
         "stamina": 5,
         "spirit": 5
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 211940,
+      "name": "Ecks'av's Tribal Guardian",
+      "icon": "inv_weapon_halberd_04",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 59,
+      "item_level": 64,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -63242,6 +65790,32 @@
       "unique": false
     },
     {
+      "id": 21127,
+      "name": "Ahn'Qiraj Mace [PH]",
+      "icon": "inv_mace_24",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 60,
+      "item_level": 75,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": true
+    },
+    {
+      "id": 21125,
+      "name": "Ahn'Qiraj Staff [PH]",
+      "icon": "inv_staff_01",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 60,
+      "item_level": 75,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 17113,
       "name": "Amberseal Keeper",
       "icon": "inv_staff_goldfeathered_01",
@@ -63747,6 +66321,19 @@
       },
       "set_id": null,
       "unique": false
+    },
+    {
+      "id": 19910,
+      "name": "Arlokk's Grasp",
+      "icon": "inv_weapon_hand_01",
+      "slot": "off_hand",
+      "quality": 4,
+      "required_level": 60,
+      "item_level": 65,
+      "armor": 0,
+      "stats": {},
+      "set_id": 463,
+      "unique": true
     },
     {
       "id": 230934,
@@ -64906,6 +67493,19 @@
       "unique": false
     },
     {
+      "id": 19166,
+      "name": "Black Amnesty",
+      "icon": "inv_weapon_shortblade_12",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 60,
+      "item_level": 66,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 19399,
       "name": "Black Ash Robe",
       "icon": "inv_chest_cloth_50",
@@ -65153,6 +67753,19 @@
         "intellect": 30,
         "stamina": 22
       },
+      "set_id": null,
+      "unique": true
+    },
+    {
+      "id": 21276,
+      "name": "Blessed Qiraji Naturalist Staff UNUSED",
+      "icon": "inv_staff_20",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 60,
+      "item_level": 80,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": true
     },
@@ -70488,6 +73101,45 @@
       "unique": false
     },
     {
+      "id": 17073,
+      "name": "Earthshaker",
+      "icon": "inv_hammer_04",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 60,
+      "item_level": 66,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 228248,
+      "name": "Earthshaker",
+      "icon": "inv_hammer_04",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 60,
+      "item_level": 66,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 228463,
+      "name": "Earthshaker",
+      "icon": "inv_hammer_04",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 60,
+      "item_level": 66,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 227842,
       "name": "Ebon Fist",
       "icon": "inv_hammer_19",
@@ -70673,6 +73325,32 @@
         "spirit": 24,
         "stamina": 12
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 17112,
+      "name": "Empyrean Demolisher",
+      "icon": "inv_hammer_05",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 60,
+      "item_level": 66,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 228397,
+      "name": "Empyrean Demolisher",
+      "icon": "inv_hammer_05",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 60,
+      "item_level": 66,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -70996,6 +73674,45 @@
         "intellect": 8,
         "spirit": 8
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 19859,
+      "name": "Fang of the Faceless",
+      "icon": "inv_weapon_shortblade_30",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 60,
+      "item_level": 68,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": true
+    },
+    {
+      "id": 231301,
+      "name": "Fang of the Faceless",
+      "icon": "inv_weapon_shortblade_30",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 60,
+      "item_level": 70,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 231855,
+      "name": "Fang of the Faceless",
+      "icon": "inv_weapon_shortblade_30",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 60,
+      "item_level": 70,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -71498,6 +74215,19 @@
         "intellect": 9,
         "fire_res": 18
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 21188,
+      "name": "Fist of Cenarius",
+      "icon": "inv_hammer_23",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 60,
+      "item_level": 66,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -74039,6 +76769,45 @@
       "unique": true
     },
     {
+      "id": 19961,
+      "name": "Gri'lek's Grinder",
+      "icon": "inv_mace_04",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 60,
+      "item_level": 68,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 231274,
+      "name": "Gri'lek's Grinder",
+      "icon": "inv_mace_04",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 60,
+      "item_level": 65,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 231847,
+      "name": "Gri'lek's Grinder",
+      "icon": "inv_mace_04",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 60,
+      "item_level": 65,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 21693,
       "name": "Guise of the Devourer",
       "icon": "inv_helmet_06",
@@ -74069,6 +76838,45 @@
         "agility": 19,
         "strength": 36
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 17071,
+      "name": "Gutgore Ripper",
+      "icon": "inv_weapon_shortblade_18",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 60,
+      "item_level": 69,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 228267,
+      "name": "Gutgore Ripper",
+      "icon": "inv_weapon_shortblade_18",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 60,
+      "item_level": 71,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 229372,
+      "name": "Gutgore Ripper",
+      "icon": "inv_weapon_shortblade_18",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 60,
+      "item_level": 71,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -74135,6 +76943,19 @@
         "intellect": 7,
         "stamina": 6
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 19874,
+      "name": "Halberd of Smiting",
+      "icon": "inv_weapon_halberd_12",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 60,
+      "item_level": 66,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -75246,6 +78067,19 @@
         "agility": 41,
         "stamina": 11
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 19918,
+      "name": "Jeklik's Crusher",
+      "icon": "inv_mace_19",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 60,
+      "item_level": 65,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -77809,6 +80643,19 @@
       "unique": false
     },
     {
+      "id": 23221,
+      "name": "Misplaced Servo Arm",
+      "icon": "inv_mace_28",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 60,
+      "item_level": 83,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 236221,
       "name": "Misplaced Servo Arm",
       "icon": "inv_mace_28",
@@ -78514,6 +81361,84 @@
       "stats": {
         "intellect": 8
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 18816,
+      "name": "Perdition's Blade",
+      "icon": "inv_sword_48",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 60,
+      "item_level": 77,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": true
+    },
+    {
+      "id": 228296,
+      "name": "Perdition's Blade",
+      "icon": "inv_sword_48",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 60,
+      "item_level": 77,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 228511,
+      "name": "Perdition's Blade",
+      "icon": "inv_sword_48",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 60,
+      "item_level": 77,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 19963,
+      "name": "Pitchfork of Madness",
+      "icon": "inv_spear_03",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 60,
+      "item_level": 68,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 231277,
+      "name": "Pitchfork of Madness",
+      "icon": "inv_spear_03",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 60,
+      "item_level": 68,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 231864,
+      "name": "Pitchfork of Madness",
+      "icon": "inv_spear_03",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 60,
+      "item_level": 68,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -79540,6 +82465,32 @@
         "agility": 8,
         "stamina": 29
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 241121,
+      "name": "Reborn Dagger",
+      "icon": "inv_sword_48",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 60,
+      "item_level": 77,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 241123,
+      "name": "Reborn Dagger",
+      "icon": "inv_sword_48",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 60,
+      "item_level": 77,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -81109,6 +84060,19 @@
       "unique": false
     },
     {
+      "id": 19908,
+      "name": "Sceptre of Smiting",
+      "icon": "inv_mace_08",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 60,
+      "item_level": 65,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": true
+    },
+    {
       "id": 241164,
       "name": "Scrapped Argent Leathers",
       "icon": "inv_bracer_22",
@@ -81547,6 +84511,19 @@
         "agility": 13,
         "strength": 14
       },
+      "set_id": null,
+      "unique": true
+    },
+    {
+      "id": 17142,
+      "name": "Shard of the Defiler",
+      "icon": "inv_sword_01",
+      "slot": "main_hand",
+      "quality": 5,
+      "required_level": 60,
+      "item_level": 70,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": true
     },
@@ -82455,6 +85432,19 @@
       "stats": {
         "stamina": 20
       },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 21673,
+      "name": "Silithid Claw",
+      "icon": "inv_misc_monsterclaw_03",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 60,
+      "item_level": 76,
+      "armor": 0,
+      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -84673,6 +87663,19 @@
       "unique": true
     },
     {
+      "id": 17193,
+      "name": "Sulfuron Hammer",
+      "icon": "inv_hammer_unique_sulfuras",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 60,
+      "item_level": 67,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 227684,
       "name": "Sulfuron Hammer",
       "icon": "inv_hammer_unique_sulfuras",
@@ -85026,6 +88029,19 @@
       "unique": false
     },
     {
+      "id": 227832,
+      "name": "Tempered Black Amnesty",
+      "icon": "inv_weapon_shortblade_12",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 60,
+      "item_level": 68,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 21694,
       "name": "Ternary Mantle",
       "icon": "inv_shoulder_05",
@@ -85102,6 +88118,19 @@
       },
       "set_id": null,
       "unique": true
+    },
+    {
+      "id": 236306,
+      "name": "The Castigator",
+      "icon": "inv_mace_1h_stratholme_d_01",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 60,
+      "item_level": 85,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
     },
     {
       "id": 22988,
@@ -85198,6 +88227,19 @@
       },
       "set_id": null,
       "unique": false
+    },
+    {
+      "id": 19324,
+      "name": "The Lobotomizer",
+      "icon": "inv_sword_29",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 60,
+      "item_level": 65,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": true
     },
     {
       "id": 21802,
@@ -86992,6 +90034,19 @@
       "unique": false
     },
     {
+      "id": 231817,
+      "name": "Windstriker",
+      "icon": "inv_weapon_shortblade_99",
+      "slot": "main_hand",
+      "quality": 4,
+      "required_level": 60,
+      "item_level": 77,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
       "id": 21613,
       "name": "Wormhide Boots",
       "icon": "inv_boots_04",
@@ -87072,6 +90127,19 @@
       },
       "set_id": null,
       "unique": false
+    },
+    {
+      "id": 19965,
+      "name": "Wushoolay's Poker",
+      "icon": "inv_sword_37",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 60,
+      "item_level": 68,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": true
     },
     {
       "id": 231279,
