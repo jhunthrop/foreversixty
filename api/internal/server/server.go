@@ -5,12 +5,14 @@ import (
 	"net/http"
 
 	"github.com/PLACEHOLDER/forever/api/internal/httpx"
+	"github.com/PLACEHOLDER/forever/api/internal/subscribe"
 )
 
 type Deps struct {
 	Version       string
 	Log           *slog.Logger
 	AllowedOrigin string
+	Subscribe     *subscribe.Service
 }
 
 func NewRouter(d Deps) http.Handler {
@@ -24,6 +26,9 @@ func NewRouter(d Deps) http.Handler {
 	mux.HandleFunc("GET /version", func(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteOK(w, r, http.StatusOK, map[string]string{"version": d.Version})
 	})
+	if d.Subscribe != nil {
+		subscribe.Mount(mux, d.Subscribe)
+	}
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such route", nil)
 	})
