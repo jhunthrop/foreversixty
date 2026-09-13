@@ -1,0 +1,18 @@
+---
+interface Props { title?: string; sample?: boolean; class?: string }
+const { title, sample = false, class: cls = '' } = Astro.props;
+---
+<section class={`flex flex-col gap-4 ${cls}`}>
+  {title && (
+    <div class="flex items-baseline justify-between">
+      <h2 class="section-title">{title}</h2>
+      <div class="flex items-center gap-3">
+        {sample && <span class="pill pill-sample">Sample</span>}
+        <slot name="aside" />
+      </div>
+    </div>
+  )}
+  <div class="bg-raised border border-line rounded-panel flex flex-col">
+    <slot />
+  </div>
+</section>

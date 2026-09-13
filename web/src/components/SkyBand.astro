@@ -1,0 +1,21 @@
+---
+---
+<div class="relative overflow-hidden sky">
+  <svg class="absolute left-0 bottom-0 w-full" height="160" viewBox="0 0 1440 160" preserveAspectRatio="none" aria-hidden="true"><path d="M0 160 L0 110 L120 85 L240 120 L380 55 L500 95 L640 45 L760 90 L900 30 L1040 80 L1180 60 L1300 105 L1440 70 L1440 160 Z" fill="#0b0e14"/><path d="M0 160 L0 135 L180 120 L320 140 L480 112 L660 132 L840 104 L1000 128 L1200 108 L1440 132 L1440 160 Z" fill="#07090d"/></svg>
+  <div class="absolute inset-0 bg-gradient-to-b from-transparent from-55% to-bg/90"></div>
+  <div class="relative"><slot /></div>
+</div>
+<style>
+  .sky {
+    background:
+      radial-gradient(1px 1px at 12% 18%, rgba(255,214,140,.9), transparent 60%),
+      radial-gradient(1px 1px at 28% 42%, rgba(255,190,110,.8), transparent 60%),
+      radial-gradient(1.5px 1.5px at 61% 22%, rgba(255,214,140,.9), transparent 60%),
+      radial-gradient(1px 1px at 74% 55%, rgba(255,190,110,.7), transparent 60%),
+      radial-gradient(1px 1px at 88% 30%, rgba(255,214,140,.8), transparent 60%),
+      radial-gradient(1px 1px at 45% 65%, rgba(255,190,110,.6), transparent 60%),
+      radial-gradient(ellipse 90% 55% at 50% 100%, rgba(214,110,40,.5), transparent 70%),
+      radial-gradient(ellipse 70% 60% at 50% 0%, rgba(38,64,92,.9), transparent 70%),
+      linear-gradient(180deg, #070b12 0%, #0d1522 55%, #1b1410 100%);
+  }
+</style>

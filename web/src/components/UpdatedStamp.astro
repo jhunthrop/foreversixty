@@ -1,0 +1,6 @@
+---
+import { formatDate } from '../lib/dates';
+interface Props { date: Date }
+const { date } = Astro.props;
+---
+<span class="text-[12px] text-muted">Updated {formatDate(date)}</span>
