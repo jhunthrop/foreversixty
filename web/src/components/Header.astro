@@ -11,7 +11,7 @@ const nav = [
 ---
 <header class="relative flex items-center justify-between px-12 py-[18px] border-b border-line/60">
   <a href="/" class="font-display text-[20px] font-extrabold tracking-[0.08em] uppercase gold-text">Forever Sixty</a>
-  <nav class="flex gap-[26px] text-[13px] font-semibold tracking-[0.12em] uppercase">
+  <nav aria-label="Primary" class="flex gap-[26px] text-[13px] font-semibold tracking-[0.12em] uppercase">
     {nav.map(([label, href]) => <a href={href} class="text-nav hover:text-strong">{label}</a>)}
   </nav>
   <a href={communityLinks.discordInvite} class="inline-flex items-center gap-2 h-[34px] px-3 border border-line-warm rounded-control text-text bg-bg/50 font-semibold text-[13px]">

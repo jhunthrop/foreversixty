@@ -38,11 +38,11 @@ const popular = [
 ] as const;
 ---
 <Base title="Forever Sixty" description="Fan-run reference for World of Warcraft: Forever. Every fact dated and sourced." path="/">
-  <main class="flex flex-col">
+  <main id="main" tabindex="-1" class="flex flex-col">
     <SkyBand>
       <div class="grid grid-cols-12 gap-8 items-start px-12 pt-7 pb-10">
         <div class="col-span-7 flex flex-col gap-[18px]">
-          <p class="label text-gold">World of Warcraft: Forever · fan reference · every fact dated and sourced</p>
+          <h1 class="label text-gold font-body">World of Warcraft: Forever · fan reference · every fact dated and sourced</h1>
           <SearchBox client:interaction />
           <p class="flex flex-wrap gap-[10px] text-[13px]">
             <span class="text-muted">Popular:</span>

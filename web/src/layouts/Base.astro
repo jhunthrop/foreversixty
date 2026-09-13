@@ -74,6 +74,11 @@ const fullTitle = title === 'Forever Sixty' ? title : `${title} · Forever Sixty
     <slot name="head" />
   </head>
   <body class="min-h-screen flex flex-col bg-bg">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:absolute focus:left-[18px] focus:top-[18px] focus:z-50 focus:inline-flex focus:items-center focus:h-11 focus:px-4 focus:rounded-control focus:border focus:border-line-warm-strong focus:bg-raised focus:text-text focus:font-semibold"
+      >Skip to content</a
+    >
     <Header />
     <slot />
     <Footer />

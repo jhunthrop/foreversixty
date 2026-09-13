@@ -9,7 +9,7 @@ const entries = (await getCollection('changelog')).sort((a, b) => b.data.date.ge
 const updated = latest(entries.map((e) => e.data.updated));
 ---
 <Base title="Changelog" description="Everything that changed in World of Warcraft: Forever and on this site, dated and sourced." path="/changelog">
-  <main class="max-w-[1000px] w-full mx-auto px-6 py-10 flex flex-col gap-5">
+  <main id="main" tabindex="-1" class="max-w-[1000px] w-full mx-auto px-6 py-10 flex flex-col gap-5">
     <header class="flex flex-col gap-2">
       <h1 class="text-[28px] font-bold tracking-[0.02em]">What changed</h1>
       <UpdatedStamp date={updated} />
