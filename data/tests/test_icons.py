@@ -209,3 +209,95 @@ def test_icons_for_build_downloads_what_the_build_refers_to(tmp_path: Path, monk
     )
     assert written == 1
     assert (build_dir / "icons" / "ability_golemthunderclap.webp").exists()
+
+
+def test_download_icons_warns_on_a_name_collision_and_keeps_the_lower_id(
+    tmp_path: Path, caplog
+):
+    calls: list[str] = []
+    client = httpx.Client(transport=blp_transport(calls), base_url="https://wago.tools")
+    with caplog.at_level("WARNING"):
+        written = download_icons(
+            {132156: "shared", 132154: "shared"},
+            tmp_path / "icons",
+            cache_dir=tmp_path / "cache",
+            client=client,
+        )
+    assert written == 1
+    assert (tmp_path / "icons" / "shared.webp").exists()
+    assert calls == ["/api/casc/132154"]
+    assert any(
+        "132154" in record.getMessage() and "132156" in record.getMessage()
+        for record in caplog.records
+    )
+
+
+def test_download_icons_creates_and_closes_its_own_client(tmp_path: Path, monkeypatch):
+    calls: list[str] = []
+    closed: list[bool] = []
+    real_client_cls = httpx.Client
+
+    class TrackingClient(real_client_cls):
+        def close(self):
+            closed.append(True)
+            super().close()
+
+    def fake_client(*args, **kwargs):
+        kwargs["transport"] = blp_transport(calls)
+        return TrackingClient(*args, **kwargs)
+
+    monkeypatch.setattr(httpx, "Client", fake_client)
+    written = download_icons({132154: "a"}, tmp_path / "icons", cache_dir=tmp_path / "cache")
+    assert written == 1
+    assert closed == [True]
+    assert calls == ["/api/casc/132154"]
+
+
+def test_wanted_icons_skips_a_file_id_absent_from_the_manifest(tmp_path: Path, caplog):
+    (tmp_path / "talents").mkdir(parents=True)
+    (tmp_path / "talents" / "warrior.json").write_text(
+        json.dumps(
+            {
+                "build": "1.0.0.1",
+                "class_id": 1,
+                "class_slug": "warrior",
+                "trees": [
+                    {
+                        "id": 161,
+                        "name": "Arms",
+                        "position": 0,
+                        "talents": [
+                            {
+                                "id": 124,
+                                "name": "x",
+                                "icon": "whatever",
+                                "max_rank": 1,
+                                "tier": 0,
+                                "column": 0,
+                                "prereq_talent_id": None,
+                                "prereq_rank": None,
+                                "ranks": [{"spell_id": 99999, "description": "x"}],
+                            }
+                        ],
+                    }
+                ],
+            }
+        )
+    )
+    (tmp_path / "items").mkdir()
+    (tmp_path / "items" / "warrior.json").write_text(
+        json.dumps({"build": "1.0.0.1", "class_slug": "warrior", "items": []})
+    )
+    names = icon_names(read_csv(HERE / "fixtures/ManifestInterfaceData.csv"))
+    misc_rows = read_csv(HERE / "fixtures/SpellMisc.csv") + [
+        {
+            "SpellID": "99999",
+            "DifficultyID": "0",
+            "DurationIndex": "0",
+            "SpellIconFileDataID": "999999",
+        }
+    ]
+    with caplog.at_level("WARNING"):
+        wanted = wanted_icons(tmp_path, misc_rows, [], names)
+    assert 999999 not in wanted
+    assert any("999999" in record.getMessage() for record in caplog.records)

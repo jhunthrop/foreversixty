@@ -10,6 +10,7 @@ from __future__ import annotations
 import io
 import json
 import logging
+import os
 from pathlib import Path
 
 import httpx
@@ -43,6 +44,33 @@ def blp_to_webp(blp: bytes, size: int = ICON_SIZE) -> bytes:
     return buffer.getvalue()
 
 
+def _atomic_write(path: Path, data: bytes) -> None:
+    """Write data to path without ever leaving a partially-written file behind."""
+    tmp = path.parent / f"{path.name}.tmp-{os.getpid()}"
+    tmp.write_bytes(data)
+    os.replace(tmp, path)
+
+
+def _warn_about_name_collisions(wanted: dict[int, str]) -> None:
+    """Two distinct file ids can map to the same lowercase icon name.
+
+    The site addresses icons by name, so exactly one file per name is correct
+    by design, but a silent skip is indistinguishable from a substituted
+    icon: log which ids collided and which one wins.
+    """
+    by_name: dict[str, list[int]] = {}
+    for file_id, name in wanted.items():
+        by_name.setdefault(name, []).append(file_id)
+    for name, ids in sorted(by_name.items()):
+        if len(ids) > 1:
+            logger.warning(
+                "icon name %r is claimed by file ids %s; only %s will be written",
+                name,
+                sorted(ids),
+                min(ids),
+            )
+
+
 def download_icons(
     wanted: dict[int, str],
     out_dir: Path,
@@ -56,9 +84,11 @@ def download_icons(
     converted is left alone.
     """
     own = client is None
-    client = client or httpx.Client(base_url=BASE_URL, headers={"User-Agent": USER_AGENT})
+    if client is None:
+        client = httpx.Client(base_url=BASE_URL, headers={"User-Agent": USER_AGENT})
     out_dir.mkdir(parents=True, exist_ok=True)
     cache_dir.mkdir(parents=True, exist_ok=True)
+    _warn_about_name_collisions(wanted)
     written = 0
     try:
         for file_id, name in sorted(wanted.items()):
@@ -72,8 +102,8 @@ def download_icons(
                     logger.warning("icon %s (%s) is not in CASC; skipping", file_id, name)
                     continue
                 response.raise_for_status()
-                cached.write_bytes(response.content)
-            target.write_bytes(blp_to_webp(cached.read_bytes()))
+                _atomic_write(cached, response.content)
+            _atomic_write(target, blp_to_webp(cached.read_bytes()))
             written += 1
     finally:
         if own:
