@@ -145,10 +145,14 @@
     <!-- Swallowing mousedown keeps focus in the input: a blur would close the dropdown via
          onfocusout and unmount the link before its click event ever fired. -->
     <ul id="search-results" role="listbox" class={dropdownClass} onmousedown={(e) => e.preventDefault()}>
-      {#each results as r, i}
+      {#each results as r, i (r.url)}
         <li id={`search-opt-${i}`} role="option" aria-selected={i === active}>
           <a href={r.url} class={`flex flex-col gap-1 px-4 py-3 border-b border-line-soft last:border-b-0 ${i === active ? 'bg-card-top' : ''}`} onmouseenter={() => (active = i)} aria-labelledby={`search-title-${i}`} aria-describedby={`search-excerpt-${i}`}>
             <span id={`search-title-${i}`} class="text-[15px] font-semibold text-strong">{r.title}</span>
+            <!-- Pagefind builds this excerpt from our own prerendered pages at index time: it
+                 escapes the page text and adds only a mark element around the matched words, so
+                 nothing user-supplied ever reaches the markup below. -->
+            <!-- eslint-disable-next-line svelte/no-at-html-tags -->
             <span id={`search-excerpt-${i}`} class="text-[13px] text-muted">{@html r.excerpt}</span>
           </a>
         </li>
