@@ -27,7 +27,7 @@ func NewRouter(d Deps) http.Handler {
 		httpx.WriteOK(w, r, http.StatusOK, map[string]string{"version": d.Version})
 	})
 	if d.Subscribe != nil {
-		subscribe.Mount(mux, d.Subscribe)
+		subscribe.Mount(mux, d.Subscribe, d.Log)
 	}
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such route", nil)

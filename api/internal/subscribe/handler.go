@@ -3,12 +3,13 @@ package subscribe
 import (
 	"encoding/json"
 	"errors"
+	"log/slog"
 	"net/http"
 
 	"github.com/PLACEHOLDER/forever/api/internal/httpx"
 )
 
-func Mount(mux *http.ServeMux, s *Service) {
+func Mount(mux *http.ServeMux, s *Service, log *slog.Logger) {
 	limited := httpx.RateLimit(10)
 	mux.Handle("POST /v1/subscribe", limited(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var body struct {
@@ -23,6 +24,7 @@ func Mount(mux *http.ServeMux, s *Service) {
 		case errors.Is(err, ErrInvalidEmail):
 			httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "enter a valid email address", map[string]string{"email": "invalid"})
 		case err != nil:
+			log.Error("subscribe", "id", httpx.RequestIDFrom(r.Context()), "op", "subscribe", "err", err)
 			httpx.WriteError(w, r, http.StatusInternalServerError, "internal", "could not subscribe right now", nil)
 		default:
 			httpx.WriteOK(w, r, http.StatusAccepted, map[string]string{"status": "check your email"})
@@ -37,10 +39,16 @@ func Mount(mux *http.ServeMux, s *Service) {
 	}
 	mux.HandleFunc("GET /v1/subscribe/confirm", func(w http.ResponseWriter, r *http.Request) {
 		ok, err := s.Confirm(r.Context(), r.URL.Query().Get("token"))
+		if err != nil {
+			log.Error("subscribe", "id", httpx.RequestIDFrom(r.Context()), "op", "confirm", "err", err)
+		}
 		redirect(w, r, err == nil && ok, "/subscribed")
 	})
 	mux.HandleFunc("GET /v1/subscribe/unsubscribe", func(w http.ResponseWriter, r *http.Request) {
 		ok, err := s.Unsubscribe(r.Context(), r.URL.Query().Get("token"))
+		if err != nil {
+			log.Error("subscribe", "id", httpx.RequestIDFrom(r.Context()), "op", "unsubscribe", "err", err)
+		}
 		redirect(w, r, err == nil && ok, "/unsubscribed")
 	})
 }

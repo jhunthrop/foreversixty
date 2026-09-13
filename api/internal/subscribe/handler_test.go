@@ -1,8 +1,11 @@
 package subscribe
 
 import (
+	"bytes"
 	"context"
 	"errors"
+	"io"
+	"log/slog"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -11,10 +14,14 @@ import (
 	"github.com/PLACEHOLDER/forever/api/internal/mail"
 )
 
+func discardLogger() *slog.Logger {
+	return slog.New(slog.NewTextHandler(io.Discard, nil))
+}
+
 func newTestHandler() http.Handler {
-	s := &Service{Store: &memStore{rows: map[string]string{"known@example.com": "tok"}}, Mailer: &mail.Fake{}, PublicBaseURL: "https://foreversixty.gg", APIBaseURL: "https://api.foreversixty.gg"}
+	s := &Service{Store: &memStore{rows: map[string]memRow{"known@example.com": {token: "tok", unsubscribeToken: "utok"}}}, Mailer: &mail.Fake{}, PublicBaseURL: "https://foreversixty.gg", APIBaseURL: "https://api.foreversixty.gg"}
 	mux := http.NewServeMux()
-	Mount(mux, s)
+	Mount(mux, s, discardLogger())
 	return mux
 }
 
@@ -55,7 +62,7 @@ func TestConfirmRedirects(t *testing.T) {
 func TestUnsubscribeRedirects(t *testing.T) {
 	h := newTestHandler()
 	rec := httptest.NewRecorder()
-	h.ServeHTTP(rec, httptest.NewRequest("GET", "/v1/subscribe/unsubscribe?token=tok", nil))
+	h.ServeHTTP(rec, httptest.NewRequest("GET", "/v1/subscribe/unsubscribe?token=utok", nil))
 	if rec.Code != 302 || rec.Header().Get("Location") != "https://foreversixty.gg/unsubscribed" {
 		t.Fatalf("code=%d loc=%s", rec.Code, rec.Header().Get("Location"))
 	}
@@ -66,14 +73,59 @@ func TestUnsubscribeRedirects(t *testing.T) {
 	}
 }
 
-func TestPostSubscribe500OnMailError(t *testing.T) {
-	s := &Service{Store: &memStore{rows: map[string]string{}}, Mailer: &mail.Fake{Err: errors.New("boom")}, PublicBaseURL: "https://foreversixty.gg", APIBaseURL: "https://api.foreversixty.gg"}
+func TestPostSubscribe500OnMailErrorLogsIt(t *testing.T) {
+	var buf bytes.Buffer
+	log := slog.New(slog.NewTextHandler(&buf, nil))
+	s := &Service{Store: &memStore{rows: map[string]memRow{}}, Mailer: &mail.Fake{Err: errors.New("boom")}, PublicBaseURL: "https://foreversixty.gg", APIBaseURL: "https://api.foreversixty.gg"}
 	mux := http.NewServeMux()
-	Mount(mux, s)
+	Mount(mux, s, log)
 	rec := httptest.NewRecorder()
 	mux.ServeHTTP(rec, httptest.NewRequest("POST", "/v1/subscribe", strings.NewReader(`{"email":"new@example.com"}`)))
 	if rec.Code != 500 {
 		t.Fatalf("code=%d body=%s", rec.Code, rec.Body.String())
+	}
+	if !strings.Contains(buf.String(), "op=subscribe") {
+		t.Fatalf("expected log with op=subscribe, got %q", buf.String())
+	}
+}
+
+type erroringStore struct{ err error }
+
+func (e *erroringStore) Upsert(_ context.Context, _, _, _, _ string) (bool, string, bool, error) {
+	return false, "", false, e.err
+}
+func (e *erroringStore) Confirm(_ context.Context, _ string) (bool, error)     { return false, e.err }
+func (e *erroringStore) Unsubscribe(_ context.Context, _ string) (bool, error) { return false, e.err }
+
+func TestConfirmStoreErrorRedirectsInvalidAndLogs(t *testing.T) {
+	var buf bytes.Buffer
+	log := slog.New(slog.NewTextHandler(&buf, nil))
+	s := &Service{Store: &erroringStore{err: errors.New("db down")}, Mailer: &mail.Fake{}, PublicBaseURL: "https://foreversixty.gg", APIBaseURL: "https://api.foreversixty.gg"}
+	mux := http.NewServeMux()
+	Mount(mux, s, log)
+	rec := httptest.NewRecorder()
+	mux.ServeHTTP(rec, httptest.NewRequest("GET", "/v1/subscribe/confirm?token=tok", nil))
+	if rec.Code != 302 || rec.Header().Get("Location") != "https://foreversixty.gg/subscribe-invalid" {
+		t.Fatalf("code=%d loc=%s", rec.Code, rec.Header().Get("Location"))
+	}
+	if !strings.Contains(buf.String(), "op=confirm") {
+		t.Fatalf("expected log with op=confirm, got %q", buf.String())
+	}
+}
+
+func TestUnsubscribeStoreErrorRedirectsInvalidAndLogs(t *testing.T) {
+	var buf bytes.Buffer
+	log := slog.New(slog.NewTextHandler(&buf, nil))
+	s := &Service{Store: &erroringStore{err: errors.New("db down")}, Mailer: &mail.Fake{}, PublicBaseURL: "https://foreversixty.gg", APIBaseURL: "https://api.foreversixty.gg"}
+	mux := http.NewServeMux()
+	Mount(mux, s, log)
+	rec := httptest.NewRecorder()
+	mux.ServeHTTP(rec, httptest.NewRequest("GET", "/v1/subscribe/unsubscribe?token=tok", nil))
+	if rec.Code != 302 || rec.Header().Get("Location") != "https://foreversixty.gg/subscribe-invalid" {
+		t.Fatalf("code=%d loc=%s", rec.Code, rec.Header().Get("Location"))
+	}
+	if !strings.Contains(buf.String(), "op=unsubscribe") {
+		t.Fatalf("expected log with op=unsubscribe, got %q", buf.String())
 	}
 }
 
