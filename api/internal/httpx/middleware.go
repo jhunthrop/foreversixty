@@ -172,15 +172,19 @@ func RateLimit(perMinute, trustedHops int) func(http.Handler) http.Handler {
 //
 // X-Forwarded-For is appended to by each proxy the request passes through,
 // so it reads [original-client, proxy-1, proxy-2, ...]; a client can put
-// anything they like in the leftmost entries. With trustedHops trusted
-// proxies, the real client is the trustedHops-th entry counted from the
-// right (trustedHops=1 means the rightmost entry). If the header has fewer
-// entries than trustedHops - including when it is absent - the header is
-// untrustworthy and RemoteAddr (the last hop we ourselves observed) is used
-// instead. trustedHops=0 ignores X-Forwarded-For entirely.
+// anything they like in the leftmost entries - including sending their own
+// entire X-Forwarded-For header line ahead of the one the trusted proxy
+// adds, since Go's net/http preserves repeated header lines in order and
+// only Values (not Get) sees all of them. So every X-Forwarded-For line is
+// joined into one list before counting from the right. With trustedHops
+// trusted proxies, the real client is the trustedHops-th entry counted from
+// the right (trustedHops=1 means the rightmost entry). If the combined list
+// has fewer entries than trustedHops - including when the header is absent
+// - it is untrustworthy and RemoteAddr (the last hop we ourselves observed)
+// is used instead. trustedHops=0 ignores X-Forwarded-For entirely.
 func clientIP(r *http.Request, trustedHops int) string {
 	if trustedHops > 0 {
-		if xff := r.Header.Get("X-Forwarded-For"); xff != "" {
+		if xff := strings.Join(r.Header.Values("X-Forwarded-For"), ","); xff != "" {
 			hops := strings.Split(xff, ",")
 			if len(hops) >= trustedHops {
 				return strings.TrimSpace(hops[len(hops)-trustedHops])

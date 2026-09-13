@@ -10,6 +10,7 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/PLACEHOLDER/forever/api/internal/mail"
 )
@@ -112,9 +113,11 @@ type erroringStore struct{ err error }
 func (e *erroringStore) Upsert(_ context.Context, _, _, _, _ string) (UpsertResult, error) {
 	return UpsertResult{}, e.err
 }
-func (e *erroringStore) MarkConfirmationSent(_ context.Context, _ string) error { return e.err }
-func (e *erroringStore) Confirm(_ context.Context, _ string) (bool, error)      { return false, e.err }
-func (e *erroringStore) Unsubscribe(_ context.Context, _ string) (bool, error)  { return false, e.err }
+func (e *erroringStore) ClaimConfirmationSend(_ context.Context, _ string, _ time.Duration) (bool, error) {
+	return false, e.err
+}
+func (e *erroringStore) Confirm(_ context.Context, _ string) (bool, error)     { return false, e.err }
+func (e *erroringStore) Unsubscribe(_ context.Context, _ string) (bool, error) { return false, e.err }
 
 func TestConfirmStoreErrorRedirectsInvalidAndLogs(t *testing.T) {
 	var buf bytes.Buffer

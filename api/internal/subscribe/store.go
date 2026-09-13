@@ -26,11 +26,13 @@ type UpsertResult struct {
 
 // Upsert inserts a new subscriber row when normalized is not already present.
 // When the address already exists, nothing is inserted; the existing row's
-// token, confirmation state, unsubscribed state, and last confirmation-send
-// time are returned so the caller can decide whether to resend the
-// confirmation (never inventing a new token for a row that already has one,
-// never re-mailing an already-confirmed-and-subscribed address, and never
-// resending faster than its own cooldown/cap policy allows).
+// token, confirmation state, and unsubscribed state are returned so the
+// caller can decide whether to resend the confirmation (never inventing a
+// new token for a row that already has one, and never re-mailing an
+// already-confirmed-and-subscribed address). Whether a resend is currently
+// allowed by cooldown is decided separately and atomically by
+// ClaimConfirmationSend, not from the ConfirmationSentAt snapshot returned
+// here.
 func (s *Store) Upsert(ctx context.Context, email, normalized, token, unsubscribeToken string) (UpsertResult, error) {
 	var returnedToken string
 	err := s.Pool.QueryRow(ctx,
@@ -55,11 +57,25 @@ func (s *Store) Upsert(ctx context.Context, email, normalized, token, unsubscrib
 	return res, nil
 }
 
-// MarkConfirmationSent records that a confirmation email was just sent for
-// normalized, so future sends can be rate-limited against it.
-func (s *Store) MarkConfirmationSent(ctx context.Context, normalized string) error {
-	_, err := s.Pool.Exec(ctx, `update subscribers set confirmation_sent_at = now() where email_normalized = $1`, normalized)
-	return err
+// ClaimConfirmationSend atomically claims the right to send a confirmation
+// email to normalized. It succeeds (claimed=true) and stamps
+// confirmation_sent_at = now() in the same statement only when no
+// confirmation was sent within cooldown; on failure (claimed=false) nothing
+// is written. Doing the check and the write in one statement closes a race
+// where concurrent callers on the same address would each read a stale
+// confirmation_sent_at and each decide to send. The caller must send only
+// after a true result, and must not separately record the send afterward -
+// the timestamp this call writes is the record.
+func (s *Store) ClaimConfirmationSend(ctx context.Context, normalized string, cooldown time.Duration) (bool, error) {
+	tag, err := s.Pool.Exec(ctx,
+		`update subscribers set confirmation_sent_at = now()
+		 where email_normalized = $1
+		   and (confirmation_sent_at is null or confirmation_sent_at < now() - ($2 * interval '1 second'))`,
+		normalized, cooldown.Seconds())
+	if err != nil {
+		return false, err
+	}
+	return tag.RowsAffected() == 1, nil
 }
 
 func (s *Store) Confirm(ctx context.Context, token string) (bool, error) {

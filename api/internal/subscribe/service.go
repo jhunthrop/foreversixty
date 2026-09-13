@@ -19,8 +19,11 @@ import (
 var ErrInvalidEmail = errors.New("invalid email")
 
 // mailSendTimeout bounds how long a single confirmation send (which now
-// happens off the request path, see Service.Subscribe) may run.
-const mailSendTimeout = 15 * time.Second
+// happens off the request path, see Service.Subscribe) may run. Kept well
+// under the 10s graceful-shutdown deadline (see cmd/api/main.go) so a send
+// in flight when shutdown starts has a realistic chance to finish before
+// Service.Wait's caller gives up waiting.
+const mailSendTimeout = 8 * time.Second
 
 type Storer interface {
 	// Upsert inserts a new subscriber row when normalized is not already
@@ -30,9 +33,11 @@ type Storer interface {
 	// address stuck unconfirmed after a prior mail-send failure, or
 	// re-mailing an address that is already confirmed and still subscribed.
 	Upsert(ctx context.Context, email, normalized, token, unsubscribeToken string) (UpsertResult, error)
-	// MarkConfirmationSent records that a confirmation email was just sent
-	// for normalized, so future sends can be rate-limited against it.
-	MarkConfirmationSent(ctx context.Context, normalized string) error
+	// ClaimConfirmationSend atomically claims the right to send a
+	// confirmation email to normalized, honoring cooldown, and records the
+	// claim's timestamp in the same operation. The caller must send only
+	// when this returns true, and must not separately record the send.
+	ClaimConfirmationSend(ctx context.Context, normalized string, cooldown time.Duration) (claimed bool, err error)
 	Confirm(ctx context.Context, token string) (found bool, err error)
 	Unsubscribe(ctx context.Context, unsubscribeToken string) (found bool, err error)
 }
@@ -83,16 +88,6 @@ func (s *Service) log() *slog.Logger {
 	return slog.Default()
 }
 
-// withinCooldown reports whether a resend must be blocked because the last
-// confirmation for this address went out too recently. sentAt is nil for an
-// address that has never had a confirmation sent, which is never blocked.
-func (s *Service) withinCooldown(sentAt *time.Time) bool {
-	if s.ResendCooldown <= 0 || sentAt == nil {
-		return false
-	}
-	return time.Since(*sentAt) < s.ResendCooldown
-}
-
 // reserveSendSlot enforces MaxSendsPerHour as a sliding window over the
 // trailing hour, shared across all addresses on this Service instance. It
 // returns false (reserving nothing) when the cap has already been reached.
@@ -133,11 +128,17 @@ func (s *Service) logSkippedSend(ctx context.Context, reason string) {
 //
 // Any send is subject to ResendCooldown and MaxSendsPerHour: when either
 // blocks it, Subscribe sends nothing, logs why, and still returns nil so the
-// handler returns 202 regardless.
+// handler returns 202 regardless. ResendCooldown is enforced by atomically
+// claiming the send in the store (Storer.ClaimConfirmationSend) rather than
+// by reading a timestamp and deciding here, which would race: two
+// concurrent requests for the same address could otherwise both read a
+// stale confirmation_sent_at and both send.
 //
 // The send itself happens after Subscribe returns (see Wait) so a slow or
 // failing mail provider cannot turn a subscribe request into a slow or
-// failing response.
+// failing response. A failed send is simply logged: the claim already
+// stamped confirmation_sent_at, so the address just waits out the cooldown
+// before the next attempt can resend.
 func (s *Service) Subscribe(ctx context.Context, email string) error {
 	display, normalized, err := normalize(email)
 	if err != nil {
@@ -157,7 +158,11 @@ func (s *Service) Subscribe(ctx context.Context, email string) error {
 		token = result.Token // never invent a new token for an existing row
 	}
 
-	if s.withinCooldown(result.ConfirmationSentAt) {
+	claimed, err := s.Store.ClaimConfirmationSend(ctx, normalized, s.ResendCooldown)
+	if err != nil {
+		return fmt.Errorf("subscribe: store: %w", err)
+	}
+	if !claimed {
 		s.logSkippedSend(ctx, "cooldown")
 		return nil
 	}
@@ -182,10 +187,6 @@ func (s *Service) Subscribe(ctx context.Context, email string) error {
 		defer cancel()
 		if err := s.Mailer.Send(sendCtx, msg); err != nil {
 			s.log().Error("subscribe", "id", requestID, "op", "subscribe", "stage", "mail", "err", err)
-			return
-		}
-		if err := s.Store.MarkConfirmationSent(sendCtx, normalized); err != nil {
-			s.log().Error("subscribe", "id", requestID, "op", "subscribe", "stage", "mail", "err", err)
 		}
 	}()
 	return nil
@@ -194,7 +195,7 @@ func (s *Service) Subscribe(ctx context.Context, email string) error {
 // Wait blocks until every confirmation send started by Subscribe has
 // finished. Tests must call it before asserting on a fake mailer's sent
 // messages; shutdown calls it before closing the database pool so an
-// in-flight send's MarkConfirmationSent has somewhere to write.
+// in-flight send's mailer call has somewhere to run to completion.
 func (s *Service) Wait() {
 	s.wg.Wait()
 }

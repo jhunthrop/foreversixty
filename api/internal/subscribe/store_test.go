@@ -75,12 +75,13 @@ func TestStoreUpsertReportsUnsubscribedOnExistingRow(t *testing.T) {
 	}
 }
 
-func TestStoreMarkConfirmationSentRecordsTimestamp(t *testing.T) {
+func TestStoreClaimConfirmationSendSetsTimestampOnFirstClaimOnly(t *testing.T) {
 	s := testStore(t)
 	ctx := context.Background()
 	if _, err := s.Upsert(ctx, "a@example.com", "a@example.com", "tok", "utok"); err != nil {
 		t.Fatal(err)
 	}
+
 	fresh, err := s.Upsert(ctx, "a@example.com", "a@example.com", "tok2", "utok2")
 	if err != nil {
 		t.Fatal(err)
@@ -90,8 +91,22 @@ func TestStoreMarkConfirmationSentRecordsTimestamp(t *testing.T) {
 	}
 
 	before := time.Now().Add(-time.Second)
-	if err := s.MarkConfirmationSent(ctx, "a@example.com"); err != nil {
+	claimed, err := s.ClaimConfirmationSend(ctx, "a@example.com", 15*time.Minute)
+	if err != nil {
 		t.Fatal(err)
+	}
+	if !claimed {
+		t.Fatal("expected the first claim on a never-sent address to succeed")
+	}
+
+	// Two immediate claims for the same address: the second must lose the
+	// race against the cooldown the first just started.
+	claimed, err = s.ClaimConfirmationSend(ctx, "a@example.com", 15*time.Minute)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if claimed {
+		t.Fatal("expected an immediate second claim to fail (still within cooldown)")
 	}
 
 	after, err := s.Upsert(ctx, "a@example.com", "a@example.com", "tok3", "utok3")
@@ -99,10 +114,46 @@ func TestStoreMarkConfirmationSentRecordsTimestamp(t *testing.T) {
 		t.Fatal(err)
 	}
 	if after.ConfirmationSentAt == nil {
-		t.Fatal("expected confirmation_sent_at to be set after MarkConfirmationSent")
+		t.Fatal("expected confirmation_sent_at to be set after the successful claim")
 	}
 	if after.ConfirmationSentAt.Before(before) {
 		t.Fatalf("confirmation_sent_at = %v, want at/after %v", after.ConfirmationSentAt, before)
+	}
+}
+
+func TestStoreClaimConfirmationSendSucceedsAgainAfterCooldownElapses(t *testing.T) {
+	s := testStore(t)
+	ctx := context.Background()
+	if _, err := s.Upsert(ctx, "a@example.com", "a@example.com", "tok", "utok"); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := s.Pool.Exec(ctx, `update subscribers set confirmation_sent_at = now() - interval '20 minutes' where email_normalized = $1`, "a@example.com"); err != nil {
+		t.Fatal(err)
+	}
+
+	claimed, err := s.ClaimConfirmationSend(ctx, "a@example.com", 15*time.Minute)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !claimed {
+		t.Fatal("expected a claim to succeed once the previous send is older than the cooldown")
+	}
+}
+
+func TestStoreClaimConfirmationSendIsIndependentPerAddress(t *testing.T) {
+	s := testStore(t)
+	ctx := context.Background()
+	if _, err := s.Upsert(ctx, "a@example.com", "a@example.com", "tok-a", "utok-a"); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := s.Upsert(ctx, "b@example.com", "b@example.com", "tok-b", "utok-b"); err != nil {
+		t.Fatal(err)
+	}
+	if claimed, err := s.ClaimConfirmationSend(ctx, "a@example.com", 15*time.Minute); err != nil || !claimed {
+		t.Fatalf("claim for a@example.com: claimed=%v err=%v", claimed, err)
+	}
+	if claimed, err := s.ClaimConfirmationSend(ctx, "b@example.com", 15*time.Minute); err != nil || !claimed {
+		t.Fatalf("claim for b@example.com should be unaffected by a's cooldown: claimed=%v err=%v", claimed, err)
 	}
 }
 

@@ -46,17 +46,25 @@ func (m *memStore) Upsert(_ context.Context, _, normalized, token, unsubscribeTo
 	return UpsertResult{Existing: false}, nil
 }
 
-func (m *memStore) MarkConfirmationSent(_ context.Context, normalized string) error {
+// ClaimConfirmationSend mirrors Store.ClaimConfirmationSend: the check
+// (is confirmationSentAt unset or older than cooldown) and the write
+// (stamp confirmationSentAt = now) happen under the same lock acquisition,
+// so concurrent callers for the same address cannot both observe a stale
+// timestamp and both claim.
+func (m *memStore) ClaimConfirmationSend(_ context.Context, normalized string, cooldown time.Duration) (bool, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 	row, ok := m.rows[normalized]
 	if !ok {
-		return nil
+		return false, nil
 	}
 	now := time.Now()
+	if row.confirmationSentAt != nil && cooldown > 0 && now.Sub(*row.confirmationSentAt) < cooldown {
+		return false, nil
+	}
 	row.confirmationSentAt = &now
 	m.rows[normalized] = row
-	return nil
+	return true, nil
 }
 
 func (m *memStore) Confirm(_ context.Context, token string) (bool, error) {
@@ -210,6 +218,33 @@ func TestSubscribeAfterCooldownExpiresSendsAgain(t *testing.T) {
 	s.Wait()
 	if len(fake.Sent) != 1 {
 		t.Fatalf("expected a resend once the cooldown has elapsed, got %d", len(fake.Sent))
+	}
+}
+
+func TestSubscribeConcurrentResendsOnlyClaimOnce(t *testing.T) {
+	// Regression for the check-then-act cooldown race: concurrent requests
+	// for the same address must not all observe an un-set/expired
+	// confirmation_sent_at and all send.
+	fake := &mail.Fake{}
+	st := &memStore{rows: map[string]memRow{"player@example.com": {token: "tok", unsubscribeToken: "utok"}}}
+	s := &Service{Store: st, Mailer: fake, PublicBaseURL: "x", APIBaseURL: "y", ResendCooldown: 15 * time.Minute}
+
+	const n = 20
+	var wg sync.WaitGroup
+	wg.Add(n)
+	for i := 0; i < n; i++ {
+		go func() {
+			defer wg.Done()
+			if err := s.Subscribe(context.Background(), "player@example.com"); err != nil {
+				t.Error(err)
+			}
+		}()
+	}
+	wg.Wait()
+	s.Wait()
+
+	if len(fake.Sent) != 1 {
+		t.Fatalf("expected exactly one send to win the claim race, got %d", len(fake.Sent))
 	}
 }
 

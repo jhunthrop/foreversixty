@@ -75,6 +75,17 @@ Pushes to `main` run tests, build the image, push to Artifact Registry, and depl
 Migrations run at container startup (`db.Migrate` in `main.go`), so a deploy applies them before
 serving traffic; Cloud Run only routes to the new revision once `/healthz` passes.
 
+### Shutdown and Cloud Run's termination grace period
+
+Cloud Run sends `SIGTERM` and then forcibly kills the container after a fixed 10-second
+termination grace period (not configurable, and unrelated to the `--timeout 30` request timeout
+above, which bounds an individual request instead). `main.go`'s shutdown budget is sized to fit
+inside that: `srv.Shutdown` gets a 10-second deadline and an in-flight confirmation send is
+capped at `mailSendTimeout` (8 seconds, see `internal/subscribe/service.go`), so a send that was
+already running when `SIGTERM` arrives has a realistic chance to finish before the process is
+killed. Running `gcloud run services update api --no-cpu-throttling` is not needed for this — it
+only affects CPU allocation between requests, not the termination grace period.
+
 ## First-time setup (manual)
 
 These steps are run once, by hand, before the CI/CD workflow can deploy anything. They are not
@@ -116,6 +127,10 @@ gcloud run deploy api \
   --min-instances 0 --max-instances 3 --cpu 1 --memory 256Mi --concurrency 80 --timeout 30
 gcloud run domain-mappings create --service api --domain api.foreversixty.gg --region us-east1
 ```
+
+`MAIL_FROM` and `TRUSTED_PROXY_HOPS` are deliberately left out of `--set-env-vars` above: both
+take their documented defaults (`Forever Sixty <hello@foreversixty.gg>` and `1`, matching a
+single Cloud Run edge in front of the service) unless explicitly set on the service.
 
 Add the DNS records the last command prints to Cloudflare as DNS-only (grey cloud) so Google's
 certificate validates. Verify:

@@ -91,6 +91,21 @@ func TestClientIPUsesRightmostHopWithHopsOne(t *testing.T) {
 	}
 }
 
+func TestClientIPJoinsMultipleXFFHeaderLines(t *testing.T) {
+	// A client can send its own X-Forwarded-For header line ahead of the one
+	// the trusted proxy appends; net/http keeps repeated header lines
+	// separate (only visible via Header.Values, not Header.Get). clientIP
+	// must join every line before counting hops from the right, so a
+	// client-supplied line can't shift the trusted-hop count.
+	r := httptest.NewRequest("GET", "/", nil)
+	r.RemoteAddr = "10.0.0.9:1"
+	r.Header.Add("X-Forwarded-For", "9.9.9.9, 8.8.8.8") // client-supplied line
+	r.Header.Add("X-Forwarded-For", "1.2.3.4, 5.6.7.8") // proxy-supplied line
+	if ip := clientIP(r, 1); ip != "5.6.7.8" {
+		t.Fatalf("clientIP = %q, want 5.6.7.8 (last hop of the proxy-supplied line)", ip)
+	}
+}
+
 func TestClientIPIgnoresXFFWhenHopsZero(t *testing.T) {
 	r := httptest.NewRequest("GET", "/", nil)
 	r.RemoteAddr = "10.0.0.5:555"
