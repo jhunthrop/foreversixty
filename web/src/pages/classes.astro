@@ -4,7 +4,7 @@
 // Forever changed about each, and a way into the planner from every row.
 import Base from '../layouts/Base.astro';
 import Panel from '../components/Panel.astro';
-import SourcePill from '../components/SourcePill.astro';
+import ForeverChangeList from '../components/ForeverChangeList.astro';
 import { classRows, comboFor, plannerHref, raceRows } from '../lib/planner/reference';
 ---
 
@@ -61,7 +61,7 @@ import { classRows, comboFor, plannerHref, raceRows } from '../lib/planner/refer
                         <a
                           href={plannerHref(klass.slug, race.slug)}
                           class="inline-flex min-h-11 items-center gap-2 md:min-h-0"
-                          aria-label={`Plan a ${race.name} ${klass.name}`}
+                          aria-label={`Plan a ${race.name} ${klass.name}${combo.new_in_forever ? ', new in Forever' : ''}`}
                         >
                           <svg
                             width="16"
@@ -106,16 +106,7 @@ import { classRows, comboFor, plannerHref, raceRows } from '../lib/planner/refer
               Open in the planner
             </a>
           </div>
-          {klass.forever_changes.map((change) => (
-            <div class="flex flex-wrap items-center gap-2">
-              <span class="text-[14px]">{change.text}</span>
-              {change.sources.map((source) => (
-                <a href={source.url} rel="noreferrer">
-                  <SourcePill kind={source.kind} label={source.label} />
-                </a>
-              ))}
-            </div>
-          ))}
+          <ForeverChangeList changes={klass.forever_changes} />
         </div>
       ))}
     </Panel>
@@ -134,16 +125,7 @@ import { classRows, comboFor, plannerHref, raceRows } from '../lib/planner/refer
             </span>
             {race.placeholder && <span class="pill pill-sample">Placeholder</span>}
           </div>
-          {race.forever_changes.map((change) => (
-            <div class="flex flex-wrap items-center gap-2">
-              <span class="text-[14px]">{change.text}</span>
-              {change.sources.map((source) => (
-                <a href={source.url} rel="noreferrer">
-                  <SourcePill kind={source.kind} label={source.label} />
-                </a>
-              ))}
-            </div>
-          ))}
+          <ForeverChangeList changes={race.forever_changes} />
         </div>
       ))}
     </Panel>

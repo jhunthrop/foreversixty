@@ -47,6 +47,14 @@ describe('classes.astro', () => {
     expect(html).toContain('Placeholder');
   });
 
+  it('exposes the Forever marking in the accessible name, not just a sighted-only pill', () => {
+    // The pill's text sits inside the link, but the aria-label overrides it, so the marking
+    // has to be folded into the label itself or a screen reader never hears it.
+    expect(html).toContain('aria-label="Plan a Undead Paladin, new in Forever"');
+    expect(html).toContain('aria-label="Plan a Human Warrior"');
+    expect(html).not.toContain('aria-label="Plan a Human Warrior, new in Forever"');
+  });
+
   it('ships no island', () => {
     expect(html).not.toContain('<astro-island');
   });
