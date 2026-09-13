@@ -1,0 +1,190 @@
+// web/src/lib/planner/rules.ts
+// Client-side mirror of the API's build validation (rules 1-6 in
+// docs/superpowers/specs/2026-09-13-phase-1-interfaces.md), so the planner refuses exactly
+// the moves POST /v1/builds refuses, with the same wording.
+//
+// Rules 2-5 are expressed once, in validateOrder. canAddPoint and canRemovePoint build the
+// candidate order and ask validateOrder about it, so an added point and a saved build can
+// never disagree about what is legal.
+import {
+  MAX_POINTS,
+  POINTS_PER_TIER,
+  SLOTS,
+  SLOT_ALIASES,
+  SLOT_LABELS,
+  type Combo,
+  type Gear,
+  type Item,
+  type ItemFile,
+  type Slot,
+  type Talent,
+  type TalentFile,
+  type TalentTree,
+} from './types';
+
+export interface TalentIndex {
+  file: TalentFile;
+  /** Trees in left-to-right (`position`) order. */
+  trees: TalentTree[];
+  byId: Map<number, Talent>;
+  treeOf: Map<number, TalentTree>;
+}
+
+export interface FieldError {
+  /** `point_order[7]` or `gear.head`, matching the API's 400 response. */
+  field: string;
+  message: string;
+}
+
+export type Decision = { ok: true } | { ok: false; reason: string };
+
+const ALLOWED: Decision = { ok: true };
+const refuse = (reason: string): Decision => ({ ok: false, reason });
+
+/** Every refusal string in the planner. Components and tests import these, never literals. */
+export const messages = {
+  tierLocked: (tier: number, treeName: string): string =>
+    `Tier ${tier} of ${treeName} needs ${POINTS_PER_TIER * tier} points in ${treeName} first`,
+  prereqMissing: (talentName: string, rank: number, prereqName: string): string =>
+    `${talentName} needs ${rank} ${rank === 1 ? 'point' : 'points'} in ${prereqName} first`,
+  maxRank: (talentName: string, maxRank: number): string =>
+    `${talentName} is already at ${maxRank} of ${maxRank} points`,
+  capReached: (): string => `A build spends at most ${MAX_POINTS} points`,
+  unknownTalent: (id: number): string => `Talent ${id} is not in this class`,
+  noPoints: (talentName: string): string => `${talentName} has no points to remove`,
+  unknownSlot: (slot: string): string => `${slot} is not a gear slot`,
+  unknownItem: (id: number): string => `Item ${id} is not in this class list`,
+  wrongSlot: (itemName: string, slotLabel: string): string => `${itemName} cannot go in ${slotLabel}`,
+  duplicateUnique: (itemName: string): string => `${itemName} is unique; equip it once`,
+  illegalCombo: (raceName: string, className: string): string => `${raceName} cannot be a ${className}`,
+} as const;
+
+export function indexTalents(file: TalentFile): TalentIndex {
+  const trees = [...file.trees].sort((a, b) => a.position - b.position);
+  const byId = new Map<number, Talent>();
+  const treeOf = new Map<number, TalentTree>();
+  for (const tree of trees) {
+    for (const talent of tree.talents) {
+      byId.set(talent.id, talent);
+      treeOf.set(talent.id, tree);
+    }
+  }
+  return { file, trees, byId, treeOf };
+}
+
+export function indexItems(file: ItemFile): Map<number, Item> {
+  return new Map(file.items.map((item) => [item.id, item]));
+}
+
+/** Rules 2 to 5, applied point by point. Returns one message per offending index. */
+export function validateOrder(index: TalentIndex, order: number[]): FieldError[] {
+  const errors: FieldError[] = [];
+  const pointsInTree = new Map<number, number>();
+  const ranks = new Map<number, number>();
+
+  order.forEach((id, i) => {
+    const field = `point_order[${i}]`;
+    const talent = index.byId.get(id);
+    if (!talent) {
+      errors.push({ field, message: messages.unknownTalent(id) });
+      return;
+    }
+    const tree = index.treeOf.get(id)!;
+    const inTree = pointsInTree.get(tree.id) ?? 0;
+    const rank = ranks.get(id) ?? 0;
+
+    if (inTree < POINTS_PER_TIER * talent.tier) {
+      errors.push({ field, message: messages.tierLocked(talent.tier, tree.name) });
+    } else if (
+      talent.prereq_talent_id !== null &&
+      (ranks.get(talent.prereq_talent_id) ?? 0) < (talent.prereq_rank ?? 0)
+    ) {
+      const prereq = index.byId.get(talent.prereq_talent_id);
+      errors.push({
+        field,
+        message: messages.prereqMissing(
+          talent.name,
+          talent.prereq_rank ?? 0,
+          prereq?.name ?? String(talent.prereq_talent_id),
+        ),
+      });
+    } else if (rank >= talent.max_rank) {
+      errors.push({ field, message: messages.maxRank(talent.name, talent.max_rank) });
+    } else if (i >= MAX_POINTS) {
+      errors.push({ field, message: messages.capReached() });
+    }
+
+    pointsInTree.set(tree.id, inTree + 1);
+    ranks.set(id, rank + 1);
+  });
+
+  return errors;
+}
+
+/** A new order with one more point in `talentId`. Never mutates. */
+export function withPoint(order: number[], talentId: number): number[] {
+  return [...order, talentId];
+}
+
+/** A new order with the last point in `talentId` dropped. Never mutates. */
+export function withoutLastPoint(order: number[], talentId: number): number[] {
+  const last = order.lastIndexOf(talentId);
+  if (last === -1) return [...order];
+  return [...order.slice(0, last), ...order.slice(last + 1)];
+}
+
+export function canAddPoint(index: TalentIndex, order: number[], talentId: number): Decision {
+  const candidate = withPoint(order, talentId);
+  const field = `point_order[${candidate.length - 1}]`;
+  const failure = validateOrder(index, candidate).find((error) => error.field === field);
+  return failure ? refuse(failure.message) : ALLOWED;
+}
+
+export function canRemovePoint(index: TalentIndex, order: number[], talentId: number): Decision {
+  if (!order.includes(talentId)) {
+    const talent = index.byId.get(talentId);
+    return refuse(talent ? messages.noPoints(talent.name) : messages.unknownTalent(talentId));
+  }
+  const [failure] = validateOrder(index, withoutLastPoint(order, talentId));
+  return failure ? refuse(failure.message) : ALLOWED;
+}
+
+/** Rule 1. */
+export function comboIsLegal(combos: Combo[], raceId: number, classId: number): boolean {
+  return combos.some((combo) => combo.race_id === raceId && combo.class_id === classId);
+}
+
+/** The planner slots an item can occupy; `finger`/`trinket` map to both numbered slots. */
+export function slotsForItem(item: Item): Slot[] {
+  const aliased = SLOT_ALIASES[item.slot];
+  if (aliased) return aliased;
+  return (SLOTS as readonly string[]).includes(item.slot) ? [item.slot as Slot] : [];
+}
+
+/** Rule 6, for one slot. */
+export function canEquip(items: Map<number, Item>, gear: Gear, slot: Slot, itemId: number): Decision {
+  if (!(SLOTS as readonly string[]).includes(slot)) return refuse(messages.unknownSlot(slot));
+  const item = items.get(itemId);
+  if (!item) return refuse(messages.unknownItem(itemId));
+  if (!slotsForItem(item).includes(slot)) return refuse(messages.wrongSlot(item.name, SLOT_LABELS[slot]));
+  if (item.unique) {
+    const elsewhere = (Object.entries(gear) as [Slot, number][]).some(
+      ([other, id]) => other !== slot && id === itemId,
+    );
+    if (elsewhere) return refuse(messages.duplicateUnique(item.name));
+  }
+  return ALLOWED;
+}
+
+/** Rule 6, for a whole gear map. */
+export function validateGear(items: Map<number, Item>, gear: Gear): FieldError[] {
+  const errors: FieldError[] = [];
+  for (const [slot, itemId] of Object.entries(gear) as [Slot, number][]) {
+    if (itemId === undefined) continue;
+    const rest: Gear = { ...gear };
+    delete rest[slot];
+    const decision = canEquip(items, rest, slot, itemId);
+    if (!decision.ok) errors.push({ field: `gear.${slot}`, message: decision.reason });
+  }
+  return errors;
+}
