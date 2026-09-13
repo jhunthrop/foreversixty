@@ -7,7 +7,7 @@ export const confidences = ['confirmed', 'single-source', 'inferred'] as const;
 
 export const sourceSchema = z.object({
   label: z.string().min(1),
-  url: z.string().url(),
+  url: z.url(),
   kind: z.enum(sourceKinds),
 });
 
