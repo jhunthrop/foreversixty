@@ -114,6 +114,14 @@ export function validateOrder(index: TalentIndex, order: number[]): FieldError[]
       errors.push({ field, message: messages.capReached() });
     }
 
+    // Both counters advance even when the point above was just refused: a refused
+    // point still occupies a slot in point_order, and the only branch that skips this
+    // update is the unknown-talent early return. This can make a later index's checks
+    // pass (or fail differently) than they would if only legal points were counted, but
+    // it never lets an illegal order through — any single FieldError already invalidates
+    // the whole order, so the effect is limited to which secondary diagnostic is
+    // reported. The API's validator must replay counts the same way, or the two would
+    // disagree about which message to show for a given index.
     pointsInTree.set(tree.id, inTree + 1);
     ranks.set(id, rank + 1);
   });

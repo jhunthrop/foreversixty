@@ -224,3 +224,25 @@ describe('rule 6: gear', () => {
     expect(validateGear(items, { head: 12640, main_hand: 12784 })).toEqual([]);
   });
 });
+
+describe('validateOrder with more than one offending index', () => {
+  it('counts a refused point toward the tree total, so a later tier can unlock on it', () => {
+    // 1001 x3 + 1002 x1 = 4 real, legal points in Arms (tier 0 needs none of them).
+    // A 5th 1001 is refused (already at its 3-point max) at index 4, but the tree
+    // counter still advances to 5 for it, as if it were a legal point.
+    // 1004 (tier 1, needs 5 points in Arms) then reads inTree === 5 and treats tier 1
+    // as unlocked, even though only 4 points were ever legally spent there. Tier 1 being
+    // "unlocked" only means the tier check does not fire; validateOrder falls through to
+    // the next rule, and 1004 still needs rank 2 in its prerequisite (1002), which has
+    // only rank 1. So index 5 is refused for the prerequisite, not the tier lock it would
+    // have hit had the phantom count not been added.
+    const order = [1001, 1001, 1001, 1002, 1001, 1004];
+    expect(validateOrder(index, order)).toEqual([
+      { field: 'point_order[4]', message: messages.maxRank('Improved Heroic Strike', 3) },
+      {
+        field: 'point_order[5]',
+        message: messages.prereqMissing('Tactical Mastery', 2, 'Deflection'),
+      },
+    ]);
+  });
+});
