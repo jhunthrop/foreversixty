@@ -35,11 +35,23 @@ class Spell(BaseModel):
     name: str
 
 
+class Source(BaseModel):
+    label: str
+    url: str
+    kind: str
+
+
+class ForeverChange(BaseModel):
+    text: str
+    sources: list[Source]
+
+
 class PlayableClass(BaseModel):
     id: int
     name: str
     slug: str
     color: str
+    forever_changes: list[ForeverChange] = []
 
 
 class PlayableRace(BaseModel):
@@ -47,6 +59,14 @@ class PlayableRace(BaseModel):
     name: str
     slug: str
     faction: str
+    placeholder: bool = False
+    forever_changes: list[ForeverChange] = []
+
+
+class Combo(BaseModel):
+    race_id: int
+    class_id: int
+    new_in_forever: bool
 
 
 class TalentNode(BaseModel):

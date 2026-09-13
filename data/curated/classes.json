@@ -1,0 +1,11 @@
+[
+  { "slug": "warrior", "forever_changes": [] },
+  { "slug": "paladin", "forever_changes": [] },
+  { "slug": "hunter", "forever_changes": [] },
+  { "slug": "rogue", "forever_changes": [] },
+  { "slug": "priest", "forever_changes": [] },
+  { "slug": "shaman", "forever_changes": [] },
+  { "slug": "mage", "forever_changes": [] },
+  { "slug": "warlock", "forever_changes": [] },
+  { "slug": "druid", "forever_changes": [] }
+]

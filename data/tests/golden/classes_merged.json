@@ -4,7 +4,18 @@
     "name": "Warrior",
     "slug": "warrior",
     "color": "#c69b6d",
-    "forever_changes": []
+    "forever_changes": [
+      {
+        "text": "Warriors gain a fourth tree.",
+        "sources": [
+          {
+            "label": "Forever dev blog",
+            "url": "https://example.test/forever-warrior",
+            "kind": "blizzard"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": 2,

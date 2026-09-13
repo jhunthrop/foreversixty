@@ -22,5 +22,13 @@
     "faction": "neutral",
     "placeholder": false,
     "forever_changes": []
+  },
+  {
+    "id": 900,
+    "name": "Skyborne",
+    "slug": "skyborne",
+    "faction": "neutral",
+    "placeholder": true,
+    "forever_changes": []
   }
 ]

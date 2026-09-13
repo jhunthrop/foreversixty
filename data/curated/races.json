@@ -1,0 +1,18 @@
+[
+  { "slug": "human", "forever_changes": [] },
+  { "slug": "orc", "forever_changes": [] },
+  { "slug": "dwarf", "forever_changes": [] },
+  { "slug": "night-elf", "forever_changes": [] },
+  { "slug": "undead", "forever_changes": [] },
+  { "slug": "tauren", "forever_changes": [] },
+  { "slug": "gnome", "forever_changes": [] },
+  { "slug": "troll", "forever_changes": [] },
+  {
+    "id": 900,
+    "name": "Skyborne",
+    "slug": "skyborne",
+    "faction": "neutral",
+    "placeholder": true,
+    "forever_changes": []
+  }
+]
