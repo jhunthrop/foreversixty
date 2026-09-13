@@ -6,7 +6,7 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/PLACEHOLDER/forever/api/internal/httpx"
+	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 )
 
 func Mount(mux *http.ServeMux, s *Service, log *slog.Logger, trustedProxyHops int) {

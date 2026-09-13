@@ -4,8 +4,8 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/PLACEHOLDER/forever/api/internal/httpx"
-	"github.com/PLACEHOLDER/forever/api/internal/subscribe"
+	"github.com/jhunthrop/foreversixty/api/internal/httpx"
+	"github.com/jhunthrop/foreversixty/api/internal/subscribe"
 )
 
 type Deps struct {

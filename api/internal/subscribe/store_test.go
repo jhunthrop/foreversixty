@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/PLACEHOLDER/forever/api/internal/db"
+	"github.com/jhunthrop/foreversixty/api/internal/db"
 )
 
 func testStore(t *testing.T) *Store {

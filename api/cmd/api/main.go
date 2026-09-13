@@ -10,11 +10,11 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/PLACEHOLDER/forever/api/internal/config"
-	"github.com/PLACEHOLDER/forever/api/internal/db"
-	"github.com/PLACEHOLDER/forever/api/internal/mail"
-	"github.com/PLACEHOLDER/forever/api/internal/server"
-	"github.com/PLACEHOLDER/forever/api/internal/subscribe"
+	"github.com/jhunthrop/foreversixty/api/internal/config"
+	"github.com/jhunthrop/foreversixty/api/internal/db"
+	"github.com/jhunthrop/foreversixty/api/internal/mail"
+	"github.com/jhunthrop/foreversixty/api/internal/server"
+	"github.com/jhunthrop/foreversixty/api/internal/subscribe"
 )
 
 var version = "dev" // set with -ldflags "-X main.version=<git sha>"

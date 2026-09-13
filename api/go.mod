@@ -1,4 +1,4 @@
-module github.com/PLACEHOLDER/forever/api
+module github.com/jhunthrop/foreversixty/api
 
 go 1.25.11
 

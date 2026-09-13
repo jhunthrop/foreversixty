@@ -12,8 +12,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/PLACEHOLDER/forever/api/internal/httpx"
-	mailer "github.com/PLACEHOLDER/forever/api/internal/mail"
+	"github.com/jhunthrop/foreversixty/api/internal/httpx"
+	mailer "github.com/jhunthrop/foreversixty/api/internal/mail"
 )
 
 var ErrInvalidEmail = errors.New("invalid email")

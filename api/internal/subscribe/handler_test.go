@@ -12,7 +12,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/PLACEHOLDER/forever/api/internal/mail"
+	"github.com/jhunthrop/foreversixty/api/internal/mail"
 )
 
 func discardLogger() *slog.Logger {
