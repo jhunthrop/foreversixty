@@ -3,16 +3,41 @@
 @import './tokens.css';
 
 @layer base {
-  html { background: var(--color-bg); color: var(--color-text); font-family: var(--font-body); }
-  body { margin: 0; -webkit-font-smoothing: antialiased; }
-  a { color: var(--color-gold); text-decoration: none; }
-  a:hover { color: var(--color-gold-hover); }
-  h1, h2, h3 { font-family: var(--font-display); color: var(--color-strong); }
-  :focus-visible { outline: 2px solid var(--color-gold); outline-offset: 2px; }
+  html {
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+  }
+  body {
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+  }
+  a {
+    color: var(--color-gold);
+    text-decoration: none;
+  }
+  a:hover {
+    color: var(--color-gold-hover);
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    color: var(--color-strong);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+  }
 }
 
 @utility gold-text {
-  background: linear-gradient(180deg, var(--color-gold-light) 0%, var(--color-gold) 45%, var(--color-gold-deep) 100%);
+  background: linear-gradient(
+    180deg,
+    var(--color-gold-light) 0%,
+    var(--color-gold) 45%,
+    var(--color-gold-deep) 100%
+  );
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -34,23 +59,86 @@
   color: var(--color-strong);
 }
 
-@utility tabular { font-variant-numeric: tabular-nums; }
-
-@layer components {
-  .pill { display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 8px; border-radius: var(--radius-pill); font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; border: 1px solid transparent; }
-  .pill-blizzard { color: #6fb1ff; background: rgba(0,112,221,.18); border-color: rgba(0,112,221,.35); }
-  .pill-datamined { color: #c98bff; background: rgba(163,53,238,.16); border-color: rgba(163,53,238,.35); }
-  .pill-community { color: #7bff5c; background: rgba(30,255,0,.10); border-color: rgba(30,255,0,.25); }
-  .pill-site { color: var(--color-gold); background: rgba(229,185,85,.14); border-color: rgba(229,185,85,.35); }
-  .pill-sample { color: var(--color-muted); background: rgba(154,148,132,.12); border-color: rgba(154,148,132,.30); }
+@utility tabular {
+  font-variant-numeric: tabular-nums;
 }
 
 @layer components {
-  .prose-forever h2 { font-size: 18px; letter-spacing: 0.06em; text-transform: uppercase; margin: 28px 0 10px; }
-  .prose-forever h3 { font-size: 16px; margin: 20px 0 8px; }
-  .prose-forever p { margin: 0 0 14px; }
-  .prose-forever ul { padding-left: 20px; margin: 0 0 14px; }
-  .prose-forever table { width: 100%; border-collapse: collapse; margin: 0 0 18px; font-size: 14px; }
-  .prose-forever th, .prose-forever td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--color-line-soft); vertical-align: top; }
-  .prose-forever th { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-muted); }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 22px;
+    padding: 0 8px;
+    border-radius: var(--radius-pill);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: 1px solid transparent;
+  }
+  .pill-blizzard {
+    color: #6fb1ff;
+    background: rgba(0, 112, 221, 0.18);
+    border-color: rgba(0, 112, 221, 0.35);
+  }
+  .pill-datamined {
+    color: #c98bff;
+    background: rgba(163, 53, 238, 0.16);
+    border-color: rgba(163, 53, 238, 0.35);
+  }
+  .pill-community {
+    color: #7bff5c;
+    background: rgba(30, 255, 0, 0.1);
+    border-color: rgba(30, 255, 0, 0.25);
+  }
+  .pill-site {
+    color: var(--color-gold);
+    background: rgba(229, 185, 85, 0.14);
+    border-color: rgba(229, 185, 85, 0.35);
+  }
+  .pill-sample {
+    color: var(--color-muted);
+    background: rgba(154, 148, 132, 0.12);
+    border-color: rgba(154, 148, 132, 0.3);
+  }
+}
+
+@layer components {
+  .prose-forever h2 {
+    font-size: 18px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin: 28px 0 10px;
+  }
+  .prose-forever h3 {
+    font-size: 16px;
+    margin: 20px 0 8px;
+  }
+  .prose-forever p {
+    margin: 0 0 14px;
+  }
+  .prose-forever ul {
+    padding-left: 20px;
+    margin: 0 0 14px;
+  }
+  .prose-forever table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 0 18px;
+    font-size: 14px;
+  }
+  .prose-forever th,
+  .prose-forever td {
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--color-line-soft);
+    vertical-align: top;
+  }
+  .prose-forever th {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
 }

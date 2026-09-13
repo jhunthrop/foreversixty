@@ -17,13 +17,24 @@ const rows = dungeons.map((d) => ({
 const updated = latest(dungeons.map((d) => d.data.updated));
 const sources = dungeons.flatMap((d) => d.data.sources);
 ---
-<Base title="Dungeons" description="The nine new dungeons in World of Warcraft: Forever, with what is known about each." path="/dungeons">
-  <main id="main" tabindex="-1" class="max-w-[1000px] w-full mx-auto px-[18px] md:px-12 py-10 flex flex-col gap-5">
+
+<Base
+  title="Dungeons"
+  description="The nine new dungeons in World of Warcraft: Forever, with what is known about each."
+  path="/dungeons"
+>
+  <main
+    id="main"
+    tabindex="-1"
+    class="max-w-[1000px] w-full mx-auto px-[18px] md:px-12 py-10 flex flex-col gap-5"
+  >
     <header class="flex flex-col gap-2">
       <h1 class="text-[28px] font-bold tracking-[0.02em]">Dungeons</h1>
       <UpdatedStamp date={updated} />
     </header>
-    <p class="text-muted text-[14px]">Level ranges are reported by one outlet and not yet confirmed by Blizzard.</p>
+    <p class="text-muted text-[14px]">
+      Level ranges are reported by one outlet and not yet confirmed by Blizzard.
+    </p>
     <EntryTable nameHeading="Dungeon" metaHeading="Zone" rows={rows} />
     <SourcesList sources={sources} />
   </main>

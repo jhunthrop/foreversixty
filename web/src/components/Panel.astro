@@ -1,9 +1,14 @@
 ---
-interface Props { title?: string; sample?: boolean; class?: string }
+interface Props {
+  title?: string;
+  sample?: boolean;
+  class?: string;
+}
 const { title, sample = false, class: cls = '' } = Astro.props;
 const hasAside = Astro.slots.has('aside');
 const showHeader = Boolean(title) || sample || hasAside;
 ---
+
 <section class={`flex flex-col gap-4 ${cls}`}>
   {showHeader && (
     <div class="flex items-baseline justify-between">

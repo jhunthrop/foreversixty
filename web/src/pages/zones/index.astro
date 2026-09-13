@@ -17,13 +17,24 @@ const rows = zones.map((z) => ({
 const updated = latest(zones.map((z) => z.data.updated));
 const sources = zones.flatMap((z) => z.data.sources);
 ---
-<Base title="Zones" description="The new zones in World of Warcraft: Forever, with what is known about each." path="/zones">
-  <main id="main" tabindex="-1" class="max-w-[1000px] w-full mx-auto px-[18px] md:px-12 py-10 flex flex-col gap-5">
+
+<Base
+  title="Zones"
+  description="The new zones in World of Warcraft: Forever, with what is known about each."
+  path="/zones"
+>
+  <main
+    id="main"
+    tabindex="-1"
+    class="max-w-[1000px] w-full mx-auto px-[18px] md:px-12 py-10 flex flex-col gap-5"
+  >
     <header class="flex flex-col gap-2">
       <h1 class="text-[28px] font-bold tracking-[0.02em]">Zones</h1>
       <UpdatedStamp date={updated} />
     </header>
-    <p class="text-muted text-[14px]">Level ranges are reported where a source gives them and not yet confirmed by Blizzard unless noted.</p>
+    <p class="text-muted text-[14px]">
+      Level ranges are reported where a source gives them and not yet confirmed by Blizzard unless noted.
+    </p>
     <EntryTable nameHeading="Zone" metaHeading="Continent" rows={rows} />
     <SourcesList sources={sources} />
   </main>

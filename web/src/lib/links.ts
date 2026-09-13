@@ -15,6 +15,8 @@ export function placeholderKeys(links: Record<string, string>): string[] {
 export function assertLinksAreReal(links: Record<string, string>): void {
   const unset = placeholderKeys(links);
   if (unset.length > 0) {
-    throw new Error(`${LINKS_FILE} still contains ${PLACEHOLDER} links: ${unset.join(', ')}. Replace them before deploying.`);
+    throw new Error(
+      `${LINKS_FILE} still contains ${PLACEHOLDER} links: ${unset.join(', ')}. Replace them before deploying.`,
+    );
   }
 }

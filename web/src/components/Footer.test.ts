@@ -7,7 +7,7 @@ describe('Footer', () => {
     const container = await AstroContainer.create();
     const html = await container.renderToString(Footer);
     expect(html).toContain(
-      'Forever Sixty is a fan-run reference. Not affiliated with or endorsed by Blizzard Entertainment. World of Warcraft and Warcraft are trademarks of Blizzard Entertainment, Inc.'
+      'Forever Sixty is a fan-run reference. Not affiliated with or endorsed by Blizzard Entertainment. World of Warcraft and Warcraft are trademarks of Blizzard Entertainment, Inc.',
     );
   });
 

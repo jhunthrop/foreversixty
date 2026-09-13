@@ -19,7 +19,9 @@ describe('StatePanel', () => {
   });
   it('shows a Sample pill when sample is true', async () => {
     const c = await AstroContainer.create();
-    const html = await c.renderToString(StatePanel, { props: { title: 'This week', sample: true, rows: [] } });
+    const html = await c.renderToString(StatePanel, {
+      props: { title: 'This week', sample: true, rows: [] },
+    });
     expect(html).toContain('pill-sample');
   });
 });

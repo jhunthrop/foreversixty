@@ -2,7 +2,9 @@ import { expect, test } from '@playwright/test';
 
 test('homepage renders the reference layout without a marketing hero', async ({ page }) => {
   const errors: string[] = [];
-  page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
+  page.on('console', (m) => {
+    if (m.type() === 'error') errors.push(m.text());
+  });
   await page.goto('/');
   const h1 = page.locator('h1');
   await expect(h1).toHaveCount(1);
@@ -22,7 +24,9 @@ test('homepage renders the reference layout without a marketing hero', async ({ 
 
 test('content pages ship no client JavaScript', async ({ page }) => {
   const scripts: string[] = [];
-  page.on('request', (r) => { if (r.resourceType() === 'script') scripts.push(r.url()); });
+  page.on('request', (r) => {
+    if (r.resourceType() === 'script') scripts.push(r.url());
+  });
   await page.goto('/about');
   expect(scripts).toEqual([]);
 });

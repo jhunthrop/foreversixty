@@ -20,6 +20,8 @@ describe('factSchema', () => {
     expect(factSchema.safeParse({ ...valid, sources: [] }).success).toBe(false);
   });
   it('rejects an unknown source kind', () => {
-    expect(factSchema.safeParse({ ...valid, sources: [{ ...valid.sources[0], kind: 'rumor' }] }).success).toBe(false);
+    expect(
+      factSchema.safeParse({ ...valid, sources: [{ ...valid.sources[0], kind: 'rumor' }] }).success,
+    ).toBe(false);
   });
 });

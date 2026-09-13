@@ -1,7 +1,17 @@
 ---
 import classes from '../data/classes.json';
-interface Props { name: string; slug: string }
+interface Props {
+  name: string;
+  slug: string;
+}
 const { name, slug } = Astro.props;
 const color = classes.find((c) => c.slug === slug)?.color ?? '#ffffff';
 ---
-<a href={`/guides/${slug}`} class="h-[84px] rounded-control bg-raised border border-line flex items-end justify-center pb-3 text-[13px] font-bold tracking-[0.08em] uppercase" style={`box-shadow: inset 0 2px 0 ${color}; color: ${color};`}>{name}</a>
+
+<a
+  href={`/guides/${slug}`}
+  class="h-[84px] rounded-control bg-raised border border-line flex items-end justify-center pb-3 text-[13px] font-bold tracking-[0.08em] uppercase"
+  style={`box-shadow: inset 0 2px 0 ${color}; color: ${color};`}
+>
+  {name}
+</a>

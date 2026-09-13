@@ -9,7 +9,13 @@ export default defineConfig({
   // (see astro/dist/cli/preview/index.js `isRunByAgent()`), which otherwise forks preview into the
   // background and exits the foreground process immediately -- Playwright then reports
   // "Process from config.webServer exited early" even though the server is actually up.
-  webServer: { command: 'npm run build && npm run preview -- --port 4321', port: 4321, reuseExistingServer: !process.env.CI, timeout: 180_000, env: { ASTRO_PREVIEW_BACKGROUND: '1' } },
+  webServer: {
+    command: 'npm run build && npm run preview -- --port 4321',
+    port: 4321,
+    reuseExistingServer: !process.env.CI,
+    timeout: 180_000,
+    env: { ASTRO_PREVIEW_BACKGROUND: '1' },
+  },
   projects: [
     { name: 'desktop', use: { ...devices['Desktop Chrome'] } },
     { name: 'mobile', use: { ...devices['Pixel 7'] } },

@@ -1,31 +1,31 @@
 ---
 title: Everything we know
-description: "A single-page summary of what Blizzard and the press have said about World of Warcraft: Forever since its BlizzCon 2026 announcement."
+description: 'A single-page summary of what Blizzard and the press have said about World of Warcraft: Forever since its BlizzCon 2026 announcement.'
 updated: 2026-09-12
 confidence: confirmed
 sources:
-  - label: "Blizzard, World of Warcraft at BlizzCon 2026"
+  - label: 'Blizzard, World of Warcraft at BlizzCon 2026'
     url: https://news.blizzard.com/en-us/article/24301145/world-of-warcraft-at-blizzcon-2026-discover-whats-next
     kind: blizzard
   - label: "Blizzard, What's Next panel recap"
     url: https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap
     kind: blizzard
-  - label: "Blizzard, pillars post"
+  - label: 'Blizzard, pillars post'
     url: https://news.blizzard.com/en-us/article/24302093/
     kind: blizzard
-  - label: "PCGamesN, Forever coverage"
+  - label: 'PCGamesN, Forever coverage'
     url: https://www.pcgamesn.com/world-of-warcraft/forever-blizzcon-2026-wow-classic-plus
     kind: community
-  - label: "Inven Global, World of Warcraft: Forever coverage"
+  - label: 'Inven Global, World of Warcraft: Forever coverage'
     url: https://www.invenglobal.com/articles/25876/
     kind: community
-  - label: "guided.news roundup"
+  - label: 'guided.news roundup'
     url: https://guided.news/en/news/wow-classic-launches-in-november-everything-you-need-to-know-about-world-of-warcraft-forever/
     kind: community
-  - label: "Wowhead, Undead Paladins coming to Forever"
+  - label: 'Wowhead, Undead Paladins coming to Forever'
     url: https://www.wowhead.com/forever/news/undead-paladins-coming-to-world-of-warcraft-forever-382823
     kind: community
-  - label: "games.gg, Forever coverage"
+  - label: 'games.gg, Forever coverage'
     url: https://games.gg/news/wow-classic-plus-world-of-warcraft/
     kind: community
 ---
@@ -34,7 +34,7 @@ World of Warcraft: Forever was announced at the BlizzCon 2026 Opening Ceremony a
 
 ## Setting
 
-- Forever is set after *Warcraft III: Reforged — Forsaken Kingdom* and before Molten Core, in what Blizzard describes as "year one of vanilla."
+- Forever is set after _Warcraft III: Reforged — Forsaken Kingdom_ and before Molten Core, in what Blizzard describes as "year one of vanilla."
 - One outlet, guided.news, reports that it is a standalone narrative branch and a permanent third pillar of WoW alongside Modern and Classic; this is not Blizzard's own wording and is treated as single-source.
 - The level cap is 60, indefinitely; there are no Outland- or Draenor-style level jumps.
 - Inven Global reports from the panel that there is no flying and no level scaling; this is single-source and has not been restated by Blizzard directly.
@@ -82,16 +82,16 @@ Skyborne is a new neutral elven race that requires a paid pack starting at $29.9
 
 ## Roadmap
 
-| Date | Content |
-| --- | --- |
-| Sept 13, 10:00 a.m. PDT | Deep Dive panel; Hardcore: What's Next panel at 4:15 p.m. PDT |
-| Sept 17 – Oct 21 | Beta (level cap 30) |
-| Oct 27 – Nov 3 | Character name reservation |
-| Nov 4, 3:00 p.m. PST | Launch |
-| Dec 9 | Barrow Deeps, Hyjal Summit, and Onyxia's Lair open |
-| Winter 2026/27 | Hardcore realms, exact date not yet announced |
-| Spring 2027 | Two raids, two dungeons, a new zone, a legendary questline, and a PvP season |
-| Summer 2027 | A revamped iconic raid plus one new raid, two dungeons, a PvP season, and professions and Legacy updates |
+| Date                    | Content                                                                                                  |
+| ----------------------- | -------------------------------------------------------------------------------------------------------- |
+| Sept 13, 10:00 a.m. PDT | Deep Dive panel; Hardcore: What's Next panel at 4:15 p.m. PDT                                            |
+| Sept 17 – Oct 21        | Beta (level cap 30)                                                                                      |
+| Oct 27 – Nov 3          | Character name reservation                                                                               |
+| Nov 4, 3:00 p.m. PST    | Launch                                                                                                   |
+| Dec 9                   | Barrow Deeps, Hyjal Summit, and Onyxia's Lair open                                                       |
+| Winter 2026/27          | Hardcore realms, exact date not yet announced                                                            |
+| Spring 2027             | Two raids, two dungeons, a new zone, a legendary questline, and a PvP season                             |
+| Summer 2027             | A revamped iconic raid plus one new raid, two dungeons, a PvP season, and professions and Legacy updates |
 
 See the full [roadmap page](/roadmap) for sources on each date.
 

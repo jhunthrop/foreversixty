@@ -10,7 +10,17 @@ const { entry } = Astro.props;
 const { Content: Body } = await render(entry);
 const range = levelRangeLong(entry.data.levelMin, entry.data.levelMax);
 ---
-<Content title={entry.data.title} description={`${entry.data.continent} · ${range}`} path={`/zones/${entry.id}`} updated={entry.data.updated} confidence={entry.data.confidence} sources={entry.data.sources}>
-  <p><strong>{entry.data.continent}</strong> · {range}</p>
+
+<Content
+  title={entry.data.title}
+  description={`${entry.data.continent} · ${range}`}
+  path={`/zones/${entry.id}`}
+  updated={entry.data.updated}
+  confidence={entry.data.confidence}
+  sources={entry.data.sources}
+>
+  <p>
+    <strong>{entry.data.continent}</strong> · {range}
+  </p>
   <Body />
 </Content>

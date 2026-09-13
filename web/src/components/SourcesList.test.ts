@@ -8,7 +8,11 @@ describe('SourcesList', () => {
     const html = await c.renderToString(SourcesList, {
       props: {
         sources: [
-          { label: 'BlizzCon announcement', url: 'https://worldofwarcraft.blizzard.com/forever', kind: 'blizzard' },
+          {
+            label: 'BlizzCon announcement',
+            url: 'https://worldofwarcraft.blizzard.com/forever',
+            kind: 'blizzard',
+          },
           { label: 'guided.news roundup', url: 'https://guided.news/x', kind: 'community' },
         ],
       },

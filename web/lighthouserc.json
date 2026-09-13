@@ -4,7 +4,16 @@
       "staticDistDir": "./dist",
       "url": ["http://localhost/index.html", "http://localhost/dungeons/hall-of-thanes.html"],
       "numberOfRuns": 3,
-      "settings": { "formFactor": "mobile", "screenEmulation": { "mobile": true, "width": 360, "height": 640, "deviceScaleFactor": 2, "disabled": false } }
+      "settings": {
+        "formFactor": "mobile",
+        "screenEmulation": {
+          "mobile": true,
+          "width": 360,
+          "height": 640,
+          "deviceScaleFactor": 2,
+          "disabled": false
+        }
+      }
     },
     "assert": {
       "assertions": {

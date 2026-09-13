@@ -1,11 +1,22 @@
 ---
 import type { ToolStatusKind } from '../lib/sources';
-interface Props { title: string; description: string; href: string; status: { label: string; kind: ToolStatusKind } }
+interface Props {
+  title: string;
+  description: string;
+  href: string;
+  status: { label: string; kind: ToolStatusKind };
+}
 const { title, description, href, status } = Astro.props;
 ---
-<a href={href} class="flex flex-col gap-[10px] p-[18px_16px] rounded-panel border border-line bg-gradient-to-b from-card-top to-raised shadow-[inset_0_-1px_0_rgba(229,185,85,.35)] text-strong hover:border-gold-deep transition-colors duration-150">
+
+<a
+  href={href}
+  class="flex flex-col gap-[10px] p-[18px_16px] rounded-panel border border-line bg-gradient-to-b from-card-top to-raised shadow-[inset_0_-1px_0_rgba(229,185,85,.35)] text-strong hover:border-gold-deep transition-colors duration-150"
+>
   <div class="flex items-center justify-between">
-    <span class="text-gold"><slot name="icon" /></span>
+    <span class="text-gold">
+      <slot name="icon" />
+    </span>
     <span class={`pill pill-${status.kind}`}>{status.label}</span>
   </div>
   <span class="font-display text-[15px] font-bold">{title}</span>

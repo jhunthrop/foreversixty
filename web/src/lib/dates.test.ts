@@ -19,7 +19,11 @@ describe('isPast', () => {
 
 describe('latest', () => {
   it('returns the most recent date regardless of order', () => {
-    const dates = [new Date('2026-09-11T00:00:00Z'), new Date('2026-09-17T00:00:00Z'), new Date('2026-09-12T00:00:00Z')];
+    const dates = [
+      new Date('2026-09-11T00:00:00Z'),
+      new Date('2026-09-17T00:00:00Z'),
+      new Date('2026-09-12T00:00:00Z'),
+    ];
     expect(latest(dates).toISOString()).toBe('2026-09-17T00:00:00.000Z');
   });
 

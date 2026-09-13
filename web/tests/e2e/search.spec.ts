@@ -44,7 +44,9 @@ test('an unreachable search index falls back to links, once', async ({ page }) =
   const crashes: string[] = [];
   const indexRequests: string[] = [];
   page.on('pageerror', (e) => crashes.push(e.message));
-  page.on('request', (r) => { if (r.url().includes('/pagefind/pagefind.js')) indexRequests.push(r.url()); });
+  page.on('request', (r) => {
+    if (r.url().includes('/pagefind/pagefind.js')) indexRequests.push(r.url());
+  });
   await page.route('**/pagefind/pagefind.js', (route) => route.fulfill({ status: 404, body: 'not found' }));
 
   await page.goto('/');
@@ -54,7 +56,11 @@ test('an unreachable search index falls back to links, once', async ({ page }) =
 
   const fallback = page.getByText('Search is unavailable. Browse');
   await expect(fallback).toBeVisible();
-  for (const [name, href] of [['dungeons', '/dungeons'], ['zones', '/zones'], ['guides', '/guides']]) {
+  for (const [name, href] of [
+    ['dungeons', '/dungeons'],
+    ['zones', '/zones'],
+    ['guides', '/guides'],
+  ]) {
     await expect(fallback.getByRole('link', { name })).toHaveAttribute('href', href);
   }
 

@@ -1,7 +1,7 @@
 ---
 title: Rogue in Forever
 classSlug: rogue
-description: "What is known about the Rogue class in World of Warcraft: Forever, and when a leveling and talent guide will follow."
+description: 'What is known about the Rogue class in World of Warcraft: Forever, and when a leveling and talent guide will follow.'
 updated: 2026-09-12
 confidence: inferred
 sources:

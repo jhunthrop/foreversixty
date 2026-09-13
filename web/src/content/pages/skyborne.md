@@ -1,13 +1,13 @@
 ---
 title: Skyborne
-description: "The new neutral race in World of Warcraft: Forever, its classes, its paywall, and how the community has reacted."
+description: 'The new neutral race in World of Warcraft: Forever, its classes, its paywall, and how the community has reacted.'
 updated: 2026-09-12
 confidence: confirmed
 sources:
-  - label: "Wowhead, Skyborne First Look"
+  - label: 'Wowhead, Skyborne First Look'
     url: https://www.wowhead.com/forever/news/skyborne-first-look-new-neutral-race-in-world-of-warcraft-forever-382829
     kind: community
-  - label: "Inven Global, World of Warcraft: Forever coverage"
+  - label: 'Inven Global, World of Warcraft: Forever coverage'
     url: https://www.invenglobal.com/articles/25876/
     kind: community
 ---

@@ -1,20 +1,38 @@
 ---
 import UpdatedStamp from './UpdatedStamp.astro';
-interface Row { key: string; value: string; note?: string; highlight?: boolean }
-interface Props { title: string; rows: Row[]; updated?: Date; sample?: boolean }
+interface Row {
+  key: string;
+  value: string;
+  note?: string;
+  highlight?: boolean;
+}
+interface Props {
+  title: string;
+  rows: Row[];
+  updated?: Date;
+  sample?: boolean;
+}
 const { title, rows, updated, sample = false } = Astro.props;
 ---
+
 <div class="bg-raised/85 border border-line rounded-panel flex flex-col gap-3 px-[22px] py-[18px]">
   <div class="flex items-center gap-[10px]">
     <span class="w-2 h-2 rounded-full bg-gold shadow-[0_0_10px_rgba(229,185,85,.8)]"></span>
     <span class="label text-gold">{title}</span>
-    <span class="ml-auto">{sample ? <span class="pill pill-sample">Sample</span> : updated && <UpdatedStamp date={updated} />}</span>
+    <span class="ml-auto">
+      {sample ? <span class="pill pill-sample">Sample</span> : updated && <UpdatedStamp date={updated} />}
+    </span>
   </div>
   <dl class="flex flex-col">
     {rows.map((r, i) => (
-      <div class={`grid grid-cols-[110px_1fr] gap-3 py-[9px] text-[14px] items-baseline ${i < rows.length - 1 ? 'border-b border-line-soft' : ''}`}>
+      <div
+        class={`grid grid-cols-[110px_1fr] gap-3 py-[9px] text-[14px] items-baseline ${i < rows.length - 1 ? 'border-b border-line-soft' : ''}`}
+      >
         <dt class={`font-mono tabular ${r.highlight ? 'text-gold' : 'text-muted'}`}>{r.key}</dt>
-        <dd class="m-0"><span class="text-strong font-semibold">{r.value}</span>{r.note && <span class="text-muted"> {r.note}</span>}</dd>
+        <dd class="m-0">
+          <span class="text-strong font-semibold">{r.value}</span>
+          {r.note && <span class="text-muted"> {r.note}</span>}
+        </dd>
       </div>
     ))}
   </dl>

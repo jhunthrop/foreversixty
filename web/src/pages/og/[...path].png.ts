@@ -14,7 +14,10 @@ export const getStaticPaths: GetStaticPaths = async () => {
     { params: { path: 'guides' }, props: { title: 'Guides by class', kicker: 'Leveling · talents · gear' } },
     { params: { path: 'changelog' }, props: { title: 'What changed', kicker: 'Dated and sourced' } },
     { params: { path: 'search' }, props: { title: 'Search', kicker: 'Forever Sixty' } },
-    ...pages.map((p) => ({ params: { path: p.id }, props: { title: p.data.title, kicker: 'Forever Sixty' } })),
+    ...pages.map((p) => ({
+      params: { path: p.id },
+      props: { title: p.data.title, kicker: 'Forever Sixty' },
+    })),
     ...dungeons.map((d) => ({
       params: { path: `dungeons/${d.id}` },
       props: { title: d.data.title, kicker: `Dungeon · ${d.data.zone}` },
@@ -23,7 +26,10 @@ export const getStaticPaths: GetStaticPaths = async () => {
       params: { path: `zones/${z.id}` },
       props: { title: z.data.title, kicker: `Zone · ${z.data.continent}` },
     })),
-    ...guides.map((g) => ({ params: { path: `guides/${g.id}` }, props: { title: g.data.title, kicker: 'Class guide' } })),
+    ...guides.map((g) => ({
+      params: { path: `guides/${g.id}` },
+      props: { title: g.data.title, kicker: 'Class guide' },
+    })),
   ];
 };
 

@@ -32,14 +32,26 @@ export async function renderOg({ title, kicker }: OgContent): Promise<Uint8Array
           {
             type: 'div',
             props: {
-              style: { fontSize: 22, letterSpacing: 3, textTransform: 'uppercase', color: '#e5b955', marginBottom: 18 },
+              style: {
+                fontSize: 22,
+                letterSpacing: 3,
+                textTransform: 'uppercase',
+                color: '#e5b955',
+                marginBottom: 18,
+              },
               children: kicker,
             },
           },
           {
             type: 'div',
             props: {
-              style: { fontSize: 72, fontFamily: 'Cinzel', fontWeight: 700, lineHeight: 1.05, color: '#e5b955' },
+              style: {
+                fontSize: 72,
+                fontFamily: 'Cinzel',
+                fontWeight: 700,
+                lineHeight: 1.05,
+                color: '#e5b955',
+              },
               children: title,
             },
           },
@@ -60,7 +72,7 @@ export async function renderOg({ title, kicker }: OgContent): Promise<Uint8Array
         { name: 'Cinzel', data: await cinzel, weight: 700, style: 'normal' },
         { name: 'Barlow', data: await barlow, weight: 400, style: 'normal' },
       ],
-    }
+    },
   );
   const png = new Resvg(svg, { fitTo: { mode: 'width', value: 1200 } }).render().asPng();
   // Buffer is typed as Uint8Array<ArrayBufferLike>, which the DOM lib's BodyInit no

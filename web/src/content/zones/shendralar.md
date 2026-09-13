@@ -7,7 +7,7 @@ sources:
   - label: "Blizzard, What's Next panel recap"
     url: https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap
     kind: blizzard
-  - label: "Inven Global, World of Warcraft: Forever coverage"
+  - label: 'Inven Global, World of Warcraft: Forever coverage'
     url: https://www.invenglobal.com/articles/25876/
     kind: community
 ---

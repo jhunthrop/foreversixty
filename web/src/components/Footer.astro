@@ -9,10 +9,18 @@ const footerLinks = [
   ['Contribute', `${communityLinks.githubRepo}/issues`],
 ] as const;
 ---
+
 <!-- Phone: links above the disclaimer (design/Mobile.dc.html); desktop keeps them side by side. -->
 <footer class="mt-auto flex flex-col-reverse md:flex-row md:items-center md:justify-between gap-4 md:gap-8 px-[18px] md:px-12 py-6 md:py-7 border-t border-line text-[13px]">
-  <p class="max-w-[720px] leading-relaxed text-muted">Forever Sixty is a fan-run reference. Not affiliated with or endorsed by Blizzard Entertainment. World of Warcraft and Warcraft are trademarks of Blizzard Entertainment, Inc.</p>
+  <p class="max-w-[720px] leading-relaxed text-muted">
+    Forever Sixty is a fan-run reference. Not affiliated with or endorsed by Blizzard Entertainment. World of
+    Warcraft and Warcraft are trademarks of Blizzard Entertainment, Inc.
+  </p>
   <nav aria-label="Footer" class="flex flex-wrap gap-x-[18px]">
-    {footerLinks.map(([label, href]) => <a href={href} class="inline-flex items-center min-h-11 md:min-h-0 text-nav hover:text-strong">{label}</a>)}
+    {footerLinks.map(([label, href]) => (
+      <a href={href} class="inline-flex items-center min-h-11 md:min-h-0 text-nav hover:text-strong">
+        {label}
+      </a>
+    ))}
   </nav>
 </footer>

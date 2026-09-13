@@ -51,11 +51,16 @@ const fallbackFontFace = `
 }
 `;
 
-interface Props { title: string; description: string; path: string }
+interface Props {
+  title: string;
+  description: string;
+  path: string;
+}
 const { title, description, path } = Astro.props;
 const site = 'https://foreversixty.gg';
 const fullTitle = title === 'Forever Sixty' ? title : `${title} · Forever Sixty`;
 ---
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -70,15 +75,16 @@ const fullTitle = title === 'Forever Sixty' ? title : `${title} · Forever Sixty
     <meta property="og:url" content={`${site}${path}`} />
     <meta property="og:image" content={`${site}/og${path === '/' ? '/index' : path}.png`} />
     <meta name="twitter:card" content="summary_large_image" />
-    <style set:html={fallbackFontFace} />
+    <style set:html={fallbackFontFace}></style>
     <slot name="head" />
   </head>
   <body class="min-h-screen flex flex-col bg-bg">
     <a
       href="#main"
       class="sr-only focus:not-sr-only focus:absolute focus:left-[18px] focus:top-[18px] focus:z-50 focus:inline-flex focus:items-center focus:h-11 focus:px-4 focus:rounded-control focus:border focus:border-line-warm-strong focus:bg-raised focus:text-text focus:font-semibold"
-      >Skip to content</a
     >
+      Skip to content
+    </a>
     <Header />
     <slot />
     <Footer />
