@@ -3,12 +3,14 @@ name: web
 on:
   push:
     branches: [main]
-    paths: ['web/**', '.github/workflows/web.yml']
+    paths: ['web/**', 'data/builds/**', '.github/workflows/web.yml']
   pull_request:
-    paths: ['web/**', '.github/workflows/web.yml']
+    paths: ['web/**', 'data/builds/**', '.github/workflows/web.yml']
   workflow_dispatch:
 permissions:
   contents: read
+env:
+  PUBLIC_API_BASE_URL: https://api.foreversixty.gg
 concurrency:
   group: web-${{ github.ref }}
   cancel-in-progress: true
