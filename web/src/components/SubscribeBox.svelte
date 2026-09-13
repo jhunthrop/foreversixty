@@ -4,6 +4,7 @@
      is replaced by a mailto link, so the panel is never a dead end. -->
 <script lang="ts">
   import { API_BASE_URL } from '../lib/planner/config';
+  import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
   import { subscribeMessageFor, type SubscribeMessage } from '../lib/subscribe';
 
   let { mailto }: { mailto: string } = $props();
@@ -48,12 +49,12 @@
       autocomplete="email"
       bind:value={email}
       placeholder="you@example.com"
-      class="border-line-warm rounded-control bg-raised text-text placeholder:text-muted h-11 min-w-[200px] flex-1 px-3 text-[14px]"
+      class="border-line-warm rounded-control bg-raised text-text placeholder:text-muted h-11 min-w-[8rem] flex-1 border px-3 text-[14px]"
     />
     <button
       type="submit"
       disabled={sending}
-      class="border-line-warm-strong rounded-control text-text inline-flex h-11 items-center px-4 text-[12px] font-bold tracking-[0.06em] uppercase"
+      class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-text px-4"
     >
       {sending ? 'Sending' : 'Subscribe'}
     </button>

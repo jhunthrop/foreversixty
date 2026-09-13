@@ -9,3 +9,11 @@
  */
 export const SECONDARY_BUTTON =
   'rounded-control inline-flex h-11 items-center border text-[12px] font-bold tracking-[0.06em] uppercase md:h-9';
+
+/**
+ * Same recipe as SECONDARY_BUTTON, but 44px tall on every breakpoint instead of shrinking to
+ * 36px on desktop. For controls outside the planner -- the homepage subscribe button -- where
+ * the 44px hit target is a fixed requirement, not just a phone-only minimum.
+ */
+export const SECONDARY_BUTTON_FIXED =
+  'rounded-control inline-flex h-11 items-center border text-[12px] font-bold tracking-[0.06em] uppercase';
