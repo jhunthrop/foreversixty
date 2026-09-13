@@ -1,12 +1,19 @@
 ---
 // web/src/pages/guides/index.astro
+import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import ClassTile from '../../components/ClassTile.astro';
+import UpdatedStamp from '../../components/UpdatedStamp.astro';
 import classes from '../../data/classes.json';
+import { latest } from '../../lib/dates';
+const updated = latest((await getCollection('guides')).map((g) => g.data.updated));
 ---
 <Base title="Guides" description="Class guides for World of Warcraft: Forever, written after beta play." path="/guides">
   <main class="max-w-[1000px] w-full mx-auto px-6 py-10 flex flex-col gap-5">
-    <h1 class="text-[28px] font-bold tracking-[0.02em]">Guides</h1>
+    <header class="flex flex-col gap-2">
+      <h1 class="text-[28px] font-bold tracking-[0.02em]">Guides</h1>
+      <UpdatedStamp date={updated} />
+    </header>
     <p class="text-muted text-[14px]">Leveling and talent guides are written after we play each class in beta, not before.</p>
     <div class="grid grid-cols-3 gap-3">
       {classes.map((c) => <ClassTile name={c.name} slug={c.slug} />)}

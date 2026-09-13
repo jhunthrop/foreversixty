@@ -1,7 +1,7 @@
 ---
 // web/src/layouts/Content.astro
 import Base from './Base.astro';
-import SourcePill from '../components/SourcePill.astro';
+import SourcesList from '../components/SourcesList.astro';
 import UpdatedStamp from '../components/UpdatedStamp.astro';
 import type { Source } from '../lib/sources';
 
@@ -25,13 +25,6 @@ const confidenceCopy: Record<Confidence, string> = {
       </div>
     </header>
     <div class="prose-forever text-[16px] leading-[1.6]"><slot /></div>
-    <footer class="border-t border-line pt-5 flex flex-col gap-3">
-      <h2 class="section-title text-[14px]">Sources</h2>
-      <ul class="flex flex-col gap-2 list-none p-0 m-0">
-        {sources.map((s) => (
-          <li class="flex items-center gap-3 text-[14px]"><SourcePill kind={s.kind} /><a href={s.url} rel="noopener">{s.label}</a></li>
-        ))}
-      </ul>
-    </footer>
+    <SourcesList sources={sources} />
   </main>
 </Base>

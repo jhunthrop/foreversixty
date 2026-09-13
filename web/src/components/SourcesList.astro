@@ -1,0 +1,21 @@
+---
+// web/src/components/SourcesList.astro
+// Every page that states a fact carries the sources behind it: the detail pages via
+// Content.astro, the indexes via the union of the sources of the entries they list. The
+// union is deduplicated by URL here so a page listing nine dungeons that all cite the same
+// roundup shows that roundup once.
+import SourcePill from './SourcePill.astro';
+import type { Source } from '../lib/sources';
+
+interface Props { sources: Source[] }
+const { sources } = Astro.props;
+const unique = [...new Map(sources.map((s) => [s.url, s])).values()];
+---
+<footer class="border-t border-line pt-5 flex flex-col gap-3">
+  <h2 class="section-title text-[14px]">Sources</h2>
+  <ul class="flex flex-col gap-2 list-none p-0 m-0">
+    {unique.map((s) => (
+      <li class="flex items-center gap-3 text-[14px]"><SourcePill kind={s.kind} /><a href={s.url} rel="noopener">{s.label}</a></li>
+    ))}
+  </ul>
+</footer>
