@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 
 import httpx
+import pytest
 
 from pipeline.wago import TABLES, download_table, fetch_build, latest_build
 
@@ -55,6 +56,15 @@ def test_download_table_writes_empty_csv_when_table_missing_for_product(tmp_path
     )
     path = download_table("JournalInstance", "1.15.7.61582", tmp_path, client)
     assert path.read_text() == "ID\n"
+
+
+def test_download_table_404_on_required_table_fails(tmp_path: Path):
+    client = httpx.Client(
+        transport=fake_transport([], missing_tables=frozenset({"ItemSparse"})),
+        base_url="https://wago.tools",
+    )
+    with pytest.raises(SystemExit):
+        download_table("ItemSparse", "1.15.7.61582", tmp_path, client)
 
 
 def test_download_table_accepts_id_column_anywhere_in_header(tmp_path: Path):

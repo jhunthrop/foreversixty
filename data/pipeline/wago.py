@@ -20,6 +20,10 @@ TABLES = [
     "Talent",
     "TalentTab",
 ]
+# Tables allowed to be missing (404) for a given product/build without aborting the
+# fetch. JournalInstance (the Dungeon Journal) predates Classic Era's client, so it
+# doesn't exist there. Any other 404 is treated as a real failure (e.g. a typo).
+OPTIONAL_TABLES = frozenset({"JournalInstance"})
 
 
 def latest_build(product: str, client: httpx.Client) -> str:
@@ -39,9 +43,10 @@ def download_table(table: str, build: str, dest: Path, client: httpx.Client) -> 
     dest.mkdir(parents=True, exist_ok=True)
     path = dest / f"{table}.csv"
     if r.status_code == 404:
-        # Some DB2 tables don't exist for every product/build (e.g. JournalInstance,
-        # the Dungeon Journal table, predates Classic Era's client). Treat a missing
-        # table as empty rather than aborting the whole fetch.
+        if table not in OPTIONAL_TABLES:
+            raise SystemExit(f"{table} not found for build {build}; check TABLES for a typo")
+        # Allowlisted: this table is known to be absent for some products/builds.
+        # Treat it as empty rather than aborting the whole fetch.
         logger.warning("table %s not found for build %s; writing empty table", table, build)
         path.write_text("ID\n", encoding="utf-8")
         return path
