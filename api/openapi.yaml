@@ -29,7 +29,7 @@ components:
         application/json:
           schema: { $ref: '#/components/schemas/Envelope' }
 paths:
-  /healthz:
+  /health:
     get:
       summary: Liveness
       responses:

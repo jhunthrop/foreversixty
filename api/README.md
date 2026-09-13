@@ -61,7 +61,7 @@ docker run -d --name foreversixty-api-smoke \
   -e API_BASE_URL=https://api.foreversixty.gg \
   -p 18080:8080 \
   foreversixty-api:local
-curl -s http://localhost:18080/healthz
+curl -s http://localhost:18080/health
 docker stop foreversixty-api-smoke && docker rm foreversixty-api-smoke
 ```
 
@@ -73,7 +73,7 @@ Pushes to `main` run tests, build the image, push to Artifact Registry, and depl
 `API_BASE_URL`, `MAIL_FROM`, `TRUSTED_PROXY_HOPS`) are set on the Cloud Run service.
 
 Migrations run at container startup (`db.Migrate` in `main.go`), so a deploy applies them before
-serving traffic; Cloud Run only routes to the new revision once `/healthz` passes.
+serving traffic; Cloud Run only routes to the new revision once `/health` passes. The path is `/health`, not `/healthz`: Google's front end answers `/healthz` on run.app hosts itself, before the request reaches the container.
 
 ### Shutdown and Cloud Run's termination grace period
 
@@ -117,12 +117,15 @@ provider resource name and deployer email as GitHub repository variables `GCP_WI
 
 ```bash
 cd api
-gcloud builds submit --tag us-east1-docker.pkg.dev/foreversixty/api/api:$(git rev-parse --short HEAD)
+docker build --platform linux/amd64 --build-arg VERSION=$(git rev-parse --short HEAD) -t us-east1-docker.pkg.dev/foreversixty/api/api:$(git rev-parse --short HEAD) .
+docker push us-east1-docker.pkg.dev/foreversixty/api/api:$(git rev-parse --short HEAD)
+# Public access: the derbee.ai organization policy forbids allUsers IAM bindings, so the service
+# runs with the invoker IAM check disabled instead of --allow-unauthenticated.
 gcloud run deploy api \
   --image us-east1-docker.pkg.dev/foreversixty/api/api:$(git rev-parse --short HEAD) \
-  --region us-east1 --platform managed --allow-unauthenticated \
+  --region us-east1 --platform managed --no-invoker-iam-check \
   --service-account api-runtime@foreversixty.iam.gserviceaccount.com \
-  --set-env-vars PORT=8080,PUBLIC_BASE_URL=https://foreversixty.gg,API_BASE_URL=https://api.foreversixty.gg \
+  --set-env-vars PUBLIC_BASE_URL=https://foreversixty.gg,API_BASE_URL=https://api.foreversixty.gg \
   --set-secrets DATABASE_URL=DATABASE_URL:latest,MIGRATE_DATABASE_URL=MIGRATE_DATABASE_URL:latest,RESEND_API_KEY=RESEND_API_KEY:latest \
   --min-instances 0 --max-instances 3 --cpu 1 --memory 256Mi --concurrency 80 --timeout 30
 gcloud run domain-mappings create --service api --domain api.foreversixty.gg --region us-east1
@@ -136,7 +139,7 @@ Add the DNS records the last command prints to Cloudflare as DNS-only (grey clou
 certificate validates. Verify:
 
 ```bash
-curl -s https://api.foreversixty.gg/healthz
+curl -s https://api.foreversixty.gg/health
 ```
 
 Expected: `{"ok":true,"data":{"status":"ok"},...}`.

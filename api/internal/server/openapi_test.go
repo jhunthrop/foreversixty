@@ -25,7 +25,7 @@ func TestOpenAPIListsEveryRoute(t *testing.T) {
 		t.Fatal("openapi.yaml missing or invalid 'paths' object")
 	}
 
-	requiredPaths := []string{"/healthz", "/version", "/v1/subscribe", "/v1/subscribe/confirm", "/v1/subscribe/unsubscribe"}
+	requiredPaths := []string{"/health", "/version", "/v1/subscribe", "/v1/subscribe/confirm", "/v1/subscribe/unsubscribe"}
 	for _, p := range requiredPaths {
 		if _, ok := paths[p]; !ok {
 			t.Errorf("openapi.yaml missing path %s", p)

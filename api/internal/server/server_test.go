@@ -10,7 +10,7 @@ import (
 func TestHealthAndVersion(t *testing.T) {
 	h := NewRouter(Deps{Version: "test-1"})
 	for _, tc := range []struct{ path, want string }{
-		{"/healthz", `"status":"ok"`},
+		{"/health", `"status":"ok"`},
 		{"/version", `"version":"test-1"`},
 	} {
 		rec := httptest.NewRecorder()

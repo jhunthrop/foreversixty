@@ -21,7 +21,7 @@ func NewRouter(d Deps) http.Handler {
 		d.Log = slog.Default()
 	}
 	mux := http.NewServeMux()
-	mux.HandleFunc("GET /healthz", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("GET /health", func(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteOK(w, r, http.StatusOK, map[string]string{"status": "ok"})
 	})
 	mux.HandleFunc("GET /version", func(w http.ResponseWriter, r *http.Request) {
