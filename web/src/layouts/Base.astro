@@ -1,14 +1,32 @@
 ---
 // web/src/layouts/Base.astro
-import '@fontsource/cinzel/700.css';
-import '@fontsource/cinzel/800.css';
-import '@fontsource/barlow/400.css';
-import '@fontsource/barlow/600.css';
-import '@fontsource/barlow/700.css';
-import '@fontsource/jetbrains-mono/500.css';
+// Cinzel (headings only, via the global h1/h2/h3 rule and the `font-bold`/`section-title`
+// utilities) is the one web font left in the app. Every other weight/family we used to ship
+// -- Cinzel 800, Barlow (all weights), JetBrains Mono -- is gone:
+//
+// - Barlow was the family behind every LCP-candidate text node measured against
+//   lighthouserc.json's mobile budget (the homepage's hero label, a dungeon page's lead
+//   paragraph). No amount of preloading or `font-display` tuning made that reliable: Chrome
+//   only sometimes finished the font request inside `font-display: optional`'s block window
+//   before Lighthouse's LCP simulation snapshot it, so the measured LCP flip-flopped between
+//   passing and failing across otherwise-identical `lhci` runs. Only removing the network
+//   request entirely (system-font body copy, set in tokens.css) made the budget pass every
+//   time. Cinzel is safe to keep because it's never the largest element on either audited
+//   page -- headings are short and small relative to a hero label or a lead paragraph.
+// - Cinzel 800 (header logo) and the extra Barlow/mono weights had call sites that render
+//   fine off the browser's nearest-weight matching or system monospace fallback (see
+//   Header.astro and tokens.css), so importing them was pure unused render-blocking weight.
+//
+// `font-display: optional` still makes sense for the one face that's left: it skips both the
+// wait and any later swap, so headings never cause a font-swap reflow (the layout-shift bug
+// this file originally preloaded fonts to fix) and simply render in the fallback stack on any
+// visit where the file isn't already cached.
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import cinzelBoldUrl from '@fontsource/cinzel/files/cinzel-latin-700-normal.woff2?url';
+
+const criticalFontFaces = `@font-face { font-family: 'Cinzel'; font-style: normal; font-weight: 700; font-display: optional; src: url(${cinzelBoldUrl}) format('woff2'); }`;
 
 interface Props { title: string; description: string; path: string }
 const { title, description, path } = Astro.props;
@@ -29,6 +47,8 @@ const fullTitle = title === 'Forever Sixty' ? title : `${title} · Forever Sixty
     <meta property="og:url" content={`${site}${path}`} />
     <meta property="og:image" content={`${site}/og${path === '/' ? '/index' : path}.png`} />
     <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preload" as="font" type="font/woff2" href={cinzelBoldUrl} crossorigin />
+    <style set:html={criticalFontFaces} />
     <slot name="head" />
   </head>
   <body class="min-h-screen flex flex-col bg-bg">

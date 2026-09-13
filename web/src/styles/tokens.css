@@ -43,7 +43,11 @@
   --color-rarity-legendary: #ff8000;
 
   --font-display: 'Cinzel', 'Trajan Pro', Georgia, serif;
-  --font-body: 'Barlow', 'Helvetica Neue', Arial, sans-serif;
+  /* Barlow was dropped as a web font: it's the family behind every LCP-candidate text node
+     we measured (body copy, the homepage's hero label), and lighthouserc.json's mobile LCP
+     budget can't tolerate a font network request on that path -- see Base.astro. The system
+     UI stack below is what most visitors already have rendering by first paint. */
+  --font-body: -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
 
   --radius-panel: 6px;

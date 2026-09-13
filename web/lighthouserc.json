@@ -1,0 +1,19 @@
+{
+  "ci": {
+    "collect": {
+      "staticDistDir": "./dist",
+      "url": ["http://localhost/index.html", "http://localhost/dungeons/hall-of-thanes.html"],
+      "numberOfRuns": 3,
+      "settings": { "formFactor": "mobile", "screenEmulation": { "mobile": true, "width": 360, "height": 640, "deviceScaleFactor": 2, "disabled": false } }
+    },
+    "assert": {
+      "assertions": {
+        "categories:performance": ["error", { "minScore": 0.95 }],
+        "largest-contentful-paint": ["error", { "maxNumericValue": 1200 }],
+        "total-blocking-time": ["error", { "maxNumericValue": 100 }],
+        "cumulative-layout-shift": ["error", { "maxNumericValue": 0.05 }]
+      }
+    },
+    "upload": { "target": "temporary-public-storage" }
+  }
+}
