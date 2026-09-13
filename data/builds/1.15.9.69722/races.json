@@ -64,14 +64,6 @@
     "forever_changes": []
   },
   {
-    "id": 9,
-    "name": "Goblin",
-    "slug": "goblin",
-    "faction": "horde",
-    "placeholder": false,
-    "forever_changes": []
-  },
-  {
     "id": 900,
     "name": "Skyborne",
     "slug": "skyborne",
