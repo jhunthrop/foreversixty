@@ -83,9 +83,9 @@
     <ul id="search-results" role="listbox" class="absolute left-0 right-0 top-full mt-2 bg-raised border border-line rounded-panel overflow-hidden z-10">
       {#each results as r, i}
         <li id={`search-opt-${i}`} role="option" aria-selected={i === active}>
-          <a href={r.url} class={`flex flex-col gap-1 px-4 py-3 border-b border-line-soft last:border-b-0 ${i === active ? 'bg-card-top' : ''}`} onmouseenter={() => (active = i)}>
-            <span class="text-[15px] font-semibold text-strong">{r.title}</span>
-            <span class="text-[13px] text-muted" aria-hidden="true">{@html r.excerpt}</span>
+          <a href={r.url} class={`flex flex-col gap-1 px-4 py-3 border-b border-line-soft last:border-b-0 ${i === active ? 'bg-card-top' : ''}`} onmouseenter={() => (active = i)} aria-labelledby={`search-title-${i}`} aria-describedby={`search-excerpt-${i}`}>
+            <span id={`search-title-${i}`} class="text-[15px] font-semibold text-strong">{r.title}</span>
+            <span id={`search-excerpt-${i}`} class="text-[13px] text-muted">{@html r.excerpt}</span>
           </a>
         </li>
       {/each}
