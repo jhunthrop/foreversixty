@@ -222,14 +222,13 @@ export interface BuildDraft {
   race_id: number;
   tree_version: string;
   point_order: number[];
-  gear: Gear;
+  gear?: Gear;
   title?: string;
 }
 
 /** What GET /v1/builds/{id} returns and what the API inlines into `data-build`. */
 export interface BuildRecord extends BuildDraft {
   id: string;
-  title?: string;
   created_at: string;
   views: number;
 }
