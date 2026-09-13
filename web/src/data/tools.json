@@ -1,0 +1,30 @@
+[
+  {
+    "title": "Build planner",
+    "description": "Revamped talents and every race and class combo, including Skyborne and Undead Paladin. Share a build by link.",
+    "href": "/builds",
+    "status": { "label": "Sept 17", "kind": "site" },
+    "icon": "talents"
+  },
+  {
+    "title": "Realm picker",
+    "description": "Realm list, type, faction balance and launch-week queues, once Blizzard publishes the list.",
+    "href": "/realms",
+    "status": { "label": "Oct 27", "kind": "site" },
+    "icon": "realms"
+  },
+  {
+    "title": "Dungeons",
+    "description": "All nine new dungeons with what is known today. Bosses and loot fill in from beta.",
+    "href": "/dungeons",
+    "status": { "label": "Live", "kind": "community" },
+    "icon": "dungeon"
+  },
+  {
+    "title": "Zone atlas",
+    "description": "Mount Hyjal, Zephras Isle, Riverglades, Shen'dralar and the reworked old zones.",
+    "href": "/zones",
+    "status": { "label": "Live", "kind": "community" },
+    "icon": "map"
+  }
+]

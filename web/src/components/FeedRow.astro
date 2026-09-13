@@ -1,0 +1,37 @@
+---
+import SourcePill from './SourcePill.astro';
+import { formatDate } from '../lib/dates';
+import type { SourceKind } from '../lib/sources';
+interface Props {
+  date: Date;
+  kind: SourceKind;
+  title: string;
+  href: string;
+  note?: string;
+  last?: boolean;
+  pillLabel?: string;
+}
+const { date, kind, title, href, note, last = false, pillLabel } = Astro.props;
+---
+
+<!-- Phone: date and source pill on the first line, the entry itself underneath
+     (design/Mobile.dc.html); desktop keeps all three in one row. -->
+<article
+  class={`grid grid-cols-[auto_auto_1fr] md:grid-cols-[84px_110px_1fr] gap-x-3 md:gap-x-4 gap-y-2 px-[18px] md:px-5 py-4 items-start ${last ? '' : 'border-b border-line-soft'}`}
+>
+  <time
+    class="col-start-1 row-start-1 font-mono tabular text-[13px] text-muted pt-[2px]"
+    datetime={date.toISOString().slice(0, 10)}
+  >
+    {formatDate(date)}
+  </time>
+  <span class="col-start-2 row-start-1">
+    <SourcePill kind={kind} label={pillLabel} />
+  </span>
+  <div class="col-start-1 col-span-3 row-start-2 md:col-start-3 md:col-span-1 md:row-start-1 flex flex-col gap-1">
+    <a href={href} class="text-[15px] font-semibold text-strong hover:text-gold">
+      {title}
+    </a>
+    {note && <span class="text-[13px] text-muted">{note}</span>}
+  </div>
+</article>

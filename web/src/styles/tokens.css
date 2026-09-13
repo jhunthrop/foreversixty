@@ -1,0 +1,56 @@
+/* web/src/styles/tokens.css — single source of truth; keep in sync with design/DESIGN-SYSTEM.md */
+@theme {
+  --color-bg: #07090d;
+  --color-raised: #0d111a;
+  --color-card-top: #131824;
+  --color-line: #262e40;
+  --color-line-soft: #1c2230;
+  --color-line-warm: #3a3326;
+  --color-line-warm-strong: #4a4030;
+
+  --color-text: #e9e4d8;
+  --color-strong: #f2eee4;
+  --color-muted: #9a9484;
+  --color-nav: #b9b3a4;
+
+  --color-gold: #e5b955;
+  --color-gold-hover: #f5d27a;
+  --color-gold-deep: #a8762a;
+  --color-gold-light: #fbe7a1;
+  --color-ember: #d66e28;
+  --color-night: #26405c;
+
+  --color-alliance: #6fb1ff;
+  --color-alliance-bar: #2f6fd6;
+  --color-horde: #ff6b5c;
+  --color-horde-bar: #c0392b;
+
+  --color-class-warrior: #c69b6d;
+  --color-class-paladin: #f48cba;
+  --color-class-hunter: #aad372;
+  --color-class-rogue: #fff468;
+  --color-class-priest: #ffffff;
+  --color-class-shaman: #3f8fe0;
+  --color-class-mage: #3fc7eb;
+  --color-class-warlock: #8788ee;
+  --color-class-druid: #ff7c0a;
+
+  --color-rarity-poor: #9d9d9d;
+  --color-rarity-common: #ffffff;
+  --color-rarity-uncommon: #1eff00;
+  --color-rarity-rare: #0070dd;
+  --color-rarity-epic: #a335ee;
+  --color-rarity-legendary: #ff8000;
+
+  --font-display: 'Cinzel', 'Trajan Pro', Georgia, serif;
+  /* 'Barlow Fallback' (defined in Base.astro) is a size-adjusted Helvetica Neue/Arial that
+     matches Barlow's em-box, so the `font-display: swap` in Base.astro doesn't reflow text
+     when the real face loads -- see Base.astro for the full explanation and how the
+     size-adjust/ascent-override/descent-override numbers were computed. */
+  --font-body: 'Barlow', 'Barlow Fallback', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+
+  --radius-panel: 6px;
+  --radius-control: 4px;
+  --radius-pill: 3px;
+}

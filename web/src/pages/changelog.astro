@@ -1,0 +1,43 @@
+---
+// web/src/pages/changelog.astro
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import FeedRow from '../components/FeedRow.astro';
+import UpdatedStamp from '../components/UpdatedStamp.astro';
+import { latest } from '../lib/dates';
+const entries = (await getCollection('changelog')).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+);
+const updated = latest(entries.map((e) => e.data.updated));
+---
+
+<Base
+  title="Changelog"
+  description="Everything that changed in World of Warcraft: Forever and on this site, dated and sourced."
+  path="/changelog"
+>
+  <main
+    id="main"
+    tabindex="-1"
+    class="max-w-[1000px] w-full mx-auto px-[18px] md:px-12 py-10 flex flex-col gap-5"
+  >
+    <header class="flex flex-col gap-2">
+      <h1 class="text-[28px] font-bold tracking-[0.02em]">What changed</h1>
+      <UpdatedStamp date={updated} />
+    </header>
+    <div class="bg-raised border border-line rounded-panel">
+      {entries.map((e, i) => (
+        <div id={e.id}>
+          <FeedRow
+            date={e.data.date}
+            kind={e.data.kind}
+            title={e.data.title}
+            href={e.data.sources[0].url}
+            note={e.data.note}
+            last={i === entries.length - 1}
+          />
+        </div>
+      ))}
+    </div>
+  </main>
+</Base>

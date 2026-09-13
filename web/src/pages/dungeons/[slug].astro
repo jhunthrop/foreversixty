@@ -1,0 +1,26 @@
+---
+// web/src/pages/dungeons/[slug].astro
+import { getCollection, render } from 'astro:content';
+import Content from '../../layouts/Content.astro';
+import { levelRangeLong } from '../../lib/levels';
+export async function getStaticPaths() {
+  return (await getCollection('dungeons')).map((d) => ({ params: { slug: d.id }, props: { entry: d } }));
+}
+const { entry } = Astro.props;
+const { Content: Body } = await render(entry);
+const range = levelRangeLong(entry.data.levelMin, entry.data.levelMax);
+---
+
+<Content
+  title={entry.data.title}
+  description={`${entry.data.zone} · ${range}`}
+  path={`/dungeons/${entry.id}`}
+  updated={entry.data.updated}
+  confidence={entry.data.confidence}
+  sources={entry.data.sources}
+>
+  <p>
+    <strong>{entry.data.zone}</strong> · {range}
+  </p>
+  <Body />
+</Content>
