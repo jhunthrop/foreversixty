@@ -1,0 +1,5 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment: { POSTGRES_USER: forever, POSTGRES_PASSWORD: forever, POSTGRES_DB: forever_test }
+    ports: ["5434:5432"]

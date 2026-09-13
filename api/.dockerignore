@@ -1,0 +1,3 @@
+bin/
+*.md
+docker-compose.test.yml
