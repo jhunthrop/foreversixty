@@ -9,6 +9,7 @@ import Panel from '../components/Panel.astro';
 import FeedRow from '../components/FeedRow.astro';
 import ClassTile from '../components/ClassTile.astro';
 import SearchBox from '../components/SearchBox.svelte';
+import SubscribeBox from '../components/SubscribeBox.svelte';
 import dates from '../data/dates.json';
 import toolsData from '../data/tools.json';
 import unknowns from '../data/unknowns.json';
@@ -154,6 +155,7 @@ const popular = [
                   Write a guide
                 </a>
               </div>
+              <SubscribeBox client:visible mailto={communityLinks.subscribeMailto} />
             </div>
           </Panel>
         </div>
