@@ -1,6 +1,7 @@
 # dependencies
 node_modules/
 .pnpm-store/
+data/.venv/
 
 # build output
 dist/
