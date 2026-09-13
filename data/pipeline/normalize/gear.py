@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import re
 
 from pipeline.icons import resolve_icon
 from pipeline.models import ClassItems, GearItem, ItemSetBonus, ItemSetRecord
@@ -15,6 +16,23 @@ logger = logging.getLogger(__name__)
 MAX_PLAYER_LEVEL = 60
 STAT_COLUMNS = range(10)
 SET_ITEM_COLUMNS = range(17)
+
+#: OverallQualityID values the planner keeps: uncommon, rare, epic, legendary.
+#: Poor (0) and common (1) are vendor trash the planner never recommends, and
+#: artifact (6) and heirloom (7) are not obtainable player gear in Era.
+PLANNER_QUALITIES = frozenset({2, 3, 4, 5})
+
+#: Display names the client uses for rows that are not shipping player gear:
+#: Gamemaster/GM items, QA and test rows ("AHNQIRAJ TEST ITEM"), the
+#: "Deprecated ..." leftovers, the "Monster - ..." display weapons NPCs hold,
+#: and the "(OLD)" duplicates kept beside their replacements. Matched
+#: case-insensitively; every alternative but "(old)" is whole-word, so real
+#: items whose names merely contain the letters ("Testament of Hope" contains
+#: "test", "Magma Forged Band" contains "gm") are kept.
+JUNK_NAME_PATTERN = re.compile(
+    r"\bgamemaster\b|\bgm\b|\btest\b|\bdeprecated\b|\bmonster\b|\(old\)",
+    re.IGNORECASE,
+)
 
 #: InventoryType -> the planner's slot name. Anything absent is not gear the
 #: planner tracks (shirts, tabards, bags, ammo, quivers, relics) and is dropped.
@@ -154,6 +172,25 @@ def _stats(row: dict[str, str]) -> dict[str, int]:
     return stats
 
 
+def is_junk_name(name: str) -> bool:
+    """True when the display name marks the row as non-shipping client data.
+
+    See JUNK_NAME_PATTERN for what counts and why the alternatives are
+    whole-word: a legitimate name that merely contains the letters must survive.
+    """
+    return JUNK_NAME_PATTERN.search(name) is not None
+
+
+def _has_gear_value(armor: int, stats: dict[str, int]) -> bool:
+    """True when the item carries something the planner can compare.
+
+    An item with no armour and no non-zero stat gives the planner nothing to
+    reason about. Real weapons whose whole value is their damage fall here too,
+    because this pipeline does not emit weapon damage.
+    """
+    return armor != 0 or any(stats.values())
+
+
 def _icon_name(item_row: dict[str, str], icons: dict[int, str], display_name: str) -> str:
     """The item's icon name, falling back to the client's placeholder art.
 
@@ -184,12 +221,20 @@ def build_class_items(
         required_level = _int(row, "RequiredLevel")
         if required_level > MAX_PLAYER_LEVEL:
             continue
+        if _int(row, "OverallQualityID") not in PLANNER_QUALITIES:
+            continue
+        display_name = _column(row, "Display_lang")
+        if is_junk_name(display_name):
+            continue
         item_id = _int(row, "ID")
         item_row = by_id.get(item_id)
         if item_row is None:
             logger.warning("item %s is in ItemSparse but not in Item; skipping it", item_id)
             continue
-        display_name = _column(row, "Display_lang")
+        armor = _int(row, "Resistances_0")
+        stats = _stats(row)
+        if not _has_gear_value(armor, stats):
+            continue
         item = GearItem(
             id=item_id,
             name=display_name,
@@ -198,8 +243,8 @@ def build_class_items(
             quality=_int(row, "OverallQualityID"),
             required_level=required_level,
             item_level=_int(row, "ItemLevel"),
-            armor=_int(row, "Resistances_0"),
-            stats=_stats(row),
+            armor=armor,
+            stats=stats,
             set_id=_int(row, "ItemSet") or None,
             unique=_int(row, "MaxCount") == 1,
         )

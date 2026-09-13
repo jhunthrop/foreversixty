@@ -20,6 +20,16 @@
     "inventory_type": 15
   },
   {
+    "id": 7026,
+    "name": "Linen Belt",
+    "quality": 1,
+    "item_level": 9,
+    "required_level": 4,
+    "class_id": 4,
+    "subclass_id": 1,
+    "inventory_type": 6
+  },
+  {
     "id": 12345,
     "name": "Overlevelled Cudgel",
     "quality": 3,
@@ -28,6 +38,16 @@
     "class_id": 2,
     "subclass_id": 4,
     "inventory_type": 13
+  },
+  {
+    "id": 13315,
+    "name": "Testament of Hope",
+    "quality": 2,
+    "item_level": 61,
+    "required_level": 0,
+    "class_id": 4,
+    "subclass_id": 0,
+    "inventory_type": 23
   },
   {
     "id": 14152,
@@ -50,6 +70,16 @@
     "inventory_type": 1
   },
   {
+    "id": 17066,
+    "name": "Drillborer Disk",
+    "quality": 4,
+    "item_level": 67,
+    "required_level": 60,
+    "class_id": 4,
+    "subclass_id": 6,
+    "inventory_type": 14
+  },
+  {
     "id": 19019,
     "name": "Thunderfury Blessed Blade of the Windseeker",
     "quality": 5,
@@ -68,5 +98,15 @@
     "class_id": 4,
     "subclass_id": 0,
     "inventory_type": 11
+  },
+  {
+    "id": 19743,
+    "name": "Cloaked Hood TEST",
+    "quality": 2,
+    "item_level": 38,
+    "required_level": 33,
+    "class_id": 4,
+    "subclass_id": 2,
+    "inventory_type": 1
   }
 ]

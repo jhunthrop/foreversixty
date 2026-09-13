@@ -6,7 +6,12 @@ from pipeline.csvio import read_csv
 from pipeline.icons import PLACEHOLDER_ICON, icon_names
 from pipeline.models import ItemSetBonus
 from pipeline.normalize import write_json, write_model
-from pipeline.normalize.gear import ItemDataError, build_class_items, build_item_sets
+from pipeline.normalize.gear import (
+    ItemDataError,
+    build_class_items,
+    build_item_sets,
+    is_junk_name,
+)
 from pipeline.spelltext import load_spell_text
 
 HERE = Path(__file__).parent
@@ -75,7 +80,7 @@ def test_class_restriction_and_proficiency_are_both_applied():
     mage = {i.id for i in by_slug()["mage"].items}
     assert 16866 in warrior and 16866 not in mage  # plate: both filters exclude the mage
     assert 14152 in mage and 14152 not in warrior  # AllowableClass mask excludes the warrior
-    assert 2825 in warrior and 2825 not in mage  # bow: proficiency excludes the mage
+    assert 17066 in warrior and 17066 not in mage  # shield: proficiency excludes the mage
     assert 19019 in warrior and 19019 in mage  # one-hand sword: both classes can use it
 
 
@@ -88,6 +93,60 @@ def test_non_equipment_and_overlevelled_items_are_dropped():
         ids = {i.id for i in record.items}
         assert 2589 not in ids  # InventoryType 0
         assert 12345 not in ids  # RequiredLevel 70
+
+
+@pytest.mark.parametrize(
+    "name",
+    [
+        "Gamemaster Hood",
+        "GM Robe",
+        "AHNQIRAJ TEST ITEM",
+        "Cloaked Hood TEST",
+        "Deprecated Old Belt",
+        "Monster - Axe, 2H Arcanite Reaper",
+        "(OLD)Heavy Throwing Axe",
+    ],
+)
+def test_the_junk_name_matcher_catches_every_pattern_class(name: str):
+    assert is_junk_name(name) is True
+
+
+@pytest.mark.parametrize(
+    "name",
+    [
+        "Testament of Hope",  # real uncommon off-hand; contains "Test"
+        "Magma Forged Band",  # real rare ring; contains "gm"
+        "Old Blunderbuss",  # real gun; "old" without the client's "(OLD)" marker
+        "Grasp of the Old God",
+        "Buru's Skull Fragment",
+    ],
+)
+def test_the_junk_name_matcher_keeps_real_items_that_merely_contain_the_letters(name: str):
+    assert is_junk_name(name) is False
+
+
+def test_only_uncommon_through_legendary_items_are_emitted():
+    """Linen Belt is quality 1 and real armour, so only the quality clause drops it."""
+    ids = {i.id for record in build_all() for i in record.items}
+    assert 7026 not in ids
+    assert {i.quality for record in build_all() for i in record.items} <= {2, 3, 4, 5}
+
+
+def test_junk_named_rows_are_dropped_but_a_near_miss_name_is_kept():
+    """Cloaked Hood TEST is uncommon plate-free armour with stats: only the name drops it."""
+    ids = {i.id for record in build_all() for i in record.items}
+    assert 19743 not in ids
+    assert 13315 in ids  # Testament of Hope survives the "test" pattern
+
+
+def test_an_item_with_no_armor_and_no_stats_is_dropped():
+    """Bow of Searing Arrows is a real uncommon-or-better weapon whose only value is
+    its damage, which this pipeline does not emit, so the planner cannot rank it."""
+    ids = {i.id for record in build_all() for i in record.items}
+    assert 2825 not in ids
+    for record in build_all():
+        for item in record.items:
+            assert item.armor != 0 or any(item.stats.values()), item.id
 
 
 def test_items_are_sorted_by_required_level_then_name():

@@ -44,6 +44,14 @@ def test_a_placeholder_race_is_appended_and_marked():
     assert {r.slug: r for r in races}["human"].placeholder is False
 
 
+def test_a_client_race_with_no_combo_is_not_emitted():
+    """ChrRaces carries races a player cannot pick; a race with zero legal classes
+    would render as an empty picker. Only Human is in the fixture combos, so Orc and
+    Pandaren drop out and the placeholder Skyborne stays without needing one."""
+    _classes, races, _combos = merged()
+    assert [race.slug for race in races] == ["human", "skyborne"]
+
+
 def test_combos_are_emitted_sorted(tmp_path: Path):
     _classes, _races, combos = merged()
     out = tmp_path / "combos.json"

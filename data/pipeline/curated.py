@@ -62,8 +62,23 @@ def merge_curated(
 ) -> tuple[list[PlayableClass], list[PlayableRace], list[Combo]]:
     merged_classes = _merge_classes(classes, _read(curated_dir, "classes"))
     merged_races = _merge_races(races, _read(curated_dir, "races"))
+    # Combos are validated against every client race, then used to decide which
+    # of those races is playable at all, so they must be built before the filter.
     combos = _build_combos(merged_classes, merged_races, _read(curated_dir, "combos"))
-    return merged_classes, merged_races, combos
+    return merged_classes, _playable_races(merged_races, combos), combos
+
+
+def _playable_races(races: list[PlayableRace], combos: list[Combo]) -> list[PlayableRace]:
+    """Drop the client races a player cannot actually pick.
+
+    ChrRaces carries rows that are not player-selectable in Era — Goblin is in
+    the table but has no class to pair with — and a race with zero legal
+    classes would render as an empty picker on the site. A race is kept when at
+    least one curated combo names it, or when it is a curated placeholder whose
+    combos are not published yet (Skyborne).
+    """
+    with_a_class = {combo.race_id for combo in combos}
+    return [race for race in races if race.id in with_a_class or race.placeholder]
 
 
 def _merge_classes(classes: list[PlayableClass], curated: list[dict]) -> list[PlayableClass]:
@@ -100,7 +115,16 @@ def _merge_races(races: list[PlayableRace], curated: list[dict]) -> list[Playabl
         seen.add(slug)
         changes = _changes(entry.get("forever_changes", []), f"race {slug}")
         if slug in by_slug:
-            merged[slug] = merged[slug].model_copy(update={"forever_changes": changes})
+            # The curated file is the authority on `placeholder`, even for a slug the
+            # input already carries: merging an earlier merge's output back in must not
+            # silently demote a placeholder race to a client one and then, because it
+            # has no combos, drop it.
+            merged[slug] = merged[slug].model_copy(
+                update={
+                    "forever_changes": changes,
+                    "placeholder": bool(entry.get("placeholder", False)),
+                }
+            )
             continue
         if not entry.get("placeholder"):
             raise CuratedError(

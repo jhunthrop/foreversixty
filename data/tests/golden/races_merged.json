@@ -8,22 +8,6 @@
     "forever_changes": []
   },
   {
-    "id": 2,
-    "name": "Orc",
-    "slug": "orc",
-    "faction": "horde",
-    "placeholder": false,
-    "forever_changes": []
-  },
-  {
-    "id": 24,
-    "name": "Pandaren",
-    "slug": "pandaren",
-    "faction": "neutral",
-    "placeholder": false,
-    "forever_changes": []
-  },
-  {
     "id": 900,
     "name": "Skyborne",
     "slug": "skyborne",
