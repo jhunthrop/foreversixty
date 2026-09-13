@@ -15,6 +15,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/db"
 	"github.com/jhunthrop/foreversixty/api/internal/mail"
 	"github.com/jhunthrop/foreversixty/api/internal/server"
+	"github.com/jhunthrop/foreversixty/api/internal/site"
 	"github.com/jhunthrop/foreversixty/api/internal/subscribe"
 	"github.com/jhunthrop/foreversixty/api/internal/trees"
 )
@@ -60,8 +61,15 @@ func main() {
 	}
 	log.Info("trees", "dir", cfg.TreeDataDir, "versions", treeData.Versions())
 
+	buildStore := &builds.Store{Pool: pool}
+	siteDeps := &site.Deps{
+		Store:         buildStore,
+		Data:          treeData,
+		PublicBaseURL: cfg.PublicBaseURL,
+		Log:           log,
+	}
 	buildsSvc := &builds.Service{
-		Store:         &builds.Store{Pool: pool},
+		Store:         buildStore,
 		Data:          treeData,
 		PublicBaseURL: cfg.PublicBaseURL,
 		Log:           log,
@@ -84,6 +92,7 @@ func main() {
 			AllowedOrigin:    cfg.PublicBaseURL,
 			Subscribe:        svc,
 			Builds:           buildsSvc,
+			Site:             siteDeps,
 			TrustedProxyHops: cfg.TrustedProxyHops,
 		}),
 		ReadHeaderTimeout: 5 * time.Second,

@@ -36,3 +36,17 @@ func TestUnknownRouteReturnsEnvelope(t *testing.T) {
 		t.Fatalf("unexpected body: %s", body)
 	}
 }
+
+func TestRouterWithoutBuildsOrSiteStillServesHealth(t *testing.T) {
+	h := NewRouter(Deps{Version: "test-1"})
+	rec := httptest.NewRecorder()
+	h.ServeHTTP(rec, httptest.NewRequest(http.MethodGet, "/b/znorjmts", nil))
+	if rec.Code != http.StatusNotFound {
+		t.Fatalf("code = %d, want the catch-all 404 when the page is not mounted", rec.Code)
+	}
+	rec = httptest.NewRecorder()
+	h.ServeHTTP(rec, httptest.NewRequest(http.MethodGet, "/health", nil))
+	if rec.Code != http.StatusOK {
+		t.Fatalf("health code = %d", rec.Code)
+	}
+}
