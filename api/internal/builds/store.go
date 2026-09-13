@@ -1,0 +1,142 @@
+package builds
+
+import (
+	"context"
+	"errors"
+	"fmt"
+	"math"
+
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
+)
+
+// ErrNotFound is returned by Get for an id that has never been saved.
+var ErrNotFound = errors.New("builds: not found")
+
+type Store struct{ Pool *pgxpool.Pool }
+
+// Save inserts b and returns the stored record with created true. When the
+// id already exists nothing is written and the existing record is returned
+// with created false: an id is a content hash, so an existing row is the
+// same build, and the title that was saved first wins.
+func (s *Store) Save(ctx context.Context, b Build) (Build, bool, error) {
+	classID, err := smallint(b.ClassID, "class_id")
+	if err != nil {
+		return Build{}, false, err
+	}
+	raceID, err := smallint(b.RaceID, "race_id")
+	if err != nil {
+		return Build{}, false, err
+	}
+	order, err := smallints(b.PointOrder)
+	if err != nil {
+		return Build{}, false, err
+	}
+	gear := b.Gear
+	if gear == nil {
+		gear = map[string]int{}
+	}
+	var title *string
+	if b.Title != "" {
+		t := b.Title
+		title = &t
+	}
+
+	err = s.Pool.QueryRow(ctx,
+		`insert into builds (id, class_id, race_id, tree_version, point_order, gear, title)
+		 values ($1, $2, $3, $4, $5, $6, $7)
+		 on conflict (id) do nothing
+		 returning created_at, views`,
+		b.ID, classID, raceID, b.TreeVersion, order, gear, title).
+		Scan(&b.CreatedAt, &b.Views)
+	if err == nil {
+		b.Gear = gear
+		return b, true, nil
+	}
+	if !errors.Is(err, pgx.ErrNoRows) {
+		return Build{}, false, fmt.Errorf("builds: insert %s: %w", b.ID, err)
+	}
+	existing, err := s.Get(ctx, b.ID)
+	if err != nil {
+		return Build{}, false, err
+	}
+	return existing, false, nil
+}
+
+func (s *Store) Get(ctx context.Context, id string) (Build, error) {
+	b := Build{ID: id}
+	var (
+		classID, raceID int16
+		order           []int16
+		title           *string
+	)
+	err := s.Pool.QueryRow(ctx,
+		`select class_id, race_id, tree_version, point_order, gear, title, created_at, views
+		 from builds where id = $1`, id).
+		Scan(&classID, &raceID, &b.TreeVersion, &order, &b.Gear, &title, &b.CreatedAt, &b.Views)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return Build{}, ErrNotFound
+	}
+	if err != nil {
+		return Build{}, fmt.Errorf("builds: get %s: %w", id, err)
+	}
+	b.ClassID = int(classID)
+	b.RaceID = int(raceID)
+	b.PointOrder = make([]int, len(order))
+	for i, v := range order {
+		b.PointOrder[i] = int(v)
+	}
+	if b.Gear == nil {
+		b.Gear = map[string]int{}
+	}
+	if title != nil {
+		b.Title = *title
+	}
+	return b, nil
+}
+
+// AddViews adds each count to the matching row's view counter in one round
+// trip. Ids that no longer exist are simply not updated.
+func (s *Store) AddViews(ctx context.Context, counts map[string]int64) error {
+	if len(counts) == 0 {
+		return nil
+	}
+	batch := &pgx.Batch{}
+	for id, n := range counts {
+		batch.Queue(`update builds set views = views + $2 where id = $1`, id, n)
+	}
+	res := s.Pool.SendBatch(ctx, batch)
+	for range counts {
+		if _, err := res.Exec(); err != nil {
+			_ = res.Close()
+			return fmt.Errorf("builds: add views: %w", err)
+		}
+	}
+	if err := res.Close(); err != nil {
+		return fmt.Errorf("builds: add views: %w", err)
+	}
+	return nil
+}
+
+// smallint converts a validated id to the column's element type. The
+// validator rejects unknown classes, races, and talents before a build
+// reaches the store, so an out-of-range value here is a programming error
+// rather than user input - but it is checked instead of silently truncated.
+func smallint(v int, name string) (int16, error) {
+	if v < math.MinInt16 || v > math.MaxInt16 {
+		return 0, fmt.Errorf("builds: %s %d does not fit a smallint column", name, v)
+	}
+	return int16(v), nil
+}
+
+func smallints(in []int) ([]int16, error) {
+	out := make([]int16, len(in))
+	for i, v := range in {
+		s, err := smallint(v, "talent id")
+		if err != nil {
+			return nil, err
+		}
+		out[i] = s
+	}
+	return out, nil
+}
