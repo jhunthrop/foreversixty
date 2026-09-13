@@ -9,7 +9,7 @@ import { latest } from '../../lib/dates';
 const updated = latest((await getCollection('guides')).map((g) => g.data.updated));
 ---
 <Base title="Guides" description="Class guides for World of Warcraft: Forever, written after beta play." path="/guides">
-  <main id="main" tabindex="-1" class="max-w-[1000px] w-full mx-auto px-6 py-10 flex flex-col gap-5">
+  <main id="main" tabindex="-1" class="max-w-[1000px] w-full mx-auto px-[18px] md:px-12 py-10 flex flex-col gap-5">
     <header class="flex flex-col gap-2">
       <h1 class="text-[28px] font-bold tracking-[0.02em]">Guides</h1>
       <UpdatedStamp date={updated} />

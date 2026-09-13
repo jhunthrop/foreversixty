@@ -130,7 +130,7 @@
       aria-expanded={open}
       aria-controls={open ? 'search-results' : undefined}
       aria-activedescendant={open && active >= 0 ? `search-opt-${active}` : undefined}
-      class="flex-1 bg-transparent text-[17px] text-text placeholder:text-muted outline-none"
+      class="flex-1 self-stretch min-h-11 bg-transparent text-[17px] text-text placeholder:text-muted outline-none"
       oninput={onInput}
       onkeydown={onKey}
       onfocus={load}
