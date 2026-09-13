@@ -8,10 +8,7 @@ HERE = Path(__file__).parent
 
 
 def test_dungeons_match_golden(tmp_path: Path):
-    dungeons = normalize_dungeons(
-        read_csv(HERE / "fixtures/JournalInstance.csv"),
-        read_csv(HERE / "fixtures/Map.csv"),
-    )
+    dungeons = normalize_dungeons(read_csv(HERE / "fixtures/JournalInstance.csv"))
     out = tmp_path / "dungeons.json"
     write_json(dungeons, out)
     assert out.read_text() == (HERE / "golden/dungeons.json").read_text()
