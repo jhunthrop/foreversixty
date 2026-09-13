@@ -1,5 +1,6 @@
 ---
-interface Props { title: string; description: string; href: string; status: { label: string; kind: 'site' | 'community' } }
+import type { ToolStatusKind } from '../lib/sources';
+interface Props { title: string; description: string; href: string; status: { label: string; kind: ToolStatusKind } }
 const { title, description, href, status } = Astro.props;
 ---
 <a href={href} class="flex flex-col gap-[10px] p-[18px_16px] rounded-panel border border-line bg-gradient-to-b from-card-top to-raised shadow-[inset_0_-1px_0_rgba(229,185,85,.35)] text-strong hover:border-gold-deep transition-colors duration-150">

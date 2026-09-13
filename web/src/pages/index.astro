@@ -14,8 +14,9 @@ import toolsData from '../data/tools.json';
 import unknowns from '../data/unknowns.json';
 import classes from '../data/classes.json';
 import communityLinks from '../data/links.json';
+import type { ToolStatusKind } from '../lib/sources';
 
-interface Tool { title: string; description: string; href: string; status: { label: string; kind: 'site' | 'community' }; icon: string }
+interface Tool { title: string; description: string; href: string; status: { label: string; kind: ToolStatusKind }; icon: string }
 const tools = toolsData as Tool[];
 
 const changelog = (await getCollection('changelog'))
