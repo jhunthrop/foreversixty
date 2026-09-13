@@ -12,7 +12,7 @@ HERE = Path(__file__).parent
 def make_blp2(
     width: int = 8,
     height: int = 8,
-    colour: tuple[int, int, int, int] = (13, 34, 56, 255),
+    colour: tuple[int, int, int, int] = (12, 34, 56, 255),
 ) -> bytes:
     """A minimal palettised BLP2, the format wago.tools serves from CASC."""
     red, green, blue, alpha = colour
@@ -45,7 +45,14 @@ def test_blp_to_webp_produces_a_64_square(tmp_path: Path):
     with Image.open(out) as img:
         assert img.format == "WEBP"
         assert img.size == (64, 64)
-        assert img.convert("RGBA").getpixel((32, 32)) == (13, 34, 56, 255)
+        # Lossy WebP at quality=90 can shift a channel by 1 (quantization), so this
+        # compares with a +-1 per-channel tolerance instead of exact equality. Do not
+        # tighten this back to `==`: it is not a bug, it is the lossy codec doing its
+        # job, and the exact shift is specific to the Pillow/libwebp build in uv.lock.
+        pixel = img.convert("RGBA").getpixel((32, 32))
+        expected = (12, 34, 56, 255)
+        channel_pairs = zip(pixel, expected, strict=True)
+        assert all(abs(actual - want) <= 1 for actual, want in channel_pairs)
 
 
 def test_blp_to_webp_is_deterministic():
