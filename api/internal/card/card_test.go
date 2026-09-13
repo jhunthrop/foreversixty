@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"image/png"
 	"strings"
+	"sync"
 	"testing"
 )
 
@@ -98,4 +99,41 @@ func TestSplitTextJoinsTheTreeCounts(t *testing.T) {
 			t.Errorf("splitText(%v) = %q, want %q", tc.in, got, tc.want)
 		}
 	}
+}
+
+// TestRenderIsSafeForConcurrentUse drives Render from several goroutines at
+// once, the way Discord, Slack, Twitter/X and Facebook all fetch a card the
+// moment one link is posted and Cloud Run serves them on one instance. Each
+// card must be byte-identical to a card rendered on its own: a garbled one
+// would be served 200 and cached for a week under a content-hash URL that
+// cannot be busted.
+func TestRenderIsSafeForConcurrentUse(t *testing.T) {
+	want, err := Render(sample())
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	const goroutines, perGoroutine = 8, 20
+	var wg sync.WaitGroup
+	start := make(chan struct{})
+	for range goroutines {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			<-start
+			for range perGoroutine {
+				got, err := Render(sample())
+				if err != nil {
+					t.Errorf("concurrent render: %v", err)
+					return
+				}
+				if !bytes.Equal(got, want) {
+					t.Error("a concurrent render produced different bytes than a lone one")
+					return
+				}
+			}
+		}()
+	}
+	close(start)
+	wg.Wait()
 }

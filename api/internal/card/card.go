@@ -72,14 +72,39 @@ type faces struct {
 	wordmark font.Face
 }
 
-// loadFaces parses the embedded fonts once. Parsing can only fail if the
+// parsedFonts holds the two typefaces the card draws with. An
+// *opentype.Font is read-only once parsed, so one copy is shared by every
+// request; the font.Face values built from it are not, which is why
+// newFaces below builds a fresh set per render.
+type parsedFonts struct {
+	cinzel *opentype.Font
+	barlow *opentype.Font
+}
+
+// loadFonts parses the embedded fonts once. Parsing can only fail if the
 // embedded files are corrupt, which is a build problem, not a request one.
-var loadFaces = sync.OnceValues(func() (*faces, error) {
+var loadFonts = sync.OnceValues(func() (*parsedFonts, error) {
 	cinzel, err := parseFont("fonts/Cinzel-Bold.ttf")
 	if err != nil {
 		return nil, err
 	}
 	barlow, err := parseFont("fonts/Barlow-Regular.ttf")
+	if err != nil {
+		return nil, err
+	}
+	return &parsedFonts{cinzel: cinzel, barlow: barlow}, nil
+})
+
+// newFaces builds one render's worth of faces. A font.Face may not be
+// shared across goroutines: opentype's implementation carries an
+// sfnt.Buffer, a vector.Rasterizer and a glyph mask that every draw
+// overwrites, so two concurrent card requests through one face corrupt each
+// other's glyphs or panic inside the rasterizer. Giving each render its own
+// set costs a few microseconds against a render of several milliseconds,
+// because the parse - the expensive half - is already shared and
+// opentype.NewFace only records a font pointer and a scale.
+func newFaces() (*faces, error) {
+	fonts, err := loadFonts()
 	if err != nil {
 		return nil, err
 	}
@@ -89,10 +114,10 @@ var loadFaces = sync.OnceValues(func() (*faces, error) {
 		src  *opentype.Font
 		size float64
 	}{
-		{&f.title, cinzel, 64},
-		{&f.numerals, cinzel, 96},
-		{&f.body, barlow, 34},
-		{&f.wordmark, barlow, 26},
+		{&f.title, fonts.cinzel, 64},
+		{&f.numerals, fonts.cinzel, 96},
+		{&f.body, fonts.barlow, 34},
+		{&f.wordmark, fonts.barlow, 26},
 	} {
 		face, err := opentype.NewFace(spec.src, &opentype.FaceOptions{Size: spec.size, DPI: 72, Hinting: font.HintingFull})
 		if err != nil {
@@ -101,7 +126,7 @@ var loadFaces = sync.OnceValues(func() (*faces, error) {
 		*spec.dst = face
 	}
 	return f, nil
-})
+}
 
 func parseFont(name string) (*opentype.Font, error) {
 	b, err := fontFS.ReadFile(name)
@@ -115,9 +140,9 @@ func parseFont(name string) (*opentype.Font, error) {
 	return f, nil
 }
 
-// Render draws the card for one build.
+// Render draws the card for one build. It is safe to call concurrently.
 func Render(in Input) ([]byte, error) {
-	f, err := loadFaces()
+	f, err := newFaces()
 	if err != nil {
 		return nil, err
 	}
@@ -138,7 +163,7 @@ func Render(in Input) ([]byte, error) {
 // build's own card cannot be drawn, so it must never itself fail at
 // request time.
 var fallback = sync.OnceValue(func() []byte {
-	f, err := loadFaces()
+	f, err := newFaces()
 	if err != nil {
 		return nil
 	}
