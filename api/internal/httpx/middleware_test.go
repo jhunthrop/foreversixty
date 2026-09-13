@@ -1,10 +1,11 @@
 package httpx
 
 import (
+	"bytes"
 	"log/slog"
 	"net/http"
 	"net/http/httptest"
-	"os"
+	"strings"
 	"testing"
 )
 
@@ -22,12 +23,20 @@ func TestRequestIDIsSetAndEchoed(t *testing.T) {
 }
 
 func TestRecoverTurnsPanicInto500(t *testing.T) {
-	log := slog.New(slog.NewTextHandler(os.Stderr, nil))
+	buf := &bytes.Buffer{}
+	log := slog.New(slog.NewTextHandler(buf, nil))
 	h := Chain(http.HandlerFunc(func(http.ResponseWriter, *http.Request) { panic("boom") }), RequestID(), Recover(log))
 	rec := httptest.NewRecorder()
 	h.ServeHTTP(rec, httptest.NewRequest("GET", "/", nil))
 	if rec.Code != 500 {
 		t.Fatalf("code = %d", rec.Code)
+	}
+	logOutput := buf.String()
+	if !strings.Contains(logOutput, "method=GET") {
+		t.Fatalf("log missing method=GET: %s", logOutput)
+	}
+	if !strings.Contains(logOutput, "path=/") {
+		t.Fatalf("log missing path=/: %s", logOutput)
 	}
 }
 
