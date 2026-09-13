@@ -13,6 +13,7 @@
   // instead of re-firing an import that has already failed.
   let failed = $state(false);
   let input: HTMLInputElement;
+  let form: HTMLFormElement;
   let pagefind: Pagefind | null = null;
 
   const PAGEFIND_MODULE_URL = '/pagefind/pagefind.js';
@@ -67,9 +68,26 @@
 
   function onKey(e: KeyboardEvent) {
     if (e.key === 'ArrowDown') { e.preventDefault(); active = Math.min(active + 1, results.length - 1); }
-    else if (e.key === 'ArrowUp') { e.preventDefault(); active = Math.max(active - 1, 0); }
+    // ArrowUp off the top of the list hands the input back to the typist (active = -1), so
+    // Enter submits the typed query instead of opening whatever was highlighted.
+    else if (e.key === 'ArrowUp') { e.preventDefault(); active = active <= 0 ? -1 : active - 1; }
     else if (e.key === 'Enter' && active >= 0 && open) { e.preventDefault(); location.href = results[active].url; }
-    else if (e.key === 'Escape') { open = false; }
+    else if (e.key === 'Escape') { close(); }
+  }
+
+  function close() {
+    open = false;
+    active = -1;
+  }
+
+  function onFocusOut(e: FocusEvent) {
+    const next = e.relatedTarget;
+    if (!(next instanceof Node) || !form.contains(next)) close();
+  }
+
+  function onPointerDownOutside(e: PointerEvent) {
+    const target = e.target;
+    if (!(target instanceof Node) || !form.contains(target)) close();
   }
 
   function globalKey(e: KeyboardEvent) {
@@ -85,16 +103,20 @@
   // before the debounce resolved (which submits the form rather than opening a result).
   onMount(() => {
     window.addEventListener('keydown', globalKey);
+    document.addEventListener('pointerdown', onPointerDownOutside);
     const seeded = new URLSearchParams(window.location.search).get('q') ?? '';
     if (seeded) {
       query = seeded;
       run();
     }
-    return () => window.removeEventListener('keydown', globalKey);
+    return () => {
+      window.removeEventListener('keydown', globalKey);
+      document.removeEventListener('pointerdown', onPointerDownOutside);
+    };
   });
 </script>
 
-<form role="search" action="/search" class="relative max-w-[760px]" onsubmit={(e) => { if (open && active >= 0) { e.preventDefault(); location.href = results[active].url; } }}>
+<form bind:this={form} role="search" action="/search" class="relative max-w-[760px]" onfocusout={onFocusOut} onsubmit={(e) => { if (open && active >= 0) { e.preventDefault(); location.href = results[active].url; } }}>
   <div class="flex items-center gap-3 h-14 px-[18px] border border-line-warm-strong rounded-panel bg-bg/75 shadow-[0_0_0_1px_rgba(229,185,85,.15),0_12px_30px_rgba(0,0,0,.45)]">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="text-gold" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
     <input
@@ -106,7 +128,7 @@
       placeholder="Search quests, items, dungeons, zones, talents…"
       aria-label="Search the site"
       aria-expanded={open}
-      aria-controls="search-results"
+      aria-controls={open ? 'search-results' : undefined}
       aria-activedescendant={open && active >= 0 ? `search-opt-${active}` : undefined}
       class="flex-1 bg-transparent text-[17px] text-text placeholder:text-muted outline-none"
       oninput={onInput}
@@ -120,7 +142,9 @@
       Search is unavailable. Browse <a href="/dungeons">dungeons</a>, <a href="/zones">zones</a>, <a href="/guides">guides</a>.
     </p>
   {:else if open}
-    <ul id="search-results" role="listbox" class={dropdownClass}>
+    <!-- Swallowing mousedown keeps focus in the input: a blur would close the dropdown via
+         onfocusout and unmount the link before its click event ever fired. -->
+    <ul id="search-results" role="listbox" class={dropdownClass} onmousedown={(e) => e.preventDefault()}>
       {#each results as r, i}
         <li id={`search-opt-${i}`} role="option" aria-selected={i === active}>
           <a href={r.url} class={`flex flex-col gap-1 px-4 py-3 border-b border-line-soft last:border-b-0 ${i === active ? 'bg-card-top' : ''}`} onmouseenter={() => (active = i)} aria-labelledby={`search-title-${i}`} aria-describedby={`search-excerpt-${i}`}>

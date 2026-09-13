@@ -63,3 +63,30 @@ test('an unreachable search index falls back to links, once', async ({ page }) =
   expect(indexRequests).toHaveLength(1);
   expect(crashes).toEqual([]);
 });
+
+test('the results dropdown closes on outside click and drops aria-controls', async ({ page }) => {
+  await page.goto('/');
+  await page.keyboard.press('/');
+  const box = page.getByRole('searchbox');
+  await expect(box).not.toHaveAttribute('aria-controls');
+  await box.fill('Thanes');
+  await expect(page.getByRole('listbox')).toBeVisible();
+  await expect(box).toHaveAttribute('aria-controls', 'search-results');
+
+  await page.getByRole('heading', { name: 'Tools' }).click();
+  await expect(page.getByRole('listbox')).toBeHidden();
+  await expect(box).not.toHaveAttribute('aria-controls');
+});
+
+test('ArrowUp from the first result hands the query back to the input', async ({ page }) => {
+  await page.goto('/');
+  await page.keyboard.press('/');
+  const box = page.getByRole('searchbox');
+  await box.fill('Thanes');
+  await expect(box).toHaveAttribute('aria-activedescendant', 'search-opt-0');
+  await page.keyboard.press('ArrowUp');
+  await expect(box).not.toHaveAttribute('aria-activedescendant');
+  await expect(page.getByRole('option').first()).toHaveAttribute('aria-selected', 'false');
+  await page.keyboard.press('Enter');
+  await expect(page).toHaveURL(/\/search\?q=Thanes$/);
+});
