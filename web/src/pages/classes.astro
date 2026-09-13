@@ -1,0 +1,151 @@
+---
+// web/src/pages/classes.astro
+// The one generated reference page in Phase 1: which races can be which classes, what
+// Forever changed about each, and a way into the planner from every row.
+import Base from '../layouts/Base.astro';
+import Panel from '../components/Panel.astro';
+import SourcePill from '../components/SourcePill.astro';
+import { classRows, comboFor, plannerHref, raceRows } from '../lib/planner/reference';
+---
+
+<Base
+  title="Races and classes"
+  description="Every race and class in World of Warcraft: Forever, the legal combinations including the ones Forever adds, and what changed per row."
+  path="/classes"
+>
+  <main
+    id="main"
+    tabindex="-1"
+    class="mx-auto flex w-full max-w-[1344px] flex-col gap-[22px] px-[18px] py-8 md:gap-8 md:px-12"
+  >
+    <header class="flex flex-col gap-2">
+      <h1 class="section-title text-[18px]">Races and classes</h1>
+      <p class="text-muted max-w-[720px] text-[14px] leading-relaxed">
+        The nine classes, the nine races, and which pairs are legal. Combinations Forever adds are marked.
+        Every cell opens the planner on that pair.
+      </p>
+    </header>
+
+    <Panel title="Legal combinations">
+      <div class="overflow-x-auto">
+        <table class="w-full border-collapse text-[13px]">
+          <thead>
+            <tr>
+              <th
+                scope="col"
+                class="label text-muted border-line-soft bg-raised sticky left-0 z-10 border-b px-3 py-2 text-left"
+              >
+                Race
+              </th>
+              {classRows.map((klass) => (
+                <th scope="col" class="label border-line-soft border-b px-2 py-2 text-left">
+                  <span style={`color: ${klass.color};`}>{klass.name}</span>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {raceRows.map((race) => (
+              <tr>
+                <th
+                  scope="row"
+                  class="text-strong border-line-soft bg-raised sticky left-0 z-10 border-b px-3 py-2 text-left text-[13px] font-semibold whitespace-nowrap"
+                >
+                  {race.name}
+                </th>
+                {classRows.map((klass) => {
+                  const combo = comboFor(race.id, klass.id);
+                  return (
+                    <td class="border-line-soft border-b px-2 py-1">
+                      {combo ? (
+                        <a
+                          href={plannerHref(klass.slug, race.slug)}
+                          class="inline-flex min-h-11 items-center gap-2 md:min-h-0"
+                          aria-label={`Plan a ${race.name} ${klass.name}`}
+                        >
+                          <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            aria-hidden="true"
+                          >
+                            <path d="M4 12l5 5L20 6" />
+                          </svg>
+                          {combo.new_in_forever && <span class="pill pill-blizzard">New in Forever</span>}
+                        </a>
+                      ) : (
+                        <span class="text-muted" aria-label="Not available">
+                          —
+                        </span>
+                      )}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </Panel>
+
+    <Panel title="Classes">
+      {classRows.map((klass, i) => (
+        <div
+          class={`flex flex-col gap-2 px-[18px] py-[14px] ${i < classRows.length - 1 ? 'border-line-soft border-b' : ''}`}
+        >
+          <div class="flex flex-wrap items-center gap-3">
+            <span class="font-display text-[15px] font-bold" style={`color: ${klass.color};`}>
+              {klass.name}
+            </span>
+            <a href={plannerHref(klass.slug)} class="text-[13px] font-semibold">
+              Open in the planner
+            </a>
+          </div>
+          {klass.forever_changes.map((change) => (
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="text-[14px]">{change.text}</span>
+              {change.sources.map((source) => (
+                <a href={source.url} rel="noreferrer">
+                  <SourcePill kind={source.kind} label={source.label} />
+                </a>
+              ))}
+            </div>
+          ))}
+        </div>
+      ))}
+    </Panel>
+
+    <Panel title="Races">
+      {raceRows.map((race, i) => (
+        <div
+          class={`flex flex-col gap-2 px-[18px] py-[14px] ${i < raceRows.length - 1 ? 'border-line-soft border-b' : ''}`}
+        >
+          <div class="flex flex-wrap items-center gap-3">
+            <span class="text-strong font-display text-[15px] font-bold">{race.name}</span>
+            <span
+              class={`label ${race.faction === 'alliance' ? 'text-alliance' : race.faction === 'horde' ? 'text-horde' : 'text-muted'}`}
+            >
+              {race.faction}
+            </span>
+            {race.placeholder && <span class="pill pill-sample">Placeholder</span>}
+          </div>
+          {race.forever_changes.map((change) => (
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="text-[14px]">{change.text}</span>
+              {change.sources.map((source) => (
+                <a href={source.url} rel="noreferrer">
+                  <SourcePill kind={source.kind} label={source.label} />
+                </a>
+              ))}
+            </div>
+          ))}
+        </div>
+      ))}
+    </Panel>
+  </main>
+</Base>
