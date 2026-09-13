@@ -215,6 +215,13 @@ paths:
           content:
             text/html:
               schema: { type: string }
+        '500':
+          description: >-
+            The build could not be loaded or the page could not be rendered. A plain page titled
+            "Build unavailable", served with Cache-Control: no-store.
+          content:
+            text/html:
+              schema: { type: string }
   /b/{id}/card.png:
     get:
       summary: The build's preview card
