@@ -4,6 +4,8 @@ import svelte from '@astrojs/svelte';
 import sitemap from '@astrojs/sitemap';
 import pagefind from 'astro-pagefind';
 import tailwindcss from '@tailwindcss/vite';
+import links from './src/data/links.json';
+import { assertLinksAreReal } from './src/lib/links';
 
 // Registers `client:interaction` (see src/directives/interaction.ts): hydrates the homepage
 // search island on the user's first focus/`/`-press instead of during initial page load, so
@@ -17,11 +19,22 @@ const interactionDirective = {
   },
 };
 
+// CF_PAGES is set only inside a Cloudflare Pages build, so local and CI builds keep working
+// against the placeholder community links while a deploy fails fast and names the file.
+const placeholderGuard = {
+  name: 'placeholder-guard',
+  hooks: {
+    'astro:config:setup': () => {
+      if (process.env.CF_PAGES) assertLinksAreReal(links);
+    },
+  },
+};
+
 export default defineConfig({
   site: 'https://foreversixty.gg',
   trailingSlash: 'never',
   build: { format: 'file', inlineStylesheets: 'always' },
-  integrations: [svelte(), sitemap(), pagefind(), interactionDirective],
+  integrations: [svelte(), sitemap(), pagefind(), interactionDirective, placeholderGuard],
   vite: {
     plugins: [tailwindcss()],
     // astro-pagefind writes /pagefind/pagefind.js into dist/ *after* the bundle is generated,

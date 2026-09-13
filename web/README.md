@@ -56,7 +56,7 @@ web/
 3. Custom domains: add `foreversixty.gg` (apex) and `www.foreversixty.gg`.
 4. Enable Web Analytics on the Pages project (dashboard toggle; no script is added to the repo).
 
-Before the first deploy, replace the `PLACEHOLDER` values in `src/data/links.json`.
+Before the first deploy, replace the `PLACEHOLDER` values in `src/data/links.json`. A build with `CF_PAGES` set (that is, a Cloudflare Pages build) fails and names the offending keys if any are left; local and CI builds are unaffected.
 
 ## Redirect foreversixty.com → foreversixty.gg
 
