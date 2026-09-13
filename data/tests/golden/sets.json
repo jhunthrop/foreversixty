@@ -1,0 +1,20 @@
+[
+  {
+    "id": 209,
+    "name": "Battlegear of Might",
+    "item_ids": [
+      16866,
+      16867
+    ],
+    "bonuses": [
+      {
+        "pieces": 3,
+        "description": "Increases the block value of your shield by 31."
+      },
+      {
+        "pieces": 5,
+        "description": "Gives you a $h% chance to generate an additional Rage point."
+      }
+    ]
+  }
+]

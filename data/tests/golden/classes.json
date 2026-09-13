@@ -10,5 +10,11 @@
     "name": "Paladin",
     "slug": "paladin",
     "color": "#f48cba"
+  },
+  {
+    "id": 8,
+    "name": "Mage",
+    "slug": "mage",
+    "color": "#3fc7eb"
   }
 ]

@@ -10,6 +10,46 @@
     "inventory_type": 0
   },
   {
+    "id": 2825,
+    "name": "Bow of Searing Arrows",
+    "quality": 4,
+    "item_level": 42,
+    "required_level": 37,
+    "class_id": 2,
+    "subclass_id": 2,
+    "inventory_type": 15
+  },
+  {
+    "id": 12345,
+    "name": "Overlevelled Cudgel",
+    "quality": 3,
+    "item_level": 70,
+    "required_level": 70,
+    "class_id": 2,
+    "subclass_id": 4,
+    "inventory_type": 13
+  },
+  {
+    "id": 14152,
+    "name": "Robe of the Archmage",
+    "quality": 4,
+    "item_level": 66,
+    "required_level": 60,
+    "class_id": 4,
+    "subclass_id": 1,
+    "inventory_type": 20
+  },
+  {
+    "id": 16866,
+    "name": "Helm of Might",
+    "quality": 4,
+    "item_level": 66,
+    "required_level": 60,
+    "class_id": 4,
+    "subclass_id": 4,
+    "inventory_type": 1
+  },
+  {
     "id": 19019,
     "name": "Thunderfury Blessed Blade of the Windseeker",
     "quality": 5,
@@ -18,5 +58,15 @@
     "class_id": 2,
     "subclass_id": 7,
     "inventory_type": 13
+  },
+  {
+    "id": 19325,
+    "name": "Don Julio's Band",
+    "quality": 4,
+    "item_level": 65,
+    "required_level": 60,
+    "class_id": 4,
+    "subclass_id": 0,
+    "inventory_type": 11
   }
 ]

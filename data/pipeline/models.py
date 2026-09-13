@@ -89,3 +89,35 @@ class ClassTalents(BaseModel):
     class_id: int
     class_slug: str
     trees: list[TalentTree]
+
+
+class GearItem(BaseModel):
+    id: int
+    name: str
+    icon: str
+    slot: str
+    quality: int
+    required_level: int
+    item_level: int
+    armor: int
+    stats: dict[str, int]
+    set_id: int | None
+    unique: bool
+
+
+class ClassItems(BaseModel):
+    build: str
+    class_slug: str
+    items: list[GearItem]
+
+
+class ItemSetBonus(BaseModel):
+    pieces: int
+    description: str
+
+
+class ItemSetRecord(BaseModel):
+    id: int
+    name: str
+    item_ids: list[int]
+    bonuses: list[ItemSetBonus]
