@@ -1,0 +1,42 @@
+[
+  {
+    "id": 124,
+    "tab_id": 161,
+    "tab_name": "Arms",
+    "class_id": 1,
+    "tier": 0,
+    "column": 0,
+    "spell_ids": [
+      12282,
+      12663,
+      12664
+    ],
+    "prereq_talent_id": null
+  },
+  {
+    "id": 130,
+    "tab_id": 161,
+    "tab_name": "Arms",
+    "class_id": 1,
+    "tier": 1,
+    "column": 1,
+    "spell_ids": [
+      12285,
+      12697
+    ],
+    "prereq_talent_id": 124
+  },
+  {
+    "id": 142,
+    "tab_id": 161,
+    "tab_name": "Arms",
+    "class_id": 1,
+    "tier": 3,
+    "column": 2,
+    "spell_ids": [
+      12294,
+      12297
+    ],
+    "prereq_talent_id": 130
+  }
+]

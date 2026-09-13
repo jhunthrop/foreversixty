@@ -1,0 +1,14 @@
+{
+  "build": "1.15.9.69722",
+  "product": "wow_classic_era",
+  "fetched_at": "2026-09-13T01:58:22.130333Z",
+  "files": {
+    "classes.json": "1fa45d109af64583675090e9cac0e3f820b7daaaa41c2f1947081b475ed0a7b6",
+    "dungeons.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+    "items.json": "63846bc86c578b84668ee8931819109edef99bf5fd4cc5b879bfa2e3f5f3e6db",
+    "races.json": "40a9b6cb5749399a620255b6de527e03184a2ec38c6f030f286635da3746e21f",
+    "spells.json": "6cb025bb4e3ac8d71516fb8c6afd0767515e4fa4288a69aaf997e1b717751235",
+    "talents.json": "8a5d5fe8423654b8d7b03dbd147e1032d3691e115835bebc1023ee483bfde91a",
+    "zones.json": "26960cda5fdeb776c5b558d07dc5dc0ae2c3f66b3663aa1bc5444316eab2f68b"
+  }
+}

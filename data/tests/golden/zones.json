@@ -1,0 +1,38 @@
+[
+  {
+    "id": 12,
+    "name": "Elwynn Forest",
+    "map_id": 0,
+    "map_name": "Eastern Kingdoms",
+    "parent_id": null,
+    "level_min": 1,
+    "level_max": null
+  },
+  {
+    "id": 14,
+    "name": "Durotar",
+    "map_id": 1,
+    "map_name": "Kalimdor",
+    "parent_id": null,
+    "level_min": 1,
+    "level_max": null
+  },
+  {
+    "id": 40,
+    "name": "Westfall",
+    "map_id": 0,
+    "map_name": "Eastern Kingdoms",
+    "parent_id": null,
+    "level_min": 10,
+    "level_max": null
+  },
+  {
+    "id": 87,
+    "name": "Goldshire",
+    "map_id": 0,
+    "map_name": "Eastern Kingdoms",
+    "parent_id": 12,
+    "level_min": null,
+    "level_max": null
+  }
+]

@@ -1,0 +1,16 @@
+[
+  {
+    "id": 227,
+    "name": "Ragefire Chasm",
+    "map_id": 389,
+    "description": "A cavern beneath Orgrimmar.",
+    "order": 1
+  },
+  {
+    "id": 228,
+    "name": "Wailing Caverns",
+    "map_id": 43,
+    "description": "Twisting tunnels below the Barrens.",
+    "order": 2
+  }
+]

@@ -1,0 +1,5 @@
+ID,ContinentID,ParentAreaID,AreaName_lang,Flags_0,Flags_1,ExplorationLevel,ZoneName
+12,0,0,Elwynn Forest,0,0,1,ELWYNN
+40,0,0,Westfall,0,0,10,WESTFALL
+87,0,12,Goldshire,0,0,0,GOLDSHIRE
+14,1,0,Durotar,0,0,1,DUROTAR
