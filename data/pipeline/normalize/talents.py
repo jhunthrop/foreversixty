@@ -9,7 +9,7 @@ def normalize_talents(
     for t in talent_rows:
         spell_ids = [
             int(t[f"SpellRank_{i}"])
-            for i in range(5)
+            for i in range(9)
             if t.get(f"SpellRank_{i}", "0").strip() not in ("", "0")
         ]
         prereq = int(t.get("PrereqTalent_0", "0") or 0)

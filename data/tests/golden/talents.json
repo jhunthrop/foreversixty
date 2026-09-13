@@ -25,5 +25,18 @@
       12697
     ],
     "prereq_talent_id": 124
+  },
+  {
+    "id": 142,
+    "tab_id": 161,
+    "tab_name": "Arms",
+    "class_id": 1,
+    "tier": 3,
+    "column": 2,
+    "spell_ids": [
+      12294,
+      12297
+    ],
+    "prereq_talent_id": 130
   }
 ]

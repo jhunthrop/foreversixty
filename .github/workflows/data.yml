@@ -10,6 +10,7 @@ on:
     inputs:
       product: { description: 'wago.tools product key', required: true, default: 'wow_classic_era' }
       build: { description: 'build string (blank = latest)', required: false }
+permissions: { contents: read }
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -30,15 +31,24 @@ jobs:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v3
       - run: uv sync
-      - run: uv run python -m pipeline fetch --product "${{ inputs.product }}" ${{ inputs.build && format('--build {0}', inputs.build) || '' }}
-      - run: echo "BUILD=$(ls builds | sort -V | tail -1)" >> $GITHUB_ENV
+      - name: Fetch build
+        env:
+          PRODUCT: ${{ inputs.product }}
+          BUILD_IN: ${{ inputs.build }}
+        run: |
+          ARGS=(--product "$PRODUCT")
+          [ -n "$BUILD_IN" ] && ARGS+=(--build "$BUILD_IN")
+          BUILD=$(uv run python -m pipeline fetch "${ARGS[@]}" | tail -1)
+          echo "BUILD=$BUILD" >> "$GITHUB_ENV"
+          echo "PRODUCT=$PRODUCT" >> "$GITHUB_ENV"
       - run: uv run python -m pipeline normalize --build "$BUILD"
       - run: |
-          PREV=$(ls builds | sort -V | tail -2 | head -1)
-          if [ "$PREV" != "$BUILD" ]; then uv run python -m pipeline diff --from "$PREV" --to "$BUILD"; fi
+          PREV=$(ls builds | grep -vx "$BUILD" | sort -V | tail -1)
+          if [ -n "$PREV" ]; then uv run python -m pipeline diff --from "$PREV" --to "$BUILD"; fi
       - run: |
           git config user.name "forever-data-bot"
           git config user.email "bot@foreversixty.gg"
-          git add builds diffs
-          git commit -m "data: build $BUILD (${{ inputs.product }})" || echo "nothing to commit"
+          git add builds
+          git add diffs
+          git commit -m "data: build $BUILD ($PRODUCT)" || echo "nothing to commit"
           git push

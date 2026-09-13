@@ -83,6 +83,7 @@ def fetch_build(
             "fetched_at": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
         }
         (raw / "_meta.json").write_text(json.dumps(meta, indent=2) + "\n")
+        print(build)
         return root / build
     finally:
         if own:

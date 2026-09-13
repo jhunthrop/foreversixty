@@ -9,7 +9,7 @@ dev = ["pytest>=8", "pytest-cov>=5", "ruff>=0.6"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "--cov=pipeline --cov-report=term-missing"
+addopts = "--cov=pipeline --cov-report=term-missing --cov-fail-under=80"
 
 [tool.ruff]
 line-length = 100
