@@ -175,6 +175,8 @@ test('reset asks before it clears the build', async ({ page }) => {
   for (let i = 0; i < 2; i += 1) await page.getByTestId('talent-1001').click();
   await page.getByRole('button', { name: 'Reset' }).click();
   await expect(page.getByTestId('planner-spent')).toHaveText('2/51');
+  // The safe answer takes the focus, so a second Enter out of habit keeps the build.
+  await expect(page.getByRole('button', { name: 'Keep the build' })).toBeFocused();
   await page.getByRole('button', { name: 'Keep the build' }).click();
   await expect(page.getByTestId('planner-spent')).toHaveText('2/51');
 
@@ -204,4 +206,24 @@ test('a long point order scrolls inside the strip, not across the page', async (
   });
   expect(widths.listScroll).toBeGreaterThan(widths.listClient);
   expect(widths.pageScroll).toBeLessThanOrEqual(widths.pageClient);
+});
+
+// Switching class empties the build by itself, and the class selector stays reachable while the
+// confirm is open, so a confirm that survived the switch would ask about points already gone.
+test('a class switch drops a reset confirm that is still open', async ({ page }) => {
+  await page.goto('/planner');
+  await page.getByTestId('talent-1001').click();
+  await page.getByRole('button', { name: 'Reset' }).click();
+  await expect(page.getByRole('button', { name: 'Clear all points' })).toBeVisible();
+
+  // Warrior is the only class with talent data on this build, so the way back to a ready
+  // planner under a different class is out and back again.
+  await page.getByLabel('Class').selectOption('paladin');
+  await expect(page.getByText('Talent data did not load')).toBeVisible();
+  await page.getByLabel('Class').selectOption('warrior');
+  await expect(page.getByRole('heading', { name: 'Arms' })).toBeVisible();
+
+  await expect(page.getByTestId('planner-spent')).toHaveText('0/51');
+  await expect(page.getByRole('button', { name: 'Clear all points' })).toBeHidden();
+  await expect(page.getByRole('button', { name: 'Reset' })).toBeVisible();
 });

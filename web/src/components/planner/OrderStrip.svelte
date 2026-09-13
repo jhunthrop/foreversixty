@@ -5,6 +5,7 @@
 <script lang="ts">
   import { levelForIndex } from '../../lib/planner/derive';
   import { dataUrl } from '../../lib/planner/load';
+  import { SECONDARY_BUTTON } from '../../lib/planner/styles';
   import type { PlannerStore } from '../../lib/planner/store.svelte';
 
   let { store }: { store: PlannerStore } = $props();
@@ -30,7 +31,7 @@
       <span class="tabular text-muted font-mono text-[13px]">{store.order.length}</span>
       <button
         type="button"
-        class="border-line-warm rounded-control text-text inline-flex h-11 items-center border px-3 text-[12px] font-bold tracking-[0.06em] uppercase md:h-9"
+        class="{SECONDARY_BUTTON} border-line-warm text-text px-3"
         aria-expanded={expanded}
         onclick={() => (expanded = !expanded)}
       >

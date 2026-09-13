@@ -8,6 +8,7 @@
   import { DEFAULT_CLASS_SLUG, ERA_DATA_NOTICE } from '../../lib/planner/config';
   import { DATA_LOAD_FAILED, loadReference, loadSets, loadTalents } from '../../lib/planner/load';
   import { createPlannerStore } from '../../lib/planner/store.svelte';
+  import { SECONDARY_BUTTON } from '../../lib/planner/styles';
   import type { BuildRecord } from '../../lib/planner/types';
   import OrderStrip from './OrderStrip.svelte';
   import SummaryBar from './SummaryBar.svelte';
@@ -67,11 +68,6 @@
     }
   }
 
-  // design/DESIGN-SYSTEM.md "Secondary button": warm border, uppercase 12px 700 at 0.06em
-  // tracking, 36px tall -- 44px on phone, where it has to clear the hit-target minimum.
-  const secondaryButton =
-    'rounded-control inline-flex h-11 items-center border px-4 text-[12px] font-bold tracking-[0.06em] uppercase md:h-9';
-
   // Re-runs whenever the class changes (selectClass drops the loaded trees) or Retry bumps
   // `attempt`. Reading both synchronously here is what registers them as dependencies; the
   // writes `load` performs happen after the tracking window, so this cannot loop.
@@ -79,6 +75,15 @@
     void store.classSlug;
     void attempt;
     void load();
+  });
+
+  // Switching class empties the build on its own, and the class selector stays reachable while
+  // the confirm is open. Without this the planner comes back asking whether to clear a build the
+  // switch already cleared. Its own effect rather than a line in the one above: that effect
+  // documents a careful no-loop invariant, and this has nothing to do with loading.
+  $effect(() => {
+    void store.classSlug;
+    confirmingReset = false;
   });
 </script>
 
@@ -99,7 +104,7 @@
       </p>
       <button
         type="button"
-        class="{secondaryButton} border-line-warm-strong text-text w-fit"
+        class="{SECONDARY_BUTTON} border-line-warm-strong text-text w-fit px-4"
         onclick={() => (attempt += 1)}
       >
         Retry
@@ -121,12 +126,9 @@
     <div class="flex flex-wrap items-center gap-3 px-[18px] md:px-0" data-testid="planner-toolbar">
       {#if confirmingReset}
         <span class="text-muted text-[13px]">Clear every point in this build?</span>
-        <!-- Reset leaves the DOM the moment it is pressed, so the keyboard lands on the
-             question it just asked rather than back at the top of the document. -->
         <button
           type="button"
-          class="{secondaryButton} border-line-warm-strong text-gold"
-          {@attach (node) => node.focus()}
+          class="{SECONDARY_BUTTON} border-line-warm-strong text-gold px-4"
           onclick={() => {
             store.reset();
             confirmingReset = false;
@@ -134,9 +136,14 @@
         >
           Clear all points
         </button>
+        <!-- Reset leaves the DOM the moment it is pressed, so the keyboard lands on the question
+             it just asked rather than back at the top of the document. It lands on the safe
+             answer: a second Enter pressed out of habit keeps the build rather than clearing it,
+             which is the only reason the second step exists. -->
         <button
           type="button"
-          class="{secondaryButton} border-line-warm text-text"
+          class="{SECONDARY_BUTTON} border-line-warm text-text px-4"
+          {@attach (node) => node.focus()}
           onclick={() => (confirmingReset = false)}
         >
           Keep the build
@@ -144,7 +151,7 @@
       {:else}
         <button
           type="button"
-          class="{secondaryButton} border-line-warm text-text"
+          class="{SECONDARY_BUTTON} border-line-warm text-text px-4"
           onclick={() => (confirmingReset = true)}
         >
           Reset
