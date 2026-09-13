@@ -12,6 +12,20 @@ def write_json(records: Sequence[BaseModel], path: Path) -> None:
     path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
+def write_model(record: BaseModel, path: Path) -> None:
+    """Write a single record as a JSON object."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    payload = json.dumps(record.model_dump(), indent=2, ensure_ascii=False) + "\n"
+    path.write_text(payload, encoding="utf-8")
+
+
+def write_records(records: Sequence[BaseModel], path: Path) -> None:
+    """Write a list of records in the order given, without sorting by id."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    payload = [r.model_dump() for r in records]
+    path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+
 def normalize_build(build: str, root: Path = Path("builds")) -> Path:
     from pipeline.csvio import read_csv
     from pipeline.manifest import write_manifest

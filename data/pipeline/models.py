@@ -58,3 +58,34 @@ class TalentNode(BaseModel):
     column: int
     spell_ids: list[int]
     prereq_talent_id: int | None
+
+
+class TalentRank(BaseModel):
+    spell_id: int
+    description: str
+
+
+class TalentEntry(BaseModel):
+    id: int
+    name: str
+    icon: str
+    max_rank: int
+    tier: int
+    column: int
+    prereq_talent_id: int | None
+    prereq_rank: int | None
+    ranks: list[TalentRank]
+
+
+class TalentTree(BaseModel):
+    id: int
+    name: str
+    position: int
+    talents: list[TalentEntry]
+
+
+class ClassTalents(BaseModel):
+    build: str
+    class_id: int
+    class_slug: str
+    trees: list[TalentTree]
