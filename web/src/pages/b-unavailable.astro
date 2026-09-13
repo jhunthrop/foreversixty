@@ -1,0 +1,27 @@
+---
+// web/src/pages/b-unavailable.astro
+// Served by src/worker.ts with status 503 when api.foreversixty.gg cannot answer a /b/:id
+// request. Static, so it works precisely when nothing else does.
+import Base from '../layouts/Base.astro';
+---
+
+<Base
+  title="Build unavailable"
+  description="This shared build cannot be loaded right now."
+  path="/b-unavailable"
+>
+  <main
+    id="main"
+    tabindex="-1"
+    class="max-w-[820px] w-full mx-auto px-[18px] md:px-12 py-10 flex flex-col gap-4"
+  >
+    <h1 class="text-[28px] font-bold">Build unavailable</h1>
+    <p class="text-[15px] text-muted">
+      Shared builds are stored by the Forever Sixty API, which is not answering right now. The build itself is
+      not lost; the link will work again once the API is back.
+    </p>
+    <p class="text-[15px] text-muted">
+      In the meantime, <a href="/planner">the build planner</a> works without it.
+    </p>
+  </main>
+</Base>
