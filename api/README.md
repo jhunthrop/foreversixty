@@ -81,10 +81,11 @@ the site has not been built, so the api suite never depends on the web build. Af
 
 ## Docker
 
-Build the image locally:
+Build the image locally. The build context is the repository root, not `api/`, because the image
+copies `data/builds` to `/data`:
 
 ```bash
-cd /Users/jh/code/forever
+cd "$(git rev-parse --show-toplevel)"   # the build context is the repository root
 docker build --build-arg VERSION=local -f api/Dockerfile -t foreversixty-api:local .
 ```
 
@@ -156,8 +157,10 @@ provider resource name and deployer email as GitHub repository variables `GCP_WI
 
 ### 2. First deploy
 
+Like the local build, this runs from the repository root so the context includes `data/builds`:
+
 ```bash
-cd /Users/jh/code/forever
+cd "$(git rev-parse --show-toplevel)"   # the build context is the repository root
 docker build --platform linux/amd64 --build-arg VERSION=$(git rev-parse --short HEAD) \
   -f api/Dockerfile -t us-east1-docker.pkg.dev/foreversixty/api/api:$(git rev-parse --short HEAD) .
 docker push us-east1-docker.pkg.dev/foreversixty/api/api:$(git rev-parse --short HEAD)
