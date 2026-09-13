@@ -2,10 +2,14 @@
 
 from __future__ import annotations
 
+import logging
+
 from pipeline.models import ClassItems, GearItem, ItemSetBonus, ItemSetRecord
 from pipeline.normalize.classes import slugify
 from pipeline.proficiency import can_equip
 from pipeline.spelltext import SpellText
+
+logger = logging.getLogger(__name__)
 
 MAX_PLAYER_LEVEL = 60
 STAT_COLUMNS = range(10)
@@ -87,15 +91,34 @@ class ItemDataError(ValueError):
     """The item tables hold something this normalizer will not guess at."""
 
 
+def _column(row: dict[str, str], column: str) -> str:
+    """One column's value, or ItemDataError if the row does not supply one.
+
+    csv.DictReader pads a short row with None rather than dropping the key, so
+    a present key with no value means a truncated ItemSparse row, and a missing
+    key here means a header that pairs a bonusStat column with no bonusAmount.
+    Both are unreadable, and this module raises rather than guess at them.
+    """
+    value = row.get(column)
+    if value is None:
+        raise ItemDataError(
+            f"item {row['ID']} has no readable {column}; "
+            f"the ItemSparse row or header is malformed"
+        )
+    return value
+
+
 def _stats(row: dict[str, str]) -> dict[str, int]:
     stats: dict[str, int] = {}
     for index in STAT_COLUMNS:
+        stat_column = f"StatModifier_bonusStat_{index}"
         # The live table carries all ten stat column pairs, but they are
-        # contiguous: a build that exports fewer simply has fewer to read.
-        raw_stat_id = row.get(f"StatModifier_bonusStat_{index}")
-        if raw_stat_id is None:
+        # contiguous: a header that stops early simply has fewer to read.
+        # Only an absent key means that; a key whose value is missing is a
+        # truncated row, which _column turns into an error.
+        if stat_column not in row:
             break
-        stat_id = int(raw_stat_id)
+        stat_id = int(_column(row, stat_column))
         if stat_id < 0:
             continue
         if stat_id not in STAT_BY_MODIFIER_ID:
@@ -104,7 +127,7 @@ def _stats(row: dict[str, str]) -> dict[str, int]:
                 f"add it to STAT_BY_MODIFIER_ID in pipeline/normalize/gear.py"
             )
         key = STAT_BY_MODIFIER_ID[stat_id]
-        amount = int(row[f"StatModifier_bonusAmount_{index}"])
+        amount = int(_column(row, f"StatModifier_bonusAmount_{index}"))
         if key is None or amount == 0:
             continue
         stats[key] = stats.get(key, 0) + amount
@@ -135,6 +158,7 @@ def build_class_items(
         item_id = int(row["ID"])
         item_row = by_id.get(item_id)
         if item_row is None:
+            logger.warning("item %s is in ItemSparse but not in Item; skipping it", item_id)
             continue
         set_id = int(row["ItemSet"]) or None
         item = GearItem(
@@ -185,11 +209,18 @@ def build_item_sets(
 ) -> list[ItemSetRecord]:
     bonuses: dict[int, list[ItemSetBonus]] = {}
     for row in set_spell_rows:
-        bonuses.setdefault(int(row["ItemSetID"]), []).append(
-            ItemSetBonus(
-                pieces=int(row["Threshold"]),
-                description=spell_text.describe(int(row["SpellID"])),
+        set_id = int(row["ItemSetID"])
+        spell_id = int(row["SpellID"])
+        description = spell_text.describe(spell_id)
+        if not description:
+            logger.warning(
+                "set %s has a %s-piece bonus whose spell %s has no description",
+                set_id,
+                row["Threshold"],
+                spell_id,
             )
+        bonuses.setdefault(set_id, []).append(
+            ItemSetBonus(pieces=int(row["Threshold"]), description=description)
         )
     records: list[ItemSetRecord] = []
     for row in set_rows:

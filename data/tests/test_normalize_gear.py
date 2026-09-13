@@ -4,6 +4,7 @@ import pytest
 
 from pipeline.csvio import read_csv
 from pipeline.icons import icon_names
+from pipeline.models import ItemSetBonus
 from pipeline.normalize import write_json, write_model
 from pipeline.normalize.gear import ItemDataError, build_class_items, build_item_sets
 from pipeline.spelltext import load_spell_text
@@ -72,7 +73,7 @@ def test_set_id_is_none_when_the_item_is_not_in_a_set():
 def test_class_restriction_and_proficiency_are_both_applied():
     warrior = {i.id for i in by_slug()["warrior"].items}
     mage = {i.id for i in by_slug()["mage"].items}
-    assert 16866 in warrior and 16866 not in mage  # plate: proficiency excludes the mage
+    assert 16866 in warrior and 16866 not in mage  # plate: both filters exclude the mage
     assert 14152 in mage and 14152 not in warrior  # AllowableClass mask excludes the warrior
     assert 2825 in warrior and 2825 not in mage  # bow: proficiency excludes the mage
     assert 19019 in warrior and 19019 in mage  # one-hand sword: both classes can use it
@@ -107,6 +108,60 @@ def test_an_unmapped_stat_id_is_an_error_not_a_guess():
             fixture_icons(),
             "1.0.0.1",
         )
+
+
+def test_a_row_truncated_inside_the_stat_block_is_an_error_not_partial_stats():
+    """csv.DictReader pads a short row with None, so the key is there but the value is not."""
+    rows = read_csv(HERE / "fixtures/ItemSparse.csv")
+    rows[0]["StatModifier_bonusStat_1"] = None  # type: ignore[assignment]
+    with pytest.raises(ItemDataError, match="StatModifier_bonusStat_1"):
+        build_class_items(
+            rows,
+            read_csv(HERE / "fixtures/Item.csv"),
+            read_csv(HERE / "fixtures/ChrClasses.csv"),
+            fixture_icons(),
+            "1.0.0.1",
+        )
+
+
+def test_a_stat_column_with_no_paired_amount_column_is_an_item_data_error():
+    """Task 9 catches ItemDataError by name, so a bare KeyError must not escape."""
+    rows = read_csv(HERE / "fixtures/ItemSparse.csv")
+    del rows[0]["StatModifier_bonusAmount_0"]
+    with pytest.raises(ItemDataError, match="StatModifier_bonusAmount_0"):
+        build_class_items(
+            rows,
+            read_csv(HERE / "fixtures/Item.csv"),
+            read_csv(HERE / "fixtures/ChrClasses.csv"),
+            fixture_icons(),
+            "1.0.0.1",
+        )
+
+
+def test_an_item_missing_from_the_item_table_is_skipped_with_a_warning(caplog):
+    rows = read_csv(HERE / "fixtures/ItemSparse.csv")
+    item_rows = [r for r in read_csv(HERE / "fixtures/Item.csv") if r["ID"] != "16866"]
+    with caplog.at_level("WARNING"):
+        records = build_class_items(
+            rows,
+            item_rows,
+            read_csv(HERE / "fixtures/ChrClasses.csv"),
+            fixture_icons(),
+            "1.0.0.1",
+        )
+    assert 16866 not in {i.id for r in records for i in r.items}
+    assert any("16866" in record.getMessage() for record in caplog.records)
+
+
+def test_a_set_bonus_with_no_spell_text_is_emitted_but_warned_about(caplog):
+    spell_rows = [{"ItemSetID": "209", "SpellID": "99999", "Threshold": "8"}]
+    with caplog.at_level("WARNING"):
+        records = build_item_sets(
+            read_csv(HERE / "fixtures/ItemSet.csv"), spell_rows, fixture_spell_text()
+        )
+    assert records[0].bonuses == [ItemSetBonus(pieces=8, description="")]
+    messages = [record.getMessage() for record in caplog.records]
+    assert any("209" in m and "99999" in m for m in messages)
 
 
 def test_sets_match_golden(tmp_path: Path):
