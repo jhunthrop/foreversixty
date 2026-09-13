@@ -1,0 +1,44 @@
+# .github/workflows/data.yml
+name: data
+on:
+  push:
+    branches: [main]
+    paths: ['data/**', '.github/workflows/data.yml']
+  pull_request:
+    paths: ['data/**', '.github/workflows/data.yml']
+  workflow_dispatch:
+    inputs:
+      product: { description: 'wago.tools product key', required: true, default: 'wow_classic_era' }
+      build: { description: 'build string (blank = latest)', required: false }
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: data } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+      - run: uv sync
+      - run: uv run ruff check .
+      - run: uv run pytest
+  fetch:
+    if: github.event_name == 'workflow_dispatch'
+    needs: test
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: data } }
+    permissions: { contents: write }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+      - run: uv sync
+      - run: uv run python -m pipeline fetch --product "${{ inputs.product }}" ${{ inputs.build && format('--build {0}', inputs.build) || '' }}
+      - run: echo "BUILD=$(ls builds | sort -V | tail -1)" >> $GITHUB_ENV
+      - run: uv run python -m pipeline normalize --build "$BUILD"
+      - run: |
+          PREV=$(ls builds | sort -V | tail -2 | head -1)
+          if [ "$PREV" != "$BUILD" ]; then uv run python -m pipeline diff --from "$PREV" --to "$BUILD"; fi
+      - run: |
+          git config user.name "forever-data-bot"
+          git config user.email "bot@foreversixty.gg"
+          git add builds diffs
+          git commit -m "data: build $BUILD (${{ inputs.product }})" || echo "nothing to commit"
+          git push
