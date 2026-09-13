@@ -34,37 +34,56 @@
   let open = $state(false);
   let iconBroken = $state(false);
   let pressTimer: ReturnType<typeof setTimeout> | undefined;
-  // Releasing a long press also fires a click, and on touch that is the only way the press
-  // ends. Without this flag the click would add straight back the point the press removed.
-  let removedByLongPress = false;
+  // True once the gesture in progress has removed its point. Two things would otherwise
+  // remove a second one: the click that ends a press (on touch, releasing a long press
+  // always fires one), and the platform's own contextmenu, which touch-and-hold raises at
+  // about the same threshold as the timer below. Whichever path fires first sets this, and
+  // it is what makes the other a no-op, so one gesture is always exactly one removal.
+  let gestureRemoved = false;
 
   const borderClass = $derived(
     maxed ? 'border-gold' : rank > 0 ? 'border-gold-deep' : available ? 'border-line' : 'border-line-soft',
   );
 
-  function startPress(): void {
-    removedByLongPress = false;
+  function startPress(event: PointerEvent): void {
+    // Only a primary press can become a long press. A secondary button raises contextmenu
+    // on its own, so arming the timer for it too would remove twice for one right-click.
+    if (event.button !== 0) return;
+    gestureRemoved = false;
     pressTimer = setTimeout(() => {
-      removedByLongPress = true;
+      disarmPress();
+      gestureRemoved = true;
       store.removePoint(talent.id);
     }, LONG_PRESS_MS);
   }
 
-  /** The press ended on the cell: a click follows, and it is the one the flag suppresses. */
-  function endPress(): void {
+  /** Cancels a pending long press. Leaves `gestureRemoved` alone: the click still follows. */
+  function disarmPress(): void {
     clearTimeout(pressTimer);
     pressTimer = undefined;
   }
 
   /** The press ended somewhere else, so no click follows and nothing is left to suppress. */
   function abandonPress(): void {
-    endPress();
-    removedByLongPress = false;
+    disarmPress();
+    gestureRemoved = false;
+  }
+
+  function removeOnContextMenu(event: MouseEvent): void {
+    event.preventDefault();
+    if (gestureRemoved) return;
+    // A contextmenu raised while a press is pending is that press's own platform gesture,
+    // and on touch a click still follows it; a right-click arms no timer and no click
+    // follows it, so only the first case has anything left to suppress.
+    const duringPress = pressTimer !== undefined;
+    disarmPress();
+    gestureRemoved = duringPress;
+    store.removePoint(talent.id);
   }
 
   function add(): void {
-    if (removedByLongPress) {
-      removedByLongPress = false;
+    if (gestureRemoved) {
+      gestureRemoved = false;
       return;
     }
     store.addPoint(talent.id);
@@ -81,10 +100,7 @@
     data-rank={rank}
     class={`rounded-control bg-card-top relative flex h-11 w-11 items-center justify-center border md:h-12 md:w-12 ${borderClass} ${rank === 0 && !available ? 'opacity-50' : ''}`}
     onclick={add}
-    oncontextmenu={(event) => {
-      event.preventDefault();
-      store.removePoint(talent.id);
-    }}
+    oncontextmenu={removeOnContextMenu}
     onfocus={() => {
       open = true;
       onfocuscell();
@@ -96,7 +112,7 @@
       abandonPress();
     }}
     onpointerdown={startPress}
-    onpointerup={endPress}
+    onpointerup={disarmPress}
     onpointercancel={abandonPress}
   >
     {#if iconBroken}

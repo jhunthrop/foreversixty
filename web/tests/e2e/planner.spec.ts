@@ -111,3 +111,40 @@ test('a keyboard-only visitor can spend and remove points', async ({ page }) => 
   await expect(page.getByTestId('talent-1002')).toHaveAttribute('data-rank', '0');
   await expect(page.getByTestId('planner-spent')).toHaveText('2/51');
 });
+
+// Touch-and-hold raises a native contextmenu at roughly the same 500ms threshold as the
+// long-press timer, so one gesture can reach both removal paths. Playwright cannot drive
+// that native gesture (its touchscreen API has no long press, and synthesised touches do
+// not raise contextmenu), so this dispatches both paths at the cell for a single press and
+// asserts they remove one point between them -- in either arrival order, and for the
+// secondary button, where the same race exists on desktop.
+test('a long press that also raises a context menu removes one point, not two', async ({ page }) => {
+  await page.goto('/planner');
+  const talent = page.getByTestId('talent-1001');
+  for (let i = 0; i < 3; i += 1) await talent.click();
+  await expect(talent).toHaveAttribute('data-rank', '3');
+
+  // The context menu arrives while the long press is still pending.
+  await talent.dispatchEvent('pointerdown', { button: 0 });
+  await talent.dispatchEvent('contextmenu');
+  await page.waitForTimeout(900);
+  await talent.dispatchEvent('pointerup', { button: 0 });
+  await talent.dispatchEvent('click', { button: 0 });
+  await expect(talent).toHaveAttribute('data-rank', '2');
+
+  // The long press fires first and the context menu follows it.
+  await talent.dispatchEvent('pointerdown', { button: 0 });
+  await page.waitForTimeout(900);
+  await talent.dispatchEvent('contextmenu');
+  await talent.dispatchEvent('pointerup', { button: 0 });
+  await talent.dispatchEvent('click', { button: 0 });
+  await expect(talent).toHaveAttribute('data-rank', '1');
+
+  // A secondary-button press held past the threshold is one gesture too.
+  await talent.dispatchEvent('pointerdown', { button: 2 });
+  await page.waitForTimeout(900);
+  await talent.dispatchEvent('contextmenu');
+  await talent.dispatchEvent('pointerup', { button: 2 });
+  await expect(talent).toHaveAttribute('data-rank', '0');
+  await expect(page.getByTestId('planner-spent')).toHaveText('0/51');
+});
