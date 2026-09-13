@@ -10,6 +10,7 @@
   import { createPlannerStore } from '../../lib/planner/store.svelte';
   import type { BuildRecord } from '../../lib/planner/types';
   import SummaryBar from './SummaryBar.svelte';
+  import TreeGrid from './TreeGrid.svelte';
 
   let {
     treeVersion,
@@ -103,7 +104,7 @@
             <h2 class="section-title text-[15px]">{tree.name}</h2>
             <span class="tabular text-gold font-mono text-[15px]">{store.split[i] ?? 0}</span>
           </header>
-          <!-- Task 7 renders <TreeGrid {tree} {store} /> here. -->
+          <TreeGrid {store} {tree} />
         </section>
       {/each}
     </div>
