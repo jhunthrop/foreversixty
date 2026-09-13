@@ -12,7 +12,7 @@ test('homepage renders the reference layout without a marketing hero', async ({ 
   // A reference heading, not a slogan: short, and it does not end in punctuation.
   expect(heading.length).toBeLessThanOrEqual(90);
   expect(heading).not.toMatch(/[.!?]$/);
-  await expect(page.getByRole('searchbox')).toBeVisible();
+  await expect(page.getByRole('combobox', { name: 'Search the site' })).toBeVisible();
   await expect(page.getByText('Right now')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Tools' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'What changed' })).toBeVisible();

@@ -20,7 +20,7 @@ test.describe('phone layout', () => {
     await page.goto('/');
     const discord = await page.getByRole('link', { name: 'Discord' }).boundingBox();
     expect(discord?.height ?? 0).toBeGreaterThanOrEqual(44);
-    const searchbox = await page.getByRole('searchbox').boundingBox();
+    const searchbox = await page.getByRole('combobox', { name: 'Search the site' }).boundingBox();
     expect(searchbox?.height ?? 0).toBeGreaterThanOrEqual(44);
   });
 });

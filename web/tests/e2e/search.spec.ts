@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test';
 test('search finds a dungeon page and navigates to it', async ({ page }) => {
   await page.goto('/');
   await page.keyboard.press('/');
-  const box = page.getByRole('searchbox');
+  const box = page.getByRole('combobox', { name: 'Search the site' });
   await expect(box).toBeFocused();
   await box.fill('Thanes');
   const result = page.getByRole('option', { name: /Hall of Thanes/ });
@@ -15,7 +15,7 @@ test('search finds a dungeon page and navigates to it', async ({ page }) => {
 test('no keystrokes are dropped when typing immediately after the "/" shortcut', async ({ page }) => {
   await page.goto('/');
   await page.keyboard.press('/');
-  const box = page.getByRole('searchbox');
+  const box = page.getByRole('combobox', { name: 'Search the site' });
   await expect(box).toBeFocused();
   await page.keyboard.type('Thanes', { delay: 10 });
   await expect(box).toHaveValue('Thanes');
@@ -25,18 +25,18 @@ test('no keystrokes are dropped when typing immediately after the "/" shortcut',
 
 test('arriving at /search?q= seeds the box from the URL and shows results', async ({ page }) => {
   await page.goto('/search?q=Thanes');
-  await expect(page.getByRole('searchbox')).toHaveValue('Thanes');
+  await expect(page.getByRole('combobox', { name: 'Search the site' })).toHaveValue('Thanes');
   await expect(page.getByRole('option', { name: /Hall of Thanes/ })).toBeVisible();
 });
 
 test('Enter before the debounce resolves submits the query to the results page', async ({ page }) => {
   await page.goto('/');
   await page.keyboard.press('/');
-  await expect(page.getByRole('searchbox')).toBeFocused();
+  await expect(page.getByRole('combobox', { name: 'Search the site' })).toBeFocused();
   await page.keyboard.type('Thanes');
   await page.keyboard.press('Enter');
   await expect(page).toHaveURL(/\/search\?q=Thanes$/);
-  await expect(page.getByRole('searchbox')).toHaveValue('Thanes');
+  await expect(page.getByRole('combobox', { name: 'Search the site' })).toHaveValue('Thanes');
   await expect(page.getByRole('option', { name: /Hall of Thanes/ })).toBeVisible();
 });
 
@@ -51,7 +51,7 @@ test('an unreachable search index falls back to links, once', async ({ page }) =
 
   await page.goto('/');
   await page.keyboard.press('/');
-  const box = page.getByRole('searchbox');
+  const box = page.getByRole('combobox', { name: 'Search the site' });
   await box.fill('Thanes');
 
   const fallback = page.getByText('Search is unavailable. Browse');
@@ -73,7 +73,7 @@ test('an unreachable search index falls back to links, once', async ({ page }) =
 test('the results dropdown closes on outside click and drops aria-controls', async ({ page }) => {
   await page.goto('/');
   await page.keyboard.press('/');
-  const box = page.getByRole('searchbox');
+  const box = page.getByRole('combobox', { name: 'Search the site' });
   await expect(box).not.toHaveAttribute('aria-controls');
   await box.fill('Thanes');
   await expect(page.getByRole('listbox')).toBeVisible();
@@ -87,7 +87,7 @@ test('the results dropdown closes on outside click and drops aria-controls', asy
 test('ArrowUp from the first result hands the query back to the input', async ({ page }) => {
   await page.goto('/');
   await page.keyboard.press('/');
-  const box = page.getByRole('searchbox');
+  const box = page.getByRole('combobox', { name: 'Search the site' });
   await box.fill('Thanes');
   await expect(box).toHaveAttribute('aria-activedescendant', 'search-opt-0');
   await page.keyboard.press('ArrowUp');

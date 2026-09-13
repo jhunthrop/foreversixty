@@ -178,6 +178,8 @@
       type="search"
       name="q"
       autocomplete="off"
+      role="combobox"
+      aria-autocomplete="list"
       placeholder="Search quests, items, dungeons, zones, talents…"
       aria-label="Search the site"
       aria-expanded={open}
