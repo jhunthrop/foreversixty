@@ -70,6 +70,65 @@ func TestStoreSaveInsertsThenReturnsTheExistingRow(t *testing.T) {
 	}
 }
 
+// TestStoreSaveRefusesAnIDCollision forces the case the id length makes
+// possible but a test cannot find honestly: a second, different build
+// landing on an id that is already taken. Save must refuse rather than hand
+// the caller a link to the stored build, which is not theirs.
+func TestStoreSaveRefusesAnIDCollision(t *testing.T) {
+	s := testStore(t)
+	ctx := context.Background()
+
+	first := sampleBuild(t, "Arms leveling")
+	if _, _, err := s.Save(ctx, first); err != nil {
+		t.Fatal(err)
+	}
+
+	collider := sampleBuild(t, "Fury leveling")
+	collider.ID = first.ID
+	collider.ClassID = 2
+	collider.PointOrder = []int{201, 201}
+	collider.Gear = map[string]int{"neck": 18404}
+
+	got, created, err := s.Save(ctx, collider)
+	if !errors.Is(err, ErrIDCollision) {
+		t.Fatalf("err = %v, want ErrIDCollision; got %+v created=%v", err, got, created)
+	}
+	if created || got.ID != "" {
+		t.Fatalf("a refused save must return no record: %+v created=%v", got, created)
+	}
+
+	// The stored row is untouched.
+	stored, err := s.Get(ctx, first.ID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if stored.ClassID != 1 || stored.Title != "Arms leveling" {
+		t.Fatalf("the stored build changed: %+v", stored)
+	}
+}
+
+// TestStoreSaveAllowsATitleOnlyDifference guards the other side of the
+// collision check: a resave that differs only in its title is the same
+// build and must still dedupe rather than be read as a collision. The
+// broader dedupe behaviour is covered above; this pins the comparison
+// itself to the hashed fields.
+func TestStoreSaveAllowsATitleOnlyDifference(t *testing.T) {
+	s := testStore(t)
+	ctx := context.Background()
+
+	first, _, err := s.Save(ctx, sampleBuild(t, ""))
+	if err != nil {
+		t.Fatal(err)
+	}
+	again, created, err := s.Save(ctx, sampleBuild(t, "Now with a title"))
+	if err != nil || created {
+		t.Fatalf("created=%v err=%v, want a dedupe", created, err)
+	}
+	if again.ID != first.ID || again.Title != "" {
+		t.Fatalf("got %+v, want the first row back", again)
+	}
+}
+
 func TestStoreGetRoundTripsEveryColumn(t *testing.T) {
 	s := testStore(t)
 	ctx := context.Background()

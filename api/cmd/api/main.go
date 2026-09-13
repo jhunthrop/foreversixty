@@ -61,7 +61,7 @@ func main() {
 	}
 	log.Info("trees", "dir", cfg.TreeDataDir, "versions", treeData.Versions())
 
-	buildStore := &builds.Store{Pool: pool}
+	buildStore := &builds.Store{Pool: pool, Log: log}
 	views := builds.NewViews(buildStore, log)
 	siteDeps := &site.Deps{
 		Store:         buildStore,

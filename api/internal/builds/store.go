@@ -4,7 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
+	"maps"
 	"math"
+	"slices"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -13,12 +16,31 @@ import (
 // ErrNotFound is returned by Get for an id that has never been saved.
 var ErrNotFound = errors.New("builds: not found")
 
-type Store struct{ Pool *pgxpool.Pool }
+// ErrIDCollision is returned by Save when the row already under a build's
+// id is a different build. An id is eight base32 characters of a SHA-256,
+// so forty bits: at a million stored builds the chance that some pair
+// collides is roughly even. Returning the other build would hand the
+// planner a link to someone else's work and silently drop their own, so
+// Save refuses instead and the handler answers 500.
+var ErrIDCollision = errors.New("builds: id collision")
+
+type Store struct {
+	Pool *pgxpool.Pool
+	Log  *slog.Logger
+}
+
+func (s *Store) logger() *slog.Logger {
+	if s.Log != nil {
+		return s.Log
+	}
+	return slog.Default()
+}
 
 // Save inserts b and returns the stored record with created true. When the
 // id already exists nothing is written and the existing record is returned
-// with created false: an id is a content hash, so an existing row is the
-// same build, and the title that was saved first wins.
+// with created false, provided it really is the same build: an id is a
+// content hash, so the title that was saved first wins. An existing row
+// whose content differs is an id collision and returns ErrIDCollision.
 func (s *Store) Save(ctx context.Context, b Build) (Build, bool, error) {
 	classID, err := smallint(b.ClassID, "class_id")
 	if err != nil {
@@ -60,7 +82,31 @@ func (s *Store) Save(ctx context.Context, b Build) (Build, bool, error) {
 	if err != nil {
 		return Build{}, false, err
 	}
+	b.Gear = gear
+	if !sameContent(existing, b) {
+		s.logger().Error("builds", "op", "save", "err", "id collision", "id", b.ID,
+			"stored", contentOf(existing), "incoming", contentOf(b))
+		return Build{}, false, fmt.Errorf("%w on %s", ErrIDCollision, b.ID)
+	}
 	return existing, false, nil
+}
+
+// sameContent reports whether two records hash to the same id for the same
+// reason: every field ID covers. The title is deliberately excluded, since
+// it is excluded from the hash and the first one saved wins.
+func sameContent(a, b Build) bool {
+	return a.ClassID == b.ClassID &&
+		a.RaceID == b.RaceID &&
+		a.TreeVersion == b.TreeVersion &&
+		slices.Equal(a.PointOrder, b.PointOrder) &&
+		maps.Equal(a.Gear, b.Gear)
+}
+
+// contentOf is the collision log's view of a record: the hashed fields, so
+// the two builds that landed on one id can be told apart in the logs.
+func contentOf(b Build) string {
+	return fmt.Sprintf("class_id=%d race_id=%d tree_version=%s point_order=%v gear=%v",
+		b.ClassID, b.RaceID, b.TreeVersion, b.PointOrder, b.Gear)
 }
 
 func (s *Store) Get(ctx context.Context, id string) (Build, error) {
