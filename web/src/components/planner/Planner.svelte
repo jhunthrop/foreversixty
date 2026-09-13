@@ -11,6 +11,7 @@
   import { SECONDARY_BUTTON } from '../../lib/planner/styles';
   import type { BuildRecord } from '../../lib/planner/types';
   import OrderStrip from './OrderStrip.svelte';
+  import SharePanel from './SharePanel.svelte';
   import SummaryBar from './SummaryBar.svelte';
   import TreeGrid from './TreeGrid.svelte';
 
@@ -126,18 +127,21 @@
        them and still moves the footer -- by the difference rather than by the whole planner.
        Re-derive them by loading /planner, setting this element's min-height to 0, and reading
        its `getBoundingClientRect().height` below and above the md breakpoint. They measured
-       594.5 (595.5 at 360px) and 539.5; each value here is set a hair under what was measured,
-       because under costs a pixel of movement and over leaves dead space below the ready
-       planner for good.
+       727 (728 at 360px) and 616 once Task 10's SharePanel joined the toolbar row -- its
+       `w-full` section always forces its own line, so the reserve grew by that section's
+       height even before a build is ever saved. Each value here is set a hair under what was
+       measured, because under costs a pixel of movement and over leaves dead space below the
+       ready planner for good.
 
        It wraps the swapping branches only, not the planner as a whole, and that is what lets
        one number hold: the summary bar and the notice above are in all three states and
        reflow with the viewport width, so keeping them outside the reserve takes their
        wrapping out of the figure. Inside it every part is a fixed height -- the tab strip,
-       the toolbar, the order strip's reserved row, and a tree grid sized by tier count rather
-       than by width. The md value is the smaller one because desktop drops the tab strip and
-       lays the trees out side by side, so the tallest tree sets the height, not their sum. -->
-  <div class="flex min-h-[594px] flex-col gap-[22px] md:min-h-[539px] md:gap-8">
+       the toolbar (now including the always-visible title field and Share button), the order
+       strip's reserved row, and a tree grid sized by tier count rather than by width. The md
+       value is the smaller one because desktop drops the tab strip and lays the trees out side
+       by side, so the tallest tree sets the height, not their sum. -->
+  <div class="flex min-h-[726px] flex-col gap-[22px] md:min-h-[615px] md:gap-8">
     {#if status === 'loading'}
       <!-- The planner's own panel chrome rather than a bare line on a blank reserve: a
            viewport of empty space reads as a broken page, and the frame reads as the planner
@@ -251,6 +255,8 @@
             Reset
           </button>
         {/if}
+
+        <SharePanel {store} />
       </div>
 
       <OrderStrip {store} />
