@@ -10,25 +10,34 @@ const nav = [
 ] as const;
 ---
 
-<!-- Phone: wordmark and Discord on the first line, the nav wrapping onto its own full-width
-     line below. No hamburger, so no client JS on a content page. -->
-<header class="relative flex flex-wrap items-center justify-between gap-x-4 gap-y-2 px-[18px] md:px-12 py-3 md:py-[18px] border-b border-line/60">
-  <a href="/" class="font-display text-[20px] font-bold tracking-[0.08em] uppercase gold-text">
+<!-- Phone: an explicit two-row grid -- wordmark and Discord on the first row, the nav on the
+     second. No hamburger, so no client JS on a content page. The nav is one non-wrapping,
+     horizontally scrollable row rather than a wrapping one: the four labels sit within a few
+     pixels of 360px, so a wrapping nav changes height when Barlow swaps in for its fallback
+     and shifts the whole page down (a CLS the Lighthouse budget rejects). -->
+<header class="relative grid grid-cols-[1fr_auto] items-center gap-x-4 gap-y-2 px-[18px] md:flex md:justify-between md:px-12 py-3 md:py-[18px] border-b border-line/60">
+  <a
+    href="/"
+    class="col-start-1 row-start-1 font-display text-[20px] font-bold tracking-[0.08em] uppercase gold-text"
+  >
     Forever Sixty
   </a>
   <nav
     aria-label="Primary"
-    class="order-last w-full md:order-none md:w-auto flex flex-wrap gap-x-5 md:gap-x-[26px] text-[13px] font-semibold tracking-[0.12em] uppercase"
+    class="col-span-2 row-start-2 md:row-auto -mx-[18px] px-[18px] md:mx-0 md:px-0 flex flex-nowrap overflow-x-auto md:overflow-visible gap-x-5 md:gap-x-[26px] text-[13px] font-semibold tracking-[0.12em] uppercase"
   >
     {nav.map(([label, href]) => (
-      <a href={href} class="inline-flex items-center min-h-11 md:min-h-0 text-nav hover:text-strong">
+      <a
+        href={href}
+        class="inline-flex shrink-0 items-center min-h-11 md:min-h-0 whitespace-nowrap text-nav hover:text-strong"
+      >
         {label}
       </a>
     ))}
   </nav>
   <a
     href={communityLinks.discordInvite}
-    class="inline-flex items-center gap-2 h-11 md:h-[38px] px-3 border border-line-warm rounded-control text-text bg-bg/50 font-semibold text-[13px]"
+    class="col-start-2 row-start-1 justify-self-end inline-flex items-center gap-2 h-11 md:h-[38px] px-3 border border-line-warm rounded-control text-text bg-bg/50 font-semibold text-[13px]"
   >
     <svg
       width="16"
