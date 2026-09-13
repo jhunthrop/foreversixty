@@ -7,6 +7,10 @@
   import { MAX_TITLE_LENGTH, type PlannerStore } from '../../lib/planner/store.svelte';
   import { SECONDARY_BUTTON } from '../../lib/planner/styles';
 
+  // Retry and Copy link are both the neutral (non-gold) secondary button; only the layout
+  // around them differs.
+  const NEUTRAL_BUTTON = `${SECONDARY_BUTTON} border-line-warm text-text px-4`;
+
   let { store }: { store: PlannerStore } = $props();
 
   let saving = $state(false);
@@ -29,8 +33,16 @@
   async function share(): Promise<void> {
     saving = true;
     cardBroken = false;
-    outcome = await saveBuild(store.toDraft());
+    copied = false;
+    const draft = store.toDraft();
+    const result = await saveBuild(draft);
     saving = false;
+    // The grid stays editable while a save is in flight -- a slow API should not lock the
+    // planner -- so the build this response describes may no longer be the current one.
+    // Comparing the drafts rather than disabling input catches every kind of edit (points,
+    // gear, title, even a class switch) and discards a response that arrives stale.
+    if (JSON.stringify(store.toDraft()) !== JSON.stringify(draft)) return;
+    outcome = result;
   }
 
   async function copy(url: string): Promise<void> {
@@ -72,9 +84,7 @@
       {#each Object.entries(failure.fields) as [field, message] (field)}
         <p class="text-muted text-[13px]"><span class="font-mono">{field}</span>: {message}</p>
       {/each}
-      <button type="button" class="{SECONDARY_BUTTON} border-line-warm text-text w-fit px-4" onclick={share}>
-        Retry
-      </button>
+      <button type="button" class="{NEUTRAL_BUTTON} w-fit" onclick={share}> Retry </button>
     </div>
   {/if}
 
@@ -82,11 +92,7 @@
     <div class="border-line bg-raised rounded-panel flex flex-col gap-3 border p-3">
       <div class="flex flex-wrap items-center gap-3">
         <a href={saved.url} class="font-mono text-[14px]" data-testid="share-link">{saved.url}</a>
-        <button
-          type="button"
-          class="{SECONDARY_BUTTON} border-line-warm text-text px-4"
-          onclick={() => copy(saved.url)}
-        >
+        <button type="button" class={NEUTRAL_BUTTON} onclick={() => copy(saved.url)}>
           {copied ? 'Copied' : 'Copy link'}
         </button>
       </div>
