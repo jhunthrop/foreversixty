@@ -39,3 +39,27 @@ test('Enter before the debounce resolves submits the query to the results page',
   await expect(page.getByRole('searchbox')).toHaveValue('Thanes');
   await expect(page.getByRole('option', { name: /Hall of Thanes/ })).toBeVisible();
 });
+
+test('an unreachable search index falls back to links, once', async ({ page }) => {
+  const crashes: string[] = [];
+  const indexRequests: string[] = [];
+  page.on('pageerror', (e) => crashes.push(e.message));
+  page.on('request', (r) => { if (r.url().includes('/pagefind/pagefind.js')) indexRequests.push(r.url()); });
+  await page.route('**/pagefind/pagefind.js', (route) => route.fulfill({ status: 404, body: 'not found' }));
+
+  await page.goto('/');
+  await page.keyboard.press('/');
+  const box = page.getByRole('searchbox');
+  await box.fill('Thanes');
+
+  const fallback = page.getByText('Search is unavailable. Browse');
+  await expect(fallback).toBeVisible();
+  for (const [name, href] of [['dungeons', '/dungeons'], ['zones', '/zones'], ['guides', '/guides']]) {
+    await expect(fallback.getByRole('link', { name })).toHaveAttribute('href', href);
+  }
+
+  await box.fill('Hyjal');
+  await expect(fallback).toBeVisible();
+  expect(indexRequests).toHaveLength(1);
+  expect(crashes).toEqual([]);
+});

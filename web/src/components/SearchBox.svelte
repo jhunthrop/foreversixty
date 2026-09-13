@@ -9,14 +9,26 @@
   let results = $state<Result[]>([]);
   let active = $state(-1);
   let open = $state(false);
+  // Latched: once the index has proven unavailable, every later keystroke shows the fallback
+  // instead of re-firing an import that has already failed.
+  let failed = $state(false);
   let input: HTMLInputElement;
   let pagefind: Pagefind | null = null;
 
+  const PAGEFIND_MODULE_URL = '/pagefind/pagefind.js';
+  const dropdownClass =
+    'absolute left-0 right-0 top-full mt-2 bg-raised border border-line rounded-panel overflow-hidden z-10';
+
   async function load() {
-    if (pagefind) return;
-    const pagefindModuleUrl = '/pagefind/pagefind.js';
-    pagefind = (await import(/* @vite-ignore */ pagefindModuleUrl)) as Pagefind;
-    await pagefind.init();
+    if (pagefind || failed) return;
+    try {
+      pagefind = (await import(/* @vite-ignore */ PAGEFIND_MODULE_URL)) as Pagefind;
+      await pagefind.init();
+    } catch (error) {
+      pagefind = null;
+      failed = true;
+      console.error('Search index could not be loaded from', PAGEFIND_MODULE_URL, error);
+    }
   }
 
   let timer: ReturnType<typeof setTimeout>;
@@ -26,16 +38,31 @@
   }
 
   let seq = 0;
+  function showFallback() {
+    results = [];
+    active = -1;
+    open = true;
+  }
+
   async function run() {
     if (query.trim().length < 2) { results = []; open = false; return; }
     const mine = ++seq;
     await load();
-    const res = await pagefind!.search(query);
-    const top = await Promise.all(res.results.slice(0, 8).map((r) => r.data()));
     if (mine !== seq) return;
-    results = top.map((d) => ({ url: d.url.replace(/\.html$/, ''), title: d.meta.title, excerpt: d.excerpt }));
-    active = results.length ? 0 : -1;
-    open = results.length > 0;
+    if (failed) { showFallback(); return; }
+    try {
+      const res = await pagefind!.search(query);
+      const top = await Promise.all(res.results.slice(0, 8).map((r) => r.data()));
+      if (mine !== seq) return;
+      results = top.map((d) => ({ url: d.url.replace(/\.html$/, ''), title: d.meta.title, excerpt: d.excerpt }));
+      active = results.length ? 0 : -1;
+      open = results.length > 0;
+    } catch (error) {
+      if (mine !== seq) return;
+      failed = true;
+      showFallback();
+      console.error('Search query failed:', error);
+    }
   }
 
   function onKey(e: KeyboardEvent) {
@@ -88,8 +115,12 @@
     />
     <kbd class="font-mono text-[12px] text-muted px-[7px] py-[3px] border border-line-warm rounded-control">/</kbd>
   </div>
-  {#if open}
-    <ul id="search-results" role="listbox" class="absolute left-0 right-0 top-full mt-2 bg-raised border border-line rounded-panel overflow-hidden z-10">
+  {#if open && failed}
+    <p id="search-results" role="status" class={`${dropdownClass} px-4 py-3 text-[14px] text-muted`}>
+      Search is unavailable. Browse <a href="/dungeons">dungeons</a>, <a href="/zones">zones</a>, <a href="/guides">guides</a>.
+    </p>
+  {:else if open}
+    <ul id="search-results" role="listbox" class={dropdownClass}>
       {#each results as r, i}
         <li id={`search-opt-${i}`} role="option" aria-selected={i === active}>
           <a href={r.url} class={`flex flex-col gap-1 px-4 py-3 border-b border-line-soft last:border-b-0 ${i === active ? 'bg-card-top' : ''}`} onmouseenter={() => (active = i)} aria-labelledby={`search-title-${i}`} aria-describedby={`search-excerpt-${i}`}>
