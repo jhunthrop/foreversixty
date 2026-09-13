@@ -10,7 +10,14 @@ def _sha256(path: Path) -> str:
 
 
 def write_manifest(build_dir: Path, build: str, product: str, fetched_at: str) -> dict:
-    files = {p.name: _sha256(p) for p in sorted(build_dir.glob("*.json")) if p.name != MANIFEST}
+    files: dict[str, str] = {}
+    for path in sorted(build_dir.rglob("*")):
+        if not path.is_file():
+            continue
+        name = path.relative_to(build_dir).as_posix()
+        if name == MANIFEST or name.startswith("raw/"):
+            continue
+        files[name] = _sha256(path)
     m = {"build": build, "product": product, "fetched_at": fetched_at, "files": files}
     (build_dir / MANIFEST).write_text(json.dumps(m, indent=2) + "\n", encoding="utf-8")
     return m

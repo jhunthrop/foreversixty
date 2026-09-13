@@ -21,3 +21,9 @@ def test_diff_builds_writes_file(tmp_path: Path):
     payload = json.loads(out.read_text())
     assert payload["from"] == "a" and payload["to"] == "b"
     assert payload["entities"]["zones"]["changed"][0]["fields"] == ["name"]
+
+
+def test_sets_are_a_diffed_entity():
+    from pipeline.diff import ENTITIES
+
+    assert "sets" in ENTITIES
