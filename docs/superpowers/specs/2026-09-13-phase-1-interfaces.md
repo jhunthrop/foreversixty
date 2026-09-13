@@ -13,9 +13,10 @@ shapes the plans share so they can be executed in parallel worktrees. Values her
 - Node 22.12.0 at `/Users/jh/.nvm/versions/node/v22.12.0/bin`; npm from `web/`. Go from
   `/usr/local/go/bin`. Local test Postgres: `postgres://forever:forever@localhost:5434/forever_test?sslmode=disable`
   (docker compose in `api/docker-compose.test.yml`). Playwright needs `ASTRO_PREVIEW_BACKGROUND=1`.
-- Commits: conventional subject, body, and these trailers as separate `-m` flags:
+- Commits: conventional subject, body, and these two trailer lines together in ONE final `-m`
+  argument (git parses trailers only from the last paragraph, so separate `-m` flags lose the first):
   `Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>` and
-  `Claude-Session: https://claude.ai/code/session_01EkkERdonhxS2PMgXD7qZ6k`. Never `--no-verify`.
+  `Claude-Session: https://claude.ai/code/session_01EkkERdonhxS2PMgXD7qZ6k`. Never bypass git hooks.
 - Hosting: site on Cloudflare Workers static assets via `web/wrangler.jsonc` and `wrangler deploy`
   from `.github/workflows/web.yml`; API on Cloud Run `api` in us-east1 from
   `.github/workflows/api.yml` (Docker build, Workload Identity). API health is `GET /health`.
