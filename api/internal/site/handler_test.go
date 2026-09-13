@@ -1,10 +1,12 @@
 package site
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
 	"html"
+	"image/png"
 	"io"
 	"log/slog"
 	"net/http"
@@ -14,6 +16,7 @@ import (
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/api/internal/builds"
+	"github.com/jhunthrop/foreversixty/api/internal/card"
 	"github.com/jhunthrop/foreversixty/api/internal/trees"
 )
 
@@ -195,5 +198,99 @@ func TestUnknownBuildRendersThe404Page(t *testing.T) {
 	}
 	if len(views.ids) != 0 {
 		t.Fatalf("a missing build must not be counted as a view: %v", views.ids)
+	}
+}
+
+func TestCardRouteServesA1200x630PNG(t *testing.T) {
+	record := sampleRecord(t, "Arms leveling")
+	rec := get(t, testPage(t, record, nil), "/b/"+record.ID+"/card.png")
+	if rec.Code != http.StatusOK {
+		t.Fatalf("code = %d", rec.Code)
+	}
+	if ct := rec.Header().Get("Content-Type"); ct != "image/png" {
+		t.Fatalf("content-type = %q", ct)
+	}
+	if cc := rec.Header().Get("Cache-Control"); cc != "public, max-age=604800" {
+		t.Fatalf("cache-control = %q", cc)
+	}
+	cfg, err := png.DecodeConfig(bytes.NewReader(rec.Body.Bytes()))
+	if err != nil {
+		t.Fatalf("body is not a PNG: %v", err)
+	}
+	if cfg.Width != 1200 || cfg.Height != 630 {
+		t.Fatalf("card is %dx%d", cfg.Width, cfg.Height)
+	}
+}
+
+func TestCardRouteServesTheFallbackForAnUnknownBuild(t *testing.T) {
+	record := sampleRecord(t, "Arms leveling")
+	rec := get(t, testPage(t, record, nil), "/b/nosuchid/card.png")
+	if rec.Code != http.StatusNotFound {
+		t.Fatalf("code = %d, want 404", rec.Code)
+	}
+	if ct := rec.Header().Get("Content-Type"); ct != "image/png" {
+		t.Fatalf("content-type = %q, want the fallback card", ct)
+	}
+	cfg, err := png.DecodeConfig(bytes.NewReader(rec.Body.Bytes()))
+	if err != nil || cfg.Width != 1200 || cfg.Height != 630 {
+		t.Fatalf("fallback body: %v %+v", err, cfg)
+	}
+}
+
+func TestCardRouteFallsBackWhenTheStoreFails(t *testing.T) {
+	data, err := trees.LoadFixture()
+	if err != nil {
+		t.Fatal(err)
+	}
+	mux := http.NewServeMux()
+	Mount(mux, Deps{
+		Store:         failingGetter{err: errors.New("database is down")},
+		Data:          data,
+		PublicBaseURL: "https://foreversixty.gg",
+		Log:           slog.New(slog.NewTextHandler(io.Discard, nil)),
+	})
+	rec := get(t, mux, "/b/znorjmts/card.png")
+	if rec.Code != http.StatusInternalServerError {
+		t.Fatalf("code = %d, want 500", rec.Code)
+	}
+	if ct := rec.Header().Get("Content-Type"); ct != "image/png" {
+		t.Fatalf("content-type = %q, want the fallback card", ct)
+	}
+	if cc := rec.Header().Get("Cache-Control"); cc != "public, max-age=300" {
+		t.Fatalf("cache-control = %q, want the short fallback cache", cc)
+	}
+	if cfg, err := png.DecodeConfig(bytes.NewReader(rec.Body.Bytes())); err != nil || cfg.Width != 1200 {
+		t.Fatalf("fallback body: %v %+v", err, cfg)
+	}
+}
+
+func TestWriteCardWithoutABodyIs500(t *testing.T) {
+	// Fallback() returns nothing only if the embedded fonts are unusable;
+	// the handler must still answer rather than send an empty 200.
+	d := Deps{PublicBaseURL: "https://foreversixty.gg", Log: slog.New(slog.NewTextHandler(io.Discard, nil))}
+	rec := httptest.NewRecorder()
+	d.writeCard(rec, httptest.NewRequest(http.MethodGet, "/b/znorjmts/card.png", nil), http.StatusOK, cardMaxAge, nil)
+	if rec.Code != http.StatusInternalServerError {
+		t.Fatalf("code = %d, want 500", rec.Code)
+	}
+}
+
+// A card that could not be drawn is served as the spec pins it: a 200 so an
+// unfurl still shows something, but the short cache, so a transient render
+// failure is not cached for a week. No route test reaches this path, since
+// Render only fails when the embedded fonts are unusable.
+func TestWriteCardServesAnUndrawableCardAs200WithTheShortCache(t *testing.T) {
+	d := Deps{PublicBaseURL: "https://foreversixty.gg", Log: slog.New(slog.NewTextHandler(io.Discard, nil))}
+	rec := httptest.NewRecorder()
+	d.writeCard(rec, httptest.NewRequest(http.MethodGet, "/b/znorjmts/card.png", nil),
+		http.StatusOK, fallbackCardMaxAge, card.Fallback())
+	if rec.Code != http.StatusOK {
+		t.Fatalf("code = %d, want 200", rec.Code)
+	}
+	if ct := rec.Header().Get("Content-Type"); ct != "image/png" {
+		t.Fatalf("content-type = %q", ct)
+	}
+	if cc := rec.Header().Get("Cache-Control"); cc != "public, max-age=300" {
+		t.Fatalf("cache-control = %q, want the short fallback cache", cc)
 	}
 }
