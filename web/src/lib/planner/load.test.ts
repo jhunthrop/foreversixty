@@ -65,4 +65,25 @@ describe('loadSets', () => {
     stubFetch({});
     await expect(loadSets('b1')).resolves.toEqual([]);
   });
+
+  it('rejects with the status when the server errors, rather than reporting no sets', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => new Response('boom', { status: 500 })),
+    );
+    await expect(loadSets('b1')).rejects.toMatchObject({
+      message: expect.stringContaining(DATA_LOAD_FAILED),
+      status: 500,
+    });
+  });
+
+  it('rejects when the network fails, rather than reporting no sets', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => {
+        throw new TypeError('offline');
+      }),
+    );
+    await expect(loadSets('b1')).rejects.toThrow(DATA_LOAD_FAILED);
+  });
 });

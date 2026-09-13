@@ -7,6 +7,21 @@ import type { ClassRow, Combo, ItemFile, ItemSet, RaceRow, TalentFile } from './
 /** The one message the planner shows when data cannot be read; the UI adds a retry. */
 export const DATA_LOAD_FAILED = 'Talent data did not load';
 
+/**
+ * What every planner fetch throws. `status` is the HTTP status when the server answered at
+ * all, and undefined when the request never got a response, so a caller can tell "this build
+ * ships no such file" (404) apart from "this build is broken" (5xx, offline).
+ */
+export class DataLoadError extends Error {
+  readonly status: number | undefined;
+
+  constructor(message: string, options: { status?: number; cause?: unknown } = {}) {
+    super(message, { cause: options.cause });
+    this.name = 'DataLoadError';
+    this.status = options.status;
+  }
+}
+
 export function dataUrl(build: string, file: string): string {
   return `/data/${build}/${file}`;
 }
@@ -16,9 +31,13 @@ export async function fetchJson<T>(url: string): Promise<T> {
   try {
     response = await fetch(url, { headers: { accept: 'application/json' } });
   } catch (cause) {
-    throw new Error(DATA_LOAD_FAILED, { cause });
+    throw new DataLoadError(DATA_LOAD_FAILED, { cause });
   }
-  if (!response.ok) throw new Error(`${DATA_LOAD_FAILED} (${response.status} for ${url})`);
+  if (!response.ok) {
+    throw new DataLoadError(`${DATA_LOAD_FAILED} (${response.status} for ${url})`, {
+      status: response.status,
+    });
+  }
   return (await response.json()) as T;
 }
 
@@ -30,12 +49,17 @@ export async function loadItems(build: string, classSlug: string): Promise<ItemF
   return fetchJson<ItemFile>(dataUrl(build, `items/${classSlug}.json`));
 }
 
-/** Sets are optional: a build without normalized items ships no sets.json. */
+/**
+ * Sets are optional: a build without normalized items ships no sets.json, and only that --
+ * a 404 -- resolves to an empty list. A 5xx, an unreachable network or a malformed file is a
+ * broken build, not an absent one, so it is rethrown rather than rendered as "no sets".
+ */
 export async function loadSets(build: string): Promise<ItemSet[]> {
   try {
     return await fetchJson<ItemSet[]>(dataUrl(build, 'sets.json'));
-  } catch {
-    return [];
+  } catch (error) {
+    if (error instanceof DataLoadError && error.status === 404) return [];
+    throw error;
   }
 }
 

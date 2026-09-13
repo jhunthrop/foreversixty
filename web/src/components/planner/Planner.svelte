@@ -82,8 +82,10 @@
   {:else if status === 'failed'}
     <div class="border-line bg-raised rounded-panel mx-[18px] flex flex-col gap-3 border p-5 md:mx-0">
       <p class="text-strong text-[15px] font-semibold">{DATA_LOAD_FAILED}</p>
+      <!-- Honest for every branch of `load`: the reference files fail into this state too,
+           not just talents/<class>.json. -->
       <p class="text-muted text-[13px]">
-        The talent file for {store.classSlug} could not be read from this build.
+        Build {store.treeVersion} did not return the files the planner needs.
       </p>
       <button
         type="button"
