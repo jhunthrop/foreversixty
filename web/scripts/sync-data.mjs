@@ -52,30 +52,30 @@ export async function missingManifestFiles(manifest, sourceDir) {
 }
 
 async function readJson(file) {
-  return JSON.parse(await readFile(file, 'utf8'));
+  const raw = await readFile(file, 'utf8');
+  try {
+    return JSON.parse(raw);
+  } catch (cause) {
+    throw new Error(`${file}: invalid JSON (${cause.message})`, { cause });
+  }
 }
 
 /**
+ * Decides which directory to copy from: the real build directory when its manifest lists
+ * Phase 1 talent data, or the checked-in fixture otherwise. Throws when the manifest is
+ * missing listed files, or when falling back to the fixture is not allowed.
  * @param {{
  *   repoRoot: string,
  *   webRoot: string,
- *   allowFixture?: boolean,
- *   log?: { log: (...args: unknown[]) => void, warn: (...args: unknown[]) => void },
+ *   build: string,
+ *   allowFixture: boolean,
+ *   log: { log: (...args: unknown[]) => void, warn: (...args: unknown[]) => void },
  * }} options
  */
-export async function syncData({ repoRoot, webRoot, allowFixture = true, log = console } = {}) {
-  const activeFile = path.join(webRoot, 'src/data/active-build.json');
-  const { build } = await readJson(activeFile);
-  if (typeof build !== 'string' || build.length === 0) {
-    throw new Error(`${activeFile} must contain a non-empty "build" string.`);
-  }
-
+async function resolveSourceDir({ repoRoot, webRoot, build, allowFixture, log }) {
   const buildDir = path.join(repoRoot, 'data/builds', build);
   const manifestFile = path.join(buildDir, 'manifest.json');
   const manifest = (await exists(manifestFile)) ? await readJson(manifestFile) : null;
-
-  let sourceDir = buildDir;
-  let usedFixture = false;
 
   if (manifest && hasPhaseOneData(manifest)) {
     const missing = await missingManifestFiles(manifest, buildDir);
@@ -85,21 +85,29 @@ export async function syncData({ repoRoot, webRoot, allowFixture = true, log = c
           `Re-run the data pipeline for build ${build}.`,
       );
     }
-  } else {
-    if (!allowFixture) {
-      throw new Error(
-        `data/builds/${build} has no Phase 1 talent data (manifest.json lists no talents/*.json). ` +
-          `Run the data pipeline before deploying; the fixture fallback is refused here.`,
-      );
-    }
-    sourceDir = path.join(webRoot, 'src/fixtures/planner');
-    usedFixture = true;
-    log.warn(
-      `sync-data: data/builds/${build} has no Phase 1 talent data; copying the fixture from ` +
-        `src/fixtures/planner instead. Talent and item content on this build is placeholder data.`,
-    );
+    return { sourceDir: buildDir, usedFixture: false };
   }
 
+  if (!allowFixture) {
+    throw new Error(
+      `data/builds/${build} has no Phase 1 talent data (manifest.json lists no talents/*.json). ` +
+        `Run the data pipeline before deploying; the fixture fallback is refused here.`,
+    );
+  }
+  log.warn(
+    `sync-data: data/builds/${build} has no Phase 1 talent data; copying the fixture from ` +
+      `src/fixtures/planner instead. Talent and item content on this build is placeholder data.`,
+  );
+  return { sourceDir: path.join(webRoot, 'src/fixtures/planner'), usedFixture: true };
+}
+
+/**
+ * Resets public/data/<build> and src/data/generated, then copies SYNC_ENTRIES from
+ * sourceDir into the former and mirrors PAGE_IMPORTS into the latter. Throws when a
+ * required entry is missing from sourceDir. Returns the names actually copied.
+ * @param {{ repoRoot: string, webRoot: string, build: string, sourceDir: string }} options
+ */
+async function copyBuild({ repoRoot, webRoot, build, sourceDir }) {
   const publicDir = path.join(webRoot, 'public/data', build);
   const generatedDir = path.join(webRoot, 'src/data/generated');
   await rm(publicDir, { recursive: true, force: true });
@@ -126,6 +134,27 @@ export async function syncData({ repoRoot, webRoot, allowFixture = true, log = c
     const body = await readFile(path.join(sourceDir, name), 'utf8');
     await writeFile(path.join(generatedDir, name), body, 'utf8');
   }
+
+  return copied;
+}
+
+/**
+ * @param {{
+ *   repoRoot: string,
+ *   webRoot: string,
+ *   allowFixture?: boolean,
+ *   log?: { log: (...args: unknown[]) => void, warn: (...args: unknown[]) => void },
+ * }} options
+ */
+export async function syncData({ repoRoot, webRoot, allowFixture = true, log = console } = {}) {
+  const activeFile = path.join(webRoot, 'src/data/active-build.json');
+  const { build } = await readJson(activeFile);
+  if (typeof build !== 'string' || build.length === 0) {
+    throw new Error(`${activeFile} must contain a non-empty "build" string.`);
+  }
+
+  const { sourceDir, usedFixture } = await resolveSourceDir({ repoRoot, webRoot, build, allowFixture, log });
+  const copied = await copyBuild({ repoRoot, webRoot, build, sourceDir });
 
   log.log(
     `sync-data: build ${build} -> public/data/${build} (${copied.join(', ')})` +
