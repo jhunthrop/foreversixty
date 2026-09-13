@@ -11,18 +11,20 @@ components:
       required: [ok, data, error, request_id]
       properties:
         ok: { type: boolean }
-        data: { nullable: true }
+        data:
+          description: any JSON or null
         error:
-          nullable: true
-          type: object
-          properties:
-            code: { type: string }
-            message: { type: string }
-            fields: { type: object, additionalProperties: { type: string } }
+          oneOf:
+            - type: "null"
+            - type: object
+              properties:
+                code: { type: string }
+                message: { type: string }
+                fields: { type: object, additionalProperties: { type: string } }
         request_id: { type: string }
   responses:
     NotFound:
-      description: Unmatched routes return the envelope with code not_found
+      description: "Unmatched routes return the envelope with code not_found"
       content:
         application/json:
           schema: { $ref: '#/components/schemas/Envelope' }
@@ -30,29 +32,73 @@ paths:
   /healthz:
     get:
       summary: Liveness
-      responses: { '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Envelope' }
   /version:
     get:
       summary: Build version
-      responses: { '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Envelope' }
   /v1/subscribe:
     post:
       summary: Start a double opt-in subscription
       requestBody:
         required: true
-        content: { application/json: { schema: { type: object, required: [email], properties: { email: { type: string, format: email } } } } }
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email: { type: string, format: email }
       responses:
-        '202': { description: Accepted regardless of whether the address is already known }
-        '400': { description: Invalid email }
-        '429': { description: Rate limited }
-        '500': { description: Internal error; envelope with code internal, content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '202':
+          description: "Accepted regardless of whether the address is already known"
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Envelope' }
+        '400':
+          description: "Malformed or missing JSON body, or invalid email address. When email is invalid, error.fields.email is set."
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Envelope' }
+        '429':
+          description: "Rate limited: 10 requests per minute per IP on this route, 120 per minute per IP overall"
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Envelope' }
+        '500':
+          description: "Internal error; envelope with code internal"
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Envelope' }
   /v1/subscribe/confirm:
     get:
       summary: Confirm a subscription
-      parameters: [{ name: token, in: query, required: true, schema: { type: string } }]
-      responses: { '302': { description: Redirect to /subscribed or /subscribe-invalid on the public site } }
+      parameters:
+        - name: token
+          in: query
+          required: true
+          schema: { type: string }
+      responses:
+        '302':
+          description: "Redirect to configured public site base URL + /subscribed (success) or /subscribe-invalid (invalid token)"
   /v1/subscribe/unsubscribe:
     get:
       summary: Unsubscribe
-      parameters: [{ name: token, in: query, required: true, schema: { type: string } }]
-      responses: { '302': { description: Redirect to /unsubscribed or /subscribe-invalid on the public site } }
+      parameters:
+        - name: token
+          in: query
+          required: true
+          schema: { type: string }
+      responses:
+        '302':
+          description: "Redirect to configured public site base URL + /unsubscribed (success) or /subscribe-invalid (invalid token)"

@@ -3,8 +3,9 @@ package server
 
 import (
 	"os"
-	"strings"
 	"testing"
+
+	"gopkg.in/yaml.v3"
 )
 
 func TestOpenAPIListsEveryRoute(t *testing.T) {
@@ -12,9 +13,21 @@ func TestOpenAPIListsEveryRoute(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	doc := string(b)
-	for _, p := range []string{"/healthz:", "/version:", "/v1/subscribe:", "/v1/subscribe/confirm:", "/v1/subscribe/unsubscribe:"} {
-		if !strings.Contains(doc, p) {
+
+	var doc map[string]any
+	err = yaml.Unmarshal(b, &doc)
+	if err != nil {
+		t.Fatalf("openapi.yaml is not valid YAML: %v", err)
+	}
+
+	paths, ok := doc["paths"].(map[string]any)
+	if !ok {
+		t.Fatal("openapi.yaml missing or invalid 'paths' object")
+	}
+
+	requiredPaths := []string{"/healthz", "/version", "/v1/subscribe", "/v1/subscribe/confirm", "/v1/subscribe/unsubscribe"}
+	for _, p := range requiredPaths {
+		if _, ok := paths[p]; !ok {
 			t.Errorf("openapi.yaml missing path %s", p)
 		}
 	}
