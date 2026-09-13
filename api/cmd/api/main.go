@@ -21,7 +21,7 @@ func main() {
 	}
 	srv := &http.Server{
 		Addr:              ":" + cfg.Port,
-		Handler:           server.NewRouter(server.Deps{Version: version}),
+		Handler:           server.NewRouter(server.Deps{Version: version, Log: log, AllowedOrigin: cfg.PublicBaseURL}),
 		ReadHeaderTimeout: 5 * time.Second,
 	}
 	log.Info("listening", "port", cfg.Port, "version", version)
