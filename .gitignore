@@ -1,0 +1,25 @@
+# dependencies
+node_modules/
+.pnpm-store/
+
+# build output
+dist/
+.astro/
+api/bin/
+coverage/
+
+# environment
+.env
+.env.*
+!.env.example
+
+# editor / os
+.DS_Store
+.idea/
+.vscode/
+
+# seeded design canvas (regenerated from the .dc.html files)
+design/forever-sixty-look-and-feel.html
+
+# large raw game data (normalized JSON is committed; raw DB2 exports are not)
+data/builds/*/raw/

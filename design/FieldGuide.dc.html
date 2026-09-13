@@ -1,0 +1,96 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Public+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+  <style>
+    body { margin: 0; background: #131311; }
+    a { color: #e9c46a; text-decoration: none; } a:hover { color: #f2d68c; }
+    .fg { font-family: 'Public Sans', 'Helvetica Neue', Arial, sans-serif; color: #e6e2d8; }
+    .fg h1, .fg h2, .fg .display { font-family: 'Instrument Serif', 'Georgia', 'Times New Roman', serif; }
+    .fg .num { font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace; font-variant-numeric: tabular-nums; }
+  </style>
+</helmet>
+<div class="fg" style="width: 720px; min-height: 1080px; background-color: #131311; display: flex; flex-direction: column;">
+
+  <div style="display: flex; align-items: center; justify-content: space-between; padding: 18px 32px; border-bottom: 1px solid #262622;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <div style="width: 26px; height: 26px; border-radius: 6px; background: #e9c46a; display: flex; align-items: center; justify-content: center; color: #131311;"><span class="num" style="font-size: 12px; font-weight: 500;">60</span></div>
+      <div style="font-size: 15px; font-weight: 600; letter-spacing: -0.01em;">Forever Sixty</div>
+    </div>
+    <div style="display: flex; gap: 20px; font-size: 14px; font-weight: 500; color: #a6a294;">
+      <a href="#" style="color: #a6a294;">Guides</a>
+      <a href="#" style="color: #a6a294;">Dungeons</a>
+      <a href="#" style="color: #a6a294;">Builds</a>
+      <a href="#" style="color: #a6a294;">Realms</a>
+      <a href="#" style="color: #a6a294;">Changelog</a>
+    </div>
+    <div style="display: flex; align-items: center; gap: 8px; height: 34px; padding: 0 10px; border: 1px solid #2e2e29; border-radius: 8px; color: #7d7a6e; font-size: 13px; width: 150px; background: #1a1a17;">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+      <span style="flex-grow: 1;">Search</span>
+      <span class="num" style="font-size: 11px; padding: 2px 5px; border: 1px solid #2e2e29; border-radius: 4px;">/</span>
+    </div>
+  </div>
+
+  <div style="padding: 56px 32px 36px 32px; display: flex; flex-direction: column; gap: 18px;">
+    <div style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: #a6a294;">
+      <span style="width: 8px; height: 8px; border-radius: 999px; background: #e9c46a;"></span>
+      <span>Beta opens in</span>
+      <span class="num" style="color: #e6e2d8; font-weight: 500;">4d 18h</span>
+      <span style="color: #4a4a44;">·</span>
+      <span>Launch Nov 4</span>
+    </div>
+    <h1 style="font-size: 60px; line-height: 1.0; font-weight: 400; margin: 0; letter-spacing: -0.01em; color: #f4f1ea; max-width: 560px; text-wrap: pretty;">Know the world <em style="color: #e9c46a;">before</em> you walk it.</h1>
+    <p style="font-size: 17px; line-height: 1.55; color: #a6a294; margin: 0; max-width: 500px; text-wrap: pretty;">Fast, accurate reference for Forever. Built for the second screen, updated the hour a build ships, no ads in your way.</p>
+    <div style="display: flex; align-items: center; gap: 14px; margin-top: 8px;">
+      <a href="#" style="display: inline-flex; align-items: center; height: 44px; padding: 0 18px; background: #f4f1ea; color: #131311; border-radius: 8px; font-weight: 600; font-size: 15px;">Open the build planner</a>
+      <a href="#" style="display: inline-flex; align-items: center; height: 44px; padding: 0 16px; border: 1px solid #2e2e29; border-radius: 8px; font-weight: 500; font-size: 15px; color: #e6e2d8;">Everything we know</a>
+    </div>
+  </div>
+
+  <div style="padding: 8px 32px 36px 32px; display: flex; flex-direction: column; gap: 12px;">
+    <div style="display: flex; align-items: baseline; justify-content: space-between;">
+      <h2 style="font-size: 28px; font-weight: 400; margin: 0; color: #f4f1ea;">Dungeons</h2>
+      <span style="font-size: 13px; color: #7d7a6e;">Levels reported by press, unverified</span>
+    </div>
+    <div style="display: flex; flex-direction: column; border: 1px solid #262622; border-radius: 10px; overflow: hidden;">
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; padding: 10px 16px; background: #1a1a17; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #7d7a6e; font-weight: 600;">
+        <div>Dungeon</div><div>Zone</div><div>Level</div><div>Bosses</div>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; padding: 14px 16px; border-top: 1px solid #262622; font-size: 15px; align-items: center;">
+        <div style="font-weight: 500; color: #f4f1ea;">Hall of Thanes</div><div style="color: #a6a294;">Dun Morogh</div><div class="num" style="color: #e9c46a;">13–18</div><div style="color: #4a4a44;">—</div>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; padding: 14px 16px; border-top: 1px solid #262622; font-size: 15px; align-items: center;">
+        <div style="font-weight: 500; color: #f4f1ea;">Ruins of Lordaeron</div><div style="color: #a6a294;">Tirisfal Glades</div><div class="num" style="color: #e9c46a;">15–20</div><div style="color: #4a4a44;">—</div>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; padding: 14px 16px; border-top: 1px solid #262622; font-size: 15px; align-items: center;">
+        <div style="font-weight: 500; color: #f4f1ea;">City of Dalaran</div><div style="color: #a6a294;">Alterac Mountains</div><div class="num" style="color: #e9c46a;">20–35</div><div style="color: #4a4a44;">—</div>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; padding: 14px 16px; border-top: 1px solid #262622; font-size: 15px; align-items: center;">
+        <div style="font-weight: 500; color: #f4f1ea;">Whelgar's Excavation</div><div style="color: #a6a294;">Wetlands</div><div class="num" style="color: #e9c46a;">24–29</div><div style="color: #4a4a44;">—</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top: auto; padding: 22px 32px 28px 32px; border-top: 1px solid #262622; display: flex; flex-direction: column; gap: 14px;">
+    <div style="font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #7d7a6e; font-weight: 600;">Direction C · The Field Guide</div>
+    <div style="display: flex; gap: 8px;">
+      <div style="width: 40px; height: 40px; border-radius: 8px; background: #131311; border: 1px solid #262622;"></div>
+      <div style="width: 40px; height: 40px; border-radius: 8px; background: #1a1a17;"></div>
+      <div style="width: 40px; height: 40px; border-radius: 8px; background: #2e2e29;"></div>
+      <div style="width: 40px; height: 40px; border-radius: 8px; background: #7d7a6e;"></div>
+      <div style="width: 40px; height: 40px; border-radius: 8px; background: #a6a294;"></div>
+      <div style="width: 40px; height: 40px; border-radius: 8px; background: #f4f1ea;"></div>
+      <div style="width: 40px; height: 40px; border-radius: 8px; background: #e9c46a;"></div>
+    </div>
+    <div style="font-size: 14px; color: #a6a294; line-height: 1.5;">Instrument Serif for headings, Public Sans for body, JetBrains Mono for numbers. Warm charcoal, one gold accent, dense but calm tables. Feels trustworthy and fast, like a tool that respects your time. The tradeoff: less nostalgia in the chrome, so the warmth has to come from the writing.</div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

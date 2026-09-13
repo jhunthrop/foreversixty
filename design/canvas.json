@@ -1,0 +1,128 @@
+{
+  "pages": [
+    {
+      "id": "page-1",
+      "name": "Homepage"
+    },
+    {
+      "id": "page-2",
+      "name": "Round 2 \u00b7 Gaming directions"
+    },
+    {
+      "id": "page-3",
+      "name": "Round 1 \u00b7 Editorial"
+    }
+  ],
+  "artboards": [
+    {
+      "file": "Main.dc.html",
+      "title": "Homepage \u00b7 live game \u00b7 desktop 1440",
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 1640,
+      "page": "page-1"
+    },
+    {
+      "file": "Mobile.dc.html",
+      "title": "Homepage \u00b7 live game \u00b7 phone 390",
+      "x": 1540,
+      "y": 0,
+      "w": 390,
+      "h": 1760,
+      "page": "page-1"
+    },
+    {
+      "file": "Cinematic.dc.html",
+      "title": "D \u00b7 Cinematic (chosen)",
+      "x": 0,
+      "y": 0,
+      "w": 720,
+      "h": 1080,
+      "page": "page-2"
+    },
+    {
+      "file": "Arena.dc.html",
+      "title": "E \u00b7 Arena",
+      "x": 820,
+      "y": 0,
+      "w": 720,
+      "h": 1080,
+      "page": "page-2"
+    },
+    {
+      "file": "StoneGold.dc.html",
+      "title": "F \u00b7 Stone and Gold",
+      "x": 1640,
+      "y": 0,
+      "w": 720,
+      "h": 1080,
+      "page": "page-2"
+    },
+    {
+      "file": "Inn.dc.html",
+      "title": "A \u00b7 The Inn",
+      "x": 0,
+      "y": 0,
+      "w": 720,
+      "h": 1080,
+      "page": "page-3"
+    },
+    {
+      "file": "Cartographer.dc.html",
+      "title": "B \u00b7 The Cartographer",
+      "x": 820,
+      "y": 0,
+      "w": 720,
+      "h": 1080,
+      "page": "page-3"
+    },
+    {
+      "file": "FieldGuide.dc.html",
+      "title": "C \u00b7 The Field Guide",
+      "x": 1640,
+      "y": 0,
+      "w": 720,
+      "h": 1080,
+      "page": "page-3"
+    }
+  ],
+  "annotations": [
+    {
+      "id": "home-brief",
+      "x": 0,
+      "y": -220,
+      "w": 900,
+      "text": "Homepage designed for the LIVE game (December 2026 onward), not the announcement window.\n\nSlots, top to bottom: search \u00b7 This week (reset, raid tier, active event, latest hotfix, realm status) \u00b7 tools \u00b7 What changed (hotfix / datamined / community / this site, each tagged) \u00b7 Your characters (signed in: raid lockouts, attunements, zone quests, Legacy progress, fed by the addon) \u00b7 guides by class \u00b7 guilds recruiting \u00b7 recent contributions.\n\nPre-launch, the same slots hold dates, 'still unknown', and 'add a character' prompts. Live data shown here is marked Sample; bracketed values are placeholders.",
+      "page": "page-1"
+    },
+    {
+      "id": "home-mobile",
+      "x": 1540,
+      "y": -120,
+      "w": 390,
+      "text": "Phone: search, This week, then Your characters, because a signed-in second-screen visit is usually 'what do I do next on this toon'. Tools and the feed follow.",
+      "page": "page-1"
+    },
+    {
+      "id": "brief-2",
+      "x": 0,
+      "y": -180,
+      "w": 720,
+      "text": "Round 2 sketches. D was chosen; E and F kept for reference.",
+      "page": "page-2"
+    },
+    {
+      "id": "brief-1",
+      "x": 0,
+      "y": -180,
+      "w": 720,
+      "text": "Round 1 (editorial). Rejected as not feeling like a gaming site.",
+      "page": "page-3"
+    }
+  ],
+  "launch": {
+    "view": "canvas",
+    "page": "page-1"
+  }
+}
