@@ -1,0 +1,19 @@
+---
+// web/src/components/Header.astro
+const nav = [
+  ['Guides', '/guides'],
+  ['Zones', '/zones'],
+  ['Dungeons', '/dungeons'],
+  ['Changelog', '/changelog'],
+] as const;
+---
+<header class="relative flex items-center justify-between px-12 py-[18px] border-b border-line/60">
+  <a href="/" class="font-display text-[20px] font-extrabold tracking-[0.08em] uppercase gold-text">Forever Sixty</a>
+  <nav class="flex gap-[26px] text-[13px] font-semibold tracking-[0.12em] uppercase">
+    {nav.map(([label, href]) => <a href={href} class="text-nav hover:text-strong">{label}</a>)}
+  </nav>
+  <a href="https://discord.gg/PLACEHOLDER" class="inline-flex items-center gap-2 h-[34px] px-3 border border-line-warm rounded-control text-text bg-bg/50 font-semibold text-[13px]">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 12a4 4 0 0 0 8 0M5 8a7 7 0 0 1 14 0v7l2 3H3l2-3z"/></svg>
+    <span>Discord</span>
+  </a>
+</header>
