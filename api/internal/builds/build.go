@@ -24,6 +24,15 @@ var Slots = []string{
 	"main_hand", "off_hand", "ranged",
 }
 
+// slotSet indexes Slots for membership tests.
+var slotSet = func() map[string]bool {
+	m := make(map[string]bool, len(Slots))
+	for _, s := range Slots {
+		m[s] = true
+	}
+	return m
+}()
+
 // ItemSlot maps a planner slot to the slot value items carry in the data
 // files: the two ring slots and the two trinket slots share one item slot.
 func ItemSlot(slot string) string {
