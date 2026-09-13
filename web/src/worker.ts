@@ -67,10 +67,25 @@ export default {
     // that. Only a server-side failure means the API itself is unusable.
     if (upstream.status >= 500) return unavailable(request, env);
 
+    // The rest of upstream's headers pass through unchanged -- ETag, Vary, Last-Modified,
+    // Content-Encoding and the like all need to keep working as the API-rendered page grows,
+    // so this is deliberately not an allow-list. Set-Cookie is the one exception: this
+    // response can carry a cacheable Cache-Control and sit behind Cloudflare's shared edge
+    // cache, so any Set-Cookie the API ever emitted here would be a cache-poisoning vector.
+    // The Fetch spec special-cases Set-Cookie as the one response header that is never
+    // combined: `Headers` keeps repeated Set-Cookie entries distinct internally (checked here
+    // with Node's native Headers/Response -- multiple Set-Cookie values survive a `new
+    // Headers(response.headers)` copy as separate entries, confirmed via `getSetCookie()`)
+    // rather than folding them into one comma-joined value, and a single `delete` call
+    // removes every one of them, so this is not a partial fix when the API sends more than
+    // one Set-Cookie.
+    const headers = new Headers(upstream.headers);
+    headers.delete('set-cookie');
+
     return new Response(upstream.body, {
       status: upstream.status,
       statusText: upstream.statusText,
-      headers: upstream.headers,
+      headers,
     });
   },
 };

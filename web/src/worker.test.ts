@@ -69,6 +69,23 @@ describe('worker fetch handler', () => {
     expect(proxied.headers.get('x-forwarded-for')).toBe('203.0.113.5');
   });
 
+  it('strips every Set-Cookie from the proxied response without touching Cache-Control', async () => {
+    const upstream = vi.fn<GlobalFetch>(async () => {
+      const headers = new Headers({ 'cache-control': 'public, max-age=60' });
+      headers.append('set-cookie', 'a=1; Path=/');
+      headers.append('set-cookie', 'b=2; Path=/');
+      return new Response('<html>build</html>', { status: 200, headers });
+    });
+    vi.stubGlobal('fetch', upstream);
+    const env = envWith();
+
+    const response = await worker.fetch(new Request('https://foreversixty.gg/b/k7x2qm4a'), env);
+
+    expect(response.headers.get('set-cookie')).toBeNull();
+    expect(response.headers.getSetCookie()).toEqual([]);
+    expect(response.headers.get('cache-control')).toBe('public, max-age=60');
+  });
+
   it('proxies the card image too', async () => {
     const upstream = vi.fn<GlobalFetch>(async () => new Response('png', { status: 200 }));
     vi.stubGlobal('fetch', upstream);
