@@ -108,131 +108,152 @@
   });
 </script>
 
-<!-- The talent data arrives over the network, so the island paints a one-line placeholder and
-     then replaces it with a planner several screens tall. Without a reserve the whole document
-     below it -- the footer above all -- drops down the page at that moment, which is most of
-     the /planner.html CLS that lighthouserc.json budgets at 0.05. Reserving a viewport's worth
-     of height puts everything below the planner off screen before the swap and leaves it there
-     afterwards, so the move is never visible and never scored. A viewport rather than a pixel
-     height tuned to the ready state: the ready height depends on the class (a tree with more
-     tiers is taller), on the viewport width (the summary bar wraps into a different number of
-     rows), and on the breakpoint, so no one number is right for long, whereas "at least a
-     screen" holds for every class on every device with nothing to retune. -->
-<div
-  class="flex flex-col gap-[22px] md:gap-8 {status === 'loading' ? 'min-h-screen' : ''}"
-  data-testid="planner"
->
+<div class="flex flex-col gap-[22px] md:gap-8" data-testid="planner">
   <SummaryBar {store} />
 
   <p class="text-muted px-[18px] text-[13px] md:px-0">{ERA_DATA_NOTICE}</p>
 
-  {#if status === 'loading'}
-    <p class="text-muted px-[18px] text-[14px] md:px-0" role="status">Loading talent data</p>
-  {:else if status === 'failed'}
-    <div class="border-line bg-raised rounded-panel mx-[18px] flex flex-col gap-3 border p-5 md:mx-0">
-      <p class="text-strong text-[15px] font-semibold">{DATA_LOAD_FAILED}</p>
-      <!-- Honest for every branch of `load`: the reference files fail into this state too,
-           not just talents/<class>.json. -->
-      <p class="text-muted text-[13px]">
-        Build {store.treeVersion} did not return the files the planner needs.
-      </p>
-      <button
-        type="button"
-        class="{SECONDARY_BUTTON} border-line-warm-strong text-text w-fit px-4"
-        onclick={() => (attempt += 1)}
+  <!-- The three states below swap in place once the talent data arrives over the network, and
+       they are wildly different heights: one line of status text against a planner the better
+       part of a thousand pixels tall. Whatever is under the planner -- the footer, mainly --
+       moves by that difference, which Lighthouse measured as 0.185 of /planner.html's 0.186
+       CLS against the 0.05 lighthouserc.json budget. This min-height reserves the room up
+       front so the swap moves nothing below it.
+
+       What it does not do is make the three states identical, and it does not abolish the
+       swap. The reserve is one number; the ready height is not. These two come from the
+       loaded layout of the default class, so a class whose trees run to more tiers grows past
+       them and still moves the footer -- by the difference rather than by the whole planner.
+       Re-derive them by loading /planner, setting this element's min-height to 0, and reading
+       its `getBoundingClientRect().height` below and above the md breakpoint. They measured
+       594.5 (595.5 at 360px) and 539.5; each value here is set a hair under what was measured,
+       because under costs a pixel of movement and over leaves dead space below the ready
+       planner for good.
+
+       It wraps the swapping branches only, not the planner as a whole, and that is what lets
+       one number hold: the summary bar and the notice above are in all three states and
+       reflow with the viewport width, so keeping them outside the reserve takes their
+       wrapping out of the figure. Inside it every part is a fixed height -- the tab strip,
+       the toolbar, the order strip's reserved row, and a tree grid sized by tier count rather
+       than by width. The md value is the smaller one because desktop drops the tab strip and
+       lays the trees out side by side, so the tallest tree sets the height, not their sum. -->
+  <div class="flex min-h-[594px] flex-col gap-[22px] md:min-h-[539px] md:gap-8">
+    {#if status === 'loading'}
+      <!-- The planner's own panel chrome rather than a bare line on a blank reserve: a
+           viewport of empty space reads as a broken page, and the frame reads as the planner
+           arriving. It cannot show the trees themselves -- their names, tiers and columns are
+           the very thing still loading -- so it grows to fill the reserve and says so. -->
+      <div class="border-line bg-raised rounded-panel mx-[18px] flex grow flex-col gap-3 border p-4 md:mx-0">
+        <p class="text-muted text-[14px]" role="status">Loading talent data</p>
+      </div>
+    {:else if status === 'failed'}
+      <div class="border-line bg-raised rounded-panel mx-[18px] flex flex-col gap-3 border p-5 md:mx-0">
+        <p class="text-strong text-[15px] font-semibold">{DATA_LOAD_FAILED}</p>
+        <!-- Honest for every branch of `load`: the reference files fail into this state too,
+             not just talents/<class>.json. -->
+        <p class="text-muted text-[13px]">
+          Build {store.treeVersion} did not return the files the planner needs.
+        </p>
+        <button
+          type="button"
+          class="{SECONDARY_BUTTON} border-line-warm-strong text-text w-fit px-4"
+          onclick={() => (attempt += 1)}
+        >
+          Retry
+        </button>
+      </div>
+    {:else if store.talentIndex}
+      <!-- One tree at a time on a phone: three trees side by side do not fit 360px, and
+           stacking them puts the third one two screens down. Desktop keeps the columns and
+           hides this. The roving tabindex lives on the tabs, as it does on TreeGrid's cells.
+           The -1 on the container changes nothing about the keyboard order -- a bare div was
+           never a tab stop -- and is there to satisfy the compiler's a11y rule that an element
+           carrying an interactive role and a key handler declare a tabindex; -1 declares one
+           without adding a stop, and it matches what TreeGrid's `role="grid"` does. -->
+      <div
+        role="tablist"
+        tabindex={-1}
+        aria-label="Talent trees"
+        class="border-line-soft mx-[18px] flex gap-2 border-b pb-2 md:hidden"
+        onkeydown={onTabKeys}
       >
-        Retry
-      </button>
-    </div>
-  {:else if store.talentIndex}
-    <!-- One tree at a time on a phone: three trees side by side do not fit 360px, and stacking
-         them puts the third one two screens down. Desktop keeps the columns and hides this.
-         Same composite-widget shape as TreeGrid's `role="grid"`: the roving tabindex lives on
-         the tabs, and the container's own -1 keeps it out of the tab order while still giving
-         the widget a focus target of its own. -->
-    <div
-      role="tablist"
-      tabindex={-1}
-      aria-label="Talent trees"
-      class="border-line-soft mx-[18px] flex gap-2 border-b pb-2 md:hidden"
-      onkeydown={onTabKeys}
-    >
-      {#each store.talentIndex.trees as tree, i (tree.id)}
-        <button
-          type="button"
-          role="tab"
-          id={`tree-tab-${tree.id}`}
-          aria-selected={activeTree === i}
-          aria-controls={`tree-panel-${tree.id}`}
-          tabindex={activeTree === i ? 0 : -1}
-          class="{SECONDARY_BUTTON} flex-1 justify-center {activeTree === i
-            ? 'border-gold text-gold'
-            : 'border-line text-nav'}"
-          onclick={() => (activeTree = i)}
-        >
-          <span>{tree.name}</span>
-          <span class="tabular text-muted ml-2 font-mono">{store.split[i] ?? 0}</span>
-        </button>
-      {/each}
-    </div>
+        {#each store.talentIndex.trees as tree, i (tree.id)}
+          <button
+            type="button"
+            role="tab"
+            id={`tree-tab-${tree.id}`}
+            aria-selected={activeTree === i}
+            aria-controls={`tree-panel-${tree.id}`}
+            tabindex={activeTree === i ? 0 : -1}
+            class="{SECONDARY_BUTTON} flex-1 justify-center {activeTree === i
+              ? 'border-gold text-gold'
+              : 'border-line text-nav'}"
+            onclick={() => (activeTree = i)}
+          >
+            <span>{tree.name}</span>
+            <span class="tabular text-muted ml-2 font-mono">{store.split[i] ?? 0}</span>
+          </button>
+        {/each}
+      </div>
 
-    <div class="grid grid-cols-1 gap-4 px-[18px] md:grid-cols-3 md:px-0" data-testid="tree-columns">
-      {#each store.talentIndex.trees as tree, i (tree.id)}
-        <!-- The inactive trees are hidden with a class, not the `hidden` attribute: the
-             attribute would hide them on desktop too, where `md:flex` cannot override it. -->
-        <div
-          id={`tree-panel-${tree.id}`}
-          role="tabpanel"
-          aria-labelledby={`tree-tab-${tree.id}`}
-          class="border-line bg-raised rounded-panel flex-col gap-3 border p-4 md:flex {activeTree === i
-            ? 'flex'
-            : 'hidden'}"
-        >
-          <header class="flex items-baseline justify-between">
-            <h2 class="section-title text-[15px]">{tree.name}</h2>
-            <span class="tabular text-gold font-mono text-[15px]">{store.split[i] ?? 0}</span>
-          </header>
-          <TreeGrid {store} {tree} />
-        </div>
-      {/each}
-    </div>
+      <div class="grid grid-cols-1 gap-4 px-[18px] md:grid-cols-3 md:px-0" data-testid="tree-columns">
+        {#each store.talentIndex.trees as tree, i (tree.id)}
+          <!-- The inactive trees are hidden with a class, not the `hidden` attribute: the
+               attribute would hide them on desktop too, where `md:flex` cannot override it. -->
+          <div
+            id={`tree-panel-${tree.id}`}
+            role="tabpanel"
+            aria-labelledby={`tree-tab-${tree.id}`}
+            class="border-line bg-raised rounded-panel flex-col gap-3 border p-4 md:flex {activeTree === i
+              ? 'flex'
+              : 'hidden'}"
+          >
+            <header class="flex items-baseline justify-between">
+              <h2 class="section-title text-[15px]">{tree.name}</h2>
+              <span class="tabular text-gold font-mono text-[15px]">{store.split[i] ?? 0}</span>
+            </header>
+            <TreeGrid {store} {tree} />
+          </div>
+        {/each}
+      </div>
 
-    <div class="flex flex-wrap items-center gap-3 px-[18px] md:px-0" data-testid="planner-toolbar">
-      {#if confirmingReset}
-        <span class="text-muted text-[13px]">Clear every point in this build?</span>
-        <button
-          type="button"
-          class="{SECONDARY_BUTTON} border-line-warm-strong text-gold px-4"
-          onclick={() => {
-            store.reset();
-            confirmingReset = false;
-          }}
-        >
-          Clear all points
-        </button>
-        <!-- Reset leaves the DOM the moment it is pressed, so the keyboard lands on the question
-             it just asked rather than back at the top of the document. It lands on the safe
-             answer: a second Enter pressed out of habit keeps the build rather than clearing it,
-             which is the only reason the second step exists. -->
-        <button
-          type="button"
-          class="{SECONDARY_BUTTON} border-line-warm text-text px-4"
-          {@attach (node) => node.focus()}
-          onclick={() => (confirmingReset = false)}
-        >
-          Keep the build
-        </button>
-      {:else}
-        <button
-          type="button"
-          class="{SECONDARY_BUTTON} border-line-warm text-text px-4"
-          onclick={() => (confirmingReset = true)}
-        >
-          Reset
-        </button>
-      {/if}
-    </div>
+      <div class="flex flex-wrap items-center gap-3 px-[18px] md:px-0" data-testid="planner-toolbar">
+        {#if confirmingReset}
+          <span class="text-muted text-[13px]">Clear every point in this build?</span>
+          <button
+            type="button"
+            class="{SECONDARY_BUTTON} border-line-warm-strong text-gold px-4"
+            onclick={() => {
+              store.reset();
+              confirmingReset = false;
+            }}
+          >
+            Clear all points
+          </button>
+          <!-- Reset leaves the DOM the moment it is pressed, so the keyboard lands on the
+               question it just asked rather than back at the top of the document. It lands on
+               the safe answer: a second Enter pressed out of habit keeps the build rather than
+               clearing it, which is the only reason the second step exists. -->
+          <button
+            type="button"
+            class="{SECONDARY_BUTTON} border-line-warm text-text px-4"
+            {@attach (node) => node.focus()}
+            onclick={() => (confirmingReset = false)}
+          >
+            Keep the build
+          </button>
+        {:else}
+          <button
+            type="button"
+            class="{SECONDARY_BUTTON} border-line-warm text-text px-4"
+            onclick={() => (confirmingReset = true)}
+          >
+            Reset
+          </button>
+        {/if}
+      </div>
 
-    <OrderStrip {store} />
-  {/if}
+      <OrderStrip {store} />
+    {/if}
+  </div>
 </div>
