@@ -8,6 +8,8 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "build:island": "vite build --config vite.island.config.ts",
+    "postbuild": "npm run build:island && node scripts/check-island-size.mjs",
     "preview": "astro preview",
     "check": "astro check",
     "lint": "eslint .",
@@ -44,6 +46,7 @@
     "@lhci/cli": "^0.15.1",
     "@playwright/test": "^1.63.0",
     "@resvg/resvg-js": "^2.6.2",
+    "@sveltejs/vite-plugin-svelte": "^7.3.0",
     "eslint": "^9.39.5",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-astro": "^1.7.0",

@@ -140,7 +140,17 @@
        the toolbar (now including the always-visible title field and Share button), the order
        strip's reserved row, and a tree grid sized by tier count rather than by width. The md
        value is the smaller one because desktop drops the tab strip and lays the trees out side
-       by side, so the tallest tree sets the height, not their sum. -->
+       by side, so the tallest tree sets the height, not their sum.
+
+       Re-derived again for Task 11's Fork branch and unchanged: 728 and 616, the same as
+       before. Fork replaces Reset and drops the SharePanel section, but only on the read-only
+       mount -- the editable toolbar this measures is untouched. The read-only mount is the
+       shorter one, 646 and 539, so it sits about 80px under the reserve and leaves that much
+       space above the footer on the API's /b/:id. Reserving the taller figure in both is
+       deliberate: Fork grows the toolbar back to the editable height, and a reserve that
+       tracked `readOnly` would spend that growth shoving the footer down the moment it is
+       pressed. /b/:id carries no CLS budget of its own -- it is server-rendered, so the
+       island's whole planner arrives after first paint regardless of what this reserves. -->
   <div class="flex min-h-[726px] flex-col gap-[22px] md:min-h-[615px] md:gap-8">
     {#if status === 'loading'}
       <!-- The planner's own panel chrome rather than a bare line on a blank reserve: a
@@ -222,41 +232,64 @@
       </div>
 
       <div class="flex flex-wrap items-center gap-3 px-[18px] md:px-0" data-testid="planner-toolbar">
-        {#if confirmingReset}
-          <span class="text-muted text-[13px]">Clear every point in this build?</span>
+        {#if store.readOnly}
+          <!-- A build opened from a share link. Every edit is refused until Fork, so the
+               toolbar says so up front rather than leaving the refusal message to explain it
+               after the first click. Reset and Share are gone with it: there is nothing of
+               one's own to clear, and re-sharing someone else's build under a new id is the
+               one thing Fork is for. -->
+          <p class="text-muted text-[13px]">
+            This build was shared as a link. Fork it to spend points of your own.
+          </p>
           <button
             type="button"
             class="{SECONDARY_BUTTON} border-line-warm-strong text-gold px-4"
-            onclick={() => {
-              store.reset();
-              confirmingReset = false;
-            }}
+            onclick={() => store.fork()}
           >
-            Clear all points
-          </button>
-          <!-- Reset leaves the DOM the moment it is pressed, so the keyboard lands on the
-               question it just asked rather than back at the top of the document. It lands on
-               the safe answer: a second Enter pressed out of habit keeps the build rather than
-               clearing it, which is the only reason the second step exists. -->
-          <button
-            type="button"
-            class="{SECONDARY_BUTTON} border-line-warm text-text px-4"
-            {@attach (node) => node.focus()}
-            onclick={() => (confirmingReset = false)}
-          >
-            Keep the build
+            Fork
           </button>
         {:else}
-          <button
-            type="button"
-            class="{SECONDARY_BUTTON} border-line-warm text-text px-4"
-            onclick={() => (confirmingReset = true)}
-          >
-            Reset
-          </button>
-        {/if}
+          <!-- Nested rather than a third arm of the branch above, so `readOnly` is asked once:
+               Reset and Share belong to the same half of that decision, and SharePanel has to
+               sit outside the confirm to survive it -- it holds the title being typed and the
+               link of the last save, and re-mounting it when the confirm opens would throw
+               both away. -->
+          {#if confirmingReset}
+            <span class="text-muted text-[13px]">Clear every point in this build?</span>
+            <button
+              type="button"
+              class="{SECONDARY_BUTTON} border-line-warm-strong text-gold px-4"
+              onclick={() => {
+                store.reset();
+                confirmingReset = false;
+              }}
+            >
+              Clear all points
+            </button>
+            <!-- Reset leaves the DOM the moment it is pressed, so the keyboard lands on the
+                 question it just asked rather than back at the top of the document. It lands
+                 on the safe answer: a second Enter pressed out of habit keeps the build rather
+                 than clearing it, which is the only reason the second step exists. -->
+            <button
+              type="button"
+              class="{SECONDARY_BUTTON} border-line-warm text-text px-4"
+              {@attach (node) => node.focus()}
+              onclick={() => (confirmingReset = false)}
+            >
+              Keep the build
+            </button>
+          {:else}
+            <button
+              type="button"
+              class="{SECONDARY_BUTTON} border-line-warm text-text px-4"
+              onclick={() => (confirmingReset = true)}
+            >
+              Reset
+            </button>
+          {/if}
 
-        <SharePanel {store} />
+          <SharePanel {store} />
+        {/if}
       </div>
 
       <OrderStrip {store} />
