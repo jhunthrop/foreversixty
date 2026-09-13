@@ -44,3 +44,13 @@
   .pill-site { color: var(--color-gold); background: rgba(229,185,85,.14); border-color: rgba(229,185,85,.35); }
   .pill-sample { color: var(--color-muted); background: rgba(154,148,132,.12); border-color: rgba(154,148,132,.30); }
 }
+
+@layer components {
+  .prose-forever h2 { font-size: 18px; letter-spacing: 0.06em; text-transform: uppercase; margin: 28px 0 10px; }
+  .prose-forever h3 { font-size: 16px; margin: 20px 0 8px; }
+  .prose-forever p { margin: 0 0 14px; }
+  .prose-forever ul { padding-left: 20px; margin: 0 0 14px; }
+  .prose-forever table { width: 100%; border-collapse: collapse; margin: 0 0 18px; font-size: 14px; }
+  .prose-forever th, .prose-forever td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--color-line-soft); vertical-align: top; }
+  .prose-forever th { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-muted); }
+}
