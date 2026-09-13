@@ -13,6 +13,7 @@ Compiled from official Blizzard News posts, the official panel recap, Wowhead, I
 | Name reservation / char creation | Oct 27 – Nov 3, 2026 | [Blizzard 24301508](https://news.blizzard.com/en-us/article/24301508/) |
 | Base access | Included with WoW Subscription or Game Time | same |
 | Dev Q&A | Sept 17, 10:00 a.m. PDT (verify) | [Blizzard 24301145](https://news.blizzard.com/en-us/article/24301145/) |
+| Invite-a-Friend code window | Access from Nov 4 through Nov 11, 2026; codes emailed from Oct 20 | [Blizzard 24301508](https://news.blizzard.com/en-us/article/24301508/) |
 
 Editions (contents official; USD prices are press-reported, consistent across outlets):
 

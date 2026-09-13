@@ -25,6 +25,9 @@ sources:
   - label: "Wowhead, Undead Paladins coming to Forever"
     url: https://www.wowhead.com/forever/news/undead-paladins-coming-to-world-of-warcraft-forever-382823
     kind: community
+  - label: "games.gg, Forever coverage"
+    url: https://games.gg/news/wow-classic-plus-world-of-warcraft/
+    kind: community
 ---
 
 World of Warcraft: Forever was announced at the BlizzCon 2026 Opening Ceremony and What's Next panel on Sept 12, 2026. This page summarizes what has been confirmed since; the [dungeons](/dungeons), [zones](/zones), [editions](/editions), and [roadmap](/roadmap) pages carry the full detail and sources for each topic.
@@ -32,10 +35,10 @@ World of Warcraft: Forever was announced at the BlizzCon 2026 Opening Ceremony a
 ## Setting
 
 - Forever is set after *Warcraft III: Reforged — Forsaken Kingdom* and before Molten Core, in what Blizzard describes as "year one of vanilla."
-- It is a standalone narrative branch, and a permanent third pillar of WoW alongside Modern and Classic, according to press coverage.
+- One outlet, guided.news, reports that it is a standalone narrative branch and a permanent third pillar of WoW alongside Modern and Classic; this is not Blizzard's own wording and is treated as single-source.
 - The level cap is 60, indefinitely; there are no Outland- or Draenor-style level jumps.
-- There is no flying and no level scaling.
-- Blizzard describes the design as a "time bubble": growth comes from more raids and dungeons at level 60, not from raising the cap.
+- Inven Global reports from the panel that there is no flying and no level scaling; this is single-source and has not been restated by Blizzard directly.
+- The phrase "time bubble" — growth from more raids and dungeons at level 60, not from raising the cap — comes from games.gg's coverage of the panel, not from a Blizzard post, and is treated as single-source.
 - Blizzard's stated pillars are approachability, the world as protagonist, the journey, and nurturing social experiences.
 
 ## New zones
