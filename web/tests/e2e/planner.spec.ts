@@ -15,7 +15,10 @@ test('the planner opens on the default class with an empty build', async ({ page
     ),
   ).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Arms' })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Fury' })).toBeVisible();
+  // Both trees render, but below the md breakpoint only the selected tab's panel is on screen,
+  // so Fury is in the document rather than visible -- tests/e2e/planner-phone.spec.ts owns the
+  // one-tree-at-a-time rule, and this project runs at a phone width.
+  await expect(page.getByRole('heading', { name: 'Fury', includeHidden: true })).toBeAttached();
   expect(errors).toEqual([]);
 });
 
