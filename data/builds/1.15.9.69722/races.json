@@ -1,0 +1,56 @@
+[
+  {
+    "id": 1,
+    "name": "Human",
+    "slug": "human",
+    "faction": "alliance"
+  },
+  {
+    "id": 2,
+    "name": "Orc",
+    "slug": "orc",
+    "faction": "horde"
+  },
+  {
+    "id": 3,
+    "name": "Dwarf",
+    "slug": "dwarf",
+    "faction": "alliance"
+  },
+  {
+    "id": 4,
+    "name": "Night Elf",
+    "slug": "night-elf",
+    "faction": "alliance"
+  },
+  {
+    "id": 5,
+    "name": "Undead",
+    "slug": "undead",
+    "faction": "horde"
+  },
+  {
+    "id": 6,
+    "name": "Tauren",
+    "slug": "tauren",
+    "faction": "horde"
+  },
+  {
+    "id": 7,
+    "name": "Gnome",
+    "slug": "gnome",
+    "faction": "alliance"
+  },
+  {
+    "id": 8,
+    "name": "Troll",
+    "slug": "troll",
+    "faction": "horde"
+  },
+  {
+    "id": 9,
+    "name": "Goblin",
+    "slug": "goblin",
+    "faction": "horde"
+  }
+]
