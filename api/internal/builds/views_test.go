@@ -94,3 +94,39 @@ func TestViewsRecordDropsWhenTheQueueIsFull(t *testing.T) {
 		t.Fatalf("queued %d records, want 1 with the second dropped", len(v.ch))
 	}
 }
+
+func TestViewsRecordDuringCloseDoesNotPanic(t *testing.T) {
+	// Shutdown lands while requests are still finishing their renders, so
+	// Record and Close genuinely run at the same time. Only holding the
+	// read lock across both the closed check and the send makes that safe:
+	// without it a recorder can pass the check, lose the race to Close, and
+	// panic sending on a closed channel. The sequential tests cannot catch
+	// that, and -race only reports races the test actually creates.
+	v := newViews(newFakeAdder(), quietLogger(), 8, time.Hour)
+
+	const recorders = 8
+	var started, finished sync.WaitGroup
+	started.Add(recorders)
+	finished.Add(recorders)
+	stop := make(chan struct{})
+	for i := 0; i < recorders; i++ {
+		go func() {
+			defer finished.Done()
+			v.Record("znorjmts")
+			started.Done()
+			for {
+				select {
+				case <-stop:
+					return
+				default:
+					v.Record("znorjmts")
+				}
+			}
+		}()
+	}
+
+	started.Wait() // every recorder is now inside its loop
+	v.Close()      // so this races all of them, and they keep going after it
+	close(stop)
+	finished.Wait()
+}

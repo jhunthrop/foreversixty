@@ -12,9 +12,11 @@ const (
 	viewQueue = 1024
 	// viewFlushEvery is how often pending counts are written.
 	viewFlushEvery = 5 * time.Second
-	// viewFlushTimeout bounds a single flush. It sits inside the 10-second
-	// shutdown budget in cmd/api/main.go, so the drain on Close cannot hold
-	// the process past Cloud Run's termination grace period.
+	// viewFlushTimeout bounds a single flush on its own, independently of
+	// the server's shutdown deadline: cmd/api/main.go calls Close after
+	// srv.Shutdown has returned, so the two budgets run in sequence rather
+	// than nested. A shutdown cut short before the drain finishes simply
+	// drops the pending window, which the counter's drop policy allows.
 	viewFlushTimeout = 5 * time.Second
 )
 
@@ -60,9 +62,10 @@ func newViews(store ViewAdder, log *slog.Logger, queue int, every time.Duration)
 	return v
 }
 
-// Record queues one view for id. A full queue drops the view, and so does a
-// counter that has already been closed: a view count is never worth
-// delaying a page render or failing a shutdown, and the loss is logged.
+// Record queues one view for id: a view count is never worth delaying a page
+// render or failing a shutdown. A full queue drops the view and logs it; a
+// counter that has already been closed drops it silently, because a line per
+// in-flight request during shutdown would be noise.
 func (v *Views) Record(id string) {
 	v.mu.RLock()
 	defer v.mu.RUnlock()
