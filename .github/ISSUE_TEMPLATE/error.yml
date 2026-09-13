@@ -1,0 +1,30 @@
+name: Report an error
+description: A fact on foreversixty.gg is wrong, outdated, or missing its source.
+title: "Error: "
+labels: [error-report]
+body:
+  - type: input
+    id: page
+    attributes:
+      label: Page
+      description: The address of the page with the error.
+      placeholder: https://foreversixty.gg/dungeons/hall-of-thanes
+    validations:
+      required: true
+  - type: textarea
+    id: wrong
+    attributes:
+      label: What is wrong
+      description: Quote the sentence or value as it appears on the page.
+    validations:
+      required: true
+  - type: textarea
+    id: correct
+    attributes:
+      label: What it should say
+      description: The correct fact, if you know it.
+  - type: input
+    id: source
+    attributes:
+      label: Source
+      description: A link that supports the correction. Blizzard posts, datamined tables, and the beta client all count. Say which.

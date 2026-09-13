@@ -1,0 +1,35 @@
+name: Write a guide
+description: Propose a guide for foreversixty.gg. Guides are dated, sourced, and written in plain reference voice.
+title: "Guide: "
+labels: [guide-proposal]
+body:
+  - type: input
+    id: topic
+    attributes:
+      label: Topic
+      placeholder: Undead Paladin leveling 1 to 30 in the beta
+    validations:
+      required: true
+  - type: textarea
+    id: outline
+    attributes:
+      label: Outline
+      description: The sections you plan to write, one per line.
+    validations:
+      required: true
+  - type: textarea
+    id: sources
+    attributes:
+      label: Sources
+      description: Where each claim will come from. Beta testing counts; say which build.
+    validations:
+      required: true
+  - type: dropdown
+    id: state
+    attributes:
+      label: Game state the guide covers
+      options:
+        - Beta (Sept 17 to Oct 21)
+        - Launch (Nov 4)
+        - First raids (Dec 9)
+        - Hardcore
