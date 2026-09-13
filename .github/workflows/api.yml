@@ -2,9 +2,9 @@ name: api
 on:
   push:
     branches: [main]
-    paths: ['api/**', '.github/workflows/api.yml']
+    paths: ['api/**', 'data/builds/**', '.github/workflows/api.yml']
   pull_request:
-    paths: ['api/**', '.github/workflows/api.yml']
+    paths: ['api/**', 'data/builds/**', '.github/workflows/api.yml']
   workflow_dispatch:
 jobs:
   test:
@@ -41,7 +41,7 @@ jobs:
           service_account: ${{ vars.GCP_DEPLOYER_SA }}
       - uses: google-github-actions/setup-gcloud@v2
       - run: gcloud auth configure-docker us-east1-docker.pkg.dev --quiet
-      - run: docker build --build-arg VERSION=${{ github.sha }} -t $IMAGE api
+      - run: docker build --build-arg VERSION=${{ github.sha }} -t $IMAGE -f api/Dockerfile .
       - run: docker push $IMAGE
       - uses: google-github-actions/deploy-cloudrun@v2
         with:
