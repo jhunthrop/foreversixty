@@ -41,6 +41,75 @@ test('a failed talent fetch shows the reason and a working retry', async ({ page
   await expect(page.getByRole('heading', { name: 'Arms' })).toBeVisible();
 });
 
+test('a slow class switch cannot leave one class holding another class trees', async ({ page }) => {
+  // Warrior is the class the planner opens on, so its talent request is the one already in
+  // flight when the switch happens. Held open until paladin has finished loading, it is the
+  // stale response `load` in Planner.svelte has to discard: without the generation guard it
+  // lands last and puts warrior trees under `paladin`, which then posts warrior talent ids
+  // with paladin's class_id and is refused by the API.
+  let release = (): void => {};
+  const held = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  await page.route('**/data/*/talents/warrior.json', async (route) => {
+    await held;
+    await route.continue();
+  });
+  // This build ships talent data for warrior alone, so paladin's file is supplied here. One
+  // tier-0 talent is enough: what the assertions read is the tree name, not the grid.
+  await page.route('**/data/*/talents/paladin.json', (route) =>
+    route.fulfill({
+      json: {
+        build: '1.15.9.69722',
+        class_slug: 'paladin',
+        class_id: 2,
+        trees: [
+          {
+            id: 382,
+            name: 'Holy',
+            position: 0,
+            talents: [
+              {
+                id: 3001,
+                name: 'Divine Strength',
+                icon: 'fixture_divine_strength',
+                max_rank: 1,
+                tier: 0,
+                column: 0,
+                prereq_talent_id: null,
+                prereq_rank: null,
+                ranks: [{ spell_id: 30011, description: 'Increases Strength by 2%.' }],
+              },
+            ],
+          },
+        ],
+      },
+    }),
+  );
+  // Gear is optional, and a 404 is how the planner is told a class ships no item file.
+  await page.route('**/data/*/items/paladin.json', (route) =>
+    route.fulfill({ status: 404, contentType: 'text/plain', body: 'not found' }),
+  );
+
+  await page.goto('/planner');
+  await expect(page.getByText('Loading talent data')).toBeVisible();
+  await page.getByLabel('Class').selectOption('paladin');
+  await expect(page.getByRole('heading', { name: 'Holy' })).toBeVisible();
+
+  const warriorResponse = page.waitForResponse('**/data/*/talents/warrior.json');
+  release();
+  await warriorResponse;
+  // The response event fires when the headers arrive; the store write the unguarded code
+  // made followed a microtask later, once the body parsed. A discarded response changes
+  // nothing and so raises no event to wait on, which is what this settle stands in for.
+  await page.waitForTimeout(500);
+
+  await expect(page.getByLabel('Class')).toHaveValue('paladin');
+  await expect(page.getByRole('heading', { name: 'Holy' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Arms', includeHidden: true })).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: 'Fury', includeHidden: true })).toHaveCount(0);
+});
+
 test('clicking a talent spends points and the counters follow', async ({ page }) => {
   await page.goto('/planner');
   const improvedHeroicStrike = page.getByTestId('talent-1001');

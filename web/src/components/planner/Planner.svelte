@@ -89,26 +89,46 @@
     tabs[activeTree].focus();
   }
 
+  // Nothing cancels a request that is already in flight, so switching class twice in quick
+  // succession leaves two runs of this racing to write to the same store. The class this run
+  // was started for is its generation token: a run whose class has since moved on stops before
+  // it writes anything, rather than leaving the store holding one class's trees under
+  // another's slug -- which `toDraft` would then post as that class's talent ids under the
+  // wrong class_id, for the API to refuse. SharePanel.svelte draws the same line for saves,
+  // by comparing drafts.
   async function load(): Promise<void> {
+    const slug = store.classSlug;
+    const stale = (): boolean => store.classSlug !== slug;
     status = 'loading';
     try {
       const reference = await loadReference(store.treeVersion);
+      if (stale()) return;
       store.setReference(reference);
-      store.setTalents(await loadTalents(store.treeVersion, store.classSlug));
-      store.setSets(await loadSets(store.treeVersion));
+      const talents = await loadTalents(store.treeVersion, slug);
+      if (stale()) return;
+      store.setTalents(talents);
+      const sets = await loadSets(store.treeVersion);
+      if (stale()) return;
+      store.setSets(sets);
       // Gear is optional in the same way sets are: a build whose item table did not
       // normalize ships no items/<class>.json, and the planner is complete without a gear
       // panel. Only a 404 means that. A 5xx, an unreachable network or a malformed file is a
       // broken build rather than an absent one, so it is rethrown into the failure state --
       // the same line loadSets draws, for the same reason.
       try {
-        store.setItems(await loadItems(store.treeVersion, store.classSlug));
+        const items = await loadItems(store.treeVersion, slug);
+        if (stale()) return;
+        store.setItems(items);
       } catch (error) {
         if (!(error instanceof DataLoadError) || error.status !== 404) throw error;
-        store.setItems({ build: store.treeVersion, class_slug: store.classSlug, items: [] });
+        if (stale()) return;
+        store.setItems({ build: store.treeVersion, class_slug: slug, items: [] });
       }
       status = 'ready';
     } catch {
+      // A stale run's failure is not this class's failure: the run that replaced it owns the
+      // status, and reporting this one would put a working planner behind a Retry button.
+      if (stale()) return;
       status = 'failed';
     }
   }
