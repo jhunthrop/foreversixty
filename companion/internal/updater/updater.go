@@ -310,15 +310,50 @@ func ApplyPending(dir, publicKey, exe string) (bool, error) {
 		clearPending(dir)
 		return false, err
 	}
+
+	// Stage the verified bytes as a sibling of exe first, so the swap
+	// below is two same-directory renames rather than a write in
+	// place: Windows will not let a running binary be replaced, but
+	// it will let one be renamed aside and a new file renamed into
+	// its place, and that target-path-is-free rename is effectively
+	// instant, unlike a full write.
+	tmp, err := os.CreateTemp(filepath.Dir(exe), filepath.Base(exe)+".update-*")
+	if err != nil {
+		return false, fmt.Errorf("stage the new binary next to the running one: %w", err)
+	}
+	tmpPath := tmp.Name()
+	moved := false
+	defer func() {
+		if !moved {
+			os.Remove(tmpPath) // leave nothing behind for the next launch to trip over
+		}
+	}()
+	if _, err := tmp.Write(body); err != nil {
+		tmp.Close()
+		return false, fmt.Errorf("write the new binary: %w", err)
+	}
+	if err := tmp.Close(); err != nil {
+		return false, fmt.Errorf("write the new binary: %w", err)
+	}
+	if err := os.Chmod(tmpPath, 0o755); err != nil {
+		return false, fmt.Errorf("make the new binary executable: %w", err)
+	}
+
 	previous := filepath.Join(dir, "previous")
 	os.Remove(previous)
 	if err := os.Rename(exe, previous); err != nil {
 		return false, fmt.Errorf("move the running binary aside: %w", err)
 	}
-	if err := os.WriteFile(exe, body, 0o755); err != nil {
-		os.Rename(previous, exe) // put it back rather than leave nothing
-		return false, fmt.Errorf("write the new binary: %w", err)
+	if err := os.Rename(tmpPath, exe); err != nil {
+		// The target is free now, so this should be rare, but leaving
+		// nothing at exe is worse than a stale binary: restore it, and
+		// report a restore failure rather than swallow it.
+		if restoreErr := os.Rename(previous, exe); restoreErr != nil {
+			return false, fmt.Errorf("swap in the new binary: %w; restoring the previous binary also failed: %w", err, restoreErr)
+		}
+		return false, fmt.Errorf("swap in the new binary: %w", err)
 	}
+	moved = true
 	clearPending(dir)
 	return true, nil
 }

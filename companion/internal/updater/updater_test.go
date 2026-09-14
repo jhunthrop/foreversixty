@@ -216,6 +216,51 @@ func TestApplyPendingRefusesAndClearsAnUnsignedStage(t *testing.T) {
 	}
 }
 
+// TestApplyPendingRejectsAStageTamperedWithAfterStaging proves the
+// apply-time re-verify actually does something: a pending file
+// modified on disk after it was staged, with its original
+// well-formed signature still sitting next to it, must be refused --
+// this is the exact "it sat on disk in between" scenario the package
+// exists for.
+func TestApplyPendingRejectsAStageTamperedWithAfterStaging(t *testing.T) {
+	sk, pub := keypair(t)
+	binary := []byte("the real companion")
+	srv := release(t, "companion-v9.9.9", binary, sign(t, sk, binary))
+	dir := t.TempDir()
+	u := New(Options{Dir: dir, APIBase: srv.URL, PublicKey: pub, Version: "1.0.0",
+		GOOS: "linux", GOARCH: "amd64"})
+	if staged, err := u.Poll(t.Context(), t0); err != nil || !staged {
+		t.Fatalf("Poll = %v, %v", staged, err)
+	}
+
+	// Tamper with the staged bytes after the fact, leaving the
+	// original signature untouched.
+	if err := os.WriteFile(PendingPath(dir), []byte("a trojan planted after staging"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+
+	exeDir := t.TempDir()
+	exe := filepath.Join(exeDir, "foreversixty-companion")
+	if err := os.WriteFile(exe, []byte("the running companion"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+
+	if _, err := ApplyPending(dir, pub, exe); err == nil {
+		t.Fatal("a stage tampered with after staging was applied")
+	}
+	if got, _ := os.ReadFile(exe); string(got) != "the running companion" {
+		t.Errorf("the running binary changed to %q", got)
+	}
+	if _, err := os.Stat(PendingPath(dir)); err == nil {
+		t.Error("the tampered stage was not cleared")
+	}
+	if entries, err := os.ReadDir(exeDir); err != nil {
+		t.Fatal(err)
+	} else if len(entries) != 1 {
+		t.Errorf("stray files left next to the executable: %v", entries)
+	}
+}
+
 func TestVerifyReportsWhichPieceIsWrong(t *testing.T) {
 	sk, pub := keypair(t)
 	body := []byte("payload")
