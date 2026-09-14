@@ -11,8 +11,8 @@ describe('rarityClassFor', () => {
     expect(rarityClassFor(0)).toBe('text-rarity-poor');
     expect(rarityClassFor(1)).toBe('text-rarity-common');
     expect(rarityClassFor(2)).toBe('text-rarity-uncommon');
-    expect(rarityClassFor(3)).toBe('text-rarity-rare');
-    expect(rarityClassFor(4)).toBe('text-rarity-epic');
+    expect(rarityClassFor(3)).toBe('text-rarity-rare-text');
+    expect(rarityClassFor(4)).toBe('text-rarity-epic-text');
     expect(rarityClassFor(5)).toBe('text-rarity-legendary');
   });
 

@@ -68,6 +68,8 @@ Warrior `#c69b6d` · Paladin `#f48cba` · Hunter `#aad372` · Rogue `#fff468` ·
 
 Poor `#9d9d9d` · Common `#ffffff` · Uncommon `#1eff00` · Rare `#0070dd` · Epic `#a335ee` · Legendary `#ff8000`. Level-range tags reuse these: green for low brackets, blue for mid, purple for max-level.
 
+Rare and epic are too dark to read as small text on `--color-raised` `#0d111a`: 3.92:1 and 3.87:1, under WCAG AA's 4.5:1 for 13–14px semibold. Text uses two lightened variants instead — rare `#3d94f0` (6.02:1) and epic `#b866f5` (5.63:1) — the same move the Shaman class colour makes. The base colours above are unchanged and stay in use for bars, borders and icons; poor (6.96:1), common (18.88:1), uncommon (13.81:1) and legendary (7.50:1) already clear AA and are used as-is for text.
+
 ## Typography
 
 | Role | Face | Fallback | Notes |

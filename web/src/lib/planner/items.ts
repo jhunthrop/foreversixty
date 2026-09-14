@@ -9,8 +9,8 @@ const RARITY_CLASS: Record<number, string> = {
   0: 'text-rarity-poor',
   1: 'text-rarity-common',
   2: 'text-rarity-uncommon',
-  3: 'text-rarity-rare',
-  4: 'text-rarity-epic',
+  3: 'text-rarity-rare-text',
+  4: 'text-rarity-epic-text',
   5: 'text-rarity-legendary',
 };
 

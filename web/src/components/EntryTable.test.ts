@@ -32,7 +32,7 @@ describe('EntryTable', () => {
     expect(html).toContain('24–32');
     expect(html).toContain('text-rarity-uncommon');
     expect(html).toContain('56–60');
-    expect(html).toContain('text-rarity-epic');
+    expect(html).toContain('text-rarity-epic-text');
     expect(html).toContain('—');
     expect(html).toContain('text-muted');
   });
