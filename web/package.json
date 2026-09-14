@@ -23,6 +23,7 @@
     "lhci": "lhci autorun",
     "deploy": "npm run build && wrangler deploy",
     "sync:data": "node scripts/sync-data.mjs",
+    "make:report-fixture": "node scripts/make-report-fixture.mjs",
     "predev": "npm run sync:data",
     "precheck": "npm run sync:data",
     "pretest": "FOREVER_DATA=fixture npm run sync:data",
