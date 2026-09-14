@@ -77,6 +77,17 @@ type Health struct {
 	HeaderRestarts  int            `json:"header_restarts"`
 }
 
+// cloneHealth deep-copies h's map, so a snapshot taken at one point in time
+// is unaffected by counters that keep changing afterwards.
+func cloneHealth(h Health) Health {
+	c := h
+	c.UnknownEvents = make(map[string]int, len(h.UnknownEvents))
+	for k, v := range h.UnknownEvents {
+		c.UnknownEvents[k] = v
+	}
+	return c
+}
+
 // Session is the engine, wired together.
 type Session struct {
 	opt Options
@@ -92,6 +103,19 @@ type Session struct {
 	pending    []lexer.Line // buffered while a layout is still unknown
 	inferring  bool
 	headerSeen bool
+
+	// openClock and openSeen are the decoder's clock and Seen() as they
+	// stood immediately before the line that opened the fight currently in
+	// progress was decoded. State() serialises them as the clock a restored
+	// session must resume with, since the caller replays that same line.
+	openClock time.Time
+	openSeen  bool
+	// openHealth is health as it stood immediately before that same line,
+	// so State() can serialise a baseline that excludes every line the
+	// caller is about to replay. Without it, Lines and friends would be
+	// counted twice: once by this session before it was serialised, once
+	// again by the restored session replaying the open fight's byte range.
+	openHealth Health
 
 	health Health
 }
@@ -143,9 +167,6 @@ func (s *Session) Feed(chunk []byte, offset int64) (Result, error) {
 	if err != nil {
 		return res, err
 	}
-	if s.inferring && len(s.pending) >= inferWindow {
-		s.flushInference(&res)
-	}
 	res.Bytes = s.lex.NextOffset() - before
 	return res, nil
 }
@@ -154,7 +175,7 @@ func (s *Session) line(ln lexer.Line, res *Result) {
 	if s.inferring {
 		h, isHeader := layout.ParseHeader(ln)
 		if !isHeader {
-			s.pending = append(s.pending, ln)
+			s.buffer(ln, res)
 			return
 		}
 		switch l, found := layout.Lookup(h); {
@@ -162,7 +183,7 @@ func (s *Session) line(ln lexer.Line, res *Result) {
 			s.setLayout(l)
 		case s.opt.Infer:
 			// No row for this header: buffer and let Infer count fields.
-			s.pending = append(s.pending, ln)
+			s.buffer(ln, res)
 			return
 		default:
 			s.setLayout(layout.RetailV16())
@@ -171,6 +192,17 @@ func (s *Session) line(ln lexer.Line, res *Result) {
 		s.replay(res)
 	}
 	s.handle(ln, res)
+}
+
+// buffer appends ln to the inference sample and flushes it the moment the
+// window fills, checked per line rather than once per Feed call, so the
+// sample layout.Infer sees is the same regardless of how the caller chunks
+// the input.
+func (s *Session) buffer(ln lexer.Line, res *Result) {
+	s.pending = append(s.pending, ln)
+	if len(s.pending) >= inferWindow {
+		s.flushInference(res)
+	}
 }
 
 // flushInference builds a row from the buffered lines and replays them.
@@ -190,6 +222,7 @@ func (s *Session) replay(res *Result) {
 
 func (s *Session) handle(ln lexer.Line, res *Result) {
 	s.health.Lines++
+	prevClock, prevSeen := s.dec.Time(), s.dec.Seen()
 	e := s.dec.Decode(ln)
 
 	if e.Kind == event.Header && s.headerSeen {
@@ -227,6 +260,13 @@ func (s *Session) handle(ln lexer.Line, res *Result) {
 		return
 	}
 	if step.Opened {
+		s.openClock, s.openSeen = prevClock, prevSeen
+		// The opening line can only be hostile combat or ENCOUNTER_START
+		// (see hostileCombat in package fight), so it is never counted as
+		// a ParseError, an Unknown event, or a header restart; only Lines
+		// needs undoing to land on the count as of just before this line.
+		s.openHealth = cloneHealth(s.health)
+		s.openHealth.Lines--
 		s.startFight(step.Fight)
 	}
 	if s.acc != nil {
@@ -318,16 +358,24 @@ func (s *Session) Units() *units.Registry { return s.reg }
 // state is the serialised form of a session. Decoded events and the open
 // fight's accumulator are not in it: the caller replays the open fight's
 // byte range, which is bounded by one fight.
+//
+// Layout carries the full row, not just LayoutName: a registered row is
+// looked up afresh by name on Restore, but an inferred row has no entry in
+// layout.Rows() to look up, so its dynamically derived shape must travel
+// in the state itself. layout.Layout's fields are all exported and its
+// maps are sorted by encoding/json, so this stays deterministic.
 type state struct {
-	Version    string      `json:"version"`
-	LayoutName string      `json:"layout_name"`
-	Lexer      lexer.State `json:"lexer"`
-	Units      units.State `json:"units"`
-	Fight      fight.State `json:"fight"`
-	Clock      time.Time   `json:"clock"`
-	Health     Health      `json:"health"`
-	HeaderSeen bool        `json:"header_seen"`
-	Replay     int64       `json:"replay_offset"`
+	Version    string        `json:"version"`
+	LayoutName string        `json:"layout_name"`
+	Layout     layout.Layout `json:"layout"`
+	Lexer      lexer.State   `json:"lexer"`
+	Units      units.State   `json:"units"`
+	Fight      fight.State   `json:"fight"`
+	Clock      time.Time     `json:"clock"`
+	ClockSeen  bool          `json:"clock_seen"`
+	Health     Health        `json:"health"`
+	HeaderSeen bool          `json:"header_seen"`
+	Replay     int64         `json:"replay_offset"`
 }
 
 // State serialises the session. Restore resumes from it, and the caller
@@ -344,12 +392,21 @@ func (s *Session) State() ([]byte, error) {
 	}
 	if s.dec != nil {
 		st.LayoutName = s.dec.Layout().Name
+		st.Layout = s.dec.Layout()
 		st.Clock = s.dec.Time()
+		st.ClockSeen = s.dec.Seen()
 	}
 	if open := s.seg.Open(); open != nil {
 		st.Replay = open.StartOffset
 		st.Fight.Open = nil // the open fight is rebuilt by replaying
 		st.Lexer = lexer.State{Offset: open.StartOffset, Number: open.StartLine - 1}
+		// The clock, and the health counters, must resume as of just
+		// before the line that opened this fight, since the caller
+		// replays every line from there on: replaying already-counted
+		// lines a second time must not count them twice.
+		st.Clock = s.openClock
+		st.ClockSeen = s.openSeen
+		st.Health = s.openHealth
 	}
 	b, err := json.Marshal(st)
 	if err != nil {
@@ -387,13 +444,21 @@ func Restore(o Options, b []byte) (*Session, error) {
 	}
 	lay, ok := rowByName(st.LayoutName)
 	if !ok {
-		if o.Layout.Name == "" {
+		// Not a registered row: fall back to the layout serialised in the
+		// state itself, which is how an inferred layout survives a
+		// restore, since it has no entry in layout.Rows() to look up.
+		switch {
+		case st.Layout.Name != "":
+			lay = st.Layout
+		case o.Layout.Name != "":
+			lay = o.Layout
+		default:
 			return nil, fmt.Errorf("session: state names layout %q, which is not registered", st.LayoutName)
 		}
-		lay = o.Layout
 	}
 	s.setLayout(lay)
 	s.dec.SetTime(st.Clock)
+	s.dec.SetSeen(st.ClockSeen)
 	return s, nil
 }
 

@@ -3,9 +3,11 @@ package session
 
 import (
 	"encoding/json"
+	"fmt"
 	"math/rand/v2"
 	"os"
 	"strconv"
+	"strings"
 	"testing"
 	"time"
 
@@ -219,7 +221,7 @@ func TestTheFixtureProducesTheEncounterWithItsMetrics(t *testing.T) {
 
 func TestSerialiseAndRestoreMidFight(t *testing.T) {
 	src := fixture(t)
-	want, _ := feed(t, opts(), src, len(src))
+	want, wantHealth := feed(t, opts(), src, len(src))
 
 	s := New(opts())
 	var got Result
@@ -261,9 +263,13 @@ func TestSerialiseAndRestoreMidFight(t *testing.T) {
 		t.Fatal(err)
 	}
 	add(r)
+	gotHealth := revived.Health()
 
 	if jsonOf(t, digestOf(got)) != jsonOf(t, digestOf(want)) {
 		t.Fatal("a serialise and restore mid-fight changed the output")
+	}
+	if jsonOf(t, gotHealth) != jsonOf(t, wantHealth) {
+		t.Fatalf("a serialise and restore mid-fight changed health: got %+v, want %+v", gotHealth, wantHealth)
 	}
 }
 
@@ -378,5 +384,193 @@ func TestAForcedLayoutSkipsHeaderDetection(t *testing.T) {
 	_, health := feed(t, o, fixture(t), 1024)
 	if health.Layout != "retail-v16" {
 		t.Fatalf("layout = %q", health.Layout)
+	}
+}
+
+// stampAt returns a yearless "M/D HH:MM:SS.mmm" timestamp n seconds after
+// 9/26 20:10:00.000, for synthetic logs that need many distinct timestamps
+// without risking an hour or day rollover.
+func stampAt(n int) string {
+	total := 10*60 + n // seconds since 20:00:00
+	hh := 20 + total/3600
+	mm := (total % 3600) / 60
+	ss := total % 60
+	return fmt.Sprintf("9/26 %02d:%02d:%02d.000", hh, mm, ss)
+}
+
+// swingDamageLog builds n identically shaped SWING_DAMAGE lines, one second
+// apart, a hostile creature swinging on a friendly player. That is real
+// combat: it opens and sustains a trash fight, and its field count is
+// exactly what a real retail-v16 log carries, so a layout inferred from a
+// sample of these lines decodes every later one the same way.
+func swingDamageLog(n int) []byte {
+	const line = `SWING_DAMAGE,Creature-0-2085-2284-7855-169753-0000AA0001,"Hollow Sentinel",0xa48,0x0,Player-4184-000000A1,"Baelgrim-Nightslayer",0x511,0x0,Creature-0-2085-2284-7855-169753-0000AA0001,0000000000000000,41320,44000,612,0,1955,0,1,0,1000,0,-1487.02,6409.71,1675,1.2044,45,812,1290,-1,1,0,0,0,nil,nil,nil`
+	var b strings.Builder
+	for i := 0; i < n; i++ {
+		fmt.Fprintf(&b, "%s  %s\n", stampAt(i), line)
+	}
+	return []byte(b.String())
+}
+
+func TestSerialiseAndRestoreAfterAnInferredLayout(t *testing.T) {
+	src := swingDamageLog(inferWindow + 500)
+	o := opts()
+	o.Infer = true
+
+	want, _ := feed(t, o, src, len(src))
+
+	s := New(o)
+	var got Result
+	add := func(r Result) {
+		got.Events = append(got.Events, r.Events...)
+		got.Closed = append(got.Closed, r.Closed...)
+	}
+
+	// Feed far enough to cross the inference window and open a fight, then
+	// serialise while still short of the end of the file.
+	cut := len(src) - 200
+	r, err := s.Feed(src[:cut], 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	add(r)
+	if health := s.Health(); health.Layout != "inferred" || !health.LayoutInferred {
+		t.Fatalf("health before serialising = %+v, want an inferred layout", health)
+	}
+	if _, _, ok := s.Snapshot(); !ok {
+		t.Fatal("expected a fight in progress before serialising")
+	}
+
+	blob, err := s.State()
+	if err != nil {
+		t.Fatal(err)
+	}
+	replay, err := ReplayOffset(blob)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if replay > int64(cut) {
+		t.Fatalf("replay offset %d is past the bytes already fed (%d)", replay, cut)
+	}
+	got.Events = keepBefore(got.Events, replay)
+
+	revived, err := Restore(o, blob)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if health := revived.Health(); health.Layout != "inferred" || !health.LayoutInferred {
+		t.Fatalf("restored health = %+v, want an inferred layout", health)
+	}
+	if r, err = revived.Feed(src[replay:], replay); err != nil {
+		t.Fatal(err)
+	}
+	add(r)
+	if r, err = revived.Close(); err != nil {
+		t.Fatal(err)
+	}
+	add(r)
+
+	if jsonOf(t, digestOf(got)) != jsonOf(t, digestOf(want)) {
+		t.Fatal("a serialise and restore after an inferred layout changed the output")
+	}
+}
+
+func TestInferenceWindowIsChunkSizeInvariant(t *testing.T) {
+	var b strings.Builder
+	for i := 0; i < inferWindow; i++ {
+		fmt.Fprintf(&b, "%s  TEST_INFER_SPECIAL,111,222\n", stampAt(i))
+	}
+	// A wider shape for the same event name, seen only past the window: a
+	// sample that ran past the window by chunking accident would infer a
+	// wider Special and decode these differently than a sample cut off
+	// exactly at the window.
+	for i := inferWindow; i < inferWindow+500; i++ {
+		fmt.Fprintf(&b, "%s  TEST_INFER_SPECIAL,111,222,333\n", stampAt(i))
+	}
+	log := []byte(b.String())
+
+	o := opts()
+	o.Infer = true
+
+	small, smallHealth := feed(t, o, log, 1)
+	whole, wholeHealth := feed(t, o, log, len(log))
+
+	if jsonOf(t, small.Events) != jsonOf(t, whole.Events) {
+		t.Fatal("the inference window's sample depended on how the input was chunked")
+	}
+	if jsonOf(t, smallHealth) != jsonOf(t, wholeHealth) {
+		t.Fatalf("health differs by chunk size: chunk-1=%+v whole=%+v", smallHealth, wholeHealth)
+	}
+}
+
+// TestSerialiseAndRestoreAcrossAYearRollover proves State/Restore reseed the
+// decoder's clock with the value as of the open fight's start, not as of
+// whenever State() happened to be called: a fight that opens before a year
+// rollover and is still open afterwards must replay its pre-rollover lines
+// with the pre-rollover year, not the year the clock had advanced to by the
+// time it was serialised.
+func TestSerialiseAndRestoreAcrossAYearRollover(t *testing.T) {
+	const swing = `SWING_DAMAGE,Creature-0-2085-2284-7855-169753-0000AA0001,"Hollow Sentinel",0xa48,0x0,Player-4184-000000A1,"Baelgrim-Nightslayer",0x511,0x0,Creature-0-2085-2284-7855-169753-0000AA0001,0000000000000000,41320,44000,612,0,1955,0,1,0,1000,0,-1487.02,6409.71,1675,1.2044,45,812,1290,-1,1,0,0,0,nil,nil,nil`
+	stamps := []string{
+		"12/31 23:59:58.000",
+		"12/31 23:59:59.000",
+		"1/1 00:00:00.000",
+		"1/1 00:00:01.000",
+		"1/1 00:00:02.000",
+	}
+	var b strings.Builder
+	for _, stamp := range stamps {
+		fmt.Fprintf(&b, "%s  %s\n", stamp, swing)
+	}
+	src := []byte(b.String())
+
+	o := opts()
+	o.Layout = layout.RetailV16()
+	o.Base = time.Date(2026, 12, 31, 0, 0, 0, 0, time.UTC)
+
+	want, _ := feed(t, o, src, len(src))
+
+	// Feed everything to one session without closing, so the trash fight
+	// opened by the first line is still open, straddling the rollover,
+	// when State() is called.
+	s := New(o)
+	if _, err := s.Feed(src, 0); err != nil {
+		t.Fatal(err)
+	}
+	if _, _, ok := s.Snapshot(); !ok {
+		t.Fatal("expected the trash fight to still be open across the rollover")
+	}
+
+	blob, err := s.State()
+	if err != nil {
+		t.Fatal(err)
+	}
+	replay, err := ReplayOffset(blob)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if replay != 0 {
+		t.Fatalf("replay offset = %d, want 0: the fight opened on the first line", replay)
+	}
+
+	revived, err := Restore(o, blob)
+	if err != nil {
+		t.Fatal(err)
+	}
+	r, err := revived.Feed(src[replay:], replay)
+	if err != nil {
+		t.Fatal(err)
+	}
+	closeR, err := revived.Close()
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := Result{
+		Events: append(append([]event.Event{}, r.Events...), closeR.Events...),
+		Closed: append(append([]Closed{}, r.Closed...), closeR.Closed...),
+	}
+
+	if jsonOf(t, digestOf(got)) != jsonOf(t, digestOf(want)) {
+		t.Fatal("a serialise and restore across a year rollover produced the wrong timestamps")
 	}
 }

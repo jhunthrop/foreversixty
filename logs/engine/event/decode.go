@@ -45,6 +45,12 @@ func (d *Decoder) SetTime(t time.Time) { d.prev = t }
 // Seen reports whether at least one timestamped line has been decoded.
 func (d *Decoder) Seen() bool { return d.seen }
 
+// SetSeen seeds whether a timestamped line has already been decoded, for
+// Restore: a session resuming mid-stream has seen lines before the byte
+// range it replays, so the clock-jump check must not treat the first
+// replayed line as the stream's first.
+func (d *Decoder) SetSeen(seen bool) { d.seen = seen }
+
 // Rollovers counts year rollovers applied so far.
 func (d *Decoder) Rollovers() int { return d.rollovers }
 
