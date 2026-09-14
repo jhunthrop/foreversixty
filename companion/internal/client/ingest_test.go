@@ -3,6 +3,7 @@ package client_test
 import (
 	"errors"
 	"net/http"
+	"slices"
 	"testing"
 	"time"
 
@@ -126,8 +127,9 @@ func TestAFightBundleRoundTripsThroughTheMultipartRoute(t *testing.T) {
 	if got.RawRange.StartOffset != 4096 || got.RawRange.EndOffset != 90112 {
 		t.Errorf("raw range = %+v", got.RawRange)
 	}
-	if want := []string{"report " + rep.ID, "fight 2"}; len(srv.Order()) != len(want) {
-		t.Errorf("order = %v, want %v", srv.Order(), want)
+	want := []string{"report " + rep.ID, "fight 2"}
+	if got := srv.Order(); !slices.Equal(got, want) {
+		t.Errorf("order = %v, want %v", got, want)
 	}
 }
 
