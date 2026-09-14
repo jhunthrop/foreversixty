@@ -1,0 +1,4 @@
+[
+  { "id": 1, "name": "Human", "slug": "human", "faction": "alliance", "forever_changes": [] },
+  { "id": 3, "name": "Dwarf", "slug": "dwarf", "faction": "alliance", "forever_changes": [] }
+]

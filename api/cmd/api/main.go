@@ -10,11 +10,14 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/jhunthrop/foreversixty/api/internal/builds"
 	"github.com/jhunthrop/foreversixty/api/internal/config"
 	"github.com/jhunthrop/foreversixty/api/internal/db"
 	"github.com/jhunthrop/foreversixty/api/internal/mail"
 	"github.com/jhunthrop/foreversixty/api/internal/server"
+	"github.com/jhunthrop/foreversixty/api/internal/site"
 	"github.com/jhunthrop/foreversixty/api/internal/subscribe"
+	"github.com/jhunthrop/foreversixty/api/internal/trees"
 )
 
 var version = "dev" // set with -ldflags "-X main.version=<git sha>"
@@ -48,6 +51,32 @@ func main() {
 	}
 	defer pool.Close()
 
+	treeData, err := trees.Load(cfg.TreeDataDir)
+	if err != nil {
+		log.Error("trees", "dir", cfg.TreeDataDir, "err", err)
+		os.Exit(1)
+	}
+	for _, skipped := range treeData.Skipped() {
+		log.Warn("trees", "skipped", skipped)
+	}
+	log.Info("trees", "dir", cfg.TreeDataDir, "versions", treeData.Versions())
+
+	buildStore := &builds.Store{Pool: pool, Log: log}
+	views := builds.NewViews(buildStore, log)
+	siteDeps := &site.Deps{
+		Store:         buildStore,
+		Data:          treeData,
+		PublicBaseURL: cfg.PublicBaseURL,
+		Views:         views,
+		Log:           log,
+	}
+	buildsSvc := &builds.Service{
+		Store:         buildStore,
+		Data:          treeData,
+		PublicBaseURL: cfg.PublicBaseURL,
+		Log:           log,
+	}
+
 	svc := &subscribe.Service{
 		Store:           &subscribe.Store{Pool: pool},
 		Mailer:          mail.NewResend(cfg.ResendAPIKey, cfg.MailFrom, nil),
@@ -64,6 +93,8 @@ func main() {
 			Log:              log,
 			AllowedOrigin:    cfg.PublicBaseURL,
 			Subscribe:        svc,
+			Builds:           buildsSvc,
+			Site:             siteDeps,
 			TrustedProxyHops: cfg.TrustedProxyHops,
 		}),
 		ReadHeaderTimeout: 5 * time.Second,
@@ -94,5 +125,6 @@ func main() {
 		<-serveErr // wait for the listener goroutine to actually return
 	}
 	svc.Wait()
+	views.Close()
 	log.Info("stopped")
 }

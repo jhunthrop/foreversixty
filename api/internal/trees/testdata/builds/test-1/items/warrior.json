@@ -1,0 +1,18 @@
+{
+  "build": "test-1",
+  "class_slug": "warrior",
+  "items": [
+    { "id": 12640, "name": "Lionheart Helm", "icon": "inv_helmet_29", "slot": "head", "quality": 4,
+      "required_level": 60, "item_level": 65, "armor": 565, "stats": { "strength": 18, "crit": 2, "hit": 2 },
+      "set_id": null, "unique": false },
+    { "id": 19325, "name": "Band of Servitude", "icon": "inv_jewelry_ring_18", "slot": "finger", "quality": 3,
+      "required_level": 58, "item_level": 63, "armor": 0, "stats": { "attack_power": 24 },
+      "set_id": null, "unique": false },
+    { "id": 12930, "name": "Briarwood Reed", "icon": "inv_misc_branch_01", "slot": "trinket", "quality": 4,
+      "required_level": 60, "item_level": 66, "armor": 0, "stats": { "spell_power": 21 },
+      "set_id": null, "unique": true },
+    { "id": 16963, "name": "Lawbringer Helm", "icon": "inv_helmet_04", "slot": "head", "quality": 4,
+      "required_level": 60, "item_level": 66, "armor": 597, "stats": { "intellect": 22, "stamina": 20 },
+      "set_id": 901, "unique": false }
+  ]
+}

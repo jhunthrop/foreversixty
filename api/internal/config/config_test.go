@@ -101,3 +101,20 @@ func TestLoadTrustedProxyHopsRejectsNegative(t *testing.T) {
 		t.Fatal("expected error for negative TRUSTED_PROXY_HOPS")
 	}
 }
+
+func TestLoadDefaultsTreeDataDir(t *testing.T) {
+	env := map[string]string{
+		"DATABASE_URL": "postgres://x", "RESEND_API_KEY": "k",
+		"PUBLIC_BASE_URL": "https://foreversixty.gg", "API_BASE_URL": "https://api.foreversixty.gg",
+	}
+	c, err := Load(func(k string) string { return env[k] })
+	if err != nil || c.TreeDataDir != "/data" {
+		t.Fatalf("TreeDataDir = %q err = %v", c.TreeDataDir, err)
+	}
+
+	env["TREE_DATA_DIR"] = "../../data/builds"
+	c, err = Load(func(k string) string { return env[k] })
+	if err != nil || c.TreeDataDir != "../../data/builds" {
+		t.Fatalf("TreeDataDir = %q err = %v", c.TreeDataDir, err)
+	}
+}

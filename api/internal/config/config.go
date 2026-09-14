@@ -8,6 +8,10 @@ import (
 // defaultMailFrom is used when MAIL_FROM is not set.
 const defaultMailFrom = "Forever Sixty <hello@foreversixty.gg>"
 
+// defaultTreeDataDir is where the Docker image places data/builds; see
+// api/Dockerfile.
+const defaultTreeDataDir = "/data"
+
 // defaultTrustedProxyHops is used when TRUSTED_PROXY_HOPS is not set. 1
 // matches a single reverse proxy (e.g. Cloud Run) sitting directly in front
 // of this service.
@@ -30,6 +34,12 @@ type Config struct {
 	PublicBaseURL string
 	APIBaseURL    string
 
+	// TreeDataDir holds one directory per client build with that build's
+	// talent, item, class, race, and combo JSON. Missing or incomplete
+	// directories are reported at startup and simply have no data, so the
+	// service still serves health, version, and subscribe.
+	TreeDataDir string
+
 	// TrustedProxyHops is how many reverse proxies in front of this service
 	// are trusted to append to X-Forwarded-For; see httpx.RateLimit. 0
 	// ignores X-Forwarded-For entirely and rate-limits by RemoteAddr.
@@ -51,6 +61,10 @@ func Load(getenv func(string) string) (Config, error) {
 	}
 	if c.MailFrom == "" {
 		c.MailFrom = defaultMailFrom
+	}
+	c.TreeDataDir = getenv("TREE_DATA_DIR")
+	if c.TreeDataDir == "" {
+		c.TreeDataDir = defaultTreeDataDir
 	}
 	for name, v := range map[string]string{
 		"DATABASE_URL": c.DatabaseURL, "RESEND_API_KEY": c.ResendAPIKey,

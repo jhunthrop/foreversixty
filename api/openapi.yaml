@@ -22,6 +22,36 @@ components:
                 message: { type: string }
                 fields: { type: object, additionalProperties: { type: string } }
         request_id: { type: string }
+    BuildInput:
+      type: object
+      required: [class_id, race_id, tree_version, point_order]
+      properties:
+        class_id: { type: integer, description: "Class id present in classes.json for tree_version" }
+        race_id: { type: integer, description: "Race id present in races.json for tree_version" }
+        tree_version: { type: string, example: "1.15.9.69722", description: "Client build id the API has data for" }
+        point_order:
+          type: array
+          maxItems: 51
+          items: { type: integer }
+          description: "Talent id per point spent, in the order the points were spent"
+        gear:
+          type: object
+          additionalProperties: { type: integer }
+          description: "Item id per planner slot: head neck shoulder back chest wrist hands waist legs feet finger1 finger2 trinket1 trinket2 main_hand off_hand ranged"
+        title: { type: string, maxLength: 60 }
+    Build:
+      type: object
+      required: [id, class_id, race_id, tree_version, point_order, gear, created_at, views]
+      properties:
+        id: { type: string, minLength: 8, maxLength: 8, example: "k7x2qm4a" }
+        class_id: { type: integer }
+        race_id: { type: integer }
+        tree_version: { type: string }
+        point_order: { type: array, items: { type: integer } }
+        gear: { type: object, additionalProperties: { type: integer } }
+        title: { type: string }
+        created_at: { type: string, format: date-time }
+        views: { type: integer, format: int64 }
   responses:
     NotFound:
       description: "Unmatched routes return the envelope with code not_found"
@@ -102,3 +132,125 @@ paths:
       responses:
         '302':
           description: "Redirect to configured public site base URL + /unsubscribed (success) or /subscribe-invalid (invalid token)"
+  /v1/builds:
+    post:
+      summary: Save a build
+      description: >-
+        The id is the first eight characters of the lowercase base32 SHA-256 of the canonical JSON of
+        class_id, gear, point_order, race_id, and tree_version, so saving the same build twice returns
+        the same id and the first title wins.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/BuildInput' }
+      responses:
+        '201':
+          description: "Saved. data is { id, url } where url is PUBLIC_BASE_URL + /b/ + id."
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Envelope' }
+        '200':
+          description: "That build was already saved; data is the same { id, url }."
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Envelope' }
+        '400':
+          description: >-
+            Body was not JSON or was larger than 8 KB, or the build breaks a talent rule. In the latter
+            case error.fields carries one message per offending field, keyed class_id, race_id,
+            tree_version, title, point_order, point_order[i], or gear.<slot>.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Envelope' }
+        '429':
+          description: "Rate limited: 20 saves per IP per hour, and 120 requests per minute per IP overall"
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Envelope' }
+        '500':
+          description: "Unexpected store error; envelope with code internal"
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Envelope' }
+  /v1/builds/{id}:
+    get:
+      summary: Fetch a build record
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: "The record, in the envelope's data. Cache-Control: public, max-age=86400"
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Envelope' }
+        '404':
+          description: "Unknown id; envelope with code not_found"
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Envelope' }
+        '500':
+          description: "Unexpected store error; envelope with code internal"
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Envelope' }
+  /b/{id}:
+    get:
+      summary: The shared build page
+      description: >-
+        Server-rendered HTML carrying the site's header and footer, Open Graph and Twitter card tags,
+        a canonical link to https://foreversixty.gg/b/{id}, and the record inlined on the planner
+        island's mount point. Proxied from foreversixty.gg/b/* by the site's Worker.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: "The build page"
+          content:
+            text/html:
+              schema: { type: string }
+        '404':
+          description: "A plain page with a link to the planner"
+          content:
+            text/html:
+              schema: { type: string }
+        '500':
+          description: >-
+            The build could not be loaded or the page could not be rendered. A plain page titled
+            "Build unavailable", served with Cache-Control: no-store.
+          content:
+            text/html:
+              schema: { type: string }
+  /b/{id}/card.png:
+    get:
+      summary: The build's preview card
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: >-
+            1200x630 PNG. Cache-Control: public, max-age=604800. A build whose card cannot be drawn
+            gets the static fallback card here too, with a short cache (Cache-Control: public,
+            max-age=300) rather than the week-long one.
+          content:
+            image/png:
+              schema: { type: string, format: binary }
+        '404':
+          description: "Unknown id; the fallback card with a short cache (Cache-Control: public, max-age=300)"
+          content:
+            image/png:
+              schema: { type: string, format: binary }
+        '500':
+          description: "Store failure while loading the build; the fallback card with a short cache (Cache-Control: public, max-age=300)"
+          content:
+            image/png:
+              schema: { type: string, format: binary }

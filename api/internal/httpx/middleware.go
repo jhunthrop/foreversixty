@@ -93,14 +93,15 @@ const (
 // size at limiterMaxEntries so an attacker spraying distinct source IPs (or
 // spoofed X-Forwarded-For values) cannot grow it without bound.
 type ipLimiter struct {
-	mu        sync.Mutex
-	perMinute int
-	entries   map[string]*limiterEntry
-	calls     uint64
+	mu      sync.Mutex
+	n       int
+	window  time.Duration
+	entries map[string]*limiterEntry
+	calls   uint64
 }
 
-func newIPLimiter(perMinute int) *ipLimiter {
-	return &ipLimiter{perMinute: perMinute, entries: map[string]*limiterEntry{}}
+func newIPLimiter(n int, window time.Duration) *ipLimiter {
+	return &ipLimiter{n: n, window: window, entries: map[string]*limiterEntry{}}
 }
 
 // sweepLocked removes entries idle for longer than idle. Callers must hold mu.
@@ -138,7 +139,7 @@ func (l *ipLimiter) reserve(ip string, now time.Time) (*rate.Limiter, bool) {
 			return nil, false
 		}
 	}
-	e := &limiterEntry{lim: rate.NewLimiter(rate.Every(time.Minute/time.Duration(l.perMinute)), l.perMinute), seen: now}
+	e := &limiterEntry{lim: rate.NewLimiter(rate.Every(l.window/time.Duration(l.n)), l.n), seen: now}
 	l.entries[ip] = e
 	return e.lim, true
 }
@@ -151,10 +152,37 @@ func (l *ipLimiter) allow(ip string, now time.Time) bool {
 	return lim.Allow()
 }
 
-// RateLimit rate-limits requests per client IP, resolved via clientIP with
-// trustedHops trusted reverse proxies in front of this service.
+// RateLimit rate-limits requests per client IP to perMinute per minute,
+// with trustedHops trusted reverse proxies in front of this service.
 func RateLimit(perMinute, trustedHops int) func(http.Handler) http.Handler {
-	l := newIPLimiter(perMinute)
+	return RateLimitPer(perMinute, time.Minute, trustedHops)
+}
+
+// RateLimitExcept rate-limits per client IP to perMinute per minute exactly
+// as RateLimit does, except for requests where exempt reports true: those are
+// passed straight to next, neither counted against the bucket nor rejected by
+// it. A nil exempt exempts nothing. The caller owns the predicate, and with it
+// the reason a route may skip the limiter.
+func RateLimitExcept(perMinute, trustedHops int, exempt func(*http.Request) bool) func(http.Handler) http.Handler {
+	limit := RateLimit(perMinute, trustedHops)
+	return func(next http.Handler) http.Handler {
+		limited := limit(next)
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if exempt != nil && exempt(r) {
+				next.ServeHTTP(w, r)
+				return
+			}
+			limited.ServeHTTP(w, r)
+		})
+	}
+}
+
+// RateLimitPer rate-limits each client IP to n requests per window, with a
+// burst of n: a fresh IP may spend the whole allowance at once, and the
+// bucket then refills at n per window. Used with an hour-long window for
+// POST /v1/builds, which the contract caps at 20 saves per IP per hour.
+func RateLimitPer(n int, window time.Duration, trustedHops int) func(http.Handler) http.Handler {
+	l := newIPLimiter(n, window)
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			ip := clientIP(r, trustedHops)

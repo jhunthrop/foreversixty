@@ -1,0 +1,26 @@
+# api/Dockerfile.dockerignore
+# Excludes for the repository-root build context. BuildKit reads
+# <dockerfile>.dockerignore in preference to the context root's
+# .dockerignore, which keeps this file next to the Dockerfile it serves.
+# Everything the image needs is api/ (minus its test-only files) and
+# data/builds.
+.git
+.github
+.superpowers
+.worktrees
+.ruff_cache
+design
+docs
+research
+web
+data/pipeline
+data/tests
+data/diffs
+data/curated
+data/__pycache__
+data/conftest.py
+data/pyproject.toml
+data/uv.lock
+api/bin
+api/docker-compose.test.yml
+**/*.md

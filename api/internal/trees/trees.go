@@ -1,0 +1,320 @@
+// Package trees holds the client's talent, item, class, and race data for
+// every build under TREE_DATA_DIR. It is read once at startup and then only
+// read from, so every accessor is safe for concurrent use.
+package trees
+
+import (
+	"encoding/json"
+	"errors"
+	"fmt"
+	"io/fs"
+	"os"
+	"path/filepath"
+	"sort"
+)
+
+type Rank struct {
+	SpellID     int    `json:"spell_id"`
+	Description string `json:"description"`
+}
+
+type Talent struct {
+	ID             int    `json:"id"`
+	Name           string `json:"name"`
+	Icon           string `json:"icon"`
+	MaxRank        int    `json:"max_rank"`
+	Tier           int    `json:"tier"`
+	Column         int    `json:"column"`
+	PrereqTalentID *int   `json:"prereq_talent_id"`
+	PrereqRank     *int   `json:"prereq_rank"`
+	Ranks          []Rank `json:"ranks"`
+}
+
+type Tree struct {
+	ID       int      `json:"id"`
+	Name     string   `json:"name"`
+	Position int      `json:"position"`
+	Talents  []Talent `json:"talents"`
+}
+
+type classTalents struct {
+	Build     string `json:"build"`
+	ClassID   int    `json:"class_id"`
+	ClassSlug string `json:"class_slug"`
+	Trees     []Tree `json:"trees"`
+}
+
+type Item struct {
+	ID            int            `json:"id"`
+	Name          string         `json:"name"`
+	Icon          string         `json:"icon"`
+	Slot          string         `json:"slot"`
+	Quality       int            `json:"quality"`
+	RequiredLevel int            `json:"required_level"`
+	ItemLevel     int            `json:"item_level"`
+	Armor         int            `json:"armor"`
+	Stats         map[string]int `json:"stats"`
+	SetID         *int           `json:"set_id"`
+	Unique        bool           `json:"unique"`
+}
+
+type classItems struct {
+	Build     string `json:"build"`
+	ClassSlug string `json:"class_slug"`
+	Items     []Item `json:"items"`
+}
+
+type SetBonus struct {
+	Pieces      int    `json:"pieces"`
+	Description string `json:"description"`
+}
+
+type Set struct {
+	ID      int        `json:"id"`
+	Name    string     `json:"name"`
+	ItemIDs []int      `json:"item_ids"`
+	Bonuses []SetBonus `json:"bonuses"`
+}
+
+type Class struct {
+	ID    int    `json:"id"`
+	Name  string `json:"name"`
+	Slug  string `json:"slug"`
+	Color string `json:"color"`
+}
+
+type Race struct {
+	ID      int    `json:"id"`
+	Name    string `json:"name"`
+	Slug    string `json:"slug"`
+	Faction string `json:"faction"`
+}
+
+type Combo struct {
+	RaceID       int  `json:"race_id"`
+	ClassID      int  `json:"class_id"`
+	NewInForever bool `json:"new_in_forever"`
+}
+
+// TalentRef is a talent plus the tree it lives in, which the validator needs
+// for tier and prerequisite messages and the page needs for the point split.
+type TalentRef struct {
+	Talent
+	TreeID       int
+	TreeName     string
+	TreePosition int
+}
+
+// Build is one client build's data, indexed for lookup by id.
+type Build struct {
+	Version string
+
+	classes map[int]Class
+	races   map[int]Race
+	combos  map[[2]int]Combo
+	trees   map[int][]Tree
+	talents map[int]map[int]TalentRef
+	items   map[int]map[int]Item
+	sets    []Set
+}
+
+func (b *Build) Class(id int) (Class, bool) { c, ok := b.classes[id]; return c, ok }
+
+func (b *Build) Race(id int) (Race, bool) { r, ok := b.races[id]; return r, ok }
+
+func (b *Build) ComboAllowed(raceID, classID int) bool {
+	_, ok := b.combos[[2]int{raceID, classID}]
+	return ok
+}
+
+func (b *Build) Talent(classID, talentID int) (TalentRef, bool) {
+	byID, ok := b.talents[classID]
+	if !ok {
+		return TalentRef{}, false
+	}
+	t, ok := byID[talentID]
+	return t, ok
+}
+
+func (b *Build) Item(classID, itemID int) (Item, bool) {
+	byID, ok := b.items[classID]
+	if !ok {
+		return Item{}, false
+	}
+	it, ok := byID[itemID]
+	return it, ok
+}
+
+// Trees returns the class's trees in client order (by position).
+func (b *Build) Trees(classID int) []Tree { return b.trees[classID] }
+
+func (b *Build) Sets() []Set { return b.sets }
+
+// Data holds every build found under the tree data directory.
+type Data struct {
+	builds  map[string]*Build
+	skipped []string
+}
+
+func (d *Data) Build(version string) (*Build, bool) {
+	b, ok := d.builds[version]
+	return b, ok
+}
+
+func (d *Data) Versions() []string {
+	out := make([]string, 0, len(d.builds))
+	for v := range d.builds {
+		out = append(out, v)
+	}
+	sort.Strings(out)
+	return out
+}
+
+// Skipped lists directories that were not loaded because they predate the
+// Phase 1 pipeline outputs (no combos.json or no talents directory), and the
+// root directory itself when it does not exist. Startup logs these: the API
+// still serves health, version, and subscribe without any tree data, and
+// every save then fails validation on tree_version, which is the right
+// behaviour while the data pipeline is catching up.
+func (d *Data) Skipped() []string { return d.skipped }
+
+// Load reads every build directory under dir. A directory that does not look
+// like a Phase 1 build is skipped (see Skipped); a directory that does look
+// like one but contains bad data fails the load.
+func Load(dir string) (*Data, error) {
+	d := &Data{builds: map[string]*Build{}}
+	entries, err := os.ReadDir(dir)
+	if errors.Is(err, fs.ErrNotExist) {
+		d.skipped = append(d.skipped, dir+": directory does not exist")
+		return d, nil
+	}
+	if err != nil {
+		return nil, fmt.Errorf("trees: read %s: %w", dir, err)
+	}
+	for _, e := range entries {
+		if !e.IsDir() {
+			continue
+		}
+		path := filepath.Join(dir, e.Name())
+		if !looksLikeBuild(path) {
+			d.skipped = append(d.skipped, path+": no combos.json or talents directory")
+			continue
+		}
+		b, err := loadBuild(path, e.Name())
+		if err != nil {
+			return nil, err
+		}
+		d.builds[e.Name()] = b
+	}
+	return d, nil
+}
+
+func looksLikeBuild(dir string) bool {
+	if _, err := os.Stat(filepath.Join(dir, "combos.json")); err != nil {
+		return false
+	}
+	info, err := os.Stat(filepath.Join(dir, "talents"))
+	return err == nil && info.IsDir()
+}
+
+func loadBuild(dir, version string) (*Build, error) {
+	b := &Build{
+		Version: version,
+		classes: map[int]Class{},
+		races:   map[int]Race{},
+		combos:  map[[2]int]Combo{},
+		trees:   map[int][]Tree{},
+		talents: map[int]map[int]TalentRef{},
+		items:   map[int]map[int]Item{},
+	}
+
+	var classes []Class
+	if err := readJSON(filepath.Join(dir, "classes.json"), &classes); err != nil {
+		return nil, err
+	}
+	var races []Race
+	if err := readJSON(filepath.Join(dir, "races.json"), &races); err != nil {
+		return nil, err
+	}
+	var combos []Combo
+	if err := readJSON(filepath.Join(dir, "combos.json"), &combos); err != nil {
+		return nil, err
+	}
+	for _, c := range classes {
+		b.classes[c.ID] = c
+	}
+	for _, r := range races {
+		b.races[r.ID] = r
+	}
+	for _, c := range combos {
+		if _, ok := b.races[c.RaceID]; !ok {
+			return nil, fmt.Errorf("trees: %s: combos.json references unknown race %d", version, c.RaceID)
+		}
+		if _, ok := b.classes[c.ClassID]; !ok {
+			return nil, fmt.Errorf("trees: %s: combos.json references unknown class %d", version, c.ClassID)
+		}
+		b.combos[[2]int{c.RaceID, c.ClassID}] = c
+	}
+
+	for _, c := range classes {
+		var ct classTalents
+		if err := readJSON(filepath.Join(dir, "talents", c.Slug+".json"), &ct); err != nil {
+			return nil, err
+		}
+		if ct.ClassID != c.ID {
+			return nil, fmt.Errorf("trees: %s: talents/%s.json has class_id %d, want %d", version, c.Slug, ct.ClassID, c.ID)
+		}
+		sort.SliceStable(ct.Trees, func(i, j int) bool { return ct.Trees[i].Position < ct.Trees[j].Position })
+		byTalentID := map[int]TalentRef{}
+		for _, tree := range ct.Trees {
+			for _, t := range tree.Talents {
+				if len(t.Ranks) != t.MaxRank {
+					return nil, fmt.Errorf("trees: %s: talent %d has %d ranks, want max_rank %d", version, t.ID, len(t.Ranks), t.MaxRank)
+				}
+				if _, dup := byTalentID[t.ID]; dup {
+					return nil, fmt.Errorf("trees: %s: duplicate talent id %d in class %s", version, t.ID, c.Slug)
+				}
+				byTalentID[t.ID] = TalentRef{Talent: t, TreeID: tree.ID, TreeName: tree.Name, TreePosition: tree.Position}
+			}
+		}
+		b.trees[c.ID] = ct.Trees
+		b.talents[c.ID] = byTalentID
+
+		var ci classItems
+		err := readJSON(filepath.Join(dir, "items", c.Slug+".json"), &ci)
+		switch {
+		case errors.Is(err, fs.ErrNotExist):
+			// The pipeline emits an items file only when the item table
+			// normalizes cleanly for that class; absence is expected.
+			b.items[c.ID] = map[int]Item{}
+		case err != nil:
+			return nil, err
+		default:
+			byItemID := make(map[int]Item, len(ci.Items))
+			for _, it := range ci.Items {
+				byItemID[it.ID] = it
+			}
+			b.items[c.ID] = byItemID
+		}
+	}
+
+	if err := readJSON(filepath.Join(dir, "sets.json"), &b.sets); err != nil && !errors.Is(err, fs.ErrNotExist) {
+		return nil, err
+	}
+	return b, nil
+}
+
+// readJSON decodes path into v. Unknown fields are allowed on purpose: the
+// pipeline adds fields (forever_changes, sources) the API has no use for,
+// and a new field there must not break the API.
+func readJSON(path string, v any) error {
+	f, err := os.Open(path)
+	if err != nil {
+		return fmt.Errorf("trees: open %s: %w", path, err)
+	}
+	defer f.Close()
+	if err := json.NewDecoder(f).Decode(v); err != nil {
+		return fmt.Errorf("trees: decode %s: %w", path, err)
+	}
+	return nil
+}
