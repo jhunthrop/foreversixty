@@ -9,7 +9,6 @@ import (
 	"errors"
 	"io/fs"
 	"log/slog"
-	"os"
 	"time"
 )
 
@@ -31,12 +30,15 @@ type Options struct {
 	API   API
 	Log   *slog.Logger
 	Every time.Duration
+	// Cache is the shared reader for the SavedVariables files. A nil
+	// Cache gets one of its own; the companion passes the same one
+	// the status page reads through.
+	Cache *Cache
 }
 
 // Sync moves strings between the addon and the API.
 type Sync struct {
 	o         Options
-	seen      map[string]time.Time
 	lastInbox time.Time
 }
 
@@ -48,7 +50,10 @@ func New(o Options) *Sync {
 	if o.Log == nil {
 		o.Log = slog.New(slog.DiscardHandler)
 	}
-	return &Sync{o: o, seen: map[string]time.Time{}}
+	if o.Cache == nil {
+		o.Cache = &Cache{}
+	}
+	return &Sync{o: o}
 }
 
 // Poll does one pass. It is called on the same ticker as the pipeline
@@ -57,29 +62,20 @@ func (s *Sync) Poll(ctx context.Context, now time.Time) error {
 	var errs []error
 	paths := s.o.Paths()
 	for _, p := range paths {
-		fi, err := os.Stat(p)
+		exports, fresh, err := s.o.Cache.Exports(p)
 		if errors.Is(err, fs.ErrNotExist) {
 			continue // the player has not installed the addon here
 		}
-		if err != nil {
-			errs = append(errs, err)
-			continue
-		}
-		if was, ok := s.seen[p]; ok && was.Equal(fi.ModTime()) {
-			continue
-		}
-		s.seen[p] = fi.ModTime()
-		exports, err := ScanExports(p)
 		if err != nil {
 			s.o.Log.Warn("could not read the addon's saved variables",
 				"component", "addon", "path", p, "err", err.Error())
 			continue
 		}
-		if len(exports) == 0 {
+		if !fresh || len(exports) == 0 {
 			continue
 		}
 		if err := s.o.API.PostAddonExports(ctx, exports); err != nil {
-			delete(s.seen, p) // try again next pass
+			s.o.Cache.Forget(p) // read it again, and retry, next pass
 			errs = append(errs, err)
 			continue
 		}

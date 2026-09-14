@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 
@@ -19,17 +20,40 @@ import (
 	"github.com/jhunthrop/foreversixty/companion/internal/fixture"
 	"github.com/jhunthrop/foreversixty/companion/internal/paths"
 	"github.com/jhunthrop/foreversixty/companion/internal/secret"
+	"github.com/jhunthrop/foreversixty/companion/internal/state"
 )
 
 var t0 = time.Date(2026, 12, 9, 20, 0, 0, 0, time.UTC)
 
 type harness struct {
-	t    *testing.T
-	app  *app.App
-	srv  *fakeapi.Server
-	dirs paths.Dirs
-	game string // the flavour directory
-	log  string
+	t      *testing.T
+	app    *app.App
+	srv    *fakeapi.Server
+	dirs   paths.Dirs
+	secret *countingSecret
+	game   string // the flavour directory
+	log    string
+}
+
+// countingSecret is the token store with a tally, so a test can hold
+// the two-second poll's cost to account.
+type countingSecret struct {
+	secret.Store
+	mu    sync.Mutex
+	reads int
+}
+
+func (c *countingSecret) Token() (string, error) {
+	c.mu.Lock()
+	c.reads++
+	c.mu.Unlock()
+	return c.Store.Token()
+}
+
+func (c *countingSecret) count() int {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return c.reads
 }
 
 // newGame builds a flavour directory wow.Pick accepts, with a Logs
@@ -52,7 +76,12 @@ func newGame(t *testing.T) string {
 	return game
 }
 
-func newHarness(t *testing.T) *harness {
+func newHarness(t *testing.T) *harness { return newHarnessSeeded(t, nil) }
+
+// newHarnessSeeded builds the harness, calling seed with the resolved
+// directories before the app is assembled, so a test can leave behind
+// what a long-running install would have left behind.
+func newHarnessSeeded(t *testing.T, seed func(paths.Dirs)) *harness {
 	t.Helper()
 	home := t.TempDir()
 	t.Setenv(paths.HomeEnv, home)
@@ -70,9 +99,13 @@ func newHarness(t *testing.T) *harness {
 	if err := config.Save(dirs.ConfigFile(), cfg); err != nil {
 		t.Fatal(err)
 	}
+	if seed != nil {
+		seed(dirs)
+	}
+	store := &countingSecret{Store: secret.ConfigFile{Path: dirs.ConfigFile()}}
 	a, err := app.New(app.Options{
 		Dirs: dirs, Config: cfg,
-		Secret: secret.ConfigFile{Path: dirs.ConfigFile()},
+		Secret: store,
 		Retry:  client.Retry{MaxAttempts: 1, Base: time.Millisecond, Max: time.Millisecond},
 		Now:    func() time.Time { return t0 },
 	})
@@ -80,7 +113,7 @@ func newHarness(t *testing.T) *harness {
 		t.Fatal(err)
 	}
 	t.Cleanup(func() { a.Close() })
-	return &harness{t: t, app: a, srv: srv, dirs: dirs, game: game,
+	return &harness{t: t, app: a, srv: srv, dirs: dirs, secret: store, game: game,
 		log: filepath.Join(game, "Logs", "WoWCombatLog.txt")}
 }
 
@@ -380,5 +413,66 @@ func TestANewFirstGameFolderMovesTheTailOnTheNextStep(t *testing.T) {
 	h.app.Step(t.Context(), t0.Add(time.Second))
 	if got := h.app.Snapshot().Pipeline.LogPath; got != log {
 		t.Fatalf("the tail is on %q, not the newly added folder's log %q", got, log)
+	}
+}
+
+func TestTheStatusPollDoesNotAskTheTokenStoreEveryTime(t *testing.T) {
+	h := newHarness(t)
+	h.app.Snapshot()
+	settled := h.secret.count()
+	for range 5 {
+		h.app.Snapshot()
+		h.app.Step(t.Context(), t0)
+	}
+	if got := h.secret.count(); got != settled {
+		t.Errorf("ten more passes cost %d token reads", got-settled)
+	}
+	// Pairing must be visible immediately even so.
+	if code, _ := h.call(http.MethodPost, h.url("/api/pair"),
+		map[string]string{"code": fakeapi.PairCode}); code != http.StatusOK {
+		t.Fatal("pairing failed")
+	}
+	if !h.app.Snapshot().Paired {
+		t.Fatal("the cached token outlived the pairing that replaced it")
+	}
+	if code, _ := h.call(http.MethodPost, h.url("/api/unpair"), map[string]string{}); code != http.StatusOK {
+		t.Fatal("unpairing failed")
+	}
+	if h.app.Snapshot().Paired {
+		t.Fatal("the cached token outlived the unpairing that cleared it")
+	}
+}
+
+func TestReportsOlderThanTheRetentionAreForgottenAtStartup(t *testing.T) {
+	old := t0.Add(-app.ReportRetention - 24*time.Hour)
+	keys := struct{ stale, recent, unsent string }{
+		"20200101-200000-aaaaaaaa", "20261201-200000-bbbbbbbb", "20200102-200000-cccccccc",
+	}
+	h := newHarnessSeeded(t, func(dirs paths.Dirs) {
+		for _, r := range []state.Report{
+			{Key: keys.stale, StartedAt: old, Closed: true, Done: true},
+			{Key: keys.recent, StartedAt: t0.Add(-time.Hour), Closed: true, Done: true},
+			// Old, but the server never accepted its completion: the
+			// queue may still be holding work for it.
+			{Key: keys.unsent, StartedAt: old, Closed: true},
+		} {
+			if err := state.Save(dirs.State, r); err != nil {
+				t.Fatal(err)
+			}
+		}
+	})
+	left, err := state.List(h.dirs.State)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var got []string
+	for _, r := range left {
+		got = append(got, r.Key)
+	}
+	if len(got) != 2 || got[0] != keys.unsent || got[1] != keys.recent {
+		t.Fatalf("state/ holds %v; the finished report from %s should be gone", got, old)
+	}
+	if n := len(h.app.Snapshot().Reports); n != 2 {
+		t.Errorf("the Reports page shows %d reports", n)
 	}
 }

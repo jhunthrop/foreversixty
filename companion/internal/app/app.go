@@ -64,6 +64,13 @@ type App struct {
 	now   func() time.Time
 	token string // the local UI token
 
+	// tokMu guards the cached device token. It is its own lock
+	// because the token is read on every tick and on every HTTP
+	// poll, and must not queue behind a settings save.
+	tokMu    sync.Mutex
+	tokKnown bool
+	tok      string
+
 	mu       sync.Mutex
 	cfg      config.Config
 	installs []wow.Install
@@ -75,8 +82,18 @@ type App struct {
 	queue   *queue.Queue
 	pipe    *pipeline.Pipeline
 	sync    *addon.Sync
+	exports *addon.Cache
 	updater *updater.Updater
 }
+
+// ReportRetention is how long a finished report's state file is kept.
+// Nothing else ever deleted one, and every status poll reads and
+// parses all of them, so without a bound both the Reports page and
+// the cost of showing it grow for the life of the install. Six months
+// is a little over a raid tier: the season a player is actually in
+// stays complete, and what falls off is on the site anyway, which is
+// where the Reports page links.
+const ReportRetention = 180 * 24 * time.Hour
 
 // New assembles the companion over an already-resolved set of
 // directories and a loaded configuration.
@@ -102,6 +119,8 @@ func New(o Options) (*App, error) {
 	a.cfg.DeviceToken = ""
 	a.installs = a.detect()
 	a.watching = a.logsDir()
+	a.exports = &addon.Cache{}
+	a.prune(a.now())
 
 	a.client, err = client.New(client.Options{
 		BaseURL: a.cfg.APIBaseURL,
@@ -127,7 +146,9 @@ func New(o Options) (*App, error) {
 	if err != nil {
 		return nil, err
 	}
-	a.sync = addon.New(addon.Options{Paths: a.savedVariables, API: a.client, Log: a.log})
+	a.sync = addon.New(addon.Options{
+		Paths: a.savedVariables, API: a.client, Log: a.log, Cache: a.exports,
+	})
 	uo := o.Updater
 	uo.Dir, uo.Log = o.Dirs.Update, a.log
 	a.updater = updater.New(uo)
@@ -148,14 +169,62 @@ func localToken() (string, error) {
 	return base64.RawURLEncoding.EncodeToString(b[:]), nil
 }
 
-// deviceToken reads the stored token, empty when unpaired.
+// deviceToken reads the stored token, empty when unpaired. The
+// answer is remembered: the status page asks every two seconds and
+// every tick asks again, while on Linux the keychain is a D-Bus round
+// trip. Pair and Unpair are the only things that change it, and both
+// forget it. A read that failed is not remembered, so a locked
+// keychain that is unlocked a moment later works on the next ask.
 func (a *App) deviceToken() string {
+	a.tokMu.Lock()
+	defer a.tokMu.Unlock()
+	if a.tokKnown {
+		return a.tok
+	}
 	tok, err := a.o.Secret.Token()
 	if err != nil {
 		a.log.Warn("could not read the device token", "component", "app", "err", err.Error())
 		return ""
 	}
+	a.tok, a.tokKnown = tok, true
 	return tok
+}
+
+// forgetToken drops the cached token, so the next read goes to the
+// store again.
+func (a *App) forgetToken() {
+	a.tokMu.Lock()
+	defer a.tokMu.Unlock()
+	a.tok, a.tokKnown = "", false
+}
+
+// prune deletes the state of reports that finished longer ago than
+// ReportRetention. It runs once, at startup: the files are small and
+// the cost is in their number, which grows by a handful a week.
+func (a *App) prune(now time.Time) {
+	reports, err := state.List(a.o.Dirs.State)
+	if err != nil {
+		a.log.Warn("could not list the reports to prune",
+			"component", "app", "err", err.Error())
+		return
+	}
+	cutoff := now.Add(-ReportRetention)
+	removed := 0
+	for _, r := range reports {
+		if !r.Done || !r.StartedAt.Before(cutoff) {
+			continue
+		}
+		if err := state.Remove(a.o.Dirs.State, r.Key); err != nil {
+			a.log.Warn("could not remove an old report's state", "component", "app",
+				"report", r.Key, "err", err.Error())
+			continue
+		}
+		removed++
+	}
+	if removed > 0 {
+		a.log.Info("forgot reports older than the retention", "component", "app",
+			"reports", removed, "retention", ReportRetention.String())
+	}
 }
 
 // detect lists the installs: the configured paths first, then
@@ -236,6 +305,7 @@ func (a *App) Pair(ctx context.Context, code string) error {
 	if err := a.o.Secret.SetToken(dev.Token); err != nil {
 		return err
 	}
+	a.forgetToken()
 	a.log.Info("this device is paired", "component", "app", "device_id", dev.DeviceID)
 	return nil
 }
@@ -245,7 +315,9 @@ func (a *App) Pair(ctx context.Context, code string) error {
 func (a *App) Unpair() error {
 	a.mu.Lock()
 	defer a.mu.Unlock()
-	return a.o.Secret.Clear()
+	err := a.o.Secret.Clear()
+	a.forgetToken()
+	return err
 }
 
 // Settings is what the settings page can change.
@@ -410,7 +482,9 @@ func (a *App) Snapshot() Snapshot {
 		s.Reports = append(s.Reports, row)
 	}
 	for _, p := range a.savedVariables() {
-		found, err := addon.ScanExports(p)
+		// Through the cache: this runs on a two-second poll and the
+		// file behind it is megabytes of Lua.
+		found, _, err := a.exports.Exports(p)
 		if err != nil {
 			continue
 		}
