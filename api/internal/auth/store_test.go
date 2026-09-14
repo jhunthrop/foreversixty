@@ -56,7 +56,7 @@ func TestUpsertBnetUserIsIdempotentAndRefreshesTheBattletag(t *testing.T) {
 	if again.ID != first.ID {
 		t.Fatalf("second sign-in made user %d, want %d", again.ID, first.ID)
 	}
-	if again.Name() != "Renamed#4321" {
+	if again.Battletag == nil || *again.Battletag != "Renamed#4321" {
 		t.Fatalf("battletag = %v, want the new one", again.Battletag)
 	}
 }
@@ -416,5 +416,31 @@ func TestMiddlewareAnswers500WhenTheSessionCannotBeRead(t *testing.T) {
 	h.ServeHTTP(w, r)
 	if w.Code != http.StatusInternalServerError {
 		t.Fatalf("status = %d, want 500", w.Code)
+	}
+}
+
+func TestPublicNameNeverCarriesTheEmailAddress(t *testing.T) {
+	tag := "Baelgrim#1234"
+	email := "raider@example.com"
+	empty := ""
+	for _, c := range []struct {
+		name string
+		user User
+		want string
+	}{
+		{"a battletag is the public name", User{ID: 7, Battletag: &tag, Email: &email}, tag},
+		{"no battletag falls back to the pseudonym, never the email",
+			User{ID: 7, Email: &email}, "user-7"},
+		{"an empty battletag is no battletag",
+			User{ID: 7, Battletag: &empty, Email: &email}, "user-7"},
+		{"an anonymized account reads as the pseudonym",
+			User{ID: 7, Battletag: &tag, Email: &email, Anonymize: true}, "user-7"},
+		{"an account with nothing at all still has a name", User{ID: 7}, "user-7"},
+	} {
+		t.Run(c.name, func(t *testing.T) {
+			if got := c.user.PublicName(); got != c.want {
+				t.Fatalf("PublicName() = %q, want %q", got, c.want)
+			}
+		})
 	}
 }

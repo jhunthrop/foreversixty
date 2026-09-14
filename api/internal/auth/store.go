@@ -49,16 +49,24 @@ type User struct {
 	Anonymize bool    `json:"anonymize"`
 }
 
-// Name is the battletag, the email, or the id: whatever the account has
-// to show for itself.
-func (u User) Name() string {
-	if u.Battletag != nil && *u.Battletag != "" {
+// PublicName is what strangers may be told an account is called: the
+// battletag, or a stable pseudonym derived from the id.
+//
+// It is never the email address. A report's owner is published in the
+// report body and in the Open Graph tags of an unauthenticated report
+// page, and an account created by magic link has no battletag at all,
+// so anything that falls back to the email publishes it. There is
+// deliberately no method here that would return it.
+//
+// An account that has asked to be anonymous reads as the pseudonym
+// even when it has a battletag: this is the one read path the
+// anonymize flag governs. See the PATCH /v1/me description in
+// openapi.yaml for the flag's exact scope.
+func (u User) PublicName() string {
+	if !u.Anonymize && u.Battletag != nil && *u.Battletag != "" {
 		return *u.Battletag
 	}
-	if u.Email != nil {
-		return *u.Email
-	}
-	return ""
+	return fmt.Sprintf("user-%d", u.ID)
 }
 
 // Session is a signed-in browser.

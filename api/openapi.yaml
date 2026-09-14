@@ -85,7 +85,12 @@ components:
           type: object
           properties:
             id: { type: integer, format: int64 }
-            battletag: { type: string }
+            battletag:
+              type: string
+              description: >-
+                The owner's battletag, or "user-<id>" when they have none or have set
+                anonymize. Never an email address: this body is public for a public or
+                unlisted report.
         guild:
           type: object
           properties:
@@ -423,6 +428,14 @@ paths:
         '401': { description: "Not signed in", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
     patch:
       summary: Set the read-time pseudonym flag
+      description: >-
+        anonymize replaces your name on report pages: the owner of a report you posted reads as
+        "user-<id>" instead of your battletag, for every reader of every report you own.
+        It does not touch ranking rows. A row in /v1/rankings, on a character page or on a
+        guild page still carries the character name you logged under, both as player.name and
+        inside player.key, because the key is the character's identity: the leaderboard filters,
+        the character page and the links between them are all keyed on it. Nothing in the API
+        ever publishes your email address.
       requestBody:
         required: true
         content:

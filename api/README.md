@@ -134,6 +134,23 @@ code from `POST /v1/devices/pair` and uploads with `Authorization: Bearer fsd_â€
 sessions are opaque cookies with double-submit CSRF (`fs_csrf` plus `X-CSRF-Token`); device
 tokens are exempt, because a companion is not a browser.
 
+### What the `anonymize` flag covers
+
+`PATCH /v1/me {"anonymize": true}` replaces your name on report pages: `owner.battletag` in
+`GET /v1/reports/{id}` reads as `user-<id>` instead of your battletag, for every reader of
+every report you own. That is its whole scope today.
+
+It does **not** touch ranking rows. A row in `/v1/rankings`, on a character page or on a guild
+page still carries the character name you logged under â€” as `player.name` and inside
+`player.key`, which is `<region>/<ruleset>/<name-slug>`. The key is the character's identity:
+the region and ruleset filters, the character page's own URL, and the links between a
+leaderboard and a character page are all keyed on it, so substituting a pseudonym for the name
+while publishing the key beside it would look like privacy without being any.
+
+Separately, and regardless of the flag: no route publishes an account's email address. An
+account that signed in by magic link has no battletag, and a report owner with no battletag
+reads as `user-<id>` whether or not they set `anonymize`.
+
 ### The parse job
 
 A whole-file upload is parsed by the same image, run as a Cloud Run job with different

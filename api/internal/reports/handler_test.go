@@ -1,8 +1,10 @@
 package reports
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"strings"
 	"testing"
@@ -484,5 +486,66 @@ func TestTheOwnReportsListNeedsMineAndAValidPage(t *testing.T) {
 	res.Body.Close()
 	if res.StatusCode != http.StatusUnauthorized {
 		t.Fatalf("a device listing = %d, want 401", res.StatusCode)
+	}
+}
+
+// setOwner changes a column on the harness owner's account row.
+func (h *harness) setOwner(column string, value any) {
+	h.t.Helper()
+	if _, err := h.store.Pool.Exec(context.Background(),
+		`update users set `+column+` = $2 where id = $1`, h.owner, value); err != nil {
+		h.t.Fatal(err)
+	}
+}
+
+// A public report is readable by anyone holding the link, and the
+// contract puts its owner in the page's Open Graph tags. The harness
+// owner signed in by email and so has no battletag: they must read as
+// a pseudonym, and their address must appear nowhere in the body.
+func TestAPublicReportNamesItsOwnerWithoutPublishingTheirEmail(t *testing.T) {
+	h := newHarness(t)
+	id := h.createReport(Public)
+
+	res := h.do(http.MethodGet, "/v1/reports/"+id, "", nil)
+	body, err := io.ReadAll(res.Body)
+	res.Body.Close()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.Contains(string(body), "raider@example.com") {
+		t.Fatalf("the owner's email address is in a public report body: %s", body)
+	}
+	var env struct {
+		Data View `json:"data"`
+	}
+	if err := json.Unmarshal(body, &env); err != nil {
+		t.Fatal(err)
+	}
+	want := fmt.Sprintf("user-%d", h.owner)
+	if env.Data.Owner == nil || env.Data.Owner.Battletag != want {
+		t.Fatalf("owner = %+v, want the pseudonym %q", env.Data.Owner, want)
+	}
+}
+
+// The anonymize flag governs this one read path, and it is the only
+// place the API promises it applies.
+func TestAnAnonymizedOwnerReadsAsThePseudonym(t *testing.T) {
+	h := newHarness(t)
+	id := h.createReport(Public)
+	h.setOwner("battletag", "Baelgrim#1234")
+
+	res := h.do(http.MethodGet, "/v1/reports/"+id, "", nil)
+	var view View
+	h.data(res, &view)
+	if view.Owner == nil || view.Owner.Battletag != "Baelgrim#1234" {
+		t.Fatalf("owner = %+v, want the battletag", view.Owner)
+	}
+
+	h.setOwner("anonymize", true)
+	res = h.do(http.MethodGet, "/v1/reports/"+id, "", nil)
+	h.data(res, &view)
+	want := fmt.Sprintf("user-%d", h.owner)
+	if view.Owner == nil || view.Owner.Battletag != want {
+		t.Fatalf("owner = %+v, want the pseudonym %q", view.Owner, want)
 	}
 }

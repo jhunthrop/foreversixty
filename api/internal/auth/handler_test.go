@@ -148,7 +148,7 @@ func TestEmailMagicLinkSignsInAndMeAnswers(t *testing.T) {
 	}
 	var me Me
 	h.decode(t, res, &me)
-	if me.User.Name() != "raider@example.com" || me.User.Role != "user" {
+	if me.User.Email == nil || *me.User.Email != "raider@example.com" || me.User.Role != "user" {
 		t.Fatalf("me = %+v", me)
 	}
 	if me.Characters == nil || me.Guilds == nil {
@@ -486,7 +486,7 @@ func TestBattleNetSignInCreatesTheAccountAndSession(t *testing.T) {
 	res = h.do(t, http.MethodGet, "/v1/me", "")
 	var me Me
 	h.decode(t, res, &me)
-	if me.User.Name() != "Baelgrim#1234" {
+	if me.User.Battletag == nil || *me.User.Battletag != "Baelgrim#1234" {
 		t.Fatalf("me = %+v", me)
 	}
 }

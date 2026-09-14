@@ -224,7 +224,10 @@ func (s *Service) view(ctx context.Context, rep Report) (View, error) {
 	if rep.OwnerID != nil {
 		owner := Owner{ID: *rep.OwnerID}
 		if u, err := s.Accounts.User(ctx, *rep.OwnerID); err == nil {
-			owner.Battletag = u.Name()
+			// PublicName, never Name: this body is served to anyone
+			// holding the link of a public or unlisted report, and an
+			// account signed in by email has no battletag to show.
+			owner.Battletag = u.PublicName()
 		}
 		v.Owner = &owner
 	}

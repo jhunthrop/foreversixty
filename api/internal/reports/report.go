@@ -88,7 +88,10 @@ type FightRecord struct {
 	RawSHA256   []byte
 }
 
-// Owner is the account a report belongs to, as the page shows it.
+// Owner is the account a report belongs to, as the page shows it. The
+// field is named for the contract's `owner: { id, battletag }`, but
+// what it carries is auth.User.PublicName: the battletag when there is
+// one to show, and a pseudonym otherwise.
 type Owner struct {
 	ID        int64  `json:"id"`
 	Battletag string `json:"battletag,omitempty"`
