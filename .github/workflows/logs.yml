@@ -36,6 +36,14 @@ jobs:
             echo "coverage ${total}% is under the 80% floor"
             exit 1
           }
+      - name: fuzz
+        # Short runs, because the point is to keep the corpus honest against
+        # every change rather than to search: the seeds alone cover the
+        # shapes that used to panic. A crasher is written to
+        # engine/*/testdata/fuzz and must be committed with its fix.
+        run: |
+          go test ./engine/event/ -run '^$' -fuzz FuzzDecode -fuzztime 20s
+          go test ./engine/lexer/ -run '^$' -fuzz FuzzSplitParams -fuzztime 20s
   bench:
     # Non-blocking. It downloads a 77 MB sample that is not in the repository,
     # so it is a signal rather than a gate: a slow runner must not fail a PR.

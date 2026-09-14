@@ -65,24 +65,42 @@ func ClassicWiki() Layout {
 			"_EXTRA_ATTACKS":     {Params: 1},
 			"_DURABILITY_DAMAGE": {Params: 0},
 		},
+		// Every special carries an explicit width list. An empty list
+		// means the row does not know the shape, and the decoder then
+		// keeps the line raw instead of indexing into it, so a missing
+		// list must never stand in for "any width".
 		Specials: map[string]Special{
-			"COMBAT_LOG_VERSION": {},
+			// Eight fields, the same flat key/value header retail writes.
+			// ParseHeader reads this line before the width check, so the
+			// list documents the shape rather than gating it.
+			"COMBAT_LOG_VERSION": {Widths: []int{8}},
 			"UNIT_DIED":          {Widths: []int{9, 10}},
 			"UNIT_DESTROYED":     {Widths: []int{9, 10}},
 			"UNIT_DISSIPATES":    {Widths: []int{9, 10}},
 			"PARTY_KILL":         {Widths: []int{9, 10}},
 			// The wiki's suffix stops at absorbedAmount and marks
 			// totalAmount as a later addition, so both widths are allowed.
-			"SPELL_ABSORBED":       {Widths: []int{18, 19, 21, 22}},
-			"SPELL_HEAL_ABSORBED":  {Widths: []int{20, 21}},
-			"ENCOUNTER_START":      {},
-			"ENCOUNTER_END":        {},
-			"ZONE_CHANGE":          {},
-			"MAP_CHANGE":           {},
-			"ENCHANT_APPLIED":      {Widths: []int{12}},
-			"ENCHANT_REMOVED":      {Widths: []int{12}},
-			"EMOTE":                {},
-			"ENVIRONMENTAL_DAMAGE": {},
+			"SPELL_ABSORBED":      {Widths: []int{18, 19, 21, 22}},
+			"SPELL_HEAL_ABSORBED": {Widths: []int{20, 21}},
+			// The instanceID on ENCOUNTER_START and the success flag on
+			// ENCOUNTER_END predate every Classic client, the same
+			// argument the 17-field advanced block above rests on, so
+			// the wiki's full six-field shape is the one declared.
+			"ENCOUNTER_START": {Widths: []int{6}},
+			"ENCOUNTER_END":   {Widths: []int{6}},
+			"ZONE_CHANGE":     {Widths: []int{4}},
+			// The only documented MAP_CHANGE shape, from wowcoach.gg's
+			// spec.yaml; no Classic-specific source exists, so a Classic
+			// line of any other width is kept raw rather than guessed at.
+			"MAP_CHANGE":      {Widths: []int{7}},
+			"ENCHANT_APPLIED": {Widths: []int{12}},
+			"ENCHANT_REMOVED": {Widths: []int{12}},
+			"EMOTE":           {Widths: []int{6}},
+			// Common header (9) + advanced block (17) + environmentalType
+			// + this row's own nine-field damage suffix, plus the
+			// optional trailing isOffHand. Arithmetic over the counts
+			// already declared above, not a new number.
+			"ENVIRONMENTAL_DAMAGE": {Widths: []int{36, 37}},
 		},
 		Combatant: Combatant{Present: false},
 	}

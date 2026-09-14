@@ -31,17 +31,19 @@ type Suffix struct {
 }
 
 // Special describes an event that does not follow the prefix/suffix pattern.
-// Widths are total field counts including the event name; an empty Widths
-// accepts any width.
+// Widths are total field counts including the event name.
+//
+// An empty Widths means the row does not know this event's shape, and the
+// decoder then keeps the line raw rather than indexing into it. Absence of
+// information is ignorance, not permission: a row that does not state a
+// width has no business telling the decoder where a field sits.
 type Special struct {
 	Widths []int
 }
 
-// Accepts reports whether n is one of the widths this special allows.
+// Accepts reports whether n is one of the widths this special allows. A
+// special with no declared widths accepts nothing.
 func (s Special) Accepts(n int) bool {
-	if len(s.Widths) == 0 {
-		return true
-	}
 	for _, w := range s.Widths {
 		if w == n {
 			return true

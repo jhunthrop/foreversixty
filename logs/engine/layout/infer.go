@@ -167,6 +167,11 @@ func inferStamp(stamp string) (year, zone bool) {
 		return false, false
 	}
 	year = strings.Count(date, "/") == 2
-	zone = strings.ContainsAny(clock[1:], "+-")
+	// The scan starts at the second byte because the zone's sign never
+	// sits at the front of the clock. A clock that short carries no zone,
+	// and on a truncated line it may be empty altogether.
+	if len(clock) > 1 {
+		zone = strings.ContainsAny(clock[1:], "+-")
+	}
 	return year, zone
 }

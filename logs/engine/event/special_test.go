@@ -37,7 +37,9 @@ func TestBothAbsorbedShapes(t *testing.T) {
 
 func TestAbsorbedWithAnImpossibleWidthIsAParseError(t *testing.T) {
 	l := layout.RetailV16()
-	l.Specials["SPELL_ABSORBED"] = layout.Special{} // accept any width at the gate
+	// Declare the width so the row's gate lets the line through and
+	// readAbsorbed's own shape check is the thing under test.
+	l.Specials["SPELL_ABSORBED"] = layout.Special{Widths: []int{11}}
 	d := NewDecoder(l, fixtureBase)
 	e := d.Decode(lexer.Line{
 		Stamp:  "9/26 20:10:00.000",

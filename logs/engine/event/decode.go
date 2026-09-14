@@ -93,6 +93,13 @@ func (d *Decoder) Decode(ln lexer.Line) Event {
 	}
 
 	if spec, ok := d.lay.Specials[e.Name]; ok {
+		if len(spec.Widths) == 0 {
+			// The row lists the event but not its shape. There is nothing
+			// to index against, so the line is kept raw and the
+			// conformance report picks it up as an unknown event.
+			e.Kind, e.Raw = Unknown, ln.Raw
+			return e
+		}
 		if !spec.Accepts(len(ln.Params)) {
 			return fail(e, ln, fmt.Sprintf("%s has %d fields, layout %q allows %v",
 				e.Name, len(ln.Params), d.lay.Name, spec.Widths))
@@ -144,15 +151,32 @@ func (d *Decoder) decodeStandard(e Event, ln lexer.Line, prefix, suffix string) 
 		return fail(e, ln, fmt.Sprintf("%s has %d fields, layout %q wants %d", e.Name, len(p), d.lay.Name, want))
 	}
 
-	readUnits(&e, p)
+	// Where the suffix's fields start. The inferred row derives Params
+	// from the file itself and can hand back a negative count, so this
+	// index and the suffix branch's own requirement are both checked
+	// before anything is sliced: len(p) == want above only proves the
+	// line matches the row's arithmetic, not that the arithmetic is sane.
 	i := layout.BaseParams
 	if n := d.lay.Prefixes[prefix]; n == 3 {
-		e.Spell = Spell{ID: intOf(p[i]), Name: nilless(p[i+1]), School: intOf(p[i+2])}
 		i += 3
 	}
 	if advAt >= 0 {
-		e.Adv = readAdvanced(p[advAt : advAt+d.lay.Advanced])
 		i = advAt + d.lay.Advanced
+	}
+	if advAt < 0 || advAt > i {
+		advAt = -1
+	}
+	if need := suffixNeeds(suffix, spec); i < layout.BaseParams || i > len(p) || len(p)-i < need {
+		return fail(e, ln, fmt.Sprintf("%s has %d fields, layout %q leaves %d for a %s that reads %d",
+			e.Name, len(p), d.lay.Name, len(p)-i, suffix, need))
+	}
+
+	readUnits(&e, p)
+	if d.lay.Prefixes[prefix] == 3 {
+		e.Spell = Spell{ID: intOf(p[layout.BaseParams]), Name: nilless(p[layout.BaseParams+1]), School: intOf(p[layout.BaseParams+2])}
+	}
+	if advAt >= 0 {
+		e.Adv = readAdvanced(p[advAt : advAt+d.lay.Advanced])
 	}
 	rest := p[i:]
 
@@ -226,6 +250,45 @@ func (d *Decoder) decodeStandard(e Event, ln lexer.Line, prefix, suffix string) 
 		e.Kind, e.Raw = Unknown, ln.Raw
 	}
 	return e
+}
+
+// suffixNeeds is how many fields after the prefix and the advanced block
+// the switch in decodeStandard reads unconditionally. The layout row says
+// how wide the line should be; this says what the code actually indexes,
+// and the two are checked separately because an inferred row's widths come
+// from the file rather than from a document.
+func suffixNeeds(suffix string, spec layout.Suffix) int {
+	switch suffix {
+	case "_DAMAGE", "_DAMAGE_LANDED":
+		// amount, then overkill through crushing; plus baseAmount when
+		// the row carries it. The trailing isOffHand is optional and is
+		// read only when it is there.
+		if spec.BaseAmount {
+			return 10
+		}
+		return 9
+	case "_HEAL":
+		if spec.HealedToHP {
+			return 5
+		}
+		return 4
+	case "_MISSED":
+		return 2
+	case "_ENERGIZE", "_DRAIN", "_LEECH":
+		return 4
+	case "_AURA_APPLIED", "_AURA_REMOVED", "_AURA_REFRESH", "_AURA_BROKEN":
+		return 1
+	case "_AURA_APPLIED_DOSE", "_AURA_REMOVED_DOSE":
+		return 2
+	case "_AURA_BROKEN_SPELL", "_DISPEL", "_STOLEN":
+		return 4
+	case "_INTERRUPT", "_DISPEL_FAILED":
+		return 3
+	case "_CAST_FAILED", "_EXTRA_ATTACKS":
+		return 1
+	default:
+		return 0
+	}
 }
 
 // readDamage reads the damage suffix. Amount is always the first field and

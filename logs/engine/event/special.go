@@ -9,10 +9,42 @@ import (
 	"github.com/jhunthrop/foreversixty/logs/engine/lexer"
 )
 
+// specialNeeds is how many fields each branch of decodeSpecial reads
+// unconditionally, keyed by event name. The layout row's Widths say what
+// shape the dialect writes; this says what the code indexes. Both are
+// checked, because the inferred row derives its widths from the file, so a
+// width can be declared and still be too short for the branch that reads
+// it.
+var specialNeeds = map[string]int{
+	"UNIT_DIED":            layout.BaseParams,
+	"UNIT_DESTROYED":       layout.BaseParams,
+	"UNIT_DISSIPATES":      layout.BaseParams,
+	"PARTY_KILL":           layout.BaseParams,
+	"SPELL_ABSORBED":       layout.BaseParams,
+	"SPELL_HEAL_ABSORBED":  20,
+	"ENVIRONMENTAL_DAMAGE": layout.BaseParams,
+	"ENCOUNTER_START":      5,
+	"ENCOUNTER_END":        5,
+	"ZONE_CHANGE":          3,
+	"MAP_CHANGE":           3,
+	"CHALLENGE_MODE_START": 5,
+	"CHALLENGE_MODE_END":   4,
+	"ENCHANT_APPLIED":      12,
+	"ENCHANT_REMOVED":      12,
+	"EMOTE":                5,
+	"COMBATANT_INFO":       2,
+}
+
 // decodeSpecial handles the events that do not follow the prefix/suffix
-// pattern. The width has already been checked against the layout row.
+// pattern. The width has already been checked against the layout row's
+// declared widths; specialNeeds checks it again against what each branch
+// below actually reads.
 func (d *Decoder) decodeSpecial(e Event, ln lexer.Line) Event {
 	p := ln.Params
+	if need, ok := specialNeeds[e.Name]; ok && len(p) < need {
+		return fail(e, ln, fmt.Sprintf("%s has %d fields, the decoder reads %d",
+			e.Name, len(p), need))
+	}
 	switch e.Name {
 	case "UNIT_DIED", "UNIT_DESTROYED", "UNIT_DISSIPATES":
 		readUnits(&e, p)
@@ -31,7 +63,14 @@ func (d *Decoder) decodeSpecial(e Event, ln lexer.Line) Event {
 		e.Spell = Spell{ID: intOf(p[9]), Name: nilless(p[10]), School: intOf(p[11])}
 		e.ExtraUnit = Unit{GUID: p[12], Name: nilless(p[13]), Flags: hex32(p[14]), Raid: hex32(p[15])}
 		e.ExtraSpell = Spell{ID: intOf(p[16]), Name: nilless(p[17]), School: intOf(p[18])}
-		e.Amount, e.Total = optInt(p[19]), optInt(p[20])
+		e.Amount = optInt(p[19])
+		// The Classic row allows width 20: the wiki's suffix stops at
+		// absorbed and marks totalAmount as a later addition, so at that
+		// width the field is absent and Total stays unset rather than
+		// being read from off the end of the line.
+		if len(p) > 20 {
+			e.Total = optInt(p[20])
+		}
 	case "ENVIRONMENTAL_DAMAGE":
 		return d.readEnvironmental(e, ln)
 	case "ENCOUNTER_START":
@@ -149,13 +188,17 @@ func (d *Decoder) readEnvironmental(e Event, ln lexer.Line) Event {
 		e.Adv = readAdvanced(p[i : i+d.lay.Advanced])
 		i += d.lay.Advanced
 	}
+	if i >= len(p) {
+		return fail(e, ln, fmt.Sprintf("ENVIRONMENTAL_DAMAGE has %d fields, too few for the environmental type", len(p)))
+	}
 	e.EnvType = p[i]
 	i++
 	rest := p[i:]
 	spec := d.lay.Suffixes["_DAMAGE"]
-	if len(rest) < spec.Params {
+	want := max(spec.Params, suffixNeeds("_DAMAGE", spec))
+	if len(rest) < want {
 		return fail(e, ln, fmt.Sprintf("ENVIRONMENTAL_DAMAGE has %d damage fields, layout %q wants %d",
-			len(rest), d.lay.Name, spec.Params))
+			len(rest), d.lay.Name, want))
 	}
 	readDamage(&e, rest, spec)
 	return e
@@ -174,6 +217,12 @@ func (d *Decoder) readCombatant(e Event, ln lexer.Line) Event {
 	if len(p) != c.Params {
 		return fail(e, ln, fmt.Sprintf("COMBATANT_INFO has %d fields, layout %q wants %d",
 			len(p), d.lay.Name, c.Params))
+	}
+	for _, at := range []int{c.SpecIndex, c.TalentIndex, c.PvPTalentIndex, c.BorrowIndex, c.GearIndex, c.AuraIndex} {
+		if at < 0 || at >= len(p) {
+			return fail(e, ln, fmt.Sprintf("COMBATANT_INFO has %d fields, layout %q indexes field %d",
+				len(p), d.lay.Name, at))
+		}
 	}
 	e.Kind = CombatantInfo
 	info := &Combatant{
