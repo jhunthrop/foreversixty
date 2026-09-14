@@ -16,7 +16,10 @@ ERA_BUILD = Path("builds/1.15.9.69722")
 #: Dwarf Shaman, Undead Paladin, and the placeholder Skyborne's own classes.
 SKYBORNE_ID = 900
 SKYBORNE_CLASSES = frozenset({1, 3, 4, 7, 8, 11})
-NEW_COMBOS = {(3, 7), (5, 2)} | {(SKYBORNE_ID, class_id) for class_id in SKYBORNE_CLASSES}
+#: Six Deep Dive pairs:
+#: Dwarf Shaman, Undead Paladin, Gnome Priest, Human Hunter, Orc Mage, Troll Warlock.
+DEEP_DIVE_COMBOS = {(3, 7), (5, 2), (7, 5), (1, 3), (2, 8), (8, 9)}
+NEW_COMBOS = DEEP_DIVE_COMBOS | {(SKYBORNE_ID, class_id) for class_id in SKYBORNE_CLASSES}
 #: How many pairs vanilla itself allows; the pairs above are the only additions.
 CLASSIC_COMBO_COUNT = 40
 
