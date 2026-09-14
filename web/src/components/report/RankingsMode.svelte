@@ -7,7 +7,12 @@
 <script lang="ts">
   import { characterHref, guildHref, rulesetLabel, splitUnitName } from '../../lib/characters';
   import { classColorVar, formatAmount, formatDuration, percentileToken } from '../../lib/report/format';
-  import { fetchRankings, type RankingMetric, type RankingsPage } from '../../lib/rankings/api';
+  import {
+    fetchRankings,
+    type RankingMetric,
+    type RankingRow,
+    type RankingsPage,
+  } from '../../lib/rankings/api';
   import type { FightEntry } from '../../lib/report/types';
 
   let {
@@ -16,10 +21,33 @@
     encounterSlug,
   }: { fight: FightEntry; reportId: string; encounterSlug: string } = $props();
 
+  /** The picker's options and the word the value column is filed under: one list, so the
+      label on a phone card cannot drift from the metric the visitor chose. */
+  const METRICS: { id: RankingMetric; label: string }[] = [
+    { id: 'dps', label: 'Damage' },
+    { id: 'hps', label: 'Healing' },
+    { id: 'damage_taken', label: 'Damage taken' },
+  ];
+
   let metric = $state<RankingMetric>('dps');
   let page = $state<RankingsPage | null>(null);
   let status = $state<'idle' | 'loading' | 'ready' | 'failed'>('idle');
   let error = $state('');
+
+  const metricLabel = $derived(METRICS.find((option) => option.id === metric)?.label ?? 'Value');
+
+  /**
+   * A row's three figures with the words their columns never carried. Built here rather
+   * than written out three times in the markup so the phone strip cannot drift from the
+   * columns it stands in for -- the same shape SummaryTab.svelte's `figuresFor` uses.
+   */
+  function figuresFor(row: RankingRow): { label: string; value: string }[] {
+    return [
+      { label: 'Split', value: row.talent_split },
+      { label: metricLabel, value: formatAmount(Math.round(row.value)) },
+      { label: 'Duration', value: formatDuration(row.duration_ms) },
+    ];
+  }
 
   /**
    * The metric picker is not the only thing that can change while a request is in
@@ -68,12 +96,17 @@
           bind:value={metric}
           data-testid="rankings-metric"
         >
-          <option value="dps">Damage</option>
-          <option value="hps">Healing</option>
-          <option value="damage_taken">Damage taken</option>
+          {#each METRICS as option (option.id)}
+            <option value={option.id}>{option.label}</option>
+          {/each}
         </select>
       </label>
-      <a class="text-[13px]" href={`/rankings/${encounterSlug}`}>Full rankings for {fight.name}</a>
+      <!-- A target beside the metric picker, not a word in a sentence, so it carries the
+           44px the design system asks of a phone. SummaryTab.svelte's build link is the
+           same shape. -->
+      <a class="inline-flex min-h-11 items-center text-[13px] md:min-h-0" href={`/rankings/${encounterSlug}`}>
+        Full rankings for {fight.name}
+      </a>
     </div>
 
     {#if status === 'loading'}
@@ -117,15 +150,35 @@
                 <span class="pill pill-site shrink-0">This report</span>
               {/if}
             </span>
-            <span class="text-muted truncate text-[13px]">
+            <!-- Its own line on a phone card. Sharing line one with the player leaves the
+                 name a `minmax(0,1fr)` track against the guild's `auto` one, and a row
+                 carrying the "This report" pill truncated "Baelgrim" to "B". -->
+            <span class="text-muted col-span-full truncate text-[13px] md:col-auto">
               {#if row.guild}
                 <a href={guildHref(row.guild.region, row.guild.ruleset, row.guild.name)}>{row.guild.name}</a>
                 · {rulesetLabel(row.guild.ruleset)}
               {/if}
             </span>
-            <span class="text-muted font-mono tabular text-right text-[13px]">{row.talent_split}</span>
-            <span class="font-mono tabular text-right">{formatAmount(Math.round(row.value))}</span>
-            <span class="text-muted font-mono tabular text-right text-[13px]">{formatDuration(row.duration_ms)}</span>
+            <span class="text-muted font-mono tabular hidden text-right text-[13px] md:inline"
+              >{row.talent_split}</span
+            >
+            <span class="font-mono tabular hidden text-right md:inline">{formatAmount(Math.round(row.value))}</span>
+            <span class="text-muted font-mono tabular hidden text-right text-[13px] md:inline"
+              >{formatDuration(row.duration_ms)}</span
+            >
+
+            <!-- The three figures above sit in unlabelled columns, and a phone card has
+                 neither the columns nor the width to keep them side by side, so below `md`
+                 they are replaced by a strip where each says what it is. The value takes
+                 the word from the metric picker above, not a word of its own. -->
+            <span
+              class="text-muted label col-span-full flex flex-wrap gap-x-3 gap-y-1 md:hidden"
+              data-testid="ranking-figures"
+            >
+              {#each figuresFor(row) as figure (figure.label)}
+                <span>{figure.label} <span class="font-mono tabular">{figure.value}</span></span>
+              {/each}
+            </span>
             {#if row.state !== 'ok'}
               <span class="pill pill-sample col-span-full md:col-auto">{row.state.replace('_', ' ')}</span>
             {/if}

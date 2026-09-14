@@ -93,11 +93,7 @@
   {/if}
 
   {#if state.mode === 'analyze' && state.view === 'tables'}
-    <div
-      role="tablist"
-      aria-label="Table"
-      class="flex flex-nowrap overflow-x-auto md:flex-wrap"
-    >
+    <div role="tablist" aria-label="Table" class="flex flex-nowrap overflow-x-auto md:flex-wrap">
       {#each TABS as tab (tab.id)}
         <button
           type="button"

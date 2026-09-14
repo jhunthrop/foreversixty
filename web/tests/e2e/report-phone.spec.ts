@@ -18,25 +18,38 @@ test.skip(() => test.info().project.name !== 'mobile', 'phone layout only');
 
 const REPORT = '/reports/fixture2abcd?fight=3';
 
+/** The phone width this file sets, and the number both sweeps measure against. */
+const PHONE_WIDTH = 360;
+
+/**
+ * Every state the report can be in, swept by both audits below. One list, so a panel added
+ * to a new tab cannot be covered by the scroll sweep and missed by the hit-target sweep.
+ */
+const STATES = [
+  'tab=summary',
+  'tab=damage-done',
+  'tab=deaths',
+  'tab=buffs',
+  'tab=casts',
+  'tab=resources',
+  'tab=threat',
+  'view=timelines',
+  'view=events',
+  'view=queries',
+  'mode=compare',
+  'mode=rankings',
+];
+
 test('nothing scrolls sideways on any tab or view', async ({ page }) => {
-  for (const query of [
-    'tab=summary',
-    'tab=damage-done',
-    'tab=deaths',
-    'tab=buffs',
-    'tab=casts',
-    'tab=resources',
-    'tab=threat',
-    'view=timelines',
-    'view=events',
-    'view=queries',
-    'mode=compare',
-    'mode=rankings',
-  ]) {
+  for (const query of STATES) {
     await page.goto(`${REPORT}&${query}`);
     await expect(page.getByTestId('mode-bar')).toBeVisible();
-    const overflows = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
-    expect(overflows, query).toBe(false);
+    // Against PHONE_WIDTH, not window.innerWidth. Content wider than the phone widens the
+    // emulated layout viewport with it -- innerWidth read 373 on this 360 viewport while
+    // Compare's table was overflowing -- so `scrollWidth > innerWidth` moves its own goal
+    // posts and silently passes over exactly the bug it is here to catch.
+    const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+    expect(scrollWidth, query).toBeLessThanOrEqual(PHONE_WIDTH);
   }
 });
 
@@ -49,7 +62,7 @@ test('a damage row is a card with every field labelled', async ({ page }) => {
   await expect(row.getByTestId('phone-labels')).toBeVisible();
 
   const box = (await row.boundingBox())!;
-  expect(box.width).toBeLessThanOrEqual(360);
+  expect(box.width).toBeLessThanOrEqual(PHONE_WIDTH);
 });
 
 // The sideways-scroll sweep above visits `mode=compare` with no second fight picked, so
@@ -65,7 +78,7 @@ test('the compare table stays inside the page gutter once a second fight is pick
   // Measured against the 360 this file sets, not window.innerWidth: a table wider than the
   // phone widens the emulated layout viewport with it, so innerWidth moves to meet the
   // overflow and a comparison against it always passes.
-  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(360);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(PHONE_WIDTH);
 
   // Wider than the phone is allowed for a table, but only inside its own scroller and only
   // with the 18px page gutter still standing on both sides.
@@ -73,7 +86,7 @@ test('the compare table stays inside the page gutter once a second fight is pick
   const scroller = page.getByTestId('compare-table').locator('xpath=parent::div');
   const box = (await scroller.boundingBox())!;
   expect(box.x).toBeGreaterThanOrEqual(gutter);
-  expect(box.x + box.width).toBeLessThanOrEqual(360 - gutter);
+  expect(box.x + box.width).toBeLessThanOrEqual(PHONE_WIDTH - gutter);
 
   // Still a real table, with the caption and the column headers a card stack would lose:
   // the header association is the whole reason Compare does not collapse to cards.
@@ -95,8 +108,10 @@ test('the mode bar stays reachable while a long table scrolls', async ({ page })
 });
 
 test('every interactive control clears 44px', async ({ page }) => {
-  for (const query of ['tab=summary', 'tab=damage-done', 'tab=deaths', 'view=queries']) {
+  for (const query of STATES) {
     await page.goto(`${REPORT}&${query}`);
+    await expect(page.getByTestId('mode-bar')).toBeVisible();
+    let measured = 0;
     const controls = await page
       .locator('button:visible, select:visible, a[href]:visible, input:visible')
       .all();
@@ -144,6 +159,11 @@ test('every interactive control clears 44px', async ({ page }) => {
       // footer are every page's, not this one's -- layout.spec.ts measures those.
       const inIsland = await target.evaluate((element) => element.closest('#report') !== null);
       if (inIsland) expect(box.height, where).toBeGreaterThanOrEqual(44);
+      measured += 1;
     }
+    // A state whose controls all fell through the exclusions above would leave this loop
+    // with nothing asserted and the test still green, which is worse than no audit. Every
+    // state renders the mode bar, so the floor is its three mode buttons.
+    expect(measured, `${query} measured no controls at all`).toBeGreaterThanOrEqual(3);
   }
 });
