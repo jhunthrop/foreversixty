@@ -5,7 +5,7 @@
 export const SUBSCRIBED = 'Check your email and confirm the address.';
 export const RATE_LIMITED = 'Too many attempts from this connection; try again shortly.';
 export const SUBSCRIBE_FAILED = 'That did not go through; try again.';
-export const MAILTO_PROMPT = 'The subscribe service is not answering. Email the address below instead.';
+export const OFFLINE_PROMPT = 'The subscribe service is not answering. Join the Discord below instead.';
 
 export interface SubscribeMessage {
   kind: 'done' | 'error' | 'offline';
@@ -20,6 +20,6 @@ export function subscribeMessageFor(status: number, apiMessage: string | null): 
   if (status === 202) return { kind: 'done', message: SUBSCRIBED };
   if (status === 429) return { kind: 'error', message: RATE_LIMITED };
   if (status === 400) return { kind: 'error', message: apiMessage ?? SUBSCRIBE_FAILED };
-  if (status === 0 || status >= 500) return { kind: 'offline', message: MAILTO_PROMPT };
+  if (status === 0 || status >= 500) return { kind: 'offline', message: OFFLINE_PROMPT };
   return { kind: 'error', message: SUBSCRIBE_FAILED };
 }

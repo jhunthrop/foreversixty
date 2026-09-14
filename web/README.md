@@ -165,10 +165,10 @@ created through the API, so the site deploys with wrangler instead.
 - Node is pinned by `web/.node-version` (`22.12.0`); CI reads it with `node-version-file`.
 
 Community links (Discord invite, GitHub repo, issue templates, and the community panel's subscribe
-mailto) live in `src/data/links.json`. `subscribeMailto` ships as
-`mailto:PLACEHOLDER@foreversixty.gg?subject=...`; the deploy job builds with `CF_PAGES=1`, which makes
-the build fail and name the offending keys if any value still contains `PLACEHOLDER`; local and CI
-verify builds are unaffected.
+fallback, which points at the Discord until the site has a contact address) live in
+`src/data/links.json`. The deploy job builds with `CF_PAGES=1`, which makes the build fail and name
+the offending keys if any value still contains `PLACEHOLDER`; local and CI verify builds are
+unaffected.
 
 ## Lighthouse budgets
 

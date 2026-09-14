@@ -3,5 +3,5 @@
   "githubRepo": "https://github.com/jhunthrop/foreversixty",
   "reportErrorIssue": "https://github.com/jhunthrop/foreversixty/issues/new?template=error.yml",
   "writeGuideIssue": "https://github.com/jhunthrop/foreversixty/issues/new?template=guide.yml",
-  "subscribeMailto": "mailto:PLACEHOLDER@foreversixty.gg?subject=Forever%20Sixty%20updates"
+  "subscribeFallback": "https://discord.gg/NZhBtPwvHt"
 }

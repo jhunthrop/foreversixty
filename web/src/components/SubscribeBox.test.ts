@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
-  MAILTO_PROMPT,
+  OFFLINE_PROMPT,
   RATE_LIMITED,
   SUBSCRIBE_FAILED,
   SUBSCRIBED,
@@ -23,9 +23,9 @@ describe('subscribeMessageFor', () => {
     expect(subscribeMessageFor(429, 'slow down')).toEqual({ kind: 'error', message: RATE_LIMITED });
   });
 
-  it('offers the mailto fallback when the API cannot be reached', () => {
-    expect(subscribeMessageFor(0, null)).toEqual({ kind: 'offline', message: MAILTO_PROMPT });
-    expect(subscribeMessageFor(503, null)).toEqual({ kind: 'offline', message: MAILTO_PROMPT });
+  it('offers the Discord fallback when the API cannot be reached', () => {
+    expect(subscribeMessageFor(0, null)).toEqual({ kind: 'offline', message: OFFLINE_PROMPT });
+    expect(subscribeMessageFor(503, null)).toEqual({ kind: 'offline', message: OFFLINE_PROMPT });
   });
 
   it('falls back to a generic error for anything else', () => {
