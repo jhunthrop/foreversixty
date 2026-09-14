@@ -62,6 +62,17 @@ func (u *Uploads) fail(w http.ResponseWriter, r *http.Request, op string, err er
 	httpx.WriteError(w, r, http.StatusInternalServerError, "internal", message, nil)
 }
 
+// abort throws away a multipart upload that a later step has no way to
+// finish, so it does not sit open in R2 forever. An abort that itself
+// fails is logged rather than swallowed: the upload is orphaned in R2
+// either way, and this is the only record of it.
+func (u *Uploads) abort(r *http.Request, key, r2UploadID string) {
+	if err := u.R2.AbortMultipart(r.Context(), key, r2UploadID); err != nil {
+		u.logger().Error("uploads", "id", httpx.RequestIDFrom(r.Context()), "op", "abort",
+			"key", key, "err", err)
+	}
+}
+
 // StartInput is the body of POST /v1/uploads.
 type StartInput struct {
 	SizeBytes int64  `json:"size_bytes"`
@@ -89,6 +100,9 @@ func (u *Uploads) start(w http.ResponseWriter, r *http.Request) {
 	}
 	parts, err := u.R2.PresignParts(r.Context(), key, r2UploadID, r2.PartCount(in.SizeBytes), r2.URLTTL)
 	if err != nil {
+		// The multipart upload is open in R2 but nothing here will ever
+		// finish it: abort it rather than leave it orphaned.
+		u.abort(r, key, r2UploadID)
 		u.fail(w, r, "start", err, "could not start that upload just now")
 		return
 	}
@@ -97,6 +111,7 @@ func (u *Uploads) start(w http.ResponseWriter, r *http.Request) {
 		ID: id, UserID: &owner, ObjectKey: key, R2UploadID: r2UploadID,
 		SizeBytes: in.SizeBytes, Filename: trimFilename(in.Filename),
 	}); err != nil {
+		u.abort(r, key, r2UploadID)
 		u.fail(w, r, "start", err, "could not start that upload just now")
 		return
 	}
@@ -148,26 +163,35 @@ func (u *Uploads) complete(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusForbidden, "forbidden", "that upload is not yours", nil)
 		return
 	}
+	// The report id is reserved on the upload row the moment R2 confirms
+	// the object is whole, before the report row itself exists. That
+	// makes every step from here on replayable: a retry that finds
+	// up.ReportID already set never calls CompleteMultipart again on an
+	// upload R2 has already finalized (which would error forever), and
+	// never creates a second report row for the same upload.
+	reportID := ""
 	if up.ReportID != nil {
-		// Already completed: hand back the report it became, so a
-		// retried completion is harmless.
-		httpx.WriteOK(w, r, http.StatusAccepted, map[string]string{"report_id": *up.ReportID})
-		return
+		reportID = *up.ReportID
+	} else {
+		if err := u.R2.CompleteMultipart(r.Context(), up.ObjectKey, up.R2UploadID, in.ETags); err != nil {
+			u.fail(w, r, "complete", err, "could not finish that upload just now")
+			return
+		}
+		reportID = auth.NewReportID()
+		if err := u.Store.FinishUpload(r.Context(), up.ID, reportID); err != nil {
+			u.fail(w, r, "complete", err, "could not finish that upload just now")
+			return
+		}
 	}
-	if err := u.R2.CompleteMultipart(r.Context(), up.ObjectKey, up.R2UploadID, in.ETags); err != nil {
-		u.fail(w, r, "complete", err, "could not finish that upload just now")
-		return
+	rep, err := u.Store.Get(r.Context(), reportID)
+	if errors.Is(err, ErrNotFound) {
+		uploadID := up.ID
+		rep, err = u.Store.Create(r.Context(), Report{
+			ID: reportID, OwnerID: &actor.UserID, Title: strings.TrimSpace(in.Title),
+			Visibility: in.Visibility, Status: StatusProcessing, UploadID: &uploadID,
+		})
 	}
-	uploadID := up.ID
-	rep, err := u.Store.Create(r.Context(), Report{
-		ID: auth.NewReportID(), OwnerID: &actor.UserID, Title: strings.TrimSpace(in.Title),
-		Visibility: in.Visibility, Status: StatusProcessing, UploadID: &uploadID,
-	})
 	if err != nil {
-		u.fail(w, r, "complete", err, "could not finish that upload just now")
-		return
-	}
-	if err := u.Store.FinishUpload(r.Context(), up.ID, rep.ID); err != nil {
 		u.fail(w, r, "complete", err, "could not finish that upload just now")
 		return
 	}

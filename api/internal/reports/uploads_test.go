@@ -2,7 +2,9 @@ package reports
 
 import (
 	"context"
+	"errors"
 	"net/http"
+	"strconv"
 	"testing"
 	"time"
 
@@ -16,6 +18,9 @@ type fakeMultipart struct {
 	completed map[string][]r2.CompletedPart
 	aborted   []string
 	err       error
+	// presignErr fails only PresignParts, so a test can exercise a
+	// multipart that started successfully in R2 but never got signed.
+	presignErr error
 }
 
 func newFakeMultipart() *fakeMultipart {
@@ -35,9 +40,12 @@ func (f *fakeMultipart) PresignParts(_ context.Context, key, uploadID string, pa
 	if f.err != nil {
 		return nil, f.err
 	}
+	if f.presignErr != nil {
+		return nil, f.presignErr
+	}
 	out := make([]r2.Part, 0, parts)
 	for n := 1; n <= parts; n++ {
-		out = append(out, r2.Part{Number: n, URL: "https://r2.example/" + key + "?part=" + itoa(n)})
+		out = append(out, r2.Part{Number: n, URL: "https://r2.example/" + key + "?part=" + strconv.Itoa(n)})
 	}
 	return out, nil
 }
@@ -54,8 +62,6 @@ func (f *fakeMultipart) AbortMultipart(_ context.Context, key, uploadID string) 
 	f.aborted = append(f.aborted, key)
 	return nil
 }
-
-func itoa(n int) string { return string(rune('0' + n)) }
 
 func TestAWholeFileUploadIsSignedCompletedAndParsed(t *testing.T) {
 	h := newHarness(t)
@@ -204,5 +210,89 @@ func TestStartingAnUploadAnswers500WhenTheDatabaseIsGone(t *testing.T) {
 	res.Body.Close()
 	if res.StatusCode != http.StatusInternalServerError {
 		t.Fatalf("status = %d, want 500", res.StatusCode)
+	}
+}
+
+// TestStartAbortsTheMultipartWhenPresigningFails proves the start path
+// does not orphan a multipart upload in R2 when a step after
+// StartMultipart fails: the upload it opened must be aborted before the
+// 500 is answered.
+func TestStartAbortsTheMultipartWhenPresigningFails(t *testing.T) {
+	h := newHarness(t)
+	h.asSession()
+	h.parts.presignErr = errors.New("presign failed")
+
+	res := h.json(http.MethodPost, "/v1/uploads", `{"size_bytes":10,"filename":"x"}`)
+	res.Body.Close()
+	if res.StatusCode != http.StatusInternalServerError {
+		t.Fatalf("status = %d, want 500", res.StatusCode)
+	}
+	if len(h.parts.started) != 1 {
+		t.Fatalf("started = %v, want exactly one multipart start", h.parts.started)
+	}
+	var key string
+	for k := range h.parts.started {
+		key = k
+	}
+	if len(h.parts.aborted) != 1 || h.parts.aborted[0] != key {
+		t.Fatalf("aborted = %v, want [%q]", h.parts.aborted, key)
+	}
+}
+
+// TestARetryAfterTheReportRowWasNeverCreatedConverges reproduces the
+// state a partial failure between R2.CompleteMultipart succeeding and
+// Store.Create running would leave: the upload row already names a
+// reserved report id, but that report does not exist yet. A retried
+// completion must create the report under that same id, start the job,
+// and never call CompleteMultipart again on an upload R2 already
+// finalized.
+func TestARetryAfterTheReportRowWasNeverCreatedConverges(t *testing.T) {
+	h := newHarness(t)
+	h.asSession()
+
+	res := h.json(http.MethodPost, "/v1/uploads", `{"size_bytes":10,"filename":"x"}`)
+	var start struct {
+		UploadID string `json:"upload_id"`
+	}
+	h.data(res, &start)
+
+	reserved := auth.NewReportID()
+	if err := h.store.FinishUpload(t.Context(), start.UploadID, reserved); err != nil {
+		t.Fatal(err)
+	}
+
+	res = h.json(http.MethodPost, "/v1/uploads/"+start.UploadID+"/complete",
+		`{"etags":[{"number":1,"etag":"a"}]}`)
+	if res.StatusCode != http.StatusAccepted {
+		t.Fatalf("status = %d, want 202", res.StatusCode)
+	}
+	var out struct {
+		ReportID string `json:"report_id"`
+	}
+	h.data(res, &out)
+	if out.ReportID != reserved {
+		t.Fatalf("report id = %q, want the reserved id %q", out.ReportID, reserved)
+	}
+	if len(h.parts.completed) != 0 {
+		t.Fatalf("CompleteMultipart was called on an upload R2 had already finalized: %v", h.parts.completed)
+	}
+	rep, err := h.store.Get(t.Context(), reserved)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if rep.Status != StatusProcessing {
+		t.Fatalf("report = %+v", rep)
+	}
+	var count int
+	if err := h.store.Pool.QueryRow(t.Context(),
+		`select count(*) from reports where upload_id = $1`, start.UploadID).Scan(&count); err != nil {
+		t.Fatal(err)
+	}
+	if count != 1 {
+		t.Fatalf("reports for upload = %d, want exactly 1", count)
+	}
+	ran := h.jobs.Ran()
+	if len(ran) != 1 || ran[0][0] != ParseJobCommand || ran[0][1] != reserved {
+		t.Fatalf("job ran with %v, want exactly one run for %q", ran, reserved)
 	}
 }
