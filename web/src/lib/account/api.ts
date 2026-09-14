@@ -150,3 +150,46 @@ export async function signOut(apiBase: string = API_BASE_URL): Promise<void> {
 export async function setAnonymize(value: boolean, apiBase: string = API_BASE_URL): Promise<void> {
   await call('/v1/me', apiBase, { method: 'PATCH', body: { anonymize: value } });
 }
+
+/** One row of the "Your reports" list. */
+export interface MyReport {
+  id: string;
+  title: string;
+  zone: string;
+  status: string;
+  visibility: string;
+  created_at: string;
+  fight_count: number;
+  kill_count: number;
+}
+
+export interface MyReportPage {
+  rows: MyReport[];
+  total: number;
+  page: number;
+  per_page: number;
+}
+
+/** The contract's Amendments section fixes the page size at 100. */
+export const REPORTS_PER_PAGE = 100;
+
+const EMPTY_REPORT_PAGE: MyReportPage = { rows: [], total: 0, page: 1, per_page: REPORTS_PER_PAGE };
+
+/**
+ * The "Your reports" list on /logs, per the contract's Amendments section. A signed-out
+ * visitor gets an empty page rather than an error, because /logs renders for them too --
+ * it just tells them to sign in.
+ */
+export async function listMyReports(
+  page: number = 1,
+  apiBase: string = API_BASE_URL,
+): Promise<MyReportPage> {
+  try {
+    return (await call<MyReportPage>(`/v1/reports?mine=1&page=${page}`, apiBase)) ?? EMPTY_REPORT_PAGE;
+  } catch (error) {
+    if (error instanceof AccountError && (error.status === 401 || error.status === 403)) {
+      return EMPTY_REPORT_PAGE;
+    }
+    throw error;
+  }
+}

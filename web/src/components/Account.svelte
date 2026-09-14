@@ -13,8 +13,9 @@
   } from '../lib/account/api';
   import { characterHref, rulesetLabel } from '../lib/characters';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
+  import MyReports from './MyReports.svelte';
 
-  let { mode, next = '/logs' }: { mode: 'nav' | 'login' | 'account' | 'pairing'; next?: string } = $props();
+  let { mode, next = '/logs' }: { mode: 'nav' | 'login' | 'account' | 'pairing' | 'reports'; next?: string } = $props();
 
   let me = $state<Me | null>(null);
   let status = $state<'loading' | 'ready' | 'failed'>('loading');
@@ -147,6 +148,8 @@
     {#if notice !== ''}<p class="text-[14px]" data-testid="account-notice">{notice}</p>{/if}
     {#if error !== ''}<p class="text-[14px]" role="alert" data-testid="account-error">{error}</p>{/if}
   </div>
+{:else if mode === 'reports'}
+  <MyReports signedIn={signedIn} />
 {:else if mode === 'pairing'}
   <div class="flex flex-col gap-3" data-testid="pairing">
     {#if !signedIn}
@@ -243,6 +246,8 @@
           never deleted or rewritten.
         </p>
       </section>
+
+      <MyReports signedIn={signedIn} />
     {/if}
     {#if error !== ''}<p class="text-[14px]" role="alert" data-testid="account-error">{error}</p>{/if}
   </div>

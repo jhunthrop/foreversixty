@@ -117,3 +117,28 @@ describe('the account API', () => {
     await expect(listDevices(API)).rejects.toThrow(ACCOUNT_FAILED);
   });
 });
+
+describe('listMyReports', () => {
+  it('asks for the signed-in user’s reports, one page at a time', async () => {
+    const page = {
+      rows: [
+        { id: 'fixture2abcd', title: 'Sanguine Depths, fixture night', zone: 'Sanguine Depths', status: 'complete', visibility: 'public', created_at: '2026-09-26T20:09:00Z', fight_count: 3, kill_count: 1 },
+      ],
+      total: 1,
+      page: 1,
+      per_page: 100,
+    };
+    const upstream = vi.fn<GlobalFetch>(async () => envelope(page));
+    vi.stubGlobal('fetch', upstream);
+
+    const { listMyReports } = await import('./api');
+    await expect(listMyReports(2, API)).resolves.toEqual(page);
+    expect((upstream.mock.calls[0][0] as Request).url).toBe(`${API}/v1/reports?mine=1&page=2`);
+  });
+
+  it('treats a signed-out visitor as an empty page rather than an error', async () => {
+    vi.stubGlobal('fetch', vi.fn<GlobalFetch>(async () => envelope(null, 401)));
+    const { listMyReports } = await import('./api');
+    await expect(listMyReports(1, API)).resolves.toEqual({ rows: [], total: 0, page: 1, per_page: 100 });
+  });
+});
