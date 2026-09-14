@@ -12,7 +12,12 @@
      `†` mark unconditionally, exactly as ExchangeTable's Count does. -->
 <script lang="ts">
   import { splitUnitName } from '../../lib/characters';
-  import { formatDuration, wholeFightAriaLabel, wholeFightMark, wholeFightTitle } from '../../lib/report/format';
+  import {
+    formatDuration,
+    wholeFightAriaLabel,
+    wholeFightMark,
+    wholeFightTitle,
+  } from '../../lib/report/format';
   import type { ResourceTrack } from '../../lib/report/types';
 
   let { tracks, durationMs }: { tracks: ResourceTrack[]; durationMs: number } = $props();
@@ -59,8 +64,15 @@
         data-testid={`resource-${track.guid}-${track.power_type}`}
       >
         <span class="truncate font-semibold">{splitUnitName(track.name).name}</span>
-        <span class="text-muted text-[13px]">{POWER_NAMES.get(track.power_type) ?? `Power ${track.power_type}`}</span>
-        <svg class="col-span-2 h-[26px] w-full md:col-span-1" viewBox="0 0 100 26" preserveAspectRatio="none" aria-hidden="true">
+        <span class="text-muted text-[13px]"
+          >{POWER_NAMES.get(track.power_type) ?? `Power ${track.power_type}`}</span
+        >
+        <svg
+          class="col-span-2 h-[26px] w-full md:col-span-1"
+          viewBox="0 0 100 26"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
           <polyline
             points={points(track.series)}
             fill="none"
@@ -70,7 +82,7 @@
           />
         </svg>
         <span
-          class="text-muted font-mono tabular text-right text-[13px]"
+          class="text-muted tabular text-right font-mono text-[13px]"
           {title}
           aria-label={wholeFightAriaLabel(true, zeroText(track.zero_ms))}
           data-testid="resource-zero"
@@ -80,9 +92,11 @@
       </li>
     {/each}
   </ul>
-  <p class="text-muted text-[12px]">Fight length in this window: {formatDuration(durationMs)}.</p>
+  <p class="text-muted text-[12px]">
+    Fight length in this window: <span class="tabular font-mono">{formatDuration(durationMs)}</span>.
+  </p>
   <p class="text-muted text-[12px]" data-testid="resource-wholefight-note">
-    Time empty is marked {mark} because the summary tracks it for the whole fight only; the
-    line above is this window's own series.
+    Time empty is marked {mark} because the summary tracks it for the whole fight only; the line above is this window's
+    own series.
   </p>
 {/if}
