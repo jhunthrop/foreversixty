@@ -7,6 +7,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"maps"
+	"slices"
 	"strings"
 	"time"
 
@@ -117,9 +119,22 @@ func (s *Store) WriteFight(ctx context.Context, f reports.RankedFight) error {
 	}
 	defer func() { _ = tx.Rollback(ctx) }()
 
+	// Serialise writers of the same fight. Without this, two of them
+	// race: both run the delete below before either has committed an
+	// insert, both count zero rows withdrawn, both call themselves a
+	// first write, and the fight lands in the digests twice. The lock
+	// is transaction-scoped, so it is released by the commit or the
+	// rollback below. A hash collision between two different fights
+	// only makes them wait for each other.
+	if _, err := tx.Exec(ctx, `select pg_advisory_xact_lock(hashtext($1), $2)`,
+		f.ReportID, f.FightIndex); err != nil {
+		return fmt.Errorf("rankings: lock %s/%d: %w", f.ReportID, f.FightIndex, err)
+	}
+
 	// Withdraw whatever this fight wrote before, so a rewrite replaces
 	// its rows instead of leaving a stale player behind, and so the
-	// digests can tell a first write from a second.
+	// digests can tell a first write from a second. Under the lock
+	// above, this count is authoritative.
 	withdrawn, err := tx.Exec(ctx,
 		`delete from fight_metrics where report_id = $1 and fight_index = $2`, f.ReportID, f.FightIndex)
 	if err != nil {
@@ -168,9 +183,12 @@ func (s *Store) WriteFight(ctx context.Context, f reports.RankedFight) error {
 		}
 	}
 
-	for k, values := range pending {
+	// In a fixed order, so two fights that touch an overlapping set of
+	// brackets take the digest row locks in the same order and cannot
+	// deadlock against each other.
+	for _, k := range sortedKeys(pending) {
 		if err := updateDigest(ctx, tx, f.Rows[0].EncounterID, f.Rows[0].Difficulty,
-			k.spec, at, k.metric, values); err != nil {
+			k.spec, at, k.metric, pending[k]); err != nil {
 			return err
 		}
 	}
@@ -180,17 +198,43 @@ func (s *Store) WriteFight(ctx context.Context, f reports.RankedFight) error {
 	return nil
 }
 
-// updateDigest folds values into one digest row, locking it first so
-// two fights closing at once cannot lose each other's values.
+// sortedKeys is the brackets of one fight in a stable order: by metric,
+// then by spec. Go randomises map iteration, and these keys name rows
+// that are about to be locked.
+func sortedKeys(pending map[digestKey][]float64) []digestKey {
+	keys := slices.Collect(maps.Keys(pending))
+	slices.SortFunc(keys, func(a, b digestKey) int {
+		if c := strings.Compare(a.metric, b.metric); c != 0 {
+			return c
+		}
+		return strings.Compare(a.spec, b.spec)
+	})
+	return keys
+}
+
+// updateDigest folds values into one digest row, holding that row's
+// lock across the read and the write so two fights closing at once
+// cannot lose each other's values.
+//
+// The lock is taken by creating the row rather than by selecting it:
+// `select ... for update` locks nothing when nothing matches, so two
+// transactions first-populating the same brand-new bracket would both
+// read an empty digest, both fold only their own values, and the
+// second would overwrite the first's committed values. The insert
+// below always leaves a locked row behind - a new empty one, or the
+// existing one, whose digest it returns unchanged - and the update
+// that follows is protected by that lock.
 func updateDigest(ctx context.Context, tx pgx.Tx, encounterID, difficulty int64,
 	specName, at, metric string, values []float64) error {
 	var raw []byte
-	err := tx.QueryRow(ctx,
-		`select digest from percentile_digests
-		 where encounter_id = $1 and difficulty = $2 and spec = $3 and phase = $4 and metric = $5
-		 for update`, encounterID, difficulty, specName, at, metric).Scan(&raw)
-	if err != nil && !errors.Is(err, pgx.ErrNoRows) {
-		return fmt.Errorf("rankings: read digest: %w", err)
+	if err := tx.QueryRow(ctx,
+		`insert into percentile_digests (encounter_id, difficulty, spec, phase, metric, digest, n)
+		 values ($1, $2, $3, $4, $5, $6, 0)
+		 on conflict (encounter_id, difficulty, spec, phase, metric) do update set
+		   digest = percentile_digests.digest
+		 returning digest`,
+		encounterID, difficulty, specName, at, metric, []byte{}).Scan(&raw); err != nil {
+		return fmt.Errorf("rankings: lock digest: %w", err)
 	}
 	d, err := digest.Unmarshal(raw)
 	if err != nil {
@@ -204,10 +248,8 @@ func updateDigest(ctx context.Context, tx pgx.Tx, encounterID, difficulty int64,
 		return err
 	}
 	if _, err := tx.Exec(ctx,
-		`insert into percentile_digests (encounter_id, difficulty, spec, phase, metric, digest, n, updated_at)
-		 values ($1, $2, $3, $4, $5, $6, $7, now())
-		 on conflict (encounter_id, difficulty, spec, phase, metric) do update set
-		   digest = excluded.digest, n = excluded.n, updated_at = now()`,
+		`update percentile_digests set digest = $6, n = $7, updated_at = now()
+		 where encounter_id = $1 and difficulty = $2 and spec = $3 and phase = $4 and metric = $5`,
 		encounterID, difficulty, specName, at, metric, encoded, d.Count()); err != nil {
 		return fmt.Errorf("rankings: write digest: %w", err)
 	}

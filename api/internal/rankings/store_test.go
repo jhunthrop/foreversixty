@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http/httptest"
 	"os"
+	"slices"
 	"testing"
 	"time"
 
@@ -488,5 +489,93 @@ func TestEveryCallFailsWhenTheDatabaseIsGone(t *testing.T) {
 	}
 	if _, _, err := h.store.Percentile(t.Context(), 9001, 8, "", "raids-1", MetricDPS, 1); err == nil {
 		t.Error("reading a percentile must fail when the database is gone")
+	}
+}
+
+// The second fight in a bracket merges into the digest that is already
+// there rather than replacing it.
+func TestASecondFightFoldsIntoTheSameBracket(t *testing.T) {
+	h := newHarness(t)
+	h.seedReport("report-one")
+	rows := h.seedFight("report-one", 1, engine.FixtureBase, nil)
+	h.seedReport("report-two")
+	h.seedFight("report-two", 1, engine.FixtureBase, nil)
+
+	if got, want := h.digested(), int64(2*len(rows)); got != want {
+		t.Fatalf("digests hold %d values, want %d: the second fight must merge in", got, want)
+	}
+	var brackets int
+	if err := h.pool.QueryRow(t.Context(), `select count(*) from percentile_digests`).Scan(&brackets); err != nil {
+		t.Fatal(err)
+	}
+	if brackets != 3 {
+		t.Fatalf("brackets = %d, want one per role", brackets)
+	}
+}
+
+// Two writers of the same fight must not both call themselves the
+// first write, so a fight is never folded into the digests twice. The
+// lock that guarantees it is held here by another connection.
+func TestWriteFightWaitsForAnotherWriterOfTheSameFight(t *testing.T) {
+	h := newHarness(t)
+	h.seedReport("report-one")
+	fx, err := engine.NewFixture("report-one")
+	if err != nil {
+		t.Fatal(err)
+	}
+	fight := reports.RankedFight{
+		ReportID: "report-one", FightIndex: 1, FoughtAt: engine.FixtureBase,
+		Region: "us", Ruleset: "hardcore", Rows: metrics.Derive(fx.Fight, fx.Summary),
+	}
+
+	holder, err := h.pool.Acquire(context.Background())
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer holder.Release()
+	if _, err := holder.Exec(context.Background(),
+		`select pg_advisory_lock(hashtext($1), $2)`, fight.ReportID, fight.FightIndex); err != nil {
+		t.Fatal(err)
+	}
+
+	waiting, cancel := context.WithTimeout(context.Background(), 300*time.Millisecond)
+	defer cancel()
+	if err := h.store.WriteFight(waiting, fight); err == nil {
+		t.Fatal("a second writer of the same fight must wait for the first")
+	}
+	var n int
+	if err := h.pool.QueryRow(context.Background(), `select count(*) from fight_metrics`).Scan(&n); err != nil {
+		t.Fatal(err)
+	}
+	if n != 0 {
+		t.Fatalf("rows = %d, want none: the blocked write must roll back", n)
+	}
+
+	if _, err := holder.Exec(context.Background(),
+		`select pg_advisory_unlock(hashtext($1), $2)`, fight.ReportID, fight.FightIndex); err != nil {
+		t.Fatal(err)
+	}
+	if err := h.store.WriteFight(context.Background(), fight); err != nil {
+		t.Fatalf("once the lock is free the write goes through: %v", err)
+	}
+	if got := h.digested(); got != int64(len(fight.Rows)) {
+		t.Fatalf("digests hold %d values, want %d", got, len(fight.Rows))
+	}
+}
+
+func TestSortedKeysLockTheBracketsInAFixedOrder(t *testing.T) {
+	pending := map[digestKey][]float64{
+		{MetricHPS, "holy"}:         nil,
+		{MetricDPS, "fury"}:         nil,
+		{MetricDamageTaken, "prot"}: nil,
+		{MetricDPS, "arms"}:         nil,
+	}
+	want := []digestKey{
+		{MetricDamageTaken, "prot"}, {MetricDPS, "arms"}, {MetricDPS, "fury"}, {MetricHPS, "holy"},
+	}
+	for range 8 {
+		if got := sortedKeys(pending); !slices.Equal(got, want) {
+			t.Fatalf("sortedKeys = %v, want %v", got, want)
+		}
 	}
 }
