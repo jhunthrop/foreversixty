@@ -1,6 +1,8 @@
 package metrics
 
 import (
+	"errors"
+	"strings"
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/api/internal/engine"
@@ -149,5 +151,39 @@ func TestCompareRejectsChangedIntegers(t *testing.T) {
 		if err := Compare(posted, rows); err == nil {
 			t.Fatalf("a changed integer field must be rejected: %+v", posted[0])
 		}
+	}
+}
+
+func TestCompareReportsAMismatchThatNamesTheFieldApartFromTheValue(t *testing.T) {
+	rows := fixtureRows(t)
+	posted := append([]Row{}, rows...)
+	i := damageDealer(t, rows)
+	posted[i].MetricDPS *= 2
+
+	var m *Mismatch
+	if err := Compare(posted, rows); !errors.As(err, &m) {
+		t.Fatalf("err = %v, want a *Mismatch", err)
+	}
+	if m.Field != "metric_dps" {
+		t.Fatalf("field = %q, want metric_dps and nothing else", m.Field)
+	}
+	if m.PlayerGUID != rows[i].PlayerGUID {
+		t.Fatalf("guid = %q, want %q", m.PlayerGUID, rows[i].PlayerGUID)
+	}
+	// The field is safe to hand back to the sender; the message, which
+	// carries the engine's own number, is for the server's log.
+	if strings.Contains(m.Field, "the events give") {
+		t.Fatalf("the field must not carry the engine's value: %q", m.Field)
+	}
+	if !strings.HasPrefix(m.Error(), m.PlayerGUID+": ") || !strings.Contains(m.Error(), "the events give") {
+		t.Fatalf("message = %q, want the player and the detail", m.Error())
+	}
+
+	// A row-count mismatch belongs to no player, so it stands alone.
+	if err := Compare(rows[:2], rows); !errors.As(err, &m) || m.Field != "rows" {
+		t.Fatalf("err = %v, want a rows mismatch", err)
+	}
+	if m.Error() != m.Detail {
+		t.Fatalf("message = %q, want the detail alone", m.Error())
 	}
 }

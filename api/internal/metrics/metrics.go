@@ -62,14 +62,41 @@ func Derive(f fight.Fight, s summary.Summary) []Row {
 	return out
 }
 
+// Mismatch is one disagreement between a posted row and the row the
+// events produce. Field names what disagreed and is all a rejection may
+// safely tell the sender: the message carries the engine's own value
+// too, and a companion that learns that on rejection learns exactly what
+// to post next time. Callers put Error() in the server's log and Field
+// in the response.
+type Mismatch struct {
+	PlayerGUID string
+	Field      string
+	Detail     string
+}
+
+// Error is the server's log line: the player, the field, and the value
+// the events give.
+func (m *Mismatch) Error() string {
+	if m.PlayerGUID == "" {
+		return m.Detail
+	}
+	return m.PlayerGUID + ": " + m.Detail
+}
+
+// mismatchf builds a Mismatch for one field of one player's row.
+func mismatchf(guid, field, format string, args ...any) *Mismatch {
+	return &Mismatch{PlayerGUID: guid, Field: field, Detail: fmt.Sprintf(format, args...)}
+}
+
 // Compare reports the first way posted differs from derived, or nil when
-// they agree. Integers must match exactly and floats must be within
+// they agree. Every error it returns is a *Mismatch. Integers must match exactly and floats must be within
 // Tolerance, except for the three fields a rebuild cannot always see -
 // class, spec, and item level - which are checked only when the rebuild
 // derived one of its own.
 func Compare(posted, derived []Row) error {
 	if len(posted) != len(derived) {
-		return fmt.Errorf("%d rows posted, the events produce %d", len(posted), len(derived))
+		return &Mismatch{Field: "rows",
+			Detail: fmt.Sprintf("%d rows posted, the events produce %d", len(posted), len(derived))}
 	}
 	byGUID := make(map[string]Row, len(posted))
 	for _, r := range posted {
@@ -78,16 +105,17 @@ func Compare(posted, derived []Row) error {
 	for _, want := range derived {
 		got, ok := byGUID[want.PlayerGUID]
 		if !ok {
-			return fmt.Errorf("no row posted for player %s", want.PlayerGUID)
+			return &Mismatch{Field: "rows",
+				Detail: fmt.Sprintf("no row posted for player %s", want.PlayerGUID)}
 		}
-		if err := compareRow(want.PlayerGUID, got, want); err != nil {
-			return err
+		if m := compareRow(want.PlayerGUID, got, want); m != nil {
+			return m
 		}
 	}
 	return nil
 }
 
-func compareRow(guid string, got, want Row) error {
+func compareRow(guid string, got, want Row) *Mismatch {
 	for _, f := range []struct {
 		name      string
 		got, want int64
@@ -101,7 +129,7 @@ func compareRow(guid string, got, want Row) error {
 		{"duration_ms", got.DurationMS, want.DurationMS},
 	} {
 		if f.got != f.want {
-			return fmt.Errorf("%s: %s is %d, the events give %d", guid, f.name, f.got, f.want)
+			return mismatchf(guid, f.name, "%s is %d, the events give %d", f.name, f.got, f.want)
 		}
 	}
 	for _, f := range []struct {
@@ -112,7 +140,7 @@ func compareRow(guid string, got, want Row) error {
 		{"metric_hps", got.MetricHPS, want.MetricHPS},
 	} {
 		if !within(f.got, f.want) {
-			return fmt.Errorf("%s: %s is %g, the events give %g", guid, f.name, f.got, f.want)
+			return mismatchf(guid, f.name, "%s is %g, the events give %g", f.name, f.got, f.want)
 		}
 	}
 	for _, f := range []struct {
@@ -123,7 +151,7 @@ func compareRow(guid string, got, want Row) error {
 		{"role", got.Role, want.Role},
 	} {
 		if f.got != f.want {
-			return fmt.Errorf("%s: %s is %q, the events give %q", guid, f.name, f.got, f.want)
+			return mismatchf(guid, f.name, "%s is %q, the events give %q", f.name, f.got, f.want)
 		}
 	}
 	// Class, spec, and item level come from COMBATANT_INFO, whose payload
@@ -139,14 +167,14 @@ func compareRow(guid string, got, want Row) error {
 		{"spec", got.Spec, want.Spec},
 	} {
 		if f.want != "" && f.got != f.want {
-			return fmt.Errorf("%s: %s is %q, the events give %q", guid, f.name, f.got, f.want)
+			return mismatchf(guid, f.name, "%s is %q, the events give %q", f.name, f.got, f.want)
 		}
 	}
 	if want.Ilvl != 0 && got.Ilvl != want.Ilvl {
-		return fmt.Errorf("%s: ilvl is %d, the events give %d", guid, got.Ilvl, want.Ilvl)
+		return mismatchf(guid, "ilvl", "ilvl is %d, the events give %d", got.Ilvl, want.Ilvl)
 	}
 	if got.Kill != want.Kill {
-		return fmt.Errorf("%s: kill is %v, the events give %v", guid, got.Kill, want.Kill)
+		return mismatchf(guid, "kill", "kill is %v, the events give %v", got.Kill, want.Kill)
 	}
 	return nil
 }

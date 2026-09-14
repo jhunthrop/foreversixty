@@ -54,16 +54,19 @@ func (fakeSigner) PresignGet(_ context.Context, key string, ttl time.Duration) (
 // harness is the report surface mounted over the test database, with a
 // local directory for R2 and a fixed actor on every request.
 type harness struct {
-	t      *testing.T
-	store  *Store
-	dir    string
-	files  *store.Dir
-	server *httptest.Server
-	actor  auth.Actor
-	owner  int64
+	t       *testing.T
+	store   *Store
+	dir     string
+	files   *store.Dir
+	ranker  *fakeRanker
+	sampler *fakeSampler
+	server  *httptest.Server
+	actor   auth.Actor
+	owner   int64
 	// reportID is the report a store test seeded fights into.
 	reportID string
 	service  *Service
+	ingest   *Ingest
 }
 
 func newHarness(t *testing.T) *harness {
@@ -80,6 +83,7 @@ func newHarness(t *testing.T) *harness {
 	}
 	h := &harness{
 		t: t, store: &Store{Pool: pool}, dir: t.TempDir(),
+		ranker: &fakeRanker{}, sampler: &fakeSampler{},
 		owner: owner.ID,
 	}
 	h.files = store.NewDir(h.dir)
@@ -89,8 +93,10 @@ func newHarness(t *testing.T) *harness {
 		Store: h.store, Accounts: accounts, Signer: fakeSigner{},
 		PublicBaseURL: "https://foreversixty.gg", APIBaseURL: "https://api.foreversixty.gg", Log: quiet,
 	}
+	h.ingest = &Ingest{Store: h.store, Put: h.files, Rank: h.ranker, Samp: h.sampler, Log: quiet}
 	mux := http.NewServeMux()
 	Mount(mux, h.service)
+	MountIngest(mux, h.ingest)
 	h.server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		mux.ServeHTTP(w, r.WithContext(auth.WithActor(r.Context(), h.actor)))
 	}))
