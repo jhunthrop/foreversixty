@@ -4,6 +4,7 @@
 // whole-file upload (Task 8) is the fallback for a night that was already logged.
 import Base from '../layouts/Base.astro';
 import Account from '../components/Account.svelte';
+import Upload from '../components/Upload.svelte';
 import companion from '../data/companion.json';
 
 const download = (asset: string): string => `${companion.releasesUrl}/latest/download/${asset}`;
@@ -46,6 +47,8 @@ const download = (asset: string): string => `${companion.releasesUrl}/latest/dow
 
       <Account client:load mode="pairing" />
     </section>
+
+    <Upload client:load />
 
     <Account client:visible mode="reports" />
   </main>
