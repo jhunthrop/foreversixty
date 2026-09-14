@@ -1,0 +1,38 @@
+---
+// web/src/pages/reports/[id].astro
+// Prerendered report pages. Only the fixtures, and only under FOREVER_DATA=fixture (see
+// ../../lib/report/shell-paths.ts): Playwright and Lighthouse need a /reports/<id> that
+// exists without a Worker and without an API.
+//
+// The complete fixture inlines its GET /v1/reports/{id} payload as data-report, the way
+// the API inlines data-build on /b/:id, so the page renders from static files alone and
+// Lighthouse measures a real report rather than an error state. The live fixture carries
+// no payload: its e2e stubs the API and the data files to exercise the fetch and poll
+// paths.
+import Base from '../../layouts/Base.astro';
+import fixtureMeta from '../../fixtures/report/meta.json';
+import { FIXTURE_REPORT_ID, fixtureReportPaths } from '../../lib/report/shell-paths';
+
+export function getStaticPaths() {
+  return fixtureReportPaths();
+}
+
+const { id } = Astro.params;
+const inline = id === FIXTURE_REPORT_ID ? JSON.stringify(fixtureMeta) : undefined;
+---
+
+<Base
+  title={id === FIXTURE_REPORT_ID ? fixtureMeta.title : 'Report'}
+  description="A World of Warcraft: Forever combat log report: fights, damage, healing, deaths and rankings."
+  path={`/reports/${id}`}
+>
+  <main
+    id="main"
+    tabindex="-1"
+    class="mx-auto flex w-full max-w-[1344px] flex-col gap-[22px] pt-4 pb-10 md:gap-8 md:px-12 md:pt-7"
+  >
+    <div id="report" data-report-mount data-report-id={id} data-report={inline}>
+      <p class="text-muted px-[18px] text-[14px] md:px-0">Loading the report.</p>
+    </div>
+  </main>
+</Base>

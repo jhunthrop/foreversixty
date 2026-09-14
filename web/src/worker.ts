@@ -9,6 +9,19 @@
 // The Workers runtime types are declared inline instead of pulling in
 // @cloudflare/workers-types, which would have to be added to the Astro tsconfig's `types`
 // and would then apply to every file in the project.
+import { parseCharacterPath, parseGuildPath } from './lib/characters';
+import {
+  characterShellMeta,
+  guildShellMeta,
+  rankingsShellMeta,
+  reportShellMeta,
+  type CharacterHead,
+  type GuildHead,
+  type RankingsHead,
+  type ShellMeta,
+} from './lib/report/og-meta';
+import type { ReportMeta } from './lib/report/types';
+
 export interface Env {
   /** Origin of the Go API, from `vars` in wrangler.jsonc. */
   API_BASE_URL: string;
@@ -171,6 +184,191 @@ async function serveReportFile(request: Request, env: Env, key: string, id: stri
   return new Response(request.method === 'HEAD' ? null : object.body, { status: 200, headers });
 }
 
+/**
+ * Shared build pages, rendered by the Go API. Extracted alongside the other named route
+ * handlers for consistency with the shape the R2 route above established -- one early-return
+ * check per route in `fetch()`, dispatching to its own standalone function -- though its
+ * behaviour is unchanged from before this file grew a shell router.
+ */
+async function serveBuildPage(request: Request, env: Env, url: URL): Promise<Response> {
+  let upstream: Response;
+  try {
+    upstream = await fetch(
+      new Request(`${env.API_BASE_URL}${url.pathname}${url.search}`, {
+        method: 'GET',
+        headers: buildUpstreamHeaders(request),
+        redirect: 'manual',
+      }),
+    );
+  } catch {
+    return unavailable(request, env);
+  }
+
+  // A 404 is the API saying the build does not exist, and it renders its own page for
+  // that. Only a server-side failure means the API itself is unusable.
+  if (upstream.status >= 500) return unavailable(request, env);
+
+  // The rest of upstream's headers pass through unchanged -- ETag, Vary, Last-Modified,
+  // Content-Encoding and the like all need to keep working as the API-rendered page grows,
+  // so this is deliberately not an allow-list. Set-Cookie is the one exception: this
+  // response can carry a cacheable Cache-Control and sit behind Cloudflare's shared edge
+  // cache, so any Set-Cookie the API ever emitted here would be a cache-poisoning vector.
+  // The Fetch spec special-cases Set-Cookie as the one response header that is never
+  // combined: `Headers` keeps repeated Set-Cookie entries distinct internally (checked here
+  // with Node's native Headers/Response -- multiple Set-Cookie values survive a `new
+  // Headers(response.headers)` copy as separate entries, confirmed via `getSetCookie()`)
+  // rather than folding them into one comma-joined value, and a single `delete` call
+  // removes every one of them, so this is not a partial fix when the API sends more than
+  // one Set-Cookie.
+  const headers = new Headers(upstream.headers);
+  headers.delete('set-cookie');
+
+  return new Response(upstream.body, {
+    status: upstream.status,
+    statusText: upstream.statusText,
+    headers,
+  });
+}
+
+/**
+ * The four Worker-served shells. Each prefix maps to one built asset; the id, slug or
+ * character path in the URL is what the island reads at runtime and what the head values
+ * are rewritten from here.
+ *
+ * The rankings, character and guild shells arrive with Tasks 19 and 20. Until then their
+ * asset is missing and ASSETS answers 404, which is exactly what should happen.
+ */
+const SHELL_ROUTES = [
+  { prefix: '/reports/', asset: '/reports.html' },
+  { prefix: '/rankings/', asset: '/rankings.html' },
+  { prefix: '/character/', asset: '/character.html' },
+  { prefix: '/guild/', asset: '/guild.html' },
+] as const;
+
+const REPORT_ID = /^\/reports\/([a-z2-7]{12})$/;
+const RANKINGS_SLUG = /^\/rankings\/([a-z0-9-]{1,64})$/;
+
+/** Unwraps the Phase 0 envelope, or null for any failure at all: a shell is never worth an error page. */
+async function apiData<T>(url: string): Promise<T | null> {
+  try {
+    // No cookies, no client headers: this response is cached at the edge for everyone, so
+    // nothing about the individual visitor may influence it. A fresh Request (rather than a
+    // bare url string) carries that empty header set explicitly rather than by omission.
+    const response = await fetch(new Request(url));
+    if (!response.ok) return null;
+    const envelope = (await response.json()) as { ok: boolean; data: T | null };
+    return envelope.ok ? envelope.data : null;
+  } catch {
+    return null;
+  }
+}
+
+interface ShellHead {
+  meta: ShellMeta;
+  /** False for unlisted, private and guild reports, which must not be indexed. */
+  indexable: boolean;
+}
+
+async function shellHead(url: URL, env: Env): Promise<ShellHead | null> {
+  const report = REPORT_ID.exec(url.pathname);
+  if (report !== null) {
+    const data = await apiData<ReportMeta>(`${env.API_BASE_URL}/v1/reports/${report[1]}`);
+    if (data === null) return null;
+    return { meta: reportShellMeta(data, env.API_BASE_URL), indexable: data.visibility === 'public' };
+  }
+
+  const rankings = RANKINGS_SLUG.exec(url.pathname);
+  if (rankings !== null) {
+    const data = await apiData<RankingsHead>(
+      `${env.API_BASE_URL}/v1/rankings?encounter=${rankings[1]}&page=1`,
+    );
+    if (data === null) return null;
+    return { meta: rankingsShellMeta(rankings[1], data), indexable: true };
+  }
+
+  const character = parseCharacterPath(url.pathname);
+  if (character !== null) {
+    const data = await apiData<CharacterHead>(
+      `${env.API_BASE_URL}/v1/characters/${character.region}/${character.ruleset}/${character.slug}`,
+    );
+    if (data === null) return null;
+    return { meta: characterShellMeta(character, data), indexable: true };
+  }
+
+  const guild = parseGuildPath(url.pathname);
+  if (guild !== null) {
+    const data = await apiData<GuildHead>(
+      `${env.API_BASE_URL}/v1/guilds/${guild.region}/${guild.ruleset}/${guild.slug}`,
+    );
+    if (data === null) return null;
+    return { meta: guildShellMeta(guild, data), indexable: true };
+  }
+
+  return null;
+}
+
+/**
+ * Whether this path names one report, encounter, character or guild. A path under a shell
+ * prefix that does not -- `/reports/fixture2abcd/extra`, a prerendered fixture page's own
+ * asset request -- belongs to ASSETS, not to the shell.
+ */
+function shellPathIsAddressable(url: URL): boolean {
+  return (
+    REPORT_ID.test(url.pathname) ||
+    RANKINGS_SLUG.test(url.pathname) ||
+    parseCharacterPath(url.pathname) !== null ||
+    parseGuildPath(url.pathname) !== null
+  );
+}
+
+/**
+ * HTMLRewriter is a Workers-runtime global. It is reached through globalThis rather than
+ * used bare so the tests can stub it and so a runtime without it -- `vitest`, a future
+ * local preview -- serves the shell unrewritten instead of throwing. The island renders
+ * the page either way; only the unfurl is lost.
+ */
+type ElementHandlers = {
+  element(element: { setAttribute(n: string, v: string): void; setInnerContent(t: string): void }): void;
+};
+type Rewriter = {
+  on(selector: string, handlers: ElementHandlers): Rewriter;
+  transform(response: Response): Response;
+};
+type RewriterConstructor = new () => Rewriter;
+
+function rewriteHead(response: Response, meta: ShellMeta): Response {
+  const Ctor = (globalThis as { HTMLRewriter?: RewriterConstructor }).HTMLRewriter;
+  if (Ctor === undefined) return response;
+  return new Ctor()
+    .on('title', { element: (element) => element.setInnerContent(meta.title) })
+    .on('meta[data-og="description"]', {
+      element: (element) => element.setAttribute('content', meta.description),
+    })
+    .on('meta[data-og="og-title"]', { element: (element) => element.setAttribute('content', meta.title) })
+    .on('meta[data-og="og-description"]', {
+      element: (element) => element.setAttribute('content', meta.description),
+    })
+    .on('meta[data-og="og-url"]', { element: (element) => element.setAttribute('content', meta.canonical) })
+    .on('meta[data-og="og-image"]', { element: (element) => element.setAttribute('content', meta.image) })
+    .on('link[data-og="canonical"]', { element: (element) => element.setAttribute('href', meta.canonical) })
+    .transform(response);
+}
+
+async function serveShell(env: Env, url: URL, asset: string): Promise<Response> {
+  const shell = await env.ASSETS.fetch(new Request(new URL(asset, url).toString(), { method: 'GET' }));
+  if (!shell.ok) return shell;
+
+  const head = await shellHead(url, env);
+  const headers = new Headers(shell.headers);
+  // One minute: a report's title and fight count change while a raid night is being
+  // logged, and an unfurl a crawler fetched an hour ago should not be the one people see.
+  headers.set('cache-control', 'public, max-age=60');
+  if (head !== null && !head.indexable) headers.set('x-robots-tag', 'noindex');
+
+  const body = new Response(shell.body, { status: 200, headers });
+  return head === null ? body : rewriteHead(body, head.meta);
+}
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
@@ -178,44 +376,16 @@ export default {
     if (logsData !== null) return serveReportFile(request, env, logsData[1], logsData[2]);
     if (url.pathname.startsWith(LOGS_DATA_PREFIX)) return refuse(404, 'Not a report file');
 
-    if (!BUILD_PATH.test(url.pathname)) return env.ASSETS.fetch(request);
-
-    let upstream: Response;
-    try {
-      upstream = await fetch(
-        new Request(`${env.API_BASE_URL}${url.pathname}${url.search}`, {
-          method: 'GET',
-          headers: buildUpstreamHeaders(request),
-          redirect: 'manual',
-        }),
-      );
-    } catch {
-      return unavailable(request, env);
+    const shell = SHELL_ROUTES.find((route) => url.pathname.startsWith(route.prefix));
+    // A path under a shell prefix that is not a valid id, slug or character path -- a
+    // prerendered fixture page's own asset request, a stray segment -- belongs to ASSETS,
+    // which serves it or 404s there.
+    if (shell !== undefined && shellPathIsAddressable(url)) {
+      return serveShell(env, url, shell.asset);
     }
 
-    // A 404 is the API saying the build does not exist, and it renders its own page for
-    // that. Only a server-side failure means the API itself is unusable.
-    if (upstream.status >= 500) return unavailable(request, env);
+    if (!BUILD_PATH.test(url.pathname)) return env.ASSETS.fetch(request);
 
-    // The rest of upstream's headers pass through unchanged -- ETag, Vary, Last-Modified,
-    // Content-Encoding and the like all need to keep working as the API-rendered page grows,
-    // so this is deliberately not an allow-list. Set-Cookie is the one exception: this
-    // response can carry a cacheable Cache-Control and sit behind Cloudflare's shared edge
-    // cache, so any Set-Cookie the API ever emitted here would be a cache-poisoning vector.
-    // The Fetch spec special-cases Set-Cookie as the one response header that is never
-    // combined: `Headers` keeps repeated Set-Cookie entries distinct internally (checked here
-    // with Node's native Headers/Response -- multiple Set-Cookie values survive a `new
-    // Headers(response.headers)` copy as separate entries, confirmed via `getSetCookie()`)
-    // rather than folding them into one comma-joined value, and a single `delete` call
-    // removes every one of them, so this is not a partial fix when the API sends more than
-    // one Set-Cookie.
-    const headers = new Headers(upstream.headers);
-    headers.delete('set-cookie');
-
-    return new Response(upstream.body, {
-      status: upstream.status,
-      statusText: upstream.statusText,
-      headers,
-    });
+    return serveBuildPage(request, env, url);
   },
 };

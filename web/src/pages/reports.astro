@@ -1,0 +1,27 @@
+---
+// web/src/pages/reports.astro
+// The report shell. src/worker.ts serves this file's output for /reports/<any id>, with
+// the head values rewritten from GET /v1/reports/{id}. It carries no report data: the
+// island reads the id out of the path and fetches the rest.
+//
+// Task 9 adds the island's <link> and <script> tags below the mount element.
+import Base from '../layouts/Base.astro';
+---
+
+<Base
+  title="Report"
+  description="A World of Warcraft: Forever combat log report: fights, damage, healing, deaths and rankings."
+  path="/reports"
+>
+  <main
+    id="main"
+    tabindex="-1"
+    class="mx-auto flex w-full max-w-[1344px] flex-col gap-[22px] pt-4 pb-10 md:gap-8 md:px-12 md:pt-7"
+  >
+    <div id="report" data-report-mount>
+      <p class="text-muted px-[18px] text-[14px] md:px-0">
+        No report is open. Upload a log or start the companion from <a href="/logs">Logs</a>.
+      </p>
+    </div>
+  </main>
+</Base>

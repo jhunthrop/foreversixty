@@ -196,7 +196,10 @@ function visibilityResponse(visibility: string, status = 200): Response {
 describe('/logs-data/* served from the R2 bucket', () => {
   it('serves a public report’s summary with the headers R2 stored', async () => {
     const id = 'pubaaaaaaaaa';
-    vi.stubGlobal('fetch', vi.fn<GlobalFetch>(async () => visibilityResponse('public')));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => visibilityResponse('public')),
+    );
     const env = { ...envWith(), LOGS: bucketWith({ [SUMMARY_KEY(id)]: summaryObject() }) };
 
     const response = await worker.fetch(
@@ -214,7 +217,10 @@ describe('/logs-data/* served from the R2 bucket', () => {
 
   it('serves an unlisted report too', async () => {
     const id = 'unlaaaaaaaaa';
-    vi.stubGlobal('fetch', vi.fn<GlobalFetch>(async () => visibilityResponse('unlisted')));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => visibilityResponse('unlisted')),
+    );
     const env = { ...envWith(), LOGS: bucketWith({ [SUMMARY_KEY(id)]: summaryObject() }) };
     const response = await worker.fetch(
       new Request(`https://foreversixty.gg/logs-data/reports/${id}/fights/3/summary.json`),
@@ -225,7 +231,10 @@ describe('/logs-data/* served from the R2 bucket', () => {
 
   it('refuses a private report and never touches the bucket', async () => {
     const id = 'privaaaaaaaa';
-    vi.stubGlobal('fetch', vi.fn<GlobalFetch>(async () => visibilityResponse('private')));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => visibilityResponse('private')),
+    );
     const env = { ...envWith(), LOGS: bucketWith({ [SUMMARY_KEY(id)]: summaryObject() }) };
 
     const response = await worker.fetch(
@@ -240,7 +249,10 @@ describe('/logs-data/* served from the R2 bucket', () => {
 
   it('refuses a guild report the same way', async () => {
     const id = 'gldaaaaaaaaa';
-    vi.stubGlobal('fetch', vi.fn<GlobalFetch>(async () => visibilityResponse('guild')));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => visibilityResponse('guild')),
+    );
     const env = { ...envWith(), LOGS: bucketWith({}) };
     const response = await worker.fetch(
       new Request(`https://foreversixty.gg/logs-data/reports/${id}/report.json`),
@@ -269,7 +281,12 @@ describe('/logs-data/* served from the R2 bucket', () => {
 
   it('answers 503 and stores nothing when the API cannot say', async () => {
     const id = 'downaaaaaaaa';
-    vi.stubGlobal('fetch', vi.fn<GlobalFetch>(async () => { throw new TypeError('offline'); }));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => {
+        throw new TypeError('offline');
+      }),
+    );
     const env = { ...envWith(), LOGS: bucketWith({ [SUMMARY_KEY(id)]: summaryObject() }) };
 
     const response = await worker.fetch(
@@ -284,7 +301,10 @@ describe('/logs-data/* served from the R2 bucket', () => {
 
   it('answers 404 for a report the API does not know', async () => {
     const id = 'gonaaaaaaaaa';
-    vi.stubGlobal('fetch', vi.fn<GlobalFetch>(async () => visibilityResponse('', 404)));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => visibilityResponse('', 404)),
+    );
     const env = { ...envWith(), LOGS: bucketWith({}) };
     const response = await worker.fetch(
       new Request(`https://foreversixty.gg/logs-data/reports/${id}/report.json`),
@@ -295,7 +315,10 @@ describe('/logs-data/* served from the R2 bucket', () => {
 
   it('falls through to the static assets when the object is missing, which is how the fixture serves in preview', async () => {
     const id = 'fixaaaaaaaaa';
-    vi.stubGlobal('fetch', vi.fn<GlobalFetch>(async () => visibilityResponse('public')));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => visibilityResponse('public')),
+    );
     const env = { ...envWith('fixture bytes'), LOGS: bucketWith({}) };
 
     const response = await worker.fetch(
@@ -348,7 +371,10 @@ describe('/logs-data/* served from the R2 bucket', () => {
 
   it('refuses raw chunks, which are private to their owner and downloaded from the API', async () => {
     const id = 'rawaaaaaaaaa';
-    vi.stubGlobal('fetch', vi.fn<GlobalFetch>(async () => visibilityResponse('public')));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => visibilityResponse('public')),
+    );
     const env = { ...envWith(), LOGS: bucketWith({ [`reports/${id}/raw/0.zst`]: summaryObject() }) };
 
     const response = await worker.fetch(
@@ -362,7 +388,10 @@ describe('/logs-data/* served from the R2 bucket', () => {
 
   it('answers 405 for anything but GET and HEAD', async () => {
     const id = 'putaaaaaaaaa';
-    vi.stubGlobal('fetch', vi.fn<GlobalFetch>(async () => visibilityResponse('public')));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => visibilityResponse('public')),
+    );
     const env = { ...envWith(), LOGS: bucketWith({}) };
     const response = await worker.fetch(
       new Request(`https://foreversixty.gg/logs-data/reports/${id}/report.json`, { method: 'PUT' }),
@@ -370,5 +399,167 @@ describe('/logs-data/* served from the R2 bucket', () => {
     );
     expect(response.status).toBe(405);
     expect(response.headers.get('allow')).toBe('GET, HEAD');
+  });
+});
+
+// --- appended to web/src/worker.test.ts ---
+import { FakeHTMLRewriter } from './test-support/html-rewriter';
+import fixtureMeta from './fixtures/report/meta.json';
+
+const SHELL_HTML = `<!doctype html><html><head><title>Report · Forever Sixty</title>
+<meta name="description" content="placeholder" data-og="description" />
+<link rel="canonical" href="https://foreversixty.gg/reports" data-og="canonical" />
+<meta property="og:title" content="Report · Forever Sixty" data-og="og-title" />
+<meta property="og:description" content="placeholder" data-og="og-description" />
+<meta property="og:url" content="https://foreversixty.gg/reports" data-og="og-url" />
+<meta property="og:image" content="https://foreversixty.gg/og/reports.png" data-og="og-image" />
+</head><body><div id="report" data-report-mount></div></body></html>`;
+
+function shellEnv() {
+  return {
+    API_BASE_URL,
+    ASSETS: {
+      fetch: vi.fn<AssetFetch>(async (request: Request) =>
+        new URL(request.url).pathname === '/reports.html'
+          ? new Response(SHELL_HTML, { status: 200, headers: { 'content-type': 'text/html' } })
+          : new Response('not found', { status: 404 }),
+      ),
+    },
+  };
+}
+
+describe('shell routes with rewritten unfurl tags', () => {
+  it('serves dist/reports.html for any id, rewritten from the API’s JSON', async () => {
+    vi.stubGlobal('HTMLRewriter', FakeHTMLRewriter);
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(
+        async () =>
+          new Response(JSON.stringify({ ok: true, data: fixtureMeta, error: null, request_id: 'r' }), {
+            status: 200,
+            headers: { 'content-type': 'application/json' },
+          }),
+      ),
+    );
+    const env = shellEnv();
+
+    const response = await worker.fetch(new Request('https://foreversixty.gg/reports/fixture2abcd'), env);
+    const html = await response.text();
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get('content-type')).toContain('text/html');
+    expect(response.headers.get('cache-control')).toBe('public, max-age=60');
+    expect(html).toContain('<title>Sanguine Depths, fixture night · Forever Sixty</title>');
+    expect(html).toContain('content="3 fights in Sanguine Depths, 1 boss kill, logged 2026-09-26."');
+    expect(html).toContain(`content="${API_BASE_URL}/reports/fixture2abcd/card.png"`);
+    expect(html).toContain('href="https://foreversixty.gg/reports/fixture2abcd"');
+    expect(html).toContain('content="https://foreversixty.gg/reports/fixture2abcd"');
+    expect((env.ASSETS.fetch.mock.calls[0][0] as Request).url).toBe('https://foreversixty.gg/reports.html');
+  });
+
+  it('never sends the visitor’s cookies to the API for a cacheable shell', async () => {
+    vi.stubGlobal('HTMLRewriter', FakeHTMLRewriter);
+    const upstream = vi.fn<GlobalFetch>(
+      async () =>
+        new Response(JSON.stringify({ ok: true, data: fixtureMeta, error: null, request_id: 'r' }), {
+          status: 200,
+          headers: { 'content-type': 'application/json' },
+        }),
+    );
+    vi.stubGlobal('fetch', upstream);
+
+    await worker.fetch(
+      new Request('https://foreversixty.gg/reports/fixture2abcd', {
+        headers: { cookie: 'fs_session=secret' },
+      }),
+      shellEnv(),
+    );
+
+    const proxied = upstream.mock.calls[0][0] as Request;
+    expect(proxied.headers.get('cookie')).toBeNull();
+  });
+
+  it('marks a non-public report noindex', async () => {
+    vi.stubGlobal('HTMLRewriter', FakeHTMLRewriter);
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(
+        async () =>
+          new Response(
+            JSON.stringify({
+              ok: true,
+              data: { ...fixtureMeta, visibility: 'unlisted' },
+              error: null,
+              request_id: 'r',
+            }),
+            { status: 200, headers: { 'content-type': 'application/json' } },
+          ),
+      ),
+    );
+    const response = await worker.fetch(
+      new Request('https://foreversixty.gg/reports/fixture2abcd'),
+      shellEnv(),
+    );
+    expect(response.headers.get('x-robots-tag')).toBe('noindex');
+  });
+
+  it('serves the shell unrewritten when the API cannot answer, rather than failing the page', async () => {
+    vi.stubGlobal('HTMLRewriter', FakeHTMLRewriter);
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => {
+        throw new TypeError('offline');
+      }),
+    );
+
+    const response = await worker.fetch(
+      new Request('https://foreversixty.gg/reports/fixture2abcd'),
+      shellEnv(),
+    );
+    const html = await response.text();
+
+    expect(response.status).toBe(200);
+    expect(html).toContain('<title>Report · Forever Sixty</title>');
+    expect(html).toContain('data-report-mount');
+  });
+
+  it('passes a shell prefix whose asset does not exist yet straight through', async () => {
+    vi.stubGlobal('HTMLRewriter', FakeHTMLRewriter);
+    vi.stubGlobal('fetch', vi.fn<GlobalFetch>());
+    const env = shellEnv();
+    const response = await worker.fetch(new Request('https://foreversixty.gg/rankings/warden-kelthas'), env);
+    expect(response.status).toBe(404);
+    expect((env.ASSETS.fetch.mock.calls[0][0] as Request).url).toBe('https://foreversixty.gg/rankings.html');
+  });
+
+  it('serves the shell unrewritten where HTMLRewriter does not exist', async () => {
+    vi.stubGlobal('HTMLRewriter', undefined);
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(
+        async () =>
+          new Response(JSON.stringify({ ok: true, data: fixtureMeta, error: null, request_id: 'r' }), {
+            status: 200,
+            headers: { 'content-type': 'application/json' },
+          }),
+      ),
+    );
+    const html = await (
+      await worker.fetch(new Request('https://foreversixty.gg/reports/fixture2abcd'), shellEnv())
+    ).text();
+    expect(html).toContain('<title>Report · Forever Sixty</title>');
+  });
+
+  it('leaves a path under a shell prefix that is not a valid id to the assets', async () => {
+    vi.stubGlobal('HTMLRewriter', FakeHTMLRewriter);
+    const upstream = vi.fn<GlobalFetch>();
+    vi.stubGlobal('fetch', upstream);
+    const env = shellEnv();
+    const response = await worker.fetch(new Request('https://foreversixty.gg/reports/NOT-AN-ID/extra'), env);
+    expect(upstream).not.toHaveBeenCalled();
+    expect((env.ASSETS.fetch.mock.calls[0][0] as Request).url).toBe(
+      'https://foreversixty.gg/reports/NOT-AN-ID/extra',
+    );
+    expect(response.status).toBe(404);
   });
 });

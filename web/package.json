@@ -23,11 +23,13 @@
     "lhci": "lhci autorun",
     "deploy": "npm run build && wrangler deploy",
     "sync:data": "node scripts/sync-data.mjs",
+    "sync:report-fixture": "node scripts/sync-report-fixture.mjs",
+    "sync": "npm run sync:data && npm run sync:report-fixture",
     "make:report-fixture": "node scripts/make-report-fixture.mjs",
-    "predev": "npm run sync:data",
-    "precheck": "npm run sync:data",
-    "pretest": "FOREVER_DATA=fixture npm run sync:data",
-    "prebuild": "npm run sync:data"
+    "predev": "npm run sync",
+    "precheck": "npm run sync",
+    "pretest": "FOREVER_DATA=fixture npm run sync",
+    "prebuild": "npm run sync"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",

@@ -37,9 +37,11 @@ export default defineConfig({
   integrations: [
     svelte(),
     // /b-unavailable is the 503 fallback src/worker.ts serves when the API cannot answer a
-    // /b/:id request. It is internal plumbing rather than a destination, so it stays out of
-    // the sitemap; the page also carries its own noindex for a crawler that finds it anyway.
-    sitemap({ filter: (page) => !page.endsWith('/b-unavailable') }),
+    // /b/:id request, and /reports is the shell the Worker clones for every report id.
+    // Both are plumbing rather than destinations, so they stay out of the sitemap; the
+    // report pages people actually link to are /reports/<id>, which cannot be enumerated
+    // at build time.
+    sitemap({ filter: (page) => !page.endsWith('/b-unavailable') && !page.endsWith('/reports') }),
     pagefind(),
     interactionDirective,
     placeholderGuard,
