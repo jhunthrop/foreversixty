@@ -40,6 +40,7 @@
   import ActorTable from './ActorTable.svelte';
   import AuraTable from './AuraTable.svelte';
   import CastTable from './CastTable.svelte';
+  import CompareMode from './CompareMode.svelte';
   import DeathsTab from './DeathsTab.svelte';
   import EventsView from './EventsView.svelte';
   import ExchangeTable from './ExchangeTable.svelte';
@@ -47,6 +48,7 @@
   import FilterBar from './FilterBar.svelte';
   import ModeBar from './ModeBar.svelte';
   import QueriesView from './QueriesView.svelte';
+  import RankingsMode from './RankingsMode.svelte';
   import ResourceGraphs from './ResourceGraphs.svelte';
   import SummaryTab from './SummaryTab.svelte';
   import ThreatTable from './ThreatTable.svelte';
@@ -81,6 +83,10 @@
   const firstFight = $derived(fights.length > 0 ? fights[0].index : 1);
   let state = $state<ReportState>(defaultState(1));
   const fight = $derived<FightEntry | null>(fights.find((f) => f.index === state.fight) ?? null);
+  /** The encounter slug the rankings pages use: the fight's name, lowercased and hyphenated. */
+  const encounterSlug = $derived(
+    (fight?.name ?? '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
+  );
   const roster = $derived(
     (summary?.roster ?? []).map((row) => ({ guid: row.guid, name: row.name, class: row.class })),
   );
@@ -555,6 +561,12 @@
            takes the window so a starting point is written for what is on screen. -->
       {#if scoped !== null && state.mode === 'analyze' && state.view === 'queries'}
         <QueriesView dataBaseUrl={dataBase} fightIndex={state.fight} window={timeWindow} />
+      {/if}
+      {#if state.mode === 'compare' && summary !== null}
+        <CompareMode {fights} current={state.fight} dataBaseUrl={dataBase} left={summary} />
+      {/if}
+      {#if state.mode === 'rankings' && fight !== null}
+        <RankingsMode {fight} {reportId} {encounterSlug} />
       {/if}
     </div>
   </div>

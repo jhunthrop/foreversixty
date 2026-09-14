@@ -180,3 +180,124 @@ test('a stale fight success neither clears the current error nor paints its rost
   await expect(page.getByTestId('report-fight-error')).toHaveText('Report data did not load');
   await expect(summaryRosterRows(page)).toHaveCount(3);
 });
+
+test('compare puts two fights side by side with a per-player difference', async ({ page }) => {
+  await page.goto('/reports/fixture2abcd?fight=3&mode=compare');
+  await expect(page.getByTestId('compare-mode')).toContainText('Pick a second fight');
+  await page.getByTestId('compare-with').selectOption({ index: 1 });
+  await expect(page.getByTestId('compare-table')).toBeVisible();
+  await expect(page.getByTestId('compare-delta').first()).toContainText(/[+-]/);
+});
+
+// Picking a second fight does not cancel the request for the one picked before it, so two
+// of these can settle in either order -- the same hazard the fight-switch races above
+// cover for the primary fight, now for CompareMode's own `right` fetch. Fight 3 (the
+// fixture's current fight) has Morrowlyn at 3,110 damage; fight 1 has her at 1,484; fight
+// 2 has her at 0. Picking fight 1, then fight 2 before fight 1's summary arrives, has to
+// land on fight 2's zero (delta +3,110) and stay there once fight 1's late answer shows up
+// -- not fall back to fight 1's 1,484 (delta +1,626), which is what an unguarded write
+// would paint.
+test('a stale compare answer does not overwrite the fight actually selected', async ({ page }) => {
+  await page.goto('/reports/fixture2abcd?fight=3&mode=compare');
+
+  const slow = await heldRoute(page, 1, 'continue');
+  await page.getByTestId('compare-with').selectOption('1');
+  await slow.started;
+
+  // The visitor changes their mind before fight 1's summary has even arrived.
+  await page.getByTestId('compare-with').selectOption('2');
+  const delta = page.getByTestId('compare-Player-4184-000000A3').getByTestId('compare-delta');
+  await expect(delta).toHaveText('+3,110');
+
+  const answered = page.waitForResponse((response) => response.url().endsWith('/fights/1/summary.json'));
+  slow.release();
+  await answered;
+  await page.waitForTimeout(250);
+
+  // Fight 1's late answer must not speak for the fight actually selected (fight 2).
+  await expect(delta).toHaveText('+3,110');
+});
+
+test('rankings inside the report marks this report’s own row', async ({ page }) => {
+  await page.route('**/v1/rankings?**', (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        ok: true,
+        data: {
+          rows: [
+            { rank: 1, player: { key: 'us/normal/other-raider', name: 'Other Raider', class: 'Mage', spec: 'Fire' }, guild: { name: 'Elsewhere', ruleset: 'normal', region: 'us' }, value: 2200, size: 40, fought_at: '2026-12-09T22:10:00Z', duration_ms: 200000, talent_split: '0/31/20', trinkets: [], buff_count: 9, report_id: 'otherreport1', fight_index: 1, state: 'ok' },
+            { rank: 2, player: { key: 'us/normal/baelgrim', name: 'Baelgrim', class: 'Warrior', spec: 'Protection' }, guild: { name: 'The Last Watch', ruleset: 'normal', region: 'us' }, value: 110, size: 5, fought_at: '2026-09-26T20:12:40Z', duration_ms: 40000, talent_split: '31/20/0', trinkets: [], buff_count: 4, report_id: 'fixture2abcd', fight_index: 3, state: 'at_risk' },
+          ],
+          total: 2,
+          page: 1,
+          per_page: 100,
+          updated_at: '2026-12-09T22:15:00Z',
+        },
+        error: null,
+        request_id: 'r',
+      }),
+    }),
+  );
+
+  await page.goto('/reports/fixture2abcd?fight=3&mode=rankings');
+  await expect(page.getByTestId('rankings-rows')).toBeVisible();
+  await expect(page.getByTestId('rankings-mine')).toContainText('Baelgrim');
+  await expect(page.getByTestId('rankings-mine')).toContainText('at risk');
+  await expect(page.getByRole('link', { name: /Full rankings/ })).toHaveAttribute(
+    'href',
+    '/rankings/warden-kelthas',
+  );
+});
+
+test('rankings says so plainly on a trash fight', async ({ page }) => {
+  await page.goto('/reports/fixture2abcd?fight=1&mode=rankings');
+  await expect(page.getByTestId('rankings-mode')).toContainText('Trash is not ranked');
+});
+
+// Switching the metric does not cancel the request for the one picked before it, so two
+// of these can be in flight and settle in either order too -- `wantedMetric`'s half of
+// RankingsMode's guard. dps is held open; hps answers immediately and paints the screen;
+// dps's late answer, once it does arrive, must not overwrite hps's numbers with its own.
+test('a stale rankings answer for the metric that is no longer selected is dropped', async ({ page }) => {
+  let markStarted = (): void => {};
+  let release = (): void => {};
+  const started = new Promise<void>((resolve) => (markStarted = resolve));
+  const gate = new Promise<void>((resolve) => (release = resolve));
+
+  function pageBody(total: number): string {
+    return JSON.stringify({
+      ok: true,
+      data: { rows: [], total, page: 1, per_page: 100, updated_at: '2026-12-09T22:15:00Z' },
+      error: null,
+      request_id: 'r',
+    });
+  }
+
+  await page.route('**/v1/rankings?**', async (route) => {
+    const metric = new URL(route.request().url()).searchParams.get('metric');
+    if (metric === 'dps') {
+      markStarted();
+      await gate;
+      await route.fulfill({ status: 200, contentType: 'application/json', body: pageBody(111) });
+      return;
+    }
+    await route.fulfill({ status: 200, contentType: 'application/json', body: pageBody(222) });
+  });
+
+  await page.goto('/reports/fixture2abcd?fight=3&mode=rankings');
+  await started;
+
+  // The visitor picks Healing before Damage's request has even arrived.
+  await page.getByTestId('rankings-metric').selectOption('hps');
+  await expect(page.getByTestId('rankings-mode')).toContainText('222 ranked kills');
+
+  const answered = page.waitForResponse((response) => response.url().includes('metric=dps'));
+  release();
+  await answered;
+  await page.waitForTimeout(250);
+
+  // Damage's late answer must not speak for the metric actually selected (Healing).
+  await expect(page.getByTestId('rankings-mode')).toContainText('222 ranked kills');
+});
