@@ -1,4 +1,5 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Locator, type Page } from '@playwright/test';
+import { openGear } from './support/planner';
 
 /**
  * Holds the talent request open so the planner's loading state can be measured, and returns
@@ -28,10 +29,16 @@ const SETTLED_PX = 4;
 test.describe('planner on a phone', () => {
   test.use({ viewport: { width: 360, height: 800 } });
 
-  test('shows one tree at a time behind a tab switcher', async ({ page }) => {
+  test('shows one panel at a time behind a tab switcher', async ({ page }) => {
     await page.goto('/planner');
     const tabs = page.getByRole('tab');
-    await expect(tabs).toHaveCount(2);
+    // The two warrior trees and the gear panel. Named as well as counted, so a tab that went
+    // missing cannot be covered for by one that arrived, and so the order is pinned: the gear
+    // tab is last because Planner.svelte derives its index from the tree count.
+    await expect(tabs).toHaveCount(3);
+    await expect(tabs.nth(0)).toHaveAccessibleName(/^Arms/);
+    await expect(tabs.nth(1)).toHaveAccessibleName(/^Fury/);
+    await expect(tabs.nth(2)).toHaveAccessibleName('Gear');
     await expect(tabs.nth(0)).toHaveAttribute('aria-selected', 'true');
     await expect(page.getByRole('grid', { name: 'Arms talents' })).toBeVisible();
     await expect(page.getByRole('grid', { name: 'Fury talents' })).toBeHidden();
@@ -42,8 +49,8 @@ test.describe('planner on a phone', () => {
   });
 
   // The roving tabindex takes the unselected tabs out of the tab order, so arrow keys are the
-  // only way a keyboard can reach the second tree at all.
-  test('arrow keys move between the tabs and open the tree they land on', async ({ page }) => {
+  // only way a keyboard can reach anything past the first tab at all.
+  test('arrow keys move between the tabs and open the panel they land on', async ({ page }) => {
     await page.goto('/planner');
     const tabs = page.getByRole('tab');
     await tabs.first().focus();
@@ -52,6 +59,15 @@ test.describe('planner on a phone', () => {
     await expect(tabs.nth(1)).toBeFocused();
     await expect(page.getByRole('grid', { name: 'Fury talents' })).toBeVisible();
 
+    // The walk carries on to the end of the strip: the gear tab is behind the same roving
+    // tabindex as the trees, so arrow keys are the only way a keyboard reaches it at all.
+    await page.keyboard.press('ArrowRight');
+    await expect(tabs.nth(2)).toBeFocused();
+    await expect(page.getByTestId('gear-panel')).toBeVisible();
+    await expect(page.getByRole('grid', { name: 'Fury talents' })).toBeHidden();
+
+    await page.keyboard.press('ArrowLeft');
+    await expect(tabs.nth(1)).toBeFocused();
     await page.keyboard.press('ArrowLeft');
     await expect(tabs.nth(0)).toBeFocused();
     await expect(page.getByRole('grid', { name: 'Arms talents' })).toBeVisible();
@@ -118,21 +134,31 @@ test.describe('planner on a phone', () => {
 
   test('every talent cell, tab, button and gear target clears 44px', async ({ page }) => {
     await page.goto('/planner');
-    // A gear slot and an item row are hit with a finger like everything else here, and the
-    // rows are the narrowest thing the planner asks anyone to tap, so the picker is opened
-    // for the measurement rather than left out of it.
-    await page.getByTestId('slot-head').click();
+    const clears44 = async (locator: Locator): Promise<void> => {
+      const box = await locator.boundingBox();
+      expect(box?.height ?? 0).toBeGreaterThanOrEqual(44);
+    };
+
+    // Every tab rather than the first: the gear tab is built from the same recipe as the
+    // tree tabs but not from the same loop, so it is free to drift on its own.
+    for (const tab of await page.getByRole('tab').all()) await clears44(tab);
+
     for (const locator of [
       page.getByTestId('talent-1001'),
-      page.getByRole('tab').first(),
       page.getByRole('button', { name: 'Reset' }),
       page.getByRole('button', { name: 'Hide point order' }),
       page.getByLabel('Class'),
-      page.getByTestId('slot-head'),
-      page.getByTestId('item-16963'),
     ]) {
-      const box = await locator.boundingBox();
-      expect(box?.height ?? 0).toBeGreaterThanOrEqual(44);
+      await clears44(locator);
     }
+
+    // A gear slot and an item row are hit with a finger like everything else here, and the
+    // rows are the narrowest thing the planner asks anyone to tap, so the picker is opened
+    // for the measurement rather than left out of it. It comes after the talent cell because
+    // the gear tab hides the tree: a locator measured from the wrong tab has no box at all.
+    await openGear(page);
+    await page.getByTestId('slot-head').click();
+    await clears44(page.getByTestId('slot-head'));
+    await clears44(page.getByTestId('item-16963'));
   });
 });

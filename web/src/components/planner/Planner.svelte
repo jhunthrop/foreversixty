@@ -1,8 +1,8 @@
 <!-- web/src/components/planner/Planner.svelte -->
 <!-- The planner island. Mounted two ways: by src/pages/planner.astro with client:load, and
      by src/planner-island.ts on the API-rendered /b/:id page, where `record` is supplied and
-     the build starts read-only. Desktop lays the trees out side by side; phone shows one
-     tree at a time behind a tab switcher (Task 9). -->
+     the build starts read-only. Desktop lays the trees out side by side with the gear panel
+     under them; phone shows one panel at a time behind a tab switcher (Tasks 9 and 17). -->
 <script lang="ts">
   import { untrack } from 'svelte';
   import { DEFAULT_CLASS_SLUG, ERA_DATA_NOTICE } from '../../lib/planner/config';
@@ -63,15 +63,23 @@
   // Reset asks in the toolbar rather than through window.confirm: a browser dialog cannot be
   // styled, cannot say what it is about to clear, and reads badly on phone.
   let confirmingReset = $state(false);
-  // Which tree the phone shows. Desktop ignores it and lays every tree out side by side.
+  // Which panel the phone shows: a tree by index, or the gear panel last. Desktop ignores it
+  // and lays every tree out side by side with the gear panel under them.
   let activeTree = $state(0);
 
+  // Gear is the optional half of a build: a class the build ships no item file for has an
+  // empty index, so it gets no panel and no tab. The tab sits after the trees, which is both
+  // where it belongs in the strip and why its index can never collide with a tree's.
+  const hasGear = $derived(store.itemIndex.size > 0);
+  const gearTabIndex = $derived(store.talentIndex ? store.talentIndex.trees.length : 0);
+
   // The roving tabindex keeps the unselected tabs out of the tab order, so arrow keys are the
-  // only way to reach them: without this a keyboard could never open the second tree. Moving
-  // selects, which is the automatic-activation half of the ARIA tabs pattern -- switching tree
-  // costs nothing, so there is no reason to make it a second keypress. The tabs come off the
-  // event rather than a `bind:this`: the listener is on the tablist itself, so currentTarget
-  // is already the element, and there is no reference to go stale when the branch unmounts.
+  // only way to reach them: without this a keyboard could never open the second tree, or the
+  // gear panel behind the last tab. Moving selects, which is the automatic-activation half of
+  // the ARIA tabs pattern -- switching panel costs nothing, so there is no reason to make it
+  // a second keypress. The tabs come off the event rather than a `bind:this`: the listener is
+  // on the tablist itself, so currentTarget is already the element, and there is no reference
+  // to go stale when the branch unmounts.
   function onTabKeys(event: KeyboardEvent & { currentTarget: HTMLDivElement }): void {
     const step = event.key === 'ArrowRight' ? 1 : event.key === 'ArrowLeft' ? -1 : 0;
     if (step === 0) return;
@@ -134,37 +142,43 @@
   <p class="text-muted px-[18px] text-[13px] md:px-0">{ERA_DATA_NOTICE}</p>
 
   <!-- The three states below swap in place once the talent data arrives over the network, and
-       they are wildly different heights: one line of status text against a planner fourteen
-       hundred pixels tall on a phone. Whatever is under the planner -- the footer, mainly --
-       moves by that difference, which Lighthouse measured as 0.185 of /planner.html's 0.186
-       CLS against the 0.05 lighthouserc.json budget. This min-height reserves the room up
-       front so the swap moves nothing below it.
+       they are wildly different heights: one line of status text against a planner several
+       hundred pixels tall. Whatever is under the planner -- the footer, mainly -- moves by
+       that difference, which Lighthouse measured as 0.185 of /planner.html's 0.186 CLS
+       against the 0.05 lighthouserc.json budget. This min-height reserves the room up front
+       so the swap moves nothing below it.
 
        What it does not do is make the three states identical, and it does not abolish the
        swap. The reserve is one number; the ready height is not. These two come from the
        loaded layout of the default class, so a class whose trees run to more tiers grows past
        them and still moves the footer -- by the difference rather than by the whole planner.
-       A class the build ships no items for is the same story in the other direction: no gear
-       panel, so its ready state comes in some 680px under this and leaves that much dead
-       space. Both are bounded by the reserve; neither is the whole-planner jump it replaces.
        Re-derive them by loading /planner, setting this element's min-height to 0, and reading
        its `getBoundingClientRect().height` below and above the md breakpoint. They measure
-       1412.5 at 360px and 1038.5 from md up, now that Task 16's gear panel -- seventeen slot
-       buttons two to a row, plus the totals and sets columns -- has joined the column. Each
-       value here is set a hair under what was measured, because under costs a pixel of
-       movement and over leaves dead space below the ready planner for good.
+       728 at 360px and 1038.5 from md up. Each value here is set a hair under what was
+       measured, because under costs a pixel of movement and over leaves dead space below the
+       ready planner for good.
 
-       Task 16 asked whether this still earns its keep, now that the ready planner is tall
-       enough that the footer is below the fold in both states. It does, and the numbers are
-       here so the question does not have to be re-opened blind: removing it entirely takes
-       /planner.html's CLS from 0.002 to a median 0.176 and its performance score from 0.98 to
-       0.91, because without it the *loading* state is short enough to leave the footer on
-       screen, and the swap then hauls it 1400px down from inside the viewport. Nor is the
-       answer a smaller number tuned to the audit: a 700px reserve scores an identical 0.0009
-       CLS purely because it clears Lighthouse's emulated 640px fold, while still moving the
-       footer 712px on the 800px-tall phone tests/e2e/planner-phone.spec.ts drives -- which is
-       what those two footer assertions are for, and they fail it. The reserve has to cover the
-       ready height, not the audit's viewport.
+       The phone figure fell from 1412.5 to 728 when gear became the third tab: the gear panel
+       used to stack under the trees there and now takes its turn in the same column. What is
+       reserved for is the tab the planner lands on, which is the first tree. Opening Gear
+       grows the region to 1143 and pushes the footer down by the difference, and that is
+       deliberate -- it is a tap rather than an unprompted shift, the same kind of movement
+       showing the order strip or opening an item picker already makes, and none of it is
+       what CLS measures. Reserving the gear height instead would buy that back at the price
+       of 415px of dead space under every build that never opens the tab. Desktop is untouched
+       by the tab strip (it is md:hidden, and the gear panel still sits under the order strip
+       there), so the md figure is unchanged.
+
+       This still earns its keep even though the ready planner is now tall enough that the
+       footer is below the fold in both states, and the numbers are here so the question does
+       not have to be re-opened blind: removing it entirely takes /planner.html's median CLS
+       from 0.0009 to 0.1324 and its performance score from 0.98 to 0.94, because without
+       it the *loading* state is short enough to leave the footer on screen and the swap then
+       hauls it down from inside the viewport. Nor is the answer a number tuned to the audit:
+       Lighthouse emulates a 640px-tall fold, so anything over that scores well while still
+       moving the footer on the 800px-tall phone tests/e2e/planner-phone.spec.ts drives --
+       which is what those two footer assertions are for. The reserve has to cover the ready
+       height, not the audit's viewport.
 
        The phone figure is deliberately the one measured at 360px, the narrowest width the
        site designs for and the width Lighthouse emulates (lighthouserc.json). It is the
@@ -178,21 +192,26 @@
        reflow with the viewport width, so keeping them outside the reserve takes their
        wrapping out of the figure. Inside it every part is a fixed height -- the tab strip,
        the toolbar (including the always-visible title field and Share button), the order
-       strip's reserved row, a tree grid sized by tier count rather than by width, and a gear
-       panel whose slot grid is a fixed count of fixed-height rows and whose totals and sets
-       columns start on their one-line empty state. The md value is the smaller one because
-       desktop drops the tab strip, lays the trees out side by side and puts the slots four to
-       a row, so the tallest tree sets the height, not their sum.
+       strip's reserved row, a tree grid sized by tier count rather than by width, and --
+       from md up, where gear is part of the column rather than a tab -- a gear panel whose
+       slot grid is a fixed count of fixed-height rows and whose totals and sets columns
+       start on their one-line empty state.
+
+       A class the build ships no item file for loses the gear panel, and with it the Gear
+       tab. On a phone that changes nothing: the tree tab is what is reserved for, and it
+       measures the same 728. On desktop the panel leaves the column and the ready planner
+       comes in at 616, some 421px under the md reserve, which is dead space rather than
+       movement and stays the safe direction to err.
 
        Fork replaces Reset and drops the SharePanel section, but only on the read-only mount --
        the editable toolbar this measures is untouched. The read-only mount is the shorter one,
-       1331 and 962, so it sits about 80px under the reserve and leaves that much space above
+       646.5 and 962, so it sits about 80px under the reserve and leaves that much space above
        the footer on the API's /b/:id. Reserving the taller figure in both is deliberate:
        Fork grows the toolbar back to the editable height, and a reserve that
        tracked `readOnly` would spend that growth shoving the footer down the moment it is
        pressed. /b/:id carries no CLS budget of its own -- it is server-rendered, so the
        island's whole planner arrives after first paint regardless of what this reserves. -->
-  <div class="flex min-h-[1411px] flex-col gap-[22px] md:min-h-[1037px] md:gap-8">
+  <div class="flex min-h-[727px] flex-col gap-[22px] md:min-h-[1037px] md:gap-8">
     {#if status === 'loading'}
       <!-- The planner's own panel chrome rather than a bare line on a blank reserve: a
            viewport of empty space reads as a broken page, and the frame reads as the planner
@@ -218,9 +237,10 @@
         </button>
       </div>
     {:else if store.talentIndex}
-      <!-- One tree at a time on a phone: three trees side by side do not fit 360px, and
-           stacking them puts the third one two screens down. Desktop keeps the columns and
-           hides this. The roving tabindex lives on the tabs, as it does on TreeGrid's cells.
+      <!-- One panel at a time on a phone: three trees side by side do not fit 360px, and
+           stacking them -- with the gear panel's seventeen slots under them -- puts the last
+           one several screens down. Desktop keeps the columns and hides this. The roving
+           tabindex lives on the tabs, as it does on TreeGrid's cells.
            The -1 on the container changes nothing about the keyboard order -- a bare div was
            never a tab stop -- and is there to satisfy the compiler's a11y rule that an element
            carrying an interactive role and a key handler declare a tabindex; -1 declares one
@@ -228,7 +248,7 @@
       <div
         role="tablist"
         tabindex={-1}
-        aria-label="Talent trees"
+        aria-label="Planner sections"
         class="border-line-soft mx-[18px] flex gap-2 border-b pb-2 md:hidden"
         onkeydown={onTabKeys}
       >
@@ -249,6 +269,26 @@
             <span class="tabular text-muted ml-2 font-mono">{store.split[i] ?? 0}</span>
           </button>
         {/each}
+        <!-- Last, so `gearTabIndex` is the tree count and onTabKeys picks it up from the
+             tablist's own DOM order without knowing gear exists. No count beside the name:
+             the trees show the points spent in them because that number is otherwise only on
+             the panel behind the tab, and the gear panel's own totals are not one number. -->
+        {#if hasGear}
+          <button
+            type="button"
+            role="tab"
+            id="gear-tab"
+            aria-selected={activeTree === gearTabIndex}
+            aria-controls="gear-tabpanel"
+            tabindex={activeTree === gearTabIndex ? 0 : -1}
+            class="{SECONDARY_BUTTON} flex-1 justify-center {activeTree === gearTabIndex
+              ? 'border-gold text-gold'
+              : 'border-line text-nav'}"
+            onclick={() => (activeTree = gearTabIndex)}
+          >
+            Gear
+          </button>
+        {/if}
       </div>
 
       <div class="grid grid-cols-1 gap-4 px-[18px] md:grid-cols-3 md:px-0" data-testid="tree-columns">
@@ -335,10 +375,18 @@
 
       <OrderStrip {store} />
 
-      <!-- Gear is the optional half of a build. A build with no item file has an empty index
-           and no panel at all, rather than seventeen slots nothing can ever fill. -->
-      {#if store.itemIndex.size > 0}
-        <GearPanel {store} />
+      <!-- The gear tab's panel. Hidden by a class rather than the `hidden` attribute for the
+           same reason the tree panels are: the attribute would hide it on desktop too, where
+           it belongs under the order strip and `md:flex` could not override it. -->
+      {#if hasGear}
+        <div
+          id="gear-tabpanel"
+          role="tabpanel"
+          aria-labelledby="gear-tab"
+          class="flex-col md:flex {activeTree === gearTabIndex ? 'flex' : 'hidden'}"
+        >
+          <GearPanel {store} />
+        </div>
       {/if}
     {/if}
   </div>
