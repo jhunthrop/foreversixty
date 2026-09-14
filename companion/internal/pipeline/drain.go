@@ -117,12 +117,15 @@ func (p *Pipeline) send(ctx context.Context, l *queue.Lease) error {
 		}
 	}
 
+	// stored stays Created for anything the API does not answer
+	// idempotently, which is everything but the two writes below.
+	var stored client.Stored
 	switch l.Item.Kind {
 	case queue.Fight:
-		_, err = p.o.Client.PutFight(ctx, rep.ReportID, l.Item.FightIndex,
+		stored, err = p.o.Client.PutFight(ctx, rep.ReportID, l.Item.FightIndex,
 			l.Item.ContentType, l.Body)
 	case queue.Raw:
-		_, err = p.o.Client.PutRaw(ctx, rep.ReportID, l.Item.Offset, l.Item.SHA256, l.Body)
+		stored, err = p.o.Client.PutRaw(ctx, rep.ReportID, l.Item.Offset, l.Item.SHA256, l.Body)
 	case queue.Complete:
 		var in client.Complete
 		if jerr := json.Unmarshal(l.Body, &in); jerr != nil {
@@ -138,6 +141,14 @@ func (p *Pipeline) send(ctx context.Context, l *queue.Lease) error {
 	}
 	if err != nil {
 		return p.failed(l, err)
+	}
+	if stored == client.Duplicate {
+		// At-least-once delivery is safe by contract, so this is not
+		// a problem — but on a resume it is the line that says how
+		// much of the night the server already had.
+		p.o.Log.Debug("the server already held this item", "component", "uploader",
+			"report", rep.Key, "report_id", rep.ReportID, "kind", string(l.Item.Kind),
+			"fight", l.Item.FightIndex, "offset", l.Item.Offset)
 	}
 	if l.Item.Kind == queue.Complete {
 		rep.Done = true

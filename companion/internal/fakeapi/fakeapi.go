@@ -399,7 +399,6 @@ func (s *Server) putRaw(w http.ResponseWriter, r *http.Request) {
 		fail(w, http.StatusBadRequest, "X-Raw-SHA256 does not match the decoded chunk")
 		return
 	}
-	_ = offset + int64(len(decoded)) // the end offset the real API records
 	s.mu.Lock()
 	if prior, already := rep.Raw[offset]; already {
 		same := string(prior) == string(body)

@@ -65,8 +65,3 @@ func Resolve() (Dirs, error) {
 
 // ConfigFile is the path of config.json.
 func (d Dirs) ConfigFile() string { return filepath.Join(d.Home, "config.json") }
-
-// StateFile is the path of one report's state file.
-func (d Dirs) StateFile(localID string) string {
-	return filepath.Join(d.State, localID+".json")
-}

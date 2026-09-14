@@ -103,22 +103,10 @@ func TestAdvancedLoggingIsReadFromConfigWTF(t *testing.T) {
 	}
 }
 
-func TestCombatLogsAndSavedVariablesArePerInstall(t *testing.T) {
+func TestSavedVariablesAreOnePerAccount(t *testing.T) {
 	root := t.TempDir()
 	in := fakeInstall(t, root, "_classic_era_", "ACCOUNT#1")
 	fakeInstall(t, root, "_classic_era_", "ACCOUNT#2") // second account, same install
-	for _, n := range []string{"WoWCombatLog.txt", "WoWCombatLog-120926_200000.txt", "notes.md"} {
-		if err := os.WriteFile(filepath.Join(in.Logs, n), nil, 0o600); err != nil {
-			t.Fatal(err)
-		}
-	}
-	logs, err := in.CombatLogs()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if len(logs) != 2 {
-		t.Fatalf("CombatLogs = %v", logs)
-	}
 	sv, err := in.SavedVariables("ForeverSixty")
 	if err != nil {
 		t.Fatal(err)
@@ -129,20 +117,6 @@ func TestCombatLogsAndSavedVariablesArePerInstall(t *testing.T) {
 	want := filepath.Join(in.WTF, "Account", "ACCOUNT#1", "SavedVariables", "ForeverSixty.lua")
 	if sv[0] != want {
 		t.Errorf("SavedVariables[0] = %q, want %q", sv[0], want)
-	}
-}
-
-func TestEnsureLogsCreatesTheDirectory(t *testing.T) {
-	dir := filepath.Join(t.TempDir(), "_classic_era_")
-	if err := os.MkdirAll(filepath.Join(dir, "WTF"), 0o755); err != nil {
-		t.Fatal(err)
-	}
-	in := installAt(dir)
-	if err := in.EnsureLogs(); err != nil {
-		t.Fatal(err)
-	}
-	if fi, err := os.Stat(in.Logs); err != nil || !fi.IsDir() {
-		t.Fatalf("Logs = %v, %v", fi, err)
 	}
 }
 

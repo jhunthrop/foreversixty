@@ -23,6 +23,11 @@ import (
 	"time"
 )
 
+// MaxResponseBody bounds what one response may cost in memory. The
+// API answers every route with a small JSON envelope; anything near
+// this is a proxy's error page or a server that has lost its mind.
+const MaxResponseBody = 8 << 20
+
 // MaxErrorBody is how much of an unparseable error response is kept for
 // the message. A server that answers HTML must not fill the log file.
 const MaxErrorBody = 2048
@@ -278,10 +283,14 @@ func (c *Client) attempt(ctx context.Context, r request) (int, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode == http.StatusNoContent {
-		io.Copy(io.Discard, resp.Body)
+		// A 204 has no body to read; draining it is only so the
+		// connection can go back in the pool, and a failure there
+		// costs one pooled connection and nothing the caller can act
+		// on — the request itself already succeeded.
+		_, _ = io.Copy(io.Discard, resp.Body)
 		return resp.StatusCode, nil
 	}
-	raw, err := io.ReadAll(io.LimitReader(resp.Body, 8<<20))
+	raw, err := io.ReadAll(io.LimitReader(resp.Body, MaxResponseBody))
 	if err != nil {
 		return resp.StatusCode, fmt.Errorf("%s %s: read body: %w", r.Method, r.Path, err)
 	}

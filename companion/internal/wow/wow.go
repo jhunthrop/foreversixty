@@ -137,22 +137,6 @@ func Pick(path string) ([]Install, error) {
 	return found, nil
 }
 
-// EnsureLogs creates the Logs directory if the player has never
-// logged, so the watcher has something to watch from the first run.
-func (i Install) EnsureLogs() error {
-	return os.MkdirAll(i.Logs, 0o755)
-}
-
-// CombatLogs lists the combat logs in the install, newest last.
-func (i Install) CombatLogs() ([]string, error) {
-	matches, err := filepath.Glob(filepath.Join(i.Logs, LogGlob))
-	if err != nil {
-		return nil, err
-	}
-	sort.Strings(matches)
-	return matches, nil
-}
-
 // AdvancedLoggingPath is the settings file the checkbox writes to.
 func (i Install) AdvancedLoggingPath() string { return filepath.Join(i.WTF, "Config.wtf") }
 

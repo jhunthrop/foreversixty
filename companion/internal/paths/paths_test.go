@@ -55,7 +55,4 @@ func TestResolveCreatesEveryDirectory(t *testing.T) {
 	if want := filepath.Join(d.Home, "config.json"); d.ConfigFile() != want {
 		t.Errorf("ConfigFile() = %q, want %q", d.ConfigFile(), want)
 	}
-	if want := filepath.Join(d.State, "abc.json"); d.StateFile("abc") != want {
-		t.Errorf("StateFile() = %q, want %q", d.StateFile("abc"), want)
-	}
 }
