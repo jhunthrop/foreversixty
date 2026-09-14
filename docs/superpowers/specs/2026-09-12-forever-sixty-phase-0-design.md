@@ -19,10 +19,12 @@ Phase 0 is small on purpose. It exists so that Phase 1 (build planner, from Sept
 | Phase | Window | Ships |
 |---|---|---|
 | 0 Foundation | now to Sept 17 | this document |
-| 1 Build planner | Sept 17 to ~Oct 10 | talents, race/class combos, shareable builds; datamined content pages |
-| 2 Launch tools | Oct 10 to Nov 4 | realm picker, queue tracker, new-zone routes, addon v1 + uploader |
-| 3 Community and raids | Nov 4 to Dec 9 | Legacy/character tracker, guild board, raid guides |
-| 4 Hardcore | winter | deathlog, deathmap |
+| 1 Build planner | Sept 17 to ~Oct 10 | talents, race/class combos, shareable builds; gear picker |
+| 2 Addon and launch tools | Oct 10 to Nov 4 | addon v1 (import, follow, gear upgrades), stat weights, realm picker, gear-release tail |
+| 3 Accounts, companion, logs MVP | Nov 4 to Dec 9 | accounts and character tracker; desktop companion; combat-log upload, parse, per-fight tables, share links |
+| 4 Logs at scale and Hardcore | Dec 9 onward | rankings, guild pages; Hardcore deathlog and deathmap; simulator start |
+
+Scope note (2026-09-13): the site's goal is now the one stop for World of Warcraft: Forever, including a replacement for Warcraft Logs. Logs are the first feature with a real per-gigabyte cost and require accounts and a desktop uploader, so they follow accounts in Phase 3 and target the first raids on Dec 9.
 
 ## Scope of Phase 0
 

@@ -1,0 +1,4 @@
+# Served by Cloudflare Workers static assets. Build output under /_astro/ is content-hashed,
+# so it can be cached for a year; everything else keeps the default revalidation.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable

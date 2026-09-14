@@ -13,9 +13,10 @@ shapes the plans share so they can be executed in parallel worktrees. Values her
 - Node 22.12.0 at `/Users/jh/.nvm/versions/node/v22.12.0/bin`; npm from `web/`. Go from
   `/usr/local/go/bin`. Local test Postgres: `postgres://forever:forever@localhost:5434/forever_test?sslmode=disable`
   (docker compose in `api/docker-compose.test.yml`). Playwright needs `ASTRO_PREVIEW_BACKGROUND=1`.
-- Commits: conventional subject, body, and these trailers as separate `-m` flags:
+- Commits: conventional subject, body, and these two trailer lines together in ONE final `-m`
+  argument (git parses trailers only from the last paragraph, so separate `-m` flags lose the first):
   `Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>` and
-  `Claude-Session: https://claude.ai/code/session_01EkkERdonhxS2PMgXD7qZ6k`. Never `--no-verify`.
+  `Claude-Session: https://claude.ai/code/session_01EkkERdonhxS2PMgXD7qZ6k`. Never bypass git hooks.
 - Hosting: site on Cloudflare Workers static assets via `web/wrangler.jsonc` and `wrangler deploy`
   from `.github/workflows/web.yml`; API on Cloud Run `api` in us-east1 from
   `.github/workflows/api.yml` (Docker build, Workload Identity). API health is `GET /health`.
@@ -85,7 +86,7 @@ Directory `data/builds/<build>/` keeps the Phase 0 files and adds:
 ```
 - `slot` ∈ `head neck shoulder back chest wrist hands waist legs feet finger1 finger2 trinket1 trinket2 main_hand off_hand ranged`. Rings and trinkets are emitted with slot `finger` and `trinket`; the planner maps them to the two slots.
 - `stats` keys ∈ `strength agility stamina intellect spirit armor crit hit spell_power healing attack_power defense dodge parry block mp5 fire_res frost_res nature_res shadow_res arcane_res`.
-- `quality` is the client value (0 poor … 5 legendary). Items are filtered to `required_level` ≤ 60, class-equippable, and `inventory_type` in the slot map; the file is emitted only if the item table normalizes without error.
+- `quality` is the client value; only 2 (uncommon) through 5 (legendary) are emitted. Items are filtered to `required_level` ≤ 60, class-equippable (AllowableClass mask plus the Classic armor and weapon proficiency table), `inventory_type` in the slot map, not matching the GM/test/deprecated/monster name patterns, and, for non-weapons, having armor or at least one non-zero stat; the file is emitted only if the item table normalizes without error. Known gaps until the gear release: secondary stats that vanilla stores as equip effects (crit, hit, spell power, healing, defense, dodge, parry, block, mp5) are zero, weapon damage is not emitted, and two-handers are not distinguished from one-handers.
 - Item icons go to the same `icons/` directory.
 
 `sets.json`: `[ { "id": 209, "name": "Lawbringer Armor", "item_ids": [...], "bonuses": [ { "pieces": 2, "description": "..." } ] } ]`
