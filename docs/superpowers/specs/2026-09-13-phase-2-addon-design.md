@@ -102,6 +102,15 @@ grant spell damage. Weight keys therefore use the merged names (`hit`, `crit`, `
 `block`, `dodge`, `parry`). The gear panel's stat summary uses the same keys. Vanilla items with
 per-school hit or crit map onto the merged stat until the Sept 17 beta data replaces them.
 
+## Companion inbox (Phase 3 dependency)
+
+The Phase 3 companion writes `ForeverSixtyInbox.lua` beside `ForeverSixty.lua` in each account's
+`SavedVariables`, assigning a global the addon's TOC must declare as a saved variable
+(`## SavedVariables: ForeverSixtyDB, ForeverSixtyInbox`). The addon reads the inbox at login for
+gear-upgrade data and never writes it. The companion also reads `ruleset` from the addon's export
+record when present and `realm` otherwise, so the addon writes `ruleset` from the game client once
+the beta shows which API exposes it.
+
 ## Gear tail (data, api, web)
 
 - `damage_min`, `damage_max`, `speed` on weapons; `dps` derived.
