@@ -21,7 +21,7 @@ carried in strings the player copies, because addons cannot use the network.
 | Desktop companion | Phase 3, together with combat-log upload. |
 | Also in Phase 2 | Curated stat weights per class and spec; the gear-release tail from Phase 1. |
 | Dropped | Realm picker and queue tracker (Forever has rulesets, not realms); new-zone leveling routes. |
-| Candidate | Legacy tree planner (account-wide Legacy Points: 65 at launch, 16 per character, trees Professions, Adventure, Resourcefulness). Same planner mechanics, share links, and addon codes; pending a decision. |
+| Deferred | Legacy tree planner (account-wide Legacy Points: 65 at launch, 16 per character, trees Professions, Adventure, Resourcefulness). Same planner mechanics, share links, and addon codes; decided Sept 14: not in Phase 2, revisit once the beta client shows whether the trees are in the tables. |
 
 ## Scope
 
