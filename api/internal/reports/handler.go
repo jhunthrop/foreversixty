@@ -48,6 +48,11 @@ type Service struct {
 	Store    *Store
 	Accounts Accounts
 	Signer   Signer
+	// Rank withdraws a report's ranking rows when a patch takes the
+	// report out of the visibilities that may rank. Nil leaves the
+	// rows in place, which is only ever right in a test that is not
+	// looking at rankings.
+	Rank Ranker
 	// PublicBaseURL is the site, which serves public report files from
 	// the bucket at /logs-data/.
 	PublicBaseURL string
@@ -328,6 +333,19 @@ func (s *Service) patch(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		s.fail(w, r, "patch", err, "could not change that report just now")
 		return
+	}
+	// A report that stops being rankable takes its ranking rows with
+	// it: the body 404s from here on, and leaving the rows would keep
+	// publishing the player keys, names, guild and numbers the owner
+	// just withdrew. Only the crossing is acted on, so patching a
+	// private report again is not a second withdrawal. The way back is
+	// deliberately one-way: re-ranking a report returned to public
+	// would have to re-derive every fight, and nothing asks for it.
+	if s.Rank != nil && Ranked(rep.Visibility) && !Ranked(updated.Visibility) {
+		if err := s.Rank.RemoveReport(r.Context(), updated.ID, ReasonNotRankable); err != nil {
+			s.fail(w, r, "patch", err, "could not change that report just now")
+			return
+		}
 	}
 	view, err := s.view(r.Context(), updated)
 	if err != nil {

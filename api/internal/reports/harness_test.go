@@ -93,7 +93,7 @@ func newHarness(t *testing.T) *harness {
 	h.actor = auth.Actor{UserID: owner.ID, Role: "user", Method: "device", DeviceID: "device-1"}
 
 	h.service = &Service{
-		Store: h.store, Accounts: accounts, Signer: fakeSigner{},
+		Store: h.store, Accounts: accounts, Signer: fakeSigner{}, Rank: h.ranker,
 		PublicBaseURL: "https://foreversixty.gg", APIBaseURL: "https://api.foreversixty.gg", Log: quiet,
 	}
 	h.ingest = &Ingest{Store: h.store, Put: h.files, Rank: h.ranker, Samp: h.sampler, Log: quiet}

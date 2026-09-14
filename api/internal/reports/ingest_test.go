@@ -25,6 +25,7 @@ type fakeRanker struct {
 	mu      sync.Mutex
 	written []RankedFight
 	removed []string
+	reasons []string
 }
 
 func (f *fakeRanker) WriteFight(_ context.Context, rf RankedFight) error {
@@ -34,11 +35,20 @@ func (f *fakeRanker) WriteFight(_ context.Context, rf RankedFight) error {
 	return nil
 }
 
-func (f *fakeRanker) RemoveReport(_ context.Context, id string) error {
+func (f *fakeRanker) RemoveReport(_ context.Context, id, reason string) error {
 	f.mu.Lock()
 	defer f.mu.Unlock()
 	f.removed = append(f.removed, id)
+	f.reasons = append(f.reasons, reason)
 	return nil
+}
+
+// withdrawals is every report the ingest or the handlers withdrew, with
+// the reason each was withdrawn for.
+func (f *fakeRanker) withdrawals() ([]string, []string) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	return append([]string{}, f.removed...), append([]string{}, f.reasons...)
 }
 
 func (f *fakeRanker) fights() []RankedFight {
@@ -780,4 +790,71 @@ func TestARawChunkWhoseObjectFailedIsRetriedRatherThanSkipped(t *testing.T) {
 	if chunks, err = h.store.RawChunks(t.Context(), id); err != nil || len(chunks) != 1 {
 		t.Fatalf("chunks = %+v, %v, want the chunk recorded once", chunks, err)
 	}
+}
+
+// A fight can verify on one send and fail on the next, when the second
+// bundle covers a different raw range: the fight's verified flag goes
+// true -> false. Storing that demotion without withdrawing the rows the
+// fight already ranked would leave the numbers on the leaderboards with
+// nothing behind them.
+func TestADemotedFightWithdrawsTheReportsRankingRows(t *testing.T) {
+	h := newHarness(t)
+	id := h.createReport(Public)
+
+	good := makeBundle(t, 1, nil)
+	res := h.do(http.MethodPut, "/v1/reports/"+id+"/fights/1", good.contentType, good.body)
+	res.Body.Close()
+	if res.StatusCode != http.StatusCreated {
+		t.Fatalf("first = %d, want 201", res.StatusCode)
+	}
+	if got := len(h.ranker.fights()); got != 1 {
+		t.Fatalf("the verified fight ranked %d times, want once", got)
+	}
+	if removed, _ := h.ranker.withdrawals(); len(removed) != 0 {
+		t.Fatalf("nothing should be withdrawn yet: %v", removed)
+	}
+
+	// A second bundle over different raw bytes, so the stored hash does
+	// not match and the fight is verified again - this time failing.
+	bad := makeBundleWith(t, func(parts map[string][]byte) {
+		parts["raw_range"] = mustJSON(t, RawRange{
+			StartOffset: 0, EndOffset: 4096,
+			SHA256: strings.Repeat("ab", sha256.Size),
+		})
+		fx := mustFixture(t)
+		rows := metrics.Derive(fx.Fight, fx.Summary)
+		inflateDPS(rows)
+		parts["metrics"] = mustJSON(t, rows)
+	})
+	res = h.do(http.MethodPut, "/v1/reports/"+id+"/fights/1", bad.contentType, bad.body)
+	res.Body.Close()
+	if res.StatusCode != http.StatusConflict {
+		t.Fatalf("the demoting bundle = %d, want 409", res.StatusCode)
+	}
+
+	fights, err := h.store.Fights(t.Context(), id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(fights) != 1 || fights[0].Verified {
+		t.Fatalf("fights = %+v, want the fight demoted to unverified", fights)
+	}
+	removed, reasons := h.ranker.withdrawals()
+	if len(removed) != 1 || removed[0] != id {
+		t.Fatalf("withdrawn = %v, want the demoted report once", removed)
+	}
+	if reasons[0] != ReasonUnverified {
+		t.Fatalf("reason = %q, want %q", reasons[0], ReasonUnverified)
+	}
+}
+
+// mustFixture is the engine fixture, for a test that needs its rows
+// twice.
+func mustFixture(t *testing.T) engine.Fixture {
+	t.Helper()
+	fx, err := engine.NewFixture("fixture")
+	if err != nil {
+		t.Fatal(err)
+	}
+	return fx
 }

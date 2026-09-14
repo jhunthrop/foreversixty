@@ -549,3 +549,39 @@ func TestAnAnonymizedOwnerReadsAsThePseudonym(t *testing.T) {
 		t.Fatalf("owner = %+v, want the pseudonym %q", view.Owner, want)
 	}
 }
+
+// Making a report private takes the report body away but used to leave
+// every fight_metrics row in place, so /v1/rankings kept publishing the
+// player keys, names, guild and numbers of a report that now 404s.
+func TestPatchingAReportOutOfTheRankingsWithdrawsItsRows(t *testing.T) {
+	h := newHarness(t)
+	h.actor = auth.Actor{UserID: h.owner, Role: "user", Method: "session"}
+	id := h.createReport(Public)
+
+	// Unlisted still ranks, so nothing is withdrawn on the way there.
+	res := h.json(http.MethodPatch, "/v1/reports/"+id, `{"visibility":"unlisted"}`)
+	h.data(res, nil)
+	if removed, _ := h.ranker.withdrawals(); len(removed) != 0 {
+		t.Fatalf("withdrawn = %v, want nothing: unlisted still ranks", removed)
+	}
+
+	res = h.json(http.MethodPatch, "/v1/reports/"+id, `{"visibility":"private"}`)
+	h.data(res, nil)
+	removed, reasons := h.ranker.withdrawals()
+	if len(removed) != 1 || removed[0] != id {
+		t.Fatalf("withdrawn = %v, want the report once", removed)
+	}
+	if reasons[0] != ReasonNotRankable {
+		t.Fatalf("reason = %q, want %q", reasons[0], ReasonNotRankable)
+	}
+
+	// Only the crossing withdraws: patching a report that is already
+	// private must not write a second withdrawal.
+	res = h.json(http.MethodPatch, "/v1/reports/"+id, `{"title":"Wednesday"}`)
+	h.data(res, nil)
+	res = h.json(http.MethodPatch, "/v1/reports/"+id, `{"visibility":"private"}`)
+	h.data(res, nil)
+	if removed, _ := h.ranker.withdrawals(); len(removed) != 1 {
+		t.Fatalf("withdrawn = %v, want exactly one withdrawal", removed)
+	}
+}

@@ -262,11 +262,17 @@ func updateDigest(ctx context.Context, tx pgx.Tx, encounterID, difficulty int64,
 // still recorded, because moderation is an append-only log of what was
 // decided about a report.
 //
+// reason is the caller's own words for the withdrawal, because the
+// three callers withdraw for three different reasons: a tampered
+// report, a re-sent bundle that stopped verifying, and an owner making
+// their report private. The log would be a lie if it named only the
+// first.
+//
 // The digests are left as they are: a t-digest cannot have a value
 // taken back out, and the alternative - rebuilding every affected
 // digest from the rows - would cost far more than one tampered report
 // distorts.
-func (s *Store) RemoveReport(ctx context.Context, reportID string) error {
+func (s *Store) RemoveReport(ctx context.Context, reportID, reason string) error {
 	tx, err := s.Pool.Begin(ctx)
 	if err != nil {
 		return fmt.Errorf("rankings: begin: %w", err)
@@ -274,8 +280,7 @@ func (s *Store) RemoveReport(ctx context.Context, reportID string) error {
 	defer func() { _ = tx.Rollback(ctx) }()
 	if _, err := tx.Exec(ctx,
 		`insert into moderation (target_kind, target_id, state, reason)
-		 values ('report', $1, 'removed', 'the stored events do not match the raw log')`,
-		reportID); err != nil {
+		 values ('report', $1, 'removed', $2)`, reportID, reason); err != nil {
 		return fmt.Errorf("rankings: record moderation: %w", err)
 	}
 	if _, err := tx.Exec(ctx, `delete from fight_metrics where report_id = $1`, reportID); err != nil {

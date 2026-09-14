@@ -200,8 +200,8 @@ func serve(log *slog.Logger) error {
 		Subscribe: subscribeSvc, Builds: buildsSvc, Site: siteDeps,
 		Auth: authenticator, Accounts: accounts,
 		Reports: &reports.Service{
-			Store: reportStore, Accounts: authStore, PublicBaseURL: cfg.PublicBaseURL,
-			APIBaseURL: cfg.APIBaseURL, Log: log,
+			Store: reportStore, Accounts: authStore, Rank: rankStore,
+			PublicBaseURL: cfg.PublicBaseURL, APIBaseURL: cfg.APIBaseURL, Log: log,
 		},
 		Rankings: &rankings.Service{Store: rankStore, Log: log},
 		Addon: &addon.Service{

@@ -64,12 +64,23 @@ type RankedFight struct {
 }
 
 // Ranker writes and withdraws ranking rows. The rankings store
-// satisfies it; the ingest holds it as an interface so a test can watch
-// what the ingest sends without a rankings store behind it.
+// satisfies it; the ingest and the report handlers hold it as an
+// interface so a test can watch what they send without a rankings
+// store behind it.
 type Ranker interface {
 	WriteFight(ctx context.Context, f RankedFight) error
-	RemoveReport(ctx context.Context, reportID string) error
+	RemoveReport(ctx context.Context, reportID, reason string) error
 }
+
+// The reasons this package withdraws a report's ranking rows.
+const (
+	// ReasonUnverified is a fight that had ranked being demoted by a
+	// re-sent bundle whose metrics no longer match its events.
+	ReasonUnverified = "a re-sent bundle's metrics do not match its events"
+	// ReasonNotRankable is an owner moving a report out of the
+	// visibilities that may rank.
+	ReasonNotRankable = "the report is no longer visible to the rankings"
+)
 
 // Sampler schedules the after-the-fact raw-sample verification of a
 // report. The job runs out of band, so the companion's complete call
@@ -251,6 +262,16 @@ func (i *Ingest) putFight(w http.ResponseWriter, r *http.Request) {
 		if err := i.Store.Flag(r.Context(), rep.ID, "metrics_mismatch"); err != nil {
 			i.fail(w, r, "fight", err, "could not store that fight just now")
 			return
+		}
+		// The fight may have verified on an earlier send and ranked
+		// then; this send demoted it. Storing the demotion without
+		// withdrawing the rows would leave the report's numbers on the
+		// leaderboards with nothing behind them.
+		if i.Rank != nil {
+			if err := i.Rank.RemoveReport(r.Context(), rep.ID, ReasonUnverified); err != nil {
+				i.fail(w, r, "fight", err, "could not store that fight just now")
+				return
+			}
 		}
 		i.logger().Warn("ingest", "id", httpx.RequestIDFrom(r.Context()), "op", "verify",
 			"report", rep.ID, "fight", n, "mismatch", mismatch.Error())

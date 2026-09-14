@@ -241,7 +241,7 @@ func (d Deps) tampered(ctx context.Context, rep reports.Report, index int, why s
 		return err
 	}
 	if d.Rank != nil {
-		return d.Rank.RemoveReport(ctx, rep.ID)
+		return d.Rank.RemoveReport(ctx, rep.ID, "the stored events do not match the raw log")
 	}
 	return nil
 }

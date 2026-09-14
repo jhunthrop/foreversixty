@@ -75,7 +75,7 @@ func (f *fakeRanker) WriteFight(_ context.Context, rf reports.RankedFight) error
 	return nil
 }
 
-func (f *fakeRanker) RemoveReport(_ context.Context, id string) error {
+func (f *fakeRanker) RemoveReport(_ context.Context, id, _ string) error {
 	f.mu.Lock()
 	defer f.mu.Unlock()
 	f.removed = append(f.removed, id)
@@ -269,7 +269,7 @@ func (failingRanker) WriteFight(context.Context, reports.RankedFight) error {
 	return errors.New("rankings are down")
 }
 
-func (failingRanker) RemoveReport(context.Context, string) error {
+func (failingRanker) RemoveReport(context.Context, string, string) error {
 	return errors.New("rankings are down")
 }
 
