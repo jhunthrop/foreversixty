@@ -8,8 +8,11 @@
 <script lang="ts">
   import { untrack } from 'svelte';
   import {
+    POLL_INTERVAL_MS,
     REPORT_LOAD_FAILED,
+    createPoller,
     fetchAccessUrl,
+    fetchLive,
     fetchReportFile,
     fetchReportMeta,
     fetchSummary,
@@ -38,6 +41,7 @@
   import AuraTable from './AuraTable.svelte';
   import CastTable from './CastTable.svelte';
   import DeathsTab from './DeathsTab.svelte';
+  import EventsView from './EventsView.svelte';
   import ExchangeTable from './ExchangeTable.svelte';
   import FightSelector from './FightSelector.svelte';
   import FilterBar from './FilterBar.svelte';
@@ -46,6 +50,7 @@
   import SummaryTab from './SummaryTab.svelte';
   import ThreatTable from './ThreatTable.svelte';
   import TimeChart from './TimeChart.svelte';
+  import TimelinesView from './TimelinesView.svelte';
   import {
     DEFAULT_FILTERS, applyActorFilters, bossGuids, playerGuids, type ReportFilters,
   } from '../../lib/report/filters';
@@ -88,6 +93,18 @@
   const presets = $derived(summary === null ? [] : windowPresets(summary));
   const chartSeries = $derived(combinedSeries(summary?.damage_done ?? []));
   const windowIsWhole = $derived(summary !== null && isFullWindow(timeWindow, summary.duration_ms));
+
+  /**
+   * True while the report is still being written -- the report's own status says so, or a
+   * fight report.json already knows about is still open -- which is what the poll below
+   * exists for. Not the same question as "is the fight on screen still open": that is
+   * `fightIsLive`, just below, and it is what the header badge answers. A report can stay
+   * live (still gaining fights) after the fight the visitor is looking at has already
+   * closed, and the poll has to keep running for that reason even once the badge has gone.
+   */
+  const isLive = $derived(meta?.status === 'live' || fights.some((entry) => entry.in_progress));
+  /** Drives the "Live" badge: the fight actually on screen, not the report as a whole. */
+  const fightIsLive = $derived(fight?.in_progress === true);
 
   let filters = $state<ReportFilters>(DEFAULT_FILTERS);
 
@@ -351,6 +368,47 @@
       },
     );
   });
+
+  /**
+   * The live poll. Stops in three ways: this effect's own cleanup runs when the component
+   * unmounts (Svelte tears down every live effect on destroy, so the poller is stopped with
+   * it); `isLive` turning false (the fight on screen closed and report.json has nothing
+   * else open) reruns this effect, which runs the same cleanup and then returns before a
+   * new poller starts; and a failed report load (`status !== 'ready'`) or a report with no
+   * data base yet never starts one. A closed report never enters this effect at all, so it
+   * costs nothing.
+   */
+  $effect(() => {
+    if (!isLive || dataBase === '' || status !== 'ready') return;
+
+    const poller = createPoller(async () => {
+      // report.json first: it is what turns a live fight into a closed one and adds the
+      // next fight to the selector.
+      const next = await fetchReportFile(dataBase);
+      file = next;
+      if (meta !== null) meta = { ...meta, fights: next.fights };
+
+      const selected = next.fights.find((entry) => entry.index === state.fight);
+      if (selected === undefined) return;
+      if (selected.in_progress) {
+        // Captured before the await, re-checked after: the visitor can switch fights while
+        // this request is in flight, and a live snapshot of fight A must never land on
+        // fight B, the same discipline loadFight and Effect 3 above already use.
+        const wantedFight = selected.index;
+        const live = await fetchLive(dataBase, selected.index);
+        if (live !== null && wantedFight === state.fight) summary = live;
+        return;
+      }
+      // The fight closed while we were watching: the immutable summary replaces the
+      // snapshot, and the cache entry with it. loadFight carries its own `index ===
+      // state.fight` guard, so a fight switch mid-request is handled there too.
+      summaries.delete(selected.index);
+      await loadFight(selected.index);
+    }, POLL_INTERVAL_MS);
+
+    poller.start();
+    return () => poller.stop();
+  });
 </script>
 
 {#if status === 'failed'}
@@ -359,9 +417,20 @@
   <p class="text-muted px-[18px] text-[14px] md:px-0">Loading the report.</p>
 {:else}
   <header class="flex flex-col gap-1 px-[18px] md:px-0">
-    <h1 class="section-title text-[18px]" data-testid="report-title">
-      {meta.title === '' ? meta.zone : meta.title}
-    </h1>
+    <div class="flex flex-wrap items-center gap-2">
+      <h1 class="section-title text-[18px]" data-testid="report-title">
+        {meta.title === '' ? meta.zone : meta.title}
+      </h1>
+      <!-- Announced politely, not stolen focus: a fight going live or settling is worth a
+           screen reader hearing about on its own time, not interrupting whatever the
+           visitor is doing. role="status" plus aria-live="polite" is the same pairing
+           SummaryBar.svelte uses for its own background result. -->
+      <span role="status" aria-live="polite">
+        {#if fightIsLive}
+          <span class="pill pill-site" data-testid="report-live">Live</span>
+        {/if}
+      </span>
+    </div>
     <p class="text-muted text-[13px]" data-testid="report-subtitle">
       {meta.zone} · <span class="tabular font-mono">{fights.length} fights</span> · {meta.status}
       {#if fight}· {fight.name}
@@ -468,6 +537,12 @@
             onWindow={setWindow}
           />
         {/if}
+      {/if}
+      {#if scoped !== null && state.mode === 'analyze' && state.view === 'timelines'}
+        <TimelinesView summary={scoped} window={timeWindow} {classOf} />
+      {/if}
+      {#if scoped !== null && state.mode === 'analyze' && state.view === 'events'}
+        <EventsView summary={scoped} {classOf} />
       {/if}
     </div>
   </div>
