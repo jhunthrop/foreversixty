@@ -1,10 +1,12 @@
 /* companion/ui/styles.css
    The companion cannot import the site's stylesheet, so the tokens it
-   uses are copied from web/src/styles/tokens.css. Keep them in step
-   with that file and design/DESIGN-SYSTEM.md; the values here are
-   verbatim. Fonts are not self-hosted in the companion: the stacks
-   fall through to the system faces rather than pulling a third-party
-   request into a desktop app. */
+   uses are adapted from web/src/styles/tokens.css. Keep them in step
+   with that file and design/DESIGN-SYSTEM.md; most values are taken
+   across unchanged, but --ok, --warn and --bad have no counterpart
+   there and --font-body deliberately drops the self-hosted fallback
+   face the site loads. Fonts are not self-hosted in the companion:
+   the stacks fall through to the system faces rather than pulling a
+   third-party request into a desktop app. */
 :root {
   --bg: #07090d;
   --raised: #0d111a;
@@ -125,7 +127,7 @@ a:hover { color: var(--gold-hover); }
 
 label { display: block; margin: 12px 0 4px; color: var(--muted); font-size: 13px; }
 
-input, select {
+input, select, textarea {
   width: 100%;
   min-height: 36px;
   padding: 0 10px;
@@ -134,6 +136,15 @@ input, select {
   background: #0a0e15;
   color: var(--text);
   font: 400 14px/1 var(--font-body);
+}
+
+/* Game folders are one path per line, so the field is a textarea: an
+   input strips the newlines and two installs become one bad path. */
+textarea {
+  display: block;
+  padding: 8px 10px;
+  font: 400 13px/1.6 var(--font-mono);
+  resize: vertical;
 }
 
 button.action {

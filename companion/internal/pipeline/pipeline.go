@@ -120,6 +120,33 @@ func (p *Pipeline) Close() error {
 	return nil
 }
 
+// SetConfig swaps the configuration the pipeline reads when a report
+// opens, so a visibility or a logging character chosen on the
+// settings page is in force on the next report rather than on the
+// next launch. A report already open keeps what it started with:
+// state.Report captures both at the start on purpose.
+func (p *Pipeline) SetConfig(c config.Config) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	p.o.Config = c
+}
+
+// SetWatch repoints the tail at another Logs directory and reports
+// whether it did. It refuses while a report is open: the watcher
+// carries a file and an offset inside the old directory, and swapping
+// it mid-report would strand the night at a byte boundary. The caller
+// asks again on the next tick, and the swap happens when the report
+// closes.
+func (p *Pipeline) SetWatch(w *watch.Watcher) bool {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	if p.cur != nil {
+		return false
+	}
+	p.o.Watch = w
+	return true
+}
+
 // sessionOptions are the engine settings the companion parses with.
 // KeepEvents is on because every closed fight is written as Parquet.
 func sessionOptions(reportKey string, base time.Time) session.Options {

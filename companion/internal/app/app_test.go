@@ -32,14 +32,10 @@ type harness struct {
 	log  string
 }
 
-func newHarness(t *testing.T) *harness {
+// newGame builds a flavour directory wow.Pick accepts, with a Logs
+// folder to tail and one account's SavedVariables.
+func newGame(t *testing.T) string {
 	t.Helper()
-	home := t.TempDir()
-	t.Setenv(paths.HomeEnv, home)
-	dirs, err := paths.Resolve()
-	if err != nil {
-		t.Fatal(err)
-	}
 	game := filepath.Join(t.TempDir(), "_classic_era_")
 	for _, p := range []string{
 		filepath.Join(game, "Logs"),
@@ -53,6 +49,18 @@ func newHarness(t *testing.T) *harness {
 		[]byte("SET advancedCombatLogging \"1\"\n"), 0o600); err != nil {
 		t.Fatal(err)
 	}
+	return game
+}
+
+func newHarness(t *testing.T) *harness {
+	t.Helper()
+	home := t.TempDir()
+	t.Setenv(paths.HomeEnv, home)
+	dirs, err := paths.Resolve()
+	if err != nil {
+		t.Fatal(err)
+	}
+	game := newGame(t)
 	srv := fakeapi.New()
 	t.Cleanup(srv.Close)
 
@@ -297,5 +305,80 @@ func TestAnUnpairedCompanionStillParsesButUploadsNothing(t *testing.T) {
 	}
 	if s.Pipeline.Queued == 0 {
 		t.Error("nothing was queued for when the device is paired")
+	}
+}
+
+// A raid night's worth of log, enough to open a report and close one
+// fight.
+func aNight() string {
+	return fixture.Header + fixture.Zone + fixture.Encounter(0) + fixture.Heartbeat(0)
+}
+
+func TestSavingSettingsKeepsTheDeviceTokenAndAppliesWithoutARestart(t *testing.T) {
+	h := newHarness(t)
+	base := h.url("")
+	if code, _ := h.call(http.MethodPost, base+"/api/pair",
+		map[string]string{"code": fakeapi.PairCode}); code != http.StatusOK {
+		t.Fatal("pairing failed")
+	}
+	second := newGame(t)
+	code, body := h.call(http.MethodPost, base+"/api/settings", app.Settings{
+		Visibility: "private", WoWPaths: []string{h.game, second},
+	})
+	if code != http.StatusOK || body["ok"] != true {
+		t.Fatalf("settings = %d %v", code, body)
+	}
+
+	// The save must not carry a stale blank over the token the
+	// pairing wrote into the same file.
+	stored, err := config.Load(h.dirs.ConfigFile())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if stored.DeviceToken != fakeapi.Token {
+		t.Fatalf("saving the settings unpaired the device: token = %q", stored.DeviceToken)
+	}
+	s := h.app.Snapshot()
+	if !s.Paired {
+		t.Error("the companion reports itself unpaired after a settings save")
+	}
+	if len(s.Installs) != 2 {
+		t.Fatalf("the second game folder was not picked up: %+v", s.Installs)
+	}
+
+	// The new visibility reaches the next report with no restart.
+	h.app.Step(t.Context(), t0)
+	if err := os.WriteFile(h.log, []byte(aNight()), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	h.app.Step(t.Context(), t0.Add(time.Second))
+	reports := h.srv.Reports()
+	if len(reports) != 1 {
+		t.Fatalf("the server holds %d reports", len(reports))
+	}
+	for _, r := range reports {
+		if r.Visibility != "private" {
+			t.Errorf("the report the save asked to be private is %q", r.Visibility)
+		}
+	}
+}
+
+func TestANewFirstGameFolderMovesTheTailOnTheNextStep(t *testing.T) {
+	h := newHarness(t)
+	second := newGame(t)
+	if code, body := h.call(http.MethodPost, h.url("/api/settings"), app.Settings{
+		Visibility: "public", WoWPaths: []string{second, h.game},
+	}); code != http.StatusOK {
+		t.Fatalf("settings = %d %v", code, body)
+	}
+	// One step to prime the tail over the folder that is now first.
+	h.app.Step(t.Context(), t0)
+	log := filepath.Join(second, "Logs", "WoWCombatLog.txt")
+	if err := os.WriteFile(log, []byte(aNight()), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	h.app.Step(t.Context(), t0.Add(time.Second))
+	if got := h.app.Snapshot().Pipeline.LogPath; got != log {
+		t.Fatalf("the tail is on %q, not the newly added folder's log %q", got, log)
 	}
 }

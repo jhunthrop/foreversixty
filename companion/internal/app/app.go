@@ -67,6 +67,9 @@ type App struct {
 	mu       sync.Mutex
 	cfg      config.Config
 	installs []wow.Install
+	// watching is the Logs directory the tail is pointed at. The
+	// settings page can move it; retarget does the move.
+	watching string
 
 	client  *client.Client
 	queue   *queue.Queue
@@ -92,7 +95,13 @@ func New(o Options) (*App, error) {
 		return nil, err
 	}
 	a := &App{o: o, log: o.Log, now: o.Now, token: tok, cfg: o.Config}
+	// The secret store owns the device token. The in-memory copy is
+	// blanked so no later write of this configuration can carry a
+	// stale token back over the one on disk; SaveSettings reads the
+	// live value out of config.json when it saves.
+	a.cfg.DeviceToken = ""
 	a.installs = a.detect()
+	a.watching = a.logsDir()
 
 	a.client, err = client.New(client.Options{
 		BaseURL: a.cfg.APIBaseURL,
@@ -111,7 +120,7 @@ func New(o Options) (*App, error) {
 		StateDir: o.Dirs.State,
 		Client:   a.client,
 		Queue:    a.queue,
-		Watch:    watch.New(watch.Options{Dir: a.logsDir()}),
+		Watch:    watch.New(watch.Options{Dir: a.watching}),
 		Config:   a.cfg,
 		Log:      a.log,
 	})
@@ -179,7 +188,8 @@ func (a *App) detect() []wow.Install {
 
 // logsDir is the Logs directory the watcher follows: the first
 // install, or a directory that does not exist when there is none,
-// which the watcher handles as "nothing to do".
+// which the watcher handles as "nothing to do". It reads a.installs,
+// so every caller but New holds a.mu.
 func (a *App) logsDir() string {
 	if len(a.installs) == 0 {
 		return a.o.Dirs.Home
@@ -217,6 +227,12 @@ func (a *App) Pair(ctx context.Context, code string) error {
 	if err != nil {
 		return err
 	}
+	// The config-file backend reads config.json, edits it and writes
+	// it back, which is the same read-modify-write SaveSettings does:
+	// both happen under a.mu so neither can lose the other's change.
+	// The network call above stays outside it.
+	a.mu.Lock()
+	defer a.mu.Unlock()
 	if err := a.o.Secret.SetToken(dev.Token); err != nil {
 		return err
 	}
@@ -226,7 +242,11 @@ func (a *App) Pair(ctx context.Context, code string) error {
 
 // Unpair forgets the device token. The reports already uploaded stay
 // on the site; revoking the device itself is done on the account page.
-func (a *App) Unpair() error { return a.o.Secret.Clear() }
+func (a *App) Unpair() error {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+	return a.o.Secret.Clear()
+}
 
 // Settings is what the settings page can change.
 type Settings struct {
@@ -235,9 +255,24 @@ type Settings struct {
 	LoggingCharacter *character.Character `json:"logging_character"`
 }
 
-// SaveSettings validates and stores the settings, then re-detects the
-// installs so a newly added folder takes effect without a restart.
+// SaveSettings validates and stores the settings, then puts them to
+// work without a restart: the visibility and the logging character
+// are handed to the pipeline, which reads them when the next report
+// opens, and a newly added game folder re-detects the installs and
+// moves the tail — as soon as the report in progress closes, because
+// a watcher carries a file and an offset and cannot be moved out from
+// under an open report.
 func (a *App) SaveSettings(in Settings) error {
+	if err := a.store(in); err != nil {
+		return err
+	}
+	a.retarget()
+	return nil
+}
+
+// store validates the settings and writes them, holding the lock for
+// the whole read-modify-write of config.json.
+func (a *App) store(in Settings) error {
 	a.mu.Lock()
 	defer a.mu.Unlock()
 	cfg := a.cfg
@@ -255,12 +290,44 @@ func (a *App) SaveSettings(in Settings) error {
 			return err
 		}
 	}
+	// The device token lives in config.json on the fallback backend
+	// and is written there by the secret store alone. Whatever is on
+	// disk now is the truth; carrying the in-memory blank over it
+	// would silently unpair the player.
+	onDisk, err := config.Load(a.o.Dirs.ConfigFile())
+	if err != nil {
+		return err
+	}
+	cfg.DeviceToken = onDisk.DeviceToken
 	if err := config.Save(a.o.Dirs.ConfigFile(), cfg); err != nil {
 		return err
 	}
+	cfg.DeviceToken = ""
 	a.cfg = cfg
 	a.installs = a.detect()
+	a.pipe.SetConfig(cfg)
 	return nil
+}
+
+// retarget points the tail at the first install's Logs directory when
+// the settings have moved it. The swap waits for the open report to
+// close, so it is attempted again on every step rather than only on
+// the save that asked for it.
+func (a *App) retarget() {
+	a.mu.Lock()
+	want := a.logsDir()
+	same := want == a.watching
+	a.mu.Unlock()
+	if same {
+		return
+	}
+	if !a.pipe.SetWatch(watch.New(watch.Options{Dir: want})) {
+		return // a report is open; the next step tries again
+	}
+	a.mu.Lock()
+	a.watching = want
+	a.mu.Unlock()
+	a.log.Info("the tail moved to a new game folder", "component", "app", "dir", want)
 }
 
 // Snapshot is everything the UI shows.
@@ -359,6 +426,7 @@ func (a *App) Snapshot() Snapshot {
 // addon sync and the update check. It returns no error because the
 // companion must keep logging through every one of them failing.
 func (a *App) Step(ctx context.Context, now time.Time) {
+	a.retarget()
 	if err := a.pipe.Tick(now); err != nil {
 		a.log.Error("the tail failed", "component", "app", "err", err.Error())
 	}
