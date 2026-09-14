@@ -26,6 +26,10 @@ const SampleSize = 2
 // not match its raw bytes.
 const FlagTampered = "tampered"
 
+// ReasonTampered is why this check withdraws a report's ranking rows,
+// recorded in the moderation log beside the withdrawal.
+const ReasonTampered = "the stored events do not match the raw log"
+
 // Sample re-parses up to SampleSize of a report's fights from the raw
 // chunks the companion uploaded and compares the events it gets with
 // the events stored for those fights. A mismatch flags the report and
@@ -245,7 +249,7 @@ func (d Deps) tampered(ctx context.Context, rep reports.Report, index int, why s
 		return err
 	}
 	if d.Rank != nil {
-		return d.Rank.RemoveReport(ctx, rep.ID, "the stored events do not match the raw log")
+		return d.Rank.RemoveReport(ctx, rep.ID, ReasonTampered)
 	}
 	return nil
 }

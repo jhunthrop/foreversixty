@@ -112,20 +112,6 @@ func CanonicalJSON(in Input) ([]byte, error) {
 	return b, nil
 }
 
-// ID is the first eight characters of the lowercase, unpadded RFC 4648
-// base32 encoding of the SHA-256 of CanonicalJSON. Saving the same build
-// twice yields the same id; the title is not part of it, so retitling a
-// build is the same build and the first title wins.
-func ID(in Input) (string, error) {
-	b, err := CanonicalJSON(in)
-	if err != nil {
-		return "", err
-	}
-	sum := sha256.Sum256(b)
-	enc := base32.StdEncoding.WithPadding(base32.NoPadding).EncodeToString(sum[:])
-	return strings.ToLower(enc)[:IDLen], nil
-}
-
 // IDLen is how many characters of the base32 hash an id carries.
 const IDLen = 8
 
@@ -143,6 +129,20 @@ func ValidID(s string) bool {
 		}
 	}
 	return true
+}
+
+// ID is the first eight characters of the lowercase, unpadded RFC 4648
+// base32 encoding of the SHA-256 of CanonicalJSON. Saving the same build
+// twice yields the same id; the title is not part of it, so retitling a
+// build is the same build and the first title wins.
+func ID(in Input) (string, error) {
+	b, err := CanonicalJSON(in)
+	if err != nil {
+		return "", err
+	}
+	sum := sha256.Sum256(b)
+	enc := base32.StdEncoding.WithPadding(base32.NoPadding).EncodeToString(sum[:])
+	return strings.ToLower(enc)[:IDLen], nil
 }
 
 // New turns a validated input into the record to store.

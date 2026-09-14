@@ -260,11 +260,15 @@ func TestAStoreWithNoTalentDataStillWritesRows(t *testing.T) {
 	}
 }
 
+// whyRemoved stands in for whatever a caller says when it withdraws a
+// report; the store's job is to record it verbatim.
+const whyRemoved = "the stored events do not match the raw log"
+
 func TestRemoveReportWithdrawsItsRowsAndRecordsWhy(t *testing.T) {
 	h := newHarness(t)
 	h.seedReport("report-one")
 	h.seedFight("report-one", 1, engine.FixtureBase, nil)
-	if err := h.store.RemoveReport(t.Context(), "report-one", "the stored events do not match the raw log"); err != nil {
+	if err := h.store.RemoveReport(t.Context(), "report-one", whyRemoved); err != nil {
 		t.Fatal(err)
 	}
 	var rows, moderations int
@@ -288,7 +292,7 @@ func TestRemoveReportWithdrawsItsRowsAndRecordsWhy(t *testing.T) {
 		`select reason from moderation where target_id = 'report-one'`).Scan(&reason); err != nil {
 		t.Fatal(err)
 	}
-	if reason != "the stored events do not match the raw log" {
+	if reason != whyRemoved {
 		t.Fatalf("reason = %q, want the caller's own words", reason)
 	}
 	page, err := h.store.Rankings(t.Context(), Query{EncounterID: 9001}, engine.FixtureBase)
@@ -305,7 +309,7 @@ func TestRemoveReportWithdrawsItsRowsAndRecordsWhy(t *testing.T) {
 // back, and the withdrawal is still recorded.
 func TestRemoveReportWithNoRowsIsHarmless(t *testing.T) {
 	h := newHarness(t)
-	if err := h.store.RemoveReport(t.Context(), "never-ranked", "the stored events do not match the raw log"); err != nil {
+	if err := h.store.RemoveReport(t.Context(), "never-ranked", whyRemoved); err != nil {
 		t.Fatalf("removing a report with no rows: %v", err)
 	}
 	var moderations int
@@ -499,7 +503,7 @@ func TestEveryCallFailsWhenTheDatabaseIsGone(t *testing.T) {
 	}); err == nil {
 		t.Error("writing a fight must fail when the database is gone")
 	}
-	if err := h.store.RemoveReport(t.Context(), "report-one", "the stored events do not match the raw log"); err == nil {
+	if err := h.store.RemoveReport(t.Context(), "report-one", whyRemoved); err == nil {
 		t.Error("withdrawing a report must fail when the database is gone")
 	}
 	if _, _, err := h.store.Percentile(t.Context(), 9001, 8, "", "raids-1", MetricDPS, 1); err == nil {
