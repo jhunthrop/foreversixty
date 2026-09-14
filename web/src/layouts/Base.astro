@@ -15,14 +15,19 @@ import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 
+import { SITE_NAME, SITE_URL, toJsonLd, websiteLd } from '../lib/seo';
+
 interface Props {
   title: string;
   description: string;
   path: string;
+  /** Extra JSON-LD nodes for this page; the homepage always carries the WebSite node. */
+  jsonLd?: object[];
 }
-const { title, description, path } = Astro.props;
-const site = 'https://foreversixty.gg';
-const fullTitle = title === 'Forever Sixty' ? title : `${title} · Forever Sixty`;
+const { title, description, path, jsonLd = [] } = Astro.props;
+const site = SITE_URL;
+const fullTitle = title === SITE_NAME ? title : `${title} · ${SITE_NAME}`;
+const ldNodes = path === '/' ? [websiteLd(), ...jsonLd] : jsonLd;
 ---
 
 <!doctype html>
@@ -40,7 +45,11 @@ const fullTitle = title === 'Forever Sixty' ? title : `${title} · Forever Sixty
     <meta property="og:description" content={description} />
     <meta property="og:url" content={`${site}${path}`} />
     <meta property="og:image" content={`${site}/og${path === '/' ? '/index' : path}.png`} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:locale" content="en_US" />
     <meta name="twitter:card" content="summary_large_image" />
+    {ldNodes.length > 0 && <script type="application/ld+json" set:html={toJsonLd(ldNodes)}></script>}
     <slot name="head" />
   </head>
   <body class="min-h-screen flex flex-col bg-bg">
