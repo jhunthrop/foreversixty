@@ -73,6 +73,16 @@ web/
 `src/data/generated/` for `src/pages/classes.astro` to import at build time. Both destinations are
 gitignored.
 
+`active-build.json` names the default build for `/planner` and `/classes`, but the sync publishes
+**every** build under `../data/builds/` whose `manifest.json` lists Phase 1 talent data, each into its
+own `public/data/<build>/`, and logs which ones it published. Saved builds are immutable and carry the
+`tree_version` they were made against: `/b/:id` mounts the island on that build id and the island
+fetches `/data/<tree_version>/…` for its talents, items and reference files. Publishing only the active
+build would break every share link already circulating the moment `active-build.json` moved on. The
+retained set is the same set the API accepts — any `tree_version` it holds data for. A build directory
+with no Phase 1 talent data is skipped and named in a warning. `src/data/generated/` still comes from
+the active build alone, since those are build-time page imports rather than per-build fetches.
+
 Every path listed in the build's `manifest.json` must exist on disk or the sync fails and names the
 missing files. While `data/builds/<build>/` still holds only the Phase 0 flat files, the sync falls
 back to the checked-in fixture at `src/fixtures/planner/` and says so on stdout. That fallback is

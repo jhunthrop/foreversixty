@@ -6,6 +6,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { syncData } from '../../../scripts/sync-data.mjs';
 
 const BUILD = '1.15.9.69722';
+const OTHER_BUILD = '1.16.0.70000';
 const silent = { log: () => {}, warn: () => {} };
 
 let root: string;
@@ -32,23 +33,30 @@ function scaffoldWeb(): void {
   writeJson(path.join(fixture, 'manifest.json'), { build: BUILD, fixture: true, files: {} });
 }
 
-/** A data/builds/<build>/ tree carrying real Phase 1 files. */
-function scaffoldRealBuild(): string {
-  const dir = path.join(repoRoot, 'data/builds', BUILD);
-  writeJson(path.join(dir, 'talents/paladin.json'), { build: BUILD, class_slug: 'paladin', trees: [] });
-  writeJson(path.join(dir, 'classes.json'), [{ id: 2, slug: 'paladin' }]);
+/** A data/builds/<build>/ tree carrying real Phase 1 files, one class per build. */
+function scaffoldRealBuild(build = BUILD, slug = 'paladin'): string {
+  const dir = path.join(repoRoot, 'data/builds', build);
+  writeJson(path.join(dir, `talents/${slug}.json`), { build, class_slug: slug, trees: [] });
+  writeJson(path.join(dir, 'classes.json'), [{ id: 2, slug }]);
   writeJson(path.join(dir, 'races.json'), [{ id: 5, slug: 'undead' }]);
   writeJson(path.join(dir, 'combos.json'), [{ race_id: 5, class_id: 2, new_in_forever: true }]);
   writeJson(path.join(dir, 'manifest.json'), {
-    build: BUILD,
+    build,
     files: {
-      'talents/paladin.json': 'aa',
+      [`talents/${slug}.json`]: 'aa',
       'classes.json': 'bb',
       'races.json': 'cc',
       'combos.json': 'dd',
     },
   });
   return dir;
+}
+
+/** A data/builds/<build>/ tree with only the Phase 0 flat files, as Era ships today. */
+function scaffoldPhaseZeroBuild(build: string): void {
+  const dir = path.join(repoRoot, 'data/builds', build);
+  writeJson(path.join(dir, 'talents.json'), []);
+  writeJson(path.join(dir, 'manifest.json'), { build, files: { 'talents.json': 'aa' } });
 }
 
 beforeEach(() => {
@@ -118,5 +126,47 @@ describe('syncData', () => {
     writeJson(stale, { gone: true });
     await syncData({ repoRoot, webRoot, allowFixture: true, log: silent });
     expect(existsSync(stale)).toBe(false);
+  });
+
+  it('publishes every build carrying Phase 1 data, not only the active one', async () => {
+    scaffoldRealBuild();
+    scaffoldRealBuild(OTHER_BUILD, 'mage');
+    const result = await syncData({ repoRoot, webRoot, allowFixture: true, log: silent });
+    expect(result.published).toEqual([BUILD, OTHER_BUILD]);
+    expect(existsSync(path.join(webRoot, 'public/data', BUILD, 'talents/paladin.json'))).toBe(true);
+    expect(existsSync(path.join(webRoot, 'public/data', OTHER_BUILD, 'talents/mage.json'))).toBe(true);
+    // A retained build has to carry the reference files too: loadReference() fetches
+    // classes.json, races.json and combos.json from the shared build's own directory.
+    for (const name of ['classes.json', 'races.json', 'combos.json']) {
+      expect(existsSync(path.join(webRoot, 'public/data', OTHER_BUILD, name))).toBe(true);
+    }
+  });
+
+  it('skips a build with no Phase 1 data and warns naming it', async () => {
+    scaffoldRealBuild();
+    scaffoldPhaseZeroBuild(OTHER_BUILD);
+    const warnings: string[] = [];
+    const log = { log: () => {}, warn: (message: unknown) => void warnings.push(String(message)) };
+    const result = await syncData({ repoRoot, webRoot, allowFixture: true, log });
+    expect(result.published).toEqual([BUILD]);
+    expect(existsSync(path.join(webRoot, 'public/data', OTHER_BUILD))).toBe(false);
+    expect(warnings.join('\n')).toContain(OTHER_BUILD);
+  });
+
+  it('mirrors the active build alone into src/data/generated', async () => {
+    scaffoldRealBuild();
+    scaffoldRealBuild(OTHER_BUILD, 'mage');
+    await syncData({ repoRoot, webRoot, allowFixture: true, log: silent });
+    const generated = readFileSync(path.join(webRoot, 'src/data/generated/classes.json'), 'utf8');
+    expect(JSON.parse(generated)).toEqual([{ id: 2, slug: 'paladin' }]);
+  });
+
+  it('names the published builds on stdout', async () => {
+    scaffoldRealBuild();
+    scaffoldRealBuild(OTHER_BUILD, 'mage');
+    const lines: string[] = [];
+    const log = { log: (message: unknown) => void lines.push(String(message)), warn: () => {} };
+    await syncData({ repoRoot, webRoot, allowFixture: true, log });
+    expect(lines.join('\n')).toContain(OTHER_BUILD);
   });
 });

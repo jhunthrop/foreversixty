@@ -1,14 +1,23 @@
 // web/scripts/sync-data.mjs
-// Copies one data/builds/<build>/ directory into web/ before dev, check, test and build:
+// Copies data/builds/<build>/ directories into web/ before dev, check, test and build:
 //   public/data/<build>/…        fetched at runtime by the planner island
 //   src/data/generated/*.json    imported at build time by src/pages/classes.astro
+//
+// Every build whose manifest lists Phase 1 talent data is published under public/data/, not
+// only the active one. Shared builds are immutable and keyed by tree_version: /b/:id renders
+// with the tree_version the build was saved against, and the island fetches
+// /data/<tree_version>/… for it. Publishing only the active build would turn every share
+// link made against an earlier build into "Talent data did not load" the moment
+// active-build.json moved on. The retained set matches what the API accepts -- any
+// tree_version it holds data for. src/data/generated/ still mirrors the active build alone,
+// because those are the build-time imports for /classes.
 //
 // The pipeline's manifest.json is the contract: every path it lists must exist on disk, or
 // this script throws and names the missing files. Until the data/ plan emits the Phase 1
 // per-class directories, a build whose manifest lists none of them falls back to the
 // checked-in fixture at src/fixtures/planner — loudly, and never when CF_PAGES is set
 // (the same deploy guard astro.config.mjs uses for placeholder community links).
-import { access, cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { access, cp, mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -30,6 +39,38 @@ export const PAGE_IMPORTS = ['classes.json', 'races.json', 'combos.json'];
 /** True once the manifest lists the Phase 1 per-class talent files. */
 export function hasPhaseOneData(manifest) {
   return Object.keys(manifest?.files ?? {}).some((key) => key.startsWith('talents/'));
+}
+
+/** The data/builds/<build>/ directory names, sorted. Empty when data/builds/ is absent. */
+async function listBuildDirs(repoRoot) {
+  let entries;
+  try {
+    entries = await readdir(path.join(repoRoot, 'data/builds'), { withFileTypes: true });
+  } catch {
+    return [];
+  }
+  return entries
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+    .sort();
+}
+
+/**
+ * Splits data/builds/ into the builds worth publishing and the ones with nothing to publish.
+ * `retained` is every build whose manifest lists Phase 1 talent data; `skipped` is the rest,
+ * so the caller can name them.
+ * @param {string} repoRoot
+ * @returns {Promise<{ retained: string[], skipped: string[] }>}
+ */
+export async function partitionBuilds(repoRoot) {
+  const retained = [];
+  const skipped = [];
+  for (const build of await listBuildDirs(repoRoot)) {
+    const manifestFile = path.join(repoRoot, 'data/builds', build, 'manifest.json');
+    const manifest = (await exists(manifestFile)) ? await readJson(manifestFile) : null;
+    (hasPhaseOneData(manifest) ? retained : skipped).push(build);
+  }
+  return { retained, skipped };
 }
 
 async function exists(file) {
@@ -102,17 +143,14 @@ async function resolveSourceDir({ repoRoot, webRoot, build, allowFixture, log })
 }
 
 /**
- * Resets public/data/<build> and src/data/generated, then copies SYNC_ENTRIES from
- * sourceDir into the former and mirrors PAGE_IMPORTS into the latter. Throws when a
+ * Resets public/data/<build> and copies SYNC_ENTRIES from sourceDir into it. Throws when a
  * required entry is missing from sourceDir. Returns the names actually copied.
  * @param {{ repoRoot: string, webRoot: string, build: string, sourceDir: string }} options
  */
 async function copyBuild({ repoRoot, webRoot, build, sourceDir }) {
   const publicDir = path.join(webRoot, 'public/data', build);
-  const generatedDir = path.join(webRoot, 'src/data/generated');
   await rm(publicDir, { recursive: true, force: true });
   await mkdir(publicDir, { recursive: true });
-  await mkdir(generatedDir, { recursive: true });
 
   const copied = [];
   for (const entry of SYNC_ENTRIES) {
@@ -130,12 +168,47 @@ async function copyBuild({ repoRoot, webRoot, build, sourceDir }) {
     copied.push(entry.name);
   }
 
+  return copied;
+}
+
+/**
+ * Mirrors PAGE_IMPORTS from the active build's source directory into src/data/generated,
+ * which src/pages/classes.astro imports at build time. Only the active build lands here.
+ * @param {{ webRoot: string, sourceDir: string }} options
+ */
+async function writePageImports({ webRoot, sourceDir }) {
+  const generatedDir = path.join(webRoot, 'src/data/generated');
+  await mkdir(generatedDir, { recursive: true });
   for (const name of PAGE_IMPORTS) {
     const body = await readFile(path.join(sourceDir, name), 'utf8');
     await writeFile(path.join(generatedDir, name), body, 'utf8');
   }
+}
 
-  return copied;
+/**
+ * Publishes the retained builds other than the active one. Each already has Phase 1 data, so
+ * the fixture fallback can never apply and is refused. Returns the build ids published.
+ * @param {{
+ *   repoRoot: string,
+ *   webRoot: string,
+ *   builds: string[],
+ *   log: { log: (...args: unknown[]) => void, warn: (...args: unknown[]) => void },
+ * }} options
+ */
+async function publishRetained({ repoRoot, webRoot, builds, log }) {
+  const published = [];
+  for (const build of builds) {
+    const { sourceDir } = await resolveSourceDir({
+      repoRoot,
+      webRoot,
+      build,
+      allowFixture: false,
+      log,
+    });
+    await copyBuild({ repoRoot, webRoot, build, sourceDir });
+    published.push(build);
+  }
+  return published;
 }
 
 /**
@@ -155,12 +228,32 @@ export async function syncData({ repoRoot, webRoot, allowFixture = true, log = c
 
   const { sourceDir, usedFixture } = await resolveSourceDir({ repoRoot, webRoot, build, allowFixture, log });
   const copied = await copyBuild({ repoRoot, webRoot, build, sourceDir });
-
+  await writePageImports({ webRoot, sourceDir });
   log.log(
-    `sync-data: build ${build} -> public/data/${build} (${copied.join(', ')})` +
+    `sync-data: active build ${build} -> public/data/${build} (${copied.join(', ')})` +
       `${usedFixture ? ' [fixture]' : ''}`,
   );
-  return { build, sourceDir, usedFixture, copied };
+
+  // The active build has already been published, with whatever fixture handling it needed.
+  const { retained, skipped } = await partitionBuilds(repoRoot);
+  for (const other of skipped.filter((name) => name !== build)) {
+    log.warn(
+      `sync-data: data/builds/${other} has no Phase 1 talent data; not publishing it. ` +
+        `Share links made against build ${other} will not find their talent data.`,
+    );
+  }
+  const published = [
+    build,
+    ...(await publishRetained({
+      repoRoot,
+      webRoot,
+      builds: retained.filter((name) => name !== build),
+      log,
+    })),
+  ];
+  log.log(`sync-data: published ${published.length} build(s): ${published.join(', ')}`);
+
+  return { build, sourceDir, usedFixture, copied, published };
 }
 
 const invokedDirectly =
