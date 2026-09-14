@@ -173,19 +173,22 @@ func (s *Store) UpsertFight(ctx context.Context, f FightRecord) (bool, error) {
 	return tag.RowsAffected() == 1, nil
 }
 
-// FightSHA reads the raw hash stored for a fight, so a re-sent bundle
-// can be answered 200 rather than written twice.
-func (s *Store) FightSHA(ctx context.Context, reportID string, index int) ([]byte, error) {
-	var sha []byte
-	err := s.Pool.QueryRow(ctx,
-		`select raw_sha256 from fights where report_id = $1 and fight_index = $2`, reportID, index).Scan(&sha)
+// FightSHA reads the raw hash a fight was stored with, and whether that
+// fight verified. A re-sent bundle matching both is answered 200 rather
+// than written twice; a re-send matching the hash of a fight that did
+// not verify is checked again rather than accepted, or an uploader
+// would be told its rejected fight was fine.
+func (s *Store) FightSHA(ctx context.Context, reportID string, index int) (sha []byte, verified bool, err error) {
+	err = s.Pool.QueryRow(ctx,
+		`select raw_sha256, verified from fights where report_id = $1 and fight_index = $2`,
+		reportID, index).Scan(&sha, &verified)
 	if errors.Is(err, pgx.ErrNoRows) {
-		return nil, ErrNotFound
+		return nil, false, ErrNotFound
 	}
 	if err != nil {
-		return nil, fmt.Errorf("reports: read fight %s/%d: %w", reportID, index, err)
+		return nil, false, fmt.Errorf("reports: read fight %s/%d: %w", reportID, index, err)
 	}
-	return sha, nil
+	return sha, verified, nil
 }
 
 // FightRawRange reads the byte range a fight was parsed from, which is

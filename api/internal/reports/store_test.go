@@ -180,19 +180,34 @@ func TestAnonymousCallersCannotCreateAReport(t *testing.T) {
 // Tasks 11 and 12. Direct store-level coverage here means this task's
 // own surface is tested without reaching into those routes.
 
-func TestFightSHAReadsBackTheStoredHash(t *testing.T) {
+func TestFightSHAReadsBackTheStoredHashAndWhetherItVerified(t *testing.T) {
 	h := newHarness(t)
 	id := h.createReport(Public)
-	if _, err := h.store.UpsertFight(t.Context(), FightRecord{
-		ReportID: id, Index: 1, Name: "Trash", Players: []string{}, RawSHA256: []byte("hash-bytes"),
-	}); err != nil {
-		t.Fatal(err)
+	upsert := func(verified bool) {
+		t.Helper()
+		if _, err := h.store.UpsertFight(t.Context(), FightRecord{
+			ReportID: id, Index: 1, Name: "Trash", Players: []string{},
+			RawSHA256: []byte("hash-bytes"), Verified: verified,
+		}); err != nil {
+			t.Fatal(err)
+		}
 	}
-	sha, err := h.store.FightSHA(t.Context(), id, 1)
+
+	upsert(false)
+	sha, verified, err := h.store.FightSHA(t.Context(), id, 1)
 	if err != nil || string(sha) != "hash-bytes" {
 		t.Fatalf("sha = %q, %v", sha, err)
 	}
-	if _, err := h.store.FightSHA(t.Context(), id, 99); !errors.Is(err, ErrNotFound) {
+	if verified {
+		t.Fatal("a fight stored unverified must not read back verified")
+	}
+
+	upsert(true)
+	if _, verified, err = h.store.FightSHA(t.Context(), id, 1); err != nil || !verified {
+		t.Fatalf("verified = %v, %v, want true", verified, err)
+	}
+
+	if _, _, err := h.store.FightSHA(t.Context(), id, 99); !errors.Is(err, ErrNotFound) {
 		t.Fatalf("err = %v, want ErrNotFound", err)
 	}
 }

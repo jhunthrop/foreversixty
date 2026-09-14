@@ -260,13 +260,7 @@ func TestResendingTheSameBundleIsAccepted(t *testing.T) {
 func TestAnInflatedMetricIsRefusedAndFlagsTheReport(t *testing.T) {
 	h := newHarness(t)
 	id := h.createReport(Public)
-	b := makeBundle(t, 1, func(rows []metrics.Row) {
-		for i := range rows {
-			if rows[i].MetricDPS > 0 {
-				rows[i].MetricDPS *= 3
-			}
-		}
-	})
+	b := makeBundle(t, 1, inflateDPS)
 	res := h.do(http.MethodPut, "/v1/reports/"+id+"/fights/1", b.contentType, b.body)
 	if res.StatusCode != http.StatusConflict {
 		t.Fatalf("status = %d, want 409", res.StatusCode)
@@ -662,5 +656,60 @@ func TestAPrivateReportsFightIsVerifiedAndStoredButNeverRanked(t *testing.T) {
 func TestMismatchFieldFallsBackWhenTheErrorIsNotAMismatch(t *testing.T) {
 	if got := mismatchField(errors.New("something else went wrong")); got != "rows" {
 		t.Fatalf("field = %q, want the rows fallback", got)
+	}
+}
+
+// inflateDPS is the forgery TestAnInflatedMetricIsRefusedAndFlagsTheReport
+// posts, reused by the re-send test so both send the same bad bundle.
+func inflateDPS(rows []metrics.Row) {
+	for i := range rows {
+		if rows[i].MetricDPS > 0 {
+			rows[i].MetricDPS *= 3
+		}
+	}
+}
+
+func TestResendingARejectedBundleIsRefusedAgain(t *testing.T) {
+	h := newHarness(t)
+	id := h.createReport(Public)
+	first := makeBundle(t, 1, inflateDPS)
+	res := h.do(http.MethodPut, "/v1/reports/"+id+"/fights/1", first.contentType, first.body)
+	res.Body.Close()
+	if res.StatusCode != http.StatusConflict {
+		t.Fatalf("first = %d, want 409", res.StatusCode)
+	}
+
+	// The rejected fight is stored with its raw hash, so the re-send
+	// matches on hash - but a stored fight that did not verify must be
+	// answered the way it was the first time, never accepted.
+	again := makeBundle(t, 1, inflateDPS)
+	res = h.do(http.MethodPut, "/v1/reports/"+id+"/fights/1", again.contentType, again.body)
+	if res.StatusCode != http.StatusConflict {
+		res.Body.Close()
+		t.Fatalf("re-sending a rejected bundle = %d, want 409", res.StatusCode)
+	}
+	if got := h.errorFields(res)["metrics"]; got != "metric_dps" {
+		t.Fatalf("fields.metrics = %q, want the field name and nothing else", got)
+	}
+	if got := len(h.ranker.fights()); got != 0 {
+		t.Fatalf("a rejected fight was ranked %d times", got)
+	}
+	if h.fileExists(store.Keys{ReportID: id}.FightEvents(1)) {
+		t.Fatal("a rejected fight's events must not be published")
+	}
+
+	// Correcting the metrics over the same bytes verifies and is stored.
+	fixed := makeBundle(t, 1, nil)
+	res = h.do(http.MethodPut, "/v1/reports/"+id+"/fights/1", fixed.contentType, fixed.body)
+	res.Body.Close()
+	if res.StatusCode != http.StatusCreated {
+		t.Fatalf("a corrected bundle = %d, want 201", res.StatusCode)
+	}
+	fights, err := h.store.Fights(t.Context(), id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(fights) != 1 || !fights[0].Verified {
+		t.Fatalf("fights = %+v, want the fight now verified", fights)
 	}
 }

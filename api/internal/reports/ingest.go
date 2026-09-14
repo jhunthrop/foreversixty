@@ -193,9 +193,12 @@ func (i *Ingest) putFight(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Idempotency: the same fight with the same raw hash is already
-	// stored, so at-least-once delivery costs nothing.
-	switch stored, err := i.Store.FightSHA(r.Context(), rep.ID, n); {
-	case err == nil && string(stored) == string(sha):
+	// stored and verified, so at-least-once delivery costs nothing. A
+	// stored fight that did *not* verify falls through and is checked
+	// again: a re-send must be answered the way the first send was, and
+	// a corrected bundle over the same bytes must still be able to pass.
+	switch stored, verified, err := i.Store.FightSHA(r.Context(), rep.ID, n); {
+	case err == nil && verified && string(stored) == string(sha):
 		httpx.WriteOK(w, r, http.StatusOK, map[string]any{"fight_index": n, "verified": true})
 		return
 	case err != nil && !errors.Is(err, ErrNotFound):
