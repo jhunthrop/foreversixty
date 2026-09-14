@@ -49,15 +49,25 @@ func Sample(ctx context.Context, d Deps, reportID string) error {
 	if err != nil {
 		return err
 	}
+
+	// Everything that reads bytes back out of the bucket - the raw
+	// chunks and the stored events - runs under its own deadline, the
+	// same way Report's whole-file read does in parse.go. The terminal
+	// Flag/RemoveReport writes in tampered stay on ctx, outside this
+	// deadline, so a check that runs out of read time still records
+	// what it found.
+	readCtx, cancel := context.WithTimeout(ctx, SampleTimeout)
+	defer cancel()
+
 	for _, f := range pick(fights, SampleSize) {
-		raw, ok, err := d.rawRange(ctx, reportID, chunks, f)
+		raw, ok, err := d.rawRange(readCtx, reportID, chunks, f)
 		if err != nil {
 			return err
 		}
 		if !ok {
 			continue
 		}
-		if err := d.compareFight(ctx, rep, f, raw); err != nil {
+		if err := d.compareFight(ctx, readCtx, rep, f, raw); err != nil {
 			return err
 		}
 	}
@@ -97,7 +107,13 @@ func (d Deps) rawRange(ctx context.Context, reportID string, chunks []reports.Ra
 		if c.End <= *start || c.Start >= *end {
 			continue
 		}
-		if cursor >= 0 && c.Start != cursor {
+		switch {
+		case cursor < 0 && c.Start > *start:
+			// The first chunk that overlaps the fight does not reach
+			// back to where the fight itself starts: a gap at the head
+			// of the range, nothing to compare.
+			return nil, false, nil
+		case cursor >= 0 && c.Start != cursor:
 			// A gap in the middle of the fight: nothing to compare.
 			return nil, false, nil
 		}
@@ -114,9 +130,6 @@ func (d Deps) rawRange(ctx context.Context, reportID string, chunks []reports.Ra
 		if err != nil {
 			return nil, false, fmt.Errorf("parse: decode raw chunk %s@%d: %w", reportID, c.Start, err)
 		}
-		if cursor < 0 {
-			cursor = c.Start
-		}
 		out = append(out, decoded...)
 		cursor = c.End
 	}
@@ -127,16 +140,19 @@ func (d Deps) rawRange(ctx context.Context, reportID string, chunks []reports.Ra
 }
 
 // compareFight re-parses raw and compares the fight it finds with the
-// events stored for f.
+// events stored for f. readCtx bounds the reads (the re-parse feed and
+// the stored Parquet); ctx is the caller's own, unbounded by readCtx's
+// deadline, and is what tampered's terminal writes run on, so a check
+// that ran out of read time can still record what it found.
 //
 // The layout is pinned from the report's own health record: a fight in
 // the middle of a night starts at a 4 MiB chunk boundary, which carries
 // no header, so a session left to infer could read the lines with the
 // wrong dialect and call an honest report tampered.
-func (d Deps) compareFight(ctx context.Context, rep reports.Report, f reports.FightEntry, raw []byte) error {
+func (d Deps) compareFight(ctx, readCtx context.Context, rep reports.Report, f reports.FightEntry, raw []byte) error {
 	s := session.New(engine.SessionOptionsFor(rep.ID, f.Start, true, layoutOf(rep)))
 	var found *session.Closed
-	if err := stream(ctx, s, byteReader(raw), func(c session.Closed) error {
+	if err := stream(readCtx, s, byteReader(raw), func(c session.Closed) error {
 		if found == nil && c.Fight.Start.Equal(f.Start) {
 			closed := c
 			found = &closed
@@ -155,7 +171,7 @@ func (d Deps) compareFight(ctx context.Context, rep reports.Report, f reports.Fi
 			"result", "no fight found in the raw range; not checked")
 		return nil
 	}
-	stored, err := d.storedEvents(ctx, rep.ID, f.Index)
+	stored, err := d.storedEvents(readCtx, rep.ID, f.Index)
 	if err != nil {
 		return err
 	}
@@ -237,6 +253,16 @@ type Worker struct {
 	queue chan string
 	done  chan struct{}
 	once  sync.Once
+
+	// mu guards closed against a Schedule that races Close: Close takes
+	// the write lock before it closes queue, and Schedule holds the
+	// read lock for the whole of its send, so a Schedule already inside
+	// its critical section always finishes before queue can close, and
+	// one that has not started yet always sees closed true and skips
+	// the channel entirely. Without this a Schedule racing Close is a
+	// send on a closed channel - a panic, not a drop.
+	mu     sync.RWMutex
+	closed bool
 }
 
 // QueueDepth is how many reports may be waiting to be checked. Beyond
@@ -249,8 +275,16 @@ func NewWorker(d Deps) *Worker {
 	return &Worker{Deps: d, queue: make(chan string, QueueDepth), done: make(chan struct{})}
 }
 
-// Schedule queues a report for checking. It never blocks.
+// Schedule queues a report for checking. It never blocks, and a
+// Schedule that loses the race with Close drops its report the same
+// way one that finds the queue full does, rather than panicking.
 func (w *Worker) Schedule(reportID string) {
+	w.mu.RLock()
+	defer w.mu.RUnlock()
+	if w.closed {
+		w.Deps.logger().Warn("parse", "op", "sample", "report", reportID, "err", "worker is closed")
+		return
+	}
 	select {
 	case w.queue <- reportID:
 	default:
@@ -258,7 +292,9 @@ func (w *Worker) Schedule(reportID string) {
 	}
 }
 
-// Run consumes the queue until ctx is cancelled or Close is called.
+// Run consumes the queue until ctx is cancelled or Close is called. A
+// report already queued when Close runs is still drained and checked:
+// closing a channel does not discard what is already buffered in it.
 func (w *Worker) Run(ctx context.Context) {
 	defer close(w.done)
 	for {
@@ -269,21 +305,27 @@ func (w *Worker) Run(ctx context.Context) {
 			if !ok {
 				return
 			}
-			checkCtx, cancel := context.WithTimeout(ctx, SampleTimeout)
-			if err := Sample(checkCtx, w.Deps, id); err != nil {
+			if err := Sample(ctx, w.Deps, id); err != nil {
 				w.Deps.logger().Error("parse", "op", "sample", "report", id, "err", err)
 			}
-			cancel()
 		}
 	}
 }
 
-// SampleTimeout bounds one report's check.
+// SampleTimeout bounds the read-heavy part of one report's check: the
+// raw chunk and stored-events reads. See Sample.
 const SampleTimeout = 5 * time.Minute
 
-// Close stops the worker and waits for the check in flight.
+// Close stops the worker and waits for the check in flight, if any, to
+// finish. No Schedule call started after Close returns can reach the
+// queue.
 func (w *Worker) Close() {
-	w.once.Do(func() { close(w.queue) })
+	w.once.Do(func() {
+		w.mu.Lock()
+		w.closed = true
+		close(w.queue)
+		w.mu.Unlock()
+	})
 	<-w.done
 }
 
