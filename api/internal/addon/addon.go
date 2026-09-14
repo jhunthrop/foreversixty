@@ -313,15 +313,30 @@ type QueueInput struct {
 // for. The build lands only in the caller's own inbox: userID comes
 // from the session actor, never from the request, so this can never
 // write into an account the caller does not already own.
+//
+// Both fields are checked for shape before they are stored, because
+// GET /v1/addon/inbox hands them straight back and the companion
+// writes them into ForeverSixtyInbox.lua - a Lua source file the addon
+// loads. Escaping that file is the companion's job and stays its job;
+// this route's part of the bargain is that what it stores is a build
+// id and a character key and can be nothing else. See the route's
+// description in openapi.yaml.
 func (s *Service) queueBuild(w http.ResponseWriter, r *http.Request) {
 	var in QueueInput
 	if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, maxBody)).Decode(&in); err != nil {
 		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "body must be JSON with a build_id", nil)
 		return
 	}
-	if in.BuildID == "" {
+	if !builds.ValidID(in.BuildID) {
 		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "that is not a build",
 			map[string]string{"build_id": "the id of a saved build"})
+		return
+	}
+	// An empty key is the whole point of the column's default: a build
+	// can be sent to the account rather than to one character.
+	if in.CharacterKey != "" && !character.ValidKey(in.CharacterKey) {
+		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "that is not a character",
+			map[string]string{"character_key": "<region>/<ruleset>/<name-slug>, or omitted"})
 		return
 	}
 	if err := s.Store.AddInbox(r.Context(), auth.ActorFrom(r.Context()).UserID,

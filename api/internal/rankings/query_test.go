@@ -9,9 +9,11 @@ import (
 	"log/slog"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"testing"
 	"time"
 
+	"github.com/jhunthrop/foreversixty/api/internal/character"
 	"github.com/jhunthrop/foreversixty/api/internal/engine"
 	"github.com/jhunthrop/foreversixty/api/internal/metrics"
 	"github.com/jhunthrop/foreversixty/api/internal/reports"
@@ -552,5 +554,30 @@ func TestTheGuildPageListsOnlyPublicAndUnlistedReports(t *testing.T) {
 		if !listed[id] {
 			t.Fatalf("%s should be listed: %+v", id, g.Reports)
 		}
+	}
+}
+
+// The guild route reconstructs a guild's name by mapping each hyphen
+// in the path back to one space, so the slug a URL is built from must
+// spend one hyphen per space. character.Slug does, including for a
+// doubled space, and this pins that: collapsing a run of spaces to a
+// single hyphen would make a guild whose name carries one unreachable.
+func TestAGuildNameWithADoubleSpaceRoundTripsThroughTheRoute(t *testing.T) {
+	h := newHarness(t)
+	serve(t, h)
+	if _, err := h.pool.Exec(t.Context(),
+		`insert into guilds (region, ruleset, name) values ('us', 'hardcore', $1)`,
+		"Lady  Sunwick's Own"); err != nil {
+		t.Fatal(err)
+	}
+
+	slug := character.Slug("Lady  Sunwick's Own")
+	if slug != "lady--sunwick's-own" {
+		t.Fatalf("slug = %q, want one hyphen per space", slug)
+	}
+	var g Guild
+	h.data(h.get("/v1/guilds/us/hardcore/"+url.PathEscape(slug)), &g)
+	if g.Guild.Name != "Lady  Sunwick's Own" {
+		t.Fatalf("guild = %+v, want the doubled-space name resolved", g.Guild)
 	}
 }

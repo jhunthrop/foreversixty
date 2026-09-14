@@ -43,25 +43,7 @@ func TestSampleFlagsAReportWhoseStoredEventsDoNotMatch(t *testing.T) {
 	}
 	seedRawChunk(t, d, objects, reportID, engine.FixtureLog())
 
-	// Rewrite the stored events with one event missing, which is what a
-	// companion that trimmed its own deaths would have uploaded.
-	fights, err := d.Reports.Fights(ctx, reportID)
-	if err != nil {
-		t.Fatal(err)
-	}
-	key := store.Keys{ReportID: reportID}.FightEvents(fights[0].Index)
-	stored, _ := objects.get(key)
-	events, err := logparquet.Unmarshal(stored)
-	if err != nil {
-		t.Fatal(err)
-	}
-	trimmed, err := logparquet.Marshal(events[:len(events)-1])
-	if err != nil {
-		t.Fatal(err)
-	}
-	if err := objects.Put(ctx, key, trimmed, store.PutOptions{}); err != nil {
-		t.Fatal(err)
-	}
+	trimStoredEvents(t, d, objects, reportID)
 
 	if err := Sample(ctx, d, reportID); err != nil {
 		t.Fatal(err)
@@ -399,5 +381,70 @@ func TestSessionOptionsForPinsAKnownLayout(t *testing.T) {
 	o = engine.SessionOptionsFor("r", engine.FixtureBase, true, "no-such-layout")
 	if o.Layout.Name != "" {
 		t.Fatalf("layout = %q, want the session left to infer", o.Layout.Name)
+	}
+}
+
+// Run used to return on ctx.Done, and ctx is the signal context: on
+// SIGTERM the consumer exited before http.Server.Shutdown drained the
+// handlers, so a completion call arriving during shutdown queued a
+// check nobody would ever read. The consumer has to outlive the
+// handlers, and the check itself has to survive the signal that
+// started the shutdown.
+func TestAReportScheduledDuringShutdownIsStillChecked(t *testing.T) {
+	d, reportID, objects, rank := fixtureUpload(t, false)
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	if err := Report(context.Background(), d, reportID); err != nil {
+		t.Fatal(err)
+	}
+	seedRawChunk(t, d, objects, reportID, engine.FixtureLog())
+	trimStoredEvents(t, d, objects, reportID)
+
+	w := NewWorker(d)
+	done := make(chan struct{})
+	go func() { w.Run(ctx); close(done) }()
+
+	// The signal lands first, exactly as it does in cmd/api: the
+	// listener stops, the handlers keep draining, and this is one of
+	// their completion calls.
+	cancel()
+	w.Schedule(reportID)
+	w.Close()
+	<-done
+
+	rep, err := d.Reports.Get(context.Background(), reportID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if rep.Flagged == nil || *rep.Flagged != FlagTampered {
+		t.Fatalf("flagged = %v, want the check to have run despite the signal", rep.Flagged)
+	}
+	if len(rank.removed) != 1 || rank.removed[0] != reportID {
+		t.Fatalf("removed = %v, want the report withdrawn", rank.removed)
+	}
+}
+
+// trimStoredEvents rewrites a report's first fight with one event
+// missing, which is what a companion that trimmed its own deaths would
+// have uploaded.
+func trimStoredEvents(t *testing.T, d Deps, objects *memObjects, reportID string) {
+	t.Helper()
+	ctx := context.Background()
+	fights, err := d.Reports.Fights(ctx, reportID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	key := store.Keys{ReportID: reportID}.FightEvents(fights[0].Index)
+	stored, _ := objects.get(key)
+	events, err := logparquet.Unmarshal(stored)
+	if err != nil {
+		t.Fatal(err)
+	}
+	trimmed, err := logparquet.Marshal(events[:len(events)-1])
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := objects.Put(ctx, key, trimmed, store.PutOptions{}); err != nil {
+		t.Fatal(err)
 	}
 }

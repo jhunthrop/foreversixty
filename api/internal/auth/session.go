@@ -114,6 +114,19 @@ func (a *Authenticator) Middleware(next http.Handler) http.Handler {
 			httpx.WriteError(w, r, http.StatusInternalServerError, "internal", "could not read that session", nil)
 			return
 		}
+		// fs_csrf is readable by script and outlives nothing that
+		// fs_session does not, so a browser can end up holding the
+		// session and not the token - and then every state-changing
+		// request 403s with no way out, DELETE /v1/sessions included.
+		// Re-issuing it here is the recovery: this request still fails
+		// the check below, because the caller could not have sent a
+		// token it did not have, but the retry carries one. Handing a
+		// fresh random token to a request that is missing it gives a
+		// cross-site caller nothing: it still cannot read the cookie to
+		// echo it in the header.
+		if c, err := r.Cookie(CSRFCookie); err != nil || c.Value == "" {
+			a.setCookie(w, CSRFCookie, NewSessionID(), SessionTTL, false)
+		}
 		if stateChanging(r.Method) && !a.csrfOK(r) {
 			httpx.WriteError(w, r, http.StatusForbidden, "csrf",
 				"this request needs the X-CSRF-Token header to match the fs_csrf cookie", nil)

@@ -1,6 +1,9 @@
 package character
 
-import "testing"
+import (
+	"strings"
+	"testing"
+)
 
 func TestKeyIsRegionRulesetAndNameSlug(t *testing.T) {
 	for _, tc := range []struct{ region, ruleset, name, want string }{
@@ -46,5 +49,42 @@ func TestKeyFromUnitSplitsTheLoggedName(t *testing.T) {
 	}
 	if got := KeyFromUnit("us", "pvp", "Baelgrim"); got != "us/pvp/baelgrim" {
 		t.Errorf("a unit with no realm segment is all name: %q", got)
+	}
+}
+
+func TestValidKeyAcceptsTheContractsShapeAndNothingElse(t *testing.T) {
+	for _, c := range []struct {
+		key  string
+		want bool
+	}{
+		{"us/normal/baelgrim", true},
+		{"eu/rp/lady-sunwick", true},
+		{"kr/hardcore/" + "사실", true},
+		{"us/normal/bael9", true},
+		{"", false},
+		{"us/normal", false},
+		{"us/normal/", false},
+		{"mars/normal/baelgrim", false},
+		{"us/nightslayer/baelgrim", false},
+		{"us/normal/Baelgrim", false},
+		{"us/normal/bael grim", false}, // Slug would have hyphenated it
+		{"us/normal/bael/grim", false},
+		// The slug crosses into a Lua file the addon loads, so the
+		// characters that would close a string or a long bracket there
+		// are refused at the door.
+		{`us/normal/bael"grim`, false},
+		{"us/normal/bael'grim", false},
+		{`us/normal/bael\grim`, false},
+		{"us/normal/bael]]grim", false},
+		{"us/normal/bael\ngrim", false},
+		{"us/normal/bael\x00grim", false},
+		{"us/normal/bael\u00a0grim", false}, // a non-breaking space is still a space
+		{"us/normal/bael\xffgrim", false},
+		{"us/normal/" + strings.Repeat("a", MaxSlugBytes), true},
+		{"us/normal/" + strings.Repeat("a", MaxSlugBytes+1), false},
+	} {
+		if got := ValidKey(c.key); got != c.want {
+			t.Errorf("ValidKey(%q) = %v, want %v", c.key, got, c.want)
+		}
 	}
 }

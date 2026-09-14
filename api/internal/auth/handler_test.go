@@ -12,7 +12,6 @@ import (
 	"net/url"
 	"strings"
 	"testing"
-	"unicode/utf8"
 
 	"github.com/jhunthrop/foreversixty/api/internal/mail"
 	"golang.org/x/oauth2"
@@ -732,25 +731,5 @@ func TestAMailerFailureIs500AndTheLinkIsNotClaimedSent(t *testing.T) {
 	w := emailPost(s, `{"email":"raider@example.com"}`)
 	if w.Code != http.StatusInternalServerError {
 		t.Fatalf("status = %d, want 500", w.Code)
-	}
-}
-
-func TestTrimBoundsALabel(t *testing.T) {
-	if got := trim("  Raid PC  ", 60); got != "Raid PC" {
-		t.Errorf("trim = %q", got)
-	}
-	// A pure-ASCII label truncates exactly at the byte bound, as before.
-	if got := trim(strings.Repeat("x", 100), 10); len(got) != 10 {
-		t.Errorf("trim did not bound the label: %q", got)
-	}
-	// A multi-byte label truncated at the bound must still be valid
-	// UTF-8, never split mid-rune: each "日" is 3 bytes, so a naive cut
-	// at byte 10 would land one byte into the fourth rune.
-	if got := trim(strings.Repeat("日", 20), 10); !utf8.ValidString(got) {
-		t.Fatalf("trim produced invalid UTF-8: %q", got)
-	} else if len(got) > 10 {
-		t.Fatalf("trim exceeded the bound: %q (%d bytes)", got, len(got))
-	} else if got != "日日日" {
-		t.Fatalf("trim = %q, want the largest whole-rune prefix under the bound", got)
 	}
 }

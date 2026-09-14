@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"log/slog"
 	"net/http"
@@ -369,9 +370,13 @@ func TestTheInboxIsBoundedAgainstASpammyAccount(t *testing.T) {
 	h := newHarness(t)
 	h.actor = auth.Actor{UserID: h.owner, Role: "user", Method: "session"}
 	for i := 0; i < InboxLimit+5; i++ {
-		res := h.do(http.MethodPost, "/v1/addon/inbox",
-			`{"build_id":"k7x2qm4`+string(rune('a'+i%26))+string(rune('0'+i/26))+`"}`)
+		// Eight lowercase base32 characters, as builds.ID produces.
+		id := fmt.Sprintf("k7x2qm%c%c", 'a'+i%26, 'a'+(i/26)%26)
+		res := h.do(http.MethodPost, "/v1/addon/inbox", `{"build_id":"`+id+`"}`)
 		res.Body.Close()
+		if res.StatusCode != http.StatusCreated {
+			t.Fatalf("queueing %s = %d, want 201", id, res.StatusCode)
+		}
 	}
 	var count int
 	if err := h.pool.QueryRow(context.Background(),
@@ -383,15 +388,43 @@ func TestTheInboxIsBoundedAgainstASpammyAccount(t *testing.T) {
 	}
 }
 
+// Both fields go back out of GET /v1/addon/inbox verbatim and into a
+// Lua file the addon loads, so neither may be arbitrary free text.
 func TestQueueingRefusesNonsense(t *testing.T) {
 	h := newHarness(t)
 	h.actor = auth.Actor{UserID: h.owner, Role: "user", Method: "session"}
-	for name, body := range map[string]string{"not json": `{`, "no build": `{"build_id":""}`} {
+	for name, body := range map[string]string{
+		"not json":             `{`,
+		"no build":             `{"build_id":""}`,
+		"build id too long":    `{"build_id":"k7x2qm4ab"}`,
+		"build id not base32":  `{"build_id":"k7x2qm41"}`,
+		"build id with quotes": `{"build_id":"k7x2qm"a"}`,
+		"key with a quote":     `{"build_id":"k7x2qm4a","character_key":"us/normal/bael"grim"}`,
+		"key with a backslash": `{"build_id":"k7x2qm4a","character_key":"us/normal/bael\grim"}`,
+		"key with a newline": `{"build_id":"k7x2qm4a","character_key":"us/normal/bael
+grim"}`,
+		"key with a bad region": `{"build_id":"k7x2qm4a","character_key":"mars/normal/baelgrim"}`,
+		"key that is not a key": `{"build_id":"k7x2qm4a","character_key":"baelgrim"}`,
+		"key that is a novel": `{"build_id":"k7x2qm4a","character_key":"us/normal/` +
+			strings.Repeat("a", 200) + `"}`,
+	} {
 		res := h.do(http.MethodPost, "/v1/addon/inbox", body)
 		res.Body.Close()
 		if res.StatusCode != http.StatusBadRequest {
 			t.Errorf("%s = %d, want 400", name, res.StatusCode)
 		}
+	}
+}
+
+// A build sent to the account rather than to one character carries no
+// key at all, which the column's default allows.
+func TestQueueingWithNoCharacterKeyIsAllowed(t *testing.T) {
+	h := newHarness(t)
+	h.actor = auth.Actor{UserID: h.owner, Role: "user", Method: "session"}
+	res := h.do(http.MethodPost, "/v1/addon/inbox", `{"build_id":"k7x2qm4a"}`)
+	res.Body.Close()
+	if res.StatusCode != http.StatusCreated {
+		t.Fatalf("status = %d, want 201", res.StatusCode)
 	}
 }
 

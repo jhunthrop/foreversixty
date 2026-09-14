@@ -7,7 +7,11 @@
 // <region>/<ruleset>/<name-slug>.
 package character
 
-import "strings"
+import (
+	"strings"
+	"unicode"
+	"unicode/utf8"
+)
 
 // The four rulesets, per the Phase 3 contract.
 const (
@@ -43,6 +47,50 @@ func in(all []string, s string) bool {
 // same path so there is only ever one rule.
 func Slug(name string) string {
 	return strings.ReplaceAll(strings.ToLower(strings.TrimSpace(name)), " ", "-")
+}
+
+// MaxSlugBytes bounds a name-slug. A character name is at most twelve
+// characters and a guild name at most twenty-four; sixty-four bytes is
+// room for either written in any script.
+const MaxSlugBytes = 64
+
+// ValidSlug reports whether s is a canonical name-slug: non-empty, at
+// most MaxSlugBytes, unchanged by Slug, valid UTF-8, and made only of
+// letters, digits and hyphens.
+//
+// The charset matters beyond tidiness. A character key crosses the
+// addon inbox into a Lua source file the addon loads, so a slug
+// carrying a quote, a bracket, a backslash or a newline is an
+// injection waiting for a companion that forgets to escape. Nothing in
+// a real name needs an ASCII character outside [a-z0-9-], and
+// non-ASCII letters - which kr, tw and cn names are made of - are
+// allowed through unharmed.
+func ValidSlug(s string) bool {
+	if s == "" || len(s) > MaxSlugBytes || !utf8.ValidString(s) || Slug(s) != s {
+		return false
+	}
+	for _, r := range s {
+		switch {
+		case r == '-' || (r >= 'a' && r <= 'z') || (r >= '0' && r <= '9'):
+		case r < utf8.RuneSelf || unicode.IsControl(r) || unicode.IsSpace(r):
+			return false
+		}
+	}
+	return true
+}
+
+// ValidKey reports whether key is a well-formed character key:
+// <region>/<ruleset>/<name-slug>, with all three parts valid.
+func ValidKey(key string) bool {
+	region, rest, ok := strings.Cut(key, "/")
+	if !ok {
+		return false
+	}
+	ruleset, slug, ok := strings.Cut(rest, "/")
+	if !ok {
+		return false
+	}
+	return ValidRegion(region) && ValidRuleset(ruleset) && ValidSlug(slug)
 }
 
 // Key builds a character key. Region and ruleset are lowercased but not

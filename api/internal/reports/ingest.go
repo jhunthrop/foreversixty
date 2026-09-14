@@ -27,10 +27,12 @@ import (
 )
 
 const (
-	// maxBundleBytes is the ceiling on one fight bundle: a fight's
+	// MaxBundleBytes is the ceiling on one fight bundle: a fight's
 	// Parquet is two to ten megabytes compressed, so sixty-four is
-	// generous and still bounded.
-	maxBundleBytes = 64 << 20
+	// generous and still bounded. It is exported because it is also
+	// the ceiling on a stored fight's events.parquet read back out of
+	// the bucket - nothing larger than this was ever written.
+	MaxBundleBytes = 64 << 20
 	// maxRawChunkBytes is the contract's 8 MiB cap on a raw chunk.
 	maxRawChunkBytes = 8 << 20
 	// maxLiveBytes is the ceiling on a live snapshot.
@@ -169,8 +171,8 @@ func (i *Ingest) putFight(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", msgFightIndex, nil)
 		return
 	}
-	r.Body = http.MaxBytesReader(w, r.Body, maxBundleBytes)
-	if err := r.ParseMultipartForm(maxBundleBytes); err != nil {
+	r.Body = http.MaxBytesReader(w, r.Body, MaxBundleBytes)
+	if err := r.ParseMultipartForm(MaxBundleBytes); err != nil {
 		httpx.WriteError(w, r, http.StatusBadRequest, "invalid",
 			"the bundle must be multipart with summary, events, metrics, and raw_range parts", nil)
 		return
@@ -533,7 +535,7 @@ func partBytes(r *http.Request, name string) ([]byte, error) {
 		return nil, fmt.Errorf("the bundle has no %s part", name)
 	}
 	defer f.Close()
-	b, err := io.ReadAll(io.LimitReader(f, maxBundleBytes))
+	b, err := io.ReadAll(io.LimitReader(f, MaxBundleBytes))
 	if err != nil {
 		return nil, fmt.Errorf("the %s part could not be read", name)
 	}

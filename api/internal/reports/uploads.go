@@ -13,6 +13,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/api/internal/jobs"
 	"github.com/jhunthrop/foreversixty/api/internal/r2"
+	"github.com/jhunthrop/foreversixty/api/internal/textx"
 )
 
 const (
@@ -24,6 +25,8 @@ const (
 	uploadIDChars = 16
 	// ParseJobCommand is the argument the image dispatches on.
 	ParseJobCommand = "parse-report"
+	// maxFilename bounds the filename an upload is remembered by.
+	maxFilename = 120
 )
 
 // Multipart is the part of the R2 client the upload routes use.
@@ -226,14 +229,13 @@ func (u *Uploads) complete(w http.ResponseWriter, r *http.Request) {
 	httpx.WriteOK(w, r, http.StatusAccepted, map[string]string{"report_id": rep.ID})
 }
 
-// trimFilename bounds a filename and keeps its base name only.
+// trimFilename bounds a filename and keeps its base name only. The
+// bound is rune-safe: uploads.filename is a text column, and cutting a
+// multi-byte rune in half makes the insert fail outright.
 func trimFilename(name string) string {
 	name = strings.TrimSpace(name)
 	if i := strings.LastIndexAny(name, `/\`); i >= 0 {
 		name = name[i+1:]
 	}
-	if len(name) > 120 {
-		name = name[:120]
-	}
-	return name
+	return textx.Trim(name, maxFilename)
 }

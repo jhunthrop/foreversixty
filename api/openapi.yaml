@@ -801,6 +801,15 @@ paths:
           content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } }
     post:
       summary: Queue a build for the game (session)
+      description: >-
+        Escaping contract. What this route stores comes straight back out of GET /v1/addon/inbox
+        as `id` and `character`, and the companion writes those into ForeverSixtyInbox.lua, a Lua
+        source file the addon loads. The API's half of the bargain is shape: build_id is exactly
+        eight lowercase RFC 4648 base32 characters ([a-z2-7]), and character_key is either empty
+        or <region>/<ruleset>/<name-slug> whose slug is letters, digits and hyphens only - no
+        quote, backslash, bracket, control character or whitespace can reach the store, and
+        anything else is refused 400. The companion's half is to escape what it writes anyway:
+        the shape check is a floor, not a promise that the value is safe to interpolate.
       requestBody:
         required: true
         content:
@@ -809,10 +818,13 @@ paths:
               type: object
               required: [build_id]
               properties:
-                build_id: { type: string }
-                character_key: { type: string }
+                build_id: { type: string, minLength: 8, maxLength: 8, pattern: '^[a-z2-7]{8}$' }
+                character_key:
+                  type: string
+                  pattern: '^$|^[a-z]{2}/(normal|pvp|rp|hardcore)/[^/]{1,64}$'
       responses:
         '201': { description: "queued", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '400': { description: "build_id or character_key is not the right shape", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
   /reports/{id}/card.png:
     get:
       summary: A report's unfurl card

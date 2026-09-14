@@ -8,10 +8,10 @@ import (
 	netmail "net/mail"
 	"strings"
 	"time"
-	"unicode/utf8"
 
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/api/internal/mail"
+	"github.com/jhunthrop/foreversixty/api/internal/textx"
 )
 
 // LoginTokenTTL and PairingCodeTTL are Task 5's store.go constants
@@ -27,6 +27,10 @@ const (
 	claimsPerHour = 30
 	// emailsPerHour caps magic links per IP on top of the per-address cap.
 	emailsPerHour = 20
+	// maxDeviceName and maxDevicePlatform bound the two labels a
+	// companion names itself with.
+	maxDeviceName     = 60
+	maxDevicePlatform = 40
 )
 
 // Service serves every sign-in route.
@@ -303,7 +307,8 @@ func (s *Service) claim(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	token, hash := NewDeviceToken()
-	d, err := s.Store.CreateDevice(r.Context(), userID, trim(in.Name, 60), trim(in.Platform, 40), hash)
+	d, err := s.Store.CreateDevice(r.Context(), userID,
+		textx.Trim(in.Name, maxDeviceName), textx.Trim(in.Platform, maxDevicePlatform), hash)
 	if err != nil {
 		s.fail(w, r, "claim", err, "could not pair that device just now")
 		return
@@ -344,22 +349,4 @@ func normalizeEmail(s string) (string, error) {
 		return "", errors.New("auth: invalid email")
 	}
 	return strings.ToLower(addr.Address), nil
-}
-
-// trim bounds a client-supplied label to at most max bytes, backing off
-// from the cut point to the nearest rune boundary. Byte-slicing UTF-8
-// blindly can split a multi-byte rune and hand devices.name or
-// devices.platform an invalid string, which fails the insert with
-// "invalid byte sequence for encoding "UTF8"" after the pairing code has
-// already been spent — so this never cuts mid-rune.
-func trim(s string, max int) string {
-	s = strings.TrimSpace(s)
-	if len(s) <= max {
-		return s
-	}
-	s = s[:max]
-	for !utf8.ValidString(s) {
-		s = s[:len(s)-1]
-	}
-	return s
 }

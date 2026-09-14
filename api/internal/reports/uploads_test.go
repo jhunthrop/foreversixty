@@ -2,11 +2,14 @@ package reports
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"net/http"
 	"strconv"
+	"strings"
 	"testing"
 	"time"
+	"unicode/utf8"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/r2"
@@ -204,6 +207,40 @@ func TestTrimFilenameKeepsTheBaseName(t *testing.T) {
 	}
 	if got := trimFilename(string(make([]byte, 300))); len(got) != 120 {
 		t.Errorf("a long name was not bounded: %d", len(got))
+	}
+}
+
+// A filename over the bound that is not ASCII used to be byte-sliced,
+// which can split a multi-byte rune; uploads.filename is a text column
+// and Postgres refuses the result with "invalid byte sequence for
+// encoding UTF8", so the upload 500s on every attempt.
+func TestALongNonASCIIFilenameStartsAnUpload(t *testing.T) {
+	h := newHarness(t)
+	h.asSession()
+	// Each "日" is three bytes, so 50 of them is 150 bytes and a cut at
+	// 120 lands inside the forty-first rune.
+	name := strings.Repeat("日", 50) + ".txt"
+
+	body, err := json.Marshal(map[string]any{"size_bytes": 10, "filename": name})
+	if err != nil {
+		t.Fatal(err)
+	}
+	res := h.json(http.MethodPost, "/v1/uploads", string(body))
+	var start struct {
+		UploadID string `json:"upload_id"`
+	}
+	h.data(res, &start)
+
+	var stored string
+	if err := h.store.Pool.QueryRow(t.Context(),
+		`select filename from uploads where id = $1`, start.UploadID).Scan(&stored); err != nil {
+		t.Fatal(err)
+	}
+	if !utf8.ValidString(stored) {
+		t.Fatalf("stored filename is not valid UTF-8: %q", stored)
+	}
+	if len(stored) > 120 || stored != strings.Repeat("日", 40) {
+		t.Fatalf("stored filename = %q (%d bytes), want the whole-rune prefix", stored, len(stored))
 	}
 }
 

@@ -178,3 +178,90 @@ func TestStartSessionSetsBothCookiesWithTheContractAttributes(t *testing.T) {
 		})
 	}
 }
+
+// Losing fs_csrf while fs_session survives used to be a lockout: every
+// state-changing request 403s, and DELETE /v1/sessions is itself state
+// changing, so even signing out on the account page failed. The
+// middleware now hands the token back, so the retry works.
+func TestALostCSRFCookieIsReissuedWhileTheSessionStands(t *testing.T) {
+	store := testStore(t)
+	u, err := store.UpsertEmailUser(context.Background(), "raider@example.com")
+	if err != nil {
+		t.Fatal(err)
+	}
+	sess, err := store.CreateSession(context.Background(), u.ID, "email", SessionTTL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	a := &Authenticator{Store: store}
+	h := a.Middleware(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	}))
+
+	w := httptest.NewRecorder()
+	h.ServeHTTP(w, newCSRFRequest(sess.ID, "", true, "anything"))
+	if w.Code != http.StatusForbidden {
+		t.Fatalf("status = %d, want the request itself still refused", w.Code)
+	}
+	reissued := setCookie(w.Result(), CSRFCookie)
+	if reissued == nil || reissued.Value == "" {
+		t.Fatalf("no fs_csrf was re-issued: %v", w.Result().Cookies())
+	}
+
+	// The browser now has the token, so the retry is accepted.
+	w = httptest.NewRecorder()
+	h.ServeHTTP(w, newCSRFRequest(sess.ID, reissued.Value, true, reissued.Value))
+	if w.Code != http.StatusOK {
+		t.Fatalf("the retry = %d, want 200", w.Code)
+	}
+
+	// A GET is not state changing and never had a token to lose, but
+	// it is the cheapest place to get one back.
+	w = httptest.NewRecorder()
+	r := httptest.NewRequest(http.MethodGet, "/v1/me", nil)
+	r.AddCookie(&http.Cookie{Name: SessionCookie, Value: sess.ID})
+	h.ServeHTTP(w, r)
+	if w.Code != http.StatusOK {
+		t.Fatalf("a read = %d, want 200", w.Code)
+	}
+	if got := setCookie(w.Result(), CSRFCookie); got == nil || got.Value == "" {
+		t.Fatalf("a read with a session and no token must re-issue one: %v", w.Result().Cookies())
+	}
+}
+
+// A request that already carries fs_csrf is left alone: re-issuing on
+// every request would race a second tab into a 403.
+func TestACSRFCookieThatIsPresentIsNotReissued(t *testing.T) {
+	store := testStore(t)
+	u, err := store.UpsertEmailUser(context.Background(), "raider@example.com")
+	if err != nil {
+		t.Fatal(err)
+	}
+	sess, err := store.CreateSession(context.Background(), u.ID, "email", SessionTTL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	a := &Authenticator{Store: store}
+	h := a.Middleware(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	}))
+	w := httptest.NewRecorder()
+	h.ServeHTTP(w, newCSRFRequest(sess.ID, "csrf-token", true, "csrf-token"))
+	if w.Code != http.StatusOK {
+		t.Fatalf("status = %d", w.Code)
+	}
+	if got := setCookie(w.Result(), CSRFCookie); got != nil {
+		t.Fatalf("fs_csrf was re-issued over a good one: %+v", got)
+	}
+}
+
+// setCookie reads one Set-Cookie off a response, or nil when it is not
+// there.
+func setCookie(res *http.Response, name string) *http.Cookie {
+	for _, c := range res.Cookies() {
+		if c.Name == name {
+			return c
+		}
+	}
+	return nil
+}

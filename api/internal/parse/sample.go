@@ -188,7 +188,11 @@ func (d Deps) storedEvents(ctx context.Context, reportID string, index int) ([]e
 		return nil, fmt.Errorf("parse: read events %s/%d: %w", reportID, index, err)
 	}
 	defer body.Close()
-	b, err := io.ReadAll(body)
+	// Bounded like every other r2.Get read on this path: the ingest
+	// never accepted a bundle larger than this, so nothing bigger can
+	// be stored, and the job must not be at the mercy of the bucket
+	// for how much it holds in memory.
+	b, err := io.ReadAll(io.LimitReader(body, reports.MaxBundleBytes))
 	if err != nil {
 		return nil, fmt.Errorf("parse: read events %s/%d: %w", reportID, index, err)
 	}
@@ -292,22 +296,27 @@ func (w *Worker) Schedule(reportID string) {
 	}
 }
 
-// Run consumes the queue until ctx is cancelled or Close is called. A
-// report already queued when Close runs is still drained and checked:
-// closing a channel does not discard what is already buffered in it.
+// Run consumes the queue until Close is called. A report already
+// queued when Close runs is still drained and checked: closing a
+// channel does not discard what is already buffered in it.
+//
+// Close is deliberately the only thing that stops it. Run used to
+// return on ctx.Done too, and ctx is the signal context: on SIGTERM
+// the consumer exited first and http.Server.Shutdown then drained
+// handlers that can still Schedule, so those reports landed in a
+// buffered channel nobody was reading and were silently lost. The
+// consumer has to outlive the handlers it serves, which is why the
+// shutdown order is Shutdown and then Close.
+//
+// For the same reason the checks themselves run on a context the
+// shutdown signal does not cancel. Each one is still bounded by
+// SampleTimeout.
 func (w *Worker) Run(ctx context.Context) {
 	defer close(w.done)
-	for {
-		select {
-		case <-ctx.Done():
-			return
-		case id, ok := <-w.queue:
-			if !ok {
-				return
-			}
-			if err := Sample(ctx, w.Deps, id); err != nil {
-				w.Deps.logger().Error("parse", "op", "sample", "report", id, "err", err)
-			}
+	work := context.WithoutCancel(ctx)
+	for id := range w.queue {
+		if err := Sample(work, w.Deps, id); err != nil {
+			w.Deps.logger().Error("parse", "op", "sample", "report", id, "err", err)
 		}
 	}
 }
