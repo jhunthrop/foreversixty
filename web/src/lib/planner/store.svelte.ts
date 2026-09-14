@@ -211,6 +211,18 @@ export function createPlannerStore(init: PlannerInit) {
       talents = file;
     },
 
+    /**
+     * Replaces the build with one reconstructed from an FS1 code. Separate from the
+     * constructor because an FS1 code names talents by tab position, which needs the class's
+     * talent file -- and that arrives one fetch after the store is created.
+     */
+    applyOrder(nextOrder: number[], nextGear: Gear): void {
+      if (!editable()) return;
+      order = [...nextOrder];
+      gear = { ...nextGear };
+      refusal = null;
+    },
+
     setItems(file: ItemFile): void {
       itemFile = file;
     },

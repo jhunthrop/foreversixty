@@ -6,6 +6,7 @@
 <script lang="ts">
   import { untrack } from 'svelte';
   import { DEFAULT_CLASS_SLUG, ERA_DATA_NOTICE } from '../../lib/planner/config';
+  import { decodeFS1, orderFromRanks } from '../../lib/planner/fs1';
   import {
     DATA_LOAD_FAILED,
     DataLoadError,
@@ -42,14 +43,36 @@
     return new URLSearchParams(window.location.search).get(name) ?? undefined;
   }
 
+  // A code wins over ?class= and ?race=: it names all three, and a mismatch between them
+  // would be a build in the wrong class. A record (from /b/:id) wins over all three: that
+  // build already names its class and race, and it is not an addon export to decode. Read
+  // once, like the store below and for the same reason: `record` is a prop, and this only
+  // ever wants the value the page mounted with.
+  const decoded = untrack(() => {
+    const codeParam = record ? null : (fromQuery('code') ?? null);
+    return codeParam === null ? null : decodeFS1(codeParam);
+  });
+
+  /** Set when the build came in as an FS1 code, because its order is a reconstruction. */
+  let codeNote = $state('');
+  // A code is applied once, on the load it arrived with. `load()` also reruns on a manual
+  // class switch or Retry (see its own comment below) -- without this guard, switching class
+  // after opening a code would replay the original code's tree ranks against the new class's
+  // talent index on the next load, silently overwriting the switch the person just made.
+  let codeApplied = false;
+
   // The store is seeded once, from the props as they arrive. `untrack` says so: without it
   // the compiler warns that these reads only capture the initial value, which is the point --
   // after mount the store owns the class, the race and the order, not the props.
   const store = untrack(() =>
     createPlannerStore({
       treeVersion: record?.tree_version ?? treeVersion,
-      classSlug: record ? classSlug : (fromQuery('class') ?? classSlug),
-      raceSlug: record ? (raceSlug ?? '') : (fromQuery('race') ?? raceSlug ?? ''),
+      classSlug: record ? classSlug : (decoded?.ok ? decoded.build.classSlug : (fromQuery('class') ?? classSlug)),
+      raceSlug: record
+        ? (raceSlug ?? '')
+        : decoded?.ok
+          ? decoded.build.raceSlug
+          : (fromQuery('race') ?? raceSlug ?? ''),
       order: record?.point_order,
       gear: record?.gear,
       title: record?.title,
@@ -107,6 +130,19 @@
       const talents = await loadTalents(store.treeVersion, slug);
       if (stale()) return;
       store.setTalents(talents);
+      if (decoded !== null && !codeApplied) {
+        codeApplied = true;
+        if (!decoded.ok) {
+          codeNote = decoded.message;
+        } else if (store.talentIndex !== null) {
+          const rebuilt = orderFromRanks(store.talentIndex, decoded.build.treeRanks);
+          store.applyOrder(rebuilt.order, decoded.build.gear);
+          codeNote =
+            rebuilt.dropped.length === 0
+              ? 'Talents loaded from a character. The order points were spent in is not recorded in game, so this is the lowest-tier-first order that reaches the same tree.'
+              : `Talents loaded from a character, minus ${rebuilt.dropped.length} that no legal order reaches. The order is a reconstruction: the game does not record the order points were spent in.`;
+        }
+      }
       const sets = await loadSets(store.treeVersion);
       if (stale()) return;
       store.setSets(sets);
@@ -160,6 +196,10 @@
   <SummaryBar {store} />
 
   <p class="text-muted px-[18px] text-[13px] md:px-0">{ERA_DATA_NOTICE}</p>
+
+  {#if codeNote !== ''}
+    <p class="text-muted px-[18px] text-[13px] md:px-0" data-testid="planner-code-note">{codeNote}</p>
+  {/if}
 
   <!-- The three states below swap in place once the talent data arrives over the network, and
        they are wildly different heights: one line of status text against a planner several

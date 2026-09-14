@@ -299,3 +299,18 @@ test('a class switch drops a reset confirm that is still open', async ({ page })
   await expect(page.getByRole('button', { name: 'Clear all points' })).toBeHidden();
   await expect(page.getByRole('button', { name: 'Reset' })).toBeVisible();
 });
+
+test('a build opens from an addon code in the URL, with the order noted as reconstructed', async ({ page }) => {
+  // The fixture warrior's first tier-0 talent is 1001 with max rank 3; see
+  // src/fixtures/planner/talents/warrior.json.
+  await page.goto('/planner?code=FS1%3A1.15.9.69722%3Awarrior%3Ahuman%3A3%2F0%2F0%3A');
+
+  await expect(page.getByTestId('talent-1001')).toHaveAttribute('data-rank', '3');
+  await expect(page.getByTestId('planner-split')).toHaveText('3/0');
+  await expect(page.getByTestId('planner-code-note')).toContainText('not recorded in game');
+});
+
+test('a code from another format is refused by name rather than ignored', async ({ page }) => {
+  await page.goto('/planner?code=FS2%3A1%3Awarrior%3Ahuman%3A3%2F0%2F0%3A');
+  await expect(page.getByTestId('planner-code-note')).toHaveText('That code is FS2; this site reads FS1.');
+});
