@@ -3,12 +3,21 @@
     "id": 1,
     "name": "Warrior",
     "slug": "warrior",
-    "color": "#c69b6d"
+    "color": "#c69b6d",
+    "forever_changes": []
   },
   {
     "id": 2,
     "name": "Paladin",
     "slug": "paladin",
-    "color": "#f48cba"
+    "color": "#f48cba",
+    "forever_changes": []
+  },
+  {
+    "id": 8,
+    "name": "Mage",
+    "slug": "mage",
+    "color": "#3fc7eb",
+    "forever_changes": []
   }
 ]

@@ -3,54 +3,63 @@
     "id": 1,
     "name": "Warrior",
     "slug": "warrior",
-    "color": "#c69b6d"
+    "color": "#c69b6d",
+    "forever_changes": []
   },
   {
     "id": 2,
     "name": "Paladin",
     "slug": "paladin",
-    "color": "#f48cba"
+    "color": "#f48cba",
+    "forever_changes": []
   },
   {
     "id": 3,
     "name": "Hunter",
     "slug": "hunter",
-    "color": "#aad372"
+    "color": "#aad372",
+    "forever_changes": []
   },
   {
     "id": 4,
     "name": "Rogue",
     "slug": "rogue",
-    "color": "#fff468"
+    "color": "#fff468",
+    "forever_changes": []
   },
   {
     "id": 5,
     "name": "Priest",
     "slug": "priest",
-    "color": "#ffffff"
+    "color": "#ffffff",
+    "forever_changes": []
   },
   {
     "id": 7,
     "name": "Shaman",
     "slug": "shaman",
-    "color": "#0070dd"
+    "color": "#0070dd",
+    "forever_changes": []
   },
   {
     "id": 8,
     "name": "Mage",
     "slug": "mage",
-    "color": "#3fc7eb"
+    "color": "#3fc7eb",
+    "forever_changes": []
   },
   {
     "id": 9,
     "name": "Warlock",
     "slug": "warlock",
-    "color": "#8788ee"
+    "color": "#8788ee",
+    "forever_changes": []
   },
   {
     "id": 11,
     "name": "Druid",
     "slug": "druid",
-    "color": "#ff7c0a"
+    "color": "#ff7c0a",
+    "forever_changes": []
   }
 ]

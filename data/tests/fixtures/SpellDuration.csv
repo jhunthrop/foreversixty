@@ -1,0 +1,5 @@
+ID,Duration,DurationPerLevel,MaxDuration
+1,10000,0,10000
+3,60000,0,60000
+21,-1,0,-1
+29,12000,0,12000

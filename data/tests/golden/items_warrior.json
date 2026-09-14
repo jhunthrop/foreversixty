@@ -1,0 +1,109 @@
+{
+  "build": "1.0.0.1",
+  "class_slug": "warrior",
+  "items": [
+    {
+      "id": 13315,
+      "name": "Testament of Hope",
+      "icon": "inv_misc_book_06",
+      "slot": "off_hand",
+      "quality": 2,
+      "required_level": 0,
+      "item_level": 61,
+      "armor": 0,
+      "stats": {
+        "spirit": 10
+      },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 2825,
+      "name": "Bow of Searing Arrows",
+      "icon": "inv_weapon_bow_08",
+      "slot": "ranged",
+      "quality": 4,
+      "required_level": 37,
+      "item_level": 42,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 12798,
+      "name": "Annihilator",
+      "icon": "inv_axe_12",
+      "slot": "main_hand",
+      "quality": 3,
+      "required_level": 58,
+      "item_level": 63,
+      "armor": 0,
+      "stats": {},
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 19325,
+      "name": "Don Julio's Band",
+      "icon": "inv_shield_09",
+      "slot": "finger",
+      "quality": 4,
+      "required_level": 60,
+      "item_level": 65,
+      "armor": 0,
+      "stats": {
+        "stamina": 11
+      },
+      "set_id": null,
+      "unique": true
+    },
+    {
+      "id": 17066,
+      "name": "Drillborer Disk",
+      "icon": "inv_shield_10",
+      "slot": "off_hand",
+      "quality": 4,
+      "required_level": 60,
+      "item_level": 67,
+      "armor": 2539,
+      "stats": {
+        "stamina": 10
+      },
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 16866,
+      "name": "Helm of Might",
+      "icon": "inv_helmet_21",
+      "slot": "head",
+      "quality": 4,
+      "required_level": 60,
+      "item_level": 66,
+      "armor": 608,
+      "stats": {
+        "stamina": 35,
+        "strength": 15,
+        "fire_res": 10
+      },
+      "set_id": 209,
+      "unique": false
+    },
+    {
+      "id": 19019,
+      "name": "Thunderfury Blessed Blade of the Windseeker",
+      "icon": "inv_sword_04",
+      "slot": "main_hand",
+      "quality": 5,
+      "required_level": 60,
+      "item_level": 80,
+      "armor": 0,
+      "stats": {
+        "agility": 5
+      },
+      "set_id": null,
+      "unique": true
+    }
+  ]
+}

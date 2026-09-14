@@ -8,6 +8,7 @@ import httpx
 logger = logging.getLogger(__name__)
 
 BASE_URL = "https://wago.tools"
+USER_AGENT = "foreversixty-pipeline/0.1 (+https://foreversixty.gg)"
 TABLES = [
     "Map",
     "AreaTable",
@@ -15,6 +16,13 @@ TABLES = [
     "ItemSparse",
     "Item",
     "SpellName",
+    "Spell",
+    "SpellEffect",
+    "SpellDuration",
+    "SpellMisc",
+    "ManifestInterfaceData",
+    "ItemSet",
+    "ItemSetSpell",
     "ChrClasses",
     "ChrRaces",
     "Talent",
@@ -70,7 +78,7 @@ def fetch_build(
     own = client is None
     client = client or httpx.Client(
         base_url=BASE_URL,
-        headers={"User-Agent": "foreversixty-pipeline/0.1 (+https://foreversixty.gg)"},
+        headers={"User-Agent": USER_AGENT},
     )
     try:
         build = build or latest_build(product, client)

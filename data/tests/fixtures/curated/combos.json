@@ -1,0 +1,11 @@
+[
+  { "race_id": 1, "class_id": 1, "new_in_forever": false },
+  {
+    "race_id": 1,
+    "class_id": 2,
+    "new_in_forever": true,
+    "sources": [
+      { "label": "Forever dev blog", "url": "https://example.test/forever-combo", "kind": "blizzard" }
+    ]
+  }
+]

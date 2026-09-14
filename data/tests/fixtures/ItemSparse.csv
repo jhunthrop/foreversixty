@@ -1,3 +1,14 @@
-ID,Display_lang,OverallQualityID,ItemLevel,RequiredLevel,InventoryType
-19019,Thunderfury Blessed Blade of the Windseeker,5,80,60,13
-2589,Linen Cloth,1,5,1,0
+ID,Display_lang,OverallQualityID,ItemLevel,RequiredLevel,InventoryType,MaxCount,ItemSet,AllowableClass,Resistances_0,Resistances_1,Resistances_2,Resistances_3,Resistances_4,Resistances_5,Resistances_6,StatModifier_bonusStat_0,StatModifier_bonusStat_1,StatModifier_bonusAmount_0,StatModifier_bonusAmount_1
+16866,Helm of Might,4,66,60,1,0,209,1,608,0,10,0,0,0,0,7,4,35,15
+19325,Don Julio's Band,4,65,60,11,1,0,-1,0,0,0,0,0,0,0,7,-1,11,0
+14152,Robe of the Archmage,4,66,60,20,0,0,128,106,0,0,0,0,0,0,5,6,40,20
+19019,Thunderfury Blessed Blade of the Windseeker,5,80,60,13,1,0,-1,0,0,0,0,0,0,0,3,-1,5,0
+2825,Bow of Searing Arrows,4,42,37,15,0,0,-1,0,0,0,0,0,0,0,-1,-1,0,0
+2589,Linen Cloth,1,5,1,0,0,0,-1,0,0,0,0,0,0,0,-1,-1,0,0
+12345,Overlevelled Cudgel,3,70,70,13,0,0,-1,0,0,0,0,0,0,0,4,-1,9,0
+7026,Linen Belt,1,9,4,6,0,0,-1,9,0,0,0,0,0,0,-1,-1,0,0
+13315,Testament of Hope,2,61,0,23,0,0,-1,0,0,0,0,0,0,0,6,-1,10,0
+17066,Drillborer Disk,4,67,60,14,0,0,-1,2539,0,0,0,0,0,0,7,-1,10,0
+19743,Cloaked Hood TEST,2,38,33,1,0,0,-1,86,0,0,0,0,0,0,7,3,10,10
+12798,Annihilator,3,63,58,21,0,0,-1,0,0,0,0,0,0,0,-1,-1,0,0
+99002,Featureless Cloth Vest,2,40,35,5,0,0,-1,0,0,0,0,0,0,0,-1,-1,0,0

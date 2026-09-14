@@ -1,0 +1,34 @@
+[
+  {
+    "id": 1,
+    "name": "Warrior",
+    "slug": "warrior",
+    "color": "#c69b6d",
+    "forever_changes": [
+      {
+        "text": "Warriors gain a fourth tree.",
+        "sources": [
+          {
+            "label": "Forever dev blog",
+            "url": "https://example.test/forever-warrior",
+            "kind": "blizzard"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Paladin",
+    "slug": "paladin",
+    "color": "#f48cba",
+    "forever_changes": []
+  },
+  {
+    "id": 8,
+    "name": "Mage",
+    "slug": "mage",
+    "color": "#3fc7eb",
+    "forever_changes": []
+  }
+]

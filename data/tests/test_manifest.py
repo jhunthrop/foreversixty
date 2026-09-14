@@ -24,3 +24,24 @@ def test_verify_reports_changed_files(tmp_path: Path):
     write_manifest(tmp_path, "b", "p", "t")
     (tmp_path / "zones.json").write_text("[1]\n")
     assert verify(tmp_path) == ["zones.json"]
+
+
+def test_manifest_keys_are_paths_relative_to_the_build_dir(tmp_path: Path):
+    (tmp_path / "talents").mkdir()
+    (tmp_path / "talents" / "warrior.json").write_text("{}\n")
+    (tmp_path / "icons").mkdir()
+    (tmp_path / "icons" / "a.webp").write_bytes(b"webp")
+    (tmp_path / "raw").mkdir()
+    (tmp_path / "raw" / "Talent.csv").write_text("ID\n")
+    (tmp_path / "classes.json").write_text("[]\n")
+    m = write_manifest(tmp_path, build="b", product="p", fetched_at="t")
+    assert sorted(m["files"]) == ["classes.json", "icons/a.webp", "talents/warrior.json"]
+    assert verify(tmp_path) == []
+
+
+def test_verify_reports_a_missing_nested_file(tmp_path: Path):
+    (tmp_path / "talents").mkdir()
+    (tmp_path / "talents" / "warrior.json").write_text("{}\n")
+    write_manifest(tmp_path, "b", "p", "t")
+    (tmp_path / "talents" / "warrior.json").unlink()
+    assert verify(tmp_path) == ["talents/warrior.json"]

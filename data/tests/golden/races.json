@@ -3,18 +3,24 @@
     "id": 1,
     "name": "Human",
     "slug": "human",
-    "faction": "alliance"
+    "faction": "alliance",
+    "placeholder": false,
+    "forever_changes": []
   },
   {
     "id": 2,
     "name": "Orc",
     "slug": "orc",
-    "faction": "horde"
+    "faction": "horde",
+    "placeholder": false,
+    "forever_changes": []
   },
   {
     "id": 24,
     "name": "Pandaren",
     "slug": "pandaren",
-    "faction": "neutral"
+    "faction": "neutral",
+    "placeholder": false,
+    "forever_changes": []
   }
 ]

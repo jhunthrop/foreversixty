@@ -13,14 +13,14 @@ CLASS_COLORS = {
 }
 
 
-def _slug(name: str) -> str:
+def slugify(name: str) -> str:
     return name.lower().replace(" ", "-").replace("'", "")
 
 
 def normalize_classes(rows: list[dict[str, str]]) -> list[PlayableClass]:
     out: list[PlayableClass] = []
     for r in rows:
-        slug = _slug(r["Name_lang"])
+        slug = slugify(r["Name_lang"])
         out.append(
             PlayableClass(
                 id=int(r["ID"]),
@@ -38,7 +38,7 @@ def normalize_races(rows: list[dict[str, str]]) -> list[PlayableRace]:
         PlayableRace(
             id=int(r["ID"]),
             name=r["Name_lang"],
-            slug=_slug(r["Name_lang"]),
+            slug=slugify(r["Name_lang"]),
             faction=faction_by_flag.get(r["Alliance"].strip(), "neutral"),
         )
         for r in rows

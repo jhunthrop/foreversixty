@@ -4,7 +4,7 @@ from pathlib import Path
 import httpx
 import pytest
 
-from pipeline.wago import TABLES, download_table, fetch_build, latest_build
+from pipeline.wago import TABLES, USER_AGENT, download_table, fetch_build, latest_build
 
 
 def fake_transport(
@@ -74,3 +74,26 @@ def test_download_table_accepts_id_column_anywhere_in_header(tmp_path: Path):
     client = httpx.Client(transport=httpx.MockTransport(handler), base_url="https://wago.tools")
     path = download_table("ChrClasses", "1.15.7.61582", tmp_path, client)
     assert path.read_text() == "Name_lang,ID\nWarrior,1\n"
+
+
+def test_tables_cover_every_phase_1_input():
+    assert TABLES == [
+        "Map",
+        "AreaTable",
+        "JournalInstance",
+        "ItemSparse",
+        "Item",
+        "SpellName",
+        "Spell",
+        "SpellEffect",
+        "SpellDuration",
+        "SpellMisc",
+        "ManifestInterfaceData",
+        "ItemSet",
+        "ItemSetSpell",
+        "ChrClasses",
+        "ChrRaces",
+        "Talent",
+        "TalentTab",
+    ]
+    assert "foreversixty-pipeline" in USER_AGENT

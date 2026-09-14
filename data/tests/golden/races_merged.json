@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "name": "Human",
+    "slug": "human",
+    "faction": "alliance",
+    "placeholder": false,
+    "forever_changes": []
+  },
+  {
+    "id": 900,
+    "name": "Skyborne",
+    "slug": "skyborne",
+    "faction": "neutral",
+    "placeholder": true,
+    "forever_changes": []
+  }
+]

@@ -38,5 +38,17 @@
       12297
     ],
     "prereq_talent_id": 130
+  },
+  {
+    "id": 150,
+    "tab_id": 164,
+    "tab_name": "Fury",
+    "class_id": 1,
+    "tier": 0,
+    "column": 1,
+    "spell_ids": [
+      21179
+    ],
+    "prereq_talent_id": null
   }
 ]

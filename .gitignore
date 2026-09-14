@@ -24,6 +24,7 @@ design/forever-sixty-look-and-feel.html
 
 # large raw game data (normalized JSON is committed; raw DB2 exports are not)
 data/builds/*/raw/
+data/.icon-cache/
 
 # git worktrees for parallel plan execution
 .worktrees/

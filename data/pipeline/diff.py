@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-ENTITIES = ["zones", "dungeons", "items", "spells", "classes", "races", "talents"]
+ENTITIES = ["zones", "dungeons", "items", "spells", "classes", "races", "talents", "sets"]
 
 
 def diff_entities(before: list[dict], after: list[dict]) -> dict:
