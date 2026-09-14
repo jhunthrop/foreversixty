@@ -7,7 +7,7 @@
 <script lang="ts">
   import { characterHref, guildHref, rulesetLabel, splitUnitName } from '../../lib/characters';
   import { classColorVar, formatAmount, formatDuration, percentileToken } from '../../lib/report/format';
-  import { fetchRankings, type RankingsPage } from '../../lib/rankings/api';
+  import { fetchRankings, type RankingMetric, type RankingsPage } from '../../lib/rankings/api';
   import type { FightEntry } from '../../lib/report/types';
 
   let {
@@ -16,7 +16,7 @@
     encounterSlug,
   }: { fight: FightEntry; reportId: string; encounterSlug: string } = $props();
 
-  let metric = $state<'dps' | 'hps' | 'damage_taken'>('dps');
+  let metric = $state<RankingMetric>('dps');
   let page = $state<RankingsPage | null>(null);
   let status = $state<'idle' | 'loading' | 'ready' | 'failed'>('idle');
   let error = $state('');
@@ -95,6 +95,10 @@
               class="font-mono tabular text-[12px]"
               style={`color: ${percentileToken(Math.max(0, 100 - ((row.rank - 1) / Math.max(page.total, 1)) * 100))}`}
             >
+              <!-- Decorative and approximate: a rank's position on this page, not the
+                   API's own percentile (GET /v1/rankings/percentile). Good enough to tint
+                   the digit; not a substitute for that endpoint if a precise percentile is
+                   ever needed here. -->
               {row.rank}
             </span>
             <span class="flex min-w-0 items-center gap-2">

@@ -5,11 +5,15 @@
 // and 20 (character and guild pages) import this module as-is: it is a shared surface, not
 // a private helper of the report island's Rankings mode.
 //
-// These reads are public -- a ranking is not tied to a signed-in visitor -- so unlike
-// web/src/lib/account/api.ts's requestEnvelope this sends no credentials and no CSRF
-// header. Going through account/api.ts's primitive would mean sending a session cookie an
-// anonymous ranking read does not need, so this module owns its own thin GET, parsing the
-// same `{ ok, data, error, request_id }` envelope every API response uses.
+// These reads are public -- a ranking is not tied to a signed-in visitor -- so this module
+// goes through account/api.ts's requestEnvelope the same way every other API-reading
+// module in this codebase does (account/api.ts itself, and web/src/lib/upload/
+// multipart.ts), but passes `credentials: 'omit'`: a ranking read does not need the
+// session cookie, and there is no reason to send it. Fix round 1 (Task 17 review) replaced
+// this module's own duplicate fetch/envelope-parse implementation with that shared one --
+// see `get()` below for how the two modules' slightly different failure readings are
+// reconciled.
+import { AccountError, requestEnvelope, type EnvelopeResult } from '../account/api';
 import { API_BASE_URL } from '../planner/config';
 import type { CharacterPath } from '../characters';
 
@@ -24,6 +28,12 @@ export class RankingsError extends Error {
     this.name = 'RankingsError';
   }
 }
+
+/** The contract's Amendments metric enum. */
+export type RankingMetric = 'dps' | 'hps' | 'damage_taken';
+
+/** A ranking row's moderation state. */
+export type RankingState = 'ok' | 'at_risk' | 'removed';
 
 export interface RankingRow {
   rank: number;
@@ -40,8 +50,7 @@ export interface RankingRow {
   buff_count: number;
   report_id: string;
   fight_index: number;
-  /** ok | at_risk | removed. */
-  state: string;
+  state: RankingState;
 }
 
 export interface RankingsPage {
@@ -67,7 +76,7 @@ export interface CharacterFight {
   encounter: string;
   encounter_id: number;
   difficulty: number;
-  metric: string;
+  metric: RankingMetric;
   value: number;
   percentile?: number;
   spec?: string;
@@ -108,7 +117,7 @@ export interface GuildRosterBest {
   player: { key: string; name: string; class: string; spec: string };
   encounter: string;
   encounter_id: number;
-  metric: string;
+  metric: RankingMetric;
   value: number;
   fought_at: string;
 }
@@ -124,7 +133,7 @@ export interface RankingsQuery {
   /** The numeric encounter id or the `/rankings/<encounter-slug>` slug -- the API accepts either. */
   encounter: string;
   difficulty?: number;
-  metric?: string;
+  metric?: RankingMetric;
   spec?: string;
   class?: string;
   phase?: string;
@@ -135,30 +144,26 @@ export interface RankingsQuery {
   page?: number;
 }
 
-interface Envelope<T> {
-  ok: boolean;
-  data: T | null;
-  error: { message?: string } | null;
-}
-
-async function get<T>(path: string, apiBase: string): Promise<T> {
-  let response: Response;
-  try {
-    response = await fetch(new Request(`${apiBase}${path}`));
-  } catch {
-    throw new RankingsError(RANKINGS_FAILED, 0);
-  }
-  if (!response.ok) throw new RankingsError(RANKINGS_FAILED, response.status);
-  let envelope: Envelope<T>;
-  try {
-    envelope = (await response.json()) as Envelope<T>;
-  } catch {
-    throw new RankingsError(RANKINGS_FAILED, response.status);
-  }
-  if (!envelope.ok || envelope.data === null) {
-    throw new RankingsError(envelope.error?.message ?? RANKINGS_FAILED, response.status);
-  }
-  return envelope.data;
+/**
+ * The `/rankings/<encounter-slug>` identifier a fight's own display name maps to -- the
+ * same slug `GET /v1/rankings?encounter=` accepts in place of the numeric id. Lowercased,
+ * every run of non-alphanumeric characters (spaces, apostrophes, punctuation) collapsed to
+ * one hyphen, and any leading or trailing hyphen trimmed: "Warden Kelthas" becomes
+ * "warden-kelthas", "Skolex the Insatiable" becomes "skolex-the-insatiable".
+ *
+ * This is the one place that derivation lives. The report island's own Rankings mode
+ * (ReportView.svelte's `encounterSlug` value, computed from the selected fight's name) and
+ * Task 19's `/rankings/<encounter-slug>` route both need exactly this identifier for
+ * exactly the same encounter name, and two independent derivations of one identifier drift
+ * apart at the first name with punctuation in it -- an apostrophe becoming its own hyphen
+ * in one copy and not the other, say. Both import this function rather than reimplementing
+ * the regex.
+ */
+export function encounterSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
 }
 
 /** Only the filters that are set reach the URL, so a bare rankings link stays short. */
@@ -170,6 +175,28 @@ function search(query: Record<string, string | number | undefined>): string {
   }
   const text = params.toString();
   return text === '' ? '' : `?${text}`;
+}
+
+/**
+ * The shared transport (`account/api.ts`'s `requestEnvelope`) reads failure off the HTTP
+ * status alone, unchanged from how the account module has always used it -- a caller that
+ * needs `data` to be non-null on success checks that itself, the same way
+ * `web/src/lib/upload/multipart.ts`'s `post()` already does. Every type this module
+ * exports is non-nullable, so that check happens here: a resolved-but-null `data` (an
+ * envelope that was `ok` with nothing in it, or a 200 response whose body did not parse)
+ * becomes a `RankingsError` using the envelope's own message when the response carried
+ * one, the same message fidelity the original standalone implementation had.
+ */
+async function get<T>(path: string, apiBase: string): Promise<T> {
+  let result: EnvelopeResult<T>;
+  try {
+    result = await requestEnvelope<T>(path, apiBase, { credentials: 'omit', failureMessage: RANKINGS_FAILED });
+  } catch (error) {
+    if (error instanceof AccountError) throw new RankingsError(error.message, error.status);
+    throw new RankingsError(RANKINGS_FAILED, 0);
+  }
+  if (result.data === null) throw new RankingsError(result.message ?? RANKINGS_FAILED, result.status);
+  return result.data;
 }
 
 export function fetchRankings(query: RankingsQuery, apiBase: string = API_BASE_URL): Promise<RankingsPage> {

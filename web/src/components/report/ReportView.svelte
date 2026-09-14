@@ -60,6 +60,7 @@
   import { createPercentileLoader, percentileKey } from '../../lib/report/percentile';
   import activeBuild from '../../data/active-build.json';
   import { loadTalents } from '../../lib/planner/load';
+  import { encounterSlug as slugFor } from '../../lib/rankings/api';
   import { resolveTreeSizes } from '../../lib/report/tree-sizes';
 
   let { reportId, inlineMeta = null }: { reportId: string; inlineMeta?: ReportMeta | null } = $props();
@@ -83,10 +84,12 @@
   const firstFight = $derived(fights.length > 0 ? fights[0].index : 1);
   let state = $state<ReportState>(defaultState(1));
   const fight = $derived<FightEntry | null>(fights.find((f) => f.index === state.fight) ?? null);
-  /** The encounter slug the rankings pages use: the fight's name, lowercased and hyphenated. */
-  const encounterSlug = $derived(
-    (fight?.name ?? '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
-  );
+  /**
+   * The encounter slug the rankings pages use, from the selected fight's own name. This
+   * is `rankings/api.ts`'s one shared derivation -- Task 19's `/rankings/<encounter-slug>`
+   * route uses the same function, so the two cannot drift apart on a name with punctuation.
+   */
+  const currentEncounterSlug = $derived(slugFor(fight?.name ?? ''));
   const roster = $derived(
     (summary?.roster ?? []).map((row) => ({ guid: row.guid, name: row.name, class: row.class })),
   );
@@ -566,7 +569,7 @@
         <CompareMode {fights} current={state.fight} dataBaseUrl={dataBase} left={summary} />
       {/if}
       {#if state.mode === 'rankings' && fight !== null}
-        <RankingsMode {fight} {reportId} {encounterSlug} />
+        <RankingsMode {fight} {reportId} encounterSlug={currentEncounterSlug} />
       {/if}
     </div>
   </div>

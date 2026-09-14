@@ -1,6 +1,6 @@
 // web/src/lib/rankings/api.test.ts
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { RANKINGS_FAILED, RankingsError, fetchCharacter, fetchGuild, fetchRankings } from './api';
+import { RANKINGS_FAILED, RankingsError, encounterSlug, fetchCharacter, fetchGuild, fetchRankings } from './api';
 
 const API = 'https://api.foreversixty.test';
 type GlobalFetch = (...args: Parameters<typeof fetch>) => Promise<Response>;
@@ -82,5 +82,28 @@ describe('character and guild', () => {
 
     await fetchGuild({ region: 'eu', ruleset: 'normal', slug: 'the-last-watch' }, API);
     expect((upstream.mock.calls[0][0] as Request).url).toBe(`${API}/v1/guilds/eu/normal/the-last-watch`);
+  });
+});
+
+describe('encounterSlug', () => {
+  it('lowercases and hyphenates a plain multi-word name', () => {
+    expect(encounterSlug('Warden Kelthas')).toBe('warden-kelthas');
+  });
+
+  it('collapses a run of punctuation to one hyphen rather than one per character', () => {
+    expect(encounterSlug("Kel'Thas Sunstrider")).toBe('kel-thas-sunstrider');
+    expect(encounterSlug('A -- B')).toBe('a-b');
+  });
+
+  it('trims a leading or trailing hyphen rather than keeping it', () => {
+    expect(encounterSlug('  Leading and Trailing  ')).toBe('leading-and-trailing');
+  });
+
+  it('leaves a single word alone but for the case', () => {
+    expect(encounterSlug('Trash')).toBe('trash');
+  });
+
+  it('is total: an empty name slugs to an empty string, not a throw', () => {
+    expect(encounterSlug('')).toBe('');
   });
 });

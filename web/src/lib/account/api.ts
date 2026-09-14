@@ -79,22 +79,42 @@ export interface EnvelopeResult<T> {
 
 /**
  * The one place a browser call to our API builds the request: `credentials: 'include'`
- * for the session cookie, `X-CSRF-Token` from the readable `fs_csrf` cookie on every
- * non-GET, and the JSON envelope parsed and turned into an `AccountError` (carrying the
- * API's own `error.message`) on a failed response. Every module that talks to our API --
- * this one, and `web/src/lib/upload/multipart.ts` for the two upload routes -- goes
- * through this, so the CSRF header and the credentials mode can only go wrong in one
- * place. It never throws for a *successful* response with no `data`; each caller decides
- * what "no data" means for its own endpoint.
+ * (by default -- see `init.credentials` below) for the session cookie, `X-CSRF-Token`
+ * from the readable `fs_csrf` cookie on every non-GET, and the JSON envelope parsed and
+ * turned into an `AccountError` (carrying the API's own `error.message`) on a failed
+ * response. Every module that talks to our API -- this one, `web/src/lib/upload/
+ * multipart.ts` for the two upload routes, and `web/src/lib/rankings/api.ts` for the
+ * public rankings/character/guild reads -- goes through this, so the CSRF header and the
+ * credentials mode can only go wrong in one place. It never throws for a *successful*
+ * response with no `data`; each caller decides what "no data" means for its own endpoint.
+ * Failure is read off the HTTP status alone (`!response.ok`), not the envelope's own `ok`
+ * flag: every response this API has ever sent keeps the two in agreement, and the
+ * account module's callers (`fetchMe`'s 401-means-signed-out, `listMyReports`'s
+ * empty-page-when-signed-out) rely on reading a non-2xx status themselves. A caller that
+ * needs `data` to be non-null on success (rankings, the two upload routes) checks that
+ * itself, the same way `multipart.ts`'s `post()` already does; the pattern in
+ * `rankings/api.ts`'s `get()` matches it.
  *
- * `failureMessage` overrides the fallback shown when a failed response carries no
- * `error.message` of its own; it defaults to `ACCOUNT_FAILED`, the account module's own
- * generic copy.
+ * `init.credentials` overrides the session cookie's `'include'` default. A public read
+ * that answers the same way for every visitor -- a ranking is not tied to who is asking
+ * -- passes `'omit'` so it does not send a cookie or the CSRF header the API does not
+ * need for it (CSRF is skipped on every GET regardless, since it only guards
+ * state-changing requests, but `'omit'` also keeps the session cookie itself off a
+ * request that has no business carrying one).
+ *
+ * `failureMessage` overrides the fallback shown when a failed response -- including one
+ * the browser never reached at all -- carries no `error.message` of its own; it defaults
+ * to `ACCOUNT_FAILED`, the account module's own generic copy.
  */
 export async function requestEnvelope<T>(
   path: string,
   apiBase: string,
-  init: { method?: string; body?: unknown; failureMessage?: string } = {},
+  init: {
+    method?: string;
+    body?: unknown;
+    failureMessage?: string;
+    credentials?: RequestCredentials;
+  } = {},
 ): Promise<EnvelopeResult<T>> {
   const method = init.method ?? 'GET';
   const headers = new Headers({ accept: 'application/json' });
@@ -109,12 +129,12 @@ export async function requestEnvelope<T>(
       new Request(`${apiBase}${path}`, {
         method,
         headers,
-        credentials: 'include',
+        credentials: init.credentials ?? 'include',
         body: init.body === undefined ? undefined : JSON.stringify(init.body),
       }),
     );
   } catch {
-    throw new AccountError(ACCOUNT_FAILED, 0);
+    throw new AccountError(init.failureMessage ?? ACCOUNT_FAILED, 0);
   }
 
   let envelope: Envelope<T> | null = null;
