@@ -147,7 +147,8 @@ the region and ruleset filters, the character page's own URL, and the links betw
 leaderboard and a character page are all keyed on it, so substituting a pseudonym for the name
 while publishing the key beside it would look like privacy without being any.
 
-Separately, and regardless of the flag: no route publishes an account's email address. An
+Separately, and regardless of the flag: no route shows an account's email address to anyone
+but that account, on `GET /v1/me`. An
 account that signed in by magic link has no battletag, and a report owner with no battletag
 reads as `user-<id>` whether or not they set `anonymize`.
 

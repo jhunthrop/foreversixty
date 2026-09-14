@@ -434,8 +434,8 @@ paths:
         It does not touch ranking rows. A row in /v1/rankings, on a character page or on a
         guild page still carries the character name you logged under, both as player.name and
         inside player.key, because the key is the character's identity: the leaderboard filters,
-        the character page and the links between them are all keyed on it. Nothing in the API
-        ever publishes your email address.
+        the character page and the links between them are all keyed on it. Separately and
+        regardless of the flag, no route shows your email address to anyone but you.
       requestBody:
         required: true
         content:

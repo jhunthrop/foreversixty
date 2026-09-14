@@ -329,23 +329,31 @@ func (s *Service) patch(w http.ResponseWriter, r *http.Request) {
 		trimmed := strings.TrimSpace(*p.Title)
 		p.Title = &trimmed
 	}
-	updated, err := s.Store.Update(r.Context(), rep.ID, p)
-	if err != nil {
-		s.fail(w, r, "patch", err, "could not change that report just now")
-		return
-	}
 	// A report that stops being rankable takes its ranking rows with
 	// it: the body 404s from here on, and leaving the rows would keep
 	// publishing the player keys, names, guild and numbers the owner
 	// just withdrew. Only the crossing is acted on, so patching a
-	// private report again is not a second withdrawal. The way back is
-	// deliberately one-way: re-ranking a report returned to public
-	// would have to re-derive every fight, and nothing asks for it.
-	if s.Rank != nil && Ranked(rep.Visibility) && !Ranked(updated.Visibility) {
-		if err := s.Rank.RemoveReport(r.Context(), updated.ID, ReasonNotRankable); err != nil {
+	// report that is already private is not a second withdrawal, and
+	// a patch that does not touch visibility withdraws nothing. The
+	// way back is deliberately one-way: re-ranking a report returned
+	// to public would have to re-derive every fight, and nothing asks
+	// for it.
+	//
+	// This runs before the update, not after. A withdrawal that fails
+	// then leaves a report that is still public and still rankable, so
+	// the retry crosses again and withdraws again; the other order
+	// would leave a private report's rows on the leaderboards with
+	// nothing left to notice them.
+	if s.Rank != nil && p.Visibility != nil && Ranked(rep.Visibility) && !Ranked(*p.Visibility) {
+		if err := s.Rank.RemoveReport(r.Context(), rep.ID, ReasonNotRankable); err != nil {
 			s.fail(w, r, "patch", err, "could not change that report just now")
 			return
 		}
+	}
+	updated, err := s.Store.Update(r.Context(), rep.ID, p)
+	if err != nil {
+		s.fail(w, r, "patch", err, "could not change that report just now")
+		return
 	}
 	view, err := s.view(r.Context(), updated)
 	if err != nil {
