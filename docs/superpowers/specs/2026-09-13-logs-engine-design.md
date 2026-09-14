@@ -22,6 +22,7 @@ report can be rebuilt from its stored events alone.
 | Storage | Parquet per report in object storage as the source of truth, precomputed fight summaries beside it; DuckDB embedded in the Go service for per-report queries; self-hosted ClickHouse on one small VM in Phase 4 for rankings and history, reading the same files. |
 | Location | New top-level `logs/` Go module: library, CLI, tests, later a Cloud Run job. Shares nothing with `api/` today. |
 | Fixtures | Public sample logs from open-source parser repositories plus hand-written lines from the wiki format reference; a real Forever dungeon log from the beta when available. |
+| Streaming | Live logging is a first-class mode: the engine is an incremental session fed chunks as the game writes them, and batch parsing is the same session fed one whole file. |
 | Client format | Classic-family advanced combat logging (the same line format Classic Era and SoD write); `COMBAT_LOG_VERSION` and `ADVANCED_LOG_ENABLED` headers are parsed and the version is stored with the report. |
 
 ## Architecture
@@ -50,6 +51,34 @@ WoWCombatLog.txt ──▶ reader (streaming, tolerant) ──▶ line lexer ─
   reason; parsing continues. A report's health (lines, errors, unknown events) is part of its
   metadata.
 - **Deterministic.** The same file yields byte-identical Parquet and JSON, tested.
+
+## Streaming
+
+Warcraft Logs' live logging is table stakes for raid nights: the uploader tails
+`WoWCombatLog.txt` while the game writes it, and the report updates as fights end. The engine is
+therefore built as an incremental session, and batch parsing is a special case of it.
+
+- **Session.** `logs.NewSession(reportID, opts)` holds all parser state: the partial trailing
+  line, the unit registry, the open fight, health counters, the year and last timestamp for
+  rollover handling. `session.Feed(chunk []byte)` decodes every complete line in the chunk and
+  keeps the remainder; it returns the events decoded and any fights that closed. `session.Close()`
+  closes an open fight as unfinished and flushes. Feeding a whole file in one call is batch mode;
+  the CLI does exactly that.
+- **Fight lifecycle.** A fight opens on its first event, accumulates events in memory, and on
+  close writes `events.parquet` and `summary.json`. While open, `session.Snapshot()` returns the
+  in-progress summary (damage, healing, deaths so far, elapsed time) cheaply, computed from
+  running accumulators rather than a rescan, so a live report page can refresh every few seconds.
+- **Chunk boundaries** never matter: lines split across chunks, chunks that end mid-quote, and
+  chunks containing a year rollover all parse identically to the whole file, tested by feeding
+  every fixture in random chunk sizes and comparing outputs byte for byte with the batch result.
+- **Ordering and idempotency.** Each fed byte range is addressed by file offset; a re-fed range
+  (the uploader retried) is detected by offset and ignored, so at-least-once delivery from the
+  companion is safe. Offsets are recorded in `report.json` so a session can resume after a
+  process restart by re-reading the stored tail state (`session.State()` serializes it).
+- **Runtime shape (Phase 3).** The companion posts chunks to an ingest endpoint with the report
+  id and offset; one session per live report runs in a long-lived Cloud Run instance with
+  session affinity, or a small always-on VM, writing fight files to the bucket as fights close.
+  The engine exposes only the session API; the transport is the Phase 3 design's job.
 
 ## Format coverage
 
@@ -144,7 +173,7 @@ used by tests and the CLI.
 
 ## CLI
 
-`forever-logs parse <file> --out <dir> [--report-id <id>] [--year 2026]` runs the whole
+`forever-logs tail <file> --out <dir>` follows a growing file and writes fights as they close, printing each fight's summary line, which is the live mode exercised locally against the game client. `forever-logs parse <file> --out <dir> [--report-id <id>] [--year 2026]` runs the whole
 pipeline and prints the health summary. `forever-logs fights <file>` lists fights. `forever-logs
 query <dir> "<sql>"` runs DuckDB over a report's Parquet for inspection. The CLI is how the engine
 is validated on real logs before any upload path exists.
@@ -172,6 +201,8 @@ log concatenation, and timestamps going backwards (client clock changes) are han
 - Property tests: parse then serialize then parse yields the same events; summaries recomputed
   from Parquet match the ones written at parse time.
 - A benchmark over the largest fixture with the memory ceiling asserted.
+- Streaming equivalence: every fixture fed in chunk sizes of 1, 7, 64, 4096 bytes and random sizes yields byte-identical outputs to batch; duplicate and overlapping chunk ranges are ignored; a session serialized mid-fight and restored continues to the same result.
+- Snapshot tests: the in-progress summary after N events equals the summary of a fight truncated at N.
 - Coverage floor 80%, `go vet`, `gofmt`, race detector in CI.
 
 ## Out of scope here
