@@ -104,3 +104,58 @@ test('the Summary tab gives the healer a percentile from the healing metric, not
   expect(healerRequest).toContain('metric=hps');
   expect(healerRequest).not.toContain('metric=dps');
 });
+
+test('buffs and debuffs each show only their own kind, with a real uptime', async ({ page }) => {
+  await page.goto(`${FIGHT}&tab=buffs`);
+  await expect(page.getByTestId('aura-table')).toContainText('Power Word: Fortitude');
+  await expect(page.getByTestId('aura-table')).not.toContainText('Necrotic Wound');
+  // 31 s of a 40 s fight.
+  await expect(page.getByTestId('aura-1243-Player-4184-000000A1').getByTestId('aura-uptime')).toHaveText('77.5%');
+
+  await page.goto(`${FIGHT}&tab=debuffs`);
+  await expect(page.getByTestId('aura-table')).toContainText('Necrotic Wound');
+  await expect(page.getByTestId('aura-table')).not.toContainText('Power Word: Fortitude');
+});
+
+test('casts show the caster, the count and a sequence timeline', async ({ page }) => {
+  await page.goto(`${FIGHT}&tab=casts`);
+  await expect(page.getByTestId('cast-table')).toContainText('Frostbolt');
+  await expect(page.getByTestId('cast-Player-4184-000000A3-116')).toContainText('Morrowlyn');
+});
+
+test('interrupts, dispels, resources and threat each render or say they are empty', async ({ page }) => {
+  await page.goto(`${FIGHT}&tab=interrupts`);
+  await expect(page.getByTestId('table-empty')).toContainText('Nothing was interrupted');
+
+  await page.goto(`${FIGHT}&tab=resources`);
+  await expect(page.getByTestId('resource-graphs')).toBeVisible();
+  await expect(page.getByTestId('resource-graphs').getByTestId('resource-zero').first()).toBeVisible();
+
+  await page.goto(`${FIGHT}&tab=threat`);
+  await expect(page.getByTestId('threat-table')).toContainText('Baelgrim');
+  await expect(page.getByTestId('threat-incomplete')).toContainText('does not yet carry every class');
+});
+
+test('the trash fight’s interrupts and dispels do have rows', async ({ page }) => {
+  await page.goto('/reports/fixture2abcd?fight=1&tab=interrupts');
+  await expect(page.getByTestId('exchange-table')).toContainText('Pummel');
+  await page.goto('/reports/fixture2abcd?fight=1&tab=dispels');
+  await expect(page.getByTestId('exchange-table')).toContainText('Purify');
+});
+
+test('interrupts and dispels state their counts are the whole fight’s, unaffected by the window', async ({
+  page,
+}) => {
+  await page.goto('/reports/fixture2abcd?fight=1&tab=interrupts&start=0&end=1000');
+  await expect(page.getByTestId('exchange-wholefight-note')).toContainText("whole fight's totals");
+  await expect(page.getByTestId('exchange-table')).toContainText('†');
+});
+
+test('a brushed window marks cast counts and threat as approximate', async ({ page }) => {
+  await page.goto(`${FIGHT}&tab=casts&start=0&end=10000`);
+  await expect(page.getByTestId('cast-approximate-note')).toBeVisible();
+  await expect(page.getByTestId('cast-time-note')).toContainText('whole fight');
+
+  await page.goto(`${FIGHT}&tab=threat&start=0&end=10000`);
+  await expect(page.getByTestId('threat-approximate-note')).toBeVisible();
+});

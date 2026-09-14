@@ -35,10 +35,15 @@
     type TimeWindow,
   } from '../../lib/report/window';
   import ActorTable from './ActorTable.svelte';
+  import AuraTable from './AuraTable.svelte';
+  import CastTable from './CastTable.svelte';
+  import ExchangeTable from './ExchangeTable.svelte';
   import FightSelector from './FightSelector.svelte';
   import FilterBar from './FilterBar.svelte';
   import ModeBar from './ModeBar.svelte';
+  import ResourceGraphs from './ResourceGraphs.svelte';
   import SummaryTab from './SummaryTab.svelte';
+  import ThreatTable from './ThreatTable.svelte';
   import TimeChart from './TimeChart.svelte';
   import {
     DEFAULT_FILTERS, applyActorFilters, bossGuids, playerGuids, type ReportFilters,
@@ -100,6 +105,11 @@
     players: playerGuids(file?.units ?? []),
     deaths: scoped?.deaths ?? [],
   });
+
+  /** GUID to class, for the tables whose rows are not Actors. */
+  const classOf = $derived(
+    new Map((scoped?.roster ?? []).filter((row) => row.class).map((row) => [row.guid, row.class as string])),
+  );
 
   /** Which Actor[] the current tab shows, scoped to `state.source` and then filtered. */
   const tabActors = $derived.by(() => {
@@ -389,8 +399,28 @@
               the split exactly.
             </p>
           {/if}
+        {:else if state.tab === 'buffs'}
+          <AuraTable tracks={scoped.auras} durationMs={scoped.duration_ms} kind="BUFF" />
+        {:else if state.tab === 'debuffs'}
+          <AuraTable tracks={scoped.auras} durationMs={scoped.duration_ms} kind="DEBUFF" />
+        {:else if state.tab === 'casts'}
+          <CastTable
+            rows={scoped.casts}
+            durationMs={scoped.duration_ms}
+            startMs={timeWindow.startMs}
+            {classOf}
+            approximate={!windowIsWhole}
+          />
+        {:else if state.tab === 'interrupts'}
+          <ExchangeTable rows={scoped.interrupts} emptyText="Nothing was interrupted in the whole fight." />
+        {:else if state.tab === 'dispels'}
+          <ExchangeTable rows={scoped.dispels} emptyText="Nothing was dispelled in the whole fight." />
+        {:else if state.tab === 'resources'}
+          <ResourceGraphs tracks={scoped.resources} durationMs={scoped.duration_ms} />
+        {:else if state.tab === 'threat'}
+          <ThreatTable rows={scoped.threat} {classOf} approximate={!windowIsWhole} />
         {:else}
-          <p class="text-muted text-[14px]" data-testid="report-placeholder">This tab arrives in Task 12.</p>
+          <p class="text-muted text-[14px]" data-testid="report-placeholder">Deaths arrives in Task 14.</p>
         {/if}
       {/if}
     </div>
