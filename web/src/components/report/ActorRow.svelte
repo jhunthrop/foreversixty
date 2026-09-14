@@ -8,12 +8,20 @@
      grained, so a percentage of a short window quantises hard -- a 3s window can only ever
      read 0%, 33%, 67% or 100%. Below ACTIVITY_SECONDS_BELOW_MS this column reads seconds
      instead of a percentage: "2s active" is honest at that grain, "67%" implies precision
-     the data does not have. -->
+     the data does not have.
+
+     The Amount column is `actor.effective`, which window.ts computes independently from
+     the one-second series -- exact regardless of the window -- and which filters.ts leaves
+     alone unless a target or boss filter is active (ReportView.svelte's `approximate`
+     already folds that in). It never carries the `~` mark. The expanded Abilities and
+     Targets tables below the row DO carry it: `ability.total`/`effective` and
+     `target.total` are the per-ability and per-target splits that both the window and a
+     target/boss filter scale by a ratio. -->
 <script lang="ts">
   import { characterHref, splitUnitName } from '../../lib/characters';
   import {
-    approximateMark, approximateTitle, classColorVar, formatAmount, formatPercent,
-    formatPerSecond, percentileToken,
+    approximateAriaLabel, approximateMark, approximateTitle, classColorVar, formatAmount,
+    formatPercent, formatPerSecond, percentileToken,
   } from '../../lib/report/format';
   import type { Actor } from '../../lib/report/types';
   import AbilityBar from './AbilityBar.svelte';
@@ -80,8 +88,8 @@
       <AbilityBar abilities={actor.abilities} total={actor.effective} {peak} {color} />
     </span>
 
-    <span class="font-mono tabular text-right" data-testid="row-amount" {title}>
-      {mark}{formatAmount(actor.effective)}
+    <span class="font-mono tabular text-right" data-testid="row-amount">
+      {formatAmount(actor.effective)}
     </span>
     <span class="text-muted font-mono tabular text-right text-[13px]" data-testid="row-per-second">
       {formatPerSecond(actor.effective, durationMs)}
@@ -99,7 +107,13 @@
           {#each [...actor.abilities].sort((a, b) => b.total - a.total) as ability (ability.spell_id)}
             <tr class="border-line-soft border-b">
               <td class="py-1 pr-3">{ability.name}</td>
-              <td class="font-mono tabular py-1 pr-3 text-right">{mark}{formatAmount(ability.total)}</td>
+              <td
+                class="font-mono tabular py-1 pr-3 text-right"
+                {title}
+                aria-label={approximateAriaLabel(approximate, formatAmount(ability.total))}
+              >
+                {mark}{formatAmount(ability.total)}
+              </td>
               <td class="text-muted font-mono tabular py-1 pr-3 text-right">{ability.hits + ability.ticks} hits</td>
               <td class="text-muted font-mono tabular py-1 text-right">{ability.crits} crits</td>
             </tr>
@@ -112,7 +126,13 @@
           {#each actor.targets as target (target.guid)}
             <tr class="border-line-soft border-b">
               <td class="py-1 pr-3">{splitUnitName(target.name).name}</td>
-              <td class="font-mono tabular py-1 text-right">{mark}{formatAmount(target.total)}</td>
+              <td
+                class="font-mono tabular py-1 text-right"
+                {title}
+                aria-label={approximateAriaLabel(approximate, formatAmount(target.total))}
+              >
+                {mark}{formatAmount(target.total)}
+              </td>
             </tr>
           {/each}
         </tbody>

@@ -65,23 +65,29 @@ export function classColorVar(className: string | undefined): string {
 }
 
 /**
- * Parse percentiles use the item-rarity scale. This is the one place the design system's
- * "never repurpose the game's colours" rule is deliberately bent, and it is bent because
- * every player already reads a purple parse as epic: reusing the scale is what makes the
- * number legible at a glance. The two AA-safe text variants are used for rare and epic,
- * as the rarity text classes do elsewhere.
- */
-/**
- * The window can leave a summary figure in one of three states (see window.ts's module
- * doc and scopeSummary): exact, scaled from the whole fight by the window's share (a
- * per-ability or per-target split, cast started/succeeded/failed, threat), or not
- * rescoped at all -- returned unchanged from the whole fight because the summary never
- * tracked it over time (interrupts, dispels, resource gained/spent/zero_ms, aura
- * max_stacks, roster activity_pct and active_ms). The two non-exact cases are different
- * lies to avoid, so they get different marks: `~` means "close, scaled proportionally",
- * `†` (a dagger) means "not this window's number at all, the whole fight's". Every
- * table that renders one of these figures uses these two functions rather than inlining
- * its own glyph, so the convention -- and its title text -- reads the same everywhere.
+ * A figure that is not what the window (window.ts's `scopeSummary`) or the active filters
+ * (filters.ts's `applyActorFilters`) claim it is falls into one of two lies to avoid, and
+ * every table marks them differently rather than inlining its own glyph:
+ *
+ *   `~` (scaled)      A per-ability or per-target split rescaled by a ratio -- the
+ *                      window's share of the actor's total (window.ts), or a filter's
+ *                      target share (filters.ts's `targetShare`). Close, proportionally,
+ *                      not measured directly. Never applies to an actor's own `effective`
+ *                      figure: window.ts computes that independently from the one-second
+ *                      series, so it is exact regardless of the window, and untouched by
+ *                      filters unless a target or boss filter is active (see
+ *                      ReportView.svelte's `approximate` derivation).
+ *   `†` (whole fight)  A figure the summary never rescopes at all under a window --
+ *                      interrupts, dispels, resource gained/spent/zero_ms, aura
+ *                      max_stacks, roster activity_pct and active_ms. Not "close", simply
+ *                      the whole fight's number regardless of the window.
+ *
+ * Each mark has a title (for a sighted hover) and an aria-label composer (so the meaning
+ * reaches assistive tech too: a `title` on an element that already has visible text is
+ * not reliably exposed as an accessible name or description, and is unreachable on
+ * touch). Compose the full text once -- `approximateAriaLabel(scaled, formatAmount(x))`
+ * -- and set it as the element's `aria-label`, keeping `title` only as a bonus for mouse
+ * hover. Task 12 should reuse all of these rather than inventing new ones.
  */
 export function approximateMark(scaled: boolean): string {
   return scaled ? '~' : '';
@@ -89,8 +95,12 @@ export function approximateMark(scaled: boolean): string {
 
 export function approximateTitle(scaled: boolean): string | undefined {
   return scaled
-    ? 'Split across abilities and targets in proportion to the window, not measured directly in it.'
+    ? 'Split across abilities and targets in proportion to the window and any active filter, not measured directly.'
     : undefined;
+}
+
+export function approximateAriaLabel(scaled: boolean, text: string): string {
+  return scaled ? `approximately ${text}` : text;
 }
 
 export function wholeFightMark(stale: boolean): string {
@@ -101,6 +111,17 @@ export function wholeFightTitle(stale: boolean): string | undefined {
   return stale ? 'The whole fight’s figure: the summary does not track this over time.' : undefined;
 }
 
+export function wholeFightAriaLabel(stale: boolean, text: string): string {
+  return stale ? `${text}, the whole fight’s figure` : text;
+}
+
+/**
+ * Parse percentiles use the item-rarity scale. This is the one place the design system's
+ * "never repurpose the game's colours" rule is deliberately bent, and it is bent because
+ * every player already reads a purple parse as epic: reusing the scale is what makes the
+ * number legible at a glance. The two AA-safe text variants are used for rare and epic,
+ * as the rarity text classes do elsewhere.
+ */
 export function percentileToken(percentile: number): string {
   const p = Number.isFinite(percentile) ? percentile : 0;
   if (p >= 99) return 'var(--color-rarity-legendary)';

@@ -14,7 +14,7 @@
   import { splitUnitName } from '../../lib/characters';
   import {
     classColorVar, formatAmount, formatDuration, formatPercent, percentileToken,
-    wholeFightMark, wholeFightTitle,
+    wholeFightAriaLabel, wholeFightMark, wholeFightTitle,
   } from '../../lib/report/format';
   import type { Summary } from '../../lib/report/types';
 
@@ -40,8 +40,12 @@
 
 <section class="flex flex-col gap-4" data-testid="summary-tab">
   <p class="text-muted text-[13px]">
-    {roster.length} players · {summary.deaths.length} deaths · {formatDuration(durationMs)}
-    {#if missingBuffs > 0}· {missingBuffs} missing a raid buff at pull{/if}
+    <span class="font-mono tabular">{roster.length}</span> players ·
+    <span class="font-mono tabular">{summary.deaths.length}</span> deaths ·
+    <span class="font-mono tabular">{formatDuration(durationMs)}</span>
+    {#if missingBuffs > 0}
+      · <span class="font-mono tabular">{missingBuffs}</span> missing a raid buff at pull
+    {/if}
   </p>
 
   <div class="flex flex-col">
@@ -79,6 +83,7 @@
           <span
             class="text-muted font-mono tabular text-right text-[13px]"
             title={activeTitle}
+            aria-label={wholeFightAriaLabel(approximate, formatPercent(row.activity_pct))}
             data-testid="roster-active"
           >
             {activeMark}{formatPercent(row.activity_pct)}
@@ -106,11 +111,16 @@
           <li class="border-line-soft flex min-h-11 flex-wrap items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px]">
             <span class="font-semibold">{display.name}</span>
             <span class="text-muted text-[13px]">
-              {combatant.spec ?? 'Unknown spec'} · item level {combatant.item_level ?? 0}
+              {combatant.spec ?? 'Unknown spec'} · item level
+              <span class="font-mono tabular">{combatant.item_level ?? 0}</span>
             </span>
-            <span class="text-muted text-[13px]">{combatant.gear.filter((item) => item.ID > 0).length} items</span>
+            <span class="text-muted text-[13px]">
+              <span class="font-mono tabular">{combatant.gear.filter((item) => item.ID > 0).length}</span> items
+            </span>
             {#if combatant.missing_buffs.length > 0}
-              <span class="pill pill-sample">missing {combatant.missing_buffs.length} buffs</span>
+              <span class="pill pill-sample">
+                missing <span class="font-mono tabular">{combatant.missing_buffs.length}</span> buffs
+              </span>
             {/if}
           </li>
         {/each}

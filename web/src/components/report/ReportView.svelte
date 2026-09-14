@@ -23,7 +23,7 @@
     withState,
     type ReportState,
   } from '../../lib/report/url';
-  import type { FightEntry, ReportFile, ReportMeta, Summary } from '../../lib/report/types';
+  import type { FightEntry, ReportFile, ReportMeta, RosterRow, Summary } from '../../lib/report/types';
   import {
     clampWindow,
     combinedSeries,
@@ -81,6 +81,17 @@
   const windowIsWhole = $derived(summary !== null && isFullWindow(timeWindow, summary.duration_ms));
 
   let filters = $state<ReportFilters>(DEFAULT_FILTERS);
+
+  // Two independent sources of scaling on an Actor-shaped row: the window (its share of
+  // the actor's series, window.ts) and a target or boss filter (its share of the actor's
+  // targets, filters.ts's `targetShare`). Either one alone is enough to make the
+  // per-ability and per-target splits approximate, so a whole-fight window with "Boss
+  // damage only" engaged still needs the mark. Ability, players-only, count-overkill and
+  // ignore-after-death do not scale anything -- they subset or add exact figures -- so
+  // they are not part of this. Over-claiming (marking a row that individually happens to
+  // be exact) is the safe direction here; under-claiming is not.
+  const filtersScale = $derived(filters.target !== '' || filters.bossOnly);
+  const actorTableApproximate = $derived(!windowIsWhole || filtersScale);
   let percentiles = $state(new Map<string, number>());
   const loader = createPercentileLoader();
 
@@ -112,6 +123,19 @@
 
   const metricLabel = $derived(state.tab === 'healing' ? 'Healing' : 'Damage');
 
+  /**
+   * The Summary tab's headline percentile is each row's own role metric -- DPS for a dps
+   * row, HPS for a healer, damage taken for a tank (spec section 3: "Role metric (DPS,
+   * HPS, damage taken for tanks)") -- not a blanket DPS for everyone on the product's
+   * default landing tab. The Damage Done, Damage Taken and Healing tabs are unaffected:
+   * they already rank every row by that table's own metric.
+   */
+  function roleMetric(row: RosterRow): { metric: string; value: number } {
+    if (row.role === 'healer') return { metric: 'hps', value: row.hps };
+    if (row.role === 'tank') return { metric: 'damage_taken', value: row.dtps };
+    return { metric: 'dps', value: row.dps };
+  }
+
   // Percentiles mean a fight's whole-fight role metric against the rankings, so they are
   // asked for only on an encounter kill at the full window. A brushed window's number is
   // not a parse, and saying otherwise would be worse than saying nothing.
@@ -126,25 +150,25 @@
       percentiles = new Map();
       return;
     }
-    const metric = state.tab === 'healing' ? 'hps' : 'dps';
+    const tab = state.tab;
     const phase = meta?.phase ?? 'launch';
     const difficulty = fight?.difficulty ?? 0;
 
     // One query per roster row that has a spec, kept beside its GUID so the answers can be
-    // put back on the right rows.
+    // put back on the right rows. Summary picks each row's own role metric; the other
+    // three tabs rank by that table's metric, exactly as before.
     const wanted = summary.roster
       .filter((row) => row.spec !== undefined && row.spec !== '')
-      .map((row) => ({
-        guid: row.guid,
-        query: {
-          encounterId,
-          difficulty,
-          spec: row.spec ?? '',
-          phase,
-          metric,
-          value: Math.round(metric === 'hps' ? row.hps : row.dps),
-        },
-      }));
+      .map((row) => {
+        const { metric, value } =
+          tab === 'summary'
+            ? roleMetric(row)
+            : { metric: tab === 'healing' ? 'hps' : 'dps', value: tab === 'healing' ? row.hps : row.dps };
+        return {
+          guid: row.guid,
+          query: { encounterId, difficulty, spec: row.spec ?? '', phase, metric, value: Math.round(value) },
+        };
+      });
 
     void loader.load(wanted.map((entry) => entry.query)).then((answers) => {
       if (state.fight !== wantedFight || state.tab !== wantedTab) return;
@@ -356,12 +380,13 @@
             durationMs={scoped.duration_ms}
             {metricLabel}
             {percentiles}
-            approximate={!windowIsWhole}
+            approximate={actorTableApproximate}
           />
-          {#if !windowIsWhole}
+          {#if actorTableApproximate}
             <p class="text-muted text-[12px]" data-testid="approximate-note">
-              A tilde marks a figure split across abilities and targets in proportion to the window.
-              Totals and per-second figures are exact. Queries answers the split exactly.
+              A tilde marks a figure split across abilities and targets in proportion to the window and
+              any active target or boss filter. Totals and per-second figures are exact. Queries answers
+              the split exactly.
             </p>
           {/if}
         {:else}

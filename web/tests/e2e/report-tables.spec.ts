@@ -44,10 +44,32 @@ test('boss damage only drops the boss’s own row and keeps the raid’s', async
   await expect(page.getByTestId('actor-table')).toContainText('Baelgrim');
 });
 
-test('a brushed window marks the split as approximate and says why', async ({ page }) => {
+test('a brushed window marks the split as approximate but never the exact amount', async ({ page }) => {
   await page.goto(`${FIGHT}&tab=damage-done&start=0&end=10000`);
   await expect(page.getByTestId('approximate-note')).toContainText('Totals and per-second figures are exact');
-  await expect(page.getByTestId('actor-table').getByTestId('row-amount').first()).toContainText('~');
+
+  // Amount is `actor.effective`: window.ts measures it directly from the one-second
+  // series, so it is exact under any window and must never carry the `~` mark.
+  await expect(page.getByTestId('actor-Player-4184-000000A1').getByTestId('row-amount')).not.toContainText('~');
+
+  // The per-ability split inside the expander IS scaled by the window's share, so it does.
+  await page.getByTestId('actor-Player-4184-000000A1').getByRole('button').first().click();
+  await expect(page.getByTestId('row-detail')).toContainText('~');
+});
+
+test('boss damage only marks the split as approximate even at a whole-fight window', async ({ page }) => {
+  await page.goto(`${FIGHT}&tab=damage-done`);
+  await expect(page.getByTestId('approximate-note')).toHaveCount(0);
+
+  await page.getByTestId('filter-boss').check();
+  await expect(page.getByTestId('approximate-note')).toBeVisible();
+
+  // A target/boss filter scales the per-ability and per-target splits the same way the
+  // window does (filters.ts's `targetShare`), so the expander marks them even though the
+  // window is still the whole fight -- and Amount still never carries the mark.
+  await page.getByTestId('actor-Player-4184-000000A1').getByRole('button').first().click();
+  await expect(page.getByTestId('row-detail')).toContainText('~');
+  await expect(page.getByTestId('actor-Player-4184-000000A1').getByTestId('row-amount')).not.toContainText('~');
 });
 
 test('rows carry a parse percentile from the API on a whole-fight encounter view', async ({ page }) => {
@@ -60,4 +82,25 @@ test('rows carry a parse percentile from the API on a whole-fight encounter view
   );
   await page.goto(FIGHT);
   await expect(page.getByTestId('roster-Player-4184-000000A1')).toContainText('96');
+});
+
+test('the Summary tab gives the healer a percentile from the healing metric, not DPS', async ({ page }) => {
+  const requestUrls: string[] = [];
+  await page.route('**/v1/rankings/percentile**', async (route) => {
+    requestUrls.push(route.request().url());
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ ok: true, data: { percentile: 88.1 }, error: null, request_id: 'r' }),
+    });
+  });
+  // FIGHT carries no &tab=, so this is the Summary tab -- the product's default landing
+  // view, where a healer's headline number must read as a healing parse.
+  await page.goto(FIGHT);
+  await expect(page.getByTestId('roster-Player-4184-000000A2')).toContainText('88');
+
+  const healerRequest = requestUrls.find((url) => url.includes('spec=Holy'));
+  expect(healerRequest).toBeDefined();
+  expect(healerRequest).toContain('metric=hps');
+  expect(healerRequest).not.toContain('metric=dps');
 });
