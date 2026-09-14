@@ -14,6 +14,7 @@ import (
 	"path/filepath"
 	"sort"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/klauspost/compress/zstd"
@@ -82,7 +83,11 @@ func (d *Dir) Put(ctx context.Context, key string, body []byte, _ PutOptions) er
 	if err := ctx.Err(); err != nil {
 		return err
 	}
-	path := filepath.Join(d.Root, filepath.FromSlash(key))
+	root := filepath.Clean(d.Root)
+	path := filepath.Join(root, filepath.FromSlash(key))
+	if path != root && !strings.HasPrefix(path, root+string(filepath.Separator)) {
+		return fmt.Errorf("store: key %q escapes root %s", key, d.Root)
+	}
 	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
 		return fmt.Errorf("store: create %s: %w", filepath.Dir(path), err)
 	}
@@ -139,7 +144,9 @@ type Publisher struct {
 
 // WriteReport writes report.json. It is mutable, so it gets the short cache.
 func (p Publisher) WriteReport(ctx context.Context, r Report) error {
-	sort.Slice(r.Fights, func(i, j int) bool { return r.Fights[i].Index < r.Fights[j].Index })
+	sorted := append([]FightEntry(nil), r.Fights...)
+	sort.Slice(sorted, func(i, j int) bool { return sorted[i].Index < sorted[j].Index })
+	r.Fights = sorted
 	b, err := marshal(r)
 	if err != nil {
 		return err

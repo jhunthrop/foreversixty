@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"reflect"
 	"testing"
 	"time"
 
@@ -119,6 +120,44 @@ func TestPublisherWritesEveryFileWithTheRightCaching(t *testing.T) {
 	}
 }
 
+func TestWriteReportSortsWithoutMutatingTheCallersSlice(t *testing.T) {
+	rec := newRecorder()
+	p := Publisher{Keys: Keys{ReportID: "abc123"}, Put: rec}
+
+	original := []FightEntry{
+		{Index: 3, Name: "Third"},
+		{Index: 1, Name: "First"},
+		{Index: 2, Name: "Second"},
+	}
+	fights := append([]FightEntry(nil), original...)
+	rep := Report{ReportID: "abc123", Fights: fights}
+	if err := p.WriteReport(t.Context(), rep); err != nil {
+		t.Fatal(err)
+	}
+
+	// Finding 1's regression test: the caller's own slice must be left
+	// exactly as it was, in the order the caller built it.
+	if !reflect.DeepEqual(fights, original) {
+		t.Fatalf("caller's slice was mutated: got %+v, want %+v", fights, original)
+	}
+
+	// The determinism requirement: published output is sorted by index
+	// regardless of the order the caller supplied.
+	var back Report
+	if err := json.Unmarshal(rec.body["reports/abc123/report.json"], &back); err != nil {
+		t.Fatal(err)
+	}
+	wantOrder := []int{1, 2, 3}
+	if len(back.Fights) != len(wantOrder) {
+		t.Fatalf("fights = %+v, want %d entries", back.Fights, len(wantOrder))
+	}
+	for i, idx := range wantOrder {
+		if back.Fights[i].Index != idx {
+			t.Errorf("fights[%d].Index = %d, want %d", i, back.Fights[i].Index, idx)
+		}
+	}
+}
+
 func TestRawChunksRoundTripThroughZstd(t *testing.T) {
 	rec := newRecorder()
 	p := Publisher{Keys: Keys{ReportID: "abc123"}, Put: rec}
@@ -173,6 +212,30 @@ func TestTheLocalStoreReportsAWriteFailure(t *testing.T) {
 	err := NewDir(root).Put(t.Context(), "reports/abc123/report.json", []byte("{}"), PutOptions{})
 	if err == nil {
 		t.Fatal("want an error when the path cannot be created")
+	}
+}
+
+func TestDirPutRefusesAKeyThatEscapesRoot(t *testing.T) {
+	root := t.TempDir()
+	escaped := filepath.Join(filepath.Dir(root), "escape.json")
+	if err := NewDir(root).Put(t.Context(), "../escape.json", []byte("{}"), PutOptions{}); err == nil {
+		t.Fatal("want an error for a key that escapes the root")
+	}
+	if _, err := os.Stat(escaped); !os.IsNotExist(err) {
+		t.Fatalf("a key that escapes the root wrote to %s", escaped)
+	}
+}
+
+func TestDirPutAcceptsEveryKeyTheStorageLayoutProduces(t *testing.T) {
+	root := t.TempDir()
+	d := NewDir(root)
+	k := Keys{ReportID: "abc123"}
+	for _, key := range []string{
+		k.Report(), k.FightSummary(1), k.FightEvents(1), k.FightLive(1), k.Raw(0),
+	} {
+		if err := d.Put(t.Context(), key, []byte("x"), PutOptions{}); err != nil {
+			t.Errorf("Put(%q) = %v, want nil", key, err)
+		}
 	}
 }
 
