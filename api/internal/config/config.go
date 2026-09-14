@@ -12,6 +12,17 @@ const defaultMailFrom = "Forever Sixty <hello@foreversixty.gg>"
 // api/Dockerfile.
 const defaultTreeDataDir = "/data"
 
+// Defaults for the Phase 3 variables. Every one of them has a working
+// default so a developer can run the service with the Phase 0 environment
+// and simply not have the features that need credentials.
+const (
+	defaultR2Bucket            = "foreversixty-logs"
+	defaultSessionCookieDomain = ".foreversixty.gg"
+	defaultParseJobName        = "parse-report"
+	defaultParseJobRegion      = "us-east1"
+	defaultParseJobProject     = "foreversixty"
+)
+
 // defaultTrustedProxyHops is used when TRUSTED_PROXY_HOPS is not set. 1
 // matches a single reverse proxy (e.g. Cloud Run) sitting directly in front
 // of this service.
@@ -44,6 +55,38 @@ type Config struct {
 	// are trusted to append to X-Forwarded-For; see httpx.RateLimit. 0
 	// ignores X-Forwarded-For entirely and rate-limits by RemoteAddr.
 	TrustedProxyHops int
+
+	// R2AccountID, R2AccessKeyID, R2SecretAccessKey and R2Bucket address
+	// the Cloudflare R2 bucket that holds every report file. With the id
+	// or either credential empty, R2Configured reports false and the
+	// routes that need object storage are not mounted.
+	R2AccountID       string
+	R2AccessKeyID     string
+	R2SecretAccessKey string
+	R2Bucket          string
+	// R2Endpoint overrides the S3 endpoint derived from AccountID. The
+	// tests set it; production leaves it empty.
+	R2Endpoint string
+
+	// SessionCookieDomain is the Domain attribute of fs_session and
+	// fs_csrf. Production is ".foreversixty.gg" so the cookie is sent to
+	// both the site and the API; a local run wants it empty, which makes
+	// the cookie host-only.
+	SessionCookieDomain string
+
+	// BnetClientID, BnetClientSecret and BnetRedirectURL configure
+	// Battle.net sign-in. With the id or the secret empty,
+	// BattleNetConfigured reports false and only the email magic link is
+	// offered.
+	BnetClientID     string
+	BnetClientSecret string
+	BnetRedirectURL  string
+
+	// ParseJobName, ParseJobRegion and ParseJobProject address the Cloud
+	// Run job that parses a whole-file upload.
+	ParseJobName    string
+	ParseJobRegion  string
+	ParseJobProject string
 }
 
 func Load(getenv func(string) string) (Config, error) {
@@ -87,5 +130,49 @@ func Load(getenv func(string) string) (Config, error) {
 		c.TrustedProxyHops = hops
 	}
 
+	c.R2AccountID = getenv("R2_ACCOUNT_ID")
+	c.R2AccessKeyID = getenv("R2_ACCESS_KEY_ID")
+	c.R2SecretAccessKey = getenv("R2_SECRET_ACCESS_KEY")
+	c.R2Endpoint = getenv("R2_ENDPOINT")
+	c.BnetClientID = getenv("BNET_CLIENT_ID")
+	c.BnetClientSecret = getenv("BNET_CLIENT_SECRET")
+	c.BnetRedirectURL = getenv("BNET_REDIRECT_URL")
+	for _, d := range []struct {
+		dst *string
+		env string
+		def string
+	}{
+		{&c.R2Bucket, "R2_BUCKET", defaultR2Bucket},
+		{&c.ParseJobName, "PARSE_JOB_NAME", defaultParseJobName},
+		{&c.ParseJobRegion, "PARSE_JOB_REGION", defaultParseJobRegion},
+		{&c.ParseJobProject, "PARSE_JOB_PROJECT", defaultParseJobProject},
+	} {
+		*d.dst = getenv(d.env)
+		if *d.dst == "" {
+			*d.dst = d.def
+		}
+	}
+	// SESSION_COOKIE_DOMAIN is handled apart from the loop above: "none"
+	// asks for a host-only cookie, which is an empty Domain attribute and
+	// so cannot be spelled with an empty environment variable.
+	c.SessionCookieDomain = getenv("SESSION_COOKIE_DOMAIN")
+	switch c.SessionCookieDomain {
+	case "":
+		c.SessionCookieDomain = defaultSessionCookieDomain
+	case "none":
+		c.SessionCookieDomain = ""
+	}
+
 	return c, nil
+}
+
+// R2Configured reports whether the object store can be reached. Without it
+// the ingest, upload, and report-file routes are not mounted.
+func (c Config) R2Configured() bool {
+	return c.R2AccountID != "" && c.R2AccessKeyID != "" && c.R2SecretAccessKey != "" && c.R2Bucket != ""
+}
+
+// BattleNetConfigured reports whether Battle.net sign-in can be offered.
+func (c Config) BattleNetConfigured() bool {
+	return c.BnetClientID != "" && c.BnetClientSecret != "" && c.BnetRedirectURL != ""
 }
