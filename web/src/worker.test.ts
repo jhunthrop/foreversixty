@@ -326,8 +326,14 @@ describe('/logs-data/* served from the R2 bucket', () => {
     vi.stubGlobal('fetch', upstream);
     const env = { ...envWith(), LOGS: bucketWith({}) };
 
+    // A literal '../../secret' is not tested here: the Request constructor resolves
+    // dot-segments before the Worker ever sees the URL, so a plain `..` never reaches this
+    // code as anything but an ordinary (non-/logs-data/) path. The percent-encoded form
+    // below stays literal through URL parsing, so it's the one that actually exercises the
+    // handler's rejection.
     for (const path of [
-      '/logs-data/reports/../../secret',
+      '/logs-data/reports/%2e%2e%2f%2e%2e%2fsecret',
+      '/logs-data/reports/..%2f..%2fsecret',
       '/logs-data/reports/SHOUTING1234/report.json',
       '/logs-data/reports/short/report.json',
       '/logs-data/uploads/abc/raw.txt.zst',
