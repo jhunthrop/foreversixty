@@ -1,0 +1,224 @@
+name: companion
+on:
+  # No paths filter on push: GitHub applies one filter set to every
+  # ref in a push block, and a tag push changes no paths, so a paths
+  # filter here would silently never release. Pull requests, where
+  # the cost of running matters, are filtered.
+  push:
+    branches: [main]
+    tags: ['companion-v*']
+  pull_request:
+    paths: ['companion/**', 'logs/**', '.github/workflows/companion.yml']
+  workflow_dispatch:
+permissions: { contents: read }
+concurrency:
+  group: companion-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  # The module is tested as it ships, not through the repo-root
+  # workspace: a companion that only builds inside go.work is a
+  # companion that does not build for a contributor who clones it.
+  GOWORK: "off"
+  # Build tag for every job that must not link a desktop toolkit.
+  HEADLESS_TAGS: nogui
+jobs:
+  test:
+    if: "!startsWith(github.ref, 'refs/tags/')"
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: companion } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with: { go-version-file: companion/go.mod, cache-dependency-path: companion/go.sum }
+      - name: gofmt
+        run: |
+          unformatted=$(gofmt -l .)
+          if [ -n "$unformatted" ]; then
+            echo "these files are not gofmt'd:"
+            echo "$unformatted"
+            exit 1
+          fi
+      - run: go vet -tags "$HEADLESS_TAGS" ./...
+      - run: go test -tags "$HEADLESS_TAGS" ./... -race -coverprofile=cover.out -coverpkg=./...
+      - name: coverage floor
+        # The window is excluded: cmd, internal/shell and ui are the
+        # tray, the webview and three static files, none of which a Go
+        # test can exercise without a desktop.
+        run: |
+          grep -v -E '/(cmd|internal/shell|ui)/' cover.out > cover-core.out
+          total=$(go tool cover -func=cover-core.out | awk '/^total:/ {print substr($3, 1, length($3)-1)}')
+          echo "coverage outside the window: ${total}%"
+          awk -v t="$total" 'BEGIN { exit (t + 0 >= 80) ? 0 : 1 }' || {
+            echo "coverage ${total}% is under the 80% floor"
+            exit 1
+          }
+      - name: the window still compiles
+        # Nothing here runs it; this only proves the cgo build is not
+        # broken by a change to the headless side.
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev
+          go build ./...
+
+  build:
+    if: startsWith(github.ref, 'refs/tags/companion-v')
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { runner: macos-14, goos: darwin, goarch: arm64 }
+          # Intel macOS is cross-compiled from the arm64 runner:
+          # Xcode's clang is a universal compiler, so -arch x86_64 is
+          # all it needs, and GitHub's Intel runners are retired.
+          - { runner: macos-14, goos: darwin, goarch: amd64, cgoarch: '-arch x86_64 -mmacosx-version-min=11.0' }
+          - { runner: windows-latest, goos: windows, goarch: amd64 }
+          - { runner: ubuntu-latest, goos: linux, goarch: amd64 }
+    runs-on: ${{ matrix.runner }}
+    defaults: { run: { shell: bash, working-directory: companion } }
+    env:
+      APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+      APPLE_CERTIFICATE_P12: ${{ secrets.APPLE_CERTIFICATE_P12 }}
+      APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+      APPLE_ID: ${{ secrets.APPLE_ID }}
+      APPLE_APP_PASSWORD: ${{ secrets.APPLE_APP_PASSWORD }}
+      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      WINDOWS_SIGNING_CERTIFICATE: ${{ secrets.WINDOWS_SIGNING_CERTIFICATE }}
+      WINDOWS_SIGNING_PASSWORD: ${{ secrets.WINDOWS_SIGNING_PASSWORD }}
+      MINISIGN_PUBLIC_KEY: ${{ vars.MINISIGN_PUBLIC_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with: { go-version-file: companion/go.mod, cache-dependency-path: companion/go.sum }
+
+      - name: Linux webview libraries
+        if: matrix.goos == 'linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev
+
+      - name: Windows C toolchain
+        if: matrix.goos == 'windows'
+        run: |
+          if ! command -v gcc >/dev/null; then
+            choco install mingw -y --no-progress
+          fi
+          gcc --version
+
+      - name: Build
+        env:
+          CGOARCH: ${{ matrix.cgoarch }}
+        run: |
+          version="${GITHUB_REF_NAME#companion-v}"
+          name="foreversixty-companion_${{ matrix.goos }}_${{ matrix.goarch }}"
+          if [ "${{ matrix.goos }}" = "windows" ]; then name="${name}.exe"; fi
+          mkdir -p dist
+          if [ -n "$CGOARCH" ]; then
+            export CGO_CFLAGS="$CGOARCH" CGO_CXXFLAGS="$CGOARCH" CGO_LDFLAGS="$CGOARCH"
+          fi
+          CGO_ENABLED=1 GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} \
+            go build -trimpath \
+              -ldflags "-s -w \
+                -X github.com/jhunthrop/foreversixty/companion/internal/updater.Version=${version} \
+                -X github.com/jhunthrop/foreversixty/companion/internal/updater.PublicKey=${MINISIGN_PUBLIC_KEY}" \
+              -o "dist/${name}" ./cmd/foreversixty-companion
+          ls -l dist
+          echo "ASSET=${name}" >> "$GITHUB_ENV"
+
+      - name: Smoke test the binary
+        # Every target but Intel macOS runs natively on its runner;
+        # that one is cross-compiled, and Rosetta runs it anyway.
+        run: ./dist/${ASSET} -version
+
+      - name: Sign and notarize for macOS
+        if: matrix.goos == 'darwin' && env.APPLE_SIGNING_IDENTITY != ''
+        run: |
+          keychain="$RUNNER_TEMP/signing.keychain-db"
+          security create-keychain -p "$APPLE_CERTIFICATE_PASSWORD" "$keychain"
+          security set-keychain-settings -lut 900 "$keychain"
+          security unlock-keychain -p "$APPLE_CERTIFICATE_PASSWORD" "$keychain"
+          echo "$APPLE_CERTIFICATE_P12" | base64 --decode > "$RUNNER_TEMP/cert.p12"
+          security import "$RUNNER_TEMP/cert.p12" -k "$keychain" \
+            -P "$APPLE_CERTIFICATE_PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple:,codesign: \
+            -s -k "$APPLE_CERTIFICATE_PASSWORD" "$keychain" >/dev/null
+          security list-keychain -d user -s "$keychain" login.keychain-db
+          codesign --force --timestamp --options runtime \
+            --sign "$APPLE_SIGNING_IDENTITY" "dist/${ASSET}"
+          codesign --verify --strict --verbose=2 "dist/${ASSET}"
+          ditto -c -k --keepParent "dist/${ASSET}" "$RUNNER_TEMP/notarize.zip"
+          xcrun notarytool submit "$RUNNER_TEMP/notarize.zip" \
+            --apple-id "$APPLE_ID" --team-id "$APPLE_TEAM_ID" \
+            --password "$APPLE_APP_PASSWORD" --wait
+          rm -f "$RUNNER_TEMP/cert.p12"
+          security delete-keychain "$keychain"
+
+      - name: Unsigned macOS build
+        if: matrix.goos == 'darwin' && env.APPLE_SIGNING_IDENTITY == ''
+        run: echo "::notice::APPLE_* secrets are not set, so this macOS build is unsigned."
+
+      - name: Sign for Windows
+        if: matrix.goos == 'windows' && env.WINDOWS_SIGNING_CERTIFICATE != ''
+        shell: pwsh
+        working-directory: companion
+        run: |
+          $pfx = Join-Path $env:RUNNER_TEMP 'signing.pfx'
+          [IO.File]::WriteAllBytes($pfx, [Convert]::FromBase64String($env:WINDOWS_SIGNING_CERTIFICATE))
+          $signtool = Get-ChildItem 'C:\Program Files (x86)\Windows Kits\10\bin' -Recurse `
+            -Filter signtool.exe | Where-Object { $_.FullName -like '*x64*' } | Select-Object -First 1
+          & $signtool.FullName sign /fd SHA256 /f $pfx /p $env:WINDOWS_SIGNING_PASSWORD `
+            /tr http://timestamp.digicert.com /td SHA256 "dist/$env:ASSET"
+          Remove-Item $pfx
+
+      - name: Unsigned Windows build
+        if: matrix.goos == 'windows' && env.WINDOWS_SIGNING_CERTIFICATE == ''
+        run: echo "::notice::WINDOWS_SIGNING_* secrets are not set, so this Windows build is unsigned."
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: companion-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: companion/dist/*
+          if-no-files-found: error
+
+  release:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/companion-v')
+    runs-on: ubuntu-latest
+    permissions: { contents: write }
+    env:
+      MINISIGN_SECRET_KEY: ${{ secrets.MINISIGN_SECRET_KEY }}
+      MINISIGN_PASSWORD: ${{ secrets.MINISIGN_PASSWORD }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: { path: staged, merge-multiple: true }
+      - run: ls -l staged
+
+      - name: Sign the assets with minisign
+        if: env.MINISIGN_SECRET_KEY != ''
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y minisign
+          printf '%s\n' "$MINISIGN_SECRET_KEY" > "$RUNNER_TEMP/minisign.key"
+          for f in staged/*; do
+            case "$f" in *.minisig) continue;; esac
+            printf '%s\n' "$MINISIGN_PASSWORD" | \
+              minisign -S -s "$RUNNER_TEMP/minisign.key" -m "$f" \
+                -t "Forever Sixty companion ${GITHUB_REF_NAME}"
+          done
+          rm -f "$RUNNER_TEMP/minisign.key"
+          ls -l staged
+
+      - name: Unsigned release
+        if: env.MINISIGN_SECRET_KEY == ''
+        run: |
+          echo "::notice::MINISIGN_SECRET_KEY is not set, so this release carries no \
+          signatures and installed companions will not update themselves to it."
+
+      - name: Publish
+        run: |
+          gh release create "$GITHUB_REF_NAME" staged/* \
+            --title "Companion ${GITHUB_REF_NAME#companion-v}" \
+            --notes "Desktop companion ${GITHUB_REF_NAME#companion-v} for macOS, Windows and Linux. \
+          Each binary is published beside its minisign signature; companion/README.md has the \
+          public key and the command to check one."
