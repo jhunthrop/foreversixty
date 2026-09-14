@@ -35,7 +35,7 @@ copying it.
 - `fight_index`: 0-based integer, the engine's `fight.Fight.Index`.
 - `device_id`: 16 lowercase base32 characters; `device token`: `fsd_` + 32 random base32
   characters, shown once, stored as SHA-256.
-- `user_id`: bigint. `character_key`: `<region>/<realm-slug>/<name-lowercase>`.
+- `user_id`: bigint. `character_key`: `<region>/<ruleset>/<name-slug>`. `ruleset` is one of `normal`, `pvp`, `rp`, `hardcore` (Forever has no realms; the Deep Dive panel replaced them with four rulesets per region). `name-slug` is the two-part character name lowercased with spaces as `-`. The combat log identifies units as `Name-Realm` today; on Sept 17 the beta log settles what the realm segment carries for Forever and the parser maps it to `ruleset`.
 - Regions: `us`, `eu`, `kr`, `tw`, `cn`. Realm slugs are lowercase with hyphens.
 
 ## Authentication
@@ -65,7 +65,7 @@ All bodies are JSON unless noted; all responses use the envelope.
 
 | Route | Auth | Body | Response |
 |---|---|---|---|
-| `POST /v1/reports` | device or session | `{ title?, visibility, zone?, logging_character? { region, realm, name } }` | 201 `{ id, created_at }` |
+| `POST /v1/reports` | device or session | `{ title?, visibility, zone?, logging_character? { region, ruleset, name } }` | 201 `{ id, created_at }` |
 | `PUT /v1/reports/{id}/fights/{n}` | device | multipart: `summary` (JSON, `summary.Summary`), `events` (Parquet bytes), `metrics` (JSON `[]MetricsRow`), `raw_range` (JSON `{ start_offset, end_offset, sha256 }`) | 201 `{ fight_index, verified: true }`; 200 if already stored with the same sha; 409 `{ error: { message, fields: { metrics: "…" } } }` on verification mismatch |
 | `PUT /v1/reports/{id}/fights/{n}/live` | device | `{ summary: summary.Summary, elapsed_ms, updated_at }` | 204; the API writes `live.json` and touches `report.json` |
 | `PUT /v1/reports/{id}/raw?offset=N` | device | body `application/zstd`, ≤ 8 MiB; header `X-Raw-SHA256` | 204; 200 if the offset is already stored; 409 if the offset overlaps a different stored range |
@@ -119,10 +119,10 @@ users(id bigserial pk, bnet_sub text unique null, battletag text null, email tex
 sessions(id text pk, user_id bigint fk, method text, created_at, expires_at)
 devices(id text pk, user_id bigint fk, name text, platform text, token_hash bytea unique,
         created_at, last_seen_at, revoked_at null)
-guilds(id bigserial pk, region text, realm text, name text, claimed_by bigint fk null,
-       default_visibility text not null default 'public', unique(region, realm, name))
+guilds(id bigserial pk, region text, ruleset text, name text, claimed_by bigint fk null,
+       default_visibility text not null default 'public', unique(region, ruleset, name))
 guild_members(guild_id fk, user_id fk, rank text, refreshed_at, pk(guild_id, user_id))
-characters(key text pk, region, realm, name, class text null, user_id bigint fk null, refreshed_at)
+characters(key text pk, region, ruleset, name, class text null, user_id bigint fk null, refreshed_at)
 reports(id text pk, owner_id bigint fk null, guild_id bigint fk null, title text, visibility text
         not null, zone text, status text not null, engine_version text, upload_id text null,
         logging_character text null, health jsonb, flagged text null, created_at, completed_at null)
@@ -146,10 +146,10 @@ follow-up; until it exists the API infers the dominant tree and names it by tree
 
 | Route | Response |
 |---|---|
-| `GET /v1/rankings?encounter=&difficulty=&metric=dps\|hps\|damage_taken&spec=&class=&phase=&region=&realm=&faction=&page=` | `{ rows: [ { rank, player: { key, name, class, spec }, guild: { name, realm, region }?, value, size, fought_at, duration_ms, talent_split: "31/20/0", build_id?, trinkets: [item_id], buff_count, report_id, fight_index, state } ], total, page, per_page: 100, updated_at }` |
+| `GET /v1/rankings?encounter=&difficulty=&metric=dps\|hps\|damage_taken&spec=&class=&phase=&region=&ruleset=&faction=&page=` | `{ rows: [ { rank, player: { key, name, class, spec }, guild: { name, ruleset, region }?, value, size, fought_at, duration_ms, talent_split: "31/20/0", build_id?, trinkets: [item_id], buff_count, report_id, fight_index, state } ], total, page, per_page: 100, updated_at }` |
 | `GET /v1/rankings/percentile?encounter=&difficulty=&spec=&phase=&metric=&value=` | `{ percentile: 0..100 }` |
-| `GET /v1/characters/{region}/{realm}/{name}` | `{ character, best: [ per encounter ], history: [ per fight ], builds_seen: [ { build_id, first_seen } ] }` |
-| `GET /v1/guilds/{region}/{realm}/{name}` | `{ guild, progression: [ per encounter: kills, first_kill_at, pull_count ], roster_best: [...], reports: [...] }` |
+| `GET /v1/characters/{region}/{ruleset}/{name}` | `{ character, best: [ per encounter ], history: [ per fight ], builds_seen: [ { build_id, first_seen } ] }` |
+| `GET /v1/guilds/{region}/{ruleset}/{name}` | `{ guild, progression: [ per encounter: kills, first_kill_at, pull_count ], roster_best: [...], reports: [...] }` |
 | `GET /v1/rankings/guilds?encounter=&kind=speed\|execution\|progress&phase=` | `{ rows: [...] }` |
 
 Rows are written at fight close; digests updated in the same transaction. All-time versus today
@@ -169,7 +169,7 @@ is the `since` query parameter. Moderation states `ok | at_risk | removed` come 
   `planner-island.js` and shares `global.css`.
 - `/logs`: sign-in gate, "Live logging" instructions with the companion download and pairing
   code, whole-file upload with progress, "Your reports" list.
-- `/rankings/<encounter-slug>`, `/character/<region>/<realm>/<name>`, `/guild/<region>/<realm>/<name>`:
+- `/rankings/<encounter-slug>`, `/character/<region>/<ruleset>/<name>`, `/guild/<region>/<ruleset>/<name>`:
   Worker-served shells with islands reading the API; OG tags from the API's JSON.
 - `/login`, `/account` (devices, characters, anonymize toggle, sign out).
 
@@ -189,7 +189,7 @@ is the `since` query parameter. Moderation states `ok | at_risk | removed` come 
 - Queue on failure, retry with backoff, resume by offset; at-least-once is safe by contract.
 - Addon sync: after logout (SavedVariables file mtime change) reads
   `WTF/Account/<acct>/SavedVariables/ForeverSixty.lua` and POSTs its exports to
-  `POST /v1/addon/exports` (device) `{ characters: [ { name, realm, region, export: "FS1:…" } ] }`;
+  `POST /v1/addon/exports` (device) `{ characters: [ { name, ruleset, region, export: "FS1:…" } ] }`;
   writes `ForeverSixtyInbox.lua` with builds from `GET /v1/addon/inbox` (device) at startup and
   every 10 minutes. Both endpoints are owned by the api plan; the addon side is Phase 2.
 - UI: system tray with a native webview window over `companion/ui/index.html` using the site's
