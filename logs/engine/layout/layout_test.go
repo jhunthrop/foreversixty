@@ -2,6 +2,9 @@
 package layout
 
 import (
+	"bytes"
+	"encoding/json"
+	"fmt"
 	"strings"
 	"testing"
 	"time"
@@ -299,5 +302,77 @@ func TestEventNamesIsSortedAndIncludesSpecials(t *testing.T) {
 	}
 	if !found {
 		t.Error("COMBATANT_INFO missing from EventNames")
+	}
+}
+
+// twoEventsSharingTheDamageSuffix is the shape that used to make Infer
+// nondeterministic: SPELL_CAST_SUCCESS fixes the advanced block at 17,
+// SPELL_DAMAGE then derives _DAMAGE{Params: 11, Advanced: true}, and
+// SWING_DAMAGE is too narrow to hold an advanced block so it falls back to
+// _DAMAGE{Params: 11, Advanced: false}. The two agree on Params and
+// disagree on Advanced, so the reduction's Params guard does not fire and
+// whichever event the loop visited last used to win.
+const twoEventsSharingTheDamageSuffix = `9/26 20:10:01.000  SPELL_CAST_SUCCESS,Player-4184-000000A1,"Baelgrim-Nightslayer",0x511,0x0,Creature-0-2085-2284-7855-169753-0000AA0001,"Hollow Sentinel",0xa48,0x0,116,"Frostbolt",0x10,Player-4184-000000A1,0000000000000000,1,2,3,4,5,6,7,8,9,10,1.0,2.0,11,3.0,12
+9/26 20:10:02.000  SPELL_DAMAGE,Player-4184-000000A1,"Baelgrim-Nightslayer",0x511,0x0,Creature-0-2085-2284-7855-169753-0000AA0001,"Hollow Sentinel",0xa48,0x0,116,"Frostbolt",0x10,Creature-0-2085-2284-7855-169753-0000AA0001,0000000000000000,1,2,3,4,5,6,7,8,9,10,1.0,2.0,11,3.0,12,500,499,-1,16,0,0,0,nil,nil,nil,nil
+9/26 20:10:03.000  SWING_DAMAGE,Player-4184-000000A1,"Baelgrim-Nightslayer",0x511,0x0,Creature-0-2085-2284-7855-169753-0000AA0001,"Hollow Sentinel",0xa48,0x0,300,299,-1,1,0,0,0,nil,nil,nil,nil
+`
+
+// renderSuffixes writes the suffix map out in key order, so two layouts can
+// be compared as text without depending on map order.
+func renderSuffixes(l Layout) string {
+	var b strings.Builder
+	for _, k := range sortedKeys(l.Suffixes) {
+		fmt.Fprintf(&b, "%s=%+v\n", k, l.Suffixes[k])
+	}
+	return b.String()
+}
+
+func TestInferIsDeterministicWhenTwoEventsShareASuffix(t *testing.T) {
+	ls := lines(t, twoEventsSharingTheDamageSuffix)
+
+	// Sanity: this input really does drive both branches into the same
+	// Params, which is the precondition for the bug.
+	first := Infer(ls)
+	if first.Advanced != 17 {
+		t.Fatalf("advanced = %d, want 17", first.Advanced)
+	}
+	if got := first.Suffixes["_DAMAGE"].Params; got != 11 {
+		t.Fatalf("_DAMAGE params = %d, want 11 from both events", got)
+	}
+
+	seen := map[string]int{}
+	advanced := map[bool]int{}
+	for i := 0; i < 100; i++ {
+		l := Infer(ls)
+		seen[renderSuffixes(l)]++
+		advanced[l.Suffixes["_DAMAGE"].Advanced]++
+	}
+	if len(seen) != 1 {
+		t.Fatalf("Infer produced %d distinct suffix maps over 100 runs of the same input: %v", len(seen), seen)
+	}
+	if len(advanced) != 1 {
+		t.Fatalf("_DAMAGE.Advanced flipped across runs: %v", advanced)
+	}
+	if _, ok := advanced[false]; !ok {
+		t.Errorf("_DAMAGE.Advanced = true, want the value the alphabetically last writer (SWING_DAMAGE) sets")
+	}
+}
+
+func TestInferIsDeterministicOverTheWholeRow(t *testing.T) {
+	ls := lines(t, twoEventsSharingTheDamageSuffix+
+		"9/26 20:10:04.000  MADE_UP_EVENT,a,b,c\n"+
+		"9/26 20:10:05.000  MADE_UP_EVENT,a,b,c,d\n")
+	want, err := json.Marshal(Infer(ls))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for i := 0; i < 100; i++ {
+		got, err := json.Marshal(Infer(ls))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !bytes.Equal(got, want) {
+			t.Fatalf("run %d produced a different row:\n got %s\nwant %s", i, got, want)
+		}
 	}
 }

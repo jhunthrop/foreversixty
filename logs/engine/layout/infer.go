@@ -64,7 +64,14 @@ func Infer(lines []lexer.Line) Layout {
 		}
 	}
 
-	for ev, ws := range widths {
+	// Iterate the events in sorted order. The reduction below is total on
+	// Suffix.Params but not on the whole Suffix struct: two events sharing
+	// a suffix can agree on Params and disagree on Advanced, and the write
+	// at the end of the loop would then let Go's randomised map order pick
+	// the winner. Sorting settles it, and keeps settling it if a later
+	// field is added to Suffix.
+	for _, ev := range sortedKeys(widths) {
+		ws := widths[ev]
 		w, ok := dominant(ws)
 		if !ok {
 			continue
@@ -128,6 +135,19 @@ func splitAny(prefixes map[string]int, event string) (prefix, suffix string, ok 
 	return best, rest, true
 }
 
+// sortedKeys returns m's keys in a fixed order, so a loop that reduces over
+// them lands on the same answer whatever order the runtime hands them back.
+func sortedKeys[V any](m map[string]V) []string {
+	out := make([]string, 0, len(m))
+	for k := range m {
+		out = append(out, k)
+	}
+	sort.Strings(out)
+	return out
+}
+
+// dominant returns the most common width, breaking a tie on the smaller
+// width so the answer does not depend on map order.
 func dominant(ws map[int]int) (int, bool) {
 	best, bestN := 0, 0
 	for w, n := range ws {
