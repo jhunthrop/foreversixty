@@ -3,6 +3,7 @@ package addon
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"io"
 	"log/slog"
 	"net/http"
@@ -151,6 +152,98 @@ func TestExportsRefuseNonsense(t *testing.T) {
 	res.Body.Close()
 	if res.StatusCode != http.StatusBadRequest {
 		t.Fatalf("an over-long export = %d, want 400", res.StatusCode)
+	}
+}
+
+// TestPutExportsClaimsAnUnclaimedCharacter is the first of the three
+// cases the Task 5 review pointed at: a character_key nobody has synced
+// before is claimed by whoever syncs it first.
+func TestPutExportsClaimsAnUnclaimedCharacter(t *testing.T) {
+	h := newHarness(t)
+	if err := h.store.PutExports(context.Background(), h.owner,
+		[]Export{{Name: "Baelgrim", Ruleset: "hardcore", Region: "us", Export: "FS1:aaa"}}); err != nil {
+		t.Fatal(err)
+	}
+	exports, err := h.store.Exports(context.Background(), h.owner)
+	if err != nil || len(exports) != 1 || exports[0].Export != "FS1:aaa" {
+		t.Fatalf("exports = %+v, err = %v", exports, err)
+	}
+}
+
+// TestPutExportsRefreshesTheSameAccountsOwnCharacter is the second case:
+// re-syncing a character already owned by the same account is a normal
+// update, not a claim.
+func TestPutExportsRefreshesTheSameAccountsOwnCharacter(t *testing.T) {
+	h := newHarness(t)
+	ctx := context.Background()
+	if err := h.store.PutExports(ctx, h.owner,
+		[]Export{{Name: "Baelgrim", Ruleset: "hardcore", Region: "us", Export: "FS1:aaa"}}); err != nil {
+		t.Fatal(err)
+	}
+	if err := h.store.PutExports(ctx, h.owner,
+		[]Export{{Name: "Baelgrim", Ruleset: "hardcore", Region: "us", Export: "FS1:bbb"}}); err != nil {
+		t.Fatalf("re-syncing as the current owner should succeed: %v", err)
+	}
+	exports, err := h.store.Exports(ctx, h.owner)
+	if err != nil || len(exports) != 1 || exports[0].Export != "FS1:bbb" {
+		t.Fatalf("exports = %+v, err = %v, want the refreshed export", exports, err)
+	}
+}
+
+// TestPutExportsRefusesToStealAnotherAccountsCharacter is the third
+// case: a different account may not take over a character_key someone
+// else already owns, and the stored row must be untouched by the
+// refused attempt.
+func TestPutExportsRefusesToStealAnotherAccountsCharacter(t *testing.T) {
+	h := newHarness(t)
+	ctx := context.Background()
+	stranger, err := (&auth.Store{Pool: h.pool}).UpsertEmailUser(ctx, "stranger@example.com")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := h.store.PutExports(ctx, h.owner,
+		[]Export{{Name: "Baelgrim", Ruleset: "hardcore", Region: "us", Export: "FS1:aaa"}}); err != nil {
+		t.Fatal(err)
+	}
+
+	err = h.store.PutExports(ctx, stranger.ID,
+		[]Export{{Name: "Baelgrim", Ruleset: "hardcore", Region: "us", Export: "FS1:stolen"}})
+	if !errors.Is(err, ErrCharacterClaimed) {
+		t.Fatalf("err = %v, want ErrCharacterClaimed", err)
+	}
+
+	var storedUserID int64
+	var storedExport string
+	if err := h.pool.QueryRow(ctx,
+		`select user_id, export from addon_exports where character_key = $1`, "us/hardcore/baelgrim").
+		Scan(&storedUserID, &storedExport); err != nil {
+		t.Fatal(err)
+	}
+	if storedUserID != h.owner || storedExport != "FS1:aaa" {
+		t.Fatalf("stored row changed: user_id=%d export=%q, want owner=%d export=FS1:aaa",
+			storedUserID, storedExport, h.owner)
+	}
+}
+
+// TestExportsRefuseStealingAnAlreadyClaimedCharacter covers the HTTP
+// path onto the same guard: the device route answers 409 rather than
+// 200 when the store refuses a claim.
+func TestExportsRefuseStealingAnAlreadyClaimedCharacter(t *testing.T) {
+	h := newHarness(t)
+	stranger, err := (&auth.Store{Pool: h.pool}).UpsertEmailUser(context.Background(), "stranger@example.com")
+	if err != nil {
+		t.Fatal(err)
+	}
+	res := h.do(http.MethodPost, "/v1/addon/exports",
+		`{"characters":[{"name":"Baelgrim","ruleset":"hardcore","region":"us","export":"FS1:aaa"}]}`)
+	res.Body.Close()
+
+	h.actor = auth.Actor{UserID: stranger.ID, Role: "user", Method: "device", DeviceID: "device-2"}
+	res = h.do(http.MethodPost, "/v1/addon/exports",
+		`{"characters":[{"name":"Baelgrim","ruleset":"hardcore","region":"us","export":"FS1:stolen"}]}`)
+	res.Body.Close()
+	if res.StatusCode != http.StatusConflict {
+		t.Fatalf("status = %d, want 409 for a character claimed by a different account", res.StatusCode)
 	}
 }
 

@@ -6,6 +6,7 @@ package addon
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log/slog"
 	"net/http"
@@ -20,6 +21,13 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/api/internal/trees"
 )
+
+// ErrCharacterClaimed is returned by PutExports when a character_key
+// already belongs to a different account. Forever merges original
+// realms into one ruleset, so two real characters can collide on the
+// same region/ruleset/name-slug; the row is not moved, the same way
+// auth.LinkCharacter refuses to move a characters row it does not own.
+var ErrCharacterClaimed = errors.New("addon: character already claimed by another account")
 
 const (
 	// maxBody is the ceiling on an export or inbox body.
@@ -67,17 +75,31 @@ type Store struct{ Pool *pgxpool.Pool }
 // whatever the game client gave it, and the companion forwards it
 // untouched, so an unrecognised value goes through the API's single
 // realm-to-ruleset mapping like any other realm segment would.
+//
+// character_key is the table's only key, with no user_id in the
+// conflict target, so a plain upsert would let any device silently
+// reassign and overwrite a row it does not own the moment two real
+// characters collide on the same region/ruleset/name-slug. The WHERE
+// guard only claims a row that is unclaimed or already userID's own -
+// the same shape auth.LinkCharacter uses for the characters table -
+// and a claim that touches no row (RowsAffected() == 0) is refused as
+// ErrCharacterClaimed rather than stealing it.
 func (s *Store) PutExports(ctx context.Context, userID int64, exports []Export) error {
 	for _, e := range exports {
 		ruleset := character.RulesetFromRealm(e.Ruleset, "")
 		key := character.Key(e.Region, ruleset, e.Name)
-		if _, err := s.Pool.Exec(ctx,
+		tag, err := s.Pool.Exec(ctx,
 			`insert into addon_exports (character_key, user_id, region, ruleset, name, export, updated_at)
 			 values ($1, $2, $3, $4, $5, $6, now())
 			 on conflict (character_key) do update set
-			   user_id = excluded.user_id, export = excluded.export, updated_at = now()`,
-			key, userID, strings.ToLower(e.Region), ruleset, e.Name, e.Export); err != nil {
+			   user_id = excluded.user_id, export = excluded.export, updated_at = now()
+			 where addon_exports.user_id = excluded.user_id`,
+			key, userID, strings.ToLower(e.Region), ruleset, e.Name, e.Export)
+		if err != nil {
 			return fmt.Errorf("addon: store export %s: %w", key, err)
+		}
+		if tag.RowsAffected() == 0 {
+			return fmt.Errorf("%w: %s", ErrCharacterClaimed, key)
 		}
 	}
 	return nil
@@ -220,6 +242,12 @@ func (s *Service) putExports(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	if err := s.Store.PutExports(r.Context(), auth.ActorFrom(r.Context()).UserID, in.Characters); err != nil {
+		if errors.Is(err, ErrCharacterClaimed) {
+			httpx.WriteError(w, r, http.StatusConflict, "conflict",
+				"one of those characters is already synced from a different account",
+				map[string]string{"characters": "already claimed by another account"})
+			return
+		}
 		s.fail(w, r, "exports", err, "could not store those exports just now")
 		return
 	}
