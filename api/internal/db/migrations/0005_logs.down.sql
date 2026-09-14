@@ -1,0 +1,17 @@
+drop table if exists addon_inbox;
+drop table if exists addon_exports;
+drop table if exists moderation;
+drop table if exists percentile_digests;
+drop table if exists fight_metrics;
+drop table if exists raw_chunks;
+drop table if exists fights;
+drop table if exists reports;
+drop table if exists uploads;
+drop table if exists characters;
+drop table if exists guild_members;
+drop table if exists guilds;
+drop table if exists pairing_codes;
+drop table if exists devices;
+drop table if exists login_tokens;
+drop table if exists sessions;
+drop table if exists users;
