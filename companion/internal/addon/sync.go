@@ -41,6 +41,13 @@ type Options struct {
 type Sync struct {
 	o         Options
 	lastInbox time.Time
+	// uploaded is the version of each SavedVariables file whose
+	// exports the API has accepted. It is the sync's own record
+	// rather than a question put to the shared cache, because the
+	// status page reads through that cache too and would otherwise
+	// consume the change the sync is waiting for. An upload that
+	// failed is simply not recorded, so the next pass retries it.
+	uploaded map[string]Stamp
 	// builds and body are the inbox as it was last rendered. The
 	// render is stamped with the time the builds changed, not the
 	// time the file is written, so an unchanged inbox is the same
@@ -61,7 +68,7 @@ func New(o Options) *Sync {
 	if o.Cache == nil {
 		o.Cache = &Cache{}
 	}
-	return &Sync{o: o}
+	return &Sync{o: o, uploaded: map[string]Stamp{}}
 }
 
 // Poll does one pass. It is called on the same ticker as the pipeline
@@ -70,7 +77,7 @@ func (s *Sync) Poll(ctx context.Context, now time.Time) error {
 	var errs []error
 	paths := s.o.Paths()
 	for _, p := range paths {
-		exports, fresh, err := s.o.Cache.Exports(p)
+		exports, at, err := s.o.Cache.Exports(p)
 		if errors.Is(err, fs.ErrNotExist) {
 			continue // the player has not installed the addon here
 		}
@@ -79,14 +86,17 @@ func (s *Sync) Poll(ctx context.Context, now time.Time) error {
 				"component", "addon", "path", p, "err", err.Error())
 			continue
 		}
-		if !fresh || len(exports) == 0 {
+		if len(exports) == 0 {
 			continue
+		}
+		if was, ok := s.uploaded[p]; ok && was.eq(at) {
+			continue // this version is already on the site
 		}
 		if err := s.o.API.PostAddonExports(ctx, exports); err != nil {
-			s.o.Cache.Forget(p) // read it again, and retry, next pass
-			errs = append(errs, err)
+			errs = append(errs, err) // unrecorded, so the next pass retries
 			continue
 		}
+		s.uploaded[p] = at
 		s.o.Log.Info("uploaded character exports", "component", "addon",
 			"path", p, "characters", len(exports))
 	}

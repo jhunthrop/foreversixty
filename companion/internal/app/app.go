@@ -483,7 +483,9 @@ func (a *App) Snapshot() Snapshot {
 	}
 	for _, p := range a.savedVariables() {
 		// Through the cache: this runs on a two-second poll and the
-		// file behind it is megabytes of Lua.
+		// file behind it is megabytes of Lua. The stamp is the sync's
+		// business, not the status page's — reading here as often as
+		// the window likes costs the sync nothing.
 		found, _, err := a.exports.Exports(p)
 		if err != nil {
 			continue

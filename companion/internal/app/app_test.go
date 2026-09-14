@@ -21,6 +21,7 @@ import (
 	"github.com/jhunthrop/foreversixty/companion/internal/paths"
 	"github.com/jhunthrop/foreversixty/companion/internal/secret"
 	"github.com/jhunthrop/foreversixty/companion/internal/state"
+	"github.com/jhunthrop/foreversixty/companion/internal/watch"
 )
 
 var t0 = time.Date(2026, 12, 9, 20, 0, 0, 0, time.UTC)
@@ -503,5 +504,118 @@ func TestTheAddressTheCompanionLogsCarriesNoToken(t *testing.T) {
 	}
 	if _, err := http.Get(ui.URL + "api/status"); err == nil {
 		t.Error("the UI server still answers after Close")
+	}
+}
+
+// TestTheCharactersOnDiskAtLaunchStillReachTheSite holds the addon
+// sync to its one job while the status page shares its parse cache.
+// The window polls /api/status every two seconds and the tick runs
+// every second, so a poll routinely reads a SavedVariables file
+// before the sync does; that must not cost the upload.
+func TestTheCharactersOnDiskAtLaunchStillReachTheSite(t *testing.T) {
+	h := newHarness(t)
+	sv := filepath.Join(h.game, "WTF", "Account", "ACCOUNT#1", "SavedVariables", "ForeverSixty.lua")
+	writeExport := func(name string, at time.Time) {
+		t.Helper()
+		if err := os.WriteFile(sv, []byte(`ForeverSixtyDB = { ["characters"] = { `+
+			`["`+name+`-Hardcore"] = { ["name"] = "`+name+`", ["realm"] = "Hardcore", `+
+			`["region"] = "us", ["export"] = "FS1:x" } } }`), 0o600); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.Chtimes(sv, at, at); err != nil {
+			t.Fatal(err)
+		}
+	}
+	writeExport("Morrowlyn", t0)
+	if code, _ := h.call(http.MethodPost, h.url("/api/pair"),
+		map[string]string{"code": fakeapi.PairCode}); code != http.StatusOK {
+		t.Fatal("pairing failed")
+	}
+
+	// The window is open before the first tick: its poll reads the
+	// file the sync has not looked at yet.
+	if n := len(h.app.Snapshot().Characters); n != 1 {
+		t.Fatalf("the status page shows %d characters", n)
+	}
+	h.app.Step(t.Context(), t0)
+	if got := h.srv.Exports(); len(got) != 1 || got[0]["name"] != "Morrowlyn" {
+		t.Fatalf("the characters present at launch never reached the site: %+v", got)
+	}
+
+	// The player logs out and the game rewrites the file. The status
+	// poll gets there first again; the logout must still upload.
+	writeExport("Thessaly", t0.Add(time.Hour))
+	h.app.Snapshot()
+	h.app.Step(t.Context(), t0.Add(time.Hour))
+	if got := h.srv.Exports(); len(got) != 2 || got[1]["name"] != "Thessaly" {
+		t.Fatalf("a logout's exports never reached the site: %+v", got)
+	}
+
+	// A pass with nothing new does not upload the same file again.
+	h.app.Step(t.Context(), t0.Add(time.Hour+time.Second))
+	if got := h.srv.Exports(); len(got) != 2 {
+		t.Fatalf("a quiet pass uploaded again: %+v", got)
+	}
+}
+
+// TestANewFirstGameFolderWaitsForTheOpenReportAndThenMoves covers the
+// refuse-then-retry half of retarget: the save cannot move the tail
+// while a report is open, and the step after the report closes does
+// it without anyone asking again.
+func TestANewFirstGameFolderWaitsForTheOpenReportAndThenMoves(t *testing.T) {
+	h := newHarness(t)
+	h.app.Step(t.Context(), t0) // prime the tail over the empty folder
+	if err := os.WriteFile(h.log, []byte(aNight()), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	h.app.Step(t.Context(), t0.Add(time.Second))
+	open := h.app.Snapshot().Pipeline
+	if !open.Logging || open.LogPath != h.log {
+		t.Fatalf("no report is open on the first folder: %+v", open)
+	}
+
+	// Mid-raid, the player puts another game folder in front of the
+	// one being logged.
+	second := newGame(t)
+	secondLog := filepath.Join(second, "Logs", "WoWCombatLog.txt")
+	if code, body := h.call(http.MethodPost, h.url("/api/settings"), app.Settings{
+		Visibility: "public", WoWPaths: []string{second, h.game},
+	}); code != http.StatusOK {
+		t.Fatalf("settings = %d %v", code, body)
+	}
+
+	// The tail has not moved: the rest of the night still lands in
+	// the open report.
+	f, err := os.OpenFile(h.log, os.O_APPEND|os.O_WRONLY, 0o600)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := f.WriteString(fixture.Encounter(1) + fixture.Heartbeat(1)); err != nil {
+		t.Fatal(err)
+	}
+	f.Close()
+	h.app.Step(t.Context(), t0.Add(2*time.Second))
+	grown := h.app.Snapshot().Pipeline
+	if !grown.Logging || grown.LogPath != h.log {
+		t.Fatalf("the save moved the tail out from under the open report: %+v", grown)
+	}
+	if grown.Offset <= open.Offset {
+		t.Fatalf("the open report stopped reading: offset %d, was %d", grown.Offset, open.Offset)
+	}
+
+	// The night ends and the report completes; the tail moves on the
+	// next step with no second save.
+	quiet := t0.Add(2*time.Second + watch.CompleteIdle + time.Minute)
+	h.app.Step(t.Context(), quiet)
+	if s := h.app.Snapshot().Pipeline; s.Logging {
+		t.Fatalf("the report did not close: %+v", s)
+	}
+	h.app.Step(t.Context(), quiet.Add(time.Second)) // the retry that moves the tail
+	if err := os.WriteFile(secondLog, []byte(aNight()), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	h.app.Step(t.Context(), quiet.Add(2*time.Second))
+	if got := h.app.Snapshot().Pipeline.LogPath; got != secondLog {
+		t.Fatalf("the tail is on %q, not the newly added folder's log %q", got, secondLog)
 	}
 }

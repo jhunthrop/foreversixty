@@ -132,11 +132,14 @@ func (p *Pipeline) SetConfig(c config.Config) {
 }
 
 // SetWatch repoints the tail at another Logs directory and reports
-// whether it did. It refuses while a report is open: the watcher
-// carries a file and an offset inside the old directory, and swapping
-// it mid-report would strand the night at a byte boundary. The caller
-// asks again on the next tick, and the swap happens when the report
-// closes.
+// whether it did. It refuses while a report is open, because the
+// replacement is a fresh watcher: it has seen no file, so it emits no
+// Complete for the report already open, and the watcher that would
+// have emitted one is the one being thrown away. p.cur would be left
+// open with nobody left to close it, until the first Start from the
+// new directory overwrote it — losing the rest of the night and its
+// completion both. The caller asks again on the next tick, and the
+// swap happens when the report closes.
 func (p *Pipeline) SetWatch(w *watch.Watcher) bool {
 	p.mu.Lock()
 	defer p.mu.Unlock()
