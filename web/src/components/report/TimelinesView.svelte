@@ -39,7 +39,8 @@
 {:else}
   <div class="flex flex-col gap-1" data-testid="timelines">
     <p class="text-muted label">
-      {formatDuration(current.startMs)} to {formatDuration(current.endMs)} · casts as ticks, auras as bars
+      <span class="tabular font-mono">{formatDuration(current.startMs)} to {formatDuration(current.endMs)}</span>
+      · casts as ticks, auras as bars
     </p>
     <ul class="flex flex-col">
       {#each lanes as lane (lane.guid)}

@@ -404,6 +404,11 @@
       // state.fight` guard, so a fight switch mid-request is handled there too.
       summaries.delete(selected.index);
       await loadFight(selected.index);
+      // Effect 3's own success handler clears `error` the same way: a "did not load" alert
+      // left over from an earlier failed fetch of this same fight must not outlive the
+      // poll quietly loading it correctly, the same lie in reverse an alert that outlived
+      // its fight already is.
+      if (selected.index === state.fight) error = '';
     }, POLL_INTERVAL_MS);
 
     poller.start();
