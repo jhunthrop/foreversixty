@@ -3,6 +3,19 @@ import { expect, test } from '@playwright/test';
 
 const REPORT = '/reports/fixture2abcd';
 
+// These tests care about which fight's data is on screen, and used to read that off a
+// Task-10 placeholder's "N players in this fight." text. Task 11 replaced the placeholder
+// with the summary tab's real roster list, and Task 14 removed the placeholder branch
+// entirely -- so the signal these tests want is now the summary tab's own roster rows
+// (SummaryTab.svelte's `<li data-testid={`roster-${row.guid}`}>`), one per player the
+// selected fight's summary actually reports: 3 for fight 1, 1 for fight 2, 5 for fight 3
+// (src/fixtures/report/fights/<n>/summary.json). Scoped to `li`, not just `[data-testid^=
+// "roster-"]`: each row also carries a nested `data-testid="roster-active"` span for its
+// Active column, which shares the "roster-" prefix and would otherwise double the count.
+function summaryRosterRows(page: import('@playwright/test').Page): import('@playwright/test').Locator {
+  return page.getByTestId('summary-tab').locator('li[data-testid^="roster-"]');
+}
+
 test('the report opens on its first fight with the chrome the spec sets', async ({ page }) => {
   await page.goto(REPORT);
 
@@ -64,7 +77,7 @@ test('a fight the report does not have falls back to the first one', async ({ pa
     await page.goto(`${REPORT}${search}`);
     await expect(page.getByTestId('report-error')).toHaveCount(0);
     await expect(page.getByTestId('fight-selector')).toBeVisible();
-    await expect(page.getByTestId('report-placeholder')).toHaveText('3 players in this fight.');
+    await expect(summaryRosterRows(page)).toHaveCount(3);
   }
 });
 
@@ -118,7 +131,7 @@ async function heldRoute(
 
 test('a stale fight failure does not fail the fight that is on screen', async ({ page }) => {
   await page.goto(REPORT);
-  await expect(page.getByTestId('report-placeholder')).toHaveText('3 players in this fight.');
+  await expect(summaryRosterRows(page)).toHaveCount(3);
 
   const slow = await heldRoute(page, 2, 'abort');
   await page.getByTestId('toggle-trash').click();
@@ -127,7 +140,7 @@ test('a stale fight failure does not fail the fight that is on screen', async ({
 
   // Fight 3 is picked and lands while fight 2 is still open.
   await page.getByTestId('fight-3').click();
-  await expect(page.getByTestId('report-placeholder')).toHaveText('5 players in this fight.');
+  await expect(summaryRosterRows(page)).toHaveCount(5);
   await expect(page.getByTestId('report-fight-error')).toHaveCount(0);
 
   const failed = page.waitForEvent('requestfailed', (request) =>
@@ -138,12 +151,12 @@ test('a stale fight failure does not fail the fight that is on screen', async ({
   await page.waitForTimeout(250);
 
   await expect(page.getByTestId('report-fight-error')).toHaveCount(0);
-  await expect(page.getByTestId('report-placeholder')).toHaveText('5 players in this fight.');
+  await expect(summaryRosterRows(page)).toHaveCount(5);
 });
 
 test('a stale fight success neither clears the current error nor paints its roster', async ({ page }) => {
   await page.goto(REPORT);
-  await expect(page.getByTestId('report-placeholder')).toHaveText('3 players in this fight.');
+  await expect(summaryRosterRows(page)).toHaveCount(3);
 
   const slow = await heldRoute(page, 2, 'continue');
   await page.route('**/fights/3/summary.json', (route) => route.abort());
@@ -155,7 +168,7 @@ test('a stale fight success neither clears the current error nor paints its rost
   // Fight 3 is picked and fails while fight 2 is still open.
   await page.getByTestId('fight-3').click();
   await expect(page.getByTestId('report-fight-error')).toHaveText('Report data did not load');
-  await expect(page.getByTestId('report-placeholder')).toHaveText('3 players in this fight.');
+  await expect(summaryRosterRows(page)).toHaveCount(3);
 
   const answered = page.waitForResponse((response) => response.url().includes('/fights/2/summary.json'));
   slow.release();
@@ -165,5 +178,5 @@ test('a stale fight success neither clears the current error nor paints its rost
   // Fight 2 has one player; seeing its roster or losing fight 3's alert would both be the
   // stale answer speaking for the selected fight.
   await expect(page.getByTestId('report-fight-error')).toHaveText('Report data did not load');
-  await expect(page.getByTestId('report-placeholder')).toHaveText('3 players in this fight.');
+  await expect(summaryRosterRows(page)).toHaveCount(3);
 });
