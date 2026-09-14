@@ -19,7 +19,10 @@ import (
 
 // URL is the retail sample: COMBAT_LOG_VERSION 16, build 9.0.2, advanced
 // logging on, 105 COMBATANT_INFO lines, eighteen encounters.
-const URL = "https://raw.githubusercontent.com/rp4rk/WoWP/main/WoWCombatLog.txt"
+//
+// It is a var, not a const, only so tests in this package can point it at
+// an httptest.Server; production code must never assign to it.
+var URL = "https://raw.githubusercontent.com/rp4rk/WoWP/main/WoWCombatLog.txt"
 
 // Name is the file's name inside the cache.
 const Name = "wowp-retail-v16.txt"
@@ -42,21 +45,31 @@ func CacheDir() string {
 	return filepath.Join(filepath.Dir(filepath.Dir(filepath.Dir(self))), "testdata", "cache")
 }
 
+// cacheDir is what Fetch actually writes into. It defaults to CacheDir, but
+// tests in this package redirect it to a t.TempDir() so exercising the
+// download path never touches the real testdata/cache or the real sample
+// cached there.
+var cacheDir = CacheDir
+
 // Fetch returns the path to the cached sample, downloading it if needed.
 // It returns an error wrapping ErrUnavailable when the machine is offline
 // and nothing is cached.
 func Fetch(ctx context.Context) (string, error) {
 	if p := os.Getenv(EnvOverride); p != "" {
-		if _, err := os.Stat(p); err != nil {
+		fi, err := os.Stat(p)
+		if err != nil {
 			return "", fmt.Errorf("%w: %s is set to %q: %v", ErrUnavailable, EnvOverride, p, err)
+		}
+		if !fi.Mode().IsRegular() {
+			return "", fmt.Errorf("%w: %s is set to %q, which is not a regular file", ErrUnavailable, EnvOverride, p)
 		}
 		return p, nil
 	}
-	path := filepath.Join(CacheDir(), Name)
+	path := filepath.Join(cacheDir(), Name)
 	if fi, err := os.Stat(path); err == nil && fi.Size() > 0 {
 		return path, nil
 	}
-	if err := os.MkdirAll(CacheDir(), 0o755); err != nil {
+	if err := os.MkdirAll(cacheDir(), 0o755); err != nil {
 		return "", fmt.Errorf("%w: create cache: %v", ErrUnavailable, err)
 	}
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Minute)
@@ -88,6 +101,7 @@ func Fetch(ctx context.Context) (string, error) {
 		return "", fmt.Errorf("%w: close %s: %v", ErrUnavailable, tmp, err)
 	}
 	if err := os.Rename(tmp, path); err != nil {
+		os.Remove(tmp)
 		return "", fmt.Errorf("%w: rename: %v", ErrUnavailable, err)
 	}
 	return path, nil
