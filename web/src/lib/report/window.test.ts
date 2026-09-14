@@ -97,6 +97,16 @@ describe('scoping a row to the window', () => {
     expect(scopeActor(idle, { startMs: 1000, endMs: 3000 }).active_ms).toBe(0);
   });
 
+  it('never reports more active time than the window is long', () => {
+    // The range inputs step by BUCKET_MS, but a canvas drag does not: onUp produces
+    // arbitrary millisecond bounds, gated only by a minimum width of one bucket. A legal
+    // 1000ms drag landing off the bucket grid touches two buckets, and two buckets of a
+    // fully active series is 2000ms of activity inside a 1000ms window.
+    const busy: Actor = { ...actor, series: [10, 20, 30, 40] };
+    const offGrid = { startMs: 999, endMs: 1999 };
+    expect(scopeActor(busy, offGrid).active_ms).toBeLessThanOrEqual(windowMs(offGrid));
+  });
+
   it('leaves a whole-fight actor exactly as the engine wrote it', () => {
     const scoped = scopeActor(actor, { startMs: 0, endMs: 4000 });
     expect(scoped.total).toBe(100);

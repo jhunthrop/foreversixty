@@ -92,9 +92,17 @@ function scale(value: number, ratio: number): number {
  * look right while being wrong. The series is what the summary knows about *when*, so the
  * window's answer comes from the series, at its one-second resolution. The whole-fight
  * path never reaches this: it returns the engine's exact figure untouched.
+ *
+ * Clamped to the window because the two are on different grids. The range inputs step by
+ * BUCKET_MS, but a canvas drag does not: it yields arbitrary millisecond bounds, and
+ * sliceSeries rounds those outwards (floor the start, ceil the end), so an off-grid
+ * 1000ms window can touch two buckets. Counting both would claim 2000ms of activity
+ * inside a 1000ms window, which is impossible on its face. The clamp is a bound on a real
+ * measurement, not the old ceiling standing in for one.
  */
 function activeMs(series: number[], window: TimeWindow): number {
-  return sliceSeries(series, window).filter((value) => value !== 0).length * BUCKET_MS;
+  const measured = sliceSeries(series, window).filter((value) => value !== 0).length * BUCKET_MS;
+  return Math.min(measured, windowMs(window));
 }
 
 export function scopeActor(actor: Actor, window: TimeWindow): ScopedActor {
