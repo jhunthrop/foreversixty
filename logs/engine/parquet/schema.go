@@ -42,6 +42,8 @@ type Row struct {
 
 	ExtraGUID        string `parquet:"extra_guid,dict"`
 	ExtraName        string `parquet:"extra_name,dict"`
+	ExtraFlags       int64  `parquet:"extra_flags"`
+	ExtraRaid        int64  `parquet:"extra_raid"`
 	ExtraSpellID     int64  `parquet:"extra_spell_id"`
 	ExtraSpellName   string `parquet:"extra_spell_name,dict"`
 	ExtraSpellSchool int64  `parquet:"extra_spell_school"`
@@ -158,6 +160,7 @@ func RowOf(e event.Event) Row {
 		SpellID: e.Spell.ID, SpellName: e.Spell.Name, SpellSchool: e.Spell.School,
 
 		ExtraGUID: e.ExtraUnit.GUID, ExtraName: e.ExtraUnit.Name,
+		ExtraFlags: int64(e.ExtraUnit.Flags), ExtraRaid: int64(e.ExtraUnit.Raid),
 		ExtraSpellID: e.ExtraSpell.ID, ExtraSpellName: e.ExtraSpell.Name,
 		ExtraSpellSchool: e.ExtraSpell.School,
 
@@ -207,7 +210,8 @@ func EventOf(r Row) event.Event {
 			Flags: uint32(r.DestFlags), Raid: uint32(r.DestRaid)},
 		Spell: event.Spell{ID: r.SpellID, Name: r.SpellName, School: r.SpellSchool},
 
-		ExtraUnit:  event.Unit{GUID: r.ExtraGUID, Name: r.ExtraName},
+		ExtraUnit: event.Unit{GUID: r.ExtraGUID, Name: r.ExtraName,
+			Flags: uint32(r.ExtraFlags), Raid: uint32(r.ExtraRaid)},
 		ExtraSpell: event.Spell{ID: r.ExtraSpellID, Name: r.ExtraSpellName, School: r.ExtraSpellSchool},
 
 		Amount: fromI(r.Amount), BaseAmount: fromI(r.BaseAmount), Overkill: fromI(r.Overkill),

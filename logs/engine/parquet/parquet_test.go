@@ -96,6 +96,10 @@ func TestRoundTripKeepsEveryTypedField(t *testing.T) {
 		if g.Source != want.Source || g.Dest != want.Dest || g.Spell != want.Spell {
 			t.Errorf("line %d units or spell differ", want.Line)
 		}
+		if g.ExtraUnit != want.ExtraUnit || g.ExtraSpell != want.ExtraSpell {
+			t.Errorf("line %d extra unit/spell differ:\n got %+v/%+v\nwant %+v/%+v",
+				want.Line, g.ExtraUnit, g.ExtraSpell, want.ExtraUnit, want.ExtraSpell)
+		}
 	}
 }
 
