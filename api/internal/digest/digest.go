@@ -231,10 +231,16 @@ func Unmarshal(b []byte) (*Digest, error) {
 		return nil, fmt.Errorf("digest: unknown format %d", b[4])
 	}
 	d.count = int64(binary.BigEndian.Uint64(b[5:13]))
-	n := int(binary.BigEndian.Uint64(b[13:21]))
-	if len(b) != 21+n*16 {
-		return nil, fmt.Errorf("digest: %d centroids do not fit %d bytes", n, len(b))
+	declared := binary.BigEndian.Uint64(b[13:21])
+	rem := len(b) - 21
+	// Checked by division, not by computing 21+n*16: n comes straight off
+	// the wire, and multiplying an attacker-controlled 64-bit count by 16
+	// can overflow and coincidentally match len(b), which would let a
+	// corrupt blob reach the decode loop below instead of being rejected.
+	if rem%16 != 0 || declared != uint64(rem/16) {
+		return nil, fmt.Errorf("digest: %d centroids do not fit %d bytes", declared, len(b))
 	}
+	n := int(declared)
 	d.merged = make([]centroid, 0, n)
 	for i := range n {
 		off := 21 + i*16

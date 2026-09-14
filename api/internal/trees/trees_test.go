@@ -203,3 +203,29 @@ func TestLatestIsTheNewestBuild(t *testing.T) {
 		t.Fatal("no builds means no latest")
 	}
 }
+
+func TestLatestComparesVersionsNumericallyNotLexicographically(t *testing.T) {
+	// Lexicographically these sort "1.10" < "1.15.10.1" < "1.15.9.69722" <
+	// "1.2" < "1.9", which would pick "1.9" as "latest" - wrong, since the
+	// project's own build directories are dotted version numbers like
+	// "1.15.9.69722" and a numeric comparison must win.
+	files := map[string]string{}
+	for _, v := range []string{"1.2", "1.9", "1.10", "1.15.9.69722", "1.15.10.1"} {
+		files[v+"/classes.json"] = oneClass
+		files[v+"/races.json"] = oneRace
+		files[v+"/combos.json"] = oneCombo
+		files[v+"/talents/warrior.json"] = oneTree
+	}
+	root := writeBuild(t, files)
+	d, err := Load(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	b, ok := d.Latest()
+	if !ok {
+		t.Fatal("expected a latest build")
+	}
+	if b.Version != "1.15.10.1" {
+		t.Fatalf("latest = %q, want the numerically newest 1.15.10.1", b.Version)
+	}
+}
