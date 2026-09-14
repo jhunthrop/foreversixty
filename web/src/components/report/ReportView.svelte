@@ -467,7 +467,15 @@
     <FightSelector {fights} selected={state.fight} onSelect={(index) => patch({ fight: index })} />
 
     <div class="flex min-w-0 flex-col gap-[22px] md:gap-6">
-      <ModeBar {state} {roster} onPatch={patch} />
+      <!-- Sticky on phone only: the desktop layout keeps the selector column beside the
+           content and the whole bar is a short scroll from anything. On a phone a forty-row
+           table puts the tabs a long way off the top of the screen, so the bar rides under
+           the page header instead. The negative margin takes it out to the viewport edges
+           so its background covers the rows sliding under it, and the padding puts the
+           18px gutter back on its own children. -->
+      <div class="bg-bg sticky top-0 z-10 -mx-[18px] px-[18px] py-2 md:static md:mx-0 md:px-0 md:py-0">
+        <ModeBar {state} {roster} onPatch={patch} />
+      </div>
       <!-- Tasks 11 to 17 insert the panels below the chart. -->
       {#if summary !== null}
         <TimeChart

@@ -53,6 +53,8 @@
   const activitySeconds = $derived(Math.round(actor.active_ms / 1000));
   const activityPct = $derived(durationMs === 0 ? 0 : (actor.active_ms / durationMs) * 100);
   const showActivitySeconds = $derived(durationMs > 0 && durationMs < ACTIVITY_SECONDS_BELOW_MS);
+  /** One source for the figure, which the desktop column and the phone card both read. */
+  const activeText = $derived(showActivitySeconds ? `${activitySeconds}s` : formatPercent(activityPct));
   const mark = $derived(approximateMark(approximate));
   const title = $derived(approximateTitle(approximate));
 </script>
@@ -60,7 +62,7 @@
 <li class="border-line-soft border-b" data-testid={`actor-${actor.guid}`}>
   <button
     type="button"
-    class="grid min-h-11 w-full grid-cols-[28px_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 px-2 py-2 text-left text-[14px] md:grid-cols-[28px_40px_minmax(120px,1.4fr)_minmax(0,3fr)_92px_80px_64px]"
+    class="grid min-h-11 w-full grid-cols-[28px_auto_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 px-2 py-3 text-left text-[14px] md:grid-cols-[28px_40px_minmax(120px,1.4fr)_minmax(0,3fr)_92px_80px_64px] md:py-2"
     aria-expanded={open}
     onclick={() => (open = !open)}
   >
@@ -84,18 +86,33 @@
       {/if}
     </span>
 
-    <span class="col-span-3 md:col-span-1">
+    <span class="col-span-4 row-start-2 md:col-span-1 md:row-auto">
       <AbilityBar abilities={actor.abilities} total={actor.effective} {peak} {color} />
     </span>
 
     <span class="font-mono tabular text-right" data-testid="row-amount">
       {formatAmount(actor.effective)}
     </span>
-    <span class="text-muted font-mono tabular text-right text-[13px]" data-testid="row-per-second">
-      {formatPerSecond(actor.effective, durationMs)}
+
+    <!-- The card's third line, below the bar: Active on the left, Per sec on the right.
+         It sits here in source order rather than after the two cells it replaces because a
+         grid places its row-3 items in source order, and it is display:none above `md`, so
+         where it sits costs the desktop grid nothing. -->
+    <span class="text-muted label col-span-2 row-start-3 md:hidden" data-testid="phone-labels">
+      <span class="font-mono tabular">{activeText}</span> active
     </span>
-    <span class="text-muted font-mono tabular text-right text-[13px]" data-testid="row-active">
-      {showActivitySeconds ? `${activitySeconds}s` : formatPercent(activityPct)}
+    <!-- One element, both layouts: a column under ActorTable's "Per sec" heading above
+         `md`, and the same figure saying what it is once that heading is gone. -->
+    <span
+      class="text-muted font-mono tabular col-span-2 row-start-3 text-right text-[13px] md:col-span-1 md:row-auto"
+      data-testid="row-per-second"
+    >
+      {formatPerSecond(actor.effective, durationMs)}<span class="label font-body ml-1.5 md:hidden"
+        >per sec</span
+      >
+    </span>
+    <span class="text-muted font-mono tabular hidden text-right text-[13px] md:inline" data-testid="row-active">
+      {activeText}
     </span>
   </button>
 

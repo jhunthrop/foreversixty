@@ -71,26 +71,34 @@
             {splitUnitName(row.name).name}
           </span>
           <span class="truncate">{row.spell_name}</span>
+          <!-- Below `md` the heading row is hidden and these three are a card's middle
+               lines, so each says what it is. The word goes into the accessible name as
+               well as onto the screen: an aria-label replaces an element's text outright,
+               so a visible word alone would reach a sighted reader and nobody else -- and
+               these cells are divs, with no column header for a screen reader to associate
+               them with at any width. -->
           <span
             class="font-mono tabular text-right"
             {title}
-            aria-label={approximateAriaLabel(approximate, String(row.succeeded))}
+            aria-label={approximateAriaLabel(approximate, `${row.succeeded} cast`)}
           >
-            {mark}{row.succeeded}
+            {mark}{row.succeeded}<span class="label font-body ml-1.5 md:hidden">cast</span>
           </span>
           <span
             class="font-mono tabular text-muted text-right"
             {title}
-            aria-label={approximateAriaLabel(approximate, String(row.failed))}
+            aria-label={approximateAriaLabel(approximate, `${row.failed} failed`)}
           >
-            {mark}{row.failed}
+            {mark}{row.failed}<span class="label font-body ml-1.5 md:hidden">failed</span>
           </span>
           <span
             class="font-mono tabular text-muted text-right text-[13px]"
             title={castTimeTitle}
-            aria-label={wholeFightAriaLabel(true, castTimeText(row.cast_time_ms))}
+            aria-label={wholeFightAriaLabel(true, `${castTimeText(row.cast_time_ms)} cast time`)}
           >
-            {castTimeMark}{castTimeText(row.cast_time_ms)}
+            {castTimeMark}{castTimeText(row.cast_time_ms)}<span class="label font-body ml-1.5 md:hidden"
+              >cast time</span
+            >
           </span>
           <span class="bg-line-soft relative col-span-2 block h-[6px] w-full md:col-span-1">
             {#each row.sequence as at (at)}

@@ -59,10 +59,17 @@
               ></span>
             {/each}
           </span>
-          <span class="font-mono tabular text-right" data-testid="aura-uptime">
-            {formatPercent(pct(track.uptime_ms))}
+          <!-- The heading row above is `hidden` below `md`, so each figure carries the word
+               it was filed under. The testid stays on the number alone: it is the figure
+               report-tables.spec.ts pins, not the word beside it. -->
+          <span class="font-mono tabular text-right">
+            <span data-testid="aura-uptime">{formatPercent(pct(track.uptime_ms))}</span><span
+              class="label font-body text-muted ml-1.5 md:hidden">uptime</span
+            >
           </span>
-          <span class="text-muted font-mono tabular text-right text-[13px]">{track.applications}</span>
+          <span class="text-muted font-mono tabular text-right text-[13px]"
+            >{track.applications}<span class="label font-body ml-1.5 md:hidden">applied</span></span
+          >
         </li>
       {/each}
     </ul>

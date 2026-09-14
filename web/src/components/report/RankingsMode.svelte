@@ -82,7 +82,8 @@
       <p class="text-[14px]" role="alert">{error}</p>
     {:else if page !== null}
       <p class="text-muted text-[13px]">
-        <span class="font-mono tabular">{page.total}</span> ranked kills · updated {page.updated_at.slice(0, 10)}
+        <span class="font-mono tabular">{page.total}</span> ranked kills · updated
+        <span class="font-mono tabular">{page.updated_at.slice(0, 10)}</span>
       </p>
       <ul class="flex flex-col" data-testid="rankings-rows">
         {#each page.rows as row (`${row.report_id}-${row.fight_index}-${row.player.key}`)}

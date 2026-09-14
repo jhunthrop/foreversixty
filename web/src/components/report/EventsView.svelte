@@ -20,6 +20,9 @@
   const kinds = new SvelteSet<EventKind>(EVENT_KINDS.map((kind) => kind.id));
   let search = $state('');
 
+  /** See FilterBar.svelte: the label around a checkbox is its 44px target, not the box. */
+  const check = 'accent-gold';
+
   const all = $derived(summaryEvents(summary));
   const shown = $derived(filterEvents(all, kinds, search));
 
@@ -33,7 +36,7 @@
   <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
     {#each EVENT_KINDS as kind (kind.id)}
       <label class="flex min-h-11 items-center gap-2 text-[13px] md:min-h-0">
-        <input type="checkbox" checked={kinds.has(kind.id)} onchange={() => toggle(kind.id)} />
+        <input class={check} type="checkbox" checked={kinds.has(kind.id)} onchange={() => toggle(kind.id)} />
         {kind.label}
       </label>
     {/each}

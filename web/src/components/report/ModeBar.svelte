@@ -96,7 +96,7 @@
     <div
       role="tablist"
       aria-label="Table"
-      class="-mx-[18px] flex flex-nowrap overflow-x-auto px-[18px] md:mx-0 md:flex-wrap md:px-0"
+      class="flex flex-nowrap overflow-x-auto md:flex-wrap"
     >
       {#each TABS as tab (tab.id)}
         <button

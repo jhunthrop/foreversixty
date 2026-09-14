@@ -20,6 +20,7 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "test:e2e:real": "FOREVER_DATA=real playwright test real-data.spec.ts",
+    "test:e2e:phone": "playwright test report-phone.spec.ts --project=mobile",
     "lhci": "lhci autorun",
     "deploy": "npm run build && wrangler deploy",
     "sync:data": "node scripts/sync-data.mjs",

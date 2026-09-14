@@ -153,46 +153,54 @@
   {:else if right === null}
     <p class="text-muted text-[14px]">Pick a second fight to see the difference per player.</p>
   {:else}
-    <table class="w-full border-collapse text-[14px]" data-testid="compare-table">
-      <caption class="sr-only">
-        Per-player {metric.replace('_', ' ')} in {currentFight?.name ?? 'this fight'}, compared with {rightFight?.name ??
-          'the selected fight'}.
-      </caption>
-      <thead>
-        <tr class="border-line-soft border-b text-left">
-          <th scope="col" class="label text-muted px-2 py-2 font-bold">Player</th>
-          <th scope="col" class="label text-muted px-2 py-2 text-right font-bold">
-            This fight
-            <span class="block truncate text-[11px] normal-case">{currentFight?.name ?? ''}</span>
-          </th>
-          <th scope="col" class="label text-muted px-2 py-2 text-right font-bold">
-            Compared with
-            <span class="block truncate text-[11px] normal-case">{rightFight?.name ?? ''}</span>
-          </th>
-          <th scope="col" class="label text-muted px-2 py-2 text-right font-bold">Difference</th>
-        </tr>
-      </thead>
-      <tbody>
-        {#each lines as line (line.guid)}
-          <tr class="border-line-soft min-h-11 border-b" data-testid={`compare-${line.guid}`}>
-            <td
-              class="max-w-0 truncate px-2 py-2 font-semibold"
-              style={`color: ${classColorVar(line.class)}`}
-            >
-              {splitUnitName(line.name).name}
-            </td>
-            <td class="font-mono tabular px-2 py-2 text-right">{formatAmount(line.a)}</td>
-            <td class="text-muted font-mono tabular px-2 py-2 text-right">{formatAmount(line.b)}</td>
-            <td
-              class="font-mono tabular w-[96px] px-2 py-2 text-right"
-              class:text-gold={line.a >= line.b}
-              data-testid="compare-delta"
-            >
-              {line.a - line.b >= 0 ? '+' : ''}{formatAmount(line.a - line.b)}
-            </td>
+    <!-- Four columns of names and figures do not fit 360px, and `w-full` on a table is a
+         floor, not a ceiling: the table grows to its min-content width and eats the page
+         gutter. The scroller keeps it a real table -- caption, `th scope="col"`, the
+         header association a card stack would lose -- and lets it be wider than the phone
+         rather than narrower than its contents. QueriesView.svelte wraps its own result
+         table the same way. -->
+    <div class="overflow-x-auto">
+      <table class="w-full border-collapse text-[14px]" data-testid="compare-table">
+        <caption class="sr-only">
+          Per-player {metric.replace('_', ' ')} in {currentFight?.name ?? 'this fight'}, compared with {rightFight?.name ??
+            'the selected fight'}.
+        </caption>
+        <thead>
+          <tr class="border-line-soft border-b text-left">
+            <th scope="col" class="label text-muted px-2 py-2 font-bold">Player</th>
+            <th scope="col" class="label text-muted px-2 py-2 text-right font-bold">
+              This fight
+              <span class="block truncate text-[11px] normal-case">{currentFight?.name ?? ''}</span>
+            </th>
+            <th scope="col" class="label text-muted px-2 py-2 text-right font-bold">
+              Compared with
+              <span class="block truncate text-[11px] normal-case">{rightFight?.name ?? ''}</span>
+            </th>
+            <th scope="col" class="label text-muted px-2 py-2 text-right font-bold">Difference</th>
           </tr>
-        {/each}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {#each lines as line (line.guid)}
+            <tr class="border-line-soft min-h-11 border-b" data-testid={`compare-${line.guid}`}>
+              <td
+                class="max-w-0 truncate px-2 py-2 font-semibold"
+                style={`color: ${classColorVar(line.class)}`}
+              >
+                {splitUnitName(line.name).name}
+              </td>
+              <td class="font-mono tabular px-2 py-2 text-right">{formatAmount(line.a)}</td>
+              <td class="text-muted font-mono tabular px-2 py-2 text-right">{formatAmount(line.b)}</td>
+              <td
+                class="font-mono tabular w-[96px] px-2 py-2 text-right"
+                class:text-gold={line.a >= line.b}
+                data-testid="compare-delta"
+              >
+                {line.a - line.b >= 0 ? '+' : ''}{formatAmount(line.a - line.b)}
+              </td>
+            </tr>
+          {/each}
+        </tbody>
+      </table>
+    </div>
   {/if}
 </div>

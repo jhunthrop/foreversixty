@@ -17,7 +17,7 @@
     wholeFightAriaLabel, wholeFightMark, wholeFightTitle,
   } from '../../lib/report/format';
   import { plannerLinkFor } from '../../lib/report/planner-link';
-  import type { Summary } from '../../lib/report/types';
+  import type { RosterRow, Summary } from '../../lib/report/types';
 
   let {
     summary,
@@ -43,6 +43,33 @@
   );
   const activeMark = $derived(wholeFightMark(approximate));
   const activeTitle = $derived(wholeFightTitle(approximate));
+
+  interface Figure {
+    label: string;
+    value: string;
+    title?: string;
+    ariaLabel?: string;
+  }
+
+  /**
+   * The row's five figures with the words the column headings carry above `md`. Built
+   * here rather than written out five times in the markup so the phone strip cannot drift
+   * from the desktop columns it stands in for.
+   */
+  function figuresFor(row: RosterRow): Figure[] {
+    return [
+      { label: 'Damage', value: formatAmount(row.damage_done) },
+      { label: 'Healing', value: formatAmount(row.healing_done) },
+      { label: 'Taken', value: formatAmount(row.damage_taken) },
+      {
+        label: 'Active',
+        value: `${activeMark}${formatPercent(row.activity_pct)}`,
+        title: activeTitle,
+        ariaLabel: wholeFightAriaLabel(approximate, formatPercent(row.activity_pct)),
+      },
+      { label: 'Deaths', value: String(row.deaths) },
+    ];
+  }
 </script>
 
 <section class="flex flex-col gap-4" data-testid="summary-tab">
@@ -75,7 +102,7 @@
           data-testid={`roster-${row.guid}`}
         >
           <span
-            class="font-mono tabular order-2 text-[12px] md:order-none"
+            class="font-mono tabular col-start-2 row-start-1 text-right text-[12px] md:col-auto md:row-auto md:text-left"
             style={percentile === null ? undefined : `color: ${percentileToken(percentile)}`}
           >
             {percentile === null ? '' : Math.round(percentile)}
@@ -83,19 +110,35 @@
           <span class="truncate font-semibold" style={`color: ${classColorVar(row.class)}`}>
             {display.name}
           </span>
-          <span class="text-muted text-[13px]">{row.spec ?? row.class ?? 'Unknown'}</span>
-          <span class="font-mono tabular text-right">{formatAmount(row.damage_done)}</span>
-          <span class="font-mono tabular text-right">{formatAmount(row.healing_done)}</span>
-          <span class="font-mono tabular text-right">{formatAmount(row.damage_taken)}</span>
+          <span class="text-muted col-span-2 text-[13px] md:col-span-1">
+            {row.spec ?? row.class ?? 'Unknown'}
+          </span>
+          <span class="font-mono tabular hidden text-right md:inline">{formatAmount(row.damage_done)}</span>
+          <span class="font-mono tabular hidden text-right md:inline">{formatAmount(row.healing_done)}</span>
+          <span class="font-mono tabular hidden text-right md:inline">{formatAmount(row.damage_taken)}</span>
           <span
-            class="text-muted font-mono tabular text-right text-[13px]"
+            class="text-muted font-mono tabular hidden text-right text-[13px] md:inline"
             title={activeTitle}
             aria-label={wholeFightAriaLabel(approximate, formatPercent(row.activity_pct))}
             data-testid="roster-active"
           >
             {activeMark}{formatPercent(row.activity_pct)}
           </span>
-          <span class="font-mono tabular text-right">{row.deaths}</span>
+          <span class="font-mono tabular hidden text-right md:inline">{row.deaths}</span>
+
+          <!-- The five figures above are columns under headings in the header row, which is
+               `hidden` below `md`. A card has no headings, so on phone they are replaced by
+               this strip, where each figure states what it is. Active keeps the whole-fight
+               mark, its title and its composed accessible name: a card layout that dropped
+               them would be claiming a precision the summary does not have. -->
+          <span class="text-muted label col-span-2 flex flex-wrap gap-x-3 gap-y-1 md:hidden" data-testid="roster-figures">
+            {#each figuresFor(row) as figure (figure.label)}
+              <span>
+                {figure.label}
+                <span class="font-mono tabular" title={figure.title} aria-label={figure.ariaLabel}>{figure.value}</span>
+              </span>
+            {/each}
+          </span>
         </li>
       {/each}
     </ul>
