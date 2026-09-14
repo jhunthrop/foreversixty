@@ -159,7 +159,6 @@ jobs:
       - name: Sign for Windows
         if: matrix.goos == 'windows' && env.WINDOWS_SIGNING_CERTIFICATE != ''
         shell: pwsh
-        working-directory: companion
         run: |
           $pfx = Join-Path $env:RUNNER_TEMP 'signing.pfx'
           [IO.File]::WriteAllBytes($pfx, [Convert]::FromBase64String($env:WINDOWS_SIGNING_CERTIFICATE))
@@ -187,6 +186,7 @@ jobs:
     env:
       MINISIGN_SECRET_KEY: ${{ secrets.MINISIGN_SECRET_KEY }}
       MINISIGN_PASSWORD: ${{ secrets.MINISIGN_PASSWORD }}
+      MINISIGN_PUBLIC_KEY: ${{ vars.MINISIGN_PUBLIC_KEY }}
       GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v4
@@ -214,6 +214,17 @@ jobs:
         run: |
           echo "::notice::MINISIGN_SECRET_KEY is not set, so this release carries no \
           signatures and installed companions will not update themselves to it."
+
+      - name: Publish the public key
+        if: env.MINISIGN_PUBLIC_KEY != ''
+        run: printf '%s\n' "$MINISIGN_PUBLIC_KEY" > staged/MINISIGN_PUBLIC_KEY.txt
+
+      - name: No public key to publish
+        if: env.MINISIGN_PUBLIC_KEY == ''
+        run: |
+          echo "::notice::MINISIGN_PUBLIC_KEY is not set, so this release does not publish \
+          MINISIGN_PUBLIC_KEY.txt; these binaries were built without a compiled-in key and \
+          will not verify or self-update."
 
       - name: Publish
         run: |

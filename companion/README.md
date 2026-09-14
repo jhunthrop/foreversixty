@@ -24,8 +24,9 @@ Every asset is published beside a `.minisig` signature. To check one:
 minisign -Vm foreversixty-companion_darwin_arm64 -P "$(cat MINISIGN_PUBLIC_KEY.txt)"
 ```
 
-The public key is in `MINISIGN_PUBLIC_KEY.txt` on every release. The companion verifies the same
-signature itself before it installs an update, so the check above is for the first download.
+The public key is in `MINISIGN_PUBLIC_KEY.txt` beside the assets on every release the project has
+signed. The companion verifies the same signature itself before it installs an update, so the
+check above is for the first download.
 
 macOS and Windows builds are signed and notarized when the project's signing credentials are in
 place. If a build is unsigned, macOS will refuse it on the first run: right-click the binary,
@@ -102,7 +103,8 @@ in **Options → Network → Advanced Combat Logging** and restart the game.
 **Fights are queued and not going up.** Open `logs/companion.log`. Every upload failure is one
 line with the report, the fight and the reason. Uploads are strictly in order, so one failing
 fight holds the rest behind it deliberately; they go as soon as it does. A fight the server
-refuses outright is dropped with an `ERROR` line rather than retried forever.
+refuses outright is dropped with an `ERROR` line rather than retried forever. Run the companion
+with `-debug` for a more detailed log if the reason isn't clear.
 
 **Nothing appears while the raid is going.** The engine emits a fight when the line after its
 last one arrives, which in a live raid is immediate. A fight that is genuinely the last thing in
