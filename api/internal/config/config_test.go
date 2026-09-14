@@ -118,3 +118,114 @@ func TestLoadDefaultsTreeDataDir(t *testing.T) {
 		t.Fatalf("TreeDataDir = %q err = %v", c.TreeDataDir, err)
 	}
 }
+
+// base is the Phase 0 environment every Phase 3 test starts from.
+func base(extra map[string]string) func(string) string {
+	m := map[string]string{
+		"DATABASE_URL": "postgres://x", "RESEND_API_KEY": "k",
+		"PUBLIC_BASE_URL": "https://foreversixty.gg", "API_BASE_URL": "https://api.foreversixty.gg",
+	}
+	for k, v := range extra {
+		m[k] = v
+	}
+	return env(m)
+}
+
+func TestPhase3DefaultsAreUsableWithoutAnyNewVariables(t *testing.T) {
+	c, err := Load(base(nil))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if c.R2Bucket != defaultR2Bucket {
+		t.Errorf("bucket = %q", c.R2Bucket)
+	}
+	if c.SessionCookieDomain != defaultSessionCookieDomain {
+		t.Errorf("cookie domain = %q", c.SessionCookieDomain)
+	}
+	if c.ParseJobName != "parse-report" || c.ParseJobRegion != "us-east1" || c.ParseJobProject != "foreversixty" {
+		t.Errorf("parse job = %s/%s/%s", c.ParseJobProject, c.ParseJobRegion, c.ParseJobName)
+	}
+	if c.R2Configured() {
+		t.Error("R2 must not read as configured with no credentials")
+	}
+	if c.BattleNetConfigured() {
+		t.Error("Battle.net must not read as configured with no client")
+	}
+}
+
+func TestR2AndBattleNetReadAsConfiguredOnlyWhenComplete(t *testing.T) {
+	full := map[string]string{
+		"R2_ACCOUNT_ID": "acct", "R2_ACCESS_KEY_ID": "key", "R2_SECRET_ACCESS_KEY": "secret",
+		"BNET_CLIENT_ID": "id", "BNET_CLIENT_SECRET": "secret",
+		"BNET_REDIRECT_URL": "https://api.foreversixty.gg/v1/auth/battlenet/callback",
+	}
+	c, err := Load(base(full))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !c.R2Configured() || !c.BattleNetConfigured() {
+		t.Fatalf("config = %+v, want both configured", c)
+	}
+	for _, missing := range []string{"R2_ACCOUNT_ID", "R2_ACCESS_KEY_ID", "R2_SECRET_ACCESS_KEY"} {
+		partial := map[string]string{}
+		for k, v := range full {
+			partial[k] = v
+		}
+		delete(partial, missing)
+		c, err := Load(base(partial))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if c.R2Configured() {
+			t.Errorf("R2 reads as configured without %s", missing)
+		}
+	}
+	for _, missing := range []string{"BNET_CLIENT_ID", "BNET_CLIENT_SECRET", "BNET_REDIRECT_URL"} {
+		partial := map[string]string{}
+		for k, v := range full {
+			partial[k] = v
+		}
+		delete(partial, missing)
+		c, err := Load(base(partial))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if c.BattleNetConfigured() {
+			t.Errorf("Battle.net reads as configured without %s", missing)
+		}
+	}
+}
+
+func TestSessionCookieDomainCanBeTurnedOff(t *testing.T) {
+	c, err := Load(base(map[string]string{"SESSION_COOKIE_DOMAIN": "none"}))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if c.SessionCookieDomain != "" {
+		t.Fatalf("domain = %q, want a host-only cookie", c.SessionCookieDomain)
+	}
+	c, err = Load(base(map[string]string{"SESSION_COOKIE_DOMAIN": ".example.test"}))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if c.SessionCookieDomain != ".example.test" {
+		t.Fatalf("domain = %q", c.SessionCookieDomain)
+	}
+}
+
+func TestTheParseJobAndBucketCanBeOverridden(t *testing.T) {
+	c, err := Load(base(map[string]string{
+		"R2_BUCKET": "other-bucket", "R2_ENDPOINT": "http://127.0.0.1:9000",
+		"PARSE_JOB_NAME": "parse-staging", "PARSE_JOB_REGION": "europe-west1",
+		"PARSE_JOB_PROJECT": "staging",
+	}))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if c.R2Bucket != "other-bucket" || c.R2Endpoint != "http://127.0.0.1:9000" {
+		t.Fatalf("r2 = %+v", c)
+	}
+	if c.ParseJobName != "parse-staging" || c.ParseJobRegion != "europe-west1" || c.ParseJobProject != "staging" {
+		t.Fatalf("parse job = %s/%s/%s", c.ParseJobProject, c.ParseJobRegion, c.ParseJobName)
+	}
+}

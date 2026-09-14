@@ -165,3 +165,67 @@ func TestLoadRejectsDuplicateTalentIDs(t *testing.T) {
 		t.Fatalf("err = %v, want duplicate talent id 101", err)
 	}
 }
+
+func TestClassesAreListedByID(t *testing.T) {
+	data, err := LoadFixture()
+	if err != nil {
+		t.Fatal(err)
+	}
+	b, ok := data.Build("test-1")
+	if !ok {
+		t.Fatal("the fixture build should load")
+	}
+	classes := b.Classes()
+	if len(classes) == 0 {
+		t.Fatal("the fixture has classes")
+	}
+	for i := 1; i < len(classes); i++ {
+		if classes[i-1].ID >= classes[i].ID {
+			t.Fatalf("classes are not ordered by id: %v", classes)
+		}
+	}
+}
+
+func TestLatestIsTheNewestBuild(t *testing.T) {
+	data, err := LoadFixture()
+	if err != nil {
+		t.Fatal(err)
+	}
+	b, ok := data.Latest()
+	if !ok {
+		t.Fatal("the fixture build should be the latest")
+	}
+	versions := data.Versions()
+	if b.Version != versions[len(versions)-1] {
+		t.Fatalf("latest = %q, want %q", b.Version, versions[len(versions)-1])
+	}
+	if _, ok := (&Data{}).Latest(); ok {
+		t.Fatal("no builds means no latest")
+	}
+}
+
+func TestLatestComparesVersionsNumericallyNotLexicographically(t *testing.T) {
+	// Lexicographically these sort "1.10" < "1.15.10.1" < "1.15.9.69722" <
+	// "1.2" < "1.9", which would pick "1.9" as "latest" - wrong, since the
+	// project's own build directories are dotted version numbers like
+	// "1.15.9.69722" and a numeric comparison must win.
+	files := map[string]string{}
+	for _, v := range []string{"1.2", "1.9", "1.10", "1.15.9.69722", "1.15.10.1"} {
+		files[v+"/classes.json"] = oneClass
+		files[v+"/races.json"] = oneRace
+		files[v+"/combos.json"] = oneCombo
+		files[v+"/talents/warrior.json"] = oneTree
+	}
+	root := writeBuild(t, files)
+	d, err := Load(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	b, ok := d.Latest()
+	if !ok {
+		t.Fatal("expected a latest build")
+	}
+	if b.Version != "1.15.10.1" {
+		t.Fatalf("latest = %q, want the numerically newest 1.15.10.1", b.Version)
+	}
+}

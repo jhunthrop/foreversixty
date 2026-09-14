@@ -1,3 +1,7 @@
+// The repository's Go workspace. Adding a module is one line in the use
+// block; nothing else changes, because every module that depends on
+// another also carries its own replace, which is what the Docker builds
+// (GOWORK=off) resolve against.
 go 1.25.11
 
 use (

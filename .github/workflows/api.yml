@@ -2,9 +2,9 @@ name: api
 on:
   push:
     branches: [main]
-    paths: ['api/**', 'data/builds/**', '.github/workflows/api.yml']
+    paths: ['api/**', 'logs/**', 'data/builds/**', '.github/workflows/api.yml']
   pull_request:
-    paths: ['api/**', 'data/builds/**', '.github/workflows/api.yml']
+    paths: ['api/**', 'logs/**', 'data/builds/**', '.github/workflows/api.yml']
   workflow_dispatch:
 jobs:
   test:
@@ -24,7 +24,9 @@ jobs:
       - uses: actions/setup-go@v5
         with: { go-version-file: api/go.mod, cache-dependency-path: api/go.sum }
       - run: go vet ./...
-      - run: go test -race -cover ./...
+        # -p 1: the database-backed packages share one Postgres and each
+        # truncates the tables it uses, so they cannot run at once.
+      - run: go test -race -cover -p 1 ./...
   deploy:
     needs: test
     # Deploys only once the Google Cloud variables from api/README.md "First-time setup" exist.
@@ -48,3 +50,14 @@ jobs:
           service: api
           region: us-east1
           image: ${{ env.IMAGE }}
+        # The parse job is the same image run with different arguments,
+        # so it has to move with the service. The job is created once by
+        # hand (see api/README.md "The parse job"); until it exists this
+        # step says so rather than failing the deploy.
+      - name: Point the parse job at the new image
+        run: |
+          if gcloud run jobs describe parse-report --region us-east1 >/dev/null 2>&1; then
+            gcloud run jobs update parse-report --region us-east1 --image "$IMAGE"
+          else
+            echo "the parse-report job does not exist yet; skipping"
+          fi
