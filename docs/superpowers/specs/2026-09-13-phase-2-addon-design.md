@@ -20,7 +20,8 @@ carried in strings the player copies, because addons cannot use the network.
 | Distribution | CurseForge and Wago Addons plus GitHub Releases. |
 | Desktop companion | Phase 3, together with combat-log upload. |
 | Also in Phase 2 | Curated stat weights per class and spec; the gear-release tail from Phase 1. |
-| Dropped | Realm picker and queue tracker; new-zone leveling routes. |
+| Dropped | Realm picker and queue tracker (Forever has rulesets, not realms); new-zone leveling routes. |
+| Candidate | Legacy tree planner (account-wide Legacy Points: 65 at launch, 16 per character, trees Professions, Adventure, Resourcefulness). Same planner mechanics, share links, and addon codes; pending a decision. |
 
 ## Scope
 
@@ -92,6 +93,14 @@ addon and site versions involved.
 the tree with the most points; ties resolve to the first tree. Score = Σ weight × stat; shown in
 the planner's gear panel and used by the addon. Weights are opinions, labeled as such on the site
 with their sources, and revised as the beta reveals Forever's changes.
+
+Stat vocabulary (Deep Dive panel, Sept 13): Forever merges melee, ranged, and spell hit into one
+`hit` stat and the three crit chances into one `crit`; adds `expertise` (reduces the target's parry
+and dodge chance); bonus healing carries one third of its value as bonus damage; caster weapons
+grant spell damage. Weight keys therefore use the merged names (`hit`, `crit`, `expertise`, `haste`,
+`spell_power`, `healing_power`, `attack_power`, plus the five primaries and `armor`, `defense`,
+`block`, `dodge`, `parry`). The gear panel's stat summary uses the same keys. Vanilla items with
+per-school hit or crit map onto the merged stat until the Sept 17 beta data replaces them.
 
 ## Gear tail (data, api, web)
 
