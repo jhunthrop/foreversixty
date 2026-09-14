@@ -24,8 +24,19 @@
     type ReportState,
   } from '../../lib/report/url';
   import type { FightEntry, ReportFile, ReportMeta, Summary } from '../../lib/report/types';
+  import {
+    clampWindow,
+    combinedSeries,
+    isFullWindow,
+    scopeSummary,
+    windowMs,
+    windowOf,
+    windowPresets,
+    type TimeWindow,
+  } from '../../lib/report/window';
   import FightSelector from './FightSelector.svelte';
   import ModeBar from './ModeBar.svelte';
+  import TimeChart from './TimeChart.svelte';
 
   let { reportId, inlineMeta = null }: { reportId: string; inlineMeta?: ReportMeta | null } = $props();
 
@@ -51,6 +62,28 @@
   const roster = $derived(
     (summary?.roster ?? []).map((row) => ({ guid: row.guid, name: row.name, class: row.class })),
   );
+
+  // Named timeWindow, not window: a `const window` in a Svelte <script> shadows the
+  // global one, and this component uses window.location, window.history and
+  // window.addEventListener.
+  const timeWindow = $derived(windowOf(state, summary?.duration_ms ?? 0));
+  /** Every table below reads this, never `summary`: one rescope per window change. */
+  const scoped = $derived(summary === null ? null : scopeSummary(summary, timeWindow));
+  const presets = $derived(summary === null ? [] : windowPresets(summary));
+  const chartSeries = $derived(combinedSeries(summary?.damage_done ?? []));
+
+  function setWindow(next: TimeWindow | null): void {
+    const duration = summary?.duration_ms ?? 0;
+    // Clamped for the reason resolveFightIndex clamps the fight: a drag, a preset or a
+    // pasted URL can land past either end. A window that covers the fight is no window at
+    // all, so it leaves the URL rather than sitting there as start=0&end=<duration>.
+    const clamped = next === null ? null : clampWindow(next, duration);
+    patch(
+      clamped === null || windowMs(clamped) === 0 || isFullWindow(clamped, duration)
+        ? { start: null, end: null }
+        : { start: clamped.startMs, end: clamped.endMs },
+    );
+  }
 
   function readUrl(): void {
     const parsed = parseReportState(window.location.search, firstFight);
@@ -193,9 +226,34 @@
 
     <div class="flex min-w-0 flex-col gap-[22px] md:gap-6">
       <ModeBar {state} {roster} onPatch={patch} />
-      <!-- Task 10 inserts TimeChart here; Tasks 11 to 17 insert the panels below it. -->
+      <!-- Tasks 11 to 17 insert the panels below the chart. -->
+      {#if summary !== null}
+        <TimeChart
+          series={chartSeries}
+          durationMs={summary.duration_ms}
+          window={timeWindow}
+          deaths={summary.deaths.map((death) => ({ at_ms: death.at_ms, name: death.name }))}
+          label="Damage"
+          onWindow={setWindow}
+        />
+        <div class="flex flex-wrap gap-2" data-testid="window-presets">
+          <!-- Keyed by position, not by label: a battle-rez puts the same name in
+               `deaths` twice, and two buttons labelled "Before Thalgrit died" would be a
+               duplicate key, which Svelte throws on rather than renders. The list is
+               rebuilt wholesale whenever the fight changes, so position is stable. -->
+          {#each presets as preset, position (position)}
+            <button
+              type="button"
+              class="border-line-soft rounded-control text-nav inline-flex h-11 items-center border px-3 text-[12px] font-bold tracking-[0.06em] uppercase md:h-9"
+              onclick={() => setWindow(preset.window)}
+            >
+              {preset.label}
+            </button>
+          {/each}
+        </div>
+      {/if}
       <p class="text-muted text-[14px]" data-testid="report-placeholder">
-        {summary === null ? 'Loading the fight.' : `${summary.roster.length} players in this fight.`}
+        {scoped === null ? 'Loading the fight.' : `${scoped.roster.length} players in this fight.`}
       </p>
     </div>
   </div>
