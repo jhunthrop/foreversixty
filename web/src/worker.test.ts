@@ -475,8 +475,67 @@ describe('shell routes with rewritten unfurl tags', () => {
       shellEnv(),
     );
 
-    const proxied = upstream.mock.calls[0][0] as Request;
-    expect(proxied.headers.get('cookie')).toBeNull();
+    // Two calls happen for a report shell: the visibility check (a bare url string, which
+    // carries no headers by construction) and the report data fetch (a Request built fresh
+    // by apiData). Every call this route makes is checked, not just the first.
+    for (const [arg] of upstream.mock.calls) {
+      if (arg instanceof Request) expect(arg.headers.get('cookie')).toBeNull();
+    }
+    expect(upstream.mock.calls.some(([arg]) => arg instanceof Request)).toBe(true);
+  });
+
+  it('gates the report branch on the visibility endpoint, never the report data itself, and never leaks a private report’s title', async () => {
+    vi.stubGlobal('HTMLRewriter', FakeHTMLRewriter);
+    const upstream = vi.fn<GlobalFetch>(async (input) => {
+      const url = typeof input === 'string' ? input : (input as Request).url;
+      if (url.endsWith('/visibility')) {
+        return new Response(
+          JSON.stringify({ ok: true, data: { visibility: 'private' }, error: null, request_id: 'r' }),
+          { status: 200, headers: { 'content-type': 'application/json' } },
+        );
+      }
+      // If the report branch ever reaches this, the gate has failed: fail loudly rather
+      // than answering with data the test would otherwise appear to pass against.
+      throw new Error(`unexpected fetch to ${url}`);
+    });
+    vi.stubGlobal('fetch', upstream);
+
+    const response = await worker.fetch(
+      new Request('https://foreversixty.gg/reports/fixture2abcd'),
+      shellEnv(),
+    );
+    const html = await response.text();
+
+    expect(response.status).toBe(200);
+    expect(html).toContain('<title>Report · Forever Sixty</title>');
+    expect(html).not.toContain('Sanguine Depths');
+    expect(response.headers.get('x-robots-tag')).toBe('noindex');
+    expect(upstream).toHaveBeenCalledTimes(1);
+  });
+
+  it('gates a guild report the same way as a private one', async () => {
+    vi.stubGlobal('HTMLRewriter', FakeHTMLRewriter);
+    const upstream = vi.fn<GlobalFetch>(async (input) => {
+      const url = typeof input === 'string' ? input : (input as Request).url;
+      if (url.endsWith('/visibility')) {
+        return new Response(
+          JSON.stringify({ ok: true, data: { visibility: 'guild' }, error: null, request_id: 'r' }),
+          { status: 200, headers: { 'content-type': 'application/json' } },
+        );
+      }
+      throw new Error(`unexpected fetch to ${url}`);
+    });
+    vi.stubGlobal('fetch', upstream);
+
+    const response = await worker.fetch(
+      new Request('https://foreversixty.gg/reports/fixture2abcd'),
+      shellEnv(),
+    );
+    const html = await response.text();
+
+    expect(html).toContain('<title>Report · Forever Sixty</title>');
+    expect(response.headers.get('x-robots-tag')).toBe('noindex');
+    expect(upstream).toHaveBeenCalledTimes(1);
   });
 
   it('marks a non-public report noindex', async () => {
@@ -521,6 +580,9 @@ describe('shell routes with rewritten unfurl tags', () => {
     expect(response.status).toBe(200);
     expect(html).toContain('<title>Report · Forever Sixty</title>');
     expect(html).toContain('data-report-mount');
+    // An unrewritten placeholder is still noindex: a crawler indexing it would confirm the
+    // id exists even though it carries no report data.
+    expect(response.headers.get('x-robots-tag')).toBe('noindex');
   });
 
   it('passes a shell prefix whose asset does not exist yet straight through', async () => {

@@ -97,7 +97,9 @@ export interface GuildHead {
 
 export function guildShellMeta(path: CharacterPath, head: GuildHead): ShellMeta {
   const rows = head.progression ?? [];
-  const kills = rows.reduce((total, row) => total + row.kills, 0);
+  // "N bosses down" counts distinct bosses killed at least once, not total kill events: a
+  // boss farmed repeatedly in one progression row is still one boss down.
+  const kills = rows.filter((row) => row.kills > 0).length;
   const pulls = rows.reduce((total, row) => total + (row.pull_count ?? 0), 0);
   return {
     title: `${head.guild.name} · ${rulesetLabel(path.ruleset)} ${path.region.toUpperCase()} · Forever Sixty`,

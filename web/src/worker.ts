@@ -272,6 +272,14 @@ interface ShellHead {
 async function shellHead(url: URL, env: Env): Promise<ShellHead | null> {
   const report = REPORT_ID.exec(url.pathname);
   if (report !== null) {
+    // The same gate /logs-data/* uses (Task 4): a report's title, zone and kill count are
+    // never fetched -- let alone rewritten into a cached, anonymous-readable response --
+    // until the cheap visibility endpoint says the report is public or unlisted. This is
+    // deliberately a second, independent check from GET /v1/reports/{id}'s own answer: that
+    // endpoint is not guaranteed to refuse a private or guild report to an anonymous caller,
+    // and this route must not trust it to.
+    const lookup = await reportVisibility(report[1], env);
+    if (lookup.kind !== 'ok' || !PUBLIC_VISIBILITIES.has(lookup.visibility)) return null;
     const data = await apiData<ReportMeta>(`${env.API_BASE_URL}/v1/reports/${report[1]}`);
     if (data === null) return null;
     return { meta: reportShellMeta(data, env.API_BASE_URL), indexable: data.visibility === 'public' };
@@ -363,7 +371,10 @@ async function serveShell(env: Env, url: URL, asset: string): Promise<Response> 
   // One minute: a report's title and fight count change while a raid night is being
   // logged, and an unfurl a crawler fetched an hour ago should not be the one people see.
   headers.set('cache-control', 'public, max-age=60');
-  if (head !== null && !head.indexable) headers.set('x-robots-tag', 'noindex');
+  // Carries no confidential data either way, but a crawler indexing an un-rewritten
+  // placeholder for a real id (a private report it was refused, an id nothing answered for)
+  // confirms that id exists, so both the no-data and the not-indexable case are noindex.
+  if (head === null || !head.indexable) headers.set('x-robots-tag', 'noindex');
 
   const body = new Response(shell.body, { status: 200, headers });
   return head === null ? body : rewriteHead(body, head.meta);

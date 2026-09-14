@@ -69,7 +69,21 @@ describe('shell unfurl values', () => {
       },
     );
     expect(shell.title).toBe('The Last Watch · Normal EU · Forever Sixty');
-    expect(shell.description).toBe('3 bosses down over 52 pulls.');
+    // Only the first row has been killed at all (kills: 3 > 0); the second (kills: 0) has
+    // not. "Bosses down" counts distinct bosses defeated, not total kill events, so this is
+    // one boss down, not three -- see the next test for the case that distinguishes them.
+    expect(shell.description).toBe('1 boss down over 52 pulls.');
     expect(shell.canonical).toBe('https://foreversixty.gg/guild/eu/normal/the-last-watch');
+  });
+
+  it('counts a repeatedly-farmed boss once, not by its kill count', () => {
+    const shell = guildShellMeta(
+      { region: 'eu', ruleset: 'normal', slug: 'the-last-watch' },
+      {
+        guild: { name: 'The Last Watch', region: 'eu', ruleset: 'normal' },
+        progression: [{ kills: 3, pull_count: 12 }],
+      },
+    );
+    expect(shell.description).toBe('1 boss down over 12 pulls.');
   });
 });
