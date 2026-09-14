@@ -184,6 +184,20 @@ func (brokenPutter) Put(context.Context, string, []byte, store.PutOptions) error
 	return errors.New("r2 is down")
 }
 
+// flakyPutter is an object store that is down until it is mended, and
+// the real one afterwards.
+type flakyPutter struct {
+	inner  store.Putter
+	broken bool
+}
+
+func (p *flakyPutter) Put(ctx context.Context, key string, body []byte, o store.PutOptions) error {
+	if p.broken {
+		return errors.New("r2 is down")
+	}
+	return p.inner.Put(ctx, key, body, o)
+}
+
 func TestAVerifiedBundleIsStoredPublishedAndRanked(t *testing.T) {
 	h := newHarness(t)
 	id := h.createReport(Public)
@@ -317,6 +331,23 @@ func TestABrokenBundleIsRefused(t *testing.T) {
 	res.Body.Close()
 	if res.StatusCode != http.StatusBadRequest {
 		t.Fatalf("a non-numeric index = %d, want 400", res.StatusCode)
+	}
+	// The engine numbers fights from 1, so index 0 is not a fight.
+	for _, n := range []string{"0", "-1"} {
+		b = makeBundle(t, 1, nil)
+		res = h.do(http.MethodPut, "/v1/reports/"+id+"/fights/"+n, b.contentType, b.body)
+		res.Body.Close()
+		if res.StatusCode != http.StatusBadRequest {
+			t.Errorf("index %s = %d, want 400", n, res.StatusCode)
+		}
+		res = h.json(http.MethodPut, "/v1/reports/"+id+"/fights/"+n+"/live", `{"elapsed_ms":1}`)
+		res.Body.Close()
+		if res.StatusCode != http.StatusBadRequest {
+			t.Errorf("index %s on the live route = %d, want 400", n, res.StatusCode)
+		}
+	}
+	if fights, err := h.store.Fights(t.Context(), id); err != nil || len(fights) != 0 {
+		t.Fatalf("fights = %+v, %v, want nothing stored", fights, err)
 	}
 }
 
@@ -711,5 +742,42 @@ func TestResendingARejectedBundleIsRefusedAgain(t *testing.T) {
 	}
 	if len(fights) != 1 || !fights[0].Verified {
 		t.Fatalf("fights = %+v, want the fight now verified", fights)
+	}
+}
+
+func TestARawChunkWhoseObjectFailedIsRetriedRatherThanSkipped(t *testing.T) {
+	h := newHarness(t)
+	id := h.createReport(Public)
+	flaky := &flakyPutter{inner: h.files, broken: true}
+	h.ingest.Put = flaky
+	packed, sha := packRaw(t, "9/26 20:10:00.000  COMBAT_LOG_VERSION,16,ADVANCED_LOG_ENABLED,1\n")
+
+	res := h.putRaw(id, 0, packed, sha)
+	res.Body.Close()
+	if res.StatusCode != http.StatusInternalServerError {
+		t.Fatalf("status = %d, want 500", res.StatusCode)
+	}
+	// The row must not outlive the failed upload, or the retry below
+	// would match on hash and be answered 200 over a chunk that is not
+	// there.
+	chunks, err := h.store.RawChunks(t.Context(), id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(chunks) != 0 {
+		t.Fatalf("chunks = %+v, want the row undone with its object", chunks)
+	}
+
+	flaky.broken = false
+	res = h.putRaw(id, 0, packed, sha)
+	res.Body.Close()
+	if res.StatusCode != http.StatusNoContent {
+		t.Fatalf("the retry = %d, want 204", res.StatusCode)
+	}
+	if !h.fileExists(store.Keys{ReportID: id}.Raw(0)) {
+		t.Fatal("the retry must actually store the object")
+	}
+	if chunks, err = h.store.RawChunks(t.Context(), id); err != nil || len(chunks) != 1 {
+		t.Fatalf("chunks = %+v, %v, want the chunk recorded once", chunks, err)
 	}
 }

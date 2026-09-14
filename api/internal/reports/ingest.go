@@ -37,6 +37,8 @@ const (
 	maxLiveBytes = 8 << 20
 	// rawSHAHeader carries the hash of a raw chunk's decoded bytes.
 	rawSHAHeader = "X-Raw-SHA256"
+	// msgFightIndex is what both fight routes say about a bad {n}.
+	msgFightIndex = "the fight index must be a number, counted from one"
 	// rawCacheControl is the header the engine's publisher gives a raw
 	// chunk. Its own constant is unexported, and a chunk is stored here
 	// exactly as it arrived rather than through Publisher.WriteRaw,
@@ -127,10 +129,12 @@ func (i *Ingest) owned(w http.ResponseWriter, r *http.Request) (Report, bool) {
 	return rep, true
 }
 
-// fightIndex reads the {n} path value.
+// fightIndex reads the {n} path value. The engine numbers fights from
+// one, and every route and column keyed on a fight index follows it, so
+// zero is not a fight.
 func fightIndex(r *http.Request) (int, bool) {
 	n, err := strconv.Atoi(r.PathValue("n"))
-	if err != nil || n < 0 {
+	if err != nil || n < 1 {
 		return 0, false
 	}
 	return n, true
@@ -151,7 +155,7 @@ func (i *Ingest) putFight(w http.ResponseWriter, r *http.Request) {
 	}
 	n, ok := fightIndex(r)
 	if !ok {
-		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "the fight index must be a number", nil)
+		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", msgFightIndex, nil)
 		return
 	}
 	r.Body = http.MaxBytesReader(w, r.Body, maxBundleBytes)
@@ -333,7 +337,7 @@ func (i *Ingest) putLive(w http.ResponseWriter, r *http.Request) {
 	}
 	n, ok := fightIndex(r)
 	if !ok {
-		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "the fight index must be a number", nil)
+		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", msgFightIndex, nil)
 		return
 	}
 	var in LiveInput
@@ -410,6 +414,18 @@ func (i *Ingest) putRaw(w http.ResponseWriter, r *http.Request) {
 		ContentType: "application/zstd", CacheControl: rawCacheControl,
 		ContentEncoding: "zstd",
 	}); err != nil {
+		// The row is recorded but the object is not. Left alone it would
+		// make the companion's retry look like a chunk already held, and
+		// the hole would survive until the raw-sample job re-read the
+		// range. Undo the row so the retry re-records and re-uploads.
+		// The row is recorded first, and not last, so that a chunk that
+		// conflicts with a stored range is refused before it can
+		// overwrite that range's object.
+		if undo := i.Store.DeleteRawChunk(r.Context(), rep.ID, offset); undo != nil {
+			i.logger().Error("ingest", "id", httpx.RequestIDFrom(r.Context()), "op", "raw",
+				"report", rep.ID, "offset", offset, "err", undo,
+				"msg", "the chunk was recorded but not stored and the record could not be undone")
+		}
 		i.fail(w, r, "raw", err, "could not store that chunk just now")
 		return
 	}

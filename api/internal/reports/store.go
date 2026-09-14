@@ -312,6 +312,20 @@ func (s *Store) PutRawChunk(ctx context.Context, reportID string, c RawChunk) (b
 	return true, nil
 }
 
+// DeleteRawChunk removes the record of one raw chunk. It is how the
+// ingest undoes a row whose object never reached the bucket: a chunk
+// recorded but not stored would be recognised as already held and the
+// retry answered without ever uploading it. Removing a chunk that is
+// not there is not an error.
+func (s *Store) DeleteRawChunk(ctx context.Context, reportID string, start int64) error {
+	if _, err := s.Pool.Exec(ctx,
+		`delete from raw_chunks where report_id = $1 and start_offset = $2`,
+		reportID, start); err != nil {
+		return fmt.Errorf("reports: delete raw chunk %s@%d: %w", reportID, start, err)
+	}
+	return nil
+}
+
 // RawChunks lists a report's stored raw ranges in offset order, for the
 // raw-sample verification job.
 func (s *Store) RawChunks(ctx context.Context, reportID string) ([]RawChunk, error) {

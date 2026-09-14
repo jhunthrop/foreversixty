@@ -228,6 +228,31 @@ func TestPutRawChunkDetectsOverlapsAndHashMismatches(t *testing.T) {
 	}
 }
 
+func TestDeleteRawChunkFreesTheOffsetAgain(t *testing.T) {
+	h := newHarness(t)
+	id := h.createReport(Public)
+	if _, err := h.store.PutRawChunk(t.Context(), id, RawChunk{Start: 0, End: 100, SHA256: []byte("aaaa")}); err != nil {
+		t.Fatal(err)
+	}
+	if err := h.store.DeleteRawChunk(t.Context(), id, 0); err != nil {
+		t.Fatal(err)
+	}
+	chunks, err := h.store.RawChunks(t.Context(), id)
+	if err != nil || len(chunks) != 0 {
+		t.Fatalf("chunks = %+v, %v, want the row gone", chunks, err)
+	}
+	// The offset is free again, and free for different bytes: the whole
+	// point is that nothing is recorded as held.
+	if stored, err := h.store.PutRawChunk(t.Context(), id,
+		RawChunk{Start: 0, End: 100, SHA256: []byte("bbbb")}); err != nil || !stored {
+		t.Fatalf("stored = %v, %v, want the offset writable again", stored, err)
+	}
+	// Removing a chunk that is not there is not an error.
+	if err := h.store.DeleteRawChunk(t.Context(), id, 9999); err != nil {
+		t.Fatalf("err = %v, want removing an absent chunk to be a no-op", err)
+	}
+}
+
 func TestUploadLifecycle(t *testing.T) {
 	h := newHarness(t)
 	u := Upload{
