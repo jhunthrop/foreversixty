@@ -84,22 +84,37 @@ func run(args []string, out *os.File) error {
 	}
 	defer a.Close()
 
-	url, ln, err := a.Serve()
+	ui, err := a.Serve()
 	if err != nil {
 		return err
 	}
-	defer ln.Close()
+	defer ui.Close()
+	// The address without the token: the token in the path is the
+	// whole authentication for the settings and pairing routes, and
+	// this file is one the troubleshooting section asks players to
+	// open and paste.
 	log.Info("the companion is running", "component", "main",
-		"version", updater.Version, "home", dirs.Home, "ui", url)
+		"version", updater.Version, "home", dirs.Home, "ui", ui.Addr)
 	if *headless {
-		fmt.Fprintln(out, "Companion UI:", url)
+		fmt.Fprintln(out, "Companion UI:", ui.URL)
 	}
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
-	go a.Run(ctx)
+	done := make(chan struct{})
+	go func() {
+		defer close(done)
+		_ = a.Run(ctx)
+	}()
 
 	// The shell owns the main goroutine: every desktop toolkit here
 	// requires its loop to run on it.
-	return shell.Run(ctx, shell.Options{URL: url, Headless: *headless, OnQuit: stop})
+	err = shell.Run(ctx, shell.Options{URL: ui.URL, Headless: *headless, OnQuit: stop})
+	// Closing the window with the OS button returns from Run without
+	// ever calling OnQuit, so the cancel happens here too, and the
+	// loop is waited for: the deferred a.Close releases the zstd
+	// encoder, and Step must not still be inside EncodeAll.
+	stop()
+	<-done
+	return err
 }

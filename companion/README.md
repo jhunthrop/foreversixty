@@ -2,8 +2,8 @@
 
 A desktop app that watches World of Warcraft's combat log, uploads each fight to
 [foreversixty.gg](https://foreversixty.gg) as it ends, and keeps the ForeverSixty addon in step
-with the builds you chose on the site. One static binary per platform, a tray icon, and a small
-window. It never modifies the game's log and never sees your Battle.net password.
+with the builds you chose on the site. One binary per platform, a tray icon, and a small window.
+It never modifies the game's log and never sees your Battle.net password.
 
 ## Install
 
@@ -111,7 +111,17 @@ last one arrives, which in a live raid is immediate. A fight that is genuinely t
 the file closes when the report does.
 
 **The window will not open.** Run with `-headless` and open the URL it prints. The interface is
-the same; it is served on loopback with a per-session token in the path.
+the same; it is served on loopback with a per-session token in the path. The Windows build has
+no console of its own — it is a windowed application, so starting it never opens a `cmd` box —
+so redirect what it prints to a file and read it from there:
+
+```
+foreversixty-companion.exe -headless > url.txt
+foreversixty-companion.exe -version > version.txt
+```
+
+The URL is not written to `companion.log`: its token is the whole authentication for the local
+interface, and the log is a file you may well paste somewhere.
 
 **Start over.** Quit the companion and delete the directory above. Reports already uploaded stay
 on the site.

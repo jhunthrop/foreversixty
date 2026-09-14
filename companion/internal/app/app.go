@@ -538,19 +538,47 @@ func (a *App) Run(ctx context.Context) error {
 	}
 }
 
-// Serve starts the local UI server on a loopback port and returns the
-// URL the webview should open. The token is in the path, so a page on
-// another origin cannot guess it.
-func (a *App) Serve() (string, net.Listener, error) {
+// UI is the local server the window talks to.
+type UI struct {
+	// URL is what the webview opens: the loopback address with the
+	// session token in the path.
+	URL string
+	// Addr is the address without the token, which is what may be
+	// logged. The token is the whole authentication for /api/pair,
+	// /api/unpair and /api/settings, and companion.log is a file the
+	// README tells players to open and paste.
+	Addr string
+
+	srv *http.Server
+}
+
+// Close stops the server and releases the port.
+func (u *UI) Close() error {
+	if err := u.srv.Close(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+		return err
+	}
+	return nil
+}
+
+// Serve starts the local UI server on a loopback port. The token is
+// in the path, so a page on another origin cannot guess it.
+func (a *App) Serve() (*UI, error) {
 	ln, err := net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {
-		return "", nil, fmt.Errorf("listen on loopback: %w", err)
+		return nil, fmt.Errorf("listen on loopback: %w", err)
 	}
-	srv := &http.Server{Handler: a.Handler(), ReadHeaderTimeout: 5 * time.Second}
+	u := &UI{
+		Addr: ln.Addr().String(),
+		srv:  &http.Server{Handler: a.Handler(), ReadHeaderTimeout: 5 * time.Second},
+	}
+	u.URL = fmt.Sprintf("http://%s/%s/", u.Addr, a.token)
 	go func() {
-		if err := srv.Serve(ln); err != nil && !errors.Is(err, http.ErrServerClosed) {
+		// Close above is the only way this server stops, so anything
+		// but ErrServerClosed is a real failure worth an Error line;
+		// an ordinary quit produces none.
+		if err := u.srv.Serve(ln); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			a.log.Error("the local UI server stopped", "component", "ui", "err", err.Error())
 		}
 	}()
-	return fmt.Sprintf("http://%s/%s/", ln.Addr().String(), a.token), ln, nil
+	return u, nil
 }

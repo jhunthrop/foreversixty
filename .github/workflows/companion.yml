@@ -115,18 +115,25 @@ jobs:
           if [ -n "$CGOARCH" ]; then
             export CGO_CFLAGS="$CGOARCH" CGO_CXXFLAGS="$CGOARCH" CGO_LDFLAGS="$CGOARCH"
           fi
+          ldflags="-s -w"
+          ldflags="$ldflags -X github.com/jhunthrop/foreversixty/companion/internal/updater.Version=${version}"
+          ldflags="$ldflags -X github.com/jhunthrop/foreversixty/companion/internal/updater.PublicKey=${MINISIGN_PUBLIC_KEY}"
+          # Without this the tray app is a console application and
+          # Windows opens a cmd window behind it for the life of the
+          # process. The cost is that the binary then has no console
+          # of its own: -version and -headless still write to stdout,
+          # so the README tells Windows players to redirect them.
+          if [ "${{ matrix.goos }}" = "windows" ]; then ldflags="$ldflags -H windowsgui"; fi
           CGO_ENABLED=1 GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} \
-            go build -trimpath \
-              -ldflags "-s -w \
-                -X github.com/jhunthrop/foreversixty/companion/internal/updater.Version=${version} \
-                -X github.com/jhunthrop/foreversixty/companion/internal/updater.PublicKey=${MINISIGN_PUBLIC_KEY}" \
-              -o "dist/${name}" ./cmd/foreversixty-companion
+            go build -trimpath -ldflags "$ldflags" -o "dist/${name}" ./cmd/foreversixty-companion
           ls -l dist
           echo "ASSET=${name}" >> "$GITHUB_ENV"
 
       - name: Smoke test the binary
         # Every target but Intel macOS runs natively on its runner;
-        # that one is cross-compiled, and Rosetta runs it anyway.
+        # that one is cross-compiled, and Rosetta runs it anyway. The
+        # Windows build has no console, so this checks that it starts
+        # and exits cleanly; the version it prints goes nowhere.
         run: ./dist/${ASSET} -version
 
       - name: Sign and notarize for macOS

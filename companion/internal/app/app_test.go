@@ -143,13 +143,13 @@ func (h *harness) call(method, path string, body any) (int, map[string]any) {
 // url is a path under the session token, read out of a served URL.
 func (h *harness) url(path string) string {
 	h.t.Helper()
-	full, ln, err := h.app.Serve()
+	ui, err := h.app.Serve()
 	if err != nil {
 		h.t.Fatal(err)
 	}
-	h.t.Cleanup(func() { ln.Close() })
+	h.t.Cleanup(func() { ui.Close() })
 	// http://127.0.0.1:PORT/<token>/ → /<token>/<path>
-	cut := strings.SplitN(strings.TrimPrefix(full, "http://"), "/", 2)
+	cut := strings.SplitN(strings.TrimPrefix(ui.URL, "http://"), "/", 2)
 	return "/" + strings.TrimSuffix(cut[1], "/") + path
 }
 
@@ -474,5 +474,34 @@ func TestReportsOlderThanTheRetentionAreForgottenAtStartup(t *testing.T) {
 	}
 	if n := len(h.app.Snapshot().Reports); n != 2 {
 		t.Errorf("the Reports page shows %d reports", n)
+	}
+}
+
+func TestTheAddressTheCompanionLogsCarriesNoToken(t *testing.T) {
+	h := newHarness(t)
+	ui, err := h.app.Serve()
+	if err != nil {
+		t.Fatal(err)
+	}
+	token := strings.Trim(strings.TrimPrefix(ui.URL, "http://"+ui.Addr), "/")
+	if token == "" {
+		t.Fatal("the UI URL carries no session token")
+	}
+	if strings.Contains(ui.Addr, token) {
+		t.Errorf("the logged address %q carries the session token", ui.Addr)
+	}
+	resp, err := http.Get(ui.URL + "api/status")
+	if err != nil {
+		t.Fatal(err)
+	}
+	resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		t.Fatalf("the served UI answered %d", resp.StatusCode)
+	}
+	if err := ui.Close(); err != nil {
+		t.Fatalf("closing the UI server: %v", err)
+	}
+	if _, err := http.Get(ui.URL + "api/status"); err == nil {
+		t.Error("the UI server still answers after Close")
 	}
 }
