@@ -70,11 +70,32 @@ interface Envelope<T> {
   error: { message?: string } | null;
 }
 
-async function call<T>(
+export interface EnvelopeResult<T> {
+  status: number;
+  data: T | null;
+  /** The API's own `error.message`, when the envelope carried one -- null otherwise. */
+  message: string | null;
+}
+
+/**
+ * The one place a browser call to our API builds the request: `credentials: 'include'`
+ * for the session cookie, `X-CSRF-Token` from the readable `fs_csrf` cookie on every
+ * non-GET, and the JSON envelope parsed and turned into an `AccountError` (carrying the
+ * API's own `error.message`) on a failed response. Every module that talks to our API --
+ * this one, and `web/src/lib/upload/multipart.ts` for the two upload routes -- goes
+ * through this, so the CSRF header and the credentials mode can only go wrong in one
+ * place. It never throws for a *successful* response with no `data`; each caller decides
+ * what "no data" means for its own endpoint.
+ *
+ * `failureMessage` overrides the fallback shown when a failed response carries no
+ * `error.message` of its own; it defaults to `ACCOUNT_FAILED`, the account module's own
+ * generic copy.
+ */
+export async function requestEnvelope<T>(
   path: string,
   apiBase: string,
-  init: { method?: string; body?: unknown } = {},
-): Promise<T | null> {
+  init: { method?: string; body?: unknown; failureMessage?: string } = {},
+): Promise<EnvelopeResult<T>> {
   const method = init.method ?? 'GET';
   const headers = new Headers({ accept: 'application/json' });
   if (method !== 'GET') {
@@ -106,9 +127,18 @@ async function call<T>(
   if (!response.ok) {
     // The API's own message is shown verbatim when it has one: it is the only thing that
     // can say "too many sign-in links" or name the field that was wrong.
-    throw new AccountError(envelope?.error?.message ?? ACCOUNT_FAILED, response.status);
+    throw new AccountError(envelope?.error?.message ?? init.failureMessage ?? ACCOUNT_FAILED, response.status);
   }
-  return envelope?.data ?? null;
+  return { status: response.status, data: envelope?.data ?? null, message: envelope?.error?.message ?? null };
+}
+
+async function call<T>(
+  path: string,
+  apiBase: string,
+  init: { method?: string; body?: unknown } = {},
+): Promise<T | null> {
+  const { data } = await requestEnvelope<T>(path, apiBase, init);
+  return data;
 }
 
 /** Null means "not signed in", which is a state the header renders, not a failure. */

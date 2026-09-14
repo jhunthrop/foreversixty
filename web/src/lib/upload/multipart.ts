@@ -6,7 +6,7 @@
 // Part PUTs use XMLHttpRequest rather than fetch because fetch reports no upload progress:
 // with 64 MiB parts a 500 MB raid night would move the progress bar eight times. The
 // constructor is injected so the tests drive a fake instead of a network.
-import { ACCOUNT_FAILED, AccountError, csrfToken } from '../account/api';
+import { AccountError, requestEnvelope } from '../account/api';
 import { API_BASE_URL } from '../planner/config';
 
 /** The contract's part size. R2 multipart requires every part but the last to match. */
@@ -47,36 +47,24 @@ export interface UploadProgress {
 
 export type XhrFactory = () => XMLHttpRequest;
 
-interface Envelope<T> {
-  ok: boolean;
-  data: T | null;
-  error: { message?: string } | null;
-}
-
+/**
+ * The two calls this module makes to OUR API -- issuing the signed part urls and telling
+ * the API their ETags -- go through `account/api.ts`'s `requestEnvelope`, the one place
+ * that builds the request, attaches `credentials: 'include'` and the CSRF header, and
+ * parses the response envelope. Only the request-shaping is shared: unlike the account
+ * module's own calls, both endpoints here always expect a `data` payload on success, so a
+ * response that is `ok` but carries no `data` is still an upload failure.
+ */
 async function post<T>(path: string, body: unknown, apiBase: string): Promise<T> {
-  let response: Response;
-  try {
-    response = await fetch(
-      new Request(`${apiBase}${path}`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'content-type': 'application/json', 'x-csrf-token': csrfToken() },
-        body: JSON.stringify(body),
-      }),
-    );
-  } catch {
-    throw new AccountError(ACCOUNT_FAILED, 0);
+  const { status, data, message } = await requestEnvelope<T>(path, apiBase, {
+    method: 'POST',
+    body,
+    failureMessage: UPLOAD_FAILED,
+  });
+  if (data == null) {
+    throw new AccountError(message ?? UPLOAD_FAILED, status);
   }
-  let envelope: Envelope<T> | null = null;
-  try {
-    envelope = (await response.json()) as Envelope<T>;
-  } catch {
-    envelope = null;
-  }
-  if (!response.ok || envelope?.data == null) {
-    throw new AccountError(envelope?.error?.message ?? UPLOAD_FAILED, response.status);
-  }
-  return envelope.data;
+  return data;
 }
 
 export function createUpload(
