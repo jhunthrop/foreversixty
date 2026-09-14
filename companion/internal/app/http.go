@@ -48,7 +48,10 @@ func writeJSON(w http.ResponseWriter, status int, data any, message string) {
 	if message != "" {
 		body["error"] = map[string]string{"message": message}
 	}
-	json.NewEncoder(w).Encode(body)
+	// The status line is already on the wire, so a failure here can
+	// only mean the local page went away mid-response: there is no
+	// second answer to send and nothing for the player to do.
+	_ = json.NewEncoder(w).Encode(body)
 }
 
 func decode(w http.ResponseWriter, r *http.Request, out any) bool {

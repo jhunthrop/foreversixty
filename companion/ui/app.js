@@ -13,7 +13,6 @@ const api = (path, body) =>
 const $ = (id) => document.getElementById(id);
 const text = (id, value) => { $(id).textContent = value; };
 
-let latest = null;
 let editing = false;
 
 function show(page) {
@@ -141,7 +140,6 @@ function renderSettings(s) {
 }
 
 function render(s) {
-  latest = s;
   renderStatus(s);
   renderReports(s);
   renderDevice(s);
