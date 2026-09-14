@@ -300,7 +300,9 @@ test('a class switch drops a reset confirm that is still open', async ({ page })
   await expect(page.getByRole('button', { name: 'Reset' })).toBeVisible();
 });
 
-test('a build opens from an addon code in the URL, with the order noted as reconstructed', async ({ page }) => {
+test('a build opens from an addon code in the URL, with the order noted as reconstructed', async ({
+  page,
+}) => {
   // The fixture warrior's first tier-0 talent is 1001 with max rank 3; see
   // src/fixtures/planner/talents/warrior.json.
   await page.goto('/planner?code=FS1%3A1.15.9.69722%3Awarrior%3Ahuman%3A3%2F0%2F0%3A');
@@ -349,4 +351,30 @@ test('a code naming a class with no talent data fails clean, and switching class
   await page.getByLabel('Class').selectOption('warrior');
   await expect(page.getByRole('heading', { name: 'Arms' })).toBeVisible();
   await expect(page.getByTestId('planner-spent')).toHaveText('0/51');
+
+  // The paladin message is now stale and, worse, no longer true -- warrior's build is working
+  // fine -- so switching class must clear it rather than leave it sitting under the new build.
+  await expect(page.getByTestId('planner-code-note')).toHaveCount(0);
+});
+
+test('a good code survives a transient failure on its own class, and still applies on a same-class Retry', async ({
+  page,
+}) => {
+  // Warrior does have talent data on this build, so this is a network blip on the way to it --
+  // nothing to do with the code itself -- unlike the paladin case above, which fails because
+  // the class named by the code has no data at all. The code must get a second chance here.
+  let attempts = 0;
+  await page.route('**/data/*/talents/warrior.json', async (route) => {
+    attempts += 1;
+    if (attempts === 1) return route.abort('failed');
+    return route.continue();
+  });
+
+  await page.goto('/planner?code=FS1%3A1.15.9.69722%3Awarrior%3Ahuman%3A3%2F0%2F0%3A');
+  await expect(page.getByText('Talent data did not load')).toBeVisible();
+
+  await page.getByRole('button', { name: 'Retry' }).click();
+  await expect(page.getByTestId('talent-1001')).toHaveAttribute('data-rank', '3');
+  await expect(page.getByTestId('planner-split')).toHaveText('3/0');
+  await expect(page.getByTestId('planner-code-note')).toContainText('not recorded in game');
 });

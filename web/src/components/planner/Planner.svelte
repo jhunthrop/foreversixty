@@ -77,14 +77,24 @@
     return match ? { kind: 'tree-count', got: match[1], want: match[2] } : { kind: 'message', text: message };
   }
 
-  // A code is applied once, on the load it arrived with -- `load()` also reruns on a manual
-  // class switch or Retry (see its own comment below). `codeApplied` is armed the moment the
-  // first `load()` call begins, before anything in it can throw, not only once talents load:
-  // otherwise a code naming a class this planner has no data for would leave `codeApplied`
-  // false when that first load fails, and a person recovering by picking a different class by
-  // hand would have that unrelated class's talents silently overwritten by the original code's
-  // tree ranks on the very next load -- `orderFromRanks` only knows tab positions, not which
-  // class they belong to, so it would apply them without complaint.
+  // A code has exactly one turn on the class it names, tracked by two things together rather
+  // than one flag armed early:
+  //
+  //  - Every `load()` run only ever considers applying the code when *this run's own class*
+  //    matches the class the code names. A run for any other class leaves it alone no matter
+  //    how the timing between two `load()` calls falls out, which is what stops a class switch
+  //    (immediate, or after a failed load) from ever applying a code meant for a different
+  //    class -- `orderFromRanks` only knows tab positions, not which class they belong to, so
+  //    it would apply them onto the wrong tree without complaint if it were reachable at all.
+  //
+  //  - `codeApplied` gates *reuse within that one matching class*. It is armed only once the
+  //    code has genuinely had its turn: applied successfully, or permanently refused because
+  //    the class it names has no talent data (retrying that can never succeed). It is left
+  //    unarmed by any other failure on that same class -- a network blip on the reference
+  //    files, a 5xx on talents, sets or items -- so a same-class Retry still gets to apply the
+  //    code. Arming it unconditionally on the first attempt, whatever the failure, would drop
+  //    a perfectly good code the moment an unrelated transient error hit first and leave no
+  //    trace once the retry quietly succeeded onto an empty default build.
   let codeApplied = false;
 
   // The store is seeded once, from the props as they arrive. `untrack` says so: without it
@@ -153,14 +163,18 @@
     const slug = store.classSlug;
     const stale = (): boolean => store.classSlug !== slug;
 
-    // The code this run should apply, or null if there is none or a prior run already claimed
-    // it. Captured once, synchronously, before the first `await` below -- see the comment on
-    // `codeApplied` above for why arming happens here rather than after talents load.
-    const codeToApply = decoded !== null && !codeApplied ? decoded : null;
-    if (codeToApply !== null) {
+    // A decode failure is not tied to any class -- the code will never decode differently no
+    // matter which class loads or how many times -- so it is shown, and `codeApplied` armed,
+    // the first chance `load()` gets, independent of `slug`. A well-formed code only ever gets
+    // a turn on the run whose class matches the one it names; see the comment on `codeApplied`
+    // above for why that alone (with no early, unconditional arming) is already enough to stop
+    // a class switch from ever applying it to the wrong class.
+    if (decoded !== null && !decoded.ok && !codeApplied) {
       codeApplied = true;
-      if (!codeToApply.ok) codeNote = noteForMessage(codeToApply.message);
+      codeNote = noteForMessage(decoded.message);
     }
+    const codeForThisClass =
+      decoded !== null && decoded.ok && !codeApplied && decoded.build.classSlug === slug ? decoded : null;
 
     status = 'loading';
     try {
@@ -172,20 +186,19 @@
       try {
         talents = await loadTalents(store.treeVersion, slug);
       } catch (error) {
-        // A code naming a class this planner has no talent data for fails exactly like any
-        // other missing file, but a person who followed a build link deserves to be told the
-        // link is why -- the generic panel below says nothing about the code, and its Retry
-        // button cannot succeed without also changing class.
-        if (
-          codeToApply !== null &&
-          codeToApply.ok &&
-          error instanceof DataLoadError &&
-          error.status === 404
-        ) {
+        // A class this planner has no talent data for will never load no matter how many
+        // times this is retried, so that -- and only that -- earns the code its one turn even
+        // though nothing was applied. Any other failure here (a network blip, a 5xx) leaves
+        // `codeApplied` unarmed, so a same-class Retry still gets a real chance to apply it.
+        // A person who followed a build link deserves to be told the class is why: the
+        // generic panel below says nothing about the code, and its Retry button cannot
+        // succeed without also changing class.
+        if (codeForThisClass !== null && error instanceof DataLoadError && error.status === 404) {
+          codeApplied = true;
           if (!stale()) {
             codeNote = {
               kind: 'message',
-              text: `That code names a class this planner does not have: ${codeToApply.build.classSlug}.`,
+              text: `That code names a class this planner does not have: ${codeForThisClass.build.classSlug}.`,
             };
           }
         }
@@ -194,9 +207,10 @@
       if (stale()) return;
       store.setTalents(talents);
 
-      if (codeToApply !== null && codeToApply.ok && store.talentIndex !== null) {
-        const rebuilt = orderFromRanks(store.talentIndex, codeToApply.build.treeRanks);
-        store.applyOrder(rebuilt.order, codeToApply.build.gear);
+      if (codeForThisClass !== null && store.talentIndex !== null) {
+        codeApplied = true;
+        const rebuilt = orderFromRanks(store.talentIndex, codeForThisClass.build.treeRanks);
+        store.applyOrder(rebuilt.order, codeForThisClass.build.gear);
         codeNote = { kind: 'reconstructed', dropped: rebuilt.dropped.length };
       }
 
@@ -242,10 +256,27 @@
   // one would leave no tab selected and no panel shown at all. Its own effect rather than a line
   // in the one above: that effect documents a careful no-loop invariant, and this has nothing to
   // do with loading.
+  // Compared against the class this effect last saw, rather than cleared unconditionally, so
+  // that the very first run -- which fires once on mount, in the same synchronous flush as the
+  // load effect's own first run -- cannot wipe out a decode failure that load() may already
+  // have written into `codeNote` moments earlier in that same flush (decode failures are
+  // reported synchronously, before load()'s first `await`). Every run after the first is a
+  // genuine class change, and only those should ever clear it.
+  let classSlugForNoteReset = store.classSlug;
   $effect(() => {
     void store.classSlug;
     confirmingReset = false;
     activeTree = 0;
+    if (store.classSlug !== classSlugForNoteReset) {
+      // A code's note describes why the build looked the way it did on the class it was shown
+      // under -- switching class already discards that build (selectClass), so a note left
+      // behind (most visibly the "does not have" message: switching class is its entire
+      // remedy) would sit under an unrelated, working build claiming something no longer true.
+      // Every kind of note is cleared the same way; none of them describes anything about a
+      // class the planner has since moved on from.
+      codeNote = null;
+      classSlugForNoteReset = store.classSlug;
+    }
   });
 </script>
 
