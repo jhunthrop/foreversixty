@@ -87,3 +87,83 @@ test('a fight whose summary does not load says so instead of passing off the las
   await page.getByTestId('fight-3').click();
   await expect(page.getByTestId('report-fight-error')).toHaveCount(0);
 });
+
+// Picking a fight does not cancel the one before it, so two summary requests can be in
+// flight at once and settle in either order. Whichever settles last must not speak for a
+// fight nobody is looking at: one fight's roster under another fight's name, or an alert
+// that outlived or preceded the fight it describes, is the same mislabelling either way.
+//
+// The two tests below interleave rather than await in turn -- the sequential case is the
+// one that cannot race -- by holding the slow fight's response open in the route handler
+// until the fast one has already settled. The fixture's three fights have three, one and
+// five players, so the rendered line names which fight is on screen.
+async function heldRoute(
+  page: import('@playwright/test').Page,
+  fightIndex: number,
+  settle: 'abort' | 'continue',
+): Promise<{ started: Promise<void>; release: () => void }> {
+  let markStarted = (): void => {};
+  let release = (): void => {};
+  const started = new Promise<void>((resolve) => (markStarted = resolve));
+  const gate = new Promise<void>((resolve) => (release = resolve));
+
+  await page.route(`**/fights/${fightIndex}/summary.json`, async (route) => {
+    markStarted();
+    await gate;
+    await (settle === 'abort' ? route.abort() : route.continue());
+  });
+
+  return { started, release: () => release() };
+}
+
+test('a stale fight failure does not fail the fight that is on screen', async ({ page }) => {
+  await page.goto(REPORT);
+  await expect(page.getByTestId('report-placeholder')).toHaveText('3 players in this fight.');
+
+  const slow = await heldRoute(page, 2, 'abort');
+  await page.getByTestId('toggle-trash').click();
+  await page.getByTestId('fight-2').click();
+  await slow.started;
+
+  // Fight 3 is picked and lands while fight 2 is still open.
+  await page.getByTestId('fight-3').click();
+  await expect(page.getByTestId('report-placeholder')).toHaveText('5 players in this fight.');
+  await expect(page.getByTestId('report-fight-error')).toHaveCount(0);
+
+  const failed = page.waitForEvent('requestfailed', (request) =>
+    request.url().includes('/fights/2/summary.json'),
+  );
+  slow.release();
+  await failed;
+  await page.waitForTimeout(250);
+
+  await expect(page.getByTestId('report-fight-error')).toHaveCount(0);
+  await expect(page.getByTestId('report-placeholder')).toHaveText('5 players in this fight.');
+});
+
+test('a stale fight success neither clears the current error nor paints its roster', async ({ page }) => {
+  await page.goto(REPORT);
+  await expect(page.getByTestId('report-placeholder')).toHaveText('3 players in this fight.');
+
+  const slow = await heldRoute(page, 2, 'continue');
+  await page.route('**/fights/3/summary.json', (route) => route.abort());
+
+  await page.getByTestId('toggle-trash').click();
+  await page.getByTestId('fight-2').click();
+  await slow.started;
+
+  // Fight 3 is picked and fails while fight 2 is still open.
+  await page.getByTestId('fight-3').click();
+  await expect(page.getByTestId('report-fight-error')).toHaveText('Report data did not load');
+  await expect(page.getByTestId('report-placeholder')).toHaveText('3 players in this fight.');
+
+  const answered = page.waitForResponse((response) => response.url().includes('/fights/2/summary.json'));
+  slow.release();
+  await answered;
+  await page.waitForTimeout(250);
+
+  // Fight 2 has one player; seeing its roster or losing fight 3's alert would both be the
+  // stale answer speaking for the selected fight.
+  await expect(page.getByTestId('report-fight-error')).toHaveText('Report data did not load');
+  await expect(page.getByTestId('report-placeholder')).toHaveText('3 players in this fight.');
+});

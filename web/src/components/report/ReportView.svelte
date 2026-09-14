@@ -107,6 +107,13 @@
     }
   }
 
+  /**
+   * Picking a fight does not cancel the one before it, so two of these can be in flight
+   * and settle in either order. `index === state.fight` is the whole guard: an answer for
+   * a fight nobody is looking at is cached and otherwise dropped, rather than painted
+   * under the selected fight's name. Cancelling the request instead would buy nothing --
+   * the answer is worth keeping, it is only the assignment that is wrong.
+   */
   async function loadFight(index: number): Promise<void> {
     const cached = summaries.get(index);
     if (cached !== undefined) {
@@ -115,7 +122,7 @@
     }
     const loaded = await fetchSummary(dataBase, index);
     summaries.set(index, loaded);
-    summary = loaded;
+    if (index === state.fight) summary = loaded;
   }
 
   $effect(() => {
@@ -140,11 +147,15 @@
     if (summary?.fight_index === wanted) return;
     // Cleared on success as well as set on failure: an alert left over from the fight
     // before this one would describe the wrong fight, which is the same lie in reverse.
+    // Both handlers re-check the selection for the reason loadFight does -- a stale
+    // rejection must not fail the fight on screen, and a stale success must not retract
+    // the current fight's alert.
     void loadFight(wanted).then(
       () => {
-        error = '';
+        if (wanted === state.fight) error = '';
       },
       (thrown: unknown) => {
+        if (wanted !== state.fight) return;
         error = thrown instanceof Error ? thrown.message : REPORT_LOAD_FAILED;
       },
     );
