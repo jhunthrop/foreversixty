@@ -52,6 +52,112 @@ components:
         title: { type: string }
         created_at: { type: string, format: date-time }
         views: { type: integer, format: int64 }
+    MetricsRow:
+      type: object
+      description: "One player's numbers for one boss fight; the companion posts these and the API recomputes them from the events"
+      required: [player_guid, name, role, metric_dps, metric_hps, damage_taken, active_ms, deaths,
+                 encounter_id, difficulty, size, duration_ms, kill]
+      properties:
+        player_guid: { type: string }
+        name: { type: string }
+        class: { type: string }
+        spec: { type: string }
+        role: { type: string, enum: [dps, healer, tank] }
+        ilvl: { type: integer }
+        metric_dps: { type: number }
+        metric_hps: { type: number }
+        damage_taken: { type: integer, format: int64 }
+        active_ms: { type: integer, format: int64 }
+        deaths: { type: integer }
+        encounter_id: { type: integer, format: int64 }
+        difficulty: { type: integer }
+        size: { type: integer }
+        duration_ms: { type: integer, format: int64 }
+        kill: { type: boolean }
+    Report:
+      type: object
+      required: [id, title, visibility, status, fights, players, created_at, data_base_url]
+      properties:
+        id: { type: string, minLength: 12, maxLength: 12 }
+        title: { type: string }
+        visibility: { type: string, enum: [public, unlisted, private, guild] }
+        owner:
+          type: object
+          properties:
+            id: { type: integer, format: int64 }
+            battletag: { type: string }
+        guild:
+          type: object
+          properties:
+            id: { type: integer, format: int64 }
+            name: { type: string }
+            region: { type: string }
+            ruleset: { type: string, enum: [normal, pvp, rp, hardcore] }
+        zone: { type: string }
+        status: { type: string, enum: [live, processing, complete, failed] }
+        engine_version: { type: string }
+        flagged: { type: string, description: "metrics_mismatch or tampered when the report is under suspicion" }
+        fights:
+          type: array
+          items: { $ref: '#/components/schemas/FightEntry' }
+        players: { type: array, items: { type: string } }
+        created_at: { type: string, format: date-time }
+        data_base_url:
+          type: string
+          description: >-
+            Where the island reads report.json and the per-fight files. Public and unlisted reports
+            are served off the bucket by the site Worker; everything else points at
+            /v1/reports/{id}/files, which redirects each object to a signed URL valid ten minutes.
+    FightEntry:
+      type: object
+      description: "The engine's store.FightEntry plus whether the ingest verified the fight"
+      required: [index, kind, name, kill, duration_ms, players, verified]
+      properties:
+        index: { type: integer }
+        kind: { type: string, enum: [encounter, trash] }
+        name: { type: string }
+        encounter_id: { type: integer, format: int64 }
+        difficulty: { type: integer }
+        size: { type: integer }
+        kill: { type: boolean }
+        in_progress: { type: boolean }
+        zone: { type: string }
+        start: { type: string, format: date-time }
+        end: { type: string, format: date-time }
+        duration_ms: { type: integer, format: int64 }
+        players: { type: array, items: { type: string } }
+        deaths: { type: integer }
+        npc_kills: { type: integer }
+        verified: { type: boolean }
+    RankingRow:
+      type: object
+      required: [rank, player, value, size, fought_at, duration_ms, report_id, fight_index, state]
+      properties:
+        rank: { type: integer }
+        player:
+          type: object
+          properties:
+            key: { type: string, description: "<region>/<ruleset>/<name-slug>" }
+            name: { type: string }
+            class: { type: string }
+            spec: { type: string }
+        guild:
+          type: object
+          properties:
+            name: { type: string }
+            region: { type: string }
+            ruleset: { type: string }
+        value: { type: number }
+        ilvl: { type: integer }
+        size: { type: integer }
+        fought_at: { type: string, format: date-time }
+        duration_ms: { type: integer }
+        talent_split: { type: string, example: "31/20/0" }
+        trinkets: { type: array, items: { type: integer } }
+        buff_count: { type: integer }
+        report_id: { type: string }
+        fight_index: { type: integer }
+        state: { type: string, enum: [ok, at_risk, removed] }
   responses:
     NotFound:
       description: "Unmatched routes return the envelope with code not_found"
@@ -254,3 +360,435 @@ paths:
           content:
             image/png:
               schema: { type: string, format: binary }
+  /v1/auth/battlenet/start:
+    get:
+      summary: Begin Battle.net sign-in
+      description: "Sets a ten-minute state cookie and redirects to oauth.battle.net with scope openid wow.profile. Registered only when BNET_CLIENT_ID, BNET_CLIENT_SECRET and BNET_REDIRECT_URL are all set."
+      parameters:
+        - name: next
+          in: query
+          schema: { type: string, default: /logs }
+          description: "A path on foreversixty.gg to return to; anything else falls back to /logs"
+      responses:
+        '302': { description: "Redirect to Battle.net" }
+  /v1/auth/battlenet/callback:
+    get:
+      summary: Finish Battle.net sign-in
+      responses:
+        '302': { description: "Session created; redirect to the site" }
+        '400':
+          description: "Missing or mismatched state, or no code"
+          content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } }
+        '502':
+          description: "Battle.net could not confirm the sign-in"
+          content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } }
+  /v1/auth/email:
+    post:
+      summary: Send a magic link
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties: { email: { type: string, format: email } }
+      responses:
+        '202': { description: "Link sent", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '400': { description: "Not an address; error.fields.email is set", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '429': { description: "Five links per address per hour, twenty per IP per hour", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+  /v1/auth/email/callback:
+    get:
+      summary: Spend a magic link
+      parameters:
+        - { name: token, in: query, required: true, schema: { type: string } }
+      responses:
+        '302': { description: "Session created; redirect to the site" }
+        '400': { description: "Used or expired link", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+  /v1/auth/logout:
+    post:
+      summary: Sign out
+      responses:
+        '200': { description: "Signed out", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+  /v1/sessions:
+    delete:
+      summary: Sign out (session; the account page's own route for POST /v1/auth/logout)
+      responses:
+        '204': { description: "Signed out; both cookies cleared" }
+  /v1/me:
+    get:
+      summary: The signed-in account, its characters and its guilds
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '401': { description: "Not signed in", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+    patch:
+      summary: Set the read-time pseudonym flag
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [anonymize]
+              properties: { anonymize: { type: boolean } }
+      responses:
+        '200': { description: "The account as it now stands", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '400': { description: "Nothing to change", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+  /v1/devices/pair:
+    post:
+      summary: Issue a pairing code (session only)
+      responses:
+        '200': { description: "A code valid ten minutes", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '401': { description: "Not signed in on the site", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+  /v1/devices/claim:
+    post:
+      summary: Claim a pairing code (the companion; no identity yet)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [code]
+              properties:
+                code: { type: string }
+                name: { type: string }
+                platform: { type: string }
+      responses:
+        '201': { description: "device_id and the token, shown once", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '404': { description: "Unknown, spent, or expired code", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+  /v1/devices:
+    get:
+      summary: The account's devices
+      responses:
+        '200':
+          description: "data is the device array itself, with no wrapper object"
+          content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } }
+  /v1/devices/{id}:
+    delete:
+      summary: Revoke a device
+      parameters: [ { name: id, in: path, required: true, schema: { type: string } } ]
+      responses:
+        '204': { description: "Revoked" }
+        '404': { description: "Not one of yours", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+  /v1/reports:
+    get:
+      summary: The caller's own reports, newest first (session)
+      parameters:
+        - { name: mine, in: query, required: true, schema: { type: string, enum: ["1"] } }
+        - { name: page, in: query, schema: { type: integer, minimum: 1 } }
+      responses:
+        '200':
+          description: "rows, total, page, per_page (100). Each row carries id, title, zone, status, visibility, created_at, fight_count and kill_count."
+          content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } }
+        '400': { description: "mine=1 is required", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+    post:
+      summary: Start a report
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [visibility]
+              properties:
+                title: { type: string }
+                visibility: { type: string, enum: [public, unlisted, private, guild] }
+                zone: { type: string }
+                logging_character:
+                  type: object
+                  properties:
+                    region: { type: string, enum: [us, eu, kr, tw, cn] }
+                    ruleset: { type: string, enum: [normal, pvp, rp, hardcore] }
+                    name: { type: string }
+      responses:
+        '201': { description: "id and created_at", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '400': { description: "Bad visibility or character", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '401': { description: "No identity", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+  /v1/reports/{id}:
+    get:
+      summary: A report and its fights
+      parameters: [ { name: id, in: path, required: true, schema: { type: string } } ]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties: { data: { $ref: '#/components/schemas/Report' } }
+        '404': { description: "Unknown, or not visible to you", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+    patch:
+      summary: Change a report's title, visibility, or guild
+      parameters: [ { name: id, in: path, required: true, schema: { type: string } } ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title: { type: string }
+                visibility: { type: string, enum: [public, unlisted, private, guild] }
+                guild_id: { type: integer, format: int64 }
+      responses:
+        '200': { description: "The report as it now stands", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '403': { description: "Not the owner, a guild officer, or a moderator", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+  /v1/reports/{id}/visibility:
+    get:
+      summary: A report's visibility, for the site Worker
+      parameters: [ { name: id, in: path, required: true, schema: { type: string } } ]
+      responses:
+        '200': { description: "Cache-Control: public, max-age=60", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+  /v1/reports/{id}/access:
+    get:
+      summary: A base URL for a report the Worker will not serve
+      parameters: [ { name: id, in: path, required: true, schema: { type: string } } ]
+      responses:
+        '200': { description: "data_base_url and expires_in", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '404': { description: "Unknown, or not visible to you", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+  /v1/reports/{id}/files/{path}:
+    get:
+      summary: One of a report's files, as a signed redirect
+      description: "Only report.json and fights/<n>/{summary.json,events.parquet,live.json} are reachable; raw chunks never are."
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { name: path, in: path, required: true, schema: { type: string } }
+      responses:
+        '302': { description: "Redirect to a signed R2 URL valid ten minutes" }
+        '404': { description: "Unknown report or file", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+  /v1/reports/{id}/fights/{n}:
+    put:
+      summary: Store one closed fight (device)
+      description: >-
+        multipart/form-data with summary (summary.Summary JSON), events (Parquet), metrics
+        ([]MetricsRow JSON) and raw_range ({start_offset, end_offset, sha256}). Offsets are
+        report-relative. The API rebuilds the metrics from the events and compares.
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { name: n, in: path, required: true, schema: { type: integer } }
+      responses:
+        '201': { description: "Stored and verified", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '200': { description: "Already stored with the same raw hash", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '409': { description: "The metrics do not match the events; error.fields.metrics says how", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+  /v1/reports/{id}/fights/{n}/live:
+    put:
+      summary: The running summary of a fight in progress (device)
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { name: n, in: path, required: true, schema: { type: integer } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                summary: { type: object }
+                elapsed_ms: { type: integer, format: int64 }
+                updated_at: { type: string, format: date-time }
+      responses:
+        '204': { description: "live.json written and report.json touched" }
+  /v1/reports/{id}/raw:
+    put:
+      summary: One compressed raw chunk (device)
+      description: "Body is application/zstd, at most 8 MiB. X-Raw-SHA256 is the hex SHA-256 of the decoded bytes. Offsets are report-relative and chunk boundaries are multiples of 4 MiB of decoded log."
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { name: offset, in: query, required: true, schema: { type: integer, format: int64 } }
+      responses:
+        '204': { description: "Stored" }
+        '200': { description: "Already stored with the same hash" }
+        '400': { description: "Not zstd, or does not hash to X-Raw-SHA256", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '409': { description: "The range overlaps a different stored range", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+  /v1/reports/{id}/complete:
+    post:
+      summary: Finish a live report (device)
+      parameters: [ { name: id, in: path, required: true, schema: { type: string } } ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                final_offset: { type: integer, format: int64 }
+                engine_version: { type: string }
+                health: { type: object }
+      responses:
+        '204': { description: "Complete; the raw-sample check is scheduled" }
+  /v1/uploads:
+    post:
+      summary: Start a whole-file upload (session)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [size_bytes]
+              properties:
+                size_bytes: { type: integer, format: int64, maximum: 4294967296 }
+                filename: { type: string }
+      responses:
+        '201': { description: "upload_id, signed 64 MiB parts valid an hour, and complete_url", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+  /v1/uploads/{upload_id}/complete:
+    post:
+      summary: Finish an upload and start the parse job (session)
+      parameters: [ { name: upload_id, in: path, required: true, schema: { type: string } } ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [etags]
+              properties:
+                etags:
+                  type: array
+                  items:
+                    type: object
+                    properties: { number: { type: integer }, etag: { type: string } }
+                title: { type: string }
+                visibility: { type: string, enum: [public, unlisted, private, guild] }
+      responses:
+        '202': { description: "report_id; the parse job has been started", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '502': { description: "Stored, but the parse job could not be started", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+  /v1/rankings:
+    get:
+      summary: A leaderboard page
+      parameters:
+        - name: encounter
+          in: query
+          required: true
+          schema: { type: string }
+          description: "The numeric encounter id, or the slug /rankings/<encounter-slug> uses (the encounter name lowercased with spaces as -)"
+        - { name: difficulty, in: query, schema: { type: integer } }
+        - { name: metric, in: query, schema: { type: string, enum: [dps, hps, damage_taken], default: dps } }
+        - { name: spec, in: query, schema: { type: string } }
+        - { name: class, in: query, schema: { type: string } }
+        - { name: phase, in: query, schema: { type: string, enum: [pre-beta, beta, launch, raids-1] } }
+        - { name: region, in: query, schema: { type: string, enum: [us, eu, kr, tw, cn] } }
+        - { name: ruleset, in: query, schema: { type: string, enum: [normal, pvp, rp, hardcore] } }
+        - { name: faction, in: query, schema: { type: string, enum: [alliance, horde] } }
+        - { name: since, in: query, schema: { type: string, example: "today" } }
+        - { name: page, in: query, schema: { type: integer, minimum: 1 } }
+      responses:
+        '200':
+          description: "Cache-Control: public, max-age=30"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          rows: { type: array, items: { $ref: '#/components/schemas/RankingRow' } }
+                          total: { type: integer }
+                          page: { type: integer }
+                          per_page: { type: integer, enum: [100] }
+                          updated_at: { type: string, format: date-time }
+  /v1/rankings/percentile:
+    get:
+      summary: Where one value stands in its bracket
+      parameters:
+        - { name: encounter, in: query, required: true, schema: { type: string }, description: "Encounter id or slug" }
+        - { name: difficulty, in: query, required: true, schema: { type: integer } }
+        - { name: spec, in: query, schema: { type: string } }
+        - { name: phase, in: query, schema: { type: string } }
+        - { name: metric, in: query, schema: { type: string, enum: [dps, hps, damage_taken] } }
+        - { name: value, in: query, required: true, schema: { type: number } }
+      responses:
+        '200': { description: "percentile, 0 to 100", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '404': { description: "Nothing ranked in that bracket yet", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+  /v1/rankings/guilds:
+    get:
+      summary: A guild leaderboard
+      parameters:
+        - { name: encounter, in: query, schema: { type: string }, description: "Encounter id or slug; required for speed and execution" }
+        - { name: kind, in: query, schema: { type: string, enum: [speed, execution, progress], default: speed } }
+        - { name: phase, in: query, schema: { type: string } }
+      responses:
+        '200': { description: "rows", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+  /v1/characters/{region}/{ruleset}/{name}:
+    get:
+      summary: A character's bests, history, and the builds they have been seen in
+      description: "best[] and history[] rows are { encounter, encounter_id, difficulty, metric, value, percentile?, spec?, fought_at, report_id, fight_index }; builds_seen[] is { talent_split, spec?, first_seen }"
+      parameters:
+        - { name: region, in: path, required: true, schema: { type: string, enum: [us, eu, kr, tw, cn] } }
+        - { name: ruleset, in: path, required: true, schema: { type: string, enum: [normal, pvp, rp, hardcore] } }
+        - { name: name, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '404': { description: "No such character", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+  /v1/guilds/{region}/{ruleset}/{name}:
+    get:
+      summary: A guild's progression, roster bests, and reports
+      description: "progression[] rows are { encounter, encounter_id, difficulty, kills, pull_count, first_kill_at? }; roster_best[] rows are { player, encounter, encounter_id, metric, value, fought_at }"
+      parameters:
+        - { name: region, in: path, required: true, schema: { type: string, enum: [us, eu, kr, tw, cn] } }
+        - { name: ruleset, in: path, required: true, schema: { type: string, enum: [normal, pvp, rp, hardcore] } }
+        - { name: name, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '404': { description: "No such guild", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+  /v1/addon/exports:
+    post:
+      summary: Store the addon's character exports (device)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [characters]
+              properties:
+                characters:
+                  type: array
+                  maxItems: 200
+                  items:
+                    type: object
+                    properties:
+                      name: { type: string }
+                      ruleset: { type: string, description: "Normalised through the API's realm-to-ruleset mapping; an unrecognised value is not rejected" }
+                      region: { type: string, enum: [us, eu, kr, tw, cn] }
+                      export: { type: string, maxLength: 4096 }
+      responses:
+        '200': { description: "stored", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+  /v1/addon/inbox:
+    get:
+      summary: The builds waiting to be written into the game (device)
+      responses:
+        '200':
+          description: "{ builds: [ { id, name, character?, code } ] } where code is the build's FSB1 addon code, so the companion writes the inbox file without a second call"
+          content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } }
+    post:
+      summary: Queue a build for the game (session)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [build_id]
+              properties:
+                build_id: { type: string }
+                character_key: { type: string }
+      responses:
+        '201': { description: "queued", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+  /reports/{id}/card.png:
+    get:
+      summary: A report's unfurl card
+      parameters: [ { name: id, in: path, required: true, schema: { type: string } } ]
+      responses:
+        '200':
+          description: "1200x630 PNG. Cache-Control: public, max-age=300"
+          content: { image/png: { schema: { type: string, format: binary } } }
+        '404':
+          description: "Unknown or invisible report; the stand-in card, cached a minute"
+          content: { image/png: { schema: { type: string, format: binary } } }

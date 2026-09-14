@@ -3,19 +3,31 @@ package main
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 
+	"github.com/jackc/pgx/v5/pgxpool"
+
+	"github.com/jhunthrop/foreversixty/api/internal/addon"
+	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/builds"
 	"github.com/jhunthrop/foreversixty/api/internal/config"
 	"github.com/jhunthrop/foreversixty/api/internal/db"
+	"github.com/jhunthrop/foreversixty/api/internal/jobs"
 	"github.com/jhunthrop/foreversixty/api/internal/mail"
+	"github.com/jhunthrop/foreversixty/api/internal/parse"
+	"github.com/jhunthrop/foreversixty/api/internal/r2"
+	"github.com/jhunthrop/foreversixty/api/internal/rankings"
+	"github.com/jhunthrop/foreversixty/api/internal/reports"
 	"github.com/jhunthrop/foreversixty/api/internal/server"
 	"github.com/jhunthrop/foreversixty/api/internal/site"
+	"github.com/jhunthrop/foreversixty/api/internal/spec"
 	"github.com/jhunthrop/foreversixty/api/internal/subscribe"
 	"github.com/jhunthrop/foreversixty/api/internal/trees"
 )
@@ -35,73 +47,194 @@ const (
 
 func main() {
 	log := slog.New(slog.NewJSONHandler(os.Stdout, nil))
-	cfg, err := config.Load(os.Getenv)
-	if err != nil {
+	// The image is both the service and the parse job: Cloud Run runs
+	// it with `parse-report <id>` as its arguments for an upload.
+	if len(os.Args) > 1 && os.Args[1] == reports.ParseJobCommand {
+		if err := runParse(context.Background(), log, os.Args[2:]); err != nil {
+			log.Error("parse-report", "err", err)
+			os.Exit(1)
+		}
+		return
+	}
+	if err := serve(log); err != nil {
 		log.Error("startup", "err", err)
 		os.Exit(1)
 	}
-	if err := db.Migrate(cfg.MigrateDatabaseURL); err != nil {
-		log.Error("migrate", "err", err)
-		os.Exit(1)
-	}
-	pool, err := db.Connect(context.Background(), cfg.DatabaseURL)
+}
+
+// start loads the configuration, migrates, and connects. Both the
+// service and the job need exactly this much.
+func start(ctx context.Context) (config.Config, *pgxpool.Pool, error) {
+	cfg, err := config.Load(os.Getenv)
 	if err != nil {
-		log.Error("db", "err", err)
-		os.Exit(1)
+		return config.Config{}, nil, err
+	}
+	if err := db.Migrate(cfg.MigrateDatabaseURL); err != nil {
+		return config.Config{}, nil, fmt.Errorf("migrate: %w", err)
+	}
+	pool, err := db.Connect(ctx, cfg.DatabaseURL)
+	if err != nil {
+		return config.Config{}, nil, err
+	}
+	return cfg, pool, nil
+}
+
+// objects builds the R2 client, or nil when the deployment has no
+// credentials for it: the service then serves everything that does not
+// touch object storage.
+func objects(cfg config.Config, log *slog.Logger) *r2.Client {
+	if !cfg.R2Configured() {
+		log.Warn("r2", "state", "not configured", "effect",
+			"ingest, uploads, and report files are not served")
+		return nil
+	}
+	client, err := r2.New(r2.Config{
+		AccountID: cfg.R2AccountID, AccessKeyID: cfg.R2AccessKeyID,
+		SecretAccessKey: cfg.R2SecretAccessKey, Bucket: cfg.R2Bucket, Endpoint: cfg.R2Endpoint,
+	})
+	if err != nil {
+		log.Error("r2", "err", err)
+		return nil
+	}
+	return client
+}
+
+// runParse is the Cloud Run job: parse one uploaded log into its
+// report, then exit.
+func runParse(ctx context.Context, log *slog.Logger, args []string) error {
+	if len(args) != 1 || args[0] == "" {
+		return fmt.Errorf("usage: api %s <report_id>", reports.ParseJobCommand)
+	}
+	cfg, pool, err := start(ctx)
+	if err != nil {
+		return err
+	}
+	defer pool.Close()
+	client := objects(cfg, log)
+	if client == nil {
+		return fmt.Errorf("parse-report needs R2 credentials")
+	}
+	treeData, err := trees.Load(cfg.TreeDataDir)
+	if err != nil {
+		return err
+	}
+	reportStore := &reports.Store{Pool: pool}
+	log.Info("parse-report", "report", args[0])
+	return parse.Report(ctx, parse.Deps{
+		Reports: reportStore, Objects: client, Log: log,
+		Rank: &rankings.Store{Pool: pool, Specs: inferrer(treeData)},
+	}, args[0])
+}
+
+// inferrer names specs from the newest client build's talent data.
+func inferrer(data *trees.Data) *spec.Inferrer {
+	b, ok := data.Latest()
+	if !ok {
+		return spec.New(nil)
+	}
+	return spec.New(b)
+}
+
+func serve(log *slog.Logger) error {
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
+
+	cfg, pool, err := start(ctx)
+	if err != nil {
+		return err
 	}
 	defer pool.Close()
 
 	treeData, err := trees.Load(cfg.TreeDataDir)
 	if err != nil {
-		log.Error("trees", "dir", cfg.TreeDataDir, "err", err)
-		os.Exit(1)
+		return fmt.Errorf("trees: %s: %w", cfg.TreeDataDir, err)
 	}
 	for _, skipped := range treeData.Skipped() {
 		log.Warn("trees", "skipped", skipped)
 	}
 	log.Info("trees", "dir", cfg.TreeDataDir, "versions", treeData.Versions())
 
+	// Ranking rows are written into monthly partitions, which have to
+	// exist before the first fight of the month closes.
+	partitions := &db.PartitionJob{Pool: pool, Log: log}
+	if err := partitions.Run(ctx); err != nil {
+		return fmt.Errorf("partitions: %w", err)
+	}
+
 	buildStore := &builds.Store{Pool: pool, Log: log}
 	views := builds.NewViews(buildStore, log)
 	siteDeps := &site.Deps{
-		Store:         buildStore,
-		Data:          treeData,
-		PublicBaseURL: cfg.PublicBaseURL,
-		Views:         views,
-		Log:           log,
+		Store: buildStore, Data: treeData, PublicBaseURL: cfg.PublicBaseURL, Views: views, Log: log,
 	}
 	buildsSvc := &builds.Service{
-		Store:         buildStore,
-		Data:          treeData,
-		PublicBaseURL: cfg.PublicBaseURL,
-		Log:           log,
+		Store: buildStore, Data: treeData, PublicBaseURL: cfg.PublicBaseURL, Log: log,
+	}
+	mailer := mail.NewResend(cfg.ResendAPIKey, cfg.MailFrom, nil)
+	subscribeSvc := &subscribe.Service{
+		Store: &subscribe.Store{Pool: pool}, Mailer: mailer,
+		PublicBaseURL: cfg.PublicBaseURL, APIBaseURL: cfg.APIBaseURL, Logger: log,
+		ResendCooldown: resendCooldown, MaxSendsPerHour: maxSendsPerHour,
 	}
 
-	svc := &subscribe.Service{
-		Store:           &subscribe.Store{Pool: pool},
-		Mailer:          mail.NewResend(cfg.ResendAPIKey, cfg.MailFrom, nil),
-		PublicBaseURL:   cfg.PublicBaseURL,
-		APIBaseURL:      cfg.APIBaseURL,
-		Logger:          log,
-		ResendCooldown:  resendCooldown,
-		MaxSendsPerHour: maxSendsPerHour,
+	authStore := &auth.Store{Pool: pool}
+	authenticator := &auth.Authenticator{
+		Store: authStore, CookieDomain: cfg.SessionCookieDomain,
+		Secure: strings.HasPrefix(cfg.PublicBaseURL, "https://"), Log: log,
 	}
+	accounts := &auth.Service{
+		Store: authStore, Auth: authenticator, Mailer: mailer,
+		PublicBaseURL: cfg.PublicBaseURL, APIBaseURL: cfg.APIBaseURL, Log: log,
+	}
+	if cfg.BattleNetConfigured() {
+		accounts.BNet = auth.NewBattleNet(cfg.BnetClientID, cfg.BnetClientSecret, cfg.BnetRedirectURL)
+	} else {
+		log.Warn("auth", "state", "battle.net is not configured", "effect", "email sign-in only")
+	}
+
+	reportStore := &reports.Store{Pool: pool}
+	rankStore := &rankings.Store{Pool: pool, Specs: inferrer(treeData)}
+	client := objects(cfg, log)
+
+	deps := server.Deps{
+		Version: version, Log: log, AllowedOrigin: cfg.PublicBaseURL,
+		Subscribe: subscribeSvc, Builds: buildsSvc, Site: siteDeps,
+		Auth: authenticator, Accounts: accounts,
+		Reports: &reports.Service{
+			Store: reportStore, Accounts: authStore, PublicBaseURL: cfg.PublicBaseURL,
+			APIBaseURL: cfg.APIBaseURL, Log: log,
+		},
+		Rankings: &rankings.Service{Store: rankStore, Log: log},
+		Addon: &addon.Service{
+			Store: &addon.Store{Pool: pool}, Builds: buildStore, Data: treeData, Log: log,
+		},
+		TrustedProxyHops: cfg.TrustedProxyHops,
+	}
+
+	var sampler *parse.Worker
+	if client != nil {
+		deps.Reports.Signer = client
+		sampler = parse.NewWorker(parse.Deps{
+			Reports: reportStore, Objects: client, Rank: rankStore, Log: log,
+		})
+		go sampler.Run(ctx)
+		deps.Ingest = &reports.Ingest{
+			Store: reportStore, Put: client, Rank: rankStore, Samp: sampler, Log: log,
+		}
+		if runner, err := jobs.NewCloudRun(ctx, cfg.ParseJobProject, cfg.ParseJobRegion, cfg.ParseJobName); err != nil {
+			log.Warn("jobs", "state", "the parse job cannot be reached", "err", err,
+				"effect", "whole-file uploads are not offered")
+		} else {
+			deps.Uploads = &reports.Uploads{
+				Store: reportStore, R2: client, Jobs: runner, APIBaseURL: cfg.APIBaseURL, Log: log,
+			}
+		}
+	}
+
 	srv := &http.Server{
-		Addr: ":" + cfg.Port,
-		Handler: server.NewRouter(server.Deps{
-			Version:          version,
-			Log:              log,
-			AllowedOrigin:    cfg.PublicBaseURL,
-			Subscribe:        svc,
-			Builds:           buildsSvc,
-			Site:             siteDeps,
-			TrustedProxyHops: cfg.TrustedProxyHops,
-		}),
+		Addr:              ":" + cfg.Port,
+		Handler:           server.NewRouter(deps),
 		ReadHeaderTimeout: 5 * time.Second,
 	}
-
-	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
-	defer stop()
 
 	serveErr := make(chan error, 1)
 	go func() {
@@ -112,8 +245,7 @@ func main() {
 	select {
 	case err := <-serveErr:
 		if err != nil && !errors.Is(err, http.ErrServerClosed) {
-			log.Error("serve", "err", err)
-			os.Exit(1)
+			return fmt.Errorf("serve: %w", err)
 		}
 	case <-ctx.Done():
 		log.Info("shutting down")
@@ -124,7 +256,11 @@ func main() {
 		}
 		<-serveErr // wait for the listener goroutine to actually return
 	}
-	svc.Wait()
+	subscribeSvc.Wait()
 	views.Close()
+	if sampler != nil {
+		sampler.Close()
+	}
 	log.Info("stopped")
+	return nil
 }

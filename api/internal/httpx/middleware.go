@@ -228,13 +228,25 @@ func clientIP(r *http.Request, trustedHops int) string {
 	return ip
 }
 
+// CORSMethods and CORSHeaders are what the site's islands need from
+// this service: the report page reads and patches reports, the upload
+// page PUTs and POSTs, the account page DELETEs a device, and every
+// state-changing call carries the CSRF header. Credentials are allowed
+// because the session cookie is on .foreversixty.gg and the site is a
+// different origin from the API.
+const (
+	CORSMethods = "GET, POST, PUT, PATCH, DELETE, OPTIONS"
+	CORSHeaders = "Content-Type, X-CSRF-Token, Authorization"
+)
+
 func CORS(allowedOrigin string) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if r.Header.Get("Origin") == allowedOrigin {
 				w.Header().Set("Access-Control-Allow-Origin", allowedOrigin)
-				w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-				w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+				w.Header().Set("Access-Control-Allow-Methods", CORSMethods)
+				w.Header().Set("Access-Control-Allow-Headers", CORSHeaders)
+				w.Header().Set("Access-Control-Allow-Credentials", "true")
 				w.Header().Set("Vary", "Origin")
 			}
 			if r.Method == http.MethodOptions {
