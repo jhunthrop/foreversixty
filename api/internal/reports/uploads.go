@@ -168,7 +168,11 @@ func (u *Uploads) complete(w http.ResponseWriter, r *http.Request) {
 	// makes every step from here on replayable: a retry that finds
 	// up.ReportID already set never calls CompleteMultipart again on an
 	// upload R2 has already finalized (which would error forever), and
-	// never creates a second report row for the same upload.
+	// never creates a second report row for the same upload. Only the
+	// request that actually creates the report row starts the parse job:
+	// a retry that finds the report already there hands it back and
+	// starts nothing, so a client's at-least-once retry of a completion
+	// that already succeeded does not launch a second parse.
 	reportID := ""
 	if up.ReportID != nil {
 		reportID = *up.ReportID
@@ -184,15 +188,25 @@ func (u *Uploads) complete(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	rep, err := u.Store.Get(r.Context(), reportID)
+	created := false
 	if errors.Is(err, ErrNotFound) {
 		uploadID := up.ID
 		rep, err = u.Store.Create(r.Context(), Report{
 			ID: reportID, OwnerID: &actor.UserID, Title: strings.TrimSpace(in.Title),
 			Visibility: in.Visibility, Status: StatusProcessing, UploadID: &uploadID,
 		})
+		created = true
 	}
 	if err != nil {
 		u.fail(w, r, "complete", err, "could not finish that upload just now")
+		return
+	}
+	if !created {
+		// The report already exists: either a fully-successful earlier
+		// completion, or an earlier attempt that created it and is still
+		// running (or already failed) its own parse. Either way this
+		// retry starts no second job.
+		httpx.WriteOK(w, r, http.StatusAccepted, map[string]string{"report_id": rep.ID})
 		return
 	}
 	if err := u.Jobs.Run(r.Context(), ParseJobCommand, rep.ID); err != nil {

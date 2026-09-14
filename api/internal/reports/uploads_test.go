@@ -111,7 +111,9 @@ func TestAWholeFileUploadIsSignedCompletedAndParsed(t *testing.T) {
 		t.Fatalf("report = %+v", rep)
 	}
 
-	// Completing again is harmless and names the same report.
+	// Completing again is harmless and names the same report. It also
+	// starts no second parse job: an at-least-once retry of a completion
+	// that already succeeded must not launch a second Cloud Run execution.
 	res = h.json(http.MethodPost, "/v1/uploads/"+start.UploadID+"/complete",
 		`{"etags":[{"number":1,"etag":"a"}]}`)
 	var again struct {
@@ -120,6 +122,9 @@ func TestAWholeFileUploadIsSignedCompletedAndParsed(t *testing.T) {
 	h.data(res, &again)
 	if again.ReportID != complete.ReportID {
 		t.Fatalf("a second completion made %q, want %q", again.ReportID, complete.ReportID)
+	}
+	if ran := h.jobs.Ran(); len(ran) != 1 {
+		t.Fatalf("job ran %d times after a retry of a completed upload, want 1: %v", len(ran), ran)
 	}
 }
 
@@ -210,6 +215,15 @@ func TestStartingAnUploadAnswers500WhenTheDatabaseIsGone(t *testing.T) {
 	res.Body.Close()
 	if res.StatusCode != http.StatusInternalServerError {
 		t.Fatalf("status = %d, want 500", res.StatusCode)
+	}
+	// CreateUpload failed after StartMultipart already opened the
+	// multipart in R2: that upload must be aborted, not orphaned.
+	var key string
+	for k := range h.parts.started {
+		key = k
+	}
+	if len(h.parts.aborted) != 1 || h.parts.aborted[0] != key {
+		t.Fatalf("aborted = %v, want [%q]", h.parts.aborted, key)
 	}
 }
 
