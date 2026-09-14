@@ -18,13 +18,20 @@ import barlow400Url from '@fontsource/barlow/files/barlow-latin-400-normal.woff2
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import Account from '../components/Account.svelte';
 
 interface Props {
   title: string;
   description: string;
   path: string;
+  /**
+   * Renders the signed-in state in the header. Only the logs-product pages set it: a
+   * content page that did would ship client JavaScript for a link, and the Lighthouse
+   * budgets on those pages have no room for it.
+   */
+  session?: boolean;
 }
-const { title, description, path } = Astro.props;
+const { title, description, path, session = false } = Astro.props;
 const site = 'https://foreversixty.gg';
 const fullTitle = title === 'Forever Sixty' ? title : `${title} · Forever Sixty`;
 ---
@@ -58,7 +65,7 @@ const fullTitle = title === 'Forever Sixty' ? title : `${title} · Forever Sixty
     >
       Skip to content
     </a>
-    <Header />
+    <Header>{session && <Account client:load mode="nav" slot="session" />}</Header>
     <slot />
     <Footer />
   </body>

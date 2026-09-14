@@ -1,0 +1,21 @@
+---
+// web/src/pages/account.astro
+import Base from '../layouts/Base.astro';
+import Account from '../components/Account.svelte';
+---
+
+<Base
+  title="Your account"
+  description="Your Forever Sixty account: paired devices, linked characters, and how your name appears."
+  path="/account"
+  session
+>
+  <main
+    id="main"
+    tabindex="-1"
+    class="mx-auto flex w-full max-w-[640px] flex-col gap-[22px] px-[18px] pt-4 pb-10 md:gap-8 md:px-12 md:pt-7"
+  >
+    <h1 class="section-title text-[18px]">Your account</h1>
+    <Account client:load mode="account" />
+  </main>
+</Base>
