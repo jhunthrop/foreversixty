@@ -301,3 +301,57 @@ test('a stale rankings answer for the metric that is no longer selected is dropp
   // Damage's late answer must not speak for the metric actually selected (Healing).
   await expect(page.getByTestId('rankings-mode')).toContainText('222 ranked kills');
 });
+
+// The fight selector stays visible in every mode, so a visitor can switch to a different
+// encounter while a rankings request for the one they left is still in flight --
+// `wantedFight`'s half of RankingsMode's guard. The fixture carries a second encounter
+// fight (fight 4, Skolex the Insatiable) for exactly this: switching away from Warden
+// Kelthas to Skolex is a real fight-to-fight race the way the metric test above is a
+// metric-to-metric one, and both encounters are shown without unfolding trash. Warden
+// Kelthas's request is held open; Skolex's answers immediately and paints the screen;
+// Warden Kelthas's late answer, once it does arrive, must not overwrite Skolex's numbers.
+test('a stale rankings answer for the fight that is no longer selected is dropped', async ({ page }) => {
+  let markStarted = (): void => {};
+  let release = (): void => {};
+  const started = new Promise<void>((resolve) => (markStarted = resolve));
+  const gate = new Promise<void>((resolve) => (release = resolve));
+
+  function pageBody(total: number): string {
+    return JSON.stringify({
+      ok: true,
+      data: { rows: [], total, page: 1, per_page: 100, updated_at: '2026-12-09T22:15:00Z' },
+      error: null,
+      request_id: 'r',
+    });
+  }
+
+  await page.route('**/v1/rankings?**', async (route) => {
+    const encounter = new URL(route.request().url()).searchParams.get('encounter');
+    if (encounter === 'warden-kelthas') {
+      markStarted();
+      await gate;
+      await route.fulfill({ status: 200, contentType: 'application/json', body: pageBody(111) });
+      return;
+    }
+    await route.fulfill({ status: 200, contentType: 'application/json', body: pageBody(333) });
+  });
+
+  await page.goto('/reports/fixture2abcd?fight=3&mode=rankings');
+  await started;
+
+  // The visitor moves to the next kill before Warden Kelthas's request has even arrived.
+  await page.getByTestId('fight-4').click();
+  await expect(page.getByTestId('rankings-mode')).toContainText('333 ranked kills');
+  await expect(page.getByRole('link', { name: /Full rankings/ })).toHaveAttribute(
+    'href',
+    '/rankings/skolex-the-insatiable',
+  );
+
+  const answered = page.waitForResponse((response) => response.url().includes('encounter=warden-kelthas'));
+  release();
+  await answered;
+  await page.waitForTimeout(250);
+
+  // Warden Kelthas's late answer must not speak for the fight actually selected (Skolex).
+  await expect(page.getByTestId('rankings-mode')).toContainText('333 ranked kills');
+});

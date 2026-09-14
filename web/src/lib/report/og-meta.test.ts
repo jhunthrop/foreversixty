@@ -10,7 +10,7 @@ describe('shell unfurl values', () => {
   it('titles a report and describes its night in plain numbers', () => {
     const shell = reportShellMeta(meta, API);
     expect(shell.title).toBe('Sanguine Depths, fixture night · Forever Sixty');
-    expect(shell.description).toBe('3 fights in Sanguine Depths, 1 boss kill, logged 2026-09-26.');
+    expect(shell.description).toBe('4 fights in Sanguine Depths, 2 boss kills, logged 2026-09-26.');
     expect(shell.image).toBe(`${API}/reports/fixture2abcd/card.png`);
     expect(shell.canonical).toBe('https://foreversixty.gg/reports/fixture2abcd');
   });

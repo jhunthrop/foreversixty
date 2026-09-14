@@ -37,7 +37,7 @@ describe('fetchReportMeta', () => {
     const meta = await fetchReportMeta('fixture2abcd', API);
 
     expect(meta.id).toBe('fixture2abcd');
-    expect(meta.fights).toHaveLength(3);
+    expect(meta.fights).toHaveLength(4);
     const request = upstream.mock.calls[0][0] as Request;
     expect(request.url).toBe(`${API}/v1/reports/fixture2abcd`);
     expect(request.credentials).toBe('include');
@@ -79,7 +79,7 @@ describe('the report files', () => {
 
     const file = await fetchReportFile(DATA);
 
-    expect(file.fights.map((f) => f.index)).toEqual([1, 2, 3]);
+    expect(file.fights.map((f) => f.index)).toEqual([1, 2, 3, 4]);
     expect(file.units).toEqual([]);
     expect((upstream.mock.calls[0][0] as Request).url).toContain(`${DATA}/report.json`);
   });

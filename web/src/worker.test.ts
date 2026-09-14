@@ -450,7 +450,7 @@ describe('shell routes with rewritten unfurl tags', () => {
     expect(response.headers.get('content-type')).toContain('text/html');
     expect(response.headers.get('cache-control')).toBe('public, max-age=60');
     expect(html).toContain('<title>Sanguine Depths, fixture night · Forever Sixty</title>');
-    expect(html).toContain('content="3 fights in Sanguine Depths, 1 boss kill, logged 2026-09-26."');
+    expect(html).toContain('content="4 fights in Sanguine Depths, 2 boss kills, logged 2026-09-26."');
     expect(html).toContain(`content="${API_BASE_URL}/reports/fixture2abcd/card.png"`);
     expect(html).toContain('href="https://foreversixty.gg/reports/fixture2abcd"');
     expect(html).toContain('content="https://foreversixty.gg/reports/fixture2abcd"');

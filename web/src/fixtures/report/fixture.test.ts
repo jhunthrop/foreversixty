@@ -40,10 +40,10 @@ function everyArray(summary: Summary): unknown[][] {
 }
 
 describe('the checked-in report fixture', () => {
-  it('is the report the engine wrote, with three fights numbered from one', () => {
+  it('is the report the engine wrote, with four fights numbered from one', () => {
     expect(report.report_id).toBe('fixture2abcd');
     expect(report.engine_version).toBe('0.1.0');
-    expect(report.fights.map((f) => f.index)).toEqual([1, 2, 3]);
+    expect(report.fights.map((f) => f.index)).toEqual([1, 2, 3, 4]);
     expect(report.health.layout).toBe('retail-v16');
     expect(report.health.advanced_logging).toBe(true);
     expect(report.health.parse_errors).toBe(0);
@@ -56,8 +56,27 @@ describe('the checked-in report fixture', () => {
     expect(encounter.encounter_id).toBe(9001);
     expect(encounter.kill).toBe(true);
     expect(encounter.in_progress).toBe(false);
-    expect(encounter.duration_ms).toBe(40000);
+    // 60000, not the encounter's own 40s ENCOUNTER_START-to-ENCOUNTER_END span: the engine
+    // extends a fight's report.json window to the next fight's start when nothing else
+    // bounds the gap between them. fights/3/summary.json's own duration_ms stays exactly
+    // 40000 -- the combat-derived figure every table and DPS/HPS calculation reads -- so
+    // this is a report.json-list-only figure (Task 17 fix round 1 discovered this while
+    // adding fight 4 below; see task-17-report.md).
+    expect(encounter.duration_ms).toBe(60000);
     expect(encounter.deaths).toBe(1);
+  });
+
+  // Added in Task 17's fix round 1 so RankingsMode's `wantedFight` guard half -- previously
+  // undrivable because the fixture had only one encounter-kind fight -- can be exercised by
+  // an interleaving e2e test (report-tabs.spec.ts).
+  it('has a second encounter fight, for tests that need two ranked fights', () => {
+    const second = report.fights[3];
+    expect(second.kind).toBe('encounter');
+    expect(second.name).toBe('Skolex the Insatiable');
+    expect(second.encounter_id).toBe(9002);
+    expect(second.kill).toBe(true);
+    expect(second.duration_ms).toBe(10000);
+    expect(second.players).toEqual(['Player-4184-000000A1']);
   });
 
   it('parses a damage actor with abilities, targets and a per-second series', () => {
