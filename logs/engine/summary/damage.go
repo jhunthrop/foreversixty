@@ -231,7 +231,7 @@ func (a *Accumulator) actors(m map[string]*actor) []Actor {
 			GUID: guid, Name: a.name(guid),
 			Total: t.total, Effective: t.effective,
 			Overheal: t.overheal, Absorbed: t.absorbed,
-			Series: t.series,
+			Series: copySlice(t.series),
 		}
 		if row.Series == nil {
 			row.Series = []int64{}
@@ -246,7 +246,9 @@ func (a *Accumulator) actors(m map[string]*actor) []Actor {
 		}
 		row.Abilities = make([]Ability, 0, len(t.abilities))
 		for _, ab := range t.abilities {
-			row.Abilities = append(row.Abilities, *ab)
+			copied := *ab
+			copied.Misses = copyMap(ab.Misses)
+			row.Abilities = append(row.Abilities, copied)
 		}
 		sort.Slice(row.Abilities, func(i, j int) bool {
 			if row.Abilities[i].Effective != row.Abilities[j].Effective {

@@ -2,6 +2,8 @@
 package sample
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"errors"
 	"io"
 	"net/http"
@@ -33,6 +35,16 @@ func withTestServer(t *testing.T, handler http.HandlerFunc) {
 	old := URL
 	URL = server.URL
 	t.Cleanup(func() { URL = old })
+}
+
+// withPinned points the digest check at some other bytes, so a test can
+// exercise the verification path without a 77 MB fixture.
+func withPinned(t *testing.T, body string) {
+	t.Helper()
+	sum := sha256.Sum256([]byte(body))
+	old := pinned
+	pinned.sha, pinned.size = hex.EncodeToString(sum[:]), int64(len(body))
+	t.Cleanup(func() { pinned = old })
 }
 
 func TestTheOverrideEnvironmentVariableWins(t *testing.T) {
@@ -80,8 +92,10 @@ func TestACacheHitMakesNoRequest(t *testing.T) {
 		requested = true
 		w.WriteHeader(http.StatusOK)
 	})
+	const body = "already here"
+	withPinned(t, body)
 	cached := filepath.Join(dir, Name)
-	if err := os.WriteFile(cached, []byte("already here"), 0o644); err != nil {
+	if err := os.WriteFile(cached, []byte(body), 0o644); err != nil {
 		t.Fatal(err)
 	}
 	got, err := Fetch(t.Context())
@@ -99,6 +113,7 @@ func TestACacheHitMakesNoRequest(t *testing.T) {
 func TestASuccessfulDownloadLandsTheFileAtomically(t *testing.T) {
 	dir := withTempCache(t)
 	const body = "9/26 20:10:00.000  ZONE_CHANGE,1,\"Z\",0\n"
+	withPinned(t, body)
 	withTestServer(t, func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		io.WriteString(w, body)
@@ -186,5 +201,80 @@ func TestACacheDirectoryThatCannotBeCreatedIsUnavailable(t *testing.T) {
 	}
 	if requested {
 		t.Fatal("Fetch made a request although the cache directory could not be created")
+	}
+}
+
+func TestThePinnedDigestIsTheOneInTheReadme(t *testing.T) {
+	// The README tells a reader which bytes every measurement describes.
+	// If the pin moves, that sentence moves with it.
+	readme, err := os.ReadFile(filepath.Join("..", "..", "README.md"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(readme), SHA256) {
+		t.Errorf("the README does not carry the pinned sha256 %s", SHA256)
+	}
+	if !strings.Contains(string(readme), "76,979,002") {
+		t.Error("the README does not carry the pinned byte size")
+	}
+}
+
+func TestACachedFileThatIsNotThePinnedSampleIsRefused(t *testing.T) {
+	dir := withTempCache(t)
+	withPinned(t, "the real thing")
+	requested := false
+	withTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+		requested = true
+		w.WriteHeader(http.StatusOK)
+	})
+	if err := os.WriteFile(filepath.Join(dir, Name), []byte("something else"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	_, err := Fetch(t.Context())
+	if !errors.Is(err, ErrUnavailable) {
+		t.Fatalf("err = %v, want ErrUnavailable", err)
+	}
+	if !strings.Contains(err.Error(), SHA256) && !strings.Contains(err.Error(), pinned.sha) {
+		t.Errorf("the error does not name the expected digest: %v", err)
+	}
+	if requested {
+		t.Error("Fetch re-downloaded instead of reporting the stale cache")
+	}
+}
+
+func TestADownloadThatIsNotThePinnedSampleLeavesNoFile(t *testing.T) {
+	dir := withTempCache(t)
+	withPinned(t, "the real thing")
+	withTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		io.WriteString(w, "a different file entirely")
+	})
+	_, err := Fetch(t.Context())
+	if !errors.Is(err, ErrUnavailable) {
+		t.Fatalf("err = %v, want ErrUnavailable", err)
+	}
+	want := filepath.Join(dir, Name)
+	if _, err := os.Stat(want); !os.IsNotExist(err) {
+		t.Errorf("the cache file exists after a digest mismatch: %v", err)
+	}
+	if _, err := os.Stat(want + ".partial"); !os.IsNotExist(err) {
+		t.Errorf(".partial survived a digest mismatch: %v", err)
+	}
+}
+
+func TestAnOverriddenFileIsNotDigestChecked(t *testing.T) {
+	// The override points at the caller's own log, so hashing it would
+	// defeat the point of having one.
+	local := filepath.Join(t.TempDir(), "mine.txt")
+	if err := os.WriteFile(local, []byte("not the pinned sample at all"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	t.Setenv(EnvOverride, local)
+	got, err := Fetch(t.Context())
+	if err != nil {
+		t.Fatalf("an overridden file was rejected: %v", err)
+	}
+	if got != local {
+		t.Fatalf("path = %q, want %q", got, local)
 	}
 }

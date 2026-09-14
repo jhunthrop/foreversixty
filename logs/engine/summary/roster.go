@@ -91,7 +91,7 @@ func (a *Accumulator) combatantRows() []CombatantRow {
 			GUID: guid, Name: a.name(guid),
 			SpecID: c.SpecID, Spec: a.opt.SpecNames[c.SpecID],
 			ItemLevel: c.ItemLevel,
-			Gear:      c.Gear, Talents: c.Talents,
+			Gear:      copySlice(c.Gear), Talents: copySlice(c.Talents),
 		}
 		if row.Gear == nil {
 			row.Gear = []event.Item{}

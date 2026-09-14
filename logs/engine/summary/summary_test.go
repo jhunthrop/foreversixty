@@ -133,6 +133,28 @@ func build(t *testing.T) (*Accumulator, fight.Fight, Summary) {
 	return a, f, a.Snapshot(f, "test")
 }
 
+// jsonOf renders a value as JSON, so two renderings can be compared as
+// bytes.
+func jsonOf(t *testing.T, v any) string {
+	t.Helper()
+	b, err := json.Marshal(v)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return string(b)
+}
+
+// jsonIndentOf renders a value as indented JSON, for the committed golden:
+// a text file a human can diff is worth the extra bytes.
+func jsonIndentOf(t *testing.T, v any) string {
+	t.Helper()
+	b, err := json.MarshalIndent(v, "", "  ")
+	if err != nil {
+		t.Fatal(err)
+	}
+	return string(b)
+}
+
 func actorByGUID(rows []Actor, guid string) (Actor, bool) {
 	for _, r := range rows {
 		if r.GUID == guid {
@@ -617,5 +639,108 @@ func TestRecomputingFromTheEventsMatchesTheStreamedSummary(t *testing.T) {
 		if string(jw) != string(jg) {
 			t.Fatalf("trial %d: recomputed summary differs from the streamed one", trial)
 		}
+	}
+}
+
+// TestSnapshotDoesNotAliasLiveAccumulatorState covers the live-tail use
+// Snapshot's doc comment advertises: a snapshot already handed to a caller
+// must not change when later events land in the accumulator.
+func TestSnapshotDoesNotAliasLiveAccumulatorState(t *testing.T) {
+	o, reg := opts(t)
+	a := New(o)
+	a.Start(at(0))
+	f := fight.Fight{Index: 1, Kind: fight.Encounter, Start: at(0), End: at(30),
+		Players: []string{tank, healer, mage}}
+	for _, e := range script() {
+		reg.Observe(e)
+		a.Add(e)
+	}
+
+	early := a.Snapshot(f, "test")
+	before := jsonOf(t, early)
+
+	// Everything the accumulator mutates in place: a per-second bucket an
+	// earlier event already wrote, a miss type, a cast failure reason, a
+	// cast sequence, and a resource series bucket.
+	later := []event.Event{
+		dmg(1, mage, boss, 116, "Frostbolt", 9999, -1),
+		{Time: at(21), Kind: event.Missed, Name: "SWING_MISSED",
+			Source: event.Unit{GUID: boss, Flags: 0xa48}, Dest: event.Unit{GUID: tank, Flags: 0x512},
+			MissType: "DODGE"},
+		{Time: at(22), Kind: event.CastFailed, Name: "SPELL_CAST_FAILED",
+			Source: event.Unit{GUID: mage, Flags: 0x512}, Spell: event.Spell{ID: 116, Name: "Frostbolt"},
+			FailedType: "Out of range"},
+		{Time: at(23), Kind: event.CastSuccess, Name: "SPELL_CAST_SUCCESS",
+			Source: event.Unit{GUID: mage, Flags: 0x512}, Spell: event.Spell{ID: 116, Name: "Frostbolt"}},
+		{Time: at(19), Kind: event.Energize, Name: "SPELL_ENERGIZE",
+			Source: event.Unit{GUID: mage, Flags: 0x512}, Dest: event.Unit{GUID: mage, Flags: 0x512},
+			Spell:     event.Spell{ID: 34428, Name: "Victory Rush"},
+			Amount:    event.OptInt{V: 50, OK: true},
+			PowerType: event.OptInt{V: 0, OK: true}, MaxPower: event.OptInt{V: 1000, OK: true},
+			Adv: event.Advanced{OK: true, InfoGUID: mage, PowerType: 0, CurrentPower: 100, MaxPower: 1000}},
+	}
+	for _, e := range later {
+		reg.Observe(e)
+		a.Add(e)
+	}
+
+	if after := jsonOf(t, early); after != before {
+		t.Fatalf("the snapshot changed after later events landed:\nbefore %s\nafter  %s", before, after)
+	}
+
+	// And the new snapshot really does see the new events, so the test is
+	// not passing because nothing was folded in.
+	late := a.Snapshot(f, "test")
+	if jsonOf(t, late) == before {
+		t.Fatal("the later events changed nothing at all; the test proves nothing")
+	}
+}
+
+// TestSnapshotIsSafeToSerialiseWhileTheParseContinues is the race-detector
+// half of the same guarantee: the companion renders a snapshot off the
+// parse goroutine every few seconds.
+func TestSnapshotIsSafeToSerialiseWhileTheParseContinues(t *testing.T) {
+	o, reg := opts(t)
+	a := New(o)
+	a.Start(at(0))
+	f := fight.Fight{Index: 1, Kind: fight.Encounter, Start: at(0), End: at(30),
+		Players: []string{tank, healer, mage}}
+	for _, e := range script() {
+		reg.Observe(e)
+		a.Add(e)
+	}
+	snap := a.Snapshot(f, "test")
+
+	done := make(chan string, 1)
+	go func() { done <- jsonOf(t, snap) }()
+	for i := 0; i < 200; i++ {
+		a.Add(dmg(float64(i%25), mage, boss, 116, "Frostbolt", int64(i), -1))
+	}
+	<-done
+}
+
+// TestAnEnergizeWithNoDestinationOpensNoResourceRow covers the guard that
+// used to test Source while keying on Dest.
+func TestAnEnergizeWithNoDestinationOpensNoResourceRow(t *testing.T) {
+	o, _ := opts(t)
+	a := New(o)
+	a.Start(at(0))
+	for _, dest := range []string{"", units.NoGUID} {
+		a.Add(event.Event{
+			Time: at(1), Kind: event.Energize, Name: "SPELL_ENERGIZE",
+			Source:    event.Unit{GUID: mage, Flags: 0x512},
+			Dest:      event.Unit{GUID: dest},
+			Amount:    event.OptInt{V: 50, OK: true},
+			PowerType: event.OptInt{V: 0, OK: true},
+		})
+	}
+	rows := a.Snapshot(fight.Fight{Index: 1, Start: at(0), End: at(2)}, "test").Resources
+	for _, r := range rows {
+		if r.GUID == "" || r.GUID == units.NoGUID {
+			t.Errorf("a resource row was opened for GUID %q", r.GUID)
+		}
+	}
+	if len(rows) != 0 {
+		t.Errorf("got %d resource rows, want none", len(rows))
 	}
 }

@@ -366,6 +366,56 @@ func TestALogWithNoHeaderInfersALayout(t *testing.T) {
 	}
 }
 
+// TestALogWithNoHeaderAndInferOffUsesTheDefaultRow pins Options.Infer to
+// its name: with inference off, a headerless log falls back to retail v16,
+// the same row line() falls back to for an unrecognised header, and the
+// missing header is still reported.
+func TestALogWithNoHeaderAndInferOffUsesTheDefaultRow(t *testing.T) {
+	log := "9/26 20:10:01.000  ZONE_CHANGE,2284,\"Sanguine Depths\",8\n" +
+		"9/26 20:10:02.000  SPELL_AURA_APPLIED,Player-1-A,\"A\",0x512,0x0,Player-1-A,\"A\",0x512,0x0,17,\"Shield\",0x2,BUFF\n"
+	o := opts()
+	o.Infer = false
+	_, health := feed(t, o, []byte(log), 4096)
+	if health.LayoutInferred {
+		t.Errorf("Infer is off but the layout was inferred: %+v", health)
+	}
+	if health.Layout != layout.RetailV16().Name {
+		t.Errorf("layout = %q, want %q", health.Layout, layout.RetailV16().Name)
+	}
+	if !health.MissingHeader {
+		t.Error("the log has no header and health does not say so")
+	}
+}
+
+// TestStateWhileStillInferringIsAnError covers the honest answer: a
+// session that has not settled a dialect has nothing resumable, and the
+// replay offset is already past the lines it is still holding.
+func TestStateWhileStillInferringIsAnError(t *testing.T) {
+	o := opts()
+	o.Infer = true
+	s := New(o)
+	if _, err := s.Feed([]byte("9/26 20:10:01.000  ZONE_CHANGE,2284,\"Sanguine Depths\",8\n"), 0); err != nil {
+		t.Fatal(err)
+	}
+	b, err := s.State()
+	if err == nil {
+		t.Fatalf("State returned %d bytes while still inferring, want an error", len(b))
+	}
+	if b != nil {
+		t.Errorf("State returned %d bytes alongside its error", len(b))
+	}
+	if !strings.Contains(err.Error(), "nothing resumable") {
+		t.Errorf("error %q does not say why there is nothing to serialise", err)
+	}
+	// Once the layout is settled the session serialises as usual.
+	if _, err := s.Close(); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := s.State(); err != nil {
+		t.Fatalf("State after Close: %v", err)
+	}
+}
+
 func TestAMidFileHeaderIsAHardBoundary(t *testing.T) {
 	header := "9/26 20:10:00.000  COMBAT_LOG_VERSION,16,ADVANCED_LOG_ENABLED,1,BUILD_VERSION,9.0.2,PROJECT_ID,1\n"
 	log := header +

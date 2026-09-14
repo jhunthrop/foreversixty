@@ -7,6 +7,8 @@ package sample
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"io"
@@ -26,6 +28,49 @@ var URL = "https://raw.githubusercontent.com/rp4rk/WoWP/main/WoWCombatLog.txt"
 
 // Name is the file's name inside the cache.
 const Name = "wowp-retail-v16.txt"
+
+// SHA256 and Size pin the exact bytes every measurement in this module
+// describes: the 272,367-event log the retail layout row was verified
+// against, the benchmark's 77 MB, and the "0 parse errors" conformance
+// evidence. URL points at a third-party repository that can edit or
+// replace the file at any time, so a download that does not match these
+// is refused rather than silently measured.
+const (
+	SHA256 = "72b3ee25ac51b0e08c2b250e71171ec4c22ab6069df961e946031105c1cfa2bf"
+	Size   = 76979002
+)
+
+// pinned is what verify checks a file against. Like URL it is a var only
+// so the tests in this package can substitute a small stand-in file;
+// production code must never assign to it.
+var pinned = struct {
+	sha  string
+	size int64
+}{SHA256, Size}
+
+// verify reads path and reports whether it is the pinned sample. It is
+// applied to a fresh download before the rename and to a cache hit, since
+// a cached copy can be stale from before an upstream change.
+func verify(path string) error {
+	f, err := os.Open(path)
+	if err != nil {
+		return fmt.Errorf("%w: open %s: %v", ErrUnavailable, path, err)
+	}
+	defer f.Close()
+	h := sha256.New()
+	n, err := io.Copy(h, f)
+	if err != nil {
+		return fmt.Errorf("%w: read %s: %v", ErrUnavailable, path, err)
+	}
+	got := hex.EncodeToString(h.Sum(nil))
+	if n != pinned.size || got != pinned.sha {
+		return fmt.Errorf("%w: %s is not the pinned sample: got sha256 %s (%d bytes), "+
+			"want %s (%d bytes). %s may have been changed upstream; delete the cached "+
+			"copy to re-download, or point %s at a known-good local file",
+			ErrUnavailable, path, got, n, pinned.sha, pinned.size, URL, EnvOverride)
+	}
+	return nil
+}
 
 // EnvOverride points at a local copy instead of downloading.
 const EnvOverride = "FOREVER_LOGS_SAMPLE"
@@ -51,9 +96,14 @@ func CacheDir() string {
 // cached there.
 var cacheDir = CacheDir
 
-// Fetch returns the path to the cached sample, downloading it if needed.
-// It returns an error wrapping ErrUnavailable when the machine is offline
-// and nothing is cached.
+// Fetch returns the path to the cached sample, downloading it if needed,
+// and verifies it against the pinned digest. It returns an error wrapping
+// ErrUnavailable when the machine is offline and nothing is cached, and
+// when what is there is not the pinned file.
+//
+// A file supplied through EnvOverride is deliberately not checked: the
+// override exists so a caller can point the benchmark at their own log,
+// and hashing it would defeat that.
 func Fetch(ctx context.Context) (string, error) {
 	if p := os.Getenv(EnvOverride); p != "" {
 		fi, err := os.Stat(p)
@@ -67,6 +117,9 @@ func Fetch(ctx context.Context) (string, error) {
 	}
 	path := filepath.Join(cacheDir(), Name)
 	if fi, err := os.Stat(path); err == nil && fi.Size() > 0 {
+		if err := verify(path); err != nil {
+			return "", err
+		}
 		return path, nil
 	}
 	if err := os.MkdirAll(cacheDir(), 0o755); err != nil {
@@ -99,6 +152,10 @@ func Fetch(ctx context.Context) (string, error) {
 	if err := f.Close(); err != nil {
 		os.Remove(tmp)
 		return "", fmt.Errorf("%w: close %s: %v", ErrUnavailable, tmp, err)
+	}
+	if err := verify(tmp); err != nil {
+		os.Remove(tmp)
+		return "", err
 	}
 	if err := os.Rename(tmp, path); err != nil {
 		os.Remove(tmp)

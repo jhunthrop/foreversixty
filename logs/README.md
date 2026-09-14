@@ -102,10 +102,19 @@ is git-ignored:
 
 - Source: `https://raw.githubusercontent.com/rp4rk/WoWP/main/WoWCombatLog.txt`
 - 77 MB, `COMBAT_LOG_VERSION 16`, build 9.0.2, advanced logging on.
+- **Pinned**: exactly 76,979,002 bytes, SHA-256
+  `72b3ee25ac51b0e08c2b250e71171ec4c22ab6069df961e946031105c1cfa2bf`. The
+  digest is verified after a download and on every cache hit, because the
+  source is a third-party repository that can edit or replace the file:
+  every measurement in this module — the verified retail row, the 77 MB
+  throughput figure, the "0 parse errors over 272,367 lines" conformance
+  evidence — describes those exact bytes and nothing else. A mismatch is
+  an `ErrUnavailable` naming both digests, not a quiet re-measurement.
 - Its repository is AGPL-3.0, which is why it stays out of this one.
 - Offline, the tests that need it call `t.Skip` with a message saying so.
 - Point `FOREVER_LOGS_SAMPLE` at a local copy to use one instead of
-  downloading.
+  downloading. A file supplied that way is deliberately **not**
+  digest-checked: it is your log, not ours.
 
 ## Determinism
 
@@ -113,7 +122,25 @@ is git-ignored:
 machines. That means no map iteration in an output path — every slice is
 sorted before it is emitted — no wall clock, no randomness, and a pinned
 `CreatedBy` in the Parquet metadata. `TestWriteIsByteIdenticalAcrossRuns`
-and `TestSnapshotIsDeterministic` are the guards.
+and `TestSnapshotIsDeterministic` are the in-process guards, and
+`engine/summary/testdata/v16.summary.json.golden` is the committed one: it
+catches the drift two runs in one process cannot see, such as a
+dependency bump that changes a rounding, a schema reorder, or a renamed
+`Kind`. Regenerate it deliberately, never to make a test pass:
+
+```bash
+FOREVER_UPDATE_GOLDEN=1 go test ./engine/summary/ -run TestTheFixtureSummaryMatchesTheCommittedGolden
+```
+
+There is no committed Parquet golden. A binary asserting byte-identity
+across architectures is a claim this branch cannot verify before CI runs;
+it is recorded as a recommendation rather than written on a guess.
+
+Untrusted input is fuzzed rather than only sampled: `FuzzDecode` in
+`engine/event` and `FuzzSplitParams` in `engine/lexer` run for twenty
+seconds each in CI, seeded from the v16 fixture and from the malformed
+shapes that once panicked. A crasher lands in
+`engine/*/testdata/fuzz/` and is committed with its fix.
 
 ## Unresolved on purpose
 
@@ -130,6 +157,12 @@ stay marked:
 - **Which `COMBAT_LOG_VERSION` Classic clients write.** The Classic row has
   `Version: 0`, so `Lookup` never selects it automatically; pass
   `-layout classic-wiki`, or let the inferred row handle it.
+- **`EventNames()` is a cross-product, not a list of real events.**
+  `layout.Layout.EventNames()` returns every prefix joined to every suffix,
+  so it lists combinations the game never emits — `SWING_HEAL` among them.
+  Nothing consumes it today. It must be narrowed to the combinations a
+  dialect actually writes before the conformance report adopts it, or that
+  report will overstate what the layout can decode.
 - **Which patch added the year and zone to the timestamp.** Detected from the
   log by `layout.Infer`, never assumed.
 - **`_DRAIN` and `_LEECH` carry the advanced block on the retail row,

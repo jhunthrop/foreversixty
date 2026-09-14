@@ -195,8 +195,10 @@ func (a *Accumulator) Add(e event.Event) {
 	}
 }
 
-// Snapshot renders the tables. It sorts but does not mutate, so it is safe
-// to call every few seconds during a live fight.
+// Snapshot renders the tables. It sorts and copies but does not mutate the
+// accumulator, and every slice and map it hands out is the caller's own, so
+// it is safe to call every few seconds during a live fight and to serialise
+// the result while the parse goes on.
 func (a *Accumulator) Snapshot(f fight.Fight, engineVersion string) Summary {
 	dur := a.end.Sub(a.start)
 	if dur < 0 {
@@ -221,6 +223,30 @@ func (a *Accumulator) Snapshot(f fight.Fight, engineVersion string) Summary {
 	}
 	s.Roster = a.rosterRows(f, s)
 	return s
+}
+
+// copySlice returns a copy of s. Snapshot hands its result to a caller
+// that may hold it while the accumulator keeps folding events in, so every
+// slice that comes out of accumulator state is copied on the way: an
+// already-rendered snapshot must never change underneath its reader, and a
+// companion serialising one off the parse goroutine must not race.
+func copySlice[T any](s []T) []T {
+	if s == nil {
+		return nil
+	}
+	return append(make([]T, 0, len(s)), s...)
+}
+
+// copyMap is copySlice for the maps Snapshot hands out.
+func copyMap[K comparable, V any](m map[K]V) map[K]V {
+	if m == nil {
+		return nil
+	}
+	c := make(map[K]V, len(m))
+	for k, v := range m {
+		c[k] = v
+	}
+	return c
 }
 
 // sortActors orders rows by effective amount descending, then GUID, so two

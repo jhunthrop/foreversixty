@@ -372,7 +372,10 @@ func (a *Accumulator) exchange(kind string, e event.Event) {
 // addResources builds the power series from the advanced block and from
 // energize events, and counts the time an actor spent at zero power.
 func (a *Accumulator) addResources(e event.Event) {
-	if e.Kind == event.Energize && e.Source.GUID != "" {
+	// Guard the GUID the track is keyed on, not the other one: an energize
+	// with no destination would otherwise open a resource row keyed by the
+	// empty string and show up in resourceRows as a real actor.
+	if e.Kind == event.Energize && e.Dest.GUID != "" && e.Dest.GUID != units.NoGUID {
 		k := resourceKey{guid: e.Dest.GUID, powerType: e.PowerType.V}
 		a.resource(k, e.Time).Gained += e.Amount.V
 	}
@@ -415,7 +418,15 @@ func (a *Accumulator) resource(k resourceKey, at time.Time) *resourceTrack {
 func (a *Accumulator) deathRows() []Death {
 	out := make([]Death, 0, len(a.deaths))
 	for _, d := range a.deaths {
-		out = append(out, d.Death)
+		row := d.Death
+		row.Last = copySlice(d.Last)
+		row.AurasHeld = copySlice(d.AurasHeld)
+		row.AurasLost = copySlice(d.AurasLost)
+		if kb := d.KillingBlow; kb != nil {
+			blow := *kb
+			row.KillingBlow = &blow
+		}
+		out = append(out, row)
 	}
 	sort.Slice(out, func(i, j int) bool {
 		if out[i].AtMS != out[j].AtMS {
@@ -442,9 +453,11 @@ func (a *Accumulator) auraRows() []AuraTrack {
 			if stacks == 0 {
 				stacks = 1
 			}
-			row.Segments = append(append([]Segment(nil), row.Segments...),
+			row.Segments = append(copySlice(row.Segments),
 				Segment{StartMS: start, EndMS: end, Stacks: stacks, SourceGUID: tr.openSource})
 			row.UptimeMS += end - start
+		} else {
+			row.Segments = copySlice(row.Segments)
 		}
 		row.Appliers = make([]string, 0, len(tr.appliers))
 		for g := range tr.appliers {
@@ -469,6 +482,8 @@ func (a *Accumulator) castRows() []CastRow {
 	out := make([]CastRow, 0, len(a.casts))
 	for _, r := range a.casts {
 		row := r.CastRow
+		row.Sequence = copySlice(r.Sequence)
+		row.FailReasons = copyMap(r.FailReasons)
 		if row.Sequence == nil {
 			row.Sequence = []int64{}
 		}
@@ -515,6 +530,7 @@ func (a *Accumulator) resourceRows() []ResourceTrack {
 	out := make([]ResourceTrack, 0, len(a.resources))
 	for _, tr := range a.resources {
 		row := tr.ResourceTrack
+		row.Series = copySlice(tr.Series)
 		if row.Series == nil {
 			row.Series = []int64{}
 		}

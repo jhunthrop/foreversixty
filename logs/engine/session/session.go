@@ -30,7 +30,10 @@ type Options struct {
 	// Layout forces a dialect. Leave it zero to select one from the
 	// header, and set Infer to fall back to counting.
 	Layout layout.Layout
-	// Infer allows the counting fallback when no row matches the header.
+	// Infer allows the counting fallback: layout.Infer builds a row from
+	// the log's own field counts when no registered row matches the
+	// header, and when there is no header at all. With Infer off both
+	// cases fall back to layout.RetailV16.
 	Infer bool
 	// Base seeds the clock for dialects whose timestamps carry no year.
 	// Pass the log file's modification time for a batch parse and the
@@ -205,10 +208,18 @@ func (s *Session) buffer(ln lexer.Line, res *Result) {
 	}
 }
 
-// flushInference builds a row from the buffered lines and replays them.
+// flushInference settles the layout for a log that presented no header at
+// all and replays the lines buffered while waiting for one. Options.Infer
+// decides what settles it: the counting fallback, or retail v16, which is
+// the same fallback line() takes for a header no row recognises. Either
+// way Health.MissingHeader records that there was no header.
 func (s *Session) flushInference(res *Result) {
 	s.health.MissingHeader = true
-	s.setLayout(layout.Infer(s.pending))
+	if s.opt.Infer {
+		s.setLayout(layout.Infer(s.pending))
+	} else {
+		s.setLayout(layout.RetailV16())
+	}
 	s.replay(res)
 }
 
@@ -381,6 +392,11 @@ type state struct {
 // State serialises the session. Restore resumes from it, and the caller
 // must re-feed from the returned replay offset so the open fight is rebuilt.
 func (s *Session) State() ([]byte, error) {
+	if s.inferring {
+		return nil, fmt.Errorf("session: no layout has been settled yet, so there is " +
+			"nothing resumable: the stream has presented no header and fewer than the " +
+			"lines inference needs. Feed more input or Close the session first")
+	}
 	st := state{
 		Version:    Version,
 		Lexer:      s.lex.State(),
