@@ -3,7 +3,6 @@ package summary
 
 import (
 	"encoding/json"
-	"math/rand/v2"
 	"testing"
 	"time"
 
@@ -174,6 +173,36 @@ func TestDamageDoneCreditsPetsToTheirOwner(t *testing.T) {
 	}
 }
 
+// TestAbilityMinStaysAtATrueZero guards against Ability.Min conflating "no
+// hit recorded yet" with "the lowest hit so far was a genuine zero" (a
+// fully resisted or otherwise informational hit lands for 0). Once a real
+// zero-amount hit is recorded, later larger hits must not overwrite it.
+func TestAbilityMinStaysAtATrueZero(t *testing.T) {
+	o, reg := opts(t)
+	a := New(o)
+	a.Start(at(0))
+	events := []event.Event{
+		dmg(1, mage, boss, 116, "Frostbolt", 0, -1),
+		dmg(2, mage, boss, 116, "Frostbolt", 500, -1),
+		dmg(3, mage, boss, 116, "Frostbolt", 900, -1),
+	}
+	for _, e := range events {
+		reg.Observe(e)
+		a.Add(e)
+	}
+	s := a.Snapshot(fight.Fight{Index: 1, Start: at(0), End: at(3)}, "test")
+	m, ok := actorByGUID(s.DamageDone, mage)
+	if !ok {
+		t.Fatal("no mage row")
+	}
+	if len(m.Abilities) != 1 || m.Abilities[0].Min != 0 {
+		t.Fatalf("min = %+v, want 0 (a genuine zero-amount hit, not overwritten by later larger hits)", m.Abilities)
+	}
+	if m.Abilities[0].Max != 900 {
+		t.Errorf("max = %d, want 900", m.Abilities[0].Max)
+	}
+}
+
 func TestPerSecondSeries(t *testing.T) {
 	_, _, s := build(t)
 	m, _ := actorByGUID(s.DamageDone, mage)
@@ -315,6 +344,67 @@ func TestCastsInterruptsDispels(t *testing.T) {
 	}
 }
 
+// TestExchangeRowsBreakTiesOnTheFullMapKey guards against exchangeRows
+// falling back on map iteration order — which Go does not guarantee is
+// stable across iterations — when two rows tie on Count, SourceGUID and
+// ExtraSpellID. The comparator must also break ties on TargetGUID and
+// SpellID, the rest of exchangeKey, so the order is a function of the data
+// and not of how the map happened to be walked.
+func TestExchangeRowsBreakTiesOnTheFullMapKey(t *testing.T) {
+	o, reg := opts(t)
+	a := New(o)
+	a.Start(at(0))
+	// Same source, same extra spell removed, count 1 each: these tie on
+	// the comparator's first three fields and differ only by target.
+	events := []event.Event{
+		{Time: at(1), Kind: event.Dispel, Name: "SPELL_DISPEL",
+			Source: event.Unit{GUID: healer, Flags: 0x512}, Dest: event.Unit{GUID: hunter, Flags: 0x512},
+			Spell: event.Spell{ID: 527, Name: "Purify"}, ExtraSpell: event.Spell{ID: 999, Name: "Curse"},
+			AuraType: "DEBUFF"},
+		{Time: at(2), Kind: event.Dispel, Name: "SPELL_DISPEL",
+			Source: event.Unit{GUID: healer, Flags: 0x512}, Dest: event.Unit{GUID: mage, Flags: 0x512},
+			Spell: event.Spell{ID: 527, Name: "Purify"}, ExtraSpell: event.Spell{ID: 999, Name: "Curse"},
+			AuraType: "DEBUFF"},
+		// Same source, same target, same extra spell, count 1 each: these
+		// tie on the first three fields AND on TargetGUID, and differ only
+		// by the primary spell used to cast the dispel.
+		{Time: at(3), Kind: event.Dispel, Name: "SPELL_DISPEL",
+			Source: event.Unit{GUID: healer, Flags: 0x512}, Dest: event.Unit{GUID: tank, Flags: 0x512},
+			Spell: event.Spell{ID: 528, Name: "Mass Dispel"}, ExtraSpell: event.Spell{ID: 999, Name: "Curse"},
+			AuraType: "DEBUFF"},
+		{Time: at(4), Kind: event.Dispel, Name: "SPELL_DISPEL",
+			Source: event.Unit{GUID: healer, Flags: 0x512}, Dest: event.Unit{GUID: tank, Flags: 0x512},
+			Spell: event.Spell{ID: 527, Name: "Purify"}, ExtraSpell: event.Spell{ID: 999, Name: "Curse"},
+			AuraType: "DEBUFF"},
+	}
+	for _, e := range events {
+		reg.Observe(e)
+		a.Add(e)
+	}
+	f := fight.Fight{Index: 1, Start: at(0), End: at(4)}
+	// GUIDs sort tank < mage < hunter (the fixture GUIDs end ...A1, ...A3,
+	// ...A4), so with Count, SourceGUID and ExtraSpellID tied throughout,
+	// the four distinct (target, spellID) rows must land in this order:
+	// tank/527, tank/528, mage/527, hunter/527.
+	want := []struct {
+		target  string
+		spellID int64
+	}{
+		{tank, 527}, {tank, 528}, {mage, 527}, {hunter, 527},
+	}
+	for trial := range 20 {
+		s := a.Snapshot(f, "test")
+		if len(s.Dispels) != len(want) {
+			t.Fatalf("trial %d: dispels = %d, want %d", trial, len(s.Dispels), len(want))
+		}
+		for i, w := range want {
+			if s.Dispels[i].TargetGUID != w.target || s.Dispels[i].SpellID != w.spellID {
+				t.Fatalf("trial %d: dispels not ordered by the full key, got %+v", trial, s.Dispels)
+			}
+		}
+	}
+}
+
 func TestResourcesFromTheAdvancedBlock(t *testing.T) {
 	_, _, s := build(t)
 	if len(s.Resources) != 1 {
@@ -436,6 +526,45 @@ func TestCombatantRowsCarryGearTalentsAndConsumables(t *testing.T) {
 	}
 }
 
+// TestNilRegistryFallsBackToGUIDs pins the contract that Options.Registry
+// may be nil (Task 9's startFight sets it after New, not before): names
+// fall back to the raw GUID and pet ownership cannot be resolved, but
+// nothing panics.
+func TestNilRegistryFallsBackToGUIDs(t *testing.T) {
+	o := DefaultOptions()
+	// o.Registry is left nil on purpose.
+	a := New(o)
+	a.Start(at(0))
+	events := []event.Event{
+		dmg(1, mage, boss, 116, "Frostbolt", 1000, -1),
+		dmg(2, pet, boss, 0, "", 200, -1),
+	}
+	for _, e := range events {
+		a.Add(e)
+	}
+	s := a.Snapshot(fight.Fight{Index: 1, Start: at(0), End: at(2), Players: []string{mage}}, "test")
+	m, ok := actorByGUID(s.DamageDone, mage)
+	if !ok {
+		t.Fatal("no mage row")
+	}
+	if m.Name != mage {
+		t.Errorf("name = %q, want the raw GUID %q with no registry", m.Name, mage)
+	}
+	// With no registry, owner() cannot resolve the pet to its owner, so the
+	// pet's damage lands on its own GUID rather than being credited to the
+	// hunter.
+	p, ok := actorByGUID(s.DamageDone, pet)
+	if !ok {
+		t.Fatal("with no registry the pet's damage must land on the pet's own GUID")
+	}
+	if p.Name != pet {
+		t.Errorf("pet name = %q, want the raw GUID", p.Name)
+	}
+	if len(s.Roster) != 1 || s.Roster[0].Name != mage {
+		t.Errorf("roster = %+v, want the mage's row named by its GUID", s.Roster)
+	}
+}
+
 func TestSnapshotIsDeterministic(t *testing.T) {
 	first, _, _ := build(t)
 	_, f, _ := build(t)
@@ -454,12 +583,16 @@ func TestSnapshotIsDeterministic(t *testing.T) {
 }
 
 func TestRecomputingFromTheEventsMatchesTheStreamedSummary(t *testing.T) {
-	// The property the spec asks for: whatever the engine wrote out as the
-	// fight's events must reproduce the fight's summary exactly.
+	// The property the spec asks for: rebuilding a fresh Accumulator from
+	// the same script of events, 20 times over, reproduces the exact same
+	// summary bytes every time as the one built once in build(t). This is
+	// deliberately the same event order each trial: order is semantically
+	// load-bearing for the per-second series, cast start/success pairing,
+	// and the death windows, so a shuffled run would not be a stronger
+	// version of this property, only a different and failing one.
 	streamed, f, want := build(t)
 	_ = streamed
 
-	rng := rand.New(rand.NewPCG(1, 2))
 	for trial := range 20 {
 		o, reg := opts(t)
 		a := New(o)
@@ -484,6 +617,5 @@ func TestRecomputingFromTheEventsMatchesTheStreamedSummary(t *testing.T) {
 		if string(jw) != string(jg) {
 			t.Fatalf("trial %d: recomputed summary differs from the streamed one", trial)
 		}
-		_ = rng
 	}
 }

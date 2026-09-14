@@ -58,8 +58,14 @@ type actor struct {
 	overheal  int64
 	absorbed  int64
 	abilities map[int64]*Ability
-	targets   map[string]int64
-	series    []int64
+	// minSet tracks, per spell id, whether that ability's Min has been set
+	// by a real event yet. Ability.Min is exported and starts at its zero
+	// value, which is also a legitimate minimum (a fully resisted or
+	// informational hit lands for 0), so "have we seen one yet" cannot be
+	// read back off Min itself without conflating "unset" with "zero".
+	minSet  map[int64]bool
+	targets map[string]int64
+	series  []int64
 }
 
 // activity tracks how long an actor spent doing something, so a row can
@@ -93,7 +99,7 @@ func (a *Accumulator) markActive(guid string, at time.Time) {
 func (a *Accumulator) table(m map[string]*actor, guid string) *actor {
 	t, ok := m[guid]
 	if !ok {
-		t = &actor{guid: guid, abilities: map[int64]*Ability{}, targets: map[string]int64{}}
+		t = &actor{guid: guid, abilities: map[int64]*Ability{}, minSet: map[int64]bool{}, targets: map[string]int64{}}
 		m[guid] = t
 	}
 	return t
@@ -211,8 +217,9 @@ func (a *Accumulator) fold(t *actor, e event.Event, amount, effective int64, tar
 	if amount > ab.Max {
 		ab.Max = amount
 	}
-	if ab.Min == 0 || (amount > 0 && amount < ab.Min) {
+	if !t.minSet[e.Spell.ID] || amount < ab.Min {
 		ab.Min = amount
+		t.minSet[e.Spell.ID] = true
 	}
 }
 

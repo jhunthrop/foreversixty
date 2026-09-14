@@ -497,7 +497,13 @@ func (a *Accumulator) exchangeRows(kind string) []ExchangeRow {
 		if out[i].SourceGUID != out[j].SourceGUID {
 			return out[i].SourceGUID < out[j].SourceGUID
 		}
-		return out[i].ExtraSpellID < out[j].ExtraSpellID
+		if out[i].ExtraSpellID != out[j].ExtraSpellID {
+			return out[i].ExtraSpellID < out[j].ExtraSpellID
+		}
+		if out[i].TargetGUID != out[j].TargetGUID {
+			return out[i].TargetGUID < out[j].TargetGUID
+		}
+		return out[i].SpellID < out[j].SpellID
 	})
 	if out == nil {
 		return []ExchangeRow{}
