@@ -3,6 +3,7 @@ package auth
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"log/slog"
 	"net/http"
@@ -11,6 +12,7 @@ import (
 	"net/url"
 	"strings"
 	"testing"
+	"unicode/utf8"
 
 	"github.com/jhunthrop/foreversixty/api/internal/mail"
 	"golang.org/x/oauth2"
@@ -182,6 +184,27 @@ func TestMagicLinksAreCappedAtFivePerHour(t *testing.T) {
 	}
 }
 
+// TestEmailIsRateLimitedPerIPOnTopOfThePerAddressCap reaches the per-IP
+// budget (emailsPerHour) by spreading requests across distinct addresses,
+// each well under the five-per-address cap, so it is the IP-wide limiter
+// - not the address one - that answers 429.
+func TestEmailIsRateLimitedPerIPOnTopOfThePerAddressCap(t *testing.T) {
+	h := newHarness(t)
+	for i := range emailsPerHour {
+		body := fmt.Sprintf(`{"email":"raider%d@example.com"}`, i)
+		res := h.do(t, http.MethodPost, "/v1/auth/email", body)
+		res.Body.Close()
+		if res.StatusCode != http.StatusAccepted {
+			t.Fatalf("request %d = %d", i, res.StatusCode)
+		}
+	}
+	res := h.do(t, http.MethodPost, "/v1/auth/email", `{"email":"one-more@example.com"}`)
+	defer res.Body.Close()
+	if res.StatusCode != http.StatusTooManyRequests {
+		t.Fatalf("request %d = %d, want 429 from the per-IP cap", emailsPerHour+1, res.StatusCode)
+	}
+}
+
 func TestAnInvalidAddressIsRejectedWithAField(t *testing.T) {
 	h := newHarness(t)
 	res := h.do(t, http.MethodPost, "/v1/auth/email", `{"email":"not-an-address"}`)
@@ -323,6 +346,36 @@ func TestAnUnknownPairingCodeIs404(t *testing.T) {
 	}
 }
 
+// TestClaimIsRateLimitedPerIP covers the one control standing between a
+// guesser and the live pairing-code pool: pairing_codes.code is eight
+// base32 characters (40 bits) in plaintext, so an unthrottled claim route
+// would make brute-forcing it online feasible. Each attempt here uses an
+// unknown code and answers 404 on its own, but the budget is still spent
+// - the limiter runs before the handler ever looks the code up.
+func TestClaimIsRateLimitedPerIP(t *testing.T) {
+	h := newHarness(t)
+	for i := range claimsPerHour {
+		res, err := http.Post(h.server.URL+"/v1/devices/claim", "application/json",
+			strings.NewReader(`{"code":"aaaaaaaa"}`))
+		if err != nil {
+			t.Fatal(err)
+		}
+		res.Body.Close()
+		if res.StatusCode != http.StatusNotFound {
+			t.Fatalf("request %d = %d, want 404 from an unknown code, not the limiter", i, res.StatusCode)
+		}
+	}
+	res, err := http.Post(h.server.URL+"/v1/devices/claim", "application/json",
+		strings.NewReader(`{"code":"aaaaaaaa"}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer res.Body.Close()
+	if res.StatusCode != http.StatusTooManyRequests {
+		t.Fatalf("request %d = %d, want 429", claimsPerHour+1, res.StatusCode)
+	}
+}
+
 func TestLogoutEndsTheSession(t *testing.T) {
 	h := newHarness(t)
 	h.signIn(t, "raider@example.com")
@@ -384,6 +437,20 @@ func (h *harness) withBattleNet(t *testing.T, sub, battletag string) {
 	mux := http.NewServeMux()
 	Mount(mux, h.svc, 0)
 	h.server.Config.Handler = h.svc.Auth.Middleware(mux)
+}
+
+// TestBattleNetRoutesAreNotMountedWhenUnconfigured covers honest
+// degradation: newHarness leaves Service.BNet nil (no withBattleNet
+// call), so an unconfigured deployment must answer 404 here rather than
+// nil-dereferencing s.BNet.AuthURL, and the email magic link stays the
+// only way in.
+func TestBattleNetRoutesAreNotMountedWhenUnconfigured(t *testing.T) {
+	h := newHarness(t)
+	res := h.do(t, http.MethodGet, "/v1/auth/battlenet/start", "")
+	defer res.Body.Close()
+	if res.StatusCode != http.StatusNotFound {
+		t.Fatalf("status = %d, want 404 when Battle.net is not configured", res.StatusCode)
+	}
 }
 
 func TestBattleNetSignInCreatesTheAccountAndSession(t *testing.T) {
@@ -672,7 +739,18 @@ func TestTrimBoundsALabel(t *testing.T) {
 	if got := trim("  Raid PC  ", 60); got != "Raid PC" {
 		t.Errorf("trim = %q", got)
 	}
+	// A pure-ASCII label truncates exactly at the byte bound, as before.
 	if got := trim(strings.Repeat("x", 100), 10); len(got) != 10 {
 		t.Errorf("trim did not bound the label: %q", got)
+	}
+	// A multi-byte label truncated at the bound must still be valid
+	// UTF-8, never split mid-rune: each "日" is 3 bytes, so a naive cut
+	// at byte 10 would land one byte into the fourth rune.
+	if got := trim(strings.Repeat("日", 20), 10); !utf8.ValidString(got) {
+		t.Fatalf("trim produced invalid UTF-8: %q", got)
+	} else if len(got) > 10 {
+		t.Fatalf("trim exceeded the bound: %q (%d bytes)", got, len(got))
+	} else if got != "日日日" {
+		t.Fatalf("trim = %q, want the largest whole-rune prefix under the bound", got)
 	}
 }
