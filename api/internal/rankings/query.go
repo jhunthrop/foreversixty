@@ -145,7 +145,7 @@ func (s *Store) Rankings(ctx context.Context, q Query, now time.Time) (Page, err
 		 left join reports r on r.id = m.report_id
 		 left join guilds g on g.id = r.guild_id
 		 where `+where+`
-		 order by `+column+` desc nulls last, m.fought_at desc
+		 order by `+column+` desc nulls last, m.fought_at desc, m.report_id, m.fight_index, m.player_key
 		 limit `+fmt.Sprint(PerPage)+` offset `+fmt.Sprint((q.Page-1)*PerPage), args...)
 	if err != nil {
 		return Page{}, fmt.Errorf("rankings: query: %w", err)

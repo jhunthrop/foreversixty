@@ -1,8 +1,10 @@
 package rankings
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"log/slog"
 	"net/http"
@@ -12,7 +14,58 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/engine"
 	"github.com/jhunthrop/foreversixty/api/internal/metrics"
+	"github.com/jhunthrop/foreversixty/api/internal/reports"
 )
+
+// seedReportVisibility makes a report owned by the guild with the given
+// visibility, so a test can check what a non-public report does and
+// does not leak into a guild's public reads.
+func (h *harness) seedReportVisibility(id, visibility string) {
+	h.t.Helper()
+	character := "us/hardcore/baelgrim"
+	if _, err := h.reports.Create(context.Background(), reports.Report{
+		ID: id, OwnerID: &h.owner, GuildID: &h.guildID, Title: "Tuesday",
+		Visibility: visibility, Status: reports.StatusComplete, LoggingCharacter: &character,
+	}); err != nil {
+		h.t.Fatal(err)
+	}
+}
+
+// seedFightRecord writes only the fights-table row for one fight,
+// mirroring what the ingest writes before the ranking gate
+// (reports.Ranked) runs. It is used to test the guild progression
+// query's own visibility filter independently of whether the fight
+// ever produced ranking rows.
+func (h *harness) seedFightRecord(reportID string, index int, at time.Time, kill bool) {
+	h.t.Helper()
+	if _, err := h.reports.UpsertFight(context.Background(), reports.FightRecord{
+		ReportID: reportID, Index: index, Name: "Warden Kelthas", Kill: kill,
+		EncounterID: ptr(int64(9001)), Difficulty: ptr(int64(8)), Size: ptr(int64(5)),
+		DurationMS: 30000, StartMS: at.UnixMilli(), Verified: true,
+	}); err != nil {
+		h.t.Fatal(err)
+	}
+}
+
+// seedTiedRankingRows writes n fight_metrics rows directly, every one
+// tied on both the ranked metric and fought_at - the exact condition
+// under which an ORDER BY with no unique final column can repeat or
+// drop rows across a page boundary. Writing straight to the table
+// rather than through WriteFight keeps a 100+ row fixture cheap.
+func (h *harness) seedTiedRankingRows(n int, value float64, at time.Time) {
+	h.t.Helper()
+	for i := 0; i < n; i++ {
+		reportID := fmt.Sprintf("tie-report-%04d", i)
+		key := fmt.Sprintf("us/hardcore/tie-%04d", i)
+		if _, err := h.pool.Exec(context.Background(),
+			`insert into fight_metrics (report_id, fight_index, player_key, player_name, role,
+			   metric_dps, encounter_id, difficulty, kill, phase, fought_at, state)
+			 values ($1, 1, $2, $2, 'dps', $3, 9001, 8, true, 'raids-1', $4, 'ok')`,
+			reportID, key, value, at); err != nil {
+			h.t.Fatal(err)
+		}
+	}
+}
 
 // serve mounts the read routes over a harness, with a fixed clock so
 // "today" means the fixture's day.
@@ -140,6 +193,7 @@ func TestRankingsRejectBadParameters(t *testing.T) {
 		"bad metric":   "/v1/rankings?encounter=1&metric=threat",
 		"bad phase":    "/v1/rankings?encounter=1&phase=season-of-mastery",
 		"bad ruleset":  "/v1/rankings?encounter=1&ruleset=nightslayer",
+		"bad region":   "/v1/rankings?encounter=1&region=mars",
 		"bad page":     "/v1/rankings?encounter=1&page=0",
 		"bad since":    "/v1/rankings?encounter=1&since=forever",
 		"bad kind":     "/v1/rankings/guilds?kind=wipes",
@@ -410,5 +464,62 @@ func TestEncountersAreListedWithTheirSlugs(t *testing.T) {
 	names, err := h.store.EncounterNames(t.Context(), nil)
 	if err != nil || len(names) != 0 {
 		t.Fatalf("no ids = %v, %v", names, err)
+	}
+}
+
+// A guild's progression must not reveal what an officer marked private:
+// fights are written to the fights table unconditionally at ingest,
+// before the ranking gate, so the progression query needs its own
+// visibility filter rather than relying on fight_metrics being empty.
+func TestGuildProgressionIgnoresPrivateReports(t *testing.T) {
+	h := newHarness(t)
+	serve(t, h)
+	h.seedReportVisibility("report-private", reports.Private)
+	h.seedFightRecord("report-private", 1, engine.FixtureBase, true)
+	h.seedReport("report-public")
+	h.seedFightRecord("report-public", 1, engine.FixtureBase, true)
+
+	var g Guild
+	h.data(h.get("/v1/guilds/us/hardcore/forever-sixty"), &g)
+	if len(g.Progression) != 1 {
+		t.Fatalf("progression = %+v, want the one bracket both fights share", g.Progression)
+	}
+	if g.Progression[0].Kills != 1 || g.Progression[0].PullCount != 1 {
+		t.Fatalf("progression = %+v, want only the public report's kill and pull counted",
+			g.Progression[0])
+	}
+}
+
+// A leaderboard page must not repeat or drop rows across a page
+// boundary that falls inside a tie on both the ranked metric and
+// fought_at - the exact pattern flagged as binding: ORDER BY needs a
+// unique final column.
+func TestRankingsPageBoundaryIsStableAcrossATie(t *testing.T) {
+	h := newHarness(t)
+	serve(t, h)
+	h.seedTiedRankingRows(PerPage+5, 1000, engine.FixtureBase)
+
+	var page1, page1Again, page2 Page
+	h.data(h.get("/v1/rankings?encounter=9001&page=1"), &page1)
+	h.data(h.get("/v1/rankings?encounter=9001&page=1"), &page1Again)
+	h.data(h.get("/v1/rankings?encounter=9001&page=2"), &page2)
+
+	if len(page1.Rows) != PerPage || len(page2.Rows) != 5 {
+		t.Fatalf("page1 = %d rows, page2 = %d rows, want %d and 5", len(page1.Rows), len(page2.Rows), PerPage)
+	}
+	for i := range page1.Rows {
+		if page1.Rows[i].Player.Key != page1Again.Rows[i].Player.Key {
+			t.Fatalf("page 1 is not stable across repeated calls at row %d: %q vs %q",
+				i, page1.Rows[i].Player.Key, page1Again.Rows[i].Player.Key)
+		}
+	}
+	seen := map[string]bool{}
+	for _, r := range page1.Rows {
+		seen[r.Player.Key] = true
+	}
+	for _, r := range page2.Rows {
+		if seen[r.Player.Key] {
+			t.Fatalf("player %s appears on both page 1 and page 2", r.Player.Key)
+		}
 	}
 }

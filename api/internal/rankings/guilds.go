@@ -188,7 +188,7 @@ func (s *Store) Guild(ctx context.Context, region, ruleset, name string) (Guild,
 		`select f.encounter_id, coalesce(f.difficulty, 0),
 		        count(*) filter (where f.kill), count(*), min(f.start_ms) filter (where f.kill)
 		 from fights f join reports r on r.id = f.report_id
-		 where r.guild_id = $1 and f.encounter_id is not null
+		 where r.guild_id = $1 and f.encounter_id is not null and r.visibility <> 'private'
 		 group by f.encounter_id, f.difficulty order by f.encounter_id`, out.Guild.ID)
 	if err != nil {
 		return Guild{}, false, fmt.Errorf("rankings: read progression: %w", err)

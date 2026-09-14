@@ -118,6 +118,11 @@ func (s *Service) rankings(w http.ResponseWriter, r *http.Request) {
 			map[string]string{"ruleset": strings.Join(character.Rulesets, ", ")})
 		return
 	}
+	if query.Region != "" && !character.ValidRegion(query.Region) {
+		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "that is not a region",
+			map[string]string{"region": strings.Join(character.Regions, ", ")})
+		return
+	}
 	if v := q.Get("page"); v != "" {
 		p, err := strconv.Atoi(v)
 		if err != nil || p < 1 {
