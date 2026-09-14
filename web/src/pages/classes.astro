@@ -28,7 +28,13 @@ import { classRows, comboFor, plannerHref, raceRows } from '../lib/planner/refer
 
     <Panel title="Legal combinations">
       <div class="overflow-x-auto">
-        <table class="w-full border-collapse text-[13px]">
+        <table class="w-full min-w-[760px] table-fixed border-collapse text-[13px]">
+          <colgroup>
+            <col class="w-28" />
+            {classRows.map(() => (
+              <col />
+            ))}
+          </colgroup>
           <thead>
             <tr>
               <th
@@ -38,7 +44,7 @@ import { classRows, comboFor, plannerHref, raceRows } from '../lib/planner/refer
                 Race
               </th>
               {classRows.map((klass) => (
-                <th scope="col" class="label border-line-soft border-b px-2 py-2 text-left">
+                <th scope="col" class="label border-line-soft border-b px-1 py-2 text-center">
                   <span style={`color: ${klass.color};`}>{klass.name}</span>
                 </th>
               ))}
@@ -56,16 +62,16 @@ import { classRows, comboFor, plannerHref, raceRows } from '../lib/planner/refer
                 {classRows.map((klass) => {
                   const combo = comboFor(race.id, klass.id);
                   return (
-                    <td class="border-line-soft border-b px-2 py-1">
+                    <td class="border-line-soft border-b px-1 py-1 text-center">
                       {combo ? (
                         <a
                           href={plannerHref(klass.slug, race.slug)}
-                          class="inline-flex min-h-11 items-center gap-2 md:min-h-0"
+                          class={`inline-flex min-h-11 items-center justify-center gap-1 whitespace-nowrap md:min-h-8 ${combo.new_in_forever ? 'text-gold' : 'text-text'}`}
                           aria-label={`Plan a ${race.name} ${klass.name}${combo.new_in_forever ? ', new in Forever' : ''}`}
                         >
                           <svg
-                            width="16"
-                            height="16"
+                            width="18"
+                            height="18"
                             viewBox="0 0 24 24"
                             fill="none"
                             stroke="currentColor"
@@ -76,7 +82,12 @@ import { classRows, comboFor, plannerHref, raceRows } from '../lib/planner/refer
                           >
                             <path d="M4 12l5 5L20 6" />
                           </svg>
-                          {combo.new_in_forever && <span class="pill pill-blizzard">New in Forever</span>}
+                          {combo.new_in_forever && (
+                            <span class="font-mono text-gold-light text-[10px] tracking-[0.14em] uppercase">
+                              <span aria-hidden="true">New</span>
+                              <span class="sr-only">New in Forever</span>
+                            </span>
+                          )}
                         </a>
                       ) : (
                         <span class="text-muted" aria-label="Not available">
@@ -90,6 +101,10 @@ import { classRows, comboFor, plannerHref, raceRows } from '../lib/planner/refer
             ))}
           </tbody>
         </table>
+        <p class="text-muted mt-3 text-[12px]">
+          A gold check marked New is a race and class pair Forever adds. Every check opens the planner on that
+          pair.
+        </p>
       </div>
     </Panel>
 
