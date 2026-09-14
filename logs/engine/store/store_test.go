@@ -239,6 +239,72 @@ func TestDirPutAcceptsEveryKeyTheStorageLayoutProduces(t *testing.T) {
 	}
 }
 
+// TestSafeJoinAcceptsEveryKeyUnderVariousRoots is the guard's own test,
+// table-driven over the root shapes a CLI or a caller could plausibly
+// pass: dot, a bare relative name, a dot-prefixed relative name, the
+// filesystem root, a trailing separator, and an absolute directory (with
+// and without its own trailing separator). It runs the check with no
+// filesystem access, which is what lets "/" appear here at all: actually
+// writing under "/" in a test is neither possible nor desirable.
+func TestSafeJoinAcceptsEveryKeyUnderVariousRoots(t *testing.T) {
+	abs := t.TempDir()
+	k := Keys{ReportID: "abc123"}
+	keys := []string{k.Report(), k.FightSummary(1), k.FightEvents(1), k.FightLive(1), k.Raw(0)}
+	roots := []string{".", "data", "./data", "/", "data/", abs, abs + string(filepath.Separator)}
+	for _, root := range roots {
+		for _, key := range keys {
+			if _, err := safeJoin(root, key); err != nil {
+				t.Errorf("safeJoin(%q, %q) = %v, want nil", root, key, err)
+			}
+		}
+	}
+}
+
+// TestSafeJoinRejectsAnEscapingKeyUnderVariousRoots covers the regression
+// finding directly: the earlier string-prefix guard rejected every key
+// once root was "." (or "/", or trailing-separator), because the cleaned
+// join no longer shared root's literal prefix. filepath.Rel does not have
+// that failure mode. "/" is excluded from this table on purpose: it is
+// the filesystem root, so no ".."-bearing key can resolve outside it —
+// there is nothing to escape to, and asserting rejection there would be
+// asserting something false.
+func TestSafeJoinRejectsAnEscapingKeyUnderVariousRoots(t *testing.T) {
+	abs := t.TempDir()
+	roots := []string{".", "data", "./data", "data/", abs, abs + string(filepath.Separator)}
+	for _, root := range roots {
+		if _, err := safeJoin(root, "../escape.json"); err == nil {
+			t.Errorf("safeJoin(%q, %q) = nil, want an error", root, "../escape.json")
+		}
+	}
+}
+
+// TestDirPutWorksWhenRootedAtTheWorkingDirectory is the end-to-end check
+// for the "." root case: it chdirs into a fresh temp directory so a
+// relative root behaves the way a CLI's default would, confirms a
+// legitimate key is actually written there, and confirms an escaping key
+// is refused and writes nothing.
+func TestDirPutWorksWhenRootedAtTheWorkingDirectory(t *testing.T) {
+	dir := t.TempDir()
+	t.Chdir(dir)
+
+	d := NewDir(".")
+	k := Keys{ReportID: "abc123"}
+	if err := d.Put(t.Context(), k.Report(), []byte("{}"), PutOptions{}); err != nil {
+		t.Fatalf(`Put under "." = %v, want nil`, err)
+	}
+	if _, err := os.Stat(filepath.Join(dir, "reports", "abc123", "report.json")); err != nil {
+		t.Fatalf("report.json was not written under the working directory: %v", err)
+	}
+
+	escaped := filepath.Join(filepath.Dir(dir), "escape.json")
+	if err := d.Put(t.Context(), "../escape.json", []byte("{}"), PutOptions{}); err == nil {
+		t.Fatal(`want an error for a key that escapes a "." root`)
+	}
+	if _, err := os.Stat(escaped); !os.IsNotExist(err) {
+		t.Fatalf("a key that escaped a \".\" root wrote to %s", escaped)
+	}
+}
+
 func TestDecompressRejectsGarbage(t *testing.T) {
 	if _, err := Decompress([]byte("not zstd")); err == nil {
 		t.Fatal("want an error for a non-zstd payload")

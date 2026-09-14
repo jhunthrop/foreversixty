@@ -83,10 +83,9 @@ func (d *Dir) Put(ctx context.Context, key string, body []byte, _ PutOptions) er
 	if err := ctx.Err(); err != nil {
 		return err
 	}
-	root := filepath.Clean(d.Root)
-	path := filepath.Join(root, filepath.FromSlash(key))
-	if path != root && !strings.HasPrefix(path, root+string(filepath.Separator)) {
-		return fmt.Errorf("store: key %q escapes root %s", key, d.Root)
+	path, err := safeJoin(d.Root, key)
+	if err != nil {
+		return err
 	}
 	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
 		return fmt.Errorf("store: create %s: %w", filepath.Dir(path), err)
@@ -95,6 +94,21 @@ func (d *Dir) Put(ctx context.Context, key string, body []byte, _ PutOptions) er
 		return fmt.Errorf("store: write %s: %w", path, err)
 	}
 	return nil
+}
+
+// safeJoin resolves key under root, rejecting any key that would resolve
+// outside it. The check is purely lexical (via filepath.Rel against the
+// cleaned root) so it gives the same answer regardless of whether root is
+// ".", relative, absolute, or "/" itself, and it never touches the
+// filesystem.
+func safeJoin(root, key string) (string, error) {
+	cleanRoot := filepath.Clean(root)
+	path := filepath.Join(cleanRoot, filepath.FromSlash(key))
+	rel, err := filepath.Rel(cleanRoot, path)
+	if err != nil || rel == ".." || strings.HasPrefix(rel, ".."+string(filepath.Separator)) {
+		return "", fmt.Errorf("store: key %q escapes root %s", key, root)
+	}
+	return path, nil
 }
 
 // FightEntry is one fight's line in report.json.
