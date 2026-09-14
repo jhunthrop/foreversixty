@@ -79,6 +79,11 @@ export function createPlannerStore(init: PlannerInit) {
   let combos = $state<Combo[]>([]);
 
   const talentIndex = $derived<TalentIndex | null>(talents ? indexTalents(talents) : null);
+  // A derived lookup, not mutable state: indexItems returns a fresh Map and the whole thing is
+  // rebuilt whenever itemFile changes, so reactivity flows through the derivation. Every consumer
+  // only reads it -- get(), values(), size -- and nothing ever sets, deletes or clears a key, so
+  // SvelteMap's per-key tracking would be machinery for mutations that never happen.
+  // eslint-disable-next-line svelte/prefer-svelte-reactivity
   const itemIndex = $derived<Map<number, Item>>(itemFile ? indexItems(itemFile) : new Map());
   const classRow = $derived<ClassRow | null>(classes.find((c) => c.slug === classSlug) ?? null);
   const raceRow = $derived<RaceRow | null>(races.find((r) => r.slug === raceSlug) ?? null);

@@ -23,7 +23,7 @@ export default defineConfig([
   },
   {
     // <script lang="ts"> inside a Svelte component.
-    files: ['**/*.svelte'],
+    files: ['**/*.svelte', '**/*.svelte.ts', '**/*.svelte.js'],
     languageOptions: { parserOptions: { parser: tseslint.parser } },
   },
   {
