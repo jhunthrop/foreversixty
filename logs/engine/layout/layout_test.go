@@ -55,6 +55,17 @@ func TestLookupPicksRetailV16AndHonoursTheAdvancedFlag(t *testing.T) {
 	}
 }
 
+func TestLookupNeverAutoSelectsTheZeroVersionClassicRow(t *testing.T) {
+	if _, ok := Lookup(Header{}); ok {
+		t.Fatal("Lookup(Header{}) matched a row; a zero-value header must fall through to inference")
+	}
+	// A header whose COMBAT_LOG_VERSION field failed to parse also comes
+	// through as Version: 0 and must not silently select classic-wiki.
+	if _, ok := Lookup(Header{Version: 0, ProjectID: 1, Advanced: true}); ok {
+		t.Fatal("Lookup matched the zero-version row for an unparseable version")
+	}
+}
+
 func TestRetailV16WidthsMatchTheVerifiedCounts(t *testing.T) {
 	l := RetailV16()
 	for _, tc := range []struct {

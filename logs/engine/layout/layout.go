@@ -117,7 +117,7 @@ var rows = []Layout{RetailV16(), ClassicWiki()}
 // Lookup returns the row for a header, and whether one matched.
 func Lookup(h Header) (Layout, bool) {
 	for _, r := range rows {
-		if r.Version != h.Version {
+		if r.Version == 0 || r.Version != h.Version {
 			continue
 		}
 		if r.ProjectID != 0 && h.ProjectID != 0 && r.ProjectID != h.ProjectID {
