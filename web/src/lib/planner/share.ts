@@ -1,7 +1,7 @@
 // web/src/lib/planner/share.ts
 // Saving a build. The API answers in the Phase 0 envelope { ok, data, error, request_id };
 // 201 is a new id, 200 is the same build saved before, and both carry { id, url }.
-import { API_BASE_URL, SITE_BASE_URL } from './config';
+import { API_BASE_URL } from './config';
 import type { BuildDraft } from './types';
 
 export interface SavedBuild {
@@ -27,12 +27,15 @@ function failed(message: string, fields: Record<string, string> = {}): SaveOutco
   return { ok: false, message, fields };
 }
 
-export function shareUrlFor(id: string): string {
-  return `${SITE_BASE_URL}/b/${id}`;
-}
-
-export function cardUrlFor(id: string): string {
-  return `${shareUrlFor(id)}/card.png`;
+/**
+ * The preview card the API renders for a saved build, derived from the `url` the save
+ * returned rather than from a second copy of the origin held here. The contract builds that
+ * url as `PUBLIC_BASE_URL + "/b/" + id`, so on any deployment whose base url is not this
+ * bundle's idea of the site -- a preview domain, a staging API -- a locally composed card
+ * url would point at a host that has no such image.
+ */
+export function cardUrlFor(buildUrl: string): string {
+  return `${buildUrl}/card.png`;
 }
 
 export async function saveBuild(draft: BuildDraft, apiBase: string = API_BASE_URL): Promise<SaveOutcome> {

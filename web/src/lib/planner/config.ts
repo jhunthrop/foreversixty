@@ -6,9 +6,6 @@
 /** Where POST /v1/builds and /v1/subscribe live. */
 export const API_BASE_URL: string = import.meta.env.PUBLIC_API_BASE_URL ?? 'https://api.foreversixty.gg';
 
-/** The canonical site origin; share links are built against it. */
-export const SITE_BASE_URL = 'https://foreversixty.gg';
-
 /** The class the planner opens on when the query string does not say otherwise. */
 export const DEFAULT_CLASS_SLUG = 'warrior';
 

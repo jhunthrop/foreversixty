@@ -1,6 +1,6 @@
 // web/src/lib/planner/share.test.ts
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { cardUrlFor, RATE_LIMIT_MESSAGE, SAVE_FAILED_MESSAGE, saveBuild, shareUrlFor } from './share';
+import { cardUrlFor, RATE_LIMIT_MESSAGE, SAVE_FAILED_MESSAGE, saveBuild } from './share';
 import type { BuildDraft } from './types';
 
 const draft: BuildDraft = {
@@ -27,10 +27,17 @@ function stubResponse(status: number, body: unknown) {
 
 afterEach(() => vi.unstubAllGlobals());
 
-describe('share urls', () => {
-  it('point at the site, not the API', () => {
-    expect(shareUrlFor('k7x2qm4a')).toBe('https://foreversixty.gg/b/k7x2qm4a');
-    expect(cardUrlFor('k7x2qm4a')).toBe('https://foreversixty.gg/b/k7x2qm4a/card.png');
+describe('cardUrlFor', () => {
+  it('hangs the card off the url the save returned', () => {
+    expect(cardUrlFor('https://foreversixty.gg/b/k7x2qm4a')).toBe(
+      'https://foreversixty.gg/b/k7x2qm4a/card.png',
+    );
+  });
+
+  it('follows the returned origin rather than the site this bundle was built for', () => {
+    expect(cardUrlFor('https://preview.foreversixty.gg/b/k7x2qm4a')).toBe(
+      'https://preview.foreversixty.gg/b/k7x2qm4a/card.png',
+    );
   });
 });
 

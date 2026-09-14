@@ -98,7 +98,7 @@
       </div>
       {#if !cardBroken}
         <img
-          src={cardUrlFor(saved.id)}
+          src={cardUrlFor(saved.url)}
           alt={`Preview card for build ${saved.id}`}
           width="600"
           height="315"
