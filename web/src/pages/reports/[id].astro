@@ -26,6 +26,7 @@ const inline = id === FIXTURE_REPORT_ID ? JSON.stringify(fixtureMeta) : undefine
   description="A World of Warcraft: Forever combat log report: fights, damage, healing, deaths and rankings."
   path={`/reports/${id}`}
 >
+  <link rel="stylesheet" href="/report-island.css" slot="head" />
   <main
     id="main"
     tabindex="-1"
@@ -34,5 +35,6 @@ const inline = id === FIXTURE_REPORT_ID ? JSON.stringify(fixtureMeta) : undefine
     <div id="report" data-report-mount data-report-id={id} data-report={inline}>
       <p class="text-muted px-[18px] text-[14px] md:px-0">Loading the report.</p>
     </div>
+    <script type="module" src="/report-island.js"></script>
   </main>
 </Base>

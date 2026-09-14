@@ -3,8 +3,6 @@
 // The report shell. src/worker.ts serves this file's output for /reports/<any id>, with
 // the head values rewritten from GET /v1/reports/{id}. It carries no report data: the
 // island reads the id out of the path and fetches the rest.
-//
-// Task 9 adds the island's <link> and <script> tags below the mount element.
 import Base from '../layouts/Base.astro';
 ---
 
@@ -13,6 +11,7 @@ import Base from '../layouts/Base.astro';
   description="A World of Warcraft: Forever combat log report: fights, damage, healing, deaths and rankings."
   path="/reports"
 >
+  <link rel="stylesheet" href="/report-island.css" slot="head" />
   <main
     id="main"
     tabindex="-1"
@@ -23,5 +22,6 @@ import Base from '../layouts/Base.astro';
         No report is open. Upload a log or start the companion from <a href="/logs">Logs</a>.
       </p>
     </div>
+    <script type="module" src="/report-island.js"></script>
   </main>
 </Base>

@@ -1,0 +1,69 @@
+// web/tests/e2e/report-tabs.spec.ts
+import { expect, test } from '@playwright/test';
+
+const REPORT = '/reports/fixture2abcd';
+
+test('the report opens on its first fight with the chrome the spec sets', async ({ page }) => {
+  await page.goto(REPORT);
+
+  await expect(page.getByTestId('report-title')).toHaveText('Sanguine Depths, fixture night');
+  await expect(page.getByTestId('fight-selector')).toBeVisible();
+  await expect(page.getByTestId('fight-3')).toBeVisible();
+  await expect(page.getByTestId('fight-3-outcome')).toHaveText('Kill');
+  for (const mode of ['analyze', 'compare', 'rankings']) {
+    await expect(page.getByTestId(`mode-${mode}`)).toBeEnabled();
+  }
+  for (const mode of ['mechanics', 'replay']) {
+    await expect(page.getByTestId(`mode-${mode}`)).toBeDisabled();
+    await expect(page.getByTestId(`mode-${mode}`)).toContainText('later');
+  }
+  for (const view of ['tables', 'timelines', 'events', 'queries']) {
+    await expect(page.getByTestId(`view-${view}`)).toBeVisible();
+  }
+  await expect(page.getByRole('tab', { name: 'Damage Done' })).toBeVisible();
+});
+
+test('trash is folded away behind a count, and unfolds', async ({ page }) => {
+  await page.goto(REPORT);
+  await expect(page.getByTestId('fight-1')).toHaveCount(0);
+  await page.getByTestId('toggle-trash').click();
+  await expect(page.getByTestId('fight-1')).toBeVisible();
+});
+
+test('every control the spec names writes itself into the URL and reads back', async ({ page }) => {
+  await page.goto(REPORT);
+
+  await page.getByTestId('toggle-trash').click();
+  await page.getByTestId('fight-2').click();
+  await page.getByTestId('tab-healing').click();
+  await page.getByTestId('view-events').click();
+
+  await expect(page).toHaveURL(/\?fight=2&view=events&tab=healing$/);
+
+  await page.goto(`${REPORT}?fight=3&view=tables&tab=deaths&source=Player-4184-000000A1`);
+  await expect(page.getByTestId('tab-deaths')).toHaveAttribute('aria-selected', 'true');
+  await expect(page.getByTestId('source-scope')).toHaveValue('Player-4184-000000A1');
+  await expect(page.getByTestId('fight-3')).toHaveAttribute('aria-current', 'true');
+});
+
+test('the source scope lists the fight’s players', async ({ page }) => {
+  await page.goto(`${REPORT}?fight=3`);
+  const options = page.getByTestId('source-scope').locator('option');
+  await expect(options).toHaveCount(7);
+  await expect(options.nth(0)).toHaveText('All friendlies');
+  await expect(options.nth(1)).toHaveText('All enemies');
+  await expect(options.filter({ hasText: 'Elyra Duskvale' })).toHaveCount(1);
+});
+
+// The defect this guards is in parseReportState, which is plan-mandated and total by
+// design: it validates ?fight= as a run of digits and cannot know the report's fights,
+// so ?fight=0 parses even though fight_index is 1-based. The island resolves it against
+// report.json instead of asking the edge for fights/0/summary.json and failing the page.
+test('a fight the report does not have falls back to the first one', async ({ page }) => {
+  for (const search of ['?fight=0', '?fight=999']) {
+    await page.goto(`${REPORT}${search}`);
+    await expect(page.getByTestId('report-error')).toHaveCount(0);
+    await expect(page.getByTestId('fight-selector')).toBeVisible();
+    await expect(page.getByTestId('report-placeholder')).toHaveText('3 players in this fight.');
+  }
+});
