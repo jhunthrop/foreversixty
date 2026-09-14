@@ -88,6 +88,15 @@ describe('scoping a row to the window', () => {
     expect(scoped.approximate).toBe(true);
   });
 
+  it('measures active time from the series instead of capping the whole-fight figure', () => {
+    // Three seconds of window, one of them with output. The old ceiling
+    // min(active_ms, windowMs) called all three active, which is the whole fight's
+    // activity read onto an idle stretch.
+    const idle: Actor = { ...actor, active_ms: 4000, series: [10, 0, 0, 40] };
+    expect(scopeActor(idle, { startMs: 0, endMs: 3000 }).active_ms).toBe(1000);
+    expect(scopeActor(idle, { startMs: 1000, endMs: 3000 }).active_ms).toBe(0);
+  });
+
   it('leaves a whole-fight actor exactly as the engine wrote it', () => {
     const scoped = scopeActor(actor, { startMs: 0, endMs: 4000 });
     expect(scoped.total).toBe(100);

@@ -84,6 +84,19 @@ function scale(value: number, ratio: number): number {
   return Math.round(value * ratio);
 }
 
+/**
+ * Active time, measured rather than capped: one bucket per second the actor actually put
+ * a number out. The engine's own `active_ms` is millisecond-accurate but whole-fight, and
+ * `min(active_ms, windowMs)` is a ceiling on it, not a measurement -- a short window over
+ * an idle stretch would come back fully active, which is the one figure here that would
+ * look right while being wrong. The series is what the summary knows about *when*, so the
+ * window's answer comes from the series, at its one-second resolution. The whole-fight
+ * path never reaches this: it returns the engine's exact figure untouched.
+ */
+function activeMs(series: number[], window: TimeWindow): number {
+  return sliceSeries(series, window).filter((value) => value !== 0).length * BUCKET_MS;
+}
+
 export function scopeActor(actor: Actor, window: TimeWindow): ScopedActor {
   const total = sumSeries(actor.series, window);
   const whole = actor.series.reduce((sum, value) => sum + value, 0);
@@ -98,7 +111,7 @@ export function scopeActor(actor: Actor, window: TimeWindow): ScopedActor {
     effective: total,
     overheal: actor.overheal === undefined ? undefined : scale(actor.overheal, ratio),
     absorbed: actor.absorbed === undefined ? undefined : scale(actor.absorbed, ratio),
-    active_ms: Math.min(actor.active_ms, windowMs(window)),
+    active_ms: activeMs(actor.series, window),
     series: sliceSeries(actor.series, window),
     abilities: actor.abilities.map((ability) => ({
       ...ability,
@@ -191,6 +204,10 @@ function scopeActors(actors: Actor[], window: TimeWindow): ScopedActor[] {
     .sort((a, b) => b.effective - a.effective || a.guid.localeCompare(b.guid));
 }
 
+/**
+ * With no window set this returns the caller's own `summary` by reference, not a copy:
+ * every consumer must treat the result as read-only.
+ */
 export function scopeSummary(summary: Summary, window: TimeWindow): Summary {
   if (isFullWindow(window, summary.duration_ms)) return summary;
 

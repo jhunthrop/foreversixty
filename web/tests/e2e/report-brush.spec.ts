@@ -60,6 +60,13 @@ test.describe('the chart on a phone', () => {
     expect(box.width).toBeLessThanOrEqual(360);
     const reset = (await page.getByTestId('window-reset').boundingBox())!;
     expect(reset.height).toBeGreaterThanOrEqual(44);
+    // The brush handles are named by type in the 44px rule. A range input drags from a
+    // press anywhere inside its own box, so the box is the hit target -- the wrapping
+    // label's min-h-11 does nothing for it.
+    for (const handle of ['window-start', 'window-end']) {
+      const box = (await page.getByTestId(handle).boundingBox())!;
+      expect(box.height, `${handle} hit target`).toBeGreaterThanOrEqual(44);
+    }
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   });
 });

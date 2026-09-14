@@ -173,12 +173,17 @@
     aria-hidden="true"
   ></canvas>
 
+  <!-- The 44px minimum is on each input, not on the label around it: a range input is
+       dragged by a press anywhere inside its own box, and the label's height does nothing
+       for that. Native is 16px tall. h-11 makes the whole strip the handle, which is why
+       the thumb pseudo-element needs no sizing of its own -- and leaving the control's
+       native appearance alone is what keeps accent-gold painting the filled track. -->
   <div class="flex flex-col gap-2 md:flex-row md:items-center md:gap-4">
     <label class="label text-muted flex min-h-11 flex-1 items-center gap-2 md:min-h-0" for="window-start">
       Start
       <input
         id="window-start"
-        class="accent-gold flex-1"
+        class="accent-gold h-11 flex-1 md:h-9"
         type="range"
         min="0"
         max={durationMs}
@@ -196,7 +201,7 @@
       End
       <input
         id="window-end"
-        class="accent-gold flex-1"
+        class="accent-gold h-11 flex-1 md:h-9"
         type="range"
         min="0"
         max={durationMs}
