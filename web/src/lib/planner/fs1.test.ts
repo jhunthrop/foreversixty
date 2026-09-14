@@ -27,7 +27,13 @@ describe('encodeFS1', () => {
   });
 
   it('uses base 36, so a rank above nine is a letter', () => {
-    const code = encodeFS1({ dataBuild: '1', classSlug: 'mage', raceSlug: 'gnome', treeRanks: [[12], [], []], gear: {} });
+    const code = encodeFS1({
+      dataBuild: '1',
+      classSlug: 'mage',
+      raceSlug: 'gnome',
+      treeRanks: [[12], [], []],
+      gear: {},
+    });
     expect(code).toContain(':c/0/0:');
   });
 });
@@ -71,6 +77,24 @@ describe('decodeFS1', () => {
       ok: false,
       message: 'That code names a slot this planner does not have: elbow.',
     });
+  });
+
+  it('refuses a gear value that is not entirely digits, rather than truncating it', () => {
+    // Number.parseInt stops at the first non-digit and returns what came before it, so these
+    // would otherwise silently become the item id 12640 instead of being refused.
+    expect(decodeFS1('FS1:1:mage:gnome:1/0/0:head=12640abc')).toEqual({
+      ok: false,
+      message: 'That code has an unreadable gear entry: head=12640abc.',
+    });
+    expect(decodeFS1('FS1:1:mage:gnome:1/0/0:head=12640.5')).toEqual({
+      ok: false,
+      message: 'That code has an unreadable gear entry: head=12640.5.',
+    });
+  });
+
+  it('refuses a code past the sane length bound before parsing any of it', () => {
+    const hostile = `FS1:1:mage:gnome:${'1'.repeat(4000)}/0/0:`;
+    expect(decodeFS1(hostile)).toEqual({ ok: false, message: 'That code is too long to read.' });
   });
 });
 

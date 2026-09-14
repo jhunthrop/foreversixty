@@ -314,3 +314,39 @@ test('a code from another format is refused by name rather than ignored', async 
   await page.goto('/planner?code=FS2%3A1%3Awarrior%3Ahuman%3A3%2F0%2F0%3A');
   await expect(page.getByTestId('planner-code-note')).toHaveText('That code is FS2; this site reads FS1.');
 });
+
+test('a code that spends a locked tier drops it, and the dropped count renders as a wrapped number', async ({
+  page,
+}) => {
+  // Warrior's talent 1005 sits at tier 2 of Arms; asking for a point there with nothing spent
+  // in the lower tiers is not reachable by any legal order, so orderFromRanks drops it. "00001"
+  // is talent 1005's tab position (the fifth of Arms's seven talents) encoded as base-36 digits
+  // with the trailing zeros trimmed; see src/fixtures/planner/talents/warrior.json.
+  await page.goto('/planner?code=FS1%3A1.15.9.69722%3Awarrior%3Ahuman%3A00001%2F0%2F0%3A');
+
+  const note = page.getByTestId('planner-code-note');
+  await expect(note).toContainText('minus 1 that no legal order reaches');
+  await expect(note.locator('span.font-mono')).toHaveText('1');
+});
+
+test('a code naming a class with no talent data fails clean, and switching class does not replay it', async ({
+  page,
+}) => {
+  // Paladin is a real class in this build's classes.json but ships no talents/paladin.json
+  // fixture -- the same gap the 'a failed talent fetch...' test above uses to force a load
+  // failure without a route mock.
+  await page.goto('/planner?code=FS1%3A1.15.9.69722%3Apaladin%3Ahuman%3A5%2F0%2F0%3A');
+
+  await expect(page.getByText('Talent data did not load')).toBeVisible();
+  await expect(page.getByTestId('planner-code-note')).toHaveText(
+    'That code names a class this planner does not have: paladin.',
+  );
+
+  // Recovering by picking a class that does have data must not replay the paladin code's tree
+  // ranks onto it: codeApplied is armed the moment the first load began, not only once that
+  // load succeeds, so warrior comes up with an empty build rather than paladin's digits
+  // reinterpreted against warrior's own talent tab positions.
+  await page.getByLabel('Class').selectOption('warrior');
+  await expect(page.getByRole('heading', { name: 'Arms' })).toBeVisible();
+  await expect(page.getByTestId('planner-spent')).toHaveText('0/51');
+});

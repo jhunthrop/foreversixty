@@ -17,7 +17,7 @@
   } from '../../lib/planner/load';
   import { createPlannerStore } from '../../lib/planner/store.svelte';
   import { SECONDARY_BUTTON } from '../../lib/planner/styles';
-  import type { BuildRecord } from '../../lib/planner/types';
+  import type { BuildRecord, TalentFile } from '../../lib/planner/types';
   import GearPanel from './GearPanel.svelte';
   import OrderStrip from './OrderStrip.svelte';
   import SharePanel from './SharePanel.svelte';
@@ -53,12 +53,38 @@
     return codeParam === null ? null : decodeFS1(codeParam);
   });
 
-  /** Set when the build came in as an FS1 code, because its order is a reconstruction. */
-  let codeNote = $state('');
-  // A code is applied once, on the load it arrived with. `load()` also reruns on a manual
-  // class switch or Retry (see its own comment below) -- without this guard, switching class
-  // after opening a code would replay the original code's tree ranks against the new class's
-  // talent index on the next load, silently overwriting the switch the person just made.
+  // A parsed count inside one of these renders in a tabular, monospace span, the same as every
+  // other number the planner shows (OrderStrip, SummaryBar, GearPanel, TalentCell, ItemPicker).
+  // This stays a small discriminated union rather than a plain string so the template can wrap
+  // just the digits with a real element -- `decodeFS1`'s own message stays flat text (its exact
+  // wording is pinned by fs1.test.ts and is the shape Task 14 reads), so the split happens once,
+  // here, rather than by reformatting arbitrary text at render time.
+  type CodeNote =
+    | { kind: 'message'; text: string }
+    | { kind: 'tree-count'; got: string; want: string }
+    | { kind: 'reconstructed'; dropped: number };
+
+  /** Set when the build came in as an FS1 code: either why it could not be read, or that its
+   *  order is a reconstruction (nothing in the game records the order points were spent in). */
+  let codeNote = $state<CodeNote | null>(null);
+
+  // Matches decodeFS1's one message that carries two counts, so the digits can be pulled out
+  // and wrapped without decodeFS1 having to return anything but a flat, tested string.
+  const TREE_COUNT_MESSAGE = /^That code has (\d+) talent trees; a build has (\d+)\.$/;
+
+  function noteForMessage(message: string): CodeNote {
+    const match = TREE_COUNT_MESSAGE.exec(message);
+    return match ? { kind: 'tree-count', got: match[1], want: match[2] } : { kind: 'message', text: message };
+  }
+
+  // A code is applied once, on the load it arrived with -- `load()` also reruns on a manual
+  // class switch or Retry (see its own comment below). `codeApplied` is armed the moment the
+  // first `load()` call begins, before anything in it can throw, not only once talents load:
+  // otherwise a code naming a class this planner has no data for would leave `codeApplied`
+  // false when that first load fails, and a person recovering by picking a different class by
+  // hand would have that unrelated class's talents silently overwritten by the original code's
+  // tree ranks on the very next load -- `orderFromRanks` only knows tab positions, not which
+  // class they belong to, so it would apply them without complaint.
   let codeApplied = false;
 
   // The store is seeded once, from the props as they arrive. `untrack` says so: without it
@@ -67,7 +93,11 @@
   const store = untrack(() =>
     createPlannerStore({
       treeVersion: record?.tree_version ?? treeVersion,
-      classSlug: record ? classSlug : (decoded?.ok ? decoded.build.classSlug : (fromQuery('class') ?? classSlug)),
+      classSlug: record
+        ? classSlug
+        : decoded?.ok
+          ? decoded.build.classSlug
+          : (fromQuery('class') ?? classSlug),
       raceSlug: record
         ? (raceSlug ?? '')
         : decoded?.ok
@@ -122,27 +152,54 @@
   async function load(): Promise<void> {
     const slug = store.classSlug;
     const stale = (): boolean => store.classSlug !== slug;
+
+    // The code this run should apply, or null if there is none or a prior run already claimed
+    // it. Captured once, synchronously, before the first `await` below -- see the comment on
+    // `codeApplied` above for why arming happens here rather than after talents load.
+    const codeToApply = decoded !== null && !codeApplied ? decoded : null;
+    if (codeToApply !== null) {
+      codeApplied = true;
+      if (!codeToApply.ok) codeNote = noteForMessage(codeToApply.message);
+    }
+
     status = 'loading';
     try {
       const reference = await loadReference(store.treeVersion);
       if (stale()) return;
       store.setReference(reference);
-      const talents = await loadTalents(store.treeVersion, slug);
+
+      let talents: TalentFile;
+      try {
+        talents = await loadTalents(store.treeVersion, slug);
+      } catch (error) {
+        // A code naming a class this planner has no talent data for fails exactly like any
+        // other missing file, but a person who followed a build link deserves to be told the
+        // link is why -- the generic panel below says nothing about the code, and its Retry
+        // button cannot succeed without also changing class.
+        if (
+          codeToApply !== null &&
+          codeToApply.ok &&
+          error instanceof DataLoadError &&
+          error.status === 404
+        ) {
+          if (!stale()) {
+            codeNote = {
+              kind: 'message',
+              text: `That code names a class this planner does not have: ${codeToApply.build.classSlug}.`,
+            };
+          }
+        }
+        throw error;
+      }
       if (stale()) return;
       store.setTalents(talents);
-      if (decoded !== null && !codeApplied) {
-        codeApplied = true;
-        if (!decoded.ok) {
-          codeNote = decoded.message;
-        } else if (store.talentIndex !== null) {
-          const rebuilt = orderFromRanks(store.talentIndex, decoded.build.treeRanks);
-          store.applyOrder(rebuilt.order, decoded.build.gear);
-          codeNote =
-            rebuilt.dropped.length === 0
-              ? 'Talents loaded from a character. The order points were spent in is not recorded in game, so this is the lowest-tier-first order that reaches the same tree.'
-              : `Talents loaded from a character, minus ${rebuilt.dropped.length} that no legal order reaches. The order is a reconstruction: the game does not record the order points were spent in.`;
-        }
+
+      if (codeToApply !== null && codeToApply.ok && store.talentIndex !== null) {
+        const rebuilt = orderFromRanks(store.talentIndex, codeToApply.build.treeRanks);
+        store.applyOrder(rebuilt.order, codeToApply.build.gear);
+        codeNote = { kind: 'reconstructed', dropped: rebuilt.dropped.length };
       }
+
       const sets = await loadSets(store.treeVersion);
       if (stale()) return;
       store.setSets(sets);
@@ -197,8 +254,25 @@
 
   <p class="text-muted px-[18px] text-[13px] md:px-0">{ERA_DATA_NOTICE}</p>
 
-  {#if codeNote !== ''}
-    <p class="text-muted px-[18px] text-[13px] md:px-0" data-testid="planner-code-note">{codeNote}</p>
+  {#if codeNote !== null}
+    <p class="text-muted px-[18px] text-[13px] md:px-0" data-testid="planner-code-note">
+      {#if codeNote.kind === 'tree-count'}
+        That code has <span class="tabular font-mono">{codeNote.got}</span> talent trees; a build has
+        <span class="tabular font-mono">{codeNote.want}</span>.
+      {:else if codeNote.kind === 'reconstructed'}
+        {#if codeNote.dropped === 0}
+          Talents loaded from a character. The order points were spent in is not recorded in game, so this is
+          the lowest-tier-first order that reaches the same tree.
+        {:else}
+          Talents loaded from a character, minus
+          <span class="tabular font-mono">{codeNote.dropped}</span>
+          that no legal order reaches. The order is a reconstruction: the game does not record the order points
+          were spent in.
+        {/if}
+      {:else}
+        {codeNote.text}
+      {/if}
+    </p>
   {/if}
 
   <!-- The three states below swap in place once the talent data arrives over the network, and

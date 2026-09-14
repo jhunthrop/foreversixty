@@ -15,6 +15,11 @@ import { SLOTS, type Gear, type Slot } from './types';
 
 export const FS1_PREFIX = 'FS1';
 const TREES = 3;
+// A query string is attacker-controlled. A real code tops out around a few hundred characters
+// (build id, two slugs, three short talent strings, at most 17 gear entries); this is a
+// generous multiple of that, high enough to never clip a real code and low enough that nothing
+// past it is worth splitting or scanning.
+const MAX_CODE_LENGTH = 2048;
 
 export interface FS1Build {
   dataBuild: string;
@@ -43,6 +48,11 @@ export function encodeFS1(build: FS1Build): string {
 }
 
 export function decodeFS1(code: string): FS1Result {
+  // Before any splitting or parsing: the cheapest possible check, and the one that keeps a
+  // hostile multi-megabyte query value from doing any real work at all.
+  if (code.length > MAX_CODE_LENGTH) {
+    return { ok: false, message: 'That code is too long to read.' };
+  }
   const parts = code.trim().split(':');
   if (parts[0] !== FS1_PREFIX) {
     const named = parts[0] === undefined || parts[0] === '' ? 'unlabelled' : parts[0];
@@ -61,7 +71,8 @@ export function decodeFS1(code: string): FS1Result {
     const ranks: number[] = [];
     for (const digit of tree) {
       const rank = Number.parseInt(digit, 36);
-      if (Number.isNaN(rank)) return { ok: false, message: `That code has an unreadable talent rank: ${digit}.` };
+      if (Number.isNaN(rank))
+        return { ok: false, message: `That code has an unreadable talent rank: ${digit}.` };
       ranks.push(rank);
     }
     treeRanks.push(ranks);
@@ -75,9 +86,13 @@ export function decodeFS1(code: string): FS1Result {
       if (!(SLOTS as readonly string[]).includes(slot)) {
         return { ok: false, message: `That code names a slot this planner does not have: ${slot}.` };
       }
-      const itemId = Number.parseInt(value ?? '', 10);
-      if (Number.isNaN(itemId)) return { ok: false, message: `That code has an unreadable gear entry: ${entry}.` };
-      gear[slot as Slot] = itemId;
+      // A strict digits-only match rather than Number.parseInt: parseInt stops at the first
+      // non-digit character and returns what came before it, so "12640abc" and "12640.5" would
+      // otherwise silently become the item id 12640 instead of being refused.
+      if (value === undefined || !/^\d+$/.test(value)) {
+        return { ok: false, message: `That code has an unreadable gear entry: ${entry}.` };
+      }
+      gear[slot as Slot] = Number.parseInt(value, 10);
     }
   }
 
