@@ -17,6 +17,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/db"
 	"github.com/jhunthrop/foreversixty/api/internal/engine"
+	"github.com/jhunthrop/foreversixty/api/internal/jobs"
 	"github.com/jhunthrop/foreversixty/logs/engine/store"
 )
 
@@ -60,6 +61,8 @@ type harness struct {
 	files   *store.Dir
 	ranker  *fakeRanker
 	sampler *fakeSampler
+	jobs    *jobs.Fake
+	parts   *fakeMultipart
 	server  *httptest.Server
 	actor   auth.Actor
 	owner   int64
@@ -83,7 +86,7 @@ func newHarness(t *testing.T) *harness {
 	}
 	h := &harness{
 		t: t, store: &Store{Pool: pool}, dir: t.TempDir(),
-		ranker: &fakeRanker{}, sampler: &fakeSampler{},
+		ranker: &fakeRanker{}, sampler: &fakeSampler{}, jobs: &jobs.Fake{}, parts: newFakeMultipart(),
 		owner: owner.ID,
 	}
 	h.files = store.NewDir(h.dir)
@@ -97,6 +100,9 @@ func newHarness(t *testing.T) *harness {
 	mux := http.NewServeMux()
 	Mount(mux, h.service)
 	MountIngest(mux, h.ingest)
+	MountUploads(mux, &Uploads{
+		Store: h.store, R2: h.parts, Jobs: h.jobs, APIBaseURL: "https://api.foreversixty.gg", Log: quiet,
+	})
 	h.server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		mux.ServeHTTP(w, r.WithContext(auth.WithActor(r.Context(), h.actor)))
 	}))
