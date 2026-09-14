@@ -5,7 +5,18 @@
     "slug": "human",
     "faction": "alliance",
     "placeholder": false,
-    "forever_changes": []
+    "forever_changes": [
+      {
+        "text": "Racial traits are reworked for Forever.",
+        "sources": [
+          {
+            "label": "Blizzard, What's Next panel recap",
+            "url": "https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap",
+            "kind": "blizzard"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": 2,
@@ -13,7 +24,18 @@
     "slug": "orc",
     "faction": "horde",
     "placeholder": false,
-    "forever_changes": []
+    "forever_changes": [
+      {
+        "text": "Racial traits are reworked for Forever.",
+        "sources": [
+          {
+            "label": "Blizzard, What's Next panel recap",
+            "url": "https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap",
+            "kind": "blizzard"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": 3,
@@ -21,7 +43,38 @@
     "slug": "dwarf",
     "faction": "alliance",
     "placeholder": false,
-    "forever_changes": []
+    "forever_changes": [
+      {
+        "text": "Racial traits are reworked for Forever.",
+        "sources": [
+          {
+            "label": "Blizzard, What's Next panel recap",
+            "url": "https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap",
+            "kind": "blizzard"
+          }
+        ]
+      },
+      {
+        "text": "Shaman is a new Dwarf class in Forever, shown in a hands-on demo at BlizzCon 2026 per one outlet.",
+        "sources": [
+          {
+            "label": "Warcraft Tavern, other race/class combos",
+            "url": "https://www.warcrafttavern.com/forever/news/undead-paladins-other-race-class-combos-in-world-of-warcraft-forever/",
+            "kind": "community"
+          }
+        ]
+      },
+      {
+        "text": "One press roundup reports that the reworked Dwarf racial grants a bonus against beasts; Blizzard has not confirmed it directly.",
+        "sources": [
+          {
+            "label": "guided.news roundup",
+            "url": "https://guided.news/en/news/wow-classic-launches-in-november-everything-you-need-to-know-about-world-of-warcraft-forever/",
+            "kind": "community"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": 4,
@@ -29,7 +82,18 @@
     "slug": "night-elf",
     "faction": "alliance",
     "placeholder": false,
-    "forever_changes": []
+    "forever_changes": [
+      {
+        "text": "Racial traits are reworked for Forever.",
+        "sources": [
+          {
+            "label": "Blizzard, What's Next panel recap",
+            "url": "https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap",
+            "kind": "blizzard"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": 5,
@@ -37,7 +101,38 @@
     "slug": "undead",
     "faction": "horde",
     "placeholder": false,
-    "forever_changes": []
+    "forever_changes": [
+      {
+        "text": "Racial traits are reworked for Forever.",
+        "sources": [
+          {
+            "label": "Blizzard, What's Next panel recap",
+            "url": "https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap",
+            "kind": "blizzard"
+          }
+        ]
+      },
+      {
+        "text": "Paladin is a new Undead class in Forever, shown in an announcement cinematic.",
+        "sources": [
+          {
+            "label": "Wowhead, Undead Paladins coming to Forever",
+            "url": "https://www.wowhead.com/forever/news/undead-paladins-coming-to-world-of-warcraft-forever-382823",
+            "kind": "community"
+          }
+        ]
+      },
+      {
+        "text": "One press roundup reports that the reworked Undead racial drains spells; Blizzard has not confirmed it directly.",
+        "sources": [
+          {
+            "label": "guided.news roundup",
+            "url": "https://guided.news/en/news/wow-classic-launches-in-november-everything-you-need-to-know-about-world-of-warcraft-forever/",
+            "kind": "community"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": 6,
@@ -45,7 +140,18 @@
     "slug": "tauren",
     "faction": "horde",
     "placeholder": false,
-    "forever_changes": []
+    "forever_changes": [
+      {
+        "text": "Racial traits are reworked for Forever.",
+        "sources": [
+          {
+            "label": "Blizzard, What's Next panel recap",
+            "url": "https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap",
+            "kind": "blizzard"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": 7,
@@ -53,7 +159,18 @@
     "slug": "gnome",
     "faction": "alliance",
     "placeholder": false,
-    "forever_changes": []
+    "forever_changes": [
+      {
+        "text": "Racial traits are reworked for Forever.",
+        "sources": [
+          {
+            "label": "Blizzard, What's Next panel recap",
+            "url": "https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap",
+            "kind": "blizzard"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": 8,
@@ -61,7 +178,18 @@
     "slug": "troll",
     "faction": "horde",
     "placeholder": false,
-    "forever_changes": []
+    "forever_changes": [
+      {
+        "text": "Racial traits are reworked for Forever.",
+        "sources": [
+          {
+            "label": "Blizzard, What's Next panel recap",
+            "url": "https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap",
+            "kind": "blizzard"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": 900,
@@ -69,6 +197,62 @@
     "slug": "skyborne",
     "faction": "neutral",
     "placeholder": true,
-    "forever_changes": []
+    "forever_changes": [
+      {
+        "text": "Skyborne is a neutral race: the player chooses Horde or Alliance at character creation.",
+        "sources": [
+          {
+            "label": "Wowhead, Skyborne First Look",
+            "url": "https://www.wowhead.com/forever/news/skyborne-first-look-new-neutral-race-in-world-of-warcraft-forever-382829",
+            "kind": "community"
+          },
+          {
+            "label": "Inven Global, World of Warcraft: Forever coverage",
+            "url": "https://www.invenglobal.com/articles/25876/",
+            "kind": "community"
+          }
+        ]
+      },
+      {
+        "text": "Skyborne is unlocked by the Skyborne Heroic Pack, reported at $29.99, rather than by a base subscription.",
+        "sources": [
+          {
+            "label": "Blizzard, Pre-Purchase World of Warcraft: Forever Upgrades",
+            "url": "https://news.blizzard.com/en-us/article/24301508/pre-purchase-world-of-warcraft-forever-upgrades-and-begin-your-next-journey-in-azeroth",
+            "kind": "blizzard"
+          },
+          {
+            "label": "gamefragger, pre-order pricing",
+            "url": "https://gamefragger.com/pc/warcraft/world-of-warcraft-forever-pre-orders-are-live-ranging-from-30-race-pack-to-a-150-collector-box-a29775",
+            "kind": "community"
+          },
+          {
+            "label": "Warcraft Tavern, editions and prices",
+            "url": "https://www.warcrafttavern.com/forever/news/world-of-warcraft-forever-editions-skyborne-race-unlock-beta-access/",
+            "kind": "community"
+          }
+        ]
+      },
+      {
+        "text": "Skyborne characters begin on Zephras Isle, a starting zone covering levels 1 to 12.",
+        "sources": [
+          {
+            "label": "Blizzard, World of Warcraft at BlizzCon 2026",
+            "url": "https://news.blizzard.com/en-us/article/24301145/world-of-warcraft-at-blizzcon-2026-discover-whats-next",
+            "kind": "blizzard"
+          }
+        ]
+      },
+      {
+        "text": "Shaman is available to Skyborne only on the Horde and Mage only on the Alliance.",
+        "sources": [
+          {
+            "label": "Wowhead, Skyborne First Look",
+            "url": "https://www.wowhead.com/forever/news/skyborne-first-look-new-neutral-race-in-world-of-warcraft-forever-382829",
+            "kind": "community"
+          }
+        ]
+      }
+    ]
   }
 ]

@@ -15,12 +15,36 @@
   { "race_id": 3, "class_id": 3, "new_in_forever": false },
   { "race_id": 3, "class_id": 4, "new_in_forever": false },
   { "race_id": 3, "class_id": 5, "new_in_forever": false },
+  {
+    "race_id": 3,
+    "class_id": 7,
+    "new_in_forever": true,
+    "sources": [
+      {
+        "label": "Warcraft Tavern, other race/class combos",
+        "url": "https://www.warcrafttavern.com/forever/news/undead-paladins-other-race-class-combos-in-world-of-warcraft-forever/",
+        "kind": "community"
+      }
+    ]
+  },
   { "race_id": 4, "class_id": 1, "new_in_forever": false },
   { "race_id": 4, "class_id": 3, "new_in_forever": false },
   { "race_id": 4, "class_id": 4, "new_in_forever": false },
   { "race_id": 4, "class_id": 5, "new_in_forever": false },
   { "race_id": 4, "class_id": 11, "new_in_forever": false },
   { "race_id": 5, "class_id": 1, "new_in_forever": false },
+  {
+    "race_id": 5,
+    "class_id": 2,
+    "new_in_forever": true,
+    "sources": [
+      {
+        "label": "Wowhead, Undead Paladins coming to Forever",
+        "url": "https://www.wowhead.com/forever/news/undead-paladins-coming-to-world-of-warcraft-forever-382823",
+        "kind": "community"
+      }
+    ]
+  },
   { "race_id": 5, "class_id": 4, "new_in_forever": false },
   { "race_id": 5, "class_id": 5, "new_in_forever": false },
   { "race_id": 5, "class_id": 8, "new_in_forever": false },
@@ -38,5 +62,97 @@
   { "race_id": 8, "class_id": 4, "new_in_forever": false },
   { "race_id": 8, "class_id": 5, "new_in_forever": false },
   { "race_id": 8, "class_id": 7, "new_in_forever": false },
-  { "race_id": 8, "class_id": 8, "new_in_forever": false }
+  { "race_id": 8, "class_id": 8, "new_in_forever": false },
+  {
+    "race_id": 900,
+    "class_id": 1,
+    "new_in_forever": true,
+    "sources": [
+      {
+        "label": "Wowhead, Skyborne First Look",
+        "url": "https://www.wowhead.com/forever/news/skyborne-first-look-new-neutral-race-in-world-of-warcraft-forever-382829",
+        "kind": "community"
+      },
+      {
+        "label": "Inven Global, World of Warcraft: Forever coverage",
+        "url": "https://www.invenglobal.com/articles/25876/",
+        "kind": "community"
+      }
+    ]
+  },
+  {
+    "race_id": 900,
+    "class_id": 3,
+    "new_in_forever": true,
+    "sources": [
+      {
+        "label": "Wowhead, Skyborne First Look",
+        "url": "https://www.wowhead.com/forever/news/skyborne-first-look-new-neutral-race-in-world-of-warcraft-forever-382829",
+        "kind": "community"
+      },
+      {
+        "label": "Inven Global, World of Warcraft: Forever coverage",
+        "url": "https://www.invenglobal.com/articles/25876/",
+        "kind": "community"
+      }
+    ]
+  },
+  {
+    "race_id": 900,
+    "class_id": 4,
+    "new_in_forever": true,
+    "sources": [
+      {
+        "label": "Wowhead, Skyborne First Look",
+        "url": "https://www.wowhead.com/forever/news/skyborne-first-look-new-neutral-race-in-world-of-warcraft-forever-382829",
+        "kind": "community"
+      },
+      {
+        "label": "Inven Global, World of Warcraft: Forever coverage",
+        "url": "https://www.invenglobal.com/articles/25876/",
+        "kind": "community"
+      }
+    ]
+  },
+  {
+    "race_id": 900,
+    "class_id": 7,
+    "new_in_forever": true,
+    "sources": [
+      {
+        "label": "Wowhead, Skyborne First Look",
+        "url": "https://www.wowhead.com/forever/news/skyborne-first-look-new-neutral-race-in-world-of-warcraft-forever-382829",
+        "kind": "community"
+      }
+    ]
+  },
+  {
+    "race_id": 900,
+    "class_id": 8,
+    "new_in_forever": true,
+    "sources": [
+      {
+        "label": "Wowhead, Skyborne First Look",
+        "url": "https://www.wowhead.com/forever/news/skyborne-first-look-new-neutral-race-in-world-of-warcraft-forever-382829",
+        "kind": "community"
+      }
+    ]
+  },
+  {
+    "race_id": 900,
+    "class_id": 11,
+    "new_in_forever": true,
+    "sources": [
+      {
+        "label": "Wowhead, Skyborne First Look",
+        "url": "https://www.wowhead.com/forever/news/skyborne-first-look-new-neutral-race-in-world-of-warcraft-forever-382829",
+        "kind": "community"
+      },
+      {
+        "label": "Inven Global, World of Warcraft: Forever coverage",
+        "url": "https://www.invenglobal.com/articles/25876/",
+        "kind": "community"
+      }
+    ]
+  }
 ]

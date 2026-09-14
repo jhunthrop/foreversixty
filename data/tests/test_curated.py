@@ -4,13 +4,21 @@ from pathlib import Path
 import pytest
 
 from pipeline.csvio import read_csv
-from pipeline.curated import CuratedError, merge_curated
+from pipeline.curated import SOURCE_KINDS, CuratedError, merge_curated
 from pipeline.models import PlayableClass, PlayableRace
 from pipeline.normalize import write_json, write_records
 from pipeline.normalize.classes import normalize_classes, normalize_races
 
 HERE = Path(__file__).parent
 ERA_BUILD = Path("builds/1.15.9.69722")
+
+#: The Forever race and class pairs the research documents, as (race_id, class_id):
+#: Dwarf Shaman, Undead Paladin, and the placeholder Skyborne's own classes.
+SKYBORNE_ID = 900
+SKYBORNE_CLASSES = frozenset({1, 3, 4, 7, 8, 11})
+NEW_COMBOS = {(3, 7), (5, 2)} | {(SKYBORNE_ID, class_id) for class_id in SKYBORNE_CLASSES}
+#: How many pairs vanilla itself allows; the pairs above are the only additions.
+CLASSIC_COMBO_COUNT = 40
 
 
 def client_rows():
@@ -166,13 +174,71 @@ def test_merged_classes_and_races_match_golden(tmp_path: Path):
     ).read_text()
 
 
-def test_the_real_curated_directory_is_valid():
-    """data/curated must merge cleanly onto the committed Classic Era rows."""
+def real_merged():
+    """data/curated merged onto the committed Classic Era rows.
+
+    The committed rows already carry the previous merge's `forever_changes`;
+    merge_curated replaces them, so merging them again is what the pipeline does.
+    """
     classes = [PlayableClass(**row) for row in json.loads((ERA_BUILD / "classes.json").read_text())]
     races = [PlayableRace(**row) for row in json.loads((ERA_BUILD / "races.json").read_text())]
-    _classes, merged_races, combos = merge_curated(classes, races, Path("curated"))
+    return merge_curated(classes, races, Path("curated"))
+
+
+def test_the_real_curated_directory_is_valid():
+    """data/curated must merge cleanly onto the committed Classic Era rows."""
+    _classes, merged_races, combos = real_merged()
     assert "skyborne" in {race.slug for race in merged_races}
-    assert len(combos) == 40
+    assert len(combos) == CLASSIC_COMBO_COUNT + len(NEW_COMBOS)
+
+
+def test_the_documented_new_combos_are_the_ones_marked_new():
+    """Exactly the pairs the research documents carry new_in_forever."""
+    _classes, _races, combos = real_merged()
+    assert {(c.race_id, c.class_id) for c in combos if c.new_in_forever} == NEW_COMBOS
+
+
+def test_the_placeholder_race_has_its_combos():
+    _classes, _races, combos = real_merged()
+    skyborne = {c.class_id for c in combos if c.race_id == SKYBORNE_ID}
+    assert skyborne == SKYBORNE_CLASSES
+
+
+def test_every_class_and_race_documents_a_forever_change():
+    classes, races, _combos = real_merged()
+    assert [record.slug for record in classes if not record.forever_changes] == []
+    assert [record.slug for record in races if not record.forever_changes] == []
+
+
+def test_every_forever_change_carries_a_usable_source():
+    classes, races, _combos = real_merged()
+    for record in [*classes, *races]:
+        for change in record.forever_changes:
+            where = f"{record.slug}: {change.text}"
+            assert change.text.endswith("."), where
+            assert change.sources, where
+            for source in change.sources:
+                assert source.kind in SOURCE_KINDS, where
+                assert source.url.startswith("https://"), where
+                assert source.label.strip(), where
+
+
+def test_every_new_combo_names_a_source():
+    """merge_curated rejects an unsourced new combo, but the sources are dropped
+    from the emitted row, so the curated file is where they can be asserted."""
+    for row in json.loads(Path("curated/combos.json").read_text()):
+        if row["new_in_forever"]:
+            assert row["sources"], row
+            assert {source["kind"] for source in row["sources"]} <= SOURCE_KINDS
+
+
+def test_the_committed_build_matches_the_curated_facts():
+    """A curated edit that was never normalized into builds/<build>/ fails here."""
+    classes, races, combos = real_merged()
+    emitted = ((classes, "classes.json"), (races, "races.json"), (combos, "combos.json"))
+    for records, name in emitted:
+        committed = json.loads((ERA_BUILD / name).read_text())
+        assert [record.model_dump() for record in records] == committed, name
 
 
 def test_a_duplicate_class_slug_fails(tmp_path: Path):

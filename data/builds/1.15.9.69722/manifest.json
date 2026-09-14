@@ -1,10 +1,10 @@
 {
   "build": "1.15.9.69722",
   "product": "wow_classic_era",
-  "fetched_at": "2026-09-13T18:07:29.011886Z",
+  "fetched_at": "2026-09-14T02:39:59.280784Z",
   "files": {
-    "classes.json": "9f4d14881bb4ac401173f32011e35f0f3d9552de312f939f0386ea471344c64b",
-    "combos.json": "bfec310d08c337e3e79cf7fac6cb4f7393cdf5c9307be481e5dd9cdbcbe48370",
+    "classes.json": "69a1f10164818e356aea7c8c310115806ef717dd4bd436a5aea3ca8fcb367d8a",
+    "combos.json": "167fb770491fcd4061d46431cb9beb46e90668eeca3e08ffaa437add12a34572",
     "dungeons.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
     "icons/ability_ambush.webp": "1504117d5903ef95da23a33f7d291ead48d74dbbed749c758a74395ec8f677cc",
     "icons/ability_backstab.webp": "538192d228b673a37a7fa2f9c45452e73719050edc46393e2faa81c87224cadb",
@@ -1397,7 +1397,7 @@
     "items/warlock.json": "b24c1106c10a4e7df2d040243aa435311665f9a13077df8ca3f6e1c06a3ef369",
     "items/warrior.json": "2fee13e33133a2d9ccfe4515d0fc38810605115927566a405a8aa9e2d1328005",
     "items.json": "63846bc86c578b84668ee8931819109edef99bf5fd4cc5b879bfa2e3f5f3e6db",
-    "races.json": "2cc1e360eb457559c7de1810db11345538373c2ac350213a3be396436b675118",
+    "races.json": "31f985aebd89b965a9a277a776c409a5e7b342c48c0d9629e63e2be4f02e8c00",
     "sets.json": "49311aeec411d67b550a534af16ac1f4f96c43b093a93ebb917bbc5272549508",
     "spells.json": "6cb025bb4e3ac8d71516fb8c6afd0767515e4fa4288a69aaf997e1b717751235",
     "talents/druid.json": "5ab317edab2cfbf3045c4f5143ae3273d76e3dcdd88edfd04c3c3b978547e9d0",

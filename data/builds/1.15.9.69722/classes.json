@@ -4,62 +4,251 @@
     "name": "Warrior",
     "slug": "warrior",
     "color": "#c69b6d",
-    "forever_changes": []
+    "forever_changes": [
+      {
+        "text": "Every class gets a revamped talent tree built around meaningful trade-offs.",
+        "sources": [
+          {
+            "label": "Blizzard, What's Next panel recap",
+            "url": "https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap",
+            "kind": "blizzard"
+          }
+        ]
+      },
+      {
+        "text": "Warrior is one of the four default classes of the new Skyborne race.",
+        "sources": [
+          {
+            "label": "Wowhead, Skyborne First Look",
+            "url": "https://www.wowhead.com/forever/news/skyborne-first-look-new-neutral-race-in-world-of-warcraft-forever-382829",
+            "kind": "community"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": 2,
     "name": "Paladin",
     "slug": "paladin",
     "color": "#f48cba",
-    "forever_changes": []
+    "forever_changes": [
+      {
+        "text": "Every class gets a revamped talent tree built around meaningful trade-offs.",
+        "sources": [
+          {
+            "label": "Blizzard, What's Next panel recap",
+            "url": "https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap",
+            "kind": "blizzard"
+          }
+        ]
+      },
+      {
+        "text": "Undead is a new Paladin race in Forever, shown in an announcement cinematic.",
+        "sources": [
+          {
+            "label": "Wowhead, Undead Paladins coming to Forever",
+            "url": "https://www.wowhead.com/forever/news/undead-paladins-coming-to-world-of-warcraft-forever-382823",
+            "kind": "community"
+          }
+        ]
+      },
+      {
+        "text": "One press roundup reports a Seal usable for tanking, deeper group healing and a fuller Retribution tree; Blizzard has not confirmed these directly.",
+        "sources": [
+          {
+            "label": "guided.news roundup",
+            "url": "https://guided.news/en/news/wow-classic-launches-in-november-everything-you-need-to-know-about-world-of-warcraft-forever/",
+            "kind": "community"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": 3,
     "name": "Hunter",
     "slug": "hunter",
     "color": "#aad372",
-    "forever_changes": []
+    "forever_changes": [
+      {
+        "text": "Every class gets a revamped talent tree built around meaningful trade-offs.",
+        "sources": [
+          {
+            "label": "Blizzard, What's Next panel recap",
+            "url": "https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap",
+            "kind": "blizzard"
+          }
+        ]
+      },
+      {
+        "text": "Hunter is one of the four default classes of the new Skyborne race.",
+        "sources": [
+          {
+            "label": "Wowhead, Skyborne First Look",
+            "url": "https://www.wowhead.com/forever/news/skyborne-first-look-new-neutral-race-in-world-of-warcraft-forever-382829",
+            "kind": "community"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": 4,
     "name": "Rogue",
     "slug": "rogue",
     "color": "#fff468",
-    "forever_changes": []
+    "forever_changes": [
+      {
+        "text": "Every class gets a revamped talent tree built around meaningful trade-offs.",
+        "sources": [
+          {
+            "label": "Blizzard, What's Next panel recap",
+            "url": "https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap",
+            "kind": "blizzard"
+          }
+        ]
+      },
+      {
+        "text": "Rogue is one of the four default classes of the new Skyborne race.",
+        "sources": [
+          {
+            "label": "Wowhead, Skyborne First Look",
+            "url": "https://www.wowhead.com/forever/news/skyborne-first-look-new-neutral-race-in-world-of-warcraft-forever-382829",
+            "kind": "community"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": 5,
     "name": "Priest",
     "slug": "priest",
     "color": "#ffffff",
-    "forever_changes": []
+    "forever_changes": [
+      {
+        "text": "Every class gets a revamped talent tree built around meaningful trade-offs.",
+        "sources": [
+          {
+            "label": "Blizzard, What's Next panel recap",
+            "url": "https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap",
+            "kind": "blizzard"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": 7,
     "name": "Shaman",
     "slug": "shaman",
     "color": "#0070dd",
-    "forever_changes": []
+    "forever_changes": [
+      {
+        "text": "Every class gets a revamped talent tree built around meaningful trade-offs.",
+        "sources": [
+          {
+            "label": "Blizzard, What's Next panel recap",
+            "url": "https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap",
+            "kind": "blizzard"
+          }
+        ]
+      },
+      {
+        "text": "Dwarf Shaman was shown in a hands-on demo at BlizzCon 2026, per one outlet.",
+        "sources": [
+          {
+            "label": "Warcraft Tavern, other race/class combos",
+            "url": "https://www.warcrafttavern.com/forever/news/undead-paladins-other-race-class-combos-in-world-of-warcraft-forever/",
+            "kind": "community"
+          }
+        ]
+      },
+      {
+        "text": "Skyborne can be Shaman only when they choose the Horde at character creation.",
+        "sources": [
+          {
+            "label": "Wowhead, Skyborne First Look",
+            "url": "https://www.wowhead.com/forever/news/skyborne-first-look-new-neutral-race-in-world-of-warcraft-forever-382829",
+            "kind": "community"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": 8,
     "name": "Mage",
     "slug": "mage",
     "color": "#3fc7eb",
-    "forever_changes": []
+    "forever_changes": [
+      {
+        "text": "Every class gets a revamped talent tree built around meaningful trade-offs.",
+        "sources": [
+          {
+            "label": "Blizzard, What's Next panel recap",
+            "url": "https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap",
+            "kind": "blizzard"
+          }
+        ]
+      },
+      {
+        "text": "Skyborne can be Mages only when they choose the Alliance at character creation.",
+        "sources": [
+          {
+            "label": "Wowhead, Skyborne First Look",
+            "url": "https://www.wowhead.com/forever/news/skyborne-first-look-new-neutral-race-in-world-of-warcraft-forever-382829",
+            "kind": "community"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": 9,
     "name": "Warlock",
     "slug": "warlock",
     "color": "#8788ee",
-    "forever_changes": []
+    "forever_changes": [
+      {
+        "text": "Every class gets a revamped talent tree built around meaningful trade-offs.",
+        "sources": [
+          {
+            "label": "Blizzard, What's Next panel recap",
+            "url": "https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap",
+            "kind": "blizzard"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": 11,
     "name": "Druid",
     "slug": "druid",
     "color": "#ff7c0a",
-    "forever_changes": []
+    "forever_changes": [
+      {
+        "text": "Every class gets a revamped talent tree built around meaningful trade-offs.",
+        "sources": [
+          {
+            "label": "Blizzard, What's Next panel recap",
+            "url": "https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap",
+            "kind": "blizzard"
+          }
+        ]
+      },
+      {
+        "text": "Druid is one of the four default classes of the new Skyborne race, whose forms are sky-blue.",
+        "sources": [
+          {
+            "label": "Wowhead, Skyborne First Look",
+            "url": "https://www.wowhead.com/forever/news/skyborne-first-look-new-neutral-race-in-world-of-warcraft-forever-382829",
+            "kind": "community"
+          }
+        ]
+      }
+    ]
   }
 ]
