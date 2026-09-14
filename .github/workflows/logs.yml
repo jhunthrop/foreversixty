@@ -1,0 +1,65 @@
+name: logs
+on:
+  push:
+    branches: [main]
+    paths: ['logs/**', '.github/workflows/logs.yml']
+  pull_request:
+    paths: ['logs/**', '.github/workflows/logs.yml']
+  workflow_dispatch:
+permissions: { contents: read }
+concurrency:
+  group: logs-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: logs } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with: { go-version-file: logs/go.mod, cache-dependency-path: logs/go.sum }
+      - name: gofmt
+        run: |
+          unformatted=$(gofmt -l .)
+          if [ -n "$unformatted" ]; then
+            echo "these files are not gofmt'd:"
+            echo "$unformatted"
+            exit 1
+          fi
+      - run: go vet ./...
+      - run: go test ./... -race -coverprofile=cover.out
+      - name: coverage floor
+        run: |
+          total=$(go tool cover -func=cover.out | awk '/^total:/ {print substr($3, 1, length($3)-1)}')
+          echo "total coverage ${total}%"
+          awk -v t="$total" 'BEGIN { exit (t + 0 >= 80) ? 0 : 1 }' || {
+            echo "coverage ${total}% is under the 80% floor"
+            exit 1
+          }
+      - name: fuzz
+        # Short runs, because the point is to keep the corpus honest against
+        # every change rather than to search: the seeds alone cover the
+        # shapes that used to panic. A crasher is written to
+        # engine/*/testdata/fuzz and must be committed with its fix.
+        run: |
+          go test ./engine/event/ -run '^$' -fuzz FuzzDecode -fuzztime 20s
+          go test ./engine/lexer/ -run '^$' -fuzz FuzzSplitParams -fuzztime 20s
+  bench:
+    # Non-blocking. It downloads a 77 MB sample that is not in the repository,
+    # so it is a signal rather than a gate: a slow runner must not fail a PR.
+    needs: test
+    continue-on-error: true
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: logs } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with: { go-version-file: logs/go.mod, cache-dependency-path: logs/go.sum }
+      - uses: actions/cache@v4
+        with:
+          path: logs/testdata/cache
+          key: logs-retail-sample-v16
+      - name: throughput and memory budget
+        run: go test ./bench/ -run TestThroughputAndMemoryMeetTheBudget -v
+      - name: benchmark
+        run: go test ./bench/ -run '^$' -bench BenchmarkParseRetailSample -benchtime 1x -benchmem
