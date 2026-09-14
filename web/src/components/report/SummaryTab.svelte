@@ -16,6 +16,7 @@
     classColorVar, formatAmount, formatDuration, formatPercent, percentileToken,
     wholeFightAriaLabel, wholeFightMark, wholeFightTitle,
   } from '../../lib/report/format';
+  import { plannerLinkFor } from '../../lib/report/planner-link';
   import type { Summary } from '../../lib/report/types';
 
   let {
@@ -23,11 +24,17 @@
     durationMs,
     percentiles = new Map<string, number>(),
     approximate = false,
+    dataBuild = '',
+    classOf = new Map<string, string>(),
+    treeSizesFor = () => [],
   }: {
     summary: Summary;
     durationMs: number;
     percentiles?: Map<string, number>;
     approximate?: boolean;
+    dataBuild?: string;
+    classOf?: Map<string, string>;
+    treeSizesFor?: (className: string | undefined) => number[];
   } = $props();
 
   const roster = $derived([...summary.roster].sort((a, b) => b.damage_done - a.damage_done));
@@ -108,6 +115,12 @@
       <ul class="flex flex-col" data-testid="combatants">
         {#each summary.combatants as combatant (combatant.guid)}
           {@const display = splitUnitName(combatant.name)}
+          {@const link = plannerLinkFor({
+            dataBuild,
+            className: classOf.get(combatant.guid),
+            treeSizes: treeSizesFor(classOf.get(combatant.guid)),
+            combatant,
+          })}
           <li class="border-line-soft flex min-h-11 flex-wrap items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px]">
             <span class="font-semibold">{display.name}</span>
             <span class="text-muted text-[13px]">
@@ -121,6 +134,15 @@
               <span class="pill pill-sample">
                 missing <span class="font-mono tabular">{combatant.missing_buffs.length}</span> buffs
               </span>
+            {/if}
+            {#if link}
+              <a
+                class="text-gold ml-auto inline-flex min-h-11 items-center text-[13px] md:min-h-0"
+                href={link.href}
+                data-testid="combatant-build-link"
+              >
+                {link.label}
+              </a>
             {/if}
           </li>
         {/each}

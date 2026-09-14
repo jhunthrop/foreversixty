@@ -37,6 +37,7 @@
   import ActorTable from './ActorTable.svelte';
   import AuraTable from './AuraTable.svelte';
   import CastTable from './CastTable.svelte';
+  import DeathsTab from './DeathsTab.svelte';
   import ExchangeTable from './ExchangeTable.svelte';
   import FightSelector from './FightSelector.svelte';
   import FilterBar from './FilterBar.svelte';
@@ -49,6 +50,9 @@
     DEFAULT_FILTERS, applyActorFilters, bossGuids, playerGuids, type ReportFilters,
   } from '../../lib/report/filters';
   import { createPercentileLoader, percentileKey } from '../../lib/report/percentile';
+  import activeBuild from '../../data/active-build.json';
+  import { loadTalents } from '../../lib/planner/load';
+  import type { TalentFile } from '../../lib/planner/types';
 
   let { reportId, inlineMeta = null }: { reportId: string; inlineMeta?: ReportMeta | null } = $props();
 
@@ -110,6 +114,40 @@
   const classOf = $derived(
     new Map((scoped?.roster ?? []).filter((row) => row.class).map((row) => [row.guid, row.class as string])),
   );
+
+  /**
+   * Talents per tree, per class, fetched once per class the fight actually contains. The
+   * planner already publishes these files under /data/<build>/talents/<class>.json, so the
+   * report reuses them rather than shipping a second copy of the tree shapes.
+   */
+  // Replaced wholesale below, never keyed: SvelteMap's per-key tracking is machinery this
+  // does not need.
+  let treeSizes = $state(new Map<string, number[]>());
+
+  $effect(() => {
+    const classes = new Set(
+      (summary?.roster ?? []).map((row) => row.class).filter((name): name is string => name !== undefined),
+    );
+    const wanted = [...classes].filter((name) => !treeSizes.has(name));
+    if (wanted.length === 0) return;
+    void Promise.all(
+      wanted.map(async (name) => {
+        const slug = name.toLowerCase().replace(/\s+/g, '-');
+        try {
+          const file: TalentFile = await loadTalents(activeBuild.build, slug);
+          return [name, file.trees.map((tree) => tree.talents.length)] as const;
+        } catch {
+          // No talent data for this class in this build: the link falls back to gear only.
+          return [name, []] as const;
+        }
+      }),
+    ).then((entries) => {
+      treeSizes = new Map([...treeSizes, ...entries]);
+    });
+  });
+
+  const treeSizesFor = (className: string | undefined): number[] =>
+    className === undefined ? [] : (treeSizes.get(className) ?? []);
 
   /** Which Actor[] the current tab shows, scoped to `state.source` and then filtered. */
   const tabActors = $derived.by(() => {
@@ -382,6 +420,9 @@
             durationMs={scoped.duration_ms}
             {percentiles}
             approximate={!windowIsWhole}
+            dataBuild={activeBuild.build}
+            {classOf}
+            {treeSizesFor}
           />
         {:else if state.tab === 'damage-done' || state.tab === 'damage-taken' || state.tab === 'healing'}
           <FilterBar {filters} actors={tabActors} onChange={(next) => (filters = next)} />
@@ -419,8 +460,16 @@
           <ResourceGraphs tracks={scoped.resources} durationMs={scoped.duration_ms} />
         {:else if state.tab === 'threat'}
           <ThreatTable rows={scoped.threat} {classOf} approximate={!windowIsWhole} />
-        {:else}
-          <p class="text-muted text-[14px]" data-testid="report-placeholder">Deaths arrives in Task 14.</p>
+        {:else if state.tab === 'deaths'}
+          <DeathsTab
+            deaths={scoped.deaths}
+            durationMs={summary?.duration_ms ?? scoped.duration_ms}
+            combatants={scoped.combatants}
+            {classOf}
+            dataBuild={activeBuild.build}
+            {treeSizesFor}
+            onWindow={setWindow}
+          />
         {/if}
       {/if}
     </div>

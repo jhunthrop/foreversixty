@@ -62,7 +62,7 @@
   type CodeNote =
     | { kind: 'message'; text: string }
     | { kind: 'tree-count'; got: string; want: string }
-    | { kind: 'reconstructed'; dropped: number };
+    | { kind: 'reconstructed'; dropped: number; gearOnly: boolean };
 
   /** Set when the build came in as an FS1 code: either why it could not be read, or that its
    *  order is a reconstruction (nothing in the game records the order points were spent in). */
@@ -211,7 +211,11 @@
         codeApplied = true;
         const rebuilt = orderFromRanks(store.talentIndex, codeForThisClass.build.treeRanks);
         store.applyOrder(rebuilt.order, codeForThisClass.build.gear);
-        codeNote = { kind: 'reconstructed', dropped: rebuilt.dropped.length };
+        // A build link from the deaths recap (src/lib/report/planner-link.ts) carries gear
+        // alone when the log's talents field could not be read as ranks -- every tree comes
+        // through as all zeros. The note says so rather than claiming talents loaded.
+        const gearOnly = codeForThisClass.build.treeRanks.every((tree) => tree.every((rank) => rank === 0));
+        codeNote = { kind: 'reconstructed', dropped: rebuilt.dropped.length, gearOnly };
       }
 
       const sets = await loadSets(store.treeVersion);
@@ -291,7 +295,9 @@
         That code has <span class="tabular font-mono">{codeNote.got}</span> talent trees; a build has
         <span class="tabular font-mono">{codeNote.want}</span>.
       {:else if codeNote.kind === 'reconstructed'}
-        {#if codeNote.dropped === 0}
+        {#if codeNote.gearOnly}
+          Gear loaded from a character. The log did not record talent ranks for this build.
+        {:else if codeNote.dropped === 0}
           Talents loaded from a character. The order points were spent in is not recorded in game, so this is
           the lowest-tier-first order that reaches the same tree.
         {:else}
