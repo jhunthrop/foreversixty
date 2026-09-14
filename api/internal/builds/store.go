@@ -141,6 +141,55 @@ func (s *Store) Get(ctx context.Context, id string) (Build, error) {
 	return b, nil
 }
 
+// GetMany reads every row named by ids in one query, keyed by id. It is
+// Get's batched counterpart, for a caller that would otherwise fetch one
+// row per id in a loop - the addon inbox, rendering several queued builds
+// at once. An id with no matching row is simply absent from the result:
+// GetMany is not a validator, and the caller decides what a missing build
+// means.
+func (s *Store) GetMany(ctx context.Context, ids []string) (map[string]Build, error) {
+	out := make(map[string]Build, len(ids))
+	if len(ids) == 0 {
+		return out, nil
+	}
+	rows, err := s.Pool.Query(ctx,
+		`select id, class_id, race_id, tree_version, point_order, gear, title, created_at, views
+		 from builds where id = any($1)`, ids)
+	if err != nil {
+		return nil, fmt.Errorf("builds: get many: %w", err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var (
+			b               Build
+			classID, raceID int16
+			order           []int16
+			title           *string
+		)
+		if err := rows.Scan(&b.ID, &classID, &raceID, &b.TreeVersion, &order, &b.Gear, &title,
+			&b.CreatedAt, &b.Views); err != nil {
+			return nil, fmt.Errorf("builds: get many: %w", err)
+		}
+		b.ClassID = int(classID)
+		b.RaceID = int(raceID)
+		b.PointOrder = make([]int, len(order))
+		for i, v := range order {
+			b.PointOrder[i] = int(v)
+		}
+		if b.Gear == nil {
+			b.Gear = map[string]int{}
+		}
+		if title != nil {
+			b.Title = *title
+		}
+		out[b.ID] = b
+	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("builds: get many: %w", err)
+	}
+	return out, nil
+}
+
 // AddViews adds each count to the matching row's view counter in one round
 // trip. Ids that no longer exist are simply not updated.
 func (s *Store) AddViews(ctx context.Context, counts map[string]int64) error {
