@@ -8,8 +8,10 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/builds"
+	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/api/internal/site"
 	"github.com/jhunthrop/foreversixty/api/internal/trees"
 )
@@ -85,6 +87,13 @@ func TestSharedBuildPageStaysServedAfterTheRouterWideBudgetIsSpent(t *testing.T)
 		},
 		TrustedProxyHops: 1,
 	})
+	// Freeze the limiter's clock: with real time, a slow runner refills part of
+	// the bucket during the loop below and the request past the budget is let
+	// through, which CI observed. The budget itself, not the refill, is under test.
+	frozen := time.Date(2026, time.September, 14, 0, 0, 0, 0, time.UTC)
+	httpx.Now = func() time.Time { return frozen }
+	t.Cleanup(func() { httpx.Now = time.Now })
+
 	get := func(path string) int {
 		rec := httptest.NewRecorder()
 		req := httptest.NewRequest(http.MethodGet, path, nil)

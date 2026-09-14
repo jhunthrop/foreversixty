@@ -149,7 +149,7 @@ func (l *ipLimiter) allow(ip string, now time.Time) bool {
 	if !ok {
 		return true
 	}
-	return lim.Allow()
+	return lim.AllowN(now, 1)
 }
 
 // RateLimit rate-limits requests per client IP to perMinute per minute,
@@ -181,12 +181,17 @@ func RateLimitExcept(perMinute, trustedHops int, exempt func(*http.Request) bool
 // burst of n: a fresh IP may spend the whole allowance at once, and the
 // bucket then refills at n per window. Used with an hour-long window for
 // POST /v1/builds, which the contract caps at 20 saves per IP per hour.
+// Now is the limiter's clock. Tests replace it with a frozen time so a bucket
+// spent in one loop cannot refill between the last allowed request and the
+// first refused one on a slow runner.
+var Now = time.Now
+
 func RateLimitPer(n int, window time.Duration, trustedHops int) func(http.Handler) http.Handler {
 	l := newIPLimiter(n, window)
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			ip := clientIP(r, trustedHops)
-			if !l.allow(ip, time.Now()) {
+			if !l.allow(ip, Now()) {
 				WriteError(w, r, http.StatusTooManyRequests, "rate_limited", "too many requests", nil)
 				return
 			}
