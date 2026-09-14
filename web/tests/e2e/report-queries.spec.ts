@@ -1,0 +1,159 @@
+// web/tests/e2e/report-queries.spec.ts
+// The one place the real DuckDB runs: vitest cannot start it (the Node build wants a
+// web-worker shim), so src/lib/report/query.test.ts drives a fake engine and everything
+// that needs an actual WebAssembly instance is asserted here, against the checked-in
+// fixture Parquet (src/fixtures/report/fights/3/events.parquet).
+import { expect, test, type Page } from '@playwright/test';
+
+const REPORT = '/reports/fixture2abcd';
+const QUERIES = `${REPORT}?fight=3&view=queries`;
+const ORIGIN = 'http://localhost:4321';
+// The report island calls the rankings API for its percentiles (Task 12), which is a
+// first-party origin the contract names. Everything else -- a CDN, a font host, DuckDB's
+// own extension repository -- is what "no third-party bytes, on any page, ever" forbids.
+const OWN_ORIGINS = new Set([ORIGIN, 'https://api.foreversixty.gg']);
+
+/** Every request the page made, newest last, so a test can assert on what was not asked for. */
+function recordRequests(page: Page): string[] {
+  const seen: string[] = [];
+  page.on('request', (request) => seen.push(request.url()));
+  return seen;
+}
+
+const duckdbAssets = (urls: string[]): string[] => urls.filter((url) => url.includes('/duckdb/'));
+const parquetFiles = (urls: string[]): string[] => urls.filter((url) => url.endsWith('events.parquet'));
+
+// Spec section 4: "DuckDB-WASM loads lazily on the first deep interaction, never on page
+// load." Opening the Queries view is not the deep interaction -- running a query is -- so
+// browsing the whole report, tabs included, must still cost nothing.
+test('nothing DuckDB-related loads on page load, while browsing, or on opening Queries', async ({ page }) => {
+  const fetched = recordRequests(page);
+
+  await page.goto(REPORT);
+  await expect(page.getByTestId('summary-tab')).toBeVisible();
+  await page.getByTestId('tab-damage-done').click();
+  await page.getByTestId('tab-casts').click();
+  await page.getByTestId('view-events').click();
+  await expect(page.getByTestId('events-view')).toBeVisible();
+
+  expect(duckdbAssets(fetched)).toEqual([]);
+  expect(parquetFiles(fetched)).toEqual([]);
+
+  await page.getByTestId('view-queries').click();
+  await expect(page.getByTestId('queries-view')).toBeVisible();
+  await expect(page.getByTestId('query-run')).toBeEnabled();
+
+  // The engine and the two-to-ten megabyte event file are still untouched: the view is
+  // rendered, the SQL box is filled in, and not a byte of either has been asked for.
+  expect(duckdbAssets(fetched)).toEqual([]);
+  expect(parquetFiles(fetched)).toEqual([]);
+});
+
+test('a statement that is not a read is refused before anything loads', async ({ page }) => {
+  const fetched = recordRequests(page);
+  await page.goto(QUERIES);
+
+  await page.getByTestId('query-sql').fill('DROP TABLE events');
+  await page.getByTestId('query-run').click();
+
+  await expect(page.getByTestId('query-error')).toHaveText(
+    'Queries here read the fight; they cannot change it.',
+  );
+  expect(duckdbAssets(fetched)).toEqual([]);
+  expect(parquetFiles(fetched)).toEqual([]);
+});
+
+test('a query runs against the fight’s own Parquet, and every byte comes from this origin', async ({
+  page,
+}) => {
+  test.slow(); // The first run downloads and instantiates the WebAssembly build.
+  const external: string[] = [];
+  page.on('request', (request) => {
+    if (!OWN_ORIGINS.has(new URL(request.url()).origin)) external.push(request.url());
+  });
+
+  await page.goto(QUERIES);
+  await page.getByTestId('template-event-counts').click();
+  await page.getByTestId('query-run').click();
+
+  const table = page.getByTestId('query-result');
+  await expect(table).toBeVisible({ timeout: 90_000 });
+  await expect(table).toContainText('SPELL_DAMAGE');
+  // The cold run paid for the engine and the download, and says so, so nobody reads the
+  // number as the cost of the query.
+  await expect(page.getByTestId('query-status')).toContainText('That run included the one-time load');
+
+  // A warm run answers from memory: no second engine, no second download.
+  await page.getByTestId('template-damage-by-ability').click();
+  await page.getByTestId('query-run').click();
+  await expect(page.getByTestId('query-result')).toContainText('Anima Lash');
+  await expect(page.getByTestId('query-status')).not.toContainText('one-time load');
+
+  // A query with nothing to say says nothing rather than rendering an empty grid: the
+  // fixture fight has no misses at all.
+  await page.getByTestId('template-misses').click();
+  await page.getByTestId('query-run').click();
+  await expect(page.getByTestId('query-empty')).toHaveText('No rows matched.');
+
+  // A malformed query is DuckDB's own sentence, not an unhandled rejection, and the page
+  // is still usable afterwards.
+  await page.getByTestId('query-sql').fill("SELECT * FROM read_parquet('nope.parquet')");
+  await page.getByTestId('query-run').click();
+  await expect(page.getByTestId('query-error')).toBeVisible();
+  await page.getByTestId('query-sql').fill("SELECT count(*) AS n FROM read_parquet('events.parquet')");
+  await page.getByTestId('query-run').click();
+  await expect(page.getByTestId('query-error')).toHaveCount(0);
+  await expect(page.getByTestId('query-result')).toContainText('24');
+
+  expect(external).toEqual([]);
+});
+
+// The engine build, the download and the query all resolve long after the click, so a
+// fight switch can land in the middle of any of them. This holds fight 3's event file
+// open until fight 1 is already on screen, then releases it: an answer computed from
+// fight 3's events must not be painted under fight 1's name.
+test('an answer for the fight that was left behind is dropped, not painted', async ({ page }) => {
+  test.slow();
+  await page.goto(QUERIES);
+
+  let markStarted = (): void => {};
+  let release = (): void => {};
+  const started = new Promise<void>((resolve) => (markStarted = resolve));
+  const gate = new Promise<void>((resolve) => (release = resolve));
+  await page.route('**/fights/3/events.parquet', async (route) => {
+    markStarted();
+    await gate;
+    await route.continue();
+  });
+
+  await page.getByTestId('template-event-counts').click();
+  await page.getByTestId('query-run').click();
+  await started;
+
+  await page.getByTestId('toggle-trash').click();
+  await page.getByTestId('fight-1').click();
+  await expect(page.getByTestId('fight-1')).toHaveAttribute('aria-current', 'true');
+
+  const answered = page.waitForResponse((response) => response.url().endsWith('/fights/3/events.parquet'));
+  release();
+  await answered;
+  await page.waitForTimeout(1000);
+
+  await expect(page.getByTestId('query-result')).toHaveCount(0);
+  await expect(page.getByTestId('query-empty')).toHaveCount(0);
+  await expect(page.getByTestId('query-error')).toHaveCount(0);
+  await expect(page.getByTestId('query-run')).toBeEnabled();
+});
+
+// The island's budget is 140 KB gzipped (scripts/check-island-size.mjs) and DuckDB is an
+// order of magnitude larger than that, so the library has to be in the chunk the dynamic
+// import splits out, not in the entry every report page loads.
+test('the report island bundle does not carry DuckDB', async ({ request }) => {
+  const bundle = await (await request.get('/report-island.js')).text();
+
+  // A protocol string from the worker binding, and the CDN helper the site's "no
+  // third-party bytes" rule rules out: neither may appear in the eagerly loaded entry.
+  expect(bundle).not.toContain('REGISTER_FILE_BUFFER');
+  expect(bundle).not.toContain('cdn.jsdelivr.net');
+  expect(bundle.length).toBeLessThan(700_000);
+});

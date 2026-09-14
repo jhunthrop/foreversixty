@@ -46,6 +46,7 @@
   import FightSelector from './FightSelector.svelte';
   import FilterBar from './FilterBar.svelte';
   import ModeBar from './ModeBar.svelte';
+  import QueriesView from './QueriesView.svelte';
   import ResourceGraphs from './ResourceGraphs.svelte';
   import SummaryTab from './SummaryTab.svelte';
   import ThreatTable from './ThreatTable.svelte';
@@ -548,6 +549,12 @@
       {/if}
       {#if scoped !== null && state.mode === 'analyze' && state.view === 'events'}
         <EventsView summary={scoped} {classOf} />
+      {/if}
+      <!-- `scoped` only to say a summary has loaded, the same guard its three siblings
+           use; the Queries view reads the fight's events.parquet, not the summary, and
+           takes the window so a starting point is written for what is on screen. -->
+      {#if scoped !== null && state.mode === 'analyze' && state.view === 'queries'}
+        <QueriesView dataBaseUrl={dataBase} fightIndex={state.fight} window={timeWindow} />
       {/if}
     </div>
   </div>
