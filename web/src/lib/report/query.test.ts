@@ -3,12 +3,15 @@ import {
   EVENTS_TABLE,
   FIGHT_MS,
   NOT_A_READ,
+  NOT_LOCAL,
   QUERY_ABANDONED,
   QUERY_TEMPLATES,
   QUERY_TOO_SLOW,
   createQueryLayer,
+  isLocalOnlySql,
   isReadOnlySql,
   normalizeCell,
+  refuseSql,
   withWindow,
   type QueryEngine,
   type QueryResult,
@@ -43,6 +46,20 @@ function held<T>(): { promise: Promise<T>; resolve: (value: T) => void } {
   return { promise, resolve };
 }
 
+/** What a wedged DuckDB worker does: answers nothing, including the request to shut down. */
+function deafEngine(): QueryEngine & { closeCalls: number } {
+  const engine = {
+    closeCalls: 0,
+    async open(): Promise<void> {},
+    query: (): Promise<QueryResult> => new Promise<QueryResult>(() => {}),
+    close: (): Promise<void> => {
+      engine.closeCalls += 1;
+      return new Promise<void>(() => {});
+    },
+  };
+  return engine;
+}
+
 describe('the SQL surface', () => {
   it('names the events table the templates read', () => {
     expect(EVENTS_TABLE).toBe("read_parquet('events.parquet')");
@@ -64,6 +81,18 @@ describe('the SQL surface', () => {
     expect(isReadOnlySql('DROP TABLE events')).toBe(false);
     expect(isReadOnlySql('INSTALL httpfs; SELECT 1')).toBe(false);
     expect(isReadOnlySql('SELECT 1; DROP TABLE events')).toBe(false);
+  });
+
+  // read_parquet('https://…') is the one way a query can still reach off this origin: it
+  // autoloads httpfs, which is not vendored into public/duckdb/extensions, and then
+  // fetches from wherever the URL points.
+  it('refuses a query that names an address, and lets the local templates through', () => {
+    expect(isLocalOnlySql("SELECT * FROM read_parquet('events.parquet')")).toBe(true);
+    expect(isLocalOnlySql("SELECT * FROM read_parquet('https://example.invalid/x.parquet')")).toBe(false);
+    expect(isLocalOnlySql("SELECT * FROM read_csv('s3://bucket/x.csv')")).toBe(false);
+    expect(refuseSql("SELECT * FROM read_parquet('https://example.invalid/x.parquet')")).toBe(NOT_LOCAL);
+    expect(refuseSql('DROP TABLE events')).toBe(NOT_A_READ);
+    for (const template of QUERY_TEMPLATES) expect(refuseSql(template.sql)).toBeNull();
   });
 
   it('scopes a template to the window by substituting the two bounds', () => {
@@ -155,7 +184,33 @@ describe('createQueryLayer', () => {
     const layer = createQueryLayer({ load, fetchBytes: async () => bytes });
 
     await expect(layer.run('/x/fights/3/events.parquet', 'DROP TABLE events')).rejects.toThrow(NOT_A_READ);
+    await expect(
+      layer.run('/x/fights/3/events.parquet', "SELECT * FROM read_parquet('https://example.invalid/x')"),
+    ).rejects.toThrow(NOT_LOCAL);
     expect(load).not.toHaveBeenCalled();
+  });
+
+  // The download that fails here is the thirty-odd megabyte engine, which is exactly the
+  // one a flaky connection drops. Caching the rejected build would answer every later Run
+  // with the same error and no network activity at all, and the only way back would be
+  // leaving the view -- which nothing tells the visitor.
+  it('tries again after a build that failed, rather than replaying the failure', async () => {
+    const engine = fakeEngine();
+    let attempt = 0;
+    const load = vi.fn(async () => {
+      attempt += 1;
+      if (attempt === 1) throw new Error('The query engine did not load.');
+      return engine;
+    });
+    const layer = createQueryLayer({ load, fetchBytes: async () => bytes });
+
+    await expect(layer.run('/x/fights/3/events.parquet', 'SELECT 1')).rejects.toThrow(
+      'The query engine did not load.',
+    );
+    await expect(layer.run('/x/fights/3/events.parquet', 'SELECT 2')).resolves.toMatchObject({
+      columns: ['event', 'n'],
+    });
+    expect(load).toHaveBeenCalledTimes(2);
   });
 
   it('reports an empty answer as an empty answer, not as a failure', async () => {
@@ -286,6 +341,51 @@ describe('createQueryLayer under overlap', () => {
     await closing;
     expect(engine.opened).toEqual([]);
     expect(engine.closed).toBe(true);
+  });
+
+  // The recovery from a wedged worker must not itself wait on the wedged worker. DuckDB's
+  // connection.close() posts a message the worker answers on the same loop the query is
+  // occupying, so a shutdown that is merely awaited never completes: the timeout would
+  // never be reported, the Run button would stay disabled, and because the run queue is
+  // serial every later query would wait behind it forever.
+  it('reports the timeout and keeps going even when the engine will not shut down', async () => {
+    const wedged = deafEngine();
+    const next = fakeEngine();
+    const engines: QueryEngine[] = [wedged, next];
+    const layer = createQueryLayer({
+      load: async () => engines.shift() as QueryEngine,
+      fetchBytes: async () => bytes,
+      timeoutMs: 5,
+      teardownMs: 10,
+    });
+
+    await expect(layer.run('/x/fights/3/events.parquet', 'SELECT 1')).rejects.toThrow(QUERY_TOO_SLOW);
+    expect(wedged.closeCalls).toBe(1);
+    expect(layer.ready).toBe(false);
+
+    // The queue moved on: a second run builds a fresh engine and answers.
+    await expect(layer.run('/x/fights/3/events.parquet', 'SELECT 2')).resolves.toMatchObject({
+      columns: ['event', 'n'],
+    });
+    expect(next.asked).toEqual(['SELECT 2']);
+  });
+
+  it('finishes closing even when the engine never acknowledges it', async () => {
+    const wedged = deafEngine();
+    const layer = createQueryLayer({
+      load: async () => wedged,
+      fetchBytes: async () => bytes,
+      timeoutMs: 5,
+      teardownMs: 10,
+    });
+
+    void layer.run('/x/fights/3/events.parquet', 'SELECT 1').catch(() => undefined);
+    await new Promise((resolve) => setTimeout(resolve, 1));
+    // Leaving the Queries view mid-query: close() has to return, or the caller's own
+    // teardown never completes and a ~35 MB WASM heap stays for the session.
+    await layer.close();
+    expect(wedged.closeCalls).toBeGreaterThanOrEqual(1);
+    expect(layer.ready).toBe(false);
   });
 
   it('stops a query that never answers, tears the engine down and works again after', async () => {

@@ -100,6 +100,24 @@ test('a query runs against the fight’s own Parquet, and every byte comes from 
   await page.getByTestId('query-sql').fill("SELECT * FROM read_parquet('nope.parquet')");
   await page.getByTestId('query-run').click();
   await expect(page.getByTestId('query-error')).toBeVisible();
+
+  // A query naming an address is refused before it reaches the engine: it would autoload
+  // httpfs, which is not among the vendored extensions, and then fetch from that address.
+  await page.getByTestId('query-sql').fill("SELECT * FROM read_parquet('https://example.invalid/x.parquet')");
+  await page.getByTestId('query-run').click();
+  await expect(page.getByTestId('query-error')).toHaveText(
+    'Queries here read this fight\u2019s own file; they cannot fetch from another address.',
+  );
+
+  // And the other half of the same worry, which the guard above deliberately does not
+  // cover: an extension that is simply not vendored, reached without naming an address.
+  // custom_extension_repository has to replace DuckDB's default rather than extend it.
+  // The error naming spatial is what says the query reached the engine rather than
+  // leaving the previous alert on screen; the trailing same-origin assertion is what says
+  // there was no fallback to extensions.duckdb.org.
+  await page.getByTestId('query-sql').fill("SELECT * FROM st_read('nothing.shp')");
+  await page.getByTestId('query-run').click();
+  await expect(page.getByTestId('query-error')).toContainText('it exists in the spatial extension');
   await page.getByTestId('query-sql').fill("SELECT count(*) AS n FROM read_parquet('events.parquet')");
   await page.getByTestId('query-run').click();
   await expect(page.getByTestId('query-error')).toHaveCount(0);

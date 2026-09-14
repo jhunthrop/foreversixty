@@ -29,13 +29,27 @@
 // and update DUCKDB_VERSION below. The e2e (tests/e2e/report-queries.spec.ts) fails if
 // the version and the vendored directory ever drift apart, because the query then reaches
 // for a file this script never published.
-import { copyFile, mkdir, readdir, stat } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+import { copyFile, mkdir, readFile, readdir, stat } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 /** The DuckDB the pinned @duckdb/duckdb-wasm carries; also the vendored directory name. */
 export const DUCKDB_VERSION = 'v1.4.3';
+
+/**
+ * The vendored extensions, pinned. The runtime files come from node_modules and are
+ * already pinned by package-lock.json's integrity hashes; these have no npm source, so
+ * this is their lockfile. A swapped, truncated or half-downloaded file fails the build
+ * here rather than the browser, and refreshing the extension means updating the hash in
+ * the same commit as the bytes. `shasum -a 256 <file>` prints these.
+ */
+export const EXTENSION_SHA256 = {
+  'wasm_eh/parquet.duckdb_extension.wasm': '22765c8f7dc741cda2b571a66ac7bb355295d7d69a6c37e5315b265672984f55',
+  'wasm_mvp/parquet.duckdb_extension.wasm':
+    '0785c6c95d003eff4faa7b3b4b660f02c9c92f6d68d135ddf330d42e3a650600',
+};
 
 const RUNTIME_FILES = [
   'duckdb-eh.wasm',
@@ -92,11 +106,20 @@ for (const platform of ['wasm_eh', 'wasm_mvp']) {
     );
   }
   for (const name of names.filter((entry) => entry.endsWith('.duckdb_extension.wasm'))) {
+    const key = `${platform}/${name}`;
+    const expected = EXTENSION_SHA256[key];
+    if (expected === undefined) {
+      throw new Error(`No SHA-256 pinned for vendored extension ${key} in scripts/sync-duckdb.mjs`);
+    }
+    const source = path.join(from, name);
+    const actual = createHash('sha256')
+      .update(await readFile(source))
+      .digest('hex');
+    if (actual !== expected) {
+      throw new Error(`${key} is ${actual}, not the pinned ${expected}. Refusing to publish it.`);
+    }
     extensions += 1;
-    copied += await publish(
-      path.join(from, name),
-      path.join(target, 'extensions', DUCKDB_VERSION, platform, name),
-    );
+    copied += await publish(source, path.join(target, 'extensions', DUCKDB_VERSION, platform, name));
   }
 }
 if (extensions === 0) throw new Error(`No .duckdb_extension.wasm vendored for ${DUCKDB_VERSION}`);

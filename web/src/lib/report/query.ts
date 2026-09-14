@@ -126,6 +126,7 @@ export const NOT_A_READ = 'Queries here read the fight; they cannot change it.';
 export const QUERY_TOO_SLOW =
   'That query ran for too long and was stopped. Narrow it with a WHERE or a LIMIT.';
 export const QUERY_ABANDONED = 'That query was dropped when the view moved on.';
+export const NOT_LOCAL = 'Queries here read this fight’s own file; they cannot fetch from another address.';
 
 /**
  * Where scripts/sync-duckdb.mjs publishes the vendored DuckDB extensions. DuckDB builds
@@ -137,8 +138,45 @@ export const EXTENSION_REPOSITORY = '/duckdb/extensions';
 /** A query that has not answered by then has its engine torn down and rebuilt. */
 export const QUERY_TIMEOUT_MS = 30_000;
 
+/**
+ * How long a graceful shutdown is given before the worker is killed outright.
+ *
+ * DuckDB's own `connection.close()` posts a DISCONNECT message and waits for the worker
+ * to answer it, and the worker answers on the same single-threaded message loop the query
+ * is running on -- so the one shutdown that has to work, the one after a query wedged the
+ * worker, is exactly the one that would hang forever. Past this the worker is terminated.
+ */
+export const ENGINE_CLOSE_TIMEOUT_MS = 2_000;
+
+/**
+ * How long the layer waits for an engine to shut down before it stops caring. Longer than
+ * ENGINE_CLOSE_TIMEOUT_MS, so the real engine always finishes first and this only bites a
+ * `load()` that returns something misbehaving: the point is that close() and the run
+ * queue behind it can never be held hostage by an engine that will not die.
+ */
+export const TEARDOWN_TIMEOUT_MS = 5_000;
+
 /** The most rows one answer materialises; `total` carries the real count. */
 export const MAX_ROWS = 200;
+
+/**
+ * Waits for `work`, but never longer than `ms`, and never rejects. Used only for shutdown,
+ * where the useful outcome is "stop waiting" rather than "report what went wrong": the
+ * caller's next line kills the worker regardless.
+ */
+function withDeadline(work: Promise<unknown>, ms: number): Promise<void> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const deadline = new Promise<void>((resolve) => {
+    timer = setTimeout(resolve, ms);
+  });
+  return Promise.race([
+    work.then(
+      () => undefined,
+      () => undefined,
+    ),
+    deadline,
+  ]).finally(() => clearTimeout(timer));
+}
 
 /**
  * One statement, and it must be a SELECT or a WITH. This is not a security boundary --
@@ -150,6 +188,28 @@ export function isReadOnlySql(sql: string): boolean {
   const trimmed = sql.trim().replace(/;+\s*$/, '');
   if (trimmed.includes(';')) return false;
   return /^(select|with)\b/i.test(trimmed);
+}
+
+/**
+ * No address but this fight's own file.
+ *
+ * `read_parquet('https://…')` is the one way a query can still reach off this origin: it
+ * makes DuckDB autoload `httpfs`, which is not among the extensions vendored into
+ * public/duckdb/extensions, and then fetch from wherever the URL points. Neither belongs
+ * on a site whose rule is that every byte comes from foreversixty.gg, so a query carrying
+ * any URL scheme is refused before the engine is even built. The events file is already
+ * registered in DuckDB's own filesystem under a bare name, so nothing legitimate here
+ * needs one.
+ */
+export function isLocalOnlySql(sql: string): boolean {
+  return !/[a-z][a-z0-9+.-]*:\/\//i.test(sql);
+}
+
+/** The one gate run() applies: the refusal to show, or null when the query may run. */
+export function refuseSql(sql: string): string | null {
+  if (!isReadOnlySql(sql)) return NOT_A_READ;
+  if (!isLocalOnlySql(sql)) return NOT_LOCAL;
+  return null;
 }
 
 export function withWindow(sql: string, window: TimeWindow): string {
@@ -191,6 +251,8 @@ export interface QueryLayerOptions {
   fetchBytes: (url: string) => Promise<Uint8Array>;
   /** Overridden only by tests; production uses QUERY_TIMEOUT_MS. */
   timeoutMs?: number;
+  /** Overridden only by tests; production uses TEARDOWN_TIMEOUT_MS. */
+  teardownMs?: number;
 }
 
 export interface QueryLayer {
@@ -217,6 +279,7 @@ export interface QueryLayer {
  */
 export function createQueryLayer(options: QueryLayerOptions): QueryLayer {
   const timeoutMs = options.timeoutMs ?? QUERY_TIMEOUT_MS;
+  const teardownMs = options.teardownMs ?? TEARDOWN_TIMEOUT_MS;
   let engine: QueryEngine | null = null;
   let loading: Promise<QueryEngine> | null = null;
   let openedUrl = '';
@@ -233,11 +296,24 @@ export function createQueryLayer(options: QueryLayerOptions): QueryLayer {
   }
 
   function engineOnce(): Promise<QueryEngine> {
-    loading ??= options.load().then((built) => {
-      engine = built;
-      return built;
-    });
-    return loading;
+    if (loading !== null) return loading;
+    const attempt: Promise<QueryEngine> = options.load().then(
+      (built) => {
+        engine = built;
+        return built;
+      },
+      (thrown: unknown) => {
+        // Cleared, because a rejected promise stays rejected and `??=` would never
+        // replace it. The download that fails here is the thirty-odd megabyte engine, the
+        // one a flaky connection actually drops, and without this every later Run would
+        // answer with the same stale error and no network activity at all. Only if it is
+        // still the current attempt: a teardown may already have started a newer one.
+        if (loading === attempt) loading = null;
+        throw thrown;
+      },
+    );
+    loading = attempt;
+    return attempt;
   }
 
   async function teardown(): Promise<void> {
@@ -248,8 +324,15 @@ export function createQueryLayer(options: QueryLayerOptions): QueryLayer {
     openedUrl = '';
     if (pending === null) return;
     // Awaited, not dropped: a build still in flight would otherwise resolve into a live
-    // worker with nobody left holding a reference to terminate it.
-    await pending.then((built) => built.close(), ignore).catch(ignore);
+    // worker with nobody left holding a reference to terminate it. Bounded, because this
+    // is awaited from inside the run queue on the timeout path: an engine that will not
+    // shut down must not also stop every later query from starting. Giving up on the
+    // await does not abandon the shutdown -- createDuckDbEngine's close() kills the
+    // worker in a `finally` whether anyone is still listening or not.
+    await withDeadline(
+      pending.then((built) => built.close(), ignore),
+      teardownMs,
+    );
   }
 
   /** Throws if the layer was closed, or timed out, while the last await was outstanding. */
@@ -293,8 +376,9 @@ export function createQueryLayer(options: QueryLayerOptions): QueryLayer {
     },
     run(eventsUrl: string, sql: string): Promise<QueryResult> {
       // Ahead of the queue on purpose: a statement that will never be allowed to run
-      // should not wait behind a slow one to be told so.
-      if (!isReadOnlySql(sql)) return Promise.reject(new Error(NOT_A_READ));
+      // should not wait behind a slow one to be told so, and nothing is built for it.
+      const refusal = refuseSql(sql);
+      if (refusal !== null) return Promise.reject(new Error(refusal));
       // Read now, not inside the job: the job is a microtask away, and a close() in
       // between -- the visitor leaving the Queries view the instant after pressing Run --
       // would otherwise be read as having happened before the run, and the layer would
@@ -376,9 +460,19 @@ export async function createDuckDbEngine(): Promise<QueryEngine> {
       return { columns, rows, elapsedMs: performance.now() - started, total: table.numRows };
     },
     async close(): Promise<void> {
-      await connection.close();
-      await database.terminate();
-      worker.terminate();
+      // The graceful half is best-effort and on a deadline. connection.close() posts
+      // DISCONNECT and waits for the worker to answer on the same message loop a running
+      // query occupies, so after a query wedged the worker -- the one case this path
+      // exists to recover from -- it never returns. The kill is in a `finally` so it
+      // happens on every route out of here, including that one.
+      try {
+        await withDeadline(connection.close(), ENGINE_CLOSE_TIMEOUT_MS);
+      } finally {
+        // AsyncDuckDB.terminate() is what actually calls worker.terminate(); the second
+        // call is the belt for a database that has already forgotten its worker.
+        await database.terminate().catch(() => undefined);
+        worker.terminate();
+      }
     },
   };
 }
