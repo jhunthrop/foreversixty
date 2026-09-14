@@ -150,6 +150,18 @@ func (b *Build) Trees(classID int) []Tree { return b.trees[classID] }
 
 func (b *Build) Sets() []Set { return b.sets }
 
+// Classes lists the build's classes by id. The rankings need it to turn
+// a class name the engine read out of a log into the class id the
+// talent data is keyed by.
+func (b *Build) Classes() []Class {
+	out := make([]Class, 0, len(b.classes))
+	for _, c := range b.classes {
+		out = append(out, c)
+	}
+	sort.Slice(out, func(i, j int) bool { return out[i].ID < out[j].ID })
+	return out
+}
+
 // Data holds every build found under the tree data directory.
 type Data struct {
 	builds  map[string]*Build
@@ -177,6 +189,18 @@ func (d *Data) Versions() []string {
 // every save then fails validation on tree_version, which is the right
 // behaviour while the data pipeline is catching up.
 func (d *Data) Skipped() []string { return d.skipped }
+
+// Latest is the newest build's data, which is what the rankings infer
+// specs from: talent ids are stable across client builds, and a report
+// parsed today is best read against today's trees. The second return is
+// false when no build loaded at all.
+func (d *Data) Latest() (*Build, bool) {
+	versions := d.Versions()
+	if len(versions) == 0 {
+		return nil, false
+	}
+	return d.builds[versions[len(versions)-1]], true
+}
 
 // Load reads every build directory under dir. A directory that does not look
 // like a Phase 1 build is skipped (see Skipped); a directory that does look

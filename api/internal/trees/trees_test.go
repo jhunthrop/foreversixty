@@ -165,3 +165,41 @@ func TestLoadRejectsDuplicateTalentIDs(t *testing.T) {
 		t.Fatalf("err = %v, want duplicate talent id 101", err)
 	}
 }
+
+func TestClassesAreListedByID(t *testing.T) {
+	data, err := LoadFixture()
+	if err != nil {
+		t.Fatal(err)
+	}
+	b, ok := data.Build("test-1")
+	if !ok {
+		t.Fatal("the fixture build should load")
+	}
+	classes := b.Classes()
+	if len(classes) == 0 {
+		t.Fatal("the fixture has classes")
+	}
+	for i := 1; i < len(classes); i++ {
+		if classes[i-1].ID >= classes[i].ID {
+			t.Fatalf("classes are not ordered by id: %v", classes)
+		}
+	}
+}
+
+func TestLatestIsTheNewestBuild(t *testing.T) {
+	data, err := LoadFixture()
+	if err != nil {
+		t.Fatal(err)
+	}
+	b, ok := data.Latest()
+	if !ok {
+		t.Fatal("the fixture build should be the latest")
+	}
+	versions := data.Versions()
+	if b.Version != versions[len(versions)-1] {
+		t.Fatalf("latest = %q, want %q", b.Version, versions[len(versions)-1])
+	}
+	if _, ok := (&Data{}).Latest(); ok {
+		t.Fatal("no builds means no latest")
+	}
+}
