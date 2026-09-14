@@ -124,7 +124,15 @@ func (a *Authenticator) Middleware(next http.Handler) http.Handler {
 		// fresh random token to a request that is missing it gives a
 		// cross-site caller nothing: it still cannot read the cookie to
 		// echo it in the header.
-		if c, err := r.Cookie(CSRFCookie); err != nil || c.Value == "" {
+		// The re-issue is limited to requests whose response is never
+		// shared: a state-changing one (which is about to 403) and the
+		// account read. A public, cacheable read such as a ranking page
+		// or a report card must never carry one viewer's Set-Cookie
+		// into a cache another viewer is served from, so those are
+		// left alone, and the response that does re-issue is marked
+		// no-store for the same reason.
+		if c, err := r.Cookie(CSRFCookie); (err != nil || c.Value == "") && reissuesCSRF(r) {
+			w.Header().Set("Cache-Control", "no-store")
 			a.setCookie(w, CSRFCookie, NewSessionID(), SessionTTL, false)
 		}
 		if stateChanging(r.Method) && !a.csrfOK(r) {
@@ -148,6 +156,15 @@ func bearerToken(r *http.Request) (string, bool) {
 		return "", false
 	}
 	return token, true
+}
+
+// mePath is the one read whose response is per-user by definition and
+// which the site fetches on every page load, so it is where a browser
+// that lost fs_csrf gets it back.
+const mePath = "/v1/me"
+
+func reissuesCSRF(r *http.Request) bool {
+	return stateChanging(r.Method) || r.URL.Path == mePath
 }
 
 func stateChanging(method string) bool {

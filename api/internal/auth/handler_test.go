@@ -292,8 +292,9 @@ func TestPairClaimListAndRevokeADevice(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer asDevice.Body.Close()
-	if asDevice.StatusCode != http.StatusOK {
-		t.Fatalf("/v1/me as the device = %d", asDevice.StatusCode)
+	// A device token uploads; it does not read the account behind it.
+	if asDevice.StatusCode != http.StatusUnauthorized {
+		t.Fatalf("/v1/me as the device = %d, want 401", asDevice.StatusCode)
 	}
 
 	// But it cannot pair another device: that needs a browser session.

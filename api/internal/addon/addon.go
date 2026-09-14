@@ -240,6 +240,14 @@ func (s *Service) putExports(w http.ResponseWriter, r *http.Request) {
 				map[string]string{"characters": "region must be one of us, eu, kr, tw, cn"})
 			return
 		}
+		// The name becomes the key's slug and, through the inbox, a
+		// Lua string; the same rule ValidKey applies on the way back
+		// out is applied on the way in.
+		if !character.ValidSlug(character.Slug(c.Name)) {
+			httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "that character cannot be stored",
+				map[string]string{"characters": "name must be letters, digits, spaces and hyphens"})
+			return
+		}
 	}
 	if err := s.Store.PutExports(r.Context(), auth.ActorFrom(r.Context()).UserID, in.Characters); err != nil {
 		if errors.Is(err, ErrCharacterClaimed) {

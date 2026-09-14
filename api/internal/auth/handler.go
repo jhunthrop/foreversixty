@@ -61,7 +61,9 @@ func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	// logout route, in the shape the account page uses: a DELETE of
 	// the session resource, answering 204.
 	mux.HandleFunc("DELETE /v1/sessions", RequireSession(s.deleteSession))
-	mux.HandleFunc("GET /v1/me", Require(s.me))
+	// A paired device holds a token for uploading, not for reading the
+	// account behind it; the email and guild list stay with the browser.
+	mux.HandleFunc("GET /v1/me", RequireSession(s.me))
 	mux.HandleFunc("PATCH /v1/me", RequireSession(s.patchMe))
 	mux.HandleFunc("POST /v1/devices/pair", RequireSession(s.pair))
 	claimLimit := httpx.RateLimitPer(claimsPerHour, time.Hour, trustedProxyHops)

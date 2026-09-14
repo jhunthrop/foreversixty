@@ -227,6 +227,25 @@ func TestALostCSRFCookieIsReissuedWhileTheSessionStands(t *testing.T) {
 	if got := setCookie(w.Result(), CSRFCookie); got == nil || got.Value == "" {
 		t.Fatalf("a read with a session and no token must re-issue one: %v", w.Result().Cookies())
 	}
+	if got := w.Header().Get("Cache-Control"); got != "no-store" {
+		t.Fatalf("a response that re-issues fs_csrf must be no-store, got %q", got)
+	}
+
+	// A public read is shared through caches, so it never carries the
+	// re-issue: one viewer's cookie must not be served to the next.
+	w = httptest.NewRecorder()
+	r = httptest.NewRequest(http.MethodGet, "/v1/rankings?encounter=1", nil)
+	r.AddCookie(&http.Cookie{Name: SessionCookie, Value: sess.ID})
+	h.ServeHTTP(w, r)
+	if w.Code != http.StatusOK {
+		t.Fatalf("a public read = %d, want 200", w.Code)
+	}
+	if got := setCookie(w.Result(), CSRFCookie); got != nil {
+		t.Fatalf("a public read re-issued fs_csrf into a cacheable response: %+v", got)
+	}
+	if got := w.Header().Get("Cache-Control"); got != "" {
+		t.Fatalf("a public read had its cache policy overridden: %q", got)
+	}
 }
 
 // A request that already carries fs_csrf is left alone: re-issuing on

@@ -140,6 +140,7 @@ func TestExportsRefuseNonsense(t *testing.T) {
 		"no name":       `{"characters":[{"name":"","ruleset":"pvp","region":"us","export":"FS1:a"}]}`,
 		"no export":     `{"characters":[{"name":"Baelgrim","ruleset":"pvp","region":"us","export":""}]}`,
 		"bad region":    `{"characters":[{"name":"Baelgrim","ruleset":"pvp","region":"mars","export":"FS1:a"}]}`,
+		"bad name":      `{"characters":[{"name":"Bael\tgrim\"]","ruleset":"pvp","region":"us","export":"FS1:a"}]}`,
 	} {
 		res := h.do(http.MethodPost, "/v1/addon/exports", body)
 		res.Body.Close()
