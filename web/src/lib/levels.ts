@@ -22,10 +22,13 @@ export function levelRangeLong(min?: number, max?: number): string {
   return min && max ? `Level ${min}–${max}` : UNKNOWN_LONG;
 }
 
-/** Rarity colour token for a range, keyed on its lower bound. */
+/**
+ * Rarity colour token for a range, keyed on its lower bound. These land on text, so rare and
+ * epic take the `-text` variants that clear WCAG AA on --color-raised; see tokens.css.
+ */
 export function levelColorClass(min?: number): string {
   if (!min) return 'text-muted';
-  if (min >= HIGH_BRACKET_MIN_LEVEL) return 'text-rarity-epic';
-  if (min >= MID_BRACKET_MIN_LEVEL) return 'text-rarity-rare';
+  if (min >= HIGH_BRACKET_MIN_LEVEL) return 'text-rarity-epic-text';
+  if (min >= MID_BRACKET_MIN_LEVEL) return 'text-rarity-rare-text';
   return 'text-rarity-uncommon';
 }

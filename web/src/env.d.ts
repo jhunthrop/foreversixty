@@ -7,3 +7,12 @@ declare namespace Astro {
     'client:interaction'?: boolean;
   }
 }
+
+interface ImportMetaEnv {
+  /** Origin of the Go API. Defaults to https://api.foreversixty.gg in lib/planner/config.ts. */
+  readonly PUBLIC_API_BASE_URL?: string;
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}

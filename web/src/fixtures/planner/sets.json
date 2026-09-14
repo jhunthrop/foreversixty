@@ -1,0 +1,13 @@
+[
+  {
+    "id": 550,
+    "name": "Battlegear of Wrath",
+    "item_ids": [16963, 16966],
+    "bonuses": [
+      {
+        "pieces": 2,
+        "description": "Increases your chance to parry an attack by 1%."
+      }
+    ]
+  }
+]

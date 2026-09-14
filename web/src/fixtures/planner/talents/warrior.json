@@ -1,0 +1,409 @@
+{
+  "build": "1.15.9.69722",
+  "class_id": 1,
+  "class_slug": "warrior",
+  "trees": [
+    {
+      "id": 161,
+      "name": "Arms",
+      "position": 0,
+      "talents": [
+        {
+          "id": 1001,
+          "name": "Improved Heroic Strike",
+          "icon": "fixture_improved_heroic_strike",
+          "max_rank": 3,
+          "tier": 0,
+          "column": 0,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 10011,
+              "description": "Reduces the rage cost of Heroic Strike by 1."
+            },
+            {
+              "spell_id": 10012,
+              "description": "Reduces the rage cost of Heroic Strike by 2."
+            },
+            {
+              "spell_id": 10013,
+              "description": "Reduces the rage cost of Heroic Strike by 3."
+            }
+          ]
+        },
+        {
+          "id": 1002,
+          "name": "Deflection",
+          "icon": "fixture_deflection",
+          "max_rank": 5,
+          "tier": 0,
+          "column": 1,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 10021,
+              "description": "Increases your chance to parry by 1%."
+            },
+            {
+              "spell_id": 10022,
+              "description": "Increases your chance to parry by 2%."
+            },
+            {
+              "spell_id": 10023,
+              "description": "Increases your chance to parry by 3%."
+            },
+            {
+              "spell_id": 10024,
+              "description": "Increases your chance to parry by 4%."
+            },
+            {
+              "spell_id": 10025,
+              "description": "Increases your chance to parry by 5%."
+            }
+          ]
+        },
+        {
+          "id": 1003,
+          "name": "Improved Rend",
+          "icon": "fixture_improved_rend",
+          "max_rank": 3,
+          "tier": 1,
+          "column": 0,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 10031,
+              "description": "Increases the damage of Rend by 5%."
+            },
+            {
+              "spell_id": 10032,
+              "description": "Increases the damage of Rend by 10%."
+            },
+            {
+              "spell_id": 10033,
+              "description": "Increases the damage of Rend by 15%."
+            }
+          ]
+        },
+        {
+          "id": 1004,
+          "name": "Tactical Mastery",
+          "icon": "fixture_tactical_mastery",
+          "max_rank": 5,
+          "tier": 1,
+          "column": 1,
+          "prereq_talent_id": 1002,
+          "prereq_rank": 2,
+          "ranks": [
+            {
+              "spell_id": 10041,
+              "description": "Retains up to 5 rage when you change stances."
+            },
+            {
+              "spell_id": 10042,
+              "description": "Retains up to 10 rage when you change stances."
+            },
+            {
+              "spell_id": 10043,
+              "description": "Retains up to 15 rage when you change stances."
+            },
+            {
+              "spell_id": 10044,
+              "description": "Retains up to 20 rage when you change stances."
+            },
+            {
+              "spell_id": 10045,
+              "description": "Retains up to 25 rage when you change stances."
+            }
+          ]
+        },
+        {
+          "id": 1005,
+          "name": "Sweeping Strikes",
+          "icon": "fixture_sweeping_strikes",
+          "max_rank": 1,
+          "tier": 2,
+          "column": 0,
+          "prereq_talent_id": 1003,
+          "prereq_rank": 3,
+          "ranks": [
+            {
+              "spell_id": 10051,
+              "description": "Your next 5 melee attacks strike an additional nearby target."
+            }
+          ]
+        },
+        {
+          "id": 1006,
+          "name": "Impale",
+          "icon": "fixture_impale",
+          "max_rank": 2,
+          "tier": 2,
+          "column": 1,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 10061,
+              "description": "Increases critical strike damage by 10%."
+            },
+            {
+              "spell_id": 10062,
+              "description": "Increases critical strike damage by 20%."
+            }
+          ]
+        },
+        {
+          "id": 1007,
+          "name": "Axe Specialization",
+          "icon": "fixture_axe_specialization",
+          "max_rank": 5,
+          "tier": 3,
+          "column": 0,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 10071,
+              "description": "Increases your chance to critically hit with axes by 1%."
+            },
+            {
+              "spell_id": 10072,
+              "description": "Increases your chance to critically hit with axes by 2%."
+            },
+            {
+              "spell_id": 10073,
+              "description": "Increases your chance to critically hit with axes by 3%."
+            },
+            {
+              "spell_id": 10074,
+              "description": "Increases your chance to critically hit with axes by 4%."
+            },
+            {
+              "spell_id": 10075,
+              "description": "Increases your chance to critically hit with axes by 5%."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 164,
+      "name": "Fury",
+      "position": 1,
+      "talents": [
+        {
+          "id": 2001,
+          "name": "Booming Voice",
+          "icon": "fixture_booming_voice",
+          "max_rank": 5,
+          "tier": 0,
+          "column": 0,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 20011,
+              "description": "Increases the duration of your shouts by 10%."
+            },
+            {
+              "spell_id": 20012,
+              "description": "Increases the duration of your shouts by 20%."
+            },
+            {
+              "spell_id": 20013,
+              "description": "Increases the duration of your shouts by 30%."
+            },
+            {
+              "spell_id": 20014,
+              "description": "Increases the duration of your shouts by 40%."
+            },
+            {
+              "spell_id": 20015,
+              "description": "Increases the duration of your shouts by 50%."
+            }
+          ]
+        },
+        {
+          "id": 2002,
+          "name": "Cruelty",
+          "icon": "fixture_cruelty",
+          "max_rank": 5,
+          "tier": 0,
+          "column": 1,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 20021,
+              "description": "Increases your chance to critically hit by 1%."
+            },
+            {
+              "spell_id": 20022,
+              "description": "Increases your chance to critically hit by 2%."
+            },
+            {
+              "spell_id": 20023,
+              "description": "Increases your chance to critically hit by 3%."
+            },
+            {
+              "spell_id": 20024,
+              "description": "Increases your chance to critically hit by 4%."
+            },
+            {
+              "spell_id": 20025,
+              "description": "Increases your chance to critically hit by 5%."
+            }
+          ]
+        },
+        {
+          "id": 2003,
+          "name": "Unbridled Wrath",
+          "icon": "fixture_unbridled_wrath",
+          "max_rank": 5,
+          "tier": 1,
+          "column": 0,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 20031,
+              "description": "Gives you a 8% chance to generate an extra rage point on a melee hit."
+            },
+            {
+              "spell_id": 20032,
+              "description": "Gives you a 16% chance to generate an extra rage point on a melee hit."
+            },
+            {
+              "spell_id": 20033,
+              "description": "Gives you a 24% chance to generate an extra rage point on a melee hit."
+            },
+            {
+              "spell_id": 20034,
+              "description": "Gives you a 32% chance to generate an extra rage point on a melee hit."
+            },
+            {
+              "spell_id": 20035,
+              "description": "Gives you a 40% chance to generate an extra rage point on a melee hit."
+            }
+          ]
+        },
+        {
+          "id": 2004,
+          "name": "Improved Battle Shout",
+          "icon": "fixture_improved_battle_shout",
+          "max_rank": 5,
+          "tier": 1,
+          "column": 1,
+          "prereq_talent_id": 2001,
+          "prereq_rank": 1,
+          "ranks": [
+            {
+              "spell_id": 20041,
+              "description": "Increases the attack power of Battle Shout by 5%."
+            },
+            {
+              "spell_id": 20042,
+              "description": "Increases the attack power of Battle Shout by 10%."
+            },
+            {
+              "spell_id": 20043,
+              "description": "Increases the attack power of Battle Shout by 15%."
+            },
+            {
+              "spell_id": 20044,
+              "description": "Increases the attack power of Battle Shout by 20%."
+            },
+            {
+              "spell_id": 20045,
+              "description": "Increases the attack power of Battle Shout by 25%."
+            }
+          ]
+        },
+        {
+          "id": 2005,
+          "name": "Enrage",
+          "icon": "fixture_enrage",
+          "max_rank": 5,
+          "tier": 2,
+          "column": 0,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 20051,
+              "description": "Increases your melee damage by 3% after being critically hit."
+            },
+            {
+              "spell_id": 20052,
+              "description": "Increases your melee damage by 6% after being critically hit."
+            },
+            {
+              "spell_id": 20053,
+              "description": "Increases your melee damage by 9% after being critically hit."
+            },
+            {
+              "spell_id": 20054,
+              "description": "Increases your melee damage by 12% after being critically hit."
+            },
+            {
+              "spell_id": 20055,
+              "description": "Increases your melee damage by 15% after being critically hit."
+            }
+          ]
+        },
+        {
+          "id": 2006,
+          "name": "Death Wish",
+          "icon": "fixture_death_wish",
+          "max_rank": 1,
+          "tier": 2,
+          "column": 1,
+          "prereq_talent_id": 2003,
+          "prereq_rank": 3,
+          "ranks": [
+            {
+              "spell_id": 20061,
+              "description": "Increases your physical damage by 20% and raises damage taken by 20%."
+            }
+          ]
+        },
+        {
+          "id": 2007,
+          "name": "Flurry",
+          "icon": "fixture_flurry",
+          "max_rank": 5,
+          "tier": 3,
+          "column": 0,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 20071,
+              "description": "Increases your attack speed by 5% after a critical strike."
+            },
+            {
+              "spell_id": 20072,
+              "description": "Increases your attack speed by 10% after a critical strike."
+            },
+            {
+              "spell_id": 20073,
+              "description": "Increases your attack speed by 15% after a critical strike."
+            },
+            {
+              "spell_id": 20074,
+              "description": "Increases your attack speed by 20% after a critical strike."
+            },
+            {
+              "spell_id": 20075,
+              "description": "Increases your attack speed by 25% after a critical strike."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

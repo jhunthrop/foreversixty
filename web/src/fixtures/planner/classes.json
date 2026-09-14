@@ -1,0 +1,164 @@
+[
+  {
+    "id": 1,
+    "name": "Warrior",
+    "slug": "warrior",
+    "color": "#c69b6d",
+    "forever_changes": [
+      {
+        "text": "Skyborne can be Warriors.",
+        "sources": [
+          {
+            "label": "Wowhead, Skyborne First Look",
+            "url": "https://www.wowhead.com/forever/news/skyborne-first-look-new-neutral-race-in-world-of-warcraft-forever-382829",
+            "kind": "community"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Paladin",
+    "slug": "paladin",
+    "color": "#f48cba",
+    "forever_changes": [
+      {
+        "text": "Undead can be Paladins.",
+        "sources": [
+          {
+            "label": "Blizzard, World of Warcraft at BlizzCon 2026",
+            "url": "https://news.blizzard.com/en-us/article/24301145/world-of-warcraft-at-blizzcon-2026-discover-whats-next",
+            "kind": "blizzard"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Hunter",
+    "slug": "hunter",
+    "color": "#aad372",
+    "forever_changes": [
+      {
+        "text": "Skyborne can be Hunters.",
+        "sources": [
+          {
+            "label": "Wowhead, Skyborne First Look",
+            "url": "https://www.wowhead.com/forever/news/skyborne-first-look-new-neutral-race-in-world-of-warcraft-forever-382829",
+            "kind": "community"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Rogue",
+    "slug": "rogue",
+    "color": "#fff468",
+    "forever_changes": [
+      {
+        "text": "Skyborne can be Rogues.",
+        "sources": [
+          {
+            "label": "Wowhead, Skyborne First Look",
+            "url": "https://www.wowhead.com/forever/news/skyborne-first-look-new-neutral-race-in-world-of-warcraft-forever-382829",
+            "kind": "community"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "name": "Priest",
+    "slug": "priest",
+    "color": "#ffffff",
+    "forever_changes": [
+      {
+        "text": "Race-specific Priest spells are unchanged.",
+        "sources": [
+          {
+            "label": "Wowhead, Skyborne First Look",
+            "url": "https://www.wowhead.com/forever/news/skyborne-first-look-new-neutral-race-in-world-of-warcraft-forever-382829",
+            "kind": "community"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "name": "Shaman",
+    "slug": "shaman",
+    "color": "#3f8fe0",
+    "forever_changes": [
+      {
+        "text": "Shaman remains Horde-only.",
+        "sources": [
+          {
+            "label": "Wowhead, Skyborne First Look",
+            "url": "https://www.wowhead.com/forever/news/skyborne-first-look-new-neutral-race-in-world-of-warcraft-forever-382829",
+            "kind": "community"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "name": "Mage",
+    "slug": "mage",
+    "color": "#3fc7eb",
+    "forever_changes": [
+      {
+        "text": "Mage race list is unchanged.",
+        "sources": [
+          {
+            "label": "Wowhead, Skyborne First Look",
+            "url": "https://www.wowhead.com/forever/news/skyborne-first-look-new-neutral-race-in-world-of-warcraft-forever-382829",
+            "kind": "community"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "name": "Warlock",
+    "slug": "warlock",
+    "color": "#8788ee",
+    "forever_changes": [
+      {
+        "text": "Warlock race list is unchanged.",
+        "sources": [
+          {
+            "label": "Wowhead, Skyborne First Look",
+            "url": "https://www.wowhead.com/forever/news/skyborne-first-look-new-neutral-race-in-world-of-warcraft-forever-382829",
+            "kind": "community"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "name": "Druid",
+    "slug": "druid",
+    "color": "#ff7c0a",
+    "forever_changes": [
+      {
+        "text": "Skyborne can be Druids, with sky-blue forms.",
+        "sources": [
+          {
+            "label": "Wowhead, Skyborne First Look",
+            "url": "https://www.wowhead.com/forever/news/skyborne-first-look-new-neutral-race-in-world-of-warcraft-forever-382829",
+            "kind": "community"
+          }
+        ]
+      }
+    ]
+  }
+]

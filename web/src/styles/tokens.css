@@ -41,6 +41,12 @@
   --color-rarity-rare: #0070dd;
   --color-rarity-epic: #a335ee;
   --color-rarity-legendary: #ff8000;
+  /* Rare and epic are the game's colours, kept as they are for bars, borders and icons, but
+     both fall short of WCAG AA as 13-14px text on --color-raised (3.92:1 and 3.87:1). These
+     two lightened variants are what the rarity text classes use -- the same move the Shaman
+     class colour already makes above. */
+  --color-rarity-rare-text: #3d94f0;
+  --color-rarity-epic-text: #b866f5;
 
   --font-display: 'Cinzel', 'Trajan Pro', Georgia, serif;
   /* 'Barlow Fallback' (defined in Base.astro) is a size-adjusted Helvetica Neue/Arial that

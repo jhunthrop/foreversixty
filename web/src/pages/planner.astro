@@ -1,0 +1,24 @@
+---
+// web/src/pages/planner.astro
+// Static page. `?class=` and `?race=` are read by the island in the browser, because the
+// page itself is prerendered and has no request to read.
+import Base from '../layouts/Base.astro';
+import Planner from '../components/planner/Planner.svelte';
+import activeBuild from '../data/active-build.json';
+import { DEFAULT_CLASS_SLUG } from '../lib/planner/config';
+---
+
+<Base
+  title="Build planner"
+  description="Plan a World of Warcraft: Forever build: talents in the order you spend them, and a short link to share it."
+  path="/planner"
+>
+  <main
+    id="main"
+    tabindex="-1"
+    class="mx-auto flex w-full max-w-[1344px] flex-col gap-[22px] pt-4 pb-10 md:gap-8 md:px-12 md:pt-7"
+  >
+    <h1 class="section-title px-[18px] text-[18px] md:px-0">Build planner</h1>
+    <Planner client:load treeVersion={activeBuild.build} classSlug={DEFAULT_CLASS_SLUG} />
+  </main>
+</Base>

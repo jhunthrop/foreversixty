@@ -4,3 +4,5 @@ dist/
 test-results/
 playwright-report/
 package-lock.json
+public/data/
+src/data/generated/

@@ -1,14 +1,22 @@
 {
   // Cloudflare Workers static-assets deployment for foreversixty.gg.
-  // Pages has been folded into Workers; the site is served as assets with no Worker code.
+  // Pages has been folded into Workers; the site is served as assets, with one Worker route.
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "foreversixty",
   "compatibility_date": "2026-09-01",
+  "main": "src/worker.ts",
   "assets": {
     "directory": "./dist",
     // build.format 'file' emits dungeons.html; auto-trailing-slash serves it at /dungeons.
     "html_handling": "auto-trailing-slash",
     "not_found_handling": "404-page",
+    "binding": "ASSETS",
+    // Only /b/* reaches src/worker.ts. Every other path is served from the assets with no
+    // Worker invocation, so the static site keeps its zero-runtime cost.
+    "run_worker_first": ["/b/*"],
+  },
+  "vars": {
+    "API_BASE_URL": "https://api.foreversixty.gg",
   },
   "workers_dev": true,
   "routes": [

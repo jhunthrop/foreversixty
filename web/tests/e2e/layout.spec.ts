@@ -5,7 +5,7 @@ import { expect, test } from '@playwright/test';
 test.describe('phone layout', () => {
   test.use({ viewport: { width: 360, height: 800 } });
 
-  for (const path of ['/', '/dungeons', '/dungeons/hall-of-thanes', '/changelog']) {
+  for (const path of ['/', '/planner', '/dungeons', '/dungeons/hall-of-thanes', '/changelog']) {
     test(`${path} fits the viewport without scrolling sideways`, async ({ page }) => {
       await page.goto(path);
       const { scrollWidth, clientWidth } = await page.evaluate(() => ({

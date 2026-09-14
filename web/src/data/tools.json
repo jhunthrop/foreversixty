@@ -2,8 +2,8 @@
   {
     "title": "Build planner",
     "description": "Revamped talents and every race and class combo, including Skyborne and Undead Paladin. Share a build by link.",
-    "href": "/builds",
-    "status": { "label": "Sept 17", "kind": "site" },
+    "href": "/planner",
+    "status": { "label": "Live", "kind": "site" },
     "icon": "talents"
   },
   {

@@ -32,7 +32,9 @@ shapes the plans share so they can be executed in parallel worktrees. Values her
 
 `TREE_VERSION` is the client build string, e.g. `1.15.9.69722`. The site reads
 `web/src/data/active-build.json` → `{ "build": "1.15.9.69722" }`. The API accepts any
-`tree_version` for which `TREE_DATA_DIR/<build>/` exists.
+`tree_version` for which `TREE_DATA_DIR/<build>/` exists. The site publishes `public/data/<build>/`
+for every build with Phase 1 data, not only the active one, so a `tree_version` shared against an
+earlier build keeps resolving.
 
 ## Pipeline outputs (data plan produces; web and api consume)
 
