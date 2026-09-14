@@ -42,7 +42,7 @@ the opening: build them once, together, around one shareable data model, for thi
 | Sixty Upgrades | Gear planning with stat weights | Gear picker on every build with curated, sourced weights | 1 to 2 |
 | RestedXP | In-game leveling guidance | Addon "follow": the next talent point in-game from any shared build | 2 |
 | Raidbots | Simulation and stat weights | Curated weights first; a browser-side simulator forked from WoWSims once the Forever trees settle | 2, then 4+ |
-| Warcraft Logs | Upload, parse, and analyze raid logs; rankings | Companion uploader, parser, per-fight tables and share links, then rankings and guild pages | 3, then 4 |
+| Warcraft Logs | Upload, parse, and analyze raid logs; rankings | Live logging through the companion, the full report experience with no ads, live rankings, character and guild pages, all free | 3 |
 | Deathlog, Deathmap | Hardcore deaths | Deathlog and deathmap fed by the addon, live the day Hardcore ships | 4 |
 | ironforge.pro | Population and faction balance | Later, from the site's own addon and log data rather than scraping | 4+ |
 | Discord, spreadsheets | Guild coordination | Guild pages on top of logs and characters | 4 |
@@ -59,8 +59,8 @@ Each phase ships on a date the game sets, and each one starts on the previous on
 | 0 Foundation | done Sept 13 | Site, research pages, data pipeline, API, hosting | live |
 | 1 Build planner | Sept 13 to Oct 10 | Planner with talents, point order, gear; shareable short links with preview cards; races and classes page | beta client exports talents Sept 17 |
 | 2 Addon | Oct 10 to Nov 4 | Addon with import, follow, gear upgrades; stat weights; gear-release tail | beta loads addons |
-| 3 Accounts, companion, logs MVP | Nov 4 to Dec 9 | Accounts, character tracker, desktop companion, log upload and parse, per-fight tables, share links | first raids Dec 9 |
-| 4 Logs at scale, Hardcore | Dec 9 onward | Rankings, guild pages; deathlog and deathmap; simulator start | Hardcore realms |
+| 3 Accounts, companion, logs | Nov 4 to Dec 9 | Accounts, character tracker, signed desktop companion with live logging, the full report experience, live rankings, character and guild pages | first raids Dec 9 |
+| 4 Hardcore and depth | Dec 9 onward | Replay and positional views, Mechanics content; deathlog and deathmap; simulator start | Hardcore realms |
 | 5 Simulator, population | 2027 | WoWSims fork per class; population from own data | trees stable |
 
 ## How each piece connects
