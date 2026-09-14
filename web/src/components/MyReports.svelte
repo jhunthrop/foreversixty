@@ -50,7 +50,8 @@
           <a href={`/reports/${report.id}`} class="font-semibold">{report.title === '' ? report.zone : report.title}</a>
           <span class="text-muted font-mono tabular text-[13px]">{day(report.created_at)}</span>
           <span class="text-muted text-[13px]">
-            {report.fight_count} fights · {report.kill_count} kills · {report.visibility}
+            <span class="font-mono tabular">{report.fight_count} fights · {report.kill_count} kills</span> ·
+            {report.visibility}
           </span>
           {#if report.status !== 'complete'}
             <span class="pill pill-site" data-testid="report-status">{report.status}</span>

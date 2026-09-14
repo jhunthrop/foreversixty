@@ -149,7 +149,11 @@
     {#if error !== ''}<p class="text-[14px]" role="alert" data-testid="account-error">{error}</p>{/if}
   </div>
 {:else if mode === 'reports'}
-  <MyReports signedIn={signedIn} />
+  {#if status === 'loading'}
+    <p class="text-muted text-[14px]">Loading your reports.</p>
+  {:else}
+    <MyReports signedIn={signedIn} />
+  {/if}
 {:else if mode === 'pairing'}
   <div class="flex flex-col gap-3" data-testid="pairing">
     {#if !signedIn}
