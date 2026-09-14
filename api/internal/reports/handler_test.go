@@ -1,0 +1,413 @@
+package reports
+
+import (
+	"encoding/json"
+	"net/http"
+	"strings"
+	"testing"
+
+	"github.com/jhunthrop/foreversixty/api/internal/auth"
+)
+
+func TestCreateAndReadAReport(t *testing.T) {
+	h := newHarness(t)
+	id := h.createReport(Public)
+	if len(id) != 12 {
+		t.Fatalf("report id = %q, want twelve characters", id)
+	}
+
+	res := h.do(http.MethodGet, "/v1/reports/"+id, "", nil)
+	var view View
+	h.data(res, &view)
+	if view.Title != "Tuesday" || view.Zone != "Blackrock Spire" || view.Status != StatusLive {
+		t.Fatalf("view = %+v", view)
+	}
+	if view.Owner == nil || view.Owner.ID != h.owner {
+		t.Fatalf("owner = %+v, want the creator", view.Owner)
+	}
+	if view.DataBaseURL != "https://foreversixty.gg/logs-data/reports/"+id {
+		t.Fatalf("data_base_url = %q", view.DataBaseURL)
+	}
+	if view.Fights == nil || view.Players == nil {
+		t.Fatalf("a new report should carry empty lists, not null: %+v", view)
+	}
+}
+
+func TestCreateRejectsABadVisibilityAndCharacter(t *testing.T) {
+	h := newHarness(t)
+	res := h.json(http.MethodPost, "/v1/reports", `{"visibility":"secret"}`)
+	if res.StatusCode != http.StatusBadRequest {
+		t.Fatalf("status = %d, want 400", res.StatusCode)
+	}
+	if h.errorFields(res)["visibility"] == "" {
+		t.Fatal("the 400 should name the visibility field")
+	}
+	res = h.json(http.MethodPost, "/v1/reports",
+		`{"visibility":"public","logging_character":{"region":"us","ruleset":"nightslayer","name":"Baelgrim"}}`)
+	if res.StatusCode != http.StatusBadRequest {
+		t.Fatalf("status = %d, want 400 for a realm that is not a ruleset", res.StatusCode)
+	}
+	if h.errorFields(res)["logging_character"] == "" {
+		t.Fatal("the 400 should name the character field")
+	}
+	res = h.json(http.MethodPost, "/v1/reports", `{`)
+	res.Body.Close()
+	if res.StatusCode != http.StatusBadRequest {
+		t.Fatalf("status = %d, want 400 for a broken body", res.StatusCode)
+	}
+}
+
+func TestAPrivateReportIsInvisibleToEveryoneElse(t *testing.T) {
+	h := newHarness(t)
+	id := h.createReport(Private)
+
+	h.actor = auth.Actor{UserID: h.owner + 99, Role: "user", Method: "session"}
+	res := h.do(http.MethodGet, "/v1/reports/"+id, "", nil)
+	res.Body.Close()
+	if res.StatusCode != http.StatusNotFound {
+		t.Fatalf("a stranger sees %d, want 404", res.StatusCode)
+	}
+
+	h.actor = auth.Actor{}
+	res = h.do(http.MethodGet, "/v1/reports/"+id, "", nil)
+	res.Body.Close()
+	if res.StatusCode != http.StatusNotFound {
+		t.Fatalf("an anonymous reader sees %d, want 404", res.StatusCode)
+	}
+
+	h.actor = auth.Actor{UserID: h.owner, Role: "user", Method: "session"}
+	res = h.do(http.MethodGet, "/v1/reports/"+id, "", nil)
+	var view View
+	h.data(res, &view)
+	if view.DataBaseURL != "https://api.foreversixty.gg/v1/reports/"+id+"/files" {
+		t.Fatalf("a private report's files are served by the API: %q", view.DataBaseURL)
+	}
+
+	h.actor = auth.Actor{UserID: h.owner + 99, Role: "moderator", Method: "session"}
+	res = h.do(http.MethodGet, "/v1/reports/"+id, "", nil)
+	res.Body.Close()
+	if res.StatusCode != http.StatusOK {
+		t.Fatalf("a moderator sees %d, want 200", res.StatusCode)
+	}
+}
+
+func TestAGuildReportIsVisibleToTheGuild(t *testing.T) {
+	h := newHarness(t)
+	id := h.createReport(GuildTo)
+	var guildID int64
+	if err := h.store.Pool.QueryRow(t.Context(),
+		`insert into guilds (region, ruleset, name) values ('us', 'hardcore', 'Forever') returning id`).
+		Scan(&guildID); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := h.store.Pool.Exec(t.Context(),
+		`update reports set guild_id = $2 where id = $1`, id, guildID); err != nil {
+		t.Fatal(err)
+	}
+	member := h.owner + 1
+	if _, err := h.store.Pool.Exec(t.Context(),
+		`insert into users (id, email) values ($1, 'member@example.com')
+		 on conflict (id) do nothing`, member); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := h.store.Pool.Exec(t.Context(),
+		`insert into guild_members (guild_id, user_id, rank) values ($1, $2, 'member')`,
+		guildID, member); err != nil {
+		t.Fatal(err)
+	}
+
+	h.actor = auth.Actor{UserID: member, Role: "user", Method: "session"}
+	res := h.do(http.MethodGet, "/v1/reports/"+id, "", nil)
+	var view View
+	h.data(res, &view)
+	if view.Guild == nil || view.Guild.Name != "Forever" || view.Guild.Ruleset != "hardcore" {
+		t.Fatalf("guild = %+v", view.Guild)
+	}
+
+	h.actor = auth.Actor{UserID: member + 1, Role: "user", Method: "session"}
+	res = h.do(http.MethodGet, "/v1/reports/"+id, "", nil)
+	res.Body.Close()
+	if res.StatusCode != http.StatusNotFound {
+		t.Fatalf("a non-member sees %d, want 404", res.StatusCode)
+	}
+}
+
+func TestPatchIsForTheOwnerAndGuildOfficers(t *testing.T) {
+	h := newHarness(t)
+	id := h.createReport(Public)
+
+	res := h.json(http.MethodPatch, "/v1/reports/"+id, `{"title":"Wednesday","visibility":"unlisted"}`)
+	var view View
+	h.data(res, &view)
+	if view.Title != "Wednesday" || view.Visibility != Unlisted {
+		t.Fatalf("view = %+v", view)
+	}
+
+	h.actor = auth.Actor{UserID: h.owner + 50, Role: "user", Method: "session"}
+	res = h.json(http.MethodPatch, "/v1/reports/"+id, `{"title":"Mine now"}`)
+	res.Body.Close()
+	if res.StatusCode != http.StatusForbidden {
+		t.Fatalf("a stranger patching = %d, want 403", res.StatusCode)
+	}
+
+	var guildID int64
+	if err := h.store.Pool.QueryRow(t.Context(),
+		`insert into guilds (region, ruleset, name) values ('us', 'pvp', 'Officers') returning id`).
+		Scan(&guildID); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := h.store.Pool.Exec(t.Context(),
+		`update reports set guild_id = $2 where id = $1`, id, guildID); err != nil {
+		t.Fatal(err)
+	}
+	officer := h.owner + 50
+	if _, err := h.store.Pool.Exec(t.Context(),
+		`insert into users (id, email) values ($1, 'officer@example.com') on conflict (id) do nothing`,
+		officer); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := h.store.Pool.Exec(t.Context(),
+		`insert into guild_members (guild_id, user_id, rank) values ($1, $2, 'officer')`,
+		guildID, officer); err != nil {
+		t.Fatal(err)
+	}
+	res = h.json(http.MethodPatch, "/v1/reports/"+id, `{"title":"Guild night"}`)
+	h.data(res, &view)
+	if view.Title != "Guild night" {
+		t.Fatalf("an officer could not patch: %+v", view)
+	}
+
+	res = h.json(http.MethodPatch, "/v1/reports/"+id, `{"visibility":"invisible"}`)
+	res.Body.Close()
+	if res.StatusCode != http.StatusBadRequest {
+		t.Fatalf("a bad visibility = %d, want 400", res.StatusCode)
+	}
+}
+
+func TestVisibilityRouteIsCachedForTheWorker(t *testing.T) {
+	h := newHarness(t)
+	id := h.createReport(Unlisted)
+	res := h.do(http.MethodGet, "/v1/reports/"+id+"/visibility", "", nil)
+	var out struct {
+		Visibility string `json:"visibility"`
+	}
+	if got := res.Header.Get("Cache-Control"); got != "public, max-age=60" {
+		t.Fatalf("cache-control = %q", got)
+	}
+	h.data(res, &out)
+	if out.Visibility != Unlisted {
+		t.Fatalf("visibility = %q", out.Visibility)
+	}
+	res = h.do(http.MethodGet, "/v1/reports/nosuchreport/visibility", "", nil)
+	res.Body.Close()
+	if res.StatusCode != http.StatusNotFound {
+		t.Fatalf("status = %d, want 404", res.StatusCode)
+	}
+}
+
+func TestAccessHandsOutSignedRedirectsForAPrivateReport(t *testing.T) {
+	h := newHarness(t)
+	h.actor = auth.Actor{UserID: h.owner, Role: "user", Method: "session"}
+	id := h.createReport(Private)
+
+	res := h.do(http.MethodGet, "/v1/reports/"+id+"/access", "", nil)
+	var access struct {
+		DataBaseURL string `json:"data_base_url"`
+		ExpiresIn   int    `json:"expires_in"`
+	}
+	h.data(res, &access)
+	if !strings.HasSuffix(access.DataBaseURL, "/v1/reports/"+id+"/files") || access.ExpiresIn != 600 {
+		t.Fatalf("access = %+v", access)
+	}
+
+	client := &http.Client{CheckRedirect: func(*http.Request, []*http.Request) error {
+		return http.ErrUseLastResponse
+	}}
+	r, _ := http.NewRequest(http.MethodGet, h.server.URL+"/v1/reports/"+id+"/files/report.json", nil)
+	redirect, err := client.Do(r)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer redirect.Body.Close()
+	if redirect.StatusCode != http.StatusFound {
+		t.Fatalf("status = %d, want a redirect", redirect.StatusCode)
+	}
+	if got := redirect.Header.Get("Location"); !strings.Contains(got, "reports/"+id+"/report.json") {
+		t.Fatalf("redirected to %q", got)
+	}
+
+	// A raw chunk is never served here, whoever asks.
+	r, _ = http.NewRequest(http.MethodGet, h.server.URL+"/v1/reports/"+id+"/files/raw/0.zst", nil)
+	refused, err := client.Do(r)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer refused.Body.Close()
+	if refused.StatusCode != http.StatusNotFound {
+		t.Fatalf("a raw chunk = %d, want 404", refused.StatusCode)
+	}
+}
+
+func TestReadablePathAllowsOnlyThePageFiles(t *testing.T) {
+	for path, want := range map[string]bool{
+		"report.json":              true,
+		"fights/0/summary.json":    true,
+		"fights/12/events.parquet": true,
+		"fights/3/live.json":       true,
+		"raw/0.zst":                false,
+		"fights/0/raw.zst":         false,
+		"fights/x/summary.json":    false,
+		"../../other/report.json":  false,
+		"":                         false,
+		"fights/0":                 false,
+		"report.json/../raw/0.zst": false,
+	} {
+		if got := readablePath(path); got != want {
+			t.Errorf("readablePath(%q) = %v, want %v", path, got, want)
+		}
+	}
+}
+
+func TestTheCardRendersAPNG(t *testing.T) {
+	h := newHarness(t)
+	id := h.createReport(Public)
+	res := h.do(http.MethodGet, "/reports/"+id+"/card.png", "", nil)
+	defer res.Body.Close()
+	if res.StatusCode != http.StatusOK {
+		t.Fatalf("status = %d", res.StatusCode)
+	}
+	if got := res.Header.Get("Content-Type"); got != "image/png" {
+		t.Fatalf("content-type = %q", got)
+	}
+	if got := res.Header.Get("Cache-Control"); got != "public, max-age=300" {
+		t.Fatalf("cache-control = %q", got)
+	}
+	head := make([]byte, 8)
+	if _, err := res.Body.Read(head); err != nil {
+		t.Fatal(err)
+	}
+	if string(head[1:4]) != "PNG" {
+		t.Fatalf("body does not start with a PNG header: %q", head)
+	}
+}
+
+func TestTheCardOfAnUnknownReportIsTheStandIn(t *testing.T) {
+	h := newHarness(t)
+	res := h.do(http.MethodGet, "/reports/nosuchreport/card.png", "", nil)
+	defer res.Body.Close()
+	if res.StatusCode != http.StatusNotFound {
+		t.Fatalf("status = %d, want 404", res.StatusCode)
+	}
+	if got := res.Header.Get("Content-Type"); got != "image/png" {
+		t.Fatalf("content-type = %q, want a stand-in card", got)
+	}
+}
+
+func TestValidVisibilityAndRanked(t *testing.T) {
+	for _, v := range Visibilities {
+		if !ValidVisibility(v) {
+			t.Errorf("%q should be valid", v)
+		}
+	}
+	if ValidVisibility("secret") {
+		t.Error("secret is not a visibility")
+	}
+	if Ranked(Private) || !Ranked(Public) || !Ranked(GuildTo) {
+		t.Error("a private report is the only one that is never ranked")
+	}
+}
+
+func TestUnknownReportsAre404Everywhere(t *testing.T) {
+	h := newHarness(t)
+	h.actor = auth.Actor{UserID: h.owner, Role: "user", Method: "session"}
+	for _, path := range []string{
+		"/v1/reports/nosuchreport",
+		"/v1/reports/nosuchreport/access",
+		"/v1/reports/nosuchreport/files/report.json",
+	} {
+		res := h.do(http.MethodGet, path, "", nil)
+		res.Body.Close()
+		if res.StatusCode != http.StatusNotFound {
+			t.Errorf("GET %s = %d, want 404", path, res.StatusCode)
+		}
+	}
+	res := h.json(http.MethodPatch, "/v1/reports/nosuchreport", `{"title":"x"}`)
+	res.Body.Close()
+	if res.StatusCode != http.StatusNotFound {
+		t.Errorf("PATCH = %d, want 404", res.StatusCode)
+	}
+}
+
+// decodeInto is a small helper for tests that read a raw JSON body.
+func decodeInto(t *testing.T, body []byte, into any) {
+	t.Helper()
+	if err := json.Unmarshal(body, into); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestTheOwnReportsListIsPagedAndCounted(t *testing.T) {
+	h := newHarness(t)
+	h.asSession()
+	first := h.createReport(Public)
+	second := h.createReport(Private)
+	h.reportID = second
+	h.seedFight(1, 9001, 0, 100)
+	h.seedFight(2, 0, 100, 200)
+
+	res := h.do(http.MethodGet, "/v1/reports?mine=1", "", nil)
+	var page MinePage
+	h.data(res, &page)
+	if page.Total != 2 || page.PerPage != MinePerPage || page.Page != 1 {
+		t.Fatalf("page = %+v", page)
+	}
+	if len(page.Rows) != 2 {
+		t.Fatalf("rows = %+v", page.Rows)
+	}
+	newest := page.Rows[0]
+	if newest.ID != second || newest.Status != StatusLive || newest.Visibility != Private {
+		t.Fatalf("newest = %+v", newest)
+	}
+	if newest.FightCount != 2 || newest.KillCount != 1 {
+		t.Fatalf("counts = %d fights and %d kills, want 2 and 1 (the trash fight is not a kill)",
+			newest.FightCount, newest.KillCount)
+	}
+	if page.Rows[1].ID != first || page.Rows[1].FightCount != 0 || page.Rows[1].KillCount != 0 {
+		t.Fatalf("oldest = %+v", page.Rows[1])
+	}
+
+	res = h.do(http.MethodGet, "/v1/reports?mine=1&page=2", "", nil)
+	h.data(res, &page)
+	if len(page.Rows) != 0 || page.Page != 2 {
+		t.Fatalf("second page = %+v", page)
+	}
+
+	// Someone else's list is their own, not this one.
+	h.actor = auth.Actor{UserID: h.owner + 42, Role: "user", Method: "session"}
+	res = h.do(http.MethodGet, "/v1/reports?mine=1", "", nil)
+	h.data(res, &page)
+	if page.Total != 0 {
+		t.Fatalf("a stranger sees %d reports, want none", page.Total)
+	}
+}
+
+func TestTheOwnReportsListNeedsMineAndAValidPage(t *testing.T) {
+	h := newHarness(t)
+	h.asSession()
+	for name, path := range map[string]string{
+		"no mine":  "/v1/reports",
+		"bad page": "/v1/reports?mine=1&page=0",
+	} {
+		res := h.do(http.MethodGet, path, "", nil)
+		res.Body.Close()
+		if res.StatusCode != http.StatusBadRequest {
+			t.Errorf("%s = %d, want 400", name, res.StatusCode)
+		}
+	}
+	h.actor = auth.Actor{UserID: h.owner, Method: "device", DeviceID: "d"}
+	res := h.do(http.MethodGet, "/v1/reports?mine=1", "", nil)
+	res.Body.Close()
+	if res.StatusCode != http.StatusUnauthorized {
+		t.Fatalf("a device listing = %d, want 401", res.StatusCode)
+	}
+}

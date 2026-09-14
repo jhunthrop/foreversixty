@@ -215,6 +215,11 @@ func splitText(split []int) string {
 	return strings.Join(parts, " / ")
 }
 
+// measure is the drawn width of s in a face, in pixels.
+func measure(face font.Face, s string) int {
+	return font.MeasureString(face, s).Ceil()
+}
+
 // fit trims s with an ellipsis until it draws within maxWidth. The faces
 // are the latin subsets, so the ellipsis is three periods rather than the
 // single character, which those subsets may not carry.
