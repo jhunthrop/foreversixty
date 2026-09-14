@@ -34,6 +34,36 @@
             "kind": "blizzard"
           }
         ]
+      },
+      {
+        "text": "Victory Rush is baseline in Arms: instant, 30 second cooldown, heals 10% of maximum health within 20 seconds of a non-trivial kill. Tactical Mastery is a passive rather than a talent.",
+        "sources": [
+          {
+            "label": "Talents Forever (demo transcription)",
+            "url": "https://talentsforever.com/data.json",
+            "kind": "community"
+          }
+        ]
+      },
+      {
+        "text": "Shield Wall is a 15 minute cooldown reducing damage 60% for 12 seconds, where Classic was 30 minutes, 75% and 10 seconds; Shield Block has 2 charges and lasts 7 seconds; Thunder Clap works in Battle or Defensive Stance and rank 4 slows attacks 20% for 22 seconds against up to 4 targets.",
+        "sources": [
+          {
+            "label": "Talents Forever (demo transcription)",
+            "url": "https://talentsforever.com/data.json",
+            "kind": "community"
+          }
+        ]
+      },
+      {
+        "text": "New talents include Spearing Strike and Bloodthrill in Arms, Raging Blows in Fury and Vanguard in Protection; Death Wish's penalty is now 5% more damage taken instead of reduced armour.",
+        "sources": [
+          {
+            "label": "Power Up Gaming, Forever talent changes vs Classic",
+            "url": "https://powerupgaming.co.uk/2026/09/14/new-wow-forever-talents-changes-vs-classic-guide/",
+            "kind": "community"
+          }
+        ]
       }
     ]
   },
@@ -102,6 +132,46 @@
             "kind": "blizzard"
           }
         ]
+      },
+      {
+        "text": "Holy Strike is on a 12 second cooldown and had reached rank 5 by level 38 in the demo; Seal of Fury's absorb is worth about half the Holy damage it adds, and Judging it taunts for 4 seconds at 10 yards where every other taunt is 5.",
+        "sources": [
+          {
+            "label": "Blizzard, Deep Dive panel recap",
+            "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
+            "kind": "blizzard"
+          },
+          {
+            "label": "Talents Forever (demo transcription)",
+            "url": "https://talentsforever.com/data.json",
+            "kind": "community"
+          }
+        ]
+      },
+      {
+        "text": "Holy gains Improved Holy Strike, Voice of Truth, Reverence, Infusion of Light and Light's Vigil; Protection gains Improved Seal of Fury, Shield Specialization, Swift Judgement, Templar's Bulwark and Iron Creed; Retribution gains Vindication, Sacred Arbiter, Champion of the Light, Instrument of Law and Twist of Light.",
+        "sources": [
+          {
+            "label": "Blizzard, Deep Dive panel recap",
+            "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
+            "kind": "blizzard"
+          }
+        ]
+      },
+      {
+        "text": "Blessing of Kings and Consecration are trainable rather than talents; Illumination now refunds roughly 50% of the mana on a critical heal and Redoubt triggers on any damaging melee hit.",
+        "sources": [
+          {
+            "label": "Talents Forever (demo transcription)",
+            "url": "https://talentsforever.com/data.json",
+            "kind": "community"
+          },
+          {
+            "label": "Power Up Gaming, Forever talent changes vs Classic",
+            "url": "https://powerupgaming.co.uk/2026/09/14/new-wow-forever-talents-changes-vs-classic-guide/",
+            "kind": "community"
+          }
+        ]
       }
     ]
   },
@@ -150,6 +220,26 @@
             "kind": "blizzard"
           }
         ]
+      },
+      {
+        "text": "Aimed Shot is trainable rather than a Marksmanship talent, with a 2 second cast on a 6 second cooldown shared with Multi-Shot, where Classic was a 3 second cast; Aspect of the Beast now also grants 50 melee attack power at rank 1.",
+        "sources": [
+          {
+            "label": "Talents Forever (demo transcription)",
+            "url": "https://talentsforever.com/data.json",
+            "kind": "community"
+          }
+        ]
+      },
+      {
+        "text": "New talents include Lone Wolf, which grants 20% more damage with no active pet, Summon Hawk, and Resourcefulness; Trueshot Aura moved up the tree and grants ranged attack power only.",
+        "sources": [
+          {
+            "label": "Power Up Gaming, Forever talent changes vs Classic",
+            "url": "https://powerupgaming.co.uk/2026/09/14/new-wow-forever-talents-changes-vs-classic-guide/",
+            "kind": "community"
+          }
+        ]
       }
     ]
   },
@@ -188,6 +278,26 @@
             "kind": "blizzard"
           }
         ]
+      },
+      {
+        "text": "Rogues can use one-handed axes; the Hack and Slash talent treats Axe and Sword as one weapon group.",
+        "sources": [
+          {
+            "label": "Talents Forever (demo transcription)",
+            "url": "https://talentsforever.com/data.json",
+            "kind": "community"
+          }
+        ]
+      },
+      {
+        "text": "New talents include Mutilate and Venom in Assassination, Restless Blades in Combat and Cutthroat in Subtlety; Weapon Expertise now reduces enemy dodge and parry chance instead of granting weapon skill.",
+        "sources": [
+          {
+            "label": "Power Up Gaming, Forever talent changes vs Classic",
+            "url": "https://powerupgaming.co.uk/2026/09/14/new-wow-forever-talents-changes-vs-classic-guide/",
+            "kind": "community"
+          }
+        ]
       }
     ]
   },
@@ -224,6 +334,36 @@
             "label": "Blizzard, Deep Dive panel recap",
             "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
             "kind": "blizzard"
+          }
+        ]
+      },
+      {
+        "text": "Fear Ward is baseline for every Priest on a 3 minute cooldown, and Devouring Plague is a normal Shadow spell rather than an Undead racial.",
+        "sources": [
+          {
+            "label": "Talents Forever (demo transcription)",
+            "url": "https://talentsforever.com/data.json",
+            "kind": "community"
+          }
+        ]
+      },
+      {
+        "text": "Priest racial spells are reworked per race: Human gains Divine Grace, Gnome gains Confounding Flash and Contingency Plan, Night Elf's Elune's Grace now reduces melee and ranged hit chance by 50%, and Troll's Hex of Weakness cuts attack power instead of flat melee damage.",
+        "sources": [
+          {
+            "label": "Talents Forever (demo transcription)",
+            "url": "https://talentsforever.com/data.json",
+            "kind": "community"
+          }
+        ]
+      },
+      {
+        "text": "New talents include Penance and Divine Aegis in Discipline and Litany of Light and Prayer of Mending in Holy; Meditation gives 17% mana regeneration while casting at rank 1 against Classic's 5%.",
+        "sources": [
+          {
+            "label": "Power Up Gaming, Forever talent changes vs Classic",
+            "url": "https://powerupgaming.co.uk/2026/09/14/new-wow-forever-talents-changes-vs-classic-guide/",
+            "kind": "community"
           }
         ]
       }
@@ -284,6 +424,36 @@
             "kind": "blizzard"
           }
         ]
+      },
+      {
+        "text": "Lightning Bolt and Chain Lightning cast half a second faster than Classic before any talent, and Ghost Wolf's base cast is 2 seconds with Improved Ghost Wolf making it instant and usable indoors at 2 of 2.",
+        "sources": [
+          {
+            "label": "Talents Forever (demo transcription)",
+            "url": "https://talentsforever.com/data.json",
+            "kind": "community"
+          }
+        ]
+      },
+      {
+        "text": "Fire Nova is a spell rather than a totem, detonating within 10 yards of your active Fire totem on a 10 second cooldown; Totemic Projection moves your totems to a spot up to 30 yards away, and Call of the Elements drops up to four totems in one 3 second cast.",
+        "sources": [
+          {
+            "label": "Talents Forever (demo transcription)",
+            "url": "https://talentsforever.com/data.json",
+            "kind": "community"
+          }
+        ]
+      },
+      {
+        "text": "New talents include Lava Burst in Elemental, Maelstrom Weapon and Spirit Weapons in Enhancement and Water Shield in Restoration; Stormstrike now increases the Nature damage you deal rather than amplifying the next two Nature sources on the target.",
+        "sources": [
+          {
+            "label": "Power Up Gaming, Forever talent changes vs Classic",
+            "url": "https://powerupgaming.co.uk/2026/09/14/new-wow-forever-talents-changes-vs-classic-guide/",
+            "kind": "community"
+          }
+        ]
       }
     ]
   },
@@ -332,6 +502,26 @@
             "kind": "blizzard"
           }
         ]
+      },
+      {
+        "text": "Two new abilities appear in the demo: Frostfire Bolt, which counts as both Fire and Frost and is named by four talents, and Comprehend Scroll, seen on a Skyborne Mage.",
+        "sources": [
+          {
+            "label": "Talents Forever (demo transcription)",
+            "url": "https://talentsforever.com/data.json",
+            "kind": "community"
+          }
+        ]
+      },
+      {
+        "text": "Mage has the fewest new talents and the most changed of any class in one tally of the demo trees; Arcane Blast and Hot Streak are new and Improved Counterspell's silence is guaranteed but short at rank 1.",
+        "sources": [
+          {
+            "label": "Power Up Gaming, Forever talent changes vs Classic",
+            "url": "https://powerupgaming.co.uk/2026/09/14/new-wow-forever-talents-changes-vs-classic-guide/",
+            "kind": "community"
+          }
+        ]
       }
     ]
   },
@@ -370,6 +560,26 @@
             "kind": "blizzard"
           }
         ]
+      },
+      {
+        "text": "Banes and Curses are separate categories, so one of each can run on a target: Curse of Agony is Bane of Agony and Curse of Doom is Bane of Doom. Enslave Demon is renamed Subjugate Demon, and a new Incubus summon is named by four Demonology talents.",
+        "sources": [
+          {
+            "label": "Talents Forever (demo transcription)",
+            "url": "https://talentsforever.com/data.json",
+            "kind": "community"
+          }
+        ]
+      },
+      {
+        "text": "New talents include Pandemic, Drain Hope and Malevolence, which lets damage-over-time effects critically strike; Warlock has the largest tree rework of any class in one tally of the demo trees.",
+        "sources": [
+          {
+            "label": "Power Up Gaming, Forever talent changes vs Classic",
+            "url": "https://powerupgaming.co.uk/2026/09/14/new-wow-forever-talents-changes-vs-classic-guide/",
+            "kind": "community"
+          }
+        ]
       }
     ]
   },
@@ -406,6 +616,26 @@
             "label": "Blizzard, Deep Dive panel recap",
             "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
             "kind": "blizzard"
+          }
+        ]
+      },
+      {
+        "text": "Omen of Clarity and Nature's Grasp are trainable rather than talents; Revive is a new 10 second out-of-combat resurrection, Lacerate is in as a baseline Bear bleed learned after level 30, and Cure Poison is gone.",
+        "sources": [
+          {
+            "label": "Talents Forever (demo transcription)",
+            "url": "https://talentsforever.com/data.json",
+            "kind": "community"
+          }
+        ]
+      },
+      {
+        "text": "New talents include Genesis in Balance, Nature's Majesty and Berserk in Feral; Feral Charge gains a separate Cat version and Primal Fury also grants combo points on Cat critical strikes.",
+        "sources": [
+          {
+            "label": "Power Up Gaming, Forever talent changes vs Classic",
+            "url": "https://powerupgaming.co.uk/2026/09/14/new-wow-forever-talents-changes-vs-classic-guide/",
+            "kind": "community"
           }
         ]
       }

@@ -31,6 +31,21 @@
             "kind": "blizzard"
           }
         ]
+      },
+      {
+        "text": "Racials read from the BlizzCon demo: Will to Survive removes all Stuns on a 3 minute cooldown, Perception gives 20 seconds of stealth detection, Sword Specialization grants 2% spell and ability critical strike chance with a sword, and The Human Spirit grants 5% Spirit.",
+        "sources": [
+          {
+            "label": "Icy Veins, the racial rework",
+            "url": "https://www.icy-veins.com/wow-forever/news/the-racial-rework-gives-every-race-a-reason-to-matter-in-warcraft-forever/",
+            "kind": "community"
+          },
+          {
+            "label": "Talents Forever (demo transcription)",
+            "url": "https://talentsforever.com/data.json",
+            "kind": "community"
+          }
+        ]
       }
     ]
   },
@@ -64,6 +79,21 @@
             "label": "Blizzard, Deep Dive panel recap",
             "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
             "kind": "blizzard"
+          }
+        ]
+      },
+      {
+        "text": "Racials read from the BlizzCon demo: Blood Fury grants 10% Attack Power and Spell Power for 15 seconds on a 2 minute cooldown, Shatter Curse removes and grants immunity to Curses and Banes and reduces magical damage taken 15% for 8 seconds, Axe Specialization grants 1% critical strike chance with an axe, and Hardiness reduces stun duration 20%.",
+        "sources": [
+          {
+            "label": "Icy Veins, the racial rework",
+            "url": "https://www.icy-veins.com/wow-forever/news/the-racial-rework-gives-every-race-a-reason-to-matter-in-warcraft-forever/",
+            "kind": "community"
+          },
+          {
+            "label": "Talents Forever (demo transcription)",
+            "url": "https://talentsforever.com/data.json",
+            "kind": "community"
           }
         ]
       }
@@ -156,6 +186,21 @@
             "kind": "blizzard"
           }
         ]
+      },
+      {
+        "text": "Racials read from the BlizzCon demo: Elune's Light grants 10% critical strike chance for 15 seconds on a 3 minute cooldown, Shadowmeld stealths until you move and is usable in combat at a 2 minute cooldown, Quickness grants dodge and run speed, and Wisp Spirit grants 75% speed while dead. Icy Veins reads Quickness as 2% dodge and 2% speed; Talents Forever reads 1% dodge and 2% speed.",
+        "sources": [
+          {
+            "label": "Icy Veins, the racial rework",
+            "url": "https://www.icy-veins.com/wow-forever/news/the-racial-rework-gives-every-race-a-reason-to-matter-in-warcraft-forever/",
+            "kind": "community"
+          },
+          {
+            "label": "Talents Forever (demo transcription)",
+            "url": "https://talentsforever.com/data.json",
+            "kind": "community"
+          }
+        ]
       }
     ]
   },
@@ -246,6 +291,21 @@
             "kind": "blizzard"
           }
         ]
+      },
+      {
+        "text": "Racials read from the BlizzCon demo: War Stomp stuns up to 5 enemies within 8 yards for 2 seconds on a 2 minute cooldown, Cultivation grows bonus herbs that need no Herbalism to gather, Plainsrunning raises movement speed the longer you keep moving, and Endurance grants 5% Health and 1% Hit chance.",
+        "sources": [
+          {
+            "label": "Icy Veins, the racial rework",
+            "url": "https://www.icy-veins.com/wow-forever/news/the-racial-rework-gives-every-race-a-reason-to-matter-in-warcraft-forever/",
+            "kind": "community"
+          },
+          {
+            "label": "Talents Forever (demo transcription)",
+            "url": "https://talentsforever.com/data.json",
+            "kind": "community"
+          }
+        ]
       }
     ]
   },
@@ -281,6 +341,21 @@
             "kind": "blizzard"
           }
         ]
+      },
+      {
+        "text": "Racials read from the BlizzCon demo: Escape Artist breaks and grants brief immunity to movement impairment on a 2 minute cooldown, Eureka! makes your next 3 abilities cost 50% less Mana and do 10% more on a 2 minute cooldown, Expansive Mind grants 5% Mana, Rage and Energy, and Engineering Specialization makes engineering devices more reliable. The immunity window is read as 3 seconds by one outlet and 5 by another.",
+        "sources": [
+          {
+            "label": "Icy Veins, the racial rework",
+            "url": "https://www.icy-veins.com/wow-forever/news/the-racial-rework-gives-every-race-a-reason-to-matter-in-warcraft-forever/",
+            "kind": "community"
+          },
+          {
+            "label": "Talents Forever (demo transcription)",
+            "url": "https://talentsforever.com/data.json",
+            "kind": "community"
+          }
+        ]
       }
     ]
   },
@@ -314,6 +389,21 @@
             "label": "Blizzard, Deep Dive panel recap",
             "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
             "kind": "blizzard"
+          }
+        ]
+      },
+      {
+        "text": "Racials read from the BlizzCon demo: Berserking grants 10% casting and attack speed on a 3 minute cooldown, Rapid Regeneration channels back 50% of maximum Health, Beast Slaying grants 5% damage against Beasts, and Regeneration keeps 10% of Health regeneration running in combat. The Berserking duration is read as 10 seconds by one outlet and 12 by another.",
+        "sources": [
+          {
+            "label": "Icy Veins, the racial rework",
+            "url": "https://www.icy-veins.com/wow-forever/news/the-racial-rework-gives-every-race-a-reason-to-matter-in-warcraft-forever/",
+            "kind": "community"
+          },
+          {
+            "label": "Talents Forever (demo transcription)",
+            "url": "https://talentsforever.com/data.json",
+            "kind": "community"
           }
         ]
       }
@@ -403,6 +493,16 @@
             "label": "Blizzard, Deep Dive panel recap",
             "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
             "kind": "blizzard"
+          }
+        ]
+      },
+      {
+        "text": "One demo transcription reads a different second active for each faction: Alliance Skyborne get Read Ley Line, Horde Skyborne get Skysight, which grants 10% movement and mounted speed for 30 seconds or 15 minutes near a convergence of elements.",
+        "sources": [
+          {
+            "label": "Talents Forever (demo transcription)",
+            "url": "https://talentsforever.com/data.json",
+            "kind": "community"
           }
         ]
       }
