@@ -9,6 +9,11 @@
 // byte stream, which begins at zero when the report begins. The
 // watcher works in file offsets; state.Report.StartOffset is the one
 // place the two meet.
+//
+// One mutex guards the open report. Tick, Live and Drain all run on
+// the companion's single ticker, but Status is read from the loopback
+// UI's HTTP goroutine while that ticker is inside Tick, so the fields
+// Status reads are locked. The lock never spans a network call.
 package pipeline
 
 import (
@@ -16,6 +21,7 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	"sync"
 	"time"
 
 	"github.com/klauspost/compress/zstd"
@@ -63,6 +69,9 @@ type Pipeline struct {
 	o   Options
 	enc *zstd.Encoder
 
+	// mu guards everything below it: the open report and the engine
+	// session behind it, which Status reads from another goroutine.
+	mu   sync.Mutex
 	sess *session.Session
 	cur  *state.Report
 	// raw holds report-relative bytes not yet handed to the queue;
@@ -195,6 +204,8 @@ func (p *Pipeline) abandon(r state.Report) {
 // Tick reads whatever the game has written and turns it into queued
 // work. It never talks to the network.
 func (p *Pipeline) Tick(now time.Time) error {
+	p.mu.Lock()
+	defer p.mu.Unlock()
 	events, err := p.o.Watch.Poll(now)
 	if err != nil {
 		return err
@@ -447,22 +458,34 @@ func (p *Pipeline) save() error {
 // queued: the next snapshot replaces a failed one. It is silent when
 // no fight is open or the report has no server id yet.
 func (p *Pipeline) Live(ctx context.Context, now time.Time) error {
-	if p.cur == nil || p.cur.ReportID == "" || now.Sub(p.lastLive) < p.o.LiveEvery {
+	reportID, f, sum, due := p.liveDue(now)
+	if !due {
 		return nil
 	}
-	f, sum, open := p.sess.Snapshot()
-	if !open {
-		return nil
-	}
-	p.lastLive = now
-	err := p.o.Client.PutLive(ctx, p.cur.ReportID, f.Index, client.Live{
+	err := p.o.Client.PutLive(ctx, reportID, f.Index, client.Live{
 		Summary:   sum,
 		ElapsedMS: now.Sub(f.Start).Milliseconds(),
 		UpdatedAt: now.UTC(),
 	})
 	if err != nil {
 		p.o.Log.Debug("a live snapshot did not land", "component", "pipeline",
-			"report", p.cur.ReportID, "fight", f.Index, "err", err.Error())
+			"report", reportID, "fight", f.Index, "err", err.Error())
 	}
 	return nil
+}
+
+// liveDue takes the running fight's summary under the lock, so the
+// upload above happens with nothing held.
+func (p *Pipeline) liveDue(now time.Time) (string, fight.Fight, summary.Summary, bool) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	if p.cur == nil || p.cur.ReportID == "" || now.Sub(p.lastLive) < p.o.LiveEvery {
+		return "", fight.Fight{}, summary.Summary{}, false
+	}
+	f, sum, open := p.sess.Snapshot()
+	if !open {
+		return "", fight.Fight{}, summary.Summary{}, false
+	}
+	p.lastLive = now
+	return p.cur.ReportID, f, sum, true
 }

@@ -23,12 +23,14 @@ func marshalComplete(in client.Complete) ([]byte, error) { return json.Marshal(i
 func (p *Pipeline) Drain(ctx context.Context) error {
 	// The open report is created as soon as the network allows, not
 	// when its first fight closes, so the live snapshots of the very
-	// first pull have somewhere to go.
-	if p.cur != nil && p.cur.ReportID == "" {
-		if err := p.create(ctx, p.cur); err != nil {
+	// first pull have somewhere to go. It is copied out from under
+	// the lock first: create talks to the network, and Status must
+	// not wait on that.
+	if rep, ok := p.openWithoutID(); ok {
+		if err := p.create(ctx, &rep); err != nil {
 			return err
 		}
-		if err := state.Save(p.o.StateDir, *p.cur); err != nil {
+		if err := state.Save(p.o.StateDir, rep); err != nil {
 			return err
 		}
 	}
@@ -49,6 +51,16 @@ func (p *Pipeline) Drain(ctx context.Context) error {
 	}
 }
 
+// openWithoutID copies the open report when it has no server id yet.
+func (p *Pipeline) openWithoutID() (state.Report, bool) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	if p.cur == nil || p.cur.ReportID != "" {
+		return state.Report{}, false
+	}
+	return *p.cur, true
+}
+
 // create asks the API for a report id and records it on rep and, when
 // rep is the open report, on the pipeline.
 func (p *Pipeline) create(ctx context.Context, rep *state.Report) error {
@@ -64,9 +76,11 @@ func (p *Pipeline) create(ctx context.Context, rep *state.Report) error {
 		return err
 	}
 	rep.ReportID = created.ID
+	p.mu.Lock()
 	if p.cur != nil && p.cur.Key == rep.Key {
 		p.cur.ReportID = created.ID
 	}
+	p.mu.Unlock()
 	p.o.Log.Info("a report was created", "component", "uploader",
 		"report", rep.Key, "report_id", rep.ReportID)
 	return nil
@@ -156,6 +170,8 @@ func (p *Pipeline) Status() Status {
 	if n, err := p.o.Queue.Len(); err == nil {
 		s.Queued = n
 	}
+	p.mu.Lock()
+	defer p.mu.Unlock()
 	if p.cur == nil {
 		return s
 	}

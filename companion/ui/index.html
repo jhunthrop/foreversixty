@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Forever Sixty companion</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+  <span class="wordmark">Forever Sixty</span>
+  <nav>
+    <button data-page="status" aria-current="page">Status</button>
+    <button data-page="reports">Reports</button>
+    <button data-page="device">Device</button>
+    <button data-page="settings">Settings</button>
+  </nav>
+</header>
+
+<main>
+  <section id="status">
+    <h2>Logging</h2>
+    <div class="panel">
+      <div class="row"><span class="k"><span id="logging-dot" class="dot off"></span>State</span><span class="v" id="logging-state">—</span></div>
+      <div class="row"><span class="k">Report</span><span class="v" id="logging-report">—</span></div>
+      <div class="row"><span class="k">Fights sent</span><span class="v" id="logging-fights">0</span></div>
+      <div class="row"><span class="k">Waiting to upload</span><span class="v" id="logging-queued">0</span></div>
+      <div class="row"><span class="k">Engine</span><span class="v" id="engine-version">—</span></div>
+      <p class="note" id="logging-note"></p>
+    </div>
+    <h2>Game folders</h2>
+    <div class="panel" id="installs"></div>
+  </section>
+
+  <section id="reports" hidden>
+    <h2>Your reports</h2>
+    <div class="panel"><ul class="reports" id="report-list"></ul></div>
+  </section>
+
+  <section id="device" hidden>
+    <h2>This device</h2>
+    <div class="panel">
+      <div class="row"><span class="k"><span id="paired-dot" class="dot off"></span>Pairing</span><span class="v" id="paired-state">—</span></div>
+      <div class="row"><span class="k">Token stored in</span><span class="v" id="token-backend">—</span></div>
+      <div class="row"><span class="k">API</span><span class="v" id="api-base">—</span></div>
+      <label for="pair-code">Pairing code from the site</label>
+      <input id="pair-code" autocomplete="off" spellcheck="false" placeholder="Sign in on the site, then paste the code">
+      <button class="action" id="pair">Pair this device</button>
+      <button class="action" id="unpair">Forget this device</button>
+      <p class="note" id="device-note"></p>
+    </div>
+  </section>
+
+  <section id="settings" hidden>
+    <h2>Settings</h2>
+    <div class="panel">
+      <label for="visibility">New reports are</label>
+      <select id="visibility">
+        <option value="public">Public</option>
+        <option value="unlisted">Unlisted</option>
+        <option value="private">Private</option>
+        <option value="guild">Guild only</option>
+      </select>
+      <label for="wow-paths">Game folders, one per line</label>
+      <input id="wow-paths" autocomplete="off" spellcheck="false">
+      <label for="logging-character">Logging character</label>
+      <select id="logging-character"><option value="">Not set</option></select>
+      <button class="action" id="save">Save</button>
+      <p class="note" id="settings-note"></p>
+    </div>
+  </section>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
