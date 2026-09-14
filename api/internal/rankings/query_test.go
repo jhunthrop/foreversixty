@@ -523,3 +523,34 @@ func TestRankingsPageBoundaryIsStableAcrossATie(t *testing.T) {
 		}
 	}
 }
+
+// The guild page's report list is report identities, not aggregates: a
+// report marked "guild" is readable by the guild, and listing its id,
+// title, zone and timestamp to an unauthenticated caller tells the
+// world it exists and what it is called. reports.mayView then refuses
+// the body, which is the giveaway that the list was wrong.
+func TestTheGuildPageListsOnlyPublicAndUnlistedReports(t *testing.T) {
+	h := newHarness(t)
+	serve(t, h)
+	h.seedReportVisibility("report-guild", reports.GuildTo)
+	h.seedReportVisibility("report-private", reports.Private)
+	h.seedReportVisibility("report-unlisted", reports.Unlisted)
+	h.seedReport("report-public")
+
+	var g Guild
+	h.data(h.get("/v1/guilds/us/hardcore/forever-sixty"), &g)
+	listed := map[string]bool{}
+	for _, r := range g.Reports {
+		listed[r.ID] = true
+	}
+	for _, id := range []string{"report-guild", "report-private"} {
+		if listed[id] {
+			t.Fatalf("%s is listed to a stranger: %+v", id, g.Reports)
+		}
+	}
+	for _, id := range []string{"report-public", "report-unlisted"} {
+		if !listed[id] {
+			t.Fatalf("%s should be listed: %+v", id, g.Reports)
+		}
+	}
+}

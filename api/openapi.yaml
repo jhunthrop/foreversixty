@@ -819,7 +819,10 @@ paths:
       parameters: [ { name: id, in: path, required: true, schema: { type: string } } ]
       responses:
         '200':
-          description: "1200x630 PNG. Cache-Control: public, max-age=300"
+          description: >-
+            1200x630 PNG, Vary: Cookie. Cache-Control is public, max-age=300 for a public or
+            unlisted report and private, max-age=300 for one whose card was drawn because the
+            caller may read it.
           content: { image/png: { schema: { type: string, format: binary } } }
         '404':
           description: "Unknown or invisible report; the stand-in card, cached a minute"

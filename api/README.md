@@ -127,7 +127,7 @@ companion, the whole-file job, and the ingest's verification all parse the same 
 | `GET /v1/reports/{id}/access`, `GET /v1/reports/{id}/files/{path}` | A private or guild report's files, as signed redirects valid ten minutes. |
 | `GET /v1/rankings`, `/v1/rankings/percentile`, `/v1/rankings/guilds` | Leaderboards and percentiles, cached 30 s. |
 | `GET /v1/characters/{region}/{ruleset}/{name}`, `GET /v1/guilds/...` | Character and guild pages. |
-| `GET /reports/{id}/card.png` | The unfurl card, cached five minutes. |
+| `GET /reports/{id}/card.png` | The unfurl card, cached five minutes — `private` and `Vary: Cookie` when the report is not public or unlisted, so a shared cache never serves one reader's card to another. |
 
 Sign-in is Battle.net first and an email magic link as the fallback; the companion pairs with a
 code from `POST /v1/devices/pair` and uploads with `Authorization: Bearer fsd_…`. Browser

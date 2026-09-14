@@ -266,9 +266,16 @@ func (s *Store) Guild(ctx context.Context, region, ruleset, name string) (Guild,
 		out.RosterBest[i].Encounter = names[out.RosterBest[i].EncounterID]
 	}
 
+	// This list is report identities - id, title, zone - served to
+	// anyone who loads the guild page, so it takes the stricter rule
+	// than the derived aggregates above: "guild" means the guild may
+	// read it, and reports.mayView refuses the body to everyone else.
+	// Listing it here would tell the world the report exists and what
+	// it is called. The progression counts stay on reports.Ranked,
+	// which is the right rule for an aggregate.
 	reps, err := s.Pool.Query(ctx,
 		`select id, title, zone, status, created_at from reports
-		 where guild_id = $1 and visibility <> 'private'
+		 where guild_id = $1 and visibility in ('public', 'unlisted')
 		 order by created_at desc limit $2`, out.Guild.ID, GuildReportLimit)
 	if err != nil {
 		return Guild{}, false, fmt.Errorf("rankings: read guild reports: %w", err)

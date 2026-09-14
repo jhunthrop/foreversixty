@@ -359,6 +359,9 @@ func TestTheCardRendersAPNG(t *testing.T) {
 	if got := res.Header.Get("Cache-Control"); got != "public, max-age=300" {
 		t.Fatalf("cache-control = %q", got)
 	}
+	if got := res.Header.Get("Vary"); got != "Cookie" {
+		t.Fatalf("vary = %q, want Cookie", got)
+	}
 	head := make([]byte, 8)
 	if _, err := res.Body.Read(head); err != nil {
 		t.Fatal(err)
@@ -583,5 +586,38 @@ func TestPatchingAReportOutOfTheRankingsWithdrawsItsRows(t *testing.T) {
 	h.data(res, nil)
 	if removed, _ := h.ranker.withdrawals(); len(removed) != 1 {
 		t.Fatalf("withdrawn = %v, want exactly one withdrawal", removed)
+	}
+}
+
+// A card drawn for a private or guild report passed mayView for one
+// caller. api.foreversixty.gg sits behind Cloudflare, which caches
+// .png by extension, so a public Cache-Control would let the owner's
+// own fetch fill a shared entry served to everyone else.
+func TestTheCardOfAGatedReportIsNotSharedCacheable(t *testing.T) {
+	h := newHarness(t)
+	h.actor = auth.Actor{UserID: h.owner, Role: "user", Method: "session"}
+	for _, c := range []struct {
+		visibility string
+		want       string
+	}{
+		{Public, "public, max-age=300"},
+		{Unlisted, "public, max-age=300"},
+		{Private, "private, max-age=300"},
+		{GuildTo, "private, max-age=300"},
+	} {
+		t.Run(c.visibility, func(t *testing.T) {
+			id := h.createReport(c.visibility)
+			res := h.do(http.MethodGet, "/reports/"+id+"/card.png", "", nil)
+			defer res.Body.Close()
+			if res.StatusCode != http.StatusOK {
+				t.Fatalf("status = %d", res.StatusCode)
+			}
+			if got := res.Header.Get("Cache-Control"); got != c.want {
+				t.Fatalf("cache-control = %q, want %q", got, c.want)
+			}
+			if got := res.Header.Get("Vary"); got != "Cookie" {
+				t.Fatalf("vary = %q, want Cookie", got)
+			}
+		})
 	}
 }
