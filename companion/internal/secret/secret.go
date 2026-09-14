@@ -118,7 +118,11 @@ func Open(configPath string) Store {
 
 // Migrate moves a token found in config.json into the keychain and
 // blanks the file copy. It runs at startup so an install that once fell
-// back stops leaving the token on disk once the keychain works.
+// back stops leaving the token on disk once the keychain works. It
+// never overwrites a token the keychain already holds: once pairing has
+// written a fresh token straight into the keychain, a stale
+// config.json left over from an earlier fallback episode must not
+// clobber it.
 func Migrate(s Store, configPath string) error {
 	if s.Backend() != Keychain {
 		return nil
@@ -130,9 +134,20 @@ func Migrate(s Store, configPath string) error {
 	if cfg.DeviceToken == "" {
 		return nil
 	}
-	if err := s.SetToken(cfg.DeviceToken); err != nil {
+	current, err := s.Token()
+	if err != nil {
 		return err
 	}
+	if current == "" {
+		if err := s.SetToken(cfg.DeviceToken); err != nil {
+			return err
+		}
+	}
+	// Either the token was just migrated, or the keychain already held
+	// one and the config.json copy is stale. Either way, a plaintext
+	// token left on disk once the keychain is the live backend is the
+	// exact leak this package exists to close, so the file copy is
+	// blanked regardless of which branch above ran.
 	cfg.DeviceToken = ""
 	return config.Save(configPath, cfg)
 }

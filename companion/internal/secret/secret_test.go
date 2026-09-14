@@ -92,6 +92,33 @@ func TestMigrateMovesAFileTokenIntoTheKeychain(t *testing.T) {
 	}
 }
 
+func TestMigrateDoesNotOverwriteAnExistingKeychainToken(t *testing.T) {
+	keyring.MockInit()
+	path := filepath.Join(t.TempDir(), "config.json")
+	cfg := config.Default()
+	cfg.DeviceToken = "fsd_stale"
+	if err := config.Save(path, cfg); err != nil {
+		t.Fatal(err)
+	}
+	s := Keyring{}
+	if err := s.SetToken("fsd_fresh"); err != nil {
+		t.Fatal(err)
+	}
+	if err := Migrate(s, path); err != nil {
+		t.Fatal(err)
+	}
+	if got, _ := s.Token(); got != "fsd_fresh" {
+		t.Errorf("keychain token = %q, want the fresh token preserved", got)
+	}
+	after, err := config.Load(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if after.DeviceToken != "" {
+		t.Errorf("config still holds %q, want it blanked", after.DeviceToken)
+	}
+}
+
 func TestMigrateIsANoOpForTheFileStore(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "config.json")
 	cfg := config.Default()
