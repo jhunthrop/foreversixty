@@ -109,6 +109,11 @@ type Step struct {
 	Fight *Fight
 	// Opened is true when Fight was opened by this event.
 	Opened bool
+	// Discarded is true when a fight ended and was dropped rather than
+	// reported, which today means a trash segment shorter than MinTrash.
+	// Closed is nil in that case, so without this a caller holding an
+	// accumulator for the segment would never learn it can let go of it.
+	Discarded bool
 }
 
 // State is the segmenter in a form that survives a restart.
@@ -185,6 +190,14 @@ func (s *Segmenter) Open() *Fight {
 	return &f
 }
 
+// closeInto closes the open fight and records the outcome on step,
+// including the case where the fight was dropped rather than reported.
+func (s *Segmenter) closeInto(step *Step, end time.Time, line, offset int64) {
+	wasOpen := s.open != nil
+	step.Closed = s.close(end, line, offset)
+	step.Discarded = wasOpen && step.Closed == nil
+}
+
 // Feed assigns one event.
 func (s *Segmenter) Feed(e event.Event) Step {
 	var step Step
@@ -195,7 +208,7 @@ func (s *Segmenter) Feed(e event.Event) Step {
 
 	// An encounter boundary always wins over gap segmentation.
 	if e.Kind == event.EncounterStart && e.Encounter != nil {
-		step.Closed = s.close(e.Time, e.Line, e.Offset)
+		s.closeInto(&step, e.Time, e.Line, e.Offset)
 		s.open = s.newFight(Encounter, e)
 		s.open.EncounterID = e.Encounter.ID
 		s.open.Name = e.Encounter.Name
@@ -212,7 +225,7 @@ func (s *Segmenter) Feed(e event.Event) Step {
 		if s.opt.Trailing > 0 {
 			s.ending, s.endAt = true, e.Time.Add(s.opt.Trailing)
 		} else {
-			step.Closed = s.close(e.Time, e.Line, e.Offset)
+			s.closeInto(&step, e.Time, e.Line, e.Offset)
 		}
 		return step
 	}
@@ -222,10 +235,10 @@ func (s *Segmenter) Feed(e event.Event) Step {
 	switch {
 	case s.ending && !e.Time.Before(s.endAt):
 		// The encounter's trailing window has run out.
-		step.Closed = s.close(s.endAt, e.Line, e.Offset)
+		s.closeInto(&step, s.endAt, e.Line, e.Offset)
 	case s.open != nil && s.open.Kind == Trash && e.Time.Sub(s.lastFight) > s.opt.Gap:
 		// Hostile combat has been quiet for longer than the gap.
-		step.Closed = s.close(s.lastFight, e.Line, e.Offset)
+		s.closeInto(&step, s.lastFight, e.Line, e.Offset)
 	}
 
 	if s.open == nil {

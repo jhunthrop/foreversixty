@@ -624,3 +624,45 @@ func TestSerialiseAndRestoreAcrossAYearRollover(t *testing.T) {
 		t.Fatal("a serialise and restore across a year rollover produced the wrong timestamps")
 	}
 }
+
+// TestADiscardedTrashSegmentLeavesNoFightOpen pins the invariant the
+// resetFight helper exists for: after any path that ends a fight, s.acc
+// is nil, so "an accumulator exists" means exactly "a fight is open".
+func TestADiscardedTrashSegmentLeavesNoFightOpen(t *testing.T) {
+	o := opts()
+	o.Layout = layout.RetailV16()
+	s := New(o)
+
+	// One stray hit opens a trash segment. It is shorter than MinTrash,
+	// so when a quiet gap closes it the segmenter drops it rather than
+	// reporting it, and nothing calls finish.
+	hit := "9/26 20:10:01.000  SPELL_DAMAGE,Player-4184-000000A3,\"Morrowlyn-Nightslayer\",0x512,0x0," +
+		"Creature-0-2085-2284-7855-169753-0000AA0001,\"Hollow Sentinel\",0xa48,0x0,116,\"Frostbolt\",0x10," +
+		"Creature-0-2085-2284-7855-169753-0000AA0001,0000000000000000,100,100,0,0,0,0,0,0,0,0,1.0,2.0,11,3.0,12," +
+		"500,499,-1,16,0,0,0,nil,nil,nil\n"
+	r, err := s.Feed([]byte(hit), 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if s.acc == nil {
+		t.Fatal("the hit did not open a fight")
+	}
+
+	// A quiet, non-combat line well past the gap: it closes the segment
+	// and opens nothing.
+	quiet := "9/26 20:10:40.000  ZONE_CHANGE,2284,\"Sanguine Depths\",8\n"
+	r2, err := s.Feed([]byte(quiet), int64(len(hit)))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(r.Closed)+len(r2.Closed) != 0 {
+		t.Fatalf("a segment shorter than MinTrash was reported: %d fights", len(r.Closed)+len(r2.Closed))
+	}
+	if s.acc != nil || s.kept != nil || s.open != nil {
+		t.Fatalf("the discarded segment left state behind: acc=%v kept=%d open=%v",
+			s.acc != nil, len(s.kept), s.open)
+	}
+	if _, _, ok := s.Snapshot(); ok {
+		t.Error("Snapshot reports a fight in progress after the segment was discarded")
+	}
+}

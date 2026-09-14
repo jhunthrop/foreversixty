@@ -262,3 +262,33 @@ func TestFlushOnAnEmptySegmenterIsNil(t *testing.T) {
 		t.Fatalf("flush = %+v, want nil", f)
 	}
 }
+
+// TestADiscardedTrashSegmentIsReportedAsDiscarded covers the signal a
+// caller needs to drop the accumulator it opened for a segment that
+// closes without being reported.
+func TestADiscardedTrashSegmentIsReportedAsDiscarded(t *testing.T) {
+	s := NewSegmenter(Options{Gap: 5 * time.Second, MinTrash: 3 * time.Second})
+	// One stray swing, then a long enough quiet period to close it.
+	if st := s.Feed(playerHit(0)); !st.Opened {
+		t.Fatal("the first hit did not open a fight")
+	}
+	st := s.Feed(playerHit(100))
+	if st.Closed != nil {
+		t.Fatalf("a one-second trash segment was reported as fight %+v", *st.Closed)
+	}
+	if !st.Discarded {
+		t.Fatal("the discarded segment was not reported as discarded")
+	}
+	// A fight that closes normally is reported, not discarded.
+	next := s.Feed(playerHit(104))
+	if next.Discarded {
+		t.Error("nothing was discarded on this event")
+	}
+	closed := s.Feed(playerHit(200))
+	if closed.Closed == nil {
+		t.Fatal("the four-second segment should have been reported")
+	}
+	if closed.Discarded {
+		t.Error("a reported fight must not also be marked discarded")
+	}
+}

@@ -240,7 +240,7 @@ func (s *Session) handle(ln lexer.Line, res *Result) {
 		// A second header means the logger restarted: a hard boundary.
 		s.health.HeaderRestarts++
 		s.closeOpen(e.Time, res)
-		s.acc, s.kept, s.open = nil, nil, nil
+		s.resetFight()
 		s.reg = units.NewRegistry(s.opt.Units)
 		if h, ok := layout.ParseHeader(ln); ok {
 			if l, found := layout.Lookup(h); found {
@@ -266,6 +266,12 @@ func (s *Session) handle(ln lexer.Line, res *Result) {
 	step := s.seg.Feed(e)
 	if step.Closed != nil {
 		s.finish(*step.Closed, res)
+	}
+	if step.Discarded {
+		// The segmenter dropped a trash segment too short to report, so
+		// nothing calls finish for it. Let go of its state here, or
+		// s.acc != nil would stop meaning "a fight is open".
+		s.resetFight()
 	}
 	if step.Fight == nil {
 		return
@@ -307,6 +313,13 @@ func (s *Session) finish(f fight.Fight, res *Result) {
 		c.Events = s.kept
 	}
 	res.Closed = append(res.Closed, c)
+	s.resetFight()
+}
+
+// resetFight drops the state that belongs to one fight. Every path that
+// ends a fight goes through it, so s.acc != nil means exactly "a fight is
+// open".
+func (s *Session) resetFight() {
 	s.acc, s.kept, s.open = nil, nil, nil
 }
 
@@ -314,7 +327,7 @@ func (s *Session) closeOpen(at time.Time, res *Result) {
 	if f := s.seg.Flush(at); f != nil {
 		s.finish(*f, res)
 	} else {
-		s.acc, s.kept, s.open = nil, nil, nil
+		s.resetFight()
 	}
 }
 

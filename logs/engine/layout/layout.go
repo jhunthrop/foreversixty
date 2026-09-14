@@ -15,6 +15,13 @@ import (
 	"github.com/jhunthrop/foreversixty/logs/engine/lexer"
 )
 
+// rolloverDays is how far a yearless timestamp may fall behind the
+// previous line before it is read as the next year rather than as a clock
+// that went backwards. Half a year is the only threshold that cannot be
+// wrong in either direction: a log spanning more than six months does not
+// exist, and a New Year's Eve raid crosses the boundary by hours.
+const rolloverDays = 180
+
 // BaseParams is the common header shared by every event with a source and a
 // target: event, sourceGUID, sourceName, sourceFlags, sourceRaidFlags,
 // destGUID, destName, destFlags, destRaidFlags.
@@ -221,7 +228,7 @@ func (l Layout) ParseStamp(stamp string, prev time.Time) (time.Time, bool, error
 	}
 	t := time.Date(year, time.Month(month), day, h, m, sec, ns, zone)
 	rolled := false
-	if !l.StampYear && !prev.IsZero() && t.Before(prev.AddDate(0, 0, -180)) {
+	if !l.StampYear && !prev.IsZero() && t.Before(prev.AddDate(0, 0, -rolloverDays)) {
 		t = t.AddDate(1, 0, 0)
 		rolled = true
 	}

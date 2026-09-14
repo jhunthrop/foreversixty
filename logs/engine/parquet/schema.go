@@ -143,10 +143,29 @@ func derefF(p *float64) float64 {
 	return *p
 }
 
+// unixNano and timeAt carry a time through the file. A zero time.Time is
+// written as 0 rather than as its UnixNano, which is -6795364578871345152
+// and round-trips to a different instant; a header line decoded before any
+// timestamped line has exactly that zero time. The cost is that the Unix
+// epoch itself reads back as a zero time, which no combat log contains.
+func unixNano(t time.Time) int64 {
+	if t.IsZero() {
+		return 0
+	}
+	return t.UnixNano()
+}
+
+func timeAt(ns int64) time.Time {
+	if ns == 0 {
+		return time.Time{}
+	}
+	return time.Unix(0, ns).UTC()
+}
+
 // RowOf projects an event onto the schema.
 func RowOf(e event.Event) Row {
 	r := Row{
-		TimeUnixNano: e.Time.UnixNano(),
+		TimeUnixNano: unixNano(e.Time),
 		Line:         e.Line,
 		Offset:       e.Offset,
 		Event:        e.Name,
@@ -198,7 +217,7 @@ func RowOf(e event.Event) Row {
 // report.json and summary.json, which is where the report page reads them.
 func EventOf(r Row) event.Event {
 	e := event.Event{
-		Time:   time.Unix(0, r.TimeUnixNano).UTC(),
+		Time:   timeAt(r.TimeUnixNano),
 		Line:   r.Line,
 		Offset: r.Offset,
 		Name:   r.Event,

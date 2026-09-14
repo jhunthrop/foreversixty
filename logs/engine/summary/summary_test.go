@@ -744,3 +744,34 @@ func TestAnEnergizeWithNoDestinationOpensNoResourceRow(t *testing.T) {
 		t.Errorf("got %d resource rows, want none", len(rows))
 	}
 }
+
+// TestActivityPctIsClampedAtOneHundred covers a fight shorter than the
+// activity gap: markActive credits a full ActiveGap for an actor's first
+// action, so the ratio can exceed one and the table would show a
+// percentage the engine invented.
+func TestActivityPctIsClampedAtOneHundred(t *testing.T) {
+	o, reg := opts(t)
+	a := New(o)
+	a.Start(at(0))
+	e := dmg(0.2, mage, boss, 116, "Frostbolt", 100, -1)
+	reg.Observe(e)
+	a.Add(e)
+	f := fight.Fight{Index: 1, Kind: fight.Encounter, Start: at(0), End: at(0.2),
+		Players: []string{mage}}
+	s := a.Snapshot(f, "test")
+	if len(s.Roster) != 1 {
+		t.Fatalf("roster = %+v", s.Roster)
+	}
+	row := s.Roster[0]
+	if row.ActivityPct > 100 {
+		t.Errorf("activity = %v%%, want it clamped at 100", row.ActivityPct)
+	}
+	if row.ActivityPct != 100 {
+		t.Errorf("activity = %v%%, want 100 for an actor active for the whole fight", row.ActivityPct)
+	}
+	// The underlying accounting is untouched: it is what the ranking
+	// metric divides by, so clamping it would change a ranked number.
+	if row.ActiveMS != o.ActiveGap.Milliseconds() {
+		t.Errorf("active_ms = %d, want the full gap %d", row.ActiveMS, o.ActiveGap.Milliseconds())
+	}
+}

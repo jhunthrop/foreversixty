@@ -238,3 +238,43 @@ func equalJSON(t *testing.T, a, b summary.Summary) bool {
 	}
 	return bytes.Equal(ja, jb)
 }
+
+// TestAZeroTimeRoundTripsAsAZeroTime covers the header line decoded
+// before any timestamped line: its zero time.Time used to be written as
+// UnixNano's -6795364578871345152 and read back as a different instant.
+func TestAZeroTimeRoundTripsAsAZeroTime(t *testing.T) {
+	e := event.Event{Line: 1, Name: "COMBAT_LOG_VERSION", Kind: event.Header}
+	if !e.Time.IsZero() {
+		t.Fatal("the fixture event does not have a zero time")
+	}
+	if got := RowOf(e).TimeUnixNano; got != 0 {
+		t.Errorf("a zero time wrote %d, want 0", got)
+	}
+	b, err := Marshal([]event.Event{e})
+	if err != nil {
+		t.Fatal(err)
+	}
+	got, err := Unmarshal(b)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(got) != 1 {
+		t.Fatalf("rows = %d", len(got))
+	}
+	if !got[0].Time.IsZero() {
+		t.Errorf("time came back as %s, want a zero time", got[0].Time)
+	}
+	// A real timestamp still round-trips exactly.
+	stamped := event.Event{Time: base.Add(1234 * time.Nanosecond), Line: 2, Name: "SPELL_DAMAGE", Kind: event.Damage}
+	b, err = Marshal([]event.Event{stamped})
+	if err != nil {
+		t.Fatal(err)
+	}
+	got, err = Unmarshal(b)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !got[0].Time.Equal(stamped.Time) {
+		t.Errorf("time = %s, want %s", got[0].Time, stamped.Time)
+	}
+}

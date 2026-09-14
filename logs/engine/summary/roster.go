@@ -180,7 +180,12 @@ func (a *Accumulator) rosterRows(f fight.Fight, s Summary) []RosterRow {
 			row.DPS = float64(row.DamageDone) / seconds
 			row.HPS = float64(row.HealingDone) / seconds
 			row.DTPS = float64(row.DamageTaken) / seconds
-			row.ActivityPct = float64(row.ActiveMS) / float64(s.DurationMS) * 100
+			// markActive credits a full ActiveGap for an actor's first
+			// action, so on a fight shorter than that gap the ratio can
+			// exceed one. Clamp what the table shows; the underlying
+			// ActiveMS is what the ranking metric divides by and is left
+			// alone.
+			row.ActivityPct = min(float64(row.ActiveMS)/float64(s.DurationMS)*100, 100)
 		}
 		row.Role = role(row)
 		out = append(out, row)

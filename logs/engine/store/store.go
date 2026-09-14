@@ -244,8 +244,17 @@ func compress(chunk []byte) ([]byte, error) {
 }
 
 // Decompress unpacks a raw chunk, for the reprocess job and the tests.
+//
+// TODO: cap the decoded size. DecodeAll's default ceiling is 64 GiB, which
+// is only safe while every object this reads is one this engine wrote.
+// The trigger is the Phase 3 reprocess job, which will read R2 objects
+// whose provenance is not guaranteed: pass zstd.WithDecoderMaxMemory for a
+// bound derived from the chunk size the publisher writes.
+//
+// The reader argument is nil because DecodeAll is stateless and ignores
+// it; passing a real one would only spawn a decoder goroutine per call.
 func Decompress(packed []byte) ([]byte, error) {
-	r, err := zstd.NewReader(bytes.NewReader(packed), zstd.WithDecoderConcurrency(1))
+	r, err := zstd.NewReader(nil, zstd.WithDecoderConcurrency(1))
 	if err != nil {
 		return nil, fmt.Errorf("store: zstd reader: %w", err)
 	}
