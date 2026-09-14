@@ -38,3 +38,6 @@ __pycache__/
 
 # fetched combat-log samples (never committed; the retail sample is AGPL-3.0)
 logs/testdata/cache/
+
+# go workspace checksum file (regenerated; the modules are local)
+go.work.sum
