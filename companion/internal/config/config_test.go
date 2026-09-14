@@ -68,3 +68,31 @@ func TestAnEmptyAPIBaseURLIsRefused(t *testing.T) {
 		t.Fatal("Validate accepted an empty site_base_url")
 	}
 }
+
+func TestABaseURLMustBeHTTPOrHTTPS(t *testing.T) {
+	for _, tc := range []struct {
+		name string
+		api  string
+		site string
+		ok   bool
+	}{
+		{"the defaults", DefaultAPIBaseURL, DefaultSiteBaseURL, true},
+		{"a local server", "http://127.0.0.1:8080", "http://127.0.0.1:4321", true},
+		// site_base_url becomes the href of a link in the local page,
+		// so a script URL there is a script URL inside the webview.
+		{"a javascript site URL", DefaultAPIBaseURL, "javascript:alert(1)", false},
+		{"a javascript API URL", "javascript:alert(1)", DefaultSiteBaseURL, false},
+		{"a file URL", DefaultAPIBaseURL, "file:///etc/passwd", false},
+		{"a bare host", DefaultAPIBaseURL, "foreversixty.gg", false},
+		{"no host", DefaultAPIBaseURL, "https://", false},
+		{"an empty site URL", DefaultAPIBaseURL, "", false},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			c := Default()
+			c.APIBaseURL, c.SiteBaseURL = tc.api, tc.site
+			if err := c.Validate(); (err == nil) != tc.ok {
+				t.Fatalf("Validate() = %v, want ok = %v", err, tc.ok)
+			}
+		})
+	}
+}

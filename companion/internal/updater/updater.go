@@ -339,7 +339,11 @@ func ApplyPending(dir, publicKey, exe string) (bool, error) {
 		return false, fmt.Errorf("make the new binary executable: %w", err)
 	}
 
-	previous := filepath.Join(dir, "previous")
+	// Beside exe, not in the update directory: the install location
+	// and the application directory can be on different volumes, and
+	// a cross-device rename fails outright. Both halves of the swap
+	// are same-directory renames this way.
+	previous := exe + ".previous"
 	os.Remove(previous)
 	if err := os.Rename(exe, previous); err != nil {
 		return false, fmt.Errorf("move the running binary aside: %w", err)

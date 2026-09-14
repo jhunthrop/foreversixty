@@ -33,10 +33,19 @@ func (t *Table) Get(key string) string {
 	return ""
 }
 
+// MaxTableDepth bounds how deeply tables may nest. The reader
+// descends the Lua with the Go stack, and a SavedVariables file is a
+// file the companion did not write; without a bound, a pathologically
+// nested one is a stack overflow, which no recover can catch, on the
+// goroutine that happens to be reading — including the loopback
+// server's. Real saved variables nest a handful of levels.
+const MaxTableDepth = 128
+
 // parser is a recursive-descent reader over the source.
 type parser struct {
-	src string
-	i   int
+	src   string
+	i     int
+	depth int
 }
 
 // ParseLua reads a SavedVariables file into its top-level assignments.
@@ -220,6 +229,11 @@ func (p *parser) number() (float64, error) {
 }
 
 func (p *parser) table() (*Table, error) {
+	if p.depth >= MaxTableDepth {
+		return nil, p.errf("tables are nested deeper than %d levels", MaxTableDepth)
+	}
+	p.depth++
+	defer func() { p.depth-- }()
 	if err := p.expect('{'); err != nil {
 		return nil, err
 	}

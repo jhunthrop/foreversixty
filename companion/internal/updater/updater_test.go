@@ -193,6 +193,15 @@ func TestApplyPendingSwapsTheBinaryAndVerifiesAgain(t *testing.T) {
 	if _, err := os.Stat(PendingPath(dir)); err == nil {
 		t.Error("the pending file was left behind")
 	}
+	// Both halves of the swap must be same-directory renames: the
+	// install location and the application directory can sit on
+	// different volumes, where a rename across them fails outright.
+	if _, err := os.Stat(exe + ".previous"); err != nil {
+		t.Errorf("the replaced binary is not beside the new one: %v", err)
+	}
+	if _, err := os.Stat(filepath.Join(dir, "previous")); err == nil {
+		t.Error("the replaced binary was moved into the update directory")
+	}
 }
 
 func TestApplyPendingRefusesAndClearsAnUnsignedStage(t *testing.T) {

@@ -9,6 +9,7 @@ import (
 	"errors"
 	"io/fs"
 	"log/slog"
+	"slices"
 	"time"
 )
 
@@ -40,6 +41,13 @@ type Options struct {
 type Sync struct {
 	o         Options
 	lastInbox time.Time
+	// builds and body are the inbox as it was last rendered. The
+	// render is stamped with the time the builds changed, not the
+	// time the file is written, so an unchanged inbox is the same
+	// bytes pass after pass and WriteInbox's identity check fires.
+	builds   []Build
+	body     []byte
+	rendered bool
 }
 
 // New builds a sync.
@@ -91,9 +99,12 @@ func (s *Sync) Poll(ctx context.Context, now time.Time) error {
 		return errors.Join(append(errs, err)...)
 	}
 	s.lastInbox = now
-	body := RenderInbox(inbox, now)
+	if !s.rendered || !slices.Equal(s.builds, inbox.Builds) {
+		s.builds = slices.Clone(inbox.Builds)
+		s.body, s.rendered = RenderInbox(inbox, now), true
+	}
 	for _, p := range paths {
-		wrote, err := WriteInbox(InboxPath(p), body)
+		wrote, err := WriteInbox(InboxPath(p), s.body)
 		if err != nil {
 			errs = append(errs, err)
 			continue

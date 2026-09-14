@@ -432,6 +432,41 @@ func TestAQueuedItemWithNoReportStateIsDropped(t *testing.T) {
 	}
 }
 
+func TestAQueuedItemWhoseStateWillNotReadStaysQueued(t *testing.T) {
+	r := newRig(t, 1<<20)
+	const key = "20261209-200000-deadbeef"
+	// The file is there and unreadable: a half-written state file, a
+	// disk error, a descriptor table that is full. That is a passing
+	// condition, not a report that is gone.
+	if err := os.WriteFile(filepath.Join(r.dirs.state, key+".json"),
+		[]byte("{ this is not json"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := r.q.Enqueue(queue.Item{
+		Kind: queue.Fight, ReportKey: key, ContentType: "text/plain",
+	}, []byte("x")); err != nil {
+		t.Fatal(err)
+	}
+	if err := r.pipe.Drain(t.Context()); err == nil {
+		t.Fatal("an unreadable report state was not reported")
+	}
+	if n, _ := r.q.Len(); n != 1 {
+		t.Fatalf("the fight was thrown away: %d queued", n)
+	}
+	// The state file becomes readable again and the fight goes up.
+	if err := state.Save(r.dirs.state, state.Report{
+		Key: key, ReportID: "r-1", StartedAt: t0, Visibility: "public",
+	}); err != nil {
+		t.Fatal(err)
+	}
+	if err := r.pipe.Drain(t.Context()); err != nil {
+		t.Fatal(err)
+	}
+	if n, _ := r.q.Len(); n != 0 {
+		t.Fatalf("%d items are still queued after the state came back", n)
+	}
+}
+
 func TestLiveAndCompleteDoNothingWithoutAnOpenReport(t *testing.T) {
 	r := newRig(t, 1<<20)
 	if err := r.pipe.Live(t.Context(), r.clock); err != nil {

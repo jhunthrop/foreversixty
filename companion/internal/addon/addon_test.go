@@ -256,3 +256,56 @@ func TestAMissingSavedVariablesFileIsNotAnError(t *testing.T) {
 		t.Errorf("posted %+v", api.posted)
 	}
 }
+
+func TestTheInboxIsNotRewrittenWhenTheBuildsHaveNotChanged(t *testing.T) {
+	dir := filepath.Join(t.TempDir(), "SavedVariables")
+	if err := os.MkdirAll(dir, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	path := filepath.Join(dir, SavedVariablesName+".lua")
+	if err := os.WriteFile(path, []byte(savedVariables), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	api := &fakeAPI{inbox: Inbox{Builds: []Build{{ID: "b1", Name: "Holy", Code: "FSB1:x"}}}}
+	s := New(Options{Paths: func() []string { return []string{path} }, API: api})
+	if err := s.Poll(t.Context(), t0); err != nil {
+		t.Fatal(err)
+	}
+	inbox := InboxPath(path)
+	if err := os.Chtimes(inbox, t0, t0); err != nil {
+		t.Fatalf("the inbox was not written: %v", err)
+	}
+
+	// The ten-minute timer comes round and the site has the same
+	// builds: the bytes are identical and the file is left alone.
+	if err := s.Poll(t.Context(), t0.Add(InboxEvery)); err != nil {
+		t.Fatal(err)
+	}
+	fi, err := os.Stat(inbox)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !fi.ModTime().Equal(t0) {
+		t.Error("the inbox was rewritten though the builds had not changed")
+	}
+
+	// A build the player added on the site does reach the addon.
+	api.inbox = Inbox{Builds: append(api.inbox.Builds, Build{ID: "b2", Name: "Prot", Code: "FSB1:y"})}
+	if err := s.Poll(t.Context(), t0.Add(2*InboxEvery)); err != nil {
+		t.Fatal(err)
+	}
+	fi, err = os.Stat(inbox)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if fi.ModTime().Equal(t0) {
+		t.Error("a new build never reached the addon")
+	}
+	body, err := os.ReadFile(inbox)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(body), "FSB1:y") {
+		t.Errorf("the rewritten inbox does not carry the new build:\n%s", body)
+	}
+}

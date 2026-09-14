@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"io/fs"
+	"net/url"
 	"os"
 	"path/filepath"
 	"slices"
@@ -55,13 +56,35 @@ func Default() Config {
 	}
 }
 
+// baseURL rejects anything that is not an absolute http or https
+// URL. site_base_url becomes the href of a link in the local page, so
+// a javascript: value in config.json would otherwise be a clickable
+// script URL inside the webview, and api_base_url is where the device
+// token is sent.
+func baseURL(field, raw string) error {
+	if raw == "" {
+		return fmt.Errorf("%s is empty", field)
+	}
+	u, err := url.Parse(raw)
+	if err != nil {
+		return fmt.Errorf("%s is not a URL: %w", field, err)
+	}
+	if u.Scheme != "http" && u.Scheme != "https" {
+		return fmt.Errorf("%s must be an http or https URL, not %q", field, u.Scheme)
+	}
+	if u.Host == "" {
+		return fmt.Errorf("%s has no host", field)
+	}
+	return nil
+}
+
 // Validate rejects a configuration the rest of the app cannot use.
 func (c Config) Validate() error {
-	if c.APIBaseURL == "" {
-		return errors.New("api_base_url is empty")
+	if err := baseURL("api_base_url", c.APIBaseURL); err != nil {
+		return err
 	}
-	if c.SiteBaseURL == "" {
-		return errors.New("site_base_url is empty")
+	if err := baseURL("site_base_url", c.SiteBaseURL); err != nil {
+		return err
 	}
 	if !slices.Contains(Visibilities, c.ReportVisibility) {
 		return fmt.Errorf("report_visibility %q is not one of %v", c.ReportVisibility, Visibilities)

@@ -105,8 +105,10 @@ func collect(v any, out *[]Export) {
 }
 
 // RenderInbox writes the Lua the addon loads. It is deterministic:
-// the same inbox at the same time renders byte for byte the same, so
-// the companion can skip a write that would change nothing.
+// the same inbox at the same time renders byte for byte the same. at
+// is when the builds were generated, not when the file is written —
+// the sync re-renders only when the build set changes — which is what
+// lets WriteInbox skip a pass that would change nothing.
 func RenderInbox(in Inbox, at time.Time) []byte {
 	var b strings.Builder
 	b.WriteString("-- Written by the Forever Sixty companion. Do not edit:\n")

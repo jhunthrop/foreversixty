@@ -8,6 +8,8 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
+	"io/fs"
 	"time"
 
 	"github.com/jhunthrop/foreversixty/companion/internal/client"
@@ -89,11 +91,22 @@ func (p *Pipeline) create(ctx context.Context, rep *state.Report) error {
 // send performs one queued item.
 func (p *Pipeline) send(ctx context.Context, l *queue.Lease) error {
 	rep, err := state.Load(p.o.StateDir, l.Item.ReportKey)
-	if err != nil {
+	if errors.Is(err, fs.ErrNotExist) {
 		p.o.Log.Error("dropping a queued item whose report state is gone",
 			"component", "uploader", "report", l.Item.ReportKey,
 			"kind", string(l.Item.Kind), "err", err.Error())
 		return l.Drop()
+	}
+	if err != nil {
+		// The file is there and could not be read: a full descriptor
+		// table, a disk error, a half-written file. That is the same
+		// shape as a retryable upload failure, so the item stays at
+		// the head and the drain stops rather than throwing a fight
+		// away over a condition that passes.
+		if ferr := l.Fail(err); ferr != nil {
+			return ferr
+		}
+		return fmt.Errorf("read the state of report %s: %w", l.Item.ReportKey, err)
 	}
 	if rep.ReportID == "" {
 		if cerr := p.create(ctx, &rep); cerr != nil {
