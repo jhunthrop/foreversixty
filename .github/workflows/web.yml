@@ -26,6 +26,12 @@ jobs:
       - run: npm run check
       - run: npm run lint
       - run: npm run format:check
+      # `pretest` and playwright.config.ts's webServer both set FOREVER_DATA=fixture, so the
+      # unit tests and the browser suite see the checked-in fixture rather than whatever the
+      # data pipeline last emitted. No env var is needed here. `npm run build` below is the
+      # real-data build, unset FOREVER_DATA defaulting to real; `npm run test:e2e` then
+      # rebuilds dist/ on the fixture, which is the build `npm run lhci` audits.
+      # tests/e2e/real-data.spec.ts skips here: it is the pre-deploy smoke, npm run test:e2e:real.
       - run: npm test
       - run: npm run build
       - run: npx playwright install --with-deps chromium

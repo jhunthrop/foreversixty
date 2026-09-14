@@ -3,6 +3,13 @@
 //   public/data/<build>/…        fetched at runtime by the planner island
 //   src/data/generated/*.json    imported at build time by src/pages/classes.astro
 //
+// FOREVER_DATA picks the source explicitly. `real` (the default) publishes data/builds/ as
+// described below. `fixture` publishes src/fixtures/planner regardless of what data/builds
+// holds, so the unit tests and the browser suite run against the small, fixed two-tree
+// warrior they were written for instead of whatever the data pipeline last emitted. Tests
+// that assert on talent names, item ids and counts are only meaningful against data that
+// does not move; the real data gets its own smoke suite (tests/e2e/real-data.spec.ts).
+//
 // Every build whose manifest lists Phase 1 talent data is published under public/data/, not
 // only the active one. Shared builds are immutable and keyed by tree_version: /b/:id renders
 // with the tree_version the build was saved against, and the island fetches
@@ -13,10 +20,11 @@
 // because those are the build-time imports for /classes.
 //
 // The pipeline's manifest.json is the contract: every path it lists must exist on disk, or
-// this script throws and names the missing files. Until the data/ plan emits the Phase 1
-// per-class directories, a build whose manifest lists none of them falls back to the
-// checked-in fixture at src/fixtures/planner — loudly, and never when CF_PAGES is set
-// (the same deploy guard astro.config.mjs uses for placeholder community links).
+// this script throws and names the missing files. Under FOREVER_DATA=real, a build whose
+// manifest lists none of the Phase 1 per-class directories falls back to the checked-in
+// fixture at src/fixtures/planner — loudly. Neither that fallback nor an explicit
+// FOREVER_DATA=fixture is allowed when CF_PAGES is set (the same deploy guard
+// astro.config.mjs uses for placeholder community links).
 import { access, cp, mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
@@ -35,6 +43,24 @@ export const SYNC_ENTRIES = [
 
 /** The files src/pages/classes.astro imports statically. */
 export const PAGE_IMPORTS = ['classes.json', 'races.json', 'combos.json'];
+
+/** The values FOREVER_DATA accepts. `real` is the default; see the file header. */
+export const DATA_SOURCES = ['real', 'fixture'];
+
+/**
+ * Reads the FOREVER_DATA selector, defaulting to 'real'. Throws on any other value rather
+ * than guessing: a typo that silently published real data would make the test suites
+ * nondeterministic in exactly the way this selector exists to prevent.
+ * @param {string | undefined} value
+ * @returns {'real' | 'fixture'}
+ */
+export function resolveDataSource(value) {
+  if (value === undefined || value === '') return 'real';
+  if (!DATA_SOURCES.includes(value)) {
+    throw new Error(`FOREVER_DATA must be one of ${DATA_SOURCES.join(', ')}; got ${JSON.stringify(value)}.`);
+  }
+  return value;
+}
 
 /** True once the manifest lists the Phase 1 per-class talent files. */
 export function hasPhaseOneData(manifest) {
@@ -102,18 +128,30 @@ async function readJson(file) {
 }
 
 /**
- * Decides which directory to copy from: the real build directory when its manifest lists
- * Phase 1 talent data, or the checked-in fixture otherwise. Throws when the manifest is
- * missing listed files, or when falling back to the fixture is not allowed.
+ * Decides which directory to copy from: the checked-in fixture when the caller asked for it,
+ * otherwise the real build directory when its manifest lists Phase 1 talent data, otherwise
+ * the fixture again as a fallback. Throws when the manifest is missing listed files, or when
+ * the fixture is not allowed.
  * @param {{
  *   repoRoot: string,
  *   webRoot: string,
  *   build: string,
+ *   source: 'real' | 'fixture',
  *   allowFixture: boolean,
- *   log: { log: (...args: unknown[]) => void, warn: (...args: unknown[]) => void },
  * }} options
  */
-async function resolveSourceDir({ repoRoot, webRoot, build, allowFixture, log }) {
+async function resolveSourceDir({ repoRoot, webRoot, build, source, allowFixture }) {
+  const fixtureDir = path.join(webRoot, 'src/fixtures/planner');
+  if (source === 'fixture') {
+    if (!allowFixture) {
+      throw new Error(
+        `FOREVER_DATA=fixture is refused here: this build publishes the site, and fixture ` +
+          `talent and item content is placeholder data. Unset FOREVER_DATA or set it to real.`,
+      );
+    }
+    return { sourceDir: fixtureDir, usedFixture: true };
+  }
+
   const buildDir = path.join(repoRoot, 'data/builds', build);
   const manifestFile = path.join(buildDir, 'manifest.json');
   const manifest = (await exists(manifestFile)) ? await readJson(manifestFile) : null;
@@ -135,11 +173,7 @@ async function resolveSourceDir({ repoRoot, webRoot, build, allowFixture, log })
         `Run the data pipeline before deploying; the fixture fallback is refused here.`,
     );
   }
-  log.warn(
-    `sync-data: data/builds/${build} has no Phase 1 talent data; copying the fixture from ` +
-      `src/fixtures/planner instead. Talent and item content on this build is placeholder data.`,
-  );
-  return { sourceDir: path.join(webRoot, 'src/fixtures/planner'), usedFixture: true };
+  return { sourceDir: fixtureDir, usedFixture: true };
 }
 
 /**
@@ -188,22 +222,17 @@ async function writePageImports({ webRoot, sourceDir }) {
 /**
  * Publishes the retained builds other than the active one. Each already has Phase 1 data, so
  * the fixture fallback can never apply and is refused. Returns the build ids published.
- * @param {{
- *   repoRoot: string,
- *   webRoot: string,
- *   builds: string[],
- *   log: { log: (...args: unknown[]) => void, warn: (...args: unknown[]) => void },
- * }} options
+ * @param {{ repoRoot: string, webRoot: string, builds: string[] }} options
  */
-async function publishRetained({ repoRoot, webRoot, builds, log }) {
+async function publishRetained({ repoRoot, webRoot, builds }) {
   const published = [];
   for (const build of builds) {
     const { sourceDir } = await resolveSourceDir({
       repoRoot,
       webRoot,
       build,
+      source: 'real',
       allowFixture: false,
-      log,
     });
     await copyBuild({ repoRoot, webRoot, build, sourceDir });
     published.push(build);
@@ -212,21 +241,64 @@ async function publishRetained({ repoRoot, webRoot, builds, log }) {
 }
 
 /**
+ * Removes public/data/<build> directories this run did not publish. Without it, switching
+ * FOREVER_DATA or retiring a build leaves a stale directory the island would still fetch.
+ * @param {{ webRoot: string, published: string[] }} options
+ * @returns {Promise<string[]>} the build ids removed
+ */
+async function pruneUnpublished({ webRoot, published }) {
+  const publicData = path.join(webRoot, 'public/data');
+  const keep = new Set(published);
+  let entries;
+  try {
+    entries = await readdir(publicData, { withFileTypes: true });
+  } catch {
+    return [];
+  }
+  const removed = [];
+  for (const entry of entries) {
+    if (!entry.isDirectory() || keep.has(entry.name)) continue;
+    await rm(path.join(publicData, entry.name), { recursive: true, force: true });
+    removed.push(entry.name);
+  }
+  return removed;
+}
+
+/**
  * @param {{
  *   repoRoot: string,
  *   webRoot: string,
+ *   source?: 'real' | 'fixture',
  *   allowFixture?: boolean,
  *   log?: { log: (...args: unknown[]) => void, warn: (...args: unknown[]) => void },
  * }} options
  */
-export async function syncData({ repoRoot, webRoot, allowFixture = true, log = console } = {}) {
+export async function syncData({
+  repoRoot,
+  webRoot,
+  source = 'real',
+  allowFixture = true,
+  log = console,
+} = {}) {
   const activeFile = path.join(webRoot, 'src/data/active-build.json');
   const { build } = await readJson(activeFile);
   if (typeof build !== 'string' || build.length === 0) {
     throw new Error(`${activeFile} must contain a non-empty "build" string.`);
   }
 
-  const { sourceDir, usedFixture } = await resolveSourceDir({ repoRoot, webRoot, build, allowFixture, log });
+  const { sourceDir, usedFixture } = await resolveSourceDir({
+    repoRoot,
+    webRoot,
+    build,
+    source,
+    allowFixture,
+  });
+  if (usedFixture && source === 'real') {
+    log.warn(
+      `sync-data: data/builds/${build} has no Phase 1 talent data; copying the fixture from ` +
+        `src/fixtures/planner instead. Talent and item content on this build is placeholder data.`,
+    );
+  }
   const copied = await copyBuild({ repoRoot, webRoot, build, sourceDir });
   await writePageImports({ webRoot, sourceDir });
   log.log(
@@ -235,25 +307,30 @@ export async function syncData({ repoRoot, webRoot, allowFixture = true, log = c
   );
 
   // The active build has already been published, with whatever fixture handling it needed.
-  const { retained, skipped } = await partitionBuilds(repoRoot);
-  for (const other of skipped.filter((name) => name !== build)) {
-    log.warn(
-      `sync-data: data/builds/${other} has no Phase 1 talent data; not publishing it. ` +
-        `Share links made against build ${other} will not find their talent data.`,
+  // Under FOREVER_DATA=fixture there is nothing else to retain: data/builds is not consulted
+  // at all, so the fixture stands alone as the one published build.
+  const published = [build];
+  if (source === 'real') {
+    const { retained, skipped } = await partitionBuilds(repoRoot);
+    for (const other of skipped.filter((name) => name !== build)) {
+      log.warn(
+        `sync-data: data/builds/${other} has no Phase 1 talent data; not publishing it. ` +
+          `Share links made against build ${other} will not find their talent data.`,
+      );
+    }
+    published.push(
+      ...(await publishRetained({
+        repoRoot,
+        webRoot,
+        builds: retained.filter((name) => name !== build),
+      })),
     );
   }
-  const published = [
-    build,
-    ...(await publishRetained({
-      repoRoot,
-      webRoot,
-      builds: retained.filter((name) => name !== build),
-      log,
-    })),
-  ];
-  log.log(`sync-data: published ${published.length} build(s): ${published.join(', ')}`);
+  const pruned = await pruneUnpublished({ webRoot, published });
+  if (pruned.length > 0) log.log(`sync-data: removed stale public/data/${pruned.join(', ')}`);
+  log.log(`sync-data: published ${published.length} build(s) from ${source} data: ${published.join(', ')}`);
 
-  return { build, sourceDir, usedFixture, copied, published };
+  return { build, source, sourceDir, usedFixture, copied, published, pruned };
 }
 
 const invokedDirectly =
@@ -264,6 +341,7 @@ if (invokedDirectly) {
   await syncData({
     repoRoot: path.resolve(webRoot, '..'),
     webRoot,
+    source: resolveDataSource(process.env.FOREVER_DATA),
     // CF_PAGES is set only in the deploy build (see .github/workflows/web.yml), where
     // shipping fixture talent data to foreversixty.gg would be a lie.
     allowFixture: !process.env.CF_PAGES,

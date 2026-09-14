@@ -14,21 +14,22 @@ A fan reference site for World of Warcraft: Forever, built with [Astro](https://
 
 All commands are run from this directory (`web/`):
 
-| Command                | Action                                            |
-| :--------------------- | :------------------------------------------------ |
-| `npm install`          | Install dependencies                              |
-| `npm run dev`          | Start the local dev server                        |
-| `npm run build`        | Build the production site to `./dist/`            |
-| `npm run preview`      | Preview the production build locally              |
-| `npm run check`        | Type-check with `astro check` (TypeScript strict) |
-| `npm run lint`         | Lint with ESLint (Astro, Svelte, TypeScript)      |
-| `npm run lint:fix`     | Lint and apply the fixable rules                  |
-| `npm run format`       | Format with Prettier                              |
-| `npm run format:check` | Check formatting without writing                  |
-| `npm run test`         | Run unit tests once with Vitest                   |
-| `npm run test:watch`   | Run unit tests in watch mode                      |
-| `npm run test:e2e`     | Run end-to-end tests with Playwright              |
-| `npm run lhci`         | Run Lighthouse CI                                 |
+| Command                 | Action                                                                    |
+| :---------------------- | :------------------------------------------------------------------------ |
+| `npm install`           | Install dependencies                                                      |
+| `npm run dev`           | Start the local dev server                                                |
+| `npm run build`         | Build the production site to `./dist/`                                    |
+| `npm run preview`       | Preview the production build locally                                      |
+| `npm run check`         | Type-check with `astro check` (TypeScript strict)                         |
+| `npm run lint`          | Lint with ESLint (Astro, Svelte, TypeScript)                              |
+| `npm run lint:fix`      | Lint and apply the fixable rules                                          |
+| `npm run format`        | Format with Prettier                                                      |
+| `npm run format:check`  | Check formatting without writing                                          |
+| `npm run test`          | Run unit tests once with Vitest                                           |
+| `npm run test:watch`    | Run unit tests in watch mode                                              |
+| `npm run test:e2e`      | Run end-to-end tests with Playwright (fixture data)                       |
+| `npm run test:e2e:real` | Pre-deploy smoke: build with real data, run `tests/e2e/real-data.spec.ts` |
+| `npm run lhci`          | Run Lighthouse CI                                                         |
 
 ## Project Structure
 
@@ -51,7 +52,7 @@ web/
 │   ├── content.config.ts    # content collection schemas (zod)
 │   ├── planner-island.ts    # entry for the standalone island bundle the API's /b/:id page links
 │   └── worker.ts            # the Cloudflare Worker for /b/* (the only server code here)
-├── tests/e2e/               # Playwright end-to-end specs
+├── tests/e2e/               # Playwright end-to-end specs (fixture data; real-data.spec.ts is the real-data smoke)
 ├── lighthouserc.json        # Lighthouse CI budgets
 ├── vite.island.config.ts    # the second Vite build that emits dist/planner-island.{js,css}
 ├── wrangler.jsonc           # Workers deploy config (assets, routes, custom domains)
@@ -87,7 +88,40 @@ Every path listed in the build's `manifest.json` must exist on disk or the sync 
 missing files. While `data/builds/<build>/` still holds only the Phase 0 flat files, the sync falls
 back to the checked-in fixture at `src/fixtures/planner/` and says so on stdout. That fallback is
 refused when `CF_PAGES` is set, so a deploy can never publish fixture talent data. Regenerate the
-fixture with `node scripts/make-planner-fixture.mjs`.
+fixture with `node scripts/make-planner-fixture.mjs`. A `public/data/<build>/` directory this run did
+not publish is removed, so switching sources or retiring a build never leaves a stale build behind
+for the island to fetch.
+
+### `FOREVER_DATA`: which data the sync publishes
+
+`FOREVER_DATA` selects the source explicitly; any value other than the two below fails the sync
+rather than being guessed at.
+
+| Value            | Effect                                                                                           |
+| :--------------- | :----------------------------------------------------------------------------------------------- |
+| `real` (default) | Publishes `data/builds/` as described above, fixture fallback included.                          |
+| `fixture`        | Publishes `src/fixtures/planner/` whatever `data/builds/` holds. Refused when `CF_PAGES` is set. |
+
+**The test suites run on the fixture.** `pretest` sets `FOREVER_DATA=fixture`, and
+`playwright.config.ts` passes `FOREVER_DATA: process.env.FOREVER_DATA ?? 'fixture'` to the build its
+`webServer` runs. The unit tests and every browser spec but one assert on talent names, tree counts,
+item ids and reference rows; the real pipeline output moves all of those on each regeneration, so
+running them against it would make them a changelog rather than a test. The fixture is a two-tree
+warrior with a handful of items and the full nine-by-nine reference tables, and it is checked in, so
+those suites are deterministic.
+
+**The real data gets a smoke suite.** `tests/e2e/real-data.spec.ts` skips unless `FOREVER_DATA=real`,
+and `npm run test:e2e:real` builds with real data and runs it alone: `/planner` opens on the default
+class and lays out its three trees under the names the synced talent file gives them, switching class
+lays out the new class's trees, `/classes` crosses nine classes with nine races, and the share panel is
+there. It asserts on structure and on names it reads back out of `public/data/<build>/`, never on
+particular Forever facts, so regenerating `data/builds/` cannot turn it red on its own. It is not in
+CI's verify job — run it before a deploy.
+
+`npm run build` (and CI's deploy job, which adds `CF_PAGES=1`) uses real data: `FOREVER_DATA` is unset
+there, and `real` is the default. CI's verify job runs `npm run build` for the real build and then
+`npm run test:e2e`, whose `webServer` rebuilds `dist/` on the fixture; `npm run lhci` audits that
+fixture build, which is the build the Lighthouse budgets below were measured against.
 
 ## The planner island
 
@@ -146,6 +180,7 @@ content="noindex">`: nobody should arrive at it from a search result.
 | `PUBLIC_API_BASE_URL` | build time (Astro and the island bundle)       | `https://api.foreversixty.gg`                                           |
 | `API_BASE_URL`        | `vars` in `wrangler.jsonc`, read by the Worker | `https://api.foreversixty.gg`                                           |
 | `CF_PAGES`            | deploy build only                              | unset; when set, placeholder links and fixture data both fail the build |
+| `FOREVER_DATA`        | `scripts/sync-data.mjs`, so every `pre*` hook  | `real`; `fixture` publishes `src/fixtures/planner/` instead             |
 
 ## Deploy (Cloudflare Workers, static assets)
 

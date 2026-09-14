@@ -3,7 +3,7 @@ import { existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { syncData } from '../../../scripts/sync-data.mjs';
+import { resolveDataSource, syncData } from '../../../scripts/sync-data.mjs';
 
 const BUILD = '1.15.9.69722';
 const OTHER_BUILD = '1.16.0.70000';
@@ -161,6 +161,42 @@ describe('syncData', () => {
     expect(JSON.parse(generated)).toEqual([{ id: 2, slug: 'paladin' }]);
   });
 
+  it('publishes the fixture when asked, whatever data/builds holds', async () => {
+    scaffoldRealBuild();
+    const result = await syncData({ repoRoot, webRoot, source: 'fixture', log: silent });
+    expect(result.usedFixture).toBe(true);
+    expect(result.published).toEqual([BUILD]);
+    expect(existsSync(path.join(webRoot, 'public/data', BUILD, 'talents/warrior.json'))).toBe(true);
+    expect(existsSync(path.join(webRoot, 'public/data', BUILD, 'talents/paladin.json'))).toBe(false);
+    const generated = readFileSync(path.join(webRoot, 'src/data/generated/classes.json'), 'utf8');
+    expect(JSON.parse(generated)).toEqual([{ id: 1, slug: 'warrior' }]);
+  });
+
+  it('does not retain other real builds when publishing the fixture', async () => {
+    scaffoldRealBuild();
+    scaffoldRealBuild(OTHER_BUILD, 'mage');
+    const result = await syncData({ repoRoot, webRoot, source: 'fixture', log: silent });
+    expect(result.published).toEqual([BUILD]);
+    expect(existsSync(path.join(webRoot, 'public/data', OTHER_BUILD))).toBe(false);
+  });
+
+  it('refuses the fixture source where fixtures are not allowed', async () => {
+    scaffoldRealBuild();
+    await expect(
+      syncData({ repoRoot, webRoot, source: 'fixture', allowFixture: false, log: silent }),
+    ).rejects.toThrow(/FOREVER_DATA=fixture is refused here/);
+  });
+
+  it('removes a build public/data still holds from an earlier run', async () => {
+    scaffoldRealBuild();
+    scaffoldRealBuild(OTHER_BUILD, 'mage');
+    await syncData({ repoRoot, webRoot, log: silent });
+    rmSync(path.join(repoRoot, 'data/builds', OTHER_BUILD), { recursive: true, force: true });
+    const result = await syncData({ repoRoot, webRoot, log: silent });
+    expect(result.pruned).toEqual([OTHER_BUILD]);
+    expect(existsSync(path.join(webRoot, 'public/data', OTHER_BUILD))).toBe(false);
+  });
+
   it('names the published builds on stdout', async () => {
     scaffoldRealBuild();
     scaffoldRealBuild(OTHER_BUILD, 'mage');
@@ -168,5 +204,18 @@ describe('syncData', () => {
     const log = { log: (message: unknown) => void lines.push(String(message)), warn: () => {} };
     await syncData({ repoRoot, webRoot, allowFixture: true, log });
     expect(lines.join('\n')).toContain(OTHER_BUILD);
+  });
+});
+
+describe('resolveDataSource', () => {
+  it('defaults to real and passes the two known values through', () => {
+    expect(resolveDataSource(undefined)).toBe('real');
+    expect(resolveDataSource('')).toBe('real');
+    expect(resolveDataSource('real')).toBe('real');
+    expect(resolveDataSource('fixture')).toBe('fixture');
+  });
+
+  it('refuses an unknown value rather than guessing', () => {
+    expect(() => resolveDataSource('fixtures')).toThrow(/FOREVER_DATA must be one of real, fixture/);
   });
 });
