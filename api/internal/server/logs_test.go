@@ -10,6 +10,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/jackc/pgx/v5/pgxpool"
+
 	"github.com/jhunthrop/foreversixty/api/internal/addon"
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/db"
@@ -19,10 +21,9 @@ import (
 	"github.com/jhunthrop/foreversixty/logs/engine/store"
 )
 
-// logsRouter is the whole Phase 3 surface mounted over the test
-// database, which is what a deployment with every credential looks
-// like.
-func logsRouter(t *testing.T) http.Handler {
+// testPool connects a migrated pool for a router fixture, skipping the
+// test when TEST_DATABASE_URL is unset.
+func testPool(t *testing.T) *pgxpool.Pool {
 	t.Helper()
 	url := os.Getenv("TEST_DATABASE_URL")
 	if url == "" {
@@ -36,6 +37,15 @@ func logsRouter(t *testing.T) http.Handler {
 		t.Fatal(err)
 	}
 	t.Cleanup(pool.Close)
+	return pool
+}
+
+// logsRouter is the whole Phase 3 surface mounted over the test
+// database, which is what a deployment with every credential looks
+// like.
+func logsRouter(t *testing.T) http.Handler {
+	t.Helper()
+	pool := testPool(t)
 	quiet := slog.New(slog.NewTextHandler(io.Discard, nil))
 	authStore := &auth.Store{Pool: pool}
 	authenticator := &auth.Authenticator{Store: authStore, Log: quiet}
@@ -55,6 +65,37 @@ func logsRouter(t *testing.T) http.Handler {
 		Rankings: &rankings.Service{Store: rankStore, Log: quiet},
 		Addon:    &addon.Service{Store: &addon.Store{Pool: pool}, Log: quiet},
 	})
+}
+
+// degradedRouter is the shape a deployment with no R2 and no Battle.net
+// credentials actually runs in - the Phase 0 environment carried
+// requirements 1 and 2 exist to protect. It returns the router and the
+// report store behind it, so a test can seed a report to exercise the
+// always-mounted file route.
+func degradedRouter(t *testing.T) (http.Handler, *reports.Store) {
+	t.Helper()
+	pool := testPool(t)
+	quiet := slog.New(slog.NewTextHandler(io.Discard, nil))
+	authStore := &auth.Store{Pool: pool}
+	authenticator := &auth.Authenticator{Store: authStore, Log: quiet}
+	reportStore := &reports.Store{Pool: pool}
+	rankStore := &rankings.Store{Pool: pool}
+	h := NewRouter(Deps{
+		Version: "test", Log: quiet, AllowedOrigin: "https://foreversixty.gg",
+		Auth: authenticator,
+		Accounts: &auth.Service{
+			Store: authStore, Auth: authenticator, PublicBaseURL: "https://foreversixty.gg",
+			APIBaseURL: "https://api.foreversixty.gg", Log: quiet,
+			// No BNet: the email-only shape.
+		},
+		// Reports is mounted (it does not need R2), but its Signer is
+		// left nil: the no-R2 shape. Ingest and Uploads are left nil
+		// entirely, so their routes are not registered at all.
+		Reports:  &reports.Service{Store: reportStore, Accounts: authStore, Log: quiet},
+		Rankings: &rankings.Service{Store: rankStore, Log: quiet},
+		Addon:    &addon.Service{Store: &addon.Store{Pool: pool}, Log: quiet},
+	})
+	return h, reportStore
 }
 
 func TestEveryPhase3RouteIsMounted(t *testing.T) {
@@ -91,6 +132,71 @@ func TestEveryPhase3RouteIsMounted(t *testing.T) {
 		// own catch-all says there is no such route.
 		if strings.Contains(w.Body.String(), "no such route") {
 			t.Errorf("%s %s is not mounted: %d %s", tc.method, tc.path, w.Code, w.Body.String())
+		}
+	}
+}
+
+// TestRouterDegradesHonestlyWithoutR2OrBattleNet is carried requirements
+// 1 and 2: an unconfigured deployment must not offer the routes it has
+// no credentials for, and the object-storage routes are the ones this
+// task's own wiring is responsible for gating. The report-file route is
+// the accepted exception - it stays mounted and answers 503, which the
+// Global Constraints' "degrading honestly" language calls for and which
+// is a better answer than the router's generic 404 for a route that
+// does exist, just not right now.
+func TestRouterDegradesHonestlyWithoutR2OrBattleNet(t *testing.T) {
+	h, reportStore := degradedRouter(t)
+
+	rep, err := reportStore.Create(context.Background(), reports.Report{
+		ID: auth.NewReportID(), Title: "degraded shape", Visibility: reports.Public,
+		Status: reports.StatusComplete,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	for _, tc := range []struct {
+		name       string
+		method     string
+		path       string
+		wantStatus int
+		wantBody   string
+	}{
+		{"ingest not mounted", http.MethodPut, "/v1/reports/abc/fights/1", http.StatusNotFound, "no such route"},
+		{"uploads not mounted", http.MethodPost, "/v1/uploads", http.StatusNotFound, "no such route"},
+		{"battlenet not mounted", http.MethodGet, "/v1/auth/battlenet/start", http.StatusNotFound, "no such route"},
+		{
+			"report files answer 503, not unmounted", http.MethodGet,
+			"/v1/reports/" + rep.ID + "/files/report.json", http.StatusServiceUnavailable,
+			"report files are not configured on this deployment",
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			r := httptest.NewRequest(tc.method, tc.path, strings.NewReader("{}"))
+			w := httptest.NewRecorder()
+			h.ServeHTTP(w, r)
+			if w.Code != tc.wantStatus {
+				t.Errorf("%s %s = %d, want %d (body %s)", tc.method, tc.path, w.Code, tc.wantStatus, w.Body.String())
+			}
+			if !strings.Contains(w.Body.String(), tc.wantBody) {
+				t.Errorf("%s %s body = %q, want it to contain %q", tc.method, tc.path, w.Body.String(), tc.wantBody)
+			}
+		})
+	}
+
+	// Routes that need neither R2 nor Battle.net still serve normally:
+	// this deployment is missing two credentials, not broken.
+	for _, tc := range []struct{ method, path string }{
+		{http.MethodGet, "/health"},
+		{http.MethodPost, "/v1/auth/email"},
+		{http.MethodGet, "/v1/rankings?encounter=1"},
+		{http.MethodGet, "/reports/" + rep.ID + "/card.png"},
+	} {
+		r := httptest.NewRequest(tc.method, tc.path, strings.NewReader("{}"))
+		w := httptest.NewRecorder()
+		h.ServeHTTP(w, r)
+		if strings.Contains(w.Body.String(), "no such route") {
+			t.Errorf("%s %s should still be mounted: %d %s", tc.method, tc.path, w.Code, w.Body.String())
 		}
 	}
 }

@@ -552,20 +552,29 @@ paths:
   /v1/reports/{id}/files/{path}:
     get:
       summary: One of a report's files, as a signed redirect
-      description: "Only report.json and fights/<n>/{summary.json,events.parquet,live.json} are reachable; raw chunks never are."
+      description: >-
+        Only report.json and fights/<n>/{summary.json,events.parquet,live.json} are reachable;
+        raw chunks never are. Always registered, unlike the ingest and upload routes below:
+        without R2 configured it answers 503 rather than being unmounted, because a route that
+        exists but cannot serve is a better answer than a bare 404 for something that never
+        existed.
       parameters:
         - { name: id, in: path, required: true, schema: { type: string } }
         - { name: path, in: path, required: true, schema: { type: string } }
       responses:
         '302': { description: "Redirect to a signed R2 URL valid ten minutes" }
         '404': { description: "Unknown report or file", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '503': { description: "R2 is not configured on this deployment; error.code unavailable", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
   /v1/reports/{id}/fights/{n}:
     put:
       summary: Store one closed fight (device)
       description: >-
         multipart/form-data with summary (summary.Summary JSON), events (Parquet), metrics
         ([]MetricsRow JSON) and raw_range ({start_offset, end_offset, sha256}). Offsets are
-        report-relative. The API rebuilds the metrics from the events and compares.
+        report-relative. The API rebuilds the metrics from the events and compares. Registered
+        only when R2 is configured (R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY,
+        R2_BUCKET are all set); without it this route, and every other ingest route below, is
+        not mounted at all.
       parameters:
         - { name: id, in: path, required: true, schema: { type: string } }
         - { name: n, in: path, required: true, schema: { type: integer } }
@@ -576,6 +585,7 @@ paths:
   /v1/reports/{id}/fights/{n}/live:
     put:
       summary: The running summary of a fight in progress (device)
+      description: "Registered only when R2 is configured; see PUT /v1/reports/{id}/fights/{n}."
       parameters:
         - { name: id, in: path, required: true, schema: { type: string } }
         - { name: n, in: path, required: true, schema: { type: integer } }
@@ -594,7 +604,10 @@ paths:
   /v1/reports/{id}/raw:
     put:
       summary: One compressed raw chunk (device)
-      description: "Body is application/zstd, at most 8 MiB. X-Raw-SHA256 is the hex SHA-256 of the decoded bytes. Offsets are report-relative and chunk boundaries are multiples of 4 MiB of decoded log."
+      description: >-
+        Body is application/zstd, at most 8 MiB. X-Raw-SHA256 is the hex SHA-256 of the decoded
+        bytes. Offsets are report-relative and chunk boundaries are multiples of 4 MiB of decoded
+        log. Registered only when R2 is configured; see PUT /v1/reports/{id}/fights/{n}.
       parameters:
         - { name: id, in: path, required: true, schema: { type: string } }
         - { name: offset, in: query, required: true, schema: { type: integer, format: int64 } }
@@ -606,6 +619,7 @@ paths:
   /v1/reports/{id}/complete:
     post:
       summary: Finish a live report (device)
+      description: "Registered only when R2 is configured; see PUT /v1/reports/{id}/fights/{n}."
       parameters: [ { name: id, in: path, required: true, schema: { type: string } } ]
       requestBody:
         required: true
@@ -622,6 +636,10 @@ paths:
   /v1/uploads:
     post:
       summary: Start a whole-file upload (session)
+      description: >-
+        Registered only when R2 is configured and the Cloud Run parse job can be reached at
+        startup; without either, whole-file uploads are not offered and the ingest above (which
+        needs only R2) is what a companion uses instead.
       requestBody:
         required: true
         content:
@@ -637,6 +655,7 @@ paths:
   /v1/uploads/{upload_id}/complete:
     post:
       summary: Finish an upload and start the parse job (session)
+      description: "Registered only when R2 is configured and the parse job can be reached; see POST /v1/uploads."
       parameters: [ { name: upload_id, in: path, required: true, schema: { type: string } } ]
       requestBody:
         required: true
