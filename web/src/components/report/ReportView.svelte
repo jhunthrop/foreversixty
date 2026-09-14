@@ -138,9 +138,16 @@
     if (status !== 'ready' || dataBase === '') return;
     if (fight === null) return;
     if (summary?.fight_index === wanted) return;
-    void loadFight(wanted).catch((thrown: unknown) => {
-      error = thrown instanceof Error ? thrown.message : REPORT_LOAD_FAILED;
-    });
+    // Cleared on success as well as set on failure: an alert left over from the fight
+    // before this one would describe the wrong fight, which is the same lie in reverse.
+    void loadFight(wanted).then(
+      () => {
+        error = '';
+      },
+      (thrown: unknown) => {
+        error = thrown instanceof Error ? thrown.message : REPORT_LOAD_FAILED;
+      },
+    );
   });
 </script>
 
@@ -154,10 +161,21 @@
       {meta.title === '' ? meta.zone : meta.title}
     </h1>
     <p class="text-muted text-[13px]" data-testid="report-subtitle">
-      {meta.zone} · {fights.length} fights · {meta.status}
-      {#if fight}· {fight.name} {formatDuration(fight.duration_ms)}{/if}
+      {meta.zone} · <span class="tabular font-mono">{fights.length} fights</span> · {meta.status}
+      {#if fight}· {fight.name}
+        <span class="tabular font-mono">{formatDuration(fight.duration_ms)}</span>{/if}
     </p>
   </header>
+
+  {#if error !== ''}
+    <!-- The fight selector and the url have already moved by the time a fight's summary
+         fails, so without this the previous fight's numbers sit under the new fight's
+         label. A live report whose next fight is not written yet is the ordinary way to
+         reach it. One line until a later task owns a real error panel. -->
+    <p class="text-muted px-[18px] text-[13px] md:px-0" role="alert" data-testid="report-fight-error">
+      {error}
+    </p>
+  {/if}
 
   <div class="grid grid-cols-1 gap-[22px] px-[18px] md:grid-cols-[280px_minmax(0,1fr)] md:gap-8 md:px-0">
     <FightSelector {fights} selected={state.fight} onSelect={(index) => patch({ fight: index })} />
