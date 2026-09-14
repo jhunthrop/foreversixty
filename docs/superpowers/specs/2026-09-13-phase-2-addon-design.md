@@ -107,7 +107,9 @@ per-school hit or crit map onto the merged stat until the Sept 17 beta data repl
 The Phase 3 companion writes `ForeverSixtyInbox.lua` beside `ForeverSixty.lua` in each account's
 `SavedVariables`, assigning a global the addon's TOC must declare as a saved variable
 (`## SavedVariables: ForeverSixtyDB, ForeverSixtyInbox`). The addon reads the inbox at login for
-gear-upgrade data and never writes it. The companion also reads `ruleset` from the addon's export
+gear-upgrade data and never writes it. The planner page gets a "Send to my addon" control that
+calls `POST /v1/addon/inbox` (session; the API route exists from Phase 3) with the build id, so
+a signed-in player with a paired companion sees the build in game on the next inbox pass. The companion also reads `ruleset` from the addon's export
 record when present and `realm` otherwise, so the addon writes `ruleset` from the game client once
 the beta shows which API exposes it.
 
