@@ -34,21 +34,32 @@ All commands are run from this directory (`web/`):
 
 ```text
 web/
-├── public/               # static assets served as-is (favicon, robots.txt)
+├── public/                  # static assets served as-is (favicon, robots.txt); sync-data writes public/data/
+├── scripts/                 # build-time Node scripts (sync-data, make-planner-fixture, check-island-size)
 ├── src/
-│   ├── components/       # Astro components and their co-located unit tests
-│   ├── content/          # Markdown content collections (changelog, dungeons, guides, pages, zones)
-│   ├── data/             # static JSON data (dates, tools, classes, community links, unknowns)
-│   ├── directives/       # custom client directives (e.g. `client:interaction`)
-│   ├── layouts/          # shared page layouts (Base, Content)
-│   ├── lib/              # framework-agnostic helpers (dates, sources, OG image generation)
-│   ├── pages/            # file-based routes, including dynamic `[slug]` and OG image routes
-│   ├── styles/           # global CSS and design tokens
-│   └── content.config.ts # content collection schemas (zod)
-├── tests/e2e/             # Playwright end-to-end specs
-├── lighthouserc.json      # Lighthouse CI budget
+│   ├── components/          # Astro components and Svelte islands, with their co-located unit tests
+│   │   └── planner/         # the planner island's own Svelte components (Planner, TreeGrid, GearPanel, …)
+│   ├── content/             # Markdown content collections (changelog, dungeons, guides, pages, zones)
+│   ├── data/                # static JSON data (active build, dates, tools, classes, community links, unknowns)
+│   ├── directives/          # custom client directives (e.g. `client:interaction`)
+│   ├── fixtures/planner/    # checked-in planner data the sync falls back to off a deploy
+│   ├── layouts/             # shared page layouts (Base, Content)
+│   ├── lib/                 # framework-agnostic helpers (dates, sources, OG image generation)
+│   │   └── planner/         # the planner's logic modules — see the table below
+│   ├── pages/               # file-based routes, including dynamic `[slug]` and OG image routes
+│   ├── styles/              # global CSS and design tokens
+│   ├── content.config.ts    # content collection schemas (zod)
+│   ├── planner-island.ts    # entry for the standalone island bundle the API's /b/:id page links
+│   └── worker.ts            # the Cloudflare Worker for /b/* (the only server code here)
+├── tests/e2e/               # Playwright end-to-end specs
+├── lighthouserc.json        # Lighthouse CI budgets
+├── vite.island.config.ts    # the second Vite build that emits dist/planner-island.{js,css}
+├── wrangler.jsonc           # Workers deploy config (assets, routes, custom domains)
 ├── playwright.config.ts
+├── vitest.config.ts
 ├── astro.config.mjs
+├── svelte.config.js
+├── eslint.config.js
 ├── tsconfig.json
 └── package.json
 ```
@@ -75,6 +86,7 @@ plain modules under `src/lib/planner/`:
 
 | Module            | Responsibility                                                               |
 | :---------------- | :--------------------------------------------------------------------------- |
+| `config.ts`       | The API base url, the default class, the era data notice                     |
 | `types.ts`        | Shapes from the Phase 1 interface contract, the 17 gear slots, the stat keys |
 | `rules.ts`        | Validation rules 1-6, mirrored from the API so the UI refuses the same moves |
 | `derive.ts`       | Split, level per point, gear stat totals, active set bonuses                 |
@@ -82,6 +94,8 @@ plain modules under `src/lib/planner/`:
 | `store.svelte.ts` | The one rune store: draft build, loaded data, refusal, read-only and fork    |
 | `load.ts`         | Fetches under `/data/<build>/`                                               |
 | `share.ts`        | `POST /v1/builds` and its wording                                            |
+| `items.ts`        | Item list helpers for the gear panel, and the rarity token per quality       |
+| `styles.ts`       | The class strings more than one planner component renders                    |
 | `reference.ts`    | Typed access to `src/data/generated/*.json` for `/classes`                   |
 
 `npm run build` also runs `build:island`, a second Vite build (`vite.island.config.ts`) that writes
@@ -111,7 +125,9 @@ browser's `Cookie` header is never forwarded — and setting `X-Forwarded-For` f
 On the way back, every upstream response header passes through unchanged except `Set-Cookie`, which is
 stripped so a cacheable, edge-cached response never leaks a session cookie. A 404 is the API's own "no
 such build" page. A network failure or a 5xx from the API serves `dist/b-unavailable.html` with status
-503 and `Cache-Control: no-store`.
+503 and `Cache-Control: no-store`. That fallback is internal plumbing rather than a destination, so
+`astro.config.mjs` filters it out of the sitemap and the page carries `<meta name="robots"
+content="noindex">`: nobody should arrive at it from a search result.
 
 ### Environment
 
@@ -149,12 +165,25 @@ verify builds are unaffected.
 `lighthouserc.json` audits four URLs under a mobile, throttled profile: `/index.html`,
 `/dungeons/hall-of-thanes.html`, `/classes.html` and `/planner.html`. `ci.assert.assertMatrix` (an array
 of `{ matchingUrlPattern, assertions }` entries; not `ci.assert.assertions`, which is mutually exclusive
-with it) applies two sets of assertions: a general entry matched with a negative lookahead
-(`^(?!.*/planner\.html).*$`) so `/planner.html` only gets the second entry, and a `/planner.html`-specific
-entry. Accessibility and SEO stay at 0.95 on every URL. Performance is 0.95 on the general entry and 0.90
-on `/planner.html` (it ships more interactive surface for the budget). TBT (100 ms) and CLS (0.05) apply
-to every URL except LCP, which the `/planner.html` entry omits because its figure moves with talent icon
-decode timing rather than static layout.
+with it) holds three of them. Every collected URL matches exactly one, which is the property to preserve
+when a URL or an entry is added: `@lhci/utils` tests each entry's pattern against each URL with a plain
+`new RegExp(pattern).test(finalUrl)` and applies every entry that matches, so a URL matching two entries
+is held to both and a URL matching none is collected and never asserted at all.
+
+- `^(?!.*/(?:index|planner)\.html$).*$` — `/dungeons/hall-of-thanes.html` and `/classes.html`. LCP 1600 ms.
+- `.*/index\.html$` — the homepage alone, for the 1800 ms LCP budget evidenced below.
+- `.*/planner\.html$` — the planner alone. No LCP assertion.
+
+Accessibility and SEO stay at 0.95 on every URL, and so do TBT (100 ms) and CLS (0.05). Performance is
+0.95 on the two static entries and 0.90 on `/planner.html`, which ships more interactive surface for the
+budget. LCP is the only metric that is not asserted everywhere: `/planner.html` omits it because its
+figure moves with talent icon decode timing rather than static layout, and it measures 2120 ms against
+the 1352 ms the two static pages come in at.
+
+`/planner.html` is the one page that hydrates an island, so TBT is the metric its growth moves first and
+the composite performance score is too coarse to catch that alone. It measures 0 ms of total blocking
+time across all three runs under the 4x CPU slowdown, so the same 100 ms the rest of the site carries
+costs nothing today and turns a regression into a named failure rather than a slipped score.
 
 `assertMatrix` has to sit inside `ci.assert`, not as a sibling key of `ci.collect`/`ci.upload`. Sibling
 placement parses without error, but `@lhci/cli@0.15.1`'s `autorun` command decides whether to even run
@@ -165,7 +194,10 @@ against that shape, which throws `Error: No assertions to use`. Nesting it under
 fixes both: the `autorun` gate sees a truthy `assert`, and yargs's config loading (which only spreads
 `ci.assert`'s own keys into the `assert` command's options) picks up `assertMatrix` at all.
 
-The general entry's LCP budget is 1800 ms, not the Phase 0 site's original 1600 ms. Phase 0 measured the
+The homepage entry's LCP budget is 1800 ms, not the Phase 0 site's original 1600 ms. It is its own
+matrix entry for exactly that reason: the evidence below is about the homepage, and carrying it on the
+general entry would have loosened `/dungeons/hall-of-thanes.html` and `/classes.html` by 200 ms on the
+strength of it. Those two measure 1352 ms, so 1600 leaves them the headroom they had. Phase 0 measured the
 homepage at 1502 ms against 1600 ms — 98 ms of headroom. Task 14 added a subscribe box to the community
 panel, and with it the homepage measures 1652 ms. Five separate configurations were tried while chasing
 that regression back down — CSS made byte-identical to the pre-task baseline, a `client:interaction`

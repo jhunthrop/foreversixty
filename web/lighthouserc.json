@@ -28,7 +28,20 @@
     "assert": {
       "assertMatrix": [
         {
-          "matchingUrlPattern": "^(?!.*/planner\\.html).*$",
+          "matchingUrlPattern": "^(?!.*/(?:index|planner)\\.html$).*$",
+          "aggregationMethod": "median",
+          "assertions": {
+            "categories:performance": ["error", { "minScore": 0.95 }],
+            "categories:accessibility": ["error", { "minScore": 0.95 }],
+            "categories:seo": ["error", { "minScore": 0.95 }],
+            "categories:best-practices": ["warn", { "minScore": 0.95 }],
+            "largest-contentful-paint": ["error", { "maxNumericValue": 1600 }],
+            "total-blocking-time": ["error", { "maxNumericValue": 100 }],
+            "cumulative-layout-shift": ["error", { "maxNumericValue": 0.05 }]
+          }
+        },
+        {
+          "matchingUrlPattern": ".*/index\\.html$",
           "aggregationMethod": "median",
           "assertions": {
             "categories:performance": ["error", { "minScore": 0.95 }],
@@ -48,6 +61,7 @@
             "categories:accessibility": ["error", { "minScore": 0.95 }],
             "categories:seo": ["error", { "minScore": 0.95 }],
             "categories:best-practices": ["warn", { "minScore": 0.95 }],
+            "total-blocking-time": ["error", { "maxNumericValue": 100 }],
             "cumulative-layout-shift": ["error", { "maxNumericValue": 0.05 }]
           }
         }
