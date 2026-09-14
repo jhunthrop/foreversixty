@@ -305,6 +305,8 @@ export interface ReportMeta {
   created_at: string;
   /** Where report.json and the fight files are served from, with no trailing slash. */
   data_base_url: string;
+  /** The content-phase name the API derives from `fought_at` (e.g. "launch", "raids-1"). */
+  phase?: string;
 }
 
 /**

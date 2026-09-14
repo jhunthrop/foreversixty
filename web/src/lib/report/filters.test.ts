@@ -1,0 +1,95 @@
+// web/src/lib/report/filters.test.ts
+import { describe, expect, it } from 'vitest';
+import fixtureReport from '../../fixtures/report/report.json';
+import fixtureSummary from '../../fixtures/report/fights/3/summary.json';
+import type { ReportFile, Summary } from './types';
+import {
+  DEFAULT_FILTERS, abilityOptions, applyActorFilters, bossGuids, playerGuids, targetOptions,
+} from './filters';
+
+const report = fixtureReport as ReportFile;
+const summary = fixtureSummary as Summary;
+const context = {
+  bosses: bossGuids(report.units, 'Warden Kelthas'),
+  players: playerGuids(report.units),
+  deaths: summary.deaths,
+};
+
+describe('unit sets from report.json', () => {
+  it('finds the encounter boss by the fight’s own name', () => {
+    expect([...context.bosses]).toEqual(['Creature-0-2085-2284-7855-169754-0000AA0002']);
+    expect(bossGuids(report.units, 'Trash').size).toBe(0);
+  });
+
+  it('knows which units are players', () => {
+    expect(context.players.size).toBe(5);
+    expect(context.players.has('Player-4184-000000A1')).toBe(true);
+    expect(context.players.has('Creature-0-2085-2284-7855-169754-0000AA0002')).toBe(false);
+  });
+});
+
+describe('filter options', () => {
+  it('lists every ability and every target present, deduplicated and sorted by size', () => {
+    expect(abilityOptions(summary.damage_done).map((option) => option.name)).toEqual([
+      'Anima Lash', 'Slam', 'Frostbolt', 'Melee', 'Shadow Word: Pain',
+    ]);
+    expect(targetOptions(summary.damage_done).map((option) => option.name)).toContain('Warden Kelthas');
+  });
+});
+
+describe('applyActorFilters', () => {
+  it('changes nothing by default', () => {
+    expect(applyActorFilters(summary.damage_done, DEFAULT_FILTERS, context)).toEqual(summary.damage_done);
+  });
+
+  it('keeps only the named target, and rescales the row to it', () => {
+    const filtered = applyActorFilters(
+      summary.damage_done,
+      { ...DEFAULT_FILTERS, target: 'Creature-0-2085-2284-7855-169754-0000AA0002' },
+      context,
+    );
+    expect(filtered.map((actor) => actor.name)).not.toContain('Warden Kelthas');
+    const mage = filtered.find((actor) => actor.name === 'Morrowlyn-Nightslayer');
+    expect(mage?.total).toBe(3110);
+  });
+
+  it('keeps only the named ability', () => {
+    const filtered = applyActorFilters(summary.damage_done, { ...DEFAULT_FILTERS, ability: 1464 }, context);
+    expect(filtered).toHaveLength(1);
+    expect(filtered[0].name).toBe('Baelgrim-Nightslayer');
+    expect(filtered[0].abilities.map((ability) => ability.name)).toEqual(['Slam']);
+  });
+
+  it('boss damage only drops damage aimed anywhere else', () => {
+    const filtered = applyActorFilters(summary.damage_done, { ...DEFAULT_FILTERS, bossOnly: true }, context);
+    expect(filtered.map((actor) => actor.name)).not.toContain('Warden Kelthas');
+    expect(filtered.map((actor) => actor.name)).toContain('Baelgrim-Nightslayer');
+  });
+
+  it('hides NPC rows when asked, leaving the players', () => {
+    const filtered = applyActorFilters(summary.damage_done, { ...DEFAULT_FILTERS, playersOnly: true }, context);
+    expect(filtered.every((actor) => context.players.has(actor.guid))).toBe(true);
+  });
+
+  it('counting overkill raises a row that had some', () => {
+    const plain = applyActorFilters(summary.damage_taken, DEFAULT_FILTERS, context);
+    const withOverkill = applyActorFilters(
+      summary.damage_taken,
+      { ...DEFAULT_FILTERS, countOverkill: true },
+      context,
+    );
+    const victim = (rows: typeof plain): number =>
+      rows.find((actor) => actor.name === 'Thalgrit-Nightslayer')?.total ?? 0;
+    expect(victim(withOverkill)).toBe(victim(plain) + 100);
+  });
+
+  it('ignoring events after a death clips that actor’s series at the second they died', () => {
+    const filtered = applyActorFilters(
+      summary.damage_taken,
+      { ...DEFAULT_FILTERS, ignoreAfterDeath: true },
+      context,
+    );
+    const victim = filtered.find((actor) => actor.name === 'Thalgrit-Nightslayer');
+    expect(victim?.series.length).toBeLessThanOrEqual(11);
+  });
+});

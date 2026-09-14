@@ -71,6 +71,36 @@ export function classColorVar(className: string | undefined): string {
  * number legible at a glance. The two AA-safe text variants are used for rare and epic,
  * as the rarity text classes do elsewhere.
  */
+/**
+ * The window can leave a summary figure in one of three states (see window.ts's module
+ * doc and scopeSummary): exact, scaled from the whole fight by the window's share (a
+ * per-ability or per-target split, cast started/succeeded/failed, threat), or not
+ * rescoped at all -- returned unchanged from the whole fight because the summary never
+ * tracked it over time (interrupts, dispels, resource gained/spent/zero_ms, aura
+ * max_stacks, roster activity_pct and active_ms). The two non-exact cases are different
+ * lies to avoid, so they get different marks: `~` means "close, scaled proportionally",
+ * `†` (a dagger) means "not this window's number at all, the whole fight's". Every
+ * table that renders one of these figures uses these two functions rather than inlining
+ * its own glyph, so the convention -- and its title text -- reads the same everywhere.
+ */
+export function approximateMark(scaled: boolean): string {
+  return scaled ? '~' : '';
+}
+
+export function approximateTitle(scaled: boolean): string | undefined {
+  return scaled
+    ? 'Split across abilities and targets in proportion to the window, not measured directly in it.'
+    : undefined;
+}
+
+export function wholeFightMark(stale: boolean): string {
+  return stale ? '†' : '';
+}
+
+export function wholeFightTitle(stale: boolean): string | undefined {
+  return stale ? 'The whole fight’s figure: the summary does not track this over time.' : undefined;
+}
+
 export function percentileToken(percentile: number): string {
   const p = Number.isFinite(percentile) ? percentile : 0;
   if (p >= 99) return 'var(--color-rarity-legendary)';

@@ -34,9 +34,16 @@
     windowPresets,
     type TimeWindow,
   } from '../../lib/report/window';
+  import ActorTable from './ActorTable.svelte';
   import FightSelector from './FightSelector.svelte';
+  import FilterBar from './FilterBar.svelte';
   import ModeBar from './ModeBar.svelte';
+  import SummaryTab from './SummaryTab.svelte';
   import TimeChart from './TimeChart.svelte';
+  import {
+    DEFAULT_FILTERS, applyActorFilters, bossGuids, playerGuids, type ReportFilters,
+  } from '../../lib/report/filters';
+  import { createPercentileLoader, percentileKey } from '../../lib/report/percentile';
 
   let { reportId, inlineMeta = null }: { reportId: string; inlineMeta?: ReportMeta | null } = $props();
 
@@ -71,6 +78,88 @@
   const scoped = $derived(summary === null ? null : scopeSummary(summary, timeWindow));
   const presets = $derived(summary === null ? [] : windowPresets(summary));
   const chartSeries = $derived(combinedSeries(summary?.damage_done ?? []));
+  const windowIsWhole = $derived(summary !== null && isFullWindow(timeWindow, summary.duration_ms));
+
+  let filters = $state<ReportFilters>(DEFAULT_FILTERS);
+  let percentiles = $state(new Map<string, number>());
+  const loader = createPercentileLoader();
+
+  const filterContext = $derived({
+    bosses: bossGuids(file?.units ?? [], fight?.name ?? ''),
+    players: playerGuids(file?.units ?? []),
+    deaths: scoped?.deaths ?? [],
+  });
+
+  /** Which Actor[] the current tab shows, scoped to `state.source` and then filtered. */
+  const tabActors = $derived.by(() => {
+    if (scoped === null) return [];
+    const source =
+      state.tab === 'damage-done'
+        ? scoped.damage_done
+        : state.tab === 'damage-taken'
+          ? scoped.damage_taken
+          : state.tab === 'healing'
+            ? scoped.healing
+            : [];
+    const bySource =
+      state.source === 'friendlies'
+        ? source.filter((actor) => filterContext.players.has(actor.guid))
+        : state.source === 'enemies'
+          ? source.filter((actor) => !filterContext.players.has(actor.guid))
+          : source.filter((actor) => actor.guid === state.source);
+    return applyActorFilters(bySource, filters, filterContext);
+  });
+
+  const metricLabel = $derived(state.tab === 'healing' ? 'Healing' : 'Damage');
+
+  // Percentiles mean a fight's whole-fight role metric against the rankings, so they are
+  // asked for only on an encounter kill at the full window. A brushed window's number is
+  // not a parse, and saying otherwise would be worse than saying nothing.
+  $effect(() => {
+    const encounterId = fight?.encounter_id;
+    // Captured now, checked when the request resolves: a fight or tab change while it is
+    // in flight must not paint stale answers under the new selection, the same guard
+    // loadFight uses on `index === state.fight`.
+    const wantedFight = state.fight;
+    const wantedTab = state.tab;
+    if (summary === null || encounterId === undefined || !windowIsWhole) {
+      percentiles = new Map();
+      return;
+    }
+    const metric = state.tab === 'healing' ? 'hps' : 'dps';
+    const phase = meta?.phase ?? 'launch';
+    const difficulty = fight?.difficulty ?? 0;
+
+    // One query per roster row that has a spec, kept beside its GUID so the answers can be
+    // put back on the right rows.
+    const wanted = summary.roster
+      .filter((row) => row.spec !== undefined && row.spec !== '')
+      .map((row) => ({
+        guid: row.guid,
+        query: {
+          encounterId,
+          difficulty,
+          spec: row.spec ?? '',
+          phase,
+          metric,
+          value: Math.round(metric === 'hps' ? row.hps : row.dps),
+        },
+      }));
+
+    void loader.load(wanted.map((entry) => entry.query)).then((answers) => {
+      if (state.fight !== wantedFight || state.tab !== wantedTab) return;
+      // A plain Map, not SvelteMap: this is a throwaway local built up once and then
+      // assigned whole to `percentiles` (already $state) below, the same reasoning the
+      // `summaries` cache above gives for its own eslint-disable.
+      // eslint-disable-next-line svelte/prefer-svelte-reactivity
+      const next = new Map<string, number>();
+      for (const entry of wanted) {
+        const found = answers.get(percentileKey(entry.query));
+        if (found !== undefined) next.set(entry.guid, found);
+      }
+      percentiles = next;
+    });
+  });
 
   function setWindow(next: TimeWindow | null): void {
     const duration = summary?.duration_ms ?? 0;
@@ -252,9 +341,33 @@
           {/each}
         </div>
       {/if}
-      <p class="text-muted text-[14px]" data-testid="report-placeholder">
-        {scoped === null ? 'Loading the fight.' : `${scoped.roster.length} players in this fight.`}
-      </p>
+      {#if scoped !== null && state.mode === 'analyze' && state.view === 'tables'}
+        {#if state.tab === 'summary'}
+          <SummaryTab
+            summary={scoped}
+            durationMs={scoped.duration_ms}
+            {percentiles}
+            approximate={!windowIsWhole}
+          />
+        {:else if state.tab === 'damage-done' || state.tab === 'damage-taken' || state.tab === 'healing'}
+          <FilterBar {filters} actors={tabActors} onChange={(next) => (filters = next)} />
+          <ActorTable
+            actors={tabActors}
+            durationMs={scoped.duration_ms}
+            {metricLabel}
+            {percentiles}
+            approximate={!windowIsWhole}
+          />
+          {#if !windowIsWhole}
+            <p class="text-muted text-[12px]" data-testid="approximate-note">
+              A tilde marks a figure split across abilities and targets in proportion to the window.
+              Totals and per-second figures are exact. Queries answers the split exactly.
+            </p>
+          {/if}
+        {:else}
+          <p class="text-muted text-[14px]" data-testid="report-placeholder">This tab arrives in Task 12.</p>
+        {/if}
+      {/if}
     </div>
   </div>
 {/if}
