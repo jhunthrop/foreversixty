@@ -8,11 +8,23 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+
+	"github.com/jhunthrop/foreversixty/api/internal/character"
 )
 
 // ErrNotFound is returned when a row that must exist does not: an unknown
 // session, an expired or spent token, a revoked device.
 var ErrNotFound = errors.New("auth: not found")
+
+// ErrInvalidCharacter is returned when a Character's Key does not match
+// its own Region, Ruleset and Name under the character package's key
+// rules, or names a region or ruleset outside the contract.
+var ErrInvalidCharacter = errors.New("auth: invalid character")
+
+// ErrCharacterClaimed is returned when LinkCharacter is asked to move a
+// character to an account that does not already own it, away from an
+// account that does.
+var ErrCharacterClaimed = errors.New("auth: character already claimed by another account")
 
 // SessionTTL is how long a browser session lasts, as the contract sets it.
 const SessionTTL = 30 * 24 * time.Hour
@@ -307,16 +319,33 @@ func (s *Store) Characters(ctx context.Context, userID int64) ([]Character, erro
 	return out, rows.Err()
 }
 
-// LinkCharacter records a character as belonging to an account, creating
-// its row if this is the first time the character has been seen.
+// LinkCharacter records a character as belonging to an account. It
+// validates that c.Key is exactly the key the character package would
+// build from c.Region, c.Ruleset and c.Name — ErrInvalidCharacter
+// otherwise, never a raw database error. If the key is new, or belongs
+// to no one, or already belongs to userID, the row is created or its
+// mutable fields (owner, class) are refreshed. If the key already
+// belongs to a different account, it is not moved: LinkCharacter returns
+// ErrCharacterClaimed rather than stealing it.
 func (s *Store) LinkCharacter(ctx context.Context, userID int64, c Character) error {
-	if _, err := s.Pool.Exec(ctx,
+	if !character.ValidRegion(c.Region) || !character.ValidRuleset(c.Ruleset) ||
+		c.Key != character.Key(c.Region, c.Ruleset, c.Name) {
+		return ErrInvalidCharacter
+	}
+	tag, err := s.Pool.Exec(ctx,
 		`insert into characters (key, region, ruleset, name, class, user_id, refreshed_at)
 		 values ($1, $2, $3, $4, nullif($5, ''), $6, now())
 		 on conflict (key) do update set user_id = excluded.user_id,
-		   class = coalesce(excluded.class, characters.class), refreshed_at = now()`,
-		c.Key, c.Region, c.Ruleset, c.Name, c.Class, userID); err != nil {
+		   class = coalesce(excluded.class, characters.class), refreshed_at = now()
+		 where characters.user_id = excluded.user_id or characters.user_id is null`,
+		c.Key, c.Region, c.Ruleset, c.Name, c.Class, userID)
+	if err != nil {
 		return fmt.Errorf("auth: link character: %w", err)
+	}
+	if tag.RowsAffected() == 0 {
+		// The row already existed and its owner is neither userID nor
+		// nobody: the WHERE guard refused the update.
+		return ErrCharacterClaimed
 	}
 	return nil
 }

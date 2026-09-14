@@ -236,6 +236,72 @@ func TestCharactersAndGuildsComeBackForMe(t *testing.T) {
 	}
 }
 
+func TestLinkCharacterRejectsAKeyThatDoesNotMatchItsFields(t *testing.T) {
+	s := testStore(t)
+	ctx := context.Background()
+	u, err := s.UpsertEmailUser(ctx, "raider@example.com")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, tc := range []struct {
+		name string
+		c    Character
+	}{
+		{"key does not match region/ruleset/name", Character{
+			Key: "us/hardcore/someone-else", Region: "us", Ruleset: "hardcore", Name: "Baelgrim"}},
+		{"unknown region", Character{
+			Key: "mars/hardcore/baelgrim", Region: "mars", Ruleset: "hardcore", Name: "Baelgrim"}},
+		{"unknown ruleset", Character{
+			Key: "us/nightslayer/baelgrim", Region: "us", Ruleset: "nightslayer", Name: "Baelgrim"}},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			if err := s.LinkCharacter(ctx, u.ID, tc.c); err != ErrInvalidCharacter {
+				t.Fatalf("err = %v, want ErrInvalidCharacter", err)
+			}
+		})
+	}
+}
+
+func TestLinkCharacterDoesNotStealAnAlreadyOwnedCharacter(t *testing.T) {
+	s := testStore(t)
+	ctx := context.Background()
+	owner, err := s.UpsertEmailUser(ctx, "owner@example.com")
+	if err != nil {
+		t.Fatal(err)
+	}
+	stranger, err := s.UpsertEmailUser(ctx, "stranger@example.com")
+	if err != nil {
+		t.Fatal(err)
+	}
+	c := Character{Key: "us/hardcore/baelgrim", Region: "us", Ruleset: "hardcore", Name: "Baelgrim", Class: "Warrior"}
+	if err := s.LinkCharacter(ctx, owner.ID, c); err != nil {
+		t.Fatal(err)
+	}
+
+	// Re-linking as the same owner refreshes the row rather than failing.
+	c.Class = "Mage"
+	if err := s.LinkCharacter(ctx, owner.ID, c); err != nil {
+		t.Fatalf("re-linking as the current owner should succeed: %v", err)
+	}
+	chars, err := s.Characters(ctx, owner.ID)
+	if err != nil || len(chars) != 1 || chars[0].Class != "Mage" {
+		t.Fatalf("characters = %v, err = %v, want the refreshed class", chars, err)
+	}
+
+	// A different account cannot take it over.
+	if err := s.LinkCharacter(ctx, stranger.ID, c); err != ErrCharacterClaimed {
+		t.Fatalf("err = %v, want ErrCharacterClaimed", err)
+	}
+	stillOwner, err := s.Characters(ctx, owner.ID)
+	if err != nil || len(stillOwner) != 1 {
+		t.Fatalf("the original owner should still have the character: %v, %v", stillOwner, err)
+	}
+	strangerChars, err := s.Characters(ctx, stranger.ID)
+	if err != nil || len(strangerChars) != 0 {
+		t.Fatalf("the stranger should not have gained it: %v, %v", strangerChars, err)
+	}
+}
+
 func TestIDShapesMatchTheContract(t *testing.T) {
 	if got := NewReportID(); len(got) != 12 {
 		t.Fatalf("report id = %q, want 12 characters", got)
