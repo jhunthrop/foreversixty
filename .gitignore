@@ -34,3 +34,6 @@ __pycache__/
 .pytest_cache/
 .ruff_cache/
 .coverage
+
+# fetched combat-log samples (never committed; the retail sample is AGPL-3.0)
+logs/testdata/cache/
