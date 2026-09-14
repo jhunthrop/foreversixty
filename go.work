@@ -1,0 +1,7 @@
+go 1.25.11
+
+use (
+	./api
+	./companion
+	./logs
+)
