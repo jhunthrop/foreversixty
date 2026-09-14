@@ -21,12 +21,22 @@ func TestNewBattleNetUsesTheProductionEndpoints(t *testing.T) {
 	if !strings.Contains(b.AuthURL("state"), "state=state") {
 		t.Fatalf("auth url = %q", b.AuthURL("state"))
 	}
+	if b.HTTP == nil || b.HTTP.Timeout != bnetHTTPTimeout {
+		t.Fatalf("http timeout = %+v, want %s", b.HTTP, bnetHTTPTimeout)
+	}
 }
 
 func TestSafeNextKeepsRedirectsOnSite(t *testing.T) {
 	for in, want := range map[string]string{
 		"/logs": "/logs", "": "/logs", "//evil.example": "/logs",
 		"https://evil.example": "/logs", "/account": "/account",
+		// A backslash is a path separator in the authority position of a
+		// special-scheme URL to a browser, so a plain "//" / "https://"
+		// denylist alone would let these resolve off-site.
+		"/\\evil.example": "/logs", "/\\/evil.example": "/logs", "\\/evil.example": "/logs",
+		// A ';' in the query would survive naive re-serialisation and
+		// break the cookie safeNext's result is packed into.
+		"/account?x=1;y=2": "/logs",
 	} {
 		if got := safeNext(in); got != want {
 			t.Errorf("safeNext(%q) = %q, want %q", in, got, want)
@@ -96,6 +106,51 @@ func TestIdentifyRefusesWhatItCannotTrust(t *testing.T) {
 	b := provider(t, `{"sub":"1"}`, http.StatusOK)
 	if _, err := b.Identify(context.Background(), "the-wrong-code"); err == nil {
 		t.Error("a code the provider rejects must surface")
+	}
+}
+
+// TestIdentifyDoesNotLeakTheProviderBodyOnExchangeFailure guards
+// against oauth2.RetrieveError.Error() embedding the token endpoint's
+// raw response body: that text is not ours to log or return.
+func TestIdentifyDoesNotLeakTheProviderBodyOnExchangeFailure(t *testing.T) {
+	const secret = "super secret upstream diagnostic text"
+	mux := http.NewServeMux()
+	mux.HandleFunc("POST /token", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusBadRequest)
+		_, _ = w.Write([]byte(secret))
+	})
+	srv := httptest.NewServer(mux)
+	t.Cleanup(srv.Close)
+	b := &BattleNet{
+		Config: &oauth2.Config{
+			ClientID: "id", ClientSecret: "secret",
+			RedirectURL: "https://api.foreversixty.gg/v1/auth/battlenet/callback",
+			Endpoint:    oauth2.Endpoint{AuthURL: srv.URL + "/authorize", TokenURL: srv.URL + "/token"},
+		},
+		HTTP: srv.Client(),
+	}
+	_, err := b.Identify(context.Background(), "the-code")
+	if err == nil {
+		t.Fatal("expected an error")
+	}
+	if strings.Contains(err.Error(), secret) {
+		t.Fatalf("error leaked the provider's response body: %v", err)
+	}
+	if !strings.Contains(err.Error(), "400") {
+		t.Fatalf("error should still carry the status code: %v", err)
+	}
+}
+
+// TestIdentifyWrapsANonProviderExchangeError covers exchangeError's
+// other branch: an error the exchange never got a response for (here, a
+// context already canceled) is not an oauth2.RetrieveError and is
+// wrapped rather than replaced.
+func TestIdentifyWrapsANonProviderExchangeError(t *testing.T) {
+	b := provider(t, `{"sub":"1"}`, http.StatusOK)
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+	if _, err := b.Identify(ctx, "the-code"); err == nil {
+		t.Fatal("expected an error from a canceled context")
 	}
 }
 
