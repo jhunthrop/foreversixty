@@ -171,7 +171,14 @@ func TestMigration0005DownReversesUp(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	if n := indexCount(t, pool, "fights_encounter_idx"); n != 1 {
+		t.Error("encounter name resolution has no index to run on")
+	}
+
 	migrateTo(t, url, 4)
+	if n := indexCount(t, pool, "fights_encounter_idx"); n != 0 {
+		t.Error("fights_encounter_idx survived the down migration")
+	}
 	for _, gone := range []string{
 		"users", "sessions", "login_tokens", "devices", "pairing_codes",
 		"guilds", "guild_members", "characters", "uploads", "reports",
@@ -195,6 +202,19 @@ func TestMigration0005DownReversesUp(t *testing.T) {
 			t.Errorf("table %s did not come back", back)
 		}
 	}
+	if n := indexCount(t, pool, "fights_encounter_idx"); n != 1 {
+		t.Error("fights_encounter_idx did not come back")
+	}
+}
+
+func indexCount(t *testing.T, pool *pgxpool.Pool, name string) int {
+	t.Helper()
+	var n int
+	if err := pool.QueryRow(context.Background(),
+		`select count(*) from pg_indexes where indexname = $1`, name).Scan(&n); err != nil {
+		t.Fatal(err)
+	}
+	return n
 }
 
 func TestFightMetricsIsPartitionedByMonth(t *testing.T) {

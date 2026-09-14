@@ -149,6 +149,14 @@ create table if not exists fights (
   raw_sha256       bytea,
   primary key (report_id, fight_index)
 );
+-- Encounter name resolution runs
+--   select distinct on (encounter_id) ... from fights order by encounter_id, start_ms desc
+-- on every /v1/rankings, character and guild request, uncached and with
+-- no filter. The primary key is on (report_id, fight_index), so without
+-- this the newest-name-per-encounter lookup is a sequential scan plus a
+-- sort of the whole table on every page view.
+create index if not exists fights_encounter_idx on fights (encounter_id, start_ms desc)
+  where encounter_id is not null;
 
 -- One row per stored raw chunk, so a re-sent offset is recognised and an
 -- offset that overlaps a different stored range is refused.

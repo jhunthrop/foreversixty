@@ -4,6 +4,7 @@ drop table if exists moderation;
 drop table if exists percentile_digests;
 drop table if exists fight_metrics;
 drop table if exists raw_chunks;
+drop index if exists fights_encounter_idx;
 drop table if exists fights;
 drop table if exists reports;
 drop table if exists uploads;
