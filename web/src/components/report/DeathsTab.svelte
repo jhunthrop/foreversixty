@@ -63,15 +63,18 @@
             <span class="text-[13px]">
               killed by {splitUnitName(death.killing_blow.source_name).name} ·
               {death.killing_blow.spell_name === '' ? 'Melee' : death.killing_blow.spell_name} ·
-              {formatAmount(death.killing_blow.amount)}
+              <span class="font-mono tabular">{formatAmount(death.killing_blow.amount)}</span>
               {#if death.killing_blow.overkill}
-                <span class="text-muted"> ({formatAmount(death.killing_blow.overkill)} overkill)</span>
+                <span class="text-muted">
+                  (<span class="font-mono tabular">{formatAmount(death.killing_blow.overkill)}</span> overkill)
+                </span>
               {/if}
             </span>
           {/if}
           {#if death.release_ms}
             <span class="text-muted text-[13px]">
-              released after {formatDuration(death.release_ms - death.at_ms)}
+              released after
+              <span class="font-mono tabular">{formatDuration(death.release_ms - death.at_ms)}</span>
             </span>
           {/if}
         </div>

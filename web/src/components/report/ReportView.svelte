@@ -52,7 +52,7 @@
   import { createPercentileLoader, percentileKey } from '../../lib/report/percentile';
   import activeBuild from '../../data/active-build.json';
   import { loadTalents } from '../../lib/planner/load';
-  import type { TalentFile } from '../../lib/planner/types';
+  import { resolveTreeSizes } from '../../lib/report/tree-sizes';
 
   let { reportId, inlineMeta = null }: { reportId: string; inlineMeta?: ReportMeta | null } = $props();
 
@@ -125,25 +125,22 @@
   let treeSizes = $state(new Map<string, number[]>());
 
   $effect(() => {
-    const classes = new Set(
-      (summary?.roster ?? []).map((row) => row.class).filter((name): name is string => name !== undefined),
+    const classes = [
+      ...new Set(
+        (summary?.roster ?? []).map((row) => row.class).filter((name): name is string => name !== undefined),
+      ),
+    ];
+    // resolveTreeSizes (src/lib/report/tree-sizes.ts) only ever returns a class this build
+    // truly has no talent data for (a 404) or one it fetched successfully -- never a class
+    // that merely failed to load this time, so a network blip or a 5xx cannot pin that class
+    // to gear-only links forever: it stays out of `treeSizes` and this effect tries it again
+    // the next time it runs.
+    void resolveTreeSizes(classes, new Set(treeSizes.keys()), loadTalents, activeBuild.build).then(
+      (entries) => {
+        if (entries.length === 0) return;
+        treeSizes = new Map([...treeSizes, ...entries]);
+      },
     );
-    const wanted = [...classes].filter((name) => !treeSizes.has(name));
-    if (wanted.length === 0) return;
-    void Promise.all(
-      wanted.map(async (name) => {
-        const slug = name.toLowerCase().replace(/\s+/g, '-');
-        try {
-          const file: TalentFile = await loadTalents(activeBuild.build, slug);
-          return [name, file.trees.map((tree) => tree.talents.length)] as const;
-        } catch {
-          // No talent data for this class in this build: the link falls back to gear only.
-          return [name, []] as const;
-        }
-      }),
-    ).then((entries) => {
-      treeSizes = new Map([...treeSizes, ...entries]);
-    });
   });
 
   const treeSizesFor = (className: string | undefined): number[] =>
