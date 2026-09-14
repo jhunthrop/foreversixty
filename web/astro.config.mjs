@@ -34,7 +34,16 @@ export default defineConfig({
   site: 'https://foreversixty.gg',
   trailingSlash: 'never',
   build: { format: 'file', inlineStylesheets: 'always' },
-  integrations: [svelte(), sitemap(), pagefind(), interactionDirective, placeholderGuard],
+  integrations: [
+    svelte(),
+    // /b-unavailable is the 503 fallback src/worker.ts serves when the API cannot answer a
+    // /b/:id request. It is internal plumbing rather than a destination, so it stays out of
+    // the sitemap; the page also carries its own noindex for a crawler that finds it anyway.
+    sitemap({ filter: (page) => !page.endsWith('/b-unavailable') }),
+    pagefind(),
+    interactionDirective,
+    placeholderGuard,
+  ],
   vite: {
     plugins: [tailwindcss()],
     // astro-pagefind writes /pagefind/pagefind.js into dist/ *after* the bundle is generated,
