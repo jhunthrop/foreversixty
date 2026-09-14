@@ -2,6 +2,7 @@ package reports
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strings"
 	"testing"
@@ -181,6 +182,80 @@ func TestPatchIsForTheOwnerAndGuildOfficers(t *testing.T) {
 	res.Body.Close()
 	if res.StatusCode != http.StatusBadRequest {
 		t.Fatalf("a bad visibility = %d, want 400", res.StatusCode)
+	}
+}
+
+// A private report answers 404 to a read it refuses; PATCH must refuse
+// the same way rather than confirming existence with a 403.
+func TestPatchingAPrivateReportIsInvisibleToAStranger(t *testing.T) {
+	h := newHarness(t)
+	id := h.createReport(Private)
+
+	h.actor = auth.Actor{UserID: h.owner + 99, Role: "user", Method: "session"}
+	stranger := h.json(http.MethodPatch, "/v1/reports/"+id, `{"title":"Not yours"}`)
+	stranger.Body.Close()
+	unknown := h.json(http.MethodPatch, "/v1/reports/nosuchreport", `{"title":"x"}`)
+	unknown.Body.Close()
+
+	if stranger.StatusCode != http.StatusNotFound {
+		t.Fatalf("a stranger patching a private report = %d, want 404", stranger.StatusCode)
+	}
+	if stranger.StatusCode != unknown.StatusCode {
+		t.Fatalf("a private report and one that does not exist should answer the same: %d vs %d",
+			stranger.StatusCode, unknown.StatusCode)
+	}
+}
+
+// Setting guild_id hands that guild's officers edit rights on the
+// report and its members read rights once visibility is guild, so the
+// caller must have standing - officer or leader - in the guild they
+// are naming, not just ownership of the report.
+func TestPatchingGuildIDRequiresStandingInTheTargetGuild(t *testing.T) {
+	h := newHarness(t)
+	id := h.createReport(Public)
+
+	var guildID int64
+	if err := h.store.Pool.QueryRow(t.Context(),
+		`insert into guilds (region, ruleset, name) values ('us', 'normal', 'Targets') returning id`).
+		Scan(&guildID); err != nil {
+		t.Fatal(err)
+	}
+
+	// The owner has no standing at all in that guild: refused, and the
+	// report is left untouched.
+	res := h.json(http.MethodPatch, "/v1/reports/"+id, fmt.Sprintf(`{"guild_id":%d}`, guildID))
+	res.Body.Close()
+	if res.StatusCode != http.StatusForbidden {
+		t.Fatalf("attaching to a guild with no standing = %d, want 403", res.StatusCode)
+	}
+	rep, err := h.store.Get(t.Context(), id)
+	if err != nil || rep.GuildID != nil {
+		t.Fatalf("a refused patch should not change guild_id: %+v, %v", rep.GuildID, err)
+	}
+
+	// Plain membership is not enough either.
+	if _, err := h.store.Pool.Exec(t.Context(),
+		`insert into guild_members (guild_id, user_id, rank) values ($1, $2, 'member')`,
+		guildID, h.owner); err != nil {
+		t.Fatal(err)
+	}
+	res = h.json(http.MethodPatch, "/v1/reports/"+id, fmt.Sprintf(`{"guild_id":%d}`, guildID))
+	res.Body.Close()
+	if res.StatusCode != http.StatusForbidden {
+		t.Fatalf("attaching to a guild as a plain member = %d, want 403", res.StatusCode)
+	}
+
+	// An officer of the target guild may attach the report to it.
+	if _, err := h.store.Pool.Exec(t.Context(),
+		`update guild_members set rank = 'officer' where guild_id = $1 and user_id = $2`,
+		guildID, h.owner); err != nil {
+		t.Fatal(err)
+	}
+	res = h.json(http.MethodPatch, "/v1/reports/"+id, fmt.Sprintf(`{"guild_id":%d}`, guildID))
+	var view View
+	h.data(res, &view)
+	if view.Guild == nil || view.Guild.ID != guildID {
+		t.Fatalf("an officer could not attach the report to their guild: %+v", view.Guild)
 	}
 }
 

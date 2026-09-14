@@ -269,6 +269,14 @@ func (s *Service) patch(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "patch", err, "could not change that report just now")
 		return
 	}
+	if !s.mayView(r, rep) {
+		// Same rule as every read path: whether a private report exists
+		// is itself private, so a caller who could not even see it gets
+		// the same 404 as a caller patching an id that does not exist -
+		// never the 403 that would confirm it is there.
+		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such report", nil)
+		return
+	}
 	may, err := s.mayEdit(r.Context(), auth.ActorFrom(r.Context()), rep)
 	if err != nil {
 		s.fail(w, r, "patch", err, "could not change that report just now")
@@ -287,6 +295,27 @@ func (s *Service) patch(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "that is not a visibility",
 			map[string]string{"visibility": "one of public, unlisted, private, guild"})
 		return
+	}
+	if p.GuildID != nil {
+		// Setting guild_id hands that guild's officers edit rights on
+		// this report (via mayEdit) and its members read rights once
+		// visibility is guild, so the caller needs standing in the
+		// guild they are naming, not just in the report they own. A
+		// moderator keeps the same wider reach mayEdit already gives
+		// them elsewhere in this handler.
+		a := auth.ActorFrom(r.Context())
+		if !a.IsModerator() {
+			rank, ok, err := s.Accounts.GuildRank(r.Context(), *p.GuildID, a.UserID)
+			if err != nil {
+				s.fail(w, r, "patch", err, "could not change that report just now")
+				return
+			}
+			if !ok || (rank != rankOfficer && rank != rankLeader) {
+				httpx.WriteError(w, r, http.StatusForbidden, "forbidden",
+					"you must be an officer of that guild to attach a report to it", nil)
+				return
+			}
+		}
 	}
 	if p.Title != nil {
 		trimmed := strings.TrimSpace(*p.Title)
