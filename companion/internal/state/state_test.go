@@ -111,3 +111,55 @@ func TestRemoveDeletesOneReport(t *testing.T) {
 		t.Fatalf("List = %+v", got)
 	}
 }
+
+func TestSaveLoadRemoveRejectATraversalKey(t *testing.T) {
+	dir := t.TempDir()
+	parent := filepath.Dir(dir)
+	bad := []string{"", ".", "..", "../escaped", "../../escaped", "a/../../escaped", "sub/dir", `back\slash`}
+	for _, k := range bad {
+		if err := Save(dir, Report{Key: k}); err == nil {
+			t.Errorf("Save accepted key %q", k)
+		}
+		if _, err := Load(dir, k); err == nil {
+			t.Errorf("Load accepted key %q", k)
+		}
+		if err := Remove(dir, k); err == nil {
+			t.Errorf("Remove accepted key %q", k)
+		}
+	}
+	// None of the attempts above may have written anything outside dir.
+	if _, err := os.Stat(filepath.Join(parent, "escaped.json")); !os.IsNotExist(err) {
+		t.Fatalf("a traversal key escaped the state directory: %v", err)
+	}
+}
+
+func TestSaveLoadRoundTripsAnEmptySession(t *testing.T) {
+	dir := t.TempDir()
+	// Session intentionally left nil: a session that has not settled
+	// a layout cannot be serialised, so this must still round-trip.
+	want := Report{
+		Key: "no-session-report", ReportID: "rpt000000002",
+		LogPath: "/w/Logs/WoWCombatLog.txt", StartOffset: 5, Offset: 10, RawSent: 10,
+		Visibility: "public", Zone: "Icecrown Citadel", Title: "ICC 25",
+		StartedAt: t0, LastAppend: t0.Add(time.Minute),
+		Fights: 1, Closed: true, EngineVersion: "0.1.0",
+	}
+	if err := Save(dir, want); err != nil {
+		t.Fatal(err)
+	}
+	got, err := Load(dir, want.Key)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.Session != nil {
+		t.Fatalf("Session = %#v, want nil", got.Session)
+	}
+	if got.Key != want.Key || got.ReportID != want.ReportID || got.LogPath != want.LogPath ||
+		got.StartOffset != want.StartOffset || got.Offset != want.Offset || got.RawSent != want.RawSent ||
+		got.Visibility != want.Visibility || got.Zone != want.Zone || got.Title != want.Title ||
+		!got.StartedAt.Equal(want.StartedAt) || !got.LastAppend.Equal(want.LastAppend) ||
+		got.Fights != want.Fights || got.Closed != want.Closed || got.Done != want.Done ||
+		got.EngineVersion != want.EngineVersion || got.LoggingCharacter != nil {
+		t.Fatalf("Load = %+v, want %+v", got, want)
+	}
+}

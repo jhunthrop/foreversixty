@@ -67,10 +67,29 @@ func NewKey(now time.Time) string {
 
 func path(dir, key string) string { return filepath.Join(dir, key+".json") }
 
+// validateKey rejects a key that is not a safe, single file-name
+// component. Save, Load and Remove all take a key from callers beyond
+// this package's control — a Report round-trips through JSON on disk
+// and, from Task 12 on, arrives over the loopback HTTP interface — so
+// a key containing a path separator or a ".." segment must never
+// reach filepath.Join, which would otherwise let it escape dir.
+func validateKey(key string) error {
+	if key == "" {
+		return errors.New("state: the report key is empty")
+	}
+	if strings.ContainsAny(key, `/\`) {
+		return fmt.Errorf("state: report key %q must not contain a path separator", key)
+	}
+	if key == "." || key == ".." {
+		return fmt.Errorf("state: report key %q is not a valid file name", key)
+	}
+	return nil
+}
+
 // Save writes one report's state atomically.
 func Save(dir string, r Report) error {
-	if r.Key == "" {
-		return errors.New("state: the report key is empty")
+	if err := validateKey(r.Key); err != nil {
+		return err
 	}
 	b, err := json.MarshalIndent(r, "", "  ")
 	if err != nil {
@@ -101,6 +120,9 @@ func Save(dir string, r Report) error {
 
 // Load reads one report's state.
 func Load(dir, key string) (Report, error) {
+	if err := validateKey(key); err != nil {
+		return Report{}, err
+	}
 	b, err := os.ReadFile(path(dir, key))
 	if err != nil {
 		return Report{}, err
@@ -143,6 +165,9 @@ func List(dir string) ([]Report, error) {
 
 // Remove deletes one report's state.
 func Remove(dir, key string) error {
+	if err := validateKey(key); err != nil {
+		return err
+	}
 	err := os.Remove(path(dir, key))
 	if errors.Is(err, fs.ErrNotExist) {
 		return nil
