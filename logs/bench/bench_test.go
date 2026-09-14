@@ -94,6 +94,9 @@ func parseFile(tb testing.TB, path string) (int64, int) {
 }
 
 func TestThroughputAndMemoryMeetTheBudget(t *testing.T) {
+	if raceEnabled {
+		t.Skip("throughput budget is measured without the race detector; see the bench job")
+	}
 	path := samplePath(t)
 
 	runtime.GC()
