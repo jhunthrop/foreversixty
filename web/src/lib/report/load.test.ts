@@ -9,7 +9,10 @@ import {
 } from './load';
 
 const API = 'https://api.foreversixty.test';
-const DATA = '/logs-data/reports/fixture2abcd';
+// Absolute, per the Amendments: data_base_url is always
+// `https://foreversixty.gg/logs-data/reports/<id>` (public/unlisted) or a signed absolute
+// url from /access (private/guild) -- production never sends a relative one.
+const DATA = 'https://logs.foreversixty.test/reports/fixture2abcd';
 
 type GlobalFetch = (...args: Parameters<typeof fetch>) => Promise<Response>;
 
@@ -101,12 +104,24 @@ describe('the report files', () => {
 
     expect(summary.fight_index).toBe(3);
     expect(summary.deaths).toHaveLength(1);
-    expect((upstream.mock.calls[0][0] as Request).url).toContain(`${DATA}/fights/3/summary.json`);
+    expect((upstream.mock.calls[0][0] as Request).url).toBe(`${DATA}/fights/3/summary.json`);
   });
 
   it('treats a missing live.json as "the fight is not open" rather than an error', async () => {
     vi.stubGlobal('fetch', vi.fn<GlobalFetch>(async () => new Response('', { status: 404 })));
     await expect(fetchLive(DATA, 3)).resolves.toBeNull();
+  });
+
+  it('preserves a signed data_base_url query string byte-for-byte', async () => {
+    // A signed url from GET /v1/reports/{id}/access carries a signature in its query
+    // string; the request the browser sends must match it exactly, with no re-encoding.
+    const signed = 'https://signed.example/reports/fixture2abcd?sig=AbC%2B123&exp=1700000000';
+    const upstream = vi.fn<GlobalFetch>(async () => json(fixtureSummary));
+    vi.stubGlobal('fetch', upstream);
+
+    await fetchSummary(signed, 3);
+
+    expect((upstream.mock.calls[0][0] as Request).url).toBe(`${signed}/fights/3/summary.json`);
   });
 
   it('names the events file without fetching it', () => {

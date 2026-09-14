@@ -75,19 +75,10 @@ export async function fetchAccessUrl(id: string, apiBase: string = API_BASE_URL)
   return access.data_base_url;
 }
 
-/**
- * `data_base_url` is always absolute in production (the Amendments fix it as
- * `https://foreversixty.gg/logs-data/reports/<id>`, or a signed absolute url from
- * `/access`), so this base is never actually used to resolve anything real -- it only
- * keeps `new Request()` from throwing on a relative url, which `new URL()` resolves
- * against an execution context's document that a plain fetch would supply for free.
- */
-const RESOLVE_BASE = 'http://localhost';
-
 async function dataGet<T>(url: string, cache: RequestCache): Promise<T> {
   let response: Response;
   try {
-    response = await fetch(new Request(new URL(url, RESOLVE_BASE).toString(), { cache }));
+    response = await fetch(new Request(url, { cache }));
   } catch {
     throw new ReportLoadError(REPORT_LOAD_FAILED, 0);
   }
