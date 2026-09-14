@@ -15,7 +15,7 @@
 - New top-level module `companion/`, module path `github.com/jhunthrop/foreversixty/companion`, `go 1.25.11` — the same directive `api/go.mod` and `logs/go.mod` use. Run every `go` command from `companion/`.
 - The engine comes from the repository: `require github.com/jhunthrop/foreversixty/logs v0.0.0` with `replace github.com/jhunthrop/foreversixty/logs => ../logs`. The companion must parse with exactly the code the server parses with.
 - Direct dependencies are exactly five, pinned: `github.com/klauspost/compress v1.20.0`, `github.com/zalando/go-keyring v0.2.8`, `github.com/jedisct1/go-minisign v0.0.0-20260527172527-a09352b57a22`, `github.com/getlantern/systray v1.2.2`, `github.com/webview/webview_go v0.0.0-20240831120633-6173450d4dd6`. Anything else needs a written justification in the commit body.
-- **Coverage floor: 80% of statements outside the window.** Measured with `go test -tags nogui ./... -race -coverprofile=cover.out -coverpkg=./...`, then the profile filtered to drop `cmd/`, `internal/shell/` and `ui/` — the tray, the webview and three static files, which no Go test can exercise without a desktop. The reference implementation this plan was written from measures 80.8%.
+- **Coverage floor: 80% of statements outside the window.** Measured with `go test -tags nogui ./... -race -coverprofile=cover.out -coverpkg=./...`, then the profile filtered to drop `cmd/`, `internal/shell/` and `ui/` — the tray, the webview and three static files, which no Go test can exercise without a desktop. The reference implementation this plan was written from measures 81.0%.
 - **Testing rule: implementers run only the tests for the packages they touch.** The full suite runs once at the whole-branch final review; CI is the last gate.
 - **Two builds, one behaviour.** `-tags nogui` compiles the companion without cgo, systray or webview; CI uses it for everything. The default build adds the window. Both honour the `-headless` flag at runtime. Nothing outside `internal/shell` may import systray or webview.
 - **All offsets the companion sends are report-relative**, counted from the first byte of the report's own stream, not from the start of the log file. `state.Report.StartOffset` is the single place the file offset and the report offset meet. See "Contract decisions" below.
@@ -31,11 +31,14 @@
 
 ## Contract decisions
 
-The interface contract leaves five things to the companion. They are decided here, once, and every task below depends on these answers.
+The interface contract left five things to the companion. They were decided here, taken through
+the three-plan cross-check, and are now written into the contract's own **Amendments** section,
+which is authoritative where it differs from the sections above it. They are repeated here
+because every task below depends on them.
 
 **1. Offsets are report-relative.** The contract addresses raw chunks by `offset` and fights by `raw_range.start_offset`, and the engine's session expects its first `Feed` at offset zero. A combat log holds many reports over a night, so the two cannot both be file offsets. Every offset the companion sends — the raw chunk's `?offset=`, the fight's `raw_range`, the completion's `final_offset` — counts from the first byte of *that report*, so `reports/<id>/raw/0.zst` is always the first chunk of the report and the chunks concatenate into exactly the bytes the engine parsed. `state.Report.StartOffset` records where the report begins in the file; `watch` is the only package that works in file offsets.
 
-**2. Raw chunks are 4 MiB of uncompressed log.** The contract says "raw chunks of 4 MiB zstd" and caps the route's body at 8 MiB. Four mebibytes of combat log compresses to a few hundred kilobytes, comfortably inside the cap, and the chunk boundary lands on a multiple of 4 MiB from the report's start so a re-sent chunk overwrites itself exactly.
+**2. Raw chunks are 4 MiB of uncompressed log, and `X-Raw-SHA256` is over the decoded bytes.** The contract says "raw chunks of 4 MiB zstd" and caps the route's body at 8 MiB. Four mebibytes of combat log compresses to a few hundred kilobytes, comfortably inside the cap, and the chunk boundary lands on a multiple of 4 MiB from the report's start so a re-sent chunk overwrites itself exactly. The amendment settles what the header hashes: the **decoded** chunk, not the compressed frame. The server decodes — bounded at 16 MiB, because the bytes arrive from a stranger — hashes what comes out, and derives the range's end offset from the decoded length. That has one consequence the companion has to design around: the queue stores the compressed frame and nothing else, so the digest cannot be recomputed at upload time and `queue.Item` carries it, taken while the plaintext still exists.
 
 **3. `MetricsRow` is built from the fight's roster.** The contract says the engine exposes `summary.MetricsRow` "if present, else the API defines it and the companion copies". It is not present: `logs/engine/summary` has `MetricRow`, which is one row per player *per metric*. The contract's shape is one row per player with `metric_dps` and `metric_hps` side by side, so the companion pivots `summary.Summary.Roster` — which already carries GUID, name, class, spec, role, item level, DPS, HPS, damage taken, active time and deaths — and takes the encounter, difficulty, size, duration and kill from the fight. The field names are the contract's, verbatim.
 
@@ -1494,12 +1497,15 @@ Claude-Session: https://claude.ai/code/session_01EkkERdonhxS2PMgXD7qZ6k"
   - `client.RawRange{StartOffset, EndOffset int64; SHA256 string}`, `client.FightBundle{Summary summary.Summary; Events []byte; Metrics []MetricsRow; RawRange RawRange}` with `.Encode() (contentType string, body []byte, err error)`, and `client.BundleBoundary`.
   - `client.Live{Summary summary.Summary; ElapsedMS int64; UpdatedAt time.Time}`, `client.Complete{FinalOffset int64; EngineVersion string; Health session.Health}`.
   - `client.Stored` with `client.Created` and `client.Duplicate`.
-  - `(*Client).CreateReport`, `.PutFight(ctx, reportID string, index int, contentType string, body []byte) (Stored, error)`, `.PutLive`, `.PutRaw(ctx, reportID string, offset int64, chunk []byte) (Stored, error)`, `.Complete`.
-  - `fakeapi.New() *Server` with `Token`, `PairCode`, `.Offline(bool)`, `.RefuseFights(bool)`, `.FailNext(pattern string, n int)`, `.Order() []string`, `.Reports() map[string]*Report`, `.Exports()`, `.SetInbox(string)`; `fakeapi.Fight`, `fakeapi.Report`.
+  - `client.SHA256(b []byte) string` — the hex digest the raw route and `raw_range` both carry, always over plaintext log bytes.
+  - `(*Client).CreateReport`, `.PutFight(ctx, reportID string, index int, contentType string, body []byte) (Stored, error)`, `.PutLive`, `.PutRaw(ctx, reportID string, offset int64, decodedSHA256 string, chunk []byte) (Stored, error)`, `.Complete`.
+  - `fakeapi.New() *Server` with `Token`, `PairCode`, `.Offline(bool)`, `.RefuseFights(bool)`, `.FailNext(pattern string, n int)`, `.Order() []string`, `.Reports() map[string]*Report`, `.Exports()`, `.SetInbox(string)`; `fakeapi.MaxDecoded`, `fakeapi.Fight`, `fakeapi.Report`.
 
 `PutFight` takes a pre-encoded body because the queue in Task 5 stores exactly those bytes and replays them unchanged. The multipart boundary is pinned so two encodings of the same bundle are byte-identical — the same determinism rule the engine works under.
 
-`fakeapi` is the interface contract written down once, in memory. Every companion test that talks to a server talks to it, so a route that drifts breaks every test at the same time.
+`PutRaw` takes the digest rather than computing one, because the contract hashes the *decoded* chunk and the caller is the only party still holding the plaintext. `fakeapi` decodes before it compares, bounded at 16 MiB, so a digest taken over the compressed frame fails the upload in a test rather than in production — `TestARawChunkWhoseHashIsOverTheCompressedFrameIsRefused` is exactly that mistake, made on purpose.
+
+`fakeapi` is the interface contract written down once, in memory. Every companion test that talks to a server talks to it, so a route that drifts breaks every test at the same time. The inbox it serves is the contract's `{ builds: [ { id, name, character?, code } ] }`, which is what `addon.Inbox` in Task 10 decodes.
 
 - [ ] **Step 1: Write the fake API**
 
@@ -1525,8 +1531,24 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/klauspost/compress/zstd"
+
 	"github.com/jhunthrop/foreversixty/companion/internal/client"
 )
+
+// MaxDecoded bounds decoding, per the contract: a chunk is 4 MiB of
+// log, and anything claiming to be four times that is not one.
+const MaxDecoded = 16 << 20
+
+// decode unpacks a raw chunk the way the API does.
+func decode(packed []byte) ([]byte, error) {
+	d, err := zstd.NewReader(nil, zstd.WithDecoderMaxMemory(MaxDecoded))
+	if err != nil {
+		return nil, err
+	}
+	defer d.Close()
+	return d.DecodeAll(packed, nil)
+}
 
 // Token is the device token the fake issues and the only one it
 // accepts.
@@ -1876,11 +1898,20 @@ func (s *Server) putRaw(w http.ResponseWriter, r *http.Request) {
 		fail(w, http.StatusRequestEntityTooLarge, "a raw chunk may not exceed 8 MiB")
 		return
 	}
-	sum := sha256.Sum256(body)
-	if got, want := r.Header.Get("X-Raw-SHA256"), hex.EncodeToString(sum[:]); got != want {
-		fail(w, http.StatusBadRequest, "X-Raw-SHA256 does not match the body")
+	// The header is the hash of the DECODED chunk, so the server
+	// decodes first -- bounded, because the bytes are a stranger's --
+	// and the decoded length is what gives the range its end.
+	decoded, derr := decode(body)
+	if derr != nil {
+		fail(w, http.StatusBadRequest, "the chunk did not decode: "+derr.Error())
 		return
 	}
+	sum := sha256.Sum256(decoded)
+	if got, want := r.Header.Get("X-Raw-SHA256"), hex.EncodeToString(sum[:]); got != want {
+		fail(w, http.StatusBadRequest, "X-Raw-SHA256 does not match the decoded chunk")
+		return
+	}
+	_ = offset + int64(len(decoded)) // the end offset the real API records
 	s.mu.Lock()
 	if prior, already := rep.Raw[offset]; already {
 		same := string(prior) == string(body)
@@ -2031,6 +2062,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/klauspost/compress/zstd"
+
 	"github.com/jhunthrop/foreversixty/companion/internal/client"
 	"github.com/jhunthrop/foreversixty/companion/internal/fakeapi"
 	"github.com/jhunthrop/foreversixty/logs/engine/fight"
@@ -2050,6 +2083,17 @@ func dial(t *testing.T, srv *fakeapi.Server) *client.Client {
 		t.Fatal(err)
 	}
 	return c
+}
+
+// pack compresses a chunk the way the pipeline does.
+func pack(t *testing.T, plain []byte) []byte {
+	t.Helper()
+	enc, err := zstd.NewWriter(nil, zstd.WithEncoderLevel(zstd.SpeedDefault))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer enc.Close()
+	return enc.EncodeAll(plain, nil)
 }
 
 func sampleFight() (fight.Fight, summary.Summary) {
@@ -2172,10 +2216,13 @@ func TestLiveRawAndCompleteReachTheServer(t *testing.T) {
 		Summary: s, ElapsedMS: 12000, UpdatedAt: time.Unix(1200, 0).UTC()}); err != nil {
 		t.Fatal(err)
 	}
-	if stored, err := c.PutRaw(t.Context(), rep.ID, 4194304, []byte("compressed")); err != nil || stored != client.Created {
+	plain := []byte("9/26 20:10:00.000  ZONE_CHANGE,2284,\"Sanguine Depths\",8\n")
+	packed := pack(t, plain)
+	digest := client.SHA256(plain)
+	if stored, err := c.PutRaw(t.Context(), rep.ID, 4194304, digest, packed); err != nil || stored != client.Created {
 		t.Fatalf("PutRaw = %v, %v", stored, err)
 	}
-	if stored, err := c.PutRaw(t.Context(), rep.ID, 4194304, []byte("compressed")); err != nil || stored != client.Duplicate {
+	if stored, err := c.PutRaw(t.Context(), rep.ID, 4194304, digest, packed); err != nil || stored != client.Duplicate {
 		t.Fatalf("re-sent PutRaw = %v, %v", stored, err)
 	}
 	if err := c.Complete(t.Context(), rep.ID, client.Complete{
@@ -2187,7 +2234,7 @@ func TestLiveRawAndCompleteReachTheServer(t *testing.T) {
 	if stored.Live[2].ElapsedMS != 12000 {
 		t.Errorf("live = %+v", stored.Live[2])
 	}
-	if string(stored.Raw[4194304]) != "compressed" {
+	if string(stored.Raw[4194304]) != string(packed) {
 		t.Errorf("raw = %q", stored.Raw[4194304])
 	}
 	if stored.Complete == nil || stored.Complete.FinalOffset != 131072 ||
@@ -2204,13 +2251,33 @@ func TestARawOffsetThatHoldsDifferentBytesIsAConflict(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if _, err := c.PutRaw(t.Context(), rep.ID, 0, []byte("first")); err != nil {
+	first, second := []byte("first chunk"), []byte("second chunk")
+	if _, err := c.PutRaw(t.Context(), rep.ID, 0, client.SHA256(first), pack(t, first)); err != nil {
 		t.Fatal(err)
 	}
-	_, err = c.PutRaw(t.Context(), rep.ID, 0, []byte("second"))
+	_, err = c.PutRaw(t.Context(), rep.ID, 0, client.SHA256(second), pack(t, second))
 	var ae *client.Error
 	if !errors.As(err, &ae) || ae.Status != http.StatusConflict {
 		t.Fatalf("err = %v, want a 409", err)
+	}
+}
+
+func TestARawChunkWhoseHashIsOverTheCompressedFrameIsRefused(t *testing.T) {
+	srv := fakeapi.New()
+	defer srv.Close()
+	c := dial(t, srv)
+	rep, err := c.CreateReport(t.Context(), client.CreateReport{Visibility: "public"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	plain := []byte("the decoded bytes are what the server hashes")
+	packed := pack(t, plain)
+	// Hashing the frame rather than its contents is the mistake the
+	// contract's amendment exists to prevent.
+	_, err = c.PutRaw(t.Context(), rep.ID, 0, client.SHA256(packed), packed)
+	var ae *client.Error
+	if !errors.As(err, &ae) || ae.Status != http.StatusBadRequest {
+		t.Fatalf("err = %v, want a 400", err)
 	}
 }
 
@@ -2471,18 +2538,30 @@ func (c *Client) PutLive(ctx context.Context, reportID string, index int, in Liv
 	return err
 }
 
-// PutRaw uploads one compressed chunk of the original log, addressed by
-// the uncompressed byte offset of its first byte.
-func (c *Client) PutRaw(ctx context.Context, reportID string, offset int64, chunk []byte) (Stored, error) {
-	sum := sha256.Sum256(chunk)
+// PutRaw uploads one compressed chunk of the original log, addressed
+// by the uncompressed byte offset of its first byte.
+//
+// X-Raw-SHA256 is the hash of the DECODED bytes, not of the frame in
+// body: the server decodes the chunk, hashes what comes out and
+// derives the end offset from its length. The caller passes that hash
+// because it is the only party that still has the plaintext — the
+// queue stores the compressed frame and nothing else.
+func (c *Client) PutRaw(ctx context.Context, reportID string, offset int64, decodedSHA256 string, chunk []byte) (Stored, error) {
 	status, err := c.do(ctx, request{
 		Method: http.MethodPut,
 		Path:   "/v1/reports/" + url.PathEscape(reportID) + "/raw",
 		Query:  url.Values{"offset": []string{strconv.FormatInt(offset, 10)}},
 		Body:   chunk, Type: "application/zstd",
-		Header: map[string]string{"X-Raw-SHA256": hex.EncodeToString(sum[:])},
+		Header: map[string]string{"X-Raw-SHA256": decodedSHA256},
 	})
 	return storedOf(status), err
+}
+
+// SHA256 is the hex digest the raw route and the fight bundle's
+// raw_range both carry, over plaintext log bytes.
+func SHA256(b []byte) string {
+	sum := sha256.Sum256(b)
+	return hex.EncodeToString(sum[:])
 }
 
 // Complete closes the report and schedules the server's raw-sample
@@ -2966,7 +3045,7 @@ Claude-Session: https://claude.ai/code/session_01EkkERdonhxS2PMgXD7qZ6k"
 - Consumes: nothing.
 - Produces:
   - `queue.Kind` with `queue.Fight`, `queue.Raw`, `queue.Complete`.
-  - `queue.Item{Seq int64; Kind Kind; ReportKey string; FightIndex int; Offset int64; ContentType string; Attempts int; LastError string; EnqueuedAt time.Time}`.
+  - `queue.Item{Seq int64; Kind Kind; ReportKey string; FightIndex int; Offset int64; SHA256 string; ContentType string; Attempts int; LastError string; EnqueuedAt time.Time}`.
   - `queue.Open(dir string) (*Queue, error)`, `(*Queue).SetClock(func() time.Time)`, `.Enqueue(Item, body []byte) (int64, error)`, `.Len() (int, error)`, `.Head() (*Lease, error)`, `queue.ErrEmpty`.
   - `queue.Lease{Item Item; Body []byte}` with `.Ack() error`, `.Fail(error) error`, `.Drop() error`.
 
@@ -2975,6 +3054,8 @@ This is the package the ordering guarantee lives in. `Head` hands out one lease 
 Live snapshots are deliberately not a `Kind`. A snapshot that fails is replaced five seconds later, and queueing them would put a fight behind a stale picture of a fight.
 
 The body is written before the metadata, so a crash between the two leaves an orphan `.bin` that `Head` skips rather than an item whose body is missing.
+
+`Item.SHA256` exists for one reason: a raw chunk's body is the compressed frame, and the contract hashes the decoded bytes, so the digest has to be recorded when the chunk is queued and carried to the upload.
 
 - [ ] **Step 1: Write the failing test**
 
@@ -3044,6 +3125,33 @@ func TestAFailedItemStaysAtTheHeadAndCountsItsAttempts(t *testing.T) {
 	}
 	if again.Item.Attempts != 1 || again.Item.LastError != "network is unreachable" {
 		t.Fatalf("item = %+v", again.Item)
+	}
+}
+
+func TestARawItemCarriesTheDecodedHashAcrossAReopen(t *testing.T) {
+	dir := t.TempDir()
+	q, err := Open(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	// The body is the compressed frame; the digest is over the
+	// plaintext, so it has to travel with the item rather than be
+	// recomputed at upload time.
+	if _, err := q.Enqueue(Item{Kind: Raw, ReportKey: "local-1", Offset: 4194304,
+		SHA256: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"},
+		[]byte("\x28\xb5\x2f\xfd")); err != nil {
+		t.Fatal(err)
+	}
+	reopened, err := Open(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	l, err := reopened.Head()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if l.Item.SHA256 != "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855" {
+		t.Fatalf("digest = %q", l.Item.SHA256)
 	}
 }
 
@@ -3219,11 +3327,16 @@ const (
 // Item is one queued operation. The body lives beside it in a .bin
 // file, so a 6 MiB bundle never passes through JSON.
 type Item struct {
-	Seq         int64     `json:"seq"`
-	Kind        Kind      `json:"kind"`
-	ReportKey   string    `json:"report_key"`
-	FightIndex  int       `json:"fight_index,omitempty"`
-	Offset      int64     `json:"offset,omitempty"`
+	Seq        int64  `json:"seq"`
+	Kind       Kind   `json:"kind"`
+	ReportKey  string `json:"report_key"`
+	FightIndex int    `json:"fight_index,omitempty"`
+	Offset     int64  `json:"offset,omitempty"`
+	// SHA256 is the hex digest of a raw chunk's DECODED bytes. The
+	// body beside this item is the compressed frame, so the digest
+	// cannot be recomputed from it at upload time and is recorded
+	// here when the chunk is queued.
+	SHA256      string    `json:"sha256,omitempty"`
 	ContentType string    `json:"content_type,omitempty"`
 	Attempts    int       `json:"attempts"`
 	LastError   string    `json:"last_error,omitempty"`
@@ -4851,6 +4964,7 @@ Three subtleties the reference implementation had to get right, each with a test
 - **The open report is created as soon as the network allows**, not when its first fight closes, because the live snapshots of the very first pull need somewhere to go.
 - **A session that has not settled a layout cannot be serialised** — the engine says so — and does not need to be: nothing has closed, so a restart re-feeds the report from its first byte. `save` tolerates it and `resume` handles the state file with no session blob.
 - **A restart must not lose buffered raw bytes.** The bytes between the last queued 4 MiB chunk and the stopping point are re-read out of the log by `refillRaw`; without it the server could never reassemble the raw stream. `bufferRaw` skips anything already buffered, which is also what makes the engine's replay bytes harmless.
+- **The raw digest is taken before compression.** `flushRaw` hashes `p.raw[:n]` and only then encodes it, because the contract's `X-Raw-SHA256` is over the decoded chunk and the queued body is the frame. `rawHash`, which fills the fight bundle's `raw_range`, hashes plaintext read back out of the log for the same reason; both go through `client.SHA256` so there is one spelling of it.
 
 - [ ] **Step 1: Write the fixture and prove the engine reads it**
 
@@ -5224,6 +5338,25 @@ func TestRawIsChunkedAtTheConfiguredSizeAndAddressedByOffset(t *testing.T) {
 	}
 }
 
+func TestTheRawHashIsOverTheDecodedChunk(t *testing.T) {
+	// The fake ingest decodes each chunk and compares the header
+	// against the decoded bytes, so a digest taken over the
+	// compressed frame would fail the upload outright.
+	r := newRig(t, 512)
+	r.write(fixture.Log(1))
+	for range 3 {
+		if err := r.tick(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	r.settle()
+	for _, rep := range r.srv.Reports() {
+		if len(rep.Raw) == 0 {
+			t.Fatal("no raw chunks were accepted")
+		}
+	}
+}
+
 func TestAnOutageQueuesAndTheOrderSurvivesTheReconnect(t *testing.T) {
 	r := newRig(t, 1<<20)
 	r.write(fixture.Header + fixture.Zone + fixture.Encounter(0) + fixture.Heartbeat(0))
@@ -5452,8 +5585,6 @@ package pipeline
 
 import (
 	"context"
-	"crypto/sha256"
-	"encoding/hex"
 	"errors"
 	"fmt"
 	"log/slog"
@@ -5741,9 +5872,13 @@ func (p *Pipeline) refillRaw(r state.Report) {
 func (p *Pipeline) flushRaw(final bool) error {
 	for len(p.raw) >= p.o.RawChunk || (final && len(p.raw) > 0) {
 		n := min(len(p.raw), p.o.RawChunk)
+		// The digest is over the plaintext, because that is what the
+		// server hashes after it decodes; it is taken here, while the
+		// plaintext still exists.
+		digest := client.SHA256(p.raw[:n])
 		packed := p.enc.EncodeAll(p.raw[:n], nil)
 		if _, err := p.o.Queue.Enqueue(queue.Item{
-			Kind: queue.Raw, ReportKey: p.cur.Key, Offset: p.rawAt,
+			Kind: queue.Raw, ReportKey: p.cur.Key, Offset: p.rawAt, SHA256: digest,
 		}, packed); err != nil {
 			return err
 		}
@@ -5804,8 +5939,7 @@ func (p *Pipeline) rawHash(f fight.Fight) string {
 			"report", p.cur.Key, "fight", f.Index, "err", err.Error())
 		return ""
 	}
-	sum := sha256.Sum256(raw)
-	return hex.EncodeToString(sum[:])
+	return client.SHA256(raw)
 }
 
 // complete closes the engine's session, queues the last fights, the
@@ -5997,7 +6131,7 @@ func (p *Pipeline) send(ctx context.Context, l *queue.Lease) error {
 		_, err = p.o.Client.PutFight(ctx, rep.ReportID, l.Item.FightIndex,
 			l.Item.ContentType, l.Body)
 	case queue.Raw:
-		_, err = p.o.Client.PutRaw(ctx, rep.ReportID, l.Item.Offset, l.Body)
+		_, err = p.o.Client.PutRaw(ctx, rep.ReportID, l.Item.Offset, l.Item.SHA256, l.Body)
 	case queue.Complete:
 		var in client.Complete
 		if jerr := json.Unmarshal(l.Body, &in); jerr != nil {
@@ -10224,7 +10358,7 @@ go tool cover -func=cover-core.out | tail -1
 ```
 
 Expected: no gofmt output, no vet output, PASS everywhere, and a total at or above 80.0%. The
-reference implementation measures 80.8%.
+reference implementation measures 81.0%.
 
 - [ ] **Step 4: Write the README**
 
@@ -10477,6 +10611,17 @@ Spec section 9, "Companion: tail, offsets, upload queue with a fake server; inte
 fake game writer, local ingest, drops and restarts; signed build smoke test per platform":
 Tasks 7, 5, 3, 14 and the `-version` smoke test in Task 15's build job, respectively.
 
+The contract's **Amendments** section, applied: `fight_index` is 1-based, which is already the
+engine's own `fight.Fight.Index` and is forwarded unchanged (Tasks 3 and 9); `X-Raw-SHA256` is
+over the decoded chunk (Tasks 3, 5 and 9); `GET /v1/addon/inbox` returns
+`{ builds: [ { id, name, character?, code } ] }`, which is what `addon.Inbox` decodes and what
+`fakeapi` serves (Tasks 3 and 10); `POST /v1/addon/exports` normalises an unrecognised `ruleset`
+server-side, so the companion forwards whatever the addon wrote (Task 10). The remaining
+amendments — the rankings, character, guild, session and device routes, and the 4 GiB whole-file
+ceiling — are the api and web plans'; the companion calls none of them. `GET /v1/reports?mine=1`
+is not used either: the reports page reads the companion's own state files, so it works offline
+and shows a report before the server has one.
+
 Interface-contract items with no task, deliberately: the `POST /v1/devices/pair` route and the
 site's pairing page (api and web plans), `POST /v1/uploads` whole-file upload (web plan), the
 verification and re-parse jobs (api plan), the `/v1/addon/exports` and `/v1/addon/inbox`
@@ -10509,7 +10654,7 @@ go vet -tags nogui ./...   clean
 go vet ./...               clean (cgo build, macOS; webview.h deprecation warnings only)
 go test -tags nogui ./... -race -coverprofile=cover.out -coverpkg=./...
                            ok in all 18 packages
-coverage outside cmd/, internal/shell/ and ui/:  80.8%
+coverage outside cmd/, internal/shell/ and ui/:  81.0%
 go build -tags nogui ./cmd/foreversixty-companion              ok
 CGO_ENABLED=1 go build ./cmd/foreversixty-companion            ok (darwin/arm64)
 CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 CGO_CFLAGS="-arch x86_64 -mmacosx-version-min=11.0" \
