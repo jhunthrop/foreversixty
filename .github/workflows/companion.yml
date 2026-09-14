@@ -23,7 +23,8 @@ env:
   HEADLESS_TAGS: nogui
 jobs:
   test:
-    if: "!startsWith(github.ref, 'refs/tags/')"
+    # Runs on tags too: a release is built from the exact tree that
+    # passed, not from the commit the tag was cut from.
     runs-on: ubuntu-latest
     defaults: { run: { working-directory: companion } }
     steps:
@@ -61,6 +62,7 @@ jobs:
           go build ./...
 
   build:
+    needs: test
     if: startsWith(github.ref, 'refs/tags/companion-v')
     strategy:
       fail-fast: false

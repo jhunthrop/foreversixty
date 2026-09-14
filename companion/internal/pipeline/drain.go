@@ -19,6 +19,11 @@ import (
 
 func marshalComplete(in client.Complete) ([]byte, error) { return json.Marshal(in) }
 
+// MaxStateReads is how many drains may fail to read an item's report
+// state before the item is dropped as poisoned. Network failures are
+// not counted here and are never capped: an outage keeps the queue.
+const MaxStateReads = 20
+
 // Drain sends queued work until the queue is empty or an upload fails
 // in a way that is worth retrying. The failing item stays at the head,
 // so nothing behind it overtakes it.
@@ -102,7 +107,16 @@ func (p *Pipeline) send(ctx context.Context, l *queue.Lease) error {
 		// table, a disk error, a half-written file. That is the same
 		// shape as a retryable upload failure, so the item stays at
 		// the head and the drain stops rather than throwing a fight
-		// away over a condition that passes.
+		// away over a condition that passes. A file that never
+		// becomes readable is a different thing: after MaxStateReads
+		// drains it is treated as corrupt and the item is dropped, so
+		// one bad byte cannot hold every later night's uploads.
+		if l.Item.Attempts+1 >= MaxStateReads {
+			p.o.Log.Error("dropping a queued item whose report state never became readable",
+				"component", "uploader", "report", l.Item.ReportKey,
+				"kind", string(l.Item.Kind), "attempts", l.Item.Attempts+1, "err", err.Error())
+			return l.Drop()
+		}
 		if ferr := l.Fail(err); ferr != nil {
 			return ferr
 		}

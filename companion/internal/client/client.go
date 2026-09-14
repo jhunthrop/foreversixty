@@ -249,6 +249,21 @@ func (c *Client) do(ctx context.Context, r request) (int, error) {
 }
 
 func (c *Client) attempt(ctx context.Context, r request) (int, error) {
+	req, err := c.newRequest(ctx, r)
+	if err != nil {
+		return 0, err
+	}
+	resp, err := c.http.Do(req)
+	if err != nil {
+		return 0, fmt.Errorf("%s %s: %w", r.Method, r.Path, err)
+	}
+	defer resp.Body.Close()
+	return decode(resp, r)
+}
+
+// newRequest builds one HTTP request for r: URL, body, headers and the
+// device token, which is required unless r is Anonymous.
+func (c *Client) newRequest(ctx context.Context, r request) (*http.Request, error) {
 	u := *c.base
 	u.Path = c.base.Path + r.Path
 	if len(r.Query) > 0 {
@@ -260,7 +275,7 @@ func (c *Client) attempt(ctx context.Context, r request) (int, error) {
 	}
 	req, err := http.NewRequestWithContext(ctx, r.Method, u.String(), body)
 	if err != nil {
-		return 0, err
+		return nil, err
 	}
 	if r.Type != "" {
 		req.Header.Set("Content-Type", r.Type)
@@ -272,16 +287,16 @@ func (c *Client) attempt(ctx context.Context, r request) (int, error) {
 	if !r.Anonymous {
 		tok := c.token()
 		if tok == "" {
-			return 0, &Error{Status: http.StatusUnauthorized, Message: "this device is not paired"}
+			return nil, &Error{Status: http.StatusUnauthorized, Message: "this device is not paired"}
 		}
 		req.Header.Set("Authorization", "Bearer "+tok)
 	}
-	resp, err := c.http.Do(req)
-	if err != nil {
-		return 0, fmt.Errorf("%s %s: %w", r.Method, r.Path, err)
-	}
-	defer resp.Body.Close()
+	return req, nil
+}
 
+// decode reads one response into r.Out through the envelope, turning a
+// failed envelope or a bare error status into a typed *Error.
+func decode(resp *http.Response, r request) (int, error) {
 	if resp.StatusCode == http.StatusNoContent {
 		// A 204 has no body to read; draining it is only so the
 		// connection can go back in the pool, and a failure there

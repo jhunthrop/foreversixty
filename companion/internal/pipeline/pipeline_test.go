@@ -467,6 +467,42 @@ func TestAQueuedItemWhoseStateWillNotReadStaysQueued(t *testing.T) {
 	}
 }
 
+func TestAnItemWhoseStateNeverBecomesReadableIsDroppedAfterTheCap(t *testing.T) {
+	r := newRig(t, 1<<20)
+	const key = "20261209-200000-deadbeef"
+	if err := os.WriteFile(filepath.Join(r.dirs.state, key+".json"),
+		[]byte("{ this is not json"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := r.q.Enqueue(queue.Item{
+		Kind: queue.Fight, ReportKey: key, ContentType: "text/plain",
+	}, []byte("x")); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := r.q.Enqueue(queue.Item{
+		Kind: queue.Fight, ReportKey: "20261210-200000-cafef00d", ContentType: "text/plain",
+	}, []byte("y")); err != nil {
+		t.Fatal(err)
+	}
+	// Every drain short of the cap keeps the poisoned item at the head.
+	for i := 1; i < pipeline.MaxStateReads; i++ {
+		if err := r.pipe.Drain(t.Context()); err == nil {
+			t.Fatalf("drain %d: an unreadable report state was not reported", i)
+		}
+		if n, _ := r.q.Len(); n != 2 {
+			t.Fatalf("drain %d: %d queued, the head was dropped early", i, n)
+		}
+	}
+	// The drain at the cap drops it, and the item behind it moves: its
+	// report state is gone, so it is dropped too and the queue empties.
+	if err := r.pipe.Drain(t.Context()); err != nil {
+		t.Fatalf("drain at the cap: %v", err)
+	}
+	if n, _ := r.q.Len(); n != 0 {
+		t.Fatalf("%d items are still queued after the poisoned head was dropped", n)
+	}
+}
+
 func TestLiveAndCompleteDoNothingWithoutAnOpenReport(t *testing.T) {
 	r := newRig(t, 1<<20)
 	if err := r.pipe.Live(t.Context(), r.clock); err != nil {
