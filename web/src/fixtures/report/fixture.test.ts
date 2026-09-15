@@ -35,7 +35,13 @@ function everyArray(summary: Summary): unknown[][] {
     ...summary.auras.flatMap((track) => [track.segments, track.appliers]),
     ...summary.casts.map((cast) => cast.sequence),
     ...summary.resources.map((track) => track.series),
-    ...summary.combatants.flatMap((row) => [row.gear, row.talents, row.consumables, row.raid_buffs, row.missing_buffs]),
+    ...summary.combatants.flatMap((row) => [
+      row.gear,
+      row.talents,
+      row.consumables,
+      row.raid_buffs,
+      row.missing_buffs,
+    ]),
   ];
 }
 
@@ -132,7 +138,10 @@ describe('the checked-in report fixture', () => {
   });
 
   it('parses auras, casts, resources and threat', () => {
-    expect(three.auras.map((track) => track.name).sort()).toEqual(['Necrotic Wound', 'Power Word: Fortitude']);
+    expect(three.auras.map((track) => track.name).sort()).toEqual([
+      'Necrotic Wound',
+      'Power Word: Fortitude',
+    ]);
     expect(three.auras.find((t) => t.name === 'Power Word: Fortitude')?.uptime_ms).toBe(31000);
     expect(three.casts[0].sequence).toEqual([5000]);
     expect(three.resources.every((track) => Array.isArray(track.series))).toBe(true);

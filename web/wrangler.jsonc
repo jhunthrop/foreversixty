@@ -15,14 +15,7 @@
     // The four shell prefixes are served from the static shells with their unfurl tags
     // rewritten from the API's JSON (see src/worker.ts). Every other path is served from
     // the assets with no Worker invocation, so the static site keeps its zero-runtime cost.
-    "run_worker_first": [
-      "/b/*",
-      "/logs-data/*",
-      "/reports/*",
-      "/rankings/*",
-      "/character/*",
-      "/guild/*",
-    ],
+    "run_worker_first": ["/b/*", "/logs-data/*", "/reports/*", "/rankings/*", "/character/*", "/guild/*"],
   },
   "r2_buckets": [
     // Written by the API and the parse job; read-only here. The bucket and an Object Read

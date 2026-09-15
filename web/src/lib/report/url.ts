@@ -12,8 +12,18 @@
 export type Mode = 'analyze' | 'compare' | 'rankings';
 export type View = 'tables' | 'timelines' | 'events' | 'queries';
 export type Tab =
-  | 'summary' | 'damage-done' | 'damage-taken' | 'healing' | 'threat' | 'buffs'
-  | 'debuffs' | 'deaths' | 'interrupts' | 'dispels' | 'resources' | 'casts';
+  | 'summary'
+  | 'damage-done'
+  | 'damage-taken'
+  | 'healing'
+  | 'threat'
+  | 'buffs'
+  | 'debuffs'
+  | 'deaths'
+  | 'interrupts'
+  | 'dispels'
+  | 'resources'
+  | 'casts';
 
 export interface ModeOption {
   id: Mode | 'mechanics' | 'replay';

@@ -4,7 +4,12 @@ import fixtureReport from '../../fixtures/report/report.json';
 import fixtureSummary from '../../fixtures/report/fights/3/summary.json';
 import type { ReportFile, Summary } from './types';
 import {
-  DEFAULT_FILTERS, abilityOptions, applyActorFilters, bossGuids, playerGuids, targetOptions,
+  DEFAULT_FILTERS,
+  abilityOptions,
+  applyActorFilters,
+  bossGuids,
+  playerGuids,
+  targetOptions,
 } from './filters';
 
 const report = fixtureReport as ReportFile;
@@ -31,7 +36,11 @@ describe('unit sets from report.json', () => {
 describe('filter options', () => {
   it('lists every ability and every target present, deduplicated and sorted by size', () => {
     expect(abilityOptions(summary.damage_done).map((option) => option.name)).toEqual([
-      'Anima Lash', 'Slam', 'Frostbolt', 'Melee', 'Shadow Word: Pain',
+      'Anima Lash',
+      'Slam',
+      'Frostbolt',
+      'Melee',
+      'Shadow Word: Pain',
     ]);
     expect(targetOptions(summary.damage_done).map((option) => option.name)).toContain('Warden Kelthas');
   });
@@ -67,7 +76,11 @@ describe('applyActorFilters', () => {
   });
 
   it('hides NPC rows when asked, leaving the players', () => {
-    const filtered = applyActorFilters(summary.damage_done, { ...DEFAULT_FILTERS, playersOnly: true }, context);
+    const filtered = applyActorFilters(
+      summary.damage_done,
+      { ...DEFAULT_FILTERS, playersOnly: true },
+      context,
+    );
     expect(filtered.every((actor) => context.players.has(actor.guid))).toBe(true);
   });
 

@@ -75,7 +75,9 @@
 
 {#if status === 'missing'}
   <p class="text-[14px]" data-testid="character-missing">
-    That is not a character address. They look like <code class="font-mono">/character/us/hardcore/elyra-duskvale</code>.
+    That is not a character address. They look like <code class="font-mono"
+      >/character/us/hardcore/elyra-duskvale</code
+    >.
   </p>
 {:else if status === 'loading'}
   <p class="text-muted text-[14px]">Loading.</p>
@@ -88,9 +90,10 @@
         {data.character.name}
       </h1>
       <p class="text-muted text-[13px]">
-        {rulesetLabel(resolved.ruleset)} {resolved.region.toUpperCase()}
+        {rulesetLabel(resolved.ruleset)}
+        {resolved.region.toUpperCase()}
         {#if data.character.class}· {data.character.class}{/if}
-        · <span class="font-mono tabular">{data.history.length}</span> ranked fights
+        · <span class="tabular font-mono">{data.history.length}</span> ranked fights
       </p>
     </header>
 
@@ -101,19 +104,24 @@
       {:else}
         <ul class="flex flex-col" data-testid="character-best">
           {#each data.best as row (`${row.encounter_id}-${row.difficulty}-${row.metric}`)}
-            <li class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-3 border-b px-2 py-2 text-[14px]">
-              <a class="{rowLink} truncate" href={`/rankings/${row.encounter.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}>
+            <li
+              class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-3 border-b px-2 py-2 text-[14px]"
+            >
+              <a
+                class="{rowLink} truncate"
+                href={`/rankings/${row.encounter.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
+              >
                 {row.encounter}
               </a>
               <span
-                class="font-mono tabular text-right text-[13px]"
+                class="tabular text-right font-mono text-[13px]"
                 style={row.percentile === undefined ? undefined : `color: ${percentileToken(row.percentile)}`}
                 aria-label={percentileAriaLabel(row.percentile)}
               >
                 {row.percentile === undefined ? '' : Math.round(row.percentile)}
               </span>
               <a
-                class="{rowLink} font-mono tabular justify-end text-right"
+                class="{rowLink} tabular justify-end text-right font-mono"
                 href={`/reports/${row.report_id}?fight=${row.fight_index}`}
                 aria-label={`${formatAmount(Math.round(row.value))} ${metricLabel(row.metric)}`}
               >
@@ -129,19 +137,25 @@
       <h2 class="section-title text-[18px]">Every ranked fight</h2>
       <ul class="flex flex-col" data-testid="character-history">
         {#each data.history as row, index (`${row.report_id}-${row.fight_index}-${index}`)}
-          <li class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-3 border-b px-2 py-2 text-[14px] md:grid-cols-[96px_minmax(0,1fr)_88px_72px_88px]">
-            <span class="text-muted font-mono tabular hidden text-[13px] md:inline">{row.fought_at.slice(0, 10)}</span>
-            <a class="{rowLink} truncate" href={`/reports/${row.report_id}?fight=${row.fight_index}`}>{row.encounter}</a>
+          <li
+            class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-3 border-b px-2 py-2 text-[14px] md:grid-cols-[96px_minmax(0,1fr)_88px_72px_88px]"
+          >
+            <span class="text-muted tabular hidden font-mono text-[13px] md:inline"
+              >{row.fought_at.slice(0, 10)}</span
+            >
+            <a class="{rowLink} truncate" href={`/reports/${row.report_id}?fight=${row.fight_index}`}
+              >{row.encounter}</a
+            >
             <span class="text-muted hidden text-[13px] md:inline">{row.spec ?? ''}</span>
             <span
-              class="font-mono tabular text-right text-[13px]"
+              class="tabular text-right font-mono text-[13px]"
               style={row.percentile === undefined ? undefined : `color: ${percentileToken(row.percentile)}`}
               aria-label={percentileAriaLabel(row.percentile)}
             >
               {row.percentile === undefined ? '' : Math.round(row.percentile)}
             </span>
             <span
-              class="font-mono tabular text-right"
+              class="tabular text-right font-mono"
               aria-label={`${formatAmount(Math.round(row.value))} ${metricLabel(row.metric)}`}
             >
               {formatAmount(Math.round(row.value))}
@@ -156,16 +170,20 @@
         <h2 class="section-title text-[18px]">Builds seen at pull</h2>
         <ul class="flex flex-col" data-testid="character-builds">
           {#each data.builds_seen as build (`${build.talent_split}-${build.first_seen}`)}
-            <li class="border-line-soft flex min-h-11 flex-wrap items-center gap-3 border-b px-2 py-2 text-[14px]">
-              <span class="font-mono tabular font-semibold">{build.talent_split}</span>
+            <li
+              class="border-line-soft flex min-h-11 flex-wrap items-center gap-3 border-b px-2 py-2 text-[14px]"
+            >
+              <span class="tabular font-mono font-semibold">{build.talent_split}</span>
               {#if build.spec}<span class="text-muted text-[13px]">{build.spec}</span>{/if}
-              <span class="text-muted font-mono tabular text-[13px]">first seen {build.first_seen.slice(0, 10)}</span>
+              <span class="text-muted tabular font-mono text-[13px]"
+                >first seen {build.first_seen.slice(0, 10)}</span
+              >
             </li>
           {/each}
         </ul>
         <p class="text-muted text-[12px]">
-          A split, not a planner link: a saved build records the order points were spent in, and the
-          combat log does not.
+          A split, not a planner link: a saved build records the order points were spent in, and the combat
+          log does not.
         </p>
       </section>
     {/if}

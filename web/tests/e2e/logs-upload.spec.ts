@@ -9,11 +9,25 @@ const fulfil = (body: unknown, status = 200) => ({
 
 test('a log uploads part by part and hands off to the report', async ({ page }) => {
   await page.route('**/v1/me', (route) =>
-    route.fulfill(fulfil({ user: { id: 1, battletag: 'F#1', email: null, role: 'user', anonymize: false }, characters: [], guilds: [] })),
+    route.fulfill(
+      fulfil({
+        user: { id: 1, battletag: 'F#1', email: null, role: 'user', anonymize: false },
+        characters: [],
+        guilds: [],
+      }),
+    ),
   );
-  await page.route('**/v1/reports?mine=1**', (route) => route.fulfill(fulfil({ rows: [], total: 0, page: 1, per_page: 100 })));
+  await page.route('**/v1/reports?mine=1**', (route) =>
+    route.fulfill(fulfil({ rows: [], total: 0, page: 1, per_page: 100 })),
+  );
   await page.route('**/v1/uploads', (route) =>
-    route.fulfill(fulfil({ upload_id: 'up1', parts: [{ number: 1, url: 'https://r2.test/p1' }], complete_url: 'https://r2.test/c' })),
+    route.fulfill(
+      fulfil({
+        upload_id: 'up1',
+        parts: [{ number: 1, url: 'https://r2.test/p1' }],
+        complete_url: 'https://r2.test/c',
+      }),
+    ),
   );
   await page.route('https://r2.test/p1', (route) =>
     route.fulfill({ status: 200, headers: { etag: '"e1"', 'access-control-expose-headers': 'ETag' } }),
@@ -35,13 +49,23 @@ test('a log uploads part by part and hands off to the report', async ({ page }) 
   await page.getByTestId('upload-start').click();
 
   await page.waitForURL('**/reports/fixture2abcd');
-  expect(completeBody).toEqual({ etags: [{ number: 1, etag: '"e1"' }], title: 'Tuesday', visibility: 'unlisted' });
+  expect(completeBody).toEqual({
+    etags: [{ number: 1, etag: '"e1"' }],
+    title: 'Tuesday',
+    visibility: 'unlisted',
+  });
 });
 
 test('a failed part shows what went wrong instead of a spinner', async ({ page }) => {
   await page.route('**/v1/me', (route) => route.fulfill(fulfil(null, 401)));
   await page.route('**/v1/uploads', (route) =>
-    route.fulfill(fulfil({ upload_id: 'up1', parts: [{ number: 1, url: 'https://r2.test/p1' }], complete_url: 'https://r2.test/c' })),
+    route.fulfill(
+      fulfil({
+        upload_id: 'up1',
+        parts: [{ number: 1, url: 'https://r2.test/p1' }],
+        complete_url: 'https://r2.test/c',
+      }),
+    ),
   );
   await page.route('https://r2.test/p1', (route) => route.fulfill({ status: 500 }));
 
@@ -58,10 +82,20 @@ test('a failed part shows what went wrong instead of a spinner', async ({ page }
 
 test('the pairing code and the companion downloads are on the page', async ({ page }) => {
   await page.route('**/v1/me', (route) =>
-    route.fulfill(fulfil({ user: { id: 1, battletag: 'F#1', email: null, role: 'user', anonymize: false }, characters: [], guilds: [] })),
+    route.fulfill(
+      fulfil({
+        user: { id: 1, battletag: 'F#1', email: null, role: 'user', anonymize: false },
+        characters: [],
+        guilds: [],
+      }),
+    ),
   );
-  await page.route('**/v1/reports?mine=1**', (route) => route.fulfill(fulfil({ rows: [], total: 0, page: 1, per_page: 100 })));
-  await page.route('**/v1/devices/pair', (route) => route.fulfill(fulfil({ code: '4821-9930', expires_in: 600 })));
+  await page.route('**/v1/reports?mine=1**', (route) =>
+    route.fulfill(fulfil({ rows: [], total: 0, page: 1, per_page: 100 })),
+  );
+  await page.route('**/v1/devices/pair', (route) =>
+    route.fulfill(fulfil({ code: '4821-9930', expires_in: 600 })),
+  );
 
   await page.goto('/logs');
   await expect(page.getByTestId('companion-downloads').getByRole('link')).toHaveCount(4);

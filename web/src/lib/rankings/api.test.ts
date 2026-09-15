@@ -1,6 +1,13 @@
 // web/src/lib/rankings/api.test.ts
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { RANKINGS_FAILED, RankingsError, encounterSlug, fetchCharacter, fetchGuild, fetchRankings } from './api';
+import {
+  RANKINGS_FAILED,
+  RankingsError,
+  encounterSlug,
+  fetchCharacter,
+  fetchGuild,
+  fetchRankings,
+} from './api';
 
 const API = 'https://api.foreversixty.test';
 type GlobalFetch = (...args: Parameters<typeof fetch>) => Promise<Response>;
@@ -57,7 +64,12 @@ describe('fetchRankings', () => {
   });
 
   it('turns a failure into a RankingsError a page can print', async () => {
-    vi.stubGlobal('fetch', vi.fn<GlobalFetch>(async () => { throw new TypeError('offline'); }));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => {
+        throw new TypeError('offline');
+      }),
+    );
     await expect(fetchRankings({ encounter: 'x' }, API)).rejects.toBeInstanceOf(RankingsError);
     await expect(fetchRankings({ encounter: 'x' }, API)).rejects.toThrow(RANKINGS_FAILED);
   });
@@ -66,17 +78,29 @@ describe('fetchRankings', () => {
 describe('character and guild', () => {
   it('reads a character by region, ruleset and slug', async () => {
     const upstream = vi.fn<GlobalFetch>(async () =>
-      envelope({ character: { name: 'Elyra Duskvale', region: 'us', ruleset: 'hardcore' }, best: [], history: [], builds_seen: [] }),
+      envelope({
+        character: { name: 'Elyra Duskvale', region: 'us', ruleset: 'hardcore' },
+        best: [],
+        history: [],
+        builds_seen: [],
+      }),
     );
     vi.stubGlobal('fetch', upstream);
 
     await fetchCharacter({ region: 'us', ruleset: 'hardcore', slug: 'elyra-duskvale' }, API);
-    expect((upstream.mock.calls[0][0] as Request).url).toBe(`${API}/v1/characters/us/hardcore/elyra-duskvale`);
+    expect((upstream.mock.calls[0][0] as Request).url).toBe(
+      `${API}/v1/characters/us/hardcore/elyra-duskvale`,
+    );
   });
 
   it('reads a guild the same way', async () => {
     const upstream = vi.fn<GlobalFetch>(async () =>
-      envelope({ guild: { name: 'The Last Watch', region: 'eu', ruleset: 'normal' }, progression: [], roster_best: [], reports: [] }),
+      envelope({
+        guild: { name: 'The Last Watch', region: 'eu', ruleset: 'normal' },
+        progression: [],
+        roster_best: [],
+        reports: [],
+      }),
     );
     vi.stubGlobal('fetch', upstream);
 

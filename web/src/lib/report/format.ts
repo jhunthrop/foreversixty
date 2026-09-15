@@ -56,7 +56,15 @@ export function formatPercent(value: number): string {
  * a guess.
  */
 const CLASS_TOKENS = new Set([
-  'warrior', 'paladin', 'hunter', 'rogue', 'priest', 'shaman', 'mage', 'warlock', 'druid',
+  'warrior',
+  'paladin',
+  'hunter',
+  'rogue',
+  'priest',
+  'shaman',
+  'mage',
+  'warlock',
+  'druid',
 ]);
 
 export function classColorVar(className: string | undefined): string {

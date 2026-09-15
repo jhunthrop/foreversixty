@@ -47,9 +47,7 @@ describe('/logs', () => {
     // Only the prose between tags: the document itself legitimately contains <!doctype and
     // HTML comments, and the mounted Account island ships Astro's own hydration runtime,
     // whose minified JS uses `!` as an operator, not as punctuation in this page's copy.
-    const copy = html
-      .replace(/<script[\s\S]*?<\/script>/gi, ' ')
-      .replace(/<[^>]*>/g, ' ');
+    const copy = html.replace(/<script[\s\S]*?<\/script>/gi, ' ').replace(/<[^>]*>/g, ' ');
     expect(copy).not.toContain('!');
   });
 });

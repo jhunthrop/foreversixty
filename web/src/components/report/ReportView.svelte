@@ -55,7 +55,11 @@
   import TimeChart from './TimeChart.svelte';
   import TimelinesView from './TimelinesView.svelte';
   import {
-    DEFAULT_FILTERS, applyActorFilters, bossGuids, playerGuids, type ReportFilters,
+    DEFAULT_FILTERS,
+    applyActorFilters,
+    bossGuids,
+    playerGuids,
+    type ReportFilters,
   } from '../../lib/report/filters';
   import { createPercentileLoader, percentileKey } from '../../lib/report/percentile';
   import activeBuild from '../../data/active-build.json';
@@ -524,9 +528,9 @@
           />
           {#if actorTableApproximate}
             <p class="text-muted text-[12px]" data-testid="approximate-note">
-              A tilde marks a figure split across abilities and targets in proportion to the window and
-              any active target or boss filter. Totals and per-second figures are exact. Queries answers
-              the split exactly.
+              A tilde marks a figure split across abilities and targets in proportion to the window and any
+              active target or boss filter. Totals and per-second figures are exact. Queries answers the split
+              exactly.
             </p>
           {/if}
         {:else if state.tab === 'buffs'}

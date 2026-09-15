@@ -17,7 +17,9 @@
 
   let { rows, emptyText }: { rows: ExchangeRow[]; emptyText: string } = $props();
 
-  const ordered = $derived([...rows].sort((a, b) => b.count - a.count || a.source_name.localeCompare(b.source_name)));
+  const ordered = $derived(
+    [...rows].sort((a, b) => b.count - a.count || a.source_name.localeCompare(b.source_name)),
+  );
   const mark = wholeFightMark(true);
   const title = wholeFightTitle(true);
 </script>
@@ -26,7 +28,9 @@
   <p class="text-muted text-[14px]" data-testid="table-empty">{emptyText}</p>
 {:else}
   <div class="flex flex-col" data-testid="exchange-table">
-    <div class="text-muted label hidden grid-cols-[minmax(120px,1fr)_minmax(120px,1fr)_minmax(120px,1fr)_minmax(120px,1fr)_64px] gap-x-3 px-2 pb-1 md:grid">
+    <div
+      class="text-muted label hidden grid-cols-[minmax(120px,1fr)_minmax(120px,1fr)_minmax(120px,1fr)_minmax(120px,1fr)_64px] gap-x-3 px-2 pb-1 md:grid"
+    >
       <span>By</span>
       <span>With</span>
       <span>On</span>
@@ -43,7 +47,7 @@
           <span class="text-muted truncate text-[13px]">{splitUnitName(row.target_name).name}</span>
           <span class="text-muted truncate text-[13px]">{row.extra_spell_name}</span>
           <span
-            class="font-mono tabular text-right"
+            class="tabular text-right font-mono"
             {title}
             aria-label={wholeFightAriaLabel(true, String(row.count))}
           >
@@ -54,7 +58,7 @@
     </ul>
   </div>
   <p class="text-muted text-[12px]" data-testid="exchange-wholefight-note">
-    Count is marked {mark}: interrupts and dispels are the whole fight's totals, because
-    the summary keeps no timestamp for them and a brushed window cannot cut them down.
+    Count is marked {mark}: interrupts and dispels are the whole fight's totals, because the summary keeps no
+    timestamp for them and a brushed window cannot cut them down.
   </p>
 {/if}

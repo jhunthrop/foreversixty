@@ -28,7 +28,9 @@
         name: splitUnitName(row.name).name,
         color: classColorVar(row.class ?? classOf.get(row.guid)),
         casts: summary.casts.filter((cast) => cast.guid === row.guid).flatMap((cast) => cast.sequence),
-        auras: summary.auras.filter((track) => track.target_guid === row.guid).flatMap((track) => track.segments),
+        auras: summary.auras
+          .filter((track) => track.target_guid === row.guid)
+          .flatMap((track) => track.segments),
         deaths: summary.deaths.filter((death) => death.guid === row.guid).map((death) => death.at_ms),
       })),
   );
@@ -39,7 +41,9 @@
 {:else}
   <div class="flex flex-col gap-1" data-testid="timelines">
     <p class="text-muted label">
-      <span class="tabular font-mono">{formatDuration(current.startMs)} to {formatDuration(current.endMs)}</span>
+      <span class="tabular font-mono"
+        >{formatDuration(current.startMs)} to {formatDuration(current.endMs)}</span
+      >
       · casts as ticks, auras as bars
     </p>
     <ul class="flex flex-col">

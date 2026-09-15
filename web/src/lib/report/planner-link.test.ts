@@ -3,7 +3,11 @@ import { describe, expect, it } from 'vitest';
 import fixtureSummary from '../../fixtures/report/fights/3/summary.json';
 import type { Summary } from './types';
 import {
-  GEAR_SLOT_ORDER, classSlugOf, gearFromCombatant, plannerLinkFor, treeRanksFromTalents,
+  GEAR_SLOT_ORDER,
+  classSlugOf,
+  gearFromCombatant,
+  plannerLinkFor,
+  treeRanksFromTalents,
 } from './planner-link';
 
 const summary = fixtureSummary as Summary;

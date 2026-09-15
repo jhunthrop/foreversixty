@@ -2,7 +2,13 @@
 <!-- Progression per boss with pull counts and kill dates, the roster's bests, and the
      guild's reports. Progression is the page's reason to exist, so it leads. -->
 <script lang="ts">
-  import { characterHref, parseGuildPath, rulesetLabel, splitUnitName, type CharacterPath } from '../lib/characters';
+  import {
+    characterHref,
+    parseGuildPath,
+    rulesetLabel,
+    splitUnitName,
+    type CharacterPath,
+  } from '../lib/characters';
   import { classColorVar, formatAmount } from '../lib/report/format';
   import { fetchGuild, type GuildPage } from '../lib/rankings/api';
   import { RANKING_METRICS } from '../lib/rankings/url';
@@ -77,7 +83,8 @@
 
 {#if status === 'missing'}
   <p class="text-[14px]" data-testid="guild-missing">
-    That is not a guild address. They look like <code class="font-mono">/guild/eu/normal/the-last-watch</code>.
+    That is not a guild address. They look like <code class="font-mono">/guild/eu/normal/the-last-watch</code
+    >.
   </p>
 {:else if status === 'loading'}
   <p class="text-muted text-[14px]">Loading.</p>
@@ -88,9 +95,10 @@
     <header class="flex flex-col gap-1">
       <h1 class="section-title text-[18px]">{data.guild.name}</h1>
       <p class="text-muted text-[13px]">
-        {rulesetLabel(resolved.ruleset)} {resolved.region.toUpperCase()} ·
-        <span class="font-mono tabular">{killed}</span> bosses down ·
-        <span class="font-mono tabular">{pulls}</span> pulls
+        {rulesetLabel(resolved.ruleset)}
+        {resolved.region.toUpperCase()} ·
+        <span class="tabular font-mono">{killed}</span> bosses down ·
+        <span class="tabular font-mono">{pulls}</span> pulls
       </p>
     </header>
 
@@ -101,13 +109,18 @@
       {:else}
         <ul class="flex flex-col" data-testid="guild-progression">
           {#each data.progression as row (row.encounter)}
-            <li class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-3 border-b px-2 py-2 text-[14px]">
-              <a class="{rowLink} truncate" href={`/rankings/${row.encounter.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}>
+            <li
+              class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-3 border-b px-2 py-2 text-[14px]"
+            >
+              <a
+                class="{rowLink} truncate"
+                href={`/rankings/${row.encounter.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
+              >
                 {row.encounter}
               </a>
-              <span class="text-muted font-mono tabular text-right text-[13px]">{row.pull_count} pulls</span>
+              <span class="text-muted tabular text-right font-mono text-[13px]">{row.pull_count} pulls</span>
               <span
-                class="font-mono tabular w-[104px] text-right"
+                class="tabular w-[104px] text-right font-mono"
                 data-testid="guild-kill"
                 aria-label={killedAtAriaLabel(row)}
               >
@@ -124,7 +137,9 @@
         <h2 class="section-title text-[18px]">Roster bests</h2>
         <ul class="flex flex-col" data-testid="guild-roster">
           {#each data.roster_best as row (`${row.player.key}-${row.encounter_id}-${row.metric}`)}
-            <li class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b px-2 py-2 text-[14px] md:grid-cols-[minmax(120px,1fr)_minmax(0,1fr)_96px]">
+            <li
+              class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b px-2 py-2 text-[14px] md:grid-cols-[minmax(120px,1fr)_minmax(0,1fr)_96px]"
+            >
               <a
                 class="{rowLink} truncate font-semibold"
                 style={`color: ${classColorVar(row.player.class)}`}
@@ -132,9 +147,11 @@
               >
                 {splitUnitName(row.player.name).name}
               </a>
-              <span class="text-muted truncate hidden text-[13px] md:inline">{row.encounter} · {row.player.spec}</span>
+              <span class="text-muted hidden truncate text-[13px] md:inline"
+                >{row.encounter} · {row.player.spec}</span
+              >
               <span
-                class="font-mono tabular text-right"
+                class="tabular text-right font-mono"
                 aria-label={`${formatAmount(Math.round(row.value))} ${metricLabel(row.metric)}`}
               >
                 {formatAmount(Math.round(row.value))}
@@ -150,9 +167,13 @@
         <h2 class="section-title text-[18px]">Reports</h2>
         <ul class="flex flex-col" data-testid="guild-reports">
           {#each data.reports as report (report.id)}
-            <li class="border-line-soft flex min-h-11 flex-wrap items-center gap-3 border-b px-2 py-2 text-[14px]">
-              <a class={rowLink} href={`/reports/${report.id}`}>{report.title === '' ? report.zone : report.title}</a>
-              <span class="text-muted font-mono tabular text-[13px]">{report.created_at.slice(0, 10)}</span>
+            <li
+              class="border-line-soft flex min-h-11 flex-wrap items-center gap-3 border-b px-2 py-2 text-[14px]"
+            >
+              <a class={rowLink} href={`/reports/${report.id}`}
+                >{report.title === '' ? report.zone : report.title}</a
+              >
+              <span class="text-muted tabular font-mono text-[13px]">{report.created_at.slice(0, 10)}</span>
             </li>
           {/each}
         </ul>

@@ -1,7 +1,10 @@
 <!-- web/src/components/report/FilterBar.svelte -->
 <script lang="ts">
   import {
-    DEFAULT_FILTERS, abilityOptions, targetOptions, type ReportFilters,
+    DEFAULT_FILTERS,
+    abilityOptions,
+    targetOptions,
+    type ReportFilters,
   } from '../../lib/report/filters';
   import { splitUnitName } from '../../lib/characters';
   import type { Actor } from '../../lib/report/types';
@@ -65,7 +68,8 @@
       class={check}
       checked={filters.bossOnly}
       data-testid="filter-boss"
-      onchange={(event) => onChange({ ...filters, bossOnly: (event.currentTarget as HTMLInputElement).checked })}
+      onchange={(event) =>
+        onChange({ ...filters, bossOnly: (event.currentTarget as HTMLInputElement).checked })}
     />
     Boss damage only
   </label>
@@ -74,7 +78,8 @@
       type="checkbox"
       class={check}
       checked={filters.playersOnly}
-      onchange={(event) => onChange({ ...filters, playersOnly: (event.currentTarget as HTMLInputElement).checked })}
+      onchange={(event) =>
+        onChange({ ...filters, playersOnly: (event.currentTarget as HTMLInputElement).checked })}
     />
     Players only
   </label>
@@ -83,7 +88,8 @@
       type="checkbox"
       class={check}
       checked={filters.countOverkill}
-      onchange={(event) => onChange({ ...filters, countOverkill: (event.currentTarget as HTMLInputElement).checked })}
+      onchange={(event) =>
+        onChange({ ...filters, countOverkill: (event.currentTarget as HTMLInputElement).checked })}
     />
     Count overkill
   </label>
@@ -92,7 +98,8 @@
       type="checkbox"
       class={check}
       checked={filters.ignoreAfterDeath}
-      onchange={(event) => onChange({ ...filters, ignoreAfterDeath: (event.currentTarget as HTMLInputElement).checked })}
+      onchange={(event) =>
+        onChange({ ...filters, ignoreAfterDeath: (event.currentTarget as HTMLInputElement).checked })}
     />
     Ignore events after a death
   </label>

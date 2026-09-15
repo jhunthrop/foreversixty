@@ -12,18 +12,44 @@ describe('the report URL state', () => {
   it('offers the four views and the twelve tabs in the spec’s order', () => {
     expect(VIEWS.map((v) => v.id)).toEqual(['tables', 'timelines', 'events', 'queries']);
     expect(TABS.map((t) => t.id)).toEqual([
-      'summary', 'damage-done', 'damage-taken', 'healing', 'threat', 'buffs',
-      'debuffs', 'deaths', 'interrupts', 'dispels', 'resources', 'casts',
+      'summary',
+      'damage-done',
+      'damage-taken',
+      'healing',
+      'threat',
+      'buffs',
+      'debuffs',
+      'deaths',
+      'interrupts',
+      'dispels',
+      'resources',
+      'casts',
     ]);
     expect(TABS.map((t) => t.label)).toEqual([
-      'Summary', 'Damage Done', 'Damage Taken', 'Healing', 'Threat', 'Buffs',
-      'Debuffs', 'Deaths', 'Interrupts', 'Dispels', 'Resources', 'Casts',
+      'Summary',
+      'Damage Done',
+      'Damage Taken',
+      'Healing',
+      'Threat',
+      'Buffs',
+      'Debuffs',
+      'Deaths',
+      'Interrupts',
+      'Dispels',
+      'Resources',
+      'Casts',
     ]);
   });
 
   it('defaults to the report’s first fight, analyze, tables, summary, all friendlies', () => {
     expect(defaultState(1)).toEqual({
-      fight: 1, mode: 'analyze', view: 'tables', tab: 'summary', source: 'friendlies', start: null, end: null,
+      fight: 1,
+      mode: 'analyze',
+      view: 'tables',
+      tab: 'summary',
+      source: 'friendlies',
+      start: null,
+      end: null,
     });
   });
 
@@ -33,15 +59,26 @@ describe('the report URL state', () => {
       1,
     );
     expect(state).toEqual({
-      fight: 3, mode: 'compare', view: 'events', tab: 'deaths',
-      source: 'Player-4184-000000A1', start: 4000, end: 12000,
+      fight: 3,
+      mode: 'compare',
+      view: 'events',
+      tab: 'deaths',
+      source: 'Player-4184-000000A1',
+      start: 4000,
+      end: 12000,
     });
   });
 
   it('falls back to the default for anything it does not recognise', () => {
     const state = parseReportState('?fight=nope&mode=replay&view=sideways&tab=gear&start=-5&end=abc', 2);
     expect(state).toEqual({
-      fight: 2, mode: 'analyze', view: 'tables', tab: 'summary', source: 'friendlies', start: null, end: null,
+      fight: 2,
+      mode: 'analyze',
+      view: 'tables',
+      tab: 'summary',
+      source: 'friendlies',
+      start: null,
+      end: null,
     });
   });
 
@@ -60,7 +97,13 @@ describe('the report URL state', () => {
 
   it('serialises the fields in the contract’s order', () => {
     const state = withState(defaultState(1), {
-      fight: 3, mode: 'rankings', view: 'queries', tab: 'casts', source: 'enemies', start: 10, end: 20,
+      fight: 3,
+      mode: 'rankings',
+      view: 'queries',
+      tab: 'casts',
+      source: 'enemies',
+      start: 10,
+      end: 20,
     });
     expect(reportSearch(state, 1)).toBe(
       '?fight=3&mode=rankings&view=queries&tab=casts&source=enemies&start=10&end=20',

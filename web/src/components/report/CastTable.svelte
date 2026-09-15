@@ -13,8 +13,14 @@
 <script lang="ts">
   import { splitUnitName } from '../../lib/characters';
   import {
-    approximateAriaLabel, approximateMark, approximateTitle, classColorVar, formatDuration,
-    wholeFightAriaLabel, wholeFightMark, wholeFightTitle,
+    approximateAriaLabel,
+    approximateMark,
+    approximateTitle,
+    classColorVar,
+    formatDuration,
+    wholeFightAriaLabel,
+    wholeFightMark,
+    wholeFightTitle,
   } from '../../lib/report/format';
   import type { CastRow } from '../../lib/report/types';
 
@@ -53,7 +59,9 @@
   <p class="text-muted text-[14px]" data-testid="table-empty">No casts in this window.</p>
 {:else}
   <div class="flex flex-col" data-testid="cast-table">
-    <div class="text-muted label hidden grid-cols-[minmax(120px,1.2fr)_minmax(120px,1.2fr)_64px_64px_80px_minmax(0,3fr)] gap-x-3 px-2 pb-1 md:grid">
+    <div
+      class="text-muted label hidden grid-cols-[minmax(120px,1.2fr)_minmax(120px,1.2fr)_64px_64px_80px_minmax(0,3fr)] gap-x-3 px-2 pb-1 md:grid"
+    >
       <span>Caster</span>
       <span>Spell</span>
       <span class="text-right">Cast</span>
@@ -78,21 +86,21 @@
                these cells are divs, with no column header for a screen reader to associate
                them with at any width. -->
           <span
-            class="font-mono tabular text-right"
+            class="tabular text-right font-mono"
             {title}
             aria-label={approximateAriaLabel(approximate, `${row.succeeded} cast`)}
           >
             {mark}{row.succeeded}<span class="label font-body ml-1.5 md:hidden">cast</span>
           </span>
           <span
-            class="font-mono tabular text-muted text-right"
+            class="tabular text-muted text-right font-mono"
             {title}
             aria-label={approximateAriaLabel(approximate, `${row.failed} failed`)}
           >
             {mark}{row.failed}<span class="label font-body ml-1.5 md:hidden">failed</span>
           </span>
           <span
-            class="font-mono tabular text-muted text-right text-[13px]"
+            class="tabular text-muted text-right font-mono text-[13px]"
             title={castTimeTitle}
             aria-label={wholeFightAriaLabel(true, `${castTimeText(row.cast_time_ms)} cast time`)}
           >
@@ -115,13 +123,13 @@
   </div>
   {#if approximate}
     <p class="text-muted text-[12px]" data-testid="cast-approximate-note">
-      Cast and Failed are marked {mark} because the summary keeps only a whole-fight count
-      for each: this window's figure is that count scaled by the window's share of the
-      sequence, not measured directly. The sequence above is this window's own ticks.
+      Cast and Failed are marked {mark} because the summary keeps only a whole-fight count for each: this window's
+      figure is that count scaled by the window's share of the sequence, not measured directly. The sequence above
+      is this window's own ticks.
     </p>
   {/if}
   <p class="text-muted text-[12px]" data-testid="cast-time-note">
-    Cast time is marked {castTimeMark} because it is the whole fight's accumulated casting
-    time for that spell, even inside a shorter window.
+    Cast time is marked {castTimeMark} because it is the whole fight's accumulated casting time for that spell,
+    even inside a shorter window.
   </p>
 {/if}

@@ -50,7 +50,9 @@ test('a brushed window marks the split as approximate but never the exact amount
 
   // Amount is `actor.effective`: window.ts measures it directly from the one-second
   // series, so it is exact under any window and must never carry the `~` mark.
-  await expect(page.getByTestId('actor-Player-4184-000000A1').getByTestId('row-amount')).not.toContainText('~');
+  await expect(page.getByTestId('actor-Player-4184-000000A1').getByTestId('row-amount')).not.toContainText(
+    '~',
+  );
 
   // The per-ability split inside the expander IS scaled by the window's share, so it does.
   await page.getByTestId('actor-Player-4184-000000A1').getByRole('button').first().click();
@@ -69,7 +71,9 @@ test('boss damage only marks the split as approximate even at a whole-fight wind
   // window is still the whole fight -- and Amount still never carries the mark.
   await page.getByTestId('actor-Player-4184-000000A1').getByRole('button').first().click();
   await expect(page.getByTestId('row-detail')).toContainText('~');
-  await expect(page.getByTestId('actor-Player-4184-000000A1').getByTestId('row-amount')).not.toContainText('~');
+  await expect(page.getByTestId('actor-Player-4184-000000A1').getByTestId('row-amount')).not.toContainText(
+    '~',
+  );
 });
 
 test('rows carry a parse percentile from the API on a whole-fight encounter view', async ({ page }) => {
@@ -110,7 +114,9 @@ test('buffs and debuffs each show only their own kind, with a real uptime', asyn
   await expect(page.getByTestId('aura-table')).toContainText('Power Word: Fortitude');
   await expect(page.getByTestId('aura-table')).not.toContainText('Necrotic Wound');
   // 31 s of a 40 s fight.
-  await expect(page.getByTestId('aura-1243-Player-4184-000000A1').getByTestId('aura-uptime')).toHaveText('77.5%');
+  await expect(page.getByTestId('aura-1243-Player-4184-000000A1').getByTestId('aura-uptime')).toHaveText(
+    '77.5%',
+  );
 
   await page.goto(`${FIGHT}&tab=debuffs`);
   await expect(page.getByTestId('aura-table')).toContainText('Necrotic Wound');

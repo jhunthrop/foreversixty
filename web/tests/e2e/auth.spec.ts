@@ -5,7 +5,15 @@ const ME = {
   ok: true,
   data: {
     user: { id: 7, battletag: 'Fixture#1234', email: null, role: 'user', anonymize: false },
-    characters: [{ key: 'us/hardcore/elyra-duskvale', region: 'us', ruleset: 'hardcore', name: 'Elyra Duskvale', class: 'Priest' }],
+    characters: [
+      {
+        key: 'us/hardcore/elyra-duskvale',
+        region: 'us',
+        ruleset: 'hardcore',
+        name: 'Elyra Duskvale',
+        class: 'Priest',
+      },
+    ],
     guilds: [],
   },
   error: null,
@@ -19,16 +27,23 @@ const fulfil = (body: unknown, status = 200) => ({
 });
 
 test('a signed-out visitor is offered both sign-in routes', async ({ page }) => {
-  await page.route('**/v1/me', (route) => route.fulfill(fulfil({ ok: false, data: null, error: null, request_id: 'r' }, 401)));
+  await page.route('**/v1/me', (route) =>
+    route.fulfill(fulfil({ ok: false, data: null, error: null, request_id: 'r' }, 401)),
+  );
   await page.goto('/login');
 
   await expect(page.getByTestId('session-nav').getByRole('link', { name: 'Sign in' })).toBeVisible();
-  await expect(page.getByTestId('battlenet')).toHaveAttribute('href', /\/v1\/auth\/battlenet\/start\?next=%2Flogs$/);
+  await expect(page.getByTestId('battlenet')).toHaveAttribute(
+    'href',
+    /\/v1\/auth\/battlenet\/start\?next=%2Flogs$/,
+  );
   await expect(page.getByTestId('email-form')).toBeVisible();
 });
 
 test('asking for an email link shows what happens next', async ({ page }) => {
-  await page.route('**/v1/me', (route) => route.fulfill(fulfil({ ok: false, data: null, error: null, request_id: 'r' }, 401)));
+  await page.route('**/v1/me', (route) =>
+    route.fulfill(fulfil({ ok: false, data: null, error: null, request_id: 'r' }, 401)),
+  );
   let body: unknown;
   await page.route('**/v1/auth/email', (route) => {
     body = route.request().postDataJSON();
@@ -47,11 +62,30 @@ test('the account page lists devices, pairs one, and shows the character', async
   await page.route('**/v1/me', (route) => route.fulfill(fulfil(ME)));
   await page.route('**/v1/devices', (route) =>
     route.request().method() === 'POST'
-      ? route.fulfill(fulfil({ ok: true, data: { code: '4821-9930', expires_in: 600 }, error: null, request_id: 'r' }))
-      : route.fulfill(fulfil({ ok: true, data: [{ id: 'dev1', name: 'Raid PC', platform: 'windows', created_at: '2026-11-05T10:00:00Z', last_seen_at: null }], error: null, request_id: 'r' })),
+      ? route.fulfill(
+          fulfil({ ok: true, data: { code: '4821-9930', expires_in: 600 }, error: null, request_id: 'r' }),
+        )
+      : route.fulfill(
+          fulfil({
+            ok: true,
+            data: [
+              {
+                id: 'dev1',
+                name: 'Raid PC',
+                platform: 'windows',
+                created_at: '2026-11-05T10:00:00Z',
+                last_seen_at: null,
+              },
+            ],
+            error: null,
+            request_id: 'r',
+          }),
+        ),
   );
   await page.route('**/v1/devices/pair', (route) =>
-    route.fulfill(fulfil({ ok: true, data: { code: '4821-9930', expires_in: 600 }, error: null, request_id: 'r' })),
+    route.fulfill(
+      fulfil({ ok: true, data: { code: '4821-9930', expires_in: 600 }, error: null, request_id: 'r' }),
+    ),
   );
 
   await page.goto('/account');
@@ -70,7 +104,9 @@ test('the account page lists devices, pairs one, and shows the character', async
 test('every control on the account page clears 44px on phone', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'mobile', 'phone hit targets');
   await page.route('**/v1/me', (route) => route.fulfill(fulfil(ME)));
-  await page.route('**/v1/devices', (route) => route.fulfill(fulfil({ ok: true, data: [], error: null, request_id: 'r' })));
+  await page.route('**/v1/devices', (route) =>
+    route.fulfill(fulfil({ ok: true, data: [], error: null, request_id: 'r' })),
+  );
   await page.goto('/account');
 
   for (const control of await page.getByRole('button').all()) {

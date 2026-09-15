@@ -1,8 +1,13 @@
 // web/src/lib/report/format.test.ts
 import { describe, expect, it } from 'vitest';
 import {
-  classColorVar, formatAmount, formatClock, formatDuration, formatPercent,
-  formatPerSecond, percentileToken,
+  classColorVar,
+  formatAmount,
+  formatClock,
+  formatDuration,
+  formatPercent,
+  formatPerSecond,
+  percentileToken,
 } from './format';
 
 describe('report formatting', () => {

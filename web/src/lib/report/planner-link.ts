@@ -24,8 +24,24 @@ import type { CombatantRow, GearItem } from './types';
  * and brings one back, this becomes a table keyed by report.json's health.layout.
  */
 export const GEAR_SLOT_ORDER: (Slot | null)[] = [
-  'head', 'neck', 'shoulder', null, 'chest', 'waist', 'legs', 'feet', 'wrist', 'hands',
-  'finger1', 'finger2', 'trinket1', 'trinket2', 'back', 'main_hand', 'off_hand', null,
+  'head',
+  'neck',
+  'shoulder',
+  null,
+  'chest',
+  'waist',
+  'legs',
+  'feet',
+  'wrist',
+  'hands',
+  'finger1',
+  'finger2',
+  'trinket1',
+  'trinket2',
+  'back',
+  'main_hand',
+  'off_hand',
+  null,
 ];
 
 export function gearFromCombatant(gear: GearItem[]): Gear {
@@ -52,7 +68,15 @@ export function treeRanksFromTalents(talents: number[], treeSizes: number[]): nu
 
 /** The nine classes the planner has data for. Anything else gets no link. */
 const CLASS_SLUGS = new Set([
-  'warrior', 'paladin', 'hunter', 'rogue', 'priest', 'shaman', 'mage', 'warlock', 'druid',
+  'warrior',
+  'paladin',
+  'hunter',
+  'rogue',
+  'priest',
+  'shaman',
+  'mage',
+  'warlock',
+  'druid',
 ]);
 
 export function classSlugOf(className: string | undefined): string | null {

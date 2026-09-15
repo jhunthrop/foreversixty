@@ -190,7 +190,10 @@ function search(query: Record<string, string | number | undefined>): string {
 async function get<T>(path: string, apiBase: string): Promise<T> {
   let result: EnvelopeResult<T>;
   try {
-    result = await requestEnvelope<T>(path, apiBase, { credentials: 'omit', failureMessage: RANKINGS_FAILED });
+    result = await requestEnvelope<T>(path, apiBase, {
+      credentials: 'omit',
+      failureMessage: RANKINGS_FAILED,
+    });
   } catch (error) {
     if (error instanceof AccountError) throw new RankingsError(error.message, error.status);
     throw new RankingsError(RANKINGS_FAILED, 0);

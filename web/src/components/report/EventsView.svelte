@@ -53,8 +53,8 @@
   </div>
 
   <p class="text-muted text-[12px]">
-    Everything the fight summary timestamps. The complete event stream, every field of every line, is
-    in Queries.
+    Everything the fight summary timestamps. The complete event stream, every field of every line, is in
+    Queries.
   </p>
 
   {#if shown.length === 0}
@@ -62,10 +62,13 @@
   {:else}
     <ul class="flex flex-col" data-testid="event-list">
       {#each shown as event, index (`${event.atMs}-${index}`)}
-        <li class="border-line-soft grid min-h-11 grid-cols-[68px_minmax(0,1fr)_auto] items-center gap-3 border-b px-2 py-1 text-[14px]">
-          <span class="text-muted font-mono tabular text-[12px]">{formatDuration(event.atMs)}</span>
-          <span class="truncate" style={`color: ${classColorVar(classOf.get(event.guid))}`}>{event.text}</span>
-          <span class="font-mono tabular text-right text-[13px]">
+        <li
+          class="border-line-soft grid min-h-11 grid-cols-[68px_minmax(0,1fr)_auto] items-center gap-3 border-b px-2 py-1 text-[14px]"
+        >
+          <span class="text-muted tabular font-mono text-[12px]">{formatDuration(event.atMs)}</span>
+          <span class="truncate" style={`color: ${classColorVar(classOf.get(event.guid))}`}>{event.text}</span
+          >
+          <span class="tabular text-right font-mono text-[13px]">
             {event.amount === undefined ? '' : formatAmount(event.amount)}
           </span>
         </li>

@@ -6,7 +6,12 @@ const API = 'https://api.foreversixty.test';
 type GlobalFetch = (...args: Parameters<typeof fetch>) => Promise<Response>;
 
 const query = {
-  encounterId: 9001, difficulty: 8, spec: 'Protection', phase: 'raids-1', metric: 'dps', value: 110,
+  encounterId: 9001,
+  difficulty: 8,
+  spec: 'Protection',
+  phase: 'raids-1',
+  metric: 'dps',
+  value: 110,
 };
 
 afterEach(() => vi.unstubAllGlobals());
@@ -17,11 +22,12 @@ describe('parse percentiles', () => {
   });
 
   it('asks the API once per distinct query and caches the answer', async () => {
-    const upstream = vi.fn<GlobalFetch>(async () =>
-      new Response(JSON.stringify({ ok: true, data: { percentile: 83.4 }, error: null, request_id: 'r' }), {
-        status: 200,
-        headers: { 'content-type': 'application/json' },
-      }),
+    const upstream = vi.fn<GlobalFetch>(
+      async () =>
+        new Response(JSON.stringify({ ok: true, data: { percentile: 83.4 }, error: null, request_id: 'r' }), {
+          status: 200,
+          headers: { 'content-type': 'application/json' },
+        }),
     );
     vi.stubGlobal('fetch', upstream);
     const loader = createPercentileLoader(API);
@@ -44,10 +50,13 @@ describe('parse percentiles', () => {
         peak = Math.max(peak, running);
         await new Promise((resolve) => setTimeout(resolve, 1));
         running -= 1;
-        return new Response(JSON.stringify({ ok: true, data: { percentile: 1 }, error: null, request_id: 'r' }), {
-          status: 200,
-          headers: { 'content-type': 'application/json' },
-        });
+        return new Response(
+          JSON.stringify({ ok: true, data: { percentile: 1 }, error: null, request_id: 'r' }),
+          {
+            status: 200,
+            headers: { 'content-type': 'application/json' },
+          },
+        );
       }),
     );
     const loader = createPercentileLoader(API);
@@ -56,7 +65,12 @@ describe('parse percentiles', () => {
   });
 
   it('leaves a row without a percentile rather than failing the table', async () => {
-    vi.stubGlobal('fetch', vi.fn<GlobalFetch>(async () => { throw new TypeError('offline'); }));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => {
+        throw new TypeError('offline');
+      }),
+    );
     await expect(createPercentileLoader(API).load([query])).resolves.toEqual(new Map());
   });
 });

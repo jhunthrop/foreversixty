@@ -4,8 +4,18 @@ import fixtureMeta from '../../fixtures/report/meta.json';
 import fixtureReport from '../../fixtures/report/report.json';
 import fixtureSummary from '../../fixtures/report/fights/3/summary.json';
 import {
-  POLL_INTERVAL_MS, REPORT_FORBIDDEN, REPORT_LOAD_FAILED, REPORT_NOT_FOUND, ReportLoadError,
-  createPoller, eventsUrl, fetchAccessUrl, fetchLive, fetchReportFile, fetchReportMeta, fetchSummary,
+  POLL_INTERVAL_MS,
+  REPORT_FORBIDDEN,
+  REPORT_LOAD_FAILED,
+  REPORT_NOT_FOUND,
+  ReportLoadError,
+  createPoller,
+  eventsUrl,
+  fetchAccessUrl,
+  fetchLive,
+  fetchReportFile,
+  fetchReportMeta,
+  fetchSummary,
 } from './load';
 
 const API = 'https://api.foreversixty.test';
@@ -44,15 +54,26 @@ describe('fetchReportMeta', () => {
   });
 
   it('reports a missing report and a refused one differently', async () => {
-    vi.stubGlobal('fetch', vi.fn<GlobalFetch>(async () => envelope(null, 404)));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => envelope(null, 404)),
+    );
     await expect(fetchReportMeta('nope', API)).rejects.toThrow(REPORT_NOT_FOUND);
 
-    vi.stubGlobal('fetch', vi.fn<GlobalFetch>(async () => envelope(null, 403)));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => envelope(null, 403)),
+    );
     await expect(fetchReportMeta('secret', API)).rejects.toThrow(REPORT_FORBIDDEN);
   });
 
   it('turns a network failure into a ReportLoadError rather than a TypeError', async () => {
-    vi.stubGlobal('fetch', vi.fn<GlobalFetch>(async () => { throw new TypeError('offline'); }));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => {
+        throw new TypeError('offline');
+      }),
+    );
     await expect(fetchReportMeta('fixture2abcd', API)).rejects.toBeInstanceOf(ReportLoadError);
     await expect(fetchReportMeta('fixture2abcd', API)).rejects.toThrow(REPORT_LOAD_FAILED);
   });
@@ -108,7 +129,10 @@ describe('the report files', () => {
   });
 
   it('treats a missing live.json as "the fight is not open" rather than an error', async () => {
-    vi.stubGlobal('fetch', vi.fn<GlobalFetch>(async () => new Response('', { status: 404 })));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => new Response('', { status: 404 })),
+    );
     await expect(fetchLive(DATA, 3)).resolves.toBeNull();
   });
 

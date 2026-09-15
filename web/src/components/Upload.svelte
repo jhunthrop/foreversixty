@@ -5,7 +5,11 @@
 <script lang="ts">
   import { formatAmount } from '../lib/report/format';
   import {
-    MAX_UPLOAD_BYTES, UPLOAD_TOO_LARGE, completeUpload, createUpload, uploadParts,
+    MAX_UPLOAD_BYTES,
+    UPLOAD_TOO_LARGE,
+    completeUpload,
+    createUpload,
+    uploadParts,
   } from '../lib/upload/multipart';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
 
@@ -64,8 +68,8 @@
 <section class="flex flex-col gap-4" data-testid="upload">
   <h2 class="section-title text-[18px]">Upload a log</h2>
   <p class="text-muted text-[14px]">
-    A whole <code class="font-mono">WoWCombatLog.txt</code>. The first fight is readable within ten
-    seconds of the upload finishing, and the rest appear as they are parsed.
+    A whole <code class="font-mono">WoWCombatLog.txt</code>. The first fight is readable within ten seconds of
+    the upload finishing, and the rest appear as they are parsed.
   </p>
 
   <div
@@ -86,7 +90,7 @@
       data-testid="upload-file"
     />
     {#if file !== null}
-      <p class="text-muted font-mono tabular text-[13px]" data-testid="upload-size">
+      <p class="text-muted tabular font-mono text-[13px]" data-testid="upload-size">
         {file.name} · {formatAmount(file.size)} bytes
       </p>
     {/if}
@@ -135,7 +139,7 @@
       >
         <div class="bg-gold h-full" style={`width: ${percent}%`}></div>
       </div>
-      <p class="text-muted font-mono tabular text-[13px]">
+      <p class="text-muted tabular font-mono text-[13px]">
         {phase === 'finishing' ? 'Finishing' : `${percent}%`}
       </p>
     </div>

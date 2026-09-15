@@ -147,7 +147,10 @@ export async function requestEnvelope<T>(
   if (!response.ok) {
     // The API's own message is shown verbatim when it has one: it is the only thing that
     // can say "too many sign-in links" or name the field that was wrong.
-    throw new AccountError(envelope?.error?.message ?? init.failureMessage ?? ACCOUNT_FAILED, response.status);
+    throw new AccountError(
+      envelope?.error?.message ?? init.failureMessage ?? ACCOUNT_FAILED,
+      response.status,
+    );
   }
   return { status: response.status, data: envelope?.data ?? null, message: envelope?.error?.message ?? null };
 }
@@ -230,10 +233,7 @@ const EMPTY_REPORT_PAGE: MyReportPage = { rows: [], total: 0, page: 1, per_page:
  * visitor gets an empty page rather than an error, because /logs renders for them too --
  * it just tells them to sign in.
  */
-export async function listMyReports(
-  page: number = 1,
-  apiBase: string = API_BASE_URL,
-): Promise<MyReportPage> {
+export async function listMyReports(page: number = 1, apiBase: string = API_BASE_URL): Promise<MyReportPage> {
   try {
     return (await call<MyReportPage>(`/v1/reports?mine=1&page=${page}`, apiBase)) ?? EMPTY_REPORT_PAGE;
   } catch (error) {

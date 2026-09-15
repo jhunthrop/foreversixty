@@ -46,11 +46,15 @@
   {:else}
     <ul class="flex flex-col">
       {#each rows as report (report.id)}
-        <li class="border-line-soft flex min-h-11 flex-wrap items-center gap-x-3 gap-y-1 border-b py-2 text-[14px]">
-          <a href={`/reports/${report.id}`} class="font-semibold">{report.title === '' ? report.zone : report.title}</a>
-          <span class="text-muted font-mono tabular text-[13px]">{day(report.created_at)}</span>
+        <li
+          class="border-line-soft flex min-h-11 flex-wrap items-center gap-x-3 gap-y-1 border-b py-2 text-[14px]"
+        >
+          <a href={`/reports/${report.id}`} class="font-semibold"
+            >{report.title === '' ? report.zone : report.title}</a
+          >
+          <span class="text-muted tabular font-mono text-[13px]">{day(report.created_at)}</span>
           <span class="text-muted text-[13px]">
-            <span class="font-mono tabular">{report.fight_count} fights · {report.kill_count} kills</span> ·
+            <span class="tabular font-mono">{report.fight_count} fights · {report.kill_count} kills</span> ·
             {report.visibility}
           </span>
           {#if report.status !== 'complete'}

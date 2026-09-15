@@ -11,7 +11,9 @@ describe('summaryEvents', () => {
 
   it('merges casts, auras, deaths and killing hits into one ordered list', () => {
     expect(events.length).toBeGreaterThan(6);
-    expect(events.map((event) => event.atMs)).toEqual([...events.map((event) => event.atMs)].sort((a, b) => a - b));
+    expect(events.map((event) => event.atMs)).toEqual(
+      [...events.map((event) => event.atMs)].sort((a, b) => a - b),
+    );
     expect(new Set(events.map((event) => event.kind))).toEqual(
       new Set(['cast', 'aura-applied', 'aura-removed', 'damage', 'death']),
     );
@@ -19,7 +21,11 @@ describe('summaryEvents', () => {
 
   it('names the five kinds it can produce', () => {
     expect(EVENT_KINDS.map((kind) => kind.id)).toEqual([
-      'cast', 'aura-applied', 'aura-removed', 'damage', 'death',
+      'cast',
+      'aura-applied',
+      'aura-removed',
+      'damage',
+      'death',
     ]);
   });
 
@@ -47,7 +53,9 @@ describe('filterEvents', () => {
   });
 
   it('matches the search against the text, case-insensitively', () => {
-    expect(filterEvents(events, new Set(EVENT_KINDS.map((kind) => kind.id)), 'frostbolt').length).toBeGreaterThan(0);
+    expect(
+      filterEvents(events, new Set(EVENT_KINDS.map((kind) => kind.id)), 'frostbolt').length,
+    ).toBeGreaterThan(0);
     expect(filterEvents(events, new Set(EVENT_KINDS.map((kind) => kind.id)), 'nothing here')).toEqual([]);
   });
 });

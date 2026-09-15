@@ -8,14 +8,26 @@
      Each mode renders one branch; the shared parts are the `me` load and the error line. -->
 <script lang="ts">
   import {
-    ACCOUNT_FAILED, EMAIL_SENT, battlenetStartUrl, fetchMe, listDevices, pairDevice,
-    revokeDevice, requestEmailLink, setAnonymize, signOut, type Device, type Me, type PairingCode,
+    ACCOUNT_FAILED,
+    EMAIL_SENT,
+    battlenetStartUrl,
+    fetchMe,
+    listDevices,
+    pairDevice,
+    revokeDevice,
+    requestEmailLink,
+    setAnonymize,
+    signOut,
+    type Device,
+    type Me,
+    type PairingCode,
   } from '../lib/account/api';
   import { characterHref, rulesetLabel } from '../lib/characters';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
   import MyReports from './MyReports.svelte';
 
-  let { mode, next = '/logs' }: { mode: 'nav' | 'login' | 'account' | 'pairing' | 'reports'; next?: string } = $props();
+  let { mode, next = '/logs' }: { mode: 'nav' | 'login' | 'account' | 'pairing' | 'reports'; next?: string } =
+    $props();
 
   let me = $state<Me | null>(null);
   let status = $state<'loading' | 'ready' | 'failed'>('loading');
@@ -139,7 +151,11 @@
             required
             bind:value={email}
           />
-          <button class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-4" type="submit" disabled={busy}>
+          <button
+            class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-4"
+            type="submit"
+            disabled={busy}
+          >
             Send link
           </button>
         </div>
@@ -152,21 +168,25 @@
   {#if status === 'loading'}
     <p class="text-muted text-[14px]">Loading your reports.</p>
   {:else}
-    <MyReports signedIn={signedIn} />
+    <MyReports {signedIn} />
   {/if}
 {:else if mode === 'pairing'}
   <div class="flex flex-col gap-3" data-testid="pairing">
     {#if !signedIn}
       <p class="text-[14px]"><a href="/login">Sign in</a> to pair the companion.</p>
     {:else if pairing === null}
-      <button class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-4" onclick={onPair} disabled={busy}>
+      <button
+        class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-4"
+        onclick={onPair}
+        disabled={busy}
+      >
         Show pairing code
       </button>
     {:else}
-      <p class="font-mono tabular text-strong text-[24px]" data-testid="pairing-code">{pairing.code}</p>
+      <p class="tabular text-strong font-mono text-[24px]" data-testid="pairing-code">{pairing.code}</p>
       <p class="text-muted text-[13px]">
-        Type this into the companion within {Math.round(pairing.expires_in / 60)} minutes. It pairs one
-        device and cannot be reused.
+        Type this into the companion within {Math.round(pairing.expires_in / 60)} minutes. It pairs one device and
+        cannot be reused.
       </p>
     {/if}
     {#if error !== ''}<p class="text-[14px]" role="alert" data-testid="account-error">{error}</p>{/if}
@@ -181,7 +201,11 @@
       <section class="flex flex-col gap-3">
         <h2 class="section-title text-[18px]">Account</h2>
         <p class="text-[14px]">{displayName}</p>
-        <button class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-4" onclick={onSignOut} disabled={busy}>
+        <button
+          class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-4"
+          onclick={onSignOut}
+          disabled={busy}
+        >
           Sign out
         </button>
       </section>
@@ -210,11 +234,15 @@
           </ul>
         {/if}
         {#if pairing === null}
-          <button class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4" onclick={onPair} disabled={busy}>
+          <button
+            class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4"
+            onclick={onPair}
+            disabled={busy}
+          >
             Pair a device
           </button>
         {:else}
-          <p class="font-mono tabular text-strong text-[24px]" data-testid="pairing-code">{pairing.code}</p>
+          <p class="tabular text-strong font-mono text-[24px]" data-testid="pairing-code">{pairing.code}</p>
           <p class="text-muted text-[13px]">
             Type this into the companion within {Math.round(pairing.expires_in / 60)} minutes.
           </p>
@@ -224,14 +252,19 @@
       <section class="flex flex-col gap-3">
         <h2 class="section-title text-[18px]">Characters</h2>
         {#if me!.characters.length === 0}
-          <p class="text-muted text-[14px]">No characters linked yet. Sign in with Battle.net to link them.</p>
+          <p class="text-muted text-[14px]">
+            No characters linked yet. Sign in with Battle.net to link them.
+          </p>
         {:else}
           <ul class="flex flex-col">
             {#each me!.characters as character (character.key)}
               <li class="border-line-soft flex min-h-11 items-center gap-3 border-b py-2 text-[14px]">
-                <a href={characterHref(character.region, character.ruleset, character.name)}>{character.name}</a>
+                <a href={characterHref(character.region, character.ruleset, character.name)}
+                  >{character.name}</a
+                >
                 <span class="text-muted">
-                  {rulesetLabel(character.ruleset)} {character.region.toUpperCase()}
+                  {rulesetLabel(character.ruleset)}
+                  {character.region.toUpperCase()}
                 </span>
               </li>
             {/each}
@@ -242,7 +275,13 @@
       <section class="flex flex-col gap-3">
         <h2 class="section-title text-[18px]">Name</h2>
         <label class="flex min-h-11 items-center gap-3 text-[14px]">
-          <input type="checkbox" checked={me!.user.anonymize} onchange={onAnonymize} disabled={busy} data-testid="anonymize" />
+          <input
+            type="checkbox"
+            checked={me!.user.anonymize}
+            onchange={onAnonymize}
+            disabled={busy}
+            data-testid="anonymize"
+          />
           Show a pseudonym instead of my character names
         </label>
         <p class="text-muted text-[13px]">
@@ -251,7 +290,7 @@
         </p>
       </section>
 
-      <MyReports signedIn={signedIn} />
+      <MyReports {signedIn} />
     {/if}
     {#if error !== ''}<p class="text-[14px]" role="alert" data-testid="account-error">{error}</p>{/if}
   </div>

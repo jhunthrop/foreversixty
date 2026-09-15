@@ -131,7 +131,9 @@ function wait(ms: number): Promise<void> {
 function boundedSlice(file: Blob, start: number, end: number): Blob {
   const raw = file.slice(start, end);
   const expected = end - start;
-  return raw.size === expected ? raw : Object.defineProperty(raw, 'size', { value: expected, configurable: true });
+  return raw.size === expected
+    ? raw
+    : Object.defineProperty(raw, 'size', { value: expected, configurable: true });
 }
 
 /**

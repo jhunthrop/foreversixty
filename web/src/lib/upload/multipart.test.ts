@@ -2,8 +2,14 @@
 // web/src/lib/upload/multipart.test.ts
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
-  MAX_UPLOAD_BYTES, PART_SIZE_BYTES, UPLOAD_TOO_LARGE, completeUpload, createUpload,
-  putPart, uploadParts, type CreatedUpload,
+  MAX_UPLOAD_BYTES,
+  PART_SIZE_BYTES,
+  UPLOAD_TOO_LARGE,
+  completeUpload,
+  createUpload,
+  putPart,
+  uploadParts,
+  type CreatedUpload,
 } from './multipart';
 
 const API = 'https://api.foreversixty.test';

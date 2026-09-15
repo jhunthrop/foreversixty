@@ -20,8 +20,14 @@
 <script lang="ts">
   import { characterHref, splitUnitName } from '../../lib/characters';
   import {
-    approximateAriaLabel, approximateMark, approximateTitle, classColorVar, formatAmount,
-    formatPercent, formatPerSecond, percentileToken,
+    approximateAriaLabel,
+    approximateMark,
+    approximateTitle,
+    classColorVar,
+    formatAmount,
+    formatPercent,
+    formatPerSecond,
+    percentileToken,
   } from '../../lib/report/format';
   import type { Actor } from '../../lib/report/types';
   import AbilityBar from './AbilityBar.svelte';
@@ -66,10 +72,10 @@
     aria-expanded={open}
     onclick={() => (open = !open)}
   >
-    <span class="text-muted font-mono tabular text-[12px]">{rank}</span>
+    <span class="text-muted tabular font-mono text-[12px]">{rank}</span>
 
     <span
-      class="font-mono tabular text-[12px]"
+      class="tabular font-mono text-[12px]"
       style={percentile === null ? undefined : `color: ${percentileToken(percentile)}`}
       data-testid="row-percentile"
     >
@@ -78,7 +84,10 @@
 
     <span class="truncate font-semibold" style={`color: ${color}`} data-testid="row-name">
       {#if characterLink}
-        <a href={characterHref(characterLink.region, characterLink.ruleset, display.name)} style={`color: ${color}`}>
+        <a
+          href={characterHref(characterLink.region, characterLink.ruleset, display.name)}
+          style={`color: ${color}`}
+        >
           {display.name}
         </a>
       {:else}
@@ -90,7 +99,7 @@
       <AbilityBar abilities={actor.abilities} total={actor.effective} {peak} {color} />
     </span>
 
-    <span class="font-mono tabular text-right" data-testid="row-amount">
+    <span class="tabular text-right font-mono" data-testid="row-amount">
       {formatAmount(actor.effective)}
     </span>
 
@@ -99,19 +108,22 @@
          grid places its row-3 items in source order, and it is display:none above `md`, so
          where it sits costs the desktop grid nothing. -->
     <span class="text-muted label col-span-2 row-start-3 md:hidden" data-testid="phone-labels">
-      <span class="font-mono tabular">{activeText}</span> active
+      <span class="tabular font-mono">{activeText}</span> active
     </span>
     <!-- One element, both layouts: a column under ActorTable's "Per sec" heading above
          `md`, and the same figure saying what it is once that heading is gone. -->
     <span
-      class="text-muted font-mono tabular col-span-2 row-start-3 text-right text-[13px] md:col-span-1 md:row-auto"
+      class="text-muted tabular col-span-2 row-start-3 text-right font-mono text-[13px] md:col-span-1 md:row-auto"
       data-testid="row-per-second"
     >
       {formatPerSecond(actor.effective, durationMs)}<span class="label font-body ml-1.5 md:hidden"
         >per sec</span
       >
     </span>
-    <span class="text-muted font-mono tabular hidden text-right text-[13px] md:inline" data-testid="row-active">
+    <span
+      class="text-muted tabular hidden text-right font-mono text-[13px] md:inline"
+      data-testid="row-active"
+    >
       {activeText}
     </span>
   </button>
@@ -125,14 +137,16 @@
             <tr class="border-line-soft border-b">
               <td class="py-1 pr-3">{ability.name}</td>
               <td
-                class="font-mono tabular py-1 pr-3 text-right"
+                class="tabular py-1 pr-3 text-right font-mono"
                 {title}
                 aria-label={approximateAriaLabel(approximate, formatAmount(ability.total))}
               >
                 {mark}{formatAmount(ability.total)}
               </td>
-              <td class="text-muted font-mono tabular py-1 pr-3 text-right">{ability.hits + ability.ticks} hits</td>
-              <td class="text-muted font-mono tabular py-1 text-right">{ability.crits} crits</td>
+              <td class="text-muted tabular py-1 pr-3 text-right font-mono"
+                >{ability.hits + ability.ticks} hits</td
+              >
+              <td class="text-muted tabular py-1 text-right font-mono">{ability.crits} crits</td>
             </tr>
           {/each}
         </tbody>
@@ -144,7 +158,7 @@
             <tr class="border-line-soft border-b">
               <td class="py-1 pr-3">{splitUnitName(target.name).name}</td>
               <td
-                class="font-mono tabular py-1 text-right"
+                class="tabular py-1 text-right font-mono"
                 {title}
                 aria-label={approximateAriaLabel(approximate, formatAmount(target.total))}
               >

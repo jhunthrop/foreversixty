@@ -68,7 +68,11 @@ export function abilityOptions(actors: Actor[]): FilterOption[] {
     for (const ability of actor.abilities) {
       const found = totals.get(ability.spell_id);
       if (found === undefined) {
-        totals.set(ability.spell_id, { id: String(ability.spell_id), name: ability.name, total: ability.total });
+        totals.set(ability.spell_id, {
+          id: String(ability.spell_id),
+          name: ability.name,
+          total: ability.total,
+        });
       } else {
         found.total += ability.total;
       }
@@ -82,7 +86,8 @@ export function targetOptions(actors: Actor[]): FilterOption[] {
   for (const actor of actors) {
     for (const target of actor.targets) {
       const found = totals.get(target.guid);
-      if (found === undefined) totals.set(target.guid, { id: target.guid, name: target.name, total: target.total });
+      if (found === undefined)
+        totals.set(target.guid, { id: target.guid, name: target.name, total: target.total });
       else found.total += target.total;
     }
   }
@@ -107,11 +112,7 @@ function rebuild(
   return { ...actor, abilities, targets, total: gross, effective };
 }
 
-export function applyActorFilters(
-  actors: Actor[],
-  filters: ReportFilters,
-  context: FilterContext,
-): Actor[] {
+export function applyActorFilters(actors: Actor[], filters: ReportFilters, context: FilterContext): Actor[] {
   const untouched =
     filters.target === '' &&
     filters.ability === null &&
@@ -132,7 +133,8 @@ export function applyActorFilters(
       if (filters.bossOnly) targets = targets.filter((target) => context.bosses.has(target.guid));
 
       let abilities = actor.abilities;
-      if (filters.ability !== null) abilities = abilities.filter((ability) => ability.spell_id === filters.ability);
+      if (filters.ability !== null)
+        abilities = abilities.filter((ability) => ability.spell_id === filters.ability);
 
       // A target filter cannot be resolved per ability from the summary, so the row is
       // scaled to the surviving targets' share -- the same trade the window makes, and the
@@ -141,7 +143,10 @@ export function applyActorFilters(
         actor.targets.length === 0 || targets.length === actor.targets.length
           ? 1
           : targets.reduce((sum, target) => sum + target.total, 0) /
-            Math.max(actor.targets.reduce((sum, target) => sum + target.total, 0), 1);
+            Math.max(
+              actor.targets.reduce((sum, target) => sum + target.total, 0),
+              1,
+            );
 
       const scaled = abilities.map((ability) => ({
         ...ability,

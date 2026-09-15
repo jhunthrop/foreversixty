@@ -188,10 +188,10 @@
               >
                 {splitUnitName(line.name).name}
               </td>
-              <td class="font-mono tabular px-2 py-2 text-right">{formatAmount(line.a)}</td>
-              <td class="text-muted font-mono tabular px-2 py-2 text-right">{formatAmount(line.b)}</td>
+              <td class="tabular px-2 py-2 text-right font-mono">{formatAmount(line.a)}</td>
+              <td class="text-muted tabular px-2 py-2 text-right font-mono">{formatAmount(line.b)}</td>
               <td
-                class="font-mono tabular w-[96px] px-2 py-2 text-right"
+                class="tabular w-[96px] px-2 py-2 text-right font-mono"
                 class:text-gold={line.a >= line.b}
                 data-testid="compare-delta"
               >

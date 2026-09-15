@@ -29,7 +29,12 @@ const GUILD = {
     ],
     roster_best: [
       {
-        player: { key: 'us/hardcore/elyra-duskvale', name: 'Elyra Duskvale', class: 'Priest', spec: 'Discipline' },
+        player: {
+          key: 'us/hardcore/elyra-duskvale',
+          name: 'Elyra Duskvale',
+          class: 'Priest',
+          spec: 'Discipline',
+        },
         encounter: 'Warden Kelthas',
         encounter_id: 9001,
         metric: 'hps',
@@ -46,7 +51,12 @@ const GUILD = {
       },
     ],
     reports: [
-      { id: 'fixture2abcd', title: 'Sanguine Depths, fixture night', zone: 'Sanguine Depths', created_at: '2026-09-26T20:09:00Z' },
+      {
+        id: 'fixture2abcd',
+        title: 'Sanguine Depths, fixture night',
+        zone: 'Sanguine Depths',
+        created_at: '2026-09-26T20:09:00Z',
+      },
       { id: 'otherreport1', title: '', zone: 'Blackmaw Hold', created_at: '2026-12-08T19:30:00Z' },
     ],
   },

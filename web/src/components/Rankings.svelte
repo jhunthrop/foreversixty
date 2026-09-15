@@ -139,10 +139,10 @@
     <h1 class="section-title text-[18px]">{encounter}</h1>
     <p class="text-muted text-[13px]" data-testid="rankings-count">
       {#if page !== null}
-        <span class="font-mono tabular">{page.total}</span> ranked kills · updated
-        <span class="font-mono tabular">{page.updated_at.slice(0, 10)}</span>
+        <span class="tabular font-mono">{page.total}</span> ranked kills · updated
+        <span class="tabular font-mono">{page.updated_at.slice(0, 10)}</span>
       {:else if state.board === 'guild'}
-        <span class="font-mono tabular">{guildRows.length}</span> guilds
+        <span class="tabular font-mono">{guildRows.length}</span> guilds
       {/if}
     </p>
   </header>

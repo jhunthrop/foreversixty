@@ -11,7 +11,11 @@
 <script lang="ts">
   import { splitUnitName } from '../../lib/characters';
   import {
-    approximateAriaLabel, approximateMark, approximateTitle, classColorVar, formatAmount,
+    approximateAriaLabel,
+    approximateMark,
+    approximateTitle,
+    classColorVar,
+    formatAmount,
   } from '../../lib/report/format';
   import type { ThreatRow } from '../../lib/report/types';
 
@@ -40,8 +44,8 @@
   <div class="flex flex-col gap-2" data-testid="threat-table">
     {#if incomplete}
       <p class="text-muted text-[12px]" data-testid="threat-incomplete">
-        Threat model {modelVersion} does not yet carry every class's modifiers, so these figures are
-        indicative. The per-class table lands with Forever's ability data.
+        Threat model {modelVersion} does not yet carry every class's modifiers, so these figures are indicative.
+        The per-class table lands with Forever's ability data.
       </p>
     {/if}
     <ul class="flex flex-col">
@@ -54,10 +58,11 @@
             {splitUnitName(row.name).name}
           </span>
           <span class="bg-line-soft col-span-2 block h-[6px] w-full md:col-span-1">
-            <span class="bg-gold block h-full" style={`width: ${peak === 0 ? 0 : (row.threat / peak) * 100}%`}></span>
+            <span class="bg-gold block h-full" style={`width: ${peak === 0 ? 0 : (row.threat / peak) * 100}%`}
+            ></span>
           </span>
           <span
-            class="font-mono tabular text-right"
+            class="tabular text-right font-mono"
             {title}
             aria-label={approximateAriaLabel(approximate, formatAmount(Math.round(row.threat)))}
           >
@@ -68,9 +73,8 @@
     </ul>
     {#if approximate}
       <p class="text-muted text-[12px]" data-testid="threat-approximate-note">
-        Threat is marked {mark} because it is accumulated from damage and healing and
-        scaled to this window's share of that total, not recomputed from the model
-        directly.
+        Threat is marked {mark} because it is accumulated from damage and healing and scaled to this window's share
+        of that total, not recomputed from the model directly.
       </p>
     {/if}
   </div>

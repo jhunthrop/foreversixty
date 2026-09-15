@@ -83,11 +83,7 @@ export function summaryEvents(summary: Summary): SummaryEvent[] {
     .map((entry) => entry.event);
 }
 
-export function filterEvents(
-  events: SummaryEvent[],
-  kinds: Set<EventKind>,
-  search: string,
-): SummaryEvent[] {
+export function filterEvents(events: SummaryEvent[], kinds: Set<EventKind>, search: string): SummaryEvent[] {
   const needle = search.trim().toLowerCase();
   return events.filter(
     (event) => kinds.has(event.kind) && (needle === '' || event.text.toLowerCase().includes(needle)),

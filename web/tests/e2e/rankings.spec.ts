@@ -190,8 +190,34 @@ const CHARACTER = {
   ok: true,
   data: {
     character: { name: 'Elyra Duskvale', region: 'us', ruleset: 'hardcore', class: 'Priest' },
-    best: [{ encounter: 'Warden Kelthas', encounter_id: 9001, difficulty: 8, metric: 'hps', value: 1840, percentile: 96.2, spec: 'Discipline', fought_at: '2026-12-09T22:10:00Z', report_id: 'fixture2abcd', fight_index: 3 }],
-    history: [{ encounter: 'Warden Kelthas', encounter_id: 9001, difficulty: 8, metric: 'hps', value: 1840, percentile: 96.2, spec: 'Discipline', fought_at: '2026-12-09T22:10:00Z', report_id: 'fixture2abcd', fight_index: 3 }],
+    best: [
+      {
+        encounter: 'Warden Kelthas',
+        encounter_id: 9001,
+        difficulty: 8,
+        metric: 'hps',
+        value: 1840,
+        percentile: 96.2,
+        spec: 'Discipline',
+        fought_at: '2026-12-09T22:10:00Z',
+        report_id: 'fixture2abcd',
+        fight_index: 3,
+      },
+    ],
+    history: [
+      {
+        encounter: 'Warden Kelthas',
+        encounter_id: 9001,
+        difficulty: 8,
+        metric: 'hps',
+        value: 1840,
+        percentile: 96.2,
+        spec: 'Discipline',
+        fought_at: '2026-12-09T22:10:00Z',
+        report_id: 'fixture2abcd',
+        fight_index: 3,
+      },
+    ],
     builds_seen: [{ talent_split: '31/20/0', spec: 'Discipline', first_seen: '2026-12-09T22:10:00Z' }],
   },
   error: null,
@@ -203,11 +229,39 @@ const GUILD = {
   data: {
     guild: { name: 'The Last Watch', region: 'us', ruleset: 'hardcore' },
     progression: [
-      { encounter: 'Warden Kelthas', encounter_id: 9001, difficulty: 8, kills: 2, pull_count: 14, first_kill_at: '2026-12-09T22:10:00Z' },
+      {
+        encounter: 'Warden Kelthas',
+        encounter_id: 9001,
+        difficulty: 8,
+        kills: 2,
+        pull_count: 14,
+        first_kill_at: '2026-12-09T22:10:00Z',
+      },
       { encounter: 'Deep Warden', encounter_id: 9002, difficulty: 8, kills: 0, pull_count: 31 },
     ],
-    roster_best: [{ player: { key: 'us/hardcore/elyra-duskvale', name: 'Elyra Duskvale', class: 'Priest', spec: 'Discipline' }, encounter: 'Warden Kelthas', encounter_id: 9001, metric: 'hps', value: 1840, fought_at: '2026-12-09T22:10:00Z' }],
-    reports: [{ id: 'fixture2abcd', title: 'Sanguine Depths, fixture night', zone: 'Sanguine Depths', created_at: '2026-09-26T20:09:00Z' }],
+    roster_best: [
+      {
+        player: {
+          key: 'us/hardcore/elyra-duskvale',
+          name: 'Elyra Duskvale',
+          class: 'Priest',
+          spec: 'Discipline',
+        },
+        encounter: 'Warden Kelthas',
+        encounter_id: 9001,
+        metric: 'hps',
+        value: 1840,
+        fought_at: '2026-12-09T22:10:00Z',
+      },
+    ],
+    reports: [
+      {
+        id: 'fixture2abcd',
+        title: 'Sanguine Depths, fixture night',
+        zone: 'Sanguine Depths',
+        created_at: '2026-09-26T20:09:00Z',
+      },
+    ],
   },
   error: null,
   request_id: 'r',
@@ -240,9 +294,8 @@ test('a guild page leads with progression, pull counts and kill dates', async ({
   await expect(page.getByTestId('guild')).toContainText('1 bosses down · 45 pulls');
   await expect(page.getByTestId('guild-progression')).toContainText('31 pulls');
   await expect(page.getByTestId('guild-kill').nth(1)).toHaveText('not killed');
-  await expect(page.getByTestId('guild-roster').getByRole('link', { name: 'Elyra Duskvale' })).toHaveAttribute(
-    'href',
-    '/character/us/hardcore/elyra-duskvale',
-  );
+  await expect(
+    page.getByTestId('guild-roster').getByRole('link', { name: 'Elyra Duskvale' }),
+  ).toHaveAttribute('href', '/character/us/hardcore/elyra-duskvale');
   await expect(page.getByTestId('guild-reports')).toContainText('Sanguine Depths, fixture night');
 });

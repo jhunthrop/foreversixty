@@ -14,11 +14,8 @@
   import { formatDuration, formatPercent } from '../../lib/report/format';
   import type { AuraTrack } from '../../lib/report/types';
 
-  let {
-    tracks,
-    durationMs,
-    kind,
-  }: { tracks: AuraTrack[]; durationMs: number; kind: 'BUFF' | 'DEBUFF' } = $props();
+  let { tracks, durationMs, kind }: { tracks: AuraTrack[]; durationMs: number; kind: 'BUFF' | 'DEBUFF' } =
+    $props();
 
   const rows = $derived(
     tracks
@@ -35,7 +32,9 @@
   </p>
 {:else}
   <div class="flex flex-col" data-testid="aura-table">
-    <div class="text-muted label hidden grid-cols-[minmax(120px,1.2fr)_minmax(120px,1.2fr)_minmax(0,3fr)_80px_64px] gap-x-3 px-2 pb-1 md:grid">
+    <div
+      class="text-muted label hidden grid-cols-[minmax(120px,1.2fr)_minmax(120px,1.2fr)_minmax(0,3fr)_80px_64px] gap-x-3 px-2 pb-1 md:grid"
+    >
       <span>Aura</span>
       <span>On</span>
       <span>Uptime</span>
@@ -62,12 +61,12 @@
           <!-- The heading row above is `hidden` below `md`, so each figure carries the word
                it was filed under. The testid stays on the number alone: it is the figure
                report-tables.spec.ts pins, not the word beside it. -->
-          <span class="font-mono tabular text-right">
+          <span class="tabular text-right font-mono">
             <span data-testid="aura-uptime">{formatPercent(pct(track.uptime_ms))}</span><span
               class="label font-body text-muted ml-1.5 md:hidden">uptime</span
             >
           </span>
-          <span class="text-muted font-mono tabular text-right text-[13px]"
+          <span class="text-muted tabular text-right font-mono text-[13px]"
             >{track.applications}<span class="label font-body ml-1.5 md:hidden">applied</span></span
           >
         </li>

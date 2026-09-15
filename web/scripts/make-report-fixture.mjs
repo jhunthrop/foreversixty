@@ -22,7 +22,16 @@ const staging = await mkdtemp(path.join(tmpdir(), 'forever-report-fixture-'));
 try {
   execFileSync(
     'go',
-    ['run', './cmd/forever-logs', 'parse', '-out', staging, '-report', FIXTURE_REPORT_ID, path.join(fixtureDir, 'fixture.log')],
+    [
+      'run',
+      './cmd/forever-logs',
+      'parse',
+      '-out',
+      staging,
+      '-report',
+      FIXTURE_REPORT_ID,
+      path.join(fixtureDir, 'fixture.log'),
+    ],
     { cwd: path.join(repoRoot, 'logs'), stdio: 'inherit' },
   );
   const produced = path.join(staging, 'reports', FIXTURE_REPORT_ID);

@@ -58,15 +58,15 @@
           >
             {splitUnitName(death.name).name}
           </span>
-          <span class="text-muted font-mono tabular text-[13px]">{formatDuration(death.at_ms)}</span>
+          <span class="text-muted tabular font-mono text-[13px]">{formatDuration(death.at_ms)}</span>
           {#if death.killing_blow}
             <span class="text-[13px]">
               killed by {splitUnitName(death.killing_blow.source_name).name} ·
               {death.killing_blow.spell_name === '' ? 'Melee' : death.killing_blow.spell_name} ·
-              <span class="font-mono tabular">{formatAmount(death.killing_blow.amount)}</span>
+              <span class="tabular font-mono">{formatAmount(death.killing_blow.amount)}</span>
               {#if death.killing_blow.overkill}
                 <span class="text-muted">
-                  (<span class="font-mono tabular">{formatAmount(death.killing_blow.overkill)}</span> overkill)
+                  (<span class="tabular font-mono">{formatAmount(death.killing_blow.overkill)}</span> overkill)
                 </span>
               {/if}
             </span>
@@ -74,7 +74,7 @@
           {#if death.release_ms}
             <span class="text-muted text-[13px]">
               released after
-              <span class="font-mono tabular">{formatDuration(death.release_ms - death.at_ms)}</span>
+              <span class="tabular font-mono">{formatDuration(death.release_ms - death.at_ms)}</span>
             </span>
           {/if}
         </div>
@@ -84,10 +84,10 @@
           <tbody>
             {#each death.last as hit (`${hit.at_ms}-${hit.spell_id}`)}
               <tr class="border-line-soft border-b">
-                <td class="text-muted font-mono tabular py-1 pr-3">{formatDuration(hit.at_ms)}</td>
+                <td class="text-muted tabular py-1 pr-3 font-mono">{formatDuration(hit.at_ms)}</td>
                 <td class="py-1 pr-3">{hit.spell_name === '' ? 'Melee' : hit.spell_name}</td>
                 <td class="text-muted truncate py-1 pr-3">{splitUnitName(hit.source_name).name}</td>
-                <td class="font-mono tabular py-1 pr-3 text-right">{formatAmount(hit.amount)}</td>
+                <td class="tabular py-1 pr-3 text-right font-mono">{formatAmount(hit.amount)}</td>
                 <td class="w-[30%] py-1">
                   {#if hit.max_hp}
                     <span
