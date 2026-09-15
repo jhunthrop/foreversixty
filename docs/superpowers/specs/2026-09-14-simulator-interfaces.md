@@ -189,15 +189,28 @@ create table if not exists sim_specs (
 
 Three new outputs from `python -m pipeline`, all under the existing build directory:
 
-- `simdb` command → `data/builds/<build>/simdb.bin`: the engine's `SimDatabase` protobuf (items,
-  enchants, item sets, consumables) generated from the same normalized tables the planner uses.
-  Committed, since the engine needs it at build time.
+- `simdb` command → `data/builds/<build>/simdb.bin`: the engine's `SimDatabase` protobuf,
+  generated from the same normalized tables the planner uses, byte-for-byte the engine's own
+  message. Committed, since the engine needs it at build time. The message is exactly
+  `{items, random_suffixes, enchants}` (verified against the engine's `common.proto`), so:
+  item sets ride on each item as `set_id` + `set_name`, `random_suffixes` is emitted empty
+  (resolving vanilla suffixes needs the RandPropPoints allocation table and Forever
+  re-itemises anyway), and consumables have no field. Consumables are therefore a sidecar,
+  `data/builds/<build>/simconsumes.json`, which the engine lane reads into its hand-written
+  consumes table; its shape is owned by the data lane and confirmed by the engine lane.
+  Icons are not in `SimDatabase` and stay in `data/builds/<build>/icons/` for the site.
 - `simconst` command → `data/builds/<build>/spellconst/<class-slug>.json`: per-spell constants
   keyed by spell id (base points, coefficients where readable, cooldown ms, cast time ms, cost,
   duration ms, school, family mask), for the engine's generated constants files.
 - `data/curated/apl/<spec_slug>.json`: the default rotation per spec, an `APLRotation` protobuf in
   its JSON form plus `{ "sources": [ { label, url, kind } ], "notes": "" }`. Validated by the data
   tests against the engine's APL schema.
+- `simconst` emits the coefficient columns verbatim, zeros included; the vanilla
+  `cast_time/3.5` and `duration/15` conventions and their per-spell overrides belong to the
+  engine lane, not the pipeline.
+- The engine's checked-in preset APLs are stale on spell ranks (their Frostbolt is rank 10
+  where the Era tables give rank 11 for spell 25304), so an APL is validated against the
+  build's own tables rather than copied from a preset.
 - `data/curated/specs.json`: the canonical spec list, `[ { spec, class_slug, spec_slug, name,
   role, tree_index } ]`.
 
