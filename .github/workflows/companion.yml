@@ -137,10 +137,9 @@ jobs:
           - { runner: windows-latest, goos: windows, goarch: amd64 }
           - { runner: ubuntu-22.04, goos: linux, goarch: amd64 }
     runs-on: ${{ matrix.runner }}
-    env:
-      TAG: ${{ needs.version.outputs.tag }}
     defaults: { run: { shell: bash, working-directory: companion } }
     env:
+      TAG: ${{ needs.version.outputs.tag }}
       APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
       APPLE_CERTIFICATE_P12: ${{ secrets.APPLE_CERTIFICATE_P12 }}
       APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
