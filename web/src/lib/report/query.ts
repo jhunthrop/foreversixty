@@ -3,8 +3,11 @@
 //
 // Three rules, from spec sections 1 and 4:
 //   never on page load    the import is dynamic and only the Queries view calls load()
-//   from our own assets   public/duckdb/ (scripts/sync-duckdb.mjs); the package's
-//                         getJsDelivrBundles() helper is deliberately unused
+//   from our own origin   the worker JS and the extension out of public/duckdb/, the two
+//                         engine modules out of the LOGS bucket through the Worker's
+//                         /duckdb-runtime/ route (they are over Cloudflare's 25 MiB
+//                         static-asset cap; see scripts/duckdb-runtime.mjs). The
+//                         package's getJsDelivrBundles() helper is deliberately unused
 //   once per fight        the Parquet is fetched and registered once, then every brush,
 //                         filter and drill-down is answered from memory
 //
@@ -12,6 +15,7 @@
 // Node build needs a web-worker shim and does not start under vitest. The real engine is
 // exercised by tests/e2e/report-queries.spec.ts, in a browser, against the checked-in
 // fixture Parquet.
+import { DUCKDB_ASSET_PREFIX, duckdbRuntimeUrl } from './duckdb-runtime';
 import type { TimeWindow } from './window';
 
 /** The name the fight's bytes are registered under inside DuckDB. */
@@ -129,11 +133,12 @@ export const QUERY_ABANDONED = 'That query was dropped when the view moved on.';
 export const NOT_LOCAL = 'Queries here read this fight’s own file; they cannot fetch from another address.';
 
 /**
- * Where scripts/sync-duckdb.mjs publishes the vendored DuckDB extensions. DuckDB builds
- * `<repository>/<version>/<platform>/<name>.duckdb_extension.wasm` itself, so this is the
- * base and nothing else.
+ * Where scripts/sync-duckdb.mjs publishes the vendored DuckDB extensions: under the same
+ * version-pinned prefix as the worker JS, so public/_headers can cache the lot for a year.
+ * DuckDB builds `<repository>/<version>/<platform>/<name>.duckdb_extension.wasm` itself,
+ * so this is the base and nothing else.
  */
-export const EXTENSION_REPOSITORY = '/duckdb/extensions';
+export const EXTENSION_REPOSITORY = `${DUCKDB_ASSET_PREFIX}/extensions`;
 
 /** A query that has not answered by then has its engine torn down and rebuilt. */
 export const QUERY_TIMEOUT_MS = 30_000;
@@ -408,13 +413,20 @@ export async function createDuckDbEngine(): Promise<QueryEngine> {
   const duckdb = await import('@duckdb/duckdb-wasm');
 
   // Safari versions still in use have no WebAssembly exceptions, so both builds are
-  // published and the runtime picks. Both come from /duckdb/, never from a CDN: the
+  // published and the runtime picks. Both come from foreversixty.gg, never from a CDN: the
   // package's own getJsDelivrBundles() is what the site's "no third-party bytes" rule
-  // exists to rule out.
+  // exists to rule out. The worker is a static asset; the module is too large to be one
+  // and is served from the LOGS bucket by src/worker.ts.
   const features = await duckdb.getPlatformFeatures();
   const bundle = features.wasmExceptions
-    ? { module: '/duckdb/duckdb-eh.wasm', worker: '/duckdb/duckdb-browser-eh.worker.js' }
-    : { module: '/duckdb/duckdb-mvp.wasm', worker: '/duckdb/duckdb-browser-mvp.worker.js' };
+    ? {
+        module: duckdbRuntimeUrl('duckdb-eh.wasm'),
+        worker: `${DUCKDB_ASSET_PREFIX}/duckdb-browser-eh.worker.js`,
+      }
+    : {
+        module: duckdbRuntimeUrl('duckdb-mvp.wasm'),
+        worker: `${DUCKDB_ASSET_PREFIX}/duckdb-browser-mvp.worker.js`,
+      };
 
   // A plain string, not `new URL(..., import.meta.url)`: the second form asks Vite to
   // bundle a worker of its own, which would put DuckDB back inside the island's chunk.
@@ -430,7 +442,7 @@ export async function createDuckDbEngine(): Promise<QueryEngine> {
   // that it does not. Turning autoload off instead just breaks the queries, so the signed
   // extension is vendored and served from here: DuckDB appends /<version>/<platform>/
   // <name>.duckdb_extension.wasm to whatever repository it is given, and
-  // scripts/sync-duckdb.mjs publishes exactly that shape under public/duckdb/extensions.
+  // scripts/sync-duckdb.mjs publishes exactly that shape under the extension repository.
   //
   // location.origin, not a bare path: the setting is a repository URL, and the report
   // island runs on foreversixty.gg, on localhost under Playwright, and on a preview

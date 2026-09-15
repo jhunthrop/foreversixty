@@ -2,3 +2,12 @@
 # so it can be cached for a year; everything else keeps the default revalidation.
 /_astro/*
   Cache-Control: public, max-age=31536000, immutable
+
+# The DuckDB runtime published by scripts/sync-duckdb.mjs: the two worker scripts under
+# /duckdb/<package-version>/ and the vendored extension under its own DuckDB version below
+# that. Every path here carries the version of the bytes it serves, so a package bump
+# publishes to a new path rather than needing this cache invalidated. The two engine
+# modules are not here: they are over the 25 MiB static-asset cap and are served from R2 by
+# src/worker.ts, which sets the same header itself.
+/duckdb/*
+  Cache-Control: public, max-age=31536000, immutable

@@ -61,6 +61,22 @@ jobs:
       # FOREVER_DATA is unset here on purpose: a real build prerenders no fixture report,
       # rankings, character or guild page and publishes no public/logs-data/.
       - run: CF_PAGES=1 npm run build
+      # The two DuckDB engine modules are over Cloudflare's 25 MiB static-asset cap, so
+      # they are served from the foreversixty-logs bucket by src/worker.ts instead of from
+      # dist/ (web/README.md, "Deep queries"). `npm run build` staged them; putting them in
+      # the bucket needs an R2 write token, which is user-owned setup. Until that secret
+      # exists this says so rather than failing the deploy: every page but the Queries view
+      # works without it, and the upload is idempotent once per version.
+      - name: Upload the DuckDB runtime to R2
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_R2_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "CLOUDFLARE_R2_TOKEN is not set; skipping the DuckDB runtime upload"
+          else
+            npm run upload:duckdb
+          fi
       - uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}

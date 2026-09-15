@@ -1,8 +1,8 @@
 // web/scripts/check-island-size.mjs
-// The spec caps the planner island at 60 KB gzipped. CI runs this straight after the
-// island build so a dependency that quietly doubles the bundle fails the pull request
-// instead of the mobile Lighthouse budget three steps later.
-import { readdir, readFile } from 'node:fs/promises';
+// Two size checks over dist/, both run by `npm run postbuild` so a pull request fails here
+// rather than three steps later: the island budgets the spec sets, and the hard per-file
+// limit Cloudflare enforces at deploy time.
+import { readdir, readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
 import { fileURLToPath } from 'node:url';
@@ -33,9 +33,44 @@ const PAGE_ISLAND_BUDGETS = [
   { component: 'Guild', limitBytes: 16 * 1024 },
 ];
 
+/**
+ * Cloudflare Workers static assets refuse a single file over 25 MiB, on every plan, and
+ * the refusal is the whole deploy rather than that one file. Nothing else here catches it:
+ * vitest, Playwright and Lighthouse all serve dist/ off the disk, where a 34 MB file is
+ * merely a 34 MB file. This is what stops the class of defect that put DuckDB's two
+ * engine modules -- 32.7 and 37.5 MiB -- into dist/ in the first place (they are served
+ * from R2 now; see scripts/duckdb-runtime.mjs).
+ */
+const CLOUDFLARE_ASSET_LIMIT_BYTES = 25 * 1024 * 1024;
+
 const webRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 let failed = false;
+
+/** Every file under `dir`, depth first, as paths relative to dist/. */
+async function* filesUnder(dir, prefix = '') {
+  for (const entry of await readdir(dir, { withFileTypes: true })) {
+    const relative = prefix === '' ? entry.name : `${prefix}/${entry.name}`;
+    if (entry.isDirectory()) yield* filesUnder(path.join(dir, entry.name), relative);
+    else yield relative;
+  }
+}
+
+const distRoot = path.join(webRoot, 'dist');
+let largest = { file: '', bytes: 0 };
+for await (const file of filesUnder(distRoot)) {
+  const { size } = await stat(path.join(distRoot, file));
+  if (size > largest.bytes) largest = { file, bytes: size };
+  if (size > CLOUDFLARE_ASSET_LIMIT_BYTES) {
+    console.error(
+      `dist/${file} is ${size} bytes, over Cloudflare's ${CLOUDFLARE_ASSET_LIMIT_BYTES} byte ` +
+        'static-asset limit. `wrangler deploy` would refuse the whole site. Serve it from R2 ' +
+        'through src/worker.ts instead, the way the DuckDB engine modules are.',
+    );
+    failed = true;
+  }
+}
+console.log(`dist/: largest asset is dist/${largest.file} at ${largest.bytes} bytes`);
 
 for (const budget of BUDGETS) {
   const bytes = await readFile(path.join(webRoot, budget.file));

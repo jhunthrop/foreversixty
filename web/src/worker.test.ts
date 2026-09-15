@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import worker from './worker';
+import { DUCKDB_WASM_VERSION, duckdbRuntimeUrl } from './lib/report/duckdb-runtime';
 
 const API_BASE_URL = 'https://api.foreversixty.test';
 
@@ -399,6 +400,70 @@ describe('/logs-data/* served from the R2 bucket', () => {
     );
     expect(response.status).toBe(405);
     expect(response.headers.get('allow')).toBe('GET, HEAD');
+  });
+});
+
+describe('/duckdb-runtime/* served from the R2 bucket', () => {
+  const MODULE_KEY = `runtime/duckdb/${DUCKDB_WASM_VERSION}/duckdb-eh.wasm`;
+  const MODULE_URL = `https://foreversixty.gg${duckdbRuntimeUrl('duckdb-eh.wasm')}`;
+
+  function wasmObject(): FakeObject {
+    return { body: '\u0000asm', httpMetadata: {}, httpEtag: '"wasm1"' };
+  }
+
+  // These two files are 32.7 and 37.5 MiB, over Cloudflare's 25 MiB static-asset cap, so
+  // they cannot be in dist/ at all: a deploy that carries them fails for the whole site.
+  it('serves the engine module with an immutable year and the WebAssembly type', async () => {
+    const upstream = vi.fn<GlobalFetch>(async () => visibilityResponse('public'));
+    vi.stubGlobal('fetch', upstream);
+    const env = { ...envWith(), LOGS: bucketWith({ [MODULE_KEY]: wasmObject() }) };
+
+    const response = await worker.fetch(new Request(MODULE_URL), env);
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get('content-type')).toBe('application/wasm');
+    expect(response.headers.get('cache-control')).toBe('public, max-age=31536000, immutable');
+    expect(response.headers.get('etag')).toBe('"wasm1"');
+    expect(env.LOGS.get).toHaveBeenCalledWith(MODULE_KEY);
+    // Public bytes out of an npm package, not report data: no visibility lookup, and so no
+    // API subrequest for a file every visitor gets the same copy of.
+    expect(upstream).not.toHaveBeenCalled();
+  });
+
+  it('answers a HEAD without a body', async () => {
+    const env = { ...envWith(), LOGS: bucketWith({ [MODULE_KEY]: wasmObject() }) };
+    const response = await worker.fetch(new Request(MODULE_URL, { method: 'HEAD' }), env);
+    expect(response.status).toBe(200);
+    expect(await response.text()).toBe('');
+  });
+
+  it('answers 405 for anything but GET and HEAD', async () => {
+    const env = { ...envWith(), LOGS: bucketWith({ [MODULE_KEY]: wasmObject() }) };
+    const response = await worker.fetch(new Request(MODULE_URL, { method: 'PUT' }), env);
+    expect(response.status).toBe(405);
+    expect(response.headers.get('allow')).toBe('GET, HEAD');
+  });
+
+  it('404s anything else under the prefix without touching the bucket or the assets', async () => {
+    const env = { ...envWith(), LOGS: bucketWith({ [MODULE_KEY]: wasmObject() }) };
+    const refused = [
+      `https://foreversixty.gg/duckdb-runtime/${DUCKDB_WASM_VERSION}/duckdb-coi.wasm`,
+      'https://foreversixty.gg/duckdb-runtime/1.31.0/duckdb-eh.wasm',
+      `https://foreversixty.gg/duckdb-runtime/${DUCKDB_WASM_VERSION}/`,
+    ];
+    for (const url of refused) {
+      const response = await worker.fetch(new Request(url), env);
+      expect(response.status).toBe(404);
+    }
+    expect(env.LOGS.get).not.toHaveBeenCalled();
+    expect(env.ASSETS.fetch).not.toHaveBeenCalled();
+  });
+
+  it('404s rather than falling back to the assets when the upload has not been done', async () => {
+    const env = { ...envWith('a 404 page'), LOGS: bucketWith({}) };
+    const response = await worker.fetch(new Request(MODULE_URL), env);
+    expect(response.status).toBe(404);
+    expect(env.ASSETS.fetch).not.toHaveBeenCalled();
   });
 });
 

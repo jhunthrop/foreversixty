@@ -2,13 +2,14 @@
 import { defineConfig } from 'astro/config';
 import svelte from '@astrojs/svelte';
 import sitemap from '@astrojs/sitemap';
-import { readFileSync, readdirSync } from 'node:fs';
+import { createReadStream, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import pagefind from 'astro-pagefind';
 import tailwindcss from '@tailwindcss/vite';
 import links from './src/data/links.json';
 import { assertLinksAreReal } from './src/lib/links';
+import { DUCKDB_WASM_VERSION, RUNTIME_MODULES, stagingDir } from './scripts/duckdb-runtime.mjs';
 
 // Registers `client:interaction` (see src/directives/interaction.ts): hydrates the homepage
 // search island on the user's first focus/`/`-press instead of during initial page load, so
@@ -18,6 +19,33 @@ const interactionDirective = {
   hooks: {
     'astro:config:setup': ({ addClientDirective }) => {
       addClientDirective({ name: 'interaction', entrypoint: './src/directives/interaction.ts' });
+    },
+  },
+};
+
+// The two DuckDB engine modules are over Cloudflare's static-asset limit, so they are not
+// in public/ and `astro dev` has nothing to serve them with: in production src/worker.ts
+// answers /duckdb-runtime/<version>/<file> out of the LOGS bucket. This serves the same
+// two paths straight off the staging directory scripts/sync-duckdb.mjs fills, so the
+// Queries view works in `npm run dev`. `astro preview` cannot be extended this way -- it
+// strips user Vite plugins -- so the Playwright suite stubs the same route instead
+// (tests/e2e/support/duckdb-runtime.ts).
+const duckdbRuntime = {
+  name: 'duckdb-runtime',
+  hooks: {
+    'astro:server:setup': ({ server }) => {
+      server.middlewares.use((request, response, next) => {
+        const pathname = (request.url ?? '').split('?')[0];
+        const file = RUNTIME_MODULES.find(
+          (name) => pathname === `/duckdb-runtime/${DUCKDB_WASM_VERSION}/${name}`,
+        );
+        if (file === undefined) {
+          next();
+          return;
+        }
+        response.setHeader('content-type', 'application/wasm');
+        createReadStream(join(stagingDir, file)).pipe(response);
+      });
     },
   },
 };
@@ -84,6 +112,7 @@ export default defineConfig({
     pagefind(),
     interactionDirective,
     placeholderGuard,
+    duckdbRuntime,
   ],
   vite: {
     plugins: [tailwindcss()],

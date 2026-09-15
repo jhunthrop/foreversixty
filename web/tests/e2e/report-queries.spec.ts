@@ -4,6 +4,8 @@
 // that needs an actual WebAssembly instance is asserted here, against the checked-in
 // fixture Parquet (src/fixtures/report/fights/3/events.parquet).
 import { expect, test, type Page } from '@playwright/test';
+import { DUCKDB_WASM_VERSION } from '../../src/lib/report/duckdb-runtime';
+import { serveDuckdbRuntime } from './support/duckdb-runtime';
 
 const REPORT = '/reports/fixture2abcd';
 const QUERIES = `${REPORT}?fight=3&view=queries`;
@@ -20,7 +22,10 @@ function recordRequests(page: Page): string[] {
   return seen;
 }
 
-const duckdbAssets = (urls: string[]): string[] => urls.filter((url) => url.includes('/duckdb/'));
+// Both halves of the runtime: the worker script and the extension under /duckdb/, and the
+// engine module under /duckdb-runtime/, which is served from R2 rather than from dist/.
+const duckdbAssets = (urls: string[]): string[] =>
+  urls.filter((url) => /\/duckdb(-runtime)?\//.test(new URL(url).pathname));
 const parquetFiles = (urls: string[]): string[] => urls.filter((url) => url.endsWith('events.parquet'));
 
 // Spec section 4: "DuckDB-WASM loads lazily on the first deep interaction, never on page
@@ -68,9 +73,11 @@ test('a query runs against the fight’s own Parquet, and every byte comes from 
 }) => {
   test.slow(); // The first run downloads and instantiates the WebAssembly build.
   const external: string[] = [];
+  const fetched = recordRequests(page);
   page.on('request', (request) => {
     if (!OWN_ORIGINS.has(new URL(request.url()).origin)) external.push(request.url());
   });
+  await serveDuckdbRuntime(page);
 
   await page.goto(QUERIES);
   await page.getByTestId('template-event-counts').click();
@@ -124,6 +131,20 @@ test('a query runs against the fight’s own Parquet, and every byte comes from 
   await expect(page.getByTestId('query-result')).toContainText('24');
 
   expect(external).toEqual([]);
+
+  // The engine module comes from the version-pinned Worker route, not from a static asset
+  // under /duckdb/: at 32.7 MiB it is over Cloudflare's 25 MiB per-file limit, so shipping
+  // it in dist/ fails the whole site's deploy (scripts/duckdb-runtime.mjs). The worker
+  // script beside it is small enough to stay a static asset, and is version-pinned too so
+  // public/_headers can cache both for a year.
+  expect(duckdbAssets(fetched)).toContain(`${ORIGIN}/duckdb-runtime/${DUCKDB_WASM_VERSION}/duckdb-eh.wasm`);
+  expect(duckdbAssets(fetched)).toContain(
+    `${ORIGIN}/duckdb/${DUCKDB_WASM_VERSION}/duckdb-browser-eh.worker.js`,
+  );
+  const staticModules = duckdbAssets(fetched).filter(
+    (url) => url.includes('/duckdb/') && url.endsWith('.wasm') && !url.includes('/extensions/'),
+  );
+  expect(staticModules).toEqual([]);
 });
 
 // The engine build, the download and the query all resolve long after the click, so a
@@ -132,6 +153,7 @@ test('a query runs against the fight’s own Parquet, and every byte comes from 
 // fight 3's events must not be painted under fight 1's name.
 test('an answer for the fight that was left behind is dropped, not painted', async ({ page }) => {
   test.slow();
+  await serveDuckdbRuntime(page);
   await page.goto(QUERIES);
 
   let markStarted = (): void => {};

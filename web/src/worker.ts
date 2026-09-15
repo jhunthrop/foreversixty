@@ -1,6 +1,7 @@
-// The only server code in web/. wrangler.jsonc sets run_worker_first to ["/b/*"], so this
-// handler runs for shared build pages and their preview cards and nothing else; every other
-// path is served straight from the static assets with no Worker execution at all.
+// The only server code in web/. wrangler.jsonc's run_worker_first lists exactly the
+// prefixes this handler owns -- the shared build proxy, report files and the DuckDB
+// runtime out of R2, and the four shells -- and every other path is served straight from
+// the static assets with no Worker execution at all.
 //
 // Shared builds are rendered by the Go API, but their links have to stay on foreversixty.gg:
 // that is the domain people paste into Discord, and it is what the canonical tag and the
@@ -10,6 +11,7 @@
 // @cloudflare/workers-types, which would have to be added to the Astro tsconfig's `types`
 // and would then apply to every file in the project.
 import { parseCharacterPath, parseGuildPath } from './lib/characters';
+import { DUCKDB_RUNTIME_PREFIX, duckdbRuntimeKey } from './lib/report/duckdb-runtime';
 import {
   characterShellMeta,
   guildShellMeta,
@@ -28,9 +30,10 @@ export interface Env {
   /** The static assets binding. */
   ASSETS: { fetch(request: Request): Promise<Response> };
   /**
-   * The foreversixty-logs bucket. Optional because `astro preview` and the Playwright
-   * suite serve the static assets with no Worker and no bindings, and the checked-in
-   * report fixture under public/logs-data/ has to keep working there.
+   * The foreversixty-logs bucket. It holds both a report's files and the two DuckDB
+   * engine modules. Optional because `astro preview` and the Playwright suite serve the
+   * static assets with no Worker and no bindings, and the checked-in report fixture under
+   * public/logs-data/ has to keep working there.
    */
   LOGS?: R2Bucket;
 }
@@ -181,6 +184,45 @@ async function serveReportFile(request: Request, env: Env, key: string, id: stri
     headers.set('content-encoding', object.httpMetadata.contentEncoding);
   }
   headers.set('etag', object.httpEtag);
+  return new Response(request.method === 'HEAD' ? null : object.body, { status: 200, headers });
+}
+
+/**
+ * The two DuckDB engine modules, out of the same bucket a report's files come from.
+ *
+ * They are here rather than in dist/ because Cloudflare caps a static asset at 25 MiB and
+ * these are 32.7 and 37.5 MiB (scripts/duckdb-runtime.mjs). Unlike /logs-data/*, there is
+ * no visibility check: these are the vendored public bytes of an npm package, identical
+ * for every visitor, and the only reason they are served from here at all is the site's
+ * rule that no page makes a third-party request.
+ *
+ * The path carries the package version and duckdbRuntimeKey() matches it exactly, so the
+ * response can be cached forever and anything else under the prefix -- an old version, a
+ * filename this site does not publish, a traversal attempt -- is a 404 rather than a
+ * lookup.
+ */
+async function serveDuckdbRuntime(request: Request, env: Env, pathname: string): Promise<Response> {
+  if (request.method !== 'GET' && request.method !== 'HEAD') {
+    return refuse(405, 'Method not allowed', { allow: 'GET, HEAD' });
+  }
+
+  const key = duckdbRuntimeKey(pathname);
+  if (key === null) return refuse(404, 'Not a DuckDB runtime file');
+
+  // No ASSETS fallback, unlike /logs-data/*: these bytes are never published as static
+  // assets, so a miss means the upload in web/README.md's user-owned steps has not been
+  // done for this version and there is nothing else to serve.
+  const object = await env.LOGS?.get(key);
+  if (object === null || object === undefined) return refuse(404, 'That DuckDB runtime file is not uploaded');
+
+  // Set here rather than read from the object: WebAssembly.instantiateStreaming refuses
+  // anything but application/wasm, and that would then depend on the content type whoever
+  // ran the upload happened to pass.
+  const headers = new Headers({
+    'content-type': 'application/wasm',
+    'cache-control': 'public, max-age=31536000, immutable',
+    etag: object.httpEtag,
+  });
   return new Response(request.method === 'HEAD' ? null : object.body, { status: 200, headers });
 }
 
@@ -386,6 +428,10 @@ export default {
     const logsData = LOGS_DATA_PATH.exec(url.pathname);
     if (logsData !== null) return serveReportFile(request, env, logsData[1], logsData[2]);
     if (url.pathname.startsWith(LOGS_DATA_PREFIX)) return refuse(404, 'Not a report file');
+
+    if (url.pathname.startsWith(DUCKDB_RUNTIME_PREFIX)) {
+      return serveDuckdbRuntime(request, env, url.pathname);
+    }
 
     const shell = SHELL_ROUTES.find((route) => url.pathname.startsWith(route.prefix));
     // A path under a shell prefix that is not a valid id, slug or character path -- a

@@ -14,22 +14,23 @@ A fan reference site for World of Warcraft: Forever, built with [Astro](https://
 
 All commands are run from this directory (`web/`):
 
-| Command                 | Action                                                                    |
-| :---------------------- | :------------------------------------------------------------------------ |
-| `npm install`           | Install dependencies                                                      |
-| `npm run dev`           | Start the local dev server                                                |
-| `npm run build`         | Build the production site to `./dist/`                                    |
-| `npm run preview`       | Preview the production build locally                                      |
-| `npm run check`         | Type-check with `astro check` (TypeScript strict)                         |
-| `npm run lint`          | Lint with ESLint (Astro, Svelte, TypeScript)                              |
-| `npm run lint:fix`      | Lint and apply the fixable rules                                          |
-| `npm run format`        | Format with Prettier                                                      |
-| `npm run format:check`  | Check formatting without writing                                          |
-| `npm run test`          | Run unit tests once with Vitest                                           |
-| `npm run test:watch`    | Run unit tests in watch mode                                              |
-| `npm run test:e2e`      | Run end-to-end tests with Playwright (fixture data)                       |
-| `npm run test:e2e:real` | Pre-deploy smoke: build with real data, run `tests/e2e/real-data.spec.ts` |
-| `npm run lhci`          | Run Lighthouse CI                                                         |
+| Command                  | Action                                                                    |
+| :----------------------- | :------------------------------------------------------------------------ |
+| `npm install`            | Install dependencies                                                      |
+| `npm run dev`            | Start the local dev server                                                |
+| `npm run build`          | Build the production site to `./dist/`                                    |
+| `npm run preview`        | Preview the production build locally                                      |
+| `npm run check`          | Type-check with `astro check` (TypeScript strict)                         |
+| `npm run lint`           | Lint with ESLint (Astro, Svelte, TypeScript)                              |
+| `npm run lint:fix`       | Lint and apply the fixable rules                                          |
+| `npm run format`         | Format with Prettier                                                      |
+| `npm run format:check`   | Check formatting without writing                                          |
+| `npm run test`           | Run unit tests once with Vitest                                           |
+| `npm run test:watch`     | Run unit tests in watch mode                                              |
+| `npm run test:e2e`       | Run end-to-end tests with Playwright (fixture data)                       |
+| `npm run test:e2e:real`  | Pre-deploy smoke: build with real data, run `tests/e2e/real-data.spec.ts` |
+| `npm run test:e2e:phone` | Just the four phone audits, at 360x800, on the `mobile` project           |
+| `npm run lhci`           | Run Lighthouse CI                                                         |
 
 ## Project Structure
 
@@ -234,9 +235,26 @@ on 5.
 ### Deep queries
 
 The Queries view runs SQL over the fight's own `events.parquet` with DuckDB-WASM. It loads
-lazily — never on page load, asserted by an e2e — and from `public/duckdb/`, which
-`scripts/sync-duckdb.mjs` fills from `node_modules` at build time. The package's own
-jsDelivr helper is deliberately unused: no page on this site makes a third-party request.
+lazily — never on page load, asserted by an e2e — and entirely from this origin. The
+package's own jsDelivr helper is deliberately unused: no page on this site makes a
+third-party request.
+
+`scripts/sync-duckdb.mjs` publishes the runtime out of `node_modules` at build time, and
+splits it in two because Cloudflare Workers cap a single static asset at 25 MiB:
+
+- `duckdb-eh.wasm` and `duckdb-mvp.wasm` (32.7 and 37.5 MiB) are staged into
+  `build/duckdb-runtime/<version>/`, uploaded to the `foreversixty-logs` bucket under
+  `runtime/duckdb/<version>/`, and served by `src/worker.ts` at
+  `/duckdb-runtime/<version>/<file>` with an immutable year.
+- the two `duckdb-browser-*.worker.js` and the vendored parquet extension go to
+  `public/duckdb/<version>/` as ordinary static assets, cached for a year by
+  `public/_headers` because that path carries the version too.
+
+`scripts/duckdb-runtime.mjs` and `src/lib/report/duckdb-runtime.ts` are the two halves of
+that arithmetic, held to one version by `duckdb-runtime.test.ts`. The upload is a
+user-owned step (below) and runs once per `@duckdb/duckdb-wasm` bump; `npm run postbuild`
+fails the build if any file in `dist/` is over the 25 MiB limit, so this class of defect
+cannot reach a deploy again.
 
 Spec section 9 asks for a timing test of a brush over a 10 MB fight. The checked-in fixture's
 Parquet is 18 KB, so that budget is measured against a real raid log once one exists rather
@@ -283,24 +301,40 @@ catch a regression here. `scripts/check-island-size.mjs` therefore also globs
 today they measure roughly 4 KB, 2 KB and 2 KB, so the ceiling is headroom against a
 regression rather than a target to grow into.
 
+### The phone audits
+
+`tests/e2e/report-phone.spec.ts`, `rankings-phone.spec.ts`, `character-phone.spec.ts` and
+`guild-phone.spec.ts` are the standing regression guard for the phone layout on the four
+logs-product pages that carry one: the report, the rankings board, a character page and a
+guild page. Each file sets its own 360x800 viewport with `test.use()` and skips itself on
+every Playwright project but `mobile`, so plain `npm run test:e2e` already runs all four as
+part of the ordinary suite — no CI step is dedicated to them. Each sweeps every tab, view and
+mode (or filter and page, for rankings/character/guild) the page can be in and asserts two
+things throughout: nothing scrolls sideways at 360px, and every visible control clears 44px
+in its smallest dimension. `npm run test:e2e:phone` runs just these four, against whatever
+`dist/` the last build left behind, for a fast local check while iterating on layout.
+
 ## Deploying this: two things you own
 
 Two pieces of the deploy are outside this repository's CI and were left for whoever runs
 `wrangler deploy` for the first time.
 
-**DuckDB's WebAssembly build does not fit Cloudflare's static asset limit.** Cloudflare
-Workers static assets cap a single file at 25 MiB. `public/duckdb/` carries
-`duckdb-eh.wasm` (32.66 MiB) and `duckdb-mvp.wasm` (37.54 MiB, the Safari fallback); both
-exceed the cap on their own, so `wrangler deploy` refuses them, and dropping the MVP build
-does not fix it because the EH build alone is still over. The only fix that keeps the
-architecture DuckDB-WASM is served same-origin — the whole reason it is vendored under
-`public/duckdb/` rather than pulled from jsDelivr — is to route `/duckdb/*` through the
-Worker to an R2 bucket the same way `/logs-data/*` already is: bind a second bucket, upload
-the two `.wasm` files and their workers into it once per DuckDB version bump, and add a
-`/duckdb/*` handler to `src/worker.ts` that streams them back. That binding, the bucket and
-the one-time upload are not done by this plan and need the deployer's own Cloudflare
-credentials; until they are, a deploy that includes `public/duckdb/` as static assets fails,
-and the Queries view has nothing to fetch.
+**The DuckDB engine modules have to be uploaded to R2 once per version.** They are 32.7 and
+37.5 MiB, over Cloudflare's 25 MiB static-asset cap, so they are served out of the
+`foreversixty-logs` bucket by `src/worker.ts` rather than out of `dist/` (see _Deep
+queries_ above). `npm run build` stages them; putting them in the bucket needs an R2 write
+token this repository does not have. From `web/`, with `CLOUDFLARE_API_TOKEN` and
+`CLOUDFLARE_ACCOUNT_ID` set, or after `npx wrangler login`:
+
+```bash
+npm run sync:duckdb    # stages build/duckdb-runtime/<version>/
+npm run upload:duckdb  # puts both modules in foreversixty-logs/runtime/duckdb/<version>/
+```
+
+`.github/workflows/web.yml` runs the same command before `wrangler deploy` when the
+`CLOUDFLARE_R2_TOKEN` secret exists, and prints a notice and carries on when it does not.
+Until the upload is done the site deploys and every page works; only the Queries view has
+nothing to instantiate.
 
 **The rest of the backend is likewise provisioned by hand, not by this workflow:** the
 `foreversixty-logs` R2 bucket and its `LOGS` binding in `wrangler.jsonc`, the bucket's CORS
