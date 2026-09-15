@@ -59,13 +59,13 @@ describe('report formatting', () => {
   });
 
   it('maps a parse percentile onto the ladder the community reads', () => {
-    expect(percentileToken(3)).toBe('var(--color-rarity-poor)');
-    expect(percentileToken(40)).toBe('var(--color-rarity-uncommon)');
-    expect(percentileToken(60)).toBe('var(--color-rarity-rare-text)');
-    expect(percentileToken(80)).toBe('var(--color-rarity-epic-text)');
-    expect(percentileToken(96)).toBe('var(--color-rarity-legendary)');
-    expect(percentileToken(99)).toBe('var(--color-parse-99)');
-    expect(percentileToken(100)).toBe('var(--color-parse-100)');
+    expect(percentileToken(3)).toBe('var(--color-parse-grey)');
+    expect(percentileToken(40)).toBe('var(--color-parse-green)');
+    expect(percentileToken(60)).toBe('var(--color-parse-blue)');
+    expect(percentileToken(80)).toBe('var(--color-parse-purple)');
+    expect(percentileToken(96)).toBe('var(--color-parse-orange)');
+    expect(percentileToken(99)).toBe('var(--color-parse-pink)');
+    expect(percentileToken(100)).toBe('var(--color-parse-gold)');
   });
 
   it('keeps tenths past a minute in the precise form, and names spell schools', () => {

@@ -18,7 +18,7 @@
     {
       term: 'Parse colours',
       meaning:
-        'Grey under 25, green from 25, blue from 50, purple from 75, orange from 95, pink at 99, gold at 100.',
+        'The same ladder as Warcraft Logs, so a "grey parse" or an "orange parse" means what it does there: grey under 25, green from 25, blue from 50, purple from 75, orange from 95, pink at 99, gold at 100.',
     },
     {
       term: 'Damage · DPS',

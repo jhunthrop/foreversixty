@@ -224,11 +224,11 @@ export function percentileToken(percentile: number): string {
   // The ladder every log reader already knows: grey under 25, green from 25, blue from
   // 50, purple from 75, orange from 95, pink at 99, gold at 100.
   const p = Number.isFinite(percentile) ? Math.round(percentile) : 0;
-  if (p >= 100) return 'var(--color-parse-100)';
-  if (p >= 99) return 'var(--color-parse-99)';
-  if (p >= 95) return 'var(--color-rarity-legendary)';
-  if (p >= 75) return 'var(--color-rarity-epic-text)';
-  if (p >= 50) return 'var(--color-rarity-rare-text)';
-  if (p >= 25) return 'var(--color-rarity-uncommon)';
-  return 'var(--color-rarity-poor)';
+  if (p >= 100) return 'var(--color-parse-gold)';
+  if (p >= 99) return 'var(--color-parse-pink)';
+  if (p >= 95) return 'var(--color-parse-orange)';
+  if (p >= 75) return 'var(--color-parse-purple)';
+  if (p >= 50) return 'var(--color-parse-blue)';
+  if (p >= 25) return 'var(--color-parse-green)';
+  return 'var(--color-parse-grey)';
 }

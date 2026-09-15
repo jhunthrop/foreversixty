@@ -29,8 +29,16 @@
   --color-wipe: #f0736b;
   --color-death: #ff5a5a;
   --color-death-soft: #5a1f1f;
-  /* The two parse colours the rarity ladder does not have: a 99 and a 100. */
-  --color-parse-99: #e268a8;
+  /* Parse colours, exactly Warcraft Logs': the culture says "orange parse" and "grey
+     parse", and those words have to point at the same hues here. Grey under 25, green
+     from 25, blue from 50, purple from 75, orange from 95, pink at 99, gold at 100. */
+  --color-parse-grey: #666666;
+  --color-parse-green: #1eff00;
+  --color-parse-blue: #0070ff;
+  --color-parse-purple: #a335ee;
+  --color-parse-orange: #ff8000;
+  --color-parse-pink: #e268a8;
+  --color-parse-gold: #e5cc80;
   /* Spell schools, for ability bars: the colours the community reads them by. */
   --color-school-physical: #e8c96a;
   --color-school-holy: #fff1a8;
@@ -39,7 +47,6 @@
   --color-school-frost: #5fb8ff;
   --color-school-shadow: #b07bff;
   --color-school-arcane: #ff9bd6;
-  --color-parse-100: #e5cc80;
   --color-night: #26405c;
 
   --color-alliance: #6fb1ff;
