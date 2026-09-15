@@ -37,9 +37,13 @@
       }
       byName.set(track.name, uses);
     }
-    return [...byName.entries()]
-      .map(([name, uses]) => ({ name, uses: uses.sort((a, b) => a.at - b.at) }))
-      .sort((a, b) => a.uses[0].at - b.uses[0].at);
+    return (
+      [...byName.entries()]
+        .map(([name, uses]) => ({ name, uses: uses.sort((a, b) => a.at - b.at) }))
+        // A track with no segment in this window has no use to draw.
+        .filter((row) => row.uses.length > 0)
+        .sort((a, b) => a.uses[0].at - b.uses[0].at)
+    );
   });
 
   const pct = (ms: number): number => (durationMs === 0 ? 0 : (ms / durationMs) * 100);
