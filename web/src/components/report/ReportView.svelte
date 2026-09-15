@@ -184,7 +184,7 @@
       tableKind,
       actor.guid,
       cutWindow,
-      filters.target === '' ? null : filters.target,
+      tableScope,
       measureOptions,
     );
   }
@@ -468,9 +468,9 @@
         const found = measured.get(actor.guid);
         return {
           ...actor,
-          total: found?.effective ?? 0,
+          total: found?.total ?? 0,
           effective: found?.effective ?? 0,
-          overheal: undefined,
+          overheal: actor.overheal === undefined ? undefined : (found?.overheal ?? 0),
           targets: found?.targets ?? [],
           measured: true,
         };
@@ -1019,6 +1019,7 @@
             {percentiles}
             parseFallback={tableParseFallback}
             pairsLabel={state.tab === 'damage-taken' ? 'Sources' : 'Targets'}
+            mitigation={state.tab === 'damage-taken'}
             measure={nightMode ? undefined : measureRow}
             approximate={actorTableApproximate}
             amountApproximate={filtersScale && !windowIsWhole}
@@ -1060,7 +1061,14 @@
             </p>
           {/if}
         {:else if state.tab === 'buffs'}
-          <RaidCooldowns tracks={scoped.auras} window={cutWindow} deaths={scoped.deaths} names={unitNames} />
+          <RaidCooldowns
+            tracks={scoped.auras}
+            casts={scoped.casts}
+            pulls={scoped.pulls ?? []}
+            window={cutWindow}
+            deaths={scoped.deaths}
+            names={unitNames}
+          />
           <AuraTable tracks={scoped.auras} durationMs={scoped.duration_ms} kind="BUFF" />
         {:else if state.tab === 'debuffs'}
           <AuraTable

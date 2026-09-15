@@ -38,7 +38,16 @@
     {
       term: 'Active',
       meaning:
-        'The share of the window the player spent casting or attacking. Time spent dead is not active.',
+        'The share of the window the player spent casting or attacking. Time spent dead is not active. The smaller per-second figure marked "while active" divides by that time instead of the whole window, so it says what they did while they were doing anything.',
+    },
+    {
+      term: 'Overkill',
+      meaning:
+        'The part of a killing hit beyond the health the player had left. A death line shows the hit whole and the overkill in brackets; the tables leave overkill out unless "Count overkill" is on.',
+    },
+    {
+      term: 'Max health',
+      meaning: 'The player’s full health bar at the time, so a hit can be read as a share of it.',
     },
     {
       term: 'Kill · Wipe 59% · pull 1 of 2',

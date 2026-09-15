@@ -53,7 +53,11 @@
     casts: { at: number; name: string }[],
     auras: { start_ms: number; end_ms: number; name: string }[] = [],
   ): void {
-    const bounds = (event.currentTarget as HTMLElement).getBoundingClientRect();
+    // The lane by its mark, not currentTarget: a delegated pointer event can hand over the
+    // island's root, whose width made every readout land a few seconds off the pointer.
+    const lane = (event.target as HTMLElement).closest<HTMLElement>('[data-lane]');
+    if (lane === null) return;
+    const bounds = lane.getBoundingClientRect();
     const at = current.startMs + ((event.clientX - bounds.left) / Math.max(bounds.width, 1)) * span;
     // The upper half of the lane is the aura bands: an aura covering this instant wins there.
     if (event.clientY - bounds.top < bounds.height / 2) {
@@ -134,18 +138,25 @@
         ><span class="bg-death mr-1 inline-block h-[14px] w-[3px] align-middle" aria-hidden="true"
         ></span>death</span
       >
-      {#if picked}
-        <span class="text-strong normal-case" data-testid="timeline-picked"
-          >{picked.name} · {formatDuration(picked.at)}</span
-        >
-      {:else}
-        <span>tap or hover a tick for the spell</span>
-      {/if}
       {#if bossCasts.length > 0}
         <span
           ><span class="bg-wipe mr-1 inline-block h-[10px] w-[2px] align-middle" aria-hidden="true"
           ></span>boss cast</span
         >
+      {/if}
+    </p>
+    <!-- The readout on one line of fixed height: eight aura names must never wrap and push
+         the lanes out from under the pointer that is reading them. -->
+    <p
+      class="text-muted label h-5 truncate"
+      title={picked === null ? undefined : `${picked.name} · ${formatDuration(picked.at)}`}
+    >
+      {#if picked}
+        <span class="text-strong normal-case" data-testid="timeline-picked"
+          >{picked.name} · {formatDuration(picked.at)}</span
+        >
+      {:else}
+        <span>tap or hover a tick for the spell, or an aura band for what was up</span>
       {/if}
     </p>
     <div
@@ -172,6 +183,7 @@
           <span class="text-wipe truncate text-[13px] font-semibold">{bossName}</span>
           <span
             class="bg-line-soft relative block h-[18px] w-full touch-none"
+            data-lane
             onpointerdown={(event) => pickNearest(event, bossCasts)}
             onpointermove={(event) => pickNearest(event, bossCasts)}
           >
@@ -199,6 +211,7 @@
           <span class="truncate text-[13px] font-semibold" style={`color: ${lane.color}`}>{lane.name}</span>
           <span
             class="bg-line-soft relative block h-[18px] w-full touch-none"
+            data-lane
             onpointerdown={(event) => pickNearest(event, lane.casts, lane.auras)}
             onpointermove={(event) => pickNearest(event, lane.casts, lane.auras)}
           >

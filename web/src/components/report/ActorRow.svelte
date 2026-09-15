@@ -159,7 +159,8 @@
   const activitySeconds = $derived(Math.round(actor.active_ms / 1000));
   const activityPct = $derived.by(() => {
     const over = actor.time_ms ?? durationMs;
-    return over === 0 ? 0 : (actor.active_ms / over) * 100;
+    // Never past the whole: a cast that straddles the fight's end can count a hair over.
+    return over === 0 ? 0 : Math.min((actor.active_ms / over) * 100, 100);
   });
   const showActivitySeconds = $derived(durationMs > 0 && durationMs < ACTIVITY_SECONDS_BELOW_MS);
   /** One source for the figure, which the desktop column and the phone card both read. */
@@ -191,7 +192,7 @@
   const schoolSplit = $derived.by(() => {
     // eslint-disable-next-line svelte/prefer-svelte-reactivity
     const totals = new Map<string, { name: string; token: string; total: number }>();
-    for (const ability of actor.abilities) {
+    for (const ability of shownAbilities) {
       const name = schoolName(ability.school) || 'Physical';
       const found = totals.get(name);
       if (found === undefined)
@@ -285,7 +286,7 @@
           title={approximate
             ? 'Overhealing, scaled to the window in proportion to the total'
             : 'Healing that landed on a full health bar'}
-          data-testid="row-overheal">{mark}{formatPercent(overhealPct)} over</span
+          data-testid="row-overheal">{amountMark}{formatPercent(overhealPct)} over</span
         >
       {/if}
     </span>
@@ -314,7 +315,7 @@
             class="text-[11px]"
             title="Per second over the time this row was active, not the whole window"
             data-testid="row-active-per-second"
-            >{formatPerSecond(shownEffective, actor.active_ms)} active</span
+            >{formatPerSecond(shownEffective, actor.active_ms)} while active</span
           >
         {/if}
       </span>

@@ -93,7 +93,7 @@ ORDER BY total DESC`,
     label: 'Pet damage, separated from its owner',
     sql: `SELECT source_name, adv_owner_guid, sum(amount) AS total
 FROM ${EVENTS_TABLE}
-WHERE kind = 'damage' AND adv_owner_guid NOT IN ('', '${NO_OWNER_GUID}')
+WHERE kind = 'damage' AND ((source_flags & 0x3000) <> 0 OR adv_owner_guid NOT IN ('', '${NO_OWNER_GUID}'))
   AND ${FIGHT_MS} BETWEEN :start AND :end
 GROUP BY 1, 2
 ORDER BY total DESC`,

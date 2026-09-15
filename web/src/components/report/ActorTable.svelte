@@ -15,6 +15,7 @@
     pairsLabel = 'Targets',
     approximate = false,
     amountApproximate = false,
+    mitigation = false,
     measure = undefined,
   }: {
     actors: Actor[];
@@ -27,11 +28,35 @@
     approximate?: boolean;
     /** True when the amounts are prorated too: a window met by a target or boss filter. */
     amountApproximate?: boolean;
+    /** Sum what did not land (absorbed, blocked, avoided) under the total: the Damage Taken table's headline. */
+    mitigation?: boolean;
     measure?: (actor: Actor) => Promise<ExactSplit>;
   } = $props();
 
   const peak = $derived(actors.reduce((highest, actor) => Math.max(highest, actor.effective), 0));
   const total = $derived(actors.reduce((sum, actor) => sum + actor.effective, 0));
+  /** Absorbed and blocked amounts and the avoided hits by type, over every row's abilities. */
+  const mitigated = $derived.by(() => {
+    let absorbed = 0;
+    let blocked = 0;
+    // eslint-disable-next-line svelte/prefer-svelte-reactivity
+    const avoided = new Map<string, number>();
+    for (const actor of actors) {
+      for (const ability of actor.abilities) {
+        absorbed += ability.absorbed ?? 0;
+        blocked += ability.blocked ?? 0;
+        for (const [type, count] of Object.entries(ability.misses ?? {})) {
+          avoided.set(type, (avoided.get(type) ?? 0) + count);
+        }
+      }
+    }
+    const hits = [...avoided.values()].reduce((sum, count) => sum + count, 0);
+    const byType = [...avoided.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .map(([type, count]) => `${count} ${type.toLowerCase()}`)
+      .join(', ');
+    return { absorbed, blocked, hits, byType };
+  });
   const totalActive = $derived(actors.reduce((sum, actor) => Math.max(sum, actor.active_ms), 0));
 
   /** The table as it stands, for a spreadsheet: name, share, amount, per second, active. */
@@ -110,9 +135,22 @@
         >{formatPerSecond(total, durationMs)}</span
       >
       <span class="text-muted tabular hidden text-right font-mono text-[13px] md:inline"
-        >{durationMs === 0 ? '' : formatPercent((totalActive / durationMs) * 100)}</span
+        >{durationMs === 0 ? '' : formatPercent(Math.min((totalActive / durationMs) * 100, 100))}</span
       >
     </div>
+    {#if mitigation && (mitigated.absorbed > 0 || mitigated.blocked > 0 || mitigated.hits > 0)}
+      <p
+        class="text-muted border-line-soft border-t px-2 py-2 text-[12px]"
+        data-testid="actor-mitigated"
+        title="What did not land, over every row shown: absorbed by shields, blocked, and hits avoided outright"
+      >
+        Mitigated: <span class="tabular font-mono">{formatAmount(mitigated.absorbed)}</span> absorbed ·
+        <span class="tabular font-mono">{formatAmount(mitigated.blocked)}</span> blocked ·
+        <span class="tabular font-mono">{mitigated.hits}</span> hits avoided{mitigated.hits > 0
+          ? ` (${mitigated.byType})`
+          : ''}
+      </p>
+    {/if}
     <div class="flex justify-end">
       <button
         type="button"

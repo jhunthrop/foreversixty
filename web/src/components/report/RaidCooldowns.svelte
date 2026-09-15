@@ -7,15 +7,26 @@
   import { splitUnitName } from '../../lib/characters';
   import { formatDuration } from '../../lib/report/format';
   import { isRaidCooldown } from '../../lib/report/raid-cooldowns';
-  import type { AuraTrack, Death } from '../../lib/report/types';
+  import type { AuraTrack, CastRow, Death, PullMark } from '../../lib/report/types';
   import type { TimeWindow } from '../../lib/report/window';
 
   let {
     tracks,
+    casts = [],
+    pulls = [],
     window: timeWindow,
     deaths = [],
     names,
-  }: { tracks: AuraTrack[]; window: TimeWindow; deaths?: Death[]; names: Map<string, string> } = $props();
+  }: {
+    tracks: AuraTrack[];
+    /** The fight's casts, for a cooldown that leaves no aura behind: Revival heals and is gone. */
+    casts?: CastRow[];
+    /** Over the night: where each pull sits, drawn as bands so a use can be read against its pull. */
+    pulls?: PullMark[];
+    window: TimeWindow;
+    deaths?: Death[];
+    names: Map<string, string>;
+  } = $props();
 
   interface Use {
     at: number;
@@ -44,6 +55,14 @@
       }
       byName.set(track.name, uses);
     }
+    // A cooldown that is a cast and no aura (Revival, Invoke Yu'lon) is drawn from its casts,
+    // as an instant, unless an aura of the same name already told the story.
+    for (const row of casts) {
+      if (!isRaidCooldown(row.spell_name) || byName.has(row.spell_name)) continue;
+      const uses = byName.get(row.spell_name) ?? [];
+      for (const at of row.sequence) uses.push({ at, end: at, source: row.name, target: 'the raid' });
+      byName.set(row.spell_name, uses);
+    }
     return (
       [...byName.entries()]
         .map(([name, uses]) => ({ name, uses: dedupe(uses).sort((a, b) => a.at - b.at) }))
@@ -57,15 +76,19 @@
   /** Where an instant sits across the lane, 0..100, from the window's start. */
   const pct = (ms: number): number => ((ms - timeWindow.startMs) / span) * 100;
 
-  /** Axis ticks every 10s, 30s or minute, whichever keeps them under about eight. */
+  /** Axis ticks at the coarsest of these steps that keeps them under about eight. */
   const axis = $derived.by(() => {
-    const step = span > 240_000 ? 60_000 : span > 80_000 ? 30_000 : 10_000;
+    const steps = [10_000, 30_000, 60_000, 120_000, 300_000, 600_000, 1_800_000];
+    const step = steps.find((candidate) => span / candidate <= 8) ?? steps[steps.length - 1];
     const first = Math.ceil(timeWindow.startMs / step) * step;
     const ticks: number[] = [];
     for (let at = first; at <= timeWindow.endMs; at += step) ticks.push(at);
     return ticks;
   });
 
+  const shownPulls = $derived(
+    pulls.filter((pull) => pull.end_ms > timeWindow.startMs && pull.start_ms < timeWindow.endMs),
+  );
   const shownDeaths = $derived(
     deaths.filter((death) => death.at_ms >= timeWindow.startMs && death.at_ms <= timeWindow.endMs),
   );
@@ -108,6 +131,16 @@
             >{row.uses.length}</span
           >
           <span class="bg-line-soft relative block h-[14px] w-full">
+            {#each shownPulls as pull, i (pull.start_ms)}
+              <span
+                class="absolute top-0 h-full {i % 2 === 1 ? 'bg-card-top' : ''} {pull.kill
+                  ? ''
+                  : 'border-wipe border-l border-dotted'}"
+                style={`left: ${Math.max(pct(pull.start_ms), 0)}%; width: ${Math.min(pct(pull.end_ms), 100) - Math.max(pct(pull.start_ms), 0)}%`}
+                title={pull.label}
+                aria-hidden="true"
+              ></span>
+            {/each}
             {#each row.uses as use, i (`${use.at}-${i}`)}
               <span
                 class="bg-gold absolute top-0 h-full opacity-80"
@@ -136,7 +169,8 @@
               >{formatDuration(at)}</span
             >
           {/each}
-          {#each shownDeaths as death (`${death.guid}-${death.at_ms}`)}
+          <!-- Over a whole night the daggers would smear; the lines through the lanes remain. -->
+          {#each shownDeaths.length <= 12 ? shownDeaths : [] as death (`${death.guid}-${death.at_ms}`)}
             <span
               class="text-death absolute top-0 -translate-x-1/2"
               style={`left: ${pct(death.at_ms)}%`}

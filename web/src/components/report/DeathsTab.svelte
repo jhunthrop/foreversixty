@@ -203,14 +203,20 @@
                   : death.killing_blow.spell_name} ·
               <span class="tabular font-mono">{formatAmount(death.killing_blow.amount)}</span>
               {#if death.killing_blow.overkill}
-                <span class="text-muted">
-                  (<span class="tabular font-mono">{formatAmount(death.killing_blow.overkill)}</span> overkill)
-                </span>
+                <span
+                  class="text-muted"
+                  title="Overkill: the part of that hit beyond the health they had left. The hit is counted whole here."
+                  >(<span class="tabular font-mono">{formatAmount(death.killing_blow.overkill)}</span> overkill)</span
+                >
               {/if}
             </span>
           {/if}
           {#if death.last.some((hit) => hit.max_hp)}
-            <span class="text-muted text-[13px]" data-testid="death-max-hp">
+            <span
+              class="text-muted text-[13px]"
+              data-testid="death-max-hp"
+              title="Their full health bar, for reading the hits against"
+            >
               max health
               <span class="tabular font-mono"
                 >{formatAmount(Math.max(...death.last.map((hit) => hit.max_hp ?? 0)))}</span

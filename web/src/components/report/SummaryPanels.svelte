@@ -187,17 +187,23 @@
       <ul class="flex flex-col">
         {#each deaths as death, i (`${death.guid}-${death.at_ms}-${i}`)}
           <li
-            class="grid min-h-8 grid-cols-[52px_minmax(0,1fr)_minmax(0,1.6fr)] items-center gap-x-2 text-[13px]"
+            class="grid min-h-8 grid-cols-[52px_minmax(0,1fr)] items-center gap-x-2 gap-y-0.5 py-1 text-[13px] md:grid-cols-[52px_minmax(0,1fr)_minmax(0,1.6fr)]"
           >
             <span class="text-muted tabular font-mono text-[12px]">{formatDuration(death.at_ms)}</span>
             <span class="truncate font-semibold" style={`color: ${classColorVar(death.class)}`}
               >{splitUnitName(death.name).name}</span
             >
-            <span class="text-muted truncate text-[12px]">
+            <!-- The killing hit wraps under the name on a phone rather than clipping its number. -->
+            <span
+              class="text-muted col-start-2 text-[12px] md:col-start-3"
+              title="The hit that killed them, and how hard it landed"
+            >
               {#if death.killing_blow}
                 {death.killing_blow.spell_name === '' ? 'Melee' : death.killing_blow.spell_name} ·
                 {splitUnitName(death.killing_blow.source_name).name} ·
-                <span class="tabular font-mono">{formatAmount(death.killing_blow.amount)}</span>
+                <span class="tabular font-mono whitespace-nowrap"
+                  >{formatAmount(death.killing_blow.amount)}</span
+                >
               {/if}
             </span>
           </li>

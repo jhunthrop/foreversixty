@@ -14,6 +14,7 @@ import type {
   ResourceTrack,
   Summary,
   ThreatRow,
+  PullMark,
 } from './types';
 
 export interface NightPlayerFight {
@@ -213,6 +214,9 @@ export function nightSummary(
   const threat = new Map<string, ThreatRow>();
   const resources = new Map<string, ResourceTrack>();
   const combatants = new Map<string, CombatantRow>();
+  /** Per unit name, the time it was in a pull: the denominator every aura on it divides by. */
+  const presence = new Map<string, number>();
+  const pullMarks: PullMark[] = [];
   let offset = 0;
   let engine = '';
 
@@ -221,6 +225,14 @@ export function nightSummary(
     if (summary === undefined) continue;
     engine = summary.engine_version;
     const label = `${fight.name} · pull ${pulls.get(fight.index) ?? 1}`;
+    pullMarks.push({ label, start_ms: offset, end_ms: offset + summary.duration_ms, kill: fight.kill });
+    for (const name of new Set([
+      ...summary.roster.map((row) => row.name),
+      ...summary.damage_taken.map((actor) => actor.name),
+      ...summary.auras.map((track) => track.target_name),
+    ])) {
+      presence.set(name, (presence.get(name) ?? 0) + summary.duration_ms);
+    }
     for (const table of ['damage_done', 'damage_taken', 'healing', 'healing_taken'] as const) {
       for (const actor of summary[table]) mergeActor(actorsBy[table], actor);
     }
@@ -322,7 +334,13 @@ export function nightSummary(
     healing: sorted(actorsBy.healing),
     healing_taken: sorted(actorsBy.healing_taken),
     deaths,
-    auras: [...auras.values()],
+    pulls: pullMarks,
+    // An aura's uptime is over every pull its target was in, not only the pulls it showed
+    // up in: a Bloodlust used on one pull in five is up a fifth as often as it looks.
+    auras: [...auras.values()].map((track) => ({
+      ...track,
+      time_ms: presence.get(track.target_name) ?? track.time_ms,
+    })),
     casts: [...casts.values()],
     interrupts: [...exchanges.values()].filter((row) => row.kind === 'interrupt'),
     dispels: [...exchanges.values()].filter((row) => row.kind === 'dispel'),

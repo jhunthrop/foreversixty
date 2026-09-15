@@ -22,9 +22,12 @@ export interface ExactSplit {
   targets: Pair[];
 }
 
-/** An actor's measured totals: what they did in the window, and to whom. */
+/** An actor's measured totals: what they did in the window, gross and net, and to whom. */
 export interface ExactTotals {
   effective: number;
+  /** Gross amount, overheal included, so the row's overheal share stays exact. */
+  total: number;
+  overheal: number;
   targets: Pair[];
 }
 
@@ -129,12 +132,12 @@ export function exactSplitSql(
   kind: ActorKind,
   guid: string,
   window: TimeWindow,
-  target: string | null = null,
+  target: TargetScope | null = null,
   options: MeasureOptions = {},
 ): { abilities: string; misses: string; targets: string } {
   const rows = rowsSql(kind, window, options);
   const pets = options.pets ?? NO_PETS;
-  const scope = `actor = ${quote(guid)}${target === null ? '' : ` AND other_guid = ${quote(target)}`}`;
+  const scope = `actor = ${quote(guid)}${scopeClause(target)}`;
   const own =
     kind === 'damage-taken'
       ? `dest_guid = ${quote(guid)}`
@@ -177,7 +180,8 @@ export function exactTableSql(
   options: MeasureOptions = {},
 ): string {
   return `WITH rows AS (${rowsSql(kind, window, options)})
-SELECT actor AS guid, other_guid, any_value(other_name) AS other_name, sum(effective) AS total
+SELECT actor AS guid, other_guid, any_value(other_name) AS other_name, sum(effective) AS total,
+  sum(amount) AS gross, sum(overheal) AS overheal
 FROM rows
 WHERE actor <> ''${scopeClause(scope)}
 GROUP BY actor, other_guid
@@ -205,9 +209,11 @@ export async function measureTable(
   const out = new Map<string, ExactTotals>();
   for (const row of rowsOf(result)) {
     const guid = String(row.guid ?? '');
-    const found = out.get(guid) ?? { effective: 0, targets: [] };
+    const found = out.get(guid) ?? { effective: 0, total: 0, overheal: 0, targets: [] };
     const total = num(row.total);
     found.effective += total;
+    found.total += num(row.gross);
+    found.overheal += num(row.overheal);
     found.targets.push({ guid: String(row.other_guid ?? ''), name: String(row.other_name ?? ''), total });
     out.set(guid, found);
   }
@@ -221,7 +227,7 @@ export async function measureExact(
   kind: ActorKind,
   guid: string,
   window: TimeWindow,
-  target: string | null = null,
+  target: TargetScope | null = null,
   options: MeasureOptions = {},
 ): Promise<ExactSplit> {
   const sql = exactSplitSql(kind, guid, window, target, options);

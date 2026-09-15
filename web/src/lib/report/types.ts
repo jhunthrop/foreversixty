@@ -37,6 +37,14 @@ export interface Pair {
   total: number;
 }
 
+/** Set by the whole-night fold: where each pull sits on the night's clock. */
+export interface PullMark {
+  label: string;
+  start_ms: number;
+  end_ms: number;
+  kill: boolean;
+}
+
 /** summary.Actor — one row of Damage Done, Damage Taken, Healing or Healing Taken. */
 export interface Actor {
   guid: string;
@@ -229,6 +237,8 @@ export interface RosterRow {
 
 /** summary.Summary — reports/<id>/fights/<n>/summary.json and live.json. */
 export interface Summary {
+  /** Set by the whole-night fold: the pulls, in order, on the night's clock. */
+  pulls?: PullMark[];
   engine_version: string;
   fight_index: number;
   duration_ms: number;
