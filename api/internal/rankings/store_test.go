@@ -530,8 +530,9 @@ func TestASecondFightFoldsIntoTheSameBracket(t *testing.T) {
 	if err := h.pool.QueryRow(t.Context(), `select count(*) from percentile_digests`).Scan(&brackets); err != nil {
 		t.Fatal(err)
 	}
-	if brackets != 3*len(Metrics) {
-		t.Fatalf("brackets = %d, want one per spec per metric", brackets)
+	// The fixture's three players share one spec, so one bracket per metric.
+	if brackets != len(Metrics) {
+		t.Fatalf("brackets = %d, want one per metric", brackets)
 	}
 }
 
