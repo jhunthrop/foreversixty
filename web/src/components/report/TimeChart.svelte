@@ -6,7 +6,7 @@
      two range inputs beneath it (which are how a keyboard and a screen reader work the
      chart), and the presets. All three call the same onWindow. -->
 <script lang="ts">
-  import { formatDuration } from '../../lib/report/format';
+  import { formatAmount, formatDuration } from '../../lib/report/format';
   import { BUCKET_MS, isFullWindow, type TimeWindow } from '../../lib/report/window';
 
   let {
@@ -31,6 +31,11 @@
   let width = $state(720);
   let dragFrom = $state<number | null>(null);
   let dragTo = $state<number | null>(null);
+  /** The second under the pointer, or null when it is off the canvas. */
+  let hoverMs = $state<number | null>(null);
+  const hoverValue = $derived(
+    hoverMs === null ? null : (series[Math.min(series.length - 1, Math.floor(hoverMs / BUCKET_MS))] ?? 0),
+  );
 
   const peak = $derived(series.reduce((highest, value) => Math.max(highest, value), 0));
 
@@ -133,6 +138,7 @@
   }
 
   function onMove(event: PointerEvent): void {
+    hoverMs = msOf(localX(event));
     if (dragFrom === null) return;
     dragTo = msOf(localX(event));
   }
@@ -161,6 +167,11 @@
         >{/if}</span
     >
     <span class="tabular text-muted font-mono text-[12px]" data-testid="window-label" aria-live="polite">
+      {#if hoverMs !== null && hoverValue !== null}
+        <span class="text-text mr-3" data-testid="chart-readout"
+          >{formatDuration(hoverMs)} · {formatAmount(hoverValue)}/s</span
+        >
+      {/if}
       {isFullWindow(current, durationMs)
         ? `Whole fight · ${formatDuration(durationMs)}`
         : `${formatDuration(current.startMs)} to ${formatDuration(current.endMs)}`}
@@ -175,6 +186,7 @@
     onpointermove={onMove}
     onpointerup={onUp}
     onpointercancel={onUp}
+    onpointerleave={() => (hoverMs = null)}
     data-testid="time-chart-canvas"
     aria-hidden="true"
   ></canvas>

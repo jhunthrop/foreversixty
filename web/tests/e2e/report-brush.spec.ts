@@ -11,6 +11,9 @@ test('dragging across the chart sets the window in the URL and rescopes the page
   await expect(page.getByTestId('window-label')).toContainText('Whole fight');
 
   const canvas = page.getByTestId('time-chart-canvas');
+  // On a phone the chart sits below the fight list; a drag at coordinates off the screen
+  // lands nowhere.
+  await canvas.scrollIntoViewIfNeeded();
   const box = (await canvas.boundingBox())!;
   await page.mouse.move(box.x + box.width * 0.1, box.y + box.height / 2);
   await page.mouse.down();

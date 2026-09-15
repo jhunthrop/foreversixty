@@ -44,6 +44,18 @@ export function formatDuration(ms: number): string {
  * viewer's zone: a raid leader comparing a log against a teammate's screenshot needs the
  * same clock on both, and the log file itself is the shared reference.
  */
+/** The calendar day of an instant, in UTC like formatClock: "26 Sep 2026". */
+export function formatDate(iso: string): string {
+  const at = new Date(iso);
+  if (Number.isNaN(at.getTime())) return '';
+  return new Intl.DateTimeFormat('en-GB', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(at);
+}
+
 export function formatClock(iso: string): string {
   const at = new Date(iso);
   if (Number.isNaN(at.getTime())) return '--:--:--';

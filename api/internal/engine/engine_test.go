@@ -150,7 +150,9 @@ func TestTheFixtureLogIsAvailableWhole(t *testing.T) {
 	if len(FixtureLog()) == 0 {
 		t.Fatal("the fixture log should not be empty")
 	}
-	if FixtureLines() != 8 {
-		t.Fatalf("lines = %d, want the fixture's eight", FixtureLines())
+	// Nine: the header, six spell lines and the tank's one swing, which a real log writes
+	// twice (SWING_DAMAGE, then SWING_DAMAGE_LANDED with the target's health).
+	if FixtureLines() != 9 {
+		t.Fatalf("lines = %d, want the fixture's nine", FixtureLines())
 	}
 }

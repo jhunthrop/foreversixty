@@ -68,7 +68,9 @@
    * from the desktop columns it stands in for.
    */
   function figuresFor(row: RosterRow): Figure[] {
+    const percentile = percentiles.get(row.guid);
     return [
+      ...(percentile === undefined ? [] : [{ label: 'Parse', value: String(Math.round(percentile)) }]),
       { label: 'DPS', value: formatPerSecond(row.damage_done, durationMs) },
       { label: 'HPS', value: formatPerSecond(row.healing_done, durationMs) },
       { label: 'Taken', value: formatAmount(row.damage_taken) },

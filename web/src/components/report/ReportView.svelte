@@ -20,7 +20,7 @@
   } from '../../lib/report/load';
   import { defaultFightIndex, resolveFightIndex } from '../../lib/report/fights';
   import { aggregateNight, type Night } from '../../lib/report/night';
-  import { formatDuration } from '../../lib/report/format';
+  import { formatDate, formatDuration } from '../../lib/report/format';
   import {
     ALL_FIGHTS,
     defaultState,
@@ -159,6 +159,18 @@
   const fightIsLive = $derived(fight?.in_progress === true);
 
   let filters = $state<ReportFilters>(DEFAULT_FILTERS);
+  /** 'Copied' for a moment after the link is copied; '' otherwise. */
+  let copied = $state('');
+
+  async function copyLink(): Promise<void> {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      copied = 'Copied';
+    } catch {
+      copied = 'Copy failed';
+    }
+    setTimeout(() => (copied = ''), 2000);
+  }
   /** Set when the url named a fight the report does not have, cleared on the next pick. */
   let missingFight = $state<number | null>(null);
 
@@ -619,9 +631,20 @@
           <span class="pill pill-site" data-testid="report-live">Live</span>
         {/if}
       </span>
+      <button
+        type="button"
+        class="border-line-warm rounded-control text-text ml-auto inline-flex h-11 items-center border px-3 text-[12px] font-bold tracking-[0.06em] uppercase md:h-9"
+        title="Copy a link to exactly this view"
+        data-testid="copy-link"
+        onclick={() => void copyLink()}
+      >
+        {copied === '' ? 'Copy link' : copied}
+      </button>
     </div>
     <p class="text-muted text-[13px]" data-testid="report-subtitle">
-      {meta.zone} · <span class="tabular font-mono">{fights.length} fights</span> · {meta.status}
+      {#if meta.zone !== ''}{meta.zone} ·{/if}
+      {#if fights.length > 0}<span class="tabular font-mono">{formatDate(fights[0].start)}</span> ·{/if}
+      <span class="tabular font-mono">{fights.length} fights</span> · {meta.status}
       {#if nightMode}· All boss pulls{/if}
       {#if fight}· {fight.name}
         {#if fight.kind === 'encounter' && !fight.in_progress}
@@ -655,7 +678,7 @@
     </p>
   {/if}
 
-  <div class="grid grid-cols-1 gap-[22px] px-[18px] md:grid-cols-[280px_minmax(0,1fr)] md:gap-8 md:px-0">
+  <div class="grid grid-cols-1 gap-[22px] px-[18px] md:grid-cols-[300px_minmax(0,1fr)] md:gap-8 md:px-0">
     <FightSelector {fights} selected={state.fight} onSelect={(index) => patch({ fight: index })} />
 
     <div class="flex min-w-0 flex-col gap-[22px] md:gap-6">

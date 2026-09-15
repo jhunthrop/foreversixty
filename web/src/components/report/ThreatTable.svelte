@@ -16,6 +16,7 @@
     approximateTitle,
     classColorVar,
     formatAmount,
+    formatPercent,
   } from '../../lib/report/format';
   import type { ThreatRow } from '../../lib/report/types';
 
@@ -32,6 +33,7 @@
 
   const ordered = $derived([...rows].sort((a, b) => b.threat - a.threat));
   const peak = $derived(ordered.reduce((highest, row) => Math.max(highest, row.threat), 0));
+  const total = $derived(ordered.reduce((sum, row) => sum + row.threat, 0));
   const incomplete = $derived(ordered.some((row) => !row.complete));
   const modelVersion = $derived(ordered[0]?.model_version ?? '');
   const mark = $derived(approximateMark(approximate));
@@ -48,10 +50,19 @@
         The per-class table lands with Forever's ability data.
       </p>
     {/if}
+    <div
+      class="text-muted label hidden grid-cols-[minmax(120px,1.2fr)_minmax(0,3fr)_96px_64px] gap-x-3 px-2 pb-1 md:grid"
+    >
+      <span>Unit</span>
+      <span title="Threat generated, against the highest row">Threat</span>
+      <span class="text-right" title="Threat accumulated from damage and healing over this window">Total</span
+      >
+      <span class="text-right" title="Share of all the threat in this table">Share</span>
+    </div>
     <ul class="flex flex-col">
       {#each ordered as row (row.guid)}
         <li
-          class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px] md:grid-cols-[minmax(120px,1.2fr)_minmax(0,3fr)_96px]"
+          class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px] md:grid-cols-[minmax(120px,1.2fr)_minmax(0,3fr)_96px_64px]"
           data-testid={`threat-${row.guid}`}
         >
           <span class="truncate font-semibold" style={`color: ${classColorVar(classOf.get(row.guid))}`}>
@@ -68,6 +79,10 @@
           >
             {mark}{formatAmount(Math.round(row.threat))}
           </span>
+          <span
+            class="text-muted tabular col-span-2 text-right font-mono text-[13px] md:col-span-1"
+            data-testid="threat-share">{formatPercent(total === 0 ? 0 : (row.threat / total) * 100)}</span
+          >
         </li>
       {/each}
     </ul>
