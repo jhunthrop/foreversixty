@@ -190,7 +190,10 @@ func TestPlacementCountsWhatAParseBeats(t *testing.T) {
 	}
 	one := New()
 	one.Add(500)
-	if got := one.Placement(500); got != 1 {
-		t.Errorf("a bracket of one places its only kill at %v, want 1", got)
+	if got := one.Placement(500); got != 0 {
+		t.Errorf("a bracket of one beats nothing: %v, want 0", got)
+	}
+	if got := one.Placement(900); got != 1 {
+		t.Errorf("a value above the one kill beats it: %v, want 1", got)
 	}
 }

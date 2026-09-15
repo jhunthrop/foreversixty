@@ -201,8 +201,9 @@ func (d *Digest) CDF(x float64) float64 {
 }
 
 // Placement is the share of the other values a parse beats, in 0..1: the
-// top of a bracket is 1, the bottom 0, and a bracket of one has nothing to
-// beat and reads 1. It counts centroids strictly below x, with a small
+// top of a bracket is 1, the bottom 0, and in a bracket of one nothing is
+// beaten, so it reads 0 (the page says "only" for that bracket rather than
+// a number). It counts centroids strictly below x, with a small
 // tolerance so a value the page recomputed to the hundredth still matches
 // the one the ingest stored, and never interpolates: CDF's interpolation
 // between two centroids placed the best of two kills at the 30th
@@ -211,8 +212,8 @@ func (d *Digest) CDF(x float64) float64 {
 func (d *Digest) Placement(x float64) float64 {
 	cs := d.centroids()
 	t := total(cs)
-	if t <= 1 {
-		return 1
+	if t == 0 {
+		return 0
 	}
 	floor := x * (1 - 0.0025)
 	var below float64
@@ -221,7 +222,7 @@ func (d *Digest) Placement(x float64) float64 {
 			below += c.Weight
 		}
 	}
-	return math.Min(below/(t-1), 1)
+	return math.Min(below/math.Max(t-1, 1), 1)
 }
 
 // MarshalBinary encodes the digest for the percentile_digests column.
