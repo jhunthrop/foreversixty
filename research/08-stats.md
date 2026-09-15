@@ -740,9 +740,11 @@ separate `WeaponSkills [WeaponSkillLen]float64` array keyed by weapon subclass. 
 `safeDepsOrder` is the topological order for stat dependencies. Changes:
 
 1. **Add `HealingPower → SpellDamage` at a ratio of 1/3**, globally, as a stat dependency. This is the
-   cleanest expression of Blizzard's rule and it is confirmed three ways (§7, §9). `HealingPower` already
-   precedes `SpellDamage` in `safeDepsOrder`, so the ordering is already correct — this is a one-line
-   dependency registration, not a reordering.
+   cleanest expression of Blizzard's rule and it is confirmed three ways (§7, §9). **Correction
+   (2026-09-15, from reading `sim/core/stats/deps.go` in the fork):** `safeDepsOrder` lists
+   `SpellDamage` *before* `HealingPower`, the reverse of what this section first claimed, so the
+   dependency needs `HealingPower` moved ahead of `SpellDamage` in that order as well as the
+   registration. The engine plan's Task 6 carries the reorder and a check that the order is safe.
 2. **Collapse the `SpellCrit` and `MeleeCrit` entries into one `Crit`** to match 12.1.
 3. **New per-class talent dependencies** from §7: Intellect→SpellDamage/HealingPower (Paladin Champion of
    the Light, Shaman Mental Quickness), Intellect→AttackPower (Hunter Careful Aim, Shaman Mental
