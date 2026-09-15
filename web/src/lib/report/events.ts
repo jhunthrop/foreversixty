@@ -13,13 +13,14 @@
 import { splitUnitName } from '../characters';
 import type { Summary } from './types';
 
-export type EventKind = 'cast' | 'aura-applied' | 'aura-removed' | 'damage' | 'death';
+export type EventKind = 'cast' | 'aura-applied' | 'aura-removed' | 'damage' | 'heal' | 'death';
 
 export const EVENT_KINDS: readonly { id: EventKind; label: string }[] = [
   { id: 'cast', label: 'Casts' },
   { id: 'aura-applied', label: 'Auras applied' },
   { id: 'aura-removed', label: 'Auras removed' },
   { id: 'damage', label: 'Hits before a death' },
+  { id: 'heal', label: 'Heals before a death' },
   { id: 'death', label: 'Deaths' },
 ];
 
@@ -70,6 +71,15 @@ export function summaryEvents(summary: Summary): SummaryEvent[] {
         guid: death.guid,
         amount: hit.amount,
         text: `${splitUnitName(hit.source_name).name} hit ${who} with ${hit.spell_name === '' ? 'Melee' : hit.spell_name}`,
+      });
+    }
+    for (const heal of death.heals ?? []) {
+      events.push({
+        atMs: heal.at_ms,
+        kind: 'heal',
+        guid: death.guid,
+        amount: heal.amount - (heal.overheal ?? 0),
+        text: `${splitUnitName(heal.source_name).name} healed ${who} with ${heal.spell_name}`,
       });
     }
     events.push({ atMs: death.at_ms, kind: 'death', guid: death.guid, text: `${who} died` });

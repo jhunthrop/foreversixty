@@ -207,6 +207,34 @@ func (a *Accumulator) Add(e event.Event) {
 	a.addDeaths(e)
 	if e.Kind == event.CombatantInfo && e.Combatant != nil {
 		a.combatants[e.Combatant.GUID] = e.Combatant
+		a.seedAuras(e)
+	}
+}
+
+// seedAuras opens a track for every aura the combatant snapshot says was
+// already up at the pull. The log writes no APPLIED line for those, so
+// without this a flask, a raid buff or a mitigation cast just before the
+// pull read as absent until it dropped, and uptime was a floor. The
+// snapshot carries only spell ids: the track is named by the first aura
+// event that mentions the spell, and "Spell #id" if none ever does.
+func (a *Accumulator) seedAuras(e event.Event) {
+	for _, aura := range e.Combatant.Auras {
+		if aura.SpellID == 0 {
+			continue
+		}
+		key := auraKey{target: e.Combatant.GUID, spellID: aura.SpellID}
+		if _, ok := a.auras[key]; ok {
+			continue
+		}
+		tr := &auraTrack{appliers: map[string]bool{}}
+		tr.TargetGUID, tr.TargetName = e.Combatant.GUID, a.name(e.Combatant.GUID)
+		tr.SpellID, tr.Name, tr.Type = aura.SpellID, "", "BUFF"
+		tr.open, tr.openAt, tr.openStacks = true, e.Time, 1
+		tr.openSource = aura.SourceGUID
+		if aura.SourceGUID != "" && aura.SourceGUID != units.NoGUID {
+			tr.appliers[aura.SourceGUID] = true
+		}
+		a.auras[key] = tr
 	}
 }
 

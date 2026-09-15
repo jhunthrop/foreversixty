@@ -15,6 +15,7 @@
     fetchLive,
     fetchReportFile,
     fetchReportMeta,
+    eventsUrl,
     fetchSummary,
     withFreshBase,
   } from '../../lib/report/load';
@@ -31,7 +32,7 @@
     withState,
     type ReportState,
   } from '../../lib/report/url';
-  import type { FightEntry, ReportFile, ReportMeta, RosterRow, Summary } from '../../lib/report/types';
+  import type { Actor, FightEntry, ReportFile, ReportMeta, RosterRow, Summary } from '../../lib/report/types';
   import {
     clampWindow,
     combinedSeries,
@@ -76,6 +77,7 @@
   import { encounterSlug as slugFor } from '../../lib/rankings/api';
   import { phaseAt } from '../../lib/rankings/phases';
   import { inSource, scopeSource } from '../../lib/report/source';
+  import { measureExact, sharedQueryLayer, type ExactSplit } from '../../lib/report/exact';
   import { resolveTreeSizes } from '../../lib/report/tree-sizes';
   import { classSlugOf } from '../../lib/report/planner-link';
 
@@ -133,6 +135,15 @@
   // global one, and this component uses window.location, window.history and
   // window.addEventListener.
   const timeWindow = $derived(windowOf(state, base?.duration_ms ?? 0));
+  /** The bosses' unit names over the night, for the debuff table's per-spell line. */
+  const bossUnitNames = $derived.by(() => {
+    const units = file?.units ?? [];
+    const guids = bossGuidsOf(
+      units,
+      fights.filter((entry) => entry.kind === 'encounter').map((entry) => entry.name),
+    );
+    return new Set(units.filter((unit) => guids.has(unit.guid)).map((unit) => unit.name));
+  });
   /** GUID to unit name from report.json, for the auras' casters. */
   const unitNames = $derived(new Map((file?.units ?? []).map((unit) => [unit.guid, unit.name])));
   /** The player GUIDs from report.json, for the source scope and the filters. */
@@ -143,6 +154,23 @@
    * Every table below reads this, never `summary`: one rescope per window change, then
    * the Source control's scope over it, so picking one player narrows the whole page.
    */
+  /**
+   * The exact split of one row inside the window, from the fight's events through the
+   * shared DuckDB engine. One fight at a time: the night has no single event file.
+   */
+  function measureRow(actor: Actor): Promise<ExactSplit> {
+    const kind =
+      state.tab === 'damage-taken' ? 'damage-taken' : state.tab === 'healing' ? 'healing' : 'damage-done';
+    return measureExact(
+      sharedQueryLayer(),
+      eventsUrl(dataBase, state.fight),
+      kind,
+      actor.guid,
+      cutWindow,
+      filters.target === '' ? null : filters.target,
+    );
+  }
+
   /** The window, cut at the last death when the filter asks for it. */
   const cutWindow = $derived.by(() => {
     if (base === null || !state.flags.includes('ignoreAfterDeath') || base.deaths.length === 0)
@@ -780,6 +808,7 @@
         {#if fight.kind === 'encounter' && !fight.in_progress}
           <span
             class="font-semibold {fight.kill ? 'text-kill' : 'text-wipe'}"
+            title={fight.kill ? 'The boss died' : 'The percentage is the boss’s health when the pull ended'}
             data-testid="report-fight-outcome">{outcomeLabel(fight)}</span
           >
         {/if}
@@ -895,6 +924,7 @@
             {parseFallback}
             {parseNotes}
             pairsLabel={state.tab === 'damage-taken' ? 'Sources' : 'Targets'}
+            measure={nightMode ? undefined : measureRow}
             approximate={actorTableApproximate}
           />
           {#if actorTableApproximate}
@@ -913,7 +943,12 @@
           <RaidCooldowns tracks={scoped.auras} durationMs={scoped.duration_ms} names={unitNames} />
           <AuraTable tracks={scoped.auras} durationMs={scoped.duration_ms} kind="BUFF" />
         {:else if state.tab === 'debuffs'}
-          <AuraTable tracks={scoped.auras} durationMs={scoped.duration_ms} kind="DEBUFF" />
+          <AuraTable
+            tracks={scoped.auras}
+            durationMs={scoped.duration_ms}
+            kind="DEBUFF"
+            bossNames={bossUnitNames}
+          />
         {:else if state.tab === 'casts'}
           <CastTable
             rows={scoped.casts}

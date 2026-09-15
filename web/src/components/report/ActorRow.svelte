@@ -34,6 +34,7 @@
   } from '../../lib/report/format';
   import type { Placement } from '../../lib/report/percentile';
   import type { Actor } from '../../lib/report/types';
+  import type { ExactSplit } from '../../lib/report/exact';
   import AbilityBar from './AbilityBar.svelte';
   import ClassIcon from './ClassIcon.svelte';
 
@@ -47,6 +48,7 @@
     pairsLabel = 'Targets',
     share = 0,
     approximate = false,
+    measure = undefined,
     characterLink = null,
   }: {
     rank: number;
@@ -60,6 +62,8 @@
     /** This row's share of its table's total, 0..100. */
     share?: number;
     approximate?: boolean;
+    /** Measures this row's split inside the window from the fight's own events. */
+    measure?: (actor: Actor) => Promise<ExactSplit>;
     characterLink?: { region: string; ruleset: string } | null;
   } = $props();
 
@@ -67,10 +71,40 @@
   const ACTIVITY_SECONDS_BELOW_MS = 10_000;
 
   let open = $state(false);
+  /** The exact split once measured; the prorated one shows until then. */
+  let exact = $state<ExactSplit | null>(null);
+  let measuring = $state(false);
+  let measureError = $state('');
+  // A new window or filter invalidates a measurement taken under the old one.
+  $effect(() => {
+    void [actor, approximate];
+    exact = null;
+    measureError = '';
+  });
+  async function runMeasure(): Promise<void> {
+    if (measure === undefined) return;
+    measuring = true;
+    measureError = '';
+    try {
+      exact = await measure(actor);
+    } catch (thrown) {
+      measureError = thrown instanceof Error ? thrown.message : 'The measurement did not run.';
+    } finally {
+      measuring = false;
+    }
+  }
+  /** What the detail tables show: the exact split when measured, the summary's otherwise. */
+  const shownAbilities = $derived(exact?.abilities ?? actor.abilities);
+  const shownTargets = $derived(exact?.targets ?? actor.targets);
+  const detailMark = $derived(exact === null ? mark : '');
+  const detailTitle = $derived(exact === null ? title : 'Measured from the fight’s events for this window');
   const color = $derived(classColorVar(actor.class));
   const display = $derived(splitUnitName(actor.name));
   const activitySeconds = $derived(Math.round(actor.active_ms / 1000));
-  const activityPct = $derived(durationMs === 0 ? 0 : (actor.active_ms / durationMs) * 100);
+  const activityPct = $derived.by(() => {
+    const over = actor.time_ms ?? durationMs;
+    return over === 0 ? 0 : (actor.active_ms / over) * 100;
+  });
   const showActivitySeconds = $derived(durationMs > 0 && durationMs < ACTIVITY_SECONDS_BELOW_MS);
   /** One source for the figure, which the desktop column and the phone card both read. */
   const activeText = $derived(showActivitySeconds ? `${activitySeconds}s` : formatPercent(activityPct));
@@ -113,7 +147,7 @@
     // A plain Map: built once inside the derived and never read reactively by key.
     // eslint-disable-next-line svelte/prefer-svelte-reactivity
     const merged = new Map<string, { name: string; total: number; count: number }>();
-    for (const target of actor.targets) {
+    for (const target of shownTargets) {
       const name = splitUnitName(target.name).name;
       const found = merged.get(name);
       if (found === undefined) merged.set(name, { name, total: target.total, count: 1 });
@@ -230,9 +264,31 @@
 
   {#if open}
     <div
-      class="bg-card-top flex flex-col gap-4 overflow-x-auto px-2 py-3 md:flex-row"
+      class="bg-card-top flex flex-col gap-4 overflow-x-auto px-2 py-3 md:flex-row md:flex-wrap"
       data-testid="row-detail"
     >
+      {#if approximate && measure !== undefined}
+        <div class="flex flex-wrap items-center gap-3 md:basis-full" data-testid="row-measure">
+          {#if exact === null}
+            <button
+              type="button"
+              class="border-line-warm rounded-control text-text inline-flex h-11 items-center border px-3 text-[12px] font-bold tracking-[0.06em] uppercase md:h-9"
+              disabled={measuring}
+              onclick={() => void runMeasure()}
+            >
+              {measuring ? 'Measuring…' : 'Measure this window exactly'}
+            </button>
+            <span class="text-muted text-[12px]"
+              >The split below is prorated (~). Measuring reads the fight’s events.</span
+            >
+          {:else}
+            <span class="text-kill text-[12px]" data-testid="row-measured"
+              >Measured exactly from the fight’s events.</span
+            >
+          {/if}
+          {#if measureError !== ''}<span class="text-wipe text-[12px]" role="alert">{measureError}</span>{/if}
+        </div>
+      {/if}
       <table class="min-w-[520px] flex-1 text-[13px]">
         <caption class="label text-muted text-left"
           >Abilities{#if schoolSplit.length > 1}
@@ -248,7 +304,7 @@
             >{/if}</caption
         >
         <tbody>
-          {#each [...actor.abilities]
+          {#each [...shownAbilities]
             .filter((ability) => ability.total > 0 || ability.hits + ability.ticks > 0 || (ability.misses !== undefined && Object.keys(ability.misses).length > 0))
             .sort((a, b) => b.effective - a.effective) as ability (ability.spell_id)}
             <tr class="border-line-soft border-b">
@@ -263,13 +319,13 @@
               >
               <td
                 class="tabular py-1 pr-3 text-right font-mono"
-                {title}
+                title={detailTitle}
                 aria-label={approximateAriaLabel(approximate, formatAmount(ability.effective))}
               >
-                {mark}{formatAmount(ability.effective)}
+                {detailMark}{formatAmount(ability.effective)}
               </td>
               <td class="text-muted tabular py-1 pr-3 text-right font-mono"
-                >{mark}{ability.hits + ability.ticks} hits</td
+                >{detailMark}{ability.hits + ability.ticks} hits</td
               >
               <td class="text-muted tabular py-1 pr-3 text-right font-mono" title="Largest single hit"
                 >{#if ability.max > 0}max {formatAmount(ability.max)}{/if}</td
@@ -316,10 +372,10 @@
               >
               <td
                 class="tabular py-1 text-right font-mono"
-                {title}
+                title={detailTitle}
                 aria-label={approximateAriaLabel(approximate, formatAmount(target.total))}
               >
-                {mark}{formatAmount(target.total)}
+                {detailMark}{formatAmount(target.total)}
               </td>
             </tr>
           {/each}

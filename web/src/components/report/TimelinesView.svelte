@@ -48,10 +48,22 @@
    * A tap or a pass of the pointer anywhere on a lane picks the nearest tick: a tick is
    * two pixels wide, and a finger needs the whole lane to be the target.
    */
-  function pickNearest(event: PointerEvent, casts: { at: number; name: string }[]): void {
-    if (casts.length === 0) return;
+  function pickNearest(
+    event: PointerEvent,
+    casts: { at: number; name: string }[],
+    auras: { start_ms: number; end_ms: number; name: string }[] = [],
+  ): void {
     const bounds = (event.currentTarget as HTMLElement).getBoundingClientRect();
     const at = current.startMs + ((event.clientX - bounds.left) / Math.max(bounds.width, 1)) * span;
+    // The upper half of the lane is the aura bands: an aura covering this instant wins there.
+    if (event.clientY - bounds.top < bounds.height / 2) {
+      const held = auras.filter((aura) => aura.start_ms <= at && at <= aura.end_ms);
+      if (held.length > 0) {
+        picked = { at: held[0].start_ms, name: held.map((aura) => aura.name).join(', ') };
+        return;
+      }
+    }
+    if (casts.length === 0) return;
     let nearest = casts[0];
     for (const cast of casts) if (Math.abs(cast.at - at) < Math.abs(nearest.at - at)) nearest = cast;
     // Within a fortieth of the window: past that the pointer is in a gap, not on a tick.
@@ -172,13 +184,13 @@
           <span class="truncate text-[13px] font-semibold" style={`color: ${lane.color}`}>{lane.name}</span>
           <span
             class="bg-line-soft relative block h-[18px] w-full touch-none"
-            onpointerdown={(event) => pickNearest(event, lane.casts)}
-            onpointermove={(event) => pickNearest(event, lane.casts)}
+            onpointerdown={(event) => pickNearest(event, lane.casts, lane.auras)}
+            onpointermove={(event) => pickNearest(event, lane.casts, lane.auras)}
           >
             {#each lane.auras as segment, i (`${segment.start_ms}-${i}`)}
               <span
-                class="absolute top-0 h-[6px]"
-                style={`left: ${pct(segment.start_ms)}%; width: ${Math.max(pct(segment.end_ms) - pct(segment.start_ms), 0.4)}%; background: ${lane.color}; opacity: .45`}
+                class="absolute h-[3px]"
+                style={`top: ${(i % 3) * 3}px; left: ${pct(segment.start_ms)}%; width: ${Math.max(pct(segment.end_ms) - pct(segment.start_ms), 0.4)}%; background: ${lane.color}; opacity: .5`}
                 title={`${segment.name} · ${formatDuration(segment.start_ms)} to ${formatDuration(segment.end_ms)}`}
               ></span>
             {/each}

@@ -45,7 +45,7 @@
   let error = $state('');
   const METRIC_IDS: CompareMetric[] = ['damage_done', 'dps', 'healing_done', 'hps', 'damage_taken', 'dtps'];
   const metric = $derived<CompareMetric>(
-    (METRIC_IDS as string[]).includes(metricParam) ? (metricParam as CompareMetric) : 'damage_done',
+    (METRIC_IDS as string[]).includes(metricParam) ? (metricParam as CompareMetric) : 'dps',
   );
 
   // A fight picked elsewhere on the page (the fight selector, or the browser's own back
@@ -149,7 +149,9 @@
       >
         <option value="">Pick a fight</option>
         {#each options as fight (fight.index)}
-          <option value={fight.index} selected={fight.index === rightIndex}>{fightLabel(fight)}</option>
+          <option value={String(fight.index)} selected={fight.index === rightIndex}
+            >{fightLabel(fight)}</option
+          >
         {/each}
       </select>
     </label>

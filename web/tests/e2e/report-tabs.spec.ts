@@ -202,7 +202,7 @@ test('compare puts two fights side by side with a per-player difference', async 
 // -- not fall back to fight 1's 1,484 (delta +1,626), which is what an unguarded write
 // would paint.
 test('a stale compare answer does not overwrite the fight actually selected', async ({ page }) => {
-  await page.goto('/reports/fixture2abcd?fight=3&mode=compare');
+  await page.goto('/reports/fixture2abcd?fight=3&mode=compare&cmetric=damage_done');
 
   const slow = await heldRoute(page, 1, 'continue');
   await page.getByTestId('compare-with').selectOption('1');

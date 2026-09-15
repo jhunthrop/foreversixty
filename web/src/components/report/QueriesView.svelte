@@ -12,17 +12,11 @@
      that discipline: one engine, one query at a time, and nothing left running after
      close(). -->
 <script lang="ts">
+  import { sharedQueryLayer } from '../../lib/report/exact';
   import { untrack } from 'svelte';
   import { eventsUrl as eventsUrlFor } from '../../lib/report/load';
   import { formatDuration } from '../../lib/report/format';
-  import {
-    QUERY_ABANDONED,
-    QUERY_TEMPLATES,
-    createDuckDbEngine,
-    createQueryLayer,
-    withWindow,
-    type QueryResult,
-  } from '../../lib/report/query';
+  import { QUERY_ABANDONED, QUERY_TEMPLATES, withWindow, type QueryResult } from '../../lib/report/query';
   import type { TimeWindow } from '../../lib/report/window';
 
   let {
@@ -36,14 +30,9 @@
   const RUNNING_NOTE = 'Running the query.';
   const FAILED_NOTE = 'That query did not run.';
 
-  const layer = createQueryLayer({
-    load: createDuckDbEngine,
-    fetchBytes: async (url) => {
-      const response = await fetch(url);
-      if (!response.ok) throw new Error('This fight’s event file did not load.');
-      return new Uint8Array(await response.arrayBuffer());
-    },
-  });
+  // One engine for the page, shared with the tables' exact measure (exact.ts): a second
+  // DuckDB worker would be a second thirty-megabyte heap for the same fight.
+  const layer = sharedQueryLayer();
 
   /** The file every run reads, and the identity a settled run is checked against. */
   const eventsUrl = $derived(eventsUrlFor(dataBaseUrl, fightIndex));
@@ -79,7 +68,8 @@
   // Svelte tears every live effect down on destroy, so leaving the Queries view, switching
   // mode, or the island itself unmounting all reach this: the DuckDB worker is terminated
   // rather than left holding its WebAssembly heap for the rest of the session.
-  $effect(() => () => void layer.close());
+  // The engine outlives this view: the tables' exact measure may want it next, and a
+  // fight switch re-registers the file. The island's unmount is the page's end anyway.
 
   function useTemplate(id: string): void {
     const template = QUERY_TEMPLATES.find((candidate) => candidate.id === id);

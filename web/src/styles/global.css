@@ -3,6 +3,11 @@
 @import './tokens.css';
 
 @layer base {
+  button:not(:disabled),
+  summary {
+    cursor: pointer;
+  }
+
   html {
     background: var(--color-bg);
     color: var(--color-text);

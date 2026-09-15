@@ -19,11 +19,14 @@
     durationMs,
     players,
     onTab,
+    onSelectPlayer = undefined,
   }: {
     summary: Summary;
     durationMs: number;
     players: ReadonlySet<string>;
     onTab: (tab: 'damage-done' | 'healing' | 'damage-taken' | 'deaths') => void;
+    /** Narrows the page to one player, the way the roster's names do. */
+    onSelectPlayer?: (guid: string) => void;
   } = $props();
 
   const ROWS = 8;
@@ -84,7 +87,13 @@
             class="flex min-w-0 items-center gap-1.5 truncate font-semibold"
             style={`color: ${classColorVar(actor.class)}`}
             title={splitUnitName(actor.name).name}
-            ><ClassIcon className={actor.class} size={16} />{splitUnitName(actor.name).name}</span
+            ><ClassIcon className={actor.class} size={16} />{#if onSelectPlayer}<button
+                type="button"
+                class="inline-flex min-h-11 items-center truncate underline-offset-2 hover:underline md:min-h-0"
+                style={`color: ${classColorVar(actor.class)}`}
+                title="Show only this player"
+                onclick={() => onSelectPlayer(actor.guid)}>{splitUnitName(actor.name).name}</button
+              >{:else}{splitUnitName(actor.name).name}{/if}</span
           >
           <span class="text-muted tabular text-right font-mono text-[12px]">{share.toFixed(1)}%</span>
           <span class="bg-line-soft col-span-3 block h-[8px] w-full md:col-span-1"
@@ -116,7 +125,13 @@
             class="flex min-w-0 items-center gap-1.5 truncate font-semibold"
             style={`color: ${classColorVar(actor.class)}`}
             title={splitUnitName(actor.name).name}
-            ><ClassIcon className={actor.class} size={16} />{splitUnitName(actor.name).name}</span
+            ><ClassIcon className={actor.class} size={16} />{#if onSelectPlayer}<button
+                type="button"
+                class="inline-flex min-h-11 items-center truncate underline-offset-2 hover:underline md:min-h-0"
+                style={`color: ${classColorVar(actor.class)}`}
+                title="Show only this player"
+                onclick={() => onSelectPlayer(actor.guid)}>{splitUnitName(actor.name).name}</button
+              >{:else}{splitUnitName(actor.name).name}{/if}</span
           >
           <span class="text-muted tabular text-right font-mono text-[12px]">{share.toFixed(1)}%</span>
           <span class="bg-line-soft col-span-3 block h-[8px] w-full md:col-span-1"

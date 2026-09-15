@@ -82,6 +82,11 @@
                   : fight.kill
                     ? 'text-kill'
                     : 'text-wipe'}"
+              title={fight.kind !== 'encounter'
+                ? 'Trash: how many enemies died'
+                : fight.kill
+                  ? 'The boss died'
+                  : 'The percentage is the boss’s health when the pull ended'}
               data-testid={`fight-${fight.index}-outcome`}
             >
               {outcome(fight)}

@@ -19,12 +19,13 @@ describe('summaryEvents', () => {
     );
   });
 
-  it('names the five kinds it can produce', () => {
+  it('names the six kinds it can produce', () => {
     expect(EVENT_KINDS.map((kind) => kind.id)).toEqual([
       'cast',
       'aura-applied',
       'aura-removed',
       'damage',
+      'heal',
       'death',
     ]);
   });

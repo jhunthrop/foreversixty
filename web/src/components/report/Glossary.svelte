@@ -36,8 +36,9 @@
         'The share of the window the player spent casting or attacking. Time spent dead is not active.',
     },
     {
-      term: 'Kill · Wipe · pull 1 of 2',
-      meaning: 'How a boss pull ended, and which attempt it was when a boss took more than one.',
+      term: 'Kill · Wipe 59% · pull 1 of 2',
+      meaning:
+        'How a boss pull ended, and which attempt it was when a boss took more than one. The percentage after a wipe is the boss’s health when the pull ended: how far the pull got.',
     },
     {
       term: 'Source',

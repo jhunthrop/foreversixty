@@ -313,6 +313,27 @@ func TestDeathsKeepTheKillingBlowAndTheAurasHeld(t *testing.T) {
 	}
 }
 
+func TestAurasUpAtThePullAreCountedFromItsStart(t *testing.T) {
+	_, _, s := build(t)
+	// The tank's combatant snapshot lists spell 17 (from the healer) and 871 (their own);
+	// neither has an APPLIED line, so without seeding they would not exist.
+	var seeded *AuraTrack
+	for i := range s.Auras {
+		if s.Auras[i].TargetGUID == tank && s.Auras[i].SpellID == 871 {
+			seeded = &s.Auras[i]
+		}
+	}
+	if seeded == nil {
+		t.Fatal("the aura the snapshot said was up at the pull is missing")
+	}
+	if seeded.Name != "Spell #871" || len(seeded.Segments) != 1 || seeded.Segments[0].StartMS != 0 {
+		t.Errorf("seeded track = %+v, want one segment from the pull's start named by its id", *seeded)
+	}
+	if seeded.Applications != 0 {
+		t.Errorf("a seeded aura was not applied during the fight: applications = %d", seeded.Applications)
+	}
+}
+
 func TestAuraUptimeAndSegments(t *testing.T) {
 	_, _, s := build(t)
 	var nova *AuraTrack

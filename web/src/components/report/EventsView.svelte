@@ -24,7 +24,16 @@
   const check = 'accent-gold';
 
   const all = $derived(summaryEvents(summary));
-  const shown = $derived(filterEvents(all, kinds, search));
+  const matching = $derived(filterEvents(all, kinds, search));
+  /** How many rows are on the page: a wipe's stream runs to thousands. */
+  const PAGE = 200;
+  let limit = $state(PAGE);
+  const shown = $derived(matching.slice(0, limit));
+  $effect(() => {
+    // Back to the first page whenever the filter changes.
+    void [kinds.size, search];
+    limit = PAGE;
+  });
 
   function toggle(kind: EventKind): void {
     if (kinds.has(kind)) kinds.delete(kind);
@@ -53,8 +62,9 @@
   </div>
 
   <p class="text-muted text-[12px]">
-    Everything the fight summary timestamps. The complete event stream, every field of every line, is in
-    Queries.
+    <span class="tabular font-mono">{matching.length}</span> events the summary timestamps: casts, auras going up
+    and down, the hits before each death, and the deaths. The complete event stream, every field of every line,
+    is in Queries.
   </p>
 
   {#if shown.length === 0}
@@ -74,5 +84,15 @@
         </li>
       {/each}
     </ul>
+    {#if matching.length > shown.length}
+      <button
+        type="button"
+        class="border-line-warm rounded-control text-text inline-flex h-11 items-center self-start border px-3 text-[12px] font-bold tracking-[0.06em] uppercase md:h-9"
+        data-testid="events-more"
+        onclick={() => (limit += PAGE)}
+      >
+        Show {Math.min(PAGE, matching.length - shown.length)} more of {matching.length - shown.length}
+      </button>
+    {/if}
   {/if}
 </div>

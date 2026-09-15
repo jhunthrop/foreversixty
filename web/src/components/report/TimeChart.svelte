@@ -123,14 +123,24 @@
     }
 
     context.strokeStyle = death;
-    context.lineWidth = 2;
+    context.fillStyle = death;
+    context.lineWidth = 1.5;
+    context.setLineDash([4, 3]);
     for (const death of deaths) {
       const x = Math.round(xOf(death.at_ms)) + 0.5;
       context.beginPath();
-      context.moveTo(x, 0);
+      context.moveTo(x, 6);
       context.lineTo(x, HEIGHT);
       context.stroke();
+      // A cap at the top: the mark is a death, not a spike of the line under it.
+      context.beginPath();
+      context.moveTo(x - 4, 0);
+      context.lineTo(x + 4, 0);
+      context.lineTo(x, 6);
+      context.closePath();
+      context.fill();
     }
+    context.setLineDash([]);
 
     if (hoverMs !== null) {
       const x = Math.round(xOf(hoverMs)) + 0.5;

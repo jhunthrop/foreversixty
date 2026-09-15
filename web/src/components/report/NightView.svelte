@@ -71,7 +71,7 @@
               {#each boss.fights as index, i (index)}
                 <button
                   type="button"
-                  class="tabular inline-flex min-h-6 items-center font-mono text-[11px] underline-offset-2 hover:underline"
+                  class="tabular inline-flex min-h-11 items-center font-mono text-[11px] underline-offset-2 hover:underline md:min-h-6"
                   title="Open this pull"
                   onclick={() => onSelect(index)}
                 >
@@ -126,7 +126,7 @@
             {#if boss.best}
               <button
                 type="button"
-                class="text-kill tabular inline-flex min-h-6 items-center font-mono underline-offset-2 hover:underline"
+                class="text-kill tabular inline-flex min-h-11 items-center font-mono underline-offset-2 hover:underline md:min-h-6"
                 onclick={() => onSelect(boss.best?.index ?? 0)}
               >
                 {formatDuration(boss.best.duration_ms)}
@@ -198,7 +198,11 @@
                 }}>{display.name}</span
               ></span
             >
-            <span class="text-muted text-[13px]">{player.spec ?? player.class ?? 'Unknown'}</span>
+            <span class="text-muted text-[13px]"
+              >{player.spec ?? player.class ?? 'Unknown'}
+              <span class="label ml-2 text-[10px]">{open === player.guid ? 'hide pulls' : 'per pull ›'}</span
+              ></span
+            >
             <span class="tabular hidden text-right font-mono md:inline">{player.fights}</span>
             <span class="tabular hidden flex-col text-right font-mono leading-tight md:flex">
               <span>{formatAmount(player.damage_done)}</span>
@@ -237,7 +241,7 @@
                     <td class="px-2 py-1">
                       <button
                         type="button"
-                        class="inline-flex min-h-6 items-center underline-offset-2 hover:underline"
+                        class="inline-flex min-h-11 items-center underline-offset-2 hover:underline md:min-h-6"
                         onclick={() => onSelect(entry.index)}
                       >
                         {entry.boss}

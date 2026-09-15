@@ -3,6 +3,7 @@ package parquet
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"os"
 	"testing"
 	"time"
@@ -180,7 +181,11 @@ func TestSummaryRecomputedFromTheEventsFileMatches(t *testing.T) {
 		}
 		return a.Snapshot(fightFixture(), "test")
 	}
-	want, got := recomputable(sum(evs)), recomputable(sum(back))
+	streamed, recomputed := sum(evs), sum(back)
+	// The snapshot's auras are seeded on the streamed side only: the events file carries
+	// no combatant payload, so those (target, spell) tracks are struck from both.
+	seeded := seededKeys(evs)
+	want, got := recomputable(streamed, seeded), recomputable(recomputed, seeded)
 	if !equalJSON(t, want, got) {
 		t.Fatal("the summary recomputed from the events file differs from the streamed one")
 	}
@@ -190,7 +195,7 @@ func TestSummaryRecomputedFromTheEventsFileMatches(t *testing.T) {
 // Gear, talents, spec and item level are structured fields that live in
 // summary.json and report.json, not in the events file, so they cannot come
 // back from a Parquet round trip and are not part of the property.
-func recomputable(s summary.Summary) summary.Summary {
+func recomputable(s summary.Summary, seeded map[string]bool) summary.Summary {
 	s.Combatants = nil
 	for i := range s.Roster {
 		s.Roster[i].SpecID, s.Roster[i].Spec = 0, ""
@@ -212,7 +217,37 @@ func recomputable(s summary.Summary) summary.Summary {
 	for i := range s.Deaths {
 		s.Deaths[i].Class = ""
 	}
+	// The auras the snapshot said were up at the pull are seeded from
+	// COMBATANT_INFO too (summary.seedAuras), and the deaths' held-aura lists
+	// with them; neither can come back from the events file.
+	kept := s.Auras[:0:0]
+	for _, tr := range s.Auras {
+		if !seeded[fmt.Sprintf("%s|%d", tr.TargetGUID, tr.SpellID)] {
+			kept = append(kept, tr)
+		}
+	}
+	s.Auras = kept
+	for i := range s.Deaths {
+		s.Deaths[i].AurasHeld = nil
+		s.Deaths[i].AurasLost = nil
+	}
 	return s
+}
+
+// seededKeys is every (target, spell) the combatant snapshots said was up,
+// read from the events themselves so nothing depends on how the summary
+// files them.
+func seededKeys(evs []event.Event) map[string]bool {
+	out := map[string]bool{}
+	for _, e := range evs {
+		if e.Kind != event.CombatantInfo || e.Combatant == nil {
+			continue
+		}
+		for _, aura := range e.Combatant.Auras {
+			out[fmt.Sprintf("%s|%d", e.Combatant.GUID, aura.SpellID)] = true
+		}
+	}
+	return out
 }
 
 func fightFixture() fight.Fight {

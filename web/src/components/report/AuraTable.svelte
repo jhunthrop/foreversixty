@@ -14,8 +14,41 @@
   import { formatDuration, formatPercent } from '../../lib/report/format';
   import type { AuraTrack } from '../../lib/report/types';
 
-  let { tracks, durationMs, kind }: { tracks: AuraTrack[]; durationMs: number; kind: 'BUFF' | 'DEBUFF' } =
-    $props();
+  let {
+    tracks,
+    durationMs,
+    kind,
+    bossNames = new Set<string>(),
+  }: {
+    tracks: AuraTrack[];
+    durationMs: number;
+    kind: 'BUFF' | 'DEBUFF';
+    /** The encounter bosses' unit names, for the per-spell line across the night. */
+    bossNames?: ReadonlySet<string>;
+  } = $props();
+
+  /**
+   * Over the night, one line per debuff across every boss: uptime on the bosses over the
+   * time the bosses were up. Only for folded tracks (those carrying their own time), and
+   * only for spells on a boss, since adds come and go.
+   */
+  const bySpell = $derived.by(() => {
+    if (kind !== 'DEBUFF' || bossNames.size === 0) return [];
+    // eslint-disable-next-line svelte/prefer-svelte-reactivity
+    const totals = new Map<string, { name: string; uptime: number; time: number; targets: number }>();
+    for (const track of rows) {
+      if (track.time_ms === undefined || !bossNames.has(track.target_name)) continue;
+      const found = totals.get(track.name) ?? { name: track.name, uptime: 0, time: 0, targets: 0 };
+      found.uptime += track.uptime_ms;
+      found.time += track.time_ms;
+      found.targets += 1;
+      totals.set(track.name, found);
+    }
+    return [...totals.values()]
+      .filter((entry) => entry.targets > 1)
+      .map((entry) => ({ ...entry, pct: entry.time === 0 ? 0 : (entry.uptime / entry.time) * 100 }))
+      .sort((a, b) => b.pct - a.pct);
+  });
 
   const rows = $derived(
     tracks
@@ -49,6 +82,28 @@
     No {kind === 'BUFF' ? 'buffs' : 'debuffs'} in this window.
   </p>
 {:else}
+  {#if bySpell.length > 0}
+    <div class="flex flex-col gap-1" data-testid="aura-by-spell">
+      <h2 class="label text-muted">On the bosses, across the night</h2>
+      <ul class="flex flex-col">
+        {#each bySpell as entry (entry.name)}
+          <li
+            class="border-line-soft grid min-h-9 grid-cols-[minmax(120px,1.2fr)_minmax(0,3fr)_80px] items-center gap-x-3 border-b px-2 py-1 text-[14px]"
+          >
+            <span class="truncate font-semibold">{entry.name}</span>
+            <span class="bg-line-soft block h-[6px] w-full"
+              ><span class="bg-wipe block h-full" style={`width: ${entry.pct}%`}></span></span
+            >
+            <span
+              class="tabular text-right font-mono"
+              title={`Uptime on ${entry.targets} bosses over the time they were up`}
+              >{formatPercent(entry.pct)}</span
+            >
+          </li>
+        {/each}
+      </ul>
+    </div>
+  {/if}
   <div class="flex flex-col" data-testid="aura-table">
     <div
       class="text-muted label hidden grid-cols-[minmax(120px,1.2fr)_minmax(120px,1.2fr)_minmax(0,3fr)_80px_64px] gap-x-3 px-2 pb-1 md:grid"

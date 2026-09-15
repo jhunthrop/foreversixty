@@ -2,6 +2,7 @@
 package summary
 
 import (
+	"fmt"
 	"sort"
 	"time"
 
@@ -333,6 +334,14 @@ func (a *Accumulator) addAuras(e event.Event) {
 		tr.SpellID, tr.Name, tr.Type = e.Spell.ID, e.Spell.Name, e.AuraType
 		a.auras[key] = tr
 	}
+	// A track seeded from the combatant snapshot knows its spell only by id
+	// until an event names it.
+	if tr.Name == "" && e.Spell.Name != "" {
+		tr.Name = e.Spell.Name
+		if e.AuraType != "" {
+			tr.Type = e.AuraType
+		}
+	}
 	if e.Source.GUID != "" && e.Source.GUID != units.NoGUID {
 		tr.appliers[e.Source.GUID] = true
 	}
@@ -528,6 +537,9 @@ func (a *Accumulator) auraRows() []AuraTrack {
 	out := make([]AuraTrack, 0, len(a.auras))
 	for _, tr := range a.auras {
 		row := tr.AuraTrack
+		if row.Name == "" {
+			row.Name = fmt.Sprintf("Spell #%d", row.SpellID)
+		}
 		if tr.open {
 			// The fight ended with the aura still up: close it at the end
 			// so uptime is not silently short.

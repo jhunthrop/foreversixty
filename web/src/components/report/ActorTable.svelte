@@ -3,6 +3,7 @@
   import type { Placement } from '../../lib/report/percentile';
   import { formatAmount, formatPerSecond, formatPercent } from '../../lib/report/format';
   import type { Actor } from '../../lib/report/types';
+  import type { ExactSplit } from '../../lib/report/exact';
   import ActorRow from './ActorRow.svelte';
 
   let {
@@ -14,6 +15,7 @@
     parseNotes = new Map<string, string>(),
     pairsLabel = 'Targets',
     approximate = false,
+    measure = undefined,
   }: {
     actors: Actor[];
     durationMs: number;
@@ -25,6 +27,7 @@
     parseNotes?: Map<string, string>;
     pairsLabel?: string;
     approximate?: boolean;
+    measure?: (actor: Actor) => Promise<ExactSplit>;
   } = $props();
 
   const peak = $derived(actors.reduce((highest, actor) => Math.max(highest, actor.effective), 0));
@@ -88,6 +91,7 @@
           {approximate}
           parseFallback={parseNotes.get(actor.guid) ?? parseFallback}
           {pairsLabel}
+          {measure}
           percentile={percentiles.get(actor.guid) ?? null}
           share={total === 0 ? 0 : (actor.effective / total) * 100}
         />
