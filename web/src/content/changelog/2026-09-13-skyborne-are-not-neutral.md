@@ -6,7 +6,7 @@ note: 'The faction-specific second racial comes from one demo transcription and 
 updated: 2026-09-14
 confidence: confirmed
 sources:
-  - label: 'Blizzplanet, What''s Next panel transcript'
+  - label: "Blizzplanet, What's Next panel transcript"
     url: https://warcraft.blizzplanet.com/blog/comments/blizzcon-2026-world-of-warcraft-whats-next-panel-transcript/4
     kind: community
   - label: 'Blizzard, Deep Dive panel recap'

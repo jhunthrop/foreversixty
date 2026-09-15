@@ -1,12 +1,12 @@
 ---
-title: 'Two dungeon level ranges revised: City of Dalaran 28 to 30, Krol''dok Stronghold 40 to 55.'
+title: "Two dungeon level ranges revised: City of Dalaran 28 to 30, Krol'dok Stronghold 40 to 55."
 date: 2026-09-14
 kind: community
 note: 'Both the old and the new ranges come from a single outlet. Blizzard has never published dungeon level ranges.'
 updated: 2026-09-14
 confidence: single-source
 sources:
-  - label: 'Output Lag, live log of the What''s Next panel'
+  - label: "Output Lag, live log of the What's Next panel"
     url: https://outputlag.com/news/everything-new-world-of-warcraft-forever/
     kind: community
 ---

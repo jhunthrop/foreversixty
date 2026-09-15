@@ -2,7 +2,7 @@
 title: 'Hardcore is coming to Forever after launch, with a safe layer refresh and one-way Legacy.'
 date: 2026-09-13
 kind: community
-note: 'Blizzard''s written recap covers the ruleset and the transfer rule. The layer-refresh system, the one-way Legacy detail and the Mak''gora tease come from panel coverage, not from a Blizzard post.'
+note: "Blizzard's written recap covers the ruleset and the transfer rule. The layer-refresh system, the one-way Legacy detail and the Mak'gora tease come from panel coverage, not from a Blizzard post."
 updated: 2026-09-14
 confidence: confirmed
 sources:

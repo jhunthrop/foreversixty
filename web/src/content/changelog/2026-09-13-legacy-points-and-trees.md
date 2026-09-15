@@ -2,7 +2,7 @@
 title: 'Legacy: 65 points earnable at launch, 16 spendable per character, three trees.'
 date: 2026-09-13
 kind: blizzard
-note: 'The point totals and tree names are Blizzard''s. The individual perks, their ranks, and the Merchant Favor crate economy come from one demo transcription.'
+note: "The point totals and tree names are Blizzard's. The individual perks, their ranks, and the Merchant Favor crate economy come from one demo transcription."
 updated: 2026-09-14
 confidence: confirmed
 sources:

@@ -15,7 +15,7 @@ sources:
   - label: 'PC Gamer, 10 big Forever details from BlizzCon'
     url: https://www.pcgamer.com/games/world-of-warcraft/10-big-world-of-warcraft-forever-details-from-blizzcon-no-separate-realms-optional-transmog-and-massively-improved-items/
     kind: community
-  - label: 'Output Lag, live log of the What''s Next panel'
+  - label: "Output Lag, live log of the What's Next panel"
     url: https://outputlag.com/news/everything-new-world-of-warcraft-forever/
     kind: community
 ---

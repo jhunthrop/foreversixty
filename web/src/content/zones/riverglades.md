@@ -6,10 +6,10 @@ levelMax: 44
 updated: 2026-09-14
 confidence: single-source
 sources:
-  - label: 'Blizzard, What''s Next panel recap'
+  - label: "Blizzard, What's Next panel recap"
     url: https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap
     kind: blizzard
-  - label: 'Output Lag, live log of the What''s Next panel'
+  - label: "Output Lag, live log of the What's Next panel"
     url: https://outputlag.com/news/everything-new-world-of-warcraft-forever/
     kind: community
   - label: 'ScreenRant, interview with Tim Jones and Nora Valletta'
