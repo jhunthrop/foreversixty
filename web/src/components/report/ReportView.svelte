@@ -61,7 +61,13 @@
   import ThreatTable from './ThreatTable.svelte';
   import TimeChart from './TimeChart.svelte';
   import TimelinesView from './TimelinesView.svelte';
-  import { applyActorFilters, bossGuids, playerGuids, type ReportFilters } from '../../lib/report/filters';
+  import {
+    applyActorFilters,
+    bossGuids,
+    bossGuidsOf,
+    playerGuids,
+    type ReportFilters,
+  } from '../../lib/report/filters';
   import { createPercentileLoader, percentileKey, type Placement } from '../../lib/report/percentile';
   import activeBuild from '../../data/active-build.json';
   import { loadTalents } from '../../lib/planner/load';
@@ -146,7 +152,7 @@
   const chartLabel = $derived(
     state.tab === 'damage-taken' ? 'Damage taken' : state.tab === 'healing' ? 'Healing' : 'Damage',
   );
-  const windowIsWhole = $derived(summary !== null && isFullWindow(timeWindow, summary.duration_ms));
+  const windowIsWhole = $derived(base !== null && isFullWindow(timeWindow, base.duration_ms));
 
   /**
    * True while the report is still being written -- the report's own status says so, or a
@@ -206,7 +212,13 @@
   const loader = createPercentileLoader();
 
   const filterContext = $derived({
-    bosses: bossGuids(file?.units ?? [], fight?.name ?? ''),
+    // The whole night's bosses are every encounter's; one pull's is its own.
+    bosses: nightMode
+      ? bossGuidsOf(
+          file?.units ?? [],
+          fights.filter((entry) => entry.kind === 'encounter').map((entry) => entry.name),
+        )
+      : bossGuids(file?.units ?? [], fight?.name ?? ''),
     players: playerSet,
     deaths: scoped?.deaths ?? [],
   });
@@ -277,7 +289,10 @@
         : state.source === 'enemies'
           ? source.filter((actor) => !filterContext.players.has(actor.guid))
           : source.filter((actor) => actor.guid === state.source);
-    return applyActorFilters(bySource, filters, filterContext);
+    // "Boss damage only" has no meaning for healing, whose targets are players: applied
+    // there it blanked the table.
+    const applied = state.tab === 'healing' ? { ...filters, bossOnly: false } : filters;
+    return applyActorFilters(bySource, applied, filterContext);
   });
 
   const metricLabel = $derived(state.tab === 'healing' ? 'Healing' : 'Damage');
@@ -345,7 +360,14 @@
         const { metric, value } = tab === 'summary' ? roleMetric(row) : tabMetric(tab, row);
         return {
           guid: row.guid,
-          query: { encounterId, difficulty, spec: row.spec ?? '', phase, metric, value: Math.round(value) },
+          query: {
+            encounterId,
+            difficulty,
+            spec: row.spec ?? '',
+            phase,
+            metric,
+            value: Math.round(value * 100) / 100,
+          },
         };
       })
       // A row is only asked about on the metric its role is ranked on: a healer's 34 dps
@@ -793,7 +815,12 @@
             onSelectPlayer={(guid) => patch({ source: guid })}
           />
         {:else if state.tab === 'damage-done' || state.tab === 'damage-taken' || state.tab === 'healing'}
-          <FilterBar {filters} actors={tabActors} onChange={setFilters} />
+          <FilterBar
+            {filters}
+            actors={tabActors}
+            onChange={setFilters}
+            showBossOnly={state.tab !== 'healing'}
+          />
           <ActorTable
             actors={tabActors}
             durationMs={scoped.duration_ms}
@@ -825,7 +852,7 @@
           <ExchangeTable
             rows={scoped.interrupts}
             emptyText="Nothing was interrupted in the whole fight."
-            casts={summary?.casts ?? []}
+            casts={base?.casts ?? []}
             players={playerSet}
           />
         {:else if state.tab === 'dispels'}
@@ -853,9 +880,15 @@
           />
         {/if}
       {/if}
-      {#if nightMode && state.view !== 'tables'}
+      {#if nightMode && (state.view !== 'tables' || state.mode !== 'analyze')}
         <p class="text-muted text-[14px]" data-testid="night-tables-only">
-          Timelines, events and queries are one pull's. Pick a pull from the list to see them.
+          Timelines, events, queries, compare and rankings are one pull's. Pick a pull from the list to see
+          them, or
+          <button
+            type="button"
+            class="text-gold inline-flex min-h-11 items-center underline-offset-2 hover:underline md:min-h-0"
+            onclick={() => patch({ mode: 'analyze', view: 'tables' })}>go back to the night's tables</button
+          >.
         </p>
       {/if}
       {#if scoped !== null && !nightMode && state.mode === 'analyze' && state.view === 'timelines'}

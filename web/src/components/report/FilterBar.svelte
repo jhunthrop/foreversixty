@@ -13,7 +13,14 @@
     filters,
     actors,
     onChange,
-  }: { filters: ReportFilters; actors: Actor[]; onChange: (filters: ReportFilters) => void } = $props();
+    showBossOnly = true,
+  }: {
+    filters: ReportFilters;
+    actors: Actor[];
+    onChange: (filters: ReportFilters) => void;
+    /** False on the Healing tab, where "boss damage only" has nothing to apply to. */
+    showBossOnly?: boolean;
+  } = $props();
 
   const abilities = $derived(abilityOptions(actors));
   const targets = $derived(targetOptions(actors));
@@ -62,17 +69,19 @@
     </select>
   </label>
 
-  <label class={toggle}>
-    <input
-      type="checkbox"
-      class={check}
-      checked={filters.bossOnly}
-      data-testid="filter-boss"
-      onchange={(event) =>
-        onChange({ ...filters, bossOnly: (event.currentTarget as HTMLInputElement).checked })}
-    />
-    Boss damage only
-  </label>
+  {#if showBossOnly}
+    <label class={toggle}>
+      <input
+        type="checkbox"
+        class={check}
+        checked={filters.bossOnly}
+        data-testid="filter-boss"
+        onchange={(event) =>
+          onChange({ ...filters, bossOnly: (event.currentTarget as HTMLInputElement).checked })}
+      />
+      Boss damage only
+    </label>
+  {/if}
   <label class={toggle}>
     <input
       type="checkbox"

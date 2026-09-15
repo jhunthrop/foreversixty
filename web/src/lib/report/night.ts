@@ -274,8 +274,13 @@ export function nightSummary(
   }
 
   const night = aggregateNight(fights, summaries);
+  // A player who left after two pulls is measured over two pulls, not the night: the
+  // Summary tab already does, and the two tabs must agree.
+  const timeOf = new Map(night.players.map((player) => [player.guid, player.time_ms]));
   const sorted = (table: Map<string, Actor>): Actor[] =>
-    [...table.values()].sort((a, b) => b.effective - a.effective || a.guid.localeCompare(b.guid));
+    [...table.values()]
+      .map((actor) => ({ ...actor, time_ms: timeOf.get(actor.guid) }))
+      .sort((a, b) => b.effective - a.effective || a.guid.localeCompare(b.guid));
   return {
     engine_version: engine,
     fight_index: 0,

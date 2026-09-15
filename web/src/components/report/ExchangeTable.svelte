@@ -72,11 +72,31 @@
   );
   const mark = wholeFightMark(true);
   const title = wholeFightTitle(true);
+
+  /** One line per source, most first: who did the interrupting or dispelling tonight. */
+  const bySource = $derived.by(() => {
+    // eslint-disable-next-line svelte/prefer-svelte-reactivity
+    const totals = new Map<string, { name: string; count: number }>();
+    for (const row of rows) {
+      const found = totals.get(row.source_guid);
+      if (found === undefined) totals.set(row.source_guid, { name: row.source_name, count: row.count });
+      else found.count += row.count;
+    }
+    return [...totals.values()].sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+  });
 </script>
 
 {#if ordered.length === 0}
   <p class="text-muted text-[14px]" data-testid="table-empty">{emptyText}</p>
 {:else}
+  <p class="flex flex-wrap gap-x-4 gap-y-1 text-[13px]" data-testid="exchange-by-source">
+    {#each bySource as entry (entry.name)}
+      <span
+        ><span class="font-semibold">{splitUnitName(entry.name).name}</span>
+        <span class="tabular font-mono">{mark}{entry.count}</span></span
+      >
+    {/each}
+  </p>
   <div class="flex flex-col" data-testid="exchange-table">
     <div
       class="text-muted label hidden grid-cols-[minmax(120px,1fr)_minmax(120px,1fr)_minmax(120px,1fr)_minmax(120px,1fr)_64px] gap-x-3 px-2 pb-1 md:grid"

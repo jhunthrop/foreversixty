@@ -2,8 +2,9 @@
 import { describe, expect, it } from 'vitest';
 import fixtureReport from '../../fixtures/report/report.json';
 import fixtureSummary from '../../fixtures/report/fights/3/summary.json';
-import type { ReportFile, Summary } from './types';
+import type { ReportFile, Summary, Unit } from './types';
 import {
+  bossGuidsOf,
   DEFAULT_FILTERS,
   abilityOptions,
   applyActorFilters,
@@ -104,5 +105,14 @@ describe('applyActorFilters', () => {
     );
     const victim = filtered.find((actor) => actor.name === 'Thalgrit-Nightslayer');
     expect(victim?.series.length).toBeLessThanOrEqual(11);
+  });
+
+  it('finds every night’s boss by name, and none of the players', () => {
+    const units = [
+      { guid: 'Creature-1', name: 'Kaal', kind: 'creature' },
+      { guid: 'Creature-2', name: 'Kryxis', kind: 'creature' },
+      { guid: 'Player-1', name: 'Kaal', kind: 'player' },
+    ] as Unit[];
+    expect([...bossGuidsOf(units, ['Kaal', 'Kryxis', ''])]).toEqual(['Creature-1', 'Creature-2']);
   });
 });

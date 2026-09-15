@@ -80,7 +80,10 @@
         : [
             {
               label: 'Parse',
-              value: `${Math.round(percentile.percentile)}${percentile.ranked > 0 ? ` of ${percentile.ranked}` : ''}`,
+              value:
+                percentile.ranked === 1
+                  ? 'only kill ranked'
+                  : `${Math.round(percentile.percentile)}${percentile.ranked > 0 ? ` of ${percentile.ranked}` : ''}`,
             },
           ]),
       { label: 'DPS', value: formatPerSecond(row.damage_done, durationMs) },
@@ -141,11 +144,11 @@
               : parseTitle(percentile.percentile, percentile.ranked)}
             data-testid="roster-percentile"
           >
-            {percentile === null
-              ? parseFallback
-              : Math.round(percentile.percentile)}{#if percentile !== null && percentile.ranked > 0}<span
-                class="text-muted ml-1 text-[10px]">of {percentile.ranked}</span
-              >{/if}
+            {#if percentile === null}{parseFallback}{:else if percentile.ranked === 1}<span class="text-muted"
+                >only</span
+              >{:else}{Math.round(percentile.percentile)}{#if percentile.ranked > 0}<span
+                  class="text-muted ml-1 text-[10px]">of {percentile.ranked}</span
+                >{/if}{/if}
           </span>
           <span class="truncate font-semibold" style={`color: ${classColorVar(row.class)}`}>
             {#if onSelectPlayer}

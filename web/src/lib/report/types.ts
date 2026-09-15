@@ -51,6 +51,8 @@ export interface Actor {
   targets: Pair[];
   /** One bucket per second from the fight's start. */
   series: number[];
+  /** Set by the whole-night fold: the combat time this actor was present for, which their per-second figure divides by. */
+  time_ms?: number;
 }
 
 /** summary.DamageRef — one damage event kept for the deaths view. */

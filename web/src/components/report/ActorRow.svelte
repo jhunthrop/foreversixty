@@ -76,6 +76,14 @@
    * Targets merged by name: a trash pack is six "Gluttonous Tick" GUIDs, and six rows of
    * the same name tell nobody anything the one row with a count does not.
    */
+  /** Ability names two different spell ids share, shown with the id to tell them apart. */
+  const sameName = $derived.by(() => {
+    // eslint-disable-next-line svelte/prefer-svelte-reactivity
+    const seen = new Map<string, number>();
+    for (const ability of actor.abilities) seen.set(ability.name, (seen.get(ability.name) ?? 0) + 1);
+    return new Set([...seen.entries()].filter(([, count]) => count > 1).map(([name]) => name));
+  });
+
   const targetsByName = $derived.by(() => {
     // A plain Map: built once inside the derived and never read reactively by key.
     // eslint-disable-next-line svelte/prefer-svelte-reactivity
@@ -115,11 +123,11 @@
         : parseTitle(percentile.percentile, percentile.ranked)}
       data-testid="row-percentile"
     >
-      {percentile === null
-        ? parseFallback
-        : Math.round(percentile.percentile)}{#if percentile !== null && percentile.ranked > 0}<span
-          class="text-muted ml-1 text-[10px]">of {percentile.ranked}</span
-        >{/if}
+      {#if percentile === null}{parseFallback}{:else if percentile.ranked === 1}<span class="text-muted"
+          >only</span
+        >{:else}{Math.round(percentile.percentile)}{#if percentile.ranked > 0}<span
+            class="text-muted ml-1 text-[10px]">of {percentile.ranked}</span
+          >{/if}{/if}
     </span>
 
     <span class="truncate font-semibold" style={`color: ${color}`} data-testid="row-name">
@@ -166,9 +174,9 @@
       data-testid="row-per-second"
     >
       <span class="flex flex-col leading-tight">
-        <span
-          >{formatPerSecond(actor.effective, durationMs)}<span class="label font-body ml-1.5 md:hidden"
-            >per sec</span
+        <span title={actor.time_ms === undefined ? undefined : 'Per second of the pulls this player was in'}
+          >{formatPerSecond(actor.effective, actor.time_ms ?? durationMs)}<span
+            class="label font-body ml-1.5 md:hidden">per sec</span
           ></span
         >
         {#if actor.active_ms > 0 && actor.active_ms < durationMs}
@@ -190,7 +198,10 @@
   </button>
 
   {#if open}
-    <div class="bg-card-top flex flex-col gap-4 px-2 py-3 md:flex-row" data-testid="row-detail">
+    <div
+      class="bg-card-top flex flex-col gap-4 overflow-x-auto px-2 py-3 md:flex-row"
+      data-testid="row-detail"
+    >
       <table class="flex-1 text-[13px]">
         <caption class="label text-muted text-left">Abilities</caption>
         <tbody>
@@ -199,7 +210,12 @@
             .sort((a, b) => b.total - a.total) as ability (ability.spell_id)}
             <tr class="border-line-soft border-b">
               <td class="py-1 pr-3"
-                >{ability.name}{#if schoolName(ability.school)}
+                >{ability.name}{#if sameName.has(ability.name)}
+                  <span
+                    class="text-muted ml-1 font-mono text-[11px]"
+                    title="Two spells share this name; this is spell id {ability.spell_id}"
+                    >#{ability.spell_id}</span
+                  >{/if}{#if schoolName(ability.school)}
                   <span class="text-muted ml-1 text-[11px]">{schoolName(ability.school)}</span>{/if}</td
               >
               <td

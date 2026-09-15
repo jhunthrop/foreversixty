@@ -47,10 +47,36 @@
    * lists make the reader interleave them by hand. Summaries from engines before 0.2.0
    * carry no heals, and then this is the damage alone.
    */
+  /** The row that is the killing blow: same instant, spell and amount. */
+  function isKillingBlow(death: Death, hit: DamageRef): boolean {
+    const blow = death.killing_blow;
+    return (
+      blow !== undefined &&
+      blow.at_ms === hit.at_ms &&
+      blow.spell_id === hit.spell_id &&
+      blow.amount === hit.amount
+    );
+  }
+
+  /**
+   * True when the last recorded hit demonstrably left them alive: its health-after is
+   * known and above zero. Then the log never showed what killed them.
+   */
+  function lethalHitMissing(death: Death): boolean {
+    const blow = death.killing_blow;
+    return blow !== undefined && blow.max_hp !== undefined && blow.max_hp > 0 && (blow.hp_after ?? 0) > 0;
+  }
+
   function lastEvents(death: Death): LastEvent[] {
+    // Nothing after the death itself: a hit the log wrote after UNIT_DIED is noise.
+    const cutoff = death.killing_blow?.at_ms ?? death.at_ms;
     const events: LastEvent[] = [
-      ...death.last.map((hit): LastEvent => ({ kind: 'damage', at_ms: hit.at_ms, hit })),
-      ...(death.heals ?? []).map((heal): LastEvent => ({ kind: 'heal', at_ms: heal.at_ms, heal })),
+      ...death.last
+        .filter((hit) => hit.at_ms <= cutoff)
+        .map((hit): LastEvent => ({ kind: 'damage', at_ms: hit.at_ms, hit })),
+      ...(death.heals ?? [])
+        .filter((heal) => heal.at_ms <= cutoff)
+        .map((heal): LastEvent => ({ kind: 'heal', at_ms: heal.at_ms, heal })),
     ];
     return events.sort((a, b) => a.at_ms - b.at_ms);
   }
@@ -165,7 +191,7 @@
         {#if shape(death)}
           <p class="text-[13px]" data-testid="death-shape">{shape(death)}</p>
         {/if}
-        {#if death.killing_blow && !death.killing_blow.overkill}
+        {#if death.killing_blow && lethalHitMissing(death)}
           <p class="text-muted text-[13px]" data-testid="death-unlogged">
             The log shows no lethal hit: the last recorded hit left them at
             {#if healthPct(death.killing_blow) !== null}
@@ -213,7 +239,7 @@
                   </tr>
                 {:else}
                   {@const hit = event.hit}
-                  {@const lethal = (hit.overkill ?? 0) > 0}
+                  {@const lethal = isKillingBlow(death, hit)}
                   {@const pct = lethal ? 0 : healthPct(hit)}
                   <tr class="border-line-soft border-b">
                     <td

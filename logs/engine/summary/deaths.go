@@ -472,10 +472,18 @@ func (a *Accumulator) addResources(e event.Event) {
 			}
 		}
 	}
+	// Buckets with no reading carry the last one forward: the log only
+	// reports power on the actor's own events, and a zero in every quiet
+	// second drew a mana bar that sat on the floor while ZeroMS said
+	// "never empty".
+	carry := int64(0)
+	if tr.haveLast {
+		carry = tr.lastVal
+	}
 	tr.lastVal, tr.lastSeen, tr.haveLast = e.Adv.CurrentPower, e.Time, true
 	b := a.bucket(e.Time)
 	for len(tr.Series) <= b {
-		tr.Series = append(tr.Series, 0)
+		tr.Series = append(tr.Series, carry)
 	}
 	tr.Series[b] = e.Adv.CurrentPower
 	if e.Adv.PowerCost > 0 {

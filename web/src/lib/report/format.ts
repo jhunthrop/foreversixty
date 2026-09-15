@@ -191,6 +191,8 @@ export function wholeFightAriaLabel(stale: boolean, text: string): string {
  */
 /** The hover text behind a Parse cell: the number's meaning, or why the cell is empty. */
 export function parseTitle(value: number | string, ranked = 0): string {
+  if (typeof value === 'number' && ranked === 1)
+    return 'The only ranked kill of this boss by this spec so far, so there is nothing to place it against yet';
   if (typeof value === 'number') {
     const among = ranked > 0 ? `${ranked} ranked ${ranked === 1 ? 'kill' : 'kills'}` : 'the ranked kills';
     return `${Math.round(value)}th percentile among ${among} of this boss by this spec on this ruleset`;

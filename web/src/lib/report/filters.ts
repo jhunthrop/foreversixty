@@ -46,8 +46,14 @@ export interface FilterContext {
  * for no trash fight -- which is right: "boss damage only" means nothing on trash.
  */
 export function bossGuids(units: Unit[], fightName: string): Set<string> {
+  return bossGuidsOf(units, [fightName]);
+}
+
+/** The same rule over several encounter names at once: the whole night's bosses. */
+export function bossGuidsOf(units: Unit[], fightNames: readonly string[]): Set<string> {
+  const names = new Set(fightNames.filter((name) => name !== ''));
   return new Set(
-    units.filter((unit) => unit.kind !== 'player' && unit.name === fightName).map((unit) => unit.guid),
+    units.filter((unit) => unit.kind !== 'player' && names.has(unit.name)).map((unit) => unit.guid),
   );
 }
 
