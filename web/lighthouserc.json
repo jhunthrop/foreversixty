@@ -6,7 +6,9 @@
         "http://localhost/index.html",
         "http://localhost/dungeons/hall-of-thanes.html",
         "http://localhost/classes.html",
-        "http://localhost/planner.html"
+        "http://localhost/planner.html",
+        "http://localhost/logs.html",
+        "http://localhost/reports/fixture2abcd.html"
       ],
       "numberOfRuns": 3,
       "settings": {
@@ -28,7 +30,7 @@
     "assert": {
       "assertMatrix": [
         {
-          "matchingUrlPattern": "^(?!.*/(?:index|planner)\\.html$).*$",
+          "matchingUrlPattern": "^(?!.*/(?:index|planner|logs)\\.html$)(?!.*/reports/).*$",
           "aggregationMethod": "median",
           "assertions": {
             "categories:performance": ["error", { "minScore": 0.95 }],
@@ -54,7 +56,7 @@
           }
         },
         {
-          "matchingUrlPattern": ".*/planner\\.html$",
+          "matchingUrlPattern": ".*/(?:planner|logs)\\.html$",
           "aggregationMethod": "median",
           "assertions": {
             "categories:performance": ["error", { "minScore": 0.9 }],
@@ -62,6 +64,18 @@
             "categories:seo": ["error", { "minScore": 0.95 }],
             "categories:best-practices": ["warn", { "minScore": 0.95 }],
             "total-blocking-time": ["error", { "maxNumericValue": 100 }],
+            "cumulative-layout-shift": ["error", { "maxNumericValue": 0.05 }]
+          }
+        },
+        {
+          "matchingUrlPattern": ".*/reports/.*\\.html$",
+          "aggregationMethod": "median",
+          "assertions": {
+            "categories:performance": ["error", { "minScore": 0.9 }],
+            "categories:accessibility": ["error", { "minScore": 0.95 }],
+            "categories:seo": ["error", { "minScore": 0.95 }],
+            "categories:best-practices": ["warn", { "minScore": 0.95 }],
+            "total-blocking-time": ["error", { "maxNumericValue": 150 }],
             "cumulative-layout-shift": ["error", { "maxNumericValue": 0.05 }]
           }
         }

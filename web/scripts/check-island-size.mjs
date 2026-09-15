@@ -2,7 +2,7 @@
 // The spec caps the planner island at 60 KB gzipped. CI runs this straight after the
 // island build so a dependency that quietly doubles the bundle fails the pull request
 // instead of the mobile Lighthouse budget three steps later.
-import { readFile } from 'node:fs/promises';
+import { readdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
 import { fileURLToPath } from 'node:url';
@@ -18,9 +18,25 @@ const BUDGETS = [
   { file: 'dist/report-island.js', limitBytes: 140 * 1024 },
 ];
 
+// Rankings, Character and Guild are ordinary `client:load` Astro islands, not standalone
+// Vite builds, so Astro emits them under dist/_astro/ with a content hash in the filename
+// (e.g. Rankings.xBviRjNL.js) rather than the fixed name the two budgets above match on.
+// None of their pages are in lighthouserc.json's collect.url, so nothing else in CI catches
+// a regression here. 16 KB gzipped is roughly 3x the heaviest of the three today (Rankings,
+// ~4.1-4.8 KB depending on gzip level) -- enough headroom that legitimate UI growth will not
+// flap the build, tight enough that an accidental heavy import (a chart library, a duplicated
+// data module) still trips it well before it could threaten a Lighthouse score no test here
+// measures directly.
+const PAGE_ISLAND_BUDGETS = [
+  { component: 'Rankings', limitBytes: 16 * 1024 },
+  { component: 'Character', limitBytes: 16 * 1024 },
+  { component: 'Guild', limitBytes: 16 * 1024 },
+];
+
 const webRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 let failed = false;
+
 for (const budget of BUDGETS) {
   const bytes = await readFile(path.join(webRoot, budget.file));
   const gzipped = gzipSync(bytes, { level: 9 }).length;
@@ -30,4 +46,30 @@ for (const budget of BUDGETS) {
     failed = true;
   }
 }
+
+const astroChunksDir = path.join(webRoot, 'dist/_astro');
+const astroChunks = await readdir(astroChunksDir);
+for (const budget of PAGE_ISLAND_BUDGETS) {
+  const pattern = new RegExp(`^${budget.component}\\.[\\w-]+\\.js$`);
+  const matches = astroChunks.filter((name) => pattern.test(name));
+  if (matches.length !== 1) {
+    console.error(
+      `Expected exactly one dist/_astro/${budget.component}.<hash>.js chunk, found ${matches.length}` +
+        (matches.length ? `: ${matches.join(', ')}` : '.'),
+    );
+    failed = true;
+    continue;
+  }
+  const chunkPath = path.join(astroChunksDir, matches[0]);
+  const bytes = await readFile(chunkPath);
+  const gzipped = gzipSync(bytes, { level: 9 }).length;
+  console.log(`dist/_astro/${matches[0]}: ${bytes.length} bytes raw, ${gzipped} bytes gzipped`);
+  if (gzipped > budget.limitBytes) {
+    console.error(
+      `dist/_astro/${matches[0]} is ${gzipped} bytes gzipped, over the ${budget.limitBytes} byte budget.`,
+    );
+    failed = true;
+  }
+}
+
 if (failed) process.exit(1);

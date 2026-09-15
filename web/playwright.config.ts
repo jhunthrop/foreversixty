@@ -3,7 +3,11 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: './tests/e2e',
-  timeout: 30_000,
+  // 30 s is right for everything but tests/e2e/report-queries.spec.ts, where the first
+  // query downloads and instantiates DuckDB's WebAssembly build. Those tests call
+  // test.slow(), which triples whatever this is, so 45 s gives them 135 s on a cold CI
+  // runner without slowing anything else down.
+  timeout: 45_000,
   use: { baseURL: 'http://localhost:4321', trace: 'retain-on-failure' },
   // ASTRO_PREVIEW_BACKGROUND disables Astro's auto-detected-AI-agent daemon mode for `astro preview`
   // (see astro/dist/cli/preview/index.js `isRunByAgent()`), which otherwise forks preview into the

@@ -32,7 +32,22 @@ const inline = id === FIXTURE_REPORT_ID ? JSON.stringify(fixtureMeta) : undefine
     tabindex="-1"
     class="mx-auto flex w-full max-w-[1344px] flex-col gap-[22px] pt-4 pb-10 md:gap-8 md:px-12 md:pt-7"
   >
-    <div id="report" data-report-mount data-report-id={id} data-report={inline}>
+    <!--
+      Reserves the report's space before the island mounts. Without it the placeholder is
+      one line tall, the footer sits inside the viewport, and rendering the report shoves
+      the footer down by roughly the report's own height -- a layout shift every bit as
+      real whether the box grows into the reservation or past it, so a reservation smaller
+      than the eventual content still costs the CLS budget. Measured on the fixture at
+      360px (Task 21's Lighthouse profile): the placeholder alone paints at 100svh (640px)
+      but the island's default view (first fight, Summary tab) settles at ~1288px, so
+      100svh was a guess that undershot by roughly a screen and turned into a 0.32 CLS,
+      more than six times the 0.05 budget. 200svh reserves ~1280px, within 8px of that
+      measured height, and the remaining shift is negligible. A real report's default view
+      will not match this fixture's height exactly, but it lands far closer than a single
+      screen -- the failure mode this replaces was undershooting by roughly a full screen,
+      not being off by a few rows.
+    -->
+    <div id="report" data-report-mount data-report-id={id} data-report={inline} class="min-h-[200svh]">
       <p class="text-muted px-[18px] text-[14px] md:px-0">Loading the report.</p>
     </div>
     <script type="module" src="/report-island.js"></script>

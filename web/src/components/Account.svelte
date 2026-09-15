@@ -110,7 +110,14 @@
 {#if mode === 'nav'}
   <div class="flex items-center gap-3 text-[13px]" data-testid="session-nav">
     {#if status === 'loading'}
-      <span class="text-muted">&nbsp;</span>
+      <!--
+        The placeholder is the signed-out label, hidden rather than absent, so the slot is
+        exactly the width and height it will have once the session resolves. A narrower
+        placeholder lets the header's 1fr brand column stretch, and the brand then wraps to
+        two lines and un-wraps on hydration: a 16px header growth that moves the whole page
+        and was the entirety of /logs' layout shift.
+      -->
+      <span class="invisible inline-flex min-h-11 items-center md:min-h-0" aria-hidden="true"> Sign in </span>
     {:else if signedIn}
       <a href="/account" class="text-nav hover:text-strong inline-flex min-h-11 items-center md:min-h-0">
         {displayName}
@@ -162,7 +169,13 @@
       </form>
     {/if}
     {#if notice !== ''}<p class="text-[14px]" data-testid="account-notice">{notice}</p>{/if}
-    {#if error !== ''}<p class="text-[14px]" role="alert" data-testid="account-error">{error}</p>{/if}
+    <!-- 21px is the measured line height of the text-[14px] error line: reserved so the
+         `load()` call above landing (or a `run()` action failing) never shoves the page
+         down after first paint, the same reason `mode === 'nav'` renders `&nbsp;` while
+         `status === 'loading'`. Repeated for the pairing and account modes below. -->
+    <div class="min-h-[21px]">
+      {#if error !== ''}<p class="text-[14px]" role="alert" data-testid="account-error">{error}</p>{/if}
+    </div>
   </div>
 {:else if mode === 'reports'}
   {#if status === 'loading'}
@@ -189,7 +202,9 @@
         cannot be reused.
       </p>
     {/if}
-    {#if error !== ''}<p class="text-[14px]" role="alert" data-testid="account-error">{error}</p>{/if}
+    <div class="min-h-[21px]">
+      {#if error !== ''}<p class="text-[14px]" role="alert" data-testid="account-error">{error}</p>{/if}
+    </div>
   </div>
 {:else}
   <div class="flex flex-col gap-8" data-testid="account">
@@ -292,6 +307,8 @@
 
       <MyReports {signedIn} />
     {/if}
-    {#if error !== ''}<p class="text-[14px]" role="alert" data-testid="account-error">{error}</p>{/if}
+    <div class="min-h-[21px]">
+      {#if error !== ''}<p class="text-[14px]" role="alert" data-testid="account-error">{error}</p>{/if}
+    </div>
   </div>
 {/if}
