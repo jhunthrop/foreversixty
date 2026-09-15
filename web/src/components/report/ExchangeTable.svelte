@@ -109,7 +109,7 @@
   </div>
   {#if missed.length > 0}
     <div class="flex flex-col gap-1" data-testid="interrupts-missed">
-      <h3 class="label text-muted">Went through</h3>
+      <h2 class="label text-muted">Went through</h2>
       <ul class="flex flex-col">
         {#each missed as entry (entry.spell_id)}
           <li

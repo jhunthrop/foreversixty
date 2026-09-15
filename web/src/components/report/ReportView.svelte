@@ -51,6 +51,7 @@
   import FilterBar from './FilterBar.svelte';
   import ModeBar from './ModeBar.svelte';
   import NightView from './NightView.svelte';
+  import Glossary from './Glossary.svelte';
   import QueriesView from './QueriesView.svelte';
   import RankingsMode from './RankingsMode.svelte';
   import ResourceGraphs from './ResourceGraphs.svelte';
@@ -72,6 +73,7 @@
   import { phaseAt } from '../../lib/rankings/phases';
   import { inSource, scopeSource } from '../../lib/report/source';
   import { resolveTreeSizes } from '../../lib/report/tree-sizes';
+  import { classSlugOf } from '../../lib/report/planner-link';
 
   let { reportId, inlineMeta = null }: { reportId: string; inlineMeta?: ReportMeta | null } = $props();
 
@@ -193,6 +195,15 @@
     deaths: scoped?.deaths ?? [],
   });
 
+  /**
+   * What an empty Parse cell means, for the tables to say so: '' on trash, where there is
+   * nothing to rank; 'wipe' on a wipe; a dash on a kill nothing of that spec has been
+   * ranked on yet.
+   */
+  const parseFallback = $derived(
+    fight?.encounter_id === undefined || fight.in_progress ? '' : fight.kill ? '–' : 'wipe',
+  );
+
   /** GUID to class, for the tables whose rows are not Actors. */
   const classOf = $derived(
     new Map((scoped?.roster ?? []).filter((row) => row.class).map((row) => [row.guid, row.class as string])),
@@ -208,9 +219,13 @@
   let treeSizes = $state(new Map<string, number[]>());
 
   $effect(() => {
+    // Only classes this build has talent data for: a log from another client can carry
+    // classes Forever does not, and asking for their file is a 404 on every load.
     const classes = [
       ...new Set(
-        (summary?.roster ?? []).map((row) => row.class).filter((name): name is string => name !== undefined),
+        (summary?.roster ?? [])
+          .map((row) => row.class)
+          .filter((name): name is string => name !== undefined && classSlugOf(name) !== null),
       ),
     ];
     // resolveTreeSizes (src/lib/report/tree-sizes.ts) only ever returns a class this build
@@ -285,7 +300,15 @@
     // not: the numbers are a partial fight's, and the cache key carries the rounded dps,
     // which moves on every five-second tick -- so a live 25-player pull asked for 25 fresh
     // t-digest lookups every five seconds, per viewer, and never hit the cache once.
-    if (summary === null || encounterId === undefined || !windowIsWhole || fight?.in_progress === true) {
+    // Only kills are ranked, so only kills are asked about: a wipe's dps placed among the
+    // kills read as "0" beside a tooltip saying wipes have no parse.
+    if (
+      summary === null ||
+      encounterId === undefined ||
+      !windowIsWhole ||
+      fight?.in_progress === true ||
+      fight?.kill !== true
+    ) {
       percentiles = new Map();
       return;
     }
@@ -696,6 +719,7 @@
         <div class="bg-bg sticky top-0 z-10 -mx-[18px] px-[18px] py-2 md:static md:mx-0 md:px-0 md:py-0">
           <ModeBar {state} {roster} onPatch={patch} />
         </div>
+        <Glossary />
         <!-- Tasks 11 to 17 insert the panels below the chart. -->
         {#if summary !== null}
           <TimeChart
@@ -735,6 +759,7 @@
               summary={scoped}
               durationMs={scoped.duration_ms}
               {percentiles}
+              {parseFallback}
               approximate={!windowIsWhole}
               dataBuild={activeBuild.build}
               {classOf}
@@ -748,6 +773,7 @@
               durationMs={scoped.duration_ms}
               {metricLabel}
               {percentiles}
+              {parseFallback}
               approximate={actorTableApproximate}
             />
             {#if actorTableApproximate}

@@ -18,6 +18,7 @@
     formatDuration,
     formatPerSecond,
     formatPercent,
+    parseTitle,
     percentileToken,
     wholeFightAriaLabel,
     wholeFightMark,
@@ -31,6 +32,7 @@
     summary,
     durationMs,
     percentiles = new Map<string, number>(),
+    parseFallback = '',
     approximate = false,
     dataBuild = '',
     classOf = new Map<string, string>(),
@@ -40,6 +42,8 @@
     summary: Summary;
     durationMs: number;
     percentiles?: Map<string, number>;
+    /** What an empty Parse cell shows: '' on trash, 'wipe', or a dash for not ranked yet. */
+    parseFallback?: string;
     approximate?: boolean;
     dataBuild?: string;
     classOf?: Map<string, string>;
@@ -87,7 +91,8 @@
 
 <section class="flex flex-col gap-4" data-testid="summary-tab">
   <p class="text-muted text-[13px]">
-    <span class="tabular font-mono">{roster.length}</span> players ·
+    <span class="tabular font-mono">{roster.length}</span>
+    {roster.length === 1 ? 'player' : 'players'} ·
     <span class="tabular font-mono">{summary.deaths.length}</span> deaths ·
     <span class="tabular font-mono">{formatDuration(durationMs)}</span>
     {#if missingBuffs > 0}
@@ -121,9 +126,12 @@
         >
           <span
             class="tabular col-start-2 row-start-1 text-right font-mono text-[12px] md:col-auto md:row-auto md:text-left"
+            class:text-muted={percentile === null}
             style={percentile === null ? undefined : `color: ${percentileToken(percentile)}`}
+            title={percentile === null ? parseTitle(parseFallback) : parseTitle(percentile)}
+            data-testid="roster-percentile"
           >
-            {percentile === null ? '' : Math.round(percentile)}
+            {percentile === null ? parseFallback : Math.round(percentile)}
           </span>
           <span class="truncate font-semibold" style={`color: ${classColorVar(row.class)}`}>
             {#if onSelectPlayer}
@@ -212,7 +220,7 @@
 
   {#if summary.combatants.length > 0}
     <div class="flex flex-col gap-2">
-      <h3 class="label text-muted">At pull</h3>
+      <h2 class="label text-muted">At pull</h2>
       <ul class="flex flex-col" data-testid="combatants">
         {#each summary.combatants as combatant (combatant.guid)}
           {@const display = splitUnitName(combatant.name)}

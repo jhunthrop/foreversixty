@@ -59,24 +59,28 @@
   </div>
 
   {#if state.mode === 'analyze'}
-    <div role="tablist" aria-label="View" class="flex flex-wrap items-center gap-1">
-      {#each VIEWS as option (option.id)}
-        <button
-          type="button"
-          role="tab"
-          class="{pill} rounded-control border"
-          class:border-gold={state.view === option.id}
-          class:bg-card-top={state.view === option.id}
-          class:border-line-soft={state.view !== option.id}
-          class:text-strong={state.view === option.id}
-          class:text-nav={state.view !== option.id}
-          aria-selected={state.view === option.id}
-          data-testid={`view-${option.id}`}
-          onclick={() => onPatch({ view: option.id as View })}
-        >
-          {option.label}
-        </button>
-      {/each}
+    <!-- The tablist holds only tabs: the Source picker beside it is a sibling, since a
+         label inside a tablist is a child the role does not allow. -->
+    <div class="flex flex-wrap items-center gap-1">
+      <div role="tablist" aria-label="View" class="flex flex-wrap items-center gap-1">
+        {#each VIEWS as option (option.id)}
+          <button
+            type="button"
+            role="tab"
+            class="{pill} rounded-control border"
+            class:border-gold={state.view === option.id}
+            class:bg-card-top={state.view === option.id}
+            class:border-line-soft={state.view !== option.id}
+            class:text-strong={state.view === option.id}
+            class:text-nav={state.view !== option.id}
+            aria-selected={state.view === option.id}
+            data-testid={`view-${option.id}`}
+            onclick={() => onPatch({ view: option.id as View })}
+          >
+            {option.label}
+          </button>
+        {/each}
+      </div>
 
       <label class="text-muted label ml-auto flex items-center gap-2" for="report-source">
         Source

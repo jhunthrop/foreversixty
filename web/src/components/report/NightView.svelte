@@ -36,7 +36,7 @@
   </p>
 
   <div class="flex flex-col gap-2">
-    <h3 class="label text-muted">Bosses</h3>
+    <h2 class="label text-muted">Bosses</h2>
     <div
       class="text-muted label hidden grid-cols-[minmax(160px,2fr)_64px_64px_64px_80px_64px_120px] gap-x-3 px-2 pb-1 md:grid"
     >
@@ -101,7 +101,7 @@
   </div>
 
   <div class="flex flex-col gap-2">
-    <h3 class="label text-muted">Players, across every boss pull</h3>
+    <h2 class="label text-muted">Players, across every boss pull</h2>
     <div
       class="text-muted label hidden grid-cols-[minmax(120px,1.4fr)_88px_56px_96px_96px_96px_72px_56px] gap-x-3 px-2 pb-1 md:grid"
     >

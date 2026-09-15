@@ -8,12 +8,15 @@
     durationMs,
     metricLabel,
     percentiles = new Map<string, number>(),
+    parseFallback = '',
     approximate = false,
   }: {
     actors: Actor[];
     durationMs: number;
     metricLabel: string;
     percentiles?: Map<string, number>;
+    /** What an empty Parse cell shows: '' on trash, 'wipe', or a dash for not ranked yet. */
+    parseFallback?: string;
     approximate?: boolean;
   } = $props();
 
@@ -46,6 +49,7 @@
           {peak}
           {durationMs}
           {approximate}
+          {parseFallback}
           percentile={percentiles.get(actor.guid) ?? null}
         />
       {/each}

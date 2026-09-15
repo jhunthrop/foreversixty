@@ -27,6 +27,7 @@
     formatAmount,
     formatPercent,
     formatPerSecond,
+    parseTitle,
     percentileToken,
     schoolName,
   } from '../../lib/report/format';
@@ -39,6 +40,7 @@
     peak,
     durationMs,
     percentile = null,
+    parseFallback = '',
     approximate = false,
     characterLink = null,
   }: {
@@ -47,6 +49,7 @@
     peak: number;
     durationMs: number;
     percentile?: number | null;
+    parseFallback?: string;
     approximate?: boolean;
     characterLink?: { region: string; ruleset: string } | null;
   } = $props();
@@ -100,10 +103,12 @@
 
     <span
       class="tabular font-mono text-[12px]"
+      class:text-muted={percentile === null}
       style={percentile === null ? undefined : `color: ${percentileToken(percentile)}`}
+      title={percentile === null ? parseTitle(parseFallback) : parseTitle(percentile)}
       data-testid="row-percentile"
     >
-      {percentile === null ? '' : Math.round(percentile)}
+      {percentile === null ? parseFallback : Math.round(percentile)}
     </span>
 
     <span class="truncate font-semibold" style={`color: ${color}`} data-testid="row-name">

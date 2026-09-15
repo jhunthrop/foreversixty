@@ -184,6 +184,15 @@ export function wholeFightAriaLabel(stale: boolean, text: string): string {
  * number legible at a glance. The two AA-safe text variants are used for rare and epic,
  * as the rarity text classes do elsewhere.
  */
+/** The hover text behind a Parse cell: the number's meaning, or why the cell is empty. */
+export function parseTitle(value: number | string): string {
+  if (typeof value === 'number')
+    return `${Math.round(value)}th percentile among ranked kills of this boss by this spec on this ruleset`;
+  if (value === 'wipe') return 'A wipe is not ranked';
+  if (value === '–') return 'Nothing of this spec has been ranked on this boss yet';
+  return '';
+}
+
 export function percentileToken(percentile: number): string {
   const p = Number.isFinite(percentile) ? percentile : 0;
   if (p >= 99) return 'var(--color-rarity-legendary)';

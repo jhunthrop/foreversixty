@@ -30,7 +30,7 @@
   class="border-line rounded-panel bg-raised flex flex-col border"
   data-testid="fight-selector"
 >
-  <ul class="flex max-h-[320px] flex-col overflow-y-auto md:max-h-[560px]">
+  <ul class="flex max-h-[320px] flex-col overflow-y-auto md:max-h-[calc(100vh-180px)]">
     {#if encounters.length > 0}
       <li>
         <button
