@@ -24,3 +24,18 @@ export function fixtureRankingsPaths(): { params: { slug: string } }[] {
   if (process.env.FOREVER_DATA !== 'fixture') return [];
   return [{ params: { slug: FIXTURE_ENCOUNTER_SLUG } }];
 }
+
+// Task 20's fixture character and guild pages -- one of each, the same pairing
+// fixtureReportPaths() and fixtureRankingsPaths() use above: a path here is what
+// Playwright navigates to and what the fixture-only [...path].astro route prerenders,
+// and it must never ship in a real build.
+export const FIXTURE_CHARACTER_PATH = 'us/hardcore/elyra-duskvale';
+export const FIXTURE_GUILD_PATH = 'us/hardcore/the-last-watch';
+
+export function fixtureCharacterPaths(): { params: { path: string } }[] {
+  return process.env.FOREVER_DATA === 'fixture' ? [{ params: { path: FIXTURE_CHARACTER_PATH } }] : [];
+}
+
+export function fixtureGuildPaths(): { params: { path: string } }[] {
+  return process.env.FOREVER_DATA === 'fixture' ? [{ params: { path: FIXTURE_GUILD_PATH } }] : [];
+}

@@ -185,3 +185,64 @@ test('a stale filtered response is discarded once a newer filter has already ans
   await expect(page.getByTestId('rankings-count')).toContainText('1 ranked kills');
   await expect(page.getByTestId('ranking-rows').locator('li')).toHaveCount(1);
 });
+
+const CHARACTER = {
+  ok: true,
+  data: {
+    character: { name: 'Elyra Duskvale', region: 'us', ruleset: 'hardcore', class: 'Priest' },
+    best: [{ encounter: 'Warden Kelthas', encounter_id: 9001, difficulty: 8, metric: 'hps', value: 1840, percentile: 96.2, spec: 'Discipline', fought_at: '2026-12-09T22:10:00Z', report_id: 'fixture2abcd', fight_index: 3 }],
+    history: [{ encounter: 'Warden Kelthas', encounter_id: 9001, difficulty: 8, metric: 'hps', value: 1840, percentile: 96.2, spec: 'Discipline', fought_at: '2026-12-09T22:10:00Z', report_id: 'fixture2abcd', fight_index: 3 }],
+    builds_seen: [{ talent_split: '31/20/0', spec: 'Discipline', first_seen: '2026-12-09T22:10:00Z' }],
+  },
+  error: null,
+  request_id: 'r',
+};
+
+const GUILD = {
+  ok: true,
+  data: {
+    guild: { name: 'The Last Watch', region: 'us', ruleset: 'hardcore' },
+    progression: [
+      { encounter: 'Warden Kelthas', encounter_id: 9001, difficulty: 8, kills: 2, pull_count: 14, first_kill_at: '2026-12-09T22:10:00Z' },
+      { encounter: 'Deep Warden', encounter_id: 9002, difficulty: 8, kills: 0, pull_count: 31 },
+    ],
+    roster_best: [{ player: { key: 'us/hardcore/elyra-duskvale', name: 'Elyra Duskvale', class: 'Priest', spec: 'Discipline' }, encounter: 'Warden Kelthas', encounter_id: 9001, metric: 'hps', value: 1840, fought_at: '2026-12-09T22:10:00Z' }],
+    reports: [{ id: 'fixture2abcd', title: 'Sanguine Depths, fixture night', zone: 'Sanguine Depths', created_at: '2026-09-26T20:09:00Z' }],
+  },
+  error: null,
+  request_id: 'r',
+};
+
+test('a character page shows bests, history and the builds they were seen in', async ({ page }) => {
+  await page.route('**/v1/characters/us/hardcore/elyra-duskvale', (route) =>
+    route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(CHARACTER) }),
+  );
+
+  await page.goto('/character/us/hardcore/elyra-duskvale');
+
+  await expect(page.locator('h1')).toHaveText('Elyra Duskvale');
+  await expect(page.getByTestId('character')).toContainText('Hardcore US');
+  await expect(page.getByTestId('character-best')).toContainText('Warden Kelthas');
+  await expect(page.getByTestId('character-history')).toContainText('Discipline');
+  // A split as text, not a planner link: the log does not record the order points were spent in.
+  await expect(page.getByTestId('character-builds')).toContainText('31/20/0');
+  await expect(page.getByTestId('character-builds').getByRole('link')).toHaveCount(0);
+});
+
+test('a guild page leads with progression, pull counts and kill dates', async ({ page }) => {
+  await page.route('**/v1/guilds/us/hardcore/the-last-watch', (route) =>
+    route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(GUILD) }),
+  );
+
+  await page.goto('/guild/us/hardcore/the-last-watch');
+
+  await expect(page.locator('h1')).toHaveText('The Last Watch');
+  await expect(page.getByTestId('guild')).toContainText('1 bosses down · 45 pulls');
+  await expect(page.getByTestId('guild-progression')).toContainText('31 pulls');
+  await expect(page.getByTestId('guild-kill').nth(1)).toHaveText('not killed');
+  await expect(page.getByTestId('guild-roster').getByRole('link', { name: 'Elyra Duskvale' })).toHaveAttribute(
+    'href',
+    '/character/us/hardcore/elyra-duskvale',
+  );
+  await expect(page.getByTestId('guild-reports')).toContainText('Sanguine Depths, fixture night');
+});

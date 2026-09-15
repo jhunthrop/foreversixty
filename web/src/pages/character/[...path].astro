@@ -1,0 +1,29 @@
+---
+// web/src/pages/character/[...path].astro
+// Fixture-only, like the report and rankings fixture pages: one character Playwright can
+// reach without a Worker. A real build prerenders none.
+import Base from '../../layouts/Base.astro';
+import Character from '../../components/Character.svelte';
+import { fixtureCharacterPaths } from '../../lib/report/shell-paths';
+
+export function getStaticPaths() {
+  return fixtureCharacterPaths();
+}
+
+const { path } = Astro.params;
+---
+
+<Base
+  title="Character"
+  description="A World of Warcraft: Forever character: every ranked fight, best per encounter, and the builds they were seen in."
+  path={`/character/${path}`}
+  session
+>
+  <main
+    id="main"
+    tabindex="-1"
+    class="mx-auto flex w-full max-w-[1344px] flex-col gap-[22px] px-[18px] pt-4 pb-10 md:gap-8 md:px-12 md:pt-7"
+  >
+    <Character client:load />
+  </main>
+</Base>
