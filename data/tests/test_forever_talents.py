@@ -1,3 +1,5 @@
+import json
+
 import pytest
 
 from pipeline.normalize.forever_talents import (
@@ -150,3 +152,33 @@ def test_a_talent_with_no_ranks_is_refused():
     p["talents"]["161"]["105954"]["descriptions"] = {}
     with pytest.raises(ForeverTalentError, match="no ranks"):
         normalize(p)
+
+
+def test_an_icon_no_client_holds_is_repointed_at_the_placeholder(tmp_path):
+    from pipeline.forever import _repoint_to_placeholder
+    from pipeline.icons import PLACEHOLDER_ICON
+
+    talents = tmp_path / "talents"
+    talents.mkdir()
+    (talents / "druid.json").write_text(
+        json.dumps(
+            {
+                "trees": [
+                    {
+                        "talents": [
+                            {"icon": "classic_ability_druid_demoralizingroar"},
+                            {"icon": "spell_nature_regeneration"},
+                        ]
+                    }
+                ]
+            }
+        )
+    )
+    changed = _repoint_to_placeholder(tmp_path, {"classic_ability_druid_demoralizingroar"})
+    assert changed == 1
+    icons = [
+        t["icon"]
+        for tree in json.loads((talents / "druid.json").read_text())["trees"]
+        for t in tree["talents"]
+    ]
+    assert icons == [PLACEHOLDER_ICON, "spell_nature_regeneration"]

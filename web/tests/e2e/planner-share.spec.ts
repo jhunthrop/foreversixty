@@ -1,6 +1,8 @@
 import { crc32, deflateSync } from 'node:zlib';
 import { expect, test } from '@playwright/test';
 
+import { ACTIVE_BUILD } from './support/active-build';
+
 const SAVED = {
   ok: true,
   data: { id: 'k7x2qm4a', url: 'https://foreversixty.gg/b/k7x2qm4a' },
@@ -62,7 +64,7 @@ test('sharing a build posts the contract body and shows the link', async ({ page
   expect(body).toEqual({
     class_id: 1,
     race_id: 1,
-    tree_version: '1.15.9.69722',
+    tree_version: ACTIVE_BUILD,
     point_order: [1001, 1001, 1001],
     gear: {},
     title: 'Arms leveling',

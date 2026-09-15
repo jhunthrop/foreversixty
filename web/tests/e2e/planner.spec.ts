@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 
+import { ACTIVE_BUILD } from './support/active-build';
+
 test('the planner opens on the default class with an empty build', async ({ page }) => {
   const errors: string[] = [];
   page.on('console', (m) => {
@@ -60,7 +62,7 @@ test('a slow class switch cannot leave one class holding another class trees', a
   await page.route('**/data/*/talents/paladin.json', (route) =>
     route.fulfill({
       json: {
-        build: '1.15.9.69722',
+        build: ACTIVE_BUILD,
         class_slug: 'paladin',
         class_id: 2,
         trees: [

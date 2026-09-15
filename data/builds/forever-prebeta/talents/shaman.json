@@ -154,7 +154,7 @@
     },
     {
      "column": 3,
-     "icon": "classic_spell_fire_elementaldevastation",
+     "icon": "inv_misc_questionmark",
      "id": 104769,
      "max_rank": 3,
      "name": "Elemental Devastation",
@@ -701,7 +701,7 @@
     },
     {
      "column": 1,
-     "icon": "classic_spell_nature_healingway",
+     "icon": "inv_misc_questionmark",
      "id": 104727,
      "max_rank": 3,
      "name": "Healing Way",

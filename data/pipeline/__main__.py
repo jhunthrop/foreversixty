@@ -62,6 +62,9 @@ def main(argv: list[str] | None = None) -> int:
         from pipeline.forever import write_forever_talents
 
         write_forever_talents(args.snapshot, args.from_build, args.build)
+        from pipeline.forever import fetch_missing_icons
+
+        fetch_missing_icons(args.build)
     elif args.command == "diff":
         from pipeline.diff import diff_builds
 

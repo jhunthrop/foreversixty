@@ -1200,7 +1200,7 @@
     },
     {
      "column": 1,
-     "icon": "classic_spell_holy_blessingofprotection",
+     "icon": "inv_misc_questionmark",
      "id": 105628,
      "max_rank": 1,
      "name": "Holy Shield",

@@ -274,7 +274,7 @@
     },
     {
      "column": 0,
-     "icon": "classic_ability_druid_demoralizingroar",
+     "icon": "inv_misc_questionmark",
      "id": 104965,
      "max_rank": 2,
      "name": "Spirit Bond",
