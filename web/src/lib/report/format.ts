@@ -205,13 +205,20 @@ export function wholeFightAriaLabel(stale: boolean, text: string): string {
  * number legible at a glance. The two AA-safe text variants are used for rare and epic,
  * as the rarity text classes do elsewhere.
  */
+/** 1st, 2nd, 3rd, 4th … 11th, 12th, 13th … 21st. */
+export function ordinal(n: number): string {
+  const rest = n % 100;
+  if (rest >= 11 && rest <= 13) return `${n}th`;
+  const last = n % 10;
+  return `${n}${last === 1 ? 'st' : last === 2 ? 'nd' : last === 3 ? 'rd' : 'th'}`;
+}
+
 /** The hover text behind a Parse cell: the number's meaning, or why the cell is empty. */
 export function parseTitle(value: number | string, ranked = 0): string {
-  if (typeof value === 'number' && ranked === 1)
-    return 'The only ranked kill of this boss by this spec so far, so there is nothing to place it against yet';
   if (typeof value === 'number') {
     const among = ranked > 0 ? `${ranked} ranked ${ranked === 1 ? 'kill' : 'kills'}` : 'the ranked kills';
-    return `${Math.round(value)}th percentile among ${among} of this boss by this spec on this ruleset`;
+    const note = ranked === 1 ? '; the only kill of its kind ranked so far, so it stands first of one' : '';
+    return `${ordinal(Math.round(value))} percentile among ${among} of this boss by this spec on this ruleset${note}`;
   }
   if (value === 'wipe') return 'A wipe is not ranked';
   if (value === '–') return 'Nothing of this spec has been ranked on this boss yet';

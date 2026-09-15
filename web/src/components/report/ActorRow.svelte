@@ -142,19 +142,15 @@
     <span
       class="tabular font-mono text-[12px]"
       class:text-muted={percentile === null}
-      style={percentile === null || percentile.ranked === 1
-        ? undefined
-        : `color: ${percentileToken(percentile.percentile)}`}
+      style={percentile === null ? undefined : `color: ${percentileToken(percentile.percentile)}`}
       title={percentile === null
         ? parseTitle(parseFallback)
         : parseTitle(percentile.percentile, percentile.ranked)}
       data-testid="row-percentile"
     >
-      {#if percentile === null}<span class:text-muted={true}>{parseFallback}</span
-        >{:else if percentile.ranked === 1}<span class="text-muted">only</span>{:else}{Math.round(
+      {#if percentile === null}<span class:text-muted={true}>{parseFallback}</span>{:else}{Math.round(
           percentile.percentile,
-        )}{#if percentile.ranked > 0}<span class="text-muted ml-1 text-[10px]">of {percentile.ranked}</span
-          >{/if}{/if}
+        )}{/if}
     </span>
 
     <span

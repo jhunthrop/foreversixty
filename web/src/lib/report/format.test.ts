@@ -8,6 +8,7 @@ import {
   formatDurationPrecise,
   formatPercent,
   formatPerSecond,
+  ordinal,
   outcomeLabel,
   parseTitle,
   percentileToken,
@@ -81,7 +82,11 @@ describe('report formatting', () => {
     expect(outcomeLabel({ ...base, boss_health_pct: 23.4 })).toBe('Wipe 23%');
     expect(outcomeLabel({ ...base, boss_health_pct: -1 })).toBe('Wipe');
     expect(outcomeLabel({ ...base, kill: true, boss_health_pct: 0 })).toBe('Kill');
-    expect(parseTitle(80, 12)).toContain('12 ranked kills');
+    expect(parseTitle(80, 12)).toContain('80th percentile among 12 ranked kills');
+    expect(parseTitle(100, 1)).toContain('first of one');
+    expect(ordinal(1)).toBe('1st');
+    expect(ordinal(12)).toBe('12th');
+    expect(ordinal(23)).toBe('23rd');
   });
 
   it('colours an ability by its first school, and melee as physical', () => {

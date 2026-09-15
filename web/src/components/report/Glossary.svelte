@@ -11,9 +11,9 @@
         'Where a kill sits among every ranked kill of the same boss by the same spec, on this ruleset, as a percentile: 100 is the best, 0 the lowest. A wipe is not ranked, and a dash means nothing of this spec has been ranked on this boss yet.',
     },
     {
-      term: 'of 12 · only',
+      term: 'Parse, hovered',
       meaning:
-        'How many ranked kills the percentile was placed among. "only" means this is the first kill of its kind ranked, so there is nothing to compare it with yet.',
+        'The hover text says how many ranked kills the percentile was placed among. Early on a bracket can hold one kill, which stands first of one and reads 100.',
     },
     {
       term: 'Parse colours',

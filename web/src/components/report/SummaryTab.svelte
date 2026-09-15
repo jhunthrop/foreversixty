@@ -88,10 +88,7 @@
         : [
             {
               label: 'Parse',
-              value:
-                percentile.ranked === 1
-                  ? 'only · 1 kill ranked'
-                  : `${Math.round(percentile.percentile)}${percentile.ranked > 0 ? ` of ${percentile.ranked}` : ''}`,
+              value: String(Math.round(percentile.percentile)),
             },
           ]),
       { label: 'DPS', value: formatPerSecond(row.damage_done, durationMs) },
@@ -146,19 +143,13 @@
           <span
             class="tabular col-start-2 row-start-1 text-right font-mono text-[12px] md:col-auto md:row-auto md:text-left"
             class:text-muted={percentile === null}
-            style={percentile === null || percentile.ranked === 1
-              ? undefined
-              : `color: ${percentileToken(percentile.percentile)}`}
+            style={percentile === null ? undefined : `color: ${percentileToken(percentile.percentile)}`}
             title={percentile === null
               ? parseTitle(parseFallback)
               : parseTitle(percentile.percentile, percentile.ranked)}
             data-testid="roster-percentile"
           >
-            {#if percentile === null}{parseFallback}{:else if percentile.ranked === 1}<span class="text-muted"
-                >only</span
-              >{:else}{Math.round(percentile.percentile)}{#if percentile.ranked > 0}<span
-                  class="text-muted ml-1 text-[10px]">of {percentile.ranked}</span
-                >{/if}{/if}
+            {#if percentile === null}{parseFallback}{:else}{Math.round(percentile.percentile)}{/if}
           </span>
           <span
             class="flex min-w-0 items-center gap-2 truncate font-semibold"
