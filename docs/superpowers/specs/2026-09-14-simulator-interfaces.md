@@ -33,8 +33,9 @@ labelled stale in the UI; it is never silently re-run.
 
 ## Identifiers
 
-- `sim_id`: 12 lowercase base32 characters from 60 random bits, same generator and alphabet as
-  `report_id` (`api/internal/ids`). Route `/sim/<sim_id>`.
+- `sim_id`: 12 lowercase base32 characters from 60 random bits, from the same generator,
+  alphabet and length as `report_id`: `auth.Base32ID(auth.ReportIDChars)` in
+  `api/internal/auth/ids.go` (there is no `api/internal/ids` package). Route `/sim/<sim_id>`.
 - `character_key`: unchanged from the logs contract, `<region>/<ruleset>/<name-slug>`.
 - `spec_slug`: `<class-slug>-<spec-slug>` in lower kebab, e.g. `warrior-fury`, `mage-frost`. The
   canonical list lives in `data/curated/specs.json` (data lane) and is generated into
@@ -133,7 +134,7 @@ and CSRF rules.
 | `POST /v1/sims/run` | session + CSRF + premium | `SimRequest` with `Raw` set | 202 `{ sim_id }`; dispatches the Cloud Run job |
 | `GET /v1/sims/{sim_id}/progress` | none | | 200 `{ state: "queued"\|"running"\|"done"\|"error", iterations_done, dps? }` |
 | `GET /v1/specs` | none | | 200 `{ specs: [ { spec, state: "validated"\|"in_progress"\|"unsupported", median_gap, parses, worst_actions: [ { name, sim_casts, actual_casts } ], engine_version, updated_at } ] }` |
-| `GET /v1/characters/{character_key}/sim-input` | optional session | | 200 `{ spec, gear, talents, buffs, captured_at, source }`: the character model from the newest of Armory, addon export, or last fight |
+| `GET /v1/characters/{region}/{ruleset}/{name}/sim-input` | optional session | | 200 `{ spec, gear, talents, buffs, captured_at, source }`: the character model from the newest available source. A character key is three path segments, so the route is spelled out the way the existing character route is, never as one `{character_key}` segment. **Armory is not a source yet**: nothing in the repo stores an Armory refresh, so today `source` is `"addon"` or `"fight"`, newest wins, and `"armory"` appears when that lands without the shape changing. |
 
 `GET /v1/rankings` gains `execution` to the sortable metrics and every row gains
 `execution_score float|null`. `GET /v1/characters/{…}` and `GET /v1/guilds/{…}` rows gain the same
@@ -143,7 +144,13 @@ field. Null means the spec is not validated or the fight predates scoring.
 `POST /v1/sims/run` answers 402 with code `premium_required` when it is false.
 
 **Parse job**: `api sim-run <sim_id>` is a Cloud Run job on the same image as the API, created once
-by hand like `parse-report`.
+by hand like `parse-report`. The request and result cross between the route and the job through
+R2, not the database: `sims/<sim_id>/request.bin` holds the proto-encoded `RaidSimRequest` the
+route received, `sims/<sim_id>/result.json` the finished `SimResult`.
+
+**Validation job**: `api sim-validate` lives in `api/internal/sims` and runs on the API image,
+not in the `sim/` module: it reads `fight_metrics` and writes `sim_specs`, both of which are the
+API's. With `data/curated/specs.json` absent it measures nothing and says so rather than failing.
 
 **Execution score at fight close**: the ingest's fight-close path enqueues a scoring task when the
 fight's player is a signed-in member and the spec is validated. The task runs the native engine
