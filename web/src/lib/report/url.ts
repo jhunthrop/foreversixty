@@ -105,6 +105,8 @@ export interface ReportState {
   openDeaths: string[];
   /** Rankings mode's spec filter; '' ranks every spec together. */
   rankingsSpec: string;
+  /** Rankings mode's metric; '' is the default (dps). */
+  rankingsMetric: string;
 }
 
 const ENABLED_MODES = MODES.filter((m) => m.enabled).map((m) => m.id) as Mode[];
@@ -129,6 +131,7 @@ export function defaultState(firstFight: number): ReportState {
     find: '',
     openDeaths: [],
     rankingsSpec: '',
+    rankingsMetric: '',
   };
 }
 
@@ -186,6 +189,8 @@ export function parseReportState(search: string, firstFight: number): ReportStat
     state.openDeaths = openDeaths.split(',').filter((token) => /^[A-Za-z0-9-]{1,80}$/.test(token));
   const rankingsSpec = params.get('rspec');
   if (rankingsSpec !== null && /^[A-Za-z ]{1,32}$/.test(rankingsSpec)) state.rankingsSpec = rankingsSpec;
+  const rankingsMetric = params.get('rmetric');
+  if (rankingsMetric !== null && /^[a-z_]{1,24}$/.test(rankingsMetric)) state.rankingsMetric = rankingsMetric;
   return state;
 }
 
@@ -212,6 +217,7 @@ export function reportSearch(state: ReportState, firstFight: number): string {
   if (state.find !== '') params.set('find', state.find);
   if (state.openDeaths.length > 0) params.set('death', state.openDeaths.join(','));
   if (state.rankingsSpec !== '') params.set('rspec', state.rankingsSpec);
+  if (state.rankingsMetric !== '') params.set('rmetric', state.rankingsMetric);
   const query = params.toString();
   return query === '' ? '' : `?${query}`;
 }

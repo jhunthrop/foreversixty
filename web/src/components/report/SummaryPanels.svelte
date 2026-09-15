@@ -3,6 +3,8 @@
      before any tab is clicked. Damage and healing by source, damage taken by ability, and
      the deaths, each a short bar list that links to the tab that goes deeper. -->
 <script lang="ts">
+  /** The log's null unit: a fall, a hazard, or a source the log did not name (as DeathsTab reads it). */
+  const NULL_GUID = /^0+$/;
   import { splitUnitName } from '../../lib/characters';
   import {
     classColorVar,
@@ -241,7 +243,11 @@
               title="The hit that killed them, and how hard it landed"
             >
               {#if death.killing_blow}
-                {death.killing_blow.spell_name === '' ? 'Melee' : death.killing_blow.spell_name} ·
+                {NULL_GUID.test(death.killing_blow.source_guid) && death.killing_blow.spell_name === ''
+                  ? 'a fall, a hazard or an untracked source'
+                  : death.killing_blow.spell_name === ''
+                    ? 'Melee'
+                    : death.killing_blow.spell_name} ·
                 {splitUnitName(death.killing_blow.source_name).name} ·
                 <span class="tabular font-mono whitespace-nowrap"
                   >{formatAmount(death.killing_blow.amount)}</span

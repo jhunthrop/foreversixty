@@ -68,6 +68,7 @@ describe('the report URL state', () => {
       find: '',
       openDeaths: [],
       rankingsSpec: '',
+      rankingsMetric: '',
     });
   });
 
@@ -93,6 +94,7 @@ describe('the report URL state', () => {
       find: '',
       openDeaths: [],
       rankingsSpec: '',
+      rankingsMetric: '',
     });
   });
 
@@ -115,6 +117,7 @@ describe('the report URL state', () => {
       find: '',
       openDeaths: [],
       rankingsSpec: '',
+      rankingsMetric: '',
     });
   });
 
@@ -149,6 +152,7 @@ describe('the report URL state', () => {
       find: '',
       openDeaths: [],
       rankingsSpec: '',
+      rankingsMetric: '',
     });
     expect(reportSearch(state, 1)).toBe(
       '?fight=3&mode=rankings&view=queries&tab=casts&source=enemies&start=10&end=20',
@@ -187,6 +191,7 @@ describe('the report URL state', () => {
       find: '',
       openDeaths: [],
       rankingsSpec: '',
+      rankingsMetric: '',
     });
     const search = reportSearch(state, 1);
     expect(search).toBe('?target=Creature-1-2&ability=116&flags=bd&with=4&cmetric=dps');

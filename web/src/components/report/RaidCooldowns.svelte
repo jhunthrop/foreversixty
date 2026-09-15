@@ -96,7 +96,8 @@
   /** Axis ticks at the coarsest of these steps that keeps them under about eight. */
   const axis = $derived.by(() => {
     const steps = [10_000, 30_000, 60_000, 120_000, 300_000, 600_000, 1_800_000];
-    const step = steps.find((candidate) => span / candidate <= 8) ?? steps[steps.length - 1];
+    // Five at most: a phone lane is 250px wide and six labels there ran into one another.
+    const step = steps.find((candidate) => span / candidate <= 5) ?? steps[steps.length - 1];
     const first = Math.ceil(timeWindow.startMs / step) * step;
     const ticks: number[] = [];
     for (let at = first; at <= timeWindow.endMs; at += step) ticks.push(at);

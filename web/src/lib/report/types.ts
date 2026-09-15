@@ -142,6 +142,8 @@ export interface AuraTrack {
   spell_id: number;
   name: string;
   type: string;
+  /** The spell's school mask; absent on summaries written before the engine recorded it. */
+  school?: number;
   applications: number;
   max_stacks: number;
   uptime_ms: number;

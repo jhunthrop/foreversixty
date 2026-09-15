@@ -54,6 +54,19 @@ describe('exactTableSql', () => {
   });
 });
 
+describe('dead spans', () => {
+  it('leave an actor’s lines out while they were dead, in the split and in the table', () => {
+    const exclude = [{ guid: 'Player-1', startMs: 63_800, endMs: 457_000 }];
+    const split = exactSplitSql('damage-taken', 'Player-1', { startMs: 0, endMs: 724_000 }, null, {
+      exclude,
+    });
+    expect(split.abilities).toContain("AND NOT (actor = 'Player-1' AND at >= 63800 AND at < 457000)");
+    expect(split.misses).toContain("AND NOT (dest_guid = 'Player-1' AND");
+    const table = exactTableSql('damage-taken', { startMs: 0, endMs: 724_000 }, null, { exclude });
+    expect(table).toContain("AND NOT (actor = 'Player-1' AND at >= 63800 AND at < 457000)");
+  });
+});
+
 describe('exactMissesSql', () => {
   it('counts avoided hits by type on the table’s own side of the events', () => {
     const sql = exactMissesSql(

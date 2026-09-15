@@ -95,8 +95,6 @@
       { label: 'Deaths', value: String(row.deaths) },
     ];
   }
-  /** Below this many ranked kills the bracket is named beside the number at every width: a 0 among 2 is not a 0 among 200. */
-  const THIN_BRACKET = 10;
 </script>
 
 <section class="flex flex-col gap-4" data-testid="summary-tab">
@@ -143,9 +141,10 @@
               : parseTitle(percentile.percentile, percentile.ranked)}
             data-testid="roster-percentile"
           >
-            {#if percentile === null}{parseFallback}{:else}{Math.round(percentile.percentile)}<span
-                class="text-muted ml-1"
-                class:md:hidden={percentile.ranked >= THIN_BRACKET}>among {percentile.ranked}</span
+            {#if percentile === null}{parseFallback}{:else}<span class="label font-body mr-1 md:hidden"
+                >Parse</span
+              >{Math.round(percentile.percentile)}<span class="text-muted ml-1 md:hidden"
+                >among {percentile.ranked}</span
               >{/if}
           </span>
           <span

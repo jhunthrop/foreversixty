@@ -157,11 +157,11 @@
   </p>
 
   <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
-    <label class="label text-muted flex items-center gap-2" for="compare-with">
+    <label class="label text-muted flex w-full flex-wrap items-center gap-2 md:w-auto" for="compare-with">
       Compare with
       <select
         id="compare-with"
-        class="border-line-warm bg-raised rounded-control text-text h-11 px-2 text-[13px] md:h-9"
+        class="border-line-warm bg-raised rounded-control text-text h-11 w-full max-w-full min-w-0 px-2 text-[13px] md:h-9 md:w-auto"
         data-testid="compare-with"
         value={rightIndex === null ? '' : String(rightIndex)}
         onchange={(event) => {

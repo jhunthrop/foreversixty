@@ -11,7 +11,7 @@
      one field on AuraTrack that IS whole-fight -- `max_stacks` -- is not rendered here. -->
 <script lang="ts">
   import { splitUnitName } from '../../lib/characters';
-  import { formatDuration, formatPercent } from '../../lib/report/format';
+  import { formatDuration, formatPercent, schoolName, schoolToken } from '../../lib/report/format';
   import type { AuraTrack } from '../../lib/report/types';
 
   let {
@@ -129,7 +129,13 @@
           data-testid={`aura-${track.spell_id}-${track.target_guid}`}
         >
           <span class="truncate font-semibold"
-            >{track.name}{#if ambiguous.has(`${track.target_guid}|${track.name}`)}
+            >{track.name}{#if kind === 'DEBUFF' && schoolName(track.school)}
+              <span
+                class="ml-1 rounded-[2px] px-1 text-[10px] font-normal tracking-[0.04em] uppercase"
+                style={`background: ${schoolToken(track.school)}; color: var(--color-bg)`}
+                title="The spell's school: Physical and bleeds cannot be dispelled; Magic, Curse, Poison and Disease can, by the right class"
+                data-testid="aura-school">{schoolName(track.school)}</span
+              >{/if}{#if ambiguous.has(`${track.target_guid}|${track.name}`)}
               <span
                 class="text-muted ml-1 font-mono text-[11px]"
                 title="Two spells share this name; this is spell id {track.spell_id}">#{track.spell_id}</span

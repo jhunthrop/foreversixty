@@ -235,8 +235,6 @@
     }
     return [...merged.values()].sort((a, b) => b.total - a.total);
   });
-  /** Below this many ranked kills the bracket is named beside the number at every width: a 0 among 2 is not a 0 among 200. */
-  const THIN_BRACKET = 10;
 </script>
 
 <li class="border-line-soft border-b" data-testid={`actor-${actor.guid}`}>
@@ -263,14 +261,13 @@
     >
       {#if percentile === null}<span class:text-muted={true}
           >{parseFallback === 'none' ? '' : parseFallback}</span
-        >{:else}{Math.round(percentile.percentile)}<span
-          class="text-muted ml-1"
-          class:md:hidden={percentile.ranked >= THIN_BRACKET}>among {percentile.ranked}</span
-        >{/if}
+        >{:else}<span class="label font-body mr-1 md:hidden">Parse</span>{Math.round(
+          percentile.percentile,
+        )}<span class="text-muted ml-1 md:hidden">among {percentile.ranked}</span>{/if}
     </span>
 
     <span
-      class="flex min-w-0 items-center gap-2 truncate font-semibold"
+      class="flex min-w-0 flex-wrap items-center gap-x-2 font-semibold [&>*]:truncate"
       style={`color: ${color}`}
       data-testid="row-name"
     >
@@ -287,7 +284,7 @@
       {/if}
       {#if deadSince !== null}
         <span
-          class="text-death label shrink-0"
+          class="text-death label basis-full text-[10px] whitespace-nowrap"
           title="Dead before this window ended and not raised: what is here ticked on a corpse"
           data-testid="row-dead">dead since {formatDuration(deadSince)}</span
         >

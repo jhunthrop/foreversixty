@@ -16,12 +16,15 @@
     window: current,
     classOf,
     bossName = '',
+    auraOrder = [],
     players = new Set<string>(),
     allCasts = [],
   }: {
     summary: Summary;
     window: TimeWindow;
     classOf: Map<string, string>;
+    /** Every aura name in the whole fight, in order, so a band keeps its row when the window moves. */
+    auraOrder?: string[];
     /** The encounter's name, which is the boss unit's name; '' on trash. */
     bossName?: string;
     players?: ReadonlySet<string>;
@@ -122,7 +125,7 @@
     // By name, not by uptime: an aura keeps its row when the window moves.
     const ordered = [...tracks].sort((a, b) => a.name.localeCompare(b.name));
     // eslint-disable-next-line svelte/prefer-svelte-reactivity
-    const bands = new Map<string, number>();
+    const bands = new Map<string, number>(auraOrder.map((name, index) => [name, index]));
     return ordered.flatMap((track) => {
       const band = bands.get(track.name) ?? bands.size;
       bands.set(track.name, band);

@@ -22,6 +22,7 @@
     casts = [],
     open = [],
     onPatch = () => {},
+    onSelectPlayer = undefined,
     durationMs,
     combatants,
     classOf,
@@ -34,6 +35,8 @@
     casts?: CastRow[];
     open?: string[];
     onPatch?: (patch: { openDeaths?: string[] }) => void;
+    /** Narrows the page to one player, from their name on the card. */
+    onSelectPlayer?: (guid: string) => void;
     durationMs: number;
     combatants: CombatantRow[];
     classOf: Map<string, string>;
@@ -209,7 +212,17 @@
             class="text-[15px] font-semibold"
             style={`color: ${classColorVar(death.class ?? classOf.get(death.guid))}`}
           >
-            {splitUnitName(death.name).name}
+            {#if onSelectPlayer}
+              <button
+                type="button"
+                class="inline-flex min-h-11 items-center underline-offset-2 hover:underline md:min-h-0"
+                style={`color: ${classColorVar(death.class ?? classOf.get(death.guid))}`}
+                title="Show only this player"
+                onclick={() => onSelectPlayer(death.guid)}>{splitUnitName(death.name).name}</button
+              >
+            {:else}
+              {splitUnitName(death.name).name}
+            {/if}
           </span>
           {#if death.label}
             <span class="text-muted text-[13px]" data-testid="death-label">{death.label}</span>

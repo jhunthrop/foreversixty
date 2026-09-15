@@ -79,9 +79,11 @@ type Segment struct {
 
 // AuraTrack is one aura on one target across the fight.
 type AuraTrack struct {
-	TargetGUID   string    `json:"target_guid"`
-	TargetName   string    `json:"target_name"`
-	SpellID      int64     `json:"spell_id"`
+	TargetGUID string `json:"target_guid"`
+	TargetName string `json:"target_name"`
+	SpellID    int64  `json:"spell_id"`
+	// School is the spell's school mask, so a debuff can say Magic from Physical.
+	School       int64     `json:"school,omitempty"`
 	Name         string    `json:"name"`
 	Type         string    `json:"type"`
 	Applications int64     `json:"applications"`
@@ -332,12 +334,14 @@ func (a *Accumulator) addAuras(e event.Event) {
 		tr = &auraTrack{appliers: map[string]bool{}}
 		tr.TargetGUID, tr.TargetName = e.Dest.GUID, a.name(e.Dest.GUID)
 		tr.SpellID, tr.Name, tr.Type = e.Spell.ID, e.Spell.Name, e.AuraType
+		tr.School = e.Spell.School
 		a.auras[key] = tr
 	}
 	// A track seeded from the combatant snapshot knows its spell only by id
 	// until an event names it.
 	if tr.Name == "" && e.Spell.Name != "" {
 		tr.Name = e.Spell.Name
+		tr.School = e.Spell.School
 		if e.AuraType != "" {
 			tr.Type = e.AuraType
 		}

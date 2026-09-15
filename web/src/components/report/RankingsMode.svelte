@@ -26,6 +26,7 @@
     reportId,
     encounterSlug,
     spec = '',
+    metric: metricParam = '',
     onPatch = () => {},
   }: {
     fight: FightEntry;
@@ -33,7 +34,9 @@
     encounterSlug: string;
     /** '' ranks every spec together; a spec name narrows the board to it. From the url, so a link keeps it. */
     spec?: string;
-    onPatch?: (patch: { rankingsSpec?: string }) => void;
+    /** The metric id from the url; '' means dps. */
+    metric?: string;
+    onPatch?: (patch: { rankingsSpec?: string; rankingsMetric?: string }) => void;
   } = $props();
 
   /** The picker's options and the word the value column is filed under: one list, so the
@@ -44,7 +47,9 @@
     { id: 'damage_taken', label: 'Damage taken per second' },
   ];
 
-  let metric = $state<RankingMetric>('dps');
+  const metric = $derived<RankingMetric>(
+    METRICS.some((entry) => entry.id === metricParam) ? (metricParam as RankingMetric) : 'dps',
+  );
   let page = $state<RankingsPage | null>(null);
   let status = $state<'idle' | 'loading' | 'ready' | 'failed'>('idle');
   let error = $state('');
@@ -136,7 +141,8 @@
         <select
           id="rankings-metric"
           class="border-line-warm bg-raised rounded-control text-text h-11 px-2 text-[13px] md:h-9"
-          bind:value={metric}
+          value={metric}
+          onchange={(event) => onPatch({ rankingsMetric: (event.currentTarget as HTMLSelectElement).value })}
           data-testid="rankings-metric"
         >
           {#each METRICS as option (option.id)}

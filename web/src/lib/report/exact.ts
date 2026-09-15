@@ -46,6 +46,26 @@ export interface MeasureOptions {
   pets?: PetOwners;
   /** Count a killing blow's overkill as damage, as the "Count overkill" filter does. */
   countOverkill?: boolean;
+  /** Spans to leave out per actor: the time each player was dead, for "ignore events after a death". */
+  exclude?: DeadSpan[];
+}
+
+/** One stretch a player was dead, from the death to the first cast after it (or the fight's end). */
+export interface DeadSpan {
+  guid: string;
+  startMs: number;
+  endMs: number;
+}
+
+/** The clause that leaves an actor's dead spans out, on whatever names the actor and the instant. */
+function excludeClause(exclude: DeadSpan[] | undefined, actor: string, at: string): string {
+  if (exclude === undefined || exclude.length === 0) return '';
+  return exclude
+    .map(
+      (span) =>
+        ` AND NOT (${actor} = ${quote(span.guid)} AND ${at} >= ${Math.round(span.startMs)} AND ${at} < ${Math.round(span.endMs)})`,
+    )
+    .join('');
 }
 const NO_PETS: PetOwners = new Map();
 
@@ -102,25 +122,25 @@ export function rowsSql(kind: ActorKind, window: TimeWindow, options: MeasureOpt
   const damage = options.countOverkill ? 'amount' : 'amount - greatest(coalesce(overkill, 0), 0)';
   if (kind === 'damage-taken') {
     return `SELECT dest_guid AS actor, source_guid AS other_guid, source_name AS other_name,
-    spell_id, spell_name, spell_school, event, amount,
+    ${FIGHT_MS} AS at, spell_id, spell_name, spell_school, event, amount,
     ${damage} AS effective,
     0 AS overheal, coalesce(absorbed, 0) AS absorbed, coalesce(blocked, 0) AS blocked, critical
   FROM ${EVENTS_TABLE} WHERE kind = 'damage' AND ${at}`;
   }
   if (kind === 'healing') {
     return `SELECT ${ownerExpr('source_guid', pets)} AS actor, dest_guid AS other_guid, dest_name AS other_name,
-    spell_id, spell_name, spell_school, event, amount,
+    ${FIGHT_MS} AS at, spell_id, spell_name, spell_school, event, amount,
     amount - coalesce(overheal, 0) AS effective,
     coalesce(overheal, 0) AS overheal, 0 AS absorbed, 0 AS blocked, critical
   FROM ${EVENTS_TABLE} WHERE kind = 'heal' AND ${at}
   UNION ALL
   SELECT ${ownerExpr('extra_guid', pets)} AS actor, dest_guid AS other_guid, dest_name AS other_name,
-    extra_spell_id AS spell_id, extra_spell_name AS spell_name, extra_spell_school AS spell_school, event, amount,
+    ${FIGHT_MS} AS at, extra_spell_id AS spell_id, extra_spell_name AS spell_name, extra_spell_school AS spell_school, event, amount,
     amount AS effective, 0 AS overheal, amount AS absorbed, 0 AS blocked, false AS critical
   FROM ${EVENTS_TABLE} WHERE kind = 'absorbed' AND extra_guid <> '' AND ${at}`;
   }
   return `SELECT ${ownerExpr('source_guid', pets)} AS actor, dest_guid AS other_guid, dest_name AS other_name,
-    spell_id, spell_name, spell_school, event, amount,
+    ${FIGHT_MS} AS at, spell_id, spell_name, spell_school, event, amount,
     ${damage} AS effective,
     0 AS overheal, coalesce(absorbed, 0) AS absorbed, coalesce(blocked, 0) AS blocked, critical
   FROM ${EVENTS_TABLE} WHERE kind = 'damage' AND ${at}`;
@@ -145,13 +165,17 @@ export function exactSplitSql(
 ): { abilities: string; misses: string; targets: string } {
   const rows = rowsSql(kind, window, options);
   const pets = options.pets ?? NO_PETS;
-  const scope = `actor = ${quote(guid)}${scopeClause(target)}`;
+  const scope = `actor = ${quote(guid)}${scopeClause(target)}${excludeClause(options.exclude, 'actor', 'at')}`;
   const other = otherSide(kind);
   const own = `${
     kind === 'damage-taken'
       ? `dest_guid = ${quote(guid)}`
       : `${ownerExpr('source_guid', pets)} = ${quote(guid)}`
-  }${scopeClause(target).replaceAll('other_guid', other.guid).replaceAll('other_name', other.name)}`;
+  }${scopeClause(target).replaceAll('other_guid', other.guid).replaceAll('other_name', other.name)}${excludeClause(
+    options.exclude,
+    kind === 'damage-taken' ? 'dest_guid' : ownerExpr('source_guid', pets),
+    FIGHT_MS,
+  )}`;
   return {
     abilities: `WITH rows AS (${rows})
 SELECT spell_id, any_value(spell_name) AS spell_name, min(spell_school) AS school,
@@ -193,7 +217,7 @@ export function exactTableSql(
 SELECT actor AS guid, other_guid, any_value(other_name) AS other_name, sum(effective) AS total,
   sum(amount) AS gross, sum(overheal) AS overheal, sum(absorbed) AS absorbed, sum(blocked) AS blocked
 FROM rows
-WHERE actor <> ''${scopeClause(scope)}
+WHERE actor <> ''${scopeClause(scope)}${excludeClause(options.exclude, 'actor', 'at')}
 GROUP BY actor, other_guid
 ORDER BY total DESC`;
 }
@@ -214,8 +238,51 @@ export function exactMissesSql(
       : scopeClause(scope).replaceAll('other_guid', other.guid).replaceAll('other_name', other.name);
   return `SELECT ${actor} AS guid, miss_type, count(*) AS n
 FROM ${EVENTS_TABLE}
-WHERE kind = 'missed' AND miss_type <> '' AND ${windowClause(window)}${narrowed}
+WHERE kind = 'missed' AND miss_type <> '' AND ${windowClause(window)}${narrowed}${excludeClause(options.exclude, actor, FIGHT_MS)}
 GROUP BY 1, 2`;
+}
+
+/** One line of the full stream: every hit and heal in the window, for the events view. */
+export interface StreamLine {
+  atMs: number;
+  kind: 'damage' | 'heal';
+  sourceGuid: string;
+  sourceName: string;
+  destGuid: string;
+  destName: string;
+  spellName: string;
+  amount: number;
+  overheal: number;
+  absorbed: number;
+}
+
+export function eventStreamSql(window: TimeWindow): string {
+  return `SELECT ${FIGHT_MS} AS at, kind, source_guid, source_name, dest_guid, dest_name, spell_name,
+  coalesce(amount, 0) AS amount, coalesce(overheal, 0) AS overheal, coalesce(absorbed, 0) AS absorbed
+FROM ${EVENTS_TABLE}
+WHERE kind IN ('damage', 'heal') AND ${windowClause(window)}
+ORDER BY time_unix_nano, line`;
+}
+
+/** Every hit and heal in the window, time-ordered. */
+export async function loadEventStream(
+  layer: QueryLayer,
+  eventsUrl: string,
+  window: TimeWindow,
+): Promise<StreamLine[]> {
+  const result = await layer.run(eventsUrl, eventStreamSql(window));
+  return rowsOf(result).map((row) => ({
+    atMs: num(row.at),
+    kind: row.kind === 'heal' ? 'heal' : 'damage',
+    sourceGuid: String(row.source_guid ?? ''),
+    sourceName: String(row.source_name ?? ''),
+    destGuid: String(row.dest_guid ?? ''),
+    destName: String(row.dest_name ?? ''),
+    spellName: String(row.spell_name ?? ''),
+    amount: num(row.amount),
+    overheal: num(row.overheal),
+    absorbed: num(row.absorbed),
+  }));
 }
 
 type Row = Record<string, unknown>;

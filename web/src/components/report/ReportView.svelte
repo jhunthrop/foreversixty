@@ -79,10 +79,12 @@
   import { inSource, scopeSource } from '../../lib/report/source';
   import { splitUnitName } from '../../lib/characters';
   import {
+    loadEventStream,
     measureExact,
     measureTable,
     sharedQueryLayer,
     type ExactSplit,
+    type DeadSpan,
     type ExactTotals,
     type TargetScope,
   } from '../../lib/report/exact';
@@ -177,7 +179,11 @@
         .map((unit) => [unit.guid, unit.owner_guid as string]),
     ),
   );
-  const measureOptions = $derived({ pets: petOwners, countOverkill: filters.countOverkill });
+  const measureOptions = $derived({
+    pets: petOwners,
+    countOverkill: filters.countOverkill,
+    exclude: ignoringDead ? deadSpans : [],
+  });
   function measureRow(actor: Actor): Promise<ExactSplit> {
     return measureExact(
       sharedQueryLayer(),
@@ -211,7 +217,7 @@
       !nightMode &&
       state.view === 'tables' &&
       (state.tab === 'damage-done' || state.tab === 'damage-taken' || state.tab === 'healing');
-    void [tableKind, cutWindow, tableScope, filters.countOverkill, state.fight];
+    void [tableKind, cutWindow, tableScope, filters.countOverkill, ignoringDead, state.fight];
     tableExact = null;
     tableMeasureError = '';
     const token = ++measureToken;
@@ -264,15 +270,24 @@
   }
 
   /** The window, cut at the last death when the filter asks for it. */
-  const cutWindow = $derived.by(() => {
-    if (base === null || !state.flags.includes('ignoreAfterDeath') || base.deaths.length === 0)
-      return timeWindow;
-    const last = Math.max(...base.deaths.map((death) => death.at_ms));
-    return clampWindow(
-      { startMs: timeWindow.startMs, endMs: Math.min(timeWindow.endMs, last) },
-      base.duration_ms,
-    );
+  // The window itself is never cut: "ignore events after a death" leaves each player's own
+  // dead spans out of the measure instead (see `deadSpans`), since a raised player fights on.
+  const cutWindow = $derived(timeWindow);
+  /** Each player's dead spans: from a death to their first cast after it, or the fight's end. */
+  const deadSpans = $derived.by((): DeadSpan[] => {
+    if (base === null || nightMode) return [];
+    return base.deaths.map((death) => {
+      const raised = base.casts
+        .filter((row) => row.guid === death.guid)
+        .flatMap((row) => row.sequence)
+        .filter((at) => at > death.at_ms)
+        .sort((a, b) => a - b)[0];
+      return { guid: death.guid, startMs: death.at_ms, endMs: raised ?? base.duration_ms };
+    });
   });
+  const ignoringDead = $derived(
+    state.flags.includes('ignoreAfterDeath') && !nightMode && deadSpans.length > 0,
+  );
   /** The fight in the window, before the source scope: what the events view reads whole. */
   const windowed = $derived(base === null ? null : scopeSummary(base, cutWindow));
   const scoped = $derived(
@@ -374,7 +389,7 @@
   // they are not part of this. Over-claiming (marking a row that individually happens to
   // be exact) is the safe direction here; under-claiming is not.
   const filtersScale = $derived(filters.target !== '' || filters.bossOnly);
-  const actorTableApproximate = $derived(!windowIsWhole || filtersScale);
+  const actorTableApproximate = $derived(!windowIsWhole || filtersScale || ignoringDead);
   let percentiles = $state(new Map<string, Placement>());
   const loader = createPercentileLoader();
 
@@ -1059,6 +1074,7 @@
           <FilterBar
             {filters}
             actors={tabSource}
+            afterDeathAvailable={!nightMode}
             onChange={setFilters}
             showBossOnly={state.tab !== 'healing'}
           />
@@ -1084,7 +1100,18 @@
                 <span class="text-kill" data-testid="table-measured"
                   >Totals, shares, per-second figures and targets are measured from the fight’s events for
                   this window and filter.</span
-                > A row’s ability split is measured the same way when it is opened.
+                >
+                A row’s ability split is measured the same way when it is opened.
+                {#if ignoringDead}
+                  <span data-testid="dead-spans-note"
+                    >Left out while dead: {deadSpans
+                      .map(
+                        (span) =>
+                          `${splitUnitName(unitNames.get(span.guid) ?? span.guid).name} ${formatDuration(span.startMs)} to ${formatDuration(span.endMs)}`,
+                      )
+                      .join(', ')}.</span
+                  >
+                {/if}
               {:else if nightMode}
                 Over the whole night a tilde marks a figure split across abilities and targets in proportion
                 to the window and any target or boss filter{filtersScale && !windowIsWhole
@@ -1167,7 +1194,9 @@
             rows={scoped.threat}
             {classOf}
             approximate={!windowIsWhole}
-            totalThreat={windowed?.threat.reduce((sum, row) => sum + row.threat, 0)}
+            totalThreat={windowed?.threat
+              .filter((row) => playerSet.has(row.guid))
+              .reduce((sum, row) => sum + row.threat, 0)}
           />
         {:else if state.tab === 'deaths'}
           <DeathsTab
@@ -1175,6 +1204,7 @@
             casts={base?.casts ?? []}
             open={state.openDeaths}
             onPatch={patch}
+            onSelectPlayer={(guid) => patch({ source: guid })}
             durationMs={summary?.duration_ms ?? scoped.duration_ms}
             combatants={scoped.combatants}
             {classOf}
@@ -1203,6 +1233,9 @@
           bossName={fight?.kind === 'encounter' ? fight.name : ''}
           players={playerSet}
           allCasts={summary?.casts ?? []}
+          auraOrder={[...new Set((summary?.auras ?? []).map((track) => track.name))].sort((a, b) =>
+            a.localeCompare(b),
+          )}
         />
       {/if}
       {#if scoped !== null && !nightMode && state.mode === 'analyze' && state.view === 'events'}
@@ -1213,6 +1246,9 @@
           off={state.eventsOff}
           search={state.find}
           onPatch={patch}
+          loadStream={nightMode
+            ? undefined
+            : () => loadEventStream(sharedQueryLayer(), eventsUrl(dataBase, state.fight), cutWindow)}
         />
       {/if}
       <!-- `scoped` only to say a summary has loaded, the same guard its three siblings
@@ -1239,6 +1275,7 @@
           {reportId}
           encounterSlug={currentEncounterSlug}
           spec={state.rankingsSpec}
+          metric={state.rankingsMetric}
           onPatch={patch}
         />
       {/if}

@@ -14,12 +14,15 @@
     actors,
     onChange,
     showBossOnly = true,
+    afterDeathAvailable = true,
   }: {
     filters: ReportFilters;
     actors: Actor[];
     onChange: (filters: ReportFilters) => void;
     /** False on the Healing tab, where "boss damage only" has nothing to apply to. */
     showBossOnly?: boolean;
+    /** False over the whole night, where a death's span cannot be read across pulls. */
+    afterDeathAvailable?: boolean;
   } = $props();
 
   const abilities = $derived(abilityOptions(actors));
@@ -106,11 +109,15 @@
     <input
       type="checkbox"
       class={check}
-      checked={filters.ignoreAfterDeath}
+      checked={filters.ignoreAfterDeath && afterDeathAvailable}
+      disabled={!afterDeathAvailable}
+      title={afterDeathAvailable
+        ? 'Leave out what each player did, and took, while dead: from a death to their first cast after it'
+        : 'Over the whole night a death’s span cannot be read; open a pull'}
       onchange={(event) =>
         onChange({ ...filters, ignoreAfterDeath: (event.currentTarget as HTMLInputElement).checked })}
     />
-    Ignore events after a death
+    Ignore events while dead
   </label>
 
   <button
@@ -122,6 +129,6 @@
   </button>
 
   <p class="text-muted basis-full text-[12px]">
-    Pet damage is counted on its owner's row, as the engine records it. Split it in Queries.
+    A pet’s damage and healing count on its owner’s row, as the engine records it. Split it in Queries.
   </p>
 </div>

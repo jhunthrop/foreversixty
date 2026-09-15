@@ -55,6 +55,11 @@
         'The share of the window the player spent casting or attacking. Time spent dead is not active. The smaller per-second figure marked "while active" divides by that time instead of the whole window, so it says what they did while they were doing anything.',
     },
     {
+      term: 'Ignore events while dead',
+      meaning:
+        'Leaves out what each player did, and what hit them, from a death to their first cast after it (or the end of the fight if they stayed dead). On one pull the tables are then measured from the events; over the whole night it is not available.',
+    },
+    {
       term: 'Overkill',
       meaning:
         'The part of a killing hit beyond the health the player had left. A death line shows the hit whole and the overkill in brackets; the tables leave overkill out unless "Count overkill" is on.',

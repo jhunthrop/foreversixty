@@ -10,6 +10,7 @@
 // Every source read here is exact under a window (window.ts's scopeSummary): cast
 // sequence, aura segments and deaths are none of the fields that scoping only scales, so
 // this list never needs an approximate mark.
+import type { StreamLine } from './exact';
 import { splitUnitName } from '../characters';
 import type { Summary } from './types';
 
@@ -19,8 +20,8 @@ export const EVENT_KINDS: readonly { id: EventKind; label: string }[] = [
   { id: 'cast', label: 'Casts' },
   { id: 'aura-applied', label: 'Auras applied' },
   { id: 'aura-removed', label: 'Auras removed' },
-  { id: 'damage', label: 'Hits before a death' },
-  { id: 'heal', label: 'Heals before a death' },
+  { id: 'damage', label: 'Hits' },
+  { id: 'heal', label: 'Heals' },
   { id: 'death', label: 'Deaths' },
 ];
 
@@ -34,6 +35,31 @@ export interface SummaryEvent {
   /** Every actor the line involves, for scoping by source: a heal is the healer's and the healed's. */
   guids: string[];
   amount?: number;
+}
+
+/** The full stream's lines in the view's shape: every hit and heal, said the same way as a death's. */
+export function streamEvents(lines: StreamLine[]): SummaryEvent[] {
+  return lines.map((line) => {
+    const who = splitUnitName(line.sourceName).name || 'Something';
+    const whom = splitUnitName(line.destName).name;
+    const spell = line.spellName === '' ? 'Melee' : line.spellName;
+    const detail =
+      line.kind === 'heal'
+        ? line.overheal > 0
+          ? ` (${line.overheal.toLocaleString()} over)`
+          : ''
+        : line.absorbed > 0
+          ? ` (${line.absorbed.toLocaleString()} absorbed)`
+          : '';
+    return {
+      atMs: line.atMs,
+      kind: line.kind,
+      guid: line.kind === 'heal' ? line.sourceGuid : line.destGuid,
+      guids: [line.sourceGuid, line.destGuid],
+      amount: line.kind === 'heal' ? line.amount - line.overheal : line.amount,
+      text: `${who} ${line.kind === 'heal' ? 'healed' : 'hit'} ${whom} with ${spell}${detail}`,
+    };
+  });
 }
 
 export function summaryEvents(summary: Summary): SummaryEvent[] {

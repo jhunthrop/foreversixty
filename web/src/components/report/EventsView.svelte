@@ -6,7 +6,14 @@
      DuckDB instance for a question this view answers for free. -->
 <script lang="ts">
   import { classColorVar, formatAmount, formatDuration } from '../../lib/report/format';
-  import { EVENT_KINDS, filterEvents, summaryEvents, type EventKind } from '../../lib/report/events';
+  import {
+    EVENT_KINDS,
+    filterEvents,
+    streamEvents,
+    summaryEvents,
+    type EventKind,
+  } from '../../lib/report/events';
+  import type { StreamLine } from '../../lib/report/exact';
   import type { Summary } from '../../lib/report/types';
 
   let {
@@ -16,6 +23,7 @@
     off = [],
     search = '',
     onPatch = () => {},
+    loadStream = undefined,
   }: {
     summary: Summary;
     classOf: Map<string, string>;
@@ -25,7 +33,31 @@
     off?: string[];
     search?: string;
     onPatch?: (patch: { eventsOff?: string[]; find?: string }) => void;
+    /** Loads every hit and heal in the window from the fight's events; absent over the night. */
+    loadStream?: () => Promise<StreamLine[]>;
   } = $props();
+
+  let stream = $state<StreamLine[] | null>(null);
+  let streaming = $state(false);
+  let streamError = $state('');
+  // A new window is a new stream: the loaded one answered the old question.
+  $effect(() => {
+    void summary;
+    stream = null;
+    streamError = '';
+  });
+  async function runStream(): Promise<void> {
+    if (loadStream === undefined) return;
+    streaming = true;
+    streamError = '';
+    try {
+      stream = await loadStream();
+    } catch (thrown) {
+      streamError = thrown instanceof Error ? thrown.message : 'The events did not load.';
+    } finally {
+      streaming = false;
+    }
+  }
 
   const kinds = $derived(
     new Set<EventKind>(EVENT_KINDS.map((kind) => kind.id).filter((kind) => !off.includes(kind))),
@@ -34,7 +66,18 @@
   /** See FilterBar.svelte: the label around a checkbox is its 44px target, not the box. */
   const check = 'accent-gold';
 
-  const all = $derived(summaryEvents(summary).filter((event) => event.guids.some(inScope)));
+  // With the stream loaded, the summary's few hits and heals (the ones before a death) give way
+  // to every one of them; the casts, auras and deaths stay the summary's.
+  const all = $derived(
+    [
+      ...summaryEvents(summary).filter(
+        (event) => stream === null || (event.kind !== 'damage' && event.kind !== 'heal'),
+      ),
+      ...(stream === null ? [] : streamEvents(stream)),
+    ]
+      .filter((event) => event.guids.some(inScope))
+      .sort((a, b) => a.atMs - b.atMs),
+  );
   const matching = $derived(filterEvents(all, kinds, search));
   /** How many rows are on the page: a wipe's stream runs to thousands. */
   const PAGE = 200;
@@ -73,9 +116,21 @@
   </div>
 
   <p class="text-muted text-[12px]">
-    <span class="tabular font-mono">{matching.length}</span> events the summary timestamps: casts, auras going up
-    and down, the hits before each death, and the deaths. The complete event stream, every field of every line,
-    is in Queries.
+    <span class="tabular font-mono">{matching.length}</span> events{#if stream === null}
+      the summary timestamps: casts, auras going up and down, the hits and heals before each death, and the
+      deaths.{#if loadStream !== undefined}
+        <button
+          type="button"
+          class="text-gold inline-flex min-h-11 items-center underline-offset-2 hover:underline md:min-h-0"
+          data-testid="events-stream"
+          disabled={streaming}
+          onclick={() => void runStream()}
+          >{streaming ? 'Loading…' : 'Load every hit and heal in this window'}</button
+        >
+        from the fight’s events.{/if}{:else}: casts, auras and deaths from the summary, and
+      <span class="tabular font-mono">{stream.length}</span> hits and heals from the fight’s events.{/if}
+    {#if streamError !== ''}<span class="text-wipe" role="alert">{streamError}</span>{/if}
+    Every field of every line is in Queries.
   </p>
 
   {#if shown.length === 0}
