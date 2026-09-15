@@ -114,8 +114,10 @@
               style={`width: ${peakOf(damage) === 0 ? 0 : (share / peakOf(damage)) * 100}%; background: ${classColorVar(actor.class)}`}
             ></span></span
           >
-          <span class="tabular text-right font-mono">{formatAmount(actor.effective)}</span>
-          <span class="text-muted tabular text-right font-mono text-[12px]"
+          <span class="tabular text-right font-mono whitespace-nowrap"
+            >{formatAmount(actor.effective)}<span class="label font-body ml-1 md:hidden">amount</span></span
+          >
+          <span class="text-muted tabular text-right font-mono text-[12px] whitespace-nowrap"
             >{formatPerSecond(actor.effective, durationMs)}<span class="label font-body ml-1 md:hidden"
               >per sec</span
             ></span
@@ -164,8 +166,10 @@
               style={`width: ${peakOf(healing) === 0 ? 0 : (share / peakOf(healing)) * 100}%; background: ${classColorVar(actor.class)}`}
             ></span></span
           >
-          <span class="tabular text-right font-mono">{formatAmount(actor.effective)}</span>
-          <span class="text-muted tabular text-right font-mono text-[12px]"
+          <span class="tabular text-right font-mono whitespace-nowrap"
+            >{formatAmount(actor.effective)}<span class="label font-body ml-1 md:hidden">amount</span></span
+          >
+          <span class="text-muted tabular text-right font-mono text-[12px] whitespace-nowrap"
             >{formatPerSecond(actor.effective, durationMs)}<span class="label font-body ml-1 md:hidden"
               >per sec</span
             ></span

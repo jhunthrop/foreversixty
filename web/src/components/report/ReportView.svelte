@@ -263,7 +263,9 @@
       if (token === measureToken) tableExact = measured;
     } catch (thrown) {
       if (token === measureToken)
-        tableMeasureError = thrown instanceof Error ? thrown.message : 'The measurement did not run.';
+        tableMeasureError = `The measure did not run, so these are the summary’s prorated figures${
+          thrown instanceof Error ? ` (${thrown.message})` : ''
+        }.`;
     } finally {
       if (token === measureToken) tableMeasuring = false;
     }
@@ -1007,7 +1009,7 @@
            the page header instead. The negative margin takes it out to the viewport edges
            so its background covers the rows sliding under it, and the padding puts the
            18px gutter back on its own children. -->
-      <div class="bg-bg sticky top-0 z-10 -mx-[18px] px-[18px] py-2 md:static md:mx-0 md:px-0 md:py-0">
+      <div class="bg-bg -mx-[18px] px-[18px] py-2 md:mx-0 md:px-0 md:py-0">
         <ModeBar {state} {roster} onPatch={patch} {nightMode} />
       </div>
       <Glossary />
@@ -1195,7 +1197,7 @@
             {classOf}
             approximate={!windowIsWhole}
             totalThreat={windowed?.threat
-              .filter((row) => playerSet.has(row.guid))
+              .filter((row) => inSource(row.guid, state.source, playerSet, friendlySet))
               .reduce((sum, row) => sum + row.threat, 0)}
           />
         {:else if state.tab === 'deaths'}

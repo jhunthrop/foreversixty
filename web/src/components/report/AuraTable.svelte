@@ -128,19 +128,24 @@
           class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px] md:grid-cols-[minmax(120px,1.2fr)_minmax(120px,1.2fr)_minmax(0,3fr)_80px_64px]"
           data-testid={`aura-${track.spell_id}-${track.target_guid}`}
         >
-          <span class="truncate font-semibold"
-            >{track.name}{#if kind === 'DEBUFF' && schoolName(track.school)}
+          <span class="flex min-w-0 items-center gap-1">
+            <span class="truncate font-semibold"
+              >{track.name}{#if ambiguous.has(`${track.target_guid}|${track.name}`)}
+                <span
+                  class="text-muted ml-1 font-mono text-[11px]"
+                  title="Two spells share this name; this is spell id {track.spell_id}"
+                  >#{track.spell_id}</span
+                >{/if}</span
+            >
+            {#if kind === 'DEBUFF' && schoolName(track.school)}
               <span
-                class="ml-1 rounded-[2px] px-1 text-[10px] font-normal tracking-[0.04em] uppercase"
+                class="shrink-0 rounded-[2px] px-1 text-[10px] font-normal tracking-[0.04em] uppercase"
                 style={`background: ${schoolToken(track.school)}; color: var(--color-bg)`}
-                title="The spell's school: Physical and bleeds cannot be dispelled; Magic, Curse, Poison and Disease can, by the right class"
+                title="The spell's school. Whether a debuff can be dispelled is not in the log; the Dispels tab shows which ones were."
                 data-testid="aura-school">{schoolName(track.school)}</span
-              >{/if}{#if ambiguous.has(`${track.target_guid}|${track.name}`)}
-              <span
-                class="text-muted ml-1 font-mono text-[11px]"
-                title="Two spells share this name; this is spell id {track.spell_id}">#{track.spell_id}</span
-              >{/if}</span
-          >
+              >
+            {/if}
+          </span>
           <span class="text-muted truncate text-[13px]">{splitUnitName(track.target_name).name}</span>
           <span class="bg-line-soft relative col-span-2 block h-[6px] w-full md:col-span-1">
             <!-- Keyed by index as well as start: a stack refreshed on the tick it was

@@ -385,7 +385,7 @@
         </p>
       {/if}
       <table
-        class="min-w-[640px] flex-1 self-start text-[13px]"
+        class="min-w-[640px] flex-1 self-start text-[13px] md:w-full md:min-w-0"
         data-testid="row-abilities"
         hidden={splitUnavailable}
       >
@@ -470,7 +470,8 @@
               <td class="text-muted tabular py-1.5 pr-3 text-right font-mono whitespace-nowrap"
                 >{#if ability.max > 0}{formatAmount(ability.max)}{/if}</td
               >
-              <td class="text-muted tabular py-1.5 text-right font-mono text-[12px] whitespace-nowrap"
+              <!-- Wraps: a long list of what did not land must not push the table past its box. -->
+              <td class="text-muted tabular max-w-[260px] py-1.5 text-right font-mono text-[12px]"
                 >{abilityNotes(ability).join(' · ')}</td
               >
             </tr>

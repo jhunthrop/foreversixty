@@ -132,11 +132,7 @@
     </label>
   {/if}
   {#if (state.mode === 'analyze' && state.view === 'tables') || nightMode}
-    <div
-      role="tablist"
-      aria-label="Table"
-      class="border-line-soft flex flex-nowrap overflow-x-auto border-b [mask-image:linear-gradient(to_right,black_88%,transparent)] md:flex-wrap md:[mask-image:none]"
-    >
+    <div role="tablist" aria-label="Table" class="border-line-soft flex flex-wrap border-b">
       {#each TABS as tab (tab.id)}
         <button
           type="button"

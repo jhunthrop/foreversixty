@@ -60,7 +60,8 @@ export interface QueryResult {
 export interface QueryEngine {
   /** Registers the bytes under `name` so SQL can read_parquet() them. */
   open(name: string, bytes: Uint8Array): Promise<void>;
-  query(sql: string): Promise<QueryResult>;
+  /** `maxRows` caps what is materialised (MAX_ROWS by default); a measure passes Infinity. */
+  query(sql: string, maxRows?: number): Promise<QueryResult>;
   close(): Promise<void>;
 }
 
@@ -273,7 +274,7 @@ export interface QueryLayerOptions {
 export interface QueryLayer {
   /** True once the engine exists and a fight's events are registered. */
   readonly ready: boolean;
-  run(eventsUrl: string, sql: string): Promise<QueryResult>;
+  run(eventsUrl: string, sql: string, options?: { maxRows?: number }): Promise<QueryResult>;
   close(): Promise<void>;
 }
 
@@ -355,7 +356,12 @@ export function createQueryLayer(options: QueryLayerOptions): QueryLayer {
     if (mine !== generation) throw new Error(QUERY_ABANDONED);
   }
 
-  async function execute(eventsUrl: string, sql: string, mine: number): Promise<QueryResult> {
+  async function execute(
+    eventsUrl: string,
+    sql: string,
+    mine: number,
+    maxRows: number | undefined,
+  ): Promise<QueryResult> {
     const active = await engineOnce();
     stillWanted(mine);
     if (openedUrl !== eventsUrl) {
@@ -365,7 +371,7 @@ export function createQueryLayer(options: QueryLayerOptions): QueryLayer {
       stillWanted(mine);
       openedUrl = eventsUrl;
     }
-    const answer = await active.query(sql);
+    const answer = await active.query(sql, maxRows);
     stillWanted(mine);
     return answer;
   }
@@ -389,7 +395,7 @@ export function createQueryLayer(options: QueryLayerOptions): QueryLayer {
     get ready(): boolean {
       return engine !== null && openedUrl !== '';
     },
-    run(eventsUrl: string, sql: string): Promise<QueryResult> {
+    run(eventsUrl: string, sql: string, options: { maxRows?: number } = {}): Promise<QueryResult> {
       // Ahead of the queue on purpose: a statement that will never be allowed to run
       // should not wait behind a slow one to be told so, and nothing is built for it.
       const refusal = refuseSql(sql);
@@ -402,7 +408,7 @@ export function createQueryLayer(options: QueryLayerOptions): QueryLayer {
       return serial(async () => {
         try {
           stillWanted(mine);
-          return await withTimeout(execute(eventsUrl, sql, mine));
+          return await withTimeout(execute(eventsUrl, sql, mine, options.maxRows));
         } catch (thrown) {
           if (thrown instanceof Error && thrown.message === QUERY_TOO_SLOW) await teardown();
           throw thrown;
@@ -467,14 +473,14 @@ export async function createDuckDbEngine(): Promise<QueryEngine> {
       await database.dropFile(name).catch(() => null);
       await database.registerFileBuffer(name, bytes);
     },
-    async query(sql: string): Promise<QueryResult> {
+    async query(sql: string, maxRows = MAX_ROWS): Promise<QueryResult> {
       const started = performance.now();
       const table = await connection.query(sql);
       const columns = table.schema.fields.map((field) => field.name);
       // Read positionally, by child vector, rather than through a row object keyed by
       // column name: two output columns can share a name, and a keyed row would drop one.
       const children = columns.map((_name, index) => table.getChildAt(index));
-      const shown = Math.min(table.numRows, MAX_ROWS);
+      const shown = Math.min(table.numRows, maxRows);
       const rows: unknown[][] = [];
       for (let index = 0; index < shown; index += 1) {
         rows.push(children.map((child) => normalizeCell(child?.get(index))));

@@ -275,5 +275,24 @@
         </li>
       {/each}
     </ul>
+    {#if auraOrder.length > 0}
+      <!-- The bands are 3px each, too thin to label in place: this names each row's aura in
+           its colour, in the order the rows run from the top of every lane. -->
+      <details class="text-[12px]" data-testid="timeline-aura-legend">
+        <summary class="label text-muted min-h-11 cursor-pointer md:min-h-0"
+          >Aura rows, top to bottom ({auraOrder.length})</summary
+        >
+        <ol class="mt-1 flex flex-wrap gap-x-4 gap-y-1">
+          {#each auraOrder as name, index (name)}
+            <li class="flex items-center gap-1">
+              <span class="text-muted tabular font-mono text-[11px]">{index + 1}</span>
+              <span class="inline-block h-[3px] w-[14px]" style={`background: hsl(${hueOf(name)} 65% 62%)`}
+              ></span>
+              {name}
+            </li>
+          {/each}
+        </ol>
+      </details>
+    {/if}
   </div>
 {/if}

@@ -256,7 +256,9 @@
                     <td class="tabular py-1 pr-3 text-right font-mono">{perSecond(entry.dps)} dps</td>
                     <td class="tabular py-1 pr-3 text-right font-mono">{perSecond(entry.hps)} hps</td>
                     <td class="tabular py-1 pr-3 text-right font-mono" title="Damage taken on this pull"
-                      >{formatAmount(entry.damage_taken)} taken</td
+                      >{perSecond(
+                        entry.duration_ms > 0 ? entry.damage_taken / (entry.duration_ms / 1000) : 0,
+                      )}/s taken</td
                     >
                     <td class="tabular py-1 pr-3 text-right font-mono" class:text-death={entry.deaths > 0}
                       >{entry.deaths} {entry.deaths === 1 ? 'death' : 'deaths'}</td

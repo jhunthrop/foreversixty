@@ -60,10 +60,12 @@ describe('dead spans', () => {
     const split = exactSplitSql('damage-taken', 'Player-1', { startMs: 0, endMs: 724_000 }, null, {
       exclude,
     });
-    expect(split.abilities).toContain("AND NOT (actor = 'Player-1' AND at >= 63800 AND at < 457000)");
+    expect(split.abilities).toContain(
+      "AND NOT (actor = 'Player-1' AND fight_ms >= 63800 AND fight_ms < 457000)",
+    );
     expect(split.misses).toContain("AND NOT (dest_guid = 'Player-1' AND");
     const table = exactTableSql('damage-taken', { startMs: 0, endMs: 724_000 }, null, { exclude });
-    expect(table).toContain("AND NOT (actor = 'Player-1' AND at >= 63800 AND at < 457000)");
+    expect(table).toContain("AND NOT (actor = 'Player-1' AND fight_ms >= 63800 AND fight_ms < 457000)");
   });
 });
 

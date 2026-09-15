@@ -57,7 +57,8 @@ export interface DeadSpan {
   endMs: number;
 }
 
-/** The clause that leaves an actor's dead spans out, on whatever names the actor and the instant. */
+/** The clause that leaves an actor's dead spans out, on whatever names the actor and the instant.
+ *  (The instant's alias is `fight_ms`, never `at`: `at` is a keyword in DuckDB.) */
 function excludeClause(exclude: DeadSpan[] | undefined, actor: string, at: string): string {
   if (exclude === undefined || exclude.length === 0) return '';
   return exclude
@@ -68,6 +69,8 @@ function excludeClause(exclude: DeadSpan[] | undefined, actor: string, at: strin
     .join('');
 }
 const NO_PETS: PetOwners = new Map();
+/** A measure is not a preview: every row, or the totals are wrong. */
+const ALL_ROWS = { maxRows: Number.POSITIVE_INFINITY };
 
 let shared: QueryLayer | null = null;
 
@@ -122,25 +125,25 @@ export function rowsSql(kind: ActorKind, window: TimeWindow, options: MeasureOpt
   const damage = options.countOverkill ? 'amount' : 'amount - greatest(coalesce(overkill, 0), 0)';
   if (kind === 'damage-taken') {
     return `SELECT dest_guid AS actor, source_guid AS other_guid, source_name AS other_name,
-    ${FIGHT_MS} AS at, spell_id, spell_name, spell_school, event, amount,
+    ${FIGHT_MS} AS fight_ms, spell_id, spell_name, spell_school, event, amount,
     ${damage} AS effective,
     0 AS overheal, coalesce(absorbed, 0) AS absorbed, coalesce(blocked, 0) AS blocked, critical
   FROM ${EVENTS_TABLE} WHERE kind = 'damage' AND ${at}`;
   }
   if (kind === 'healing') {
     return `SELECT ${ownerExpr('source_guid', pets)} AS actor, dest_guid AS other_guid, dest_name AS other_name,
-    ${FIGHT_MS} AS at, spell_id, spell_name, spell_school, event, amount,
+    ${FIGHT_MS} AS fight_ms, spell_id, spell_name, spell_school, event, amount,
     amount - coalesce(overheal, 0) AS effective,
     coalesce(overheal, 0) AS overheal, 0 AS absorbed, 0 AS blocked, critical
   FROM ${EVENTS_TABLE} WHERE kind = 'heal' AND ${at}
   UNION ALL
   SELECT ${ownerExpr('extra_guid', pets)} AS actor, dest_guid AS other_guid, dest_name AS other_name,
-    ${FIGHT_MS} AS at, extra_spell_id AS spell_id, extra_spell_name AS spell_name, extra_spell_school AS spell_school, event, amount,
+    ${FIGHT_MS} AS fight_ms, extra_spell_id AS spell_id, extra_spell_name AS spell_name, extra_spell_school AS spell_school, event, amount,
     amount AS effective, 0 AS overheal, amount AS absorbed, 0 AS blocked, false AS critical
   FROM ${EVENTS_TABLE} WHERE kind = 'absorbed' AND extra_guid <> '' AND ${at}`;
   }
   return `SELECT ${ownerExpr('source_guid', pets)} AS actor, dest_guid AS other_guid, dest_name AS other_name,
-    ${FIGHT_MS} AS at, spell_id, spell_name, spell_school, event, amount,
+    ${FIGHT_MS} AS fight_ms, spell_id, spell_name, spell_school, event, amount,
     ${damage} AS effective,
     0 AS overheal, coalesce(absorbed, 0) AS absorbed, coalesce(blocked, 0) AS blocked, critical
   FROM ${EVENTS_TABLE} WHERE kind = 'damage' AND ${at}`;
@@ -165,7 +168,7 @@ export function exactSplitSql(
 ): { abilities: string; misses: string; targets: string } {
   const rows = rowsSql(kind, window, options);
   const pets = options.pets ?? NO_PETS;
-  const scope = `actor = ${quote(guid)}${scopeClause(target)}${excludeClause(options.exclude, 'actor', 'at')}`;
+  const scope = `actor = ${quote(guid)}${scopeClause(target)}${excludeClause(options.exclude, 'actor', 'fight_ms')}`;
   const other = otherSide(kind);
   const own = `${
     kind === 'damage-taken'
@@ -217,7 +220,7 @@ export function exactTableSql(
 SELECT actor AS guid, other_guid, any_value(other_name) AS other_name, sum(effective) AS total,
   sum(amount) AS gross, sum(overheal) AS overheal, sum(absorbed) AS absorbed, sum(blocked) AS blocked
 FROM rows
-WHERE actor <> ''${scopeClause(scope)}${excludeClause(options.exclude, 'actor', 'at')}
+WHERE actor <> ''${scopeClause(scope)}${excludeClause(options.exclude, 'actor', 'fight_ms')}
 GROUP BY actor, other_guid
 ORDER BY total DESC`;
 }
@@ -257,7 +260,7 @@ export interface StreamLine {
 }
 
 export function eventStreamSql(window: TimeWindow): string {
-  return `SELECT ${FIGHT_MS} AS at, kind, source_guid, source_name, dest_guid, dest_name, spell_name,
+  return `SELECT ${FIGHT_MS} AS fight_ms, kind, source_guid, source_name, dest_guid, dest_name, spell_name,
   coalesce(amount, 0) AS amount, coalesce(overheal, 0) AS overheal, coalesce(absorbed, 0) AS absorbed
 FROM ${EVENTS_TABLE}
 WHERE kind IN ('damage', 'heal') AND ${windowClause(window)}
@@ -270,9 +273,9 @@ export async function loadEventStream(
   eventsUrl: string,
   window: TimeWindow,
 ): Promise<StreamLine[]> {
-  const result = await layer.run(eventsUrl, eventStreamSql(window));
+  const result = await layer.run(eventsUrl, eventStreamSql(window), ALL_ROWS);
   return rowsOf(result).map((row) => ({
-    atMs: num(row.at),
+    atMs: num(row.fight_ms),
     kind: row.kind === 'heal' ? 'heal' : 'damage',
     sourceGuid: String(row.source_guid ?? ''),
     sourceName: String(row.source_name ?? ''),
@@ -303,10 +306,10 @@ export async function measureTable(
   options: MeasureOptions = {},
 ): Promise<Map<string, ExactTotals>> {
   const [result, misses] = await Promise.all([
-    layer.run(eventsUrl, exactTableSql(kind, window, scope, options)),
+    layer.run(eventsUrl, exactTableSql(kind, window, scope, options), ALL_ROWS),
     kind === 'healing'
       ? Promise.resolve({ columns: [], rows: [] })
-      : layer.run(eventsUrl, exactMissesSql(kind, window, scope, options)),
+      : layer.run(eventsUrl, exactMissesSql(kind, window, scope, options), ALL_ROWS),
   ]);
   const out = new Map<string, ExactTotals>();
   const fresh = (): ExactTotals => ({
@@ -350,9 +353,9 @@ export async function measureExact(
 ): Promise<ExactSplit> {
   const sql = exactSplitSql(kind, guid, window, target, options);
   const [abilities, misses, targets] = await Promise.all([
-    layer.run(eventsUrl, sql.abilities),
-    layer.run(eventsUrl, sql.misses),
-    layer.run(eventsUrl, sql.targets),
+    layer.run(eventsUrl, sql.abilities, ALL_ROWS),
+    layer.run(eventsUrl, sql.misses, ALL_ROWS),
+    layer.run(eventsUrl, sql.targets, ALL_ROWS),
   ]);
   const missesBySpell = new Map<number, Record<string, number>>();
   for (const row of rowsOf(misses)) {

@@ -101,10 +101,14 @@ test('the chart sits above the table, as the spec asks', async ({ page }) => {
   expect(chart.y).toBeLessThan(table.y);
 });
 
-test('the mode bar stays reachable while a long table scrolls', async ({ page }) => {
+// The strips once stuck to the top of a phone screen; at 263px they covered every table's
+// headings, so they scroll with the page now, and the tab strip wraps rather than hiding
+// "Deaths" past the right edge.
+test('every tab is visible on a phone without scrolling sideways', async ({ page }) => {
   await page.goto(`${REPORT}&tab=damage-done`);
-  await page.mouse.wheel(0, 1200);
-  await expect(page.getByTestId('mode-bar')).toBeInViewport();
+  const deaths = (await page.getByTestId('tab-deaths').boundingBox())!;
+  expect(deaths.x + deaths.width).toBeLessThanOrEqual(390);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
 });
 
 test('every interactive control clears 44px', async ({ page }) => {

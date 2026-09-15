@@ -215,7 +215,7 @@
         </caption>
         <thead>
           <tr class="border-line-soft border-b text-left">
-            <th scope="col" class="label text-muted px-2 py-2 font-bold">Player</th>
+            <th scope="col" class="label text-muted bg-bg sticky left-0 px-2 py-2 font-bold">Player</th>
             <th scope="col" class="label text-muted px-2 py-2 text-right font-bold">
               This fight
               <span class="block truncate text-[11px] normal-case">{fightLabel(currentFight)}</span>
@@ -230,8 +230,9 @@
         <tbody>
           {#each lines as line (line.guid)}
             <tr class="border-line-soft min-h-11 border-b" data-testid={`compare-${line.guid}`}>
+              <!-- Sticky, so a name stays beside its figures when the box scrolls on a phone. -->
               <td
-                class="max-w-0 truncate px-2 py-2 font-semibold"
+                class="bg-bg sticky left-0 max-w-[40vw] truncate px-2 py-2 font-semibold md:max-w-none"
                 style={`color: ${classColorVar(line.class)}`}
               >
                 {splitUnitName(line.name).name}
