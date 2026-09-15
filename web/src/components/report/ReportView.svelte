@@ -77,6 +77,7 @@
   import { encounterSlug as slugFor } from '../../lib/rankings/api';
   import { phaseAt } from '../../lib/rankings/phases';
   import { inSource, scopeSource } from '../../lib/report/source';
+  import { splitUnitName } from '../../lib/characters';
   import {
     measureExact,
     measureTable,
@@ -473,12 +474,39 @@
           overheal: actor.overheal === undefined ? undefined : (found?.overheal ?? 0),
           targets: found?.targets ?? [],
           measured: true,
+          mitigated: found?.mitigated ?? { absorbed: 0, blocked: 0, misses: {} },
         };
       })
       .sort((a, b) => b.effective - a.effective);
   });
 
   const metricLabel = $derived(state.tab === 'healing' ? 'Healing' : 'Damage');
+
+  /**
+   * Players with no row in this table: under a death window that is usually someone who
+   * was already dead, and a table that silently lacks them reads as if they never existed.
+   */
+  const absentPlayers = $derived.by((): { name: string; deadSince: number | null }[] => {
+    if (scoped === null || windowIsWhole) return [];
+    const shown = new Set(tabActors.map((actor) => actor.guid));
+    return scoped.roster
+      .filter((row) => playerSet.has(row.guid) && !shown.has(row.guid))
+      .filter((row) => inSource(row.guid, state.source, playerSet, friendlySet))
+      .map((row) => ({
+        name: splitUnitName(row.name).name,
+        deadSince: deadSince(row.guid, cutWindow.endMs),
+      }));
+  });
+  /** When this player died before `at` and cast nothing since, the instant they died; else null. */
+  function deadSince(guid: string, at: number): number | null {
+    if (base === null) return null;
+    const death = [...base.deaths].filter((entry) => entry.guid === guid && entry.at_ms <= at).pop();
+    if (death === undefined) return null;
+    const castSince = base.casts
+      .filter((row) => row.guid === guid)
+      .some((row) => row.sequence.some((cast) => cast > death.at_ms && cast <= at));
+    return castSince ? null : death.at_ms;
+  }
 
   /**
    * The metric a table tab's Parse column places every row on, the way Warcraft Logs
@@ -1020,6 +1048,8 @@
             parseFallback={tableParseFallback}
             pairsLabel={state.tab === 'damage-taken' ? 'Sources' : 'Targets'}
             mitigation={state.tab === 'damage-taken'}
+            splitUnavailable={nightMode && filtersScale}
+            absent={absentPlayers}
             measure={nightMode ? undefined : measureRow}
             approximate={actorTableApproximate}
             amountApproximate={filtersScale && !windowIsWhole}
@@ -1093,7 +1123,12 @@
             players={playerSet}
           />
         {:else if state.tab === 'dispels'}
-          <ExchangeTable rows={scoped.dispels} emptyText="Nothing was dispelled in the whole fight." />
+          <ExchangeTable
+            rows={scoped.dispels}
+            emptyText="Nothing was dispelled in the whole fight."
+            auras={base?.auras ?? []}
+            players={playerSet}
+          />
         {:else if state.tab === 'resources'}
           <ResourceGraphs
             tracks={scoped.resources}
@@ -1113,6 +1148,9 @@
         {:else if state.tab === 'deaths'}
           <DeathsTab
             deaths={scoped.deaths}
+            casts={base?.casts ?? []}
+            open={state.openDeaths}
+            onPatch={patch}
             durationMs={summary?.duration_ms ?? scoped.duration_ms}
             combatants={scoped.combatants}
             {classOf}
@@ -1148,6 +1186,9 @@
           summary={windowed ?? scoped}
           {classOf}
           inScope={(guid) => inSource(guid, state.source, playerSet, friendlySet)}
+          off={state.eventsOff}
+          search={state.find}
+          onPatch={patch}
         />
       {/if}
       <!-- `scoped` only to say a summary has loaded, the same guard its three siblings

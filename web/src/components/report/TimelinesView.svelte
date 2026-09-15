@@ -51,7 +51,7 @@
   function pickNearest(
     event: PointerEvent,
     casts: { at: number; name: string }[],
-    auras: { start_ms: number; end_ms: number; name: string }[] = [],
+    auras: AuraBand[] = [],
   ): void {
     // The lane by its mark, not currentTarget: a delegated pointer event can hand over the
     // island's root, whose width made every readout land a few seconds off the pointer.
@@ -59,11 +59,23 @@
     if (lane === null) return;
     const bounds = lane.getBoundingClientRect();
     const at = current.startMs + ((event.clientX - bounds.left) / Math.max(bounds.width, 1)) * span;
-    // The upper half of the lane is the aura bands: an aura covering this instant wins there.
-    if (event.clientY - bounds.top < bounds.height / 2) {
+    // The aura bands run from the lane's top, one per aura: the band under the pointer
+    // names its aura and the segment's span; a gap in it says what else was up.
+    const y = event.clientY - bounds.top;
+    const bandCount = auras.reduce((top, aura) => Math.max(top, aura.band), -1) + 1;
+    if (y < bandCount * BAND_PX) {
+      const band = Math.floor(y / BAND_PX);
+      const under = auras.find((aura) => aura.band === band && aura.start_ms <= at && at <= aura.end_ms);
+      if (under !== undefined) {
+        picked = {
+          at,
+          name: `${under.name} · ${formatDuration(under.start_ms)} to ${formatDuration(under.end_ms)}`,
+        };
+        return;
+      }
       const held = auras.filter((aura) => aura.start_ms <= at && at <= aura.end_ms);
       if (held.length > 0) {
-        picked = { at, name: held.map((aura) => aura.name).join(', ') };
+        picked = { at, name: [...new Set(held.map((aura) => aura.name))].join(', ') };
         return;
       }
     }
@@ -90,17 +102,35 @@
    * lane, so an aura reads as one line across the fight rather than hopping bands between
    * occurrences.
    */
-  function bandAuras(
-    tracks: AuraTrack[],
-  ): { start_ms: number; end_ms: number; name: string; band: number }[] {
+  interface AuraBand {
+    start_ms: number;
+    end_ms: number;
+    name: string;
+    band: number;
+    color: string;
+  }
+  const BAND_PX = 3;
+  const CASTS_PX = 12;
+  /** A hue of its own per aura name, stable across lanes and fights. */
+  function hueOf(name: string): number {
+    let hash = 0;
+    for (const char of name) hash = (hash * 31 + char.charCodeAt(0)) % 360;
+    return hash;
+  }
+  /** Every aura on its own band, longest uptime first, so each reads as one line and can be pointed at. */
+  function bandAuras(tracks: AuraTrack[]): AuraBand[] {
+    const ordered = [...tracks].sort((a, b) => b.uptime_ms - a.uptime_ms || a.name.localeCompare(b.name));
     // eslint-disable-next-line svelte/prefer-svelte-reactivity
     const bands = new Map<string, number>();
-    return tracks.flatMap((track) => {
-      const band = bands.get(track.name) ?? bands.size % 3;
+    return ordered.flatMap((track) => {
+      const band = bands.get(track.name) ?? bands.size;
       bands.set(track.name, band);
-      return track.segments.map((segment) => ({ ...segment, name: track.name, band }));
+      const color = `hsl(${hueOf(track.name)} 65% 62%)`;
+      return track.segments.map((segment) => ({ ...segment, name: track.name, band, color }));
     });
   }
+  const laneHeight = (auras: AuraBand[]): number =>
+    Math.max(18, (auras.reduce((top, aura) => Math.max(top, aura.band), -1) + 1) * BAND_PX + CASTS_PX);
 
   const lanes = $derived(
     [...summary.roster]
@@ -210,7 +240,8 @@
         >
           <span class="truncate text-[13px] font-semibold" style={`color: ${lane.color}`}>{lane.name}</span>
           <span
-            class="bg-line-soft relative block h-[18px] w-full touch-none"
+            class="bg-line-soft relative block w-full touch-none"
+            style={`height: ${laneHeight(lane.auras)}px`}
             data-lane
             onpointerdown={(event) => pickNearest(event, lane.casts, lane.auras)}
             onpointermove={(event) => pickNearest(event, lane.casts, lane.auras)}
@@ -218,7 +249,7 @@
             {#each lane.auras as segment, i (`${segment.start_ms}-${i}`)}
               <span
                 class="absolute h-[3px]"
-                style={`top: ${segment.band * 3}px; left: ${pct(segment.start_ms)}%; width: ${Math.max(pct(segment.end_ms) - pct(segment.start_ms), 0.4)}%; background: ${lane.color}; opacity: ${[0.85, 0.6, 0.4][segment.band]}`}
+                style={`top: ${segment.band * BAND_PX}px; left: ${pct(segment.start_ms)}%; width: ${Math.max(pct(segment.end_ms) - pct(segment.start_ms), 0.4)}%; background: ${segment.color}`}
                 title={`${segment.name} · ${formatDuration(segment.start_ms)} to ${formatDuration(segment.end_ms)}`}
               ></span>
             {/each}

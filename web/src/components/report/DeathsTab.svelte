@@ -6,7 +6,6 @@
      Cards rather than a table at every width: a death is read top to bottom, and the
      last-ten list is the whole point of the view. -->
 <script lang="ts">
-  import { SvelteSet } from 'svelte/reactivity';
   import { splitUnitName } from '../../lib/characters';
   import {
     classColorVar,
@@ -15,11 +14,14 @@
     formatDurationPrecise,
   } from '../../lib/report/format';
   import { plannerLinkFor } from '../../lib/report/planner-link';
-  import type { CombatantRow, DamageRef, Death, HealRef } from '../../lib/report/types';
+  import type { CastRow, CombatantRow, DamageRef, Death, HealRef } from '../../lib/report/types';
   import { deathWindow, type TimeWindow } from '../../lib/report/window';
 
   let {
     deaths,
+    casts = [],
+    open = [],
+    onPatch = () => {},
     durationMs,
     combatants,
     classOf,
@@ -28,6 +30,10 @@
     onWindow,
   }: {
     deaths: Death[];
+    /** The fight's casts, to tell a player still dead from one raised: a cast means alive. */
+    casts?: CastRow[];
+    open?: string[];
+    onPatch?: (patch: { openDeaths?: string[] }) => void;
     durationMs: number;
     combatants: CombatantRow[];
     classOf: Map<string, string>;
@@ -40,14 +46,13 @@
   const ordered = $derived([...deaths].sort((a, b) => a.at_ms - b.at_ms));
   const FOLD_ABOVE = 6;
   /** Cards the reader has opened by hand; every card is open while there are few. */
-  // A SvelteSet: toggled one card at a time, which is the per-entry tracking it is for.
-  const opened = new SvelteSet<string>();
+  /** The cards opened by hand, from the url, so a pasted link opens the same ones. */
+  const opened = $derived(new Set(open));
   const foldAll = $derived(ordered.length > FOLD_ABOVE);
   const isOpen = (death: Death): boolean => !foldAll || opened.has(`${death.guid}-${death.at_ms}`);
   function toggle(death: Death): void {
     const key = `${death.guid}-${death.at_ms}`;
-    if (opened.has(key)) opened.delete(key);
-    else opened.add(key);
+    onPatch({ openDeaths: opened.has(key) ? open.filter((entry) => entry !== key) : [...open, key] });
   }
 
   type LastEvent =
@@ -154,6 +159,24 @@
     const className = death.class ?? classOf.get(death.guid);
     return plannerLinkFor({ dataBuild, className, treeSizes: treeSizesFor(className), combatant });
   }
+
+  /** The players who had died earlier in the same pull and cast nothing since: still dead at this one. */
+  function deadAt(death: Death): Death[] {
+    // eslint-disable-next-line svelte/prefer-svelte-reactivity
+    const seen = new Set<string>();
+    return deaths
+      .filter(
+        (other) => other.guid !== death.guid && other.at_ms < death.at_ms && other.label === death.label,
+      )
+      .filter((other) => {
+        const raised = casts
+          .filter((row) => row.guid === other.guid)
+          .some((row) => row.sequence.some((at) => at > other.at_ms && at <= death.at_ms));
+        if (raised || seen.has(other.guid)) return false;
+        seen.add(other.guid);
+        return true;
+      });
+  }
 </script>
 
 {#if ordered.length === 0}
@@ -167,6 +190,7 @@
          key threw on the duplicate and blanked the whole tab. -->
     {#each ordered as death (`${death.guid}-${death.at_ms}`)}
       {@const link = linkFor(death)}
+      {@const alreadyDead = deadAt(death)}
       <li
         class="border-line rounded-panel bg-raised flex flex-col gap-3 border p-3"
         data-testid={`death-${death.guid}`}
@@ -191,6 +215,13 @@
             <span class="text-muted text-[13px]" data-testid="death-label">{death.label}</span>
           {:else}
             <span class="text-muted tabular font-mono text-[13px]">{formatDuration(death.at_ms)}</span>
+          {/if}
+          {#if alreadyDead.length > 0}
+            <span class="text-muted text-[13px]" data-testid="death-already-dead"
+              >already dead: {alreadyDead
+                .map((entry) => `${splitUnitName(entry.name).name} (since ${formatDuration(entry.at_ms)})`)
+                .join(', ')}</span
+            >
           {/if}
           {#if death.killing_blow}
             <span class="text-[13px]">

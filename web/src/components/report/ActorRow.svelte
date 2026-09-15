@@ -49,6 +49,7 @@
     share = 0,
     approximate = false,
     amountApproximate = false,
+    splitUnavailable = false,
     measure = undefined,
     characterLink = null,
   }: {
@@ -65,6 +66,8 @@
     approximate?: boolean;
     /** True when the amount itself is prorated: a window met by a target or boss filter. */
     amountApproximate?: boolean;
+    /** Over the night under a target or boss filter: the split by ability cannot be had, so say so. */
+    splitUnavailable?: boolean;
     /** Measures this row's split inside the window from the fight's own events. */
     measure?: (actor: Actor) => Promise<ExactSplit>;
     characterLink?: { region: string; ruleset: string } | null;
@@ -355,7 +358,17 @@
           {#if measureError !== ''}<span class="text-wipe text-[12px]" role="alert">{measureError}</span>{/if}
         </div>
       {/if}
-      <table class="min-w-[640px] flex-1 self-start text-[13px]" data-testid="row-abilities">
+      {#if splitUnavailable}
+        <p class="text-muted text-[13px] md:basis-full" data-testid="row-split-unavailable">
+          Over the whole night the split by ability under a target or boss filter can only be guessed from
+          each pull’s whole, so it is not shown. Open a pull to read it from that fight’s events.
+        </p>
+      {/if}
+      <table
+        class="min-w-[640px] flex-1 self-start text-[13px]"
+        data-testid="row-abilities"
+        hidden={splitUnavailable}
+      >
         <caption class="label text-muted pb-1 text-left">
           Abilities{#if schoolSplit.length > 1}
             <span class="ml-3 tracking-normal normal-case" data-testid="school-split"

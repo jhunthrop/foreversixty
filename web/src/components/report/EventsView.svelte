@@ -5,7 +5,6 @@
      events.parquet, which is the Queries view's job (Task 16): two to ten megabytes and a
      DuckDB instance for a question this view answers for free. -->
 <script lang="ts">
-  import { SvelteSet } from 'svelte/reactivity';
   import { classColorVar, formatAmount, formatDuration } from '../../lib/report/format';
   import { EVENT_KINDS, filterEvents, summaryEvents, type EventKind } from '../../lib/report/events';
   import type { Summary } from '../../lib/report/types';
@@ -14,20 +13,23 @@
     summary,
     classOf,
     inScope = () => true,
+    off = [],
+    search = '',
+    onPatch = () => {},
   }: {
     summary: Summary;
     classOf: Map<string, string>;
     /** The page's Source scope: a line stays when anyone it involves is in scope. */
     inScope?: (guid: string) => boolean;
+    /** The kinds switched off and the find text, from the url, so a copied link keeps them. */
+    off?: string[];
+    search?: string;
+    onPatch?: (patch: { eventsOff?: string[]; find?: string }) => void;
   } = $props();
 
-  // A SvelteSet, not a plain one: toggle() below adds and removes single entries in place,
-  // which is exactly the per-entry tracking SvelteSet exists for, unlike the Maps this
-  // component's siblings rebuild wholesale (see ReportView.svelte's `treeSizes` and
-  // `summaries` for that other case and why they stay plain). SvelteSet is already
-  // reactive on its own, so it is not also wrapped in $state.
-  const kinds = new SvelteSet<EventKind>(EVENT_KINDS.map((kind) => kind.id));
-  let search = $state('');
+  const kinds = $derived(
+    new Set<EventKind>(EVENT_KINDS.map((kind) => kind.id).filter((kind) => !off.includes(kind))),
+  );
 
   /** See FilterBar.svelte: the label around a checkbox is its 44px target, not the box. */
   const check = 'accent-gold';
@@ -45,8 +47,7 @@
   });
 
   function toggle(kind: EventKind): void {
-    if (kinds.has(kind)) kinds.delete(kind);
-    else kinds.add(kind);
+    onPatch({ eventsOff: kinds.has(kind) ? [...off, kind] : off.filter((entry) => entry !== kind) });
   }
 </script>
 
@@ -64,7 +65,8 @@
         id="events-search"
         class="border-line-warm bg-raised rounded-control text-text h-11 px-2 text-[13px] md:h-9"
         type="search"
-        bind:value={search}
+        value={search}
+        oninput={(event) => onPatch({ find: (event.currentTarget as HTMLInputElement).value })}
         data-testid="events-search"
       />
     </label>
@@ -100,7 +102,7 @@
         data-testid="events-more"
         onclick={() => (limit += PAGE)}
       >
-        Show {Math.min(PAGE, matching.length - shown.length)} more of {matching.length - shown.length}
+        Show {Math.min(PAGE, matching.length - shown.length)} more · {matching.length - shown.length} not yet shown
       </button>
     {/if}
   {/if}

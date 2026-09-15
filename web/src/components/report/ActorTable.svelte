@@ -1,7 +1,7 @@
 <!-- web/src/components/report/ActorTable.svelte -->
 <script lang="ts">
   import type { Placement } from '../../lib/report/percentile';
-  import { formatAmount, formatPerSecond, formatPercent } from '../../lib/report/format';
+  import { formatAmount, formatPerSecond, formatDuration } from '../../lib/report/format';
   import type { Actor } from '../../lib/report/types';
   import type { ExactSplit } from '../../lib/report/exact';
   import ActorRow from './ActorRow.svelte';
@@ -16,6 +16,8 @@
     approximate = false,
     amountApproximate = false,
     mitigation = false,
+    splitUnavailable = false,
+    absent = [],
     measure = undefined,
   }: {
     actors: Actor[];
@@ -30,6 +32,10 @@
     amountApproximate?: boolean;
     /** Sum what did not land (absorbed, blocked, avoided) under the total: the Damage Taken table's headline. */
     mitigation?: boolean;
+    /** Over the night under a target or boss filter the per-ability split cannot be measured; rows say so. */
+    splitUnavailable?: boolean;
+    /** Players with no row in this window, and when they died if they were dead. */
+    absent?: { name: string; deadSince: number | null }[];
     measure?: (actor: Actor) => Promise<ExactSplit>;
   } = $props();
 
@@ -42,6 +48,15 @@
     // eslint-disable-next-line svelte/prefer-svelte-reactivity
     const avoided = new Map<string, number>();
     for (const actor of actors) {
+      // A measured row carries its own figures; otherwise the per-ability ones, prorated like them.
+      if (actor.mitigated !== undefined) {
+        absorbed += actor.mitigated.absorbed;
+        blocked += actor.mitigated.blocked;
+        for (const [type, count] of Object.entries(actor.mitigated.misses)) {
+          avoided.set(type, (avoided.get(type) ?? 0) + count);
+        }
+        continue;
+      }
       for (const ability of actor.abilities) {
         absorbed += ability.absorbed ?? 0;
         blocked += ability.blocked ?? 0;
@@ -55,9 +70,9 @@
       .sort((a, b) => b[1] - a[1])
       .map(([type, count]) => `${count} ${type.toLowerCase()}`)
       .join(', ');
-    return { absorbed, blocked, hits, byType };
+    const prorated = approximate && actors.some((actor) => actor.mitigated === undefined);
+    return { absorbed, blocked, hits, byType, prorated };
   });
-  const totalActive = $derived(actors.reduce((sum, actor) => Math.max(sum, actor.active_ms), 0));
 
   /** The table as it stands, for a spreadsheet: name, share, amount, per second, active. */
   function csv(): string {
@@ -115,6 +130,7 @@
           {durationMs}
           {approximate}
           {amountApproximate}
+          {splitUnavailable}
           {parseFallback}
           {pairsLabel}
           {measure}
@@ -134,17 +150,33 @@
       <span class="text-muted tabular hidden text-right font-mono text-[13px] md:inline"
         >{formatPerSecond(total, durationMs)}</span
       >
-      <span class="text-muted tabular hidden text-right font-mono text-[13px] md:inline"
-        >{durationMs === 0 ? '' : formatPercent(Math.min((totalActive / durationMs) * 100, 100))}</span
-      >
+      <!-- No figure: the summary keeps each player's active time, not the raid's, and the
+           largest of them said nothing true about the table. -->
+      <span class="hidden md:inline"></span>
     </div>
+    {#if absent.length > 0}
+      <p class="text-muted border-line-soft border-t px-2 py-2 text-[12px]" data-testid="actor-absent">
+        No row in this window: {absent
+          .map((entry) =>
+            entry.deadSince === null
+              ? entry.name
+              : `${entry.name} (dead since ${formatDuration(entry.deadSince)})`,
+          )
+          .join(', ')}.
+      </p>
+    {/if}
     {#if mitigation && (mitigated.absorbed > 0 || mitigated.blocked > 0 || mitigated.hits > 0)}
       <p
         class="text-muted border-line-soft border-t px-2 py-2 text-[12px]"
         data-testid="actor-mitigated"
-        title="What did not land, over every row shown: absorbed by shields, blocked, and hits avoided outright"
+        title={mitigated.prorated
+          ? 'What did not land, prorated from the whole fight like the split above; a pull measures it exactly'
+          : 'What did not land, measured from the fight’s events: absorbed by shields, blocked, and hits avoided outright'}
       >
-        Mitigated: <span class="tabular font-mono">{formatAmount(mitigated.absorbed)}</span> absorbed ·
+        Mitigated: <span class="tabular font-mono"
+          >{mitigated.prorated ? '~' : ''}{formatAmount(mitigated.absorbed)}</span
+        >
+        absorbed ·
         <span class="tabular font-mono">{formatAmount(mitigated.blocked)}</span> blocked ·
         <span class="tabular font-mono">{mitigated.hits}</span> hits avoided{mitigated.hits > 0
           ? ` (${mitigated.byType})`

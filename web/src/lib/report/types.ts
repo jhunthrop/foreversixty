@@ -37,6 +37,13 @@ export interface Pair {
   total: number;
 }
 
+/** What did not land on (or from) an actor: absorbed and blocked amounts, avoided hits by type. */
+export interface Mitigated {
+  absorbed: number;
+  blocked: number;
+  misses: Record<string, number>;
+}
+
 /** Set by the whole-night fold: where each pull sits on the night's clock. */
 export interface PullMark {
   label: string;
@@ -63,6 +70,8 @@ export interface Actor {
   time_ms?: number;
   /** Set on the client when the row's totals and targets were measured from the fight's events. */
   measured?: boolean;
+  /** Set with `measured`: what did not land, measured, so the table's mitigation line is exact too. */
+  mitigated?: Mitigated;
 }
 
 /** summary.DamageRef — one damage event kept for the deaths view. */

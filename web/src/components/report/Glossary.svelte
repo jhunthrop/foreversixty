@@ -26,6 +26,20 @@
         'The same ladder as Warcraft Logs, so a "grey parse" or an "orange parse" means what it does there: grey under 25, green from 25, blue from 50, purple from 75, orange from 95, pink at 99, gold at 100.',
     },
     {
+      term: 'Aura · Buff · Debuff',
+      meaning:
+        'An effect sitting on a unit for a while: a buff helps the one it is on, a debuff hurts them. The Buffs tab lists the auras on the raid, the Debuffs tab the ones on the enemies.',
+    },
+    {
+      term: 'Uptime',
+      meaning:
+        'The share of the window an aura was up on that unit. A damage-over-time debuff at 95% uptime was on the boss nearly the whole fight.',
+    },
+    {
+      term: 'Applied',
+      meaning: 'How many times an aura was put on that unit inside the window, refreshes not counted.',
+    },
+    {
       term: 'Damage · DPS',
       meaning: 'Damage done in the window, and the same divided by the window’s length in seconds.',
     },

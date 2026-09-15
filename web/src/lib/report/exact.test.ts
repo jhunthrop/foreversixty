@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { exactSplitSql, exactTableSql, rowsSql } from './exact';
+import { exactMissesSql, exactSplitSql, exactTableSql, rowsSql } from './exact';
 
 const pets = { pets: new Map([['Pet-7', 'Player-1']]) };
 
@@ -51,6 +51,19 @@ describe('exactTableSql', () => {
     const sql = exactTableSql('damage-taken', { startMs: 0, endMs: 1000 }, { guids: ['Boss-1'], names: [] });
     expect(sql).toContain(`other_guid IN ('Boss-1')`);
     expect(sql).not.toContain('other_name IN');
+  });
+});
+
+describe('exactMissesSql', () => {
+  it('counts avoided hits by type on the table’s own side of the events', () => {
+    const sql = exactMissesSql(
+      'damage-taken',
+      { startMs: 0, endMs: 1000 },
+      { guids: ['Boss-1'], names: ['Kaal'] },
+    );
+    expect(sql).toContain('SELECT dest_guid AS guid, miss_type, count(*) AS n');
+    expect(sql).toContain("kind = 'missed'");
+    expect(sql).toContain(`source_guid IN ('Boss-1') OR source_name IN ('Kaal')`);
   });
 });
 

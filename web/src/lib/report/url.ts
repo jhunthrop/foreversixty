@@ -98,6 +98,11 @@ export interface ReportState {
   /** Compare mode's second fight and metric; null and '' when not chosen. */
   compareWith: number | null;
   compareMetric: string;
+  /** The events view: the kinds switched off, and the find box. */
+  eventsOff: string[];
+  find: string;
+  /** The death cards opened by hand, as `guid-at_ms`, so a pasted link opens the same ones. */
+  openDeaths: string[];
 }
 
 const ENABLED_MODES = MODES.filter((m) => m.enabled).map((m) => m.id) as Mode[];
@@ -118,6 +123,9 @@ export function defaultState(firstFight: number): ReportState {
     flags: [],
     compareWith: null,
     compareMetric: '',
+    eventsOff: [],
+    find: '',
+    openDeaths: [],
   };
 }
 
@@ -165,6 +173,14 @@ export function parseReportState(search: string, firstFight: number): ReportStat
   if (compareWith !== null && compareWith > 0) state.compareWith = compareWith;
   const compareMetric = params.get('cmetric');
   if (compareMetric !== null && /^[a-z_]{1,24}$/.test(compareMetric)) state.compareMetric = compareMetric;
+  const eventsOff = params.get('eoff');
+  if (eventsOff !== null)
+    state.eventsOff = eventsOff.split(',').filter((kind) => /^[a-z-]{1,24}$/.test(kind));
+  const find = params.get('find');
+  if (find !== null) state.find = find.slice(0, 64);
+  const openDeaths = params.get('death');
+  if (openDeaths !== null)
+    state.openDeaths = openDeaths.split(',').filter((token) => /^[A-Za-z0-9-]{1,80}$/.test(token));
   return state;
 }
 
@@ -187,6 +203,9 @@ export function reportSearch(state: ReportState, firstFight: number): string {
   if (state.flags.length > 0) params.set('flags', state.flags.map((key) => FLAG_LETTERS[key]).join(''));
   if (state.compareWith !== null) params.set('with', String(state.compareWith));
   if (state.compareMetric !== '') params.set('cmetric', state.compareMetric);
+  if (state.eventsOff.length > 0) params.set('eoff', state.eventsOff.join(','));
+  if (state.find !== '') params.set('find', state.find);
+  if (state.openDeaths.length > 0) params.set('death', state.openDeaths.join(','));
   const query = params.toString();
   return query === '' ? '' : `?${query}`;
 }

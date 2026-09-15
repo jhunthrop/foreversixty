@@ -73,6 +73,23 @@
   });
 
   const span = $derived(Math.max(timeWindow.endMs - timeWindow.startMs, 1));
+  /** What the pointer is over: the pull and the instant, so a band never needs a tooltip. */
+  let hovered = $state('');
+  function readAt(event: PointerEvent): void {
+    const lane = (event.target as HTMLElement).closest<HTMLElement>('[data-lane]');
+    if (lane === null) return;
+    const bounds = lane.getBoundingClientRect();
+    const at = timeWindow.startMs + ((event.clientX - bounds.left) / Math.max(bounds.width, 1)) * span;
+    const pull = pulls.find((entry) => entry.start_ms <= at && at < entry.end_ms);
+    hovered = `${pull === undefined ? '' : `${pull.label} · `}${formatDuration(at)}`;
+  }
+  /** Per cooldown, the pulls it was used in, and the ones it was not. */
+  function pullsUsed(uses: Use[]): { used: number; missed: string[] } {
+    const missed = pulls
+      .filter((pull) => !uses.some((use) => use.at >= pull.start_ms && use.at < pull.end_ms))
+      .map((pull) => pull.label);
+    return { used: pulls.length - missed.length, missed };
+  }
   /** Where an instant sits across the lane, 0..100, from the window's start. */
   const pct = (ms: number): number => ((ms - timeWindow.startMs) / span) * 100;
 
@@ -120,24 +137,45 @@
         >
       {/if}
     </h2>
+    {#if pulls.length > 0}
+      <p class="text-muted label h-5 truncate" data-testid="raid-cooldowns-readout">
+        {#if hovered !== ''}<span class="text-strong normal-case">{hovered}</span>{:else}hover a lane for the
+          pull · alternate shading is one pull each · a red top edge is a wipe{/if}
+      </p>
+    {/if}
     <ul class="flex flex-col">
       {#each rows as row (row.name)}
+        {@const across = pullsUsed(row.uses)}
         <li
-          class="border-line-soft grid min-h-9 grid-cols-[minmax(110px,160px)_40px_minmax(0,1fr)] items-center gap-3 border-b py-1 text-[13px]"
+          class="border-line-soft grid min-h-9 grid-cols-[minmax(110px,160px)_56px_minmax(0,1fr)] items-center gap-3 border-b py-1 text-[13px]"
           data-testid={`raid-cooldown-${row.name}`}
         >
           <span class="truncate font-semibold">{row.name}</span>
-          <span class="text-muted tabular text-right font-mono text-[12px]" title="Times used"
-            >{row.uses.length}</span
+          {#if pulls.length > 0}
+            <span
+              class="tabular text-right font-mono text-[12px]"
+              class:text-wipe={across.used < pulls.length}
+              class:text-muted={across.used === pulls.length}
+              title={across.missed.length === 0
+                ? 'Used on every pull'
+                : `Not used on: ${across.missed.join(', ')}`}
+              data-testid="raid-cooldown-pulls">{across.used}/{pulls.length}</span
+            >
+          {:else}
+            <span class="text-muted tabular text-right font-mono text-[12px]" title="Times used"
+              >{row.uses.length}</span
+            >
+          {/if}
+          <span
+            class="bg-line-soft relative block h-[14px] w-full touch-none"
+            data-lane
+            onpointermove={readAt}
+            onpointerdown={readAt}
           >
-          <span class="bg-line-soft relative block h-[14px] w-full">
             {#each shownPulls as pull, i (pull.start_ms)}
               <span
-                class="absolute top-0 h-full {i % 2 === 1 ? 'bg-card-top' : ''} {pull.kill
-                  ? ''
-                  : 'border-wipe border-l border-dotted'}"
-                style={`left: ${Math.max(pct(pull.start_ms), 0)}%; width: ${Math.min(pct(pull.end_ms), 100) - Math.max(pct(pull.start_ms), 0)}%`}
-                title={pull.label}
+                class="absolute top-0 h-full"
+                style={`left: ${Math.max(pct(pull.start_ms), 0)}%; width: ${Math.min(pct(pull.end_ms), 100) - Math.max(pct(pull.start_ms), 0)}%; ${i % 2 === 1 ? 'background: var(--color-text); opacity: .08;' : ''} ${pull.kill ? '' : 'box-shadow: inset 0 2px var(--color-wipe);'}`}
                 aria-hidden="true"
               ></span>
             {/each}

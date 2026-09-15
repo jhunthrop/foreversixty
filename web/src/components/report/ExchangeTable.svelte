@@ -13,20 +13,60 @@
 <script lang="ts">
   import { splitUnitName } from '../../lib/characters';
   import { wholeFightAriaLabel, wholeFightMark, wholeFightTitle } from '../../lib/report/format';
-  import type { CastRow, ExchangeRow } from '../../lib/report/types';
+  import type { AuraTrack, CastRow, ExchangeRow } from '../../lib/report/types';
 
   let {
     rows,
     emptyText,
     casts = [],
+    auras = [],
     players = new Set<string>(),
   }: {
     rows: ExchangeRow[];
     emptyText: string;
     /** The fight's cast rows, for the "went through" count on the Interrupts tab. */
     casts?: CastRow[];
+    /** The fight's aura tracks, for the "ran its course" count on the Dispels tab. */
+    auras?: AuraTrack[];
     players?: ReadonlySet<string>;
   } = $props();
+
+  interface Uncured {
+    spell_id: number;
+    name: string;
+    applied: number;
+    dispelled: number;
+  }
+
+  /**
+   * For every debuff somebody dispelled at least once: how many times it landed on a
+   * player against how many times it was dispelled. The rest ran its full course.
+   */
+  const uncured = $derived.by<Uncured[]>(() => {
+    if (auras.length === 0) return [];
+    // eslint-disable-next-line svelte/prefer-svelte-reactivity
+    const bySpell = new Map<number, Uncured>();
+    for (const row of rows) {
+      if (row.kind !== 'dispel') continue;
+      const found = bySpell.get(row.extra_spell_id) ?? {
+        spell_id: row.extra_spell_id,
+        name: row.extra_spell_name,
+        applied: 0,
+        dispelled: 0,
+      };
+      found.dispelled += row.count;
+      bySpell.set(row.extra_spell_id, found);
+    }
+    for (const track of auras) {
+      if (track.type !== 'DEBUFF' || !players.has(track.target_guid)) continue;
+      const found = bySpell.get(track.spell_id);
+      if (found !== undefined) found.applied += track.applications;
+    }
+    return [...bySpell.values()]
+      .map((entry) => ({ ...entry, applied: Math.max(entry.applied, entry.dispelled) }))
+      .filter((entry) => entry.applied > entry.dispelled)
+      .sort((a, b) => b.applied - b.dispelled - (a.applied - a.dispelled));
+  });
 
   interface Missed {
     spell_id: number;
@@ -140,6 +180,25 @@
               cast <span class="tabular font-mono">{entry.cast}</span> · stopped
               <span class="tabular font-mono">{entry.stopped}</span> ·
               <span class="text-wipe tabular font-mono">{entry.cast - entry.stopped}</span> went through
+            </span>
+          </li>
+        {/each}
+      </ul>
+    </div>
+  {/if}
+  {#if uncured.length > 0}
+    <div class="flex flex-col gap-1" data-testid="dispels-uncured">
+      <h2 class="label text-muted">Ran their course</h2>
+      <ul class="flex flex-col">
+        {#each uncured as entry (entry.spell_id)}
+          <li
+            class="border-line-soft flex min-h-11 flex-wrap items-center gap-x-3 border-b px-2 py-2 text-[14px]"
+          >
+            <span class="font-semibold">{entry.name}</span>
+            <span class="text-muted text-[13px]">
+              landed on the raid <span class="tabular font-mono">{entry.applied}</span> times · dispelled
+              <span class="tabular font-mono">{entry.dispelled}</span> ·
+              <span class="text-wipe tabular font-mono">{entry.applied - entry.dispelled}</span> ran their course
             </span>
           </li>
         {/each}

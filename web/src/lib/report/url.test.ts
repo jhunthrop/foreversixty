@@ -64,6 +64,9 @@ describe('the report URL state', () => {
       flags: [],
       compareWith: null,
       compareMetric: '',
+      eventsOff: [],
+      find: '',
+      openDeaths: [],
     });
   });
 
@@ -85,6 +88,9 @@ describe('the report URL state', () => {
       flags: [],
       compareWith: null,
       compareMetric: '',
+      eventsOff: [],
+      find: '',
+      openDeaths: [],
     });
   });
 
@@ -103,6 +109,9 @@ describe('the report URL state', () => {
       flags: [],
       compareWith: null,
       compareMetric: '',
+      eventsOff: [],
+      find: '',
+      openDeaths: [],
     });
   });
 
@@ -133,6 +142,9 @@ describe('the report URL state', () => {
       flags: [],
       compareWith: null,
       compareMetric: '',
+      eventsOff: [],
+      find: '',
+      openDeaths: [],
     });
     expect(reportSearch(state, 1)).toBe(
       '?fight=3&mode=rankings&view=queries&tab=casts&source=enemies&start=10&end=20',
@@ -167,6 +179,9 @@ describe('the report URL state', () => {
       flags: ['bossOnly', 'ignoreAfterDeath'],
       compareWith: 4,
       compareMetric: 'dps',
+      eventsOff: [],
+      find: '',
+      openDeaths: [],
     });
     const search = reportSearch(state, 1);
     expect(search).toBe('?target=Creature-1-2&ability=116&flags=bd&with=4&cmetric=dps');

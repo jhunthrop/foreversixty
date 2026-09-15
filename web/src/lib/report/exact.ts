@@ -12,7 +12,7 @@
 // is empty on most lines; and an absorb is healing done by the shield's caster, under the
 // shield's spell, since that is the only place an absorbed amount is counted.
 import { EVENTS_TABLE, FIGHT_MS, createDuckDbEngine, createQueryLayer, type QueryLayer } from './query';
-import type { Ability, Pair } from './types';
+import type { Ability, Mitigated, Pair } from './types';
 import type { TimeWindow } from './window';
 
 export type ActorKind = 'damage-done' | 'damage-taken' | 'healing';
@@ -29,6 +29,7 @@ export interface ExactTotals {
   total: number;
   overheal: number;
   targets: Pair[];
+  mitigated: Mitigated;
 }
 
 /** The other side a table is narrowed to: by GUID, or by name where a filter matched a name. */
@@ -65,6 +66,13 @@ export function sharedQueryLayer(): QueryLayer {
 
 function quote(value: string): string {
   return `'${value.replaceAll("'", "''")}'`;
+}
+
+/** The other side of each event: what was hit, or who did the hitting. */
+function otherSide(kind: ActorKind): { guid: string; name: string } {
+  return kind === 'damage-taken'
+    ? { guid: 'source_guid', name: 'source_name' }
+    : { guid: 'dest_guid', name: 'dest_name' };
 }
 
 /** The log's "no unit" GUID, which the advanced owner field carries on a player's own lines. */
@@ -181,11 +189,31 @@ export function exactTableSql(
 ): string {
   return `WITH rows AS (${rowsSql(kind, window, options)})
 SELECT actor AS guid, other_guid, any_value(other_name) AS other_name, sum(effective) AS total,
-  sum(amount) AS gross, sum(overheal) AS overheal
+  sum(amount) AS gross, sum(overheal) AS overheal, sum(absorbed) AS absorbed, sum(blocked) AS blocked
 FROM rows
 WHERE actor <> ''${scopeClause(scope)}
 GROUP BY actor, other_guid
 ORDER BY total DESC`;
+}
+
+/** Every actor's avoided hits by type inside the window, on the same side as the table. */
+export function exactMissesSql(
+  kind: ActorKind,
+  window: TimeWindow,
+  scope: TargetScope | null = null,
+  options: MeasureOptions = {},
+): string {
+  const pets = options.pets ?? NO_PETS;
+  const actor = kind === 'damage-taken' ? 'dest_guid' : ownerExpr('source_guid', pets);
+  const other = otherSide(kind);
+  const narrowed =
+    scope === null || (scope.guids.length === 0 && scope.names.length === 0)
+      ? ''
+      : scopeClause(scope).replaceAll('other_guid', other.guid).replaceAll('other_name', other.name);
+  return `SELECT ${actor} AS guid, miss_type, count(*) AS n
+FROM ${EVENTS_TABLE}
+WHERE kind = 'missed' AND miss_type <> '' AND ${windowClause(window)}${narrowed}
+GROUP BY 1, 2`;
 }
 
 type Row = Record<string, unknown>;
@@ -205,16 +233,37 @@ export async function measureTable(
   scope: TargetScope | null = null,
   options: MeasureOptions = {},
 ): Promise<Map<string, ExactTotals>> {
-  const result = await layer.run(eventsUrl, exactTableSql(kind, window, scope, options));
+  const [result, misses] = await Promise.all([
+    layer.run(eventsUrl, exactTableSql(kind, window, scope, options)),
+    kind === 'healing'
+      ? Promise.resolve({ columns: [], rows: [] })
+      : layer.run(eventsUrl, exactMissesSql(kind, window, scope, options)),
+  ]);
   const out = new Map<string, ExactTotals>();
+  const fresh = (): ExactTotals => ({
+    effective: 0,
+    total: 0,
+    overheal: 0,
+    targets: [],
+    mitigated: { absorbed: 0, blocked: 0, misses: {} },
+  });
   for (const row of rowsOf(result)) {
     const guid = String(row.guid ?? '');
-    const found = out.get(guid) ?? { effective: 0, total: 0, overheal: 0, targets: [] };
+    const found = out.get(guid) ?? fresh();
     const total = num(row.total);
     found.effective += total;
     found.total += num(row.gross);
     found.overheal += num(row.overheal);
+    found.mitigated.absorbed += num(row.absorbed);
+    found.mitigated.blocked += num(row.blocked);
     found.targets.push({ guid: String(row.other_guid ?? ''), name: String(row.other_name ?? ''), total });
+    out.set(guid, found);
+  }
+  for (const row of rowsOf(misses)) {
+    const guid = String(row.guid ?? '');
+    const found = out.get(guid) ?? fresh();
+    const type = String(row.miss_type);
+    found.mitigated.misses[type] = (found.mitigated.misses[type] ?? 0) + num(row.n);
     out.set(guid, found);
   }
   return out;

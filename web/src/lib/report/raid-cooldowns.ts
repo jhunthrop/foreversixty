@@ -43,6 +43,7 @@ export const RAID_COOLDOWNS: readonly string[] = [
   'Ardent Defender',
   'Guardian of Ancient Kings',
   'Revival',
+  "Invoke Yu'lon, the Jade Serpent",
   'Life Cocoon',
   'Pain Suppression',
   'Guardian Spirit',

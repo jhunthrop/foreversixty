@@ -79,6 +79,16 @@
       <button type="button" class={more} onclick={() => onTab('damage-done')}>Damage Done tab</button>
     </h2>
     <ul class="flex flex-col">
+      <li
+        class="text-muted label grid min-h-6 grid-cols-[minmax(0,1fr)_44px_64px] items-center gap-x-2 md:grid-cols-[minmax(150px,1.6fr)_44px_minmax(0,2fr)_64px_56px]"
+        aria-hidden="true"
+      >
+        <span>Name</span>
+        <span class="text-right" title="Share of the table's total">Share</span>
+        <span class="hidden md:inline"></span>
+        <span class="text-right" title="Amount in this window">Amount</span>
+        <span class="text-right" title="Amount divided by the window's length">Per sec</span>
+      </li>
       {#each damage as { actor, share } (actor.guid)}
         <li
           class="grid min-h-8 grid-cols-[minmax(0,1fr)_44px_64px] items-center gap-x-2 gap-y-1 text-[13px] md:grid-cols-[minmax(150px,1.6fr)_44px_minmax(0,2fr)_64px_56px]"
@@ -117,6 +127,16 @@
       <button type="button" class={more} onclick={() => onTab('healing')}>Healing tab</button>
     </h2>
     <ul class="flex flex-col">
+      <li
+        class="text-muted label grid min-h-6 grid-cols-[minmax(0,1fr)_44px_64px] items-center gap-x-2 md:grid-cols-[minmax(150px,1.6fr)_44px_minmax(0,2fr)_64px_56px]"
+        aria-hidden="true"
+      >
+        <span>Name</span>
+        <span class="text-right" title="Share of the table's total">Share</span>
+        <span class="hidden md:inline"></span>
+        <span class="text-right" title="Amount in this window">Amount</span>
+        <span class="text-right" title="Amount divided by the window's length">Per sec</span>
+      </li>
       {#each healing as { actor, share } (actor.guid)}
         <li
           class="grid min-h-8 grid-cols-[minmax(0,1fr)_44px_64px] items-center gap-x-2 gap-y-1 text-[13px] md:grid-cols-[minmax(150px,1.6fr)_44px_minmax(0,2fr)_64px_56px]"
@@ -155,6 +175,16 @@
       <button type="button" class={more} onclick={() => onTab('damage-taken')}>Damage Taken tab</button>
     </h2>
     <ul class="flex flex-col">
+      <li
+        class="text-muted label grid min-h-6 grid-cols-[minmax(0,1fr)_44px_64px] items-center gap-x-2 md:grid-cols-[minmax(150px,1.6fr)_44px_minmax(0,2fr)_64px_56px]"
+        aria-hidden="true"
+      >
+        <span>Ability</span>
+        <span class="text-right" title="Share of all damage taken">Share</span>
+        <span class="hidden md:inline"></span>
+        <span class="text-right" title="Damage taken in this window">Amount</span>
+        <span class="text-right" title="Amount divided by the window's length">Per sec</span>
+      </li>
       {#each takenByAbility as row (row.name)}
         <li
           class="grid min-h-8 grid-cols-[minmax(0,1fr)_44px_64px] items-center gap-x-2 gap-y-1 text-[13px] md:grid-cols-[minmax(150px,1.6fr)_44px_minmax(0,2fr)_64px_56px]"
