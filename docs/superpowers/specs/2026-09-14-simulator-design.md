@@ -85,6 +85,7 @@ Confirmed rules from the Deep Dive panel and their engine cost, from reading the
 | New baseline abilities per class | one small file each in the existing one-ability-per-file pattern | hours each |
 | Re-itemised world; biome- and creature-type trinkets | item effects and set files as content; one new engine concept, an encounter environment (biome, target creature type) that conditional effects read | a week for the concept, content ongoing |
 | `SpellScaling` absent from the Classic-lineage tables | spell coefficients stay the vanilla convention with per-spell overrides, as they are today | none |
+| Periodic damage can critically strike (vanilla's could not) | the engine already carries the machinery: `Dot.OutcomeTickPhysicalCrit`, the `CritTicks` and `ResistedCritTicks` metrics, and `crit_ticks`/`resisted_crit_ticks` in `TargetedActionMetrics`. What is missing is the magic-school equivalent of that one function, plus switching the 64 call sites that apply the plain `OutcomeTick` to the critting variant where Forever says a DoT crits, and the crit multiplier the periodic case uses | one new outcome function; a call-site sweep per spec |
 
 The `spell_mod.go` declarative modifier system from the Season of Discovery repository is
 cherry-picked, since Forever's reworked talents are mostly "these spells cost or crit or hit
