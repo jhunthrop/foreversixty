@@ -203,6 +203,20 @@ const CHARACTER = {
         report_id: 'fixture2abcd',
         fight_index: 3,
       },
+      // Punctuation at the end of the name: the slug it maps to is the one thing two
+      // independent derivations of "encounter name to /rankings/<slug>" disagree about.
+      {
+        encounter: 'Emeriss (Dream)',
+        encounter_id: 9003,
+        difficulty: 8,
+        metric: 'hps',
+        value: 1500,
+        percentile: 80.1,
+        spec: 'Discipline',
+        fought_at: '2026-12-09T23:10:00Z',
+        report_id: 'fixture2abcd',
+        fight_index: 4,
+      },
     ],
     history: [
       {
@@ -237,7 +251,7 @@ const GUILD = {
         pull_count: 14,
         first_kill_at: '2026-12-09T22:10:00Z',
       },
-      { encounter: 'Deep Warden', encounter_id: 9002, difficulty: 8, kills: 0, pull_count: 31 },
+      { encounter: 'Emeriss (Dream)', encounter_id: 9002, difficulty: 8, kills: 0, pull_count: 31 },
     ],
     roster_best: [
       {
@@ -281,6 +295,14 @@ test('a character page shows bests, history and the builds they were seen in', a
   // A split as text, not a planner link: the log does not record the order points were spent in.
   await expect(page.getByTestId('character-builds')).toContainText('31/20/0');
   await expect(page.getByTestId('character-builds').getByRole('link')).toHaveCount(0);
+
+  // rankings/api.ts's encounterSlug is the one derivation of this identifier, trailing
+  // hyphen trimmed and all. A second, inlined copy here linked "Emeriss (Dream)" to
+  // /rankings/emeriss-dream- , which the Worker accepts and renders as a permanently empty
+  // board, while every other page on the site links to /rankings/emeriss-dream.
+  await expect(
+    page.getByTestId('character-best').getByRole('link', { name: 'Emeriss (Dream)' }),
+  ).toHaveAttribute('href', '/rankings/emeriss-dream');
 });
 
 test('a guild page leads with progression, pull counts and kill dates', async ({ page }) => {
@@ -298,4 +320,8 @@ test('a guild page leads with progression, pull counts and kill dates', async ({
     page.getByTestId('guild-roster').getByRole('link', { name: 'Elyra Duskvale' }),
   ).toHaveAttribute('href', '/character/us/hardcore/elyra-duskvale');
   await expect(page.getByTestId('guild-reports')).toContainText('Sanguine Depths, fixture night');
+  // The same one derivation, for the same reason as on the character page.
+  await expect(
+    page.getByTestId('guild-progression').getByRole('link', { name: 'Emeriss (Dream)' }),
+  ).toHaveAttribute('href', '/rankings/emeriss-dream');
 });

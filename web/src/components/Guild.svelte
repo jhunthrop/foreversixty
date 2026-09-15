@@ -10,7 +10,7 @@
     type CharacterPath,
   } from '../lib/characters';
   import { classColorVar, formatAmount } from '../lib/report/format';
-  import { fetchGuild, type GuildPage } from '../lib/rankings/api';
+  import { encounterSlug, fetchGuild, type GuildPage } from '../lib/rankings/api';
   import { RANKING_METRICS } from '../lib/rankings/url';
 
   let { path = null }: { path?: CharacterPath | null } = $props();
@@ -112,10 +112,7 @@
             <li
               class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-3 border-b px-2 py-2 text-[14px]"
             >
-              <a
-                class="{rowLink} truncate"
-                href={`/rankings/${row.encounter.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
-              >
+              <a class="{rowLink} truncate" href={`/rankings/${encounterSlug(row.encounter)}`}>
                 {row.encounter}
               </a>
               <span class="text-muted tabular text-right font-mono text-[13px]">{row.pull_count} pulls</span>
