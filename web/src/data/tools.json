@@ -3,28 +3,60 @@
     "title": "Build planner",
     "description": "Revamped talents and every race and class combo, including Skyborne and Undead Paladin. Share a build by link.",
     "href": "/planner",
-    "status": { "label": "Live", "kind": "site" },
+    "status": {
+      "label": "Live",
+      "kind": "site"
+    },
     "icon": "talents"
   },
   {
-    "title": "Realm picker",
-    "description": "Realm list, type, faction balance and launch-week queues, once Blizzard publishes the list.",
-    "href": "/realms",
-    "status": { "label": "Oct 27", "kind": "site" },
-    "icon": "realms"
+    "title": "Combat logs",
+    "description": "Upload a log or log live with the companion. Every fight, every view, and your parse against everyone else's.",
+    "href": "/logs",
+    "status": {
+      "label": "Live",
+      "kind": "site"
+    },
+    "icon": "logs"
+  },
+  {
+    "title": "Rankings",
+    "description": "Every encounter's leaderboard by class and spec, updated the moment a fight ends.",
+    "href": "/rankings",
+    "status": {
+      "label": "Live",
+      "kind": "site"
+    },
+    "icon": "rankings"
   },
   {
     "title": "Dungeons",
     "description": "All nine new dungeons with what is known today. Bosses and loot fill in from beta.",
     "href": "/dungeons",
-    "status": { "label": "Live", "kind": "community" },
+    "status": {
+      "label": "Live",
+      "kind": "community"
+    },
     "icon": "dungeon"
   },
   {
     "title": "Zone atlas",
     "description": "Mount Hyjal, Zephras Isle, Riverglades, Shen'dralar and the reworked old zones.",
     "href": "/zones",
-    "status": { "label": "Live", "kind": "community" },
+    "status": {
+      "label": "Live",
+      "kind": "community"
+    },
     "icon": "map"
+  },
+  {
+    "title": "Class guides",
+    "description": "What changed for each class in Forever, with the demo findings and every source.",
+    "href": "/guides",
+    "status": {
+      "label": "Live",
+      "kind": "community"
+    },
+    "icon": "guides"
   }
 ]
