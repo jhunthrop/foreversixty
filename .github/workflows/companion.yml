@@ -10,6 +10,11 @@ on:
   pull_request:
     paths: ['companion/**', 'logs/**', '.github/workflows/companion.yml']
   workflow_dispatch:
+    inputs:
+      release:
+        description: Cut a release from this commit even if nothing under companion/ changed
+        type: boolean
+        default: false
 permissions: { contents: read }
 concurrency:
   group: companion-${{ github.ref }}
@@ -61,9 +66,65 @@ jobs:
           sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev libayatana-appindicator3-dev
           go build ./...
 
-  build:
+  # Releases are automatic. A push to main that touches companion/, logs/ or this
+  # workflow releases the next patch version after the newest companion-v* tag, and
+  # the release step creates that tag at the commit it built. A tag pushed by hand still
+  # works and sets the version explicitly, which is how a minor or major bump is made.
+  # A push that touches nothing the companion is built from releases nothing.
+  version:
     needs: test
-    if: startsWith(github.ref, 'refs/tags/companion-v')
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    outputs:
+      release: ${{ steps.decide.outputs.release }}
+      tag: ${{ steps.decide.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - id: decide
+        env:
+          BEFORE: ${{ github.event.before }}
+          FORCE: ${{ github.event.inputs.release }}
+        run: |
+          if [[ "$GITHUB_REF" == refs/tags/companion-v* ]]; then
+            echo "release=true" >> "$GITHUB_OUTPUT"
+            echo "tag=$GITHUB_REF_NAME" >> "$GITHUB_OUTPUT"
+            echo "releasing the pushed tag $GITHUB_REF_NAME"
+            exit 0
+          fi
+          changed=false
+          if [ "$FORCE" = "true" ]; then
+            changed=true
+          elif [ -n "$BEFORE" ] && git cat-file -e "$BEFORE" 2>/dev/null; then
+            if git diff --name-only "$BEFORE" "$GITHUB_SHA" \
+                | grep -qE '^(companion/|logs/|\.github/workflows/companion\.yml)'; then
+              changed=true
+            fi
+          else
+            # No usable base commit (a force push, or the first push): release rather
+            # than guess that nothing changed.
+            changed=true
+          fi
+          if [ "$changed" != true ]; then
+            echo "release=false" >> "$GITHUB_OUTPUT"
+            echo "nothing under companion/ or logs/ changed; no release"
+            exit 0
+          fi
+          last=$(git tag --list 'companion-v*' --sort=-v:refname | head -1)
+          if [ -z "$last" ]; then
+            next=companion-v0.1.0
+          else
+            v=${last#companion-v}
+            IFS=. read -r maj min pat <<<"$v"
+            next="companion-v${maj}.${min}.$((pat+1))"
+          fi
+          echo "release=true" >> "$GITHUB_OUTPUT"
+          echo "tag=$next" >> "$GITHUB_OUTPUT"
+          echo "releasing $next (previous: ${last:-none})"
+
+  build:
+    needs: [test, version]
+    if: needs.version.outputs.release == 'true'
     strategy:
       fail-fast: false
       matrix:
@@ -76,6 +137,8 @@ jobs:
           - { runner: windows-latest, goos: windows, goarch: amd64 }
           - { runner: ubuntu-22.04, goos: linux, goarch: amd64 }
     runs-on: ${{ matrix.runner }}
+    env:
+      TAG: ${{ needs.version.outputs.tag }}
     defaults: { run: { shell: bash, working-directory: companion } }
     env:
       APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
@@ -110,7 +173,7 @@ jobs:
         env:
           CGOARCH: ${{ matrix.cgoarch }}
         run: |
-          version="${GITHUB_REF_NAME#companion-v}"
+          version="${TAG#companion-v}"
           name="foreversixty-companion_${{ matrix.goos }}_${{ matrix.goarch }}"
           if [ "${{ matrix.goos }}" = "windows" ]; then name="${name}.exe"; fi
           mkdir -p dist
@@ -188,11 +251,12 @@ jobs:
           if-no-files-found: error
 
   release:
-    needs: build
-    if: startsWith(github.ref, 'refs/tags/companion-v')
+    needs: [build, version]
+    if: needs.version.outputs.release == 'true'
     runs-on: ubuntu-latest
     permissions: { contents: write }
     env:
+      TAG: ${{ needs.version.outputs.tag }}
       MINISIGN_SECRET_KEY: ${{ secrets.MINISIGN_SECRET_KEY }}
       MINISIGN_PASSWORD: ${{ secrets.MINISIGN_PASSWORD }}
       MINISIGN_PUBLIC_KEY: ${{ vars.MINISIGN_PUBLIC_KEY }}
@@ -213,7 +277,7 @@ jobs:
             case "$f" in *.minisig) continue;; esac
             printf '%s\n' "$MINISIGN_PASSWORD" | \
               minisign -S -s "$RUNNER_TEMP/minisign.key" -m "$f" \
-                -t "Forever Sixty companion ${GITHUB_REF_NAME}"
+                -t "Forever Sixty companion ${TAG}"
           done
           rm -f "$RUNNER_TEMP/minisign.key"
           ls -l staged
@@ -237,8 +301,11 @@ jobs:
 
       - name: Publish
         run: |
-          gh release create "$GITHUB_REF_NAME" staged/* \
-            --title "Companion ${GITHUB_REF_NAME#companion-v}" \
-            --notes "Desktop companion ${GITHUB_REF_NAME#companion-v} for macOS, Windows and Linux. \
+          # --target makes gh create the tag at this commit when it does not exist yet,
+          # which is every automatic release; a hand-pushed tag already exists and is used.
+          gh release create "$TAG" staged/* \
+            --target "$GITHUB_SHA" \
+            --title "Companion ${TAG#companion-v}" \
+            --notes "Desktop companion ${TAG#companion-v} for macOS, Windows and Linux. \
           Each binary is published beside its minisign signature; companion/README.md has the \
           public key and the command to check one."

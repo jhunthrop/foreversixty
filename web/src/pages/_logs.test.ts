@@ -23,10 +23,10 @@ beforeAll(async () => {
 describe('/logs', () => {
   it('names the four companion builds the release workflow produces', () => {
     expect(companion.downloads.map((entry) => entry.asset)).toEqual([
-      'foreversixty-companion-darwin-arm64',
-      'foreversixty-companion-darwin-amd64',
-      'foreversixty-companion-windows-amd64.exe',
-      'foreversixty-companion-linux-amd64',
+      'foreversixty-companion_darwin_arm64',
+      'foreversixty-companion_darwin_amd64',
+      'foreversixty-companion_windows_amd64.exe',
+      'foreversixty-companion_linux_amd64',
     ]);
     for (const entry of companion.downloads) {
       expect(companion.releasesUrl).toBe('https://github.com/jhunthrop/foreversixty/releases');
@@ -38,7 +38,7 @@ describe('/logs', () => {
     const html = await container.renderToString(Logs);
     expect(html).toContain('Advanced Combat Logging');
     expect(html).toContain('/combatlog');
-    expect(html).toContain('latest/download/foreversixty-companion-windows-amd64.exe');
+    expect(html).toContain('latest/download/foreversixty-companion_windows_amd64.exe');
   });
 
   it('uses no emoji, and no exclamation marks in its copy', async () => {
