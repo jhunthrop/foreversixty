@@ -5,6 +5,7 @@
   import { characterHref, parseGuildPath, rulesetLabel, splitUnitName, type CharacterPath } from '../lib/characters';
   import { classColorVar, formatAmount } from '../lib/report/format';
   import { fetchGuild, type GuildPage } from '../lib/rankings/api';
+  import { RANKING_METRICS } from '../lib/rankings/url';
 
   let { path = null }: { path?: CharacterPath | null } = $props();
 
@@ -53,7 +54,25 @@
   const killed = $derived((data?.progression ?? []).filter((row) => row.kills > 0).length);
   const killedAt = (row: { first_kill_at?: string }): string =>
     row.first_kill_at === undefined ? 'not killed' : row.first_kill_at.slice(0, 10);
+  /**
+   * "not killed" already says what it is; a bare date does not -- read on its own, out of
+   * a screen reader's per-row traversal, "2026-12-09" is not obviously the boss's first
+   * kill date rather than a pull's date or the report's. This is the whole reason the date
+   * carries its own label rather than only the visible column position.
+   */
+  const killedAtAriaLabel = (row: { first_kill_at?: string }): string =>
+    row.first_kill_at === undefined ? 'not killed' : `first killed ${killedAt(row)}`;
   const pulls = $derived((data?.progression ?? []).reduce((total, row) => total + row.pull_count, 0));
+
+  /**
+   * A roster-best value has no column heading at any breakpoint to say which metric it
+   * is. `RANKING_METRICS` already holds the one label table for `dps`/`hps`/
+   * `damage_taken`; echoed as-is if the API returns an id this list has not heard of, the
+   * same fallback shape `rulesetLabel` uses.
+   */
+  function metricLabel(id: string): string {
+    return RANKING_METRICS.find((metric) => metric.id === id)?.label ?? id;
+  }
 </script>
 
 {#if status === 'missing'}
@@ -69,7 +88,9 @@
     <header class="flex flex-col gap-1">
       <h1 class="section-title text-[18px]">{data.guild.name}</h1>
       <p class="text-muted text-[13px]">
-        {rulesetLabel(resolved.ruleset)} {resolved.region.toUpperCase()} · {killed} bosses down · {pulls} pulls
+        {rulesetLabel(resolved.ruleset)} {resolved.region.toUpperCase()} ·
+        <span class="font-mono tabular">{killed}</span> bosses down ·
+        <span class="font-mono tabular">{pulls}</span> pulls
       </p>
     </header>
 
@@ -85,7 +106,11 @@
                 {row.encounter}
               </a>
               <span class="text-muted font-mono tabular text-right text-[13px]">{row.pull_count} pulls</span>
-              <span class="font-mono tabular w-[104px] text-right" data-testid="guild-kill">
+              <span
+                class="font-mono tabular w-[104px] text-right"
+                data-testid="guild-kill"
+                aria-label={killedAtAriaLabel(row)}
+              >
                 {killedAt(row)}
               </span>
             </li>
@@ -108,7 +133,12 @@
                 {splitUnitName(row.player.name).name}
               </a>
               <span class="text-muted truncate hidden text-[13px] md:inline">{row.encounter} · {row.player.spec}</span>
-              <span class="font-mono tabular text-right">{formatAmount(Math.round(row.value))}</span>
+              <span
+                class="font-mono tabular text-right"
+                aria-label={`${formatAmount(Math.round(row.value))} ${metricLabel(row.metric)}`}
+              >
+                {formatAmount(Math.round(row.value))}
+              </span>
             </li>
           {/each}
         </ul>

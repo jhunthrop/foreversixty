@@ -6,6 +6,7 @@
   import { parseCharacterPath, rulesetLabel, type CharacterPath } from '../lib/characters';
   import { classColorVar, formatAmount, percentileToken } from '../lib/report/format';
   import { fetchCharacter, type CharacterPage } from '../lib/rankings/api';
+  import { RANKING_METRICS } from '../lib/rankings/url';
 
   let { path = null }: { path?: CharacterPath | null } = $props();
 
@@ -20,6 +21,22 @@
    * anchor that is its own tap target gets it too, not just the row around it.
    */
   const rowLink = 'inline-flex min-h-11 items-center';
+
+  /**
+   * A percentile beside a formatted amount has no column heading at any breakpoint --
+   * unlike the report island's tables, this list never had one to lose, so the two bare
+   * numbers need their own labels rather than relying on position. `RANKING_METRICS`
+   * already holds the one label table for `dps`/`hps`/`damage_taken`; echoed as-is if the
+   * API ever returns an id this list has not heard of, the same fallback shape
+   * `rulesetLabel` and `phaseLabel` use.
+   */
+  function metricLabel(id: string): string {
+    return RANKING_METRICS.find((metric) => metric.id === id)?.label ?? id;
+  }
+
+  function percentileAriaLabel(percentile: number | undefined): string | undefined {
+    return percentile === undefined ? undefined : `${Math.round(percentile)} percentile`;
+  }
 
   let data = $state<CharacterPage | null>(null);
   let status = $state<'loading' | 'ready' | 'failed' | 'missing'>('loading');
@@ -73,7 +90,7 @@
       <p class="text-muted text-[13px]">
         {rulesetLabel(resolved.ruleset)} {resolved.region.toUpperCase()}
         {#if data.character.class}· {data.character.class}{/if}
-        · {data.history.length} ranked fights
+        · <span class="font-mono tabular">{data.history.length}</span> ranked fights
       </p>
     </header>
 
@@ -91,12 +108,14 @@
               <span
                 class="font-mono tabular text-right text-[13px]"
                 style={row.percentile === undefined ? undefined : `color: ${percentileToken(row.percentile)}`}
+                aria-label={percentileAriaLabel(row.percentile)}
               >
                 {row.percentile === undefined ? '' : Math.round(row.percentile)}
               </span>
               <a
                 class="{rowLink} font-mono tabular justify-end text-right"
                 href={`/reports/${row.report_id}?fight=${row.fight_index}`}
+                aria-label={`${formatAmount(Math.round(row.value))} ${metricLabel(row.metric)}`}
               >
                 {formatAmount(Math.round(row.value))}
               </a>
@@ -117,10 +136,16 @@
             <span
               class="font-mono tabular text-right text-[13px]"
               style={row.percentile === undefined ? undefined : `color: ${percentileToken(row.percentile)}`}
+              aria-label={percentileAriaLabel(row.percentile)}
             >
               {row.percentile === undefined ? '' : Math.round(row.percentile)}
             </span>
-            <span class="font-mono tabular text-right">{formatAmount(Math.round(row.value))}</span>
+            <span
+              class="font-mono tabular text-right"
+              aria-label={`${formatAmount(Math.round(row.value))} ${metricLabel(row.metric)}`}
+            >
+              {formatAmount(Math.round(row.value))}
+            </span>
           </li>
         {/each}
       </ul>
