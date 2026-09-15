@@ -351,6 +351,22 @@
     void loadReport();
   });
 
+  // The shell reserves height on #report (min-h-[200svh] in src/pages/reports/[id].astro)
+  // so the footer does not jump once this component's real content replaces the loading
+  // placeholder -- but Svelte's mount() only ever manages #report's children, never the
+  // element itself, so nothing else ever removes that class. Left alone it is a permanent
+  // minimum height rather than a one-time reservation: any report shorter than ~200svh
+  // would show a standing gap above the footer for as long as the page stayed open. This
+  // clears it the first time `status` leaves 'loading' -- by then loadReport has already
+  // set `summary` (or failed), so the real content is already in the DOM and removing the
+  // reservation causes no further shift. The class name is duplicated from the shell on
+  // purpose rather than shared: the two files sides of this are a plain Astro page and a
+  // component with no build-time link between them.
+  $effect(() => {
+    if (status === 'loading') return;
+    document.getElementById('report')?.classList.remove('min-h-[200svh]');
+  });
+
   // Re-read the URL when the visitor uses the browser's own back and forward.
   $effect(() => {
     const onPop = (): void => {
