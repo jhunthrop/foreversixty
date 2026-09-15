@@ -211,7 +211,10 @@ Three new outputs from `python -m pipeline`, all under the existing build direct
   duration ms, school, family mask), for the engine's generated constants files.
 - `data/curated/apl/<spec_slug>.json`: the default rotation per spec, an `APLRotation` protobuf in
   its JSON form plus `{ "sources": [ { label, url, kind } ], "notes": "" }`. Validated by the data
-  tests against the engine's APL schema.
+  tests against the engine's APL schema. **This file is canonical.** The engine's regression suite
+  reads a rotation from its own `ui/<class>/apls/`, so `make engine-pin` syncs the curated files
+  into the engine repo in that one direction; a rotation is never edited in the engine repo, and
+  the engine lane's spec tasks write their first draft here, not there.
 - `simconst` emits the coefficient columns verbatim, zeros included; the vanilla
   `cast_time/3.5` and `duration/15` conventions and their per-spell overrides belong to the
   engine lane, not the pipeline.
@@ -225,11 +228,19 @@ Three new outputs from `python -m pipeline`, all under the existing build direct
 
 Binding for the other lanes:
 
-- The protobuf API does not change shape. Lanes consume `RaidSimRequest`, `RaidSimResult`,
-  `SimDatabase`, `APLRotation` as they are.
-- `Stat` enum: `MeleeHit`+`SpellHit` → `Hit`, `MeleeCrit`+`SpellCrit` → `Crit`. Indexes stay
-  synced between `sim/core/stats` and `proto/common.proto`. The web reads stat names from the
-  proto enum, so this is the only place the rename surfaces outside Go.
+- No message is reshaped: lanes consume `RaidSimRequest`, `RaidSimResult`, `SimDatabase` and
+  `APLRotation` as they are, and `Encounter.biome` is added strictly additively.
+- `Stat` enum: `MeleeHit`+`SpellHit` → `Hit`, `MeleeCrit`+`SpellCrit` → `Crit`. This
+  **renumbers the enum**: every value after index 13 shifts down by two. That is safe only
+  because the stat index is an array position, never a persisted or wire-stable value, and
+  both ends are rebuilt at one `ENGINE_VERSION` — so nothing may store a bare stat index
+  across engine versions, and a test asserts the Go and proto indexes stay in step.
+- The rename is **not** confined to Go: 177 occurrences across 27 TypeScript files in the
+  engine's own `ui/` reference `StatSpellHit`, `StatMeleeCrit` and friends. We ship none of
+  that UI, but the fork stays buildable and mergeable, so the engine lane fixes them too.
+- A fresh clone of the engine does not build (its generated protobufs are gitignored) and
+  `tools/base_stats_parser.py` is broken and its output hand-edited. Both are fixed in the
+  engine lane's first tasks; do not assume a clean `go build` on a fresh clone before that.
 - Two artifacts per version: `sim.wasm` + `sim.js` (the `syscall/js` glue) for the browser, and a
   `forever-sim` binary for the server lane. Both built in CI from the pinned sha.
 - The WASM entrypoints the web uses: `raidSimAsync`, `raidSimRequestSplit`,
