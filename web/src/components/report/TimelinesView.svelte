@@ -47,6 +47,12 @@
       · casts as ticks, auras as bars
     </p>
     <ul class="flex flex-col">
+      <!--
+        Keys carry the index as well as the timestamp: two casts in one millisecond, two
+        auras starting on the same tick and two deaths at the same instant are all real
+        (multi-target spells, a trinket and its proc, an AoE wipe), and a timestamp alone
+        made Svelte throw on the duplicate and leave the whole view blank.
+      -->
       {#each lanes as lane (lane.guid)}
         <li
           class="border-line-soft grid min-h-11 grid-cols-[minmax(96px,140px)_minmax(0,1fr)] items-center gap-3 border-b py-2"
@@ -54,20 +60,20 @@
         >
           <span class="truncate text-[13px] font-semibold" style={`color: ${lane.color}`}>{lane.name}</span>
           <span class="bg-line-soft relative block h-[18px] w-full">
-            {#each lane.auras as segment (segment.start_ms)}
+            {#each lane.auras as segment, i (`${segment.start_ms}-${i}`)}
               <span
                 class="absolute top-0 h-[6px]"
                 style={`left: ${pct(segment.start_ms)}%; width: ${Math.max(pct(segment.end_ms) - pct(segment.start_ms), 0.4)}%; background: ${lane.color}; opacity: .45`}
               ></span>
             {/each}
-            {#each lane.casts as at (at)}
+            {#each lane.casts as at, i (`${at}-${i}`)}
               <span
                 class="absolute bottom-0 h-[10px] w-[2px]"
                 style={`left: ${pct(at)}%; background: ${lane.color}`}
                 title={formatDuration(at)}
               ></span>
             {/each}
-            {#each lane.deaths as at (at)}
+            {#each lane.deaths as at, i (`${at}-${i}`)}
               <span
                 class="bg-ember absolute top-0 h-full w-[2px]"
                 style={`left: ${pct(at)}%`}

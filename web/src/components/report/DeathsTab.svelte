@@ -45,6 +45,9 @@
   <p class="text-muted text-[14px]" data-testid="table-empty">Nobody died in this window.</p>
 {:else}
   <ul class="flex flex-col gap-4" data-testid="deaths-tab">
+    <!-- A death's last hits can repeat a spell in one millisecond (a DoT tick and its
+         crit, a cleave), so the row key carries its index too; a bare timestamp-and-spell
+         key threw on the duplicate and blanked the whole tab. -->
     {#each ordered as death (`${death.guid}-${death.at_ms}`)}
       {@const link = linkFor(death)}
       <li
@@ -82,7 +85,7 @@
         <table class="w-full text-[13px]">
           <caption class="label text-muted text-left">Last hits</caption>
           <tbody>
-            {#each death.last as hit (`${hit.at_ms}-${hit.spell_id}`)}
+            {#each death.last as hit, i (`${hit.at_ms}-${hit.spell_id}-${i}`)}
               <tr class="border-line-soft border-b">
                 <td class="text-muted tabular py-1 pr-3 font-mono">{formatDuration(hit.at_ms)}</td>
                 <td class="py-1 pr-3">{hit.spell_name === '' ? 'Melee' : hit.spell_name}</td>
