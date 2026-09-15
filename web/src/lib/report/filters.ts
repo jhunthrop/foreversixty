@@ -49,20 +49,77 @@ export function bossGuids(units: Unit[], fightName: string): Set<string> {
   return bossGuidsOf(units, [fightName]);
 }
 
-/** The same rule over several encounter names at once: the whole night's bosses. */
+/**
+ * The same rule over several encounter names at once: the whole night's bosses. An
+ * encounter's name is not always the boss unit's name to the letter -- "Halkias, the
+ * Sin-Stained Goliath" is the unit "Halkias", "Amarth, The Harvester" is "Amarth", and
+ * the encounter "Stichflesh" is the unit "Surgeon Stitchflesh" -- so a unit matches when
+ * one of its words is one of the encounter's, allowing a letter's slip in a long word.
+ */
 export function bossGuidsOf(units: Unit[], fightNames: readonly string[]): Set<string> {
-  const names = new Set(fightNames.filter((name) => name !== ''));
+  const wanted = fightNames.filter((name) => name !== '').map((name) => ({ name, words: nameWords(name) }));
   return new Set(
-    units.filter((unit) => unit.kind !== 'player' && names.has(unit.name)).map((unit) => unit.guid),
+    units
+      .filter(
+        (unit) =>
+          unit.kind !== 'player' &&
+          wanted.some(
+            ({ name, words }) =>
+              unit.name === name ||
+              nameWords(unit.name).some((word) => words.some((other) => sameWord(word, other))),
+          ),
+      )
+      .map((unit) => unit.guid),
   );
 }
 
-/**
- * The players and everything they own: a pet or a totem is on the players' side, and an
- * "enemies" scope that listed the raid's own totems put them among the trash.
- */
+/** The words of a unit or encounter name worth matching: four letters or more, lowercased. */
+function nameWords(name: string): string[] {
+  return name
+    .toLowerCase()
+    .split(/[^a-z']+/)
+    .filter((word) => word.length >= 4 && !STOP_WORDS.has(word));
+}
+
+const STOP_WORDS = new Set(['the', 'lord', 'high', 'grand', 'surgeon', 'general', 'commander', 'executor']);
+
+/** Equal, or one letter off in a word long enough for that to be a typo rather than a different word. */
+function sameWord(a: string, b: string): boolean {
+  if (a === b) return true;
+  if (a.length < 6 || b.length < 6 || Math.abs(a.length - b.length) > 1) return false;
+  let i = 0;
+  let j = 0;
+  let edits = 0;
+  while (i < a.length && j < b.length) {
+    if (a[i] === b[j]) {
+      i += 1;
+      j += 1;
+      continue;
+    }
+    edits += 1;
+    if (edits > 1) return false;
+    if (a.length > b.length) i += 1;
+    else if (b.length > a.length) j += 1;
+    else {
+      i += 1;
+      j += 1;
+    }
+  }
+  return edits + (a.length - i) + (b.length - j) <= 1;
+}
+
+/** The players, and only the players: the rows a friendlies table is made of. */
 export function playerGuids(units: Unit[]): Set<string> {
-  const players = new Set(units.filter((unit) => unit.kind === 'player').map((unit) => unit.guid));
+  return new Set(units.filter((unit) => unit.kind === 'player').map((unit) => unit.guid));
+}
+
+/**
+ * The players and everything they own: a pet or a totem is on the players' side, so an
+ * "enemies" scope must not list the raid's own totems among the trash -- but neither is
+ * a totem a row of the friendlies table, which is why this is not playerGuids.
+ */
+export function friendlyGuids(units: Unit[]): Set<string> {
+  const players = playerGuids(units);
   return new Set(
     units
       .filter(
@@ -158,7 +215,11 @@ function rebuild(
     (total, ability) => total + ability.total + (countOverkill ? (ability.overkill ?? 0) : 0),
     0,
   );
-  return { ...actor, abilities, targets, total: gross, effective };
+  // Overheal and absorbs are per-ability figures too, so they follow the same share.
+  const overheal = abilities.some((ability) => ability.overheal !== undefined)
+    ? abilities.reduce((total, ability) => total + (ability.overheal ?? 0), 0)
+    : actor.overheal;
+  return { ...actor, abilities, targets, total: gross, effective, overheal };
 }
 
 export function applyActorFilters(actors: Actor[], filters: ReportFilters, context: FilterContext): Actor[] {
@@ -203,6 +264,7 @@ export function applyActorFilters(actors: Actor[], filters: ReportFilters, conte
         ...ability,
         total: Math.round(ability.total * targetShare),
         effective: Math.round(ability.effective * targetShare),
+        overheal: ability.overheal === undefined ? undefined : Math.round(ability.overheal * targetShare),
       }));
 
       let series = actor.series;

@@ -54,6 +54,7 @@
   import ModeBar from './ModeBar.svelte';
   import NightView from './NightView.svelte';
   import Glossary from './Glossary.svelte';
+  import RaidCooldowns from './RaidCooldowns.svelte';
   import QueriesView from './QueriesView.svelte';
   import RankingsMode from './RankingsMode.svelte';
   import ResourceGraphs from './ResourceGraphs.svelte';
@@ -65,6 +66,7 @@
     applyActorFilters,
     bossGuids,
     bossGuidsOf,
+    friendlyGuids,
     playerGuids,
     type ReportFilters,
   } from '../../lib/report/filters';
@@ -131,14 +133,28 @@
   // global one, and this component uses window.location, window.history and
   // window.addEventListener.
   const timeWindow = $derived(windowOf(state, base?.duration_ms ?? 0));
+  /** GUID to unit name from report.json, for the auras' casters. */
+  const unitNames = $derived(new Map((file?.units ?? []).map((unit) => [unit.guid, unit.name])));
   /** The player GUIDs from report.json, for the source scope and the filters. */
   const playerSet = $derived(playerGuids(file?.units ?? []));
+  /** The players and their pets and totems: what the enemies scope leaves out. */
+  const friendlySet = $derived(friendlyGuids(file?.units ?? []));
   /**
    * Every table below reads this, never `summary`: one rescope per window change, then
    * the Source control's scope over it, so picking one player narrows the whole page.
    */
+  /** The window, cut at the last death when the filter asks for it. */
+  const cutWindow = $derived.by(() => {
+    if (base === null || !state.flags.includes('ignoreAfterDeath') || base.deaths.length === 0)
+      return timeWindow;
+    const last = Math.max(...base.deaths.map((death) => death.at_ms));
+    return clampWindow(
+      { startMs: timeWindow.startMs, endMs: Math.min(timeWindow.endMs, last) },
+      base.duration_ms,
+    );
+  });
   const scoped = $derived(
-    base === null ? null : scopeSource(scopeSummary(base, timeWindow), state.source, playerSet),
+    base === null ? null : scopeSource(scopeSummary(base, cutWindow), state.source, playerSet, friendlySet),
   );
   const presets = $derived(summary === null ? [] : windowPresets(summary));
   /** What the chart draws: the table the tab shows, under the source scope. */
@@ -150,9 +166,32 @@
         : state.tab === 'healing'
           ? scoped.healing
           : scoped.damage_done;
-    return table.filter((actor) => inSource(actor.guid, state.source, playerSet));
+    return table.filter((actor) => inSource(actor.guid, state.source, playerSet, friendlySet));
   });
   const chartSeries = $derived(combinedSeries(chartActors));
+  /** On the summary, damage taken and healing ride behind the damage line. */
+  const chartExtra = $derived(
+    scoped === null || state.tab !== 'summary'
+      ? []
+      : [
+          {
+            label: 'Damage taken',
+            series: combinedSeries(
+              scoped.damage_taken.filter((actor) =>
+                inSource(actor.guid, state.source, playerSet, friendlySet),
+              ),
+            ),
+            token: 'var(--color-death)',
+          },
+          {
+            label: 'Healing',
+            series: combinedSeries(
+              scoped.healing.filter((actor) => inSource(actor.guid, state.source, playerSet, friendlySet)),
+            ),
+            token: 'var(--color-kill)',
+          },
+        ],
+  );
   const chartLabel = $derived(
     state.tab === 'damage-taken' ? 'Damage taken' : state.tab === 'healing' ? 'Healing' : 'Damage',
   );
@@ -293,7 +332,7 @@
       state.source === 'friendlies'
         ? source.filter((actor) => filterContext.players.has(actor.guid))
         : state.source === 'enemies'
-          ? source.filter((actor) => !filterContext.players.has(actor.guid))
+          ? source.filter((actor) => !friendlySet.has(actor.guid))
           : source.filter((actor) => actor.guid === state.source);
     // "Boss damage only" has no meaning for healing, whose targets are players: applied
     // there it blanked the table.
@@ -389,7 +428,7 @@
     parseNotes = new Map(
       summary.roster
         .filter((row) => tab !== 'summary' && !asked.has(row.guid) && row.spec)
-        .map((row) => [row.guid, 'role'] as const),
+        .map((row) => [row.guid, row.role] as const),
     );
 
     void loader.load(wanted.map((entry) => entry.query)).then((answers) => {
@@ -455,9 +494,14 @@
     // pushed and the back button undoes it. Brushing the chart replaces: a drag writes
     // the url on every pointer move, and pushing those would bury the real back
     // destination under a hundred entries.
-    const pushes = (['fight', 'mode', 'view', 'tab', 'source'] as const).some(
-      (key) => next[key] !== undefined && next[key] !== state[key],
-    );
+    const pushes =
+      (['fight', 'mode', 'view', 'tab', 'source'] as const).some(
+        (key) => next[key] !== undefined && next[key] !== state[key],
+      ) ||
+      // The first window set on a whole fight is pushed too, so Back returns to the
+      // whole fight rather than to the fight before it; moving an existing window
+      // replaces, since a drag writes on every pointer move.
+      (next.start !== undefined && next.start !== null && state.start === null);
     state = withState(state, changesFight ? { ...next, start: null, end: null } : next);
     writeUrl(pushes);
   }
@@ -782,6 +826,7 @@
       {#if summary !== null && !nightMode}
         <TimeChart
           series={chartSeries}
+          extra={chartExtra}
           durationMs={summary.duration_ms}
           window={timeWindow}
           deaths={summary.deaths.map((death) => ({ at_ms: death.at_ms, name: death.name }))}
@@ -832,6 +877,8 @@
             {classOf}
             {treeSizesFor}
             onSelectPlayer={(guid) => patch({ source: guid })}
+            players={playerSet}
+            onTab={(tab) => patch({ tab })}
           />
         {:else if state.tab === 'damage-done' || state.tab === 'damage-taken' || state.tab === 'healing'}
           <FilterBar
@@ -858,6 +905,7 @@
             </p>
           {/if}
         {:else if state.tab === 'buffs'}
+          <RaidCooldowns tracks={scoped.auras} durationMs={scoped.duration_ms} names={unitNames} />
           <AuraTable tracks={scoped.auras} durationMs={scoped.duration_ms} kind="BUFF" />
         {:else if state.tab === 'debuffs'}
           <AuraTable tracks={scoped.auras} durationMs={scoped.duration_ms} kind="DEBUFF" />

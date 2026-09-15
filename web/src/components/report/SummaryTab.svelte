@@ -26,6 +26,8 @@
   } from '../../lib/report/format';
   import { plannerLinkFor } from '../../lib/report/planner-link';
   import GearList from './GearList.svelte';
+  import SummaryPanels from './SummaryPanels.svelte';
+  import ClassIcon from './ClassIcon.svelte';
   import type { Placement } from '../../lib/report/percentile';
   import type { RosterRow, Summary } from '../../lib/report/types';
 
@@ -39,6 +41,8 @@
     classOf = new Map<string, string>(),
     treeSizesFor = () => [],
     onSelectPlayer = undefined,
+    players = new Set<string>(),
+    onTab = undefined,
   }: {
     summary: Summary;
     durationMs: number;
@@ -51,6 +55,10 @@
     treeSizesFor?: (className: string | undefined) => number[];
     /** Narrows the page to one player; the name becomes a button when this is given. */
     onSelectPlayer?: (guid: string) => void;
+    /** The players' GUIDs, so the panels show the raid and not the trash. */
+    players?: ReadonlySet<string>;
+    /** Opens one of the deeper tabs from a panel's heading. */
+    onTab?: (tab: 'damage-done' | 'healing' | 'damage-taken' | 'deaths') => void;
   } = $props();
 
   const roster = $derived([...summary.roster].sort((a, b) => b.damage_done - a.damage_done));
@@ -82,7 +90,7 @@
               label: 'Parse',
               value:
                 percentile.ranked === 1
-                  ? 'only kill ranked'
+                  ? 'only · 1 kill ranked'
                   : `${Math.round(percentile.percentile)}${percentile.ranked > 0 ? ` of ${percentile.ranked}` : ''}`,
             },
           ]),
@@ -152,7 +160,11 @@
                   class="text-muted ml-1 text-[10px]">of {percentile.ranked}</span
                 >{/if}{/if}
           </span>
-          <span class="truncate font-semibold" style={`color: ${classColorVar(row.class)}`}>
+          <span
+            class="flex min-w-0 items-center gap-2 truncate font-semibold"
+            style={`color: ${classColorVar(row.class)}`}
+          >
+            <ClassIcon className={row.class} />
             {#if onSelectPlayer}
               <button
                 type="button"
@@ -235,6 +247,10 @@
       Active is marked {activeMark} because the summary does not track it over time: it is the whole fight's figure
       even inside a shorter window. Damage, healing, taken and deaths above are this window's own numbers.
     </p>
+  {/if}
+
+  {#if onTab}
+    <SummaryPanels {summary} {durationMs} {players} {onTab} />
   {/if}
 
   {#if summary.combatants.length > 0}

@@ -7,6 +7,7 @@
   import { splitUnitName } from '../../lib/characters';
   import { classColorVar, formatAmount, formatDuration, formatPercent } from '../../lib/report/format';
   import type { Night, NightPlayer } from '../../lib/report/night';
+  import ClassIcon from './ClassIcon.svelte';
 
   let {
     night,
@@ -79,7 +80,36 @@
               {/each}
             </span>
           </span>
-          <span class="tabular text-right font-mono md:text-[14px]">{boss.pulls}</span>
+          <span class="tabular text-right font-mono md:text-[14px]"
+            >{boss.pulls}<span class="label font-body text-muted ml-1 md:hidden">pulls</span></span
+          >
+          <span class="text-muted label col-span-2 flex flex-wrap gap-x-3 gap-y-1 md:hidden">
+            <span
+              >Kills <span class="tabular font-mono" class:text-kill={boss.kills > 0}>{boss.kills}</span
+              ></span
+            >
+            <span
+              >Wipes <span class="tabular font-mono" class:text-wipe={boss.wipes > 0}>{boss.wipes}</span
+              ></span
+            >
+            <span>Time <span class="tabular font-mono">{formatDuration(boss.time_ms)}</span></span>
+            <span
+              >Deaths <span class="tabular font-mono" class:text-death={boss.deaths > 0}>{boss.deaths}</span
+              ></span
+            >
+            {#if boss.best}
+              <span
+                >Best kill <span class="text-kill tabular font-mono"
+                  >{formatDuration(boss.best.duration_ms)}</span
+                ></span
+              >
+            {:else if boss.lowest_wipe_pct !== undefined}
+              <span
+                >Best wipe <span class="text-wipe tabular font-mono">{Math.round(boss.lowest_wipe_pct)}%</span
+                ></span
+              >
+            {/if}
+          </span>
           <span class="tabular hidden text-right font-mono md:inline" class:text-kill={boss.kills > 0}
             >{boss.kills}</span
           >
@@ -143,8 +173,10 @@
             aria-expanded={open === player.guid}
             onclick={() => (open = open === player.guid ? null : player.guid)}
           >
-            <span class="truncate font-semibold" style={`color: ${classColorVar(player.class)}`}
-              ><span
+            <span
+              class="flex min-w-0 items-center gap-2 truncate font-semibold"
+              style={`color: ${classColorVar(player.class)}`}
+              ><ClassIcon className={player.class} /><span
                 class="mr-1 inline-block w-3 transition-transform"
                 class:rotate-90={open === player.guid}
                 aria-hidden="true">›</span

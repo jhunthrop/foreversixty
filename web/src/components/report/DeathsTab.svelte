@@ -145,8 +145,8 @@
           : ' No healing landed on them in that span.';
     const from = `the highest they stood at in that span was ${Math.round(firstPct)}%`;
     if (spanMs <= 3000 && firstPct >= 60)
-      return `Burst: ${formatAmount(total)} in ${spanText}; ${from}.${healedText}`;
-    return `${formatAmount(total)} over ${spanText}; ${from}.${healedText}`;
+      return `Burst: they took ${formatAmount(total)} in ${spanText}; ${from}.${healedText}`;
+    return `They took ${formatAmount(total)} over ${spanText}; ${from}.${healedText}`;
   }
   function linkFor(death: Death): ReturnType<typeof plannerLinkFor> {
     const combatant = combatants.find((row) => row.guid === death.guid);
@@ -326,7 +326,14 @@
               {/if}
               {#if death.auras_lost.length > 0}
                 <span class="label text-muted ml-3">Just lost</span>
-                {death.auras_lost.map((aura) => aura.name).join(', ')}
+                {#each death.auras_lost as aura, i (`${aura.spell_id}-${i}`)}
+                  {#if i > 0},{/if}
+                  {aura.name}
+                  <span
+                    class="text-muted tabular font-mono text-[12px]"
+                    title={formatDurationPrecise(aura.at_ms)}>{beforeDeath(death, aura.at_ms)}</span
+                  >
+                {/each}
               {/if}
             </p>
           {/if}

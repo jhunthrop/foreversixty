@@ -110,7 +110,7 @@ ORDER BY n DESC`,
   {
     id: 'overheal',
     label: 'Healing and overhealing by spell',
-    sql: `SELECT source_name, spell_name, sum(amount) AS healing, sum(overheal) AS overheal
+    sql: `SELECT source_name, spell_name, sum(amount) AS raw_healing, sum(overheal) AS overheal, sum(amount) - sum(overheal) AS effective_healing
 FROM ${EVENTS_TABLE}
 WHERE kind = 'heal' AND ${FIGHT_MS} BETWEEN :start AND :end
 GROUP BY 1, 2

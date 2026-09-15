@@ -5,6 +5,7 @@ import fixtureSummary from '../../fixtures/report/fights/3/summary.json';
 import type { Actor, ReportFile, Summary, Unit } from './types';
 import {
   bossGuidsOf,
+  friendlyGuids,
   DEFAULT_FILTERS,
   abilityOptions,
   applyActorFilters,
@@ -27,9 +28,10 @@ describe('unit sets from report.json', () => {
     expect(bossGuids(report.units, 'Trash').size).toBe(0);
   });
 
-  it('knows which units are on the players’ side, pets included', () => {
+  it('knows which units are players, and which are on their side', () => {
+    expect(context.players.size).toBe(5);
     // Five players and the hunter's pet: a pet is its owner's, not an enemy.
-    expect(context.players.size).toBe(6);
+    expect(friendlyGuids(report.units).size).toBe(6);
     expect(context.players.has('Player-4184-000000A1')).toBe(true);
     expect(context.players.has('Creature-0-2085-2284-7855-169754-0000AA0002')).toBe(false);
   });
@@ -159,5 +161,19 @@ describe('applyActorFilters', () => {
     );
     expect(filtered[0].targets.map((target) => target.guid)).toEqual(['C1', 'C2']);
     expect(filtered[0].effective).toBe(20);
+  });
+
+  it('finds a boss whose unit name is not the encounter’s to the letter', () => {
+    const units = [
+      { guid: 'C1', name: 'Halkias', kind: 'creature' },
+      { guid: 'C2', name: 'Amarth', kind: 'creature' },
+      { guid: 'C3', name: 'Surgeon Stitchflesh', kind: 'creature' },
+      { guid: 'C4', name: 'Stitchflesh Abomination', kind: 'creature' },
+      { guid: 'C5', name: 'Grand Overseer', kind: 'creature' },
+    ] as Unit[];
+    expect([...bossGuidsOf(units, ['Halkias, the Sin-Stained Goliath'])]).toEqual(['C1']);
+    expect([...bossGuidsOf(units, ['Amarth, The Harvester'])]).toEqual(['C2']);
+    expect([...bossGuidsOf(units, ['Stichflesh'])]).toEqual(['C3', 'C4']);
+    expect([...bossGuidsOf(units, ['General Kaal'])]).toEqual([]);
   });
 });

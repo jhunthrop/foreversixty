@@ -9,9 +9,18 @@ import type { Summary } from './types';
 import { SOURCE_ENEMIES, SOURCE_FRIENDLIES } from './url';
 
 /** Whether a unit is inside the chosen source scope. */
-export function inSource(guid: string, source: string, players: ReadonlySet<string>): boolean {
+/**
+ * `players` is the players; `friendly` is the players and what they own (pets, totems),
+ * which the enemies scope leaves out without the friendlies scope taking them in.
+ */
+export function inSource(
+  guid: string,
+  source: string,
+  players: ReadonlySet<string>,
+  friendly: ReadonlySet<string> = players,
+): boolean {
   if (source === SOURCE_FRIENDLIES) return players.size === 0 || players.has(guid);
-  if (source === SOURCE_ENEMIES) return !players.has(guid);
+  if (source === SOURCE_ENEMIES) return !friendly.has(guid);
   return guid === source;
 }
 
@@ -23,9 +32,14 @@ export function inSource(guid: string, source: string, players: ReadonlySet<stri
  * default scope cuts those down to the players so a Casts tab does not open on sixty
  * rows of trash spells.
  */
-export function scopeSource(summary: Summary, source: string, players: ReadonlySet<string>): Summary {
+export function scopeSource(
+  summary: Summary,
+  source: string,
+  players: ReadonlySet<string>,
+  friendly: ReadonlySet<string> = players,
+): Summary {
   if (source === SOURCE_FRIENDLIES && players.size === 0) return summary;
-  const keep = (guid: string): boolean => inSource(guid, source, players);
+  const keep = (guid: string): boolean => inSource(guid, source, players, friendly);
   return {
     ...summary,
     roster: summary.roster.filter((row) => keep(row.guid)),

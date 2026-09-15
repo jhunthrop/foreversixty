@@ -34,6 +34,7 @@
   import type { Placement } from '../../lib/report/percentile';
   import type { Actor } from '../../lib/report/types';
   import AbilityBar from './AbilityBar.svelte';
+  import ClassIcon from './ClassIcon.svelte';
 
   let {
     rank,
@@ -43,6 +44,7 @@
     percentile = null,
     parseFallback = '',
     pairsLabel = 'Targets',
+    share = 0,
     approximate = false,
     characterLink = null,
   }: {
@@ -54,6 +56,8 @@
     parseFallback?: string;
     /** The word over the per-unit split: Targets for damage done and healing, Sources for damage taken. */
     pairsLabel?: string;
+    /** This row's share of its table's total, 0..100. */
+    share?: number;
     approximate?: boolean;
     characterLink?: { region: string; ruleset: string } | null;
   } = $props();
@@ -107,7 +111,7 @@
 <li class="border-line-soft border-b" data-testid={`actor-${actor.guid}`}>
   <button
     type="button"
-    class="grid min-h-11 w-full grid-cols-[28px_auto_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 px-2 py-3 text-left text-[14px] md:grid-cols-[28px_40px_minmax(120px,1.4fr)_minmax(0,3fr)_92px_80px_64px] md:py-2"
+    class="grid min-h-11 w-full grid-cols-[28px_auto_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 px-2 py-3 text-left text-[14px] md:grid-cols-[28px_40px_minmax(120px,1.4fr)_52px_minmax(0,3fr)_92px_80px_64px] md:py-2"
     aria-expanded={open}
     onclick={() => (open = !open)}
   >
@@ -128,15 +132,19 @@
         : parseTitle(percentile.percentile, percentile.ranked)}
       data-testid="row-percentile"
     >
-      {#if percentile === null}{parseFallback === 'role'
-          ? ''
-          : parseFallback}{:else if percentile.ranked === 1}<span class="text-muted">only</span
-        >{:else}{Math.round(percentile.percentile)}{#if percentile.ranked > 0}<span
-            class="text-muted ml-1 text-[10px]">of {percentile.ranked}</span
+      {#if percentile === null}<span class:text-muted={true}>{parseFallback}</span
+        >{:else if percentile.ranked === 1}<span class="text-muted">only</span>{:else}{Math.round(
+          percentile.percentile,
+        )}{#if percentile.ranked > 0}<span class="text-muted ml-1 text-[10px]">of {percentile.ranked}</span
           >{/if}{/if}
     </span>
 
-    <span class="truncate font-semibold" style={`color: ${color}`} data-testid="row-name">
+    <span
+      class="flex min-w-0 items-center gap-2 truncate font-semibold"
+      style={`color: ${color}`}
+      data-testid="row-name"
+    >
+      <ClassIcon className={actor.class} />
       {#if characterLink}
         <a
           href={characterHref(characterLink.region, characterLink.ruleset, display.name)}
@@ -149,6 +157,9 @@
       {/if}
     </span>
 
+    <span class="text-muted tabular hidden text-right font-mono text-[12px] md:inline" data-testid="row-share"
+      >{share.toFixed(1)}%</span
+    >
     <span class="col-span-4 row-start-2 md:col-span-1 md:row-auto">
       <AbilityBar abilities={actor.abilities} total={actor.effective} {peak} {color} />
     </span>
@@ -213,7 +224,7 @@
         <tbody>
           {#each [...actor.abilities]
             .filter((ability) => ability.total > 0 || ability.hits + ability.ticks > 0)
-            .sort((a, b) => b.total - a.total) as ability (ability.spell_id)}
+            .sort((a, b) => b.effective - a.effective) as ability (ability.spell_id)}
             <tr class="border-line-soft border-b">
               <td class="py-1 pr-3"
                 >{ability.name}{#if sameName.has(ability.name)}

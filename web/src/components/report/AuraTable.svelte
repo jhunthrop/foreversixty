@@ -20,10 +20,13 @@
   const rows = $derived(
     tracks
       .filter((track) => track.type === kind)
-      .sort((a, b) => b.uptime_ms - a.uptime_ms || a.name.localeCompare(b.name)),
+      .sort((a, b) => shareOf(b) - shareOf(a) || a.name.localeCompare(b.name)),
   );
 
   const pct = (ms: number): number => (durationMs === 0 ? 0 : (ms / durationMs) * 100);
+  /** Uptime over the time the track's target was in: the figure the row shows. */
+  const shareOf = (track: AuraTrack): number =>
+    track.time_ms === undefined ? pct(track.uptime_ms) : (track.uptime_ms / track.time_ms) * 100;
 
   /** Names that two different spells share on one target: shown with their spell id. */
   const ambiguous = $derived.by(() => {
@@ -56,7 +59,11 @@
         >Uptime</span
       >
       <span class="text-right" title="Share of the window the aura was up">Total</span>
-      <span class="text-right" title="How many times it was applied or refreshed">Applied</span>
+      <span
+        class="text-right"
+        title="How many times it went up when it was not already up; a refresh while up does not count"
+        >Applied</span
+      >
     </div>
     <ul class="flex flex-col">
       {#each rows as track (`${track.target_guid}-${track.spell_id}`)}
@@ -88,11 +95,9 @@
                it was filed under. The testid stays on the number alone: it is the figure
                report-tables.spec.ts pins, not the word beside it. -->
           <span class="tabular text-right font-mono">
-            <span data-testid="aura-uptime"
-              >{formatPercent(
-                track.time_ms === undefined ? pct(track.uptime_ms) : (track.uptime_ms / track.time_ms) * 100,
-              )}</span
-            ><span class="label font-body text-muted ml-1.5 md:hidden">uptime</span>
+            <span data-testid="aura-uptime">{formatPercent(shareOf(track))}</span><span
+              class="label font-body text-muted ml-1.5 md:hidden">uptime</span
+            >
           </span>
           <span class="text-muted tabular text-right font-mono text-[13px]"
             >{track.applications}<span class="label font-body ml-1.5 md:hidden">applied</span></span

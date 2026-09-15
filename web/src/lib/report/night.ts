@@ -11,6 +11,7 @@ import type {
   Death,
   ExchangeRow,
   FightEntry,
+  ResourceTrack,
   Summary,
   ThreatRow,
 } from './types';
@@ -210,6 +211,7 @@ export function nightSummary(
   const casts = new Map<string, CastRow>();
   const exchanges = new Map<string, ExchangeRow>();
   const threat = new Map<string, ThreatRow>();
+  const resources = new Map<string, ResourceTrack>();
   const combatants = new Map<string, CombatantRow>();
   let offset = 0;
   let engine = '';
@@ -235,9 +237,10 @@ export function nightSummary(
         start_ms: segment.start_ms + offset,
         end_ms: segment.end_ms + offset,
       }));
-      const nameKey = track.target_name;
-      const countPull = !pullsCounted.has(nameKey);
-      pullsCounted.add(nameKey);
+      // Counted once per pull per track, not per target: two spells on one boss each
+      // need the pull's time added to their own denominator.
+      const countPull = !pullsCounted.has(key);
+      pullsCounted.add(key);
       if (found === undefined) auras.set(key, { ...track, segments: shifted, time_ms: summary.duration_ms });
       else
         auras.set(key, {
@@ -278,6 +281,27 @@ export function nightSummary(
       );
     }
     for (const row of summary.combatants) combatants.set(row.guid, row);
+    for (const track of summary.resources) {
+      const rkey = `${track.guid}|${track.power_type}`;
+      const found = resources.get(rkey);
+      // The night's series is the pulls' series end to end, with the gaps between pulls
+      // (a player absent from a pull) padded with the last reading so the line holds.
+      const padTo = offset / 1000;
+      if (found === undefined) {
+        const lead = new Array<number>(Math.max(0, Math.round(padTo))).fill(0);
+        resources.set(rkey, { ...track, series: [...lead, ...track.series] });
+      } else {
+        const last = found.series[found.series.length - 1] ?? 0;
+        const gap = Math.max(0, Math.round(padTo) - found.series.length);
+        resources.set(rkey, {
+          ...found,
+          series: [...found.series, ...new Array<number>(gap).fill(last), ...track.series],
+          gained: found.gained + track.gained,
+          spent: found.spent + track.spent,
+          zero_ms: found.zero_ms + track.zero_ms,
+        });
+      }
+    }
     offset += summary.duration_ms;
   }
 
@@ -302,7 +326,7 @@ export function nightSummary(
     casts: [...casts.values()],
     interrupts: [...exchanges.values()].filter((row) => row.kind === 'interrupt'),
     dispels: [...exchanges.values()].filter((row) => row.kind === 'dispel'),
-    resources: [],
+    resources: [...resources.values()],
     threat: [...threat.values()],
     combatants: [...combatants.values()],
     roster: night.players.map((player) => ({
