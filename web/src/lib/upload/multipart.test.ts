@@ -4,6 +4,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   MAX_UPLOAD_BYTES,
   PART_SIZE_BYTES,
+  UPLOAD_CANCELLED,
   UPLOAD_TOO_LARGE,
   completeUpload,
   createUpload,
@@ -27,13 +28,19 @@ class FakeXhr {
   static sent: { url: string; size: number }[] = [];
   static failUntil = 0;
   static attempts = 0;
+  /** Urls whose signature has expired: R2 answers 403 and no retry of the same url helps. */
+  static expired = new Set<string>();
+  /** Called as soon as a send is in flight, so a test can cancel mid-part. */
+  static onSend: (() => void) | null = null;
 
   status = 0;
   upload = { onprogress: null as ((event: { loaded: number; total: number }) => void) | null };
   onload: (() => void) | null = null;
   onerror: (() => void) | null = null;
+  onabort: (() => void) | null = null;
   private url = '';
   private etag = '"etag-1"';
+  private done = false;
 
   open(_method: string, url: string): void {
     this.url = url;
@@ -45,7 +52,15 @@ class FakeXhr {
 
   send(body: Blob): void {
     FakeXhr.attempts += 1;
+    FakeXhr.onSend?.();
     queueMicrotask(() => {
+      if (this.done) return;
+      this.done = true;
+      if (FakeXhr.expired.has(this.url)) {
+        this.status = 403;
+        this.onload?.();
+        return;
+      }
       if (FakeXhr.attempts <= FakeXhr.failUntil) {
         this.status = 500;
         this.onload?.();
@@ -60,7 +75,11 @@ class FakeXhr {
     });
   }
 
-  abort(): void {}
+  abort(): void {
+    if (this.done) return;
+    this.done = true;
+    this.onabort?.();
+  }
 }
 
 function fakeFile(size: number, name = 'WoWCombatLog.txt'): File {
@@ -76,6 +95,8 @@ afterEach(() => {
   FakeXhr.sent = [];
   FakeXhr.failUntil = 0;
   FakeXhr.attempts = 0;
+  FakeXhr.expired = new Set();
+  FakeXhr.onSend = null;
 });
 
 describe('createUpload', () => {
@@ -135,11 +156,14 @@ describe('uploadParts', () => {
     const file = fakeFile(PART_SIZE_BYTES * 2 + 10);
     const seen: number[] = [];
 
-    const etags = await uploadParts(file, created, (progress) => seen.push(progress.uploadedBytes), {
-      makeXhr: () => new FakeXhr() as unknown as XMLHttpRequest,
-      retryDelayMs: 0,
-    });
+    const { uploadId, etags } = await uploadParts(
+      file,
+      created,
+      (progress) => seen.push(progress.uploadedBytes),
+      { makeXhr: () => new FakeXhr() as unknown as XMLHttpRequest, retryDelayMs: 0 },
+    );
 
+    expect(uploadId).toBe('up1');
     expect(etags).toEqual([
       { number: 1, etag: '"etag-1"' },
       { number: 2, etag: '"etag-2"' },
@@ -154,7 +178,7 @@ describe('uploadParts', () => {
     FakeXhr.failUntil = 2;
     const file = fakeFile(10);
 
-    const etags = await uploadParts(file, { ...created, parts: [created.parts[0]] }, () => {}, {
+    const { etags } = await uploadParts(file, { ...created, parts: [created.parts[0]] }, () => {}, {
       makeXhr: () => new FakeXhr() as unknown as XMLHttpRequest,
       retryDelayMs: 0,
     });
@@ -173,6 +197,99 @@ describe('uploadParts', () => {
       }),
     ).rejects.toThrow('part 1');
     expect(FakeXhr.attempts).toBe(3);
+  });
+
+  // The signed part urls last an hour and the ceiling is 4 GiB, so an upload on a home
+  // uplink can outlive its own signatures. Before this it threw away every part already
+  // sent and said "part 2 failed three times"; the whole night had to be uploaded again
+  // from the beginning, by hand.
+  it('starts a fresh upload when a signature expires, rather than losing the file', async () => {
+    const file = fakeFile(PART_SIZE_BYTES + 10);
+    const twoParts = { ...created, parts: created.parts.slice(0, 2) };
+    FakeXhr.expired = new Set(['https://r2.example/p2']);
+    const restart = vi.fn(async () => ({
+      upload_id: 'up2',
+      parts: [
+        { number: 1, url: 'https://r2.example/fresh1' },
+        { number: 2, url: 'https://r2.example/fresh2' },
+      ],
+      complete_url: 'https://r2.example/complete2',
+    }));
+
+    const { uploadId, etags } = await uploadParts(file, twoParts, () => {}, {
+      makeXhr: () => new FakeXhr() as unknown as XMLHttpRequest,
+      retryDelayMs: 0,
+      restart,
+    });
+
+    expect(restart).toHaveBeenCalledTimes(1);
+    // Every part again, against the fresh upload: POST /v1/uploads mints a new object key
+    // and a new R2 multipart upload (api/internal/reports/uploads.go), so the parts already
+    // sent belong to an object the new upload could never be completed with. The id that
+    // comes back is the one that has to be completed.
+    expect(uploadId).toBe('up2');
+    expect(etags).toHaveLength(2);
+    expect(FakeXhr.sent.map((part) => part.url)).toEqual([
+      'https://r2.example/p1',
+      'https://r2.example/fresh1',
+      'https://r2.example/fresh2',
+    ]);
+  });
+
+  it('does not retry an expired signature against the same url, and restarts only once', async () => {
+    FakeXhr.expired = new Set(['https://r2.example/p1', 'https://r2.example/fresh1']);
+    const restart = vi.fn(async () => ({
+      upload_id: 'up2',
+      parts: [{ number: 1, url: 'https://r2.example/fresh1' }],
+      complete_url: 'https://r2.example/complete2',
+    }));
+
+    await expect(
+      uploadParts(fakeFile(10), { ...created, parts: [created.parts[0]] }, () => {}, {
+        makeXhr: () => new FakeXhr() as unknown as XMLHttpRequest,
+        retryDelayMs: 0,
+        restart,
+      }),
+    ).rejects.toThrow('403');
+
+    // One attempt each, not three: retrying a url whose signature no longer verifies is
+    // three more 403s. And one restart, not a loop.
+    expect(FakeXhr.attempts).toBe(2);
+    expect(restart).toHaveBeenCalledTimes(1);
+  });
+
+  // The signal used to be read between parts only, and nothing ever called xhr.abort(), so
+  // Cancel did nothing at all for as long as the 64 MiB part in flight took to finish.
+  it('aborts the request in flight when the signal fires, and sends nothing after it', async () => {
+    const controller = new AbortController();
+    FakeXhr.onSend = () => controller.abort();
+
+    await expect(
+      uploadParts(fakeFile(PART_SIZE_BYTES + 10), created, () => {}, {
+        makeXhr: () => new FakeXhr() as unknown as XMLHttpRequest,
+        retryDelayMs: 0,
+        signal: controller.signal,
+      }),
+    ).rejects.toThrow(UPLOAD_CANCELLED);
+
+    expect(FakeXhr.sent).toEqual([]);
+    expect(FakeXhr.attempts).toBe(1);
+  });
+
+  it('never restarts an upload that was cancelled', async () => {
+    const controller = new AbortController();
+    controller.abort();
+    const restart = vi.fn();
+
+    await expect(
+      uploadParts(fakeFile(10), created, () => {}, {
+        makeXhr: () => new FakeXhr() as unknown as XMLHttpRequest,
+        signal: controller.signal,
+        restart,
+      }),
+    ).rejects.toThrow(UPLOAD_CANCELLED);
+    expect(restart).not.toHaveBeenCalled();
+    expect(FakeXhr.attempts).toBe(0);
   });
 });
 

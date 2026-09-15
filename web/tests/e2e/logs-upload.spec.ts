@@ -80,6 +80,58 @@ test('a failed part shows what went wrong instead of a spinner', async ({ page }
   await expect(page.getByTestId('upload-error')).toContainText('part 1', { timeout: 20_000 });
 });
 
+// The signal was only read between parts and nothing ever called xhr.abort(), so there was
+// no way to stop an upload at all: no control on the page, and no effect if there had been.
+test('cancel stops the part in flight and leaves the form usable', async ({ page }) => {
+  await page.route('**/v1/me', (route) => route.fulfill(fulfil(null, 401)));
+  let completed = 0;
+  await page.route('**/v1/uploads', (route) =>
+    route.fulfill(
+      fulfil({
+        upload_id: 'up1',
+        parts: [{ number: 1, url: 'https://r2.test/p1' }],
+        complete_url: 'https://r2.test/c',
+      }),
+    ),
+  );
+  await page.route('**/v1/uploads/up1/complete', (route) => {
+    completed += 1;
+    return route.fulfill(fulfil({ report_id: 'fixture2abcd' }, 202));
+  });
+  // Never answered: the part is in flight for as long as the test wants it to be, which is
+  // the state Cancel has to be able to interrupt.
+  let releasePart = (): void => {};
+  const held = new Promise<void>((resolve) => (releasePart = resolve));
+  await page.route('https://r2.test/p1', async (route) => {
+    await held;
+    await route.fulfill({ status: 200, headers: { etag: '"e1"' } });
+  });
+
+  await page.goto('/logs');
+  await page.getByTestId('upload-file').setInputFiles({
+    name: 'WoWCombatLog.txt',
+    mimeType: 'text/plain',
+    buffer: Buffer.from('x'),
+  });
+  await page.getByTestId('upload-start').click();
+  await expect(page.getByTestId('upload-progress')).toBeVisible();
+
+  await page.getByTestId('upload-cancel').click();
+
+  // Back to where it started, with no error: the visitor asked for this and knows.
+  await expect(page.getByTestId('upload-progress')).toHaveCount(0);
+  await expect(page.getByTestId('upload-cancel')).toHaveCount(0);
+  await expect(page.getByTestId('upload-error')).toHaveCount(0);
+  await expect(page.getByTestId('upload-start')).toBeEnabled();
+
+  // And the upload is really over: releasing the part does not complete it behind the
+  // visitor's back or navigate away from the page.
+  releasePart();
+  await page.waitForTimeout(500);
+  expect(completed).toBe(0);
+  await expect(page).toHaveURL(/\/logs$/);
+});
+
 test('the pairing code and the companion downloads are on the page', async ({ page }) => {
   await page.route('**/v1/me', (route) =>
     route.fulfill(

@@ -6,6 +6,7 @@
   import { formatAmount } from '../lib/report/format';
   import {
     MAX_UPLOAD_BYTES,
+    UPLOAD_CANCELLED,
     UPLOAD_TOO_LARGE,
     completeUpload,
     createUpload,
@@ -26,6 +27,8 @@
   let phase = $state<'idle' | 'uploading' | 'finishing' | 'failed'>('idle');
   let uploaded = $state(0);
   let error = $state('');
+  /** Non-null only while an upload is in flight; `cancel` is the only thing that fires it. */
+  let inFlight: AbortController | null = null;
 
   const percent = $derived(file === null || uploaded === 0 ? 0 : Math.round((uploaded / file.size) * 100));
   const tooLarge = $derived(file !== null && file.size > MAX_UPLOAD_BYTES);
@@ -45,22 +48,54 @@
     error = tooLarge ? UPLOAD_TOO_LARGE : '';
   }
 
+  /**
+   * Cancels the part in flight, not just the queue: multipart.ts hands the signal to the
+   * XMLHttpRequest, so a 64 MiB part that is halfway up stops there rather than finishing
+   * first. Nothing is uploaded afterwards, and the multipart upload is left for the API to
+   * clean up -- the browser has no endpoint to abort it with.
+   */
+  function cancel(): void {
+    inFlight?.abort();
+  }
+
   async function start(): Promise<void> {
     if (file === null || tooLarge) return;
+    const chosen = file;
+    const controller = new AbortController();
+    inFlight = controller;
     phase = 'uploading';
     error = '';
     uploaded = 0;
     try {
-      const created = await createUpload(file);
-      const etags = await uploadParts(file, created, (progress) => {
-        uploaded = progress.uploadedBytes;
-      });
+      const created = await createUpload(chosen);
+      // `restart` is how an upload that outlives its own signed urls -- an hour, and a
+      // 4 GiB night on a home uplink is longer -- recovers instead of throwing away every
+      // part it already sent. It is a fresh upload, not a re-signing of this one, so the
+      // id to complete is whichever one uploadParts actually finished against.
+      const { uploadId, etags } = await uploadParts(
+        chosen,
+        created,
+        (progress) => {
+          uploaded = progress.uploadedBytes;
+        },
+        { signal: controller.signal, restart: () => createUpload(chosen) },
+      );
       phase = 'finishing';
-      const reportId = await completeUpload(created.upload_id, etags, { title: title.trim(), visibility });
+      const reportId = await completeUpload(uploadId, etags, { title: title.trim(), visibility });
       window.location.assign(`/reports/${reportId}`);
     } catch (thrown) {
+      const message = thrown instanceof Error ? thrown.message : UPLOAD_TOO_LARGE;
+      // Cancelling is not a failure to report back: the visitor asked for it and already
+      // knows. The form goes back to where it was, with the same file still chosen.
+      if (message === UPLOAD_CANCELLED) {
+        phase = 'idle';
+        uploaded = 0;
+        return;
+      }
       phase = 'failed';
-      error = thrown instanceof Error ? thrown.message : UPLOAD_TOO_LARGE;
+      error = message;
+    } finally {
+      if (inFlight === controller) inFlight = null;
     }
   }
 </script>
@@ -119,14 +154,25 @@
     {/each}
   </fieldset>
 
-  <button
-    class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4"
-    onclick={() => void start()}
-    disabled={file === null || tooLarge || phase === 'uploading' || phase === 'finishing'}
-    data-testid="upload-start"
-  >
-    Upload
-  </button>
+  <div class="flex flex-wrap items-center gap-3">
+    <button
+      class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4"
+      onclick={() => void start()}
+      disabled={file === null || tooLarge || phase === 'uploading' || phase === 'finishing'}
+      data-testid="upload-start"
+    >
+      Upload
+    </button>
+    {#if phase === 'uploading'}
+      <button
+        class="{SECONDARY_BUTTON_FIXED} border-line-warm text-muted w-fit px-4"
+        onclick={cancel}
+        data-testid="upload-cancel"
+      >
+        Cancel
+      </button>
+    {/if}
+  </div>
 
   {#if phase === 'uploading' || phase === 'finishing'}
     <div class="flex flex-col gap-2" data-testid="upload-progress">

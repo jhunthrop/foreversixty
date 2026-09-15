@@ -21,6 +21,7 @@ export const MAX_UPLOAD_BYTES = 4 * 1024 * 1024 * 1024;
 
 export const UPLOAD_TOO_LARGE = 'That file is over 4 GB. Split the night or log it live instead.';
 export const UPLOAD_FAILED = 'The upload did not finish';
+export const UPLOAD_CANCELLED = 'The upload was cancelled';
 
 export interface UploadPart {
   number: number;
@@ -80,18 +81,34 @@ export function createUpload(
 /**
  * One part. Resolves with the ETag R2 returned, which the bucket's CORS rule has to expose
  * (`ExposeHeaders: ETag`) or the browser cannot read it.
+ *
+ * The signal aborts the request in flight rather than at the next part boundary. A part is
+ * 64 MiB, which on a home uplink is minutes: checking the signal between parts only, as
+ * this did before, means Cancel appears to do nothing for as long as the part takes and
+ * the bytes keep going up in the meantime.
  */
 export function putPart(
   url: string,
   body: Blob,
   onBytes: (loaded: number) => void,
   make: XhrFactory = () => new XMLHttpRequest(),
+  signal?: AbortSignal,
 ): Promise<string> {
   return new Promise((resolve, reject) => {
+    if (signal?.aborted === true) {
+      reject(new AccountError(UPLOAD_CANCELLED, 0));
+      return;
+    }
     const xhr = make();
+    const stopListening = (): void => signal?.removeEventListener('abort', onAbort);
+    function onAbort(): void {
+      xhr.abort();
+    }
+    signal?.addEventListener('abort', onAbort, { once: true });
     xhr.open('PUT', url);
     xhr.upload.onprogress = (event): void => onBytes(event.loaded);
     xhr.onload = (): void => {
+      stopListening();
       if (xhr.status < 200 || xhr.status >= 300) {
         reject(new AccountError(`${UPLOAD_FAILED}: R2 answered ${xhr.status}`, xhr.status));
         return;
@@ -103,7 +120,14 @@ export function putPart(
       }
       resolve(etag);
     };
-    xhr.onerror = (): void => reject(new AccountError(UPLOAD_FAILED, 0));
+    xhr.onabort = (): void => {
+      stopListening();
+      reject(new AccountError(UPLOAD_CANCELLED, 0));
+    };
+    xhr.onerror = (): void => {
+      stopListening();
+      reject(new AccountError(UPLOAD_FAILED, 0));
+    };
     xhr.send(body);
   });
 }
@@ -112,9 +136,35 @@ export interface UploadOptions {
   makeXhr?: XhrFactory;
   retryDelayMs?: number;
   signal?: AbortSignal;
+  /**
+   * Starts a fresh upload when R2 refuses an expired signature. Injected rather than
+   * called directly so the tests can drive it, and because only the caller still holds the
+   * File this module was handed as a bare Blob.
+   */
+  restart?: () => Promise<CreatedUpload>;
+}
+
+/** What uploadParts finished against, which is not always the upload it was handed. */
+export interface UploadedParts {
+  uploadId: string;
+  etags: PartEtag[];
 }
 
 const ATTEMPTS_PER_PART = 3;
+
+/**
+ * An expired signature, which is the one failure retrying the same url cannot fix: the
+ * part urls last an hour (r2.URLTTL) and a 4 GiB night on a home uplink takes longer.
+ * R2 answers 403 for a signature that no longer verifies, and 401 is included for the same
+ * class of answer from anything in front of it.
+ */
+function isExpiredSignature(error: unknown): boolean {
+  return error instanceof AccountError && (error.status === 401 || error.status === 403);
+}
+
+function aborted(signal: AbortSignal | undefined): boolean {
+  return signal?.aborted === true;
+}
 
 function wait(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -141,21 +191,22 @@ function boundedSlice(file: Blob, start: number, end: number): Blob {
  * night on a home connection saturates the uplink with one part anyway, and a serial
  * upload keeps the progress figure honest and the memory bounded by one slice.
  *
- * A part that fails is retried, not the upload: the signed urls last an hour, and the ones
- * already done keep their ETags.
+ * A part that fails is retried, not the upload: the ones already done keep their ETags.
+ * The one failure that is not retried here is an expired signature, which retrying the
+ * same url cannot fix; uploadParts handles that.
  */
-export async function uploadParts(
+async function putEveryPart(
   file: Blob,
   created: CreatedUpload,
   onProgress: (progress: UploadProgress) => void,
-  options: UploadOptions = {},
+  options: UploadOptions,
 ): Promise<PartEtag[]> {
   const { makeXhr, retryDelayMs = 1000, signal } = options;
   const etags: PartEtag[] = [];
   let completedBytes = 0;
 
   for (const [index, part] of created.parts.entries()) {
-    if (signal?.aborted === true) throw new AccountError(UPLOAD_FAILED, 0);
+    if (aborted(signal)) throw new AccountError(UPLOAD_CANCELLED, 0);
 
     const start = index * PART_SIZE_BYTES;
     const slice = boundedSlice(file, start, Math.min(start + PART_SIZE_BYTES, file.size));
@@ -175,10 +226,14 @@ export async function uploadParts(
               partsTotal: created.parts.length,
             }),
           makeXhr,
+          signal,
         );
         break;
       } catch (error) {
         lastError = error;
+        // Neither an expired signature nor a cancellation is worth two more attempts at
+        // the same url: the first needs a fresh upload, the second needs nothing at all.
+        if (isExpiredSignature(error) || aborted(signal)) throw error;
         if (attempt < ATTEMPTS_PER_PART) await wait(retryDelayMs * attempt);
       }
     }
@@ -200,6 +255,39 @@ export async function uploadParts(
   }
 
   return etags;
+}
+
+/**
+ * The whole file, and the recovery from the one failure that cannot be retried in place.
+ *
+ * The signed part urls last an hour and MAX_UPLOAD_BYTES is 4 GiB, so an upload on a home
+ * uplink can outlive its own signatures; before this, every part already sent was thrown
+ * away and the visitor was told part N failed three times.
+ *
+ * The recovery is a restart rather than a resume, because `POST /v1/uploads` is not a
+ * re-signing endpoint: api/internal/reports/uploads.go's `start` mints a new id, a new
+ * object key and a new R2 multipart upload every time, so the parts already sent belong to
+ * an object the new upload cannot complete with. Once, and only once: a second expiry
+ * means the file cannot be uploaded in an hour on this connection, and restarting forever
+ * would be a loop rather than a recovery. The upload that was actually finished comes back
+ * with the ETags, because it is the one `completeUpload` has to be told about.
+ */
+export async function uploadParts(
+  file: Blob,
+  created: CreatedUpload,
+  onProgress: (progress: UploadProgress) => void,
+  options: UploadOptions = {},
+): Promise<UploadedParts> {
+  try {
+    return { uploadId: created.upload_id, etags: await putEveryPart(file, created, onProgress, options) };
+  } catch (error) {
+    if (options.restart === undefined || aborted(options.signal) || !isExpiredSignature(error)) throw error;
+    const fresh = await options.restart();
+    return {
+      uploadId: fresh.upload_id,
+      etags: await putEveryPart(file, fresh, onProgress, { ...options, restart: undefined }),
+    };
+  }
 }
 
 export async function completeUpload(
