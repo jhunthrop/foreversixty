@@ -27,8 +27,9 @@ describe('unit sets from report.json', () => {
     expect(bossGuids(report.units, 'Trash').size).toBe(0);
   });
 
-  it('knows which units are players', () => {
-    expect(context.players.size).toBe(5);
+  it('knows which units are on the players’ side, pets included', () => {
+    // Five players and the hunter's pet: a pet is its owner's, not an enemy.
+    expect(context.players.size).toBe(6);
     expect(context.players.has('Player-4184-000000A1')).toBe(true);
     expect(context.players.has('Creature-0-2085-2284-7855-169754-0000AA0002')).toBe(false);
   });
