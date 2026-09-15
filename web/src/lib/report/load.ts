@@ -75,6 +75,35 @@ export async function fetchAccessUrl(id: string, apiBase: string = API_BASE_URL)
   return access.data_base_url;
 }
 
+/**
+ * That re-ask, as the one place it happens.
+ *
+ * A signed base url lasts ten minutes and a report page is left open for hours, so every
+ * read after the first ten minutes is a 403: selecting an uncached fight shows "That
+ * report is not public" to someone who can plainly see it, and the live poll swallows the
+ * failure and keeps the Live badge on a page that has silently stopped updating.
+ *
+ * So the refusal is a retry rather than a message: `resign` is asked for a fresh base and
+ * the same request is made once more against it. Once -- a second 403 is the answer the
+ * visitor should actually be shown, and so is a `resign` that is itself refused, which is
+ * what a report that has genuinely been made private looks like. The base that worked
+ * comes back with the answer, because the caller has to keep it for the next read.
+ */
+export async function withFreshBase<T>(
+  base: string,
+  resign: () => Promise<string>,
+  work: (dataBaseUrl: string) => Promise<T>,
+): Promise<{ value: T; base: string }> {
+  try {
+    return { value: await work(base), base };
+  } catch (thrown) {
+    const refused = thrown instanceof ReportLoadError && (thrown.status === 401 || thrown.status === 403);
+    if (!refused) throw thrown;
+    const fresh = await resign();
+    return { value: await work(fresh), base: fresh };
+  }
+}
+
 async function dataGet<T>(url: string, cache: RequestCache): Promise<T> {
   let response: Response;
   try {

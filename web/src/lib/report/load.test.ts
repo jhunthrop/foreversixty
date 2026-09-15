@@ -16,6 +16,7 @@ import {
   fetchReportFile,
   fetchReportMeta,
   fetchSummary,
+  withFreshBase,
 } from './load';
 
 const API = 'https://api.foreversixty.test';
@@ -150,6 +151,71 @@ describe('the report files', () => {
 
   it('names the events file without fetching it', () => {
     expect(eventsUrl(DATA, 2)).toBe(`${DATA}/fights/2/events.parquet`);
+  });
+});
+
+describe('withFreshBase', () => {
+  const resign = (url: string) => vi.fn(async () => url);
+
+  it('does nothing at all while the base still works', async () => {
+    const again = resign(`${DATA}?sig=new`);
+    const work = vi.fn(async (base: string) => `${base}/report.json`);
+
+    const answer = await withFreshBase(DATA, again, work);
+
+    expect(answer).toEqual({ value: `${DATA}/report.json`, base: DATA });
+    expect(again).not.toHaveBeenCalled();
+    expect(work).toHaveBeenCalledTimes(1);
+  });
+
+  // A signed base lasts ten minutes and a report page is left open for hours, so this is
+  // the ordinary case for a private or guild report, not an edge one. Before it, selecting
+  // an uncached fight told the owner of the report that it was not public.
+  it('re-signs once and retries the same request when the base has expired', async () => {
+    const again = resign(`${DATA}?sig=new`);
+    const work = vi.fn(async (base: string) => {
+      if (!base.includes('sig=new')) throw new ReportLoadError(REPORT_FORBIDDEN, 403);
+      return 'the summary';
+    });
+
+    const answer = await withFreshBase(DATA, again, work);
+
+    expect(answer).toEqual({ value: 'the summary', base: `${DATA}?sig=new` });
+    expect(again).toHaveBeenCalledTimes(1);
+    expect(work).toHaveBeenCalledTimes(2);
+  });
+
+  it('retries a 401 the same way', async () => {
+    const again = resign(`${DATA}?sig=new`);
+    let calls = 0;
+    const value = await withFreshBase(DATA, again, async () => {
+      calls += 1;
+      if (calls === 1) throw new ReportLoadError(REPORT_FORBIDDEN, 401);
+      return 'ok';
+    });
+    expect(value.value).toBe('ok');
+  });
+
+  it('gives up after one retry, so a report that really is refused says so', async () => {
+    const again = resign(`${DATA}?sig=new`);
+    const work = vi.fn(async () => {
+      throw new ReportLoadError(REPORT_FORBIDDEN, 403);
+    });
+
+    await expect(withFreshBase(DATA, again, work)).rejects.toThrow(REPORT_FORBIDDEN);
+    expect(again).toHaveBeenCalledTimes(1);
+    expect(work).toHaveBeenCalledTimes(2);
+  });
+
+  it('never re-signs for a failure a new url cannot fix', async () => {
+    const again = resign(`${DATA}?sig=new`);
+    const work = vi.fn(async () => {
+      throw new ReportLoadError(REPORT_NOT_FOUND, 404);
+    });
+
+    await expect(withFreshBase(DATA, again, work)).rejects.toThrow(REPORT_NOT_FOUND);
+    expect(again).not.toHaveBeenCalled();
+    expect(work).toHaveBeenCalledTimes(1);
   });
 });
 

@@ -16,6 +16,7 @@
     fetchReportFile,
     fetchReportMeta,
     fetchSummary,
+    withFreshBase,
   } from '../../lib/report/load';
   import { resolveFightIndex } from '../../lib/report/fights';
   import { formatDuration } from '../../lib/report/format';
@@ -222,7 +223,11 @@
     // loadFight uses on `index === state.fight`.
     const wantedFight = state.fight;
     const wantedTab = state.tab;
-    if (summary === null || encounterId === undefined || !windowIsWhole) {
+    // A fight still being written is not a parse, for the same reason a brushed window is
+    // not: the numbers are a partial fight's, and the cache key carries the rounded dps,
+    // which moves on every five-second tick -- so a live 25-player pull asked for 25 fresh
+    // t-digest lookups every five seconds, per viewer, and never hit the cache once.
+    if (summary === null || encounterId === undefined || !windowIsWhole || fight?.in_progress === true) {
       percentiles = new Map();
       return;
     }
@@ -330,6 +335,20 @@
   }
 
   /**
+   * Every read of a fight file, through the one re-signing retry.
+   *
+   * `dataBase` is a signed url for a private or guild report and it expires in ten
+   * minutes, which is a fraction of how long a report page stays open. load.ts's
+   * withFreshBase turns the 403 that follows into one fresh `/access` call and one retry,
+   * and the base that worked is kept for the next read.
+   */
+  async function fromDataBase<T>(work: (base: string) => Promise<T>): Promise<T> {
+    const { value, base } = await withFreshBase(dataBase, () => fetchAccessUrl(reportId), work);
+    if (base !== dataBase) dataBase = base;
+    return value;
+  }
+
+  /**
    * Picking a fight does not cancel the one before it, so two of these can be in flight
    * and settle in either order. `index === state.fight` is the whole guard: an answer for
    * a fight nobody is looking at is cached and otherwise dropped, rather than painted
@@ -342,7 +361,21 @@
       summary = cached;
       return;
     }
-    const loaded = await fetchSummary(dataBase, index);
+    // An open fight has no summary.json at all -- the engine writes it when the fight
+    // closes -- so asking for one 404s and renders "No report with that id" over a report
+    // that is perfectly fine, for as long as the pull lasts. The snapshot is live.json,
+    // and it is never cached: it is a few seconds old by definition.
+    const entry = fights.find((candidate) => candidate.index === index);
+    if (entry?.in_progress === true) {
+      const live = await fromDataBase((base) => fetchLive(base, index));
+      if (live !== null) {
+        if (index === state.fight) summary = live;
+        return;
+      }
+      // Null means the fight closed between report.json being read and this request, so
+      // the immutable summary exists after all.
+    }
+    const loaded = await fromDataBase((base) => fetchSummary(base, index));
     summaries.set(index, loaded);
     if (index === state.fight) summary = loaded;
   }
@@ -414,7 +447,7 @@
     const poller = createPoller(async () => {
       // report.json first: it is what turns a live fight into a closed one and adds the
       // next fight to the selector.
-      const next = await fetchReportFile(dataBase);
+      const next = await fromDataBase(fetchReportFile);
       file = next;
       if (meta !== null) meta = { ...meta, fights: next.fights };
 
@@ -425,8 +458,15 @@
         // this request is in flight, and a live snapshot of fight A must never land on
         // fight B, the same discipline loadFight and Effect 3 above already use.
         const wantedFight = selected.index;
-        const live = await fetchLive(dataBase, selected.index);
-        if (live !== null && wantedFight === state.fight) summary = live;
+        const live = await fromDataBase((base) => fetchLive(base, selected.index));
+        if (live !== null && wantedFight === state.fight) {
+          summary = live;
+          // Cleared here as well as in Effect 3 and in the closing branch below: Effect 3
+          // returns early while `summary.fight_index` already matches the selection, so a
+          // failure from a fight the visitor has since come back from would otherwise sit
+          // under the header for as long as this fight stays open.
+          error = '';
+        }
         return;
       }
       // The fight closed while we were watching: the immutable summary replaces the

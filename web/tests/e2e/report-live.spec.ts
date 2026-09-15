@@ -25,12 +25,14 @@ test('a live fight polls, then settles when it closes', async ({ page }) => {
   const closed = { ...open, fights: [{ ...report.fights[2], in_progress: false }] };
 
   let reportCalls = 0;
+  let isClosed = false;
   await page.route(`**${DATA}/report.json`, (route) => {
     reportCalls += 1;
+    if (reportCalls >= 3) isClosed = true;
     return route.fulfill({
       status: 200,
       contentType: 'application/json',
-      body: JSON.stringify(reportCalls < 3 ? open : closed),
+      body: JSON.stringify(isClosed ? closed : open),
     });
   });
   await page.route(`**${DATA}/fights/3/live.json`, (route) =>
@@ -40,9 +42,27 @@ test('a live fight polls, then settles when it closes', async ({ page }) => {
       body: JSON.stringify({ ...summary, duration_ms: 12_000 }),
     }),
   );
-  await page.route(`**${DATA}/fights/3/summary.json`, (route) =>
-    route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(summary) }),
-  );
+  // 404 while the fight is open, which is the only thing the server can answer: the engine
+  // writes summary.json when a fight closes, so an open fight has live.json and nothing
+  // else. Stubbing a 200 here -- as this test used to -- hid a report that could not be
+  // opened at all during its first pull, because loadFight always asked for the summary
+  // and rendered "No report with that id" when it 404ed.
+  let summaryCalls = 0;
+  await page.route(`**${DATA}/fights/3/summary.json`, (route) => {
+    summaryCalls += 1;
+    return isClosed
+      ? route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(summary) })
+      : route.fulfill({ status: 404, contentType: 'text/plain', body: 'not yet' });
+  });
+  // The percentile endpoint, counted: a whole-fight parse percentile is not a thing a
+  // fight still being written has, and the cache key carries the row's rounded dps, which
+  // moves every tick -- so one live 25-player pull meant ~25 uncacheable requests every
+  // five seconds, per viewer.
+  let percentileCalls = 0;
+  await page.route('**/v1/rankings/percentile?**', (route) => {
+    percentileCalls += 1;
+    return route.fulfill(envelope({ percentile: 91.5 }));
+  });
   await page.route('**/v1/reports/fixture2live', (route) =>
     route.fulfill(
       envelope({
@@ -59,11 +79,21 @@ test('a live fight polls, then settles when it closes', async ({ page }) => {
 
   await expect(page.getByTestId('report-live')).toBeVisible();
   await expect(page.getByTestId('fight-3-outcome')).toHaveText('Live');
+  // The open fight rendered from live.json, without ever asking for a summary that cannot
+  // exist yet.
+  await expect(summaryRosterRows(page)).toHaveCount(5);
+  await expect(page.getByTestId('report-error')).toHaveCount(0);
+  expect(summaryCalls).toBe(0);
+  expect(percentileCalls).toBe(0);
 
   // Two polls at five seconds each, plus slack.
   await expect(page.getByTestId('fight-3-outcome')).toHaveText('Kill', { timeout: 20_000 });
   await expect(page.getByTestId('report-live')).toHaveCount(0);
   expect(reportCalls).toBeGreaterThanOrEqual(3);
+
+  // And the guard is the fight's own state, not a blanket refusal: the moment it closes,
+  // the same rows are worth a percentile and ask for one.
+  await expect.poll(() => percentileCalls, { timeout: 10_000 }).toBeGreaterThan(0);
 });
 
 test('a closed report never polls', async ({ page }) => {
@@ -151,17 +181,33 @@ test('a stale live response does not trigger a second fetch for the fight the vi
       envelope({ ...meta, id: 'fixture2live', status: 'live', data_base_url: DATA, fights: open.fights }),
     ),
   );
-  // Both held: fight 2's own summary fetch has to still be in flight -- an unconditional
+  // Fight 2's summary is held throughout: it has to still be in flight -- an unconditional
   // cache miss -- when the live response for fight 3 is released, or the race never forms.
-  const live = await heldRoute(page, `**${DATA}/fights/3/live.json`, summary3);
   const fight2 = await heldRoute(page, `**${DATA}/fights/2/summary.json`, summary2);
+  // live.json is held from the poll's first tick onwards, not from the page's first
+  // request: an open fight is rendered from live.json now (there is no summary.json for
+  // one), so holding the very first call would just leave the page loading forever.
+  let liveCalls = 0;
+  let markStarted = (): void => {};
+  let release = (): void => {};
+  const livePolled = new Promise<void>((resolve) => (markStarted = resolve));
+  const gate = new Promise<void>((resolve) => (release = resolve));
+  const liveBody = { status: 200, contentType: 'application/json', body: JSON.stringify(summary3) };
+  await page.route(`**${DATA}/fights/3/live.json`, async (route) => {
+    liveCalls += 1;
+    if (liveCalls > 1) {
+      markStarted();
+      await gate;
+    }
+    await route.fulfill(liveBody);
+  });
 
   await page.goto('/reports/fixture2live?fight=3');
   await expect(page.getByTestId('report-live')).toBeVisible();
   await expect(summaryRosterRows(page)).toHaveCount(5);
 
   // Wait for the poll's first tick to actually reach fetchLive for fight 3 before moving.
-  await live.started;
+  await livePolled;
 
   await page.getByTestId('toggle-trash').click();
   await page.getByTestId('fight-2').click();
@@ -176,7 +222,7 @@ test('a stale live response does not trigger a second fetch for the fight the vi
   // (2) and calls loadFight(2) again -- a second, wasted fights/2/summary.json request,
   // since the first has not cached yet.
   const answered = page.waitForResponse((response) => response.url().includes('/fights/3/live.json'));
-  live.release();
+  release();
   await answered;
   await page.waitForTimeout(300);
 
@@ -186,6 +232,130 @@ test('a stale live response does not trigger a second fetch for the fight the vi
   await expect(summaryRosterRows(page)).toHaveCount(1);
   await expect(page.getByTestId('report-live')).toHaveCount(0);
   await expect(page.getByTestId('report-fight-error')).toHaveCount(0);
+});
+
+// A private or guild report is refused at /logs-data/, so the island reads it through a
+// signed base url from GET /v1/reports/{id}/access -- which expires in ten minutes, while
+// a report page is left open for hours. Nothing re-asked for one: after ten minutes,
+// selecting an uncached fight told the person who owns the report that it was not public.
+test('an expired signed base is re-signed and the same request retried', async ({ page }) => {
+  const report = JSON.parse(await readFile(path.join(FIXTURES, 'report.json'), 'utf8'));
+  const summary3 = JSON.parse(await readFile(path.join(FIXTURES, 'fights/3/summary.json'), 'utf8'));
+  const summary2 = JSON.parse(await readFile(path.join(FIXTURES, 'fights/2/summary.json'), 'utf8'));
+  const meta = JSON.parse(await readFile(path.join(FIXTURES, 'meta.json'), 'utf8'));
+
+  // One base per signature, so a request carries the signature it was made with in its
+  // own path and the stub can refuse the stale one the way R2 refuses an expired one.
+  const signedBase = (signature: number): string => `/signed/${signature}/reports/fixture2live`;
+  let issued = 0;
+  const live = new Set<number>();
+  let accessCalls = 0;
+  await page.route('**/v1/reports/fixture2live/access', (route) => {
+    accessCalls += 1;
+    issued += 1;
+    live.add(issued);
+    return route.fulfill(envelope({ data_base_url: signedBase(issued) }));
+  });
+  await page.route('**/v1/reports/fixture2live', (route) =>
+    route.fulfill(
+      envelope({
+        ...meta,
+        id: 'fixture2live',
+        visibility: 'private',
+        status: 'complete',
+        data_base_url: '',
+        fights: report.fights,
+      }),
+    ),
+  );
+
+  const bodies: Record<string, unknown> = {
+    'report.json': { ...report, report_id: 'fixture2live' },
+    'fights/2/summary.json': summary2,
+    'fights/3/summary.json': summary3,
+  };
+  await page.route('**/signed/*/reports/fixture2live/**', (route) => {
+    const url = new URL(route.request().url());
+    const signature = Number(/\/signed\/(\d+)\//.exec(url.pathname)?.[1]);
+    if (!live.has(signature)) {
+      return route.fulfill({ status: 403, contentType: 'text/plain', body: 'expired' });
+    }
+    const file = url.pathname.split(`${signedBase(signature)}/`)[1];
+    const body = bodies[file];
+    return body === undefined
+      ? route.fulfill({ status: 404, contentType: 'text/plain', body: 'no' })
+      : route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(body) });
+  });
+
+  await page.goto('/reports/fixture2live?fight=3');
+  await expect(summaryRosterRows(page)).toHaveCount(5);
+  expect(accessCalls).toBe(1);
+
+  // Ten minutes pass. The page is still open and the base it holds no longer signs.
+  live.delete(1);
+
+  await page.getByTestId('toggle-trash').click();
+  await page.getByTestId('fight-2').click();
+
+  // Fight 2 renders from a freshly signed base rather than "That report is not public".
+  await expect(summaryRosterRows(page)).toHaveCount(1);
+  await expect(page.getByTestId('report-fight-error')).toHaveCount(0);
+  expect(accessCalls).toBe(2);
+
+  // And the fresh base is kept: going back to a fight that is no longer cached does not
+  // re-sign a second time.
+  await page.getByTestId('fight-1').click();
+  await expect(page.getByTestId('fight-1')).toHaveAttribute('aria-current', 'true');
+  await expect(page.getByTestId('report-fight-error')).toHaveCount(0);
+  expect(accessCalls).toBe(2);
+});
+
+// The poll's in_progress branch assigned `summary` and returned without clearing `error`,
+// and Effect 3 cannot clear it in this shape: coming back to the fight already on screen
+// leaves `summary.fight_index` matching the selection, so Effect 3 returns early and never
+// runs its success handler. The alert from the fight the visitor bounced off then sat
+// under the header for as long as the live fight stayed open.
+test('a stale fight error is cleared by the live poll', async ({ page }) => {
+  const report = JSON.parse(await readFile(path.join(FIXTURES, 'report.json'), 'utf8'));
+  const summary3 = JSON.parse(await readFile(path.join(FIXTURES, 'fights/3/summary.json'), 'utf8'));
+  const meta = JSON.parse(await readFile(path.join(FIXTURES, 'meta.json'), 'utf8'));
+
+  const open = {
+    ...report,
+    report_id: 'fixture2live',
+    fights: [report.fights[0], report.fights[1], { ...report.fights[2], in_progress: true, kill: false }],
+  };
+
+  await page.route(`**${DATA}/report.json`, (route) =>
+    route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(open) }),
+  );
+  await page.route(`**${DATA}/fights/3/live.json`, (route) =>
+    route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(summary3) }),
+  );
+  // Fight 2 never loads, which is what puts the alert on screen in the first place.
+  await page.route(`**${DATA}/fights/2/summary.json`, (route) =>
+    route.fulfill({ status: 500, contentType: 'text/plain', body: 'no' }),
+  );
+  await page.route('**/v1/reports/fixture2live', (route) =>
+    route.fulfill(
+      envelope({ ...meta, id: 'fixture2live', status: 'live', data_base_url: DATA, fights: open.fights }),
+    ),
+  );
+
+  await page.goto('/reports/fixture2live?fight=3');
+  await expect(page.getByTestId('report-live')).toBeVisible();
+
+  await page.getByTestId('toggle-trash').click();
+  await page.getByTestId('fight-2').click();
+  await expect(page.getByTestId('report-fight-error')).toBeVisible();
+
+  await page.getByTestId('fight-3').click();
+  await expect(page.getByTestId('fight-3')).toHaveAttribute('aria-current', 'true');
+
+  // One poll tick, plus slack: the fight on screen is live and being updated, so an alert
+  // about a different fight must not outlive the next update.
+  await expect(page.getByTestId('report-fight-error')).toHaveCount(0, { timeout: 15_000 });
+  await expect(summaryRosterRows(page)).toHaveCount(5);
 });
 
 test('the timelines and events views render from the summary', async ({ page }) => {
