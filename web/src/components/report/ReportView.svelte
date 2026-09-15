@@ -290,6 +290,18 @@
   const ignoringDead = $derived(
     state.flags.includes('ignoreAfterDeath') && !nightMode && deadSpans.length > 0,
   );
+  /** The window's length less the time this player spent dead inside it. */
+  function aliveMs(guid: string): number {
+    const dead = deadSpans
+      .filter((span) => span.guid === guid)
+      .reduce(
+        (sum, span) =>
+          sum +
+          Math.max(0, Math.min(span.endMs, cutWindow.endMs) - Math.max(span.startMs, cutWindow.startMs)),
+        0,
+      );
+    return Math.max(0, cutWindow.endMs - cutWindow.startMs - dead);
+  }
   /** The fight in the window, before the source scope: what the events view reads whole. */
   const windowed = $derived(base === null ? null : scopeSummary(base, cutWindow));
   const scoped = $derived(
@@ -500,6 +512,9 @@
           targets: found?.targets ?? [],
           measured: true,
           mitigated: found?.mitigated ?? { absorbed: 0, blocked: 0, misses: {} },
+          // The summary's active time counts a corpse's HoT ticks; with the dead spans left
+          // out, active time can be at most the time alive in the window.
+          active_ms: ignoringDead ? Math.min(actor.active_ms, aliveMs(actor.guid)) : actor.active_ms,
         };
       })
       .sort((a, b) => b.effective - a.effective);
@@ -1157,6 +1172,7 @@
           <AuraTable
             tracks={scoped.auras}
             durationMs={scoped.duration_ms}
+            names={unitNames}
             kind="DEBUFF"
             bossNames={bossUnitNames}
           />
@@ -1235,9 +1251,13 @@
           bossName={fight?.kind === 'encounter' ? fight.name : ''}
           players={playerSet}
           allCasts={summary?.casts ?? []}
-          auraOrder={[...new Set((summary?.auras ?? []).map((track) => track.name))].sort((a, b) =>
-            a.localeCompare(b),
-          )}
+          auraOrder={[
+            ...new Set(
+              (summary?.auras ?? [])
+                .filter((track) => inSource(track.target_guid, state.source, playerSet, friendlySet))
+                .map((track) => track.name),
+            ),
+          ].sort((a, b) => a.localeCompare(b))}
         />
       {/if}
       {#if scoped !== null && !nightMode && state.mode === 'analyze' && state.view === 'events'}

@@ -4,11 +4,9 @@ import { exactMissesSql, exactSplitSql, exactTableSql, rowsSql } from './exact';
 const pets = { pets: new Map([['Pet-7', 'Player-1']]) };
 
 describe('rowsSql', () => {
-  it('lands a pet’s damage on its owner, by the report’s units before the advanced field', () => {
+  it('lands a pet’s damage on its owner, by the report’s units', () => {
     const sql = rowsSql('damage-done', { startMs: 5000, endMs: 25_000 }, pets);
-    expect(sql).toContain(
-      `CASE source_guid WHEN 'Pet-7' THEN 'Player-1' ELSE coalesce(nullif(nullif(adv_owner_guid, ''), '0000000000000000'), source_guid) END AS actor`,
-    );
+    expect(sql).toContain(`CASE source_guid WHEN 'Pet-7' THEN 'Player-1' ELSE source_guid END AS actor`);
     expect(sql).toContain('>= 5000 AND');
     expect(sql).toContain('< 25000');
     expect(sql).toContain('amount - greatest(coalesce(overkill, 0), 0) AS effective');
@@ -61,11 +59,11 @@ describe('dead spans', () => {
       exclude,
     });
     expect(split.abilities).toContain(
-      "AND NOT (actor = 'Player-1' AND fight_ms >= 63800 AND fight_ms < 457000)",
+      "AND NOT (actor = 'Player-1' AND fight_ms > 63800 AND fight_ms < 457000)",
     );
     expect(split.misses).toContain("AND NOT (dest_guid = 'Player-1' AND");
     const table = exactTableSql('damage-taken', { startMs: 0, endMs: 724_000 }, null, { exclude });
-    expect(table).toContain("AND NOT (actor = 'Player-1' AND fight_ms >= 63800 AND fight_ms < 457000)");
+    expect(table).toContain("AND NOT (actor = 'Player-1' AND fight_ms > 63800 AND fight_ms < 457000)");
   });
 });
 

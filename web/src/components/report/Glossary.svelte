@@ -60,6 +60,11 @@
         'Leaves out what each player did, and what hit them, from a death to their first cast after it (or the end of the fight if they stayed dead). On one pull the tables are then measured from the events; over the whole night it is not available.',
     },
     {
+      term: 'Failed casts',
+      meaning:
+        'On the Casts tab, casts that were started and never finished: interrupted, cancelled, or the caster moved. "Cast" counts the ones that went off.',
+    },
+    {
       term: 'Overkill',
       meaning:
         'The part of a killing hit beyond the health the player had left. A death line shows the hit whole and the overkill in brackets; the tables leave overkill out unless "Count overkill" is on.',

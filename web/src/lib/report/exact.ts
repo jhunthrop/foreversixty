@@ -64,7 +64,8 @@ function excludeClause(exclude: DeadSpan[] | undefined, actor: string, at: strin
   return exclude
     .map(
       (span) =>
-        ` AND NOT (${actor} = ${quote(span.guid)} AND ${at} >= ${Math.round(span.startMs)} AND ${at} < ${Math.round(span.endMs)})`,
+        // Strictly after the death's instant: the killing blow shares it and must stay counted.
+        ` AND NOT (${actor} = ${quote(span.guid)} AND ${at} > ${Math.round(span.startMs)} AND ${at} < ${Math.round(span.endMs)})`,
     )
     .join('');
 }
@@ -98,15 +99,14 @@ function otherSide(kind: ActorKind): { guid: string; name: string } {
     : { guid: 'dest_guid', name: 'dest_name' };
 }
 
-/** The log's "no unit" GUID, which the advanced owner field carries on a player's own lines. */
-const NO_GUID = '0000000000000000';
-
 /** The unit a column names, resolved to its owner when it is a pet. */
 function ownerExpr(column: string, pets: PetOwners): string {
-  const fallback = `coalesce(nullif(nullif(adv_owner_guid, ''), '${NO_GUID}'), ${column})`;
-  if (pets.size === 0) return fallback;
+  // From the report's units only. The advanced owner field on a damage or heal line
+  // describes the unit the advanced block is about, which is the target, so reading it
+  // here credited a heal on someone's pet to that someone.
+  if (pets.size === 0) return column;
   const arms = [...pets.entries()].map(([pet, owner]) => `WHEN ${quote(pet)} THEN ${quote(owner)}`).join(' ');
-  return `CASE ${column} ${arms} ELSE ${fallback} END`;
+  return `CASE ${column} ${arms} ELSE ${column} END`;
 }
 
 /** Half-open, like the one-second buckets the tables sum: [start, end). */

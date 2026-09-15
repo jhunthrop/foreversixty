@@ -45,6 +45,31 @@
   const PER_SECOND = new Set<CompareMetric>(['dps', 'hps', 'dtps']);
 
   const options = $derived(fights.filter((fight) => fight.index !== current));
+  /** "pull 2 of 3" per boss pull, the way the fight list says it, so the picker reads the same. */
+  const pullOf = $derived.by(() => {
+    // eslint-disable-next-line svelte/prefer-svelte-reactivity
+    const seen = new Map<string, number>();
+    // eslint-disable-next-line svelte/prefer-svelte-reactivity
+    const total = new Map<string, number>();
+    for (const fight of fights)
+      if (fight.kind === 'encounter') total.set(fight.name, (total.get(fight.name) ?? 0) + 1);
+    // eslint-disable-next-line svelte/prefer-svelte-reactivity
+    const out = new Map<number, string>();
+    for (const fight of fights) {
+      if (fight.kind !== 'encounter') continue;
+      const n = (seen.get(fight.name) ?? 0) + 1;
+      seen.set(fight.name, n);
+      const of = total.get(fight.name) ?? 1;
+      out.set(fight.index, of > 1 ? `pull ${n} of ${of}` : '');
+    }
+    return out;
+  });
+  const bossOptions = $derived(options.filter((fight) => fight.kind === 'encounter'));
+  const trashOptions = $derived(options.filter((fight) => fight.kind !== 'encounter'));
+  function optionLabel(fight: FightEntry): string {
+    const pull = pullOf.get(fight.index) ?? '';
+    return `${fight.name}${pull === '' ? '' : ` · ${pull}`} · ${formatDuration(fight.duration_ms)} · ${outcomeLabel(fight).toLowerCase()}`;
+  }
   let rightWhole = $state<Summary | null>(null);
   /** Each side in the window, clamped to that fight's own length. */
   const left = $derived(
@@ -170,11 +195,22 @@
         }}
       >
         <option value="">Pick a fight</option>
-        {#each options as fight (fight.index)}
-          <option value={String(fight.index)} selected={fight.index === rightIndex}
-            >{fightLabel(fight)}</option
-          >
-        {/each}
+        <optgroup label="Boss pulls">
+          {#each bossOptions as fight (fight.index)}
+            <option value={String(fight.index)} selected={fight.index === rightIndex}
+              >{optionLabel(fight)}</option
+            >
+          {/each}
+        </optgroup>
+        {#if trashOptions.length > 0}
+          <optgroup label="Trash">
+            {#each trashOptions as fight (fight.index)}
+              <option value={String(fight.index)} selected={fight.index === rightIndex}
+                >{optionLabel(fight)}</option
+              >
+            {/each}
+          </optgroup>
+        {/if}
       </select>
     </label>
     <label class="label text-muted flex items-center gap-2" for="compare-metric">
@@ -207,7 +243,32 @@
          header association a card stack would lose -- and lets it be wider than the phone
          rather than narrower than its contents. QueriesView.svelte wraps its own result
          table the same way. -->
-    <div class="overflow-x-auto">
+    <!-- A phone gets one block per player: a four-column table in a 354px box showed five
+         names and no numbers at rest. -->
+    <ul class="flex flex-col md:hidden" data-testid="compare-cards">
+      {#each lines as line (line.guid)}
+        <li
+          class="border-line-soft grid grid-cols-[minmax(0,1fr)_auto] gap-x-3 gap-y-0.5 border-b py-2 text-[14px]"
+          data-testid={`compare-card-${line.guid}`}
+        >
+          <span class="truncate font-semibold" style={`color: ${classColorVar(line.class)}`}
+            >{splitUnitName(line.name).name}</span
+          >
+          <span
+            class="tabular text-right font-mono"
+            class:text-gold={line.a >= line.b}
+            title="This fight less the compared fight"
+            data-testid="compare-card-delta"
+            >{line.a - line.b >= 0 ? '+' : ''}{formatAmount(line.a - line.b)}</span
+          >
+          <span class="text-muted col-span-2 text-[12px]"
+            ><span class="tabular font-mono">{formatAmount(line.a)}</span> this fight ·
+            <span class="tabular font-mono">{formatAmount(line.b)}</span> compared with</span
+          >
+        </li>
+      {/each}
+    </ul>
+    <div class="hidden overflow-x-auto md:block">
       <table class="w-full border-collapse text-[14px]" data-testid="compare-table">
         <caption class="sr-only">
           Per-player {metric.replace('_', ' ')} in {currentFight?.name ?? 'this fight'}, compared with {rightFight?.name ??

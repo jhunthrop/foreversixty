@@ -118,7 +118,7 @@
     return `-${((death.at_ms - atMs) / 1000).toFixed(1)}s`;
   }
 
-  function healthPct(hit: Death['last'][number]): number | null {
+  function healthPct(hit: { hp_after?: number; max_hp?: number }): number | null {
     if (!hit.max_hp) return null;
     return Math.max(0, Math.min(100, ((hit.hp_after ?? 0) / hit.max_hp) * 100));
   }
@@ -310,6 +310,7 @@
                 {#each lastEvents(death) as event, i (`${event.at_ms}-${i}`)}
                   {#if event.kind === 'heal'}
                     {@const heal = event.heal}
+                    {@const healed = healthPct(heal)}
                     <tr class="border-line-soft border-b" data-testid="death-heal">
                       <td
                         class="text-muted tabular py-1 pr-3 font-mono"
@@ -323,19 +324,44 @@
                             ({formatAmount(heal.overheal)} over)</span
                           >{/if}</td
                       >
-                      <td class="py-1"></td>
+                      <td class="w-[30%] py-1">
+                        {#if healed !== null}
+                          <span class="flex items-center gap-2">
+                            <span
+                              class="bg-line-soft block h-[8px] flex-1"
+                              title={`${heal.hp_after ?? 0} of ${heal.max_hp}`}
+                            >
+                              <span
+                                class="block h-full {healed <= 35
+                                  ? 'bg-death'
+                                  : healed <= 65
+                                    ? 'bg-ember'
+                                    : 'bg-kill'}"
+                                style={`width: ${healed}%`}
+                              ></span>
+                            </span>
+                            <span class="text-muted tabular w-[36px] text-right font-mono text-[12px]"
+                              >{Math.round(healed)}%</span
+                            >
+                          </span>
+                        {/if}
+                      </td>
                     </tr>
                   {:else}
                     {@const hit = event.hit}
                     {@const lethal = isKillingBlow(death, hit)}
-                    {@const pct = lethal ? 0 : healthPct(hit)}
+                    <!-- The last recorded hit reads as the kill only when it was one: a hit that
+                         left health behind keeps its own figure, as the sentence above says. -->
+                    {@const pct = lethal && !lethalHitMissing(death) ? 0 : healthPct(hit)}
                     <tr class="border-line-soft border-b">
                       <td
                         class="text-muted tabular py-1 pr-3 font-mono"
                         title={formatDurationPrecise(hit.at_ms)}>{beforeDeath(death, hit.at_ms)}</td
                       >
                       <td class="py-1 pr-3">{hit.spell_name === '' ? 'Melee' : hit.spell_name}</td>
-                      <td class="text-muted truncate py-1 pr-3"
+                      <td
+                        class="text-muted max-w-[96px] truncate py-1 pr-3 md:max-w-none"
+                        title={sourceName(hit.source_guid, hit.source_name)}
                         >{sourceName(hit.source_guid, hit.source_name)}</td
                       >
                       <td class="tabular py-1 pr-3 text-right font-mono">{formatAmount(hit.amount)}</td>
@@ -368,15 +394,17 @@
             </table>
           </div>
 
-          {#if death.auras_held.length > 0 || death.auras_lost.length > 0}
+          {#if death.auras_held.length > 0 || death.auras_lost.some((aura) => aura.at_ms < death.at_ms - 50)}
             <p class="text-[13px]">
               {#if death.auras_held.length > 0}
                 <span class="label text-muted">Up</span>
                 {death.auras_held.map((aura) => aura.name || `Spell #${aura.spell_id}`).join(', ')}
               {/if}
-              {#if death.auras_lost.length > 0}
+              {#if death.auras_lost.some((aura) => aura.at_ms < death.at_ms - 50)}
                 <span class="label text-muted ml-3">Just lost</span>
-                {#each death.auras_lost as aura, i (`${aura.spell_id}-${i}`)}
+                <!-- Only what dropped before the death: the death itself strips every aura,
+                     and listing those as "just lost" said nothing. -->
+                {#each death.auras_lost.filter((aura) => aura.at_ms < death.at_ms - 50) as aura, i (`${aura.spell_id}-${i}`)}
                   {#if i > 0},{/if}
                   {aura.name}
                   <span

@@ -73,25 +73,21 @@ test('a damage row is a card with every field labelled', async ({ page }) => {
 test('the compare table stays inside the page gutter once a second fight is picked', async ({ page }) => {
   await page.goto(`${REPORT}&mode=compare`);
   await page.getByTestId('compare-with').selectOption('1');
-  await expect(page.getByTestId('compare-table')).toBeVisible();
+  // A phone gets one card per player; the table is the desktop's.
+  await expect(page.getByTestId('compare-cards')).toBeVisible();
 
-  // Measured against the 360 this file sets, not window.innerWidth: a table wider than the
+  // Measured against the 360 this file sets, not window.innerWidth: anything wider than the
   // phone widens the emulated layout viewport with it, so innerWidth moves to meet the
   // overflow and a comparison against it always passes.
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(PHONE_WIDTH);
 
-  // Wider than the phone is allowed for a table, but only inside its own scroller and only
-  // with the 18px page gutter still standing on both sides.
+  // The cards keep the 18px page gutter on both sides, and each names its player beside
+  // the difference: a four-column table in this width showed names and no numbers.
   const gutter = 18;
-  const scroller = page.getByTestId('compare-table').locator('xpath=parent::div');
-  const box = (await scroller.boundingBox())!;
+  const box = (await page.getByTestId('compare-cards').boundingBox())!;
   expect(box.x).toBeGreaterThanOrEqual(gutter);
   expect(box.x + box.width).toBeLessThanOrEqual(PHONE_WIDTH - gutter);
-
-  // Still a real table, with the caption and the column headers a card stack would lose:
-  // the header association is the whole reason Compare does not collapse to cards.
-  await expect(page.getByTestId('compare-table').locator('th[scope="col"]')).toHaveCount(4);
-  await expect(page.getByTestId('compare-table').locator('caption')).toHaveCount(1);
+  await expect(page.getByTestId('compare-card-delta').first()).toContainText(/[+-]/);
 });
 
 test('the chart sits above the table, as the spec asks', async ({ page }) => {

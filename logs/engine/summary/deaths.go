@@ -36,6 +36,10 @@ type HealRef struct {
 	Amount     int64  `json:"amount"`
 	Overheal   int64  `json:"overheal,omitempty"`
 	Absorbed   int64  `json:"absorbed,omitempty"`
+	// HPAfter and MaxHP are the target's health after the heal, from the
+	// advanced fields, so a death card can show the step a heal made.
+	HPAfter int64 `json:"hp_after,omitempty"`
+	MaxHP   int64 `json:"max_hp,omitempty"`
 }
 
 // AuraRef is one aura as the deaths and combatants views show it.
@@ -204,6 +208,8 @@ func (a *Accumulator) addDeaths(e event.Event) {
 			Amount:     e.Amount.V,
 			Overheal:   max(e.Overheal.V, 0),
 			Absorbed:   e.Absorbed.V,
+			HPAfter:    e.Adv.CurrentHP,
+			MaxHP:      e.Adv.MaxHP,
 		}
 		q := append(a.recentHeals[e.Dest.GUID], ref)
 		if len(q) > a.opt.DeathHealWindow {

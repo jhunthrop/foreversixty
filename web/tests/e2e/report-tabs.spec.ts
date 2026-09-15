@@ -189,8 +189,12 @@ test('compare puts two fights side by side with a per-player difference', async 
   await page.goto('/reports/fixture2abcd?fight=3&mode=compare');
   await expect(page.getByTestId('compare-mode')).toContainText('Pick a second fight');
   await page.getByTestId('compare-with').selectOption({ index: 1 });
-  await expect(page.getByTestId('compare-table')).toBeVisible();
-  await expect(page.getByTestId('compare-delta').first()).toContainText(/[+-]/);
+  // A phone gets one card per player instead of the table.
+  const phone = (page.viewportSize()?.width ?? 1280) < 768;
+  await expect(page.getByTestId(phone ? 'compare-cards' : 'compare-table')).toBeVisible();
+  await expect(page.getByTestId(phone ? 'compare-card-delta' : 'compare-delta').first()).toContainText(
+    /[+-]/,
+  );
 });
 
 // Picking a second fight does not cancel the request for the one picked before it, so two
@@ -210,7 +214,10 @@ test('a stale compare answer does not overwrite the fight actually selected', as
 
   // The visitor changes their mind before fight 1's summary has even arrived.
   await page.getByTestId('compare-with').selectOption('2');
-  const delta = page.getByTestId('compare-Player-4184-000000A3').getByTestId('compare-delta');
+  const phone = (page.viewportSize()?.width ?? 1280) < 768;
+  const delta = phone
+    ? page.getByTestId('compare-card-Player-4184-000000A3').getByTestId('compare-card-delta')
+    : page.getByTestId('compare-Player-4184-000000A3').getByTestId('compare-delta');
   await expect(delta).toHaveText('+3,110');
 
   const answered = page.waitForResponse((response) => response.url().endsWith('/fights/1/summary.json'));

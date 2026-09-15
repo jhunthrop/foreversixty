@@ -71,11 +71,11 @@
       }
     }
     const hits = [...avoided.values()].reduce((sum, count) => sum + count, 0);
+    const prorated = approximate && actors.some((actor) => actor.mitigated === undefined);
     const byType = [...avoided.entries()]
       .sort((a, b) => b[1] - a[1])
-      .map(([type, count]) => `${count} ${type.toLowerCase()}`)
+      .map(([type, count]) => `${prorated ? '~' : ''}${count} ${type.toLowerCase()}`)
       .join(', ');
-    const prorated = approximate && actors.some((actor) => actor.mitigated === undefined);
     return { absorbed, blocked, hits, byType, prorated };
   });
 

@@ -42,6 +42,19 @@
   const ordered = $derived(
     [...rows].sort((a, b) => b.succeeded - a.succeeded || a.spell_name.localeCompare(b.spell_name)),
   );
+  /** Spell names two different spell ids share for one caster, shown with the id to tell them apart. */
+  const sameName = $derived.by(() => {
+    // eslint-disable-next-line svelte/prefer-svelte-reactivity
+    const ids = new Map<string, Set<number>>();
+    for (const row of rows) {
+      const key = `${row.guid}|${row.spell_name}`;
+      // eslint-disable-next-line svelte/prefer-svelte-reactivity
+      const found = ids.get(key) ?? new Set<number>();
+      found.add(row.spell_id);
+      ids.set(key, found);
+    }
+    return new Set([...ids.entries()].filter(([, set]) => set.size > 1).map(([key]) => key));
+  });
   const minutes = $derived(durationMs / 60_000);
   const perMinute = (count: number): string => (minutes <= 0 ? '0' : (count / minutes).toFixed(1));
 
@@ -108,7 +121,13 @@
           <span class="truncate font-semibold" style={`color: ${classColorVar(classOf.get(row.guid))}`}>
             {splitUnitName(row.name).name}
           </span>
-          <span class="truncate">{row.spell_name}</span>
+          <span class="truncate"
+            >{row.spell_name}{#if sameName.has(`${row.guid}|${row.spell_name}`)}
+              <span
+                class="text-muted ml-1 font-mono text-[11px]"
+                title="Two spells share this name; this is spell id {row.spell_id}">#{row.spell_id}</span
+              >{/if}</span
+          >
           <!-- Below `md` the heading row is hidden and these three are a card's middle
                lines, so each says what it is. The word goes into the accessible name as
                well as onto the screen: an aria-label replaces an element's text outright,

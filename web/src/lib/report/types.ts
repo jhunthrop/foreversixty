@@ -98,6 +98,9 @@ export interface HealRef {
   amount: number;
   overheal?: number;
   absorbed?: number;
+  /** The target's health after the heal, from the advanced fields; absent before engine 0.2.2. */
+  hp_after?: number;
+  max_hp?: number;
 }
 
 /** summary.AuraRef */

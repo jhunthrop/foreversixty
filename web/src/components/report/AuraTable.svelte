@@ -19,10 +19,13 @@
     durationMs,
     kind,
     bossNames = new Set<string>(),
+    names = new Map<string, string>(),
   }: {
     tracks: AuraTrack[];
     durationMs: number;
     kind: 'BUFF' | 'DEBUFF';
+    /** GUID to unit name, so a debuff can say who applied it. */
+    names?: ReadonlyMap<string, string>;
     /** The encounter bosses' unit names, for the per-spell line across the night. */
     bossNames?: ReadonlySet<string>;
   } = $props();
@@ -146,7 +149,16 @@
               >
             {/if}
           </span>
-          <span class="text-muted truncate text-[13px]">{splitUnitName(track.target_name).name}</span>
+          <span class="text-muted truncate text-[13px]"
+            >{splitUnitName(track.target_name).name}{#if kind === 'DEBUFF' && track.appliers.length > 0}
+              <span class="text-[11px]" title="Who applied it">
+                · from {track.appliers
+                  .map((guid) => splitUnitName(names.get(guid) ?? '').name)
+                  .filter(Boolean)
+                  .slice(0, 2)
+                  .join(', ') || 'an unnamed source'}</span
+              >{/if}</span
+          >
           <span class="bg-line-soft relative col-span-2 block h-[6px] w-full md:col-span-1">
             <!-- Keyed by index as well as start: a stack refreshed on the tick it was
                  applied gives two segments the same start_ms, and a bare timestamp key
