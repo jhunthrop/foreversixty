@@ -40,8 +40,14 @@ export function scopeSource(
 ): Summary {
   if (source === SOURCE_FRIENDLIES && players.size === 0) return summary;
   const keep = (guid: string): boolean => inSource(guid, source, players, friendly);
+  const actors = (table: Summary['damage_done']): Summary['damage_done'] =>
+    table.filter((actor) => keep(actor.guid));
   return {
     ...summary,
+    damage_done: actors(summary.damage_done),
+    damage_taken: actors(summary.damage_taken),
+    healing: actors(summary.healing),
+    healing_taken: actors(summary.healing_taken),
     roster: summary.roster.filter((row) => keep(row.guid)),
     combatants: summary.combatants.filter((row) => keep(row.guid)),
     deaths: summary.deaths.filter((death) => keep(death.guid)),

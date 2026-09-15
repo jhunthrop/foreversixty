@@ -322,3 +322,22 @@ func TestAWipeRemembersTheBossHealth(t *testing.T) {
 		t.Errorf("boss health = %v, want 23 (the last block that named the boss)", got)
 	}
 }
+
+func TestBossNameMatchesTheUnitLoosely(t *testing.T) {
+	cases := []struct {
+		encounter, unit string
+		want            bool
+	}{
+		{"Halkias, the Sin-Stained Goliath", "Halkias", true},
+		{"Amarth, The Harvester", "Amarth", true},
+		{"Stichflesh", "Surgeon Stitchflesh", true},
+		{"General Kaal", "Grand Overseer", false},
+		{"General Kaal", "General Kaal", true},
+		{"Kryxis the Voracious", "Ravenous Dreadbat", false},
+	}
+	for _, tc := range cases {
+		if got := bossNameMatches(tc.encounter, tc.unit); got != tc.want {
+			t.Errorf("bossNameMatches(%q, %q) = %v, want %v", tc.encounter, tc.unit, got, tc.want)
+		}
+	}
+}

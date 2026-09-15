@@ -265,6 +265,20 @@ export function applyActorFilters(actors: Actor[], filters: ReportFilters, conte
         total: Math.round(ability.total * targetShare),
         effective: Math.round(ability.effective * targetShare),
         overheal: ability.overheal === undefined ? undefined : Math.round(ability.overheal * targetShare),
+        absorbed: ability.absorbed === undefined ? undefined : Math.round(ability.absorbed * targetShare),
+        blocked: ability.blocked === undefined ? undefined : Math.round(ability.blocked * targetShare),
+        hits: Math.round(ability.hits * targetShare),
+        crits: Math.round(ability.crits * targetShare),
+        ticks: Math.round(ability.ticks * targetShare),
+        misses:
+          ability.misses === undefined
+            ? undefined
+            : Object.fromEntries(
+                Object.entries(ability.misses).map(([type, count]) => [
+                  type,
+                  Math.round(count * targetShare),
+                ]),
+              ),
       }));
 
       let series = actor.series;

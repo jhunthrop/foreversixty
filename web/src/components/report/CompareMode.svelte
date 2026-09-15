@@ -149,7 +149,7 @@
       >
         <option value="">Pick a fight</option>
         {#each options as fight (fight.index)}
-          <option value={fight.index}>{fightLabel(fight)}</option>
+          <option value={fight.index} selected={fight.index === rightIndex}>{fightLabel(fight)}</option>
         {/each}
       </select>
     </label>

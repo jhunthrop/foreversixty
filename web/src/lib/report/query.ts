@@ -114,7 +114,17 @@ ORDER BY n DESC`,
 FROM ${EVENTS_TABLE}
 WHERE kind = 'heal' AND ${FIGHT_MS} BETWEEN :start AND :end
 GROUP BY 1, 2
-ORDER BY healing DESC`,
+ORDER BY raw_healing DESC`,
+  },
+  {
+    id: 'healing-by-target',
+    label: 'Healing by target, with overhealing',
+    sql: `SELECT source_name, dest_name AS target, spell_name, sum(amount) - sum(overheal) AS effective_healing, sum(overheal) AS overheal,
+  round(100.0 * sum(overheal) / greatest(sum(amount), 1), 1) AS overheal_pct
+FROM ${EVENTS_TABLE}
+WHERE kind = 'heal' AND ${FIGHT_MS} BETWEEN :start AND :end
+GROUP BY 1, 2, 3
+ORDER BY effective_healing DESC`,
   },
   {
     id: 'event-counts',

@@ -30,6 +30,7 @@
     parseTitle,
     percentileToken,
     schoolName,
+    schoolToken,
   } from '../../lib/report/format';
   import type { Placement } from '../../lib/report/percentile';
   import type { Actor } from '../../lib/report/types';
@@ -89,6 +90,23 @@
     const seen = new Map<string, number>();
     for (const ability of actor.abilities) seen.set(ability.name, (seen.get(ability.name) ?? 0) + 1);
     return new Set([...seen.entries()].filter(([, count]) => count > 1).map(([name]) => name));
+  });
+
+  /** The row's amount by spell school: how much was physical, how much magic. */
+  const schoolSplit = $derived.by(() => {
+    // eslint-disable-next-line svelte/prefer-svelte-reactivity
+    const totals = new Map<string, { name: string; token: string; total: number }>();
+    for (const ability of actor.abilities) {
+      const name = schoolName(ability.school) || 'Physical';
+      const found = totals.get(name);
+      if (found === undefined)
+        totals.set(name, { name, token: schoolToken(ability.school), total: ability.effective });
+      else found.total += ability.effective;
+    }
+    const sum = [...totals.values()].reduce((acc, part) => acc + part.total, 0);
+    return [...totals.values()]
+      .sort((a, b) => b.total - a.total)
+      .map((part) => ({ ...part, pct: sum === 0 ? 0 : (part.total / sum) * 100 }));
   });
 
   const targetsByName = $derived.by(() => {
@@ -220,10 +238,22 @@
       data-testid="row-detail"
     >
       <table class="min-w-[520px] flex-1 text-[13px]">
-        <caption class="label text-muted text-left">Abilities</caption>
+        <caption class="label text-muted text-left"
+          >Abilities{#if schoolSplit.length > 1}
+            <span class="ml-3 tracking-normal normal-case" data-testid="school-split"
+              >{#each schoolSplit as part, i (part.name)}{#if i > 0}
+                  ·
+                {/if}<span
+                  class="inline-block h-[8px] w-[8px] rounded-[2px] align-middle"
+                  style={`background: ${part.token}`}
+                  aria-hidden="true"
+                ></span>
+                {part.name} <span class="tabular font-mono">{part.pct.toFixed(0)}%</span>{/each}</span
+            >{/if}</caption
+        >
         <tbody>
           {#each [...actor.abilities]
-            .filter((ability) => ability.total > 0 || ability.hits + ability.ticks > 0)
+            .filter((ability) => ability.total > 0 || ability.hits + ability.ticks > 0 || (ability.misses !== undefined && Object.keys(ability.misses).length > 0))
             .sort((a, b) => b.effective - a.effective) as ability (ability.spell_id)}
             <tr class="border-line-soft border-b">
               <td class="py-1 pr-3"
@@ -243,7 +273,7 @@
                 {mark}{formatAmount(ability.effective)}
               </td>
               <td class="text-muted tabular py-1 pr-3 text-right font-mono"
-                >{ability.hits + ability.ticks} hits</td
+                >{mark}{ability.hits + ability.ticks} hits</td
               >
               <td class="text-muted tabular py-1 pr-3 text-right font-mono" title="Largest single hit"
                 >{#if ability.max > 0}max {formatAmount(ability.max)}{/if}</td

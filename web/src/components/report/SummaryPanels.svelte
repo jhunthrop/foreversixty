@@ -78,15 +78,16 @@
     <ul class="flex flex-col">
       {#each damage as { actor, share } (actor.guid)}
         <li
-          class="grid min-h-8 grid-cols-[minmax(80px,1fr)_44px_minmax(0,2fr)_64px_56px] items-center gap-x-2 text-[13px]"
+          class="grid min-h-8 grid-cols-[minmax(0,1fr)_44px_64px] items-center gap-x-2 gap-y-1 text-[13px] md:grid-cols-[minmax(150px,1.6fr)_44px_minmax(0,2fr)_64px_56px]"
         >
           <span
             class="flex min-w-0 items-center gap-1.5 truncate font-semibold"
             style={`color: ${classColorVar(actor.class)}`}
+            title={splitUnitName(actor.name).name}
             ><ClassIcon className={actor.class} size={16} />{splitUnitName(actor.name).name}</span
           >
           <span class="text-muted tabular text-right font-mono text-[12px]">{share.toFixed(1)}%</span>
-          <span class="bg-line-soft block h-[8px] w-full"
+          <span class="bg-line-soft col-span-3 block h-[8px] w-full md:col-span-1"
             ><span
               class="block h-full"
               style={`width: ${peakOf(damage) === 0 ? 0 : (share / peakOf(damage)) * 100}%; background: ${classColorVar(actor.class)}`}
@@ -109,15 +110,16 @@
     <ul class="flex flex-col">
       {#each healing as { actor, share } (actor.guid)}
         <li
-          class="grid min-h-8 grid-cols-[minmax(80px,1fr)_44px_minmax(0,2fr)_64px_56px] items-center gap-x-2 text-[13px]"
+          class="grid min-h-8 grid-cols-[minmax(0,1fr)_44px_64px] items-center gap-x-2 gap-y-1 text-[13px] md:grid-cols-[minmax(150px,1.6fr)_44px_minmax(0,2fr)_64px_56px]"
         >
           <span
             class="flex min-w-0 items-center gap-1.5 truncate font-semibold"
             style={`color: ${classColorVar(actor.class)}`}
+            title={splitUnitName(actor.name).name}
             ><ClassIcon className={actor.class} size={16} />{splitUnitName(actor.name).name}</span
           >
           <span class="text-muted tabular text-right font-mono text-[12px]">{share.toFixed(1)}%</span>
-          <span class="bg-line-soft block h-[8px] w-full"
+          <span class="bg-line-soft col-span-3 block h-[8px] w-full md:col-span-1"
             ><span
               class="block h-full"
               style={`width: ${peakOf(healing) === 0 ? 0 : (share / peakOf(healing)) * 100}%; background: ${classColorVar(actor.class)}`}
@@ -140,11 +142,11 @@
     <ul class="flex flex-col">
       {#each takenByAbility as row (row.name)}
         <li
-          class="grid min-h-8 grid-cols-[minmax(80px,1fr)_44px_minmax(0,2fr)_64px_56px] items-center gap-x-2 text-[13px]"
+          class="grid min-h-8 grid-cols-[minmax(0,1fr)_44px_64px] items-center gap-x-2 gap-y-1 text-[13px] md:grid-cols-[minmax(150px,1.6fr)_44px_minmax(0,2fr)_64px_56px]"
         >
-          <span class="truncate font-semibold">{row.name}</span>
+          <span class="truncate font-semibold" title={row.name}>{row.name}</span>
           <span class="text-muted tabular text-right font-mono text-[12px]">{row.share.toFixed(1)}%</span>
-          <span class="bg-line-soft block h-[8px] w-full"
+          <span class="bg-line-soft col-span-3 block h-[8px] w-full md:col-span-1"
             ><span
               class="block h-full"
               style={`width: ${peakOf(takenByAbility) === 0 ? 0 : (row.share / peakOf(takenByAbility)) * 100}%; background: ${schoolToken(row.school)}`}
@@ -170,7 +172,7 @@
       <ul class="flex flex-col">
         {#each deaths as death, i (`${death.guid}-${death.at_ms}-${i}`)}
           <li
-            class="grid min-h-8 grid-cols-[52px_minmax(80px,1fr)_minmax(0,2fr)] items-center gap-x-2 text-[13px]"
+            class="grid min-h-8 grid-cols-[52px_minmax(0,1fr)_minmax(0,1.6fr)] items-center gap-x-2 text-[13px]"
           >
             <span class="text-muted tabular font-mono text-[12px]">{formatDuration(death.at_ms)}</span>
             <span class="truncate font-semibold" style={`color: ${classColorVar(death.class)}`}

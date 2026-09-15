@@ -247,7 +247,7 @@ export function nightSummary(
           ...found,
           applications: found.applications + track.applications,
           max_stacks: Math.max(found.max_stacks, track.max_stacks),
-          uptime_ms: found.uptime_ms + track.uptime_ms,
+          uptime_ms: unionMs([...found.segments, ...shifted]),
           segments: [...found.segments, ...shifted],
           appliers: [...new Set([...found.appliers, ...track.appliers])],
           time_ms: (found.time_ms ?? 0) + (countPull ? summary.duration_ms : 0),
@@ -346,6 +346,23 @@ export function nightSummary(
       dtps: player.dtps,
     })),
   };
+}
+
+/** The length of the union of segments: time at least one of them covered. */
+function unionMs(segments: readonly { start_ms: number; end_ms: number }[]): number {
+  const sorted = [...segments].sort((a, b) => a.start_ms - b.start_ms);
+  let total = 0;
+  let start = -1;
+  let end = -1;
+  for (const segment of sorted) {
+    if (segment.start_ms > end) {
+      if (end > start) total += end - start;
+      start = segment.start_ms;
+      end = segment.end_ms;
+    } else if (segment.end_ms > end) end = segment.end_ms;
+  }
+  if (end > start) total += end - start;
+  return total;
 }
 
 /** Pull numbers per boss, in fight order, for the death labels. */

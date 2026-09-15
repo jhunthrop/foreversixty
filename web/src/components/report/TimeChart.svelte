@@ -36,8 +36,14 @@
   let dragTo = $state<number | null>(null);
   /** The second under the pointer, or null when it is off the canvas. */
   let hoverMs = $state<number | null>(null);
-  const hoverValue = $derived(
-    hoverMs === null ? null : (series[Math.min(series.length - 1, Math.floor(hoverMs / BUCKET_MS))] ?? 0),
+  const hoverIndex = $derived(
+    hoverMs === null ? null : Math.min(series.length - 1, Math.floor(hoverMs / BUCKET_MS)),
+  );
+  const hoverValue = $derived(hoverIndex === null ? null : (series[hoverIndex] ?? 0));
+  const hoverExtra = $derived(
+    hoverIndex === null
+      ? []
+      : extra.map((line) => ({ label: line.label, value: line.series[hoverIndex] ?? 0 })),
   );
 
   const peak = $derived(
@@ -126,6 +132,18 @@
       context.stroke();
     }
 
+    if (hoverMs !== null) {
+      const x = Math.round(xOf(hoverMs)) + 0.5;
+      context.strokeStyle = styles.getPropertyValue('--color-text').trim();
+      context.lineWidth = 1;
+      context.setLineDash([3, 3]);
+      context.beginPath();
+      context.moveTo(x, 0);
+      context.lineTo(x, HEIGHT);
+      context.stroke();
+      context.setLineDash([]);
+    }
+
     const from = dragFrom ?? current.startMs;
     const to = dragTo ?? current.endMs;
     if (!(from <= 0 && to >= durationMs)) {
@@ -136,7 +154,7 @@
 
   $effect(() => {
     // Re-reads series, window, deaths and width, so any of them redraws the canvas.
-    void [series, extra, current, deaths, width, peak];
+    void [series, extra, current, deaths, width, peak, hoverMs];
     draw();
   });
 
@@ -184,7 +202,8 @@
 >
   <figcaption class="flex flex-wrap items-baseline justify-between gap-2">
     <span class="label text-muted"
-      >{label} per second{#each extra as line (line.label)}
+      ><span class="bg-gold mr-1 inline-block h-[2px] w-[14px] align-middle" aria-hidden="true"></span>{label} per
+      second{#each extra as line (line.label)}
         <span class="ml-3 tracking-normal normal-case"
           ><span
             class="mr-1 inline-block h-[2px] w-[14px] align-middle"
@@ -200,7 +219,9 @@
     <span class="tabular text-muted font-mono text-[12px]" data-testid="window-label" aria-live="polite">
       {#if hoverMs !== null && hoverValue !== null}
         <span class="text-text mr-3" data-testid="chart-readout"
-          >{formatDuration(hoverMs)} · {formatAmount(hoverValue)}/s</span
+          >{formatDuration(hoverMs)} · {label.toLowerCase()}
+          {formatAmount(hoverValue)}/s{#each hoverExtra as line (line.label)}
+            · {line.label.toLowerCase()} {formatAmount(line.value)}/s{/each}</span
         >
       {/if}
       {isFullWindow(current, durationMs)

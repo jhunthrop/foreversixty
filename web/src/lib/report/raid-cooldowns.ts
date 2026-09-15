@@ -40,6 +40,21 @@ export const RAID_COOLDOWNS: readonly string[] = [
   'Fear Ward',
   'Battle Shout',
   'Ancestral Fortitude',
+  'Ardent Defender',
+  'Guardian of Ancient Kings',
+  'Revival',
+  'Life Cocoon',
+  'Pain Suppression',
+  'Guardian Spirit',
+  'Spirit Link Totem',
+  'Healing Tide Totem',
+  'Ascendance',
+  'Aspect of the Turtle',
+  'Ice Block',
+  'Vampiric Embrace',
+  'Rallying Cry',
+  'Demoralizing Shout',
+  'Challenging Shout',
 ];
 
 const NAMES = new Set(RAID_COOLDOWNS.map((name) => name.toLowerCase()));

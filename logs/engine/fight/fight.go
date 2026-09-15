@@ -7,6 +7,7 @@ package fight
 
 import (
 	"sort"
+	"strings"
 	"time"
 
 	"github.com/jhunthrop/foreversixty/logs/engine/event"
@@ -405,10 +406,89 @@ func (s *Segmenter) watchBoss(e event.Event) {
 	default:
 		return
 	}
-	if name != f.Name || units.Parse(e.Adv.InfoGUID).Kind == units.KindPlayer {
+	if !bossNameMatches(f.Name, name) || units.Parse(e.Adv.InfoGUID).Kind == units.KindPlayer {
 		return
 	}
 	f.bossHP, f.bossMaxHP, f.bossSeen = e.Adv.CurrentHP, e.Adv.MaxHP, true
+}
+
+// bossNameMatches says whether a unit is the encounter's boss by name. The
+// encounter's name is not always the unit's to the letter: "Halkias, the
+// Sin-Stained Goliath" is the unit "Halkias", and the encounter "Stichflesh"
+// is the unit "Surgeon Stitchflesh". A unit matches when one of its words is
+// one of the encounter's, allowing one letter's slip in a word of six or
+// more.
+func bossNameMatches(encounter, unit string) bool {
+	if encounter == unit {
+		return true
+	}
+	for _, a := range nameWords(unit) {
+		for _, b := range nameWords(encounter) {
+			if sameWord(a, b) {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+var stopWords = map[string]bool{
+	"the": true, "lord": true, "high": true, "grand": true, "surgeon": true,
+	"general": true, "commander": true, "executor": true,
+}
+
+// nameWords is the words of a name worth matching: four letters or more,
+// lowercased, titles left out.
+func nameWords(name string) []string {
+	var out []string
+	for _, w := range strings.FieldsFunc(strings.ToLower(name), func(r rune) bool {
+		return !(r >= 'a' && r <= 'z' || r == '\'')
+	}) {
+		if len(w) >= 4 && !stopWords[w] {
+			out = append(out, w)
+		}
+	}
+	return out
+}
+
+// sameWord is equality, or one letter off in a word long enough for that to
+// be a typo rather than another word.
+func sameWord(a, b string) bool {
+	if a == b {
+		return true
+	}
+	if len(a) < 6 || len(b) < 6 || abs(len(a)-len(b)) > 1 {
+		return false
+	}
+	i, j, edits := 0, 0, 0
+	for i < len(a) && j < len(b) {
+		if a[i] == b[j] {
+			i++
+			j++
+			continue
+		}
+		edits++
+		if edits > 1 {
+			return false
+		}
+		switch {
+		case len(a) > len(b):
+			i++
+		case len(b) > len(a):
+			j++
+		default:
+			i++
+			j++
+		}
+	}
+	return edits+(len(a)-i)+(len(b)-j) <= 1
+}
+
+func abs(n int) int {
+	if n < 0 {
+		return -n
+	}
+	return n
 }
 
 // bossHealthPct is what the encounter ended with the boss at: 0 on a kill,

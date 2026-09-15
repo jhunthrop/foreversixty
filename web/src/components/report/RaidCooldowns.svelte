@@ -39,7 +39,7 @@
     }
     return (
       [...byName.entries()]
-        .map(([name, uses]) => ({ name, uses: uses.sort((a, b) => a.at - b.at) }))
+        .map(([name, uses]) => ({ name, uses: dedupe(uses).sort((a, b) => a.at - b.at) }))
         // A track with no segment in this window has no use to draw.
         .filter((row) => row.uses.length > 0)
         .sort((a, b) => a.uses[0].at - b.uses[0].at)
@@ -47,6 +47,19 @@
   });
 
   const pct = (ms: number): number => (durationMs === 0 ? 0 : (ms / durationMs) * 100);
+
+  /** A raid-wide buff lands on everyone in the same second; that is one use, on the raid. */
+  function dedupe(uses: Use[]): Use[] {
+    // eslint-disable-next-line svelte/prefer-svelte-reactivity
+    const seen = new Map<string, Use>();
+    for (const use of uses) {
+      const key = `${use.source}|${Math.round(use.at / 1000)}`;
+      const found = seen.get(key);
+      if (found === undefined) seen.set(key, { ...use });
+      else if (found.target !== use.target) found.target = 'the raid';
+    }
+    return [...seen.values()];
+  }
 </script>
 
 {#if rows.length > 0}

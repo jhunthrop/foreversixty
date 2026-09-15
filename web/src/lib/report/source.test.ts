@@ -9,7 +9,38 @@ function summary(): Summary {
     engine_version: 'test',
     fight_index: 1,
     duration_ms: 10_000,
-    damage_done: [],
+    damage_done: [
+      {
+        guid: 'Player-1',
+        name: 'One',
+        total: 1,
+        effective: 1,
+        active_ms: 1,
+        abilities: [],
+        targets: [],
+        series: [1],
+      },
+      {
+        guid: 'Player-2',
+        name: 'Two',
+        total: 1,
+        effective: 1,
+        active_ms: 1,
+        abilities: [],
+        targets: [],
+        series: [1],
+      },
+      {
+        guid: 'Creature-9',
+        name: 'Boss',
+        total: 1,
+        effective: 1,
+        active_ms: 1,
+        abilities: [],
+        targets: [],
+        series: [1],
+      },
+    ],
     damage_taken: [],
     healing: [],
     healing_taken: [],
@@ -123,6 +154,7 @@ describe('scopeSource', () => {
   it('narrows every unit-keyed table to the chosen player', () => {
     const scoped = scopeSource(summary(), 'Player-1', players);
     expect(scoped.roster.map((row) => row.guid)).toEqual(['Player-1']);
+    expect(scoped.damage_done.map((actor) => actor.guid)).toEqual(['Player-1']);
     expect(scoped.deaths.map((death) => death.guid)).toEqual(['Player-1']);
     expect(scoped.auras.map((track) => track.target_guid)).toEqual(['Player-1']);
     expect(scoped.casts).toEqual([]);

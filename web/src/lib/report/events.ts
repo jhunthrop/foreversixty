@@ -19,7 +19,7 @@ export const EVENT_KINDS: readonly { id: EventKind; label: string }[] = [
   { id: 'cast', label: 'Casts' },
   { id: 'aura-applied', label: 'Auras applied' },
   { id: 'aura-removed', label: 'Auras removed' },
-  { id: 'damage', label: 'Damage' },
+  { id: 'damage', label: 'Hits before a death' },
   { id: 'death', label: 'Deaths' },
 ];
 

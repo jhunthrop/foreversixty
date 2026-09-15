@@ -900,8 +900,13 @@
           {#if actorTableApproximate}
             <p class="text-muted text-[12px]" data-testid="approximate-note">
               A tilde marks a figure split across abilities and targets in proportion to the window and any
-              active target or boss filter. Totals and per-second figures are exact. Queries answers the split
-              exactly.
+              active target or boss filter. Totals and per-second figures are exact.
+              <button
+                type="button"
+                class="text-gold inline-flex min-h-11 items-center underline-offset-2 hover:underline md:min-h-0"
+                data-testid="measure-exactly"
+                onclick={() => patch({ view: 'queries' })}>Measure this window exactly in Queries</button
+              >.
             </p>
           {/if}
         {:else if state.tab === 'buffs'}
