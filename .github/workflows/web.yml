@@ -41,6 +41,17 @@ jobs:
           # FOREVER_DATA=fixture, and playwright.config.ts's webServer already defaults to
           # it. This makes the dependency explicit for anyone reading the workflow.
           FOREVER_DATA: fixture
+      # A failed e2e run is only diagnosable from the page snapshot and trace Playwright
+      # writes under test-results/; without this they die with the runner.
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-failures
+          path: |
+            web/test-results/
+            web/playwright-report/
+          if-no-files-found: ignore
+          retention-days: 7
       - run: npm run lhci
         env:
           # lhci audits whatever dist/ holds, which is the fixture build test:e2e left
