@@ -93,6 +93,9 @@ addon and site versions involved.
 the tree with the most points; ties resolve to the first tree. Score = Σ weight × stat; shown in
 the planner's gear panel and used by the addon. Weights are opinions, labeled as such on the site
 with their sources, and revised as the beta reveals Forever's changes.
+Once the simulator's engine produces weights for a spec (simulator design, section 4.7), the
+curated entry for that spec is replaced by the sim-derived one, with the engine version as its
+source; curated weights remain for specs the sim has not validated.
 
 Stat vocabulary (Deep Dive panel, Sept 13): Forever merges melee, ranged, and spell hit into one
 `hit` stat and the three crit chances into one `crit`; adds `expertise` (reduces the target's parry

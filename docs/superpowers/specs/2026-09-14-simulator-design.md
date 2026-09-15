@@ -208,6 +208,40 @@ With Top Gear (S3):
 - **Result to the addon.** Expected DPS and cast counts pushed through the addon inbox, so the
   in-game meter carries an expected column beside the actual one.
 
+### 4.7 Cross-pillar features
+
+What each pillar gains from the sim, and what the sim gains from each. Ordered by phase.
+
+At launch (S1 and S2):
+
+- **Execution leaderboard.** A second sort order on every rankings page: by execution score
+  rather than DPS, so a player in dungeon gear competes with a full raider on how well they
+  played. One column, one sort; the fairest ranking on offer anywhere.
+- **Execution score at fight close.** For members, the score is computed when the fight closes
+  (three seconds of native compute per fight on the ingest path's job runner), not nightly, so a
+  report carries it the moment the fight ends. The nightly job remains the fidelity source.
+- **Build unfurls with DPS.** A shared planner link's card carries the build's simmed DPS and the
+  engine version it was simmed on.
+
+With Top Gear (S3):
+
+- **Fight-shaped encounters.** Per boss, an encounter profile generated from the logs corpus:
+  median kill length, target counts over time, the execute window, and the downtime players
+  actually had. A sim of "this boss as raids fight it", offered beside the plain single-target
+  fight, refreshed weekly from the corpus. Raidbots' hand-made fight styles have no equivalent.
+- **Computed BiS lists.** Top Gear over the whole item universe per spec per phase on the server
+  lane, published on the class guides and the item pages with per-slot alternatives and the
+  date, regenerated on every data change. A content feature the incumbents hand-write.
+- **Personalised loot on boss pages.** Every dungeon and raid boss page shows a signed-in
+  member "best drop here for you: +31 DPS" from a Droptimizer run cached per character per data
+  version.
+- **Coaching lines.** Compare mode adds cooldown-delay and downtime analysis in words from the
+  fight's cast sequence: "Death Wish was ready for 14 seconds before you used it", "9 seconds
+  with no cast during the add phase".
+- **Sim-derived stat weights and addon deltas.** The Phase 2 curated stat weights are replaced
+  per spec and phase by weights the engine produces, and Top Gear's per-item deltas are pushed
+  through the addon inbox so the in-game tooltip reads "+42 DPS, simmed".
+
 ### 4.5 Later, on the same engine
 
 - **Top Gear**: tick bag items, enchants, and consumables from the addon export; the premium
@@ -276,9 +310,9 @@ The engine lives outside this repository; its version is pinned in `sim/go.mod` 
 | Phase | Dates | Engine lane | Data lane | Web lane | API lane |
 |---|---|---|---|---|---|
 | S0 | Sept 15 to 19 | Forever repository; core stat changes; spell_mod cherry-pick; encounter environment concept; browser throughput spike | simdb generator against Era tables; switch to Forever tables on beta day | engine loader and worker pool spike; character model | result adapter to logs events |
-| S1 | Sept 22 to Oct 17 | Fury Warrior and Frost Mage models with constants files; racials; default APLs | per-class constants; Forever items and sets | sim page with the signed-in landing state, four sources, results, compare mode, saved sims, spec page, phone; live DPS in the planner | saved sims, validation job, spec fidelity, execution score column |
+| S1 | Sept 22 to Oct 17 | Fury Warrior and Frost Mage models with constants files; racials; default APLs | per-class constants; Forever items and sets | sim page with the signed-in landing state, four sources, results, compare mode, saved sims, spec page, phone; live DPS in the planner; execution leaderboard sort; build unfurl DPS | saved sims, validation job, spec fidelity, execution score at fight close |
 | S2 | Oct 20 to Nov 4 | fixes from validation; two specs validated | launch build | polish, budgets, Lighthouse | premium flag and server lane |
-| S3 | Nov 5 to Dec 9 | remaining DPS specs in rankings order | raid loot tables | Top Gear, Droptimizer, gear tooltip deltas, biggest lever, guild execution | staged premium sims, addon inbox results |
+| S3 | Nov 5 to Dec 9 | remaining DPS specs in rankings order | raid loot tables | Top Gear, Droptimizer, gear tooltip deltas, biggest lever, guild execution, computed BiS on guides, personalised loot on boss pages, coaching lines | staged premium sims, addon inbox results and deltas, encounter profiles from the corpus, sim-derived stat weights |
 
 Each lane is one plan with parallel sub-lanes for independent tasks, per the execution rules in
 memory. The engine lane's work happens in the engine repository and is the one place a
