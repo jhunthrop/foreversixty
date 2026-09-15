@@ -73,6 +73,46 @@ export interface CharacterPath {
   slug: string;
 }
 
+/** Longer than any name the game allows, and a bound on what is pasted into an API path. */
+const MAX_SLUG_LENGTH = 64;
+
+/** The same bound before decoding, where one character can be several `%xx` escapes. */
+const MAX_ENCODED_SLUG_LENGTH = MAX_SLUG_LENGTH * 4;
+
+/** A path separator, a dot segment, a query or fragment marker, a stray escape, a space. */
+const UNSAFE_IN_SLUG = /[/\\.?#%\s]/;
+
+/**
+ * Whether a slug names a character rather than somewhere else.
+ *
+ * The slug is interpolated straight into `/v1/characters/<region>/<ruleset>/<slug>` and
+ * into the Worker's own upstream url, so a dot segment there does not 404 -- the URL
+ * parser resolves it, and `/character/us/normal/..` becomes a request to a different
+ * endpoint entirely. Anything that can traverse or re-target is refused: a path
+ * separator, a dot, a query or fragment marker, whitespace, a control character.
+ *
+ * Deliberately not `[a-z0-9-]`, which is what /rankings/<slug> allows: a pathname reaches
+ * here percent-encoded, and kr, tw and cn are regions this site serves, so real character
+ * pages carry `%`-escapes for names that are not Latin at all. The escapes are decoded
+ * before the check instead, so `%2e%2e` and `%2f` are refused as the `..` and `/` they
+ * are -- the WHATWG URL parser resolves those forms too -- while a Hangul name is not.
+ */
+function isCharacterSlug(slug: string): boolean {
+  if (slug === '' || slug.length > MAX_ENCODED_SLUG_LENGTH) return false;
+  let decoded: string;
+  try {
+    decoded = decodeURIComponent(slug);
+  } catch {
+    // A malformed escape. Nothing legitimate produces one, and it is not worth guessing at.
+    return false;
+  }
+  if (decoded.length > MAX_SLUG_LENGTH || UNSAFE_IN_SLUG.test(decoded)) return false;
+  // Control characters, separately: writing them as a range in the expression above is
+  // what no-control-regex exists to stop, and this reads better than escaping past it.
+  for (const character of decoded) if ((character.codePointAt(0) ?? 0) < 0x20) return false;
+  return true;
+}
+
 function parsePath(prefix: string, pathname: string): CharacterPath | null {
   const parts = pathname
     .replace(/\/+$/, '')
@@ -80,7 +120,7 @@ function parsePath(prefix: string, pathname: string): CharacterPath | null {
     .filter((part) => part !== '');
   if (parts.length !== 4 || parts[0] !== prefix) return null;
   const [, region, ruleset, slug] = parts;
-  if (!isRegion(region) || !isRuleset(ruleset) || slug === '') return null;
+  if (!isRegion(region) || !isRuleset(ruleset) || !isCharacterSlug(slug)) return null;
   return { region, ruleset, slug };
 }
 

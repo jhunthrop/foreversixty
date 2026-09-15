@@ -81,6 +81,41 @@ describe('character and guild links', () => {
     expect(parseCharacterPath('/guild/us/hardcore/the-last-watch')).toBeNull();
   });
 
+  // The slug is interpolated straight into `/v1/characters/<region>/<ruleset>/<slug>`, and
+  // a dot segment there is resolved by the URL parser rather than 404ing: `..` would make
+  // the island, and the Worker's own unfurl fetch, call a different endpoint entirely. The
+  // percent-encoded spellings resolve the same way, so they are refused the same way.
+  it('refuses a slug that could name something other than a character', () => {
+    const refused = [
+      '..',
+      '.',
+      '%2e%2e',
+      '%2E%2E',
+      '%2f%2e%2e',
+      'elyra%2fduskvale',
+      'elyra duskvale',
+      'elyra?x=1',
+      'elyra#x',
+      'a'.repeat(65),
+    ];
+    for (const slug of refused) {
+      expect(parseCharacterPath(`/character/us/normal/${slug}`)).toBeNull();
+      expect(parseGuildPath(`/guild/us/normal/${slug}`)).toBeNull();
+    }
+  });
+
+  // Not `[a-z0-9-]`, which is what /rankings/<slug> allows: kr, tw and cn are regions this
+  // site serves, and a pathname reaches the parser percent-encoded, so a real character
+  // page for a Hangul name is nothing but `%`-escapes and has to keep working.
+  it('accepts a percent-encoded name from a region that does not write in Latin', () => {
+    const encoded = encodeURIComponent('아무개');
+    expect(parseCharacterPath(`/character/kr/normal/${encoded}`)).toEqual({
+      region: 'kr',
+      ruleset: 'normal',
+      slug: encoded,
+    });
+  });
+
   it('reads a guild path back', () => {
     expect(parseGuildPath('/guild/eu/normal/the-last-watch')).toEqual({
       region: 'eu',
