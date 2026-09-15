@@ -123,36 +123,61 @@ const PUBLIC_VISIBILITIES = new Set(['public', 'unlisted']);
  * minute longer -- the contract's own bound.
  */
 const VISIBILITY_TTL_MS = 60_000;
-const visibilityCache = new Map<string, { visibility: string; expires: number }>();
+
+/**
+ * A "no such report" is as stable an answer as a real one and is cached for as long:
+ * without this, every request for an id nothing answers for -- a crawler working through
+ * guessed ids, a stale link being retried -- costs an uncached subrequest to the API.
+ */
+const MISSING_TTL_MS = VISIBILITY_TTL_MS;
+
+/**
+ * An outage is not stable, so it is cached only long enough to stop a recovering API being
+ * hit once per inbound request while it comes back. Short enough that the site follows it
+ * back up within one visitor's reload.
+ */
+const UNAVAILABLE_TTL_MS = 5_000;
 
 type VisibilityLookup = { kind: 'ok'; visibility: string } | { kind: 'missing' } | { kind: 'unavailable' };
 
+const visibilityCache = new Map<string, { lookup: VisibilityLookup; expires: number }>();
+
+const VISIBILITY_TTL_BY_KIND: Record<VisibilityLookup['kind'], number> = {
+  ok: VISIBILITY_TTL_MS,
+  missing: MISSING_TTL_MS,
+  unavailable: UNAVAILABLE_TTL_MS,
+};
+
+function remember(id: string, lookup: VisibilityLookup): VisibilityLookup {
+  visibilityCache.set(id, { lookup, expires: Date.now() + VISIBILITY_TTL_BY_KIND[lookup.kind] });
+  return lookup;
+}
+
 async function reportVisibility(id: string, env: Env): Promise<VisibilityLookup> {
   const cached = visibilityCache.get(id);
-  if (cached !== undefined && cached.expires > Date.now()) {
-    return { kind: 'ok', visibility: cached.visibility };
-  }
+  if (cached !== undefined && cached.expires > Date.now()) return cached.lookup;
 
   let response: Response;
   try {
     response = await fetch(`${env.API_BASE_URL}/v1/reports/${id}/visibility`);
   } catch {
-    return { kind: 'unavailable' };
+    return remember(id, { kind: 'unavailable' });
   }
-  if (response.status === 404) return { kind: 'missing' };
-  if (!response.ok) return { kind: 'unavailable' };
+  if (response.status === 404) return remember(id, { kind: 'missing' });
+  if (!response.ok) return remember(id, { kind: 'unavailable' });
 
   let envelope: { ok: boolean; data: { visibility?: string } | null };
   try {
     envelope = (await response.json()) as { ok: boolean; data: { visibility?: string } | null };
   } catch {
-    return { kind: 'unavailable' };
+    return remember(id, { kind: 'unavailable' });
   }
   const visibility = envelope.data?.visibility;
-  if (typeof visibility !== 'string' || visibility === '') return { kind: 'unavailable' };
+  if (typeof visibility !== 'string' || visibility === '') {
+    return remember(id, { kind: 'unavailable' });
+  }
 
-  visibilityCache.set(id, { visibility, expires: Date.now() + VISIBILITY_TTL_MS });
-  return { kind: 'ok', visibility };
+  return remember(id, { kind: 'ok', visibility });
 }
 
 function refuse(status: number, message: string, extra: Record<string, string> = {}): Response {

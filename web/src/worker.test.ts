@@ -280,38 +280,57 @@ describe('/logs-data/* served from the R2 bucket', () => {
     vi.useRealTimers();
   });
 
-  it('answers 503 and stores nothing when the API cannot say', async () => {
+  it('answers 503 when the API cannot say, and shields it from a stampede for five seconds', async () => {
+    vi.useFakeTimers();
     const id = 'downaaaaaaaa';
-    vi.stubGlobal(
-      'fetch',
-      vi.fn<GlobalFetch>(async () => {
-        throw new TypeError('offline');
-      }),
-    );
+    const upstream = vi.fn<GlobalFetch>(async () => {
+      throw new TypeError('offline');
+    });
+    vi.stubGlobal('fetch', upstream);
     const env = { ...envWith(), LOGS: bucketWith({ [SUMMARY_KEY(id)]: summaryObject() }) };
+    const url = `https://foreversixty.gg/logs-data/reports/${id}/fights/3/summary.json`;
 
-    const response = await worker.fetch(
-      new Request(`https://foreversixty.gg/logs-data/reports/${id}/fights/3/summary.json`),
-      env,
-    );
+    const response = await worker.fetch(new Request(url), env);
 
     expect(response.status).toBe(503);
     expect(response.headers.get('cache-control')).toBe('no-store');
     expect(env.LOGS.get).not.toHaveBeenCalled();
+
+    // An outage must not cost the recovering API one subrequest per inbound request. The
+    // response itself still says no-store: it is the Worker's own lookup that is held, not
+    // the visitor's copy of the failure.
+    await worker.fetch(new Request(url), env);
+    expect(upstream).toHaveBeenCalledTimes(1);
+
+    // And it is only five seconds, so the site follows the API back up straight away.
+    vi.setSystemTime(Date.now() + 6_000);
+    await worker.fetch(new Request(url), env);
+    expect(upstream).toHaveBeenCalledTimes(2);
+    vi.useRealTimers();
   });
 
-  it('answers 404 for a report the API does not know', async () => {
+  it('answers 404 for a report the API does not know, and remembers that for a minute', async () => {
+    vi.useFakeTimers();
     const id = 'gonaaaaaaaaa';
-    vi.stubGlobal(
-      'fetch',
-      vi.fn<GlobalFetch>(async () => visibilityResponse('', 404)),
-    );
+    const upstream = vi.fn<GlobalFetch>(async () => visibilityResponse('', 404));
+    vi.stubGlobal('fetch', upstream);
     const env = { ...envWith(), LOGS: bucketWith({}) };
-    const response = await worker.fetch(
-      new Request(`https://foreversixty.gg/logs-data/reports/${id}/report.json`),
-      env,
-    );
+    const url = `https://foreversixty.gg/logs-data/reports/${id}/report.json`;
+
+    const response = await worker.fetch(new Request(url), env);
     expect(response.status).toBe(404);
+
+    // A crawler working through guessed ids, or one dead link being retried, costs one
+    // subrequest a minute rather than one per request: an id nothing answers for is as
+    // stable an answer as a real visibility.
+    await worker.fetch(new Request(url), env);
+    await worker.fetch(new Request(url), env);
+    expect(upstream).toHaveBeenCalledTimes(1);
+
+    vi.setSystemTime(Date.now() + 61_000);
+    await worker.fetch(new Request(url), env);
+    expect(upstream).toHaveBeenCalledTimes(2);
+    vi.useRealTimers();
   });
 
   it('falls through to the static assets when the object is missing, which is how the fixture serves in preview', async () => {
