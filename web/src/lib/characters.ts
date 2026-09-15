@@ -74,7 +74,10 @@ export interface CharacterPath {
 }
 
 function parsePath(prefix: string, pathname: string): CharacterPath | null {
-  const parts = pathname.replace(/\/+$/, '').split('/').filter((part) => part !== '');
+  const parts = pathname
+    .replace(/\/+$/, '')
+    .split('/')
+    .filter((part) => part !== '');
   if (parts.length !== 4 || parts[0] !== prefix) return null;
   const [, region, ruleset, slug] = parts;
   if (!isRegion(region) || !isRuleset(ruleset) || slug === '') return null;
@@ -87,4 +90,19 @@ export function parseCharacterPath(pathname: string): CharacterPath | null {
 
 export function parseGuildPath(pathname: string): CharacterPath | null {
   return parsePath('guild', pathname);
+}
+
+/**
+ * A ranking row's `player.key` (contract: `GET /v1/rankings` and `GET /v1/rankings/guilds`)
+ * is `<region>/<ruleset>/<name-slug>` -- exactly `parseCharacterPath`'s last three segments
+ * -- so this reuses that parser's validation rather than trusting the key's shape and
+ * guessing at a fallback when a row happens to carry no guild. A row with no guild is not a
+ * row with no region or ruleset: `player.key` always has both, and a caller that defaulted
+ * them (`us`/`normal`, say) would link a real player at a link for someone else's server. A
+ * key this does not recognise -- a future format change, a row the API answered oddly --
+ * returns null rather than a guess a link would make look correct.
+ */
+export function parseCharacterKey(key: string): { region: Region; ruleset: Ruleset } | null {
+  const path = parseCharacterPath(`/character/${key}`);
+  return path === null ? null : { region: path.region, ruleset: path.ruleset };
 }

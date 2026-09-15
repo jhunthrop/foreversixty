@@ -1,8 +1,18 @@
 // web/src/lib/characters.test.ts
 import { describe, expect, it } from 'vitest';
 import {
-  RULESETS, characterHref, characterKey, characterSlug, guildHref, isRegion, isRuleset,
-  parseCharacterPath, parseGuildPath, rulesetLabel, splitUnitName,
+  RULESETS,
+  characterHref,
+  characterKey,
+  characterSlug,
+  guildHref,
+  isRegion,
+  isRuleset,
+  parseCharacterKey,
+  parseCharacterPath,
+  parseGuildPath,
+  rulesetLabel,
+  splitUnitName,
 } from './characters';
 
 describe('rulesets and regions', () => {
@@ -57,10 +67,14 @@ describe('character and guild links', () => {
 
   it('reads a character path back, and refuses one that is not a real region and ruleset', () => {
     expect(parseCharacterPath('/character/us/hardcore/elyra-duskvale')).toEqual({
-      region: 'us', ruleset: 'hardcore', slug: 'elyra-duskvale',
+      region: 'us',
+      ruleset: 'hardcore',
+      slug: 'elyra-duskvale',
     });
     expect(parseCharacterPath('/character/us/hardcore/elyra-duskvale/')).toEqual({
-      region: 'us', ruleset: 'hardcore', slug: 'elyra-duskvale',
+      region: 'us',
+      ruleset: 'hardcore',
+      slug: 'elyra-duskvale',
     });
     expect(parseCharacterPath('/character/us/nightslayer/elyra-duskvale')).toBeNull();
     expect(parseCharacterPath('/character/us/hardcore')).toBeNull();
@@ -69,7 +83,22 @@ describe('character and guild links', () => {
 
   it('reads a guild path back', () => {
     expect(parseGuildPath('/guild/eu/normal/the-last-watch')).toEqual({
-      region: 'eu', ruleset: 'normal', slug: 'the-last-watch',
+      region: 'eu',
+      ruleset: 'normal',
+      slug: 'the-last-watch',
     });
+  });
+
+  it('reads a ranking row’s player.key back into its own region and ruleset', () => {
+    expect(parseCharacterKey('eu/normal/other-raider')).toEqual({ region: 'eu', ruleset: 'normal' });
+    // Not us/normal, not any default: a key with a real region and ruleset that simply are
+    // not the defaults a careless fallback would guess.
+    expect(parseCharacterKey('kr/hardcore/other-raider')).toEqual({ region: 'kr', ruleset: 'hardcore' });
+  });
+
+  it('refuses a malformed player.key rather than guessing', () => {
+    expect(parseCharacterKey('nightslayer/elyra-duskvale')).toBeNull();
+    expect(parseCharacterKey('us/nightslayer/elyra-duskvale')).toBeNull();
+    expect(parseCharacterKey('')).toBeNull();
   });
 });

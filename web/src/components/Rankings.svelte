@@ -8,6 +8,7 @@
     RULESETS,
     characterHref,
     guildHref,
+    parseCharacterKey,
     rulesetLabel,
     splitUnitName,
   } from '../lib/characters';
@@ -119,9 +120,21 @@
   function plannerHref(row: RankingRow): string | null {
     return row.build_id === undefined ? null : `/b/${row.build_id}`;
   }
+
+  /**
+   * A row's own region and ruleset, read out of `player.key` rather than the row's guild --
+   * an unguilded row still fought in a real region and ruleset, and defaulting them (the
+   * way `us`/`normal` would) links a real player at someone else's server. Null when
+   * `player.key` does not parse, rather than a guess: fix round 1 caught this pointing an
+   * unguilded row at the wrong region.
+   */
+  function characterRowHref(row: RankingRow): string | null {
+    const key = parseCharacterKey(row.player.key);
+    return key === null ? null : characterHref(key.region, key.ruleset, row.player.name);
+  }
 </script>
 
-<div class="flex flex-col gap-[22px] md:gap-6" data-testid="rankings">
+<div class="flex flex-col gap-[22px] md:gap-6" data-testid="rankings" id="rankings">
   <header class="flex flex-col gap-1">
     <h1 class="section-title text-[18px]">{encounter}</h1>
     <p class="text-muted text-[13px]" data-testid="rankings-count">
@@ -275,6 +288,7 @@
     <ul class="flex flex-col" data-testid="ranking-rows">
       {#each page.rows as row (`${row.report_id}-${row.fight_index}-${row.player.key}`)}
         {@const buildHref = plannerHref(row)}
+        {@const characterLinkHref = characterRowHref(row)}
         <li
           class="border-line-soft grid min-h-11 grid-cols-[40px_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px] md:grid-cols-[40px_minmax(140px,1.4fr)_minmax(120px,1fr)_72px_88px_96px_72px_88px]"
           data-testid={`ranking-${row.rank}`}
@@ -285,13 +299,23 @@
           >
             {row.rank}
           </span>
-          <a
-            class="{rowLink} truncate font-semibold"
-            style={`color: ${classColorVar(row.player.class)}`}
-            href={characterHref(row.guild?.region ?? 'us', row.guild?.ruleset ?? 'normal', row.player.name)}
-          >
-            {splitUnitName(row.player.name).name}
-          </a>
+          {#if characterLinkHref !== null}
+            <a
+              class="{rowLink} truncate font-semibold"
+              style={`color: ${classColorVar(row.player.class)}`}
+              href={characterLinkHref}
+              data-testid="ranking-character"
+            >
+              {splitUnitName(row.player.name).name}
+            </a>
+          {:else}
+            <!-- player.key did not parse into a region and ruleset: an unlinked name is
+                 the legible failure, not a guessed link that would point at the wrong
+                 character. -->
+            <span class="truncate font-semibold" style={`color: ${classColorVar(row.player.class)}`}>
+              {splitUnitName(row.player.name).name}
+            </span>
+          {/if}
           <span class="text-muted truncate text-[13px]">
             {#if row.guild}
               <a class={rowLink} href={guildHref(row.guild.region, row.guild.ruleset, row.guild.name)}

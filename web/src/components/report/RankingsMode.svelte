@@ -5,7 +5,13 @@
      printed inline rather than silently filtered, the same way a live fight says "Live"
      instead of hiding until it closes. -->
 <script lang="ts">
-  import { characterHref, guildHref, rulesetLabel, splitUnitName } from '../../lib/characters';
+  import {
+    characterHref,
+    guildHref,
+    parseCharacterKey,
+    rulesetLabel,
+    splitUnitName,
+  } from '../../lib/characters';
   import { classColorVar, formatAmount, formatDuration, percentileToken } from '../../lib/report/format';
   import {
     fetchRankings,
@@ -15,11 +21,8 @@
   } from '../../lib/rankings/api';
   import type { FightEntry } from '../../lib/report/types';
 
-  let {
-    fight,
-    reportId,
-    encounterSlug,
-  }: { fight: FightEntry; reportId: string; encounterSlug: string } = $props();
+  let { fight, reportId, encounterSlug }: { fight: FightEntry; reportId: string; encounterSlug: string } =
+    $props();
 
   /** The picker's options and the word the value column is filed under: one list, so the
       label on a phone card cannot drift from the metric the visitor chose. */
@@ -47,6 +50,18 @@
       { label: metricLabel, value: formatAmount(Math.round(row.value)) },
       { label: 'Duration', value: formatDuration(row.duration_ms) },
     ];
+  }
+
+  /**
+   * A row's own region and ruleset, read out of `player.key` rather than the row's guild --
+   * an unguilded row still fought in a real region and ruleset, and defaulting them (the
+   * way `us`/`normal` would) links a real player at someone else's server. Null when
+   * `player.key` does not parse, rather than a guess: `Rankings.svelte` carries the same
+   * helper, and both call sites take the fix together since both carried the bug.
+   */
+  function characterRowHref(row: RankingRow): string | null {
+    const key = parseCharacterKey(row.player.key);
+    return key === null ? null : characterHref(key.region, key.ruleset, row.player.name);
   }
 
   /**
@@ -115,18 +130,19 @@
       <p class="text-[14px]" role="alert">{error}</p>
     {:else if page !== null}
       <p class="text-muted text-[13px]">
-        <span class="font-mono tabular">{page.total}</span> ranked kills · updated
-        <span class="font-mono tabular">{page.updated_at.slice(0, 10)}</span>
+        <span class="tabular font-mono">{page.total}</span> ranked kills · updated
+        <span class="tabular font-mono">{page.updated_at.slice(0, 10)}</span>
       </p>
       <ul class="flex flex-col" data-testid="rankings-rows">
         {#each page.rows as row (`${row.report_id}-${row.fight_index}-${row.player.key}`)}
+          {@const characterLinkHref = characterRowHref(row)}
           <li
             class="border-line-soft grid min-h-11 grid-cols-[40px_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px] md:grid-cols-[40px_minmax(120px,1.4fr)_minmax(100px,1fr)_88px_96px_72px]"
             class:bg-card-top={row.report_id === reportId}
             data-testid={row.report_id === reportId ? 'rankings-mine' : 'rankings-row'}
           >
             <span
-              class="font-mono tabular text-[12px]"
+              class="tabular font-mono text-[12px]"
               style={`color: ${percentileToken(Math.max(0, 100 - ((row.rank - 1) / Math.max(page.total, 1)) * 100))}`}
             >
               <!-- Decorative and approximate: a rank's position on this page, not the
@@ -136,13 +152,21 @@
               {row.rank}
             </span>
             <span class="flex min-w-0 items-center gap-2">
-              <a
-                class="truncate font-semibold"
-                style={`color: ${classColorVar(row.player.class)}`}
-                href={characterHref(row.guild?.region ?? 'us', row.guild?.ruleset ?? 'normal', row.player.name)}
-              >
-                {splitUnitName(row.player.name).name}
-              </a>
+              {#if characterLinkHref !== null}
+                <a
+                  class="truncate font-semibold"
+                  style={`color: ${classColorVar(row.player.class)}`}
+                  href={characterLinkHref}
+                >
+                  {splitUnitName(row.player.name).name}
+                </a>
+              {:else}
+                <!-- player.key did not parse into a region and ruleset: an unlinked name
+                     is the legible failure, not a guessed link to the wrong character. -->
+                <span class="truncate font-semibold" style={`color: ${classColorVar(row.player.class)}`}>
+                  {splitUnitName(row.player.name).name}
+                </span>
+              {/if}
               {#if row.report_id === reportId}
                 <!-- The row's own background also marks this, but a colour alone is not a
                      safe way to say "this is the report you are reading": this text does
@@ -159,11 +183,13 @@
                 · {rulesetLabel(row.guild.ruleset)}
               {/if}
             </span>
-            <span class="text-muted font-mono tabular hidden text-right text-[13px] md:inline"
+            <span class="text-muted tabular hidden text-right font-mono text-[13px] md:inline"
               >{row.talent_split}</span
             >
-            <span class="font-mono tabular hidden text-right md:inline">{formatAmount(Math.round(row.value))}</span>
-            <span class="text-muted font-mono tabular hidden text-right text-[13px] md:inline"
+            <span class="tabular hidden text-right font-mono md:inline"
+              >{formatAmount(Math.round(row.value))}</span
+            >
+            <span class="text-muted tabular hidden text-right font-mono text-[13px] md:inline"
               >{formatDuration(row.duration_ms)}</span
             >
 
@@ -176,7 +202,7 @@
               data-testid="ranking-figures"
             >
               {#each figuresFor(row) as figure (figure.label)}
-                <span>{figure.label} <span class="font-mono tabular">{figure.value}</span></span>
+                <span>{figure.label} <span class="tabular font-mono">{figure.value}</span></span>
               {/each}
             </span>
             {#if row.state !== 'ok'}

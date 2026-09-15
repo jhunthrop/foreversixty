@@ -84,6 +84,15 @@ test('the board lists ranked kills with guilds, splits, reports and moderation s
     '/guild/us/hardcore/the-last-watch',
   );
   await expect(page.getByTestId('ranking-2').getByTestId('ranking-state')).toHaveText('removed');
+
+  // Row 2 has no guild (`player.key: 'eu/normal/other-raider'`), so a fallback that
+  // defaulted region/ruleset to `us`/`normal` would link it there instead -- the wrong
+  // character page, on a real player, with a link that looks correct. The href must carry
+  // the row's own region and ruleset, read out of `player.key`.
+  await expect(page.getByTestId('ranking-2').getByTestId('ranking-character')).toHaveAttribute(
+    'href',
+    '/character/eu/normal/other-raider',
+  );
 });
 
 test('every filter lands in the URL and in the request', async ({ page }) => {

@@ -138,6 +138,13 @@ test('every filter control, row link and pagination control clears 44px', async 
       );
       const where = `${query} ${named} measured ${Math.round(box.width)}x${Math.round(box.height)}`;
       expect(Math.max(box.height, box.width), where).toBeGreaterThanOrEqual(44);
+      // Height as well as the larger dimension, for the page this audit covers -- a
+      // 200x20 row link clears the max() line above and is still unusable with a thumb,
+      // the same reasoning report-phone.spec.ts's own sweep pins for `#report`.
+      // `#rankings` is this page's equivalent scope (Rankings.svelte's own root element),
+      // not the shared header and footer, which layout.spec.ts already measures.
+      const inPage = await target.evaluate((element) => element.closest('#rankings') !== null);
+      if (inPage) expect(box.height, where).toBeGreaterThanOrEqual(44);
       measured += 1;
     }
     // Every state renders the board switch's two tabs plus at least the metric or kind
