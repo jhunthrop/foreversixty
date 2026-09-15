@@ -13,6 +13,22 @@ export function formatDurationPrecise(ms: number): string {
   return `${minutes}:${seconds.toFixed(1).padStart(4, '0')}`;
 }
 
+/** The colour token for a school mask's first school; melee (no school) is physical. */
+export function schoolToken(mask: number | undefined): string {
+  const bits: [number, string][] = [
+    [1, 'physical'],
+    [2, 'holy'],
+    [4, 'fire'],
+    [8, 'nature'],
+    [16, 'frost'],
+    [32, 'shadow'],
+    [64, 'arcane'],
+  ];
+  if (mask === undefined || mask <= 0) return 'var(--color-school-physical)';
+  for (const [bit, name] of bits) if ((mask & bit) !== 0) return `var(--color-school-${name})`;
+  return 'var(--color-school-physical)';
+}
+
 /** The game's spell school mask as a word; combined schools are joined. */
 export function schoolName(mask: number | undefined): string {
   // A melee swing carries no school in the log; it is physical.
@@ -199,7 +215,8 @@ export function parseTitle(value: number | string, ranked = 0): string {
   }
   if (value === 'wipe') return 'A wipe is not ranked';
   if (value === '–') return 'Nothing of this spec has been ranked on this boss yet';
-  if (value === 'role') return 'Ranked on their role’s own metric; the Summary tab carries it';
+  if (value === 'tank' || value === 'healer' || value === 'dps')
+    return `A ${value} is ranked on their role’s own metric; the Summary tab carries their parse`;
   return '';
 }
 

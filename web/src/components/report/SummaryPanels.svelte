@@ -1,0 +1,191 @@
+<!-- web/src/components/report/SummaryPanels.svelte -->
+<!-- The summary as a dashboard: the four things a reader wants at a glance, side by side,
+     before any tab is clicked. Damage and healing by source, damage taken by ability, and
+     the deaths, each a short bar list that links to the tab that goes deeper. -->
+<script lang="ts">
+  import { splitUnitName } from '../../lib/characters';
+  import {
+    classColorVar,
+    formatAmount,
+    formatDuration,
+    formatPerSecond,
+    schoolToken,
+  } from '../../lib/report/format';
+  import type { Actor, Summary } from '../../lib/report/types';
+  import ClassIcon from './ClassIcon.svelte';
+
+  let {
+    summary,
+    durationMs,
+    players,
+    onTab,
+  }: {
+    summary: Summary;
+    durationMs: number;
+    players: ReadonlySet<string>;
+    onTab: (tab: 'damage-done' | 'healing' | 'damage-taken' | 'deaths') => void;
+  } = $props();
+
+  const ROWS = 8;
+
+  /** The players' rows of a table, largest first, with each row's share of the table. */
+  function bySource(table: Actor[]): { actor: Actor; share: number }[] {
+    const rows = table.filter((actor) => players.size === 0 || players.has(actor.guid));
+    const total = rows.reduce((sum, actor) => sum + actor.effective, 0);
+    return rows
+      .sort((a, b) => b.effective - a.effective)
+      .slice(0, ROWS)
+      .map((actor) => ({ actor, share: total === 0 ? 0 : (actor.effective / total) * 100 }));
+  }
+
+  const damage = $derived(bySource(summary.damage_done));
+  const healing = $derived(bySource(summary.healing));
+
+  /** Every ability that hit a player, summed over the players it hit, largest first. */
+  const takenByAbility = $derived.by(() => {
+    // eslint-disable-next-line svelte/prefer-svelte-reactivity
+    const totals = new Map<string, { name: string; school?: number; total: number }>();
+    for (const actor of summary.damage_taken) {
+      if (players.size > 0 && !players.has(actor.guid)) continue;
+      for (const ability of actor.abilities) {
+        const key = ability.name === '' ? 'Melee' : ability.name;
+        const found = totals.get(key);
+        if (found === undefined)
+          totals.set(key, { name: key, school: ability.school, total: ability.effective });
+        else found.total += ability.effective;
+      }
+    }
+    const rows = [...totals.values()].sort((a, b) => b.total - a.total);
+    const total = rows.reduce((sum, row) => sum + row.total, 0);
+    return rows.slice(0, ROWS).map((row) => ({ ...row, share: total === 0 ? 0 : (row.total / total) * 100 }));
+  });
+
+  const deaths = $derived([...summary.deaths].sort((a, b) => a.at_ms - b.at_ms));
+  const peakOf = (shares: { share: number }[]): number =>
+    shares.reduce((top, row) => Math.max(top, row.share), 0);
+  const panel = 'border-line rounded-panel bg-raised flex flex-col gap-2 border p-3';
+  const heading = 'label text-muted flex items-center justify-between';
+  const more =
+    'text-gold inline-flex min-h-11 items-center text-[11px] normal-case tracking-normal md:min-h-0';
+</script>
+
+<div class="grid grid-cols-1 gap-4 md:grid-cols-2" data-testid="summary-panels">
+  <section class={panel} data-testid="panel-damage">
+    <h2 class={heading}>
+      Damage done by source
+      <button type="button" class={more} onclick={() => onTab('damage-done')}>Damage Done tab</button>
+    </h2>
+    <ul class="flex flex-col">
+      {#each damage as { actor, share } (actor.guid)}
+        <li
+          class="grid min-h-8 grid-cols-[minmax(80px,1fr)_44px_minmax(0,2fr)_64px_56px] items-center gap-x-2 text-[13px]"
+        >
+          <span
+            class="flex min-w-0 items-center gap-1.5 truncate font-semibold"
+            style={`color: ${classColorVar(actor.class)}`}
+            ><ClassIcon className={actor.class} size={16} />{splitUnitName(actor.name).name}</span
+          >
+          <span class="text-muted tabular text-right font-mono text-[12px]">{share.toFixed(1)}%</span>
+          <span class="bg-line-soft block h-[8px] w-full"
+            ><span
+              class="block h-full"
+              style={`width: ${peakOf(damage) === 0 ? 0 : (share / peakOf(damage)) * 100}%; background: ${classColorVar(actor.class)}`}
+            ></span></span
+          >
+          <span class="tabular text-right font-mono">{formatAmount(actor.effective)}</span>
+          <span class="text-muted tabular text-right font-mono text-[12px]"
+            >{formatPerSecond(actor.effective, durationMs)}</span
+          >
+        </li>
+      {/each}
+    </ul>
+  </section>
+
+  <section class={panel} data-testid="panel-healing">
+    <h2 class={heading}>
+      Healing done by source
+      <button type="button" class={more} onclick={() => onTab('healing')}>Healing tab</button>
+    </h2>
+    <ul class="flex flex-col">
+      {#each healing as { actor, share } (actor.guid)}
+        <li
+          class="grid min-h-8 grid-cols-[minmax(80px,1fr)_44px_minmax(0,2fr)_64px_56px] items-center gap-x-2 text-[13px]"
+        >
+          <span
+            class="flex min-w-0 items-center gap-1.5 truncate font-semibold"
+            style={`color: ${classColorVar(actor.class)}`}
+            ><ClassIcon className={actor.class} size={16} />{splitUnitName(actor.name).name}</span
+          >
+          <span class="text-muted tabular text-right font-mono text-[12px]">{share.toFixed(1)}%</span>
+          <span class="bg-line-soft block h-[8px] w-full"
+            ><span
+              class="block h-full"
+              style={`width: ${peakOf(healing) === 0 ? 0 : (share / peakOf(healing)) * 100}%; background: ${classColorVar(actor.class)}`}
+            ></span></span
+          >
+          <span class="tabular text-right font-mono">{formatAmount(actor.effective)}</span>
+          <span class="text-muted tabular text-right font-mono text-[12px]"
+            >{formatPerSecond(actor.effective, durationMs)}</span
+          >
+        </li>
+      {/each}
+    </ul>
+  </section>
+
+  <section class={panel} data-testid="panel-taken">
+    <h2 class={heading}>
+      Damage taken by ability
+      <button type="button" class={more} onclick={() => onTab('damage-taken')}>Damage Taken tab</button>
+    </h2>
+    <ul class="flex flex-col">
+      {#each takenByAbility as row (row.name)}
+        <li
+          class="grid min-h-8 grid-cols-[minmax(80px,1fr)_44px_minmax(0,2fr)_64px_56px] items-center gap-x-2 text-[13px]"
+        >
+          <span class="truncate font-semibold">{row.name}</span>
+          <span class="text-muted tabular text-right font-mono text-[12px]">{row.share.toFixed(1)}%</span>
+          <span class="bg-line-soft block h-[8px] w-full"
+            ><span
+              class="block h-full"
+              style={`width: ${peakOf(takenByAbility) === 0 ? 0 : (row.share / peakOf(takenByAbility)) * 100}%; background: ${schoolToken(row.school)}`}
+            ></span></span
+          >
+          <span class="tabular text-right font-mono">{formatAmount(row.total)}</span>
+          <span class="text-muted tabular text-right font-mono text-[12px]"
+            >{formatPerSecond(row.total, durationMs)}</span
+          >
+        </li>
+      {/each}
+    </ul>
+  </section>
+
+  <section class={panel} data-testid="panel-deaths">
+    <h2 class={heading}>
+      Deaths
+      <button type="button" class={more} onclick={() => onTab('deaths')}>Deaths tab</button>
+    </h2>
+    {#if deaths.length === 0}
+      <p class="text-muted text-[13px]">Nobody died.</p>
+    {:else}
+      <ul class="flex flex-col">
+        {#each deaths as death, i (`${death.guid}-${death.at_ms}-${i}`)}
+          <li
+            class="grid min-h-8 grid-cols-[52px_minmax(80px,1fr)_minmax(0,2fr)] items-center gap-x-2 text-[13px]"
+          >
+            <span class="text-muted tabular font-mono text-[12px]">{formatDuration(death.at_ms)}</span>
+            <span class="truncate font-semibold" style={`color: ${classColorVar(death.class)}`}
+              >{splitUnitName(death.name).name}</span
+            >
+            <span class="text-muted truncate text-[12px]">
+              {#if death.killing_blow}
+                {death.killing_blow.spell_name === '' ? 'Melee' : death.killing_blow.spell_name} ·
+                {splitUnitName(death.killing_blow.source_name).name} ·
+                <span class="tabular font-mono">{formatAmount(death.killing_blow.amount)}</span>
+              {/if}
+            </span>
+          </li>
+        {/each}
+      </ul>
+    {/if}
+  </section>
+</div>

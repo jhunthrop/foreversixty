@@ -31,6 +31,14 @@
   --color-death-soft: #5a1f1f;
   /* The two parse colours the rarity ladder does not have: a 99 and a 100. */
   --color-parse-99: #e268a8;
+  /* Spell schools, for ability bars: the colours the community reads them by. */
+  --color-school-physical: #e8c96a;
+  --color-school-holy: #fff1a8;
+  --color-school-fire: #ff8a3d;
+  --color-school-nature: #6fdc6f;
+  --color-school-frost: #5fb8ff;
+  --color-school-shadow: #b07bff;
+  --color-school-arcane: #ff9bd6;
   --color-parse-100: #e5cc80;
   --color-night: #26405c;
 

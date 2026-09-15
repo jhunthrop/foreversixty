@@ -12,6 +12,7 @@ import {
   parseTitle,
   percentileToken,
   schoolName,
+  schoolToken,
 } from './format';
 
 describe('report formatting', () => {
@@ -81,5 +82,11 @@ describe('report formatting', () => {
     expect(outcomeLabel({ ...base, boss_health_pct: -1 })).toBe('Wipe');
     expect(outcomeLabel({ ...base, kill: true, boss_health_pct: 0 })).toBe('Kill');
     expect(parseTitle(80, 12)).toContain('12 ranked kills');
+  });
+
+  it('colours an ability by its first school, and melee as physical', () => {
+    expect(schoolToken(undefined)).toBe('var(--color-school-physical)');
+    expect(schoolToken(32)).toBe('var(--color-school-shadow)');
+    expect(schoolToken(36)).toBe('var(--color-school-fire)');
   });
 });

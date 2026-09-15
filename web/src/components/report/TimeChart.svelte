@@ -11,6 +11,7 @@
 
   let {
     series,
+    extra = [],
     durationMs,
     window: current,
     deaths,
@@ -18,6 +19,8 @@
     onWindow,
   }: {
     series: number[];
+    /** More lines drawn behind the main one, each in its token's colour. */
+    extra?: { label: string; series: number[]; token: string }[];
     durationMs: number;
     window: TimeWindow;
     deaths: { at_ms: number; name: string }[];
@@ -37,7 +40,11 @@
     hoverMs === null ? null : (series[Math.min(series.length - 1, Math.floor(hoverMs / BUCKET_MS))] ?? 0),
   );
 
-  const peak = $derived(series.reduce((highest, value) => Math.max(highest, value), 0));
+  const peak = $derived(
+    [series, ...extra.map((line) => line.series)]
+      .flat()
+      .reduce((highest, value) => Math.max(highest, value), 0),
+  );
 
   function xOf(ms: number): number {
     return durationMs === 0 ? 0 : (ms / durationMs) * width;
@@ -72,6 +79,23 @@
       context.beginPath();
       context.moveTo(x, 0);
       context.lineTo(x, HEIGHT);
+      context.stroke();
+    }
+
+    for (const line of extra) {
+      if (peak <= 0 || line.series.length === 0) continue;
+      const lineStep = width / line.series.length;
+      const name = line.token.replace(/^var\(/, '').replace(/\)$/, '');
+      const colour = styles.getPropertyValue(name).trim() || line.token;
+      context.beginPath();
+      line.series.forEach((value, index) => {
+        const y = HEIGHT - (value / peak) * (HEIGHT - 8);
+        if (index === 0) context.moveTo(0, y);
+        context.lineTo(index * lineStep, y);
+        context.lineTo((index + 1) * lineStep, y);
+      });
+      context.strokeStyle = colour;
+      context.lineWidth = 1.25;
       context.stroke();
     }
 
@@ -112,7 +136,7 @@
 
   $effect(() => {
     // Re-reads series, window, deaths and width, so any of them redraws the canvas.
-    void [series, current, deaths, width, peak];
+    void [series, extra, current, deaths, width, peak];
     draw();
   });
 
@@ -160,7 +184,14 @@
 >
   <figcaption class="flex flex-wrap items-baseline justify-between gap-2">
     <span class="label text-muted"
-      >{label} per second{#if deaths.length > 0}
+      >{label} per second{#each extra as line (line.label)}
+        <span class="ml-3 tracking-normal normal-case"
+          ><span
+            class="mr-1 inline-block h-[2px] w-[14px] align-middle"
+            style={`background: ${line.token}`}
+            aria-hidden="true"
+          ></span>{line.label}</span
+        >{/each}{#if deaths.length > 0}
         <span class="ml-3 tracking-normal normal-case"
           ><span class="bg-death mr-1 inline-block h-[10px] w-[2px] align-middle" aria-hidden="true"
           ></span>{deaths.length === 1 ? 'a death' : `${deaths.length} deaths`}</span
