@@ -1,6 +1,15 @@
 // web/src/lib/report/url.test.ts
 import { describe, expect, it } from 'vitest';
-import { MODES, TABS, VIEWS, defaultState, parseReportState, reportSearch, withState } from './url';
+import {
+  ALL_FIGHTS,
+  MODES,
+  TABS,
+  VIEWS,
+  defaultState,
+  parseReportState,
+  reportSearch,
+  withState,
+} from './url';
 
 describe('the report URL state', () => {
   it('offers the five modes, with Mechanics and Replay disabled', () => {
@@ -121,5 +130,13 @@ describe('the report URL state', () => {
     expect(state.tab).toBe('summary');
     expect(next.tab).toBe('threat');
     expect(next).not.toBe(state);
+  });
+
+  it('spells the whole night as fight=all and reads it back as ALL_FIGHTS', () => {
+    expect(parseReportState('?fight=all', 1).fight).toBe(ALL_FIGHTS);
+    expect(reportSearch(withState(defaultState(1), { fight: ALL_FIGHTS }), 1)).toBe('?fight=all');
+    expect(
+      parseReportState(reportSearch(withState(defaultState(1), { fight: ALL_FIGHTS }), 1), 1).fight,
+    ).toBe(ALL_FIGHTS);
   });
 });

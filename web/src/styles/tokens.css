@@ -1,5 +1,8 @@
 /* web/src/styles/tokens.css — single source of truth; keep in sync with design/DESIGN-SYSTEM.md */
-@theme {
+/* `static`: the report reads class and outcome colours through var() in inline styles and
+   getComputedStyle, which Tailwind cannot see, and without `static` it drops every theme
+   variable no utility class references. */
+@theme static {
   --color-bg: #07090d;
   --color-raised: #0d111a;
   --color-card-top: #131824;
@@ -18,6 +21,14 @@
   --color-gold-deep: #a8762a;
   --color-gold-light: #fbe7a1;
   --color-ember: #d66e28;
+
+  /* Outcomes. A kill and a wipe, a death on a chart, a good and a bad number: these are
+     read at a glance across a whole report, so they get their own hues rather than
+     borrowing gold or the class colours. Both pass AA as text on --color-raised. */
+  --color-kill: #7fd48a;
+  --color-wipe: #f0736b;
+  --color-death: #ff5a5a;
+  --color-death-soft: #5a1f1f;
   --color-night: #26405c;
 
   --color-alliance: #6fb1ff;
@@ -34,6 +45,7 @@
   --color-class-mage: #3fc7eb;
   --color-class-warlock: #8788ee;
   --color-class-druid: #ff7c0a;
+  --color-class-monk: #00ff98;
 
   --color-rarity-poor: #9d9d9d;
   --color-rarity-common: #ffffff;

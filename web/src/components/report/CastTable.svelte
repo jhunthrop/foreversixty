@@ -42,6 +42,27 @@
   const ordered = $derived(
     [...rows].sort((a, b) => b.succeeded - a.succeeded || a.spell_name.localeCompare(b.spell_name)),
   );
+  const minutes = $derived(durationMs / 60_000);
+  const perMinute = (count: number): string => (minutes <= 0 ? '0' : (count / minutes).toFixed(1));
+
+  /**
+   * One caster's rhythm across every spell: how many casts, how many a minute, and the
+   * longest stretch with none. Only for a single caster, which is what the Source picker
+   * gives; over a whole raid the longest gap is meaningless.
+   */
+  const rhythm = $derived.by(() => {
+    const casters = new Set(rows.map((row) => row.guid));
+    if (casters.size !== 1) return null;
+    const ticks = rows.flatMap((row) => row.sequence).sort((a, b) => a - b);
+    if (ticks.length < 2) return null;
+    let gap = { from: startMs, to: ticks[0] };
+    for (let i = 1; i < ticks.length; i += 1) {
+      if (ticks[i] - ticks[i - 1] > gap.to - gap.from) gap = { from: ticks[i - 1], to: ticks[i] };
+    }
+    const end = startMs + durationMs;
+    if (end - ticks[ticks.length - 1] > gap.to - gap.from) gap = { from: ticks[ticks.length - 1], to: end };
+    return { casts: ticks.length, gap };
+  });
   const pct = (ms: number): number => (durationMs === 0 ? 0 : ((ms - startMs) / durationMs) * 100);
 
   const mark = $derived(approximateMark(approximate));
@@ -59,12 +80,21 @@
   <p class="text-muted text-[14px]" data-testid="table-empty">No casts in this window.</p>
 {:else}
   <div class="flex flex-col" data-testid="cast-table">
+    {#if rhythm !== null}
+      <p class="text-[13px]" data-testid="cast-rhythm">
+        <span class="tabular font-mono">{rhythm.casts}</span> casts ·
+        <span class="tabular font-mono">{perMinute(rhythm.casts)}</span> a minute · longest gap
+        <span class="tabular font-mono">{formatDuration(rhythm.gap.to - rhythm.gap.from)}</span> at
+        <span class="tabular font-mono">{formatDuration(rhythm.gap.from)}</span>
+      </p>
+    {/if}
     <div
-      class="text-muted label hidden grid-cols-[minmax(120px,1.2fr)_minmax(120px,1.2fr)_64px_64px_80px_minmax(0,3fr)] gap-x-3 px-2 pb-1 md:grid"
+      class="text-muted label hidden grid-cols-[minmax(120px,1.2fr)_minmax(120px,1.2fr)_64px_64px_64px_80px_minmax(0,3fr)] gap-x-3 px-2 pb-1 md:grid"
     >
       <span>Caster</span>
       <span>Spell</span>
       <span class="text-right">Cast</span>
+      <span class="text-right" title="Successful casts per minute of this window">Per min</span>
       <span class="text-right">Failed</span>
       <span class="text-right">Cast time</span>
       <span>Sequence</span>
@@ -72,7 +102,7 @@
     <ul class="flex flex-col">
       {#each ordered as row (`${row.guid}-${row.spell_id}`)}
         <li
-          class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px] md:grid-cols-[minmax(120px,1.2fr)_minmax(120px,1.2fr)_64px_64px_80px_minmax(0,3fr)]"
+          class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px] md:grid-cols-[minmax(120px,1.2fr)_minmax(120px,1.2fr)_64px_64px_64px_80px_minmax(0,3fr)]"
           data-testid={`cast-${row.guid}-${row.spell_id}`}
         >
           <span class="truncate font-semibold" style={`color: ${classColorVar(classOf.get(row.guid))}`}>
@@ -92,6 +122,9 @@
           >
             {mark}{row.succeeded}<span class="label font-body ml-1.5 md:hidden">cast</span>
           </span>
+          <span class="tabular text-muted text-right font-mono text-[13px]" data-testid="cast-per-minute">
+            {perMinute(row.succeeded)}<span class="label font-body ml-1.5 md:hidden">a minute</span>
+          </span>
           <span
             class="tabular text-muted text-right font-mono"
             {title}
@@ -109,7 +142,7 @@
             >
           </span>
           <span class="bg-line-soft relative col-span-2 block h-[6px] w-full md:col-span-1">
-            {#each row.sequence as at (at)}
+            {#each row.sequence as at, i (`${at}-${i}`)}
               <span
                 class="bg-gold absolute top-0 h-full w-[2px]"
                 style={`left: ${pct(at)}%`}

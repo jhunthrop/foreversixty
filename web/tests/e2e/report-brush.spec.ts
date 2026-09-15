@@ -33,7 +33,7 @@ test('a death preset sets the window to the seconds before it, and Whole fight c
   page,
 }) => {
   await page.goto(FIGHT);
-  await page.getByRole('button', { name: 'Before Thalgrit died' }).click();
+  await page.getByRole('button', { name: 'before Thalgrit died' }).click();
   await expect(page).toHaveURL(/start=0&end=10100/);
 
   await page.getByTestId('window-reset').click();

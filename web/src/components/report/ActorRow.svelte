@@ -28,6 +28,7 @@
     formatPercent,
     formatPerSecond,
     percentileToken,
+    schoolName,
   } from '../../lib/report/format';
   import type { Actor } from '../../lib/report/types';
   import AbilityBar from './AbilityBar.svelte';
@@ -63,6 +64,29 @@
   const activeText = $derived(showActivitySeconds ? `${activitySeconds}s` : formatPercent(activityPct));
   const mark = $derived(approximateMark(approximate));
   const title = $derived(approximateTitle(approximate));
+  /** Overhealing as a share of the raw total, for healing rows; null where there is none. */
+  const overhealPct = $derived(
+    actor.overheal === undefined || actor.total <= 0 ? null : (actor.overheal / actor.total) * 100,
+  );
+  /**
+   * Targets merged by name: a trash pack is six "Gluttonous Tick" GUIDs, and six rows of
+   * the same name tell nobody anything the one row with a count does not.
+   */
+  const targetsByName = $derived.by(() => {
+    // A plain Map: built once inside the derived and never read reactively by key.
+    // eslint-disable-next-line svelte/prefer-svelte-reactivity
+    const merged = new Map<string, { name: string; total: number; count: number }>();
+    for (const target of actor.targets) {
+      const name = splitUnitName(target.name).name;
+      const found = merged.get(name);
+      if (found === undefined) merged.set(name, { name, total: target.total, count: 1 });
+      else {
+        found.total += target.total;
+        found.count += 1;
+      }
+    }
+    return [...merged.values()].sort((a, b) => b.total - a.total);
+  });
 </script>
 
 <li class="border-line-soft border-b" data-testid={`actor-${actor.guid}`}>
@@ -99,8 +123,15 @@
       <AbilityBar abilities={actor.abilities} total={actor.effective} {peak} {color} />
     </span>
 
-    <span class="tabular text-right font-mono" data-testid="row-amount">
-      {formatAmount(actor.effective)}
+    <span class="tabular flex flex-col text-right font-mono leading-tight" data-testid="row-amount">
+      <span>{formatAmount(actor.effective)}</span>
+      {#if overhealPct !== null}
+        <span
+          class="text-muted text-[11px]"
+          title="Healing that landed on a full health bar"
+          data-testid="row-overheal">{formatPercent(overhealPct)} over</span
+        >
+      {/if}
     </span>
 
     <!-- The card's third line, below the bar: Active on the left, Per sec on the right.
@@ -116,9 +147,21 @@
       class="text-muted tabular col-span-2 row-start-3 text-right font-mono text-[13px] md:col-span-1 md:row-auto"
       data-testid="row-per-second"
     >
-      {formatPerSecond(actor.effective, durationMs)}<span class="label font-body ml-1.5 md:hidden"
-        >per sec</span
-      >
+      <span class="flex flex-col leading-tight">
+        <span
+          >{formatPerSecond(actor.effective, durationMs)}<span class="label font-body ml-1.5 md:hidden"
+            >per sec</span
+          ></span
+        >
+        {#if actor.active_ms > 0 && actor.active_ms < durationMs}
+          <span
+            class="text-[11px]"
+            title="Per second over the time this row was active, not the whole window"
+            data-testid="row-active-per-second"
+            >{formatPerSecond(actor.effective, actor.active_ms)} active</span
+          >
+        {/if}
+      </span>
     </span>
     <span
       class="text-muted tabular hidden text-right font-mono text-[13px] md:inline"
@@ -133,9 +176,14 @@
       <table class="flex-1 text-[13px]">
         <caption class="label text-muted text-left">Abilities</caption>
         <tbody>
-          {#each [...actor.abilities].sort((a, b) => b.total - a.total) as ability (ability.spell_id)}
+          {#each [...actor.abilities]
+            .filter((ability) => ability.total > 0 || ability.hits + ability.ticks > 0)
+            .sort((a, b) => b.total - a.total) as ability (ability.spell_id)}
             <tr class="border-line-soft border-b">
-              <td class="py-1 pr-3">{ability.name}</td>
+              <td class="py-1 pr-3"
+                >{ability.name}{#if schoolName(ability.school)}
+                  <span class="text-muted ml-1 text-[11px]">{schoolName(ability.school)}</span>{/if}</td
+              >
               <td
                 class="tabular py-1 pr-3 text-right font-mono"
                 {title}
@@ -146,7 +194,28 @@
               <td class="text-muted tabular py-1 pr-3 text-right font-mono"
                 >{ability.hits + ability.ticks} hits</td
               >
-              <td class="text-muted tabular py-1 text-right font-mono">{ability.crits} crits</td>
+              <td class="text-muted tabular py-1 pr-3 text-right font-mono" title="Largest single hit"
+                >{#if ability.max > 0}max {formatAmount(ability.max)}{/if}</td
+              >
+              <td class="text-muted tabular py-1 pr-3 text-right font-mono"
+                >{ability.crits} crits{#if ability.hits + ability.ticks > 0}
+                  <span class="text-[11px]"
+                    >({formatPercent((ability.crits / (ability.hits + ability.ticks)) * 100)})</span
+                  >{/if}</td
+              >
+              {#if ability.overheal !== undefined && ability.total > 0}
+                <td class="text-muted tabular py-1 text-right font-mono" title="Overhealing"
+                  >{formatPercent((ability.overheal / ability.total) * 100)} over</td
+                >
+              {:else if ability.misses !== undefined && Object.keys(ability.misses).length > 0}
+                <td
+                  class="text-muted tabular py-1 text-right font-mono"
+                  title="Misses, dodges, parries and blocks"
+                  >{Object.values(ability.misses).reduce((sum, count) => sum + count, 0)} missed</td
+                >
+              {:else}
+                <td></td>
+              {/if}
             </tr>
           {/each}
         </tbody>
@@ -154,9 +223,12 @@
       <table class="flex-1 text-[13px]">
         <caption class="label text-muted text-left">Targets</caption>
         <tbody>
-          {#each actor.targets as target (target.guid)}
+          {#each targetsByName as target (target.name)}
             <tr class="border-line-soft border-b">
-              <td class="py-1 pr-3">{splitUnitName(target.name).name}</td>
+              <td class="py-1 pr-3"
+                >{target.name}{#if target.count > 1}
+                  <span class="text-muted tabular font-mono text-[12px]">×{target.count}</span>{/if}</td
+              >
               <td
                 class="tabular py-1 text-right font-mono"
                 {title}

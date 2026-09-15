@@ -27,13 +27,16 @@
     <div
       class="text-muted label hidden grid-cols-[28px_40px_minmax(120px,1.4fr)_minmax(0,3fr)_92px_80px_64px] gap-x-3 px-2 pb-1 md:grid"
     >
-      <span>#</span>
-      <span>Parse</span>
+      <span title="Rank in this table">#</span>
+      <span
+        title="Percentile among ranked kills of the same boss by this spec. Empty on a wipe or while nothing is ranked yet."
+        >Parse</span
+      >
       <span>Name</span>
-      <span>{metricLabel}</span>
-      <span class="text-right">Amount</span>
-      <span class="text-right">Per sec</span>
-      <span class="text-right">Active</span>
+      <span title="Amount, split by ability. Hover a segment for the ability.">{metricLabel}</span>
+      <span class="text-right" title="Total in this window">Amount</span>
+      <span class="text-right" title="Amount divided by the window's length">Per sec</span>
+      <span class="text-right" title="Share of the window spent casting or attacking">Active</span>
     </div>
     <ul class="flex flex-col">
       {#each actors as actor, index (actor.guid)}

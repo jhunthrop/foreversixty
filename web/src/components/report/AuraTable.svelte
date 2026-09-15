@@ -24,6 +24,21 @@
   );
 
   const pct = (ms: number): number => (durationMs === 0 ? 0 : (ms / durationMs) * 100);
+
+  /** Names that two different spells share on one target: shown with their spell id. */
+  const ambiguous = $derived.by(() => {
+    // Plain collections: built once inside the derived and never read reactively by key.
+    // eslint-disable-next-line svelte/prefer-svelte-reactivity
+    const seen = new Map<string, Set<number>>();
+    for (const track of rows) {
+      const key = `${track.target_guid}|${track.name}`;
+      // eslint-disable-next-line svelte/prefer-svelte-reactivity
+      const ids = seen.get(key) ?? new Set<number>();
+      ids.add(track.spell_id);
+      seen.set(key, ids);
+    }
+    return new Set([...seen.entries()].filter(([, ids]) => ids.size > 1).map(([key]) => key));
+  });
 </script>
 
 {#if rows.length === 0}
@@ -37,9 +52,11 @@
     >
       <span>Aura</span>
       <span>On</span>
-      <span>Uptime</span>
-      <span class="text-right">Total</span>
-      <span class="text-right">Applied</span>
+      <span title="When the aura was up, drawn on the fight's timeline. A gap is where it dropped."
+        >Uptime</span
+      >
+      <span class="text-right" title="Share of the window the aura was up">Total</span>
+      <span class="text-right" title="How many times it was applied or refreshed">Applied</span>
     </div>
     <ul class="flex flex-col">
       {#each rows as track (`${track.target_guid}-${track.spell_id}`)}
@@ -47,12 +64,21 @@
           class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px] md:grid-cols-[minmax(120px,1.2fr)_minmax(120px,1.2fr)_minmax(0,3fr)_80px_64px]"
           data-testid={`aura-${track.spell_id}-${track.target_guid}`}
         >
-          <span class="truncate font-semibold">{track.name}</span>
+          <span class="truncate font-semibold"
+            >{track.name}{#if ambiguous.has(`${track.target_guid}|${track.name}`)}
+              <span
+                class="text-muted ml-1 font-mono text-[11px]"
+                title="Two spells share this name; this is spell id {track.spell_id}">#{track.spell_id}</span
+              >{/if}</span
+          >
           <span class="text-muted truncate text-[13px]">{splitUnitName(track.target_name).name}</span>
           <span class="bg-line-soft relative col-span-2 block h-[6px] w-full md:col-span-1">
-            {#each track.segments as segment (segment.start_ms)}
+            <!-- Keyed by index as well as start: a stack refreshed on the tick it was
+                 applied gives two segments the same start_ms, and a bare timestamp key
+                 threw on the duplicate and left the whole tab on "Loading the report." -->
+            {#each track.segments as segment, i (`${segment.start_ms}-${i}`)}
               <span
-                class="bg-gold absolute top-0 h-full"
+                class="absolute top-0 h-full {kind === 'BUFF' ? 'bg-kill' : 'bg-wipe'}"
                 style={`left: ${pct(segment.start_ms)}%; width: ${Math.max(pct(segment.end_ms - segment.start_ms), 0.4)}%; opacity: ${Math.min(0.4 + segment.stacks * 0.2, 1)}`}
                 title={`${formatDuration(segment.start_ms)} to ${formatDuration(segment.end_ms)}${segment.stacks > 1 ? ` · ${segment.stacks} stacks` : ''}`}
               ></span>

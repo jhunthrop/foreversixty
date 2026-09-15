@@ -4,6 +4,32 @@
 // with `tabular`, per design/DESIGN-SYSTEM.md.
 
 /** Under a minute, tenths tell you more than a leading zero does. */
+/** Like formatDuration but never drops the tenths: "1:01.4". For event lists. */
+export function formatDurationPrecise(ms: number): string {
+  const safe = Number.isFinite(ms) && ms > 0 ? ms : 0;
+  if (safe < 60_000) return `${(safe / 1000).toFixed(1)}s`;
+  const minutes = Math.floor(safe / 60_000);
+  const seconds = (safe - minutes * 60_000) / 1000;
+  return `${minutes}:${seconds.toFixed(1).padStart(4, '0')}`;
+}
+
+/** The game's spell school mask as a word; combined schools are joined. */
+export function schoolName(mask: number | undefined): string {
+  if (mask === undefined || mask <= 0) return '';
+  const names: string[] = [];
+  const table: [number, string][] = [
+    [1, 'Physical'],
+    [2, 'Holy'],
+    [4, 'Fire'],
+    [8, 'Nature'],
+    [16, 'Frost'],
+    [32, 'Shadow'],
+    [64, 'Arcane'],
+  ];
+  for (const [bit, name] of table) if ((mask & bit) !== 0) names.push(name);
+  return names.join('/');
+}
+
 export function formatDuration(ms: number): string {
   const safe = Number.isFinite(ms) && ms > 0 ? ms : 0;
   if (safe < 60_000) return `${(safe / 1000).toFixed(1)}s`;
@@ -32,12 +58,27 @@ export function formatAmount(n: number): string {
   const abs = Math.abs(safe);
   if (abs >= 1_000_000_000) return `${trimZero(safe / 1_000_000_000)}B`;
   if (abs >= 1_000_000) return `${trimZero(safe / 1_000_000)}M`;
+  // From 100k the grouped form is seven characters against a neighbour's "1.09M", and a
+  // column mixing the two reads the longer string as the bigger number.
+  if (abs >= 100_000) return `${(safe / 1000).toFixed(1).replace(/\.0$/, '')}k`;
   return GROUPED.format(Math.round(safe));
 }
 
 /** 1.25 stays 1.25, 12.50 becomes 12.5, 3.00 becomes 3. */
 function trimZero(value: number): string {
   return value.toFixed(2).replace(/\.?0+$/, '');
+}
+
+/** A fight's outcome word for a list: Kill, Wipe, Live, or how much trash died. */
+export function outcomeLabel(fight: {
+  kind: string;
+  kill: boolean;
+  in_progress: boolean;
+  npc_kills: number;
+}): string {
+  if (fight.in_progress) return 'Live';
+  if (fight.kind !== 'encounter') return `${fight.npc_kills} killed`;
+  return fight.kill ? 'Kill' : 'Wipe';
 }
 
 export function formatPerSecond(total: number, ms: number): string {
@@ -65,6 +106,7 @@ const CLASS_TOKENS = new Set([
   'mage',
   'warlock',
   'druid',
+  'monk',
 ]);
 
 export function classColorVar(className: string | undefined): string {

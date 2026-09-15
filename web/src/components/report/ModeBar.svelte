@@ -30,6 +30,10 @@
 
   const pill =
     'inline-flex min-h-11 items-center px-3 text-[12px] font-bold tracking-[0.06em] uppercase md:min-h-9';
+  // The selected mode and tab carry a gold rule under the word: text-strong against
+  // text-nav is a two-step difference in grey, which is not enough to find the active
+  // tab in a row of twelve without reading every one.
+  const underline = 'border-b-2 -mb-px';
 </script>
 
 <div class="flex flex-col gap-3" data-testid="mode-bar">
@@ -38,7 +42,9 @@
       <button
         type="button"
         role="tab"
-        class={pill}
+        class="{pill} {underline}"
+        class:border-gold={state.mode === option.id}
+        class:border-transparent={state.mode !== option.id}
         class:text-strong={option.enabled && state.mode === option.id}
         class:text-nav={option.enabled && state.mode !== option.id}
         class:text-muted={!option.enabled}
@@ -59,7 +65,8 @@
           type="button"
           role="tab"
           class="{pill} rounded-control border"
-          class:border-line-warm-strong={state.view === option.id}
+          class:border-gold={state.view === option.id}
+          class:bg-card-top={state.view === option.id}
           class:border-line-soft={state.view !== option.id}
           class:text-strong={state.view === option.id}
           class:text-nav={state.view !== option.id}
@@ -93,12 +100,18 @@
   {/if}
 
   {#if state.mode === 'analyze' && state.view === 'tables'}
-    <div role="tablist" aria-label="Table" class="flex flex-nowrap overflow-x-auto md:flex-wrap">
+    <div
+      role="tablist"
+      aria-label="Table"
+      class="border-line-soft flex flex-nowrap overflow-x-auto border-b [mask-image:linear-gradient(to_right,black_88%,transparent)] md:flex-wrap md:[mask-image:none]"
+    >
       {#each TABS as tab (tab.id)}
         <button
           type="button"
           role="tab"
-          class="{pill} shrink-0 whitespace-nowrap"
+          class="{pill} {underline} shrink-0 whitespace-nowrap"
+          class:border-gold={state.tab === tab.id}
+          class:border-transparent={state.tab !== tab.id}
           class:text-strong={state.tab === tab.id}
           class:text-nav={state.tab !== tab.id}
           aria-selected={state.tab === tab.id}

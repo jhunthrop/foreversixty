@@ -5,9 +5,11 @@ import {
   formatAmount,
   formatClock,
   formatDuration,
+  formatDurationPrecise,
   formatPercent,
   formatPerSecond,
   percentileToken,
+  schoolName,
 } from './format';
 
 describe('report formatting', () => {
@@ -28,7 +30,9 @@ describe('report formatting', () => {
   it('groups amounts, and abbreviates from a million up', () => {
     expect(formatAmount(0)).toBe('0');
     expect(formatAmount(1484)).toBe('1,484');
-    expect(formatAmount(999_999)).toBe('999,999');
+    expect(formatAmount(99_999)).toBe('99,999');
+    expect(formatAmount(239_230)).toBe('239.2k');
+    expect(formatAmount(999_999)).toBe('1000k');
     expect(formatAmount(1_250_000)).toBe('1.25M');
     expect(formatAmount(12_500_000)).toBe('12.5M');
     expect(formatAmount(1_250_000_000)).toBe('1.25B');
@@ -58,5 +62,13 @@ describe('report formatting', () => {
     expect(percentileToken(80)).toBe('var(--color-rarity-rare-text)');
     expect(percentileToken(96)).toBe('var(--color-rarity-epic-text)');
     expect(percentileToken(100)).toBe('var(--color-rarity-legendary)');
+  });
+
+  it('keeps tenths past a minute in the precise form, and names spell schools', () => {
+    expect(formatDurationPrecise(61_400)).toBe('1:01.4');
+    expect(formatDurationPrecise(6400)).toBe('6.4s');
+    expect(schoolName(1)).toBe('Physical');
+    expect(schoolName(36)).toBe('Fire/Shadow');
+    expect(schoolName(undefined)).toBe('');
   });
 });

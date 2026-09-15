@@ -7,9 +7,14 @@
      last-ten list is the whole point of the view. -->
 <script lang="ts">
   import { splitUnitName } from '../../lib/characters';
-  import { classColorVar, formatAmount, formatDuration } from '../../lib/report/format';
+  import {
+    classColorVar,
+    formatAmount,
+    formatDuration,
+    formatDurationPrecise,
+  } from '../../lib/report/format';
   import { plannerLinkFor } from '../../lib/report/planner-link';
-  import type { CombatantRow, Death } from '../../lib/report/types';
+  import type { CombatantRow, DamageRef, Death, HealRef } from '../../lib/report/types';
   import { deathWindow, type TimeWindow } from '../../lib/report/window';
 
   let {
@@ -33,6 +38,71 @@
 
   const ordered = $derived([...deaths].sort((a, b) => a.at_ms - b.at_ms));
 
+  type LastEvent =
+    { kind: 'damage'; at_ms: number; hit: DamageRef } | { kind: 'heal'; at_ms: number; heal: HealRef };
+
+  /**
+   * The damage and the heals in one list, in order: whether anyone was healing the
+   * player while the damage came in is the healer's whole question, and two separate
+   * lists make the reader interleave them by hand. Summaries from engines before 0.2.0
+   * carry no heals, and then this is the damage alone.
+   */
+  function lastEvents(death: Death): LastEvent[] {
+    const events: LastEvent[] = [
+      ...death.last.map((hit): LastEvent => ({ kind: 'damage', at_ms: hit.at_ms, hit })),
+      ...(death.heals ?? []).map((heal): LastEvent => ({ kind: 'heal', at_ms: heal.at_ms, heal })),
+    ];
+    return events.sort((a, b) => a.at_ms - b.at_ms);
+  }
+
+  function healingBefore(death: Death): number {
+    return (death.heals ?? []).reduce((sum, heal) => sum + heal.amount - (heal.overheal ?? 0), 0);
+  }
+
+  /** The combat log's null GUID: falling, drowning, lava, the fight's own environment. */
+  const NULL_GUID = /^0+$/;
+
+  function sourceName(guid: string, name: string): string {
+    if (NULL_GUID.test(guid) || name === '' || NULL_GUID.test(name)) return 'Environment';
+    return splitUnitName(name).name;
+  }
+
+  /** Seconds before the death a hit landed, as "-3.2s"; "0.0s" for the killing blow. */
+  function beforeDeath(death: Death, atMs: number): string {
+    return `-${((death.at_ms - atMs) / 1000).toFixed(1)}s`;
+  }
+
+  function healthPct(hit: Death['last'][number]): number | null {
+    if (!hit.max_hp) return null;
+    return Math.max(0, Math.min(100, ((hit.hp_after ?? 0) / hit.max_hp) * 100));
+  }
+
+  /**
+   * "Burst" or "bleed": the one word a healer wants first. The last hits are the engine's
+   * final ten damage events; if the player went from above 80% to dead inside three
+   * seconds, no heal was going to land in time, and that is a different conversation
+   * from a health bar that drained over fifteen seconds while nobody was healing it.
+   */
+  function shape(death: Death): string | null {
+    const hits = death.last;
+    if (hits.length < 2) return null;
+    const first = hits[0];
+    const firstPct = healthPct(first);
+    if (firstPct === null) return null;
+    const spanMs = death.at_ms - first.at_ms;
+    const total = hits.reduce((sum, hit) => sum + hit.amount, 0);
+    const spanText = formatDuration(spanMs);
+    const healed = healingBefore(death);
+    const healedText =
+      death.heals === undefined
+        ? ''
+        : healed > 0
+          ? ` ${formatAmount(healed)} of healing landed in the same span.`
+          : ' No healing landed on them in that span.';
+    if (spanMs <= 3000 && firstPct >= 60)
+      return `Burst: ${formatAmount(total)} in ${spanText}, from ${Math.round(firstPct)}% health.${healedText}`;
+    return `${formatAmount(total)} over ${spanText}, from ${Math.round(firstPct)}% health.${healedText}`;
+  }
   function linkFor(death: Death): ReturnType<typeof plannerLinkFor> {
     const combatant = combatants.find((row) => row.guid === death.guid);
     if (combatant === undefined) return null;
@@ -64,7 +134,7 @@
           <span class="text-muted tabular font-mono text-[13px]">{formatDuration(death.at_ms)}</span>
           {#if death.killing_blow}
             <span class="text-[13px]">
-              killed by {splitUnitName(death.killing_blow.source_name).name} ·
+              killed by {sourceName(death.killing_blow.source_guid, death.killing_blow.source_name)} ·
               {death.killing_blow.spell_name === '' ? 'Melee' : death.killing_blow.spell_name} ·
               <span class="tabular font-mono">{formatAmount(death.killing_blow.amount)}</span>
               {#if death.killing_blow.overkill}
@@ -82,32 +152,84 @@
           {/if}
         </div>
 
-        <table class="w-full text-[13px]">
-          <caption class="label text-muted text-left">Last hits</caption>
-          <tbody>
-            {#each death.last as hit, i (`${hit.at_ms}-${hit.spell_id}-${i}`)}
-              <tr class="border-line-soft border-b">
-                <td class="text-muted tabular py-1 pr-3 font-mono">{formatDuration(hit.at_ms)}</td>
-                <td class="py-1 pr-3">{hit.spell_name === '' ? 'Melee' : hit.spell_name}</td>
-                <td class="text-muted truncate py-1 pr-3">{splitUnitName(hit.source_name).name}</td>
-                <td class="tabular py-1 pr-3 text-right font-mono">{formatAmount(hit.amount)}</td>
-                <td class="w-[30%] py-1">
-                  {#if hit.max_hp}
-                    <span
-                      class="bg-line-soft block h-[6px] w-full"
-                      title={`${hit.hp_after ?? 0} of ${hit.max_hp}`}
-                    >
-                      <span
-                        class="bg-gold block h-full"
-                        style={`width: ${Math.max(0, Math.min(100, ((hit.hp_after ?? 0) / hit.max_hp) * 100))}%`}
-                      ></span>
-                    </span>
-                  {/if}
-                </td>
+        {#if shape(death)}
+          <p class="text-[13px]" data-testid="death-shape">{shape(death)}</p>
+        {/if}
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-[13px]">
+            <caption class="label text-muted text-left">
+              {death.heals === undefined ? 'Last hits' : 'Last hits and heals'}
+            </caption>
+            <thead>
+              <tr class="text-muted label">
+                <th class="py-1 pr-3 text-left font-bold" title="Seconds before the death">Before</th>
+                <th class="py-1 pr-3 text-left font-bold">Ability</th>
+                <th class="py-1 pr-3 text-left font-bold">From</th>
+                <th class="py-1 pr-3 text-right font-bold">Amount</th>
+                <th class="py-1 text-left font-bold" title="Health left after the hit">Health after</th>
               </tr>
-            {/each}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {#each lastEvents(death) as event, i (`${event.at_ms}-${i}`)}
+                {#if event.kind === 'heal'}
+                  {@const heal = event.heal}
+                  <tr class="border-line-soft border-b" data-testid="death-heal">
+                    <td
+                      class="text-muted tabular py-1 pr-3 font-mono"
+                      title={formatDurationPrecise(heal.at_ms)}>{beforeDeath(death, heal.at_ms)}</td
+                    >
+                    <td class="text-kill py-1 pr-3">{heal.spell_name}</td>
+                    <td class="text-muted truncate py-1 pr-3">{splitUnitName(heal.source_name).name}</td>
+                    <td class="text-kill tabular py-1 pr-3 text-right font-mono"
+                      >+{formatAmount(heal.amount - (heal.overheal ?? 0))}{#if heal.overheal}
+                        <span class="text-muted text-[11px]" title="Overhealing">
+                          ({formatAmount(heal.overheal)} over)</span
+                        >{/if}</td
+                    >
+                    <td class="py-1"></td>
+                  </tr>
+                {:else}
+                  {@const hit = event.hit}
+                  {@const pct = healthPct(hit)}
+                  <tr class="border-line-soft border-b">
+                    <td
+                      class="text-muted tabular py-1 pr-3 font-mono"
+                      title={formatDurationPrecise(hit.at_ms)}>{beforeDeath(death, hit.at_ms)}</td
+                    >
+                    <td class="py-1 pr-3">{hit.spell_name === '' ? 'Melee' : hit.spell_name}</td>
+                    <td class="text-muted truncate py-1 pr-3"
+                      >{sourceName(hit.source_guid, hit.source_name)}</td
+                    >
+                    <td class="tabular py-1 pr-3 text-right font-mono">{formatAmount(hit.amount)}</td>
+                    <td class="w-[30%] py-1">
+                      {#if pct !== null}
+                        <span class="flex items-center gap-2">
+                          <span
+                            class="bg-line-soft block h-[8px] flex-1"
+                            title={`${hit.hp_after ?? 0} of ${hit.max_hp}`}
+                          >
+                            <span
+                              class="block h-full {pct <= 35
+                                ? 'bg-death'
+                                : pct <= 65
+                                  ? 'bg-ember'
+                                  : 'bg-kill'}"
+                              style={`width: ${pct}%`}
+                            ></span>
+                          </span>
+                          <span class="text-muted tabular w-[36px] text-right font-mono text-[12px]"
+                            >{Math.round(pct)}%</span
+                          >
+                        </span>
+                      {/if}
+                    </td>
+                  </tr>
+                {/if}
+              {/each}
+            </tbody>
+          </table>
+        </div>
 
         {#if death.auras_held.length > 0 || death.auras_lost.length > 0}
           <p class="text-[13px]">

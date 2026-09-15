@@ -72,13 +72,17 @@ test('the source scope lists the fight’s players', async ({ page }) => {
 // design: it validates ?fight= as a run of digits and cannot know the report's fights,
 // so ?fight=0 parses even though fight_index is 1-based. The island resolves it against
 // report.json instead of asking the edge for fights/0/summary.json and failing the page.
-test('a fight the report does not have falls back to the first one', async ({ page }) => {
-  for (const search of ['?fight=0', '?fight=999']) {
+test('a fight the report does not have falls back to the first boss pull', async ({ page }) => {
+  for (const search of ['?fight=7', '?fight=999']) {
     await page.goto(`${REPORT}${search}`);
     await expect(page.getByTestId('report-error')).toHaveCount(0);
     await expect(page.getByTestId('fight-selector')).toBeVisible();
-    await expect(summaryRosterRows(page)).toHaveCount(3);
+    await expect(page.getByTestId('fight-3')).toHaveAttribute('aria-current', 'true');
+    await expect(summaryRosterRows(page)).toHaveCount(5);
   }
+  // Fight 0 is the whole night, which every report with a boss pull has.
+  await page.goto(`${REPORT}?fight=0`);
+  await expect(page.getByTestId('night-view')).toBeVisible();
 });
 
 // A live report's next fight appears in the selector before its summary is written, so a
@@ -130,7 +134,7 @@ async function heldRoute(
 }
 
 test('a stale fight failure does not fail the fight that is on screen', async ({ page }) => {
-  await page.goto(REPORT);
+  await page.goto(`${REPORT}?fight=1`);
   await expect(summaryRosterRows(page)).toHaveCount(3);
 
   const slow = await heldRoute(page, 2, 'abort');
@@ -155,7 +159,7 @@ test('a stale fight failure does not fail the fight that is on screen', async ({
 });
 
 test('a stale fight success neither clears the current error nor paints its roster', async ({ page }) => {
-  await page.goto(REPORT);
+  await page.goto(`${REPORT}?fight=1`);
   await expect(summaryRosterRows(page)).toHaveCount(3);
 
   const slow = await heldRoute(page, 2, 'continue');

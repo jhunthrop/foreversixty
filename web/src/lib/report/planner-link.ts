@@ -44,6 +44,29 @@ export const GEAR_SLOT_ORDER: (Slot | null)[] = [
   null,
 ];
 
+/** The log's slot order as words, for showing gear; null slots (shirt, tabard) named too. */
+export const LOG_GEAR_SLOTS: readonly string[] = [
+  'head',
+  'neck',
+  'shoulder',
+  'shirt',
+  'chest',
+  'waist',
+  'legs',
+  'feet',
+  'wrist',
+  'hands',
+  'ring',
+  'ring',
+  'trinket',
+  'trinket',
+  'back',
+  'main hand',
+  'off hand',
+  'ranged',
+  'tabard',
+];
+
 export function gearFromCombatant(gear: GearItem[]): Gear {
   const equipped: Gear = {};
   gear.forEach((item, index) => {

@@ -18,9 +18,11 @@
     fetchSummary,
     withFreshBase,
   } from '../../lib/report/load';
-  import { resolveFightIndex } from '../../lib/report/fights';
+  import { defaultFightIndex, resolveFightIndex } from '../../lib/report/fights';
+  import { aggregateNight, type Night } from '../../lib/report/night';
   import { formatDuration } from '../../lib/report/format';
   import {
+    ALL_FIGHTS,
     defaultState,
     parseReportState,
     reportSearch,
@@ -48,6 +50,7 @@
   import FightSelector from './FightSelector.svelte';
   import FilterBar from './FilterBar.svelte';
   import ModeBar from './ModeBar.svelte';
+  import NightView from './NightView.svelte';
   import QueriesView from './QueriesView.svelte';
   import RankingsMode from './RankingsMode.svelte';
   import ResourceGraphs from './ResourceGraphs.svelte';
@@ -66,6 +69,8 @@
   import activeBuild from '../../data/active-build.json';
   import { loadTalents } from '../../lib/planner/load';
   import { encounterSlug as slugFor } from '../../lib/rankings/api';
+  import { phaseAt } from '../../lib/rankings/phases';
+  import { inSource, scopeSource } from '../../lib/report/source';
   import { resolveTreeSizes } from '../../lib/report/tree-sizes';
 
   let { reportId, inlineMeta = null }: { reportId: string; inlineMeta?: ReportMeta | null } = $props();
@@ -92,7 +97,12 @@
   const inflight = new Map<number, Promise<void>>();
 
   const fights = $derived<FightEntry[]>(meta?.fights ?? file?.fights ?? []);
-  const firstFight = $derived(fights.length > 0 ? fights[0].index : 1);
+  /** The fight a bare url opens on: the first boss pull, not the first trash. */
+  const firstFight = $derived(defaultFightIndex(fights));
+  /** The whole night rather than one fight: every boss pull folded together. */
+  const nightMode = $derived(state.fight === ALL_FIGHTS);
+  let night = $state<Night | null>(null);
+  let nightLoading = $state(false);
   let state = $state<ReportState>(defaultState(1));
   const fight = $derived<FightEntry | null>(fights.find((f) => f.index === state.fight) ?? null);
   /**
@@ -109,10 +119,31 @@
   // global one, and this component uses window.location, window.history and
   // window.addEventListener.
   const timeWindow = $derived(windowOf(state, summary?.duration_ms ?? 0));
-  /** Every table below reads this, never `summary`: one rescope per window change. */
-  const scoped = $derived(summary === null ? null : scopeSummary(summary, timeWindow));
+  /** The player GUIDs from report.json, for the source scope and the filters. */
+  const playerSet = $derived(playerGuids(file?.units ?? []));
+  /**
+   * Every table below reads this, never `summary`: one rescope per window change, then
+   * the Source control's scope over it, so picking one player narrows the whole page.
+   */
+  const scoped = $derived(
+    summary === null ? null : scopeSource(scopeSummary(summary, timeWindow), state.source, playerSet),
+  );
   const presets = $derived(summary === null ? [] : windowPresets(summary));
-  const chartSeries = $derived(combinedSeries(summary?.damage_done ?? []));
+  /** What the chart draws: the table the tab shows, under the source scope. */
+  const chartActors = $derived.by(() => {
+    if (scoped === null) return [];
+    const table =
+      state.tab === 'damage-taken'
+        ? scoped.damage_taken
+        : state.tab === 'healing'
+          ? scoped.healing
+          : scoped.damage_done;
+    return table.filter((actor) => inSource(actor.guid, state.source, playerSet));
+  });
+  const chartSeries = $derived(combinedSeries(chartActors));
+  const chartLabel = $derived(
+    state.tab === 'damage-taken' ? 'Damage taken' : state.tab === 'healing' ? 'Healing' : 'Damage',
+  );
   const windowIsWhole = $derived(summary !== null && isFullWindow(timeWindow, summary.duration_ms));
 
   /**
@@ -128,6 +159,8 @@
   const fightIsLive = $derived(fight?.in_progress === true);
 
   let filters = $state<ReportFilters>(DEFAULT_FILTERS);
+  /** Set when the url named a fight the report does not have, cleared on the next pick. */
+  let missingFight = $state<number | null>(null);
 
   // Two independent sources of scaling on an Actor-shaped row: the window (its share of
   // the actor's series, window.ts) and a target or boss filter (its share of the actor's
@@ -144,7 +177,7 @@
 
   const filterContext = $derived({
     bosses: bossGuids(file?.units ?? [], fight?.name ?? ''),
-    players: playerGuids(file?.units ?? []),
+    players: playerSet,
     deaths: scoped?.deaths ?? [],
   });
 
@@ -213,6 +246,13 @@
    * default landing tab. The Damage Done, Damage Taken and Healing tabs are unaffected:
    * they already rank every row by that table's own metric.
    */
+  /** The metric a table tab ranks by, read off the row. */
+  function tabMetric(tab: string, row: RosterRow): { metric: string; value: number } {
+    if (tab === 'healing') return { metric: 'hps', value: row.hps };
+    if (tab === 'damage-taken') return { metric: 'damage_taken', value: row.dtps };
+    return { metric: 'dps', value: row.dps };
+  }
+
   function roleMetric(row: RosterRow): { metric: string; value: number } {
     if (row.role === 'healer') return { metric: 'hps', value: row.hps };
     if (row.role === 'tank') return { metric: 'damage_taken', value: row.dtps };
@@ -238,7 +278,11 @@
       return;
     }
     const tab = state.tab;
-    const phase = meta?.phase ?? 'launch';
+    // The API files a ranking row under the phase the fight happened in, so the lookup
+    // has to name that phase: a report's own `phase` when the API sends one, otherwise
+    // the fight's start read against the same boundaries. Asking for `launch` on a beta
+    // kill found nothing, and every Parse column sat empty.
+    const phase = meta?.phase ?? phaseAt(fight?.start ?? '');
     const difficulty = fight?.difficulty ?? 0;
 
     // One query per roster row that has a spec, kept beside its GUID so the answers can be
@@ -247,14 +291,18 @@
     const wanted = summary.roster
       .filter((row) => row.spec !== undefined && row.spec !== '')
       .map((row) => {
-        const { metric, value } =
-          tab === 'summary'
-            ? roleMetric(row)
-            : { metric: tab === 'healing' ? 'hps' : 'dps', value: tab === 'healing' ? row.hps : row.dps };
+        const { metric, value } = tab === 'summary' ? roleMetric(row) : tabMetric(tab, row);
         return {
           guid: row.guid,
           query: { encounterId, difficulty, spec: row.spec ?? '', phase, metric, value: Math.round(value) },
         };
+      })
+      // A row is only asked about on the metric its role is ranked on: a healer's 34 dps
+      // and a mage's 0 hps are not parses, and asking placed every healer at the bottom
+      // of the Damage Done tab's Parse column.
+      .filter((entry) => {
+        const row = summary.roster.find((candidate) => candidate.guid === entry.guid);
+        return row !== undefined && roleMetric(row).metric === entry.query.metric;
       });
 
     void loader.load(wanted.map((entry) => entry.query)).then((answers) => {
@@ -293,24 +341,31 @@
     // and a 404 on fights/0/summary.json; the window goes with it, because milliseconds
     // from a fight that does not exist mean nothing.
     const resolved = resolveFightIndex(fights, parsed.fight, firstFight);
+    // Said out loud rather than swapped silently: a link to fight 20 that opens on fight
+    // 1 with no word about it reads as the wrong fight, not as a missing one.
+    missingFight = fights.length > 0 && resolved !== parsed.fight ? parsed.fight : null;
     state =
       resolved === parsed.fight ? parsed : withState(parsed, { fight: resolved, start: null, end: null });
   }
 
-  function writeUrl(): void {
+  function writeUrl(push: boolean): void {
     const search = reportSearch(state, firstFight);
-    // replaceState, not pushState: brushing the chart and flicking between tabs would
-    // otherwise bury the visitor's real back destination under a hundred entries. A link
-    // shared from the address bar still carries the whole state.
-    window.history.replaceState(null, '', `${window.location.pathname}${search}`);
+    const url = `${window.location.pathname}${search}`;
+    // A fight change is a page in its own right, so it is pushed and the back button
+    // returns to the pull before it. Brushing the chart and flicking between tabs replace:
+    // pushing those would bury the visitor's real back destination under a hundred
+    // entries. A link shared from the address bar carries the whole state either way.
+    if (push) window.history.pushState(null, '', url);
+    else window.history.replaceState(null, '', url);
   }
 
   function patch(next: Partial<ReportState>): void {
     // Changing fight drops the window: milliseconds from one fight's start mean nothing in
     // another's.
-    const clearsWindow = next.fight !== undefined && next.fight !== state.fight;
-    state = withState(state, clearsWindow ? { ...next, start: null, end: null } : next);
-    writeUrl();
+    const changesFight = next.fight !== undefined && next.fight !== state.fight;
+    if (next.fight !== undefined) missingFight = null;
+    state = withState(state, changesFight ? { ...next, start: null, end: null } : next);
+    writeUrl(changesFight);
   }
 
   async function loadReport(): Promise<void> {
@@ -332,6 +387,7 @@
       readUrl();
       // A report with no fights at all has nothing to summarise, and asking for
       // fights/0/summary.json would fail the whole page over a file that cannot exist.
+      // The whole night is loaded by its own effect once the page is ready.
       if (fight !== null) await loadFight(state.fight);
       status = 'ready';
     } catch (thrown) {
@@ -418,10 +474,44 @@
   $effect(() => {
     const onPop = (): void => {
       readUrl();
-      void loadFight(state.fight).catch(() => {});
+      if (state.fight !== ALL_FIGHTS) void loadFight(state.fight).catch(() => {});
     };
     window.addEventListener('popstate', onPop);
     return () => window.removeEventListener('popstate', onPop);
+  });
+
+  // The whole night: every boss pull's summary, a few at a time, folded into `night` as
+  // they land so the table fills in rather than waiting for the slowest fetch. Pulls the
+  // cache already holds cost nothing; the ones this fetches are cached for the fight
+  // views. Re-run when the selection returns here after a pull was opened, which is free
+  // once everything is cached.
+  $effect(() => {
+    if (status !== 'ready' || !nightMode) return;
+    const encounters = fights.filter((entry) => entry.kind === 'encounter' && !entry.in_progress);
+    let cancelled = false;
+    night = aggregateNight(encounters, summaries);
+    const queue = encounters.filter((entry) => !summaries.has(entry.index)).map((entry) => entry.index);
+    if (queue.length === 0) return;
+    nightLoading = true;
+    const workers = Array.from({ length: Math.min(4, queue.length) }, async () => {
+      for (let index = queue.shift(); index !== undefined; index = queue.shift()) {
+        if (cancelled) return;
+        try {
+          const loaded = await fromDataBase((base) => fetchSummary(base, index as number));
+          summaries.set(index, loaded);
+        } catch {
+          /* One pull that will not load leaves a gap the summary line reports. */
+        }
+        if (!cancelled) night = aggregateNight(encounters, summaries);
+      }
+    });
+    void Promise.all(workers).then(() => {
+      if (!cancelled) nightLoading = false;
+    });
+    return () => {
+      cancelled = true;
+      nightLoading = false;
+    };
   });
 
   // One fetch per fight, and only when the selection actually moves.
@@ -434,7 +524,12 @@
     // so the first run still sees a base.
     if (status !== 'ready' || untrack(() => dataBase) === '') return;
     if (fight === null) return;
-    if (summary?.fight_index === wanted) return;
+    if (summary?.fight_index === wanted) {
+      // The selection came back to the fight whose numbers are on screen (a failed pick
+      // in between), so the alert from that pick no longer describes what is shown.
+      error = '';
+      return;
+    }
     // Cleared on success as well as set on failure: an alert left over from the fight
     // before this one would describe the wrong fight, which is the same lie in reverse.
     // Both handlers re-check the selection for the reason loadFight does -- a stale
@@ -527,10 +622,28 @@
     </div>
     <p class="text-muted text-[13px]" data-testid="report-subtitle">
       {meta.zone} · <span class="tabular font-mono">{fights.length} fights</span> · {meta.status}
+      {#if nightMode}· All boss pulls{/if}
       {#if fight}· {fight.name}
-        <span class="tabular font-mono">{formatDuration(fight.duration_ms)}</span>{/if}
+        {#if fight.kind === 'encounter' && !fight.in_progress}
+          <span
+            class="font-semibold {fight.kill ? 'text-kill' : 'text-wipe'}"
+            data-testid="report-fight-outcome">{fight.kill ? 'Kill' : 'Wipe'}</span
+          >
+        {/if}
+        <span class="tabular font-mono">{formatDuration(fight.duration_ms)}</span>
+        {#if fight.deaths > 0}
+          · <span class="text-death tabular font-mono">{fight.deaths}</span>
+          {fight.deaths === 1 ? 'death' : 'deaths'}
+        {/if}{/if}
     </p>
   </header>
+
+  {#if missingFight !== null}
+    <p class="text-muted px-[18px] text-[13px] md:px-0" role="status" data-testid="report-missing-fight">
+      This report has no fight <span class="tabular font-mono">{missingFight}</span>, so the first fight is
+      showing.
+    </p>
+  {/if}
 
   {#if error !== ''}
     <!-- The fight selector and the url have already moved by the time a fight's summary
@@ -546,117 +659,143 @@
     <FightSelector {fights} selected={state.fight} onSelect={(index) => patch({ fight: index })} />
 
     <div class="flex min-w-0 flex-col gap-[22px] md:gap-6">
-      <!-- Sticky on phone only: the desktop layout keeps the selector column beside the
+      {#if nightMode}
+        {#if night !== null}
+          <NightView {night} loading={nightLoading} onSelect={(index) => patch({ fight: index })} />
+        {/if}
+      {:else}
+        <!-- Sticky on phone only: the desktop layout keeps the selector column beside the
            content and the whole bar is a short scroll from anything. On a phone a forty-row
            table puts the tabs a long way off the top of the screen, so the bar rides under
            the page header instead. The negative margin takes it out to the viewport edges
            so its background covers the rows sliding under it, and the padding puts the
            18px gutter back on its own children. -->
-      <div class="bg-bg sticky top-0 z-10 -mx-[18px] px-[18px] py-2 md:static md:mx-0 md:px-0 md:py-0">
-        <ModeBar {state} {roster} onPatch={patch} />
-      </div>
-      <!-- Tasks 11 to 17 insert the panels below the chart. -->
-      {#if summary !== null}
-        <TimeChart
-          series={chartSeries}
-          durationMs={summary.duration_ms}
-          window={timeWindow}
-          deaths={summary.deaths.map((death) => ({ at_ms: death.at_ms, name: death.name }))}
-          label="Damage"
-          onWindow={setWindow}
-        />
-        <div class="flex flex-wrap gap-2" data-testid="window-presets">
-          <!-- Keyed by position, not by label: a battle-rez puts the same name in
+        <div class="bg-bg sticky top-0 z-10 -mx-[18px] px-[18px] py-2 md:static md:mx-0 md:px-0 md:py-0">
+          <ModeBar {state} {roster} onPatch={patch} />
+        </div>
+        <!-- Tasks 11 to 17 insert the panels below the chart. -->
+        {#if summary !== null}
+          <TimeChart
+            series={chartSeries}
+            durationMs={summary.duration_ms}
+            window={timeWindow}
+            deaths={summary.deaths.map((death) => ({ at_ms: death.at_ms, name: death.name }))}
+            label={chartLabel}
+            onWindow={setWindow}
+          />
+          <div class="flex gap-2 overflow-x-auto md:flex-wrap" data-testid="window-presets">
+            <!-- Keyed by position, not by label: a battle-rez puts the same name in
                `deaths` twice, and two buttons labelled "Before Thalgrit died" would be a
                duplicate key, which Svelte throws on rather than renders. The list is
                rebuilt wholesale whenever the fight changes, so position is stable. -->
-          {#each presets as preset, position (position)}
-            <button
-              type="button"
-              class="border-line-soft rounded-control text-nav inline-flex h-11 items-center border px-3 text-[12px] font-bold tracking-[0.06em] uppercase md:h-9"
-              onclick={() => setWindow(preset.window)}
-            >
-              {preset.label}
-            </button>
-          {/each}
-        </div>
-      {/if}
-      {#if scoped !== null && state.mode === 'analyze' && state.view === 'tables'}
-        {#if state.tab === 'summary'}
-          <SummaryTab
-            summary={scoped}
-            durationMs={scoped.duration_ms}
-            {percentiles}
-            approximate={!windowIsWhole}
-            dataBuild={activeBuild.build}
-            {classOf}
-            {treeSizesFor}
-          />
-        {:else if state.tab === 'damage-done' || state.tab === 'damage-taken' || state.tab === 'healing'}
-          <FilterBar {filters} actors={tabActors} onChange={(next) => (filters = next)} />
-          <ActorTable
-            actors={tabActors}
-            durationMs={scoped.duration_ms}
-            {metricLabel}
-            {percentiles}
-            approximate={actorTableApproximate}
-          />
-          {#if actorTableApproximate}
-            <p class="text-muted text-[12px]" data-testid="approximate-note">
-              A tilde marks a figure split across abilities and targets in proportion to the window and any
-              active target or boss filter. Totals and per-second figures are exact. Queries answers the split
-              exactly.
-            </p>
+            {#each presets as preset, position (position)}
+              {@const active =
+                preset.window === null
+                  ? windowIsWhole
+                  : timeWindow.startMs === preset.window.startMs && timeWindow.endMs === preset.window.endMs}
+              <button
+                type="button"
+                class="rounded-control inline-flex h-11 shrink-0 items-center border px-3 text-[12px] font-bold tracking-[0.06em] whitespace-nowrap uppercase md:h-9 {active
+                  ? 'border-gold bg-card-top text-strong'
+                  : 'border-line-soft text-nav'}"
+                aria-pressed={active}
+                onclick={() => setWindow(preset.window)}
+              >
+                {preset.label}
+              </button>
+            {/each}
+          </div>
+        {/if}
+        {#if scoped !== null && state.mode === 'analyze' && state.view === 'tables'}
+          {#if state.tab === 'summary'}
+            <SummaryTab
+              summary={scoped}
+              durationMs={scoped.duration_ms}
+              {percentiles}
+              approximate={!windowIsWhole}
+              dataBuild={activeBuild.build}
+              {classOf}
+              {treeSizesFor}
+              onSelectPlayer={(guid) => patch({ source: guid })}
+            />
+          {:else if state.tab === 'damage-done' || state.tab === 'damage-taken' || state.tab === 'healing'}
+            <FilterBar {filters} actors={tabActors} onChange={(next) => (filters = next)} />
+            <ActorTable
+              actors={tabActors}
+              durationMs={scoped.duration_ms}
+              {metricLabel}
+              {percentiles}
+              approximate={actorTableApproximate}
+            />
+            {#if actorTableApproximate}
+              <p class="text-muted text-[12px]" data-testid="approximate-note">
+                A tilde marks a figure split across abilities and targets in proportion to the window and any
+                active target or boss filter. Totals and per-second figures are exact. Queries answers the
+                split exactly.
+              </p>
+            {/if}
+          {:else if state.tab === 'buffs'}
+            <AuraTable tracks={scoped.auras} durationMs={scoped.duration_ms} kind="BUFF" />
+          {:else if state.tab === 'debuffs'}
+            <AuraTable tracks={scoped.auras} durationMs={scoped.duration_ms} kind="DEBUFF" />
+          {:else if state.tab === 'casts'}
+            <CastTable
+              rows={scoped.casts}
+              durationMs={scoped.duration_ms}
+              startMs={timeWindow.startMs}
+              {classOf}
+              approximate={!windowIsWhole}
+            />
+          {:else if state.tab === 'interrupts'}
+            <ExchangeTable
+              rows={scoped.interrupts}
+              emptyText="Nothing was interrupted in the whole fight."
+              casts={summary?.casts ?? []}
+              players={playerSet}
+            />
+          {:else if state.tab === 'dispels'}
+            <ExchangeTable rows={scoped.dispels} emptyText="Nothing was dispelled in the whole fight." />
+          {:else if state.tab === 'resources'}
+            <ResourceGraphs tracks={scoped.resources} durationMs={scoped.duration_ms} />
+          {:else if state.tab === 'threat'}
+            <ThreatTable rows={scoped.threat} {classOf} approximate={!windowIsWhole} />
+          {:else if state.tab === 'deaths'}
+            <DeathsTab
+              deaths={scoped.deaths}
+              durationMs={summary?.duration_ms ?? scoped.duration_ms}
+              combatants={scoped.combatants}
+              {classOf}
+              dataBuild={activeBuild.build}
+              {treeSizesFor}
+              onWindow={setWindow}
+            />
           {/if}
-        {:else if state.tab === 'buffs'}
-          <AuraTable tracks={scoped.auras} durationMs={scoped.duration_ms} kind="BUFF" />
-        {:else if state.tab === 'debuffs'}
-          <AuraTable tracks={scoped.auras} durationMs={scoped.duration_ms} kind="DEBUFF" />
-        {:else if state.tab === 'casts'}
-          <CastTable
-            rows={scoped.casts}
-            durationMs={scoped.duration_ms}
-            startMs={timeWindow.startMs}
+        {/if}
+        {#if scoped !== null && state.mode === 'analyze' && state.view === 'timelines'}
+          <TimelinesView
+            summary={scoped}
+            window={timeWindow}
             {classOf}
-            approximate={!windowIsWhole}
-          />
-        {:else if state.tab === 'interrupts'}
-          <ExchangeTable rows={scoped.interrupts} emptyText="Nothing was interrupted in the whole fight." />
-        {:else if state.tab === 'dispels'}
-          <ExchangeTable rows={scoped.dispels} emptyText="Nothing was dispelled in the whole fight." />
-        {:else if state.tab === 'resources'}
-          <ResourceGraphs tracks={scoped.resources} durationMs={scoped.duration_ms} />
-        {:else if state.tab === 'threat'}
-          <ThreatTable rows={scoped.threat} {classOf} approximate={!windowIsWhole} />
-        {:else if state.tab === 'deaths'}
-          <DeathsTab
-            deaths={scoped.deaths}
-            durationMs={summary?.duration_ms ?? scoped.duration_ms}
-            combatants={scoped.combatants}
-            {classOf}
-            dataBuild={activeBuild.build}
-            {treeSizesFor}
-            onWindow={setWindow}
+            bossName={fight?.kind === 'encounter' ? fight.name : ''}
+            players={playerSet}
+            allCasts={summary?.casts ?? []}
           />
         {/if}
-      {/if}
-      {#if scoped !== null && state.mode === 'analyze' && state.view === 'timelines'}
-        <TimelinesView summary={scoped} window={timeWindow} {classOf} />
-      {/if}
-      {#if scoped !== null && state.mode === 'analyze' && state.view === 'events'}
-        <EventsView summary={scoped} {classOf} />
-      {/if}
-      <!-- `scoped` only to say a summary has loaded, the same guard its three siblings
+        {#if scoped !== null && state.mode === 'analyze' && state.view === 'events'}
+          <EventsView summary={scoped} {classOf} />
+        {/if}
+        <!-- `scoped` only to say a summary has loaded, the same guard its three siblings
            use; the Queries view reads the fight's events.parquet, not the summary, and
            takes the window so a starting point is written for what is on screen. -->
-      {#if scoped !== null && state.mode === 'analyze' && state.view === 'queries'}
-        <QueriesView dataBaseUrl={dataBase} fightIndex={state.fight} window={timeWindow} />
-      {/if}
-      {#if state.mode === 'compare' && summary !== null}
-        <CompareMode {fights} current={state.fight} dataBaseUrl={dataBase} left={summary} />
-      {/if}
-      {#if state.mode === 'rankings' && fight !== null}
-        <RankingsMode {fight} {reportId} encounterSlug={currentEncounterSlug} />
+        {#if scoped !== null && state.mode === 'analyze' && state.view === 'queries'}
+          <QueriesView dataBaseUrl={dataBase} fightIndex={state.fight} window={timeWindow} />
+        {/if}
+        {#if state.mode === 'compare' && summary !== null}
+          <CompareMode {fights} current={state.fight} dataBaseUrl={dataBase} left={summary} />
+        {/if}
+        {#if state.mode === 'rankings' && fight !== null}
+          <RankingsMode {fight} {reportId} encounterSlug={currentEncounterSlug} />
+        {/if}
       {/if}
     </div>
   </div>

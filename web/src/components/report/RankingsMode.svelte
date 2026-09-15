@@ -12,7 +12,7 @@
     rulesetLabel,
     splitUnitName,
   } from '../../lib/characters';
-  import { classColorVar, formatAmount, formatDuration, percentileToken } from '../../lib/report/format';
+  import { classColorVar, formatAmount, formatDuration } from '../../lib/report/format';
   import {
     fetchRankings,
     type RankingMetric,
@@ -130,9 +130,23 @@
       <p class="text-[14px]" role="alert">{error}</p>
     {:else if page !== null}
       <p class="text-muted text-[13px]">
-        <span class="tabular font-mono">{page.total}</span> ranked kills · updated
+        <span class="tabular font-mono">{page.total}</span> ranked {page.total === 1 ? 'kill' : 'kills'} of
+        {fight.name} on this ruleset, every report counted · updated
         <span class="tabular font-mono">{page.updated_at.slice(0, 10)}</span>
+        {#if !fight.kill}
+          · <span class="text-wipe">this pull was a wipe</span>, and only kills are ranked
+        {/if}
       </p>
+      <div
+        class="text-muted label hidden grid-cols-[40px_minmax(120px,1.4fr)_minmax(100px,1fr)_88px_96px_72px] gap-x-3 px-2 pb-1 md:grid"
+      >
+        <span>#</span>
+        <span>Player</span>
+        <span>Guild</span>
+        <span class="text-right" title="Talent points per tree">Split</span>
+        <span class="text-right">{metricLabel}</span>
+        <span class="text-right">Length</span>
+      </div>
       <ul class="flex flex-col" data-testid="rankings-rows">
         {#each page.rows as row (`${row.report_id}-${row.fight_index}-${row.player.key}`)}
           {@const characterLinkHref = characterRowHref(row)}
@@ -141,16 +155,7 @@
             class:bg-card-top={row.report_id === reportId}
             data-testid={row.report_id === reportId ? 'rankings-mine' : 'rankings-row'}
           >
-            <span
-              class="tabular font-mono text-[12px]"
-              style={`color: ${percentileToken(Math.max(0, 100 - ((row.rank - 1) / Math.max(page.total, 1)) * 100))}`}
-            >
-              <!-- Decorative and approximate: a rank's position on this page, not the
-                   API's own percentile (GET /v1/rankings/percentile). Good enough to tint
-                   the digit; not a substitute for that endpoint if a precise percentile is
-                   ever needed here. -->
-              {row.rank}
-            </span>
+            <span class="text-muted tabular font-mono text-[12px]">{row.rank}</span>
             <span class="flex min-w-0 items-center gap-2">
               {#if characterLinkHref !== null}
                 <a
@@ -189,9 +194,18 @@
             <span class="tabular hidden text-right font-mono md:inline"
               >{formatAmount(Math.round(row.value))}</span
             >
-            <span class="text-muted tabular hidden text-right font-mono text-[13px] md:inline"
-              >{formatDuration(row.duration_ms)}</span
-            >
+            <span class="text-muted tabular hidden text-right font-mono text-[13px] md:inline">
+              {#if row.report_id === reportId}
+                {formatDuration(row.duration_ms)}
+              {:else}
+                <a
+                  class="underline-offset-2 hover:underline"
+                  href={`/reports/${row.report_id}?fight=${row.fight_index}`}
+                  title="Open this kill's log"
+                  data-testid="ranking-open">{formatDuration(row.duration_ms)}</a
+                >
+              {/if}
+            </span>
 
             <!-- The three figures above sit in unlabelled columns, and a phone card has
                  neither the columns nor the width to keep them side by side, so below `md`

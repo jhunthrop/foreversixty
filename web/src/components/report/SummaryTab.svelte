@@ -16,6 +16,7 @@
     classColorVar,
     formatAmount,
     formatDuration,
+    formatPerSecond,
     formatPercent,
     percentileToken,
     wholeFightAriaLabel,
@@ -23,6 +24,7 @@
     wholeFightTitle,
   } from '../../lib/report/format';
   import { plannerLinkFor } from '../../lib/report/planner-link';
+  import GearList from './GearList.svelte';
   import type { RosterRow, Summary } from '../../lib/report/types';
 
   let {
@@ -33,6 +35,7 @@
     dataBuild = '',
     classOf = new Map<string, string>(),
     treeSizesFor = () => [],
+    onSelectPlayer = undefined,
   }: {
     summary: Summary;
     durationMs: number;
@@ -41,9 +44,13 @@
     dataBuild?: string;
     classOf?: Map<string, string>;
     treeSizesFor?: (className: string | undefined) => number[];
+    /** Narrows the page to one player; the name becomes a button when this is given. */
+    onSelectPlayer?: (guid: string) => void;
   } = $props();
 
   const roster = $derived([...summary.roster].sort((a, b) => b.damage_done - a.damage_done));
+  /** The combatant whose gear list is open. */
+  let gearOpen = $state<string | null>(null);
   const missingBuffs = $derived(summary.combatants.filter((row) => row.missing_buffs.length > 0).length);
   const activeMark = $derived(wholeFightMark(approximate));
   const activeTitle = $derived(wholeFightTitle(approximate));
@@ -62,8 +69,8 @@
    */
   function figuresFor(row: RosterRow): Figure[] {
     return [
-      { label: 'Damage', value: formatAmount(row.damage_done) },
-      { label: 'Healing', value: formatAmount(row.healing_done) },
+      { label: 'DPS', value: formatPerSecond(row.damage_done, durationMs) },
+      { label: 'HPS', value: formatPerSecond(row.healing_done, durationMs) },
       { label: 'Taken', value: formatAmount(row.damage_taken) },
       {
         label: 'Active',
@@ -90,13 +97,16 @@
     <div
       class="text-muted label hidden grid-cols-[40px_minmax(120px,1.4fr)_88px_96px_96px_96px_72px_56px] gap-x-3 px-2 pb-1 md:grid"
     >
-      <span>Parse</span>
+      <span
+        title="Percentile among ranked kills of the same boss by this spec: DPS for damage, HPS for healers, damage taken for tanks. Empty on a wipe or while nothing is ranked yet."
+        >Parse</span
+      >
       <span>Name</span>
       <span>Spec</span>
-      <span class="text-right">Damage</span>
-      <span class="text-right">Healing</span>
-      <span class="text-right">Taken</span>
-      <span class="text-right">Active</span>
+      <span class="text-right" title="Damage done, and per second over this window">Damage</span>
+      <span class="text-right" title="Healing done, and per second over this window">Healing</span>
+      <span class="text-right" title="Damage taken, and per second over this window">Taken</span>
+      <span class="text-right" title="Share of the fight spent casting or attacking">Active</span>
       <span class="text-right">Deaths</span>
     </div>
     <ul class="flex flex-col">
@@ -114,14 +124,48 @@
             {percentile === null ? '' : Math.round(percentile)}
           </span>
           <span class="truncate font-semibold" style={`color: ${classColorVar(row.class)}`}>
-            {display.name}
+            {#if onSelectPlayer}
+              <button
+                type="button"
+                class="inline-flex min-h-11 items-center underline-offset-2 hover:underline md:min-h-0"
+                style={`color: ${classColorVar(row.class)}`}
+                title="Show only this player"
+                data-testid="roster-name"
+                onclick={() => onSelectPlayer(row.guid)}
+              >
+                {display.name}
+              </button>
+            {:else}
+              {display.name}
+            {/if}
           </span>
           <span class="text-muted col-span-2 text-[13px] md:col-span-1">
             {row.spec ?? row.class ?? 'Unknown'}
           </span>
-          <span class="tabular hidden text-right font-mono md:inline">{formatAmount(row.damage_done)}</span>
-          <span class="tabular hidden text-right font-mono md:inline">{formatAmount(row.healing_done)}</span>
-          <span class="tabular hidden text-right font-mono md:inline">{formatAmount(row.damage_taken)}</span>
+          <!-- Total on top, per-second underneath: a raid leader compares totals across
+               the roster, and a player compares their per-second figure with their
+               parse. Both are the window's own numbers. -->
+          <span
+            class="tabular hidden flex-col text-right font-mono leading-tight md:flex"
+            data-testid="roster-damage"
+          >
+            <span>{formatAmount(row.damage_done)}</span>
+            <span class="text-muted text-[11px]">{formatPerSecond(row.damage_done, durationMs)}/s</span>
+          </span>
+          <span
+            class="tabular hidden flex-col text-right font-mono leading-tight md:flex"
+            data-testid="roster-healing"
+          >
+            <span>{formatAmount(row.healing_done)}</span>
+            <span class="text-muted text-[11px]">{formatPerSecond(row.healing_done, durationMs)}/s</span>
+          </span>
+          <span
+            class="tabular hidden flex-col text-right font-mono leading-tight md:flex"
+            data-testid="roster-taken"
+          >
+            <span>{formatAmount(row.damage_taken)}</span>
+            <span class="text-muted text-[11px]">{formatPerSecond(row.damage_taken, durationMs)}/s</span>
+          </span>
           <span
             class="text-muted tabular hidden text-right font-mono text-[13px] md:inline"
             title={activeTitle}
@@ -130,7 +174,9 @@
           >
             {activeMark}{formatPercent(row.activity_pct)}
           </span>
-          <span class="tabular hidden text-right font-mono md:inline">{row.deaths}</span>
+          <span class="tabular hidden text-right font-mono md:inline" class:text-death={row.deaths > 0}
+            >{row.deaths}</span
+          >
 
           <!-- The five figures above are columns under headings in the header row, which is
                `hidden` below `md`. A card has no headings, so on phone they are replaced by
@@ -182,9 +228,16 @@
               {combatant.spec ?? 'Unknown spec'} · item level
               <span class="tabular font-mono">{combatant.item_level ?? 0}</span>
             </span>
-            <span class="text-muted text-[13px]">
-              <span class="tabular font-mono">{combatant.gear.filter((item) => item.ID > 0).length}</span> items
-            </span>
+            <button
+              type="button"
+              class="text-muted inline-flex min-h-11 items-center text-[13px] underline-offset-2 hover:underline md:min-h-0"
+              aria-expanded={gearOpen === combatant.guid}
+              data-testid="combatant-gear"
+              onclick={() => (gearOpen = gearOpen === combatant.guid ? null : combatant.guid)}
+            >
+              <span class="tabular font-mono">{combatant.gear.filter((item) => item.ID > 0).length}</span
+              >&nbsp;items
+            </button>
             {#if combatant.missing_buffs.length > 0}
               <span class="pill pill-sample">
                 missing <span class="tabular font-mono">{combatant.missing_buffs.length}</span> buffs
@@ -198,6 +251,11 @@
               >
                 {link.label}
               </a>
+            {/if}
+            {#if gearOpen === combatant.guid}
+              <div class="basis-full pt-2">
+                <GearList gear={combatant.gear} className={classOf.get(combatant.guid)} {dataBuild} />
+              </div>
             {/if}
           </li>
         {/each}

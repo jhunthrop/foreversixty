@@ -30,7 +30,9 @@ export interface PercentileLoader {
 const CONCURRENCY = 6;
 
 export function createPercentileLoader(apiBase: string = API_BASE_URL): PercentileLoader {
-  const cache = new Map<string, number>();
+  // null remembers "nothing is ranked in that bracket": the API's 404 is as final as a
+  // number for the life of the page, and re-asking on every tab switch tripped the limiter.
+  const cache = new Map<string, number | null>();
 
   async function one(query: PercentileQuery): Promise<void> {
     const key = percentileKey(query);
@@ -47,6 +49,10 @@ export function createPercentileLoader(apiBase: string = API_BASE_URL): Percenti
       // A Request, not a bare URL string: the test asserts on `.url`, and passing a
       // Request here is no different for a real fetch implementation.
       const response = await fetch(new Request(`${apiBase}/v1/rankings/percentile?${params.toString()}`));
+      if (response.status === 404) {
+        cache.set(key, null);
+        return;
+      }
       if (!response.ok) return;
       const envelope = (await response.json()) as { ok: boolean; data: { percentile?: number } | null };
       const percentile = envelope.data?.percentile;
@@ -82,7 +88,7 @@ export function createPercentileLoader(apiBase: string = API_BASE_URL): Percenti
       for (const query of queries) {
         const key = percentileKey(query);
         const found = cache.get(key);
-        if (found !== undefined) answers.set(key, found);
+        if (found !== undefined && found !== null) answers.set(key, found);
       }
       return answers;
     },

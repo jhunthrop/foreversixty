@@ -73,4 +73,22 @@ describe('parse percentiles', () => {
     );
     await expect(createPercentileLoader(API).load([query])).resolves.toEqual(new Map());
   });
+
+  it('remembers a bracket nothing is ranked in, and does not ask again', async () => {
+    const upstream = vi.fn<GlobalFetch>(
+      async () =>
+        new Response(
+          JSON.stringify({ ok: false, data: null, error: { code: 'not_found' }, request_id: 'r' }),
+          {
+            status: 404,
+            headers: { 'content-type': 'application/json' },
+          },
+        ),
+    );
+    vi.stubGlobal('fetch', upstream);
+    const loader = createPercentileLoader(API);
+    expect(await loader.load([query])).toEqual(new Map());
+    expect(await loader.load([query])).toEqual(new Map());
+    expect(upstream).toHaveBeenCalledTimes(1);
+  });
 });

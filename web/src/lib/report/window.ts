@@ -14,6 +14,7 @@
 // deliberate trade: every table rescopes in under a frame with no network, and the one
 // question that needs precision says so.
 import { splitUnitName } from '../characters';
+import { formatDuration } from './format';
 import type { Actor, AuraTrack, CastRow, Death, ResourceTrack, RosterRow, Summary, ThreatRow } from './types';
 import type { ReportState } from './url';
 
@@ -227,7 +228,7 @@ export function scopeSummary(summary: Summary, window: TimeWindow): Summary {
     healing: scopeActors(summary.healing, window),
     healing_taken: scopeActors(summary.healing_taken, window),
     deaths: summary.deaths.filter(
-      (death: Death) => death.at_ms >= window.startMs && death.at_ms < window.endMs,
+      (death: Death) => death.at_ms >= window.startMs && death.at_ms <= window.endMs,
     ),
     auras: summary.auras.map((track) => scopeAuraTrack(track, window)).filter((track) => track.uptime_ms > 0),
     casts: summary.casts
@@ -264,7 +265,9 @@ export function windowPresets(summary: Summary): WindowPreset[] {
   ];
   for (const death of summary.deaths) {
     presets.push({
-      label: `Before ${splitUnitName(death.name).name} died`,
+      // The time is part of the label: one player can die twice in a fight (a battle
+      // rez), and two chips reading "Before Thalgrit died" leave the reader guessing.
+      label: `20s before ${splitUnitName(death.name).name} died · ${formatDuration(death.at_ms)}`,
       window: deathWindow(death.at_ms, duration),
     });
   }

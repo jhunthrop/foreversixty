@@ -25,7 +25,7 @@
     onWindow: (window: TimeWindow | null) => void;
   } = $props();
 
-  const HEIGHT = 120;
+  const HEIGHT = 96;
 
   let canvas = $state<HTMLCanvasElement | null>(null);
   let width = $state(720);
@@ -58,7 +58,7 @@
     const styles = getComputedStyle(element);
     const gold = styles.getPropertyValue('--color-gold').trim();
     const line = styles.getPropertyValue('--color-line-soft').trim();
-    const ember = styles.getPropertyValue('--color-ember').trim();
+    const death = styles.getPropertyValue('--color-death').trim();
 
     context.strokeStyle = line;
     context.lineWidth = 1;
@@ -87,7 +87,7 @@
       context.stroke();
     }
 
-    context.strokeStyle = ember;
+    context.strokeStyle = death;
     context.lineWidth = 2;
     for (const death of deaths) {
       const x = Math.round(xOf(death.at_ms)) + 0.5;
@@ -153,7 +153,13 @@
   data-testid="time-chart"
 >
   <figcaption class="flex flex-wrap items-baseline justify-between gap-2">
-    <span class="label text-muted">{label} per second</span>
+    <span class="label text-muted"
+      >{label} per second{#if deaths.length > 0}
+        <span class="ml-3 tracking-normal normal-case"
+          ><span class="bg-death mr-1 inline-block h-[10px] w-[2px] align-middle" aria-hidden="true"
+          ></span>{deaths.length === 1 ? 'a death' : `${deaths.length} deaths`}</span
+        >{/if}</span
+    >
     <span class="tabular text-muted font-mono text-[12px]" data-testid="window-label" aria-live="polite">
       {isFullWindow(current, durationMs)
         ? `Whole fight · ${formatDuration(durationMs)}`

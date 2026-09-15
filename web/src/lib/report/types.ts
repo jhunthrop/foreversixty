@@ -67,6 +67,18 @@ export interface DamageRef {
   max_hp?: number;
 }
 
+/** summary.HealRef: one heal on a dying player, engine 0.2.0 and later. */
+export interface HealRef {
+  at_ms: number;
+  source_guid: string;
+  source_name: string;
+  spell_id: number;
+  spell_name: string;
+  amount: number;
+  overheal?: number;
+  absorbed?: number;
+}
+
 /** summary.AuraRef */
 export interface AuraRef {
   spell_id: number;
@@ -85,6 +97,8 @@ export interface Death {
   at_ms: number;
   killing_blow?: DamageRef;
   last: DamageRef[];
+  /** The last heals landed on the player before the death. Absent from summaries written before engine 0.2.0. */
+  heals?: HealRef[];
   auras_held: AuraRef[];
   auras_lost: AuraRef[];
   release_ms?: number;

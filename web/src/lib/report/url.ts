@@ -67,7 +67,12 @@ export const TABS: readonly { id: Tab; label: string }[] = [
 export const SOURCE_FRIENDLIES = 'friendlies';
 export const SOURCE_ENEMIES = 'enemies';
 
+/** The fight number that means every boss pull of the report, and its url spelling. */
+export const ALL_FIGHTS = 0;
+export const ALL_FIGHTS_PARAM = 'all';
+
 export interface ReportState {
+  /** A fight index from report.json, or ALL_FIGHTS for the whole night. */
   fight: number;
   mode: Mode;
   view: View;
@@ -111,7 +116,8 @@ export function parseReportState(search: string, firstFight: number): ReportStat
   const state = defaultState(firstFight);
 
   const fight = params.get('fight');
-  if (fight !== null && /^\d+$/.test(fight)) state.fight = Number.parseInt(fight, 10);
+  if (fight === ALL_FIGHTS_PARAM) state.fight = ALL_FIGHTS;
+  else if (fight !== null && /^\d+$/.test(fight)) state.fight = Number.parseInt(fight, 10);
 
   state.mode = readOne(params.get('mode'), ENABLED_MODES, state.mode);
   state.view = readOne(params.get('view'), VIEW_IDS, state.view);
@@ -134,7 +140,8 @@ export function parseReportState(search: string, firstFight: number): ReportStat
 export function reportSearch(state: ReportState, firstFight: number): string {
   const base = defaultState(firstFight);
   const params = new URLSearchParams();
-  if (state.fight !== base.fight) params.set('fight', String(state.fight));
+  if (state.fight !== base.fight)
+    params.set('fight', state.fight === ALL_FIGHTS ? ALL_FIGHTS_PARAM : String(state.fight));
   if (state.mode !== base.mode) params.set('mode', state.mode);
   if (state.view !== base.view) params.set('view', state.view);
   if (state.tab !== base.tab) params.set('tab', state.tab);

@@ -30,6 +30,16 @@
     [3, 'Energy'],
     [4, 'Combo points'],
     [6, 'Runic power'],
+    [7, 'Soul shards'],
+    [8, 'Astral power'],
+    [9, 'Holy power'],
+    [11, 'Maelstrom'],
+    [12, 'Chi'],
+    [13, 'Insanity'],
+    [16, 'Arcane charges'],
+    [17, 'Fury'],
+    [18, 'Pain'],
+    [19, 'Essence'],
   ]);
 
   const rows = $derived(

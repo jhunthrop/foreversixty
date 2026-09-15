@@ -11,7 +11,7 @@ test('the recap shows the killing blow, the last hits and the auras that were up
   await expect(card).toContainText('killed by Warden Kelthas');
   await expect(card).toContainText('Anima Lash');
   await expect(card).toContainText('100 overkill');
-  await expect(card.getByRole('row')).toHaveCount(3);
+  await expect(card.locator('tbody tr')).toHaveCount(3);
   await expect(card).toContainText('Necrotic Wound');
 });
 

@@ -13,7 +13,7 @@
      brushed on the chart is not mistaken for narrowing this table too. -->
 <script lang="ts">
   import { splitUnitName } from '../../lib/characters';
-  import { classColorVar, formatAmount, formatDuration } from '../../lib/report/format';
+  import { classColorVar, formatAmount, formatDuration, outcomeLabel } from '../../lib/report/format';
   import { fetchSummary } from '../../lib/report/load';
   import type { FightEntry, RosterRow, Summary } from '../../lib/report/types';
 
@@ -24,7 +24,8 @@
     left,
   }: { fights: FightEntry[]; current: number; dataBaseUrl: string; left: Summary } = $props();
 
-  type CompareMetric = 'damage_done' | 'healing_done' | 'damage_taken';
+  type CompareMetric = 'damage_done' | 'dps' | 'healing_done' | 'hps' | 'damage_taken' | 'dtps';
+  const PER_SECOND = new Set<CompareMetric>(['dps', 'hps', 'dtps']);
 
   const options = $derived(fights.filter((fight) => fight.index !== current));
   let rightIndex = $state<number | null>(null);
@@ -70,7 +71,12 @@
   });
 
   function rowMetric(row: RosterRow): number {
-    return row[metric];
+    return PER_SECOND.has(metric) ? Math.round(row[metric]) : row[metric];
+  }
+
+  function fightLabel(fight: FightEntry | null): string {
+    if (fight === null) return '';
+    return `${fight.name} · ${formatDuration(fight.duration_ms)} · ${outcomeLabel(fight).toLowerCase()}`;
   }
 
   interface Line {
@@ -127,9 +133,7 @@
       >
         <option value="">Pick a fight</option>
         {#each options as fight (fight.index)}
-          <option value={fight.index}>
-            {fight.name} · {formatDuration(fight.duration_ms)} · {fight.kill ? 'kill' : 'wipe'}
-          </option>
+          <option value={fight.index}>{fightLabel(fight)}</option>
         {/each}
       </select>
     </label>
@@ -141,8 +145,11 @@
         bind:value={metric}
         data-testid="compare-metric"
       >
+        <option value="dps">DPS</option>
         <option value="damage_done">Damage done</option>
+        <option value="hps">HPS</option>
         <option value="healing_done">Healing done</option>
+        <option value="dtps">Damage taken per second</option>
         <option value="damage_taken">Damage taken</option>
       </select>
     </label>
@@ -170,11 +177,11 @@
             <th scope="col" class="label text-muted px-2 py-2 font-bold">Player</th>
             <th scope="col" class="label text-muted px-2 py-2 text-right font-bold">
               This fight
-              <span class="block truncate text-[11px] normal-case">{currentFight?.name ?? ''}</span>
+              <span class="block truncate text-[11px] normal-case">{fightLabel(currentFight)}</span>
             </th>
             <th scope="col" class="label text-muted px-2 py-2 text-right font-bold">
               Compared with
-              <span class="block truncate text-[11px] normal-case">{rightFight?.name ?? ''}</span>
+              <span class="block truncate text-[11px] normal-case">{fightLabel(rightFight)}</span>
             </th>
             <th scope="col" class="label text-muted px-2 py-2 text-right font-bold">Difference</th>
           </tr>

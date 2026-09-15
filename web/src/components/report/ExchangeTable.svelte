@@ -13,9 +13,59 @@
 <script lang="ts">
   import { splitUnitName } from '../../lib/characters';
   import { wholeFightAriaLabel, wholeFightMark, wholeFightTitle } from '../../lib/report/format';
-  import type { ExchangeRow } from '../../lib/report/types';
+  import type { CastRow, ExchangeRow } from '../../lib/report/types';
 
-  let { rows, emptyText }: { rows: ExchangeRow[]; emptyText: string } = $props();
+  let {
+    rows,
+    emptyText,
+    casts = [],
+    players = new Set<string>(),
+  }: {
+    rows: ExchangeRow[];
+    emptyText: string;
+    /** The fight's cast rows, for the "went through" count on the Interrupts tab. */
+    casts?: CastRow[];
+    players?: ReadonlySet<string>;
+  } = $props();
+
+  interface Missed {
+    spell_id: number;
+    name: string;
+    cast: number;
+    stopped: number;
+  }
+
+  /**
+   * For every enemy spell somebody interrupted at least once: how many times an enemy
+   * cast it against how many times it was stopped. A spell nobody ever interrupted is not
+   * listed, because the summary cannot tell an uninterruptible cast from an ignored one.
+   */
+  const missed = $derived.by<Missed[]>(() => {
+    if (casts.length === 0) return [];
+    // A plain Map: built once inside the derived, never read reactively by key.
+    // eslint-disable-next-line svelte/prefer-svelte-reactivity
+    const stopped = new Map<number, Missed>();
+    for (const row of rows) {
+      if (row.kind !== 'interrupt') continue;
+      const found = stopped.get(row.extra_spell_id) ?? {
+        spell_id: row.extra_spell_id,
+        name: row.extra_spell_name,
+        cast: 0,
+        stopped: 0,
+      };
+      found.stopped += row.count;
+      stopped.set(row.extra_spell_id, found);
+    }
+    for (const cast of casts) {
+      if (players.has(cast.guid)) continue;
+      const found = stopped.get(cast.spell_id);
+      if (found !== undefined) found.cast += cast.succeeded + cast.started;
+    }
+    return [...stopped.values()]
+      .map((entry) => ({ ...entry, cast: Math.max(entry.cast, entry.stopped) }))
+      .filter((entry) => entry.cast > entry.stopped)
+      .sort((a, b) => b.cast - b.stopped - (a.cast - a.stopped));
+  });
 
   const ordered = $derived(
     [...rows].sort((a, b) => b.count - a.count || a.source_name.localeCompare(b.source_name)),
@@ -57,6 +107,25 @@
       {/each}
     </ul>
   </div>
+  {#if missed.length > 0}
+    <div class="flex flex-col gap-1" data-testid="interrupts-missed">
+      <h3 class="label text-muted">Went through</h3>
+      <ul class="flex flex-col">
+        {#each missed as entry (entry.spell_id)}
+          <li
+            class="border-line-soft flex min-h-11 flex-wrap items-center gap-x-3 border-b px-2 py-2 text-[14px]"
+          >
+            <span class="font-semibold">{entry.name}</span>
+            <span class="text-muted text-[13px]">
+              cast <span class="tabular font-mono">{entry.cast}</span> · stopped
+              <span class="tabular font-mono">{entry.stopped}</span> ·
+              <span class="text-wipe tabular font-mono">{entry.cast - entry.stopped}</span> went through
+            </span>
+          </li>
+        {/each}
+      </ul>
+    </div>
+  {/if}
   <p class="text-muted text-[12px]" data-testid="exchange-wholefight-note">
     Count is marked {mark}: interrupts and dispels are the whole fight's totals, because the summary keeps no
     timestamp for them and a brushed window cannot cut them down.

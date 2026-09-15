@@ -185,7 +185,7 @@ describe('presets', () => {
       'Whole fight',
       'First 30s',
       'Last 30s',
-      'Before Thalgrit died',
+      '20s before Thalgrit died · 10.1s',
     ]);
     expect(presets[0].window).toBeNull();
     expect(presets[3].window).toEqual({ startMs: 0, endMs: 10_100 });

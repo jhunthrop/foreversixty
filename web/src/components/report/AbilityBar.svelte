@@ -14,12 +14,12 @@
     color,
   }: { abilities: Ability[]; total: number; peak: number; color: string } = $props();
 
-  const OPACITIES = [1, 0.78, 0.58, 0.42, 0.3];
+  const OPACITIES = [1, 0.85, 0.7, 0.58, 0.48];
   const ordered = $derived([...abilities].sort((a, b) => b.total - a.total));
   const widthPct = $derived(peak <= 0 ? 0 : Math.max((total / peak) * 100, 0.5));
 </script>
 
-<div class="bg-line-soft h-[6px] w-full" style={`max-width: ${widthPct}%`} aria-hidden="true">
+<div class="bg-line-soft h-[8px] w-full" style={`max-width: ${widthPct}%`} aria-hidden="true">
   <div class="flex h-full w-full">
     {#each ordered as ability, index (ability.spell_id)}
       <span

@@ -62,7 +62,7 @@ Alliance `#6fb1ff` (text) / `#2f6fd6` (bars). Horde `#ff6b5c` (text) / `#c0392b`
 
 ### Class colors (WoW standard)
 
-Warrior `#c69b6d` · Paladin `#f48cba` · Hunter `#aad372` · Rogue `#fff468` · Priest `#ffffff` · Shaman `#0070dd` (use `#3f8fe0` for text on dark) · Mage `#3fc7eb` · Warlock `#8788ee` · Druid `#ff7c0a`.
+Warrior `#c69b6d` · Paladin `#f48cba` · Hunter `#aad372` · Rogue `#fff468` · Priest `#ffffff` · Shaman `#0070dd` (use `#3f8fe0` for text on dark) · Mage `#3fc7eb` · Warlock `#8788ee` · Druid `#ff7c0a` · Monk `#00ff98`.
 
 ### Item rarity (WoW standard)
 
