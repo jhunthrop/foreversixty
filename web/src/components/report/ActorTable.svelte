@@ -18,6 +18,8 @@
     mitigation = false,
     splitUnavailable = false,
     absent = [],
+    windowIsWhole = false,
+    deadAt = new Map<string, number>(),
     measure = undefined,
   }: {
     actors: Actor[];
@@ -36,6 +38,9 @@
     splitUnavailable?: boolean;
     /** Players with no row in this window, and when they died if they were dead. */
     absent?: { name: string; deadSince: number | null }[];
+    windowIsWhole?: boolean;
+    /** Players dead at the window's end, by GUID, with when they died. */
+    deadAt?: ReadonlyMap<string, number>;
     measure?: (actor: Actor) => Promise<ExactSplit>;
   } = $props();
 
@@ -131,6 +136,7 @@
           {approximate}
           {amountApproximate}
           {splitUnavailable}
+          deadSince={deadAt.get(actor.guid) ?? null}
           {parseFallback}
           {pairsLabel}
           {measure}
@@ -156,7 +162,7 @@
     </div>
     {#if absent.length > 0}
       <p class="text-muted border-line-soft border-t px-2 py-2 text-[12px]" data-testid="actor-absent">
-        No row in this window: {absent
+        No row {windowIsWhole ? 'under this filter' : 'in this window'}: {absent
           .map((entry) =>
             entry.deadSince === null
               ? entry.name
@@ -177,8 +183,11 @@
           >{mitigated.prorated ? '~' : ''}{formatAmount(mitigated.absorbed)}</span
         >
         absorbed ·
-        <span class="tabular font-mono">{formatAmount(mitigated.blocked)}</span> blocked ·
-        <span class="tabular font-mono">{mitigated.hits}</span> hits avoided{mitigated.hits > 0
+        <span class="tabular font-mono">{mitigated.prorated ? '~' : ''}{formatAmount(mitigated.blocked)}</span
+        >
+        blocked ·
+        <span class="tabular font-mono">{mitigated.prorated ? '~' : ''}{mitigated.hits}</span> hits avoided{mitigated.hits >
+        0
           ? ` (${mitigated.byType})`
           : ''}
       </p>

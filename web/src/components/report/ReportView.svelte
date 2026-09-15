@@ -317,7 +317,9 @@
   const chartLabel = $derived(
     state.tab === 'damage-taken' ? 'Damage taken' : state.tab === 'healing' ? 'Healing' : 'Damage',
   );
-  const windowIsWhole = $derived(base !== null && isFullWindow(timeWindow, base.duration_ms));
+  // Whole means the cut window too: "ignore events after a death" narrows what the tables
+  // sum just as a brush does, and a narrowed table is measured, not prorated.
+  const windowIsWhole = $derived(base !== null && isFullWindow(cutWindow, base.duration_ms));
 
   /**
    * True while the report is still being written -- the report's own status says so, or a
@@ -440,7 +442,8 @@
     className === undefined ? [] : (treeSizes.get(className) ?? []);
 
   /** Which Actor[] the current tab shows, scoped to `state.source` and then filtered. */
-  const tabActors = $derived.by(() => {
+  /** The tab's rows under the source scope, before the filters: what the filter pickers list. */
+  const tabSource = $derived.by((): Actor[] => {
     if (scoped === null) return [];
     const source =
       state.tab === 'damage-done'
@@ -456,10 +459,15 @@
         : state.source === 'enemies'
           ? source.filter((actor) => !friendlySet.has(actor.guid))
           : source.filter((actor) => actor.guid === state.source);
+    return bySource;
+  });
+
+  /** Which Actor[] the current tab shows: the source scope, then the filters, then any measure. */
+  const tabActors = $derived.by(() => {
     // "Boss damage only" has no meaning for healing, whose targets are players: applied
     // there it blanked the table.
     const applied = state.tab === 'healing' ? { ...filters, bossOnly: false } : filters;
-    const filtered = applyActorFilters(bySource, applied, filterContext);
+    const filtered = applyActorFilters(tabSource, applied, filterContext);
     if (tableExact === null) return filtered;
     // Measured rows: the events' own totals and pairs replace the prorated ones, and a
     // row the events do not mention did nothing in this window to these targets.
@@ -486,8 +494,9 @@
    * Players with no row in this table: under a death window that is usually someone who
    * was already dead, and a table that silently lacks them reads as if they never existed.
    */
+  const filtersNarrow = $derived(filters.target !== '' || filters.ability !== null || filters.bossOnly);
   const absentPlayers = $derived.by((): { name: string; deadSince: number | null }[] => {
-    if (scoped === null || windowIsWhole) return [];
+    if (scoped === null || (windowIsWhole && !filtersNarrow)) return [];
     const shown = new Set(tabActors.map((actor) => actor.guid));
     return scoped.roster
       .filter((row) => playerSet.has(row.guid) && !shown.has(row.guid))
@@ -496,6 +505,18 @@
         name: splitUnitName(row.name).name,
         deadSince: deadSince(row.guid, cutWindow.endMs),
       }));
+  });
+  /** Rows of players who were dead at the window's end: a HoT ticking on a corpse is not a live row. */
+  const deadRows = $derived.by(() => {
+    // eslint-disable-next-line svelte/prefer-svelte-reactivity
+    const out = new Map<string, number>();
+    if (windowIsWhole || nightMode) return out;
+    for (const actor of tabActors) {
+      if (!playerSet.has(actor.guid)) continue;
+      const since = deadSince(actor.guid, cutWindow.endMs);
+      if (since !== null) out.set(actor.guid, since);
+    }
+    return out;
   });
   /** When this player died before `at` and cast nothing since, the instant they died; else null. */
   function deadSince(guid: string, at: number): number | null {
@@ -986,7 +1007,8 @@
           label={chartLabel}
           onWindow={setWindow}
         />
-        <div class="flex gap-2 overflow-x-auto md:flex-wrap" data-testid="window-presets">
+        <!-- Wrapped at every width: a strip that scrolls sideways hid the death presets on a phone. -->
+        <div class="flex flex-wrap gap-2" data-testid="window-presets">
           <!-- Keyed by position, not by label: a battle-rez puts the same name in
                `deaths` twice, and two buttons labelled "Before Thalgrit died" would be a
                duplicate key, which Svelte throws on rather than renders. The list is
@@ -1036,7 +1058,7 @@
         {:else if state.tab === 'damage-done' || state.tab === 'damage-taken' || state.tab === 'healing'}
           <FilterBar
             {filters}
-            actors={tabActors}
+            actors={tabSource}
             onChange={setFilters}
             showBossOnly={state.tab !== 'healing'}
           />
@@ -1050,6 +1072,8 @@
             mitigation={state.tab === 'damage-taken'}
             splitUnavailable={nightMode && filtersScale}
             absent={absentPlayers}
+            deadAt={deadRows}
+            {windowIsWhole}
             measure={nightMode ? undefined : measureRow}
             approximate={actorTableApproximate}
             amountApproximate={filtersScale && !windowIsWhole}
@@ -1210,7 +1234,13 @@
         />
       {/if}
       {#if state.mode === 'rankings' && fight !== null}
-        <RankingsMode {fight} {reportId} encounterSlug={currentEncounterSlug} />
+        <RankingsMode
+          {fight}
+          {reportId}
+          encounterSlug={currentEncounterSlug}
+          spec={state.rankingsSpec}
+          onPatch={patch}
+        />
       {/if}
     </div>
   </div>

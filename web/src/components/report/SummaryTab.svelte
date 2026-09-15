@@ -81,16 +81,8 @@
    * from the desktop columns it stands in for.
    */
   function figuresFor(row: RosterRow): Figure[] {
-    const percentile = percentiles.get(row.guid);
+    // No Parse figure here: the card's top-right cell already shows it, and twice read as two numbers.
     return [
-      ...(percentile === undefined
-        ? []
-        : [
-            {
-              label: 'Parse',
-              value: `${Math.round(percentile.percentile)} among ${percentile.ranked}`,
-            },
-          ]),
       { label: 'DPS', value: formatPerSecond(row.damage_done, durationMs) },
       { label: 'HPS', value: formatPerSecond(row.healing_done, durationMs) },
       { label: 'Taken', value: formatAmount(row.damage_taken) },
@@ -103,6 +95,8 @@
       { label: 'Deaths', value: String(row.deaths) },
     ];
   }
+  /** Below this many ranked kills the bracket is named beside the number at every width: a 0 among 2 is not a 0 among 200. */
+  const THIN_BRACKET = 10;
 </script>
 
 <section class="flex flex-col gap-4" data-testid="summary-tab">
@@ -150,7 +144,8 @@
             data-testid="roster-percentile"
           >
             {#if percentile === null}{parseFallback}{:else}{Math.round(percentile.percentile)}<span
-                class="text-muted ml-1 md:hidden">among {percentile.ranked}</span
+                class="text-muted ml-1"
+                class:md:hidden={percentile.ranked >= THIN_BRACKET}>among {percentile.ranked}</span
               >{/if}
           </span>
           <span

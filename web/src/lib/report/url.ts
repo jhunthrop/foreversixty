@@ -103,6 +103,8 @@ export interface ReportState {
   find: string;
   /** The death cards opened by hand, as `guid-at_ms`, so a pasted link opens the same ones. */
   openDeaths: string[];
+  /** Rankings mode's spec filter; '' ranks every spec together. */
+  rankingsSpec: string;
 }
 
 const ENABLED_MODES = MODES.filter((m) => m.enabled).map((m) => m.id) as Mode[];
@@ -126,6 +128,7 @@ export function defaultState(firstFight: number): ReportState {
     eventsOff: [],
     find: '',
     openDeaths: [],
+    rankingsSpec: '',
   };
 }
 
@@ -181,6 +184,8 @@ export function parseReportState(search: string, firstFight: number): ReportStat
   const openDeaths = params.get('death');
   if (openDeaths !== null)
     state.openDeaths = openDeaths.split(',').filter((token) => /^[A-Za-z0-9-]{1,80}$/.test(token));
+  const rankingsSpec = params.get('rspec');
+  if (rankingsSpec !== null && /^[A-Za-z ]{1,32}$/.test(rankingsSpec)) state.rankingsSpec = rankingsSpec;
   return state;
 }
 
@@ -206,6 +211,7 @@ export function reportSearch(state: ReportState, firstFight: number): string {
   if (state.eventsOff.length > 0) params.set('eoff', state.eventsOff.join(','));
   if (state.find !== '') params.set('find', state.find);
   if (state.openDeaths.length > 0) params.set('death', state.openDeaths.join(','));
+  if (state.rankingsSpec !== '') params.set('rspec', state.rankingsSpec);
   const query = params.toString();
   return query === '' ? '' : `?${query}`;
 }

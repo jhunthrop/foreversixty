@@ -146,10 +146,12 @@ export function exactSplitSql(
   const rows = rowsSql(kind, window, options);
   const pets = options.pets ?? NO_PETS;
   const scope = `actor = ${quote(guid)}${scopeClause(target)}`;
-  const own =
+  const other = otherSide(kind);
+  const own = `${
     kind === 'damage-taken'
       ? `dest_guid = ${quote(guid)}`
-      : `${ownerExpr('source_guid', pets)} = ${quote(guid)}`;
+      : `${ownerExpr('source_guid', pets)} = ${quote(guid)}`
+  }${scopeClause(target).replaceAll('other_guid', other.guid).replaceAll('other_name', other.name)}`;
   return {
     abilities: `WITH rows AS (${rows})
 SELECT spell_id, any_value(spell_name) AS spell_name, min(spell_school) AS school,

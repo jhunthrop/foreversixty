@@ -21,8 +21,20 @@
   } from '../../lib/rankings/api';
   import type { FightEntry } from '../../lib/report/types';
 
-  let { fight, reportId, encounterSlug }: { fight: FightEntry; reportId: string; encounterSlug: string } =
-    $props();
+  let {
+    fight,
+    reportId,
+    encounterSlug,
+    spec = '',
+    onPatch = () => {},
+  }: {
+    fight: FightEntry;
+    reportId: string;
+    encounterSlug: string;
+    /** '' ranks every spec together; a spec name narrows the board to it. From the url, so a link keeps it. */
+    spec?: string;
+    onPatch?: (patch: { rankingsSpec?: string }) => void;
+  } = $props();
 
   /** The picker's options and the word the value column is filed under: one list, so the
       label on a phone card cannot drift from the metric the visitor chose. */
@@ -33,8 +45,6 @@
   ];
 
   let metric = $state<RankingMetric>('dps');
-  /** '' ranks every spec together; a spec name narrows the board to it. */
-  let spec = $state('');
   let page = $state<RankingsPage | null>(null);
   let status = $state<'idle' | 'loading' | 'ready' | 'failed'>('idle');
   let error = $state('');
@@ -139,7 +149,8 @@
         <select
           id="rankings-spec"
           class="border-line-warm bg-raised rounded-control text-text h-11 px-2 text-[13px] md:h-9"
-          bind:value={spec}
+          value={spec}
+          onchange={(event) => onPatch({ rankingsSpec: (event.currentTarget as HTMLSelectElement).value })}
           data-testid="rankings-spec"
         >
           <option value="">Every spec</option>

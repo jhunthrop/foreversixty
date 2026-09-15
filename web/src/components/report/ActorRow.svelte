@@ -25,6 +25,7 @@
     approximateTitle,
     classColorVar,
     formatAmount,
+    formatDuration,
     formatPercent,
     formatPerSecond,
     parseTitle,
@@ -50,6 +51,7 @@
     approximate = false,
     amountApproximate = false,
     splitUnavailable = false,
+    deadSince = null,
     measure = undefined,
     characterLink = null,
   }: {
@@ -68,6 +70,8 @@
     amountApproximate?: boolean;
     /** Over the night under a target or boss filter: the split by ability cannot be had, so say so. */
     splitUnavailable?: boolean;
+    /** When this player died before the window's end without coming back: the row is a corpse's. */
+    deadSince?: number | null;
     /** Measures this row's split inside the window from the fight's own events. */
     measure?: (actor: Actor) => Promise<ExactSplit>;
     characterLink?: { region: string; ruleset: string } | null;
@@ -126,6 +130,14 @@
     exact === null ? actor.effective : exact.abilities.reduce((sum, ability) => sum + ability.effective, 0),
   );
   const amountMark = $derived(exact !== null || actor.measured || !amountApproximate ? '' : mark);
+  // Overheal is a per-ability figure the summary prorates under any window, so it carries the mark
+  // until the row or the table is measured, unlike the amount, which the series keep exact.
+  const overhealMark = $derived(exact !== null || actor.measured || !approximate ? '' : mark);
+  const shownOverheal = $derived(
+    exact === null
+      ? (actor.overheal ?? 0)
+      : exact.abilities.reduce((sum, ability) => sum + (ability.overheal ?? 0), 0),
+  );
   /** Hits and ticks together: a dot's ticks are its hits. */
   const landed = (ability: Ability): number => ability.hits + ability.ticks;
   /** The abilities worth a line, largest first; a row that only missed still says so. */
@@ -223,6 +235,8 @@
     }
     return [...merged.values()].sort((a, b) => b.total - a.total);
   });
+  /** Below this many ranked kills the bracket is named beside the number at every width: a 0 among 2 is not a 0 among 200. */
+  const THIN_BRACKET = 10;
 </script>
 
 <li class="border-line-soft border-b" data-testid={`actor-${actor.guid}`}>
@@ -249,8 +263,9 @@
     >
       {#if percentile === null}<span class:text-muted={true}
           >{parseFallback === 'none' ? '' : parseFallback}</span
-        >{:else}{Math.round(percentile.percentile)}<span class="text-muted ml-1 md:hidden"
-          >among {percentile.ranked}</span
+        >{:else}{Math.round(percentile.percentile)}<span
+          class="text-muted ml-1"
+          class:md:hidden={percentile.ranked >= THIN_BRACKET}>among {percentile.ranked}</span
         >{/if}
     </span>
 
@@ -270,6 +285,13 @@
       {:else}
         {display.name}
       {/if}
+      {#if deadSince !== null}
+        <span
+          class="text-death label shrink-0"
+          title="Dead before this window ended and not raised: what is here ticked on a corpse"
+          data-testid="row-dead">dead since {formatDuration(deadSince)}</span
+        >
+      {/if}
     </span>
 
     <span class="text-muted tabular hidden text-right font-mono text-[12px] md:inline" data-testid="row-share"
@@ -286,10 +308,11 @@
       {#if overhealPct !== null}
         <span
           class="text-muted text-[11px]"
-          title={approximate
-            ? 'Overhealing, scaled to the window in proportion to the total'
-            : 'Healing that landed on a full health bar'}
-          data-testid="row-overheal">{amountMark}{formatPercent(overhealPct)} over</span
+          title={overhealMark === ''
+            ? 'Healing that landed on a full health bar, and how much'
+            : 'Overhealing, scaled to the window in proportion to the total until it is measured'}
+          data-testid="row-overheal"
+          >{overhealMark}{formatPercent(overhealPct)} over · {overhealMark}{formatAmount(shownOverheal)}</span
         >
       {/if}
     </span>

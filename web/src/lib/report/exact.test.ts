@@ -80,6 +80,7 @@ describe('exactSplitSql', () => {
       `actor = 'Player-1' AND (other_guid IN ('Creature-9') OR other_name IN ('General Kaal'))`,
     );
     expect(sql.abilities).toContain("WHEN 'Pet-7' THEN 'Player-1'");
+    expect(sql.misses).toContain(`dest_guid IN ('Creature-9') OR dest_name IN ('General Kaal')`);
     expect(sql.targets).toContain('other_guid AS guid');
   });
 

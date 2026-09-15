@@ -104,7 +104,11 @@
 
   function fightLabel(fight: FightEntry | null): string {
     if (fight === null) return '';
-    return `${fight.name} · ${formatDuration(fight.duration_ms)} · ${outcomeLabel(fight).toLowerCase()}`;
+    const stretch =
+      window === null
+        ? formatDuration(fight.duration_ms)
+        : `${formatDuration(window.startMs)} to ${formatDuration(Math.min(window.endMs, fight.duration_ms))} of ${formatDuration(fight.duration_ms)}`;
+    return `${fight.name} · ${stretch} · ${outcomeLabel(fight).toLowerCase()}`;
   }
 
   interface Line {

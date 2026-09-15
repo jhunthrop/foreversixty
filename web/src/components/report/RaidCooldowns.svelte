@@ -173,11 +173,20 @@
             onpointerdown={readAt}
           >
             {#each shownPulls as pull, i (pull.start_ms)}
-              <span
-                class="absolute top-0 h-full"
-                style={`left: ${Math.max(pct(pull.start_ms), 0)}%; width: ${Math.min(pct(pull.end_ms), 100) - Math.max(pct(pull.start_ms), 0)}%; ${i % 2 === 1 ? 'background: var(--color-text); opacity: .08;' : ''} ${pull.kill ? '' : 'box-shadow: inset 0 2px var(--color-wipe);'}`}
-                aria-hidden="true"
-              ></span>
+              {#if i % 2 === 1}
+                <span
+                  class="absolute top-0 h-full"
+                  style={`left: ${Math.max(pct(pull.start_ms), 0)}%; width: ${Math.min(pct(pull.end_ms), 100) - Math.max(pct(pull.start_ms), 0)}%; background: var(--color-text); opacity: .08`}
+                  aria-hidden="true"
+                ></span>
+              {/if}
+              {#if !pull.kill}
+                <span
+                  class="bg-wipe absolute top-0 h-[2px]"
+                  style={`left: ${Math.max(pct(pull.start_ms), 0)}%; width: ${Math.min(pct(pull.end_ms), 100) - Math.max(pct(pull.start_ms), 0)}%`}
+                  aria-hidden="true"
+                ></span>
+              {/if}
             {/each}
             {#each row.uses as use, i (`${use.at}-${i}`)}
               <span

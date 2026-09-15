@@ -80,7 +80,7 @@
     </h2>
     <ul class="flex flex-col">
       <li
-        class="text-muted label grid min-h-6 grid-cols-[minmax(0,1fr)_44px_64px] items-center gap-x-2 md:grid-cols-[minmax(150px,1.6fr)_44px_minmax(0,2fr)_64px_56px]"
+        class="text-muted label hidden min-h-6 grid-cols-[minmax(150px,1.6fr)_44px_minmax(0,2fr)_64px_56px] items-center gap-x-2 md:grid"
         aria-hidden="true"
       >
         <span>Name</span>
@@ -114,7 +114,9 @@
           >
           <span class="tabular text-right font-mono">{formatAmount(actor.effective)}</span>
           <span class="text-muted tabular text-right font-mono text-[12px]"
-            >{formatPerSecond(actor.effective, durationMs)}</span
+            >{formatPerSecond(actor.effective, durationMs)}<span class="label font-body ml-1 md:hidden"
+              >per sec</span
+            ></span
           >
         </li>
       {/each}
@@ -128,7 +130,7 @@
     </h2>
     <ul class="flex flex-col">
       <li
-        class="text-muted label grid min-h-6 grid-cols-[minmax(0,1fr)_44px_64px] items-center gap-x-2 md:grid-cols-[minmax(150px,1.6fr)_44px_minmax(0,2fr)_64px_56px]"
+        class="text-muted label hidden min-h-6 grid-cols-[minmax(150px,1.6fr)_44px_minmax(0,2fr)_64px_56px] items-center gap-x-2 md:grid"
         aria-hidden="true"
       >
         <span>Name</span>
@@ -162,7 +164,9 @@
           >
           <span class="tabular text-right font-mono">{formatAmount(actor.effective)}</span>
           <span class="text-muted tabular text-right font-mono text-[12px]"
-            >{formatPerSecond(actor.effective, durationMs)}</span
+            >{formatPerSecond(actor.effective, durationMs)}<span class="label font-body ml-1 md:hidden"
+              >per sec</span
+            ></span
           >
         </li>
       {/each}
@@ -176,7 +180,7 @@
     </h2>
     <ul class="flex flex-col">
       <li
-        class="text-muted label grid min-h-6 grid-cols-[minmax(0,1fr)_44px_64px] items-center gap-x-2 md:grid-cols-[minmax(150px,1.6fr)_44px_minmax(0,2fr)_64px_56px]"
+        class="text-muted label hidden min-h-6 grid-cols-[minmax(150px,1.6fr)_44px_minmax(0,2fr)_64px_56px] items-center gap-x-2 md:grid"
         aria-hidden="true"
       >
         <span>Ability</span>
@@ -199,7 +203,9 @@
           >
           <span class="tabular text-right font-mono">{formatAmount(row.total)}</span>
           <span class="text-muted tabular text-right font-mono text-[12px]"
-            >{formatPerSecond(row.total, durationMs)}</span
+            >{formatPerSecond(row.total, durationMs)}<span class="label font-body ml-1 md:hidden"
+              >per sec</span
+            ></span
           >
         </li>
       {/each}
@@ -221,7 +227,13 @@
           >
             <span class="text-muted tabular font-mono text-[12px]">{formatDuration(death.at_ms)}</span>
             <span class="truncate font-semibold" style={`color: ${classColorVar(death.class)}`}
-              >{splitUnitName(death.name).name}</span
+              >{#if onSelectPlayer}<button
+                  type="button"
+                  class="inline-flex min-h-11 items-center underline-offset-2 hover:underline md:min-h-0"
+                  style={`color: ${classColorVar(death.class)}`}
+                  title="Show only this player"
+                  onclick={() => onSelectPlayer(death.guid)}>{splitUnitName(death.name).name}</button
+                >{:else}{splitUnitName(death.name).name}{/if}</span
             >
             <!-- The killing hit wraps under the name on a phone rather than clipping its number. -->
             <span

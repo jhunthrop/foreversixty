@@ -359,7 +359,7 @@
             <p class="text-[13px]">
               {#if death.auras_held.length > 0}
                 <span class="label text-muted">Up</span>
-                {death.auras_held.map((aura) => aura.name).join(', ')}
+                {death.auras_held.map((aura) => aura.name || `Spell #${aura.spell_id}`).join(', ')}
               {/if}
               {#if death.auras_lost.length > 0}
                 <span class="label text-muted ml-3">Just lost</span>

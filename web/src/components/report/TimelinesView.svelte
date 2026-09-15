@@ -117,9 +117,10 @@
     for (const char of name) hash = (hash * 31 + char.charCodeAt(0)) % 360;
     return hash;
   }
-  /** Every aura on its own band, longest uptime first, so each reads as one line and can be pointed at. */
+  /** Every aura on its own band, in name order, so each reads as one line and can be pointed at. */
   function bandAuras(tracks: AuraTrack[]): AuraBand[] {
-    const ordered = [...tracks].sort((a, b) => b.uptime_ms - a.uptime_ms || a.name.localeCompare(b.name));
+    // By name, not by uptime: an aura keeps its row when the window moves.
+    const ordered = [...tracks].sort((a, b) => a.name.localeCompare(b.name));
     // eslint-disable-next-line svelte/prefer-svelte-reactivity
     const bands = new Map<string, number>();
     return ordered.flatMap((track) => {

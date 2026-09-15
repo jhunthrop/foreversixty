@@ -28,7 +28,7 @@
     {
       term: 'Aura · Buff · Debuff',
       meaning:
-        'An effect sitting on a unit for a while: a buff helps the one it is on, a debuff hurts them. The Buffs tab lists the auras on the raid, the Debuffs tab the ones on the enemies.',
+        'An effect sitting on a unit for a while: a buff helps the one it is on, a debuff hurts them. The Buffs tab lists the helpful auras on anyone in scope, the Debuffs tab the harmful ones: the raid’s on the enemies, and the enemies’ on the raid.',
     },
     {
       term: 'Uptime',
