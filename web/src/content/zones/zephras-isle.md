@@ -9,13 +9,13 @@ sources:
   - label: 'Blizzard, World of Warcraft at BlizzCon 2026'
     url: https://news.blizzard.com/en-us/article/24301145/world-of-warcraft-at-blizzcon-2026-discover-whats-next
     kind: blizzard
-  - label: 'Blizzard, What''s Next panel recap'
+  - label: "Blizzard, What's Next panel recap"
     url: https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap
     kind: blizzard
-  - label: 'Blizzplanet, What''s Next panel transcript'
+  - label: "Blizzplanet, What's Next panel transcript"
     url: https://warcraft.blizzplanet.com/blog/comments/blizzcon-2026-world-of-warcraft-whats-next-panel-transcript/4
     kind: community
-  - label: 'Output Lag, live log of the What''s Next panel'
+  - label: "Output Lag, live log of the What's Next panel"
     url: https://outputlag.com/news/everything-new-world-of-warcraft-forever/
     kind: community
   - label: 'Inven Global, World of Warcraft: Forever coverage'

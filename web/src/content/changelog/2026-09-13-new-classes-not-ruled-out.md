@@ -6,10 +6,10 @@ note: 'The survey numbers and the quote come from live coverage of the panel, no
 updated: 2026-09-14
 confidence: confirmed
 sources:
-  - label: 'Output Lag, live log of the What''s Next panel'
+  - label: "Output Lag, live log of the What's Next panel"
     url: https://outputlag.com/news/everything-new-world-of-warcraft-forever/
     kind: community
-  - label: 'Wowhead, What''s Next liveblog'
+  - label: "Wowhead, What's Next liveblog"
     url: https://www.wowhead.com/forever/news/world-of-warcraft-forever-whats-next-liveblog-382824
     kind: community
 ---

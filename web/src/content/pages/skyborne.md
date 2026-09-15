@@ -45,14 +45,14 @@ The split is a story point as much as a mechanic. The Skyborne share an ancestry
 
 Six classes across the race, four of them shared:
 
-| Class | Horde Skyborne | Alliance Skyborne |
-| --- | --- | --- |
-| Warrior | Yes | Yes |
-| Hunter | Yes | Yes |
-| Rogue | Yes | Yes |
-| Druid | Yes | Yes |
-| Shaman | Yes | No |
-| Mage | No | Yes |
+| Class   | Horde Skyborne | Alliance Skyborne |
+| ------- | -------------- | ----------------- |
+| Warrior | Yes            | Yes               |
+| Hunter  | Yes            | Yes               |
+| Rogue   | Yes            | Yes               |
+| Druid   | Yes            | Yes               |
+| Shaman  | Yes            | No                |
+| Mage    | No             | Yes               |
 
 Druids get sky-blue forms created specifically for the race. Two hands-on reports from the BlizzCon demo flagged the Shaman and Mage split as something to watch through testing, since a faction-locked class on a single race has no precedent in Classic.
 
@@ -60,13 +60,13 @@ Druids get sky-blue forms created specifically for the race. Two hands-on report
 
 Every race in Forever has two active and two passive racials. Skyborne share both passives, and the Alliance and Horde halves differ on the second active.
 
-| Racial | Type | What it does |
-| --- | --- | --- |
-| Walk on Air | Active | Glide downward through the air for 10 seconds while steering, on a 2-minute cooldown |
-| Read Ley Line (Alliance) | Active | 100% increased Health and Mana regeneration for 15 seconds, or 15 minutes if a ley line is nearby |
-| Skysight (Horde) | Active | 10% movement and mounted speed for 30 seconds, or 15 minutes near a convergence of elements |
-| Wind Blessed | Passive | 1% increased melee, ranged, and spellcasting haste |
-| Elemental Insight | Passive | 5% increased damage against Elementals |
+| Racial                   | Type    | What it does                                                                                      |
+| ------------------------ | ------- | ------------------------------------------------------------------------------------------------- |
+| Walk on Air              | Active  | Glide downward through the air for 10 seconds while steering, on a 2-minute cooldown              |
+| Read Ley Line (Alliance) | Active  | 100% increased Health and Mana regeneration for 15 seconds, or 15 minutes if a ley line is nearby |
+| Skysight (Horde)         | Active  | 10% movement and mounted speed for 30 seconds, or 15 minutes near a convergence of elements       |
+| Wind Blessed             | Passive | 1% increased melee, ranged, and spellcasting haste                                                |
+| Elemental Insight        | Passive | 5% increased damage against Elementals                                                            |
 
 Walk on Air, Wind Blessed, and Elemental Insight were seen by two outlets in the demo. Read Ley Line is reported by both, but only one transcription separates the Horde version into Skysight, so the Horde and Alliance difference is single-source and has not been stated by Blizzard.
 

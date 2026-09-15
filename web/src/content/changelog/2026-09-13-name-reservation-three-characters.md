@@ -2,7 +2,7 @@
 title: 'Name reservation covers up to three characters, first come first served.'
 date: 2026-09-13
 kind: community
-note: 'The three-character figure is reported by one outlet and is not in Blizzard''s own pre-purchase post.'
+note: "The three-character figure is reported by one outlet and is not in Blizzard's own pre-purchase post."
 updated: 2026-09-14
 confidence: single-source
 sources:
