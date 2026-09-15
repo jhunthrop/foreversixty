@@ -367,7 +367,7 @@ func (f *Fight) snapshotMarkers() []Marker {
 // a player eating do not.
 func hostileCombat(e event.Event) bool {
 	switch e.Kind {
-	case event.Damage, event.Missed, event.Absorbed, event.PartyKill:
+	case event.Damage, event.DamageLanded, event.Missed, event.Absorbed, event.PartyKill:
 	default:
 		return false
 	}

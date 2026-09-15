@@ -23,6 +23,20 @@ type DamageRef struct {
 	MaxHP      int64  `json:"max_hp,omitempty"`
 }
 
+// HealRef is one heal on the dying player as the deaths view shows it: the
+// question a healer asks of every death is whether anyone was healing them,
+// and the damage list alone cannot answer it.
+type HealRef struct {
+	AtMS       int64  `json:"at_ms"`
+	SourceGUID string `json:"source_guid"`
+	SourceName string `json:"source_name"`
+	SpellID    int64  `json:"spell_id"`
+	SpellName  string `json:"spell_name"`
+	Amount     int64  `json:"amount"`
+	Overheal   int64  `json:"overheal,omitempty"`
+	Absorbed   int64  `json:"absorbed,omitempty"`
+}
+
 // AuraRef is one aura as the deaths and combatants views show it.
 type AuraRef struct {
 	SpellID    int64  `json:"spell_id"`
@@ -41,9 +55,12 @@ type Death struct {
 	AtMS        int64       `json:"at_ms"`
 	KillingBlow *DamageRef  `json:"killing_blow,omitempty"`
 	Last        []DamageRef `json:"last"`
-	AurasHeld   []AuraRef   `json:"auras_held"`
-	AurasLost   []AuraRef   `json:"auras_lost"`
-	ReleaseMS   int64       `json:"release_ms,omitempty"`
+	// Heals is the last DeathWindow heals landed on the player before the
+	// death, in order, alongside Last's damage.
+	Heals     []HealRef `json:"heals"`
+	AurasHeld []AuraRef `json:"auras_held"`
+	AurasLost []AuraRef `json:"auras_lost"`
+	ReleaseMS int64     `json:"release_ms,omitempty"`
 }
 
 type death struct {
@@ -151,9 +168,46 @@ type resourceTrack struct {
 	haveLast bool
 }
 
-// addDeaths records deaths, the last damage before each one, and the auras
-// the player was holding and had just lost.
+// addDeaths records deaths, the last damage and heals before each one, and
+// the auras the player was holding and had just lost.
+//
+// A melee swing arrives twice: SWING_DAMAGE, whose advanced block describes
+// the attacker, and SWING_DAMAGE_LANDED, whose block describes the target
+// and so carries the health the hit left. Counting both doubled every
+// melee hit in the recap; the landed line now only fills in the health on
+// the swing it repeats.
 func (a *Accumulator) addDeaths(e event.Event) {
+	if e.Kind == event.DamageLanded && e.Dest.GUID != "" {
+		if e.Adv.OK && e.Adv.InfoGUID == e.Dest.GUID {
+			q := a.recent[e.Dest.GUID]
+			for i := len(q) - 1; i >= 0; i-- {
+				if q[i].SourceGUID == e.Source.GUID && q[i].Amount == e.Amount.V && q[i].SpellID == e.Spell.ID {
+					if q[i].HPAfter == 0 && q[i].MaxHP == 0 {
+						q[i].HPAfter, q[i].MaxHP = e.Adv.CurrentHP, e.Adv.MaxHP
+					}
+					break
+				}
+			}
+		}
+		return
+	}
+	if e.Kind == event.Heal && e.Dest.GUID != "" {
+		ref := HealRef{
+			AtMS:       a.ms(e.Time),
+			SourceGUID: e.Source.GUID,
+			SourceName: a.name(e.Source.GUID),
+			SpellID:    e.Spell.ID,
+			SpellName:  e.Spell.Name,
+			Amount:     e.Amount.V,
+			Overheal:   max(e.Overheal.V, 0),
+			Absorbed:   e.Absorbed.V,
+		}
+		q := append(a.recentHeals[e.Dest.GUID], ref)
+		if len(q) > a.opt.DeathWindow {
+			q = q[len(q)-a.opt.DeathWindow:]
+		}
+		a.recentHeals[e.Dest.GUID] = q
+	}
 	if e.Kind == event.Damage && e.Dest.GUID != "" {
 		ref := DamageRef{
 			AtMS:       a.ms(e.Time),
@@ -186,6 +240,7 @@ func (a *Accumulator) addDeaths(e event.Event) {
 		}
 	}
 	d.Last = append([]DamageRef(nil), a.recent[e.Dest.GUID]...)
+	d.Heals = append([]HealRef(nil), a.recentHeals[e.Dest.GUID]...)
 	if n := len(d.Last); n > 0 {
 		kb := d.Last[n-1]
 		d.KillingBlow = &kb
@@ -223,8 +278,12 @@ func (a *Accumulator) addDeaths(e event.Event) {
 	if d.Last == nil {
 		d.Last = []DamageRef{}
 	}
+	if d.Heals == nil {
+		d.Heals = []HealRef{}
+	}
 	a.deaths = append(a.deaths, d)
 	a.recent[e.Dest.GUID] = nil
+	a.recentHeals[e.Dest.GUID] = nil
 }
 
 func sortAuraRefs(rs []AuraRef) {
@@ -420,6 +479,7 @@ func (a *Accumulator) deathRows() []Death {
 	for _, d := range a.deaths {
 		row := d.Death
 		row.Last = copySlice(d.Last)
+		row.Heals = copySlice(d.Heals)
 		row.AurasHeld = copySlice(d.AurasHeld)
 		row.AurasLost = copySlice(d.AurasLost)
 		if kb := d.KillingBlow; kb != nil {

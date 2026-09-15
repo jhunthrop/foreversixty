@@ -18,6 +18,10 @@ const (
 	ParseError
 	Header
 	Damage
+	// DamageLanded is a SWING_DAMAGE_LANDED line: the same swing SWING_DAMAGE
+	// already reported, written again at impact with the target's advanced
+	// block. It is never added to a total, only read for the target's health.
+	DamageLanded
 	Heal
 	Missed
 	Absorbed
@@ -54,7 +58,7 @@ const (
 
 var kindNames = map[Kind]string{
 	Unknown: "unknown", ParseError: "parse_error", Header: "header",
-	Damage: "damage", Heal: "heal", Missed: "missed", Absorbed: "absorbed",
+	Damage: "damage", DamageLanded: "damage_landed", Heal: "heal", Missed: "missed", Absorbed: "absorbed",
 	HealAbsorbed: "heal_absorbed", Energize: "energize",
 	AuraApplied: "aura_applied", AuraRemoved: "aura_removed",
 	AuraRefresh: "aura_refresh", AuraBroken: "aura_broken", AuraDose: "aura_dose",

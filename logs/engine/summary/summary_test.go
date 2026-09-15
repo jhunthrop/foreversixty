@@ -101,6 +101,13 @@ func script() []event.Event {
 			ExtraUnit:  event.Unit{GUID: healer, Flags: 0x512},
 			ExtraSpell: event.Spell{ID: 17, Name: "Power Word: Shield"},
 			Amount:     event.OptInt{V: 300, OK: true}, Total: event.OptInt{V: 450, OK: true}},
+		dmg(15.5, boss, tank, 0, "", 900, -1),
+		// The same swing, written again at impact with the tank's health on it.
+		// It must not become a second hit anywhere; it only fills in the health.
+		{Time: at(15.5), Kind: event.DamageLanded, Name: "SWING_DAMAGE_LANDED",
+			Source: event.Unit{GUID: boss, Flags: 0xa48}, Dest: event.Unit{GUID: tank, Flags: 0x512},
+			Amount: event.OptInt{V: 900, OK: true}, Overkill: event.OptInt{V: -1, OK: true},
+			Adv: event.Advanced{OK: true, InfoGUID: tank, CurrentHP: 5000, MaxHP: 20000}},
 		dmg(16, boss, tank, 334660, "Anima Lash", 5000, 1200),
 		{Time: at(16), Kind: event.Death, Name: "UNIT_DIED",
 			Dest: event.Unit{GUID: tank, Flags: 0x512}},
@@ -246,8 +253,8 @@ func TestDamageTakenAndTheAbsorbCredit(t *testing.T) {
 	if !ok {
 		t.Fatal("no tank row in damage taken")
 	}
-	if tk.Effective != 5800 { // 800 + 5000
-		t.Errorf("tank damage taken = %d, want 5800", tk.Effective)
+	if tk.Effective != 6700 { // 800 + 900 (the swing, once, not its landed line too) + 5000
+		t.Errorf("tank damage taken = %d, want 6700", tk.Effective)
 	}
 	if tk.Abilities[0].SpellID != 334660 || tk.Abilities[0].Effective != 5800 {
 		t.Errorf("abilities are sorted by effective damage, got %+v", tk.Abilities[0])
@@ -289,11 +296,17 @@ func TestDeathsKeepTheKillingBlowAndTheAurasHeld(t *testing.T) {
 	if d.KillingBlow == nil || d.KillingBlow.Amount != 5000 || d.KillingBlow.Overkill != 1200 {
 		t.Fatalf("killing blow = %+v", d.KillingBlow)
 	}
-	if len(d.Last) != 2 {
-		t.Errorf("last damage = %d events, want the two hits on the tank", len(d.Last))
+	if len(d.Last) != 3 {
+		t.Fatalf("last damage = %d events, want the three hits on the tank (the landed line is not a fourth)", len(d.Last))
+	}
+	if d.Last[1].HPAfter != 5000 || d.Last[1].MaxHP != 20000 {
+		t.Errorf("the swing should carry the health its landed line reported, got %+v", d.Last[1])
 	}
 	if d.Last[0].SpellName != "Anima Lash" {
 		t.Errorf("first recorded hit = %+v", d.Last[0])
+	}
+	if len(d.Heals) != 1 || d.Heals[0].SpellName != "Heal" || d.Heals[0].Amount != 1000 || d.Heals[0].Overheal != 400 {
+		t.Errorf("heals before the death = %+v, want the healer's one Heal on the tank", d.Heals)
 	}
 }
 
@@ -429,10 +442,12 @@ func TestExchangeRowsBreakTiesOnTheFullMapKey(t *testing.T) {
 
 func TestResourcesFromTheAdvancedBlock(t *testing.T) {
 	_, _, s := build(t)
-	if len(s.Resources) != 1 {
+	// The mage's energize and advanced blocks, plus the tank's own from the swing that
+	// landed on them: a landed line's block describes the target, power included.
+	if len(s.Resources) != 2 {
 		t.Fatalf("resources = %+v", s.Resources)
 	}
-	r := s.Resources[0]
+	r := s.Resources[1]
 	if r.GUID != mage || r.PowerType != 0 || r.Gained != 50 {
 		t.Errorf("resource = %+v", r)
 	}

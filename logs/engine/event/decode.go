@@ -181,8 +181,11 @@ func (d *Decoder) decodeStandard(e Event, ln lexer.Line, prefix, suffix string) 
 	rest := p[i:]
 
 	switch suffix {
-	case "_DAMAGE", "_DAMAGE_LANDED":
+	case "_DAMAGE":
 		e.Kind = Damage
+		readDamage(&e, rest, spec)
+	case "_DAMAGE_LANDED":
+		e.Kind = DamageLanded
 		readDamage(&e, rest, spec)
 	case "_HEAL":
 		e.Kind = Heal

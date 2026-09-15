@@ -107,16 +107,17 @@ type Accumulator struct {
 	healingDone  map[string]*actor
 	healingTaken map[string]*actor
 
-	active     map[string]*activity
-	deaths     []*death
-	recent     map[string][]DamageRef
-	auras      map[auraKey]*auraTrack
-	casts      map[castKey]*castRow
-	pending    map[castKey]time.Time
-	exchanges  map[exchangeKey]*ExchangeRow
-	resources  map[resourceKey]*resourceTrack
-	threat     map[string]float64
-	combatants map[string]*event.Combatant
+	active      map[string]*activity
+	deaths      []*death
+	recent      map[string][]DamageRef
+	recentHeals map[string][]HealRef
+	auras       map[auraKey]*auraTrack
+	casts       map[castKey]*castRow
+	pending     map[castKey]time.Time
+	exchanges   map[exchangeKey]*ExchangeRow
+	resources   map[resourceKey]*resourceTrack
+	threat      map[string]float64
+	combatants  map[string]*event.Combatant
 }
 
 // New returns an accumulator for one fight.
@@ -129,6 +130,7 @@ func New(o Options) *Accumulator {
 		healingTaken: map[string]*actor{},
 		active:       map[string]*activity{},
 		recent:       map[string][]DamageRef{},
+		recentHeals:  map[string][]HealRef{},
 		auras:        map[auraKey]*auraTrack{},
 		casts:        map[castKey]*castRow{},
 		pending:      map[castKey]time.Time{},
