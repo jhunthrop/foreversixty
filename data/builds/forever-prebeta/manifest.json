@@ -1,0 +1,53 @@
+{
+ "build": "forever-prebeta",
+ "counts": {
+  "classes": 9,
+  "talents": 470,
+  "talents_with_prereq": 70,
+  "trees": 27
+ },
+ "derived_from": "1.15.9.69722",
+ "files": {
+  "classes.json": "b154118d07e977509fde4e8450b64e8804d4c77f8706aadfebe15fee711e5ff7",
+  "combos.json": "5253b782f333c3d77dc14ca0a35f5438b4796dd025711533bd4513f63bfc09fb",
+  "dungeons.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+  "items.json": "63846bc86c578b84668ee8931819109edef99bf5fd4cc5b879bfa2e3f5f3e6db",
+  "items/druid.json": "71808929c93e8ae5065a855cd12f728ef89f6502acadb11c82d3de1bb567d29d",
+  "items/hunter.json": "fe0742dbe6574918b44f7e5e4a682438f8dab5b9df965b0c3e03d522d661293e",
+  "items/mage.json": "116685ae752d59a978760b5c0e7d153f3353c1e76547a9fd4cc3159b6c4f6e80",
+  "items/paladin.json": "17247cd91a54314d92a6fd10719e771fd310abca898bc8fa3ba6fd772419bba1",
+  "items/priest.json": "2226dc316d664bb0fb40d7d32ceabb00dfe8f0317bb9e1861175b9a942d29f99",
+  "items/rogue.json": "0c3f2dc4dec1202021e1eba5e5b29e2fa03915bbae61bcf3dab7b9f14d1e9745",
+  "items/shaman.json": "97842f71144e236bb6e5bfabcf43a5612f0732e9b1b0bd6f5ce57b173777041e",
+  "items/warlock.json": "b24c1106c10a4e7df2d040243aa435311665f9a13077df8ca3f6e1c06a3ef369",
+  "items/warrior.json": "2fee13e33133a2d9ccfe4515d0fc38810605115927566a405a8aa9e2d1328005",
+  "races.json": "eb2b3e3eb21468f8a704abb2e99c5feb85d6dbe33f7503e988f4108975927cdf",
+  "sets.json": "49311aeec411d67b550a534af16ac1f4f96c43b093a93ebb917bbc5272549508",
+  "talents.json": "0673e20e45e3f15d0855c865adf70d04bf2d11da26829508e93555317bd4b063",
+  "talents/druid.json": "90acd7f1744acf243cff0093c0b02151c26dc194bf8ad6ba2d55c6c174d8b9b8",
+  "talents/hunter.json": "d0aff3c802a785b8a6e528d91548b400afda5bfcd01b97debfa2d245ab4b529d",
+  "talents/mage.json": "8e5c862d411045733867622e56ffdb5d6e379548617a7e19083bc4fab64bd1c8",
+  "talents/paladin.json": "a9a7f97e2e3af774b0415c123e58eb046f52095eaba2d032e263cafa2fb9bca7",
+  "talents/priest.json": "eba7cf8ee9ad3aeff9f15774a60267c843ee094a6cddaa31a49fe6ba82ef254b",
+  "talents/rogue.json": "93053831661cadd21bf675534715a735893929862643aefd8e634575edba492a",
+  "talents/shaman.json": "305b29c746f6e66084cf180e0376b92d5373a6f669b053db9a17d4d825bcdaad",
+  "talents/warlock.json": "7fa5d3afc8debc1c3ea7cbc07dc726d8ab36d1d788d936bbe1539591ec9e0949",
+  "talents/warrior.json": "5f88ceb40b1cafb47f1c6ba4d1e1b5f8a7f10d3762ba389b3d30cc3acc32e5c6"
+ },
+ "kind": "forever-prebeta",
+ "note": "Talents are real Forever data from Wowhead's classicplus environment. Everything else is Classic Era, carried over so the planner can render. Replace the whole build from the beta client on 2026-09-17.",
+ "product": "wow_forever_prebeta",
+ "provenance": {
+  "classes.json": "classic-era",
+  "combos.json": "classic-era",
+  "dungeons.json": "classic-era",
+  "icons/": "classic-era",
+  "items.json": "classic-era",
+  "items/": "classic-era",
+  "races.json": "classic-era",
+  "sets.json": "classic-era",
+  "talents.json": "forever",
+  "talents/": "forever"
+ },
+ "snapshot": "data/raw-forever/wowhead-talents-2026-09-14.json"
+}

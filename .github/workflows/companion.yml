@@ -58,7 +58,7 @@ jobs:
         # broken by a change to the headless side.
         run: |
           sudo apt-get update
-          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev libayatana-appindicator3-dev
           go build ./...
 
   build:
@@ -96,7 +96,7 @@ jobs:
         if: matrix.goos == 'linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev libayatana-appindicator3-dev
 
       - name: Windows C toolchain
         if: matrix.goos == 'windows'

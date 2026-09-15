@@ -1,6 +1,8 @@
 // web/tests/e2e/shared-build.spec.ts
 import { expect, test } from '@playwright/test';
 
+import { ACTIVE_BUILD } from './support/active-build';
+
 // The real /b/:id is server-rendered by the Go API and reaches the browser through the
 // Worker proxy (Task 12). Playwright serves the static site only, so the page is stubbed
 // with exactly the markup the interface contract specifies -- including the island script
@@ -9,7 +11,7 @@ const RECORD = {
   id: 'k7x2qm4a',
   class_id: 1,
   race_id: 5,
-  tree_version: '1.15.9.69722',
+  tree_version: ACTIVE_BUILD,
   point_order: [1001, 1001, 1001],
   gear: {},
   title: 'Arms leveling',
