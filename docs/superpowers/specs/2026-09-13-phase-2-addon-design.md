@@ -93,6 +93,9 @@ addon and site versions involved.
 the tree with the most points; ties resolve to the first tree. Score = Σ weight × stat; shown in
 the planner's gear panel and used by the addon. Weights are opinions, labeled as such on the site
 with their sources, and revised as the beta reveals Forever's changes.
+Once the simulator's engine produces weights for a spec (simulator design, section 4.7), the
+curated entry for that spec is replaced by the sim-derived one, with the engine version as its
+source; curated weights remain for specs the sim has not validated.
 
 Stat vocabulary (Deep Dive panel, Sept 13): Forever merges melee, ranged, and spell hit into one
 `hit` stat and the three crit chances into one `crit`; adds `expertise` (reduces the target's parry
@@ -107,7 +110,9 @@ per-school hit or crit map onto the merged stat until the Sept 17 beta data repl
 The Phase 3 companion writes `ForeverSixtyInbox.lua` beside `ForeverSixty.lua` in each account's
 `SavedVariables`, assigning a global the addon's TOC must declare as a saved variable
 (`## SavedVariables: ForeverSixtyDB, ForeverSixtyInbox`). The addon reads the inbox at login for
-gear-upgrade data and never writes it. The companion also reads `ruleset` from the addon's export
+gear-upgrade data and never writes it. The planner page gets a "Send to my addon" control that
+calls `POST /v1/addon/inbox` (session; the API route exists from Phase 3) with the build id, so
+a signed-in player with a paired companion sees the build in game on the next inbox pass. The companion also reads `ruleset` from the addon's export
 record when present and `realm` otherwise, so the addon writes `ruleset` from the game client once
 the beta shows which API exposes it.
 

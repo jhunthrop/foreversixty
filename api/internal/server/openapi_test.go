@@ -29,6 +29,17 @@ func TestOpenAPIListsEveryRoute(t *testing.T) {
 		"/health", "/version",
 		"/v1/subscribe", "/v1/subscribe/confirm", "/v1/subscribe/unsubscribe",
 		"/v1/builds", "/v1/builds/{id}", "/b/{id}", "/b/{id}/card.png",
+		"/v1/auth/battlenet/start", "/v1/auth/battlenet/callback",
+		"/v1/auth/email", "/v1/auth/email/callback", "/v1/auth/logout", "/v1/sessions", "/v1/me",
+		"/v1/devices/pair", "/v1/devices/claim", "/v1/devices", "/v1/devices/{id}",
+		"/v1/reports", "/v1/reports/{id}", "/v1/reports/{id}/visibility",
+		"/v1/reports/{id}/access", "/v1/reports/{id}/files/{path}",
+		"/v1/reports/{id}/fights/{n}", "/v1/reports/{id}/fights/{n}/live",
+		"/v1/reports/{id}/raw", "/v1/reports/{id}/complete",
+		"/v1/uploads", "/v1/uploads/{upload_id}/complete",
+		"/v1/rankings", "/v1/rankings/percentile", "/v1/rankings/guilds",
+		"/v1/characters/{region}/{ruleset}/{name}", "/v1/guilds/{region}/{ruleset}/{name}",
+		"/v1/addon/exports", "/v1/addon/inbox", "/reports/{id}/card.png",
 	}
 	for _, p := range requiredPaths {
 		if _, ok := paths[p]; !ok {
@@ -44,7 +55,8 @@ func TestOpenAPIListsEveryRoute(t *testing.T) {
 	if !ok {
 		t.Fatal("openapi.yaml missing 'components.schemas'")
 	}
-	for _, s := range []string{"Envelope", "Build", "BuildInput"} {
+	for _, s := range []string{"Envelope", "Build", "BuildInput", "Report", "FightEntry",
+		"MetricsRow", "RankingRow"} {
 		if _, ok := schemas[s]; !ok {
 			t.Errorf("openapi.yaml missing schema %s", s)
 		}

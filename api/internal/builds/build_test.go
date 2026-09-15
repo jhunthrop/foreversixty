@@ -131,3 +131,20 @@ func TestSlotsAndItemSlot(t *testing.T) {
 		}
 	}
 }
+
+func TestValidIDIsTheShapeIDProduces(t *testing.T) {
+	id, err := ID(Input{ClassID: 1, RaceID: 1, TreeVersion: "1.15.0", PointOrder: []int{1}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !ValidID(id) {
+		t.Fatalf("ID() produced %q, which ValidID rejects", id)
+	}
+	for _, s := range []string{
+		"", "abcdefg", "abcdefghi", "abcdef01", "ABCDEFGH", "abcd-efg", "abcdef g",
+	} {
+		if ValidID(s) {
+			t.Errorf("ValidID(%q) = true, want false", s)
+		}
+	}
+}

@@ -178,6 +178,47 @@ func TestStoreSaveKeepsAnEmptyTitleNull(t *testing.T) {
 	}
 }
 
+func TestStoreGetManyReadsSeveralRowsInOneQuery(t *testing.T) {
+	s := testStore(t)
+	ctx := context.Background()
+	one, _, err := s.Save(ctx, sampleBuild(t, "one"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	other, err := New(Input{ClassID: 1, RaceID: 1, TreeVersion: "test-1", PointOrder: []int{201}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	two, _, err := s.Save(ctx, other)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// A missing id is simply absent from the result, not an error: the
+	// caller (the addon inbox) treats that as "no code for this entry".
+	got, err := s.GetMany(ctx, []string{one.ID, two.ID, "nosuchid"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(got) != 2 {
+		t.Fatalf("got %d rows, want 2: %+v", len(got), got)
+	}
+	if got[one.ID].Title != "one" || got[two.ID].ClassID != 1 {
+		t.Fatalf("got = %+v", got)
+	}
+}
+
+func TestStoreGetManyOfNoIDsIsEmptyAndMakesNoQuery(t *testing.T) {
+	s := testStore(t)
+	got, err := s.GetMany(context.Background(), nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(got) != 0 {
+		t.Fatalf("got %+v, want empty", got)
+	}
+}
+
 func TestStoreAddViewsIncrementsEachID(t *testing.T) {
 	s := testStore(t)
 	ctx := context.Background()

@@ -32,7 +32,24 @@ make run
 | `API_BASE_URL` | yes | — | e.g. `https://api.foreversixty.gg`; used to build the confirmation link. |
 | `MAIL_FROM` | no | `Forever Sixty <hello@foreversixty.gg>` | `From:` address for outgoing mail. |
 | `TRUSTED_PROXY_HOPS` | no | `1` | How many reverse proxies in front of this service (e.g. Cloud Run) are trusted to append to `X-Forwarded-For`; used to resolve the real client IP for rate limiting. `0` ignores `X-Forwarded-For` entirely and rate-limits by the raw connection address. Must be an integer >= 0. |
+| `R2_ACCOUNT_ID` | no | — | Cloudflare account id; the S3 endpoint is derived from it. |
+| `R2_ACCESS_KEY_ID` | no | — | R2 API token id (Object Read & Write). |
+| `R2_SECRET_ACCESS_KEY` | no | — | R2 API token secret. |
+| `R2_BUCKET` | no | `foreversixty-logs` | The bucket every report file lives in. |
+| `R2_ENDPOINT` | no | derived | S3 endpoint override; the tests point it at an in-process fake. |
+| `SESSION_COOKIE_DOMAIN` | no | `.foreversixty.gg` | `Domain` on `fs_session` and `fs_csrf`. Set it to `none` for a local `http://localhost` run, which makes the cookies host-only. |
+| `BNET_CLIENT_ID` | no | — | Battle.net OAuth client. Without the id, the secret, and the redirect URL, only the email magic link is offered. |
+| `BNET_CLIENT_SECRET` | no | — | |
+| `BNET_REDIRECT_URL` | no | — | Registered for production and for `http://localhost:8080/v1/auth/battlenet/callback`. |
+| `PARSE_JOB_NAME` | no | `parse-report` | The Cloud Run job that parses a whole-file upload. |
+| `PARSE_JOB_REGION` | no | `us-east1` | |
+| `PARSE_JOB_PROJECT` | no | `foreversixty` | The Google Cloud project the job lives in. |
 | `TREE_DATA_DIR` | no | `/data` | Directory holding one subdirectory per client build (`<build>/talents/*.json`, `<build>/items/*.json`, `<build>/{sets,classes,races,combos}.json`). The Docker image copies `data/builds` here. A missing or pre-Phase-1 directory is logged at startup and simply has no data: the service still serves health, version, and subscribe, and every save fails validation on `tree_version`. |
+
+Every Phase 3 variable is optional and degrades honestly: with no R2 credentials the service
+serves everything that does not touch object storage and logs that the ingest, upload, and
+report-file routes are not mounted; with no Battle.net client it offers the email magic link
+alone; with no Cloud Run credentials it serves the live ingest but not whole-file uploads.
 
 ### Migrations and connection poolers
 
@@ -51,6 +68,13 @@ Tests need a Postgres instance:
 docker compose -f docker-compose.test.yml up -d   # Postgres for tests on host port 5434
 export TEST_DATABASE_URL='postgres://forever:forever@localhost:5434/forever_test?sslmode=disable'
 make test
+```
+
+The database-backed packages share that one Postgres and each truncates the tables it uses, so
+the whole suite runs with `-p 1`:
+
+```bash
+go test -race -cover -p 1 ./...
 ```
 
 ## Build endpoints
@@ -83,6 +107,115 @@ the site has not been built, so the api suite never depends on the web build. Af
 (cd ../web && npm run build) && go test ./internal/site -run TestChromeSnapshot -update
 ```
 
+## The logs product
+
+The API is the ingest, the index, and the rankings for combat logs. The engine itself is the
+`logs/` module, which this module requires through a `replace ../logs`; the repository root's
+`go.work` lists both. `internal/engine` is the one place the engine is configured, so the
+companion, the whole-file job, and the ingest's verification all parse the same way.
+
+| Route | Notes |
+|---|---|
+| `POST /v1/reports` | Starts a live report. Device or session. |
+| `PUT /v1/reports/{id}/fights/{n}` | One closed fight as multipart: `summary`, `events` (Parquet), `metrics`, `raw_range`. The API rebuilds the metrics from the events and answers 409 with `error.fields.metrics` when they disagree. 200 when the same fight with the same raw hash is already stored. |
+| `PUT /v1/reports/{id}/fights/{n}/live` | The running summary while a fight is open. |
+| `PUT /v1/reports/{id}/raw?offset=N` | One zstd chunk of the original log, at most 8 MiB, hashed by `X-Raw-SHA256` over the decoded bytes. Offsets are report-relative. |
+| `POST /v1/reports/{id}/complete` | Ends the report and schedules the raw-sample check. |
+| `POST /v1/uploads`, `POST /v1/uploads/{id}/complete` | Signed R2 multipart URLs for a whole-file upload, then the parse job. |
+| `GET /v1/reports/{id}` | The report, its fights, and `data_base_url`. |
+| `GET /v1/reports/{id}/visibility` | What the site Worker asks before serving files off the bucket. Cached 60 s. |
+| `GET /v1/reports/{id}/access`, `GET /v1/reports/{id}/files/{path}` | A private or guild report's files, as signed redirects valid ten minutes. |
+| `GET /v1/rankings`, `/v1/rankings/percentile`, `/v1/rankings/guilds` | Leaderboards and percentiles, cached 30 s. |
+| `GET /v1/characters/{region}/{ruleset}/{name}`, `GET /v1/guilds/...` | Character and guild pages. |
+| `GET /reports/{id}/card.png` | The unfurl card, cached five minutes — `private` and `Vary: Cookie` when the report is not public or unlisted, so a shared cache never serves one reader's card to another. |
+
+Sign-in is Battle.net first and an email magic link as the fallback; the companion pairs with a
+code from `POST /v1/devices/pair` and uploads with `Authorization: Bearer fsd_…`. Browser
+sessions are opaque cookies with double-submit CSRF (`fs_csrf` plus `X-CSRF-Token`); device
+tokens are exempt, because a companion is not a browser.
+
+### What the `anonymize` flag covers
+
+`PATCH /v1/me {"anonymize": true}` replaces your name on report pages: `owner.battletag` in
+`GET /v1/reports/{id}` reads as `user-<id>` instead of your battletag, for every reader of
+every report you own. That is its whole scope today.
+
+It does **not** touch ranking rows. A row in `/v1/rankings`, on a character page or on a guild
+page still carries the character name you logged under — as `player.name` and inside
+`player.key`, which is `<region>/<ruleset>/<name-slug>`. The key is the character's identity:
+the region and ruleset filters, the character page's own URL, and the links between a
+leaderboard and a character page are all keyed on it, so substituting a pseudonym for the name
+while publishing the key beside it would look like privacy without being any.
+
+Separately, and regardless of the flag: no route shows an account's email address to anyone
+but that account, on `GET /v1/me`. An
+account that signed in by magic link has no battletag, and a report owner with no battletag
+reads as `user-<id>` whether or not they set `anonymize`.
+
+### The parse job
+
+A whole-file upload is parsed by the same image, run as a Cloud Run job with different
+arguments. Create it once:
+
+```bash
+gcloud run jobs create parse-report \
+  --image us-east1-docker.pkg.dev/foreversixty/api/api:latest \
+  --region us-east1 --cpu 2 --memory 2Gi --task-timeout 30m \
+  --args parse-report \
+  --set-env-vars "$(tr '\n' ',' < .env.job)"
+```
+
+The API executes it per upload through the Cloud Run Admin API, which needs `run.developer` on
+the job for the API's runtime service account:
+
+```bash
+gcloud run jobs add-iam-policy-binding parse-report --region us-east1 \
+  --member "serviceAccount:<api runtime service account>" --role roles/run.developer
+```
+
+Deploys update the job's image automatically (see `.github/workflows/api.yml`); the job needs
+the same secrets and variables as the service, minus `PORT`.
+
+### The bucket's CORS rule
+
+A whole-file upload goes straight from the browser to R2 through the signed part URLs, and the
+browser has to read each part's `ETag` back to complete the upload. Both need a CORS rule on the
+bucket, applied once with the AWS CLI pointed at R2:
+
+```bash
+cat > /tmp/logs-cors.json <<'JSON'
+{"CORSRules":[{
+  "AllowedOrigins":["https://foreversixty.gg"],
+  "AllowedMethods":["PUT","GET","HEAD"],
+  "AllowedHeaders":["content-type","content-length"],
+  "ExposeHeaders":["ETag"],
+  "MaxAgeSeconds":3600
+}]}
+JSON
+AWS_ACCESS_KEY_ID=$R2_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$R2_SECRET_ACCESS_KEY \
+aws s3api put-bucket-cors --bucket foreversixty-logs \
+  --endpoint-url "https://$R2_ACCOUNT_ID.r2.cloudflarestorage.com" --region auto \
+  --cors-configuration file:///tmp/logs-cors.json
+```
+
+Without `ExposeHeaders: ["ETag"]` every part uploads and the completion call then fails, because
+the browser cannot see the ETag it has to send back.
+
+### Fight numbering
+
+Fight indexes are the engine's own, and the engine numbers fights **from 1**. Every route and
+column keyed on a fight index — `PUT /v1/reports/{id}/fights/{n}`, `fights.fight_index`,
+`fight_metrics.fight_index` — carries that number unchanged. (The interface contract's
+Identifiers section says 0-based; the engine's segmenter starts at one, and the site and the
+companion both use the engine's numbers, so 1-based is what ships.)
+
+### Running the job locally
+
+```bash
+TREE_DATA_DIR=../data/builds DATABASE_URL=… R2_ACCESS_KEY_ID=… R2_SECRET_ACCESS_KEY=… \
+  R2_ACCOUNT_ID=… go run ./cmd/api parse-report <report_id>
+```
+
 ## Docker
 
 Build the image locally. The build context is the repository root, not `api/`, because the image
@@ -111,7 +244,8 @@ docker stop foreversixty-api-smoke && docker rm foreversixty-api-smoke
 
 Pushes to `main` run tests, build the image, push to Artifact Registry, and deploy to Cloud Run
 (see `.github/workflows/api.yml`). Secrets live in Secret Manager: `DATABASE_URL`,
-`MIGRATE_DATABASE_URL`, `RESEND_API_KEY`. Other env vars (`PORT`, `PUBLIC_BASE_URL`,
+`MIGRATE_DATABASE_URL`, `RESEND_API_KEY`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`,
+`BNET_CLIENT_SECRET`. Other env vars (`PORT`, `PUBLIC_BASE_URL`,
 `API_BASE_URL`, `MAIL_FROM`, `TRUSTED_PROXY_HOPS`) are set on the Cloud Run service.
 
 The image is built from the repository root (`-f api/Dockerfile .`) because it copies `data/builds`

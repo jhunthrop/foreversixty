@@ -2,17 +2,21 @@
 
 Compiled from official Blizzard News posts, the official panel recap, Wowhead, Inven Global, and other press published Sept 12, 2026. Single-source or unconfirmed items are flagged.
 
+*Section 13 (Deep Dive, Sept 13) was added Sept 14. Sections 1–12 were written on announcement day; corrections made since are marked inline and collected in [06-since-announcement.md](06-since-announcement.md).*
+
 ## 1. Release & Pricing
 
 | Fact | Detail | Source |
 |---|---|---|
 | Announcement | BlizzCon 2026 Opening Ceremony / What's Next panel, Sept 12 | [Blizzard 24301145](https://news.blizzard.com/en-us/article/24301145/) |
 | Global launch | November 4, 2026, 3:00 p.m. PST | [Blizzard 24303862](https://news.blizzard.com/en-gb/article/24303862/), [Blizzard 24301508](https://news.blizzard.com/en-us/article/24301508/) |
-| Beta window | Sept 17 – Oct 21, 2026 | [Blizzard 24301508](https://news.blizzard.com/en-us/article/24301508/) |
+| Beta window | Sept 17 – Oct 21, 2026 (Blizzard's post). The roadmap slide reads Oct 22; exact times were never given — **noted Sept 14** | [Blizzard 24301508](https://news.blizzard.com/en-us/article/24301508/), [Output Lag](https://outputlag.com/news/everything-new-world-of-warcraft-forever/) |
 | Beta level cap | 30 | [Inven Global](https://www.invenglobal.com/articles/25876/), [gamefragger](https://gamefragger.com/pc/warcraft/world-of-warcraft-forever-will-get-official-hardcore-realms-after-the-november-launch-a29777) |
 | Name reservation / char creation | Oct 27 – Nov 3, 2026 | [Blizzard 24301508](https://news.blizzard.com/en-us/article/24301508/) |
 | Base access | Included with WoW Subscription or Game Time | same |
-| Dev Q&A | Sept 17, 10:00 a.m. PDT (verify) | [Blizzard 24301145](https://news.blizzard.com/en-us/article/24301145/) |
+| Dev Q&A | Sept 17, 10:00 a.m. PDT, Warcraft Twitch and YouTube, VOD after — **confirmed Sept 14** | [Blizzard 24303312](https://news.blizzard.com/en-us/article/24303312/submit-your-questions-for-the-world-of-warcraft-live-q-a-september-17) |
+| Beta opt-in | Free opt-in on the Battle.net Forever page, open since Sept 13; does not guarantee a seat — **added Sept 14** | [Wowhead 382860](https://www.wowhead.com/forever/news/opt-in-for-the-world-of-warcraft-forever-beta-382860) |
+| Name reservation detail | Up to three characters, first come first served, names not guaranteed — **added Sept 14** | [Insider Gaming](https://insider-gaming.com/how-to-access-wow-forever-beta-explained/) |
 | Invite-a-Friend code window | Access from Nov 4 through Nov 11, 2026; codes emailed from Oct 20 | [Blizzard 24301508](https://news.blizzard.com/en-us/article/24301508/) |
 
 Editions (contents official; USD prices are press-reported, consistent across outlets):
@@ -83,7 +87,7 @@ Sources: [Blizzard 24303862](https://news.blizzard.com/en-gb/article/24303862/),
 ## 7. Race / Class
 
 **Skyborne** (official spelling; "Skyborn" appears in some outlets):
-- Neutral elven race from Zephras Isle; choose faction at creation (Pandaren-style).
+- **Correction (Sept 14):** Blizzard's own transcript says "the Skyborne are not a neutral race" — the faction is chosen at creation and the two halves get different racials. Elven race from Zephras Isle; Horde Skyborne work with the Earthen Ring, Alliance Skyborne with the Kirin Tor. ([Blizzplanet transcript](https://warcraft.blizzplanet.com/blog/comments/blizzcon-2026-world-of-warcraft-whats-next-panel-transcript/4))
 - Default classes: Warrior, Hunter, Rogue, Druid (sky-blue druid forms). Horde-only Shaman, Alliance-only Mage.
 - Deep customization, new voice lines and dances.
 - Paywalled ($29.99 minimum). Largest community flashpoint.
@@ -93,9 +97,9 @@ Sources: [Wowhead Skyborne First Look](https://www.wowhead.com/forever/news/skyb
 **New race/class combos:**
 - Undead Paladin: confirmed via cinematic. [Wowhead](https://www.wowhead.com/forever/news/undead-paladins-coming-to-world-of-warcraft-forever-382823)
 - Dwarf Shaman: shown in demo per hands-on reports. [Warcraft Tavern](https://www.warcrafttavern.com/forever/news/undead-paladins-other-race-class-combos-in-world-of-warcraft-forever/)
-- Night Elf Paladin: only in reader comments; unconfirmed for Forever.
+- **Resolved Sept 14:** the full list of six new pairs is Gnome Priest, Human Hunter, Dwarf Shaman, Orc Mage, Troll Warlock, Undead Paladin (see §13). Night Elf Paladin is a retail 12.2 combination and is **not** in Forever.
 - Do not conflate with retail Patch 12.2 "Eclipse" Paladin combos (Night Elf, Forsaken, Darkspear). [Wowhead 382828](https://www.wowhead.com/news/three-new-race-class-combos-for-paladins-coming-in-patch-12-2-382828)
-- No new classes. [gamefragger](https://gamefragger.com/pc/warcraft/world-of-warcraft-forevers-first-panel-just-mapped-nine-dungeons-hyjal-and-a-level-60-roadmap-a29773)
+- ~~No new classes.~~ **Wrong, corrected Sept 14:** Clay Stone said on the What's Next panel that nothing is off the table, not even a new class, next to a 35,305-response fan survey (42.2% no, 47.3% yes in some form). No new class is in the launch game. [Output Lag](https://outputlag.com/news/everything-new-world-of-warcraft-forever/), [Wowhead 382824](https://www.wowhead.com/forever/news/world-of-warcraft-forever-whats-next-liveblog-382824)
 
 **Talents and classes:** extensive talent revamp, meaningful trade-offs; Paladin gets a tanking Seal, better group healing, fuller Retribution (single-source); racials reworked (Dwarf bonus vs beasts, Undead spell-drain, single-source). [Blizzard 24303862](https://news.blizzard.com/en-gb/article/24303862/), [guided.news](https://guided.news/en/news/wow-classic-launches-in-november-everything-you-need-to-know-about-world-of-warcraft-forever/)
 
@@ -103,7 +107,7 @@ Sources: [Wowhead Skyborne First Look](https://www.wowhead.com/forever/news/skyb
 
 - **Legacy progression**: account-wide benefits for alt levelers, without skipping the journey. Relationship to retail Warbands unclear. [Blizzard 24303862](https://news.blizzard.com/en-gb/article/24303862/), [Wowhead Legacy explainer](https://www.wowhead.com/forever/news/warcraft-forever-legacy-system-explained-382842)
 - **Camping**: craft campfires in the world; others join, contribute via professions, share buffs. Presented by Clayton Stone. [Wowhead liveblog](https://www.wowhead.com/forever/news/world-of-warcraft-forever-whats-next-liveblog-382824)
-- **Opt-in transmog**: toggle; disabling shows everyone's real gear. [Out of Games](https://outof.games/news/9946-world-of-warcraft-forever-whats-next-at-blizzcon-2026-ended/)
+- ~~**Opt-in transmog**~~: **corrected Sept 14 — transmog is opt-*out*.** It is on by default, a mode selector appears at first login, picking Classic Mode disables it automatically, and an NPC can change it later. Disabling still shows everyone's real gear. [Blizzard Deep Dive recap](https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap), [Out of Games](https://outof.games/news/9946-world-of-warcraft-forever-whats-next-at-blizzcon-2026-ended/)
 - New professions, reputations, dungeon-themed items, legendary questlines (few specifics). [Inven Global](https://www.invenglobal.com/articles/25876/)
 - Riding skill changes teased.
 - Official gamepad/controller support. [Blizzard 24303862](https://news.blizzard.com/en-gb/article/24303862/)
@@ -123,7 +127,7 @@ Sources: [Wowhead Skyborne First Look](https://www.wowhead.com/forever/news/skyb
 | Oct 27 – Nov 3 | Name reservation |
 | Nov 4, 3:00 p.m. PST | Launch |
 | Dec 9 | Barrow Deeps, Hyjal Summit, Onyxia open |
-| Winter 2026/27 | Hardcore realms (no exact date) |
+| Winter 2026/27 | Hardcore **ruleset** (no exact date; the Sept 13 Hardcore panel gave none) |
 | Spring 2027 | 2 raids, 2 dungeons, quests/zone, legendary questline, PvP season |
 | Summer 2027 | Revamped iconic raid + 1 new raid, 2 dungeons, PvP season, professions/Legacy updates |
 
@@ -131,25 +135,29 @@ Sources: [Blizzard 24303862](https://news.blizzard.com/en-gb/article/24303862/),
 
 ## 11. Not yet known
 
-1. Realm count, types (PvP/PvE/RP), regions
+*Items struck through were answered on Sept 13–14; see [06-since-announcement.md](06-since-announcement.md) for the current list.*
+
+1. ~~Realm count, types (PvP/PvE/RP), regions~~ — **answered:** no realms. Four rulesets: Normal, PvP, Roleplaying, Hardcore.
 2. Classic Era character transfers into Forever
-3. Addon policy for Forever
-4. PvP flagging rules, self-found rulesets
-5. Hardcore realm date and regions
-6. Legacy vs Warbands relationship
+3. Addon policy for Forever — **still nothing said, by anyone**
+4. PvP flagging rules; ~~self-found rulesets~~ — **answered:** there is no self-found ruleset
+5. Hardcore date and regions — **still unknown**; Hardcore is a ruleset, not realms
+6. ~~Legacy vs Warbands relationship~~ — **answered:** points earned account-wide, spent per character, 16 per character against 65 earnable, three trees, separate cosmetic track
 7. Honor system numbers
 8. Full talent trees (community explicitly asking for a calculator)
 9. Barrow Deeps Demon Hunter identity
 10. Whether Timbermaw is a real raid
-11. Night Elf Paladin / Dwarf Shaman official confirmation
+11. ~~Night Elf Paladin / Dwarf Shaman official confirmation~~ — **answered:** Dwarf Shaman is official, Night Elf Paladin is retail-only
 12. Pricing verbatim from Blizzard copy
-13. Which retail 12.2 Paladin combos apply to Forever
+13. ~~Which retail 12.2 Paladin combos apply to Forever~~ — **answered:** none; Forever's Paladin addition is Undead
 
 ## 12. Named developers
 
+*Corrected and expanded Sept 14: the What's Next panel's lead software engineer is **Nora Valletta** (ScreenRant), and Blizzard's Deep Dive recap names **Ana Resendez** as Lead Software Engineer. "Nora Mills" below conflated the two and should not be used. Full roster in [06-since-announcement.md](06-since-announcement.md) §16.*
+
 - Holly Longdale (EP & VP, WoW): "putting the war back in Warcraft"; "easy to get into and play, and deep enough to stay… forever." [PCGamesN](https://www.pcgamesn.com/world-of-warcraft/forever-blizzcon-2026-wow-classic-plus)
 - Clayton Stone (Associate Production Director): rendering, Camping.
-- Nora Mills (Lead Software Engineer): dungeon/raid counts.
+- ~~Nora Mills~~ **Nora Valletta** (Lead Software Engineer): dungeon/raid counts on the What's Next panel.
 
 ## 13. Deep Dive panel, Sept 13, 2026 (added Sept 14)
 
@@ -169,3 +177,8 @@ Sources: Blizzard, "World of Warcraft: Forever Deep Dive Panel Recap", https://n
 - **Transmog:** global opt-out and a Classic Mode; appearances granted on loot for poor and common items, to all eligible looters for uncommon and rare dungeon drops, only to the binding player for epic raid drops; armor-type restrictions kept; level restrictions lifted at 60. (Blizzard recap)
 
 Impact on the site: rankings and character pages key on region + ruleset, not realm (Phase 3 contract updated Sept 14); the gear stat model needs unified hit and crit plus expertise (Phase 2 stat weights); the Legacy trees are a second planner; four more new combos than the What's Next recap listed.
+
+
+## 14. Second pass, Sept 14, 2026
+
+Everything published between Sept 12 and Sept 14 that this file does not already carry lives in [06-since-announcement.md](06-since-announcement.md): the Hardcore panel outcome, the free beta opt-in, the Sept 17 Q&A, six developer interviews, per-class ability and talent changes read off the demo, all nine races' racials with numbers, the full Legacy perk list, camping objects by profession, revised dungeon level ranges, and the corrections listed above.

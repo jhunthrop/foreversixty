@@ -4,6 +4,7 @@ import Base from './Base.astro';
 import SourcesList from '../components/SourcesList.astro';
 import UpdatedStamp from '../components/UpdatedStamp.astro';
 import type { Source } from '../lib/sources';
+import { articleLd, breadcrumbLd } from '../lib/seo';
 
 type Confidence = 'confirmed' | 'single-source' | 'inferred';
 interface Props {
@@ -15,6 +16,7 @@ interface Props {
   sources: Source[];
 }
 const { title, description = '', path, updated, confidence, sources } = Astro.props;
+const jsonLd = [articleLd({ title, description, path, updated }), breadcrumbLd(path, title)];
 const confidenceCopy: Record<Confidence, string> = {
   confirmed: 'Confirmed by Blizzard or by multiple sources',
   'single-source': 'Reported by one outlet, not yet confirmed',
@@ -22,7 +24,8 @@ const confidenceCopy: Record<Confidence, string> = {
 };
 ---
 
-<Base title={title} description={description} path={path}>
+<Base title={title} description={description} path={path} jsonLd={jsonLd}>
+  <meta slot="head" property="article:modified_time" content={updated.toISOString()} />
   <main
     id="main"
     tabindex="-1"

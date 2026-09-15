@@ -112,6 +112,25 @@ func CanonicalJSON(in Input) ([]byte, error) {
 	return b, nil
 }
 
+// IDLen is how many characters of the base32 hash an id carries.
+const IDLen = 8
+
+// ValidID reports whether s has the shape ID produces: IDLen
+// characters of lowercase, unpadded RFC 4648 base32. It says nothing
+// about whether that build exists - it is the cheap shape check a
+// route does before it goes near the store.
+func ValidID(s string) bool {
+	if len(s) != IDLen {
+		return false
+	}
+	for _, r := range s {
+		if !(r >= 'a' && r <= 'z') && !(r >= '2' && r <= '7') {
+			return false
+		}
+	}
+	return true
+}
+
 // ID is the first eight characters of the lowercase, unpadded RFC 4648
 // base32 encoding of the SHA-256 of CanonicalJSON. Saving the same build
 // twice yields the same id; the title is not part of it, so retitling a
@@ -123,7 +142,7 @@ func ID(in Input) (string, error) {
 	}
 	sum := sha256.Sum256(b)
 	enc := base32.StdEncoding.WithPadding(base32.NoPadding).EncodeToString(sum[:])
-	return strings.ToLower(enc)[:8], nil
+	return strings.ToLower(enc)[:IDLen], nil
 }
 
 // New turns a validated input into the record to store.

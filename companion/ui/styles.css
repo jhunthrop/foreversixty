@@ -1,0 +1,176 @@
+/* companion/ui/styles.css
+   The companion cannot import the site's stylesheet, so the tokens it
+   uses are adapted from web/src/styles/tokens.css. Keep them in step
+   with that file and design/DESIGN-SYSTEM.md; most values are taken
+   across unchanged, but --ok, --warn and --bad have no counterpart
+   there and --font-body deliberately drops the self-hosted fallback
+   face the site loads. Fonts are not self-hosted in the companion:
+   the stacks fall through to the system faces rather than pulling a
+   third-party request into a desktop app. */
+:root {
+  --bg: #07090d;
+  --raised: #0d111a;
+  --card-top: #131824;
+  --line: #262e40;
+  --line-soft: #1c2230;
+  --line-warm: #3a3326;
+
+  --text: #e9e4d8;
+  --strong: #f2eee4;
+  --muted: #9a9484;
+  --nav: #b9b3a4;
+
+  --gold: #e5b955;
+  --gold-hover: #f5d27a;
+  --gold-deep: #a8762a;
+
+  --ok: #7bff5c;
+  --warn: #d66e28;
+  --bad: #ff6b5c;
+
+  --font-display: 'Cinzel', 'Trajan Pro', Georgia, serif;
+  --font-body: 'Barlow', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+
+  --radius-panel: 6px;
+  --radius-control: 4px;
+  --radius-pill: 3px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 400 14px/1.5 var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(180deg, #0b1018, var(--bg));
+}
+
+.wordmark {
+  font: 700 16px/1 var(--font-display);
+  letter-spacing: 0.06em;
+  color: var(--gold);
+}
+
+nav { display: flex; gap: 4px; margin-left: auto; }
+
+nav button {
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-control);
+  background: none;
+  color: var(--nav);
+  font: 700 12px/1 var(--font-body);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 120ms, border-color 120ms;
+}
+
+nav button:hover { color: var(--strong); }
+nav button[aria-current='page'] { color: var(--gold); border-color: var(--line-warm); }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+main { padding: 18px; max-width: 720px; }
+section[hidden] { display: none; }
+
+h2 {
+  margin: 0 0 12px;
+  font: 600 15px/1.2 var(--font-display);
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--strong);
+}
+
+.panel {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-panel);
+  background: linear-gradient(180deg, var(--card-top), var(--raised));
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.row:last-child { border-bottom: 0; }
+.row .k { color: var(--muted); }
+.row .v { font-family: var(--font-mono); font-variant-numeric: tabular-nums; color: var(--strong); }
+
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 999px; margin-right: 6px; }
+.dot.on { background: var(--ok); box-shadow: 0 0 8px var(--ok); }
+.dot.off { background: var(--muted); }
+.dot.bad { background: var(--bad); }
+
+.note { color: var(--muted); font-size: 13px; margin: 8px 0 0; }
+.note.warn { color: var(--warn); }
+.note.bad { color: var(--bad); }
+
+a { color: var(--gold); }
+a:hover { color: var(--gold-hover); }
+
+label { display: block; margin: 12px 0 4px; color: var(--muted); font-size: 13px; }
+
+input, select, textarea {
+  width: 100%;
+  min-height: 36px;
+  padding: 0 10px;
+  border: 1px solid var(--line-warm);
+  border-radius: var(--radius-control);
+  background: #0a0e15;
+  color: var(--text);
+  font: 400 14px/1 var(--font-body);
+}
+
+/* Game folders are one path per line, so the field is a textarea: an
+   input strips the newlines and two installs become one bad path. */
+textarea {
+  display: block;
+  padding: 8px 10px;
+  font: 400 13px/1.6 var(--font-mono);
+  resize: vertical;
+}
+
+button.action {
+  min-height: 36px;
+  margin-top: 14px;
+  padding: 0 14px;
+  border: 1px solid var(--line-warm);
+  border-radius: var(--radius-control);
+  background: none;
+  color: var(--text);
+  font: 700 12px/1 var(--font-body);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+button.action:hover { border-color: var(--gold-deep); color: var(--strong); }
+
+ul.reports { list-style: none; margin: 0; padding: 0; }
+ul.reports li { padding: 10px 0; border-bottom: 1px solid var(--line-soft); }
+ul.reports li:last-child { border-bottom: 0; }
+.when { font-family: var(--font-mono); color: var(--muted); font-size: 12px; }
+
+@media (max-width: 520px) {
+  header { flex-wrap: wrap; }
+  nav { margin-left: 0; width: 100%; }
+  nav button { flex: 1; }
+  .row { flex-direction: column; gap: 2px; }
+}

@@ -11,6 +11,8 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strconv"
+	"strings"
 )
 
 type Rank struct {
@@ -150,6 +152,18 @@ func (b *Build) Trees(classID int) []Tree { return b.trees[classID] }
 
 func (b *Build) Sets() []Set { return b.sets }
 
+// Classes lists the build's classes by id. The rankings need it to turn
+// a class name the engine read out of a log into the class id the
+// talent data is keyed by.
+func (b *Build) Classes() []Class {
+	out := make([]Class, 0, len(b.classes))
+	for _, c := range b.classes {
+		out = append(out, c)
+	}
+	sort.Slice(out, func(i, j int) bool { return out[i].ID < out[j].ID })
+	return out
+}
+
 // Data holds every build found under the tree data directory.
 type Data struct {
 	builds  map[string]*Build
@@ -177,6 +191,79 @@ func (d *Data) Versions() []string {
 // every save then fails validation on tree_version, which is the right
 // behaviour while the data pipeline is catching up.
 func (d *Data) Skipped() []string { return d.skipped }
+
+// Latest is the newest build's data, which is what the rankings infer
+// specs from: talent ids are stable across client builds, and a report
+// parsed today is best read against today's trees. The second return is
+// false when no build loaded at all.
+//
+// "Newest" is a numeric comparison of the dot-separated version, not the
+// lexicographic order Versions() returns: build directories are named
+// like "1.15.9.69722", and the patch component is already double-digit,
+// so a plain string sort would rank "1.9" above "1.10".
+func (d *Data) Latest() (*Build, bool) {
+	versions := d.Versions()
+	if len(versions) == 0 {
+		return nil, false
+	}
+	return d.builds[newestVersion(versions)], true
+}
+
+// newestVersion returns the numerically greatest of a non-empty list of
+// dot-separated build versions.
+func newestVersion(versions []string) string {
+	best := versions[0]
+	for _, v := range versions[1:] {
+		if compareVersions(v, best) > 0 {
+			best = v
+		}
+	}
+	return best
+}
+
+// compareVersions orders two dot-separated version strings segment by
+// segment: a pair of segments that both parse as non-negative integers is
+// compared numerically ("9" < "10"), and any other pair is compared as
+// plain text, so a non-numeric segment never panics, it just orders
+// lexicographically. A version with fewer segments than the other is
+// lower once the shared segments are equal, the way "1.15" sorts below
+// "1.15.1". It returns -1, 0, or 1 the way strings.Compare does.
+func compareVersions(a, b string) int {
+	as := strings.Split(a, ".")
+	bs := strings.Split(b, ".")
+	n := len(as)
+	if len(bs) > n {
+		n = len(bs)
+	}
+	for i := 0; i < n; i++ {
+		var sa, sb string
+		if i < len(as) {
+			sa = as[i]
+		}
+		if i < len(bs) {
+			sb = bs[i]
+		}
+		if sa == sb {
+			continue
+		}
+		na, aErr := strconv.Atoi(sa)
+		nb, bErr := strconv.Atoi(sb)
+		if aErr == nil && bErr == nil {
+			if na == nb {
+				continue
+			}
+			if na < nb {
+				return -1
+			}
+			return 1
+		}
+		if sa < sb {
+			return -1
+		}
+		return 1
+	}
+	return 0
+}
 
 // Load reads every build directory under dir. A directory that does not look
 // like a Phase 1 build is skipped (see Skipped); a directory that does look
