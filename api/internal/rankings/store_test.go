@@ -334,7 +334,7 @@ func TestPercentilePlacesAValueAmongTheKills(t *testing.T) {
 		Scan(&specName, &phaseName); err != nil {
 		t.Fatal(err)
 	}
-	got, ok, err := h.store.Percentile(t.Context(), 9001, 8, specName, phaseName, MetricDPS, 0)
+	got, ranked, ok, err := h.store.Percentile(t.Context(), 9001, 8, specName, phaseName, MetricDPS, 0)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -344,7 +344,10 @@ func TestPercentilePlacesAValueAmongTheKills(t *testing.T) {
 	if got != 0 {
 		t.Fatalf("percentile = %v, want the bottom: zero beats no parse", got)
 	}
-	if _, ok, err := h.store.Percentile(t.Context(), 4242, 8, specName, phaseName, MetricDPS, 1); err != nil || ok {
+	if ranked < 1 {
+		t.Fatalf("ranked = %d, want the bracket's kill count alongside the placement", ranked)
+	}
+	if _, _, ok, err := h.store.Percentile(t.Context(), 4242, 8, specName, phaseName, MetricDPS, 1); err != nil || ok {
 		t.Fatalf("an encounter with no digest = %v, %v", ok, err)
 	}
 }
@@ -506,7 +509,7 @@ func TestEveryCallFailsWhenTheDatabaseIsGone(t *testing.T) {
 	if err := h.store.RemoveReport(t.Context(), "report-one", whyRemoved); err == nil {
 		t.Error("withdrawing a report must fail when the database is gone")
 	}
-	if _, _, err := h.store.Percentile(t.Context(), 9001, 8, "", "raids-1", MetricDPS, 1); err == nil {
+	if _, _, _, err := h.store.Percentile(t.Context(), 9001, 8, "", "raids-1", MetricDPS, 1); err == nil {
 		t.Error("reading a percentile must fail when the database is gone")
 	}
 }

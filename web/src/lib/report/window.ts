@@ -129,6 +129,8 @@ export function scopeActor(actor: Actor, window: TimeWindow): ScopedActor {
       hits: scale(ability.hits, ratio),
       crits: scale(ability.crits, ratio),
       ticks: scale(ability.ticks, ratio),
+      overheal: ability.overheal === undefined ? undefined : scale(ability.overheal, ratio),
+      absorbed: ability.absorbed === undefined ? undefined : scale(ability.absorbed, ratio),
     })),
     targets: actor.targets.map((target) => ({ ...target, total: scale(target.total, ratio) })),
   };

@@ -91,6 +91,10 @@
               >
                 {formatDuration(boss.best.duration_ms)}
               </button>
+            {:else if boss.lowest_wipe_pct !== undefined}
+              <span class="text-wipe" title="The lowest the boss was brought to"
+                >best wipe {Math.round(boss.lowest_wipe_pct)}%</span
+              >
             {:else}
               <span class="text-wipe">no kill</span>
             {/if}

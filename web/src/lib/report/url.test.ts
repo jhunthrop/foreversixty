@@ -59,6 +59,11 @@ describe('the report URL state', () => {
       source: 'friendlies',
       start: null,
       end: null,
+      target: '',
+      ability: null,
+      flags: [],
+      compareWith: null,
+      compareMetric: '',
     });
   });
 
@@ -75,6 +80,11 @@ describe('the report URL state', () => {
       source: 'Player-4184-000000A1',
       start: 4000,
       end: 12000,
+      target: '',
+      ability: null,
+      flags: [],
+      compareWith: null,
+      compareMetric: '',
     });
   });
 
@@ -88,6 +98,11 @@ describe('the report URL state', () => {
       source: 'friendlies',
       start: null,
       end: null,
+      target: '',
+      ability: null,
+      flags: [],
+      compareWith: null,
+      compareMetric: '',
     });
   });
 
@@ -113,6 +128,11 @@ describe('the report URL state', () => {
       source: 'enemies',
       start: 10,
       end: 20,
+      target: '',
+      ability: null,
+      flags: [],
+      compareWith: null,
+      compareMetric: '',
     });
     expect(reportSearch(state, 1)).toBe(
       '?fight=3&mode=rankings&view=queries&tab=casts&source=enemies&start=10&end=20',
@@ -138,5 +158,18 @@ describe('the report URL state', () => {
     expect(
       parseReportState(reportSearch(withState(defaultState(1), { fight: ALL_FIGHTS }), 1), 1).fight,
     ).toBe(ALL_FIGHTS);
+  });
+
+  it('carries the filter bar and the compare pairing, so a copied link is the view', () => {
+    const state = withState(defaultState(1), {
+      target: 'Creature-1-2',
+      ability: 116,
+      flags: ['bossOnly', 'ignoreAfterDeath'],
+      compareWith: 4,
+      compareMetric: 'dps',
+    });
+    const search = reportSearch(state, 1);
+    expect(search).toBe('?target=Creature-1-2&ability=116&flags=bd&with=4&cmetric=dps');
+    expect(parseReportState(search, 1)).toEqual(state);
   });
 });

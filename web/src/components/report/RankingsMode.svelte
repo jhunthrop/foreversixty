@@ -27,17 +27,28 @@
   /** The picker's options and the word the value column is filed under: one list, so the
       label on a phone card cannot drift from the metric the visitor chose. */
   const METRICS: { id: RankingMetric; label: string }[] = [
-    { id: 'dps', label: 'Damage' },
-    { id: 'hps', label: 'Healing' },
-    { id: 'damage_taken', label: 'Damage taken' },
+    { id: 'dps', label: 'DPS' },
+    { id: 'hps', label: 'HPS' },
+    { id: 'damage_taken', label: 'Damage taken per second' },
   ];
 
   let metric = $state<RankingMetric>('dps');
+  /** '' ranks every spec together; a spec name narrows the board to it. */
+  let spec = $state('');
   let page = $state<RankingsPage | null>(null);
   let status = $state<'idle' | 'loading' | 'ready' | 'failed'>('idle');
   let error = $state('');
 
   const metricLabel = $derived(METRICS.find((option) => option.id === metric)?.label ?? 'Value');
+  /** The specs on the board plus the chosen one, so a narrowed board still offers the rest. */
+  let seenSpecs = $state<string[]>([]);
+  const specs = $derived(
+    [...new Set([...seenSpecs, ...(page?.rows ?? []).map((row) => row.player.spec)])].sort(),
+  );
+  $effect(() => {
+    if (page === null || spec !== '') return;
+    seenSpecs = [...new Set(page.rows.map((row) => row.player.spec))];
+  });
 
   /**
    * A row's three figures with the words their columns never carried. Built here rather
@@ -76,6 +87,7 @@
    */
   $effect(() => {
     const wantedMetric = metric;
+    const wantedSpec = spec;
     const wantedFight = fight.index;
     const encounterId = fight.encounter_id;
     const difficulty = fight.difficulty;
@@ -84,14 +96,20 @@
       return;
     }
     status = 'loading';
-    void fetchRankings({ encounter: encounterSlug, difficulty, metric: wantedMetric, page: 1 })
+    void fetchRankings({
+      encounter: encounterSlug,
+      difficulty,
+      metric: wantedMetric,
+      spec: wantedSpec === '' ? undefined : wantedSpec,
+      page: 1,
+    })
       .then((result) => {
-        if (fight.index !== wantedFight || metric !== wantedMetric) return;
+        if (fight.index !== wantedFight || metric !== wantedMetric || spec !== wantedSpec) return;
         page = result;
         status = 'ready';
       })
       .catch((thrown: unknown) => {
-        if (fight.index !== wantedFight || metric !== wantedMetric) return;
+        if (fight.index !== wantedFight || metric !== wantedMetric || spec !== wantedSpec) return;
         status = 'failed';
         error = thrown instanceof Error ? thrown.message : 'Rankings did not load.';
       });
@@ -113,6 +131,20 @@
         >
           {#each METRICS as option (option.id)}
             <option value={option.id}>{option.label}</option>
+          {/each}
+        </select>
+      </label>
+      <label class="label text-muted flex items-center gap-2" for="rankings-spec">
+        Spec
+        <select
+          id="rankings-spec"
+          class="border-line-warm bg-raised rounded-control text-text h-11 px-2 text-[13px] md:h-9"
+          bind:value={spec}
+          data-testid="rankings-spec"
+        >
+          <option value="">Every spec</option>
+          {#each specs as option (option)}
+            <option value={option}>{option}</option>
           {/each}
         </select>
       </label>
@@ -142,7 +174,7 @@
       >
         <span>#</span>
         <span>Player</span>
-        <span>Guild</span>
+        <span>Guild · spec</span>
         <span class="text-right" title="Talent points per tree">Split</span>
         <span class="text-right">{metricLabel}</span>
         <span class="text-right">Length</span>
@@ -185,8 +217,9 @@
             <span class="text-muted col-span-full truncate text-[13px] md:col-auto">
               {#if row.guild}
                 <a href={guildHref(row.guild.region, row.guild.ruleset, row.guild.name)}>{row.guild.name}</a>
-                · {rulesetLabel(row.guild.ruleset)}
+                · {rulesetLabel(row.guild.ruleset)} ·
               {/if}
+              {row.player.spec}
             </span>
             <span class="text-muted tabular hidden text-right font-mono text-[13px] md:inline"
               >{row.talent_split}</span

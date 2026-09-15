@@ -23,8 +23,15 @@ export function percentileKey(query: PercentileQuery): string {
   return [query.encounterId, query.difficulty, query.spec, query.phase, query.metric, query.value].join('|');
 }
 
+/** Where a value sits in its bracket, and how many ranked kills the bracket holds. */
+export interface Placement {
+  percentile: number;
+  /** 0 when the API predates the count. */
+  ranked: number;
+}
+
 export interface PercentileLoader {
-  load(queries: PercentileQuery[]): Promise<Map<string, number>>;
+  load(queries: PercentileQuery[]): Promise<Map<string, Placement>>;
 }
 
 const CONCURRENCY = 6;
@@ -32,7 +39,7 @@ const CONCURRENCY = 6;
 export function createPercentileLoader(apiBase: string = API_BASE_URL): PercentileLoader {
   // null remembers "nothing is ranked in that bracket": the API's 404 is as final as a
   // number for the life of the page, and re-asking on every tab switch tripped the limiter.
-  const cache = new Map<string, number | null>();
+  const cache = new Map<string, Placement | null>();
 
   async function one(query: PercentileQuery): Promise<void> {
     const key = percentileKey(query);
@@ -54,16 +61,20 @@ export function createPercentileLoader(apiBase: string = API_BASE_URL): Percenti
         return;
       }
       if (!response.ok) return;
-      const envelope = (await response.json()) as { ok: boolean; data: { percentile?: number } | null };
+      const envelope = (await response.json()) as {
+        ok: boolean;
+        data: { percentile?: number; ranked?: number } | null;
+      };
       const percentile = envelope.data?.percentile;
-      if (envelope.ok && typeof percentile === 'number') cache.set(key, percentile);
+      if (envelope.ok && typeof percentile === 'number')
+        cache.set(key, { percentile, ranked: envelope.data?.ranked ?? 0 });
     } catch {
       /* No percentile for this row. The row still renders. */
     }
   }
 
   return {
-    async load(queries: PercentileQuery[]): Promise<Map<string, number>> {
+    async load(queries: PercentileQuery[]): Promise<Map<string, Placement>> {
       // Deduplicated by key, not just filtered against the cache: two identical queries in
       // the same call (a tank and a healer both parsed at the same rounded dps, say) would
       // otherwise both pass the "not cached yet" check before either request lands, and
@@ -84,7 +95,7 @@ export function createPercentileLoader(apiBase: string = API_BASE_URL): Percenti
       });
       await Promise.all(workers);
 
-      const answers = new Map<string, number>();
+      const answers = new Map<string, Placement>();
       for (const query of queries) {
         const key = percentileKey(query);
         const found = cache.get(key);

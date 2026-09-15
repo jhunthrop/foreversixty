@@ -31,6 +31,7 @@
     percentileToken,
     schoolName,
   } from '../../lib/report/format';
+  import type { Placement } from '../../lib/report/percentile';
   import type { Actor } from '../../lib/report/types';
   import AbilityBar from './AbilityBar.svelte';
 
@@ -48,7 +49,7 @@
     actor: Actor;
     peak: number;
     durationMs: number;
-    percentile?: number | null;
+    percentile?: Placement | null;
     parseFallback?: string;
     approximate?: boolean;
     characterLink?: { region: string; ruleset: string } | null;
@@ -99,16 +100,26 @@
     aria-expanded={open}
     onclick={() => (open = !open)}
   >
-    <span class="text-muted tabular font-mono text-[12px]">{rank}</span>
+    <span class="text-muted tabular font-mono text-[12px]"
+      ><span class="mr-1 inline-block w-3 transition-transform" class:rotate-90={open} aria-hidden="true"
+        >›</span
+      >{rank}</span
+    >
 
     <span
       class="tabular font-mono text-[12px]"
       class:text-muted={percentile === null}
-      style={percentile === null ? undefined : `color: ${percentileToken(percentile)}`}
-      title={percentile === null ? parseTitle(parseFallback) : parseTitle(percentile)}
+      style={percentile === null ? undefined : `color: ${percentileToken(percentile.percentile)}`}
+      title={percentile === null
+        ? parseTitle(parseFallback)
+        : parseTitle(percentile.percentile, percentile.ranked)}
       data-testid="row-percentile"
     >
-      {percentile === null ? parseFallback : Math.round(percentile)}
+      {percentile === null
+        ? parseFallback
+        : Math.round(percentile.percentile)}{#if percentile !== null && percentile.ranked > 0}<span
+          class="text-muted ml-1 text-[10px]">of {percentile.ranked}</span
+        >{/if}
     </span>
 
     <span class="truncate font-semibold" style={`color: ${color}`} data-testid="row-name">
@@ -133,8 +144,10 @@
       {#if overhealPct !== null}
         <span
           class="text-muted text-[11px]"
-          title="Healing that landed on a full health bar"
-          data-testid="row-overheal">{formatPercent(overhealPct)} over</span
+          title={approximate
+            ? 'Overhealing, scaled to the window in proportion to the total'
+            : 'Healing that landed on a full health bar'}
+          data-testid="row-overheal">{mark}{formatPercent(overhealPct)} over</span
         >
       {/if}
     </span>
@@ -212,14 +225,22 @@
                 <td class="text-muted tabular py-1 text-right font-mono" title="Overhealing"
                   >{formatPercent((ability.overheal / ability.total) * 100)} over</td
                 >
-              {:else if ability.misses !== undefined && Object.keys(ability.misses).length > 0}
-                <td
-                  class="text-muted tabular py-1 text-right font-mono"
-                  title="Misses, dodges, parries and blocks"
-                  >{Object.values(ability.misses).reduce((sum, count) => sum + count, 0)} missed</td
-                >
               {:else}
-                <td></td>
+                <td class="text-muted tabular py-1 text-right font-mono text-[12px]">
+                  {#if ability.absorbed}<span title="Absorbed by shields"
+                      >{formatAmount(ability.absorbed)} absorbed</span
+                    >{/if}
+                  {#if ability.blocked}<span class="ml-2" title="Blocked"
+                      >{formatAmount(ability.blocked)} blocked</span
+                    >{/if}
+                  {#if ability.misses !== undefined && Object.keys(ability.misses).length > 0}
+                    <span class="ml-2" title="Avoided or fully absorbed, by type"
+                      >{Object.entries(ability.misses)
+                        .map(([type, count]) => `${count} ${type.toLowerCase()}`)
+                        .join(', ')}</span
+                    >
+                  {/if}
+                </td>
               {/if}
             </tr>
           {/each}

@@ -1,5 +1,6 @@
 <!-- web/src/components/report/ActorTable.svelte -->
 <script lang="ts">
+  import type { Placement } from '../../lib/report/percentile';
   import type { Actor } from '../../lib/report/types';
   import ActorRow from './ActorRow.svelte';
 
@@ -7,14 +8,14 @@
     actors,
     durationMs,
     metricLabel,
-    percentiles = new Map<string, number>(),
+    percentiles = new Map<string, Placement>(),
     parseFallback = '',
     approximate = false,
   }: {
     actors: Actor[];
     durationMs: number;
     metricLabel: string;
-    percentiles?: Map<string, number>;
+    percentiles?: Map<string, Placement>;
     /** What an empty Parse cell shows: '' on trash, 'wipe', or a dash for not ranked yet. */
     parseFallback?: string;
     approximate?: boolean;

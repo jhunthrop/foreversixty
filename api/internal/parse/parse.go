@@ -148,6 +148,10 @@ func (d Deps) writeFight(ctx context.Context, rep reports.Report, pub store.Publ
 	}
 	if c.Fight.EncounterID != 0 {
 		rec.EncounterID, rec.Difficulty, rec.Size = &c.Fight.EncounterID, &c.Fight.Difficulty, &c.Fight.Size
+		if !c.Fight.Kill {
+			health := c.Fight.BossHealthPct
+			rec.BossHealthPct = &health
+		}
 	}
 	if _, err := d.Reports.UpsertFight(ctx, rec); err != nil {
 		return err

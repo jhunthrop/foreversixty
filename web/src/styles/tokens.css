@@ -29,6 +29,9 @@
   --color-wipe: #f0736b;
   --color-death: #ff5a5a;
   --color-death-soft: #5a1f1f;
+  /* The two parse colours the rarity ladder does not have: a 99 and a 100. */
+  --color-parse-99: #e268a8;
+  --color-parse-100: #e5cc80;
   --color-night: #26405c;
 
   --color-alliance: #6fb1ff;

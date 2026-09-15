@@ -128,6 +128,9 @@ type FightEntry struct {
 	Players     []string  `json:"players"`
 	Deaths      int       `json:"deaths"`
 	NPCKills    int       `json:"npc_kills"`
+	// BossHealthPct is what a wipe got the boss down to; -1 when the log
+	// never showed the boss's health, absent on a kill and on trash.
+	BossHealthPct float64 `json:"boss_health_pct,omitempty"`
 }
 
 // EntryOf projects a fight onto its report.json line.
@@ -138,6 +141,7 @@ func EntryOf(f fight.Fight) FightEntry {
 		Kill: f.Kill, InProgress: f.InProgress, Zone: f.Zone,
 		Start: f.Start, End: f.End, DurationMS: f.Duration().Milliseconds(),
 		Players: f.Players, Deaths: f.Deaths, NPCKills: f.NPCKills,
+		BossHealthPct: f.BossHealthPct,
 	}
 }
 

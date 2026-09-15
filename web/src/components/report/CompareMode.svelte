@@ -22,23 +22,38 @@
     current,
     dataBaseUrl,
     left,
-  }: { fights: FightEntry[]; current: number; dataBaseUrl: string; left: Summary } = $props();
+    rightIndex = null,
+    metric: metricParam = '',
+    onPatch,
+  }: {
+    fights: FightEntry[];
+    current: number;
+    dataBaseUrl: string;
+    left: Summary;
+    /** The second fight, from the url; null until one is picked. */
+    rightIndex?: number | null;
+    /** The metric id from the url; '' means the default. */
+    metric?: string;
+    onPatch: (patch: { compareWith?: number | null; compareMetric?: string }) => void;
+  } = $props();
 
   type CompareMetric = 'damage_done' | 'dps' | 'healing_done' | 'hps' | 'damage_taken' | 'dtps';
   const PER_SECOND = new Set<CompareMetric>(['dps', 'hps', 'dtps']);
 
   const options = $derived(fights.filter((fight) => fight.index !== current));
-  let rightIndex = $state<number | null>(null);
   let right = $state<Summary | null>(null);
   let error = $state('');
-  let metric = $state<CompareMetric>('damage_done');
+  const METRIC_IDS: CompareMetric[] = ['damage_done', 'dps', 'healing_done', 'hps', 'damage_taken', 'dtps'];
+  const metric = $derived<CompareMetric>(
+    (METRIC_IDS as string[]).includes(metricParam) ? (metricParam as CompareMetric) : 'damage_done',
+  );
 
   // A fight picked elsewhere on the page (the fight selector, or the browser's own back
   // button) can leave `rightIndex` pointing at the fight that just became `current`.
   // Comparing a fight to itself is never useful, so the selection is dropped rather than
   // shown as a table of zero differences.
   $effect(() => {
-    if (rightIndex === current) rightIndex = null;
+    if (rightIndex === current) onPatch({ compareWith: null });
   });
 
   /**
@@ -126,9 +141,10 @@
         id="compare-with"
         class="border-line-warm bg-raised rounded-control text-text h-11 px-2 text-[13px] md:h-9"
         data-testid="compare-with"
+        value={rightIndex === null ? '' : String(rightIndex)}
         onchange={(event) => {
           const raw = (event.currentTarget as HTMLSelectElement).value;
-          rightIndex = raw === '' ? null : Number(raw);
+          onPatch({ compareWith: raw === '' ? null : Number(raw) });
         }}
       >
         <option value="">Pick a fight</option>
@@ -142,7 +158,8 @@
       <select
         id="compare-metric"
         class="border-line-warm bg-raised rounded-control text-text h-11 px-2 text-[13px] md:h-9"
-        bind:value={metric}
+        value={metric}
+        onchange={(event) => onPatch({ compareMetric: (event.currentTarget as HTMLSelectElement).value })}
         data-testid="compare-metric"
       >
         <option value="dps">DPS</option>

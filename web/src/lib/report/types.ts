@@ -96,6 +96,8 @@ export interface Death {
   class?: string;
   at_ms: number;
   killing_blow?: DamageRef;
+  /** Set by the whole-night fold: which pull this death happened in. */
+  label?: string;
   last: DamageRef[];
   /** The last heals landed on the player before the death. Absent from summaries written before engine 0.2.0. */
   heals?: HealRef[];
@@ -290,6 +292,8 @@ export interface FightEntry {
   players: string[];
   deaths: number;
   npc_kills: number;
+  /** On a wipe, the boss's health the last time the log showed it; -1 when it never did. Absent from reports written before engine 0.2.0. */
+  boss_health_pct?: number;
 }
 
 /** store.Report — reports/<id>/report.json. */

@@ -177,7 +177,7 @@ func (s *Service) percentile(w http.ResponseWriter, r *http.Request) {
 	if at == "" {
 		at = phase.At(s.now())
 	}
-	pct, ok, err := s.Store.Percentile(r.Context(), encounter, difficulty, q.Get("spec"), at, metric, value)
+	pct, ranked, ok, err := s.Store.Percentile(r.Context(), encounter, difficulty, q.Get("spec"), at, metric, value)
 	if err != nil {
 		s.fail(w, r, "percentile", err, "could not place that parse just now")
 		return
@@ -188,7 +188,7 @@ func (s *Service) percentile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	cache(w)
-	httpx.WriteOK(w, r, http.StatusOK, map[string]float64{"percentile": pct})
+	httpx.WriteOK(w, r, http.StatusOK, map[string]any{"percentile": pct, "ranked": ranked})
 }
 
 func (s *Service) guildRankings(w http.ResponseWriter, r *http.Request) {

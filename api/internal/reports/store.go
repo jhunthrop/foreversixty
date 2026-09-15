@@ -154,8 +154,8 @@ func (s *Store) UpsertFight(ctx context.Context, f FightRecord) (bool, error) {
 	tag, err := s.Pool.Exec(ctx,
 		`insert into fights (report_id, fight_index, encounter_id, name, difficulty, size, kill,
 		   duration_ms, start_ms, verified, players, deaths, npc_kills,
-		   raw_start_offset, raw_end_offset, raw_sha256)
-		 values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
+		   raw_start_offset, raw_end_offset, raw_sha256, boss_health_pct)
+		 values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)
 		 on conflict (report_id, fight_index) do update set
 		   encounter_id = excluded.encounter_id, name = excluded.name,
 		   difficulty = excluded.difficulty, size = excluded.size, kill = excluded.kill,
@@ -163,10 +163,10 @@ func (s *Store) UpsertFight(ctx context.Context, f FightRecord) (bool, error) {
 		   verified = excluded.verified, players = excluded.players,
 		   deaths = excluded.deaths, npc_kills = excluded.npc_kills,
 		   raw_start_offset = excluded.raw_start_offset, raw_end_offset = excluded.raw_end_offset,
-		   raw_sha256 = excluded.raw_sha256`,
+		   raw_sha256 = excluded.raw_sha256, boss_health_pct = excluded.boss_health_pct`,
 		f.ReportID, f.Index, f.EncounterID, f.Name, f.Difficulty, f.Size, f.Kill,
 		f.DurationMS, f.StartMS, f.Verified, f.Players, f.Deaths, f.NPCKills,
-		f.RawStart, f.RawEnd, f.RawSHA256)
+		f.RawStart, f.RawEnd, f.RawSHA256, f.BossHealthPct)
 	if err != nil {
 		return false, fmt.Errorf("reports: write fight %s/%d: %w", f.ReportID, f.Index, err)
 	}
@@ -212,7 +212,7 @@ func (s *Store) FightRawRange(ctx context.Context, reportID string, index int) (
 func (s *Store) Fights(ctx context.Context, reportID string) ([]FightEntry, error) {
 	rows, err := s.Pool.Query(ctx,
 		`select fight_index, encounter_id, name, difficulty, size, kill, duration_ms, start_ms,
-		        verified, players, deaths, npc_kills
+		        verified, players, deaths, npc_kills, boss_health_pct
 		 from fights where report_id = $1 order by fight_index`, reportID)
 	if err != nil {
 		return nil, fmt.Errorf("reports: list fights %s: %w", reportID, err)
@@ -224,10 +224,14 @@ func (s *Store) Fights(ctx context.Context, reportID string) ([]FightEntry, erro
 			e                            FightEntry
 			encounterID, difficulty, siz *int64
 			startMS                      int64
+			bossHealth                   *float64
 		)
 		if err := rows.Scan(&e.Index, &encounterID, &e.Name, &difficulty, &siz, &e.Kill,
-			&e.DurationMS, &startMS, &e.Verified, &e.Players, &e.Deaths, &e.NPCKills); err != nil {
+			&e.DurationMS, &startMS, &e.Verified, &e.Players, &e.Deaths, &e.NPCKills, &bossHealth); err != nil {
 			return nil, fmt.Errorf("reports: list fights %s: %w", reportID, err)
+		}
+		if bossHealth != nil {
+			e.BossHealthPct = *bossHealth
 		}
 		e.Kind = string(fight.Trash)
 		if encounterID != nil {

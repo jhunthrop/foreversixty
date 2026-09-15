@@ -87,7 +87,13 @@
     const hits = death.last;
     if (hits.length < 2) return null;
     const first = hits[0];
-    const firstPct = healthPct(first);
+    // The health the run-up started from is the highest the recap saw, not the first
+    // row's: heals between hits can lift it, and "from 4%" when they were at 47% two
+    // hits later is the wrong story.
+    const firstPct = hits.reduce<number | null>((highest, hit) => {
+      const pct = healthPct(hit);
+      return pct === null ? highest : Math.max(highest ?? 0, pct);
+    }, null);
     if (firstPct === null) return null;
     const spanMs = death.at_ms - first.at_ms;
     const total = hits.reduce((sum, hit) => sum + hit.amount, 0);
@@ -131,7 +137,11 @@
           >
             {splitUnitName(death.name).name}
           </span>
-          <span class="text-muted tabular font-mono text-[13px]">{formatDuration(death.at_ms)}</span>
+          {#if death.label}
+            <span class="text-muted text-[13px]" data-testid="death-label">{death.label}</span>
+          {:else}
+            <span class="text-muted tabular font-mono text-[13px]">{formatDuration(death.at_ms)}</span>
+          {/if}
           {#if death.killing_blow}
             <span class="text-[13px]">
               killed by {sourceName(death.killing_blow.source_guid, death.killing_blow.source_name)} ·
@@ -154,6 +164,18 @@
 
         {#if shape(death)}
           <p class="text-[13px]" data-testid="death-shape">{shape(death)}</p>
+        {/if}
+        {#if death.killing_blow && !death.killing_blow.overkill}
+          <p class="text-muted text-[13px]" data-testid="death-unlogged">
+            The log shows no lethal hit: the last recorded hit left them at
+            {#if healthPct(death.killing_blow) !== null}
+              <span class="tabular font-mono">{Math.round(healthPct(death.killing_blow) ?? 0)}%</span>,
+            {:else}
+              unknown health,
+            {/if}
+            and they died
+            <span class="tabular font-mono">{beforeDeath(death, death.killing_blow.at_ms).slice(1)}</span> later.
+          </p>
         {/if}
 
         <div class="overflow-x-auto">
@@ -191,7 +213,8 @@
                   </tr>
                 {:else}
                   {@const hit = event.hit}
-                  {@const pct = healthPct(hit)}
+                  {@const lethal = (hit.overkill ?? 0) > 0}
+                  {@const pct = lethal ? 0 : healthPct(hit)}
                   <tr class="border-line-soft border-b">
                     <td
                       class="text-muted tabular py-1 pr-3 font-mono"

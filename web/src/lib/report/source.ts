@@ -31,7 +31,13 @@ export function scopeSource(summary: Summary, source: string, players: ReadonlyS
     roster: summary.roster.filter((row) => keep(row.guid)),
     combatants: summary.combatants.filter((row) => keep(row.guid)),
     deaths: summary.deaths.filter((death) => keep(death.guid)),
-    auras: summary.auras.filter((track) => keep(track.target_guid)),
+    // An aura belongs to its target, and to the one player who applied it when the
+    // scope is a player: Flame Shock on the boss is the shaman's own uptime.
+    auras: summary.auras.filter(
+      (track) =>
+        keep(track.target_guid) ||
+        (source !== SOURCE_ENEMIES && players.has(source) && track.appliers.includes(source)),
+    ),
     casts: summary.casts.filter((row) => keep(row.guid)),
     resources: summary.resources.filter((track) => keep(track.guid)),
     threat: summary.threat.filter((row) => keep(row.guid)),

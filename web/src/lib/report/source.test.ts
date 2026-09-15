@@ -40,7 +40,7 @@ function summary(): Summary {
         max_stacks: 1,
         uptime_ms: 1,
         segments: [],
-        appliers: [],
+        appliers: ['Player-2'],
       },
     ] as Summary['auras'],
     casts: [
@@ -131,6 +131,11 @@ describe('scopeSource', () => {
   it('keeps only enemies for the enemies scope', () => {
     const scoped = scopeSource(summary(), 'enemies', players);
     expect(scoped.roster).toEqual([]);
+    expect(scoped.auras.map((track) => track.target_guid)).toEqual(['Creature-9']);
+  });
+
+  it('keeps the debuffs a player applied on enemies under that player’s scope', () => {
+    const scoped = scopeSource(summary(), 'Player-2', players);
     expect(scoped.auras.map((track) => track.target_guid)).toEqual(['Creature-9']);
   });
 });

@@ -26,12 +26,13 @@
   } from '../../lib/report/format';
   import { plannerLinkFor } from '../../lib/report/planner-link';
   import GearList from './GearList.svelte';
+  import type { Placement } from '../../lib/report/percentile';
   import type { RosterRow, Summary } from '../../lib/report/types';
 
   let {
     summary,
     durationMs,
-    percentiles = new Map<string, number>(),
+    percentiles = new Map<string, Placement>(),
     parseFallback = '',
     approximate = false,
     dataBuild = '',
@@ -41,7 +42,7 @@
   }: {
     summary: Summary;
     durationMs: number;
-    percentiles?: Map<string, number>;
+    percentiles?: Map<string, Placement>;
     /** What an empty Parse cell shows: '' on trash, 'wipe', or a dash for not ranked yet. */
     parseFallback?: string;
     approximate?: boolean;
@@ -74,7 +75,14 @@
   function figuresFor(row: RosterRow): Figure[] {
     const percentile = percentiles.get(row.guid);
     return [
-      ...(percentile === undefined ? [] : [{ label: 'Parse', value: String(Math.round(percentile)) }]),
+      ...(percentile === undefined
+        ? []
+        : [
+            {
+              label: 'Parse',
+              value: `${Math.round(percentile.percentile)}${percentile.ranked > 0 ? ` of ${percentile.ranked}` : ''}`,
+            },
+          ]),
       { label: 'DPS', value: formatPerSecond(row.damage_done, durationMs) },
       { label: 'HPS', value: formatPerSecond(row.healing_done, durationMs) },
       { label: 'Taken', value: formatAmount(row.damage_taken) },
@@ -127,11 +135,17 @@
           <span
             class="tabular col-start-2 row-start-1 text-right font-mono text-[12px] md:col-auto md:row-auto md:text-left"
             class:text-muted={percentile === null}
-            style={percentile === null ? undefined : `color: ${percentileToken(percentile)}`}
-            title={percentile === null ? parseTitle(parseFallback) : parseTitle(percentile)}
+            style={percentile === null ? undefined : `color: ${percentileToken(percentile.percentile)}`}
+            title={percentile === null
+              ? parseTitle(parseFallback)
+              : parseTitle(percentile.percentile, percentile.ranked)}
             data-testid="roster-percentile"
           >
-            {percentile === null ? parseFallback : Math.round(percentile)}
+            {percentile === null
+              ? parseFallback
+              : Math.round(percentile.percentile)}{#if percentile !== null && percentile.ranked > 0}<span
+                class="text-muted ml-1 text-[10px]">of {percentile.ranked}</span
+              >{/if}
           </span>
           <span class="truncate font-semibold" style={`color: ${classColorVar(row.class)}`}>
             {#if onSelectPlayer}

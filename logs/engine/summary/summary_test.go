@@ -308,6 +308,9 @@ func TestDeathsKeepTheKillingBlowAndTheAurasHeld(t *testing.T) {
 	if len(d.Heals) != 1 || d.Heals[0].SpellName != "Heal" || d.Heals[0].Amount != 1000 || d.Heals[0].Overheal != 400 {
 		t.Errorf("heals before the death = %+v, want the healer's one Heal on the tank", d.Heals)
 	}
+	if d.KillingBlow.SpellName != "Anima Lash" || d.KillingBlow.Overkill != 1200 {
+		t.Errorf("killing blow = %+v, want the hit that overkilled", d.KillingBlow)
+	}
 }
 
 func TestAuraUptimeAndSegments(t *testing.T) {

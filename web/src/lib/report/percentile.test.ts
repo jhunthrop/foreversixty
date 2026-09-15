@@ -32,7 +32,9 @@ describe('parse percentiles', () => {
     vi.stubGlobal('fetch', upstream);
     const loader = createPercentileLoader(API);
 
-    await expect(loader.load([query, query])).resolves.toEqual(new Map([[percentileKey(query), 83.4]]));
+    await expect(loader.load([query, query])).resolves.toEqual(
+      new Map([[percentileKey(query), { percentile: 83.4, ranked: 0 }]]),
+    );
     await loader.load([query]);
     expect(upstream).toHaveBeenCalledTimes(1);
     expect((upstream.mock.calls[0][0] as Request).url).toBe(

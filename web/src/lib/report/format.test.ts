@@ -8,6 +8,8 @@ import {
   formatDurationPrecise,
   formatPercent,
   formatPerSecond,
+  outcomeLabel,
+  parseTitle,
   percentileToken,
   schoolName,
 } from './format';
@@ -55,13 +57,14 @@ describe('report formatting', () => {
     expect(classColorVar(undefined)).toBe('var(--color-text)');
   });
 
-  it('maps a parse percentile onto the rarity scale the community reads', () => {
+  it('maps a parse percentile onto the ladder the community reads', () => {
     expect(percentileToken(3)).toBe('var(--color-rarity-poor)');
-    expect(percentileToken(40)).toBe('var(--color-rarity-common)');
-    expect(percentileToken(60)).toBe('var(--color-rarity-uncommon)');
-    expect(percentileToken(80)).toBe('var(--color-rarity-rare-text)');
-    expect(percentileToken(96)).toBe('var(--color-rarity-epic-text)');
-    expect(percentileToken(100)).toBe('var(--color-rarity-legendary)');
+    expect(percentileToken(40)).toBe('var(--color-rarity-uncommon)');
+    expect(percentileToken(60)).toBe('var(--color-rarity-rare-text)');
+    expect(percentileToken(80)).toBe('var(--color-rarity-epic-text)');
+    expect(percentileToken(96)).toBe('var(--color-rarity-legendary)');
+    expect(percentileToken(99)).toBe('var(--color-parse-99)');
+    expect(percentileToken(100)).toBe('var(--color-parse-100)');
   });
 
   it('keeps tenths past a minute in the precise form, and names spell schools', () => {
@@ -69,6 +72,14 @@ describe('report formatting', () => {
     expect(formatDurationPrecise(6400)).toBe('6.4s');
     expect(schoolName(1)).toBe('Physical');
     expect(schoolName(36)).toBe('Fire/Shadow');
-    expect(schoolName(undefined)).toBe('');
+    expect(schoolName(undefined)).toBe('Physical');
+  });
+
+  it('says how far a wipe got when the log showed the boss', () => {
+    const base = { kind: 'encounter', kill: false, in_progress: false, npc_kills: 0 };
+    expect(outcomeLabel({ ...base, boss_health_pct: 23.4 })).toBe('Wipe 23%');
+    expect(outcomeLabel({ ...base, boss_health_pct: -1 })).toBe('Wipe');
+    expect(outcomeLabel({ ...base, kill: true, boss_health_pct: 0 })).toBe('Kill');
+    expect(parseTitle(80, 12)).toContain('12 ranked kills');
   });
 });

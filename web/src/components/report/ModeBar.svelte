@@ -22,10 +22,13 @@
     state,
     roster,
     onPatch,
+    nightMode = false,
   }: {
     state: ReportState;
     roster: { guid: string; name: string; class?: string }[];
     onPatch: (patch: Partial<ReportState>) => void;
+    /** The whole night: only the tables have a meaning over it, so modes and views hide. */
+    nightMode?: boolean;
   } = $props();
 
   const pill =
@@ -37,7 +40,12 @@
 </script>
 
 <div class="flex flex-col gap-3" data-testid="mode-bar">
-  <div role="tablist" aria-label="Mode" class="border-line-soft flex flex-wrap items-center border-b">
+  <div
+    role="tablist"
+    aria-label="Mode"
+    class="border-line-soft flex flex-wrap items-center border-b"
+    hidden={nightMode}
+  >
     {#each MODES as option (option.id)}
       <button
         type="button"
@@ -58,7 +66,7 @@
     {/each}
   </div>
 
-  {#if state.mode === 'analyze'}
+  {#if state.mode === 'analyze' && !nightMode}
     <!-- The tablist holds only tabs: the Source picker beside it is a sibling, since a
          label inside a tablist is a child the role does not allow. -->
     <div class="flex flex-wrap items-center gap-1">
@@ -103,7 +111,27 @@
     </div>
   {/if}
 
-  {#if state.mode === 'analyze' && state.view === 'tables'}
+  {#if nightMode}
+    <label class="text-muted label flex items-center gap-2" for="report-source">
+      Source
+      <select
+        id="report-source"
+        class="border-line-warm bg-raised rounded-control text-text h-11 px-2 text-[13px] md:h-9"
+        value={state.source}
+        data-testid="source-scope"
+        onchange={(event) => onPatch({ source: event.currentTarget.value })}
+      >
+        <option value={SOURCE_FRIENDLIES}>All friendlies</option>
+        <option value={SOURCE_ENEMIES}>All enemies</option>
+        {#each roster as unit (unit.guid)}
+          <option value={unit.guid} style={`color: ${classColorVar(unit.class)}`}>
+            {splitUnitName(unit.name).name}
+          </option>
+        {/each}
+      </select>
+    </label>
+  {/if}
+  {#if (state.mode === 'analyze' && state.view === 'tables') || nightMode}
     <div
       role="tablist"
       aria-label="Table"

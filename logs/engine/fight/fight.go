@@ -52,9 +52,17 @@ type Fight struct {
 	Markers     []Marker  `json:"markers,omitempty"`
 	NPCKills    int       `json:"npc_kills"`
 	Deaths      int       `json:"deaths"`
+	// BossHealthPct is the boss's health, as a percentage, the last time
+	// the log showed it: what a wipe got the boss down to. Zero on a kill
+	// and on trash; -1 when no advanced block ever named the boss.
+	BossHealthPct float64 `json:"boss_health_pct,omitempty"`
 
 	players map[string]bool
-	markers map[string]Marker
+	// The boss's last seen health, from the advanced block of any event
+	// that described a creature carrying the encounter's name.
+	bossHP, bossMaxHP int64
+	bossSeen          bool
+	markers           map[string]Marker
 }
 
 // Duration is the fight's wall length.
@@ -221,6 +229,7 @@ func (s *Segmenter) Feed(e event.Event) Step {
 	if e.Kind == event.EncounterEnd && e.Encounter != nil && s.open != nil && s.open.Kind == Encounter {
 		s.open.Kill = e.Encounter.Kill
 		s.assign(e)
+		s.open.BossHealthPct = bossHealthPct(s.open)
 		step.Fight = s.open
 		if s.opt.Trailing > 0 {
 			s.ending, s.endAt = true, e.Time.Add(s.opt.Trailing)
@@ -286,6 +295,7 @@ func (s *Segmenter) newFight(k Kind, e event.Event) *Fight {
 }
 
 func (s *Segmenter) assign(e event.Event) {
+	s.watchBoss(e)
 	f := s.open
 	if f == nil {
 		return
@@ -376,4 +386,39 @@ func hostileCombat(e event.Event) bool {
 		return false
 	}
 	return units.Hostile(src) != units.Hostile(dst)
+}
+
+// watchBoss remembers the boss's health from any advanced block that
+// describes a creature carrying the encounter's name, whichever side of
+// the event it was on.
+func (s *Segmenter) watchBoss(e event.Event) {
+	f := s.open
+	if f == nil || f.Kind != Encounter || !e.Adv.OK || e.Adv.MaxHP <= 0 {
+		return
+	}
+	var name string
+	switch e.Adv.InfoGUID {
+	case e.Source.GUID:
+		name = e.Source.Name
+	case e.Dest.GUID:
+		name = e.Dest.Name
+	default:
+		return
+	}
+	if name != f.Name || units.Parse(e.Adv.InfoGUID).Kind == units.KindPlayer {
+		return
+	}
+	f.bossHP, f.bossMaxHP, f.bossSeen = e.Adv.CurrentHP, e.Adv.MaxHP, true
+}
+
+// bossHealthPct is what the encounter ended with the boss at: 0 on a kill,
+// -1 when the log never showed the boss's health.
+func bossHealthPct(f *Fight) float64 {
+	if f.Kill {
+		return 0
+	}
+	if !f.bossSeen || f.bossMaxHP <= 0 {
+		return -1
+	}
+	return float64(f.bossHP) / float64(f.bossMaxHP) * 100
 }

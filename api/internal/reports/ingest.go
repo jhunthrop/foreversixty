@@ -253,6 +253,10 @@ func (i *Ingest) putFight(w http.ResponseWriter, r *http.Request) {
 	}
 	if f.EncounterID != 0 {
 		record.EncounterID, record.Difficulty, record.Size = &f.EncounterID, &f.Difficulty, &f.Size
+		if !f.Kill {
+			health := f.BossHealthPct
+			record.BossHealthPct = &health
+		}
 	}
 
 	if mismatch := metrics.Compare(rows, derived); mismatch != nil {

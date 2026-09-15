@@ -292,3 +292,33 @@ func TestADiscardedTrashSegmentIsReportedAsDiscarded(t *testing.T) {
 		t.Error("a reported fight must not also be marked discarded")
 	}
 }
+
+func TestAWipeRemembersTheBossHealth(t *testing.T) {
+	s := NewSegmenter(Options{Trailing: 0})
+	boss := "Creature-0-1-2-3-9001-0000000001"
+	evs := []event.Event{
+		{Time: at(1), Kind: event.EncounterStart, Line: 10,
+			Encounter: &event.Encounter{ID: 9001, Name: "Warden Kelthas", Difficulty: 8, Size: 5}},
+		playerHit(2),
+		// A player's spell on the boss: the advanced block describes the caster, so it
+		// says nothing about the boss.
+		{Time: at(3), Kind: event.Damage, Name: "SPELL_DAMAGE",
+			Source: event.Unit{GUID: "Player-1-A", Name: "Mage", Flags: 0x511},
+			Dest:   event.Unit{GUID: boss, Name: "Warden Kelthas", Flags: 0xa48},
+			Adv:    event.Advanced{OK: true, InfoGUID: "Player-1-A", CurrentHP: 100, MaxHP: 100}},
+		// The boss's own swing carries the boss's health.
+		{Time: at(4), Kind: event.Damage, Name: "SWING_DAMAGE",
+			Source: event.Unit{GUID: boss, Name: "Warden Kelthas", Flags: 0xa48},
+			Dest:   event.Unit{GUID: "Player-1-A", Name: "Mage", Flags: 0x511},
+			Adv:    event.Advanced{OK: true, InfoGUID: boss, CurrentHP: 2300, MaxHP: 10000}},
+		{Time: at(40), Kind: event.EncounterEnd, Line: 400,
+			Encounter: &event.Encounter{ID: 9001, Name: "Warden Kelthas", Kill: false}},
+	}
+	closed := run(s, evs)
+	if len(closed) != 1 {
+		t.Fatalf("closed %d fights, want 1", len(closed))
+	}
+	if got := closed[0].BossHealthPct; got != 23 {
+		t.Errorf("boss health = %v, want 23 (the last block that named the boss)", got)
+	}
+}

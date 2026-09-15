@@ -3,7 +3,17 @@
 // and one row per boss. A raid leader opens a log to compare the team across the night,
 // not to sum eighteen pulls by hand. Trash is left out, as it is from the rankings: a
 // trash pull's damage is mostly a function of how much trash there was.
-import type { FightEntry, Summary } from './types';
+import type {
+  Actor,
+  AuraTrack,
+  CastRow,
+  CombatantRow,
+  Death,
+  ExchangeRow,
+  FightEntry,
+  Summary,
+  ThreatRow,
+} from './types';
 
 export interface NightPlayerFight {
   index: number;
@@ -47,6 +57,8 @@ export interface NightBoss {
   deaths: number;
   /** The quickest kill's index and length, when there was a kill. */
   best?: { index: number; duration_ms: number };
+  /** The lowest the boss was brought to on a wipe, as a percentage; absent with no wipe seen. */
+  lowest_wipe_pct?: number;
   fights: number[];
 }
 
@@ -99,6 +111,9 @@ export function aggregateNight(
     boss.fights.push(fight.index);
     if (fight.kill && (boss.best === undefined || fight.duration_ms < boss.best.duration_ms))
       boss.best = { index: fight.index, duration_ms: fight.duration_ms };
+    const health = fight.boss_health_pct;
+    if (!fight.kill && health !== undefined && health >= 0)
+      boss.lowest_wipe_pct = Math.min(boss.lowest_wipe_pct ?? 100, health);
     bosses.set(fight.name, boss);
 
     const summary = summaries.get(fight.index);
@@ -168,4 +183,210 @@ export function aggregateNight(
     players: rows,
     bosses: [...bosses.values()],
   };
+}
+
+/**
+ * Every loaded boss pull folded into one Summary-shaped object, so the fight tabs can
+ * show the night the way they show a pull: damage by ability across every boss, deaths
+ * in the order they happened with the pull they happened in, interrupts and the casts
+ * that went through, buff uptime over the night's combat time. Timestamps are offset by
+ * the pulls before them, so the night reads as one long fight; the per-second series are
+ * left empty, since nothing draws a chart over a night.
+ */
+export function nightSummary(
+  fights: readonly FightEntry[],
+  summaries: ReadonlyMap<number, Summary>,
+): Summary {
+  const encounters = fights.filter((fight) => fight.kind === 'encounter' && !fight.in_progress);
+  const pulls = pullNumbersOf(encounters);
+  const actorsBy = {
+    damage_done: new Map<string, Actor>(),
+    damage_taken: new Map<string, Actor>(),
+    healing: new Map<string, Actor>(),
+    healing_taken: new Map<string, Actor>(),
+  };
+  const deaths: Death[] = [];
+  const auras = new Map<string, AuraTrack>();
+  const casts = new Map<string, CastRow>();
+  const exchanges = new Map<string, ExchangeRow>();
+  const threat = new Map<string, ThreatRow>();
+  const combatants = new Map<string, CombatantRow>();
+  let offset = 0;
+  let engine = '';
+
+  for (const fight of encounters) {
+    const summary = summaries.get(fight.index);
+    if (summary === undefined) continue;
+    engine = summary.engine_version;
+    const label = `${fight.name} · pull ${pulls.get(fight.index) ?? 1}`;
+    for (const table of ['damage_done', 'damage_taken', 'healing', 'healing_taken'] as const) {
+      for (const actor of summary[table]) mergeActor(actorsBy[table], actor);
+    }
+    for (const death of summary.deaths) deaths.push({ ...death, at_ms: death.at_ms + offset, label });
+    for (const track of summary.auras) {
+      const key = `${track.target_guid}|${track.spell_id}`;
+      const found = auras.get(key);
+      const shifted = track.segments.map((segment) => ({
+        ...segment,
+        start_ms: segment.start_ms + offset,
+        end_ms: segment.end_ms + offset,
+      }));
+      if (found === undefined) auras.set(key, { ...track, segments: shifted });
+      else
+        auras.set(key, {
+          ...found,
+          applications: found.applications + track.applications,
+          max_stacks: Math.max(found.max_stacks, track.max_stacks),
+          uptime_ms: found.uptime_ms + track.uptime_ms,
+          segments: [...found.segments, ...shifted],
+          appliers: [...new Set([...found.appliers, ...track.appliers])],
+        });
+    }
+    for (const row of summary.casts) {
+      const key = `${row.guid}|${row.spell_id}`;
+      const found = casts.get(key);
+      const sequence = row.sequence.map((at) => at + offset);
+      if (found === undefined) casts.set(key, { ...row, sequence });
+      else
+        casts.set(key, {
+          ...found,
+          started: found.started + row.started,
+          succeeded: found.succeeded + row.succeeded,
+          failed: found.failed + row.failed,
+          cast_time_ms: found.cast_time_ms + row.cast_time_ms,
+          sequence: [...found.sequence, ...sequence],
+        });
+    }
+    for (const row of [...summary.interrupts, ...summary.dispels]) {
+      const key = `${row.kind}|${row.source_guid}|${row.target_guid}|${row.spell_id}|${row.extra_spell_id}`;
+      const found = exchanges.get(key);
+      exchanges.set(key, found === undefined ? { ...row } : { ...found, count: found.count + row.count });
+    }
+    for (const row of summary.threat) {
+      const found = threat.get(row.guid);
+      threat.set(
+        row.guid,
+        found === undefined ? { ...row } : { ...found, threat: found.threat + row.threat },
+      );
+    }
+    for (const row of summary.combatants) combatants.set(row.guid, row);
+    offset += summary.duration_ms;
+  }
+
+  const night = aggregateNight(fights, summaries);
+  const sorted = (table: Map<string, Actor>): Actor[] =>
+    [...table.values()].sort((a, b) => b.effective - a.effective || a.guid.localeCompare(b.guid));
+  return {
+    engine_version: engine,
+    fight_index: 0,
+    duration_ms: offset,
+    damage_done: sorted(actorsBy.damage_done),
+    damage_taken: sorted(actorsBy.damage_taken),
+    healing: sorted(actorsBy.healing),
+    healing_taken: sorted(actorsBy.healing_taken),
+    deaths,
+    auras: [...auras.values()],
+    casts: [...casts.values()],
+    interrupts: [...exchanges.values()].filter((row) => row.kind === 'interrupt'),
+    dispels: [...exchanges.values()].filter((row) => row.kind === 'dispel'),
+    resources: [],
+    threat: [...threat.values()],
+    combatants: [...combatants.values()],
+    roster: night.players.map((player) => ({
+      guid: player.guid,
+      name: player.name,
+      class: player.class,
+      spec: player.spec,
+      role: player.role,
+      active_ms: player.active_ms,
+      activity_pct: player.activity_pct,
+      deaths: player.deaths,
+      damage_done: player.damage_done,
+      healing_done: player.healing_done,
+      damage_taken: player.damage_taken,
+      dps: player.dps,
+      hps: player.hps,
+      dtps: player.dtps,
+    })),
+  };
+}
+
+/** Pull numbers per boss, in fight order, for the death labels. */
+function pullNumbersOf(encounters: readonly FightEntry[]): Map<number, number> {
+  const counts = new Map<string, number>();
+  const out = new Map<number, number>();
+  for (const fight of encounters) {
+    const pull = (counts.get(fight.name) ?? 0) + 1;
+    counts.set(fight.name, pull);
+    out.set(fight.index, pull);
+  }
+  return out;
+}
+
+/** Adds an actor's totals, abilities and targets into the table's row for that GUID. */
+function mergeActor(table: Map<string, Actor>, actor: Actor): void {
+  const found = table.get(actor.guid);
+  if (found === undefined) {
+    table.set(actor.guid, {
+      ...actor,
+      abilities: actor.abilities.map((a) => ({ ...a })),
+      targets: actor.targets.map((t) => ({ ...t })),
+      series: [],
+    });
+    return;
+  }
+  const abilities = new Map(found.abilities.map((ability) => [ability.spell_id, { ...ability }]));
+  for (const ability of actor.abilities) {
+    const have = abilities.get(ability.spell_id);
+    if (have === undefined) abilities.set(ability.spell_id, { ...ability });
+    else
+      abilities.set(ability.spell_id, {
+        ...have,
+        total: have.total + ability.total,
+        effective: have.effective + ability.effective,
+        overheal: sumOptional(have.overheal, ability.overheal),
+        overkill: sumOptional(have.overkill, ability.overkill),
+        absorbed: sumOptional(have.absorbed, ability.absorbed),
+        blocked: sumOptional(have.blocked, ability.blocked),
+        hits: have.hits + ability.hits,
+        crits: have.crits + ability.crits,
+        ticks: have.ticks + ability.ticks,
+        min: have.min === 0 ? ability.min : ability.min === 0 ? have.min : Math.min(have.min, ability.min),
+        max: Math.max(have.max, ability.max),
+        misses: mergeCounts(have.misses, ability.misses),
+      });
+  }
+  const targets = new Map(found.targets.map((target) => [target.guid, { ...target }]));
+  for (const target of actor.targets) {
+    const have = targets.get(target.guid);
+    targets.set(
+      target.guid,
+      have === undefined ? { ...target } : { ...have, total: have.total + target.total },
+    );
+  }
+  table.set(actor.guid, {
+    ...found,
+    total: found.total + actor.total,
+    effective: found.effective + actor.effective,
+    overheal: sumOptional(found.overheal, actor.overheal),
+    absorbed: sumOptional(found.absorbed, actor.absorbed),
+    active_ms: found.active_ms + actor.active_ms,
+    abilities: [...abilities.values()],
+    targets: [...targets.values()],
+  });
+}
+
+function sumOptional(a: number | undefined, b: number | undefined): number | undefined {
+  if (a === undefined && b === undefined) return undefined;
+  return (a ?? 0) + (b ?? 0);
+}
+
+function mergeCounts(
+  a: Record<string, number> | undefined,
+  b: Record<string, number> | undefined,
+): Record<string, number> | undefined {
+  if (a === undefined && b === undefined) return undefined;
+  const out: Record<string, number> = { ...(a ?? {}) };
+  for (const [key, count] of Object.entries(b ?? {})) out[key] = (out[key] ?? 0) + count;
+  return out;
 }

@@ -21,6 +21,9 @@ type Options struct {
 	// ActiveGap is how long an actor counts as active after each action.
 	// Default 1.5 seconds.
 	ActiveGap time.Duration
+	// DeathHealWindow is how many heals to keep before each death; more
+	// than the damage window because a healer's ticks come thick.
+	DeathHealWindow int
 	// DeathWindow is how many damage events to keep before each death.
 	// Default ten, which is what the deaths view shows.
 	DeathWindow int
@@ -49,6 +52,7 @@ func DefaultOptions() Options {
 		Bucket:          time.Second,
 		ActiveGap:       1500 * time.Millisecond,
 		DeathWindow:     10,
+		DeathHealWindow: 40,
 		DeathAuraWindow: 10 * time.Second,
 		Threat:          BaseThreat{},
 	}
@@ -64,6 +68,9 @@ func (o Options) withDefaults() Options {
 	}
 	if o.DeathWindow <= 0 {
 		o.DeathWindow = d.DeathWindow
+	}
+	if o.DeathHealWindow <= 0 {
+		o.DeathHealWindow = d.DeathHealWindow
 	}
 	if o.DeathAuraWindow <= 0 {
 		o.DeathAuraWindow = d.DeathAuraWindow
@@ -164,6 +171,12 @@ func (a *Accumulator) bucket(t time.Time) int {
 
 // name resolves a display name through the registry.
 func (a *Accumulator) name(guid string) string {
+	// The game's null GUID is the source of falling, drowning and the
+	// fight's own hazards; a table that prints it as sixteen zeros tells
+	// the reader nothing.
+	if guid == units.NoGUID {
+		return "Environment"
+	}
 	if a.opt.Registry == nil {
 		return guid
 	}

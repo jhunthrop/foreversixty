@@ -41,13 +41,33 @@
     return ticks;
   });
 
+  /** The cast last tapped or hovered, read out in the legend for screens with no hover. */
+  let picked = $state<{ at: number; name: string } | null>(null);
+
+  /**
+   * A tap or a pass of the pointer anywhere on a lane picks the nearest tick: a tick is
+   * two pixels wide, and a finger needs the whole lane to be the target.
+   */
+  function pickNearest(event: PointerEvent, casts: { at: number; name: string }[]): void {
+    if (casts.length === 0) return;
+    const bounds = (event.currentTarget as HTMLElement).getBoundingClientRect();
+    const at = current.startMs + ((event.clientX - bounds.left) / Math.max(bounds.width, 1)) * span;
+    let nearest = casts[0];
+    for (const cast of casts) if (Math.abs(cast.at - at) < Math.abs(nearest.at - at)) nearest = cast;
+    // Within a fortieth of the window: past that the pointer is in a gap, not on a tick.
+    if (Math.abs(nearest.at - at) <= span / 40) picked = nearest;
+  }
+
   /** The boss's casts, one tick each, named on hover: the thing to line a death up against. */
   const bossCasts = $derived(
     bossName === ''
       ? []
       : allCasts
           .filter((cast) => !players.has(cast.guid) && cast.name === bossName)
-          .flatMap((cast) => cast.sequence.map((at) => ({ at, name: cast.spell_name }))),
+          .flatMap((cast) => cast.sequence.map((at) => ({ at, name: cast.spell_name })))
+          // Clipped to the window: the whole fight's casts are read so the lane exists
+          // under any scope, but a tick past the window's edge stretches the page.
+          .filter((cast) => cast.at >= current.startMs && cast.at <= current.endMs),
   );
   const lanes = $derived(
     [...summary.roster]
@@ -56,10 +76,12 @@
         guid: row.guid,
         name: splitUnitName(row.name).name,
         color: classColorVar(row.class ?? classOf.get(row.guid)),
-        casts: summary.casts.filter((cast) => cast.guid === row.guid).flatMap((cast) => cast.sequence),
+        casts: summary.casts
+          .filter((cast) => cast.guid === row.guid)
+          .flatMap((cast) => cast.sequence.map((at) => ({ at, name: cast.spell_name }))),
         auras: summary.auras
           .filter((track) => track.target_guid === row.guid)
-          .flatMap((track) => track.segments),
+          .flatMap((track) => track.segments.map((segment) => ({ ...segment, name: track.name }))),
         deaths: summary.deaths.filter((death) => death.guid === row.guid).map((death) => death.at_ms),
       })),
   );
@@ -85,10 +107,17 @@
         ><span class="bg-death mr-1 inline-block h-[14px] w-[3px] align-middle" aria-hidden="true"
         ></span>death</span
       >
+      {#if picked}
+        <span class="text-strong normal-case" data-testid="timeline-picked"
+          >{picked.name} · {formatDuration(picked.at)}</span
+        >
+      {:else}
+        <span>tap or hover a tick for the spell</span>
+      {/if}
       {#if bossCasts.length > 0}
         <span
           ><span class="bg-wipe mr-1 inline-block h-[10px] w-[2px] align-middle" aria-hidden="true"
-          ></span>boss cast, hover for the spell</span
+          ></span>boss cast</span
         >
       {/if}
     </p>
@@ -98,7 +127,9 @@
       data-testid="timeline-axis"
     >
       <span></span>
-      <span class="text-muted tabular relative block h-[14px] font-mono text-[10px]">
+      <span
+        class="text-muted tabular relative block h-[14px] font-mono text-[10px] [&>span:nth-child(even)]:hidden md:[&>span:nth-child(even)]:inline"
+      >
         {#each axis as at (at)}
           <span class="absolute top-0 -translate-x-1/2" style={`left: ${pct(at)}%`}>{formatDuration(at)}</span
           >
@@ -112,7 +143,11 @@
           data-testid="lane-boss"
         >
           <span class="text-wipe truncate text-[13px] font-semibold">{bossName}</span>
-          <span class="bg-line-soft relative block h-[18px] w-full">
+          <span
+            class="bg-line-soft relative block h-[18px] w-full touch-none"
+            onpointerdown={(event) => pickNearest(event, bossCasts)}
+            onpointermove={(event) => pickNearest(event, bossCasts)}
+          >
             {#each bossCasts as cast, i (`${cast.at}-${i}`)}
               <span
                 class="bg-wipe absolute bottom-0 h-[14px] w-[2px]"
@@ -135,18 +170,23 @@
           data-testid={`lane-${lane.guid}`}
         >
           <span class="truncate text-[13px] font-semibold" style={`color: ${lane.color}`}>{lane.name}</span>
-          <span class="bg-line-soft relative block h-[18px] w-full">
+          <span
+            class="bg-line-soft relative block h-[18px] w-full touch-none"
+            onpointerdown={(event) => pickNearest(event, lane.casts)}
+            onpointermove={(event) => pickNearest(event, lane.casts)}
+          >
             {#each lane.auras as segment, i (`${segment.start_ms}-${i}`)}
               <span
                 class="absolute top-0 h-[6px]"
                 style={`left: ${pct(segment.start_ms)}%; width: ${Math.max(pct(segment.end_ms) - pct(segment.start_ms), 0.4)}%; background: ${lane.color}; opacity: .45`}
+                title={`${segment.name} · ${formatDuration(segment.start_ms)} to ${formatDuration(segment.end_ms)}`}
               ></span>
             {/each}
-            {#each lane.casts as at, i (`${at}-${i}`)}
+            {#each lane.casts as cast, i (`${cast.at}-${i}`)}
               <span
                 class="absolute bottom-0 h-[10px] w-[2px]"
-                style={`left: ${pct(at)}%; background: ${lane.color}`}
-                title={formatDuration(at)}
+                style={`left: ${pct(cast.at)}%; background-color: ${lane.color}`}
+                title={`${cast.name} · ${formatDuration(cast.at)}`}
               ></span>
             {/each}
             {#each lane.deaths as at, i (`${at}-${i}`)}

@@ -68,8 +68,11 @@ test('the whole night folds every boss pull into one table, and each pull opens 
   await expect(page.getByTestId('night-summary')).toContainText('2 boss pulls');
   await expect(page.getByTestId('night-bosses').locator('li')).toHaveCount(2);
   await expect(page.getByTestId('night-players').locator('li').first()).toBeVisible();
-  // The whole night is not a fight: no tabs, no chart.
-  await expect(page.getByTestId('mode-bar')).toHaveCount(0);
+  // The whole night keeps the tables and drops the chart: nothing draws a chart over a night.
+  await expect(page.getByTestId('time-chart')).toHaveCount(0);
+  await page.getByTestId('tab-damage-done').click();
+  await expect(page.getByTestId('actor-table')).toBeVisible();
+  await page.getByTestId('tab-summary').click();
   await page.getByTestId('night-bosses').getByRole('button', { name: 'pull 1' }).first().click();
   await expect(page.getByTestId('fight-3')).toHaveAttribute('aria-current', 'true');
   await expect(page.getByTestId('summary-tab')).toBeVisible();

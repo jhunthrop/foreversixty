@@ -190,4 +190,34 @@ describe('presets', () => {
     expect(presets[0].window).toBeNull();
     expect(presets[3].window).toEqual({ startMs: 0, endMs: 10_100 });
   });
+
+  it('scales an ability’s overheal with its total, so the share holds inside a window', () => {
+    const actor: Actor = {
+      guid: 'H',
+      name: 'Healer',
+      total: 1000,
+      effective: 600,
+      overheal: 400,
+      active_ms: 4000,
+      abilities: [
+        {
+          spell_id: 1,
+          name: 'Heal',
+          total: 1000,
+          effective: 600,
+          overheal: 400,
+          hits: 4,
+          crits: 0,
+          ticks: 0,
+          min: 0,
+          max: 0,
+        },
+      ],
+      targets: [],
+      series: [150, 150, 150, 150],
+    };
+    const scoped = scopeActor(actor, { startMs: 0, endMs: 2000 });
+    expect(scoped.abilities[0].overheal).toBe(200);
+    expect(scoped.abilities[0].total).toBe(500);
+  });
 });

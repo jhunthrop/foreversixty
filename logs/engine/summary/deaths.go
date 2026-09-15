@@ -203,8 +203,8 @@ func (a *Accumulator) addDeaths(e event.Event) {
 			Absorbed:   e.Absorbed.V,
 		}
 		q := append(a.recentHeals[e.Dest.GUID], ref)
-		if len(q) > a.opt.DeathWindow {
-			q = q[len(q)-a.opt.DeathWindow:]
+		if len(q) > a.opt.DeathHealWindow {
+			q = q[len(q)-a.opt.DeathHealWindow:]
 		}
 		a.recentHeals[e.Dest.GUID] = q
 	}
@@ -240,9 +240,28 @@ func (a *Accumulator) addDeaths(e event.Event) {
 		}
 	}
 	d.Last = append([]DamageRef(nil), a.recent[e.Dest.GUID]...)
-	d.Heals = append([]HealRef(nil), a.recentHeals[e.Dest.GUID]...)
+	// Heals are kept only from the first kept hit onward: the ten hits may span
+	// a minute and the ten heals an earlier one, and a heal list that starts
+	// before the damage list reads as healing that never came.
+	heals := a.recentHeals[e.Dest.GUID]
+	if len(d.Last) > 0 {
+		for len(heals) > 0 && heals[0].AtMS < d.Last[0].AtMS {
+			heals = heals[1:]
+		}
+	}
+	d.Heals = append([]HealRef(nil), heals...)
+	// The killing blow is the last hit that overkilled; a death the log never
+	// showed a lethal hit for (the hit landed after UNIT_DIED was written, or
+	// was not logged at all) falls back to the last hit, which the view can
+	// tell apart by its missing overkill.
 	if n := len(d.Last); n > 0 {
 		kb := d.Last[n-1]
+		for i := n - 1; i >= 0; i-- {
+			if d.Last[i].Overkill > 0 {
+				kb = d.Last[i]
+				break
+			}
+		}
 		d.KillingBlow = &kb
 	}
 	cutoff := e.Time.Add(-a.opt.DeathAuraWindow)

@@ -13,6 +13,7 @@
 <script lang="ts">
   import { splitUnitName } from '../../lib/characters';
   import {
+    formatAmount,
     formatDuration,
     wholeFightAriaLabel,
     wholeFightMark,
@@ -20,7 +21,26 @@
   } from '../../lib/report/format';
   import type { ResourceTrack } from '../../lib/report/types';
 
-  let { tracks, durationMs }: { tracks: ResourceTrack[]; durationMs: number } = $props();
+  let {
+    tracks,
+    durationMs,
+    deaths = [],
+  }: { tracks: ResourceTrack[]; durationMs: number; deaths?: { guid: string; at_ms: number }[] } = $props();
+
+  /** The lowest point of a series and the second it happened, for the figure beside the line. */
+  function low(series: number[]): { value: number; atMs: number } {
+    let value = Number.POSITIVE_INFINITY;
+    let atMs = 0;
+    series.forEach((point, index) => {
+      if (point < value) {
+        value = point;
+        atMs = index * 1000;
+      }
+    });
+    return { value: Number.isFinite(value) ? value : 0, atMs };
+  }
+
+  const peakOf = (series: number[]): number => series.reduce((highest, value) => Math.max(highest, value), 0);
 
   /** The game's power indices. Anything else is shown by its number, not guessed at. */
   const POWER_NAMES = new Map<number, string>([
@@ -69,6 +89,8 @@
 {:else}
   <ul class="flex flex-col" data-testid="resource-graphs">
     {#each rows as track (`${track.guid}-${track.power_type}`)}
+      {@const lowest = low(track.series)}
+      {@const peak = peakOf(track.series)}
       <li
         class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px] md:grid-cols-[minmax(120px,1.2fr)_96px_minmax(0,3fr)_96px]"
         data-testid={`resource-${track.guid}-${track.power_type}`}
@@ -77,20 +99,52 @@
         <span class="text-muted text-[13px]"
           >{POWER_NAMES.get(track.power_type) ?? `Power ${track.power_type}`}</span
         >
-        <svg
-          class="col-span-2 h-[26px] w-full md:col-span-1"
-          viewBox="0 0 100 26"
-          preserveAspectRatio="none"
-          aria-hidden="true"
-        >
-          <polyline
-            points={points(track.series)}
-            fill="none"
-            stroke="var(--color-gold)"
-            stroke-width="1.5"
-            vector-effect="non-scaling-stroke"
-          />
-        </svg>
+        <span class="col-span-2 flex flex-col gap-0.5 md:col-span-1">
+          <svg class="h-[40px] w-full" viewBox="0 0 100 26" preserveAspectRatio="none" aria-hidden="true">
+            <line
+              x1="0"
+              y1="2"
+              x2="100"
+              y2="2"
+              stroke="var(--color-line-soft)"
+              stroke-width="1"
+              vector-effect="non-scaling-stroke"
+            />
+            <line
+              x1="0"
+              y1="24"
+              x2="100"
+              y2="24"
+              stroke="var(--color-line-soft)"
+              stroke-width="1"
+              vector-effect="non-scaling-stroke"
+            />
+            {#each deaths.filter((death) => death.guid === track.guid) as death, i (`${death.at_ms}-${i}`)}
+              <line
+                x1={durationMs === 0 ? 0 : (death.at_ms / durationMs) * 100}
+                y1="0"
+                x2={durationMs === 0 ? 0 : (death.at_ms / durationMs) * 100}
+                y2="26"
+                stroke="var(--color-death)"
+                stroke-width="2"
+                vector-effect="non-scaling-stroke"
+              />
+            {/each}
+            <polyline
+              points={points(track.series)}
+              fill="none"
+              stroke="var(--color-gold)"
+              stroke-width="1.5"
+              vector-effect="non-scaling-stroke"
+            />
+          </svg>
+          <span class="text-muted tabular flex justify-between font-mono text-[11px]">
+            <span title="The top of the line">peak {formatAmount(peak)}</span>
+            <span title="The lowest point and when it was reached" data-testid="resource-low"
+              >low {formatAmount(lowest.value)} at {formatDuration(lowest.atMs)}</span
+            >
+          </span>
+        </span>
         <span
           class="text-muted tabular text-right font-mono text-[13px]"
           {title}

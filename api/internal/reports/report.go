@@ -83,9 +83,12 @@ type FightRecord struct {
 	Players     []string
 	Deaths      int
 	NPCKills    int
-	RawStart    *int64
-	RawEnd      *int64
-	RawSHA256   []byte
+	// BossHealthPct is what a wipe got the boss down to; nil on a kill
+	// and on trash, -1 when the log never showed the boss.
+	BossHealthPct *float64
+	RawStart      *int64
+	RawEnd        *int64
+	RawSHA256     []byte
 }
 
 // Owner is the account a report belongs to, as the page shows it. The

@@ -295,27 +295,30 @@ func (s *Store) RemoveReport(ctx context.Context, reportID, reason string) error
 // Percentile is where value stands among the kills in its bracket, as a
 // number from 0 to 100. The second return is false when the bracket has
 // no digest yet.
+// Percentile places value among the bracket's ranked kills and says how many
+// there are: a 0 among one kill and a 0 among a thousand are different
+// answers, and the page has to be able to tell them apart.
 func (s *Store) Percentile(ctx context.Context, encounterID, difficulty int64,
-	specName, at, metric string, value float64) (float64, bool, error) {
+	specName, at, metric string, value float64) (float64, int64, bool, error) {
 	var raw []byte
 	err := s.Pool.QueryRow(ctx,
 		`select digest from percentile_digests
 		 where encounter_id = $1 and difficulty = $2 and spec = $3 and phase = $4 and metric = $5`,
 		encounterID, difficulty, specName, at, metric).Scan(&raw)
 	if errors.Is(err, pgx.ErrNoRows) {
-		return 0, false, nil
+		return 0, 0, false, nil
 	}
 	if err != nil {
-		return 0, false, fmt.Errorf("rankings: read digest: %w", err)
+		return 0, 0, false, fmt.Errorf("rankings: read digest: %w", err)
 	}
 	d, err := digest.Unmarshal(raw)
 	if err != nil {
-		return 0, false, err
+		return 0, 0, false, err
 	}
 	if d.Count() == 0 {
-		return 0, false, nil
+		return 0, 0, false, nil
 	}
-	return d.CDF(value) * 100, true, nil
+	return d.CDF(value) * 100, d.Count(), true, nil
 }
 
 // byGUID indexes the combatant rows a fight carried.

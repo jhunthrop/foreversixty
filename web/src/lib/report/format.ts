@@ -15,7 +15,8 @@ export function formatDurationPrecise(ms: number): string {
 
 /** The game's spell school mask as a word; combined schools are joined. */
 export function schoolName(mask: number | undefined): string {
-  if (mask === undefined || mask <= 0) return '';
+  // A melee swing carries no school in the log; it is physical.
+  if (mask === undefined || mask <= 0) return 'Physical';
   const names: string[] = [];
   const table: [number, string][] = [
     [1, 'Physical'],
@@ -87,10 +88,14 @@ export function outcomeLabel(fight: {
   kill: boolean;
   in_progress: boolean;
   npc_kills: number;
+  boss_health_pct?: number;
 }): string {
   if (fight.in_progress) return 'Live';
   if (fight.kind !== 'encounter') return `${fight.npc_kills} killed`;
-  return fight.kill ? 'Kill' : 'Wipe';
+  if (fight.kill) return 'Kill';
+  // "Wipe 23%": how far the pull got, which is what separates one wipe from the next.
+  const health = fight.boss_health_pct;
+  return health !== undefined && health >= 0 ? `Wipe ${Math.round(health)}%` : 'Wipe';
 }
 
 export function formatPerSecond(total: number, ms: number): string {
@@ -185,20 +190,25 @@ export function wholeFightAriaLabel(stale: boolean, text: string): string {
  * as the rarity text classes do elsewhere.
  */
 /** The hover text behind a Parse cell: the number's meaning, or why the cell is empty. */
-export function parseTitle(value: number | string): string {
-  if (typeof value === 'number')
-    return `${Math.round(value)}th percentile among ranked kills of this boss by this spec on this ruleset`;
+export function parseTitle(value: number | string, ranked = 0): string {
+  if (typeof value === 'number') {
+    const among = ranked > 0 ? `${ranked} ranked ${ranked === 1 ? 'kill' : 'kills'}` : 'the ranked kills';
+    return `${Math.round(value)}th percentile among ${among} of this boss by this spec on this ruleset`;
+  }
   if (value === 'wipe') return 'A wipe is not ranked';
   if (value === '–') return 'Nothing of this spec has been ranked on this boss yet';
   return '';
 }
 
 export function percentileToken(percentile: number): string {
-  const p = Number.isFinite(percentile) ? percentile : 0;
-  if (p >= 99) return 'var(--color-rarity-legendary)';
-  if (p >= 95) return 'var(--color-rarity-epic-text)';
-  if (p >= 75) return 'var(--color-rarity-rare-text)';
-  if (p >= 50) return 'var(--color-rarity-uncommon)';
-  if (p >= 25) return 'var(--color-rarity-common)';
+  // The ladder every log reader already knows: grey under 25, green from 25, blue from
+  // 50, purple from 75, orange from 95, pink at 99, gold at 100.
+  const p = Number.isFinite(percentile) ? Math.round(percentile) : 0;
+  if (p >= 100) return 'var(--color-parse-100)';
+  if (p >= 99) return 'var(--color-parse-99)';
+  if (p >= 95) return 'var(--color-rarity-legendary)';
+  if (p >= 75) return 'var(--color-rarity-epic-text)';
+  if (p >= 50) return 'var(--color-rarity-rare-text)';
+  if (p >= 25) return 'var(--color-rarity-uncommon)';
   return 'var(--color-rarity-poor)';
 }
