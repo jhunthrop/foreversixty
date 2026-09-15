@@ -10,6 +10,8 @@
     metricLabel,
     percentiles = new Map<string, Placement>(),
     parseFallback = '',
+    parseNotes = new Map<string, string>(),
+    pairsLabel = 'Targets',
     approximate = false,
   }: {
     actors: Actor[];
@@ -18,6 +20,9 @@
     percentiles?: Map<string, Placement>;
     /** What an empty Parse cell shows: '' on trash, 'wipe', or a dash for not ranked yet. */
     parseFallback?: string;
+    /** Per GUID, a fallback that overrides parseFallback for that row ('role': ranked elsewhere). */
+    parseNotes?: Map<string, string>;
+    pairsLabel?: string;
     approximate?: boolean;
   } = $props();
 
@@ -50,7 +55,8 @@
           {peak}
           {durationMs}
           {approximate}
-          {parseFallback}
+          parseFallback={parseNotes.get(actor.guid) ?? parseFallback}
+          {pairsLabel}
           percentile={percentiles.get(actor.guid) ?? null}
         />
       {/each}

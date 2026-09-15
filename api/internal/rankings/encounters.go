@@ -160,6 +160,6 @@ func percentileOf(digests map[bracketKey]*digest.Digest, k bracketKey, value flo
 	if !ok || d.Count() == 0 {
 		return nil
 	}
-	p := d.CDF(value) * 100
+	p := d.Placement(value) * 100
 	return &p
 }

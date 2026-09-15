@@ -57,8 +57,19 @@ export function bossGuidsOf(units: Unit[], fightNames: readonly string[]): Set<s
   );
 }
 
+/**
+ * The players and everything they own: a pet or a totem is on the players' side, and an
+ * "enemies" scope that listed the raid's own totems put them among the trash.
+ */
 export function playerGuids(units: Unit[]): Set<string> {
-  return new Set(units.filter((unit) => unit.kind === 'player').map((unit) => unit.guid));
+  const players = new Set(units.filter((unit) => unit.kind === 'player').map((unit) => unit.guid));
+  return new Set(
+    units
+      .filter(
+        (unit) => players.has(unit.guid) || (unit.owner_guid !== undefined && players.has(unit.owner_guid)),
+      )
+      .map((unit) => unit.guid),
+  );
 }
 
 export interface FilterOption {
@@ -84,20 +95,52 @@ export function abilityOptions(actors: Actor[]): FilterOption[] {
       }
     }
   }
-  return [...totals.values()].sort((a, b) => b.total - a.total || a.name.localeCompare(b.name));
+  const options = [...totals.values()].sort((a, b) => b.total - a.total || a.name.localeCompare(b.name));
+  // Two spells with one name (a cast and its heal, say) are told apart by their id.
+  const names = new Map<string, number>();
+  for (const option of options) names.set(option.name, (names.get(option.name) ?? 0) + 1);
+  return options.map((option) =>
+    (names.get(option.name) ?? 0) > 1 ? { ...option, name: `${option.name} #${option.id}` } : option,
+  );
 }
 
+/**
+ * One option per unit name: a trash pack is thirteen "Mindbender" GUIDs, and thirteen
+ * options of the same word help nobody. The option's id is the first GUID seen, and
+ * applyActorFilters matches every unit of that name (see targetsNamed).
+ */
 export function targetOptions(actors: Actor[]): FilterOption[] {
-  const totals = new Map<string, FilterOption>();
+  const totals = new Map<string, FilterOption & { guids: Set<string> }>();
   for (const actor of actors) {
     for (const target of actor.targets) {
-      const found = totals.get(target.guid);
+      const found = totals.get(target.name);
       if (found === undefined)
-        totals.set(target.guid, { id: target.guid, name: target.name, total: target.total });
-      else found.total += target.total;
+        totals.set(target.name, {
+          id: target.guid,
+          name: target.name,
+          total: target.total,
+          guids: new Set([target.guid]),
+        });
+      else {
+        found.total += target.total;
+        found.guids.add(target.guid);
+      }
     }
   }
-  return [...totals.values()].sort((a, b) => b.total - a.total || a.name.localeCompare(b.name));
+  return [...totals.values()]
+    .sort((a, b) => b.total - a.total || a.name.localeCompare(b.name))
+    .map(({ guids, ...option }) =>
+      guids.size > 1 ? { ...option, name: `${option.name} ×${guids.size}` } : option,
+    );
+}
+
+/** The name the target filter's GUID stands for, so every unit of that name matches. */
+function targetName(actors: Actor[], guid: string): string | null {
+  for (const actor of actors) {
+    const found = actor.targets.find((target) => target.guid === guid);
+    if (found !== undefined) return found.name;
+  }
+  return null;
 }
 
 /** Rebuilds a row's totals from whatever abilities and targets survived the filters. */
@@ -130,12 +173,14 @@ export function applyActorFilters(actors: Actor[], filters: ReportFilters, conte
 
   const deathBucket = new Map<string, number>();
   for (const death of context.deaths) deathBucket.set(death.guid, Math.ceil(death.at_ms / BUCKET_MS));
+  const wantedName = filters.target === '' ? null : targetName(actors, filters.target);
 
   return actors
     .filter((actor) => !filters.playersOnly || context.players.has(actor.guid))
     .map((actor) => {
       let targets = actor.targets;
-      if (filters.target !== '') targets = targets.filter((target) => target.guid === filters.target);
+      if (filters.target !== '')
+        targets = targets.filter((target) => target.guid === filters.target || target.name === wantedName);
       if (filters.bossOnly) targets = targets.filter((target) => context.bosses.has(target.guid));
 
       let abilities = actor.abilities;

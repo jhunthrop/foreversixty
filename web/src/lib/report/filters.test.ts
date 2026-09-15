@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import fixtureReport from '../../fixtures/report/report.json';
 import fixtureSummary from '../../fixtures/report/fights/3/summary.json';
-import type { ReportFile, Summary, Unit } from './types';
+import type { Actor, ReportFile, Summary, Unit } from './types';
 import {
   bossGuidsOf,
   DEFAULT_FILTERS,
@@ -114,5 +114,49 @@ describe('applyActorFilters', () => {
       { guid: 'Player-1', name: 'Kaal', kind: 'player' },
     ] as Unit[];
     expect([...bossGuidsOf(units, ['Kaal', 'Kryxis', ''])]).toEqual(['Creature-1', 'Creature-2']);
+  });
+
+  it('folds same-named units into one target option that matches all of them', () => {
+    const actors: Actor[] = [
+      {
+        guid: 'P1',
+        name: 'One',
+        total: 30,
+        effective: 30,
+        active_ms: 0,
+        abilities: [
+          {
+            spell_id: 1,
+            name: 'Bolt',
+            total: 30,
+            effective: 30,
+            hits: 3,
+            crits: 0,
+            ticks: 0,
+            min: 10,
+            max: 10,
+          },
+        ],
+        targets: [
+          { guid: 'C1', name: 'Mindbender', total: 10 },
+          { guid: 'C2', name: 'Mindbender', total: 10 },
+          { guid: 'C3', name: 'Boss', total: 10 },
+        ],
+        series: [30],
+      },
+    ];
+    const options = targetOptions(actors);
+    expect(options.map((option) => option.name)).toEqual(['Mindbender ×2', 'Boss']);
+    const filtered = applyActorFilters(
+      actors,
+      { ...DEFAULT_FILTERS, target: options[0].id },
+      {
+        bosses: new Set(),
+        players: new Set(['P1']),
+        deaths: [],
+      },
+    );
+    expect(filtered[0].targets.map((target) => target.guid)).toEqual(['C1', 'C2']);
+    expect(filtered[0].effective).toBe(20);
   });
 });

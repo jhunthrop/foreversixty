@@ -138,7 +138,9 @@
           <span
             class="tabular col-start-2 row-start-1 text-right font-mono text-[12px] md:col-auto md:row-auto md:text-left"
             class:text-muted={percentile === null}
-            style={percentile === null ? undefined : `color: ${percentileToken(percentile.percentile)}`}
+            style={percentile === null || percentile.ranked === 1
+              ? undefined
+              : `color: ${percentileToken(percentile.percentile)}`}
             title={percentile === null
               ? parseTitle(parseFallback)
               : parseTitle(percentile.percentile, percentile.ranked)}

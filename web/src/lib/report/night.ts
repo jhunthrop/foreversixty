@@ -223,15 +223,22 @@ export function nightSummary(
       for (const actor of summary[table]) mergeActor(actorsBy[table], actor);
     }
     for (const death of summary.deaths) deaths.push({ ...death, at_ms: death.at_ms + offset, label });
+    // Folded by the target's name, not its GUID: a boss is a new GUID every pull, and
+    // three "Nalthor" rows at a third of the uptime each are one row at the whole. The
+    // denominator is the time that name was in a pull, counted once per pull.
+    const pullsCounted = new Set<string>();
     for (const track of summary.auras) {
-      const key = `${track.target_guid}|${track.spell_id}`;
+      const key = `${track.target_name}|${track.spell_id}`;
       const found = auras.get(key);
       const shifted = track.segments.map((segment) => ({
         ...segment,
         start_ms: segment.start_ms + offset,
         end_ms: segment.end_ms + offset,
       }));
-      if (found === undefined) auras.set(key, { ...track, segments: shifted });
+      const nameKey = track.target_name;
+      const countPull = !pullsCounted.has(nameKey);
+      pullsCounted.add(nameKey);
+      if (found === undefined) auras.set(key, { ...track, segments: shifted, time_ms: summary.duration_ms });
       else
         auras.set(key, {
           ...found,
@@ -240,6 +247,7 @@ export function nightSummary(
           uptime_ms: found.uptime_ms + track.uptime_ms,
           segments: [...found.segments, ...shifted],
           appliers: [...new Set([...found.appliers, ...track.appliers])],
+          time_ms: (found.time_ms ?? 0) + (countPull ? summary.duration_ms : 0),
         });
     }
     for (const row of summary.casts) {

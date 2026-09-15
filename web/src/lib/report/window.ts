@@ -34,9 +34,15 @@ export function windowMs(window: TimeWindow): number {
   return Math.max(window.endMs - window.startMs, 0);
 }
 
+/**
+ * Clamped to the fight and snapped outward to whole seconds. The series are one-second
+ * buckets, so a window that starts mid-bucket either counts or drops that bucket
+ * whole; snapping the bounds to the buckets makes the tables, the chart and the Queries
+ * view (which reads the same bounds) agree to the number.
+ */
 export function clampWindow(window: TimeWindow, durationMs: number): TimeWindow {
-  const startMs = Math.max(0, Math.min(window.startMs, durationMs));
-  const endMs = Math.max(startMs, Math.min(window.endMs, durationMs));
+  const startMs = Math.max(0, Math.min(Math.floor(window.startMs / BUCKET_MS) * BUCKET_MS, durationMs));
+  const endMs = Math.max(startMs, Math.min(Math.ceil(window.endMs / BUCKET_MS) * BUCKET_MS, durationMs));
   return { startMs, endMs };
 }
 

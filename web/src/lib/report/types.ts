@@ -128,6 +128,8 @@ export interface AuraTrack {
   uptime_ms: number;
   segments: Segment[];
   appliers: string[];
+  /** Set by the whole-night fold: the combat time this track's target existed for, which uptime divides by. */
+  time_ms?: number;
 }
 
 /** summary.CastRow. `sequence` holds millisecond offsets from the fight's start. */

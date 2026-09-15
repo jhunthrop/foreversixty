@@ -120,7 +120,11 @@
    */
   const currentEncounterSlug = $derived(slugFor(fight?.name ?? ''));
   const roster = $derived(
-    (summary?.roster ?? []).map((row) => ({ guid: row.guid, name: row.name, class: row.class })),
+    ((nightMode ? nightFold : summary)?.roster ?? []).map((row) => ({
+      guid: row.guid,
+      name: row.name,
+      class: row.class,
+    })),
   );
 
   // Named timeWindow, not window: a `const window` in a Svelte <script> shadows the
@@ -209,6 +213,8 @@
   const filtersScale = $derived(filters.target !== '' || filters.bossOnly);
   const actorTableApproximate = $derived(!windowIsWhole || filtersScale);
   let percentiles = $state(new Map<string, Placement>());
+  /** Per row, why its Parse cell is empty on this tab when the tab's metric is not its role's. */
+  let parseNotes = $state(new Map<string, string>());
   const loader = createPercentileLoader();
 
   const filterContext = $derived({
@@ -377,6 +383,14 @@
         const row = summary.roster.find((candidate) => candidate.guid === entry.guid);
         return row !== undefined && roleMetric(row).metric === entry.query.metric;
       });
+    // The rows this tab does not ask about say why their cell is empty: a tank on the
+    // Damage Done tab is ranked on damage taken, which the Summary tab shows.
+    const asked = new Set(wanted.map((entry) => entry.guid));
+    parseNotes = new Map(
+      summary.roster
+        .filter((row) => tab !== 'summary' && !asked.has(row.guid) && row.spec)
+        .map((row) => [row.guid, 'role'] as const),
+    );
 
     void loader.load(wanted.map((entry) => entry.query)).then((answers) => {
       if (state.fight !== wantedFight || state.tab !== wantedTab) return;
@@ -800,7 +814,12 @@
       {#if scoped !== null && state.mode === 'analyze' && state.view === 'tables'}
         {#if state.tab === 'summary' && nightMode}
           {#if night !== null}
-            <NightView {night} loading={nightLoading} onSelect={(index) => patch({ fight: index })} />
+            <NightView
+              {night}
+              loading={nightLoading}
+              onSelect={(index) => patch({ fight: index })}
+              onSelectPlayer={(guid) => patch({ source: guid })}
+            />
           {/if}
         {:else if state.tab === 'summary'}
           <SummaryTab
@@ -827,6 +846,8 @@
             {metricLabel}
             {percentiles}
             {parseFallback}
+            {parseNotes}
+            pairsLabel={state.tab === 'damage-taken' ? 'Sources' : 'Targets'}
             approximate={actorTableApproximate}
           />
           {#if actorTableApproximate}

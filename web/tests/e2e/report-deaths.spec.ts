@@ -18,7 +18,7 @@ test('the recap shows the killing blow, the last hits and the auras that were up
 test('a death sets the window to the twenty seconds before it', async ({ page }) => {
   await page.goto(DEATHS);
   await page.getByTestId('death-window').click();
-  await expect(page).toHaveURL(/start=0&end=10100/);
+  await expect(page).toHaveURL(/start=0&end=11000/);
 });
 
 test('the combatants list links a build into the planner and the planner opens it', async ({ page }) => {

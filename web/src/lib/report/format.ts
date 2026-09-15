@@ -199,6 +199,7 @@ export function parseTitle(value: number | string, ranked = 0): string {
   }
   if (value === 'wipe') return 'A wipe is not ranked';
   if (value === '–') return 'Nothing of this spec has been ranked on this boss yet';
+  if (value === 'role') return 'Ranked on their role’s own metric; the Summary tab carries it';
   return '';
 }
 

@@ -6,6 +6,7 @@
      Cards rather than a table at every width: a death is read top to bottom, and the
      last-ten list is the whole point of the view. -->
 <script lang="ts">
+  import { SvelteSet } from 'svelte/reactivity';
   import { splitUnitName } from '../../lib/characters';
   import {
     classColorVar,
@@ -37,6 +38,17 @@
   } = $props();
 
   const ordered = $derived([...deaths].sort((a, b) => a.at_ms - b.at_ms));
+  const FOLD_ABOVE = 6;
+  /** Cards the reader has opened by hand; every card is open while there are few. */
+  // A SvelteSet: toggled one card at a time, which is the per-entry tracking it is for.
+  const opened = new SvelteSet<string>();
+  const foldAll = $derived(ordered.length > FOLD_ABOVE);
+  const isOpen = (death: Death): boolean => !foldAll || opened.has(`${death.guid}-${death.at_ms}`);
+  function toggle(death: Death): void {
+    const key = `${death.guid}-${death.at_ms}`;
+    if (opened.has(key)) opened.delete(key);
+    else opened.add(key);
+  }
 
   type LastEvent =
     { kind: 'damage'; at_ms: number; hit: DamageRef } | { kind: 'heal'; at_ms: number; heal: HealRef };
@@ -131,9 +143,10 @@
         : healed > 0
           ? ` ${formatAmount(healed)} of healing landed in the same span.`
           : ' No healing landed on them in that span.';
+    const from = `the highest they stood at in that span was ${Math.round(firstPct)}%`;
     if (spanMs <= 3000 && firstPct >= 60)
-      return `Burst: ${formatAmount(total)} in ${spanText}, from ${Math.round(firstPct)}% health.${healedText}`;
-    return `${formatAmount(total)} over ${spanText}, from ${Math.round(firstPct)}% health.${healedText}`;
+      return `Burst: ${formatAmount(total)} in ${spanText}; ${from}.${healedText}`;
+    return `${formatAmount(total)} over ${spanText}; ${from}.${healedText}`;
   }
   function linkFor(death: Death): ReturnType<typeof plannerLinkFor> {
     const combatant = combatants.find((row) => row.guid === death.guid);
@@ -146,6 +159,8 @@
 {#if ordered.length === 0}
   <p class="text-muted text-[14px]" data-testid="table-empty">Nobody died in this window.</p>
 {:else}
+  <!-- Past a handful, the cards start folded to their first line: forty-four open cards
+       over a whole night were a forty-thousand-pixel page. -->
   <ul class="flex flex-col gap-4" data-testid="deaths-tab">
     <!-- A death's last hits can repeat a spell in one millisecond (a DoT tick and its
          crit, a cleave), so the row key carries its index too; a bare timestamp-and-spell
@@ -157,6 +172,15 @@
         data-testid={`death-${death.guid}`}
       >
         <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+          {#if foldAll}
+            <button
+              type="button"
+              class="text-nav inline-flex min-h-11 items-center text-[12px] font-bold tracking-[0.06em] uppercase md:min-h-0"
+              aria-expanded={isOpen(death)}
+              data-testid="death-toggle"
+              onclick={() => toggle(death)}>{isOpen(death) ? 'Fold' : 'Open'}</button
+            >
+          {/if}
           <span
             class="text-[15px] font-semibold"
             style={`color: ${classColorVar(death.class ?? classOf.get(death.guid))}`}
@@ -170,14 +194,27 @@
           {/if}
           {#if death.killing_blow}
             <span class="text-[13px]">
-              killed by {sourceName(death.killing_blow.source_guid, death.killing_blow.source_name)} ·
-              {death.killing_blow.spell_name === '' ? 'Melee' : death.killing_blow.spell_name} ·
+              {lethalHitMissing(death) ? 'last hit by' : 'killed by'}
+              {sourceName(death.killing_blow.source_guid, death.killing_blow.source_name)} ·
+              {NULL_GUID.test(death.killing_blow.source_guid) && death.killing_blow.spell_name === ''
+                ? 'a fall, a hazard or an untracked source'
+                : death.killing_blow.spell_name === ''
+                  ? 'Melee'
+                  : death.killing_blow.spell_name} ·
               <span class="tabular font-mono">{formatAmount(death.killing_blow.amount)}</span>
               {#if death.killing_blow.overkill}
                 <span class="text-muted">
                   (<span class="tabular font-mono">{formatAmount(death.killing_blow.overkill)}</span> overkill)
                 </span>
               {/if}
+            </span>
+          {/if}
+          {#if death.last.some((hit) => hit.max_hp)}
+            <span class="text-muted text-[13px]" data-testid="death-max-hp">
+              max health
+              <span class="tabular font-mono"
+                >{formatAmount(Math.max(...death.last.map((hit) => hit.max_hp ?? 0)))}</span
+              >
             </span>
           {/if}
           {#if death.release_ms}
@@ -188,130 +225,132 @@
           {/if}
         </div>
 
-        {#if shape(death)}
-          <p class="text-[13px]" data-testid="death-shape">{shape(death)}</p>
-        {/if}
-        {#if death.killing_blow && lethalHitMissing(death)}
-          <p class="text-muted text-[13px]" data-testid="death-unlogged">
-            The log shows no lethal hit: the last recorded hit left them at
-            {#if healthPct(death.killing_blow) !== null}
-              <span class="tabular font-mono">{Math.round(healthPct(death.killing_blow) ?? 0)}%</span>,
-            {:else}
-              unknown health,
-            {/if}
-            and they died
-            <span class="tabular font-mono">{beforeDeath(death, death.killing_blow.at_ms).slice(1)}</span> later.
-          </p>
-        {/if}
-
-        <div class="overflow-x-auto">
-          <table class="w-full text-[13px]">
-            <caption class="label text-muted text-left">
-              {death.heals === undefined ? 'Last hits' : 'Last hits and heals'}
-            </caption>
-            <thead>
-              <tr class="text-muted label">
-                <th class="py-1 pr-3 text-left font-bold" title="Seconds before the death">Before</th>
-                <th class="py-1 pr-3 text-left font-bold">Ability</th>
-                <th class="py-1 pr-3 text-left font-bold">From</th>
-                <th class="py-1 pr-3 text-right font-bold">Amount</th>
-                <th class="py-1 text-left font-bold" title="Health left after the hit">Health after</th>
-              </tr>
-            </thead>
-            <tbody>
-              {#each lastEvents(death) as event, i (`${event.at_ms}-${i}`)}
-                {#if event.kind === 'heal'}
-                  {@const heal = event.heal}
-                  <tr class="border-line-soft border-b" data-testid="death-heal">
-                    <td
-                      class="text-muted tabular py-1 pr-3 font-mono"
-                      title={formatDurationPrecise(heal.at_ms)}>{beforeDeath(death, heal.at_ms)}</td
-                    >
-                    <td class="text-kill py-1 pr-3">{heal.spell_name}</td>
-                    <td class="text-muted truncate py-1 pr-3">{splitUnitName(heal.source_name).name}</td>
-                    <td class="text-kill tabular py-1 pr-3 text-right font-mono"
-                      >+{formatAmount(heal.amount - (heal.overheal ?? 0))}{#if heal.overheal}
-                        <span class="text-muted text-[11px]" title="Overhealing">
-                          ({formatAmount(heal.overheal)} over)</span
-                        >{/if}</td
-                    >
-                    <td class="py-1"></td>
-                  </tr>
-                {:else}
-                  {@const hit = event.hit}
-                  {@const lethal = isKillingBlow(death, hit)}
-                  {@const pct = lethal ? 0 : healthPct(hit)}
-                  <tr class="border-line-soft border-b">
-                    <td
-                      class="text-muted tabular py-1 pr-3 font-mono"
-                      title={formatDurationPrecise(hit.at_ms)}>{beforeDeath(death, hit.at_ms)}</td
-                    >
-                    <td class="py-1 pr-3">{hit.spell_name === '' ? 'Melee' : hit.spell_name}</td>
-                    <td class="text-muted truncate py-1 pr-3"
-                      >{sourceName(hit.source_guid, hit.source_name)}</td
-                    >
-                    <td class="tabular py-1 pr-3 text-right font-mono">{formatAmount(hit.amount)}</td>
-                    <td class="w-[30%] py-1">
-                      {#if pct !== null}
-                        <span class="flex items-center gap-2">
-                          <span
-                            class="bg-line-soft block h-[8px] flex-1"
-                            title={`${hit.hp_after ?? 0} of ${hit.max_hp}`}
-                          >
-                            <span
-                              class="block h-full {pct <= 35
-                                ? 'bg-death'
-                                : pct <= 65
-                                  ? 'bg-ember'
-                                  : 'bg-kill'}"
-                              style={`width: ${pct}%`}
-                            ></span>
-                          </span>
-                          <span class="text-muted tabular w-[36px] text-right font-mono text-[12px]"
-                            >{Math.round(pct)}%</span
-                          >
-                        </span>
-                      {/if}
-                    </td>
-                  </tr>
-                {/if}
-              {/each}
-            </tbody>
-          </table>
-        </div>
-
-        {#if death.auras_held.length > 0 || death.auras_lost.length > 0}
-          <p class="text-[13px]">
-            {#if death.auras_held.length > 0}
-              <span class="label text-muted">Up</span>
-              {death.auras_held.map((aura) => aura.name).join(', ')}
-            {/if}
-            {#if death.auras_lost.length > 0}
-              <span class="label text-muted ml-3">Just lost</span>
-              {death.auras_lost.map((aura) => aura.name).join(', ')}
-            {/if}
-          </p>
-        {/if}
-
-        <div class="flex flex-wrap gap-2">
-          <button
-            type="button"
-            class="border-line-warm rounded-control text-text inline-flex h-11 items-center border px-3 text-[12px] font-bold tracking-[0.06em] uppercase md:h-9"
-            data-testid="death-window"
-            onclick={() => onWindow(deathWindow(death.at_ms, durationMs))}
-          >
-            The 20s before this
-          </button>
-          {#if link}
-            <a
-              class="border-line-warm-strong rounded-control text-strong inline-flex h-11 items-center border px-3 text-[12px] font-bold tracking-[0.06em] uppercase md:h-9"
-              href={link.href}
-              data-testid="death-build-link"
-            >
-              {link.label}
-            </a>
+        {#if isOpen(death)}
+          {#if shape(death)}
+            <p class="text-[13px]" data-testid="death-shape">{shape(death)}</p>
           {/if}
-        </div>
+          {#if death.killing_blow && lethalHitMissing(death)}
+            <p class="text-muted text-[13px]" data-testid="death-unlogged">
+              The log shows no lethal hit: the last recorded hit left them at
+              {#if healthPct(death.killing_blow) !== null}
+                <span class="tabular font-mono">{Math.round(healthPct(death.killing_blow) ?? 0)}%</span>,
+              {:else}
+                unknown health,
+              {/if}
+              and they died
+              <span class="tabular font-mono">{beforeDeath(death, death.killing_blow.at_ms).slice(1)}</span> later.
+            </p>
+          {/if}
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-[13px]">
+              <caption class="label text-muted text-left">
+                {death.heals === undefined ? 'Last hits' : 'Last hits and heals'}
+              </caption>
+              <thead>
+                <tr class="text-muted label">
+                  <th class="py-1 pr-3 text-left font-bold" title="Seconds before the death">Before</th>
+                  <th class="py-1 pr-3 text-left font-bold">Ability</th>
+                  <th class="py-1 pr-3 text-left font-bold">From</th>
+                  <th class="py-1 pr-3 text-right font-bold">Amount</th>
+                  <th class="py-1 text-left font-bold" title="Health left after the hit">Health after</th>
+                </tr>
+              </thead>
+              <tbody>
+                {#each lastEvents(death) as event, i (`${event.at_ms}-${i}`)}
+                  {#if event.kind === 'heal'}
+                    {@const heal = event.heal}
+                    <tr class="border-line-soft border-b" data-testid="death-heal">
+                      <td
+                        class="text-muted tabular py-1 pr-3 font-mono"
+                        title={formatDurationPrecise(heal.at_ms)}>{beforeDeath(death, heal.at_ms)}</td
+                      >
+                      <td class="text-kill py-1 pr-3">{heal.spell_name}</td>
+                      <td class="text-muted truncate py-1 pr-3">{splitUnitName(heal.source_name).name}</td>
+                      <td class="text-kill tabular py-1 pr-3 text-right font-mono"
+                        >+{formatAmount(heal.amount - (heal.overheal ?? 0))}{#if heal.overheal}
+                          <span class="text-muted text-[11px]" title="Overhealing">
+                            ({formatAmount(heal.overheal)} over)</span
+                          >{/if}</td
+                      >
+                      <td class="py-1"></td>
+                    </tr>
+                  {:else}
+                    {@const hit = event.hit}
+                    {@const lethal = isKillingBlow(death, hit)}
+                    {@const pct = lethal ? 0 : healthPct(hit)}
+                    <tr class="border-line-soft border-b">
+                      <td
+                        class="text-muted tabular py-1 pr-3 font-mono"
+                        title={formatDurationPrecise(hit.at_ms)}>{beforeDeath(death, hit.at_ms)}</td
+                      >
+                      <td class="py-1 pr-3">{hit.spell_name === '' ? 'Melee' : hit.spell_name}</td>
+                      <td class="text-muted truncate py-1 pr-3"
+                        >{sourceName(hit.source_guid, hit.source_name)}</td
+                      >
+                      <td class="tabular py-1 pr-3 text-right font-mono">{formatAmount(hit.amount)}</td>
+                      <td class="w-[30%] py-1">
+                        {#if pct !== null}
+                          <span class="flex items-center gap-2">
+                            <span
+                              class="bg-line-soft block h-[8px] flex-1"
+                              title={`${hit.hp_after ?? 0} of ${hit.max_hp}`}
+                            >
+                              <span
+                                class="block h-full {pct <= 35
+                                  ? 'bg-death'
+                                  : pct <= 65
+                                    ? 'bg-ember'
+                                    : 'bg-kill'}"
+                                style={`width: ${pct}%`}
+                              ></span>
+                            </span>
+                            <span class="text-muted tabular w-[36px] text-right font-mono text-[12px]"
+                              >{Math.round(pct)}%</span
+                            >
+                          </span>
+                        {/if}
+                      </td>
+                    </tr>
+                  {/if}
+                {/each}
+              </tbody>
+            </table>
+          </div>
+
+          {#if death.auras_held.length > 0 || death.auras_lost.length > 0}
+            <p class="text-[13px]">
+              {#if death.auras_held.length > 0}
+                <span class="label text-muted">Up</span>
+                {death.auras_held.map((aura) => aura.name).join(', ')}
+              {/if}
+              {#if death.auras_lost.length > 0}
+                <span class="label text-muted ml-3">Just lost</span>
+                {death.auras_lost.map((aura) => aura.name).join(', ')}
+              {/if}
+            </p>
+          {/if}
+
+          <div class="flex flex-wrap gap-2">
+            <button
+              type="button"
+              class="border-line-warm rounded-control text-text inline-flex h-11 items-center border px-3 text-[12px] font-bold tracking-[0.06em] uppercase md:h-9"
+              data-testid="death-window"
+              onclick={() => onWindow(deathWindow(death.at_ms, durationMs))}
+            >
+              The 20s before this
+            </button>
+            {#if link}
+              <a
+                class="border-line-warm-strong rounded-control text-strong inline-flex h-11 items-center border px-3 text-[12px] font-bold tracking-[0.06em] uppercase md:h-9"
+                href={link.href}
+                data-testid="death-build-link"
+              >
+                {link.label}
+              </a>
+            {/if}
+          </div>
+        {/if}
       </li>
     {/each}
   </ul>

@@ -88,9 +88,11 @@
                it was filed under. The testid stays on the number alone: it is the figure
                report-tables.spec.ts pins, not the word beside it. -->
           <span class="tabular text-right font-mono">
-            <span data-testid="aura-uptime">{formatPercent(pct(track.uptime_ms))}</span><span
-              class="label font-body text-muted ml-1.5 md:hidden">uptime</span
-            >
+            <span data-testid="aura-uptime"
+              >{formatPercent(
+                track.time_ms === undefined ? pct(track.uptime_ms) : (track.uptime_ms / track.time_ms) * 100,
+              )}</span
+            ><span class="label font-body text-muted ml-1.5 md:hidden">uptime</span>
           </span>
           <span class="text-muted tabular text-right font-mono text-[13px]"
             >{track.applications}<span class="label font-body ml-1.5 md:hidden">applied</span></span

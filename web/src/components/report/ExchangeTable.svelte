@@ -59,7 +59,7 @@
     for (const cast of casts) {
       if (players.has(cast.guid)) continue;
       const found = stopped.get(cast.spell_id);
-      if (found !== undefined) found.cast += cast.succeeded + cast.started;
+      if (found !== undefined) found.cast += Math.max(cast.started, cast.succeeded);
     }
     return [...stopped.values()]
       .map((entry) => ({ ...entry, cast: Math.max(entry.cast, entry.stopped) }))

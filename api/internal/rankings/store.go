@@ -318,7 +318,7 @@ func (s *Store) Percentile(ctx context.Context, encounterID, difficulty int64,
 	if d.Count() == 0 {
 		return 0, 0, false, nil
 	}
-	return d.CDF(value) * 100, d.Count(), true, nil
+	return d.Placement(value) * 100, d.Count(), true, nil
 }
 
 // byGUID indexes the combatant rows a fight carried.

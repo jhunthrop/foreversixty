@@ -8,8 +8,18 @@
   import { classColorVar, formatAmount, formatDuration, formatPercent } from '../../lib/report/format';
   import type { Night, NightPlayer } from '../../lib/report/night';
 
-  let { night, loading, onSelect }: { night: Night; loading: boolean; onSelect: (index: number) => void } =
-    $props();
+  let {
+    night,
+    loading,
+    onSelect,
+    onSelectPlayer,
+  }: {
+    night: Night;
+    loading: boolean;
+    onSelect: (index: number) => void;
+    /** Narrows the page to one player, the way the summary's names do. */
+    onSelectPlayer: (guid: string) => void;
+  } = $props();
 
   let open = $state<string | null>(null);
 
@@ -134,7 +144,27 @@
             onclick={() => (open = open === player.guid ? null : player.guid)}
           >
             <span class="truncate font-semibold" style={`color: ${classColorVar(player.class)}`}
-              >{display.name}</span
+              ><span
+                class="mr-1 inline-block w-3 transition-transform"
+                class:rotate-90={open === player.guid}
+                aria-hidden="true">›</span
+              ><span
+                role="link"
+                tabindex="0"
+                class="underline-offset-2 hover:underline"
+                title="Show only this player"
+                data-testid="night-player-name"
+                onclick={(event) => {
+                  event.stopPropagation();
+                  onSelectPlayer(player.guid);
+                }}
+                onkeydown={(event) => {
+                  if (event.key === 'Enter') {
+                    event.stopPropagation();
+                    onSelectPlayer(player.guid);
+                  }
+                }}>{display.name}</span
+              ></span
             >
             <span class="text-muted text-[13px]">{player.spec ?? player.class ?? 'Unknown'}</span>
             <span class="tabular hidden text-right font-mono md:inline">{player.fights}</span>

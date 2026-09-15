@@ -42,6 +42,7 @@
     durationMs,
     percentile = null,
     parseFallback = '',
+    pairsLabel = 'Targets',
     approximate = false,
     characterLink = null,
   }: {
@@ -51,6 +52,8 @@
     durationMs: number;
     percentile?: Placement | null;
     parseFallback?: string;
+    /** The word over the per-unit split: Targets for damage done and healing, Sources for damage taken. */
+    pairsLabel?: string;
     approximate?: boolean;
     characterLink?: { region: string; ruleset: string } | null;
   } = $props();
@@ -117,14 +120,17 @@
     <span
       class="tabular font-mono text-[12px]"
       class:text-muted={percentile === null}
-      style={percentile === null ? undefined : `color: ${percentileToken(percentile.percentile)}`}
+      style={percentile === null || percentile.ranked === 1
+        ? undefined
+        : `color: ${percentileToken(percentile.percentile)}`}
       title={percentile === null
         ? parseTitle(parseFallback)
         : parseTitle(percentile.percentile, percentile.ranked)}
       data-testid="row-percentile"
     >
-      {#if percentile === null}{parseFallback}{:else if percentile.ranked === 1}<span class="text-muted"
-          >only</span
+      {#if percentile === null}{parseFallback === 'role'
+          ? ''
+          : parseFallback}{:else if percentile.ranked === 1}<span class="text-muted">only</span
         >{:else}{Math.round(percentile.percentile)}{#if percentile.ranked > 0}<span
             class="text-muted ml-1 text-[10px]">of {percentile.ranked}</span
           >{/if}{/if}
@@ -202,7 +208,7 @@
       class="bg-card-top flex flex-col gap-4 overflow-x-auto px-2 py-3 md:flex-row"
       data-testid="row-detail"
     >
-      <table class="flex-1 text-[13px]">
+      <table class="min-w-[520px] flex-1 text-[13px]">
         <caption class="label text-muted text-left">Abilities</caption>
         <tbody>
           {#each [...actor.abilities]
@@ -221,9 +227,9 @@
               <td
                 class="tabular py-1 pr-3 text-right font-mono"
                 {title}
-                aria-label={approximateAriaLabel(approximate, formatAmount(ability.total))}
+                aria-label={approximateAriaLabel(approximate, formatAmount(ability.effective))}
               >
-                {mark}{formatAmount(ability.total)}
+                {mark}{formatAmount(ability.effective)}
               </td>
               <td class="text-muted tabular py-1 pr-3 text-right font-mono"
                 >{ability.hits + ability.ticks} hits</td
@@ -262,8 +268,8 @@
           {/each}
         </tbody>
       </table>
-      <table class="flex-1 text-[13px]">
-        <caption class="label text-muted text-left">Targets</caption>
+      <table class="min-w-[280px] flex-1 text-[13px]">
+        <caption class="label text-muted text-left">{pairsLabel}</caption>
         <tbody>
           {#each targetsByName as target (target.name)}
             <tr class="border-line-soft border-b">

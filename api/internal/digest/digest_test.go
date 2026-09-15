@@ -170,3 +170,27 @@ func TestNaNAndInfinityAreIgnored(t *testing.T) {
 		t.Fatalf("count = %d, want 0", d.Count())
 	}
 }
+
+func TestPlacementCountsWhatAParseBeats(t *testing.T) {
+	d := New()
+	for _, v := range []float64{1000, 1380.9, 2000} {
+		d.Add(v)
+	}
+	cases := []struct{ value, want float64 }{
+		{2000, 1},     // the best beats both others
+		{1380.4, 0.5}, // recomputed to the hundredth, still the middle one
+		{1000, 0},     // the bottom beats nobody
+		{999, 0},      // below everyone
+		{3000, 1},     // above everyone
+	}
+	for _, tc := range cases {
+		if got := d.Placement(tc.value); math.Abs(got-tc.want) > 1e-9 {
+			t.Errorf("Placement(%v) = %v, want %v", tc.value, got, tc.want)
+		}
+	}
+	one := New()
+	one.Add(500)
+	if got := one.Placement(500); got != 1 {
+		t.Errorf("a bracket of one places its only kill at %v, want 1", got)
+	}
+}

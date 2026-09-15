@@ -54,7 +54,11 @@
       meaning:
         'A figure split in proportion to the window or a filter rather than measured directly. Totals are exact.',
     },
-    { term: '†', meaning: 'A whole-fight figure the summary cannot cut down to a window.' },
+    {
+      term: '9† in the fight list',
+      meaning:
+        'How many players died on that pull. Beside a figure in a table, † marks a whole-fight figure the summary cannot cut down to a window.',
+    },
     { term: 'Split', meaning: 'Talent points per tree, in tree order.' },
     {
       term: 'Threat',

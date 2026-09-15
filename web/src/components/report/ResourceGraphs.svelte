@@ -31,8 +31,10 @@
   function low(series: number[]): { value: number; atMs: number } {
     let value = Number.POSITIVE_INFINITY;
     let atMs = 0;
+    // The seconds before the first reading are not zero power, they are no reading.
+    const first = series.findIndex((point) => point > 0);
     series.forEach((point, index) => {
-      if (point < value) {
+      if (index >= first && first >= 0 && point < value) {
         value = point;
         atMs = index * 1000;
       }
@@ -119,14 +121,14 @@
               stroke-width="1"
               vector-effect="non-scaling-stroke"
             />
-            {#each deaths.filter((death) => death.guid === track.guid) as death, i (`${death.at_ms}-${i}`)}
+            {#each deaths as death, i (`${death.at_ms}-${i}`)}
               <line
                 x1={durationMs === 0 ? 0 : (death.at_ms / durationMs) * 100}
                 y1="0"
                 x2={durationMs === 0 ? 0 : (death.at_ms / durationMs) * 100}
                 y2="26"
-                stroke="var(--color-death)"
-                stroke-width="2"
+                stroke={death.guid === track.guid ? 'var(--color-death)' : 'var(--color-death-soft)'}
+                stroke-width={death.guid === track.guid ? 2 : 1}
                 vector-effect="non-scaling-stroke"
               />
             {/each}

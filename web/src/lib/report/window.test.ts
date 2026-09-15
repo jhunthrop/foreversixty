@@ -175,7 +175,7 @@ describe('scoping a row to the window', () => {
 
 describe('presets', () => {
   it('sets the window to the twenty seconds before a death', () => {
-    expect(deathWindow(10_100, 40_000)).toEqual({ startMs: 0, endMs: 10_100 });
+    expect(deathWindow(10_100, 40_000)).toEqual({ startMs: 0, endMs: 11_000 });
     expect(deathWindow(30_000, 40_000)).toEqual({ startMs: 10_000, endMs: 30_000 });
   });
 
@@ -188,7 +188,7 @@ describe('presets', () => {
       '20s before Thalgrit died · 10.1s',
     ]);
     expect(presets[0].window).toBeNull();
-    expect(presets[3].window).toEqual({ startMs: 0, endMs: 10_100 });
+    expect(presets[3].window).toEqual({ startMs: 0, endMs: 11_000 });
   });
 
   it('scales an ability’s overheal with its total, so the share holds inside a window', () => {
