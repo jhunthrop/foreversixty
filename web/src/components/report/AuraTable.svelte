@@ -33,11 +33,11 @@
    * only for spells on a boss, since adds come and go.
    */
   const bySpell = $derived.by(() => {
-    if (kind !== 'DEBUFF' || bossNames.size === 0) return [];
+    if (kind === 'DEBUFF' && bossNames.size === 0) return [];
     // eslint-disable-next-line svelte/prefer-svelte-reactivity
     const totals = new Map<string, { name: string; uptime: number; time: number; targets: number }>();
     for (const track of rows) {
-      if (track.time_ms === undefined || !bossNames.has(track.target_name)) continue;
+      if (track.time_ms === undefined || (kind === 'DEBUFF' && !bossNames.has(track.target_name))) continue;
       const found = totals.get(track.name) ?? { name: track.name, uptime: 0, time: 0, targets: 0 };
       found.uptime += track.uptime_ms;
       found.time += track.time_ms;
@@ -84,7 +84,9 @@
 {:else}
   {#if bySpell.length > 0}
     <div class="flex flex-col gap-1" data-testid="aura-by-spell">
-      <h2 class="label text-muted">On the bosses, across the night</h2>
+      <h2 class="label text-muted">
+        {kind === 'DEBUFF' ? 'On the bosses, across the night' : 'Across the night, over everyone who had it'}
+      </h2>
       <ul class="flex flex-col">
         {#each bySpell as entry (entry.name)}
           <li
@@ -138,13 +140,23 @@
             <!-- Keyed by index as well as start: a stack refreshed on the tick it was
                  applied gives two segments the same start_ms, and a bare timestamp key
                  threw on the duplicate and left the whole tab on "Loading the report." -->
-            {#each track.segments as segment, i (`${segment.start_ms}-${i}`)}
+            {#if track.time_ms !== undefined}
+              <!-- Over the night the number is uptime over the target's own time in combat,
+                   so the bar is that share, not the segments laid on the whole night. -->
               <span
                 class="absolute top-0 h-full {kind === 'BUFF' ? 'bg-kill' : 'bg-wipe'}"
-                style={`left: ${pct(segment.start_ms)}%; width: ${Math.max(pct(segment.end_ms - segment.start_ms), 0.4)}%; opacity: ${Math.min(0.4 + segment.stacks * 0.2, 1)}`}
-                title={`${formatDuration(segment.start_ms)} to ${formatDuration(segment.end_ms)}${segment.stacks > 1 ? ` · ${segment.stacks} stacks` : ''}`}
+                style={`width: ${Math.min(shareOf(track), 100)}%`}
+                title={`Up ${formatDuration(track.uptime_ms)} of the ${formatDuration(track.time_ms)} this unit was in`}
               ></span>
-            {/each}
+            {:else}
+              {#each track.segments as segment, i (`${segment.start_ms}-${i}`)}
+                <span
+                  class="absolute top-0 h-full {kind === 'BUFF' ? 'bg-kill' : 'bg-wipe'}"
+                  style={`left: ${pct(segment.start_ms)}%; width: ${Math.max(pct(segment.end_ms - segment.start_ms), 0.4)}%; opacity: ${Math.min(0.4 + segment.stacks * 0.2, 1)}`}
+                  title={`${formatDuration(segment.start_ms)} to ${formatDuration(segment.end_ms)}${segment.stacks > 1 ? ` · ${segment.stacks} stacks` : ''}`}
+                ></span>
+              {/each}
+            {/if}
           </span>
           <!-- The heading row above is `hidden` below `md`, so each figure carries the word
                it was filed under. The testid stays on the number alone: it is the figure

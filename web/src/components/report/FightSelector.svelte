@@ -20,6 +20,9 @@
   const encounters = $derived(fights.filter((fight) => fight.kind === 'encounter'));
   const shown = $derived(showTrash ? fights : encounters.length > 0 ? encounters : fights);
   const trashCount = $derived(fights.length - encounters.length);
+  /** Roughly how many two-line rows the phone's 320px box shows before it scrolls. */
+  const PHONE_ROWS_SHOWN = 5;
+  let listAtEnd = $state(false);
   const pulls = $derived(pullNumbers(fights));
 
   const outcome = outcomeLabel;
@@ -30,7 +33,13 @@
   class="border-line rounded-panel bg-raised flex flex-col border"
   data-testid="fight-selector"
 >
-  <ul class="flex max-h-[320px] flex-col overflow-y-auto md:max-h-[calc(100vh-180px)]">
+  <ul
+    class="flex max-h-[320px] flex-col overflow-y-auto md:max-h-[calc(100vh-180px)]"
+    onscroll={(event) => {
+      const list = event.currentTarget;
+      listAtEnd = list.scrollTop + list.clientHeight >= list.scrollHeight - 4;
+    }}
+  >
     {#if encounters.length > 0}
       <li>
         <button
@@ -114,6 +123,14 @@
       </li>
     {/each}
   </ul>
+  {#if encounters.length > PHONE_ROWS_SHOWN && !listAtEnd}
+    <!-- The phone list is a scroll box that ends on a whole row, so it looks complete when it
+         is not: this says how much is below the fold until the reader gets there. -->
+    <span
+      class="text-muted border-line-soft border-t px-3 py-1 text-[12px] md:hidden"
+      data-testid="fights-more">Scroll the list for all {encounters.length} pulls</span
+    >
+  {/if}
   {#if trashCount > 0 && encounters.length > 0}
     <button
       type="button"

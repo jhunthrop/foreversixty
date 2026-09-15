@@ -222,8 +222,7 @@ export function parseTitle(value: number | string, ranked = 0): string {
   }
   if (value === 'wipe') return 'A wipe is not ranked';
   if (value === '–') return 'Nothing of this spec has been ranked on this boss yet';
-  if (value === 'tank' || value === 'healer' || value === 'dps')
-    return `A ${value} is ranked on their role’s own metric; the Summary tab carries their parse`;
+  if (value === 'none') return 'Damage taken has no parse: taking more is not doing better';
   return '';
 }
 

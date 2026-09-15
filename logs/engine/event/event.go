@@ -238,7 +238,10 @@ type Event struct {
 func (e Event) Effective() int64 {
 	switch e.Kind {
 	case Damage:
-		return e.Amount.V
+		// Amount includes overkill, as the log writes it; the damage that
+		// counts is what the target could still take. Overkill is -1 on a
+		// hit that did not kill, hence the floor.
+		return e.Amount.V - max(e.Overkill.V, 0)
 	case Heal:
 		return e.Amount.V - e.Overheal.V
 	default:

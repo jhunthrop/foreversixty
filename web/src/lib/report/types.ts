@@ -53,6 +53,8 @@ export interface Actor {
   series: number[];
   /** Set by the whole-night fold: the combat time this actor was present for, which their per-second figure divides by. */
   time_ms?: number;
+  /** Set on the client when the row's totals and targets were measured from the fight's events. */
+  measured?: boolean;
 }
 
 /** summary.DamageRef — one damage event kept for the deaths view. */

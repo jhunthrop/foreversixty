@@ -1,11 +1,16 @@
 // web/src/lib/report/exact.ts
-// The exact per-ability and per-target split of one actor inside a window, measured from
-// the fight's own events rather than prorated from the whole-fight summary. The summary
-// keeps one per-second series per actor and none per ability, so window.ts can only
-// scale an ability's whole-fight figure by the window's share of the actor's total --
-// which credits a healer with spells she never cast in that window. This asks DuckDB the
-// real question, through the same engine the Queries view uses, and hands back rows in
-// the summary's own Ability and Pair shapes so the table renders them unchanged.
+// The exact per-ability and per-target split of one actor inside a window, and the exact
+// totals of a whole table, measured from the fight's own events rather than prorated from
+// the whole-fight summary. The summary keeps one per-second series per actor and none per
+// ability, so window.ts can only scale an ability's whole-fight figure by the window's
+// share of the actor's total -- which credits a healer with spells she never cast in that
+// window. This asks DuckDB the real question, through the same engine the Queries view
+// uses, and hands back rows in the summary's own Ability and Pair shapes.
+//
+// It counts what the engine counts (logs/engine/summary/damage.go): a pet's damage and
+// healing land on its owner, read from the report's units since the advanced owner field
+// is empty on most lines; and an absorb is healing done by the shield's caster, under the
+// shield's spell, since that is the only place an absorbed amount is counted.
 import { EVENTS_TABLE, FIGHT_MS, createDuckDbEngine, createQueryLayer, type QueryLayer } from './query';
 import type { Ability, Pair } from './types';
 import type { TimeWindow } from './window';
@@ -16,6 +21,29 @@ export interface ExactSplit {
   abilities: Ability[];
   targets: Pair[];
 }
+
+/** An actor's measured totals: what they did in the window, and to whom. */
+export interface ExactTotals {
+  effective: number;
+  targets: Pair[];
+}
+
+/** The other side a table is narrowed to: by GUID, or by name where a filter matched a name. */
+export interface TargetScope {
+  guids: string[];
+  names: string[];
+}
+
+/** Pet GUID to owner GUID, from the report's units. */
+export type PetOwners = ReadonlyMap<string, string>;
+
+/** What the measure counts the way the tables count it. */
+export interface MeasureOptions {
+  pets?: PetOwners;
+  /** Count a killing blow's overkill as damage, as the "Count overkill" filter does. */
+  countOverkill?: boolean;
+}
+const NO_PETS: PetOwners = new Map();
 
 let shared: QueryLayer | null = null;
 
@@ -36,66 +64,124 @@ function quote(value: string): string {
   return `'${value.replaceAll("'", "''")}'`;
 }
 
-/** The rows that are this actor's, for the table in question. Pets count for their owner. */
-function actorClause(kind: ActorKind, guid: string): string {
-  const g = quote(guid);
-  if (kind === 'damage-taken') return `kind = 'damage' AND dest_guid = ${g}`;
-  if (kind === 'healing') return `kind = 'heal' AND (source_guid = ${g} OR adv_owner_guid = ${g})`;
-  return `kind = 'damage' AND (source_guid = ${g} OR adv_owner_guid = ${g})`;
+/** The log's "no unit" GUID, which the advanced owner field carries on a player's own lines. */
+const NO_GUID = '0000000000000000';
+
+/** The unit a column names, resolved to its owner when it is a pet. */
+function ownerExpr(column: string, pets: PetOwners): string {
+  const fallback = `coalesce(nullif(nullif(adv_owner_guid, ''), '${NO_GUID}'), ${column})`;
+  if (pets.size === 0) return fallback;
+  const arms = [...pets.entries()].map(([pet, owner]) => `WHEN ${quote(pet)} THEN ${quote(owner)}`).join(' ');
+  return `CASE ${column} ${arms} ELSE ${fallback} END`;
 }
 
-/** The other side of each event: what was hit, or who did the hitting. */
-function otherSide(kind: ActorKind): { guid: string; name: string } {
-  return kind === 'damage-taken'
-    ? { guid: 'source_guid', name: 'source_name' }
-    : { guid: 'dest_guid', name: 'dest_name' };
-}
-
+/** Half-open, like the one-second buckets the tables sum: [start, end). */
 function windowClause(window: TimeWindow): string {
-  return `${FIGHT_MS} BETWEEN ${Math.round(window.startMs)} AND ${Math.round(window.endMs)}`;
+  return `${FIGHT_MS} >= ${Math.round(window.startMs)} AND ${FIGHT_MS} < ${Math.round(window.endMs)}`;
 }
 
-/** The three statements the split needs: abilities, misses by type, targets. */
+/**
+ * One row per counted event, in the same shape for every kind: who it counts for (`actor`),
+ * the other side, the spell it is filed under, and its effective amount. Healing takes
+ * heals and absorbs; damage taken reads the victim as the actor and never folds pets.
+ */
+export function rowsSql(kind: ActorKind, window: TimeWindow, options: MeasureOptions = {}): string {
+  const at = windowClause(window);
+  const pets = options.pets ?? NO_PETS;
+  const damage = options.countOverkill ? 'amount' : 'amount - greatest(coalesce(overkill, 0), 0)';
+  if (kind === 'damage-taken') {
+    return `SELECT dest_guid AS actor, source_guid AS other_guid, source_name AS other_name,
+    spell_id, spell_name, spell_school, event, amount,
+    ${damage} AS effective,
+    0 AS overheal, coalesce(absorbed, 0) AS absorbed, coalesce(blocked, 0) AS blocked, critical
+  FROM ${EVENTS_TABLE} WHERE kind = 'damage' AND ${at}`;
+  }
+  if (kind === 'healing') {
+    return `SELECT ${ownerExpr('source_guid', pets)} AS actor, dest_guid AS other_guid, dest_name AS other_name,
+    spell_id, spell_name, spell_school, event, amount,
+    amount - coalesce(overheal, 0) AS effective,
+    coalesce(overheal, 0) AS overheal, 0 AS absorbed, 0 AS blocked, critical
+  FROM ${EVENTS_TABLE} WHERE kind = 'heal' AND ${at}
+  UNION ALL
+  SELECT ${ownerExpr('extra_guid', pets)} AS actor, dest_guid AS other_guid, dest_name AS other_name,
+    extra_spell_id AS spell_id, extra_spell_name AS spell_name, extra_spell_school AS spell_school, event, amount,
+    amount AS effective, 0 AS overheal, amount AS absorbed, 0 AS blocked, false AS critical
+  FROM ${EVENTS_TABLE} WHERE kind = 'absorbed' AND extra_guid <> '' AND ${at}`;
+  }
+  return `SELECT ${ownerExpr('source_guid', pets)} AS actor, dest_guid AS other_guid, dest_name AS other_name,
+    spell_id, spell_name, spell_school, event, amount,
+    ${damage} AS effective,
+    0 AS overheal, coalesce(absorbed, 0) AS absorbed, coalesce(blocked, 0) AS blocked, critical
+  FROM ${EVENTS_TABLE} WHERE kind = 'damage' AND ${at}`;
+}
+
+function scopeClause(scope: TargetScope | null): string {
+  if (scope === null || (scope.guids.length === 0 && scope.names.length === 0)) return '';
+  const parts = [
+    ...(scope.guids.length > 0 ? [`other_guid IN (${scope.guids.map(quote).join(', ')})`] : []),
+    ...(scope.names.length > 0 ? [`other_name IN (${scope.names.map(quote).join(', ')})`] : []),
+  ];
+  return ` AND (${parts.join(' OR ')})`;
+}
+
+/** The three statements one actor's split needs: abilities, misses by type, targets. */
 export function exactSplitSql(
   kind: ActorKind,
   guid: string,
   window: TimeWindow,
   target: string | null = null,
+  options: MeasureOptions = {},
 ): { abilities: string; misses: string; targets: string } {
-  const other = otherSide(kind);
-  const scope = `${actorClause(kind, guid)} AND ${windowClause(window)}${
-    target === null ? '' : ` AND ${other.guid} = ${quote(target)}`
-  }`;
-  const effective =
-    kind === 'healing'
-      ? 'sum(amount - coalesce(overheal, 0))'
-      : 'sum(amount - greatest(coalesce(overkill, 0), 0))';
+  const rows = rowsSql(kind, window, options);
+  const pets = options.pets ?? NO_PETS;
+  const scope = `actor = ${quote(guid)}${target === null ? '' : ` AND other_guid = ${quote(target)}`}`;
+  const own =
+    kind === 'damage-taken'
+      ? `dest_guid = ${quote(guid)}`
+      : `${ownerExpr('source_guid', pets)} = ${quote(guid)}`;
   return {
-    abilities: `SELECT spell_id, any_value(spell_name) AS spell_name, min(spell_school) AS school,
-  sum(amount) AS total, ${effective} AS effective,
-  sum(coalesce(overheal, 0)) AS overheal, sum(coalesce(absorbed, 0)) AS absorbed, sum(coalesce(blocked, 0)) AS blocked,
+    abilities: `WITH rows AS (${rows})
+SELECT spell_id, any_value(spell_name) AS spell_name, min(spell_school) AS school,
+  sum(amount) AS total, sum(effective) AS effective,
+  sum(overheal) AS overheal, sum(absorbed) AS absorbed, sum(blocked) AS blocked,
   count(*) FILTER (WHERE event NOT LIKE '%PERIODIC%') AS hits,
   count(*) FILTER (WHERE event LIKE '%PERIODIC%') AS ticks,
   count(*) FILTER (WHERE critical) AS crits,
   min(amount) AS min_hit, max(amount) AS max_hit
-FROM ${EVENTS_TABLE}
+FROM rows
 WHERE ${scope}
 GROUP BY spell_id
 ORDER BY effective DESC`,
     misses: `SELECT spell_id, miss_type, count(*) AS n
 FROM ${EVENTS_TABLE}
-WHERE kind = 'missed' AND miss_type <> '' AND ${
-      kind === 'damage-taken'
-        ? `dest_guid = ${quote(guid)}`
-        : `(source_guid = ${quote(guid)} OR adv_owner_guid = ${quote(guid)})`
-    } AND ${windowClause(window)}
+WHERE kind = 'missed' AND miss_type <> '' AND ${own} AND ${windowClause(window)}
 GROUP BY spell_id, miss_type`,
-    targets: `SELECT ${other.guid} AS guid, any_value(${other.name}) AS name, ${effective} AS total
-FROM ${EVENTS_TABLE}
+    targets: `WITH rows AS (${rows})
+SELECT other_guid AS guid, any_value(other_name) AS name, sum(effective) AS total
+FROM rows
 WHERE ${scope}
-GROUP BY ${other.guid}
+GROUP BY other_guid
 ORDER BY total DESC`,
   };
+}
+
+/**
+ * Every actor's effective total per other unit inside the window, narrowed to the targets
+ * (or sources) a filter chose: one statement for the whole table, so a windowed "Boss
+ * damage only" or target filter reads from events instead of prorating.
+ */
+export function exactTableSql(
+  kind: ActorKind,
+  window: TimeWindow,
+  scope: TargetScope | null = null,
+  options: MeasureOptions = {},
+): string {
+  return `WITH rows AS (${rowsSql(kind, window, options)})
+SELECT actor AS guid, other_guid, any_value(other_name) AS other_name, sum(effective) AS total
+FROM rows
+WHERE actor <> ''${scopeClause(scope)}
+GROUP BY actor, other_guid
+ORDER BY total DESC`;
 }
 
 type Row = Record<string, unknown>;
@@ -106,6 +192,28 @@ function rowsOf(result: { columns: string[]; rows: unknown[][] }): Row[] {
 
 const num = (value: unknown): number => (typeof value === 'bigint' ? Number(value) : Number(value ?? 0));
 
+/** Measures every actor's totals and pairs inside the window, keyed by actor GUID. */
+export async function measureTable(
+  layer: QueryLayer,
+  eventsUrl: string,
+  kind: ActorKind,
+  window: TimeWindow,
+  scope: TargetScope | null = null,
+  options: MeasureOptions = {},
+): Promise<Map<string, ExactTotals>> {
+  const result = await layer.run(eventsUrl, exactTableSql(kind, window, scope, options));
+  const out = new Map<string, ExactTotals>();
+  for (const row of rowsOf(result)) {
+    const guid = String(row.guid ?? '');
+    const found = out.get(guid) ?? { effective: 0, targets: [] };
+    const total = num(row.total);
+    found.effective += total;
+    found.targets.push({ guid: String(row.other_guid ?? ''), name: String(row.other_name ?? ''), total });
+    out.set(guid, found);
+  }
+  return out;
+}
+
 /** Measures one actor's split inside the window. Rejects with the engine's own message. */
 export async function measureExact(
   layer: QueryLayer,
@@ -114,8 +222,9 @@ export async function measureExact(
   guid: string,
   window: TimeWindow,
   target: string | null = null,
+  options: MeasureOptions = {},
 ): Promise<ExactSplit> {
-  const sql = exactSplitSql(kind, guid, window, target);
+  const sql = exactSplitSql(kind, guid, window, target, options);
   const [abilities, misses, targets] = await Promise.all([
     layer.run(eventsUrl, sql.abilities),
     layer.run(eventsUrl, sql.misses),

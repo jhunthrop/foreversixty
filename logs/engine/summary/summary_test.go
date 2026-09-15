@@ -177,9 +177,9 @@ func TestDamageDoneCreditsPetsToTheirOwner(t *testing.T) {
 	if !ok {
 		t.Fatal("no mage row")
 	}
-	// 1000 + 500 + 2000
-	if m.Effective != 3500 {
-		t.Errorf("mage damage = %d, want 3500", m.Effective)
+	// 1000 + 500 + 2000, less the 700 the last hit overkilled.
+	if m.Effective != 2800 {
+		t.Errorf("mage damage = %d, want 2800", m.Effective)
 	}
 	if len(m.Abilities) != 1 || m.Abilities[0].SpellID != 116 {
 		t.Fatalf("mage abilities = %+v", m.Abilities)
@@ -235,11 +235,11 @@ func TestAbilityMinStaysAtATrueZero(t *testing.T) {
 func TestPerSecondSeries(t *testing.T) {
 	_, _, s := build(t)
 	m, _ := actorByGUID(s.DamageDone, mage)
-	// Buckets: second 1 = 1000, second 2 = 500, second 20 = 2000.
+	// Buckets: second 1 = 1000, second 2 = 500, second 20 = 2000 less 700 overkill.
 	if len(m.Series) != 21 {
 		t.Fatalf("series has %d buckets, want 21", len(m.Series))
 	}
-	if m.Series[1] != 1000 || m.Series[2] != 500 || m.Series[20] != 2000 {
+	if m.Series[1] != 1000 || m.Series[2] != 500 || m.Series[20] != 1300 {
 		t.Errorf("series = %v", m.Series)
 	}
 	if m.Series[0] != 0 || m.Series[3] != 0 {
@@ -253,10 +253,12 @@ func TestDamageTakenAndTheAbsorbCredit(t *testing.T) {
 	if !ok {
 		t.Fatal("no tank row in damage taken")
 	}
-	if tk.Effective != 6700 { // 800 + 900 (the swing, once, not its landed line too) + 5000
-		t.Errorf("tank damage taken = %d, want 6700", tk.Effective)
+	// 800 + 900 (the swing, once, not its landed line too) + 5000, less the 1200 the
+	// killing blow overkilled: what the target could still take is what counts.
+	if tk.Effective != 5500 {
+		t.Errorf("tank damage taken = %d, want 5500", tk.Effective)
 	}
-	if tk.Abilities[0].SpellID != 334660 || tk.Abilities[0].Effective != 5800 {
+	if tk.Abilities[0].SpellID != 334660 || tk.Abilities[0].Effective != 4600 {
 		t.Errorf("abilities are sorted by effective damage, got %+v", tk.Abilities[0])
 	}
 	var melee *Ability
@@ -493,10 +495,11 @@ func TestThreatReportsItsModelAndSaysWhenItIsIncomplete(t *testing.T) {
 			t.Error("with no modifier table the threat model must report itself incomplete")
 		}
 	}
-	// The mage did 3500 effective damage, so 3500 threat under the base model.
+	// The mage did 2800 effective damage (3500 less 700 overkill), so 2800 threat
+	// under the base model: a dead target owes no threat for the surplus.
 	for _, r := range s.Threat {
-		if r.GUID == mage && r.Threat != 3500 {
-			t.Errorf("mage threat = %f, want 3500", r.Threat)
+		if r.GUID == mage && r.Threat != 2800 {
+			t.Errorf("mage threat = %f, want 2800", r.Threat)
 		}
 	}
 	withTable := BaseThreat{Modifiers: map[int64]float64{116: 0.5}}
@@ -527,8 +530,8 @@ func TestRosterAndRankingMetrics(t *testing.T) {
 	if byGUID[tank].Class != "Warrior" || byGUID[tank].Spec != "Protection" {
 		t.Errorf("tank class/spec = %q %q", byGUID[tank].Class, byGUID[tank].Spec)
 	}
-	if got := byGUID[mage].DPS; got != 175 { // 3500 over 20 seconds
-		t.Errorf("mage dps = %f, want 175", got)
+	if got := byGUID[mage].DPS; got != 140 { // 2800 effective over 20 seconds
+		t.Errorf("mage dps = %f, want 140", got)
 	}
 
 	rows := a.Metrics("report-1", f, s, "test")
@@ -540,7 +543,7 @@ func TestRosterAndRankingMetrics(t *testing.T) {
 			r.Difficulty != 8 || r.Size != 5 || r.DurationMS != 20000 || r.EngineVersion != "test" {
 			t.Fatalf("metric row = %+v", r)
 		}
-		if r.PlayerGUID == mage && (r.Metric != "dps" || r.Value != 175) {
+		if r.PlayerGUID == mage && (r.Metric != "dps" || r.Value != 140) {
 			t.Errorf("mage metric = %s %f", r.Metric, r.Value)
 		}
 		if r.PlayerGUID == healer && r.Metric != "hps" {

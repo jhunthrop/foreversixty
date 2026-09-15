@@ -119,12 +119,16 @@ type Accumulator struct {
 	recent      map[string][]DamageRef
 	recentHeals map[string][]HealRef
 	auras       map[auraKey]*auraTrack
-	casts       map[castKey]*castRow
-	pending     map[castKey]time.Time
-	exchanges   map[exchangeKey]*ExchangeRow
-	resources   map[resourceKey]*resourceTrack
-	threat      map[string]float64
-	combatants  map[string]*event.Combatant
+	// spellNames is every spell id an event named, so a track seeded from
+	// a combatant snapshot can be named by any line that mentions the
+	// spell, not only an aura line on the same target.
+	spellNames map[int64]string
+	casts      map[castKey]*castRow
+	pending    map[castKey]time.Time
+	exchanges  map[exchangeKey]*ExchangeRow
+	resources  map[resourceKey]*resourceTrack
+	threat     map[string]float64
+	combatants map[string]*event.Combatant
 }
 
 // New returns an accumulator for one fight.
@@ -139,6 +143,7 @@ func New(o Options) *Accumulator {
 		recent:       map[string][]DamageRef{},
 		recentHeals:  map[string][]HealRef{},
 		auras:        map[auraKey]*auraTrack{},
+		spellNames:   map[int64]string{},
 		casts:        map[castKey]*castRow{},
 		pending:      map[castKey]time.Time{},
 		exchanges:    map[exchangeKey]*ExchangeRow{},
@@ -199,6 +204,9 @@ func (a *Accumulator) Add(e event.Event) {
 	}
 	if e.Time.After(a.end) {
 		a.end = e.Time
+	}
+	if e.Spell.ID != 0 && e.Spell.Name != "" {
+		a.spellNames[e.Spell.ID] = e.Spell.Name
 	}
 	a.addDamageAndHealing(e)
 	a.addCastsAndExchanges(e)

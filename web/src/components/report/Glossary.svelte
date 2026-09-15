@@ -16,9 +16,9 @@
         'On the Summary tab a healer is placed by healing per second and everyone else, tanks included, by damage per second, as on Warcraft Logs. The Damage Done and Healing tabs place every row on that table’s own metric, each among their own spec.',
     },
     {
-      term: 'Parse, hovered',
+      term: 'Parse, of how many',
       meaning:
-        'The hover text says how many ranked kills the percentile was placed among. Early on a bracket can hold one kill, which stands first of one and reads 100.',
+        'On a phone the number is followed by how many ranked kills it was placed among; on a desktop that count is in the hover text. Early on a bracket can hold one kill, which stands first of one and reads 100.',
     },
     {
       term: 'Parse colours',

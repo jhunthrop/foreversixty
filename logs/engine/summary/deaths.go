@@ -538,6 +538,9 @@ func (a *Accumulator) auraRows() []AuraTrack {
 	for _, tr := range a.auras {
 		row := tr.AuraTrack
 		if row.Name == "" {
+			row.Name = a.spellNames[row.SpellID]
+		}
+		if row.Name == "" {
 			row.Name = fmt.Sprintf("Spell #%d", row.SpellID)
 		}
 		if tr.open {

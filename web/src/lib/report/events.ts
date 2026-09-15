@@ -31,6 +31,8 @@ export interface SummaryEvent {
   text: string;
   /** The actor the line is about, for class colouring. */
   guid: string;
+  /** Every actor the line involves, for scoping by source: a heal is the healer's and the healed's. */
+  guids: string[];
   amount?: number;
 }
 
@@ -40,7 +42,13 @@ export function summaryEvents(summary: Summary): SummaryEvent[] {
   for (const row of summary.casts) {
     const caster = splitUnitName(row.name).name;
     for (const at of row.sequence) {
-      events.push({ atMs: at, kind: 'cast', guid: row.guid, text: `${caster} cast ${row.spell_name}` });
+      events.push({
+        atMs: at,
+        kind: 'cast',
+        guid: row.guid,
+        guids: [row.guid],
+        text: `${caster} cast ${row.spell_name}`,
+      });
     }
   }
 
@@ -51,12 +59,14 @@ export function summaryEvents(summary: Summary): SummaryEvent[] {
         atMs: segment.start_ms,
         kind: 'aura-applied',
         guid: track.target_guid,
+        guids: [track.target_guid, ...track.appliers],
         text: `${track.name} on ${target}`,
       });
       events.push({
         atMs: segment.end_ms,
         kind: 'aura-removed',
         guid: track.target_guid,
+        guids: [track.target_guid, ...track.appliers],
         text: `${track.name} off ${target}`,
       });
     }
@@ -69,6 +79,7 @@ export function summaryEvents(summary: Summary): SummaryEvent[] {
         atMs: hit.at_ms,
         kind: 'damage',
         guid: death.guid,
+        guids: [death.guid, hit.source_guid],
         amount: hit.amount,
         text: `${splitUnitName(hit.source_name).name} hit ${who} with ${hit.spell_name === '' ? 'Melee' : hit.spell_name}`,
       });
@@ -78,11 +89,18 @@ export function summaryEvents(summary: Summary): SummaryEvent[] {
         atMs: heal.at_ms,
         kind: 'heal',
         guid: death.guid,
+        guids: [death.guid, heal.source_guid],
         amount: heal.amount - (heal.overheal ?? 0),
         text: `${splitUnitName(heal.source_name).name} healed ${who} with ${heal.spell_name}`,
       });
     }
-    events.push({ atMs: death.at_ms, kind: 'death', guid: death.guid, text: `${who} died` });
+    events.push({
+      atMs: death.at_ms,
+      kind: 'death',
+      guid: death.guid,
+      guids: [death.guid],
+      text: `${who} died`,
+    });
   }
 
   // Stable: equal timestamps keep the order the sources were walked in, which puts the

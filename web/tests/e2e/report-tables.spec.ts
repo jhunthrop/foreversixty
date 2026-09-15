@@ -1,5 +1,6 @@
 // web/tests/e2e/report-tables.spec.ts
 import { expect, test } from '@playwright/test';
+import { serveDuckdbRuntime } from './support/duckdb-runtime';
 
 const FIGHT = '/reports/fixture2abcd?fight=3';
 
@@ -44,22 +45,29 @@ test('boss damage only drops the boss’s own row and keeps the raid’s', async
   await expect(page.getByTestId('actor-table')).toContainText('Baelgrim');
 });
 
-test('a brushed window marks the split as approximate but never the exact amount', async ({ page }) => {
+test('a brushed window measures the table and each opened row from the fight’s events', async ({ page }) => {
+  test.slow();
+  await serveDuckdbRuntime(page);
   await page.goto(`${FIGHT}&tab=damage-done&start=0&end=10000`);
-  await expect(page.getByTestId('approximate-note')).toContainText('Totals and per-second figures are exact');
+  await expect(page.getByTestId('approximate-note')).toBeVisible();
 
   // Amount is `actor.effective`: window.ts measures it directly from the one-second
-  // series, so it is exact under any window and must never carry the `~` mark.
+  // series, so it is exact under a bare window and never carries the `~` mark.
   await expect(page.getByTestId('actor-Player-4184-000000A1').getByTestId('row-amount')).not.toContainText(
     '~',
   );
 
-  // The per-ability split inside the expander IS scaled by the window's share, so it does.
+  // The per-ability split is prorated by the summary, so the page measures it from the
+  // events by default: first the whole table, then each row as it is opened.
+  await expect(page.getByTestId('table-measured')).toBeVisible({ timeout: 60_000 });
   await page.getByTestId('actor-Player-4184-000000A1').getByRole('button').first().click();
-  await expect(page.getByTestId('row-detail')).toContainText('~');
+  await expect(page.getByTestId('row-measured')).toBeVisible({ timeout: 60_000 });
+  await expect(page.getByTestId('row-detail')).not.toContainText('~');
 });
 
 test('boss damage only marks the split as approximate even at a whole-fight window', async ({ page }) => {
+  test.slow();
+  await serveDuckdbRuntime(page);
   await page.goto(`${FIGHT}&tab=damage-done`);
   await expect(page.getByTestId('approximate-note')).toHaveCount(0);
 
@@ -67,10 +75,9 @@ test('boss damage only marks the split as approximate even at a whole-fight wind
   await expect(page.getByTestId('approximate-note')).toBeVisible();
 
   // A target/boss filter scales the per-ability and per-target splits the same way the
-  // window does (filters.ts's `targetShare`), so the expander marks them even though the
-  // window is still the whole fight -- and Amount still never carries the mark.
-  await page.getByTestId('actor-Player-4184-000000A1').getByRole('button').first().click();
-  await expect(page.getByTestId('row-detail')).toContainText('~');
+  // window does (filters.ts's `targetShare`), so the page measures the table from the
+  // events -- and Amount, exact at a whole-fight window, never carries the mark.
+  await expect(page.getByTestId('table-measured')).toBeVisible({ timeout: 60_000 });
   await expect(page.getByTestId('actor-Player-4184-000000A1').getByTestId('row-amount')).not.toContainText(
     '~',
   );

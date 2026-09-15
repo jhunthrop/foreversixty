@@ -48,6 +48,7 @@
     pairsLabel = 'Targets',
     share = 0,
     approximate = false,
+    amountApproximate = false,
     measure = undefined,
     characterLink = null,
   }: {
@@ -62,6 +63,8 @@
     /** This row's share of its table's total, 0..100. */
     share?: number;
     approximate?: boolean;
+    /** True when the amount itself is prorated: a window met by a target or boss filter. */
+    amountApproximate?: boolean;
     /** Measures this row's split inside the window from the fight's own events. */
     measure?: (actor: Actor) => Promise<ExactSplit>;
     characterLink?: { region: string; ruleset: string } | null;
@@ -93,9 +96,33 @@
       measuring = false;
     }
   }
+  // The row's own measure answers for one actor and window; a new actor object (the table
+  // re-measured, the window moved) is a new question.
+  $effect(() => {
+    void actor;
+    exact = null;
+    measureError = '';
+  });
+  // Once the table is measured the engine is warm, so an opened row measures itself.
+  $effect(() => {
+    if (
+      open &&
+      actor.measured &&
+      exact === null &&
+      !measuring &&
+      measureError === '' &&
+      measure !== undefined
+    )
+      void runMeasure();
+  });
   /** What the detail tables show: the exact split when measured, the summary's otherwise. */
   const shownAbilities = $derived(exact?.abilities ?? actor.abilities);
   const shownTargets = $derived(exact?.targets ?? actor.targets);
+  /** The row's amount: measured when its split was, or when the table was; prorated otherwise. */
+  const shownEffective = $derived(
+    exact === null ? actor.effective : exact.abilities.reduce((sum, ability) => sum + ability.effective, 0),
+  );
+  const amountMark = $derived(exact !== null || actor.measured || !amountApproximate ? '' : mark);
   /** Hits and ticks together: a dot's ticks are its hits. */
   const landed = (ability: Ability): number => ability.hits + ability.ticks;
   /** The abilities worth a line, largest first; a row that only missed still says so. */
@@ -140,9 +167,14 @@
   const mark = $derived(approximateMark(approximate));
   const title = $derived(approximateTitle(approximate));
   /** Overhealing as a share of the raw total, for healing rows; null where there is none. */
-  const overhealPct = $derived(
-    actor.overheal === undefined || actor.total <= 0 ? null : (actor.overheal / actor.total) * 100,
-  );
+  const overhealPct = $derived.by(() => {
+    if (exact !== null && exact.abilities.some((ability) => ability.overheal !== undefined)) {
+      const total = exact.abilities.reduce((sum, ability) => sum + ability.total, 0);
+      const over = exact.abilities.reduce((sum, ability) => sum + (ability.overheal ?? 0), 0);
+      return total <= 0 ? null : (over / total) * 100;
+    }
+    return actor.overheal === undefined || actor.total <= 0 ? null : (actor.overheal / actor.total) * 100;
+  });
   /**
    * Targets merged by name: a trash pack is six "Gluttonous Tick" GUIDs, and six rows of
    * the same name tell nobody anything the one row with a count does not.
@@ -211,9 +243,11 @@
         : parseTitle(percentile.percentile, percentile.ranked)}
       data-testid="row-percentile"
     >
-      {#if percentile === null}<span class:text-muted={true}>{parseFallback}</span>{:else}{Math.round(
-          percentile.percentile,
-        )}{/if}
+      {#if percentile === null}<span class:text-muted={true}
+          >{parseFallback === 'none' ? '' : parseFallback}</span
+        >{:else}{Math.round(percentile.percentile)}<span class="text-muted ml-1 md:hidden"
+          >among {percentile.ranked}</span
+        >{/if}
     </span>
 
     <span
@@ -242,7 +276,9 @@
     </span>
 
     <span class="tabular flex flex-col text-right font-mono leading-tight" data-testid="row-amount">
-      <span>{formatAmount(actor.effective)}</span>
+      <span title={exact === null && !actor.measured ? undefined : 'Measured from the fight’s events'}
+        >{amountMark}{formatAmount(shownEffective)}</span
+      >
       {#if overhealPct !== null}
         <span
           class="text-muted text-[11px]"
@@ -269,7 +305,7 @@
     >
       <span class="flex flex-col leading-tight">
         <span title={actor.time_ms === undefined ? undefined : 'Per second of the pulls this player was in'}
-          >{formatPerSecond(actor.effective, actor.time_ms ?? durationMs)}<span
+          >{formatPerSecond(shownEffective, actor.time_ms ?? durationMs)}<span
             class="label font-body ml-1.5 md:hidden">per sec</span
           ></span
         >
@@ -278,7 +314,7 @@
             class="text-[11px]"
             title="Per second over the time this row was active, not the whole window"
             data-testid="row-active-per-second"
-            >{formatPerSecond(actor.effective, actor.active_ms)} active</span
+            >{formatPerSecond(shownEffective, actor.active_ms)} active</span
           >
         {/if}
       </span>
@@ -340,9 +376,7 @@
             <th scope="col" class="py-1 pr-3 text-right font-normal" title="Share of this row's total"
               >Share</th
             >
-            <th scope="col" class="w-[16%] py-1 pr-3 font-normal"
-              ><span class="sr-only">Share, drawn</span></th
-            >
+            <th scope="col" class="w-[16%] py-1 pr-3 font-normal" aria-label="Share, drawn"></th>
             <th scope="col" class="py-1 pr-3 text-right font-normal" title="Hits and ticks that landed"
               >Hits</th
             >
@@ -353,7 +387,7 @@
             >
             <th scope="col" class="py-1 pr-3 text-right font-normal" title="Amount per hit">Avg</th>
             <th scope="col" class="py-1 pr-3 text-right font-normal" title="Largest single hit">Max</th>
-            <th scope="col" class="py-1 text-right font-normal"><span class="sr-only">Notes</span></th>
+            <th scope="col" class="py-1 text-right font-normal" aria-label="Notes"></th>
           </tr>
         </thead>
         <tbody>

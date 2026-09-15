@@ -24,8 +24,11 @@
     rows,
     classOf = new Map<string, string>(),
     approximate = false,
+    totalThreat = undefined,
   }: {
     rows: ThreatRow[];
+    /** The whole window's threat, so a source scope's rows still share against everyone. */
+    totalThreat?: number;
     classOf?: Map<string, string>;
     /** True when the window is brushed, so threat is a scaled share, not measured. */
     approximate?: boolean;
@@ -33,7 +36,7 @@
 
   const ordered = $derived([...rows].sort((a, b) => b.threat - a.threat));
   const peak = $derived(ordered.reduce((highest, row) => Math.max(highest, row.threat), 0));
-  const total = $derived(ordered.reduce((sum, row) => sum + row.threat, 0));
+  const total = $derived(totalThreat ?? ordered.reduce((sum, row) => sum + row.threat, 0));
   const incomplete = $derived(ordered.some((row) => !row.complete));
   const modelVersion = $derived(ordered[0]?.model_version ?? '');
   const mark = $derived(approximateMark(approximate));

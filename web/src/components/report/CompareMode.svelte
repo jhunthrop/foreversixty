@@ -16,12 +16,14 @@
   import { classColorVar, formatAmount, formatDuration, outcomeLabel } from '../../lib/report/format';
   import { fetchSummary } from '../../lib/report/load';
   import type { FightEntry, RosterRow, Summary } from '../../lib/report/types';
+  import { clampWindow, scopeSummary, type TimeWindow } from '../../lib/report/window';
 
   let {
     fights,
     current,
     dataBaseUrl,
-    left,
+    left: leftWhole,
+    window = null,
     rightIndex = null,
     metric: metricParam = '',
     onPatch,
@@ -30,6 +32,8 @@
     current: number;
     dataBaseUrl: string;
     left: Summary;
+    /** The Analyze window, applied to both sides; null compares whole fights. */
+    window?: TimeWindow | null;
     /** The second fight, from the url; null until one is picked. */
     rightIndex?: number | null;
     /** The metric id from the url; '' means the default. */
@@ -41,7 +45,16 @@
   const PER_SECOND = new Set<CompareMetric>(['dps', 'hps', 'dtps']);
 
   const options = $derived(fights.filter((fight) => fight.index !== current));
-  let right = $state<Summary | null>(null);
+  let rightWhole = $state<Summary | null>(null);
+  /** Each side in the window, clamped to that fight's own length. */
+  const left = $derived(
+    window === null ? leftWhole : scopeSummary(leftWhole, clampWindow(window, leftWhole.duration_ms)),
+  );
+  const right = $derived(
+    rightWhole === null || window === null
+      ? rightWhole
+      : scopeSummary(rightWhole, clampWindow(window, rightWhole.duration_ms)),
+  );
   let error = $state('');
   const METRIC_IDS: CompareMetric[] = ['damage_done', 'dps', 'healing_done', 'hps', 'damage_taken', 'dtps'];
   const metric = $derived<CompareMetric>(
@@ -68,19 +81,19 @@
   $effect(() => {
     const wanted = rightIndex;
     if (wanted === null) {
-      right = null;
+      rightWhole = null;
       error = '';
       return;
     }
     void fetchSummary(dataBaseUrl, wanted)
       .then((summary) => {
         if (wanted !== rightIndex) return;
-        right = summary;
+        rightWhole = summary;
         error = '';
       })
       .catch((thrown: unknown) => {
         if (wanted !== rightIndex) return;
-        right = null;
+        rightWhole = null;
         error = thrown instanceof Error ? thrown.message : 'That fight did not load.';
       });
   });
@@ -130,8 +143,13 @@
 </script>
 
 <div class="flex flex-col gap-3" data-testid="compare-mode">
-  <p class="text-muted text-[12px]">
-    Both sides show the whole fight. The time window above scopes Analyze; it does not narrow Compare.
+  <p class="text-muted text-[12px]" data-testid="compare-scope">
+    {#if window === null}
+      Both sides show the whole fight. Set a window in Analyze to compare the same stretch of each pull.
+    {:else}
+      Both sides show {formatDuration(window.startMs)} to {formatDuration(window.endMs)} of each fight, so a long
+      wipe and a short one are read over the same stretch. Clear the window in Analyze to compare whole fights.
+    {/if}
   </p>
 
   <div class="flex flex-wrap items-center gap-x-4 gap-y-2">

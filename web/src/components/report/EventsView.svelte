@@ -10,7 +10,16 @@
   import { EVENT_KINDS, filterEvents, summaryEvents, type EventKind } from '../../lib/report/events';
   import type { Summary } from '../../lib/report/types';
 
-  let { summary, classOf }: { summary: Summary; classOf: Map<string, string> } = $props();
+  let {
+    summary,
+    classOf,
+    inScope = () => true,
+  }: {
+    summary: Summary;
+    classOf: Map<string, string>;
+    /** The page's Source scope: a line stays when anyone it involves is in scope. */
+    inScope?: (guid: string) => boolean;
+  } = $props();
 
   // A SvelteSet, not a plain one: toggle() below adds and removes single entries in place,
   // which is exactly the per-entry tracking SvelteSet exists for, unlike the Maps this
@@ -23,7 +32,7 @@
   /** See FilterBar.svelte: the label around a checkbox is its 44px target, not the box. */
   const check = 'accent-gold';
 
-  const all = $derived(summaryEvents(summary));
+  const all = $derived(summaryEvents(summary).filter((event) => event.guids.some(inScope)));
   const matching = $derived(filterEvents(all, kinds, search));
   /** How many rows are on the page: a wipe's stream runs to thousands. */
   const PAGE = 200;

@@ -77,7 +77,14 @@
   import { encounterSlug as slugFor } from '../../lib/rankings/api';
   import { phaseAt } from '../../lib/rankings/phases';
   import { inSource, scopeSource } from '../../lib/report/source';
-  import { measureExact, sharedQueryLayer, type ExactSplit } from '../../lib/report/exact';
+  import {
+    measureExact,
+    measureTable,
+    sharedQueryLayer,
+    type ExactSplit,
+    type ExactTotals,
+    type TargetScope,
+  } from '../../lib/report/exact';
   import { resolveTreeSizes } from '../../lib/report/tree-sizes';
   import { classSlugOf } from '../../lib/report/planner-link';
 
@@ -158,17 +165,101 @@
    * The exact split of one row inside the window, from the fight's events through the
    * shared DuckDB engine. One fight at a time: the night has no single event file.
    */
+  const tableKind = $derived(
+    state.tab === 'damage-taken' ? 'damage-taken' : state.tab === 'healing' ? 'healing' : 'damage-done',
+  );
+  /** A player's pets, to their owner, from the report's units: what a measure folds a pet's lines under. */
+  const petOwners = $derived(
+    new Map(
+      (file?.units ?? [])
+        .filter((unit) => unit.owner_guid !== undefined && playerSet.has(unit.owner_guid))
+        .map((unit) => [unit.guid, unit.owner_guid as string]),
+    ),
+  );
+  const measureOptions = $derived({ pets: petOwners, countOverkill: filters.countOverkill });
   function measureRow(actor: Actor): Promise<ExactSplit> {
-    const kind =
-      state.tab === 'damage-taken' ? 'damage-taken' : state.tab === 'healing' ? 'healing' : 'damage-done';
     return measureExact(
       sharedQueryLayer(),
       eventsUrl(dataBase, state.fight),
-      kind,
+      tableKind,
       actor.guid,
       cutWindow,
       filters.target === '' ? null : filters.target,
+      measureOptions,
     );
+  }
+
+  /**
+   * The whole table measured from the fight's events for this tab, window and filter:
+   * null until asked, and dropped the moment any of those changes, since it answered a
+   * different question. A window met by a target or boss filter is the case that needs
+   * it: the summary can only prorate the one by the other.
+   */
+  let tableExact = $state<Map<string, ExactTotals> | null>(null);
+  let tableMeasuring = $state(false);
+  let tableMeasureError = $state('');
+  /** The measure that is wanted now; an answer for an older question is dropped. */
+  let measureToken = 0;
+  $effect(() => {
+    // Read everything the measure depends on, so a change in any of it re-arms it. The
+    // measure is the default the moment the table is prorated: every reviewer read a
+    // prorated window as fact, and one read the wrong killer off it. The delay lets a
+    // drag settle before the events are asked.
+    const wanted =
+      actorTableApproximate &&
+      !nightMode &&
+      state.view === 'tables' &&
+      (state.tab === 'damage-done' || state.tab === 'damage-taken' || state.tab === 'healing');
+    void [tableKind, cutWindow, tableScope, filters.countOverkill, state.fight];
+    tableExact = null;
+    tableMeasureError = '';
+    const token = ++measureToken;
+    if (!wanted) return;
+    const timer = setTimeout(() => void runTableMeasure(token), 350);
+    return () => clearTimeout(timer);
+  });
+  /**
+   * What the filter narrowed the other side to, for the measure: a target by GUID and
+   * name, or the bosses. Read off the summary's own pairs, never the measured table: the
+   * measure must not depend on its own answer.
+   */
+  const tableScope = $derived.by((): TargetScope | null => {
+    if (filters.target !== '') {
+      const source =
+        state.tab === 'damage-taken'
+          ? scoped?.damage_taken
+          : state.tab === 'healing'
+            ? scoped?.healing
+            : scoped?.damage_done;
+      // eslint-disable-next-line svelte/prefer-svelte-reactivity
+      const names = new Set<string>();
+      for (const actor of source ?? []) {
+        for (const pair of actor.targets) if (pair.guid === filters.target) names.add(pair.name);
+      }
+      return { guids: [filters.target], names: [...names] };
+    }
+    if (filters.bossOnly && state.tab !== 'healing') return { guids: [...filterContext.bosses], names: [] };
+    return null;
+  });
+  async function runTableMeasure(token = measureToken): Promise<void> {
+    tableMeasuring = true;
+    tableMeasureError = '';
+    try {
+      const measured = await measureTable(
+        sharedQueryLayer(),
+        eventsUrl(dataBase, state.fight),
+        tableKind,
+        cutWindow,
+        tableScope,
+        measureOptions,
+      );
+      if (token === measureToken) tableExact = measured;
+    } catch (thrown) {
+      if (token === measureToken)
+        tableMeasureError = thrown instanceof Error ? thrown.message : 'The measurement did not run.';
+    } finally {
+      if (token === measureToken) tableMeasuring = false;
+    }
   }
 
   /** The window, cut at the last death when the filter asks for it. */
@@ -181,8 +272,10 @@
       base.duration_ms,
     );
   });
+  /** The fight in the window, before the source scope: what the events view reads whole. */
+  const windowed = $derived(base === null ? null : scopeSummary(base, cutWindow));
   const scoped = $derived(
-    base === null ? null : scopeSource(scopeSummary(base, cutWindow), state.source, playerSet, friendlySet),
+    windowed === null ? null : scopeSource(windowed, state.source, playerSet, friendlySet),
   );
   const presets = $derived(summary === null ? [] : windowPresets(summary));
   /** What the chart draws: the table the tab shows, under the source scope. */
@@ -302,6 +395,8 @@
   const parseFallback = $derived(
     fight?.encounter_id === undefined || fight.in_progress ? '' : fight.kill ? '–' : 'wipe',
   );
+  /** The actor tables' fallback: Damage Taken has no parse at all, and its cells say so. */
+  const tableParseFallback = $derived(state.tab === 'damage-taken' ? 'none' : parseFallback);
 
   /** GUID to class, for the tables whose rows are not Actors. */
   const classOf = $derived(
@@ -363,7 +458,24 @@
     // "Boss damage only" has no meaning for healing, whose targets are players: applied
     // there it blanked the table.
     const applied = state.tab === 'healing' ? { ...filters, bossOnly: false } : filters;
-    return applyActorFilters(bySource, applied, filterContext);
+    const filtered = applyActorFilters(bySource, applied, filterContext);
+    if (tableExact === null) return filtered;
+    // Measured rows: the events' own totals and pairs replace the prorated ones, and a
+    // row the events do not mention did nothing in this window to these targets.
+    const measured = tableExact;
+    return filtered
+      .map((actor): Actor => {
+        const found = measured.get(actor.guid);
+        return {
+          ...actor,
+          total: found?.effective ?? 0,
+          effective: found?.effective ?? 0,
+          overheal: undefined,
+          targets: found?.targets ?? [],
+          measured: true,
+        };
+      })
+      .sort((a, b) => b.effective - a.effective);
   });
 
   const metricLabel = $derived(state.tab === 'healing' ? 'Healing' : 'Damage');
@@ -905,25 +1017,50 @@
             durationMs={scoped.duration_ms}
             {metricLabel}
             {percentiles}
-            {parseFallback}
+            parseFallback={tableParseFallback}
             pairsLabel={state.tab === 'damage-taken' ? 'Sources' : 'Targets'}
             measure={nightMode ? undefined : measureRow}
             approximate={actorTableApproximate}
+            amountApproximate={filtersScale && !windowIsWhole}
           />
           {#if actorTableApproximate}
             <p class="text-muted text-[12px]" data-testid="approximate-note">
-              A tilde marks a figure split across abilities and targets in proportion to the window and any
-              active target or boss filter. Totals and per-second figures are exact.
-              <button
-                type="button"
-                class="text-gold inline-flex min-h-11 items-center underline-offset-2 hover:underline md:min-h-0"
-                data-testid="measure-exactly"
-                onclick={() => patch({ view: 'queries' })}>Measure this window exactly in Queries</button
-              >.
+              {#if tableExact !== null}
+                <span class="text-kill" data-testid="table-measured"
+                  >Totals, shares, per-second figures and targets are measured from the fight’s events for
+                  this window and filter.</span
+                > A row’s ability split is measured the same way when it is opened.
+              {:else if nightMode}
+                Over the whole night a tilde marks a figure split across abilities and targets in proportion
+                to the window and any target or boss filter{filtersScale && !windowIsWhole
+                  ? ', totals included'
+                  : ''}. Open a pull to read its figures from the fight’s events.
+              {:else if tableMeasuring}
+                <span data-testid="table-measuring">Measuring this window from the fight’s events…</span> A tilde
+                marks a figure still prorated from the summary.
+              {:else if tableMeasureError !== ''}
+                <span class="text-wipe" role="alert">{tableMeasureError}</span> A tilde marks a figure
+                prorated from the summary{filtersScale && !windowIsWhole ? ', totals included' : ''}.
+                <button
+                  type="button"
+                  class="text-gold inline-flex min-h-11 items-center underline-offset-2 hover:underline md:min-h-0"
+                  data-testid="measure-table"
+                  onclick={() => void runTableMeasure(++measureToken)}>Try the measure again</button
+                >
+              {:else}
+                A tilde marks a figure split across abilities and targets in proportion to the window and any
+                active target or boss filter. Totals and per-second figures are exact.
+                <button
+                  type="button"
+                  class="text-gold inline-flex min-h-11 items-center underline-offset-2 hover:underline md:min-h-0"
+                  data-testid="measure-exactly"
+                  onclick={() => patch({ view: 'queries' })}>Measure this window exactly in Queries</button
+                >.
+              {/if}
             </p>
           {/if}
         {:else if state.tab === 'buffs'}
-          <RaidCooldowns tracks={scoped.auras} durationMs={scoped.duration_ms} names={unitNames} />
+          <RaidCooldowns tracks={scoped.auras} window={cutWindow} deaths={scoped.deaths} names={unitNames} />
           <AuraTable tracks={scoped.auras} durationMs={scoped.duration_ms} kind="BUFF" />
         {:else if state.tab === 'debuffs'}
           <AuraTable
@@ -959,7 +1096,12 @@
             }))}
           />
         {:else if state.tab === 'threat'}
-          <ThreatTable rows={scoped.threat} {classOf} approximate={!windowIsWhole} />
+          <ThreatTable
+            rows={scoped.threat}
+            {classOf}
+            approximate={!windowIsWhole}
+            totalThreat={windowed?.threat.reduce((sum, row) => sum + row.threat, 0)}
+          />
         {:else if state.tab === 'deaths'}
           <DeathsTab
             deaths={scoped.deaths}
@@ -994,7 +1136,11 @@
         />
       {/if}
       {#if scoped !== null && !nightMode && state.mode === 'analyze' && state.view === 'events'}
-        <EventsView summary={scoped} {classOf} />
+        <EventsView
+          summary={windowed ?? scoped}
+          {classOf}
+          inScope={(guid) => inSource(guid, state.source, playerSet, friendlySet)}
+        />
       {/if}
       <!-- `scoped` only to say a summary has loaded, the same guard its three siblings
            use; the Queries view reads the fight's events.parquet, not the summary, and
@@ -1008,6 +1154,7 @@
           current={state.fight}
           dataBaseUrl={dataBase}
           left={summary}
+          window={windowIsWhole ? null : cutWindow}
           rightIndex={state.compareWith}
           metric={state.compareMetric}
           onPatch={patch}

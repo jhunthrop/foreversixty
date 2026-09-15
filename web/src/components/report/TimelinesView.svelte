@@ -8,7 +8,7 @@
 <script lang="ts">
   import { splitUnitName } from '../../lib/characters';
   import { classColorVar, formatDuration } from '../../lib/report/format';
-  import type { Summary } from '../../lib/report/types';
+  import type { AuraTrack, Summary } from '../../lib/report/types';
   import type { TimeWindow } from '../../lib/report/window';
 
   let {
@@ -59,7 +59,7 @@
     if (event.clientY - bounds.top < bounds.height / 2) {
       const held = auras.filter((aura) => aura.start_ms <= at && at <= aura.end_ms);
       if (held.length > 0) {
-        picked = { at: held[0].start_ms, name: held.map((aura) => aura.name).join(', ') };
+        picked = { at, name: held.map((aura) => aura.name).join(', ') };
         return;
       }
     }
@@ -81,6 +81,23 @@
           // under any scope, but a tick past the window's edge stretches the page.
           .filter((cast) => cast.at >= current.startMs && cast.at <= current.endMs),
   );
+  /**
+   * Every segment of a player's auras, each aura kept on one of three bands for the whole
+   * lane, so an aura reads as one line across the fight rather than hopping bands between
+   * occurrences.
+   */
+  function bandAuras(
+    tracks: AuraTrack[],
+  ): { start_ms: number; end_ms: number; name: string; band: number }[] {
+    // eslint-disable-next-line svelte/prefer-svelte-reactivity
+    const bands = new Map<string, number>();
+    return tracks.flatMap((track) => {
+      const band = bands.get(track.name) ?? bands.size % 3;
+      bands.set(track.name, band);
+      return track.segments.map((segment) => ({ ...segment, name: track.name, band }));
+    });
+  }
+
   const lanes = $derived(
     [...summary.roster]
       .sort((a, b) => b.damage_done + b.healing_done - (a.damage_done + a.healing_done))
@@ -91,9 +108,7 @@
         casts: summary.casts
           .filter((cast) => cast.guid === row.guid)
           .flatMap((cast) => cast.sequence.map((at) => ({ at, name: cast.spell_name }))),
-        auras: summary.auras
-          .filter((track) => track.target_guid === row.guid)
-          .flatMap((track) => track.segments.map((segment) => ({ ...segment, name: track.name }))),
+        auras: bandAuras(summary.auras.filter((track) => track.target_guid === row.guid)),
         deaths: summary.deaths.filter((death) => death.guid === row.guid).map((death) => death.at_ms),
       })),
   );
@@ -190,7 +205,7 @@
             {#each lane.auras as segment, i (`${segment.start_ms}-${i}`)}
               <span
                 class="absolute h-[3px]"
-                style={`top: ${(i % 3) * 3}px; left: ${pct(segment.start_ms)}%; width: ${Math.max(pct(segment.end_ms) - pct(segment.start_ms), 0.4)}%; background: ${lane.color}; opacity: .5`}
+                style={`top: ${segment.band * 3}px; left: ${pct(segment.start_ms)}%; width: ${Math.max(pct(segment.end_ms) - pct(segment.start_ms), 0.4)}%; background: ${lane.color}; opacity: ${[0.85, 0.6, 0.4][segment.band]}`}
                 title={`${segment.name} · ${formatDuration(segment.start_ms)} to ${formatDuration(segment.end_ms)}`}
               ></span>
             {/each}

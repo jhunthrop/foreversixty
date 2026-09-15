@@ -84,6 +84,7 @@ describe('report formatting', () => {
     expect(outcomeLabel({ ...base, kill: true, boss_health_pct: 0 })).toBe('Kill');
     expect(parseTitle(80, 12)).toContain('80th percentile among 12 ranked kills');
     expect(parseTitle(100, 1)).toContain('first of one');
+    expect(parseTitle('none')).toContain('no parse');
     expect(ordinal(1)).toBe('1st');
     expect(ordinal(12)).toBe('12th');
     expect(ordinal(23)).toBe('23rd');

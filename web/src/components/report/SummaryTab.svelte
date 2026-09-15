@@ -88,7 +88,7 @@
         : [
             {
               label: 'Parse',
-              value: String(Math.round(percentile.percentile)),
+              value: `${Math.round(percentile.percentile)} among ${percentile.ranked}`,
             },
           ]),
       { label: 'DPS', value: formatPerSecond(row.damage_done, durationMs) },
@@ -121,7 +121,7 @@
       class="text-muted label hidden grid-cols-[40px_minmax(120px,1.4fr)_88px_96px_96px_96px_72px_56px] gap-x-3 px-2 pb-1 md:grid"
     >
       <span
-        title="Percentile among ranked kills of the same boss by this spec: DPS for damage, HPS for healers, damage taken for tanks. Empty on a wipe or while nothing is ranked yet."
+        title="Percentile among ranked kills of the same boss by this spec: healers on healing per second, everyone else on damage per second. Empty on a wipe or while nothing is ranked yet."
         >Parse</span
       >
       <span>Name</span>
@@ -149,7 +149,9 @@
               : parseTitle(percentile.percentile, percentile.ranked)}
             data-testid="roster-percentile"
           >
-            {#if percentile === null}{parseFallback}{:else}{Math.round(percentile.percentile)}{/if}
+            {#if percentile === null}{parseFallback}{:else}{Math.round(percentile.percentile)}<span
+                class="text-muted ml-1 md:hidden">among {percentile.ranked}</span
+              >{/if}
           </span>
           <span
             class="flex min-w-0 items-center gap-2 truncate font-semibold"

@@ -14,6 +14,7 @@
     parseFallback = '',
     pairsLabel = 'Targets',
     approximate = false,
+    amountApproximate = false,
     measure = undefined,
   }: {
     actors: Actor[];
@@ -24,6 +25,8 @@
     parseFallback?: string;
     pairsLabel?: string;
     approximate?: boolean;
+    /** True when the amounts are prorated too: a window met by a target or boss filter. */
+    amountApproximate?: boolean;
     measure?: (actor: Actor) => Promise<ExactSplit>;
   } = $props();
 
@@ -86,6 +89,7 @@
           {peak}
           {durationMs}
           {approximate}
+          {amountApproximate}
           {parseFallback}
           {pairsLabel}
           {measure}
