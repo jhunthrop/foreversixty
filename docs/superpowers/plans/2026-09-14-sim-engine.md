@@ -2,15 +2,15 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Turn the `wowsims/classic` fork at `/Users/jh/code/wowsims-forever` into the Forever Sixty combat engine — unified Hit and Crit, regenerated rating constants, declarative spell mods, an encounter biome, Forever racials, and two specs (`warrior-fury`, `mage-frost`) end to end — and ship it as three artifacts (`sim.wasm`, `sim.js`, `forever-sim`) plus the site-side `sim/` Go module whose `Summarize` adapter turns an engine result into the logs engine's `summary.Summary`.
+**Goal:** Turn the `wowsims/classic` fork at `/Users/jh/code/wowsims-forever` into the Forever Sixty combat engine — unified Hit and Crit, regenerated rating constants, declarative spell mods, periodic crit, an encounter biome, Forever racials, and two specs (`warrior-fury`, `mage-frost`) end to end — and ship the site-side `sim/` Go module that wraps it: the request builder, the result adapter, the two artifacts built from that module, and the beta-day tool that measures what no client table carries.
 
-**Architecture:** Two repositories. The **engine repo** (`/Users/jh/code/wowsims-forever`, module path stays `github.com/wowsims/classic`) holds every change to the simulation itself; it is consumed by the site as a Go module, so its generated protobufs must be committed (they are `.gitignore`d upstream — Task 1). The **site repo** (`/Users/jh/code/forever`) gains a new module `sim/` holding the request/result envelopes, the engine version pin, and the adapter. The adapter is the lane's first deliverable because the api and web lanes are blocked on it. Engine changes are ordered so that the one repo-wide mechanical rename (Hit/Crit) lands alone, before the six independent feature tasks that follow it.
+**Architecture:** Two repositories, and a hard rule about which owns what. The **engine repo** (`/Users/jh/code/wowsims-forever`, module path stays `github.com/wowsims/classic`) holds every change to the simulation itself and **ships no artifact of ours** — it stays a clean, upstreamable Go library plus its own UI, because we intend to contribute the Forever work back rather than diverge. The **site repo** (`/Users/jh/code/forever`) gains a module `sim/` that imports the engine at a pinned version and holds everything else: the JSON envelopes, the engine pin, `sim/request` and `sim/adapter` (the only two places in the product that touch a protobuf), `sim/combine`, and both artifacts — `sim/cmd/wasm` and `sim/cmd/forever-sim`. Building our own wasm is what lets the request builder and the adapter run *inside the browser*, so no protobuf ever crosses into TypeScript and the mapping table exists once, in Go. Engine changes are ordered so the one repo-wide mechanical rename (Hit/Crit) lands alone, before the seven independent feature tasks that follow it.
 
 **Tech Stack:** Go (engine `go 1.23.0`, site `go 1.25.11`), `google.golang.org/protobuf` v1.36.6, `protoc` 36.1 with `protoc-gen-go` v1.36.6, Python 3 (`tools/base_stats_parser.py`, the new `tools/spellconst_gen.py`), GNU make, GitHub Actions, Node 22 (wasm smoke test only).
 
 **Spec:** `docs/superpowers/specs/2026-09-14-simulator-design.md` (sections 2 and 9)
 **Interface contract (binding):** `docs/superpowers/specs/2026-09-14-simulator-interfaces.md` ("Engine" and "Engine version" sections are this lane's; the rest constrains it)
-**Research:** `research/07-simulator.md` sections 1.2, 1.3, 1.11, 5.3
+**Research:** `research/07-simulator.md` sections 1.2, 1.3, 1.11, 5.3; `research/08-stats.md` section 12, "What this changes in the engine" 
 
 ## Global Constraints
 
@@ -22,7 +22,9 @@
 - **`ENGINE_VERSION` is the short commit sha of `wowsims-forever`**, currently `7779ebb`. It appears in `sim/enginever/version.go` (`const Version = "7779ebb"`, written by `make engine-pin`), in `web/public/_sim/<ENGINE_VERSION>/sim.{wasm,js}`, in every `SimEnvelope.engine_version`, every stored sim row, every validation row, and the premium image tag. A result from a different `ENGINE_VERSION` stays readable and is labelled stale; it is never silently re-run.
 - **The protobuf API does not change shape.** `RaidSimRequest`, `RaidSimResult`, `SimDatabase`, `APLRotation` keep their messages and field numbers. The only proto edits this plan makes are the `Stat` enum merge (Task 4) and two additive fields on `Encounter`/`Target` (Task 8). Additive means: new field numbers, nothing renumbered, nothing removed.
 - **The `Stat` enum in `sim/core/stats/stats.go` and `proto.Stat` in `proto/common.proto` must stay index-synced.** The Go file says so at line 19. After the merge both shrink by two and every later index shifts down by two; Task 4 changes both in one commit and asserts the sync in a test.
-- **The five WASM entrypoints the web uses are `raidSimAsync`, `raidSimRequestSplit`, `raidSimResultCombination`, `computeStats`, `abortById`** — all five confirmed present in `sim/wasm/main.go:28-38`. No others. Note `sim/wasm/main.go:39` calls `js.Global().Call("wasmready")` on startup, so the host page must define a global `wasmready` function before instantiating; the web lane owns that.
+- **The engine repository ships no artifact of ours.** Both are built in the site repo from the `sim/` module: `sim/cmd/wasm` → `sim.wasm` + `sim.js`, `sim/cmd/forever-sim` → the native binary. The engine's own `sim/wasm` and `cmd/wowsimcli` are untouched and remain what upstream ships. The engine's makefile also generates TypeScript protobuf bindings for its own UI; we deliberately do not use them.
+- **No protobuf crosses a lane boundary.** `sim/request` turns a `SimRequest` into the engine's `RaidSimRequest` and `sim/adapter` turns a `RaidSimResult` into a `summary.Summary`. Both are Go, both are linked into both artifacts, and neither the browser nor an API handler ever encodes or decodes a protobuf. An earlier draft of the contract carried a `Raw []byte` field on the envelope; it was removed because it would have forced a protobuf toolchain into the front end and a second copy of the adapter's mapping table in TypeScript.
+- **Our wasm exports exactly four functions, all JSON in and JSON out, never bytes:** `simRun(requestJSON, callbackId)`, `simSplit(requestJSON, n)`, `simCombine(resultsJSON)`, `simAbort(callbackId)`. The engine's own thirteen `js.Global().Set` entrypoints — of which `raidSimAsync`, `raidSimRequestSplit`, `raidSimResultCombination`, `computeStats` and `abortById` are the five that matter, all confirmed present at `sim/wasm/main.go:28-38` — are an implementation detail behind those four, and the web must not call them. Our `main` likewise calls `js.Global().Call("wasmready")` once the four exist, so the host page must define a global `wasmready` before instantiating; the web lane owns that.
 - **Unknown Forever numbers are never invented.** Every constant whose Forever value is not yet readable from a client table ships as the Era value, generated (not typed) into a constants file, and carries `unconfirmed` in a comment on its own line. The nightly validation job (api lane) is what clears it. A task that cannot generate a number from data must say so in the constants file, not guess.
 - **Testing rule: a task runs only the tests covering the files it changed.** The full engine suite (`go test --tags=with_db -count=1 ./sim/...`, 10.5 s) runs once at the final review and in CI. The same for the site: `go test ./... -race` from `sim/`.
 - **`gofmt` is a gate.** The engine has a `pre-commit` hook (`make setup` installs it) running `gofmt -w ./sim ./tools`. Run `gofmt -l ./sim ./tools` before every engine commit; a non-empty list fails CI.
@@ -32,6 +34,20 @@
   Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>
   ```
   Never `--no-verify`.
+
+### What `research/08-stats.md` §12 settles, and one place it is wrong
+
+That document read the same engine checkout and reached firmer conclusions than the simulator research did. Where the two differ, §12 wins, except on the one point below where this plan measured otherwise.
+
+- **Flat percentages are settled** (§2, §12.4). `CritRatingPerCritChance`, `HitRatingPerHitChance` and `HasteRatingPerHastePercent` at 1:1 are **confirmed, not provisional**, and leave the unconfirmed list (Task 5).
+- **`Resilience` is deleted from the enum** (§12.1 item 2): Forever adds none, and keeping it would let the UI offer a stat weight for a stat that cannot exist (Task 4).
+- **Expertise's item unit is a percentage**, not expertise points — Edgemaster's is 1.0% — so `ExpertisePerQuarterPercentReduction` is deleted and `ExpertiseRatingPerExpertiseChance` is 1 (§12.4 item 2, Task 5). The attack table already reads `stats.Expertise / 100`, making the whole subsystem **zero-change**, which §12.3 item 2 calls a genuine windfall.
+- **Haste is not merged** (§12.1 item 5): Forever keeps melee, ranged and spell haste separate.
+- **Bleeds are observed to crit** and the machinery is mostly built: four `Dot` outcome functions exist and only a per-tick magic variant is missing, so periodic crit is per-spell configuration rather than new mechanics (§12.3 items 4 and 5, Task 16).
+- **The weapon-skill picture is narrower than "unspecified".** Weapon skill survives at roughly one seventh the per-item magnitude, and `NewAttackTable`'s nine derived constants are the thing at risk, not the formulas (§12.5). Task 8 extracts them into config and pins today's values in a fixture; Task 15's `forever-measure` produces the numbers to fit.
+- **Armour ignore is a percentage**, which `stats.ArmorPenetration` cannot express, and **two talents switch on the equipped weapon subclass**, which one-talent-one-effect cannot express (§12.1 item 4, §12.3 item 6, Task 16).
+- **Thirteen hit and crit talents changed meaning**, four converting from resist-reduction to hit (§1.2, §12.6 item 1). Tasks 11 and 12 rebuild rather than rename.
+- **Where §12 is wrong:** §12.2 item 1 says `HealingPower` already precedes `SpellDamage` in `safeDepsOrder` so no reorder is needed. At engine HEAD `7779ebb` it does not — the order is `SpellPower, SpellDamage, HealingPower, Health` — and the registration would panic. Task 6 carries the one-command check and the reorder.
 
 ### What the data lane hands this lane, verified against the engine's own protos
 
@@ -54,82 +70,87 @@ The controller may run each group's tasks in parallel worktrees; groups run in o
 | Group | Tasks | Repo | Runs when | Notes |
 |---|---|---|---|---|
 | **G0** | 1 | engine | first, alone | Everything depends on committed protobufs. Serial gate. |
-| **G1a** | 2 → 3 | site | after G0 | **Serial within the group.** Task 3 (`sim/adapter`) unblocks the api and web lanes; it is the lane's highest-priority output. |
-| **G1b** | 4 | engine | after G0, **in parallel with G1a** | Serial gate for all later engine work: it renames symbols in 41 `sim/` files and 27 `ui/` files, so it must not race another engine task. |
-| **G2** | 5, 6, 7, 8, 9, 10 | engine | after G1b | **All six are INDEPENDENT.** Disjoint file sets; six parallel worktrees. |
-| **G3** | 11, 12 | engine | after G2 (needs 7 and 10) | **Both INDEPENDENT of each other.** Task 11 touches only `sim/warrior/**`, Task 12 only `sim/mage/**`. |
-| **G4** | 13 | engine + site | after G3 | Artifacts and CI; needs the specs to exist so the smoke test has something to run. |
+| **G1a** | 2 → 3 | site | after G0 | **Serial within the group.** Task 3 ships `sim/request` and `sim/adapter` together and **unblocks the api and web lanes**; it is the lane's highest-priority output. |
+| **G1b** | 4 | engine | after G0, **in parallel with G1a** | Serial gate for all later engine work: it renames symbols in 41 `sim/` files and 27 `ui/` files and deletes a stat, so it must not race another engine task. |
+| **G2** | 5, 6, 7, 8, 9, 10, 16 | engine | after G1b | **All seven are INDEPENDENT.** Disjoint file sets; seven parallel worktrees. |
+| **G3** | 11, 12 | engine | after G2 (needs 7, 10 and 16) | **INDEPENDENT of each other.** Task 11 touches only `sim/warrior/**`, Task 12 only `sim/mage/**`. |
+| **G4a** | 13 | site (+ one engine CI file) | after G3 | The two artifacts and their CI. |
+| **G4b** | 15 | site | **in parallel with G4a**; needs only Task 2 | `forever-measure`. Nothing depends on it, so it may also run earlier if a worktree is free. |
 | **G5** | 14 | both | last, alone | Final review: full suites, both repos. |
 
 Conflict map, so a controller can verify the claim:
 
-- Task 4 alone touches `sim/core/stats/stats.go`, `proto/common.proto`, and 41 files under `sim/`. Nothing in G2 may run beside it.
-- Within G2: Task 5 owns `sim/core/base_stats_auto_gen.go` + `tools/base_stats_parser.py`; Task 6 owns `sim/core/stats/deps.go` + `sim/core/character.go`; Task 7 owns `sim/core/spell_mod.go` (new) + `sim/core/spell.go` + `sim/core/flags.go` + `sim/core/cooldown.go`; Task 8 owns `proto/common.proto` (additive, different message from Task 4's enum) + `sim/core/target.go` + `sim/core/unit.go` + `sim/core/item_effects.go`; Task 9 owns `sim/core/racials.go`; Task 10 owns `tools/spellconst_gen.py` + `sim/core/spellconst/**` (new package). The only shared file is `proto/common.proto` between Task 4 (done, in G1b) and Task 8 — different messages, no overlap.
-
----
+- **Task 4 alone** touches `sim/core/stats/stats.go`, `proto/common.proto` and 41 files under `sim/`. Nothing in G2 may run beside it.
+- **Within G2**, file ownership is disjoint: Task 5 owns `sim/core/base_stats_auto_gen.go` and `tools/base_stats_parser.py`; Task 6 owns `sim/core/stats/deps.go` and `sim/core/character.go`'s `addUniversalStatDependencies`; Task 7 owns `sim/core/spell_mod.go` (new), `sim/core/spell.go`, `sim/core/flags.go` and `sim/core/cooldown.go`; Task 8 owns `sim/core/target.go`, `sim/core/unit.go`, `sim/core/item_effects.go` and `proto/common.proto`'s `Encounter`/`Biome` (a different message from Task 4's enum, and Task 4 has already landed); Task 9 owns `sim/core/racials.go`; Task 10 owns `tools/spellconst_gen` and the new `sim/core/spellconst/**`; Task 16 owns `sim/core/dot.go`, `sim/core/spell_outcome.go`, `sim/core/spell_result.go` and `PseudoStats`.
+  - **The two near-misses to watch.** Task 6 and Task 16 both add to `sim/core/character.go` — Task 6 inside `addUniversalStatDependencies`, Task 16 appending two new methods at the end of the file — so a merge conflict is possible but trivial. Task 7 and Task 16 both touch damage multipliers: Task 7 adds the `Apply*DamageBonus` helpers to `sim/core/spell.go`, Task 16 changes the armour path in `sim/core/spell_result.go`. Different files, no overlap.
+- **G3 needs Task 16** as well as 7 and 10: the specs' dots set `CanCrit` and the warrior's armour-ignore talents set `ArmorIgnorePercent`.
+- **Task 15 needs only Task 2** (the `sim/` module) and imports `logs/engine` read-only. It shares no file with Task 13.
 
 ## File structure
 
 ```
 ENGINE REPO  /Users/jh/code/wowsims-forever   (module github.com/wowsims/classic)
+                                              ships NO artifact of ours; stays upstreamable
   sim/core/proto/.gitignore                   MODIFIED T1: stop ignoring *.pb.go
   sim/core/proto/*.pb.go                      NEW T1: 14 generated files, committed
   vite.build-workers.ts                       MODIFIED T1: GOROOT/lib/wasm, not misc/wasm
-  makefile                                    MODIFIED T1 (proto check), T13 (artifacts)
-  proto/common.proto                          MODIFIED T4 (Stat enum), T8 (Biome, Target.biome_affinity)
-  sim/core/stats/stats.go                     MODIFIED T4: Hit, Crit; StatName
+  makefile                                    MODIFIED T1 (proto check), T10 (spellconst)
+  PORTING.md                                  NEW T1; MODIFIED T7, T13
+  proto/common.proto                          MODIFIED T4 (Stat: merge Hit/Crit, drop Resilience),
+                                              T8 (Biome enum, Encounter.biome)
+  sim/core/stats/stats.go                     MODIFIED T4 (Hit, Crit, no Resilience), T16 (PseudoStats)
   sim/core/stats/stats_test.go                MODIFIED T4: index-sync assertion
-  sim/core/stats/deps.go                      MODIFIED T6: safeDepsOrder places HealingPower before SpellDamage
+  sim/core/stats/deps.go                      MODIFIED T6: HealingPower before SpellDamage
   sim/core/stats/deps_test.go                 MODIFIED T6
-  sim/core/character.go                       MODIFIED T6: the healing -> spell damage dependency
+  sim/core/character.go                       MODIFIED T6 (the healing dep), T16 (weapon-subclass hook)
   sim/core/base_stats_auto_gen.go             REGENERATED T5
-  sim/core/base_stats_forever.go              NEW T5: the provisional-value marker and its test hook
-  tools/base_stats_parser.py                  MODIFIED T5: fixed, --build, --out
+  sim/core/base_stats_provisional.go          NEW T5
+  sim/core/base_stats_test.go                 NEW T5
+  tools/base_stats_parser.py                  MODIFIED T5: fixed, --build, --inputs, --out
   sim/core/spell_mod.go                       NEW T7: ported from wowsims/sod
   sim/core/spell_mod_test.go                  NEW T7
-  sim/core/spell.go                           MODIFIED T7: Matches, ClassSpellMask, Apply*DamageBonus, RelatedSelfBuff
-  sim/core/cooldown.go                        MODIFIED T7: ApplyFlatCooldownMod, ApplyFlatPercentCooldownMod
+  sim/core/spell.go                           MODIFIED T7: Matches, ClassSpellMask, Apply*DamageBonus
+  sim/core/cooldown.go                        MODIFIED T7: the two cooldown mods
   sim/core/flags.go                           MODIFIED T7: SpellFlagNoSpellMods
-  sim/core/target.go                          MODIFIED T8: Encounter.Biome
-  sim/core/unit.go                            MODIFIED T8: Unit.Biome accessor path
-  sim/core/item_effects.go                    MODIFIED T8: NewBiomeDamageEffect, NewMobTypeDamageEffect
+  sim/core/target.go                          MODIFIED T8: Encounter.Biome; attack-table constants as config
+  sim/core/unit.go                            MODIFIED T8: Unit.Biome()
+  sim/core/item_effects.go                    MODIFIED T8: biome and creature-type damage effects
   sim/core/environment_biome_test.go          NEW T8
+  sim/core/attack_table_test.go               NEW T8: the Era regression fixture
   sim/core/racials.go                         REWRITTEN T9
   sim/core/racials_test.go                    NEW T9
-  sim/core/spellconst/spellconst.go           NEW T10: the Go-side shape
-  sim/core/spellconst/spellconst_test.go      NEW T10
-  sim/core/spellconst/gen/main.go             NEW T10: JSON -> Go generator
-  sim/warrior/constants_auto_gen.go           NEW T10 (empty) / T11 (populated)
-  sim/warrior/talents.go                      REWRITTEN T11: seven rows, 11/16/21/31
-  sim/warrior/{rampage,piercing_howl}.go      NEW T11: baseline abilities
-  sim/warrior/dps_warrior/dps_warrior_test.go MODIFIED T11
+  sim/core/spellconst/{spellconst,gen}        NEW T10: the Go shape and the generator
+  sim/core/dot.go                             MODIFIED T16: CanCrit, Dot.CritMultiplier
+  sim/core/spell_outcome.go                   MODIFIED T16: OutcomeMagicCritPerTick
+  sim/core/spell_result.go                    MODIFIED T16: percentage armour ignore
+  sim/core/periodic_crit_test.go              NEW T16
+  sim/warrior/**                              T10 (constants), T11 (talents, abilities, masks)
   ui/warrior/apls/forever_fury.apl.json       NEW T11
-  sim/mage/constants_auto_gen.go              NEW T10 (empty) / T12 (populated)
-  sim/mage/talents.go                         REWRITTEN T12
-  sim/mage/{ice_lance,cold_snap_baseline}.go  NEW T12
-  sim/mage/mage_test.go                       MODIFIED T12
+  sim/mage/**                                 T10 (constants), T12
   ui/mage/apls/forever_frost.apl.json         NEW T12
-  cmd/forever-sim/main.go                     NEW T13: the native server-lane binary
-  cmd/forever-sim/main_test.go                NEW T13
-  .github/workflows/artifacts.yml             NEW T13: builds and publishes all three artifacts
   ui/core/proto_utils/{names,stats}.ts        MODIFIED T4: 177 references across 27 files
+  .github/workflows/test.yml                  NEW T13: tests only, no artifacts
 
-SITE REPO  /Users/jh/code/forever
+SITE REPO  /Users/jh/code/forever              builds BOTH artifacts, from sim/
   go.work                                     MODIFIED T2: use ./sim
-  Makefile                                    NEW T2: engine-pin
-  sim/go.mod, sim/go.sum                      NEW T2
-  sim/enginever/version.go                    NEW T2 (generated by make engine-pin)
-  sim/api/envelope.go                         NEW T2
-  sim/api/envelope_test.go                    NEW T2
-  sim/adapter/adapter.go                      NEW T3: Summarize
-  sim/adapter/adapter_test.go                 NEW T3
-  sim/adapter/golden_test.go                  NEW T3
-  sim/adapter/testdata/*.result.pb            NEW T3 (T11/T12 refresh)
-  sim/adapter/testdata/*.summary.json.golden  NEW T3 (T11/T12 refresh)
+  Makefile                                    NEW T2 (engine-pin); T13 (artifacts, publish-wasm)
   .github/workflows/sim.yml                   NEW T13
+  sim/go.mod, sim/go.sum                      NEW T2
+  sim/README.md                               NEW T15: the Sept 17 logging procedure
+  sim/enginever/version.go                    NEW T2, generated by `make engine-pin`
+  sim/api/envelope.go                         NEW T2: SimRequest, CharacterSpec, SimResult
+  sim/request/{request,slots}.go              NEW T3: our JSON -> the engine's RaidSimRequest
+  sim/request/apl/*.apl.json                  NEW T3: the two default APLs, embedded
+  sim/adapter/adapter.go, fixture.go          NEW T3: RaidSimResult -> summary.Summary
+  sim/adapter/testdata/*.{result.pb,golden}   NEW T3, refreshed by T11 and T12
+  sim/combine/combine.go                      NEW T13: split and recombine, both lanes
+  sim/cmd/wasm/main.go                        NEW T13: simRun, simSplit, simCombine, simAbort
+  sim/cmd/forever-sim/main.go                 NEW T13: the native server-lane binary
+  sim/measure/*.go                            NEW T15: the measurement functions
+  sim/measure/testdata/planted.log            NEW T15: a log with known planted values
+  sim/cmd/forever-measure/main.go             NEW T15: the beta-day tool
+  web/public/_sim/<ENGINE_VERSION>/           T13: sim.wasm + sim.js, committed, immutable
 ```
-
----
 
 ## Task 1: Make the engine consumable as a Go module
 
@@ -367,14 +388,16 @@ The site gains its fourth Go module. It holds three things and nothing else: the
 - Consumes: `github.com/wowsims/classic/sim/core/proto` (Task 1), `github.com/jhunthrop/foreversixty/logs/engine/summary`.
 - Produces, all used by Task 3, the api lane and the web lane:
   - `enginever.Version string` — the constant, e.g. `"7779ebb"`.
-  - `api.SimRequest{EngineVersion string; Spec string; Source CharacterSource; Encounter EncounterSpec; Iterations int; RandomSeed int64; Raw []byte}`
+  - `api.SimRequest{EngineVersion string; Spec string; Source CharacterSource; Character CharacterSpec; Encounter EncounterSpec; Iterations int; RandomSeed int64}`
+  - `api.CharacterSpec{Name, Race, Class string; Level int; Talents string; Gear []GearSlot; Buffs, Consumes, Profession []string}`
+  - `api.GearSlot{Slot string; ItemID, Enchant, Suffix int}`
   - `api.CharacterSource{Kind, Ref, CapturedAt string}`
   - `api.EncounterSpec{DurationSec int; Variation float64; Targets int; ExecuteRatio float64; Profile string}`
   - `api.SimResult{SimID, EngineVersion string; Request SimRequest; Lane string; DPS Estimate; IterationsRun int; DurationMS int64; Summary summary.Summary; Error string}`
   - `api.Estimate{Mean, StdDev, Error, Min, Max float64}`
   - `api.DefaultEncounter() EncounterSpec` — the contract's defaults: 180 s, 0.2 variation, 1 target, 0.25 execute, empty profile.
   - `api.ValidIterations = []int{500, 3000, 10000}`, `api.(SimRequest).Validate() error`.
-  - `api.(SimResult).ForStorage() SimResult`, `api.(SimResult).Stale(current string) bool`.
+  - `api.(SimResult).Stale(current string) bool`.
   - `api.LaneBrowser = "browser"`, `api.LaneServer = "server"`.
   - `api.SourceArmory/SourceAddon/SourceBuild/SourceFight/SourceManual` — the five `Kind` values.
 
@@ -436,9 +459,14 @@ func TestSimRequestJSONFieldNames(t *testing.T) {
 		Spec:          "warrior-fury",
 		Source:        CharacterSource{Kind: SourceArmory, Ref: "us/normal/thrall", CapturedAt: "2026-09-14T00:00:00Z"},
 		Encounter:     DefaultEncounter(),
-		Iterations:    3000,
-		RandomSeed:    0,
-		Raw:           []byte{1, 2, 3},
+		Character: CharacterSpec{
+			Name: "Thrall", Race: "orc", Class: "warrior", Level: 60,
+			Talents: "30305001302-05050005525010051",
+			Gear:    []GearSlot{{Slot: "main_hand", ItemID: 19352, Enchant: 2568}},
+			Buffs:   []string{"battle_shout"},
+		},
+		Iterations: 3000,
+		RandomSeed: 0,
 	}
 	b, err := json.Marshal(req)
 	if err != nil {
@@ -448,7 +476,7 @@ func TestSimRequestJSONFieldNames(t *testing.T) {
 	if err := json.Unmarshal(b, &m); err != nil {
 		t.Fatal(err)
 	}
-	for _, k := range []string{"engine_version", "spec", "source", "encounter", "iterations", "random_seed", "raw"} {
+	for _, k := range []string{"engine_version", "spec", "source", "character", "encounter", "iterations", "random_seed"} {
 		if _, ok := m[k]; !ok {
 			t.Errorf("SimRequest is missing JSON key %q", k)
 		}
@@ -462,6 +490,25 @@ func TestSimRequestJSONFieldNames(t *testing.T) {
 			t.Errorf("CharacterSource is missing JSON key %q", k)
 		}
 	}
+	ch, ok := m["character"].(map[string]any)
+	if !ok {
+		t.Fatalf("character is not an object: %T", m["character"])
+	}
+	for _, k := range []string{"name", "race", "class", "level", "talents", "gear", "buffs", "consumes"} {
+		if _, ok := ch[k]; !ok {
+			t.Errorf("CharacterSpec is missing JSON key %q", k)
+		}
+	}
+	gear, ok := ch["gear"].([]any)
+	if !ok || len(gear) == 0 {
+		t.Fatalf("gear is not a non-empty array: %v", ch["gear"])
+	}
+	for _, k := range []string{"slot", "item_id"} {
+		if _, ok := gear[0].(map[string]any)[k]; !ok {
+			t.Errorf("GearSlot is missing JSON key %q", k)
+		}
+	}
+
 	enc, ok := m["encounter"].(map[string]any)
 	if !ok {
 		t.Fatalf("encounter is not an object: %T", m["encounter"])
@@ -482,7 +529,11 @@ func TestDefaultEncounterMatchesTheContract(t *testing.T) {
 }
 
 func TestValidateRejectsBadRequests(t *testing.T) {
-	good := SimRequest{EngineVersion: "7779ebb", Spec: "mage-frost", Iterations: 3000, Encounter: DefaultEncounter(), Raw: []byte{1}}
+	good := SimRequest{
+		EngineVersion: "7779ebb", Spec: "mage-frost", Iterations: 3000,
+		Encounter: DefaultEncounter(),
+		Character: CharacterSpec{Name: "Jaina", Race: "gnome", Class: "mage", Level: 60},
+	}
 	if err := good.Validate(); err != nil {
 		t.Fatalf("a good request was rejected: %v", err)
 	}
@@ -496,7 +547,9 @@ func TestValidateRejectsBadRequests(t *testing.T) {
 		{"odd iteration count", func(r *SimRequest) { r.Iterations = 1234 }, "iterations"},
 		{"no duration", func(r *SimRequest) { r.Encounter.DurationSec = 0 }, "duration_sec"},
 		{"too many targets", func(r *SimRequest) { r.Encounter.Targets = 11 }, "targets"},
-		{"no raw request", func(r *SimRequest) { r.Raw = nil }, "raw"},
+		{"no class", func(r *SimRequest) { r.Character.Class = "" }, "character.class"},
+		{"no race", func(r *SimRequest) { r.Character.Race = "" }, "character.race"},
+		{"no level", func(r *SimRequest) { r.Character.Level = 0 }, "character.level"},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
@@ -513,24 +566,36 @@ func TestValidateRejectsBadRequests(t *testing.T) {
 	}
 }
 
-// A stored sim row is served to browsers; the raw engine request is large
-// and is rebuilt from the character model whenever a re-run is wanted.
-func TestSimResultOmitsRawWhenStored(t *testing.T) {
+// A stored sim row carries its whole request, and the request is JSON all
+// the way down: no protobuf crosses a lane boundary, so a stored row can
+// be re-run by handing it straight back to sim/request.
+func TestSimResultRoundTripsItsRequest(t *testing.T) {
 	res := SimResult{
 		EngineVersion: "7779ebb",
-		Request:       SimRequest{Spec: "warrior-fury", Raw: []byte{9, 9, 9}},
-		Lane:          LaneBrowser,
-		DPS:           Estimate{Mean: 1791.1, StdDev: 120, Error: 2.2, Min: 1400, Max: 2100},
+		Request: SimRequest{
+			Spec:      "warrior-fury",
+			Character: CharacterSpec{Name: "Thrall", Race: "orc", Class: "warrior", Level: 60},
+		},
+		Lane: LaneBrowser,
+		DPS:  Estimate{Mean: 1791.1, StdDev: 120, Error: 2.2, Min: 1400, Max: 2100},
 	}
-	b, err := json.Marshal(res.ForStorage())
+	b, err := json.Marshal(res)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if strings.Contains(string(b), `"raw":"`) {
-		t.Errorf("ForStorage() kept the raw request: %s", b)
+	if strings.Contains(string(b), `"raw"`) {
+		t.Errorf("the envelope still carries a raw protobuf field: %s", b)
 	}
-	if !strings.Contains(string(b), `"warrior-fury"`) {
-		t.Errorf("ForStorage() dropped the request: %s", b)
+	var back SimResult
+	if err := json.Unmarshal(b, &back); err != nil {
+		t.Fatal(err)
+	}
+	again, err := json.Marshal(back)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(again) != string(b) {
+		t.Errorf("the request did not survive a round trip:\n got %s\nwant %s", again, b)
 	}
 }
 
@@ -556,8 +621,16 @@ Create `sim/api/envelope.go`:
 
 ```go
 // Package api holds the request and result envelopes both compute lanes
-// speak. The engine never sees them: SimRequest.Raw is the engine's own
-// RaidSimRequest protobuf, and both lanes pass it through untouched.
+// speak. They are JSON all the way down.
+//
+// No protobuf crosses a lane boundary. sim/request turns a SimRequest
+// into the engine's RaidSimRequest and sim/adapter turns the result back
+// into a summary.Summary; both are Go and both run inside the browser's
+// wasm as well as on the server, so neither the web nor the API handler
+// ever encodes or decodes a protobuf. An earlier draft of the contract
+// carried a Raw []byte field holding the engine request; it was removed
+// because it would have forced a protobuf toolchain into the front end
+// and a second copy of the adapter's mapping table in TypeScript.
 //
 // The JSON field names here are authoritative and are mirrored verbatim in
 // web/src/lib/sim/types.ts.
@@ -599,14 +672,42 @@ const (
 	MaxDurationSec = 480
 )
 
+// MaxLevel is Forever's level cap.
+const MaxLevel = 60
+
 type SimRequest struct {
 	EngineVersion string          `json:"engine_version"`
 	Spec          string          `json:"spec"`
 	Source        CharacterSource `json:"source"`
+	Character     CharacterSpec   `json:"character"`
 	Encounter     EncounterSpec   `json:"encounter"`
 	Iterations    int             `json:"iterations"`
 	RandomSeed    int64           `json:"random_seed"`
-	Raw           []byte          `json:"raw"`
+}
+
+// CharacterSpec is everything the engine needs about the player, in JSON.
+// sim/request turns it into the engine's RaidSimRequest; nothing outside
+// Go ever touches a protobuf.
+type CharacterSpec struct {
+	Name    string `json:"name"`
+	Race    string `json:"race"`
+	Class   string `json:"class"`
+	Level   int    `json:"level"`
+	// Talents is the engine's own talent string, positional against the
+	// class's tree sizes, e.g. "01102123133-12312312-".
+	Talents    string     `json:"talents"`
+	Gear       []GearSlot `json:"gear"`
+	Buffs      []string   `json:"buffs"`
+	Consumes   []string   `json:"consumes"`
+	Profession []string   `json:"professions,omitempty"`
+}
+
+// GearSlot is one equipped item. Slot names are the planner's.
+type GearSlot struct {
+	Slot    string `json:"slot"`
+	ItemID  int    `json:"item_id"`
+	Enchant int    `json:"enchant,omitempty"`
+	Suffix  int    `json:"suffix,omitempty"`
 }
 
 type CharacterSource struct {
@@ -655,8 +756,14 @@ func (r SimRequest) Validate() error {
 	if r.Encounter.ExecuteRatio < 0 || r.Encounter.ExecuteRatio > 1 {
 		errs = append(errs, fmt.Errorf("execute_ratio must be between 0 and 1, got %v", r.Encounter.ExecuteRatio))
 	}
-	if len(r.Raw) == 0 {
-		errs = append(errs, errors.New("raw is required: the engine's own RaidSimRequest protobuf"))
+	if r.Character.Class == "" {
+		errs = append(errs, errors.New("character.class is required"))
+	}
+	if r.Character.Race == "" {
+		errs = append(errs, errors.New("character.race is required"))
+	}
+	if r.Character.Level < 1 || r.Character.Level > MaxLevel {
+		errs = append(errs, fmt.Errorf("character.level must be between 1 and %d, got %d", MaxLevel, r.Character.Level))
 	}
 	return errors.Join(errs...)
 }
@@ -664,8 +771,11 @@ func (r SimRequest) Validate() error {
 type SimResult struct {
 	SimID         string          `json:"sim_id,omitempty"`
 	EngineVersion string          `json:"engine_version"`
-	Request       SimRequest      `json:"request"`
-	Lane          string          `json:"lane"`
+	// Request is stored whole. There is nothing to strip: the envelope
+	// carries no protobuf, so a stored row can be re-run by handing it
+	// straight back to sim/request.
+	Request SimRequest `json:"request"`
+	Lane    string     `json:"lane"`
 	DPS           Estimate        `json:"dps"`
 	IterationsRun int             `json:"iterations_run"`
 	DurationMS    int64           `json:"duration_ms"`
@@ -679,14 +789,6 @@ type Estimate struct {
 	Error  float64 `json:"error"`
 	Min    float64 `json:"min"`
 	Max    float64 `json:"max"`
-}
-
-// ForStorage returns a copy with the raw engine request dropped. A stored
-// sim row is served to browsers; the raw request is large and is rebuilt
-// from the character model whenever a re-run is wanted.
-func (r SimResult) ForStorage() SimResult {
-	r.Request.Raw = nil
-	return r
 }
 
 // Stale reports whether this result came from an engine build other than
@@ -788,9 +890,484 @@ git commit -m "feat(sim): the sim module, the engine pin, and the request envelo
 
 ---
 
-## Task 3: `sim/adapter` — engine result to logs summary
+## Task 3: `sim/request` and `sim/adapter` — the two ends of the protobuf boundary
 
 **Repo: SITE** (`/Users/jh/code/forever`). Depends on Task 2. **THE API AND WEB LANES ARE BLOCKED ON THIS TASK.** Finish it before anything in G2.
+
+Two functions, one boundary. `request.Build` turns our JSON `SimRequest` into the engine's `RaidSimRequest`; `adapter.Summarize` turns the engine's `RaidSimResult` back into a `summary.Summary`. They are the only two places in the whole product where a protobuf is touched, they are both Go, and they both run **inside the browser's wasm as well as on the server** — which is the reason the contract removed the old `Raw []byte` field. Without them the web would need a protobuf toolchain in the front end and a second copy of the mapping table in TypeScript, drifting from this one.
+
+They ship together because the api and web lanes are blocked on the pair, not on either half.
+
+### Part A — `sim/request`
+
+**Files:**
+- Create: `sim/request/request.go`, `sim/request/slots.go`
+- Test: `sim/request/request_test.go`
+
+**Interfaces:**
+- Consumes: `api.SimRequest`, `api.CharacterSpec`, `api.GearSlot`, `api.EncounterSpec` (Task 2); the engine's `proto.RaidSimRequest`, `proto.Player`, `proto.Raid`, `proto.Encounter`, `proto.Target`, `proto.SimOptions`, `proto.EquipmentSpec`, `proto.ItemSpec`, `proto.Race`, `proto.Class`, `proto.Biome`.
+- Produces, used by the api lane, the web lane (through the wasm), and Task 13's two commands:
+  - `request.Build(req api.SimRequest) (*proto.RaidSimRequest, error)`
+  - `request.ParseRace(slug string) (proto.Race, bool)`, `request.ParseClass(slug string) (proto.Class, bool)`
+  - `request.SlotIndex(name string) (int, bool)` — the planner's slot names to the engine's equipment ordering
+  - `request.ErrUnknownRace`, `request.ErrUnknownClass`, `request.ErrUnknownSlot`
+
+- [ ] **A1: Write the failing test**
+
+Create `sim/request/request_test.go`:
+
+```go
+package request
+
+import (
+	"testing"
+
+	"github.com/jhunthrop/foreversixty/sim/api"
+	"github.com/wowsims/classic/sim/core/proto"
+)
+
+func fury() api.SimRequest {
+	return api.SimRequest{
+		EngineVersion: "7779ebb",
+		Spec:          "warrior-fury",
+		Character: api.CharacterSpec{
+			Name:    "Thrall",
+			Race:    "orc",
+			Class:   "warrior",
+			Level:   60,
+			Talents: "30305001302-05050005525010051",
+			Gear: []api.GearSlot{
+				{Slot: "main_hand", ItemID: 19352, Enchant: 2568},
+				{Slot: "head", ItemID: 16963},
+			},
+			Buffs:    []string{"battle_shout"},
+			Consumes: []string{"elixir_of_the_mongoose"},
+		},
+		Encounter:  api.DefaultEncounter(),
+		Iterations: 3000,
+		RandomSeed: 7,
+	}
+}
+
+func TestBuildProducesAPlayableRequest(t *testing.T) {
+	got, err := Build(fury())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.Raid == nil || len(got.Raid.Parties) != 1 || len(got.Raid.Parties[0].Players) != 1 {
+		t.Fatalf("Build did not produce one party with one player: %+v", got.Raid)
+	}
+	p := got.Raid.Parties[0].Players[0]
+	if p.Name != "Thrall" {
+		t.Errorf("Name = %q", p.Name)
+	}
+	if p.Race != proto.Race_RaceOrc {
+		t.Errorf("Race = %v, want RaceOrc", p.Race)
+	}
+	if p.Class != proto.Class_ClassWarrior {
+		t.Errorf("Class = %v, want ClassWarrior", p.Class)
+	}
+	if p.Level != 60 {
+		t.Errorf("Level = %d, want 60", p.Level)
+	}
+	if p.TalentsString != "30305001302-05050005525010051" {
+		t.Errorf("TalentsString = %q", p.TalentsString)
+	}
+	if p.Spec == nil {
+		t.Error("the player has no spec options; the engine cannot build an agent without one")
+	}
+}
+
+// The engine's EquipmentSpec is positional: slot order is the contract,
+// not a name, so a mis-ordered gear list silently equips a helm in the
+// weapon slot.
+func TestBuildPlacesGearByItsSlot(t *testing.T) {
+	got, err := Build(fury())
+	if err != nil {
+		t.Fatal(err)
+	}
+	eq := got.Raid.Parties[0].Players[0].Equipment
+	if eq == nil {
+		t.Fatal("no equipment")
+	}
+	headIdx, ok := SlotIndex("head")
+	if !ok {
+		t.Fatal("head is not a known slot")
+	}
+	mhIdx, ok := SlotIndex("main_hand")
+	if !ok {
+		t.Fatal("main_hand is not a known slot")
+	}
+	if eq.Items[headIdx].Id != 16963 {
+		t.Errorf("head slot holds item %d, want 16963", eq.Items[headIdx].Id)
+	}
+	if eq.Items[mhIdx].Id != 19352 {
+		t.Errorf("main hand holds item %d, want 19352", eq.Items[mhIdx].Id)
+	}
+	if eq.Items[mhIdx].Enchant != 2568 {
+		t.Errorf("main hand enchant = %d, want 2568", eq.Items[mhIdx].Enchant)
+	}
+	// Every slot the character does not fill must still exist, empty,
+	// because the engine indexes the array rather than searching it.
+	if len(eq.Items) != SlotCount {
+		t.Errorf("EquipmentSpec has %d slots, want %d", len(eq.Items), SlotCount)
+	}
+}
+
+func TestBuildCarriesTheEncounter(t *testing.T) {
+	req := fury()
+	req.Encounter = api.EncounterSpec{DurationSec: 300, Variation: 0.1, Targets: 3, ExecuteRatio: 0.2}
+	got, err := Build(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	e := got.Encounter
+	if e.Duration != 300 {
+		t.Errorf("Duration = %v, want 300", e.Duration)
+	}
+	if e.DurationVariation != 30 {
+		t.Errorf("DurationVariation = %v, want 30 (0.1 of 300 seconds, in seconds)", e.DurationVariation)
+	}
+	if len(e.Targets) != 3 {
+		t.Errorf("Targets = %d, want 3", len(e.Targets))
+	}
+	if e.ExecuteProportion_20 != 0.2 {
+		t.Errorf("ExecuteProportion_20 = %v, want 0.2", e.ExecuteProportion_20)
+	}
+}
+
+func TestBuildCarriesTheSimOptions(t *testing.T) {
+	got, err := Build(fury())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.SimOptions.Iterations != 3000 {
+		t.Errorf("Iterations = %d, want 3000", got.SimOptions.Iterations)
+	}
+	if got.SimOptions.RandomSeed != 7 {
+		t.Errorf("RandomSeed = %d, want 7; a paired run depends on it", got.SimOptions.RandomSeed)
+	}
+	// IsTest caps concurrency at three splits and adds per-iteration
+	// bookkeeping. It is never right for a real run.
+	if got.SimOptions.IsTest {
+		t.Error("IsTest is set")
+	}
+}
+
+func TestBuildRejectsWhatItCannotMap(t *testing.T) {
+	cases := []struct {
+		name string
+		mut  func(*api.SimRequest)
+		want string
+	}{
+		{"unknown race", func(r *api.SimRequest) { r.Character.Race = "vulpera" }, "race"},
+		{"unknown class", func(r *api.SimRequest) { r.Character.Class = "demon hunter" }, "class"},
+		{"unknown slot", func(r *api.SimRequest) { r.Character.Gear[0].Slot = "tabard_of_doom" }, "slot"},
+		{"invalid envelope", func(r *api.SimRequest) { r.Iterations = 17 }, "iterations"},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			req := fury()
+			req.Character.Gear = append([]api.GearSlot(nil), req.Character.Gear...)
+			tc.mut(&req)
+			_, err := Build(req)
+			if err == nil {
+				t.Fatalf("expected an error mentioning %q", tc.want)
+			}
+			if !contains(err.Error(), tc.want) {
+				t.Errorf("error %q does not mention %q", err, tc.want)
+			}
+		})
+	}
+}
+
+// Build must be deterministic: the same request twice must produce the
+// same protobuf, or a paired seed buys nothing.
+func TestBuildIsDeterministic(t *testing.T) {
+	a, err := Build(fury())
+	if err != nil {
+		t.Fatal(err)
+	}
+	b, err := Build(fury())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if a.String() != b.String() {
+		t.Errorf("two builds of one request differ:\n%s\n%s", a, b)
+	}
+}
+
+func contains(h, n string) bool {
+	for i := 0; i+len(n) <= len(h); i++ {
+		if h[i:i+len(n)] == n {
+			return true
+		}
+	}
+	return false
+}
+```
+
+- [ ] **A2: Run it and watch it fail**
+
+Run: `cd /Users/jh/code/forever/sim && go test ./request/ -v`
+Expected: `FAIL [build failed]`, `undefined: Build`.
+
+- [ ] **A3: Write the slot table**
+
+The engine's `EquipmentSpec.Items` is positional. Read `proto/common.proto`'s `ItemSlot` enum and `sim/core/equipment.go` for the ordering before writing this; the list below is vanilla's and must match the enum exactly, index for index.
+
+Create `sim/request/slots.go`:
+
+```go
+package request
+
+// The engine's EquipmentSpec.Items is a positional array, not a map:
+// slot order is the contract. These names are the planner's, and the
+// index is the engine's ItemSlot enum value. A mismatch equips a helm in
+// the weapon slot and nothing complains, so slotOrder is checked against
+// proto.ItemSlot by the test rather than trusted.
+var slotOrder = []string{
+	"head",
+	"neck",
+	"shoulder",
+	"back",
+	"chest",
+	"wrist",
+	"hands",
+	"waist",
+	"legs",
+	"feet",
+	"finger1",
+	"finger2",
+	"trinket1",
+	"trinket2",
+	"main_hand",
+	"off_hand",
+	"ranged",
+}
+
+// SlotCount is how many slots an EquipmentSpec always carries. Unfilled
+// slots are present and empty, because the engine indexes the array
+// rather than searching it.
+var SlotCount = len(slotOrder)
+
+var slotIndex = func() map[string]int {
+	m := make(map[string]int, len(slotOrder))
+	for i, s := range slotOrder {
+		m[s] = i
+	}
+	return m
+}()
+
+// SlotIndex maps a planner slot name to its engine position.
+func SlotIndex(name string) (int, bool) {
+	i, ok := slotIndex[name]
+	return i, ok
+}
+```
+
+- [ ] **A4: Write `Build`**
+
+Create `sim/request/request.go`:
+
+```go
+// Package request turns our JSON SimRequest into the engine's
+// RaidSimRequest protobuf.
+//
+// It is one of exactly two places in the product that touch a protobuf;
+// sim/adapter is the other. Both are Go and both run inside the
+// browser's wasm as well as on the server, which is what keeps a
+// protobuf toolchain out of the front end and stops the mapping being
+// written twice in two languages.
+package request
+
+import (
+	"errors"
+	"fmt"
+
+	"github.com/jhunthrop/foreversixty/sim/api"
+	"github.com/wowsims/classic/sim/core/proto"
+)
+
+var (
+	ErrUnknownRace  = errors.New("request: unknown race")
+	ErrUnknownClass = errors.New("request: unknown class")
+	ErrUnknownSlot  = errors.New("request: unknown gear slot")
+)
+
+// races and classes map our lower-kebab slugs onto the engine's enums.
+// The canonical slug list is data/curated/specs.json and races.json; these
+// maps are the engine-side half of that pairing and the test asserts
+// every engine enum value is reachable.
+var races = map[string]proto.Race{
+	"dwarf":     proto.Race_RaceDwarf,
+	"gnome":     proto.Race_RaceGnome,
+	"human":     proto.Race_RaceHuman,
+	"night-elf": proto.Race_RaceNightElf,
+	"nightelf":  proto.Race_RaceNightElf,
+	"orc":       proto.Race_RaceOrc,
+	"tauren":    proto.Race_RaceTauren,
+	"troll":     proto.Race_RaceTroll,
+	"undead":    proto.Race_RaceUndead,
+}
+
+var classes = map[string]proto.Class{
+	"druid":   proto.Class_ClassDruid,
+	"hunter":  proto.Class_ClassHunter,
+	"mage":    proto.Class_ClassMage,
+	"paladin": proto.Class_ClassPaladin,
+	"priest":  proto.Class_ClassPriest,
+	"rogue":   proto.Class_ClassRogue,
+	"shaman":  proto.Class_ClassShaman,
+	"warlock": proto.Class_ClassWarlock,
+	"warrior": proto.Class_ClassWarrior,
+}
+
+// ParseRace maps a race slug onto the engine's enum.
+func ParseRace(slug string) (proto.Race, bool) {
+	r, ok := races[slug]
+	return r, ok
+}
+
+// ParseClass maps a class slug onto the engine's enum.
+func ParseClass(slug string) (proto.Class, bool) {
+	c, ok := classes[slug]
+	return c, ok
+}
+
+// Build turns a validated SimRequest into the engine's own request.
+func Build(req api.SimRequest) (*proto.RaidSimRequest, error) {
+	if err := req.Validate(); err != nil {
+		return nil, fmt.Errorf("request: %w", err)
+	}
+	ch := req.Character
+
+	race, ok := ParseRace(ch.Race)
+	if !ok {
+		return nil, fmt.Errorf("%w: %q", ErrUnknownRace, ch.Race)
+	}
+	class, ok := ParseClass(ch.Class)
+	if !ok {
+		return nil, fmt.Errorf("%w: %q", ErrUnknownClass, ch.Class)
+	}
+	equipment, err := equipment(ch.Gear)
+	if err != nil {
+		return nil, err
+	}
+
+	player := &proto.Player{
+		Name:          ch.Name,
+		Race:          race,
+		Class:         class,
+		Level:         int32(ch.Level),
+		TalentsString: ch.Talents,
+		Equipment:     equipment,
+		Consumes:      consumes(ch.Consumes),
+		Buffs:         individualBuffs(ch.Buffs),
+	}
+	if err := applySpec(player, req.Spec); err != nil {
+		return nil, err
+	}
+
+	return &proto.RaidSimRequest{
+		Raid: &proto.Raid{
+			Parties: []*proto.Party{{Players: []*proto.Player{player}, Buffs: partyBuffs(ch.Buffs)}},
+			Buffs:   raidBuffs(ch.Buffs),
+			Debuffs: debuffs(ch.Buffs),
+		},
+		Encounter: encounter(req.Encounter),
+		SimOptions: &proto.SimOptions{
+			Iterations: int32(req.Iterations),
+			RandomSeed: req.RandomSeed,
+			// IsTest caps concurrency at three splits and adds
+			// per-iteration bookkeeping; it is never right for a real run.
+			IsTest: false,
+		},
+	}, nil
+}
+
+func equipment(gear []api.GearSlot) (*proto.EquipmentSpec, error) {
+	items := make([]*proto.ItemSpec, SlotCount)
+	for i := range items {
+		// Every slot exists, filled or not: the engine indexes this
+		// array rather than searching it.
+		items[i] = &proto.ItemSpec{}
+	}
+	for _, g := range gear {
+		idx, ok := SlotIndex(g.Slot)
+		if !ok {
+			return nil, fmt.Errorf("%w: %q", ErrUnknownSlot, g.Slot)
+		}
+		items[idx] = &proto.ItemSpec{
+			Id:           int32(g.ItemID),
+			Enchant:      int32(g.Enchant),
+			RandomSuffix: int32(g.Suffix),
+		}
+	}
+	return &proto.EquipmentSpec{Items: items}, nil
+}
+
+func encounter(e api.EncounterSpec) *proto.Encounter {
+	targets := make([]*proto.Target, e.Targets)
+	for i := range targets {
+		// A boss is three levels above the player, which is what the
+		// attack table's suppression terms are derived against.
+		targets[i] = &proto.Target{
+			Id:      31146,
+			Name:    "Target Dummy",
+			Level:   63,
+			MobType: proto.MobType_MobTypeHumanoid,
+			// Forever's biome trinkets read this; an unset biome is
+			// BiomeUnknown, which matches nothing.
+			TankIndex: -1,
+		}
+	}
+	return &proto.Encounter{
+		Duration: float64(e.DurationSec),
+		// The engine's variation is in seconds; ours is a fraction of
+		// the duration, because that is what the settings bar offers.
+		DurationVariation:    float64(e.DurationSec) * e.Variation,
+		ExecuteProportion_20: e.ExecuteRatio,
+		ExecuteProportion_25: e.ExecuteRatio,
+		ExecuteProportion_35: e.ExecuteRatio,
+		Targets:              targets,
+	}
+}
+```
+
+Four helpers are left: `applySpec`, `consumes`, `individualBuffs`, `partyBuffs`, `raidBuffs`, `debuffs`. Write each as a switch over the string ids the settings bar sends, mapping onto the engine's `proto.Consumes`, `proto.IndividualBuffs`, `proto.PartyBuffs`, `proto.RaidBuffs` and `proto.Debuffs` fields. Read `proto/common.proto` for the field names first; the buff ids are the web lane's and are the field names in lower snake case, so the mapping is mechanical. `applySpec` switches on the spec slug and calls the engine's `core.WithSpec` equivalent — for `warrior-fury` set `player.Spec = &proto.Player_Warrior{...}`, for `mage-frost` `&proto.Player_Mage{...}` — and returns an error for a spec this build does not carry, so an unsupported spec fails at the boundary rather than producing an empty agent.
+
+Also set `player.Rotation` from the spec's default APL. The APL JSON is `data/curated/apl/<spec_slug>.json` (data lane); embed the two launch specs' copies with `//go:embed` so the wasm carries them and no fetch is needed:
+
+```go
+//go:embed apl/*.apl.json
+var aplFS embed.FS
+```
+
+with `sim/request/apl/warrior-fury.apl.json` and `sim/request/apl/mage-frost.apl.json` copied from the engine's `ui/<class>/apls/` (Tasks 11 and 12 write those). Parse with `protojson` into `proto.APLRotation`. If Tasks 11 and 12 have not landed yet, copy the existing presets and note in a comment that they are replaced — the request builder's job is to attach *an* APL, and the test above does not assert which.
+
+- [ ] **A5: Run the tests and watch them pass**
+
+```bash
+cd /Users/jh/code/forever/sim
+go mod tidy
+go test ./request/ -v
+gofmt -l ./request
+```
+
+Expected: six tests `PASS`, no `gofmt` output. If `TestBuildPlacesGearByItsSlot` fails, `slotOrder` does not match `proto.ItemSlot` — print the enum with `for i := 0; i < 20; i++ { fmt.Println(i, proto.ItemSlot(i)) }` and fix the list.
+
+- [ ] **A6: Commit**
+
+```bash
+cd /Users/jh/code/forever
+git add sim/request
+git commit -m "feat(sim): build the engine's request from our JSON envelope" \
+  -m "One of the two places in the product that touch a protobuf. It runs in the browser's wasm as well as on the server, which is what keeps a protobuf toolchain out of the front end. The engine's EquipmentSpec is positional, so every slot is present whether filled or not and the slot table is checked against the ItemSlot enum rather than trusted; an unknown race, class, slot or spec fails at the boundary rather than producing an agent the engine cannot build." \
+  -m "Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
+```
+
+### Part B — `sim/adapter`
 
 `Summarize` turns a `*proto.RaidSimResult` into a `logs/engine/summary.Summary`, so the report page's damage table, aura uptimes, cast list, and resource timeline render a simulation with no second renderer. The mapping is the contract's table, field by field, and the rule that governs all of it is: **the engine reports totals accumulated across every iteration, and the summary describes one fight, so every count and every total is divided by `IterationsDone` before it enters the summary.** The distribution stays in `SimResult.DPS`, where it belongs.
 
@@ -813,7 +1390,7 @@ Engine shapes this task reads, all confirmed in `proto/api.proto`: `RaidSimResul
   - `adapter.ActionName(id *proto.ActionID) (spellID int64, name string)`
   - `adapter.Fixture(spec string) (*proto.RaidSimResult, error)` — reads `testdata/<spec>.result.pb`; the api lane's tests use it so they need no engine binary.
 
-- [ ] **Step 1: Write the failing unit test**
+- [ ] **B1: Write the failing unit test**
 
 Create `sim/adapter/adapter_test.go`:
 
@@ -883,9 +1460,9 @@ func req() api.SimRequest {
 	return api.SimRequest{
 		EngineVersion: "7779ebb",
 		Spec:          "warrior-fury",
+		Character:     api.CharacterSpec{Name: "Fury", Race: "orc", Class: "warrior", Level: 60},
 		Encounter:     api.DefaultEncounter(),
 		Iterations:    100,
-		Raw:           []byte{1},
 	}
 }
 
@@ -1106,12 +1683,12 @@ func TestDPS(t *testing.T) {
 }
 ```
 
-- [ ] **Step 2: Run it and watch it fail**
+- [ ] **B2: Run it and watch it fail**
 
 Run: `cd /Users/jh/code/forever/sim && go test ./adapter/ -v`
 Expected: `FAIL [build failed]`, `undefined: Summarize`.
 
-- [ ] **Step 3: Write the adapter**
+- [ ] **B3: Write the adapter**
 
 Create `sim/adapter/adapter.go`:
 
@@ -1461,12 +2038,12 @@ func ActionName(id *proto.ActionID) (int64, string) {
 }
 ```
 
-- [ ] **Step 4: Run the test and watch it pass**
+- [ ] **B4: Run the test and watch it pass**
 
 Run: `cd /Users/jh/code/forever/sim && go test ./adapter/ -v`
 Expected: `PASS` for all nine tests. If `TestSummarizeDividesByIterations` fails on `Hits`, check that `per` rounds rather than truncates.
 
-- [ ] **Step 5: Write the fixture loader**
+- [ ] **B5: Write the fixture loader**
 
 The api lane's tests need a real engine result without running an engine. Create `sim/adapter/fixture.go`:
 
@@ -1503,7 +2080,7 @@ func Fixture(spec string) (*proto.RaidSimResult, error) {
 }
 ```
 
-- [ ] **Step 6: Write the golden test**
+- [ ] **B6: Write the golden test**
 
 It is the same idiom `logs/engine/summary/golden_test.go` already uses: JSON is portable text, so it catches a field rename, a reordering, or a rounding change that the unit tests above pass straight through. `FOREVER_UPDATE_GOLDEN=1` regenerates.
 
@@ -1550,9 +2127,9 @@ func TestGoldenSummaries(t *testing.T) {
 			req := api.SimRequest{
 				EngineVersion: goldenEngineVersion,
 				Spec:          spec,
+				Character:     api.CharacterSpec{Name: "Sim", Race: "orc", Class: "warrior", Level: 60},
 				Encounter:     api.DefaultEncounter(),
 				Iterations:    3000,
-				Raw:           []byte{1},
 			}
 			got, err := Summarize(res, req)
 			if err != nil {
@@ -1590,7 +2167,7 @@ func TestSummarizeIsDeterministic(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	req := api.SimRequest{EngineVersion: goldenEngineVersion, Spec: "warrior-fury", Encounter: api.DefaultEncounter(), Iterations: 3000, Raw: []byte{1}}
+	req := api.SimRequest{EngineVersion: goldenEngineVersion, Spec: "warrior-fury", Encounter: api.DefaultEncounter(), Iterations: 3000}
 	var first string
 	for i := 0; i < 20; i++ {
 		s, err := Summarize(res, req)
@@ -1612,7 +2189,7 @@ func TestSummarizeIsDeterministic(t *testing.T) {
 }
 ```
 
-- [ ] **Step 7: Produce the two fixtures**
+- [ ] **B7: Produce the two fixtures**
 
 The engine has no binary result writer until Task 13, so produce the fixtures with a short throwaway program in the **engine** checkout. It is deleted at the end of this step; nothing is committed to the engine repo here.
 
@@ -1713,7 +2290,7 @@ Expected: two `wrote ... dps=...` lines and an empty `git status`. On the measur
 
 If `ui/mage/gear_sets/phase_1.gear.json` does not exist, list `ui/mage/gear_sets/` and use a file that does; the fixture's job is to be a real engine result, not a particular gear set.
 
-- [ ] **Step 8: Generate the goldens and read them**
+- [ ] **B8: Generate the goldens and read them**
 
 ```bash
 cd /Users/jh/code/forever/sim
@@ -1723,7 +2300,7 @@ head -60 adapter/testdata/warrior-fury.summary.json.golden
 
 Expected: two `regenerated ...` log lines. Read the head of the file and check by eye that `engine_version` is `sim:golden`, `fight_index` is `1`, `duration_ms` is about `180000`, the first damage row is the player with a plausible per-fight total (a 180-second fight at ~1,800 DPS is about 320,000), and the largest ability is a recognisable warrior spell id. If the totals look like a 3,000-iteration sum rather than one fight, `per` is not dividing.
 
-- [ ] **Step 9: Run the whole package and watch it pass**
+- [ ] **B9: Run the whole package and watch it pass**
 
 ```bash
 cd /Users/jh/code/forever/sim
@@ -1733,7 +2310,7 @@ gofmt -l ./adapter ./api ./enginever
 
 Expected: `PASS` for all eleven tests; `gofmt -l` prints nothing.
 
-- [ ] **Step 10: Commit**
+- [ ] **B10: Commit**
 
 ```bash
 cd /Users/jh/code/forever
@@ -1796,7 +2373,9 @@ sim/warrior/warrior.go
 - Test: `sim/core/stats/stats_test.go`
 
 **Interfaces:**
-- Produces: `stats.Hit` replaces `stats.MeleeHit` and `stats.SpellHit`; `stats.Crit` replaces `stats.MeleeCrit` and `stats.SpellCrit`. `proto.Stat_StatHit` and `proto.Stat_StatCrit` replace the four proto values. `core.HitRatingPerHitChance` replaces `MeleeHitRatingPerHitChance` and `SpellHitRatingPerHitChance`; `core.CritRatingPerCritChance` absorbs `SpellCritRatingPerCritChance`. The enum shrinks from 44 values to 42 and every value after index 13 shifts down by two.
+- Produces: `stats.Hit` replaces `stats.MeleeHit` and `stats.SpellHit`; `stats.Crit` replaces `stats.MeleeCrit` and `stats.SpellCrit`; **`stats.Resilience` is deleted** (`research/08-stats.md` §12.1 item 2: Zierhut, "we're not adding resilience" — removing it is free and stops the UI offering a stat weight for a stat that cannot exist). `proto.Stat_StatHit` and `proto.Stat_StatCrit` replace the four proto values and `StatResilience` goes. `core.HitRatingPerHitChance` replaces `MeleeHitRatingPerHitChance` and `SpellHitRatingPerHitChance`; `core.CritRatingPerCritChance` absorbs `SpellCritRatingPerCritChance`. The enum shrinks from 44 values to **41** and every value after index 13 shifts down.
+
+**Do not leave deprecated aliases.** `research/08-stats.md` §12.1 suggests keeping the old names for the duration of the port; this plan does the whole rename in one commit, so there is no duration to cover and an alias would only be a way for a later spec to keep using the split stat. **Haste is not merged**: §12.1 item 5 finds Forever keeps melee, ranged and spell haste separate, so `MeleeHaste` and `SpellHaste` are untouched.
 
 - [ ] **Step 1: Record the baseline counts**
 
@@ -1895,17 +2474,17 @@ In `proto/common.proto`, replace lines 89-95 — that is, the block from `StatSp
 	StatBlockValue = 28;
 	StatDodge = 29;
 	StatParry = 30;
-	StatResilience = 31;
-	StatHealth = 32;
-	StatArcaneResistance = 33;
-	StatFireResistance = 34;
-	StatFrostResistance = 35;
-	StatNatureResistance = 36;
-	StatShadowResistance = 37;
-	StatBonusArmor = 38;
-	StatHealingPower = 39;
-	StatSpellDamage = 40;
-	StatFeralAttackPower = 41;
+	// StatResilience is deleted: Forever adds no resilience.
+	StatHealth = 31;
+	StatArcaneResistance = 32;
+	StatFireResistance = 33;
+	StatFrostResistance = 34;
+	StatNatureResistance = 35;
+	StatShadowResistance = 36;
+	StatBonusArmor = 37;
+	StatHealingPower = 38;
+	StatSpellDamage = 39;
+	StatFeralAttackPower = 40;
 ```
 
 This renumbers, which a wire-compatible protobuf change normally must not do. It is correct here: the enum is a *stat index*, never a persisted value, and both ends of the wire — the Go engine and the web — are rebuilt from this file at the same `ENGINE_VERSION`. Add that reasoning as a comment above the enum so a reviewer does not flag it:
@@ -1922,7 +2501,7 @@ Regenerate: `export PATH=$PATH:$(go env GOPATH)/bin && make proto`.
 
 - [ ] **Step 5: Merge the Go enum**
 
-In `sim/core/stats/stats.go`, the const block at lines 20-69: delete `SpellHit`, `SpellCrit`, `MeleeHit` and `MeleeCrit`, and insert `Hit` then `Crit` where `SpellHit`/`SpellCrit` were (after `MP5`, before `SpellHaste`). The block's head becomes:
+In `sim/core/stats/stats.go`, the const block at lines 20-69: delete `SpellHit`, `SpellCrit`, `MeleeHit`, `MeleeCrit` **and `Resilience`**, and insert `Hit` then `Crit` where `SpellHit`/`SpellCrit` were (after `MP5`, before `SpellHaste`). Delete the `case Resilience:` arm from `StatName` too. The block's head becomes:
 
 ```go
 	MP5
@@ -1973,7 +2552,11 @@ grep -rlE 'stats\.(MeleeHit|SpellHit|MeleeCrit|SpellCrit)\b' sim/ --include='*.g
   | xargs sed -i '' -E 's/stats\.(MeleeHit|SpellHit)\b/stats.Hit/g; s/stats\.(MeleeCrit|SpellCrit)\b/stats.Crit/g'
 grep -rlE '\b(MeleeHitRatingPerHitChance|SpellHitRatingPerHitChance|SpellCritRatingPerCritChance)\b' sim/ tools/ --include='*.go' \
   | xargs sed -i '' -E 's/\b(MeleeHitRatingPerHitChance|SpellHitRatingPerHitChance)\b/HitRatingPerHitChance/g; s/\bSpellCritRatingPerCritChance\b/CritRatingPerCritChance/g'
+echo "--- resilience, to delete by hand ---"
+grep -rn 'stats\.Resilience\|ResilienceRatingPerCritReductionChance\|StatResilience' sim/ tools/ ui/ 2>/dev/null
 ```
+
+Delete every resilience reference the last command prints. There should be few: the stat is dead weight inherited from the later-expansion lineage and nothing in a vanilla build grants it. An item that did would simply lose the stat, which is correct — Forever has no resilience.
 
 Then in `sim/core/base_stats_auto_gen.go` collapse the five rating constants to three:
 
@@ -2085,6 +2668,16 @@ because `GenExtraStatsGoFile` builds `output`, then opens a triple-quoted string
 
 Forever's numbers are unknown until the beta client on Sept 17. So this task does **not** guess them. It makes the regeneration work, parameterises it by build, and ships Era values that are marked provisional — so that on Sept 17 the change is `python3 tools/base_stats_parser.py --build <forever-build>` and a commit, not a code edit.
 
+**Three corrections from `research/08-stats.md` §12.4, which read the same file and reached firmer conclusions than the simulator research did.** They change what this task generates:
+
+1. **The flat-percentage question is settled.** Forever uses flat percentages (§2), so `CritRatingPerCritChance = 1`, `HitRatingPerHitChance = 1` and `HasteRatingPerHastePercent = 1` are **right, not provisional**. They come out of `PERCENTAGE_CONSTANTS` below and are not in the unconfirmed list.
+2. **`ExpertisePerQuarterPercentReduction` is deleted, and `ExpertiseRatingPerExpertiseChance` is 1.** §12.4 item 2: the item unit is a percentage — Edgemaster's is 1.0% — not expertise points, so the quarter-percent quantisation inherited from later expansions is simply wrong. The attack table already reads `stats.Expertise / 100` directly (`sim/core/spell_outcome.go:711-735`), so deleting the constant is a deletion, not a substitution. **This overrides the earlier draft of this task, which generated the constant from the `weapon skill` column.**
+3. **`ResilienceRatingPerCritReductionChance` is deleted**, because Task 4 deleted the stat.
+
+One more from §12.4 item 4: the base-stat table needs regenerating for **ten races** — the nine playable ones plus Skyborne's two faction variants — and Wowhead's current `raceOffsets` has eight and is Era data. That is beta work; the generator below takes whatever the input tables carry, so it needs no change when the count moves.
+
+Two items §12.4 leaves for the beta and this task leaves alone: everything under the old `TODO: Update Defense/Dodge/Parry rates`, and the conversion tables themselves.
+
 Inputs, all present: `assets/db_inputs/basestats/{combatratings,chancetomeleecrit,chancetomeleecritbase,chancetospellcrit,chancetospellcritbase,octbasempbyclass}.txt`, tab-separated, one row per level. `combatratings.txt` has a `Level` column and named columns including `weapon skill`, `defense skill`, `dodge`, `parry`, `block`, `hit melee`, `hit spell`, `crit melee`, `crit spell`, `crit taken melee`.
 
 **Files:**
@@ -2164,13 +2757,23 @@ func TestRatingConstantsArePercentages(t *testing.T) {
 
 // Expertise is already modelled in the attack table (spell_outcome.go
 // reduces dodge and parry by stats.Expertise/100) and is dormant in
-// vanilla but live for Forever, so its two constants must be real.
-func TestExpertiseConstantsAreReal(t *testing.T) {
-	if ExpertisePerQuarterPercentReduction <= 0 {
-		t.Errorf("ExpertisePerQuarterPercentReduction = %v, want positive", ExpertisePerQuarterPercentReduction)
+// vanilla but live for Forever.
+func TestExpertiseIsAFlatPercentage(t *testing.T) {
+	// The item unit is a percentage (Edgemaster's is 1.0%), not
+	// expertise points, so the conversion is 1:1 and the quarter-percent
+	// quantisation from later expansions must not come back.
+	if ExpertiseRatingPerExpertiseChance != 1 {
+		t.Errorf("ExpertiseRatingPerExpertiseChance = %v, want 1", ExpertiseRatingPerExpertiseChance)
 	}
-	if ExpertiseRatingPerExpertiseChance <= 0 {
-		t.Errorf("ExpertiseRatingPerExpertiseChance = %v, want positive", ExpertiseRatingPerExpertiseChance)
+	b, err := os.ReadFile("base_stats_auto_gen.go")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.Contains(string(b), "ExpertisePerQuarterPercentReduction") {
+		t.Error("the quarter-percent expertise quantisation is back; Forever's item unit is a percentage")
+	}
+	if strings.Contains(string(b), "Resilience") {
+		t.Error("a resilience constant is back; Forever adds no resilience")
 	}
 }
 
@@ -2232,16 +2835,18 @@ COMBAT_RATINGS = "combatratings.txt"
 
 # Rating constants, in the order the generated file emits them:
 #   Go constant name -> (combatratings.txt column, comment)
+# Deliberately absent, and each for a reason (research/08-stats.md 12.4):
+#   ExpertisePerQuarterPercentReduction - the item unit is a percentage
+#     (Edgemaster's is 1.0%), not expertise points, so the quarter-percent
+#     quantisation from later expansions is wrong. The attack table reads
+#     stats.Expertise/100 directly.
+#   ResilienceRatingPerCritReductionChance - Forever adds no resilience,
+#     and the stat itself is deleted from the enum.
 RATING_CONSTANTS = [
-    ("ExpertisePerQuarterPercentReduction", "weapon skill",
-     "Expertise is live for Forever; the attack table already reduces dodge and parry by it."),
-    ("ExpertiseRatingPerExpertiseChance", "weapon skill", None),
-    ("HasteRatingPerHastePercent", "haste melee", None),
     ("DefenseRatingPerDefense", "defense skill", None),
     ("DodgeRatingPerDodgeChance", "dodge", None),
     ("ParryRatingPerParryChance", "parry", None),
     ("BlockRatingPerBlockChance", "block", None),
-    ("ResilienceRatingPerCritReductionChance", "crit taken melee", None),
 ]
 
 # Constants that are straight percentages in the Classic lineage, which
@@ -2249,9 +2854,14 @@ RATING_CONSTANTS = [
 # because the table's value is a rating-to-percent conversion that the
 # lineage does not use. If Forever introduces rating conversion, these
 # move into RATING_CONSTANTS and the change is one line each.
+# Confirmed, not provisional: Forever uses flat percentages
+# (research/08-stats.md 2 and 12.4).
 PERCENTAGE_CONSTANTS = [
     ("CritRatingPerCritChance", "Forever: one crit stat for spells and melee."),
     ("HitRatingPerHitChance", "Forever: one hit stat for spells, melee and ranged."),
+    ("HasteRatingPerHastePercent", "Forever keeps melee, ranged and spell haste separate."),
+    ("ExpertiseRatingPerExpertiseChance",
+     "The item unit is a percentage (Edgemaster's 1.0%), not expertise points."),
 ]
 
 
@@ -2359,9 +2969,17 @@ gofmt -w sim/core/base_stats_auto_gen.go
 cat sim/core/base_stats_auto_gen.go
 ```
 
-Expected: a file whose header names build `1.15.9.69722`, with `ExpertisePerQuarterPercentReduction = 2.500000`, `ExpertiseRatingPerExpertiseChance = 2.500000` (both the `weapon skill` column at level 60 — that is the one the Era table gives, and `2.500000` matches the value the hand-edited file carried for the first of them), `HasteRatingPerHastePercent`, the four defensive constants, `ResilienceRatingPerCritReductionChance = 28.750002`, and `CritRatingPerCritChance = 1`, `HitRatingPerHitChance = 1`.
+Expected: a file whose header names build `1.15.9.69722`, with the four defensive constants read from the table, and `CritRatingPerCritChance`, `HitRatingPerHitChance`, `HasteRatingPerHastePercent` and `ExpertiseRatingPerExpertiseChance` all `1`. **No `ExpertisePerQuarterPercentReduction` and no `ResilienceRatingPerCritReductionChance`** — both are gone, for the reasons above.
 
-If `haste melee` is not a column in `combatratings.txt`, the generator says so by name and lists the columns it found. Read the header line (`head -1 assets/db_inputs/basestats/combatratings.txt`) and correct the column name in `RATING_CONSTANTS`; do not substitute a literal.
+Deleting `ExpertisePerQuarterPercentReduction` will break whatever referenced it. Find and fix each:
+
+```bash
+grep -rn 'ExpertisePerQuarterPercentReduction' sim/ tools/ ui/ 2>/dev/null
+```
+
+The attack table already reads `stats.Expertise / 100`, so the constant is very likely referenced only by item and talent code converting expertise *points* into a percentage. Each such site becomes a direct percentage, because that is now the item's unit.
+
+If a column name in `RATING_CONSTANTS` is missing, the generator says so by name and lists the columns it found. Read the header line (`head -1 assets/db_inputs/basestats/combatratings.txt`) and correct the name; do not substitute a literal.
 
 - [ ] **Step 6: Declare what is provisional**
 
@@ -2392,16 +3010,16 @@ const foreverBaseStatsBuildPrefix = "2."
 // provisionalConstantNames are the constants whose values are Era's and
 // are therefore unconfirmed for Forever. Every one of them is generated,
 // never typed.
+// The rating constants are NOT here. research/08-stats.md 2 and 12.4
+// settle it: Forever uses flat percentages, so crit, hit, haste and
+// expertise at 1:1 are confirmed, not guesses. Only the four defensive
+// conversions are still Era's, plus the per-class base stats.
 var provisionalConstantNames = []string{
-	"ExpertisePerQuarterPercentReduction", // unconfirmed
-	"ExpertiseRatingPerExpertiseChance",   // unconfirmed
-	"HasteRatingPerHastePercent",          // unconfirmed
-	"CritRatingPerCritChance",             // unconfirmed
-	"HitRatingPerHitChance",               // unconfirmed
-	"DefenseRatingPerDefense",             // unconfirmed
-	"DodgeRatingPerDodgeChance",           // unconfirmed
-	"ParryRatingPerParryChance",           // unconfirmed
-	"BlockRatingPerBlockChance",           // unconfirmed
+	"DefenseRatingPerDefense",  // unconfirmed
+	"DodgeRatingPerDodgeChance", // unconfirmed
+	"ParryRatingPerParryChance", // unconfirmed
+	"BlockRatingPerBlockChance", // unconfirmed
+	"ExtraClassBaseStats",       // unconfirmed: Era's eight races, Forever ships ten
 }
 
 // ProvisionalConstants returns the names of every rating constant still
@@ -2589,9 +3207,16 @@ In `sim/core/character.go`, `addUniversalStatDependencies` at lines 280-291. Add
 
 ```go
 // HealingToSpellDamageRatio is Forever's rule that bonus healing carries
-// one third as bonus damage. Confirmed from the Deep Dive panel; the exact
-// fraction is one of the few Forever numbers that was stated outright, so
-// it is not marked unconfirmed.
+// one third as bonus damage. Confirmed from the Deep Dive panel and,
+// independently, three ways in research/08-stats.md sections 7 and 9,
+// so it is not marked unconfirmed.
+//
+// Watch for double application. Priest's Spiritual Guidance bakes a
+// spirit-to-healing and spirit-to-damage conversion into the talent at
+// 25% and 8%, which is the one place this rule appears as a talent
+// rather than being derived. When Shadow Priest is written, that talent
+// must not stack its own conversion on top of this global dependency
+// (research/08-stats.md 12.2 item 3).
 const HealingToSpellDamageRatio = 1.0 / 3.0
 
 func (character *Character) addUniversalStatDependencies() {
@@ -3053,7 +3678,7 @@ git commit -m "feat(core): port the declarative spell-mod system from wowsims/so
 
 ---
 
-## Task 8: Encounter biome, and creature type for conditional item effects
+## Task 8: Encounter biome, creature type, and the weapon-skill attack-table constants
 
 **Repo: ENGINE.** Depends on Task 4. **G2 — INDEPENDENT of Tasks 5, 6, 7, 9, 10.**
 
@@ -3063,12 +3688,18 @@ Forever re-itemised the world and added trinkets whose effect depends on where y
 
 So the only genuinely new concept is the **encounter biome**. This task adds it, and adds the two damage-multiplier constructors the creature-type half is missing so both conditions are expressed the same way.
 
+**Three additions from `research/08-stats.md`**, which needs `sim/core/target.go` and so must land with this task rather than beside it:
+
+- **§12.6 item 3: the creature-type enum must be extensible.** "Swine" is not a vanilla creature type, and Forever has one. Adding a value to `MobType` is additive, but the item-effect constructors must not switch exhaustively over the enum, or a new type silently matches nothing.
+- **§12.6 item 2: conditional item effects need a richer shape than a list of types.** A Forever trinket carries a zone list, a biome class, a creature type, and — importantly — is an **additive bonus rather than a gate**: it does not stop working elsewhere, it is merely better here. Step 5 builds both constructors that way.
+- **§12.5: the weapon-skill attack table is the subsystem most at risk.** `NewAttackTable` (`sim/core/target.go`, around lines 300-385) derives `BaseMissChance`, `BaseParryChance`, `BaseDodgeChance`, `BaseGlanceChance`, `GlanceMultiplierMin/Max`, `HitSuppression` and `MeleeCritSuppression` from weapon skill against target defense. Forever keeps weapon skill and says it "works as it always has", but adds a second dodge-reduction lever and cut per-item weapon skill sevenfold. **Do not touch the formulas.** Step 9 extracts the nine magic constants into a named, versioned config struct so a beta measurement can fit them without a code change, and pins today's Era-derived numbers in a regression fixture so a Forever divergence fails a test rather than drifting silently. Task 15's `forever-measure` produces the numbers to fit.
+
 Both proto changes are strictly additive: new field numbers at the end of their messages, nothing renumbered, nothing removed. A `SimDatabase` built before this change still parses; an encounter with no biome gets `BiomeUnknown`, which matches nothing, which is exactly a vanilla encounter.
 
 **Files:**
 - Modify: `proto/common.proto` (new `Biome` enum; `Encounter.biome` field 20; `Target.biome_affinity` is **not** added — see below)
-- Modify: `sim/core/target.go` (`Encounter.Biome`, set in `NewEncounter`), `sim/core/environment.go` (expose it on the environment so a unit can read it), `sim/core/item_effects.go` (two new constructors)
-- Test: `sim/core/environment_biome_test.go`
+- Modify: `sim/core/target.go` (`Encounter.Biome` set in `NewEncounter`; the attack-table constants extracted from `NewAttackTable`), `sim/core/unit.go` (`Unit.Biome()`), `sim/core/item_effects.go` (two new constructors)
+- Test: `sim/core/environment_biome_test.go`, `sim/core/attack_table_test.go`
 - Regenerate: `make proto`
 
 **Interfaces:**
@@ -3279,11 +3910,119 @@ func NewBiomeDamageEffect(itemID int32, biomes []proto.Biome, multiplier float64
 }
 ```
 
+Two rules both constructors follow, from `research/08-stats.md` §12.6:
+
+- **Never switch exhaustively over `MobType`.** Both use `slices.Contains` against a list the caller supplies, so a Forever creature type the engine has not heard of — "Swine" is the known example — is simply a value nobody listed, not a compile error and not a silent no-match in a `default:` arm. When Forever's type lands, add it to `proto/common.proto`'s `MobType` at the end and nothing else changes.
+- **A conditional effect is an additive bonus, not a gate.** A Forever biome trinket does not stop working in the wrong biome; it is merely better in the right one. Neither constructor above returns early in a way that removes a base effect — they apply a *multiplier on top*. An item with both a base bonus and a conditional one registers two effects, and the base one has no condition.
+
 The exact field used to scale outgoing damage differs between the per-target attack table and the unit's `PseudoStats`; read `sim/core/item_effects.go:157-200` and `sim/core/stats/stats.go`'s `PseudoStats` and use whatever the neighbouring constructors use. If `AttackTables[...].DamageDealtMultiplier` does not exist, apply the multiplier to `PseudoStats.DamageDealtMultiplier` in both constructors and note in a comment that the creature-type form is then whole-fight rather than per-target — which is correct when the encounter has one target and is the common case.
 
 `slices` may need adding to the imports.
 
-- [ ] **Step 6: Run the tests and watch them pass**
+- [ ] **Step 6: Extract the weapon-skill attack-table constants into config**
+
+`NewAttackTable` in `sim/core/target.go` computes nine derived numbers from weapon skill against target defense. Read it first; the constants are inline literals. Extract them, changing no arithmetic:
+
+```go
+// AttackTableConstants are the nine numbers the vanilla one-roll attack
+// table is derived from. They are extracted rather than inline because
+// Forever keeps weapon skill but adds a second dodge-reduction lever and
+// cut per-item weapon skill sevenfold, so the fitted values may move --
+// and when they do, the change must be a config edit and a regenerated
+// fixture, not a patch to the formulas.
+//
+// Fit them from a real log with forever-measure (sim/cmd/forever-measure
+// in the site repository): a thousand auto-attacks against a level-63
+// dummy with a known character sheet gives the five observed rates these
+// are fitted to. Until then these are Era's, which is what the
+// regression fixture pins.
+//
+// unconfirmed: every field, until a beta measurement fits them.
+type AttackTableConstants struct {
+	// Version names the source these came from, so a fixture diff says
+	// which set it is comparing.
+	Version string
+
+	BaseMissChance   float64
+	BaseDodgeChance  float64
+	BaseParryChance  float64
+	BaseGlanceChance float64
+
+	GlanceMultiplierMin float64
+	GlanceMultiplierMax float64
+
+	// HitSuppression and MeleeCritSuppression are the per-level-gap
+	// penalties applied above the base rates.
+	HitSuppression       float64
+	MeleeCritSuppression float64
+
+	// DualWieldMissPenalty is the flat extra miss chance on a white
+	// swing with an off-hand equipped. It is 0.19 in vanilla and is a
+	// literal in applyAttackTableMiss today; Forever's Dual Wield
+	// Specialization grants off-hand hit specifically, so the structure
+	// is right and only the number is in question
+	// (research/08-stats.md 12.3 item 3).
+	DualWieldMissPenalty float64
+}
+
+// EraAttackTable is the set derived from twenty years of vanilla
+// theorycraft, and the default until a Forever measurement replaces it.
+var EraAttackTable = AttackTableConstants{
+	Version: "era",
+	// Fill each from the literal it replaces in NewAttackTable and
+	// applyAttackTableMiss. Do not round, do not re-derive: copy.
+}
+
+// activeAttackTable is what NewAttackTable reads. A beta fit replaces it
+// in one assignment.
+var activeAttackTable = EraAttackTable
+```
+
+Then replace each literal in `NewAttackTable` and `applyAttackTableMiss` with its field, and **change nothing else**. The test in the next step is what proves you did not.
+
+- [ ] **Step 7: Pin the Era numbers in a regression fixture**
+
+Append to `sim/core/environment_biome_test.go`, or create `sim/core/attack_table_test.go`:
+
+```go
+// The attack table is the subsystem most at risk in the Forever port:
+// weapon skill survives, but the per-item magnitude fell sevenfold and a
+// second dodge-reduction lever exists. Extracting the constants into
+// config must change no arithmetic, and a Forever divergence must fail
+// here rather than drift silently, so this pins today's derived numbers
+// across the level gaps that matter.
+func TestAttackTableConstantsAreUnchanged(t *testing.T) {
+	// A player at 60 against a boss at 63 is the case every melee spec
+	// cares about; 60 against 60 is the control.
+	cases := []struct {
+		name        string
+		weaponSkill float64
+		targetLevel int32
+	}{
+		{"skill 300 vs level 63", 300, 63},
+		{"skill 305 vs level 63", 305, 63},
+		{"skill 300 vs level 60", 300, 60},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			got := deriveAttackTable(tc.weaponSkill, tc.targetLevel)
+			want, ok := eraAttackTableFixture[tc.name]
+			if !ok {
+				t.Fatalf("no fixture for %q; add it with the value this prints: %+v", tc.name, got)
+			}
+			if got != want {
+				t.Errorf("the derived attack table moved.\n got %+v\nwant %+v\n"+
+					"If this is a deliberate Forever fit, update the fixture in the same commit "+
+					"and say in the body which measurement produced it.", got, want)
+			}
+		})
+	}
+}
+```
+
+`deriveAttackTable(weaponSkill float64, targetLevel int32)` is a small extraction of the arithmetic `NewAttackTable` already does, returning a comparable struct of the five derived rates. `eraAttackTableFixture` is a `map[string]derivedTable` you fill by running the test once and copying what it prints — that is the honest way to pin a derived value, and the failure message says so.
+
+- [ ] **Step 8: Run the tests and watch them pass**
 
 ```bash
 cd /Users/jh/code/wowsims-forever
@@ -3294,9 +4033,9 @@ go test --tags=with_db ./sim/core/ -run 'TestEncounterCarries|TestEncounterWitho
 
 Expected: `BUILDS`; no `gofmt` output; four tests `PASS`.
 
-- [ ] **Step 7: Prove it is additive**
+- [ ] **Step 9: Prove it is additive and that the extraction changed no arithmetic**
 
-No existing encounter sets a biome and no existing item uses the new constructors, so nothing may change.
+No existing encounter sets a biome, no existing item uses the new constructors, and extracting the attack-table constants changed no arithmetic, so nothing may change. The attack-table extraction is the risky half: a mistyped literal there moves every melee spec at once.
 
 ```bash
 cd /Users/jh/code/wowsims-forever
@@ -3306,7 +4045,7 @@ git status --short -- '*.results'
 
 Expected: 20 packages `ok`; **`git status` prints nothing for `.results`**.
 
-- [ ] **Step 8: Commit**
+- [ ] **Step 10: Commit**
 
 ```bash
 cd /Users/jh/code/wowsims-forever
@@ -4398,6 +5137,285 @@ git commit -m "feat(core): generated per-class spell constants, and the coeffici
 
 ---
 
+## Task 16: Periodic crit, percentage armour ignore, and weapon-subclass modifiers
+
+**Repo: ENGINE.** Depends on Task 4. **G2 — INDEPENDENT of Tasks 5, 6, 7, 8, 9, 10.** Owns `sim/core/spell_outcome.go`, `sim/core/spell_result.go`, `sim/core/dot.go` and `sim/core/character.go`'s `PseudoStats` additions; no other G2 task touches them.
+
+Three Forever rules the engine cannot currently express. All three come from `research/08-stats.md` §12.3 and §12.7, items 4 and 6 of its ordered work list, and **none of them waits for the beta**.
+
+**1. Periodic crit.** `research/08-stats.md` §12.3 item 4: the machinery already exists — `Dot.OutcomeTick` (never crits), `Dot.OutcomeTickPhysicalCrit`, `Dot.OutcomeSnapshotCrit`, `Dot.OutcomeMagicHitAndSnapshotCrit` — so enabling periodic crit is mostly *assigning the right outcome function per spell*. What is missing is **one variant: a magic dot that rolls crit per tick rather than snapshotting**. Build that now. Then default every Forever dot to `OutcomeTick` and drive the exceptions from a per-spell config flag, **not** from a branch on school: which dots crit is a per-spell fact that Task 15's `forever-measure` populates from the beta, spell by spell.
+
+**2. A periodic crit multiplier of its own.** §12.3 item 5: the probable baselines are 1.5× spell and 2.0× physical with talents adding to the *bonus*, and the periodic multiplier is unknown and may differ from the direct one. Give `Dot` its own `CritMultiplier` rather than borrowing the parent spell's, so the measured answer has somewhere to go.
+
+**3. Percentage armour ignore and weapon-subclass conditionals.** §12.1 item 4: `stats.ArmorPenetration` is a flat value and Forever's three talents ignore a *percentage* of target armour. Prefer a `PseudoStats` multiplier applied before mitigation — it is per-attacker and conditional on weapon subclass, which a flat stat cannot express. §12.3 item 6: Weaponmaster and Hack and Slash switch effect on the equipped weapon type inside one talent, which the one-talent-one-effect `ApplyTalents` shape does not express.
+
+**Files:**
+- Modify: `sim/core/dot.go` (`Dot.CritMultiplier`, the new outcome variant), `sim/core/spell_outcome.go` (the variant's implementation), `sim/core/spell_result.go` (percentage armour ignore in the mitigation path), `sim/core/character.go` (the weapon-subclass helper)
+- Test: `sim/core/dot_test.go` (extend), `sim/core/periodic_crit_test.go`, `sim/core/armor_test.go` (extend)
+
+**Interfaces:**
+- Consumes: `stats.Crit` (Task 4).
+- Produces, used by Tasks 11 and 12 and by every later spec:
+  - `SpellConfig.Dot.CanCrit bool` and `Dot.CanCrit` — the per-spell flag. Default false, so every Forever dot starts as `OutcomeTick`.
+  - `Dot.CritMultiplier float64` — defaults to the parent spell's when zero, so an unset dot behaves exactly as it does today.
+  - `(*Dot).OutcomeMagicCritPerTick(sim *Simulation, result *SpellResult, attackTable *AttackTable)` — the missing variant: a magic dot that rolls crit on each tick rather than snapshotting at application.
+  - `PseudoStats.ArmorIgnorePercent float64` — 0 means ignore nothing, 0.25 means ignore a quarter of the target's armour. Applied before mitigation.
+  - `(*Character).WeaponSubclass() proto.WeaponType` and `(*Character).OnWeaponSubclass(types []proto.WeaponType, apply func())` — the hook a weapon-conditional talent registers through, so the condition is written once rather than in every talent that needs it.
+
+- [ ] **Step 1: Write the failing periodic-crit test**
+
+Create `sim/core/periodic_crit_test.go`:
+
+```go
+package core
+
+import (
+	"testing"
+	"time"
+
+	"github.com/wowsims/classic/sim/core/proto"
+)
+
+// Forever: whether a dot crits is a per-spell fact, not a school rule.
+// A dot that does not opt in must never crit, however much crit the
+// caster has, or every existing spec silently gains damage.
+func TestDotsDoNotCritByDefault(t *testing.T) {
+	cfg := SpellConfig{
+		ActionID:         ActionID{SpellID: 11574},
+		SpellSchool:      SpellSchoolPhysical,
+		DamageMultiplier: 1,
+		ThreatMultiplier: 1,
+		Dot: DotConfig{
+			Aura:          Aura{Label: "Test Dot"},
+			NumberOfTicks: 5,
+			TickLength:    time.Second * 3,
+		},
+	}
+	if cfg.Dot.CanCrit {
+		t.Fatal("DotConfig.CanCrit defaults to true; it must default to false")
+	}
+}
+
+// A dot that does opt in gets its own multiplier, because the periodic
+// figure is unknown and may differ from the direct one. An unset
+// multiplier falls back to the parent spell's, so opting in without
+// choosing a multiplier is not silently a 1.0.
+func TestDotCritMultiplierDefaultsToTheSpells(t *testing.T) {
+	const parent = 2.0
+	if got := dotCritMultiplier(0, parent); got != parent {
+		t.Errorf("an unset Dot.CritMultiplier gave %v, want the parent's %v", got, parent)
+	}
+	if got := dotCritMultiplier(1.5, parent); got != 1.5 {
+		t.Errorf("an explicit Dot.CritMultiplier gave %v, want 1.5", got)
+	}
+}
+
+// The missing variant: a magic dot that rolls crit on each tick rather
+// than snapshotting at application. The distinction is observable -
+// snapshotting makes every tick of one application crit or none - and
+// which one Forever uses is what forever-measure answers.
+func TestOutcomeMagicCritPerTickExists(t *testing.T) {
+	var d Dot
+	if d.OutcomeMagicCritPerTick == nil {
+		// A method value is never nil; this asserts the method exists at
+		// compile time and documents why.
+		t.Log("OutcomeMagicCritPerTick is present")
+	}
+	_ = proto.SpellSchool(0)
+}
+```
+
+The third test is a compile-time assertion dressed as a test; keep it, because the alternative is discovering the method is missing when a spec needs it.
+
+- [ ] **Step 2: Run it and watch it fail**
+
+Run: `cd /Users/jh/code/wowsims-forever && go test --tags=with_db ./sim/core/ -run 'TestDots|TestDotCrit|TestOutcomeMagicCritPerTick' -v`
+Expected: `FAIL [build failed]`, `cfg.Dot.CanCrit undefined` and `undefined: dotCritMultiplier`.
+
+- [ ] **Step 3: Add the dot fields and the multiplier rule**
+
+Read `sim/core/dot.go` for the real names of `DotConfig` and `Dot` and the existing outcome methods, then add to `DotConfig`:
+
+```go
+	// CanCrit opts this dot into periodic critical strikes. Forever
+	// enables them per spell rather than per school; which spells is a
+	// beta measurement (sim/cmd/forever-measure in the site repository
+	// reports, per spell, whether any tick carried the critical flag),
+	// so the default is off and every existing spec is unchanged.
+	CanCrit bool
+
+	// CritMultiplier is the multiplier a critical tick uses. Zero means
+	// "the parent spell's", which is the safe default; Forever's
+	// periodic figure is unpublished and may differ from the direct
+	// one, so it gets its own field rather than borrowing.
+	// unconfirmed
+	CritMultiplier float64
+```
+
+and the same two fields to `Dot`, copied through wherever `DotConfig` is turned into a `Dot`.
+
+Then, in `dot.go`:
+
+```go
+// dotCritMultiplier resolves a dot's critical multiplier. Zero means the
+// dot did not choose one, and it inherits the parent spell's rather than
+// silently becoming a 1.0.
+func dotCritMultiplier(dotMult, spellMult float64) float64 {
+	if dotMult == 0 {
+		return spellMult
+	}
+	return dotMult
+}
+```
+
+- [ ] **Step 4: Add the per-tick magic crit outcome**
+
+In `sim/core/spell_outcome.go`, beside the existing `OutcomeMagicHitAndSnapshotCrit` — read it first, this one is its sibling:
+
+```go
+// OutcomeMagicCritPerTick rolls hit once and crit on every tick.
+//
+// The engine's existing magic-dot outcome snapshots the crit roll at
+// application, so an application either crits on every tick or on none.
+// Forever may do either, and the two are distinguishable in a log: a
+// snapshot shows runs of identical ticks, a per-tick roll shows them
+// interleaved. forever-measure reports which, and this is the variant
+// for the per-tick answer.
+func (dot *Dot) OutcomeMagicCritPerTick(sim *Simulation, result *SpellResult, attackTable *AttackTable) {
+	spell := dot.Spell
+	if !result.Landed() {
+		return
+	}
+	if sim.RandomFloat("Magic Dot Crit") < spell.SpellCritChance(result.Target) {
+		result.Outcome |= OutcomeCrit
+		result.Damage *= dotCritMultiplier(dot.CritMultiplier, spell.CritMultiplier)
+		spell.SpellMetrics[result.Target.UnitIndex].Crits++
+	}
+}
+```
+
+Check every name against the neighbouring outcome functions — `SpellCritChance`, `OutcomeCrit`, `SpellMetrics`, `RandomFloat`'s label convention — and match them exactly; the compiler catches the rest. The label passed to `RandomFloat` must be distinct from every other one in the file, because the labelled-RNG test mode keys on it.
+
+- [ ] **Step 5: Write the failing armour-ignore test**
+
+Append to `sim/core/armor_test.go`:
+
+```go
+// Forever's armour-ignore talents ignore a percentage of the target's
+// armour, not a flat amount. stats.ArmorPenetration is flat, and a flat
+// stat cannot express "ignore a quarter of whatever this target has",
+// so the percentage lives in PseudoStats, per attacker, where a
+// weapon-conditional talent can also reach it.
+func TestArmorIgnorePercent(t *testing.T) {
+	const targetArmor = 4000.0
+	cases := []struct {
+		name    string
+		ignore  float64
+		wantEff float64
+	}{
+		{"none", 0, targetArmor},
+		{"a quarter", 0.25, targetArmor * 0.75},
+		{"all of it", 1.0, 0},
+		{"more than all of it is clamped", 1.5, 0},
+		{"negative is clamped", -0.5, targetArmor},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			got := effectiveArmor(targetArmor, tc.ignore)
+			if got != tc.wantEff {
+				t.Errorf("effectiveArmor(%v, %v) = %v, want %v", targetArmor, tc.ignore, got, tc.wantEff)
+			}
+		})
+	}
+}
+```
+
+- [ ] **Step 6: Add the percentage armour ignore**
+
+In `sim/core/stats/stats.go`'s `PseudoStats` (or wherever the attacker-side pseudo stats live — grep `BonusMeleeHitRatingTaken` to find the block):
+
+```go
+	// ArmorIgnorePercent is the fraction of a target's armour this
+	// attacker ignores: 0 ignores nothing, 0.25 a quarter. Forever's
+	// three armour-ignore talents work this way, and a flat
+	// stats.ArmorPenetration cannot express it because the amount
+	// depends on the target. It is per-attacker and reachable from a
+	// weapon-subclass-conditional talent, which a stat is not.
+	ArmorIgnorePercent float64
+```
+
+In `sim/core/spell_result.go`, in the armour-mitigation path — find it by grepping `Armor()` or `armorDamageModifier` — apply it before mitigation:
+
+```go
+// effectiveArmor applies the attacker's percentage armour ignore. The
+// fraction is clamped to [0, 1]: two talents stacking past 100% must
+// reduce armour to zero, never below it, or mitigation inverts and the
+// target takes a bonus.
+func effectiveArmor(armor, ignorePercent float64) float64 {
+	return armor * (1 - min(1, max(0, ignorePercent)))
+}
+```
+
+and call it where the target's armour is read, passing `spell.Unit.PseudoStats.ArmorIgnorePercent`.
+
+- [ ] **Step 7: Add the weapon-subclass hook**
+
+In `sim/core/character.go`:
+
+```go
+// WeaponSubclass reports the equipped main-hand weapon's type, or
+// WeaponTypeUnknown when nothing is equipped.
+func (character *Character) WeaponSubclass() proto.WeaponType {
+	mh := character.MainHand()
+	if mh == nil {
+		return proto.WeaponType_WeaponTypeUnknown
+	}
+	return mh.WeaponType
+}
+
+// OnWeaponSubclass runs apply only when the equipped main hand is one of
+// the given types.
+//
+// Forever's Weaponmaster and Hack and Slash switch effect on the
+// equipped weapon type inside a single talent, which the engine's
+// one-talent-one-effect ApplyTalents shape does not express. Rather
+// than each such talent re-writing the condition, they register through
+// here, so the rule is written once and a talent reads as what it does
+// rather than as how it checks.
+func (character *Character) OnWeaponSubclass(types []proto.WeaponType, apply func()) {
+	if slices.Contains(types, character.WeaponSubclass()) {
+		apply()
+	}
+}
+```
+
+Check `MainHand()`'s return type and the field holding the weapon type (`sim/warrior/talents.go:56` uses `warrior.MainHand().HandType`, so the item struct is there); add `"slices"` to the imports.
+
+- [ ] **Step 8: Run the tests and prove nothing moved**
+
+```bash
+cd /Users/jh/code/wowsims-forever
+go build ./sim/... && echo BUILDS
+gofmt -l ./sim
+go test --tags=with_db ./sim/core/ -run 'TestDot|TestOutcomeMagic|TestArmor' -v
+go test --tags=with_db -count=1 ./sim/... 2>&1 | tail -25
+git status --short -- '*.results'
+```
+
+Expected: `BUILDS`; no `gofmt` output; the new tests `PASS`; 20 packages `ok`; **`git status` prints nothing for `.results`**. No dot opts into `CanCrit`, no character sets `ArmorIgnorePercent`, and no talent uses `OnWeaponSubclass` yet, so nothing may change. A moved golden means the new outcome function was wired into an existing dot by accident.
+
+- [ ] **Step 9: Commit**
+
+```bash
+cd /Users/jh/code/wowsims-forever
+git add sim/core/dot.go sim/core/spell_outcome.go sim/core/spell_result.go sim/core/character.go sim/core/stats/stats.go sim/core/periodic_crit_test.go sim/core/armor_test.go
+git commit -m "feat(core): periodic crit, percentage armour ignore, weapon-subclass modifiers" \
+  -m "Three Forever rules the engine could not express, none of them blocked on the beta. Periodic crit is mostly already built - four outcome functions exist - so this adds the one missing variant, a magic dot rolling crit per tick rather than snapshotting, plus a per-spell CanCrit flag and a Dot.CritMultiplier of its own, because the periodic multiplier is unpublished and may differ from the direct one. Which dots crit is driven per spell rather than by school, because that is a beta measurement and forever-measure reports it spell by spell. Armour ignore becomes a PseudoStats percentage rather than the flat stats.ArmorPenetration, since Forever's three talents ignore a fraction of whatever the target has, and the fraction is clamped so two talents past 100% reduce armour to zero rather than inverting mitigation. The weapon-subclass hook exists because Weaponmaster and Hack and Slash switch effect on the equipped weapon inside one talent, which the one-talent-one-effect shape cannot say. Nothing opts in yet, so no golden moves." \
+  -m "Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
+```
+
+---
+
 ## Task 11: `warrior-fury` end to end
 
 **Repo: ENGINE.** Depends on Tasks 7 and 10. **G3 — INDEPENDENT of Task 12.** This task touches only `sim/warrior/**`, `proto/warrior.proto`, `ui/warrior/**` and `sim/register_all.go`; Task 12 touches only the mage's equivalents. Two parallel worktrees, one merge each.
@@ -4407,6 +5425,8 @@ Fury is the first of the two launch specs. Four deliverables: a `talents.go` rew
 **What survives and what does not.** Research §1.11 puts it at 40-60% of `talents.go`. Reading `sim/warrior/talents.go` (498 lines) against Forever's confirmed rules: Forever keeps seven rows and the 11/21/31 gold-medal talents, **adds a 16-point one per tree**, deletes the buff-only talents and makes those baseline, and keeps many talents unchanged from 2006. So the arithmetic talents (Cruelty, Toughness, Anticipation, Deflection, the weapon specializations, Impale, Improved Heroic Strike) survive as declarative mods; the mechanical ones (Anger Management, Deep Wounds, Flurry, Enrage, Unbridled Wrath, Death Wish, Sweeping Strikes, Last Stand) survive as their existing functions; only the tree *shape* and the new 16-point talent are genuinely new.
 
 **Do not copy `ui/warrior/apls/dps_reck.apl.json` as the starting point without re-validating it.** The data lane verified that the engine's checked-in preset APLs are stale on spell ranks. Every `spellId` in the new APL is checked against the build's own tables.
+
+**Thirteen hit and crit talents changed meaning, and four of them converted from resist-reduction to hit** (`research/08-stats.md` §1.2). A rename is not enough: grep this spec for the old `SpellHit` and `MeleeHit` uses and **rebuild each against §1.2's table**, rather than assuming a merged stat means the talent still does what it did. A talent that used to cut a target's resistance and now grants hit is a different talent with a different value.
 
 **Files:**
 - Modify: `proto/warrior.proto` (the `WarriorTalents` message, 111 lines), `sim/warrior/talents.go`, `sim/warrior/warrior.go` (`TalentTreeSizes`, the spell-code block, `ApplyTalents` call sites), `sim/warrior/constants_auto_gen.go` (regenerated), `sim/warrior/dps_warrior/dps_warrior_test.go`
@@ -4967,6 +5987,8 @@ Two differences from Task 11 that matter:
 
 **The preset APL is the one the data lane caught.** `ui/mage/apls/p1.apl.json` casts Frostbolt **rank 10** where the Era tables give **rank 11 for spell `25304`**. Fixing that is a real DPS change and it is this task's most concrete deliverable.
 
+**Thirteen hit and crit talents changed meaning, and four of them converted from resist-reduction to hit** (`research/08-stats.md` §1.2). A rename is not enough: grep this spec for the old `SpellHit` and `MeleeHit` uses and **rebuild each against §1.2's table**, rather than assuming a merged stat means the talent still does what it did. A talent that used to cut a target's resistance and now grants hit is a different talent with a different value.
+
 **Files:**
 - Modify: `proto/mage.proto`, `sim/mage/talents.go` (529 lines), `sim/mage/mage.go`, `sim/mage/frostbolt.go`, `sim/mage/constants_auto_gen.go` (regenerated), `sim/mage/mage_test.go`
 - Create: `sim/mage/ice_lance.go`, `sim/mage/cold_snap_baseline.go`, `ui/mage/apls/forever_frost.apl.json`, `ui/core/talents/trees/mage.json` (regenerated)
@@ -5415,43 +6437,385 @@ git commit -m "feat(mage): Forever Frost end to end - talents, baseline abilitie
 
 ---
 
-## Task 13: The three artifacts, `forever-sim`, and the CI that publishes them
+## Task 13: The two artifacts, both built in the site repo
 
-**Repo: ENGINE and SITE.** Depends on Tasks 11 and 12. **G4, alone.**
+**Repo: SITE** (`/Users/jh/code/forever`), in the `sim/` module, plus a **test-only** CI workflow in the engine. Depends on Tasks 3, 11 and 12. **G4a — runs beside Task 15.**
 
-One pinned sha produces three artifacts: `sim.wasm` and `sim.js` for the browser lane, and a native `forever-sim` binary for the premium lane and the validation job. The contract names them and names where they go.
+**The engine repository ships no artifact of ours.** It stays a clean, upstreamable Go library plus its own UI, because we intend to contribute the Forever work back rather than diverge. Both artifacts are built here, from the `sim/` module, which imports the engine at the pinned version:
 
-**Measured, at HEAD `7779ebb`, Apple M4 Pro, go1.25.4:**
+- `sim/cmd/wasm` → `sim.wasm` + `sim.js`, for the browser;
+- `sim/cmd/forever-sim` → the native binary, for the premium lane, the validation job and the execution scorer.
 
-| Artifact | Figure |
+Building our own wasm is the whole point: `sim/request` and `sim/adapter` run **inside it**, so the browser gets a finished `SimResult` with its `summary.Summary` already built by the same Go code the server runs. No protobuf crosses a lane boundary. The engine's makefile does generate TypeScript protobuf bindings for its own UI; we deliberately do not use them.
+
+**The wasm exports exactly four functions, all JSON in and JSON out, never bytes.** The engine's own thirteen `js.Global().Set` entrypoints are an implementation detail behind these four and the web must not call them:
+
+| Export | Does |
 |---|---|
-| `sim.wasm`, `GOOS=js GOARCH=wasm go build ./sim/wasm/` | **18,657,775 bytes raw, 3,470,821 gzipped (3.31 MB)**, 2.6 s to build |
-| Design budget | 4 MB gzipped — **we are 0.69 MB under it** |
-| `sim.js` | `$(go env GOROOT)/lib/wasm/wasm_exec.js`, 16,992 bytes. Go 1.24 moved it from `misc/wasm`; Task 1 fixed the one place that still looked there |
-| Native, 300 s fight, phase-1 Fury, 3,000 iterations, serial | **1,231 iterations/sec, 2.44 s wall** |
-| Native, same, 4-way split | **679.6 ms wall, 4,414 it/s** |
-| Native, same, 8-way split | **378.0 ms wall, 7,936 it/s** |
-| WASM under node 22, 500 iterations, same profile | **168 it/s** — **8.5× slower than native**, and the same DPS to one decimal (1427.4 both), which is the determinism check |
+| `simRun(requestJSON, callbackId)` | decode `SimRequest`, build the engine request, run it, adapt the result, return `SimResult` JSON; report progress through the callback |
+| `simSplit(requestJSON, n)` | split by iterations for the worker pool, returning n request JSONs |
+| `simCombine(resultsJSON)` | combine partial `SimResult`s into one |
+| `simAbort(callbackId)` | abort a run |
 
-Those numbers meet the design's budgets: a 4-worker laptop runs 3,000 iterations of WASM in roughly `3000 / (168 × 4) ≈ 4.5 s`, inside the 8-second budget, and the server lane's 10,000 iterations take about 1.3 s of 8-way native compute, inside the 3-second dispatch budget.
+**Measured, at engine HEAD `7779ebb`, Apple M4 Pro, go1.25.4:**
 
-The native binary is new. `cmd/wowsimcli` exists but reads and writes **protojson** and is a cobra app with three other subcommands; the premium lane wants a single-purpose binary that reads a binary `RaidSimRequest`, uses every core automatically, streams progress, and writes a binary `RaidSimResult`. `core.RunRaidSimConcurrentAsync` already does the hard part: `runSimConcurrent` splits by `runtime.NumCPU()` on its own (`sim/core/sim_concurrent.go:441`) and pushes `ProgressMetrics` down a channel.
+| Figure | Value |
+|---|---|
+| Engine's own `sim/wasm`, `GOOS=js GOARCH=wasm go build` | 18,657,775 bytes raw, **3,470,821 gzipped (3.31 MB)**, 2.6 s |
+| Design budget | 4 MB gzipped — **0.69 MB of headroom** for `sim/request`, `sim/adapter` and `logs/engine/summary`, which this task must not spend all of |
+| `sim.js` | `$(go env GOROOT)/lib/wasm/wasm_exec.js`, 16,992 bytes. Go 1.24 moved it from `misc/wasm` |
+| Native, 300 s Fury, 3,000 iterations, serial | **1,231 it/s, 2.44 s wall** |
+| Native, 4-way split | **679.6 ms, 4,414 it/s** |
+| Native, 8-way split | **378.0 ms, 7,936 it/s** |
+| Engine wasm under node 22, 500 iterations | **168 it/s — 8.5× slower than native**, identical DPS to one decimal (1427.4 both) |
+
+Those meet the design's budgets: a 4-worker laptop runs 3,000 iterations of wasm in roughly `3000 / (168 × 4) ≈ 4.5 s`, inside the 8-second budget; 10,000 iterations on the 8-way server lane take about 1.3 s, inside the 3-second dispatch budget.
 
 **Files:**
-- Create (engine): `cmd/forever-sim/main.go`, `cmd/forever-sim/main_test.go`, `.github/workflows/artifacts.yml`
-- Modify (engine): `makefile` (an `artifacts` target)
-- Create (site): `.github/workflows/sim.yml`
-- Modify (site): `Makefile` (an `engine-artifacts` target that fetches them)
+- Create (site): `sim/cmd/wasm/main.go`, `sim/cmd/wasm/main_test.go`, `sim/cmd/forever-sim/main.go`, `sim/cmd/forever-sim/main_test.go`, `sim/combine/combine.go`, `sim/combine/combine_test.go`, `.github/workflows/sim.yml`
+- Modify (site): `Makefile` (an `artifacts` target)
+- Create (engine): `.github/workflows/test.yml` — **tests only, no artifacts**
+- Modify (engine): `PORTING.md`
 
 **Interfaces:**
+- Consumes: `api.SimRequest`, `api.SimResult`, `api.Estimate` (Task 2); `request.Build`, `adapter.Summarize`, `adapter.DPS` (Task 3); `enginever.Version`; the engine's `core.RunRaidSimAsync`, `core.RunRaidSimConcurrentAsync`, `core.SplitSimRequestForConcurrency`, `core.CombineConcurrentSimResults`, `core.AbortById` and `sim.RegisterAll`.
 - Produces:
-  - `forever-sim -in <file> -out <file> [-progress] [-iterations N]` — reads a binary `RaidSimRequest`, writes a binary `RaidSimResult`. `-in -` reads stdin, `-out -` writes stdout. With `-progress`, one JSON object per line on **stderr**: `{"completed":N,"total":M,"dps":X}`.
-  - Exit 0 on a successful sim, 1 on an engine error (with the message on stderr), 2 on bad input.
-  - CI artifacts per sha: `sim.wasm`, `sim.js`, `forever-sim-linux-amd64`, `forever-sim-darwin-arm64`, and `SHA256SUMS`.
+  - `combine.Split(req api.SimRequest, n int) ([]api.SimRequest, error)` — divides iterations and offsets each part's `RandomSeed` by the iterations of the parts before it, so the RNG stream matches a serial run. Exactly what `core.SplitSimRequestForConcurrency` does, lifted to our envelope.
+  - `combine.Results(parts []api.SimResult) (api.SimResult, error)` — pooled mean, pooled standard deviation, summed iterations, and a `summary.Summary` weighted by each part's iteration share.
+  - The four wasm exports above.
+  - `forever-sim -in <file> -out <file> [-progress] [-iterations N] [-version]`, reading and writing **`SimRequest` / `SimResult` JSON**, not protobuf. `-in -` and `-out -` are stdin and stdout. Exit 0 on success, 1 on an engine error, 2 on bad input.
+  - CI artifacts per sha: `sim.wasm`, `sim.js`, `forever-sim-linux-amd64`, `forever-sim-darwin-arm64`, `SHA256SUMS`.
 
-- [ ] **Step 1: Write the failing test**
+- [ ] **Step 1: Write the failing combine test**
 
-Create `cmd/forever-sim/main_test.go`:
+The worker pool splits a run and recombines it, and the recombination is arithmetic that is easy to get subtly wrong — averaging averages rather than pooling them is the classic. Create `sim/combine/combine_test.go`:
+
+```go
+package combine
+
+import (
+	"math"
+	"testing"
+
+	"github.com/jhunthrop/foreversixty/sim/api"
+)
+
+func req(iters int, seed int64) api.SimRequest {
+	return api.SimRequest{
+		EngineVersion: "7779ebb", Spec: "warrior-fury",
+		Character:  api.CharacterSpec{Name: "T", Race: "orc", Class: "warrior", Level: 60},
+		Encounter:  api.DefaultEncounter(),
+		Iterations: iters, RandomSeed: seed,
+	}
+}
+
+// Splitting must divide the iterations exactly and offset each part's
+// seed by the iterations of the parts before it, so four workers produce
+// the same stream a serial run would.
+func TestSplitDividesIterationsAndOffsetsSeeds(t *testing.T) {
+	parts, err := Split(req(3000, 100), 4)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(parts) != 4 {
+		t.Fatalf("got %d parts, want 4", len(parts))
+	}
+	var total int
+	seed := int64(100)
+	for i, p := range parts {
+		total += p.Iterations
+		if p.RandomSeed != seed {
+			t.Errorf("part %d has seed %d, want %d", i, p.RandomSeed, seed)
+		}
+		seed += int64(p.Iterations)
+	}
+	if total != 3000 {
+		t.Errorf("parts sum to %d iterations, want 3000", total)
+	}
+}
+
+// A remainder goes to the first part, which is what the engine's own
+// splitter does; anything else loses iterations.
+func TestSplitHandlesARemainder(t *testing.T) {
+	parts, err := Split(req(3000, 0), 7)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var total int
+	for _, p := range parts {
+		total += p.Iterations
+		if p.Iterations == 0 {
+			t.Error("a part got zero iterations")
+		}
+	}
+	if total != 3000 {
+		t.Errorf("parts sum to %d, want 3000", total)
+	}
+}
+
+func TestSplitNeverExceedsTheIterationCount(t *testing.T) {
+	parts, err := Split(req(500, 0), 64)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(parts) > 500 {
+		t.Errorf("got %d parts for 500 iterations", len(parts))
+	}
+}
+
+func TestSplitRejectsNonsense(t *testing.T) {
+	if _, err := Split(req(3000, 0), 0); err == nil {
+		t.Error("a zero split was accepted")
+	}
+	if _, err := Split(req(3000, 0), -1); err == nil {
+		t.Error("a negative split was accepted")
+	}
+}
+
+// Combining must pool, not average averages: two parts of 1,000 and
+// 2,000 iterations weigh differently.
+func TestResultsPoolsTheMean(t *testing.T) {
+	parts := []api.SimResult{
+		{IterationsRun: 1000, DPS: api.Estimate{Mean: 1000, StdDev: 0, Min: 900, Max: 1100}},
+		{IterationsRun: 2000, DPS: api.Estimate{Mean: 1300, StdDev: 0, Min: 800, Max: 1500}},
+	}
+	got, err := Results(parts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.IterationsRun != 3000 {
+		t.Errorf("IterationsRun = %d, want 3000", got.IterationsRun)
+	}
+	want := (1000*1000.0 + 2000*1300.0) / 3000.0
+	if math.Abs(got.DPS.Mean-want) > 1e-9 {
+		t.Errorf("Mean = %v, want the iteration-weighted %v", got.DPS.Mean, want)
+	}
+	if got.DPS.Min != 800 {
+		t.Errorf("Min = %v, want 800", got.DPS.Min)
+	}
+	if got.DPS.Max != 1500 {
+		t.Errorf("Max = %v, want 1500", got.DPS.Max)
+	}
+}
+
+// The pooled standard deviation must account for the spread *between*
+// parts as well as within them, or a split run reports a tighter error
+// than a serial one and the page lies about its precision.
+func TestResultsPoolsTheStdDev(t *testing.T) {
+	parts := []api.SimResult{
+		{IterationsRun: 1000, DPS: api.Estimate{Mean: 1000, StdDev: 100}},
+		{IterationsRun: 1000, DPS: api.Estimate{Mean: 1200, StdDev: 100}},
+	}
+	got, err := Results(parts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	// Within-group variance 10000, between-group variance 10000, so the
+	// pooled standard deviation is sqrt(20000).
+	want := math.Sqrt(20000)
+	if math.Abs(got.DPS.StdDev-want) > 1e-6 {
+		t.Errorf("StdDev = %v, want %v; a split run must not report a tighter spread than a serial one",
+			got.DPS.StdDev, want)
+	}
+	wantErr := want / math.Sqrt(2000)
+	if math.Abs(got.DPS.Error-wantErr) > 1e-6 {
+		t.Errorf("Error = %v, want %v", got.DPS.Error, wantErr)
+	}
+}
+
+func TestResultsRejectsAnEmptyOrFailedSet(t *testing.T) {
+	if _, err := Results(nil); err == nil {
+		t.Error("an empty set was combined")
+	}
+	bad := []api.SimResult{{IterationsRun: 100}, {IterationsRun: 100, Error: "boom"}}
+	if _, err := Results(bad); err == nil {
+		t.Error("a set containing a failed part was combined")
+	}
+}
+```
+
+- [ ] **Step 2: Run it and watch it fail**
+
+Run: `cd /Users/jh/code/forever/sim && go test ./combine/ -v`
+Expected: `FAIL [build failed]`, `undefined: Split`.
+
+- [ ] **Step 3: Write `combine`**
+
+Create `sim/combine/combine.go`:
+
+```go
+// Package combine splits a run across workers and puts the pieces back
+// together. The browser's worker pool and the server lane both use it,
+// so the arithmetic is written once.
+package combine
+
+import (
+	"errors"
+	"fmt"
+	"math"
+
+	"github.com/jhunthrop/foreversixty/logs/engine/summary"
+	"github.com/jhunthrop/foreversixty/sim/api"
+)
+
+// Split divides a request into n parts by iteration count.
+//
+// Each part's RandomSeed is offset by the iterations of every part
+// before it. That is what the engine's own SplitSimRequestForConcurrency
+// does, and the reason is that the engine increments its seed once per
+// iteration: without the offset, four workers would run the same four
+// thousand rolls and a split run would not match a serial one. A paired
+// comparison depends on it.
+func Split(req api.SimRequest, n int) ([]api.SimRequest, error) {
+	if n <= 0 {
+		return nil, fmt.Errorf("combine: split count must be positive, got %d", n)
+	}
+	if req.Iterations <= 0 {
+		return nil, fmt.Errorf("combine: iterations must be positive, got %d", req.Iterations)
+	}
+	if n > req.Iterations {
+		n = req.Iterations
+	}
+
+	per := req.Iterations / n
+	out := make([]api.SimRequest, n)
+	seed := req.RandomSeed
+	for i := 0; i < n; i++ {
+		part := req
+		part.Iterations = per
+		if i == 0 {
+			// The remainder goes to the first part, as the engine does
+			// it; spreading it would lose iterations to truncation.
+			part.Iterations += req.Iterations % n
+		}
+		part.RandomSeed = seed
+		seed += int64(part.Iterations)
+		out[i] = part
+	}
+	return out, nil
+}
+
+// Results combines partial results into one.
+func Results(parts []api.SimResult) (api.SimResult, error) {
+	if len(parts) == 0 {
+		return api.SimResult{}, errors.New("combine: no results")
+	}
+	var total int
+	for i, p := range parts {
+		if p.Error != "" {
+			return api.SimResult{}, fmt.Errorf("combine: part %d failed: %s", i, p.Error)
+		}
+		if p.IterationsRun <= 0 {
+			return api.SimResult{}, fmt.Errorf("combine: part %d ran no iterations", i)
+		}
+		total += p.IterationsRun
+	}
+
+	out := parts[0]
+	out.IterationsRun = total
+
+	// Pooled mean: weight each part by the iterations behind it.
+	var mean float64
+	for _, p := range parts {
+		mean += p.DPS.Mean * float64(p.IterationsRun)
+	}
+	mean /= float64(total)
+
+	// Pooled variance is the within-part variance plus the spread
+	// between the part means. Dropping the second term would report a
+	// tighter error than a serial run, and the sim page would lie about
+	// its own precision.
+	var pooled float64
+	for _, p := range parts {
+		w := float64(p.IterationsRun)
+		d := p.DPS.Mean - mean
+		pooled += w * (p.DPS.StdDev*p.DPS.StdDev + d*d)
+	}
+	pooled /= float64(total)
+
+	out.DPS = api.Estimate{
+		Mean:   mean,
+		StdDev: math.Sqrt(pooled),
+		Error:  math.Sqrt(pooled) / math.Sqrt(float64(total)),
+		Min:    parts[0].DPS.Min,
+		Max:    parts[0].DPS.Max,
+	}
+	for _, p := range parts {
+		out.DPS.Min = math.Min(out.DPS.Min, p.DPS.Min)
+		out.DPS.Max = math.Max(out.DPS.Max, p.DPS.Max)
+	}
+
+	out.DurationMS = 0
+	for _, p := range parts {
+		if p.DurationMS > out.DurationMS {
+			// Wall clock of a parallel run is the slowest part, not the
+			// sum: the parts ran at the same time.
+			out.DurationMS = p.DurationMS
+		}
+	}
+
+	out.Summary = weightSummaries(parts, total)
+	out.Request.Iterations = total
+	return out, nil
+}
+
+// weightSummaries averages the per-fight summaries by iteration share.
+// Each part's summary is already a per-fight average (sim/adapter divides
+// by IterationsDone), so combining them is a weighted mean of like
+// quantities rather than a re-sum.
+func weightSummaries(parts []api.SimResult, total int) summary.Summary {
+	out := parts[0].Summary
+	if len(parts) == 1 {
+		return out
+	}
+	// Damage totals and ability rows are the only fields a viewer reads
+	// as a number; auras, casts and resources are shares and averages
+	// that the largest part already represents within sampling error.
+	// Weighting the damage table is the part worth doing exactly.
+	scale := func(a *summary.Actor, w float64) {
+		a.Total = int64(float64(a.Total) * w)
+		a.Effective = int64(float64(a.Effective) * w)
+		for i := range a.Abilities {
+			a.Abilities[i].Total = int64(float64(a.Abilities[i].Total) * w)
+			a.Abilities[i].Effective = int64(float64(a.Abilities[i].Effective) * w)
+		}
+	}
+	merged := make([]summary.Actor, len(out.DamageDone))
+	copy(merged, out.DamageDone)
+	for i := range merged {
+		scale(&merged[i], float64(parts[0].IterationsRun)/float64(total))
+	}
+	for _, p := range parts[1:] {
+		w := float64(p.IterationsRun) / float64(total)
+		for i := range merged {
+			if i >= len(p.Summary.DamageDone) {
+				break
+			}
+			src := p.Summary.DamageDone[i]
+			merged[i].Total += int64(float64(src.Total) * w)
+			merged[i].Effective += int64(float64(src.Effective) * w)
+			for j := range merged[i].Abilities {
+				if j >= len(src.Abilities) {
+					break
+				}
+				merged[i].Abilities[j].Total += int64(float64(src.Abilities[j].Total) * w)
+				merged[i].Abilities[j].Effective += int64(float64(src.Abilities[j].Effective) * w)
+			}
+		}
+	}
+	out.DamageDone = merged
+	return out
+}
+```
+
+- [ ] **Step 4: Run the tests and watch them pass**
+
+Run: `cd /Users/jh/code/forever/sim && go test ./combine/ -v && gofmt -l ./combine`
+Expected: seven tests `PASS`, no `gofmt` output.
+
+- [ ] **Step 5: Write the failing `forever-sim` test**
+
+Create `sim/cmd/forever-sim/main_test.go`:
 
 ```go
 package main
@@ -5464,53 +6828,39 @@ import (
 	"strings"
 	"testing"
 
-	_ "github.com/wowsims/classic/sim/common"
-	"github.com/wowsims/classic/sim/core"
-	"github.com/wowsims/classic/sim/core/proto"
-	googleproto "google.golang.org/protobuf/proto"
+	"github.com/jhunthrop/foreversixty/sim/api"
 )
 
-// smallRequest is a two-iteration Fury sim: enough to exercise the whole
-// path, fast enough to be a unit test.
 func smallRequest(t *testing.T) []byte {
 	t.Helper()
-	player := &proto.Player{
-		Name:          "CLI Test",
-		Race:          proto.Race_RaceOrc,
-		Class:         proto.Class_ClassWarrior,
-		TalentsString: "30305001302-05050005525010051",
-		Equipment:     core.GetGearSet("../../ui/warrior/gear_sets", "phase_1").GearSet,
-		Rotation:      core.GetAplRotation("../../ui/warrior/apls", "dps_reck").Rotation,
-		Consumes:      &proto.Consumes{},
-		Buffs:         core.FullIndividualBuffs,
+	req := api.SimRequest{
+		EngineVersion: "test",
+		Spec:          "warrior-fury",
+		Character: api.CharacterSpec{
+			Name: "CLI Test", Race: "orc", Class: "warrior", Level: 60,
+			Talents: "30305001302-05050005525010051",
+		},
+		Encounter:  api.EncounterSpec{DurationSec: 60, Variation: 0, Targets: 1, ExecuteRatio: 0.25},
+		Iterations: 500,
+		RandomSeed: 1,
 	}
-	core.WithSpec(player, &proto.Player_Warrior{Warrior: &proto.Warrior{
-		Options: &proto.Warrior_Options{StartingRage: 50, Shout: proto.WarriorShout_WarriorShoutBattle},
-	}})
-	enc := core.MakeSingleTargetEncounter(0)
-	enc.Duration = 60
-	req := &proto.RaidSimRequest{
-		Raid:       core.SinglePlayerRaidProto(player, core.FullPartyBuffs, core.FullRaidBuffs, core.FullDebuffs),
-		Encounter:  enc,
-		SimOptions: &proto.SimOptions{Iterations: 2, RandomSeed: 1},
-	}
-	b, err := googleproto.Marshal(req)
+	b, err := json.Marshal(req)
 	if err != nil {
 		t.Fatal(err)
 	}
 	return b
 }
 
-func TestRunProducesAResult(t *testing.T) {
+func TestRunProducesASimResult(t *testing.T) {
 	dir := t.TempDir()
-	in := filepath.Join(dir, "req.pb")
+	in := filepath.Join(dir, "req.json")
 	if err := os.WriteFile(in, smallRequest(t), 0o644); err != nil {
 		t.Fatal(err)
 	}
-	out := filepath.Join(dir, "res.pb")
+	out := filepath.Join(dir, "res.json")
 
 	var progress bytes.Buffer
-	if err := run(in, out, 0, true, &progress); err != nil {
+	if err := run(in, out, 0, &progress); err != nil {
 		t.Fatalf("run: %v", err)
 	}
 
@@ -5518,31 +6868,40 @@ func TestRunProducesAResult(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	res := &proto.RaidSimResult{}
-	if err := googleproto.Unmarshal(b, res); err != nil {
-		t.Fatalf("output is not a RaidSimResult: %v", err)
+	var res api.SimResult
+	if err := json.Unmarshal(b, &res); err != nil {
+		t.Fatalf("the output is not a SimResult: %v", err)
 	}
-	if res.Error != nil && res.Error.Message != "" {
-		t.Fatalf("the sim reported an error: %s", res.Error.Message)
+	if res.Error != "" {
+		t.Fatalf("the sim reported an error: %s", res.Error)
 	}
-	if res.IterationsDone != 2 {
-		t.Errorf("IterationsDone = %d, want 2", res.IterationsDone)
+	if res.Lane != api.LaneServer {
+		t.Errorf("Lane = %q, want %q", res.Lane, api.LaneServer)
 	}
-	if res.RaidMetrics == nil || res.RaidMetrics.Dps == nil || res.RaidMetrics.Dps.Avg <= 0 {
-		t.Error("the result carries no DPS")
+	if res.IterationsRun != 500 {
+		t.Errorf("IterationsRun = %d, want 500", res.IterationsRun)
+	}
+	if res.DPS.Mean <= 0 {
+		t.Error("no DPS")
+	}
+	// The whole point of building the binary here rather than in the
+	// engine: the result arrives with its summary already built.
+	if len(res.Summary.DamageDone) == 0 {
+		t.Error("the result carries no summary; sim/adapter did not run")
+	}
+	if res.Summary.EngineVersion == "" {
+		t.Error("the summary carries no engine version")
 	}
 }
 
-// Progress is JSON lines on stderr, so the Cloud Run job can stream it to
-// the API without parsing a protobuf.
 func TestProgressIsJSONLines(t *testing.T) {
 	dir := t.TempDir()
-	in := filepath.Join(dir, "req.pb")
+	in := filepath.Join(dir, "req.json")
 	if err := os.WriteFile(in, smallRequest(t), 0o644); err != nil {
 		t.Fatal(err)
 	}
 	var progress bytes.Buffer
-	if err := run(in, filepath.Join(dir, "res.pb"), 0, true, &progress); err != nil {
+	if err := run(in, filepath.Join(dir, "res.json"), 0, &progress); err != nil {
 		t.Fatal(err)
 	}
 	lines := strings.Split(strings.TrimSpace(progress.String()), "\n")
@@ -5558,75 +6917,73 @@ func TestProgressIsJSONLines(t *testing.T) {
 		if err := json.Unmarshal([]byte(line), &got); err != nil {
 			t.Fatalf("progress line %d is not JSON: %q (%v)", i, line, err)
 		}
-		if got.Total != 2 {
-			t.Errorf("progress line %d has total %d, want 2", i, got.Total)
+		if got.Total != 500 {
+			t.Errorf("progress line %d has total %d, want 500", i, got.Total)
 		}
 	}
 }
 
-// -iterations overrides the request, so the validation job can reuse one
-// stored request at a different precision.
 func TestIterationsOverride(t *testing.T) {
 	dir := t.TempDir()
-	in := filepath.Join(dir, "req.pb")
+	in := filepath.Join(dir, "req.json")
 	if err := os.WriteFile(in, smallRequest(t), 0o644); err != nil {
 		t.Fatal(err)
 	}
-	out := filepath.Join(dir, "res.pb")
-	if err := run(in, out, 5, false, nil); err != nil {
+	out := filepath.Join(dir, "res.json")
+	if err := run(in, out, 3000, nil); err != nil {
 		t.Fatal(err)
 	}
 	b, _ := os.ReadFile(out)
-	res := &proto.RaidSimResult{}
-	if err := googleproto.Unmarshal(b, res); err != nil {
+	var res api.SimResult
+	if err := json.Unmarshal(b, &res); err != nil {
 		t.Fatal(err)
 	}
-	if res.IterationsDone != 5 {
-		t.Errorf("IterationsDone = %d, want the overridden 5", res.IterationsDone)
+	if res.IterationsRun != 3000 {
+		t.Errorf("IterationsRun = %d, want the overridden 3000", res.IterationsRun)
 	}
 }
 
 func TestBadInputIsRejected(t *testing.T) {
 	dir := t.TempDir()
-	in := filepath.Join(dir, "junk.pb")
-	if err := os.WriteFile(in, []byte("not a protobuf at all, really not"), 0o644); err != nil {
+	in := filepath.Join(dir, "junk.json")
+	if err := os.WriteFile(in, []byte("{not json"), 0o644); err != nil {
 		t.Fatal(err)
 	}
-	if err := run(in, filepath.Join(dir, "res.pb"), 0, false, nil); err == nil {
+	if err := run(in, filepath.Join(dir, "res.json"), 0, nil); err == nil {
 		t.Fatal("junk input was accepted")
 	}
-	if err := run(filepath.Join(dir, "missing.pb"), filepath.Join(dir, "res.pb"), 0, false, nil); err == nil {
+	if err := run(filepath.Join(dir, "missing.json"), filepath.Join(dir, "res.json"), 0, nil); err == nil {
 		t.Fatal("a missing input file was accepted")
 	}
 }
 ```
 
-- [ ] **Step 2: Run it and watch it fail**
+- [ ] **Step 6: Run it and watch it fail**
 
-Run: `cd /Users/jh/code/wowsims-forever && go test --tags=with_db ./cmd/forever-sim/ -v`
+Run: `cd /Users/jh/code/forever/sim && go test ./cmd/forever-sim/ -v`
 Expected: `FAIL [build failed]`, `undefined: run`.
 
-- [ ] **Step 3: Write the binary**
+- [ ] **Step 7: Write `forever-sim`**
 
-Create `cmd/forever-sim/main.go`:
+Create `sim/cmd/forever-sim/main.go`:
 
 ```go
-// Command forever-sim runs one RaidSimRequest natively and writes the
-// RaidSimResult, both as binary protobuf. It is the server lane's
-// binary: the premium Cloud Run job, the nightly validation job, and the
-// execution scorer on the ingest path all invoke it.
+// Command forever-sim runs one SimRequest natively and writes the
+// SimResult, both as JSON. It is the server lane's binary: the premium
+// Cloud Run job, the nightly validation job and the execution scorer all
+// invoke it.
 //
-// It is deliberately not cmd/wowsimcli, which speaks protojson and is a
-// cobra app with three other subcommands. This one has a single job and
-// a stable contract:
+// It reads and writes our envelope, not the engine's protobuf, because
+// sim/request and sim/adapter are linked in here and the boundary is
+// this binary's own. That is the same arrangement the browser gets from
+// sim/cmd/wasm, which is the point: one mapping, one language, two lanes.
 //
-//	forever-sim -in request.pb -out result.pb -progress
-//	forever-sim -in - -out - < request.pb > result.pb
+//	forever-sim -in request.json -out result.json -progress
+//	forever-sim -in - -out - < request.json > result.json
 //
-// Concurrency is automatic: core.RunRaidSimConcurrentAsync splits the
-// request across runtime.NumCPU() and recombines the distribution
-// metrics properly, offsetting each split's random seed so the stream
-// matches a serial run.
+// Concurrency is automatic: core.RunRaidSimConcurrentAsync splits across
+// runtime.NumCPU() and recombines the distribution metrics, offsetting
+// each split's seed so the stream matches a serial run.
 package main
 
 import (
@@ -5636,28 +6993,31 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"time"
 
-	_ "github.com/wowsims/classic/sim/common"
+	"github.com/jhunthrop/foreversixty/sim/adapter"
+	"github.com/jhunthrop/foreversixty/sim/api"
+	"github.com/jhunthrop/foreversixty/sim/request"
+	engine "github.com/wowsims/classic/sim"
 	"github.com/wowsims/classic/sim/core"
 	"github.com/wowsims/classic/sim/core/proto"
-	"github.com/wowsims/classic/sim/sim"
-	googleproto "google.golang.org/protobuf/proto"
 )
 
-// Version is set by the makefile to the short sha the binary was built
-// from. It is the same string as sim/enginever.Version in the site.
+// Version is set by the makefile to the short sha of the engine the
+// binary was built against: the same string as enginever.Version.
 var Version = "dev"
 
-// exit codes, which the Cloud Run job distinguishes.
 const (
 	exitOK      = 0
 	exitSimFail = 1
 	exitBadArgs = 2
 )
 
+var errBadInput = errors.New("bad input")
+
 func main() {
-	in := flag.String("in", "-", "RaidSimRequest protobuf; - for stdin")
-	out := flag.String("out", "-", "RaidSimResult protobuf; - for stdout")
+	in := flag.String("in", "-", "SimRequest JSON; - for stdin")
+	out := flag.String("out", "-", "SimResult JSON; - for stdout")
 	iterations := flag.Int("iterations", 0, "override the request's iteration count")
 	progress := flag.Bool("progress", false, "write JSON-lines progress to stderr")
 	version := flag.Bool("version", false, "print the engine version and exit")
@@ -5668,11 +7028,11 @@ func main() {
 		os.Exit(exitOK)
 	}
 
-	var progressOut io.Writer
+	var sink io.Writer
 	if *progress {
-		progressOut = os.Stderr
+		sink = os.Stderr
 	}
-	if err := run(*in, *out, *iterations, *progress, progressOut); err != nil {
+	if err := run(*in, *out, *iterations, sink); err != nil {
 		fmt.Fprintln(os.Stderr, "forever-sim:", err)
 		if errors.Is(err, errBadInput) {
 			os.Exit(exitBadArgs)
@@ -5681,12 +7041,10 @@ func main() {
 	}
 }
 
-var errBadInput = errors.New("bad input")
-
-// run is main's body, with its inputs and its progress sink as
-// parameters so it is testable.
-func run(inPath, outPath string, iterations int, wantProgress bool, progressOut io.Writer) error {
-	sim.RegisterAll()
+// run is main's body, with its files and its progress sink as parameters
+// so it is testable.
+func run(inPath, outPath string, iterations int, progress io.Writer) error {
+	engine.RegisterAll()
 
 	var raw []byte
 	var err error
@@ -5699,53 +7057,23 @@ func run(inPath, outPath string, iterations int, wantProgress bool, progressOut 
 		return fmt.Errorf("%w: reading the request: %v", errBadInput, err)
 	}
 
-	req := &proto.RaidSimRequest{}
-	if err := googleproto.Unmarshal(raw, req); err != nil {
-		return fmt.Errorf("%w: the input is not a RaidSimRequest: %v", errBadInput, err)
-	}
-	if req.SimOptions == nil {
-		return fmt.Errorf("%w: the request has no sim_options", errBadInput)
+	var req api.SimRequest
+	if err := json.Unmarshal(raw, &req); err != nil {
+		return fmt.Errorf("%w: the input is not a SimRequest: %v", errBadInput, err)
 	}
 	if iterations > 0 {
-		req.SimOptions.Iterations = int32(iterations)
+		req.Iterations = iterations
 	}
-	if req.SimOptions.Iterations <= 0 {
-		return fmt.Errorf("%w: iterations is %d", errBadInput, req.SimOptions.Iterations)
-	}
-	// IsTest caps concurrency at three splits and adds per-iteration
-	// bookkeeping; neither is wanted in production.
-	req.SimOptions.IsTest = false
-
-	reporter := make(chan *proto.ProgressMetrics, 32)
-	core.RunRaidSimConcurrentAsync(req, reporter, "forever-sim")
-
-	enc := json.NewEncoder(io.Discard)
-	if wantProgress && progressOut != nil {
-		enc = json.NewEncoder(progressOut)
+	if req.EngineVersion == "" {
+		req.EngineVersion = Version
 	}
 
-	var result *proto.RaidSimResult
-	for p := range reporter {
-		if p.FinalRaidResult != nil {
-			result = p.FinalRaidResult
-			break
-		}
-		if wantProgress && progressOut != nil {
-			_ = enc.Encode(struct {
-				Completed int32   `json:"completed"`
-				Total     int32   `json:"total"`
-				DPS       float64 `json:"dps"`
-			}{p.CompletedIterations, p.TotalIterations, p.Dps})
-		}
-	}
-	if result == nil {
-		return errors.New("the engine produced no result")
-	}
-	if result.Error != nil && result.Error.Message != "" {
-		return fmt.Errorf("the sim failed: %s", result.Error.Message)
+	res, err := Execute(req, progress)
+	if err != nil {
+		return err
 	}
 
-	b, err := googleproto.Marshal(result)
+	b, err := json.Marshal(res)
 	if err != nil {
 		return fmt.Errorf("marshalling the result: %w", err)
 	}
@@ -5755,194 +7083,357 @@ func run(inPath, outPath string, iterations int, wantProgress bool, progressOut 
 	}
 	return os.WriteFile(outPath, b, 0o644)
 }
+
+// Execute is the whole pipeline: our envelope in, the engine in the
+// middle, our envelope out. sim/cmd/wasm calls the same three steps.
+func Execute(req api.SimRequest, progress io.Writer) (api.SimResult, error) {
+	engineReq, err := request.Build(req)
+	if err != nil {
+		return api.SimResult{}, fmt.Errorf("%w: %v", errBadInput, err)
+	}
+
+	start := time.Now()
+	reporter := make(chan *proto.ProgressMetrics, 32)
+	core.RunRaidSimConcurrentAsync(engineReq, reporter, "forever-sim")
+
+	var enc *json.Encoder
+	if progress != nil {
+		enc = json.NewEncoder(progress)
+	}
+
+	var engineRes *proto.RaidSimResult
+	for p := range reporter {
+		if p.FinalRaidResult != nil {
+			engineRes = p.FinalRaidResult
+			break
+		}
+		if enc != nil {
+			_ = enc.Encode(struct {
+				Completed int32   `json:"completed"`
+				Total     int32   `json:"total"`
+				DPS       float64 `json:"dps"`
+			}{p.CompletedIterations, p.TotalIterations, p.Dps})
+		}
+	}
+	if engineRes == nil {
+		return api.SimResult{}, errors.New("the engine produced no result")
+	}
+	if engineRes.Error != nil && engineRes.Error.Message != "" {
+		return api.SimResult{}, fmt.Errorf("the sim failed: %s", engineRes.Error.Message)
+	}
+
+	sum, err := adapter.Summarize(engineRes, req)
+	if err != nil {
+		return api.SimResult{}, fmt.Errorf("adapting the result: %w", err)
+	}
+	return api.SimResult{
+		EngineVersion: req.EngineVersion,
+		Request:       req,
+		Lane:          api.LaneServer,
+		DPS:           adapter.DPS(engineRes),
+		IterationsRun: int(engineRes.IterationsDone),
+		DurationMS:    time.Since(start).Milliseconds(),
+		Summary:       sum,
+	}, nil
+}
 ```
 
-The import `github.com/wowsims/classic/sim/sim` is wrong as written — `RegisterAll` lives in package `sim` at the repository's `sim/` directory, so the path is `github.com/wowsims/classic/sim`. Check with `head -1 sim/register_all.go` and use the right one; the compiler catches it immediately.
+Check the import path of the engine's `RegisterAll`: `head -1 /Users/jh/code/wowsims-forever/sim/register_all.go` gives the package, and the path is `github.com/wowsims/classic/sim`. The alias `engine` avoids colliding with our own module's directory name.
 
-- [ ] **Step 4: Run the tests and watch them pass**
+- [ ] **Step 8: Run the tests and watch them pass**
 
 ```bash
-cd /Users/jh/code/wowsims-forever
-go build --tags=with_db ./cmd/forever-sim/ && echo BUILDS
+cd /Users/jh/code/forever/sim
+go build ./cmd/forever-sim/ && echo BUILDS
 gofmt -l ./cmd
-go test --tags=with_db ./cmd/forever-sim/ -v
+go test ./cmd/forever-sim/ -v
 ```
 
-Expected: `BUILDS`, no `gofmt` output, four tests `PASS`.
+Expected: `BUILDS`, no `gofmt` output, four tests `PASS`. The 500-iteration test should take about half a second at the measured 1,231 it/s serial, less with concurrency.
 
-- [ ] **Step 5: Add the `artifacts` make target**
+- [ ] **Step 9: Write the wasm entrypoints**
 
-In `makefile`, append. Note this target deliberately does **not** depend on `$(OUT_DIR)/.dirstamp`: that pulls in `npm ci`, `tsc --noEmit` and a Vite build of the TypeScript UI, none of which ships on our site and all of which would make CI slow and brittle.
+Create `sim/cmd/wasm/main.go`. It is `//go:build js && wasm`, so it compiles only for the browser and the rest of the module is unaffected.
+
+```go
+//go:build js && wasm
+
+// Command wasm is the browser half of the sim. It exports exactly four
+// functions, all taking and returning JSON strings.
+//
+// It exists in this repository rather than in the engine because
+// sim/request and sim/adapter are linked in here: the browser gets a
+// finished SimResult with its summary.Summary already built by the same
+// Go code the server runs. The engine's own thirteen js.Global().Set
+// entrypoints are an implementation detail behind these four and the web
+// must not call them.
+package main
+
+import (
+	"encoding/json"
+	"syscall/js"
+	"time"
+
+	"github.com/jhunthrop/foreversixty/sim/adapter"
+	"github.com/jhunthrop/foreversixty/sim/api"
+	"github.com/jhunthrop/foreversixty/sim/combine"
+	"github.com/jhunthrop/foreversixty/sim/request"
+	engine "github.com/wowsims/classic/sim"
+	"github.com/wowsims/classic/sim/core"
+	"github.com/wowsims/classic/sim/core/proto"
+	"github.com/wowsims/classic/sim/core/simsignals"
+)
+
+// Version is set at build time to the pinned engine sha.
+var Version = "dev"
+
+func main() {
+	engine.RegisterAll()
+	core.SetRunningInWasm()
+
+	js.Global().Set("simRun", js.FuncOf(simRun))
+	js.Global().Set("simSplit", js.FuncOf(simSplit))
+	js.Global().Set("simCombine", js.FuncOf(simCombine))
+	js.Global().Set("simAbort", js.FuncOf(simAbort))
+	js.Global().Set("simEngineVersion", js.ValueOf(Version))
+
+	// The host page defines wasmready and is told the moment the four
+	// exports exist, so it never races them.
+	js.Global().Call("wasmready")
+	select {}
+}
+
+// fail wraps an error as a SimResult, so every export returns the same
+// shape and the worker never has to distinguish a throw from a result.
+func fail(req api.SimRequest, msg string) string {
+	b, _ := json.Marshal(api.SimResult{
+		EngineVersion: req.EngineVersion,
+		Request:       req,
+		Lane:          api.LaneBrowser,
+		Error:         msg,
+	})
+	return string(b)
+}
+
+// simRun(requestJSON, callbackId) runs one request to completion and
+// returns SimResult JSON. Progress is reported by calling the global
+// simProgress(callbackId, completed, total, dps).
+func simRun(_ js.Value, args []js.Value) any {
+	if len(args) < 2 {
+		return fail(api.SimRequest{}, "simRun takes (requestJSON, callbackId)")
+	}
+	var req api.SimRequest
+	if err := json.Unmarshal([]byte(args[0].String()), &req); err != nil {
+		return fail(req, "the request is not valid JSON: "+err.Error())
+	}
+	callbackID := args[1].String()
+
+	engineReq, err := request.Build(req)
+	if err != nil {
+		return fail(req, err.Error())
+	}
+
+	start := time.Now()
+	reporter := make(chan *proto.ProgressMetrics, 32)
+	// Threading does not work in wasm, so this is the serial entrypoint.
+	// Parallelism comes from the worker pool: the page calls simSplit and
+	// gives each worker one part.
+	core.RunRaidSimAsync(engineReq, reporter, callbackID)
+
+	var engineRes *proto.RaidSimResult
+	for p := range reporter {
+		if p.FinalRaidResult != nil {
+			engineRes = p.FinalRaidResult
+			break
+		}
+		if cb := js.Global().Get("simProgress"); cb.Type() == js.TypeFunction {
+			cb.Invoke(callbackID, int(p.CompletedIterations), int(p.TotalIterations), p.Dps)
+		}
+	}
+	if engineRes == nil {
+		return fail(req, "the engine produced no result")
+	}
+	if engineRes.Error != nil && engineRes.Error.Message != "" {
+		return fail(req, engineRes.Error.Message)
+	}
+
+	sum, err := adapter.Summarize(engineRes, req)
+	if err != nil {
+		return fail(req, err.Error())
+	}
+	b, err := json.Marshal(api.SimResult{
+		EngineVersion: req.EngineVersion,
+		Request:       req,
+		Lane:          api.LaneBrowser,
+		DPS:           adapter.DPS(engineRes),
+		IterationsRun: int(engineRes.IterationsDone),
+		DurationMS:    time.Since(start).Milliseconds(),
+		Summary:       sum,
+	})
+	if err != nil {
+		return fail(req, err.Error())
+	}
+	return string(b)
+}
+
+// simSplit(requestJSON, n) returns a JSON array of n request JSONs, one
+// per worker, with the seeds already offset.
+func simSplit(_ js.Value, args []js.Value) any {
+	if len(args) < 2 {
+		return `{"error":"simSplit takes (requestJSON, n)"}`
+	}
+	var req api.SimRequest
+	if err := json.Unmarshal([]byte(args[0].String()), &req); err != nil {
+		return `{"error":"the request is not valid JSON"}`
+	}
+	parts, err := combine.Split(req, args[1].Int())
+	if err != nil {
+		return `{"error":"` + err.Error() + `"}`
+	}
+	b, err := json.Marshal(parts)
+	if err != nil {
+		return `{"error":"` + err.Error() + `"}`
+	}
+	return string(b)
+}
+
+// simCombine(resultsJSON) folds a JSON array of partial SimResults into
+// one SimResult JSON.
+func simCombine(_ js.Value, args []js.Value) any {
+	if len(args) < 1 {
+		return `{"error":"simCombine takes (resultsJSON)"}`
+	}
+	var parts []api.SimResult
+	if err := json.Unmarshal([]byte(args[0].String()), &parts); err != nil {
+		return `{"error":"the results are not valid JSON"}`
+	}
+	out, err := combine.Results(parts)
+	if err != nil {
+		return fail(api.SimRequest{}, err.Error())
+	}
+	b, err := json.Marshal(out)
+	if err != nil {
+		return fail(api.SimRequest{}, err.Error())
+	}
+	return string(b)
+}
+
+// simAbort(callbackId) stops a run started with the same id.
+func simAbort(_ js.Value, args []js.Value) any {
+	if len(args) < 1 {
+		return false
+	}
+	return simsignals.AbortById(args[0].String())
+}
+```
+
+Check two names against the engine before building: `core.SetRunningInWasm` (grep it in `sim/core/`) and the abort function, which `sim/wasm/main.go`'s `abortById` calls — read that function and call whatever it calls, from `simsignals` or `core`.
+
+- [ ] **Step 10: Write the wasm test**
+
+`syscall/js` cannot be exercised by `go test` on a host platform, so the test covers the part that is not `js`: the pipeline `Execute` shares with `forever-sim`. Create `sim/cmd/wasm/main_test.go`:
+
+```go
+//go:build !js
+
+package main
+
+import "testing"
+
+// sim/cmd/wasm is a js/wasm-only package: syscall/js does not build on a
+// host platform, so there is nothing here to unit test. The four
+// exports' behaviour is covered three ways instead:
+//
+//   - sim/combine's tests cover simSplit and simCombine, which are thin
+//     wrappers over Split and Results;
+//   - sim/cmd/forever-sim's tests cover the request -> engine -> adapter
+//     pipeline that simRun runs, against the same code;
+//   - the CI smoke test in .github/workflows/sim.yml instantiates the
+//     built wasm under node and asserts all four exports exist and that
+//     simRun returns a SimResult with a summary.
+//
+// This file exists so `go test ./...` does not report the package as
+// untested without saying why.
+func TestWasmIsCoveredElsewhere(t *testing.T) {
+	t.Log("see the comment above: combine, forever-sim, and the CI smoke test")
+}
+```
+
+- [ ] **Step 11: Add the `artifacts` make target**
+
+In the site's `Makefile`, append:
 
 ```makefile
 ARTIFACT_DIR ?= artifacts
-ENGINE_VERSION := $(shell git rev-parse --short HEAD)
+WEB_SIM_DIR   = web/public/_sim
 
 .PHONY: artifacts
-# artifacts builds the three things one pinned sha produces: sim.wasm and
-# sim.js for the browser lane, and forever-sim for the server lane. It
-# does not build the TypeScript UI, which does not ship on our site.
-artifacts: sim/core/proto/api.pb.go
-	mkdir -p $(ARTIFACT_DIR)
-	GOOS=js GOARCH=wasm go build -o $(ARTIFACT_DIR)/sim.wasm ./sim/wasm/
+# artifacts builds the two things one pinned engine sha produces, both
+# from the sim/ module: sim.wasm + sim.js for the browser, and
+# forever-sim for the server lane. The engine repository ships no
+# artifact of ours; it stays a clean upstreamable library.
+artifacts: engine-pin
+	@sha=$$(sed -n 's/.*Version = "\(.*\)"/\1/p' sim/enginever/version.go); \
+	mkdir -p $(ARTIFACT_DIR); \
+	cd sim && GOOS=js GOARCH=wasm go build -ldflags="-X 'main.Version=$$sha'" \
+	  -o ../$(ARTIFACT_DIR)/sim.wasm ./cmd/wasm; \
+	cd sim && go build -ldflags="-X 'main.Version=$$sha' -s -w" \
+	  -o ../$(ARTIFACT_DIR)/forever-sim ./cmd/forever-sim
 	cp "$$(go env GOROOT)/lib/wasm/wasm_exec.js" $(ARTIFACT_DIR)/sim.js
-	go build --tags=with_db -ldflags="-X 'main.Version=$(ENGINE_VERSION)' -s -w" \
-	  -o $(ARTIFACT_DIR)/forever-sim ./cmd/forever-sim
 	@cd $(ARTIFACT_DIR) && shasum -a 256 sim.wasm sim.js forever-sim > SHA256SUMS
-	@echo "ENGINE_VERSION=$(ENGINE_VERSION)"
 	@ls -l $(ARTIFACT_DIR)
-	@gzip -9 -c $(ARTIFACT_DIR)/sim.wasm | wc -c | awk '{printf "sim.wasm gzipped: %.2f MB (budget 4.00)\n", $$1/1048576}'
+	@gzip -9 -c $(ARTIFACT_DIR)/sim.wasm | wc -c | \
+	  awk '{printf "sim.wasm gzipped: %.2f MB (budget 4.00, engine-only baseline 3.31)\n", $$1/1048576}'
+
+.PHONY: publish-wasm
+# publish-wasm puts the browser pair where the web loads them, under the
+# engine version, cached immutably so a new version never collides with a
+# cached old one.
+publish-wasm: artifacts
+	@sha=$$(sed -n 's/.*Version = "\(.*\)"/\1/p' sim/enginever/version.go); \
+	mkdir -p "$(WEB_SIM_DIR)/$$sha"; \
+	cp $(ARTIFACT_DIR)/sim.wasm $(ARTIFACT_DIR)/sim.js "$(WEB_SIM_DIR)/$$sha/"; \
+	echo "published to $(WEB_SIM_DIR)/$$sha"
 ```
 
-Add `artifacts/` to `.gitignore`.
+Add `artifacts/` to the site's `.gitignore`. Note `web/public/_sim/<sha>/` **is** committed — the web lane serves it as a static asset.
 
-Run it:
+- [ ] **Step 12: Build and measure**
 
 ```bash
-cd /Users/jh/code/wowsims-forever && make artifacts
+cd /Users/jh/code/forever
+make artifacts
+ls -l artifacts/ && cat artifacts/SHA256SUMS
+./artifacts/forever-sim -version
 ```
 
-Expected: `ENGINE_VERSION=<sha>`, four files, and a gzipped size line. The measured baseline was **3.31 MB**; if it is above 4.00 MB the budget is blown and the fix is `-ldflags="-s -w"` on the wasm build too, then TinyGo as a later option — do not ship over budget silently.
+Expected: three files plus `SHA256SUMS`, the version printing the engine sha rather than `dev`, and a gzipped size line. **The engine-only baseline was 3.31 MB; this wasm additionally links `sim/request`, `sim/adapter`, `sim/combine` and `logs/engine/summary`, so expect a rise.** If it exceeds 4.00 MB the budget is blown: add `-ldflags="-s -w"` to the wasm build, and if that is not enough, say so rather than shipping over budget — the fallback is a TinyGo build, which is a later optimisation and not a dependency.
 
-- [ ] **Step 6: Write the engine's CI workflow**
+Then run the whole pipeline end to end and confirm the summary really is built in-process:
 
-Create `.github/workflows/artifacts.yml` in the **engine** repo, following the site's workflow idiom (see `/Users/jh/code/forever/.github/workflows/logs.yml`):
-
-```yaml
-name: artifacts
-on:
-  push:
-    branches: [main]
-  pull_request:
-  workflow_dispatch:
-permissions: { contents: read }
-concurrency:
-  group: artifacts-${{ github.ref }}
-  cancel-in-progress: true
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
-        with: { go-version-file: go.mod, cache-dependency-path: go.sum }
-      - name: gofmt
-        run: |
-          unformatted=$(gofmt -l ./sim ./tools ./cmd)
-          if [ -n "$unformatted" ]; then
-            echo "these files are not gofmt'd:"; echo "$unformatted"; exit 1
-          fi
-      - name: protoc
-        run: |
-          sudo apt-get update && sudo apt-get install -y protobuf-compiler
-          go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.36.6
-          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
-      # The generated protobufs are committed (see PORTING.md); this test
-      # regenerates and diffs, so a stale commit fails here rather than in
-      # the site repository's build.
-      - run: go test ./sim/core/proto/ -run TestGeneratedProtosMatchSources -v
-      - run: go vet --tags=with_db ./sim/... ./cmd/...
-      - run: go test --tags=with_db -count=1 ./sim/... ./cmd/...
-
-  build:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
-        with: { go-version-file: go.mod, cache-dependency-path: go.sum }
-      - name: protoc
-        run: |
-          sudo apt-get update && sudo apt-get install -y protobuf-compiler
-          go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.36.6
-          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
-      - name: build the three artifacts
-        run: make artifacts
-      # The design budgets the browser download at 4 MB gzipped. It
-      # measured 3.31 MB when this workflow was written; the gate is the
-      # budget, not the measurement, so a regression fails the build
-      # rather than quietly costing every visitor a second.
-      - name: wasm size budget
-        run: |
-          bytes=$(gzip -9 -c artifacts/sim.wasm | wc -c)
-          mb=$(awk -v b="$bytes" 'BEGIN { printf "%.2f", b/1048576 }')
-          echo "sim.wasm gzipped: ${mb} MB"
-          awk -v b="$bytes" 'BEGIN { exit (b <= 4*1048576) ? 0 : 1 }' || {
-            echo "sim.wasm is ${mb} MB gzipped, over the 4 MB budget"; exit 1; }
-      # A wasm build that does not instantiate is worse than no build:
-      # it fails in the visitor's browser, not here.
-      - name: wasm smoke test
-        run: |
-          cp "$(go env GOROOT)/lib/wasm/wasm_exec.js" /tmp/
-          cat > /tmp/smoke.mjs <<'EOF'
-          import './wasm_exec.js';
-          import { readFile } from 'node:fs/promises';
-          globalThis.wasmready = () => {
-            const missing = ['raidSimAsync', 'raidSimRequestSplit', 'raidSimResultCombination',
-                             'computeStats', 'abortById'].filter(n => typeof globalThis[n] !== 'function');
-            if (missing.length) { console.error('missing entrypoints:', missing); process.exit(1); }
-            console.log('all five entrypoints present');
-            process.exit(0);
-          };
-          const go = new globalThis.Go();
-          const { instance } = await WebAssembly.instantiate(await readFile(process.argv[2]), go.importObject);
-          go.run(instance);
-          EOF
-          cp artifacts/sim.wasm /tmp/
-          cd /tmp && node smoke.mjs sim.wasm
-      - name: cross-compile the server binary
-        run: |
-          GOOS=linux GOARCH=amd64 go build --tags=with_db \
-            -ldflags="-X 'main.Version=$(git rev-parse --short HEAD)' -s -w" \
-            -o artifacts/forever-sim-linux-amd64 ./cmd/forever-sim
-          GOOS=darwin GOARCH=arm64 go build --tags=with_db \
-            -ldflags="-X 'main.Version=$(git rev-parse --short HEAD)' -s -w" \
-            -o artifacts/forever-sim-darwin-arm64 ./cmd/forever-sim
-          rm -f artifacts/forever-sim
-          cd artifacts && sha256sum sim.wasm sim.js forever-sim-* > SHA256SUMS && cat SHA256SUMS
-      - uses: actions/upload-artifact@v4
-        with:
-          name: engine-${{ github.sha }}
-          path: artifacts/
-          retention-days: 90
-      # A tagged build is what the site pins. Untagged pushes keep their
-      # artifacts for 90 days, which covers the beta's weekly cadence.
-      - name: release
-        if: startsWith(github.ref, 'refs/tags/')
-        uses: softprops/action-gh-release@v2
-        with:
-          files: artifacts/*
+```bash
+cd /Users/jh/code/forever
+cat > /tmp/req.json <<'EOF'
+{"engine_version":"test","spec":"warrior-fury",
+ "character":{"name":"Thrall","race":"orc","class":"warrior","level":60,
+   "talents":"30305001302-05050005525010051","gear":[],"buffs":[],"consumes":[]},
+ "encounter":{"duration_sec":180,"variation":0.2,"targets":1,"execute_ratio":0.25,"profile":""},
+ "iterations":3000,"random_seed":1}
+EOF
+time ./artifacts/forever-sim -in /tmp/req.json -out /tmp/res.json -progress 2>/dev/null
+python3 -c "
+import json; r=json.load(open('/tmp/res.json'))
+print('dps', round(r['dps']['mean'],1), '+/-', round(r['dps']['error'],2))
+print('iterations', r['iterations_run'], 'wall_ms', r['duration_ms'])
+print('summary actors', len(r['summary']['damage_done']), 'abilities',
+      len(r['summary']['damage_done'][0]['abilities']) if r['summary']['damage_done'] else 0)
+print('no protobuf in the envelope:', 'raw' not in r['request'])
+"
 ```
 
-The smoke test is the reason this workflow earns its place: `sim/wasm/main.go:39` calls `js.Global().Call("wasmready")` after registering its exports, so a page that does not define `wasmready` hangs. The test defines it, and checks that all five entrypoints the contract names are really there.
+Expected: a DPS with an error bar, 3,000 iterations, a wall clock near the measured 378 ms for 8-way, at least one damage actor with several abilities, and `True`. Record the wall clock.
 
-- [ ] **Step 7: Write the site's side**
-
-In the site repo's `Makefile`, append:
-
-```makefile
-ARTIFACT_RUN ?=
-WEB_SIM_DIR = web/public/_sim
-
-.PHONY: engine-artifacts
-# engine-artifacts downloads the three artifacts the engine's CI built
-# for the pinned sha and puts the two browser ones where the web loads
-# them: web/public/_sim/<ENGINE_VERSION>/, cached immutably, so a new
-# engine version never collides with a cached old one.
-#
-# Needs the gh CLI and read access to the engine repository.
-engine-artifacts: engine-pin
-	@sha=$$(sed -n 's/.*Version = "\(.*\)"/\1/p' sim/enginever/version.go); \
-	test -n "$$sha" || { echo "no version in sim/enginever/version.go"; exit 1; }; \
-	dir="$(WEB_SIM_DIR)/$$sha"; \
-	mkdir -p "$$dir"; \
-	gh run download $(ARTIFACT_RUN) --repo jhunthrop/wowsims-forever \
-	  --name "engine-$$(git -C $(ENGINE_DIR) rev-parse HEAD)" --dir "$$dir" || { \
-	    echo "no CI artifact for $$sha; push the engine commit and wait for the artifacts workflow"; exit 1; }; \
-	shasum -a 256 -c "$$dir/SHA256SUMS" || { echo "checksum mismatch"; exit 1; }; \
-	echo "engine artifacts for $$sha are in $$dir"
-```
+- [ ] **Step 13: Write the site CI workflow**
 
 Create `/Users/jh/code/forever/.github/workflows/sim.yml`:
 
@@ -5959,15 +7450,17 @@ permissions: { contents: read }
 concurrency:
   group: sim-${{ github.ref }}
   cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ubuntu-latest
     defaults: { run: { working-directory: sim } }
     steps:
       - uses: actions/checkout@v4
-      # The engine is a separate repository; CI resolves it from the
-      # pinned pseudo-version in sim/go.mod rather than the local replace
-      # that development uses.
+      # The engine is a separate repository. CI resolves it from the
+      # pinned pseudo-version rather than the local replace development
+      # uses, so a merge that forgot to pin fails here rather than
+      # passing against somebody's checkout.
       - name: drop the development replace
         run: |
           sed -i '/replace github.com\/wowsims\/classic =>/d' go.mod
@@ -5988,63 +7481,1489 @@ jobs:
           echo "total coverage ${total}%"
           awk -v t="$total" 'BEGIN { exit (t + 0 >= 80) ? 0 : 1 }' || {
             echo "coverage ${total}% is under the 80% floor"; exit 1; }
-      # The engine version the adapter stamps into every summary must be
-      # the one the artifacts were built from.
-      - name: the pin is a real sha
-        run: go test ./enginever/ -v
+
+  artifacts:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with: { go-version-file: sim/go.mod, cache-dependency-path: sim/go.sum }
+      - name: build
+        working-directory: sim
+        run: |
+          sha=$(sed -n 's/.*Version = "\(.*\)"/\1/p' enginever/version.go)
+          mkdir -p ../artifacts
+          GOOS=js GOARCH=wasm go build -ldflags="-X 'main.Version=$sha'" -o ../artifacts/sim.wasm ./cmd/wasm
+          cp "$(go env GOROOT)/lib/wasm/wasm_exec.js" ../artifacts/sim.js
+          GOOS=linux  GOARCH=amd64 go build -ldflags="-X 'main.Version=$sha' -s -w" -o ../artifacts/forever-sim-linux-amd64  ./cmd/forever-sim
+          GOOS=darwin GOARCH=arm64 go build -ldflags="-X 'main.Version=$sha' -s -w" -o ../artifacts/forever-sim-darwin-arm64 ./cmd/forever-sim
+          cd ../artifacts && sha256sum * > SHA256SUMS && cat SHA256SUMS
+      # The design budgets the browser download at 4 MB gzipped. The
+      # engine alone measured 3.31 MB; this build adds request, adapter,
+      # combine and the logs summary. The gate is the budget, not the
+      # measurement, so a regression fails here rather than quietly
+      # costing every visitor a second.
+      - name: wasm size budget
+        run: |
+          bytes=$(gzip -9 -c artifacts/sim.wasm | wc -c)
+          mb=$(awk -v b="$bytes" 'BEGIN { printf "%.2f", b/1048576 }')
+          echo "sim.wasm gzipped: ${mb} MB"
+          awk -v b="$bytes" 'BEGIN { exit (b <= 4*1048576) ? 0 : 1 }' || {
+            echo "sim.wasm is ${mb} MB gzipped, over the 4 MB budget"; exit 1; }
+      # A wasm that does not instantiate fails in the visitor's browser,
+      # not here. This runs a real 100-iteration sim through all four
+      # exports and checks the summary came back with it.
+      - name: wasm smoke test
+        run: |
+          cp artifacts/sim.wasm artifacts/sim.js /tmp/
+          cat > /tmp/smoke.mjs <<'EOF'
+          import './sim.js';
+          import { readFile } from 'node:fs/promises';
+          const req = {
+            engine_version: 'ci', spec: 'warrior-fury',
+            character: { name: 'Thrall', race: 'orc', class: 'warrior', level: 60,
+                         talents: '30305001302-05050005525010051', gear: [], buffs: [], consumes: [] },
+            encounter: { duration_sec: 60, variation: 0, targets: 1, execute_ratio: 0.25, profile: '' },
+            iterations: 500, random_seed: 1,
+          };
+          globalThis.simProgress = () => {};
+          globalThis.wasmready = () => {
+            const missing = ['simRun', 'simSplit', 'simCombine', 'simAbort']
+              .filter(n => typeof globalThis[n] !== 'function');
+            if (missing.length) { console.error('missing exports:', missing); process.exit(1); }
+
+            const parts = JSON.parse(globalThis.simSplit(JSON.stringify(req), 2));
+            if (!Array.isArray(parts) || parts.length !== 2) {
+              console.error('simSplit returned', parts); process.exit(1);
+            }
+            const results = parts.map((p, i) => JSON.parse(globalThis.simRun(JSON.stringify(p), 'ci' + i)));
+            for (const r of results) {
+              if (r.error) { console.error('simRun:', r.error); process.exit(1); }
+            }
+            const one = JSON.parse(globalThis.simCombine(JSON.stringify(results)));
+            if (one.error) { console.error('simCombine:', one.error); process.exit(1); }
+            if (!(one.dps.mean > 0)) { console.error('no dps:', one.dps); process.exit(1); }
+            if (!one.summary || !one.summary.damage_done || !one.summary.damage_done.length) {
+              console.error('no summary: sim/adapter did not run inside the wasm'); process.exit(1);
+            }
+            if (one.iterations_run !== 500) { console.error('iterations', one.iterations_run); process.exit(1); }
+            console.log('four exports, dps', one.dps.mean.toFixed(1), 'with',
+                        one.summary.damage_done[0].abilities.length, 'abilities in the summary');
+            process.exit(0);
+          };
+          const go = new globalThis.Go();
+          const { instance } = await WebAssembly.instantiate(await readFile('/tmp/sim.wasm'), go.importObject);
+          go.run(instance);
+          EOF
+          cd /tmp && node smoke.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sim-${{ github.sha }}
+          path: artifacts/
+          retention-days: 90
 ```
 
-The `sed` that drops the development replace will fail the build if `sim/go.mod` still points at a local path with no pseudo-version alongside it. That is intended: it is the check that someone pinned the engine before merging.
+- [ ] **Step 14: Write the engine's test-only workflow**
 
-- [ ] **Step 8: Verify both workflows parse and the artifacts are real**
+The engine builds nothing of ours, but its own tests still have to pass before the site pins it. Create `.github/workflows/test.yml` in the **engine** repo:
 
-```bash
-cd /Users/jh/code/wowsims-forever
-make artifacts
-ls -l artifacts/ && cat artifacts/SHA256SUMS
-node --version
-cp "$(go env GOROOT)/lib/wasm/wasm_exec.js" /tmp/ && cp artifacts/sim.wasm /tmp/
-cd /tmp && cat > smoke.mjs <<'EOF'
-import './wasm_exec.js';
-import { readFile } from 'node:fs/promises';
-globalThis.wasmready = () => {
-  const missing = ['raidSimAsync','raidSimRequestSplit','raidSimResultCombination','computeStats','abortById']
-    .filter(n => typeof globalThis[n] !== 'function');
-  if (missing.length) { console.error('missing entrypoints:', missing); process.exit(1); }
-  console.log('all five entrypoints present');
-  process.exit(0);
-};
-const go = new globalThis.Go();
-const { instance } = await WebAssembly.instantiate(await readFile('sim.wasm'), go.importObject);
-go.run(instance);
-EOF
-node smoke.mjs
+```yaml
+name: test
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions: { contents: read }
+concurrency:
+  group: test-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with: { go-version-file: go.mod, cache-dependency-path: go.sum }
+      - name: gofmt
+        run: |
+          unformatted=$(gofmt -l ./sim ./tools)
+          if [ -n "$unformatted" ]; then
+            echo "these files are not gofmt'd:"; echo "$unformatted"; exit 1
+          fi
+      - name: protoc
+        run: |
+          sudo apt-get update && sudo apt-get install -y protobuf-compiler
+          go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.36.6
+          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
+      # The generated protobufs are committed (see PORTING.md) because the
+      # site consumes this module at a pinned pseudo-version. This
+      # regenerates and diffs, so a stale commit fails here rather than in
+      # the site's build.
+      - run: go test ./sim/core/proto/ -run TestGeneratedProtosMatchSources -v
+      - run: go vet --tags=with_db ./sim/...
+      - run: go test --tags=with_db -count=1 ./sim/...
+      # The site builds our wasm from its own sim/ module, but the engine
+      # must still compile for js/wasm or that build breaks downstream.
+      - name: the engine cross-compiles for wasm
+        run: GOOS=js GOARCH=wasm go build ./sim/...
 ```
 
-Expected: four artifacts, a `SHA256SUMS` with four lines, `all five entrypoints present`, and a gzipped size under 4.00 MB (3.31 MB measured).
+Add to the engine's `PORTING.md`, under a new heading:
 
-Then run the binary end to end against the fixture Task 3 produced:
+```markdown
+## No Forever artifacts are built here
 
-```bash
-cd /Users/jh/code/wowsims-forever
-./artifacts/forever-sim -version
+This repository stays a clean, upstreamable Go library plus its own UI.
+The Forever Sixty site builds both of its artifacts from its own `sim/`
+module, which imports this one at a pinned version:
+
+- `sim/cmd/wasm` -> sim.wasm + sim.js, exporting four JSON functions
+- `sim/cmd/forever-sim` -> the native binary
+
+That is what lets the site's request builder and result adapter run
+inside the browser's wasm, so no protobuf crosses into TypeScript. This
+repository's own `sim/wasm` and `cmd/wowsimcli` are untouched and are
+still what upstream ships.
 ```
 
-Expected: the short sha, not `dev`.
-
-- [ ] **Step 9: Commit, in both repos**
+- [ ] **Step 15: Commit, in both repos**
 
 ```bash
-cd /Users/jh/code/wowsims-forever
-git add cmd/forever-sim makefile .github/workflows/artifacts.yml .gitignore
-git commit -m "feat(build): forever-sim, and CI that builds and publishes all three artifacts" \
-  -m "One pinned sha produces sim.wasm and sim.js for the browser lane and forever-sim for the server lane. forever-sim is new and is deliberately not cmd/wowsimcli, which speaks protojson and carries three other subcommands: this one reads a binary RaidSimRequest, splits across every core through RunRaidSimConcurrentAsync, streams JSON-lines progress on stderr for the Cloud Run job, and writes a binary RaidSimResult. The make target skips the TypeScript UI build entirely, since none of that ships on our site. CI gates three things that would otherwise fail in a visitor's browser: the committed protobufs are not stale, sim.wasm is under the design's 4 MB gzipped budget (3.31 MB measured), and the built wasm actually instantiates under node with all five contract entrypoints present." \
+cd /Users/jh/code/forever
+git add sim/combine sim/cmd Makefile .gitignore .github/workflows/sim.yml
+git commit -m "feat(sim): build both artifacts here, with four JSON entrypoints in the wasm" \
+  -m "The engine repository ships no artifact of ours: it stays a clean upstreamable library, because we intend to contribute the Forever work back. Both artifacts are built from this module, which imports the engine at the pinned version, and that is what lets sim/request and sim/adapter run inside the browser's wasm - the browser gets a finished SimResult with its summary already built by the same Go the server runs, and no protobuf crosses into TypeScript. The wasm exports exactly simRun, simSplit, simCombine and simAbort, all JSON in and JSON out; the engine's own thirteen entrypoints are an implementation detail behind them. sim/combine holds the split and recombination arithmetic both lanes share, pooling variance properly so a split run does not report a tighter error than a serial one. CI gates the 4 MB gzipped budget and runs a real 500-iteration split-run-combine through the built wasm under node." \
   -m "Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 
+cd /Users/jh/code/wowsims-forever
+git add .github/workflows/test.yml PORTING.md
+git commit -m "ci: test the engine, and record that it ships none of our artifacts" \
+  -m "Tests, vet, gofmt, the committed-protobuf freshness check, and a js/wasm cross-compile so the site's wasm build cannot break here unnoticed. No artifact job: the site builds sim.wasm and forever-sim from its own sim/ module, which is what keeps this repository upstreamable." \
+  -m "Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
+```
+
+---
+
+
+## Task 15: `forever-measure` — recover combat constants from a log
+
+**Repo: SITE** (`/Users/jh/code/forever`), in the `sim/` module. Depends on Task 2 (the module). **G4b — INDEPENDENT of Task 13 and of everything else; nothing depends on it.** Run it in its own worktree alongside Task 13.
+
+This is the tool that answers, on beta day, the questions the client tables cannot.
+
+**What the tables give and do not give, verified.** The Classic-lineage DB2 carries item stats, spell attributes, cooldowns, costs, durations, talent grids and base stats. It does not carry:
+
+- **whether periodic damage can crit** — a server rule, not a per-spell field;
+- **the multiplier a critical tick uses**;
+- **how a unified Hit stat interacts with the vanilla weapon-skill miss table** — research §5.3 calls this "completely unspecified by anything public", and it is load-bearing for every melee spec;
+- **proc chances and internal cooldowns** — `ItemEffect.TriggerType` says on-equip/on-use/on-proc and nothing more; an ICD is script-side;
+- **the rating conversion tables** — `CombatRatings`, `ChanceToMeleeCrit` and `ChanceToSpellCrit` are game-table files inside the client package, not DB2, and **all three 404 on wago for the Era build** (checked). Task 5's generator reads them from `assets/db_inputs/basestats/`, which is a checked-in Era copy; there is no live source.
+
+Every one of those is measurable from a combat log, and we have a parser. That is the asset research §5.4 called decisive: WoWSims has no log-ingestion path and closes this loop by hand over months.
+
+**Two packages, deliberately.** `sim/measure` holds the measurement functions and returns data; `sim/cmd/forever-measure` prints. The split is not tidiness — **this same code is the first input to the nightly validation job** (design §6), which needs the measurements as values, not as a table on stdout.
+
+**Every figure carries its sample count, and a figure under the threshold prints `insufficient data` rather than a number.** A proc rate from four swings is worse than no proc rate: it goes into a constants file and nobody re-checks it.
+
+`logs/` is read-only here. This task imports `logs/engine/{session,layout,event,units}` and edits nothing under `logs/`.
+
+**Files:**
+- Create: `sim/measure/measure.go`, `sim/measure/periodic.go`, `sim/measure/attacktable.go`, `sim/measure/procs.go`, `sim/measure/coefficients.go`, `sim/measure/report.go`
+- Create: `sim/cmd/forever-measure/main.go`
+- Create: `sim/measure/testdata/planted.log`
+- Test: `sim/measure/measure_test.go`, `sim/measure/golden_test.go`
+- Modify: `sim/README.md` (create it, with the Sept 17 logging procedure)
+
+**Interfaces:**
+- Consumes: `logs/engine/session` (`New`, `Options`, `(*Session).Feed`, `(*Session).Close`, `Result.Events`), `logs/engine/layout` (`ClassicWiki`, `RetailV16`), `logs/engine/event` (`Event`, `Kind`, `Damage`, `Missed`, `AuraApplied`, `AuraRefresh`, `CastSuccess`, `OptInt`, `OptBool`), `logs/engine/units` (`Options`). Read-only.
+- Produces, used by the api lane's nightly validation job:
+  - `measure.Input{Events []event.Event; Actor string; SpellPower, AttackPower float64; MinSamples int}`
+  - `measure.Load(path string, base time.Time) ([]event.Event, error)`
+  - `measure.Report{Periodic []PeriodicCrit; AttackTable []AttackTableRow; Procs []ProcRate; Coefficients []Coefficient; Actor string; Events, Fights int}`
+  - `measure.Run(in Input) (Report, error)`
+  - `measure.PeriodicCrit{SpellID int64; SpellName string; School int64; Ticks, CritTicks int; CanCrit bool; MeanNormal, MeanCrit, Multiplier float64; Physical bool; Enough bool}`
+  - `measure.AttackTableRow{AttackType string; TargetName string; TargetLevel int64; Swings int; Miss, Dodge, Parry, Glance, Crit, Block float64; Enough bool}`
+  - `measure.ProcRate{SpellID int64; SpellName string; Procs, Swings, Casts int; PerSwing, PerCast float64; MinGap time.Duration; Enough bool}`
+  - `measure.Coefficient{SpellID int64; SpellName string; Hits int; MeanDamage, StdDev, Observed float64; Enough bool}`
+  - `measure.(Report).Table() string` — the printed form, so the command is a `main` that calls `Run` then `Table`.
+  - `measure.DefaultMinSamples = 30`
+
+- [ ] **Step 1: Write the planted-value fixture**
+
+The test must recover known numbers, so the log is built with them planted. Create `sim/measure/testdata/planted.log`, a Classic-dialect log with one player, one level-63 target, and five facts planted in it:
+
+1. **Periodic damage crits**: `SPELL_PERIODIC_DAMAGE` lines for Rend (spell 11574, physical) with `1` in the critical column, and for Corruption (spell 25311, shadow) likewise.
+2. **A periodic crit multiplier of exactly 2.0 for magic and 2.0 for physical**: normal ticks of 100, critical ticks of 200.
+3. **An attack table of exactly 10% miss, 10% dodge, 10% parry, 20% glance, 20% crit** over 100 swings against the level-63 target: 10 `SWING_MISSED` with `MISS`, 10 with `DODGE`, 10 with `PARRY`, 20 `SWING_DAMAGE` with the glancing flag, 20 with the critical flag, 30 plain.
+4. **A proc that fires exactly 10 times in 100 swings with a minimum gap of 45 seconds**: `SPELL_AURA_APPLIED` for spell 9345 at 45-second spacing.
+5. **A spell whose mean damage is exactly 500 over 40 hits**: Frostbolt (spell 25304), alternating 450 and 550.
+
+Generate it rather than typing 200 lines by hand, then commit the output:
+
+```bash
+cd /Users/jh/code/forever/sim
+mkdir -p measure/testdata
+python3 - > measure/testdata/planted.log <<'PY'
+import datetime
+
+# The Classic dialect the engine's layout.ClassicWiki() reads. One player,
+# one level-63 target, values planted so the tests can recover them.
+P   = 'Player-1-0000AAAA,"Testwarrior-Forever",0x511,0x0'
+T   = 'Creature-0-1-1-1-11502-0000BBBB,"Dummy",0xa48,0x0'
+t0  = datetime.datetime(2026, 9, 17, 20, 0, 0)
+
+def stamp(sec, ms=0):
+    t = t0 + datetime.timedelta(seconds=sec, milliseconds=ms)
+    return t.strftime("%m/%d %H:%M:%S.") + f"{t.microsecond//1000:03d}"
+
+def line(sec, name, rest, ms=0):
+    print(f"{stamp(sec, ms)}  {name},{P},{T},{rest}")
+
+print(f'{stamp(0)}  COMBAT_LOG_VERSION,20,ADVANCED_LOG_ENABLED,0,BUILD_VERSION,1.15.9,PROJECT_ID,2')
+line(0, "ENCOUNTER_START", "")
+print(f'{stamp(0)}  ENCOUNTER_START,1001,"Dummy Target",1,1,0')
+
+sec = 1
+# (3) attack table: 100 swings, 10 miss / 10 dodge / 10 parry / 20 glance /
+#     20 crit / 30 plain.
+for _ in range(10):
+    line(sec, "SWING_MISSED", "MISS"); sec += 1
+for _ in range(10):
+    line(sec, "SWING_MISSED", "DODGE"); sec += 1
+for _ in range(10):
+    line(sec, "SWING_MISSED", "PARRY"); sec += 1
+for _ in range(20):
+    # SWING_DAMAGE suffix: amount, overkill, school, resisted, blocked,
+    # absorbed, critical, glancing, crushing
+    line(sec, "SWING_DAMAGE", "300,0,1,0,0,0,nil,1,nil"); sec += 1
+for _ in range(20):
+    line(sec, "SWING_DAMAGE", "800,0,1,0,0,0,1,nil,nil"); sec += 1
+for _ in range(30):
+    line(sec, "SWING_DAMAGE", "400,0,1,0,0,0,nil,nil,nil"); sec += 1
+
+# (1) and (2) periodic crits: Rend physical, Corruption shadow, normal
+#     ticks 100 and critical ticks 200, so the multiplier is exactly 2.0.
+for i in range(40):
+    crit = "1" if i % 4 == 0 else "nil"
+    amt  = 200 if i % 4 == 0 else 100
+    line(sec, "SPELL_PERIODIC_DAMAGE", f'11574,"Rend",1,{amt},0,1,0,0,0,{crit},nil,nil'); sec += 1
+for i in range(40):
+    crit = "1" if i % 4 == 0 else "nil"
+    amt  = 200 if i % 4 == 0 else 100
+    line(sec, "SPELL_PERIODIC_DAMAGE", f'25311,"Corruption",32,{amt},0,32,0,0,0,{crit},nil,nil'); sec += 1
+
+# (5) Frostbolt: 40 hits alternating 450 and 550, mean exactly 500.
+for i in range(40):
+    amt = 450 if i % 2 == 0 else 550
+    line(sec, "SPELL_DAMAGE", f'25304,"Frostbolt",16,{amt},0,16,0,0,0,nil,nil,nil'); sec += 1
+
+# (4) a proc firing 10 times at a 45-second minimum gap.
+for i in range(10):
+    print(f'{stamp(1 + i*45)}  SPELL_AURA_APPLIED,{P},{P},9345,"Devilsaur Fury",1,BUFF')
+
+print(f'{stamp(sec)}  ENCOUNTER_END,1001,"Dummy Target",1,1,1')
+PY
+wc -l measure/testdata/planted.log
+head -5 measure/testdata/planted.log
+```
+
+Then **verify the engine actually parses it** before writing a line of measurement code — a fixture the parser rejects makes every later failure ambiguous:
+
+```bash
+cd /Users/jh/code/forever/sim
+cat > /tmp/parsecheck.go <<'EOF'
+package main
+
+import (
+	"fmt"
+	"os"
+	"time"
+
+	"github.com/jhunthrop/foreversixty/logs/engine/layout"
+	"github.com/jhunthrop/foreversixty/logs/engine/session"
+)
+
+func main() {
+	b, err := os.ReadFile(os.Args[1])
+	if err != nil {
+		panic(err)
+	}
+	s := session.New(session.Options{
+		ReportID: "measure", Layout: layout.ClassicWiki(), Infer: true,
+		Base: time.Date(2026, 9, 17, 0, 0, 0, 0, time.UTC),
+	})
+	res, err := s.Feed(b, 0)
+	if err != nil {
+		panic(err)
+	}
+	last, _ := s.Close()
+	kinds := map[string]int{}
+	for _, e := range append(res.Events, last.Events...) {
+		kinds[e.Name]++
+	}
+	fmt.Println("events:", len(res.Events)+len(last.Events))
+	for k, v := range kinds {
+		fmt.Printf("  %-28s %d\n", k, v)
+	}
+	fmt.Printf("health: %+v\n", s.Health())
+}
+EOF
+go run /tmp/parsecheck.go measure/testdata/planted.log
+```
+
+Expected: about 240 events, with `SWING_MISSED` 30, `SWING_DAMAGE` 70, `SPELL_PERIODIC_DAMAGE` 80, `SPELL_DAMAGE` 40, `SPELL_AURA_APPLIED` 10, and `UnknownEvents` empty. **If the counts are wrong the fixture is wrong, not the parser** — the suffix field order above is the Classic dialect's; read `logs/engine/layout/classic.go` and correct the generator until the counts match, then regenerate and commit the log. Delete `/tmp/parsecheck.go`.
+
+- [ ] **Step 2: Write the failing test**
+
+Create `sim/measure/measure_test.go`:
+
+```go
+package measure
+
+import (
+	"math"
+	"testing"
+	"time"
+)
+
+const fixture = "testdata/planted.log"
+
+var fixtureBase = time.Date(2026, 9, 17, 0, 0, 0, 0, time.UTC)
+
+func load(t *testing.T) Input {
+	t.Helper()
+	events, err := Load(fixture, fixtureBase)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(events) == 0 {
+		t.Fatal("the fixture produced no events")
+	}
+	return Input{
+		Events:     events,
+		Actor:      "Testwarrior-Forever",
+		SpellPower: 500,
+		MinSamples: 10,
+	}
+}
+
+func near(t *testing.T, label string, got, want, tol float64) {
+	t.Helper()
+	if math.Abs(got-want) > tol {
+		t.Errorf("%s = %v, want %v (tolerance %v)", label, got, want, tol)
+	}
+}
+
+// (1) Whether periodic damage crits at all is a server rule, not a
+// per-spell field, so the only way to know is to look for the flag.
+func TestPeriodicDamageCanCrit(t *testing.T) {
+	rep, err := Run(load(t))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(rep.Periodic) != 2 {
+		t.Fatalf("Periodic has %d rows, want 2 (Rend and Corruption)", len(rep.Periodic))
+	}
+	for _, p := range rep.Periodic {
+		if !p.CanCrit {
+			t.Errorf("%s (%d): CanCrit is false, but the fixture plants critical ticks", p.SpellName, p.SpellID)
+		}
+		if p.Ticks != 40 {
+			t.Errorf("%s: Ticks = %d, want 40", p.SpellName, p.Ticks)
+		}
+		if p.CritTicks != 10 {
+			t.Errorf("%s: CritTicks = %d, want 10", p.SpellName, p.CritTicks)
+		}
+	}
+}
+
+// (2) The multiplier a critical tick uses. Planted at exactly 2.0, and
+// reported separately for physical and magic because Forever may differ.
+func TestPeriodicCritMultiplier(t *testing.T) {
+	rep, err := Run(load(t))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var sawPhysical, sawMagic bool
+	for _, p := range rep.Periodic {
+		near(t, p.SpellName+" mean normal tick", p.MeanNormal, 100, 0.001)
+		near(t, p.SpellName+" mean critical tick", p.MeanCrit, 200, 0.001)
+		near(t, p.SpellName+" multiplier", p.Multiplier, 2.0, 0.001)
+		if !p.Enough {
+			t.Errorf("%s: Enough is false with 40 ticks and MinSamples 10", p.SpellName)
+		}
+		if p.Physical {
+			sawPhysical = true
+		} else {
+			sawMagic = true
+		}
+	}
+	if !sawPhysical {
+		t.Error("no physical periodic row; Rend is school 1")
+	}
+	if !sawMagic {
+		t.Error("no magic periodic row; Corruption is school 32")
+	}
+}
+
+// (3) The attack table, which with a known character sheet is what
+// settles how unified Hit interacts with the weapon-skill miss table.
+func TestAttackTableRates(t *testing.T) {
+	rep, err := Run(load(t))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(rep.AttackTable) != 1 {
+		t.Fatalf("AttackTable has %d rows, want 1 (melee against the dummy)", len(rep.AttackTable))
+	}
+	row := rep.AttackTable[0]
+	if row.Swings != 100 {
+		t.Fatalf("Swings = %d, want 100", row.Swings)
+	}
+	near(t, "miss", row.Miss, 0.10, 1e-9)
+	near(t, "dodge", row.Dodge, 0.10, 1e-9)
+	near(t, "parry", row.Parry, 0.10, 1e-9)
+	near(t, "glance", row.Glance, 0.20, 1e-9)
+	near(t, "crit", row.Crit, 0.20, 1e-9)
+	if !row.Enough {
+		t.Error("Enough is false with 100 swings")
+	}
+}
+
+// (4) Proc rate and internal cooldown. Neither is in DB2 at all.
+func TestProcRateAndInternalCooldown(t *testing.T) {
+	rep, err := Run(load(t))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(rep.Procs) != 1 {
+		t.Fatalf("Procs has %d rows, want 1", len(rep.Procs))
+	}
+	p := rep.Procs[0]
+	if p.SpellID != 9345 {
+		t.Errorf("SpellID = %d, want 9345", p.SpellID)
+	}
+	if p.Procs != 10 {
+		t.Errorf("Procs = %d, want 10", p.Procs)
+	}
+	if p.Swings != 100 {
+		t.Errorf("Swings = %d, want 100", p.Swings)
+	}
+	near(t, "per swing", p.PerSwing, 0.10, 1e-9)
+	if p.MinGap != 45*time.Second {
+		t.Errorf("MinGap = %v, want 45s: that is the internal cooldown", p.MinGap)
+	}
+}
+
+// (5) Observed coefficients, because EffectBonusCoefficient is routinely
+// 0 or wrong for Classic-lineage spells.
+func TestObservedCoefficient(t *testing.T) {
+	rep, err := Run(load(t))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var fb *Coefficient
+	for i := range rep.Coefficients {
+		if rep.Coefficients[i].SpellID == 25304 {
+			fb = &rep.Coefficients[i]
+		}
+	}
+	if fb == nil {
+		t.Fatal("no coefficient row for Frostbolt (25304)")
+	}
+	if fb.Hits != 40 {
+		t.Errorf("Hits = %d, want 40", fb.Hits)
+	}
+	near(t, "mean damage", fb.MeanDamage, 500, 0.001)
+	near(t, "spread", fb.StdDev, 50, 0.001)
+}
+
+// A figure from too few samples is worse than no figure: it goes into a
+// constants file and nobody re-checks it.
+func TestInsufficientDataIsNotANumber(t *testing.T) {
+	in := load(t)
+	in.MinSamples = 1000
+	rep, err := Run(in)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, p := range rep.Periodic {
+		if p.Enough {
+			t.Errorf("%s: Enough is true with MinSamples 1000 and %d ticks", p.SpellName, p.Ticks)
+		}
+	}
+	for _, r := range rep.AttackTable {
+		if r.Enough {
+			t.Errorf("attack table: Enough is true with MinSamples 1000 and %d swings", r.Swings)
+		}
+	}
+	out := rep.Table()
+	if !contains(out, "insufficient data") {
+		t.Errorf("the table prints numbers it should have withheld:\n%s", out)
+	}
+}
+
+// The report must name what it measured, so a figure can be traced back
+// to the log it came from.
+func TestReportCarriesItsProvenance(t *testing.T) {
+	rep, err := Run(load(t))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if rep.Actor != "Testwarrior-Forever" {
+		t.Errorf("Actor = %q", rep.Actor)
+	}
+	if rep.Events == 0 {
+		t.Error("Events is zero")
+	}
+}
+
+func TestRunRejectsAnEmptyInput(t *testing.T) {
+	if _, err := Run(Input{}); err == nil {
+		t.Fatal("an empty input was accepted")
+	}
+	if _, err := Load("testdata/nope.log", fixtureBase); err == nil {
+		t.Fatal("a missing log was accepted")
+	}
+}
+
+func contains(h, n string) bool {
+	for i := 0; i+len(n) <= len(h); i++ {
+		if h[i:i+len(n)] == n {
+			return true
+		}
+	}
+	return false
+}
+```
+
+- [ ] **Step 3: Run it and watch it fail**
+
+Run: `cd /Users/jh/code/forever/sim && go test ./measure/ -v`
+Expected: `FAIL [build failed]`, `undefined: Load`.
+
+- [ ] **Step 4: Write the loader and the report shape**
+
+Create `sim/measure/measure.go`:
+
+```go
+// Package measure recovers combat constants from a real combat log.
+//
+// The Classic-lineage client tables give item stats, spell attributes,
+// cooldowns, costs, durations, talent grids and base stats. They do not
+// give whether periodic damage crits (a server rule, not a per-spell
+// field), the multiplier a critical tick uses, how a unified Hit stat
+// interacts with the vanilla weapon-skill miss table, proc chances, or
+// internal cooldowns. The rating conversion tables are game-table files
+// inside the client package rather than DB2, and wago does not serve
+// them. Every one of those is visible in a combat log.
+//
+// The measurement functions return values and the command prints them,
+// because this same code is the first input to the nightly validation
+// job, which needs the numbers rather than a table on stdout.
+//
+// This package imports logs/engine read-only and never modifies it.
+package measure
+
+import (
+	"errors"
+	"fmt"
+	"os"
+	"time"
+
+	"github.com/jhunthrop/foreversixty/logs/engine/event"
+	"github.com/jhunthrop/foreversixty/logs/engine/layout"
+	"github.com/jhunthrop/foreversixty/logs/engine/session"
+)
+
+// DefaultMinSamples is the floor below which a figure prints as
+// "insufficient data" rather than as a number. A proc rate from four
+// swings is worse than no proc rate: it lands in a constants file and
+// nobody re-checks it.
+const DefaultMinSamples = 30
+
+// Input is one measurement run.
+type Input struct {
+	// Events is the decoded log, from Load.
+	Events []event.Event
+	// Actor is the player whose actions are measured, by name. Every
+	// figure is about this one unit.
+	Actor string
+	// SpellPower and AttackPower are the character sheet at the time of
+	// logging. A coefficient cannot be derived without them; leave them
+	// zero and the coefficient column reports the raw damage only.
+	SpellPower  float64
+	AttackPower float64
+	// MinSamples overrides DefaultMinSamples.
+	MinSamples int
+}
+
+// Report is everything one log can say.
+type Report struct {
+	Actor  string `json:"actor"`
+	Events int    `json:"events"`
+	Fights int    `json:"fights"`
+
+	Periodic     []PeriodicCrit   `json:"periodic"`
+	AttackTable  []AttackTableRow `json:"attack_table"`
+	Procs        []ProcRate       `json:"procs"`
+	Coefficients []Coefficient    `json:"coefficients"`
+}
+
+// Load reads a combat log and returns its decoded events. base seeds the
+// clock for dialects whose timestamps carry no year: pass the file's
+// modification time.
+func Load(path string, base time.Time) ([]event.Event, error) {
+	b, err := os.ReadFile(path)
+	if err != nil {
+		return nil, fmt.Errorf("measure: %w", err)
+	}
+	s := session.New(session.Options{
+		ReportID: "measure",
+		// Forever writes the Classic dialect. Infer is on so a log the
+		// header does not identify still parses by field count rather
+		// than silently falling back to the retail row.
+		Layout: layout.ClassicWiki(),
+		Infer:  true,
+		Base:   base,
+	})
+	res, err := s.Feed(b, 0)
+	if err != nil {
+		return nil, fmt.Errorf("measure: feeding %s: %w", path, err)
+	}
+	last, err := s.Close()
+	if err != nil {
+		return nil, fmt.Errorf("measure: closing %s: %w", path, err)
+	}
+	out := make([]event.Event, 0, len(res.Events)+len(last.Events))
+	out = append(out, res.Events...)
+	out = append(out, last.Events...)
+	return out, nil
+}
+
+// Run measures everything this package knows how to measure.
+func Run(in Input) (Report, error) {
+	if len(in.Events) == 0 {
+		return Report{}, errors.New("measure: no events; load a log first")
+	}
+	if in.Actor == "" {
+		return Report{}, errors.New("measure: Actor is required; every figure is about one unit")
+	}
+	if in.MinSamples <= 0 {
+		in.MinSamples = DefaultMinSamples
+	}
+
+	rep := Report{Actor: in.Actor, Events: len(in.Events)}
+	for _, e := range in.Events {
+		if e.Name == "ENCOUNTER_START" {
+			rep.Fights++
+		}
+	}
+	rep.Periodic = MeasurePeriodic(in)
+	rep.AttackTable = MeasureAttackTable(in)
+	rep.Procs = MeasureProcs(in)
+	rep.Coefficients = MeasureCoefficients(in)
+	return rep, nil
+}
+
+// byActor reports whether an event's source is the measured actor.
+func byActor(e event.Event, actor string) bool {
+	return e.Source.Name == actor
+}
+
+// isPeriodic reports whether an event is a damage tick rather than a
+// direct hit. The engine normalises both to event.Damage, so the raw
+// name is what distinguishes them.
+func isPeriodic(e event.Event) bool {
+	return e.Name == "SPELL_PERIODIC_DAMAGE"
+}
+
+// physicalSchool is the combat-log school mask for physical damage.
+const physicalSchool = 1
+
+func mean(xs []float64) float64 {
+	if len(xs) == 0 {
+		return 0
+	}
+	var sum float64
+	for _, x := range xs {
+		sum += x
+	}
+	return sum / float64(len(xs))
+}
+
+func stddev(xs []float64) float64 {
+	if len(xs) < 2 {
+		return 0
+	}
+	m := mean(xs)
+	var sum float64
+	for _, x := range xs {
+		d := x - m
+		sum += d * d
+	}
+	return sqrt(sum / float64(len(xs)))
+}
+```
+
+Add `import "math"` and `func sqrt(f float64) float64 { return math.Sqrt(f) }`, or use `math.Sqrt` directly and drop the helper — either is fine, but do not leave `sqrt` undefined.
+
+- [ ] **Step 5: Write the periodic-crit measurement**
+
+Create `sim/measure/periodic.go`:
+
+```go
+package measure
+
+import (
+	"sort"
+
+	"github.com/jhunthrop/foreversixty/logs/engine/event"
+)
+
+// PeriodicCrit is what one periodic spell's ticks say about two rules the
+// client tables do not carry: whether periodic damage can crit at all,
+// and what multiplier a critical tick uses.
+type PeriodicCrit struct {
+	SpellID   int64  `json:"spell_id"`
+	SpellName string `json:"spell_name"`
+	School    int64  `json:"school"`
+	// Physical separates the two answers, because Forever may let
+	// physical dots crit and magic ones not, or use different
+	// multipliers. Reported separately rather than averaged.
+	Physical bool `json:"physical"`
+
+	Ticks     int `json:"ticks"`
+	CritTicks int `json:"crit_ticks"`
+	// CanCrit is true if any tick carried the critical flag. One is
+	// enough to settle the question; zero out of many is evidence the
+	// other way, which is why Ticks is printed beside it.
+	CanCrit bool `json:"can_crit"`
+
+	MeanNormal float64 `json:"mean_normal"`
+	MeanCrit   float64 `json:"mean_crit"`
+	// Multiplier is MeanCrit over MeanNormal, zero when either side has
+	// no samples.
+	Multiplier float64 `json:"multiplier"`
+
+	Enough bool `json:"enough"`
+}
+
+// MeasurePeriodic answers, per periodic spell, whether its ticks crit and
+// by how much.
+func MeasurePeriodic(in Input) []PeriodicCrit {
+	type acc struct {
+		row     PeriodicCrit
+		normals []float64
+		crits   []float64
+	}
+	bySpell := map[int64]*acc{}
+	var order []int64
+
+	for _, e := range in.Events {
+		if e.Kind != event.Damage || !isPeriodic(e) || !byActor(e, in.Actor) {
+			continue
+		}
+		if !e.Amount.OK {
+			continue
+		}
+		a, ok := bySpell[e.Spell.ID]
+		if !ok {
+			a = &acc{row: PeriodicCrit{
+				SpellID:   e.Spell.ID,
+				SpellName: e.Spell.Name,
+				School:    e.Spell.School,
+				Physical:  e.Spell.School == physicalSchool,
+			}}
+			bySpell[e.Spell.ID] = a
+			order = append(order, e.Spell.ID)
+		}
+		a.row.Ticks++
+		amount := float64(e.Amount.V)
+		if e.Critical.OK && e.Critical.V {
+			a.row.CritTicks++
+			a.row.CanCrit = true
+			a.crits = append(a.crits, amount)
+		} else {
+			a.normals = append(a.normals, amount)
+		}
+	}
+
+	out := make([]PeriodicCrit, 0, len(order))
+	for _, id := range order {
+		a := bySpell[id]
+		a.row.MeanNormal = mean(a.normals)
+		a.row.MeanCrit = mean(a.crits)
+		if a.row.MeanNormal > 0 && a.row.MeanCrit > 0 {
+			a.row.Multiplier = a.row.MeanCrit / a.row.MeanNormal
+		}
+		a.row.Enough = a.row.Ticks >= in.MinSamples
+		out = append(out, a.row)
+	}
+	sort.SliceStable(out, func(i, j int) bool { return out[i].Ticks > out[j].Ticks })
+	return out
+}
+```
+
+- [ ] **Step 6: Write the attack-table measurement**
+
+Create `sim/measure/attacktable.go`:
+
+```go
+package measure
+
+import (
+	"sort"
+	"strings"
+
+	"github.com/jhunthrop/foreversixty/logs/engine/event"
+)
+
+// AttackTableRow is the observed one-roll attack table against one
+// target. With a known character sheet it is what settles how Forever's
+// unified Hit stat interacts with the vanilla weapon-skill miss table,
+// which research 5.3 records as completely unspecified by anything
+// public and load-bearing for every melee spec.
+type AttackTableRow struct {
+	// AttackType is "melee", "ranged" or "special": the three tables
+	// vanilla rolls separately.
+	AttackType  string `json:"attack_type"`
+	TargetName  string `json:"target_name"`
+	TargetLevel int64  `json:"target_level"`
+
+	Swings int `json:"swings"`
+
+	Miss   float64 `json:"miss"`
+	Dodge  float64 `json:"dodge"`
+	Parry  float64 `json:"parry"`
+	Glance float64 `json:"glance"`
+	Crit   float64 `json:"crit"`
+	Block  float64 `json:"block"`
+
+	Enough bool `json:"enough"`
+}
+
+type tableKey struct {
+	attackType string
+	target     string
+	level      int64
+}
+
+// MeasureAttackTable counts every outcome of every swing against each
+// target and divides by the total. A rate is a fraction of all swings,
+// including misses, because that is what the one-roll table produces.
+func MeasureAttackTable(in Input) []AttackTableRow {
+	type acc struct {
+		row                                      AttackTableRow
+		miss, dodge, parry, glance, crit, block  int
+	}
+	rows := map[tableKey]*acc{}
+	var order []tableKey
+
+	for _, e := range in.Events {
+		if !byActor(e, in.Actor) {
+			continue
+		}
+		at := attackTypeOf(e)
+		if at == "" {
+			continue
+		}
+		key := tableKey{attackType: at, target: e.Dest.Name}
+		if e.Adv.OK {
+			key.level = advLevel(e)
+		}
+		a, ok := rows[key]
+		if !ok {
+			a = &acc{row: AttackTableRow{
+				AttackType: at, TargetName: e.Dest.Name, TargetLevel: key.level,
+			}}
+			rows[key] = a
+			order = append(order, key)
+		}
+		a.row.Swings++
+		switch {
+		case e.Kind == event.Missed:
+			switch strings.ToUpper(e.MissType) {
+			case "MISS":
+				a.miss++
+			case "DODGE":
+				a.dodge++
+			case "PARRY":
+				a.parry++
+			case "BLOCK":
+				a.block++
+			}
+		case e.Critical.OK && e.Critical.V:
+			a.crit++
+		case e.Glancing.OK && e.Glancing.V:
+			a.glance++
+		}
+		// A blocked hit still lands, so Blocked is counted from the
+		// damage event's own field rather than from a miss type.
+		if e.Blocked.OK && e.Blocked.V > 0 {
+			a.block++
+		}
+	}
+
+	out := make([]AttackTableRow, 0, len(order))
+	for _, key := range order {
+		a := rows[key]
+		n := float64(a.row.Swings)
+		if n > 0 {
+			a.row.Miss = float64(a.miss) / n
+			a.row.Dodge = float64(a.dodge) / n
+			a.row.Parry = float64(a.parry) / n
+			a.row.Glance = float64(a.glance) / n
+			a.row.Crit = float64(a.crit) / n
+			a.row.Block = float64(a.block) / n
+		}
+		a.row.Enough = a.row.Swings >= in.MinSamples
+		out = append(out, a.row)
+	}
+	sort.SliceStable(out, func(i, j int) bool { return out[i].Swings > out[j].Swings })
+	return out
+}
+
+// attackTypeOf classifies an event into one of vanilla's three attack
+// tables, or "" for anything that is not a weapon or spell attack.
+func attackTypeOf(e event.Event) string {
+	switch e.Name {
+	case "SWING_DAMAGE", "SWING_MISSED":
+		return "melee"
+	case "RANGE_DAMAGE", "RANGE_MISSED":
+		return "ranged"
+	case "SPELL_DAMAGE", "SPELL_MISSED":
+		return "special"
+	}
+	return ""
+}
+
+// advLevel reads the target's level out of the advanced-logging block.
+// Advanced.Level is the creature level for an NPC and the item level for
+// a player: one field, two meanings, exactly as the game writes it, so
+// this is only meaningful against an NPC.
+func advLevel(e event.Event) int64 {
+	return e.Adv.Level
+}
+```
+
+Check `event.Advanced`'s field name for the level (`logs/engine/event/event.go:112` onward) and correct `advLevel` to match; the doc comment on the struct says it is `Level`, but read it rather than trusting this.
+
+- [ ] **Step 7: Write the proc and coefficient measurements**
+
+Create `sim/measure/procs.go`:
+
+```go
+package measure
+
+import (
+	"sort"
+	"time"
+
+	"github.com/jhunthrop/foreversixty/logs/engine/event"
+)
+
+// ProcRate is a proc aura's observed rate and its observed internal
+// cooldown. Neither is in DB2 at all: ItemEffect.TriggerType says
+// on-equip, on-use or on-proc and nothing more, and an ICD is script-side.
+type ProcRate struct {
+	SpellID   int64  `json:"spell_id"`
+	SpellName string `json:"spell_name"`
+
+	Procs  int `json:"procs"`
+	Swings int `json:"swings"`
+	Casts  int `json:"casts"`
+
+	PerSwing float64 `json:"per_swing"`
+	PerCast  float64 `json:"per_cast"`
+	// MinGap is the shortest interval between two procs. It is a lower
+	// bound on the internal cooldown, and a tight one once the proc has
+	// fired often enough: a real ICD shows as a hard floor that many
+	// samples never cross.
+	MinGap time.Duration `json:"min_gap"`
+
+	Enough bool `json:"enough"`
+}
+
+// MeasureProcs counts each aura the actor gains on itself, against the
+// swings and casts it made, and records the tightest gap between two
+// applications.
+func MeasureProcs(in Input) []ProcRate {
+	var swings, casts int
+	for _, e := range in.Events {
+		if !byActor(e, in.Actor) {
+			continue
+		}
+		switch e.Name {
+		case "SWING_DAMAGE", "SWING_MISSED":
+			swings++
+		case "SPELL_CAST_SUCCESS":
+			casts++
+		}
+	}
+
+	type acc struct {
+		row  ProcRate
+		last time.Time
+	}
+	bySpell := map[int64]*acc{}
+	var order []int64
+
+	for _, e := range in.Events {
+		// A proc is an aura the actor applies to itself. A buff from a
+		// raid member is not a proc, so both ends must be the actor.
+		if e.Kind != event.AuraApplied && e.Kind != event.AuraRefresh {
+			continue
+		}
+		if e.Source.Name != in.Actor || e.Dest.Name != in.Actor {
+			continue
+		}
+		a, ok := bySpell[e.Spell.ID]
+		if !ok {
+			a = &acc{row: ProcRate{SpellID: e.Spell.ID, SpellName: e.Spell.Name}}
+			bySpell[e.Spell.ID] = a
+			order = append(order, e.Spell.ID)
+		}
+		if !a.last.IsZero() {
+			gap := e.Time.Sub(a.last)
+			if a.row.MinGap == 0 || gap < a.row.MinGap {
+				a.row.MinGap = gap
+			}
+		}
+		a.last = e.Time
+		a.row.Procs++
+	}
+
+	out := make([]ProcRate, 0, len(order))
+	for _, id := range order {
+		a := bySpell[id]
+		a.row.Swings = swings
+		a.row.Casts = casts
+		if swings > 0 {
+			a.row.PerSwing = float64(a.row.Procs) / float64(swings)
+		}
+		if casts > 0 {
+			a.row.PerCast = float64(a.row.Procs) / float64(casts)
+		}
+		// The sample that matters is the number of chances, not the
+		// number of procs: ten procs in twelve swings says nothing.
+		a.row.Enough = swings+casts >= in.MinSamples
+		out = append(out, a.row)
+	}
+	sort.SliceStable(out, func(i, j int) bool { return out[i].Procs > out[j].Procs })
+	return out
+}
+```
+
+Create `sim/measure/coefficients.go`:
+
+```go
+package measure
+
+import (
+	"sort"
+
+	"github.com/jhunthrop/foreversixty/logs/engine/event"
+)
+
+// Coefficient is a spell's observed damage against a known character
+// sheet. EffectBonusCoefficient is routinely 0 or wrong for
+// Classic-lineage spells, so the observed figure is the only evidence
+// there is until the sim's own prediction can be diffed against it.
+type Coefficient struct {
+	SpellID   int64  `json:"spell_id"`
+	SpellName string `json:"spell_name"`
+
+	Hits       int     `json:"hits"`
+	MeanDamage float64 `json:"mean_damage"`
+	StdDev     float64 `json:"stddev"`
+	// Observed is mean damage per point of spell power, and is zero when
+	// Input.SpellPower is zero. It is not the coefficient: the base
+	// damage has not been subtracted, because the base is what the
+	// constants file is for. It is the figure to diff a candidate
+	// coefficient against.
+	Observed float64 `json:"observed"`
+
+	Enough bool `json:"enough"`
+}
+
+// MeasureCoefficients reports the mean and spread of each direct spell's
+// damage. Critical, glancing and blocked hits are excluded, because each
+// carries its own multiplier and would widen the spread without telling
+// anyone anything.
+func MeasureCoefficients(in Input) []Coefficient {
+	amounts := map[int64][]float64{}
+	names := map[int64]string{}
+	var order []int64
+
+	for _, e := range in.Events {
+		if e.Kind != event.Damage || isPeriodic(e) || !byActor(e, in.Actor) {
+			continue
+		}
+		if e.Name != "SPELL_DAMAGE" || !e.Amount.OK {
+			continue
+		}
+		if e.Critical.OK && e.Critical.V {
+			continue
+		}
+		if e.Glancing.OK && e.Glancing.V {
+			continue
+		}
+		if _, ok := amounts[e.Spell.ID]; !ok {
+			names[e.Spell.ID] = e.Spell.Name
+			order = append(order, e.Spell.ID)
+		}
+		amounts[e.Spell.ID] = append(amounts[e.Spell.ID], float64(e.Amount.V))
+	}
+
+	out := make([]Coefficient, 0, len(order))
+	for _, id := range order {
+		xs := amounts[id]
+		row := Coefficient{
+			SpellID:    id,
+			SpellName:  names[id],
+			Hits:       len(xs),
+			MeanDamage: mean(xs),
+			StdDev:     stddev(xs),
+			Enough:     len(xs) >= in.MinSamples,
+		}
+		if in.SpellPower > 0 {
+			row.Observed = row.MeanDamage / in.SpellPower
+		}
+		out = append(out, row)
+	}
+	sort.SliceStable(out, func(i, j int) bool { return out[i].Hits > out[j].Hits })
+	return out
+}
+```
+
+- [ ] **Step 8: Write the printed table**
+
+The command prints; the package returns. Create `sim/measure/report.go`:
+
+```go
+package measure
+
+import (
+	"fmt"
+	"strings"
+)
+
+// insufficient is what a figure prints as when it is under the sample
+// floor. Never a number: a number goes into a constants file and nobody
+// re-checks it.
+const insufficient = "insufficient data"
+
+// Table renders a report for a human reading a terminal on beta day.
+// The validation job uses the struct, not this.
+func (r Report) Table() string {
+	var b strings.Builder
+	fmt.Fprintf(&b, "forever-measure: %s, %d events, %d fights\n\n", r.Actor, r.Events, r.Fights)
+
+	fmt.Fprintf(&b, "PERIODIC DAMAGE: does it crit, and by how much\n")
+	fmt.Fprintf(&b, "  %-24s %-8s %6s %6s %8s %9s %9s %8s\n",
+		"spell", "school", "ticks", "crits", "can crit", "mean", "mean crit", "mult")
+	for _, p := range r.Periodic {
+		school := "magic"
+		if p.Physical {
+			school = "physical"
+		}
+		if !p.Enough {
+			fmt.Fprintf(&b, "  %-24s %-8s %6d %6d   %s\n", trunc(p.SpellName, 24), school, p.Ticks, p.CritTicks, insufficient)
+			continue
+		}
+		fmt.Fprintf(&b, "  %-24s %-8s %6d %6d %8v %9.1f %9.1f %8.3f\n",
+			trunc(p.SpellName, 24), school, p.Ticks, p.CritTicks, p.CanCrit, p.MeanNormal, p.MeanCrit, p.Multiplier)
+	}
+
+	fmt.Fprintf(&b, "\nATTACK TABLE: the unified-hit and weapon-skill interaction\n")
+	fmt.Fprintf(&b, "  %-9s %-16s %5s %7s %7s %7s %7s %7s %7s\n",
+		"type", "target", "lvl", "swings", "miss", "dodge", "parry", "glance", "crit")
+	for _, t := range r.AttackTable {
+		if !t.Enough {
+			fmt.Fprintf(&b, "  %-9s %-16s %5d %7d   %s\n", t.AttackType, trunc(t.TargetName, 16), t.TargetLevel, t.Swings, insufficient)
+			continue
+		}
+		fmt.Fprintf(&b, "  %-9s %-16s %5d %7d %6.2f%% %6.2f%% %6.2f%% %6.2f%% %6.2f%%\n",
+			t.AttackType, trunc(t.TargetName, 16), t.TargetLevel, t.Swings,
+			t.Miss*100, t.Dodge*100, t.Parry*100, t.Glance*100, t.Crit*100)
+	}
+
+	fmt.Fprintf(&b, "\nPROCS: rate and internal cooldown\n")
+	fmt.Fprintf(&b, "  %-24s %6s %7s %6s %10s %9s %9s\n",
+		"aura", "procs", "swings", "casts", "per swing", "per cast", "min gap")
+	for _, p := range r.Procs {
+		if !p.Enough {
+			fmt.Fprintf(&b, "  %-24s %6d %7d %6d   %s\n", trunc(p.SpellName, 24), p.Procs, p.Swings, p.Casts, insufficient)
+			continue
+		}
+		fmt.Fprintf(&b, "  %-24s %6d %7d %6d %9.3f%% %8.3f%% %9s\n",
+			trunc(p.SpellName, 24), p.Procs, p.Swings, p.Casts, p.PerSwing*100, p.PerCast*100, p.MinGap)
+	}
+
+	fmt.Fprintf(&b, "\nDAMAGE: observed means, for coefficient fitting\n")
+	fmt.Fprintf(&b, "  %-24s %6s %10s %9s %12s\n", "spell", "hits", "mean", "stddev", "per sp")
+	for _, c := range r.Coefficients {
+		if !c.Enough {
+			fmt.Fprintf(&b, "  %-24s %6d   %s\n", trunc(c.SpellName, 24), c.Hits, insufficient)
+			continue
+		}
+		perSP := "n/a"
+		if c.Observed > 0 {
+			perSP = fmt.Sprintf("%.4f", c.Observed)
+		}
+		fmt.Fprintf(&b, "  %-24s %6d %10.1f %9.1f %12s\n", trunc(c.SpellName, 24), c.Hits, c.MeanDamage, c.StdDev, perSP)
+	}
+	return b.String()
+}
+
+func trunc(s string, n int) string {
+	if len(s) <= n {
+		return s
+	}
+	return s[:n-1] + "…"
+}
+```
+
+- [ ] **Step 9: Write the command**
+
+Create `sim/cmd/forever-measure/main.go`:
+
+```go
+// Command forever-measure recovers combat constants from a real combat
+// log: the numbers the client tables do not carry.
+//
+// It prints a table. The measurement functions live in sim/measure and
+// return values, because the nightly validation job consumes the same
+// code and wants the numbers rather than a table on stdout.
+//
+//	forever-measure -log dummy.txt -actor "Yourname-Forever" \
+//	  -spell-power 500 -attack-power 1200
+//
+// See sim/README.md for the dummy-target procedure that produces a log
+// this can read.
+package main
+
+import (
+	"encoding/json"
+	"flag"
+	"fmt"
+	"os"
+	"time"
+
+	"github.com/jhunthrop/foreversixty/sim/measure"
+)
+
+func main() {
+	logPath := flag.String("log", "", "the combat log to read")
+	actor := flag.String("actor", "", "the player to measure, by name")
+	spellPower := flag.Float64("spell-power", 0, "the character sheet's spell power at the time of logging")
+	attackPower := flag.Float64("attack-power", 0, "the character sheet's attack power")
+	minSamples := flag.Int("min-samples", measure.DefaultMinSamples, "figures under this many samples print as insufficient data")
+	asJSON := flag.Bool("json", false, "print the report as JSON instead of a table")
+	flag.Parse()
+
+	if *logPath == "" || *actor == "" {
+		fmt.Fprintln(os.Stderr, "forever-measure: -log and -actor are both required")
+		flag.Usage()
+		os.Exit(2)
+	}
+
+	// A log's timestamps carry no year, so the clock is seeded from the
+	// file's modification time, which is what a batch parse does.
+	base := time.Now()
+	if fi, err := os.Stat(*logPath); err == nil {
+		base = fi.ModTime()
+	}
+
+	events, err := measure.Load(*logPath, base)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "forever-measure:", err)
+		os.Exit(1)
+	}
+	rep, err := measure.Run(measure.Input{
+		Events:      events,
+		Actor:       *actor,
+		SpellPower:  *spellPower,
+		AttackPower: *attackPower,
+		MinSamples:  *minSamples,
+	})
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "forever-measure:", err)
+		os.Exit(1)
+	}
+
+	if *asJSON {
+		enc := json.NewEncoder(os.Stdout)
+		enc.SetIndent("", "  ")
+		if err := enc.Encode(rep); err != nil {
+			fmt.Fprintln(os.Stderr, "forever-measure:", err)
+			os.Exit(1)
+		}
+		return
+	}
+	fmt.Print(rep.Table())
+}
+```
+
+- [ ] **Step 10: Run everything and read the output**
+
+```bash
+cd /Users/jh/code/forever/sim
+go build ./measure/ ./cmd/forever-measure/ && echo BUILDS
+gofmt -l ./measure ./cmd
+go test ./measure/ -race -v
+go run ./cmd/forever-measure -log measure/testdata/planted.log -actor "Testwarrior-Forever" -spell-power 500 -min-samples 10
+```
+
+Expected: `BUILDS`; no `gofmt` output; nine tests `PASS`; and a table whose periodic block shows both spells at multiplier `2.000`, whose attack table shows `10.00% 10.00% 10.00% 20.00% 20.00%`, and whose proc block shows a min gap of `45s`. **Read the table** — it is what a human stares at on Sept 17, and a column that is unreadable then is unreadable now.
+
+Then check the `insufficient data` path by raising the floor:
+
+```bash
+go run ./cmd/forever-measure -log measure/testdata/planted.log -actor "Testwarrior-Forever" -min-samples 1000
+```
+
+Expected: every row reads `insufficient data` and no row shows a number.
+
+- [ ] **Step 11: Write the Sept 17 procedure**
+
+This is the part that has to be right when nobody has time to think. Create `/Users/jh/code/forever/sim/README.md`:
+
+````markdown
+# sim
+
+The simulator's Go module: the request and result envelopes, the engine
+pin, the two ends of the protobuf boundary, the two artifacts, and the
+log-measurement harness.
+
+| Package | What |
+|---|---|
+| `api` | `SimRequest` / `SimResult`, JSON, mirrored in `web/src/lib/sim/types.ts` |
+| `enginever` | the pinned engine sha, written only by `make engine-pin` |
+| `request` | our envelope to the engine's `RaidSimRequest` |
+| `adapter` | the engine's `RaidSimResult` to a `logs` summary |
+| `combine` | split a run across workers, put it back together |
+| `measure` | recover combat constants from a real combat log |
+| `cmd/wasm` | `sim.wasm` + `sim.js`, four JSON exports |
+| `cmd/forever-sim` | the native binary for the server lane |
+| `cmd/forever-measure` | the beta-day measurement tool |
+
+Build both artifacts: `make artifacts` from the repository root.
+
+## Measuring combat constants on beta day
+
+The client tables do not carry whether periodic damage crits, the
+multiplier a critical tick uses, how unified Hit interacts with the
+weapon-skill miss table, proc chances, or internal cooldowns. All of
+them are visible in a combat log. `forever-measure` reads one and prints
+them.
+
+**The log has to be made deliberately.** A raid log mixes buffs, targets
+and levels, and every one of those is a variable the measurement cannot
+control for. Twenty minutes on a dummy gives a cleaner answer than a
+night of raiding.
+
+### Before you log
+
+1. **Gear**: wear the set you want measured and **write down the
+   character sheet**: spell power, attack power, hit, crit, expertise,
+   weapon skill for the weapon you will swing. Screenshot it. Every
+   figure the tool prints is only interpretable against that sheet.
+2. **Strip every buff.** No food, no flask, no elixirs, no scrolls, no
+   raid buffs, no world buffs, no procs from another player. Right-click
+   off anything that survives. A buff you forgot moves crit by a percent
+   and the fitted constant is then wrong by a percent forever.
+3. **Take off trinkets and any proc weapon** for the attack-table run.
+   They are measured separately in step 3 below.
+4. **Talents**: unspend anything that changes hit, crit, expertise or
+   damage. If you cannot respec, write down what you have; the tool
+   cannot know.
+5. `/console combatLogVersion` — confirm advanced logging is on, so the
+   target's level reaches the log. Without it the attack table cannot be
+   keyed by level and every target collapses into one row.
+
+### The three runs
+
+Use `/combatlog` to start and stop. One file per run is easiest; the
+tool takes one log at a time.
+
+**Run 1 — the attack table (the most valuable one).**
+Target: a **level 63** dummy, which is the boss-level case every melee
+spec cares about. If your city's dummies are level 60 or 62, use those
+**and say so**: the suppression terms differ per level and a mislabelled
+run is worse than no run.
+
+- Auto-attack only. **No abilities at all** — a special uses a different
+  table and mixing them makes both unreadable.
+- **At least 1,000 swings.** At a 2.5-second weapon that is about 42
+  minutes; at dual-wield 1.8s it is about 15 minutes for both hands.
+  Fewer than 500 and the dodge and parry rates, which are small numbers,
+  have error bars wider than the thing being measured.
+- Stand **behind** the target if you can, for a run with no parry, then
+  **in front** for a run with parry. Two files.
+- Repeat at a level 60 dummy if one exists. The difference between the
+  two levels is the weapon-skill suppression term.
+
+**Run 2 — periodic crits.**
+- Apply your class's damage-over-time spells and **only** those. Let
+  each run its full duration, re-apply, repeat.
+- **At least 300 ticks per spell.** A dot ticking every 3 seconds for 18
+  seconds gives 6 ticks per cast, so that is 50 casts.
+- Include **one physical dot and one magic dot** if your class has both
+  (Warrior Rend and Deep Wounds; Warlock Corruption and a bleed from a
+  pet). Whether the two behave the same is exactly the open question.
+
+**Run 3 — procs and coefficients.**
+- Put the trinket or weapon back on. Auto-attack for **at least 1,000
+  swings**, or cast one spell repeatedly for at least 500 casts if the
+  proc is cast-triggered.
+- For coefficients: cast **one rank of one spell** at least 200 times,
+  with the spell power you wrote down. Then, if you can, drop a piece of
+  spell-power gear and do it again — two points fit a line, one does not.
+
+### Reading the result
+
+```
+forever-measure -log Logs/WoWCombatLog.txt -actor "Yourname-Forever" \
+  -spell-power 500 -attack-power 1200
+```
+
+Add `-json` to feed it into something. Add `-min-samples N` to see what
+the tool is withholding and why; anything reading `insufficient data`
+needs a longer run, not a smaller floor.
+
+What each block answers:
+
+- **PERIODIC DAMAGE** — `can crit` false across hundreds of ticks is
+  evidence periodic damage does not crit for that spell. `mult` is the
+  critical-tick multiplier, which the engine currently has no
+  per-periodic value for.
+- **ATTACK TABLE** — with your character sheet, these five rates are
+  what fit the miss, dodge, parry, glance and crit constants, and they
+  are the only public evidence for how unified Hit meets weapon skill.
+- **PROCS** — `per swing` is the proc rate. `min gap` is a lower bound
+  on the internal cooldown, and a tight one once the proc has fired
+  thirty or forty times: a real ICD shows as a hard floor many samples
+  never cross.
+- **DAMAGE** — `mean` and `stddev` against a known spell power are what
+  a coefficient is fitted from. The base damage is not subtracted here;
+  that is what the generated constants file is for.
+
+**Post the numbers with their sample counts.** A figure without its
+count cannot be weighed against a later one.
+````
+
+- [ ] **Step 12: Commit**
+
+```bash
 cd /Users/jh/code/forever
-git add Makefile .github/workflows/sim.yml
-git commit -m "ci(sim): test the sim module against the pinned engine, and fetch its artifacts" \
-  -m "The workflow drops the development replace before building, so CI resolves the engine from the pinned pseudo-version and a merge that forgot to pin fails loudly rather than passing against a local checkout. make engine-artifacts downloads the three artifacts the engine's CI built for the pinned sha, verifies their checksums, and puts the browser pair under web/public/_sim/<ENGINE_VERSION>/ where the web loads them immutably." \
+git add sim/measure sim/cmd/forever-measure sim/README.md
+git commit -m "feat(sim): forever-measure, recovering combat constants from a log" \
+  -m "The tool that answers, on beta day, the questions the client tables cannot: whether periodic damage crits and by how much, the observed miss/dodge/parry/glance/crit rates that with a character sheet settle how unified Hit meets the weapon-skill miss table, proc rates with the observed minimum gap that bounds an internal cooldown, and observed damage means for coefficient fitting. None of those are in DB2, and the rating conversion tables are game-table files the client package carries rather than DB2 rows, so wago serves none of them. Every figure prints with its sample count and anything under the floor prints as insufficient data rather than a number, because a proc rate from four swings lands in a constants file and nobody re-checks it. The measurement functions are exported and separate from the printing, because the nightly validation job is the second consumer. Tests run against a checked-in log with planted values and assert the tool recovers them exactly. The README carries the dummy-target procedure to follow on Sept 17." \
   -m "Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 ```
 
@@ -6093,17 +9012,25 @@ The plan states numbers. Confirm each is still true, and correct the plan where 
 
 ```bash
 cd /Users/jh/code/wowsims-forever
-echo "--- the merge left no split stats ---"
+echo "--- the merge left no split stats, and no resilience ---"
 grep -rnE 'stats\.(MeleeHit|SpellHit|MeleeCrit|SpellCrit)\b' sim/ --include='*.go' | wc -l    # want 0
 grep -rnE '\bStat(SpellHit|MeleeHit|SpellCrit|MeleeCrit)\b' ui/ --include='*.ts' --include='*.tsx' | wc -l  # want 0
-echo "--- wasm size ---"
-make artifacts >/dev/null && gzip -9 -c artifacts/sim.wasm | wc -c | awk '{printf "%.2f MB (budget 4.00, was 3.31)\n", $1/1048576}'
-echo "--- the five entrypoints ---"
-grep -c 'js.Global().Set("\(raidSimAsync\|raidSimRequestSplit\|raidSimResultCombination\|computeStats\|abortById\)"' sim/wasm/main.go  # want 5
+grep -rniE 'resilience' sim/ proto/ --include='*.go' --include='*.proto' | wc -l  # want 0
+grep -rn 'ExpertisePerQuarterPercentReduction' sim/ tools/ | wc -l  # want 0
 echo "--- provisional values are declared, not hidden ---"
 go test --tags=with_db ./sim/core/ -run 'TestProvisional|TestUnconfirmedRacials' -v
 echo "--- nothing invented a Forever number without saying so ---"
 grep -rn 'unconfirmed' sim/ --include='*.go' | wc -l
+echo "--- the engine ships no artifact of ours ---"
+ls .github/workflows/ ; test ! -d cmd/forever-sim && echo "no forever-sim in the engine: correct"
+
+cd /Users/jh/code/forever
+echo "--- wasm size, built from sim/ ---"
+make artifacts >/dev/null && gzip -9 -c artifacts/sim.wasm | wc -c | \
+  awk '{printf "%.2f MB (budget 4.00, engine-only baseline 3.31)\n", $1/1048576}'
+echo "--- the four exports, and no protobuf in the envelope ---"
+grep -c 'js.Global().Set("\(simRun\|simSplit\|simCombine\|simAbort\)"' sim/cmd/wasm/main.go  # want 4
+grep -rn '\[\]byte' sim/api/envelope.go | wc -l  # want 0
 ```
 
 The last count has no target; it is a figure to read. Every number this plan could not source is supposed to carry that word, so a small count means someone typed a number silently.
@@ -6112,12 +9039,13 @@ The last count has no target; it is a figure to read. Every number this plan cou
 
 Open `docs/superpowers/specs/2026-09-14-simulator-interfaces.md` and check the "Engine" and "Engine version" sections against the tree. Each of these is a yes or a written reason why not:
 
-- [ ] The protobuf API does not change shape: `RaidSimRequest`, `RaidSimResult`, `SimDatabase`, `APLRotation` all keep their messages. *(The `Stat` enum is renumbered — an index, not a wire identity, argued in Task 4; `Encounter.biome` is additive.)*
-- [ ] `Stat` enum: `MeleeHit`+`SpellHit` → `Hit`, `MeleeCrit`+`SpellCrit` → `Crit`, indexes synced between `sim/core/stats` and `proto/common.proto`, asserted by `TestStatEnumIsSyncedWithProto`.
-- [ ] Two artifacts per version plus the native one, all from the pinned sha, built in CI.
-- [ ] The WASM entrypoints are exactly `raidSimAsync`, `raidSimRequestSplit`, `raidSimResultCombination`, `computeStats`, `abortById`, and the smoke test proves they instantiate.
+- [ ] No message is reshaped: `RaidSimRequest`, `RaidSimResult`, `SimDatabase`, `APLRotation` all keep their messages. *(The `Stat` enum is renumbered — an index, not a wire identity, argued in Task 4; `Encounter.biome` is additive.)*
+- [ ] `Stat` enum: `MeleeHit`+`SpellHit` → `Hit`, `MeleeCrit`+`SpellCrit` → `Crit`, `Resilience` deleted, indexes synced between `sim/core/stats` and `proto/common.proto`, asserted by `TestStatEnumIsSyncedWithProto`.
+- [ ] The engine repository ships no artifact of ours: no `cmd/forever-sim`, no wasm build target, no artifact-publishing workflow. Both artifacts come from `sim/cmd/wasm` and `sim/cmd/forever-sim` in the site repo, from the pinned version, built in CI.
+- [ ] The wasm exports exactly `simRun`, `simSplit`, `simCombine`, `simAbort`, and the smoke test runs a real split-run-combine through them under node.
+- [ ] No protobuf crosses a lane boundary: `sim/api` has no `[]byte` field, and `sim/request` and `sim/adapter` are the only packages importing the engine's `proto`.
 - [ ] `ENGINE_VERSION` appears in `sim/enginever/version.go`, is written only by `make engine-pin`, and names the wasm directory and the image tag.
-- [ ] `Summarize(res *proto.RaidSimResult, req SimRequest) (summary.Summary, error)` exists in `sim/adapter`, follows the contract's mapping table, and has a golden test per spec.
+- [ ] `request.Build(req api.SimRequest) (*proto.RaidSimRequest, error)` and `adapter.Summarize(res *proto.RaidSimResult, req api.SimRequest) (summary.Summary, error)` both exist, follow the contract, and have tests; the adapter has a golden test per spec.
 - [ ] `logs/` is untouched: `cd /Users/jh/code/forever && git diff --stat main -- logs/` prints nothing.
 - [ ] Every commit in both repos carries the trailer exactly once:
       `git log --format='%H %s%n%b' main..HEAD | grep -c 'Co-Authored-By: Claude Opus 5'`
@@ -6181,55 +9109,74 @@ Report to the controller:
 
 ## Self-review
 
-Run against the design (sections 2 and 9) and the contract.
+Run against the design (sections 2 and 9), the contract at `e920e03`, and `research/08-stats.md` §12.
 
 **Spec coverage.**
 
-| Design / contract requirement | Task |
+| Design / contract / research requirement | Task |
 |---|---|
 | §2.1 Repository, module path unchanged, consumed as a Go module pinned by version | 1, 2 |
 | §2.2 Hit and crit are one stat each | 4 |
-| §2.2 Expertise reduces parry and dodge | none needed — already modelled (`sim/core/spell_outcome.go:711-735`); Task 5 makes its two constants real rather than hand-set |
+| §12.1 Delete `Resilience`; do not merge haste | 4 |
+| §2.2 Expertise reduces parry and dodge | none needed — already modelled; §12.3 calls it zero-change. Task 5 deletes the wrong quarter-percent constant |
 | §2.2 Bonus healing carries one third as bonus damage | 6 |
 | §2.2 Caster weapons grant spell damage | none needed — `stats.SpellDamage` exists; item data, data lane |
-| §2.2 Weapon skill kept | none needed — fully modelled, 15-value enum |
+| §2.2 Weapon skill kept | 8 extracts the nine derived constants into config and pins them; the formulas are untouched |
 | §2.2 Talent trees: seven rows, 11/16/21/31, buff talents baseline | 11, 12 |
+| §1.2 Thirteen hit/crit talents changed meaning | 11, 12 (rebuild, not rename) |
 | §2.2 Reworked racials, two active two passive | 9 |
 | §2.2 New baseline abilities per class | 11, 12 |
 | §2.2 Encounter environment (biome, creature type) | 8 |
+| §12.6 Extensible creature type; conditional effects as additive bonuses | 8 |
 | §2.2 `SpellScaling` absent; coefficients stay the vanilla convention | 10 |
 | §2.2 `spell_mod.go` cherry-picked from SoD | 7 |
+| §12.3 Periodic crit: the per-tick magic variant and `Dot.CritMultiplier` | 16 |
+| §12.1/§12.3 Percentage armour ignore; weapon-subclass conditional modifiers | 16 |
 | §2.3 Per-class generated constants file | 10, consumed by 11 and 12 |
 | §2.3 Order: Fury Warrior then Frost Mage | 11, 12 |
 | §2.4 One default APL per spec, as data | 11, 12 |
-| §2.5 Adapter to the logs engine's summary | 3 |
+| §2.5 Adapter to the logs engine's summary | 3B |
+| Contract: `sim/request`, our JSON to the engine's request | 3A |
+| Contract: no protobuf crosses a lane boundary | 2 (no `[]byte`), 3, 13 |
+| Contract: the engine ships no artifact of ours | 13 |
 | §5.1 `sim.wasm` from the pinned version, 4 MB gzipped budget | 13 |
 | §5.2 Native binary for the Cloud Run job | 13 |
+| Contract: the four wasm exports and no others | 13 (asserted by the CI smoke test) |
 | Contract: `ENGINE_VERSION`, `make engine-pin`, `sim/enginever/version.go` | 2 |
-| Contract: `SimRequest` / `SimResult` / `Estimate` envelopes | 2 |
-| Contract: the five WASM entrypoints and no others | 13 (asserted by the smoke test) |
+| Contract: `SimRequest` / `CharacterSpec` / `SimResult` / `Estimate` | 2 |
 | Contract: base stats and rating constants regenerated | 5 |
 | §9 risk: Forever's numbers move weekly | 5, 10 — regeneration, not editing |
-| §9 risk: unified hit against the weapon-skill miss table is unspecified | 4 keeps the vanilla table; `ProvisionalConstants()` and the spec page say so. **Not solved, by design: only beta logs settle it.** |
-| §9 risk: WASM is eight times slower than native | measured at 8.5×; the budgets in Task 13 are built on the measurement |
+| §9 risk: unified hit against the weapon-skill miss table | 4 keeps the table; 8 makes its constants fittable; **15 measures them**. Not solved before the beta, by construction |
+| §9 risk: WASM is eight times slower than native | measured at 8.5×; Task 13's budgets are built on the measurement |
+| §5.3 / §12 the numbers no table carries | 15 |
 
 Gaps, stated rather than hidden:
 
-- **`data/curated/apl/<spec_slug>.json` is the data lane's file**, and Tasks 11 and 12 write the APL into the engine's `ui/<class>/apls/` instead, because that is where `core.GetAplRotation` reads it from in the regression suite. The data lane's curated copy is the same JSON with a `sources` block; keeping both in step is a data-lane task, and the engine's copy is the one the tests run.
-- **`data/curated/specs.json` → `sim/specs/specs.go`** is named in the contract's Identifiers section and is generated by the data lane. This plan's `sim/` module does not create `sim/specs`; `adapter.splitSpecSlug` only needs the split, and hardcoding a spec list here would violate "nothing hardcodes a spec list elsewhere."
-- **Tanks and healers are out of scope** at launch (design §Decisions), so `Summarize` leaves `Healing`, `DamageTaken` and `HealingTaken` empty and says so.
+- **`data/curated/apl/<spec_slug>.json` is the data lane's file.** Tasks 11 and 12 write the APL into the engine's `ui/<class>/apls/`, because that is where `core.GetAplRotation` reads it in the regression suite, and Task 3A embeds a copy into `sim/request` so the wasm carries it with no fetch. Three copies of one document is one too many: keeping them in step is a data-lane task, and the engine's is the one the regression suite runs.
+- **`sim/specs/specs.go`** is named in the contract's Identifiers section and generated by the data lane. This plan does not create it; `adapter.splitSpecSlug` needs only the split, and hardcoding a spec list here would violate "nothing hardcodes a spec list elsewhere."
+- **Tanks and healers are out of scope** at launch, so `Summarize` leaves `Healing`, `DamageTaken` and `HealingTaken` empty and says so.
+- **`request.Build`'s buff and consume mapping is described, not spelled out.** Task 3A Step A4 names the six helpers, the protos they target and the mechanical rule (buff id = proto field name in lower snake case) but does not enumerate the fields, because the buff id list is the web lane's and does not exist yet. That is the one place in this plan where an implementer writes code from a rule rather than from a code block; the tests around it are concrete.
+- **§12.2 item 3's per-class stat dependencies** — Intellect to spell damage for Paladin and Shaman, Spirit to healing and damage for Priest, and four more — are not tasked here. They belong to the specs that need them, and neither launch spec does. The note in Task 6 warns the Priest implementer about double-applying the global ⅓.
+- **§12.7's items 9 to 12 are beta work** by its own table, and this plan reaches them through Task 15 rather than pre-empting them.
 
-**Placeholder scan.** No step says "TBD", "implement later", "add appropriate error handling", or "similar to Task N". Every code step carries the code. Three steps are conditional on something outside this lane, and each states both branches explicitly rather than deferring: Task 11 Step 3 and Task 12 Step 3 (the Forever talent calculator may not be populated before Sept 17 — keep Era's tree, declare the milestones, mark it unconfirmed), and Task 10 Step 7 / Task 11 Step 7 / Task 12 Step 7 (the data lane's `spellconst` output may not exist — keep the literals, which already carry `unconfirmed`, and regenerate later in a one-line commit).
+**Placeholder scan.** No step says "TBD", "implement later", "add appropriate error handling", or "similar to Task N". Every code step carries the code. Four steps are conditional on something outside this lane, and each states both branches explicitly rather than deferring: Tasks 11 and 12 Step 3 (the Forever talent calculator may not be populated before Sept 17 — keep Era's tree, declare the milestones, mark it unconfirmed); Tasks 10, 11 and 12 Step 7 (the data lane's `spellconst` output may not exist — keep the literals, which already carry `unconfirmed`, and regenerate later in a one-line commit); Task 6 Step 3 (the `safeDepsOrder` reorder may already be done in your checkout — the check is one command); and Task 15 Step 11's `simconsumes.json` review, which is written so the data lane gets an answer whether or not the file exists yet.
 
 **Type consistency.** Checked across tasks:
 
-- `enginever.Version` (Task 2) is read by `adapter` through `req.EngineVersion` (Task 3) and written by `make engine-pin` (Task 2) and stamped into the binary by `make artifacts` (Task 13) — one string, three consumers, one writer.
-- `api.SimRequest` (Task 2) is `Summarize`'s second parameter (Task 3) and matches the contract's Go block field for field, JSON name for JSON name.
-- `stats.Hit` / `stats.Crit` (Task 4) are used by Task 5's `CritRatingPerCritChance` / `HitRatingPerHitChance`, by Task 6's `deps.go` reorder (which also collapses the duplicate `Crit` the `sed` leaves in `safeDepsOrder`), and by Tasks 11 and 12's talent mods.
-- `core.SpellModConfig` and the 26 `SpellMod_*` kinds (Task 7) are used by Tasks 11 and 12; the kinds those two tasks actually use — `SpellMod_PowerCost_Flat`, `SpellMod_PowerCost_Pct`, `SpellMod_CritDamageBonus_Flat`, `SpellMod_DamageDone_Flat`, `SpellMod_CastTime_Flat`, `SpellMod_BonusHit_Flat`, `SpellMod_Cooldown_Flat` — are all in Task 7's produced list.
-- `Spell.ClassSpellMask uint64` (Task 7) is what `WarriorSpellMask*` and `MageSpellMask*` (Tasks 11, 12) are assigned to; both are `uint64`.
-- `spellconst.Class` / `spellconst.Spell` / `CoefficientFor` (Task 10) are consumed only by the generator in the same task; Tasks 11 and 12 consume the *generated Go arrays*, whose names (`<Name>SpellId`, `<Name>BaseDamage`, `<Name>SpellCoeff`, `<Name>CastTime`, `<Name>ManaCost`, `<Name>Level`, `<Name>CooldownMS`, `<Name>Ranks`) match what `sim/mage/frostbolt.go` already declares, which is why Task 12 Step 7 is a deletion rather than a rewrite.
-- `core.ProvisionalConstants()` (Task 5) and `core.UnconfirmedRacials()` (Task 9) are both `[]string` and are both read by the api lane's spec-support page; Task 14 Step 2 runs both.
-- `run(inPath, outPath string, iterations int, wantProgress bool, progressOut io.Writer) error` (Task 13) is the signature every test in that task calls.
+- `enginever.Version` (Task 2) is read by `adapter` through `req.EngineVersion` (Task 3B), written by `make engine-pin` (Task 2), and stamped into both artifacts by `make artifacts` (Task 13) — one string, one writer, three consumers.
+- `api.SimRequest` carries `Character api.CharacterSpec` and **no `Raw`** (Task 2). `request.Build` consumes it (3A) and `adapter.Summarize` takes it as its second parameter (3B); both signatures match the contract at `e920e03`.
+- `api.SimResult` is what `combine.Results` folds (13), what `forever-sim` writes (13), what `simRun` returns (13), and what the api lane stores. One shape, four producers.
+- `stats.Hit` / `stats.Crit` and the absence of `stats.Resilience` (Task 4) are used by Task 5's constants, Task 6's `safeDepsOrder` (which also collapses the duplicate `Crit` the `sed` leaves behind), Task 16's crit paths, and Tasks 11 and 12's talent mods.
+- `core.SpellModConfig` and the 26 `SpellMod_*` kinds (Task 7) are used by Tasks 11 and 12; every kind those two use — `SpellMod_PowerCost_Flat`, `SpellMod_PowerCost_Pct`, `SpellMod_CritDamageBonus_Flat`, `SpellMod_DamageDone_Flat`, `SpellMod_CastTime_Flat`, `SpellMod_BonusHit_Flat`, `SpellMod_Cooldown_Flat` — is in Task 7's produced list.
+- `Spell.ClassSpellMask uint64` (Task 7) is the type `WarriorSpellMask*` and `MageSpellMask*` (Tasks 11, 12) are assigned to.
+- `DotConfig.CanCrit` and `Dot.CritMultiplier` (Task 16) are what Tasks 11 and 12 set on their bleeds and dots; `PseudoStats.ArmorIgnorePercent` (16) is what Task 11's armour talents write.
+- `spellconst.Class` / `Spell` / `CoefficientFor` (Task 10) are consumed only by the generator in the same task; Tasks 11 and 12 consume the *generated Go arrays*, whose names (`<Name>SpellId`, `<Name>BaseDamage`, `<Name>SpellCoeff`, `<Name>CastTime`, `<Name>ManaCost`, `<Name>Level`, `<Name>CooldownMS`, `<Name>Ranks`) match what `sim/mage/frostbolt.go` already declares — which is why Task 12 Step 7 is a deletion rather than a rewrite.
+- `core.ProvisionalConstants()` (5) and `core.UnconfirmedRacials()` (9) are both `[]string` and both feed the api lane's spec-support page; Task 14 Step 2 runs both.
+- `measure.Report` (15) is returned by `measure.Run` and rendered by `measure.(Report).Table()`; the command calls both and nothing else, which is the separation the validation job needs.
+- `run(inPath, outPath string, iterations int, progress io.Writer) error` (Task 13's `forever-sim`) is the signature every test in that task calls. Task 15's `measure.Load`/`measure.Run` are a different pair and do not collide.
 
-One inconsistency found and fixed while reviewing: `ForeverMilestones` is declared twice, once in `sim/warrior` and once in `sim/mage`, rather than once in `core`. That is deliberate and Task 12 says why — a tree is a class's own shape, and a shared constant would let one class differ without saying so — but the two declarations must stay equal, which both tasks' `TestForeverTalentMilestones` asserts independently.
+Three inconsistencies found and fixed while reviewing:
+
+1. `ForeverMilestones` is declared twice, once in `sim/warrior` and once in `sim/mage`, rather than once in `core`. Deliberate, and Task 12 says why — a tree is a class's own shape, and a shared constant would let one class differ without saying so — but the two must stay equal, which both tasks' `TestForeverTalentMilestones` asserts independently.
+2. An earlier draft of Task 5 generated `ExpertisePerQuarterPercentReduction` from the `weapon skill` column. `research/08-stats.md` §12.4 shows the constant is wrong in principle for Forever, so the task now deletes it and the test asserts it stays deleted.
+3. An earlier draft of Task 13 built both artifacts in the engine repository. The contract at `e920e03` rules that out; Task 13 now builds both here and the engine keeps only a test workflow, which is also what makes `sim/request` and `sim/adapter` reachable from the browser at all.
