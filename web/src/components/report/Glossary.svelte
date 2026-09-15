@@ -11,6 +11,11 @@
         'Where a kill sits among every ranked kill of the same boss by the same spec, on this ruleset, as a percentile: 100 is the best, 0 the lowest. A wipe is not ranked, and a dash means nothing of this spec has been ranked on this boss yet.',
     },
     {
+      term: 'Parse, by role',
+      meaning:
+        'On the Summary tab a healer is placed by healing per second and everyone else, tanks included, by damage per second, as on Warcraft Logs. The Damage Done and Healing tabs place every row on that table’s own metric, each among their own spec.',
+    },
+    {
       term: 'Parse, hovered',
       meaning:
         'The hover text says how many ranked kills the percentile was placed among. Early on a bracket can hold one kill, which stands first of one and reads 100.',

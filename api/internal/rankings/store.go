@@ -73,16 +73,15 @@ type Store struct {
 // Store is the ingest's ranker.
 var _ reports.Ranker = (*Store)(nil)
 
-// metricOf is the metric a role is ranked on.
+// metricOf is the metric a role's headline figure is read on: healing
+// for a healer, damage for everyone else, tanks included, the way the
+// parse culture around Warcraft Logs reads them. The digests hold every
+// metric for every spec, so any other reading is a query away.
 func metricOf(role string) string {
-	switch role {
-	case "healer":
+	if role == "healer" {
 		return MetricHPS
-	case "tank":
-		return MetricDamageTaken
-	default:
-		return MetricDPS
 	}
+	return MetricDPS
 }
 
 // digestKey is one percentile bracket: a metric and the spec it was
@@ -152,8 +151,6 @@ func (s *Store) WriteFight(ctx context.Context, f reports.RankedFight) error {
 		if specName == "" {
 			specName = row.Spec
 		}
-		metric := metricOf(row.Role)
-		value := valueOf(row.MetricDPS, row.MetricHPS, float64(row.DamageTaken), metric)
 		if _, err := tx.Exec(ctx,
 			`insert into fight_metrics (report_id, fight_index, player_key, player_name, class, spec,
 			   role, ilvl, metric_dps, metric_hps, damage_taken, active_ms, deaths, encounter_id,
@@ -178,8 +175,15 @@ func (s *Store) WriteFight(ctx context.Context, f reports.RankedFight) error {
 		if row.Kill && !rewrite {
 			// Only kills feed the digests: a wipe's numbers are not
 			// comparable with a kill's, and the percentile a player is
-			// shown is against kills.
-			pending[digestKey{metric, specName}] = append(pending[digestKey{metric, specName}], value)
+			// shown is against kills. Every row feeds every metric's
+			// bracket for its spec, the way Warcraft Logs ranks: a
+			// healer has a damage parse among healers of that spec and
+			// a tank a damage parse among tanks, not only the metric
+			// the leaderboard sorts their role by.
+			for _, metric := range Metrics {
+				value := valueOf(row.MetricDPS, row.MetricHPS, float64(row.DamageTaken), metric)
+				pending[digestKey{metric, specName}] = append(pending[digestKey{metric, specName}], value)
+			}
 		}
 	}
 

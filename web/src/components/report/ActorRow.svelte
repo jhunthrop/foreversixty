@@ -33,7 +33,7 @@
     schoolToken,
   } from '../../lib/report/format';
   import type { Placement } from '../../lib/report/percentile';
-  import type { Actor } from '../../lib/report/types';
+  import type { Ability, Actor } from '../../lib/report/types';
   import type { ExactSplit } from '../../lib/report/exact';
   import AbilityBar from './AbilityBar.svelte';
   import ClassIcon from './ClassIcon.svelte';
@@ -96,6 +96,35 @@
   /** What the detail tables show: the exact split when measured, the summary's otherwise. */
   const shownAbilities = $derived(exact?.abilities ?? actor.abilities);
   const shownTargets = $derived(exact?.targets ?? actor.targets);
+  /** Hits and ticks together: a dot's ticks are its hits. */
+  const landed = (ability: Ability): number => ability.hits + ability.ticks;
+  /** The abilities worth a line, largest first; a row that only missed still says so. */
+  const detailRows = $derived(
+    [...shownAbilities]
+      .filter(
+        (ability) =>
+          ability.total > 0 ||
+          landed(ability) > 0 ||
+          (ability.misses !== undefined && Object.keys(ability.misses).length > 0),
+      )
+      .sort((a, b) => b.effective - a.effective),
+  );
+  const detailTotal = $derived(detailRows.reduce((sum, ability) => sum + ability.effective, 0));
+  const detailPeak = $derived(detailRows.reduce((peak, ability) => Math.max(peak, ability.effective), 0));
+  const targetsTotal = $derived(targetsByName.reduce((sum, target) => sum + target.total, 0));
+  /** What a line's last cell says: overhealing for a heal, otherwise what did not land. */
+  function abilityNotes(ability: Ability): string[] {
+    if (ability.overheal !== undefined && ability.total > 0) {
+      return [`${formatPercent((ability.overheal / ability.total) * 100)} over`];
+    }
+    const notes: string[] = [];
+    if (ability.absorbed) notes.push(`${formatAmount(ability.absorbed)} absorbed`);
+    if (ability.blocked) notes.push(`${formatAmount(ability.blocked)} blocked`);
+    for (const [type, count] of Object.entries(ability.misses ?? {})) {
+      notes.push(`${count} ${type.toLowerCase()}`);
+    }
+    return notes;
+  }
   const detailMark = $derived(exact === null ? mark : '');
   const detailTitle = $derived(exact === null ? title : 'Measured from the fight’s events for this window');
   const color = $derived(classColorVar(actor.class));
@@ -264,7 +293,7 @@
 
   {#if open}
     <div
-      class="bg-card-top flex flex-col gap-4 overflow-x-auto px-2 py-3 md:flex-row md:flex-wrap"
+      class="bg-card-top flex flex-col gap-4 overflow-x-auto px-2 py-3 md:flex-row md:flex-wrap md:items-start"
       data-testid="row-detail"
     >
       {#if approximate && measure !== undefined}
@@ -289,26 +318,50 @@
           {#if measureError !== ''}<span class="text-wipe text-[12px]" role="alert">{measureError}</span>{/if}
         </div>
       {/if}
-      <table class="min-w-[520px] flex-1 text-[13px]">
-        <caption class="label text-muted text-left"
-          >Abilities{#if schoolSplit.length > 1}
+      <table class="min-w-[640px] flex-1 self-start text-[13px]" data-testid="row-abilities">
+        <caption class="label text-muted pb-1 text-left">
+          Abilities{#if schoolSplit.length > 1}
             <span class="ml-3 tracking-normal normal-case" data-testid="school-split"
-              >{#each schoolSplit as part, i (part.name)}{#if i > 0}
-                  ·
-                {/if}<span
-                  class="inline-block h-[8px] w-[8px] rounded-[2px] align-middle"
-                  style={`background: ${part.token}`}
-                  aria-hidden="true"
-                ></span>
-                {part.name} <span class="tabular font-mono">{part.pct.toFixed(0)}%</span>{/each}</span
-            >{/if}</caption
-        >
+              >{#each schoolSplit as part (part.name)}<span class="mr-3 inline-flex items-center gap-1"
+                  ><span
+                    class="inline-block h-[8px] w-[8px] rounded-[2px]"
+                    style={`background: ${part.token}`}
+                    aria-hidden="true"
+                  ></span>{part.name} <span class="tabular font-mono">{part.pct.toFixed(0)}%</span></span
+                >{/each}</span
+            >{/if}
+        </caption>
+        <thead>
+          <tr class="label text-muted border-line-soft border-b">
+            <th scope="col" class="py-1 pr-3 text-left font-normal">Ability</th>
+            <th scope="col" class="py-1 pr-3 text-right font-normal" title="Effective amount in this window"
+              >Amount</th
+            >
+            <th scope="col" class="py-1 pr-3 text-right font-normal" title="Share of this row's total"
+              >Share</th
+            >
+            <th scope="col" class="w-[16%] py-1 pr-3 font-normal"
+              ><span class="sr-only">Share, drawn</span></th
+            >
+            <th scope="col" class="py-1 pr-3 text-right font-normal" title="Hits and ticks that landed"
+              >Hits</th
+            >
+            <th
+              scope="col"
+              class="py-1 pr-3 text-right font-normal"
+              title="Share of the hits that were critical">Crit</th
+            >
+            <th scope="col" class="py-1 pr-3 text-right font-normal" title="Amount per hit">Avg</th>
+            <th scope="col" class="py-1 pr-3 text-right font-normal" title="Largest single hit">Max</th>
+            <th scope="col" class="py-1 text-right font-normal"><span class="sr-only">Notes</span></th>
+          </tr>
+        </thead>
         <tbody>
-          {#each [...shownAbilities]
-            .filter((ability) => ability.total > 0 || ability.hits + ability.ticks > 0 || (ability.misses !== undefined && Object.keys(ability.misses).length > 0))
-            .sort((a, b) => b.effective - a.effective) as ability (ability.spell_id)}
+          {#each detailRows as ability (ability.spell_id)}
+            {@const hits = landed(ability)}
+            {@const school = schoolToken(ability.school)}
             <tr class="border-line-soft border-b">
-              <td class="py-1 pr-3"
+              <td class="py-1.5 pr-3"
                 >{ability.name}{#if sameName.has(ability.name)}
                   <span
                     class="text-muted ml-1 font-mono text-[11px]"
@@ -318,65 +371,72 @@
                   <span class="text-muted ml-1 text-[11px]">{schoolName(ability.school)}</span>{/if}</td
               >
               <td
-                class="tabular py-1 pr-3 text-right font-mono"
+                class="tabular py-1.5 pr-3 text-right font-mono whitespace-nowrap"
                 title={detailTitle}
                 aria-label={approximateAriaLabel(approximate, formatAmount(ability.effective))}
               >
                 {detailMark}{formatAmount(ability.effective)}
               </td>
-              <td class="text-muted tabular py-1 pr-3 text-right font-mono"
-                >{detailMark}{ability.hits + ability.ticks} hits</td
+              <td class="text-muted tabular py-1.5 pr-3 text-right font-mono whitespace-nowrap"
+                >{detailTotal === 0 ? '' : formatPercent((ability.effective / detailTotal) * 100)}</td
               >
-              <td class="text-muted tabular py-1 pr-3 text-right font-mono" title="Largest single hit"
-                >{#if ability.max > 0}max {formatAmount(ability.max)}{/if}</td
+              <td class="py-1.5 pr-3">
+                {#if detailPeak > 0 && ability.effective > 0}
+                  <span class="bg-line-soft block h-[6px] w-full"
+                    ><span
+                      class="block h-full"
+                      style={`width: ${(ability.effective / detailPeak) * 100}%; background: ${school}`}
+                    ></span></span
+                  >
+                {/if}
+              </td>
+              <td class="text-muted tabular py-1.5 pr-3 text-right font-mono whitespace-nowrap"
+                >{detailMark}{hits}</td
               >
-              <td class="text-muted tabular py-1 pr-3 text-right font-mono"
-                >{ability.crits} crits{#if ability.hits + ability.ticks > 0}
-                  <span class="text-[11px]"
-                    >({formatPercent((ability.crits / (ability.hits + ability.ticks)) * 100)})</span
-                  >{/if}</td
+              <td class="text-muted tabular py-1.5 pr-3 text-right font-mono whitespace-nowrap"
+                >{#if hits > 0}{formatPercent((ability.crits / hits) * 100)}{/if}</td
               >
-              {#if ability.overheal !== undefined && ability.total > 0}
-                <td class="text-muted tabular py-1 text-right font-mono" title="Overhealing"
-                  >{formatPercent((ability.overheal / ability.total) * 100)} over</td
-                >
-              {:else}
-                <td class="text-muted tabular py-1 text-right font-mono text-[12px]">
-                  {#if ability.absorbed}<span title="Absorbed by shields"
-                      >{formatAmount(ability.absorbed)} absorbed</span
-                    >{/if}
-                  {#if ability.blocked}<span class="ml-2" title="Blocked"
-                      >{formatAmount(ability.blocked)} blocked</span
-                    >{/if}
-                  {#if ability.misses !== undefined && Object.keys(ability.misses).length > 0}
-                    <span class="ml-2" title="Avoided or fully absorbed, by type"
-                      >{Object.entries(ability.misses)
-                        .map(([type, count]) => `${count} ${type.toLowerCase()}`)
-                        .join(', ')}</span
-                    >
-                  {/if}
-                </td>
-              {/if}
+              <td class="text-muted tabular py-1.5 pr-3 text-right font-mono whitespace-nowrap"
+                >{#if hits > 0 && ability.effective > 0}{formatAmount(ability.effective / hits)}{/if}</td
+              >
+              <td class="text-muted tabular py-1.5 pr-3 text-right font-mono whitespace-nowrap"
+                >{#if ability.max > 0}{formatAmount(ability.max)}{/if}</td
+              >
+              <td class="text-muted tabular py-1.5 text-right font-mono text-[12px] whitespace-nowrap"
+                >{abilityNotes(ability).join(' · ')}</td
+              >
             </tr>
           {/each}
         </tbody>
       </table>
-      <table class="min-w-[280px] flex-1 text-[13px]">
-        <caption class="label text-muted text-left">{pairsLabel}</caption>
+      <table class="min-w-[280px] flex-1 self-start text-[13px]" data-testid="row-targets">
+        <caption class="label text-muted pb-1 text-left">{pairsLabel}</caption>
+        <thead>
+          <tr class="label text-muted border-line-soft border-b">
+            <th scope="col" class="py-1 pr-3 text-left font-normal">Name</th>
+            <th scope="col" class="py-1 pr-3 text-right font-normal" title="Effective amount in this window"
+              >Amount</th
+            >
+            <th scope="col" class="py-1 text-right font-normal" title="Share of this row's total">Share</th>
+          </tr>
+        </thead>
         <tbody>
           {#each targetsByName as target (target.name)}
             <tr class="border-line-soft border-b">
-              <td class="py-1 pr-3"
+              <td class="py-1.5 pr-3"
                 >{target.name}{#if target.count > 1}
                   <span class="text-muted tabular font-mono text-[12px]">×{target.count}</span>{/if}</td
               >
               <td
-                class="tabular py-1 text-right font-mono"
+                class="tabular py-1.5 pr-3 text-right font-mono whitespace-nowrap"
                 title={detailTitle}
                 aria-label={approximateAriaLabel(approximate, formatAmount(target.total))}
               >
                 {detailMark}{formatAmount(target.total)}
               </td>
+              <td class="text-muted tabular py-1.5 text-right font-mono whitespace-nowrap"
+                >{targetsTotal === 0 ? '' : formatPercent((target.total / targetsTotal) * 100)}</td
+              >
             </tr>
           {/each}
         </tbody>

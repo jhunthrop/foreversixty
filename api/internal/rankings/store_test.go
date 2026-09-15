@@ -174,7 +174,7 @@ func TestWritingTheSameFightTwiceDoesNotCountItTwice(t *testing.T) {
 	h.seedReport("report-one")
 	rows := h.seedFight("report-one", 1, engine.FixtureBase, nil)
 	first := h.digested()
-	if first != int64(len(rows)) {
+	if first != int64(len(Metrics)*len(rows)) {
 		t.Fatalf("digests hold %d values after one write, want %d", first, len(rows))
 	}
 	h.seedFight("report-one", 1, engine.FixtureBase, nil)
@@ -361,8 +361,8 @@ func TestMetricHelpers(t *testing.T) {
 	if ValidMetric("threat") {
 		t.Error("unknown names must be refused")
 	}
-	if metricOf("healer") != MetricHPS || metricOf("tank") != MetricDamageTaken || metricOf("dps") != MetricDPS {
-		t.Error("each role ranks on its own metric")
+	if metricOf("healer") != MetricHPS || metricOf("tank") != MetricDPS || metricOf("dps") != MetricDPS {
+		t.Error("healers read on healing, everyone else on damage")
 	}
 	if got := valueOf(1, 2, 3, MetricHPS); got != 2 {
 		t.Errorf("valueOf = %v", got)
@@ -523,15 +523,15 @@ func TestASecondFightFoldsIntoTheSameBracket(t *testing.T) {
 	h.seedReport("report-two")
 	h.seedFight("report-two", 1, engine.FixtureBase, nil)
 
-	if got, want := h.digested(), int64(2*len(rows)); got != want {
+	if got, want := h.digested(), int64(2*len(Metrics)*len(rows)); got != want {
 		t.Fatalf("digests hold %d values, want %d: the second fight must merge in", got, want)
 	}
 	var brackets int
 	if err := h.pool.QueryRow(t.Context(), `select count(*) from percentile_digests`).Scan(&brackets); err != nil {
 		t.Fatal(err)
 	}
-	if brackets != 3 {
-		t.Fatalf("brackets = %d, want one per role", brackets)
+	if brackets != 3*len(Metrics) {
+		t.Fatalf("brackets = %d, want one per spec per metric", brackets)
 	}
 }
 
@@ -580,7 +580,7 @@ func TestWriteFightWaitsForAnotherWriterOfTheSameFight(t *testing.T) {
 	if err := h.store.WriteFight(context.Background(), fight); err != nil {
 		t.Fatalf("once the lock is free the write goes through: %v", err)
 	}
-	if got := h.digested(); got != int64(len(fight.Rows)) {
+	if got := h.digested(); got != int64(len(Metrics)*len(fight.Rows)) {
 		t.Fatalf("digests hold %d values, want %d", got, len(fight.Rows))
 	}
 }

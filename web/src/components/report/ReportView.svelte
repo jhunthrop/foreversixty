@@ -280,8 +280,6 @@
   const filtersScale = $derived(filters.target !== '' || filters.bossOnly);
   const actorTableApproximate = $derived(!windowIsWhole || filtersScale);
   let percentiles = $state(new Map<string, Placement>());
-  /** Per row, why its Parse cell is empty on this tab when the tab's metric is not its role's. */
-  let parseNotes = $state(new Map<string, string>());
   const loader = createPercentileLoader();
 
   const filterContext = $derived({
@@ -371,22 +369,20 @@
   const metricLabel = $derived(state.tab === 'healing' ? 'Healing' : 'Damage');
 
   /**
-   * The Summary tab's headline percentile is each row's own role metric -- DPS for a dps
-   * row, HPS for a healer, damage taken for a tank (spec section 3: "Role metric (DPS,
-   * HPS, damage taken for tanks)") -- not a blanket DPS for everyone on the product's
-   * default landing tab. The Damage Done, Damage Taken and Healing tabs are unaffected:
-   * they already rank every row by that table's own metric.
+   * The metric a table tab's Parse column places every row on, the way Warcraft Logs
+   * does: damage per second on Damage Done and healing per second on Healing, each row
+   * among ranked kills by its own spec, so a healer has a damage parse and a tank has
+   * one too. Damage Taken has no parse: taking more is not doing better.
    */
-  /** The metric a table tab ranks by, read off the row. */
-  function tabMetric(tab: string, row: RosterRow): { metric: string; value: number } {
+  function tabMetric(tab: string, row: RosterRow): { metric: string; value: number } | null {
     if (tab === 'healing') return { metric: 'hps', value: row.hps };
-    if (tab === 'damage-taken') return { metric: 'damage_taken', value: row.dtps };
+    if (tab === 'damage-taken') return null;
     return { metric: 'dps', value: row.dps };
   }
 
+  /** The Summary tab's headline parse: healers on healing, everyone else, tanks too, on damage. */
   function roleMetric(row: RosterRow): { metric: string; value: number } {
     if (row.role === 'healer') return { metric: 'hps', value: row.hps };
-    if (row.role === 'tank') return { metric: 'damage_taken', value: row.dtps };
     return { metric: 'dps', value: row.dps };
   }
 
@@ -425,39 +421,27 @@
     const difficulty = fight?.difficulty ?? 0;
 
     // One query per roster row that has a spec, kept beside its GUID so the answers can be
-    // put back on the right rows. Summary picks each row's own role metric; the other
-    // three tabs rank by that table's metric, exactly as before.
+    // put back on the right rows. Summary picks each row's role metric; a table tab asks
+    // for its own metric for every row.
     const wanted = summary.roster
       .filter((row) => row.spec !== undefined && row.spec !== '')
-      .map((row) => {
-        const { metric, value } = tab === 'summary' ? roleMetric(row) : tabMetric(tab, row);
-        return {
-          guid: row.guid,
-          query: {
-            encounterId,
-            difficulty,
-            spec: row.spec ?? '',
-            phase,
-            metric,
-            value: Math.round(value * 100) / 100,
+      .flatMap((row) => {
+        const picked = tab === 'summary' ? roleMetric(row) : tabMetric(tab, row);
+        if (picked === null) return [];
+        return [
+          {
+            guid: row.guid,
+            query: {
+              encounterId,
+              difficulty,
+              spec: row.spec ?? '',
+              phase,
+              metric: picked.metric,
+              value: Math.round(picked.value * 100) / 100,
+            },
           },
-        };
-      })
-      // A row is only asked about on the metric its role is ranked on: a healer's 34 dps
-      // and a mage's 0 hps are not parses, and asking placed every healer at the bottom
-      // of the Damage Done tab's Parse column.
-      .filter((entry) => {
-        const row = summary.roster.find((candidate) => candidate.guid === entry.guid);
-        return row !== undefined && roleMetric(row).metric === entry.query.metric;
+        ];
       });
-    // The rows this tab does not ask about say why their cell is empty: a tank on the
-    // Damage Done tab is ranked on damage taken, which the Summary tab shows.
-    const asked = new Set(wanted.map((entry) => entry.guid));
-    parseNotes = new Map(
-      summary.roster
-        .filter((row) => tab !== 'summary' && !asked.has(row.guid) && row.spec)
-        .map((row) => [row.guid, row.role] as const),
-    );
 
     void loader.load(wanted.map((entry) => entry.query)).then((answers) => {
       if (state.fight !== wantedFight || state.tab !== wantedTab) return;
@@ -922,7 +906,6 @@
             {metricLabel}
             {percentiles}
             {parseFallback}
-            {parseNotes}
             pairsLabel={state.tab === 'damage-taken' ? 'Sources' : 'Targets'}
             measure={nightMode ? undefined : measureRow}
             approximate={actorTableApproximate}

@@ -12,7 +12,6 @@
     metricLabel,
     percentiles = new Map<string, Placement>(),
     parseFallback = '',
-    parseNotes = new Map<string, string>(),
     pairsLabel = 'Targets',
     approximate = false,
     measure = undefined,
@@ -23,8 +22,6 @@
     percentiles?: Map<string, Placement>;
     /** What an empty Parse cell shows: '' on trash, 'wipe', or a dash for not ranked yet. */
     parseFallback?: string;
-    /** Per GUID, a fallback that overrides parseFallback for that row ('role': ranked elsewhere). */
-    parseNotes?: Map<string, string>;
     pairsLabel?: string;
     approximate?: boolean;
     measure?: (actor: Actor) => Promise<ExactSplit>;
@@ -71,7 +68,7 @@
     >
       <span title="Rank in this table">#</span>
       <span
-        title="Percentile among ranked kills of the same boss by this spec. Empty on a wipe or while nothing is ranked yet."
+        title="Percentile among ranked kills of the same boss by this spec: damage here, healing on the Healing tab. Empty on a wipe, on Damage Taken, or while nothing is ranked yet."
         >Parse</span
       >
       <span>Name</span>
@@ -89,7 +86,7 @@
           {peak}
           {durationMs}
           {approximate}
-          parseFallback={parseNotes.get(actor.guid) ?? parseFallback}
+          {parseFallback}
           {pairsLabel}
           {measure}
           percentile={percentiles.get(actor.guid) ?? null}
