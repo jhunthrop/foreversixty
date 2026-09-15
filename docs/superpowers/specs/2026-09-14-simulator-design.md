@@ -24,6 +24,7 @@ compute as the site's first paid feature.
 | Where it runs | Browser for free, unlimited, no queue: the engine as WebAssembly in a worker pool. Server for premium: the same engine natively as a Cloud Run job, gated on a signed-in account with a premium flag. One request and one result format for both lanes. |
 | Character sources | Armory by Battle.net sign-in, addon export by companion or paste, a planner build by link, a logged fight from a report or ranking. One character model behind all four, shared with the planner. |
 | Results | The sim emits the logs engine's event stream, so the summary code that renders a real fight renders a sim. Compare mode puts a real fight beside the sim per ability and per buff. |
+| Integration | The sim is mostly ambient: an execution score on every ranked fight, live DPS in the planner, a one-button landing state for members, and later tooltip deltas, the biggest-lever hint, guild execution, and results pushed to the addon (section 4.6). |
 | Validation | A nightly job sims the top parses per spec from rankings and publishes each spec's fidelity on a public support page. "Validated" means a median gap under 5% on the top 50 parses. |
 | Iterations | 3,000 by default with a live-updating estimate; a precision toggle for 10,000. Enough for ±0.25% and ±0.14% respectively; direct comparisons use paired seeds. |
 | Data | The existing pipeline generates the engine's database (items, enchants, sets, talents, consumables) from the Forever client tables; nothing scraped at runtime. |
@@ -175,6 +176,38 @@ One card per spec: state (validated, in progress, not yet), the fidelity figure 
 count behind it, the abilities with the largest gaps, the engine version, and the date. The
 answer to "can I trust this" lives on the site.
 
+### 4.6 Integration surfaces
+
+The sim is mostly not a page the member visits. Ordered by launch phase.
+
+At launch (S1 and S2):
+
+- **Execution score.** The nightly job (section 6) also sims every ranked fight of a signed-in
+  member with the gear, talents, and buffs recorded for that fight. Each report row, character
+  page, and rankings row shows "92% of what your gear can do" beside the parse percentile, with
+  compare mode one click away. The score is stored on the fight-metrics row and served by the
+  same rankings and character reads; unsigned members see it for fights whose spec is
+  validated, computed on demand in the browser.
+- **Live DPS in the planner.** A talent or slot change in the planner runs a 500-iteration sim
+  in the browser pool and updates a DPS estimate with its error in under a second; a "Sim this
+  build" control opens the full results. The planner is where gear decisions are made, the sim
+  page where they are explained.
+- **Signed-in landing state.** `/sim` for a member shows their characters with last-logout gear
+  and one button per character. No form is shown unless the member opens one.
+
+With Top Gear (S3):
+
+- **Gear tooltip deltas.** Any item tooltip on the site, a dungeon drop, a ranking row's
+  trinket, a planner candidate, shows "+42 DPS for you" from a paired single-swap sim against
+  the current gear, run in the browser on hover and cached per item for the session.
+- **Biggest lever.** After the main sim, the browser runs a handful of paired variants (a missing
+  consumable, an alternative in each talent milestone, the weapon enchant) and the results name
+  the one that helps most.
+- **Guild execution.** The guild page shows execution scores per raider per fight, from the
+  same stored column.
+- **Result to the addon.** Expected DPS and cast counts pushed through the addon inbox, so the
+  in-game meter carries an expected column beside the actual one.
+
 ### 4.5 Later, on the same engine
 
 - **Top Gear**: tick bag items, enchants, and consumables from the addon export; the premium
@@ -243,9 +276,9 @@ The engine lives outside this repository; its version is pinned in `sim/go.mod` 
 | Phase | Dates | Engine lane | Data lane | Web lane | API lane |
 |---|---|---|---|---|---|
 | S0 | Sept 15 to 19 | Forever repository; core stat changes; spell_mod cherry-pick; encounter environment concept; browser throughput spike | simdb generator against Era tables; switch to Forever tables on beta day | engine loader and worker pool spike; character model | result adapter to logs events |
-| S1 | Sept 22 to Oct 17 | Fury Warrior and Frost Mage models with constants files; racials; default APLs | per-class constants; Forever items and sets | sim page, four sources, results, compare mode, saved sims, spec page, phone | saved sims, validation job, spec fidelity |
+| S1 | Sept 22 to Oct 17 | Fury Warrior and Frost Mage models with constants files; racials; default APLs | per-class constants; Forever items and sets | sim page with the signed-in landing state, four sources, results, compare mode, saved sims, spec page, phone; live DPS in the planner | saved sims, validation job, spec fidelity, execution score column |
 | S2 | Oct 20 to Nov 4 | fixes from validation; two specs validated | launch build | polish, budgets, Lighthouse | premium flag and server lane |
-| S3 | Nov 5 to Dec 9 | remaining DPS specs in rankings order | raid loot tables | Top Gear, Droptimizer | staged premium sims |
+| S3 | Nov 5 to Dec 9 | remaining DPS specs in rankings order | raid loot tables | Top Gear, Droptimizer, gear tooltip deltas, biggest lever, guild execution | staged premium sims, addon inbox results |
 
 Each lane is one plan with parallel sub-lanes for independent tasks, per the execution rules in
 memory. The engine lane's work happens in the engine repository and is the one place a
