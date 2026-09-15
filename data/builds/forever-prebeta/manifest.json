@@ -1,0 +1,24 @@
+{
+ "build": "forever-prebeta",
+ "counts": {
+  "classes": 9,
+  "talents": 470,
+  "talents_with_prereq": 70,
+  "trees": 27
+ },
+ "derived_from": "1.15.9.69722",
+ "kind": "forever-prebeta",
+ "note": "Talents are real Forever data from Wowhead's classicplus environment. Everything else is Classic Era, carried over so the planner can render. Replace the whole build from the beta client on 2026-09-17.",
+ "provenance": {
+  "classes.json": "classic-era",
+  "combos.json": "classic-era",
+  "dungeons.json": "classic-era",
+  "icons/": "classic-era",
+  "items.json": "classic-era",
+  "races.json": "classic-era",
+  "sets.json": "classic-era",
+  "talents.json": "forever",
+  "talents/": "forever"
+ },
+ "snapshot": "data/raw-forever/wowhead-talents-2026-09-14.json"
+}

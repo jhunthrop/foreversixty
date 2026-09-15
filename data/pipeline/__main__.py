@@ -17,6 +17,20 @@ def build_parser() -> argparse.ArgumentParser:
     i = sub.add_parser("icons", help="download and convert the icons a build refers to")
     i.add_argument("--build", required=True)
 
+    ft = sub.add_parser(
+        "forever-talents",
+        help="build Forever talent files from a Wowhead snapshot (pre-beta only)",
+    )
+    ft.add_argument(
+        "--snapshot",
+        default="data/raw-forever/wowhead-talents-2026-09-14.json",
+        help="the saved Wowhead payload; see data/raw-forever/README.md",
+    )
+    ft.add_argument(
+        "--from-build", required=True, help="the build whose class and tree tables to reuse"
+    )
+    ft.add_argument("--build", required=True, help="the build directory to write")
+
     d = sub.add_parser("diff", help="diff two normalized builds")
     d.add_argument("--from", dest="from_build", required=True)
     d.add_argument("--to", dest="to_build", required=True)
@@ -44,6 +58,10 @@ def main(argv: list[str] | None = None) -> int:
         from pipeline.icons import icons_for_build
 
         icons_for_build(args.build)
+    elif args.command == "forever-talents":
+        from pipeline.forever import write_forever_talents
+
+        write_forever_talents(args.snapshot, args.from_build, args.build)
     elif args.command == "diff":
         from pipeline.diff import diff_builds
 
