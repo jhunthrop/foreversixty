@@ -1,0 +1,9 @@
+{
+  "releasesUrl": "https://github.com/jhunthrop/foreversixty/releases",
+  "downloads": [
+    { "platform": "macOS, Apple silicon", "asset": "foreversixty-companion-darwin-arm64", "signed": true },
+    { "platform": "macOS, Intel", "asset": "foreversixty-companion-darwin-amd64", "signed": true },
+    { "platform": "Windows", "asset": "foreversixty-companion-windows-amd64.exe", "signed": true },
+    { "platform": "Linux", "asset": "foreversixty-companion-linux-amd64", "signed": false }
+  ]
+}

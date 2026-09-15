@@ -9,7 +9,7 @@ describe('Base layout', () => {
       props: { title: 'Dungeons', description: 'All nine.', path: '/dungeons' },
       slots: { default: '<main>body</main>' },
     });
-    expect(html).toContain('<title>Dungeons · Forever Sixty</title>');
+    expect(html).toContain('<title data-og="title">Dungeons · Forever Sixty</title>');
     expect(html).toContain('href="https://foreversixty.gg/dungeons"');
     expect(html).toContain('content="https://foreversixty.gg/og/dungeons.png"');
     expect(html).toContain('<main>body</main>');
@@ -20,6 +20,6 @@ describe('Base layout', () => {
     const html = await container.renderToString(Base, {
       props: { title: 'Forever Sixty', description: 'x', path: '/' },
     });
-    expect(html).toContain('<title>Forever Sixty</title>');
+    expect(html).toContain('<title data-og="title">Forever Sixty</title>');
   });
 });

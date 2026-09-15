@@ -73,6 +73,32 @@ describe('spending points', () => {
   });
 });
 
+describe('applyOrder', () => {
+  it('replaces the order and gear wholesale, and clears the refusal', () => {
+    const store = loaded();
+    store.addPoint(1003);
+    expect(store.refusal).not.toBeNull();
+    store.applyOrder([1001, 1001, 1002], { head: 12640 });
+    expect(store.order).toEqual([1001, 1001, 1002]);
+    expect(store.gear).toEqual({ head: 12640 });
+    expect(store.refusal).toBeNull();
+  });
+
+  it('refuses while read-only, like every other edit', () => {
+    const store = loaded({
+      treeVersion: BUILD,
+      classSlug: 'warrior',
+      raceSlug: 'human',
+      order: [1001],
+      readOnly: true,
+      sourceId: 'k7x2qm4a',
+    });
+    store.applyOrder([1001, 1002], {});
+    expect(store.order).toEqual([1001]);
+    expect(store.refusal).toBe(READ_ONLY_REASON);
+  });
+});
+
 describe('class and race selection', () => {
   it('clears the build and the loaded trees when the class changes', () => {
     const store = loaded();

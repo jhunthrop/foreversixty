@@ -1,0 +1,57 @@
+---
+// web/src/pages/logs.astro
+// Where a raid leader starts. Live logging through the companion is the primary path; the
+// whole-file upload (Task 8) is the fallback for a night that was already logged.
+import Base from '../layouts/Base.astro';
+import Account from '../components/Account.svelte';
+import Upload from '../components/Upload.svelte';
+import companion from '../data/companion.json';
+
+const download = (asset: string): string => `${companion.releasesUrl}/latest/download/${asset}`;
+---
+
+<Base
+  title="Logs"
+  description="Upload a World of Warcraft: Forever combat log, or log live with the Forever Sixty companion."
+  path="/logs"
+  session
+>
+  <main
+    id="main"
+    tabindex="-1"
+    class="mx-auto flex w-full max-w-[1344px] flex-col gap-[22px] px-[18px] pt-4 pb-10 md:gap-8 md:px-12 md:pt-7"
+  >
+    <h1 class="section-title text-[18px]">Logs</h1>
+
+    <section class="flex flex-col gap-4">
+      <h2 class="section-title text-[18px]">Live logging</h2>
+      <ol class="flex list-decimal flex-col gap-2 pl-5 text-[14px]">
+        <li>Turn on advanced combat logging in the game: Options, Network, Advanced Combat Logging.</li>
+        <li>
+          Type <code class="font-mono">/combatlog</code> in the game before the first pull.
+        </li>
+        <li>Install the companion below and pair it with the code on this page.</li>
+        <li>Fights appear here within three seconds of ending. The raw file uploads in the background.</li>
+      </ol>
+
+      <ul class="flex flex-col gap-2" data-testid="companion-downloads">
+        {companion.downloads.map((entry) => (
+          <li class="border-line-soft flex min-h-11 flex-wrap items-center gap-x-3 gap-y-1 border-b py-2 text-[14px]">
+            <a href={download(entry.asset)}>{entry.platform}</a>
+            <span class="text-muted text-[13px]">{entry.signed ? 'signed' : 'unsigned'}</span>
+          </li>
+        ))}
+      </ul>
+      <p class="text-muted text-[13px]">
+        Source and every past release are on <a href={companion.releasesUrl}>GitHub</a>. The companion never
+        modifies the game's log file, and never sees a password.
+      </p>
+
+      <Account client:load mode="pairing" />
+    </section>
+
+    <Upload client:load />
+
+    <Account client:visible mode="reports" />
+  </main>
+</Base>

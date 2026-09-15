@@ -14,22 +14,23 @@ A fan reference site for World of Warcraft: Forever, built with [Astro](https://
 
 All commands are run from this directory (`web/`):
 
-| Command                 | Action                                                                    |
-| :---------------------- | :------------------------------------------------------------------------ |
-| `npm install`           | Install dependencies                                                      |
-| `npm run dev`           | Start the local dev server                                                |
-| `npm run build`         | Build the production site to `./dist/`                                    |
-| `npm run preview`       | Preview the production build locally                                      |
-| `npm run check`         | Type-check with `astro check` (TypeScript strict)                         |
-| `npm run lint`          | Lint with ESLint (Astro, Svelte, TypeScript)                              |
-| `npm run lint:fix`      | Lint and apply the fixable rules                                          |
-| `npm run format`        | Format with Prettier                                                      |
-| `npm run format:check`  | Check formatting without writing                                          |
-| `npm run test`          | Run unit tests once with Vitest                                           |
-| `npm run test:watch`    | Run unit tests in watch mode                                              |
-| `npm run test:e2e`      | Run end-to-end tests with Playwright (fixture data)                       |
-| `npm run test:e2e:real` | Pre-deploy smoke: build with real data, run `tests/e2e/real-data.spec.ts` |
-| `npm run lhci`          | Run Lighthouse CI                                                         |
+| Command                  | Action                                                                    |
+| :----------------------- | :------------------------------------------------------------------------ |
+| `npm install`            | Install dependencies                                                      |
+| `npm run dev`            | Start the local dev server                                                |
+| `npm run build`          | Build the production site to `./dist/`                                    |
+| `npm run preview`        | Preview the production build locally                                      |
+| `npm run check`          | Type-check with `astro check` (TypeScript strict)                         |
+| `npm run lint`           | Lint with ESLint (Astro, Svelte, TypeScript)                              |
+| `npm run lint:fix`       | Lint and apply the fixable rules                                          |
+| `npm run format`         | Format with Prettier                                                      |
+| `npm run format:check`   | Check formatting without writing                                          |
+| `npm run test`           | Run unit tests once with Vitest                                           |
+| `npm run test:watch`     | Run unit tests in watch mode                                              |
+| `npm run test:e2e`       | Run end-to-end tests with Playwright (fixture data)                       |
+| `npm run test:e2e:real`  | Pre-deploy smoke: build with real data, run `tests/e2e/real-data.spec.ts` |
+| `npm run test:e2e:phone` | Just the four phone audits, at 360x800, on the `mobile` project           |
+| `npm run lhci`           | Run Lighthouse CI                                                         |
 
 ## Project Structure
 
@@ -182,6 +183,167 @@ content="noindex">`: nobody should arrive at it from a search result.
 | `CF_PAGES`            | deploy build only                              | unset; when set, placeholder links and fixture data both fail the build |
 | `FOREVER_DATA`        | `scripts/sync-data.mjs`, so every `pre*` hook  | `real`; `fixture` publishes `src/fixtures/planner/` instead             |
 
+## Combat log reports
+
+A report's files are written to the R2 bucket `foreversixty-logs` by the API and served to
+the browser by this site's own Worker at `/logs-data/reports/<id>/…` — same origin, same
+edge cache, no CORS, and no origin call on a repeat view of a closed fight. The keys are
+the engine's `store.Keys` exactly:
+
+```
+reports/<id>/report.json              metadata, health, fight list, units   (max-age=5)
+reports/<id>/fights/<n>/summary.json  the precomputed tables                (immutable)
+reports/<id>/fights/<n>/events.parquet  typed events, queried in the browser  (immutable)
+reports/<id>/fights/<n>/live.json     the snapshot while a fight is open     (max-age=5)
+```
+
+R2 does not know a report is private, so `src/worker.ts` is the enforcement point: it asks
+the API for the report's visibility, caches the answer for sixty seconds, serves public and
+unlisted, and refuses private and guild with 403. Those two carry a signed `data_base_url`
+from `GET /v1/reports/{id}/access` instead.
+
+### The shells
+
+`/reports/<id>`, `/rankings/<slug>`, `/character/<region>/<ruleset>/<name>` and
+`/guild/<region>/<ruleset>/<name>` do not exist at build time. The Worker serves one static
+shell per prefix — `dist/reports.html` and its three siblings — and rewrites the `<title>`,
+canonical and Open Graph tags from the API's JSON with `HTMLRewriter`. The values come from
+`src/lib/report/og-meta.ts`, which is pure and unit-tested; `src/test-support/html-rewriter.ts`
+is a small stand-in for the runtime global, because `HTMLRewriter` has no Node
+implementation and `@cloudflare/vitest-pool-workers` peers on vitest 4 while this project is
+on 5.
+
+### The report island
+
+`dist/report-island.js` is a second standalone bundle, built exactly like the planner's by
+`vite.report-island.config.ts`, and budgeted at 140 KB gzipped by
+`scripts/check-island-size.mjs`. Everything it computes lives in plain TypeScript under
+`src/lib/report/`:
+
+| Module            | Responsibility                                                        |
+| ----------------- | --------------------------------------------------------------------- |
+| `types.ts`        | TypeScript mirrors of the engine's JSON, field for field              |
+| `url.ts`          | the page's whole state, which is its query string                     |
+| `load.ts`         | the API and `data_base_url`, plus the five-second live poll           |
+| `window.ts`       | rescoping every table to a brushed window, from the per-second series |
+| `filters.ts`      | target, ability, boss-only, players-only, overkill, after-death       |
+| `percentile.ts`   | parse percentiles, six at a time, cached                              |
+| `events.ts`       | the Events view's list, built from what the summary timestamps        |
+| `query.ts`        | the DuckDB-WASM query layer, behind an interface the tests fake       |
+| `planner-link.ts` | a combatant's gear and talents as an FS1 link into the planner        |
+
+### Deep queries
+
+The Queries view runs SQL over the fight's own `events.parquet` with DuckDB-WASM. It loads
+lazily — never on page load, asserted by an e2e — and entirely from this origin. The
+package's own jsDelivr helper is deliberately unused: no page on this site makes a
+third-party request.
+
+`scripts/sync-duckdb.mjs` publishes the runtime out of `node_modules` at build time, and
+splits it in two because Cloudflare Workers cap a single static asset at 25 MiB:
+
+- `duckdb-eh.wasm` and `duckdb-mvp.wasm` (32.7 and 37.5 MiB) are staged into
+  `build/duckdb-runtime/<version>/`, uploaded to the `foreversixty-logs` bucket under
+  `runtime/duckdb/<version>/`, and served by `src/worker.ts` at
+  `/duckdb-runtime/<version>/<file>` with an immutable year.
+- the two `duckdb-browser-*.worker.js` and the vendored parquet extension go to
+  `public/duckdb/<version>/` as ordinary static assets, cached for a year by
+  `public/_headers` because that path carries the version too.
+
+`scripts/duckdb-runtime.mjs` and `src/lib/report/duckdb-runtime.ts` are the two halves of
+that arithmetic, held to one version by `duckdb-runtime.test.ts`. The upload is a
+user-owned step (below) and runs once per `@duckdb/duckdb-wasm` bump; `npm run postbuild`
+fails the build if any file in `dist/` is over the 25 MiB limit, so this class of defect
+cannot reach a deploy again.
+
+Spec section 9 asks for a timing test of a brush over a 10 MB fight. The checked-in fixture's
+Parquet is 18 KB, so that budget is measured against a real raid log once one exists rather
+than against a fixture standing in for one; `tests/e2e/report-queries.spec.ts` measures a
+real DuckDB query over the real fixture in the meantime.
+
+### Running it locally
+
+```bash
+npm run dev                      # real data, no fixture report
+FOREVER_DATA=fixture npm run dev # adds /reports/fixture2abcd and /logs-data/
+npm run make:report-fixture      # regenerates src/fixtures/report/ with the engine CLI
+```
+
+The fixture report exists only under `FOREVER_DATA=fixture`: a production build prerenders
+no fixture pages and publishes no `public/logs-data/`.
+
+## Accounts, logs and rankings
+
+| Page                       | Island                                     | What it does                                                                 |
+| -------------------------- | ------------------------------------------ | ---------------------------------------------------------------------------- |
+| `/login`                   | `Account` (`login`)                        | Battle.net, or a single-use email link                                       |
+| `/account`                 | `Account` (`account`)                      | devices and pairing, characters, the anonymize toggle, sign out              |
+| `/logs`                    | `Account` (`pairing`, `reports`), `Upload` | live-logging steps, the companion downloads, whole-file upload, your reports |
+| `/rankings/<slug>`         | `Rankings`                                 | character and guild boards, every filter in the URL                          |
+| `/character/…`, `/guild/…` | `Character`, `Guild`                       | ranked history, bests, builds, progression                                   |
+
+The header shows who is signed in only on these pages and on the report shells: `Base.astro`
+takes a `session` prop, and a content page that set it would ship client JavaScript for a
+link and would not hold its Lighthouse budget.
+
+Sessions are an opaque `HttpOnly` cookie, so no code here reads one — `credentials:
+'include'` is the whole mechanism — and every state-changing call sends the readable
+`fs_csrf` cookie back in `X-CSRF-Token`.
+
+`Rankings.svelte`, `Character.svelte` and `Guild.svelte` are ordinary `client:load` Astro
+islands rather than a third standalone Vite build: Astro bundles each into `dist/_astro/`
+under a content-hashed filename (`Rankings.<hash>.js`, and so on), so they cannot be checked
+by a fixed-path budget the way `planner-island.js` and `report-island.js` are. None of their
+pages are in `lighthouserc.json`'s `collect.url` either — Step 1 of Task 21 audits the report
+page but not the rankings, character or guild shells, so nothing in the Lighthouse run would
+catch a regression here. `scripts/check-island-size.mjs` therefore also globs
+`dist/_astro/` for each of the three by component name and holds them to 16 KB gzipped —
+today they measure roughly 4 KB, 2 KB and 2 KB, so the ceiling is headroom against a
+regression rather than a target to grow into.
+
+### The phone audits
+
+`tests/e2e/report-phone.spec.ts`, `rankings-phone.spec.ts`, `character-phone.spec.ts` and
+`guild-phone.spec.ts` are the standing regression guard for the phone layout on the four
+logs-product pages that carry one: the report, the rankings board, a character page and a
+guild page. Each file sets its own 360x800 viewport with `test.use()` and skips itself on
+every Playwright project but `mobile`, so plain `npm run test:e2e` already runs all four as
+part of the ordinary suite — no CI step is dedicated to them. Each sweeps every tab, view and
+mode (or filter and page, for rankings/character/guild) the page can be in and asserts two
+things throughout: nothing scrolls sideways at 360px, and every visible control clears 44px
+in its smallest dimension. `npm run test:e2e:phone` runs just these four, against whatever
+`dist/` the last build left behind, for a fast local check while iterating on layout.
+
+## Deploying this: two things you own
+
+Two pieces of the deploy are outside this repository's CI and were left for whoever runs
+`wrangler deploy` for the first time.
+
+**The DuckDB engine modules have to be uploaded to R2 once per version.** They are 32.7 and
+37.5 MiB, over Cloudflare's 25 MiB static-asset cap, so they are served out of the
+`foreversixty-logs` bucket by `src/worker.ts` rather than out of `dist/` (see _Deep
+queries_ above). `npm run build` stages them; putting them in the bucket needs an R2 write
+token this repository does not have. From `web/`, with `CLOUDFLARE_API_TOKEN` and
+`CLOUDFLARE_ACCOUNT_ID` set, or after `npx wrangler login`:
+
+```bash
+npm run sync:duckdb    # stages build/duckdb-runtime/<version>/
+npm run upload:duckdb  # puts both modules in foreversixty-logs/runtime/duckdb/<version>/
+```
+
+`.github/workflows/web.yml` runs the same command before `wrangler deploy` when the
+`CLOUDFLARE_R2_TOKEN` secret exists, and prints a notice and carries on when it does not.
+Until the upload is done the site deploys and every page works; only the Queries view has
+nothing to instantiate.
+
+**The rest of the backend is likewise provisioned by hand, not by this workflow:** the
+`foreversixty-logs` R2 bucket and its `LOGS` binding in `wrangler.jsonc`, the bucket's CORS
+rule (`ExposeHeaders: ETag`, which the whole-file upload flow reads off each part response),
+the Cloud Run job the API dispatches log processing to, and the signing certificate the API
+uses for `data_base_url` and the multipart upload URLs. None of those live in `web/`, and
+none of them are things this repository's CI can create — they are one-time account-level
+setup the API and infrastructure own.
+
 ## Deploy (Cloudflare Workers, static assets)
 
 The site is served by Cloudflare Workers as static assets, plus the one Worker described above for
@@ -207,28 +369,41 @@ unaffected.
 
 ## Lighthouse budgets
 
-`lighthouserc.json` audits four URLs under a mobile, throttled profile: `/index.html`,
-`/dungeons/hall-of-thanes.html`, `/classes.html` and `/planner.html`. `ci.assert.assertMatrix` (an array
-of `{ matchingUrlPattern, assertions }` entries; not `ci.assert.assertions`, which is mutually exclusive
-with it) holds three of them. Every collected URL matches exactly one, which is the property to preserve
-when a URL or an entry is added: `@lhci/utils` tests each entry's pattern against each URL with a plain
-`new RegExp(pattern).test(finalUrl)` and applies every entry that matches, so a URL matching two entries
-is held to both and a URL matching none is collected and never asserted at all.
+`lighthouserc.json` audits six URLs under a mobile, throttled profile: `/index.html`,
+`/dungeons/hall-of-thanes.html`, `/classes.html`, `/planner.html`, `/logs.html` and
+`/reports/fixture2abcd.html`. `ci.assert.assertMatrix` (an array of `{ matchingUrlPattern, assertions }`
+entries; not `ci.assert.assertions`, which is mutually exclusive with it) holds four of them. Every
+collected URL matches exactly one, which is the property to preserve when a URL or an entry is added:
+`@lhci/utils` tests each entry's pattern against each URL with a plain `new RegExp(pattern).test(finalUrl)`
+and applies every entry that matches, so a URL matching two entries is held to both and a URL matching
+none is collected and never asserted at all.
 
-- `^(?!.*/(?:index|planner)\.html$).*$` — `/dungeons/hall-of-thanes.html` and `/classes.html`. LCP 1600 ms.
+- `^(?!.*/(?:index|planner|logs)\.html$)(?!.*/reports/).*$` — `/dungeons/hall-of-thanes.html` and
+  `/classes.html`. LCP 1600 ms.
 - `.*/index\.html$` — the homepage alone, for the 1800 ms LCP budget evidenced below.
-- `.*/planner\.html$` — the planner alone. No LCP assertion.
+- `.*/(?:planner|logs)\.html$` — the planner and `/logs`, which ships the same class of client-side
+  surface (the `Account` and `Upload` islands). No LCP assertion.
+- `.*/reports/.*\.html$` — `/reports/fixture2abcd.html`, the only report page that renders with no
+  network at all: the prerendered fixture shell inlines its `GET /v1/reports/{id}` payload as
+  `data-report`, and `public/logs-data/reports/fixture2abcd/` (published by `scripts/sync-duckdb.mjs`'s
+  sibling, `sync-report-fixture.mjs`) carries the rest. No LCP assertion, and a wider TBT ceiling.
 
-Accessibility and SEO stay at 0.95 on every URL, and so do TBT (100 ms) and CLS (0.05). Performance is
-0.95 on the two static entries and 0.90 on `/planner.html`, which ships more interactive surface for the
-budget. LCP is the only metric that is not asserted everywhere: `/planner.html` omits it because its
-figure moves with talent icon decode timing rather than static layout, and it measures 2120 ms against
-the 1352 ms the two static pages come in at.
+Accessibility and SEO stay at 0.95 on every URL, and so do CLS (0.05). Performance is 0.95 on the two
+static entries and 0.90 on `/planner.html`, `/logs.html` and `/reports/fixture2abcd.html`, which each
+ship more interactive surface for the budget. LCP is not asserted on `/planner.html`, `/logs.html` or
+the report page: `/planner.html`'s figure moves with talent icon decode timing rather than static
+layout (2120 ms against the 1352 ms the two static pages come in at), and the report page's largest
+element is the fight selector, which exists only once the island has parsed `report.json` — an LCP
+number there would measure the island's boot rather than the page's paint, and the performance score
+already covers that. TBT stays at 100 ms everywhere except the report page, which gets 150 ms: the
+island parses a summary and lays out twelve tabs' worth of state on a 4x throttled CPU, and holding it
+to a static page's 100 ms would mean deleting tables rather than making them faster.
 
-`/planner.html` is the one page that hydrates an island, so TBT is the metric its growth moves first and
-the composite performance score is too coarse to catch that alone. It measures 0 ms of total blocking
-time across all three runs under the 4x CPU slowdown, so the same 100 ms the rest of the site carries
-costs nothing today and turns a regression into a named failure rather than a slipped score.
+`/planner.html` and `/logs.html` are the pages that hydrate an island, so TBT is the metric their growth
+moves first and the composite performance score is too coarse to catch that alone. `/planner.html`
+measures 0 ms of total blocking time across all three runs under the 4x CPU slowdown, so the same 100 ms
+the rest of the site carries costs nothing today and turns a regression into a named failure rather than
+a slipped score.
 
 `assertMatrix` has to sit inside `ci.assert`, not as a sibling key of `ci.collect`/`ci.upload`. Sibling
 placement parses without error, but `@lhci/cli@0.15.1`'s `autorun` command decides whether to even run

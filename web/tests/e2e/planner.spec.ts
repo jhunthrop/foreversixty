@@ -301,3 +301,82 @@ test('a class switch drops a reset confirm that is still open', async ({ page })
   await expect(page.getByRole('button', { name: 'Clear all points' })).toBeHidden();
   await expect(page.getByRole('button', { name: 'Reset' })).toBeVisible();
 });
+
+test('a build opens from an addon code in the URL, with the order noted as reconstructed', async ({
+  page,
+}) => {
+  // The fixture warrior's first tier-0 talent is 1001 with max rank 3; see
+  // src/fixtures/planner/talents/warrior.json.
+  await page.goto('/planner?code=FS1%3A1.15.9.69722%3Awarrior%3Ahuman%3A3%2F0%2F0%3A');
+
+  await expect(page.getByTestId('talent-1001')).toHaveAttribute('data-rank', '3');
+  await expect(page.getByTestId('planner-split')).toHaveText('3/0');
+  await expect(page.getByTestId('planner-code-note')).toContainText('not recorded in game');
+});
+
+test('a code from another format is refused by name rather than ignored', async ({ page }) => {
+  await page.goto('/planner?code=FS2%3A1%3Awarrior%3Ahuman%3A3%2F0%2F0%3A');
+  await expect(page.getByTestId('planner-code-note')).toHaveText('That code is FS2; this site reads FS1.');
+});
+
+test('a code that spends a locked tier drops it, and the dropped count renders as a wrapped number', async ({
+  page,
+}) => {
+  // Warrior's talent 1005 sits at tier 2 of Arms; asking for a point there with nothing spent
+  // in the lower tiers is not reachable by any legal order, so orderFromRanks drops it. "00001"
+  // is talent 1005's tab position (the fifth of Arms's seven talents) encoded as base-36 digits
+  // with the trailing zeros trimmed; see src/fixtures/planner/talents/warrior.json.
+  await page.goto('/planner?code=FS1%3A1.15.9.69722%3Awarrior%3Ahuman%3A00001%2F0%2F0%3A');
+
+  const note = page.getByTestId('planner-code-note');
+  await expect(note).toContainText('minus 1 that no legal order reaches');
+  await expect(note.locator('span.font-mono')).toHaveText('1');
+});
+
+test('a code naming a class with no talent data fails clean, and switching class does not replay it', async ({
+  page,
+}) => {
+  // Paladin is a real class in this build's classes.json but ships no talents/paladin.json
+  // fixture -- the same gap the 'a failed talent fetch...' test above uses to force a load
+  // failure without a route mock.
+  await page.goto('/planner?code=FS1%3A1.15.9.69722%3Apaladin%3Ahuman%3A5%2F0%2F0%3A');
+
+  await expect(page.getByText('Talent data did not load')).toBeVisible();
+  await expect(page.getByTestId('planner-code-note')).toHaveText(
+    'That code names a class this planner does not have: paladin.',
+  );
+
+  // Recovering by picking a class that does have data must not replay the paladin code's tree
+  // ranks onto it: codeApplied is armed the moment the first load began, not only once that
+  // load succeeds, so warrior comes up with an empty build rather than paladin's digits
+  // reinterpreted against warrior's own talent tab positions.
+  await page.getByLabel('Class').selectOption('warrior');
+  await expect(page.getByRole('heading', { name: 'Arms' })).toBeVisible();
+  await expect(page.getByTestId('planner-spent')).toHaveText('0/51');
+
+  // The paladin message is now stale and, worse, no longer true -- warrior's build is working
+  // fine -- so switching class must clear it rather than leave it sitting under the new build.
+  await expect(page.getByTestId('planner-code-note')).toHaveCount(0);
+});
+
+test('a good code survives a transient failure on its own class, and still applies on a same-class Retry', async ({
+  page,
+}) => {
+  // Warrior does have talent data on this build, so this is a network blip on the way to it --
+  // nothing to do with the code itself -- unlike the paladin case above, which fails because
+  // the class named by the code has no data at all. The code must get a second chance here.
+  let attempts = 0;
+  await page.route('**/data/*/talents/warrior.json', async (route) => {
+    attempts += 1;
+    if (attempts === 1) return route.abort('failed');
+    return route.continue();
+  });
+
+  await page.goto('/planner?code=FS1%3A1.15.9.69722%3Awarrior%3Ahuman%3A3%2F0%2F0%3A');
+  await expect(page.getByText('Talent data did not load')).toBeVisible();
+
+  await page.getByRole('button', { name: 'Retry' }).click();
+  await expect(page.getByTestId('talent-1001')).toHaveAttribute('data-rank', '3');
+  await expect(page.getByTestId('planner-split')).toHaveText('3/0');
+  await expect(page.getByTestId('planner-code-note')).toContainText('not recorded in game');
+});

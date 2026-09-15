@@ -9,11 +9,16 @@ import '../styles/fonts.css';
 // The two faces every page paints first are preloaded so the swap from the fallback face
 // happens before first paint on most connections; Vite gives them the same hashed URL the
 // @fontsource CSS in fonts.css references, so no extra bytes are fetched.
+//
+// The data-og attributes are the selectors src/worker.ts rewrites through HTMLRewriter when
+// it serves a shell page for an id that did not exist at build time. Renaming one silently
+// stops that page's unfurl from updating, so src/pages/_shells.test.ts asserts they exist.
 import cinzel700Url from '@fontsource/cinzel/files/cinzel-latin-700-normal.woff2?url';
 import barlow400Url from '@fontsource/barlow/files/barlow-latin-400-normal.woff2?url';
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import Account from '../components/Account.svelte';
 
 import { SITE_NAME, SITE_URL, toJsonLd, websiteLd } from '../lib/seo';
 
@@ -21,10 +26,16 @@ interface Props {
   title: string;
   description: string;
   path: string;
+  /**
+   * Renders the signed-in state in the header. Only the logs-product pages set it: a
+   * content page that did would ship client JavaScript for a link, and the Lighthouse
+   * budgets on those pages have no room for it.
+   */
+  session?: boolean;
   /** Extra JSON-LD nodes for this page; the homepage always carries the WebSite node. */
   jsonLd?: object[];
 }
-const { title, description, path, jsonLd = [] } = Astro.props;
+const { title, description, path, session = false, jsonLd = [] } = Astro.props;
 const site = SITE_URL;
 const fullTitle = title === SITE_NAME ? title : `${title} · ${SITE_NAME}`;
 const ldNodes = path === '/' ? [websiteLd(), ...jsonLd] : jsonLd;
@@ -35,16 +46,20 @@ const ldNodes = path === '/' ? [websiteLd(), ...jsonLd] : jsonLd;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{fullTitle}</title>
-    <meta name="description" content={description} />
-    <link rel="canonical" href={`${site}${path}`} />
+    <title data-og="title">{fullTitle}</title>
+    <meta name="description" content={description} data-og="description" />
+    <link rel="canonical" href={`${site}${path}`} data-og="canonical" />
     <link rel="preload" href={cinzel700Url} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={barlow400Url} as="font" type="font/woff2" crossorigin />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <meta property="og:title" content={fullTitle} />
-    <meta property="og:description" content={description} />
-    <meta property="og:url" content={`${site}${path}`} />
-    <meta property="og:image" content={`${site}/og${path === '/' ? '/index' : path}.png`} />
+    <meta property="og:title" content={fullTitle} data-og="og-title" />
+    <meta property="og:description" content={description} data-og="og-description" />
+    <meta property="og:url" content={`${site}${path}`} data-og="og-url" />
+    <meta
+      property="og:image"
+      content={`${site}/og${path === '/' ? '/index' : path}.png`}
+      data-og="og-image"
+    />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={SITE_NAME} />
     <meta property="og:locale" content="en_US" />
@@ -59,7 +74,7 @@ const ldNodes = path === '/' ? [websiteLd(), ...jsonLd] : jsonLd;
     >
       Skip to content
     </a>
-    <Header />
+    <Header>{session && <Account client:load mode="nav" slot="session" />}</Header>
     <slot />
     <Footer />
   </body>

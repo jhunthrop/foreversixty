@@ -1,0 +1,30 @@
+---
+// web/src/pages/rankings/[slug].astro
+// Only under FOREVER_DATA=fixture: one encounter Playwright can navigate to without a
+// Worker. A real build prerenders none of these; every /rankings/<slug> is the shell.
+import Base from '../../layouts/Base.astro';
+import Rankings from '../../components/Rankings.svelte';
+import { fixtureRankingsPaths } from '../../lib/report/shell-paths';
+import { titleize } from '../../lib/report/og-meta';
+
+export function getStaticPaths() {
+  return fixtureRankingsPaths();
+}
+
+const { slug } = Astro.params;
+---
+
+<Base
+  title={`${titleize(slug ?? '')} rankings`}
+  description="World of Warcraft: Forever rankings by encounter: characters, guilds, specs and phases."
+  path={`/rankings/${slug}`}
+  session
+>
+  <main
+    id="main"
+    tabindex="-1"
+    class="mx-auto flex w-full max-w-[1344px] flex-col gap-[22px] px-[18px] pt-4 pb-10 md:gap-8 md:px-12 md:pt-7"
+  >
+    <Rankings client:load slug={slug ?? ''} />
+  </main>
+</Base>

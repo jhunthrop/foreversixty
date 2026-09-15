@@ -1,0 +1,55 @@
+---
+// web/src/pages/reports/[id].astro
+// Prerendered report pages. Only the fixtures, and only under FOREVER_DATA=fixture (see
+// ../../lib/report/shell-paths.ts): Playwright and Lighthouse need a /reports/<id> that
+// exists without a Worker and without an API.
+//
+// The complete fixture inlines its GET /v1/reports/{id} payload as data-report, the way
+// the API inlines data-build on /b/:id, so the page renders from static files alone and
+// Lighthouse measures a real report rather than an error state. The live fixture carries
+// no payload: its e2e stubs the API and the data files to exercise the fetch and poll
+// paths.
+import Base from '../../layouts/Base.astro';
+import fixtureMeta from '../../fixtures/report/meta.json';
+import { FIXTURE_REPORT_ID, fixtureReportPaths } from '../../lib/report/shell-paths';
+
+export function getStaticPaths() {
+  return fixtureReportPaths();
+}
+
+const { id } = Astro.params;
+const inline = id === FIXTURE_REPORT_ID ? JSON.stringify(fixtureMeta) : undefined;
+---
+
+<Base
+  title={id === FIXTURE_REPORT_ID ? fixtureMeta.title : 'Report'}
+  description="A World of Warcraft: Forever combat log report: fights, damage, healing, deaths and rankings."
+  path={`/reports/${id}`}
+>
+  <link rel="stylesheet" href="/report-island.css" slot="head" />
+  <main
+    id="main"
+    tabindex="-1"
+    class="mx-auto flex w-full max-w-[1344px] flex-col gap-[22px] pt-4 pb-10 md:gap-8 md:px-12 md:pt-7"
+  >
+    <!--
+      Reserves the report's space before the island mounts. Without it the placeholder is
+      one line tall, the footer sits inside the viewport, and rendering the report shoves
+      the footer down by roughly the report's own height -- a layout shift every bit as
+      real whether the box grows into the reservation or past it, so a reservation smaller
+      than the eventual content still costs the CLS budget. Measured on the fixture at
+      360px (Task 21's Lighthouse profile): the placeholder alone paints at 100svh (640px)
+      but the island's default view (first fight, Summary tab) settles at ~1288px, so
+      100svh was a guess that undershot by roughly a screen and turned into a 0.32 CLS,
+      more than six times the 0.05 budget. 200svh reserves ~1280px, within 8px of that
+      measured height, and the remaining shift is negligible. A real report's default view
+      will not match this fixture's height exactly, but it lands far closer than a single
+      screen -- the failure mode this replaces was undershooting by roughly a full screen,
+      not being off by a few rows.
+    -->
+    <div id="report" data-report-mount data-report-id={id} data-report={inline} class="min-h-[200svh]">
+      <p class="text-muted px-[18px] text-[14px] md:px-0">Loading the report.</p>
+    </div>
+    <script type="module" src="/report-island.js"></script>
+  </main>
+</Base>

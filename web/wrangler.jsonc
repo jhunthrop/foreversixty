@@ -11,10 +11,28 @@
     "html_handling": "auto-trailing-slash",
     "not_found_handling": "404-page",
     "binding": "ASSETS",
-    // Only /b/* reaches src/worker.ts. Every other path is served from the assets with no
+    // /b/* is the shared build proxy. /logs-data/* is report files out of the R2 bucket,
+    // and /duckdb-runtime/* the two DuckDB engine modules out of the same one (they are
+    // over the 25 MiB static-asset cap; see scripts/duckdb-runtime.mjs). The four shell
+    // prefixes are served from the static shells with their unfurl tags rewritten from the
+    // API's JSON (see src/worker.ts). Every other path is served from the assets with no
     // Worker invocation, so the static site keeps its zero-runtime cost.
-    "run_worker_first": ["/b/*"],
+    "run_worker_first": [
+      "/b/*",
+      "/logs-data/*",
+      "/duckdb-runtime/*",
+      "/reports/*",
+      "/rankings/*",
+      "/character/*",
+      "/guild/*",
+    ],
   },
+  "r2_buckets": [
+    // Written by the API, the parse job and the one-time DuckDB runtime upload
+    // (`npm run upload:duckdb`); read-only here. The bucket and an Object Read & Write
+    // token are user-owned setup, listed in the contract's user-owned steps.
+    { "binding": "LOGS", "bucket_name": "foreversixty-logs" },
+  ],
   "vars": {
     "API_BASE_URL": "https://api.foreversixty.gg",
   },

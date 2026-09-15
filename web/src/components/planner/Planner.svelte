@@ -6,6 +6,7 @@
 <script lang="ts">
   import { untrack } from 'svelte';
   import { DEFAULT_CLASS_SLUG, ERA_DATA_NOTICE } from '../../lib/planner/config';
+  import { decodeFS1, orderFromRanks } from '../../lib/planner/fs1';
   import {
     DATA_LOAD_FAILED,
     DataLoadError,
@@ -16,7 +17,7 @@
   } from '../../lib/planner/load';
   import { createPlannerStore } from '../../lib/planner/store.svelte';
   import { SECONDARY_BUTTON } from '../../lib/planner/styles';
-  import type { BuildRecord } from '../../lib/planner/types';
+  import type { BuildRecord, TalentFile } from '../../lib/planner/types';
   import GearPanel from './GearPanel.svelte';
   import OrderStrip from './OrderStrip.svelte';
   import SharePanel from './SharePanel.svelte';
@@ -42,14 +43,76 @@
     return new URLSearchParams(window.location.search).get(name) ?? undefined;
   }
 
+  // A code wins over ?class= and ?race=: it names all three, and a mismatch between them
+  // would be a build in the wrong class. A record (from /b/:id) wins over all three: that
+  // build already names its class and race, and it is not an addon export to decode. Read
+  // once, like the store below and for the same reason: `record` is a prop, and this only
+  // ever wants the value the page mounted with.
+  const decoded = untrack(() => {
+    const codeParam = record ? null : (fromQuery('code') ?? null);
+    return codeParam === null ? null : decodeFS1(codeParam);
+  });
+
+  // A parsed count inside one of these renders in a tabular, monospace span, the same as every
+  // other number the planner shows (OrderStrip, SummaryBar, GearPanel, TalentCell, ItemPicker).
+  // This stays a small discriminated union rather than a plain string so the template can wrap
+  // just the digits with a real element -- `decodeFS1`'s own message stays flat text (its exact
+  // wording is pinned by fs1.test.ts and is the shape Task 14 reads), so the split happens once,
+  // here, rather than by reformatting arbitrary text at render time.
+  type CodeNote =
+    | { kind: 'message'; text: string }
+    | { kind: 'tree-count'; got: string; want: string }
+    | { kind: 'reconstructed'; dropped: number; gearOnly: boolean };
+
+  /** Set when the build came in as an FS1 code: either why it could not be read, or that its
+   *  order is a reconstruction (nothing in the game records the order points were spent in). */
+  let codeNote = $state<CodeNote | null>(null);
+
+  // Matches decodeFS1's one message that carries two counts, so the digits can be pulled out
+  // and wrapped without decodeFS1 having to return anything but a flat, tested string.
+  const TREE_COUNT_MESSAGE = /^That code has (\d+) talent trees; a build has (\d+)\.$/;
+
+  function noteForMessage(message: string): CodeNote {
+    const match = TREE_COUNT_MESSAGE.exec(message);
+    return match ? { kind: 'tree-count', got: match[1], want: match[2] } : { kind: 'message', text: message };
+  }
+
+  // A code has exactly one turn on the class it names, tracked by two things together rather
+  // than one flag armed early:
+  //
+  //  - Every `load()` run only ever considers applying the code when *this run's own class*
+  //    matches the class the code names. A run for any other class leaves it alone no matter
+  //    how the timing between two `load()` calls falls out, which is what stops a class switch
+  //    (immediate, or after a failed load) from ever applying a code meant for a different
+  //    class -- `orderFromRanks` only knows tab positions, not which class they belong to, so
+  //    it would apply them onto the wrong tree without complaint if it were reachable at all.
+  //
+  //  - `codeApplied` gates *reuse within that one matching class*. It is armed only once the
+  //    code has genuinely had its turn: applied successfully, or permanently refused because
+  //    the class it names has no talent data (retrying that can never succeed). It is left
+  //    unarmed by any other failure on that same class -- a network blip on the reference
+  //    files, a 5xx on talents, sets or items -- so a same-class Retry still gets to apply the
+  //    code. Arming it unconditionally on the first attempt, whatever the failure, would drop
+  //    a perfectly good code the moment an unrelated transient error hit first and leave no
+  //    trace once the retry quietly succeeded onto an empty default build.
+  let codeApplied = false;
+
   // The store is seeded once, from the props as they arrive. `untrack` says so: without it
   // the compiler warns that these reads only capture the initial value, which is the point --
   // after mount the store owns the class, the race and the order, not the props.
   const store = untrack(() =>
     createPlannerStore({
       treeVersion: record?.tree_version ?? treeVersion,
-      classSlug: record ? classSlug : (fromQuery('class') ?? classSlug),
-      raceSlug: record ? (raceSlug ?? '') : (fromQuery('race') ?? raceSlug ?? ''),
+      classSlug: record
+        ? classSlug
+        : decoded?.ok
+          ? decoded.build.classSlug
+          : (fromQuery('class') ?? classSlug),
+      raceSlug: record
+        ? (raceSlug ?? '')
+        : decoded?.ok
+          ? decoded.build.raceSlug
+          : (fromQuery('race') ?? raceSlug ?? ''),
       order: record?.point_order,
       gear: record?.gear,
       title: record?.title,
@@ -99,14 +162,62 @@
   async function load(): Promise<void> {
     const slug = store.classSlug;
     const stale = (): boolean => store.classSlug !== slug;
+
+    // A decode failure is not tied to any class -- the code will never decode differently no
+    // matter which class loads or how many times -- so it is shown, and `codeApplied` armed,
+    // the first chance `load()` gets, independent of `slug`. A well-formed code only ever gets
+    // a turn on the run whose class matches the one it names; see the comment on `codeApplied`
+    // above for why that alone (with no early, unconditional arming) is already enough to stop
+    // a class switch from ever applying it to the wrong class.
+    if (decoded !== null && !decoded.ok && !codeApplied) {
+      codeApplied = true;
+      codeNote = noteForMessage(decoded.message);
+    }
+    const codeForThisClass =
+      decoded !== null && decoded.ok && !codeApplied && decoded.build.classSlug === slug ? decoded : null;
+
     status = 'loading';
     try {
       const reference = await loadReference(store.treeVersion);
       if (stale()) return;
       store.setReference(reference);
-      const talents = await loadTalents(store.treeVersion, slug);
+
+      let talents: TalentFile;
+      try {
+        talents = await loadTalents(store.treeVersion, slug);
+      } catch (error) {
+        // A class this planner has no talent data for will never load no matter how many
+        // times this is retried, so that -- and only that -- earns the code its one turn even
+        // though nothing was applied. Any other failure here (a network blip, a 5xx) leaves
+        // `codeApplied` unarmed, so a same-class Retry still gets a real chance to apply it.
+        // A person who followed a build link deserves to be told the class is why: the
+        // generic panel below says nothing about the code, and its Retry button cannot
+        // succeed without also changing class.
+        if (codeForThisClass !== null && error instanceof DataLoadError && error.status === 404) {
+          codeApplied = true;
+          if (!stale()) {
+            codeNote = {
+              kind: 'message',
+              text: `That code names a class this planner does not have: ${codeForThisClass.build.classSlug}.`,
+            };
+          }
+        }
+        throw error;
+      }
       if (stale()) return;
       store.setTalents(talents);
+
+      if (codeForThisClass !== null && store.talentIndex !== null) {
+        codeApplied = true;
+        const rebuilt = orderFromRanks(store.talentIndex, codeForThisClass.build.treeRanks);
+        store.applyOrder(rebuilt.order, codeForThisClass.build.gear);
+        // A build link from the deaths recap (src/lib/report/planner-link.ts) carries gear
+        // alone when the log's talents field could not be read as ranks -- every tree comes
+        // through as all zeros. The note says so rather than claiming talents loaded.
+        const gearOnly = codeForThisClass.build.treeRanks.every((tree) => tree.every((rank) => rank === 0));
+        codeNote = { kind: 'reconstructed', dropped: rebuilt.dropped.length, gearOnly };
+      }
+
       const sets = await loadSets(store.treeVersion);
       if (stale()) return;
       store.setSets(sets);
@@ -149,10 +260,27 @@
   // one would leave no tab selected and no panel shown at all. Its own effect rather than a line
   // in the one above: that effect documents a careful no-loop invariant, and this has nothing to
   // do with loading.
+  // Compared against the class this effect last saw, rather than cleared unconditionally, so
+  // that the very first run -- which fires once on mount, in the same synchronous flush as the
+  // load effect's own first run -- cannot wipe out a decode failure that load() may already
+  // have written into `codeNote` moments earlier in that same flush (decode failures are
+  // reported synchronously, before load()'s first `await`). Every run after the first is a
+  // genuine class change, and only those should ever clear it.
+  let classSlugForNoteReset = store.classSlug;
   $effect(() => {
     void store.classSlug;
     confirmingReset = false;
     activeTree = 0;
+    if (store.classSlug !== classSlugForNoteReset) {
+      // A code's note describes why the build looked the way it did on the class it was shown
+      // under -- switching class already discards that build (selectClass), so a note left
+      // behind (most visibly the "does not have" message: switching class is its entire
+      // remedy) would sit under an unrelated, working build claiming something no longer true.
+      // Every kind of note is cleared the same way; none of them describes anything about a
+      // class the planner has since moved on from.
+      codeNote = null;
+      classSlugForNoteReset = store.classSlug;
+    }
   });
 </script>
 
@@ -160,6 +288,29 @@
   <SummaryBar {store} />
 
   <p class="text-muted px-[18px] text-[13px] md:px-0">{ERA_DATA_NOTICE}</p>
+
+  {#if codeNote !== null}
+    <p class="text-muted px-[18px] text-[13px] md:px-0" data-testid="planner-code-note">
+      {#if codeNote.kind === 'tree-count'}
+        That code has <span class="tabular font-mono">{codeNote.got}</span> talent trees; a build has
+        <span class="tabular font-mono">{codeNote.want}</span>.
+      {:else if codeNote.kind === 'reconstructed'}
+        {#if codeNote.gearOnly}
+          Gear loaded from a character. The log did not record talent ranks for this build.
+        {:else if codeNote.dropped === 0}
+          Talents loaded from a character. The order points were spent in is not recorded in game, so this is
+          the lowest-tier-first order that reaches the same tree.
+        {:else}
+          Talents loaded from a character, minus
+          <span class="tabular font-mono">{codeNote.dropped}</span>
+          that no legal order reaches. The order is a reconstruction: the game does not record the order points
+          were spent in.
+        {/if}
+      {:else}
+        {codeNote.text}
+      {/if}
+    </p>
+  {/if}
 
   <!-- The three states below swap in place once the talent data arrives over the network, and
        they are wildly different heights: one line of status text against a planner several

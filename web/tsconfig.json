@@ -1,5 +1,8 @@
 {
   "extends": "astro/tsconfigs/strict",
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist"]
+  // public/duckdb/ is DuckDB-WASM's own runtime, copied in by scripts/sync-duckdb.mjs.
+  // It is vendored, minified and never imported from source; type-checking its two ~800 KB
+  // worker files runs the compiler out of heap, so it is excluded alongside the build output.
+  "exclude": ["dist", "public/duckdb"]
 }

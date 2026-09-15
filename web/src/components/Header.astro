@@ -37,23 +37,26 @@ const nav = [
       </a>
     ))}
   </nav>
-  <a
-    href={communityLinks.discordInvite}
-    class="col-start-2 row-start-1 justify-self-end inline-flex items-center gap-2 h-11 md:h-[38px] px-3 border border-line-warm rounded-control text-text bg-bg/50 font-semibold text-[13px]"
-  >
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      aria-hidden="true"
+  <div class="col-start-2 row-start-1 flex items-center justify-self-end gap-3">
+    <slot name="session" />
+    <a
+      href={communityLinks.discordInvite}
+      class="inline-flex items-center gap-2 h-11 md:h-[38px] px-3 border border-line-warm rounded-control text-text bg-bg/50 font-semibold text-[13px]"
     >
-      <path d="M8 12a4 4 0 0 0 8 0M5 8a7 7 0 0 1 14 0v7l2 3H3l2-3z" />
-    </svg>
-    <span>Discord</span>
-  </a>
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M8 12a4 4 0 0 0 8 0M5 8a7 7 0 0 1 14 0v7l2 3H3l2-3z" />
+      </svg>
+      <span>Discord</span>
+    </a>
+  </div>
 </header>

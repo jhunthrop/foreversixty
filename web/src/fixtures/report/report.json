@@ -1,0 +1,180 @@
+{
+  "report_id": "fixture2abcd",
+  "engine_version": "0.1.0",
+  "health": {
+    "engine_version": "0.1.0",
+    "layout": "retail-v16",
+    "layout_verified": true,
+    "layout_inferred": false,
+    "advanced_logging": true,
+    "missing_header": false,
+    "lines": 57,
+    "parse_errors": 0,
+    "unknown_events": {},
+    "dropped_lines": 0,
+    "clock_jumps": 0,
+    "year_rollovers": 0,
+    "header_restarts": 0
+  },
+  "fights": [
+    {
+      "index": 1,
+      "kind": "trash",
+      "name": "Trash",
+      "kill": false,
+      "in_progress": false,
+      "zone": "Sanguine Depths",
+      "start": "2026-09-26T20:10:04.6Z",
+      "end": "2026-09-26T20:10:11Z",
+      "duration_ms": 6400,
+      "players": ["Player-4184-000000A1", "Player-4184-000000A2", "Player-4184-000000A3"],
+      "deaths": 0,
+      "npc_kills": 0
+    },
+    {
+      "index": 2,
+      "kind": "trash",
+      "name": "Trash",
+      "kill": false,
+      "in_progress": false,
+      "zone": "Sanguine Depths",
+      "start": "2026-09-26T20:10:13Z",
+      "end": "2026-09-26T20:12:00Z",
+      "duration_ms": 107000,
+      "players": ["Player-4184-000000A3"],
+      "deaths": 0,
+      "npc_kills": 1
+    },
+    {
+      "index": 3,
+      "kind": "encounter",
+      "name": "Warden Kelthas",
+      "encounter_id": 9001,
+      "difficulty": 8,
+      "size": 5,
+      "kill": true,
+      "in_progress": false,
+      "zone": "Sanguine Depths",
+      "start": "2026-09-26T20:12:00Z",
+      "end": "2026-09-26T20:13:00Z",
+      "duration_ms": 60000,
+      "players": [
+        "Player-4184-000000A1",
+        "Player-4184-000000A2",
+        "Player-4184-000000A3",
+        "Player-4184-000000A4",
+        "Player-4184-000000A5"
+      ],
+      "deaths": 1,
+      "npc_kills": 1
+    },
+    {
+      "index": 4,
+      "kind": "encounter",
+      "name": "Skolex the Insatiable",
+      "encounter_id": 9002,
+      "difficulty": 8,
+      "size": 5,
+      "kill": true,
+      "in_progress": false,
+      "zone": "Sanguine Depths",
+      "start": "2026-09-26T20:13:00Z",
+      "end": "2026-09-26T20:13:10Z",
+      "duration_ms": 10000,
+      "players": ["Player-4184-000000A1"],
+      "deaths": 0,
+      "npc_kills": 1
+    }
+  ],
+  "units": [
+    {
+      "guid": "Creature-0-2085-2284-7855-169753-0000AA0001",
+      "name": "Hollow Sentinel",
+      "kind": "creature",
+      "npc_id": 169753,
+      "flags": 2632,
+      "first_seen": "2026-09-26T20:10:04.5Z",
+      "last_seen": "2026-09-26T20:10:13Z"
+    },
+    {
+      "guid": "Creature-0-2085-2284-7855-169754-0000AA0002",
+      "name": "Warden Kelthas",
+      "kind": "creature",
+      "npc_id": 169754,
+      "flags": 2632,
+      "first_seen": "2026-09-26T20:12:05Z",
+      "last_seen": "2026-09-26T20:12:39Z"
+    },
+    {
+      "guid": "Creature-0-2085-2284-7855-169755-0000AA0003",
+      "name": "Skolex the Insatiable",
+      "kind": "creature",
+      "npc_id": 169755,
+      "flags": 2632,
+      "first_seen": "2026-09-26T20:13:02Z",
+      "last_seen": "2026-09-26T20:13:09Z"
+    },
+    {
+      "guid": "Pet-0-2085-2284-7855-165189-01000000B1",
+      "name": "Ashfang",
+      "kind": "pet",
+      "npc_id": 165189,
+      "flags": 4372,
+      "owner_guid": "Player-4184-000000A4",
+      "first_seen": "2026-09-26T20:10:02Z",
+      "last_seen": "2026-09-26T20:12:02Z"
+    },
+    {
+      "guid": "Player-4184-000000A1",
+      "name": "Baelgrim-Nightslayer",
+      "kind": "player",
+      "flags": 1297,
+      "class": "Warrior",
+      "class_source": "combatant_info",
+      "spec_id": 73,
+      "item_level": 183,
+      "first_seen": "2026-09-26T20:10:05.1Z",
+      "last_seen": "2026-09-26T20:13:08Z"
+    },
+    {
+      "guid": "Player-4184-000000A2",
+      "name": "Sunwick-Nightslayer",
+      "kind": "player",
+      "flags": 1298,
+      "class": "Priest",
+      "class_source": "combatant_info",
+      "spec_id": 257,
+      "item_level": 179,
+      "first_seen": "2026-09-26T20:10:05.7Z",
+      "last_seen": "2026-09-26T20:12:35Z"
+    },
+    {
+      "guid": "Player-4184-000000A3",
+      "name": "Morrowlyn-Nightslayer",
+      "kind": "player",
+      "flags": 1298,
+      "class": "Mage",
+      "class_source": "combatant_info",
+      "spec_id": 63,
+      "item_level": 181,
+      "first_seen": "2026-09-26T20:10:03Z",
+      "last_seen": "2026-09-26T20:12:20Z"
+    },
+    {
+      "guid": "Player-4184-000000A4",
+      "name": "Thalgrit-Nightslayer",
+      "kind": "player",
+      "flags": 1297,
+      "first_seen": "2026-09-26T20:10:02Z",
+      "last_seen": "2026-09-26T20:12:11Z"
+    },
+    {
+      "guid": "Player-4184-000000A5",
+      "name": "Elyra Duskvale-Hardcore",
+      "kind": "player",
+      "flags": 1298,
+      "first_seen": "2026-09-26T20:12:13Z",
+      "last_seen": "2026-09-26T20:12:13Z"
+    }
+  ]
+}
