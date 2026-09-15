@@ -84,6 +84,12 @@
   // machinery for nothing: what the view re-reads is `summary`, which is $state.
   // eslint-disable-next-line svelte/prefer-svelte-reactivity
   const summaries = new Map<number, Summary>();
+  // A fight whose summary is on its way. A second request for the same fight while the
+  // first is in flight joins it instead of asking R2 again: the fight-selection effect
+  // and the popstate handler can both ask for the fight on screen within one tick, and
+  // each extra request is a round trip the visitor waits on for nothing.
+  // eslint-disable-next-line svelte/prefer-svelte-reactivity
+  const inflight = new Map<number, Promise<void>>();
 
   const fights = $derived<FightEntry[]>(meta?.fights ?? file?.fights ?? []);
   const firstFight = $derived(fights.length > 0 ? fights[0].index : 1);
@@ -361,6 +367,14 @@
       summary = cached;
       return;
     }
+    const pending = inflight.get(index);
+    if (pending !== undefined) return pending;
+    const request = fetchFight(index).finally(() => inflight.delete(index));
+    inflight.set(index, request);
+    return request;
+  }
+
+  async function fetchFight(index: number): Promise<void> {
     // An open fight has no summary.json at all -- the engine writes it when the fight
     // closes -- so asking for one 404s and renders "No report with that id" over a report
     // that is perfectly fine, for as long as the pull lasts. The snapshot is live.json,
@@ -413,7 +427,12 @@
   // One fetch per fight, and only when the selection actually moves.
   $effect(() => {
     const wanted = state.fight;
-    if (status !== 'ready' || dataBase === '') return;
+    // `dataBase` is read untracked: it is a guard, not a trigger. A re-sign assigns it
+    // from inside the very loadFight this effect started, before that load has set
+    // `summary`, so tracking it re-ran the effect and fetched the same fight's summary a
+    // second time on every expiry. `status` turns 'ready' only after `dataBase` is set,
+    // so the first run still sees a base.
+    if (status !== 'ready' || untrack(() => dataBase) === '') return;
     if (fight === null) return;
     if (summary?.fight_index === wanted) return;
     // Cleared on success as well as set on failure: an alert left over from the fight

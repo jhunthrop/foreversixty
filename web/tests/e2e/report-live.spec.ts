@@ -280,9 +280,11 @@ test('an expired signed base is re-signed and the same request retried', async (
     'fights/2/summary.json': summary2,
     'fights/3/summary.json': summary3,
   };
+  const summaryRequests: string[] = [];
   await page.route('**/signed/*/reports/fixture2live/**', (route) => {
     const url = new URL(route.request().url());
     const signature = Number(/\/signed\/(\d+)\//.exec(url.pathname)?.[1]);
+    if (url.pathname.endsWith('/fights/2/summary.json')) summaryRequests.push(url.pathname);
     if (!live.has(signature)) {
       return route.fulfill({ status: 403, contentType: 'text/plain', body: 'expired' });
     }
@@ -307,6 +309,12 @@ test('an expired signed base is re-signed and the same request retried', async (
   await expect(summaryRosterRows(page)).toHaveCount(1);
   await expect(page.getByTestId('report-fight-error')).toHaveCount(0);
   expect(accessCalls).toBe(2);
+  // And exactly once: the refused request and its retry, no third fetch of the same
+  // summary triggered by the base changing under the fight-selection effect.
+  expect(summaryRequests).toEqual([
+    `${signedBase(1)}/fights/2/summary.json`,
+    `${signedBase(2)}/fights/2/summary.json`,
+  ]);
 
   // And the fresh base is kept: going back to a fight that is no longer cached does not
   // re-sign a second time.
