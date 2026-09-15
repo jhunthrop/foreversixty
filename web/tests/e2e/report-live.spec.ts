@@ -242,6 +242,7 @@ test('an expired signed base is re-signed and the same request retried', async (
   const report = JSON.parse(await readFile(path.join(FIXTURES, 'report.json'), 'utf8'));
   const summary3 = JSON.parse(await readFile(path.join(FIXTURES, 'fights/3/summary.json'), 'utf8'));
   const summary2 = JSON.parse(await readFile(path.join(FIXTURES, 'fights/2/summary.json'), 'utf8'));
+  const summary1 = JSON.parse(await readFile(path.join(FIXTURES, 'fights/1/summary.json'), 'utf8'));
   const meta = JSON.parse(await readFile(path.join(FIXTURES, 'meta.json'), 'utf8'));
 
   // One base per signature, so a request carries the signature it was made with in its
@@ -269,8 +270,13 @@ test('an expired signed base is re-signed and the same request retried', async (
     ),
   );
 
+  // Every fight the test selects has a summary here. The stub answers 404 for anything
+  // else, and a 404 is a real "No report with that id" alert: the final step selects
+  // fight 1, and without its summary the test only passed when the assertion ran before
+  // the 404 landed, which it did on a fast machine and never in CI.
   const bodies: Record<string, unknown> = {
     'report.json': { ...report, report_id: 'fixture2live' },
+    'fights/1/summary.json': summary1,
     'fights/2/summary.json': summary2,
     'fights/3/summary.json': summary3,
   };
