@@ -80,6 +80,33 @@ func TestRegistryNamesUnitsAndTracksTimes(t *testing.T) {
 	}
 }
 
+// A boss mechanic's SPELL_SUMMON names the player it targets as the source of a
+// hostile add. That add is not the player's pet, and its damage to the raid is not
+// theirs.
+func TestAHostileSummonIsNotAPet(t *testing.T) {
+	r := NewRegistry(Options{})
+	player := "Player-4184-000000A4"
+	add := "Creature-0-2085-2284-7855-170007-0000AA0002"
+	r.Observe(event.Event{
+		Time: at, Kind: event.Summon,
+		Source: event.Unit{GUID: player, Name: "Mishvamp", Flags: 0x511},
+		Dest:   event.Unit{GUID: add, Name: "Ghastly Parishioner", Flags: 0xa48},
+	})
+	if got := r.Owner(add); got != add {
+		t.Fatalf("a hostile summon's owner = %q, want itself", got)
+	}
+	// The add's own lines carry an advanced block naming the player as owner too.
+	r.Observe(event.Event{
+		Time: at, Kind: event.Damage,
+		Source: event.Unit{GUID: add, Name: "Ghastly Parishioner", Flags: 0xa48},
+		Dest:   event.Unit{GUID: player, Name: "Mishvamp", Flags: 0x512},
+		Adv:    event.Advanced{OK: true, InfoGUID: add, OwnerGUID: player},
+	})
+	if got := r.Owner(add); got != add {
+		t.Fatalf("a hostile add's owner from the advanced block = %q, want itself", got)
+	}
+}
+
 func TestPetOwnerFromASummonAndFromTheAdvancedBlock(t *testing.T) {
 	r := NewRegistry(Options{})
 	owner := "Player-4184-000000A4"

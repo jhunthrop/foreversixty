@@ -205,6 +205,8 @@
               type="button"
               class="text-nav inline-flex min-h-11 items-center text-[12px] font-bold tracking-[0.06em] uppercase md:min-h-0"
               aria-expanded={isOpen(death)}
+              aria-label={`${isOpen(death) ? 'Fold' : 'Open'} ${splitUnitName(death.name).name}’s death at ${formatDuration(death.at_ms)}`}
+              title={`${isOpen(death) ? 'Fold' : 'Open'} this death card`}
               data-testid="death-toggle"
               onclick={() => toggle(death)}>{isOpen(death) ? 'Fold' : 'Open'}</button
             >

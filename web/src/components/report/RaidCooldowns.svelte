@@ -84,6 +84,7 @@
     // The nearest use on this lane, within a fortieth of the window: a tap names it.
     const row = rows.find((entry) => entry.name === lane.dataset.lane);
     const near = row?.uses
+      .filter((use) => pull === undefined || (use.at >= pull.start_ms && use.at < pull.end_ms))
       .filter((use) => Math.abs(use.at - at) <= span / 40 || (use.at <= at && at <= use.end))
       .sort((a, b) => Math.abs(a.at - at) - Math.abs(b.at - at))[0];
     const use =
@@ -147,12 +148,11 @@
         >
       {/if}
     </h2>
-    {#if pulls.length > 0}
-      <p class="text-muted label h-5 truncate" data-testid="raid-cooldowns-readout">
-        {#if hovered !== ''}<span class="text-strong normal-case">{hovered}</span>{:else}hover a lane for the
-          pull · alternate shading is one pull each · a red top edge is a wipe{/if}
-      </p>
-    {/if}
+    <p class="text-muted label h-5 truncate" data-testid="raid-cooldowns-readout">
+      {#if hovered !== ''}<span class="text-strong normal-case">{hovered}</span
+        >{:else if pulls.length > 0}hover or tap a lane for the pull and the nearest use · alternate shading
+        is one pull each · a red top edge is a wipe{:else}hover or tap a lane for the nearest use{/if}
+    </p>
     <ul class="flex flex-col">
       {#each rows as row (row.name)}
         {@const across = pullsUsed(row.uses)}
@@ -192,7 +192,7 @@
               {/if}
               {#if !pull.kill}
                 <span
-                  class="bg-wipe absolute top-0 h-[2px] border-l border-black/40"
+                  class="bg-wipe border-bg absolute top-0 h-[2px] border-l-2"
                   style={`left: ${Math.max(pct(pull.start_ms), 0)}%; width: ${Math.min(pct(pull.end_ms), 100) - Math.max(pct(pull.start_ms), 0)}%`}
                   aria-hidden="true"
                 ></span>

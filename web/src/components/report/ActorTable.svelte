@@ -88,8 +88,12 @@
         actor.name,
         total === 0 ? '0' : ((actor.effective / total) * 100).toFixed(2),
         String(actor.effective),
-        durationMs === 0 ? '0' : (actor.effective / (durationMs / 1000)).toFixed(1),
-        durationMs === 0 ? '0' : Math.min((actor.active_ms / durationMs) * 100, 100).toFixed(1),
+        (actor.time_ms ?? durationMs) === 0
+          ? '0'
+          : (actor.effective / ((actor.time_ms ?? durationMs) / 1000)).toFixed(1),
+        (actor.time_ms ?? durationMs) === 0
+          ? '0'
+          : Math.min((actor.active_ms / (actor.time_ms ?? durationMs)) * 100, 100).toFixed(1),
       ]);
     });
     return lines.map((row) => row.map((cell) => `"${cell.replaceAll('"', '""')}"`).join(',')).join('\n');

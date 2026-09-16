@@ -97,7 +97,7 @@
           >
             <span class="truncate font-semibold">{entry.name}</span>
             <span class="bg-line-soft block h-[6px] w-full"
-              ><span class="bg-wipe block h-full" style={`width: ${entry.pct}%`}></span></span
+              ><span class="bg-ember block h-full" style={`width: ${entry.pct}%`}></span></span
             >
             <span
               class="tabular text-right font-mono"
@@ -173,14 +173,14 @@
               <!-- Over the night the number is uptime over the target's own time in combat,
                    so the bar is that share, not the segments laid on the whole night. -->
               <span
-                class="absolute top-0 h-full {kind === 'BUFF' ? 'bg-kill' : 'bg-wipe'}"
+                class="absolute top-0 h-full {kind === 'BUFF' ? 'bg-kill' : 'bg-ember'}"
                 style={`width: ${Math.min(shareOf(track), 100)}%`}
                 title={`Up ${formatDuration(track.uptime_ms)} of the ${formatDuration(track.time_ms)} this unit was in`}
               ></span>
             {:else}
               {#each track.segments as segment, i (`${segment.start_ms}-${i}`)}
                 <span
-                  class="absolute top-0 h-full {kind === 'BUFF' ? 'bg-kill' : 'bg-wipe'}"
+                  class="absolute top-0 h-full {kind === 'BUFF' ? 'bg-kill' : 'bg-ember'}"
                   style={`left: ${pct(segment.start_ms)}%; width: ${Math.max(pct(segment.end_ms - segment.start_ms), 0.4)}%; opacity: ${Math.min(0.4 + segment.stacks * 0.2, 1)}`}
                   title={`${formatDuration(segment.start_ms)} to ${formatDuration(segment.end_ms)}${segment.stacks > 1 ? ` · ${segment.stacks} stacks` : ''}`}
                 ></span>

@@ -171,16 +171,22 @@ func (r *Registry) Observe(e event.Event) {
 	r.see(e.Dest, e.Time)
 	r.see(e.ExtraUnit, e.Time)
 
-	// The advanced block names a pet's owner directly.
+	// The advanced block names a pet's owner directly. It names an owner for a
+	// boss mechanic's hostile add too (the player the mechanic targeted), so
+	// the same test as a summon's applies: a pet or a guardian, or a unit on
+	// the owner's own side.
 	if e.Adv.OK && e.Adv.InfoGUID != "" && e.Adv.OwnerGUID != "" &&
 		Parse(e.Adv.OwnerGUID).Kind != KindNone {
-		if u := r.units[e.Adv.InfoGUID]; u != nil {
+		if u := r.units[e.Adv.InfoGUID]; u != nil && r.ownable(u, e.Adv.OwnerGUID) {
 			u.OwnerGUID = e.Adv.OwnerGUID
 		}
 	}
-	// A summon is the authoritative ownership signal.
+	// A summon is the authoritative ownership signal, for a pet or a guardian, or
+	// for anything on the summoner's own side. A boss mechanic writes SPELL_SUMMON
+	// with the player it targets as the source of a hostile add; that add is not
+	// theirs, and its damage to the raid is not their damage.
 	if e.Kind == event.Summon && e.Dest.GUID != "" && e.Source.GUID != "" {
-		if u := r.units[e.Dest.GUID]; u != nil {
+		if u := r.units[e.Dest.GUID]; u != nil && r.ownable(u, e.Source.GUID) {
 			u.OwnerGUID = e.Source.GUID
 		}
 	}
@@ -206,6 +212,20 @@ func (r *Registry) Observe(e event.Event) {
 			}
 		}
 	}
+}
+
+// ownable reports whether a unit can belong to the named owner: a pet or a
+// guardian always can; anything else only when it is on the owner's side,
+// which a hostile add spawned on a player is not.
+func (r *Registry) ownable(u *Unit, ownerGUID string) bool {
+	if u.Flags&(FlagTypePet|FlagTypeGuardian) != 0 {
+		return true
+	}
+	owner, ok := r.units[ownerGUID]
+	if !ok {
+		return false
+	}
+	return Friendly(u.Flags) == Friendly(owner.Flags) && Hostile(u.Flags) == Hostile(owner.Flags)
 }
 
 func (r *Registry) see(u event.Unit, at time.Time) {

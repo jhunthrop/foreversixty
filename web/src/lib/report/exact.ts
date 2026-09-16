@@ -199,7 +199,7 @@ SELECT spell_id, via, any_value(spell_name) AS spell_name, min(spell_school) AS 
   count(*) FILTER (WHERE event NOT LIKE '%PERIODIC%') AS hits,
   count(*) FILTER (WHERE event LIKE '%PERIODIC%') AS ticks,
   count(*) FILTER (WHERE critical) AS crits,
-  min(amount) AS min_hit, max(amount) AS max_hit
+  min(effective) AS min_hit, max(effective) AS max_hit
 FROM rows
 WHERE ${scope}
 GROUP BY spell_id, via

@@ -233,11 +233,12 @@ func (a *Accumulator) fold(t *actor, e event.Event, amount, effective int64, tar
 	if e.Critical.V {
 		ab.Crits++
 	}
-	if amount > ab.Max {
-		ab.Max = amount
+	// Sized by what landed: a killing blow's overkill is not part of the hit.
+	if effective > ab.Max {
+		ab.Max = effective
 	}
-	if !t.minSet[abilityKey{e.Spell.ID, via}] || amount < ab.Min {
-		ab.Min = amount
+	if !t.minSet[abilityKey{e.Spell.ID, via}] || effective < ab.Min {
+		ab.Min = effective
 		t.minSet[abilityKey{e.Spell.ID, via}] = true
 	}
 }

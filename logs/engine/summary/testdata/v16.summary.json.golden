@@ -199,8 +199,8 @@
           "hits": 1,
           "crits": 1,
           "ticks": 0,
-          "min": 1618,
-          "max": 1618
+          "min": 812,
+          "max": 812
         },
         {
           "spell_id": 139,
@@ -212,8 +212,8 @@
           "hits": 0,
           "crits": 0,
           "ticks": 1,
-          "min": 240,
-          "max": 240
+          "min": 0,
+          "max": 0
         }
       ],
       "targets": [
@@ -249,8 +249,8 @@
           "hits": 1,
           "crits": 1,
           "ticks": 0,
-          "min": 1618,
-          "max": 1618
+          "min": 812,
+          "max": 812
         },
         {
           "spell_id": 139,
@@ -261,8 +261,8 @@
           "hits": 0,
           "crits": 0,
           "ticks": 1,
-          "min": 240,
-          "max": 240
+          "min": 0,
+          "max": 0
         }
       ],
       "targets": [

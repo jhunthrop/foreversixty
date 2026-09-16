@@ -132,7 +132,10 @@
           >{streaming ? 'Loading…' : 'Load every hit and heal in this window'}</button
         >
         from the fight’s events.{/if}{:else}: casts, auras and deaths from the summary, and
-      <span class="tabular font-mono">{stream.length}</span> hits and heals from the fight’s events.{/if}
+      <span class="tabular font-mono"
+        >{all.filter((event) => event.kind === 'damage' || event.kind === 'heal').length}</span
+      >
+      hits and heals from the fight’s events{stream.length === all.length ? '' : ' in scope'}.{/if}
     {#if streamError !== ''}<span class="text-wipe" role="alert">{streamError}</span>{/if}
     Every field of every line is in Queries.
   </p>

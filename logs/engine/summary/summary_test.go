@@ -187,7 +187,8 @@ func TestDamageDoneCreditsPetsToTheirOwner(t *testing.T) {
 	if m.Abilities[0].Overkill != 700 {
 		t.Errorf("overkill = %d, want 700 (the -1s clamp to zero)", m.Abilities[0].Overkill)
 	}
-	if m.Abilities[0].Min != 500 || m.Abilities[0].Max != 2000 {
+	// Sized by what landed: the 2000 hit overkilled by 700, so the largest hit is 1300.
+	if m.Abilities[0].Min != 500 || m.Abilities[0].Max != 1300 {
 		t.Errorf("min/max = %d/%d", m.Abilities[0].Min, m.Abilities[0].Max)
 	}
 	h, ok := actorByGUID(s.DamageDone, hunter)
