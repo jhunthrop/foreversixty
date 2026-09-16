@@ -171,6 +171,72 @@ describe('scoping a row to the window', () => {
     const whole = scopeSummary(summary, { startMs: 0, endMs: 40_000 });
     expect(whole.damage_done.map((a) => a.name)).toContain('Morrowlyn-Nightslayer');
   });
+
+  it('scales a player’s per-target threat by the same ratio as their total', () => {
+    const base: Summary = {
+      engine_version: 't',
+      fight_index: 1,
+      duration_ms: 4000,
+      damage_done: [
+        {
+          guid: 'P1',
+          name: 'Tank',
+          total: 800,
+          effective: 800,
+          active_ms: 4000,
+          abilities: [],
+          targets: [],
+          series: [200, 200, 200, 200],
+        },
+      ],
+      damage_taken: [],
+      healing: [],
+      healing_taken: [],
+      deaths: [],
+      auras: [],
+      casts: [],
+      interrupts: [],
+      dispels: [],
+      resources: [],
+      threat: [{ guid: 'P1', name: 'Tank', threat: 1000, model_version: 'base-1', complete: false }],
+      combatants: [],
+      roster: [],
+    };
+    const halfWindow = { startMs: 0, endMs: 2000 };
+    const withPairs: Summary = {
+      ...base,
+      threat_by_target: [
+        { guid: 'P1', name: 'Tank', target_guid: 'E1', target_name: 'Boss', threat: 600 },
+        { guid: 'P1', name: 'Tank', target_guid: 'E2', target_name: 'Add', threat: 400 },
+      ],
+      taunts: [
+        {
+          at_ms: 500,
+          source_guid: 'P1',
+          source_name: 'Tank',
+          target_guid: 'E1',
+          target_name: 'Boss',
+          spell_id: 355,
+          spell_name: 'Taunt',
+        },
+        {
+          at_ms: 3000,
+          source_guid: 'P1',
+          source_name: 'Tank',
+          target_guid: 'E1',
+          target_name: 'Boss',
+          spell_id: 355,
+          spell_name: 'Taunt',
+        },
+      ],
+    };
+    const scoped = scopeSummary(withPairs, halfWindow);
+    const ratio = scoped.threat[0].threat / 1000;
+    expect(scoped.threat_by_target?.[0].threat).toBeCloseTo(600 * ratio);
+    expect(scoped.threat_by_target?.[1].threat).toBeCloseTo(400 * ratio);
+    // The taunt inside the window survives; the one after it is cut, like a death would be.
+    expect(scoped.taunts?.map((taunt) => taunt.at_ms)).toEqual([500]);
+  });
 });
 
 describe('presets', () => {

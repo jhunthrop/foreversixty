@@ -266,6 +266,28 @@ export interface ThreatRow {
   complete: boolean;
 }
 
+/** summary.ThreatPair — one player's threat on one enemy, for the threat-by-target view. */
+export interface ThreatPair {
+  guid: string;
+  name: string;
+  target_guid: string;
+  target_name: string;
+  threat: number;
+}
+
+/** summary.Taunt — who taunted what, when. */
+export interface Taunt {
+  at_ms: number;
+  source_guid: string;
+  source_name: string;
+  target_guid: string;
+  target_name: string;
+  spell_id: number;
+  spell_name: string;
+  /** Set by the whole-night fold: which pull this taunt happened in. */
+  label?: string;
+}
+
 /** event.Item, which has no json tags: these are the Go field names verbatim. */
 export interface GearItem {
   ID: number;
@@ -333,6 +355,10 @@ export interface Summary {
   roster: RosterRow[];
   /** Absent from summaries written before engine 0.3.0. */
   mechanics?: MechanicsBlock;
+  /** Absent from summaries written before engine 0.3.1. */
+  threat_by_target?: ThreatPair[];
+  /** Absent from summaries written before engine 0.3.1. */
+  taunts?: Taunt[];
 }
 
 /** units.Unit */

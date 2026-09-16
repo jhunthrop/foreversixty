@@ -61,6 +61,8 @@ export function scopeSource(
     casts: summary.casts.filter((row) => keep(row.guid)),
     resources: summary.resources.filter((track) => keep(track.guid)),
     threat: summary.threat.filter((row) => keep(row.guid)),
+    threat_by_target: summary.threat_by_target?.filter((pair) => keep(pair.guid)),
+    taunts: summary.taunts?.filter((taunt) => keep(taunt.source_guid)),
     interrupts: summary.interrupts.filter((row) => keep(row.source_guid)),
     dispels: summary.dispels.filter((row) => keep(row.source_guid)),
   };

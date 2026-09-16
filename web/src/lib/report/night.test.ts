@@ -321,6 +321,45 @@ describe('aggregateNight', () => {
     ]);
   });
 
+  it('folds per-target threat by enemy name and shifts taunts onto the night’s clock', () => {
+    const kaalFights = [fight(1, 'Kaal', false, 10_000), fight(2, 'Kaal', true, 10_000)];
+    const kaalSummaries = new Map<number, Summary>([
+      [1, summary(1, 10_000, [roster('Player-1', 1000)])],
+      [2, summary(2, 10_000, [roster('Player-1', 500)])],
+    ]);
+    const pairs = (threat: number) => [
+      { guid: 'Player-1', name: 'Tank', target_guid: 'Creature-a', target_name: 'Kaal', threat },
+    ];
+    const withThreat = new Map(kaalSummaries);
+    withThreat.set(1, {
+      ...kaalSummaries.get(1)!,
+      threat_by_target: pairs(100),
+      taunts: [
+        {
+          at_ms: 1000,
+          source_guid: 'Player-1',
+          source_name: 'Tank',
+          target_guid: 'Creature-a',
+          target_name: 'Kaal',
+          spell_id: 355,
+          spell_name: 'Taunt',
+        },
+      ],
+    });
+    // A second pull of the same boss is a new GUID for the add; folding by name keeps it
+    // as one row instead of two.
+    withThreat.set(2, {
+      ...kaalSummaries.get(2)!,
+      threat_by_target: [{ ...pairs(50)[0], target_guid: 'Creature-b' }],
+    });
+    const night = nightSummary(kaalFights, withThreat);
+    expect(night.threat_by_target).toEqual([
+      { guid: 'Player-1', name: 'Tank', target_guid: 'Kaal', target_name: 'Kaal', threat: 150 },
+    ]);
+    expect(night.taunts?.[0].label).toMatch(/pull 1/);
+    expect(night.taunts?.[0].at_ms).toBe(1000);
+  });
+
   it('offsets hits by their pull, skips a pull whose table was not found, and folds a no-player row by its counts', () => {
     const withMechanics = new Map(summaries);
     // Pull 1 (10_000 ms, offset 0): table not found, but the fixture still carries a

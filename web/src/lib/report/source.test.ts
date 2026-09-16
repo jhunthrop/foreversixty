@@ -91,6 +91,21 @@ function summary(): Summary {
     dispels: [],
     resources: [],
     threat: [],
+    threat_by_target: [
+      { guid: 'Player-1', name: 'One', target_guid: 'Creature-9', target_name: 'Boss', threat: 10 },
+      { guid: 'Player-2', name: 'Two', target_guid: 'Creature-9', target_name: 'Boss', threat: 20 },
+    ],
+    taunts: [
+      {
+        at_ms: 1000,
+        source_guid: 'Player-1',
+        source_name: 'One',
+        target_guid: 'Creature-9',
+        target_name: 'Boss',
+        spell_id: 355,
+        spell_name: 'Taunt',
+      },
+    ],
     combatants: [],
     roster: [
       {
@@ -169,5 +184,16 @@ describe('scopeSource', () => {
   it('keeps the debuffs a player applied on enemies under that player’s scope', () => {
     const scoped = scopeSource(summary(), 'Player-2', players);
     expect(scoped.auras.map((track) => track.target_guid)).toEqual(['Creature-9']);
+  });
+
+  it('narrows per-target threat by the player and taunts by their source', () => {
+    const scoped = scopeSource(summary(), 'Player-1', players);
+    expect(scoped.threat_by_target?.map((pair) => pair.guid)).toEqual(['Player-1']);
+    expect(scoped.taunts?.map((taunt) => taunt.source_guid)).toEqual(['Player-1']);
+  });
+
+  it('keeps every player’s per-target threat under the friendlies scope', () => {
+    const scoped = scopeSource(summary(), 'friendlies', players);
+    expect(scoped.threat_by_target?.map((pair) => pair.guid)).toEqual(['Player-1', 'Player-2']);
   });
 });

@@ -18,6 +18,8 @@ import type {
   MechanicsBoss,
   ResourceTrack,
   Summary,
+  Taunt,
+  ThreatPair,
   ThreatRow,
   PullMark,
 } from './types';
@@ -229,6 +231,8 @@ export function nightSummary(
   const casts = new Map<string, CastRow>();
   const exchanges = new Map<string, ExchangeRow>();
   const threat = new Map<string, ThreatRow>();
+  const threatPairs = new Map<string, ThreatPair>();
+  const taunts: Taunt[] = [];
   const resources = new Map<string, ResourceTrack>();
   const combatants = new Map<string, CombatantRow>();
   const mechanicRows = new Map<string, MechanicRow>();
@@ -327,6 +331,20 @@ export function nightSummary(
         found === undefined ? { ...row } : { ...found, threat: found.threat + row.threat },
       );
     }
+    // Keyed by the target's name, not its GUID, for the same reason as auras and
+    // exchanges: an add is a new GUID every pull. The night's target_guid is the name,
+    // since the real per-pull GUID is not a stable identity across the fold.
+    for (const pair of summary.threat_by_target ?? []) {
+      const key = `${pair.guid}|${pair.target_name}`;
+      const found = threatPairs.get(key);
+      threatPairs.set(
+        key,
+        found === undefined
+          ? { ...pair, target_guid: pair.target_name }
+          : { ...found, threat: found.threat + pair.threat },
+      );
+    }
+    for (const taunt of summary.taunts ?? []) taunts.push({ ...taunt, at_ms: taunt.at_ms + offset, label });
     for (const row of summary.combatants) combatants.set(row.guid, row);
     for (const track of summary.resources) {
       const rkey = `${track.guid}|${track.power_type}`;
@@ -392,6 +410,8 @@ export function nightSummary(
     dispels: [...exchanges.values()].filter((row) => row.kind === 'dispel'),
     resources: [...resources.values()],
     threat: [...threat.values()],
+    threat_by_target: [...threatPairs.values()],
+    taunts,
     combatants: [...combatants.values()],
     mechanics: mechanicsSeen
       ? {

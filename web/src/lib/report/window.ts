@@ -15,7 +15,17 @@
 // question that needs precision says so.
 import { splitUnitName } from '../characters';
 import { formatDuration } from './format';
-import type { Actor, AuraTrack, CastRow, Death, ResourceTrack, RosterRow, Summary, ThreatRow } from './types';
+import type {
+  Actor,
+  AuraTrack,
+  CastRow,
+  Death,
+  ResourceTrack,
+  RosterRow,
+  Summary,
+  ThreatPair,
+  ThreatRow,
+} from './types';
 import type { ReportState } from './url';
 
 /** The engine's summary.Options.Bucket default. */
@@ -213,6 +223,20 @@ function scopeThreat(threat: ThreatRow[], scoped: Summary, whole: Summary): Thre
   });
 }
 
+/**
+ * A player's per-target split scales with the same ratio their own threat total just
+ * did -- the browser has no model to recompute the split from, only the whole-fight
+ * numbers and the window's share of them.
+ */
+function scaleThreatPairs(pairs: ThreatPair[], whole: ThreatRow[], scoped: ThreatRow[]): ThreatPair[] {
+  return pairs.map((pair) => {
+    const before = whole.find((row) => row.guid === pair.guid)?.threat ?? 0;
+    const after = scoped.find((row) => row.guid === pair.guid)?.threat ?? 0;
+    const ratio = before === 0 ? 0 : after / before;
+    return { ...pair, threat: pair.threat * ratio };
+  });
+}
+
 /** A row with nothing in the window is dropped, not shown as a zero. */
 function scopeActors(actors: Actor[], window: TimeWindow): ScopedActor[] {
   return actors
@@ -245,6 +269,10 @@ export function scopeSummary(summary: Summary, window: TimeWindow): Summary {
     resources: summary.resources.map((track) => scopeResource(track, window)),
   };
   scoped.threat = scopeThreat(summary.threat, scoped, summary);
+  scoped.threat_by_target = scaleThreatPairs(summary.threat_by_target ?? [], summary.threat, scoped.threat);
+  scoped.taunts = (summary.taunts ?? []).filter(
+    (taunt) => taunt.at_ms >= window.startMs && taunt.at_ms <= window.endMs,
+  );
   scoped.roster = scopeRoster(summary.roster, scoped, window);
   return scoped;
 }
