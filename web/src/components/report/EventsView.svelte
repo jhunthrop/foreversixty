@@ -122,7 +122,9 @@
     <span class="tabular font-mono">{matching.length}</span> events
     {#if stream === null}
       are listed, from the summary: casts, auras going up and down, the hits and heals before each death, and
-      the deaths, each in the class colour of the player it is about.{#if loadStream !== undefined}
+      the deaths, each in the class colour of the player it is about. An aura applied while the same aura is
+      already up on that player is folded into the running one, so its applier can be named on the Buffs table
+      and not here.{#if loadStream !== undefined}
         <button
           type="button"
           class="text-gold inline-flex min-h-11 items-center underline-offset-2 hover:underline md:min-h-0"

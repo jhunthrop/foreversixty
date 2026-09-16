@@ -78,7 +78,7 @@
         String(row.spell_id),
         String(row.succeeded),
         String(row.started),
-        String(cancelled(row)),
+        approximate ? '' : String(cancelled(row)),
         failedKnown(row) ? String(refused(row)) : '',
         (row.cast_time_ms / 1000).toFixed(1),
       ]),
@@ -141,7 +141,7 @@
         data-testid="cast-rhythm"
         title="Casts of every spell in this scope, and the longest stretch between two of them. A gap counts time spent dead or out of range; over the night it is on the night's clock."
       >
-        <span class="tabular font-mono">{rhythm.casts}</span> casts{#if cancelledTotal > 0}
+        <span class="tabular font-mono">{rhythm.casts}</span> casts{#if cancelledTotal > 0 && !approximate}
           · <span class="tabular font-mono">{cancelledTotal}</span> cancelled{/if} ·
         <span class="tabular font-mono">{perMinute(rhythm.casts)}</span> a minute · longest gap
         <span class="tabular font-mono">{formatDuration(rhythm.gap.to - rhythm.gap.from)}</span> at
@@ -220,13 +220,19 @@
                 >—</span
               >{/if}<span class="label font-body ml-1.5 md:hidden">failed</span>
           </span>
+          <!-- The summary keeps whole-fight cast starts with no instants, so a window cannot
+               say which casts inside it were cut short; a prorated count named the wrong
+               spells, and a dash names nothing wrongly. -->
           <span
             class="tabular text-muted text-right font-mono"
-            title="Casts started that never went off: moved, interrupted or cancelled mid-cast; instants have none"
-            aria-label={approximateAriaLabel(approximate, `${cancelled(row)} cancelled`)}
+            title={approximate
+              ? 'Cancelled casts are counted for the whole fight; a window cannot split them'
+              : 'Casts started that never went off: moved, interrupted or cancelled mid-cast; instants have none'}
+            aria-label={approximate ? 'cancelled casts not split by window' : `${cancelled(row)} cancelled`}
             data-testid="cast-cancelled"
           >
-            {mark}{cancelled(row)}<span class="label font-body ml-1.5 md:hidden">cancelled</span>
+            {approximate ? '—' : cancelled(row)}<span class="label font-body ml-1.5 md:hidden">cancelled</span
+            >
           </span>
           <span
             class="tabular text-muted text-right font-mono text-[13px]"

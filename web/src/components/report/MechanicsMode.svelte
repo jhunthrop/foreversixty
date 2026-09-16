@@ -196,11 +196,14 @@
    * The Deaths tab, scoped to the player and with their card open: the Deaths tab keys an
    * open card by guid and the death's instant on the summary's own clock.
    */
-  function deathsPatch(guid: string, atMs?: number, spellId?: number): Partial<ReportState> {
-    const death =
-      atMs !== undefined
-        ? summary.deaths.find((entry) => entry.guid === guid && entry.at_ms === atMs)
-        : summary.deaths.find((entry) => entry.guid === guid && entry.killing_blow?.spell_id === spellId);
+  function deathsPatch(guid: string, nearMs?: number, spellId?: number): Partial<ReportState> {
+    // The player's death by this mechanic nearest the instant given (a hit's last instant,
+    // or the death's own): a player killed twice by the same mechanic gets the right card.
+    const death = summary.deaths
+      .filter(
+        (entry) => entry.guid === guid && (spellId === undefined || entry.killing_blow?.spell_id === spellId),
+      )
+      .sort((a, b) => Math.abs(a.at_ms - (nearMs ?? a.at_ms)) - Math.abs(b.at_ms - (nearMs ?? b.at_ms)))[0];
     return {
       mode: 'analyze',
       view: 'tables',
@@ -266,12 +269,14 @@
                 >
                 {#if problem.hit?.killed}
                   <a
-                    href={hrefFor(deathsPatch(problem.hit.guid, undefined, problem.row.spell_id))}
+                    href={hrefFor(deathsPatch(problem.hit.guid, problem.hit.last_ms, problem.row.spell_id))}
                     class={linkClass}
                     aria-label={`Deaths for ${problem.subject}`}
                     onclick={(event) =>
-                      follow(event, deathsPatch(problem.hit?.guid ?? '', undefined, problem.row.spell_id))}
-                    >Deaths</a
+                      follow(
+                        event,
+                        deathsPatch(problem.hit?.guid ?? '', problem.hit?.last_ms, problem.row.spell_id),
+                      )}>Deaths</a
                   >
                 {/if}
               {:else if problem.row.kind === 'interrupt'}
@@ -479,8 +484,8 @@
             >
               <span class="text-text font-semibold">{splitUnitName(death.name).name}</span>
               <span
-                >{#if death.label}{death.label} ·
-                {/if}at <span class="tabular font-mono">{formatDuration(death.at_ms)}</span>
+                >{death.label ? `${death.label} · ` : ''}at
+                <span class="tabular font-mono">{formatDuration(death.at_ms)}</span>
                 · {death.by}</span
               >
               <a

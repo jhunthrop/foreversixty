@@ -479,7 +479,7 @@
               <th scope="col" class="py-1 pr-3 text-right font-normal" title="Largest single hit">Max</th>
               <th
                 scope="col"
-                class="py-1 text-left font-normal whitespace-nowrap md:min-w-[220px] md:text-right"
+                class="min-w-[160px] py-1 text-left font-normal md:min-w-[220px] md:text-right"
                 aria-label="Notes"
               ></th>
             </tr>
@@ -539,7 +539,7 @@
                 >
                 <!-- Wraps: a long list of what did not land must not push the table past its box. -->
                 <td
-                  class="text-muted tabular py-1.5 text-left font-mono text-[12px] whitespace-nowrap md:min-w-[220px] md:text-right"
+                  class="text-muted tabular max-w-[200px] py-1.5 text-left font-mono text-[12px] break-words md:max-w-none md:min-w-[220px] md:text-right md:whitespace-nowrap"
                   >{abilityNotes(ability).join(' · ')}</td
                 >
               </tr>

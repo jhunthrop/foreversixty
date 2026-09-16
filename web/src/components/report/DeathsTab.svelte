@@ -54,6 +54,15 @@
   /** Cards the reader has opened by hand; every card is open while there are few. */
   /** The cards opened by hand, from the url, so a pasted link opens the same ones. */
   const opened = $derived(new Set(open));
+  // A link that arrives with a card already open (Mechanics' Deaths links) lands at the
+  // top of a long page; bring the first open card into view once, on arrival.
+  let scrolledTo = '';
+  $effect(() => {
+    const first = open[0];
+    if (first === undefined || first === scrolledTo) return;
+    scrolledTo = first;
+    document.getElementById(`death-${first}`)?.scrollIntoView({ block: 'start' });
+  });
   const foldAll = $derived(ordered.length > FOLD_ABOVE);
   const isOpen = (death: Death): boolean => !foldAll || opened.has(`${death.guid}-${death.at_ms}`);
   function toggle(death: Death): void {
@@ -207,6 +216,7 @@
       <li
         class="border-line rounded-panel bg-raised flex flex-col gap-3 border p-3"
         data-testid={`death-${death.guid}`}
+        id={`death-${death.guid}-${death.at_ms}`}
       >
         <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
           {#if foldAll}

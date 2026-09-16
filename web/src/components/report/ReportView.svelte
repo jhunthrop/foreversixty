@@ -362,8 +362,16 @@
           },
         ],
   );
+  // The chart is the fight's damage on every tab but the two that have their own series;
+  // its caption says so, or nine tabs read as a damage table with a stranger's heading.
   const chartLabel = $derived(
-    state.tab === 'damage-taken' ? 'Damage taken' : state.tab === 'healing' ? 'Healing' : 'Damage',
+    state.tab === 'damage-taken'
+      ? 'Damage taken'
+      : state.tab === 'healing'
+        ? 'Healing'
+        : state.tab === 'damage-done'
+          ? 'Damage'
+          : 'Damage, the fight’s pace (the table below is its own)',
   );
   // Whole means the cut window too: "ignore events after a death" narrows what the tables
   // sum just as a brush does, and a narrowed table is measured, not prorated.
@@ -444,7 +452,9 @@
   // ignore-after-death do not scale anything -- they subset or add exact figures -- so
   // they are not part of this. Over-claiming (marking a row that individually happens to
   // be exact) is the safe direction here; under-claiming is not.
-  const filtersScale = $derived(filters.target !== '' || filters.bossOnly);
+  // An ability filter counts too: the summary cannot split sources or mitigation by one
+  // ability, and the measured path can.
+  const filtersScale = $derived(filters.target !== '' || filters.bossOnly || filters.ability !== null);
   const actorTableApproximate = $derived(
     !windowIsWhole || filtersScale || ignoringDead || filters.countOverkill,
   );

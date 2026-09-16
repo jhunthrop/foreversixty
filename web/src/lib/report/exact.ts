@@ -275,7 +275,7 @@ export function exactMissesSql(
       : scopeClause(scope).replaceAll('other_guid', other.guid).replaceAll('other_name', other.name);
   return `SELECT ${actor} AS guid, miss_type, count(*) AS n
 FROM ${EVENTS_TABLE}
-WHERE kind = 'missed' AND miss_type <> '' AND ${windowClause(window)}${narrowed}${excludeClause(options.exclude, actor, FIGHT_MS)}
+WHERE kind = 'missed' AND miss_type <> '' AND ${windowClause(window)}${abilityClause(kind, options)}${narrowed}${excludeClause(options.exclude, actor, FIGHT_MS)}
 GROUP BY 1, 2`;
 }
 
