@@ -1481,6 +1481,8 @@
                 : undefined}
             scopeNoun={nightMode ? 'night' : 'pull'}
             durationMs={summary?.duration_ms ?? scoped.duration_ms}
+            window={cutWindow}
+            {nightMode}
             onPatch={patch}
             onWindow={setWindow}
             totalThreat={windowed?.threat

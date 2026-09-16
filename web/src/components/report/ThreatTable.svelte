@@ -33,6 +33,7 @@
   import type { Taunt, ThreatPair, ThreatRow } from '../../lib/report/types';
   import { aroundWindow, type TimeWindow } from '../../lib/report/window';
   import CopyCsv from './CopyCsv.svelte';
+  import TimeChart from './TimeChart.svelte';
 
   let {
     rows,
@@ -46,6 +47,8 @@
     totalThreat = undefined,
     target = '',
     durationMs,
+    window = { startMs: 0, endMs: durationMs },
+    nightMode = false,
     sourceName = undefined,
     scopeNoun = 'pull',
     onPatch,
@@ -75,8 +78,12 @@
     scopeNoun?: 'pull' | 'night';
     /** The whole fight's length, which a taunt's window link is clamped against. */
     durationMs: number;
+    /** The page's window, so the chart's brush is the report's window. */
+    window?: TimeWindow;
+    /** True on the night, where there is no one clock and the chart is not drawn. */
+    nightMode?: boolean;
     onPatch: (patch: { target?: string }) => void;
-    onWindow: (window: TimeWindow) => void;
+    onWindow: (window: TimeWindow | null) => void;
   } = $props();
 
   /** A row of the table, whichever question it is answering. */
@@ -270,6 +277,50 @@
   );
   /** The units table spells a name; the event's own copy of it is the fallback. */
   const nameOf = (guid: string, recorded: string): string => splitUnitName(names.get(guid) ?? recorded).name;
+  /**
+   * The enemy the chart draws: the picked one, or — with "Every enemy" picked — the one
+   * carrying the most threat, named under the chart so nobody reads it as the raid's total.
+   */
+  const charted = $derived(picked ?? everyoneGroups[0] ?? groups[0]);
+  /** A running total, so the line's value at a second is that player's standing then. */
+  function cumulative(series: number[]): number[] {
+    let running = 0;
+    return series.map((value) => (running += value));
+  }
+  /**
+   * One line per player on the charted enemy, each in their class colour, longest first so
+   * the legend reads top-down like the table. Every pair of a player on this enemy is
+   * summed: six adds of one name are one enemy, and a player's line on it is the sum.
+   */
+  const chartLines = $derived.by(() => {
+    if (charted === undefined) return [];
+    // eslint-disable-next-line svelte/prefer-svelte-reactivity
+    const byPlayer = new Map<string, number[]>();
+    for (const pair of pairs) {
+      if (pair.series === undefined || !charted.guids.includes(pair.target_guid)) continue;
+      const found = byPlayer.get(pair.guid) ?? [];
+      const merged = [...found];
+      pair.series.forEach((value, index) => {
+        merged[index] = (merged[index] ?? 0) + value;
+      });
+      byPlayer.set(pair.guid, merged);
+    }
+    return [...byPlayer.entries()]
+      .map(([guid, series]) => ({
+        label: splitUnitName(names.get(guid) ?? guid).name,
+        series: cumulative(series.map((value) => value ?? 0)),
+        token: classColorVar(classOf.get(guid)),
+      }))
+      .sort((a, b) => (b.series[b.series.length - 1] ?? 0) - (a.series[a.series.length - 1] ?? 0));
+  });
+  /** The taunts on the charted enemy, as marks on the chart's time axis. */
+  const chartMarks = $derived(
+    orderedTaunts.map((taunt) => ({
+      atMs: taunt.at_ms,
+      label: `${nameOf(taunt.source_guid, taunt.source_name)} · ${taunt.spell_name} on ${nameOf(taunt.target_guid, taunt.target_name)}`,
+    })),
+  );
+  const showChart = $derived(!nightMode && chartLines.length > 0);
   const selectClass =
     'border-line-warm bg-raised rounded-control text-text h-11 w-full max-w-full min-w-0 px-2 text-[13px] md:h-9 md:w-auto';
 </script>
@@ -283,6 +334,35 @@
       by the window's share, not the window's own events.
     </p>
   {/if}
+  {#if showChart}
+    <div data-testid="threat-chart">
+      <TimeChart
+        series={[]}
+        extra={chartLines}
+        marks={chartMarks}
+        perSecond={false}
+        {durationMs}
+        {window}
+        deaths={[]}
+        label={`Threat on ${charted?.name ?? ''}`}
+        {onWindow}
+      />
+    </div>
+  {/if}
+  <p class="text-muted text-[12px]" data-testid="threat-chart-note">
+    {#if nightMode}
+      A night has no clock to draw threat on, so there is no chart here: the totals below are every pull's
+      threat added up.
+    {:else if showChart}
+      One cumulative line per player, on {charted?.name}{picked === undefined
+        ? ', the enemy carrying the most threat; pick another above'
+        : ''}. A taunt in the game puts the taunter on top, and the base threat model does not: the lines are
+      what damage and healing built, so a taunt mark is the moment the order stopped matching them.
+    {:else}
+      This report was parsed before threat was kept second by second, so there is no chart; the totals below
+      are the whole fight's.
+    {/if}
+  </p>
   {#if groups.length > 0}
     <label class="label text-muted flex flex-wrap items-center gap-2" for="threat-target">
       Enemy

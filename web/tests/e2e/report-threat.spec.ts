@@ -166,3 +166,31 @@ test('the totals table shares the players to 100% and leaves the enemies out of 
   // the harness smoke checks their rows read a dash where a share would be.
   await expect(page.getByTestId('threat-share-note')).toContainText('every player’s threat');
 });
+
+// The chart is the answer to "did I pull it off the tank at 3:54": one cumulative line
+// per player on the picked enemy, the taunts marked on the axis, and the same brush the
+// rest of the page uses.
+test('the threat chart draws one line per player and marks the taunts', async ({ page }) => {
+  await page.goto(FIGHT);
+  const chart = page.getByTestId('threat-chart');
+  await expect(chart).toBeVisible();
+  // Four players built threat on Warden Kelthas, so four legend entries.
+  await expect(chart.getByTestId('chart-line-label')).toHaveCount(4);
+  await expect(chart).toContainText('Baelgrim');
+  // With no enemy picked the chart says which one it is drawing.
+  await expect(page.getByTestId('threat-chart-note')).toContainText('Warden Kelthas');
+  await expect(chart.getByTestId('chart-mark')).toHaveCount(1);
+  await expect(chart.getByTestId('chart-mark').first()).toHaveAttribute('title', /Taunt/);
+});
+
+test('the threat chart’s own brush sets the report’s window', async ({ page }) => {
+  await page.goto(FIGHT);
+  await page.getByTestId('threat-chart').getByTestId('window-start').fill('6000');
+  await expect(page).toHaveURL(/start=6000/);
+});
+
+test('the night has no threat chart, and says why', async ({ page }) => {
+  await page.goto('/reports/fixture2abcd?fight=all&tab=threat');
+  await expect(page.getByTestId('threat-chart')).toHaveCount(0);
+  await expect(page.getByTestId('threat-chart-note')).toContainText('no clock');
+});

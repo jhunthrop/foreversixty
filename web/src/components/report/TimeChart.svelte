@@ -12,6 +12,8 @@
   let {
     series,
     extra = [],
+    marks = [],
+    perSecond = true,
     durationMs,
     window: current,
     deaths,
@@ -21,6 +23,10 @@
     series: number[];
     /** More lines drawn behind the main one, each in its token's colour. */
     extra?: { label: string; series: number[]; token: string }[];
+    /** Ticks on the time axis, named on hover: the taunts under a threat chart. */
+    marks?: { atMs: number; label: string }[];
+    /** False when the lines are a running total rather than a rate: the caption and readout drop "per second". */
+    perSecond?: boolean;
     durationMs: number;
     window: TimeWindow;
     deaths: { at_ms: number; name: string }[];
@@ -36,8 +42,11 @@
   let dragTo = $state<number | null>(null);
   /** The second under the pointer, or null when it is off the canvas. */
   let hoverMs = $state<number | null>(null);
+  const seriesLength = $derived(
+    extra.reduce((longest, line) => Math.max(longest, line.series.length), series.length),
+  );
   const hoverIndex = $derived(
-    hoverMs === null ? null : Math.min(series.length - 1, Math.floor(hoverMs / BUCKET_MS)),
+    hoverMs === null ? null : Math.min(seriesLength - 1, Math.floor(hoverMs / BUCKET_MS)),
   );
   const hoverValue = $derived(hoverIndex === null ? null : (series[hoverIndex] ?? 0));
   const hoverExtra = $derived(
@@ -142,6 +151,22 @@
     }
     context.setLineDash([]);
 
+    if (marks.length > 0) {
+      context.strokeStyle = gold;
+      context.fillStyle = gold;
+      context.lineWidth = 2;
+      for (const mark of marks) {
+        const x = Math.round(xOf(mark.atMs)) + 0.5;
+        context.beginPath();
+        context.moveTo(x, HEIGHT);
+        context.lineTo(x, HEIGHT - 14);
+        context.stroke();
+        context.beginPath();
+        context.arc(x, HEIGHT - 16, 3, 0, Math.PI * 2);
+        context.fill();
+      }
+    }
+
     if (hoverMs !== null) {
       const x = Math.round(xOf(hoverMs)) + 0.5;
       context.strokeStyle = styles.getPropertyValue('--color-text').trim();
@@ -164,7 +189,7 @@
 
   $effect(() => {
     // Re-reads series, window, deaths and width, so any of them redraws the canvas.
-    void [series, extra, current, deaths, width, peak, hoverMs];
+    void [series, extra, marks, current, deaths, width, peak, hoverMs];
     draw();
   });
 
@@ -212,11 +237,11 @@
 >
   <figcaption class="flex flex-wrap items-baseline justify-between gap-2">
     <span class="label text-muted"
-      ><span class="whitespace-nowrap"
-        ><span class="bg-gold mr-1 inline-block h-[2px] w-[14px] align-middle" aria-hidden="true"
-        ></span>{label} per second</span
-      >{#each extra as line (line.label)}
-        <span class="ml-3 tracking-normal whitespace-nowrap normal-case"
+      >{#if series.length > 0}<span class="whitespace-nowrap"
+          ><span class="bg-gold mr-1 inline-block h-[2px] w-[14px] align-middle" aria-hidden="true"
+          ></span>{label}{perSecond ? ' per second' : ''}</span
+        >{:else}<span class="whitespace-nowrap">{label}</span>{/if}{#each extra as line (line.label)}
+        <span class="ml-3 tracking-normal whitespace-nowrap normal-case" data-testid="chart-line-label"
           ><span
             class="mr-1 inline-block h-[2px] w-[14px] align-middle"
             style={`background: ${line.token}`}
@@ -231,9 +256,10 @@
     <span class="tabular text-muted font-mono text-[12px]" data-testid="window-label" aria-live="polite">
       {#if hoverMs !== null && hoverValue !== null}
         <span class="text-text mr-3" data-testid="chart-readout"
-          >{formatDuration(hoverMs)} · {label.toLowerCase()}
-          {formatAmount(hoverValue)}/s{#each hoverExtra as line (line.label)}
-            · {line.label.toLowerCase()} {formatAmount(line.value)}/s{/each}</span
+          >{formatDuration(hoverMs)}{#if series.length > 0}
+            · {label.toLowerCase()}
+            {formatAmount(hoverValue)}{perSecond ? '/s' : ''}{/if}{#each hoverExtra as line (line.label)}
+            · {line.label.toLowerCase()} {formatAmount(line.value)}{perSecond ? '/s' : ''}{/each}</span
         >
       {/if}
       {isFullWindow(current, durationMs)
@@ -266,6 +292,18 @@
         <span>{formatAmount(peak)}/s</span>
         <span>{formatAmount(peak / 2)}/s</span>
         <span>0</span>
+      </div>
+    {/if}
+    {#if marks.length > 0}
+      <div class="pointer-events-none absolute inset-y-0 right-0 left-12" aria-hidden="true">
+        {#each marks as mark, position (`${mark.atMs}-${position}`)}
+          <span
+            class="bg-gold pointer-events-auto absolute bottom-0 block h-[18px] w-[3px]"
+            style={`left: ${durationMs === 0 ? 0 : (mark.atMs / durationMs) * 100}%`}
+            title={`${mark.label} · ${formatDuration(mark.atMs)}`}
+            data-testid="chart-mark"
+          ></span>
+        {/each}
       </div>
     {/if}
   </div>
