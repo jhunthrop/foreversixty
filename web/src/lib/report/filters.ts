@@ -309,7 +309,11 @@ export function applyActorFilters(actors: Actor[], filters: ReportFilters, conte
       const diedAt = deathBucket.get(actor.guid);
       if (filters.ignoreAfterDeath && diedAt !== undefined) series = series.slice(0, diedAt);
 
-      return { ...rebuild(actor, scaled, targets, filters.countOverkill), series };
+      // The summary's sources are over every ability; under one ability they cannot be
+      // told apart, so none are shown rather than every source of everything. A pull
+      // measures them from its events. (The target share above still reads the full list.)
+      const shownTargets = filters.ability === null ? targets : [];
+      return { ...rebuild(actor, scaled, shownTargets, filters.countOverkill), series };
     })
     .filter((actor) => actor.total > 0 || actor.effective > 0)
     .sort((a, b) => b.effective - a.effective || a.guid.localeCompare(b.guid));

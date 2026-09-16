@@ -444,7 +444,7 @@
            separate borders, so the pinned column's shadow can paint (a collapsed table
            drops cell shadows); one snap stop per column, so a number is whole or absent. -->
       <div
-        class="-mx-2 snap-x snap-mandatory scroll-pl-[158px] overflow-x-auto px-2 md:mx-0 md:flex-1 md:snap-none md:overflow-visible md:px-0"
+        class="-mx-2 snap-x snap-mandatory scroll-pl-[150px] overflow-x-auto pr-[60vw] md:mx-0 md:flex-1 md:snap-none md:overflow-visible md:pr-0"
         hidden={splitUnavailable}
       >
         <table

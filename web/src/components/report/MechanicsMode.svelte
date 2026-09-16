@@ -29,6 +29,7 @@
     classOf,
     nightMode,
     onPatch,
+    hrefFor = () => '',
   }: {
     summary: Summary;
     /** True for a trash segment: there is no boss to have a table for. */
@@ -36,6 +37,8 @@
     classOf: Map<string, string>;
     nightMode: boolean;
     onPatch: (patch: Partial<ReportState>) => void;
+    /** The url a patch would land on, so a link can be opened in a new tab as well as clicked. */
+    hrefFor?: (patch: Partial<ReportState>) => string;
   } = $props();
 
   /** No `mechanics` key at all: the report was parsed by an engine that had none. That is
@@ -150,6 +153,13 @@
   /** What hit a player and the table does not list. The spec's honesty rule: an ability
       the curator has not reached is unjudged, not absent. */
   const unclassified = $derived(unclassifiedAbilities(summary));
+  /** A name two unclassified spells share, or one that reads as the melee swing, gets its id. */
+  function unclassifiedNameShared(ability: { spell_id: number; name: string }): boolean {
+    return (
+      ability.name === 'Melee' ||
+      unclassified.some((other) => other.name === ability.name && other.spell_id !== ability.spell_id)
+    );
+  }
   const melee = $derived(meleeBucket(summary));
   /** Over the night: which bosses have a table, over how many of the night's pulls. */
   const judgedSummary = $derived.by(() => {
@@ -170,14 +180,40 @@
   function takenOf(guid: string): number {
     return summary.damage_taken.find((actor) => actor.guid === guid)?.effective ?? 0;
   }
-  function openDamageTaken(spellId: number, guid?: string): void {
-    onPatch({
+  function damageTakenPatch(spellId: number, guid?: string): Partial<ReportState> {
+    return {
       mode: 'analyze',
       view: 'tables',
       tab: 'damage-taken',
       ability: spellId,
       ...(guid ? { source: guid } : {}),
-    });
+    };
+  }
+  function openDamageTaken(spellId: number, guid?: string): void {
+    onPatch(damageTakenPatch(spellId, guid));
+  }
+  /**
+   * The Deaths tab, scoped to the player and with their card open: the Deaths tab keys an
+   * open card by guid and the death's instant on the summary's own clock.
+   */
+  function deathsPatch(guid: string, atMs?: number, spellId?: number): Partial<ReportState> {
+    const death =
+      atMs !== undefined
+        ? summary.deaths.find((entry) => entry.guid === guid && entry.at_ms === atMs)
+        : summary.deaths.find((entry) => entry.guid === guid && entry.killing_blow?.spell_id === spellId);
+    return {
+      mode: 'analyze',
+      view: 'tables',
+      tab: 'deaths',
+      source: guid,
+      ...(death ? { openDeaths: [`${death.guid}-${death.at_ms}`] } : {}),
+    };
+  }
+  /** A link that patches the page in place and still opens in a new tab from a middle click. */
+  function follow(event: MouseEvent, patch: Partial<ReportState>): void {
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    onPatch(patch);
   }
 
   const linkClass = 'text-gold min-h-11 text-[12px] underline-offset-2 hover:underline md:min-h-0';
@@ -229,11 +265,13 @@
                   >Damage Taken</button
                 >
                 {#if problem.hit?.killed}
-                  <button
-                    type="button"
+                  <a
+                    href={hrefFor(deathsPatch(problem.hit.guid, undefined, problem.row.spell_id))}
                     class={linkClass}
                     aria-label={`Deaths for ${problem.subject}`}
-                    onclick={() => onPatch({ mode: 'analyze', view: 'tables', tab: 'deaths' })}>Deaths</button
+                    onclick={(event) =>
+                      follow(event, deathsPatch(problem.hit?.guid ?? '', undefined, problem.row.spell_id))}
+                    >Deaths</a
                   >
                 {/if}
               {:else if problem.row.kind === 'interrupt'}
@@ -403,7 +441,14 @@
             <li
               class="border-line-soft text-muted flex flex-wrap items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[13px]"
             >
-              <span class="text-text font-semibold">{ability.name}</span>
+              <span class="text-text font-semibold"
+                >{ability.name}{#if unclassifiedNameShared(ability)}
+                  <span
+                    class="text-muted ml-1 font-mono text-[11px]"
+                    title="Two things share this name; this is spell id {ability.spell_id}"
+                    >#{ability.spell_id}</span
+                  >{/if}</span
+              >
               <span
                 >· <span class="tabular font-mono">{formatAmount(ability.damage)}</span> damage to players ·
                 <span class="tabular font-mono">{ability.players}</span>
@@ -438,11 +483,11 @@
                 {/if}at <span class="tabular font-mono">{formatDuration(death.at_ms)}</span>
                 · {death.by}</span
               >
-              <button
-                type="button"
+              <a
+                href={hrefFor(deathsPatch(death.guid, death.night_ms))}
                 class={linkClass}
                 aria-label={`Deaths, ${splitUnitName(death.name).name} at ${formatDuration(death.at_ms)}`}
-                onclick={() => onPatch({ mode: 'analyze', view: 'tables', tab: 'deaths' })}>Deaths</button
+                onclick={(event) => follow(event, deathsPatch(death.guid, death.night_ms))}>Deaths</a
               >
             </li>
           {/each}

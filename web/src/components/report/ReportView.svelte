@@ -201,6 +201,7 @@
     pets: petOwners,
     countOverkill: filters.countOverkill,
     exclude: ignoringDead ? deadSpans : [],
+    ability: filters.ability ?? undefined,
   });
   function measureRow(actor: Actor): Promise<ExactSplit> {
     return measureExact(
@@ -1291,7 +1292,7 @@
         {:else if state.tab === 'casts'}
           <CastTable
             rows={scoped.casts}
-            everyone={windowed?.casts ?? scoped.casts}
+            everyone={base?.casts ?? scoped.casts}
             durationMs={scoped.duration_ms}
             startMs={timeWindow.startMs}
             {classOf}
@@ -1337,7 +1338,9 @@
             onPatch={patch}
             onWindow={setWindow}
             totalThreat={windowed?.threat
-              .filter((row) => inSource(row.guid, state.source, playerSet, friendlySet))
+              .filter(
+                (row) => inSource(row.guid, state.source, playerSet, friendlySet) && !/^0+$/.test(row.guid),
+              )
               .reduce((sum, row) => sum + row.threat, 0)}
           />
         {:else if state.tab === 'deaths'}
@@ -1438,6 +1441,7 @@
           {nightMode}
           trash={!nightMode && fight?.kind !== 'encounter'}
           onPatch={patch}
+          hrefFor={(next) => reportSearch(withState(state, next), firstFight) || '?'}
         />
       {:else if state.mode === 'mechanics' && nightMode && nightLoading}
         <!-- The night's fold is every pull's summary fetched in turn, so a cold load

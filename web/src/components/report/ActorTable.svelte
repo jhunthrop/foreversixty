@@ -170,7 +170,9 @@
       <span class="tabular hidden text-right font-mono text-[12px] md:inline">100%</span>
       <span class="hidden md:inline"></span>
       <span class="tabular text-right font-mono">{formatAmount(total)}</span>
-      <span class="text-muted tabular hidden text-right font-mono text-[13px] md:inline"
+      <span
+        class="text-muted tabular hidden text-right font-mono text-[13px] md:inline"
+        title="Over the whole window. A row divides by its player's own time in it, so a player who died reads higher per second than the total"
         >{formatPerSecond(total, durationMs)}</span
       >
       <!-- No figure: the summary keeps each player's active time, not the raid's, and the

@@ -218,6 +218,8 @@ export interface UnjudgedDeath {
   guid: string;
   name: string;
   at_ms: number;
+  /** The death's instant on the summary's own clock (the night's, over a night): the Deaths tab's key. */
+  night_ms: number;
   /** What killed them, as the death card names it. */
   by: string;
   label?: string;
@@ -248,6 +250,7 @@ export function unjudgedDeaths(summary: Summary): UnjudgedDeath[] {
         guid: death.guid,
         name: death.name,
         at_ms: death.at_ms - (pull?.start_ms ?? 0),
+        night_ms: death.at_ms,
         by,
         label: death.label,
       };

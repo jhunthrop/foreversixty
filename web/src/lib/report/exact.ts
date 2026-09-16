@@ -50,6 +50,13 @@ export interface MeasureOptions {
   countOverkill?: boolean;
   /** Spans to leave out per actor: the time each player was dead, for "ignore events after a death". */
   exclude?: DeadSpan[];
+  /**
+   * The ability filter's spell id: the damage tables' rows, splits and misses are read
+   * for that spell alone, so a target and an ability together measure exactly. Healing
+   * files absorbs under the shield's spell, which the raw line does not carry, so the
+   * healing table ignores it.
+   */
+  ability?: number;
 }
 
 /** One stretch a player was dead, from the death to the first cast after it (or the fight's end). */
@@ -118,6 +125,12 @@ function viaExpr(pets: PetOwners): string {
   return `CASE WHEN source_guid IN (${[...pets.keys()].map(quote).join(', ')}) THEN source_name ELSE '' END`;
 }
 
+/** The ability filter as SQL, for the damage tables only (see MeasureOptions.ability). */
+function abilityClause(kind: ActorKind, options: MeasureOptions): string {
+  if (options.ability === undefined || kind === 'healing') return '';
+  return ` AND spell_id = ${Math.trunc(options.ability)}`;
+}
+
 function windowClause(window: TimeWindow): string {
   return `${FIGHT_MS} >= ${Math.round(window.startMs)} AND ${FIGHT_MS} < ${Math.round(window.endMs)}`;
 }
@@ -128,7 +141,7 @@ function windowClause(window: TimeWindow): string {
  * heals and absorbs; damage taken reads the victim as the actor and never folds pets.
  */
 export function rowsSql(kind: ActorKind, window: TimeWindow, options: MeasureOptions = {}): string {
-  const at = windowClause(window);
+  const at = `${windowClause(window)}${abilityClause(kind, options)}`;
   const pets = options.pets ?? NO_PETS;
   const damage = options.countOverkill ? 'amount' : 'amount - greatest(coalesce(overkill, 0), 0)';
   if (kind === 'damage-taken') {
@@ -215,7 +228,7 @@ ORDER BY effective DESC`,
     misses: `SELECT spell_id, any_value(spell_name) AS spell_name, any_value(spell_school) AS school,
   miss_type, count(*) AS n
 FROM ${EVENTS_TABLE}
-WHERE kind = 'missed' AND miss_type <> '' AND ${own}${kind === 'damage-done' ? ` AND ${OTHER_SIDE}` : ''} AND ${windowClause(window)}
+WHERE kind = 'missed' AND miss_type <> '' AND ${own}${kind === 'damage-done' ? ` AND ${OTHER_SIDE}` : ''} AND ${windowClause(window)}${abilityClause(kind, options)}
 GROUP BY spell_id, miss_type`,
     targets: `WITH rows AS (${rows})
 SELECT other_guid AS guid, any_value(other_name) AS name, sum(effective) AS total
