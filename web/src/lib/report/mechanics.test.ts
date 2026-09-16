@@ -324,3 +324,49 @@ describe('unclassifiedAbilities', () => {
     ]);
   });
 });
+
+describe('a role’s ability landing on the others', () => {
+  it('goes on that role’s card as a ranked entry, not under never hit by', () => {
+    const gash: MechanicRow = {
+      spell_id: 331415,
+      name: 'Wicked Gash',
+      kind: 'avoidable',
+      role: 'tank',
+      players: [
+        {
+          guid: 'dps-1',
+          name: 'Mishvamp',
+          hits: 3,
+          damage: 9000,
+          first_ms: 1000,
+          last_ms: 5000,
+          killed: false,
+        },
+        {
+          guid: 'heal-1',
+          name: 'Deadclasslol',
+          hits: 1,
+          damage: 4000,
+          first_ms: 2000,
+          last_ms: 2000,
+          killed: true,
+        },
+      ],
+    };
+    const cards = playerMechanics(
+      [gash],
+      [
+        { guid: 'tank-1', name: 'Hobolol', role: 'tank' },
+        { guid: 'dps-1', name: 'Mishvamp', role: 'dps' },
+        { guid: 'heal-1', name: 'Deadclasslol', role: 'healer' },
+      ],
+    );
+    const tank = cards.find((card) => card.guid === 'tank-1');
+    expect(tank?.avoided).toEqual([]);
+    expect(tank?.hits).toHaveLength(1);
+    expect(tank?.hits[0]).toMatchObject({ others: 2, hit: { hits: 4, damage: 13000, killed: true } });
+    expect(tank?.damage).toBe(13000);
+    // The victims' own cards are unchanged.
+    expect(cards.find((card) => card.guid === 'dps-1')?.hits[0].others).toBeUndefined();
+  });
+});

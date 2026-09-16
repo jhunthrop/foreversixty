@@ -209,3 +209,16 @@ test('a healing row shows what each target did not need, and the ability filter 
   await page.goto('/reports/fixture2abcd?fight=3&tab=healing&ability=999999');
   await expect(page.getByTestId('table-empty')).toBeVisible({ timeout: 60_000 });
 });
+
+// The dropdown's own words pasted into a link: `ability=Frostbolt` resolves to the id of
+// that ability in the tab, and a name the tab has no row for is said out loud instead of
+// the whole table showing under a filter that silently did nothing.
+test('an ability named in the url resolves to its id, or says it is unknown', async ({ page }) => {
+  await page.goto('/reports/fixture2abcd?fight=3&tab=damage-done&ability=Frostbolt');
+  await expect(page).toHaveURL(/ability=116(&|$)/);
+  await expect(page.getByTestId('filter-ability')).toHaveValue('116');
+
+  await page.goto('/reports/fixture2abcd?fight=3&tab=damage-done&ability=Nothing%20Of%20The%20Sort');
+  await expect(page.getByTestId('report-unknown-ability')).toContainText('Nothing Of The Sort');
+  await expect(page).not.toHaveURL(/ability=/);
+});

@@ -53,6 +53,7 @@
     amountApproximate = false,
     splitUnavailable = false,
     splitFilter = '',
+    healing = false,
     deadSince = null,
     measure = undefined,
     characterLink = null,
@@ -74,6 +75,8 @@
     splitUnavailable?: boolean;
     /** The filter the night cannot split by, in words. */
     splitFilter?: string;
+    /** The Healing tab: the last column is Over on every row, whatever this row's data holds. */
+    healing?: boolean;
     /** When this player died before the window's end without coming back: the row is a corpse's. */
     deadSince?: number | null;
     /** Measures this row's split inside the window from the fight's own events. */
@@ -491,7 +494,7 @@
                 scope="col"
                 class="min-w-[160px] py-1 text-left font-normal md:min-w-[220px] md:text-right"
                 title="A heal: how much of it was over. Damage: what did not land, by kind"
-                >{actor.overheal === undefined ? 'Not landed' : 'Over'}</th
+                >{healing ? 'Over' : 'Not landed'}</th
               >
             </tr>
           </thead>

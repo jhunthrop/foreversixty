@@ -68,6 +68,7 @@
   import TimeChart from './TimeChart.svelte';
   import TimelinesView from './TimelinesView.svelte';
   import {
+    abilityOptions,
     applyActorFilters,
     bossGuids,
     bossGuidsOf,
@@ -456,6 +457,23 @@
   let missingFight = $state<number | null>(null);
   /** Set when the url named a source the report has no unit for; cleared on the next pick. */
   let unknownSource = $state<string | null>(null);
+  /** Set when the url named an ability this tab has no row for; cleared on the next pick. */
+  let unknownAbility = $state<string | null>(null);
+  // An ability named in the url rather than numbered -- the dropdown's own words, pasted
+  // into a link -- resolves to the id of that name in this tab; anything else is said out
+  // loud, instead of the whole table showing under a filter that silently did nothing.
+  $effect(() => {
+    const name = state.abilityName;
+    if (name === '' || scoped === null) return;
+    const wanted = name.toLowerCase();
+    const found = abilityOptions(tabSource).find((option) => option.name.toLowerCase() === wanted);
+    if (found !== undefined) {
+      patch({ ability: Number.parseInt(found.id, 10), abilityName: '' });
+      return;
+    }
+    unknownAbility = name;
+    patch({ abilityName: '' });
+  });
   // A source that is not a scope word and not a GUID the report knows: a name typed by
   // hand resolves to the player of that name; anything else is said out loud and the
   // scope falls back to everyone, instead of every tab answering "nothing" as a fact.
@@ -827,6 +845,7 @@
     const changesFight = next.fight !== undefined && next.fight !== state.fight;
     if (next.fight !== undefined) missingFight = null;
     if (next.source !== undefined && next.source !== SOURCE_FRIENDLIES) unknownSource = null;
+    if (next.ability !== undefined) unknownAbility = null;
     // Picking a fight, mode, view, tab or source is a page in its own right, so it is
     // pushed and the back button undoes it. Brushing the chart replaces: a drag writes
     // the url on every pointer move, and pushing those would bury the real back
@@ -1146,6 +1165,12 @@
       friendly is showing.
     </p>
   {/if}
+  {#if unknownAbility !== null}
+    <p class="text-muted px-[18px] text-[13px] md:px-0" role="status" data-testid="report-unknown-ability">
+      This tab has no ability called <span class="font-semibold">{unknownAbility}</span>, so every ability is
+      showing.
+    </p>
+  {/if}
   {#if missingFight !== null}
     <p class="text-muted px-[18px] text-[13px] md:px-0" role="status" data-testid="report-missing-fight">
       {#if missingFight === MISSING_FIGHT}
@@ -1262,6 +1287,7 @@
             parseFallback={tableParseFallback}
             pairsLabel={state.tab === 'damage-taken' ? 'Sources' : 'Targets'}
             mitigation={state.tab === 'damage-taken'}
+            healing={state.tab === 'healing'}
             splitUnavailable={nightMode && filtersScale}
             splitFilter={nightFilterWords}
             absent={absentPlayers}
@@ -1282,6 +1308,7 @@
                 {#if ignoringDead}
                   <span data-testid="dead-spans-note"
                     >Left out while dead: {deadSpans
+                      .filter((span) => span.endMs > cutWindow.startMs && span.startMs < cutWindow.endMs)
                       .map(
                         (span) =>
                           `${splitUnitName(unitNames.get(span.guid) ?? span.guid).name} ${formatDuration(span.startMs)} to ${formatDuration(span.endMs)}`,

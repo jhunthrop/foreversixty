@@ -67,7 +67,7 @@
     {
       term: 'Share (Summary panels)',
       meaning:
-        'On the Summary’s damage and healing panels, a player’s share of every player’s total in this window, whatever the Source scope shows: one player on their own still reads their real share of the raid.',
+        'On the Summary’s damage, healing and damage-taken panels, a share of every player’s total in this window, whatever the Source scope shows: one player on their own still reads their real share of the raid, and an ability that hit only them reads its share of everything the raid took.',
     },
     {
       term: 'Casting, total',

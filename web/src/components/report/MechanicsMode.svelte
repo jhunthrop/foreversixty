@@ -414,13 +414,22 @@
                 {#each player.hits as entry (mechanicRowKey(entry.row))}
                   <li class:text-death={entry.hit.killed}>
                     {entry.row.name} · <span class="tabular font-mono">{entry.hit.hits}</span>
-                    {entry.hit.hits === 1 ? 'hit' : 'hits'} ·
+                    {entry.hit.hits === 1 ? 'hit' : 'hits'}{#if entry.others !== undefined}
+                      on <span class="tabular font-mono">{entry.others}</span>
+                      {entry.others === 1 ? 'player' : 'players'} who are not the {entry.row.role}{/if} ·
                     <span class="tabular font-mono">{formatAmount(entry.hit.damage)}</span> damage
                     {#if nightMode && entry.row.encounter}· on {entry.row.encounter}{/if}
                     {#if !nightMode}· first at <span class="tabular font-mono"
                         >{formatDuration(entry.hit.first_ms)}</span
                       >{/if}
-                    {#if entry.hit.killed}· died to it{/if}
+                    {#if entry.hit.killed}· {entry.others === undefined
+                        ? 'died to it'
+                        : 'someone died to it'}{/if}
+                    {#if entry.others !== undefined}· <span
+                        title="The table says this is the {entry.row
+                          .role}'s to take; where it lands is theirs to set"
+                        >the {entry.row.role}'s to place</span
+                      >{/if}
                     {#if entry.hit.pulls}· on <span class="tabular font-mono">{entry.hit.pulls}</span>
                       {entry.hit.pulls === 1 ? 'pull' : 'pulls'}{/if}
                   </li>

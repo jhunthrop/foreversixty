@@ -99,6 +99,12 @@ export interface ReportState {
    */
   target: string;
   ability: number | null;
+  /**
+   * An `ability=` value that is a name, not an id: the page resolves it to the id of the
+   * ability of that name in the current tab, or says it knows no such ability. Never
+   * written back to the url.
+   */
+  abilityName: string;
   flags: FlagKey[];
   /** Compare mode's second fight and metric; null and '' when not chosen. */
   compareWith: number | null;
@@ -129,6 +135,7 @@ export function defaultState(firstFight: number): ReportState {
     end: null,
     target: '',
     ability: null,
+    abilityName: '',
     flags: [],
     compareWith: null,
     compareMetric: '',
@@ -194,6 +201,7 @@ export function parseReportState(search: string, firstFight: number): ReportStat
   // right), and the environment's damage (a fall, a fire) is filed under a negative id.
   const ability = params.get('ability');
   if (ability !== null && /^-?\d+$/.test(ability)) state.ability = Number.parseInt(ability, 10);
+  else if (ability !== null && ability.trim() !== '') state.abilityName = ability.trim().slice(0, 64);
   const flags = params.get('flags') ?? '';
   state.flags = (Object.keys(FLAG_LETTERS) as FlagKey[]).filter((key) => flags.includes(FLAG_LETTERS[key]));
   const compareWith = readMs(params.get('with'));

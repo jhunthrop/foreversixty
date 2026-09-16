@@ -140,9 +140,21 @@ func TestMechanicsInterruptRowsCarryWhatTheSpellDid(t *testing.T) {
 		e.Overheal = event.OptInt{V: 0, OK: true}
 		return e
 	}
+	kick := event.Event{
+		Time: at(3.5), Kind: event.Interrupt, Name: "SPELL_INTERRUPT",
+		Source: event.Unit{GUID: tank, Flags: 0x512}, Dest: event.Unit{GUID: boss, Flags: 0xa48},
+		Spell: event.Spell{ID: 96231, Name: "Rebuke"}, ExtraSpell: event.Spell{ID: 777, Name: "Hungering Drain"},
+	}
+	// Two casts: the first is kicked at 3.5s after one 400 tick; the second runs and
+	// ticks for 100 and heals for 2500. Only the second cast's ticks are its cost.
 	events := append(fixtureEvents(),
+		drain(2.5, event.CastStart, "SPELL_CAST_START", boss, 0xa48, 0),
 		drain(3, event.Damage, "SPELL_DAMAGE", tank, 0x512, 400),
-		drain(4, event.Heal, "SPELL_HEAL", boss, 0xa48, 2500),
+		kick,
+		// A tick still in flight lands after the kick: it is the kicked cast's.
+		drain(3.6, event.Damage, "SPELL_DAMAGE", tank, 0x512, 50),
+		drain(4, event.CastStart, "SPELL_CAST_START", boss, 0xa48, 0),
+		drain(4.5, event.Heal, "SPELL_HEAL", boss, 0xa48, 2500),
 		drain(5, event.Damage, "SPELL_DAMAGE", tank, 0x512, 100),
 	)
 	for _, e := range events {
@@ -151,7 +163,10 @@ func TestMechanicsInterruptRowsCarryWhatTheSpellDid(t *testing.T) {
 	}
 	s := a.Snapshot(fixtureFight(), "test")
 	row := mechanicRowFor(t, s.Mechanics.Rows, 777)
-	if row.Damage != 500 || row.Healed != 2500 {
-		t.Fatalf("row = %+v, want Damage 500 and Healed 2500", row)
+	if row.Damage != 100 || row.Healed != 2500 {
+		t.Fatalf("row = %+v, want Damage 100 and Healed 2500: the kicked cast's tick is not the cost", row)
+	}
+	if row.Casts != 2 || row.Stopped != 1 {
+		t.Fatalf("row = %+v, want 2 casts, 1 stopped", row)
 	}
 }

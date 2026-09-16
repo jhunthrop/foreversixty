@@ -3,6 +3,7 @@ package summary
 
 import (
 	"sort"
+	"time"
 
 	"github.com/jhunthrop/foreversixty/logs/engine/event"
 	"github.com/jhunthrop/foreversixty/logs/engine/mechanics"
@@ -25,6 +26,8 @@ type MechanicRow struct {
 	Name    string         `json:"name"`
 	Kind    mechanics.Kind `json:"kind"`
 	Note    string         `json:"note,omitempty"`
+	// Role is the table's: the one role meant to take this ability, if any.
+	Role string `json:"role,omitempty"`
 	// Avoidable and unavoidable: who it hit.
 	Players []MechanicHit `json:"players,omitempty"`
 	// Interrupt: casts the enemies started and how many were stopped.
@@ -52,6 +55,74 @@ type MechanicHit struct {
 	LastMS  int64  `json:"last_ms"`
 	// Killed is true when this player's killing blow was this mechanic.
 	Killed bool `json:"killed"`
+}
+
+// mechanicCast is one enemy cast of a listed interrupt spell: when it began
+// and, if a player stopped it, when.
+type mechanicCast struct {
+	start   time.Time
+	stopped time.Time
+}
+
+// mechanicEffect is one tick of a listed effect: the damage it dealt a player
+// or the healing it gave an enemy, and when.
+type mechanicEffect struct {
+	at     time.Time
+	damage int64
+	healed int64
+}
+
+// noteMechanicCast records, for the listed interrupt spells, each enemy cast
+// beginning, each one being stopped, and each tick of the effects the table
+// names for it. Called from Add for every event.
+func (a *Accumulator) noteMechanicCast(e event.Event) {
+	if a.opt.Mechanics == nil {
+		return
+	}
+	switch e.Kind {
+	case event.CastStart, event.CastSuccess:
+		if m, ok := a.opt.Mechanics.Lookup(e.Spell.ID); ok && m.Kind == mechanics.Interrupt && !a.isPlayer(e.Source.GUID) {
+			// A channel logs a start; an instant logs only a success. Either opens a
+			// cast, unless a start already did a moment ago.
+			casts := a.mechanicCasts[e.Spell.ID]
+			if e.Kind == event.CastSuccess && len(casts) > 0 && casts[len(casts)-1].stopped.IsZero() &&
+				e.Time.Sub(casts[len(casts)-1].start) < 15*time.Second {
+				return
+			}
+			a.mechanicCasts[e.Spell.ID] = append(casts, mechanicCast{start: e.Time})
+		}
+	case event.Interrupt:
+		casts := a.mechanicCasts[e.ExtraSpell.ID]
+		if n := len(casts); n > 0 && casts[n-1].stopped.IsZero() {
+			casts[n-1].stopped = e.Time
+		}
+	case event.Damage:
+		if a.isPlayer(e.Dest.GUID) && !a.isPlayer(e.Source.GUID) {
+			a.noteMechanicEffect(e.Spell.ID, mechanicEffect{at: e.Time, damage: e.Effective()})
+		}
+	case event.Heal:
+		if !a.isPlayer(e.Source.GUID) && !a.isPlayer(e.Dest.GUID) {
+			a.noteMechanicEffect(e.Spell.ID, mechanicEffect{at: e.Time, healed: e.Effective()})
+		}
+	}
+}
+
+func (a *Accumulator) noteMechanicEffect(spellID int64, effect mechanicEffect) {
+	if _, listed := a.mechanicEffects[spellID]; listed {
+		a.mechanicEffects[spellID] = append(a.mechanicEffects[spellID], effect)
+		return
+	}
+	for _, m := range a.opt.Mechanics.Mechanics {
+		if m.Kind != mechanics.Interrupt && m.Kind != mechanics.Dispel {
+			continue
+		}
+		for _, id := range m.EffectIDs() {
+			if id == spellID {
+				a.mechanicEffects[spellID] = append(a.mechanicEffects[spellID], effect)
+				return
+			}
+		}
+	}
 }
 
 // noteMechanicHit records a listed ability landing on a player. Called from
@@ -116,7 +187,7 @@ func (a *Accumulator) mechanicsBlock(deaths []Death) MechanicsBlock {
 	}
 	rows := make([]MechanicRow, 0, len(a.opt.Mechanics.Mechanics))
 	for _, m := range a.opt.Mechanics.Mechanics {
-		row := MechanicRow{SpellID: m.SpellID, Name: m.Name, Kind: m.Kind, Note: m.Note}
+		row := MechanicRow{SpellID: m.SpellID, Name: m.Name, Kind: m.Kind, Note: m.Note, Role: m.Role}
 		switch m.Kind {
 		case mechanics.Avoidable, mechanics.Unavoidable:
 			for _, hit := range a.mechanicHits[m.SpellID] {
@@ -140,9 +211,9 @@ func (a *Accumulator) mechanicsBlock(deaths []Death) MechanicsBlock {
 			if row.Casts < row.Stopped {
 				row.Casts = row.Stopped
 			}
-			row.Damage, row.Healed = a.enemySpellTotals(m.EffectIDs())
+			row.Damage, row.Healed = a.effectTotals(m, a.mechanicCasts[m.SpellID])
 		case mechanics.Dispel:
-			row.Damage, row.Healed = a.enemySpellTotals(m.EffectIDs())
+			row.Damage, row.Healed = a.effectTotals(m, nil)
 			for _, tr := range a.auraRows() {
 				if tr.SpellID == m.SpellID && tr.Type == "DEBUFF" && a.isPlayer(tr.TargetGUID) {
 					row.Applied += tr.Applications
@@ -161,35 +232,29 @@ func (a *Accumulator) isPlayer(guid string) bool {
 	return ok && u.IsPlayer()
 }
 
-// enemySpellTotals is what listed spells did in the enemies' hands: the
-// effective damage they dealt (the damage-done tables hold only damage to the
-// other side, so a player's own copy of an id is not in it) and the healing
-// they gave the enemies, so an interrupt or dispel that went through can be
-// ranked by its cost. A channel's damage tick and heal carry their own ids,
-// which the table lists as the cast's effects.
-func (a *Accumulator) enemySpellTotals(spellIDs []int64) (damage, healed int64) {
-	listed := map[int64]bool{}
-	for _, id := range spellIDs {
-		listed[id] = true
-	}
-	for guid, t := range a.damageDone {
-		if a.isPlayer(guid) {
-			continue
-		}
-		for key, ab := range t.abilities {
-			if listed[key.spellID] {
-				damage += ab.Effective
+// effectTotals is what a listed spell's effects did when it went through:
+// every tick of the effect ids the table names for it, less the ticks of the
+// casts a player stopped. A tick belongs to the latest cast begun before it,
+// kicked or not: a kicked drain's ticks still in flight land after the kick
+// and are the kick's cost, not the cost of letting it run. With no casts to
+// lay ticks against (a dispel), every tick counts.
+func (a *Accumulator) effectTotals(m mechanics.Mechanic, casts []mechanicCast) (damage, healed int64) {
+	stopped := func(at time.Time) bool {
+		var owner *mechanicCast
+		for i := range casts {
+			if !casts[i].start.After(at) {
+				owner = &casts[i]
 			}
 		}
+		return owner != nil && !owner.stopped.IsZero()
 	}
-	for guid, t := range a.healingDone {
-		if a.isPlayer(guid) {
-			continue
-		}
-		for key, ab := range t.abilities {
-			if listed[key.spellID] {
-				healed += ab.Effective
+	for _, id := range m.EffectIDs() {
+		for _, tick := range a.mechanicEffects[id] {
+			if stopped(tick.at) {
+				continue
 			}
+			damage += tick.damage
+			healed += tick.healed
 		}
 	}
 	return damage, healed

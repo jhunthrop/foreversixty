@@ -154,30 +154,37 @@ type Accumulator struct {
 	// mechanicHits is spell id -> player guid -> the hit tally, folded from
 	// the Damage case for every spell the fight's mechanics table lists.
 	mechanicHits map[int64]map[string]*MechanicHit
+	// mechanicCasts is, per listed interrupt spell, every cast an enemy began
+	// and when it was stopped, so an effect tick can be laid against the cast
+	// it belongs to; mechanicEffects is every tick of a listed effect id.
+	mechanicCasts   map[int64][]mechanicCast
+	mechanicEffects map[int64][]mechanicEffect
 }
 
 // New returns an accumulator for one fight.
 func New(o Options) *Accumulator {
 	return &Accumulator{
-		opt:          o.withDefaults(),
-		damageDone:   map[string]*actor{},
-		damageTaken:  map[string]*actor{},
-		healingDone:  map[string]*actor{},
-		healingTaken: map[string]*actor{},
-		active:       map[string]*activity{},
-		recent:       map[string][]DamageRef{},
-		recentHeals:  map[string][]HealRef{},
-		auras:        map[auraKey]*auraTrack{},
-		spellNames:   map[int64]string{},
-		casts:        map[castKey]*castRow{},
-		pending:      map[castKey]time.Time{},
-		exchanges:    map[exchangeKey]*ExchangeRow{},
-		resources:    map[resourceKey]*resourceTrack{},
-		threat:       map[string]float64{},
-		threatBy:     map[string]map[string]float64{},
-		engaged:      map[string]time.Time{},
-		combatants:   map[string]*event.Combatant{},
-		mechanicHits: map[int64]map[string]*MechanicHit{},
+		opt:             o.withDefaults(),
+		damageDone:      map[string]*actor{},
+		damageTaken:     map[string]*actor{},
+		healingDone:     map[string]*actor{},
+		healingTaken:    map[string]*actor{},
+		active:          map[string]*activity{},
+		recent:          map[string][]DamageRef{},
+		recentHeals:     map[string][]HealRef{},
+		auras:           map[auraKey]*auraTrack{},
+		spellNames:      map[int64]string{},
+		casts:           map[castKey]*castRow{},
+		pending:         map[castKey]time.Time{},
+		exchanges:       map[exchangeKey]*ExchangeRow{},
+		resources:       map[resourceKey]*resourceTrack{},
+		threat:          map[string]float64{},
+		threatBy:        map[string]map[string]float64{},
+		engaged:         map[string]time.Time{},
+		combatants:      map[string]*event.Combatant{},
+		mechanicHits:    map[int64]map[string]*MechanicHit{},
+		mechanicCasts:   map[int64][]mechanicCast{},
+		mechanicEffects: map[int64][]mechanicEffect{},
 	}
 }
 
@@ -238,6 +245,7 @@ func (a *Accumulator) Add(e event.Event) {
 	}
 	a.addDamageAndHealing(e)
 	a.addCastsAndExchanges(e)
+	a.noteMechanicCast(e)
 	a.noteTaunt(e)
 	a.addAuras(e)
 	a.addResources(e)

@@ -41,8 +41,18 @@
     onPatch: (patch: { compareWith?: number | null; compareMetric?: string }) => void;
   } = $props();
 
-  type CompareMetric = 'damage_done' | 'dps' | 'healing_done' | 'hps' | 'damage_taken' | 'dtps';
+  type CompareMetric = 'damage_done' | 'dps' | 'healing_done' | 'hps' | 'damage_taken' | 'dtps' | 'threat';
   const PER_SECOND = new Set<CompareMetric>(['dps', 'hps', 'dtps']);
+  /** The caption's words for each metric: a key like dtps is not a sentence. */
+  const METRIC_LABELS: Record<CompareMetric, string> = {
+    damage_done: 'damage done',
+    dps: 'DPS',
+    healing_done: 'healing done',
+    hps: 'HPS',
+    damage_taken: 'damage taken',
+    dtps: 'damage taken per second',
+    threat: 'threat',
+  };
 
   const options = $derived(fights.filter((fight) => fight.index !== current));
   /** "pull 2 of 3" per boss pull, the way the fight list says it, so the picker reads the same. */
@@ -81,7 +91,15 @@
       : scopeSummary(rightWhole, clampWindow(window, rightWhole.duration_ms)),
   );
   let error = $state('');
-  const METRIC_IDS: CompareMetric[] = ['damage_done', 'dps', 'healing_done', 'hps', 'damage_taken', 'dtps'];
+  const METRIC_IDS: CompareMetric[] = [
+    'damage_done',
+    'dps',
+    'healing_done',
+    'hps',
+    'damage_taken',
+    'dtps',
+    'threat',
+  ];
   const metric = $derived<CompareMetric>(
     (METRIC_IDS as string[]).includes(metricParam) ? (metricParam as CompareMetric) : 'dps',
   );
@@ -123,7 +141,10 @@
       });
   });
 
-  function rowMetric(row: RosterRow): number {
+  /** A player's figure for the picked metric: off the roster row, or the threat table. */
+  function rowMetric(row: RosterRow, summary: Summary): number {
+    if (metric === 'threat')
+      return Math.round(summary.threat.find((line) => line.guid === row.guid)?.threat ?? 0);
     return PER_SECOND.has(metric) ? Math.round(row[metric]) : row[metric];
   }
 
@@ -153,11 +174,17 @@
     // eslint-disable-next-line svelte/prefer-svelte-reactivity
     const byGuid = new Map<string, Line>();
     for (const row of left.roster) {
-      byGuid.set(row.guid, { guid: row.guid, name: row.name, class: row.class, a: rowMetric(row), b: 0 });
+      byGuid.set(row.guid, {
+        guid: row.guid,
+        name: row.name,
+        class: row.class,
+        a: rowMetric(row, left),
+        b: 0,
+      });
     }
     for (const row of right.roster) {
       const found = byGuid.get(row.guid);
-      const value = rowMetric(row);
+      const value = rowMetric(row, right);
       if (found === undefined) {
         byGuid.set(row.guid, { guid: row.guid, name: row.name, class: row.class, a: 0, b: value });
       } else {
@@ -227,6 +254,7 @@
         <option value="hps">HPS</option>
         <option value="healing_done">Healing done</option>
         <option value="dtps">Damage taken per second</option>
+        <option value="threat">Threat</option>
         <option value="damage_taken">Damage taken</option>
       </select>
     </label>
@@ -271,7 +299,7 @@
     <div class="hidden overflow-x-auto md:block">
       <table class="w-full border-collapse text-[14px]" data-testid="compare-table">
         <caption class="sr-only">
-          Per-player {metric.replace('_', ' ')} in {fightLabel(currentFight) || 'this fight'}, compared with {fightLabel(
+          Per-player {METRIC_LABELS[metric]} in {fightLabel(currentFight) || 'this fight'}, compared with {fightLabel(
             rightFight,
           ) || 'the selected fight'}.
         </caption>

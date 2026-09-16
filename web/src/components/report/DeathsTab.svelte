@@ -14,6 +14,7 @@
     formatDurationPrecise,
   } from '../../lib/report/format';
   import { plannerLinkFor } from '../../lib/report/planner-link';
+  import CopyCsv from './CopyCsv.svelte';
   import type { CastRow, CombatantRow, DamageRef, Death, HealRef, PullMark } from '../../lib/report/types';
   import { deathWindow, type TimeWindow } from '../../lib/report/window';
 
@@ -50,6 +51,21 @@
   } = $props();
 
   const ordered = $derived([...deaths].sort((a, b) => a.at_ms - b.at_ms));
+  /** One line per death: when, who, what killed them and from whom, and the pull over a night. */
+  function csvLines(): string[][] {
+    return [
+      ['At', 'Player', 'Killing blow', 'From', 'Amount', 'Overkill', 'Pull'],
+      ...ordered.map((death) => [
+        formatDurationPrecise(death.at_ms),
+        splitUnitName(death.name).name,
+        death.killing_blow?.spell_name ?? '',
+        death.killing_blow === undefined ? '' : splitUnitName(death.killing_blow.source_name).name,
+        death.killing_blow === undefined ? '' : String(death.killing_blow.amount),
+        death.killing_blow?.overkill === undefined ? '' : String(death.killing_blow.overkill),
+        death.label ?? '',
+      ]),
+    ];
+  }
   const FOLD_ABOVE = 6;
   /** Cards the reader has opened by hand; every card is open while there are few. */
   /** The cards opened by hand, from the url, so a pasted link opens the same ones. */
@@ -206,6 +222,7 @@
 {:else}
   <!-- Past a handful, the cards start folded to their first line: forty-four open cards
        over a whole night were a forty-thousand-pixel page. -->
+  <CopyCsv lines={csvLines} />
   <ul class="flex flex-col gap-4" data-testid="deaths-tab">
     <!-- A death's last hits can repeat a spell in one millisecond (a DoT tick and its
          crit, a cleave), so the row key carries its index too; a bare timestamp-and-spell

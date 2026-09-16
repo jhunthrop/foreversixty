@@ -75,8 +75,13 @@ export function nightBossGroups(block: MechanicsBlock): NightBossMechanics[] {
 export interface PlayerMechanics {
   guid: string;
   name: string;
-  /** Avoidable hits on them, most damage first. */
-  hits: { row: MechanicRow; hit: MechanicHit }[];
+  /**
+   * Avoidable hits on them, most damage first. An entry with `others` is not a hit on
+   * them: it is an ability their role was meant to take landing on that many other
+   * players, which is their problem as much as the victims' (a cleave the tank faced
+   * into the raid).
+   */
+  hits: { row: MechanicRow; hit: MechanicHit; others?: number }[];
   /** Their avoidable damage. */
   damage: number;
   /** What the fight did to them regardless: the table's unavoidable rows they are on. */
@@ -88,7 +93,7 @@ export interface PlayerMechanics {
 interface PlayerTally {
   guid: string;
   name: string;
-  hits: { row: MechanicRow; hit: MechanicHit }[];
+  hits: { row: MechanicRow; hit: MechanicHit; others?: number }[];
   damage: number;
   unavoidableDamage: number;
   unavoidableNames: string[];
@@ -102,7 +107,7 @@ interface PlayerTally {
  */
 export function playerMechanics(
   rows: readonly MechanicRow[],
-  roster: readonly { guid: string; name: string }[],
+  roster: readonly { guid: string; name: string; role?: string }[],
 ): PlayerMechanics[] {
   const tallies = new Map<string, PlayerTally>();
   const tally = (guid: string, name: string): PlayerTally =>
@@ -125,6 +130,37 @@ export function playerMechanics(
   }
   for (const player of roster)
     if (!tallies.has(player.guid)) tallies.set(player.guid, tally(player.guid, player.name));
+
+  // An ability one role is meant to take, landing on anyone else, goes on that role's
+  // card as a ranked entry rather than under "never hit by" as praise: a tank who faced
+  // the cleave into four people did not avoid it.
+  for (const row of rows) {
+    if (row.kind !== 'avoidable' || row.role === undefined) continue;
+    const owners = roster.filter((player) => player.role === row.role);
+    const ownerGuids = new Set(owners.map((player) => player.guid));
+    const strays = (row.players ?? []).filter((hit) => !ownerGuids.has(hit.guid));
+    if (strays.length === 0) continue;
+    const hit: MechanicHit = {
+      guid: '',
+      name: '',
+      hits: strays.reduce((sum, stray) => sum + stray.hits, 0),
+      damage: strays.reduce((sum, stray) => sum + stray.damage, 0),
+      first_ms: Math.min(...strays.map((stray) => stray.first_ms)),
+      last_ms: Math.max(...strays.map((stray) => stray.last_ms)),
+      killed: strays.some((stray) => stray.killed),
+    };
+    for (const owner of owners) {
+      const found = tally(owner.guid, owner.name);
+      tallies.set(owner.guid, {
+        ...found,
+        hits: [
+          ...found.hits,
+          { row, hit: { ...hit, guid: owner.guid, name: owner.name }, others: strays.length },
+        ],
+        damage: found.damage + hit.damage,
+      });
+    }
+  }
 
   const avoidableNames = [...new Set(rows.filter((row) => row.kind === 'avoidable').map((row) => row.name))];
   return [...tallies.values()]

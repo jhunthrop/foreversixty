@@ -2,7 +2,7 @@
   "encounter_id": 2363,
   "name": "General Kaal",
   "mechanics": [
-    { "spell_id": 331415, "name": "Wicked Gash", "kind": "avoidable", "note": "Frontal cleave. Only the tank should be in it." },
+    { "spell_id": 331415, "name": "Wicked Gash", "kind": "avoidable", "note": "Frontal cleave. Only the tank should be in it.", "role": "tank" },
     { "spell_id": 322903, "name": "Gloom Squall", "kind": "avoidable", "note": "Room-wide unless behind a pillar." },
     { "spell_id": 323810, "name": "Piercing Blur", "kind": "avoidable", "note": "Charge along a line; step out of it." }
   ]

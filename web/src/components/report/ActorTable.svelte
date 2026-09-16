@@ -17,6 +17,7 @@
     approximate = false,
     amountApproximate = false,
     mitigation = false,
+    healing = false,
     splitUnavailable = false,
     splitFilter = '',
     absent = [],
@@ -36,6 +37,8 @@
     amountApproximate?: boolean;
     /** Sum what did not land (absorbed, blocked, avoided) under the total: the Damage Taken table's headline. */
     mitigation?: boolean;
+    /** The Healing tab: the abilities table's last column is what each heal did not need. */
+    healing?: boolean;
     /** Over the night under a target or boss filter the per-ability split cannot be measured; rows say so. */
     splitUnavailable?: boolean;
     /** The filter the night cannot split by, in words, for the row's note. */
@@ -157,6 +160,7 @@
           {amountApproximate}
           {splitUnavailable}
           {splitFilter}
+          {healing}
           deadSince={deadAt.get(actor.guid) ?? null}
           {parseFallback}
           {pairsLabel}

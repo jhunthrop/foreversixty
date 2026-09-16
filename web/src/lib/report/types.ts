@@ -226,6 +226,8 @@ export interface MechanicRow {
   name: string;
   kind: MechanicKind;
   note?: string;
+  /** The one role meant to take this ability, from the table: "tank" for a frontal cleave. */
+  role?: string;
   /** Avoidable and unavoidable: who it hit. */
   players?: MechanicHit[];
   /** Interrupt: casts the enemies started and how many were stopped. */

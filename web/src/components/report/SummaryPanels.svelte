@@ -51,10 +51,10 @@
   const healing = $derived(bySource(summary.healing, (everyone ?? summary).healing));
 
   /** Every ability that hit a player, summed over the players it hit, largest first. */
-  const takenByAbility = $derived.by(() => {
+  function abilityTotals(table: Actor[]): { name: string; school?: number; total: number }[] {
     // eslint-disable-next-line svelte/prefer-svelte-reactivity
     const totals = new Map<string, { name: string; school?: number; total: number }>();
-    for (const actor of summary.damage_taken) {
+    for (const actor of table) {
       if (players.size > 0 && !players.has(actor.guid)) continue;
       for (const ability of actor.abilities) {
         const key = ability.name === '' ? 'Melee' : ability.name;
@@ -64,8 +64,13 @@
         else found.total += ability.effective;
       }
     }
-    const rows = [...totals.values()].sort((a, b) => b.total - a.total);
-    const total = rows.reduce((sum, row) => sum + row.total, 0);
+    return [...totals.values()].sort((a, b) => b.total - a.total);
+  }
+  // The share is of everything every player took, the same rule as the two panels above:
+  // a source scope narrows the rows to one player's hits, never the total they share.
+  const takenByAbility = $derived.by(() => {
+    const rows = abilityTotals(summary.damage_taken);
+    const total = abilityTotals((everyone ?? summary).damage_taken).reduce((sum, row) => sum + row.total, 0);
     return rows.slice(0, ROWS).map((row) => ({ ...row, share: total === 0 ? 0 : (row.total / total) * 100 }));
   });
 
@@ -214,7 +219,9 @@
           class="grid min-h-8 grid-cols-[minmax(0,1fr)_44px_64px] items-center gap-x-2 gap-y-1 text-[13px] md:grid-cols-[minmax(150px,1.6fr)_44px_minmax(0,2fr)_64px_56px]"
         >
           <span class="truncate font-semibold" title={row.name}>{row.name}</span>
-          <span class="text-muted tabular text-right font-mono text-[12px]">{row.share.toFixed(1)}%</span>
+          <span class="text-muted tabular text-right font-mono text-[12px] whitespace-nowrap"
+            >{row.share.toFixed(1)}%<span class="label font-body ml-1 md:hidden">share</span></span
+          >
           <span class="bg-line-soft col-span-3 block h-[8px] w-full md:col-span-1"
             ><span class="block h-full" style={`width: ${row.share}%; background: ${schoolToken(row.school)}`}
             ></span></span
@@ -228,6 +235,9 @@
         </li>
       {/each}
     </ul>
+    <p class="text-muted text-[11px]" data-testid="panel-share-note">
+      Share is of everything every player took in this window, whatever the source scope shows.
+    </p>
   </section>
 
   <section class={panel} data-testid="panel-deaths">

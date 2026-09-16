@@ -41,6 +41,10 @@ type Mechanic struct {
 	// carries under their own ids -- so the row can say what it cost. Empty
 	// means the cast's own id.
 	Effects []int64 `json:"effects,omitempty"`
+	// Role, for an avoidable ability that one role is meant to take: "tank"
+	// for a frontal cleave the tank faces away from the raid. A hit on anyone
+	// else is then that role's problem as much as the victim's.
+	Role string `json:"role,omitempty"`
 }
 
 // EffectIDs is what a mechanic's cost is read from: its effects, or its own id.

@@ -65,6 +65,7 @@ describe('the report URL state', () => {
       end: null,
       target: '',
       ability: null,
+      abilityName: '',
       flags: [],
       compareWith: null,
       compareMetric: '',
@@ -91,6 +92,7 @@ describe('the report URL state', () => {
       end: 12000,
       target: '',
       ability: null,
+      abilityName: '',
       flags: [],
       compareWith: null,
       compareMetric: '',
@@ -114,6 +116,7 @@ describe('the report URL state', () => {
       end: null,
       target: '',
       ability: null,
+      abilityName: '',
       flags: [],
       compareWith: null,
       compareMetric: '',
@@ -149,6 +152,7 @@ describe('the report URL state', () => {
       end: 20,
       target: '',
       ability: null,
+      abilityName: '',
       flags: [],
       compareWith: null,
       compareMetric: '',
@@ -188,6 +192,7 @@ describe('the report URL state', () => {
     const state = withState(defaultState(1), {
       target: 'Creature-1-2',
       ability: 116,
+      abilityName: '',
       flags: ['bossOnly', 'ignoreAfterDeath'],
       compareWith: 4,
       compareMetric: 'dps',
@@ -223,5 +228,15 @@ describe('the report URL state', () => {
     expect(parseReportState('?fight=3&ability=0', 1).ability).toBe(0);
     expect(reportSearch(withState(defaultState(1), { ability: 0 }), 1)).toContain('ability=0');
     expect(reportSearch(withState(defaultState(1), { ability: -1 }), 1)).toContain('ability=-1');
+  });
+});
+
+describe('an ability named rather than numbered', () => {
+  it('rides in as a name for the page to resolve, and never rides out', () => {
+    const state = parseReportState('?fight=3&ability=Frostbolt', 1);
+    expect(state.ability).toBeNull();
+    expect(state.abilityName).toBe('Frostbolt');
+    expect(reportSearch(state, 1)).not.toContain('ability=');
+    expect(parseReportState('?ability=116', 1).abilityName).toBe('');
   });
 });
