@@ -127,7 +127,10 @@ func (ed *encounterDraft) addFight(sum summary.Summary, reg *units.Registry) {
 			if ab.SpellID == 0 {
 				continue // melee carries no mechanic to draft
 			}
-			ed.spell(ab.SpellID, ab.Name).hit(actor.GUID, ab.Hits, ab.Effective, tank[actor.GUID])
+			// Hits counts direct landings and Ticks the periodic ones: a DoT or a
+			// ground effect lands entirely in Ticks, and counting only Hits would
+			// draft it as unavoidable with "0 non-tanks".
+			ed.spell(ab.SpellID, ab.Name).hit(actor.GUID, ab.Hits+ab.Ticks, ab.Effective, tank[actor.GUID])
 		}
 	}
 	for _, death := range sum.Deaths {
@@ -215,7 +218,7 @@ func (sd *spellDraft) draft(spellID int64, totalDamageTaken int64) mechanics.Mec
 		kind = mechanics.Unavoidable
 	default:
 		// One non-tank, hit once: not enough evidence either way.
-		kind, note = mechanics.Avoidable, "unclassified: check"
+		kind, note = mechanics.Avoidable, "unclassified: check — "+evidence
 	}
 	return mechanics.Mechanic{SpellID: spellID, Name: sd.name, Kind: kind, Note: note}
 }

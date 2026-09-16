@@ -6,8 +6,12 @@ import (
 	"encoding/json"
 	"strings"
 	"testing"
+	"time"
 
+	"github.com/jhunthrop/foreversixty/logs/engine/event"
 	"github.com/jhunthrop/foreversixty/logs/engine/mechanics"
+	"github.com/jhunthrop/foreversixty/logs/engine/summary"
+	"github.com/jhunthrop/foreversixty/logs/engine/units"
 )
 
 func TestMechanicsDraftProposesATableFromTheFixtureLog(t *testing.T) {
@@ -90,7 +94,9 @@ func TestSpellDraftClassifiesByHitNotByPlayer(t *testing.T) {
 			},
 			totalDamageTaken: 500,
 			wantKind:         mechanics.Avoidable,
-			wantNote:         "unclassified: check",
+			// The evidence stays on the line: "check" without it tells the curator
+			// nothing to check against.
+			wantNote: "unclassified: check — draft: hit 1 players (1 non-tanks), 10% of damage taken, killed 0",
 		},
 		{
 			name: "tank on one pull, not the tank on another: hits counted on each side",
@@ -105,7 +111,7 @@ func TestSpellDraftClassifiesByHitNotByPlayer(t *testing.T) {
 			// whole player, so both hits were counted as non-tank hits on
 			// one player and this classified avoidable instead.
 			wantKind: mechanics.Avoidable,
-			wantNote: "unclassified: check",
+			wantNote: "unclassified: check — draft: hit 1 players (1 non-tanks), 100% of damage taken, killed 0",
 		},
 	}
 	for _, tt := range tests {
@@ -131,5 +137,52 @@ func TestPercentGuardsAZeroDenominator(t *testing.T) {
 	}
 	if got := percent(50, 200); got != 25 {
 		t.Fatalf("percent(50, 200) = %d, want 25", got)
+	}
+}
+
+// TestAddFightCountsPeriodicTicks pins the one thing the summary hands the
+// drafter that is easy to miss: periodic damage lands in Ability.Ticks, not
+// Ability.Hits. A DoT or a ground effect ticking twice on two non-tanks is
+// avoidable; counting Hits alone saw "0 non-tanks" and drafted it as the
+// fight's own damage.
+func TestAddFightCountsPeriodicTicks(t *testing.T) {
+	const p1, p2 = "Player-1-00000001", "Player-1-00000002"
+	reg := units.NewRegistry(units.Options{})
+	for _, guid := range []string{p1, p2} {
+		reg.Observe(event.Event{
+			Time:   time.Unix(0, 0),
+			Kind:   event.Damage,
+			Name:   "SPELL_DAMAGE",
+			Source: event.Unit{GUID: guid, Name: guid, Flags: 0x512},
+			Dest:   event.Unit{GUID: "Creature-0-1-1-1-1-1", Flags: 0xa48},
+		})
+	}
+	taken := func(guid string) summary.Actor {
+		return summary.Actor{GUID: guid, Name: guid, Effective: 400, Abilities: []summary.Ability{
+			// A ground effect: every landing is a tick, none of them a Hit.
+			{SpellID: 319685, Name: "Severing Smash", Effective: 400, Ticks: 2},
+		}}
+	}
+	sum := summary.Summary{
+		Roster:      []summary.RosterRow{{GUID: p1, Role: "dps"}, {GUID: p2, Role: "dps"}},
+		DamageTaken: []summary.Actor{taken(p1), taken(p2)},
+	}
+	ed := &encounterDraft{name: "Kryxis the Voracious", spells: map[int64]*spellDraft{}}
+	ed.addFight(sum, reg)
+
+	sd := ed.spells[319685]
+	if sd == nil {
+		t.Fatalf("the ticking ability must be drafted: %+v", ed.spells)
+	}
+	if got := sd.players[p1].nonTankHits; got != 2 {
+		t.Errorf("non-tank hits for %s = %d, want the 2 ticks", p1, got)
+	}
+	m := ed.table(2360).Mechanics[0]
+	if m.Kind != mechanics.Avoidable {
+		t.Errorf("kind = %q, want avoidable: it ticked on two non-tanks", m.Kind)
+	}
+	want := "draft: hit 2 players (2 non-tanks), 100% of damage taken, killed 0"
+	if m.Note != want {
+		t.Errorf("note = %q, want %q", m.Note, want)
 	}
 }

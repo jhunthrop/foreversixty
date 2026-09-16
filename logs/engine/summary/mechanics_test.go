@@ -4,6 +4,7 @@ package summary
 import (
 	"testing"
 
+	"github.com/jhunthrop/foreversixty/logs/engine/event"
 	"github.com/jhunthrop/foreversixty/logs/engine/mechanics"
 )
 
@@ -82,5 +83,38 @@ func TestMechanicsInterruptAndDispelRows(t *testing.T) {
 	dispel := mechanicRowFor(t, s.Mechanics.Rows, 321038)
 	if dispel.Kind != mechanics.Dispel || dispel.Dispelled != 1 || dispel.Applied != 0 {
 		t.Fatalf("dispel row = %+v, want Dispelled 1 and Applied 0 (no AURA_APPLIED in the fixture)", dispel)
+	}
+}
+
+// TestMechanicsIgnoreAHitFromThePlayersOwnSide: the same spell id arriving
+// from a friendly unit is not the boss's mechanic. Only the boss's two Anima
+// Lashes on the tank may be counted; the mage's friendly-fire copy on the
+// healer must leave the healer off the row entirely.
+func TestMechanicsIgnoreAHitFromThePlayersOwnSide(t *testing.T) {
+	o, reg := opts(t)
+	o.Mechanics = &mechanics.Table{EncounterID: 9001, Name: "Warden Kelthas", Mechanics: []mechanics.Mechanic{
+		{SpellID: 334660, Name: "Anima Lash", Kind: mechanics.Avoidable},
+	}}
+	a := New(o)
+	a.Start(at(0))
+	friendlyFire := event.Event{
+		Time: at(17), Kind: event.Damage, Name: "SPELL_DAMAGE",
+		Source:   event.Unit{GUID: mage, Flags: 0x512},
+		Dest:     event.Unit{GUID: healer, Flags: 0x512},
+		Spell:    event.Spell{ID: 334660, Name: "Anima Lash", School: 0x10},
+		Amount:   event.OptInt{V: 700, OK: true},
+		Overkill: event.OptInt{V: -1, OK: true},
+	}
+	for _, e := range append(fixtureEvents(), friendlyFire) {
+		reg.Observe(e)
+		a.Add(e)
+	}
+	s := a.Snapshot(fixtureFight(), "test")
+	row := mechanicRowFor(t, s.Mechanics.Rows, 334660)
+	if len(row.Players) != 1 || row.Players[0].GUID != tank {
+		t.Fatalf("players = %+v, want only the tank: the mage's friendly copy is not the boss's mechanic", row.Players)
+	}
+	if row.Players[0].Hits != 2 {
+		t.Errorf("tank hits = %d, want the boss's 2", row.Players[0].Hits)
 	}
 }

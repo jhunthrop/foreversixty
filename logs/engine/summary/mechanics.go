@@ -6,6 +6,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/logs/engine/event"
 	"github.com/jhunthrop/foreversixty/logs/engine/mechanics"
+	"github.com/jhunthrop/foreversixty/logs/engine/units"
 )
 
 // MechanicsBlock is the fight's mechanics table, rendered against what
@@ -58,6 +59,13 @@ func (a *Accumulator) noteMechanicHit(e event.Event) {
 		return
 	}
 	if !a.isPlayer(e.Dest.GUID) {
+		return
+	}
+	// A mechanic is something the fight did to the raid. A spell id the table
+	// lists that arrives from the player's own side -- a mirrored ability, a
+	// friendly-fire cast, a pet -- is not the boss failing them, and counting
+	// it would put a name on the problems list for someone else's mistake.
+	if units.SameSide(e.Source.Flags, e.Dest.Flags) {
 		return
 	}
 	bySpell := a.mechanicHits[e.Spell.ID]

@@ -48,6 +48,38 @@ type Table struct {
 //go:embed tables/*.json
 var tables embed.FS
 
+// A malformed embedded table is a build defect, so it fails the process at
+// start rather than the first time a fight of that encounter happens to open.
+var _ = mustParseAll()
+
+// mustParseAll parses every embedded table and panics on the first one that is
+// not the format or whose file name does not match its encounter id. Load
+// reads a table by that file name, so a mismatch would hide the table.
+func mustParseAll() int {
+	entries, err := tables.ReadDir("tables")
+	if err != nil {
+		panic(fmt.Errorf("mechanics: reading the embedded tables: %w", err))
+	}
+	for _, entry := range entries {
+		if entry.IsDir() {
+			continue
+		}
+		path := "tables/" + entry.Name()
+		data, err := tables.ReadFile(path)
+		if err != nil {
+			panic(fmt.Errorf("mechanics: reading %s: %w", path, err))
+		}
+		t, err := Parse(data)
+		if err != nil {
+			panic(fmt.Errorf("mechanics: %s: %w", path, err))
+		}
+		if want := strconv.FormatInt(t.EncounterID, 10) + ".json"; entry.Name() != want {
+			panic(fmt.Errorf("mechanics: %s holds encounter %d, so it must be named %s", path, t.EncounterID, want))
+		}
+	}
+	return len(entries)
+}
+
 // Parse reads a table and refuses one that is not the format.
 func Parse(data []byte) (Table, error) {
 	var t Table
@@ -57,6 +89,7 @@ func Parse(data []byte) (Table, error) {
 	if t.EncounterID <= 0 {
 		return Table{}, fmt.Errorf("mechanics: encounter_id must be positive")
 	}
+	seen := make(map[int64]bool, len(t.Mechanics))
 	for i, m := range t.Mechanics {
 		if m.SpellID <= 0 {
 			return Table{}, fmt.Errorf("mechanics[%d]: spell_id must be positive", i)
@@ -64,6 +97,12 @@ func Parse(data []byte) (Table, error) {
 		if !kinds[m.Kind] {
 			return Table{}, fmt.Errorf("mechanics[%d]: kind %q is not avoidable, unavoidable, interrupt or dispel", i, m.Kind)
 		}
+		// One spell, one classification: a second row for a spell id would be
+		// silently ignored by Lookup, so the table is wrong rather than lenient.
+		if seen[m.SpellID] {
+			return Table{}, fmt.Errorf("mechanics[%d]: spell_id %d is listed twice", i, m.SpellID)
+		}
+		seen[m.SpellID] = true
 	}
 	return t, nil
 }
