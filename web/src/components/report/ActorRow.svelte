@@ -444,7 +444,7 @@
            separate borders, so the pinned column's shadow can paint (a collapsed table
            drops cell shadows); one snap stop per column, so a number is whole or absent. -->
       <div
-        class="-mx-2 snap-x snap-mandatory scroll-pl-[176px] overflow-x-auto px-2 md:mx-0 md:flex-1 md:snap-none md:overflow-visible md:px-0"
+        class="-mx-2 snap-x snap-mandatory scroll-pl-[150px] overflow-x-auto px-2 md:mx-0 md:flex-1 md:snap-none md:overflow-visible md:px-0"
         hidden={splitUnavailable}
       >
         <table
@@ -456,7 +456,7 @@
             <tr class="label text-muted border-line-soft border-b">
               <th
                 scope="col"
-                class="bg-bg border-line-soft sticky left-0 border-r py-1 pr-3 pl-2 text-left font-normal shadow-[6px_0_8px_-4px_rgba(0,0,0,0.6)] md:static md:border-r-0 md:pl-0 md:shadow-none"
+                class="bg-bg border-line-soft sticky left-0 w-[150px] max-w-[150px] min-w-[150px] border-r py-1 pr-3 pl-2 text-left font-normal shadow-[6px_0_8px_-4px_rgba(0,0,0,0.6)] md:static md:w-auto md:max-w-none md:min-w-0 md:border-r-0 md:pl-0 md:shadow-none"
                 >Ability</th
               >
               <th scope="col" class="py-1 pr-3 text-right font-normal" title="Effective amount in this window"
@@ -479,7 +479,7 @@
               <th scope="col" class="py-1 pr-3 text-right font-normal" title="Largest single hit">Max</th>
               <th
                 scope="col"
-                class="min-w-[140px] py-1 text-right font-normal md:min-w-[220px]"
+                class="py-1 text-left font-normal whitespace-nowrap md:min-w-[220px] md:text-right"
                 aria-label="Notes"
               ></th>
             </tr>
@@ -490,7 +490,7 @@
               {@const school = schoolToken(ability.school)}
               <tr class="border-line-soft border-b">
                 <td
-                  class="bg-bg border-line-soft sticky left-0 max-w-[160px] border-r py-1.5 pr-3 pl-2 shadow-[6px_0_8px_-4px_rgba(0,0,0,0.6)] md:static md:max-w-none md:border-r-0 md:pl-0 md:shadow-none"
+                  class="bg-bg border-line-soft sticky left-0 w-[150px] max-w-[150px] min-w-[150px] border-r py-1.5 pr-3 pl-2 shadow-[6px_0_8px_-4px_rgba(0,0,0,0.6)] md:static md:w-auto md:max-w-none md:min-w-0 md:border-r-0 md:pl-0 md:shadow-none"
                   >{ability.name}{#if ability.via}
                     <span
                       class="text-muted ml-1 text-[11px]"

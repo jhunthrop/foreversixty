@@ -88,13 +88,18 @@ export function summaryEvents(
       .filter(Boolean)
       .slice(0, 2)
       .join(', ');
-    let previousEnd = Number.NEGATIVE_INFINITY;
+    let previous: { end_ms: number; stacks: number } | undefined;
     for (const segment of track.segments) {
-      // A segment that begins where the last one ended is a refresh while up, not a new
-      // application: the Buffs table's Applied count does not count it, and nor should
-      // the line's verb.
-      const refreshed = segment.start_ms <= previousEnd + 50;
-      previousEnd = segment.end_ms;
+      // A segment that begins where the last one ended is not a new application: the
+      // stacks changed, or it was refreshed while up. The Buffs table's Applied count
+      // does not count either, and the line's verb says which it was.
+      const continues = previous !== undefined && segment.start_ms <= previous.end_ms + 50;
+      const verb = !continues
+        ? 'on'
+        : segment.stacks !== previous?.stacks
+          ? `at ${segment.stacks} ${segment.stacks === 1 ? 'stack' : 'stacks'} on`
+          : 'refreshed on';
+      previous = { end_ms: segment.end_ms, stacks: segment.stacks };
       // The segment's own applier when the engine kept it; the track's set only when it
       // did not, so two priests' shields each say which priest.
       const own =
@@ -109,7 +114,7 @@ export function summaryEvents(
         kind: 'aura-applied',
         guid: track.target_guid,
         guids,
-        text: `${track.name} ${refreshed ? 'refreshed on' : 'on'} ${target}${by === '' ? '' : ` by ${by}`}`,
+        text: `${track.name} ${verb} ${target}${by === '' ? '' : ` by ${by}`}`,
       });
       events.push({
         atMs: segment.end_ms,

@@ -411,6 +411,26 @@
   }
   /** Set when the url named a fight the report does not have, cleared on the next pick. */
   let missingFight = $state<number | null>(null);
+  /** Set when the url named a source the report has no unit for; cleared on the next pick. */
+  let unknownSource = $state<string | null>(null);
+  // A source that is not a scope word and not a GUID the report knows: a name typed by
+  // hand resolves to the player of that name; anything else is said out loud and the
+  // scope falls back to everyone, instead of every tab answering "nothing" as a fact.
+  $effect(() => {
+    const source = state.source;
+    if (file === null || source === SOURCE_FRIENDLIES || source === SOURCE_ENEMIES) return;
+    if (unitNames.has(source)) return;
+    const wanted = source.toLowerCase();
+    const named = (file.units ?? []).find(
+      (unit) => splitUnitName(unit.name).name.toLowerCase() === wanted || unit.name.toLowerCase() === wanted,
+    );
+    if (named !== undefined) {
+      patch({ source: named.guid });
+      return;
+    }
+    unknownSource = source;
+    patch({ source: SOURCE_FRIENDLIES });
+  });
 
   // Two independent sources of scaling on an Actor-shaped row: the window (its share of
   // the actor's series, window.ts) and a target or boss filter (its share of the actor's
@@ -741,6 +761,7 @@
     // another's.
     const changesFight = next.fight !== undefined && next.fight !== state.fight;
     if (next.fight !== undefined) missingFight = null;
+    if (next.source !== undefined && next.source !== SOURCE_FRIENDLIES) unknownSource = null;
     // Picking a fight, mode, view, tab or source is a page in its own right, so it is
     // pushed and the back button undoes it. Brushing the chart replaces: a drag writes
     // the url on every pointer move, and pushing those would bury the real back
@@ -1054,6 +1075,12 @@
     </p>
   </header>
 
+  {#if unknownSource !== null}
+    <p class="text-muted px-[18px] text-[13px] md:px-0" role="status" data-testid="report-unknown-source">
+      This report has no player or unit called <span class="font-semibold">{unknownSource}</span>, so every
+      friendly is showing.
+    </p>
+  {/if}
   {#if missingFight !== null}
     <p class="text-muted px-[18px] text-[13px] md:px-0" role="status" data-testid="report-missing-fight">
       {#if missingFight === MISSING_FIGHT}
@@ -1089,8 +1116,9 @@
         <ModeBar {state} {roster} onPatch={patch} {nightMode} />
       </div>
       <Glossary />
-      <!-- The chart and its presets are a fight's: nothing draws a chart over a night. -->
-      {#if summary !== null && !nightMode}
+      <!-- The chart and its presets are a fight's: nothing draws a chart over a night, and
+           Mechanics ignores the window, so it does not show a strip it would then disown. -->
+      {#if summary !== null && !nightMode && state.mode !== 'mechanics'}
         <TimeChart
           series={chartSeries}
           extra={chartExtra}
@@ -1260,6 +1288,7 @@
         {:else if state.tab === 'casts'}
           <CastTable
             rows={scoped.casts}
+            everyone={windowed?.casts ?? scoped.casts}
             durationMs={scoped.duration_ms}
             startMs={timeWindow.startMs}
             {classOf}

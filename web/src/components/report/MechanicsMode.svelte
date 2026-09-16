@@ -17,6 +17,8 @@
     nightBossGroups,
     playerMechanics,
     unclassifiedAbilities,
+    meleeBucket,
+    unjudgedDeaths,
   } from '../../lib/report/mechanics';
   import type { ReportState } from '../../lib/report/url';
   import type { MechanicHit, MechanicKind, MechanicRow, Summary } from '../../lib/report/types';
@@ -141,6 +143,22 @@
   /** What hit a player and the table does not list. The spec's honesty rule: an ability
       the curator has not reached is unjudged, not absent. */
   const unclassified = $derived(unclassifiedAbilities(summary));
+  const melee = $derived(meleeBucket(summary));
+  /** Over the night: which bosses have a table, over how many of the night's pulls. */
+  const judgedSummary = $derived.by(() => {
+    const bosses = (block.bosses ?? []).filter((boss) =>
+      block.rows.some((row) => row.encounter_id === boss.encounter_id),
+    );
+    const judgedPulls = bosses.reduce((sum, boss) => sum + boss.pulls, 0);
+    const nightPulls = summary.pulls?.length ?? judgedPulls;
+    if (bosses.length === 0) return 'No boss of the night has a table yet.';
+    const names = bosses
+      .map((boss) => `${boss.name} (${boss.pulls} ${boss.pulls === 1 ? 'pull' : 'pulls'})`)
+      .join(', ');
+    const rest = nightPulls - judgedPulls;
+    return `Judged: ${names}, ${judgedPulls} of the night's ${nightPulls} pulls${rest > 0 ? `; the other ${rest} ${rest === 1 ? 'pull has' : 'pulls have'} no table yet` : ''}.`;
+  });
+  const unjudged = $derived(unjudgedDeaths(summary));
 
   function takenOf(guid: string): number {
     return summary.damage_taken.find((actor) => actor.guid === guid)?.effective ?? 0;
@@ -176,8 +194,8 @@
   {:else}
     <p class="text-muted text-[12px]">
       Whole {nightMode ? 'night' : 'fight'}, from the encounter’s mechanics table. {nightMode
-        ? 'Every pull of the night, and the source above does not narrow it.'
-        : 'The time window above does not apply here.'}
+        ? `${judgedSummary} The source above does not narrow it.`
+        : 'Whole fight: a brushed time window does not apply here, so none is offered.'}
     </p>
 
     <section class="flex flex-col gap-1" data-testid="mechanics-problems">
@@ -274,7 +292,13 @@
             </h3>
             <p class="text-[13px]">
               <span class="tabular font-mono">{formatAmount(player.damage)}</span> avoidable damage
-              {#if takenOf(player.guid) > 0}
+              {#if nightMode}
+                <span
+                  class="text-muted"
+                  title="Over the night the share would divide by every pull's damage taken, judged or not, so it is not shown; open a pull for it"
+                  >· share per pull only</span
+                >
+              {:else if takenOf(player.guid) > 0}
                 · <span class="tabular font-mono"
                   >{Math.round((player.damage / takenOf(player.guid)) * 100)}%</span
                 > of what they took
@@ -356,6 +380,55 @@
                 class={linkClass}
                 aria-label={`Damage Taken for ${ability.name}`}
                 onclick={() => openDamageTaken(ability.spell_id)}>Damage Taken</button
+              >
+            </li>
+          {/each}
+        </ul>
+      </section>
+    {/if}
+    {#if melee.damage > 0}
+      <section class="flex flex-col gap-1" data-testid="mechanics-melee">
+        <h2 class="label text-muted">Melee swings</h2>
+        <p class="text-muted text-[13px]">
+          <span class="text-text tabular font-mono">{formatAmount(melee.damage)}</span> damage to
+          <span class="tabular font-mono">{melee.players}</span>
+          {melee.players === 1 ? 'player' : 'players'} from the enemies’ swings{#if melee.most}, most of it on
+            <span class="text-text">{splitUnitName(melee.most.name).name}</span> (<span
+              class="tabular font-mono">{formatAmount(melee.most.damage)}</span
+            >){/if}. A swing lands on whoever holds the enemy, so no table judges it; the Damage Taken tab
+          splits it by source.
+          <button
+            type="button"
+            class={linkClass}
+            aria-label="Damage Taken, melee"
+            onclick={() => openDamageTaken(0)}>Damage Taken</button
+          >
+        </p>
+      </section>
+    {/if}
+    {#if unjudged.length > 0}
+      <section class="flex flex-col gap-1" data-testid="mechanics-unjudged-deaths">
+        <h2 class="label text-muted">Deaths the table does not explain</h2>
+        <p class="text-muted text-[12px]">
+          Killed by a swing, by an ability the table does not list, or by nothing the log named: the problems
+          above cannot say whether these were avoidable. The Deaths tab has each one in full.
+        </p>
+        <ul class="flex flex-col">
+          {#each unjudged as death (`${death.guid}-${death.at_ms}`)}
+            <li
+              class="border-line-soft text-muted flex flex-wrap items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[13px]"
+            >
+              <span class="text-text font-semibold">{splitUnitName(death.name).name}</span>
+              <span
+                >{#if death.label}{death.label} ·
+                {/if}at <span class="tabular font-mono">{formatDuration(death.at_ms)}</span>
+                · {death.by}</span
+              >
+              <button
+                type="button"
+                class={linkClass}
+                aria-label={`Deaths, ${splitUnitName(death.name).name} at ${formatDuration(death.at_ms)}`}
+                onclick={() => onPatch({ mode: 'analyze', view: 'tables', tab: 'deaths' })}>Deaths</button
               >
             </li>
           {/each}

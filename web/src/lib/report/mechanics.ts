@@ -170,6 +170,69 @@ const MELEE_SPELL_ID = 0;
  * controlled raider's spell) stays off the list, since a damage-taken ability carries no
  * source to tell it apart by.
  */
+/** What the enemies' melee swings did to players: the fight's baseline, never a mechanic. */
+export interface MeleeBucket {
+  /** Effective damage of every enemy swing on a roster player. */
+  damage: number;
+  /** How many players it hit. */
+  players: number;
+  /** Who took the most of it, by name, with their share of it. */
+  most?: { name: string; damage: number };
+}
+
+/**
+ * Every melee swing on a player, in one bucket: the table never lists it, since a swing
+ * is what a boss does to whoever holds it, but leaving it out made the mode account for
+ * a third of what landed and read as if the rest never happened.
+ */
+export function meleeBucket(summary: Summary): MeleeBucket {
+  const players = new Set(summary.roster.map((row) => row.guid));
+  let damage = 0;
+  let hit = 0;
+  let most: MeleeBucket['most'];
+  for (const actor of summary.damage_taken) {
+    if (!players.has(actor.guid)) continue;
+    const own = actor.abilities
+      .filter((ability) => ability.spell_id === MELEE_SPELL_ID)
+      .reduce((sum, ability) => sum + ability.effective, 0);
+    if (own <= 0) continue;
+    damage += own;
+    hit += 1;
+    if (most === undefined || own > most.damage) most = { name: actor.name, damage: own };
+  }
+  return { damage, players: hit, most };
+}
+
+/** A death whose killing blow is on no row of the table: the mode cannot judge it, so it says so. */
+export interface UnjudgedDeath {
+  guid: string;
+  name: string;
+  at_ms: number;
+  /** What killed them, as the death card names it. */
+  by: string;
+  label?: string;
+}
+
+/**
+ * The deaths the problems list leaves out: killed by a swing, by an ability the table
+ * does not list, or by nothing the log named. Listed rather than dropped, since "three
+ * of nine deaths" reads as six that went fine.
+ */
+export function unjudgedDeaths(summary: Summary): UnjudgedDeath[] {
+  const classified = new Set((summary.mechanics?.rows ?? []).map((row) => row.spell_id));
+  const players = new Set(summary.roster.map((row) => row.guid));
+  return summary.deaths
+    .filter((death) => players.has(death.guid))
+    .filter((death) => death.killing_blow === undefined || !classified.has(death.killing_blow.spell_id))
+    .map((death) => {
+      const blow = death.killing_blow;
+      const spell = blow === undefined ? '' : blow.spell_id === MELEE_SPELL_ID ? 'melee' : blow.spell_name;
+      const source = blow?.source_name ?? '';
+      const by = blow === undefined ? 'nothing the log named' : [source, spell].filter(Boolean).join(' · ');
+      return { guid: death.guid, name: death.name, at_ms: death.at_ms, by, label: death.label };
+    });
+}
+
 export function unclassifiedAbilities(summary: Summary): UnclassifiedAbility[] {
   const classified = new Set((summary.mechanics?.rows ?? []).map((row) => row.spell_id));
   const players = new Set(summary.roster.map((row) => row.guid));

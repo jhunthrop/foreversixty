@@ -27,12 +27,15 @@
 
   let {
     rows,
+    everyone = rows,
     durationMs,
     startMs = 0,
     classOf = new Map<string, string>(),
     approximate = false,
   }: {
     rows: CastRow[];
+    /** Every caster's rows, unscoped: who recorded failures is a fact about the log, not the scope. */
+    everyone?: CastRow[];
     durationMs: number;
     startMs?: number;
     classOf?: Map<string, string>;
@@ -58,7 +61,9 @@
    * Only the client that wrote the log records failed casts, so a zero on everyone else
    * is silence, not a clean sheet: their cell reads a dash.
    */
-  const recorders = $derived(new Set(rows.filter((row) => row.failed > 0).map((row) => row.guid)));
+  const recorders = $derived(new Set(everyone.filter((row) => row.failed > 0).map((row) => row.guid)));
+  /** Cancelled casts over the rows on screen: the total the rhythm line adds up. */
+  const cancelledTotal = $derived(ordered.reduce((sum, row) => sum + cancelled(row), 0));
   const failedKnown = (row: CastRow): boolean => recorders.size === 0 || recorders.has(row.guid);
   const ordered = $derived(
     [...rows].sort((a, b) => b.succeeded - a.succeeded || a.spell_name.localeCompare(b.spell_name)),
@@ -136,7 +141,8 @@
         data-testid="cast-rhythm"
         title="Casts of every spell in this scope, and the longest stretch between two of them. A gap counts time spent dead or out of range; over the night it is on the night's clock."
       >
-        <span class="tabular font-mono">{rhythm.casts}</span> casts ·
+        <span class="tabular font-mono">{rhythm.casts}</span> casts{#if cancelledTotal > 0}
+          · <span class="tabular font-mono">{cancelledTotal}</span> cancelled{/if} ·
         <span class="tabular font-mono">{perMinute(rhythm.casts)}</span> a minute · longest gap
         <span class="tabular font-mono">{formatDuration(rhythm.gap.to - rhythm.gap.from)}</span> at
         <span class="tabular font-mono">{formatDuration(rhythm.gap.from)}</span>

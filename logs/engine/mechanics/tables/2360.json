@@ -3,7 +3,7 @@
   "name": "Kryxis the Voracious",
   "mechanics": [
     { "spell_id": 319654, "name": "Hungering Drain", "kind": "interrupt", "note": "Kick it; each tick heals the boss." },
-    { "spell_id": 319655, "name": "Hungering Drain", "kind": "avoidable", "note": "The drain's damage tick, landing on whoever it's channeled on; interrupting 319654 is what actually stops it." },
+    { "spell_id": 319655, "name": "Hungering Drain", "kind": "avoidable", "note": "The drain's damage tick, landing on whoever it's channeled on; kicking the Hungering Drain cast (the interrupt row above) is what actually stops it." },
     { "spell_id": 319650, "name": "Vicious Headbutt", "kind": "unavoidable", "note": "Tank damage." },
     { "spell_id": 319685, "name": "Severing Smash", "kind": "avoidable", "note": "Ground effect; move." },
     { "spell_id": 330468, "name": "Essence Absorption", "kind": "avoidable", "note": "Hits most of the raid on every cast; spread out or move away from it." }
