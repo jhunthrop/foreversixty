@@ -10,6 +10,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/logs/engine/event"
 	"github.com/jhunthrop/foreversixty/logs/engine/fight"
+	"github.com/jhunthrop/foreversixty/logs/engine/mechanics"
 	"github.com/jhunthrop/foreversixty/logs/engine/units"
 )
 
@@ -43,6 +44,8 @@ type Options struct {
 	RaidBuffSpells map[int64]string
 	// SpecNames maps a COMBATANT_INFO spec id to the spec's name.
 	SpecNames map[int64]string
+	// Mechanics is the curated table for the fight's encounter; nil when there is none.
+	Mechanics *mechanics.Table
 }
 
 // DefaultOptions returns the values the session uses. Registry must still
@@ -101,6 +104,8 @@ type Summary struct {
 	Threat     []ThreatRow     `json:"threat"`
 	Combatants []CombatantRow  `json:"combatants"`
 	Roster     []RosterRow     `json:"roster"`
+
+	Mechanics MechanicsBlock `json:"mechanics"`
 }
 
 // Accumulator folds a fight's events into a Summary.
@@ -129,6 +134,9 @@ type Accumulator struct {
 	resources  map[resourceKey]*resourceTrack
 	threat     map[string]float64
 	combatants map[string]*event.Combatant
+	// mechanicHits is spell id -> player guid -> the hit tally, folded from
+	// the Damage case for every spell the fight's mechanics table lists.
+	mechanicHits map[int64]map[string]*MechanicHit
 }
 
 // New returns an accumulator for one fight.
@@ -150,6 +158,7 @@ func New(o Options) *Accumulator {
 		resources:    map[resourceKey]*resourceTrack{},
 		threat:       map[string]float64{},
 		combatants:   map[string]*event.Combatant{},
+		mechanicHits: map[int64]map[string]*MechanicHit{},
 	}
 }
 
@@ -272,6 +281,7 @@ func (a *Accumulator) Snapshot(f fight.Fight, engineVersion string) Summary {
 		Threat:        a.threatRows(),
 		Combatants:    a.combatantRows(),
 	}
+	s.Mechanics = a.mechanicsBlock(s.Deaths)
 	s.Roster = a.rosterRows(f, s)
 	return s
 }

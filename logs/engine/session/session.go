@@ -14,6 +14,7 @@ import (
 	"github.com/jhunthrop/foreversixty/logs/engine/fight"
 	"github.com/jhunthrop/foreversixty/logs/engine/layout"
 	"github.com/jhunthrop/foreversixty/logs/engine/lexer"
+	"github.com/jhunthrop/foreversixty/logs/engine/mechanics"
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
 	"github.com/jhunthrop/foreversixty/logs/engine/units"
 )
@@ -21,7 +22,7 @@ import (
 // Version is the engine version. It travels with every summary, every
 // metrics row, and every report, so a report always says which code
 // produced it. Bump it whenever decoded output changes.
-const Version = "0.2.4"
+const Version = "0.3.0"
 
 // Options configures a session.
 type Options struct {
@@ -297,6 +298,12 @@ func (s *Session) handle(ln lexer.Line, res *Result) {
 func (s *Session) startFight(f *fight.Fight) {
 	o := s.opt.Summary
 	o.Registry = s.reg
+	o.Mechanics = nil
+	if f.Kind == fight.Encounter {
+		if table, ok := mechanics.Load(f.EncounterID); ok {
+			o.Mechanics = &table
+		}
+	}
 	s.acc = summary.New(o)
 	s.acc.Start(f.Start)
 	s.kept = nil

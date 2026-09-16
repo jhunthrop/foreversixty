@@ -518,5 +518,9 @@
       "hps": 0,
       "dtps": 0
     }
-  ]
+  ],
+  "mechanics": {
+    "table_found": false,
+    "rows": []
+  }
 }

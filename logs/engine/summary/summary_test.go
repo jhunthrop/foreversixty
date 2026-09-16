@@ -57,9 +57,9 @@ func heal(sec float64, src, dst string, spellID int64, spellName string, amount,
 	}
 }
 
-// script is the fixture fight every table test is checked against. The
-// expected numbers below are computed by hand from these lines.
-func script() []event.Event {
+// fixtureEvents is the fixture fight every table test is checked against.
+// The expected numbers below are computed by hand from these lines.
+func fixtureEvents() []event.Event {
 	return []event.Event{
 		{Time: at(0), Kind: event.Summon, Name: "SPELL_SUMMON",
 			Source: event.Unit{GUID: hunter, Name: "Thalgrit-Nightslayer", Flags: 0x512},
@@ -123,17 +123,23 @@ func script() []event.Event {
 	}
 }
 
+// fixtureFight is the fight fixtureEvents plays out, shared by build() and
+// the mechanics tests so a table keyed on its encounter id matches.
+func fixtureFight() fight.Fight {
+	return fight.Fight{
+		Index: 1, Kind: fight.Encounter, EncounterID: 9001, Name: "Warden Kelthas",
+		Difficulty: 8, Size: 5, Kill: true, Start: at(0), End: at(20),
+		Players: []string{tank, healer, mage, hunter},
+	}
+}
+
 func build(t *testing.T) (*Accumulator, fight.Fight, Summary) {
 	t.Helper()
 	o, reg := opts(t)
 	a := New(o)
 	a.Start(at(0))
-	f := fight.Fight{
-		Index: 1, Kind: fight.Encounter, EncounterID: 9001, Name: "Warden Kelthas",
-		Difficulty: 8, Size: 5, Kill: true, Start: at(0), End: at(20),
-		Players: []string{tank, healer, mage, hunter},
-	}
-	for _, e := range script() {
+	f := fixtureFight()
+	for _, e := range fixtureEvents() {
 		reg.Observe(e)
 		a.Add(e)
 	}
@@ -565,7 +571,7 @@ func TestCombatantRowsCarryGearTalentsAndConsumables(t *testing.T) {
 	o.RaidBuffSpells = map[int64]string{17: "Power Word: Shield", 1459: "Arcane Intellect"}
 	a := New(o)
 	a.Start(at(0))
-	for _, e := range script() {
+	for _, e := range fixtureEvents() {
 		reg.Observe(e)
 		a.Add(e)
 	}
@@ -663,7 +669,7 @@ func TestRecomputingFromTheEventsMatchesTheStreamedSummary(t *testing.T) {
 		a := New(o)
 		a.Start(at(0))
 		// Registry order does not affect the summary, so observe first.
-		evs := script()
+		evs := fixtureEvents()
 		for _, e := range evs {
 			reg.Observe(e)
 		}
@@ -694,7 +700,7 @@ func TestSnapshotDoesNotAliasLiveAccumulatorState(t *testing.T) {
 	a.Start(at(0))
 	f := fight.Fight{Index: 1, Kind: fight.Encounter, Start: at(0), End: at(30),
 		Players: []string{tank, healer, mage}}
-	for _, e := range script() {
+	for _, e := range fixtureEvents() {
 		reg.Observe(e)
 		a.Add(e)
 	}
@@ -748,7 +754,7 @@ func TestSnapshotIsSafeToSerialiseWhileTheParseContinues(t *testing.T) {
 	a.Start(at(0))
 	f := fight.Fight{Index: 1, Kind: fight.Encounter, Start: at(0), End: at(30),
 		Players: []string{tank, healer, mage}}
-	for _, e := range script() {
+	for _, e := range fixtureEvents() {
 		reg.Observe(e)
 		a.Add(e)
 	}

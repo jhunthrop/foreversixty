@@ -157,6 +157,7 @@ func (a *Accumulator) addDamageAndHealing(e event.Event) {
 		a.fold(taken, e, amount, effective, src, "")
 		a.markActive(src, e.Time)
 		a.threat[src] += a.opt.Threat.Damage(e)
+		a.noteMechanicHit(e)
 
 	case event.Heal:
 		src := a.owner(e.Source.GUID)
