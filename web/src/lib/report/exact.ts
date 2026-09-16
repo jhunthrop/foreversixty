@@ -154,7 +154,12 @@ export const DAMAGE_LINES = `(SELECT * FROM ${EVENTS_TABLE} d
     WHERE l.kind = 'damage_landed' AND l.source_guid = d.source_guid AND l.dest_guid = d.dest_guid
       AND l.time_unix_nano BETWEEN d.time_unix_nano AND d.time_unix_nano + ${SWING_ECHO_NS}))
   UNION ALL
-  SELECT * REPLACE ('damage' AS kind, 'SWING_DAMAGE' AS event) FROM ${EVENTS_TABLE} l
+  SELECT * REPLACE ('damage' AS kind, 'SWING_DAMAGE' AS event,
+    CASE WHEN coalesce(l.amount, 0) = 0 AND coalesce(l.absorbed, 0) = 0 THEN (
+      SELECT max(d.amount) FROM ${EVENTS_TABLE} d
+      WHERE d.event = 'SWING_DAMAGE' AND d.source_guid = l.source_guid AND d.dest_guid = l.dest_guid
+        AND d.time_unix_nano BETWEEN l.time_unix_nano - ${SWING_ECHO_NS} AND l.time_unix_nano)
+    ELSE l.absorbed END AS absorbed) FROM ${EVENTS_TABLE} l
   WHERE l.kind = 'damage_landed' AND EXISTS (
     SELECT 1 FROM ${EVENTS_TABLE} d
     WHERE d.event = 'SWING_DAMAGE' AND d.source_guid = l.source_guid AND d.dest_guid = l.dest_guid
@@ -246,7 +251,7 @@ WHERE ${scope}
 GROUP BY spell_id, via
 ORDER BY effective DESC`,
     misses: `SELECT spell_id, any_value(spell_name) AS spell_name, any_value(spell_school) AS school,
-  miss_type, count(*) AS n
+  miss_type, count(*) AS n, coalesce(sum(amount), 0) AS amount
 FROM ${EVENTS_TABLE}
 WHERE kind = 'missed' AND miss_type <> '' AND ${own}${kind === 'damage-done' ? ` AND ${OTHER_SIDE}` : ''} AND ${windowClause(window)}${abilityClause(options)}
 GROUP BY spell_id, miss_type`,
@@ -293,7 +298,7 @@ export function exactMissesSql(
     scope === null || (scope.guids.length === 0 && scope.names.length === 0)
       ? ''
       : scopeClause(scope).replaceAll('other_guid', other.guid).replaceAll('other_name', other.name);
-  return `SELECT ${actor} AS guid, miss_type, count(*) AS n
+  return `SELECT ${actor} AS guid, miss_type, count(*) AS n, coalesce(sum(amount), 0) AS amount
 FROM ${EVENTS_TABLE}
 WHERE kind = 'missed' AND miss_type <> '' AND ${windowClause(window)}${abilityClause(options)}${narrowed}${excludeClause(options.exclude, actor, FIGHT_MS)}
 GROUP BY 1, 2`;
@@ -492,6 +497,9 @@ export async function measureTable(
     const found = out.get(guid) ?? fresh();
     const type = String(row.miss_type);
     found.mitigated.misses[type] = (found.mitigated.misses[type] ?? 0) + num(row.n);
+    // A hit a shield ate in full is a miss of type ABSORB carrying the amount on one
+    // client and a damage line landing for 0 on another; both are absorbed.
+    if (type === 'ABSORB') found.mitigated.absorbed += num(row.amount);
     out.set(guid, found);
   }
   return out;
@@ -514,6 +522,8 @@ export async function measureExact(
     layer.run(eventsUrl, sql.targets, ALL_ROWS),
   ]);
   const missesBySpell = new Map<number, Record<string, number>>();
+  /** The absorb misses' amounts per spell: a shield's work, counted as absorbed on the row. */
+  const absorbMissBySpell = new Map<number, number>();
   // An ability that never landed (every cast absorbed, dodged or parried) has no damage
   // row to hang its misses on; it keeps a row of its own, at zero, so the miss count the
   // mitigation line adds up is on the table too.
@@ -523,6 +533,8 @@ export async function measureExact(
     const found = missesBySpell.get(spell) ?? {};
     found[String(row.miss_type)] = num(row.n);
     missesBySpell.set(spell, found);
+    if (String(row.miss_type) === 'ABSORB')
+      absorbMissBySpell.set(spell, (absorbMissBySpell.get(spell) ?? 0) + num(row.amount));
     missedOnly.set(spell, {
       spell_id: spell,
       name: spell === 0 ? 'Melee' : String(row.spell_name ?? ''),
@@ -551,7 +563,7 @@ export async function measureExact(
           total: num(row.total),
           effective: num(row.effective),
           overheal: kind === 'healing' ? num(row.overheal) : undefined,
-          absorbed: num(row.absorbed) || undefined,
+          absorbed: num(row.absorbed) + (absorbMissBySpell.get(spell) ?? 0) || undefined,
           blocked: num(row.blocked) || undefined,
           hits: num(row.hits),
           crits: num(row.crits),

@@ -895,6 +895,10 @@ func TestASwingCountsAsItLanded(t *testing.T) {
 		dmg(3, boss, tank, 0, "", 4000, 0),
 		landed(3.010, 3000, 1000),
 		dmg(5, boss, tank, 0, "", 2500, 0), // no landed line: counts as thrown
+		// Landed for nothing with no absorb on the line: the client that writes the
+		// absorb on its own SPELL_ABSORBED line. What was thrown is what was soaked.
+		dmg(6, boss, tank, 0, "", 6263, 4411),
+		landed(6.002, 0, 0),
 	}
 	for _, e := range events {
 		reg.Observe(e)
@@ -905,13 +909,13 @@ func TestASwingCountsAsItLanded(t *testing.T) {
 	if !ok {
 		t.Fatal("no damage taken row for the tank")
 	}
-	// 0 + 3,000 + 2,500 landed; 11,097 + 1,000 absorbed, on the melee row.
+	// 0 + 3,000 + 2,500 + 0 landed; 11,097 + 1,000 + 6,263 absorbed, on the melee row.
 	if taken.Effective != 5500 {
 		t.Fatalf("taken effective = %d, want 5500", taken.Effective)
 	}
 	melee := taken.Abilities[0]
-	if melee.Hits != 3 || melee.Max != 3000 || melee.Absorbed != 12097 {
-		t.Fatalf("melee = %+v, want 3 hits, a largest of 3000 and 12097 absorbed", melee)
+	if melee.Hits != 4 || melee.Max != 3000 || melee.Absorbed != 18360 {
+		t.Fatalf("melee = %+v, want 4 hits, a largest of 3000 and 18360 absorbed", melee)
 	}
 }
 
@@ -959,5 +963,32 @@ func TestAFullyAbsorbedSwingLeavesNoHealthReading(t *testing.T) {
 	}
 	if soaked == nil || soaked.Absorbed != 11097 || soaked.HPAfter != 0 || soaked.MaxHP != 0 {
 		t.Fatalf("soaked swing = %+v, want 11097 absorbed and no health reading", soaked)
+	}
+}
+
+// A hit a shield ate in full arrives as a miss of type ABSORB carrying the amount on
+// one client, and as a damage line landing for 0 on another; both count as absorbed.
+func TestAnAbsorbMissCountsItsAmountAsAbsorbed(t *testing.T) {
+	o, reg := opts(t)
+	a := New(o)
+	a.Start(at(0))
+	miss := event.Event{
+		Time: at(2), Kind: event.Missed, Name: "SWING_MISSED",
+		Source: event.Unit{GUID: boss, Flags: 0xa48}, Dest: event.Unit{GUID: tank, Flags: 0x512},
+		MissType: "ABSORB", Amount: event.OptInt{V: 4200, OK: true},
+	}
+	for _, e := range []event.Event{dmg(1, boss, tank, 0, "", 3000, 0), miss} {
+		reg.Observe(e)
+		a.Add(e)
+	}
+	s := a.Snapshot(fight.Fight{Index: 1, Kind: fight.Encounter, Start: at(0), End: at(5), Players: []string{tank}}, "test")
+	taken, _ := actorByGUID(s.DamageTaken, tank)
+	melee := taken.Abilities[0]
+	if melee.Absorbed != 4200 || melee.Misses["ABSORB"] != 1 || melee.Hits != 1 {
+		t.Fatalf("melee taken = %+v, want 4200 absorbed, one absorb miss, one hit", melee)
+	}
+	done, _ := actorByGUID(s.DamageDone, boss)
+	if done.Abilities[0].Absorbed != 4200 {
+		t.Fatalf("melee done = %+v, want 4200 absorbed", done.Abilities[0])
 	}
 }

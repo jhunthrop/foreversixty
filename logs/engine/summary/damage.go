@@ -218,6 +218,16 @@ func (a *Accumulator) addDamageAndHealing(e event.Event) {
 			tab.Misses = map[string]int64{}
 		}
 		tab.Misses[e.MissType]++
+		// A hit a shield ate in full is logged as a miss of type ABSORB carrying the
+		// amount, on one client, and as a damage line landing for 0 with the absorb
+		// on another; both are the shield's work and both count as absorbed, or one
+		// player's absorbed reads a fifth of the other's for the same shields.
+		if e.MissType == "ABSORB" && e.Amount.OK {
+			tab.Absorbed += e.Amount.V
+			if !units.SameSide(e.Source.Flags, e.Dest.Flags) {
+				a.table(a.damageDone, src).ability(e, a.via(e)).Absorbed += e.Amount.V
+			}
+		}
 
 	case event.Absorbed:
 		// The shield's owner gets credit for the absorb as healing done:

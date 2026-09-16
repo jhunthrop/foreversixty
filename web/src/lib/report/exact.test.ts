@@ -54,7 +54,9 @@ describe('rowsSql', () => {
   it('reads damage taken from the victim and never folds pets', () => {
     const sql = rowsSql('damage-taken', { startMs: 0, endMs: 1000 }, pets);
     expect(sql).toContain('SELECT dest_guid AS actor, source_guid AS other_guid');
-    expect(sql).not.toContain('CASE');
+    // No owner expression on the victim's side: a pet's damage taken is the pet's.
+    expect(sql).not.toContain('CASE source_guid');
+    expect(sql).not.toContain('CASE dest_guid');
   });
 });
 
@@ -182,7 +184,9 @@ describe('damage lines', () => {
     for (const kind of ['damage-done', 'damage-taken'] as const) {
       const sql = rowsSql(kind, { startMs: 0, endMs: 1000 });
       expect(sql).toContain("l.kind = 'damage_landed'");
-      expect(sql).toContain("REPLACE ('damage' AS kind, 'SWING_DAMAGE' AS event)");
+      expect(sql).toContain("REPLACE ('damage' AS kind, 'SWING_DAMAGE' AS event,");
+      // A landed line at 0 with no absorb of its own is soaked in full: what was thrown.
+      expect(sql).toContain('coalesce(l.amount, 0) = 0 AND coalesce(l.absorbed, 0) = 0');
       expect(sql).not.toContain("FROM read_parquet('events.parquet') WHERE kind = 'damage'");
     }
     expect(eventStreamSql({ startMs: 0, endMs: 1000 })).toContain("l.kind = 'damage_landed'");

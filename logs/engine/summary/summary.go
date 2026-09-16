@@ -308,6 +308,12 @@ func landedSwing(swing, landed event.Event) event.Event {
 	if landed.Absorbed.OK {
 		out.Absorbed = landed.Absorbed
 	}
+	// A swing that landed for nothing was soaked in full, whether the landed line says
+	// so (one client writes the absorb there) or leaves it on a SPELL_ABSORBED line of
+	// its own (another writes 0): what was thrown is what the shield ate.
+	if landed.Amount.OK && landed.Amount.V == 0 && out.Absorbed.V < swing.Amount.V {
+		out.Absorbed = event.OptInt{V: swing.Amount.V, OK: true}
+	}
 	if landed.Blocked.OK {
 		out.Blocked = landed.Blocked
 	}
