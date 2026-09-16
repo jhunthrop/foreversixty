@@ -27,6 +27,21 @@
     deaths = [],
   }: { tracks: ResourceTrack[]; durationMs: number; deaths?: { guid: string; at_ms: number }[] } = $props();
 
+  /** The reading under the pointer, per line: "at 40.6s · 1,188", so the picture has a number. */
+  let readouts = $state<Record<string, string>>({});
+  function readAt(event: PointerEvent, key: string, series: number[]): void {
+    const box = (event.currentTarget as HTMLElement).getBoundingClientRect();
+    if (box.width === 0 || series.length === 0) return;
+    const index = Math.min(
+      series.length - 1,
+      Math.max(0, Math.round(((event.clientX - box.left) / box.width) * (series.length - 1))),
+    );
+    readouts = {
+      ...readouts,
+      [key]: `at ${formatDuration(index * 1000)} · ${formatAmount(series[index] ?? 0)}`,
+    };
+  }
+
   /** The lowest point of a series and the second it happened, for the figure beside the line. */
   function low(series: number[]): { value: number; atMs: number } {
     let value = Number.POSITIVE_INFINITY;
@@ -102,44 +117,56 @@
           >{POWER_NAMES.get(track.power_type) ?? `Power ${track.power_type}`}</span
         >
         <span class="col-span-2 flex flex-col gap-0.5 md:col-span-1">
-          <svg class="h-[40px] w-full" viewBox="0 0 100 26" preserveAspectRatio="none" aria-hidden="true">
-            <line
-              x1="0"
-              y1="2"
-              x2="100"
-              y2="2"
-              stroke="var(--color-line-soft)"
-              stroke-width="1"
-              vector-effect="non-scaling-stroke"
-            />
-            <line
-              x1="0"
-              y1="24"
-              x2="100"
-              y2="24"
-              stroke="var(--color-line-soft)"
-              stroke-width="1"
-              vector-effect="non-scaling-stroke"
-            />
-            {#each deaths as death, i (`${death.at_ms}-${i}`)}
+          <!-- A pointer over the line reads the second under it; a tap on a phone does the same. -->
+          <span
+            class="block touch-none"
+            onpointermove={(event) => readAt(event, `${track.guid}-${track.power_type}`, track.series)}
+            onpointerdown={(event) => readAt(event, `${track.guid}-${track.power_type}`, track.series)}
+          >
+            <svg class="h-[40px] w-full" viewBox="0 0 100 26" preserveAspectRatio="none" aria-hidden="true">
               <line
-                x1={durationMs === 0 ? 0 : (death.at_ms / durationMs) * 100}
-                y1="0"
-                x2={durationMs === 0 ? 0 : (death.at_ms / durationMs) * 100}
-                y2="26"
-                stroke={death.guid === track.guid ? 'var(--color-death)' : 'var(--color-death-soft)'}
-                stroke-width={death.guid === track.guid ? 2 : 1}
+                x1="0"
+                y1="2"
+                x2="100"
+                y2="2"
+                stroke="var(--color-line-soft)"
+                stroke-width="1"
                 vector-effect="non-scaling-stroke"
               />
-            {/each}
-            <polyline
-              points={points(track.series)}
-              fill="none"
-              stroke="var(--color-gold)"
-              stroke-width="1.5"
-              vector-effect="non-scaling-stroke"
-            />
-          </svg>
+              <line
+                x1="0"
+                y1="24"
+                x2="100"
+                y2="24"
+                stroke="var(--color-line-soft)"
+                stroke-width="1"
+                vector-effect="non-scaling-stroke"
+              />
+              {#each deaths as death, i (`${death.at_ms}-${i}`)}
+                <line
+                  x1={durationMs === 0 ? 0 : (death.at_ms / durationMs) * 100}
+                  y1="0"
+                  x2={durationMs === 0 ? 0 : (death.at_ms / durationMs) * 100}
+                  y2="26"
+                  stroke={death.guid === track.guid ? 'var(--color-death)' : 'var(--color-death-soft)'}
+                  stroke-width={death.guid === track.guid ? 2 : 1}
+                  vector-effect="non-scaling-stroke"
+                />
+              {/each}
+              <polyline
+                points={points(track.series)}
+                fill="none"
+                stroke="var(--color-gold)"
+                stroke-width="1.5"
+                vector-effect="non-scaling-stroke"
+              />
+            </svg>
+          </span>
+          {#if readouts[`${track.guid}-${track.power_type}`]}
+            <span class="text-strong tabular font-mono text-[11px]" data-testid="resource-readout"
+              >{readouts[`${track.guid}-${track.power_type}`]}</span
+            >
+          {/if}
           <span class="text-muted tabular flex justify-between font-mono text-[11px]">
             <span title="The top of the line">peak {formatAmount(peak)}</span>
             <span title="The lowest point and when it was reached" data-testid="resource-low"

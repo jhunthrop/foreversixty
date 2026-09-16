@@ -19,7 +19,7 @@ test('mechanics lists the avoidable hit and the death it caused, and links to th
   await expect(problems).toContainText('died to it');
   // By its own accessible name, not by position: every problem line has a link, and a
   // column of buttons that all read the same names none of them.
-  await problems.getByRole('button', { name: 'Damage Taken for Thalgrit, Anima Lash' }).click();
+  await problems.getByRole('link', { name: 'Damage Taken for Thalgrit, Anima Lash' }).click();
   await expect(page).toHaveURL(/tab=damage-taken/);
   await expect(page).toHaveURL(/ability=334660/);
 });
@@ -33,8 +33,8 @@ test('the death outranks the interrupt and the dispel, and each links to its own
   await expect(lines.nth(1)).toContainText('Anima Surge went through 1 of 1 casts');
   await expect(lines.nth(2)).toContainText('Wrack Soul ran its course 1 of 1 times it landed');
 
-  await expect(lines.nth(2).getByRole('button', { name: 'Dispels for Wrack Soul' })).toBeVisible();
-  await lines.nth(1).getByRole('button', { name: 'Interrupts for Anima Surge' }).click();
+  await expect(lines.nth(2).getByRole('link', { name: 'Dispels for Wrack Soul' })).toBeVisible();
+  await lines.nth(1).getByRole('link', { name: 'Interrupts for Anima Surge' }).click();
   await expect(page).toHaveURL(/tab=interrupts/);
 });
 

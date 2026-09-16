@@ -41,6 +41,7 @@
     taunts = undefined,
     names = new Map<string, string>(),
     classOf = new Map<string, string>(),
+    players = undefined,
     approximate = false,
     totalThreat = undefined,
     target = '',
@@ -61,6 +62,8 @@
     /** The whole window's threat, so a source scope's rows still share against everyone. */
     totalThreat?: number;
     classOf?: Map<string, string>;
+    /** The player GUIDs; a roster row without a class is still a player. Defaults to classOf's keys. */
+    players?: ReadonlySet<string>;
     /** True when the window is brushed, so threat is a scaled share, not measured. */
     approximate?: boolean;
     /** The picked enemy, from the url's `target`; '' is every enemy. */
@@ -106,6 +109,7 @@
   }
   /** The environment (a fall, a fire) has the null GUID and holds no threat. */
   const NULL_GUID = /^0+$/;
+  const isPlayer = (guid: string): boolean => (players ?? new Set(classOf.keys())).has(guid);
   /**
    * One row per enemy name: six "General Kaal" units are one boss to the reader, the way
    * Damage Taken folds them; players keep their own rows.
@@ -116,7 +120,7 @@
     const out: ThreatRow[] = [];
     for (const row of rows) {
       if (NULL_GUID.test(row.guid)) continue;
-      if (classOf.has(row.guid)) {
+      if (isPlayer(row.guid)) {
         out.push(row);
         continue;
       }
@@ -147,6 +151,9 @@
     // eslint-disable-next-line svelte/prefer-svelte-reactivity
     const byName = new Map<string, { guids: string[]; players: Map<string, ThreatLine> }>();
     for (const pair of list) {
+      // A row is a player's threat on an enemy: an enemy's own threat on another enemy (or
+      // on itself) is not a row, and not in the denominator either.
+      if (!isPlayer(pair.guid)) continue;
       const key = splitUnitName(pair.target_name).name;
       let found = byName.get(key);
       if (found === undefined) {
@@ -213,7 +220,12 @@
   const modelVersion = $derived(ordered[0]?.model_version ?? '');
   const mark = $derived(approximateMark(approximate));
   const title = $derived(approximateTitle(approximate));
-  const orderedTaunts = $derived([...(taunts ?? [])].sort((a, b) => a.at_ms - b.at_ms));
+  // With an enemy picked, its taunts alone: the list answers "who took this one off me".
+  const orderedTaunts = $derived(
+    [...(taunts ?? [])]
+      .filter((taunt) => picked === undefined || splitUnitName(taunt.target_name).name === picked.name)
+      .sort((a, b) => a.at_ms - b.at_ms),
+  );
   /** The units table spells a name; the event's own copy of it is the fallback. */
   const nameOf = (guid: string, recorded: string): string => splitUnitName(names.get(guid) ?? recorded).name;
   const selectClass =
@@ -223,8 +235,10 @@
 <div class="flex flex-col gap-2" data-testid="threat-table">
   {#if incomplete}
     <p class="text-muted text-[12px]" data-testid="threat-incomplete">
-      Threat model {modelVersion} does not yet carry every class's modifiers, so these figures are indicative. The
-      per-class table lands with Forever's ability data.
+      Threat model {modelVersion} does not yet carry every class's modifiers: a tank's stance, taunt and threat
+      multipliers are not in it, so a tank can read below the damage dealers they were holding threat over. The
+      per-class table lands with Forever's ability data. Under a brushed window, threat is the fight's total scaled
+      by the window's share, not the window's own events.
     </p>
   {/if}
   {#if groups.length > 0}
@@ -300,8 +314,10 @@
     <CopyCsv lines={csvLines} />
     {#if approximate}
       <p class="text-muted text-[12px]" data-testid="threat-approximate-note">
-        Threat is marked {mark} because it is accumulated from damage and healing and scaled to this window's share
-        of that total, not recomputed from the model directly.
+        Threat is marked {mark} because it is accumulated from damage and healing over the whole fight and scaled
+        to this window's share of each player's total, not recomputed from the window's own events: a player who
+        did little damage inside the window reads near zero here even while they held the enemy, and a taunt's own
+        window reads the same way. The whole pull is exact.
       </p>
     {/if}
   {/if}

@@ -297,7 +297,9 @@
       data-testid="row-percentile"
     >
       {#if percentile === null}<span class:text-muted={true}
-          >{parseFallback === 'none' || parseFallback === 'night' ? '' : parseFallback}</span
+          >{parseFallback === 'none' || parseFallback === 'night' || parseFallback === 'window'
+            ? ''
+            : parseFallback}</span
         >{:else}<span class="label font-body mr-1 md:hidden">Parse</span>{Math.round(
           percentile.percentile,
         )}<span class="text-muted ml-1 md:hidden">among {percentile.ranked}</span>{/if}

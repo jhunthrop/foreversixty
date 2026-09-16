@@ -180,17 +180,17 @@
   function takenOf(guid: string): number {
     return summary.damage_taken.find((actor) => actor.guid === guid)?.effective ?? 0;
   }
-  function damageTakenPatch(spellId: number, guid?: string): Partial<ReportState> {
+  function damageTakenPatch(spellId: number, guid?: string, encounter?: string): Partial<ReportState> {
+    // On the night a row belongs to one boss; the target filter carries that boss's name,
+    // so the link lands on that boss's pulls rather than the whole night.
     return {
       mode: 'analyze',
       view: 'tables',
       tab: 'damage-taken',
       ability: spellId,
       ...(guid ? { source: guid } : {}),
+      ...(nightMode && encounter ? { target: encounter } : {}),
     };
-  }
-  function openDamageTaken(spellId: number, guid?: string): void {
-    onPatch(damageTakenPatch(spellId, guid));
   }
   /**
    * The Deaths tab, scoped to the player and with their card open: the Deaths tab keys an
@@ -260,12 +260,17 @@
                 >{/if}
               {#if problem.row.note}<span class="text-muted text-[12px]">{problem.row.note}</span>{/if}
               {#if problem.row.kind === 'avoidable'}
-                <button
-                  type="button"
+                <a
+                  href={hrefFor(
+                    damageTakenPatch(problem.row.spell_id, problem.hit?.guid, problem.row.encounter),
+                  )}
                   class={linkClass}
                   aria-label={`Damage Taken for ${problem.subject}`}
-                  onclick={() => openDamageTaken(problem.row.spell_id, problem.hit?.guid)}
-                  >Damage Taken</button
+                  onclick={(event) =>
+                    follow(
+                      event,
+                      damageTakenPatch(problem.row.spell_id, problem.hit?.guid, problem.row.encounter),
+                    )}>Damage Taken</a
                 >
                 {#if problem.hit?.killed}
                   <a
@@ -280,19 +285,20 @@
                   >
                 {/if}
               {:else if problem.row.kind === 'interrupt'}
-                <button
-                  type="button"
+                <a
+                  href={hrefFor({ mode: 'analyze', view: 'tables', tab: 'interrupts' })}
                   class={linkClass}
                   aria-label={`Interrupts for ${problem.subject}`}
-                  onclick={() => onPatch({ mode: 'analyze', view: 'tables', tab: 'interrupts' })}
-                  >Interrupts</button
+                  onclick={(event) => follow(event, { mode: 'analyze', view: 'tables', tab: 'interrupts' })}
+                  >Interrupts</a
                 >
               {:else}
-                <button
-                  type="button"
+                <a
+                  href={hrefFor({ mode: 'analyze', view: 'tables', tab: 'dispels' })}
                   class={linkClass}
                   aria-label={`Dispels for ${problem.subject}`}
-                  onclick={() => onPatch({ mode: 'analyze', view: 'tables', tab: 'dispels' })}>Dispels</button
+                  onclick={(event) => follow(event, { mode: 'analyze', view: 'tables', tab: 'dispels' })}
+                  >Dispels</a
                 >
               {/if}
             </li>
@@ -344,11 +350,11 @@
               <span class="tabular font-mono">{melee.others.players}</span>
               {melee.others.players === 1 ? 'other player' : 'other players'}{/if}{/if}. A swing lands on
           whoever holds the enemy, so no table judges it; the Damage Taken tab splits it by source.
-          <button
-            type="button"
+          <a
+            href={hrefFor(damageTakenPatch(0))}
             class={linkClass}
             aria-label="Damage Taken, melee"
-            onclick={() => openDamageTaken(0)}>Damage Taken</button
+            onclick={(event) => follow(event, damageTakenPatch(0))}>Damage Taken</a
           >
         </p>
       </section>
@@ -459,11 +465,11 @@
                 <span class="tabular font-mono">{ability.players}</span>
                 {ability.players === 1 ? 'player' : 'players'} hit</span
               >
-              <button
-                type="button"
+              <a
+                href={hrefFor(damageTakenPatch(ability.spell_id))}
                 class={linkClass}
                 aria-label={`Damage Taken for ${ability.name}`}
-                onclick={() => openDamageTaken(ability.spell_id)}>Damage Taken</button
+                onclick={(event) => follow(event, damageTakenPatch(ability.spell_id))}>Damage Taken</a
               >
             </li>
           {/each}

@@ -271,8 +271,9 @@
     <div class="hidden overflow-x-auto md:block">
       <table class="w-full border-collapse text-[14px]" data-testid="compare-table">
         <caption class="sr-only">
-          Per-player {metric.replace('_', ' ')} in {currentFight?.name ?? 'this fight'}, compared with {rightFight?.name ??
-            'the selected fight'}.
+          Per-player {metric.replace('_', ' ')} in {fightLabel(currentFight) || 'this fight'}, compared with {fightLabel(
+            rightFight,
+          ) || 'the selected fight'}.
         </caption>
         <thead>
           <tr class="border-line-soft border-b text-left">

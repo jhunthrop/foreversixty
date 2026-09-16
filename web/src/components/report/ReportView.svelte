@@ -326,7 +326,9 @@
   const scoped = $derived(
     windowed === null ? null : scopeSource(windowed, state.source, playerSet, friendlySet),
   );
-  const presets = $derived(summary === null ? [] : windowPresets(summary));
+  // The death presets follow the source pick: with one player chosen, "20 s before X
+  // died" offers that player's deaths, not everyone's.
+  const presets = $derived(scoped === null ? [] : windowPresets(scoped));
   /** What the chart draws: the table the tab shows, under the source scope. */
   const chartActors = $derived.by(() => {
     if (scoped === null) return [];
@@ -487,13 +489,15 @@
   const parseFallback = $derived(
     fight?.encounter_id === undefined || fight.in_progress
       ? ''
-      : fight.kill
-        ? percentilesPending
-          ? '…'
-          : percentilesUnavailable
-            ? '?'
-            : '–'
-        : 'wipe',
+      : !windowIsWhole
+        ? 'window'
+        : fight.kill
+          ? percentilesPending
+            ? '…'
+            : percentilesUnavailable
+              ? '?'
+              : '–'
+          : 'wipe',
   );
   /** The actor tables' fallback: Damage Taken has no parse at all, and its cells say so. */
   const tableParseFallback = $derived(
@@ -1336,6 +1340,7 @@
         {:else if state.tab === 'threat'}
           <ThreatTable
             rows={scoped.threat}
+            players={playerSet}
             pairs={scoped.threat_by_target ?? []}
             everyonePairs={windowed?.threat_by_target ?? scoped.threat_by_target ?? []}
             taunts={scoped.taunts}

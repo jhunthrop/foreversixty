@@ -95,6 +95,11 @@
         'The ways a hit fails to land, as the log names them. A parry, dodge or miss avoided it outright; absorb means a shield took the whole hit; evade and immune mean the target could not be hit at all just then.',
     },
     {
+      term: 'Amount · Share · Hits · Crit · Avg · Max',
+      meaning:
+        'The columns of an expanded row’s abilities table: the damage or healing that landed, its share of the row’s total (the bar beside it is that share drawn), how many hits and ticks landed, the share of them that were critical, the amount per hit, and the largest single hit. The last column holds notes: what was absorbed, blocked or avoided, or how much of a heal was over.',
+    },
+    {
       term: 'Overkill',
       meaning:
         'The part of a killing hit beyond the health the player had left. A death line shows the hit whole and the overkill in brackets; the tables leave overkill out unless "Count overkill" is on.',
@@ -132,12 +137,12 @@
     {
       term: 'Threat',
       meaning:
-        'Threat accumulated from damage and healing under the named model; indicative until every class’s modifiers are in.',
+        'Threat accumulated from damage and healing under the named model; indicative until every class’s modifiers are in, so a tank without their stance and taunt multipliers can read below the damage dealers. Under a brushed window it is the fight’s total scaled by the window’s share.',
     },
     {
       term: 'Threat on a target',
       meaning:
-        'The threat one player has built on one enemy, from the damage they did to it and their share of the raid’s healing while it was engaged. Whoever has the most is who it attacks.',
+        'The threat one player has built on one enemy, from the damage they did to it and their share of the raid’s healing while it was engaged. Once every class’s modifiers are in, whoever has the most is who it attacks; until then a tank without their stance and taunt multipliers can read below the damage dealers, so the order is not yet the aggro order.',
     },
     {
       term: 'Taunt',
