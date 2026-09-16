@@ -1437,6 +1437,7 @@
             measured={castExact ?? undefined}
             measureError={castMeasureError}
             whole={base === null ? undefined : scopeSource(base, state.source, playerSet, friendlySet).casts}
+            names={unitNames}
           />
         {:else if state.tab === 'interrupts'}
           <ExchangeTable

@@ -27,3 +27,23 @@ test('a spell the window only saw started gets a row with its measured counts', 
   await expect(surge).toContainText('Anima Surge');
   await expect(surge.getByTestId('cast-cancelled')).toContainText('1');
 });
+
+// Ashfang bites once at 1.5s of fight 3. Under all friendlies the row is there, filed
+// under its owner and saying which pet it was.
+test('a pet’s cast row sits under its owner and says which pet cast it', async ({ page }) => {
+  await page.goto('/reports/fixture2abcd?fight=3&tab=casts');
+  const bite = page.getByTestId('cast-Pet-0-2085-2284-7855-165189-01000000B1-17253');
+  await expect(bite).toBeVisible();
+  await expect(bite).toContainText('Thalgrit');
+  await expect(bite).toContainText('via Ashfang');
+});
+
+test('picking the pet’s owner keeps the pet’s casts on screen', async ({ page }) => {
+  await page.goto('/reports/fixture2abcd?fight=3&tab=casts&source=Player-4184-000000A4');
+  await expect(page.getByTestId('cast-Pet-0-2085-2284-7855-165189-01000000B1-17253')).toBeVisible();
+});
+
+test('picking another player leaves the pet’s casts out', async ({ page }) => {
+  await page.goto('/reports/fixture2abcd?fight=3&tab=casts&source=Player-4184-000000A3');
+  await expect(page.getByTestId('cast-Pet-0-2085-2284-7855-165189-01000000B1-17253')).toHaveCount(0);
+});

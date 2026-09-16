@@ -36,6 +36,7 @@
     measured = undefined,
     measureError = '',
     whole = undefined,
+    names = new Map<string, string>(),
   }: {
     rows: CastRow[];
     /** Every caster's whole-fight rows: who recorded failures is a fact about the log, not the scope or the window. */
@@ -43,6 +44,8 @@
     durationMs: number;
     startMs?: number;
     classOf?: Map<string, string>;
+    /** GUID to unit name, so a pet's row can be filed under its owner's name. */
+    names?: ReadonlyMap<string, string>;
     /** True when the window is brushed, so Cast and Failed are a scaled share. */
     approximate?: boolean;
     /** The window's own counts per caster and spell, once the fight's events were read. */
@@ -56,6 +59,14 @@
     /** Why the measure did not run, when it did not: the scaled figures stay, marked. */
     measureError?: string;
   } = $props();
+  /** The player a row belongs to: a pet's owner, or the caster themselves. */
+  const ownerOf = (row: CastRow): string => row.owner_guid ?? row.guid;
+  /** The pet's own name when the row is a pet's; '' for a caster's own row. */
+  const viaOf = (row: CastRow): string => (ownerOf(row) === row.guid ? '' : splitUnitName(row.name).name);
+  /** The name the Caster column shows: the owner's, since that is whose page this is. */
+  const casterName = (row: CastRow): string =>
+    splitUnitName(names.get(ownerOf(row)) ?? (ownerOf(row) === row.guid ? row.name : ownerOf(row))).name;
+
   /**
    * Under a brush the measured counts stand in for the scaled ones, row by row, and a
    * spell the window only saw started or refused gets a row of its own: the cancelled
@@ -111,9 +122,10 @@
   /** The table as lines: one per caster and spell, with the casting time in seconds. */
   function csvLines(): string[][] {
     return [
-      ['Player', 'Spell', 'Spell id', 'Casts', 'Started', 'Cancelled', 'Failed', 'Casting s'],
+      ['Player', 'Via', 'Spell', 'Spell id', 'Casts', 'Started', 'Cancelled', 'Failed', 'Casting s'],
       ...ordered.map((row) => [
-        splitUnitName(row.name).name,
+        casterName(row),
+        viaOf(row),
         row.spell_name,
         String(row.spell_id),
         String(row.succeeded),
@@ -146,7 +158,7 @@
    * gives; over a whole raid the longest gap is meaningless.
    */
   const rhythm = $derived.by(() => {
-    const casters = new Set(rows.map((row) => row.guid));
+    const casters = new Set(rows.map(ownerOf));
     if (casters.size !== 1) return null;
     const ticks = rows.flatMap((row) => row.sequence).sort((a, b) => a - b);
     if (ticks.length < 2) return null;
@@ -219,13 +231,18 @@
         >
           <span
             class="truncate font-semibold"
-            style={`color: ${classColorVar(classOf.get(row.guid))}`}
-            title={splitUnitName(row.name).name}
+            style={`color: ${classColorVar(classOf.get(ownerOf(row)))}`}
+            title={casterName(row)}
           >
-            {splitUnitName(row.name).name}
+            {casterName(row)}
           </span>
           <span class="truncate" title={row.spell_name}
-            >{row.spell_name}{#if sameName.has(`${row.guid}|${row.spell_name}`)}
+            >{row.spell_name}{#if viaOf(row) !== ''}
+              <span
+                class="text-muted ml-1 text-[11px]"
+                title="Cast by this pet or guardian, counted on its owner's row"
+                data-testid="cast-via">· via {viaOf(row)}</span
+              >{/if}{#if sameName.has(`${row.guid}|${row.spell_name}`)}
               <span
                 class="text-muted ml-1 font-mono text-[11px]"
                 title="Two spells share this name; this is spell id {row.spell_id}">#{row.spell_id}</span

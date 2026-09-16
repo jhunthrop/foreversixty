@@ -134,6 +134,11 @@
         'Narrows every table to the friendlies, the enemies, or one player. Clicking a name in the summary does the same.',
     },
     {
+      term: 'via a pet',
+      meaning:
+        'A cast or an ability a player’s pet, totem or guardian did, counted on the player’s own row and named after the spell. Picking a player on the Source control shows their pets’ work with their own.',
+    },
+    {
       term: 'Window',
       meaning:
         'A slice of the fight. Drag across the chart, use the sliders, or pick a preset; every table follows.',
