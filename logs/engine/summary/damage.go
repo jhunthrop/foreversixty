@@ -37,6 +37,9 @@ type Pair struct {
 	GUID  string `json:"guid"`
 	Name  string `json:"name"`
 	Total int64  `json:"total"`
+	// Healing only: what the heals on this unit did not need, so a unit healed
+	// at full health has a row that says so rather than a zero and no row.
+	Overheal int64 `json:"overheal,omitempty"`
 }
 
 // Actor is one row of a damage or healing table.
@@ -68,7 +71,9 @@ type actor struct {
 	// read back off Min itself without conflating "unset" with "zero".
 	minSet  map[abilityKey]bool
 	targets map[string]int64
-	series  []int64
+	// overhealBy is overheal per target, for the healing tables' pairs.
+	overhealBy map[string]int64
+	series     []int64
 }
 
 // activity tracks how long an actor spent doing something, so a row can
@@ -102,7 +107,7 @@ func (a *Accumulator) markActive(guid string, at time.Time) {
 func (a *Accumulator) table(m map[string]*actor, guid string) *actor {
 	t, ok := m[guid]
 	if !ok {
-		t = &actor{guid: guid, abilities: map[abilityKey]*Ability{}, minSet: map[abilityKey]bool{}, targets: map[string]int64{}}
+		t = &actor{guid: guid, abilities: map[abilityKey]*Ability{}, minSet: map[abilityKey]bool{}, targets: map[string]int64{}, overhealBy: map[string]int64{}}
 		m[guid] = t
 	}
 	return t
@@ -183,6 +188,7 @@ func (a *Accumulator) addDamageAndHealing(e event.Event) {
 		done := a.table(a.healingDone, src)
 		a.fold(done, e, amount, effective, e.Dest.GUID, a.via(e))
 		done.overheal += e.Overheal.V
+		done.overhealBy[e.Dest.GUID] += e.Overheal.V
 		done.absorbed += e.Absorbed.V
 		if ab := done.ability(e, a.via(e)); ab != nil {
 			ab.Overheal += e.Overheal.V
@@ -190,6 +196,7 @@ func (a *Accumulator) addDamageAndHealing(e event.Event) {
 		taken := a.table(a.healingTaken, e.Dest.GUID)
 		a.fold(taken, e, amount, effective, src, "")
 		taken.overheal += e.Overheal.V
+		taken.overhealBy[src] += e.Overheal.V
 		a.markActive(src, e.Time)
 		healThreat := a.opt.Threat.Healing(e)
 		a.threat[src] += healThreat
@@ -301,7 +308,7 @@ func (a *Accumulator) actors(m map[string]*actor) []Actor {
 		})
 		row.Targets = make([]Pair, 0, len(t.targets))
 		for g, v := range t.targets {
-			row.Targets = append(row.Targets, Pair{GUID: g, Name: a.name(g), Total: v})
+			row.Targets = append(row.Targets, Pair{GUID: g, Name: a.name(g), Total: v, Overheal: t.overhealBy[g]})
 		}
 		sort.Slice(row.Targets, func(i, j int) bool {
 			if row.Targets[i].Total != row.Targets[j].Total {

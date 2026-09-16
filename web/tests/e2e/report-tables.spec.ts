@@ -188,3 +188,24 @@ test('a brushed window marks cast counts and threat as approximate', async ({ pa
   await page.goto(`${FIGHT}&tab=threat&start=0&end=10000`);
   await expect(page.getByTestId('threat-approximate-note')).toBeVisible();
 });
+
+// Sunwick's one Heal on Baelgrim in fight 3: 1,900 cast, 320 of it overheal. The pair
+// carries the overheal from the engine, so the Over column is on the plain row, and the
+// ability filter measures the healing table on a pull the way it does the damage tables.
+test('a healing row shows what each target did not need, and the ability filter measures it', async ({
+  page,
+}) => {
+  test.slow();
+  await serveDuckdbRuntime(page);
+  await page.goto('/reports/fixture2abcd?fight=3&tab=healing');
+  const row = page.getByTestId('actor-Player-4184-000000A2');
+  await row.getByRole('button').first().click();
+  await expect(row.getByTestId('target-overheal')).toContainText('320');
+
+  await page.goto('/reports/fixture2abcd?fight=3&tab=healing&ability=2060');
+  await expect(page.getByTestId('table-measured')).toBeVisible({ timeout: 60_000 });
+  await expect(page.getByTestId('actor-Player-4184-000000A2')).toBeVisible();
+
+  await page.goto('/reports/fixture2abcd?fight=3&tab=healing&ability=999999');
+  await expect(page.getByTestId('table-empty')).toBeVisible({ timeout: 60_000 });
+});

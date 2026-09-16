@@ -173,7 +173,11 @@
       <span class="text-muted label md:col-span-3">Total</span>
       <span class="tabular hidden text-right font-mono text-[12px] md:inline">100%</span>
       <span class="hidden md:inline"></span>
-      <span class="tabular text-right font-mono">{formatAmount(total)}</span>
+      <span
+        class="tabular text-right font-mono"
+        title={amountApproximate ? 'Prorated with its rows, the same way' : undefined}
+        >{amountApproximate ? '~' : ''}{formatAmount(total)}</span
+      >
       <span
         class="text-muted tabular hidden text-right font-mono text-[13px] md:inline"
         title="Over the whole window. A row divides by its player's own time in it, so a player who died reads higher per second than the total"

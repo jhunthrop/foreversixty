@@ -35,6 +35,7 @@
     approximate = false,
     measured = undefined,
     measureError = '',
+    whole = undefined,
   }: {
     rows: CastRow[];
     /** Every caster's whole-fight rows: who recorded failures is a fact about the log, not the scope or the window. */
@@ -46,18 +47,39 @@
     approximate?: boolean;
     /** The window's own counts per caster and spell, once the fight's events were read. */
     measured?: ReadonlyMap<string, CastCounts>;
+    /**
+     * The whole fight's rows in this source scope: a spell only started, never landed,
+     * inside the window has no windowed row (the window keeps rows by their successes),
+     * and its measured counts need a row to sit on.
+     */
+    whole?: CastRow[];
     /** Why the measure did not run, when it did not: the scaled figures stay, marked. */
     measureError?: string;
   } = $props();
-  /** Under a brush the measured counts stand in for the scaled ones, row by row. */
-  const shown = $derived(
-    measured === undefined
-      ? rows
-      : rows.map((row) => {
-          const counts = measured.get(castKey(row));
-          return counts === undefined ? row : { ...row, ...counts };
-        }),
-  );
+  /**
+   * Under a brush the measured counts stand in for the scaled ones, row by row, and a
+   * spell the window only saw started or refused gets a row of its own: the cancelled
+   * cast a player most wants to see is the one that never went off.
+   */
+  const shown = $derived.by(() => {
+    if (measured === undefined) return rows;
+    const present = new Set(rows.map(castKey));
+    const clippedOnly = (whole ?? rows)
+      .filter((row) => !present.has(castKey(row)))
+      .flatMap((row) => {
+        const counts = measured.get(castKey(row));
+        return counts === undefined || (counts.started === 0 && counts.failed === 0)
+          ? []
+          : [{ ...row, ...counts, sequence: [] }];
+      });
+    return [
+      ...rows.map((row) => {
+        const counts = measured.get(castKey(row));
+        return counts === undefined ? row : { ...row, ...counts };
+      }),
+      ...clippedOnly,
+    ];
+  });
   /** True while the figures are the summary's scaled ones: a brush with no measure yet. */
   const scaled = $derived(approximate && measured === undefined);
 

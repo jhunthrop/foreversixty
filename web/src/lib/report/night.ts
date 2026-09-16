@@ -539,7 +539,13 @@ function mergeActor(table: Map<string, Actor>, actor: Actor): void {
     const have = targets.get(target.guid);
     targets.set(
       target.guid,
-      have === undefined ? { ...target } : { ...have, total: have.total + target.total },
+      have === undefined
+        ? { ...target }
+        : {
+            ...have,
+            total: have.total + target.total,
+            overheal: sumOptional(have.overheal, target.overheal),
+          },
     );
   }
   table.set(actor.guid, {

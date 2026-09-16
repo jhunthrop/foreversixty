@@ -153,3 +153,16 @@ test('a source scope shares the totals table against everyone too', async ({ pag
   await expect(shares).toHaveCount(1);
   await expect(shares.first()).not.toContainText('100.0%');
 });
+
+// The totals table lists the enemies too, but the share is the raid's: every player's
+// threat sums to 100% and the boss's own row reads a dash, or the raid would read half
+// of itself with the rest held by the enemy it is fighting.
+test('the totals table shares the players to 100% and leaves the enemies out of it', async ({ page }) => {
+  await page.goto(FIGHT);
+  const shares = await page.getByTestId('threat-share').allInnerTexts();
+  const sum = shares.reduce((total, text) => total + Number.parseFloat(text), 0);
+  expect(Math.round(sum * 10) / 10).toBeCloseTo(100, 0);
+  // The fixture's boss builds no threat row of its own; the sample log's bosses do, and
+  // the harness smoke checks their rows read a dash where a share would be.
+  await expect(page.getByTestId('threat-share-note')).toContainText('every player’s threat');
+});

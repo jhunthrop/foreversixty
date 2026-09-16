@@ -36,12 +36,12 @@ describe('rowsSql', () => {
     expect(rowsSql('damage-taken', { startMs: 0, endMs: 1000 })).not.toContain('dest_flags');
   });
 
-  it('reads one ability alone when the ability filter is set, on the damage tables only', () => {
+  it('reads one ability alone when the ability filter is set', () => {
     expect(rowsSql('damage-taken', { startMs: 0, endMs: 1000 }, { ability: 331415 })).toContain(
       'AND spell_id = 331415',
     );
     expect(rowsSql('damage-done', { startMs: 0, endMs: 1000 }, { ability: 0 })).toContain('AND spell_id = 0');
-    expect(rowsSql('healing', { startMs: 0, endMs: 1000 }, { ability: 116 })).not.toContain('spell_id = 116');
+    expect(rowsSql('healing', { startMs: 0, endMs: 1000 }, { ability: 116 })).toContain('AND spell_id = 116');
   });
 
   it('counts overkill only when asked', () => {
@@ -161,5 +161,15 @@ describe('measureCasts', () => {
       failed: 0,
       fail_reasons: {},
     });
+  });
+});
+
+describe('the ability filter on healing', () => {
+  it('reads heals by their spell and absorbs by the shield they came from', () => {
+    const sql = rowsSql('healing', { startMs: 0, endMs: 1000 }, { ability: 116670 });
+    expect(sql).toContain("kind = 'heal' AND");
+    expect(sql).toMatch(/kind = 'heal' AND [^\n]*AND spell_id = 116670/);
+    expect(sql).toMatch(/kind = 'absorbed' AND[^\n]*AND extra_spell_id = 116670/);
+    expect(sql).not.toMatch(/kind = 'absorbed' AND[^\n]*AND spell_id = 116670/);
   });
 });

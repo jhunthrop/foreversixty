@@ -140,6 +140,11 @@
         'Threat accumulated from damage and healing under the named model; indicative until every class’s modifiers are in, so a tank without their stance and taunt multipliers can read below the damage dealers. Under a brushed window it is the fight’s total scaled by the window’s share.',
     },
     {
+      term: 'Threat share and bar',
+      meaning:
+        'On the Threat tab, Share is a player’s part of every player’s threat in this window (or of every player’s threat on the picked enemy), whatever the Source scope shows, so one player on their own still reads their real share. The bar is drawn against the highest row, not against 100%. An enemy’s own row is outside the share.',
+    },
+    {
       term: 'Threat on a target',
       meaning:
         'The threat one player has built on one enemy, from the damage they did to it and their share of the raid’s healing while it was engaged. Once every class’s modifiers are in, whoever has the most is who it attacks; until then a tank without their stance and taunt multipliers can read below the damage dealers, so the order is not yet the aggro order.',

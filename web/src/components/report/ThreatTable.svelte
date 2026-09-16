@@ -109,7 +109,7 @@
       ...lines.map((line) => [
         splitUnitName(line.name).name,
         String(Math.round(line.threat)),
-        ...share(line),
+        ...(shares(line) ? share(line) : ranked ? [''] : []),
       ]),
     ];
   }
@@ -201,7 +201,15 @@
       ? 0
       : (everyoneGroups.find((group) => group.name === picked.name)?.total ?? picked.total),
   );
-  const lines = $derived<ThreatLine[]>(picked?.lines ?? ordered);
+  /**
+   * Under a brush the figures are scaled totals, not a standing, so the rows keep the
+   * roster's order (by name) rather than an order that reads as a ranking.
+   */
+  const lines = $derived<ThreatLine[]>(
+    approximate
+      ? [...(picked?.lines ?? ordered)].sort((a, b) => a.name.localeCompare(b.name))
+      : (picked?.lines ?? ordered),
+  );
   /** Six units named "General Kaal" are six rows; each after the first says which copy it is. */
   const copyOf = $derived.by(() => {
     // eslint-disable-next-line svelte/prefer-svelte-reactivity
@@ -218,10 +226,18 @@
   const copies = $derived(new Set([...copyOf.entries()].filter(([, n]) => n > 1).map(([guid]) => guid)));
   const peak = $derived(lines.reduce((highest, line) => Math.max(highest, line.threat), 0));
   // Both branches share against everyone, never against the rows in scope: a picked enemy
-  // against every player's threat on it, the totals table against the whole window.
+  // against every player's threat on it, the totals table against every player's threat in
+  // the window. The enemies' own rows are outside the share: their threat is the model run
+  // over their damage, and a raid that reads 52% of itself because the boss holds the rest
+  // is a raid misled.
   const total = $derived(
-    picked !== undefined ? pickedTotal : (totalThreat ?? lines.reduce((sum, line) => sum + line.threat, 0)),
+    picked !== undefined
+      ? pickedTotal
+      : (totalThreat ??
+          lines.filter((line) => isPlayer(line.guid)).reduce((sum, line) => sum + line.threat, 0)),
   );
+  /** A row that has a share: every row on a picked enemy, only the players on the totals table. */
+  const shares = (line: ThreatLine): boolean => picked !== undefined || isPlayer(line.guid);
   const incomplete = $derived(ordered.some((row) => !row.complete));
   const modelVersion = $derived(ordered[0]?.model_version ?? '');
   const mark = $derived(approximateMark(approximate));
@@ -302,7 +318,7 @@
         <span
           class="text-right"
           title={picked === undefined
-            ? 'Share of all the threat in this table'
+            ? "Share of every player's threat in this window; an enemy's own row is outside it"
             : `Share of every player's threat on ${picked.name}`}>Share</span
         >
       {/if}
@@ -341,7 +357,7 @@
               >threat</span
             >
           </span>
-          {#if ranked}
+          {#if ranked && shares(row)}
             <span
               class="text-muted tabular col-span-2 text-right font-mono text-[13px] md:col-span-1"
               data-testid="threat-share"
@@ -349,10 +365,22 @@
                 class="label font-body ml-1.5 md:hidden">share</span
               ></span
             >
+          {:else if ranked}
+            <span
+              class="text-muted col-span-2 text-right text-[12px] md:col-span-1"
+              title="An enemy's threat is the model run over its own damage; the raid's shares do not include it"
+              data-testid="threat-no-share">—</span
+            >
           {/if}
         </li>
       {/each}
     </ul>
+    {#if ranked}
+      <p class="text-muted text-[12px]" data-testid="threat-share-note">
+        Share is of every player’s threat {picked === undefined ? 'in this window' : `on ${picked.name}`},
+        whatever the source scope shows; the bar is drawn against the highest row.
+      </p>
+    {/if}
     <CopyCsv lines={csvLines} />
     {#if approximate}
       <p class="text-muted text-[12px]" data-testid="threat-approximate-note">

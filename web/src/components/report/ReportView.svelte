@@ -489,6 +489,12 @@
   // An ability filter counts too: the summary cannot split sources or mitigation by one
   // ability, and the measured path can.
   const filtersScale = $derived(filters.target !== '' || filters.bossOnly || filters.ability !== null);
+  /**
+   * The night's totals are prorated only by a target or boss filter: an ability's total
+   * is exact in every pull's summary and exact in their sum, so an ability filter alone
+   * leaves the night's amounts bare.
+   */
+  const nightProrates = $derived(nightMode && (filters.target !== '' || filters.bossOnly));
   /** The night's split note names the filter that is on, not a filter that is not. */
   const nightFilterWords = $derived.by(() => {
     const words = [
@@ -1263,7 +1269,7 @@
             {windowIsWhole}
             measure={nightMode ? undefined : measureRow}
             approximate={actorTableApproximate}
-            amountApproximate={filtersScale && (!windowIsWhole || nightMode)}
+            amountApproximate={(filtersScale && !windowIsWhole) || nightProrates}
           />
           {#if actorTableApproximate}
             <p class="text-muted text-[12px]" data-testid="approximate-note">
@@ -1285,8 +1291,8 @@
                 {/if}
               {:else if nightMode}
                 Over the whole night a tilde marks a figure split across abilities and targets in proportion
-                to the window and any target, boss or ability filter{filtersScale ? ', totals included' : ''}.
-                Open a pull to read its figures from the fight’s events.
+                to the window and any target or boss filter{nightProrates ? ', totals included' : ''}; an
+                ability filter’s totals are exact. Open a pull to read its figures from the fight’s events.
               {:else if tableMeasuring}
                 <span data-testid="table-measuring">Measuring this window from the fight’s events…</span> A tilde
                 marks a figure still prorated from the summary.
@@ -1357,6 +1363,7 @@
             approximate={!windowIsWhole}
             measured={castExact ?? undefined}
             measureError={castMeasureError}
+            whole={base === null ? undefined : scopeSource(base, state.source, playerSet, friendlySet).casts}
           />
         {:else if state.tab === 'interrupts'}
           <ExchangeTable
@@ -1404,7 +1411,7 @@
             onPatch={patch}
             onWindow={setWindow}
             totalThreat={windowed?.threat
-              .filter((row) => !/^0+$/.test(row.guid))
+              .filter((row) => playerSet.has(row.guid))
               .reduce((sum, row) => sum + row.threat, 0)}
           />
         {:else if state.tab === 'deaths'}

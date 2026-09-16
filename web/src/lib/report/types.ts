@@ -37,7 +37,7 @@ export interface Pair {
   guid: string;
   name: string;
   total: number;
-  /** Healing only, and only once measured: what the heals on this unit did not need. */
+  /** Healing only (engine 0.3.3 and a measure): what the heals on this unit did not need. */
   overheal?: number;
 }
 

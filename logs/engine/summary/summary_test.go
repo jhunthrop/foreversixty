@@ -324,6 +324,23 @@ func TestDamageTakenAndTheAbsorbCredit(t *testing.T) {
 	if hl.Absorbed != 300 {
 		t.Errorf("absorbed = %d, want 300", hl.Absorbed)
 	}
+	// The pair carries the overheal too: the 1000 heal with 400 over on its target.
+	var healed *Pair
+	for i := range hl.Targets {
+		if hl.Targets[i].Overheal > 0 {
+			healed = &hl.Targets[i]
+		}
+	}
+	if healed == nil || healed.Overheal != 400 {
+		t.Errorf("healing pairs = %+v, want one carrying 400 overheal", hl.Targets)
+	}
+	for _, row := range s.DamageDone {
+		for _, pair := range row.Targets {
+			if pair.Overheal != 0 {
+				t.Errorf("damage pair %s carries overheal %d", pair.Name, pair.Overheal)
+			}
+		}
+	}
 }
 
 func TestDeathsKeepTheKillingBlowAndTheAurasHeld(t *testing.T) {

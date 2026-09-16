@@ -220,7 +220,8 @@
         {
           "guid": "Player-4184-000000A1",
           "name": "Baelgrim-Nightslayer",
-          "total": 2652
+          "total": 2652,
+          "overheal": 1046
         }
       ],
       "series": [
@@ -269,7 +270,8 @@
         {
           "guid": "Player-4184-000000A2",
           "name": "Sunwick-Nightslayer",
-          "total": 812
+          "total": 812,
+          "overheal": 1046
         }
       ],
       "series": [
