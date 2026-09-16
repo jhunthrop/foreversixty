@@ -52,6 +52,7 @@
     approximate = false,
     amountApproximate = false,
     splitUnavailable = false,
+    splitFilter = '',
     deadSince = null,
     measure = undefined,
     characterLink = null,
@@ -71,6 +72,8 @@
     amountApproximate?: boolean;
     /** Over the night under a target or boss filter: the split by ability cannot be had, so say so. */
     splitUnavailable?: boolean;
+    /** The filter the night cannot split by, in words. */
+    splitFilter?: string;
     /** When this player died before the window's end without coming back: the row is a corpse's. */
     deadSince?: number | null;
     /** Measures this row's split inside the window from the fight's own events. */
@@ -260,18 +263,22 @@
   const targetsByName = $derived.by(() => {
     // A plain Map: built once inside the derived and never read reactively by key.
     // eslint-disable-next-line svelte/prefer-svelte-reactivity
-    const merged = new Map<string, { name: string; total: number; count: number }>();
+    const merged = new Map<string, { name: string; total: number; overheal?: number; count: number }>();
     for (const target of shownTargets) {
       const name = splitUnitName(target.name).name;
       const found = merged.get(name);
-      if (found === undefined) merged.set(name, { name, total: target.total, count: 1 });
+      if (found === undefined)
+        merged.set(name, { name, total: target.total, overheal: target.overheal, count: 1 });
       else {
         found.total += target.total;
+        if (target.overheal !== undefined) found.overheal = (found.overheal ?? 0) + target.overheal;
         found.count += 1;
       }
     }
-    return [...merged.values()].sort((a, b) => b.total - a.total);
+    return [...merged.values()].sort((a, b) => b.total + (b.overheal ?? 0) - (a.total + (a.overheal ?? 0)));
   });
+  /** Measured healing carries what each unit did not need; the column exists only then. */
+  const targetsOverheal = $derived(targetsByName.some((target) => target.overheal !== undefined));
 </script>
 
 <li class="border-line-soft border-b" data-testid={`actor-${actor.guid}`}>
@@ -419,8 +426,9 @@
       {/if}
       {#if splitUnavailable}
         <p class="text-muted text-[13px] md:basis-full" data-testid="row-split-unavailable">
-          Over the whole night the split by ability under a target or boss filter can only be guessed from
-          each pull’s whole, so it is not shown. Open a pull to read it from that fight’s events.
+          Over the whole night the split by ability and by {pairsLabel.toLowerCase()} under {splitFilter ||
+            'this filter'} can only be guessed from each pull’s whole, so it is not shown. Open a pull to read it
+          from that fight’s events.
         </p>
       {/if}
       <p class="text-muted text-[11px] md:hidden" hidden={splitUnavailable}>
@@ -550,7 +558,11 @@
         </table>
         <CopyCsv lines={abilityCsv} />
       </div>
-      <table class="min-w-[280px] flex-1 self-start text-[13px]" data-testid="row-targets">
+      <table
+        class="min-w-[280px] flex-1 self-start text-[13px]"
+        data-testid="row-targets"
+        hidden={splitUnavailable}
+      >
         <caption class="label text-muted pb-1 text-left">{pairsLabel}</caption>
         <thead>
           <tr class="label text-muted border-line-soft border-b">
@@ -559,6 +571,13 @@
               >Amount</th
             >
             <th scope="col" class="py-1 text-right font-normal" title="Share of this row's total">Share</th>
+            {#if targetsOverheal}
+              <th
+                scope="col"
+                class="py-1 pl-3 text-right font-normal"
+                title="Healing this unit did not need: cast at full health, or more than the hole">Over</th
+              >
+            {/if}
           </tr>
         </thead>
         <tbody>
@@ -578,6 +597,15 @@
               <td class="text-muted tabular py-1.5 text-right font-mono whitespace-nowrap"
                 >{targetsTotal === 0 ? '' : formatPercent((target.total / targetsTotal) * 100)}</td
               >
+              {#if targetsOverheal}
+                <td
+                  class="text-muted tabular py-1.5 pl-3 text-right font-mono whitespace-nowrap"
+                  data-testid="target-overheal"
+                  >{target.overheal === undefined || target.total + target.overheal === 0
+                    ? ''
+                    : `${formatPercent((target.overheal / (target.total + target.overheal)) * 100)} · ${formatAmount(target.overheal)}`}</td
+                >
+              {/if}
             </tr>
           {/each}
         </tbody>

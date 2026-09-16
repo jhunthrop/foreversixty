@@ -31,18 +31,49 @@ var tauntSpells = map[int64]bool{
 	56222: true, 62124: true, 115546: true, 116189: true, 185245: true,
 }
 
+// tauntEchoMS is how long after a taunt's cast its debuff can land and still be
+// the same taunt: the two lines arrive a few milliseconds apart in the log. The
+// debuff can carry its own spell id (Provoke's cast is 115546, its debuff
+// 116189), so the echo is matched by who taunted what, not by which id.
+const tauntEchoMS = 100
+
 // noteTaunt records a taunt cast at an enemy. Called from Add for every event.
 // A taunt with no destination is no taunt this view can show: the nil GUID
 // renders as "Environment", so it is rejected alongside the empty one.
+//
+// The cast is the record; the debuff it applies is the fallback. A tank who
+// taunts the boss on the pull casts before the pull's first event, so the
+// fight holds the debuff landing and not the cast, and the taunt that opened
+// the fight would otherwise be the one taunt the list never shows.
 func (a *Accumulator) noteTaunt(e event.Event) {
-	if e.Kind != event.CastSuccess || !tauntSpells[e.Spell.ID] ||
-		e.Dest.GUID == "" || e.Dest.GUID == units.NoGUID {
+	if !tauntSpells[e.Spell.ID] || e.Dest.GUID == "" || e.Dest.GUID == units.NoGUID {
+		return
+	}
+	key := tauntKey{e.Source.GUID, e.Dest.GUID}
+	at := a.ms(e.Time)
+	switch e.Kind {
+	case event.CastSuccess:
+		if a.tauntCasts == nil {
+			a.tauntCasts = map[tauntKey]int64{}
+		}
+		a.tauntCasts[key] = at
+	case event.AuraApplied:
+		if last, ok := a.tauntCasts[key]; ok && at-last <= tauntEchoMS {
+			return
+		}
+	default:
 		return
 	}
 	a.taunts = append(a.taunts, Taunt{
-		AtMS: a.ms(e.Time), SourceGUID: e.Source.GUID, SourceName: a.name(e.Source.GUID),
+		AtMS: at, SourceGUID: e.Source.GUID, SourceName: a.name(e.Source.GUID),
 		TargetGUID: e.Dest.GUID, TargetName: a.name(e.Dest.GUID), SpellID: e.Spell.ID, SpellName: e.Spell.Name,
 	})
+}
+
+// tauntKey names one unit taunting one enemy, so a debuff can be matched to
+// the cast that applied it whichever id the debuff carries.
+type tauntKey struct {
+	source, target string
 }
 
 // tauntRows renders the taunt list, in the order the casts arrived. Like

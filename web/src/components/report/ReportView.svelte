@@ -84,9 +84,11 @@
   import { splitUnitName } from '../../lib/characters';
   import {
     loadEventStream,
+    measureCasts,
     measureExact,
     measureTable,
     sharedQueryLayer,
+    type CastCounts,
     type ExactSplit,
     type DeadSpan,
     type ExactTotals,
@@ -290,6 +292,36 @@
     }
   }
 
+  /**
+   * The cast table's window counts, read from the fight's cast lines: the summary keeps
+   * only whole-fight starts and failures, so a brushed window's cancelled casts need the
+   * events. Null until read, and dropped when the window or fight changes.
+   */
+  let castExact = $state<Map<string, CastCounts> | null>(null);
+  let castMeasureError = $state('');
+  let castToken = 0;
+  $effect(() => {
+    const wanted = !windowIsWhole && !nightMode && state.view === 'tables' && state.tab === 'casts';
+    void [cutWindow, state.fight];
+    castExact = null;
+    castMeasureError = '';
+    const token = ++castToken;
+    if (!wanted) return;
+    const timer = setTimeout(() => void runCastMeasure(token), 350);
+    return () => clearTimeout(timer);
+  });
+  async function runCastMeasure(token: number): Promise<void> {
+    try {
+      const measured = await measureCasts(sharedQueryLayer(), eventsUrl(dataBase, state.fight), cutWindow);
+      if (token === castToken) castExact = measured;
+    } catch (thrown) {
+      if (token === castToken)
+        castMeasureError = `The window’s casts did not load, so these are the summary’s scaled figures${
+          thrown instanceof Error ? ` (${thrown.message})` : ''
+        }.`;
+    }
+  }
+
   /** The window, cut at the last death when the filter asks for it. */
   // The window itself is never cut: "ignore events after a death" leaves each player's own
   // dead spans out of the measure instead (see `deadSpans`), since a raised player fights on.
@@ -457,6 +489,14 @@
   // An ability filter counts too: the summary cannot split sources or mitigation by one
   // ability, and the measured path can.
   const filtersScale = $derived(filters.target !== '' || filters.bossOnly || filters.ability !== null);
+  /** The night's split note names the filter that is on, not a filter that is not. */
+  const nightFilterWords = $derived.by(() => {
+    const words = [
+      ...(filters.target !== '' || filters.bossOnly ? ['a target or boss filter'] : []),
+      ...(filters.ability !== null ? ['an ability filter'] : []),
+    ];
+    return words.join(' and ');
+  });
   const actorTableApproximate = $derived(
     !windowIsWhole || filtersScale || ignoringDead || filters.countOverkill,
   );
@@ -572,7 +612,7 @@
     // "Boss damage only" has no meaning for healing, whose targets are players: applied
     // there it blanked the table.
     const applied = state.tab === 'healing' ? { ...filters, bossOnly: false } : filters;
-    const filtered = applyActorFilters(tabSource, applied, filterContext);
+    const filtered = applyActorFilters(tabSource, applied, filterContext, tableExact !== null);
     if (tableExact === null) return filtered;
     // Measured rows: the events' own totals and pairs replace the prorated ones, and a
     // row the events do not mention did nothing in this window to these targets.
@@ -595,6 +635,7 @@
             : actor.active_ms,
         };
       })
+      .filter((actor) => actor.total > 0 || actor.effective > 0)
       .sort((a, b) => b.effective - a.effective);
   });
 
@@ -1142,7 +1183,9 @@
           extra={chartExtra}
           durationMs={summary.duration_ms}
           window={timeWindow}
-          deaths={summary.deaths.map((death) => ({ at_ms: death.at_ms, name: death.name }))}
+          deaths={summary.deaths
+            .filter((death) => !playerSet.has(state.source) || death.guid === state.source)
+            .map((death) => ({ at_ms: death.at_ms, name: death.name }))}
           label={chartLabel}
           onWindow={setWindow}
         />
@@ -1184,6 +1227,7 @@
           {@render parseRetry()}
           <SummaryTab
             summary={scoped}
+            everyone={windowed ?? scoped}
             durationMs={scoped.duration_ms}
             {percentiles}
             {parseFallback}
@@ -1213,12 +1257,13 @@
             pairsLabel={state.tab === 'damage-taken' ? 'Sources' : 'Targets'}
             mitigation={state.tab === 'damage-taken'}
             splitUnavailable={nightMode && filtersScale}
+            splitFilter={nightFilterWords}
             absent={absentPlayers}
             deadAt={deadRows}
             {windowIsWhole}
             measure={nightMode ? undefined : measureRow}
             approximate={actorTableApproximate}
-            amountApproximate={filtersScale && !windowIsWhole}
+            amountApproximate={filtersScale && (!windowIsWhole || nightMode)}
           />
           {#if actorTableApproximate}
             <p class="text-muted text-[12px]" data-testid="approximate-note">
@@ -1240,9 +1285,8 @@
                 {/if}
               {:else if nightMode}
                 Over the whole night a tilde marks a figure split across abilities and targets in proportion
-                to the window and any target or boss filter{filtersScale && !windowIsWhole
-                  ? ', totals included'
-                  : ''}. Open a pull to read its figures from the fight’s events.
+                to the window and any target, boss or ability filter{filtersScale ? ', totals included' : ''}.
+                Open a pull to read its figures from the fight’s events.
               {:else if tableMeasuring}
                 <span data-testid="table-measuring">Measuring this window from the fight’s events…</span> A tilde
                 marks a figure still prorated from the summary.
@@ -1311,6 +1355,8 @@
             startMs={timeWindow.startMs}
             {classOf}
             approximate={!windowIsWhole}
+            measured={castExact ?? undefined}
+            measureError={castMeasureError}
           />
         {:else if state.tab === 'interrupts'}
           <ExchangeTable
@@ -1348,14 +1394,13 @@
             {classOf}
             approximate={!windowIsWhole}
             target={state.target}
-            startMs={timeWindow.startMs}
+            sourceName={playerSet.has(state.source) ? unitNames.get(state.source) : undefined}
+            scopeNoun={nightMode ? 'night' : 'pull'}
             durationMs={summary?.duration_ms ?? scoped.duration_ms}
             onPatch={patch}
             onWindow={setWindow}
             totalThreat={windowed?.threat
-              .filter(
-                (row) => inSource(row.guid, state.source, playerSet, friendlySet) && !/^0+$/.test(row.guid),
-              )
+              .filter((row) => !/^0+$/.test(row.guid))
               .reduce((sum, row) => sum + row.threat, 0)}
           />
         {:else if state.tab === 'deaths'}

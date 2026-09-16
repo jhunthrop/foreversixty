@@ -18,6 +18,7 @@
     amountApproximate = false,
     mitigation = false,
     splitUnavailable = false,
+    splitFilter = '',
     absent = [],
     windowIsWhole = false,
     deadAt = new Map<string, number>(),
@@ -37,6 +38,8 @@
     mitigation?: boolean;
     /** Over the night under a target or boss filter the per-ability split cannot be measured; rows say so. */
     splitUnavailable?: boolean;
+    /** The filter the night cannot split by, in words, for the row's note. */
+    splitFilter?: string;
     /** Players with no row in this window, and when they died if they were dead. */
     absent?: { name: string; deadSince: number | null }[];
     windowIsWhole?: boolean;
@@ -153,6 +156,7 @@
           {approximate}
           {amountApproximate}
           {splitUnavailable}
+          {splitFilter}
           deadSince={deadAt.get(actor.guid) ?? null}
           {parseFallback}
           {pairsLabel}
@@ -194,10 +198,10 @@
       <p
         class="text-muted border-line-soft border-t px-2 py-2 text-[12px]"
         data-testid="actor-mitigated"
-        title="An absorb, a block and an avoided hit have no damage share to prorate by, so a target filter cannot split them; a pull measures them from that fight's events"
+        title="An absorb, a block and an avoided hit have no damage share to prorate by, so a filter cannot split them from the summary; a pull measures them from that fight's events"
       >
-        Mitigated: not split by target over this window. Open a pull to measure what was absorbed, blocked and
-        avoided against this target.
+        Mitigated: not split under this filter over this window. Open a pull to measure what was absorbed,
+        blocked and avoided under it.
       </p>
     {:else if mitigation && (mitigated.absorbed > 0 || mitigated.blocked > 0 || mitigated.hits > 0)}
       <p

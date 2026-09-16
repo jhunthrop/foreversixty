@@ -146,8 +146,10 @@ type Accumulator struct {
 	threatBy map[string]map[string]float64
 	// engaged is the last instant each hostile unit dealt or took damage,
 	// for spreading healing threat over whatever it is in combat with.
-	engaged    map[string]time.Time
-	taunts     []Taunt
+	engaged map[string]time.Time
+	taunts  []Taunt
+	// The last cast of each taunt, so its debuff landing is not a second taunt.
+	tauntCasts map[tauntKey]int64
 	combatants map[string]*event.Combatant
 	// mechanicHits is spell id -> player guid -> the hit tally, folded from
 	// the Damage case for every spell the fight's mechanics table lists.

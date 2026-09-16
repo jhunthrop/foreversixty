@@ -77,7 +77,7 @@ test('a taunt says who took what and when, and opens the window around it', asyn
 
 test('a fight with no taunt says so rather than showing an empty list', async ({ page }) => {
   await page.goto('/reports/fixture2abcd?fight=4&tab=threat');
-  await expect(page.getByTestId('threat-taunts')).toContainText('No taunts in this window.');
+  await expect(page.getByTestId('threat-taunts')).toContainText('No taunts in this pull.');
 });
 
 // A fight with no threat still has taunts to answer for: the empty state belongs to the
@@ -86,7 +86,7 @@ test('a fight with no taunt says so rather than showing an empty list', async ({
 test('a fight with no threat still says what its taunts were', async ({ page }) => {
   await page.goto('/reports/fixture2abcd?fight=2&tab=threat');
   await expect(page.getByTestId('table-empty')).toContainText('No threat in this window.');
-  await expect(page.getByTestId('threat-taunts')).toContainText('No taunts in this window.');
+  await expect(page.getByTestId('threat-taunts')).toContainText('No taunts in this pull.');
 });
 
 // Baelgrim is a Warrior, not fight 3's tank, but he is the one who taunts Warden Kelthas
@@ -132,4 +132,24 @@ test('the link alone carries the night’s named enemy into Damage Done', async 
   await page.goto('/reports/fixture2abcd?fight=all&tab=damage-done&target=Warden+Kelthas');
   await expect(page.getByTestId('actor-table').locator('li').first()).toBeVisible();
   await expect(page.locator('#filter-target').locator('option:checked')).toHaveText('Warden Kelthas');
+});
+
+// Inside a brush the figures are the fight's totals scaled, which is not a standing: the
+// table holds its bars and shares back and says why, and the taunt keeps the pull's clock
+// so the same taunt reads the same time from either side of the link.
+test('a brushed window shows greyed totals with no ranking, and the taunt keeps its time', async ({
+  page,
+}) => {
+  await page.goto(`${FIGHT}&start=3000&end=14000`);
+  await expect(page.getByTestId('threat-approximate-note')).toContainText('not measured yet');
+  await expect(page.getByTestId('threat-share')).toHaveCount(0);
+  await expect(page.getByTestId('threat-table').locator('ul[data-ranked="false"]')).toHaveCount(1);
+  await expect(page.getByTestId('threat-taunts')).toContainText('8.5s');
+});
+
+test('a source scope shares the totals table against everyone too', async ({ page }) => {
+  await page.goto(`${FIGHT}&source=Player-4184-000000A1`);
+  const shares = page.getByTestId('threat-share');
+  await expect(shares).toHaveCount(1);
+  await expect(shares.first()).not.toContainText('100.0%');
 });

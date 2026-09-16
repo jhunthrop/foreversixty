@@ -18,6 +18,7 @@
 
   let {
     summary,
+    everyone,
     durationMs,
     players,
     onTab,
@@ -26,6 +27,8 @@
     summary: Summary;
     durationMs: number;
     players: ReadonlySet<string>;
+    /** The unscoped window: a source scope narrows the rows, never the total they share. */
+    everyone?: Summary;
     onTab: (tab: 'damage-done' | 'healing' | 'damage-taken' | 'deaths') => void;
     /** Narrows the page to one player, the way the roster's names do. */
     onSelectPlayer?: (guid: string) => void;
@@ -33,18 +36,19 @@
 
   const ROWS = 8;
 
-  /** The players' rows of a table, largest first, with each row's share of the table. */
-  function bySource(table: Actor[]): { actor: Actor; share: number }[] {
-    const rows = table.filter((actor) => players.size === 0 || players.has(actor.guid));
-    const total = rows.reduce((sum, actor) => sum + actor.effective, 0);
+  /** The players' rows of a table, largest first, with each row's share of every player's total. */
+  function bySource(table: Actor[], all: Actor[] = table): { actor: Actor; share: number }[] {
+    const ofPlayers = (actor: Actor): boolean => players.size === 0 || players.has(actor.guid);
+    const rows = table.filter(ofPlayers);
+    const total = all.filter(ofPlayers).reduce((sum, actor) => sum + actor.effective, 0);
     return rows
       .sort((a, b) => b.effective - a.effective)
       .slice(0, ROWS)
       .map((actor) => ({ actor, share: total === 0 ? 0 : (actor.effective / total) * 100 }));
   }
 
-  const damage = $derived(bySource(summary.damage_done));
-  const healing = $derived(bySource(summary.healing));
+  const damage = $derived(bySource(summary.damage_done, (everyone ?? summary).damage_done));
+  const healing = $derived(bySource(summary.healing, (everyone ?? summary).healing));
 
   /** Every ability that hit a player, summed over the players it hit, largest first. */
   const takenByAbility = $derived.by(() => {
@@ -84,7 +88,10 @@
         aria-hidden="true"
       >
         <span>Name</span>
-        <span class="text-right" title="Share of the table's total">Share</span>
+        <span
+          class="text-right"
+          title="Share of every player's total in this window, whatever the source scope">Share</span
+        >
         <span class="hidden md:inline"></span>
         <span class="text-right" title="Amount in this window">Amount</span>
         <span class="text-right" title="Amount divided by the window's length">Per sec</span>
@@ -134,7 +141,10 @@
         aria-hidden="true"
       >
         <span>Name</span>
-        <span class="text-right" title="Share of the table's total">Share</span>
+        <span
+          class="text-right"
+          title="Share of every player's total in this window, whatever the source scope">Share</span
+        >
         <span class="hidden md:inline"></span>
         <span class="text-right" title="Amount in this window">Amount</span>
         <span class="text-right" title="Amount divided by the window's length">Per sec</span>

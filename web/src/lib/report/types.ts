@@ -37,6 +37,8 @@ export interface Pair {
   guid: string;
   name: string;
   total: number;
+  /** Healing only, and only once measured: what the heals on this unit did not need. */
+  overheal?: number;
 }
 
 /** What did not land on (or from) an actor: absorbed and blocked amounts, avoided hits by type. */

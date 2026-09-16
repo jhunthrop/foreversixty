@@ -45,8 +45,9 @@
     approximate = false,
     totalThreat = undefined,
     target = '',
-    startMs,
     durationMs,
+    sourceName = undefined,
+    scopeNoun = 'pull',
     onPatch,
     onWindow,
   }: {
@@ -68,8 +69,10 @@
     approximate?: boolean;
     /** The picked enemy, from the url's `target`; '' is every enemy. */
     target?: string;
-    /** The window's start, so every time on this tab is read from the same zero. */
-    startMs: number;
+    /** The one player the source scope narrows to, by name; undefined when it does not. */
+    sourceName?: string;
+    /** What the unbrushed scope is called in the empty taunt line: a pull or the night. */
+    scopeNoun?: 'pull' | 'night';
     /** The whole fight's length, which a taunt's window link is clamped against. */
     durationMs: number;
     onPatch: (patch: { target?: string }) => void;
@@ -96,14 +99,17 @@
 
   /** The table as lines: each row's threat and its share of whatever the table totals. */
   function csvLines(): string[][] {
+    const share = (line: ThreatLine): string[] =>
+      ranked ? [(total === 0 ? 0 : (line.threat / total) * 100).toFixed(1)] : [];
     return [
-      picked === undefined
-        ? ['Unit', 'Threat', 'Share %']
-        : ['Player', `Threat on ${picked.name}`, 'Share %'],
+      [
+        ...(picked === undefined ? ['Unit', 'Threat'] : ['Player', `Threat on ${picked.name}`]),
+        ...(ranked ? ['Share %'] : []),
+      ],
       ...lines.map((line) => [
         splitUnitName(line.name).name,
         String(Math.round(line.threat)),
-        (total === 0 ? 0 : (line.threat / total) * 100).toFixed(1),
+        ...share(line),
       ]),
     ];
   }
@@ -220,6 +226,26 @@
   const modelVersion = $derived(ordered[0]?.model_version ?? '');
   const mark = $derived(approximateMark(approximate));
   const title = $derived(approximateTitle(approximate));
+  /**
+   * The empty taunt line names what emptied it: the picked enemy, the source scope, or
+   * the brush. A whole pull with no taunt says so and blames no window.
+   */
+  const noTaunts = $derived(
+    `No taunts${sourceName === undefined ? '' : ` by ${splitUnitName(sourceName).name}`}${
+      picked === undefined ? '' : ` on ${picked.name}`
+    } in this ${approximate ? 'window' : scopeNoun}.`,
+  );
+  /**
+   * Under a brush the figures are the fight's totals scaled, and a scaled total is not a
+   * standing. Bars and shares draw a ranking, so they are held back until threat inside a
+   * window is measured; the greyed totals and the taunt list stay.
+   */
+  const ranked = $derived(!approximate);
+  const rowGrid = $derived(
+    ranked
+      ? 'md:grid-cols-[minmax(120px,1.2fr)_minmax(0,3fr)_96px_64px]'
+      : 'md:grid-cols-[minmax(120px,1.2fr)_96px]',
+  );
   // With an enemy picked, its taunts alone: the list answers "who took this one off me".
   const orderedTaunts = $derived(
     [...(taunts ?? [])]
@@ -263,28 +289,32 @@
   {#if lines.length === 0}
     <p class="text-muted text-[14px]" data-testid="table-empty">No threat in this window.</p>
   {:else}
-    <div
-      class="text-muted label hidden grid-cols-[minmax(120px,1.2fr)_minmax(0,3fr)_96px_64px] gap-x-3 px-2 pb-1 md:grid"
-    >
+    <div class={`text-muted label hidden gap-x-3 px-2 pb-1 md:grid ${rowGrid}`}>
       <span>{picked === undefined ? 'Unit' : 'Player'}</span>
-      <span title="Threat generated, against the highest row">Threat</span>
+      {#if ranked}<span title="Threat generated, against the highest row">Threat</span>{/if}
       <span
         class="text-right"
         title={picked === undefined
           ? 'Threat accumulated from damage and healing over this window'
           : `Threat this player built on ${picked.name} over this window`}>Total</span
       >
-      <span
-        class="text-right"
-        title={picked === undefined
-          ? 'Share of all the threat in this table'
-          : `Share of every player's threat on ${picked.name}`}>Share</span
-      >
+      {#if ranked}
+        <span
+          class="text-right"
+          title={picked === undefined
+            ? 'Share of all the threat in this table'
+            : `Share of every player's threat on ${picked.name}`}>Share</span
+        >
+      {/if}
     </div>
-    <ul class="flex flex-col" data-testid={picked === undefined ? undefined : 'threat-on-target'}>
+    <ul
+      class="flex flex-col"
+      data-testid={picked === undefined ? undefined : 'threat-on-target'}
+      data-ranked={ranked ? 'true' : 'false'}
+    >
       {#each lines as row (row.guid)}
         <li
-          class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px] md:grid-cols-[minmax(120px,1.2fr)_minmax(0,3fr)_96px_64px]"
+          class={`border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px] ${rowGrid}`}
           data-testid={`threat-${row.guid}`}
         >
           <span class="truncate font-semibold" style={`color: ${classColorVar(classOf.get(row.guid))}`}>
@@ -293,31 +323,44 @@
                 >#{copyOf.get(row.guid)}</span
               >{/if}
           </span>
-          <span class="bg-line-soft col-span-2 block h-[6px] w-full md:col-span-1">
-            <span class="bg-gold block h-full" style={`width: ${peak === 0 ? 0 : (row.threat / peak) * 100}%`}
-            ></span>
-          </span>
+          {#if ranked}
+            <span class="bg-line-soft col-span-2 block h-[6px] w-full md:col-span-1">
+              <span
+                class="bg-gold block h-full"
+                style={`width: ${peak === 0 ? 0 : (row.threat / peak) * 100}%`}
+              ></span>
+            </span>
+          {/if}
+          <!-- The phone has no header row, so the figure says what it is. -->
           <span
-            class="tabular text-right font-mono"
+            class={`tabular text-right font-mono ${ranked ? '' : 'text-muted'}`}
             {title}
             aria-label={approximateAriaLabel(approximate, formatAmount(Math.round(row.threat)))}
           >
-            {mark}{formatAmount(Math.round(row.threat))}
+            {mark}{formatAmount(Math.round(row.threat))}<span class="label font-body ml-1.5 md:hidden"
+              >threat</span
+            >
           </span>
-          <span
-            class="text-muted tabular col-span-2 text-right font-mono text-[13px] md:col-span-1"
-            data-testid="threat-share">{formatPercent(total === 0 ? 0 : (row.threat / total) * 100)}</span
-          >
+          {#if ranked}
+            <span
+              class="text-muted tabular col-span-2 text-right font-mono text-[13px] md:col-span-1"
+              data-testid="threat-share"
+              >{formatPercent(total === 0 ? 0 : (row.threat / total) * 100)}<span
+                class="label font-body ml-1.5 md:hidden">share</span
+              ></span
+            >
+          {/if}
         </li>
       {/each}
     </ul>
     <CopyCsv lines={csvLines} />
     {#if approximate}
       <p class="text-muted text-[12px]" data-testid="threat-approximate-note">
-        Threat is marked {mark} because it is accumulated from damage and healing over the whole fight and scaled
-        to this window's share of each player's total, not recomputed from the window's own events: a player who
-        did little damage inside the window reads near zero here even while they held the enemy, and a taunt's own
-        window reads the same way. The whole pull is exact.
+        Threat inside a window is not measured yet. Each figure is marked {mark} because it is the whole fight's
+        threat scaled to this window's share of that player's total, not the window's own events, so it is not a
+        standing and is not drawn as one: no bars, no shares, no order to read. A player who did little damage inside
+        the window reads near zero here even while they held the enemy, and a taunt's own window reads the same
+        way. The whole pull is exact.
       </p>
     {/if}
   {/if}
@@ -326,15 +369,16 @@
     {#if taunts === undefined}
       <p class="text-muted text-[13px]">This report was parsed before taunts were kept; parse it again.</p>
     {:else if orderedTaunts.length === 0}
-      <p class="text-muted text-[13px]">No taunts in this window.</p>
+      <p class="text-muted text-[13px]" data-testid="threat-taunts-empty">{noTaunts}</p>
     {:else}
       <ul class="flex flex-col">
         {#each orderedTaunts as taunt (tauntKey(taunt))}
           <li
             class="border-line-soft flex min-h-11 flex-wrap items-center gap-x-2 gap-y-1 border-b px-2 py-2 text-[14px]"
           >
-            <span class="text-muted tabular font-mono text-[13px]"
-              >{formatDuration(taunt.at_ms - startMs)}</span
+            <span
+              class="text-muted tabular font-mono text-[13px]"
+              title="On the pull's clock, whatever the window">{formatDuration(taunt.at_ms)}</span
             >
             <span aria-hidden="true" class="text-muted">·</span>
             <span>

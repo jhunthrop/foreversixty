@@ -1,5 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import { exactMissesSql, exactSplitSql, exactTableSql, rowsSql } from './exact';
+import {
+  castCountsSql,
+  castKey,
+  exactMissesSql,
+  exactSplitSql,
+  exactTableSql,
+  measureCasts,
+  rowsSql,
+} from './exact';
+import type { QueryLayer } from './query';
 
 const pets = { pets: new Map([['Pet-7', 'Player-1']]) };
 
@@ -119,5 +128,38 @@ describe('exactSplitSql', () => {
   it('quotes a name with an apostrophe', () => {
     const sql = exactSplitSql('healing', "Player-O'Neil", { startMs: 0, endMs: 1000 });
     expect(sql.abilities).toContain("actor = 'Player-O''Neil'");
+  });
+});
+
+describe('measureCasts', () => {
+  it('reads each caster’s starts, successes and failures per spell inside the window', async () => {
+    const sql = castCountsSql({ startMs: 120_000, endMs: 180_000 });
+    expect(sql).toContain("kind IN ('cast_start', 'cast_success', 'cast_failed')");
+    expect(sql).toContain('>= 120000 AND');
+    const layer = {
+      run: async () => ({
+        columns: ['guid', 'spell_id', 'kind', 'reason', 'n'],
+        rows: [
+          ['Player-1', 116n, 'cast_start', '', 4n],
+          ['Player-1', 116n, 'cast_success', '', 3n],
+          ['Player-1', 116n, 'cast_failed', 'Interrupted', 1n],
+          ['Player-1', 116n, 'cast_failed', 'Not enough mana', 2n],
+          ['Player-2', 8092n, 'cast_success', '', 5n],
+        ],
+      }),
+    } as unknown as QueryLayer;
+    const counts = await measureCasts(layer, 'events.parquet', { startMs: 120_000, endMs: 180_000 });
+    expect(counts.get(castKey({ guid: 'Player-1', spell_id: 116 }))).toEqual({
+      started: 4,
+      succeeded: 3,
+      failed: 3,
+      fail_reasons: { Interrupted: 1, 'Not enough mana': 2 },
+    });
+    expect(counts.get(castKey({ guid: 'Player-2', spell_id: 8092 }))).toEqual({
+      started: 0,
+      succeeded: 5,
+      failed: 0,
+      fail_reasons: {},
+    });
   });
 });

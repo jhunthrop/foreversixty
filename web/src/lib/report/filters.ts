@@ -249,7 +249,18 @@ function rebuild(
   return { ...actor, abilities, targets, total: gross, effective, overheal };
 }
 
-export function applyActorFilters(actors: Actor[], filters: ReportFilters, context: FilterContext): Actor[] {
+/**
+ * Narrows and prorates the table by its filters. `keepEmpty` keeps the rows the summary
+ * prorates to nothing: a measure reads them from the fight's events afterwards, and a
+ * target healed for pure overheal has a summary share of zero and a measured row that
+ * is not.
+ */
+export function applyActorFilters(
+  actors: Actor[],
+  filters: ReportFilters,
+  context: FilterContext,
+  keepEmpty = false,
+): Actor[] {
   const untouched =
     filters.target === '' &&
     filters.ability === null &&
@@ -315,6 +326,6 @@ export function applyActorFilters(actors: Actor[], filters: ReportFilters, conte
       const shownTargets = filters.ability === null ? targets : [];
       return { ...rebuild(actor, scaled, shownTargets, filters.countOverkill), series };
     })
-    .filter((actor) => actor.total > 0 || actor.effective > 0)
+    .filter((actor) => keepEmpty || actor.total > 0 || actor.effective > 0)
     .sort((a, b) => b.effective - a.effective || a.guid.localeCompare(b.guid));
 }

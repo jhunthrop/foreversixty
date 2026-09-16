@@ -180,16 +180,16 @@
   function takenOf(guid: string): number {
     return summary.damage_taken.find((actor) => actor.guid === guid)?.effective ?? 0;
   }
-  function damageTakenPatch(spellId: number, guid?: string, encounter?: string): Partial<ReportState> {
-    // On the night a row belongs to one boss; the target filter carries that boss's name,
-    // so the link lands on that boss's pulls rather than the whole night.
+  function damageTakenPatch(spellId: number, guid?: string): Partial<ReportState> {
+    // No target scope on the night: the night's table cannot measure, so a target filter
+    // there prorates a total by the target's share and lands on a figure the row never
+    // showed. The ability filter alone returns the row's real total.
     return {
       mode: 'analyze',
       view: 'tables',
       tab: 'damage-taken',
       ability: spellId,
       ...(guid ? { source: guid } : {}),
-      ...(nightMode && encounter ? { target: encounter } : {}),
     };
   }
   /**
@@ -261,16 +261,11 @@
               {#if problem.row.note}<span class="text-muted text-[12px]">{problem.row.note}</span>{/if}
               {#if problem.row.kind === 'avoidable'}
                 <a
-                  href={hrefFor(
-                    damageTakenPatch(problem.row.spell_id, problem.hit?.guid, problem.row.encounter),
-                  )}
+                  href={hrefFor(damageTakenPatch(problem.row.spell_id, problem.hit?.guid))}
                   class={linkClass}
                   aria-label={`Damage Taken for ${problem.subject}`}
                   onclick={(event) =>
-                    follow(
-                      event,
-                      damageTakenPatch(problem.row.spell_id, problem.hit?.guid, problem.row.encounter),
-                    )}>Damage Taken</a
+                    follow(event, damageTakenPatch(problem.row.spell_id, problem.hit?.guid))}>Damage Taken</a
                 >
                 {#if problem.hit?.killed}
                   <a

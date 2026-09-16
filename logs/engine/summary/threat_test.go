@@ -193,3 +193,30 @@ func TestUntargetedAndAllyCastTauntsAreNotKept(t *testing.T) {
 		}
 	}
 }
+
+// A taunt cast on the pull lands its debuff after the fight's first event and its
+// cast before it, so the debuff is the only trace the fight holds. Inside the fight
+// the cast is the record and its debuff, a millisecond later, is not a second taunt.
+func TestTauntSeenOnlyByItsDebuffIsKeptOnce(t *testing.T) {
+	o, reg := opts(t)
+	a := New(o)
+	a.Start(at(0))
+	debuff := func(sec float64) event.Event {
+		e := cast(sec, tank, boss, 355, "Taunt")
+		e.Kind, e.Name = event.AuraApplied, "SPELL_AURA_APPLIED"
+		return e
+	}
+	events := []event.Event{
+		debuff(0.001),
+		cast(3, tank, boss, 355, "Taunt"),
+		debuff(3.002),
+	}
+	for _, e := range events {
+		reg.Observe(e)
+		a.Add(e)
+	}
+	s := a.Snapshot(fight.Fight{Index: 1, Kind: fight.Encounter, Start: at(0), End: at(5), Players: []string{tank}}, "test")
+	if len(s.Taunts) != 2 || s.Taunts[0].AtMS != 1 || s.Taunts[1].AtMS != 3000 {
+		t.Fatalf("taunts = %+v, want the opening debuff and the later cast, once each", s.Taunts)
+	}
+}

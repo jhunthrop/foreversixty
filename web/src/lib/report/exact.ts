@@ -231,7 +231,7 @@ FROM ${EVENTS_TABLE}
 WHERE kind = 'missed' AND miss_type <> '' AND ${own}${kind === 'damage-done' ? ` AND ${OTHER_SIDE}` : ''} AND ${windowClause(window)}${abilityClause(kind, options)}
 GROUP BY spell_id, miss_type`,
     targets: `WITH rows AS (${rows})
-SELECT other_guid AS guid, any_value(other_name) AS name, sum(effective) AS total
+SELECT other_guid AS guid, any_value(other_name) AS name, sum(effective) AS total, sum(overheal) AS overheal
 FROM rows
 WHERE ${scope}
 GROUP BY other_guid
@@ -277,6 +277,61 @@ export function exactMissesSql(
 FROM ${EVENTS_TABLE}
 WHERE kind = 'missed' AND miss_type <> '' AND ${windowClause(window)}${abilityClause(kind, options)}${narrowed}${excludeClause(options.exclude, actor, FIGHT_MS)}
 GROUP BY 1, 2`;
+}
+
+/** One caster's counts for one spell inside a window, read from the fight's cast lines. */
+export interface CastCounts {
+  started: number;
+  succeeded: number;
+  failed: number;
+  fail_reasons: Record<string, number>;
+}
+
+/** The key a cast row and its measured counts share: the caster and the spell. */
+export function castKey(row: { guid: string; spell_id: number }): string {
+  return `${row.guid}|${row.spell_id}`;
+}
+
+/**
+ * Every cast line in the window by caster, spell, kind and failure reason: the summary
+ * keeps only whole-fight counts of starts and failures, and a window's cancelled casts
+ * are the starts inside it that never went off.
+ */
+export function castCountsSql(window: TimeWindow): string {
+  return `SELECT source_guid AS guid, spell_id, kind, coalesce(failed_type, '') AS reason, count(*) AS n
+FROM ${EVENTS_TABLE}
+WHERE kind IN ('cast_start', 'cast_success', 'cast_failed') AND ${windowClause(window)}
+GROUP BY 1, 2, 3, 4`;
+}
+
+/** Measures each caster's starts, successes and failures per spell inside the window. */
+export async function measureCasts(
+  layer: QueryLayer,
+  eventsUrl: string,
+  window: TimeWindow,
+): Promise<Map<string, CastCounts>> {
+  const result = await layer.run(eventsUrl, castCountsSql(window), ALL_ROWS);
+  const out = new Map<string, CastCounts>();
+  for (const row of rowsOf(result)) {
+    const key = castKey({ guid: String(row.guid ?? ''), spell_id: num(row.spell_id) });
+    const found = out.get(key) ?? { started: 0, succeeded: 0, failed: 0, fail_reasons: {} };
+    const n = num(row.n);
+    switch (String(row.kind)) {
+      case 'cast_start':
+        found.started += n;
+        break;
+      case 'cast_success':
+        found.succeeded += n;
+        break;
+      default: {
+        found.failed += n;
+        const reason = String(row.reason ?? '');
+        if (reason !== '') found.fail_reasons[reason] = (found.fail_reasons[reason] ?? 0) + n;
+      }
+    }
+    out.set(key, found);
+  }
+  return out;
 }
 
 /** One line of the full stream: every hit and heal in the window, for the events view. */
@@ -387,7 +442,12 @@ export async function measureTable(
     found.overheal += num(row.overheal);
     found.mitigated.absorbed += num(row.absorbed);
     found.mitigated.blocked += num(row.blocked);
-    found.targets.push({ guid: String(row.other_guid ?? ''), name: String(row.other_name ?? ''), total });
+    found.targets.push({
+      guid: String(row.other_guid ?? ''),
+      name: String(row.other_name ?? ''),
+      total,
+      ...(kind === 'healing' ? { overheal: num(row.overheal) } : {}),
+    });
     out.set(guid, found);
   }
   for (const row of rowsOf(deadActive)) {
@@ -476,6 +536,7 @@ export async function measureExact(
       guid: String(row.guid ?? ''),
       name: String(row.name ?? ''),
       total: num(row.total),
+      ...(kind === 'healing' ? { overheal: num(row.overheal) } : {}),
     })),
   };
 }

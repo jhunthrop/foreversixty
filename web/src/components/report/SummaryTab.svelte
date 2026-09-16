@@ -33,6 +33,7 @@
 
   let {
     summary,
+    everyone = summary,
     durationMs,
     percentiles = new Map<string, Placement>(),
     parseFallback = '',
@@ -45,6 +46,8 @@
     onTab = undefined,
   }: {
     summary: Summary;
+    /** The same window before the source scope, so a scoped row still shares against everyone. */
+    everyone?: Summary;
     durationMs: number;
     percentiles?: Map<string, Placement>;
     /** What an empty Parse cell shows: '' on trash, 'wipe', or a dash for not ranked yet. */
@@ -237,7 +240,7 @@
   {/if}
 
   {#if onTab}
-    <SummaryPanels {summary} {durationMs} {players} {onTab} {onSelectPlayer} />
+    <SummaryPanels {summary} {everyone} {durationMs} {players} {onTab} {onSelectPlayer} />
   {/if}
 
   {#if summary.combatants.length > 0}

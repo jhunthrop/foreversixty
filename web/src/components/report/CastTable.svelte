@@ -23,6 +23,7 @@
     wholeFightTitle,
   } from '../../lib/report/format';
   import type { CastRow } from '../../lib/report/types';
+  import { castKey, type CastCounts } from '../../lib/report/exact';
   import CopyCsv from './CopyCsv.svelte';
 
   let {
@@ -32,6 +33,8 @@
     startMs = 0,
     classOf = new Map<string, string>(),
     approximate = false,
+    measured = undefined,
+    measureError = '',
   }: {
     rows: CastRow[];
     /** Every caster's whole-fight rows: who recorded failures is a fact about the log, not the scope or the window. */
@@ -41,7 +44,22 @@
     classOf?: Map<string, string>;
     /** True when the window is brushed, so Cast and Failed are a scaled share. */
     approximate?: boolean;
+    /** The window's own counts per caster and spell, once the fight's events were read. */
+    measured?: ReadonlyMap<string, CastCounts>;
+    /** Why the measure did not run, when it did not: the scaled figures stay, marked. */
+    measureError?: string;
   } = $props();
+  /** Under a brush the measured counts stand in for the scaled ones, row by row. */
+  const shown = $derived(
+    measured === undefined
+      ? rows
+      : rows.map((row) => {
+          const counts = measured.get(castKey(row));
+          return counts === undefined ? row : { ...row, ...counts };
+        }),
+  );
+  /** True while the figures are the summary's scaled ones: a brush with no measure yet. */
+  const scaled = $derived(approximate && measured === undefined);
 
   /** Failure reasons that mean a cast bar was cut short, not a press the game refused. */
   const CUT_SHORT = /interrupt|moving|cancel/i;
@@ -66,7 +84,7 @@
   const cancelledTotal = $derived(ordered.reduce((sum, row) => sum + cancelled(row), 0));
   const failedKnown = (row: CastRow): boolean => recorders.size === 0 || recorders.has(row.guid);
   const ordered = $derived(
-    [...rows].sort((a, b) => b.succeeded - a.succeeded || a.spell_name.localeCompare(b.spell_name)),
+    [...shown].sort((a, b) => b.succeeded - a.succeeded || a.spell_name.localeCompare(b.spell_name)),
   );
   /** The table as lines: one per caster and spell, with the casting time in seconds. */
   function csvLines(): string[][] {
@@ -78,7 +96,7 @@
         String(row.spell_id),
         String(row.succeeded),
         String(row.started),
-        approximate ? '' : String(cancelled(row)),
+        scaled ? '' : String(cancelled(row)),
         failedKnown(row) ? String(refused(row)) : '',
         (row.cast_time_ms / 1000).toFixed(1),
       ]),
@@ -120,8 +138,8 @@
   });
   const pct = (ms: number): number => (durationMs === 0 ? 0 : ((ms - startMs) / durationMs) * 100);
 
-  const mark = $derived(approximateMark(approximate));
-  const title = $derived(approximateTitle(approximate));
+  const mark = $derived(approximateMark(scaled));
+  const title = $derived(approximateTitle(scaled));
   /** Cast time is the whole fight's total under every window, never just this one's. */
   const castTimeMark = wholeFightMark(true);
   const castTimeTitle = wholeFightTitle(true);
@@ -141,7 +159,7 @@
         data-testid="cast-rhythm"
         title="Casts of every spell in this scope, and the longest stretch between two of them. A gap counts time spent dead or out of range; over the night it is on the night's clock."
       >
-        <span class="tabular font-mono">{rhythm.casts}</span> casts{#if cancelledTotal > 0 && !approximate}
+        <span class="tabular font-mono">{rhythm.casts}</span> casts{#if cancelledTotal > 0 && !scaled}
           · <span class="tabular font-mono">{cancelledTotal}</span> cancelled{/if} ·
         <span class="tabular font-mono">{perMinute(rhythm.casts)}</span> a minute · longest gap
         <span class="tabular font-mono">{formatDuration(rhythm.gap.to - rhythm.gap.from)}</span> at
@@ -200,7 +218,7 @@
           <span
             class="tabular text-right font-mono"
             {title}
-            aria-label={approximateAriaLabel(approximate, `${row.succeeded} cast`)}
+            aria-label={approximateAriaLabel(scaled, `${row.succeeded} cast`)}
           >
             {mark}{row.succeeded}<span class="label font-body ml-1.5 md:hidden">cast</span>
           </span>
@@ -211,7 +229,7 @@
             class="tabular text-muted text-right font-mono"
             {title}
             aria-label={approximateAriaLabel(
-              approximate,
+              scaled,
               failedKnown(row) ? `${refused(row)} failed` : 'failed casts not in this log for this player',
             )}
           >
@@ -220,19 +238,20 @@
                 >—</span
               >{/if}<span class="label font-body ml-1.5 md:hidden">failed</span>
           </span>
-          <!-- The summary keeps whole-fight cast starts with no instants, so a window cannot
-               say which casts inside it were cut short; a prorated count named the wrong
-               spells, and a dash names nothing wrongly. -->
+          <!-- The summary keeps whole-fight cast starts with no instants, so until the window's
+               own cast lines are read it cannot say which casts inside it were cut short; a
+               prorated count named the wrong spells, and a dash names nothing wrongly. -->
           <span
             class="tabular text-muted text-right font-mono"
-            title={approximate
-              ? 'Cancelled casts are counted for the whole fight; a window cannot split them'
+            title={scaled
+              ? 'Cancelled casts are being read from this window’s own cast lines'
               : 'Casts started that never went off: moved, interrupted or cancelled mid-cast; instants have none'}
-            aria-label={approximate ? 'cancelled casts not split by window' : `${cancelled(row)} cancelled`}
+            aria-label={scaled
+              ? 'cancelled casts not yet measured for this window'
+              : `${cancelled(row)} cancelled`}
             data-testid="cast-cancelled"
           >
-            {approximate ? '—' : cancelled(row)}<span class="label font-body ml-1.5 md:hidden">cancelled</span
-            >
+            {scaled ? '—' : cancelled(row)}<span class="label font-body ml-1.5 md:hidden">cancelled</span>
           </span>
           <span
             class="tabular text-muted text-right font-mono text-[13px]"
@@ -257,11 +276,19 @@
     </ul>
     <CopyCsv lines={csvLines} />
   </div>
-  {#if approximate}
+  {#if scaled}
     <p class="text-muted text-[12px]" data-testid="cast-approximate-note">
-      Cast and Failed are marked {mark} because the summary keeps only a whole-fight count for each: this window's
-      figure is that count scaled by the window's share of the sequence, not measured directly. The sequence above
-      is this window's own ticks.
+      {#if measureError === ''}
+        <span data-testid="cast-measuring">Reading this window’s casts from the fight’s events…</span>
+      {:else}
+        <span class="text-wipe" role="alert">{measureError}</span>
+      {/if}
+      Until then Cast and Failed are marked {mark}, the whole fight’s count scaled by the window’s share of
+      the sequence, and Cancelled reads a dash. The sequence above is this window’s own ticks.
+    </p>
+  {:else if approximate}
+    <p class="text-kill text-[12px]" data-testid="cast-measured-note">
+      Cast, Failed and Cancelled are this window’s own counts, read from the fight’s cast lines.
     </p>
   {/if}
   <p class="text-muted text-[12px]" data-testid="cast-time-note">

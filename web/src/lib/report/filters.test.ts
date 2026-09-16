@@ -58,6 +58,16 @@ describe('applyActorFilters', () => {
     expect(applyActorFilters(summary.damage_done, DEFAULT_FILTERS, context)).toEqual(summary.damage_done);
   });
 
+  it('keeps the rows a filter prorates to nothing when asked, for a measure to fill in', () => {
+    // A target none of the summary's pairs credit: every row scales to zero and drops,
+    // unless a measure is about to read the rows from the fight's events instead.
+    const filters = { ...DEFAULT_FILTERS, target: 'Creature-nobody' };
+    expect(applyActorFilters(summary.damage_done, filters, context)).toEqual([]);
+    expect(applyActorFilters(summary.damage_done, filters, context, true).map((actor) => actor.guid)).toEqual(
+      summary.damage_done.map((actor) => actor.guid).sort(),
+    );
+  });
+
   it('keeps only the named target, and rescales the row to it', () => {
     const filtered = applyActorFilters(
       summary.damage_done,
