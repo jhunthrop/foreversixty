@@ -57,8 +57,7 @@ func (a *Accumulator) noteMechanicHit(e event.Event) {
 	if !ok || (m.Kind != mechanics.Avoidable && m.Kind != mechanics.Unavoidable) {
 		return
 	}
-	u, known := a.opt.Registry.Get(e.Dest.GUID)
-	if !known || !u.IsPlayer() {
+	if !a.isPlayer(e.Dest.GUID) {
 		return
 	}
 	bySpell := a.mechanicHits[e.Spell.ID]
@@ -111,7 +110,12 @@ func (a *Accumulator) mechanicsBlock(deaths []Death) MechanicsBlock {
 				h.Killed = killedBy[m.SpellID][h.GUID]
 				row.Players = append(row.Players, h)
 			}
-			sort.Slice(row.Players, func(i, j int) bool { return row.Players[i].Damage > row.Players[j].Damage })
+			sort.Slice(row.Players, func(i, j int) bool {
+				if row.Players[i].Damage != row.Players[j].Damage {
+					return row.Players[i].Damage > row.Players[j].Damage
+				}
+				return row.Players[i].GUID < row.Players[j].GUID
+			})
 		case mechanics.Interrupt:
 			for _, c := range a.castRows() {
 				if c.SpellID == m.SpellID && !a.isPlayer(c.GUID) {
