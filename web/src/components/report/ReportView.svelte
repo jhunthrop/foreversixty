@@ -323,6 +323,10 @@
     }
   }
 
+  /** The dead spans the window meets: the note lists these, and says nothing when there are none. */
+  const windowedDeadSpans = $derived(
+    deadSpans.filter((span) => span.endMs > cutWindow.startMs && span.startMs < cutWindow.endMs),
+  );
   /** The window, cut at the last death when the filter asks for it. */
   // The window itself is never cut: "ignore events after a death" leaves each player's own
   // dead spans out of the measure instead (see `deadSpans`), since a raised player fights on.
@@ -555,13 +559,15 @@
       ? ''
       : !windowIsWhole
         ? 'window'
-        : fight.kill
-          ? percentilesPending
-            ? '…'
-            : percentilesUnavailable
-              ? '?'
-              : '–'
-          : 'wipe',
+        : filtersScale
+          ? 'filter'
+          : fight.kill
+            ? percentilesPending
+              ? '…'
+              : percentilesUnavailable
+                ? '?'
+                : '–'
+            : 'wipe',
   );
   /** The actor tables' fallback: Damage Taken has no parse at all, and its cells say so. */
   const tableParseFallback = $derived(
@@ -1305,10 +1311,9 @@
                   this window and filter.</span
                 >
                 A row’s ability split is measured the same way when it is opened.
-                {#if ignoringDead}
+                {#if ignoringDead && windowedDeadSpans.length > 0}
                   <span data-testid="dead-spans-note"
-                    >Left out while dead: {deadSpans
-                      .filter((span) => span.endMs > cutWindow.startMs && span.startMs < cutWindow.endMs)
+                    >Left out while dead: {windowedDeadSpans
                       .map(
                         (span) =>
                           `${splitUnitName(unitNames.get(span.guid) ?? span.guid).name} ${formatDuration(span.startMs)} to ${formatDuration(span.endMs)}`,

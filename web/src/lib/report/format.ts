@@ -239,6 +239,8 @@ export function parseTitle(value: number | string, ranked = 0): string {
   if (value === 'none') return 'Damage taken has no parse: taking more is not doing better';
   if (value === '…') return 'Asking the rankings where this sits';
   if (value === 'window') return 'A parse is for the whole fight; clear the window to read it';
+  if (value === 'filter')
+    return 'A parse is for the whole table; clear the target, boss or ability filter to read it';
   if (value === 'night')
     return 'A parse is per kill; the night as a whole has none. Pick a pull for its parses';
   return '';

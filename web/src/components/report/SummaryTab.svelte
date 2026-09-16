@@ -144,7 +144,7 @@
               : parseTitle(percentile.percentile, percentile.ranked)}
             data-testid="roster-percentile"
           >
-            {#if percentile === null}{['none', 'night', 'window'].includes(parseFallback)
+            {#if percentile === null}{['none', 'night', 'window', 'filter'].includes(parseFallback)
                 ? ''
                 : parseFallback}{:else}<span class="label font-body mr-1 md:hidden">Parse</span>{Math.round(
                 percentile.percentile,
