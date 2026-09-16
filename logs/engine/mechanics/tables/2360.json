@@ -1,0 +1,9 @@
+{
+  "encounter_id": 2360,
+  "name": "Kryxis the Voracious",
+  "mechanics": [
+    { "spell_id": 319654, "name": "Hungering Drain", "kind": "interrupt", "note": "Kick it; each tick heals the boss." },
+    { "spell_id": 319650, "name": "Vicious Headbutt", "kind": "unavoidable", "note": "Tank damage." },
+    { "spell_id": 319685, "name": "Severing Smash", "kind": "avoidable", "note": "Ground effect; move." }
+  ]
+}

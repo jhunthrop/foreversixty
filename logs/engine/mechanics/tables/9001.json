@@ -1,0 +1,7 @@
+{
+  "encounter_id": 9001,
+  "name": "Warden Kelthas",
+  "mechanics": [
+    { "spell_id": 334660, "name": "Anima Lash", "kind": "avoidable", "note": "Fixture: the hit that kills the tank." }
+  ]
+}
