@@ -291,7 +291,7 @@
 <li class="border-line-soft border-b" data-testid={`actor-${actor.guid}`}>
   <button
     type="button"
-    class="grid min-h-11 w-full grid-cols-[28px_auto_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 px-2 py-3 text-left text-[14px] md:grid-cols-[28px_40px_minmax(120px,1.4fr)_52px_minmax(0,3fr)_92px_80px_64px] md:py-2"
+    class="grid min-h-11 w-full grid-cols-[28px_auto_minmax(96px,1fr)_auto] items-center gap-x-3 gap-y-1 px-2 py-3 text-left text-[14px] md:grid-cols-[28px_40px_minmax(120px,1.4fr)_52px_minmax(0,3fr)_92px_80px_64px] md:py-2"
     aria-expanded={open}
     onclick={() => (open = !open)}
   >
@@ -329,6 +329,7 @@
     <span
       class="flex min-w-0 flex-wrap items-center gap-x-2 overflow-hidden font-semibold [&>*]:truncate"
       style={`color: ${color}`}
+      title={splitUnitName(actor.name).name}
       data-testid="row-name"
     >
       <ClassIcon className={actor.class} />
@@ -362,7 +363,7 @@
       <span title={exact === null && !actor.measured ? undefined : 'Measured from the fight’s events'}
         >{amountMark}{formatAmount(shownEffective)}</span
       >
-      {#if overhealPct !== null}
+      {#if overhealPct !== null && shownOverheal > 0}
         <span
           class="text-muted text-[11px]"
           title={overhealMark === ''
@@ -616,7 +617,7 @@
                 <td
                   class="text-muted tabular py-1.5 pl-3 text-right font-mono whitespace-nowrap"
                   data-testid="target-overheal"
-                  >{target.overheal === undefined || target.total + target.overheal === 0
+                  >{target.overheal === undefined || target.overheal === 0
                     ? ''
                     : `${formatPercent((target.overheal / (target.total + target.overheal)) * 100)} · ${formatAmount(target.overheal)}`}</td
                 >

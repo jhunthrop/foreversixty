@@ -148,6 +148,14 @@
     return `-${((death.at_ms - atMs) / 1000).toFixed(1)}s`;
   }
 
+  /**
+   * What a hit took off the health bar: its amount less what a shield soaked. A fully
+   * absorbed hit landed for nothing, and counting it at full would inflate what they
+   * took and draw the bar rising through a death.
+   */
+  function landed(hit: DamageRef): number {
+    return Math.max(0, hit.amount - (hit.absorbed ?? 0));
+  }
   function healthPct(hit: { hp_after?: number; max_hp?: number }): number | null {
     if (!hit.max_hp) return null;
     return Math.max(0, Math.min(100, ((hit.hp_after ?? 0) / hit.max_hp) * 100));
@@ -173,7 +181,7 @@
     }, null);
     if (firstPct === null) return null;
     const spanMs = death.at_ms - first.at_ms;
-    const total = hits.reduce((sum, hit) => sum + hit.amount, 0);
+    const total = hits.reduce((sum, hit) => sum + landed(hit), 0);
     const spanText = formatDuration(spanMs);
     const healed = healingBefore(death);
     const healedText =
@@ -424,8 +432,14 @@
                         title={sourceName(hit.source_guid, hit.source_name)}
                         >{sourceName(hit.source_guid, hit.source_name)}</td
                       >
-                      <td class="tabular py-1 pr-3 text-right font-mono"
-                        >{formatAmount(hit.amount)}{#if lethal && death.killing_blow?.overkill}
+                      <td
+                        class="tabular py-1 pr-3 text-right font-mono"
+                        class:text-muted={landed(hit) === 0}
+                        title={landed(hit) === 0 ? 'Absorbed in full: nothing landed' : undefined}
+                        >{formatAmount(landed(hit))}{#if (hit.absorbed ?? 0) > 0}
+                          <span class="text-muted block text-[11px] md:inline" title="Soaked by a shield"
+                            >({formatAmount(hit.absorbed ?? 0)} absorbed)</span
+                          >{/if}{#if lethal && death.killing_blow?.overkill}
                           <span class="text-muted block text-[11px] md:inline" title="Overkill"
                             >({formatAmount(death.killing_blow.overkill)} overkill)</span
                           >{/if}</td
