@@ -23,11 +23,14 @@
 
   let {
     summary,
+    trash = false,
     classOf,
     nightMode,
     onPatch,
   }: {
     summary: Summary;
+    /** True for a trash segment: there is no boss to have a table for. */
+    trash?: boolean;
     classOf: Map<string, string>;
     nightMode: boolean;
     onPatch: (patch: Partial<ReportState>) => void;
@@ -159,6 +162,10 @@
   {#if beforeMechanics}
     <p class="text-muted text-[14px]" data-testid="mechanics-not-parsed">
       This report was parsed before Mechanics mode existed; parse it again to see mechanics.
+    </p>
+  {:else if !block.table_found && trash}
+    <p class="text-muted text-[14px]" data-testid="mechanics-trash">
+      Mechanics are judged per boss, and this is a trash segment: pick a boss pull, or the whole night.
     </p>
   {:else if !block.table_found}
     <p class="text-muted text-[14px]" data-testid="mechanics-no-table">

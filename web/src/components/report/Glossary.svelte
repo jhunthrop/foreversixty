@@ -72,7 +72,7 @@
     {
       term: 'Failed casts',
       meaning:
-        'On the Casts tab, casts the game refused or that never finished: out of range, no target, not enough mana or energy, or interrupted, cancelled or moved while casting. An instant spell pressed while out of range fails too, which is why an instant can show more failures than casts. "Cast" counts the ones that went off.',
+        'On the Casts tab, presses the game refused: out of range, no target, not enough mana or energy. An instant pressed while out of range fails too, which is why an instant can show more failures than casts. A cast bar cut short is Cancelled, not Failed. Only the player whose client wrote the log has failed casts recorded; everyone else reads a dash.',
     },
     {
       term: 'Mitigated · absorbed · blocked · avoided',

@@ -1,1 +1,417 @@
-{"engine_version":"0.3.0","fight_index":1,"duration_ms":6400,"damage_done":[{"guid":"Player-4184-000000A3","name":"Morrowlyn-Nightslayer","total":1484,"effective":1484,"active_ms":1500,"abilities":[{"spell_id":116,"name":"Frostbolt","school":16,"total":1484,"effective":1484,"hits":1,"crits":1,"ticks":0,"min":1484,"max":1484}],"targets":[{"guid":"Creature-0-2085-2284-7855-169753-0000AA0001","name":"Hollow Sentinel","total":1484}],"series":[1484]},{"guid":"Creature-0-2085-2284-7855-169753-0000AA0001","name":"Hollow Sentinel","total":812,"effective":812,"active_ms":1500,"abilities":[{"spell_id":0,"name":"Melee","total":812,"effective":812,"hits":1,"crits":0,"ticks":0,"misses":{"ABSORB":1,"PARRY":1},"min":812,"max":812},{"spell_id":334660,"name":"Anima Lash","school":32,"total":0,"effective":0,"hits":0,"crits":0,"ticks":0,"misses":{"ABSORB":1},"min":0,"max":0}],"targets":[{"guid":"Player-4184-000000A1","name":"Baelgrim-Nightslayer","total":812}],"series":[812]}],"damage_taken":[{"guid":"Creature-0-2085-2284-7855-169753-0000AA0001","name":"Hollow Sentinel","total":1484,"effective":1484,"active_ms":1500,"abilities":[{"spell_id":116,"name":"Frostbolt","school":16,"total":1484,"effective":1484,"hits":1,"crits":1,"ticks":0,"min":1484,"max":1484}],"targets":[{"guid":"Player-4184-000000A3","name":"Morrowlyn-Nightslayer","total":1484}],"series":[1484]},{"guid":"Player-4184-000000A1","name":"Baelgrim-Nightslayer","total":812,"effective":812,"active_ms":0,"abilities":[{"spell_id":0,"name":"Melee","total":812,"effective":812,"hits":1,"crits":0,"ticks":0,"misses":{"ABSORB":1,"PARRY":1},"min":812,"max":812},{"spell_id":334660,"name":"Anima Lash","school":32,"total":0,"effective":0,"hits":0,"crits":0,"ticks":0,"misses":{"ABSORB":1},"min":0,"max":0}],"targets":[{"guid":"Creature-0-2085-2284-7855-169753-0000AA0001","name":"Hollow Sentinel","total":812}],"series":[812]}],"healing":[{"guid":"Player-4184-000000A2","name":"Sunwick-Nightslayer","total":3698,"effective":2652,"overheal":1046,"absorbed":1840,"active_ms":3600,"abilities":[{"spell_id":17,"name":"Power Word: Shield","school":2,"total":1840,"effective":1840,"absorbed":1840,"hits":2,"crits":0,"ticks":0,"min":640,"max":1200},{"spell_id":2060,"name":"Heal","school":2,"total":1618,"effective":812,"overheal":806,"hits":1,"crits":1,"ticks":0,"min":812,"max":812},{"spell_id":139,"name":"Renew","school":2,"total":240,"effective":0,"overheal":240,"hits":0,"crits":0,"ticks":1,"min":0,"max":0}],"targets":[{"guid":"Player-4184-000000A1","name":"Baelgrim-Nightslayer","total":2652}],"series":[0,1840,812,0]}],"healing_taken":[{"guid":"Player-4184-000000A1","name":"Baelgrim-Nightslayer","total":1858,"effective":812,"overheal":1046,"active_ms":0,"abilities":[{"spell_id":2060,"name":"Heal","school":2,"total":1618,"effective":812,"hits":1,"crits":1,"ticks":0,"min":812,"max":812},{"spell_id":139,"name":"Renew","school":2,"total":240,"effective":0,"hits":0,"crits":0,"ticks":1,"min":0,"max":0}],"targets":[{"guid":"Player-4184-000000A2","name":"Sunwick-Nightslayer","total":812}],"series":[0,0,812,0]}],"deaths":[],"auras":[{"target_guid":"Creature-0-2085-2284-7855-169753-0000AA0001","target_name":"Hollow Sentinel","spell_id":122,"school":16,"name":"Frost Nova","type":"DEBUFF","applications":1,"max_stacks":1,"uptime_ms":900,"segments":[{"start_ms":4300,"end_ms":5200,"stacks":1,"source_guid":"Player-4184-000000A3"}],"appliers":["Player-4184-000000A3"]},{"target_guid":"Creature-0-2085-2284-7855-169753-0000AA0001","target_name":"Hollow Sentinel","spell_id":7386,"school":1,"name":"Sunder Armor","type":"DEBUFF","applications":1,"max_stacks":3,"uptime_ms":1700,"segments":[{"start_ms":4700,"end_ms":4700,"stacks":1,"source_guid":"Player-4184-000000A1"},{"start_ms":4700,"end_ms":6400,"stacks":3,"source_guid":"Player-4184-000000A1"}],"appliers":["Player-4184-000000A1"]},{"target_guid":"Player-4184-000000A1","target_name":"Baelgrim-Nightslayer","spell_id":17,"school":2,"name":"Power Word: Shield","type":"BUFF","applications":1,"max_stacks":1,"uptime_ms":2600,"segments":[{"start_ms":3800,"end_ms":6400,"stacks":1,"source_guid":"Player-4184-000000A2"}],"appliers":["Player-4184-000000A2"]}],"casts":[{"guid":"Player-4184-000000A3","name":"Morrowlyn-Nightslayer","spell_id":116,"spell_name":"Frostbolt","started":0,"succeeded":0,"failed":1,"fail_reasons":{"Not enough mana":1},"cast_time_ms":0,"sequence":[]}],"interrupts":[{"kind":"interrupt","source_guid":"Player-4184-000000A1","source_name":"Baelgrim-Nightslayer","target_guid":"Creature-0-2085-2284-7855-169753-0000AA0001","target_name":"Hollow Sentinel","spell_id":6552,"spell_name":"Pummel","extra_spell_id":334653,"extra_spell_name":"Anima Surge","count":1}],"dispels":[{"kind":"dispel","source_guid":"Player-4184-000000A2","source_name":"Sunwick-Nightslayer","target_guid":"Player-4184-000000A3","target_name":"Morrowlyn-Nightslayer","spell_id":527,"spell_name":"Purify","extra_spell_id":321038,"extra_spell_name":"Wrack Soul","count":1}],"resources":[{"guid":"Creature-0-2085-2284-7855-169753-0000AA0001","name":"Hollow Sentinel","power_type":0,"series":[0],"gained":0,"spent":0,"zero_ms":0},{"guid":"Creature-0-2085-2284-7855-169753-0000AA0001","name":"Hollow Sentinel","power_type":1,"series":[0],"gained":0,"spent":0,"zero_ms":0},{"guid":"Player-4184-000000A1","name":"Baelgrim-Nightslayer","power_type":0,"series":[0,0,9330,9330],"gained":0,"spent":0,"zero_ms":0},{"guid":"Player-4184-000000A1","name":"Baelgrim-Nightslayer","power_type":1,"series":[0,0,0,320],"gained":50,"spent":0,"zero_ms":0}],"threat":[{"guid":"Player-4184-000000A3","name":"Morrowlyn-Nightslayer","threat":1484,"model_version":"base-1","complete":false},{"guid":"Creature-0-2085-2284-7855-169753-0000AA0001","name":"Hollow Sentinel","threat":812,"model_version":"base-1","complete":false},{"guid":"Player-4184-000000A2","name":"Sunwick-Nightslayer","threat":406,"model_version":"base-1","complete":false}],"combatants":[],"roster":[{"guid":"Player-4184-000000A1","name":"Baelgrim-Nightslayer","role":"tank","active_ms":0,"activity_pct":0,"deaths":0,"damage_done":0,"healing_done":0,"damage_taken":812,"dps":0,"hps":0,"dtps":126.875},{"guid":"Player-4184-000000A2","name":"Sunwick-Nightslayer","role":"healer","active_ms":3600,"activity_pct":56.25,"deaths":0,"damage_done":0,"healing_done":2652,"damage_taken":0,"dps":0,"hps":414.375,"dtps":0},{"guid":"Player-4184-000000A3","name":"Morrowlyn-Nightslayer","role":"dps","active_ms":1500,"activity_pct":23.4375,"deaths":0,"damage_done":1484,"healing_done":0,"damage_taken":0,"dps":231.875,"hps":0,"dtps":0}],"mechanics":{"table_found":false,"rows":[]}}
+{
+  "engine_version": "0.3.0",
+  "fight_index": 1,
+  "duration_ms": 6400,
+  "damage_done": [
+    {
+      "guid": "Player-4184-000000A3",
+      "name": "Morrowlyn-Nightslayer",
+      "total": 1484,
+      "effective": 1484,
+      "active_ms": 1500,
+      "abilities": [
+        {
+          "spell_id": 116,
+          "name": "Frostbolt",
+          "school": 16,
+          "total": 1484,
+          "effective": 1484,
+          "hits": 1,
+          "crits": 1,
+          "ticks": 0,
+          "min": 1484,
+          "max": 1484
+        }
+      ],
+      "targets": [
+        { "guid": "Creature-0-2085-2284-7855-169753-0000AA0001", "name": "Hollow Sentinel", "total": 1484 }
+      ],
+      "series": [1484]
+    },
+    {
+      "guid": "Creature-0-2085-2284-7855-169753-0000AA0001",
+      "name": "Hollow Sentinel",
+      "total": 812,
+      "effective": 812,
+      "active_ms": 1500,
+      "abilities": [
+        {
+          "spell_id": 0,
+          "name": "Melee",
+          "total": 812,
+          "effective": 812,
+          "hits": 1,
+          "crits": 0,
+          "ticks": 0,
+          "misses": { "ABSORB": 1, "PARRY": 1 },
+          "min": 812,
+          "max": 812
+        },
+        {
+          "spell_id": 334660,
+          "name": "Anima Lash",
+          "school": 32,
+          "total": 0,
+          "effective": 0,
+          "hits": 0,
+          "crits": 0,
+          "ticks": 0,
+          "misses": { "ABSORB": 1 },
+          "min": 0,
+          "max": 0
+        }
+      ],
+      "targets": [{ "guid": "Player-4184-000000A1", "name": "Baelgrim-Nightslayer", "total": 812 }],
+      "series": [812]
+    }
+  ],
+  "damage_taken": [
+    {
+      "guid": "Creature-0-2085-2284-7855-169753-0000AA0001",
+      "name": "Hollow Sentinel",
+      "total": 1484,
+      "effective": 1484,
+      "active_ms": 1500,
+      "abilities": [
+        {
+          "spell_id": 116,
+          "name": "Frostbolt",
+          "school": 16,
+          "total": 1484,
+          "effective": 1484,
+          "hits": 1,
+          "crits": 1,
+          "ticks": 0,
+          "min": 1484,
+          "max": 1484
+        }
+      ],
+      "targets": [{ "guid": "Player-4184-000000A3", "name": "Morrowlyn-Nightslayer", "total": 1484 }],
+      "series": [1484]
+    },
+    {
+      "guid": "Player-4184-000000A1",
+      "name": "Baelgrim-Nightslayer",
+      "total": 812,
+      "effective": 812,
+      "active_ms": 0,
+      "abilities": [
+        {
+          "spell_id": 0,
+          "name": "Melee",
+          "total": 812,
+          "effective": 812,
+          "hits": 1,
+          "crits": 0,
+          "ticks": 0,
+          "misses": { "ABSORB": 1, "PARRY": 1 },
+          "min": 812,
+          "max": 812
+        },
+        {
+          "spell_id": 334660,
+          "name": "Anima Lash",
+          "school": 32,
+          "total": 0,
+          "effective": 0,
+          "hits": 0,
+          "crits": 0,
+          "ticks": 0,
+          "misses": { "ABSORB": 1 },
+          "min": 0,
+          "max": 0
+        }
+      ],
+      "targets": [
+        { "guid": "Creature-0-2085-2284-7855-169753-0000AA0001", "name": "Hollow Sentinel", "total": 812 }
+      ],
+      "series": [812]
+    }
+  ],
+  "healing": [
+    {
+      "guid": "Player-4184-000000A2",
+      "name": "Sunwick-Nightslayer",
+      "total": 3698,
+      "effective": 2652,
+      "overheal": 1046,
+      "absorbed": 1840,
+      "active_ms": 3600,
+      "abilities": [
+        {
+          "spell_id": 17,
+          "name": "Power Word: Shield",
+          "school": 2,
+          "total": 1840,
+          "effective": 1840,
+          "absorbed": 1840,
+          "hits": 2,
+          "crits": 0,
+          "ticks": 0,
+          "min": 640,
+          "max": 1200
+        },
+        {
+          "spell_id": 2060,
+          "name": "Heal",
+          "school": 2,
+          "total": 1618,
+          "effective": 812,
+          "overheal": 806,
+          "hits": 1,
+          "crits": 1,
+          "ticks": 0,
+          "min": 812,
+          "max": 812
+        },
+        {
+          "spell_id": 139,
+          "name": "Renew",
+          "school": 2,
+          "total": 240,
+          "effective": 0,
+          "overheal": 240,
+          "hits": 0,
+          "crits": 0,
+          "ticks": 1,
+          "min": 0,
+          "max": 0
+        }
+      ],
+      "targets": [{ "guid": "Player-4184-000000A1", "name": "Baelgrim-Nightslayer", "total": 2652 }],
+      "series": [0, 1840, 812, 0]
+    }
+  ],
+  "healing_taken": [
+    {
+      "guid": "Player-4184-000000A1",
+      "name": "Baelgrim-Nightslayer",
+      "total": 1858,
+      "effective": 812,
+      "overheal": 1046,
+      "active_ms": 0,
+      "abilities": [
+        {
+          "spell_id": 2060,
+          "name": "Heal",
+          "school": 2,
+          "total": 1618,
+          "effective": 812,
+          "hits": 1,
+          "crits": 1,
+          "ticks": 0,
+          "min": 812,
+          "max": 812
+        },
+        {
+          "spell_id": 139,
+          "name": "Renew",
+          "school": 2,
+          "total": 240,
+          "effective": 0,
+          "hits": 0,
+          "crits": 0,
+          "ticks": 1,
+          "min": 0,
+          "max": 0
+        }
+      ],
+      "targets": [{ "guid": "Player-4184-000000A2", "name": "Sunwick-Nightslayer", "total": 812 }],
+      "series": [0, 0, 812, 0]
+    }
+  ],
+  "deaths": [],
+  "auras": [
+    {
+      "target_guid": "Creature-0-2085-2284-7855-169753-0000AA0001",
+      "target_name": "Hollow Sentinel",
+      "spell_id": 122,
+      "school": 16,
+      "name": "Frost Nova",
+      "type": "DEBUFF",
+      "applications": 1,
+      "max_stacks": 1,
+      "uptime_ms": 900,
+      "segments": [{ "start_ms": 4300, "end_ms": 5200, "stacks": 1, "source_guid": "Player-4184-000000A3" }],
+      "appliers": ["Player-4184-000000A3"]
+    },
+    {
+      "target_guid": "Creature-0-2085-2284-7855-169753-0000AA0001",
+      "target_name": "Hollow Sentinel",
+      "spell_id": 7386,
+      "school": 1,
+      "name": "Sunder Armor",
+      "type": "DEBUFF",
+      "applications": 1,
+      "max_stacks": 3,
+      "uptime_ms": 1700,
+      "segments": [
+        { "start_ms": 4700, "end_ms": 4700, "stacks": 1, "source_guid": "Player-4184-000000A1" },
+        { "start_ms": 4700, "end_ms": 6400, "stacks": 3, "source_guid": "Player-4184-000000A1" }
+      ],
+      "appliers": ["Player-4184-000000A1"]
+    },
+    {
+      "target_guid": "Player-4184-000000A1",
+      "target_name": "Baelgrim-Nightslayer",
+      "spell_id": 17,
+      "school": 2,
+      "name": "Power Word: Shield",
+      "type": "BUFF",
+      "applications": 1,
+      "max_stacks": 1,
+      "uptime_ms": 2600,
+      "segments": [{ "start_ms": 3800, "end_ms": 6400, "stacks": 1, "source_guid": "Player-4184-000000A2" }],
+      "appliers": ["Player-4184-000000A2"]
+    }
+  ],
+  "casts": [
+    {
+      "guid": "Player-4184-000000A3",
+      "name": "Morrowlyn-Nightslayer",
+      "spell_id": 116,
+      "spell_name": "Frostbolt",
+      "started": 0,
+      "succeeded": 0,
+      "failed": 1,
+      "fail_reasons": { "Not enough mana": 1 },
+      "cast_time_ms": 0,
+      "sequence": []
+    }
+  ],
+  "interrupts": [
+    {
+      "kind": "interrupt",
+      "source_guid": "Player-4184-000000A1",
+      "source_name": "Baelgrim-Nightslayer",
+      "target_guid": "Creature-0-2085-2284-7855-169753-0000AA0001",
+      "target_name": "Hollow Sentinel",
+      "spell_id": 6552,
+      "spell_name": "Pummel",
+      "extra_spell_id": 334653,
+      "extra_spell_name": "Anima Surge",
+      "count": 1
+    }
+  ],
+  "dispels": [
+    {
+      "kind": "dispel",
+      "source_guid": "Player-4184-000000A2",
+      "source_name": "Sunwick-Nightslayer",
+      "target_guid": "Player-4184-000000A3",
+      "target_name": "Morrowlyn-Nightslayer",
+      "spell_id": 527,
+      "spell_name": "Purify",
+      "extra_spell_id": 321038,
+      "extra_spell_name": "Wrack Soul",
+      "count": 1
+    }
+  ],
+  "resources": [
+    {
+      "guid": "Creature-0-2085-2284-7855-169753-0000AA0001",
+      "name": "Hollow Sentinel",
+      "power_type": 0,
+      "series": [0],
+      "gained": 0,
+      "spent": 0,
+      "zero_ms": 0
+    },
+    {
+      "guid": "Creature-0-2085-2284-7855-169753-0000AA0001",
+      "name": "Hollow Sentinel",
+      "power_type": 1,
+      "series": [0],
+      "gained": 0,
+      "spent": 0,
+      "zero_ms": 0
+    },
+    {
+      "guid": "Player-4184-000000A1",
+      "name": "Baelgrim-Nightslayer",
+      "power_type": 0,
+      "series": [0, 0, 9330, 9330],
+      "gained": 0,
+      "spent": 0,
+      "zero_ms": 0
+    },
+    {
+      "guid": "Player-4184-000000A1",
+      "name": "Baelgrim-Nightslayer",
+      "power_type": 1,
+      "series": [0, 0, 0, 320],
+      "gained": 50,
+      "spent": 0,
+      "zero_ms": 0
+    }
+  ],
+  "threat": [
+    {
+      "guid": "Player-4184-000000A3",
+      "name": "Morrowlyn-Nightslayer",
+      "threat": 1484,
+      "model_version": "base-1",
+      "complete": false
+    },
+    {
+      "guid": "Creature-0-2085-2284-7855-169753-0000AA0001",
+      "name": "Hollow Sentinel",
+      "threat": 812,
+      "model_version": "base-1",
+      "complete": false
+    },
+    {
+      "guid": "Player-4184-000000A2",
+      "name": "Sunwick-Nightslayer",
+      "threat": 406,
+      "model_version": "base-1",
+      "complete": false
+    }
+  ],
+  "combatants": [],
+  "roster": [
+    {
+      "guid": "Player-4184-000000A1",
+      "name": "Baelgrim-Nightslayer",
+      "role": "tank",
+      "active_ms": 0,
+      "activity_pct": 0,
+      "deaths": 0,
+      "damage_done": 0,
+      "healing_done": 0,
+      "damage_taken": 812,
+      "dps": 0,
+      "hps": 0,
+      "dtps": 126.875
+    },
+    {
+      "guid": "Player-4184-000000A2",
+      "name": "Sunwick-Nightslayer",
+      "role": "healer",
+      "active_ms": 3600,
+      "activity_pct": 56.25,
+      "deaths": 0,
+      "damage_done": 0,
+      "healing_done": 2652,
+      "damage_taken": 0,
+      "dps": 0,
+      "hps": 414.375,
+      "dtps": 0
+    },
+    {
+      "guid": "Player-4184-000000A3",
+      "name": "Morrowlyn-Nightslayer",
+      "role": "dps",
+      "active_ms": 1500,
+      "activity_pct": 23.4375,
+      "deaths": 0,
+      "damage_done": 1484,
+      "healing_done": 0,
+      "damage_taken": 0,
+      "dps": 231.875,
+      "hps": 0,
+      "dtps": 0
+    }
+  ],
+  "mechanics": { "table_found": false, "rows": [] }
+}

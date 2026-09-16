@@ -422,31 +422,36 @@
         </p>
       {/if}
       <p class="text-muted text-[11px] md:hidden" hidden={splitUnavailable}>
-        Swipe the table sideways for the other columns; the ability column stays put.
+        Swipe the table sideways for the other columns, a column at a time; the ability column stays put.
       </p>
-      <!-- Its own scroller, so the hint above stays put while the table moves; separate
-           borders, so the pinned column's shadow can paint (a collapsed table drops cell
-           shadows). -->
+      <p
+        class="label text-muted pb-1 text-left"
+        id="row-abilities-caption-{actor.guid}"
+        hidden={splitUnavailable}
+      >
+        Abilities{#if schoolSplit.length > 1}
+          <span class="ml-3 tracking-normal normal-case" data-testid="school-split"
+            >{#each schoolSplit as part (part.name)}<span class="mr-3 inline-flex items-center gap-1"
+                ><span
+                  class="inline-block h-[8px] w-[8px] rounded-[2px]"
+                  style={`background: ${part.token}`}
+                  aria-hidden="true"
+                ></span>{part.name} <span class="tabular font-mono">{part.pct.toFixed(0)}%</span></span
+              >{/each}</span
+          >{/if}
+      </p>
+      <!-- Its own scroller, so the hint and heading above stay put while the table moves;
+           separate borders, so the pinned column's shadow can paint (a collapsed table
+           drops cell shadows); one snap stop per column, so a number is whole or absent. -->
       <div
-        class="-mx-2 overflow-x-auto px-2 md:mx-0 md:flex-1 md:overflow-visible md:px-0"
+        class="-mx-2 snap-x snap-mandatory scroll-pl-[176px] overflow-x-auto px-2 md:mx-0 md:flex-1 md:snap-none md:overflow-visible md:px-0"
         hidden={splitUnavailable}
       >
         <table
-          class="min-w-[640px] border-separate border-spacing-0 text-[13px] md:w-full md:min-w-0"
+          class="w-max border-separate border-spacing-0 text-[13px] md:w-full"
           data-testid="row-abilities"
+          aria-labelledby="row-abilities-caption-{actor.guid}"
         >
-          <caption class="label text-muted pb-1 text-left">
-            Abilities{#if schoolSplit.length > 1}
-              <span class="ml-3 tracking-normal normal-case" data-testid="school-split"
-                >{#each schoolSplit as part (part.name)}<span class="mr-3 inline-flex items-center gap-1"
-                    ><span
-                      class="inline-block h-[8px] w-[8px] rounded-[2px]"
-                      style={`background: ${part.token}`}
-                      aria-hidden="true"
-                    ></span>{part.name} <span class="tabular font-mono">{part.pct.toFixed(0)}%</span></span
-                  >{/each}</span
-              >{/if}
-          </caption>
           <thead>
             <tr class="label text-muted border-line-soft border-b">
               <th
@@ -577,3 +582,10 @@
     </div>
   {/if}
 </li>
+
+<style>
+  /* One snap stop per column of the phone's abilities table (see the scroller above). */
+  [data-testid='row-abilities'] th {
+    scroll-snap-align: start;
+  }
+</style>

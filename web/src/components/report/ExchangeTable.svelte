@@ -154,6 +154,7 @@
       String(entry.spell_id),
       String(entry.cast),
       String(entry.stopped),
+      ...(scopedToSome ? [String(entry.own)] : []),
       String(entry.cast - entry.stopped),
     ]);
     const course = uncured.map((entry) => [
@@ -162,6 +163,7 @@
       String(entry.spell_id),
       String(entry.applied),
       String(entry.dispelled),
+      ...(scopedToSome ? [String(entry.own)] : []),
       String(entry.applied - entry.dispelled),
     ]);
     if (through.length === 0 && course.length === 0) return credit;
@@ -174,6 +176,7 @@
         'Spell id',
         'Cast or landed',
         'Stopped or dispelled',
+        ...(scopedToSome ? ['In this scope'] : []),
         'Went through or ran their course',
       ],
       ...through,

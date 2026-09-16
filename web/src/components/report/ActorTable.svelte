@@ -188,25 +188,26 @@
           .join(', ')}.
       </p>
     {/if}
-    {#if mitigation && (mitigated.absorbed > 0 || mitigated.blocked > 0 || mitigated.hits > 0)}
+    {#if mitigation && mitigated.prorated}
       <p
         class="text-muted border-line-soft border-t px-2 py-2 text-[12px]"
         data-testid="actor-mitigated"
-        title={mitigated.prorated
-          ? 'What did not land, prorated from the whole fight like the split above; a pull measures it exactly'
-          : 'What did not land, measured from the fight’s events: absorbed by shields, blocked, and hits avoided outright'}
+        title="An absorb, a block and an avoided hit have no damage share to prorate by, so a target filter cannot split them; a pull measures them from that fight's events"
       >
-        Mitigated: <span class="tabular font-mono"
-          >{mitigated.prorated ? '~' : ''}{formatAmount(mitigated.absorbed)}</span
-        >
+        Mitigated: not split by target over this window. Open a pull to measure what was absorbed, blocked and
+        avoided against this target.
+      </p>
+    {:else if mitigation && (mitigated.absorbed > 0 || mitigated.blocked > 0 || mitigated.hits > 0)}
+      <p
+        class="text-muted border-line-soft border-t px-2 py-2 text-[12px]"
+        data-testid="actor-mitigated"
+        title="What did not land, measured from the fight’s events: absorbed by shields, blocked, and hits avoided outright"
+      >
+        Mitigated: <span class="tabular font-mono">{formatAmount(mitigated.absorbed)}</span>
         absorbed ·
-        <span class="tabular font-mono">{mitigated.prorated ? '~' : ''}{formatAmount(mitigated.blocked)}</span
-        >
+        <span class="tabular font-mono">{formatAmount(mitigated.blocked)}</span>
         blocked ·
-        {#if mitigated.prorated}<span
-            title="A count has no damage share to prorate by; open a pull to measure it from that fight's events"
-            >hits avoided not split here</span
-          >{:else}<span class="tabular font-mono">{mitigated.hits}</span> hits avoided{/if}{mitigated.hits > 0
+        <span class="tabular font-mono">{mitigated.hits}</span> hits avoided{mitigated.hits > 0
           ? ` (${mitigated.byType})`
           : ''}
       </p>

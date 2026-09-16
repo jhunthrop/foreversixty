@@ -1,1 +1,34 @@
-{"engine_version":"0.3.0","fight_index":2,"duration_ms":107000,"damage_done":[],"damage_taken":[],"healing":[],"healing_taken":[],"deaths":[],"auras":[],"casts":[],"interrupts":[],"dispels":[],"resources":[],"threat":[],"combatants":[],"roster":[{"guid":"Player-4184-000000A3","name":"Morrowlyn-Nightslayer","role":"dps","active_ms":0,"activity_pct":0,"deaths":0,"damage_done":0,"healing_done":0,"damage_taken":0,"dps":0,"hps":0,"dtps":0}],"mechanics":{"table_found":false,"rows":[]}}
+{
+  "engine_version": "0.3.0",
+  "fight_index": 2,
+  "duration_ms": 107000,
+  "damage_done": [],
+  "damage_taken": [],
+  "healing": [],
+  "healing_taken": [],
+  "deaths": [],
+  "auras": [],
+  "casts": [],
+  "interrupts": [],
+  "dispels": [],
+  "resources": [],
+  "threat": [],
+  "combatants": [],
+  "roster": [
+    {
+      "guid": "Player-4184-000000A3",
+      "name": "Morrowlyn-Nightslayer",
+      "role": "dps",
+      "active_ms": 0,
+      "activity_pct": 0,
+      "deaths": 0,
+      "damage_done": 0,
+      "healing_done": 0,
+      "damage_taken": 0,
+      "dps": 0,
+      "hps": 0,
+      "dtps": 0
+    }
+  ],
+  "mechanics": { "table_found": false, "rows": [] }
+}

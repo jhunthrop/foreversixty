@@ -46,7 +46,40 @@
       ]),
     ];
   }
-  const ordered = $derived([...rows].sort((a, b) => b.threat - a.threat));
+  /** The environment (a fall, a fire) has the null GUID and holds no threat. */
+  const NULL_GUID = /^0+$/;
+  /**
+   * One row per enemy name: six "General Kaal" units are one boss to the reader, the way
+   * Damage Taken folds them; players keep their own rows.
+   */
+  const ordered = $derived.by(() => {
+    // eslint-disable-next-line svelte/prefer-svelte-reactivity
+    const byName = new Map<string, ThreatRow>();
+    const out: ThreatRow[] = [];
+    for (const row of rows) {
+      if (NULL_GUID.test(row.guid)) continue;
+      if (classOf.has(row.guid)) {
+        out.push(row);
+        continue;
+      }
+      const key = splitUnitName(row.name).name;
+      const found = byName.get(key);
+      if (found === undefined) {
+        const merged = { ...row, name: key };
+        byName.set(key, merged);
+        out.push(merged);
+      } else {
+        const merged = {
+          ...found,
+          threat: found.threat + row.threat,
+          complete: found.complete && row.complete,
+        };
+        byName.set(key, merged);
+        out[out.indexOf(found)] = merged;
+      }
+    }
+    return out.sort((a, b) => b.threat - a.threat);
+  });
   /** Six units named "General Kaal" are six rows; each after the first says which copy it is. */
   const copyOf = $derived.by(() => {
     // eslint-disable-next-line svelte/prefer-svelte-reactivity

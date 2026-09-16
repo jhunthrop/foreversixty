@@ -162,10 +162,17 @@
   const unitNames = $derived(new Map((file?.units ?? []).map((unit) => [unit.guid, unit.name])));
   /** The Interrupts and Dispels tabs' empty line, naming the scope it was empty under. */
   function exchangeEmpty(verb: 'interrupted' | 'dispelled'): string {
-    if (state.source === SOURCE_FRIENDLIES) return `Nothing was ${verb} in the whole fight.`;
-    if (state.source === SOURCE_ENEMIES) return `The enemies ${verb} nothing in this fight.`;
+    // A debuff that ran its course is listed only for a spell someone dispelled at least
+    // once, since the summary cannot tell a dispellable debuff from any other: a pull with
+    // no dispels lists none, and the whole night does.
+    const tail =
+      verb === 'dispelled'
+        ? ' Debuffs that ran their course are listed only for spells someone dispelled at least once; the whole night shows them.'
+        : '';
+    if (state.source === SOURCE_FRIENDLIES) return `Nothing was ${verb} in the whole fight.${tail}`;
+    if (state.source === SOURCE_ENEMIES) return `The enemies ${verb} nothing in this fight.${tail}`;
     const name = splitUnitName(unitNames.get(state.source) ?? state.source).name;
-    return `${name} ${verb} nothing in this fight.`;
+    return `${name} ${verb} nothing in this fight.${tail}`;
   }
   /** The player GUIDs from report.json, for the source scope and the filters. */
   const playerSet = $derived(playerGuids(file?.units ?? []));
@@ -1383,7 +1390,13 @@
            `scoped`. Over the night `base` is the fold, which carries the night's
            mechanics, so the mode draws there too. -->
       {#if state.mode === 'mechanics' && base !== null}
-        <MechanicsMode summary={base} {classOf} {nightMode} onPatch={patch} />
+        <MechanicsMode
+          summary={base}
+          {classOf}
+          {nightMode}
+          trash={!nightMode && fight?.kind !== 'encounter'}
+          onPatch={patch}
+        />
       {:else if state.mode === 'mechanics' && nightMode && nightLoading}
         <!-- The night's fold is every pull's summary fetched in turn, so a cold load
              leaves `base` null for as long as that takes. Without this the mode is a

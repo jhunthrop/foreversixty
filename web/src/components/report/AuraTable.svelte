@@ -133,7 +133,7 @@
   {/if}
   <div class="flex flex-col" data-testid="aura-table">
     <div
-      class="text-muted label hidden grid-cols-[minmax(120px,1.2fr)_minmax(120px,1.2fr)_minmax(0,3fr)_80px_64px] gap-x-3 px-2 pb-1 md:grid"
+      class="text-muted label hidden grid-cols-[minmax(160px,1.4fr)_minmax(160px,1.4fr)_minmax(0,2fr)_80px_64px] gap-x-3 px-2 pb-1 md:grid"
     >
       <span>Aura</span>
       <span>On</span>
@@ -150,11 +150,11 @@
     <ul class="flex flex-col">
       {#each rows as track (`${track.target_guid}-${track.spell_id}`)}
         <li
-          class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px] md:grid-cols-[minmax(120px,1.2fr)_minmax(120px,1.2fr)_minmax(0,3fr)_80px_64px]"
+          class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px] md:grid-cols-[minmax(160px,1.4fr)_minmax(160px,1.4fr)_minmax(0,2fr)_80px_64px]"
           data-testid={`aura-${track.spell_id}-${track.target_guid}`}
         >
           <span class="flex min-w-0 items-center gap-1">
-            <span class="truncate font-semibold"
+            <span class="truncate font-semibold" title={track.name}
               ><span
                 title={track.name.startsWith('Spell #')
                   ? 'Already up at the pull, and no line of the log ever named this spell; the number is its spell id'
@@ -177,7 +177,18 @@
               >
             {/if}
           </span>
-          <span class="text-muted truncate text-[13px]"
+          <span
+            class="text-muted truncate text-[13px]"
+            title={`${splitUnitName(track.target_name).name}${
+              track.appliers.length > 0
+                ? ` · from ${
+                    track.appliers
+                      .map((guid) => splitUnitName(names.get(guid) ?? '').name)
+                      .filter(Boolean)
+                      .join(', ') || 'an unnamed source'
+                  }`
+                : ''
+            }`}
             >{splitUnitName(track.target_name)
               .name}{#if track.appliers.length > 0 && (kind === 'DEBUFF' || track.appliers.some((guid) => guid !== track.target_guid))}
               <span class="text-[11px]" title="Who applied it">

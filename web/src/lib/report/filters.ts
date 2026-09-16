@@ -267,8 +267,10 @@ export function applyActorFilters(actors: Actor[], filters: ReportFilters, conte
         total: Math.round(ability.total * targetShare),
         effective: Math.round(ability.effective * targetShare),
         overheal: ability.overheal === undefined ? undefined : Math.round(ability.overheal * targetShare),
-        absorbed: ability.absorbed === undefined ? undefined : Math.round(ability.absorbed * targetShare),
-        blocked: ability.blocked === undefined ? undefined : Math.round(ability.blocked * targetShare),
+        // Not prorated either: what a shield soaked off one target is not the damage share
+        // of that target; a pull measures it, the night leaves it out under a target filter.
+        absorbed: undefined,
+        blocked: undefined,
         hits: Math.round(ability.hits * targetShare),
         crits: Math.round(ability.crits * targetShare),
         ticks: Math.round(ability.ticks * targetShare),
