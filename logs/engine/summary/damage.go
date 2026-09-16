@@ -167,7 +167,7 @@ func (a *Accumulator) addDamageAndHealing(e event.Event) {
 			// in the player's total. A friendly dest is excluded because a
 			// pair reads "this player's threat on this enemy", and the boss's
 			// own threat on a raider is not a row of that table.
-			if !units.Friendly(e.Dest.Flags) {
+			if units.Enemy(e.Dest.Flags) {
 				a.creditThreat(src, e.Dest.GUID, th)
 			}
 			a.engage(e.Source.GUID, e.Source.Flags, e.Time)

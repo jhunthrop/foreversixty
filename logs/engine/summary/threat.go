@@ -123,7 +123,7 @@ func (a *Accumulator) creditThreat(player, enemy string, threat float64) {
 // the fight the registry has seen yet). The event in hand is already
 // authoritative for its own units.
 func (a *Accumulator) engage(guid string, flags uint32, at time.Time) {
-	if guid == "" || units.Friendly(flags) {
+	if guid == "" || !units.Enemy(flags) {
 		return
 	}
 	a.engaged[guid] = at

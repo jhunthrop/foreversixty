@@ -99,6 +99,32 @@ func TestNeutralEnemiesGetTheirOwnThreatPair(t *testing.T) {
 	}
 }
 
+// The environment (a fall, a fire) has the nil GUID and no reaction bit at all: it is
+// nobody's enemy, so it neither takes a pair nor engages for the healing spread.
+func TestTheEnvironmentIsNobodysEnemy(t *testing.T) {
+	o, reg := opts(t)
+	a := New(o)
+	a.Start(at(0))
+	events := []event.Event{
+		{Time: at(1), Kind: event.Damage, Name: "ENVIRONMENTAL_DAMAGE",
+			Source: event.Unit{GUID: units.NoGUID, Flags: 0x80000000}, Dest: event.Unit{GUID: tank, Flags: 0x511},
+			Spell:    event.Spell{ID: -1, Name: "Falling", School: 1},
+			Amount:   event.OptInt{V: 1000, OK: true},
+			Overkill: event.OptInt{V: -1, OK: true}},
+		heal(2, healer, tank, 2050, "Holy Light", 400, 0),
+	}
+	for _, e := range events {
+		reg.Observe(e)
+		a.Add(e)
+	}
+	s := a.Snapshot(fight.Fight{Index: 1, Kind: fight.Encounter, Start: at(0), End: at(5), Players: []string{tank, healer}}, "test")
+	for _, p := range s.ThreatByTarget {
+		if p.TargetGUID == units.NoGUID || p.TargetName == "Environment" {
+			t.Errorf("the environment took a threat pair: %+v", p)
+		}
+	}
+}
+
 // A heal long after the last blow lands on nobody: the engaged window has expired,
 // so the threat stays on the player's total and no pair is invented for it.
 func TestHealingSpreadsOverNobodyOnceTheWindowExpires(t *testing.T) {

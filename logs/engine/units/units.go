@@ -38,6 +38,15 @@ func Hostile(f uint32) bool { return f&FlagReactionHostile != 0 }
 // Friendly reports whether the flags mark a friendly unit.
 func Friendly(f uint32) bool { return f&FlagReactionFriendly != 0 }
 
+// Enemy reports whether the flags describe a unit on the other side of the
+// fight: one the log gave a reaction (neutral or hostile) that is not friendly.
+// Flags with no reaction bit at all -- the environment, a unit the log never
+// described -- are nobody's enemy, so a fall does not become a boss.
+func Enemy(f uint32) bool {
+	const reaction = FlagReactionFriendly | FlagReactionNeutral | FlagReactionHostile
+	return f&reaction != 0 && !Friendly(f)
+}
+
 // SameSide reports whether two flag sets put their units on one side of the
 // fight: both friendly or both hostile. Flags with no reaction bit at all
 // (a unit the log never described) are nobody's side, so they never match.
