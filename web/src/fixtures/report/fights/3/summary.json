@@ -370,6 +370,26 @@
       "appliers": ["Player-4184-000000A3"]
     },
     {
+      "target_guid": "Player-4184-000000A3",
+      "target_name": "Morrowlyn-Nightslayer",
+      "spell_id": 321038,
+      "school": 32,
+      "name": "Wrack Soul",
+      "type": "DEBUFF",
+      "applications": 1,
+      "max_stacks": 1,
+      "uptime_ms": 24000,
+      "segments": [
+        {
+          "start_ms": 16000,
+          "end_ms": 40000,
+          "stacks": 1,
+          "source_guid": "Creature-0-2085-2284-7855-169754-0000AA0002"
+        }
+      ],
+      "appliers": ["Creature-0-2085-2284-7855-169754-0000AA0002"]
+    },
+    {
       "target_guid": "Player-4184-000000A4",
       "target_name": "Thalgrit-Nightslayer",
       "spell_id": 320462,
@@ -391,6 +411,17 @@
     }
   ],
   "casts": [
+    {
+      "guid": "Creature-0-2085-2284-7855-169754-0000AA0002",
+      "name": "Warden Kelthas",
+      "spell_id": 334653,
+      "spell_name": "Anima Surge",
+      "started": 1,
+      "succeeded": 0,
+      "failed": 0,
+      "cast_time_ms": 0,
+      "sequence": []
+    },
     {
       "guid": "Player-4184-000000A3",
       "name": "Morrowlyn-Nightslayer",
@@ -636,6 +667,32 @@
             "killed": true
           }
         ]
+      },
+      {
+        "spell_id": 334653,
+        "name": "Anima Surge",
+        "kind": "interrupt",
+        "note": "Kickable: the Warden opens with it after a Lash. Pummel, Kick or Counterspell.",
+        "casts": 1
+      },
+      {
+        "spell_id": 321038,
+        "name": "Wrack Soul",
+        "kind": "dispel",
+        "note": "Magic; left up it ticks for the rest of the pull.",
+        "applied": 1
+      },
+      {
+        "spell_id": 334661,
+        "name": "Anima Cascade",
+        "kind": "avoidable",
+        "note": "Fixture: in the Warden's kit but never cast on this pull, so the page has a mechanic nobody failed."
+      },
+      {
+        "spell_id": 320462,
+        "name": "Necrotic Wound",
+        "kind": "unavoidable",
+        "note": "The Warden's tank debuff: it lands on whoever is holding him, and nobody can play around it."
       }
     ]
   }

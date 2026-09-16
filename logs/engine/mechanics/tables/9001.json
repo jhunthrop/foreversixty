@@ -2,6 +2,10 @@
   "encounter_id": 9001,
   "name": "Warden Kelthas",
   "mechanics": [
-    { "spell_id": 334660, "name": "Anima Lash", "kind": "avoidable", "note": "Fixture: the hit that kills the tank." }
+    { "spell_id": 334660, "name": "Anima Lash", "kind": "avoidable", "note": "Fixture: the hit that kills the tank." },
+    { "spell_id": 334653, "name": "Anima Surge", "kind": "interrupt", "note": "Kickable: the Warden opens with it after a Lash. Pummel, Kick or Counterspell." },
+    { "spell_id": 321038, "name": "Wrack Soul", "kind": "dispel", "note": "Magic; left up it ticks for the rest of the pull." },
+    { "spell_id": 334661, "name": "Anima Cascade", "kind": "avoidable", "note": "Fixture: in the Warden's kit but never cast on this pull, so the page has a mechanic nobody failed." },
+    { "spell_id": 320462, "name": "Necrotic Wound", "kind": "unavoidable", "note": "The Warden's tank debuff: it lands on whoever is holding him, and nobody can play around it." }
   ]
 }

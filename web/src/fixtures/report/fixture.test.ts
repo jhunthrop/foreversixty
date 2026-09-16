@@ -6,6 +6,7 @@
 import { describe, expect, it } from 'vitest';
 import fight1 from './fights/1/summary.json';
 import fight3 from './fights/3/summary.json';
+import fight4 from './fights/4/summary.json';
 import meta from './meta.json';
 import reportFile from './report.json';
 import { asArray, type ReportFile, type ReportMeta, type Summary } from '../../lib/report/types';
@@ -13,6 +14,7 @@ import { asArray, type ReportFile, type ReportMeta, type Summary } from '../../l
 const report = reportFile as ReportFile;
 const one = fight1 as Summary;
 const three = fight3 as Summary;
+const four = fight4 as Summary;
 
 /** Every array-valued key the island reads, walked to prove none of them is null. */
 function everyArray(summary: Summary): unknown[][] {
@@ -114,6 +116,64 @@ describe('the checked-in report fixture', () => {
     expect(death.auras_held[0].name).toBe('Necrotic Wound');
   });
 
+  it('counts damage taken as effective, with effective min and max', () => {
+    // The boss lands Anima Lash twice on the tank: 2900 at 20:12:09, then 2400 at
+    // 20:12:10 of which 100 is overkill. So total is the raw 5300 and effective is 5200,
+    // and the extremes are the effective amounts -- min is 2300, the killing hit less
+    // its overkill, not the 2400 the log line reports.
+    const tank = three.damage_taken.find((actor) => actor.guid === 'Player-4184-000000A4');
+    expect(tank?.total).toBe(5300);
+    expect(tank?.effective).toBe(5200);
+    const lash = tank?.abilities.find((ability) => ability.spell_id === 334660);
+    expect(lash).toMatchObject({ total: 5300, effective: 5200, overkill: 100, hits: 2 });
+    expect(lash?.min).toBe(2300);
+    expect(lash?.max).toBe(2900);
+    // And the roster's headline figures are the effective ones over the fight's 40 s.
+    const row = three.roster.find((entry) => entry.guid === 'Player-4184-000000A4');
+    expect(three.duration_ms).toBe(40_000);
+    expect(row?.damage_taken).toBe(5200);
+    expect(row?.dtps).toBe(130);
+  });
+
+  it('renders the encounter’s mechanics table against what happened', () => {
+    // Encounter 9001's curated table (logs/engine/mechanics/tables/9001.json) lists one
+    // ability of every kind, so every branch of the mode has something to draw: Anima
+    // Lash hit the tank twice and killed him; the boss's Anima Surge cast at 20:12:14
+    // was never interrupted; the Wrack Soul it put on the mage at 20:12:16 was never
+    // dispelled; Anima Cascade is in its kit but never went out on this pull; and
+    // Necrotic Wound is the tank debuff nobody can play around.
+    expect(three.mechanics?.table_found).toBe(true);
+    const rows = three.mechanics?.rows ?? [];
+    expect(rows.map((row) => [row.spell_id, row.kind])).toEqual([
+      [334660, 'avoidable'],
+      [334653, 'interrupt'],
+      [321038, 'dispel'],
+      [334661, 'avoidable'],
+      [320462, 'unavoidable'],
+    ]);
+    // The two nobody failed carry no counts at all, which is what puts them under
+    // "also in the table" rather than in the problems list.
+    expect(rows[3].players ?? []).toEqual([]);
+    expect(rows[4].players ?? []).toEqual([]);
+    expect(rows[0].players).toEqual([
+      {
+        guid: 'Player-4184-000000A4',
+        name: 'Thalgrit-Nightslayer',
+        hits: 2,
+        damage: 5200,
+        first_ms: 9000,
+        last_ms: 10_000,
+        killed: true,
+      },
+    ]);
+    expect(rows[1]).toMatchObject({ casts: 1 });
+    expect(rows[1].stopped ?? 0).toBe(0);
+    expect(rows[2]).toMatchObject({ applied: 1 });
+    expect(rows[2].dispelled ?? 0).toBe(0);
+    // Skolex has no table at all, which is the mode's empty state.
+    expect(four.mechanics).toEqual({ table_found: false, rows: [] });
+  });
+
   it('parses a combatant with gear in the engine’s untagged Go field names', () => {
     const tank = three.combatants.find((row) => row.name === 'Baelgrim-Nightslayer');
     expect(tank?.spec).toBe('Protection');
@@ -143,12 +203,13 @@ describe('the checked-in report fixture', () => {
   });
 
   it('parses auras, casts, resources and threat', () => {
-    // Seven tracks, because the engine opens one for every aura a COMBATANT_INFO
+    // Eight tracks, because the engine opens one for every aura a COMBATANT_INFO
     // snapshot says was already up at the pull (summary.go seedAuras). The warrior and
     // the mage each brought in 17 and 871, which no aura event inside this fight names,
     // so they are filed under their spell ids; the priest brought in her own Fortitude;
-    // the warrior's Fortitude is the one the priest casts at 20:12:04; and the boss's
-    // Necrotic Wound lands on the tank.
+    // the warrior's Fortitude is the one the priest casts at 20:12:04; the boss's
+    // Necrotic Wound lands on the tank; and its Wrack Soul lands on the mage and is
+    // never dispelled, which is the dispel row of the encounter's mechanics table.
     expect(three.auras.map((track) => track.name).sort()).toEqual([
       'Necrotic Wound',
       'Power Word: Fortitude',
@@ -157,9 +218,18 @@ describe('the checked-in report fixture', () => {
       'Spell #17',
       'Spell #871',
       'Spell #871',
+      'Wrack Soul',
     ]);
-    expect(three.auras.find((t) => t.name === 'Power Word: Fortitude')?.uptime_ms).toBe(31000);
-    expect(three.casts[0].sequence).toEqual([5000]);
+    // By target as well as name: two tracks share the name, and which one comes first is
+    // the accumulator's ordering, not a fact about the fight. This is the warrior's, the
+    // one the priest casts at 20:12:04 and lets fall at 20:12:35.
+    expect(
+      three.auras.find((t) => t.name === 'Power Word: Fortitude' && t.target_guid === 'Player-4184-000000A1')
+        ?.uptime_ms,
+    ).toBe(31000);
+    // The mage's one cast, five seconds in. Keyed by caster, not by position: the boss's
+    // own Anima Surge cast is a row here too.
+    expect(three.casts.find((row) => row.guid === 'Player-4184-000000A3')?.sequence).toEqual([5000]);
     expect(three.resources.every((track) => Array.isArray(track.series))).toBe(true);
     expect(three.threat[0].model_version).toBe('base-1');
     expect(three.threat[0].complete).toBe(false);

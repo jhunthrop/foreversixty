@@ -125,6 +125,11 @@
         'Damage from an ability the boss’s mechanics table says a player should not have been standing in. The table is curated by a person; the log only says what hit whom.',
     },
     {
+      term: 'Unavoidable',
+      meaning:
+        'Damage the fight deals regardless of where anyone stood. Listed on the mechanics page so a boss’s tank damage is not mistaken for a gap in its table.',
+    },
+    {
       term: 'Went through',
       meaning:
         'Casts of an interruptible spell that finished because nobody stopped them, out of the casts that started.',

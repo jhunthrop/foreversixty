@@ -130,7 +130,9 @@ test('a query runs against the fight’s own Parquet, and every byte comes from 
   await page.getByTestId('query-sql').fill("SELECT count(*) AS n FROM read_parquet('events.parquet')");
   await page.getByTestId('query-run').click();
   await expect(page.getByTestId('query-error')).toHaveCount(0);
-  await expect(page.getByTestId('query-result')).toContainText('24');
+  // 26: every line of fight 3 in the fixture log, ENCOUNTER_START and ENCOUNTER_END
+  // included (lines 29 to 54 of src/fixtures/report/fixture.log).
+  await expect(page.getByTestId('query-result')).toContainText('26');
 
   expect(external).toEqual([]);
 

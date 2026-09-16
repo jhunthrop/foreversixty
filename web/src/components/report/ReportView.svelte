@@ -1361,6 +1361,12 @@
            mechanics, so the mode draws there too. -->
       {#if state.mode === 'mechanics' && base !== null}
         <MechanicsMode summary={base} {classOf} {nightMode} onPatch={patch} />
+      {:else if state.mode === 'mechanics' && nightMode && nightLoading}
+        <!-- The night's fold is every pull's summary fetched in turn, so a cold load
+             leaves `base` null for as long as that takes. Without this the mode is a
+             blank panel: the analyze branch's own loading line is inside NightView,
+             which mechanics does not mount. -->
+        <p class="text-muted text-[14px]" data-testid="mechanics-night-loading">Folding the night’s pulls…</p>
       {/if}
     </div>
   </div>
