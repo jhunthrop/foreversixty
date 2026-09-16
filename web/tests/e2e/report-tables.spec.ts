@@ -120,9 +120,9 @@ test('buffs and debuffs each show only their own kind, with a real uptime', asyn
   await page.goto(`${FIGHT}&tab=buffs`);
   await expect(page.getByTestId('aura-table')).toContainText('Power Word: Fortitude');
   await expect(page.getByTestId('aura-table')).not.toContainText('Necrotic Wound');
-  // 31 s of a 40 s fight.
+  // 31 s of the fight's 60 s wall length (engine 0.2.6 measures a closed fight by it).
   await expect(page.getByTestId('aura-1243-Player-4184-000000A1').getByTestId('aura-uptime')).toHaveText(
-    '77.5%',
+    '51.7%',
   );
 
   await page.goto(`${FIGHT}&tab=debuffs`);
