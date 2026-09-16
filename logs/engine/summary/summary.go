@@ -148,6 +148,10 @@ type Accumulator struct {
 	// for spreading healing threat over whatever it is in combat with.
 	engaged map[string]time.Time
 	taunts  []Taunt
+	// swings holds each SWING_DAMAGE until its SWING_DAMAGE_LANDED arrives or
+	// the echo passes: the landed line is what the target took, absorbs and
+	// all, and the swing line is what the attacker threw.
+	swings []event.Event
 	// The last cast of each taunt, so its debuff landing is not a second taunt.
 	tauntCasts map[tauntKey]int64
 	combatants map[string]*event.Combatant
@@ -232,14 +236,90 @@ func (a *Accumulator) owner(guid string) string {
 	return a.opt.Registry.Owner(guid)
 }
 
+// swingEcho is how long after a SWING_DAMAGE its SWING_DAMAGE_LANDED can
+// follow and still be the same swing; the two are a few milliseconds apart.
+const swingEcho = 250 * time.Millisecond
+
 // Add folds one event in. Events must arrive in the order they were logged.
+//
+// A melee swing is logged twice: SWING_DAMAGE with what the attacker threw,
+// and SWING_DAMAGE_LANDED with what the target took -- the amount after a
+// shield soaked it, the absorb, the overkill and the health it left. A swing
+// a shield ate in full is 11,097 on the first line and 0 on the second, so
+// the first is held until the second arrives and folded with its figures;
+// a swing with no landed line within the echo is folded as it was thrown.
 func (a *Accumulator) Add(e event.Event) {
+	a.flushSwings(e.Time)
+	if e.Kind == event.Damage && e.Name == "SWING_DAMAGE" {
+		a.noteTime(e)
+		a.swings = append(a.swings, e)
+		return
+	}
+	if e.Kind == event.DamageLanded {
+		if i := a.pendingSwing(e); i >= 0 {
+			swing := a.swings[i]
+			a.swings = append(a.swings[:i], a.swings[i+1:]...)
+			a.addNow(landedSwing(swing, e))
+		}
+	}
+	a.addNow(e)
+}
+
+// noteTime keeps the fight's first and last instants, held swings included.
+func (a *Accumulator) noteTime(e event.Event) {
 	if a.start.IsZero() {
 		a.start = e.Time
 	}
 	if e.Time.After(a.end) {
 		a.end = e.Time
 	}
+}
+
+// flushSwings folds the held swings whose echo has passed by `now`, in order.
+func (a *Accumulator) flushSwings(now time.Time) {
+	for len(a.swings) > 0 && now.Sub(a.swings[0].Time) > swingEcho {
+		swing := a.swings[0]
+		a.swings = a.swings[1:]
+		a.addNow(swing)
+	}
+}
+
+// pendingSwing is the index of the held swing a landed line repeats: the
+// latest from the same attacker at the same target, or -1.
+func (a *Accumulator) pendingSwing(landed event.Event) int {
+	for i := len(a.swings) - 1; i >= 0; i-- {
+		if a.swings[i].Source.GUID == landed.Source.GUID && a.swings[i].Dest.GUID == landed.Dest.GUID {
+			return i
+		}
+	}
+	return -1
+}
+
+// landedSwing is the swing as it landed: the throw's line with the target's
+// figures written over it, each where the landed line carries one.
+func landedSwing(swing, landed event.Event) event.Event {
+	out := swing
+	if landed.Amount.OK {
+		out.Amount = landed.Amount
+	}
+	if landed.Overkill.OK {
+		out.Overkill = landed.Overkill
+	}
+	if landed.Absorbed.OK {
+		out.Absorbed = landed.Absorbed
+	}
+	if landed.Blocked.OK {
+		out.Blocked = landed.Blocked
+	}
+	if landed.Resisted.OK {
+		out.Resisted = landed.Resisted
+	}
+	return out
+}
+
+// addNow folds one event in, held or not.
+func (a *Accumulator) addNow(e event.Event) {
+	a.noteTime(e)
 	if e.Spell.ID != 0 && e.Spell.Name != "" {
 		a.spellNames[e.Spell.ID] = e.Spell.Name
 	}
@@ -288,6 +368,8 @@ func (a *Accumulator) seedAuras(e event.Event) {
 // it is safe to call every few seconds during a live fight and to serialise
 // the result while the parse goes on.
 func (a *Accumulator) Snapshot(f fight.Fight, engineVersion string) Summary {
+	// A swing held for its landed line at the fight's very end is folded as thrown.
+	a.flushSwings(a.end.Add(2 * swingEcho))
 	// The fight's own wall length, the same figure the fight list shows, so a pull has
 	// one length everywhere and every per-second figure divides by it. A fight still
 	// open has no end yet, so it runs to the last event seen.

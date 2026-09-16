@@ -874,3 +874,43 @@ func TestActivityPctIsClampedAtOneHundred(t *testing.T) {
 		t.Errorf("active_ms = %d, want the full gap %d", row.ActiveMS, o.ActiveGap.Milliseconds())
 	}
 }
+
+// A melee swing is logged twice: SWING_DAMAGE with what was thrown and
+// SWING_DAMAGE_LANDED with what the target took. A swing a shield ate in full is
+// 11,097 on the first line and 0 absorbed 11,097 on the second, and the tables and
+// the death recap count what landed. A swing with no landed line counts as thrown.
+func TestASwingCountsAsItLanded(t *testing.T) {
+	o, reg := opts(t)
+	a := New(o)
+	a.Start(at(0))
+	landed := func(sec float64, amount, absorbed int64) event.Event {
+		e := dmg(sec, boss, tank, 0, "", amount, -1)
+		e.Kind, e.Name = event.DamageLanded, "SWING_DAMAGE_LANDED"
+		e.Absorbed = event.OptInt{V: absorbed, OK: true}
+		return e
+	}
+	events := []event.Event{
+		dmg(1, boss, tank, 0, "", 11097, 1546),
+		landed(1.012, 0, 11097),
+		dmg(3, boss, tank, 0, "", 4000, 0),
+		landed(3.010, 3000, 1000),
+		dmg(5, boss, tank, 0, "", 2500, 0), // no landed line: counts as thrown
+	}
+	for _, e := range events {
+		reg.Observe(e)
+		a.Add(e)
+	}
+	s := a.Snapshot(fight.Fight{Index: 1, Kind: fight.Encounter, Start: at(0), End: at(8), Players: []string{tank}}, "test")
+	taken, ok := actorByGUID(s.DamageTaken, tank)
+	if !ok {
+		t.Fatal("no damage taken row for the tank")
+	}
+	// 0 + 3,000 + 2,500 landed; 11,097 + 1,000 absorbed, on the melee row.
+	if taken.Effective != 5500 {
+		t.Fatalf("taken effective = %d, want 5500", taken.Effective)
+	}
+	melee := taken.Abilities[0]
+	if melee.Hits != 3 || melee.Max != 3000 || melee.Absorbed != 12097 {
+		t.Fatalf("melee = %+v, want 3 hits, a largest of 3000 and 12097 absorbed", melee)
+	}
+}
