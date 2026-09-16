@@ -277,7 +277,7 @@ export function nightSummary(
         ...death,
         at_ms: death.at_ms + offset,
         label,
-        last: death.last.map((hit) => ({ ...hit, at_ms: hit.at_ms + offset })),
+        last: (death.last ?? []).map((hit) => ({ ...hit, at_ms: hit.at_ms + offset })),
         heals: death.heals?.map((heal) => ({ ...heal, at_ms: heal.at_ms + offset })),
         killing_blow:
           death.killing_blow === undefined
