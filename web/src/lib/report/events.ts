@@ -169,9 +169,19 @@ export function summaryEvents(
     .map((entry) => entry.event);
 }
 
+/**
+ * The find matches a line's words and its amount: a reader who just read "7,554" off the
+ * Damage Taken tab types it here to find the hit, with or without the comma.
+ */
 export function filterEvents(events: SummaryEvent[], kinds: Set<EventKind>, search: string): SummaryEvent[] {
   const needle = search.trim().toLowerCase();
+  const digits = needle.replaceAll(',', '');
+  const byAmount = digits !== '' && /^\d+$/.test(digits);
   return events.filter(
-    (event) => kinds.has(event.kind) && (needle === '' || event.text.toLowerCase().includes(needle)),
+    (event) =>
+      kinds.has(event.kind) &&
+      (needle === '' ||
+        event.text.toLowerCase().includes(needle) ||
+        (byAmount && event.amount !== undefined && String(event.amount).includes(digits))),
   );
 }

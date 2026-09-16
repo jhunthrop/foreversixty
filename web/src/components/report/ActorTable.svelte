@@ -189,7 +189,9 @@
     </div>
     {#if absent.length > 0}
       <p class="text-muted border-line-soft border-t px-2 py-2 text-[12px]" data-testid="actor-absent">
-        No row {windowIsWhole ? 'under this filter' : 'in this window'}: {absent
+        No {mitigation ? 'target' : 'source'} row of their own {windowIsWhole
+          ? 'under this filter'
+          : 'in this window'}: {absent
           .map((entry) =>
             entry.deadSince === null
               ? entry.name

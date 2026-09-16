@@ -234,6 +234,9 @@ export interface MechanicRow {
   /** Dispel: applications on players and how many were dispelled. */
   applied?: number;
   dispelled?: number;
+  /** Interrupt and dispel (engine 0.3.4): what the spell did when it went through -- damage to players, healing of the enemies. */
+  damage?: number;
+  healed?: number;
   /** Set by the whole-night fold: the pulls on which this mechanic hit anyone. */
   pulls_hit?: number;
   /** Set by the whole-night fold: the encounter whose table lists this row. A night
@@ -288,6 +291,8 @@ export interface Taunt {
   target_name: string;
   spell_id: number;
   spell_name: string;
+  /** The cast came before the pull's first event; the fight holds only its debuff landing (engine 0.3.4). */
+  pre_pull?: boolean;
   /** Set by the whole-night fold: which pull this taunt happened in. */
   label?: string;
 }

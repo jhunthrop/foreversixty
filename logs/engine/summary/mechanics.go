@@ -33,6 +33,12 @@ type MechanicRow struct {
 	// Dispel: applications on players and how many were dispelled.
 	Applied   int64 `json:"applied,omitempty"`
 	Dispelled int64 `json:"dispelled,omitempty"`
+	// Interrupt and dispel: what the spell did when it went through -- the
+	// damage it dealt the players and the healing it gave the enemies -- so
+	// a drain that healed the boss eight times ranks by what it cost, not
+	// by the count of eight.
+	Damage int64 `json:"damage,omitempty"`
+	Healed int64 `json:"healed,omitempty"`
 }
 
 // MechanicHit is one player's history with an avoidable or unavoidable
@@ -134,7 +140,9 @@ func (a *Accumulator) mechanicsBlock(deaths []Death) MechanicsBlock {
 			if row.Casts < row.Stopped {
 				row.Casts = row.Stopped
 			}
+			row.Damage, row.Healed = a.enemySpellTotals(m.EffectIDs())
 		case mechanics.Dispel:
+			row.Damage, row.Healed = a.enemySpellTotals(m.EffectIDs())
 			for _, tr := range a.auraRows() {
 				if tr.SpellID == m.SpellID && tr.Type == "DEBUFF" && a.isPlayer(tr.TargetGUID) {
 					row.Applied += tr.Applications
@@ -151,4 +159,38 @@ func (a *Accumulator) mechanicsBlock(deaths []Death) MechanicsBlock {
 func (a *Accumulator) isPlayer(guid string) bool {
 	u, ok := a.opt.Registry.Get(guid)
 	return ok && u.IsPlayer()
+}
+
+// enemySpellTotals is what listed spells did in the enemies' hands: the
+// effective damage they dealt (the damage-done tables hold only damage to the
+// other side, so a player's own copy of an id is not in it) and the healing
+// they gave the enemies, so an interrupt or dispel that went through can be
+// ranked by its cost. A channel's damage tick and heal carry their own ids,
+// which the table lists as the cast's effects.
+func (a *Accumulator) enemySpellTotals(spellIDs []int64) (damage, healed int64) {
+	listed := map[int64]bool{}
+	for _, id := range spellIDs {
+		listed[id] = true
+	}
+	for guid, t := range a.damageDone {
+		if a.isPlayer(guid) {
+			continue
+		}
+		for key, ab := range t.abilities {
+			if listed[key.spellID] {
+				damage += ab.Effective
+			}
+		}
+	}
+	for guid, t := range a.healingDone {
+		if a.isPlayer(guid) {
+			continue
+		}
+		for key, ab := range t.abilities {
+			if listed[key.spellID] {
+				healed += ab.Effective
+			}
+		}
+	}
+	return damage, healed
 }

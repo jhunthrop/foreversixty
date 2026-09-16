@@ -36,6 +36,19 @@ type Mechanic struct {
 	Name    string `json:"name"`
 	Kind    Kind   `json:"kind"`
 	Note    string `json:"note,omitempty"`
+	// Effects, for an interrupt or dispel: the spell ids of what the cast
+	// does when it goes through -- the damage tick and the heal a channel
+	// carries under their own ids -- so the row can say what it cost. Empty
+	// means the cast's own id.
+	Effects []int64 `json:"effects,omitempty"`
+}
+
+// EffectIDs is what a mechanic's cost is read from: its effects, or its own id.
+func (m Mechanic) EffectIDs() []int64 {
+	if len(m.Effects) > 0 {
+		return m.Effects
+	}
+	return []int64{m.SpellID}
 }
 
 // Table is one encounter's mechanics.

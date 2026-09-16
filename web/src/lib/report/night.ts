@@ -597,6 +597,8 @@ function mergeMechanicRow(
     stopped: sumOptional(found?.stopped, row.stopped),
     applied: sumOptional(found?.applied, row.applied),
     dispelled: sumOptional(found?.dispelled, row.dispelled),
+    damage: sumOptional(found?.damage, row.damage),
+    healed: sumOptional(found?.healed, row.healed),
     pulls_hit: (found?.pulls_hit ?? 0) + (hitThisPull ? 1 : 0),
   });
 }

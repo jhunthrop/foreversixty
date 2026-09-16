@@ -15,6 +15,10 @@ type Taunt struct {
 	TargetName string `json:"target_name"`
 	SpellID    int64  `json:"spell_id"`
 	SpellName  string `json:"spell_name"`
+	// PrePull is true for a taunt the fight holds only as its debuff landing:
+	// the cast came before the pull's first event, so the Casts tab, which
+	// counts casts, is one short of this list and both are right.
+	PrePull bool `json:"pre_pull,omitempty"`
 }
 
 // tauntSpells are the taunts the deaths and threat views mark: single-target
@@ -51,6 +55,7 @@ func (a *Accumulator) noteTaunt(e event.Event) {
 	}
 	key := tauntKey{e.Source.GUID, e.Dest.GUID}
 	at := a.ms(e.Time)
+	prePull := false
 	switch e.Kind {
 	case event.CastSuccess:
 		if a.tauntCasts == nil {
@@ -61,12 +66,14 @@ func (a *Accumulator) noteTaunt(e event.Event) {
 		if last, ok := a.tauntCasts[key]; ok && at-last <= tauntEchoMS {
 			return
 		}
+		prePull = true
 	default:
 		return
 	}
 	a.taunts = append(a.taunts, Taunt{
 		AtMS: at, SourceGUID: e.Source.GUID, SourceName: a.name(e.Source.GUID),
 		TargetGUID: e.Dest.GUID, TargetName: a.name(e.Dest.GUID), SpellID: e.Spell.ID, SpellName: e.Spell.Name,
+		PrePull: prePull,
 	})
 }
 

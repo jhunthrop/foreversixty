@@ -414,7 +414,11 @@
                 >{nameOf(taunt.source_guid, taunt.source_name)}</span
               >
               taunted {nameOf(taunt.target_guid, taunt.target_name)}
-              <span class="text-muted">({taunt.spell_name})</span>
+              <span class="text-muted"
+                >({taunt.spell_name}{taunt.pre_pull
+                  ? ', cast before the pull, so Casts does not count it'
+                  : ''})</span
+              >
             </span>
             {#if taunt.label !== undefined}
               <span class="text-muted text-[12px]">{taunt.label}</span>

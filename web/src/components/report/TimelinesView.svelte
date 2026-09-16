@@ -119,7 +119,8 @@
     const target = splitUnitName(taunt.target_name).name;
     const source = splitUnitName(taunt.source_name).name;
     const pull = taunt.label === undefined ? '' : ` · ${taunt.label}`;
-    return `Taunt · ${taunt.spell_name} on ${target} by ${source}${pull}`;
+    const before = taunt.pre_pull ? ' · cast before the pull' : '';
+    return `Taunt · ${taunt.spell_name} on ${target} by ${source}${pull}${before}`;
   }
 
   /** The boss's casts, one tick each, named on hover: the thing to line a death up against. */
@@ -147,6 +148,41 @@
       ? []
       : windowedTaunts.filter((taunt) => splitUnitName(taunt.target_name).name === bossName),
   );
+  /** One enemy's lane: its casts as ticks and the taunts that landed on it. */
+  interface EnemyLane {
+    name: string;
+    casts: { at: number; name: string }[];
+    taunts: Taunt[];
+  }
+  /**
+   * The enemies with a lane: the boss, and every other enemy someone taunted. An add that
+   * took nine of a pull's ten taunts and killed four people is what the taunt marks point
+   * at, and a mark pointing at a creature with no lane is a mark pointing at nothing.
+   */
+  const enemyLanes = $derived.by<EnemyLane[]>(() => {
+    const lanes: EnemyLane[] = [];
+    if (bossCasts.length > 0 || bossTaunts.length > 0) {
+      lanes.push({ name: bossName, casts: bossCasts, taunts: bossTaunts });
+    }
+    const others = [
+      ...new Set(
+        windowedTaunts
+          .map((taunt) => splitUnitName(taunt.target_name).name)
+          .filter((name) => name !== '' && name !== bossName),
+      ),
+    ].sort((a, b) => a.localeCompare(b));
+    for (const name of others) {
+      lanes.push({
+        name,
+        casts: allCasts
+          .filter((cast) => !players.has(cast.guid) && splitUnitName(cast.name).name === name)
+          .flatMap((cast) => cast.sequence.map((at) => ({ at, name: cast.spell_name })))
+          .filter((cast) => cast.at >= current.startMs && cast.at <= current.endMs),
+        taunts: windowedTaunts.filter((taunt) => splitUnitName(taunt.target_name).name === name),
+      });
+    }
+    return lanes;
+  });
   /**
    * Every segment of a player's auras, each aura kept on one of three bands for the whole
    * lane, so an aura reads as one line across the fight rather than hopping bands between
@@ -263,27 +299,27 @@
       </span>
     </div>
     <ul class="flex flex-col">
-      {#if bossCasts.length > 0 || bossTaunts.length > 0}
+      {#each enemyLanes as lane (lane.name)}
         <li
           class="border-line-soft grid min-h-11 grid-cols-[minmax(96px,140px)_minmax(0,1fr)] items-center gap-3 border-b py-2"
-          data-testid="lane-boss"
+          data-testid={lane.name === bossName ? 'lane-boss' : `lane-enemy-${lane.name}`}
         >
-          <span class="text-wipe truncate text-[13px] font-semibold">{bossName}</span>
+          <span class="text-wipe truncate text-[13px] font-semibold" title={lane.name}>{lane.name}</span>
           <span
             class="bg-line-soft relative block h-[18px] w-full touch-none"
             data-lane
-            onpointerdown={(event) => pickNearest(event, bossCasts, [], bossTaunts)}
-            onpointermove={(event) => pickNearest(event, bossCasts, [], bossTaunts)}
+            onpointerdown={(event) => pickNearest(event, lane.casts, [], lane.taunts)}
+            onpointermove={(event) => pickNearest(event, lane.casts, [], lane.taunts)}
             onpointerleave={clearPick}
           >
-            {#each bossCasts as cast, i (`${cast.at}-${i}`)}
+            {#each lane.casts as cast, i (`${cast.at}-${i}`)}
               <span
                 class="bg-wipe absolute bottom-0 h-[14px] w-[2px]"
                 style={`left: ${pct(cast.at)}%`}
                 title={`${cast.name} · ${formatDuration(cast.at)}`}
               ></span>
             {/each}
-            {#each bossTaunts as taunt (tauntKey(taunt))}
+            {#each lane.taunts as taunt (tauntKey(taunt))}
               <span
                 class="bg-gold absolute top-0 h-full w-[3px]"
                 style={`left: ${pct(taunt.at_ms)}%`}
@@ -293,7 +329,7 @@
             {/each}
           </span>
         </li>
-      {/if}
+      {/each}
       <!--
         Keys carry the index as well as the timestamp: two casts in one millisecond, two
         auras starting on the same tick and two deaths at the same instant are all real

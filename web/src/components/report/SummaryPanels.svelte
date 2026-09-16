@@ -112,7 +112,9 @@
                 onclick={() => onSelectPlayer(actor.guid)}>{splitUnitName(actor.name).name}</button
               >{:else}{splitUnitName(actor.name).name}{/if}</span
           >
-          <span class="text-muted tabular text-right font-mono text-[12px]">{share.toFixed(1)}%</span>
+          <span class="text-muted tabular text-right font-mono text-[12px] whitespace-nowrap"
+            >{share.toFixed(1)}%<span class="label font-body ml-1 md:hidden">share</span></span
+          >
           <span class="bg-line-soft col-span-3 block h-[8px] w-full md:col-span-1"
             ><span class="block h-full" style={`width: ${share}%; background: ${classColorVar(actor.class)}`}
             ></span></span
@@ -128,6 +130,9 @@
         </li>
       {/each}
     </ul>
+    <p class="text-muted text-[11px]" data-testid="panel-share-note">
+      Share is of every player’s total in this window, whatever the source scope shows.
+    </p>
   </section>
 
   <section class={panel} data-testid="panel-healing">
@@ -165,7 +170,9 @@
                 onclick={() => onSelectPlayer(actor.guid)}>{splitUnitName(actor.name).name}</button
               >{:else}{splitUnitName(actor.name).name}{/if}</span
           >
-          <span class="text-muted tabular text-right font-mono text-[12px]">{share.toFixed(1)}%</span>
+          <span class="text-muted tabular text-right font-mono text-[12px] whitespace-nowrap"
+            >{share.toFixed(1)}%<span class="label font-body ml-1 md:hidden">share</span></span
+          >
           <span class="bg-line-soft col-span-3 block h-[8px] w-full md:col-span-1"
             ><span class="block h-full" style={`width: ${share}%; background: ${classColorVar(actor.class)}`}
             ></span></span
@@ -181,6 +188,9 @@
         </li>
       {/each}
     </ul>
+    <p class="text-muted text-[11px]" data-testid="panel-share-note">
+      Share is of every player’s total in this window, whatever the source scope shows.
+    </p>
   </section>
 
   <section class={panel} data-testid="panel-taken">

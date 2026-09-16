@@ -490,8 +490,9 @@
               <th
                 scope="col"
                 class="min-w-[160px] py-1 text-left font-normal md:min-w-[220px] md:text-right"
-                aria-label="Notes"
-              ></th>
+                title="A heal: how much of it was over. Damage: what did not land, by kind"
+                >{actor.overheal === undefined ? 'Not landed' : 'Over'}</th
+              >
             </tr>
           </thead>
           <tbody>

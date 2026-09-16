@@ -60,6 +60,16 @@
         'Leaves out what each player did, and what hit them, from a death to their first cast after it (or the end of the fight if they stayed dead). On one pull the tables are then measured from the events; over the whole night it is not available.',
     },
     {
+      term: '#number after a spell',
+      meaning:
+        'On the Casts tab, two different spells can share one name for the same player (a talent’s version and the base spell, say). Each keeps its own row, and the number after the # is the spell id that tells them apart. It is not the same spell counted twice.',
+    },
+    {
+      term: 'Share (Summary panels)',
+      meaning:
+        'On the Summary’s damage and healing panels, a player’s share of every player’s total in this window, whatever the Source scope shows: one player on their own still reads their real share of the raid.',
+    },
+    {
       term: 'Casting, total',
       meaning:
         'On the Casts tab, the time a player spent casting that spell across the whole fight, every cast added together. An instant spell has none. A dagger marks it as the whole fight’s figure under any window.',

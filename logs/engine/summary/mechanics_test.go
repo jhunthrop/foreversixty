@@ -118,3 +118,40 @@ func TestMechanicsIgnoreAHitFromThePlayersOwnSide(t *testing.T) {
 		t.Errorf("tank hits = %d, want the boss's 2", row.Players[0].Hits)
 	}
 }
+
+// An interrupt or dispel row carries what the spell did when it went through: the
+// damage it dealt the players and the healing it gave the enemies, so the problems
+// list can rank a drain that healed the boss by its cost rather than by a count.
+func TestMechanicsInterruptRowsCarryWhatTheSpellDid(t *testing.T) {
+	o, reg := opts(t)
+	o.Mechanics = &mechanics.Table{EncounterID: 9001, Name: "Warden Kelthas", Mechanics: []mechanics.Mechanic{
+		{SpellID: 777, Name: "Hungering Drain", Kind: mechanics.Interrupt},
+	}}
+	a := New(o)
+	a.Start(at(0))
+	drain := func(sec float64, kind event.Kind, name, dst string, dstFlags uint32, amount int64) event.Event {
+		e := event.Event{
+			Time: at(sec), Kind: kind, Name: name,
+			Source: event.Unit{GUID: boss, Flags: 0xa48}, Dest: event.Unit{GUID: dst, Flags: dstFlags},
+			Spell:  event.Spell{ID: 777, Name: "Hungering Drain"},
+			Amount: event.OptInt{V: amount, OK: true},
+		}
+		e.Overkill = event.OptInt{V: 0, OK: true}
+		e.Overheal = event.OptInt{V: 0, OK: true}
+		return e
+	}
+	events := append(fixtureEvents(),
+		drain(3, event.Damage, "SPELL_DAMAGE", tank, 0x512, 400),
+		drain(4, event.Heal, "SPELL_HEAL", boss, 0xa48, 2500),
+		drain(5, event.Damage, "SPELL_DAMAGE", tank, 0x512, 100),
+	)
+	for _, e := range events {
+		reg.Observe(e)
+		a.Add(e)
+	}
+	s := a.Snapshot(fixtureFight(), "test")
+	row := mechanicRowFor(t, s.Mechanics.Rows, 777)
+	if row.Damage != 500 || row.Healed != 2500 {
+		t.Fatalf("row = %+v, want Damage 500 and Healed 2500", row)
+	}
+}

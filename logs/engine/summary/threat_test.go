@@ -219,4 +219,7 @@ func TestTauntSeenOnlyByItsDebuffIsKeptOnce(t *testing.T) {
 	if len(s.Taunts) != 2 || s.Taunts[0].AtMS != 1 || s.Taunts[1].AtMS != 3000 {
 		t.Fatalf("taunts = %+v, want the opening debuff and the later cast, once each", s.Taunts)
 	}
+	if !s.Taunts[0].PrePull || s.Taunts[1].PrePull {
+		t.Fatalf("taunts = %+v, want only the debuff-only one marked pre-pull", s.Taunts)
+	}
 }

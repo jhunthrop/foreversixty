@@ -76,6 +76,21 @@
 
   /** A death outranks any amount of damage, so it sorts above one rather than beside it. */
   const DEATH_COST = 1e12;
+  /**
+   * What a cast or debuff that went through cost: the damage its effects dealt and the
+   * healing they gave the enemies (engine 0.3.4), so seven unkicked drains that healed
+   * the boss rank above a single hit for less. A row parsed before that carries neither
+   * and falls back to the count.
+   */
+  const throughCost = (row: MechanicRow, count: number): number =>
+    row.damage === undefined && row.healed === undefined ? count : (row.damage ?? 0) + (row.healed ?? 0);
+  const throughWords = (row: MechanicRow): string => {
+    const parts = [
+      ...((row.damage ?? 0) > 0 ? [`dealt ${formatAmount(row.damage ?? 0)} damage`] : []),
+      ...((row.healed ?? 0) > 0 ? [`healed the enemies for ${formatAmount(row.healed ?? 0)}`] : []),
+    ];
+    return parts.length === 0 ? '' : `; it ${parts.join(' and ')}`;
+  };
 
   /** One line per failure, most costly first: a death outranks any amount of damage. */
   const problems = $derived.by<Problem[]>(() => {
@@ -96,17 +111,17 @@
         out.push({
           key: `${mechanicRowKey(row)}-through`,
           row,
-          cost: (row.casts ?? 0) - (row.stopped ?? 0),
+          cost: throughCost(row, (row.casts ?? 0) - (row.stopped ?? 0)),
           subject: row.name,
-          text: `${row.name} went through ${(row.casts ?? 0) - (row.stopped ?? 0)} of ${row.casts} casts`,
+          text: `${row.name} went through ${(row.casts ?? 0) - (row.stopped ?? 0)} of ${row.casts} casts${throughWords(row)}`,
         });
       } else if (row.kind === 'dispel' && (row.applied ?? 0) > (row.dispelled ?? 0)) {
         out.push({
           key: `${mechanicRowKey(row)}-uncured`,
           row,
-          cost: (row.applied ?? 0) - (row.dispelled ?? 0),
+          cost: throughCost(row, (row.applied ?? 0) - (row.dispelled ?? 0)),
           subject: row.name,
-          text: `${row.name} ran its course ${(row.applied ?? 0) - (row.dispelled ?? 0)} of ${row.applied} times it landed`,
+          text: `${row.name} ran its course ${(row.applied ?? 0) - (row.dispelled ?? 0)} of ${row.applied} times it landed${throughWords(row)}`,
         });
       }
     }
@@ -173,7 +188,17 @@
       .map((boss) => `${boss.name} (${boss.pulls} ${boss.pulls === 1 ? 'pull' : 'pulls'})`)
       .join(', ');
     const rest = nightPulls - judgedPulls;
-    return `Judged: ${names}, ${judgedPulls} of the night's ${nightPulls} pulls${rest > 0 ? `; the other ${rest} ${rest === 1 ? 'pull has' : 'pulls have'} no table yet` : ''}.`;
+    // A player who was only ever in the unjudged pulls has no card and no line, and the
+    // silence would otherwise read as a clean sheet or an omission.
+    const absent =
+      block.judged_players === undefined
+        ? []
+        : summary.roster
+            .filter((row) => !block.judged_players?.includes(row.guid))
+            .map((row) => splitUnitName(row.name).name);
+    return `Judged: ${names}, ${judgedPulls} of the night's ${nightPulls} pulls${rest > 0 ? `; the other ${rest} ${rest === 1 ? 'pull has' : 'pulls have'} no table yet` : ''}.${
+      absent.length > 0 ? ` Not in a judged pull, so not judged here: ${absent.join(', ')}.` : ''
+    }`;
   });
   const unjudged = $derived(unjudgedDeaths(summary));
 

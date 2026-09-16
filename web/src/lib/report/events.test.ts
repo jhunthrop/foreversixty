@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import fixtureSummary from '../../fixtures/report/fights/3/summary.json';
 import type { Summary } from './types';
-import { EVENT_KINDS, filterEvents, summaryEvents } from './events';
+import { EVENT_KINDS, filterEvents, summaryEvents, type EventKind, type SummaryEvent } from './events';
 
 const summary = fixtureSummary as Summary;
 
@@ -95,6 +95,17 @@ describe('summaryEvents', () => {
 });
 
 describe('filterEvents', () => {
+  it('finds a line by its amount, comma or no comma', () => {
+    const events: SummaryEvent[] = [
+      { atMs: 1, kind: 'damage', guid: 'a', guids: ['a'], text: 'Boss hit Tank with Slam', amount: 7554 },
+      { atMs: 2, kind: 'damage', guid: 'a', guids: ['a'], text: 'Boss hit Tank with Slam', amount: 120 },
+    ];
+    const kinds = new Set<EventKind>(['damage']);
+    expect(filterEvents(events, kinds, '7,554').map((event) => event.amount)).toEqual([7554]);
+    expect(filterEvents(events, kinds, '7554').map((event) => event.amount)).toEqual([7554]);
+    expect(filterEvents(events, kinds, 'slam')).toHaveLength(2);
+  });
+
   const events = summaryEvents(summary);
 
   it('keeps only the chosen kinds', () => {
