@@ -1,8 +1,8 @@
 {
   "report_id": "fixture2abcd",
-  "engine_version": "0.3.7",
+  "engine_version": "0.4.0",
   "health": {
-    "engine_version": "0.3.7",
+    "engine_version": "0.4.0",
     "layout": "retail-v16",
     "layout_verified": true,
     "layout_inferred": false,

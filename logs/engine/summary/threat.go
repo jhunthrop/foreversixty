@@ -2,6 +2,7 @@
 package summary
 
 import (
+	"math"
 	"sort"
 	"time"
 
@@ -89,24 +90,38 @@ type ThreatPair struct {
 	TargetGUID string  `json:"target_guid"`
 	TargetName string  `json:"target_name"`
 	Threat     float64 `json:"threat"`
+	// Series is the threat this player built on this enemy in each whole
+	// second of the fight, on the same one-second buckets the damage series
+	// use, rounded to an integer. Its sum is Threat to the unit, so the chart
+	// drawn from it and the table drawn from the total cannot disagree.
+	Series []int64 `json:"series"`
 }
 
-// creditThreat books threat from one player against one enemy. The caller
-// is responsible for knowing enemy is on the other side; creditThreat itself
-// trusts it, the same way the damage and heal cases already trust the event's
-// own flags rather than a registry lookup (see engage below). The damage case
-// credits the pair wherever it credits the total, so the two can never
-// disagree about what an enemy is.
-func (a *Accumulator) creditThreat(player, enemy string, threat float64) {
+// creditThreat books threat from one player against one enemy, in the second it
+// was built. The caller is responsible for knowing enemy is on the other side;
+// creditThreat itself trusts it, the same way the damage and heal cases already
+// trust the event's own flags rather than a registry lookup (see engage below).
+// The damage case credits the pair wherever it credits the total, so the two can
+// never disagree about what an enemy is.
+func (a *Accumulator) creditThreat(player, enemy string, threat float64, bucket int) {
 	if threat == 0 || enemy == "" {
 		return
 	}
 	by := a.threatBy[player]
 	if by == nil {
-		by = map[string]float64{}
+		by = map[string]*threatPair{}
 		a.threatBy[player] = by
 	}
-	by[enemy] += threat
+	pair := by[enemy]
+	if pair == nil {
+		pair = &threatPair{}
+		by[enemy] = pair
+	}
+	pair.total += threat
+	for len(pair.series) <= bucket {
+		pair.series = append(pair.series, 0)
+	}
+	pair.series[bucket] += threat
 }
 
 // engage marks an enemy as in the fight now. Anything that is not friendly
@@ -129,7 +144,8 @@ func (a *Accumulator) engage(guid string, flags uint32, at time.Time) {
 	a.engaged[guid] = at
 }
 
-// spreadThreat books healing threat over every enemy engaged within the window.
+// spreadThreat books healing threat over every enemy engaged within the window,
+// in the second the heal landed.
 func (a *Accumulator) spreadThreat(player string, threat float64, at time.Time) {
 	if threat == 0 {
 		return
@@ -144,17 +160,29 @@ func (a *Accumulator) spreadThreat(player string, threat float64, at time.Time) 
 		return
 	}
 	each := threat / float64(len(live))
+	bucket := a.bucket(at)
 	for _, guid := range live {
-		a.creditThreat(player, guid, each)
+		a.creditThreat(player, guid, each, bucket)
 	}
 }
 
-// threatPairs renders the per-target table, largest first.
+// threatPairs renders the per-target table, largest first. The series is rounded
+// per bucket rather than scaled to the total: a bucket is a second of the fight
+// and reads as one, and the rounding error over a fight is under half a point a
+// second against totals in the millions.
 func (a *Accumulator) threatPairs() []ThreatPair {
 	out := []ThreatPair{}
 	for player, by := range a.threatBy {
-		for enemy, threat := range by {
-			out = append(out, ThreatPair{GUID: player, Name: a.name(player), TargetGUID: enemy, TargetName: a.name(enemy), Threat: threat})
+		for enemy, pair := range by {
+			series := make([]int64, len(pair.series))
+			for i, v := range pair.series {
+				series[i] = int64(math.Round(v))
+			}
+			out = append(out, ThreatPair{
+				GUID: player, Name: a.name(player),
+				TargetGUID: enemy, TargetName: a.name(enemy),
+				Threat: pair.total, Series: series,
+			})
 		}
 	}
 	sort.Slice(out, func(i, j int) bool {

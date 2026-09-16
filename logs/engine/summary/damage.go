@@ -173,7 +173,7 @@ func (a *Accumulator) addDamageAndHealing(e event.Event) {
 			// pair reads "this player's threat on this enemy", and the boss's
 			// own threat on a raider is not a row of that table.
 			if units.Enemy(e.Dest.Flags) {
-				a.creditThreat(src, e.Dest.GUID, th)
+				a.creditThreat(src, e.Dest.GUID, th, a.bucket(e.Time))
 			}
 			a.engage(e.Source.GUID, e.Source.Flags, e.Time)
 			a.engage(e.Dest.GUID, e.Dest.Flags, e.Time)

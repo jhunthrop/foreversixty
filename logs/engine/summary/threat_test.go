@@ -2,6 +2,8 @@
 package summary
 
 import (
+	"math"
+	"slices"
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/logs/engine/event"
@@ -221,5 +223,79 @@ func TestTauntSeenOnlyByItsDebuffIsKeptOnce(t *testing.T) {
 	}
 	if !s.Taunts[0].PrePull || s.Taunts[1].PrePull {
 		t.Fatalf("taunts = %+v, want only the debuff-only one marked pre-pull", s.Taunts)
+	}
+}
+
+// The chart on the Threat tab is drawn from the pair's own series, and a window's
+// standing and built figures are summed from it, so a series that did not reconcile
+// with the pair's total would be a second answer to the same question.
+func TestThreatPairsCarryAPerSecondSeriesThatSumsToTheTotal(t *testing.T) {
+	o, reg := opts(t)
+	a := New(o)
+	a.Start(at(0))
+	events := []event.Event{
+		dmg(0.5, tank, boss, 1464, "Slam", 300, -1),
+		dmg(2.5, tank, boss, 1464, "Slam", 700, -1),
+		heal(2.9, healer, tank, 2050, "Holy Light", 400, 0),
+	}
+	for _, e := range events {
+		reg.Observe(e)
+		a.Add(e)
+	}
+	s := a.Snapshot(fight.Fight{Index: 1, Kind: fight.Encounter, Start: at(0), End: at(5),
+		Players: []string{tank, healer}}, "test")
+
+	find := func(guid, target string) ThreatPair {
+		t.Helper()
+		for _, p := range s.ThreatByTarget {
+			if p.GUID == guid && p.TargetGUID == target {
+				return p
+			}
+		}
+		t.Fatalf("no pair for %s on %s in %+v", guid, target, s.ThreatByTarget)
+		return ThreatPair{}
+	}
+
+	// 300 in the first second, nothing in the second, 700 in the third.
+	tankPair := find(tank, boss)
+	if want := []int64{300, 0, 700}; !slices.Equal(tankPair.Series, want) {
+		t.Errorf("tank's series on the boss = %v, want %v", tankPair.Series, want)
+	}
+	var sum int64
+	for _, v := range tankPair.Series {
+		sum += v
+	}
+	if sum != int64(math.Round(tankPair.Threat)) {
+		t.Errorf("series sums to %d, pair total is %v: the two must agree to the unit", sum, tankPair.Threat)
+	}
+
+	// 400 effective healing at 0.5 is 200 threat, spread over the one enemy engaged
+	// within the window, and it lands in the second the heal landed in.
+	healerPair := find(healer, boss)
+	if want := []int64{0, 0, 200}; !slices.Equal(healerPair.Series, want) {
+		t.Errorf("healer's series on the boss = %v, want %v", healerPair.Series, want)
+	}
+}
+
+// A pair with threat only in the first second still carries a one-element series, and
+// never a nil one: the web reads `series` as "this report has the per-second split",
+// and a null there is not the same sentence as an empty array.
+func TestThreatPairSeriesIsNeverNull(t *testing.T) {
+	o, reg := opts(t)
+	a := New(o)
+	a.Start(at(0))
+	e := dmg(0.2, mage, boss, 116, "Frostbolt", 50, -1)
+	reg.Observe(e)
+	a.Add(e)
+	s := a.Snapshot(fight.Fight{Index: 1, Kind: fight.Encounter, Start: at(0), End: at(1),
+		Players: []string{mage}}, "test")
+	if len(s.ThreatByTarget) != 1 {
+		t.Fatalf("pairs = %+v", s.ThreatByTarget)
+	}
+	if s.ThreatByTarget[0].Series == nil {
+		t.Fatal("Series must be an empty or filled slice, never nil")
+	}
+	if want := []int64{50}; !slices.Equal(s.ThreatByTarget[0].Series, want) {
+		t.Errorf("series = %v, want %v", s.ThreatByTarget[0].Series, want)
 	}
 }

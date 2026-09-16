@@ -117,6 +117,14 @@ type Summary struct {
 	Mechanics MechanicsBlock `json:"mechanics"`
 }
 
+// threatPair is one player's running threat on one enemy: the total, and the
+// per-second buckets it was built in. Kept as float64 so the rounding happens
+// once, at Snapshot, rather than compounding over a fight's worth of heals.
+type threatPair struct {
+	total  float64
+	series []float64
+}
+
 // Accumulator folds a fight's events into a Summary.
 type Accumulator struct {
 	opt   Options
@@ -142,8 +150,8 @@ type Accumulator struct {
 	exchanges  map[exchangeKey]*ExchangeRow
 	resources  map[resourceKey]*resourceTrack
 	threat     map[string]float64
-	// threatBy is per-target threat: player guid -> enemy guid -> threat.
-	threatBy map[string]map[string]float64
+	// threatBy is per-target threat: player guid -> enemy guid -> the pair.
+	threatBy map[string]map[string]*threatPair
 	// engaged is the last instant each hostile unit dealt or took damage,
 	// for spreading healing threat over whatever it is in combat with.
 	engaged map[string]time.Time
@@ -183,7 +191,7 @@ func New(o Options) *Accumulator {
 		exchanges:       map[exchangeKey]*ExchangeRow{},
 		resources:       map[resourceKey]*resourceTrack{},
 		threat:          map[string]float64{},
-		threatBy:        map[string]map[string]float64{},
+		threatBy:        map[string]map[string]*threatPair{},
 		engaged:         map[string]time.Time{},
 		combatants:      map[string]*event.Combatant{},
 		mechanicHits:    map[int64]map[string]*MechanicHit{},
