@@ -592,6 +592,7 @@ function mergeMechanicRow(
     name: found?.name ?? row.name,
     kind: found?.kind ?? row.kind,
     note: found?.note ?? row.note,
+    role: found?.role ?? row.role,
     players: mergeMechanicHits(found?.players, row.players, offset),
     casts: sumOptional(found?.casts, row.casts),
     stopped: sumOptional(found?.stopped, row.stopped),

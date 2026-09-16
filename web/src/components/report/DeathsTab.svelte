@@ -58,7 +58,8 @@
       ...ordered.map((death) => [
         // On the pull's clock, the same as the cards: over the night a death is in a pull.
         formatDurationPrecise(inPull(death)),
-        splitUnitName(death.name).name,
+        // The full name, realm included, the way every other CSV on the report writes it.
+        death.name,
         death.killing_blow === undefined ? '' : death.killing_blow.spell_name || 'Melee',
         death.killing_blow === undefined ? '' : splitUnitName(death.killing_blow.source_name).name,
         death.killing_blow === undefined ? '' : String(death.killing_blow.amount),
