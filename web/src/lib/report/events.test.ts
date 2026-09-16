@@ -42,6 +42,29 @@ describe('summaryEvents', () => {
       'Power Word: Fortitude on Baelgrim',
     );
   });
+
+  it('names each application by its own applier, not the track’s whole caster set', () => {
+    const track = {
+      ...summary.auras[0]!,
+      name: 'Power Word: Shield',
+      appliers: ['Player-A', 'Player-B'],
+      segments: [
+        { start_ms: 1000, end_ms: 2000, stacks: 1, source_guid: 'Player-B' },
+        { start_ms: 3000, end_ms: 4000, stacks: 1, source_guid: 'Player-A' },
+      ],
+    };
+    const names = new Map([
+      ['Player-A', 'Hanabanana-Realm'],
+      ['Player-B', 'Reglitch-Realm'],
+    ]);
+    const applied = summaryEvents({ ...summary, auras: [track] }, names)
+      .filter((event) => event.kind === 'aura-applied' && event.text.startsWith('Power Word: Shield'))
+      .map((event) => event.text);
+    expect(applied).toEqual([
+      `Power Word: Shield on ${track.target_name.split('-')[0]} by Reglitch`,
+      `Power Word: Shield on ${track.target_name.split('-')[0]} by Hanabanana`,
+    ]);
+  });
 });
 
 describe('filterEvents', () => {

@@ -122,7 +122,7 @@
     <span class="tabular font-mono">{matching.length}</span> events
     {#if stream === null}
       are listed, from the summary: casts, auras going up and down, the hits and heals before each death, and
-      the deaths.{#if loadStream !== undefined}
+      the deaths, each in the class colour of the player it is about.{#if loadStream !== undefined}
         <button
           type="button"
           class="text-gold inline-flex min-h-11 items-center underline-offset-2 hover:underline md:min-h-0"
@@ -151,8 +151,10 @@
           <span class="text-muted tabular font-mono text-[12px]">{formatDuration(event.atMs)}</span>
           <!-- Wraps on a phone: the part a reader wants is the end of the line, "on Hobolol
                by Deadclasslol", and a truncated line cuts exactly that. -->
-          <span class="break-words md:truncate" style={`color: ${classColorVar(classOf.get(event.guid))}`}
-            >{event.text}</span
+          <span
+            class="break-words md:truncate"
+            style={`color: ${classColorVar(classOf.get(event.guid))}`}
+            title="Coloured by the class of the player the line is about">{event.text}</span
           >
           <span class="tabular text-right font-mono text-[13px]">
             {event.amount === undefined ? '' : formatAmount(event.amount)}

@@ -89,19 +89,28 @@ export function summaryEvents(
       .slice(0, 2)
       .join(', ');
     for (const segment of track.segments) {
+      // The segment's own applier when the engine kept it; the track's set only when it
+      // did not, so two priests' shields each say which priest.
+      const own =
+        segment.source_guid === undefined ? '' : splitUnitName(names.get(segment.source_guid) ?? '').name;
+      const by = own === '' ? applier : own;
+      const guids =
+        segment.source_guid === undefined
+          ? [track.target_guid, ...track.appliers]
+          : [track.target_guid, segment.source_guid];
       events.push({
         atMs: segment.start_ms,
         kind: 'aura-applied',
         guid: track.target_guid,
-        guids: [track.target_guid, ...track.appliers],
-        text: `${track.name} on ${target}${applier === '' ? '' : ` by ${applier}`}`,
+        guids,
+        text: `${track.name} on ${target}${by === '' ? '' : ` by ${by}`}`,
       });
       events.push({
         atMs: segment.end_ms,
         kind: 'aura-removed',
         guid: track.target_guid,
-        guids: [track.target_guid, ...track.appliers],
-        text: `${track.name} off ${target}${applier === '' ? '' : ` (by ${applier})`}`,
+        guids,
+        text: `${track.name} off ${target}${by === '' ? '' : ` (by ${by})`}`,
       });
     }
   }

@@ -157,7 +157,9 @@ export function abilityOptions(actors: Actor[]): FilterOption[] {
   const names = new Map<string, number>();
   for (const option of options) names.set(option.name, (names.get(option.name) ?? 0) + 1);
   return options.map((option) =>
-    (names.get(option.name) ?? 0) > 1 ? { ...option, name: `${option.name} #${option.id}` } : option,
+    (names.get(option.name) ?? 0) > 1
+      ? { ...option, name: option.id === '0' ? `${option.name} swing` : `${option.name} #${option.id}` }
+      : option,
   );
 }
 
@@ -270,15 +272,10 @@ export function applyActorFilters(actors: Actor[], filters: ReportFilters, conte
         hits: Math.round(ability.hits * targetShare),
         crits: Math.round(ability.crits * targetShare),
         ticks: Math.round(ability.ticks * targetShare),
-        misses:
-          ability.misses === undefined
-            ? undefined
-            : Object.fromEntries(
-                Object.entries(ability.misses).map(([type, count]) => [
-                  type,
-                  Math.round(count * targetShare),
-                ]),
-              ),
+        // Not prorated: an avoided hit has no damage share to scale by, and scaling a
+        // count by one gives noise (eight absorbs on a boss read as "~29 parry"). A pull
+        // measures them from its events; the night leaves them out under a target filter.
+        misses: undefined,
       }));
 
       let series = actor.series;

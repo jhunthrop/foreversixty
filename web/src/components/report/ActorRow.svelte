@@ -35,6 +35,7 @@
   } from '../../lib/report/format';
   import type { Placement } from '../../lib/report/percentile';
   import { abilityKey, type Ability, type Actor } from '../../lib/report/types';
+  import CopyCsv from './CopyCsv.svelte';
   import type { ExactSplit } from '../../lib/report/exact';
   import AbilityBar from './AbilityBar.svelte';
   import ClassIcon from './ClassIcon.svelte';
@@ -140,6 +141,27 @@
   );
   /** Hits and ticks together: a dot's ticks are its hits. */
   const landed = (ability: Ability): number => ability.hits + ability.ticks;
+  /** The abilities table as lines, with the notes column as words. */
+  function abilityCsv(): string[][] {
+    return [
+      ['Ability', 'Spell id', 'Via', 'Amount', 'Share %', 'Hits', 'Crit %', 'Avg', 'Max', 'Notes'],
+      ...detailRows.map((ability) => {
+        const hits = landed(ability);
+        return [
+          ability.name,
+          String(ability.spell_id),
+          ability.via ?? '',
+          String(ability.effective),
+          detailTotal === 0 ? '0' : ((ability.effective / detailTotal) * 100).toFixed(1),
+          String(hits),
+          hits === 0 ? '0' : ((ability.crits / hits) * 100).toFixed(1),
+          hits === 0 ? '0' : Math.round(ability.effective / hits).toString(),
+          String(ability.max),
+          abilityNotes(ability).join('; '),
+        ];
+      }),
+    ];
+  }
   /** The abilities worth a line, largest first; a row that only missed still says so. */
   const detailRows = $derived(
     [...shownAbilities]
@@ -368,7 +390,7 @@
 
   {#if open}
     <div
-      class="bg-card-top flex flex-col gap-4 overflow-x-auto py-3 md:flex-row md:flex-wrap md:items-start md:px-2"
+      class="bg-card-top flex flex-col gap-4 px-2 py-3 md:flex-row md:flex-wrap md:items-start"
       data-testid="row-detail"
     >
       {#if approximate && measure !== undefined}
@@ -399,114 +421,127 @@
           each pull’s whole, so it is not shown. Open a pull to read it from that fight’s events.
         </p>
       {/if}
-      <p class="text-muted px-2 text-[11px] md:hidden" hidden={splitUnavailable}>
-        Swipe sideways for the other columns; the ability column stays put.
+      <p class="text-muted text-[11px] md:hidden" hidden={splitUnavailable}>
+        Swipe the table sideways for the other columns; the ability column stays put.
       </p>
-      <table
-        class="min-w-[640px] flex-1 self-start text-[13px] md:w-full md:min-w-0"
-        data-testid="row-abilities"
+      <!-- Its own scroller, so the hint above stays put while the table moves; separate
+           borders, so the pinned column's shadow can paint (a collapsed table drops cell
+           shadows). -->
+      <div
+        class="-mx-2 overflow-x-auto px-2 md:mx-0 md:flex-1 md:overflow-visible md:px-0"
         hidden={splitUnavailable}
       >
-        <caption class="label text-muted pb-1 text-left">
-          Abilities{#if schoolSplit.length > 1}
-            <span class="ml-3 tracking-normal normal-case" data-testid="school-split"
-              >{#each schoolSplit as part (part.name)}<span class="mr-3 inline-flex items-center gap-1"
-                  ><span
-                    class="inline-block h-[8px] w-[8px] rounded-[2px]"
-                    style={`background: ${part.token}`}
-                    aria-hidden="true"
-                  ></span>{part.name} <span class="tabular font-mono">{part.pct.toFixed(0)}%</span></span
-                >{/each}</span
-            >{/if}
-        </caption>
-        <thead>
-          <tr class="label text-muted border-line-soft border-b">
-            <th
-              scope="col"
-              class="bg-bg border-line-soft sticky left-0 border-r py-1 pr-3 pl-2 text-left font-normal shadow-[6px_0_8px_-4px_rgba(0,0,0,0.6)] md:static md:border-r-0 md:pl-0 md:shadow-none"
-              >Ability</th
-            >
-            <th scope="col" class="py-1 pr-3 text-right font-normal" title="Effective amount in this window"
-              >Amount</th
-            >
-            <th scope="col" class="py-1 pr-3 text-right font-normal" title="Share of this row's total"
-              >Share</th
-            >
-            <th scope="col" class="w-[16%] min-w-[72px] py-1 pr-3 font-normal" aria-label="Share, drawn"></th>
-            <th scope="col" class="py-1 pr-3 text-right font-normal" title="Hits and ticks that landed"
-              >Hits</th
-            >
-            <th
-              scope="col"
-              class="py-1 pr-3 text-right font-normal"
-              title="Share of the hits that were critical">Crit</th
-            >
-            <th scope="col" class="py-1 pr-3 text-right font-normal" title="Amount per hit">Avg</th>
-            <th scope="col" class="py-1 pr-3 text-right font-normal" title="Largest single hit">Max</th>
-            <th scope="col" class="min-w-[220px] py-1 text-right font-normal" aria-label="Notes"></th>
-          </tr>
-        </thead>
-        <tbody>
-          {#each detailRows as ability (abilityKey(ability))}
-            {@const hits = landed(ability)}
-            {@const school = schoolToken(ability.school)}
-            <tr class="border-line-soft border-b">
-              <td
-                class="bg-bg border-line-soft sticky left-0 max-w-[160px] border-r py-1.5 pr-3 pl-2 shadow-[6px_0_8px_-4px_rgba(0,0,0,0.6)] md:static md:max-w-none md:border-r-0 md:pl-0 md:shadow-none"
-                >{ability.name}{#if ability.via}
-                  <span
-                    class="text-muted ml-1 text-[11px]"
-                    title="Cast by this pet or guardian, counted on its owner's row">· {ability.via}</span
-                  >{/if}{#if sameName.has(ability.name)}
-                  <span
-                    class="text-muted ml-1 font-mono text-[11px]"
-                    title={ability.spell_id === 0
-                      ? 'Two things share this name; this one is the auto-attack swing, which has no spell id'
-                      : `Two spells share this name; this is spell id ${ability.spell_id}`}
-                    >{ability.spell_id === 0 ? 'swing' : `#${ability.spell_id}`}</span
-                  >{/if}{#if schoolName(ability.school)}
-                  <span class="text-muted ml-1 text-[11px]">{schoolName(ability.school)}</span>{/if}</td
-              >
-              <td
-                class="tabular py-1.5 pr-3 text-right font-mono whitespace-nowrap"
-                title={detailTitle}
-                aria-label={approximateAriaLabel(approximate, formatAmount(ability.effective))}
-              >
-                {detailMark}{formatAmount(ability.effective)}
-              </td>
-              <td class="text-muted tabular py-1.5 pr-3 text-right font-mono whitespace-nowrap"
-                >{detailTotal === 0 ? '' : formatPercent((ability.effective / detailTotal) * 100)}</td
-              >
-              <td class="py-1.5 pr-3">
-                {#if detailTotal > 0 && ability.effective > 0}
-                  <span class="bg-line-soft block h-[6px] w-full"
+        <table
+          class="min-w-[640px] border-separate border-spacing-0 text-[13px] md:w-full md:min-w-0"
+          data-testid="row-abilities"
+        >
+          <caption class="label text-muted pb-1 text-left">
+            Abilities{#if schoolSplit.length > 1}
+              <span class="ml-3 tracking-normal normal-case" data-testid="school-split"
+                >{#each schoolSplit as part (part.name)}<span class="mr-3 inline-flex items-center gap-1"
                     ><span
-                      class="block h-full"
-                      style={`width: ${(ability.effective / detailTotal) * 100}%; background: ${school}`}
-                    ></span></span
-                  >
-                {/if}
-              </td>
-              <td class="text-muted tabular py-1.5 pr-3 text-right font-mono whitespace-nowrap"
-                >{detailMark}{hits}</td
+                      class="inline-block h-[8px] w-[8px] rounded-[2px]"
+                      style={`background: ${part.token}`}
+                      aria-hidden="true"
+                    ></span>{part.name} <span class="tabular font-mono">{part.pct.toFixed(0)}%</span></span
+                  >{/each}</span
+              >{/if}
+          </caption>
+          <thead>
+            <tr class="label text-muted border-line-soft border-b">
+              <th
+                scope="col"
+                class="bg-bg border-line-soft sticky left-0 border-r py-1 pr-3 pl-2 text-left font-normal shadow-[6px_0_8px_-4px_rgba(0,0,0,0.6)] md:static md:border-r-0 md:pl-0 md:shadow-none"
+                >Ability</th
               >
-              <td class="text-muted tabular py-1.5 pr-3 text-right font-mono whitespace-nowrap"
-                >{#if hits > 0}{formatPercent((ability.crits / hits) * 100)}{/if}</td
+              <th scope="col" class="py-1 pr-3 text-right font-normal" title="Effective amount in this window"
+                >Amount</th
               >
-              <td class="text-muted tabular py-1.5 pr-3 text-right font-mono whitespace-nowrap"
-                >{#if hits > 0 && ability.effective > 0}{formatAmount(ability.effective / hits)}{/if}</td
+              <th scope="col" class="py-1 pr-3 text-right font-normal" title="Share of this row's total"
+                >Share</th
               >
-              <td class="text-muted tabular py-1.5 pr-3 text-right font-mono whitespace-nowrap"
-                >{#if ability.max > 0}{formatAmount(ability.max)}{/if}</td
+              <th scope="col" class="w-[16%] min-w-[72px] py-1 pr-3 font-normal" aria-label="Share, drawn"
+              ></th>
+              <th scope="col" class="py-1 pr-3 text-right font-normal" title="Hits and ticks that landed"
+                >Hits</th
               >
-              <!-- Wraps: a long list of what did not land must not push the table past its box. -->
-              <td class="text-muted tabular min-w-[220px] py-1.5 text-right font-mono text-[12px]"
-                >{abilityNotes(ability).join(' · ')}</td
+              <th
+                scope="col"
+                class="py-1 pr-3 text-right font-normal"
+                title="Share of the hits that were critical">Crit</th
               >
+              <th scope="col" class="py-1 pr-3 text-right font-normal" title="Amount per hit">Avg</th>
+              <th scope="col" class="py-1 pr-3 text-right font-normal" title="Largest single hit">Max</th>
+              <th
+                scope="col"
+                class="min-w-[140px] py-1 text-right font-normal md:min-w-[220px]"
+                aria-label="Notes"
+              ></th>
             </tr>
-          {/each}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {#each detailRows as ability (abilityKey(ability))}
+              {@const hits = landed(ability)}
+              {@const school = schoolToken(ability.school)}
+              <tr class="border-line-soft border-b">
+                <td
+                  class="bg-bg border-line-soft sticky left-0 max-w-[160px] border-r py-1.5 pr-3 pl-2 shadow-[6px_0_8px_-4px_rgba(0,0,0,0.6)] md:static md:max-w-none md:border-r-0 md:pl-0 md:shadow-none"
+                  >{ability.name}{#if ability.via}
+                    <span
+                      class="text-muted ml-1 text-[11px]"
+                      title="Cast by this pet or guardian, counted on its owner's row">· {ability.via}</span
+                    >{/if}{#if sameName.has(ability.name)}
+                    <span
+                      class="text-muted ml-1 font-mono text-[11px]"
+                      title={ability.spell_id === 0
+                        ? 'Two things share this name; this one is the auto-attack swing, which has no spell id'
+                        : `Two spells share this name; this is spell id ${ability.spell_id}`}
+                      >{ability.spell_id === 0 ? 'swing' : `#${ability.spell_id}`}</span
+                    >{/if}{#if schoolName(ability.school)}
+                    <span class="text-muted ml-1 text-[11px]">{schoolName(ability.school)}</span>{/if}</td
+                >
+                <td
+                  class="tabular py-1.5 pr-3 text-right font-mono whitespace-nowrap"
+                  title={detailTitle}
+                  aria-label={approximateAriaLabel(approximate, formatAmount(ability.effective))}
+                >
+                  {detailMark}{formatAmount(ability.effective)}
+                </td>
+                <td class="text-muted tabular py-1.5 pr-3 text-right font-mono whitespace-nowrap"
+                  >{detailTotal === 0 ? '' : formatPercent((ability.effective / detailTotal) * 100)}</td
+                >
+                <td class="py-1.5 pr-3">
+                  {#if detailTotal > 0 && ability.effective > 0}
+                    <span class="bg-line-soft block h-[6px] w-full"
+                      ><span
+                        class="block h-full"
+                        style={`width: ${(ability.effective / detailTotal) * 100}%; background: ${school}`}
+                      ></span></span
+                    >
+                  {/if}
+                </td>
+                <td class="text-muted tabular py-1.5 pr-3 text-right font-mono whitespace-nowrap"
+                  >{detailMark}{hits}</td
+                >
+                <td class="text-muted tabular py-1.5 pr-3 text-right font-mono whitespace-nowrap"
+                  >{#if hits > 0}{formatPercent((ability.crits / hits) * 100)}{/if}</td
+                >
+                <td class="text-muted tabular py-1.5 pr-3 text-right font-mono whitespace-nowrap"
+                  >{#if hits > 0 && ability.effective > 0}{formatAmount(ability.effective / hits)}{/if}</td
+                >
+                <td class="text-muted tabular py-1.5 pr-3 text-right font-mono whitespace-nowrap"
+                  >{#if ability.max > 0}{formatAmount(ability.max)}{/if}</td
+                >
+                <!-- Wraps: a long list of what did not land must not push the table past its box. -->
+                <td class="text-muted tabular min-w-[220px] py-1.5 text-right font-mono text-[12px]"
+                  >{abilityNotes(ability).join(' · ')}</td
+                >
+              </tr>
+            {/each}
+          </tbody>
+        </table>
+        <CopyCsv lines={abilityCsv} />
+      </div>
       <table class="min-w-[280px] flex-1 self-start text-[13px]" data-testid="row-targets">
         <caption class="label text-muted pb-1 text-left">{pairsLabel}</caption>
         <thead>

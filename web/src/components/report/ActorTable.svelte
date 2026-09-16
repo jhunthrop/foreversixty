@@ -98,14 +98,20 @@
       ],
     ];
     actors.forEach((actor, index) => {
+      // Blank where the screen is blank: a shield healer's absorbs have no overheal figure,
+      // and "0" would read as a heal with nothing wasted.
       const overheal = actor.overheal ?? 0;
       const gross = actor.effective + overheal;
+      const overhealCells =
+        actor.overheal === undefined
+          ? ['', '']
+          : [String(overheal), gross === 0 ? '0' : ((overheal / gross) * 100).toFixed(1)];
       lines.push([
         String(index + 1),
         actor.name,
         total === 0 ? '0' : ((actor.effective / total) * 100).toFixed(2),
         String(actor.effective),
-        ...(healing ? [String(overheal), gross === 0 ? '0' : ((overheal / gross) * 100).toFixed(1)] : []),
+        ...(healing ? overhealCells : []),
         (actor.time_ms ?? durationMs) === 0
           ? '0'
           : (actor.effective / ((actor.time_ms ?? durationMs) / 1000)).toFixed(1),
@@ -197,8 +203,10 @@
         <span class="tabular font-mono">{mitigated.prorated ? '~' : ''}{formatAmount(mitigated.blocked)}</span
         >
         blocked ·
-        <span class="tabular font-mono">{mitigated.prorated ? '~' : ''}{mitigated.hits}</span> hits avoided{mitigated.hits >
-        0
+        {#if mitigated.prorated}<span
+            title="A count has no damage share to prorate by; open a pull to measure it from that fight's events"
+            >hits avoided not split here</span
+          >{:else}<span class="tabular font-mono">{mitigated.hits}</span> hits avoided{/if}{mitigated.hits > 0
           ? ` (${mitigated.byType})`
           : ''}
       </p>
