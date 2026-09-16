@@ -1,4 +1,5 @@
 ---
+import { REPORT_SKELETON_HTML } from '../lib/report/skeleton';
 // web/src/pages/reports.astro
 // The report shell. src/worker.ts serves this file's output for /reports/<any id>, with
 // the head values rewritten from GET /v1/reports/{id}. It carries no report data: the
@@ -17,10 +18,16 @@ import Base from '../layouts/Base.astro';
     tabindex="-1"
     class="mx-auto flex w-full max-w-[1344px] flex-col gap-[22px] pt-4 pb-10 md:gap-8 md:px-12 md:pt-7"
   >
+    <!-- The Worker serves this page as the shell for every /reports/<id>, so before the
+         island boots it shows the report's skeleton; only a browser with no JavaScript
+         reads the line about nothing being open. -->
     <div id="report" data-report-mount>
-      <p class="text-muted px-[18px] text-[14px] md:px-0">
-        No report is open. Upload a log or start the companion from <a href="/logs">Logs</a>.
-      </p>
+      <Fragment set:html={REPORT_SKELETON_HTML} />
+      <noscript>
+        <p class="text-muted px-[18px] text-[14px] md:px-0">
+          No report is open. Upload a log or start the companion from <a href="/logs">Logs</a>.
+        </p>
+      </noscript>
     </div>
     <script type="module" src="/report-island.js"></script>
   </main>
