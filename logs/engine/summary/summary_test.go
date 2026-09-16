@@ -992,3 +992,39 @@ func TestAnAbsorbMissCountsItsAmountAsAbsorbed(t *testing.T) {
 		t.Fatalf("melee done = %+v, want 4200 absorbed", done.Abilities[0])
 	}
 }
+
+// A hit a shield ate in full, logged as an ABSORB miss, sits on the death recap as a
+// hit that landed for nothing with what was absorbed, like a swing landing for 0.
+func TestADeathRecapListsAbsorbMisses(t *testing.T) {
+	o, reg := opts(t)
+	a := New(o)
+	a.Start(at(0))
+	miss := event.Event{
+		Time: at(2), Kind: event.Missed, Name: "SWING_MISSED",
+		Source: event.Unit{GUID: boss, Flags: 0xa48}, Dest: event.Unit{GUID: tank, Flags: 0x512},
+		MissType: "ABSORB", Amount: event.OptInt{V: 3922, OK: true},
+	}
+	events := []event.Event{
+		dmg(1, boss, tank, 0, "", 3000, 0),
+		miss,
+		dmg(3, boss, tank, 0, "", 40000, 20000),
+		{Time: at(3.5), Kind: event.Death, Name: "UNIT_DIED", Dest: event.Unit{GUID: tank, Flags: 0x512}},
+	}
+	for _, e := range events {
+		reg.Observe(e)
+		a.Add(e)
+	}
+	s := a.Snapshot(fight.Fight{Index: 1, Kind: fight.Encounter, Start: at(0), End: at(5), Players: []string{tank}}, "test")
+	if len(s.Deaths) != 1 {
+		t.Fatalf("deaths = %d, want 1", len(s.Deaths))
+	}
+	var soaked *DamageRef
+	for i := range s.Deaths[0].Last {
+		if s.Deaths[0].Last[i].Absorbed == 3922 {
+			soaked = &s.Deaths[0].Last[i]
+		}
+	}
+	if soaked == nil || soaked.Amount != 0 || soaked.AtMS != 2000 {
+		t.Fatalf("recap = %+v, want the absorbed miss as a 0 hit with 3922 absorbed at 2000ms", s.Deaths[0].Last)
+	}
+}

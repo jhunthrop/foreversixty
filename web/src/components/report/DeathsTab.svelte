@@ -160,12 +160,13 @@
   }
 
   /**
-   * What a hit took off the health bar: its amount less what a shield soaked. A fully
-   * absorbed hit landed for nothing, and counting it at full would inflate what they
-   * took and draw the bar rising through a death.
+   * What a hit took off the health bar. The engine's amount is what landed: a swing is
+   * read from its landed line and an absorb miss lands for nothing, with the absorb kept
+   * beside it, so nothing is subtracted here -- subtracting the absorb again read a
+   * 15,308 hit as 14,021.
    */
   function landed(hit: DamageRef): number {
-    return Math.max(0, hit.amount - (hit.absorbed ?? 0));
+    return Math.max(0, hit.amount);
   }
   function healthPct(hit: { hp_after?: number; max_hp?: number }): number | null {
     if (!hit.max_hp) return null;

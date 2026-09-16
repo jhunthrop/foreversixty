@@ -220,7 +220,11 @@ func (a *Accumulator) addDeaths(e event.Event) {
 		}
 		a.recentHeals[e.Dest.GUID] = q
 	}
-	if e.Kind == event.Damage && e.Dest.GUID != "" {
+	// A hit a shield ate in full is a miss of type ABSORB carrying the amount on one
+	// client; on the recap it is a hit that landed for nothing, with what was absorbed,
+	// the same as a swing that landed for 0 on another client.
+	soaked := e.Kind == event.Missed && e.MissType == "ABSORB" && e.Amount.OK
+	if (e.Kind == event.Damage || soaked) && e.Dest.GUID != "" {
 		ref := DamageRef{
 			AtMS:       a.ms(e.Time),
 			SourceGUID: e.Source.GUID,
@@ -230,6 +234,9 @@ func (a *Accumulator) addDeaths(e event.Event) {
 			Amount:     e.Amount.V,
 			Overkill:   max(e.Overkill.V, 0),
 			Absorbed:   e.Absorbed.V,
+		}
+		if soaked {
+			ref.Amount, ref.Absorbed = 0, e.Amount.V
 		}
 		if e.Adv.OK && e.Adv.InfoGUID == e.Dest.GUID {
 			ref.HPAfter, ref.MaxHP = e.Adv.CurrentHP, e.Adv.MaxHP
