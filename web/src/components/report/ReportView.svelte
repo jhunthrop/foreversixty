@@ -324,6 +324,17 @@
     }
   }
 
+  /** The zero-height mark above the tab's table, for the phone to scroll to on a tab change. */
+  let tabAnchor = $state<HTMLElement | undefined>(undefined);
+  let shownTab = state.tab;
+  $effect(() => {
+    const tab = state.tab;
+    if (tab === shownTab) return;
+    shownTab = tab;
+    if (typeof window === 'undefined' || !window.matchMedia('(max-width: 767px)').matches) return;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    tabAnchor?.scrollIntoView({ block: 'start', behavior: reduced ? 'auto' : 'smooth' });
+  });
   /** The dead spans the window meets: the note lists these, and says nothing when there are none. */
   const windowedDeadSpans = $derived(
     deadSpans.filter((span) => span.endMs > cutWindow.startMs && span.startMs < cutWindow.endMs),
@@ -411,7 +422,7 @@
         ? 'Healing'
         : state.tab === 'damage-done'
           ? 'Damage'
-          : 'Damage, the fight’s pace (the table below is its own)',
+          : 'Damage, the fight’s pace',
   );
   // Whole means the cut window too: "ignore events after a death" narrows what the tables
   // sum just as a brush does, and a narrowed table is measured, not prorated.
@@ -1253,6 +1264,10 @@
           {/each}
         </div>
       {/if}
+      <!-- Where a tab's table begins. On a phone the chart, its sliders and the death
+           presets sit between the tab strip and the table, so a tap on a tab that left the
+           page where it was read as a tap that did nothing; the page scrolls here instead. -->
+      <div bind:this={tabAnchor} class="scroll-mt-2" aria-hidden="true"></div>
       {#if scoped !== null && state.mode === 'analyze' && state.view === 'tables'}
         {#if state.tab === 'summary' && nightMode}
           {#if night !== null}

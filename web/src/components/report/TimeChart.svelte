@@ -240,18 +240,33 @@
     </span>
   </figcaption>
 
-  <canvas
-    bind:this={canvas}
-    class="w-full touch-none"
-    style={`height: ${HEIGHT}px`}
-    onpointerdown={onDown}
-    onpointermove={onMove}
-    onpointerup={onUp}
-    onpointercancel={onUp}
-    onpointerleave={() => (hoverMs = null)}
-    data-testid="time-chart-canvas"
-    aria-hidden="true"
-  ></canvas>
+  <!-- The scale sits over the canvas's left edge: the peak, half of it and zero, so the
+       line says how much and not only when. The canvas keeps its full width for the brush. -->
+  <div class="relative">
+    <canvas
+      bind:this={canvas}
+      class="w-full touch-none"
+      style={`height: ${HEIGHT}px`}
+      onpointerdown={onDown}
+      onpointermove={onMove}
+      onpointerup={onUp}
+      onpointercancel={onUp}
+      onpointerleave={() => (hoverMs = null)}
+      data-testid="time-chart-canvas"
+      aria-hidden="true"
+    ></canvas>
+    {#if peak > 0}
+      <div
+        class="text-muted pointer-events-none absolute inset-y-0 left-0 flex flex-col justify-between py-0.5 pl-1 font-mono text-[10px] leading-none"
+        data-testid="chart-scale"
+        aria-hidden="true"
+      >
+        <span>{formatAmount(peak)}/s</span>
+        <span>{formatAmount(peak / 2)}/s</span>
+        <span>0</span>
+      </div>
+    {/if}
+  </div>
 
   <!-- The 44px minimum is on each input, not on the label around it: a range input is
        dragged by a press anywhere inside its own box, and the label's height does nothing
