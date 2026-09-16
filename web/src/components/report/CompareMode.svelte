@@ -41,8 +41,9 @@
     onPatch: (patch: { compareWith?: number | null; compareMetric?: string }) => void;
   } = $props();
 
-  type CompareMetric = 'damage_done' | 'dps' | 'healing_done' | 'hps' | 'damage_taken' | 'dtps' | 'threat';
-  const PER_SECOND = new Set<CompareMetric>(['dps', 'hps', 'dtps']);
+  type CompareMetric =
+    'damage_done' | 'dps' | 'healing_done' | 'hps' | 'damage_taken' | 'dtps' | 'threat' | 'tps';
+  const PER_SECOND = new Set<CompareMetric>(['dps', 'hps', 'dtps', 'tps']);
   /** The caption's words for each metric: a key like dtps is not a sentence. */
   const METRIC_LABELS: Record<CompareMetric, string> = {
     damage_done: 'damage done',
@@ -52,6 +53,7 @@
     damage_taken: 'damage taken',
     dtps: 'damage taken per second',
     threat: 'threat',
+    tps: 'threat per second',
   };
 
   const options = $derived(fights.filter((fight) => fight.index !== current));
@@ -99,6 +101,7 @@
     'damage_taken',
     'dtps',
     'threat',
+    'tps',
   ];
   const metric = $derived<CompareMetric>(
     (METRIC_IDS as string[]).includes(metricParam) ? (metricParam as CompareMetric) : 'dps',
@@ -143,8 +146,10 @@
 
   /** A player's figure for the picked metric: off the roster row, or the threat table. */
   function rowMetric(row: RosterRow, summary: Summary): number {
-    if (metric === 'threat')
-      return Math.round(summary.threat.find((line) => line.guid === row.guid)?.threat ?? 0);
+    if (metric === 'threat' || metric === 'tps') {
+      const threat = summary.threat.find((line) => line.guid === row.guid)?.threat ?? 0;
+      return Math.round(metric === 'tps' ? threat / Math.max(summary.duration_ms / 1000, 0.001) : threat);
+    }
     return PER_SECOND.has(metric) ? Math.round(row[metric]) : row[metric];
   }
 
@@ -255,10 +260,11 @@
         <option value="healing_done">Healing done</option>
         <option value="dtps">Damage taken per second</option>
         <option value="threat">Threat</option>
+        <option value="tps">Threat per second</option>
         <option value="damage_taken">Damage taken</option>
       </select>
     </label>
-    {#if metric === 'threat'}
+    {#if metric === 'threat' || metric === 'tps'}
       <p class="text-muted text-[12px]" data-testid="compare-threat-note">
         Threat is the whole fight’s total under the base threat model, which has no tank stance, taunt or
         threat multipliers yet, so a tank can read below the damage dealers they held threat over; a longer

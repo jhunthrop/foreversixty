@@ -19,6 +19,7 @@
     unclassifiedAbilities,
     meleeBucket,
     unjudgedDeaths,
+    rolePlacements,
   } from '../../lib/report/mechanics';
   import type { ReportState } from '../../lib/report/url';
   import type { MechanicHit, MechanicKind, MechanicRow, Summary } from '../../lib/report/types';
@@ -110,6 +111,18 @@
             cost: hit.damage + (hit.killed ? DEATH_COST : 0),
             subject: `${splitUnitName(hit.name).name}, ${row.name}`,
             text: `${splitUnitName(hit.name).name} took ${row.name} ${hit.hits === 1 ? 'once' : `${hit.hits} times`} for ${formatAmount(hit.damage)} damage${hit.killed ? ' and died to it' : ''}`,
+          });
+        }
+        // The role's own line: the cleave placed on four people is the tank's failure as
+        // much as theirs, and the list names it, ranked by everything it cost.
+        for (const placement of rolePlacements([row], summary.roster)) {
+          out.push({
+            key: `${mechanicRowKey(row)}-placed-${placement.hit.guid}`,
+            row,
+            hit: placement.hit,
+            cost: placement.hit.damage + (placement.hit.killed ? DEATH_COST : 0),
+            subject: `${splitUnitName(placement.hit.name).name}, ${row.name} placed`,
+            text: `${splitUnitName(placement.hit.name).name} placed ${row.name} on ${placement.others} ${placement.others === 1 ? 'player' : 'players'} ${placement.hit.hits === 1 ? 'once' : `${placement.hit.hits} times`} for ${formatAmount(placement.hit.damage)} damage${placement.hit.killed ? ', and someone died to it' : ''}; the ${row.role}'s to place`,
           });
         }
       } else if (row.kind === 'interrupt' && (row.casts ?? 0) > (row.stopped ?? 0)) {
@@ -356,6 +369,10 @@
                     {boss.pulls === 1 ? 'pull' : 'pulls'}
                     {#if worst !== undefined}
                       · most often {splitUnitName(worst.name).name}
+                    {/if}
+                    {#if row.role !== undefined}
+                      · the {row.role}'s to place{#each rolePlacements([row], summary.roster) as placement (placement.hit.guid)}
+                        , {splitUnitName(placement.hit.name).name}{/each}
                     {/if}
                   </li>
                 {/each}

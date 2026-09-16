@@ -137,6 +137,8 @@
     exact === null ? actor.effective : exact.abilities.reduce((sum, ability) => sum + ability.effective, 0),
   );
   const amountMark = $derived(exact !== null || actor.measured || !amountApproximate ? '' : mark);
+  /** The parse is withheld under a window or a table filter even when the rankings answered. */
+  const parseWithheld = $derived(parseFallback === 'window' || parseFallback === 'filter');
   // Overheal is a per-ability figure the summary prorates under any window, so it carries the mark
   // until the row or the table is measured, unlike the amount, which the series keep exact.
   const overhealMark = $derived(exact !== null || actor.measured || !approximate ? '' : mark);
@@ -297,16 +299,20 @@
       >{rank}</span
     >
 
+    <!-- A parse is for the whole fight: under a window or a table filter the figure beside
+         it is a subtotal, and the whole-fight percentile would be read as its rank. -->
     <span
       class="tabular font-mono text-[12px]"
-      class:text-muted={percentile === null}
-      style={percentile === null ? undefined : `color: ${percentileToken(percentile.percentile)}`}
-      title={percentile === null
+      class:text-muted={percentile === null || parseWithheld}
+      style={percentile === null || parseWithheld
+        ? undefined
+        : `color: ${percentileToken(percentile.percentile)}`}
+      title={percentile === null || parseWithheld
         ? parseTitle(parseFallback)
         : parseTitle(percentile.percentile, percentile.ranked)}
       data-testid="row-percentile"
     >
-      {#if percentile === null}<span class:text-muted={true}
+      {#if percentile === null || parseWithheld}<span class:text-muted={true}
           >{parseFallback === 'none' ||
           parseFallback === 'night' ||
           parseFallback === 'window' ||

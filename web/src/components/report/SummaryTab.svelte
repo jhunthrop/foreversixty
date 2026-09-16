@@ -65,6 +65,8 @@
   } = $props();
 
   const roster = $derived([...summary.roster].sort((a, b) => b.damage_done - a.damage_done));
+  /** The parse is withheld under a window or a table filter even when the rankings answered. */
+  const parseWithheld = $derived(parseFallback === 'window' || parseFallback === 'filter');
   /** The combatant whose gear list is open. */
   let gearOpen = $state<string | null>(null);
   const missingBuffs = $derived(summary.combatants.filter((row) => row.missing_buffs.length > 0).length);
@@ -137,14 +139,18 @@
         >
           <span
             class="tabular col-start-2 row-start-1 text-right font-mono text-[12px] md:col-auto md:row-auto md:text-left"
-            class:text-muted={percentile === null}
-            style={percentile === null ? undefined : `color: ${percentileToken(percentile.percentile)}`}
-            title={percentile === null
+            class:text-muted={percentile === null || parseWithheld}
+            style={percentile === null || parseWithheld
+              ? undefined
+              : `color: ${percentileToken(percentile.percentile)}`}
+            title={percentile === null || parseWithheld
               ? parseTitle(parseFallback)
               : parseTitle(percentile.percentile, percentile.ranked)}
             data-testid="roster-percentile"
           >
-            {#if percentile === null}{['none', 'night', 'window', 'filter'].includes(parseFallback)
+            {#if percentile === null || parseWithheld}{['none', 'night', 'window', 'filter'].includes(
+                parseFallback,
+              )
                 ? ''
                 : parseFallback}{:else}<span class="label font-body mr-1 md:hidden">Parse</span>{Math.round(
                 percentile.percentile,

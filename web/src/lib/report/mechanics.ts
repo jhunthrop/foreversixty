@@ -150,32 +150,13 @@ export function playerMechanics(
   // An ability one role is meant to take, landing on anyone else, goes on that role's
   // card as a ranked entry rather than under "never hit by" as praise: a tank who faced
   // the cleave into four people did not avoid it.
-  for (const row of rows) {
-    if (row.kind !== 'avoidable' || row.role === undefined) continue;
-    const owners = roster.filter((player) => player.role === row.role);
-    const ownerGuids = new Set(owners.map((player) => player.guid));
-    const strays = (row.players ?? []).filter((hit) => !ownerGuids.has(hit.guid));
-    if (strays.length === 0) continue;
-    const hit: MechanicHit = {
-      guid: '',
-      name: '',
-      hits: strays.reduce((sum, stray) => sum + stray.hits, 0),
-      damage: strays.reduce((sum, stray) => sum + stray.damage, 0),
-      first_ms: Math.min(...strays.map((stray) => stray.first_ms)),
-      last_ms: Math.max(...strays.map((stray) => stray.last_ms)),
-      killed: strays.some((stray) => stray.killed),
-    };
-    for (const owner of owners) {
-      const found = tally(owner.guid, owner.name);
-      tallies.set(owner.guid, {
-        ...found,
-        hits: [
-          ...found.hits,
-          { row, hit: { ...hit, guid: owner.guid, name: owner.name }, others: strays.length },
-        ],
-        placed: found.placed + hit.damage,
-      });
-    }
+  for (const placement of rolePlacements(rows, roster)) {
+    const found = tally(placement.hit.guid, placement.hit.name);
+    tallies.set(placement.hit.guid, {
+      ...found,
+      hits: [...found.hits, placement],
+      placed: found.placed + placement.hit.damage,
+    });
   }
 
   const avoidableNames = [...new Set(rows.filter((row) => row.kind === 'avoidable').map((row) => row.name))];
@@ -198,6 +179,45 @@ export function playerMechanics(
       };
     })
     .sort((a, b) => b.damage + b.placed - (a.damage + a.placed) || a.name.localeCompare(b.name));
+}
+
+/** A role's ability placed on other players, as an entry on the role holder's account. */
+export interface RolePlacement {
+  row: MechanicRow;
+  /** The holder's guid and name, with the strays' hits, damage, span and deaths folded together. */
+  hit: MechanicHit;
+  /** How many players not of the role it landed on. */
+  others: number;
+}
+
+/**
+ * For every avoidable row the table assigns to a role, what it did to players not of
+ * that role, charged to each holder of the role: the cards and the problems list both
+ * read it from here, so the two never disagree about whose the cleave was.
+ */
+export function rolePlacements(
+  rows: readonly MechanicRow[],
+  roster: readonly { guid: string; name: string; role?: string }[],
+): RolePlacement[] {
+  const out: RolePlacement[] = [];
+  for (const row of rows) {
+    if (row.kind !== 'avoidable' || row.role === undefined) continue;
+    const owners = roster.filter((player) => player.role === row.role);
+    const ownerGuids = new Set(owners.map((player) => player.guid));
+    const strays = (row.players ?? []).filter((hit) => !ownerGuids.has(hit.guid));
+    if (strays.length === 0) continue;
+    const folded = {
+      hits: strays.reduce((sum, stray) => sum + stray.hits, 0),
+      damage: strays.reduce((sum, stray) => sum + stray.damage, 0),
+      first_ms: Math.min(...strays.map((stray) => stray.first_ms)),
+      last_ms: Math.max(...strays.map((stray) => stray.last_ms)),
+      killed: strays.some((stray) => stray.killed),
+    };
+    for (const owner of owners) {
+      out.push({ row, hit: { ...folded, guid: owner.guid, name: owner.name }, others: strays.length });
+    }
+  }
+  return out;
 }
 
 /** An enemy ability that hit a player and the encounter's table says nothing about. */
