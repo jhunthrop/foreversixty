@@ -93,20 +93,25 @@
     }
     // A taunt within reach beats a cast: it is the rarer, more legible event, and a mark
     // drawn right beside a cast tick would otherwise always lose to the tick underneath it.
-    if (laneTaunts.length > 0) {
-      let nearestTaunt = laneTaunts[0];
-      for (const taunt of laneTaunts)
-        if (Math.abs(taunt.at_ms - at) < Math.abs(nearestTaunt.at_ms - at)) nearestTaunt = taunt;
-      if (Math.abs(nearestTaunt.at_ms - at) <= span / 40) {
-        picked = { at: nearestTaunt.at_ms, name: tauntReadout(nearestTaunt) };
-        return;
-      }
+    const taunt = nearest(laneTaunts, (one) => one.at_ms, at);
+    if (taunt !== null) {
+      picked = { at: taunt.at_ms, name: tauntReadout(taunt) };
+      return;
     }
-    if (casts.length === 0) return;
-    let nearest = casts[0];
-    for (const cast of casts) if (Math.abs(cast.at - at) < Math.abs(nearest.at - at)) nearest = cast;
-    // Within a fortieth of the window: past that the pointer is in a gap, not on a tick.
-    if (Math.abs(nearest.at - at) <= span / 40) picked = nearest;
+    const cast = nearest(casts, (one) => one.at, at);
+    if (cast !== null) picked = cast;
+  }
+
+  /**
+   * The item under the pointer, or null when the pointer is in a gap: within a fortieth
+   * of the window is on a mark, past that is between them. Both lanes ask the same
+   * question of two differently shaped lists, so `atOf` reads the time out of each.
+   */
+  function nearest<T>(list: T[], atOf: (item: T) => number, at: number): T | null {
+    if (list.length === 0) return null;
+    let closest = list[0];
+    for (const item of list) if (Math.abs(atOf(item) - at) < Math.abs(atOf(closest) - at)) closest = item;
+    return Math.abs(atOf(closest) - at) <= span / 40 ? closest : null;
   }
 
   /** "Taunt · <spell> on <target> by <taunter>", the pull's label appended on the night. */

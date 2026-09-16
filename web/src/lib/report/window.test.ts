@@ -173,36 +173,38 @@ describe('scoping a row to the window', () => {
     expect(whole.damage_done.map((a) => a.name)).toContain('Morrowlyn-Nightslayer');
   });
 
+  // One player, one enemy, four seconds: the smallest fight that has a threat split to scale.
+  const base: Summary = {
+    engine_version: 't',
+    fight_index: 1,
+    duration_ms: 4000,
+    damage_done: [
+      {
+        guid: 'P1',
+        name: 'Tank',
+        total: 800,
+        effective: 800,
+        active_ms: 4000,
+        abilities: [],
+        targets: [],
+        series: [200, 200, 200, 200],
+      },
+    ],
+    damage_taken: [],
+    healing: [],
+    healing_taken: [],
+    deaths: [],
+    auras: [],
+    casts: [],
+    interrupts: [],
+    dispels: [],
+    resources: [],
+    threat: [{ guid: 'P1', name: 'Tank', threat: 1000, model_version: 'base-1', complete: false }],
+    combatants: [],
+    roster: [],
+  };
+
   it('scales a player’s per-target threat by the same ratio as their total', () => {
-    const base: Summary = {
-      engine_version: 't',
-      fight_index: 1,
-      duration_ms: 4000,
-      damage_done: [
-        {
-          guid: 'P1',
-          name: 'Tank',
-          total: 800,
-          effective: 800,
-          active_ms: 4000,
-          abilities: [],
-          targets: [],
-          series: [200, 200, 200, 200],
-        },
-      ],
-      damage_taken: [],
-      healing: [],
-      healing_taken: [],
-      deaths: [],
-      auras: [],
-      casts: [],
-      interrupts: [],
-      dispels: [],
-      resources: [],
-      threat: [{ guid: 'P1', name: 'Tank', threat: 1000, model_version: 'base-1', complete: false }],
-      combatants: [],
-      roster: [],
-    };
     const halfWindow = { startMs: 0, endMs: 2000 };
     const withPairs: Summary = {
       ...base,
@@ -239,6 +241,28 @@ describe('scoping a row to the window', () => {
     expect(scoped.taunts?.map((taunt) => taunt.at_ms)).toEqual([500]);
   });
 
+  it('leaves a player with no threat at zero rather than dividing by it', () => {
+    // A pair whose player holds no threat over the whole fight has no ratio to scale by:
+    // the guard hands back zero instead of a NaN that would render as "~NaN".
+    const orphan: Summary = {
+      ...base,
+      threat: [{ guid: 'P1', name: 'Tank', threat: 0, model_version: 'base-1', complete: false }],
+      threat_by_target: [{ guid: 'P1', name: 'Tank', target_guid: 'E1', target_name: 'Boss', threat: 600 }],
+    };
+    const scoped = scopeSummary(orphan, { startMs: 0, endMs: 2000 });
+    expect(scoped.threat_by_target?.[0].threat).toBe(0);
+  });
+
+  it('leaves the per-target split undefined when the summary never had the key', () => {
+    // The same sentence taunts get below: a report parsed before the engine split threat
+    // per target has no key, which the table reads differently from an empty split.
+    const whole = fullWindow(base.duration_ms);
+    const half = { startMs: 0, endMs: 2000 };
+    expect(scopeSummary({ ...base, threat_by_target: undefined }, half).threat_by_target).toBeUndefined();
+    expect(scopeSummary({ ...base, threat_by_target: [] }, half).threat_by_target).toEqual([]);
+    expect(scopeSummary({ ...base, threat_by_target: undefined }, whole).threat_by_target).toBeUndefined();
+  });
+
   it('leaves taunts undefined when the summary never had the key', () => {
     // A summary the engine wrote before it kept taunts: "none in this window" and "this
     // report has none to keep" are different sentences, so the absence has to survive.
@@ -254,7 +278,7 @@ describe('presets', () => {
     expect(deathWindow(30_000, 40_000)).toEqual({ startMs: 10_000, endMs: 30_000 });
   });
 
-  it('sets the window to the ten seconds around a taunt, snapped out and clamped', () => {
+  it('sets the window to the span around a taunt, snapped out and clamped', () => {
     expect(aroundWindow(8_500, 60_000)).toEqual({ startMs: 3_000, endMs: 14_000 });
     expect(aroundWindow(1_000, 60_000)).toEqual({ startMs: 0, endMs: 6_000 });
     expect(aroundWindow(59_000, 60_000)).toEqual({ startMs: 54_000, endMs: 60_000 });

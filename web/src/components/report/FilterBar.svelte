@@ -3,6 +3,7 @@
   import {
     DEFAULT_FILTERS,
     abilityOptions,
+    targetOptionId,
     targetOptions,
     type ReportFilters,
   } from '../../lib/report/filters';
@@ -27,6 +28,8 @@
 
   const abilities = $derived(abilityOptions(actors));
   const targets = $derived(targetOptions(actors));
+  /** The option the filter's value names, which over a night is an enemy's name, not a GUID. */
+  const picked = $derived(targetOptionId(actors, filters.target));
   const select = 'border-line-warm bg-raised rounded-control text-text h-11 px-2 text-[13px] md:h-9';
   const toggle = 'flex min-h-11 items-center gap-2 text-[13px] md:min-h-0';
   // The 44px hit target for a checkbox is the label around it, not the box: a click
@@ -43,7 +46,7 @@
     <select
       id="filter-target"
       class={select}
-      value={filters.target}
+      value={picked}
       onchange={(event) => onChange({ ...filters, target: (event.currentTarget as HTMLSelectElement).value })}
     >
       <option value="">Every target</option>

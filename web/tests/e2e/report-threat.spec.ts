@@ -62,7 +62,7 @@ test('the picked enemy rides in the URL, so the link opens on it', async ({ page
   await expect(page.getByTestId('threat-on-target')).toContainText('Baelgrim');
 });
 
-test('a taunt says who took what and when, and opens the ten seconds around it', async ({ page }) => {
+test('a taunt says who took what and when, and opens the window around it', async ({ page }) => {
   await page.goto(FIGHT);
   const taunts = page.getByTestId('threat-taunts');
   await expect(taunts).toContainText('8.5s');
@@ -77,6 +77,15 @@ test('a taunt says who took what and when, and opens the ten seconds around it',
 
 test('a fight with no taunt says so rather than showing an empty list', async ({ page }) => {
   await page.goto('/reports/fixture2abcd?fight=4&tab=threat');
+  await expect(page.getByTestId('threat-taunts')).toContainText('No taunts in this window.');
+});
+
+// A fight with no threat still has taunts to answer for: the empty state belongs to the
+// table, not to the tab, or "who took the boss off me" goes unanswered on every pull the
+// threat model happened to score at nothing.
+test('a fight with no threat still says what its taunts were', async ({ page }) => {
+  await page.goto('/reports/fixture2abcd?fight=2&tab=threat');
+  await expect(page.getByTestId('table-empty')).toContainText('No threat in this window.');
   await expect(page.getByTestId('threat-taunts')).toContainText('No taunts in this window.');
 });
 
@@ -99,4 +108,28 @@ test('the whole night names the pull each taunt came from', async ({ page }) => 
   // Over the night a pair's target is the enemy's name, one row per name across pulls.
   await page.getByTestId('threat-target').selectOption({ label: 'Warden Kelthas' });
   await expect(page.getByTestId('threat-on-target')).toContainText('Baelgrim');
+});
+
+// The night's Threat picker writes the enemy's NAME into `target` -- an add is a new GUID
+// on every pull -- and the damage tabs share that key. They have to read it as a name too:
+// read as a GUID it matched nothing, scaled every row to zero, and emptied the table while
+// the filter bar still said "Every target".
+test('an enemy picked on the night’s Threat tab keeps the damage tabs’ rows', async ({ page }) => {
+  await page.goto('/reports/fixture2abcd?fight=all&tab=threat');
+  await page.getByTestId('threat-target').selectOption({ label: 'Warden Kelthas' });
+  await expect(page).toHaveURL(/target=Warden\+Kelthas/);
+
+  await page.getByTestId('tab-damage-done').click();
+  const rows = page.getByTestId('actor-table').locator('li');
+  await expect(rows.first()).toBeVisible();
+  await expect(page.getByTestId('table-empty')).toHaveCount(0);
+  // And the bar names the enemy rather than reading "Every target" over a full table.
+  await expect(page.locator('#filter-target')).not.toHaveValue('');
+  await expect(page.locator('#filter-target').locator('option:checked')).toHaveText('Warden Kelthas');
+});
+
+test('the link alone carries the night’s named enemy into Damage Done', async ({ page }) => {
+  await page.goto('/reports/fixture2abcd?fight=all&tab=damage-done&target=Warden+Kelthas');
+  await expect(page.getByTestId('actor-table').locator('li').first()).toBeVisible();
+  await expect(page.locator('#filter-target').locator('option:checked')).toHaveText('Warden Kelthas');
 });

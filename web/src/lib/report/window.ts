@@ -269,7 +269,13 @@ export function scopeSummary(summary: Summary, window: TimeWindow): Summary {
     resources: summary.resources.map((track) => scopeResource(track, window)),
   };
   scoped.threat = scopeThreat(summary.threat, scoped, summary);
-  scoped.threat_by_target = scaleThreatPairs(summary.threat_by_target ?? [], summary.threat, scoped.threat);
+  // Undefined survives scoping, the same way `taunts` does below: a summary written before
+  // the engine kept the per-target split has no key at all, and the table reads that
+  // differently from a split that came out empty.
+  scoped.threat_by_target =
+    summary.threat_by_target === undefined
+      ? undefined
+      : scaleThreatPairs(summary.threat_by_target, summary.threat, scoped.threat);
   // Undefined survives scoping: a summary written before the engine kept taunts has no
   // `taunts` key at all, and "none in this window" is a different sentence from "this
   // report never had them". An empty array from an engine that does keep them stays [].

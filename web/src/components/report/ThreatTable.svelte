@@ -174,6 +174,8 @@
     return out.sort((a, b) => b.total - a.total);
   }
   const groups = $derived(groupPairs(pairs));
+  /** The same fold over the unscoped pairs, computed once rather than per read. */
+  const everyoneGroups = $derived(everyonePairs === undefined ? groups : groupPairs(everyonePairs));
   /** The url's target names one of this table's enemies, or it names none of them. */
   const picked = $derived(target === '' ? undefined : groups.find((group) => group.guids.includes(target)));
   /**
@@ -184,8 +186,7 @@
   const pickedTotal = $derived(
     picked === undefined
       ? 0
-      : (groupPairs(everyonePairs ?? pairs).find((group) => group.name === picked.name)?.total ??
-          picked.total),
+      : (everyoneGroups.find((group) => group.name === picked.name)?.total ?? picked.total),
   );
   const lines = $derived<ThreatLine[]>(picked?.lines ?? ordered);
   /** Six units named "General Kaal" are six rows; each after the first says which copy it is. */
@@ -219,35 +220,35 @@
     'border-line-warm bg-raised rounded-control text-text h-11 w-full max-w-full min-w-0 px-2 text-[13px] md:h-9 md:w-auto';
 </script>
 
-{#if ordered.length === 0}
-  <p class="text-muted text-[14px]" data-testid="table-empty">No threat in this window.</p>
-{:else}
-  <div class="flex flex-col gap-2" data-testid="threat-table">
-    {#if incomplete}
-      <p class="text-muted text-[12px]" data-testid="threat-incomplete">
-        Threat model {modelVersion} does not yet carry every class's modifiers, so these figures are indicative.
-        The per-class table lands with Forever's ability data.
-      </p>
-    {/if}
-    {#if groups.length > 0}
-      <label class="label text-muted flex flex-wrap items-center gap-2" for="threat-target">
-        Enemy
-        <select
-          id="threat-target"
-          class={selectClass}
-          data-testid="threat-target"
-          value={picked?.id ?? ''}
-          onchange={(event) => onPatch({ target: (event.currentTarget as HTMLSelectElement).value })}
-        >
-          <option value="">Every enemy</option>
-          {#each groups as group (group.id)}
-            <option value={group.id}
-              >{group.name}{group.guids.length > 1 ? ` ×${group.guids.length}` : ''}</option
-            >
-          {/each}
-        </select>
-      </label>
-    {/if}
+<div class="flex flex-col gap-2" data-testid="threat-table">
+  {#if incomplete}
+    <p class="text-muted text-[12px]" data-testid="threat-incomplete">
+      Threat model {modelVersion} does not yet carry every class's modifiers, so these figures are indicative. The
+      per-class table lands with Forever's ability data.
+    </p>
+  {/if}
+  {#if groups.length > 0}
+    <label class="label text-muted flex flex-wrap items-center gap-2" for="threat-target">
+      Enemy
+      <select
+        id="threat-target"
+        class={selectClass}
+        data-testid="threat-target"
+        value={picked?.id ?? ''}
+        onchange={(event) => onPatch({ target: (event.currentTarget as HTMLSelectElement).value })}
+      >
+        <option value="">Every enemy</option>
+        {#each groups as group (group.id)}
+          <option value={group.id}
+            >{group.name}{group.guids.length > 1 ? ` ×${group.guids.length}` : ''}</option
+          >
+        {/each}
+      </select>
+    </label>
+  {/if}
+  {#if lines.length === 0}
+    <p class="text-muted text-[14px]" data-testid="table-empty">No threat in this window.</p>
+  {:else}
     <div
       class="text-muted label hidden grid-cols-[minmax(120px,1.2fr)_minmax(0,3fr)_96px_64px] gap-x-3 px-2 pb-1 md:grid"
     >
@@ -303,43 +304,43 @@
         of that total, not recomputed from the model directly.
       </p>
     {/if}
-    <div class="flex flex-col gap-1 pt-2" data-testid="threat-taunts">
-      <h3 class="label text-muted">Taunts</h3>
-      {#if taunts === undefined}
-        <p class="text-muted text-[13px]">This report was parsed before taunts were kept; parse it again.</p>
-      {:else if orderedTaunts.length === 0}
-        <p class="text-muted text-[13px]">No taunts in this window.</p>
-      {:else}
-        <ul class="flex flex-col">
-          {#each orderedTaunts as taunt (tauntKey(taunt))}
-            <li
-              class="border-line-soft flex min-h-11 flex-wrap items-center gap-x-2 gap-y-1 border-b px-2 py-2 text-[14px]"
+  {/if}
+  <div class="flex flex-col gap-1 pt-2" data-testid="threat-taunts">
+    <h3 class="label text-muted">Taunts</h3>
+    {#if taunts === undefined}
+      <p class="text-muted text-[13px]">This report was parsed before taunts were kept; parse it again.</p>
+    {:else if orderedTaunts.length === 0}
+      <p class="text-muted text-[13px]">No taunts in this window.</p>
+    {:else}
+      <ul class="flex flex-col">
+        {#each orderedTaunts as taunt (tauntKey(taunt))}
+          <li
+            class="border-line-soft flex min-h-11 flex-wrap items-center gap-x-2 gap-y-1 border-b px-2 py-2 text-[14px]"
+          >
+            <span class="text-muted tabular font-mono text-[13px]"
+              >{formatDuration(taunt.at_ms - startMs)}</span
             >
-              <span class="text-muted tabular font-mono text-[13px]"
-                >{formatDuration(taunt.at_ms - startMs)}</span
+            <span aria-hidden="true" class="text-muted">·</span>
+            <span>
+              <span class="font-semibold" style={`color: ${classColorVar(classOf.get(taunt.source_guid))}`}
+                >{nameOf(taunt.source_guid, taunt.source_name)}</span
               >
-              <span aria-hidden="true" class="text-muted">·</span>
-              <span>
-                <span class="font-semibold" style={`color: ${classColorVar(classOf.get(taunt.source_guid))}`}
-                  >{nameOf(taunt.source_guid, taunt.source_name)}</span
-                >
-                taunted {nameOf(taunt.target_guid, taunt.target_name)}
-                <span class="text-muted">({taunt.spell_name})</span>
-              </span>
-              {#if taunt.label !== undefined}
-                <span class="text-muted text-[12px]">{taunt.label}</span>
-              {/if}
-              <button
-                type="button"
-                class="text-nav ml-auto inline-flex min-h-11 items-center text-[12px] font-bold tracking-[0.06em] uppercase md:min-h-0"
-                data-testid="taunt-window"
-                title="Set the window to the ten seconds around this taunt"
-                onclick={() => onWindow(aroundWindow(taunt.at_ms, durationMs))}>10s around it</button
-              >
-            </li>
-          {/each}
-        </ul>
-      {/if}
-    </div>
+              taunted {nameOf(taunt.target_guid, taunt.target_name)}
+              <span class="text-muted">({taunt.spell_name})</span>
+            </span>
+            {#if taunt.label !== undefined}
+              <span class="text-muted text-[12px]">{taunt.label}</span>
+            {/if}
+            <button
+              type="button"
+              class="text-nav ml-auto inline-flex min-h-11 items-center text-[12px] font-bold tracking-[0.06em] uppercase md:min-h-0"
+              data-testid="taunt-window"
+              title="Set the window to the span around this taunt"
+              onclick={() => onWindow(aroundWindow(taunt.at_ms, durationMs))}>Around it</button
+            >
+          </li>
+        {/each}
+      </ul>
+    {/if}
   </div>
-{/if}
+</div>

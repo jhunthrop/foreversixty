@@ -11,6 +11,7 @@ import {
   applyActorFilters,
   bossGuids,
   playerGuids,
+  targetOptionId,
   targetOptions,
 } from './filters';
 
@@ -66,6 +67,35 @@ describe('applyActorFilters', () => {
     expect(filtered.map((actor) => actor.name)).not.toContain('Warden Kelthas');
     const mage = filtered.find((actor) => actor.name === 'Morrowlyn-Nightslayer');
     expect(mage?.total).toBe(3110);
+  });
+
+  // Over a whole night the Threat tab writes the enemy's NAME into `target` -- an add is a
+  // new GUID on every pull -- so the damage tabs must match it as a name or the night's
+  // rows all vanish under a filter the bar still reads as "Every target".
+  it('matches a target named rather than identified, the way a night names an enemy', () => {
+    const byName = applyActorFilters(
+      summary.damage_done,
+      { ...DEFAULT_FILTERS, target: 'Warden Kelthas' },
+      context,
+    );
+    const byGuid = applyActorFilters(
+      summary.damage_done,
+      { ...DEFAULT_FILTERS, target: 'Creature-0-2085-2284-7855-169754-0000AA0002' },
+      context,
+    );
+    expect(byName).toEqual(byGuid);
+    expect(byName.length).toBeGreaterThan(0);
+  });
+
+  it('points the filter bar at the option a name selects, and at nothing for a stranger', () => {
+    expect(targetOptionId(summary.damage_done, 'Warden Kelthas')).toBe(
+      'Creature-0-2085-2284-7855-169754-0000AA0002',
+    );
+    expect(targetOptionId(summary.damage_done, 'Creature-0-2085-2284-7855-169754-0000AA0002')).toBe(
+      'Creature-0-2085-2284-7855-169754-0000AA0002',
+    );
+    expect(targetOptionId(summary.damage_done, '')).toBe('');
+    expect(targetOptionId(summary.damage_done, 'Nobody At All')).toBe('');
   });
 
   it('keeps only the named ability', () => {

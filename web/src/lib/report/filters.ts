@@ -193,13 +193,38 @@ export function targetOptions(actors: Actor[]): FilterOption[] {
     );
 }
 
-/** The name the target filter's GUID stands for, so every unit of that name matches. */
-function targetName(actors: Actor[], guid: string): string | null {
+/**
+ * The name the target filter's value stands for, so every unit of that name matches.
+ *
+ * The value is usually a GUID, but not always: over a whole night an add is a new GUID on
+ * every pull, so the Threat tab's picker puts the enemy's NAME in the url's `target` (see
+ * night.ts, which keys a pair by target_name). A value that is not a GUID in these rows is
+ * matched as a name, which is why one link carries one enemy across both tabs.
+ */
+function targetName(actors: Actor[], value: string): string | null {
   for (const actor of actors) {
-    const found = actor.targets.find((target) => target.guid === guid);
+    const found = actor.targets.find((target) => target.guid === value || target.name === value);
     if (found !== undefined) return found.name;
   }
   return null;
+}
+
+/**
+ * The option id a target filter value selects, for the filter bar's select: the value
+ * itself when it is a GUID these rows know, and otherwise the first GUID of that name --
+ * which is exactly the id targetOptions gives the option, built in the same order. '' is
+ * "every target", and so is a value that names nothing here.
+ */
+export function targetOptionId(actors: Actor[], value: string): string {
+  if (value === '') return '';
+  for (const actor of actors) {
+    if (actor.targets.some((target) => target.guid === value)) return value;
+  }
+  for (const actor of actors) {
+    const found = actor.targets.find((target) => target.name === value);
+    if (found !== undefined) return found.guid;
+  }
+  return '';
 }
 
 /** Rebuilds a row's totals from whatever abilities and targets survived the filters. */
