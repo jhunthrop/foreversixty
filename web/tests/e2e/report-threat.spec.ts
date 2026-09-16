@@ -181,6 +181,10 @@ test('the threat chart draws one line per player and marks the taunts', async ({
   await expect(page.getByTestId('threat-chart-note')).toContainText('Warden Kelthas');
   await expect(chart.getByTestId('chart-mark')).toHaveCount(1);
   await expect(chart.getByTestId('chart-mark').first()).toHaveAttribute('title', /Taunt/);
+  // The lines are a running total, not a rate: the scale gutter drops "/s", unlike the
+  // per-second chart above it on the same page.
+  await expect(page.getByTestId('chart-scale').first()).toContainText('/s');
+  await expect(chart.getByTestId('chart-scale')).not.toContainText(/\/s/);
 });
 
 test('the threat chart’s own brush sets the report’s window', async ({ page }) => {

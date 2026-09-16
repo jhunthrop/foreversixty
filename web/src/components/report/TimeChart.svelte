@@ -61,6 +61,9 @@
       .reduce((highest, value) => Math.max(highest, value), 0),
   );
 
+  /** The one place "/s" is spelled: the readout and the scale gutter both read off it. */
+  const unit = $derived(perSecond ? '/s' : '');
+
   function xOf(ms: number): number {
     return durationMs === 0 ? 0 : (ms / durationMs) * width;
   }
@@ -258,8 +261,8 @@
         <span class="text-text mr-3" data-testid="chart-readout"
           >{formatDuration(hoverMs)}{#if series.length > 0}
             · {label.toLowerCase()}
-            {formatAmount(hoverValue)}{perSecond ? '/s' : ''}{/if}{#each hoverExtra as line (line.label)}
-            · {line.label.toLowerCase()} {formatAmount(line.value)}{perSecond ? '/s' : ''}{/each}</span
+            {formatAmount(hoverValue)}{unit}{/if}{#each hoverExtra as line (line.label)}
+            · {line.label.toLowerCase()} {formatAmount(line.value)}{unit}{/each}</span
         >
       {/if}
       {isFullWindow(current, durationMs)
@@ -289,8 +292,8 @@
         data-testid="chart-scale"
         aria-hidden="true"
       >
-        <span>{formatAmount(peak)}/s</span>
-        <span>{formatAmount(peak / 2)}/s</span>
+        <span>{formatAmount(peak)}{unit}</span>
+        <span>{formatAmount(peak / 2)}{unit}</span>
         <span>0</span>
       </div>
     {/if}
