@@ -177,3 +177,11 @@ test('a windowed threat row says which figure is standing and which is built', a
   await expect(row.getByTestId('threat-standing')).toContainText('standing');
   await expect(row.getByTestId('threat-built')).toContainText('built');
 });
+
+test('a resource row’s cap figures sit beside the line at 360px', async ({ page }) => {
+  await page.goto(`${REPORT}&tab=resources`);
+  const figures = page.getByTestId('resource-cap-figures').first();
+  await expect(figures).toBeVisible();
+  const box = await figures.boundingBox();
+  expect(box?.width ?? 0).toBeLessThanOrEqual(PHONE_WIDTH);
+});

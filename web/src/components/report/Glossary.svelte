@@ -214,6 +214,16 @@
       meaning:
         'This fight’s figure less the compared one’s: a plus means this fight did more. Expanding a row gives the same three columns ability by ability, and an ability only one side used shows a dash on the other. Threat has no ability split, because the engine keeps it per player.',
     },
+    {
+      term: 'At cap',
+      meaning:
+        'On the Resources tab: the share of the window a bar sat at its maximum. A rage or energy bar at its cap is generating nothing, so time at cap is time a resource was going to waste. Measured from the window’s own seconds.',
+    },
+    {
+      term: 'Wasted',
+      meaning:
+        'Power gained past the cap, as the client reports it on each gain: the rage a hit would have given had the bar had room. A dagger marks it because the summary keeps it for the whole fight, not for a window.',
+    },
   ];
 
   let open = $state(false);

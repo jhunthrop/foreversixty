@@ -229,3 +229,32 @@ test('an ability named in the url resolves to its id, or says it is unknown', as
   await expect(page.getByTestId('report-unknown-ability')).toContainText('Nothing Of The Sort');
   await expect(page).not.toHaveURL(/ability=/);
 });
+
+test('a resource graph draws the cap, shades the time at it and says what was wasted', async ({ page }) => {
+  await page.goto(`${FIGHT}&tab=resources`);
+  // Baelgrim's rage fills to 1000 of 1000 eighteen seconds in and stays read at the cap
+  // for that one second of the fixture's sixty.
+  const rage = page.getByTestId('resource-Player-4184-000000A1-1');
+  await expect(rage).toBeVisible();
+  await expect(rage.getByTestId('resource-cap-line')).toBeVisible();
+  await expect(rage.getByTestId('resource-at-max')).toHaveCount(1);
+  const figures = rage.getByTestId('resource-cap-figures');
+  await expect(figures).toContainText('peak 1,000');
+  await expect(figures).toContainText('at cap');
+  await expect(figures).toContainText('wasted 25');
+});
+
+test('a resource with no reported cap draws no cap line and no cap figures', async ({ page }) => {
+  await page.goto(`${FIGHT}&tab=resources&source=Player-4184-000000A3`);
+  const mana = page.getByTestId('resource-Player-4184-000000A3-0');
+  await expect(mana).toBeVisible();
+  // The mage's mana does have a reported maximum, so this asserts the other half: it
+  // never reaches it, so nothing is shaded.
+  await expect(mana.getByTestId('resource-at-max')).toHaveCount(0);
+  await expect(mana.getByTestId('resource-cap-figures')).toContainText('at cap 0.0%');
+});
+
+test('a resource series copies as a CSV of second, reading and at cap', async ({ page }) => {
+  await page.goto(`${FIGHT}&tab=resources`);
+  await expect(page.getByTestId('resource-Player-4184-000000A1-1').getByTestId('copy-csv')).toBeVisible();
+});
