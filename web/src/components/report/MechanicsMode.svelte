@@ -284,43 +284,48 @@
                   >on {problem.row.encounter}</span
                 >{/if}
               {#if problem.row.note}<span class="text-muted text-[12px]">{problem.row.note}</span>{/if}
-              {#if problem.row.kind === 'avoidable'}
-                <a
-                  href={hrefFor(damageTakenPatch(problem.row.spell_id, problem.hit?.guid))}
-                  class={linkClass}
-                  aria-label={`Damage Taken for ${problem.subject}`}
-                  onclick={(event) =>
-                    follow(event, damageTakenPatch(problem.row.spell_id, problem.hit?.guid))}>Damage Taken</a
-                >
-                {#if problem.hit?.killed}
+              <!-- The links share one line under the sentence on a phone, and sit inline on a
+                   desktop: three links floating between a headline and its note read as noise. -->
+              <span class="flex basis-full flex-wrap items-center gap-x-4 md:basis-auto md:gap-x-3">
+                {#if problem.row.kind === 'avoidable'}
                   <a
-                    href={hrefFor(deathsPatch(problem.hit.guid, problem.hit.last_ms, problem.row.spell_id))}
+                    href={hrefFor(damageTakenPatch(problem.row.spell_id, problem.hit?.guid))}
                     class={linkClass}
-                    aria-label={`Deaths for ${problem.subject}`}
+                    aria-label={`Damage Taken for ${problem.subject}`}
                     onclick={(event) =>
-                      follow(
-                        event,
-                        deathsPatch(problem.hit?.guid ?? '', problem.hit?.last_ms, problem.row.spell_id),
-                      )}>Deaths</a
+                      follow(event, damageTakenPatch(problem.row.spell_id, problem.hit?.guid))}
+                    >Damage Taken</a
+                  >
+                  {#if problem.hit?.killed}
+                    <a
+                      href={hrefFor(deathsPatch(problem.hit.guid, problem.hit.last_ms, problem.row.spell_id))}
+                      class={linkClass}
+                      aria-label={`Deaths for ${problem.subject}`}
+                      onclick={(event) =>
+                        follow(
+                          event,
+                          deathsPatch(problem.hit?.guid ?? '', problem.hit?.last_ms, problem.row.spell_id),
+                        )}>Deaths</a
+                    >
+                  {/if}
+                {:else if problem.row.kind === 'interrupt'}
+                  <a
+                    href={hrefFor({ mode: 'analyze', view: 'tables', tab: 'interrupts' })}
+                    class={linkClass}
+                    aria-label={`Interrupts for ${problem.subject}`}
+                    onclick={(event) => follow(event, { mode: 'analyze', view: 'tables', tab: 'interrupts' })}
+                    >Interrupts</a
+                  >
+                {:else}
+                  <a
+                    href={hrefFor({ mode: 'analyze', view: 'tables', tab: 'dispels' })}
+                    class={linkClass}
+                    aria-label={`Dispels for ${problem.subject}`}
+                    onclick={(event) => follow(event, { mode: 'analyze', view: 'tables', tab: 'dispels' })}
+                    >Dispels</a
                   >
                 {/if}
-              {:else if problem.row.kind === 'interrupt'}
-                <a
-                  href={hrefFor({ mode: 'analyze', view: 'tables', tab: 'interrupts' })}
-                  class={linkClass}
-                  aria-label={`Interrupts for ${problem.subject}`}
-                  onclick={(event) => follow(event, { mode: 'analyze', view: 'tables', tab: 'interrupts' })}
-                  >Interrupts</a
-                >
-              {:else}
-                <a
-                  href={hrefFor({ mode: 'analyze', view: 'tables', tab: 'dispels' })}
-                  class={linkClass}
-                  aria-label={`Dispels for ${problem.subject}`}
-                  onclick={(event) => follow(event, { mode: 'analyze', view: 'tables', tab: 'dispels' })}
-                  >Dispels</a
-                >
-              {/if}
+              </span>
             </li>
           {/each}
         </ol>
@@ -414,7 +419,9 @@
               </p>
             {:else}
               <ul class="flex flex-col gap-1 text-[13px]">
-                {#each player.hits as entry (mechanicRowKey(entry.row))}
+                <!-- A tank both hit by the cleave and placing it on others has two entries for
+                     one row; a key on the row alone threw on the duplicate and blanked the page. -->
+                {#each player.hits as entry (`${mechanicRowKey(entry.row)}${entry.others === undefined ? '' : '-placed'}`)}
                   <li class:text-death={entry.hit.killed}>
                     {entry.row.name} · <span class="tabular font-mono">{entry.hit.hits}</span>
                     {entry.hit.hits === 1 ? 'hit' : 'hits'}{entry.others === undefined ? '' : ' on'}

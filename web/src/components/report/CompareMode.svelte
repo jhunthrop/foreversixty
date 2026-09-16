@@ -258,6 +258,13 @@
         <option value="damage_taken">Damage taken</option>
       </select>
     </label>
+    {#if metric === 'threat'}
+      <p class="text-muted text-[12px]" data-testid="compare-threat-note">
+        Threat is the whole fight’s total under the base threat model, which has no tank stance, taunt or
+        threat multipliers yet, so a tank can read below the damage dealers they held threat over; a longer
+        pull reads higher for being longer, so read the difference against the lengths.
+      </p>
+    {/if}
   </div>
 
   {#if error !== ''}

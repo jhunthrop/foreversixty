@@ -56,9 +56,10 @@
     return [
       ['At', 'Player', 'Killing blow', 'From', 'Amount', 'Overkill', 'Pull'],
       ...ordered.map((death) => [
-        formatDurationPrecise(death.at_ms),
+        // On the pull's clock, the same as the cards: over the night a death is in a pull.
+        formatDurationPrecise(inPull(death)),
         splitUnitName(death.name).name,
-        death.killing_blow?.spell_name ?? '',
+        death.killing_blow === undefined ? '' : death.killing_blow.spell_name || 'Melee',
         death.killing_blow === undefined ? '' : splitUnitName(death.killing_blow.source_name).name,
         death.killing_blow === undefined ? '' : String(death.killing_blow.amount),
         death.killing_blow?.overkill === undefined ? '' : String(death.killing_blow.overkill),

@@ -103,7 +103,7 @@
       </li>
       {#each damage as { actor, share } (actor.guid)}
         <li
-          class="grid min-h-8 grid-cols-[minmax(0,1fr)_44px_64px] items-center gap-x-2 gap-y-1 text-[13px] md:grid-cols-[minmax(150px,1.6fr)_44px_minmax(0,2fr)_64px_56px]"
+          class="border-line-soft grid min-h-8 grid-cols-[minmax(0,1fr)_44px_64px] items-center gap-x-2 gap-y-1 border-b py-1 text-[13px] md:grid-cols-[minmax(150px,1.6fr)_44px_minmax(0,2fr)_64px_56px] md:border-0 md:py-0"
         >
           <span
             class="flex min-w-0 items-center gap-1.5 truncate font-semibold"
@@ -161,7 +161,7 @@
       </li>
       {#each healing as { actor, share } (actor.guid)}
         <li
-          class="grid min-h-8 grid-cols-[minmax(0,1fr)_44px_64px] items-center gap-x-2 gap-y-1 text-[13px] md:grid-cols-[minmax(150px,1.6fr)_44px_minmax(0,2fr)_64px_56px]"
+          class="border-line-soft grid min-h-8 grid-cols-[minmax(0,1fr)_44px_64px] items-center gap-x-2 gap-y-1 border-b py-1 text-[13px] md:grid-cols-[minmax(150px,1.6fr)_44px_minmax(0,2fr)_64px_56px] md:border-0 md:py-0"
         >
           <span
             class="flex min-w-0 items-center gap-1.5 truncate font-semibold"
@@ -216,7 +216,7 @@
       </li>
       {#each takenByAbility as row (row.name)}
         <li
-          class="grid min-h-8 grid-cols-[minmax(0,1fr)_44px_64px] items-center gap-x-2 gap-y-1 text-[13px] md:grid-cols-[minmax(150px,1.6fr)_44px_minmax(0,2fr)_64px_56px]"
+          class="border-line-soft grid min-h-8 grid-cols-[minmax(0,1fr)_44px_64px] items-center gap-x-2 gap-y-1 border-b py-1 text-[13px] md:grid-cols-[minmax(150px,1.6fr)_44px_minmax(0,2fr)_64px_56px] md:border-0 md:py-0"
         >
           <span class="truncate font-semibold" title={row.name}>{row.name}</span>
           <span class="text-muted tabular text-right font-mono text-[12px] whitespace-nowrap"

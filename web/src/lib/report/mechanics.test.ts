@@ -351,6 +351,8 @@ describe('a role’s ability landing on the others', () => {
           last_ms: 2000,
           killed: true,
         },
+        // The tank stood in it too: their own hit and the placed entry are two entries.
+        { guid: 'tank-1', name: 'Hobolol', hits: 2, damage: 500, first_ms: 500, last_ms: 900, killed: false },
       ],
     };
     const cards = playerMechanics(
@@ -363,9 +365,16 @@ describe('a role’s ability landing on the others', () => {
     );
     const tank = cards.find((card) => card.guid === 'tank-1');
     expect(tank?.avoided).toEqual([]);
-    expect(tank?.hits).toHaveLength(1);
-    expect(tank?.hits[0]).toMatchObject({ others: 2, hit: { hits: 4, damage: 13000, killed: true } });
-    expect(tank?.damage).toBe(0);
+    expect(tank?.hits).toHaveLength(2);
+    // Most damage first, so the placed entry leads; the tank's own hit is its own entry.
+    expect(tank?.hits.find((entry) => entry.others === undefined)).toMatchObject({
+      hit: { hits: 2, damage: 500 },
+    });
+    expect(tank?.hits.find((entry) => entry.others !== undefined)).toMatchObject({
+      others: 2,
+      hit: { hits: 4, damage: 13000, killed: true },
+    });
+    expect(tank?.damage).toBe(500);
     expect(tank?.placed).toBe(13000);
     // The victims' own cards are unchanged.
     expect(cards.find((card) => card.guid === 'dps-1')?.hits[0].others).toBeUndefined();
