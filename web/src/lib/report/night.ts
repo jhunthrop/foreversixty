@@ -269,7 +269,22 @@ export function nightSummary(
     for (const table of ['damage_done', 'damage_taken', 'healing', 'healing_taken'] as const) {
       for (const actor of summary[table]) mergeActor(actorsBy[table], actor);
     }
-    for (const death of summary.deaths) deaths.push({ ...death, at_ms: death.at_ms + offset, label });
+    // The death and everything on its card move to the night's clock together: the
+    // hits and heals before it, the blow, the release. A card whose headline is on one
+    // clock and whose rows are on another read "over 7:29" for an eleven-second death.
+    for (const death of summary.deaths)
+      deaths.push({
+        ...death,
+        at_ms: death.at_ms + offset,
+        label,
+        last: death.last.map((hit) => ({ ...hit, at_ms: hit.at_ms + offset })),
+        heals: death.heals?.map((heal) => ({ ...heal, at_ms: heal.at_ms + offset })),
+        killing_blow:
+          death.killing_blow === undefined
+            ? undefined
+            : { ...death.killing_blow, at_ms: death.killing_blow.at_ms + offset },
+        release_ms: death.release_ms === undefined ? undefined : death.release_ms + offset,
+      });
     // Folded by the target's name, not its GUID: a boss is a new GUID every pull, and
     // three "Nalthor" rows at a third of the uptime each are one row at the whole. The
     // denominator is the time that name was in a pull, counted once per pull.

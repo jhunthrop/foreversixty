@@ -1,7 +1,7 @@
 <!-- web/src/components/report/ActorTable.svelte -->
 <script lang="ts">
   import type { Placement } from '../../lib/report/percentile';
-  import { formatAmount, formatPerSecond, formatDuration } from '../../lib/report/format';
+  import { formatAmount, formatPerSecond, formatDuration, formatAmountLike } from '../../lib/report/format';
   import type { Actor } from '../../lib/report/types';
   import CopyCsv from './CopyCsv.svelte';
   import type { ExactSplit } from '../../lib/report/exact';
@@ -155,6 +155,7 @@
           rank={index + 1}
           {actor}
           {peak}
+          columnMax={Math.max(peak, total)}
           {durationMs}
           {approximate}
           {amountApproximate}
@@ -180,7 +181,7 @@
       <span
         class="tabular text-right font-mono"
         title={amountApproximate ? 'Prorated with its rows, the same way' : undefined}
-        >{amountApproximate ? '~' : ''}{formatAmount(total)}</span
+        >{amountApproximate ? '~' : ''}{formatAmountLike(total, Math.max(peak, total))}</span
       >
       <span
         class="text-muted tabular hidden text-right font-mono text-[13px] md:inline"

@@ -32,6 +32,7 @@
     percentileToken,
     schoolName,
     schoolToken,
+    formatAmountLike,
   } from '../../lib/report/format';
   import type { Placement } from '../../lib/report/percentile';
   import { abilityKey, type Ability, type Actor } from '../../lib/report/types';
@@ -44,6 +45,7 @@
     rank,
     actor,
     peak,
+    columnMax = peak,
     durationMs,
     percentile = null,
     parseFallback = '',
@@ -61,6 +63,8 @@
     rank: number;
     actor: Actor;
     peak: number;
+    /** The largest figure in the Amount column, total included, so every row reads in one scale. */
+    columnMax?: number;
     durationMs: number;
     percentile?: Placement | null;
     parseFallback?: string;
@@ -361,7 +365,7 @@
 
     <span class="tabular flex flex-col text-right font-mono leading-tight" data-testid="row-amount">
       <span title={exact === null && !actor.measured ? undefined : 'Measured from the fight’s events'}
-        >{amountMark}{formatAmount(shownEffective)}</span
+        >{amountMark}{formatAmountLike(shownEffective, columnMax)}</span
       >
       {#if overhealPct !== null && shownOverheal > 0}
         <span

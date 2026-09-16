@@ -395,3 +395,16 @@ test('a stale rankings answer for the fight that is no longer selected is droppe
   // Warden Kelthas's late answer must not speak for the fight actually selected (Skolex).
   await expect(page.getByTestId('rankings-mode')).toContainText('333 ranked kills');
 });
+
+// A death folded into the night moves with everything on its card: the hits before it
+// keep their distance to the death, so "they took … over 3.0s" reads the same on the
+// night as on the pull, not "over 7:29" for an eleven-second death.
+test('a night death card keeps its own span', async ({ page }) => {
+  await page.goto('/reports/fixture2abcd?fight=3&tab=deaths');
+  const onPull = (await page.getByTestId('deaths-tab').locator('li').first().innerText()).match(
+    /over ([\d:.]+s?)/,
+  )?.[1];
+  await page.goto('/reports/fixture2abcd?fight=all&tab=deaths');
+  const cards = page.getByTestId('deaths-tab').locator('li').filter({ hasText: 'Warden Kelthas' });
+  await expect(cards.first()).toContainText(`over ${onPull}`);
+});

@@ -12,6 +12,7 @@
     formatDuration,
     formatPerSecond,
     schoolToken,
+    formatAmountLike,
   } from '../../lib/report/format';
   import type { Actor, Summary } from '../../lib/report/types';
   import ClassIcon from './ClassIcon.svelte';
@@ -49,6 +50,9 @@
 
   const damage = $derived(bySource(summary.damage_done, (everyone ?? summary).damage_done));
   const healing = $derived(bySource(summary.healing, (everyone ?? summary).healing));
+  /** Each panel's largest figure, so its amounts read in one scale. */
+  const damageMax = $derived(Math.max(0, ...damage.map(({ actor }) => actor.effective)));
+  const healingMax = $derived(Math.max(0, ...healing.map(({ actor }) => actor.effective)));
 
   /** Every ability that hit a player, summed over the players it hit, largest first. */
   function abilityTotals(table: Actor[]): { name: string; school?: number; total: number }[] {
@@ -125,7 +129,9 @@
             ></span></span
           >
           <span class="tabular text-right font-mono whitespace-nowrap"
-            >{formatAmount(actor.effective)}<span class="label font-body ml-1 md:hidden">amount</span></span
+            >{formatAmountLike(actor.effective, damageMax)}<span class="label font-body ml-1 md:hidden"
+              >amount</span
+            ></span
           >
           <span class="text-muted tabular text-right font-mono text-[12px] whitespace-nowrap"
             >{formatPerSecond(actor.effective, durationMs)}<span class="label font-body ml-1 md:hidden"
@@ -183,7 +189,9 @@
             ></span></span
           >
           <span class="tabular text-right font-mono whitespace-nowrap"
-            >{formatAmount(actor.effective)}<span class="label font-body ml-1 md:hidden">amount</span></span
+            >{formatAmountLike(actor.effective, healingMax)}<span class="label font-body ml-1 md:hidden"
+              >amount</span
+            ></span
           >
           <span class="text-muted tabular text-right font-mono text-[12px] whitespace-nowrap"
             >{formatPerSecond(actor.effective, durationMs)}<span class="label font-body ml-1 md:hidden"

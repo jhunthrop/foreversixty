@@ -112,9 +112,20 @@
    * True when the last recorded hit demonstrably left them alive: its health-after is
    * known and above zero. Then the log never showed what killed them.
    */
+  /**
+   * The recorded blow was not what ended them: it left health behind and carried no
+   * overkill. A blow with overkill was lethal whatever health the client's rounding
+   * left on the line (a Gloom Squall at 14,141 with 14,140 over reads "1 of 32,540").
+   */
   function lethalHitMissing(death: Death): boolean {
     const blow = death.killing_blow;
-    return blow !== undefined && blow.max_hp !== undefined && blow.max_hp > 0 && (blow.hp_after ?? 0) > 0;
+    return (
+      blow !== undefined &&
+      blow.max_hp !== undefined &&
+      blow.max_hp > 0 &&
+      (blow.hp_after ?? 0) > 0 &&
+      (blow.overkill ?? 0) <= 0
+    );
   }
 
   function lastEvents(death: Death): LastEvent[] {
