@@ -248,6 +248,8 @@ export function nightSummary(
       engine wrote one is a different thing from a night of bosses with no table. */
   let mechanicsSeen = false;
   let tauntsSeen = false;
+  /** The players who were in a pull with a table: only they can be judged clean over the night. */
+  const judgedPlayers = new Set<string>();
 
   const nameOf = knownNames(summaries);
 
@@ -362,9 +364,16 @@ export function nightSummary(
       } else {
         const last = found.series[found.series.length - 1] ?? 0;
         const gap = Math.max(0, Math.round(padTo) - found.series.length);
+        // A pull's series opens at zero until its first reading; joined end to end those
+        // zeros read as the night's low at every seam. Hold the last reading across them.
+        const firstReading = track.series.findIndex((value) => value !== 0);
+        const joined =
+          firstReading > 0
+            ? [...new Array<number>(firstReading).fill(last), ...track.series.slice(firstReading)]
+            : track.series;
         resources.set(rkey, {
           ...found,
-          series: [...found.series, ...new Array<number>(gap).fill(last), ...track.series],
+          series: [...found.series, ...new Array<number>(gap).fill(last), ...joined],
           gained: found.gained + track.gained,
           spent: found.spent + track.spent,
           zero_ms: found.zero_ms + track.zero_ms,
@@ -380,6 +389,7 @@ export function nightSummary(
     if (summary.mechanics !== undefined) mechanicsSeen = true;
     if (summary.mechanics?.table_found) {
       mechanicsTableFound = true;
+      for (const row of summary.roster) judgedPlayers.add(row.guid);
       for (const row of summary.mechanics.rows) mergeMechanicRow(mechanicRows, row, offset, fight);
     }
     offset += summary.duration_ms;
@@ -422,6 +432,7 @@ export function nightSummary(
           table_found: mechanicsTableFound,
           rows: [...mechanicRows.values()],
           bosses: [...mechanicsBosses.values()],
+          judged_players: [...judgedPlayers],
         }
       : undefined,
     roster: night.players.map((player) => ({

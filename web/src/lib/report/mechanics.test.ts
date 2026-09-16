@@ -7,6 +7,8 @@ import {
   nightBossGroups,
   playerMechanics,
   unclassifiedAbilities,
+  meleeBucket,
+  unjudgedDeaths,
 } from './mechanics';
 import type { Ability, Actor, MechanicHit, MechanicRow, Summary } from './types';
 
@@ -266,5 +268,59 @@ describe('unclassifiedAbilities', () => {
       damage_done: [actor('B', [ability({ spell_id: 116, name: 'Frostbolt', effective: 500 })])],
     });
     expect(result.map((entry) => entry.spell_id)).toEqual([999]);
+  });
+
+  it('buckets the enemies’ melee swings on players, naming who took most', () => {
+    const summary = summaryOf([
+      actor('A', [
+        ability({ spell_id: 0, name: 'Melee', effective: 300 }),
+        ability({ spell_id: 7, effective: 10 }),
+      ]),
+      actor('B', [ability({ spell_id: 0, name: 'Melee', effective: 100 })]),
+    ]);
+    expect(meleeBucket(summary)).toEqual({
+      damage: 400,
+      players: 2,
+      most: { name: 'A', damage: 300 },
+      others: { damage: 100, players: 1 },
+    });
+    expect(meleeBucket(summaryOf([actor('A', [ability({ spell_id: 7, effective: 10 })])]))).toEqual({
+      damage: 0,
+      players: 0,
+      most: undefined,
+      others: { damage: 0, players: 0 },
+    });
+  });
+
+  it('lists the deaths the table does not explain: a swing, an unlisted spell, or nothing named', () => {
+    const summary = summaryOf([], [{ spell_id: 7, name: 'Anima Lash', kind: 'avoidable' }]);
+    const death = (
+      guid: string,
+      at_ms: number,
+      blow?: { spell_id: number; spell_name: string; source_name: string },
+    ) =>
+      ({
+        guid,
+        name: guid,
+        at_ms,
+        killing_blow: blow && { ...blow, at_ms, source_guid: 'C', amount: 1 },
+        last: [],
+        auras_held: [],
+        auras_lost: [],
+      }) as unknown as Summary['deaths'][number];
+    const result = unjudgedDeaths({
+      ...summary,
+      deaths: [
+        death('A', 1000, { spell_id: 7, spell_name: 'Anima Lash', source_name: 'Warden' }),
+        death('B', 2000, { spell_id: 0, spell_name: '', source_name: 'Warden' }),
+        death('A', 3000, { spell_id: 99, spell_name: 'Gloom', source_name: 'Bat' }),
+        death('B', 4000),
+      ],
+    });
+    expect(result.map((entry) => [entry.name, entry.at_ms, entry.by])).toEqual([
+      ['B', 2000, 'Warden · melee'],
+      ['A', 3000, 'Bat · Gloom'],
+      ['B', 4000, 'nothing the log named'],
+    ]);
   });
 });

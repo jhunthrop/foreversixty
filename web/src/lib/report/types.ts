@@ -255,6 +255,8 @@ export interface MechanicsBlock {
   rows: MechanicRow[];
   /** Set by the whole-night fold only: the bosses whose pulls it folded, in fight order. */
   bosses?: MechanicsBoss[];
+  /** Set by the whole-night fold only: the players who were in a pull that had a table. */
+  judged_players?: string[];
 }
 
 /** summary.ThreatRow. `complete` is false while the threat model admits gaps. */

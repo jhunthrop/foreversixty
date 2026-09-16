@@ -118,7 +118,7 @@
     </div>
   {/if}
 
-  {#if nightMode}
+  {#if nightMode && state.mode !== 'mechanics'}
     <label class="text-muted label flex items-center gap-2" for="report-source">
       Source
       <select
