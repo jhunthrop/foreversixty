@@ -83,11 +83,13 @@ type spellDraft struct {
 	players map[string]*playerHits
 }
 
-// playerHits is one player's history with a spell: how many times it hit
-// them, and whether the roster had them tanking when it did.
+// playerHits is one player's history with a spell, split by whether the
+// roster had them tanking at the moment of each hit. A player can be the
+// tank on one pull and not another, so tankness is judged per hit, not
+// once for the player across the whole encounter.
 type playerHits struct {
-	hits   int64
-	isTank bool
+	tankHits    int64
+	nonTankHits int64
 }
 
 // addFight folds one closed fight's evidence into its encounter's draft.
@@ -159,8 +161,11 @@ func (sd *spellDraft) hit(guid string, hits, effective int64, isTank bool) {
 		p = &playerHits{}
 		sd.players[guid] = p
 	}
-	p.hits += hits
-	p.isTank = isTank
+	if isTank {
+		p.tankHits += hits
+	} else {
+		p.nonTankHits += hits
+	}
 	sd.total += effective
 }
 
@@ -189,11 +194,11 @@ func (sd *spellDraft) draft(spellID int64, totalDamageTaken int64) mechanics.Mec
 	players, nonTanks, repeatNonTank := 0, 0, false
 	for _, p := range sd.players {
 		players++
-		if p.isTank {
-			continue
+		if p.nonTankHits == 0 {
+			continue // every hit on this player landed while they tanked
 		}
 		nonTanks++
-		if p.hits >= 2 {
+		if p.nonTankHits >= 2 {
 			repeatNonTank = true
 		}
 	}
