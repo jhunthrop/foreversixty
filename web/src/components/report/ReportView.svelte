@@ -1394,7 +1394,11 @@
             {classOf}
             approximate={!windowIsWhole}
             target={state.target}
-            sourceName={playerSet.has(state.source) ? unitNames.get(state.source) : undefined}
+            sourceName={playerSet.has(state.source)
+              ? unitNames.get(state.source)
+              : state.source === SOURCE_ENEMIES
+                ? 'the enemies'
+                : undefined}
             scopeNoun={nightMode ? 'night' : 'pull'}
             durationMs={summary?.duration_ms ?? scoped.duration_ms}
             onPatch={patch}
