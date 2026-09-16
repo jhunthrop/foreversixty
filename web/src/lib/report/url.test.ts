@@ -69,6 +69,7 @@ describe('the report URL state', () => {
       flags: [],
       compareWith: null,
       compareMetric: '',
+      compareVs: '',
       eventsOff: [],
       find: '',
       openDeaths: [],
@@ -96,6 +97,7 @@ describe('the report URL state', () => {
       flags: [],
       compareWith: null,
       compareMetric: '',
+      compareVs: '',
       eventsOff: [],
       find: '',
       openDeaths: [],
@@ -120,6 +122,7 @@ describe('the report URL state', () => {
       flags: [],
       compareWith: null,
       compareMetric: '',
+      compareVs: '',
       eventsOff: [],
       find: '',
       openDeaths: [],
@@ -156,6 +159,7 @@ describe('the report URL state', () => {
       flags: [],
       compareWith: null,
       compareMetric: '',
+      compareVs: '',
       eventsOff: [],
       find: '',
       openDeaths: [],
@@ -238,5 +242,19 @@ describe('an ability named rather than numbered', () => {
     expect(state.abilityName).toBe('Frostbolt');
     expect(reportSearch(state, 1)).not.toContain('ability=');
     expect(parseReportState('?ability=116', 1).abilityName).toBe('');
+  });
+});
+
+describe('the compared player', () => {
+  it('reads vs as a GUID and writes it back beside with and cmetric', () => {
+    const state = parseReportState('?fight=3&mode=compare&with=4&cmetric=hps&vs=Player-4184-000000A3', 1);
+    expect(state.compareVs).toBe('Player-4184-000000A3');
+    expect(reportSearch(state, 1)).toContain('vs=Player-4184-000000A3');
+  });
+
+  it('defaults to no player, and ignores a vs that is not a GUID', () => {
+    expect(parseReportState('?fight=3', 1).compareVs).toBe('');
+    expect(parseReportState('?fight=3&vs=Morrowlyn the Great', 1).compareVs).toBe('');
+    expect(reportSearch(parseReportState('?fight=3', 1), 1)).not.toContain('vs=');
   });
 });
