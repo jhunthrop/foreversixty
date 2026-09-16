@@ -144,6 +144,12 @@
       });
   });
 
+  /**
+   * Threat inside a window is the whole fight's total scaled, not measured (the Threat tab
+   * greys it and says so); Compare marks it the same way rather than printing it as fact.
+   */
+  const threatScaled = $derived(window !== null && (metric === 'threat' || metric === 'tps'));
+  const mark = $derived(threatScaled ? '~' : '');
   /** A player's figure for the picked metric: off the roster row, or the threat table. */
   function rowMetric(row: RosterRow, summary: Summary): number {
     if (metric === 'threat' || metric === 'tps') {
@@ -266,9 +272,11 @@
     </label>
     {#if metric === 'threat' || metric === 'tps'}
       <p class="text-muted text-[12px]" data-testid="compare-threat-note">
-        Threat is the whole fight’s total under the base threat model, which has no tank stance, taunt or
-        threat multipliers yet, so a tank can read below the damage dealers they held threat over; a longer
-        pull reads higher for being longer, so read the difference against the lengths.
+        Threat is under the base threat model, which has no tank stance, taunt or threat multipliers yet, so a
+        tank can read below the damage dealers they held threat over; a longer pull reads higher for being
+        longer, so read the difference against the lengths.{#if threatScaled}
+          Inside a window it is marked ~: the whole fight’s threat scaled to the window’s share, not measured
+          from the window’s own events, the same figure the Threat tab greys.{/if}
       </p>
     {/if}
   </div>
@@ -300,11 +308,11 @@
             class:text-gold={line.a >= line.b}
             title="This fight less the compared fight"
             data-testid="compare-card-delta"
-            >{line.a - line.b >= 0 ? '+' : ''}{formatAmount(line.a - line.b)}</span
+            >{line.a - line.b >= 0 ? '+' : ''}{mark}{formatAmount(line.a - line.b)}</span
           >
           <span class="text-muted col-span-2 text-[12px]"
-            ><span class="tabular font-mono">{formatAmount(line.a)}</span> this fight ·
-            <span class="tabular font-mono">{formatAmount(line.b)}</span> compared with</span
+            ><span class="tabular font-mono">{mark}{formatAmount(line.a)}</span> this fight ·
+            <span class="tabular font-mono">{mark}{formatAmount(line.b)}</span> compared with</span
           >
         </li>
       {/each}
@@ -340,14 +348,14 @@
               >
                 {splitUnitName(line.name).name}
               </td>
-              <td class="tabular px-2 py-2 text-right font-mono">{formatAmount(line.a)}</td>
-              <td class="text-muted tabular px-2 py-2 text-right font-mono">{formatAmount(line.b)}</td>
+              <td class="tabular px-2 py-2 text-right font-mono">{mark}{formatAmount(line.a)}</td>
+              <td class="text-muted tabular px-2 py-2 text-right font-mono">{mark}{formatAmount(line.b)}</td>
               <td
                 class="tabular w-[96px] px-2 py-2 text-right font-mono"
                 class:text-gold={line.a >= line.b}
                 data-testid="compare-delta"
               >
-                {line.a - line.b >= 0 ? '+' : ''}{formatAmount(line.a - line.b)}
+                {line.a - line.b >= 0 ? '+' : ''}{mark}{formatAmount(line.a - line.b)}
               </td>
             </tr>
           {/each}

@@ -280,7 +280,9 @@
         found.count += 1;
       }
     }
-    return [...merged.values()].sort((a, b) => b.total + (b.overheal ?? 0) - (a.total + (a.overheal ?? 0)));
+    // By the amount shown, then by overheal: a sort by a sum the table does not print
+    // put a zero above a 765 and read as a mistake.
+    return [...merged.values()].sort((a, b) => b.total - a.total || (b.overheal ?? 0) - (a.overheal ?? 0));
   });
   /** Measured healing carries what each unit did not need; the column exists only then. */
   const targetsOverheal = $derived(targetsByName.some((target) => target.overheal !== undefined));
@@ -325,7 +327,7 @@
     </span>
 
     <span
-      class="flex min-w-0 flex-wrap items-center gap-x-2 font-semibold [&>*]:truncate"
+      class="flex min-w-0 flex-wrap items-center gap-x-2 overflow-hidden font-semibold [&>*]:truncate"
       style={`color: ${color}`}
       data-testid="row-name"
     >

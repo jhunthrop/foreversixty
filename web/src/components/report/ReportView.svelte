@@ -1319,7 +1319,7 @@
             {windowIsWhole}
             measure={nightMode ? undefined : measureRow}
             approximate={actorTableApproximate}
-            amountApproximate={(filtersScale && !windowIsWhole) || nightProrates}
+            amountApproximate={(filtersScale && !windowIsWhole && tableExact === null) || nightProrates}
           />
           {#if actorTableApproximate}
             <p class="text-muted text-[12px]" data-testid="approximate-note">
