@@ -180,13 +180,20 @@ test('interrupts and dispels state their counts are the whole fight’s, unaffec
   await expect(page.getByTestId('exchange-table')).toContainText('†');
 });
 
-test('a brushed window marks cast counts and threat as approximate', async ({ page }) => {
+test('a brushed window marks cast counts as approximate', async ({ page }) => {
   await page.goto(`${FIGHT}&tab=casts&start=0&end=10000`);
   await expect(page.getByTestId('cast-approximate-note')).toBeVisible();
   await expect(page.getByTestId('cast-time-note')).toContainText('whole fight');
+});
 
+// This fixture's pairs all carry a per-second series (engine 0.4.0), so threat inside a
+// window is measured, not scaled -- report-threat.spec.ts covers that path in full; this
+// only guards that the cast-approximate assertion above did not silently start covering
+// for a threat table that had quietly stopped rendering.
+test('a brushed window still renders the threat table', async ({ page }) => {
   await page.goto(`${FIGHT}&tab=threat&start=0&end=10000`);
-  await expect(page.getByTestId('threat-approximate-note')).toBeVisible();
+  await expect(page.getByTestId('threat-window-note')).toBeVisible();
+  await expect(page.getByTestId('threat-approximate-note')).toHaveCount(0);
 });
 
 // Sunwick's one Heal on Baelgrim in fight 3: 1,900 cast, 320 of it overheal. The pair
