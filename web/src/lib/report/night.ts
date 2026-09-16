@@ -3,6 +3,7 @@
 // and one row per boss. A raid leader opens a log to compare the team across the night,
 // not to sum eighteen pulls by hand. Trash is left out, as it is from the rankings: a
 // trash pull's damage is mostly a function of how much trash there was.
+import { abilityKey } from './types';
 import type {
   Actor,
   AuraTrack,
@@ -420,12 +421,12 @@ function mergeActor(table: Map<string, Actor>, actor: Actor): void {
     });
     return;
   }
-  const abilities = new Map(found.abilities.map((ability) => [ability.spell_id, { ...ability }]));
+  const abilities = new Map(found.abilities.map((ability) => [abilityKey(ability), { ...ability }]));
   for (const ability of actor.abilities) {
-    const have = abilities.get(ability.spell_id);
-    if (have === undefined) abilities.set(ability.spell_id, { ...ability });
+    const have = abilities.get(abilityKey(ability));
+    if (have === undefined) abilities.set(abilityKey(ability), { ...ability });
     else
-      abilities.set(ability.spell_id, {
+      abilities.set(abilityKey(ability), {
         ...have,
         total: have.total + ability.total,
         effective: have.effective + ability.effective,

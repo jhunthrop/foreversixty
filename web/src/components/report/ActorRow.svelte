@@ -34,7 +34,7 @@
     schoolToken,
   } from '../../lib/report/format';
   import type { Placement } from '../../lib/report/percentile';
-  import type { Ability, Actor } from '../../lib/report/types';
+  import { abilityKey, type Ability, type Actor } from '../../lib/report/types';
   import type { ExactSplit } from '../../lib/report/exact';
   import AbilityBar from './AbilityBar.svelte';
   import ClassIcon from './ClassIcon.svelte';
@@ -427,7 +427,7 @@
           </tr>
         </thead>
         <tbody>
-          {#each detailRows as ability (`${ability.spell_id}|${ability.via ?? ''}`)}
+          {#each detailRows as ability (abilityKey(ability))}
             {@const hits = landed(ability)}
             {@const school = schoolToken(ability.school)}
             <tr class="border-line-soft border-b">

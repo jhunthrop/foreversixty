@@ -161,7 +161,7 @@
             aria-label={wholeFightAriaLabel(true, `${castTimeText(row.cast_time_ms)} cast time`)}
           >
             {castTimeMark}{castTimeText(row.cast_time_ms)}<span class="label font-body ml-1.5 md:hidden"
-              >cast time</span
+              >casting, total</span
             >
           </span>
           <span class="bg-line-soft relative col-span-2 block h-[6px] w-full md:col-span-1">

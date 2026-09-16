@@ -119,7 +119,8 @@
   </div>
 
   <p class="text-muted text-[12px]">
-    <span class="tabular font-mono">{matching.length}</span> events{#if stream === null}
+    <span class="tabular font-mono">{matching.length}</span> events
+    {#if stream === null}
       the summary timestamps: casts, auras going up and down, the hits and heals before each death, and the
       deaths.{#if loadStream !== undefined}
         <button

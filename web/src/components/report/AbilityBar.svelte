@@ -5,7 +5,7 @@
      design system forbids or repurpose the class colours, which it forbids harder. -->
 <script lang="ts">
   import { formatAmount, schoolName, schoolToken } from '../../lib/report/format';
-  import type { Ability } from '../../lib/report/types';
+  import { abilityKey, type Ability } from '../../lib/report/types';
 
   let {
     abilities,
@@ -36,7 +36,7 @@
 
 <div class="bg-line-soft h-[8px] w-full" style={`max-width: ${widthPct}%`} aria-hidden="true">
   <div class="flex h-full w-full">
-    {#each ordered as ability, index (ability.spell_id)}
+    {#each ordered as ability, index (abilityKey(ability))}
       <span
         class="h-full"
         style={`flex: ${Math.max(ability.total, 0)} 0 0; background: ${schoolToken(ability.school)}; opacity: ${OPACITIES[Math.min(schoolRank[index] ?? 0, OPACITIES.length - 1)]}; border-right: 1px solid var(--color-bg)`}

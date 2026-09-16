@@ -54,6 +54,11 @@ export interface PullMark {
   kill: boolean;
 }
 
+/** The key an ability is listed under: its spell, and the pet it was cast via, since a pet's row is its own. */
+export function abilityKey(ability: Pick<Ability, 'spell_id' | 'via'>): string {
+  return `${ability.spell_id}|${ability.via ?? ''}`;
+}
+
 /** summary.Actor — one row of Damage Done, Damage Taken, Healing or Healing Taken. */
 export interface Actor {
   guid: string;

@@ -300,7 +300,7 @@
               </caption>
               <thead>
                 <tr class="text-muted label">
-                  <th class="w-12 py-1 pr-3 text-left font-bold md:w-auto" title="Seconds before the death"
+                  <th class="w-14 py-1 pr-2 text-left font-bold md:w-auto" title="Seconds before the death"
                     >Before</th
                   >
                   <th class="py-1 pr-3 text-left font-bold">Ability</th>
