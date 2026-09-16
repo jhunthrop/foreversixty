@@ -244,17 +244,19 @@
         : { guid: row.guid, name: row.name, threat: found.threat, built: found.built, measured: true };
     }),
   );
+  /** The table on screen: the picked enemy's pairs, or every unit's totals. */
+  const onScreen = $derived<ThreatLine[]>(picked?.lines ?? totalLines);
   /** Every line on screen is measured: the window's figures came from the series, not a ratio. */
-  const allMeasured = $derived(lines.length > 0 && lines.every((line) => line.measured === true));
+  const allMeasured = $derived(onScreen.length > 0 && onScreen.every((line) => line.measured === true));
   /**
    * Under a brush with nothing measured the figures are scaled totals, not a standing, so
    * the rows keep the roster's order (by name) rather than an order that reads as a
    * ranking. Measured lines are a ranking and keep it.
    */
   const lines = $derived<ThreatLine[]>(
-    approximate && !(picked?.lines ?? totalLines).every((line) => line.measured === true)
-      ? [...(picked?.lines ?? totalLines)].sort((a, b) => a.name.localeCompare(b.name))
-      : [...(picked?.lines ?? totalLines)].sort((a, b) => b.threat - a.threat),
+    approximate && !allMeasured
+      ? [...onScreen].sort((a, b) => a.name.localeCompare(b.name))
+      : [...onScreen].sort((a, b) => b.threat - a.threat),
   );
   /** Six units named "General Kaal" are six rows; each after the first says which copy it is. */
   const copyOf = $derived.by(() => {
