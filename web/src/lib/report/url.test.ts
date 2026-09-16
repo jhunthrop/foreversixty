@@ -12,10 +12,13 @@ import {
 } from './url';
 
 describe('the report URL state', () => {
-  it('offers the five modes, with Mechanics and Replay disabled', () => {
+  it('offers the five modes, with only Replay disabled', () => {
     expect(MODES.map((m) => m.id)).toEqual(['analyze', 'compare', 'rankings', 'mechanics', 'replay']);
-    expect(MODES.filter((m) => !m.enabled).map((m) => m.label)).toEqual(['Mechanics', 'Replay']);
+    expect(MODES.filter((m) => !m.enabled).map((m) => m.label)).toEqual(['Replay']);
     expect(MODES.filter((m) => !m.enabled).every((m) => m.note === 'later')).toBe(true);
+    expect(MODES.filter((m) => m.enabled).every((m) => m.note === undefined)).toBe(true);
+    expect(parseReportState('?mode=mechanics', 1).mode).toBe('mechanics');
+    expect(reportSearch(withState(defaultState(1), { mode: 'mechanics' }), 1)).toBe('?mode=mechanics');
   });
 
   it('offers the four views and the twelve tabs in the spec’s order', () => {

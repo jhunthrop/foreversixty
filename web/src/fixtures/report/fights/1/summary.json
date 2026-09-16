@@ -1,44 +1,8 @@
 {
-  "engine_version": "0.1.0",
+  "engine_version": "0.3.0",
   "fight_index": 1,
   "duration_ms": 6400,
   "damage_done": [
-    {
-      "guid": "Creature-0-2085-2284-7855-169753-0000AA0001",
-      "name": "Hollow Sentinel",
-      "total": 1624,
-      "effective": 1624,
-      "active_ms": 1500,
-      "abilities": [
-        {
-          "spell_id": 0,
-          "name": "Melee",
-          "total": 1624,
-          "effective": 1624,
-          "hits": 2,
-          "crits": 0,
-          "ticks": 0,
-          "misses": { "ABSORB": 1, "PARRY": 1 },
-          "min": 812,
-          "max": 812
-        },
-        {
-          "spell_id": 334660,
-          "name": "Anima Lash",
-          "school": 32,
-          "total": 0,
-          "effective": 0,
-          "hits": 0,
-          "crits": 0,
-          "ticks": 0,
-          "misses": { "ABSORB": 1 },
-          "min": 0,
-          "max": 0
-        }
-      ],
-      "targets": [{ "guid": "Player-4184-000000A1", "name": "Baelgrim-Nightslayer", "total": 1624 }],
-      "series": [1624]
-    },
     {
       "guid": "Player-4184-000000A3",
       "name": "Morrowlyn-Nightslayer",
@@ -63,22 +27,20 @@
         { "guid": "Creature-0-2085-2284-7855-169753-0000AA0001", "name": "Hollow Sentinel", "total": 1484 }
       ],
       "series": [1484]
-    }
-  ],
-  "damage_taken": [
+    },
     {
-      "guid": "Player-4184-000000A1",
-      "name": "Baelgrim-Nightslayer",
-      "total": 1624,
-      "effective": 1624,
-      "active_ms": 0,
+      "guid": "Creature-0-2085-2284-7855-169753-0000AA0001",
+      "name": "Hollow Sentinel",
+      "total": 812,
+      "effective": 812,
+      "active_ms": 1500,
       "abilities": [
         {
           "spell_id": 0,
           "name": "Melee",
-          "total": 1624,
-          "effective": 1624,
-          "hits": 2,
+          "total": 812,
+          "effective": 812,
+          "hits": 1,
           "crits": 0,
           "ticks": 0,
           "misses": { "ABSORB": 1, "PARRY": 1 },
@@ -99,11 +61,11 @@
           "max": 0
         }
       ],
-      "targets": [
-        { "guid": "Creature-0-2085-2284-7855-169753-0000AA0001", "name": "Hollow Sentinel", "total": 1624 }
-      ],
-      "series": [1624]
-    },
+      "targets": [{ "guid": "Player-4184-000000A1", "name": "Baelgrim-Nightslayer", "total": 812 }],
+      "series": [812]
+    }
+  ],
+  "damage_taken": [
     {
       "guid": "Creature-0-2085-2284-7855-169753-0000AA0001",
       "name": "Hollow Sentinel",
@@ -126,6 +88,44 @@
       ],
       "targets": [{ "guid": "Player-4184-000000A3", "name": "Morrowlyn-Nightslayer", "total": 1484 }],
       "series": [1484]
+    },
+    {
+      "guid": "Player-4184-000000A1",
+      "name": "Baelgrim-Nightslayer",
+      "total": 812,
+      "effective": 812,
+      "active_ms": 0,
+      "abilities": [
+        {
+          "spell_id": 0,
+          "name": "Melee",
+          "total": 812,
+          "effective": 812,
+          "hits": 1,
+          "crits": 0,
+          "ticks": 0,
+          "misses": { "ABSORB": 1, "PARRY": 1 },
+          "min": 812,
+          "max": 812
+        },
+        {
+          "spell_id": 334660,
+          "name": "Anima Lash",
+          "school": 32,
+          "total": 0,
+          "effective": 0,
+          "hits": 0,
+          "crits": 0,
+          "ticks": 0,
+          "misses": { "ABSORB": 1 },
+          "min": 0,
+          "max": 0
+        }
+      ],
+      "targets": [
+        { "guid": "Creature-0-2085-2284-7855-169753-0000AA0001", "name": "Hollow Sentinel", "total": 812 }
+      ],
+      "series": [812]
     }
   ],
   "healing": [
@@ -161,8 +161,8 @@
           "hits": 1,
           "crits": 1,
           "ticks": 0,
-          "min": 1618,
-          "max": 1618
+          "min": 812,
+          "max": 812
         },
         {
           "spell_id": 139,
@@ -174,8 +174,8 @@
           "hits": 0,
           "crits": 0,
           "ticks": 1,
-          "min": 240,
-          "max": 240
+          "min": 0,
+          "max": 0
         }
       ],
       "targets": [{ "guid": "Player-4184-000000A1", "name": "Baelgrim-Nightslayer", "total": 2652 }],
@@ -200,8 +200,8 @@
           "hits": 1,
           "crits": 1,
           "ticks": 0,
-          "min": 1618,
-          "max": 1618
+          "min": 812,
+          "max": 812
         },
         {
           "spell_id": 139,
@@ -212,8 +212,8 @@
           "hits": 0,
           "crits": 0,
           "ticks": 1,
-          "min": 240,
-          "max": 240
+          "min": 0,
+          "max": 0
         }
       ],
       "targets": [{ "guid": "Player-4184-000000A2", "name": "Sunwick-Nightslayer", "total": 812 }],
@@ -226,6 +226,7 @@
       "target_guid": "Creature-0-2085-2284-7855-169753-0000AA0001",
       "target_name": "Hollow Sentinel",
       "spell_id": 122,
+      "school": 16,
       "name": "Frost Nova",
       "type": "DEBUFF",
       "applications": 1,
@@ -238,6 +239,7 @@
       "target_guid": "Creature-0-2085-2284-7855-169753-0000AA0001",
       "target_name": "Hollow Sentinel",
       "spell_id": 7386,
+      "school": 1,
       "name": "Sunder Armor",
       "type": "DEBUFF",
       "applications": 1,
@@ -253,6 +255,7 @@
       "target_guid": "Player-4184-000000A1",
       "target_name": "Baelgrim-Nightslayer",
       "spell_id": 17,
+      "school": 2,
       "name": "Power Word: Shield",
       "type": "BUFF",
       "applications": 1,
@@ -344,16 +347,16 @@
   ],
   "threat": [
     {
-      "guid": "Creature-0-2085-2284-7855-169753-0000AA0001",
-      "name": "Hollow Sentinel",
-      "threat": 1624,
+      "guid": "Player-4184-000000A3",
+      "name": "Morrowlyn-Nightslayer",
+      "threat": 1484,
       "model_version": "base-1",
       "complete": false
     },
     {
-      "guid": "Player-4184-000000A3",
-      "name": "Morrowlyn-Nightslayer",
-      "threat": 1484,
+      "guid": "Creature-0-2085-2284-7855-169753-0000AA0001",
+      "name": "Hollow Sentinel",
+      "threat": 812,
       "model_version": "base-1",
       "complete": false
     },
@@ -376,10 +379,10 @@
       "deaths": 0,
       "damage_done": 0,
       "healing_done": 0,
-      "damage_taken": 1624,
+      "damage_taken": 812,
       "dps": 0,
       "hps": 0,
-      "dtps": 253.75
+      "dtps": 126.875
     },
     {
       "guid": "Player-4184-000000A2",
@@ -409,5 +412,6 @@
       "hps": 0,
       "dtps": 0
     }
-  ]
+  ],
+  "mechanics": { "table_found": false, "rows": [] }
 }

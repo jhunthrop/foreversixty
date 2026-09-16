@@ -54,6 +54,7 @@
   import ExchangeTable from './ExchangeTable.svelte';
   import FightSelector from './FightSelector.svelte';
   import FilterBar from './FilterBar.svelte';
+  import MechanicsMode from './MechanicsMode.svelte';
   import ModeBar from './ModeBar.svelte';
   import NightView from './NightView.svelte';
   import Glossary from './Glossary.svelte';
@@ -451,9 +452,11 @@
   /** The actor tables' fallback: Damage Taken has no parse at all, and its cells say so. */
   const tableParseFallback = $derived(state.tab === 'damage-taken' ? 'none' : parseFallback);
 
-  /** GUID to class, for the tables whose rows are not Actors. */
+  /** GUID to class, for the tables whose rows are not Actors. Off the whole fight rather
+      than the scoped one: a colour is a property of the player, not of the current source
+      scope, and Mechanics draws the whole raid however the scope is set. */
   const classOf = $derived(
-    new Map((scoped?.roster ?? []).filter((row) => row.class).map((row) => [row.guid, row.class as string])),
+    new Map((base?.roster ?? []).filter((row) => row.class).map((row) => [row.guid, row.class as string])),
   );
 
   /**
@@ -1283,7 +1286,7 @@
           />
         {/if}
       {/if}
-      {#if nightMode && (state.view !== 'tables' || state.mode !== 'analyze')}
+      {#if nightMode && state.mode !== 'mechanics' && (state.view !== 'tables' || state.mode !== 'analyze')}
         <p class="text-muted text-[14px]" data-testid="night-tables-only">
           Timelines, events, queries, compare and rankings are one pull's. Pick a pull from the list to see
           them, or
@@ -1352,6 +1355,12 @@
           metric={state.rankingsMetric}
           onPatch={patch}
         />
+      {/if}
+      <!-- The whole fight, never the window and never the source scope: `base`, not
+           `scoped`. Over the night `base` is the fold, which carries the night's
+           mechanics, so the mode draws there too. -->
+      {#if state.mode === 'mechanics' && base !== null}
+        <MechanicsMode summary={base} {classOf} {nightMode} onPatch={patch} />
       {/if}
     </div>
   </div>

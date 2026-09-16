@@ -9,7 +9,7 @@
 // Fight numbers come from the engine (fight.Fight.Index), which starts at 1, so the
 // default fight is the first entry of report.json rather than a hard-coded 0.
 
-export type Mode = 'analyze' | 'compare' | 'rankings';
+export type Mode = 'analyze' | 'compare' | 'rankings' | 'mechanics';
 export type View = 'tables' | 'timelines' | 'events' | 'queries';
 export type Tab =
   | 'summary'
@@ -26,10 +26,10 @@ export type Tab =
   | 'casts';
 
 export interface ModeOption {
-  id: Mode | 'mechanics' | 'replay';
+  id: Mode | 'replay';
   label: string;
   enabled: boolean;
-  /** Shown beside a disabled mode. The spec defers these two, it does not drop them. */
+  /** Shown beside a disabled mode. The spec defers Replay, it does not drop it. */
   note?: string;
 }
 
@@ -37,7 +37,7 @@ export const MODES: readonly ModeOption[] = [
   { id: 'analyze', label: 'Analyze', enabled: true },
   { id: 'compare', label: 'Compare', enabled: true },
   { id: 'rankings', label: 'Rankings', enabled: true },
-  { id: 'mechanics', label: 'Mechanics', enabled: false, note: 'later' },
+  { id: 'mechanics', label: 'Mechanics', enabled: true },
   { id: 'replay', label: 'Replay', enabled: false, note: 'later' },
 ];
 

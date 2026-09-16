@@ -1,8 +1,12 @@
 <!-- web/src/components/report/ModeBar.svelte -->
 <!-- Modes, then views, then source scope, then the twelve tabs -- the order spec section 4
-     sets, which is also Warcraft Logs' order, so nobody relearns it. Mechanics and Replay
-     are rendered disabled with "later" rather than hidden: the spec defers them, and a
-     missing control reads as a missing feature. -->
+     sets, which is also Warcraft Logs' order, so nobody relearns it. Replay is rendered
+     disabled with "later" rather than hidden: the spec defers it, and a missing control
+     reads as a missing feature.
+
+     Over the whole night the mode row stays up rather than hiding: Analyze's tables and
+     Mechanics both have a meaning across pulls, and hiding the row hid the way back out
+     of Mechanics. Compare and Rankings are one pull's, so they are disabled there. -->
 <script lang="ts">
   import { splitUnitName } from '../../lib/characters';
   import { classColorVar } from '../../lib/report/format';
@@ -13,6 +17,7 @@
     TABS,
     VIEWS,
     type Mode,
+    type ModeOption,
     type ReportState,
     type Tab,
     type View,
@@ -27,7 +32,7 @@
     state: ReportState;
     roster: { guid: string; name: string; class?: string }[];
     onPatch: (patch: Partial<ReportState>) => void;
-    /** The whole night: only the tables have a meaning over it, so modes and views hide. */
+    /** The whole night: only Analyze's tables and Mechanics have a meaning over it. */
     nightMode?: boolean;
   } = $props();
 
@@ -37,15 +42,16 @@
   // text-nav is a two-step difference in grey, which is not enough to find the active
   // tab in a row of twelve without reading every one.
   const underline = 'border-b-2 -mb-px';
+
+  /** A mode that is built, and that means something over whatever is selected. */
+  function available(option: ModeOption): boolean {
+    if (!option.enabled) return false;
+    return !nightMode || option.id === 'analyze' || option.id === 'mechanics';
+  }
 </script>
 
 <div class="flex flex-col gap-3" data-testid="mode-bar">
-  <div
-    role="tablist"
-    aria-label="Mode"
-    class="border-line-soft flex flex-wrap items-center border-b"
-    hidden={nightMode}
-  >
+  <div role="tablist" aria-label="Mode" class="border-line-soft flex flex-wrap items-center border-b">
     {#each MODES as option (option.id)}
       <button
         type="button"
@@ -53,15 +59,16 @@
         class="{pill} {underline}"
         class:border-gold={state.mode === option.id}
         class:border-transparent={state.mode !== option.id}
-        class:text-strong={option.enabled && state.mode === option.id}
-        class:text-nav={option.enabled && state.mode !== option.id}
-        class:text-muted={!option.enabled}
+        class:text-strong={available(option) && state.mode === option.id}
+        class:text-nav={available(option) && state.mode !== option.id}
+        class:text-muted={!available(option)}
         aria-selected={state.mode === option.id}
-        disabled={!option.enabled}
+        disabled={!available(option)}
         data-testid={`mode-${option.id}`}
-        onclick={() => option.enabled && onPatch({ mode: option.id as Mode })}
+        onclick={() => available(option) && onPatch({ mode: option.id as Mode })}
       >
-        {option.label}{#if option.note}<span class="text-muted ml-2 lowercase">{option.note}</span>{/if}
+        {option.label}{#if option.note}<span class="text-muted ml-2 lowercase">{option.note}</span
+          >{:else if !available(option)}<span class="text-muted ml-2 lowercase">one pull’s</span>{/if}
       </button>
     {/each}
   </div>
@@ -131,7 +138,7 @@
       </select>
     </label>
   {/if}
-  {#if (state.mode === 'analyze' && state.view === 'tables') || nightMode}
+  {#if state.mode === 'analyze' && (state.view === 'tables' || nightMode)}
     <div role="tablist" aria-label="Table" class="border-line-soft flex flex-wrap border-b">
       {#each TABS as tab (tab.id)}
         <button

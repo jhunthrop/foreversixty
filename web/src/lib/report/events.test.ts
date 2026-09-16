@@ -38,9 +38,15 @@ describe('summaryEvents', () => {
 
   it('describes a cast and an aura', () => {
     expect(events.find((event) => event.kind === 'cast')?.text).toBe('Morrowlyn cast Frostbolt');
-    expect(events.find((event) => event.kind === 'aura-applied')?.text).toBe(
-      'Power Word: Fortitude on Baelgrim',
-    );
+    // The first aura of the fight is one the engine seeds from Baelgrim's COMBATANT_INFO
+    // snapshot, which carries spell ids and no names, so it is filed under its id. The
+    // Fortitude the priest casts four seconds in is still in the list behind it.
+    expect(events.find((event) => event.kind === 'aura-applied')?.text).toBe('Spell #17 on Baelgrim');
+    expect(
+      events.some(
+        (event) => event.kind === 'aura-applied' && event.text === 'Power Word: Fortitude on Baelgrim',
+      ),
+    ).toBe(true);
   });
 });
 

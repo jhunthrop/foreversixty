@@ -1,5 +1,5 @@
 {
-  "engine_version": "0.1.0",
+  "engine_version": "0.3.0",
   "fight_index": 4,
   "duration_ms": 10000,
   "damage_done": [
@@ -107,5 +107,6 @@
       "hps": 0,
       "dtps": 0
     }
-  ]
+  ],
+  "mechanics": { "table_found": false, "rows": [] }
 }

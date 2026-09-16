@@ -11,7 +11,10 @@ test('the recap shows the killing blow, the last hits and the auras that were up
   await expect(card).toContainText('killed by Warden Kelthas');
   await expect(card).toContainText('Anima Lash');
   await expect(card).toContainText('100 overkill');
-  await expect(card.locator('tbody tr')).toHaveCount(3);
+  // Two hits, not three: the boss's swing on the tank is logged only as a
+  // SWING_DAMAGE_LANDED, which the engine reads for the target's health and never counts
+  // as a hit of its own, so the recap is the two Anima Lash hits.
+  await expect(card.locator('tbody tr')).toHaveCount(2);
   await expect(card).toContainText('Necrotic Wound');
 });
 

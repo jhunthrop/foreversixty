@@ -23,13 +23,12 @@ test('the report opens on its first fight with the chrome the spec sets', async 
   await expect(page.getByTestId('fight-selector')).toBeVisible();
   await expect(page.getByTestId('fight-3')).toBeVisible();
   await expect(page.getByTestId('fight-3-outcome')).toHaveText('Kill');
-  for (const mode of ['analyze', 'compare', 'rankings']) {
+  for (const mode of ['analyze', 'compare', 'rankings', 'mechanics']) {
     await expect(page.getByTestId(`mode-${mode}`)).toBeEnabled();
+    await expect(page.getByTestId(`mode-${mode}`)).not.toContainText('later');
   }
-  for (const mode of ['mechanics', 'replay']) {
-    await expect(page.getByTestId(`mode-${mode}`)).toBeDisabled();
-    await expect(page.getByTestId(`mode-${mode}`)).toContainText('later');
-  }
+  await expect(page.getByTestId('mode-replay')).toBeDisabled();
+  await expect(page.getByTestId('mode-replay')).toContainText('later');
   for (const view of ['tables', 'timelines', 'events', 'queries']) {
     await expect(page.getByTestId(`view-${view}`)).toBeVisible();
   }

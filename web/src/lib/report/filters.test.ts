@@ -39,11 +39,13 @@ describe('unit sets from report.json', () => {
 
 describe('filter options', () => {
   it('lists every ability and every target present, deduplicated and sorted by size', () => {
+    // No Melee: the boss's one swing in this fight is logged as a SWING_DAMAGE_LANDED
+    // with no SWING_DAMAGE to repeat, and the engine never counts a landed line as a hit
+    // of its own (logs/engine/event/event.go).
     expect(abilityOptions(summary.damage_done).map((option) => option.name)).toEqual([
       'Anima Lash',
       'Slam',
       'Frostbolt',
-      'Melee',
       'Shadow Word: Pain',
     ]);
     expect(targetOptions(summary.damage_done).map((option) => option.name)).toContain('Warden Kelthas');

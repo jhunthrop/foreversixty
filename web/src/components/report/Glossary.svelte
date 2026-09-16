@@ -114,6 +114,26 @@
       meaning:
         'Threat accumulated from damage and healing under the named model; indicative until every class’s modifiers are in.',
     },
+    {
+      term: 'Mechanics table',
+      meaning:
+        'The per-boss list behind Mechanics mode: which abilities are avoidable, which casts to interrupt, which debuffs to dispel. A boss without one has no Mechanics page yet.',
+    },
+    {
+      term: 'Avoidable damage',
+      meaning:
+        'Damage from an ability the boss’s mechanics table says a player should not have been standing in. The table is curated by a person; the log only says what hit whom.',
+    },
+    {
+      term: 'Went through',
+      meaning:
+        'Casts of an interruptible spell that finished because nobody stopped them, out of the casts that started.',
+    },
+    {
+      term: 'Ran their course',
+      meaning:
+        'Debuffs that expired on their own because nobody dispelled them, out of the times they landed.',
+    },
   ];
 
   let open = $state(false);

@@ -38,6 +38,7 @@ const STATES = [
   'view=queries',
   'mode=compare',
   'mode=rankings',
+  'mode=mechanics',
 ];
 
 test('nothing scrolls sideways on any tab or view', async ({ page }) => {

@@ -48,7 +48,7 @@ function everyArray(summary: Summary): unknown[][] {
 describe('the checked-in report fixture', () => {
   it('is the report the engine wrote, with four fights numbered from one', () => {
     expect(report.report_id).toBe('fixture2abcd');
-    expect(report.engine_version).toBe('0.1.0');
+    expect(report.engine_version).toBe('0.3.0');
     expect(report.fights.map((f) => f.index)).toEqual([1, 2, 3, 4]);
     expect(report.health.layout).toBe('retail-v16');
     expect(report.health.advanced_logging).toBe(true);
@@ -104,8 +104,13 @@ describe('the checked-in report fixture', () => {
     expect(death.at_ms).toBe(10100);
     expect(death.killing_blow?.spell_name).toBe('Anima Lash');
     expect(death.killing_blow?.overkill).toBe(100);
-    expect(death.last).toHaveLength(3);
-    expect(death.last[0].hp_after).toBe(5200);
+    // Two hits, not three: the 20:12:08 line is a SWING_DAMAGE_LANDED with no
+    // SWING_DAMAGE to repeat, and the engine never counts a landed line as a hit of its
+    // own (logs/engine/event/event.go), so the recap is the two Anima Lash hits. The
+    // first left the tank on 2300 of 9400.
+    expect(death.last).toHaveLength(2);
+    expect(death.last[0].spell_name).toBe('Anima Lash');
+    expect(death.last[0].hp_after).toBe(2300);
     expect(death.auras_held[0].name).toBe('Necrotic Wound');
   });
 
@@ -138,9 +143,20 @@ describe('the checked-in report fixture', () => {
   });
 
   it('parses auras, casts, resources and threat', () => {
+    // Seven tracks, because the engine opens one for every aura a COMBATANT_INFO
+    // snapshot says was already up at the pull (summary.go seedAuras). The warrior and
+    // the mage each brought in 17 and 871, which no aura event inside this fight names,
+    // so they are filed under their spell ids; the priest brought in her own Fortitude;
+    // the warrior's Fortitude is the one the priest casts at 20:12:04; and the boss's
+    // Necrotic Wound lands on the tank.
     expect(three.auras.map((track) => track.name).sort()).toEqual([
       'Necrotic Wound',
       'Power Word: Fortitude',
+      'Power Word: Fortitude',
+      'Spell #17',
+      'Spell #17',
+      'Spell #871',
+      'Spell #871',
     ]);
     expect(three.auras.find((t) => t.name === 'Power Word: Fortitude')?.uptime_ms).toBe(31000);
     expect(three.casts[0].sequence).toEqual([5000]);
