@@ -178,6 +178,8 @@ export interface MeleeBucket {
   players: number;
   /** Who took the most of it, by name, with their share of it. */
   most?: { name: string; damage: number };
+  /** What landed on everyone else: the swings the tank did not take. */
+  others: { damage: number; players: number };
 }
 
 /**
@@ -200,7 +202,15 @@ export function meleeBucket(summary: Summary): MeleeBucket {
     hit += 1;
     if (most === undefined || own > most.damage) most = { name: actor.name, damage: own };
   }
-  return { damage, players: hit, most };
+  return {
+    damage,
+    players: hit,
+    most,
+    others: {
+      damage: damage - (most?.damage ?? 0),
+      players: Math.max(hit - (most === undefined ? 0 : 1), 0),
+    },
+  };
 }
 
 /** A death whose killing blow is on no row of the table: the mode cannot judge it, so it says so. */
@@ -229,7 +239,18 @@ export function unjudgedDeaths(summary: Summary): UnjudgedDeath[] {
       const spell = blow === undefined ? '' : blow.spell_id === MELEE_SPELL_ID ? 'melee' : blow.spell_name;
       const source = blow?.source_name ?? '';
       const by = blow === undefined ? 'nothing the log named' : [source, spell].filter(Boolean).join(' · ');
-      return { guid: death.guid, name: death.name, at_ms: death.at_ms, by, label: death.label };
+      // On the night the death's instant is on the night's clock; the pull's own clock is
+      // what the Deaths tab shows, so the two agree.
+      const pull = (summary.pulls ?? []).find(
+        (mark) => mark.start_ms <= death.at_ms && death.at_ms < mark.end_ms,
+      );
+      return {
+        guid: death.guid,
+        name: death.name,
+        at_ms: death.at_ms - (pull?.start_ms ?? 0),
+        by,
+        label: death.label,
+      };
     });
 }
 

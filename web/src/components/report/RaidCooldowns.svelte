@@ -75,6 +75,8 @@
   const span = $derived(Math.max(timeWindow.endMs - timeWindow.startMs, 1));
   /** What the pointer is over: the pull and the instant, so a band never needs a tooltip. */
   let hovered = $state('');
+  /** Which lane the readout is about, so a phone shows it under that lane, in reach of the thumb. */
+  let hoveredLane = $state('');
   function readAt(event: PointerEvent): void {
     const lane = (event.target as HTMLElement).closest<HTMLElement>('[data-lane]');
     if (lane === null) return;
@@ -94,6 +96,7 @@
         ? ''
         : ` · ${row.name} at ${clock(near.at)}${near.source ? ` by ${splitUnitName(near.source).name}` : ''} on ${splitUnitName(near.target).name}`;
     hovered = `${pull === undefined ? '' : `${pull.label} · `}${clock(at)}${use}`;
+    hoveredLane = lane.dataset.lane ?? '';
   }
   /** Per cooldown, the pulls it was used in, and the ones it was not. */
   function pullsUsed(uses: Use[]): { used: number; missed: string[] } {
@@ -217,6 +220,14 @@
               ></span>
             {/each}
           </span>
+          {#if hovered !== '' && hoveredLane === row.name}
+            <!-- The panel's readout line sits above eight lanes on a phone, out of sight of
+                 the thumb that tapped; the tapped lane repeats it here. -->
+            <span
+              class="text-strong col-span-2 text-[12px] md:hidden"
+              data-testid="raid-cooldowns-lane-readout">{hovered}</span
+            >
+          {/if}
         </li>
       {/each}
       <li

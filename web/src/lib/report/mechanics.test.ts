@@ -278,11 +278,17 @@ describe('unclassifiedAbilities', () => {
       ]),
       actor('B', [ability({ spell_id: 0, name: 'Melee', effective: 100 })]),
     ]);
-    expect(meleeBucket(summary)).toEqual({ damage: 400, players: 2, most: { name: 'A', damage: 300 } });
+    expect(meleeBucket(summary)).toEqual({
+      damage: 400,
+      players: 2,
+      most: { name: 'A', damage: 300 },
+      others: { damage: 100, players: 1 },
+    });
     expect(meleeBucket(summaryOf([actor('A', [ability({ spell_id: 7, effective: 10 })])]))).toEqual({
       damage: 0,
       players: 0,
       most: undefined,
+      others: { damage: 0, players: 0 },
     });
   });
 

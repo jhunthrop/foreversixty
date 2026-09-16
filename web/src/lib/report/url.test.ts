@@ -202,9 +202,10 @@ describe('the report URL state', () => {
     expect(parseReportState(search, 1)).toEqual(state);
   });
 
-  it('reads a negative ability id, the engine’s spell for environmental damage, and drops zero', () => {
+  it('reads a negative ability id, the engine’s spell for environmental damage, and zero, the melee swing', () => {
     expect(parseReportState('?fight=3&ability=-1', 1).ability).toBe(-1);
-    expect(parseReportState('?fight=3&ability=0', 1).ability).toBeNull();
+    expect(parseReportState('?fight=3&ability=0', 1).ability).toBe(0);
+    expect(reportSearch(withState(defaultState(1), { ability: 0 }), 1)).toContain('ability=0');
     expect(reportSearch(withState(defaultState(1), { ability: -1 }), 1)).toContain('ability=-1');
   });
 });

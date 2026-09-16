@@ -444,7 +444,7 @@
            separate borders, so the pinned column's shadow can paint (a collapsed table
            drops cell shadows); one snap stop per column, so a number is whole or absent. -->
       <div
-        class="-mx-2 snap-x snap-mandatory scroll-pl-[150px] overflow-x-auto px-2 md:mx-0 md:flex-1 md:snap-none md:overflow-visible md:px-0"
+        class="-mx-2 snap-x snap-mandatory scroll-pl-[158px] overflow-x-auto px-2 md:mx-0 md:flex-1 md:snap-none md:overflow-visible md:px-0"
         hidden={splitUnavailable}
       >
         <table
@@ -538,7 +538,8 @@
                   >{#if ability.max > 0}{formatAmount(ability.max)}{/if}</td
                 >
                 <!-- Wraps: a long list of what did not land must not push the table past its box. -->
-                <td class="text-muted tabular min-w-[220px] py-1.5 text-right font-mono text-[12px]"
+                <td
+                  class="text-muted tabular py-1.5 text-left font-mono text-[12px] whitespace-nowrap md:min-w-[220px] md:text-right"
                   >{abilityNotes(ability).join(' · ')}</td
                 >
               </tr>

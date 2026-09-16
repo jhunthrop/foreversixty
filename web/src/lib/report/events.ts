@@ -90,15 +90,14 @@ export function summaryEvents(
       .join(', ');
     let previous: { end_ms: number; stacks: number } | undefined;
     for (const segment of track.segments) {
-      // A segment that begins where the last one ended is not a new application: the
-      // stacks changed, or it was refreshed while up. The Buffs table's Applied count
-      // does not count either, and the line's verb says which it was.
+      // A segment that begins where the last one ended with a different stack count is a
+      // stack change, not a new application, and the verb says so. The engine keeps no
+      // refresh events, so nothing here claims a refresh either way.
       const continues = previous !== undefined && segment.start_ms <= previous.end_ms + 50;
-      const verb = !continues
-        ? 'on'
-        : segment.stacks !== previous?.stacks
+      const verb =
+        continues && segment.stacks !== previous?.stacks
           ? `at ${segment.stacks} ${segment.stacks === 1 ? 'stack' : 'stacks'} on`
-          : 'refreshed on';
+          : 'on';
       previous = { end_ms: segment.end_ms, stacks: segment.stacks };
       // The segment's own applier when the engine kept it; the track's set only when it
       // did not, so two priests' shields each say which priest.

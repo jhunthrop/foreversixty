@@ -119,7 +119,14 @@
    * point -- "what to tell them next week" is as much the list they stayed out of as the
    * list they stood in, and a card with only the failures reads as an accusation.
    */
-  const players = $derived(playerMechanics(block.rows, summary.roster));
+  // Over the night only the players who were in a judged pull get a card: a clean sheet
+  // for someone who was never in the room is not a clean sheet.
+  const judgedRoster = $derived(
+    block.judged_players === undefined
+      ? summary.roster
+      : summary.roster.filter((row) => block.judged_players?.includes(row.guid)),
+  );
+  const players = $derived(playerMechanics(block.rows, judgedRoster));
   /** An interrupt-only table judges nothing about any one player, so it draws no cards. */
   const showPlayerCards = $derived(
     block.rows.some(
@@ -194,7 +201,7 @@
   {:else}
     <p class="text-muted text-[12px]">
       Whole {nightMode ? 'night' : 'fight'}, from the encounter’s mechanics table. {nightMode
-        ? `${judgedSummary} The source above does not narrow it.`
+        ? `${judgedSummary} A source pick does not apply here.`
         : 'Whole fight: a brushed time window does not apply here, so none is offered.'}
     </p>
 
@@ -280,6 +287,29 @@
       </section>
     {/if}
 
+    {#if melee.damage > 0}
+      <section class="flex flex-col gap-1" data-testid="mechanics-melee">
+        <h2 class="label text-muted">Melee swings</h2>
+        <p class="text-muted text-[13px]">
+          <span class="text-text tabular font-mono">{formatAmount(melee.damage)}</span> damage to
+          <span class="tabular font-mono">{melee.players}</span>
+          {melee.players === 1 ? 'player' : 'players'} from the enemies’ swings{#if melee.most}, most of it on
+            <span class="text-text">{splitUnitName(melee.most.name).name}</span> (<span
+              class="tabular font-mono">{formatAmount(melee.most.damage)}</span
+            >){#if melee.others.players > 0}, the other
+              <span class="tabular font-mono">{formatAmount(melee.others.damage)}</span> on
+              <span class="tabular font-mono">{melee.others.players}</span>
+              {melee.others.players === 1 ? 'other player' : 'other players'}{/if}{/if}. A swing lands on
+          whoever holds the enemy, so no table judges it; the Damage Taken tab splits it by source.
+          <button
+            type="button"
+            class={linkClass}
+            aria-label="Damage Taken, melee"
+            onclick={() => openDamageTaken(0)}>Damage Taken</button
+          >
+        </p>
+      </section>
+    {/if}
     {#if showPlayerCards}
       <section class="grid grid-cols-1 gap-3 md:grid-cols-2" data-testid="mechanics-players">
         {#each players as player (player.guid)}
@@ -305,7 +335,11 @@
               {/if}
             </p>
             {#if player.hits.length === 0}
-              <p class="text-muted text-[13px]">Clean: nothing avoidable landed on them.</p>
+              <p class="text-muted text-[13px]">
+                {nightMode
+                  ? 'Nothing avoidable landed on them on the judged pulls, or they were not in those pulls.'
+                  : 'Clean: nothing avoidable landed on them.'}
+              </p>
             {:else}
               <ul class="flex flex-col gap-1 text-[13px]">
                 {#each player.hits as entry (mechanicRowKey(entry.row))}
@@ -384,26 +418,6 @@
             </li>
           {/each}
         </ul>
-      </section>
-    {/if}
-    {#if melee.damage > 0}
-      <section class="flex flex-col gap-1" data-testid="mechanics-melee">
-        <h2 class="label text-muted">Melee swings</h2>
-        <p class="text-muted text-[13px]">
-          <span class="text-text tabular font-mono">{formatAmount(melee.damage)}</span> damage to
-          <span class="tabular font-mono">{melee.players}</span>
-          {melee.players === 1 ? 'player' : 'players'} from the enemies’ swings{#if melee.most}, most of it on
-            <span class="text-text">{splitUnitName(melee.most.name).name}</span> (<span
-              class="tabular font-mono">{formatAmount(melee.most.damage)}</span
-            >){/if}. A swing lands on whoever holds the enemy, so no table judges it; the Damage Taken tab
-          splits it by source.
-          <button
-            type="button"
-            class={linkClass}
-            aria-label="Damage Taken, melee"
-            onclick={() => openDamageTaken(0)}>Damage Taken</button
-          >
-        </p>
       </section>
     {/if}
     {#if unjudged.length > 0}

@@ -421,9 +421,12 @@
     if (file === null || source === SOURCE_FRIENDLIES || source === SOURCE_ENEMIES) return;
     if (unitNames.has(source)) return;
     const wanted = source.toLowerCase();
-    const named = (file.units ?? []).find(
-      (unit) => splitUnitName(unit.name).name.toLowerCase() === wanted || unit.name.toLowerCase() === wanted,
-    );
+    // Players first: a boss's mirror images borrow players' names, and a typed name means
+    // the player, not the clone that happened to be logged first.
+    const matches = (unit: { name: string }): boolean =>
+      splitUnitName(unit.name).name.toLowerCase() === wanted || unit.name.toLowerCase() === wanted;
+    const units = file.units ?? [];
+    const named = units.find((unit) => playerSet.has(unit.guid) && matches(unit)) ?? units.find(matches);
     if (named !== undefined) {
       patch({ source: named.guid });
       return;
