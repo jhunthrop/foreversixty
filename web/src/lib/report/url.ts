@@ -93,7 +93,10 @@ export interface ReportState {
   /** Milliseconds from the fight's start; null means the whole fight. */
   start: number | null;
   end: number | null;
-  /** The filter bar: a target GUID or '', a spell id or null, and the four switches. */
+  /**
+   * The filter bar's target and the Threat tab's picked enemy, which are one key: a
+   * unit GUID on a pull, the enemy's name over a whole night, and '' for every target.
+   */
   target: string;
   ability: number | null;
   flags: FlagKey[];
@@ -137,6 +140,10 @@ export function defaultState(firstFight: number): ReportState {
   };
 }
 
+/** C0 and C1 control characters, which no unit name holds and no url should carry. */
+// eslint-disable-next-line no-control-regex
+const CONTROL_CHARS = /[\u0000-\u001f\u007f-\u009f]/;
+
 /** A non-negative integer, or null for anything else. */
 function readMs(value: string | null): number | null {
   if (value === null) return null;
@@ -175,7 +182,14 @@ export function parseReportState(search: string, firstFight: number): ReportStat
   }
 
   const target = params.get('target');
-  if (target !== null && /^[A-Za-z0-9-]{1,64}$/.test(target)) state.target = target;
+  // Not a GUID pattern: over a whole night the Threat tab's picked enemy is the enemy's
+  // NAME, since an add is a new GUID on every pull and a name is the only identity that
+  // holds across the fold -- and a name has spaces, apostrophes and commas in it
+  // ("Halkias, the Sin-Stained Goliath"). Anything printable of a sane length is
+  // accepted; URLSearchParams percent-encodes it on the way out and decodes it on the
+  // way back, so the round trip is the library's job, not a character class's.
+  if (target !== null && target !== '' && target.length <= 80 && !CONTROL_CHARS.test(target))
+    state.target = target;
   // Any integer but zero: spell ids are positive, and the environment's damage (a fall,
   // a fire) is filed under a negative one the engine reserves; zero is the melee swing.
   const ability = params.get('ability');

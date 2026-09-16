@@ -202,6 +202,22 @@ describe('the report URL state', () => {
     expect(parseReportState(search, 1)).toEqual(state);
   });
 
+  it('carries a target that is a name, which is what the night’s picked enemy is', () => {
+    // Over a whole night the Threat tab's enemies are named, not GUID'd: an add is a new
+    // GUID on every pull. A name has spaces in it, and the link has to survive them.
+    const named = withState(defaultState(1), { target: 'Warden Kelthas' });
+    const search = reportSearch(named, 1);
+    expect(search).toBe('?target=Warden+Kelthas');
+    expect(parseReportState(search, 1).target).toBe('Warden Kelthas');
+    // The filter bar's own ids are GUIDs, and they round-trip exactly as before.
+    const guid = withState(defaultState(1), { target: 'Creature-0-2085-2284-7855-169754-0000AA0002' });
+    expect(parseReportState(reportSearch(guid, 1), 1).target).toBe(guid.target);
+    // Still refused: nothing, and anything carrying a control character.
+    expect(parseReportState('?target=', 1).target).toBe('');
+    expect(parseReportState('?target=a%00b', 1).target).toBe('');
+    expect(parseReportState(`?target=${'x'.repeat(81)}`, 1).target).toBe('');
+  });
+
   it('reads a negative ability id, the engine’s spell for environmental damage, and drops zero', () => {
     expect(parseReportState('?fight=3&ability=-1', 1).ability).toBe(-1);
     expect(parseReportState('?fight=3&ability=0', 1).ability).toBeNull();

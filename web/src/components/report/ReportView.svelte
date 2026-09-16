@@ -1294,6 +1294,7 @@
           <ThreatTable
             rows={scoped.threat}
             pairs={scoped.threat_by_target ?? []}
+            everyonePairs={windowed?.threat_by_target ?? scoped.threat_by_target ?? []}
             taunts={scoped.taunts}
             names={unitNames}
             {classOf}

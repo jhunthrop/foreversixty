@@ -41,6 +41,17 @@ test('every enemy keeps the totals table, and picking one swaps in that enemy’
   await expect(rows.first().getByTestId('threat-share')).toContainText('49.2%');
 });
 
+test('a source scope narrows the rows but not the share they are measured against', async ({ page }) => {
+  // Scoped to Baelgrim alone, he is the only row on the boss -- and he still reads the
+  // 49.2% he holds of every player's threat on it, not 100% of himself. The threat the
+  // other three built is off screen, not gone.
+  await page.goto(`${FIGHT}&source=Player-4184-000000A1&target=${KELTHAS}`);
+  const rows = page.getByTestId('threat-on-target').locator('li');
+  await expect(rows).toHaveCount(1);
+  await expect(rows.first()).toContainText('Baelgrim');
+  await expect(rows.first().getByTestId('threat-share')).toContainText('49.2%');
+});
+
 test('the picked enemy rides in the URL, so the link opens on it', async ({ page }) => {
   await page.goto(FIGHT);
   await page.getByTestId('threat-target').selectOption({ label: 'Warden Kelthas' });

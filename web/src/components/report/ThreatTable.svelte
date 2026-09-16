@@ -14,10 +14,10 @@
      unit's threat over the window, enemies folded by name. Pick an enemy and the table
      becomes that enemy's own ranking -- who it is looking at, and by how much -- which is
      the question a tank actually asks. It rides in the url's `target`, the same key the
-     damage tabs' target filter uses, so one link carries one target -- except over a
-     whole night, where a pair's target is the enemy's name rather than a GUID and a name
-     with a space in it is not a `target` url.ts will read back. The picker works; the
-     link opens on "Every enemy". -->
+     damage tabs' target filter uses, so one link carries one target. Over a whole night
+     that target is the enemy's NAME rather than a GUID -- an add is a new GUID on every
+     pull -- which is why url.ts reads `target` as any printable string and not as a GUID
+     pattern. -->
 <script lang="ts">
   import { splitUnitName } from '../../lib/characters';
   import {
@@ -36,6 +36,7 @@
   let {
     rows,
     pairs = [],
+    everyonePairs = undefined,
     taunts = undefined,
     names = new Map<string, string>(),
     classOf = new Map<string, string>(),
@@ -50,6 +51,8 @@
     rows: ThreatRow[];
     /** One player's threat on one enemy. Absent from summaries before engine 0.3.1. */
     pairs?: ThreatPair[];
+    /** The same pairs before the source scope, so a scoped row still shares against everyone. */
+    everyonePairs?: ThreatPair[];
     /** Undefined means the report was parsed before taunts were kept; [] means none. */
     taunts?: Taunt[];
     /** GUID to unit name, the units table being the canonical spelling of a name. */
@@ -139,10 +142,10 @@
    * that name -- an add is a new GUID on every pull, and six of them are one enemy to the
    * reader. A player's threat on all of them adds up into one row.
    */
-  const groups = $derived.by(() => {
+  function groupPairs(list: ThreatPair[]): TargetGroup[] {
     // eslint-disable-next-line svelte/prefer-svelte-reactivity
     const byName = new Map<string, { guids: string[]; players: Map<string, ThreatLine> }>();
-    for (const pair of pairs) {
+    for (const pair of list) {
       const key = splitUnitName(pair.target_name).name;
       let found = byName.get(key);
       if (found === undefined) {
@@ -168,9 +171,21 @@
       };
     });
     return out.sort((a, b) => b.total - a.total);
-  });
+  }
+  const groups = $derived(groupPairs(pairs));
   /** The url's target names one of this table's enemies, or it names none of them. */
   const picked = $derived(target === '' ? undefined : groups.find((group) => group.guids.includes(target)));
+  /**
+   * The picked enemy's threat from every player, not only the ones in scope -- the same
+   * job `totalThreat` does for the totals table, so narrowing the source to one player
+   * shows their real share of what the boss is looking at rather than 100% of themselves.
+   */
+  const pickedTotal = $derived(
+    picked === undefined
+      ? 0
+      : (groupPairs(everyonePairs ?? pairs).find((group) => group.name === picked.name)?.total ??
+          picked.total),
+  );
   const lines = $derived<ThreatLine[]>(picked?.lines ?? ordered);
   /** Six units named "General Kaal" are six rows; each after the first says which copy it is. */
   const copyOf = $derived.by(() => {
@@ -187,19 +202,23 @@
   });
   const copies = $derived(new Set([...copyOf.entries()].filter(([, n]) => n > 1).map(([guid]) => guid)));
   const peak = $derived(lines.reduce((highest, line) => Math.max(highest, line.threat), 0));
-  // A picked enemy shares against its own total, which is what "half of what it is looking
-  // at" means. The totals table has `totalThreat` to share against the whole window under
-  // a source scope; the pairs have no such whole-window figure, so under a scope narrowed
-  // to one player that player reads 100% of the threat shown -- which is what the table
-  // shows, the scope being on screen right above it.
+  // Both branches share against everyone, never against the rows in scope: a picked enemy
+  // against every player's threat on it, the totals table against the whole window.
   const total = $derived(
-    picked !== undefined ? picked.total : (totalThreat ?? lines.reduce((sum, line) => sum + line.threat, 0)),
+    picked !== undefined ? pickedTotal : (totalThreat ?? lines.reduce((sum, line) => sum + line.threat, 0)),
   );
   const incomplete = $derived(ordered.some((row) => !row.complete));
   const modelVersion = $derived(ordered[0]?.model_version ?? '');
   const mark = $derived(approximateMark(approximate));
   const title = $derived(approximateTitle(approximate));
   const orderedTaunts = $derived([...(taunts ?? [])].sort((a, b) => a.at_ms - b.at_ms));
+  /**
+   * Everything that tells one taunt from another: two tanks can taunt two adds on the
+   * same millisecond, and over a night the same instant recurs in every pull, which the
+   * label separates.
+   */
+  const tauntKey = (taunt: Taunt): string =>
+    `${taunt.label ?? ''}|${taunt.at_ms}|${taunt.source_guid}|${taunt.target_guid}|${taunt.spell_id}`;
   /** The units table spells a name; the event's own copy of it is the fallback. */
   const nameOf = (guid: string, recorded: string): string => splitUnitName(names.get(guid) ?? recorded).name;
   const selectClass =
@@ -298,7 +317,7 @@
         <p class="text-muted text-[13px]">No taunts in this window.</p>
       {:else}
         <ul class="flex flex-col">
-          {#each orderedTaunts as taunt (`${taunt.source_guid}-${taunt.at_ms}`)}
+          {#each orderedTaunts as taunt (tauntKey(taunt))}
             <li
               class="border-line-soft flex min-h-11 flex-wrap items-center gap-x-2 gap-y-1 border-b px-2 py-2 text-[14px]"
             >
