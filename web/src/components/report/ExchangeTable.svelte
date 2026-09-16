@@ -43,6 +43,8 @@
     name: string;
     applied: number;
     dispelled: number;
+    /** Dispels by the sources this table is scoped to, when that is not everyone. */
+    own: number;
   }
 
   /**
@@ -60,9 +62,14 @@
         name: row.extra_spell_name,
         applied: 0,
         dispelled: 0,
+        own: 0,
       };
       found.dispelled += row.count;
       bySpell.set(row.extra_spell_id, found);
+    }
+    for (const row of rows) {
+      const found = bySpell.get(row.extra_spell_id);
+      if (found !== undefined && row.kind === 'dispel') found.own += row.count;
     }
     for (const track of auras) {
       if (track.type !== 'DEBUFF' || !players.has(track.target_guid)) continue;
@@ -128,7 +135,7 @@
   );
   /** The table as lines: who did it, with what, on whom, which spell, how often. */
   function csvLines(): string[][] {
-    return [
+    const credit = [
       ['By', 'With', 'On', 'Spell', 'Spell id', 'Count'],
       ...ordered.map((row) => [
         splitUnitName(row.source_name).name,
@@ -138,6 +145,39 @@
         String(row.extra_spell_id),
         String(row.count),
       ]),
+    ];
+    // The denominators under the table, as a second block: what went through or ran its
+    // course is the half a roster is built from.
+    const through = missed.map((entry) => [
+      'Went through',
+      entry.name,
+      String(entry.spell_id),
+      String(entry.cast),
+      String(entry.stopped),
+      String(entry.cast - entry.stopped),
+    ]);
+    const course = uncured.map((entry) => [
+      'Ran their course',
+      entry.name,
+      String(entry.spell_id),
+      String(entry.applied),
+      String(entry.dispelled),
+      String(entry.applied - entry.dispelled),
+    ]);
+    if (through.length === 0 && course.length === 0) return credit;
+    return [
+      ...credit,
+      [],
+      [
+        'Block',
+        'Spell',
+        'Spell id',
+        'Cast or landed',
+        'Stopped or dispelled',
+        'Went through or ran their course',
+      ],
+      ...through,
+      ...course,
     ];
   }
   const mark = wholeFightMark(true);
@@ -210,7 +250,9 @@
             <span class="text-muted text-[13px]">
               cast <span class="tabular font-mono">{entry.cast}</span> · stopped
               <span class="tabular font-mono">{entry.stopped}</span>{#if scopedToSome}
-                (<span class="tabular font-mono">{entry.own}</span> in this scope){/if} ·
+                <span class="text-muted"
+                  >&nbsp;(<span class="tabular font-mono">{entry.own}</span> in this scope)</span
+                >{/if} ·
               <span class="text-wipe tabular font-mono">{entry.cast - entry.stopped}</span> went through
             </span>
           </li>
@@ -229,7 +271,10 @@
             <span class="font-semibold">{entry.name}</span>
             <span class="text-muted text-[13px]">
               landed on the raid <span class="tabular font-mono">{entry.applied}</span> times · dispelled
-              <span class="tabular font-mono">{entry.dispelled}</span> ·
+              <span class="tabular font-mono">{entry.dispelled}</span>{#if scopedToSome}
+                <span class="text-muted"
+                  >&nbsp;(<span class="tabular font-mono">{entry.own}</span> in this scope)</span
+                >{/if} ·
               <span class="text-wipe tabular font-mono">{entry.applied - entry.dispelled}</span> ran their course
             </span>
           </li>

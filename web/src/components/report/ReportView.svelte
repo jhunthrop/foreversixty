@@ -1223,7 +1223,13 @@
             deaths={scoped.deaths}
             names={unitNames}
           />
-          <AuraTable tracks={scoped.auras} durationMs={scoped.duration_ms} kind="BUFF" names={unitNames} />
+          <AuraTable
+            tracks={scoped.auras}
+            durationMs={scoped.duration_ms}
+            startMs={timeWindow.startMs}
+            kind="BUFF"
+            names={unitNames}
+          />
         {:else if state.tab === 'debuffs'}
           {#if state.source === 'friendlies'}
             <p class="text-muted text-[12px]" data-testid="debuffs-scope-note">
@@ -1239,6 +1245,7 @@
           <AuraTable
             tracks={scoped.auras}
             durationMs={scoped.duration_ms}
+            startMs={timeWindow.startMs}
             names={unitNames}
             kind="DEBUFF"
             bossNames={bossUnitNames}

@@ -130,6 +130,22 @@ test('buffs and debuffs each show only their own kind, with a real uptime', asyn
   await expect(page.getByTestId('aura-table')).not.toContainText('Power Word: Fortitude');
 });
 
+test('a brushed window draws the uptime bars from its own start, inside the track', async ({ page }) => {
+  // A window starting at 20 s: a bar positioned on the fight's clock would sit past the
+  // track's right edge and stretch the page sideways.
+  await page.goto(`${FIGHT}&tab=buffs&start=20000&end=40000`);
+  const row = page.getByTestId('aura-1243-Player-4184-000000A1');
+  await expect(row).toBeVisible();
+  const lefts = await row
+    .locator('span[style*="left:"]')
+    .evaluateAll((spans) => spans.map((span) => Number.parseFloat((span as HTMLElement).style.left)));
+  expect(lefts.length).toBeGreaterThan(0);
+  for (const left of lefts) expect(left).toBeGreaterThanOrEqual(0);
+  for (const left of lefts) expect(left).toBeLessThan(100);
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+  expect(overflow).toBeLessThanOrEqual(0);
+});
+
 test('casts show the caster, the count and a sequence timeline', async ({ page }) => {
   await page.goto(`${FIGHT}&tab=casts`);
   await expect(page.getByTestId('cast-table')).toContainText('Frostbolt');

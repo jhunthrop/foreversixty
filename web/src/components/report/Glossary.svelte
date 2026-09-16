@@ -65,6 +65,11 @@
         'On the Casts tab, the time a player spent casting that spell across the whole fight, every cast added together. An instant spell has none. A dagger marks it as the whole fight’s figure under any window.',
     },
     {
+      term: 'Cancelled casts',
+      meaning:
+        'On the Casts tab, casts with a cast bar that were started and never went off: the player moved, was interrupted, or cancelled it. Instants have none. A cancelled hardcast is time spent for nothing, the gap a rotation can close.',
+    },
+    {
       term: 'Failed casts',
       meaning:
         'On the Casts tab, casts the game refused or that never finished: out of range, no target, not enough mana or energy, or interrupted, cancelled or moved while casting. An instant spell pressed while out of range fails too, which is why an instant can show more failures than casts. "Cast" counts the ones that went off.',

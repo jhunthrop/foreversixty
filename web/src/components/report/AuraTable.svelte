@@ -18,12 +18,15 @@
   let {
     tracks,
     durationMs,
+    startMs = 0,
     kind,
     bossNames = new Set<string>(),
     names = new Map<string, string>(),
   }: {
     tracks: AuraTrack[];
     durationMs: number;
+    /** Where the window starts on the fight's clock, so a brushed window's bars start at its left edge. */
+    startMs?: number;
     kind: 'BUFF' | 'DEBUFF';
     /** GUID to unit name, so a debuff can say who applied it. */
     names?: ReadonlyMap<string, string>;
@@ -175,7 +178,8 @@
             {/if}
           </span>
           <span class="text-muted truncate text-[13px]"
-            >{splitUnitName(track.target_name).name}{#if kind === 'DEBUFF' && track.appliers.length > 0}
+            >{splitUnitName(track.target_name)
+              .name}{#if track.appliers.length > 0 && (kind === 'DEBUFF' || track.appliers.some((guid) => guid !== track.target_guid))}
               <span class="text-[11px]" title="Who applied it">
                 · from {track.appliers
                   .map((guid) => splitUnitName(names.get(guid) ?? '').name)
@@ -200,7 +204,7 @@
               {#each track.segments as segment, i (`${segment.start_ms}-${i}`)}
                 <span
                   class="absolute top-0 h-full {kind === 'BUFF' ? 'bg-kill' : 'bg-ember'}"
-                  style={`left: ${pct(segment.start_ms)}%; width: ${Math.max(pct(segment.end_ms - segment.start_ms), 0.4)}%; opacity: ${Math.min(0.4 + segment.stacks * 0.2, 1)}`}
+                  style={`left: ${pct(segment.start_ms - startMs)}%; width: ${Math.max(pct(segment.end_ms - segment.start_ms), 0.4)}%; opacity: ${Math.min(0.4 + segment.stacks * 0.2, 1)}`}
                   title={`${formatDuration(segment.start_ms)} to ${formatDuration(segment.end_ms)}${segment.stacks > 1 ? ` · ${segment.stacks} stacks` : ''}`}
                 ></span>
               {/each}

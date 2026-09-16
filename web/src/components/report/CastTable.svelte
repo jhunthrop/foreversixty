@@ -40,19 +40,22 @@
     approximate?: boolean;
   } = $props();
 
+  /** Hardcasts begun that never went off: the sequence's gaps a player can close. */
+  const cancelled = (row: CastRow): number => Math.max(row.started - row.succeeded, 0);
   const ordered = $derived(
     [...rows].sort((a, b) => b.succeeded - a.succeeded || a.spell_name.localeCompare(b.spell_name)),
   );
   /** The table as lines: one per caster and spell, with the casting time in seconds. */
   function csvLines(): string[][] {
     return [
-      ['Player', 'Spell', 'Spell id', 'Casts', 'Started', 'Failed', 'Casting s'],
+      ['Player', 'Spell', 'Spell id', 'Casts', 'Started', 'Cancelled', 'Failed', 'Casting s'],
       ...ordered.map((row) => [
         splitUnitName(row.name).name,
         row.spell_name,
         String(row.spell_id),
         String(row.succeeded),
         String(row.started),
+        String(cancelled(row)),
         String(row.failed),
         (row.cast_time_ms / 1000).toFixed(1),
       ]),
@@ -122,13 +125,17 @@
       </p>
     {/if}
     <div
-      class="text-muted label hidden grid-cols-[minmax(120px,1.2fr)_minmax(120px,1.2fr)_64px_64px_64px_80px_minmax(0,3fr)] gap-x-3 px-2 pb-1 md:grid"
+      class="text-muted label hidden grid-cols-[minmax(120px,1.2fr)_minmax(120px,1.2fr)_64px_64px_64px_72px_80px_minmax(0,3fr)] gap-x-3 px-2 pb-1 md:grid"
     >
       <span>Caster</span>
       <span>Spell</span>
       <span class="text-right">Cast</span>
       <span class="text-right" title="Successful casts per minute of this window">Per min</span>
       <span class="text-right">Failed</span>
+      <span
+        class="text-right"
+        title="Casts started that never went off: moved, interrupted or cancelled mid-cast">Cancelled</span
+      >
       <span
         class="text-right"
         title="Time spent casting this spell, every cast added together; instants show none"
@@ -139,7 +146,7 @@
     <ul class="flex flex-col">
       {#each ordered as row (`${row.guid}-${row.spell_id}`)}
         <li
-          class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px] md:grid-cols-[minmax(120px,1.2fr)_minmax(120px,1.2fr)_64px_64px_64px_80px_minmax(0,3fr)]"
+          class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px] md:grid-cols-[minmax(120px,1.2fr)_minmax(120px,1.2fr)_64px_64px_64px_72px_80px_minmax(0,3fr)]"
           data-testid={`cast-${row.guid}-${row.spell_id}`}
         >
           <span class="truncate font-semibold" style={`color: ${classColorVar(classOf.get(row.guid))}`}>
@@ -174,6 +181,14 @@
             aria-label={approximateAriaLabel(approximate, `${row.failed} failed`)}
           >
             {mark}{row.failed}<span class="label font-body ml-1.5 md:hidden">failed</span>
+          </span>
+          <span
+            class="tabular text-muted text-right font-mono"
+            title="Casts started that never went off: moved, interrupted or cancelled mid-cast; instants have none"
+            aria-label={approximateAriaLabel(approximate, `${cancelled(row)} cancelled`)}
+            data-testid="cast-cancelled"
+          >
+            {mark}{cancelled(row)}<span class="label font-body ml-1.5 md:hidden">cancelled</span>
           </span>
           <span
             class="tabular text-muted text-right font-mono text-[13px]"
