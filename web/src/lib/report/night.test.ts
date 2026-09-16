@@ -245,4 +245,36 @@ describe('aggregateNight', () => {
     expect(night.deaths.map((death) => death.label)).toEqual(['Kaal · pull 1']);
     expect(night.roster[0].dps).toBeCloseTo(5000 / 30);
   });
+
+  it('folds mechanics across pulls, counting the pulls each one hit anyone on', () => {
+    const withMechanics = new Map(summaries);
+    const block = (damage: number) => ({
+      table_found: true,
+      rows: [
+        {
+          spell_id: 331415,
+          name: 'Wicked Gash',
+          kind: 'avoidable' as const,
+          players: [
+            {
+              guid: 'Player-1',
+              name: 'Hobolol',
+              hits: 1,
+              damage,
+              first_ms: 1000,
+              last_ms: 1000,
+              killed: false,
+            },
+          ],
+        },
+      ],
+    });
+    withMechanics.set(1, { ...summaries.get(1)!, mechanics: block(100) });
+    withMechanics.set(3, { ...summaries.get(3)!, mechanics: block(250) });
+    const night = nightSummary(fights, withMechanics);
+    const row = night.mechanics?.rows.find((entry) => entry.spell_id === 331415);
+    expect(row?.pulls_hit).toBe(2);
+    expect(row?.players?.[0]).toMatchObject({ guid: 'Player-1', hits: 2, damage: 350, pulls: 2 });
+    expect(night.mechanics?.table_found).toBe(true);
+  });
 });

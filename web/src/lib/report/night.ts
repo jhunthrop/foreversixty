@@ -12,6 +12,8 @@ import type {
   Death,
   ExchangeRow,
   FightEntry,
+  MechanicHit,
+  MechanicRow,
   ResourceTrack,
   Summary,
   ThreatRow,
@@ -227,11 +229,13 @@ export function nightSummary(
   const threat = new Map<string, ThreatRow>();
   const resources = new Map<string, ResourceTrack>();
   const combatants = new Map<string, CombatantRow>();
+  const mechanicRows = new Map<number, MechanicRow>();
   /** Per unit name, the time it was in a pull: the denominator every aura on it divides by. */
   const presence = new Map<string, number>();
   const pullMarks: PullMark[] = [];
   let offset = 0;
   let engine = '';
+  let mechanicsTableFound = false;
 
   const nameOf = knownNames(summaries);
 
@@ -336,6 +340,8 @@ export function nightSummary(
         });
       }
     }
+    if (summary.mechanics?.table_found) mechanicsTableFound = true;
+    for (const row of summary.mechanics?.rows ?? []) mergeMechanicRow(mechanicRows, row, offset);
     offset += summary.duration_ms;
   }
 
@@ -369,6 +375,7 @@ export function nightSummary(
     resources: [...resources.values()],
     threat: [...threat.values()],
     combatants: [...combatants.values()],
+    mechanics: { table_found: mechanicsTableFound, rows: [...mechanicRows.values()] },
     roster: night.players.map((player) => ({
       guid: player.guid,
       name: player.name,
@@ -486,6 +493,59 @@ function mergeActor(table: Map<string, Actor>, actor: Actor): void {
     abilities: [...abilities.values()],
     targets: [...targets.values()],
   });
+}
+
+/**
+ * Adds one pull's mechanic row into the night's row for that spell id: casts, stops,
+ * applications and dispels summed, players merged by guid, and `pulls_hit` incremented
+ * when the row was live on this pull (it hit a player, a cast started, or a debuff
+ * applied). `offset` shifts the row's own `first_ms`/`last_ms` onto the night's clock.
+ */
+function mergeMechanicRow(table: Map<number, MechanicRow>, row: MechanicRow, offset: number): void {
+  const hitThisPull = (row.players?.length ?? 0) > 0 || (row.casts ?? 0) > 0 || (row.applied ?? 0) > 0;
+  const found = table.get(row.spell_id);
+  table.set(row.spell_id, {
+    spell_id: row.spell_id,
+    name: row.name,
+    kind: row.kind,
+    note: found?.note ?? row.note,
+    players: mergeMechanicHits(found?.players, row.players, offset),
+    casts: sumOptional(found?.casts, row.casts),
+    stopped: sumOptional(found?.stopped, row.stopped),
+    applied: sumOptional(found?.applied, row.applied),
+    dispelled: sumOptional(found?.dispelled, row.dispelled),
+    pulls_hit: (found?.pulls_hit ?? 0) + (hitThisPull ? 1 : 0),
+  });
+}
+
+/** Merges one pull's mechanic hits into the night's players for that row, by guid. */
+function mergeMechanicHits(
+  found: MechanicHit[] | undefined,
+  incoming: MechanicHit[] | undefined,
+  offset: number,
+): MechanicHit[] | undefined {
+  if (found === undefined && incoming === undefined) return undefined;
+  const hits = new Map((found ?? []).map((hit) => [hit.guid, { ...hit }]));
+  for (const hit of incoming ?? []) {
+    const have = hits.get(hit.guid);
+    const firstMs = hit.first_ms + offset;
+    const lastMs = hit.last_ms + offset;
+    hits.set(
+      hit.guid,
+      have === undefined
+        ? { ...hit, first_ms: firstMs, last_ms: lastMs, pulls: 1 }
+        : {
+            ...have,
+            hits: have.hits + hit.hits,
+            damage: have.damage + hit.damage,
+            first_ms: Math.min(have.first_ms, firstMs),
+            last_ms: Math.max(have.last_ms, lastMs),
+            killed: have.killed || hit.killed,
+            pulls: (have.pulls ?? 0) + 1,
+          },
+    );
+  }
+  return [...hits.values()];
 }
 
 function sumOptional(a: number | undefined, b: number | undefined): number | undefined {

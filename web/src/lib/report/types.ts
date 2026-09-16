@@ -202,6 +202,46 @@ export interface ResourceTrack {
   zero_ms: number;
 }
 
+export type MechanicKind = 'avoidable' | 'unavoidable' | 'interrupt' | 'dispel';
+
+/** summary.MechanicHit — one player's history with an avoidable or unavoidable ability. */
+export interface MechanicHit {
+  guid: string;
+  name: string;
+  hits: number;
+  damage: number;
+  first_ms: number;
+  last_ms: number;
+  /** True when this player's killing blow was this mechanic. */
+  killed: boolean;
+  /** Set by the whole-night fold: the pulls on which this player was hit. */
+  pulls?: number;
+}
+
+/** summary.MechanicRow — one listed ability from the encounter's mechanics table, rendered against what actually happened. */
+export interface MechanicRow {
+  spell_id: number;
+  name: string;
+  kind: MechanicKind;
+  note?: string;
+  /** Avoidable and unavoidable: who it hit. */
+  players?: MechanicHit[];
+  /** Interrupt: casts the enemies started and how many were stopped. */
+  casts?: number;
+  stopped?: number;
+  /** Dispel: applications on players and how many were dispelled. */
+  applied?: number;
+  dispelled?: number;
+  /** Set by the whole-night fold: the pulls on which this mechanic hit anyone. */
+  pulls_hit?: number;
+}
+
+/** summary.MechanicsBlock — the fight's mechanics table, rendered against what actually happened. `table_found` is false when the fight's encounter has no table, and the block is then empty. */
+export interface MechanicsBlock {
+  table_found: boolean;
+  rows: MechanicRow[];
+}
+
 /** summary.ThreatRow. `complete` is false while the threat model admits gaps. */
 export interface ThreatRow {
   guid: string;
@@ -276,6 +316,8 @@ export interface Summary {
   threat: ThreatRow[];
   combatants: CombatantRow[];
   roster: RosterRow[];
+  /** Absent from summaries written before engine 0.3.0. */
+  mechanics?: MechanicsBlock;
 }
 
 /** units.Unit */
