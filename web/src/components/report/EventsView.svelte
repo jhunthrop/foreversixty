@@ -143,7 +143,11 @@
   </p>
 
   {#if shown.length === 0}
-    <p class="text-muted text-[14px]" data-testid="table-empty">Nothing matches.</p>
+    <p class="text-muted text-[14px]" data-testid="table-empty">
+      Nothing matches{stream === null && search.trim() !== ''
+        ? ' among the summary’s events; load every hit and heal above to search them all'
+        : ''}.
+    </p>
   {:else}
     <ul class="flex flex-col" data-testid="event-list">
       {#each shown as event, index (`${event.atMs}-${index}`)}
