@@ -176,8 +176,11 @@ export function parseReportState(search: string, firstFight: number): ReportStat
 
   const target = params.get('target');
   if (target !== null && /^[A-Za-z0-9-]{1,64}$/.test(target)) state.target = target;
-  const ability = readMs(params.get('ability'));
-  if (ability !== null && ability > 0) state.ability = ability;
+  // Any integer but zero: spell ids are positive, and the environment's damage (a fall,
+  // a fire) is filed under a negative one the engine reserves; zero is the melee swing.
+  const ability = params.get('ability');
+  if (ability !== null && /^-?\d+$/.test(ability) && Number.parseInt(ability, 10) !== 0)
+    state.ability = Number.parseInt(ability, 10);
   const flags = params.get('flags') ?? '';
   state.flags = (Object.keys(FLAG_LETTERS) as FlagKey[]).filter((key) => flags.includes(FLAG_LETTERS[key]));
   const compareWith = readMs(params.get('with'));

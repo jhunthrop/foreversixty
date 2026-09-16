@@ -110,7 +110,11 @@
 {:else}
   <div class="flex flex-col" data-testid="cast-table">
     {#if rhythm !== null}
-      <p class="text-[13px]" data-testid="cast-rhythm">
+      <p
+        class="text-[13px]"
+        data-testid="cast-rhythm"
+        title="Casts of every spell in this scope, and the longest stretch between two of them. A gap counts time spent dead or out of range; over the night it is on the night's clock."
+      >
         <span class="tabular font-mono">{rhythm.casts}</span> casts ·
         <span class="tabular font-mono">{perMinute(rhythm.casts)}</span> a minute · longest gap
         <span class="tabular font-mono">{formatDuration(rhythm.gap.to - rhythm.gap.from)}</span> at

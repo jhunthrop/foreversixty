@@ -173,6 +173,31 @@ func (d *Decoder) readAbsorbed(e Event, ln lexer.Line) Event {
 	return e
 }
 
+// EnvironmentalSpellID is the spell id every ENVIRONMENTAL_DAMAGE line is filed
+// under. The log gives it none; zero is the melee swing, and a fall filed as a
+// melee hit was the biggest "melee hit" on a raid leader's wipe.
+const EnvironmentalSpellID int64 = -1
+
+// environmentalSpell names the environment as the spell a fall or a fire is
+// filed under, with the school the damage is: falling, drowning and fatigue
+// are physical, fire and lava are fire, slime is nature.
+func environmentalSpell(envType string) Spell {
+	school := int64(1)
+	switch strings.ToUpper(envType) {
+	case "FIRE", "LAVA":
+		school = 4
+	case "SLIME":
+		school = 8
+	}
+	name := envType
+	if name == "" {
+		name = "Environment"
+	} else {
+		name = strings.ToUpper(name[:1]) + strings.ToLower(name[1:])
+	}
+	return Spell{ID: EnvironmentalSpellID, Name: name, School: school}
+}
+
 // readEnvironmental reads ENVIRONMENTAL_DAMAGE: the common header, the
 // advanced block describing the target, the environmental type, then the
 // damage suffix.
@@ -192,6 +217,7 @@ func (d *Decoder) readEnvironmental(e Event, ln lexer.Line) Event {
 		return fail(e, ln, fmt.Sprintf("ENVIRONMENTAL_DAMAGE has %d fields, too few for the environmental type", len(p)))
 	}
 	e.EnvType = p[i]
+	e.Spell = environmentalSpell(e.EnvType)
 	i++
 	rest := p[i:]
 	spec := d.lay.Suffixes["_DAMAGE"]

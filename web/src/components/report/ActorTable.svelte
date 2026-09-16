@@ -127,7 +127,7 @@
     >
       <span title="Rank in this table">#</span>
       <span
-        title="Percentile among ranked kills of the same boss by this spec: damage here, healing on the Healing tab. Empty on a wipe, on Damage Taken, over the whole night, or while nothing is ranked yet; ? when the rankings could not be reached."
+        title="Percentile among ranked kills of the same boss by this spec: damage here, healing on the Healing tab. Reads wipe on a wipe, – while nothing of this spec is ranked on this boss yet, … while the rankings are being asked, ? when they could not be reached; empty on Damage Taken and over the whole night."
         >Parse</span
       >
       <span>Name</span>

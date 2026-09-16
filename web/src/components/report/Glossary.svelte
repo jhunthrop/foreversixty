@@ -52,7 +52,7 @@
     {
       term: 'Active',
       meaning:
-        'The share of the window the player spent casting or attacking. Time spent dead is not active. The smaller per-second figure marked "while active" divides by that time instead of the whole window, so it says what they did while they were doing anything.',
+        'The share of the window the player spent casting or attacking. Time spent dead is not active. The second per-second figure, marked "while active", divides by that time instead of the whole window, so it is never smaller: it says what they did while they were doing anything.',
     },
     {
       term: 'Ignore events while dead',

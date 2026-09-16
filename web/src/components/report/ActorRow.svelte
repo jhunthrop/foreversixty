@@ -399,6 +399,9 @@
           each pull’s whole, so it is not shown. Open a pull to read it from that fight’s events.
         </p>
       {/if}
+      <p class="text-muted px-2 text-[11px] md:hidden" hidden={splitUnavailable}>
+        Swipe sideways for the other columns; the ability column stays put.
+      </p>
       <table
         class="min-w-[640px] flex-1 self-start text-[13px] md:w-full md:min-w-0"
         data-testid="row-abilities"
@@ -420,7 +423,7 @@
           <tr class="label text-muted border-line-soft border-b">
             <th
               scope="col"
-              class="bg-bg border-line-soft sticky left-0 border-r py-1 pr-3 pl-2 text-left font-normal md:static md:border-r-0 md:pl-0"
+              class="bg-bg border-line-soft sticky left-0 border-r py-1 pr-3 pl-2 text-left font-normal shadow-[6px_0_8px_-4px_rgba(0,0,0,0.6)] md:static md:border-r-0 md:pl-0 md:shadow-none"
               >Ability</th
             >
             <th scope="col" class="py-1 pr-3 text-right font-normal" title="Effective amount in this window"
@@ -449,7 +452,7 @@
             {@const school = schoolToken(ability.school)}
             <tr class="border-line-soft border-b">
               <td
-                class="bg-bg border-line-soft sticky left-0 max-w-[160px] border-r py-1.5 pr-3 pl-2 md:static md:max-w-none md:border-r-0 md:pl-0"
+                class="bg-bg border-line-soft sticky left-0 max-w-[160px] border-r py-1.5 pr-3 pl-2 shadow-[6px_0_8px_-4px_rgba(0,0,0,0.6)] md:static md:max-w-none md:border-r-0 md:pl-0 md:shadow-none"
                 >{ability.name}{#if ability.via}
                   <span
                     class="text-muted ml-1 text-[11px]"
@@ -457,8 +460,10 @@
                   >{/if}{#if sameName.has(ability.name)}
                   <span
                     class="text-muted ml-1 font-mono text-[11px]"
-                    title="Two spells share this name; this is spell id {ability.spell_id}"
-                    >#{ability.spell_id}</span
+                    title={ability.spell_id === 0
+                      ? 'Two things share this name; this one is the auto-attack swing, which has no spell id'
+                      : `Two spells share this name; this is spell id ${ability.spell_id}`}
+                    >{ability.spell_id === 0 ? 'swing' : `#${ability.spell_id}`}</span
                   >{/if}{#if schoolName(ability.school)}
                   <span class="text-muted ml-1 text-[11px]">{schoolName(ability.school)}</span>{/if}</td
               >

@@ -146,10 +146,13 @@
     <ul class="flex flex-col" data-testid="event-list">
       {#each shown as event, index (`${event.atMs}-${index}`)}
         <li
-          class="border-line-soft grid min-h-11 grid-cols-[68px_minmax(0,1fr)_auto] items-center gap-3 border-b px-2 py-1 text-[14px]"
+          class="border-line-soft grid min-h-11 grid-cols-[52px_minmax(0,1fr)_auto] items-center gap-2 border-b px-2 py-1 text-[14px] md:grid-cols-[68px_minmax(0,1fr)_auto] md:gap-3"
         >
           <span class="text-muted tabular font-mono text-[12px]">{formatDuration(event.atMs)}</span>
-          <span class="truncate" style={`color: ${classColorVar(classOf.get(event.guid))}`}>{event.text}</span
+          <!-- Wraps on a phone: the part a reader wants is the end of the line, "on Hobolol
+               by Deadclasslol", and a truncated line cuts exactly that. -->
+          <span class="break-words md:truncate" style={`color: ${classColorVar(classOf.get(event.guid))}`}
+            >{event.text}</span
           >
           <span class="tabular text-right font-mono text-[13px]">
             {event.amount === undefined ? '' : formatAmount(event.amount)}

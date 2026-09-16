@@ -19,6 +19,7 @@
     formatPercent,
   } from '../../lib/report/format';
   import type { ThreatRow } from '../../lib/report/types';
+  import CopyCsv from './CopyCsv.svelte';
 
   let {
     rows,
@@ -34,6 +35,17 @@
     approximate?: boolean;
   } = $props();
 
+  /** The table as lines: each player's threat and share of the window's total. */
+  function csvLines(): string[][] {
+    return [
+      ['Player', 'Threat', 'Share %'],
+      ...ordered.map((row) => [
+        splitUnitName(row.name).name,
+        String(Math.round(row.threat)),
+        (total === 0 ? 0 : (row.threat / total) * 100).toFixed(1),
+      ]),
+    ];
+  }
   const ordered = $derived([...rows].sort((a, b) => b.threat - a.threat));
   /** Six units named "General Kaal" are six rows; each after the first says which copy it is. */
   const copyOf = $derived.by(() => {
@@ -106,6 +118,7 @@
         </li>
       {/each}
     </ul>
+    <CopyCsv lines={csvLines} />
     {#if approximate}
       <p class="text-muted text-[12px]" data-testid="threat-approximate-note">
         Threat is marked {mark} because it is accumulated from damage and healing and scaled to this window's share

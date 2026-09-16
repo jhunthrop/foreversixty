@@ -74,6 +74,10 @@ func TestEnvironmentalDamagePutsTheTypeAfterTheAdvancedBlock(t *testing.T) {
 	if e.Kind != Damage || e.EnvType != "Falling" {
 		t.Fatalf("kind = %s envType = %q", e.Kind, e.EnvType)
 	}
+	// Filed under its own spell, not the melee swing's id zero.
+	if e.Spell.ID != EnvironmentalSpellID || e.Spell.Name != "Falling" || e.Spell.School != 1 {
+		t.Fatalf("environmental spell = %+v, want id %d Falling physical", e.Spell, EnvironmentalSpellID)
+	}
 	if e.Source.GUID != "0000000000000000" || e.Dest.Name != "Thalgrit-Nightslayer" {
 		t.Errorf("units = %q -> %q", e.Source.GUID, e.Dest.Name)
 	}
