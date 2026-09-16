@@ -166,22 +166,15 @@ func (a *Accumulator) spreadThreat(player string, threat float64, at time.Time) 
 	}
 }
 
-// threatPairs renders the per-target table, largest first. The series is rounded
-// per bucket rather than scaled to the total: a bucket is a second of the fight
-// and reads as one, and the rounding error over a fight is under half a point a
-// second against totals in the millions.
+// threatPairs renders the per-target table, largest first.
 func (a *Accumulator) threatPairs() []ThreatPair {
 	out := []ThreatPair{}
 	for player, by := range a.threatBy {
 		for enemy, pair := range by {
-			series := make([]int64, len(pair.series))
-			for i, v := range pair.series {
-				series[i] = int64(math.Round(v))
-			}
 			out = append(out, ThreatPair{
 				GUID: player, Name: a.name(player),
 				TargetGUID: enemy, TargetName: a.name(enemy),
-				Threat: pair.total, Series: series,
+				Threat: pair.total, Series: reconcileSeries(pair.series),
 			})
 		}
 	}
@@ -192,4 +185,25 @@ func (a *Accumulator) threatPairs() []ThreatPair {
 		return out[i].GUID+out[i].TargetGUID < out[j].GUID+out[j].TargetGUID
 	})
 	return out
+}
+
+// reconcileSeries rounds a pair's float64 per-second buckets to int64,
+// carrying the rounding remainder from one bucket to the next rather than
+// rounding each bucket on its own: bucket i emits round(cumulative through
+// i) minus what earlier buckets already emitted. Rounding each bucket
+// independently can drift off the total -- two 50.5s each round up to 51,
+// summing to 102 against a total of 101 -- and the series must sum to the
+// pair's total to the unit, since the chart drawn from it and the table
+// drawn from the total cannot disagree.
+func reconcileSeries(buckets []float64) []int64 {
+	series := make([]int64, len(buckets))
+	var cumulative float64
+	var emitted int64
+	for i, v := range buckets {
+		cumulative += v
+		rounded := int64(math.Round(cumulative))
+		series[i] = rounded - emitted
+		emitted = rounded
+	}
+	return series
 }

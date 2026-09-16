@@ -299,3 +299,51 @@ func TestThreatPairSeriesIsNeverNull(t *testing.T) {
 		t.Errorf("series = %v, want %v", s.ThreatByTarget[0].Series, want)
 	}
 }
+
+// Two heals with odd effective amounts each build 50.5 threat (the 0.5 healing
+// coefficient), landing in two different seconds. Rounding each bucket on its own
+// would emit 51 + 51 = 102 against a total of 101; the series must reconcile to the
+// total instead, carrying the half point from one bucket into the next.
+func TestThreatPairSeriesReconcilesToTheRoundedTotal(t *testing.T) {
+	o, reg := opts(t)
+	a := New(o)
+	a.Start(at(0))
+	events := []event.Event{
+		// Engages the boss so the heals below have something to spread onto.
+		dmg(0.1, mage, boss, 116, "Frostbolt", 2, -1),
+		heal(1, healer, tank, 2050, "Holy Light", 101, 0),
+		heal(2, healer, tank, 2050, "Holy Light", 101, 0),
+	}
+	for _, e := range events {
+		reg.Observe(e)
+		a.Add(e)
+	}
+	s := a.Snapshot(fight.Fight{Index: 1, Kind: fight.Encounter, Start: at(0), End: at(3),
+		Players: []string{tank, mage, healer}}, "test")
+
+	var healerPair ThreatPair
+	found := false
+	for _, p := range s.ThreatByTarget {
+		if p.GUID == healer && p.TargetGUID == boss {
+			healerPair, found = p, true
+		}
+	}
+	if !found {
+		t.Fatalf("no healer/boss pair in %+v", s.ThreatByTarget)
+	}
+
+	var sum int64
+	var nonZero int
+	for _, v := range healerPair.Series {
+		sum += v
+		if v != 0 {
+			nonZero++
+		}
+	}
+	if want := int64(math.Round(healerPair.Threat)); sum != want {
+		t.Errorf("series sums to %d, want %d (round of total %v): the two must agree to the unit", sum, want, healerPair.Threat)
+	}
+	if nonZero != 2 {
+		t.Errorf("series = %v has %d non-zero buckets, want 2 (one per heal)", healerPair.Series, nonZero)
+	}
+}
