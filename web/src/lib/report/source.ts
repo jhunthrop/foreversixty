@@ -58,7 +58,11 @@ export function scopeSource(
         keep(track.target_guid) ||
         (source !== SOURCE_ENEMIES && players.has(source) && track.appliers.includes(source)),
     ),
-    casts: summary.casts.filter((row) => keep(row.guid)),
+    // A pet's casts are its owner's work, the way a pet's damage is its owner's damage:
+    // picking the healer shows the statue's casts too. A row written before the engine
+    // kept the owner falls back to the caster's own guid, which is what the scope did
+    // before, so an older report narrows exactly as it used to.
+    casts: summary.casts.filter((row) => keep(row.owner_guid ?? row.guid)),
     resources: summary.resources.filter((track) => keep(track.guid)),
     threat: summary.threat.filter((row) => keep(row.guid)),
     threat_by_target: summary.threat_by_target?.filter((pair) => keep(pair.guid)),

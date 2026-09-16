@@ -76,15 +76,40 @@ function summary(): Summary {
     ] as Summary['auras'],
     casts: [
       {
-        guid: 'Player-2',
-        name: 'Two',
-        spell_id: 3,
-        spell_name: 'C',
+        guid: 'Player-1',
+        name: 'One',
+        owner_guid: 'Player-1',
+        spell_id: 1,
+        spell_name: 'Slam',
         started: 1,
         succeeded: 1,
         failed: 0,
         cast_time_ms: 0,
-        sequence: [1],
+        sequence: [1000],
+      },
+      {
+        guid: 'Pet-7',
+        name: 'Ashfang',
+        owner_guid: 'Player-2',
+        spell_id: 2,
+        spell_name: 'Bite',
+        started: 1,
+        succeeded: 1,
+        failed: 0,
+        cast_time_ms: 0,
+        sequence: [2000],
+      },
+      {
+        guid: 'Creature-9',
+        name: 'Boss',
+        owner_guid: 'Creature-9',
+        spell_id: 3,
+        spell_name: 'Cleave',
+        started: 1,
+        succeeded: 1,
+        failed: 0,
+        cast_time_ms: 0,
+        sequence: [3000],
       },
     ],
     interrupts: [],
@@ -172,7 +197,7 @@ describe('scopeSource', () => {
     expect(scoped.damage_done.map((actor) => actor.guid)).toEqual(['Player-1']);
     expect(scoped.deaths.map((death) => death.guid)).toEqual(['Player-1']);
     expect(scoped.auras.map((track) => track.target_guid)).toEqual(['Player-1']);
-    expect(scoped.casts).toEqual([]);
+    expect(scoped.casts.map((row) => row.spell_name)).toEqual(['Slam']);
   });
 
   it('keeps only enemies for the enemies scope', () => {
@@ -195,5 +220,28 @@ describe('scopeSource', () => {
   it('keeps every player’s per-target threat under the friendlies scope', () => {
     const scoped = scopeSource(summary(), 'friendlies', players);
     expect(scoped.threat_by_target?.map((pair) => pair.guid)).toEqual(['Player-1', 'Player-2']);
+  });
+});
+
+describe('casts under the source scope', () => {
+  it('keeps a pet’s casts under the player who owns it', () => {
+    const scoped = scopeSource(summary(), 'Player-2', players);
+    expect(scoped.casts.map((row) => row.spell_name)).toEqual(['Bite']);
+  });
+
+  it('shows a pet’s casts under all friendlies, where the pet itself is not a player', () => {
+    const scoped = scopeSource(summary(), 'friendlies', players);
+    expect(scoped.casts.map((row) => row.spell_name).sort()).toEqual(['Bite', 'Slam']);
+  });
+
+  it('leaves a pet out of the enemies, because its owner is a friendly', () => {
+    const scoped = scopeSource(summary(), 'enemies', players, new Set([...players, 'Pet-7']));
+    expect(scoped.casts.map((row) => row.spell_name)).toEqual(['Cleave']);
+  });
+
+  it('falls back to the caster’s own guid on a report parsed before owners were kept', () => {
+    const old = summary();
+    old.casts = old.casts.map((row) => ({ ...row, owner_guid: undefined }));
+    expect(scopeSource(old, 'Player-2', players).casts).toEqual([]);
   });
 });

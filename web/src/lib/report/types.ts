@@ -169,6 +169,8 @@ export interface AuraTrack {
 export interface CastRow {
   guid: string;
   name: string;
+  /** The caster's owner when the caster is a pet, their own GUID otherwise. Absent before engine 0.4.0. */
+  owner_guid?: string;
   spell_id: number;
   spell_name: string;
   started: number;
