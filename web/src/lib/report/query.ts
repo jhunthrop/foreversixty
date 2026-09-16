@@ -18,11 +18,30 @@
 import { DUCKDB_ASSET_PREFIX, duckdbRuntimeUrl } from './duckdb-runtime';
 import type { TimeWindow } from './window';
 
-/** The name the fight's bytes are registered under inside DuckDB. */
+/**
+ * The name SQL reads the fight's bytes under. Inside DuckDB each fight is registered under
+ * its own name (see `registrationName`) and the literal is rewritten on the way in: the
+ * engine's external file cache keys byte ranges by path, and a buffer has no modified
+ * time to tell two fights apart, so re-registering under one name served the previous
+ * fight's cached pages for the next one ("ZSTD Decompression failure", "No magic bytes").
+ */
 export const EVENTS_FILE = 'events.parquet';
 
-/** The one table every query reads. The file is registered under this exact name. */
+/** The one table every query reads. */
 export const EVENTS_TABLE = `read_parquet('${EVENTS_FILE}')`;
+
+/** The literal SQL names the file by, in either quote, for the rewrite to the registered name. */
+const EVENTS_FILE_LITERAL = new RegExp(`(['"])${EVENTS_FILE.replace('.', '\\.')}\\1`, 'g');
+
+/** A statement with every `events.parquet` literal pointed at the name the bytes are registered under. */
+export function withEventsFile(sql: string, registered: string): string {
+  return sql.replace(EVENTS_FILE_LITERAL, (_match, quote: string) => `${quote}${registered}${quote}`);
+}
+
+/** The name the n-th opened fight is registered under: never reused, so no cache can confuse two. */
+export function registrationName(opened: number): string {
+  return `events-${opened}.parquet`;
+}
 
 /**
  * Milliseconds from the fight's start, which is the clock every other number on this page
@@ -299,6 +318,9 @@ export function createQueryLayer(options: QueryLayerOptions): QueryLayer {
   let engine: QueryEngine | null = null;
   let loading: Promise<QueryEngine> | null = null;
   let openedUrl = '';
+  /** The name the current fight's bytes are registered under; '' before the first open. */
+  let openedName = '';
+  let opens = 0;
   let generation = 0;
   let tail: Promise<unknown> = Promise.resolve();
 
@@ -338,6 +360,7 @@ export function createQueryLayer(options: QueryLayerOptions): QueryLayer {
     loading = null;
     engine = null;
     openedUrl = '';
+    openedName = '';
     if (pending === null) return;
     // Awaited, not dropped: a build still in flight would otherwise resolve into a live
     // worker with nobody left holding a reference to terminate it. Bounded, because this
@@ -367,11 +390,13 @@ export function createQueryLayer(options: QueryLayerOptions): QueryLayer {
     if (openedUrl !== eventsUrl) {
       const bytes = await options.fetchBytes(eventsUrl);
       stillWanted(mine);
-      await active.open(EVENTS_FILE, bytes);
+      const name = registrationName(++opens);
+      await active.open(name, bytes);
       stillWanted(mine);
       openedUrl = eventsUrl;
+      openedName = name;
     }
-    const answer = await active.query(sql, maxRows);
+    const answer = await active.query(withEventsFile(sql, openedName), maxRows);
     stillWanted(mine);
     return answer;
   }
@@ -464,14 +489,20 @@ export async function createDuckDbEngine(): Promise<QueryEngine> {
   // island runs on foreversixty.gg, on localhost under Playwright, and on a preview
   // deployment, so the origin has to come from the page rather than a constant.
   await connection.query(`SET custom_extension_repository='${location.origin}${EXTENSION_REPOSITORY}'`);
+  // Belt to the unique names' braces: DuckDB 1.3+ caches external files' byte ranges by
+  // path and modified time, and a registered buffer has no modified time, so a reused
+  // path would be read from the previous file's pages. Every fight gets its own name, and
+  // the cache is off so no name can ever be served stale.
+  await connection.query('SET enable_external_file_cache = false');
 
+  let registered = '';
   return {
     async open(name: string, bytes: Uint8Array): Promise<void> {
-      // Dropped first so switching fight replaces the registration rather than stacking a
-      // second copy of two to ten megabytes in the WASM heap. The first fight has nothing
-      // to drop, which is not an error worth surfacing.
-      await database.dropFile(name).catch(() => null);
+      // The previous fight is dropped first so switching fight replaces the registration
+      // rather than stacking a second copy of two to ten megabytes in the WASM heap.
+      if (registered !== '') await database.dropFile(registered).catch(() => null);
       await database.registerFileBuffer(name, bytes);
+      registered = name;
     },
     async query(sql: string, maxRows = MAX_ROWS): Promise<QueryResult> {
       const started = performance.now();

@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import {
   EVENTS_TABLE,
+  withEventsFile,
   FIGHT_MS,
   NOT_A_READ,
   NOT_LOCAL,
@@ -164,7 +165,7 @@ describe('createQueryLayer', () => {
 
     expect(load).toHaveBeenCalledTimes(1);
     expect(fetchBytes).toHaveBeenCalledTimes(1);
-    expect(engine.opened).toEqual(['events.parquet']);
+    expect(engine.opened).toEqual(['events-1.parquet']);
     expect(engine.asked).toEqual(['SELECT 1', 'SELECT 2']);
     expect(layer.ready).toBe(true);
   });
@@ -176,7 +177,26 @@ describe('createQueryLayer', () => {
     await layer.run('/x/fights/3/events.parquet', 'SELECT 1');
     await layer.run('/x/fights/2/events.parquet', 'SELECT 1');
 
-    expect(engine.opened).toEqual(['events.parquet', 'events.parquet']);
+    // A fresh name each time: DuckDB caches a file's byte ranges by path, and two
+    // fights under one path read each other's pages.
+    expect(engine.opened).toEqual(['events-1.parquet', 'events-2.parquet']);
+  });
+
+  it('points the statement at the name the fight is registered under', async () => {
+    const engine = fakeEngine();
+    const layer = createQueryLayer({ load: async () => engine, fetchBytes: async () => bytes });
+
+    await layer.run('/x/fights/3/events.parquet', `SELECT count(*) FROM ${EVENTS_TABLE}`);
+    await layer.run('/x/fights/2/events.parquet', 'SELECT 1 FROM read_parquet("events.parquet")');
+
+    expect(engine.asked).toEqual([
+      "SELECT count(*) FROM read_parquet('events-1.parquet')",
+      'SELECT 1 FROM read_parquet("events-2.parquet")',
+    ]);
+    // Only the quoted literal moves: a column or alias that merely mentions the word does not.
+    expect(
+      withEventsFile("SELECT 'x' AS events_parquet FROM read_parquet('events.parquet')", 'events-9.parquet'),
+    ).toBe("SELECT 'x' AS events_parquet FROM read_parquet('events-9.parquet')");
   });
 
   it('refuses a statement that is not a read, without loading anything', async () => {
@@ -274,7 +294,7 @@ describe('createQueryLayer under overlap', () => {
     // One engine, one download, one registration: a second instance here would be a second
     // live DuckDB worker nothing ever terminates.
     expect(load).toHaveBeenCalledTimes(1);
-    expect(engine.opened).toEqual(['events.parquet']);
+    expect(engine.opened).toEqual(['events-1.parquet']);
     expect(engine.asked).toEqual(['SELECT 1', 'SELECT 2']);
   });
 
