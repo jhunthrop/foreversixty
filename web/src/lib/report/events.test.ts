@@ -49,6 +49,27 @@ describe('summaryEvents', () => {
     ).toBe(true);
   });
 
+  it('prints a stack change as one line, with no removal of the aura that stayed up', () => {
+    const track = {
+      ...summary.auras[0]!,
+      name: 'Wicked Gash',
+      appliers: [],
+      segments: [
+        { start_ms: 1000, end_ms: 2000, stacks: 1 },
+        { start_ms: 2000, end_ms: 4000, stacks: 2 },
+      ],
+    };
+    const lines = summaryEvents({ ...summary, auras: [track] })
+      .filter((event) => event.text.startsWith('Wicked Gash'))
+      .map((event) => `${event.atMs} ${event.text}`);
+    const target = track.target_name.split('-')[0];
+    expect(lines).toEqual([
+      `1000 Wicked Gash on ${target}`,
+      `2000 Wicked Gash at 2 stacks on ${target}`,
+      `4000 Wicked Gash off ${target}`,
+    ]);
+  });
+
   it('names each application by its own applier, not the track’s whole caster set', () => {
     const track = {
       ...summary.auras[0]!,

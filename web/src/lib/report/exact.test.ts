@@ -27,6 +27,14 @@ describe('rowsSql', () => {
     expect(rowsSql('damage-taken', { startMs: 0, endMs: 1000 })).not.toContain('dest_flags');
   });
 
+  it('reads one ability alone when the ability filter is set, on the damage tables only', () => {
+    expect(rowsSql('damage-taken', { startMs: 0, endMs: 1000 }, { ability: 331415 })).toContain(
+      'AND spell_id = 331415',
+    );
+    expect(rowsSql('damage-done', { startMs: 0, endMs: 1000 }, { ability: 0 })).toContain('AND spell_id = 0');
+    expect(rowsSql('healing', { startMs: 0, endMs: 1000 }, { ability: 116 })).not.toContain('spell_id = 116');
+  });
+
   it('counts overkill only when asked', () => {
     expect(rowsSql('damage-done', { startMs: 0, endMs: 1000 }, { countOverkill: true })).toContain(
       'amount AS effective',

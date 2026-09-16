@@ -89,11 +89,15 @@ export function summaryEvents(
       .slice(0, 2)
       .join(', ');
     let previous: { end_ms: number; stacks: number } | undefined;
-    for (const segment of track.segments) {
+    const joins = (later: { start_ms: number } | undefined, earlier: { end_ms: number }): boolean =>
+      later !== undefined && later.start_ms <= earlier.end_ms + 50;
+    track.segments.forEach((segment, index) => {
       // A segment that begins where the last one ended with a different stack count is a
-      // stack change, not a new application, and the verb says so. The engine keeps no
-      // refresh events, so nothing here claims a refresh either way.
-      const continues = previous !== undefined && segment.start_ms <= previous.end_ms + 50;
+      // stack change, not a new application, and the verb says so; the aura never came
+      // off, so the earlier segment prints no removal. The engine keeps no refresh
+      // events, so nothing here claims a refresh either way.
+      const continues = previous !== undefined && joins(segment, previous);
+      const continued = joins(track.segments[index + 1], segment);
       const verb =
         continues && segment.stacks !== previous?.stacks
           ? `at ${segment.stacks} ${segment.stacks === 1 ? 'stack' : 'stacks'} on`
@@ -115,14 +119,15 @@ export function summaryEvents(
         guids,
         text: `${track.name} ${verb} ${target}${by === '' ? '' : ` by ${by}`}`,
       });
-      events.push({
-        atMs: segment.end_ms,
-        kind: 'aura-removed',
-        guid: track.target_guid,
-        guids,
-        text: `${track.name} off ${target}${by === '' ? '' : ` (by ${by})`}`,
-      });
-    }
+      if (!continued)
+        events.push({
+          atMs: segment.end_ms,
+          kind: 'aura-removed',
+          guid: track.target_guid,
+          guids,
+          text: `${track.name} off ${target}${by === '' ? '' : ` (by ${by})`}`,
+        });
+    });
   }
 
   for (const death of summary.deaths) {

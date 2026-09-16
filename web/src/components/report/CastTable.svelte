@@ -34,7 +34,7 @@
     approximate = false,
   }: {
     rows: CastRow[];
-    /** Every caster's rows, unscoped: who recorded failures is a fact about the log, not the scope. */
+    /** Every caster's whole-fight rows: who recorded failures is a fact about the log, not the scope or the window. */
     everyone?: CastRow[];
     durationMs: number;
     startMs?: number;
