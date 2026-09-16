@@ -82,8 +82,10 @@ export interface PlayerMechanics {
    * into the raid).
    */
   hits: { row: MechanicRow; hit: MechanicHit; others?: number }[];
-  /** Their avoidable damage. */
+  /** Their avoidable damage: what landed on them. */
   damage: number;
+  /** Damage their role's ability put on other players (the `others` entries): not theirs taken, theirs placed. */
+  placed: number;
   /** What the fight did to them regardless: the table's unavoidable rows they are on. */
   unavoidable: { damage: number; names: string[] };
   /** Avoidable mechanics that never touched them, by name. */
@@ -95,6 +97,7 @@ interface PlayerTally {
   name: string;
   hits: { row: MechanicRow; hit: MechanicHit; others?: number }[];
   damage: number;
+  placed: number;
   unavoidableDamage: number;
   unavoidableNames: string[];
 }
@@ -111,7 +114,15 @@ export function playerMechanics(
 ): PlayerMechanics[] {
   const tallies = new Map<string, PlayerTally>();
   const tally = (guid: string, name: string): PlayerTally =>
-    tallies.get(guid) ?? { guid, name, hits: [], damage: 0, unavoidableDamage: 0, unavoidableNames: [] };
+    tallies.get(guid) ?? {
+      guid,
+      name,
+      hits: [],
+      damage: 0,
+      placed: 0,
+      unavoidableDamage: 0,
+      unavoidableNames: [],
+    };
   for (const row of rows) {
     if (row.kind !== 'avoidable' && row.kind !== 'unavoidable') continue;
     for (const hit of row.players ?? []) {
@@ -157,7 +168,7 @@ export function playerMechanics(
           ...found.hits,
           { row, hit: { ...hit, guid: owner.guid, name: owner.name }, others: strays.length },
         ],
-        damage: found.damage + hit.damage,
+        placed: found.placed + hit.damage,
       });
     }
   }
@@ -173,6 +184,7 @@ export function playerMechanics(
         name: player.name,
         hits: [...player.hits].sort((a, b) => b.hit.damage - a.hit.damage),
         damage: player.damage,
+        placed: player.placed,
         unavoidable: {
           damage: player.unavoidableDamage,
           names: [...new Set(player.unavoidableNames)],
@@ -180,7 +192,7 @@ export function playerMechanics(
         avoided: avoidableNames.filter((name) => !hitNames.has(name)),
       };
     })
-    .sort((a, b) => b.damage - a.damage || a.name.localeCompare(b.name));
+    .sort((a, b) => b.damage + b.placed - (a.damage + a.placed) || a.name.localeCompare(b.name));
 }
 
 /** An enemy ability that hit a player and the encounter's table says nothing about. */

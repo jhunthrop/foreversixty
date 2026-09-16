@@ -365,7 +365,8 @@ describe('a role’s ability landing on the others', () => {
     expect(tank?.avoided).toEqual([]);
     expect(tank?.hits).toHaveLength(1);
     expect(tank?.hits[0]).toMatchObject({ others: 2, hit: { hits: 4, damage: 13000, killed: true } });
-    expect(tank?.damage).toBe(13000);
+    expect(tank?.damage).toBe(0);
+    expect(tank?.placed).toBe(13000);
     // The victims' own cards are unchanged.
     expect(cards.find((card) => card.guid === 'dps-1')?.hits[0].others).toBeUndefined();
   });

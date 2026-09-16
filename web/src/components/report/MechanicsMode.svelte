@@ -391,6 +391,9 @@
             </h3>
             <p class="text-[13px]">
               <span class="tabular font-mono">{formatAmount(player.damage)}</span> avoidable damage
+              {#if player.placed > 0}
+                · <span class="tabular font-mono">{formatAmount(player.placed)}</span> placed on others
+              {/if}
               {#if nightMode}
                 <span
                   class="text-muted"
@@ -414,8 +417,9 @@
                 {#each player.hits as entry (mechanicRowKey(entry.row))}
                   <li class:text-death={entry.hit.killed}>
                     {entry.row.name} · <span class="tabular font-mono">{entry.hit.hits}</span>
-                    {entry.hit.hits === 1 ? 'hit' : 'hits'}{#if entry.others !== undefined}
-                      on <span class="tabular font-mono">{entry.others}</span>
+                    {entry.hit.hits === 1 ? 'hit' : 'hits'}{entry.others === undefined ? '' : ' on'}
+                    {#if entry.others !== undefined}
+                      <span class="tabular font-mono">{entry.others}</span>
                       {entry.others === 1 ? 'player' : 'players'} who are not the {entry.row.role}{/if} ·
                     <span class="tabular font-mono">{formatAmount(entry.hit.damage)}</span> damage
                     {#if nightMode && entry.row.encounter}· on {entry.row.encounter}{/if}
