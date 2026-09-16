@@ -50,7 +50,7 @@ function everyArray(summary: Summary): unknown[][] {
 describe('the checked-in report fixture', () => {
   it('is the report the engine wrote, with four fights numbered from one', () => {
     expect(report.report_id).toBe('fixture2abcd');
-    expect(report.engine_version).toBe('0.3.0');
+    expect(report.engine_version).toBe('0.3.1');
     expect(report.fights.map((f) => f.index)).toEqual([1, 2, 3, 4]);
     expect(report.health.layout).toBe('retail-v16');
     expect(report.health.advanced_logging).toBe(true);

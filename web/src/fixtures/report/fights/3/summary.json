@@ -1,5 +1,5 @@
 {
-  "engine_version": "0.3.0",
+  "engine_version": "0.3.1",
   "fight_index": 3,
   "duration_ms": 60000,
   "damage_done": [
@@ -33,7 +33,7 @@
       "class": "Warrior",
       "total": 4400,
       "effective": 4400,
-      "active_ms": 3000,
+      "active_ms": 4500,
       "abilities": [
         {
           "spell_id": 1464,
@@ -225,7 +225,7 @@
       "total": 1900,
       "effective": 1580,
       "overheal": 320,
-      "active_ms": 3000,
+      "active_ms": 4500,
       "abilities": [
         {
           "spell_id": 2060,
@@ -423,6 +423,17 @@
       "sequence": []
     },
     {
+      "guid": "Player-4184-000000A1",
+      "name": "Baelgrim-Nightslayer",
+      "spell_id": 355,
+      "spell_name": "Taunt",
+      "started": 0,
+      "succeeded": 1,
+      "failed": 0,
+      "cast_time_ms": 0,
+      "sequence": [8500]
+    },
+    {
       "guid": "Player-4184-000000A3",
       "name": "Morrowlyn-Nightslayer",
       "spell_id": 116,
@@ -450,7 +461,7 @@
       "guid": "Player-4184-000000A1",
       "name": "Baelgrim-Nightslayer",
       "power_type": 0,
-      "series": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8000],
+      "series": [0, 0, 0, 0, 0, 0, 0, 0, 8000, 8000, 8000, 8000, 8000],
       "gained": 0,
       "spent": 0,
       "zero_ms": 0
@@ -509,6 +520,47 @@
       "threat": 640,
       "model_version": "base-1",
       "complete": false
+    }
+  ],
+  "threat_by_target": [
+    {
+      "guid": "Player-4184-000000A1",
+      "name": "Baelgrim-Nightslayer",
+      "target_guid": "Creature-0-2085-2284-7855-169754-0000AA0002",
+      "target_name": "Warden Kelthas",
+      "threat": 4400
+    },
+    {
+      "guid": "Player-4184-000000A3",
+      "name": "Morrowlyn-Nightslayer",
+      "target_guid": "Creature-0-2085-2284-7855-169754-0000AA0002",
+      "target_name": "Warden Kelthas",
+      "threat": 3110
+    },
+    {
+      "guid": "Player-4184-000000A2",
+      "name": "Sunwick-Nightslayer",
+      "target_guid": "Creature-0-2085-2284-7855-169754-0000AA0002",
+      "target_name": "Warden Kelthas",
+      "threat": 790
+    },
+    {
+      "guid": "Player-4184-000000A5",
+      "name": "Elyra Duskvale-Hardcore",
+      "target_guid": "Creature-0-2085-2284-7855-169754-0000AA0002",
+      "target_name": "Warden Kelthas",
+      "threat": 640
+    }
+  ],
+  "taunts": [
+    {
+      "at_ms": 8500,
+      "source_guid": "Player-4184-000000A1",
+      "source_name": "Baelgrim-Nightslayer",
+      "target_guid": "Creature-0-2085-2284-7855-169754-0000AA0002",
+      "target_name": "Warden Kelthas",
+      "spell_id": 355,
+      "spell_name": "Taunt"
     }
   ],
   "combatants": [
@@ -571,8 +623,8 @@
       "spec": "Protection",
       "role": "dps",
       "item_level": 183,
-      "active_ms": 3000,
-      "activity_pct": 5,
+      "active_ms": 4500,
+      "activity_pct": 7.5,
       "deaths": 0,
       "damage_done": 4400,
       "healing_done": 0,

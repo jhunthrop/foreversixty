@@ -1,5 +1,5 @@
 {
-  "engine_version": "0.3.0",
+  "engine_version": "0.3.1",
   "fight_index": 4,
   "duration_ms": 10000,
   "damage_done": [
@@ -86,6 +86,16 @@
       "complete": false
     }
   ],
+  "threat_by_target": [
+    {
+      "guid": "Player-4184-000000A1",
+      "name": "Baelgrim-Nightslayer",
+      "target_guid": "Creature-0-2085-2284-7855-169755-0000AA0003",
+      "target_name": "Skolex the Insatiable",
+      "threat": 482100
+    }
+  ],
+  "taunts": [],
   "combatants": [],
   "roster": [
     {

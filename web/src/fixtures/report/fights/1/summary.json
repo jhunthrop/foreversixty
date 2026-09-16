@@ -1,5 +1,5 @@
 {
-  "engine_version": "0.3.0",
+  "engine_version": "0.3.1",
   "fight_index": 1,
   "duration_ms": 6400,
   "damage_done": [
@@ -368,6 +368,23 @@
       "complete": false
     }
   ],
+  "threat_by_target": [
+    {
+      "guid": "Player-4184-000000A3",
+      "name": "Morrowlyn-Nightslayer",
+      "target_guid": "Creature-0-2085-2284-7855-169753-0000AA0001",
+      "target_name": "Hollow Sentinel",
+      "threat": 1484
+    },
+    {
+      "guid": "Player-4184-000000A2",
+      "name": "Sunwick-Nightslayer",
+      "target_guid": "Creature-0-2085-2284-7855-169753-0000AA0001",
+      "target_name": "Hollow Sentinel",
+      "threat": 406
+    }
+  ],
+  "taunts": [],
   "combatants": [],
   "roster": [
     {
