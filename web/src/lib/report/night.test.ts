@@ -60,6 +60,39 @@ function summary(fight_index: number, duration_ms: number, rows: RosterRow[]): S
   };
 }
 
+describe('nightSummary auras', () => {
+  const track = (target_guid: string, target_name: string, spell_id: number) => ({
+    target_guid,
+    target_name,
+    spell_id,
+    name: 'Hanging Chains',
+    type: 'BUFF' as const,
+    school: 1,
+    applications: 1,
+    max_stacks: 1,
+    uptime_ms: 1000,
+    segments: [{ start_ms: 0, end_ms: 1000 }],
+    appliers: [],
+  });
+
+  it('names a unit the log left "Unknown" on one pull from the pull that knew it, as one row', () => {
+    const fights = [fight(1, 'Kryxis', false, 10000), fight(2, 'Kryxis', true, 10000)];
+    const unnamed = { ...summary(1, 10000, []), auras: [track('Creature-1', 'Unknown', 5)] };
+    const named = { ...summary(2, 10000, []), auras: [track('Creature-1', 'Hanging Chain', 5)] };
+    const night = nightSummary(
+      fights,
+      new Map([
+        [1, unnamed],
+        [2, named],
+      ]) as never,
+    );
+    expect(night.auras.map((row) => [row.target_guid, row.target_name, row.uptime_ms])).toEqual([
+      ['Creature-1', 'Hanging Chain', 2000],
+    ]);
+    expect(night.auras[0]?.time_ms).toBe(20000);
+  });
+});
+
 describe('aggregateNight', () => {
   const fights = [
     fight(1, 'Kaal', false, 10_000),

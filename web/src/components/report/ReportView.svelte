@@ -25,6 +25,8 @@
   import {
     ALL_FIGHTS,
     FLAG_LETTERS,
+    SOURCE_ENEMIES,
+    SOURCE_FRIENDLIES,
     type FlagKey,
     defaultState,
     parseReportState,
@@ -156,6 +158,13 @@
   });
   /** GUID to unit name from report.json, for the auras' casters. */
   const unitNames = $derived(new Map((file?.units ?? []).map((unit) => [unit.guid, unit.name])));
+  /** The Interrupts and Dispels tabs' empty line, naming the scope it was empty under. */
+  function exchangeEmpty(verb: 'interrupted' | 'dispelled'): string {
+    if (state.source === SOURCE_FRIENDLIES) return `Nothing was ${verb} in the whole fight.`;
+    if (state.source === SOURCE_ENEMIES) return `The enemies ${verb} nothing in this fight.`;
+    const name = splitUnitName(unitNames.get(state.source) ?? state.source).name;
+    return `${name} ${verb} nothing in this fight.`;
+  }
   /** The player GUIDs from report.json, for the source scope and the filters. */
   const playerSet = $derived(playerGuids(file?.units ?? []));
   /** The players and their pets and totems: what the enemies scope leaves out. */
@@ -407,6 +416,10 @@
     !windowIsWhole || filtersScale || ignoringDead || filters.countOverkill,
   );
   let percentiles = $state(new Map<string, Placement>());
+  /** The last percentile load hit a failure (not a 404): the empty cells mean "could not ask". */
+  let percentilesUnavailable = $state(false);
+  /** Bumped by the retry line; the percentile effect reads it, so a bump asks again. */
+  let parseAttempt = $state(0);
   const loader = createPercentileLoader();
 
   const filterContext = $derived({
@@ -427,7 +440,13 @@
    * ranked on yet.
    */
   const parseFallback = $derived(
-    fight?.encounter_id === undefined || fight.in_progress ? '' : fight.kill ? '–' : 'wipe',
+    fight?.encounter_id === undefined || fight.in_progress
+      ? ''
+      : fight.kill
+        ? percentilesUnavailable
+          ? '?'
+          : '–'
+        : 'wipe',
   );
   /** The actor tables' fallback: Damage Taken has no parse at all, and its cells say so. */
   const tableParseFallback = $derived(state.tab === 'damage-taken' ? 'none' : parseFallback);
@@ -593,6 +612,7 @@
     // loadFight uses on `index === state.fight`.
     const wantedFight = state.fight;
     const wantedTab = state.tab;
+    void parseAttempt;
     // A fight still being written is not a parse, for the same reason a brushed window is
     // not: the numbers are a partial fight's, and the cache key carries the rounded dps,
     // which moves on every five-second tick -- so a live 25-player pull asked for 25 fresh
@@ -607,6 +627,7 @@
       fight?.kill !== true
     ) {
       percentiles = new Map();
+      percentilesUnavailable = false;
       return;
     }
     const tab = state.tab;
@@ -640,15 +661,16 @@
         ];
       });
 
-    void loader.load(wanted.map((entry) => entry.query)).then((answers) => {
+    void loader.load(wanted.map((entry) => entry.query)).then(({ placements, unavailable }) => {
       if (state.fight !== wantedFight || state.tab !== wantedTab) return;
+      percentilesUnavailable = unavailable;
       // A plain Map, not SvelteMap: this is a throwaway local built up once and then
       // assigned whole to `percentiles` (already $state) below, the same reasoning the
       // `summaries` cache above gives for its own eslint-disable.
       // eslint-disable-next-line svelte/prefer-svelte-reactivity
       const next = new Map<string, Placement>();
       for (const entry of wanted) {
-        const found = answers.get(percentileKey(entry.query));
+        const found = placements.get(percentileKey(entry.query));
         if (found !== undefined) next.set(entry.guid, found);
       }
       percentiles = next;
@@ -951,6 +973,17 @@
   });
 </script>
 
+{#snippet parseRetry()}
+  {#if percentilesUnavailable}
+    <p class="text-muted text-[13px]" data-testid="parse-unavailable">
+      The rankings could not be reached, so the Parse column is unknown; every other figure is from the log.
+      <button type="button" class="text-strong ml-1 underline" onclick={() => (parseAttempt += 1)}
+        >Try again</button
+      >
+    </p>
+  {/if}
+{/snippet}
+
 {#if status === 'failed'}
   <p class="px-[18px] text-[14px] md:px-0" role="alert" data-testid="report-error">{error}</p>
 {:else if status === 'loading' || meta === null}
@@ -1078,6 +1111,7 @@
             />
           {/if}
         {:else if state.tab === 'summary'}
+          {@render parseRetry()}
           <SummaryTab
             summary={scoped}
             durationMs={scoped.duration_ms}
@@ -1099,6 +1133,7 @@
             onChange={setFilters}
             showBossOnly={state.tab !== 'healing'}
           />
+          {@render parseRetry()}
           <ActorTable
             actors={tabActors}
             durationMs={scoped.duration_ms}
@@ -1202,14 +1237,14 @@
         {:else if state.tab === 'interrupts'}
           <ExchangeTable
             rows={scoped.interrupts}
-            emptyText="Nothing was interrupted in the whole fight."
+            emptyText={exchangeEmpty('interrupted')}
             casts={base?.casts ?? []}
             players={playerSet}
           />
         {:else if state.tab === 'dispels'}
           <ExchangeTable
             rows={scoped.dispels}
-            emptyText="Nothing was dispelled in the whole fight."
+            emptyText={exchangeEmpty('dispelled')}
             auras={base?.auras ?? []}
             players={playerSet}
           />
@@ -1239,6 +1274,7 @@
             onPatch={patch}
             onSelectPlayer={(guid) => patch({ source: guid })}
             durationMs={summary?.duration_ms ?? scoped.duration_ms}
+            pulls={scoped.pulls ?? []}
             combatants={scoped.combatants}
             {classOf}
             dataBuild={activeBuild.build}

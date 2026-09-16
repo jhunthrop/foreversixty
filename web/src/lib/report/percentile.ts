@@ -30,8 +30,18 @@ export interface Placement {
   ranked: number;
 }
 
+/** The placements that came back, and whether any row's request failed outright. */
+export interface PercentileAnswers {
+  placements: Map<string, Placement>;
+  /**
+   * True when a request failed (the service down, a rate limit, the network): an empty
+   * cell then means "could not ask", not "nothing is ranked", and the page can say so.
+   */
+  unavailable: boolean;
+}
+
 export interface PercentileLoader {
-  load(queries: PercentileQuery[]): Promise<Map<string, Placement>>;
+  load(queries: PercentileQuery[]): Promise<PercentileAnswers>;
 }
 
 const CONCURRENCY = 6;
@@ -41,9 +51,10 @@ export function createPercentileLoader(apiBase: string = API_BASE_URL): Percenti
   // number for the life of the page, and re-asking on every tab switch tripped the limiter.
   const cache = new Map<string, Placement | null>();
 
-  async function one(query: PercentileQuery): Promise<void> {
+  /** Whether the request got an answer (a placement or a 404); false is retried next time. */
+  async function one(query: PercentileQuery): Promise<boolean> {
     const key = percentileKey(query);
-    if (cache.has(key)) return;
+    if (cache.has(key)) return true;
     const params = new URLSearchParams({
       encounter: String(query.encounterId),
       difficulty: String(query.difficulty),
@@ -58,23 +69,27 @@ export function createPercentileLoader(apiBase: string = API_BASE_URL): Percenti
       const response = await fetch(new Request(`${apiBase}/v1/rankings/percentile?${params.toString()}`));
       if (response.status === 404) {
         cache.set(key, null);
-        return;
+        return true;
       }
-      if (!response.ok) return;
+      if (!response.ok) return false;
       const envelope = (await response.json()) as {
         ok: boolean;
         data: { percentile?: number; ranked?: number } | null;
       };
       const percentile = envelope.data?.percentile;
-      if (envelope.ok && typeof percentile === 'number')
+      if (envelope.ok && typeof percentile === 'number') {
         cache.set(key, { percentile, ranked: envelope.data?.ranked ?? 0 });
+        return true;
+      }
+      return false;
     } catch {
       /* No percentile for this row. The row still renders. */
+      return false;
     }
   }
 
   return {
-    async load(queries: PercentileQuery[]): Promise<Map<string, Placement>> {
+    async load(queries: PercentileQuery[]): Promise<PercentileAnswers> {
       // Deduplicated by key, not just filtered against the cache: two identical queries in
       // the same call (a tank and a healer both parsed at the same rounded dps, say) would
       // otherwise both pass the "not cached yet" check before either request lands, and
@@ -90,18 +105,21 @@ export function createPercentileLoader(apiBase: string = API_BASE_URL): Percenti
       // A fixed pool of workers pulling off one queue: simpler than batching, and it keeps
       // exactly CONCURRENCY requests in flight rather than CONCURRENCY per batch.
       const queue = [...pending];
+      let unavailable = false;
       const workers = Array.from({ length: Math.min(CONCURRENCY, queue.length) }, async () => {
-        for (let next = queue.shift(); next !== undefined; next = queue.shift()) await one(next);
+        for (let next = queue.shift(); next !== undefined; next = queue.shift()) {
+          if (!(await one(next))) unavailable = true;
+        }
       });
       await Promise.all(workers);
 
-      const answers = new Map<string, Placement>();
+      const placements = new Map<string, Placement>();
       for (const query of queries) {
         const key = percentileKey(query);
         const found = cache.get(key);
-        if (found !== undefined && found !== null) answers.set(key, found);
+        if (found !== undefined && found !== null) placements.set(key, found);
       }
-      return answers;
+      return { placements, unavailable };
     },
   };
 }

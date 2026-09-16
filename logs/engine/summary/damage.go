@@ -151,12 +151,18 @@ func (a *Accumulator) addDamageAndHealing(e event.Event) {
 	case event.Damage:
 		src := a.owner(e.Source.GUID)
 		amount, effective := e.Amount.V, e.Effective()
-		done := a.table(a.damageDone, src)
-		a.fold(done, e, amount, effective, e.Dest.GUID, a.via(e))
+		// Damage done is damage to the other side. A hit on a friendly unit -- an
+		// Earthen Wall Totem taking a hit in a player's place, a mind-controlled
+		// raider -- is that unit's damage taken and nobody's damage done, and it
+		// builds no threat.
+		if !units.SameSide(e.Source.Flags, e.Dest.Flags) {
+			done := a.table(a.damageDone, src)
+			a.fold(done, e, amount, effective, e.Dest.GUID, a.via(e))
+			a.markActive(src, e.Time)
+			a.threat[src] += a.opt.Threat.Damage(e)
+		}
 		taken := a.table(a.damageTaken, e.Dest.GUID)
 		a.fold(taken, e, amount, effective, src, "")
-		a.markActive(src, e.Time)
-		a.threat[src] += a.opt.Threat.Damage(e)
 		a.noteMechanicHit(e)
 
 	case event.Heal:
@@ -177,12 +183,14 @@ func (a *Accumulator) addDamageAndHealing(e event.Event) {
 
 	case event.Missed:
 		src := a.owner(e.Source.GUID)
-		done := a.table(a.damageDone, src)
-		ab := done.ability(e, a.via(e))
-		if ab.Misses == nil {
-			ab.Misses = map[string]int64{}
+		if !units.SameSide(e.Source.Flags, e.Dest.Flags) {
+			done := a.table(a.damageDone, src)
+			ab := done.ability(e, a.via(e))
+			if ab.Misses == nil {
+				ab.Misses = map[string]int64{}
+			}
+			ab.Misses[e.MissType]++
 		}
-		ab.Misses[e.MissType]++
 		taken := a.table(a.damageTaken, e.Dest.GUID)
 		tab := taken.ability(e, "")
 		if tab.Misses == nil {

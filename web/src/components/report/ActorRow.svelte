@@ -152,7 +152,6 @@
       .sort((a, b) => b.effective - a.effective),
   );
   const detailTotal = $derived(detailRows.reduce((sum, ability) => sum + ability.effective, 0));
-  const detailPeak = $derived(detailRows.reduce((peak, ability) => Math.max(peak, ability.effective), 0));
   const targetsTotal = $derived(targetsByName.reduce((sum, target) => sum + target.total, 0));
   /** What a line's last cell says: overhealing for a heal, otherwise what did not land. */
   function abilityNotes(ability: Ability): string[] {
@@ -200,9 +199,15 @@
   /** Ability names two different spell ids share, shown with the id to tell them apart. */
   const sameName = $derived.by(() => {
     // eslint-disable-next-line svelte/prefer-svelte-reactivity
-    const seen = new Map<string, number>();
-    for (const ability of actor.abilities) seen.set(ability.name, (seen.get(ability.name) ?? 0) + 1);
-    return new Set([...seen.entries()].filter(([, count]) => count > 1).map(([name]) => name));
+    const seen = new Map<string, Set<number>>();
+    for (const ability of actor.abilities) {
+      // Distinct spell ids, not rows: a pet's Melee and its owner's are one spell twice.
+      // eslint-disable-next-line svelte/prefer-svelte-reactivity
+      const ids = seen.get(ability.name) ?? new Set<number>();
+      ids.add(ability.spell_id);
+      seen.set(ability.name, ids);
+    }
+    return new Set([...seen.entries()].filter(([, ids]) => ids.size > 1).map(([name]) => name));
   });
 
   /** The row's amount by spell school: how much was physical, how much magic. */
@@ -405,7 +410,7 @@
         </caption>
         <thead>
           <tr class="label text-muted border-line-soft border-b">
-            <th scope="col" class="py-1 pr-3 text-left font-normal">Ability</th>
+            <th scope="col" class="bg-bg sticky left-0 py-1 pr-3 text-left font-normal md:static">Ability</th>
             <th scope="col" class="py-1 pr-3 text-right font-normal" title="Effective amount in this window"
               >Amount</th
             >
@@ -431,7 +436,7 @@
             {@const hits = landed(ability)}
             {@const school = schoolToken(ability.school)}
             <tr class="border-line-soft border-b">
-              <td class="py-1.5 pr-3"
+              <td class="bg-bg sticky left-0 max-w-[160px] py-1.5 pr-3 md:static md:max-w-none"
                 >{ability.name}{#if ability.via}
                   <span
                     class="text-muted ml-1 text-[11px]"
@@ -455,11 +460,11 @@
                 >{detailTotal === 0 ? '' : formatPercent((ability.effective / detailTotal) * 100)}</td
               >
               <td class="py-1.5 pr-3">
-                {#if detailPeak > 0 && ability.effective > 0}
+                {#if detailTotal > 0 && ability.effective > 0}
                   <span class="bg-line-soft block h-[6px] w-full"
                     ><span
                       class="block h-full"
-                      style={`width: ${(ability.effective / detailPeak) * 100}%; background: ${school}`}
+                      style={`width: ${(ability.effective / detailTotal) * 100}%; background: ${school}`}
                     ></span></span
                   >
                 {/if}
