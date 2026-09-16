@@ -326,14 +326,27 @@
 
   /** The zero-height mark above the tab's table, for the phone to scroll to on a tab change. */
   let tabAnchor = $state<HTMLElement | undefined>(undefined);
+  /** The mark above the mode bar, for the phone to scroll to on a mode change. */
+  let modeAnchor = $state<HTMLElement | undefined>(undefined);
   let shownTab = state.tab;
+  let shownMode = state.mode;
+  /** Scrolls a phone to the mark; a desktop has both in view and never moves. */
+  function bringIntoView(anchor: HTMLElement | undefined): void {
+    if (typeof window === 'undefined' || !window.matchMedia('(max-width: 767px)').matches) return;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    anchor?.scrollIntoView({ block: 'start', behavior: reduced ? 'auto' : 'smooth' });
+  }
   $effect(() => {
     const tab = state.tab;
     if (tab === shownTab) return;
     shownTab = tab;
-    if (typeof window === 'undefined' || !window.matchMedia('(max-width: 767px)').matches) return;
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    tabAnchor?.scrollIntoView({ block: 'start', behavior: reduced ? 'auto' : 'smooth' });
+    bringIntoView(tabAnchor);
+  });
+  $effect(() => {
+    const mode = state.mode;
+    if (mode === shownMode) return;
+    shownMode = mode;
+    bringIntoView(modeAnchor);
   });
   /** The dead spans the window meets: the note lists these, and says nothing when there are none. */
   const windowedDeadSpans = $derived(
@@ -1222,6 +1235,10 @@
            the page header instead. The negative margin takes it out to the viewport edges
            so its background covers the rows sliding under it, and the padding puts the
            18px gutter back on its own children. -->
+      <!-- On a phone the fight list sits above the mode bar, so a mode's content starts a
+           screen or two down; a mode change scrolls here, the way a tab change scrolls to
+           its table. -->
+      <div bind:this={modeAnchor} class="scroll-mt-2" aria-hidden="true"></div>
       <div class="bg-bg -mx-[18px] px-[18px] py-2 md:mx-0 md:px-0 md:py-0">
         <ModeBar {state} {roster} onPatch={patch} {nightMode} />
       </div>

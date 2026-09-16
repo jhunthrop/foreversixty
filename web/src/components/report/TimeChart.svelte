@@ -212,16 +212,18 @@
 >
   <figcaption class="flex flex-wrap items-baseline justify-between gap-2">
     <span class="label text-muted"
-      ><span class="bg-gold mr-1 inline-block h-[2px] w-[14px] align-middle" aria-hidden="true"></span>{label} per
-      second{#each extra as line (line.label)}
-        <span class="ml-3 tracking-normal normal-case"
+      ><span class="whitespace-nowrap"
+        ><span class="bg-gold mr-1 inline-block h-[2px] w-[14px] align-middle" aria-hidden="true"
+        ></span>{label} per second</span
+      >{#each extra as line (line.label)}
+        <span class="ml-3 tracking-normal whitespace-nowrap normal-case"
           ><span
             class="mr-1 inline-block h-[2px] w-[14px] align-middle"
             style={`background: ${line.token}`}
             aria-hidden="true"
           ></span>{line.label}</span
         >{/each}{#if deaths.length > 0}
-        <span class="ml-3 tracking-normal normal-case"
+        <span class="ml-3 tracking-normal whitespace-nowrap normal-case"
           ><span class="bg-death mr-1 inline-block h-[10px] w-[2px] align-middle" aria-hidden="true"
           ></span>{deaths.length === 1 ? 'a death' : `${deaths.length} deaths`}</span
         >{/if}</span
@@ -242,7 +244,7 @@
 
   <!-- The scale sits over the canvas's left edge: the peak, half of it and zero, so the
        line says how much and not only when. The canvas keeps its full width for the brush. -->
-  <div class="relative">
+  <div class="relative pl-12">
     <canvas
       bind:this={canvas}
       class="w-full touch-none"
@@ -257,7 +259,7 @@
     ></canvas>
     {#if peak > 0}
       <div
-        class="text-muted pointer-events-none absolute inset-y-0 left-0 flex flex-col justify-between py-0.5 pl-1 font-mono text-[10px] leading-none"
+        class="text-muted pointer-events-none absolute inset-y-0 left-0 flex w-11 flex-col items-end justify-between py-0.5 pr-1 text-right font-mono text-[10px] leading-none"
         data-testid="chart-scale"
         aria-hidden="true"
       >
