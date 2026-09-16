@@ -304,11 +304,8 @@ func (a *Accumulator) Snapshot(f fight.Fight, engineVersion string) Summary {
 		Resources:      a.resourceRows(),
 		Threat:         a.threatRows(),
 		ThreatByTarget: a.threatPairs(),
-		Taunts:         copySlice(a.taunts),
+		Taunts:         a.tauntRows(),
 		Combatants:     a.combatantRows(),
-	}
-	if s.Taunts == nil {
-		s.Taunts = []Taunt{}
 	}
 	s.Mechanics = a.mechanicsBlock(s.Deaths)
 	s.Roster = a.rosterRows(f, s)

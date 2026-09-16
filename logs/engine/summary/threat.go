@@ -92,9 +92,11 @@ type ThreatPair struct {
 }
 
 // creditThreat books threat from one player against one enemy. The caller
-// is responsible for knowing enemy is hostile; creditThreat itself trusts
-// it, the same way the damage and heal cases already trust the event's own
-// flags rather than a registry lookup (see engage below).
+// is responsible for knowing enemy is on the other side; creditThreat itself
+// trusts it, the same way the damage and heal cases already trust the event's
+// own flags rather than a registry lookup (see engage below). The damage case
+// credits the pair wherever it credits the total, so the two can never
+// disagree about what an enemy is.
 func (a *Accumulator) creditThreat(player, enemy string, threat float64) {
 	if threat == 0 || enemy == "" {
 		return
@@ -107,22 +109,27 @@ func (a *Accumulator) creditThreat(player, enemy string, threat float64) {
 	by[enemy] += threat
 }
 
-// engage marks a hostile unit as in the fight now. flags is the reaction
-// the current event carries for guid, not a registry lookup: the registry's
-// flags for a GUID are whatever the most recent event touching it said,
-// which mid-stream can still be catching up to what a later event will
-// reveal (Snapshot's doc comment promises a live-tail caller correct
-// output at any point, so this must not depend on how much of the fight
-// the registry has seen yet). The event in hand is already authoritative
-// for its own units.
+// engage marks an enemy as in the fight now. Anything that is not friendly
+// counts: a neutral-reaction unit (a Tormented Soul the raid pulls) fights
+// back and holds threat exactly as a hostile-flagged one does, and the
+// damage case already treats it as an enemy -- Hostile alone would leave it
+// out of the healers' spread while its damage built their totals.
+//
+// flags is the reaction the current event carries for guid, not a registry
+// lookup: the registry's flags for a GUID are whatever the most recent event
+// touching it said, which mid-stream can still be catching up to what a
+// later event will reveal (Snapshot's doc comment promises a live-tail
+// caller correct output at any point, so this must not depend on how much of
+// the fight the registry has seen yet). The event in hand is already
+// authoritative for its own units.
 func (a *Accumulator) engage(guid string, flags uint32, at time.Time) {
-	if guid == "" || !units.Hostile(flags) {
+	if guid == "" || units.Friendly(flags) {
 		return
 	}
 	a.engaged[guid] = at
 }
 
-// spreadThreat books healing threat over every hostile unit engaged within the window.
+// spreadThreat books healing threat over every enemy engaged within the window.
 func (a *Accumulator) spreadThreat(player string, threat float64, at time.Time) {
 	if threat == 0 {
 		return

@@ -161,7 +161,13 @@ func (a *Accumulator) addDamageAndHealing(e event.Event) {
 			a.markActive(src, e.Time)
 			th := a.opt.Threat.Damage(e)
 			a.threat[src] += th
-			if units.Hostile(e.Dest.Flags) {
+			// Anything not friendly is an enemy to book threat against, the
+			// same test engage uses: Hostile alone hid a neutral-reaction
+			// unit's threat from the per-target table while still counting it
+			// in the player's total. A friendly dest is excluded because a
+			// pair reads "this player's threat on this enemy", and the boss's
+			// own threat on a raider is not a row of that table.
+			if !units.Friendly(e.Dest.Flags) {
 				a.creditThreat(src, e.Dest.GUID, th)
 			}
 			a.engage(e.Source.GUID, e.Source.Flags, e.Time)
