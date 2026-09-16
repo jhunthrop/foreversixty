@@ -12,6 +12,12 @@
      entirely rather than inventing a per-fight rescoping, and says so, so a window left
      brushed on the chart is not mistaken for narrowing this table too. -->
 <script lang="ts">
+  import {
+    COMPARE_METRICS,
+    METRIC_LABELS,
+    PER_SECOND_METRICS,
+    type CompareMetric,
+  } from '../../lib/report/compare';
   import { splitUnitName } from '../../lib/characters';
   import { classColorVar, formatAmount, formatDuration, outcomeLabel } from '../../lib/report/format';
   import { fetchSummary } from '../../lib/report/load';
@@ -43,21 +49,6 @@
     metric?: string;
     onPatch: (patch: { compareWith?: number | null; compareMetric?: string }) => void;
   } = $props();
-
-  type CompareMetric =
-    'damage_done' | 'dps' | 'healing_done' | 'hps' | 'damage_taken' | 'dtps' | 'threat' | 'tps';
-  const PER_SECOND = new Set<CompareMetric>(['dps', 'hps', 'dtps', 'tps']);
-  /** The caption's words for each metric: a key like dtps is not a sentence. */
-  const METRIC_LABELS: Record<CompareMetric, string> = {
-    damage_done: 'damage done',
-    dps: 'DPS',
-    healing_done: 'healing done',
-    hps: 'HPS',
-    damage_taken: 'damage taken',
-    dtps: 'damage taken per second',
-    threat: 'threat',
-    tps: 'threat per second',
-  };
 
   const options = $derived(fights.filter((fight) => fight.index !== current));
   /** "pull 2 of 3" per boss pull, the way the fight list says it, so the picker reads the same. */
@@ -96,18 +87,8 @@
       : scopeSummary(rightWhole, clampWindow(window, rightWhole.duration_ms)),
   );
   let error = $state('');
-  const METRIC_IDS: CompareMetric[] = [
-    'damage_done',
-    'dps',
-    'healing_done',
-    'hps',
-    'damage_taken',
-    'dtps',
-    'threat',
-    'tps',
-  ];
   const metric = $derived<CompareMetric>(
-    (METRIC_IDS as string[]).includes(metricParam) ? (metricParam as CompareMetric) : 'dps',
+    (COMPARE_METRICS as readonly string[]).includes(metricParam) ? (metricParam as CompareMetric) : 'dps',
   );
 
   // A fight picked elsewhere on the page (the fight selector, or the browser's own back
@@ -166,7 +147,7 @@
       const threat = summary.threat.find((line) => line.guid === row.guid)?.threat ?? 0;
       return Math.round(metric === 'tps' ? threat / (summary.duration_ms / 1000) : threat);
     }
-    return PER_SECOND.has(metric) ? Math.round(row[metric]) : row[metric];
+    return PER_SECOND_METRICS.has(metric) ? Math.round(row[metric]) : row[metric];
   }
 
   function fightLabel(fight: FightEntry | null): string {
