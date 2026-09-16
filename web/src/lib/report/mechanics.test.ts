@@ -253,4 +253,18 @@ describe('unclassifiedAbilities', () => {
     );
     expect(result).toEqual([{ spell_id: 7, name: 'Anima Lash', damage: 10, players: 1 }]);
   });
+
+  it('leaves out a spell a roster player dealt damage with: friendly fire is nobody’s mechanic', () => {
+    const summary = summaryOf([
+      actor('A', [
+        ability({ spell_id: 116, name: 'Frostbolt', effective: 500 }),
+        ability({ spell_id: 999, name: 'Gloom Rot', effective: 40 }),
+      ]),
+    ]);
+    const result = unclassifiedAbilities({
+      ...summary,
+      damage_done: [actor('B', [ability({ spell_id: 116, name: 'Frostbolt', effective: 500 })])],
+    });
+    expect(result.map((entry) => entry.spell_id)).toEqual([999]);
+  });
 });

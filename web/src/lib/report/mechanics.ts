@@ -165,11 +165,19 @@ const MELEE_SPELL_ID = 0;
  * rule: a table is one person's list, not the whole of what a boss does, and an ability
  * missing from it must be listed as unjudged rather than quietly dropped. Over the night
  * the rows come from every boss at once -- a folded damage-taken ability does not carry
- * the pull it came from -- so the caller says so beside the list.
+ * the pull it came from -- so the caller says so beside the list. A spell a roster player
+ * dealt damage with is a player's, not a mechanic: friendly fire (a totem hit, a mind
+ * controlled raider's spell) stays off the list, since a damage-taken ability carries no
+ * source to tell it apart by.
  */
 export function unclassifiedAbilities(summary: Summary): UnclassifiedAbility[] {
   const classified = new Set((summary.mechanics?.rows ?? []).map((row) => row.spell_id));
   const players = new Set(summary.roster.map((row) => row.guid));
+  const playerSpells = new Set(
+    summary.damage_done
+      .filter((actor) => players.has(actor.guid))
+      .flatMap((actor) => actor.abilities.map((ability) => ability.spell_id)),
+  );
   const damage = new Map<number, number>();
   const names = new Map<number, string>();
   const hit = new Map<number, Set<string>>();
@@ -177,6 +185,7 @@ export function unclassifiedAbilities(summary: Summary): UnclassifiedAbility[] {
     if (!players.has(actor.guid)) continue;
     for (const ability of actor.abilities) {
       if (ability.spell_id === MELEE_SPELL_ID || classified.has(ability.spell_id)) continue;
+      if (playerSpells.has(ability.spell_id)) continue;
       damage.set(ability.spell_id, (damage.get(ability.spell_id) ?? 0) + ability.effective);
       if (ability.name) names.set(ability.spell_id, ability.name);
       const guids = hit.get(ability.spell_id) ?? new Set<string>();

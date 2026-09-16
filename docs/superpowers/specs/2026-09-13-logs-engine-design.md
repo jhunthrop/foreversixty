@@ -136,7 +136,7 @@ unknown or errored events.
 ## 4. The report experience
 
 Same shape as Warcraft Logs so nobody relearns: fight selector (encounter, kill or wipe,
-duration, time, phase presets), then modes (Analyze, Compare, Rankings; Mechanics and Replay
+duration, time, phase presets), then modes (Analyze, Compare, Rankings, Mechanics; Replay
 later), then views (Tables, Timelines, Events, Queries), then source scope (all friendlies, all
 enemies, one player), then the twelve table tabs: Summary, Damage Done, Damage Taken, Healing,
 Threat, Buffs, Debuffs, Deaths, Interrupts, Dispels, Resources, Casts. Filters beside the chart:
@@ -162,7 +162,9 @@ deep interaction, never on page load.
 - Mobile first: tables collapse to cards at phone width with the chart above.
 
 **Deferred, not dropped:** Replay and positional views once Forever logs prove the positional
-fields; Mechanics content per encounter over time.
+fields. Mechanics mode ships with curated tables for the sample log's encounters
+(`docs/superpowers/specs/2026-09-16-mechanics-mode-design.md`); Forever's bosses get tables
+as their logs arrive.
 
 ## 5. The companion
 
@@ -287,7 +289,7 @@ validated against raw byte ranges; private bucket with signed paths for non-publ
   the roster decoder.
 - **Phase 3, Nov 4 to Dec 9:** ingest and whole-file upload first, report page second, companion
   and live third, rankings fourth; accounts, policy, processor terms; live for Dec 9.
-- **After Dec 9:** Replay and positions; Mechanics content; ClickHouse when warranted; the
+- **After Dec 9:** Replay and positions; Mechanics tables for Forever's bosses; ClickHouse when warranted; the
   simulator's log import.
 
 Open on purpose: which logging format Forever writes (answered by the first beta log); whether
