@@ -23,6 +23,7 @@
     wholeFightTitle,
   } from '../../lib/report/format';
   import type { CastRow } from '../../lib/report/types';
+  import CopyCsv from './CopyCsv.svelte';
 
   let {
     rows,
@@ -42,6 +43,21 @@
   const ordered = $derived(
     [...rows].sort((a, b) => b.succeeded - a.succeeded || a.spell_name.localeCompare(b.spell_name)),
   );
+  /** The table as lines: one per caster and spell, with the casting time in seconds. */
+  function csvLines(): string[][] {
+    return [
+      ['Player', 'Spell', 'Spell id', 'Casts', 'Started', 'Failed', 'Casting s'],
+      ...ordered.map((row) => [
+        splitUnitName(row.name).name,
+        row.spell_name,
+        String(row.spell_id),
+        String(row.succeeded),
+        String(row.started),
+        String(row.failed),
+        (row.cast_time_ms / 1000).toFixed(1),
+      ]),
+    ];
+  }
   /** Spell names two different spell ids share for one caster, shown with the id to tell them apart. */
   const sameName = $derived.by(() => {
     // eslint-disable-next-line svelte/prefer-svelte-reactivity
@@ -176,6 +192,7 @@
         </li>
       {/each}
     </ul>
+    <CopyCsv lines={csvLines} />
   </div>
   {#if approximate}
     <p class="text-muted text-[12px]" data-testid="cast-approximate-note">

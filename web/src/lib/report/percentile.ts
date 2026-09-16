@@ -45,6 +45,7 @@ export interface PercentileLoader {
 }
 
 const CONCURRENCY = 6;
+const REQUEST_TIMEOUT_MS = 8000;
 
 export function createPercentileLoader(apiBase: string = API_BASE_URL): PercentileLoader {
   // null remembers "nothing is ranked in that bracket": the API's 404 is as final as a
@@ -66,7 +67,13 @@ export function createPercentileLoader(apiBase: string = API_BASE_URL): Percenti
     try {
       // A Request, not a bare URL string: the test asserts on `.url`, and passing a
       // Request here is no different for a real fetch implementation.
-      const response = await fetch(new Request(`${apiBase}/v1/rankings/percentile?${params.toString()}`));
+      // A request that hangs is a failure like any other, not a row left waiting: past the
+      // timeout the cell says the rankings could not be reached, and Try again asks anew.
+      const response = await fetch(
+        new Request(`${apiBase}/v1/rankings/percentile?${params.toString()}`, {
+          signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+        }),
+      );
       if (response.status === 404) {
         cache.set(key, null);
         return true;

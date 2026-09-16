@@ -9,6 +9,7 @@ import {
   parseReportState,
   reportSearch,
   withState,
+  MISSING_FIGHT,
 } from './url';
 
 describe('the report URL state', () => {
@@ -98,10 +99,10 @@ describe('the report URL state', () => {
     });
   });
 
-  it('falls back to the default for anything it does not recognise', () => {
+  it('falls back to the default for anything it does not recognise, and marks a fight it cannot read', () => {
     const state = parseReportState('?fight=nope&mode=replay&view=sideways&tab=gear&start=-5&end=abc', 2);
     expect(state).toEqual({
-      fight: 2,
+      fight: MISSING_FIGHT,
       mode: 'analyze',
       view: 'tables',
       tab: 'summary',

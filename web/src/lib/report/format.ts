@@ -225,6 +225,8 @@ export function parseTitle(value: number | string, ranked = 0): string {
   if (value === '?')
     return 'The rankings could not be reached, so this parse is unknown; the figure beside it is right. Retry from the line above the table';
   if (value === 'none') return 'Damage taken has no parse: taking more is not doing better';
+  if (value === 'night')
+    return 'A parse is per kill; the night as a whole has none. Pick a pull for its parses';
   return '';
 }
 

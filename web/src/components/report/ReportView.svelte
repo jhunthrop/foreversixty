@@ -25,6 +25,7 @@
   import {
     ALL_FIGHTS,
     FLAG_LETTERS,
+    MISSING_FIGHT,
     SOURCE_ENEMIES,
     SOURCE_FRIENDLIES,
     type FlagKey,
@@ -449,7 +450,9 @@
         : 'wipe',
   );
   /** The actor tables' fallback: Damage Taken has no parse at all, and its cells say so. */
-  const tableParseFallback = $derived(state.tab === 'damage-taken' ? 'none' : parseFallback);
+  const tableParseFallback = $derived(
+    nightMode ? 'night' : state.tab === 'damage-taken' ? 'none' : parseFallback,
+  );
 
   /** GUID to class, for the tables whose rows are not Actors. */
   const classOf = $derived(
@@ -1036,8 +1039,12 @@
 
   {#if missingFight !== null}
     <p class="text-muted px-[18px] text-[13px] md:px-0" role="status" data-testid="report-missing-fight">
-      This report has no fight <span class="tabular font-mono">{missingFight}</span>, so the first fight is
-      showing.
+      {#if missingFight === MISSING_FIGHT}
+        This link names a fight the page cannot read, so the first fight is showing.
+      {:else}
+        This report has no fight <span class="tabular font-mono">{missingFight}</span>, so the first fight is
+        showing.
+      {/if}
     </p>
   {/if}
 

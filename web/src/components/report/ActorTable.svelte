@@ -3,6 +3,7 @@
   import type { Placement } from '../../lib/report/percentile';
   import { formatAmount, formatPerSecond, formatDuration } from '../../lib/report/format';
   import type { Actor } from '../../lib/report/types';
+  import CopyCsv from './CopyCsv.svelte';
   import type { ExactSplit } from '../../lib/report/exact';
   import ActorRow from './ActorRow.svelte';
 
@@ -82,14 +83,29 @@
   });
 
   /** The table as it stands, for a spreadsheet: name, share, amount, per second, active. */
-  function csv(): string {
-    const lines = [['Rank', 'Name', 'Share', 'Amount', 'Per second', 'Active %']];
+  function csvLines(): string[][] {
+    // The healing table's second number is its overheal: the export carries it too.
+    const healing = actors.some((actor) => actor.overheal !== undefined);
+    const lines = [
+      [
+        'Rank',
+        'Name',
+        'Share',
+        'Amount',
+        ...(healing ? ['Overheal', 'Overheal %'] : []),
+        'Per second',
+        'Active %',
+      ],
+    ];
     actors.forEach((actor, index) => {
+      const overheal = actor.overheal ?? 0;
+      const gross = actor.effective + overheal;
       lines.push([
         String(index + 1),
         actor.name,
         total === 0 ? '0' : ((actor.effective / total) * 100).toFixed(2),
         String(actor.effective),
+        ...(healing ? [String(overheal), gross === 0 ? '0' : ((overheal / gross) * 100).toFixed(1)] : []),
         (actor.time_ms ?? durationMs) === 0
           ? '0'
           : (actor.effective / ((actor.time_ms ?? durationMs) / 1000)).toFixed(1),
@@ -98,18 +114,7 @@
           : Math.min((actor.active_ms / (actor.time_ms ?? durationMs)) * 100, 100).toFixed(1),
       ]);
     });
-    return lines.map((row) => row.map((cell) => `"${cell.replaceAll('"', '""')}"`).join(',')).join('\n');
-  }
-
-  let copied = $state('');
-  async function copyCsv(): Promise<void> {
-    try {
-      await navigator.clipboard.writeText(csv());
-      copied = 'Copied';
-    } catch {
-      copied = 'Copy failed';
-    }
-    setTimeout(() => (copied = ''), 2000);
+    return lines;
   }
 </script>
 
@@ -122,7 +127,7 @@
     >
       <span title="Rank in this table">#</span>
       <span
-        title="Percentile among ranked kills of the same boss by this spec: damage here, healing on the Healing tab. Empty on a wipe, on Damage Taken, or while nothing is ranked yet."
+        title="Percentile among ranked kills of the same boss by this spec: damage here, healing on the Healing tab. Empty on a wipe, on Damage Taken, over the whole night, or while nothing is ranked yet; ? when the rankings could not be reached."
         >Parse</span
       >
       <span>Name</span>
@@ -198,14 +203,6 @@
           : ''}
       </p>
     {/if}
-    <div class="flex justify-end">
-      <button
-        type="button"
-        class="text-nav inline-flex min-h-11 items-center text-[12px] font-bold tracking-[0.06em] uppercase md:min-h-9"
-        title="Copy this table as CSV"
-        data-testid="copy-csv"
-        onclick={() => void copyCsv()}>{copied === '' ? 'Copy CSV' : copied}</button
-      >
-    </div>
+    <CopyCsv lines={csvLines} />
   </div>
 {/if}

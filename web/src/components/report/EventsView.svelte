@@ -121,8 +121,8 @@
   <p class="text-muted text-[12px]">
     <span class="tabular font-mono">{matching.length}</span> events
     {#if stream === null}
-      the summary timestamps: casts, auras going up and down, the hits and heals before each death, and the
-      deaths.{#if loadStream !== undefined}
+      are listed, from the summary: casts, auras going up and down, the hits and heals before each death, and
+      the deaths.{#if loadStream !== undefined}
         <button
           type="button"
           class="text-gold inline-flex min-h-11 items-center underline-offset-2 hover:underline md:min-h-0"

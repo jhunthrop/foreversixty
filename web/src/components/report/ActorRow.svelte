@@ -155,15 +155,23 @@
   const targetsTotal = $derived(targetsByName.reduce((sum, target) => sum + target.total, 0));
   /** What a line's last cell says: overhealing for a heal, otherwise what did not land. */
   function abilityNotes(ability: Ability): string[] {
+    // A heal says how much of it was over; a shield says what it absorbed; a heal with
+    // nothing over says nothing, measured or not, so one cell means one thing.
     if (ability.overheal !== undefined && ability.total > 0) {
-      return [
-        `${formatPercent((ability.overheal / ability.total) * 100)} over · ${formatAmount(ability.overheal)}`,
-      ];
+      const notes: string[] = [];
+      if (ability.absorbed) notes.push(`${formatAmount(ability.absorbed)} absorbed`);
+      if (ability.overheal > 0)
+        notes.push(
+          `${formatPercent((ability.overheal / ability.total) * 100)} over · ${formatAmount(ability.overheal)}`,
+        );
+      return notes;
     }
     const notes: string[] = [];
     if (ability.absorbed) notes.push(`${formatAmount(ability.absorbed)} absorbed`);
     if (ability.blocked) notes.push(`${formatAmount(ability.blocked)} blocked`);
-    for (const [type, count] of Object.entries(ability.misses ?? {})) {
+    // Alphabetical, like the table's Mitigated line: the same numbers read in one order
+    // whatever filter or measure produced them.
+    for (const [type, count] of Object.entries(ability.misses ?? {}).sort(([a], [b]) => a.localeCompare(b))) {
       notes.push(`${count} ${type.toLowerCase()}`);
     }
     return notes;
@@ -267,7 +275,7 @@
       data-testid="row-percentile"
     >
       {#if percentile === null}<span class:text-muted={true}
-          >{parseFallback === 'none' ? '' : parseFallback}</span
+          >{parseFallback === 'none' || parseFallback === 'night' ? '' : parseFallback}</span
         >{:else}<span class="label font-body mr-1 md:hidden">Parse</span>{Math.round(
           percentile.percentile,
         )}<span class="text-muted ml-1 md:hidden">among {percentile.ranked}</span>{/if}
@@ -360,7 +368,7 @@
 
   {#if open}
     <div
-      class="bg-card-top flex flex-col gap-4 overflow-x-auto px-2 py-3 md:flex-row md:flex-wrap md:items-start"
+      class="bg-card-top flex flex-col gap-4 overflow-x-auto py-3 md:flex-row md:flex-wrap md:items-start md:px-2"
       data-testid="row-detail"
     >
       {#if approximate && measure !== undefined}
@@ -410,14 +418,18 @@
         </caption>
         <thead>
           <tr class="label text-muted border-line-soft border-b">
-            <th scope="col" class="bg-bg sticky left-0 py-1 pr-3 text-left font-normal md:static">Ability</th>
+            <th
+              scope="col"
+              class="bg-bg border-line-soft sticky left-0 border-r py-1 pr-3 pl-2 text-left font-normal md:static md:border-r-0 md:pl-0"
+              >Ability</th
+            >
             <th scope="col" class="py-1 pr-3 text-right font-normal" title="Effective amount in this window"
               >Amount</th
             >
             <th scope="col" class="py-1 pr-3 text-right font-normal" title="Share of this row's total"
               >Share</th
             >
-            <th scope="col" class="w-[16%] py-1 pr-3 font-normal" aria-label="Share, drawn"></th>
+            <th scope="col" class="w-[16%] min-w-[72px] py-1 pr-3 font-normal" aria-label="Share, drawn"></th>
             <th scope="col" class="py-1 pr-3 text-right font-normal" title="Hits and ticks that landed"
               >Hits</th
             >
@@ -436,7 +448,8 @@
             {@const hits = landed(ability)}
             {@const school = schoolToken(ability.school)}
             <tr class="border-line-soft border-b">
-              <td class="bg-bg sticky left-0 max-w-[160px] py-1.5 pr-3 md:static md:max-w-none"
+              <td
+                class="bg-bg border-line-soft sticky left-0 max-w-[160px] border-r py-1.5 pr-3 pl-2 md:static md:max-w-none md:border-r-0 md:pl-0"
                 >{ability.name}{#if ability.via}
                   <span
                     class="text-muted ml-1 text-[11px]"

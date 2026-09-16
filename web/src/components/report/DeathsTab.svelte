@@ -246,7 +246,7 @@
           {#if alreadyDead.length > 0}
             <span class="text-muted text-[13px]" data-testid="death-already-dead"
               >already dead: {alreadyDead
-                .map((entry) => `${splitUnitName(entry.name).name} (since ${formatDuration(entry.at_ms)})`)
+                .map((entry) => `${splitUnitName(entry.name).name} (since ${formatDuration(inPull(entry))})`)
                 .join(', ')}</span
             >
           {/if}
@@ -433,11 +433,15 @@
           {#if death.auras_held.length > 0 || death.auras_lost.some((aura) => aura.at_ms < death.at_ms - 50)}
             <p class="text-[13px]">
               {#if death.auras_held.length > 0}
-                <span class="label text-muted">Up</span>
+                <span class="label text-muted" title="Buffs and debuffs on them at the moment they died"
+                  >Up</span
+                >
                 {death.auras_held.map((aura) => aura.name || `Spell #${aura.spell_id}`).join(', ')}
               {/if}
               {#if death.auras_lost.some((aura) => aura.at_ms < death.at_ms - 50)}
-                <span class="label text-muted ml-3">Just lost</span>
+                <span class="label text-muted ml-3" title="Auras that dropped in the seconds before the death"
+                  >Just lost</span
+                >
                 <!-- Only what dropped before the death: the death itself strips every aura,
                      and listing those as "just lost" said nothing. -->
                 {#each death.auras_lost.filter((aura) => aura.at_ms < death.at_ms - 50) as aura, i (`${aura.spell_id}-${i}`)}
