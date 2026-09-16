@@ -72,8 +72,10 @@
     }
     const hits = [...avoided.values()].reduce((sum, count) => sum + count, 0);
     const prorated = approximate && actors.some((actor) => actor.mitigated === undefined);
+    // Alphabetical, not by count: the same six numbers must read in the same order under
+    // every filter, or a reader compares the wrong pairs.
     const byType = [...avoided.entries()]
-      .sort((a, b) => b[1] - a[1])
+      .sort((a, b) => a[0].localeCompare(b[0]))
       .map(([type, count]) => `${prorated ? '~' : ''}${count} ${type.toLowerCase()}`)
       .join(', ');
     return { absorbed, blocked, hits, byType, prorated };

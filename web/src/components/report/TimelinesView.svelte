@@ -51,6 +51,11 @@
    * A tap or a pass of the pointer anywhere on a lane picks the nearest tick: a tick is
    * two pixels wide, and a finger needs the whole lane to be the target.
    */
+  /** A mouse leaving the lane takes its readout with it; a tap's readout stays for reading. */
+  function clearPick(event: PointerEvent): void {
+    if (event.pointerType === 'mouse') picked = null;
+  }
+
   function pickNearest(
     event: PointerEvent,
     casts: { at: number; name: string }[],
@@ -183,11 +188,11 @@
          the lanes out from under the pointer that is reading them. -->
     <p
       class="text-muted label h-5 truncate"
-      title={picked === null ? undefined : `${picked.name} · ${formatDuration(picked.at)}`}
+      title={picked === null ? undefined : `${picked.name} · at ${formatDuration(picked.at)}`}
     >
       {#if picked}
         <span class="text-strong normal-case" data-testid="timeline-picked"
-          >{picked.name} · {formatDuration(picked.at)}</span
+          >{picked.name} · at {formatDuration(picked.at)}</span
         >
       {:else}
         <span>tap or hover a tick for the spell, or an aura band for what was up</span>
@@ -220,6 +225,7 @@
             data-lane
             onpointerdown={(event) => pickNearest(event, bossCasts)}
             onpointermove={(event) => pickNearest(event, bossCasts)}
+            onpointerleave={clearPick}
           >
             {#each bossCasts as cast, i (`${cast.at}-${i}`)}
               <span
@@ -249,6 +255,7 @@
             data-lane
             onpointerdown={(event) => pickNearest(event, lane.casts, lane.auras)}
             onpointermove={(event) => pickNearest(event, lane.casts, lane.auras)}
+            onpointerleave={clearPick}
           >
             {#each lane.auras as segment, i (`${segment.start_ms}-${i}`)}
               <span

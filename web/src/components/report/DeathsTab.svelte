@@ -14,7 +14,7 @@
     formatDurationPrecise,
   } from '../../lib/report/format';
   import { plannerLinkFor } from '../../lib/report/planner-link';
-  import type { CastRow, CombatantRow, DamageRef, Death, HealRef } from '../../lib/report/types';
+  import type { CastRow, CombatantRow, DamageRef, Death, HealRef, PullMark } from '../../lib/report/types';
   import { deathWindow, type TimeWindow } from '../../lib/report/window';
 
   let {
@@ -24,12 +24,15 @@
     onPatch = () => {},
     onSelectPlayer = undefined,
     durationMs,
+    pulls = [],
     combatants,
     classOf,
     dataBuild,
     treeSizesFor,
     onWindow,
   }: {
+    /** The night's pulls, so a death over the night can say when in its pull it came. */
+    pulls?: PullMark[];
     deaths: Death[];
     /** The fight's casts, to tell a player still dead from one raised: a cast means alive. */
     casts?: CastRow[];
@@ -164,6 +167,12 @@
     return plannerLinkFor({ dataBuild, className, treeSizes: treeSizesFor(className), combatant });
   }
 
+  /** When in its own pull a death came: the night's clock, less the pull's start. */
+  function inPull(death: Death): number {
+    const pull = pulls.find((mark) => mark.start_ms <= death.at_ms && death.at_ms < mark.end_ms);
+    return death.at_ms - (pull?.start_ms ?? 0);
+  }
+
   /** The players who had died earlier in the same pull and cast nothing since: still dead at this one. */
   function deadAt(death: Death): Death[] {
     // eslint-disable-next-line svelte/prefer-svelte-reactivity
@@ -228,7 +237,9 @@
             {/if}
           </span>
           {#if death.label}
-            <span class="text-muted text-[13px]" data-testid="death-label">{death.label}</span>
+            <span class="text-muted text-[13px]" data-testid="death-label"
+              >{death.label} · <span class="tabular font-mono">{formatDuration(inPull(death))}</span></span
+            >
           {:else}
             <span class="text-muted tabular font-mono text-[13px]">{formatDuration(death.at_ms)}</span>
           {/if}
@@ -307,7 +318,7 @@
                   >
                   <th class="py-1 pr-3 text-left font-bold">Ability</th>
                   <th class="hidden py-1 pr-3 text-left font-bold md:table-cell">From</th>
-                  <th class="w-16 py-1 pr-3 text-right font-bold md:w-auto">Amount</th>
+                  <th class="w-20 py-1 pr-3 text-right font-bold md:w-auto">Amount</th>
                   <th class="w-24 py-1 text-left font-bold md:w-auto" title="Health left after the hit"
                     >Health after</th
                   >
@@ -323,14 +334,18 @@
                         class="text-muted tabular py-1 pr-3 font-mono"
                         title={formatDurationPrecise(heal.at_ms)}>{beforeDeath(death, heal.at_ms)}</td
                       >
-                      <td class="text-kill truncate py-1 pr-3" title={heal.spell_name}>{heal.spell_name}</td>
+                      <td class="text-kill py-1 pr-3 break-words md:truncate" title={heal.spell_name}
+                        >{heal.spell_name}<span class="text-muted block text-[11px] md:hidden"
+                          >from {splitUnitName(heal.source_name).name}</span
+                        ></td
+                      >
                       <td class="text-muted hidden truncate py-1 pr-3 md:table-cell"
                         >{splitUnitName(heal.source_name).name}</td
                       >
                       <td class="text-kill tabular py-1 pr-3 text-right font-mono"
                         >+{formatAmount(heal.amount - (heal.overheal ?? 0))}{#if heal.overheal}
-                          <span class="text-muted text-[11px]" title="Overhealing">
-                            ({formatAmount(heal.overheal)} over)</span
+                          <span class="text-muted block text-[11px] md:inline" title="Overhealing"
+                            >({formatAmount(heal.overheal)} over)</span
                           >{/if}</td
                       >
                       <td class="w-[30%] py-1">
@@ -367,15 +382,25 @@
                         class="text-muted tabular py-1 pr-3 font-mono"
                         title={formatDurationPrecise(hit.at_ms)}>{beforeDeath(death, hit.at_ms)}</td
                       >
-                      <td class="truncate py-1 pr-3" title={hit.spell_name === '' ? 'Melee' : hit.spell_name}
-                        >{hit.spell_name === '' ? 'Melee' : hit.spell_name}</td
+                      <td
+                        class="py-1 pr-3 break-words md:truncate"
+                        title={hit.spell_name === '' ? 'Melee' : hit.spell_name}
+                        >{hit.spell_name === '' ? 'Melee' : hit.spell_name}<span
+                          class="text-muted block text-[11px] md:hidden"
+                          >from {sourceName(hit.source_guid, hit.source_name)}</span
+                        ></td
                       >
                       <td
                         class="text-muted hidden truncate py-1 pr-3 md:table-cell"
                         title={sourceName(hit.source_guid, hit.source_name)}
                         >{sourceName(hit.source_guid, hit.source_name)}</td
                       >
-                      <td class="tabular py-1 pr-3 text-right font-mono">{formatAmount(hit.amount)}</td>
+                      <td class="tabular py-1 pr-3 text-right font-mono"
+                        >{formatAmount(hit.amount)}{#if lethal && death.killing_blow?.overkill}
+                          <span class="text-muted block text-[11px] md:inline" title="Overkill"
+                            >({formatAmount(death.killing_blow.overkill)} overkill)</span
+                          >{/if}</td
+                      >
                       <td class="w-[30%] py-1">
                         {#if pct !== null}
                           <span class="flex items-center gap-2">

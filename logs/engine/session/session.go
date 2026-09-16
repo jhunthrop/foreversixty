@@ -21,7 +21,7 @@ import (
 // Version is the engine version. It travels with every summary, every
 // metrics row, and every report, so a report always says which code
 // produced it. Bump it whenever decoded output changes.
-const Version = "0.2.4"
+const Version = "0.2.5"
 
 // Options configures a session.
 type Options struct {

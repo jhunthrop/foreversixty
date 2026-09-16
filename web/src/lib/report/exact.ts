@@ -158,8 +158,16 @@ export function rowsSql(kind: ActorKind, window: TimeWindow, options: MeasureOpt
     ${FIGHT_MS} AS fight_ms, spell_id, spell_name, spell_school, event, amount,
     ${damage} AS effective,
     0 AS overheal, coalesce(absorbed, 0) AS absorbed, coalesce(blocked, 0) AS blocked, critical
-  FROM ${EVENTS_TABLE} WHERE kind = 'damage' AND ${at}`;
+  FROM ${EVENTS_TABLE} WHERE kind = 'damage' AND ${OTHER_SIDE} AND ${at}`;
 }
+
+/**
+ * Damage done is damage to the other side, as the engine counts it: a hit on a friendly
+ * unit (an Earthen Wall Totem taking it in a player's place) is nobody's damage done.
+ * The reaction bits are friendly 0x10 and hostile 0x40; a line whose units carry neither
+ * is on nobody's side and stays counted.
+ */
+const OTHER_SIDE = `NOT ((source_flags & 80) <> 0 AND (dest_flags & 80) <> 0 AND (source_flags & 80) = (dest_flags & 80))`;
 
 function scopeClause(scope: TargetScope | null): string {
   if (scope === null || (scope.guids.length === 0 && scope.names.length === 0)) return '';
@@ -204,9 +212,10 @@ FROM rows
 WHERE ${scope}
 GROUP BY spell_id, via
 ORDER BY effective DESC`,
-    misses: `SELECT spell_id, miss_type, count(*) AS n
+    misses: `SELECT spell_id, any_value(spell_name) AS spell_name, any_value(spell_school) AS school,
+  miss_type, count(*) AS n
 FROM ${EVENTS_TABLE}
-WHERE kind = 'missed' AND miss_type <> '' AND ${own} AND ${windowClause(window)}
+WHERE kind = 'missed' AND miss_type <> '' AND ${own}${kind === 'damage-done' ? ` AND ${OTHER_SIDE}` : ''} AND ${windowClause(window)}
 GROUP BY spell_id, miss_type`,
     targets: `WITH rows AS (${rows})
 SELECT other_guid AS guid, any_value(other_name) AS name, sum(effective) AS total
@@ -401,33 +410,55 @@ export async function measureExact(
     layer.run(eventsUrl, sql.targets, ALL_ROWS),
   ]);
   const missesBySpell = new Map<number, Record<string, number>>();
+  // An ability that never landed (every cast absorbed, dodged or parried) has no damage
+  // row to hang its misses on; it keeps a row of its own, at zero, so the miss count the
+  // mitigation line adds up is on the table too.
+  const missedOnly = new Map<number, Ability>();
   for (const row of rowsOf(misses)) {
     const spell = num(row.spell_id);
     const found = missesBySpell.get(spell) ?? {};
     found[String(row.miss_type)] = num(row.n);
     missesBySpell.set(spell, found);
+    missedOnly.set(spell, {
+      spell_id: spell,
+      name: spell === 0 ? 'Melee' : String(row.spell_name ?? ''),
+      school: num(row.school) || undefined,
+      total: 0,
+      effective: 0,
+      hits: 0,
+      crits: 0,
+      ticks: 0,
+      misses: found,
+      min: 0,
+      max: 0,
+    });
   }
+  const landedRows = rowsOf(abilities);
+  for (const row of landedRows) missedOnly.delete(num(row.spell_id));
   return {
-    abilities: rowsOf(abilities).map((row) => {
-      const spell = num(row.spell_id);
-      return {
-        spell_id: spell,
-        name: spell === 0 ? 'Melee' : String(row.spell_name ?? ''),
-        via: String(row.via ?? '') || undefined,
-        school: num(row.school) || undefined,
-        total: num(row.total),
-        effective: num(row.effective),
-        overheal: kind === 'healing' ? num(row.overheal) : undefined,
-        absorbed: num(row.absorbed) || undefined,
-        blocked: num(row.blocked) || undefined,
-        hits: num(row.hits),
-        crits: num(row.crits),
-        ticks: num(row.ticks),
-        misses: missesBySpell.get(spell),
-        min: num(row.min_hit),
-        max: num(row.max_hit),
-      };
-    }),
+    abilities: [
+      ...landedRows.map((row) => {
+        const spell = num(row.spell_id);
+        return {
+          spell_id: spell,
+          name: spell === 0 ? 'Melee' : String(row.spell_name ?? ''),
+          via: String(row.via ?? '') || undefined,
+          school: num(row.school) || undefined,
+          total: num(row.total),
+          effective: num(row.effective),
+          overheal: kind === 'healing' ? num(row.overheal) : undefined,
+          absorbed: num(row.absorbed) || undefined,
+          blocked: num(row.blocked) || undefined,
+          hits: num(row.hits),
+          crits: num(row.crits),
+          ticks: num(row.ticks),
+          misses: missesBySpell.get(spell),
+          min: num(row.min_hit),
+          max: num(row.max_hit),
+        };
+      }),
+      ...missedOnly.values(),
+    ],
     targets: rowsOf(targets).map((row) => ({
       guid: String(row.guid ?? ''),
       name: String(row.name ?? ''),

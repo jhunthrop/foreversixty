@@ -32,9 +32,10 @@ describe('parse percentiles', () => {
     vi.stubGlobal('fetch', upstream);
     const loader = createPercentileLoader(API);
 
-    await expect(loader.load([query, query])).resolves.toEqual(
-      new Map([[percentileKey(query), { percentile: 83.4, ranked: 0 }]]),
-    );
+    await expect(loader.load([query, query])).resolves.toEqual({
+      placements: new Map([[percentileKey(query), { percentile: 83.4, ranked: 0 }]]),
+      unavailable: false,
+    });
     await loader.load([query]);
     expect(upstream).toHaveBeenCalledTimes(1);
     expect((upstream.mock.calls[0][0] as Request).url).toBe(
@@ -73,7 +74,19 @@ describe('parse percentiles', () => {
         throw new TypeError('offline');
       }),
     );
-    await expect(createPercentileLoader(API).load([query])).resolves.toEqual(new Map());
+    await expect(createPercentileLoader(API).load([query])).resolves.toEqual({
+      placements: new Map(),
+      unavailable: true,
+    });
+  });
+
+  it('says the rankings were unavailable on a rate limit, and asks again next time', async () => {
+    const upstream = vi.fn<GlobalFetch>(async () => new Response('slow down', { status: 429 }));
+    vi.stubGlobal('fetch', upstream);
+    const loader = createPercentileLoader(API);
+    expect((await loader.load([query])).unavailable).toBe(true);
+    expect((await loader.load([query])).unavailable).toBe(true);
+    expect(upstream).toHaveBeenCalledTimes(2);
   });
 
   it('remembers a bracket nothing is ranked in, and does not ask again', async () => {
@@ -89,8 +102,8 @@ describe('parse percentiles', () => {
     );
     vi.stubGlobal('fetch', upstream);
     const loader = createPercentileLoader(API);
-    expect(await loader.load([query])).toEqual(new Map());
-    expect(await loader.load([query])).toEqual(new Map());
+    expect(await loader.load([query])).toEqual({ placements: new Map(), unavailable: false });
+    expect(await loader.load([query])).toEqual({ placements: new Map(), unavailable: false });
     expect(upstream).toHaveBeenCalledTimes(1);
   });
 });

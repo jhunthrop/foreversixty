@@ -20,6 +20,7 @@ const (
 	hunter = "Player-4184-000000A4"
 	pet    = "Pet-0-2085-2284-7855-165189-01000000B1"
 	boss   = "Creature-0-2085-2284-7855-169753-0000AA0001"
+	totem  = "Creature-0-2085-2284-7855-170343-0000AA0002"
 )
 
 func at(sec float64) time.Time { return t0.Add(time.Duration(sec * float64(time.Second))) }
@@ -118,6 +119,13 @@ func script() []event.Event {
 			PowerType: event.OptInt{V: 0, OK: true}, MaxPower: event.OptInt{V: 1000, OK: true},
 			Adv: event.Advanced{OK: true, InfoGUID: mage, PowerType: 0, CurrentPower: 900, MaxPower: 1000}},
 		dmg(20, mage, boss, 116, "Frostbolt", 2000, 700),
+		// Friendly fire: the mage's Frostbolt hitting the healer's totem (a friendly
+		// unit) is the totem's damage taken and nobody's damage done.
+		{Time: at(20), Kind: event.Damage, Name: "SPELL_DAMAGE",
+			Source: event.Unit{GUID: mage, Flags: 0x512}, Dest: event.Unit{GUID: totem, Name: "Earthen Wall Totem", Flags: 0x2111},
+			Spell:    event.Spell{ID: 116, Name: "Frostbolt", School: 0x10},
+			Amount:   event.OptInt{V: 4000, OK: true},
+			Overkill: event.OptInt{V: -1, OK: true}},
 		{Time: at(20), Kind: event.Death, Name: "UNIT_DIED",
 			Dest: event.Unit{GUID: boss, Flags: 0xa48}},
 	}
@@ -200,6 +208,20 @@ func TestDamageDoneCreditsPetsToTheirOwner(t *testing.T) {
 	}
 	if _, isOwnRow := actorByGUID(s.DamageDone, pet); isOwnRow {
 		t.Error("the pet must not have its own row")
+	}
+}
+
+func TestFriendlyFireIsDamageTakenAndNobodysDamageDone(t *testing.T) {
+	_, _, s := build(t)
+	m, _ := actorByGUID(s.DamageDone, mage)
+	for _, pair := range m.Targets {
+		if pair.GUID == totem {
+			t.Errorf("the friendly totem must not be a target of the mage's damage done: %+v", m.Targets)
+		}
+	}
+	tt, ok := actorByGUID(s.DamageTaken, totem)
+	if !ok || tt.Effective != 4000 {
+		t.Fatalf("the totem's damage taken = %+v, want 4000", tt)
 	}
 }
 

@@ -190,19 +190,20 @@
                   aria-hidden="true"
                 ></span>
               {/if}
-              {#if !pull.kill}
-                <span
-                  class="bg-wipe border-bg absolute top-0 h-[2px] border-l-2"
-                  style={`left: ${Math.max(pct(pull.start_ms), 0)}%; width: ${Math.min(pct(pull.end_ms), 100) - Math.max(pct(pull.start_ms), 0)}%`}
-                  aria-hidden="true"
-                ></span>
-              {/if}
             {/each}
             {#each row.uses as use, i (`${use.at}-${i}`)}
               <span
                 class="bg-gold absolute top-0 h-full opacity-80"
                 style={`left: ${pct(use.at)}%; width: ${Math.max(pct(use.end) - pct(use.at), 0.4)}%`}
                 title={`${formatDuration(use.at)}${use.source ? ` · ${splitUnitName(use.source).name}` : ''} on ${splitUnitName(use.target).name}`}
+              ></span>
+            {/each}
+            <!-- After the use blocks, so a busy lane's gold never paints over the wipe edge. -->
+            {#each shownPulls.filter((pull) => !pull.kill) as pull (pull.start_ms)}
+              <span
+                class="bg-wipe border-bg absolute top-0 h-[2px] border-l-2"
+                style={`left: ${Math.max(pct(pull.start_ms), 0)}%; width: ${Math.min(pct(pull.end_ms), 100) - Math.max(pct(pull.start_ms), 0)}%`}
+                aria-hidden="true"
               ></span>
             {/each}
             {#each shownDeaths as death (`${death.guid}-${death.at_ms}`)}

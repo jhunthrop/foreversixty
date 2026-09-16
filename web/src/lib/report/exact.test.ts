@@ -21,6 +21,12 @@ describe('rowsSql', () => {
     expect(sql).toContain('amount - coalesce(overheal, 0) AS effective');
   });
 
+  it('leaves friendly fire out of damage done, on both sides of the flags', () => {
+    const sql = rowsSql('damage-done', { startMs: 0, endMs: 1000 });
+    expect(sql).toContain('(source_flags & 80) = (dest_flags & 80)');
+    expect(rowsSql('damage-taken', { startMs: 0, endMs: 1000 })).not.toContain('dest_flags');
+  });
+
   it('counts overkill only when asked', () => {
     expect(rowsSql('damage-done', { startMs: 0, endMs: 1000 }, { countOverkill: true })).toContain(
       'amount AS effective',

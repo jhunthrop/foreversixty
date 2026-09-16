@@ -38,6 +38,17 @@ func Hostile(f uint32) bool { return f&FlagReactionHostile != 0 }
 // Friendly reports whether the flags mark a friendly unit.
 func Friendly(f uint32) bool { return f&FlagReactionFriendly != 0 }
 
+// SameSide reports whether two flag sets put their units on one side of the
+// fight: both friendly or both hostile. Flags with no reaction bit at all
+// (a unit the log never described) are nobody's side, so they never match.
+func SameSide(a, b uint32) bool {
+	const reaction = FlagReactionFriendly | FlagReactionHostile
+	if a&reaction == 0 || b&reaction == 0 {
+		return false
+	}
+	return Friendly(a) == Friendly(b) && Hostile(a) == Hostile(b)
+}
+
 // Kind is what a GUID refers to.
 type Kind string
 
@@ -225,7 +236,7 @@ func (r *Registry) ownable(u *Unit, ownerGUID string) bool {
 	if !ok {
 		return false
 	}
-	return Friendly(u.Flags) == Friendly(owner.Flags) && Hostile(u.Flags) == Hostile(owner.Flags)
+	return SameSide(u.Flags, owner.Flags)
 }
 
 func (r *Registry) see(u event.Unit, at time.Time) {

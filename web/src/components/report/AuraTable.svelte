@@ -97,7 +97,10 @@
           >
             <span class="truncate font-semibold">{entry.name}</span>
             <span class="bg-line-soft block h-[6px] w-full"
-              ><span class="bg-ember block h-full" style={`width: ${entry.pct}%`}></span></span
+              ><span
+                class="block h-full {kind === 'BUFF' ? 'bg-kill' : 'bg-ember'}"
+                style={`width: ${entry.pct}%`}
+              ></span></span
             >
             <span
               class="tabular text-right font-mono"

@@ -93,7 +93,6 @@ export function aggregateNight(
 ): Night {
   // Pull numbers per boss, so a player's row can say "pull 2 of 3" like the fight list.
   const encounterPulls = fights.filter((fight) => fight.kind === 'encounter');
-  // eslint-disable-next-line svelte/prefer-svelte-reactivity
   const pullTotals = new Map<string, number>();
   for (const fight of encounterPulls) pullTotals.set(fight.name, (pullTotals.get(fight.name) ?? 0) + 1);
   const pullNumbers = pullNumbersOf(encounterPulls);
@@ -234,6 +233,8 @@ export function nightSummary(
   let offset = 0;
   let engine = '';
 
+  const nameOf = knownNames(summaries);
+
   for (const fight of encounters) {
     const summary = summaries.get(fight.index);
     if (summary === undefined) continue;
@@ -243,7 +244,7 @@ export function nightSummary(
     for (const name of new Set([
       ...summary.roster.map((row) => row.name),
       ...summary.damage_taken.map((actor) => actor.name),
-      ...summary.auras.map((track) => track.target_name),
+      ...summary.auras.map((track) => nameOf.get(track.target_guid) ?? track.target_name),
     ])) {
       presence.set(name, (presence.get(name) ?? 0) + summary.duration_ms);
     }
@@ -256,7 +257,8 @@ export function nightSummary(
     // denominator is the time that name was in a pull, counted once per pull.
     const pullsCounted = new Set<string>();
     for (const track of summary.auras) {
-      const key = `${track.target_name}|${track.spell_id}`;
+      const targetName = nameOf.get(track.target_guid) ?? track.target_name;
+      const key = `${targetName}|${track.spell_id}`;
       const found = auras.get(key);
       const shifted = track.segments.map((segment) => ({
         ...segment,
@@ -267,7 +269,13 @@ export function nightSummary(
       // need the pull's time added to their own denominator.
       const countPull = !pullsCounted.has(key);
       pullsCounted.add(key);
-      if (found === undefined) auras.set(key, { ...track, segments: shifted, time_ms: summary.duration_ms });
+      if (found === undefined)
+        auras.set(key, {
+          ...track,
+          target_name: targetName,
+          segments: shifted,
+          time_ms: summary.duration_ms,
+        });
       else
         auras.set(key, {
           ...found,
@@ -381,6 +389,24 @@ export function nightSummary(
 }
 
 /** The length of the union of segments: time at least one of them covered. */
+/** The name the log gives a unit on lines before it has seen the unit properly. */
+const UNNAMED = 'Unknown';
+
+/**
+ * Each unit GUID's real name from any pull that knew it. One pull can log an aura on a
+ * unit as "Unknown" and the next pull name it; folding by name alone would then carry
+ * both, two rows for one unit, one of them keyed the same as the other.
+ */
+function knownNames(summaries: ReadonlyMap<number, Summary>): Map<string, string> {
+  const names = new Map<string, string>();
+  for (const summary of summaries.values()) {
+    for (const track of summary.auras) {
+      if (track.target_name !== UNNAMED) names.set(track.target_guid, track.target_name);
+    }
+  }
+  return names;
+}
+
 function unionMs(segments: readonly { start_ms: number; end_ms: number }[]): number {
   const sorted = [...segments].sort((a, b) => a.start_ms - b.start_ms);
   let total = 0;
