@@ -492,6 +492,13 @@ describe('/logs-data/* served from the R2 bucket', () => {
     );
     expect(revalidated.status).toBe(304);
     expect(get).toHaveBeenCalledTimes(1);
+
+    // A different engine version on the query is a different cache entry and reaches the
+    // bucket again: that is how a re-parse's new bytes get past a year-long cache.
+    const reparsed = await worker.fetch(new Request(`${url}?v=0.3.5`), env);
+    expect(reparsed.status).toBe(200);
+    expect(get).toHaveBeenCalledTimes(2);
+    expect(get).toHaveBeenLastCalledWith(SUMMARY_KEY(id));
   });
 });
 

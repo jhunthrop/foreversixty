@@ -105,6 +105,19 @@ export function formatAmount(n: number): string {
   return GROUPED.format(Math.round(safe));
 }
 
+/**
+ * An amount in the scale its column is read in: when the column's largest figure is
+ * abbreviated (239.2k), every figure in it is (81k, not 80,993), or a five-digit row reads
+ * bigger than the six-digit rows above it. Below that the grouped form stays.
+ */
+export function formatAmountLike(n: number, columnMax: number): string {
+  const safe = Number.isFinite(n) ? n : 0;
+  if (Math.abs(columnMax) >= 100_000 && Math.abs(safe) < 100_000) {
+    return `${(safe / 1000).toFixed(1).replace(/\.0$/, '')}k`;
+  }
+  return formatAmount(safe);
+}
+
 /** 1.25 stays 1.25, 12.50 becomes 12.5, 3.00 becomes 3. */
 function trimZero(value: number): string {
   return value.toFixed(2).replace(/\.?0+$/, '');

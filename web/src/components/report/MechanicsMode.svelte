@@ -288,7 +288,9 @@
     </p>
 
     <section class="flex flex-col gap-1" data-testid="mechanics-problems">
-      <h2 class="label text-muted">Problems, most costly first</h2>
+      <h2 class="label text-muted" title="A death outranks any amount of damage; below the deaths, by damage">
+        Problems, deaths first, then most costly
+      </h2>
       {#if problems.length === 0}
         <p class="text-[14px]">Nothing the table lists went wrong.</p>
       {:else}

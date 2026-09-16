@@ -90,7 +90,7 @@ test('a fight the report does not have falls back to the first boss pull', async
 // would sit under the new fight's label -- one fight's data read as another's.
 test('a fight whose summary does not load says so instead of passing off the last one', async ({ page }) => {
   await page.goto(REPORT);
-  await page.route('**/fights/2/summary.json', (route) => route.abort());
+  await page.route('**/fights/2/summary.json*', (route) => route.abort());
 
   await page.getByTestId('toggle-trash').click();
   await page.getByTestId('fight-2').click();
@@ -123,7 +123,7 @@ async function heldRoute(
   const started = new Promise<void>((resolve) => (markStarted = resolve));
   const gate = new Promise<void>((resolve) => (release = resolve));
 
-  await page.route(`**/fights/${fightIndex}/summary.json`, async (route) => {
+  await page.route(`**/fights/${fightIndex}/summary.json*`, async (route) => {
     markStarted();
     await gate;
     await (settle === 'abort' ? route.abort() : route.continue());
@@ -162,7 +162,7 @@ test('a stale fight success neither clears the current error nor paints its rost
   await expect(summaryRosterRows(page)).toHaveCount(3);
 
   const slow = await heldRoute(page, 2, 'continue');
-  await page.route('**/fights/3/summary.json', (route) => route.abort());
+  await page.route('**/fights/3/summary.json*', (route) => route.abort());
 
   await page.getByTestId('toggle-trash').click();
   await page.getByTestId('fight-2').click();
@@ -219,7 +219,9 @@ test('a stale compare answer does not overwrite the fight actually selected', as
     : page.getByTestId('compare-Player-4184-000000A3').getByTestId('compare-delta');
   await expect(delta).toHaveText('+3,110');
 
-  const answered = page.waitForResponse((response) => response.url().endsWith('/fights/1/summary.json'));
+  const answered = page.waitForResponse((response) =>
+    /\/fights\/1\/summary\.json(\?|$)/.test(response.url()),
+  );
   slow.release();
   await answered;
   await page.waitForTimeout(250);

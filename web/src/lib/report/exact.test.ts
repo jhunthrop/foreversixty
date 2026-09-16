@@ -7,6 +7,7 @@ import {
   exactTableSql,
   measureCasts,
   rowsSql,
+  eventStreamSql,
 } from './exact';
 import type { QueryLayer } from './query';
 
@@ -171,5 +172,19 @@ describe('the ability filter on healing', () => {
     expect(sql).toMatch(/kind = 'heal' AND [^\n]*AND spell_id = 116670/);
     expect(sql).toMatch(/kind = 'absorbed' AND[^\n]*AND extra_spell_id = 116670/);
     expect(sql).not.toMatch(/kind = 'absorbed' AND[^\n]*AND spell_id = 116670/);
+  });
+});
+
+describe('damage lines', () => {
+  it('reads a melee swing as it landed, on every damage table and the event stream', () => {
+    // A SWING_DAMAGE with a landed twin is left out and the twin stands in as a damage
+    // line; a swing with no twin stays. The stream reads the same lines.
+    for (const kind of ['damage-done', 'damage-taken'] as const) {
+      const sql = rowsSql(kind, { startMs: 0, endMs: 1000 });
+      expect(sql).toContain("l.kind = 'damage_landed'");
+      expect(sql).toContain("REPLACE ('damage' AS kind, 'SWING_DAMAGE' AS event)");
+      expect(sql).not.toContain("FROM read_parquet('events.parquet') WHERE kind = 'damage'");
+    }
+    expect(eventStreamSql({ startMs: 0, endMs: 1000 })).toContain("l.kind = 'damage_landed'");
   });
 });

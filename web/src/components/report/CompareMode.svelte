@@ -22,6 +22,7 @@
     fights,
     current,
     dataBaseUrl,
+    engineVersion = '',
     left: leftWhole,
     window = null,
     rightIndex = null,
@@ -31,6 +32,8 @@
     fights: FightEntry[];
     current: number;
     dataBaseUrl: string;
+    /** The engine that wrote the files, on the summary url so a re-parse is a cache miss. */
+    engineVersion?: string;
     left: Summary;
     /** The Analyze window, applied to both sides; null compares whole fights. */
     window?: TimeWindow | null;
@@ -131,7 +134,7 @@
       error = '';
       return;
     }
-    void fetchSummary(dataBaseUrl, wanted)
+    void fetchSummary(dataBaseUrl, wanted, engineVersion)
       .then((summary) => {
         if (wanted !== rightIndex) return;
         rightWhole = summary;
@@ -155,15 +158,16 @@
     `${value >= 0 ? '+' : '−'}${mark}${formatAmount(Math.abs(value))}`;
   /** A player's figure for the picked metric: off the roster row, or the threat table. */
   function rowMetric(row: RosterRow, summary: Summary): number {
+    // A window past the shorter pull's end scopes that pull to nothing: no seconds and
+    // no rate, for any per-second metric, rather than a total over a clamped-to-zero length.
+    const scopedOut = summary.duration_ms <= 0;
     if (metric === 'threat' || metric === 'tps') {
       const threat = summary.threat.find((line) => line.guid === row.guid)?.threat ?? 0;
-      // A window past the shorter pull's end scopes that pull to nothing: no seconds, no
-      // rate, rather than a total divided by a clamped-to-zero length.
-      if (metric === 'tps')
-        return summary.duration_ms <= 0 ? 0 : Math.round(threat / (summary.duration_ms / 1000));
+      if (metric === 'tps') return scopedOut ? 0 : Math.round(threat / (summary.duration_ms / 1000));
       return Math.round(threat);
     }
-    return PER_SECOND.has(metric) ? Math.round(row[metric]) : row[metric];
+    if (PER_SECOND.has(metric)) return scopedOut ? 0 : Math.round(row[metric]);
+    return row[metric];
   }
 
   function fightLabel(fight: FightEntry | null): string {

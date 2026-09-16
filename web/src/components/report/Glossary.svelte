@@ -70,6 +70,11 @@
         'On the Summary’s damage, healing and damage-taken panels, a share of every player’s total in this window, whatever the Source scope shows: one player on their own still reads their real share of the raid, and an ability that hit only them reads its share of everything the raid took.',
     },
     {
+      term: 'Killed by · last hit by',
+      meaning:
+        'On a death card, "killed by" names the hit that ended them. "Last hit by" means no damage line did: the death came from something the log does not write as damage (a fall, an instant kill, a timer running out), so the card shows the last hit before it instead.',
+    },
+    {
       term: 'Casting, total',
       meaning:
         'On the Casts tab, the time a player spent casting that spell across the whole fight, every cast added together. An instant spell has none. A dagger marks it as the whole fight’s figure under any window.',

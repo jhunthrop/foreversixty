@@ -124,8 +124,22 @@ export async function fetchReportFile(dataBaseUrl: string): Promise<ReportFile> 
   return { ...file, fights: asArray(file.fights), units: asArray(file.units) };
 }
 
-export function fetchSummary(dataBaseUrl: string, fightIndex: number): Promise<Summary> {
-  return dataGet<Summary>(`${dataBaseUrl}/fights/${fightIndex}/summary.json`, 'default');
+/**
+ * A fight's files are cached for a year under their names, at the edge and in the browser,
+ * and a re-parse writes new bytes under the same names. The engine version rides on the
+ * url as a query, from report.json (fresh within five seconds), so a re-parse on a new
+ * engine is a new url and a cache miss, and the same engine's bytes stay cached. The
+ * Worker keys the bucket by path and the cache by url, so the query costs nothing there.
+ */
+export function versioned(url: string, engineVersion: string): string {
+  return engineVersion === '' ? url : `${url}?v=${encodeURIComponent(engineVersion)}`;
+}
+
+export function fetchSummary(dataBaseUrl: string, fightIndex: number, engineVersion = ''): Promise<Summary> {
+  return dataGet<Summary>(
+    versioned(`${dataBaseUrl}/fights/${fightIndex}/summary.json`, engineVersion),
+    'default',
+  );
 }
 
 /** Null means the fight is not open; anything else is a real failure and throws. */
@@ -139,8 +153,8 @@ export async function fetchLive(dataBaseUrl: string, fightIndex: number): Promis
 }
 
 /** The Parquet file is fetched by the query layer, not here; this only names it. */
-export function eventsUrl(dataBaseUrl: string, fightIndex: number): string {
-  return `${dataBaseUrl}/fights/${fightIndex}/events.parquet`;
+export function eventsUrl(dataBaseUrl: string, fightIndex: number, engineVersion = ''): string {
+  return versioned(`${dataBaseUrl}/fights/${fightIndex}/events.parquet`, engineVersion);
 }
 
 /** Spec section 1: "five-second page poll". */

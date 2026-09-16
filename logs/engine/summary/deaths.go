@@ -185,7 +185,10 @@ type resourceTrack struct {
 // the swing it repeats.
 func (a *Accumulator) addDeaths(e event.Event) {
 	if e.Kind == event.DamageLanded && e.Dest.GUID != "" {
-		if e.Adv.OK && e.Adv.InfoGUID == e.Dest.GUID {
+		// A swing a shield ate in full lands for nothing, and the client writes the
+		// target's block at full health on that line whatever they were on: not a
+		// reading to keep. The recap leaves that hit's health blank.
+		if e.Adv.OK && e.Adv.InfoGUID == e.Dest.GUID && e.Amount.V > 0 {
 			q := a.recent[e.Dest.GUID]
 			for i := len(q) - 1; i >= 0; i-- {
 				if q[i].SourceGUID == e.Source.GUID && q[i].Amount == e.Amount.V && q[i].SpellID == e.Spell.ID {

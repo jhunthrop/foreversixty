@@ -151,6 +151,8 @@ describe('the report files', () => {
 
   it('names the events file without fetching it', () => {
     expect(eventsUrl(DATA, 2)).toBe(`${DATA}/fights/2/events.parquet`);
+    // The engine version busts a year-long cache when a re-parse rewrites the same path.
+    expect(eventsUrl(DATA, 2, '0.3.5')).toBe(`${DATA}/fights/2/events.parquet?v=0.3.5`);
   });
 });
 

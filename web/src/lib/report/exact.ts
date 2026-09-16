@@ -139,6 +139,27 @@ function windowClause(window: TimeWindow): string {
  * the other side, the spell it is filed under, and its effective amount. Healing takes
  * heals and absorbs; damage taken reads the victim as the actor and never folds pets.
  */
+/**
+ * The damage lines as the engine counts them (0.3.5): a melee swing is logged twice,
+ * SWING_DAMAGE with what was thrown and SWING_DAMAGE_LANDED a few milliseconds later with
+ * what the target took -- the amount after a shield soaked it, the absorb, the overkill.
+ * The landed line stands in for its swing; a swing with no landed line within the echo
+ * counts as thrown; a landed line with no swing counts for nothing. Every damage read
+ * here goes through this, so a measured window agrees with the summary and the recap.
+ */
+const SWING_ECHO_NS = 250_000_000;
+export const DAMAGE_LINES = `(SELECT * FROM ${EVENTS_TABLE} d
+  WHERE d.kind = 'damage' AND NOT (d.event = 'SWING_DAMAGE' AND EXISTS (
+    SELECT 1 FROM ${EVENTS_TABLE} l
+    WHERE l.kind = 'damage_landed' AND l.source_guid = d.source_guid AND l.dest_guid = d.dest_guid
+      AND l.time_unix_nano BETWEEN d.time_unix_nano AND d.time_unix_nano + ${SWING_ECHO_NS}))
+  UNION ALL
+  SELECT * REPLACE ('damage' AS kind, 'SWING_DAMAGE' AS event) FROM ${EVENTS_TABLE} l
+  WHERE l.kind = 'damage_landed' AND EXISTS (
+    SELECT 1 FROM ${EVENTS_TABLE} d
+    WHERE d.event = 'SWING_DAMAGE' AND d.source_guid = l.source_guid AND d.dest_guid = l.dest_guid
+      AND d.time_unix_nano BETWEEN l.time_unix_nano - ${SWING_ECHO_NS} AND l.time_unix_nano))`;
+
 export function rowsSql(kind: ActorKind, window: TimeWindow, options: MeasureOptions = {}): string {
   const at = `${windowClause(window)}${abilityClause(options)}`;
   const pets = options.pets ?? NO_PETS;
@@ -149,7 +170,7 @@ export function rowsSql(kind: ActorKind, window: TimeWindow, options: MeasureOpt
     ${FIGHT_MS} AS fight_ms, spell_id, spell_name, spell_school, event, amount,
     ${damage} AS effective,
     0 AS overheal, coalesce(absorbed, 0) AS absorbed, coalesce(blocked, 0) AS blocked, critical
-  FROM ${EVENTS_TABLE} WHERE kind = 'damage' AND ${at}`;
+  FROM ${DAMAGE_LINES} WHERE ${at}`;
   }
   if (kind === 'healing') {
     return `SELECT ${ownerExpr('source_guid', pets)} AS actor, dest_guid AS other_guid, dest_name AS other_name,
@@ -170,7 +191,7 @@ export function rowsSql(kind: ActorKind, window: TimeWindow, options: MeasureOpt
     ${FIGHT_MS} AS fight_ms, spell_id, spell_name, spell_school, event, amount,
     ${damage} AS effective,
     0 AS overheal, coalesce(absorbed, 0) AS absorbed, coalesce(blocked, 0) AS blocked, critical
-  FROM ${EVENTS_TABLE} WHERE kind = 'damage' AND ${OTHER_SIDE} AND ${at}`;
+  FROM ${DAMAGE_LINES} WHERE ${OTHER_SIDE} AND ${at}`;
 }
 
 /**
@@ -359,8 +380,8 @@ export function eventStreamSql(window: TimeWindow): string {
   return `SELECT ${FIGHT_MS} AS fight_ms, kind, source_guid, source_name, dest_guid, dest_name, spell_name,
   coalesce(amount, 0) AS amount, coalesce(overheal, 0) AS overheal, coalesce(absorbed, 0) AS absorbed,
   coalesce(blocked, 0) AS blocked, coalesce(miss_type, '') AS miss_type
-FROM ${EVENTS_TABLE}
-WHERE kind IN ('damage', 'heal', 'missed') AND ${windowClause(window)}
+FROM (SELECT * FROM ${DAMAGE_LINES} UNION ALL SELECT * FROM ${EVENTS_TABLE} WHERE kind IN ('heal', 'missed'))
+WHERE ${windowClause(window)}
 ORDER BY time_unix_nano, line`;
 }
 

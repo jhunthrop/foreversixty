@@ -28,7 +28,7 @@ function recordRequests(page: Page): string[] {
 // engine module under /duckdb-runtime/, which is served from R2 rather than from dist/.
 const duckdbAssets = (urls: string[]): string[] =>
   urls.filter((url) => /\/duckdb(-runtime)?\//.test(new URL(url).pathname));
-const parquetFiles = (urls: string[]): string[] => urls.filter((url) => url.endsWith('events.parquet'));
+const parquetFiles = (urls: string[]): string[] => urls.filter((url) => /events\.parquet(\?|$)/.test(url));
 
 // Spec section 4: "DuckDB-WASM loads lazily on the first deep interaction, never on page
 // load." Opening the Queries view is not the deep interaction -- running a query is -- so
@@ -164,7 +164,7 @@ test('an answer for the fight that was left behind is dropped, not painted', asy
   let release = (): void => {};
   const started = new Promise<void>((resolve) => (markStarted = resolve));
   const gate = new Promise<void>((resolve) => (release = resolve));
-  await page.route('**/fights/3/events.parquet', async (route) => {
+  await page.route('**/fights/3/events.parquet*', async (route) => {
     markStarted();
     await gate;
     await route.continue();
@@ -178,7 +178,9 @@ test('an answer for the fight that was left behind is dropped, not painted', asy
   await page.getByTestId('fight-1').click();
   await expect(page.getByTestId('fight-1')).toHaveAttribute('aria-current', 'true');
 
-  const answered = page.waitForResponse((response) => response.url().endsWith('/fights/3/events.parquet'));
+  const answered = page.waitForResponse((response) =>
+    /\/fights\/3\/events\.parquet(\?|$)/.test(response.url()),
+  );
   release();
   await answered;
   await page.waitForTimeout(1000);

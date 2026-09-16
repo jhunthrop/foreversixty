@@ -48,7 +48,7 @@ test('a live fight polls, then settles when it closes', async ({ page }) => {
   // opened at all during its first pull, because loadFight always asked for the summary
   // and rendered "No report with that id" when it 404ed.
   let summaryCalls = 0;
-  await page.route(`**${DATA}/fights/3/summary.json`, (route) => {
+  await page.route(`**${DATA}/fights/3/summary.json*`, (route) => {
     summaryCalls += 1;
     return isClosed
       ? route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(summary) })
@@ -173,7 +173,7 @@ test('a stale live response does not trigger a second fetch for the fight the vi
   await page.route(`**${DATA}/report.json`, (route) =>
     route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(open) }),
   );
-  await page.route(`**${DATA}/fights/3/summary.json`, (route) =>
+  await page.route(`**${DATA}/fights/3/summary.json*`, (route) =>
     route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(summary3) }),
   );
   await page.route('**/v1/reports/fixture2live', (route) =>
@@ -183,7 +183,7 @@ test('a stale live response does not trigger a second fetch for the fight the vi
   );
   // Fight 2's summary is held throughout: it has to still be in flight -- an unconditional
   // cache miss -- when the live response for fight 3 is released, or the race never forms.
-  const fight2 = await heldRoute(page, `**${DATA}/fights/2/summary.json`, summary2);
+  const fight2 = await heldRoute(page, `**${DATA}/fights/2/summary.json*`, summary2);
   // live.json is held from the poll's first tick onwards, not from the page's first
   // request: an open fight is rendered from live.json now (there is no summary.json for
   // one), so holding the very first call would just leave the page loading forever.
@@ -347,7 +347,7 @@ test('a stale fight error is cleared by the live poll', async ({ page }) => {
     route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(summary3) }),
   );
   // Fight 2 never loads, which is what puts the alert on screen in the first place.
-  await page.route(`**${DATA}/fights/2/summary.json`, (route) =>
+  await page.route(`**${DATA}/fights/2/summary.json*`, (route) =>
     route.fulfill({ status: 500, contentType: 'text/plain', body: 'no' }),
   );
   await page.route('**/v1/reports/fixture2live', (route) =>

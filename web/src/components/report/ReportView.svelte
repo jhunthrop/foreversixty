@@ -106,6 +106,8 @@
   // $state is the pattern Svelte warns about (state_referenced_locally).
   let meta = $state<ReportMeta | null>(untrack(() => inlineMeta));
   let file = $state<ReportFile | null>(null);
+  /** The engine that wrote the report's files, riding on their urls so a re-parse is a cache miss. */
+  const engineVersion = $derived(file?.engine_version ?? '');
   let summary = $state<Summary | null>(null);
   let status = $state<'loading' | 'ready' | 'failed'>('loading');
   let error = $state('');
@@ -210,7 +212,7 @@
   function measureRow(actor: Actor): Promise<ExactSplit> {
     return measureExact(
       sharedQueryLayer(),
-      eventsUrl(dataBase, state.fight),
+      eventsUrl(dataBase, state.fight, engineVersion),
       tableKind,
       actor.guid,
       cutWindow,
@@ -277,7 +279,7 @@
     try {
       const measured = await measureTable(
         sharedQueryLayer(),
-        eventsUrl(dataBase, state.fight),
+        eventsUrl(dataBase, state.fight, engineVersion),
         tableKind,
         cutWindow,
         tableScope,
@@ -314,7 +316,11 @@
   });
   async function runCastMeasure(token: number): Promise<void> {
     try {
-      const measured = await measureCasts(sharedQueryLayer(), eventsUrl(dataBase, state.fight), cutWindow);
+      const measured = await measureCasts(
+        sharedQueryLayer(),
+        eventsUrl(dataBase, state.fight, engineVersion),
+        cutWindow,
+      );
       if (token === castToken) castExact = measured;
     } catch (thrown) {
       if (token === castToken)
@@ -970,7 +976,7 @@
       // Null means the fight closed between report.json being read and this request, so
       // the immutable summary exists after all.
     }
-    const loaded = await fromDataBase((base) => fetchSummary(base, index));
+    const loaded = await fromDataBase((base) => fetchSummary(base, index, engineVersion));
     summaries.set(index, loaded);
     if (index === state.fight) summary = loaded;
   }
@@ -1023,7 +1029,7 @@
       for (let index = queue.shift(); index !== undefined; index = queue.shift()) {
         if (cancelled) return;
         try {
-          const loaded = await fromDataBase((base) => fetchSummary(base, index as number));
+          const loaded = await fromDataBase((base) => fetchSummary(base, index as number, engineVersion));
           summaries.set(index, loaded);
         } catch {
           /* One pull that will not load leaves a gap the summary line reports. */
@@ -1538,7 +1544,12 @@
           onPatch={patch}
           loadStream={nightMode
             ? undefined
-            : () => loadEventStream(sharedQueryLayer(), eventsUrl(dataBase, state.fight), cutWindow)}
+            : () =>
+                loadEventStream(
+                  sharedQueryLayer(),
+                  eventsUrl(dataBase, state.fight, engineVersion),
+                  cutWindow,
+                )}
         />
       {/if}
       <!-- `scoped` only to say a summary has loaded, the same guard its three siblings
@@ -1552,6 +1563,7 @@
           {fights}
           current={state.fight}
           dataBaseUrl={dataBase}
+          {engineVersion}
           left={summary}
           window={windowIsWhole ? null : cutWindow}
           rightIndex={state.compareWith}

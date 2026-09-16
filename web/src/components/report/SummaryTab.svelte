@@ -14,7 +14,6 @@
   import { splitUnitName } from '../../lib/characters';
   import {
     classColorVar,
-    formatAmount,
     formatDuration,
     formatPerSecond,
     formatPercent,
@@ -23,6 +22,7 @@
     wholeFightAriaLabel,
     wholeFightMark,
     wholeFightTitle,
+    formatAmountLike,
   } from '../../lib/report/format';
   import { plannerLinkFor } from '../../lib/report/planner-link';
   import GearList from './GearList.svelte';
@@ -65,6 +65,12 @@
   } = $props();
 
   const roster = $derived([...summary.roster].sort((a, b) => b.damage_done - a.damage_done));
+  /** Each amount column's largest figure, so every row in it reads in the same scale. */
+  const columnMax = $derived({
+    damage_done: Math.max(0, ...roster.map((row) => row.damage_done)),
+    healing_done: Math.max(0, ...roster.map((row) => row.healing_done)),
+    damage_taken: Math.max(0, ...roster.map((row) => row.damage_taken)),
+  });
   /** The parse is withheld under a window or a table filter even when the rankings answered. */
   const parseWithheld = $derived(parseFallback === 'window' || parseFallback === 'filter');
   /** The combatant whose gear list is open. */
@@ -90,7 +96,7 @@
     return [
       { label: 'DPS', value: formatPerSecond(row.damage_done, durationMs) },
       { label: 'HPS', value: formatPerSecond(row.healing_done, durationMs) },
-      { label: 'Taken', value: formatAmount(row.damage_taken) },
+      { label: 'Taken', value: formatAmountLike(row.damage_taken, columnMax.damage_taken) },
       {
         label: 'Active',
         value: `${activeMark}${formatPercent(row.activity_pct)}`,
@@ -186,21 +192,21 @@
             class="tabular hidden flex-col text-right font-mono leading-tight md:flex"
             data-testid="roster-damage"
           >
-            <span>{formatAmount(row.damage_done)}</span>
+            <span>{formatAmountLike(row.damage_done, columnMax.damage_done)}</span>
             <span class="text-muted text-[11px]">{formatPerSecond(row.damage_done, durationMs)}/s</span>
           </span>
           <span
             class="tabular hidden flex-col text-right font-mono leading-tight md:flex"
             data-testid="roster-healing"
           >
-            <span>{formatAmount(row.healing_done)}</span>
+            <span>{formatAmountLike(row.healing_done, columnMax.healing_done)}</span>
             <span class="text-muted text-[11px]">{formatPerSecond(row.healing_done, durationMs)}/s</span>
           </span>
           <span
             class="tabular hidden flex-col text-right font-mono leading-tight md:flex"
             data-testid="roster-taken"
           >
-            <span>{formatAmount(row.damage_taken)}</span>
+            <span>{formatAmountLike(row.damage_taken, columnMax.damage_taken)}</span>
             <span class="text-muted text-[11px]">{formatPerSecond(row.damage_taken, durationMs)}/s</span>
           </span>
           <span
@@ -227,7 +233,7 @@
             {#each figuresFor(row) as figure (figure.label)}
               <span>
                 {figure.label}
-                <span class="tabular font-mono" title={figure.title} aria-label={figure.ariaLabel}
+                <span class="tabular font-mono normal-case" title={figure.title} aria-label={figure.ariaLabel}
                   >{figure.value}</span
                 >
               </span>

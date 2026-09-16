@@ -914,3 +914,50 @@ func TestASwingCountsAsItLanded(t *testing.T) {
 		t.Fatalf("melee = %+v, want 3 hits, a largest of 3000 and 12097 absorbed", melee)
 	}
 }
+
+// The landed line of a swing a shield ate in full carries the target at full health,
+// whatever they were on; the recap keeps that hit's health blank rather than 100%.
+func TestAFullyAbsorbedSwingLeavesNoHealthReading(t *testing.T) {
+	o, reg := opts(t)
+	a := New(o)
+	a.Start(at(0))
+	landed := func(sec float64, amount, absorbed int64, hp int64) event.Event {
+		e := dmg(sec, boss, tank, 0, "", amount, -1)
+		e.Kind, e.Name = event.DamageLanded, "SWING_DAMAGE_LANDED"
+		e.Absorbed = event.OptInt{V: absorbed, OK: true}
+		e.Adv = event.Advanced{OK: true, InfoGUID: tank, CurrentHP: hp, MaxHP: 30000}
+		return e
+	}
+	events := []event.Event{
+		dmg(1, boss, tank, 0, "", 5000, 0),
+		landed(1.01, 5000, 0, 20000),
+		dmg(2, boss, tank, 0, "", 11097, 1546),
+		landed(2.01, 0, 11097, 30000),
+		dmg(3, boss, tank, 0, "", 40000, 20000),
+	}
+	events = append(events, event.Event{Time: at(3.5), Kind: event.Death, Name: "UNIT_DIED", Dest: event.Unit{GUID: tank, Flags: 0x512}})
+	for _, e := range events {
+		reg.Observe(e)
+		a.Add(e)
+	}
+	s := a.Snapshot(fight.Fight{Index: 1, Kind: fight.Encounter, Start: at(0), End: at(5), Players: []string{tank}}, "test")
+	if len(s.Deaths) != 1 {
+		t.Fatalf("deaths = %d, want 1", len(s.Deaths))
+	}
+	var soaked, landedHit *DamageRef
+	for i := range s.Deaths[0].Last {
+		ref := &s.Deaths[0].Last[i]
+		switch ref.Amount {
+		case 0:
+			soaked = ref
+		case 5000:
+			landedHit = ref
+		}
+	}
+	if landedHit == nil || landedHit.HPAfter != 20000 {
+		t.Fatalf("landed hit = %+v, want health 20000 read off its landed line", landedHit)
+	}
+	if soaked == nil || soaked.Absorbed != 11097 || soaked.HPAfter != 0 || soaked.MaxHP != 0 {
+		t.Fatalf("soaked swing = %+v, want 11097 absorbed and no health reading", soaked)
+	}
+}

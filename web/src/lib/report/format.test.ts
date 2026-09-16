@@ -14,6 +14,7 @@ import {
   percentileToken,
   schoolName,
   schoolToken,
+  formatAmountLike,
 } from './format';
 
 describe('report formatting', () => {
@@ -94,5 +95,14 @@ describe('report formatting', () => {
     expect(schoolToken(undefined)).toBe('var(--color-school-physical)');
     expect(schoolToken(32)).toBe('var(--color-school-shadow)');
     expect(schoolToken(36)).toBe('var(--color-school-fire)');
+  });
+});
+
+describe('formatAmountLike', () => {
+  it('reads a column in one scale once its largest figure is abbreviated', () => {
+    expect(formatAmountLike(80_993, 239_200)).toBe('81k');
+    expect(formatAmountLike(1_500, 239_200)).toBe('1.5k');
+    expect(formatAmountLike(239_200, 239_200)).toBe('239.2k');
+    expect(formatAmountLike(80_993, 90_000)).toBe('80,993');
   });
 });

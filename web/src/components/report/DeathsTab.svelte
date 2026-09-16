@@ -289,7 +289,11 @@
           {/if}
           {#if death.killing_blow}
             <span class="text-[13px]">
-              {lethalHitMissing(death) ? 'last hit by' : 'killed by'}
+              <span
+                title={lethalHitMissing(death)
+                  ? 'No damage line ended them: the death came from something the log does not write as damage (a fall, an instant kill, a timer running out), so this is the last hit before it'
+                  : 'The hit that ended them'}>{lethalHitMissing(death) ? 'last hit by' : 'killed by'}</span
+              >
               {sourceName(death.killing_blow.source_guid, death.killing_blow.source_name)} ·
               {NULL_GUID.test(death.killing_blow.source_guid) && death.killing_blow.spell_name === ''
                 ? 'a fall, a hazard or an untracked source'

@@ -22,7 +22,7 @@ test('a fight whose events share timestamps still renders its timelines and deat
 
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
-  await page.route('**/fights/3/summary.json', (route) =>
+  await page.route('**/fights/3/summary.json*', (route) =>
     route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(summary) }),
   );
 
