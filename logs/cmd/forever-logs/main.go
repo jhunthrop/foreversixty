@@ -6,6 +6,8 @@
 //	forever-logs tail    <file>   follow a growing log and print fights live
 //	forever-logs conformance <dir> report unknown events, parse errors, and
 //	                              inferred layouts over every file in a tree
+//	forever-logs mechanics-draft <file> propose a mechanics table per
+//	                              encounter from the log's evidence
 //
 // Deep queries are not here on purpose: the design runs them in the
 // browser over the fight's Parquet file.
@@ -43,7 +45,7 @@ func main() {
 }
 
 func usage() error {
-	return errors.New("usage: forever-logs parse|fights|tail|conformance ...")
+	return errors.New("usage: forever-logs parse|fights|tail|conformance|mechanics-draft ...")
 }
 
 func run(args []string, out, errOut io.Writer) error {
@@ -59,6 +61,8 @@ func run(args []string, out, errOut io.Writer) error {
 		return cmdTail(args[1:], out)
 	case "conformance":
 		return cmdConformance(args[1:], out, errOut)
+	case "mechanics-draft":
+		return runMechanicsDraft(args[1:], out, errOut)
 	default:
 		return usage()
 	}
