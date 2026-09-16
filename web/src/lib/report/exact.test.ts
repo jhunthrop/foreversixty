@@ -192,3 +192,10 @@ describe('damage lines', () => {
     expect(eventStreamSql({ startMs: 0, endMs: 1000 })).toContain("l.kind = 'damage_landed'");
   });
 });
+
+describe('eventStreamSql', () => {
+  it('reads aura refreshes alongside the hits, heals and misses', () => {
+    const sql = eventStreamSql({ startMs: 0, endMs: 10_000 });
+    expect(sql).toContain("kind IN ('heal', 'missed', 'aura_refresh')");
+  });
+});

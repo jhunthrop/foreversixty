@@ -366,7 +366,7 @@ export async function measureCasts(
  */
 export interface StreamLine {
   atMs: number;
-  kind: 'damage' | 'heal' | 'missed';
+  kind: 'damage' | 'heal' | 'missed' | 'aura_refresh';
   sourceGuid: string;
   sourceName: string;
   destGuid: string;
@@ -381,16 +381,21 @@ export interface StreamLine {
   missType: string;
 }
 
+/**
+ * A refresh rides with the hits and heals rather than with the summary's aura segments:
+ * the summary folds a refresh into the running segment and keeps no count of them, so
+ * "when did this actually get re-applied" is only answerable from the fight's own lines.
+ */
 export function eventStreamSql(window: TimeWindow): string {
   return `SELECT ${FIGHT_MS} AS fight_ms, kind, source_guid, source_name, dest_guid, dest_name, spell_name,
   coalesce(amount, 0) AS amount, coalesce(overheal, 0) AS overheal, coalesce(absorbed, 0) AS absorbed,
   coalesce(blocked, 0) AS blocked, coalesce(miss_type, '') AS miss_type
-FROM (SELECT * FROM ${DAMAGE_LINES} UNION ALL SELECT * FROM ${EVENTS_TABLE} WHERE kind IN ('heal', 'missed'))
+FROM (SELECT * FROM ${DAMAGE_LINES} UNION ALL SELECT * FROM ${EVENTS_TABLE} WHERE kind IN ('heal', 'missed', 'aura_refresh'))
 WHERE ${windowClause(window)}
 ORDER BY time_unix_nano, line`;
 }
 
-/** Every hit and heal in the window, time-ordered. */
+/** Every hit, heal and aura refresh in the window, time-ordered. */
 export async function loadEventStream(
   layer: QueryLayer,
   eventsUrl: string,
@@ -399,7 +404,14 @@ export async function loadEventStream(
   const result = await layer.run(eventsUrl, eventStreamSql(window), ALL_ROWS);
   return rowsOf(result).map((row) => ({
     atMs: num(row.fight_ms),
-    kind: row.kind === 'heal' ? 'heal' : row.kind === 'missed' ? 'missed' : 'damage',
+    kind:
+      row.kind === 'heal'
+        ? 'heal'
+        : row.kind === 'missed'
+          ? 'missed'
+          : row.kind === 'aura_refresh'
+            ? 'aura_refresh'
+            : 'damage',
     sourceGuid: String(row.source_guid ?? ''),
     sourceName: String(row.source_name ?? ''),
     destGuid: String(row.dest_guid ?? ''),
