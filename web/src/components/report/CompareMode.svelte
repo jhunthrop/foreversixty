@@ -154,7 +154,11 @@
   function rowMetric(row: RosterRow, summary: Summary): number {
     if (metric === 'threat' || metric === 'tps') {
       const threat = summary.threat.find((line) => line.guid === row.guid)?.threat ?? 0;
-      return Math.round(metric === 'tps' ? threat / Math.max(summary.duration_ms / 1000, 0.001) : threat);
+      // A window past the shorter pull's end scopes that pull to nothing: no seconds, no
+      // rate, rather than a total divided by a clamped-to-zero length.
+      if (metric === 'tps')
+        return summary.duration_ms <= 0 ? 0 : Math.round(threat / (summary.duration_ms / 1000));
+      return Math.round(threat);
     }
     return PER_SECOND.has(metric) ? Math.round(row[metric]) : row[metric];
   }

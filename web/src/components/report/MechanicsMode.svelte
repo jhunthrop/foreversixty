@@ -122,7 +122,7 @@
             hit: placement.hit,
             cost: placement.hit.damage + (placement.hit.killed ? DEATH_COST : 0),
             subject: `${splitUnitName(placement.hit.name).name}, ${row.name} placed`,
-            text: `${splitUnitName(placement.hit.name).name} placed ${row.name} on ${placement.others} ${placement.others === 1 ? 'player' : 'players'} ${placement.hit.hits === 1 ? 'once' : `${placement.hit.hits} times`} for ${formatAmount(placement.hit.damage)} damage${placement.hit.killed ? ', and someone died to it' : ''}; the ${row.role}'s to place`,
+            text: `${splitUnitName(placement.hit.name).name} placed ${row.name} on ${placement.others} ${placement.others === 1 ? 'player' : 'players'} ${placement.hit.hits === 1 ? 'once' : `${placement.hit.hits} times`} for ${formatAmount(placement.hit.damage)} damage${placement.hit.killed ? ', and someone died to it' : ''}; the ${row.role}'s to place, and the same hits as their rows below, charged here as well`,
           });
         }
       } else if (row.kind === 'interrupt' && (row.casts ?? 0) > (row.stopped ?? 0)) {
