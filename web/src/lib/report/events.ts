@@ -35,22 +35,58 @@ export interface SummaryEvent {
   /** Every actor the line involves, for scoping by source: a heal is the healer's and the healed's. */
   guids: string[];
   amount?: number;
+  /** Words the find matches besides the text: a miss's own type ("parry"), so the noun finds the verb. */
+  tags?: string[];
 }
 
-/** The full stream's lines in the view's shape: every hit and heal, said the same way as a death's. */
+/** How a miss reads, by the log's miss type: the hit that did not land, and why. */
+const MISS_VERBS: Record<string, string> = {
+  PARRY: 'parried',
+  DODGE: 'dodged',
+  BLOCK: 'blocked',
+  MISS: 'was missed by',
+  IMMUNE: 'was immune to',
+  ABSORB: 'absorbed',
+  DEFLECT: 'deflected',
+  EVADE: 'evaded',
+  RESIST: 'resisted',
+  REFLECT: 'reflected',
+};
+
+/**
+ * The full stream's lines in the view's shape: every hit, heal and avoided hit, said the
+ * same way as a death's. A miss is filed under the hits it is a member of, worded from
+ * the defender's side ("Hobolol parried General Kaal's Melee"), so a search for "parry"
+ * finds the moment the Damage Taken row counted.
+ */
 export function streamEvents(lines: StreamLine[]): SummaryEvent[] {
   return lines.map((line) => {
     const who = splitUnitName(line.sourceName).name || 'Something';
     const whom = splitUnitName(line.destName).name;
     const spell = line.spellName === '' ? 'Melee' : line.spellName;
-    const detail =
+    if (line.kind === 'missed') {
+      const verb = MISS_VERBS[line.missType] ?? `avoided (${line.missType.toLowerCase()})`;
+      const soaked =
+        line.missType === 'ABSORB' && line.amount > 0 ? ` (${line.amount.toLocaleString()})` : '';
+      return {
+        atMs: line.atMs,
+        kind: 'damage',
+        guid: line.destGuid,
+        guids: [line.sourceGuid, line.destGuid],
+        text: `${whom} ${verb} ${who}’s ${spell}${soaked}`,
+        tags: [line.missType.toLowerCase(), 'avoided'],
+      };
+    }
+    const parts =
       line.kind === 'heal'
         ? line.overheal > 0
-          ? ` (${line.overheal.toLocaleString()} over)`
-          : ''
-        : line.absorbed > 0
-          ? ` (${line.absorbed.toLocaleString()} absorbed)`
-          : '';
+          ? [`${line.overheal.toLocaleString()} over`]
+          : []
+        : [
+            ...(line.absorbed > 0 ? [`${line.absorbed.toLocaleString()} absorbed`] : []),
+            ...(line.blocked > 0 ? [`${line.blocked.toLocaleString()} blocked`] : []),
+          ];
+    const detail = parts.length === 0 ? '' : ` (${parts.join(', ')})`;
     return {
       atMs: line.atMs,
       kind: line.kind,
@@ -182,6 +218,7 @@ export function filterEvents(events: SummaryEvent[], kinds: Set<EventKind>, sear
       kinds.has(event.kind) &&
       (needle === '' ||
         event.text.toLowerCase().includes(needle) ||
+        (event.tags?.some((tag) => tag.includes(needle)) ?? false) ||
         (byAmount && event.amount !== undefined && String(event.amount).includes(digits))),
   );
 }

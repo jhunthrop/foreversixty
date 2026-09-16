@@ -333,10 +333,14 @@ export async function measureCasts(
   return out;
 }
 
-/** One line of the full stream: every hit and heal in the window, for the events view. */
+/**
+ * One line of the full stream: every hit, heal and avoided hit in the window, for the
+ * events view. A miss is a line of its own: the parry or block that kept a swing off the
+ * tank is the moment a tank goes to the events to find.
+ */
 export interface StreamLine {
   atMs: number;
-  kind: 'damage' | 'heal';
+  kind: 'damage' | 'heal' | 'missed';
   sourceGuid: string;
   sourceName: string;
   destGuid: string;
@@ -345,13 +349,18 @@ export interface StreamLine {
   amount: number;
   overheal: number;
   absorbed: number;
+  /** Damage: what a block took off the hit; a full block is a miss of type BLOCK instead. */
+  blocked: number;
+  /** Missed: PARRY, DODGE, BLOCK, MISS, IMMUNE, ABSORB, DEFLECT, EVADE, RESIST, REFLECT. */
+  missType: string;
 }
 
 export function eventStreamSql(window: TimeWindow): string {
   return `SELECT ${FIGHT_MS} AS fight_ms, kind, source_guid, source_name, dest_guid, dest_name, spell_name,
-  coalesce(amount, 0) AS amount, coalesce(overheal, 0) AS overheal, coalesce(absorbed, 0) AS absorbed
+  coalesce(amount, 0) AS amount, coalesce(overheal, 0) AS overheal, coalesce(absorbed, 0) AS absorbed,
+  coalesce(blocked, 0) AS blocked, coalesce(miss_type, '') AS miss_type
 FROM ${EVENTS_TABLE}
-WHERE kind IN ('damage', 'heal') AND ${windowClause(window)}
+WHERE kind IN ('damage', 'heal', 'missed') AND ${windowClause(window)}
 ORDER BY time_unix_nano, line`;
 }
 
@@ -364,7 +373,7 @@ export async function loadEventStream(
   const result = await layer.run(eventsUrl, eventStreamSql(window), ALL_ROWS);
   return rowsOf(result).map((row) => ({
     atMs: num(row.fight_ms),
-    kind: row.kind === 'heal' ? 'heal' : 'damage',
+    kind: row.kind === 'heal' ? 'heal' : row.kind === 'missed' ? 'missed' : 'damage',
     sourceGuid: String(row.source_guid ?? ''),
     sourceName: String(row.source_name ?? ''),
     destGuid: String(row.dest_guid ?? ''),
@@ -373,6 +382,8 @@ export async function loadEventStream(
     amount: num(row.amount),
     overheal: num(row.overheal),
     absorbed: num(row.absorbed),
+    blocked: num(row.blocked),
+    missType: String(row.miss_type ?? ''),
   }));
 }
 

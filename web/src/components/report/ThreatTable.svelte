@@ -423,13 +423,17 @@
             {#if taunt.label !== undefined}
               <span class="text-muted text-[12px]">{taunt.label}</span>
             {/if}
-            <button
-              type="button"
-              class="text-nav ml-auto inline-flex min-h-11 items-center text-[12px] font-bold tracking-[0.06em] uppercase md:min-h-0"
-              data-testid="taunt-window"
-              title="Set the window to the span around this taunt"
-              onclick={() => onWindow(aroundWindow(taunt.at_ms, durationMs))}>Around it</button
-            >
+            <!-- The night has no window to set: a taunt there names its pull instead, and
+                 the link that did nothing on the night is not offered. -->
+            {#if scopeNoun !== 'night'}
+              <button
+                type="button"
+                class="text-nav ml-auto inline-flex min-h-11 items-center text-[12px] font-bold tracking-[0.06em] uppercase md:min-h-0"
+                data-testid="taunt-window"
+                title="Set the window to the span around this taunt"
+                onclick={() => onWindow(aroundWindow(taunt.at_ms, durationMs))}>Around it</button
+              >
+            {/if}
           </li>
         {/each}
       </ul>

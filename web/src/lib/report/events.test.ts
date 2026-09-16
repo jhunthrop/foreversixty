@@ -2,7 +2,14 @@
 import { describe, expect, it } from 'vitest';
 import fixtureSummary from '../../fixtures/report/fights/3/summary.json';
 import type { Summary } from './types';
-import { EVENT_KINDS, filterEvents, summaryEvents, type EventKind, type SummaryEvent } from './events';
+import {
+  EVENT_KINDS,
+  filterEvents,
+  streamEvents,
+  summaryEvents,
+  type EventKind,
+  type SummaryEvent,
+} from './events';
 
 const summary = fixtureSummary as Summary;
 
@@ -119,5 +126,34 @@ describe('filterEvents', () => {
       filterEvents(events, new Set(EVENT_KINDS.map((kind) => kind.id)), 'frostbolt').length,
     ).toBeGreaterThan(0);
     expect(filterEvents(events, new Set(EVENT_KINDS.map((kind) => kind.id)), 'nothing here')).toEqual([]);
+  });
+});
+
+describe('streamEvents', () => {
+  it('words a miss from the defender’s side and a block beside the hit it took from', () => {
+    const base = {
+      atMs: 1000,
+      sourceGuid: 'boss',
+      sourceName: 'General Kaal',
+      destGuid: 'tank',
+      destName: 'Hobolol-Torghast',
+      spellName: '',
+      amount: 0,
+      overheal: 0,
+      absorbed: 0,
+      blocked: 0,
+      missType: '',
+    };
+    const [parry, hit] = streamEvents([
+      { ...base, kind: 'missed', missType: 'PARRY' },
+      { ...base, kind: 'damage', amount: 7554, absorbed: 261, blocked: 1200 },
+    ]);
+    expect(parry.text).toBe('Hobolol parried General Kaal’s Melee');
+    // "parry" is not a substring of "parried": the type rides along for the find.
+    expect(filterEvents([parry], new Set<EventKind>(['damage']), 'parry')).toHaveLength(1);
+    expect(filterEvents([parry], new Set<EventKind>(['damage']), 'avoided')).toHaveLength(1);
+    expect(parry.kind).toBe('damage');
+    expect(parry.guid).toBe('tank');
+    expect(hit.text).toBe('General Kaal hit Hobolol with Melee (261 absorbed, 1,200 blocked)');
   });
 });

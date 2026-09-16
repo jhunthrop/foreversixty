@@ -418,9 +418,6 @@
             </h3>
             <p class="text-[13px]">
               <span class="tabular font-mono">{formatAmount(player.damage)}</span> avoidable damage
-              {#if player.placed > 0}
-                · <span class="tabular font-mono">{formatAmount(player.placed)}</span> placed on others
-              {/if}
               {#if nightMode}
                 <span
                   class="text-muted"
@@ -431,6 +428,9 @@
                 · <span class="tabular font-mono"
                   >{Math.round((player.damage / takenOf(player.guid)) * 100)}%</span
                 > of what they took
+              {/if}
+              {#if player.placed > 0}
+                · <span class="tabular font-mono">{formatAmount(player.placed)}</span> placed on others
               {/if}
             </p>
             {#if player.hits.length === 0}

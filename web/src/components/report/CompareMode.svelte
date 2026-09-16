@@ -150,6 +150,9 @@
    */
   const threatScaled = $derived(window !== null && (metric === 'threat' || metric === 'tps'));
   const mark = $derived(threatScaled ? '~' : '');
+  /** A difference as sign, mark, magnitude: "+~13,550" and "−~26,473" read the same way round. */
+  const signed = (value: number): string =>
+    `${value >= 0 ? '+' : '−'}${mark}${formatAmount(Math.abs(value))}`;
   /** A player's figure for the picked metric: off the roster row, or the threat table. */
   function rowMetric(row: RosterRow, summary: Summary): number {
     if (metric === 'threat' || metric === 'tps') {
@@ -278,9 +281,9 @@
       <p class="text-muted text-[12px]" data-testid="compare-threat-note">
         Threat is under the base threat model, which has no tank stance, taunt or threat multipliers yet, so a
         tank can read below the damage dealers they held threat over; a longer pull reads higher for being
-        longer, so read the difference against the lengths.{#if threatScaled}
-          Inside a window it is marked ~: the whole fight’s threat scaled to the window’s share, not measured
-          from the window’s own events, the same figure the Threat tab greys.{/if}
+        longer, so read the difference against the lengths.{threatScaled
+          ? ' Inside a window it is marked ~: the whole fight’s threat scaled to the window’s share, not measured from the window’s own events, the same figure the Threat tab greys.'
+          : ''}
       </p>
     {/if}
   </div>
@@ -311,8 +314,7 @@
             class="tabular text-right font-mono"
             class:text-gold={line.a >= line.b}
             title="This fight less the compared fight"
-            data-testid="compare-card-delta"
-            >{line.a - line.b >= 0 ? '+' : ''}{mark}{formatAmount(line.a - line.b)}</span
+            data-testid="compare-card-delta">{signed(line.a - line.b)}</span
           >
           <span class="text-muted col-span-2 text-[12px]"
             ><span class="tabular font-mono">{mark}{formatAmount(line.a)}</span> this fight ·
@@ -359,7 +361,7 @@
                 class:text-gold={line.a >= line.b}
                 data-testid="compare-delta"
               >
-                {line.a - line.b >= 0 ? '+' : ''}{mark}{formatAmount(line.a - line.b)}
+                {signed(line.a - line.b)}
               </td>
             </tr>
           {/each}
