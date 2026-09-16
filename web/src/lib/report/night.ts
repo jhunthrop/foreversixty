@@ -351,14 +351,23 @@ export function nightSummary(
     }
     // Keyed by the target's name, not its GUID, for the same reason as auras and
     // exchanges: an add is a new GUID every pull. The night's target_guid is the name,
-    // since the real per-pull GUID is not a stable identity across the fold.
+    // since the real per-pull GUID is not a stable identity across the fold. The
+    // per-second series is dropped: the night has no one clock to draw threat on, and a
+    // cumulative line spliced across pulls would read as a standing nobody ever held.
     for (const pair of summary.threat_by_target ?? []) {
       const key = `${pair.guid}|${pair.target_name}`;
       const found = threatPairs.get(key);
       threatPairs.set(
         key,
         found === undefined
-          ? { ...pair, target_guid: pair.target_name }
+          ? {
+              ...pair,
+              target_guid: pair.target_name,
+              series: undefined,
+              standing: undefined,
+              built: undefined,
+              measured: undefined,
+            }
           : { ...found, threat: found.threat + pair.threat },
       );
     }

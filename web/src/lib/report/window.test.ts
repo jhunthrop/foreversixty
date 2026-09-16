@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import fixtureSummary from '../../fixtures/report/fights/3/summary.json';
-import type { Actor, AuraTrack, CastRow, Summary } from './types';
+import type { Actor, AuraTrack, CastRow, Summary, ThreatPair } from './types';
 import {
   BUCKET_MS,
   aroundWindow,
@@ -12,6 +12,7 @@ import {
   scopeAuraTrack,
   scopeCastRow,
   scopeSummary,
+  scopeThreatPairs,
   sliceSeries,
   sumSeries,
   windowMs,
@@ -324,5 +325,79 @@ describe('presets', () => {
     const scoped = scopeActor(actor, { startMs: 0, endMs: 2000 });
     expect(scoped.abilities[0].overheal).toBe(200);
     expect(scoped.abilities[0].total).toBe(500);
+  });
+});
+
+describe('threat inside a window', () => {
+  const pair = (guid: string, threat: number, series: number[]): ThreatPair => ({
+    guid,
+    name: guid,
+    target_guid: 'Creature-1',
+    target_name: 'Boss',
+    threat,
+    series,
+  });
+
+  it('measures standing at the window’s end and built inside it, from the pair’s own series', () => {
+    const [scoped] = scopeThreatPairs([pair('P1', 100, [10, 20, 30, 40])], {
+      startMs: 1000,
+      endMs: 3000,
+    });
+    // Standing is everything up to the window's end: 10 + 20 + 30.
+    expect(scoped.standing).toBe(60);
+    // Built is the window's own buckets: 20 + 30.
+    expect(scoped.built).toBe(50);
+    expect(scoped.measured).toBe(true);
+    // The table sorts and draws on standing, so `threat` is standing.
+    expect(scoped.threat).toBe(60);
+    expect(scoped.series).toEqual([20, 30]);
+  });
+
+  it('leaves a whole-fight window alone: standing at the end is the total', () => {
+    const [scoped] = scopeThreatPairs([pair('P1', 100, [10, 20, 30, 40])], {
+      startMs: 0,
+      endMs: 4000,
+    });
+    expect(scoped.standing).toBe(100);
+    expect(scoped.built).toBe(100);
+    expect(scoped.threat).toBe(100);
+  });
+
+  it('says nothing was measured when the pair was written before the engine kept a series', () => {
+    const old: ThreatPair = {
+      guid: 'P1',
+      name: 'P1',
+      target_guid: 'Creature-1',
+      target_name: 'Boss',
+      threat: 100,
+    };
+    const [scoped] = scopeThreatPairs([old], { startMs: 1000, endMs: 3000 });
+    expect(scoped.measured).toBeUndefined();
+    expect(scoped.standing).toBeUndefined();
+    expect(scoped.threat).toBe(100);
+  });
+
+  it('scopeSummary measures the pairs when they carry a series and scales them when they do not', () => {
+    const base = summary;
+    const withSeries: Summary = {
+      ...base,
+      threat: [{ guid: 'P1', name: 'P1', threat: 100, model_version: 'base-1', complete: false }],
+      threat_by_target: [pair('P1', 100, [10, 20, 30, 40])],
+      duration_ms: 4000,
+      damage_done: [],
+      healing: [],
+    };
+    const scoped = scopeSummary(withSeries, { startMs: 1000, endMs: 3000 });
+    expect(scoped.threat_by_target?.[0].measured).toBe(true);
+    expect(scoped.threat_by_target?.[0].standing).toBe(60);
+
+    const withoutSeries: Summary = {
+      ...withSeries,
+      threat_by_target: [{ ...pair('P1', 100, []), series: undefined }],
+    };
+    const legacy = scopeSummary(withoutSeries, { startMs: 1000, endMs: 3000 });
+    // No series, no damage and no healing in the window: the old ratio scales it to zero.
+    expect(legacy.threat_by_target?.[0].measured).toBeUndefined();
+    expect(legacy.threat_by_target?.[0].threat).toBe(0);
   });
 });

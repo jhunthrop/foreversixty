@@ -284,6 +284,14 @@ export interface ThreatPair {
   target_guid: string;
   target_name: string;
   threat: number;
+  /** Threat built on this enemy in each whole second of the fight. Absent before engine 0.4.0. */
+  series?: number[];
+  /** Set by the window scope: the cumulative threat at the window's end — the number that decides aggro. */
+  standing?: number;
+  /** Set by the window scope: the threat built inside the window, the series summed over it. */
+  built?: number;
+  /** Set by the window scope: true when standing and built were measured from the series, not scaled. */
+  measured?: boolean;
 }
 
 /** summary.Taunt — who taunted what, when. */

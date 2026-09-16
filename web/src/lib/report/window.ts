@@ -241,6 +241,30 @@ function scaleThreatPairs(pairs: ThreatPair[], whole: ThreatRow[], scoped: Threa
   });
 }
 
+/**
+ * A pair's two honest window figures, both measured from its own per-second series:
+ * `standing`, the cumulative threat at the window's end, which is the number that decides
+ * who the enemy is looking at, and `built`, the threat made inside the window. `threat`
+ * becomes standing, because that is what the table sorts by, draws a bar for and takes a
+ * share of. A pair written before engine 0.4.0 has no series and comes back untouched, for
+ * `scaleThreatPairs` to prorate the old way.
+ */
+export function scopeThreatPairs(pairs: ThreatPair[], window: TimeWindow): ThreatPair[] {
+  return pairs.map((pair) => {
+    if (pair.series === undefined) return pair;
+    const standing = sumSeries(pair.series, { startMs: 0, endMs: window.endMs });
+    const built = sumSeries(pair.series, window);
+    return {
+      ...pair,
+      threat: standing,
+      standing,
+      built,
+      measured: true,
+      series: sliceSeries(pair.series, window),
+    };
+  });
+}
+
 /** A row with nothing in the window is dropped, not shown as a zero. */
 function scopeActors(actors: Actor[], window: TimeWindow): ScopedActor[] {
   return actors
@@ -275,11 +299,15 @@ export function scopeSummary(summary: Summary, window: TimeWindow): Summary {
   scoped.threat = scopeThreat(summary.threat, scoped, summary);
   // Undefined survives scoping, the same way `taunts` does below: a summary written before
   // the engine kept the per-target split has no key at all, and the table reads that
-  // differently from a split that came out empty.
+  // differently from a split that came out empty. A split that carries per-second series
+  // (engine 0.4.0) is measured rather than scaled, so the window's figures are the
+  // window's own events; one that does not is prorated as before, and marked.
   scoped.threat_by_target =
     summary.threat_by_target === undefined
       ? undefined
-      : scaleThreatPairs(summary.threat_by_target, summary.threat, scoped.threat);
+      : summary.threat_by_target.every((pair) => pair.series !== undefined)
+        ? scopeThreatPairs(summary.threat_by_target, window)
+        : scaleThreatPairs(summary.threat_by_target, summary.threat, scoped.threat);
   // Undefined survives scoping: a summary written before the engine kept taunts has no
   // `taunts` key at all, and "none in this window" is a different sentence from "this
   // report never had them". An empty array from an engine that does keep them stays [].

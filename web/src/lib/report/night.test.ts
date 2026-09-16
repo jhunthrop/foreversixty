@@ -363,6 +363,29 @@ describe('aggregateNight', () => {
     expect(nightSummary(kaalFights, kaalSummaries).taunts).toBeUndefined();
   });
 
+  it('drops the per-second series from the night’s threat pairs: a night has no one clock', () => {
+    const fights = [fight(3, 'Kaal', false, 10_000), fight(4, 'Kaal', true, 10_000)];
+    const summaries = new Map([
+      [3, summary(3, 10_000, [roster('A', 10)])],
+      [4, summary(4, 10_000, [roster('A', 10)])],
+    ]);
+    const pair = (threat: number, series: number[]) => [
+      {
+        guid: 'Player-1',
+        name: 'Tank',
+        target_guid: 'Creature-a',
+        target_name: 'Kaal',
+        threat,
+        series,
+      },
+    ];
+    summaries.set(3, { ...summaries.get(3)!, threat_by_target: pair(100, [60, 40]) });
+    summaries.set(4, { ...summaries.get(4)!, threat_by_target: pair(50, [50]) });
+    const night = nightSummary(fights, summaries);
+    expect(night.threat_by_target?.[0].threat).toBe(150);
+    expect(night.threat_by_target?.[0].series).toBeUndefined();
+  });
+
   it('offsets hits by their pull, skips a pull whose table was not found, and folds a no-player row by its counts', () => {
     const withMechanics = new Map(summaries);
     // Pull 1 (10_000 ms, offset 0): table not found, but the fixture still carries a
