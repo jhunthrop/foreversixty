@@ -197,6 +197,15 @@ async function serveReportFile(request: Request, env: Env, key: string, id: stri
   if (lookup.kind === 'unavailable') return refuse(503, 'Report visibility cannot be checked right now');
   if (!PUBLIC_VISIBILITIES.has(lookup.visibility)) return refuse(403, 'That report is not public');
 
+  // The edge cache first, after the visibility gate: a summary or an events file never
+  // changes under its name and report.json carries its own five seconds, so a repeat
+  // visit is answered here rather than from the bucket. Keyed by URL, GET only.
+  const cache = edgeCache();
+  if (cache !== null && request.method === 'GET') {
+    const hit = await cache.match(request.url);
+    if (hit !== undefined) return conditional(request, hit);
+  }
+
   // No bucket bound (preview, Playwright) or no such object: the static assets carry the
   // checked-in fixture at the same path, and otherwise answer with the 404 page.
   const object = await env.LOGS?.get(key);
@@ -209,7 +218,42 @@ async function serveReportFile(request: Request, env: Env, key: string, id: stri
     headers.set('content-encoding', object.httpMetadata.contentEncoding);
   }
   headers.set('etag', object.httpEtag);
-  return new Response(request.method === 'HEAD' ? null : object.body, { status: 200, headers });
+  if (request.method === 'HEAD') return new Response(null, { status: 200, headers });
+
+  const response = new Response(object.body, { status: 200, headers });
+  if (cache !== null) {
+    // Stored before the conditional check, so a 304 today still leaves the bytes at the
+    // edge for the next visitor. The put is awaited rather than deferred: this handler
+    // has no execution context to hand it to, and a clone streams alongside the body.
+    await cache.put(request.url, response.clone()).catch(() => undefined);
+  }
+  return conditional(request, response);
+}
+
+/** The Cloudflare edge cache when this runs on Cloudflare; null under vitest or a plain Node preview. */
+function edgeCache(): Cache | null {
+  const global = globalThis as { caches?: { default?: Cache } };
+  return global.caches?.default ?? null;
+}
+
+/**
+ * A browser refresh revalidates everything it holds: with the ETag it was given sent back
+ * as If-None-Match, a matching file is a 304 and a few hundred bytes rather than the
+ * whole summary again. Weak and strong tags compare by value.
+ */
+function conditional(request: Request, response: Response): Response {
+  const etag = response.headers.get('etag');
+  const sent = request.headers.get('if-none-match');
+  if (etag === null || sent === null) return response;
+  const strip = (tag: string): string => tag.trim().replace(/^W\//, '');
+  const matches = sent.split(',').some((tag) => tag.trim() === '*' || strip(tag) === strip(etag));
+  if (!matches) return response;
+  const headers = new Headers();
+  for (const name of ['etag', 'cache-control', 'content-type']) {
+    const value = response.headers.get(name);
+    if (value !== null) headers.set(name, value);
+  }
+  return new Response(null, { status: 304, headers });
 }
 
 /**

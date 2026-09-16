@@ -96,6 +96,7 @@
     type TargetScope,
   } from '../../lib/report/exact';
   import { resolveTreeSizes } from '../../lib/report/tree-sizes';
+  import { REPORT_SKELETON_HTML } from '../../lib/report/skeleton';
   import { classSlugOf } from '../../lib/report/planner-link';
 
   let { reportId, inlineMeta = null }: { reportId: string; inlineMeta?: ReportMeta | null } = $props();
@@ -1118,7 +1119,9 @@
 {#if status === 'failed'}
   <p class="px-[18px] text-[14px] md:px-0" role="alert" data-testid="report-error">{error}</p>
 {:else if status === 'loading' || meta === null}
-  <p class="text-muted px-[18px] text-[14px] md:px-0">Loading the report.</p>
+  <!-- Static, trusted markup of our own (skeleton.ts): no data goes into it. -->
+  <!-- eslint-disable-next-line svelte/no-at-html-tags -->
+  {@html REPORT_SKELETON_HTML}
 {:else}
   <header class="flex flex-col gap-1 px-[18px] md:px-0">
     <div class="flex flex-wrap items-center gap-2">

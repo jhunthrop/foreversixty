@@ -420,6 +420,79 @@ describe('/logs-data/* served from the R2 bucket', () => {
     expect(response.status).toBe(405);
     expect(response.headers.get('allow')).toBe('GET, HEAD');
   });
+
+  it('answers a matching If-None-Match with a 304 and no body', async () => {
+    const id = 'pubaaaaaaaaa';
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => visibilityResponse('public')),
+    );
+    const env = { ...envWith(), LOGS: bucketWith({ [SUMMARY_KEY(id)]: summaryObject() }) };
+    const response = await worker.fetch(
+      new Request(`https://foreversixty.gg/logs-data/reports/${id}/fights/3/summary.json`, {
+        headers: { 'if-none-match': '"abc123"' },
+      }),
+      env,
+    );
+    expect(response.status).toBe(304);
+    expect(await response.text()).toBe('');
+    expect(response.headers.get('etag')).toBe('"abc123"');
+    expect(response.headers.get('cache-control')).toBe('public, max-age=31536000, immutable');
+
+    const weak = await worker.fetch(
+      new Request(`https://foreversixty.gg/logs-data/reports/${id}/fights/3/summary.json`, {
+        headers: { 'if-none-match': 'W/"abc123", "other"' },
+      }),
+      env,
+    );
+    expect(weak.status).toBe(304);
+
+    const stale = await worker.fetch(
+      new Request(`https://foreversixty.gg/logs-data/reports/${id}/fights/3/summary.json`, {
+        headers: { 'if-none-match': '"older"' },
+      }),
+      env,
+    );
+    expect(stale.status).toBe(200);
+    expect(await stale.text()).toBe('{"fight_index":3}');
+  });
+
+  it('serves a repeat request from the edge cache without reading the bucket', async () => {
+    const id = 'pubaaaaaaaaa';
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => visibilityResponse('public')),
+    );
+    const store = new Map<string, Response>();
+    vi.stubGlobal('caches', {
+      default: {
+        match: async (url: string) => store.get(url)?.clone(),
+        put: async (url: string, response: Response) => {
+          store.set(url, response);
+        },
+      },
+    });
+    const env = { ...envWith(), LOGS: bucketWith({ [SUMMARY_KEY(id)]: summaryObject() }) };
+    const get = env.LOGS.get;
+    const url = `https://foreversixty.gg/logs-data/reports/${id}/fights/3/summary.json`;
+    const first = await worker.fetch(new Request(url), env);
+    expect(first.status).toBe(200);
+    expect(await first.text()).toBe('{"fight_index":3}');
+    expect(get).toHaveBeenCalledTimes(1);
+
+    const second = await worker.fetch(new Request(url), env);
+    expect(second.status).toBe(200);
+    expect(await second.text()).toBe('{"fight_index":3}');
+    expect(second.headers.get('etag')).toBe('"abc123"');
+    expect(get).toHaveBeenCalledTimes(1);
+
+    const revalidated = await worker.fetch(
+      new Request(url, { headers: { 'if-none-match': '"abc123"' } }),
+      env,
+    );
+    expect(revalidated.status).toBe(304);
+    expect(get).toHaveBeenCalledTimes(1);
+  });
 });
 
 describe('/duckdb-runtime/* served from the R2 bucket', () => {

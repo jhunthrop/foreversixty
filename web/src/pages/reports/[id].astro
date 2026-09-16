@@ -1,4 +1,5 @@
 ---
+import { REPORT_SKELETON_HTML } from '../../lib/report/skeleton';
 // web/src/pages/reports/[id].astro
 // Prerendered report pages. Only the fixtures, and only under FOREVER_DATA=fixture (see
 // ../../lib/report/shell-paths.ts): Playwright and Lighthouse need a /reports/<id> that
@@ -48,7 +49,7 @@ const inline = id === FIXTURE_REPORT_ID ? JSON.stringify(fixtureMeta) : undefine
       not being off by a few rows.
     -->
     <div id="report" data-report-mount data-report-id={id} data-report={inline} class="min-h-[200svh]">
-      <p class="text-muted px-[18px] text-[14px] md:px-0">Loading the report.</p>
+      <Fragment set:html={REPORT_SKELETON_HTML} />
     </div>
     <script type="module" src="/report-island.js"></script>
   </main>
