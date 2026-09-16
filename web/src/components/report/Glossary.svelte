@@ -8,7 +8,7 @@
     {
       term: 'Parse',
       meaning:
-        'Where a kill sits among every ranked kill of the same boss by the same spec, on this ruleset, as a percentile: 100 is the best, 0 the lowest. A wipe is not ranked, and a dash means nothing of this spec has been ranked on this boss yet.',
+        'Where a kill sits among every ranked kill of the same boss by the same spec, on this ruleset, as a percentile: 100 is the best, 0 the lowest. A wipe is not ranked; a dash means nothing of this spec has been ranked on this boss yet; a question mark means the rankings could not be reached (Try again asks once more); the whole night has none, since a parse is per kill.',
     },
     {
       term: 'Parse, by role',
@@ -52,7 +52,7 @@
     {
       term: 'Active',
       meaning:
-        'The share of the window the player spent casting or attacking. Time spent dead is not active. The smaller per-second figure marked "while active" divides by that time instead of the whole window, so it says what they did while they were doing anything.',
+        'The share of the window the player spent casting or attacking. Time spent dead is not active. The second per-second figure, marked "while active", divides by that time instead of the whole window, so it is never smaller: it says what they did while they were doing anything.',
     },
     {
       term: 'Ignore events while dead',
@@ -73,6 +73,21 @@
       term: 'Mitigated · absorbed · blocked · avoided',
       meaning:
         'Under the Damage Taken table: damage that did not land. Absorbed was soaked by a shield, blocked was cut by a shield block, and avoided hits missed outright: a parry, dodge, miss, or a hit a shield took whole. Measured from the fight’s events on one pull; marked ~ where it is prorated.',
+    },
+    {
+      term: '(n over)',
+      meaning:
+        'Beside a heal: the part that landed on a full health bar, overhealing. A heal of "+0 (1,719 over)" found nothing to heal.',
+    },
+    {
+      term: 'Up · Just lost',
+      meaning:
+        'On a death card: the buffs and debuffs on the player at the moment they died, and the ones that dropped in the seconds before.',
+    },
+    {
+      term: 'Parry · dodge · miss · absorb · evade · immune',
+      meaning:
+        'The ways a hit fails to land, as the log names them. A parry, dodge or miss avoided it outright; absorb means a shield took the whole hit; evade and immune mean the target could not be hit at all just then.',
     },
     {
       term: 'Overkill',

@@ -307,7 +307,9 @@ export function nightSummary(
         });
     }
     for (const row of [...summary.interrupts, ...summary.dispels]) {
-      const key = `${row.kind}|${row.source_guid}|${row.target_guid}|${row.spell_id}|${row.extra_spell_id}`;
+      // By the target's name, not its GUID: an add is a new GUID every pull, and three
+      // "Undying Stonefiend" rows at one kick each are one row at three.
+      const key = `${row.kind}|${row.source_guid}|${row.target_name}|${row.spell_id}|${row.extra_spell_id}`;
       const found = exchanges.get(key);
       exchanges.set(key, found === undefined ? { ...row } : { ...found, count: found.count + row.count });
     }

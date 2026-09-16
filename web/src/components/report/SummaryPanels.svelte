@@ -66,8 +66,6 @@
   });
 
   const deaths = $derived([...summary.deaths].sort((a, b) => a.at_ms - b.at_ms));
-  const peakOf = (shares: { share: number }[]): number =>
-    shares.reduce((top, row) => Math.max(top, row.share), 0);
   const panel = 'border-line rounded-panel bg-raised flex flex-col gap-2 border p-3';
   const heading = 'label text-muted flex items-center justify-between';
   const more =
@@ -109,9 +107,7 @@
           >
           <span class="text-muted tabular text-right font-mono text-[12px]">{share.toFixed(1)}%</span>
           <span class="bg-line-soft col-span-3 block h-[8px] w-full md:col-span-1"
-            ><span
-              class="block h-full"
-              style={`width: ${peakOf(damage) === 0 ? 0 : (share / peakOf(damage)) * 100}%; background: ${classColorVar(actor.class)}`}
+            ><span class="block h-full" style={`width: ${share}%; background: ${classColorVar(actor.class)}`}
             ></span></span
           >
           <span class="tabular text-right font-mono whitespace-nowrap"
@@ -161,9 +157,7 @@
           >
           <span class="text-muted tabular text-right font-mono text-[12px]">{share.toFixed(1)}%</span>
           <span class="bg-line-soft col-span-3 block h-[8px] w-full md:col-span-1"
-            ><span
-              class="block h-full"
-              style={`width: ${peakOf(healing) === 0 ? 0 : (share / peakOf(healing)) * 100}%; background: ${classColorVar(actor.class)}`}
+            ><span class="block h-full" style={`width: ${share}%; background: ${classColorVar(actor.class)}`}
             ></span></span
           >
           <span class="tabular text-right font-mono whitespace-nowrap"
@@ -202,9 +196,7 @@
           <span class="truncate font-semibold" title={row.name}>{row.name}</span>
           <span class="text-muted tabular text-right font-mono text-[12px]">{row.share.toFixed(1)}%</span>
           <span class="bg-line-soft col-span-3 block h-[8px] w-full md:col-span-1"
-            ><span
-              class="block h-full"
-              style={`width: ${peakOf(takenByAbility) === 0 ? 0 : (row.share / peakOf(takenByAbility)) * 100}%; background: ${schoolToken(row.school)}`}
+            ><span class="block h-full" style={`width: ${row.share}%; background: ${schoolToken(row.school)}`}
             ></span></span
           >
           <span class="tabular text-right font-mono">{formatAmount(row.total)}</span>

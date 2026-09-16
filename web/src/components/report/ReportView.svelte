@@ -25,6 +25,7 @@
   import {
     ALL_FIGHTS,
     FLAG_LETTERS,
+    MISSING_FIGHT,
     SOURCE_ENEMIES,
     SOURCE_FRIENDLIES,
     type FlagKey,
@@ -419,6 +420,8 @@
   let percentiles = $state(new Map<string, Placement>());
   /** The last percentile load hit a failure (not a 404): the empty cells mean "could not ask". */
   let percentilesUnavailable = $state(false);
+  /** A percentile load is in flight: the empty cells mean "asking", not "nothing ranked". */
+  let percentilesPending = $state(false);
   /** Bumped by the retry line; the percentile effect reads it, so a bump asks again. */
   let parseAttempt = $state(0);
   const loader = createPercentileLoader();
@@ -444,13 +447,17 @@
     fight?.encounter_id === undefined || fight.in_progress
       ? ''
       : fight.kill
-        ? percentilesUnavailable
-          ? '?'
-          : '–'
+        ? percentilesPending
+          ? '…'
+          : percentilesUnavailable
+            ? '?'
+            : '–'
         : 'wipe',
   );
   /** The actor tables' fallback: Damage Taken has no parse at all, and its cells say so. */
-  const tableParseFallback = $derived(state.tab === 'damage-taken' ? 'none' : parseFallback);
+  const tableParseFallback = $derived(
+    nightMode ? 'night' : state.tab === 'damage-taken' ? 'none' : parseFallback,
+  );
 
   /** GUID to class, for the tables whose rows are not Actors. Off the whole fight rather
       than the scoped one: a colour is a property of the player, not of the current source
@@ -631,6 +638,7 @@
     ) {
       percentiles = new Map();
       percentilesUnavailable = false;
+      percentilesPending = false;
       return;
     }
     const tab = state.tab;
@@ -664,8 +672,10 @@
         ];
       });
 
+    percentilesPending = true;
     void loader.load(wanted.map((entry) => entry.query)).then(({ placements, unavailable }) => {
       if (state.fight !== wantedFight || state.tab !== wantedTab) return;
+      percentilesPending = false;
       percentilesUnavailable = unavailable;
       // A plain Map, not SvelteMap: this is a throwaway local built up once and then
       // assigned whole to `percentiles` (already $state) below, the same reasoning the
@@ -1039,8 +1049,12 @@
 
   {#if missingFight !== null}
     <p class="text-muted px-[18px] text-[13px] md:px-0" role="status" data-testid="report-missing-fight">
-      This report has no fight <span class="tabular font-mono">{missingFight}</span>, so the first fight is
-      showing.
+      {#if missingFight === MISSING_FIGHT}
+        This link names a fight the page cannot read, so the first fight is showing.
+      {:else}
+        This report has no fight <span class="tabular font-mono">{missingFight}</span>, so the first fight is
+        showing.
+      {/if}
     </p>
   {/if}
 
@@ -1209,7 +1223,7 @@
             deaths={scoped.deaths}
             names={unitNames}
           />
-          <AuraTable tracks={scoped.auras} durationMs={scoped.duration_ms} kind="BUFF" />
+          <AuraTable tracks={scoped.auras} durationMs={scoped.duration_ms} kind="BUFF" names={unitNames} />
         {:else if state.tab === 'debuffs'}
           {#if state.source === 'friendlies'}
             <p class="text-muted text-[12px]" data-testid="debuffs-scope-note">
@@ -1240,6 +1254,7 @@
         {:else if state.tab === 'interrupts'}
           <ExchangeTable
             rows={scoped.interrupts}
+            everyone={windowed?.interrupts ?? scoped.interrupts}
             emptyText={exchangeEmpty('interrupted')}
             casts={base?.casts ?? []}
             players={playerSet}
@@ -1247,6 +1262,7 @@
         {:else if state.tab === 'dispels'}
           <ExchangeTable
             rows={scoped.dispels}
+            everyone={windowed?.dispels ?? scoped.dispels}
             emptyText={exchangeEmpty('dispelled')}
             auras={base?.auras ?? []}
             players={playerSet}

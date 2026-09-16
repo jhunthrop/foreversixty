@@ -260,7 +260,13 @@ func (a *Accumulator) seedAuras(e event.Event) {
 // it is safe to call every few seconds during a live fight and to serialise
 // the result while the parse goes on.
 func (a *Accumulator) Snapshot(f fight.Fight, engineVersion string) Summary {
+	// The fight's own wall length, the same figure the fight list shows, so a pull has
+	// one length everywhere and every per-second figure divides by it. A fight still
+	// open has no end yet, so it runs to the last event seen.
 	dur := a.end.Sub(a.start)
+	if !f.InProgress && f.End.After(f.Start) {
+		dur = f.End.Sub(f.Start)
+	}
 	if dur < 0 {
 		dur = 0
 	}

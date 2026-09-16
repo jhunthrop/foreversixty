@@ -9,6 +9,7 @@ import {
   parseReportState,
   reportSearch,
   withState,
+  MISSING_FIGHT,
 } from './url';
 
 describe('the report URL state', () => {
@@ -101,10 +102,10 @@ describe('the report URL state', () => {
     });
   });
 
-  it('falls back to the default for anything it does not recognise', () => {
+  it('falls back to the default for anything it does not recognise, and marks a fight it cannot read', () => {
     const state = parseReportState('?fight=nope&mode=replay&view=sideways&tab=gear&start=-5&end=abc', 2);
     expect(state).toEqual({
-      fight: 2,
+      fight: MISSING_FIGHT,
       mode: 'analyze',
       view: 'tables',
       tab: 'summary',
@@ -199,5 +200,11 @@ describe('the report URL state', () => {
     const search = reportSearch(state, 1);
     expect(search).toBe('?target=Creature-1-2&ability=116&flags=bd&with=4&cmetric=dps');
     expect(parseReportState(search, 1)).toEqual(state);
+  });
+
+  it('reads a negative ability id, the engine’s spell for environmental damage, and drops zero', () => {
+    expect(parseReportState('?fight=3&ability=-1', 1).ability).toBe(-1);
+    expect(parseReportState('?fight=3&ability=0', 1).ability).toBeNull();
+    expect(reportSearch(withState(defaultState(1), { ability: -1 }), 1)).toContain('ability=-1');
   });
 });

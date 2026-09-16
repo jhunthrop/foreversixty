@@ -13,6 +13,7 @@
   import { splitUnitName } from '../../lib/characters';
   import { formatDuration, formatPercent, schoolName, schoolToken } from '../../lib/report/format';
   import type { AuraTrack } from '../../lib/report/types';
+  import CopyCsv from './CopyCsv.svelte';
 
   let {
     tracks,
@@ -60,6 +61,21 @@
   );
 
   const pct = (ms: number): number => (durationMs === 0 ? 0 : (ms / durationMs) * 100);
+  /** The table as lines: one per aura on one target, uptime in seconds and as a share. */
+  function csvLines(): string[][] {
+    return [
+      ['Aura', 'Spell id', 'On', 'Uptime s', 'Uptime %', 'Applied', 'From'],
+      ...rows.map((track) => [
+        track.name,
+        String(track.spell_id),
+        splitUnitName(track.target_name).name,
+        (track.uptime_ms / 1000).toFixed(1),
+        shareOf(track).toFixed(1),
+        String(track.applications),
+        track.appliers.map((guid) => splitUnitName(names.get(guid) ?? guid).name).join('; '),
+      ]),
+    ];
+  }
   /** Uptime over the time the track's target was in: the figure the row shows. */
   const shareOf = (track: AuraTrack): number =>
     track.time_ms === undefined ? pct(track.uptime_ms) : (track.uptime_ms / track.time_ms) * 100;
@@ -204,5 +220,6 @@
         </li>
       {/each}
     </ul>
+    <CopyCsv lines={csvLines} />
   </div>
 {/if}

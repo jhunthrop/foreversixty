@@ -23,6 +23,7 @@
     wholeFightTitle,
   } from '../../lib/report/format';
   import type { CastRow } from '../../lib/report/types';
+  import CopyCsv from './CopyCsv.svelte';
 
   let {
     rows,
@@ -42,6 +43,21 @@
   const ordered = $derived(
     [...rows].sort((a, b) => b.succeeded - a.succeeded || a.spell_name.localeCompare(b.spell_name)),
   );
+  /** The table as lines: one per caster and spell, with the casting time in seconds. */
+  function csvLines(): string[][] {
+    return [
+      ['Player', 'Spell', 'Spell id', 'Casts', 'Started', 'Failed', 'Casting s'],
+      ...ordered.map((row) => [
+        splitUnitName(row.name).name,
+        row.spell_name,
+        String(row.spell_id),
+        String(row.succeeded),
+        String(row.started),
+        String(row.failed),
+        (row.cast_time_ms / 1000).toFixed(1),
+      ]),
+    ];
+  }
   /** Spell names two different spell ids share for one caster, shown with the id to tell them apart. */
   const sameName = $derived.by(() => {
     // eslint-disable-next-line svelte/prefer-svelte-reactivity
@@ -94,7 +110,11 @@
 {:else}
   <div class="flex flex-col" data-testid="cast-table">
     {#if rhythm !== null}
-      <p class="text-[13px]" data-testid="cast-rhythm">
+      <p
+        class="text-[13px]"
+        data-testid="cast-rhythm"
+        title="Casts of every spell in this scope, and the longest stretch between two of them. A gap counts time spent dead or out of range; over the night it is on the night's clock."
+      >
         <span class="tabular font-mono">{rhythm.casts}</span> casts ·
         <span class="tabular font-mono">{perMinute(rhythm.casts)}</span> a minute · longest gap
         <span class="tabular font-mono">{formatDuration(rhythm.gap.to - rhythm.gap.from)}</span> at
@@ -176,6 +196,7 @@
         </li>
       {/each}
     </ul>
+    <CopyCsv lines={csvLines} />
   </div>
   {#if approximate}
     <p class="text-muted text-[12px]" data-testid="cast-approximate-note">

@@ -14,11 +14,13 @@
   import { splitUnitName } from '../../lib/characters';
   import { wholeFightAriaLabel, wholeFightMark, wholeFightTitle } from '../../lib/report/format';
   import type { AuraTrack, CastRow, ExchangeRow } from '../../lib/report/types';
+  import CopyCsv from './CopyCsv.svelte';
 
   let {
     rows,
     emptyText,
     casts = [],
+    everyone = rows,
     auras = [],
     players = new Set<string>(),
   }: {
@@ -26,6 +28,11 @@
     emptyText: string;
     /** The fight's cast rows, for the "went through" count on the Interrupts tab. */
     casts?: CastRow[];
+    /**
+     * Every source's rows, unscoped: what went through or ran its course is counted
+     * against the whole group's stops, whoever the table is scoped to.
+     */
+    everyone?: ExchangeRow[];
     /** The fight's aura tracks, for the "ran its course" count on the Dispels tab. */
     auras?: AuraTrack[];
     players?: ReadonlySet<string>;
@@ -46,7 +53,7 @@
     if (auras.length === 0) return [];
     // eslint-disable-next-line svelte/prefer-svelte-reactivity
     const bySpell = new Map<number, Uncured>();
-    for (const row of rows) {
+    for (const row of everyone) {
       if (row.kind !== 'dispel') continue;
       const found = bySpell.get(row.extra_spell_id) ?? {
         spell_id: row.extra_spell_id,
@@ -73,6 +80,8 @@
     name: string;
     cast: number;
     stopped: number;
+    /** Stops by the sources this table is scoped to, when that is not everyone. */
+    own: number;
   }
 
   /**
@@ -85,16 +94,21 @@
     // A plain Map: built once inside the derived, never read reactively by key.
     // eslint-disable-next-line svelte/prefer-svelte-reactivity
     const stopped = new Map<number, Missed>();
-    for (const row of rows) {
+    for (const row of everyone) {
       if (row.kind !== 'interrupt') continue;
       const found = stopped.get(row.extra_spell_id) ?? {
         spell_id: row.extra_spell_id,
         name: row.extra_spell_name,
         cast: 0,
         stopped: 0,
+        own: 0,
       };
       found.stopped += row.count;
       stopped.set(row.extra_spell_id, found);
+    }
+    for (const row of rows) {
+      const found = stopped.get(row.extra_spell_id);
+      if (found !== undefined && row.kind === 'interrupt') found.own += row.count;
     }
     for (const cast of casts) {
       if (players.has(cast.guid)) continue;
@@ -107,9 +121,25 @@
       .sort((a, b) => b.cast - b.stopped - (a.cast - a.stopped));
   });
 
+  /** Whether the table shows some sources only, so the group's counts name the scope's part. */
+  const scopedToSome = $derived(everyone !== rows && everyone.length !== rows.length);
   const ordered = $derived(
     [...rows].sort((a, b) => b.count - a.count || a.source_name.localeCompare(b.source_name)),
   );
+  /** The table as lines: who did it, with what, on whom, which spell, how often. */
+  function csvLines(): string[][] {
+    return [
+      ['By', 'With', 'On', 'Spell', 'Spell id', 'Count'],
+      ...ordered.map((row) => [
+        splitUnitName(row.source_name).name,
+        row.spell_name,
+        splitUnitName(row.target_name).name,
+        row.extra_spell_name,
+        String(row.extra_spell_id),
+        String(row.count),
+      ]),
+    ];
+  }
   const mark = wholeFightMark(true);
   const title = wholeFightTitle(true);
 
@@ -166,6 +196,7 @@
         </li>
       {/each}
     </ul>
+    <CopyCsv lines={csvLines} />
   </div>
   {#if missed.length > 0}
     <div class="flex flex-col gap-1" data-testid="interrupts-missed">
@@ -178,7 +209,8 @@
             <span class="font-semibold">{entry.name}</span>
             <span class="text-muted text-[13px]">
               cast <span class="tabular font-mono">{entry.cast}</span> · stopped
-              <span class="tabular font-mono">{entry.stopped}</span> ·
+              <span class="tabular font-mono">{entry.stopped}</span>{#if scopedToSome}
+                (<span class="tabular font-mono">{entry.own}</span> in this scope){/if} ·
               <span class="text-wipe tabular font-mono">{entry.cast - entry.stopped}</span> went through
             </span>
           </li>

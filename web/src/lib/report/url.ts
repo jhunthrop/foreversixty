@@ -66,6 +66,8 @@ export const TABS: readonly { id: Tab; label: string }[] = [
 /** The two scopes that are not a single unit. Anything else is a GUID. */
 export const SOURCE_FRIENDLIES = 'friendlies';
 export const SOURCE_ENEMIES = 'enemies';
+/** The fight index a url names when it names one the page cannot read; never a real fight. */
+export const MISSING_FIGHT = -1;
 
 /** The fight number that means every boss pull of the report, and its url spelling. */
 export const ALL_FIGHTS = 0;
@@ -153,6 +155,9 @@ export function parseReportState(search: string, firstFight: number): ReportStat
   const fight = params.get('fight');
   if (fight === ALL_FIGHTS_PARAM) state.fight = ALL_FIGHTS;
   else if (fight !== null && /^\d+$/.test(fight)) state.fight = Number.parseInt(fight, 10);
+  // A fight the url cannot read ("abc", "-1", "1e9") is a missing fight, not the first
+  // one: the page says so instead of handing a stale link someone else's numbers.
+  else if (fight !== null && fight !== '') state.fight = MISSING_FIGHT;
 
   state.mode = readOne(params.get('mode'), ENABLED_MODES, state.mode);
   state.view = readOne(params.get('view'), VIEW_IDS, state.view);
@@ -171,8 +176,11 @@ export function parseReportState(search: string, firstFight: number): ReportStat
 
   const target = params.get('target');
   if (target !== null && /^[A-Za-z0-9-]{1,64}$/.test(target)) state.target = target;
-  const ability = readMs(params.get('ability'));
-  if (ability !== null && ability > 0) state.ability = ability;
+  // Any integer but zero: spell ids are positive, and the environment's damage (a fall,
+  // a fire) is filed under a negative one the engine reserves; zero is the melee swing.
+  const ability = params.get('ability');
+  if (ability !== null && /^-?\d+$/.test(ability) && Number.parseInt(ability, 10) !== 0)
+    state.ability = Number.parseInt(ability, 10);
   const flags = params.get('flags') ?? '';
   state.flags = (Object.keys(FLAG_LETTERS) as FlagKey[]).filter((key) => flags.includes(FLAG_LETTERS[key]));
   const compareWith = readMs(params.get('with'));

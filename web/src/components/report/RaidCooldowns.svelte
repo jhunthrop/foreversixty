@@ -87,11 +87,13 @@
       .filter((use) => pull === undefined || (use.at >= pull.start_ms && use.at < pull.end_ms))
       .filter((use) => Math.abs(use.at - at) <= span / 40 || (use.at <= at && at <= use.end))
       .sort((a, b) => Math.abs(a.at - at) - Math.abs(b.at - at))[0];
+    // On the night, every time is read on the pull's own clock, like the pull's own lane.
+    const clock = (ms: number): string => formatDuration(ms - (pull?.start_ms ?? 0));
     const use =
       near === undefined || row === undefined
         ? ''
-        : ` · ${row.name} at ${formatDuration(near.at)}${near.source ? ` by ${splitUnitName(near.source).name}` : ''} on ${splitUnitName(near.target).name}`;
-    hovered = `${pull === undefined ? '' : `${pull.label} · `}${formatDuration(at)}${use}`;
+        : ` · ${row.name} at ${clock(near.at)}${near.source ? ` by ${splitUnitName(near.source).name}` : ''} on ${splitUnitName(near.target).name}`;
+    hovered = `${pull === undefined ? '' : `${pull.label} · `}${clock(at)}${use}`;
   }
   /** Per cooldown, the pulls it was used in, and the ones it was not. */
   function pullsUsed(uses: Use[]): { used: number; missed: string[] } {
