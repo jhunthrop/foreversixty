@@ -80,6 +80,16 @@ test('a fight with no taunt says so rather than showing an empty list', async ({
   await expect(page.getByTestId('threat-taunts')).toContainText('No taunts in this window.');
 });
 
+// Baelgrim is a Warrior, not fight 3's tank, but he is the one who taunts Warden Kelthas
+// off the tank -- so the timeline names him "the taunter" rather than "the tank".
+test('the timeline marks the taunt on the taunter’s lane and names it on hover', async ({ page }) => {
+  await page.goto('/reports/fixture2abcd?fight=3&view=timelines');
+  const mark = page.getByTestId('lane-Player-4184-000000A1').getByTestId('taunt-mark').first();
+  await expect(mark).toBeVisible();
+  await mark.hover();
+  await expect(page.getByTestId('timeline-picked')).toContainText('Taunt');
+});
+
 test('the whole night names the pull each taunt came from', async ({ page }) => {
   await page.goto('/reports/fixture2abcd?fight=all&tab=threat');
   await expect(page.getByTestId('threat-taunts')).toContainText('Warden Kelthas · pull 1');

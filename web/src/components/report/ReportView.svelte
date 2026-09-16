@@ -1344,6 +1344,7 @@
           bossName={fight?.kind === 'encounter' ? fight.name : ''}
           players={playerSet}
           allCasts={summary?.casts ?? []}
+          taunts={scoped.taunts ?? []}
           auraOrder={[
             ...new Set(
               (summary?.auras ?? [])

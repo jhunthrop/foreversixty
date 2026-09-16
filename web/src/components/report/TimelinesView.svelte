@@ -7,8 +7,8 @@
      window (window.ts's scopeSummary), so nothing on this lane needs an approximate mark. -->
 <script lang="ts">
   import { splitUnitName } from '../../lib/characters';
-  import { classColorVar, formatDuration } from '../../lib/report/format';
-  import type { AuraTrack, Summary } from '../../lib/report/types';
+  import { classColorVar, formatDuration, tauntKey } from '../../lib/report/format';
+  import type { AuraTrack, Summary, Taunt } from '../../lib/report/types';
   import type { TimeWindow } from '../../lib/report/window';
 
   let {
@@ -19,6 +19,7 @@
     auraOrder = [],
     players = new Set<string>(),
     allCasts = [],
+    taunts = [],
   }: {
     summary: Summary;
     window: TimeWindow;
@@ -30,6 +31,8 @@
     players?: ReadonlySet<string>;
     /** The whole fight's cast rows, enemies included, for the boss lane. */
     allCasts?: Summary['casts'];
+    /** Who taunted what, when: a mark on the taunter's lane and on the boss lane. */
+    taunts?: Taunt[];
   } = $props();
 
   const span = $derived(Math.max(current.endMs - current.startMs, 1));
@@ -60,6 +63,7 @@
     event: PointerEvent,
     casts: { at: number; name: string }[],
     auras: AuraBand[] = [],
+    laneTaunts: Taunt[] = [],
   ): void {
     // The lane by its mark, not currentTarget: a delegated pointer event can hand over the
     // island's root, whose width made every readout land a few seconds off the pointer.
@@ -87,11 +91,30 @@
         return;
       }
     }
+    // A taunt within reach beats a cast: it is the rarer, more legible event, and a mark
+    // drawn right beside a cast tick would otherwise always lose to the tick underneath it.
+    if (laneTaunts.length > 0) {
+      let nearestTaunt = laneTaunts[0];
+      for (const taunt of laneTaunts)
+        if (Math.abs(taunt.at_ms - at) < Math.abs(nearestTaunt.at_ms - at)) nearestTaunt = taunt;
+      if (Math.abs(nearestTaunt.at_ms - at) <= span / 40) {
+        picked = { at: nearestTaunt.at_ms, name: tauntReadout(nearestTaunt) };
+        return;
+      }
+    }
     if (casts.length === 0) return;
     let nearest = casts[0];
     for (const cast of casts) if (Math.abs(cast.at - at) < Math.abs(nearest.at - at)) nearest = cast;
     // Within a fortieth of the window: past that the pointer is in a gap, not on a tick.
     if (Math.abs(nearest.at - at) <= span / 40) picked = nearest;
+  }
+
+  /** "Taunt · <spell> on <target> by <taunter>", the pull's label appended on the night. */
+  function tauntReadout(taunt: Taunt): string {
+    const target = splitUnitName(taunt.target_name).name;
+    const source = splitUnitName(taunt.source_name).name;
+    const pull = taunt.label === undefined ? '' : ` · ${taunt.label}`;
+    return `Taunt · ${taunt.spell_name} on ${target} by ${source}${pull}`;
   }
 
   /** The boss's casts, one tick each, named on hover: the thing to line a death up against. */
@@ -104,6 +127,20 @@
           // Clipped to the window: the whole fight's casts are read so the lane exists
           // under any scope, but a tick past the window's edge stretches the page.
           .filter((cast) => cast.at >= current.startMs && cast.at <= current.endMs),
+  );
+  /** Taunts clipped to the window, the same way a cast or a death is. */
+  const windowedTaunts = $derived(
+    taunts.filter((taunt) => taunt.at_ms >= current.startMs && taunt.at_ms <= current.endMs),
+  );
+  /**
+   * The boss's own mark: every taunt that landed on it, wherever the taunter's lane is --
+   * matched by name rather than guid, the same way bossCasts is, since an add's guid is
+   * new on every pull.
+   */
+  const bossTaunts = $derived(
+    bossName === ''
+      ? []
+      : windowedTaunts.filter((taunt) => splitUnitName(taunt.target_name).name === bossName),
   );
   /**
    * Every segment of a player's auras, each aura kept on one of three bands for the whole
@@ -153,6 +190,7 @@
           .flatMap((cast) => cast.sequence.map((at) => ({ at, name: cast.spell_name }))),
         auras: bandAuras(summary.auras.filter((track) => track.target_guid === row.guid)),
         deaths: summary.deaths.filter((death) => death.guid === row.guid).map((death) => death.at_ms),
+        taunts: windowedTaunts.filter((taunt) => taunt.source_guid === row.guid),
       })),
   );
 </script>
@@ -181,6 +219,12 @@
         <span
           ><span class="bg-wipe mr-1 inline-block h-[10px] w-[2px] align-middle" aria-hidden="true"
           ></span>boss cast</span
+        >
+      {/if}
+      {#if windowedTaunts.length > 0}
+        <span
+          ><span class="bg-gold mr-1 inline-block h-[14px] w-[3px] align-middle" aria-hidden="true"
+          ></span>taunt</span
         >
       {/if}
     </p>
@@ -214,7 +258,7 @@
       </span>
     </div>
     <ul class="flex flex-col">
-      {#if bossCasts.length > 0}
+      {#if bossCasts.length > 0 || bossTaunts.length > 0}
         <li
           class="border-line-soft grid min-h-11 grid-cols-[minmax(96px,140px)_minmax(0,1fr)] items-center gap-3 border-b py-2"
           data-testid="lane-boss"
@@ -223,8 +267,8 @@
           <span
             class="bg-line-soft relative block h-[18px] w-full touch-none"
             data-lane
-            onpointerdown={(event) => pickNearest(event, bossCasts)}
-            onpointermove={(event) => pickNearest(event, bossCasts)}
+            onpointerdown={(event) => pickNearest(event, bossCasts, [], bossTaunts)}
+            onpointermove={(event) => pickNearest(event, bossCasts, [], bossTaunts)}
             onpointerleave={clearPick}
           >
             {#each bossCasts as cast, i (`${cast.at}-${i}`)}
@@ -232,6 +276,14 @@
                 class="bg-wipe absolute bottom-0 h-[14px] w-[2px]"
                 style={`left: ${pct(cast.at)}%`}
                 title={`${cast.name} · ${formatDuration(cast.at)}`}
+              ></span>
+            {/each}
+            {#each bossTaunts as taunt (tauntKey(taunt))}
+              <span
+                class="bg-gold absolute top-0 h-full w-[3px]"
+                style={`left: ${pct(taunt.at_ms)}%`}
+                data-testid="taunt-mark"
+                title={`Taunt · ${formatDuration(taunt.at_ms)} · by ${splitUnitName(taunt.source_name).name}`}
               ></span>
             {/each}
           </span>
@@ -253,8 +305,8 @@
             class="bg-line-soft relative block w-full touch-none"
             style={`height: ${laneHeight(lane.auras)}px`}
             data-lane
-            onpointerdown={(event) => pickNearest(event, lane.casts, lane.auras)}
-            onpointermove={(event) => pickNearest(event, lane.casts, lane.auras)}
+            onpointerdown={(event) => pickNearest(event, lane.casts, lane.auras, lane.taunts)}
+            onpointermove={(event) => pickNearest(event, lane.casts, lane.auras, lane.taunts)}
             onpointerleave={clearPick}
           >
             {#each lane.auras as segment, i (`${segment.start_ms}-${i}`)}
@@ -276,6 +328,14 @@
                 class="bg-death absolute top-0 h-full w-[3px]"
                 style={`left: ${pct(at)}%`}
                 title={`died at ${formatDuration(at)}`}
+              ></span>
+            {/each}
+            {#each lane.taunts as taunt (tauntKey(taunt))}
+              <span
+                class="bg-gold absolute top-0 h-full w-[3px]"
+                style={`left: ${pct(taunt.at_ms)}%`}
+                data-testid="taunt-mark"
+                title={`Taunt · ${formatDuration(taunt.at_ms)} · on ${splitUnitName(taunt.target_name).name}`}
               ></span>
             {/each}
           </span>

@@ -28,6 +28,7 @@
     formatAmount,
     formatDuration,
     formatPercent,
+    tauntKey,
   } from '../../lib/report/format';
   import type { Taunt, ThreatPair, ThreatRow } from '../../lib/report/types';
   import { aroundWindow, type TimeWindow } from '../../lib/report/window';
@@ -212,13 +213,6 @@
   const mark = $derived(approximateMark(approximate));
   const title = $derived(approximateTitle(approximate));
   const orderedTaunts = $derived([...(taunts ?? [])].sort((a, b) => a.at_ms - b.at_ms));
-  /**
-   * Everything that tells one taunt from another: two tanks can taunt two adds on the
-   * same millisecond, and over a night the same instant recurs in every pull, which the
-   * label separates.
-   */
-  const tauntKey = (taunt: Taunt): string =>
-    `${taunt.label ?? ''}|${taunt.at_ms}|${taunt.source_guid}|${taunt.target_guid}|${taunt.spell_id}`;
   /** The units table spells a name; the event's own copy of it is the fallback. */
   const nameOf = (guid: string, recorded: string): string => splitUnitName(names.get(guid) ?? recorded).name;
   const selectClass =

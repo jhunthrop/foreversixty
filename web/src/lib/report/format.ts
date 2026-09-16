@@ -3,6 +3,18 @@
 // fight selector, the chart axis and a death's timestamp. Numbers render in --font-mono
 // with `tabular`, per design/DESIGN-SYSTEM.md.
 
+import type { Taunt } from './types';
+
+/**
+ * Everything that tells one taunt from another: two tanks can taunt two adds on the
+ * same millisecond, and over a night the same instant recurs in every pull, which the
+ * label separates. Shared by the taunt list and the timeline marks, which key the same
+ * events off the same summary.
+ */
+export function tauntKey(taunt: Taunt): string {
+  return `${taunt.label ?? ''}|${taunt.at_ms}|${taunt.source_guid}|${taunt.target_guid}|${taunt.spell_id}`;
+}
+
 /** Under a minute, tenths tell you more than a leading zero does. */
 /** Like formatDuration but never drops the tenths: "1:01.4". For event lists. */
 export function formatDurationPrecise(ms: number): string {
