@@ -135,6 +135,16 @@
         'Threat accumulated from damage and healing under the named model; indicative until every class’s modifiers are in.',
     },
     {
+      term: 'Threat on a target',
+      meaning:
+        'The threat one player has built on one enemy, from the damage they did to it and their share of the raid’s healing while it was engaged. Whoever has the most is who it attacks.',
+    },
+    {
+      term: 'Taunt',
+      meaning:
+        'A cast that forces an enemy onto the caster; the Threat tab lists every one, and the timeline marks them.',
+    },
+    {
       term: 'Mechanics table',
       meaning:
         'The per-boss list behind Mechanics mode: which abilities are avoidable, which casts to interrupt, which debuffs to dispel. A boss without one has no Mechanics page yet.',

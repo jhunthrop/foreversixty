@@ -358,6 +358,9 @@ describe('aggregateNight', () => {
     ]);
     expect(night.taunts?.[0].label).toMatch(/pull 1/);
     expect(night.taunts?.[0].at_ms).toBe(1000);
+    // Pull 2's summary carries the key with nothing in it, so the night can say "no
+    // taunts" rather than "parsed before taunts were kept".
+    expect(nightSummary(kaalFights, kaalSummaries).taunts).toBeUndefined();
   });
 
   it('offsets hits by their pull, skips a pull whose table was not found, and folds a no-player row by its counts', () => {

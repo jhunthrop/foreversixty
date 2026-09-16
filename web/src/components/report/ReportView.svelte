@@ -1293,8 +1293,16 @@
         {:else if state.tab === 'threat'}
           <ThreatTable
             rows={scoped.threat}
+            pairs={scoped.threat_by_target ?? []}
+            taunts={scoped.taunts}
+            names={unitNames}
             {classOf}
             approximate={!windowIsWhole}
+            target={state.target}
+            startMs={timeWindow.startMs}
+            durationMs={summary?.duration_ms ?? scoped.duration_ms}
+            onPatch={patch}
+            onWindow={setWindow}
             totalThreat={windowed?.threat
               .filter((row) => inSource(row.guid, state.source, playerSet, friendlySet))
               .reduce((sum, row) => sum + row.threat, 0)}

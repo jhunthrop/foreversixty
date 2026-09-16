@@ -270,7 +270,10 @@ export function scopeSummary(summary: Summary, window: TimeWindow): Summary {
   };
   scoped.threat = scopeThreat(summary.threat, scoped, summary);
   scoped.threat_by_target = scaleThreatPairs(summary.threat_by_target ?? [], summary.threat, scoped.threat);
-  scoped.taunts = (summary.taunts ?? []).filter(
+  // Undefined survives scoping: a summary written before the engine kept taunts has no
+  // `taunts` key at all, and "none in this window" is a different sentence from "this
+  // report never had them". An empty array from an engine that does keep them stays [].
+  scoped.taunts = summary.taunts?.filter(
     (taunt) => taunt.at_ms >= window.startMs && taunt.at_ms <= window.endMs,
   );
   scoped.roster = scopeRoster(summary.roster, scoped, window);
@@ -280,6 +283,15 @@ export function scopeSummary(summary: Summary, window: TimeWindow): Summary {
 /** The twenty seconds before a death, which is what the deaths view opens. */
 export function deathWindow(atMs: number, durationMs: number, leadMs = 20_000): TimeWindow {
   return clampWindow({ startMs: atMs - leadMs, endMs: atMs }, durationMs);
+}
+
+/**
+ * The span around a moment, which is what a taunt's window link opens: a taunt is read
+ * from what led to it and what followed, so it sits in the middle rather than at the end
+ * the way a death does.
+ */
+export function aroundWindow(atMs: number, durationMs: number, spanMs = 10_000): TimeWindow {
+  return clampWindow({ startMs: atMs - spanMs / 2, endMs: atMs + spanMs / 2 }, durationMs);
 }
 
 export interface WindowPreset {

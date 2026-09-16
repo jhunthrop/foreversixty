@@ -3,6 +3,7 @@ import fixtureSummary from '../../fixtures/report/fights/3/summary.json';
 import type { Actor, AuraTrack, CastRow, Summary } from './types';
 import {
   BUCKET_MS,
+  aroundWindow,
   combinedSeries,
   deathWindow,
   fullWindow,
@@ -237,12 +238,26 @@ describe('scoping a row to the window', () => {
     // The taunt inside the window survives; the one after it is cut, like a death would be.
     expect(scoped.taunts?.map((taunt) => taunt.at_ms)).toEqual([500]);
   });
+
+  it('leaves taunts undefined when the summary never had the key', () => {
+    // A summary the engine wrote before it kept taunts: "none in this window" and "this
+    // report has none to keep" are different sentences, so the absence has to survive.
+    const whole = fullWindow(summary.duration_ms);
+    expect(scopeSummary({ ...summary, taunts: undefined }, whole).taunts).toBeUndefined();
+    expect(scopeSummary({ ...summary, taunts: [] }, whole).taunts).toEqual([]);
+  });
 });
 
 describe('presets', () => {
   it('sets the window to the twenty seconds before a death', () => {
     expect(deathWindow(10_100, 40_000)).toEqual({ startMs: 0, endMs: 11_000 });
     expect(deathWindow(30_000, 40_000)).toEqual({ startMs: 10_000, endMs: 30_000 });
+  });
+
+  it('sets the window to the ten seconds around a taunt, snapped out and clamped', () => {
+    expect(aroundWindow(8_500, 60_000)).toEqual({ startMs: 3_000, endMs: 14_000 });
+    expect(aroundWindow(1_000, 60_000)).toEqual({ startMs: 0, endMs: 6_000 });
+    expect(aroundWindow(59_000, 60_000)).toEqual({ startMs: 54_000, endMs: 60_000 });
   });
 
   it('offers the whole fight, both thirty-second ends, and one preset per death', () => {

@@ -247,6 +247,7 @@ export function nightSummary(
   /** Whether any folded pull carried a mechanics block at all: a report parsed before the
       engine wrote one is a different thing from a night of bosses with no table. */
   let mechanicsSeen = false;
+  let tauntsSeen = false;
 
   const nameOf = knownNames(summaries);
 
@@ -344,6 +345,9 @@ export function nightSummary(
           : { ...found, threat: found.threat + pair.threat },
       );
     }
+    // Seen, not non-empty: a pull the engine kept taunts for and found none is still a
+    // night that can say "no taunts", where a night of older pulls cannot.
+    if (summary.taunts !== undefined) tauntsSeen = true;
     for (const taunt of summary.taunts ?? []) taunts.push({ ...taunt, at_ms: taunt.at_ms + offset, label });
     for (const row of summary.combatants) combatants.set(row.guid, row);
     for (const track of summary.resources) {
@@ -411,7 +415,7 @@ export function nightSummary(
     resources: [...resources.values()],
     threat: [...threat.values()],
     threat_by_target: [...threatPairs.values()],
-    taunts,
+    taunts: tauntsSeen ? taunts : undefined,
     combatants: [...combatants.values()],
     mechanics: mechanicsSeen
       ? {
