@@ -32,7 +32,7 @@ Field counts per event, v16 → v22 (dominant widths):
 | SPELL_DAMAGE, SPELL_PERIODIC_DAMAGE | 39 | 42 | advanced +2, damage suffix 10 → 11 |
 | SPELL_HEAL, SPELL_PERIODIC_HEAL | 34 | 36 | advanced +2, heal suffix stays 5 |
 | SPELL_ENERGIZE, SPELL_PERIODIC_ENERGIZE | 33 | 35 | advanced +2, suffix stays 4 |
-| SPELL_MISSED, SPELL_PERIODIC_MISSED | 14 / 17 | 15 / 18 | missed suffix 2 → 3, absorb extra stays 3 |
+| SPELL_MISSED, SPELL_PERIODIC_MISSED | 14 / 17 | 15 / 16 / 18 | trailing tag; BLOCK/RESIST carry an amount |
 | SWING_MISSED | 11 / 14 | 11 / 14 | unchanged |
 | SPELL_AURA_APPLIED / REMOVED / REFRESH | 13 (14 with amount) | 13 (14) | unchanged |
 | SPELL_AURA_*_DOSE | 14 | 14 | unchanged |
@@ -40,17 +40,23 @@ Field counts per event, v16 → v22 (dominant widths):
 | SPELL_ABSORBED | 19 / 22 | 19 / 22 | unchanged |
 | UNIT_DIED, PARTY_KILL | 10 | 10 | unchanged |
 | SPELL_EXTRA_ATTACKS, SPELL_CAST_FAILED | 13 | 13 | unchanged |
-| COMBATANT_INFO | variable (34 base) | variable | keep the v16 combatant parser; verify on the corpus |
+| COMBATANT_INFO | variable (34 base) | variable (34 base) | every stat shifts by +1 (armor 23 → 24, spec 24 → 25) and v16's borrowed-power field is gone; the v22 combatant parser has its own offsets |
 
-The identity of the two new advanced fields and the one new spell-damage field is to be
-determined from the lines themselves during the plan (compare a v16 and a v22 SPELL_DAMAGE
-line field by field); the layout must name them, not skip them blindly.
+Measured while planning (see the plan for the evidence): the two new advanced fields sit at
+offsets 7 and 8 and shift `absorb` and every power field down by two; offset 7 tracks
+versatility (1.85× the combatant-info rating in these arena logs, a scale to confirm on a
+raid log) and offset 8 is a small per-unit constant, kept as `Unknown8`; the trailing field
+of a v22 advanced block is item level. The extra spell-damage field is a trailing `ST`/`AOE`
+tag on SPELL, SPELL_PERIODIC and RANGE `_DAMAGE`, `DAMAGE_SPLIT`, `DAMAGE_SHIELD_MISSED` and
+SPELL `_MISSED`, absent on SWING_*, RANGE_MISSED and ENVIRONMENTAL_DAMAGE; on the `_SUPPORT`
+variants that slot holds the supporting player'"'"'s GUID. SPELL_MISSED is 15, 16 (BLOCK/RESIST
+with an amount) or 18 wide.
 
 New event types v22 emits that v16 never had, with counts over the two probe files:
 `DAMAGE_SPLIT` (1,571), `SPELL_DAMAGE_SUPPORT` (100), `SPELL_PERIODIC_DAMAGE_SUPPORT` (17),
 `SPELL_HEAL_SUPPORT` (3), `SPELL_EMPOWER_START` (15), `SPELL_EMPOWER_END` (14),
 `SPELL_EMPOWER_INTERRUPT` (2), `ARENA_MATCH_START` (3), `ARENA_MATCH_END` (2),
-`ENVIRONMENTAL_DAMAGE` (5, width to verify against v16's 37), `SPELL_AURA_BROKEN_SPELL` (10),
+`ENVIRONMENTAL_DAMAGE` (5, width 39 against v16's 37), `SPELL_AURA_BROKEN_SPELL` (10),
 `SPELL_DRAIN` (9), `SPELL_DISPEL` (170), `MAP_CHANGE` (6).
 
 ## Design
