@@ -234,12 +234,27 @@ export interface MechanicRow {
   dispelled?: number;
   /** Set by the whole-night fold: the pulls on which this mechanic hit anyone. */
   pulls_hit?: number;
+  /** Set by the whole-night fold: the encounter whose table lists this row. A night
+      folds several bosses, and two bosses can list the same spell id. */
+  encounter_id?: number;
+  /** Set by the whole-night fold: that encounter's name, for the boss heading. */
+  encounter?: string;
+}
+
+/** One boss in the night's mechanics block: the denominator behind "hit someone on 6 of 18 pulls". */
+export interface MechanicsBoss {
+  encounter_id?: number;
+  name: string;
+  /** That boss's pulls folded into the night: loaded pulls, not pulls the night expected. */
+  pulls: number;
 }
 
 /** summary.MechanicsBlock — the fight's mechanics table, rendered against what actually happened. `table_found` is false when the fight's encounter has no table, and the block is then empty. */
 export interface MechanicsBlock {
   table_found: boolean;
   rows: MechanicRow[];
+  /** Set by the whole-night fold only: the bosses whose pulls it folded, in fight order. */
+  bosses?: MechanicsBoss[];
 }
 
 /** summary.ThreatRow. `complete` is false while the threat model admits gaps. */

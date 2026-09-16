@@ -246,9 +246,23 @@ describe('aggregateNight', () => {
     expect(night.roster[0].dps).toBeCloseTo(5000 / 30);
   });
 
-  it('folds mechanics across pulls, counting the pulls each one hit anyone on', () => {
-    const withMechanics = new Map(summaries);
-    const block = (damage: number) => ({
+  it('leaves the night\u2019s mechanics undefined when no pull carried a mechanics block', () => {
+    // A report parsed before engine 0.3.0 has no block at all, which is a different
+    // answer from "these bosses have no table" and must not be flattened into it.
+    expect(nightSummary(fights, summaries).mechanics).toBeUndefined();
+  });
+
+  it('folds mechanics per boss across pulls, keeping two bosses\u2019 rows for one spell apart', () => {
+    // Two bosses whose tables both list spell 331415. Merged by spell id alone, Kryxis\u2019s
+    // hit would be added to Kaal\u2019s row and the night would report one mechanic on three
+    // pulls of a boss that was pulled twice.
+    const byEncounter = [
+      { ...fights[0], encounter_id: 2363 },
+      fights[1],
+      { ...fights[2], encounter_id: 2363 },
+      { ...fights[3], encounter_id: 2360 },
+    ];
+    const block = (damage: number, firstMs: number, lastMs: number, casts: number) => ({
       table_found: true,
       rows: [
         {
@@ -261,21 +275,50 @@ describe('aggregateNight', () => {
               name: 'Hobolol',
               hits: 1,
               damage,
-              first_ms: 1000,
-              last_ms: 1000,
+              first_ms: firstMs,
+              last_ms: lastMs,
               killed: false,
             },
           ],
         },
+        { spell_id: 5, name: 'Corrupted Blood', kind: 'interrupt' as const, casts, stopped: 1 },
       ],
     });
-    withMechanics.set(1, { ...summaries.get(1)!, mechanics: block(100) });
-    withMechanics.set(3, { ...summaries.get(3)!, mechanics: block(250) });
-    const night = nightSummary(fights, withMechanics);
-    const row = night.mechanics?.rows.find((entry) => entry.spell_id === 331415);
-    expect(row?.pulls_hit).toBe(2);
-    expect(row?.players?.[0]).toMatchObject({ guid: 'Player-1', hits: 2, damage: 350, pulls: 2 });
+    const withMechanics = new Map(summaries);
+    withMechanics.set(1, { ...summaries.get(1)!, mechanics: block(100, 4000, 6000, 3) });
+    withMechanics.set(3, { ...summaries.get(3)!, mechanics: block(250, 1000, 9000, 2) });
+    withMechanics.set(4, { ...summary(4, 30_000, [roster('A', 100)]), mechanics: block(900, 500, 500, 1) });
+    const night = nightSummary(byEncounter, withMechanics);
+
     expect(night.mechanics?.table_found).toBe(true);
+    expect(night.mechanics?.rows).toHaveLength(4);
+
+    const kaal = night.mechanics?.rows.find((row) => row.spell_id === 331415 && row.encounter_id === 2363);
+    expect(kaal).toMatchObject({ encounter: 'Kaal', pulls_hit: 2 });
+    // Pull 1 runs 0\u201310_000 ms and pull 3 10_000\u201330_000, so the earliest hit is pull 1\u2019s
+    // 4000 and the latest is pull 3\u2019s 9000 shifted by pull 3\u2019s 10_000 ms offset.
+    expect(kaal?.players?.[0]).toMatchObject({
+      guid: 'Player-1',
+      hits: 2,
+      damage: 350,
+      first_ms: 4000,
+      last_ms: 19_000,
+      pulls: 2,
+    });
+    expect(
+      night.mechanics?.rows.find((row) => row.spell_id === 5 && row.encounter_id === 2363),
+    ).toMatchObject({ casts: 5, stopped: 2, pulls_hit: 2 });
+
+    const kryxis = night.mechanics?.rows.find((row) => row.spell_id === 331415 && row.encounter_id === 2360);
+    expect(kryxis).toMatchObject({ encounter: 'Kryxis', pulls_hit: 1 });
+    expect(kryxis?.players?.[0]).toMatchObject({ hits: 1, damage: 900, pulls: 1 });
+
+    // The denominator behind "hit someone on 2 of 2 pulls": the pulls of each boss the
+    // fold actually loaded, in the order the night met them.
+    expect(night.mechanics?.bosses).toEqual([
+      { encounter_id: 2363, name: 'Kaal', pulls: 2 },
+      { encounter_id: 2360, name: 'Kryxis', pulls: 1 },
+    ]);
   });
 
   it('offsets hits by their pull, skips a pull whose table was not found, and folds a no-player row by its counts', () => {
@@ -323,6 +366,8 @@ describe('aggregateNight', () => {
 
     expect(night.mechanics?.table_found).toBe(true);
     expect(night.mechanics?.rows).toHaveLength(2);
+    // No encounter id on these fights, so the boss name keys the rows instead.
+    expect(night.mechanics?.rows.every((entry) => entry.encounter === 'Kaal')).toBe(true);
 
     const avoidable = night.mechanics?.rows.find((entry) => entry.spell_id === 331415);
     // Pull 1's row was dropped with its pull (table_found: false), so this hit is only

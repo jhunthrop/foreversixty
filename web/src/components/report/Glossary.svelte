@@ -154,6 +154,11 @@
       meaning:
         'Debuffs that expired on their own because nobody dispelled them, out of the times they landed.',
     },
+    {
+      term: 'Not yet classified',
+      meaning:
+        'An enemy ability that hit someone and the boss’s mechanics table does not list. Nobody has judged it avoidable or not, so the page names it rather than hiding it.',
+    },
   ];
 
   let open = $state(false);

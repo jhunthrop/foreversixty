@@ -65,8 +65,28 @@ test('a boss without a table says so and offers the draft', async ({ page }) => 
   await expect(page.getByTestId('mechanics-no-table')).toContainText('No mechanics table');
 });
 
-test('the night rolls mechanics up per pull', async ({ page }) => {
+test('the night rolls mechanics up per boss, out of that boss’s pulls', async ({ page }) => {
   await page.goto('/reports/fixture2abcd?fight=all&mode=mechanics');
-  await expect(page.getByTestId('mechanics-night')).toContainText('Anima Lash');
-  await expect(page.getByTestId('mechanics-night')).toContainText(/pull/);
+  const night = page.getByTestId('mechanics-night');
+  // Grouped under the boss whose table lists them, and counted out of that boss's own
+  // pulls: the night folds Warden Kelthas and Skolex, and one denominator for both
+  // would be the wrong number on every line.
+  await expect(night).toContainText('Warden Kelthas');
+  await expect(night).toContainText('Anima Lash');
+  await expect(night).toContainText('hit someone on 1 of 1 pull');
+  await expect(night).toContainText('most often Thalgrit');
+  // The problems list says which boss each failure was on, since two bosses can list
+  // one spell id and the night shows them side by side.
+  await expect(page.getByTestId('mechanics-problems')).toContainText('on Warden Kelthas');
+});
+
+test('nothing is listed as unclassified when the table covers everything that hit a player', async ({
+  page,
+}) => {
+  await page.goto(`${FIGHT}&mode=mechanics`);
+  await expect(page.getByTestId('mechanics-mode')).toBeVisible();
+  // The Warden's table lists the only ability that landed on a player, so the honesty
+  // section has nothing to confess. It appears only when the table is silent about
+  // something that hit someone.
+  await expect(page.getByTestId('mechanics-unclassified')).toHaveCount(0);
 });

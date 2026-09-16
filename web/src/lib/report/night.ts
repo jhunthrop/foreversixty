@@ -3,6 +3,7 @@
 // and one row per boss. A raid leader opens a log to compare the team across the night,
 // not to sum eighteen pulls by hand. Trash is left out, as it is from the rankings: a
 // trash pull's damage is mostly a function of how much trash there was.
+import { encounterKey, mechanicRowKey } from './mechanics';
 import { abilityKey } from './types';
 import type {
   Actor,
@@ -14,6 +15,7 @@ import type {
   FightEntry,
   MechanicHit,
   MechanicRow,
+  MechanicsBoss,
   ResourceTrack,
   Summary,
   ThreatRow,
@@ -229,13 +231,18 @@ export function nightSummary(
   const threat = new Map<string, ThreatRow>();
   const resources = new Map<string, ResourceTrack>();
   const combatants = new Map<string, CombatantRow>();
-  const mechanicRows = new Map<number, MechanicRow>();
+  const mechanicRows = new Map<string, MechanicRow>();
+  /** Per boss, the pulls of it folded in: the denominator of "hit someone on 6 of 18 pulls". */
+  const mechanicsBosses = new Map<string, MechanicsBoss>();
   /** Per unit name, the time it was in a pull: the denominator every aura on it divides by. */
   const presence = new Map<string, number>();
   const pullMarks: PullMark[] = [];
   let offset = 0;
   let engine = '';
   let mechanicsTableFound = false;
+  /** Whether any folded pull carried a mechanics block at all: a report parsed before the
+      engine wrote one is a different thing from a night of bosses with no table. */
+  let mechanicsSeen = false;
 
   const nameOf = knownNames(summaries);
 
@@ -342,9 +349,16 @@ export function nightSummary(
         });
       }
     }
+    const bossKey = encounterKey(fight.encounter_id, fight.name);
+    mechanicsBosses.set(bossKey, {
+      encounter_id: fight.encounter_id,
+      name: fight.name,
+      pulls: (mechanicsBosses.get(bossKey)?.pulls ?? 0) + 1,
+    });
+    if (summary.mechanics !== undefined) mechanicsSeen = true;
     if (summary.mechanics?.table_found) {
       mechanicsTableFound = true;
-      for (const row of summary.mechanics.rows) mergeMechanicRow(mechanicRows, row, offset);
+      for (const row of summary.mechanics.rows) mergeMechanicRow(mechanicRows, row, offset, fight);
     }
     offset += summary.duration_ms;
   }
@@ -379,7 +393,13 @@ export function nightSummary(
     resources: [...resources.values()],
     threat: [...threat.values()],
     combatants: [...combatants.values()],
-    mechanics: { table_found: mechanicsTableFound, rows: [...mechanicRows.values()] },
+    mechanics: mechanicsSeen
+      ? {
+          table_found: mechanicsTableFound,
+          rows: [...mechanicRows.values()],
+          bosses: [...mechanicsBosses.values()],
+        }
+      : undefined,
     roster: night.players.map((player) => ({
       guid: player.guid,
       name: player.name,
@@ -500,20 +520,34 @@ function mergeActor(table: Map<string, Actor>, actor: Actor): void {
 }
 
 /**
- * Adds one pull's mechanic row into the night's row for that spell id: `name`/`kind`/
- * `note` are kept from the first pull that carried the row (they're static per spell in
- * the hand-curated table), casts/stops/applications/dispels are summed, players are
- * merged by guid, and `pulls_hit` is incremented when the row was live on this pull (it
- * hit a player, a cast started, or a debuff applied). `offset` shifts the row's own
- * `first_ms`/`last_ms` onto the night's clock. Only call this for a pull whose
- * `mechanics.table_found` is true — a pull without a table carries no rows worth
+ * Adds one pull's mechanic row into the night's row for that boss and spell id:
+ * `name`/`kind`/`note` are kept from the first pull that carried the row (they're static
+ * per spell in the hand-curated table), casts/stops/applications/dispels are summed,
+ * players are merged by guid, and `pulls_hit` is incremented when the row was live on
+ * this pull (it hit a player, a cast started, or a debuff applied). `offset` shifts the
+ * row's own `first_ms`/`last_ms` onto the night's clock. Keyed per encounter rather than
+ * per spell: a night folds several bosses and two of them can list the same spell id, so
+ * one boss's Wicked Gash must not be merged into the other's. Only call this for a pull
+ * whose `mechanics.table_found` is true — a pull without a table carries no rows worth
  * merging, table found or not.
  */
-function mergeMechanicRow(table: Map<number, MechanicRow>, row: MechanicRow, offset: number): void {
+function mergeMechanicRow(
+  table: Map<string, MechanicRow>,
+  row: MechanicRow,
+  offset: number,
+  fight: FightEntry,
+): void {
   const hitThisPull = (row.players?.length ?? 0) > 0 || (row.casts ?? 0) > 0 || (row.applied ?? 0) > 0;
-  const found = table.get(row.spell_id);
-  table.set(row.spell_id, {
+  const key = mechanicRowKey({
     spell_id: row.spell_id,
+    encounter_id: fight.encounter_id,
+    encounter: fight.name,
+  });
+  const found = table.get(key);
+  table.set(key, {
+    spell_id: row.spell_id,
+    encounter_id: fight.encounter_id,
+    encounter: fight.name,
     name: found?.name ?? row.name,
     kind: found?.kind ?? row.kind,
     note: found?.note ?? row.note,
