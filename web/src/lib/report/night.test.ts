@@ -277,4 +277,68 @@ describe('aggregateNight', () => {
     expect(row?.players?.[0]).toMatchObject({ guid: 'Player-1', hits: 2, damage: 350, pulls: 2 });
     expect(night.mechanics?.table_found).toBe(true);
   });
+
+  it('offsets hits by their pull, skips a pull whose table was not found, and folds a no-player row by its counts', () => {
+    const withMechanics = new Map(summaries);
+    // Pull 1 (10_000 ms, offset 0): table not found, but the fixture still carries a
+    // stray row -- it must be ignored entirely, not merged.
+    withMechanics.set(1, {
+      ...summaries.get(1)!,
+      mechanics: {
+        table_found: false,
+        rows: [
+          { spell_id: 331415, name: 'Wicked Gash', kind: 'avoidable', players: [] },
+          { spell_id: 5, name: 'Corrupted Blood', kind: 'interrupt', casts: 99, stopped: 99 },
+        ],
+      },
+    });
+    // Pull 3 (20_000 ms, offset 10_000): a real table with an avoidable hit near the
+    // start of the offset window and a no-player interrupt row.
+    withMechanics.set(3, {
+      ...summaries.get(3)!,
+      mechanics: {
+        table_found: true,
+        rows: [
+          {
+            spell_id: 331415,
+            name: 'Wicked Gash',
+            kind: 'avoidable',
+            players: [
+              {
+                guid: 'Player-1',
+                name: 'Hobolol',
+                hits: 1,
+                damage: 250,
+                first_ms: 500,
+                last_ms: 1500,
+                killed: false,
+              },
+            ],
+          },
+          { spell_id: 5, name: 'Corrupted Blood', kind: 'interrupt', casts: 3, stopped: 1 },
+        ],
+      },
+    });
+    const night = nightSummary(fights, withMechanics);
+
+    expect(night.mechanics?.table_found).toBe(true);
+    expect(night.mechanics?.rows).toHaveLength(2);
+
+    const avoidable = night.mechanics?.rows.find((entry) => entry.spell_id === 331415);
+    // Pull 1's row was dropped with its pull (table_found: false), so this hit is only
+    // pull 3's, shifted onto the night's clock by pull 3's 10_000 ms offset.
+    expect(avoidable?.pulls_hit).toBe(1);
+    expect(avoidable?.players?.[0]).toMatchObject({
+      guid: 'Player-1',
+      hits: 1,
+      damage: 250,
+      first_ms: 10_500,
+      last_ms: 11_500,
+      pulls: 1,
+    });
+
+    const interrupt = night.mechanics?.rows.find((entry) => entry.spell_id === 5);
+    // Pull 1's 99/99 stray counts must not appear: only pull 3's 3/1 do.
+    expect(interrupt).toMatchObject({ casts: 3, stopped: 1, pulls_hit: 1, players: undefined });
+  });
 });

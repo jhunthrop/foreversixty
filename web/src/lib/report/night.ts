@@ -340,8 +340,10 @@ export function nightSummary(
         });
       }
     }
-    if (summary.mechanics?.table_found) mechanicsTableFound = true;
-    for (const row of summary.mechanics?.rows ?? []) mergeMechanicRow(mechanicRows, row, offset);
+    if (summary.mechanics?.table_found) {
+      mechanicsTableFound = true;
+      for (const row of summary.mechanics.rows) mergeMechanicRow(mechanicRows, row, offset);
+    }
     offset += summary.duration_ms;
   }
 
@@ -496,18 +498,22 @@ function mergeActor(table: Map<string, Actor>, actor: Actor): void {
 }
 
 /**
- * Adds one pull's mechanic row into the night's row for that spell id: casts, stops,
- * applications and dispels summed, players merged by guid, and `pulls_hit` incremented
- * when the row was live on this pull (it hit a player, a cast started, or a debuff
- * applied). `offset` shifts the row's own `first_ms`/`last_ms` onto the night's clock.
+ * Adds one pull's mechanic row into the night's row for that spell id: `name`/`kind`/
+ * `note` are kept from the first pull that carried the row (they're static per spell in
+ * the hand-curated table), casts/stops/applications/dispels are summed, players are
+ * merged by guid, and `pulls_hit` is incremented when the row was live on this pull (it
+ * hit a player, a cast started, or a debuff applied). `offset` shifts the row's own
+ * `first_ms`/`last_ms` onto the night's clock. Only call this for a pull whose
+ * `mechanics.table_found` is true — a pull without a table carries no rows worth
+ * merging, table found or not.
  */
 function mergeMechanicRow(table: Map<number, MechanicRow>, row: MechanicRow, offset: number): void {
   const hitThisPull = (row.players?.length ?? 0) > 0 || (row.casts ?? 0) > 0 || (row.applied ?? 0) > 0;
   const found = table.get(row.spell_id);
   table.set(row.spell_id, {
     spell_id: row.spell_id,
-    name: row.name,
-    kind: row.kind,
+    name: found?.name ?? row.name,
+    kind: found?.kind ?? row.kind,
     note: found?.note ?? row.note,
     players: mergeMechanicHits(found?.players, row.players, offset),
     casts: sumOptional(found?.casts, row.casts),
