@@ -148,7 +148,7 @@
       {#each rows as row (row.name)}
         {@const across = pullsUsed(row.uses)}
         <li
-          class="border-line-soft grid min-h-9 grid-cols-[minmax(110px,160px)_56px_minmax(0,1fr)] items-center gap-3 border-b py-1 text-[13px]"
+          class="border-line-soft grid min-h-9 grid-cols-[minmax(0,1fr)_56px] items-center gap-x-3 gap-y-1 border-b py-1 text-[13px] md:grid-cols-[minmax(110px,160px)_56px_minmax(0,1fr)]"
           data-testid={`raid-cooldown-${row.name}`}
         >
           <span class="truncate font-semibold">{row.name}</span>
@@ -168,7 +168,7 @@
             >
           {/if}
           <span
-            class="bg-line-soft relative block h-[14px] w-full touch-none"
+            class="bg-line-soft relative col-span-2 block h-6 w-full touch-none md:col-span-1 md:h-[14px]"
             data-lane
             onpointermove={readAt}
             onpointerdown={readAt}
@@ -208,10 +208,10 @@
         </li>
       {/each}
       <li
-        class="text-muted tabular grid grid-cols-[minmax(110px,160px)_40px_minmax(0,1fr)] gap-3 py-1 font-mono text-[11px]"
+        class="text-muted tabular grid grid-cols-[minmax(0,1fr)] gap-3 py-1 font-mono text-[11px] md:grid-cols-[minmax(110px,160px)_56px_minmax(0,1fr)]"
         data-testid="raid-cooldowns-axis"
       >
-        <span class="relative col-start-3 block h-4">
+        <span class="relative block h-4 md:col-start-3">
           {#each axis as at (at)}
             <span class="absolute top-0 -translate-x-1/2" style={`left: ${pct(at)}%`}
               >{formatDuration(at)}</span
@@ -220,7 +220,7 @@
           <!-- Over a whole night the daggers would smear; the lines through the lanes remain. -->
           {#each shownDeaths.length <= 12 ? shownDeaths : [] as death (`${death.guid}-${death.at_ms}`)}
             <span
-              class="text-death absolute top-0 -translate-x-1/2"
+              class="text-death absolute top-0 hidden -translate-x-1/2 md:inline"
               style={`left: ${pct(death.at_ms)}%`}
               title={`${splitUnitName(death.name).name} died at ${formatDuration(death.at_ms)}`}>†</span
             >

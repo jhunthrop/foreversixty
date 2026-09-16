@@ -91,10 +91,10 @@ ORDER BY total DESC`,
   },
   {
     id: 'pet-damage',
-    label: 'Pet damage, separated from its owner',
-    sql: `SELECT source_name, adv_owner_guid, sum(amount) AS total
+    label: 'Pet damage, by pet',
+    sql: `SELECT source_name, source_guid, sum(amount) AS total, count(*) AS hits
 FROM ${EVENTS_TABLE}
-WHERE kind = 'damage' AND ((source_flags & 12288) <> 0 OR adv_owner_guid NOT IN ('', '${NO_OWNER_GUID}'))
+WHERE kind = 'damage' AND (source_flags & 12288) <> 0
   AND ${FIGHT_MS} BETWEEN :start AND :end
 GROUP BY 1, 2
 ORDER BY total DESC`,

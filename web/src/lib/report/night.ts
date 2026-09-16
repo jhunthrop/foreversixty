@@ -20,6 +20,8 @@ import type {
 export interface NightPlayerFight {
   index: number;
   boss: string;
+  /** "pull 2 of 3" for a boss pulled more than once; '' for a single pull. */
+  pull: string;
   kill: boolean;
   duration_ms: number;
   dps: number;
@@ -88,6 +90,16 @@ export function aggregateNight(
   fights: readonly FightEntry[],
   summaries: ReadonlyMap<number, Summary>,
 ): Night {
+  // Pull numbers per boss, so a player's row can say "pull 2 of 3" like the fight list.
+  const encounterPulls = fights.filter((fight) => fight.kind === 'encounter');
+  // eslint-disable-next-line svelte/prefer-svelte-reactivity
+  const pullTotals = new Map<string, number>();
+  for (const fight of encounterPulls) pullTotals.set(fight.name, (pullTotals.get(fight.name) ?? 0) + 1);
+  const pullNumbers = pullNumbersOf(encounterPulls);
+  const pullLabel = (fight: FightEntry): string => {
+    const of = pullTotals.get(fight.name) ?? 1;
+    return of > 1 ? `pull ${pullNumbers.get(fight.index) ?? 1} of ${of}` : '';
+  };
   const encounters = fights.filter((fight) => fight.kind === 'encounter' && !fight.in_progress);
   const players = new Map<string, NightPlayer>();
   const bosses = new Map<string, NightBoss>();
@@ -157,6 +169,7 @@ export function aggregateNight(
       player.by_fight.push({
         index: fight.index,
         boss: fight.name,
+        pull: pullLabel(fight),
         kill: fight.kill,
         duration_ms: summary.duration_ms,
         dps: row.dps,

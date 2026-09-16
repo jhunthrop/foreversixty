@@ -24,6 +24,7 @@
     search = '',
     onPatch = () => {},
     loadStream = undefined,
+    names = new Map<string, string>(),
   }: {
     summary: Summary;
     classOf: Map<string, string>;
@@ -35,6 +36,8 @@
     onPatch?: (patch: { eventsOff?: string[]; find?: string }) => void;
     /** Loads every hit and heal in the window from the fight's events; absent over the night. */
     loadStream?: () => Promise<StreamLine[]>;
+    /** GUID to unit name, so an aura line can say who applied it. */
+    names?: ReadonlyMap<string, string>;
   } = $props();
 
   let stream = $state<StreamLine[] | null>(null);
@@ -70,7 +73,7 @@
   // to every one of them; the casts, auras and deaths stay the summary's.
   const all = $derived(
     [
-      ...summaryEvents(summary).filter(
+      ...summaryEvents(summary, names).filter(
         (event) => stream === null || (event.kind !== 'damage' && event.kind !== 'heal'),
       ),
       ...(stream === null ? [] : streamEvents(stream)),

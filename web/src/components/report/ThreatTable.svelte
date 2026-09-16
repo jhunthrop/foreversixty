@@ -35,6 +35,20 @@
   } = $props();
 
   const ordered = $derived([...rows].sort((a, b) => b.threat - a.threat));
+  /** Six units named "General Kaal" are six rows; each after the first says which copy it is. */
+  const copyOf = $derived.by(() => {
+    // eslint-disable-next-line svelte/prefer-svelte-reactivity
+    const seen = new Map<string, number>();
+    // eslint-disable-next-line svelte/prefer-svelte-reactivity
+    const out = new Map<string, number>();
+    for (const row of ordered) {
+      const n = (seen.get(row.name) ?? 0) + 1;
+      seen.set(row.name, n);
+      out.set(row.guid, n);
+    }
+    return out;
+  });
+  const copies = $derived(new Set([...copyOf.entries()].filter(([, n]) => n > 1).map(([guid]) => guid)));
   const peak = $derived(ordered.reduce((highest, row) => Math.max(highest, row.threat), 0));
   const total = $derived(totalThreat ?? ordered.reduce((sum, row) => sum + row.threat, 0));
   const incomplete = $derived(ordered.some((row) => !row.complete));
@@ -69,7 +83,10 @@
           data-testid={`threat-${row.guid}`}
         >
           <span class="truncate font-semibold" style={`color: ${classColorVar(classOf.get(row.guid))}`}>
-            {splitUnitName(row.name).name}
+            {splitUnitName(row.name).name}{#if copies.has(row.guid)}
+              <span class="text-muted ml-1 font-mono text-[11px]" title="Another unit of the same name"
+                >#{copyOf.get(row.guid)}</span
+              >{/if}
           </span>
           <span class="bg-line-soft col-span-2 block h-[6px] w-full md:col-span-1">
             <span class="bg-gold block h-full" style={`width: ${peak === 0 ? 0 : (row.threat / peak) * 100}%`}

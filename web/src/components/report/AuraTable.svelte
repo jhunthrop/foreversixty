@@ -133,7 +133,11 @@
         >
           <span class="flex min-w-0 items-center gap-1">
             <span class="truncate font-semibold"
-              >{track.name}{#if ambiguous.has(`${track.target_guid}|${track.name}`)}
+              ><span
+                title={track.name.startsWith('Spell #')
+                  ? 'Already up at the pull, and no line of the log ever named this spell; the number is its spell id'
+                  : undefined}>{track.name}</span
+              >{#if ambiguous.has(`${track.target_guid}|${track.name}`)}
                 <span
                   class="text-muted ml-1 font-mono text-[11px]"
                   title="Two spells share this name; this is spell id {track.spell_id}"

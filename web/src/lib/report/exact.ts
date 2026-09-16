@@ -30,6 +30,8 @@ export interface ExactTotals {
   overheal: number;
   targets: Pair[];
   mitigated: Mitigated;
+  /** Whole seconds inside the actor's dead spans that still carried a line of theirs: a pet or a dot ticking. */
+  deadActiveMs: number;
 }
 
 /** The other side a table is narrowed to: by GUID, or by name where a filter matched a name. */
@@ -288,6 +290,26 @@ export async function loadEventStream(
   }));
 }
 
+/**
+ * Per actor, the whole seconds inside their dead spans that carried a damage, heal or cast
+ * line of theirs: the summary's active time counted those, and "ignore events while dead"
+ * takes them back out.
+ */
+export function deadActiveSql(window: TimeWindow, options: MeasureOptions): string {
+  const pets = options.pets ?? NO_PETS;
+  const actor = ownerExpr('source_guid', pets);
+  const spans = (options.exclude ?? [])
+    .map(
+      (span) =>
+        `(${actor} = ${quote(span.guid)} AND ${FIGHT_MS} > ${Math.round(span.startMs)} AND ${FIGHT_MS} < ${Math.round(span.endMs)})`,
+    )
+    .join(' OR ');
+  return `SELECT ${actor} AS guid, count(DISTINCT floor(${FIGHT_MS} / 1000)) AS seconds
+FROM ${EVENTS_TABLE}
+WHERE kind IN ('damage', 'heal', 'cast_success') AND ${windowClause(window)} AND (${spans || 'false'})
+GROUP BY 1`;
+}
+
 type Row = Record<string, unknown>;
 
 function rowsOf(result: { columns: string[]; rows: unknown[][] }): Row[] {
@@ -305,11 +327,15 @@ export async function measureTable(
   scope: TargetScope | null = null,
   options: MeasureOptions = {},
 ): Promise<Map<string, ExactTotals>> {
-  const [result, misses] = await Promise.all([
+  const empty = { columns: [], rows: [] };
+  const [result, misses, deadActive] = await Promise.all([
     layer.run(eventsUrl, exactTableSql(kind, window, scope, options), ALL_ROWS),
     kind === 'healing'
-      ? Promise.resolve({ columns: [], rows: [] })
+      ? Promise.resolve(empty)
       : layer.run(eventsUrl, exactMissesSql(kind, window, scope, options), ALL_ROWS),
+    (options.exclude ?? []).length === 0
+      ? Promise.resolve(empty)
+      : layer.run(eventsUrl, deadActiveSql(window, options), ALL_ROWS),
   ]);
   const out = new Map<string, ExactTotals>();
   const fresh = (): ExactTotals => ({
@@ -318,6 +344,7 @@ export async function measureTable(
     overheal: 0,
     targets: [],
     mitigated: { absorbed: 0, blocked: 0, misses: {} },
+    deadActiveMs: 0,
   });
   for (const row of rowsOf(result)) {
     const guid = String(row.guid ?? '');
@@ -329,6 +356,12 @@ export async function measureTable(
     found.mitigated.absorbed += num(row.absorbed);
     found.mitigated.blocked += num(row.blocked);
     found.targets.push({ guid: String(row.other_guid ?? ''), name: String(row.other_name ?? ''), total });
+    out.set(guid, found);
+  }
+  for (const row of rowsOf(deadActive)) {
+    const guid = String(row.guid ?? '');
+    const found = out.get(guid) ?? fresh();
+    found.deadActiveMs += num(row.seconds) * 1000;
     out.set(guid, found);
   }
   for (const row of rowsOf(misses)) {

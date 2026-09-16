@@ -62,7 +62,12 @@
     {
       term: 'Failed casts',
       meaning:
-        'On the Casts tab, casts that were started and never finished: interrupted, cancelled, or the caster moved. "Cast" counts the ones that went off.',
+        'On the Casts tab, casts the game refused or that never finished: out of range, no target, not enough mana or energy, or interrupted, cancelled or moved while casting. An instant spell pressed while out of range fails too, which is why an instant can show more failures than casts. "Cast" counts the ones that went off.',
+    },
+    {
+      term: 'Mitigated · absorbed · blocked · avoided',
+      meaning:
+        'Under the Damage Taken table: damage that did not land. Absorbed was soaked by a shield, blocked was cut by a shield block, and avoided hits missed outright: a parry, dodge, miss, or a hit a shield took whole. Measured from the fight’s events on one pull; marked ~ where it is prorated.',
     },
     {
       term: 'Overkill',

@@ -62,7 +62,10 @@ export function streamEvents(lines: StreamLine[]): SummaryEvent[] {
   });
 }
 
-export function summaryEvents(summary: Summary): SummaryEvent[] {
+export function summaryEvents(
+  summary: Summary,
+  names: ReadonlyMap<string, string> = new Map(),
+): SummaryEvent[] {
   const events: SummaryEvent[] = [];
 
   for (const row of summary.casts) {
@@ -80,13 +83,18 @@ export function summaryEvents(summary: Summary): SummaryEvent[] {
 
   for (const track of summary.auras) {
     const target = splitUnitName(track.target_name).name;
+    const applier = track.appliers
+      .map((guid) => splitUnitName(names.get(guid) ?? '').name)
+      .filter(Boolean)
+      .slice(0, 2)
+      .join(', ');
     for (const segment of track.segments) {
       events.push({
         atMs: segment.start_ms,
         kind: 'aura-applied',
         guid: track.target_guid,
         guids: [track.target_guid, ...track.appliers],
-        text: `${track.name} on ${target}`,
+        text: `${track.name} on ${target}${applier === '' ? '' : ` by ${applier}`}`,
       });
       events.push({
         atMs: segment.end_ms,

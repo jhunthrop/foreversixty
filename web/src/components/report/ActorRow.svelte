@@ -157,7 +157,9 @@
   /** What a line's last cell says: overhealing for a heal, otherwise what did not land. */
   function abilityNotes(ability: Ability): string[] {
     if (ability.overheal !== undefined && ability.total > 0) {
-      return [`${formatPercent((ability.overheal / ability.total) * 100)} over`];
+      return [
+        `${formatPercent((ability.overheal / ability.total) * 100)} over · ${formatAmount(ability.overheal)}`,
+      ];
     }
     const notes: string[] = [];
     if (ability.absorbed) notes.push(`${formatAmount(ability.absorbed)} absorbed`);
@@ -421,7 +423,7 @@
             >
             <th scope="col" class="py-1 pr-3 text-right font-normal" title="Amount per hit">Avg</th>
             <th scope="col" class="py-1 pr-3 text-right font-normal" title="Largest single hit">Max</th>
-            <th scope="col" class="py-1 text-right font-normal" aria-label="Notes"></th>
+            <th scope="col" class="min-w-[220px] py-1 text-right font-normal" aria-label="Notes"></th>
           </tr>
         </thead>
         <tbody>
@@ -471,7 +473,7 @@
                 >{#if ability.max > 0}{formatAmount(ability.max)}{/if}</td
               >
               <!-- Wraps: a long list of what did not land must not push the table past its box. -->
-              <td class="text-muted tabular max-w-[260px] py-1.5 text-right font-mono text-[12px]"
+              <td class="text-muted tabular min-w-[220px] py-1.5 text-right font-mono text-[12px]"
                 >{abilityNotes(ability).join(' · ')}</td
               >
             </tr>

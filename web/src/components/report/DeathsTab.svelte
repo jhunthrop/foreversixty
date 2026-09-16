@@ -293,7 +293,7 @@
           {/if}
 
           <div class="overflow-x-auto">
-            <table class="w-full text-[13px]">
+            <table class="w-full table-fixed text-[13px] md:table-auto">
               <caption class="label text-muted text-left">
                 {death.heals === undefined ? 'Last hits' : 'Last hits and heals'}
               </caption>
@@ -301,7 +301,7 @@
                 <tr class="text-muted label">
                   <th class="py-1 pr-3 text-left font-bold" title="Seconds before the death">Before</th>
                   <th class="py-1 pr-3 text-left font-bold">Ability</th>
-                  <th class="py-1 pr-3 text-left font-bold">From</th>
+                  <th class="hidden py-1 pr-3 text-left font-bold md:table-cell">From</th>
                   <th class="py-1 pr-3 text-right font-bold">Amount</th>
                   <th class="py-1 text-left font-bold" title="Health left after the hit">Health after</th>
                 </tr>
@@ -316,8 +316,10 @@
                         class="text-muted tabular py-1 pr-3 font-mono"
                         title={formatDurationPrecise(heal.at_ms)}>{beforeDeath(death, heal.at_ms)}</td
                       >
-                      <td class="text-kill py-1 pr-3">{heal.spell_name}</td>
-                      <td class="text-muted truncate py-1 pr-3">{splitUnitName(heal.source_name).name}</td>
+                      <td class="text-kill truncate py-1 pr-3" title={heal.spell_name}>{heal.spell_name}</td>
+                      <td class="text-muted hidden truncate py-1 pr-3 md:table-cell"
+                        >{splitUnitName(heal.source_name).name}</td
+                      >
                       <td class="text-kill tabular py-1 pr-3 text-right font-mono"
                         >+{formatAmount(heal.amount - (heal.overheal ?? 0))}{#if heal.overheal}
                           <span class="text-muted text-[11px]" title="Overhealing">
@@ -358,9 +360,11 @@
                         class="text-muted tabular py-1 pr-3 font-mono"
                         title={formatDurationPrecise(hit.at_ms)}>{beforeDeath(death, hit.at_ms)}</td
                       >
-                      <td class="py-1 pr-3">{hit.spell_name === '' ? 'Melee' : hit.spell_name}</td>
+                      <td class="truncate py-1 pr-3" title={hit.spell_name === '' ? 'Melee' : hit.spell_name}
+                        >{hit.spell_name === '' ? 'Melee' : hit.spell_name}</td
+                      >
                       <td
-                        class="text-muted max-w-[96px] truncate py-1 pr-3 md:max-w-none"
+                        class="text-muted hidden truncate py-1 pr-3 md:table-cell"
                         title={sourceName(hit.source_guid, hit.source_name)}
                         >{sourceName(hit.source_guid, hit.source_name)}</td
                       >

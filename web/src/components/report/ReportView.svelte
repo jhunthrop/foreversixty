@@ -514,7 +514,9 @@
           mitigated: found?.mitigated ?? { absorbed: 0, blocked: 0, misses: {} },
           // The summary's active time counts a corpse's HoT ticks; with the dead spans left
           // out, active time can be at most the time alive in the window.
-          active_ms: ignoringDead ? Math.min(actor.active_ms, aliveMs(actor.guid)) : actor.active_ms,
+          active_ms: ignoringDead
+            ? Math.min(Math.max(0, actor.active_ms - (found?.deadActiveMs ?? 0)), aliveMs(actor.guid))
+            : actor.active_ms,
         };
       })
       .sort((a, b) => b.effective - a.effective);
@@ -1126,7 +1128,7 @@
                         (span) =>
                           `${splitUnitName(unitNames.get(span.guid) ?? span.guid).name} ${formatDuration(span.startMs)} to ${formatDuration(span.endMs)}`,
                       )
-                      .join(', ')}.</span
+                      .join(', ')}. A figure that does not move had nothing landing in those spans.</span
                   >
                 {/if}
               {:else if nightMode}
@@ -1264,6 +1266,7 @@
         <EventsView
           summary={windowed ?? scoped}
           {classOf}
+          names={unitNames}
           inScope={(guid) => inSource(guid, state.source, playerSet, friendlySet)}
           off={state.eventsOff}
           search={state.find}

@@ -243,8 +243,10 @@
                         type="button"
                         class="inline-flex min-h-11 items-center underline-offset-2 hover:underline md:min-h-6"
                         onclick={() => onSelect(entry.index)}
+                        title="Open this pull"
                       >
-                        {entry.boss}
+                        {entry.boss}{#if entry.pull}
+                          <span class="text-muted ml-1 text-[12px]">· {entry.pull}</span>{/if}
                       </button>
                     </td>
                     <td class="py-1 pr-3 font-semibold {entry.kill ? 'text-kill' : 'text-wipe'}"
