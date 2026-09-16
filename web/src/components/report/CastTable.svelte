@@ -109,7 +109,11 @@
       <span class="text-right">Cast</span>
       <span class="text-right" title="Successful casts per minute of this window">Per min</span>
       <span class="text-right">Failed</span>
-      <span class="text-right">Cast time</span>
+      <span
+        class="text-right"
+        title="Time spent casting this spell, every cast added together; instants show none"
+        >Casting, total</span
+      >
       <span>Sequence</span>
     </div>
     <ul class="flex flex-col">

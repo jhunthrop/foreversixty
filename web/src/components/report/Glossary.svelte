@@ -60,6 +60,11 @@
         'Leaves out what each player did, and what hit them, from a death to their first cast after it (or the end of the fight if they stayed dead). On one pull the tables are then measured from the events; over the whole night it is not available.',
     },
     {
+      term: 'Casting, total',
+      meaning:
+        'On the Casts tab, the time a player spent casting that spell across the whole fight, every cast added together. An instant spell has none. A dagger marks it as the whole fight’s figure under any window.',
+    },
+    {
       term: 'Failed casts',
       meaning:
         'On the Casts tab, casts the game refused or that never finished: out of range, no target, not enough mana or energy, or interrupted, cancelled or moved while casting. An instant spell pressed while out of range fails too, which is why an instant can show more failures than casts. "Cast" counts the ones that went off.',

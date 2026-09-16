@@ -101,7 +101,7 @@ export function summaryEvents(
         kind: 'aura-removed',
         guid: track.target_guid,
         guids: [track.target_guid, ...track.appliers],
-        text: `${track.name} off ${target}`,
+        text: `${track.name} off ${target}${applier === '' ? '' : ` (by ${applier})`}`,
       });
     }
   }

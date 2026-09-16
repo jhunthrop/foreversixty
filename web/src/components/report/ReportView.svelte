@@ -403,7 +403,9 @@
   // they are not part of this. Over-claiming (marking a row that individually happens to
   // be exact) is the safe direction here; under-claiming is not.
   const filtersScale = $derived(filters.target !== '' || filters.bossOnly);
-  const actorTableApproximate = $derived(!windowIsWhole || filtersScale || ignoringDead);
+  const actorTableApproximate = $derived(
+    !windowIsWhole || filtersScale || ignoringDead || filters.countOverkill,
+  );
   let percentiles = $state(new Map<string, Placement>());
   const loader = createPercentileLoader();
 
@@ -1171,6 +1173,17 @@
           />
           <AuraTable tracks={scoped.auras} durationMs={scoped.duration_ms} kind="BUFF" />
         {:else if state.tab === 'debuffs'}
+          {#if state.source === 'friendlies'}
+            <p class="text-muted text-[12px]" data-testid="debuffs-scope-note">
+              These are the debuffs on the raid. The ones on the enemies, a boss’s Flame Shock among them, are
+              under
+              <button
+                type="button"
+                class="text-gold inline-flex min-h-11 items-center underline-offset-2 hover:underline md:min-h-0"
+                onclick={() => patch({ source: 'enemies' })}>Source · All enemies</button
+              >.
+            </p>
+          {/if}
           <AuraTable
             tracks={scoped.auras}
             durationMs={scoped.duration_ms}

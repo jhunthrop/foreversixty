@@ -136,8 +136,10 @@
               ><span
                 title={track.name.startsWith('Spell #')
                   ? 'Already up at the pull, and no line of the log ever named this spell; the number is its spell id'
-                  : undefined}>{track.name}</span
-              >{#if ambiguous.has(`${track.target_guid}|${track.name}`)}
+                  : track.name}>{track.name}</span
+              >{#if track.name.startsWith('Spell #')}
+                <span class="text-muted ml-1 text-[11px] font-normal">unnamed in the log</span
+                >{/if}{#if ambiguous.has(`${track.target_guid}|${track.name}`)}
                 <span
                   class="text-muted ml-1 font-mono text-[11px]"
                   title="Two spells share this name; this is spell id {track.spell_id}"

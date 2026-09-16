@@ -427,12 +427,16 @@
           </tr>
         </thead>
         <tbody>
-          {#each detailRows as ability (ability.spell_id)}
+          {#each detailRows as ability (`${ability.spell_id}|${ability.via ?? ''}`)}
             {@const hits = landed(ability)}
             {@const school = schoolToken(ability.school)}
             <tr class="border-line-soft border-b">
               <td class="py-1.5 pr-3"
-                >{ability.name}{#if sameName.has(ability.name)}
+                >{ability.name}{#if ability.via}
+                  <span
+                    class="text-muted ml-1 text-[11px]"
+                    title="Cast by this pet or guardian, counted on its owner's row">· {ability.via}</span
+                  >{/if}{#if sameName.has(ability.name)}
                   <span
                     class="text-muted ml-1 font-mono text-[11px]"
                     title="Two spells share this name; this is spell id {ability.spell_id}"

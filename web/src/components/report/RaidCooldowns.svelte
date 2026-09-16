@@ -81,7 +81,16 @@
     const bounds = lane.getBoundingClientRect();
     const at = timeWindow.startMs + ((event.clientX - bounds.left) / Math.max(bounds.width, 1)) * span;
     const pull = pulls.find((entry) => entry.start_ms <= at && at < entry.end_ms);
-    hovered = `${pull === undefined ? '' : `${pull.label} · `}${formatDuration(at)}`;
+    // The nearest use on this lane, within a fortieth of the window: a tap names it.
+    const row = rows.find((entry) => entry.name === lane.dataset.lane);
+    const near = row?.uses
+      .filter((use) => Math.abs(use.at - at) <= span / 40 || (use.at <= at && at <= use.end))
+      .sort((a, b) => Math.abs(a.at - at) - Math.abs(b.at - at))[0];
+    const use =
+      near === undefined || row === undefined
+        ? ''
+        : ` · ${row.name} at ${formatDuration(near.at)}${near.source ? ` by ${splitUnitName(near.source).name}` : ''} on ${splitUnitName(near.target).name}`;
+    hovered = `${pull === undefined ? '' : `${pull.label} · `}${formatDuration(at)}${use}`;
   }
   /** Per cooldown, the pulls it was used in, and the ones it was not. */
   function pullsUsed(uses: Use[]): { used: number; missed: string[] } {
@@ -169,7 +178,7 @@
           {/if}
           <span
             class="bg-line-soft relative col-span-2 block h-6 w-full touch-none md:col-span-1 md:h-[14px]"
-            data-lane
+            data-lane={row.name}
             onpointermove={readAt}
             onpointerdown={readAt}
           >
@@ -183,7 +192,7 @@
               {/if}
               {#if !pull.kill}
                 <span
-                  class="bg-wipe absolute top-0 h-[2px]"
+                  class="bg-wipe absolute top-0 h-[2px] border-l border-black/40"
                   style={`left: ${Math.max(pct(pull.start_ms), 0)}%; width: ${Math.min(pct(pull.end_ms), 100) - Math.max(pct(pull.start_ms), 0)}%`}
                   aria-hidden="true"
                 ></span>
@@ -211,7 +220,7 @@
         class="text-muted tabular grid grid-cols-[minmax(0,1fr)] gap-3 py-1 font-mono text-[11px] md:grid-cols-[minmax(110px,160px)_56px_minmax(0,1fr)]"
         data-testid="raid-cooldowns-axis"
       >
-        <span class="relative block h-4 md:col-start-3">
+        <span class="relative block h-7 md:col-start-3">
           {#each axis as at (at)}
             <span class="absolute top-0 -translate-x-1/2" style={`left: ${pct(at)}%`}
               >{formatDuration(at)}</span
@@ -220,7 +229,7 @@
           <!-- Over a whole night the daggers would smear; the lines through the lanes remain. -->
           {#each shownDeaths.length <= 12 ? shownDeaths : [] as death (`${death.guid}-${death.at_ms}`)}
             <span
-              class="text-death absolute top-0 hidden -translate-x-1/2 md:inline"
+              class="text-death absolute top-3 hidden -translate-x-1/2 md:inline"
               style={`left: ${pct(death.at_ms)}%`}
               title={`${splitUnitName(death.name).name} died at ${formatDuration(death.at_ms)}`}>†</span
             >
@@ -228,5 +237,17 @@
         </span>
       </li>
     </ul>
+    {#if pulls.length > 0 && rows.some((row) => pullsUsed(row.uses).missed.length > 0)}
+      <details class="text-[12px]" data-testid="raid-cooldowns-missed">
+        <summary class="label text-muted min-h-11 cursor-pointer md:min-h-0"
+          >Pulls each cooldown was not used on</summary
+        >
+        <ul class="mt-1 flex flex-col gap-1">
+          {#each rows.filter((row) => pullsUsed(row.uses).missed.length > 0) as row (row.name)}
+            <li><span class="font-semibold">{row.name}</span>: {pullsUsed(row.uses).missed.join(', ')}</li>
+          {/each}
+        </ul>
+      </details>
+    {/if}
   </section>
 {/if}

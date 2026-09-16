@@ -112,6 +112,12 @@ function ownerExpr(column: string, pets: PetOwners): string {
 }
 
 /** Half-open, like the one-second buckets the tables sum: [start, end). */
+/** The pet's name when a line is a pet's, so its abilities stay apart from its owner's; '' otherwise. */
+function viaExpr(pets: PetOwners): string {
+  if (pets.size === 0) return `''`;
+  return `CASE WHEN source_guid IN (${[...pets.keys()].map(quote).join(', ')}) THEN source_name ELSE '' END`;
+}
+
 function windowClause(window: TimeWindow): string {
   return `${FIGHT_MS} >= ${Math.round(window.startMs)} AND ${FIGHT_MS} < ${Math.round(window.endMs)}`;
 }
@@ -127,6 +133,7 @@ export function rowsSql(kind: ActorKind, window: TimeWindow, options: MeasureOpt
   const damage = options.countOverkill ? 'amount' : 'amount - greatest(coalesce(overkill, 0), 0)';
   if (kind === 'damage-taken') {
     return `SELECT dest_guid AS actor, source_guid AS other_guid, source_name AS other_name,
+    '' AS via,
     ${FIGHT_MS} AS fight_ms, spell_id, spell_name, spell_school, event, amount,
     ${damage} AS effective,
     0 AS overheal, coalesce(absorbed, 0) AS absorbed, coalesce(blocked, 0) AS blocked, critical
@@ -134,17 +141,20 @@ export function rowsSql(kind: ActorKind, window: TimeWindow, options: MeasureOpt
   }
   if (kind === 'healing') {
     return `SELECT ${ownerExpr('source_guid', pets)} AS actor, dest_guid AS other_guid, dest_name AS other_name,
+    ${viaExpr(pets)} AS via,
     ${FIGHT_MS} AS fight_ms, spell_id, spell_name, spell_school, event, amount,
     amount - coalesce(overheal, 0) AS effective,
     coalesce(overheal, 0) AS overheal, 0 AS absorbed, 0 AS blocked, critical
   FROM ${EVENTS_TABLE} WHERE kind = 'heal' AND ${at}
   UNION ALL
   SELECT ${ownerExpr('extra_guid', pets)} AS actor, dest_guid AS other_guid, dest_name AS other_name,
+    '' AS via,
     ${FIGHT_MS} AS fight_ms, extra_spell_id AS spell_id, extra_spell_name AS spell_name, extra_spell_school AS spell_school, event, amount,
     amount AS effective, 0 AS overheal, amount AS absorbed, 0 AS blocked, false AS critical
   FROM ${EVENTS_TABLE} WHERE kind = 'absorbed' AND extra_guid <> '' AND ${at}`;
   }
   return `SELECT ${ownerExpr('source_guid', pets)} AS actor, dest_guid AS other_guid, dest_name AS other_name,
+    ${viaExpr(pets)} AS via,
     ${FIGHT_MS} AS fight_ms, spell_id, spell_name, spell_school, event, amount,
     ${damage} AS effective,
     0 AS overheal, coalesce(absorbed, 0) AS absorbed, coalesce(blocked, 0) AS blocked, critical
@@ -183,7 +193,7 @@ export function exactSplitSql(
   )}`;
   return {
     abilities: `WITH rows AS (${rows})
-SELECT spell_id, any_value(spell_name) AS spell_name, min(spell_school) AS school,
+SELECT spell_id, via, any_value(spell_name) AS spell_name, min(spell_school) AS school,
   sum(amount) AS total, sum(effective) AS effective,
   sum(overheal) AS overheal, sum(absorbed) AS absorbed, sum(blocked) AS blocked,
   count(*) FILTER (WHERE event NOT LIKE '%PERIODIC%') AS hits,
@@ -192,7 +202,7 @@ SELECT spell_id, any_value(spell_name) AS spell_name, min(spell_school) AS schoo
   min(amount) AS min_hit, max(amount) AS max_hit
 FROM rows
 WHERE ${scope}
-GROUP BY spell_id
+GROUP BY spell_id, via
 ORDER BY effective DESC`,
     misses: `SELECT spell_id, miss_type, count(*) AS n
 FROM ${EVENTS_TABLE}
@@ -403,6 +413,7 @@ export async function measureExact(
       return {
         spell_id: spell,
         name: spell === 0 ? 'Melee' : String(row.spell_name ?? ''),
+        via: String(row.via ?? '') || undefined,
         school: num(row.school) || undefined,
         total: num(row.total),
         effective: num(row.effective),

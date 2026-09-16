@@ -136,8 +136,9 @@
     // The health the run-up started from is the highest the recap saw, not the first
     // row's: heals between hits can lift it, and "from 4%" when they were at 47% two
     // hits later is the wrong story.
-    const firstPct = hits.reduce<number | null>((highest, hit) => {
-      const pct = healthPct(hit);
+    // The heals count too: a Shatter that lifted them to 50% is part of the span's story.
+    const firstPct = [...hits, ...(death.heals ?? [])].reduce<number | null>((highest, event) => {
+      const pct = healthPct(event);
       return pct === null ? highest : Math.max(highest ?? 0, pct);
     }, null);
     if (firstPct === null) return null;
@@ -299,11 +300,15 @@
               </caption>
               <thead>
                 <tr class="text-muted label">
-                  <th class="py-1 pr-3 text-left font-bold" title="Seconds before the death">Before</th>
+                  <th class="w-12 py-1 pr-3 text-left font-bold md:w-auto" title="Seconds before the death"
+                    >Before</th
+                  >
                   <th class="py-1 pr-3 text-left font-bold">Ability</th>
                   <th class="hidden py-1 pr-3 text-left font-bold md:table-cell">From</th>
-                  <th class="py-1 pr-3 text-right font-bold">Amount</th>
-                  <th class="py-1 text-left font-bold" title="Health left after the hit">Health after</th>
+                  <th class="w-16 py-1 pr-3 text-right font-bold md:w-auto">Amount</th>
+                  <th class="w-24 py-1 text-left font-bold md:w-auto" title="Health left after the hit"
+                    >Health after</th
+                  >
                 </tr>
               </thead>
               <tbody>

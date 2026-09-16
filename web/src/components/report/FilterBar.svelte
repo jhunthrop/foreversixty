@@ -117,7 +117,8 @@
       onchange={(event) =>
         onChange({ ...filters, ignoreAfterDeath: (event.currentTarget as HTMLInputElement).checked })}
     />
-    Ignore events while dead
+    Ignore events while dead{#if !afterDeathAvailable}
+      <span class="text-muted text-[11px]">(one pull at a time)</span>{/if}
   </label>
 
   <button

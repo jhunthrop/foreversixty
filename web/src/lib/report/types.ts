@@ -13,6 +13,8 @@
 export interface Ability {
   spell_id: number;
   name: string;
+  /** The pet or guardian that cast it, when the ability is theirs and not the owner's own. */
+  via?: string;
   school?: number;
   total: number;
   effective: number;

@@ -526,8 +526,8 @@ func (a *Accumulator) deathRows() []Death {
 		row := d.Death
 		row.Last = copySlice(d.Last)
 		row.Heals = copySlice(d.Heals)
-		row.AurasHeld = copySlice(d.AurasHeld)
-		row.AurasLost = copySlice(d.AurasLost)
+		row.AurasHeld = a.nameAuraRefs(copySlice(d.AurasHeld))
+		row.AurasLost = a.nameAuraRefs(copySlice(d.AurasLost))
 		if kb := d.KillingBlow; kb != nil {
 			blow := *kb
 			row.KillingBlow = &blow
@@ -541,6 +541,21 @@ func (a *Accumulator) deathRows() []Death {
 		return out[i].GUID < out[j].GUID
 	})
 	return out
+}
+
+// nameAuraRefs names a reference to an aura seeded from a combatant
+// snapshot the way the Buffs tab names it: by any line that mentioned the
+// spell, and "Spell #id" only if none ever did.
+func (a *Accumulator) nameAuraRefs(refs []AuraRef) []AuraRef {
+	for i := range refs {
+		if refs[i].Name == "" {
+			refs[i].Name = a.spellNames[refs[i].SpellID]
+		}
+		if refs[i].Name == "" {
+			refs[i].Name = fmt.Sprintf("Spell #%d", refs[i].SpellID)
+		}
+	}
+	return refs
 }
 
 func (a *Accumulator) auraRows() []AuraTrack {

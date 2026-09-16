@@ -11,8 +11,11 @@ import (
 
 // Ability is one spell's contribution to an actor's row. SpellID 0 is melee.
 type Ability struct {
-	SpellID   int64            `json:"spell_id"`
-	Name      string           `json:"name"`
+	SpellID int64  `json:"spell_id"`
+	Name    string `json:"name"`
+	// Via names the pet or guardian that cast it, when the ability is theirs
+	// and counted on the owner's row; "" for the owner's own.
+	Via       string           `json:"via,omitempty"`
 	School    int64            `json:"school,omitempty"`
 	Total     int64            `json:"total"`
 	Effective int64            `json:"effective"`
@@ -57,13 +60,13 @@ type actor struct {
 	effective int64
 	overheal  int64
 	absorbed  int64
-	abilities map[int64]*Ability
+	abilities map[abilityKey]*Ability
 	// minSet tracks, per spell id, whether that ability's Min has been set
 	// by a real event yet. Ability.Min is exported and starts at its zero
 	// value, which is also a legitimate minimum (a fully resisted or
 	// informational hit lands for 0), so "have we seen one yet" cannot be
 	// read back off Min itself without conflating "unset" with "zero".
-	minSet  map[int64]bool
+	minSet  map[abilityKey]bool
 	targets map[string]int64
 	series  []int64
 }
@@ -99,23 +102,39 @@ func (a *Accumulator) markActive(guid string, at time.Time) {
 func (a *Accumulator) table(m map[string]*actor, guid string) *actor {
 	t, ok := m[guid]
 	if !ok {
-		t = &actor{guid: guid, abilities: map[int64]*Ability{}, minSet: map[int64]bool{}, targets: map[string]int64{}}
+		t = &actor{guid: guid, abilities: map[abilityKey]*Ability{}, minSet: map[abilityKey]bool{}, targets: map[string]int64{}}
 		m[guid] = t
 	}
 	return t
 }
 
-func (t *actor) ability(e event.Event) *Ability {
-	ab, ok := t.abilities[e.Spell.ID]
+// abilityKey files a pet's ability apart from its owner's own of the same
+// spell: a statue's Soothing Mist is not the monk's.
+type abilityKey struct {
+	spellID int64
+	via     string
+}
+
+func (t *actor) ability(e event.Event, via string) *Ability {
+	key := abilityKey{e.Spell.ID, via}
+	ab, ok := t.abilities[key]
 	if !ok {
 		name := e.Spell.Name
 		if e.Spell.ID == 0 && name == "" {
 			name = "Melee"
 		}
-		ab = &Ability{SpellID: e.Spell.ID, Name: name, School: e.Spell.School}
-		t.abilities[e.Spell.ID] = ab
+		ab = &Ability{SpellID: e.Spell.ID, Name: name, Via: via, School: e.Spell.School}
+		t.abilities[key] = ab
 	}
 	return ab
+}
+
+// via is the pet's name when the line is a pet's, counted on its owner.
+func (a *Accumulator) via(e event.Event) string {
+	if a.owner(e.Source.GUID) == e.Source.GUID {
+		return ""
+	}
+	return a.name(e.Source.GUID)
 }
 
 func (t *actor) addSeries(bucket int, amount int64) {
@@ -133,9 +152,9 @@ func (a *Accumulator) addDamageAndHealing(e event.Event) {
 		src := a.owner(e.Source.GUID)
 		amount, effective := e.Amount.V, e.Effective()
 		done := a.table(a.damageDone, src)
-		a.fold(done, e, amount, effective, e.Dest.GUID)
+		a.fold(done, e, amount, effective, e.Dest.GUID, a.via(e))
 		taken := a.table(a.damageTaken, e.Dest.GUID)
-		a.fold(taken, e, amount, effective, src)
+		a.fold(taken, e, amount, effective, src, "")
 		a.markActive(src, e.Time)
 		a.threat[src] += a.opt.Threat.Damage(e)
 
@@ -143,14 +162,14 @@ func (a *Accumulator) addDamageAndHealing(e event.Event) {
 		src := a.owner(e.Source.GUID)
 		amount, effective := e.Amount.V, e.Effective()
 		done := a.table(a.healingDone, src)
-		a.fold(done, e, amount, effective, e.Dest.GUID)
+		a.fold(done, e, amount, effective, e.Dest.GUID, a.via(e))
 		done.overheal += e.Overheal.V
 		done.absorbed += e.Absorbed.V
-		if ab := done.ability(e); ab != nil {
+		if ab := done.ability(e, a.via(e)); ab != nil {
 			ab.Overheal += e.Overheal.V
 		}
 		taken := a.table(a.healingTaken, e.Dest.GUID)
-		a.fold(taken, e, amount, effective, src)
+		a.fold(taken, e, amount, effective, src, "")
 		taken.overheal += e.Overheal.V
 		a.markActive(src, e.Time)
 		a.threat[src] += a.opt.Threat.Healing(e)
@@ -158,13 +177,13 @@ func (a *Accumulator) addDamageAndHealing(e event.Event) {
 	case event.Missed:
 		src := a.owner(e.Source.GUID)
 		done := a.table(a.damageDone, src)
-		ab := done.ability(e)
+		ab := done.ability(e, a.via(e))
 		if ab.Misses == nil {
 			ab.Misses = map[string]int64{}
 		}
 		ab.Misses[e.MissType]++
 		taken := a.table(a.damageTaken, e.Dest.GUID)
-		tab := taken.ability(e)
+		tab := taken.ability(e, "")
 		if tab.Misses == nil {
 			tab.Misses = map[string]int64{}
 		}
@@ -184,22 +203,22 @@ func (a *Accumulator) addDamageAndHealing(e event.Event) {
 			Amount: e.Amount,
 		}
 		done := a.table(a.healingDone, caster)
-		a.fold(done, shield, e.Amount.V, e.Amount.V, e.Dest.GUID)
+		a.fold(done, shield, e.Amount.V, e.Amount.V, e.Dest.GUID, "")
 		done.absorbed += e.Amount.V
-		if ab := done.ability(shield); ab != nil {
+		if ab := done.ability(shield, ""); ab != nil {
 			ab.Absorbed += e.Amount.V
 		}
 		a.markActive(caster, e.Time)
 	}
 }
 
-func (a *Accumulator) fold(t *actor, e event.Event, amount, effective int64, target string) {
+func (a *Accumulator) fold(t *actor, e event.Event, amount, effective int64, target string, via string) {
 	t.total += amount
 	t.effective += effective
 	t.targets[target] += effective
 	t.addSeries(a.bucket(e.Time), effective)
 
-	ab := t.ability(e)
+	ab := t.ability(e, via)
 	ab.Total += amount
 	ab.Effective += effective
 	ab.Overkill += max(e.Overkill.V, 0)
@@ -217,9 +236,9 @@ func (a *Accumulator) fold(t *actor, e event.Event, amount, effective int64, tar
 	if amount > ab.Max {
 		ab.Max = amount
 	}
-	if !t.minSet[e.Spell.ID] || amount < ab.Min {
+	if !t.minSet[abilityKey{e.Spell.ID, via}] || amount < ab.Min {
 		ab.Min = amount
-		t.minSet[e.Spell.ID] = true
+		t.minSet[abilityKey{e.Spell.ID, via}] = true
 	}
 }
 
