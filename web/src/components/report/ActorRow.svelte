@@ -450,8 +450,10 @@
           from that fight’s events.
         </p>
       {/if}
-      <p class="text-muted text-[11px] md:hidden" hidden={splitUnavailable}>
-        Swipe the table sideways for the other columns, a column at a time; the ability column stays put.
+      <p class="text-muted text-[11px]" hidden={splitUnavailable}>
+        <span class="md:hidden">Swipe the table sideways for the other columns, a column at a time;</span
+        ><span class="hidden md:inline">Scroll the table sideways when it is wider than the card;</span> the ability
+        column stays put.
       </p>
       <p
         class="label text-muted pb-1 text-left"
@@ -473,7 +475,7 @@
            separate borders, so the pinned column's shadow can paint (a collapsed table
            drops cell shadows); one snap stop per column, so a number is whole or absent. -->
       <div
-        class="-mx-2 snap-x snap-mandatory scroll-pl-[150px] overflow-x-auto pr-[60vw] md:mx-0 md:flex-1 md:snap-none md:overflow-x-auto md:pr-0"
+        class="-mx-2 snap-x snap-mandatory scroll-pl-[150px] overflow-x-auto pr-[60vw] md:mx-0 md:min-w-0 md:flex-1 md:basis-1/2 md:snap-none md:overflow-x-auto md:pr-0"
         hidden={splitUnavailable}
       >
         <table
@@ -485,7 +487,7 @@
             <tr class="label text-muted border-line-soft border-b">
               <th
                 scope="col"
-                class="bg-bg border-line-soft sticky left-0 w-[150px] max-w-[150px] min-w-[150px] border-r py-1 pr-3 pl-2 text-left font-normal shadow-[6px_0_8px_-4px_rgba(0,0,0,0.6)] md:static md:w-auto md:max-w-none md:min-w-0 md:border-r-0 md:pl-0 md:shadow-none"
+                class="bg-bg border-line-soft sticky left-0 w-[150px] max-w-[150px] min-w-[150px] border-r py-1 pr-3 pl-2 text-left font-normal shadow-[6px_0_8px_-4px_rgba(0,0,0,0.6)]"
                 >Ability</th
               >
               <th scope="col" class="py-1 pr-3 text-right font-normal" title="Effective amount in this window"
@@ -520,7 +522,7 @@
               {@const school = schoolToken(ability.school)}
               <tr class="border-line-soft border-b">
                 <td
-                  class="bg-bg border-line-soft sticky left-0 w-[150px] max-w-[150px] min-w-[150px] border-r py-1.5 pr-3 pl-2 shadow-[6px_0_8px_-4px_rgba(0,0,0,0.6)] md:static md:w-auto md:max-w-none md:min-w-0 md:border-r-0 md:pl-0 md:shadow-none"
+                  class="bg-bg border-line-soft sticky left-0 w-[150px] max-w-[150px] min-w-[150px] border-r py-1.5 pr-3 pl-2 shadow-[6px_0_8px_-4px_rgba(0,0,0,0.6)]"
                   >{ability.name}{#if ability.via}
                     <span
                       class="text-muted ml-1 text-[11px]"

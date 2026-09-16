@@ -161,13 +161,12 @@
     // A window past the shorter pull's end scopes that pull to nothing: no seconds and
     // no rate, for any per-second metric, rather than a total over a clamped-to-zero length.
     const scopedOut = summary.duration_ms <= 0;
+    if (scopedOut) return 0;
     if (metric === 'threat' || metric === 'tps') {
       const threat = summary.threat.find((line) => line.guid === row.guid)?.threat ?? 0;
-      if (metric === 'tps') return scopedOut ? 0 : Math.round(threat / (summary.duration_ms / 1000));
-      return Math.round(threat);
+      return Math.round(metric === 'tps' ? threat / (summary.duration_ms / 1000) : threat);
     }
-    if (PER_SECOND.has(metric)) return scopedOut ? 0 : Math.round(row[metric]);
-    return row[metric];
+    return PER_SECOND.has(metric) ? Math.round(row[metric]) : row[metric];
   }
 
   function fightLabel(fight: FightEntry | null): string {

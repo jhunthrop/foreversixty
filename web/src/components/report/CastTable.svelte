@@ -154,8 +154,8 @@
     for (let i = 1; i < ticks.length; i += 1) {
       if (ticks[i] - ticks[i - 1] > gap.to - gap.from) gap = { from: ticks[i - 1], to: ticks[i] };
     }
-    const end = startMs + durationMs;
-    if (end - ticks[ticks.length - 1] > gap.to - gap.from) gap = { from: ticks[ticks.length - 1], to: end };
+    // Not the stretch after the last cast: on a kill that is the boss dying, and on a
+    // wipe it is the player dead, neither a gap a rotation can close.
     return { casts: ticks.length, gap };
   });
   const pct = (ms: number): number => (durationMs === 0 ? 0 : ((ms - startMs) / durationMs) * 100);

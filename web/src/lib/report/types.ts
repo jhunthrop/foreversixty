@@ -207,6 +207,7 @@ export interface ResourceTrack {
 export type MechanicKind = 'avoidable' | 'unavoidable' | 'interrupt' | 'dispel';
 
 /** summary.MechanicHit — one player's history with an avoidable or unavoidable ability. */
+/** summary.MechanicHit — one player's history with a listed ability; `absorbed` is what shields ate of it (engine 0.3.6). */
 export interface MechanicHit {
   guid: string;
   name: string;
@@ -218,6 +219,7 @@ export interface MechanicHit {
   killed: boolean;
   /** Set by the whole-night fold: the pulls on which this player was hit. */
   pulls?: number;
+  absorbed?: number;
 }
 
 /** summary.MechanicRow — one listed ability from the encounter's mechanics table, rendered against what actually happened. */

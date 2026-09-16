@@ -639,6 +639,7 @@ function mergeMechanicHits(
             ...have,
             hits: have.hits + hit.hits,
             damage: have.damage + hit.damage,
+            absorbed: sumOptional(have.absorbed, hit.absorbed),
             first_ms: Math.min(have.first_ms, firstMs),
             last_ms: Math.max(have.last_ms, lastMs),
             killed: have.killed || hit.killed,

@@ -170,3 +170,34 @@ func TestMechanicsInterruptRowsCarryWhatTheSpellDid(t *testing.T) {
 		t.Fatalf("row = %+v, want 2 casts, 1 stopped", row)
 	}
 }
+
+// A listed ability a shield ate in full is a miss of type ABSORB in the log; it hit
+// the player as surely as one that landed, and the card must not say "never hit by".
+func TestMechanicsCountAnAbsorbedHit(t *testing.T) {
+	o, reg := opts(t)
+	o.Mechanics = &mechanics.Table{EncounterID: 9001, Name: "Warden Kelthas", Mechanics: []mechanics.Mechanic{
+		{SpellID: 334660, Name: "Anima Lash", Kind: mechanics.Avoidable},
+	}}
+	a := New(o)
+	a.Start(at(0))
+	miss := event.Event{
+		Time: at(4), Kind: event.Missed, Name: "SPELL_MISSED",
+		Source: event.Unit{GUID: boss, Flags: 0xa48}, Dest: event.Unit{GUID: healer, Flags: 0x512},
+		Spell: event.Spell{ID: 334660, Name: "Anima Lash"}, MissType: "ABSORB", Amount: event.OptInt{V: 5914, OK: true},
+	}
+	for _, e := range append(fixtureEvents(), miss) {
+		reg.Observe(e)
+		a.Add(e)
+	}
+	s := a.Snapshot(fixtureFight(), "test")
+	row := mechanicRowFor(t, s.Mechanics.Rows, 334660)
+	var found *MechanicHit
+	for i := range row.Players {
+		if row.Players[i].GUID == healer {
+			found = &row.Players[i]
+		}
+	}
+	if found == nil || found.Hits != 1 || found.Damage != 0 || found.Absorbed != 5914 {
+		t.Fatalf("healer's Anima Lash = %+v, want one hit, no damage, 5914 absorbed", found)
+	}
+}

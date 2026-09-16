@@ -53,6 +53,9 @@ type MechanicHit struct {
 	Damage  int64  `json:"damage"`
 	FirstMS int64  `json:"first_ms"`
 	LastMS  int64  `json:"last_ms"`
+	// Absorbed is what shields ate of it: a hit a shield took in full is still
+	// a hit, and a card that says "never hit by" over a 5,914 absorb is wrong.
+	Absorbed int64 `json:"absorbed,omitempty"`
 	// Killed is true when this player's killing blow was this mechanic.
 	Killed bool `json:"killed"`
 }
@@ -157,6 +160,36 @@ func (a *Accumulator) noteMechanicHit(e event.Event) {
 	}
 	hit.Hits++
 	hit.Damage += e.Effective()
+	hit.Absorbed += e.Absorbed.V
+	hit.LastMS = a.ms(e.Time)
+}
+
+// noteMechanicAbsorb records a listed ability a shield ate in full: the log
+// writes it as a miss of type ABSORB carrying the amount, and it hit the
+// player as surely as one that landed. Called from the Missed case.
+func (a *Accumulator) noteMechanicAbsorb(e event.Event) {
+	if a.opt.Mechanics == nil || e.MissType != "ABSORB" {
+		return
+	}
+	m, ok := a.opt.Mechanics.Lookup(e.Spell.ID)
+	if !ok || (m.Kind != mechanics.Avoidable && m.Kind != mechanics.Unavoidable) {
+		return
+	}
+	if !a.isPlayer(e.Dest.GUID) || units.SameSide(e.Source.Flags, e.Dest.Flags) {
+		return
+	}
+	bySpell := a.mechanicHits[e.Spell.ID]
+	if bySpell == nil {
+		bySpell = map[string]*MechanicHit{}
+		a.mechanicHits[e.Spell.ID] = bySpell
+	}
+	hit := bySpell[e.Dest.GUID]
+	if hit == nil {
+		hit = &MechanicHit{GUID: e.Dest.GUID, Name: a.name(e.Dest.GUID), FirstMS: a.ms(e.Time)}
+		bySpell[e.Dest.GUID] = hit
+	}
+	hit.Hits++
+	hit.Absorbed += e.Amount.V
 	hit.LastMS = a.ms(e.Time)
 }
 

@@ -452,7 +452,11 @@
                     {#if entry.others !== undefined}
                       <span class="tabular font-mono">{entry.others}</span>
                       {entry.others === 1 ? 'player' : 'players'} who are not the {entry.row.role}{/if} ·
-                    <span class="tabular font-mono">{formatAmount(entry.hit.damage)}</span> damage
+                    <span class="tabular font-mono">{formatAmount(entry.hit.damage)}</span>
+                    damage{#if (entry.hit.absorbed ?? 0) > 0}
+                      <span class="text-muted"
+                        >(<span class="tabular font-mono">{formatAmount(entry.hit.absorbed ?? 0)}</span> absorbed)</span
+                      >{/if}
                     {#if nightMode && entry.row.encounter}· on {entry.row.encounter}{/if}
                     {#if !nightMode}· first at <span class="tabular font-mono"
                         >{formatDuration(entry.hit.first_ms)}</span

@@ -536,6 +536,9 @@ export async function measureExact(
     if (String(row.miss_type) === 'ABSORB')
       absorbMissBySpell.set(spell, (absorbMissBySpell.get(spell) ?? 0) + num(row.amount));
     missedOnly.set(spell, {
+      // A hit a shield ate in full is a miss carrying the amount: the row it opens
+      // says what was absorbed even when nothing of that spell landed in the window.
+      absorbed: absorbMissBySpell.get(spell) || undefined,
       spell_id: spell,
       name: spell === 0 ? 'Melee' : String(row.spell_name ?? ''),
       school: num(row.school) || undefined,
