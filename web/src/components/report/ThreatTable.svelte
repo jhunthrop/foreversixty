@@ -14,7 +14,10 @@
      unit's threat over the window, enemies folded by name. Pick an enemy and the table
      becomes that enemy's own ranking -- who it is looking at, and by how much -- which is
      the question a tank actually asks. It rides in the url's `target`, the same key the
-     damage tabs' target filter uses, so one link carries one target. -->
+     damage tabs' target filter uses, so one link carries one target -- except over a
+     whole night, where a pair's target is the enemy's name rather than a GUID and a name
+     with a space in it is not a `target` url.ts will read back. The picker works; the
+     link opens on "Every enemy". -->
 <script lang="ts">
   import { splitUnitName } from '../../lib/characters';
   import {
@@ -87,7 +90,9 @@
   /** The table as lines: each row's threat and its share of whatever the table totals. */
   function csvLines(): string[][] {
     return [
-      ['Player', picked === undefined ? 'Threat' : `Threat on ${picked.name}`, 'Share %'],
+      picked === undefined
+        ? ['Unit', 'Threat', 'Share %']
+        : ['Player', `Threat on ${picked.name}`, 'Share %'],
       ...lines.map((line) => [
         splitUnitName(line.name).name,
         String(Math.round(line.threat)),
@@ -183,8 +188,10 @@
   const copies = $derived(new Set([...copyOf.entries()].filter(([, n]) => n > 1).map(([guid]) => guid)));
   const peak = $derived(lines.reduce((highest, line) => Math.max(highest, line.threat), 0));
   // A picked enemy shares against its own total, which is what "half of what it is looking
-  // at" means; the totals table shares against the whole window, so narrowing the source
-  // scope to one player does not turn their row into 100%.
+  // at" means. The totals table has `totalThreat` to share against the whole window under
+  // a source scope; the pairs have no such whole-window figure, so under a scope narrowed
+  // to one player that player reads 100% of the threat shown -- which is what the table
+  // shows, the scope being on screen right above it.
   const total = $derived(
     picked !== undefined ? picked.total : (totalThreat ?? lines.reduce((sum, line) => sum + line.threat, 0)),
   );
