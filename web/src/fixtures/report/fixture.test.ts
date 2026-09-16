@@ -64,12 +64,10 @@ describe('the checked-in report fixture', () => {
     expect(encounter.encounter_id).toBe(9001);
     expect(encounter.kill).toBe(true);
     expect(encounter.in_progress).toBe(false);
-    // 60000, not the encounter's own 40s ENCOUNTER_START-to-ENCOUNTER_END span: the engine
-    // extends a fight's report.json window to the next fight's start when nothing else
-    // bounds the gap between them. fights/3/summary.json's own duration_ms stays exactly
-    // 40000 -- the combat-derived figure every table and DPS/HPS calculation reads -- so
-    // this is a report.json-list-only figure (Task 17 fix round 1 discovered this while
-    // adding fight 4 below; see task-17-report.md).
+    // 60000, not the 40s from ENCOUNTER_START to the last event: the engine extends a
+    // fight's window to the next fight's start when nothing else bounds the gap, and since
+    // engine 0.2.6 the summary runs the same wall length, so a pull has one length
+    // everywhere and every per-second figure divides by it.
     expect(encounter.duration_ms).toBe(60000);
     expect(encounter.deaths).toBe(1);
   });
@@ -128,11 +126,12 @@ describe('the checked-in report fixture', () => {
     expect(lash).toMatchObject({ total: 5300, effective: 5200, overkill: 100, hits: 2 });
     expect(lash?.min).toBe(2300);
     expect(lash?.max).toBe(2900);
-    // And the roster's headline figures are the effective ones over the fight's 40 s.
+    // And the roster's headline figures are the effective ones over the fight's 60 s wall
+    // length (the summary and the fight list agree since engine 0.2.6).
     const row = three.roster.find((entry) => entry.guid === 'Player-4184-000000A4');
-    expect(three.duration_ms).toBe(40_000);
+    expect(three.duration_ms).toBe(60_000);
     expect(row?.damage_taken).toBe(5200);
-    expect(row?.dtps).toBe(130);
+    expect(row?.dtps).toBeCloseTo(5200 / 60, 5);
   });
 
   it('renders the encounter’s mechanics table against what happened', () => {
@@ -187,7 +186,7 @@ describe('the checked-in report fixture', () => {
     const healer = three.roster.find((row) => row.name === 'Sunwick-Nightslayer');
     expect(healer?.role).toBe('healer');
     expect(healer?.healing_done).toBe(1580);
-    expect(healer?.hps).toBeCloseTo(39.5, 5);
+    expect(healer?.hps).toBeCloseTo(1580 / 60, 5);
     const mage = three.roster.find((row) => row.name === 'Morrowlyn-Nightslayer');
     expect(mage?.class).toBe('Mage');
     expect(mage?.class_source).toBe('combatant_info');
