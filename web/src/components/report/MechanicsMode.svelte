@@ -92,12 +92,17 @@
     return parts.length === 0 ? '' : `; it ${parts.join(' and ')}`;
   };
 
+  /** Who holds which role, so an ability assigned to a role is not charged to its holder. */
+  const roleOf = $derived(new Map(summary.roster.map((row) => [row.guid, row.role])));
   /** One line per failure, most costly first: a death outranks any amount of damage. */
   const problems = $derived.by<Problem[]>(() => {
     const out: Problem[] = [];
     for (const row of block.rows) {
       if (row.kind === 'avoidable') {
         for (const hit of row.players ?? []) {
+          // The tank standing in the tank's cleave is not a problem; the card says whose
+          // it was to place. Anyone else in it is.
+          if (row.role !== undefined && roleOf.get(hit.guid) === row.role) continue;
           out.push({
             key: `${mechanicRowKey(row)}-${hit.guid}`,
             row,

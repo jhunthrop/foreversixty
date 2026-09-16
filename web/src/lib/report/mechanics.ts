@@ -123,13 +123,18 @@ export function playerMechanics(
       unavoidableDamage: 0,
       unavoidableNames: [],
     };
+  const roleOf = new Map(roster.map((player) => [player.guid, player.role]));
   for (const row of rows) {
     if (row.kind !== 'avoidable' && row.kind !== 'unavoidable') continue;
     for (const hit of row.players ?? []) {
       const found = tally(hit.guid, hit.name);
+      // An ability the table assigns to a role is that role's to take: on the tank, the
+      // cleave is unavoidable damage, not a failure; on anyone else it is avoidable.
+      const avoidable =
+        row.kind === 'avoidable' && (row.role === undefined || roleOf.get(hit.guid) !== row.role);
       tallies.set(
         hit.guid,
-        row.kind === 'avoidable'
+        avoidable
           ? { ...found, hits: [...found.hits, { row, hit }], damage: found.damage + hit.damage }
           : {
               ...found,
