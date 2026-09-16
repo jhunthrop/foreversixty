@@ -67,12 +67,10 @@
 
   const peakOf = (series: number[]): number => series.reduce((highest, value) => Math.max(highest, value), 0);
 
-  /** Where the cap sits on the 26-unit viewBox the sparkline is drawn in. */
-  function capY(series: number[], max: number): number {
-    const peak = peakOf(series);
-    const top = Math.max(peak, max);
-    return top === 0 ? 24 : 24 - (max / top) * 22;
-  }
+  /** The top of the sparkline's scale: the peak reading, or the cap when the line never reached it. */
+  const scaleTop = (peak: number, max: number | undefined): number => Math.max(peak, max ?? 0);
+  /** A reading's y on the 26-unit viewBox the sparkline is drawn in; every line and mark uses this one scale. */
+  const yOf = (value: number, top: number): number => (top === 0 ? 24 : 24 - (value / top) * 22);
   /** The seconds whose reading is at the cap, as [from, to] percentages of the line's width. */
   function atMaxSpans(series: number[], max: number): { from: number; to: number }[] {
     if (max <= 0 || series.length === 0) return [];
@@ -129,11 +127,10 @@
       .sort((a, b) => a.name.localeCompare(b.name) || a.power_type - b.power_type),
   );
 
-  function points(series: number[], max = 0): string {
-    const top = Math.max(peakOf(series), max);
+  function points(series: number[], top: number): string {
     if (top === 0 || series.length < 2) return '';
     return series
-      .map((value, index) => `${(index / (series.length - 1)) * 100},${24 - (value / top) * 22}`)
+      .map((value, index) => `${(index / (series.length - 1)) * 100},${yOf(value, top)}`)
       .join(' ');
   }
 
@@ -152,6 +149,7 @@
     {#each rows as track (`${track.guid}-${track.power_type}`)}
       {@const lowest = low(track.series)}
       {@const peak = peakOf(track.series)}
+      {@const top = scaleTop(peak, track.max)}
       <li
         class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px] md:grid-cols-[minmax(120px,1.2fr)_96px_minmax(0,3fr)_96px]"
         data-testid={`resource-${track.guid}-${track.power_type}`}
@@ -213,11 +211,11 @@
                 <!-- A perfectly horizontal <line> has zero geometric height under
                      getBoundingClientRect, so a visibility check on it always reads
                      hidden regardless of where it is drawn; a thin filled <rect> at the
-                     same y (from capY, the same scale the sparkline itself uses) carries
+                     same y (from yOf, the same scale the sparkline itself uses) carries
                      genuine area and reads the same as a cap line on screen. -->
                 <rect
                   x="0"
-                  y={capY(track.series, track.max) - 0.4}
+                  y={yOf(track.max, top) - 0.4}
                   width="100"
                   height="0.8"
                   fill="var(--color-gold)"
@@ -225,7 +223,7 @@
                 />
               {/if}
               <polyline
-                points={points(track.series, track.max ?? 0)}
+                points={points(track.series, top)}
                 fill="none"
                 stroke="var(--color-gold)"
                 stroke-width="1.5"
@@ -252,7 +250,6 @@
               >low {formatAmount(lowest.value)} at {formatDuration(lowest.atMs)}</span
             >
             {#if track.max !== undefined && track.max > 0}
-              <span title="The cap the log reported for this power">cap {formatAmount(track.max)}</span>
               <span
                 title="The share of this window the bar spent full, measured from the window's own seconds"
                 >at cap {formatPercent(atCapPct(track.at_max_ms ?? 0))} of the fight</span
