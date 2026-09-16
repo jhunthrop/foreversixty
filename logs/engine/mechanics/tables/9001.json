@@ -6,6 +6,6 @@
     { "spell_id": 334653, "name": "Anima Surge", "kind": "interrupt", "note": "Kickable: the Warden opens with it after a Lash. Pummel, Kick or Counterspell." },
     { "spell_id": 321038, "name": "Wrack Soul", "kind": "dispel", "note": "Magic; left up it ticks for the rest of the pull." },
     { "spell_id": 334661, "name": "Anima Cascade", "kind": "avoidable", "note": "Fixture: in the Warden's kit but never cast on this pull, so the page has a mechanic nobody failed." },
-    { "spell_id": 320462, "name": "Necrotic Wound", "kind": "unavoidable", "note": "The Warden's tank debuff: it lands on whoever is holding him, and nobody can play around it." }
+    { "spell_id": 320462, "name": "Necrotic Wound", "kind": "unavoidable", "note": "Fixture: the Warden's tank debuff, invented for the sample encounter; it lands on whoever is holding him, and nobody can play around it." }
   ]
 }
