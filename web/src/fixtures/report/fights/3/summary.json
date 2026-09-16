@@ -459,7 +459,10 @@
       "series": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       "gained": 0,
       "spent": 0,
-      "zero_ms": 24800
+      "zero_ms": 24800,
+      "max": 0,
+      "at_max_ms": 0,
+      "wasted": 0
     },
     {
       "guid": "Player-4184-000000A1",
@@ -468,7 +471,22 @@
       "series": [0, 0, 0, 0, 0, 0, 0, 0, 8000, 8000, 8000, 8000, 8000],
       "gained": 0,
       "spent": 0,
-      "zero_ms": 0
+      "zero_ms": 0,
+      "max": 9330,
+      "at_max_ms": 0,
+      "wasted": 0
+    },
+    {
+      "guid": "Player-4184-000000A1",
+      "name": "Baelgrim-Nightslayer",
+      "power_type": 1,
+      "series": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1000],
+      "gained": 60,
+      "spent": 0,
+      "zero_ms": 0,
+      "max": 1000,
+      "at_max_ms": 1000,
+      "wasted": 25
     },
     {
       "guid": "Player-4184-000000A3",
@@ -477,7 +495,10 @@
       "series": [0, 0, 0, 0, 0, 8900, 9000],
       "gained": 100,
       "spent": 0,
-      "zero_ms": 0
+      "zero_ms": 0,
+      "max": 9330,
+      "at_max_ms": 0,
+      "wasted": 0
     },
     {
       "guid": "Player-4184-000000A4",
@@ -486,7 +507,10 @@
       "series": [0, 0, 0, 0, 0, 0, 0, 0, 8200, 8200, 8200],
       "gained": 0,
       "spent": 0,
-      "zero_ms": 0
+      "zero_ms": 0,
+      "max": 8200,
+      "at_max_ms": 3000,
+      "wasted": 0
     }
   ],
   "threat": [

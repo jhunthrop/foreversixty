@@ -161,6 +161,16 @@ type ResourceTrack struct {
 	Gained    int64   `json:"gained"`
 	Spent     int64   `json:"spent"`
 	ZeroMS    int64   `json:"zero_ms"`
+	// Max is the largest maximum the log reported for this power: the cap the
+	// graph draws a line at. Zero when no line ever carried one.
+	Max int64 `json:"max"`
+	// AtMaxMS is the whole seconds the reading sat at Max, times 1000, on the
+	// same buckets Series uses: the time a rage bar or an energy bar was full
+	// and everything poured into it was poured away.
+	AtMaxMS int64 `json:"at_max_ms"`
+	// Wasted is the power the client says was gained past the cap, summed over
+	// this track's energize lines.
+	Wasted int64 `json:"wasted"`
 }
 
 type resourceKey struct {
@@ -484,13 +494,23 @@ func (a *Accumulator) addResources(e event.Event) {
 	// empty string and show up in resourceRows as a real actor.
 	if e.Kind == event.Energize && e.Dest.GUID != "" && e.Dest.GUID != units.NoGUID {
 		k := resourceKey{guid: e.Dest.GUID, powerType: e.PowerType.V}
-		a.resource(k, e.Time).Gained += e.Amount.V
+		tr := a.resource(k, e.Time)
+		tr.Gained += e.Amount.V
+		// What the client says was gained past the cap. Negative would be a
+		// malformed line, and a negative waste is not a thing to report.
+		tr.Wasted += max(e.OverEnergize.V, 0)
+		if e.MaxPower.V > tr.Max {
+			tr.Max = e.MaxPower.V
+		}
 	}
 	if !e.Adv.OK || e.Adv.InfoGUID == "" || e.Adv.InfoGUID == units.NoGUID {
 		return
 	}
 	k := resourceKey{guid: e.Adv.InfoGUID, powerType: e.Adv.PowerType}
 	tr := a.resource(k, e.Time)
+	if e.Adv.MaxPower > tr.Max {
+		tr.Max = e.Adv.MaxPower
+	}
 	if tr.haveLast {
 		if drop := tr.lastVal - e.Adv.CurrentPower; drop > 0 {
 			tr.Spent += drop
@@ -671,6 +691,7 @@ func (a *Accumulator) resourceRows() []ResourceTrack {
 		if row.Series == nil {
 			row.Series = []int64{}
 		}
+		row.AtMaxMS = atMaxMS(row.Series, row.Max, a.opt.Bucket)
 		out = append(out, row)
 	}
 	sort.Slice(out, func(i, j int) bool {
@@ -680,4 +701,22 @@ func (a *Accumulator) resourceRows() []ResourceTrack {
 		return out[i].PowerType < out[j].PowerType
 	})
 	return out
+}
+
+// atMaxMS is the time the series sat at the cap: one bucket per second whose
+// reading is the maximum. Read off the finished series rather than counted as
+// the events arrive, so it means what the drawn line means -- a second with no
+// reading carries the last one forward, and a bar that was full through a quiet
+// stretch was full. A track the log never gave a maximum for has no cap to be at.
+func atMaxMS(series []int64, maximum int64, bucket time.Duration) int64 {
+	if maximum <= 0 {
+		return 0
+	}
+	var total int64
+	for _, value := range series {
+		if value >= maximum {
+			total += bucket.Milliseconds()
+		}
+	}
+	return total
 }
