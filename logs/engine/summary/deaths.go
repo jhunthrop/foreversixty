@@ -113,8 +113,14 @@ type auraTrack struct {
 
 // CastRow is one caster's use of one spell.
 type CastRow struct {
-	GUID        string           `json:"guid"`
-	Name        string           `json:"name"`
+	GUID string `json:"guid"`
+	Name string `json:"name"`
+	// OwnerGUID is the caster's owner when the caster is a pet or a guardian,
+	// and the caster's own GUID otherwise, so the Casts tab can keep a pet's
+	// rows under the player who owns it the way the damage tables already keep
+	// a pet's damage. The row itself stays the pet's, name and all: the web
+	// prints "via Ashfang" and needs the two apart.
+	OwnerGUID   string           `json:"owner_guid"`
 	SpellID     int64            `json:"spell_id"`
 	SpellName   string           `json:"spell_name"`
 	Started     int64            `json:"started"`
@@ -463,6 +469,7 @@ func (a *Accumulator) cast(e event.Event) *castRow {
 	if !ok {
 		row = &castRow{}
 		row.GUID, row.Name = e.Source.GUID, a.name(e.Source.GUID)
+		row.OwnerGUID = a.owner(e.Source.GUID)
 		row.SpellID, row.SpellName = e.Spell.ID, e.Spell.Name
 		a.casts[k] = row
 	}

@@ -44,7 +44,10 @@ describe('summaryEvents', () => {
   });
 
   it('describes a cast and an aura', () => {
-    expect(events.find((event) => event.kind === 'cast')?.text).toBe('Morrowlyn cast Frostbolt');
+    // Ashfang's Bite at 1.5s is now the fight's earliest cast, ahead of Morrowlyn's
+    // Frostbolt: a pet's cast row sorts into the timeline by its own timestamp same
+    // as any other caster's.
+    expect(events.find((event) => event.kind === 'cast')?.text).toBe('Ashfang cast Bite');
     // The first aura of the fight is one the engine seeds from Baelgrim's COMBATANT_INFO
     // snapshot, which carries spell ids and no names, so it is filed under its id. The
     // Fortitude the priest casts four seconds in is still in the list behind it.

@@ -365,6 +365,7 @@
     {
       "guid": "Player-4184-000000A3",
       "name": "Morrowlyn-Nightslayer",
+      "owner_guid": "Player-4184-000000A3",
       "spell_id": 116,
       "spell_name": "Frostbolt",
       "started": 0,

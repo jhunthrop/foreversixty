@@ -167,7 +167,7 @@
       "name": "Thalgrit-Nightslayer",
       "total": 5300,
       "effective": 5200,
-      "active_ms": 0,
+      "active_ms": 1500,
       "abilities": [
         {
           "spell_id": 334660,
@@ -418,6 +418,7 @@
     {
       "guid": "Creature-0-2085-2284-7855-169754-0000AA0002",
       "name": "Warden Kelthas",
+      "owner_guid": "Creature-0-2085-2284-7855-169754-0000AA0002",
       "spell_id": 334653,
       "spell_name": "Anima Surge",
       "started": 1,
@@ -427,8 +428,21 @@
       "sequence": []
     },
     {
+      "guid": "Pet-0-2085-2284-7855-165189-01000000B1",
+      "name": "Ashfang",
+      "owner_guid": "Player-4184-000000A4",
+      "spell_id": 17253,
+      "spell_name": "Bite",
+      "started": 0,
+      "succeeded": 1,
+      "failed": 0,
+      "cast_time_ms": 0,
+      "sequence": [1500]
+    },
+    {
       "guid": "Player-4184-000000A1",
       "name": "Baelgrim-Nightslayer",
+      "owner_guid": "Player-4184-000000A1",
       "spell_id": 355,
       "spell_name": "Taunt",
       "started": 0,
@@ -440,6 +454,7 @@
     {
       "guid": "Player-4184-000000A3",
       "name": "Morrowlyn-Nightslayer",
+      "owner_guid": "Player-4184-000000A3",
       "spell_id": 116,
       "spell_name": "Frostbolt",
       "started": 0,
@@ -461,6 +476,18 @@
       "spent": 0,
       "zero_ms": 24800,
       "max": 0,
+      "at_max_ms": 0,
+      "wasted": 0
+    },
+    {
+      "guid": "Pet-0-2085-2284-7855-165189-01000000B1",
+      "name": "Ashfang",
+      "power_type": 2,
+      "series": [0, 95],
+      "gained": 0,
+      "spent": 0,
+      "zero_ms": 0,
+      "max": 100,
       "at_max_ms": 0,
       "wasted": 0
     },

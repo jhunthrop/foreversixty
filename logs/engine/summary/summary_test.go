@@ -1028,3 +1028,47 @@ func TestADeathRecapListsAbsorbMisses(t *testing.T) {
 		t.Fatalf("recap = %+v, want the absorbed miss as a 0 hit with 3922 absorbed at 2000ms", s.Deaths[0].Last)
 	}
 }
+
+// A statue's casts and a hunter's pet's casts belong on their owner's page: the damage
+// tables already fold them there, and a Casts tab that does not is the one place a pet's
+// work disappears when a reader picks the player who owns it.
+func TestCastRowsNameTheCastersOwner(t *testing.T) {
+	o, reg := opts(t)
+	a := New(o)
+	a.Start(at(0))
+	events := []event.Event{
+		{Time: at(0), Kind: event.Summon, Name: "SPELL_SUMMON",
+			Source: event.Unit{GUID: hunter, Name: "Thalgrit-Nightslayer", Flags: 0x512},
+			Dest:   event.Unit{GUID: pet, Name: "Ashfang", Flags: 0x1114}},
+		cast(1, hunter, boss, 34026, "Kill Command"),
+		cast(2, pet, boss, 17253, "Bite"),
+	}
+	for _, e := range events {
+		reg.Observe(e)
+		a.Add(e)
+	}
+	s := a.Snapshot(fight.Fight{Index: 1, Kind: fight.Encounter, Start: at(0), End: at(3),
+		Players: []string{hunter}}, "test")
+
+	row := func(guid string, spellID int64) CastRow {
+		t.Helper()
+		for _, r := range s.Casts {
+			if r.GUID == guid && r.SpellID == spellID {
+				return r
+			}
+		}
+		t.Fatalf("no cast row for %s / %d in %+v", guid, spellID, s.Casts)
+		return CastRow{}
+	}
+	if got := row(pet, 17253).OwnerGUID; got != hunter {
+		t.Errorf("the pet's row owner = %q, want the hunter %q", got, hunter)
+	}
+	if got := row(hunter, 34026).OwnerGUID; got != hunter {
+		t.Errorf("the hunter's own row owner = %q, want their own guid %q", got, hunter)
+	}
+	// The pet keeps its own row and its own name: "via Ashfang" is the web's job, and it
+	// needs the two apart.
+	if got := row(pet, 17253).Name; got != "Ashfang" {
+		t.Errorf("the pet's row name = %q, want Ashfang", got)
+	}
+}
