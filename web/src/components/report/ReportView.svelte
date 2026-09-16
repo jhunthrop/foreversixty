@@ -1570,6 +1570,7 @@
           window={windowIsWhole ? null : cutWindow}
           rightIndex={state.compareWith}
           metric={state.compareMetric}
+          vs={state.compareVs}
           onPatch={patch}
         />
       {/if}

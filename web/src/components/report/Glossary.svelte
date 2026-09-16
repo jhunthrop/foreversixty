@@ -209,6 +209,11 @@
       meaning:
         'An enemy ability that hit someone and the boss’s mechanics table does not list. Nobody has judged it avoidable or not, so the page names it rather than hiding it.',
     },
+    {
+      term: 'Difference (Compare)',
+      meaning:
+        'This fight’s figure less the compared one’s: a plus means this fight did more. Expanding a row gives the same three columns ability by ability, and an ability only one side used shows a dash on the other. Threat has no ability split, because the engine keeps it per player.',
+    },
   ];
 
   let open = $state(false);
