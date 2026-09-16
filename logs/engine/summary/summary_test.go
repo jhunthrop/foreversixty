@@ -20,6 +20,7 @@ const (
 	hunter = "Player-4184-000000A4"
 	pet    = "Pet-0-2085-2284-7855-165189-01000000B1"
 	boss   = "Creature-0-2085-2284-7855-169753-0000AA0001"
+	bossB  = "Creature-0-2085-2284-7855-169754-0000AA0002"
 	totem  = "Creature-0-2085-2284-7855-170343-0000AA0002"
 )
 
@@ -55,6 +56,16 @@ func heal(sec float64, src, dst string, spellID int64, spellName string, amount,
 		Spell:    event.Spell{ID: spellID, Name: spellName, School: 0x2},
 		Amount:   event.OptInt{V: amount, OK: true},
 		Overheal: event.OptInt{V: overheal, OK: true},
+	}
+}
+
+// cast builds a cast-success line, in the same flags dmg uses: players
+// 0x512, enemies 0xa48.
+func cast(sec float64, src, dst string, spellID int64, spellName string) event.Event {
+	return event.Event{
+		Time: at(sec), Kind: event.CastSuccess, Name: "SPELL_CAST_SUCCESS",
+		Source: event.Unit{GUID: src, Flags: 0x512}, Dest: event.Unit{GUID: dst, Flags: 0xa48},
+		Spell: event.Spell{ID: spellID, Name: spellName},
 	}
 }
 

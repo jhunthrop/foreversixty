@@ -1,7 +1,13 @@
 // logs/engine/summary/threat.go
 package summary
 
-import "github.com/jhunthrop/foreversixty/logs/engine/event"
+import (
+	"sort"
+	"time"
+
+	"github.com/jhunthrop/foreversixty/logs/engine/event"
+	"github.com/jhunthrop/foreversixty/logs/engine/units"
+)
 
 // ThreatModel turns damage and healing into threat. It is an interface
 // because the vanilla model is per class, per stance, and per ability, and
@@ -74,4 +80,81 @@ type ThreatRow struct {
 	Threat       float64 `json:"threat"`
 	ModelVersion string  `json:"model_version"`
 	Complete     bool    `json:"complete"`
+}
+
+// ThreatPair is one player's threat on one enemy for the fight.
+type ThreatPair struct {
+	GUID       string  `json:"guid"`
+	Name       string  `json:"name"`
+	TargetGUID string  `json:"target_guid"`
+	TargetName string  `json:"target_name"`
+	Threat     float64 `json:"threat"`
+}
+
+// creditThreat books threat from one player against one enemy. The caller
+// is responsible for knowing enemy is hostile; creditThreat itself trusts
+// it, the same way the damage and heal cases already trust the event's own
+// flags rather than a registry lookup (see engage below).
+func (a *Accumulator) creditThreat(player, enemy string, threat float64) {
+	if threat == 0 || enemy == "" {
+		return
+	}
+	by := a.threatBy[player]
+	if by == nil {
+		by = map[string]float64{}
+		a.threatBy[player] = by
+	}
+	by[enemy] += threat
+}
+
+// engage marks a hostile unit as in the fight now. flags is the reaction
+// the current event carries for guid, not a registry lookup: the registry's
+// flags for a GUID are whatever the most recent event touching it said,
+// which mid-stream can still be catching up to what a later event will
+// reveal (Snapshot's doc comment promises a live-tail caller correct
+// output at any point, so this must not depend on how much of the fight
+// the registry has seen yet). The event in hand is already authoritative
+// for its own units.
+func (a *Accumulator) engage(guid string, flags uint32, at time.Time) {
+	if guid == "" || !units.Hostile(flags) {
+		return
+	}
+	a.engaged[guid] = at
+}
+
+// spreadThreat books healing threat over every hostile unit engaged within the window.
+func (a *Accumulator) spreadThreat(player string, threat float64, at time.Time) {
+	if threat == 0 {
+		return
+	}
+	var live []string
+	for guid, last := range a.engaged {
+		if at.Sub(last) <= a.opt.EngagedWindow {
+			live = append(live, guid)
+		}
+	}
+	if len(live) == 0 {
+		return
+	}
+	each := threat / float64(len(live))
+	for _, guid := range live {
+		a.creditThreat(player, guid, each)
+	}
+}
+
+// threatPairs renders the per-target table, largest first.
+func (a *Accumulator) threatPairs() []ThreatPair {
+	out := []ThreatPair{}
+	for player, by := range a.threatBy {
+		for enemy, threat := range by {
+			out = append(out, ThreatPair{GUID: player, Name: a.name(player), TargetGUID: enemy, TargetName: a.name(enemy), Threat: threat})
+		}
+	}
+	sort.Slice(out, func(i, j int) bool {
+		if out[i].Threat != out[j].Threat {
+			return out[i].Threat > out[j].Threat
+		}
+		return out[i].GUID+out[i].TargetGUID < out[j].GUID+out[j].TargetGUID
+	})
+	return out
 }

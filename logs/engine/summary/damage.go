@@ -159,7 +159,13 @@ func (a *Accumulator) addDamageAndHealing(e event.Event) {
 			done := a.table(a.damageDone, src)
 			a.fold(done, e, amount, effective, e.Dest.GUID, a.via(e))
 			a.markActive(src, e.Time)
-			a.threat[src] += a.opt.Threat.Damage(e)
+			th := a.opt.Threat.Damage(e)
+			a.threat[src] += th
+			if units.Hostile(e.Dest.Flags) {
+				a.creditThreat(src, e.Dest.GUID, th)
+			}
+			a.engage(e.Source.GUID, e.Source.Flags, e.Time)
+			a.engage(e.Dest.GUID, e.Dest.Flags, e.Time)
 		}
 		taken := a.table(a.damageTaken, e.Dest.GUID)
 		a.fold(taken, e, amount, effective, src, "")
@@ -179,7 +185,9 @@ func (a *Accumulator) addDamageAndHealing(e event.Event) {
 		a.fold(taken, e, amount, effective, src, "")
 		taken.overheal += e.Overheal.V
 		a.markActive(src, e.Time)
-		a.threat[src] += a.opt.Threat.Healing(e)
+		healThreat := a.opt.Threat.Healing(e)
+		a.threat[src] += healThreat
+		a.spreadThreat(src, healThreat, e.Time)
 
 	case event.Missed:
 		src := a.owner(e.Source.GUID)

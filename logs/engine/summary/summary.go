@@ -46,6 +46,9 @@ type Options struct {
 	SpecNames map[int64]string
 	// Mechanics is the curated table for the fight's encounter; nil when there is none.
 	Mechanics *mechanics.Table
+	// EngagedWindow is how long after dealing or taking damage a hostile unit
+	// still counts as engaged, for spreading healing threat. Default ten seconds.
+	EngagedWindow time.Duration
 }
 
 // DefaultOptions returns the values the session uses. Registry must still
@@ -58,6 +61,7 @@ func DefaultOptions() Options {
 		DeathHealWindow: 40,
 		DeathAuraWindow: 10 * time.Second,
 		Threat:          BaseThreat{},
+		EngagedWindow:   10 * time.Second,
 	}
 }
 
@@ -81,6 +85,9 @@ func (o Options) withDefaults() Options {
 	if o.Threat == nil {
 		o.Threat = d.Threat
 	}
+	if o.EngagedWindow <= 0 {
+		o.EngagedWindow = d.EngagedWindow
+	}
 	return o
 }
 
@@ -95,15 +102,17 @@ type Summary struct {
 	Healing      []Actor `json:"healing"`
 	HealingTaken []Actor `json:"healing_taken"`
 
-	Deaths     []Death         `json:"deaths"`
-	Auras      []AuraTrack     `json:"auras"`
-	Casts      []CastRow       `json:"casts"`
-	Interrupts []ExchangeRow   `json:"interrupts"`
-	Dispels    []ExchangeRow   `json:"dispels"`
-	Resources  []ResourceTrack `json:"resources"`
-	Threat     []ThreatRow     `json:"threat"`
-	Combatants []CombatantRow  `json:"combatants"`
-	Roster     []RosterRow     `json:"roster"`
+	Deaths         []Death         `json:"deaths"`
+	Auras          []AuraTrack     `json:"auras"`
+	Casts          []CastRow       `json:"casts"`
+	Interrupts     []ExchangeRow   `json:"interrupts"`
+	Dispels        []ExchangeRow   `json:"dispels"`
+	Resources      []ResourceTrack `json:"resources"`
+	Threat         []ThreatRow     `json:"threat"`
+	ThreatByTarget []ThreatPair    `json:"threat_by_target"`
+	Taunts         []Taunt         `json:"taunts"`
+	Combatants     []CombatantRow  `json:"combatants"`
+	Roster         []RosterRow     `json:"roster"`
 
 	Mechanics MechanicsBlock `json:"mechanics"`
 }
@@ -133,6 +142,12 @@ type Accumulator struct {
 	exchanges  map[exchangeKey]*ExchangeRow
 	resources  map[resourceKey]*resourceTrack
 	threat     map[string]float64
+	// threatBy is per-target threat: player guid -> enemy guid -> threat.
+	threatBy map[string]map[string]float64
+	// engaged is the last instant each hostile unit dealt or took damage,
+	// for spreading healing threat over whatever it is in combat with.
+	engaged    map[string]time.Time
+	taunts     []Taunt
 	combatants map[string]*event.Combatant
 	// mechanicHits is spell id -> player guid -> the hit tally, folded from
 	// the Damage case for every spell the fight's mechanics table lists.
@@ -157,6 +172,8 @@ func New(o Options) *Accumulator {
 		exchanges:    map[exchangeKey]*ExchangeRow{},
 		resources:    map[resourceKey]*resourceTrack{},
 		threat:       map[string]float64{},
+		threatBy:     map[string]map[string]float64{},
+		engaged:      map[string]time.Time{},
 		combatants:   map[string]*event.Combatant{},
 		mechanicHits: map[int64]map[string]*MechanicHit{},
 	}
@@ -219,6 +236,7 @@ func (a *Accumulator) Add(e event.Event) {
 	}
 	a.addDamageAndHealing(e)
 	a.addCastsAndExchanges(e)
+	a.noteTaunt(e)
 	a.addAuras(e)
 	a.addResources(e)
 	a.addDeaths(e)
@@ -271,21 +289,26 @@ func (a *Accumulator) Snapshot(f fight.Fight, engineVersion string) Summary {
 		dur = 0
 	}
 	s := Summary{
-		EngineVersion: engineVersion,
-		FightIndex:    f.Index,
-		DurationMS:    dur.Milliseconds(),
-		DamageDone:    a.actors(a.damageDone),
-		DamageTaken:   a.actors(a.damageTaken),
-		Healing:       a.actors(a.healingDone),
-		HealingTaken:  a.actors(a.healingTaken),
-		Deaths:        a.deathRows(),
-		Auras:         a.auraRows(),
-		Casts:         a.castRows(),
-		Interrupts:    a.exchangeRows("interrupt"),
-		Dispels:       a.exchangeRows("dispel"),
-		Resources:     a.resourceRows(),
-		Threat:        a.threatRows(),
-		Combatants:    a.combatantRows(),
+		EngineVersion:  engineVersion,
+		FightIndex:     f.Index,
+		DurationMS:     dur.Milliseconds(),
+		DamageDone:     a.actors(a.damageDone),
+		DamageTaken:    a.actors(a.damageTaken),
+		Healing:        a.actors(a.healingDone),
+		HealingTaken:   a.actors(a.healingTaken),
+		Deaths:         a.deathRows(),
+		Auras:          a.auraRows(),
+		Casts:          a.castRows(),
+		Interrupts:     a.exchangeRows("interrupt"),
+		Dispels:        a.exchangeRows("dispel"),
+		Resources:      a.resourceRows(),
+		Threat:         a.threatRows(),
+		ThreatByTarget: a.threatPairs(),
+		Taunts:         copySlice(a.taunts),
+		Combatants:     a.combatantRows(),
+	}
+	if s.Taunts == nil {
+		s.Taunts = []Taunt{}
 	}
 	s.Mechanics = a.mechanicsBlock(s.Deaths)
 	s.Roster = a.rosterRows(f, s)
