@@ -88,6 +88,9 @@ test('the timeline marks the taunt on the taunter’s lane and names it on hover
   await expect(mark).toBeVisible();
   await mark.hover();
   await expect(page.getByTestId('timeline-picked')).toContainText('Taunt');
+  // The boss lane mounts on the taunt alone: Warden Kelthas casts nothing in the fixture,
+  // so without this guard the taunt had no boss lane to land on.
+  await expect(page.getByTestId('lane-boss').getByTestId('taunt-mark').first()).toBeVisible();
 });
 
 test('the whole night names the pull each taunt came from', async ({ page }) => {
