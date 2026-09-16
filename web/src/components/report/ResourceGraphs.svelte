@@ -29,6 +29,12 @@
 
   /** The reading under the pointer, per line: "at 40.6s · 1,188", so the picture has a number. */
   let readouts = $state<Record<string, string>>({});
+  /** A mouse leaving the line takes its readout with it; a tap's readout stays for reading. */
+  function clearReadout(event: PointerEvent, key: string): void {
+    if (event.pointerType !== 'mouse') return;
+    const { [key]: _gone, ...rest } = readouts;
+    readouts = rest;
+  }
   function readAt(event: PointerEvent, key: string, series: number[]): void {
     const box = (event.currentTarget as HTMLElement).getBoundingClientRect();
     if (box.width === 0 || series.length === 0) return;
@@ -122,6 +128,7 @@
             class="block touch-none"
             onpointermove={(event) => readAt(event, `${track.guid}-${track.power_type}`, track.series)}
             onpointerdown={(event) => readAt(event, `${track.guid}-${track.power_type}`, track.series)}
+            onpointerleave={(event) => clearReadout(event, `${track.guid}-${track.power_type}`)}
           >
             <svg class="h-[40px] w-full" viewBox="0 0 100 26" preserveAspectRatio="none" aria-hidden="true">
               <line

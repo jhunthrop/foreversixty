@@ -77,6 +77,12 @@
   let hovered = $state('');
   /** Which lane the readout is about, so a phone shows it under that lane, in reach of the thumb. */
   let hoveredLane = $state('');
+  /** A mouse leaving the lane takes its readout with it; a tap's readout stays for reading. */
+  function clearReadout(event: PointerEvent): void {
+    if (event.pointerType !== 'mouse') return;
+    hovered = '';
+    hoveredLane = '';
+  }
   function readAt(event: PointerEvent): void {
     const lane = (event.target as HTMLElement).closest<HTMLElement>('[data-lane]');
     if (lane === null) return;
@@ -186,6 +192,7 @@
             data-lane={row.name}
             onpointermove={readAt}
             onpointerdown={readAt}
+            onpointerleave={clearReadout}
           >
             {#each shownPulls as pull, i (pull.start_ms)}
               {#if i % 2 === 1}
