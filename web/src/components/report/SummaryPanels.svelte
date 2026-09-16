@@ -226,8 +226,10 @@
             ><span class="block h-full" style={`width: ${row.share}%; background: ${schoolToken(row.school)}`}
             ></span></span
           >
-          <span class="tabular text-right font-mono">{formatAmount(row.total)}</span>
-          <span class="text-muted tabular text-right font-mono text-[12px]"
+          <span class="tabular text-right font-mono whitespace-nowrap"
+            >{formatAmount(row.total)}<span class="label font-body ml-1 md:hidden">amount</span></span
+          >
+          <span class="text-muted tabular text-right font-mono text-[12px] whitespace-nowrap"
             >{formatPerSecond(row.total, durationMs)}<span class="label font-body ml-1 md:hidden"
               >per sec</span
             ></span
