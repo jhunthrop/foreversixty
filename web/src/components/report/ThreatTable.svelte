@@ -91,6 +91,10 @@
     guid: string;
     name: string;
     threat: number;
+    /** The threat built inside the window; undefined when the whole fight is on screen. */
+    built?: number;
+    /** True when threat and built came from the pair's own series rather than a ratio. */
+    measured?: boolean;
   }
 
   /** One enemy, by name, and the players who built threat on it. */
@@ -108,14 +112,17 @@
   function csvLines(): string[][] {
     const share = (line: ThreatLine): string[] =>
       ranked ? [(total === 0 ? 0 : (line.threat / total) * 100).toFixed(1)] : [];
+    const amount = showBuilt ? 'Standing' : 'Threat';
     return [
       [
-        ...(picked === undefined ? ['Unit', 'Threat'] : ['Player', `Threat on ${picked.name}`]),
+        ...(picked === undefined ? ['Unit', amount] : ['Player', `${amount} on ${picked.name}`]),
+        ...(showBuilt ? ['Built in the window'] : []),
         ...(ranked ? ['Share %'] : []),
       ],
       ...lines.map((line) => [
         splitUnitName(line.name).name,
         String(Math.round(line.threat)),
+        ...(showBuilt ? [String(Math.round(line.built ?? 0))] : []),
         ...(shares(line) ? share(line) : ranked ? [''] : []),
       ]),
     ];
@@ -179,6 +186,8 @@
         guid: pair.guid,
         name: splitUnitName(pair.name).name,
         threat: (have?.threat ?? 0) + pair.threat,
+        built: pair.built === undefined ? have?.built : (have?.built ?? 0) + pair.built,
+        measured: pair.measured === true || have?.measured === true,
       });
     }
     const out: TargetGroup[] = [...byName.entries()].map(([name, group]) => {
@@ -209,13 +218,43 @@
       : (everyoneGroups.find((group) => group.name === picked.name)?.total ?? picked.total),
   );
   /**
-   * Under a brush the figures are scaled totals, not a standing, so the rows keep the
-   * roster's order (by name) rather than an order that reads as a ranking.
+   * Per player, standing and built across every enemy: the totals table's own measured
+   * figures. An enemy's own threat row has no pair and keeps the summary's scaled total,
+   * which is what it has always been and what the share already leaves out.
+   */
+  const measuredTotals = $derived.by(() => {
+    // eslint-disable-next-line svelte/prefer-svelte-reactivity
+    const out = new Map<string, { threat: number; built: number }>();
+    for (const pair of pairs) {
+      if (pair.measured !== true) continue;
+      const found = out.get(pair.guid) ?? { threat: 0, built: 0 };
+      out.set(pair.guid, {
+        threat: found.threat + (pair.standing ?? pair.threat),
+        built: found.built + (pair.built ?? 0),
+      });
+    }
+    return out;
+  });
+  /** The totals table's lines, with a player's measured standing standing in for the scaled total. */
+  const totalLines = $derived<ThreatLine[]>(
+    ordered.map((row) => {
+      const found = measuredTotals.get(row.guid);
+      return found === undefined
+        ? { guid: row.guid, name: row.name, threat: row.threat }
+        : { guid: row.guid, name: row.name, threat: found.threat, built: found.built, measured: true };
+    }),
+  );
+  /** Every line on screen is measured: the window's figures came from the series, not a ratio. */
+  const allMeasured = $derived(lines.length > 0 && lines.every((line) => line.measured === true));
+  /**
+   * Under a brush with nothing measured the figures are scaled totals, not a standing, so
+   * the rows keep the roster's order (by name) rather than an order that reads as a
+   * ranking. Measured lines are a ranking and keep it.
    */
   const lines = $derived<ThreatLine[]>(
-    approximate
-      ? [...(picked?.lines ?? ordered)].sort((a, b) => a.name.localeCompare(b.name))
-      : (picked?.lines ?? ordered),
+    approximate && !(picked?.lines ?? totalLines).every((line) => line.measured === true)
+      ? [...(picked?.lines ?? totalLines)].sort((a, b) => a.name.localeCompare(b.name))
+      : [...(picked?.lines ?? totalLines)].sort((a, b) => b.threat - a.threat),
   );
   /** Six units named "General Kaal" are six rows; each after the first says which copy it is. */
   const copyOf = $derived.by(() => {
@@ -247,8 +286,6 @@
   const shares = (line: ThreatLine): boolean => picked !== undefined || isPlayer(line.guid);
   const incomplete = $derived(ordered.some((row) => !row.complete));
   const modelVersion = $derived(ordered[0]?.model_version ?? '');
-  const mark = $derived(approximateMark(approximate));
-  const title = $derived(approximateTitle(approximate));
   /**
    * The empty taunt line names what emptied it: the picked enemy, the source scope, or
    * the brush. A whole pull with no taunt says so and blames no window.
@@ -259,15 +296,23 @@
     } in this ${approximate ? 'window' : scopeNoun}.`,
   );
   /**
-   * Under a brush the figures are the fight's totals scaled, and a scaled total is not a
-   * standing. Bars and shares draw a ranking, so they are held back until threat inside a
-   * window is measured; the greyed totals and the taunt list stay.
+   * Bars and shares draw a ranking. A measured window is a ranking — standing is exactly
+   * the number that decides aggro — so they are drawn. A window with nothing measured
+   * (a report parsed before engine 0.4.0) still holds them back.
    */
-  const ranked = $derived(!approximate);
+  const ranked = $derived(!approximate || allMeasured);
+  /** The tilde is for a scaled figure only; a measured one never carries it. */
+  const scaled = $derived(approximate && !allMeasured);
+  const mark = $derived(approximateMark(scaled));
+  const title = $derived(approximateTitle(scaled));
+  /** The second figure exists only under a window: the whole fight has one number. */
+  const showBuilt = $derived(allMeasured && approximate);
   const rowGrid = $derived(
-    ranked
-      ? 'md:grid-cols-[minmax(120px,1.2fr)_minmax(0,3fr)_96px_64px]'
-      : 'md:grid-cols-[minmax(120px,1.2fr)_96px]',
+    showBuilt
+      ? 'md:grid-cols-[minmax(120px,1.2fr)_minmax(0,3fr)_96px_96px_64px]'
+      : ranked
+        ? 'md:grid-cols-[minmax(120px,1.2fr)_minmax(0,3fr)_96px_64px]'
+        : 'md:grid-cols-[minmax(120px,1.2fr)_96px]',
   );
   // With an enemy picked, its taunts alone: the list answers "who took this one off me".
   const orderedTaunts = $derived(
@@ -390,10 +435,16 @@
       {#if ranked}<span title="Threat generated, against the highest row">Threat</span>{/if}
       <span
         class="text-right"
-        title={picked === undefined
-          ? 'Threat accumulated from damage and healing over this window'
-          : `Threat this player built on ${picked.name} over this window`}>Total</span
+        title={showBuilt
+          ? 'Cumulative threat at the window’s end: the number that decides who the enemy attacks'
+          : picked === undefined
+            ? 'Threat accumulated from damage and healing over this window'
+            : `Threat this player built on ${picked.name} over this window`}
+        >{showBuilt ? 'Standing' : 'Total'}</span
       >
+      {#if showBuilt}
+        <span class="text-right" title="Threat this player built inside the window">Built</span>
+      {/if}
       {#if ranked}
         <span
           class="text-right"
@@ -431,12 +482,24 @@
           <span
             class={`tabular text-right font-mono ${ranked ? '' : 'text-muted'}`}
             {title}
-            aria-label={approximateAriaLabel(approximate, formatAmount(Math.round(row.threat)))}
+            data-testid="threat-standing"
+            aria-label={approximateAriaLabel(scaled, formatAmount(Math.round(row.threat)))}
           >
             {mark}{formatAmount(Math.round(row.threat))}<span class="label font-body ml-1.5 md:hidden"
-              >threat</span
+              >{showBuilt ? 'standing' : 'threat'}</span
             >
           </span>
+          {#if showBuilt}
+            <span
+              class="text-muted tabular text-right font-mono"
+              title="Threat this player built inside the window"
+              data-testid="threat-built"
+            >
+              {formatAmount(Math.round(row.built ?? 0))}<span class="label font-body ml-1.5 md:hidden"
+                >built</span
+              >
+            </span>
+          {/if}
           {#if ranked && shares(row)}
             <span
               class="text-muted tabular col-span-2 text-right font-mono text-[13px] md:col-span-1"
@@ -462,13 +525,18 @@
       </p>
     {/if}
     <CopyCsv lines={csvLines} />
-    {#if approximate}
+    {#if showBuilt}
+      <p class="text-muted text-[12px]" data-testid="threat-window-note">
+        Standing is the threat this player had built by the window’s end, which is the number that decides who
+        the enemy attacks; Built is what they made inside the window. Both are measured from the fight’s own
+        seconds, so neither is marked. The table sorts by Standing.
+      </p>
+    {:else if scaled}
       <p class="text-muted text-[12px]" data-testid="threat-approximate-note">
-        Threat inside a window is not measured yet. Each figure is marked {mark} because it is the whole fight's
-        threat scaled to this window's share of that player's total, not the window's own events, so it is not a
-        standing and is not drawn as one: no bars, no shares, no order to read. A player who did little damage inside
-        the window reads near zero here even while they held the enemy, and a taunt's own window reads the same
-        way. The whole pull is exact.
+        This report was parsed before threat was kept second by second, so threat inside a window is not
+        measured. Each figure is marked {mark} because it is the whole fight’s threat scaled to this window’s share
+        of that player’s total, not the window’s own events, so it is not a standing and is not drawn as one: no
+        bars, no shares, no order to read. Parse the report again for the measured figures. The whole pull is exact.
       </p>
     {/if}
   {/if}

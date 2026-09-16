@@ -168,3 +168,12 @@ test('every interactive control clears 44px', async ({ page }) => {
     expect(measured, `${query} measured no controls at all`).toBeGreaterThanOrEqual(3);
   }
 });
+
+test('a windowed threat row says which figure is standing and which is built', async ({ page }) => {
+  await page.goto(
+    `${REPORT}&tab=threat&start=3000&end=14000&target=Creature-0-2085-2284-7855-169754-0000AA0002`,
+  );
+  const row = page.getByTestId('threat-on-target').locator('li').first();
+  await expect(row.getByTestId('threat-standing')).toContainText('standing');
+  await expect(row.getByTestId('threat-built')).toContainText('built');
+});

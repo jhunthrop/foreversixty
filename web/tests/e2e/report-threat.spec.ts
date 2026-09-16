@@ -134,17 +134,38 @@ test('the link alone carries the night’s named enemy into Damage Done', async 
   await expect(page.locator('#filter-target').locator('option:checked')).toHaveText('Warden Kelthas');
 });
 
-// Inside a brush the figures are the fight's totals scaled, which is not a standing: the
-// table holds its bars and shares back and says why, and the taunt keeps the pull's clock
-// so the same taunt reads the same time from either side of the link.
-test('a brushed window shows greyed totals with no ranking, and the taunt keeps its time', async ({
-  page,
-}) => {
-  await page.goto(`${FIGHT}&start=3000&end=14000`);
-  await expect(page.getByTestId('threat-approximate-note')).toContainText('not measured yet');
-  await expect(page.getByTestId('threat-share')).toHaveCount(0);
-  await expect(page.getByTestId('threat-table').locator('ul[data-ranked="false"]')).toHaveCount(1);
+// Inside a brush the table is measured from the pairs' own per-second series: standing at
+// the window's end is what decides aggro, built inside it is what the window did. Both
+// are measured, so there is no tilde, no "no order to read" note, and the ranking stands.
+test('a brushed window reads standing and built from the series, measured', async ({ page }) => {
+  await page.goto(`${FIGHT}&start=3000&end=14000&target=${KELTHAS}`);
+  await expect(page.getByTestId('threat-approximate-note')).toHaveCount(0);
+  await expect(page.getByTestId('threat-window-note')).toContainText('Standing');
+  const rows = page.getByTestId('threat-on-target').locator('li');
+  await expect(rows.first()).toContainText('Baelgrim');
+  await expect(rows.first().getByTestId('threat-standing')).not.toContainText('~');
+  await expect(rows.first().getByTestId('threat-built')).toBeVisible();
+  await expect(page.getByTestId('threat-share')).not.toHaveCount(0);
+  await expect(page.getByTestId('threat-table').locator('ul[data-ranked="true"]')).toHaveCount(1);
+  // The taunt keeps the pull's clock, so the same taunt reads the same time from either side.
   await expect(page.getByTestId('threat-taunts')).toContainText('8.5s');
+});
+
+test('the whole fight is unchanged: standing at the end is the total', async ({ page }) => {
+  await page.goto(`${FIGHT}&target=${KELTHAS}`);
+  const rows = page.getByTestId('threat-on-target').locator('li');
+  await expect(rows.first().getByTestId('threat-share')).toContainText('49.2%');
+  // No second figure when there is no window: the whole fight has only one number.
+  await expect(page.getByTestId('threat-built')).toHaveCount(0);
+});
+
+// "Around it" on a taunt sets the window; the table it lands on is measured, not prorated.
+test('a taunt’s window lands on a measured table', async ({ page }) => {
+  await page.goto(`${FIGHT}&target=${KELTHAS}`);
+  await page.getByTestId('threat-taunts').getByTestId('taunt-window').first().click();
+  await expect(page).toHaveURL(/start=3000&end=14000/);
+  await expect(page.getByTestId('threat-window-note')).toContainText('Standing');
+  await expect(page.getByTestId('threat-approximate-note')).toHaveCount(0);
 });
 
 test('a source scope shares the totals table against everyone too', async ({ page }) => {
@@ -197,4 +218,11 @@ test('the night has no threat chart, and says why', async ({ page }) => {
   await page.goto('/reports/fixture2abcd?fight=all&tab=threat');
   await expect(page.getByTestId('threat-chart')).toHaveCount(0);
   await expect(page.getByTestId('threat-chart-note')).toContainText('no clock');
+});
+
+test('the glossary explains standing and built', async ({ page }) => {
+  await page.goto(FIGHT);
+  await page.getByTestId('glossary').locator('summary').click();
+  await expect(page.getByTestId('glossary')).toContainText('Standing threat');
+  await expect(page.getByTestId('glossary')).toContainText('Threat built in a window');
 });

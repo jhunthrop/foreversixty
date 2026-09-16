@@ -165,6 +165,16 @@
         'The threat one player has built on one enemy, from the damage they did to it and their share of the raid’s healing while it was engaged. Once every class’s modifiers are in, whoever has the most is who it attacks; until then a tank without their stance and taunt multipliers can read below the damage dealers, so the order is not yet the aggro order.',
     },
     {
+      term: 'Standing threat',
+      meaning:
+        'On the Threat tab under a window: the threat a player had built on that enemy by the window’s end, counted from the pull’s start. It is the number that decides who the enemy attacks, so the table sorts by it. Measured from the fight’s own seconds, never scaled.',
+    },
+    {
+      term: 'Threat built in a window',
+      meaning:
+        'The threat a player made inside the window itself, the seconds of the window added up. A player can be top of the standing and bottom of the built: they came in with a lead.',
+    },
+    {
       term: 'Taunt',
       meaning:
         'A cast that forces an enemy onto the caster; the Threat tab lists every one, and the timeline marks them.',
