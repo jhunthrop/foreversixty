@@ -20,6 +20,7 @@
   let {
     summary,
     everyone,
+    approximate = false,
     durationMs,
     players,
     onTab,
@@ -30,6 +31,13 @@
     players: ReadonlySet<string>;
     /** The unscoped window: a source scope narrows the rows, never the total they share. */
     everyone?: Summary;
+    /**
+     * A brushed window: the by-ability split is the whole fight's, prorated by the window's
+     * share, not measured from the window's events the way the Damage Taken tab measures
+     * it, and a panel that reads 10,016 of a spell the window never saw is not a panel to
+     * trust bare.
+     */
+    approximate?: boolean;
     onTab: (tab: 'damage-done' | 'healing' | 'damage-taken' | 'deaths') => void;
     /** Narrows the page to one player, the way the roster's names do. */
     onSelectPlayer?: (guid: string) => void;
@@ -234,8 +242,14 @@
             ><span class="block h-full" style={`width: ${row.share}%; background: ${schoolToken(row.school)}`}
             ></span></span
           >
-          <span class="tabular text-right font-mono whitespace-nowrap"
-            >{formatAmount(row.total)}<span class="label font-body ml-1 md:hidden">amount</span></span
+          <span
+            class="tabular text-right font-mono whitespace-nowrap"
+            title={approximate
+              ? 'Prorated inside the window from the whole fight’s split; the Damage Taken tab measures it'
+              : undefined}
+            >{approximate ? '~' : ''}{formatAmount(row.total)}<span class="label font-body ml-1 md:hidden"
+              >amount</span
+            ></span
           >
           <span class="text-muted tabular text-right font-mono text-[12px] whitespace-nowrap"
             >{formatPerSecond(row.total, durationMs)}<span class="label font-body ml-1 md:hidden"
@@ -248,6 +262,12 @@
     <p class="text-muted text-[11px]" data-testid="panel-share-note">
       Share is of everything every player took in this window, whatever the source scope shows.
     </p>
+    {#if approximate}
+      <p class="text-muted text-[11px]" data-testid="panel-taken-approximate">
+        Inside a window this split is the whole fight’s, prorated by the window’s share (~); the Damage Taken
+        tab measures the window’s own split from the fight’s events.
+      </p>
+    {/if}
   </section>
 
   <section class={panel} data-testid="panel-deaths">

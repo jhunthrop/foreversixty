@@ -252,7 +252,7 @@
   {/if}
 
   {#if onTab}
-    <SummaryPanels {summary} {everyone} {durationMs} {players} {onTab} {onSelectPlayer} />
+    <SummaryPanels {summary} {everyone} {durationMs} {players} {onTab} {onSelectPlayer} {approximate} />
   {/if}
 
   {#if summary.combatants.length > 0}
