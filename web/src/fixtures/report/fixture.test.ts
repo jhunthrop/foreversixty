@@ -3,6 +3,9 @@
 // TypeScript mirrors and asserts the two invariants the report island relies on: the field
 // names match the Go `json:` tags, and no array field is ever null (the engine normalises
 // every empty slice to `[]`, and the island's rendering would break on null).
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import fight1 from './fights/1/summary.json';
 import fight3 from './fights/3/summary.json';
@@ -47,10 +50,22 @@ function everyArray(summary: Summary): unknown[][] {
   ];
 }
 
+/** `const Version = "x.y.z"` from logs/engine/session/session.go. */
+function engineVersion(): string {
+  const here = path.dirname(fileURLToPath(import.meta.url));
+  const source = readFileSync(path.resolve(here, '../../../../logs/engine/session/session.go'), 'utf8');
+  const found = /const Version = "([^"]+)"/.exec(source);
+  if (found === null) throw new Error('the engine source declares no Version');
+  return found[1];
+}
+
 describe('the checked-in report fixture', () => {
   it('is the report the engine wrote, with four fights numbered from one', () => {
     expect(report.report_id).toBe('fixture2abcd');
-    expect(report.engine_version).toBe('0.3.1');
+    // The version the engine's own source declares: the fixture is regenerated on every
+    // engine bump (`npm run make:report-fixture`), and a pin here would only say which
+    // bump last remembered to update it.
+    expect(report.engine_version).toBe(engineVersion());
     expect(report.fights.map((f) => f.index)).toEqual([1, 2, 3, 4]);
     expect(report.health.layout).toBe('retail-v16');
     expect(report.health.advanced_logging).toBe(true);
