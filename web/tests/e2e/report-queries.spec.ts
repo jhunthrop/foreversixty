@@ -9,7 +9,9 @@ import { serveDuckdbRuntime } from './support/duckdb-runtime';
 
 const REPORT = '/reports/fixture2abcd';
 const QUERIES = `${REPORT}?fight=3&view=queries`;
-const ORIGIN = 'http://localhost:4321';
+// The preview's own address, which E2E_PORT moves (see playwright.config.ts): a run on a
+// second port must still recognise its own bytes as first-party.
+const ORIGIN = `http://localhost:${process.env.E2E_PORT ?? '4321'}`;
 // The report island calls the rankings API for its percentiles (Task 12), which is a
 // first-party origin the contract names. Everything else -- a CDN, a font host, DuckDB's
 // own extension repository -- is what "no third-party bytes, on any page, ever" forbids.
