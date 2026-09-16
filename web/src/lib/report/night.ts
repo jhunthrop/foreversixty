@@ -401,6 +401,11 @@ export function nightSummary(
           gained: found.gained + track.gained,
           spent: found.spent + track.spent,
           zero_ms: found.zero_ms + track.zero_ms,
+          // The cap is a property of the bar, not of the night: the largest any pull
+          // reported. The time at it and the waste are counts, and counts add up.
+          max: maxOptional(found.max, track.max),
+          at_max_ms: sumOptional(found.at_max_ms, track.at_max_ms),
+          wasted: sumOptional(found.wasted, track.wasted),
         });
       }
     }
@@ -662,6 +667,11 @@ function mergeMechanicHits(
 function sumOptional(a: number | undefined, b: number | undefined): number | undefined {
   if (a === undefined && b === undefined) return undefined;
   return (a ?? 0) + (b ?? 0);
+}
+
+function maxOptional(a: number | undefined, b: number | undefined): number | undefined {
+  if (a === undefined && b === undefined) return undefined;
+  return Math.max(a ?? 0, b ?? 0);
 }
 
 function mergeCounts(

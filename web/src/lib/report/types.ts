@@ -202,6 +202,12 @@ export interface ResourceTrack {
   gained: number;
   spent: number;
   zero_ms: number;
+  /** The largest maximum the log reported for this power: the cap the graph draws. Absent before engine 0.4.0. */
+  max?: number;
+  /** Whole seconds the reading was at the cap, times 1000. Recomputed by the window scope from the sliced series. */
+  at_max_ms?: number;
+  /** Power gained past the cap. The whole fight's figure under any window: the summary cannot cut it down. */
+  wasted?: number;
 }
 
 export type MechanicKind = 'avoidable' | 'unavoidable' | 'interrupt' | 'dispel';

@@ -11,6 +11,7 @@ import {
   scopeActor,
   scopeAuraTrack,
   scopeCastRow,
+  scopeResource,
   scopeSummary,
   scopeThreatPairs,
   sliceSeries,
@@ -399,5 +400,40 @@ describe('threat inside a window', () => {
     // No series, no damage and no healing in the window: the old ratio scales it to zero.
     expect(legacy.threat_by_target?.[0].measured).toBeUndefined();
     expect(legacy.threat_by_target?.[0].threat).toBe(0);
+  });
+});
+
+describe('a resource track in a window', () => {
+  const track = {
+    guid: 'P1',
+    name: 'P1',
+    power_type: 1,
+    series: [0, 100, 100, 40, 100],
+    gained: 300,
+    spent: 60,
+    zero_ms: 1000,
+    max: 100,
+    at_max_ms: 3000,
+    wasted: 25,
+  };
+
+  it('recomputes the time at the cap from the window’s own buckets', () => {
+    const scoped = scopeResource(track, { startMs: 1000, endMs: 4000 });
+    expect(scoped.series).toEqual([100, 100, 40]);
+    expect(scoped.at_max_ms).toBe(2000);
+  });
+
+  it('leaves the cap and the waste alone: one is a property of the bar, the other whole-fight', () => {
+    const scoped = scopeResource(track, { startMs: 1000, endMs: 4000 });
+    expect(scoped.max).toBe(100);
+    expect(scoped.wasted).toBe(25);
+    expect(scoped.zero_ms).toBe(1000);
+  });
+
+  it('leaves a track written before the engine kept a cap untouched', () => {
+    const { max: _max, at_max_ms: _atMax, wasted: _wasted, ...old } = track;
+    const scoped = scopeResource(old, { startMs: 1000, endMs: 4000 });
+    expect(scoped.max).toBeUndefined();
+    expect(scoped.at_max_ms).toBeUndefined();
   });
 });

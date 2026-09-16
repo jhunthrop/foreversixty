@@ -188,8 +188,22 @@ export function scopeCastRow(row: CastRow, window: TimeWindow): CastRow | null {
   };
 }
 
+/**
+ * The series is exact under a window -- this only slices it -- so the time at the cap is
+ * recomputed from the window's own buckets and stays a measured figure. `wasted`,
+ * `gained`, `spent` and `zero_ms` are not sliceable from the summary and come through
+ * untouched, which is the whole fight's figure and is marked as one where it is printed.
+ */
 export function scopeResource(track: ResourceTrack, window: TimeWindow): ResourceTrack {
-  return { ...track, series: sliceSeries(track.series, window) };
+  const series = sliceSeries(track.series, window);
+  if (track.max === undefined) return { ...track, series };
+  return { ...track, series, at_max_ms: atMaxMs(series, track.max) };
+}
+
+/** The buckets whose reading is at the cap, as milliseconds: the engine's own rule. */
+function atMaxMs(series: number[], max: number): number {
+  if (max <= 0) return 0;
+  return series.filter((value) => value >= max).length * BUCKET_MS;
 }
 
 function scopeRoster(roster: RosterRow[], scoped: Summary, window: TimeWindow): RosterRow[] {
