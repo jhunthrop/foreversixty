@@ -13,7 +13,7 @@
 // shield's spell, since that is the only place an absorbed amount is counted.
 import { EVENTS_TABLE, FIGHT_MS, createDuckDbEngine, createQueryLayer, type QueryLayer } from './query';
 import type { Ability, Mitigated, Pair } from './types';
-import type { TimeWindow } from './window';
+import { BUCKET_MS, type TimeWindow } from './window';
 
 export type ActorKind = 'damage-done' | 'damage-taken' | 'healing';
 
@@ -597,4 +597,55 @@ export async function measureExact(
       ...(kind === 'healing' ? { overheal: num(row.overheal) } : {}),
     })),
   };
+}
+
+/**
+ * One actor's one ability, bucketed by whole second: the line the main chart draws behind
+ * its own series when a reader puts an ability "on the chart". It counts what the tables
+ * count -- rowsSql is the same projection the totals and the splits are read from -- so
+ * the line's peak and the row's Max are the same number.
+ */
+export function abilitySeriesSql(
+  kind: ActorKind,
+  guid: string,
+  spellId: number,
+  via: string,
+  window: TimeWindow,
+  options: MeasureOptions = {},
+): string {
+  return `WITH rows AS (${rowsSql(kind, window, { ...options, ability: spellId })})
+SELECT floor(fight_ms / ${BUCKET_MS}) AS second, sum(effective) AS amount
+FROM rows
+WHERE actor = ${quote(guid)} AND via = ${quote(via)}
+GROUP BY 1
+ORDER BY 1`;
+}
+
+/**
+ * Measures one ability's effective amount per second over the whole fight. The whole
+ * fight, not the window: the chart slices what it draws, so a brush costs nothing, where
+ * re-measuring would put a parquet read behind every pointer move.
+ */
+export async function measureAbilitySeries(
+  layer: QueryLayer,
+  eventsUrl: string,
+  kind: ActorKind,
+  guid: string,
+  spellId: number,
+  via: string,
+  durationMs: number,
+  options: MeasureOptions = {},
+): Promise<number[]> {
+  const endMs = Math.max(durationMs, BUCKET_MS);
+  const result = await layer.run(
+    eventsUrl,
+    abilitySeriesSql(kind, guid, spellId, via, { startMs: 0, endMs }, options),
+    ALL_ROWS,
+  );
+  const series = new Array<number>(Math.ceil(endMs / BUCKET_MS)).fill(0);
+  for (const row of rowsOf(result)) {
+    const second = num(row.second);
+    if (second >= 0 && second < series.length) series[second] = num(row.amount);
+  }
+  return series;
 }

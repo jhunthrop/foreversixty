@@ -1,10 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import {
+  abilitySeriesSql,
   castCountsSql,
   castKey,
   exactMissesSql,
   exactSplitSql,
   exactTableSql,
+  measureAbilitySeries,
   measureCasts,
   rowsSql,
   eventStreamSql,
@@ -197,5 +199,52 @@ describe('eventStreamSql', () => {
   it('reads aura refreshes alongside the hits, heals and misses', () => {
     const sql = eventStreamSql({ startMs: 0, endMs: 10_000 });
     expect(sql).toContain("kind IN ('heal', 'missed', 'aura_refresh')");
+  });
+});
+
+describe('abilitySeriesSql', () => {
+  it('buckets one actor’s one ability by whole second', () => {
+    const sql = abilitySeriesSql('damage-done', 'Player-1', 1464, '', { startMs: 0, endMs: 60_000 });
+    expect(sql).toContain('AND spell_id = 1464');
+    expect(sql).toContain("WHERE actor = 'Player-1' AND via = ''");
+    expect(sql).toContain('floor(fight_ms / 1000) AS second');
+    expect(sql).toContain('sum(effective) AS amount');
+    expect(sql).toContain('GROUP BY 1');
+  });
+
+  it('keeps a pet’s ability apart from its owner’s own of the same spell', () => {
+    expect(
+      abilitySeriesSql('healing', 'Player-2', 115175, 'Jade Serpent Statue', {
+        startMs: 0,
+        endMs: 1000,
+      }),
+    ).toContain("AND via = 'Jade Serpent Statue'");
+  });
+
+  it('reads damage taken from the victim’s side', () => {
+    expect(abilitySeriesSql('damage-taken', 'Player-4', 334660, '', { startMs: 0, endMs: 1000 })).toContain(
+      'SELECT dest_guid AS actor',
+    );
+  });
+});
+
+describe('measureAbilitySeries', () => {
+  it('fills a bucket per second of the fight, zero where the ability did nothing', async () => {
+    const layer = {
+      run: async () => ({
+        columns: ['second', 'amount'],
+        rows: [
+          [0n, 2100n],
+          [3n, 2300n],
+        ] as unknown[][],
+      }),
+    } as unknown as QueryLayer;
+    const series = await measureAbilitySeries(layer, 'x.parquet', 'damage-done', 'P1', 1464, '', 5000);
+    expect(series).toEqual([2100, 0, 0, 2300, 0]);
+  });
+
+  it('never returns an empty line for a fight with a length', async () => {
+    const layer = { run: async () => ({ columns: [], rows: [] }) } as unknown as QueryLayer;
+    expect(await measureAbilitySeries(layer, 'x.parquet', 'healing', 'P1', 1, '', 2000)).toEqual([0, 0]);
   });
 });
