@@ -164,10 +164,16 @@ more; `python -m pipeline forever-talents` still regenerates the frozen
 `forever-prebeta` build, which exists only so links shared against it keep
 opening.
 
-## Re-emitting the Era build: two gaps this task found and fixed
+Regenerate the diff file with:
+
+```bash
+uv run python -m pipeline wowhead-diff --build 1.60.1.69893
+```
+
+## Re-emitting the Era build: four gaps this task found and fixed
 
 Regenerating `builds/1.15.9.69722` for Task 6 (the first time this worktree
-had ever fetched Era's raw tables, since they are git-ignored) surfaced three
+had ever fetched Era's raw tables, since they are git-ignored) surfaced four
 pre-existing gaps unrelated to talent trees, all now fixed:
 
 - `pipeline/normalize/item_curves.py`'s `load_item_curves` read only
@@ -180,9 +186,9 @@ pre-existing gaps unrelated to talent trees, all now fixed:
 - `pipeline/spelltext.py`'s `_base_points` preferred `EffectBasePointsF`
   whenever the column merely *existed*, which is true for both builds'
   `SpellEffect` tables — but only build 1.60.1.69893 ever populates it; Era's
-  copy is uniformly `"0"` padding, so every Era description silently rendered
-  a tenth of its real number (e.g. "Reduces the cost of your Heroic Strike
-  ability by 1 rage point" became "by 0.1 rage point"). Confirmed against
+  copy is uniformly `"0"` padding, so every Era description's numbers were
+  silently zeroed (e.g. "Reduces the cost of your Heroic Strike ability by 1
+  rage point" became "by 0 rage point"). Confirmed against
   every row of both builds' `SpellEffect` tables: Era's `EffectBasePoints`
   (int) is always populated and its `EffectBasePointsF` always `"0"`; build
   1.60.1.69893's `EffectBasePoints` is always empty and `EffectBasePointsF`
@@ -193,6 +199,15 @@ pre-existing gaps unrelated to talent trees, all now fixed:
   55) with 2,057 armour that was in the originally-committed Era build but
   had never been re-checked against the cap since it was added. Raised to
   2,100.
+- `pipeline/forever.py`'s manifest digests for `forever-prebeta` were
+  computed before `_repoint_to_placeholder` rewrote some of the very files
+  being digested, so the manifest recorded stale digests for those files.
+  The digest loop is now a shared `_file_digests` helper, called once after
+  the repoint step.
+
+These four are unrelated to each other and to the reader switch; each is
+documented in its own right in the fix commit that made it and in
+`.superpowers/sdd/2026-09-17-forever-trees/task-6-report.md`'s "Deviation 2".
 
 `data/curated/races.json` and `combos.json` now name the beta client's two
 real Skyborne rows (`high-order-skyborne` id 95, `windshaper-skyborne` id
