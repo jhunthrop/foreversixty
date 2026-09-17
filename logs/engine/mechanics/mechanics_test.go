@@ -81,3 +81,48 @@ func TestParseRejectsADuplicateSpellID(t *testing.T) {
 		t.Fatal("a spell id listed twice must be refused: Lookup would only ever find the first")
 	}
 }
+
+func TestParseAcceptsPhasesAndRefusesAMalformedTrigger(t *testing.T) {
+	good := []byte(`{"encounter_id": 9001, "name": "Warden Kelthas", "mechanics": [],
+		"phases": [
+			{"name": "Phase 2", "starts": {"spell_id": 334653, "on": "cast_start"}},
+			{"name": "Phase 3", "starts": {"health_pct": 30}}]}`)
+	table, err := Parse(good)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(table.Phases) != 2 {
+		t.Fatalf("phases = %+v", table.Phases)
+	}
+	if table.Phases[0].Starts.On != OnCastStart || table.Phases[1].Starts.HealthPct != 30 {
+		t.Fatalf("phases = %+v", table.Phases)
+	}
+
+	refused := map[string][]byte{
+		"an unnamed phase":      []byte(`{"encounter_id":1,"name":"X","phases":[{"starts":{"health_pct":50}}]}`),
+		"an unknown on":         []byte(`{"encounter_id":1,"name":"X","phases":[{"name":"P2","starts":{"spell_id":5,"on":"cast_finished"}}]}`),
+		"a spell with no on":    []byte(`{"encounter_id":1,"name":"X","phases":[{"name":"P2","starts":{"spell_id":5}}]}`),
+		"both forms at once":    []byte(`{"encounter_id":1,"name":"X","phases":[{"name":"P2","starts":{"spell_id":5,"on":"cast_start","health_pct":50}}]}`),
+		"an on with no spell":   []byte(`{"encounter_id":1,"name":"X","phases":[{"name":"P2","starts":{"on":"cast_start"}}]}`),
+		"a health out of range": []byte(`{"encounter_id":1,"name":"X","phases":[{"name":"P2","starts":{"health_pct":140}}]}`),
+		"no trigger at all":     []byte(`{"encounter_id":1,"name":"X","phases":[{"name":"P2","starts":{}}]}`),
+	}
+	for why, data := range refused {
+		if _, err := Parse(data); err == nil {
+			t.Errorf("%s must be refused", why)
+		}
+	}
+}
+
+func TestTheFixtureEncounterNamesItsSecondPhase(t *testing.T) {
+	table, ok := Load(9001)
+	if !ok {
+		t.Fatal("the fixture's encounter must have a table")
+	}
+	if len(table.Phases) != 1 {
+		t.Fatalf("phases = %+v", table.Phases)
+	}
+	if table.Phases[0].Name != "Phase 2" || table.Phases[0].Starts.SpellID != 334653 {
+		t.Fatalf("phase = %+v", table.Phases[0])
+	}
+}

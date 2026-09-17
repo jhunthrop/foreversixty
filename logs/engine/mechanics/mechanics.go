@@ -55,11 +55,48 @@ func (m Mechanic) EffectIDs() []int64 {
 	return []int64{m.SpellID}
 }
 
-// Table is one encounter's mechanics.
+// The trigger kinds a phase can start on. cast_start is here alongside the
+// spec's three because a boss's phase-opening channel begins the phase when
+// the cast begins -- and a channel a raid interrupts never lands at all, so
+// keying its phase on the success would be keying it on the raid failing.
+const (
+	OnCastStart   = "cast_start"
+	OnCastSuccess = "cast_success"
+	OnAuraApplied = "aura_applied"
+	OnAuraRemoved = "aura_removed"
+)
+
+var phaseOn = map[string]bool{
+	OnCastStart: true, OnCastSuccess: true, OnAuraApplied: true, OnAuraRemoved: true,
+}
+
+// PhaseStart is what begins a phase: an enemy's cast or aura change, or the
+// boss's own health passing a percentage. Exactly one of the two forms is set.
+type PhaseStart struct {
+	// SpellID with On: the spell whose cast or aura change starts the phase,
+	// on any enemy.
+	SpellID int64  `json:"spell_id,omitempty"`
+	On      string `json:"on,omitempty"`
+	// HealthPct starts the phase the first time the boss's own health is at or
+	// below this percentage, read from the advanced block on its lines.
+	HealthPct float64 `json:"health_pct,omitempty"`
+}
+
+// Phase is one named stretch of an encounter, and what begins it. Phase 1
+// starts at the pull and needs no entry.
+type Phase struct {
+	Name   string     `json:"name"`
+	Starts PhaseStart `json:"starts"`
+}
+
+// Table is one encounter's mechanics, and the phases it is fought in.
 type Table struct {
 	EncounterID int64      `json:"encounter_id"`
 	Name        string     `json:"name"`
 	Mechanics   []Mechanic `json:"mechanics"`
+	// Phases are the stretches the encounter is fought in, in the order they
+	// happen. Empty for an encounter nobody has curated phases for.
+	Phases []Phase `json:"phases,omitempty"`
 }
 
 //go:embed tables/*.json
@@ -120,6 +157,29 @@ func Parse(data []byte) (Table, error) {
 			return Table{}, fmt.Errorf("mechanics[%d]: spell_id %d is listed twice", i, m.SpellID)
 		}
 		seen[m.SpellID] = true
+	}
+	for i, p := range t.Phases {
+		if p.Name == "" {
+			return Table{}, fmt.Errorf("phases[%d]: name is required", i)
+		}
+		switch {
+		case p.Starts.SpellID > 0:
+			if !phaseOn[p.Starts.On] {
+				return Table{}, fmt.Errorf(
+					"phases[%d]: on %q is not cast_start, cast_success, aura_applied or aura_removed", i, p.Starts.On)
+			}
+			if p.Starts.HealthPct != 0 {
+				return Table{}, fmt.Errorf(
+					"phases[%d]: a phase starts on a spell or on a health percentage, not both", i)
+			}
+		case p.Starts.HealthPct > 0 && p.Starts.HealthPct <= 100:
+			if p.Starts.On != "" {
+				return Table{}, fmt.Errorf("phases[%d]: on belongs to a spell trigger; a health trigger takes none", i)
+			}
+		default:
+			return Table{}, fmt.Errorf(
+				"phases[%d]: starts must name a spell_id with on, or a health_pct above 0 and at most 100", i)
+		}
 	}
 	return t, nil
 }
