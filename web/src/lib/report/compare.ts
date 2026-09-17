@@ -66,6 +66,13 @@ export interface AbilityDiff {
   key: string;
   name: string;
   via?: string;
+  /**
+   * The spell id, set only when another row in the same list shares this row's name, so
+   * the table can tell them apart the way the Healing and Damage tables already do: a
+   * Mistweaver's two Essence Fonts (#191840 and #344006) read as one ability twice
+   * otherwise, with no id, no dash and no pet to separate them.
+   */
+  id?: number;
   /** Null when that side never used the ability, which the table prints as a dash. */
   a: number | null;
   b: number | null;
@@ -91,6 +98,7 @@ function abilityAmounts(summary: Summary | null, guid: string, metric: CompareMe
  */
 function diffOf(a: Map<string, Ability>, b: Map<string, Ability>): AbilityDiff[] {
   const out: AbilityDiff[] = [];
+  const spellIds = new Map<string, Set<number>>();
   for (const key of new Set([...a.keys(), ...b.keys()])) {
     const left = a.get(key);
     const right = b.get(key);
@@ -98,8 +106,22 @@ function diffOf(a: Map<string, Ability>, b: Map<string, Ability>): AbilityDiff[]
     if (named === undefined) continue;
     const x = left === undefined ? null : left.effective;
     const y = right === undefined ? null : right.effective;
-    out.push({ key, name: named.name, via: named.via, a: x, b: y, delta: (x ?? 0) - (y ?? 0) });
+    // Distinct ids, not rows: a pet's Melee and its owner's are one spell twice, and the
+    // `via` beside the name already tells those apart.
+    const ids = spellIds.get(named.name) ?? new Set<number>();
+    ids.add(named.spell_id);
+    spellIds.set(named.name, ids);
+    out.push({
+      key,
+      name: named.name,
+      via: named.via,
+      id: named.spell_id,
+      a: x,
+      b: y,
+      delta: (x ?? 0) - (y ?? 0),
+    });
   }
+  for (const row of out) if ((spellIds.get(row.name)?.size ?? 0) < 2) delete row.id;
   return out.sort((p, q) => Math.abs(q.delta) - Math.abs(p.delta) || p.name.localeCompare(q.name));
 }
 

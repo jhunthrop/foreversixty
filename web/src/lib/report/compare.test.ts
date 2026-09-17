@@ -83,6 +83,32 @@ describe('abilityDiff', () => {
     ]);
   });
 
+  it('names the id when two rows share a name, and only then', () => {
+    // A Mistweaver's two Essence Fonts: one name, two spell ids, nothing else to tell
+    // them apart -- the Healing tab shows the id here and Compare now does too.
+    const fonts = summary(
+      [],
+      [
+        actor('P2', [
+          ability(191840, 'Essence Font', 12_995),
+          ability(344006, 'Essence Font', 2853),
+          ability(115175, 'Soothing Mist', 900),
+        ]),
+      ],
+    );
+    expect(abilityDiff(fonts, summary([], []), 'P2', 'hps').map((row) => [row.name, row.id])).toEqual([
+      ['Essence Font', 191840],
+      ['Essence Font', 344006],
+      ['Soothing Mist', undefined],
+    ]);
+  });
+
+  it('leaves a pet’s copy of one spell without an id: the pet’s name already tells them apart', () => {
+    const owner = summary([actor('P1', [ability(1, 'Melee', 100), ability(1, 'Melee', 60, 'Ashfang')])]);
+    const rows = abilityDiff(owner, summary([actor('P1', [])]), 'P1', 'dps');
+    expect(rows.map((row) => row.id)).toEqual([undefined, undefined]);
+  });
+
   it('has nothing to split for threat, which has no per-ability table', () => {
     expect(abilityDiff(left, right, 'P1', 'threat')).toEqual([]);
   });

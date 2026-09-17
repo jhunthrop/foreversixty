@@ -324,9 +324,10 @@
   /** An ability diff as lines, in the same shape as every other table's CSV. */
   function abilityCsv(rows: AbilityDiff[], aHead: string, bHead: string): string[][] {
     return [
-      ['Ability', 'Via', aHead, bHead, 'Difference'],
+      ['Ability', 'Spell id', 'Via', aHead, bHead, 'Difference'],
       ...rows.map((row) => [
         row.name,
+        row.id === undefined ? '' : String(row.id),
         row.via ?? '',
         row.a === null ? '' : String(row.a),
         row.b === null ? '' : String(row.b),
@@ -375,7 +376,15 @@
             class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-0.5 border-b px-2 py-2 text-[14px] md:grid-cols-[minmax(0,1fr)_96px_96px_96px]"
           >
             <span class="truncate"
-              >{row.name}{#if row.via}<span class="text-muted ml-1 text-[11px]">· {row.via}</span>{/if}</span
+              >{row.name}{#if row.via}<span class="text-muted ml-1 text-[11px]">· {row.via}</span
+                >{/if}{#if row.id !== undefined}<span
+                  class="text-muted ml-1 font-mono text-[11px]"
+                  data-testid="compare-ability-id"
+                  title={row.id === 0
+                    ? 'Two things share this name; this one is the auto-attack swing, which has no spell id'
+                    : `Two spells share this name; this is spell id ${row.id}`}
+                  >{row.id === 0 ? 'swing' : `#${row.id}`}</span
+                >{/if}</span
             >
             <span class="tabular text-right font-mono md:col-start-2"
               >{row.a === null ? '—' : splitMark + formatAmount(row.a)}<span
