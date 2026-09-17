@@ -5,6 +5,7 @@ from pipeline.csvio import read_csv
 from pipeline.normalize.traits import (
     COLUMN_ORIGINS,
     TraitDataError,
+    check_tier_gates,
     grid_cell,
     has_trait_trees,
     read_trait_trees,
@@ -157,3 +158,75 @@ def test_a_non_class_trees_choice_node_with_two_entries_is_ignored():
     ]
     (warrior,) = read_trait_trees(trait_rows(node=nodes, node_entry=entries, node_x_entry=links))
     assert warrior.class_id == 1
+
+
+def test_an_edge_points_from_the_prerequisite_to_the_dependent():
+    (warrior,) = read_trait_trees(trait_rows())
+    links = {
+        t.node_id: (t.prereq_node_id, t.prereq_rank)
+        for tab in warrior.tabs
+        for t in tab.talents
+    }
+    assert links == {
+        900001: (None, None),
+        900002: (None, None),
+        # a vertical link, one row down
+        900003: (900002, 5),
+        900004: (None, None),
+        900005: (None, None),
+        # a horizontal link, same row
+        900012: (900011, 5),
+        900011: (None, None),
+        900013: (None, None),
+        # the reverse leg of the two-way pair is dropped, so 900021 keeps none
+        900021: (None, None),
+        # a vertical link spanning two rows, and an elbow
+        900022: (900021, 2),
+        900023: (900021, 2),
+    }
+
+
+def test_an_edge_that_leaves_its_tab_is_refused():
+    edges = read_csv(TRAITS / "TraitEdge.csv")
+    edges.append(
+        {
+            "ID": "6",
+            "VisualStyle": "1",
+            "LeftTraitNodeID": "900002",
+            "RightTraitNodeID": "900012",
+            "Type": "2",
+        }
+    )
+    with pytest.raises(TraitDataError, match="different tabs"):
+        read_trait_trees(trait_rows(edge=edges))
+
+
+def test_a_second_prerequisite_for_one_talent_is_refused():
+    edges = read_csv(TRAITS / "TraitEdge.csv")
+    edges.append(
+        {
+            "ID": "6",
+            "VisualStyle": "1",
+            "LeftTraitNodeID": "900001",
+            "RightTraitNodeID": "900003",
+            "Type": "2",
+        }
+    )
+    with pytest.raises(TraitDataError, match="900003"):
+        read_trait_trees(trait_rows(edge=edges))
+
+
+def test_the_tier_ladder_is_five_points_per_tier_in_every_tab():
+    check_tier_gates(trait_rows(), [1117])
+
+
+def test_a_tree_that_moves_a_tier_gate_is_refused():
+    conds = [c for c in read_csv(TRAITS / "TraitCond.csv") if c["ID"] != "500013"]
+    with pytest.raises(TraitDataError, match="points gates"):
+        check_tier_gates(trait_rows(cond=conds), [1117])
+
+
+def test_a_point_budget_other_than_fifty_one_is_refused():
+    currency = [{"ID": "3820", "Type": "2", "SourcedMax": "60"}]
+    with pytest.raises(TraitDataError, match="60"):
+        check_tier_gates(trait_rows(currency=currency), [1117])

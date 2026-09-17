@@ -27,7 +27,8 @@ from __future__ import annotations
 
 import logging
 from collections import Counter
-from dataclasses import dataclass
+from collections.abc import Iterable
+from dataclasses import dataclass, replace
 
 from pipeline.normalize.talents import class_id_from_mask
 
@@ -328,6 +329,105 @@ def _drop_stale_twins(
     return kept
 
 
+def check_tier_gates(rows: TraitRows, tree_ids: Iterable[int]) -> None:
+    """Assert the client still gates a tab's rows at 5 points per tier.
+
+    Every `TraitCond` row in build 1.60.1.69893 is `CondType` 0 and says only
+    "this group needs N points spent in this tab's currency"; none of them
+    carries a prerequisite rank. Filtering to the class currency, no pinned
+    node and a non-zero amount leaves exactly eighteen rows per class tree --
+    three tabs times 5/10/15/20/25/30 -- for all nine classes. The planner and
+    the API both hardcode that ladder (`POINTS_PER_TIER`), so a build that
+    changed it has to stop the pipeline rather than quietly disagree.
+    """
+    budgets = {int(c["ID"]): int(c["SourcedMax"]) for c in rows.currency}
+    budget = budgets.get(CLASS_CURRENCY_ID)
+    if budget != CLASS_POINT_BUDGET:
+        raise TraitDataError(
+            f"TraitCurrency {CLASS_CURRENCY_ID} allows {budget} points, "
+            f"not the {CLASS_POINT_BUDGET} the planner spends"
+        )
+    want = sorted(TIER_GATES * len(COLUMN_ORIGINS))
+    for tree_id in sorted(tree_ids):
+        got = sorted(
+            int(c["SpentAmountRequired"])
+            for c in rows.cond
+            if int(c["TraitTreeID"]) == tree_id
+            and int(c["TraitCurrencyID"]) == CLASS_CURRENCY_ID
+            and int(c["TraitNodeID"]) == 0
+            and int(c["SpentAmountRequired"]) > 0
+        )
+        if got != want:
+            raise TraitDataError(
+                f"tree {tree_id}'s points gates are {got}, not {want}: the "
+                "planner's five-points-per-tier rule would not match the client"
+            )
+
+
+def _with_prerequisites(tree: TraitClassTree, edge_rows: list[dict[str, str]]) -> TraitClassTree:
+    """Fill in each talent's one prerequisite from `TraitEdge`.
+
+    Left is the prerequisite and right the dependent, checked against the
+    Wowhead snapshot's own `requires` arrays: 69 of the tree edges match it
+    exactly. Two edges are the reverse leg of a two-way pair (Druid
+    Nature's Splendor/Nature's Majesty, Hunter Bestial Wrath/Intimidation);
+    dropping the leg whose prerequisite sits further down the tab leaves no
+    cycles, at most one prerequisite per talent, and the direction the
+    snapshot records. The required rank is not in the tables at all -- it is
+    the prerequisite's own rank cap in all 69 cases.
+    """
+    by_node = {t.node_id: t for tab in tree.tabs for t in tab.talents}
+    tab_of = {t.node_id: tab.tab_id for tab in tree.tabs for t in tab.talents}
+    links: dict[int, tuple[int, int]] = {}
+    for edge in edge_rows:
+        left, right = int(edge["LeftTraitNodeID"]), int(edge["RightTraitNodeID"])
+        # Edges of other trees, and the two edges into dropped stale nodes.
+        if left not in by_node or right not in by_node:
+            continue
+        if tab_of[left] != tab_of[right]:
+            raise TraitDataError(
+                f"edge {edge['ID']} joins nodes {left} and {right} in different tabs"
+            )
+        prerequisite, dependent = by_node[left], by_node[right]
+        if prerequisite.row > dependent.row:
+            logger.info(
+                "dropping edge %s: node %s is below its dependent %s",
+                edge["ID"],
+                left,
+                right,
+            )
+            continue
+        if right in links:
+            raise TraitDataError(
+                f"node {right} has two prerequisites, {links[right][0]} and {left}; "
+                "the planner's rules carry one"
+            )
+        links[right] = (left, prerequisite.max_rank)
+    return TraitClassTree(
+        class_id=tree.class_id,
+        tree_id=tree.tree_id,
+        tabs=tuple(
+            TraitTab(
+                tab_id=tab.tab_id,
+                name=tab.name,
+                position=tab.position,
+                background=tab.background,
+                talents=tuple(
+                    replace(
+                        talent,
+                        prereq_node_id=links[talent.node_id][0],
+                        prereq_rank=links[talent.node_id][1],
+                    )
+                    if talent.node_id in links
+                    else talent
+                    for talent in tab.talents
+                ),
+            )
+            for tab in tree.tabs
+        ),
+    )
+
+
 def read_trait_trees(rows: TraitRows) -> list[TraitClassTree]:
     """One `TraitClassTree` per class, tabs left to right, sorted by class id."""
     class_of_tree = _class_of_tree(rows)
@@ -389,4 +489,6 @@ def read_trait_trees(rows: TraitRows) -> list[TraitClassTree]:
             for index, tab_row in enumerate(tab_rows)
         )
         trees.append(TraitClassTree(class_id=class_id, tree_id=tree_id, tabs=tabs))
-    return sorted(trees, key=lambda t: t.class_id)
+    check_tier_gates(rows, class_of_tree)
+    linked = [_with_prerequisites(tree, rows.edge) for tree in trees]
+    return sorted(linked, key=lambda t: t.class_id)
