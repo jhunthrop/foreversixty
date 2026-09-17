@@ -422,3 +422,31 @@ test('the full event stream lists aura refreshes under Auras applied', async ({ 
   await page.getByLabel('Auras applied').uncheck();
   await expect(page.getByTestId('event-list')).not.toContainText('refreshed Power Word: Fortitude');
 });
+
+test('the chart bands the fight’s phases and names them at their left edge', async ({ page }) => {
+  await page.goto('/reports/fixture2abcd?fight=3');
+  const bands = page.getByTestId('time-chart').getByTestId('phase-band');
+  await expect(bands).toHaveCount(2);
+  await expect(bands.first()).toHaveText('Phase 1');
+  await expect(bands.nth(1)).toHaveText('Phase 2');
+});
+
+test('a phase is a window preset, so every table reads per phase in one click', async ({ page }) => {
+  await page.goto('/reports/fixture2abcd?fight=3');
+  await page
+    .getByTestId('window-presets')
+    .getByRole('button', { name: /Phase 2 · 14.0s to 1:00/ })
+    .click();
+  await expect(page).toHaveURL(/start=14000&end=60000/);
+});
+
+test('a fight with no phases shows no bands and no phase presets', async ({ page }) => {
+  await page.goto('/reports/fixture2abcd?fight=4');
+  await expect(page.getByTestId('phase-band')).toHaveCount(0);
+  await expect(page.getByTestId('window-presets')).not.toContainText('Phase');
+});
+
+test('the fight list says nothing about a phase on a kill', async ({ page }) => {
+  await page.goto('/reports/fixture2abcd?fight=3');
+  await expect(page.getByTestId('fight-3-outcome')).toHaveText('Kill');
+});

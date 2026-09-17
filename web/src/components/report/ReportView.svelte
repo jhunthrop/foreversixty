@@ -21,7 +21,13 @@
   } from '../../lib/report/load';
   import { defaultFightIndex, resolveFightIndex } from '../../lib/report/fights';
   import { aggregateNight, nightSummary, type Night } from '../../lib/report/night';
-  import { formatDate, formatDuration, outcomeLabel, schoolToken } from '../../lib/report/format';
+  import {
+    formatDate,
+    formatDuration,
+    outcomeLabel,
+    phaseReached,
+    schoolToken,
+  } from '../../lib/report/format';
   import {
     ALL_FIGHTS,
     FLAG_LETTERS,
@@ -462,7 +468,21 @@
   );
   // The death presets follow the source pick: with one player chosen, "20 s before X
   // died" offers that player's deaths, not everyone's.
-  const presets = $derived(scoped === null ? [] : windowPresets(scoped));
+  const presets = $derived(
+    scoped === null ? [] : windowPresets(scoped, base?.duration_ms ?? scoped.duration_ms),
+  );
+  /**
+   * Per fight index, the phase that pull reached. Over the night every pull's summary is
+   * folded, so the whole list can say; on a single pull only the one on screen is loaded,
+   * and the others' rows say nothing rather than guessing.
+   */
+  const phaseOf = $derived.by(() => {
+    // eslint-disable-next-line svelte/prefer-svelte-reactivity
+    const out = new Map<number, string>(night?.phaseReached ?? []);
+    const own = phaseReached(summary?.phases);
+    if (own !== '' && fight !== null) out.set(fight.index, own);
+    return out;
+  });
   /** What the chart draws: the table the tab shows, under the source scope. */
   const chartActors = $derived.by(() => {
     if (scoped === null) return [];
@@ -1267,7 +1287,8 @@
           <span
             class="font-semibold {fight.kill ? 'text-kill' : 'text-wipe'}"
             title={fight.kill ? 'The boss died' : 'The percentage is the boss’s health when the pull ended'}
-            data-testid="report-fight-outcome">{outcomeLabel(fight)}</span
+            data-testid="report-fight-outcome"
+            >{outcomeLabel(fight, fight.kill ? '' : phaseReached(summary?.phases))}</span
           >
         {/if}
         <span class="tabular font-mono">{formatDuration(fight.duration_ms)}</span>
@@ -1312,7 +1333,7 @@
   {/if}
 
   <div class="grid grid-cols-1 gap-[22px] px-[18px] md:grid-cols-[300px_minmax(0,1fr)] md:gap-8 md:px-0">
-    <FightSelector {fights} selected={state.fight} onSelect={(index) => patch({ fight: index })} />
+    <FightSelector {fights} selected={state.fight} onSelect={(index) => patch({ fight: index })} {phaseOf} />
 
     <div class="flex min-w-0 flex-col gap-[22px] md:gap-6">
       <!-- Sticky on phone only: the desktop layout keeps the selector column beside the
@@ -1335,6 +1356,7 @@
         <TimeChart
           series={chartSeries}
           extra={chartExtra}
+          phases={summary.phases ?? []}
           durationMs={summary.duration_ms}
           window={timeWindow}
           deaths={summary.deaths

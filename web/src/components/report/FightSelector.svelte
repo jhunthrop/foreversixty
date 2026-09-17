@@ -13,7 +13,14 @@
     fights,
     selected,
     onSelect,
-  }: { fights: FightEntry[]; selected: number; onSelect: (index: number) => void } = $props();
+    phaseOf = new Map<number, string>(),
+  }: {
+    fights: FightEntry[];
+    selected: number;
+    onSelect: (index: number) => void;
+    /** Per fight index, the phase that pull reached; a wipe's row says which. */
+    phaseOf?: ReadonlyMap<number, string>;
+  } = $props();
 
   let showTrash = $state(false);
 
@@ -98,7 +105,7 @@
                   : 'The percentage is the boss’s health when the pull ended'}
               data-testid={`fight-${fight.index}-outcome`}
             >
-              {outcome(fight)}
+              {outcome(fight, fight.kill ? '' : (phaseOf.get(fight.index) ?? ''))}
             </span>
           </span>
           <span class="text-muted tabular flex w-full items-baseline gap-2 font-mono text-[11px]">

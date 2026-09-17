@@ -124,6 +124,11 @@
       meaning: 'The player’s full health bar at the time, so a hit can be read as a share of it.',
     },
     {
+      term: 'Phase',
+      meaning:
+        'A named stretch of a boss fight, from the curated table for that encounter: the cast, debuff or health percentage that opens it is a person’s judgement, the same way the mechanics table is. Phase 1 is the pull itself. Each phase is a band on the chart and a window preset, so every table can be read per phase, and a wipe’s outcome says which phase it got to. A boss nobody has curated phases for has none, and the page reads exactly as it did before.',
+    },
+    {
       term: 'Kill · Wipe 59% · pull 1 of 2',
       meaning:
         'How a boss pull ended, and which attempt it was when a boss took more than one. The percentage after a wipe is the boss’s health when the pull ended: how far the pull got.',

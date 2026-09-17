@@ -13,6 +13,7 @@
     series,
     extra = [],
     marks = [],
+    phases = [],
     perSecond = true,
     durationMs,
     window: current,
@@ -25,6 +26,8 @@
     extra?: { label: string; series: number[]; token: string }[];
     /** Ticks on the time axis, named on hover: the taunts under a threat chart. */
     marks?: { atMs: number; label: string }[];
+    /** The fight's phases, drawn as bands with their names at their left edge. */
+    phases?: { name: string; start_ms: number; end_ms: number }[];
     /** False when the lines are a running total rather than a rate: the caption and readout drop "per second". */
     perSecond?: boolean;
     durationMs: number;
@@ -99,6 +102,23 @@
       context.lineTo(x, HEIGHT);
       context.stroke();
     }
+
+    phases.forEach((phase, index) => {
+      if (index % 2 === 1) {
+        context.fillStyle = `${gold}0d`;
+        context.fillRect(xOf(phase.start_ms), 0, xOf(phase.end_ms) - xOf(phase.start_ms), HEIGHT);
+      }
+      if (phase.start_ms <= 0) return;
+      const x = Math.round(xOf(phase.start_ms)) + 0.5;
+      context.strokeStyle = gold;
+      context.lineWidth = 1;
+      context.setLineDash([2, 2]);
+      context.beginPath();
+      context.moveTo(x, 0);
+      context.lineTo(x, HEIGHT);
+      context.stroke();
+      context.setLineDash([]);
+    });
 
     for (const line of extra) {
       if (peak <= 0 || line.series.length === 0) continue;
@@ -192,7 +212,7 @@
 
   $effect(() => {
     // Re-reads series, window, deaths and width, so any of them redraws the canvas.
-    void [series, extra, marks, current, deaths, width, peak, hoverMs];
+    void [series, extra, marks, phases, current, deaths, width, peak, hoverMs];
     draw();
   });
 
@@ -306,6 +326,17 @@
             title={`${mark.label} · ${formatDuration(mark.atMs)}`}
             data-testid="chart-mark"
           ></span>
+        {/each}
+      </div>
+    {/if}
+    {#if phases.length > 0}
+      <div class="pointer-events-none absolute inset-y-0 right-0 left-12" aria-hidden="true">
+        {#each phases as phase (phase.name)}
+          <span
+            class="text-muted absolute top-0 font-mono text-[10px] leading-none"
+            style={`left: calc(${durationMs === 0 ? 0 : (phase.start_ms / durationMs) * 100}% + 2px)`}
+            data-testid="phase-band">{phase.name}</span
+          >
         {/each}
       </div>
     {/if}

@@ -194,3 +194,11 @@ test('the on-the-chart control is a 44px target on a phone', async ({ page }) =>
   const box = await control.boundingBox();
   expect(box?.height ?? 0).toBeGreaterThanOrEqual(44);
 });
+
+test('a phase preset is a 44px target on a phone', async ({ page }) => {
+  await page.goto(`${REPORT}`);
+  const chip = page.getByTestId('window-presets').getByRole('button', { name: /Phase 2/ });
+  await expect(chip).toBeVisible();
+  const box = await chip.boundingBox();
+  expect(box?.height ?? 0).toBeGreaterThanOrEqual(44);
+});
