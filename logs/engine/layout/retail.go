@@ -78,14 +78,15 @@ func RetailV16() Layout {
 			"ENVIRONMENTAL_DAMAGE": {Widths: []int{37}},
 		},
 		Combatant: Combatant{
-			Present:        true,
-			Params:         34,
-			SpecIndex:      24,
-			TalentIndex:    25,
-			PvPTalentIndex: 26,
-			BorrowIndex:    27,
-			GearIndex:      28,
-			AuraIndex:      29,
+			Present:            true,
+			Params:             34,
+			SpecIndex:          24,
+			TalentIndex:        25,
+			PvPTalentIndex:     26,
+			BorrowIndex:        27,
+			GearIndex:          28,
+			AuraIndex:          29,
+			TalentsAreSpellIDs: true,
 			StatIndex: map[string]int{
 				"strength": 3, "agility": 4, "stamina": 5, "intellect": 6,
 				"dodge": 7, "parry": 8, "block": 9, "crit": 10, "speed": 13,
@@ -238,6 +239,12 @@ func RetailV22() Layout {
 			BorrowIndex: 0,
 			GearIndex:   28,
 			AuraIndex:   29,
+			// Version 22's talent trees write (nodeID, entryID, rank)
+			// triples at this index, not the flat spell-id tuple
+			// Combatant.Talents is typed to hold, so TalentsAreSpellIDs
+			// stays false and the decoder emits an empty Talents rather
+			// than a flattened mix of the three numbers. See the ledger.
+			TalentsAreSpellIDs: false,
 			// Every stat sits one field later than in v16: v22 writes four
 			// defensive ratings where v16 writes dodge, parry and block.
 			// All four are zero in every sample, so the fourth is counted

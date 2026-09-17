@@ -310,8 +310,14 @@ func TestV22CombatantInfoReadsTheShiftedStats(t *testing.T) {
 	if c.ItemLevel < 200 || c.ItemLevel > 500 {
 		t.Errorf("item level = %d, want a plausible level-80 item level", c.ItemLevel)
 	}
-	if len(c.Talents) == 0 {
-		t.Error("no talents; the talent index is wrong")
+	// Ruling: version 22's talent trees write (nodeID, entryID, rank)
+	// triples, not the flat spell-id tuple Combatant.Talents is typed to
+	// hold, so the decoder emits an empty Talents until named triples
+	// exist rather than a flattened, wrong-but-typed mix of the three; see
+	// docs/ledger/2026-09-16-retail-v22.md. (v16's non-empty Talents is
+	// covered by TestCombatantInfoReadsSpecTalentsGearAndAuras.)
+	if len(c.Talents) != 0 {
+		t.Errorf("talents = %v, want empty for v22", c.Talents)
 	}
 	if c.Borrowed != "" {
 		t.Errorf("borrowed = %q, want empty: v22 writes no borrowed-power field", c.Borrowed)

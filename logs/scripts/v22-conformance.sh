@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 # Sweep a directory of combat logs and fail unless every file parsed
-# cleanly under a verified layout.
+# cleanly under a verified retail-v22 layout specifically: a file that
+# parses clean under some other verified row (retail-v16, say) still fails
+# this check, because the acceptance this script exists for is retail-v22
+# coverage, not "any row works".
 #
 # Usage: logs/scripts/v22-conformance.sh <log-dir> [out.jsonl]
 #
@@ -10,7 +13,10 @@
 set -euo pipefail
 
 dir="${1:?usage: v22-conformance.sh <log-dir> [out.jsonl]}"
-out="${2:-/tmp/v22-conformance.jsonl}"
+# Defaults beside the corpus rather than /tmp, so a run's output survives
+# alongside the input it describes and two runs against different corpora
+# never collide on one shared path.
+out="${2:-${dir%/}/v22-conformance.jsonl}"
 
 cd "$(dirname "$0")/.."
 go build -o /tmp/forever-logs ./cmd/forever-logs

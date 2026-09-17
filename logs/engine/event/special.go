@@ -316,10 +316,17 @@ func (d *Decoder) readCombatant(e Event, ln lexer.Line) Event {
 		Faction:    intOf(p[2]),
 		SpecID:     intOf(p[c.SpecIndex]),
 		Stats:      stats,
-		Talents:    intList(p[c.TalentIndex]),
 		PvPTalents: intList(p[c.PvPTalentIndex]),
 		Gear:       gearList(p[c.GearIndex]),
 		Auras:      auraList(p[c.AuraIndex]),
+	}
+	// TalentsAreSpellIDs is false for a dialect (version 22) whose talent
+	// field is not the flat spell-id tuple Combatant.Talents is typed to
+	// hold: intList would still flatten it into leaf integers, but those
+	// are an interleaved (nodeID, entryID, rank) mix, a wrong-but-typed
+	// value worse than leaving the field empty. See the ledger.
+	if c.TalentsAreSpellIDs {
+		info.Talents = intList(p[c.TalentIndex])
 	}
 	if c.BorrowIndex > 0 {
 		info.Borrowed = p[c.BorrowIndex]

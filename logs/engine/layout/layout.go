@@ -93,6 +93,13 @@ type Combatant struct {
 	// does not write a stat leaves it out of the map rather than pointing
 	// it at a field that means something else.
 	StatIndex map[string]int
+	// TalentsAreSpellIDs is true for a dialect whose talent field is the
+	// flat spell-id tuple event.Combatant.Talents is typed to hold. A
+	// dialect whose talent trees write something else (version 22's
+	// (nodeID, entryID, rank) triples) leaves this false, and the decoder
+	// emits an empty Talents rather than a flattened, wrong-but-typed mix
+	// of the three; see docs/ledger/2026-09-16-retail-v22.md.
+	TalentsAreSpellIDs bool
 }
 
 // Layout is one dialect.
