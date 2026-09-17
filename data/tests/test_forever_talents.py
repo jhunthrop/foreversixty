@@ -10,6 +10,7 @@ from pipeline.normalize.forever_talents import (
 CLASSES = [{"id": 1, "name": "Warrior", "slug": "warrior"}]
 TREE_CLASS = {161: 1, 164: 1}
 TREE_NAMES = {161: "Arms", 164: "Fury"}
+TREE_BACKGROUNDS = {161: "warriorarms", 164: "warriorfury"}
 
 
 def payload(**overrides):
@@ -66,6 +67,7 @@ def normalize(p=None):
         classes=CLASSES,
         tree_class=TREE_CLASS,
         tree_names=TREE_NAMES,
+        tree_backgrounds=TREE_BACKGROUNDS,
     )
 
 
@@ -143,6 +145,19 @@ def test_a_tree_with_no_name_in_our_tables_is_refused():
             classes=CLASSES,
             tree_class=TREE_CLASS,
             tree_names={161: "Arms"},
+            tree_backgrounds=TREE_BACKGROUNDS,
+        )
+
+
+def test_a_tree_with_no_background_in_our_tables_is_refused():
+    with pytest.raises(ForeverTalentError, match="no background in our tables"):
+        normalize_forever_talents(
+            payload(),
+            build="forever-prebeta",
+            classes=CLASSES,
+            tree_class=TREE_CLASS,
+            tree_names=TREE_NAMES,
+            tree_backgrounds={161: "warriorarms"},
         )
 
 

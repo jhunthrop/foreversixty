@@ -67,16 +67,19 @@ def normalize_forever_talents(
     classes: list[dict],
     tree_class: dict[int, int],
     tree_names: dict[int, str],
+    tree_backgrounds: dict[int, str],
 ) -> list[ClassTalents]:
     """Build one `ClassTalents` per class from Wowhead's payload.
 
     `classes` is our own class table (id, name, slug), `tree_class` maps a tree id to a
-    class id and `tree_names` gives each tree its display name. All three come from the
-    build we already normalized, so nothing about the class or tree list is inferred
-    from Wowhead. The tree names matter: Wowhead's `description` glues the class onto
-    the tree with no separator ("WarriorArms", "HunterBeastMastery"), and un-gluing it
-    would have to guess where the words break. The tree ids are identical on both sides,
-    so a lookup is exact where a split would be a guess.
+    class id, `tree_names` gives each tree its display name and `tree_backgrounds` its
+    background art name. All four come from the build we already normalized, so nothing
+    about the class, tree list or art is inferred from Wowhead. The tree names matter:
+    Wowhead's `description` glues the class onto the tree with no separator
+    ("WarriorArms", "HunterBeastMastery"), and un-gluing it would have to guess where the
+    words break. The tree ids are identical on both sides, so a lookup is exact where a
+    split would be a guess. Wowhead's payload carries no background art at all, so that
+    field is always the already-normalized build's own.
     """
     trees_meta = payload.get("trees") or {}
     talents_by_tree = payload.get("talents") or {}
@@ -119,6 +122,9 @@ def normalize_forever_talents(
                         )
                         for n in range(1, count + 1)
                     ],
+                    # Same story as the ranks above: Wowhead has no real spell id for
+                    # the talent itself, only the talent's own id.
+                    spell_id=int(talent["id"]),
                 )
             )
         entries.sort(key=lambda e: (e.tier, e.column))
@@ -126,12 +132,16 @@ def normalize_forever_talents(
         name = tree_names.get(tree_id)
         if not name:
             raise ForeverTalentError(f"tree {tree_id} has no name in our tables")
+        background = tree_backgrounds.get(tree_id)
+        if not background:
+            raise ForeverTalentError(f"tree {tree_id} has no background in our tables")
         by_class.setdefault(class_id, []).append(
             TalentTree(
                 id=tree_id,
                 name=name,
                 position=0,
                 talents=entries,
+                background=background,
             )
         )
 
