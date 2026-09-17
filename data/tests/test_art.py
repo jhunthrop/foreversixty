@@ -8,12 +8,15 @@ from PIL import Image
 
 from pipeline.art import (
     BACKGROUND_SIZE,
+    DEAD_MARGIN_THRESHOLD,
+    MAX_DEAD_MARGIN_FRACTION,
     QUADRANT_SIZES,
     TREATMENT,
     ArtDataError,
     background_webp,
     backgrounds_for_build,
     compose_background,
+    crop_dead_margin,
     process_pixel,
     talent_frame_ids,
 )
@@ -56,6 +59,56 @@ def test_a_missing_quadrant_is_refused():
     del quadrants["BottomRight"]
     with pytest.raises(ArtDataError, match="BottomRight"):
         compose_background(quadrants)
+
+
+def test_a_black_bottom_and_right_margin_is_cropped_to_the_art():
+    # The client's real quadrants pad their drawn art with solid near-black
+    # beyond it; a stitched panel with the same shape (art in the top-left,
+    # dead margin along the bottom and right) must crop to just the art.
+    image = Image.new("RGB", BACKGROUND_SIZE, (0, 0, 0))
+    art = Image.new("RGB", (300, 331), (120, 90, 60))
+    image.paste(art, (0, 0))
+    cropped = crop_dead_margin(image)
+    assert cropped.size == (300, 331)
+    assert cropped.getpixel((299, 330)) == (120, 90, 60)
+
+
+def test_an_all_black_image_is_refused():
+    image = Image.new("RGB", BACKGROUND_SIZE, (0, 0, 0))
+    with pytest.raises(ArtDataError, match="dead-margin threshold"):
+        crop_dead_margin(image)
+
+
+def test_a_margin_free_image_is_unchanged():
+    image = Image.new("RGB", BACKGROUND_SIZE, (120, 90, 60))
+    cropped = crop_dead_margin(image)
+    assert cropped.size == BACKGROUND_SIZE
+    assert cropped.tobytes() == image.tobytes()
+
+
+def test_a_pixel_at_the_threshold_itself_is_still_dead_margin():
+    # DEAD_MARGIN_THRESHOLD is a strict "greater than" cutoff: a pixel whose
+    # luma lands exactly on it is still margin, not art, so the crop doesn't
+    # keep a sliver of near-black noise at its edge.
+    image = Image.new("RGB", BACKGROUND_SIZE, (0, 0, 0))
+    art = Image.new("RGB", (300, 331), (120, 90, 60))
+    image.paste(art, (0, 0))
+    margin_colour = (DEAD_MARGIN_THRESHOLD,) * 3
+    image.paste(Image.new("RGB", (20, 331), margin_colour), (300, 0))
+    cropped = crop_dead_margin(image)
+    assert cropped.size == (300, 331)
+
+
+def test_a_crop_over_the_max_fraction_is_refused():
+    # Almost the whole panel is below the threshold -- the tiny corner of
+    # "art" left is a broken-source shape, not a real dead margin, and must
+    # fail loudly rather than emit a sliver.
+    width, height = BACKGROUND_SIZE
+    image = Image.new("RGB", BACKGROUND_SIZE, (0, 0, 0))
+    sliver = max(1, round(width * (1 - MAX_DEAD_MARGIN_FRACTION) / 2))
+    image.paste(Image.new("RGB", (sliver, sliver), (120, 90, 60)), (0, 0))
+    with pytest.raises(ArtDataError, match="budget"):
+        crop_dead_margin(image)
 
 
 def test_the_treatment_desaturates_darkens_and_tints_toward_the_palette():

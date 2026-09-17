@@ -9,12 +9,21 @@ WebP per tree at `builds/<build>/trees/<background>.webp`, which is what the
 site ships. A raw texture is never published: Blizzard's art at full saturation
 under this site's type would read as a screenshot of the game rather than as
 this site, and the treatment below is the one place that decision lives.
+
+Three of the four textures also pad their own drawn art with solid near-black
+padding beyond it (TopRight, BottomLeft, BottomRight), so the stitched 320x384
+panel is cropped to its own bounding box of drawn art (`crop_dead_margin`)
+before the treatment runs -- the site draws each tree at whatever aspect ratio
+its box ends up, and a fixed black margin baked into the source would show as
+a visible band along an edge no `object-fit` choice can crop away, since the
+margin's effective size changes with the box.
 """
 
 from __future__ import annotations
 
 import io
 import json
+import logging
 from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path
@@ -24,6 +33,8 @@ from PIL import Image, ImageEnhance
 
 from pipeline.icons import CACHE_DIR, _atomic_write
 from pipeline.wago import BASE_URL, USER_AGENT
+
+logger = logging.getLogger(__name__)
 
 
 class ArtDataError(ValueError):
@@ -81,6 +92,19 @@ TREATMENT = BackgroundTreatment(
     tint_strength=0.35,
 )
 
+#: A stitched pixel at or below this on the ITU-R 601-2 luma `Image.convert("L")`
+#: uses counts as the client's own dead padding, not drawn art. Confirmed against
+#: every one of 1.60.1.69893's 27 trees: TopRight/BottomLeft/BottomRight pad with
+#: exact (0, 0, 0), and 25 of 27 trees' bounding box is identical to the pixel
+#: (some artists' canvases start their own art a few pixels later); the darkest
+#: *drawn* pixel in a sampled tree (warriorarms' night sky) is well above this.
+DEAD_MARGIN_THRESHOLD = 8
+#: Refuse a crop that would remove more than this fraction of the stitched
+#: panel's area. The real margin is ~19% (300x331 of 320x384); this leaves
+#: headroom for texture-to-texture variance while still catching a genuinely
+#: broken (mostly-black) source rather than silently emitting a sliver.
+MAX_DEAD_MARGIN_FRACTION = 0.5
+
 
 def process_pixel(
     rgb: tuple[int, int, int], treatment: BackgroundTreatment = TREATMENT
@@ -119,6 +143,41 @@ def compose_background(quadrants: Mapping[str, bytes]) -> Image.Image:
     return panel
 
 
+def crop_dead_margin(image: Image.Image) -> Image.Image:
+    """The stitched panel, cropped to the bounding box of its own drawn art.
+
+    The client pads three of the four quadrants (TopRight, BottomLeft,
+    BottomRight) with solid near-black beyond the art each one actually draws,
+    and `compose_background` pastes that padding onto the composite verbatim.
+    Left alone, it becomes a solid black band along a tree's bottom and right
+    edges the moment a consumer's box aspect ratio differs from the panel's
+    own 320x384 -- no `object-fit` choice can crop a margin whose *effective*
+    size (in a scaled box) changes with the box, so this trims the source
+    once, before the treatment runs, and every consumer of the resulting webp
+    is correct regardless of the box it's drawn into.
+    """
+    mask = image.convert("L").point(lambda p: 255 if p > DEAD_MARGIN_THRESHOLD else 0)
+    bbox = mask.getbbox()
+    if bbox is None:
+        raise ArtDataError(
+            "every pixel is at or below the dead-margin threshold "
+            f"({DEAD_MARGIN_THRESHOLD}); the crop would leave nothing"
+        )
+    left, top, right, bottom = bbox
+    cropped_size = (right - left, bottom - top)
+    if cropped_size[0] <= 0 or cropped_size[1] <= 0:
+        raise ArtDataError(f"the dead-margin crop left a non-positive size: {cropped_size}")
+    kept_fraction = (cropped_size[0] * cropped_size[1]) / (image.width * image.height)
+    if kept_fraction < 1 - MAX_DEAD_MARGIN_FRACTION:
+        raise ArtDataError(
+            f"the dead-margin crop would remove {(1 - kept_fraction):.0%} of the panel "
+            f"({image.size} -> {cropped_size}), more than the "
+            f"{MAX_DEAD_MARGIN_FRACTION:.0%} budget"
+        )
+    logger.info("cropped dead margin: %s -> %s", image.size, cropped_size)
+    return image.crop(bbox)
+
+
 def process_background(
     image: Image.Image, treatment: BackgroundTreatment = TREATMENT
 ) -> Image.Image:
@@ -133,7 +192,8 @@ def process_background(
 def background_webp(
     quadrants: Mapping[str, bytes], treatment: BackgroundTreatment = TREATMENT
 ) -> bytes:
-    processed = process_background(compose_background(quadrants), treatment)
+    stitched = crop_dead_margin(compose_background(quadrants))
+    processed = process_background(stitched, treatment)
     buffer = io.BytesIO()
     processed.save(buffer, "WEBP", quality=90, method=6)
     return buffer.getvalue()
