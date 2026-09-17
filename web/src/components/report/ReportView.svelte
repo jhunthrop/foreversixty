@@ -50,6 +50,7 @@
     combinedSeries,
     isFullWindow,
     scopeSummary,
+    sliceSeries,
     windowMs,
     windowOf,
     windowPresets,
@@ -496,11 +497,20 @@
             token: 'var(--color-kill)',
           },
         ]),
-    // The line respects the brush the way the main series does: TimeChart is handed the
-    // whole fight's buckets and draws the window over them.
+    // The measure ran once, over the whole fight (see toggleAbilityOnChart); the brush
+    // still has to cut it down every time it moves, the same way scopeSummary cuts down
+    // every actor's own series for the main line -- TimeChart stretches whatever length
+    // of series it is handed across the whole canvas, so an unsliced line here would be
+    // drawn at the whole fight's scale behind a main line drawn at the window's.
     ...(chartedAbility === null
       ? []
-      : [{ label: chartedAbility.label, series: chartedAbility.series, token: chartedAbility.token }]),
+      : [
+          {
+            label: chartedAbility.label,
+            series: sliceSeries(chartedAbility.series, cutWindow),
+            token: chartedAbility.token,
+          },
+        ]),
   ]);
   // The chart is the fight's damage on every tab but the two that have their own series;
   // its caption says so, or nine tabs read as a damage table with a stranger's heading.
