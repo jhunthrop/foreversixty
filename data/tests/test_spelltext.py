@@ -160,3 +160,21 @@ def test_divisor_duration_form_divides_the_duration():
         }
     )
     assert text.describe(1) == "Lasts 10 sec."
+
+
+def test_m_token_renders_the_effects_minimum():
+    # 724 of the 1320 rank descriptions in build 1.60.1.69893 use $m.
+    text = fixture_text()
+    assert text.describe(12321) == "Increases the duration of your shouts by 10%."
+
+
+def test_overrides_replace_an_effects_value_for_one_rank():
+    text = fixture_text()
+    assert text.describe(12321, {0: 30}) == "Increases the duration of your shouts by 30%."
+    # The spell itself is untouched: the next call sees the client's own value.
+    assert text.describe(12321) == "Increases the duration of your shouts by 10%."
+
+
+def test_overrides_reach_an_effect_the_spell_has_no_row_for():
+    text = fixture_text()
+    assert text.describe(12777, {1: 7}) == "Deals 4 damage and stuns for 7 sec."

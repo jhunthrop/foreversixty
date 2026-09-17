@@ -7,6 +7,7 @@ runtime. We resolve only the tokens whose value is in the tables we fetch:
   $o<n> / $O<n>        that value times the number of periodic ticks
   $t<n> / $T<n>        effect <n>'s tick period, in seconds
   $d   / $D            the spell's duration
+  $m<n> / $M<n>        the minimum of effect <n>'s displayed value
   $/<divisor>;s<n>     any of the above, divided first
   $<spell id><token>   the same token read off a different spell
 
@@ -19,13 +20,14 @@ token rather than a number nobody can source.
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass, field
+from collections.abc import Mapping
+from dataclasses import dataclass, field, replace
 
 TOKEN = re.compile(
     r"\$"
     r"(?:/(?P<divisor>\d+);)?"
     r"(?P<ref>\d+)?"
-    r"(?P<kind>[sSoOtTdD])"
+    r"(?P<kind>[sSoOtTdDmM])"
     r"(?P<index>[1-9])?"
 )
 
@@ -75,14 +77,38 @@ def _render_duration(duration_ms: int) -> str:
     return f"{_format_number(duration_ms / _MS_PER_SECOND)} sec"
 
 
+def _overridden(effects: dict[int, Effect], overrides: Mapping[int, int]) -> dict[int, Effect]:
+    """The overridden effects, keeping each one's tick period.
+
+    Die sides go to zero: a curve names one value per rank, not a spread, so
+    `$s` and `$m` must both render exactly that number.
+    """
+    out: dict[int, Effect] = {}
+    for index, value in overrides.items():
+        period = effects[index].period_ms if index in effects else 0
+        out[index] = Effect(base_points=value, die_sides=0, period_ms=period)
+    return out
+
+
 class SpellText:
     def __init__(self, spells: dict[int, SpellRow]) -> None:
         self._spells = spells
 
-    def describe(self, spell_id: int) -> str:
+    def describe(self, spell_id: int, overrides: Mapping[int, int] | None = None) -> str:
+        """The spell's description with its `$`-tokens resolved.
+
+        `overrides` maps a 0-based effect index to the value that effect
+        displays, which is how one rank of a trait talent gets its own
+        sentence: the 1.60 client stores one description per talent and puts
+        the per-rank numbers on a curve (see `pipeline/curves.py`). Only the
+        described spell's own effects are overridden -- a `$<id>s1` token
+        still reads the referenced spell as the client stores it.
+        """
         row = self._spells.get(spell_id)
         if row is None:
             return ""
+        if overrides:
+            row = replace(row, effects={**row.effects, **_overridden(row.effects, overrides)})
         return TOKEN.sub(lambda match: self._substitute(row, match), row.description)
 
     def icon_file_id(self, spell_id: int) -> int:
@@ -117,6 +143,8 @@ class SpellText:
                 return match[0]
             ticks = target.duration_ms // effect.period_ms
             low, high = low * ticks, high * ticks
+        if kind == "m":
+            high = low
         return _render(low, high, divisor)
 
 

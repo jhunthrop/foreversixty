@@ -9,3 +9,5 @@ ID,NameSubtext_lang,Description_lang,AuraDescription_lang
 21179,,"Causes $o1 Fire damage over $d.",
 23562,,"Increases the block value of your shield by $s1.",
 21838,,"Gives you a $h% chance to generate an additional Rage point.",
+12321,,"Increases the duration of your shouts by $m1%.",
+12777,,"Deals $m1 damage and stuns for $m2 sec.",
