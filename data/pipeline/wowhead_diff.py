@@ -137,19 +137,30 @@ def diff_snapshot(snapshot: dict, records: Sequence[ClassTalents]) -> dict:
 def write_snapshot_diff(
     snapshot: str,
     build: str,
-    root: Path = Path("builds"),
-    out: Path = Path("diffs"),
+    root: Path = Path("data/builds"),
+    out: Path = Path("data/diffs"),
 ) -> Path:
+    """Write the diff between `snapshot` and `build`'s talent trees.
+
+    `snapshot`, `root` and `out` are all resolved the same way: relative to
+    the repository root when they are relative paths (an absolute path is
+    used as-is). That matches `snapshot`'s own default, which already names a
+    `data/`-prefixed path, and makes this function give the same answer
+    regardless of the caller's working directory -- unlike most of this
+    pipeline's own `root` parameters (e.g. `normalize_build`'s), which are
+    deliberately resolved against the CLI's cwd instead.
+    """
     repo = Path(__file__).resolve().parents[2]
     payload = json.loads((repo / snapshot).read_text(encoding="utf-8"))
     records = [
         ClassTalents.model_validate_json(path.read_text(encoding="utf-8"))
-        for path in sorted((root / build / "talents").glob("*.json"))
+        for path in sorted((repo / root / build / "talents").glob("*.json"))
     ]
     result = {"snapshot": snapshot, "build": build, **diff_snapshot(payload, records)}
-    out.mkdir(parents=True, exist_ok=True)
+    out_dir = repo / out
+    out_dir.mkdir(parents=True, exist_ok=True)
     name = Path(snapshot).stem.replace("wowhead-talents-", "wowhead-")
-    path = out / f"{name}__{build}.json"
+    path = out_dir / f"{name}__{build}.json"
     path.write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     counts = {key: sum(len(t.get(key, [])) for t in result["trees"]) for key in _CHANGE_KEYS}
     print(
