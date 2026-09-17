@@ -1,0 +1,9 @@
+{
+  "encounter_id": 668,
+  "name": "Baron Geddon",
+  "mechanics": [
+    { "spell_id": 19698, "name": "Inferno", "kind": "avoidable", "note": "The fire that pulses off him while the aura is up; ranged should be out of it entirely." },
+    { "spell_id": 20476, "name": "Explosion", "kind": "avoidable", "note": "The detonation of his Living Bomb. It hits whoever is standing near the bomb, so the bomb runs out and the rest stay spread." },
+    { "spell_id": 19659, "name": "Ignite Mana", "kind": "dispel", "note": "Magic; it burns mana and burns the player for what it took. Dispel it off the casters or they pay twice." }
+  ]
+}

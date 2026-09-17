@@ -1,0 +1,8 @@
+{
+  "encounter_id": 664,
+  "name": "Magmadar",
+  "mechanics": [
+    { "spell_id": 19428, "name": "Conflagration", "kind": "avoidable", "note": "The fire the Lava Bomb leaves on the floor; it only ticks on people who stay in it." },
+    { "spell_id": 19450, "name": "Magma Spit", "kind": "unavoidable", "note": "Burns whoever hits him in melee. Melee damage taken here is the fight, not a mistake." }
+  ]
+}

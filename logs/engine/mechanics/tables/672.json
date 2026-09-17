@@ -1,0 +1,15 @@
+{
+  "encounter_id": 672,
+  "name": "Ragnaros",
+  "mechanics": [
+    { "spell_id": 20566, "name": "Wrath of Ragnaros", "kind": "avoidable", "note": "Knocks everyone in front of him back, into the lava if they are standing where he can throw them there." },
+    { "spell_id": 20564, "name": "Elemental Fire", "kind": "unavoidable", "note": "The burn he puts on whoever he is hitting. Tank damage." },
+    { "spell_id": 20565, "name": "Magma Blast", "kind": "avoidable", "note": "He only throws it when nobody is in melee range. A Magma Blast in the log means the melee were out of position, not that the target was." }
+  ],
+  "phases": [
+    {
+      "name": "Sons of Flame",
+      "starts": { "spell_id": 21108, "on": "cast_success" }
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "encounter_id": 669,
+  "name": "Sulfuron Harbinger",
+  "mechanics": [
+    { "spell_id": 19775, "name": "Dark Mending", "kind": "interrupt", "note": "His Flamewaker Priests heal him back up. Every one that goes through is a minute of the pull given away." },
+    { "spell_id": 19780, "name": "Hand of Ragnaros", "kind": "avoidable", "note": "Knocks back and stuns everyone near him; melee eat it, ranged should not be in range at all." },
+    { "spell_id": 19781, "name": "Flame Spear", "kind": "avoidable", "note": "Thrown at one player and scorching everyone near them; spread so it only catches its target." }
+  ]
+}

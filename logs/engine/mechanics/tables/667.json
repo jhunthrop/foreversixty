@@ -1,0 +1,8 @@
+{
+  "encounter_id": 667,
+  "name": "Shazzrah",
+  "mechanics": [
+    { "spell_id": 19713, "name": "Shazzrah's Curse", "kind": "dispel", "note": "Curse doubling the magic damage everyone in range takes; it is what makes his Arcane Explosion lethal." },
+    { "spell_id": 19712, "name": "Arcane Explosion", "kind": "avoidable", "note": "Hits everything near him. He blinks to a random player, so the answer is running back out, not standing still." }
+  ]
+}

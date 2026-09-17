@@ -1,0 +1,8 @@
+{
+  "encounter_id": 666,
+  "name": "Garr",
+  "mechanics": [
+    { "spell_id": 19497, "name": "Eruption", "kind": "avoidable", "note": "A Firesworn blows up when it dies; nobody should be next to one as it goes down." },
+    { "spell_id": 20483, "name": "Massive Eruption", "kind": "avoidable", "note": "The larger of the two Firesworn detonations, for the same reason and with the same answer: be somewhere else." }
+  ]
+}

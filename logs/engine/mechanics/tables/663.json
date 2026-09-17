@@ -1,0 +1,10 @@
+{
+  "encounter_id": 663,
+  "name": "Lucifron",
+  "mechanics": [
+    { "spell_id": 19703, "name": "Lucifron's Curse", "kind": "dispel", "note": "Curse on everyone in range: every spell and ability costs double until it is taken off." },
+    { "spell_id": 20604, "name": "Dominate Mind", "kind": "dispel", "note": "Magic charm; whoever it lands on fights the raid until it is dispelled." },
+    { "spell_id": 19702, "name": "Impending Doom", "kind": "avoidable", "note": "Shadow damage to everyone near him a few seconds after the cast; anyone who can leave should be gone before it lands." },
+    { "spell_id": 20603, "name": "Shadow Shock", "kind": "avoidable", "note": "Lashes everything in range at once; a ranged player taking it was standing too close." }
+  ]
+}
