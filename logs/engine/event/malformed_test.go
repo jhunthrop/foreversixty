@@ -152,6 +152,26 @@ func TestAScopeTagLookalikeOnABaseWidthLineIsAParseErrorNotAPanic(t *testing.T) 
 	}
 }
 
+// TestAnAcceptedWidthLineEndingInATagLookalikeIsNotStripped is the case the
+// two above cannot reach: a width the row accepts outright (SWING_DAMAGE at 38,
+// no tag in the shape) whose last field happens to read "ST". The guard must
+// leave it alone: the line decodes as damage with no scope, and never panics.
+func TestAnAcceptedWidthLineEndingInATagLookalikeIsNotStripped(t *testing.T) {
+	v22 := layout.RetailV22()
+	text := `7/1/2026 09:08:28.725-5  SWING_DAMAGE,Player-3676-06EC6282,"Lothanhof-Area52-US",0x10548,0x80000000,Player-76-0C1789E9,"Ushiftingme-Sargeras-US",0x511,0x80000020,Player-3676-06EC6282,0000000000000000,609501,620660,2636,712,1311,2329,0,0,0,250000,250000,0,-10749.91,464.25,0,1.1591,293,1593,2865,-1,1,0,0,0,nil,nil,ST`
+	ln := line(t, text)
+	if got := len(ln.Params); got != 38 {
+		t.Fatalf("the fixture line has %d fields, want the 38 a SWING_DAMAGE carries", got)
+	}
+	e := decodeNoPanic(t, NewDecoder(v22, fixtureBase), ln)
+	if e.Kind != Damage {
+		t.Fatalf("kind = %s, want damage (error: %s)", e.Kind, e.Error)
+	}
+	if e.Scope != "" {
+		t.Errorf("scope = %q, want none: a swing line carries no tag, so a trailing ST is a field", e.Scope)
+	}
+}
+
 // TestAWellFormedTaggedLineStillStripsTheTag is the converse of the panic
 // regression above: the suffixNeeds guard must not stop a genuinely tagged
 // line from having its tag read and stripped.
