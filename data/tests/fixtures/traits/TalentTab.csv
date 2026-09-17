@@ -1,0 +1,5 @@
+ID,Name_lang,BackgroundFile,OrderIndex,ClassMask,SpellIconID
+161,Arms,WarriorArms,0,1,132292
+164,Fury,WarriorFury,1,1,132347
+163,Protection,WarriorProtection,2,1,134952
+181,Combat,RogueCombat,1,8,132090

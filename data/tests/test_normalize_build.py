@@ -16,7 +16,14 @@ def prepare(tmp_path: Path) -> Path:
     raw = tmp_path / "1.0.0.1" / "raw"
     raw.mkdir(parents=True)
     for table in TABLES:
-        shutil.copy(HERE / "fixtures" / f"{table}.csv", raw / f"{table}.csv")
+        fixture = HERE / "fixtures" / f"{table}.csv"
+        if fixture.exists():
+            shutil.copy(fixture, raw / f"{table}.csv")
+        else:
+            # normalize_build does not read this table yet (e.g. the trait tables
+            # fetched for the talent-tree rewrite); stub it the same way
+            # download_table stubs a 404'd optional table for a real build.
+            (raw / f"{table}.csv").write_text("ID\n", encoding="utf-8")
     meta = {"product": "test", "build": "1.0.0.1", "fetched_at": "t"}
     (raw / "_meta.json").write_text(json.dumps(meta))
     return tmp_path

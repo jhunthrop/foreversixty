@@ -27,6 +27,23 @@ TABLES = [
     "ChrRaces",
     "Talent",
     "TalentTab",
+    # The 1.60 client's talent trees live in the modern trait tables rather than
+    # the legacy Talent rows above, which it still ships for its own UI chrome.
+    # pipeline/normalize/traits.py reads these; Classic Era has no class trait
+    # trees and 404s on five of them (see OPTIONAL_TABLES).
+    "SkillLine",
+    "SkillLineXTraitTree",
+    "TraitNode",
+    "TraitNodeEntry",
+    "TraitNodeXTraitNodeEntry",
+    "TraitDefinition",
+    "TraitEdge",
+    "TraitCond",
+    "TraitNodeGroup",
+    "TraitNodeGroupXTraitNode",
+    "TraitCurrency",
+    "TraitDefinitionEffectPoints",
+    "CurvePoint",
     "ItemArmorTotal",
     "ItemArmorQuality",
     "ItemArmorShield",
@@ -51,6 +68,15 @@ OPTIONAL_TABLES = frozenset(
         "ItemArmorShield",
         "ArmorLocation",
         "RandPropPoints",
+        # Classic Era 1.15.9.69722 has no class trait trees: it serves the other
+        # eight trait tables (all of whose rows belong to non-class trees) and
+        # 404s on these five. A build without them falls back to the legacy
+        # Talent reader, which is exactly what Era wants.
+        "SkillLineXTraitTree",
+        "TraitEdge",
+        "TraitCond",
+        "TraitCurrency",
+        "TraitDefinitionEffectPoints",
     }
 )
 

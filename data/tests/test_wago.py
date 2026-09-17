@@ -4,7 +4,14 @@ from pathlib import Path
 import httpx
 import pytest
 
-from pipeline.wago import TABLES, USER_AGENT, download_table, fetch_build, latest_build
+from pipeline.wago import (
+    OPTIONAL_TABLES,
+    TABLES,
+    USER_AGENT,
+    download_table,
+    fetch_build,
+    latest_build,
+)
 
 
 def fake_transport(
@@ -95,6 +102,19 @@ def test_tables_cover_every_phase_1_input():
         "ChrRaces",
         "Talent",
         "TalentTab",
+        "SkillLine",
+        "SkillLineXTraitTree",
+        "TraitNode",
+        "TraitNodeEntry",
+        "TraitNodeXTraitNodeEntry",
+        "TraitDefinition",
+        "TraitEdge",
+        "TraitCond",
+        "TraitNodeGroup",
+        "TraitNodeGroupXTraitNode",
+        "TraitCurrency",
+        "TraitDefinitionEffectPoints",
+        "CurvePoint",
         "ItemArmorTotal",
         "ItemArmorQuality",
         "ItemArmorShield",
@@ -102,3 +122,42 @@ def test_tables_cover_every_phase_1_input():
         "RandPropPoints",
     ]
     assert "foreversixty-pipeline" in USER_AGENT
+
+
+#: Every trait table the 1.60 reader needs. Classic Era 1.15.9.69722 serves
+#: SkillLine, TraitNode, TraitNodeEntry, TraitNodeXTraitNodeEntry,
+#: TraitDefinition, TraitNodeGroup, TraitNodeGroupXTraitNode and CurvePoint,
+#: and 404s on the other five, so only those five are allowed to be missing.
+TRAIT_TABLES = [
+    "SkillLine",
+    "SkillLineXTraitTree",
+    "TraitNode",
+    "TraitNodeEntry",
+    "TraitNodeXTraitNodeEntry",
+    "TraitDefinition",
+    "TraitEdge",
+    "TraitCond",
+    "TraitNodeGroup",
+    "TraitNodeGroupXTraitNode",
+    "TraitCurrency",
+    "TraitDefinitionEffectPoints",
+    "CurvePoint",
+]
+ERA_MISSING = {
+    "SkillLineXTraitTree",
+    "TraitEdge",
+    "TraitCond",
+    "TraitCurrency",
+    "TraitDefinitionEffectPoints",
+}
+
+
+def test_every_trait_table_is_fetched_once():
+    missing = [t for t in TRAIT_TABLES if t not in TABLES]
+    assert missing == [], f"TABLES is missing {missing}"
+    assert len(TABLES) == len(set(TABLES)), "TABLES lists a table twice"
+
+
+def test_only_the_tables_classic_era_lacks_are_optional():
+    optional_traits = {t for t in TRAIT_TABLES if t in OPTIONAL_TABLES}
+    assert optional_traits == ERA_MISSING
