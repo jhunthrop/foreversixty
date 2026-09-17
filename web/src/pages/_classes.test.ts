@@ -6,6 +6,7 @@
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { beforeAll, describe, expect, it } from 'vitest';
 import Classes from './classes.astro';
+import { raceRows } from '../lib/planner/reference';
 
 let html: string;
 
@@ -43,8 +44,12 @@ describe('classes.astro', () => {
     expect(html).toMatch(/pill-(blizzard|datamined|community|site)/);
   });
 
-  it('says which rows are still placeholders', () => {
-    expect(html).toContain('Placeholder');
+  it('says which rows are still placeholders, when the synced data has any', () => {
+    // The curated data has shed its placeholder rows since the beta switch, so this only
+    // asserts the pill when the sync actually wrote one -- pinning "Placeholder" unconditionally
+    // made this test false of the data the site ships the moment the last placeholder was filled in.
+    const hasPlaceholder = raceRows.some((race) => race.placeholder);
+    expect(html.includes('Placeholder')).toBe(hasPlaceholder);
   });
 
   it('exposes the Forever marking in the accessible name, not just a sighted-only pill', () => {
