@@ -371,6 +371,20 @@ func splitGroup(s string) []string {
 // number is recursed into so every leaf integer still lands in one flat
 // list, and a v16 line, which nests nothing, recurses zero times.
 func intList(s string) []int64 {
+	return nestedIntList(s, 0)
+}
+
+// maxIntListNesting bounds how deep a talent field may nest before the rest
+// is dropped: v16 nests nothing, v22 nests once, and a malformed line that
+// nests further is not worth a deeper stack.
+const maxIntListNesting = 4
+
+// nestedIntList is intList with the recursion made finite: a part that is
+// neither an integer nor a bracketed group (a stray token, an unbalanced
+// bracket) would come back from splitGroup unchanged and recurse on itself
+// forever, which the fuzzer found; such a part is skipped, and a group is only
+// entered while its content is strictly shorter than the part it came from.
+func nestedIntList(s string, depth int) []int64 {
 	var out []int64
 	for _, p := range splitGroup(s) {
 		p = strings.TrimSpace(p)
@@ -378,7 +392,12 @@ func intList(s string) []int64 {
 			out = append(out, v.V)
 			continue
 		}
-		out = append(out, intList(p)...)
+		if depth >= maxIntListNesting {
+			continue
+		}
+		if inner := trimGroup(p); inner != p && len(inner) < len(p) {
+			out = append(out, nestedIntList(inner, depth+1)...)
+		}
 	}
 	return out
 }
