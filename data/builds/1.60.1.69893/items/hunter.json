@@ -11776,51 +11776,6 @@
       "unique": false
     },
     {
-      "id": 18968,
-      "name": "Ring of Critical Testing",
-      "icon": "inv_jewelry_ring_14",
-      "slot": "finger",
-      "quality": 4,
-      "required_level": 0,
-      "item_level": 60,
-      "armor": 0,
-      "stats": {
-        "crit": 700
-      },
-      "set_id": null,
-      "unique": false
-    },
-    {
-      "id": 18970,
-      "name": "Ring of Critical Testing 2",
-      "icon": "inv_jewelry_ring_26",
-      "slot": "finger",
-      "quality": 4,
-      "required_level": 0,
-      "item_level": 60,
-      "armor": 0,
-      "stats": {
-        "crit": 700
-      },
-      "set_id": null,
-      "unique": false
-    },
-    {
-      "id": 18982,
-      "name": "Ring of Critical Testing 4",
-      "icon": "inv_jewelry_ring_15",
-      "slot": "finger",
-      "quality": 4,
-      "required_level": 0,
-      "item_level": 60,
-      "armor": 0,
-      "stats": {
-        "crit": 700
-      },
-      "set_id": null,
-      "unique": false
-    },
-    {
       "id": 2043,
       "name": "Ring of Forlorn Spirits",
       "icon": "inv_jewelry_ring_01",
@@ -17376,21 +17331,6 @@
       "stats": {
         "intellect": 4,
         "stamina": 3
-      },
-      "set_id": null,
-      "unique": false
-    },
-    {
-      "id": 24358,
-      "name": "QATest +1000 Spell Dmg Ring",
-      "icon": "inv_jewelry_ring_38",
-      "slot": "finger",
-      "quality": 4,
-      "required_level": 1,
-      "item_level": 6,
-      "armor": 0,
-      "stats": {
-        "spell_power": 1000
       },
       "set_id": null,
       "unique": false
@@ -29349,35 +29289,6 @@
       "stats": {
         "stamina": 10
       },
-      "set_id": null,
-      "unique": false
-    },
-    {
-      "id": 215112,
-      "name": "UNUSED - Cloak of Arcane Insulation",
-      "icon": "inv_misc_cape_04",
-      "slot": "back",
-      "quality": 3,
-      "required_level": 35,
-      "item_level": 40,
-      "armor": 29,
-      "stats": {
-        "spirit": 6,
-        "frost_res": 11
-      },
-      "set_id": null,
-      "unique": false
-    },
-    {
-      "id": 215113,
-      "name": "UNUSED - Razor-Lined Shoulderpads",
-      "icon": "inv_shoulder_22",
-      "slot": "shoulder",
-      "quality": 2,
-      "required_level": 35,
-      "item_level": 40,
-      "armor": 83,
-      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -43179,19 +43090,6 @@
       "unique": false
     },
     {
-      "id": 21125,
-      "name": "Ahn'Qiraj Staff [PH]",
-      "icon": "inv_staff_01",
-      "slot": "main_hand",
-      "quality": 4,
-      "required_level": 60,
-      "item_level": 75,
-      "armor": 0,
-      "stats": {},
-      "set_id": null,
-      "unique": false
-    },
-    {
       "id": 21702,
       "name": "Amulet of Foul Warding",
       "icon": "inv_jewelry_necklace_12",
@@ -43829,19 +43727,6 @@
       "stats": {
         "stamina": 10
       },
-      "set_id": null,
-      "unique": true
-    },
-    {
-      "id": 21276,
-      "name": "Blessed Qiraji Naturalist Staff UNUSED",
-      "icon": "inv_staff_20",
-      "slot": "main_hand",
-      "quality": 4,
-      "required_level": 60,
-      "item_level": 80,
-      "armor": 0,
-      "stats": {},
       "set_id": null,
       "unique": true
     },
@@ -45218,19 +45103,6 @@
       },
       "set_id": null,
       "unique": true
-    },
-    {
-      "id": 21339,
-      "name": "Doomcaller's Handwraps [PH]",
-      "icon": "inv_gauntlets_21",
-      "slot": "hands",
-      "quality": 4,
-      "required_level": 60,
-      "item_level": 78,
-      "armor": 74,
-      "stats": {},
-      "set_id": null,
-      "unique": false
     },
     {
       "id": 20622,
@@ -48086,55 +47958,6 @@
       "unique": false
     },
     {
-      "id": 22817,
-      "name": "Naxxramas Polearm [PH]",
-      "icon": "inv_weapon_halberd_04",
-      "slot": "main_hand",
-      "quality": 4,
-      "required_level": 60,
-      "item_level": 77,
-      "armor": 0,
-      "stats": {
-        "agility": 41,
-        "stamina": 31
-      },
-      "set_id": null,
-      "unique": false
-    },
-    {
-      "id": 22805,
-      "name": "Naxxramas Sword 1H 1 [PH]",
-      "icon": "inv_sword_60",
-      "slot": "main_hand",
-      "quality": 4,
-      "required_level": 60,
-      "item_level": 77,
-      "armor": 0,
-      "stats": {
-        "agility": 14,
-        "strength": 14,
-        "stamina": 7
-      },
-      "set_id": null,
-      "unique": true
-    },
-    {
-      "id": 22814,
-      "name": "Naxxramas Sword 2H 2 [PH]",
-      "icon": "inv_sword_35",
-      "slot": "main_hand",
-      "quality": 4,
-      "required_level": 60,
-      "item_level": 81,
-      "armor": 0,
-      "stats": {
-        "stamina": 33,
-        "attack_power": 86
-      },
-      "set_id": null,
-      "unique": false
-    },
-    {
       "id": 23036,
       "name": "Necklace of Necropsy",
       "icon": "inv_jewelry_necklace_30naxxramas",
@@ -48425,19 +48248,6 @@
         "strength": 14,
         "defense": 4
       },
-      "set_id": null,
-      "unique": false
-    },
-    {
-      "id": 274027,
-      "name": "Placeholder",
-      "icon": "inv_boots_03",
-      "slot": "head",
-      "quality": 4,
-      "required_level": 60,
-      "item_level": 61,
-      "armor": 77,
-      "stats": {},
       "set_id": null,
       "unique": false
     },
@@ -51569,19 +51379,6 @@
         "spell_power": 25,
         "mp5": 6
       },
-      "set_id": null,
-      "unique": false
-    },
-    {
-      "id": 273878,
-      "name": "[DNT] Crafted Tier Piece Placeholder",
-      "icon": "inv_misc_questionmark",
-      "slot": "head",
-      "quality": 4,
-      "required_level": 60,
-      "item_level": 61,
-      "armor": 77,
-      "stats": {},
       "set_id": null,
       "unique": false
     }
