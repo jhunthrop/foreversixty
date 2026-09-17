@@ -67,6 +67,8 @@
   /** The one place "/s" is spelled: the readout and the scale gutter both read off it. */
   const unit = $derived(perSecond ? '/s' : '');
 
+  /** A fight time as a percentage of the chart's width, for the labels drawn over the canvas. */
+  const pct = (ms: number): number => (durationMs === 0 ? 0 : (ms / durationMs) * 100);
   function xOf(ms: number): number {
     return durationMs === 0 ? 0 : (ms / durationMs) * width;
   }
@@ -331,10 +333,14 @@
     {/if}
     {#if phases.length > 0}
       <div class="pointer-events-none absolute inset-y-0 right-0 left-12" aria-hidden="true">
-        {#each phases as phase (phase.name)}
+        {#each phases as phase, i (`${i}-${phase.name}`)}
+          {@const from = pct(phase.start_ms)}
+          {@const width = pct(phase.end_ms) - from}
+          <!-- The name is clipped to its own band: a long curated name on a short phase
+               ends in an ellipsis rather than running into the next band's name. -->
           <span
-            class="text-muted absolute top-0 font-mono text-[10px] leading-none"
-            style={`left: calc(${durationMs === 0 ? 0 : (phase.start_ms / durationMs) * 100}% + 2px)`}
+            class="text-muted absolute top-0 overflow-hidden font-mono text-[10px] leading-none text-ellipsis whitespace-nowrap"
+            style={`left: calc(${from}% + 2px); max-width: calc(${width}% - 4px)`}
             data-testid="phase-band">{phase.name}</span
           >
         {/each}
