@@ -15,7 +15,6 @@ from __future__ import annotations
 
 import io
 import json
-import logging
 from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path
@@ -25,8 +24,6 @@ from PIL import Image, ImageEnhance
 
 from pipeline.icons import CACHE_DIR, _atomic_write
 from pipeline.wago import BASE_URL, USER_AGENT
-
-logger = logging.getLogger(__name__)
 
 
 class ArtDataError(ValueError):
@@ -79,9 +76,9 @@ class BackgroundTreatment:
 
 TREATMENT = BackgroundTreatment(
     saturation=0.30,
-    brightness=0.45,
+    brightness=0.60,
     tint=(0x0D, 0x11, 0x1A),
-    tint_strength=0.55,
+    tint_strength=0.35,
 )
 
 
