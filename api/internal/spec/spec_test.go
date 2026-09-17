@@ -104,3 +104,23 @@ func TestTotalsAreOnlyReadWhenTheyLookLikeTotals(t *testing.T) {
 		}
 	}
 }
+
+func TestSplitReadsTalentsWrittenAsSpellIDs(t *testing.T) {
+	data, err := trees.LoadFixture()
+	if err != nil {
+		t.Fatal(err)
+	}
+	b, _ := data.Build("test-1")
+	i := New(b)
+	// 12281 is talent 101's spell, in Arms; 20000 is talent 201's, in Fury.
+	got := i.Split("Warrior", []int64{12281, 12281, 20000})
+	want := []int{2, 1}
+	if len(got) != len(want) {
+		t.Fatalf("Split = %v, want %v", got, want)
+	}
+	for n := range want {
+		if got[n] != want[n] {
+			t.Fatalf("Split = %v, want %v", got, want)
+		}
+	}
+}

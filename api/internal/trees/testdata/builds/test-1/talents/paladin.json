@@ -4,10 +4,10 @@
   "class_slug": "paladin",
   "trees": [
     {
-      "id": 382, "name": "Holy", "position": 0,
+      "id": 382, "name": "Holy", "position": 0, "background": "paladinholy",
       "talents": [
         { "id": 301, "name": "Divine Strength", "icon": "ability_golemthunderclap", "max_rank": 5, "tier": 0, "column": 0,
-          "prereq_talent_id": null, "prereq_rank": null,
+          "prereq_talent_id": null, "prereq_rank": null, "spell_id": 20262,
           "ranks": [
             { "spell_id": 20262, "description": "Increases your Strength by 2%." },
             { "spell_id": 20263, "description": "Increases your Strength by 4%." },

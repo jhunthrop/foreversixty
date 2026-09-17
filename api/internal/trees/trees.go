@@ -30,6 +30,10 @@ type Talent struct {
 	PrereqTalentID *int   `json:"prereq_talent_id"`
 	PrereqRank     *int   `json:"prereq_rank"`
 	Ranks          []Rank `json:"ranks"`
+	// SpellID is the spell the client writes when the talent is learned,
+	// which is what a combat log's COMBATANT_INFO carries. The ID above is
+	// the client's trait node id, and the two are different numbers.
+	SpellID int `json:"spell_id"`
 }
 
 type Tree struct {
@@ -37,6 +41,8 @@ type Tree struct {
 	Name     string   `json:"name"`
 	Position int      `json:"position"`
 	Talents  []Talent `json:"talents"`
+	// Background names the processed art at /data/<build>/trees/<background>.webp.
+	Background string `json:"background"`
 }
 
 type classTalents struct {
@@ -111,13 +117,14 @@ type TalentRef struct {
 type Build struct {
 	Version string
 
-	classes map[int]Class
-	races   map[int]Race
-	combos  map[[2]int]Combo
-	trees   map[int][]Tree
-	talents map[int]map[int]TalentRef
-	items   map[int]map[int]Item
-	sets    []Set
+	classes        map[int]Class
+	races          map[int]Race
+	combos         map[[2]int]Combo
+	trees          map[int][]Tree
+	talents        map[int]map[int]TalentRef
+	talentsBySpell map[int]map[int]TalentRef
+	items          map[int]map[int]Item
+	sets           []Set
 }
 
 func (b *Build) Class(id int) (Class, bool) { c, ok := b.classes[id]; return c, ok }
@@ -135,6 +142,22 @@ func (b *Build) Talent(classID, talentID int) (TalentRef, bool) {
 		return TalentRef{}, false
 	}
 	t, ok := byID[talentID]
+	return t, ok
+}
+
+// TalentBySpellID resolves the spell id the client writes to the talent it
+// belongs to. A build emitted before talents carried a spell id indexes every
+// talent under 0, so a lookup for 0 is refused rather than answering with an
+// arbitrary talent.
+func (b *Build) TalentBySpellID(classID, spellID int) (TalentRef, bool) {
+	if spellID == 0 {
+		return TalentRef{}, false
+	}
+	bySpell, ok := b.talentsBySpell[classID]
+	if !ok {
+		return TalentRef{}, false
+	}
+	t, ok := bySpell[spellID]
 	return t, ok
 }
 
@@ -209,11 +232,37 @@ func (d *Data) Latest() (*Build, bool) {
 	return d.builds[newestVersion(versions)], true
 }
 
+// isClientBuild reports whether a version looks like a client build string
+// ("1.60.1.69893") rather than a named data set ("forever-prebeta"). Only
+// client builds are comparable as version numbers, and Latest must not hand
+// the rankings a data set that is not the newest client data.
+func isClientBuild(version string) bool {
+	segments := strings.Split(version, ".")
+	if len(segments) < 2 {
+		return false
+	}
+	for _, segment := range segments {
+		if _, err := strconv.Atoi(segment); err != nil {
+			return false
+		}
+	}
+	return true
+}
+
 // newestVersion returns the numerically greatest of a non-empty list of
-// dot-separated build versions.
+// dot-separated build versions. A version that looks like a client build
+// ("1.60.1.69893") is preferred over one that looks like a named data set
+// ("forever-prebeta"), regardless of how the two compare as strings.
 func newestVersion(versions []string) string {
 	best := versions[0]
 	for _, v := range versions[1:] {
+		bestIsBuild, vIsBuild := isClientBuild(best), isClientBuild(v)
+		if bestIsBuild != vIsBuild {
+			if vIsBuild {
+				best = v
+			}
+			continue
+		}
 		if compareVersions(v, best) > 0 {
 			best = v
 		}
@@ -306,13 +355,14 @@ func looksLikeBuild(dir string) bool {
 
 func loadBuild(dir, version string) (*Build, error) {
 	b := &Build{
-		Version: version,
-		classes: map[int]Class{},
-		races:   map[int]Race{},
-		combos:  map[[2]int]Combo{},
-		trees:   map[int][]Tree{},
-		talents: map[int]map[int]TalentRef{},
-		items:   map[int]map[int]Item{},
+		Version:        version,
+		classes:        map[int]Class{},
+		races:          map[int]Race{},
+		combos:         map[[2]int]Combo{},
+		trees:          map[int][]Tree{},
+		talents:        map[int]map[int]TalentRef{},
+		talentsBySpell: map[int]map[int]TalentRef{},
+		items:          map[int]map[int]Item{},
 	}
 
 	var classes []Class
@@ -353,6 +403,7 @@ func loadBuild(dir, version string) (*Build, error) {
 		}
 		sort.SliceStable(ct.Trees, func(i, j int) bool { return ct.Trees[i].Position < ct.Trees[j].Position })
 		byTalentID := map[int]TalentRef{}
+		bySpellID := map[int]TalentRef{}
 		for _, tree := range ct.Trees {
 			for _, t := range tree.Talents {
 				if len(t.Ranks) != t.MaxRank {
@@ -362,10 +413,12 @@ func loadBuild(dir, version string) (*Build, error) {
 					return nil, fmt.Errorf("trees: %s: duplicate talent id %d in class %s", version, t.ID, c.Slug)
 				}
 				byTalentID[t.ID] = TalentRef{Talent: t, TreeID: tree.ID, TreeName: tree.Name, TreePosition: tree.Position}
+				bySpellID[t.SpellID] = byTalentID[t.ID]
 			}
 		}
 		b.trees[c.ID] = ct.Trees
 		b.talents[c.ID] = byTalentID
+		b.talentsBySpell[c.ID] = bySpellID
 
 		var ci classItems
 		err := readJSON(filepath.Join(dir, "items", c.Slug+".json"), &ci)

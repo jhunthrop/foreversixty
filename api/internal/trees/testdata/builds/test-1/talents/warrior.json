@@ -4,10 +4,10 @@
   "class_slug": "warrior",
   "trees": [
     {
-      "id": 161, "name": "Arms", "position": 0,
+      "id": 161, "name": "Arms", "position": 0, "background": "warriorarms",
       "talents": [
         { "id": 101, "name": "Improved Heroic Strike", "icon": "ability_rogue_ambush", "max_rank": 5, "tier": 0, "column": 0,
-          "prereq_talent_id": null, "prereq_rank": null,
+          "prereq_talent_id": null, "prereq_rank": null, "spell_id": 12281,
           "ranks": [
             { "spell_id": 12281, "description": "Reduces the cost of your Heroic Strike ability by 1 rage point." },
             { "spell_id": 12812, "description": "Reduces the cost of your Heroic Strike ability by 2 rage points." },
@@ -16,7 +16,7 @@
             { "spell_id": 12815, "description": "Reduces the cost of your Heroic Strike ability by 5 rage points." }
           ] },
         { "id": 102, "name": "Deflection", "icon": "ability_parry", "max_rank": 5, "tier": 0, "column": 1,
-          "prereq_talent_id": null, "prereq_rank": null,
+          "prereq_talent_id": null, "prereq_rank": null, "spell_id": 16462,
           "ranks": [
             { "spell_id": 16462, "description": "Increases your Parry chance by 1%." },
             { "spell_id": 16463, "description": "Increases your Parry chance by 2%." },
@@ -25,14 +25,14 @@
             { "spell_id": 16466, "description": "Increases your Parry chance by 5%." }
           ] },
         { "id": 103, "name": "Improved Rend", "icon": "ability_gouge", "max_rank": 3, "tier": 1, "column": 0,
-          "prereq_talent_id": 101, "prereq_rank": 5,
+          "prereq_talent_id": 101, "prereq_rank": 5, "spell_id": 12286,
           "ranks": [
             { "spell_id": 12286, "description": "Increases the damage of your Rend ability by 15%." },
             { "spell_id": 12658, "description": "Increases the damage of your Rend ability by 25%." },
             { "spell_id": 12659, "description": "Increases the damage of your Rend ability by 35%." }
           ] },
         { "id": 104, "name": "Deep Wounds", "icon": "ability_backstab", "max_rank": 3, "tier": 2, "column": 0,
-          "prereq_talent_id": null, "prereq_rank": null,
+          "prereq_talent_id": null, "prereq_rank": null, "spell_id": 12834,
           "ranks": [
             { "spell_id": 12834, "description": "Your critical strikes cause the opponent to bleed." },
             { "spell_id": 12849, "description": "Your critical strikes cause the opponent to bleed for more." },
@@ -41,10 +41,10 @@
       ]
     },
     {
-      "id": 164, "name": "Fury", "position": 1,
+      "id": 164, "name": "Fury", "position": 1, "background": "warriorfury",
       "talents": [
         { "id": 201, "name": "Booming Voice", "icon": "spell_nature_purge", "max_rank": 5, "tier": 0, "column": 0,
-          "prereq_talent_id": null, "prereq_rank": null,
+          "prereq_talent_id": null, "prereq_rank": null, "spell_id": 20000,
           "ranks": [
             { "spell_id": 12321, "description": "Increases the area of effect of your shouts by 10%." },
             { "spell_id": 12835, "description": "Increases the area of effect of your shouts by 20%." },
@@ -53,7 +53,7 @@
             { "spell_id": 12838, "description": "Increases the area of effect of your shouts by 50%." }
           ] },
         { "id": 202, "name": "Cruelty", "icon": "ability_rogue_eviscerate", "max_rank": 5, "tier": 1, "column": 0,
-          "prereq_talent_id": null, "prereq_rank": null,
+          "prereq_talent_id": null, "prereq_rank": null, "spell_id": 12320,
           "ranks": [
             { "spell_id": 12320, "description": "Increases your chance to get a critical strike by 1%." },
             { "spell_id": 12852, "description": "Increases your chance to get a critical strike by 2%." },

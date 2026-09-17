@@ -229,3 +229,58 @@ func TestLatestComparesVersionsNumericallyNotLexicographically(t *testing.T) {
 		t.Fatalf("latest = %q, want the numerically newest 1.15.10.1", b.Version)
 	}
 }
+
+func TestTalentCarriesItsSpellIDAndTreeItsBackground(t *testing.T) {
+	data, err := LoadFixture()
+	if err != nil {
+		t.Fatal(err)
+	}
+	b, ok := data.Build("test-1")
+	if !ok {
+		t.Fatal("fixture build test-1 did not load")
+	}
+	arms := b.Trees(1)[0]
+	if arms.Background != "warriorarms" {
+		t.Fatalf("Arms background = %q, want %q", arms.Background, "warriorarms")
+	}
+	ref, ok := b.Talent(1, 101)
+	if !ok {
+		t.Fatal("talent 101 is missing")
+	}
+	if ref.SpellID != 12281 {
+		t.Fatalf("talent 101 spell id = %d, want 12281", ref.SpellID)
+	}
+}
+
+func TestTalentBySpellIDFindsTheTalentTheClientWrites(t *testing.T) {
+	data, err := LoadFixture()
+	if err != nil {
+		t.Fatal(err)
+	}
+	b, _ := data.Build("test-1")
+	ref, ok := b.TalentBySpellID(1, 12281)
+	if !ok || ref.ID != 101 {
+		t.Fatalf("TalentBySpellID(1, 12281) = %+v, %v; want talent 101", ref, ok)
+	}
+	if _, ok := b.TalentBySpellID(1, 999999); ok {
+		t.Fatal("an unknown spell id must report false")
+	}
+	if _, ok := b.TalentBySpellID(99, 12281); ok {
+		t.Fatal("an unknown class must report false")
+	}
+}
+
+func TestLatestPrefersAClientBuildOverANamedDataSet(t *testing.T) {
+	for _, c := range []struct {
+		versions []string
+		want     string
+	}{
+		{[]string{"1.15.9.69722", "1.60.1.69893", "forever-prebeta"}, "1.60.1.69893"},
+		{[]string{"1.15.9.69722", "1.9.1.1"}, "1.15.9.69722"},
+		{[]string{"forever-prebeta"}, "forever-prebeta"},
+	} {
+		if got := newestVersion(c.versions); got != c.want {
+			t.Fatalf("newestVersion(%v) = %q, want %q", c.versions, got, c.want)
+		}
+	}
+}

@@ -82,6 +82,12 @@ func (i *Inferrer) Split(class string, talents []int64) []int {
 	for _, id := range talents {
 		ref, ok := i.build.Talent(classID, int(id))
 		if !ok {
+			// The 1.60 client writes the talent's spell id, not the trait
+			// node id the emitted data is keyed by. Both are tried, in that
+			// order, so a log from either client reads correctly.
+			ref, ok = i.build.TalentBySpellID(classID, int(id))
+		}
+		if !ok {
 			continue
 		}
 		if n, ok := position[ref.TreeID]; ok {
