@@ -13,6 +13,7 @@
     formatDuration,
     formatDurationPrecise,
   } from '../../lib/report/format';
+  import { believableHealth, healthPct } from '../../lib/report/death-health';
   import { plannerLinkFor } from '../../lib/report/planner-link';
   import CopyCsv from './CopyCsv.svelte';
   import type { CastRow, CombatantRow, DamageRef, Death, HealRef, PullMark } from '../../lib/report/types';
@@ -168,9 +169,35 @@
   function landed(hit: DamageRef): number {
     return Math.max(0, hit.amount);
   }
-  function healthPct(hit: { hp_after?: number; max_hp?: number }): number | null {
-    if (!hit.max_hp) return null;
-    return Math.max(0, Math.min(100, ((hit.hp_after ?? 0) / hit.max_hp) * 100));
+
+  /**
+   * One card's rows with the health reading each of them can be believed on. The client
+   * writes a full bar on a swing a shield ate whole and keeps writing it for a swing or
+   * two after, so a reading that rises on a damage row with no heal before it is the
+   * client's and not the player's: death-health.ts drops it, and the bar, the run-up
+   * sentence and the "no lethal hit" sentence all read the same list.
+   */
+  function cardHealth(death: Death): { events: LastEvent[]; pcts: (number | null)[] } {
+    const events = lastEvents(death);
+    return {
+      events,
+      pcts: believableHealth(
+        events.map((event) =>
+          event.kind === 'heal'
+            ? { kind: 'heal' as const, hp_after: event.heal.hp_after, max_hp: event.heal.max_hp }
+            : { kind: 'damage' as const, hp_after: event.hit.hp_after, max_hp: event.hit.max_hp },
+        ),
+      ),
+    };
+  }
+  /** The believable reading on the killing blow's own row, when the card has one. */
+  function blowPct(death: Death, card: { events: LastEvent[]; pcts: (number | null)[] }): number | null {
+    const at = card.events.findIndex((event) => event.kind === 'damage' && isKillingBlow(death, event.hit));
+    return at === -1
+      ? death.killing_blow === undefined
+        ? null
+        : healthPct(death.killing_blow)
+      : card.pcts[at];
   }
 
   /**
@@ -179,7 +206,7 @@
    * seconds, no heal was going to land in time, and that is a different conversation
    * from a health bar that drained over fifteen seconds while nobody was healing it.
    */
-  function shape(death: Death): string | null {
+  function shape(death: Death, pcts: (number | null)[]): string | null {
     const hits = death.last;
     if (hits.length < 2) return null;
     const first = hits[0];
@@ -187,10 +214,12 @@
     // row's: heals between hits can lift it, and "from 4%" when they were at 47% two
     // hits later is the wrong story.
     // The heals count too: a Shatter that lifted them to 50% is part of the span's story.
-    const firstPct = [...hits, ...(death.heals ?? [])].reduce<number | null>((highest, event) => {
-      const pct = healthPct(event);
-      return pct === null ? highest : Math.max(highest ?? 0, pct);
-    }, null);
+    // Only the readings the card believes, though: a client's post-absorb full bar named
+    // as the peak told a healer the player was fine at 73% when they were under 30%.
+    const firstPct = pcts.reduce<number | null>(
+      (highest, pct) => (pct === null ? highest : Math.max(highest ?? 0, pct)),
+      null,
+    );
     if (firstPct === null) return null;
     const spanMs = death.at_ms - first.at_ms;
     const total = hits.reduce((sum, hit) => sum + landed(hit), 0);
@@ -252,6 +281,7 @@
     {#each ordered as death (`${death.guid}-${death.at_ms}`)}
       {@const link = linkFor(death)}
       {@const alreadyDead = deadAt(death)}
+      {@const card = cardHealth(death)}
       <li
         class="border-line rounded-panel bg-raised flex flex-col gap-3 border p-3"
         data-testid={`death-${death.guid}`}
@@ -343,14 +373,14 @@
         </div>
 
         {#if isOpen(death)}
-          {#if shape(death)}
-            <p class="text-[13px]" data-testid="death-shape">{shape(death)}</p>
+          {#if shape(death, card.pcts)}
+            <p class="text-[13px]" data-testid="death-shape">{shape(death, card.pcts)}</p>
           {/if}
           {#if death.killing_blow && lethalHitMissing(death)}
             <p class="text-muted text-[13px]" data-testid="death-unlogged">
               The log shows no lethal hit: the last recorded hit left them at
-              {#if healthPct(death.killing_blow) !== null}
-                <span class="tabular font-mono">{Math.round(healthPct(death.killing_blow) ?? 0)}%</span>,
+              {#if blowPct(death, card) !== null}
+                <span class="tabular font-mono">{Math.round(blowPct(death, card) ?? 0)}%</span>,
               {:else}
                 unknown health,
               {/if}
@@ -378,10 +408,10 @@
                 </tr>
               </thead>
               <tbody>
-                {#each lastEvents(death) as event, i (`${event.at_ms}-${i}`)}
+                {#each card.events as event, i (`${event.at_ms}-${i}`)}
                   {#if event.kind === 'heal'}
                     {@const heal = event.heal}
-                    {@const healed = healthPct(heal)}
+                    {@const healed = card.pcts[i]}
                     <tr class="border-line-soft border-b" data-testid="death-heal">
                       <td
                         class="text-muted tabular py-1 pr-3 font-mono"
@@ -429,7 +459,7 @@
                     {@const lethal = isKillingBlow(death, hit)}
                     <!-- The last recorded hit reads as the kill only when it was one: a hit that
                          left health behind keeps its own figure, as the sentence above says. -->
-                    {@const pct = lethal && !lethalHitMissing(death) ? 0 : healthPct(hit)}
+                    {@const pct = lethal && !lethalHitMissing(death) ? 0 : card.pcts[i]}
                     <tr class="border-line-soft border-b">
                       <td
                         class="text-muted tabular py-1 pr-3 font-mono"
