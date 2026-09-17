@@ -107,6 +107,8 @@ def write_forever_talents(snapshot: str, from_build: str, build: str) -> Path:
     # The planner's gear picker reads the per-class item files, not items.json alone.
     if (src / "items").is_dir() and not (dst / "items").exists():
         shutil.copytree(src / "items", dst / "items")
+    if (src / "trees").is_dir() and not (dst / "trees").exists():
+        shutil.copytree(src / "trees", dst / "trees")
 
     # The web's sync-data reads manifest["files"] and refuses to publish a build whose
     # manifest lists no talents/*.json, falling back to the checked-in fixture. The keys
@@ -132,6 +134,7 @@ def write_forever_talents(snapshot: str, from_build: str, build: str) -> Path:
                     "items/": "classic-era",
                     **{name: "classic-era" for name in CARRIED_OVER},
                     "icons/": "classic-era",
+                    "trees/": "classic-era",
                 },
                 "counts": {
                     "classes": len(per_class),

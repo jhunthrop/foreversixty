@@ -47,7 +47,8 @@
   "races.json": "classic-era",
   "sets.json": "classic-era",
   "talents.json": "forever",
-  "talents/": "forever"
+  "talents/": "forever",
+  "trees/": "classic-era"
  },
  "snapshot": "data/raw-forever/wowhead-talents-2026-09-14.json"
 }

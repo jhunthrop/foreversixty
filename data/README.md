@@ -9,11 +9,12 @@ uv run python -m pipeline fetch --product wow_classic_era            # latest bu
 uv run python -m pipeline fetch --product <forever product> --build <build>
 uv run python -m pipeline normalize --build <build>
 uv run python -m pipeline icons --build <build>
+uv run python -m pipeline tree-art --build <build>                    # then normalize again, so the manifest lists trees/
 uv run python -m pipeline diff --from <build> --to <build>
 uv run ruff check . && uv run pytest
 ```
 
-`fetch` and `icons` are the only commands that use the network. `normalize` and
+`fetch`, `icons` and `tree-art` are the only commands that use the network. `normalize` and
 `diff` are offline and fully unit-tested against the fixtures in `tests/fixtures/`.
 
 ## Layout
@@ -61,7 +62,9 @@ a build that has both real rows — 1.60 and any later one — not against the f
 
 ## Sept 17 checklist
 1. Find the Forever product key on https://wago.tools/builds (it appears when the beta client is on the CDN).
-2. Run the workflow_dispatch in GitHub Actions with that product, or run fetch, normalize and icons locally.
+2. Run the workflow_dispatch in GitHub Actions with that product, or run fetch, normalize,
+   icons and tree-art locally (re-run normalize once more after tree-art, so the manifest
+   lists `trees/`).
 3. If a table 404s or a column is missing, fix `TABLES` in `pipeline/wago.py` or the
    normalizer, add a fixture row, keep the golden tests green.
 4. If `normalize` logs "items not emitted" it also exits non-zero, which stops the
