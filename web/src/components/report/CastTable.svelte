@@ -225,6 +225,8 @@
     </div>
     <ul class="flex flex-col">
       {#each ordered as row (`${row.guid}-${row.spell_id}`)}
+        {@const caster = casterName(row)}
+        {@const via = viaOf(row)}
         <li
           class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px] md:grid-cols-[minmax(150px,1.3fr)_minmax(170px,1.5fr)_64px_64px_64px_72px_80px_minmax(0,2fr)]"
           data-testid={`cast-${row.guid}-${row.spell_id}`}
@@ -232,16 +234,16 @@
           <span
             class="truncate font-semibold"
             style={`color: ${classColorVar(classOf.get(ownerOf(row)))}`}
-            title={casterName(row)}
+            title={caster}
           >
-            {casterName(row)}
+            {caster}
           </span>
           <span class="truncate" title={row.spell_name}
-            >{row.spell_name}{#if viaOf(row) !== ''}
+            >{row.spell_name}{#if via !== ''}
               <span
                 class="text-muted ml-1 text-[11px]"
                 title="Cast by this pet or guardian, counted on its owner's row"
-                data-testid="cast-via">· via {viaOf(row)}</span
+                data-testid="cast-via">· via {via}</span
               >{/if}{#if sameName.has(`${row.guid}|${row.spell_name}`)}
               <span
                 class="text-muted ml-1 font-mono text-[11px]"
