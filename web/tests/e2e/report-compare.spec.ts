@@ -75,3 +75,17 @@ test('whatever is on screen copies as a CSV', async ({ page }) => {
   await page.goto(`${COMPARE}&with=4`);
   await expect(page.getByTestId('compare-mode').getByTestId('copy-csv').first()).toBeVisible();
 });
+
+// The fixture's two encounters are a boss with phases and a boss with none, so they share
+// no phase: the picker says so rather than offering an alignment it cannot make.
+test('the phase picker says when the two pulls share no phase', async ({ page }) => {
+  await page.goto(`${COMPARE}&with=4`);
+  await expect(page.getByTestId('compare-phase')).toHaveCount(0);
+  await expect(page.getByTestId('compare-phase-note')).toContainText('no phase in common');
+});
+
+test('there is no phase picker before a second fight is picked', async ({ page }) => {
+  await page.goto(COMPARE);
+  await expect(page.getByTestId('compare-phase')).toHaveCount(0);
+  await expect(page.getByTestId('compare-phase-note')).toHaveCount(0);
+});

@@ -1,6 +1,6 @@
 // web/src/lib/report/compare.test.ts
 import { describe, expect, it } from 'vitest';
-import { abilityDiff, metricTable, playerAbilityDiff } from './compare';
+import { abilityDiff, metricTable, phaseWindow, playerAbilityDiff, sharedPhases } from './compare';
 import type { Ability, Actor, Summary } from './types';
 
 function ability(spell_id: number, name: string, effective: number, via?: string): Ability {
@@ -107,5 +107,37 @@ describe('playerAbilityDiff', () => {
       ['Slam', 400, null, 400],
       ['Frostbolt', null, 310, -310],
     ]);
+  });
+});
+
+describe('aligning two pulls by phase', () => {
+  const phased = (phases: { name: string; start_ms: number; end_ms: number }[]): Summary => ({
+    ...summary([]),
+    phases,
+  });
+  const left = phased([
+    { name: 'Phase 1', start_ms: 0, end_ms: 20_000 },
+    { name: 'Phase 2', start_ms: 20_000, end_ms: 90_000 },
+  ]);
+  const right = phased([
+    { name: 'Phase 1', start_ms: 0, end_ms: 35_000 },
+    { name: 'Phase 2', start_ms: 35_000, end_ms: 60_000 },
+    { name: 'Phase 3', start_ms: 60_000, end_ms: 120_000 },
+  ]);
+
+  it('offers only the phases both pulls reached, in the first pull’s order', () => {
+    expect(sharedPhases(left, right)).toEqual(['Phase 1', 'Phase 2']);
+  });
+
+  it('gives each side its own span for the named phase', () => {
+    expect(phaseWindow(left, 'Phase 2')).toEqual({ startMs: 20_000, endMs: 90_000 });
+    expect(phaseWindow(right, 'Phase 2')).toEqual({ startMs: 35_000, endMs: 60_000 });
+  });
+
+  it('has nothing to offer when a side has no phases at all', () => {
+    expect(sharedPhases(left, phased([]))).toEqual([]);
+    expect(sharedPhases(left, null)).toEqual([]);
+    expect(phaseWindow(phased([]), 'Phase 2')).toBeNull();
+    expect(phaseWindow(null, 'Phase 2')).toBeNull();
   });
 });

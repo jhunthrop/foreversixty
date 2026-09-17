@@ -25,7 +25,9 @@
     PER_SECOND_METRICS,
     abilityDiff,
     metricTable,
+    phaseWindow,
     playerAbilityDiff,
+    sharedPhases,
     type AbilityDiff,
     type CompareMetric,
   } from '../../lib/report/compare';
@@ -92,14 +94,31 @@
     return `${fight.name}${pull === '' ? '' : ` · ${pull}`} · ${formatDuration(fight.duration_ms)} · ${outcomeLabel(fight).toLowerCase()}`;
   }
   let rightWhole = $state<Summary | null>(null);
-  /** Each side in the window, clamped to that fight's own length. */
+
+  /**
+   * The phase both sides are read over, when one is picked: each side is scoped to its
+   * own span for it, so a pull whose Phase 2 ran twice as long is still compared phase
+   * against phase. Not in the url: it is a way of reading the two fights on screen, and
+   * a link already carries which two they are.
+   */
+  let phase = $state('');
+  const phases = $derived(sharedPhases(leftWhole, rightWhole));
+  // A second fight picked while a phase is chosen may not have that phase.
+  $effect(() => {
+    if (phase !== '' && !phases.includes(phase)) phase = '';
+  });
+
+  /** Each side in its own phase's span when one is picked, else in the page's window. */
+  const leftWindow = $derived(phase === '' ? window : phaseWindow(leftWhole, phase));
+  const rightWindow = $derived(phase === '' ? window : phaseWindow(rightWhole, phase));
+  /** Each side in its own window, clamped to that fight's own length. */
   const left = $derived(
-    window === null ? leftWhole : scopeSummary(leftWhole, clampWindow(window, leftWhole.duration_ms)),
+    leftWindow === null ? leftWhole : scopeSummary(leftWhole, clampWindow(leftWindow, leftWhole.duration_ms)),
   );
   const right = $derived(
-    rightWhole === null || window === null
+    rightWhole === null || rightWindow === null
       ? rightWhole
-      : scopeSummary(rightWhole, clampWindow(window, rightWhole.duration_ms)),
+      : scopeSummary(rightWhole, clampWindow(rightWindow, rightWhole.duration_ms)),
   );
   let error = $state('');
   const metric = $derived<CompareMetric>(
@@ -171,12 +190,12 @@
     return PER_SECOND_METRICS.has(metric) ? Math.round(row[metric]) : row[metric];
   }
 
-  function fightLabel(fight: FightEntry | null): string {
+  function fightLabel(fight: FightEntry | null, own: TimeWindow | null): string {
     if (fight === null) return '';
     const stretch =
-      window === null
+      own === null
         ? formatDuration(fight.duration_ms)
-        : `${formatDuration(window.startMs)} to ${formatDuration(Math.min(window.endMs, fight.duration_ms))} of ${formatDuration(fight.duration_ms)}`;
+        : `${formatDuration(own.startMs)} to ${formatDuration(Math.min(own.endMs, fight.duration_ms))} of ${formatDuration(fight.duration_ms)}`;
     return `${fight.name} · ${stretch} · ${outcomeLabel(fight).toLowerCase()}`;
   }
 
@@ -256,11 +275,6 @@
     return abilityDiff(left, right, guid, metric);
   }
 
-  /** `leftWindow` and `rightWindow` are both the one `window` prop until Task 21's phase
-   *  picker gives each side its own; kept as two names now so `splitScaled` is written
-   *  once and does not change when that lands. */
-  const leftWindow = $derived(window);
-  const rightWindow = $derived(window);
   /**
    * An ability split inside a window is prorated: window.ts scales each ability by the
    * window's share of its actor's total, because the summary keeps no per-ability series.
@@ -406,7 +420,13 @@
 
 <div class="flex flex-col gap-3" data-testid="compare-mode">
   <p class="text-muted text-[12px]" data-testid="compare-scope">
-    {#if window === null}
+    {#if phase !== ''}
+      Each side shows its own {phase}: {formatDuration(leftWindow?.startMs ?? 0)} to {formatDuration(
+        leftWindow?.endMs ?? 0,
+      )} of this pull against {formatDuration(rightWindow?.startMs ?? 0)} to {formatDuration(
+        rightWindow?.endMs ?? 0,
+      )} of the other, so a long phase and a short one are read phase against phase.
+    {:else if window === null}
       Both sides show the whole fight. Set a window in Analyze to compare the same stretch of each pull.
     {:else}
       Both sides show {formatDuration(window.startMs)} to {formatDuration(window.endMs)} of each fight, so a long
@@ -475,6 +495,30 @@
         {/each}
       </select>
     </label>
+    {#if rightWhole !== null}
+      {#if phases.length > 0}
+        <label class="label text-muted flex items-center gap-2" for="compare-phase">
+          Phase
+          <select
+            id="compare-phase"
+            class="border-line-warm bg-raised rounded-control text-text h-11 px-2 text-[13px] md:h-9"
+            data-testid="compare-phase"
+            value={phase}
+            onchange={(event) => (phase = (event.currentTarget as HTMLSelectElement).value)}
+          >
+            <option value="">The whole pull</option>
+            {#each phases as name (name)}
+              <option value={name}>{name}</option>
+            {/each}
+          </select>
+        </label>
+      {:else}
+        <p class="text-muted text-[12px]" data-testid="compare-phase-note">
+          These two pulls have no phase in common, so there is nothing to align by: either their bosses have
+          no curated phases, or one pull did not reach the other's.
+        </p>
+      {/if}
+    {/if}
     {#if metric === 'threat' || metric === 'tps'}
       <p class="text-muted text-[12px]" data-testid="compare-threat-note">
         Threat is under the base threat model, which has no tank stance, taunt or threat multipliers yet, so a
@@ -523,20 +567,22 @@
     <div class="hidden overflow-x-auto md:block">
       <table class="w-full border-collapse text-[14px]" data-testid="compare-table">
         <caption class="sr-only">
-          Per-player {METRIC_LABELS[metric]} in {fightLabel(currentFight) || 'this fight'}, compared with {fightLabel(
-            rightFight,
-          ) || 'the selected fight'}.
+          Per-player {METRIC_LABELS[metric]} in {fightLabel(currentFight, leftWindow) || 'this fight'},
+          compared with {fightLabel(rightFight, rightWindow) || 'the selected fight'}.
         </caption>
         <thead>
           <tr class="border-line-soft border-b text-left">
             <th scope="col" class="label text-muted bg-bg sticky left-0 px-2 py-2 font-bold">Player</th>
             <th scope="col" class="label text-muted px-2 py-2 text-right font-bold">
               This fight
-              <span class="block truncate text-[11px] normal-case">{fightLabel(currentFight)}</span>
+              <span class="block truncate text-[11px] normal-case"
+                >{fightLabel(currentFight, leftWindow)}</span
+              >
             </th>
             <th scope="col" class="label text-muted px-2 py-2 text-right font-bold">
               Compared with
-              <span class="block truncate text-[11px] normal-case">{fightLabel(rightFight)}</span>
+              <span class="block truncate text-[11px] normal-case">{fightLabel(rightFight, rightWindow)}</span
+              >
             </th>
             <th scope="col" class="label text-muted px-2 py-2 text-right font-bold">Difference</th>
             <th scope="col"><span class="sr-only">Abilities</span></th>

@@ -7,6 +7,7 @@
 // are asked. The one thing the summary cannot split is threat, which the engine keeps per
 // player and never per ability, so a threat comparison expands to nothing and says so.
 import { abilityKey, type Ability, type Summary } from './types';
+import type { TimeWindow } from './window';
 
 export type CompareMetric =
   'damage_done' | 'dps' | 'healing_done' | 'hps' | 'damage_taken' | 'dtps' | 'threat' | 'tps';
@@ -120,4 +121,20 @@ export function playerAbilityDiff(
   metric: CompareMetric,
 ): AbilityDiff[] {
   return diffOf(abilityAmounts(summary, leftGuid, metric), abilityAmounts(summary, rightGuid, metric));
+}
+
+/**
+ * The phase names both pulls reached, in the first pull's order. Aligning by phase only
+ * makes sense for a phase both sides got to: a pull that wiped in Phase 2 has no Phase 3
+ * to compare, and offering one would compare a real span against nothing.
+ */
+export function sharedPhases(left: Summary | null, right: Summary | null): string[] {
+  const theirs = new Set((right?.phases ?? []).map((phase) => phase.name));
+  return (left?.phases ?? []).map((phase) => phase.name).filter((name) => theirs.has(name));
+}
+
+/** One pull's own span for a named phase, or null when it has none of that name. */
+export function phaseWindow(summary: Summary | null, name: string): TimeWindow | null {
+  const found = (summary?.phases ?? []).find((phase) => phase.name === name);
+  return found === undefined ? null : { startMs: found.start_ms, endMs: found.end_ms };
 }
