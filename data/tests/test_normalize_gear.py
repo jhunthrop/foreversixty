@@ -731,3 +731,14 @@ def test_base_points_columns_that_disagree_are_an_error_not_a_guess():
     row = _effect_row(EffectBasePoints="41", EffectBasePointsF="99.0")
     with pytest.raises(SpellTextError, match="disagreeing"):
         load_spell_text(spell, misc, [row], [])
+
+
+def test_a_literal_zero_float_column_is_eras_padding_not_a_disagreement():
+    """Era's own EffectBasePointsF is never truly empty -- the client exports the
+    literal string "0" as unused padding on every single Era row, not "". A real,
+    nonzero EffectBasePoints alongside that "0" padding is not a disagreement (see
+    spell 543 effect 0 in build 1.15.9.69722's own SpellEffect export, which is
+    exactly this shape and must not raise)."""
+    spell, misc = _spell_and_misc()
+    row = _effect_row(EffectBasePoints="165", EffectBasePointsF="0")
+    assert load_spell_text(spell, misc, [row], []).describe(10) == "165 dmg"

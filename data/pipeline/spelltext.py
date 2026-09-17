@@ -175,9 +175,18 @@ def _base_points(row: dict[str, str]) -> int:
     RandPropPoints; if the two ever populated the same row with different numbers,
     that would mean the "only one is ever real" premise this whole function rests on
     is false, so this raises rather than silently pick a side.
+
+    Era's EffectBasePointsF padding is the literal string "0", which `populated`
+    (correctly) still reports as present -- a column being non-empty is not the same
+    as it carrying real data. Comparing that padding against a real, nonzero
+    EffectBasePoints made this raise on the vast majority of Era's own SpellEffect
+    rows rather than only on a genuine disagreement, so a literal "0" float column is
+    treated as Era's padding (not populated, for comparison purposes) whenever the int
+    column is also populated. Any other float value is still compared and still raises
+    on a mismatch -- see test_base_points_columns_that_disagree_are_an_error_not_a_guess.
     """
     raw, float_raw = populated(row, "EffectBasePoints"), populated(row, "EffectBasePointsF")
-    if raw is not None and float_raw is not None:
+    if raw is not None and float_raw is not None and float_raw != "0":
         int_value, float_value = int(raw), round(float(float_raw))
         if int_value != float_value:
             raise SpellTextError(
