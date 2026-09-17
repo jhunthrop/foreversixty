@@ -183,7 +183,14 @@ func (d *Decoder) decodeStandard(e Event, ln lexer.Line, prefix, suffix string) 
 	// recognised by value: "ST" and "AOE" are the only two strings it ever
 	// holds, and every field it could be confused with (critical,
 	// isOffHand, crushing) holds "nil", "0" or "1".
-	if spec.Tag && len(rest) > 0 && isScopeTag(rest[len(rest)-1]) {
+	//
+	// The value check alone is not enough: a shape with no headroom past
+	// what the suffix reads (len(rest) == suffixNeeds) has no field left
+	// to be a tag, so a corrupted line whose last required field happens
+	// to read "ST" or "AOE" must not be stripped — that once cost the
+	// field the switch below reads, and turned a malformed line into an
+	// index-out-of-range panic instead of a parse error.
+	if spec.Tag && len(rest) > suffixNeeds(suffix, spec) && isScopeTag(rest[len(rest)-1]) {
 		e.Scope = rest[len(rest)-1]
 		rest = rest[:len(rest)-1]
 	}
