@@ -27,7 +27,21 @@
     tracks,
     durationMs,
     deaths = [],
-  }: { tracks: ResourceTrack[]; durationMs: number; deaths?: { guid: string; at_ms: number }[] } = $props();
+    windowed = false,
+  }: {
+    tracks: ResourceTrack[];
+    durationMs: number;
+    deaths?: { guid: string; at_ms: number }[];
+    /** True while a window is brushed, so the at-cap figure can say what it measured. */
+    windowed?: boolean;
+  } = $props();
+  /**
+   * What the at-cap share is a share of. The figure has always been the window's own --
+   * the series is sliced and `durationMs` is the window's length -- but the words beside
+   * it said "of the fight" whatever the brush was doing, so a four-minute slice capped
+   * throughout read "at cap 100.0% of the fight" on a twelve-minute pull.
+   */
+  const capSpan = $derived(windowed ? 'window' : 'fight');
 
   /** The reading under the pointer, per line: "at 40.6s · 1,188", so the picture has a number. */
   let readouts = $state<Record<string, string>>({});
@@ -252,7 +266,8 @@
             {#if track.max !== undefined && track.max > 0}
               <span
                 title="The share of this window the bar spent full, measured from the window's own seconds"
-                >at cap {formatPercent(atCapPct(track.at_max_ms ?? 0))} of the fight</span
+                data-testid="resource-at-cap"
+                >at cap {formatPercent(atCapPct(track.at_max_ms ?? 0))} of the {capSpan}</span
               >
               <!-- One title per element: the whole-fight one from wholeFightTitle(true),
                    already bound to this file's `title` const, and the words that explain

@@ -313,6 +313,17 @@ test('a resource graph draws the cap, shades the time at it and says what was wa
   await expect(figures).toContainText('wasted 25');
 });
 
+test('the at-cap figure says whether it measured the fight or the window', async ({ page }) => {
+  await page.goto(`${FIGHT}&tab=resources`);
+  const rage = page.getByTestId('resource-Player-4184-000000A1-1');
+  await expect(rage.getByTestId('resource-at-cap')).toContainText('of the fight');
+  // The same figure under a brush is the window's own, and now says so.
+  await page.goto(`${FIGHT}&tab=resources&start=10000&end=30000`);
+  const windowed = page.getByTestId('resource-Player-4184-000000A1-1').getByTestId('resource-at-cap');
+  await expect(windowed).toContainText('of the window');
+  await expect(windowed).not.toContainText('of the fight');
+});
+
 test('a resource with no reported cap draws no cap line and no cap figures', async ({ page }) => {
   await page.goto(`${FIGHT}&tab=resources&source=Player-4184-000000A3`);
   const mana = page.getByTestId('resource-Player-4184-000000A3-0');

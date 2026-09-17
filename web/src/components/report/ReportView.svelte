@@ -1580,6 +1580,7 @@
           <ResourceGraphs
             tracks={scoped.resources}
             durationMs={scoped.duration_ms}
+            windowed={!windowIsWhole}
             deaths={scoped.deaths.map((death) => ({
               guid: death.guid,
               at_ms: death.at_ms - timeWindow.startMs,
