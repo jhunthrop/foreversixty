@@ -3,13 +3,21 @@ import shutil
 from pathlib import Path
 
 from pipeline.__main__ import main
+from pipeline.models import ClassTalents
 from pipeline.normalize import normalize_build
+from pipeline.normalize.talents import flat_talents
 from pipeline.wago import OPTIONAL_TABLES, TABLES
 
 HERE = Path(__file__).parent
 # classes.json and races.json are compared against the merged goldens below,
 # because the orchestrator folds data/curated into them.
 ENTITY_NAMES = ["zones", "dungeons", "items", "spells", "talents"]
+#: Talent ids only the trait-table fixture (tests/fixtures/traits) can produce
+#: -- the legacy Talent.csv fixture's own ids are all in the low thousands
+#: (see fixtures/Talent.csv), so seeing one of these in the output proves
+#: normalize_build took the trait branch of its reader switch rather than
+#: quietly falling back to the legacy one.
+TRAIT_ONLY_TALENT_ID = 900001
 
 
 def prepare(tmp_path: Path) -> Path:
@@ -126,3 +134,46 @@ def test_the_cli_exits_zero_when_every_output_was_emitted(tmp_path: Path, monkey
     build_dir = cli_workspace(tmp_path, monkeypatch)
     assert main(["normalize", "--build", "1.0.0.1"]) == 0
     assert (build_dir / "items" / "warrior.json").exists()
+
+
+def trait_switch_workspace(tmp_path: Path) -> Path:
+    """The usual fixture raw dir, with its talent/trait tables swapped for
+    tests/fixtures/traits' (see traits_fixture.py and
+    test_normalize_trait_trees.py), so SkillLineXTraitTree is populated and
+    has_trait_trees(...) is true. ChrClasses stays the default fixture's
+    (Warrior/Paladin/Mage): the trait fixture's own tables only ever name
+    class 1 (Warrior, ClassMask 1), which the default ChrClasses already
+    has, and swapping ChrClasses too would strand the curated fixture's
+    combos, which name classes the trait fixture doesn't carry.
+    """
+    root = prepare(tmp_path)
+    raw = root / "1.0.0.1" / "raw"
+    for fixture in (HERE / "fixtures/traits").glob("*.csv"):
+        if fixture.name != "ChrClasses.csv":
+            shutil.copy(fixture, raw / fixture.name)
+    return root
+
+
+def test_normalize_build_picks_the_trait_reader_when_the_client_has_trait_trees(tmp_path: Path):
+    """The entire deliverable of Task 6: normalize_build must read a build's
+    talent trees from the trait tables, not the legacy Talent table, whenever
+    the client's SkillLineXTraitTree names one. Before this test, nothing
+    exercised this branch of the switch -- every other normalize_build test
+    fixture leaves SkillLineXTraitTree empty and takes the legacy branch."""
+    out = normalize_build(
+        "1.0.0.1", root=trait_switch_workspace(tmp_path), curated_dir=HERE / "fixtures/curated"
+    ).build_dir
+    warrior = ClassTalents.model_validate_json(
+        (out / "talents" / "warrior.json").read_text(encoding="utf-8")
+    )
+    talent_ids = {t.id for tree in warrior.trees for t in tree.talents}
+    assert TRAIT_ONLY_TALENT_ID in talent_ids
+
+    # talents.json is written by write_json, which sorts by id; flat_talents
+    # itself preserves tree/talent order, so the expectation is sorted the
+    # same way before comparing.
+    flat = json.loads((out / "talents.json").read_text(encoding="utf-8"))
+    expected = sorted(
+        (node.model_dump() for node in flat_talents([warrior])), key=lambda n: n["id"]
+    )
+    assert flat == expected
