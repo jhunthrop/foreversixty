@@ -14,6 +14,12 @@
 import { EVENTS_TABLE, FIGHT_MS, createDuckDbEngine, createQueryLayer, type QueryLayer } from './query';
 import type { Ability, Mitigated, Pair } from './types';
 import { BUCKET_MS, type TimeWindow } from './window';
+import { castKey } from './cast-key';
+
+// Re-exported so every existing caller of `castKey` off this module keeps working; the
+// definition itself lives in cast-key.ts so a consumer that needs only the key (CastTable.svelte)
+// can import it without pulling in the query layer below.
+export { castKey };
 
 export type ActorKind = 'damage-done' | 'damage-taken' | 'healing';
 
@@ -310,11 +316,6 @@ export interface CastCounts {
   succeeded: number;
   failed: number;
   fail_reasons: Record<string, number>;
-}
-
-/** The key a cast row and its measured counts share: the caster and the spell. */
-export function castKey(row: { guid: string; spell_id: number }): string {
-  return `${row.guid}|${row.spell_id}`;
 }
 
 /**
