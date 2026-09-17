@@ -255,7 +255,7 @@ def _sizes_for(ids: dict[str, int]) -> dict[int, tuple[int, int]]:
     return {file_id: QUADRANT_SIZES[quadrant] for quadrant, file_id in ids.items()}
 
 
-def test_backgrounds_for_build_reuses_the_blp_cache_on_a_second_call(tmp_path: Path):
+def test_backgrounds_for_build_regenerates_the_webp_but_reuses_the_blp_cache(tmp_path: Path):
     build_dir = tmp_path / "builds" / "1.0.0.1"
     _write_frame_manifest(build_dir / "raw", FRAME_IDS)
     _write_tree_json(build_dir)
@@ -270,10 +270,13 @@ def test_backgrounds_for_build_reuses_the_blp_cache_on_a_second_call(tmp_path: P
     assert written == 1
     assert len(first_calls) == 4  # one fetch per quadrant, nothing cached yet
 
-    # Delete the output but keep the BLP cache, and answer the second run with a
-    # client that would fail this assertion the moment it is asked anything: the
-    # rerun must resolve entirely from the cache, with zero new HTTP calls.
-    (build_dir / "trees" / "testtree.webp").unlink()
+    # Do not delete the output this time: the target already exists from the first run,
+    # and the second run must still regenerate it from the cached BLPs -- with zero new
+    # HTTP calls -- rather than skipping because the file is already there. That skip is
+    # exactly what let TREATMENT changes go silently stale; a client that would fail this
+    # assertion the moment it is asked anything proves the cache, not the network, served it.
+    target = build_dir / "trees" / "testtree.webp"
+    before = target.read_bytes()
     second_calls: list[str] = []
     client_2 = httpx.Client(transport=frame_transport(second_calls, sizes), base_url="https://x")
     written_again = backgrounds_for_build(
@@ -281,7 +284,8 @@ def test_backgrounds_for_build_reuses_the_blp_cache_on_a_second_call(tmp_path: P
     )
     assert written_again == 1
     assert second_calls == []
-    assert (build_dir / "trees" / "testtree.webp").exists()
+    assert target.exists()
+    assert target.read_bytes() == before  # same BLP input -> byte-identical re-emit
 
 
 def test_backgrounds_for_build_raises_naming_the_tree_and_missing_quadrant(tmp_path: Path):

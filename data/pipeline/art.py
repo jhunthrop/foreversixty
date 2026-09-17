@@ -233,7 +233,15 @@ def backgrounds_for_build(
     cache_dir: Path = CACHE_DIR,
     client: httpx.Client | None = None,
 ) -> int:
-    """Write one processed background per tree. Returns the number written."""
+    """Write one processed background per tree, regenerating every one on every call.
+
+    Only the fetched BLPs are cached (by CASC file data id, which does not change):
+    the emitted webp is always re-derived from them, so a change to TREATMENT or
+    DEAD_MARGIN_THRESHOLD takes effect on the next run instead of staying silently
+    stale behind a "the file already exists" skip.
+
+    Returns the number written.
+    """
     from pipeline.csvio import read_csv
 
     build_dir = root / build
@@ -252,8 +260,6 @@ def backgrounds_for_build(
     try:
         for background in wanted:
             target = out_dir / f"{background}.webp"
-            if target.exists():
-                continue
             ids = frames.get(background)
             if not ids or set(ids) != set(QUADRANTS):
                 raise ArtDataError(
