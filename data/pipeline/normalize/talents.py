@@ -5,8 +5,12 @@ class TalentDataError(ValueError):
     """A talent tab names more or fewer than one class; this module will not guess."""
 
 
-def _class_id_from_mask(tab_id: int, mask: int) -> int:
+def class_id_from_mask(tab_id: int, mask: int) -> int:
     """The one class a `ClassMask` bit names, or TalentDataError if it names none or many.
+
+    Shared by both talent readers: the legacy one below and
+    `pipeline/normalize/traits.py`, which resolves the same masks off the same
+    `TalentTab` rows.
 
     `ClassMask` is `1 << (class_id - 1)`, same as `AllowableClass` on an item -- a
     single bit for every tab this pipeline has seen. A tab this pipeline cannot single
@@ -38,7 +42,7 @@ def normalize_talents(
         ]
         prereq = int(t.get("PrereqTalent_0", "0") or 0)
         tab_id = int(t["TabID"])
-        class_id = int(t["ClassID"]) or _class_id_from_mask(tab_id, tab_masks.get(tab_id, 0))
+        class_id = int(t["ClassID"]) or class_id_from_mask(tab_id, tab_masks.get(tab_id, 0))
         out.append(
             TalentNode(
                 id=int(t["ID"]),
