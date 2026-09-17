@@ -1,5 +1,7 @@
+import pytest
+
 from pipeline.models import ClassTalents, TalentEntry, TalentRank, TalentTree
-from pipeline.wowhead_diff import diff_snapshot
+from pipeline.wowhead_diff import SnapshotShapeError, diff_snapshot
 
 
 def entry(talent_id, name, tier, column, max_rank=1, prereq=None, prereq_rank=None):
@@ -114,3 +116,24 @@ def test_rank_and_prerequisite_changes_are_listed_by_name():
         {"name": "Nature's Majesty", "snapshot": ["Nature's Splendor", 1], "build": None},
         {"name": "Nature's Splendor", "snapshot": None, "build": ["Nature's Majesty", 2]},
     ]
+
+
+def test_a_tree_the_snapshot_names_that_the_build_lacks_is_reported():
+    """The symmetric case to missing_from_snapshot: a tree id only the
+    snapshot has is otherwise invisible except as a mismatch between the two
+    totals, which is easy to miss since the totals disagree for other
+    reasons on every real run so far."""
+    snap = snapshot([snap_talent(1, "Deflection", 0, 1)])
+    snap["trees"]["999"] = {"id": 999, "description": "GoneTree"}
+    result = diff_snapshot(snap, records([entry(900002, "Deflection", 0, 1)]))
+    assert {"tree_id": 999, "tree": "GoneTree", "missing_from_build": True} in result["trees"]
+
+
+def test_two_snapshot_talents_sharing_a_cell_is_an_error_not_a_silent_drop():
+    """The build side's cells are unique by construction (see
+    tests/test_beta_build.py); the snapshot side is a hand-saved payload with
+    no such guarantee, and the dict comprehensions in _tree_diff would
+    otherwise silently keep only one of two talents sharing a cell."""
+    snap = snapshot([snap_talent(1, "Alpha", 0, 0), snap_talent(2, "Beta", 0, 0)])
+    with pytest.raises(SnapshotShapeError, match="161"):
+        diff_snapshot(snap, records([entry(900002, "Alpha", 0, 0)]))

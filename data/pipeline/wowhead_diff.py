@@ -19,6 +19,28 @@ from pathlib import Path
 from pipeline.models import ClassTalents, TalentEntry, TalentTree
 
 
+class SnapshotShapeError(ValueError):
+    """The Wowhead snapshot does not have the one-talent-per-cell shape this
+    module assumes."""
+
+
+def _assert_one_talent_per_cell(snapshot_tree: dict, tree_id: int) -> None:
+    """The build side's cells are already guaranteed unique by
+    tests/test_beta_build.py's grid test; the snapshot side, read from a
+    hand-saved payload rather than the pipeline's own output, is not. Two
+    talents sharing a cell would otherwise silently lose one of them to the
+    dict comprehensions below."""
+    seen: dict[tuple[int, int], str] = {}
+    for talent in snapshot_tree.values():
+        cell = (talent["row"], talent["col"])
+        if cell in seen:
+            raise SnapshotShapeError(
+                f"snapshot tree {tree_id} names both {seen[cell]!r} and "
+                f"{talent['name']!r} in cell {list(cell)}"
+            )
+        seen[cell] = talent["name"]
+
+
 def _prereq(talent: TalentEntry, by_id: dict[int, TalentEntry]) -> list | None:
     if talent.prereq_talent_id is None:
         return None
@@ -42,6 +64,7 @@ def _tree_diff(snapshot_tree: dict, tree: TalentTree) -> dict:
     list is a rename. What is left over on one side only is an addition or a
     removal.
     """
+    _assert_one_talent_per_cell(snapshot_tree, tree.id)
     snap_cell = {t["name"]: (t["row"], t["col"]) for t in snapshot_tree.values()}
     build_cell = {t.name: (t.tier, t.column) for t in tree.talents}
     only_snapshot = set(snap_cell) - set(build_cell)
@@ -108,8 +131,10 @@ def diff_snapshot(snapshot: dict, records: Sequence[ClassTalents]) -> dict:
     talents_by_tree = snapshot.get("talents") or {}
     trees = []
     build_total = 0
+    build_tree_ids: set[int] = set()
     for record in sorted(records, key=lambda r: r.class_id):
         for tree in sorted(record.trees, key=lambda t: t.position):
+            build_tree_ids.add(tree.id)
             build_total += len(tree.talents)
             snapshot_tree = talents_by_tree.get(str(tree.id))
             if snapshot_tree is None:
@@ -125,6 +150,20 @@ def diff_snapshot(snapshot: dict, records: Sequence[ClassTalents]) -> dict:
             diff = _tree_diff(snapshot_tree, tree)
             if any(diff[key] for key in _CHANGE_KEYS):
                 trees.append({**diff, "class_slug": record.class_slug})
+    # The symmetric case: a tree the snapshot names that the build doesn't.
+    # Without this, such a tree is invisible except as a mismatch between
+    # the two totals below -- easy to miss, since every real run so far has
+    # totals that already disagree for other reasons (talents added/removed
+    # within trees both sides do carry).
+    for tree_id, info in sorted((int(k), v) for k, v in (snapshot.get("trees") or {}).items()):
+        if tree_id not in build_tree_ids:
+            trees.append(
+                {
+                    "tree_id": tree_id,
+                    "tree": info.get("description", ""),
+                    "missing_from_build": True,
+                }
+            )
     return {
         "totals": {
             "snapshot": sum(len(t) for t in talents_by_tree.values()),

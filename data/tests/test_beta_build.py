@@ -51,7 +51,8 @@ def test_the_build_carries_every_talent_measured_off_the_client():
 def test_every_tree_names_a_background_and_every_talent_a_spell():
     for slug in TABS:
         for tree in talents(slug)["trees"]:
-            assert tree["background"] == tree["background"].lower() and tree["background"]
+            assert tree["background"], slug
+            assert tree["background"] == tree["background"].lower(), slug
             for talent in tree["talents"]:
                 assert talent["spell_id"] > 0, (slug, talent["id"])
                 assert talent["ranks"][0]["spell_id"] == talent["spell_id"]
