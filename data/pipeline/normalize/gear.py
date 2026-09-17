@@ -93,6 +93,46 @@ STAT_BY_MODIFIER_ID: dict[int, str | None] = {
     54: "shadow_res",
     55: "nature_res",
     56: "arcane_res",
+    # The 1.60 client (Forever beta) is a modern client build: its ItemSparse rows
+    # reference the full retail ITEM_MOD vocabulary even though Forever's Classic-style
+    # planner has no use for combat ratings retail grew after Classic (haste, expertise,
+    # armor penetration, mastery, versatility, avoidance, leech, speed, indestructible,
+    # corruption resistance, socket bonuses and the rest). None of Classic Era's items
+    # use them, so they are mapped to None here rather than guessed at with a stat key
+    # the planner does not have.
+    36: None,  # haste rating
+    37: None,  # expertise rating
+    44: None,  # armor penetration rating
+    46: None,  # health regen
+    47: None,  # spell penetration
+    50: None,  # mastery rating
+    83: None,
+    84: None,
+    85: None,
+    86: None,
+    87: None,
+    88: None,
+    89: None,
+    90: None,
+    91: None,
+    92: None,
+    96: None,
+    98: None,
+    103: None,
+    112: None,
+    113: None,
+    114: None,
+    115: None,
+    117: None,
+    119: None,
+    121: None,
+    124: None,
+    127: None,
+    128: None,
+    131: None,
+    132: None,
+    135: None,
+    136: None,
 }
 
 #: Resistances_<n> -> stat key. Index 0 is armour and index 1 is holy
@@ -142,6 +182,23 @@ def _int(row: dict[str, str], column: str) -> int:
         ) from error
 
 
+def _optional_int(row: dict[str, str], column: str) -> int | None:
+    """One column's value as an int, or None if this build's schema has no such column.
+
+    The 1.60 client (Forever beta) dropped ItemSparse's flat `Resistances_*` and
+    `StatModifier_bonusAmount_*` columns: armour and stat amounts are now computed from
+    curve tables (`RandPropPoints`, `ItemArmorTotal`, `ItemArmorQuality`) this pipeline
+    does not resolve, so the client states nothing in a column for them. A column
+    entirely absent from the row is that -- an older-schema build (Classic Era) still
+    carries every one of these columns, so this only ever fires on a build that truly
+    lacks the column. A present key with an empty value is still a truncated row, and
+    _int still raises for that.
+    """
+    if column not in row:
+        return None
+    return _int(row, column)
+
+
 def _stats(row: dict[str, str]) -> dict[str, int]:
     stats: dict[str, int] = {}
     for index in STAT_COLUMNS:
@@ -161,12 +218,12 @@ def _stats(row: dict[str, str]) -> dict[str, int]:
                 f"add it to STAT_BY_MODIFIER_ID in pipeline/normalize/gear.py"
             )
         key = STAT_BY_MODIFIER_ID[stat_id]
-        amount = _int(row, f"StatModifier_bonusAmount_{index}")
+        amount = _optional_int(row, f"StatModifier_bonusAmount_{index}") or 0
         if key is None or amount == 0:
             continue
         stats[key] = stats.get(key, 0) + amount
     for index, key in RESISTANCE_KEYS.items():
-        amount = _int(row, f"Resistances_{index}")
+        amount = _optional_int(row, f"Resistances_{index}") or 0
         if amount:
             stats[key] = stats.get(key, 0) + amount
     return stats
@@ -240,7 +297,7 @@ def build_class_items(
             logger.warning("item %s is in ItemSparse but not in Item; skipping it", item_id)
             continue
         item_class_id = _int(item_row, "ClassID")
-        armor = _int(row, "Resistances_0")
+        armor = _optional_int(row, "Resistances_0") or 0
         stats = _stats(row)
         if not _has_gear_value(armor, stats, item_class_id):
             continue

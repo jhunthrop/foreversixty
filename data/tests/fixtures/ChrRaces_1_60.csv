@@ -1,0 +1,5 @@
+ID,Name_lang,ClientFileString,Alliance,PlayableRaceBit
+1,Human,Human,0,0
+33,Human,ThinHuman,2,-1
+95,High Order Skyborne,Skyborne,0,32
+96,Windshaper Skyborne,Skyborne,1,33

@@ -120,6 +120,17 @@ class SpellText:
         return _render(low, high, divisor)
 
 
+def _base_points(row: dict[str, str]) -> int:
+    """The effect's base points: Classic Era exports the integer column, the 1.60 client
+    (Forever beta) the modern float column; either way the formulas want a whole number.
+    The 1.60 client also has no EffectDieSides (its spread is the Variance column, which
+    the descriptions do not use yet), so a missing die-sides column reads as no spread."""
+    raw = row.get("EffectBasePointsF")
+    if raw not in (None, ""):
+        return round(float(raw))
+    return int(row["EffectBasePoints"])
+
+
 def load_spell_text(
     spell_rows: list[dict[str, str]],
     misc_rows: list[dict[str, str]],
@@ -132,8 +143,8 @@ def load_spell_text(
         if row.get("DifficultyID", "0") != "0":
             continue
         effects.setdefault(int(row["SpellID"]), {})[int(row["EffectIndex"])] = Effect(
-            base_points=int(row["EffectBasePoints"]),
-            die_sides=int(row["EffectDieSides"]),
+            base_points=_base_points(row),
+            die_sides=int(row.get("EffectDieSides") or 0),
             period_ms=int(row["EffectAuraPeriod"]),
         )
     misc: dict[int, tuple[int | None, int]] = {}

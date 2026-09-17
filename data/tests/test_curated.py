@@ -10,16 +10,27 @@ from pipeline.normalize import write_json, write_records
 from pipeline.normalize.classes import normalize_classes, normalize_races
 
 HERE = Path(__file__).parent
-ERA_BUILD = Path("builds/1.15.9.69722")
+#: The 1.60 client (Forever beta) is the first to export real Skyborne rows, so it is
+#: the build the real curated/ directory is now validated against: it is a strict
+#: superset of era's races and classes (every Classic race and class, plus the two
+#: real Skyborne rows), where era has no Skyborne race at all. See the beta-data
+#: report for why the Skyborne placeholder (a single synthetic race id 900) was
+#: retired in favour of the client's own two per-faction rows rather than kept as a
+#: build-conditional fallback.
+BETA_BUILD = Path("builds/1.60.1.69893")
 
-#: The Forever race and class pairs the research documents, as (race_id, class_id):
-#: Dwarf Shaman, Undead Paladin, and the placeholder Skyborne's own classes.
-SKYBORNE_ID = 900
-SKYBORNE_CLASSES = frozenset({1, 3, 4, 7, 8, 11})
+#: The Forever race and class pairs the research documents, as (race_id, class_id).
+#: Skyborne is now the client's own two real per-faction rows: 95 (High Order
+#: Skyborne, Alliance) gets the four default classes plus Mage, 96 (Windshaper
+#: Skyborne, Horde) gets the four default classes plus Shaman.
+SKYBORNE_DEFAULT_CLASSES = frozenset({1, 3, 4, 11})
+SKYBORNE_COMBOS = {(95, c) for c in SKYBORNE_DEFAULT_CLASSES | {8}} | {
+    (96, c) for c in SKYBORNE_DEFAULT_CLASSES | {7}
+}
 #: Six Deep Dive pairs:
 #: Dwarf Shaman, Undead Paladin, Gnome Priest, Human Hunter, Orc Mage, Troll Warlock.
 DEEP_DIVE_COMBOS = {(3, 7), (5, 2), (7, 5), (1, 3), (2, 8), (8, 9)}
-NEW_COMBOS = DEEP_DIVE_COMBOS | {(SKYBORNE_ID, class_id) for class_id in SKYBORNE_CLASSES}
+NEW_COMBOS = DEEP_DIVE_COMBOS | SKYBORNE_COMBOS
 #: How many pairs vanilla itself allows; the pairs above are the only additions.
 CLASSIC_COMBO_COUNT = 40
 
@@ -178,20 +189,28 @@ def test_merged_classes_and_races_match_golden(tmp_path: Path):
 
 
 def real_merged():
-    """data/curated merged onto the committed Classic Era rows.
+    """data/curated merged onto the committed rows of the build it is now curated
+    against: 1.60 (Forever beta), the first client to export real Skyborne rows.
 
     The committed rows already carry the previous merge's `forever_changes`;
     merge_curated replaces them, so merging them again is what the pipeline does.
+    era's own committed build (builds/1.15.9.69722) is a frozen historical artifact:
+    its client has no Skyborne race at all, and combos.json's two real Skyborne race
+    ids (95, 96) would make merge_curated raise if merged onto it. Beta is a strict
+    superset of era's races and classes, so this is the only build the shared curated/
+    directory can validate against now that Skyborne is real data, not a placeholder.
     """
-    classes = [PlayableClass(**row) for row in json.loads((ERA_BUILD / "classes.json").read_text())]
-    races = [PlayableRace(**row) for row in json.loads((ERA_BUILD / "races.json").read_text())]
+    classes_json = json.loads((BETA_BUILD / "classes.json").read_text())
+    races_json = json.loads((BETA_BUILD / "races.json").read_text())
+    classes = [PlayableClass(**row) for row in classes_json]
+    races = [PlayableRace(**row) for row in races_json]
     return merge_curated(classes, races, Path("curated"))
 
 
 def test_the_real_curated_directory_is_valid():
-    """data/curated must merge cleanly onto the committed Classic Era rows."""
+    """data/curated must merge cleanly onto the committed beta rows."""
     _classes, merged_races, combos = real_merged()
-    assert "skyborne" in {race.slug for race in merged_races}
+    assert {"high-order-skyborne", "windshaper-skyborne"} <= {r.slug for r in merged_races}
     assert len(combos) == CLASSIC_COMBO_COUNT + len(NEW_COMBOS)
 
 
@@ -201,10 +220,18 @@ def test_the_documented_new_combos_are_the_ones_marked_new():
     assert {(c.race_id, c.class_id) for c in combos if c.new_in_forever} == NEW_COMBOS
 
 
-def test_the_placeholder_race_has_its_combos():
+def test_the_skyborne_rows_have_their_combos():
+    """High Order Skyborne (95, Alliance) and Windshaper Skyborne (96, Horde) each get
+    the four default classes plus their own faction-exclusive one."""
     _classes, _races, combos = real_merged()
-    skyborne = {c.class_id for c in combos if c.race_id == SKYBORNE_ID}
-    assert skyborne == SKYBORNE_CLASSES
+    by_race: dict[int, set[int]] = {}
+    for combo in combos:
+        if combo.race_id in (95, 96):
+            by_race.setdefault(combo.race_id, set()).add(combo.class_id)
+    assert by_race == {
+        95: SKYBORNE_DEFAULT_CLASSES | {8},
+        96: SKYBORNE_DEFAULT_CLASSES | {7},
+    }
 
 
 def test_every_class_and_race_documents_a_forever_change():
@@ -240,7 +267,7 @@ def test_the_committed_build_matches_the_curated_facts():
     classes, races, combos = real_merged()
     emitted = ((classes, "classes.json"), (races, "races.json"), (combos, "combos.json"))
     for records, name in emitted:
-        committed = json.loads((ERA_BUILD / name).read_text())
+        committed = json.loads((BETA_BUILD / name).read_text())
         assert [record.model_dump() for record in records] == committed, name
 
 

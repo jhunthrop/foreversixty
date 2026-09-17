@@ -208,18 +208,50 @@ def test_a_row_truncated_inside_the_stat_block_is_an_error_not_partial_stats():
         )
 
 
-def test_a_stat_column_with_no_paired_amount_column_is_an_item_data_error():
-    """Task 9 catches ItemDataError by name, so a bare KeyError must not escape."""
+def test_a_missing_bonus_amount_column_reads_as_no_data_for_that_stat():
+    """The 1.60 client (Forever beta) has no StatModifier_bonusAmount_* columns at all:
+    a stat type with no paired amount column is a build whose schema states nothing
+    about the amount, not a malformed row, so it must not raise. See
+    test_a_1_60_shaped_armour_item_has_no_armour_or_stats for the whole-build shape;
+    this covers just the one column going missing."""
     rows = read_csv(HERE / "fixtures/ItemSparse.csv")
-    del rows[0]["StatModifier_bonusAmount_0"]
-    with pytest.raises(ItemDataError, match="StatModifier_bonusAmount_0"):
-        build_class_items(
-            rows,
-            read_csv(HERE / "fixtures/Item.csv"),
-            read_csv(HERE / "fixtures/ChrClasses.csv"),
-            fixture_icons(),
-            "1.0.0.1",
-        )
+    del rows[0]["StatModifier_bonusAmount_0"]  # the pair for StatModifier_bonusStat_0
+    records = build_class_items(
+        rows,
+        read_csv(HERE / "fixtures/Item.csv"),
+        read_csv(HERE / "fixtures/ChrClasses.csv"),
+        fixture_icons(),
+        "1.0.0.1",
+    )
+    helm = {i.id: i for i in {r.class_slug: r for r in records}["warrior"].items}[16866]
+    # StatModifier_bonusStat_0 was stamina (see the golden fixture); with no amount
+    # column for it, stamina is silently absent rather than raising, while the other
+    # stat pair and the resistance columns -- untouched -- still come through.
+    assert helm.stats == {"strength": 15, "fire_res": 10}
+    assert helm.armor == 608
+
+
+def test_a_1_60_shaped_armour_item_has_no_armour_or_stats():
+    """The 1.60 client's ItemSparse carries no Resistances_* or
+    StatModifier_bonusAmount_* columns at all -- armour and stat amounts are now
+    computed from curve tables (RandPropPoints, ItemArmorTotal, ItemArmorQuality) this
+    pipeline does not resolve, so the client states nothing in a column for them. An
+    armour piece therefore has no armour and no stats to report and is dropped, exactly
+    like a stat-less armour piece on the old schema (test_a_stat_less_armour_piece_is_
+    still_dropped); a weapon is exempt from that clause and still survives on quality
+    and name alone."""
+    records = build_class_items(
+        read_csv(HERE / "fixtures/ItemSparse_1_60.csv"),
+        read_csv(HERE / "fixtures/Item.csv"),
+        read_csv(HERE / "fixtures/ChrClasses.csv"),
+        fixture_icons(),
+        "1.60.1.69893",
+    )
+    items = {i.id: i for r in records for i in r.items}
+    assert 16866 not in items  # armour with nothing to compare it on: dropped
+    annihilator = items[12798]
+    assert annihilator.armor == 0
+    assert annihilator.stats == {}
 
 
 def test_an_item_missing_from_the_item_table_is_skipped_with_a_warning(caplog):
@@ -379,3 +411,42 @@ def test_a_malformed_item_table_row_is_an_item_data_error_too():
             fixture_icons(),
             "1.0.0.1",
         )
+
+
+def test_effect_base_points_read_the_float_column_when_the_build_has_it():
+    # Classic Era exports EffectBasePoints as an integer; the 1.60 (Forever beta) client
+    # exports EffectBasePointsF as a float. Both must land on the same whole number.
+    spell = [
+        {
+            "ID": "10",
+            "NameSubtext_lang": "",
+            "Description_lang": "$s1 dmg",
+            "AuraDescription_lang": "",
+        }
+    ]
+    misc = [
+        {"SpellID": "10", "DurationIndex": "0", "SpellIconFileDataID": "0", "DifficultyID": "0"}
+    ]
+    era = [
+        {
+            "SpellID": "10",
+            "EffectIndex": "0",
+            "EffectBasePoints": "41",
+            "EffectDieSides": "1",
+            "EffectAuraPeriod": "0",
+            "DifficultyID": "0",
+        }
+    ]
+    beta = [
+        {
+            "SpellID": "10",
+            "EffectIndex": "0",
+            "EffectBasePointsF": "41.0",
+            "EffectDieSides": "1",
+            "EffectAuraPeriod": "0",
+            "DifficultyID": "0",
+        }
+    ]
+    assert load_spell_text(spell, misc, era, []).describe(10) == load_spell_text(
+        spell, misc, beta, []
+    ).describe(10)
