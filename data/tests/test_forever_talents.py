@@ -197,3 +197,32 @@ def test_an_icon_no_client_holds_is_repointed_at_the_placeholder(tmp_path):
         for t in tree["talents"]
     ]
     assert icons == [PLACEHOLDER_ICON, "spell_nature_regeneration"]
+
+
+def test_file_digests_reflects_a_repoint_that_happens_after_they_were_first_taken(tmp_path):
+    """_file_digests is a fresh hash of whatever bytes are on disk right now,
+    not a cache -- which is exactly the property that fixes the bug it was
+    extracted for: fetch_missing_icons calls it a second time after
+    _repoint_to_placeholder rewrites a talents/*.json file the manifest
+    already described, so the manifest it writes matches the file's final
+    bytes rather than the pre-repoint ones."""
+    import hashlib
+
+    from pipeline.forever import _file_digests, _repoint_to_placeholder
+
+    talents = tmp_path / "talents"
+    talents.mkdir()
+    path = talents / "druid.json"
+    path.write_text(
+        json.dumps({"trees": [{"talents": [{"icon": "classic_ability_druid_demoralizingroar"}]}]})
+    )
+    (tmp_path / "manifest.json").write_text("{}")  # excluded by name, not by extension
+
+    before = _file_digests(tmp_path)
+    assert before == {"talents/druid.json": hashlib.sha256(path.read_bytes()).hexdigest()}
+    assert "manifest.json" not in before
+
+    _repoint_to_placeholder(tmp_path, {"classic_ability_druid_demoralizingroar"})
+    after = _file_digests(tmp_path)
+    assert after["talents/druid.json"] == hashlib.sha256(path.read_bytes()).hexdigest()
+    assert after["talents/druid.json"] != before["talents/druid.json"]
