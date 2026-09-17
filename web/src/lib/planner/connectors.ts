@@ -13,12 +13,12 @@
 import type { TalentTree } from './types';
 
 /** The talent button's side in CSS pixels; TalentCell is h-11 w-11. */
-export const CELL_PX = 44;
+const CELL_PX = 44;
 /** The grid's gap; TreeGrid is gap-2. */
-export const GAP_PX = 8;
+const GAP_PX = 8;
 /** Centre-to-centre distance between neighbouring cells. */
 export const PITCH_PX = CELL_PX + GAP_PX;
-export const HALF_PX = CELL_PX / 2;
+const HALF_PX = CELL_PX / 2;
 
 export interface Cell {
   tier: number;

@@ -23,7 +23,7 @@ export const SECONDARY_BUTTON_FIXED =
  * and the game's own frame: gold says "you can spend here", green says "you have",
  * and a dimmed grey says "not yet".
  */
-export type CellState = 'locked' | 'available' | 'filled' | 'maxed';
+type CellState = 'locked' | 'available' | 'filled' | 'maxed';
 
 export function cellState(rank: number, maxRank: number, available: boolean): CellState {
   if (rank >= maxRank) return 'maxed';
