@@ -95,5 +95,10 @@ def test_tables_cover_every_phase_1_input():
         "ChrRaces",
         "Talent",
         "TalentTab",
+        "ItemArmorTotal",
+        "ItemArmorQuality",
+        "ItemArmorShield",
+        "ArmorLocation",
+        "RandPropPoints",
     ]
     assert "foreversixty-pipeline" in USER_AGENT

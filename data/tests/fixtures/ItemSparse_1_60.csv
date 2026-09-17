@@ -1,3 +1,8 @@
-ID,Display_lang,OverallQualityID,ItemLevel,RequiredLevel,InventoryType,MaxCount,ItemSet,AllowableClass,StatModifier_bonusStat_0,StatModifier_bonusStat_1
-16866,Helm of Might,4,66,60,1,0,209,1,7,4
-12798,Annihilator,3,63,58,21,0,0,-1,-1,-1
+ID,Display_lang,OverallQualityID,ItemLevel,RequiredLevel,InventoryType,MaxCount,ItemSet,AllowableClass,StatModifier_bonusStat_0,StatModifier_bonusStat_1,StatPercentEditor_0,StatPercentEditor_1
+16866,Helm of Might,4,66,60,1,0,209,1,7,4,7440,3200
+12798,Annihilator,3,63,58,21,0,0,-1,-1,-1,0,0
+30001,Novice's Cloth Robe,3,40,35,20,0,0,-1,-1,-1,0,0
+30002,Novice's Leather Vest,3,40,35,5,0,0,-1,-1,-1,0,0
+30003,Novice's Mail Hauberk,3,40,35,5,0,0,-1,-1,-1,0,0
+30005,Novice's Bulwark,3,40,35,14,0,0,-1,-1,-1,0,0
+30006,Loop of Minor Fortitude,3,40,35,11,0,0,-1,4,32,6000,4000

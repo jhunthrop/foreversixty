@@ -12,6 +12,7 @@ from pipeline.normalize.gear import (
     build_item_sets,
     is_junk_name,
 )
+from pipeline.normalize.item_curves import load_item_curves
 from pipeline.proficiency import WEAPON
 from pipeline.spelltext import load_spell_text
 
@@ -20,6 +21,27 @@ HERE = Path(__file__).parent
 
 def fixture_icons():
     return icon_names(read_csv(HERE / "fixtures/ManifestInterfaceData.csv"))
+
+
+def fixture_curves():
+    return load_item_curves(
+        read_csv(HERE / "fixtures/ItemArmorTotal.csv"),
+        read_csv(HERE / "fixtures/ItemArmorQuality.csv"),
+        read_csv(HERE / "fixtures/ItemArmorShield.csv"),
+        read_csv(HERE / "fixtures/ArmorLocation.csv"),
+        read_csv(HERE / "fixtures/RandPropPoints.csv"),
+    )
+
+
+def build_all_1_60(curves=None):
+    return build_class_items(
+        read_csv(HERE / "fixtures/ItemSparse_1_60.csv"),
+        read_csv(HERE / "fixtures/Item.csv"),
+        read_csv(HERE / "fixtures/ChrClasses.csv"),
+        fixture_icons(),
+        "1.60.1.69893",
+        curves,
+    )
 
 
 def fixture_spell_text():
@@ -231,27 +253,87 @@ def test_a_missing_bonus_amount_column_reads_as_no_data_for_that_stat():
     assert helm.armor == 608
 
 
-def test_a_1_60_shaped_armour_item_has_no_armour_or_stats():
+def test_a_1_60_shaped_armour_item_has_no_armour_or_stats_when_no_curves_are_given():
     """The 1.60 client's ItemSparse carries no Resistances_* or
-    StatModifier_bonusAmount_* columns at all -- armour and stat amounts are now
-    computed from curve tables (RandPropPoints, ItemArmorTotal, ItemArmorQuality) this
-    pipeline does not resolve, so the client states nothing in a column for them. An
-    armour piece therefore has no armour and no stats to report and is dropped, exactly
-    like a stat-less armour piece on the old schema (test_a_stat_less_armour_piece_is_
-    still_dropped); a weapon is exempt from that clause and still survives on quality
-    and name alone."""
-    records = build_class_items(
-        read_csv(HERE / "fixtures/ItemSparse_1_60.csv"),
-        read_csv(HERE / "fixtures/Item.csv"),
-        read_csv(HERE / "fixtures/ChrClasses.csv"),
-        fixture_icons(),
-        "1.60.1.69893",
-    )
-    items = {i.id: i for r in records for i in r.items}
+    StatModifier_bonusAmount_* columns at all -- armour and stat amounts are computed
+    from curve tables (RandPropPoints, ItemArmorTotal, ItemArmorQuality, ItemArmorShield,
+    ArmorLocation) instead. Without those tables (curves=None, the default -- a future
+    product whose fetch could not supply them, see pipeline.wago.OPTIONAL_TABLES), the
+    client states nothing usable in a column for them: an armour piece has no armour and
+    no stats to report and is dropped, exactly like a stat-less armour piece on the old
+    schema (test_a_stat_less_armour_piece_is_still_dropped); a weapon is exempt from
+    that clause and still survives on quality and name alone. See
+    test_curve_tables_resolve_armour_and_stats_for_every_armour_type below for the same
+    build with curves supplied."""
+    items = {i.id: i for r in build_all_1_60() for i in r.items}
     assert 16866 not in items  # armour with nothing to compare it on: dropped
     annihilator = items[12798]
     assert annihilator.armor == 0
     assert annihilator.stats == {}
+
+
+def test_curve_tables_resolve_armour_for_every_armour_type_and_a_shield():
+    """armour = ItemArmorTotal[ilvl][type] * ItemArmorQuality[ilvl][quality] *
+    ArmorLocation[slot][type] (ItemArmorShield[ilvl][quality] for a shield, no
+    location term). Every number here is the real 1.60.1.69893 curve tables' own
+    value at item level 40/66 -- see data/README.md for how they were pulled and
+    cross-checked against 2,830 items unchanged from builds/1.15.9.69722. The plate
+    helm (16866) is the same item id: 608 armour is the *literal* Resistances_0
+    Era emits for it too, confirming the curve formula reproduces it exactly."""
+    items = {i.id: i for r in build_all_1_60(fixture_curves()) for i in r.items}
+    assert items[16866].armor == 608  # plate, ilvl66, epic, head
+    assert items[30001].armor == 58  # cloth, ilvl40, rare, robe (scored as chest)
+    assert items[30002].armor == 121  # leather, ilvl40, rare, chest
+    assert items[30003].armor == 254  # mail, ilvl40, rare, chest
+    assert items[30005].armor == 1078  # shield, ilvl40, rare -- ItemArmorShield only
+
+
+def test_curve_tables_resolve_a_primary_and_a_secondary_stat():
+    """amount = RandPropPoints[ilvl][quality][slot group] * StatPercentEditor / 10000.
+    The helm's stats also come from the curve now: budget 47 (Epic, ilvl66, head's
+    group 0) at editor 7440/3200 rounds to 35 stamina and 15 strength -- matching
+    Era's own literal 35/15 for the same item id exactly. The ring carries one of
+    each kind of stat the planner tracks: a primary (strength) and what the game
+    calls a secondary (crit)."""
+    items = {i.id: i for r in build_all_1_60(fixture_curves()) for i in r.items}
+    assert items[16866].stats == {"stamina": 35, "strength": 15}
+    assert items[30006].stats == {"strength": 8, "crit": 5}
+    assert items[30006].armor == 0  # misc subclass (rings): no armour curve applies
+
+
+def test_an_era_shaped_row_still_uses_the_literal_path_even_when_curves_are_given():
+    """Curves are only a fallback for a row with no literal columns: passing them
+    alongside an Era-shaped fixture must not change Era's own golden output."""
+    records = build_class_items(
+        read_csv(HERE / "fixtures/ItemSparse.csv"),
+        read_csv(HERE / "fixtures/Item.csv"),
+        read_csv(HERE / "fixtures/ChrClasses.csv"),
+        fixture_icons(),
+        "1.0.0.1",
+        fixture_curves(),
+    )
+    helm = {i.id: i for i in {r.class_slug: r for r in records}["warrior"].items}[16866]
+    assert helm.armor == 608
+    assert helm.stats == {"stamina": 35, "strength": 15, "fire_res": 10}
+
+
+def test_curves_whose_own_tables_are_incomplete_resolve_nothing():
+    """An ItemCurves loaded from a build that 404s some but not all of the five
+    curve tables (OPTIONAL_TABLES) is not `available`; a 1.60-shaped row then
+    gets no armour and no stats, the same honest gap as curves=None -- resolving
+    armour from some tables and stats from none (or vice versa) would be a guess,
+    not data."""
+    incomplete = load_item_curves(
+        read_csv(HERE / "fixtures/ItemArmorTotal.csv"),
+        [],  # ItemArmorQuality 404'd for this hypothetical product
+        read_csv(HERE / "fixtures/ItemArmorShield.csv"),
+        read_csv(HERE / "fixtures/ArmorLocation.csv"),
+        read_csv(HERE / "fixtures/RandPropPoints.csv"),
+    )
+    assert incomplete.available is False
+    items = {i.id: i for r in build_all_1_60(incomplete) for i in r.items}
+    assert 16866 not in items
+    assert 30001 not in items
 
 
 def test_an_item_missing_from_the_item_table_is_skipped_with_a_warning(caplog):
