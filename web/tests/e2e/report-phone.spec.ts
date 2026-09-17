@@ -185,3 +185,12 @@ test('a resource row’s cap figures sit beside the line at 360px', async ({ pag
   const box = await figures.boundingBox();
   expect(box?.width ?? 0).toBeLessThanOrEqual(PHONE_WIDTH);
 });
+
+test('the on-the-chart control is a 44px target on a phone', async ({ page }) => {
+  await page.goto(`${REPORT}&tab=damage-done`);
+  await page.getByTestId('actor-Player-4184-000000A1').getByRole('button').first().click();
+  const control = page.getByTestId('ability-chart').first();
+  await expect(control).toBeVisible();
+  const box = await control.boundingBox();
+  expect(box?.height ?? 0).toBeGreaterThanOrEqual(44);
+});

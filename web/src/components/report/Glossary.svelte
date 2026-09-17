@@ -144,6 +144,11 @@
         'A slice of the fight. Drag across the chart, use the sliders, or pick a preset; every table follows.',
     },
     {
+      term: 'On the chart',
+      meaning:
+        'On an opened row’s abilities table: draws that one ability’s amount per second behind the chart above, in its spell school’s colour, measured from the fight’s own events. One ability at a time; picking another replaces it. It is a look rather than a view, so a copied link does not carry it.',
+    },
+    {
       term: '~',
       meaning:
         'A figure split in proportion to the window or a filter rather than measured directly. Totals are exact.',

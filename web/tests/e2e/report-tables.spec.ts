@@ -38,6 +38,55 @@ test('the ability filter narrows every row to that ability', async ({ page }) =>
   await expect(rows.first()).toContainText('Baelgrim');
 });
 
+test('an ability goes on the main chart in its school colour and comes off again', async ({ page }) => {
+  test.slow();
+  await serveDuckdbRuntime(page);
+  await page.goto(`${FIGHT}&tab=damage-done`);
+  await page.getByTestId('actor-Player-4184-000000A1').getByRole('button').first().click();
+  const control = page
+    .getByTestId('row-abilities')
+    .getByRole('row', { name: /Slam/ })
+    .getByTestId('ability-chart');
+  await expect(control).toHaveText('On the chart');
+  // force: true -- the control is the abilities table's last column, in the same
+  // horizontally-scrolling, scroll-snapped table as every other column (see the sticky
+  // Ability column and its "swipe sideways" hint above). Bringing a cell that far right
+  // into view needs both an ancestor's horizontal scroll and the page's own vertical one
+  // at once, and Chromium's scroll-snap settle races Playwright's actionability check on
+  // that combination, so the click never reports stable. force skips that wait; the click
+  // itself still lands on the same button and fires the same handler either way.
+  await control.click({ force: true });
+  // The legend names the actor and the ability once the measure lands.
+  await expect(page.getByTestId('time-chart')).toContainText('Baelgrim · Slam', { timeout: 60_000 });
+  await expect(control).toHaveText('Off the chart');
+  await control.click({ force: true });
+  await expect(page.getByTestId('time-chart')).not.toContainText('Baelgrim · Slam');
+});
+
+test('picking a second ability replaces the first: one line at a time', async ({ page }) => {
+  test.slow();
+  await serveDuckdbRuntime(page);
+  // Fight 1, not FIGHT (fight 3): Sunwick's only healing spell on the boss pull is Heal,
+  // one row, nothing to pick a second control from. The trash pull is where she has three
+  // (Power Word: Shield, Heal, Renew), which is what this test needs two of.
+  await page.goto('/reports/fixture2abcd?fight=1&tab=healing');
+  await page.getByTestId('actor-Player-4184-000000A2').getByRole('button').first().click();
+  const controls = page.getByTestId('row-abilities').getByTestId('ability-chart');
+  // force: true -- see the note on the previous test: the same last-column-of-a-
+  // scroll-snapped-table interaction.
+  await controls.first().click({ force: true });
+  await expect(page.getByTestId('time-chart')).toContainText('Sunwick · ', { timeout: 60_000 });
+  await controls.nth(1).click({ force: true });
+  await expect(controls.first()).toHaveText('On the chart');
+  await expect(controls.nth(1)).toHaveText('Off the chart');
+});
+
+test('the night offers no ability line, because it has no chart of this kind', async ({ page }) => {
+  await page.goto('/reports/fixture2abcd?fight=all&tab=damage-done');
+  await page.getByTestId('actor-Player-4184-000000A1').getByRole('button').first().click();
+  await expect(page.getByTestId('ability-chart')).toHaveCount(0);
+});
+
 test('boss damage only drops the boss’s own row and keeps the raid’s', async ({ page }) => {
   await page.goto(`${FIGHT}&tab=damage-done`);
   await page.getByTestId('filter-boss').check();

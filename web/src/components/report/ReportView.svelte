@@ -21,7 +21,7 @@
   } from '../../lib/report/load';
   import { defaultFightIndex, resolveFightIndex } from '../../lib/report/fights';
   import { aggregateNight, nightSummary, type Night } from '../../lib/report/night';
-  import { formatDate, formatDuration, outcomeLabel } from '../../lib/report/format';
+  import { formatDate, formatDuration, outcomeLabel, schoolToken } from '../../lib/report/format';
   import {
     ALL_FIGHTS,
     FLAG_LETTERS,
@@ -35,7 +35,16 @@
     withState,
     type ReportState,
   } from '../../lib/report/url';
-  import type { Actor, FightEntry, ReportFile, ReportMeta, RosterRow, Summary } from '../../lib/report/types';
+  import {
+    abilityKey,
+    type Ability,
+    type Actor,
+    type FightEntry,
+    type ReportFile,
+    type ReportMeta,
+    type RosterRow,
+    type Summary,
+  } from '../../lib/report/types';
   import {
     clampWindow,
     combinedSeries,
@@ -85,6 +94,7 @@
   import { splitUnitName } from '../../lib/characters';
   import {
     loadEventStream,
+    measureAbilitySeries,
     measureCasts,
     measureExact,
     measureTable,
@@ -330,6 +340,61 @@
     }
   }
 
+  /**
+   * The one ability drawn behind the main chart's series: a look, not a view, so it is
+   * not in the url. Measured over the whole fight once and sliced by the brush like every
+   * other line, and dropped whenever the fight, the tab or the source scope changes,
+   * because it answered a question about the table that was on screen then.
+   */
+  let chartedAbility = $state<{ key: string; label: string; token: string; series: number[] } | null>(null);
+  let chartedError = $state('');
+  /** The measure that is wanted now; an answer for an older pick is dropped. */
+  let chartedToken = 0;
+  $effect(() => {
+    void [state.fight, state.tab, state.source, nightMode];
+    chartedAbility = null;
+    chartedError = '';
+    chartedToken += 1;
+  });
+  async function toggleAbilityOnChart(actor: Actor, ability: Ability): Promise<void> {
+    const key = `${actor.guid}|${abilityKey(ability)}`;
+    if (chartedAbility?.key === key) {
+      chartedAbility = null;
+      return;
+    }
+    const token = ++chartedToken;
+    chartedError = '';
+    try {
+      const series = await measureAbilitySeries(
+        sharedQueryLayer(),
+        eventsUrl(dataBase, state.fight, engineVersion),
+        tableKind,
+        actor.guid,
+        ability.spell_id,
+        ability.via ?? '',
+        base?.duration_ms ?? 0,
+        measureOptions,
+      );
+      if (token !== chartedToken) return;
+      chartedAbility = {
+        key,
+        label: `${splitUnitName(actor.name).name} · ${ability.name}`,
+        token: schoolToken(ability.school),
+        series,
+      };
+    } catch (thrown) {
+      if (token !== chartedToken) return;
+      chartedError = `That ability's line did not load${thrown instanceof Error ? ` (${thrown.message})` : ''}.`;
+    }
+  }
+  /** True where there is a chart to put an ability on: one pull, Analyze, an actor tab. */
+  const abilityChartAvailable = $derived(
+    !nightMode &&
+      state.mode === 'analyze' &&
+      state.view === 'tables' &&
+      (state.tab === 'damage-done' || state.tab === 'damage-taken' || state.tab === 'healing'),
+  );
+
   /** The zero-height mark above the tab's table, for the phone to scroll to on a tab change. */
   let tabAnchor = $state<HTMLElement | undefined>(undefined);
   /** The mark above the mode bar, for the phone to scroll to on a mode change. */
@@ -410,8 +475,8 @@
   });
   const chartSeries = $derived(combinedSeries(chartActors));
   /** On the summary, damage taken and healing ride behind the damage line. */
-  const chartExtra = $derived(
-    scoped === null || state.tab !== 'summary'
+  const chartExtra = $derived([
+    ...(scoped === null || state.tab !== 'summary'
       ? []
       : [
           {
@@ -430,8 +495,13 @@
             ),
             token: 'var(--color-kill)',
           },
-        ],
-  );
+        ]),
+    // The line respects the brush the way the main series does: TimeChart is handed the
+    // whole fight's buckets and draws the window over them.
+    ...(chartedAbility === null
+      ? []
+      : [{ label: chartedAbility.label, series: chartedAbility.series, token: chartedAbility.token }]),
+  ]);
   // The chart is the fight's damage on every tab but the two that have their own series;
   // its caption says so, or nine tabs read as a damage table with a stranger's heading.
   const chartLabel = $derived(
@@ -1343,6 +1413,8 @@
             measure={nightMode ? undefined : measureRow}
             approximate={actorTableApproximate}
             amountApproximate={(filtersScale && !windowIsWhole && tableExact === null) || nightProrates}
+            onChart={abilityChartAvailable ? toggleAbilityOnChart : undefined}
+            charted={chartedAbility?.key ?? ''}
           />
           {#if actorTableApproximate}
             <p class="text-muted text-[12px]" data-testid="approximate-note">
@@ -1388,6 +1460,11 @@
                   onclick={() => patch({ view: 'queries' })}>Measure this window exactly in Queries</button
                 >.
               {/if}
+            </p>
+          {/if}
+          {#if chartedError !== ''}
+            <p class="text-wipe text-[12px]" role="alert" data-testid="ability-chart-error">
+              {chartedError}
             </p>
           {/if}
         {:else if state.tab === 'buffs'}
