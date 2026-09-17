@@ -410,11 +410,102 @@
     ]
   },
   {
-    "id": 900,
-    "name": "Skyborne",
-    "slug": "skyborne",
-    "faction": "neutral",
-    "placeholder": true,
+    "slug": "high-order-skyborne",
+    "forever_changes": [
+      {
+        "text": "Skyborne is a neutral race: the player chooses Horde or Alliance at character creation.",
+        "sources": [
+          {
+            "label": "Wowhead, Skyborne First Look",
+            "url": "https://www.wowhead.com/forever/news/skyborne-first-look-new-neutral-race-in-world-of-warcraft-forever-382829",
+            "kind": "community"
+          },
+          {
+            "label": "Inven Global, World of Warcraft: Forever coverage",
+            "url": "https://www.invenglobal.com/articles/25876/",
+            "kind": "community"
+          }
+        ]
+      },
+      {
+        "text": "Skyborne is unlocked by the Skyborne Heroic Pack, reported at $29.99, rather than by a base subscription.",
+        "sources": [
+          {
+            "label": "Blizzard, Pre-Purchase World of Warcraft: Forever Upgrades",
+            "url": "https://news.blizzard.com/en-us/article/24301508/pre-purchase-world-of-warcraft-forever-upgrades-and-begin-your-next-journey-in-azeroth",
+            "kind": "blizzard"
+          },
+          {
+            "label": "gamefragger, pre-order pricing",
+            "url": "https://gamefragger.com/pc/warcraft/world-of-warcraft-forever-pre-orders-are-live-ranging-from-30-race-pack-to-a-150-collector-box-a29775",
+            "kind": "community"
+          },
+          {
+            "label": "Warcraft Tavern, editions and prices",
+            "url": "https://www.warcrafttavern.com/forever/news/world-of-warcraft-forever-editions-skyborne-race-unlock-beta-access/",
+            "kind": "community"
+          }
+        ]
+      },
+      {
+        "text": "Skyborne characters begin on Zephras Isle, a starting zone covering levels 1 to 12.",
+        "sources": [
+          {
+            "label": "Blizzard, World of Warcraft at BlizzCon 2026",
+            "url": "https://news.blizzard.com/en-us/article/24301145/world-of-warcraft-at-blizzcon-2026-discover-whats-next",
+            "kind": "blizzard"
+          }
+        ]
+      },
+      {
+        "text": "Shaman is available to Skyborne only on the Horde and Mage only on the Alliance.",
+        "sources": [
+          {
+            "label": "Wowhead, Skyborne First Look",
+            "url": "https://www.wowhead.com/forever/news/skyborne-first-look-new-neutral-race-in-world-of-warcraft-forever-382829",
+            "kind": "community"
+          }
+        ]
+      },
+      {
+        "text": "Racials shown in the BlizzCon demo: Walk on Air (glide downward for 10 seconds), Read Ley Line (100% health and mana regeneration for 15 seconds), Wind Blessed (1% haste), Elemental Insight (5% damage to Elementals). Skyborne choose Horde or Alliance at creation.",
+        "sources": [
+          {
+            "label": "Icy Veins, racial rework",
+            "url": "https://www.icy-veins.com/wow-forever/news/the-racial-rework-gives-every-race-a-reason-to-matter-in-warcraft-forever/",
+            "kind": "community"
+          },
+          {
+            "label": "Blizzard, Deep Dive panel recap",
+            "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
+            "kind": "blizzard"
+          }
+        ]
+      },
+      {
+        "text": "Every race has two active and two passive racial abilities, tuned for similar offensive power.",
+        "sources": [
+          {
+            "label": "Blizzard, Deep Dive panel recap",
+            "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
+            "kind": "blizzard"
+          }
+        ]
+      },
+      {
+        "text": "One demo transcription reads a different second active for each faction: Alliance Skyborne get Read Ley Line, Horde Skyborne get Skysight, which grants 10% movement and mounted speed for 30 seconds or 15 minutes near a convergence of elements.",
+        "sources": [
+          {
+            "label": "Talents Forever (demo transcription)",
+            "url": "https://talentsforever.com/data.json",
+            "kind": "community"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "windshaper-skyborne",
     "forever_changes": [
       {
         "text": "Skyborne is a neutral race: the player chooses Horde or Alliance at character creation.",

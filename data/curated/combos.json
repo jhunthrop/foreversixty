@@ -11,6 +11,18 @@
   },
   {
     "race_id": 1,
+    "class_id": 3,
+    "new_in_forever": true,
+    "sources": [
+      {
+        "label": "Blizzard, Deep Dive panel recap",
+        "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
+        "kind": "blizzard"
+      }
+    ]
+  },
+  {
+    "race_id": 1,
     "class_id": 4,
     "new_in_forever": false
   },
@@ -48,6 +60,18 @@
     "race_id": 2,
     "class_id": 7,
     "new_in_forever": false
+  },
+  {
+    "race_id": 2,
+    "class_id": 8,
+    "new_in_forever": true,
+    "sources": [
+      {
+        "label": "Blizzard, Deep Dive panel recap",
+        "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
+        "kind": "blizzard"
+      }
+    ]
   },
   {
     "race_id": 2,
@@ -185,6 +209,18 @@
   },
   {
     "race_id": 7,
+    "class_id": 5,
+    "new_in_forever": true,
+    "sources": [
+      {
+        "label": "Blizzard, Deep Dive panel recap",
+        "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
+        "kind": "blizzard"
+      }
+    ]
+  },
+  {
+    "race_id": 7,
     "class_id": 8,
     "new_in_forever": false
   },
@@ -224,7 +260,19 @@
     "new_in_forever": false
   },
   {
-    "race_id": 900,
+    "race_id": 8,
+    "class_id": 9,
+    "new_in_forever": true,
+    "sources": [
+      {
+        "label": "Blizzard, Deep Dive panel recap",
+        "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
+        "kind": "blizzard"
+      }
+    ]
+  },
+  {
+    "race_id": 95,
     "class_id": 1,
     "new_in_forever": true,
     "sources": [
@@ -241,7 +289,7 @@
     ]
   },
   {
-    "race_id": 900,
+    "race_id": 95,
     "class_id": 3,
     "new_in_forever": true,
     "sources": [
@@ -258,7 +306,7 @@
     ]
   },
   {
-    "race_id": 900,
+    "race_id": 95,
     "class_id": 4,
     "new_in_forever": true,
     "sources": [
@@ -275,19 +323,7 @@
     ]
   },
   {
-    "race_id": 900,
-    "class_id": 7,
-    "new_in_forever": true,
-    "sources": [
-      {
-        "label": "Wowhead, Skyborne First Look",
-        "url": "https://www.wowhead.com/forever/news/skyborne-first-look-new-neutral-race-in-world-of-warcraft-forever-382829",
-        "kind": "community"
-      }
-    ]
-  },
-  {
-    "race_id": 900,
+    "race_id": 95,
     "class_id": 8,
     "new_in_forever": true,
     "sources": [
@@ -299,7 +335,7 @@
     ]
   },
   {
-    "race_id": 900,
+    "race_id": 95,
     "class_id": 11,
     "new_in_forever": true,
     "sources": [
@@ -316,50 +352,82 @@
     ]
   },
   {
-    "race_id": 7,
-    "class_id": 5,
+    "race_id": 96,
+    "class_id": 1,
     "new_in_forever": true,
     "sources": [
       {
-        "label": "Blizzard, Deep Dive panel recap",
-        "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
-        "kind": "blizzard"
+        "label": "Wowhead, Skyborne First Look",
+        "url": "https://www.wowhead.com/forever/news/skyborne-first-look-new-neutral-race-in-world-of-warcraft-forever-382829",
+        "kind": "community"
+      },
+      {
+        "label": "Inven Global, World of Warcraft: Forever coverage",
+        "url": "https://www.invenglobal.com/articles/25876/",
+        "kind": "community"
       }
     ]
   },
   {
-    "race_id": 1,
+    "race_id": 96,
     "class_id": 3,
     "new_in_forever": true,
     "sources": [
       {
-        "label": "Blizzard, Deep Dive panel recap",
-        "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
-        "kind": "blizzard"
+        "label": "Wowhead, Skyborne First Look",
+        "url": "https://www.wowhead.com/forever/news/skyborne-first-look-new-neutral-race-in-world-of-warcraft-forever-382829",
+        "kind": "community"
+      },
+      {
+        "label": "Inven Global, World of Warcraft: Forever coverage",
+        "url": "https://www.invenglobal.com/articles/25876/",
+        "kind": "community"
       }
     ]
   },
   {
-    "race_id": 2,
-    "class_id": 8,
+    "race_id": 96,
+    "class_id": 4,
     "new_in_forever": true,
     "sources": [
       {
-        "label": "Blizzard, Deep Dive panel recap",
-        "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
-        "kind": "blizzard"
+        "label": "Wowhead, Skyborne First Look",
+        "url": "https://www.wowhead.com/forever/news/skyborne-first-look-new-neutral-race-in-world-of-warcraft-forever-382829",
+        "kind": "community"
+      },
+      {
+        "label": "Inven Global, World of Warcraft: Forever coverage",
+        "url": "https://www.invenglobal.com/articles/25876/",
+        "kind": "community"
       }
     ]
   },
   {
-    "race_id": 8,
-    "class_id": 9,
+    "race_id": 96,
+    "class_id": 7,
     "new_in_forever": true,
     "sources": [
       {
-        "label": "Blizzard, Deep Dive panel recap",
-        "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
-        "kind": "blizzard"
+        "label": "Wowhead, Skyborne First Look",
+        "url": "https://www.wowhead.com/forever/news/skyborne-first-look-new-neutral-race-in-world-of-warcraft-forever-382829",
+        "kind": "community"
+      }
+    ]
+  },
+  {
+    "race_id": 96,
+    "class_id": 11,
+    "new_in_forever": true,
+    "sources": [
+      {
+        "label": "Wowhead, Skyborne First Look",
+        "url": "https://www.wowhead.com/forever/news/skyborne-first-look-new-neutral-race-in-world-of-warcraft-forever-382829",
+        "kind": "community"
+      },
+      {
+        "label": "Inven Global, World of Warcraft: Forever coverage",
+        "url": "https://www.invenglobal.com/articles/25876/",
+        "kind": "community"
       }
     ]
   }

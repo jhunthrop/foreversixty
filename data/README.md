@@ -47,9 +47,17 @@ and every combo marked `new_in_forever` must carry at least one source:
 unsourced claim stops the pipeline on purpose: the planner never states a Forever fact
 it cannot point at.
 
-Skyborne is carried as a placeholder race with the local sentinel id `900` and
-`"placeholder": true` until the beta client exports a real row. Delete the placeholder
-fields from that entry (keeping only `slug` and `forever_changes`) once it does.
+Skyborne was carried as a placeholder race with the local sentinel id `900` and
+`"placeholder": true` until the 1.60 client (Forever beta) exported real rows: it
+turned out to need two, `high-order-skyborne` (id 95, Alliance) and
+`windshaper-skyborne` (id 96, Horde) — the client's own per-faction split for a
+neutral race, the same pattern it uses for Pandaren and Dracthyr. `curated/races.json`
+now carries one entry per slug (only `slug` and `forever_changes`, matched onto the
+client row the normal way) instead of the placeholder fields, and `curated/combos.json`
+points its Skyborne pairs at 95 and 96 instead of 900. Because era's `ChrRaces` has no
+Skyborne row at all, this makes the shared `curated/` directory validate only against
+a build that has both real rows — 1.60 and any later one — not against the frozen
+`builds/1.15.9.69722`; see `tests/test_curated.py`'s `BETA_BUILD`.
 
 ## Sept 17 checklist
 1. Find the Forever product key on https://wago.tools/builds (it appears when the beta client is on the CDN).
@@ -90,3 +98,20 @@ fields from that entry (keeping only `slug` and `forever_changes`) once it does.
   Phase 1 interface contract (keys, slot and stat vocabularies, prereq and rank
   integrity, icon coverage, manifest coverage). Its constants are transcribed from the
   contract, not imported from `pipeline`; if it fails, the contract wins.
+- The 1.60 client (Forever beta) is a modern client build: `ChrRaces` carries internal
+  rows a player can never pick (`PlayableRaceBit` -1) that share a `Name_lang` with a
+  real playable race — e.g. id 33 "Human", an unused "ThinHuman" body-type row with
+  placeholder flavour text, alongside the real Human at id 1. `normalize_races` drops
+  any row with `PlayableRaceBit` -1 before slugifying, so it can never collide with a
+  real race in `curated.merge_curated`'s by-slug lookup. Classic Era's `ChrRaces` has no
+  `PlayableRaceBit` column at all, and every one of its rows is kept, as before.
+- The 1.60 client's `ItemSparse` has no `Resistances_*` or `StatModifier_bonusAmount_*`
+  columns at all: armour and stat amounts are computed client-side from curve tables
+  (`RandPropPoints`, `ItemArmorTotal`, `ItemArmorQuality`) that are not in `TABLES` and
+  this pipeline does not resolve. Per "only what the client states in a column is
+  emitted," a missing column reads as no data (armour 0, no stat contribution) rather
+  than an error. `_has_gear_value` still drops an armour piece with nothing to compare
+  it on, so **no non-weapon item survives from the 1.60 build's `items/` today** —
+  weapons are exempt from that clause and are unaffected. Resolving the curve tables is
+  future work, not attempted here: the formula is not stated in a column either, and
+  guessing at it risks silently wrong stats rather than an honest gap.
