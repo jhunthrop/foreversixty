@@ -77,7 +77,7 @@
   import SummaryTab from './SummaryTab.svelte';
   import ThreatTable from './ThreatTable.svelte';
   import TimeChart from './TimeChart.svelte';
-  import { createLazyComponent } from '../../lib/report/lazy-component.svelte';
+  import { createLazyComponent, type LazyLoadState } from '../../lib/report/lazy-component.svelte';
   // Compare, Mechanics, Rankings, Timelines, Events and Queries are not the landing mode or
   // view (Analyze / tables / summary is), so each ships as its own chunk fetched the first
   // time its mode or view is actually picked, instead of sitting in every visitor's initial
@@ -1276,6 +1276,20 @@
   });
 </script>
 
+{#snippet lazyFallback(lazy: LazyLoadState)}
+  <!-- Nothing renders while the import is still in flight (loading and no failure yet): the
+       mode or view stays blank for that one round trip, the same gap a network-bound fetch
+       elsewhere on this page leaves. A failure -- offline after the entry loaded, or a chunk
+       evicted from the cache -- says so and offers a retry that calls `load()` again, which
+       is a fresh attempt rather than a no-op: see lazy-component.svelte.ts. -->
+  {#if lazy.error !== ''}
+    <p class="text-muted text-[13px]" role="alert" data-testid="lazy-view-error">
+      {lazy.error}
+      <button type="button" class="text-strong ml-1 underline" onclick={() => lazy.load()}>Try again</button>
+    </p>
+  {/if}
+{/snippet}
+
 {#snippet parseRetry()}
   {#if percentilesUnavailable}
     <p class="text-muted text-[13px]" data-testid="parse-unavailable">
@@ -1669,88 +1683,112 @@
           >.
         </p>
       {/if}
-      {#if scoped !== null && !nightMode && state.mode === 'analyze' && state.view === 'timelines' && timelinesViewLazy.current}
-        <timelinesViewLazy.current
-          summary={scoped}
-          window={timeWindow}
-          {classOf}
-          bossName={fight?.kind === 'encounter' ? fight.name : ''}
-          players={playerSet}
-          allCasts={summary?.casts ?? []}
-          taunts={scoped.taunts ?? []}
-          auraOrder={[
-            ...new Set(
-              (summary?.auras ?? [])
-                .filter((track) => inSource(track.target_guid, state.source, playerSet, friendlySet))
-                .map((track) => track.name),
-            ),
-          ].sort((a, b) => a.localeCompare(b))}
-        />
+      {#if scoped !== null && !nightMode && state.mode === 'analyze' && state.view === 'timelines'}
+        {#if timelinesViewLazy.current}
+          <timelinesViewLazy.current
+            summary={scoped}
+            window={timeWindow}
+            {classOf}
+            bossName={fight?.kind === 'encounter' ? fight.name : ''}
+            players={playerSet}
+            allCasts={summary?.casts ?? []}
+            taunts={scoped.taunts ?? []}
+            auraOrder={[
+              ...new Set(
+                (summary?.auras ?? [])
+                  .filter((track) => inSource(track.target_guid, state.source, playerSet, friendlySet))
+                  .map((track) => track.name),
+              ),
+            ].sort((a, b) => a.localeCompare(b))}
+          />
+        {:else}
+          {@render lazyFallback(timelinesViewLazy)}
+        {/if}
       {/if}
-      {#if scoped !== null && !nightMode && state.mode === 'analyze' && state.view === 'events' && eventsViewLazy.current}
-        <eventsViewLazy.current
-          summary={windowed ?? scoped}
-          {classOf}
-          names={unitNames}
-          inScope={(guid) => inSource(guid, state.source, playerSet, friendlySet)}
-          off={state.eventsOff}
-          search={state.find}
-          onPatch={patch}
-          loadStream={nightMode
-            ? undefined
-            : async () => {
-                const { loadEventStream, sharedQueryLayer } = await import('../../lib/report/exact');
-                return loadEventStream(
-                  sharedQueryLayer(),
-                  eventsUrl(dataBase, state.fight, engineVersion),
-                  cutWindow,
-                );
-              }}
-        />
+      {#if scoped !== null && !nightMode && state.mode === 'analyze' && state.view === 'events'}
+        {#if eventsViewLazy.current}
+          <eventsViewLazy.current
+            summary={windowed ?? scoped}
+            {classOf}
+            names={unitNames}
+            inScope={(guid) => inSource(guid, state.source, playerSet, friendlySet)}
+            off={state.eventsOff}
+            search={state.find}
+            onPatch={patch}
+            loadStream={nightMode
+              ? undefined
+              : async () => {
+                  const { loadEventStream, sharedQueryLayer } = await import('../../lib/report/exact');
+                  return loadEventStream(
+                    sharedQueryLayer(),
+                    eventsUrl(dataBase, state.fight, engineVersion),
+                    cutWindow,
+                  );
+                }}
+          />
+        {:else}
+          {@render lazyFallback(eventsViewLazy)}
+        {/if}
       {/if}
       <!-- `scoped` only to say a summary has loaded, the same guard its three siblings
            use; the Queries view reads the fight's events.parquet, not the summary, and
            takes the window so a starting point is written for what is on screen. -->
-      {#if scoped !== null && !nightMode && state.mode === 'analyze' && state.view === 'queries' && queriesViewLazy.current}
-        <queriesViewLazy.current dataBaseUrl={dataBase} fightIndex={state.fight} window={timeWindow} />
+      {#if scoped !== null && !nightMode && state.mode === 'analyze' && state.view === 'queries'}
+        {#if queriesViewLazy.current}
+          <queriesViewLazy.current dataBaseUrl={dataBase} fightIndex={state.fight} window={timeWindow} />
+        {:else}
+          {@render lazyFallback(queriesViewLazy)}
+        {/if}
       {/if}
-      {#if state.mode === 'compare' && summary !== null && !nightMode && compareModeLazy.current}
-        <compareModeLazy.current
-          {fights}
-          current={state.fight}
-          dataBaseUrl={dataBase}
-          {engineVersion}
-          left={summary}
-          window={windowIsWhole ? null : cutWindow}
-          rightIndex={state.compareWith}
-          metric={state.compareMetric}
-          vs={state.compareVs}
-          source={state.source}
-          onPatch={patch}
-        />
+      {#if state.mode === 'compare' && summary !== null && !nightMode}
+        {#if compareModeLazy.current}
+          <compareModeLazy.current
+            {fights}
+            current={state.fight}
+            dataBaseUrl={dataBase}
+            {engineVersion}
+            left={summary}
+            window={windowIsWhole ? null : cutWindow}
+            rightIndex={state.compareWith}
+            metric={state.compareMetric}
+            vs={state.compareVs}
+            source={state.source}
+            onPatch={patch}
+          />
+        {:else}
+          {@render lazyFallback(compareModeLazy)}
+        {/if}
       {/if}
-      {#if state.mode === 'rankings' && fight !== null && rankingsModeLazy.current}
-        <rankingsModeLazy.current
-          {fight}
-          {reportId}
-          encounterSlug={currentEncounterSlug}
-          spec={state.rankingsSpec}
-          metric={state.rankingsMetric}
-          onPatch={patch}
-        />
+      {#if state.mode === 'rankings' && fight !== null}
+        {#if rankingsModeLazy.current}
+          <rankingsModeLazy.current
+            {fight}
+            {reportId}
+            encounterSlug={currentEncounterSlug}
+            spec={state.rankingsSpec}
+            metric={state.rankingsMetric}
+            onPatch={patch}
+          />
+        {:else}
+          {@render lazyFallback(rankingsModeLazy)}
+        {/if}
       {/if}
       <!-- The whole fight, never the window and never the source scope: `base`, not
            `scoped`. Over the night `base` is the fold, which carries the night's
            mechanics, so the mode draws there too. -->
-      {#if state.mode === 'mechanics' && base !== null && mechanicsModeLazy.current}
-        <mechanicsModeLazy.current
-          summary={base}
-          {classOf}
-          {nightMode}
-          trash={!nightMode && fight?.kind !== 'encounter'}
-          onPatch={patch}
-          hrefFor={(next) => reportSearch(withState(state, next), firstFight) || '?'}
-        />
+      {#if state.mode === 'mechanics' && base !== null}
+        {#if mechanicsModeLazy.current}
+          <mechanicsModeLazy.current
+            summary={base}
+            {classOf}
+            {nightMode}
+            trash={!nightMode && fight?.kind !== 'encounter'}
+            onPatch={patch}
+            hrefFor={(next) => reportSearch(withState(state, next), firstFight) || '?'}
+          />
+        {:else}
+          {@render lazyFallback(mechanicsModeLazy)}
+        {/if}
       {:else if state.mode === 'mechanics' && nightMode && nightLoading}
         <!-- The night's fold is every pull's summary fetched in turn, so a cold load
              leaves `base` null for as long as that takes. Without this the mode is a

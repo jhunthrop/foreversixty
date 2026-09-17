@@ -10,28 +10,57 @@
 // have had across the mode or view being switched away and back.
 import type { Component } from 'svelte';
 
-export interface LazyComponent<Props extends Record<string, unknown>> {
+/** The load/error/retry surface, without the resolved component: what a fallback renders. */
+export interface LazyLoadState {
+  /** Set when the last `load()` attempt failed; cleared the moment a retry starts. */
+  readonly error: string;
+  /** True while an import is in flight. */
+  readonly loading: boolean;
+  /** Starts the import if one is not already in flight; safe to call on every render.
+   *  After a failure, `current` is still null and `loading` is still false, so the next
+   *  call retries rather than short-circuiting. */
+  load: () => void;
+}
+
+export interface LazyComponent<Props extends Record<string, unknown>> extends LazyLoadState {
   /** The resolved component, or null before `load()` has settled. */
   readonly current: Component<Props> | null;
-  /** Starts the import if it has not started yet; safe to call on every render. */
-  load: () => void;
 }
 
 export function createLazyComponent<Props extends Record<string, unknown>>(
   loader: () => Promise<{ default: Component<Props> }>,
 ): LazyComponent<Props> {
   let current = $state<Component<Props> | null>(null);
-  let loading = false;
+  let loading = $state(false);
+  let error = $state('');
   return {
     get current() {
       return current;
     },
+    get error() {
+      return error;
+    },
+    get loading() {
+      return loading;
+    },
     load(): void {
       if (current !== null || loading) return;
       loading = true;
-      void loader().then((module) => {
-        current = module.default;
-      });
+      error = '';
+      void loader()
+        .then((module) => {
+          current = module.default;
+        })
+        .catch((thrown: unknown) => {
+          // Offline after the entry loaded, or a chunk evicted from the browser's cache: the
+          // mode or view must not stay a permanent blank panel. The caller renders `error`
+          // with a retry that calls `load()` again -- `loading` is reset below regardless of
+          // outcome, so that retry is a normal, un-short-circuited attempt.
+          error = `This view did not load${thrown instanceof Error ? ` (${thrown.message})` : ''}.`;
+        })
+        .finally(() => {
+          loading = false;
+        });
     },
   };
 }
