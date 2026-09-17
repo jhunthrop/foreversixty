@@ -51,6 +51,13 @@
   </div>
 
   <div class="flex flex-col gap-1">
+    <span class="label text-muted">Left</span>
+    <span class="tabular text-gold font-mono text-[20px] leading-11" data-testid="planner-remaining">
+      {MAX_POINTS - store.spent}
+    </span>
+  </div>
+
+  <div class="flex flex-col gap-1">
     <span class="label text-muted">Split</span>
     <span class="tabular text-gold font-mono text-[20px] leading-11" data-testid="planner-split">
       {store.splitLabel}

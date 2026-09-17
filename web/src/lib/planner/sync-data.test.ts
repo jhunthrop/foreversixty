@@ -3,7 +3,7 @@ import { existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { resolveDataSource, syncData } from '../../../scripts/sync-data.mjs';
+import { resolveDataSource, SYNC_ENTRIES, syncData } from '../../../scripts/sync-data.mjs';
 
 const BUILD = '1.15.9.69722';
 const OTHER_BUILD = '1.16.0.70000';
@@ -204,6 +204,13 @@ describe('syncData', () => {
     const log = { log: (message: unknown) => void lines.push(String(message)), warn: () => {} };
     await syncData({ repoRoot, webRoot, allowFixture: true, log });
     expect(lines.join('\n')).toContain(OTHER_BUILD);
+  });
+});
+
+describe('SYNC_ENTRIES', () => {
+  it('publishes the per-tree background art, and does not require it', () => {
+    const trees = SYNC_ENTRIES.find((entry) => entry.name === 'trees');
+    expect(trees).toEqual({ name: 'trees', kind: 'dir', required: false });
   });
 });
 

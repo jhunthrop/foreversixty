@@ -162,3 +162,17 @@ test.describe('planner on a phone', () => {
     await clears44(page.getByTestId('item-16963'));
   });
 });
+
+test('a tree and its links fit a phone with no sideways scroll', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 800 });
+  await page.goto('/planner');
+  await expect(page.getByTestId('tree-panel-161')).toBeVisible();
+  const overflow = await page.evaluate(
+    () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+  );
+  expect(overflow).toBeLessThanOrEqual(0);
+  const grid = page.getByTestId('tree-161');
+  const box = await grid.boundingBox();
+  expect(box!.width).toBeLessThanOrEqual(390 - 36);
+  await expect(page.getByTestId('connector-1002-1004')).toBeAttached();
+});

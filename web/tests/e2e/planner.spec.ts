@@ -410,3 +410,17 @@ test('a good code survives a transient failure on its own class, and still appli
   await expect(page.getByTestId('planner-split')).toHaveText('3/0');
   await expect(page.getByTestId('planner-code-note')).toContainText('not recorded in game');
 });
+
+test('each tree draws its own art and counts its own points', async ({ page }) => {
+  await page.goto('/planner');
+  const art = page.getByTestId('tree-art-161');
+  await expect(art).toHaveAttribute('src', `/data/${ACTIVE_BUILD}/trees/fixture_arms.webp`);
+  // The art is a real image, not a broken one.
+  await expect.poll(() => art.evaluate((node: HTMLImageElement) => node.naturalWidth)).toBeGreaterThan(0);
+
+  await expect(page.getByTestId('tree-points-161')).toHaveText('0');
+  await expect(page.getByTestId('planner-remaining')).toHaveText('51');
+  await page.getByTestId('talent-1001').click();
+  await expect(page.getByTestId('tree-points-161')).toHaveText('1');
+  await expect(page.getByTestId('planner-remaining')).toHaveText('50');
+});

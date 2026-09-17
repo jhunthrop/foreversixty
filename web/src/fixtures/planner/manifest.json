@@ -29,6 +29,8 @@
     "items/warrior.json": "82e488a5a1f19a9c836146d4ca7d11277f024d38c8ce2c6c571b106cd776de9c",
     "races.json": "5986704f54dd522c9bcc6339812cacdd73788dcec096f4085bfe0e3073faf2b3",
     "sets.json": "2d8dbce389d1475e0d4138c78f2b75218ef56be4850ec1900edb7fe68a2fb3fb",
-    "talents/warrior.json": "a02e292935e387cc13dff62e860acea704ebfad70b6e37853aa691af5c926fd2"
+    "talents/warrior.json": "a02e292935e387cc13dff62e860acea704ebfad70b6e37853aa691af5c926fd2",
+    "trees/fixture_arms.webp": "fafbf99c183612077ed58c7891a479c827398aa24f248809c6e4b9e70d011051",
+    "trees/fixture_fury.webp": "4e870b9e20fcfad3c54d9ae18934b9b5131d7202a4774ba38018928fc53880e7"
   }
 }

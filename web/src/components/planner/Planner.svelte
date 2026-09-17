@@ -325,9 +325,14 @@
        them and still moves the footer -- by the difference rather than by the whole planner.
        Re-derive them by loading /planner, setting this element's min-height to 0, and reading
        its `getBoundingClientRect().height` below and above the md breakpoint. They measure
-       728 at 360px and 1038.5 from md up. Each value here is set a hair under what was
-       measured, because under costs a pixel of movement and over leaves dead space below the
-       ready planner for good.
+       737 at 360px and 1047.5 from md up (Task 11's tree header -- the border-b under the
+       tree name and its point count -- added about 9px over the 728/1038.5 this measured
+       before it; the other figures below quoting 616, 646.5, 962 and 1143 predate that change
+       by the same margin and were not re-measured, since none of them feeds this min-height
+       and re-deriving them needs gear- and read-only-mount scenarios outside what the
+       checked-in fixture data covers). Each value here is set a hair under what was measured,
+       because under costs a pixel of movement and over leaves dead space below the ready
+       planner for good.
 
        The phone figure fell from 1412.5 to 728 when gear became the third tab: the gear panel
        used to stack under the trees there and now takes its turn in the same column. What is
@@ -382,7 +387,7 @@
        tracked `readOnly` would spend that growth shoving the footer down the moment it is
        pressed. /b/:id carries no CLS budget of its own -- it is server-rendered, so the
        island's whole planner arrives after first paint regardless of what this reserves. -->
-  <div class="flex min-h-[727px] flex-col gap-[22px] md:min-h-[1037px] md:gap-8">
+  <div class="flex min-h-[736px] flex-col gap-[22px] md:min-h-[1047px] md:gap-8">
     {#if status === 'loading'}
       <!-- The planner's own panel chrome rather than a bare line on a blank reserve: a
            viewport of empty space reads as a broken page, and the frame reads as the planner
@@ -470,13 +475,20 @@
             id={`tree-panel-${tree.id}`}
             role="tabpanel"
             aria-labelledby={`tree-tab-${tree.id}`}
-            class="border-line bg-raised rounded-panel flex-col gap-3 border p-4 md:flex {activeTree === i
+            data-testid={`tree-panel-${tree.id}`}
+            class="border-line-warm bg-raised rounded-panel flex-col gap-3 border p-4 md:flex {activeTree ===
+            i
               ? 'flex'
               : 'hidden'}"
           >
-            <header class="flex items-baseline justify-between">
+            <!-- The game's tree header: name on the left, points in the tree on the
+                 right, a rule under both. Warm border and gold number are the
+                 design system's; the proportions are the client's. -->
+            <header class="border-line-soft flex items-baseline justify-between border-b pb-2">
               <h2 class="section-title text-[15px]">{tree.name}</h2>
-              <span class="tabular text-gold font-mono text-[15px]">{store.split[i] ?? 0}</span>
+              <span class="tabular text-gold font-mono text-[15px]" data-testid={`tree-points-${tree.id}`}>
+                {store.split[i] ?? 0}
+              </span>
             </header>
             <TreeGrid {store} {tree} />
           </div>

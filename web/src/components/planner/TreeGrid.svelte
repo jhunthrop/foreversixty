@@ -5,6 +5,7 @@
 <script lang="ts">
   import { connectorsFor, gridViewBox } from '../../lib/planner/connectors';
   import { gridCells, gridSize, moveFocus, type GridCell } from '../../lib/planner/grid';
+  import { dataUrl } from '../../lib/planner/load';
   import { CONNECTOR_STROKE } from '../../lib/planner/styles';
   import type { PlannerStore } from '../../lib/planner/store.svelte';
   import type { TalentTree } from '../../lib/planner/types';
@@ -16,6 +17,10 @@
   const size = $derived(gridSize(tree));
   const connectors = $derived(connectorsFor(tree, store.ranks));
   const viewBox = $derived(gridViewBox(size.tiers, size.columns));
+  const backgroundSrc = $derived(dataUrl(store.treeVersion, `trees/${tree.background}.webp`));
+  // A build with no art still has to render a usable tree, so a missing image
+  // leaves the panel's own background rather than a broken-image box.
+  let artBroken = $state(false);
   let focusedId = $state<number | null>(null);
   const focused = $derived<GridCell | null>(
     cells.find((cell) => cell.talent.id === focusedId) ?? cells[0] ?? null,
@@ -59,6 +64,25 @@
      the slightly larger md cells, and non-scaling-stroke keeps the line weight
      identical at both sizes. -->
 <div class="relative w-fit">
+  {#if tree.background && !artBroken}
+    <!-- The client's own 320x384 panel, processed in the pipeline. The source texture
+         carries a black margin of game padding along its bottom and right edges, so this
+         is `object-cover` anchored top-left rather than `object-fill`: stretching would
+         squash that padding into the box instead of cropping it away, and a black band
+         would show. -->
+    <img
+      src={backgroundSrc}
+      alt=""
+      aria-hidden="true"
+      width="320"
+      height="384"
+      loading="lazy"
+      decoding="async"
+      data-testid={`tree-art-${tree.id}`}
+      class="rounded-control pointer-events-none absolute inset-0 h-full w-full object-cover object-left-top"
+      onerror={() => (artBroken = true)}
+    />
+  {/if}
   <svg
     class="pointer-events-none absolute inset-0 h-full w-full"
     {viewBox}

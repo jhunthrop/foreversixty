@@ -35,6 +35,7 @@ export const SYNC_ENTRIES = [
   { name: 'talents', kind: 'dir', required: true },
   { name: 'items', kind: 'dir', required: false },
   { name: 'icons', kind: 'dir', required: false },
+  { name: 'trees', kind: 'dir', required: false },
   { name: 'sets.json', kind: 'file', required: false },
   { name: 'classes.json', kind: 'file', required: true },
   { name: 'races.json', kind: 'file', required: true },
