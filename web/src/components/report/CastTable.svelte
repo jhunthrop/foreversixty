@@ -23,7 +23,8 @@
     wholeFightTitle,
   } from '../../lib/report/format';
   import type { CastRow } from '../../lib/report/types';
-  import { castKey, type CastCounts } from '../../lib/report/exact';
+  import { castKey } from '../../lib/report/cast-key';
+  import type { CastCounts } from '../../lib/report/exact';
   import CopyCsv from './CopyCsv.svelte';
 
   let {
