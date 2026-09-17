@@ -5,7 +5,7 @@
 <script lang="ts">
   import { levelForIndex } from '../../lib/planner/derive';
   import { dataUrl } from '../../lib/planner/load';
-  import { SECONDARY_BUTTON } from '../../lib/planner/styles';
+  import { CELL_BORDER, SECONDARY_BUTTON, cellState } from '../../lib/planner/styles';
   import type { PlannerStore } from '../../lib/planner/store.svelte';
 
   let { store }: { store: PlannerStore } = $props();
@@ -13,11 +13,18 @@
   let expanded = $state(true);
 
   const points = $derived(
-    store.order.map((id, i) => ({
-      key: `${i}-${id}`,
-      level: levelForIndex(i),
-      talent: store.talentIndex?.byId.get(id) ?? null,
-    })),
+    store.order.map((id, i) => {
+      const talent = store.talentIndex?.byId.get(id) ?? null;
+      const rank = store.order.slice(0, i + 1).filter((other) => other === id).length;
+      return {
+        key: `${i}-${id}`,
+        level: levelForIndex(i),
+        talent,
+        // A point in the strip is always spent, so it is filled or maxed; the
+        // third argument only decides between available and locked.
+        state: talent ? cellState(rank, talent.max_rank, true) : 'locked',
+      };
+    }),
   );
 </script>
 
@@ -67,7 +74,7 @@
                   height="36"
                   loading="lazy"
                   decoding="async"
-                  class="rounded-control border-line h-9 w-9 border object-cover"
+                  class={`rounded-control h-9 w-9 border object-cover ${CELL_BORDER[point.state]}`}
                 />
                 <span class="sr-only">{point.talent.name}</span>
               {/if}

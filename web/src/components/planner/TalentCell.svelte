@@ -6,6 +6,7 @@
 <script lang="ts">
   import { dataUrl } from '../../lib/planner/load';
   import { canAddPoint } from '../../lib/planner/rules';
+  import { CELL_BORDER, CELL_PILL, cellState } from '../../lib/planner/styles';
   import type { PlannerStore } from '../../lib/planner/store.svelte';
   import type { Talent } from '../../lib/planner/types';
 
@@ -24,7 +25,6 @@
   const LONG_PRESS_MS = 500;
 
   const rank = $derived(store.ranks.get(talent.id) ?? 0);
-  const maxed = $derived(rank >= talent.max_rank);
   const available = $derived(
     store.talentIndex !== null && canAddPoint(store.talentIndex, store.order, talent.id).ok,
   );
@@ -41,9 +41,7 @@
   // it is what makes the other a no-op, so one gesture is always exactly one removal.
   let gestureRemoved = false;
 
-  const borderClass = $derived(
-    maxed ? 'border-gold' : rank > 0 ? 'border-gold-deep' : available ? 'border-line' : 'border-line-soft',
-  );
+  const state = $derived(cellState(rank, talent.max_rank, available));
 
   function startPress(event: PointerEvent): void {
     // Only a primary press can become a long press. A secondary button raises contextmenu
@@ -98,7 +96,8 @@
     aria-label={`${talent.name}, rank ${rank} of ${talent.max_rank}`}
     data-testid={`talent-${talent.id}`}
     data-rank={rank}
-    class={`rounded-control bg-card-top relative flex h-11 w-11 items-center justify-center border md:h-12 md:w-12 ${borderClass} ${rank === 0 && !available ? 'opacity-50' : ''}`}
+    data-state={state}
+    class={`rounded-control bg-card-top relative flex h-11 w-11 items-center justify-center border md:h-12 md:w-12 ${CELL_BORDER[state]}`}
     onclick={add}
     oncontextmenu={removeOnContextMenu}
     onfocus={() => {
@@ -132,7 +131,7 @@
       />
     {/if}
     <span
-      class={`tabular rounded-pill bg-bg absolute -right-1 -bottom-1 border px-1 font-mono text-[11px] leading-[14px] ${maxed ? 'border-gold text-gold' : 'border-line text-text'}`}
+      class={`tabular rounded-pill bg-bg absolute -right-1 -bottom-1 border px-1 font-mono text-[11px] leading-[14px] ${CELL_PILL[state]}`}
     >
       {rank}/{talent.max_rank}
     </span>

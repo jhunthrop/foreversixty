@@ -5,7 +5,7 @@
      under them; phone shows one panel at a time behind a tab switcher (Tasks 9 and 17). -->
 <script lang="ts">
   import { untrack } from 'svelte';
-  import { DEFAULT_CLASS_SLUG, ERA_DATA_NOTICE } from '../../lib/planner/config';
+  import { DEFAULT_CLASS_SLUG, treeSourceNotice } from '../../lib/planner/config';
   import { decodeFS1, orderFromRanks } from '../../lib/planner/fs1';
   import {
     DATA_LOAD_FAILED,
@@ -287,7 +287,7 @@
 <div class="flex flex-col gap-[22px] md:gap-8" data-testid="planner">
   <SummaryBar {store} />
 
-  <p class="text-muted px-[18px] text-[13px] md:px-0">{ERA_DATA_NOTICE}</p>
+  <p class="text-muted px-[18px] text-[13px] md:px-0">{treeSourceNotice(store.treeVersion)}</p>
 
   {#if codeNote !== null}
     <p class="text-muted px-[18px] text-[13px] md:px-0" data-testid="planner-code-note">
@@ -536,7 +536,7 @@
               class="{SECONDARY_BUTTON} border-line-warm text-text px-4"
               onclick={() => (confirmingReset = true)}
             >
-              Reset
+              Reset…
             </button>
           {/if}
 

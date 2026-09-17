@@ -2,6 +2,15 @@ import { expect, test } from '@playwright/test';
 
 import { ACTIVE_BUILD } from './support/active-build';
 
+// Mirrors lib/planner/config.ts's treeSourceNotice: that module reads import.meta.env,
+// which is unset under Playwright's plain Node loader, so the string is reproduced here
+// rather than imported. ACTIVE_BUILD (src/data/active-build.json) is still the pre-beta
+// snapshot as of this build, so the pre-beta half is what actually renders.
+const ACTIVE_BUILD_NOTICE =
+  ACTIVE_BUILD === 'forever-prebeta'
+    ? 'Talent trees from a pre-beta Wowhead snapshot; the client’s own trees replace them at the beta.'
+    : `Talent trees read from the game client, build ${ACTIVE_BUILD}.`;
+
 test('the planner opens on the default class with an empty build', async ({ page }) => {
   const errors: string[] = [];
   page.on('console', (m) => {
@@ -11,17 +20,41 @@ test('the planner opens on the default class with an empty build', async ({ page
   await expect(page.getByTestId('planner-level')).toHaveText('9');
   await expect(page.getByTestId('planner-spent')).toHaveText('0/51');
   await expect(page.getByLabel('Class')).toHaveValue('warrior');
-  await expect(
-    page.getByText(
-      'Classic Era trees shown until the beta client exports; Forever revamped talents replace them then.',
-    ),
-  ).toBeVisible();
+  await expect(page.getByText(ACTIVE_BUILD_NOTICE)).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Arms' })).toBeVisible();
   // Both trees render, but below the md breakpoint only the selected tab's panel is on screen,
   // so Fury is in the document rather than visible -- tests/e2e/planner-phone.spec.ts owns the
   // one-tree-at-a-time rule, and this project runs at a phone width.
   await expect(page.getByRole('heading', { name: 'Fury', includeHidden: true })).toBeAttached();
   expect(errors).toEqual([]);
+});
+
+test('a prerequisite link is drawn and turns gold when the rank is met', async ({ page }) => {
+  await page.goto('/planner');
+  // Tactical Mastery (1004) needs Deflection (1002) at rank 2.
+  const link = page.getByTestId('connector-1002-1004');
+  await expect(link).toHaveAttribute('data-met', 'false');
+  await expect(page.getByTestId('talent-1004')).toHaveAttribute('data-state', 'locked');
+
+  await page.getByTestId('talent-1002').click();
+  await expect(link).toHaveAttribute('data-met', 'false');
+  await page.getByTestId('talent-1002').click();
+  await expect(link).toHaveAttribute('data-met', 'true');
+  await expect(page.getByTestId('talent-1002')).toHaveAttribute('data-state', 'filled');
+  // Meeting the prerequisite is not enough on its own: tier 1 still needs
+  // POINTS_PER_TIER (5) points somewhere in Arms before it opens at all. Three more in
+  // Improved Heroic Strike (1001) get there without disturbing the prerequisite above.
+  for (let i = 0; i < 3; i += 1) await page.getByTestId('talent-1001').click();
+  await expect(page.getByTestId('talent-1004')).toHaveAttribute('data-state', 'available');
+});
+
+test('reset says it will ask before it clears the build', async ({ page }) => {
+  await page.goto('/planner');
+  await page.getByTestId('talent-1001').click();
+  await page.getByRole('button', { name: 'Reset…' }).click();
+  await expect(page.getByText('Clear every point in this build?')).toBeVisible();
+  await page.getByRole('button', { name: 'Keep the build' }).click();
+  await expect(page.getByTestId('planner-spent')).toHaveText('1/51');
 });
 
 test('?class and ?race preselect the build', async ({ page }) => {
