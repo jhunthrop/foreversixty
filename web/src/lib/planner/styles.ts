@@ -49,3 +49,14 @@ export const CELL_PILL: Record<CellState, string> = {
   available: 'border-gold text-gold',
   locked: 'border-line text-muted',
 };
+
+/**
+ * A prerequisite link's stroke, keyed by whether it's met: gold once the prerequisite
+ * holds the rank its dependent needs, the same grey `border-line` uses otherwise. A
+ * `stroke-` utility rather than `border-`, so it lives beside CELL_BORDER/CELL_PILL
+ * instead of inside either of them.
+ */
+export const CONNECTOR_STROKE: Record<'met' | 'unmet', string> = {
+  met: 'stroke-gold',
+  unmet: 'stroke-line',
+};

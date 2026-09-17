@@ -5,6 +5,7 @@
 <script lang="ts">
   import { connectorsFor, gridViewBox } from '../../lib/planner/connectors';
   import { gridCells, gridSize, moveFocus, type GridCell } from '../../lib/planner/grid';
+  import { CONNECTOR_STROKE } from '../../lib/planner/styles';
   import type { PlannerStore } from '../../lib/planner/store.svelte';
   import type { TalentTree } from '../../lib/planner/types';
   import TalentCell from './TalentCell.svelte';
@@ -73,7 +74,7 @@
         stroke-width="2"
         stroke-linecap="round"
         style="vector-effect: non-scaling-stroke"
-        class={connector.met ? 'stroke-gold' : 'stroke-line'}
+        class={connector.met ? CONNECTOR_STROKE.met : CONNECTOR_STROKE.unmet}
       />
     {/each}
   </svg>

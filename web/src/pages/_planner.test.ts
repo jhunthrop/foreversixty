@@ -11,6 +11,7 @@ import { loadRenderers } from 'astro:container';
 import { beforeAll, describe, expect, it } from 'vitest';
 import Planner from './planner.astro';
 import activeBuild from '../data/active-build.json';
+import { treeSourceNotice } from '../lib/planner/tree-source';
 
 let container: AstroContainer;
 
@@ -20,11 +21,14 @@ beforeAll(async () => {
 });
 
 describe('planner.astro', () => {
-  it('renders the shell with the active build id and the Era-data notice', async () => {
+  it('renders the shell with the active build id and where its trees came from', async () => {
     const html = await container.renderToString(Planner);
     expect(html).toContain('Build planner');
     expect(html).toContain(activeBuild.build);
-    expect(html).toContain('Classic Era trees shown until the beta client exports');
+    // Computed rather than a literal string, so this keeps passing once Task 12 flips
+    // active-build.json off the pre-beta snapshot: treeSourceNotice's other branch renders
+    // it a "read from the game client" build id, and the assertion follows it there too.
+    expect(html).toContain(treeSourceNotice(activeBuild.build));
     expect(html).toContain('href="https://foreversixty.gg/planner"');
   });
 

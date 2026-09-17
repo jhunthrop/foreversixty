@@ -9,17 +9,7 @@ export const API_BASE_URL: string = import.meta.env.PUBLIC_API_BASE_URL ?? 'http
 /** The class the planner opens on when the query string does not say otherwise. */
 export const DEFAULT_CLASS_SLUG = 'warrior';
 
-/** The build id of the pre-beta data set, whose trees came from Wowhead, not a client. */
-export const PREBETA_BUILD = 'forever-prebeta';
-
-/**
- * What the planner says above the trees about where they came from. It names the
- * build rather than the expansion: the site serves several builds at once (a shared
- * link renders against the build it was saved on), so "Classic Era trees" was both
- * wrong and unanswerable once the beta client's trees shipped.
- */
-export function treeSourceNotice(build: string): string {
-  return build === PREBETA_BUILD
-    ? 'Talent trees from a pre-beta Wowhead snapshot; the client’s own trees replace them at the beta.'
-    : `Talent trees read from the game client, build ${build}.`;
-}
+// PREBETA_BUILD and treeSourceNotice live in tree-source.ts, which carries no
+// import.meta.env dependency; re-exported here so existing importers (Planner.svelte)
+// need not change.
+export { PREBETA_BUILD, treeSourceNotice } from './tree-source';

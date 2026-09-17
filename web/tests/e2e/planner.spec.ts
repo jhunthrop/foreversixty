@@ -1,15 +1,12 @@
 import { expect, test } from '@playwright/test';
 
+import { treeSourceNotice } from '../../src/lib/planner/tree-source';
 import { ACTIVE_BUILD } from './support/active-build';
 
-// Mirrors lib/planner/config.ts's treeSourceNotice: that module reads import.meta.env,
-// which is unset under Playwright's plain Node loader, so the string is reproduced here
-// rather than imported. ACTIVE_BUILD (src/data/active-build.json) is still the pre-beta
-// snapshot as of this build, so the pre-beta half is what actually renders.
-const ACTIVE_BUILD_NOTICE =
-  ACTIVE_BUILD === 'forever-prebeta'
-    ? 'Talent trees from a pre-beta Wowhead snapshot; the client’s own trees replace them at the beta.'
-    : `Talent trees read from the game client, build ${ACTIVE_BUILD}.`;
+// tree-source.ts carries no import.meta.env dependency (unlike its neighbour config.ts,
+// which reads PUBLIC_API_BASE_URL at module scope and cannot be imported under
+// Playwright's plain Node loader), so this is a real import rather than a reproduction.
+const ACTIVE_BUILD_NOTICE = treeSourceNotice(ACTIVE_BUILD);
 
 test('the planner opens on the default class with an empty build', async ({ page }) => {
   const errors: string[] = [];

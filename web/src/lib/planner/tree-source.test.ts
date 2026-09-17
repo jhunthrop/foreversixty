@@ -1,6 +1,6 @@
-// web/src/lib/planner/config.test.ts
+// web/src/lib/planner/tree-source.test.ts
 import { describe, expect, it } from 'vitest';
-import { PREBETA_BUILD, treeSourceNotice } from './config';
+import { PREBETA_BUILD, treeSourceNotice } from './tree-source';
 
 describe('treeSourceNotice', () => {
   it('names the client build the trees were read from', () => {
