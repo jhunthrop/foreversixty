@@ -177,3 +177,20 @@ test('a windowed threat row says which figure is standing and which is built', a
   await expect(row.getByTestId('threat-standing')).toContainText('standing');
   await expect(row.getByTestId('threat-built')).toContainText('built');
 });
+
+test('a resource row’s cap figures sit beside the line at 360px', async ({ page }) => {
+  await page.goto(`${REPORT}&tab=resources`);
+  const figures = page.getByTestId('resource-cap-figures').first();
+  await expect(figures).toBeVisible();
+  const box = await figures.boundingBox();
+  expect(box?.width ?? 0).toBeLessThanOrEqual(PHONE_WIDTH);
+});
+
+test('the on-the-chart control is a 44px target on a phone', async ({ page }) => {
+  await page.goto(`${REPORT}&tab=damage-done`);
+  await page.getByTestId('actor-Player-4184-000000A1').getByRole('button').first().click();
+  const control = page.getByTestId('ability-chart').first();
+  await expect(control).toBeVisible();
+  const box = await control.boundingBox();
+  expect(box?.height ?? 0).toBeGreaterThanOrEqual(44);
+});

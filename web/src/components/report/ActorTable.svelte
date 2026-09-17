@@ -2,7 +2,7 @@
 <script lang="ts">
   import type { Placement } from '../../lib/report/percentile';
   import { formatAmount, formatPerSecond, formatDuration, formatAmountLike } from '../../lib/report/format';
-  import type { Actor } from '../../lib/report/types';
+  import type { Actor, Ability } from '../../lib/report/types';
   import CopyCsv from './CopyCsv.svelte';
   import type { ExactSplit } from '../../lib/report/exact';
   import ActorRow from './ActorRow.svelte';
@@ -24,6 +24,8 @@
     windowIsWhole = false,
     deadAt = new Map<string, number>(),
     measure = undefined,
+    onChart = undefined,
+    charted = '',
   }: {
     actors: Actor[];
     durationMs: number;
@@ -49,6 +51,10 @@
     /** Players dead at the window's end, by GUID, with when they died. */
     deadAt?: ReadonlyMap<string, number>;
     measure?: (actor: Actor) => Promise<ExactSplit>;
+    /** Puts this ability on the main chart, or takes it off when it is already there. */
+    onChart?: (actor: Actor, ability: Ability) => void;
+    /** `${guid}|${abilityKey(ability)}` of the ability currently on the chart; '' for none. */
+    charted?: string;
   } = $props();
 
   const peak = $derived(actors.reduce((highest, actor) => Math.max(highest, actor.effective), 0));
@@ -166,6 +172,8 @@
           {parseFallback}
           {pairsLabel}
           {measure}
+          {onChart}
+          {charted}
           percentile={percentiles.get(actor.guid) ?? null}
           share={total === 0 ? 0 : (actor.effective / total) * 100}
         />

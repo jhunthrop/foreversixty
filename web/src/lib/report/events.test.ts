@@ -44,7 +44,10 @@ describe('summaryEvents', () => {
   });
 
   it('describes a cast and an aura', () => {
-    expect(events.find((event) => event.kind === 'cast')?.text).toBe('Morrowlyn cast Frostbolt');
+    // Ashfang's Bite at 1.5s is now the fight's earliest cast, ahead of Morrowlyn's
+    // Frostbolt: a pet's cast row sorts into the timeline by its own timestamp same
+    // as any other caster's.
+    expect(events.find((event) => event.kind === 'cast')?.text).toBe('Ashfang cast Bite');
     // The first aura of the fight is one the engine seeds from Baelgrim's COMBATANT_INFO
     // snapshot, which carries spell ids and no names, so it is filed under its id. The
     // Fortitude the priest casts four seconds in is still in the list behind it.
@@ -155,5 +158,51 @@ describe('streamEvents', () => {
     expect(parry.kind).toBe('damage');
     expect(parry.guid).toBe('tank');
     expect(hit.text).toBe('General Kaal hit Hobolol with Melee (261 absorbed, 1,200 blocked)');
+  });
+});
+
+describe('aura refreshes in the full stream', () => {
+  it('words a refresh from the caster’s side and files it under auras applied', () => {
+    const [line] = streamEvents([
+      {
+        atMs: 20_000,
+        kind: 'aura_refresh',
+        sourceGuid: 'Player-2',
+        sourceName: 'Sunwick-Nightslayer',
+        destGuid: 'Player-1',
+        destName: 'Baelgrim-Nightslayer',
+        spellName: 'Power Word: Fortitude',
+        amount: 0,
+        overheal: 0,
+        absorbed: 0,
+        blocked: 0,
+        missType: '',
+      },
+    ]);
+    expect(line.kind).toBe('aura-applied');
+    expect(line.text).toBe('Sunwick refreshed Power Word: Fortitude on Baelgrim');
+    expect(line.guid).toBe('Player-1');
+    expect(line.guids).toEqual(['Player-2', 'Player-1']);
+    expect(line.amount).toBeUndefined();
+  });
+
+  it('says the aura refreshed itself when the log names no caster', () => {
+    const [line] = streamEvents([
+      {
+        atMs: 1000,
+        kind: 'aura_refresh',
+        sourceGuid: '',
+        sourceName: '',
+        destGuid: 'Player-1',
+        destName: 'Baelgrim-Nightslayer',
+        spellName: 'Rend',
+        amount: 0,
+        overheal: 0,
+        absorbed: 0,
+        blocked: 0,
+        missType: '',
+      },
+    ]);
+    expect(line.text).toBe('Rend refreshed on Baelgrim');
   });
 });

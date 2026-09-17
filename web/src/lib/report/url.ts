@@ -109,6 +109,8 @@ export interface ReportState {
   /** Compare mode's second fight and metric; null and '' when not chosen. */
   compareWith: number | null;
   compareMetric: string;
+  /** Compare mode's second player, as a GUID; '' compares two fights instead. */
+  compareVs: string;
   /** The events view: the kinds switched off, and the find box. */
   eventsOff: string[];
   find: string;
@@ -139,6 +141,7 @@ export function defaultState(firstFight: number): ReportState {
     flags: [],
     compareWith: null,
     compareMetric: '',
+    compareVs: '',
     eventsOff: [],
     find: '',
     openDeaths: [],
@@ -208,6 +211,12 @@ export function parseReportState(search: string, firstFight: number): ReportStat
   if (compareWith !== null && compareWith > 0) state.compareWith = compareWith;
   const compareMetric = params.get('cmetric');
   if (compareMetric !== null && /^[a-z_]{1,24}$/.test(compareMetric)) state.compareMetric = compareMetric;
+  // The same shape `source` accepts: a GUID is the engine's own format, a kind then
+  // hyphen-separated numeric fields. A name typed by hand is not resolved here the way
+  // `source` resolves one, because Compare's picker is a list of this pull's players and
+  // a link that names a player who was not in it has nothing to fall back to.
+  const compareVs = params.get('vs');
+  if (compareVs !== null && /^[A-Za-z0-9-]{1,64}$/.test(compareVs)) state.compareVs = compareVs;
   const eventsOff = params.get('eoff');
   if (eventsOff !== null)
     state.eventsOff = eventsOff.split(',').filter((kind) => /^[a-z-]{1,24}$/.test(kind));
@@ -242,6 +251,7 @@ export function reportSearch(state: ReportState, firstFight: number): string {
   if (state.flags.length > 0) params.set('flags', state.flags.map((key) => FLAG_LETTERS[key]).join(''));
   if (state.compareWith !== null) params.set('with', String(state.compareWith));
   if (state.compareMetric !== '') params.set('cmetric', state.compareMetric);
+  if (state.compareVs !== '') params.set('vs', state.compareVs);
   if (state.eventsOff.length > 0) params.set('eoff', state.eventsOff.join(','));
   if (state.find !== '') params.set('find', state.find);
   if (state.openDeaths.length > 0) params.set('death', state.openDeaths.join(','));

@@ -1,5 +1,5 @@
 {
-  "engine_version": "0.4.0",
+  "engine_version": "0.4.1",
   "fight_index": 4,
   "duration_ms": 10000,
   "damage_done": [
@@ -74,7 +74,10 @@
       "series": [0, 0, 0, 0, 0, 0, 0, 0, 0],
       "gained": 0,
       "spent": 0,
-      "zero_ms": 6000
+      "zero_ms": 6000,
+      "max": 0,
+      "at_max_ms": 0,
+      "wasted": 0
     }
   ],
   "threat": [

@@ -13,7 +13,7 @@
 // shield's spell, since that is the only place an absorbed amount is counted.
 import { EVENTS_TABLE, FIGHT_MS, createDuckDbEngine, createQueryLayer, type QueryLayer } from './query';
 import type { Ability, Mitigated, Pair } from './types';
-import type { TimeWindow } from './window';
+import { BUCKET_MS, type TimeWindow } from './window';
 
 export type ActorKind = 'damage-done' | 'damage-taken' | 'healing';
 
@@ -366,7 +366,7 @@ export async function measureCasts(
  */
 export interface StreamLine {
   atMs: number;
-  kind: 'damage' | 'heal' | 'missed';
+  kind: 'damage' | 'heal' | 'missed' | 'aura_refresh';
   sourceGuid: string;
   sourceName: string;
   destGuid: string;
@@ -381,16 +381,21 @@ export interface StreamLine {
   missType: string;
 }
 
+/**
+ * A refresh rides with the hits and heals rather than with the summary's aura segments:
+ * the summary folds a refresh into the running segment and keeps no count of them, so
+ * "when did this actually get re-applied" is only answerable from the fight's own lines.
+ */
 export function eventStreamSql(window: TimeWindow): string {
   return `SELECT ${FIGHT_MS} AS fight_ms, kind, source_guid, source_name, dest_guid, dest_name, spell_name,
   coalesce(amount, 0) AS amount, coalesce(overheal, 0) AS overheal, coalesce(absorbed, 0) AS absorbed,
   coalesce(blocked, 0) AS blocked, coalesce(miss_type, '') AS miss_type
-FROM (SELECT * FROM ${DAMAGE_LINES} UNION ALL SELECT * FROM ${EVENTS_TABLE} WHERE kind IN ('heal', 'missed'))
+FROM (SELECT * FROM ${DAMAGE_LINES} UNION ALL SELECT * FROM ${EVENTS_TABLE} WHERE kind IN ('heal', 'missed', 'aura_refresh'))
 WHERE ${windowClause(window)}
 ORDER BY time_unix_nano, line`;
 }
 
-/** Every hit and heal in the window, time-ordered. */
+/** Every hit, heal and aura refresh in the window, time-ordered. */
 export async function loadEventStream(
   layer: QueryLayer,
   eventsUrl: string,
@@ -399,7 +404,14 @@ export async function loadEventStream(
   const result = await layer.run(eventsUrl, eventStreamSql(window), ALL_ROWS);
   return rowsOf(result).map((row) => ({
     atMs: num(row.fight_ms),
-    kind: row.kind === 'heal' ? 'heal' : row.kind === 'missed' ? 'missed' : 'damage',
+    kind:
+      row.kind === 'heal'
+        ? 'heal'
+        : row.kind === 'missed'
+          ? 'missed'
+          : row.kind === 'aura_refresh'
+            ? 'aura_refresh'
+            : 'damage',
     sourceGuid: String(row.source_guid ?? ''),
     sourceName: String(row.source_name ?? ''),
     destGuid: String(row.dest_guid ?? ''),
@@ -585,4 +597,55 @@ export async function measureExact(
       ...(kind === 'healing' ? { overheal: num(row.overheal) } : {}),
     })),
   };
+}
+
+/**
+ * One actor's one ability, bucketed by whole second: the line the main chart draws behind
+ * its own series when a reader puts an ability "on the chart". It counts what the tables
+ * count -- rowsSql is the same projection the totals and the splits are read from -- so
+ * the line's peak and the row's Max are the same number.
+ */
+export function abilitySeriesSql(
+  kind: ActorKind,
+  guid: string,
+  spellId: number,
+  via: string,
+  window: TimeWindow,
+  options: MeasureOptions = {},
+): string {
+  return `WITH rows AS (${rowsSql(kind, window, { ...options, ability: spellId })})
+SELECT floor(fight_ms / ${BUCKET_MS}) AS second, sum(effective) AS amount
+FROM rows
+WHERE actor = ${quote(guid)} AND via = ${quote(via)}
+GROUP BY 1
+ORDER BY 1`;
+}
+
+/**
+ * Measures one ability's effective amount per second over the whole fight. The whole
+ * fight, not the window: the chart slices what it draws, so a brush costs nothing, where
+ * re-measuring would put a parquet read behind every pointer move.
+ */
+export async function measureAbilitySeries(
+  layer: QueryLayer,
+  eventsUrl: string,
+  kind: ActorKind,
+  guid: string,
+  spellId: number,
+  via: string,
+  durationMs: number,
+  options: MeasureOptions = {},
+): Promise<number[]> {
+  const endMs = Math.max(durationMs, BUCKET_MS);
+  const result = await layer.run(
+    eventsUrl,
+    abilitySeriesSql(kind, guid, spellId, via, { startMs: 0, endMs }, options),
+    ALL_ROWS,
+  );
+  const series = new Array<number>(Math.ceil(endMs / BUCKET_MS)).fill(0);
+  for (const row of rowsOf(result)) {
+    const second = num(row.second);
+    if (second >= 0 && second < series.length) series[second] = num(row.amount);
+  }
+  return series;
 }

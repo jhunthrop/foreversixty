@@ -15,11 +15,13 @@
   import {
     formatAmount,
     formatDuration,
+    formatPercent,
     wholeFightAriaLabel,
     wholeFightMark,
     wholeFightTitle,
   } from '../../lib/report/format';
   import type { ResourceTrack } from '../../lib/report/types';
+  import CopyCsv from './CopyCsv.svelte';
 
   let {
     tracks,
@@ -65,6 +67,40 @@
 
   const peakOf = (series: number[]): number => series.reduce((highest, value) => Math.max(highest, value), 0);
 
+  /** The top of the sparkline's scale: the peak reading, or the cap when the line never reached it. */
+  const scaleTop = (peak: number, max: number | undefined): number => Math.max(peak, max ?? 0);
+  /** A reading's y on the 26-unit viewBox the sparkline is drawn in; every line and mark uses this one scale. */
+  const yOf = (value: number, top: number): number => (top === 0 ? 24 : 24 - (value / top) * 22);
+  /** The seconds whose reading is at the cap, as [from, to] percentages of the line's width. */
+  function atMaxSpans(series: number[], max: number): { from: number; to: number }[] {
+    if (max <= 0 || series.length === 0) return [];
+    const width = 100 / series.length;
+    const out: { from: number; to: number }[] = [];
+    series.forEach((value, index) => {
+      if (value < max) return;
+      const from = index * width;
+      const last = out[out.length - 1];
+      if (last !== undefined && Math.abs(last.to - from) < 0.0001) last.to = from + width;
+      else out.push({ from, to: from + width });
+    });
+    return out;
+  }
+  /** The share of the window the bar spent full. */
+  function atCapPct(atMaxMs: number): number {
+    return durationMs === 0 ? 0 : (atMaxMs / durationMs) * 100;
+  }
+  /** One track's series as lines: the second, the reading, and whether it was at the cap. */
+  function seriesCsv(track: ResourceTrack): string[][] {
+    return [
+      ['Second', 'Reading', 'At cap'],
+      ...track.series.map((value, index) => [
+        String(index),
+        String(value),
+        track.max !== undefined && track.max > 0 && value >= track.max ? 'yes' : 'no',
+      ]),
+    ];
+  }
+
   /** The game's power indices. Anything else is shown by its number, not guessed at. */
   const POWER_NAMES = new Map<number, string>([
     [0, 'Mana'],
@@ -91,11 +127,10 @@
       .sort((a, b) => a.name.localeCompare(b.name) || a.power_type - b.power_type),
   );
 
-  function points(series: number[]): string {
-    const peak = series.reduce((highest, value) => Math.max(highest, value), 0);
-    if (peak === 0 || series.length < 2) return '';
+  function points(series: number[], top: number): string {
+    if (top === 0 || series.length < 2) return '';
     return series
-      .map((value, index) => `${(index / (series.length - 1)) * 100},${24 - (value / peak) * 22}`)
+      .map((value, index) => `${(index / (series.length - 1)) * 100},${yOf(value, top)}`)
       .join(' ');
   }
 
@@ -114,6 +149,7 @@
     {#each rows as track (`${track.guid}-${track.power_type}`)}
       {@const lowest = low(track.series)}
       {@const peak = peakOf(track.series)}
+      {@const top = scaleTop(peak, track.max)}
       <li
         class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px] md:grid-cols-[minmax(120px,1.2fr)_96px_minmax(0,3fr)_96px]"
         data-testid={`resource-${track.guid}-${track.power_type}`}
@@ -160,8 +196,34 @@
                   vector-effect="non-scaling-stroke"
                 />
               {/each}
+              {#if track.max !== undefined && track.max > 0}
+                {#each atMaxSpans(track.series, track.max) as span, i (`${span.from}-${i}`)}
+                  <rect
+                    x={span.from}
+                    y="0"
+                    width={span.to - span.from}
+                    height="26"
+                    fill="var(--color-gold)"
+                    opacity="0.18"
+                    data-testid="resource-at-max"
+                  />
+                {/each}
+                <!-- A perfectly horizontal <line> has zero geometric height under
+                     getBoundingClientRect, so a visibility check on it always reads
+                     hidden regardless of where it is drawn; a thin filled <rect> at the
+                     same y (from yOf, the same scale the sparkline itself uses) carries
+                     genuine area and reads the same as a cap line on screen. -->
+                <rect
+                  x="0"
+                  y={yOf(track.max, top) - 0.4}
+                  width="100"
+                  height="0.8"
+                  fill="var(--color-gold)"
+                  data-testid="resource-cap-line"
+                />
+              {/if}
               <polyline
-                points={points(track.series)}
+                points={points(track.series, top)}
                 fill="none"
                 stroke="var(--color-gold)"
                 stroke-width="1.5"
@@ -174,12 +236,38 @@
               >{readouts[`${track.guid}-${track.power_type}`]}</span
             >
           {/if}
-          <span class="text-muted tabular flex justify-between font-mono text-[11px]">
+          <!-- The peak/low reading always renders; when the track carries a reported cap the
+               same line also carries the cap figures, so a test (or a reader) that asks for
+               "the figures" sees the peak beside the cap, the time at it and the waste. -->
+          <span
+            class={track.max !== undefined && track.max > 0
+              ? 'text-muted tabular flex flex-wrap items-baseline gap-x-3 font-mono text-[11px]'
+              : 'text-muted tabular flex justify-between font-mono text-[11px]'}
+            data-testid={track.max !== undefined && track.max > 0 ? 'resource-cap-figures' : undefined}
+          >
             <span title="The top of the line">peak {formatAmount(peak)}</span>
             <span title="The lowest point and when it was reached" data-testid="resource-low"
               >low {formatAmount(lowest.value)} at {formatDuration(lowest.atMs)}</span
             >
+            {#if track.max !== undefined && track.max > 0}
+              <span
+                title="The share of this window the bar spent full, measured from the window's own seconds"
+                >at cap {formatPercent(atCapPct(track.at_max_ms ?? 0))} of the fight</span
+              >
+              <!-- One title per element: the whole-fight one from wholeFightTitle(true),
+                   already bound to this file's `title` const, and the words that explain
+                   what the figure is in the aria-label, which is where a title on an
+                   element with visible text would not reliably be read out anyway. -->
+              <span
+                {title}
+                aria-label={wholeFightAriaLabel(
+                  true,
+                  `${formatAmount(track.wasted ?? 0)} of power gained past the cap and thrown away`,
+                )}>{mark}wasted {formatAmount(track.wasted ?? 0)}</span
+              >
+            {/if}
           </span>
+          <CopyCsv lines={() => seriesCsv(track)} label="Copy this line as CSV" />
         </span>
         <span
           class="text-muted tabular text-right font-mono text-[13px]"
@@ -196,7 +284,7 @@
     Fight length in this window: <span class="tabular font-mono">{formatDuration(durationMs)}</span>.
   </p>
   <p class="text-muted text-[12px]" data-testid="resource-wholefight-note">
-    Time empty is marked {mark} because the summary tracks it for the whole fight only; the line above is this window's
-    own series.
+    Time empty and power wasted are marked {mark} because the summary tracks them for the whole fight only; the
+    line, the cap and the time at the cap are this window's own.
   </p>
 {/if}

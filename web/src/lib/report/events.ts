@@ -64,6 +64,20 @@ export function streamEvents(lines: StreamLine[]): SummaryEvent[] {
     const who = splitUnitName(line.sourceName).name || 'Something';
     const whom = splitUnitName(line.destName).name;
     const spell = line.spellName === '' ? 'Melee' : line.spellName;
+    if (line.kind === 'aura_refresh') {
+      // Filed under "Auras applied": a refresh is the aura going back up, and a reader
+      // who switched applications off does not want refreshes either. The summary's own
+      // aura lines fold a refresh into the running segment and never say it happened,
+      // which is exactly the gap this fills.
+      return {
+        atMs: line.atMs,
+        kind: 'aura-applied',
+        guid: line.destGuid,
+        guids: [line.sourceGuid, line.destGuid],
+        text: who === 'Something' ? `${spell} refreshed on ${whom}` : `${who} refreshed ${spell} on ${whom}`,
+        tags: ['refresh', 'refreshed'],
+      };
+    }
     if (line.kind === 'missed') {
       const verb = MISS_VERBS[line.missType] ?? `avoided (${line.missType.toLowerCase()})`;
       const soaked =

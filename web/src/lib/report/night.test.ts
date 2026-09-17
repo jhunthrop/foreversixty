@@ -451,4 +451,31 @@ describe('aggregateNight', () => {
     // Pull 1's 99/99 stray counts must not appear: only pull 3's 3/1 do.
     expect(interrupt).toMatchObject({ casts: 3, stopped: 1, pulls_hit: 1, players: undefined });
   });
+
+  it('folds the cap figures: wasted and at-cap sum, the cap is the largest of them', () => {
+    const fights = [fight(3, 'Kaal', false, 4000), fight(4, 'Kaal', true, 4000)];
+    const track = (max: number, atMax: number, wasted: number, series: number[]) => [
+      {
+        guid: 'Player-1',
+        name: 'Tank',
+        power_type: 1,
+        series,
+        gained: 10,
+        spent: 5,
+        zero_ms: 0,
+        max,
+        at_max_ms: atMax,
+        wasted,
+      },
+    ];
+    const summaries = new Map([
+      [3, { ...summary(3, 4000, [roster('A', 1)]), resources: track(100, 2000, 25, [100, 100]) }],
+      [4, { ...summary(4, 4000, [roster('A', 1)]), resources: track(120, 1000, 5, [120]) }],
+    ]);
+    const night = nightSummary(fights, summaries as never);
+    const folded = night.resources.find((row) => row.guid === 'Player-1');
+    expect(folded?.max).toBe(120);
+    expect(folded?.at_max_ms).toBe(3000);
+    expect(folded?.wasted).toBe(30);
+  });
 });

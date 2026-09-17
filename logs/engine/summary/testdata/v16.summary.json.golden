@@ -365,6 +365,7 @@
     {
       "guid": "Player-4184-000000A3",
       "name": "Morrowlyn-Nightslayer",
+      "owner_guid": "Player-4184-000000A3",
       "spell_id": 116,
       "spell_name": "Frostbolt",
       "started": 0,
@@ -415,7 +416,10 @@
       ],
       "gained": 0,
       "spent": 0,
-      "zero_ms": 0
+      "zero_ms": 0,
+      "max": 0,
+      "at_max_ms": 0,
+      "wasted": 0
     },
     {
       "guid": "Creature-0-2085-2284-7855-169753-0000AA0001",
@@ -426,7 +430,10 @@
       ],
       "gained": 0,
       "spent": 0,
-      "zero_ms": 0
+      "zero_ms": 0,
+      "max": 1000,
+      "at_max_ms": 0,
+      "wasted": 0
     },
     {
       "guid": "Player-4184-000000A1",
@@ -440,7 +447,10 @@
       ],
       "gained": 0,
       "spent": 0,
-      "zero_ms": 0
+      "zero_ms": 0,
+      "max": 9330,
+      "at_max_ms": 2000,
+      "wasted": 0
     },
     {
       "guid": "Player-4184-000000A1",
@@ -454,7 +464,10 @@
       ],
       "gained": 50,
       "spent": 0,
-      "zero_ms": 0
+      "zero_ms": 0,
+      "max": 1000,
+      "at_max_ms": 0,
+      "wasted": 0
     }
   ],
   "threat": [

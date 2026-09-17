@@ -59,6 +59,8 @@
     deadSince = null,
     measure = undefined,
     characterLink = null,
+    onChart = undefined,
+    charted = '',
   }: {
     rank: number;
     actor: Actor;
@@ -86,6 +88,10 @@
     /** Measures this row's split inside the window from the fight's own events. */
     measure?: (actor: Actor) => Promise<ExactSplit>;
     characterLink?: { region: string; ruleset: string } | null;
+    /** Puts this ability on the main chart, or takes it off when it is already there. */
+    onChart?: (actor: Actor, ability: Ability) => void;
+    /** `${guid}|${abilityKey(ability)}` of the ability currently on the chart; '' for none. */
+    charted?: string;
   } = $props();
 
   /** Below ten one-second buckets, a percentage rounds to steps of 10% or coarser. */
@@ -153,6 +159,8 @@
   );
   /** Hits and ticks together: a dot's ticks are its hits. */
   const landed = (ability: Ability): number => ability.hits + ability.ticks;
+  /** The key the page identifies a charted line by: this row's actor and this ability. */
+  const chartKey = (ability: Ability): string => `${actor.guid}|${abilityKey(ability)}`;
   /** The abilities table as lines, with the notes column as words. */
   function abilityCsv(): string[][] {
     return [
@@ -514,6 +522,11 @@
                 title="A heal: how much of it was over. Damage: what did not land, by kind"
                 >{healing ? 'Over' : 'Not landed'}</th
               >
+              {#if onChart !== undefined}
+                <th scope="col" class="py-1 pl-3 text-right font-normal"
+                  ><span class="sr-only">On the chart</span></th
+                >
+              {/if}
             </tr>
           </thead>
           <tbody>
@@ -574,6 +587,19 @@
                   class="text-muted tabular max-w-[200px] py-1.5 text-left font-mono text-[12px] break-words md:max-w-none md:min-w-[220px] md:text-right md:whitespace-nowrap"
                   >{abilityNotes(ability).join(' · ')}</td
                 >
+                {#if onChart !== undefined}
+                  <td class="py-1.5 pl-3 text-right whitespace-nowrap">
+                    <button
+                      type="button"
+                      class="text-nav inline-flex min-h-11 items-center text-[12px] font-bold tracking-[0.06em] uppercase md:min-h-9"
+                      title="Draw this ability's amount per second behind the chart above"
+                      aria-pressed={charted === chartKey(ability)}
+                      data-testid="ability-chart"
+                      onclick={() => onChart?.(actor, ability)}
+                      >{charted === chartKey(ability) ? 'Off the chart' : 'On the chart'}</button
+                    >
+                  </td>
+                {/if}
               </tr>
             {/each}
           </tbody>

@@ -6,6 +6,18 @@
 import { expect, test, type Page } from '@playwright/test';
 import { DUCKDB_WASM_VERSION } from '../../src/lib/report/duckdb-runtime';
 import { serveDuckdbRuntime } from './support/duckdb-runtime';
+import { readFileSync } from 'node:fs';
+
+/** The lines of fight 3 (Warden Kelthas, encounter 9001) in the fixture log, boundaries included. */
+function fightThreeLines(): number {
+  const lines = readFileSync(new URL('../../src/fixtures/report/fixture.log', import.meta.url), 'utf8').split(
+    '\n',
+  );
+  const start = lines.findIndex((line) => line.includes('ENCOUNTER_START,9001,'));
+  const end = lines.findIndex((line) => line.includes('ENCOUNTER_END,9001,'));
+  if (start < 0 || end < start) throw new Error('fixture.log has no complete encounter 9001');
+  return end - start + 1;
+}
 
 const REPORT = '/reports/fixture2abcd';
 const QUERIES = `${REPORT}?fight=3&view=queries`;
@@ -130,9 +142,9 @@ test('a query runs against the fight’s own Parquet, and every byte comes from 
   await page.getByTestId('query-sql').fill("SELECT count(*) AS n FROM read_parquet('events.parquet')");
   await page.getByTestId('query-run').click();
   await expect(page.getByTestId('query-error')).toHaveCount(0);
-  // 27: every line of fight 3 in the fixture log, ENCOUNTER_START and ENCOUNTER_END
-  // included (lines 29 to 55 of src/fixtures/report/fixture.log).
-  await expect(page.getByTestId('query-result')).toContainText('27');
+  // Every line of fight 3 in the fixture log, ENCOUNTER_START and ENCOUNTER_END included,
+  // counted from the log itself so a line added to the fixture moves this with it.
+  await expect(page.getByTestId('query-result')).toContainText(String(fightThreeLines()));
 
   expect(external).toEqual([]);
 
