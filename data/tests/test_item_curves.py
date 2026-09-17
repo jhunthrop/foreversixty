@@ -7,6 +7,7 @@ from pipeline.normalize.item_curves import (
     PLATE,
     ROBE_INVENTORY_TYPE,
     SHIELD,
+    STAT_BUDGET_GROUP_BY_INVENTORY_TYPE,
     load_item_curves,
     resolve_armor,
     stat_budget,
@@ -93,3 +94,33 @@ def test_stat_budget_clamps_to_the_curve_table_s_own_range():
     curves = fixture_curves()
     assert stat_budget(curves, 1, 4, 1) == stat_budget(curves, 40, 4, 1)
     assert stat_budget(curves, 9999, 4, 1) == stat_budget(curves, 66, 4, 1)
+
+
+def test_rand_prop_points_reads_the_integer_columns_when_the_build_has_only_those():
+    """Classic Era's own RandPropPoints has no GoodF_0-style float columns at
+    all -- only the integer Good_0 style -- which crashed load_item_curves
+    with KeyError: 'GoodF_0' until _budget's fallback was added (see its
+    docstring). fixtures/RandPropPoints_era.csv carries the same numbers as
+    fixtures/RandPropPoints.csv under the integer-only column names, so both
+    fixtures must resolve identically."""
+    float_only = load_item_curves(
+        read_csv(HERE / "fixtures/ItemArmorTotal.csv"),
+        read_csv(HERE / "fixtures/ItemArmorQuality.csv"),
+        read_csv(HERE / "fixtures/ItemArmorShield.csv"),
+        read_csv(HERE / "fixtures/ArmorLocation.csv"),
+        read_csv(HERE / "fixtures/RandPropPoints.csv"),
+    )
+    int_only = load_item_curves(
+        read_csv(HERE / "fixtures/ItemArmorTotal.csv"),
+        read_csv(HERE / "fixtures/ItemArmorQuality.csv"),
+        read_csv(HERE / "fixtures/ItemArmorShield.csv"),
+        read_csv(HERE / "fixtures/ArmorLocation.csv"),
+        read_csv(HERE / "fixtures/RandPropPoints_era.csv"),
+    )
+    assert int_only.rand_prop_points == float_only.rand_prop_points
+    for item_level in (40, 66):
+        for quality in (2, 3, 4):
+            for inventory_type in STAT_BUDGET_GROUP_BY_INVENTORY_TYPE:
+                assert stat_budget(int_only, item_level, quality, inventory_type) == stat_budget(
+                    float_only, item_level, quality, inventory_type
+                )

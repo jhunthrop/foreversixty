@@ -19,6 +19,8 @@ from __future__ import annotations
 import bisect
 from dataclasses import dataclass, field
 
+from pipeline.csvio import populated
+
 #: Item.SubclassID values for ClassID == ARMOR (pipeline.proficiency.ARMOR) that
 #: this module knows a curve for. See proficiency.py's docstring for the full
 #: armour/weapon subclass vocabulary.
@@ -133,14 +135,19 @@ def load_item_curves(
         int(row["ID"]): {col: float(row[col]) for col in LOCATION_COLUMN.values()}
         for row in armor_location_rows
     }
+
     # Classic Era's RandPropPoints has only the integer Good_0.. columns; the
     # 1.60 client's adds float GoodF_0.. twins carrying the same values (the
     # client evidently switched to float storage at some point). Preferring
-    # the float column where it exists, and falling back to the integer one
-    # where it does not, resolves the same numbers on both schemas.
+    # the float column where the row populates it, and falling back to the
+    # integer one where it does not, resolves the same numbers on both
+    # schemas. `populated` (not a bare key-presence check) matters here the
+    # same way it does for spelltext.py's `_base_points`: a client that ships
+    # both headers but leaves one blank -- exactly what Era's own SpellEffect
+    # does -- would otherwise reach float("") instead of falling back.
     def _budget(row: dict[str, str], budget_column: str, group: int) -> float:
-        key = f"{budget_column}F_{group}"
-        return float(row[key] if key in row else row[f"{budget_column}_{group}"])
+        value = populated(row, f"{budget_column}F_{group}")
+        return float(value if value is not None else row[f"{budget_column}_{group}"])
 
     rand_prop_points = {
         int(row["ID"]): {

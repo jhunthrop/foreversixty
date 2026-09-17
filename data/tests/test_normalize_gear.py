@@ -14,7 +14,7 @@ from pipeline.normalize.gear import (
 )
 from pipeline.normalize.item_curves import load_item_curves
 from pipeline.proficiency import WEAPON
-from pipeline.spelltext import load_spell_text
+from pipeline.spelltext import SpellTextError, load_spell_text
 
 HERE = Path(__file__).parent
 
@@ -597,9 +597,19 @@ def test_a_malformed_item_table_row_is_an_item_data_error_too():
         )
 
 
-def test_effect_base_points_read_the_float_column_when_the_build_has_it():
+def test_either_base_points_column_lands_on_the_same_number():
     # Classic Era exports EffectBasePoints as an integer; the 1.60 (Forever beta) client
     # exports EffectBasePointsF as a float. Both must land on the same whole number.
+    #
+    # Renamed from test_effect_base_points_read_the_float_column_when_the_build_has_it:
+    # that name asserted the opposite of what _base_points actually does (it prefers
+    # the INT column, per the bug described in its docstring -- reading the float
+    # column whenever it merely existed silently zeroed every Era description, since
+    # Era's own EffectBasePointsF is unused "0" padding). The two fixture rows below
+    # are still mutually exclusive (each carries only one of the two columns), so this
+    # test alone cannot tell the two orderings apart; see
+    # test_the_int_column_wins_when_both_are_populated and
+    # test_the_float_column_is_used_when_only_it_is_populated below for that.
     spell = [
         {
             "ID": "10",
@@ -634,3 +644,58 @@ def test_effect_base_points_read_the_float_column_when_the_build_has_it():
     assert load_spell_text(spell, misc, era, []).describe(10) == load_spell_text(
         spell, misc, beta, []
     ).describe(10)
+
+
+def _effect_row(**overrides) -> dict:
+    # EffectDieSides 0: _bounds() adds it to base_points, so a nonzero value
+    # would shift the rendered number away from what these tests assert.
+    row = {
+        "SpellID": "10",
+        "EffectIndex": "0",
+        "EffectDieSides": "0",
+        "EffectAuraPeriod": "0",
+        "DifficultyID": "0",
+    }
+    row.update(overrides)
+    return row
+
+
+def _spell_and_misc() -> tuple[list[dict], list[dict]]:
+    spell = [
+        {
+            "ID": "10",
+            "NameSubtext_lang": "",
+            "Description_lang": "$s1 dmg",
+            "AuraDescription_lang": "",
+        }
+    ]
+    misc = [
+        {"SpellID": "10", "DurationIndex": "0", "SpellIconFileDataID": "0", "DifficultyID": "0"}
+    ]
+    return spell, misc
+
+
+def test_the_int_column_wins_when_both_are_populated():
+    """A build shaped like neither Era nor beta -- both EffectBasePoints and
+    EffectBasePointsF populated and agreeing -- reads the int column, matching
+    Era's own rule and item_curves.py's sibling _budget fallback."""
+    spell, misc = _spell_and_misc()
+    row = _effect_row(EffectBasePoints="41", EffectBasePointsF="41.0")
+    assert load_spell_text(spell, misc, [row], []).describe(10) == "41 dmg"
+
+
+def test_the_float_column_is_used_when_only_it_is_populated():
+    spell, misc = _spell_and_misc()
+    row = _effect_row(EffectBasePoints="", EffectBasePointsF="41.0")
+    assert load_spell_text(spell, misc, [row], []).describe(10) == "41 dmg"
+
+
+def test_base_points_columns_that_disagree_are_an_error_not_a_guess():
+    """The whole premise of preferring one column over the other is that only
+    one is ever real on a given build; a row where both are populated and
+    disagree means that premise is false for this build, so this must not
+    silently pick a side."""
+    spell, misc = _spell_and_misc()
+    row = _effect_row(EffectBasePoints="41", EffectBasePointsF="99.0")
+    with pytest.raises(SpellTextError, match="disagreeing"):
+        load_spell_text(spell, misc, [row], [])

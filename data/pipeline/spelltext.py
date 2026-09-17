@@ -23,6 +23,13 @@ import re
 from collections.abc import Mapping
 from dataclasses import dataclass, field, replace
 
+from pipeline.csvio import populated
+
+
+class SpellTextError(ValueError):
+    """A spell effect row states something this module will not guess at."""
+
+
 TOKEN = re.compile(
     r"\$"
     r"(?:/(?P<divisor>\d+);)?"
@@ -155,7 +162,7 @@ def _base_points(row: dict[str, str]) -> int:
     the descriptions do not use yet), so a missing die-sides column reads as no spread.
 
     Both builds' SpellEffect rows carry both column headers, but only one is ever
-    real: Era's own EffectBasePoints is always populated and its EffectBasePointsF
+    populated: Era's own EffectBasePoints is always populated and its EffectBasePointsF
     is always "0" (unused padding), while build 1.60.1.69893's EffectBasePoints is
     always empty and EffectBasePointsF carries the real value -- confirmed against
     every row of both builds' own SpellEffect tables (see data/README.md). Reading
@@ -163,10 +170,23 @@ def _base_points(row: dict[str, str]) -> int:
     function did, silently zeroed every Era description's numbers (see
     test_effect_base_points_read_the_float_column_when_the_build_has_it, which this
     still satisfies: the integer column is genuinely absent from that test's beta
-    fixture, not merely empty).
+    fixture, not merely empty). Preferring the int column when both are populated is
+    the same rule `pipeline/normalize/item_curves.py`'s `_budget` uses for
+    RandPropPoints; if the two ever populated the same row with different numbers,
+    that would mean the "only one is ever real" premise this whole function rests on
+    is false, so this raises rather than silently pick a side.
     """
-    raw = row.get("EffectBasePoints")
-    if raw not in (None, ""):
+    raw, float_raw = populated(row, "EffectBasePoints"), populated(row, "EffectBasePointsF")
+    if raw is not None and float_raw is not None:
+        int_value, float_value = int(raw), round(float(float_raw))
+        if int_value != float_value:
+            raise SpellTextError(
+                f"spell {row.get('SpellID')} effect {row.get('EffectIndex')} has both "
+                f"EffectBasePoints ({int_value}) and EffectBasePointsF ({float_value}) "
+                "populated and disagreeing"
+            )
+        return int_value
+    if raw is not None:
         return int(raw)
     return round(float(row["EffectBasePointsF"]))
 
