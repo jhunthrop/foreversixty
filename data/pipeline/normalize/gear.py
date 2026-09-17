@@ -18,20 +18,49 @@ MAX_PLAYER_LEVEL = 60
 STAT_COLUMNS = range(10)
 SET_ITEM_COLUMNS = range(17)
 
+#: Item level at which the sanity cap below applies -- the top of Classic-style
+#: itemization, where real gear's own ceiling is well understood (the highest
+#: real armour and stat values in build 1.60.1.69893 are 1,833 and 46; see
+#: data/README.md). Distinct from MAX_PLAYER_LEVEL even though both are 60 in
+#: Classic-style numbering: one is a player level, the other an item level.
+SANITY_CHECK_ITEM_LEVEL = 60
+#: A single stat or armour value past these on a SANITY_CHECK_ITEM_LEVEL item is
+#: not real gear -- every QA/test row found in build 1.60.1.69893 (JUNK_NAME_PATTERN
+#: is the primary defence) cleared both by 4x or more. This is a backstop for the
+#: next one JUNK_NAME_PATTERN does not yet know to catch, not a tuned gameplay
+#: number.
+MAX_LEVEL_60_STAT = 200
+MAX_LEVEL_60_ARMOR = 2000
+
 #: OverallQualityID values the planner keeps: uncommon, rare, epic, legendary.
 #: Poor (0) and common (1) are vendor trash the planner never recommends, and
 #: artifact (6) and heirloom (7) are not obtainable player gear in Era.
 PLANNER_QUALITIES = frozenset({2, 3, 4, 5})
 
 #: Display names the client uses for rows that are not shipping player gear:
-#: Gamemaster/GM items, QA and test rows ("AHNQIRAJ TEST ITEM"), the
-#: "Deprecated ..." leftovers, the "Monster - ..." display weapons NPCs hold,
-#: and the "(OLD)" duplicates kept beside their replacements. Matched
-#: case-insensitively; every alternative but "(old)" is whole-word, so real
-#: items whose names merely contain the letters ("Testament of Hope" contains
-#: "test", "Magma Forged Band" contains "gm") are kept.
+#: Gamemaster/GM items, QA and test rows ("AHNQIRAJ TEST ITEM", "QATest +1000
+#: Spell Dmg Ring", "Ring of Critical Testing"), the "Deprecated ..." and
+#: "[DNT] ..." (do-not-translate/internal) leftovers, the "Monster - ..."
+#: display weapons NPCs hold, "[PH] ..." placeholder rows (an entire unshipped
+#: "Brilliant/Rising/Shining Dawn" tier set was found this way in build
+#: 1.60.1.69893 -- see data/README.md), "UNUSED ..." rows, "(DND)" GM/event
+#: props, and the "(OLD)"/"zzOLD..." duplicates kept beside their
+#: replacements. Matched case-insensitively; every alternative but "(old)",
+#: "[ph]", "[dnt]" and "zzold" is whole-word, so real items whose names merely
+#: contain the letters ("Testament of Hope" contains "test", "Magma Forged
+#: Band" contains "gm") are kept. "testing" and "qatest" are separate
+#: alternatives from "test" because neither is a whole-word match for it
+#: ("Testing"/"QATest" do not end where "test" does); "testing" does have a
+#: known false positive on real quest items whose name uses "Testing" as
+#: ordinary English ("Field Testing Kit") -- accepted rather than narrowed
+#: further because every one of those is not equippable gear (InventoryType 0),
+#: so build_class_items's own slot filter drops it before is_junk_name is ever
+#: called; see test_the_testing_pattern_has_a_known_false_positive_on_real_
+#: consumables.
 JUNK_NAME_PATTERN = re.compile(
-    r"\bgamemaster\b|\bgm\b|\btest\b|\bdeprecated\b|\bmonster\b|\(old\)",
+    r"\bgamemaster\b|\bgm\b|\btest\b|\btesting\b|\bqatest\b"
+    r"|\bdeprecated\b|\bmonster\b|\bunused\b|\bplaceholder\b|\bdnd\b"
+    r"|\(old\)|zzold|\[ph\]|\[dnt\]",
     re.IGNORECASE,
 )
 
@@ -300,6 +329,33 @@ def _row_has_literal_amounts(row: dict[str, str]) -> bool:
     return "Resistances_0" in row
 
 
+def _check_level_60_sanity(
+    item_id: int, display_name: str, item_level: int, armor: int, stats: dict[str, int]
+) -> None:
+    """Raise ItemDataError for an armour or stat value no real level-60 item has.
+
+    A backstop behind JUNK_NAME_PATTERN: a QA/test row's absurd, hand-typed value
+    (700 crit, 1000 spell power) is how three such rows were first noticed leaking
+    through the curve resolver's stat path in build 1.60.1.69893 -- see
+    data/README.md. This catches the next one by value rather than by name.
+    """
+    if item_level != SANITY_CHECK_ITEM_LEVEL:
+        return
+    if armor > MAX_LEVEL_60_ARMOR:
+        raise ItemDataError(
+            f"item {item_id} ({display_name}) has {armor} armour, over the "
+            f"level-60 sanity cap of {MAX_LEVEL_60_ARMOR}; this is almost certainly "
+            f"a QA/test row JUNK_NAME_PATTERN should catch, not real gear"
+        )
+    for key, amount in stats.items():
+        if amount > MAX_LEVEL_60_STAT:
+            raise ItemDataError(
+                f"item {item_id} ({display_name}) has {amount} {key}, over the "
+                f"level-60 sanity cap of {MAX_LEVEL_60_STAT}; this is almost "
+                f"certainly a QA/test row JUNK_NAME_PATTERN should catch, not real gear"
+            )
+
+
 def _icon_name(item_row: dict[str, str], icons: dict[int, str], display_name: str) -> str:
     """The item's icon name, falling back to the client's placeholder art.
 
@@ -365,6 +421,7 @@ def build_class_items(
         else:
             armor = 0
             stats = {}
+        _check_level_60_sanity(item_id, display_name, item_level, armor, stats)
         if not _has_gear_value(armor, stats, item_class_id):
             continue
         item = GearItem(

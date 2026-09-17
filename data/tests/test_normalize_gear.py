@@ -128,6 +128,24 @@ def test_non_equipment_and_overlevelled_items_are_dropped():
         "Deprecated Old Belt",
         "Monster - Axe, 2H Arcanite Reaper",
         "(OLD)Heavy Throwing Axe",
+        # Found leaking into items/ once the curve resolver gave them real stat
+        # values (build 1.60.1.69893) -- "test"/"gm"/etc alone did not catch them.
+        "Ring of Critical Testing",  # id 18968: "testing" is not a \btest\b match
+        "Ring of Critical Testing 2",  # id 18970
+        "Ring of Critical Testing 4",  # id 18982
+        "QATest +1000 Spell Dmg Ring",  # id 24358: "qatest" has no space or "test\b"
+        "QATest Darkmoon Faire Tickets",
+        "UNUSED Electrified Mithril Gauntlets",  # id 213391
+        "UNUSED - Cloak of Arcane Insulation",  # id 215112
+        "UNUSED - Razor-Lined Shoulderpads",  # id 215113
+        "Blessed Qiraji Naturalist Staff UNUSED",  # id 21276
+        "Ahn'Qiraj Mace [PH]",  # id 21127; a whole unshipped tier set ("[PH] ...
+        "Naxxramas Polearm [PH]",  # id 22817   Brilliant/Rising/Shining Dawn")
+        "[PH] Brilliant Dawn Gauntlets",  # is also marked this way in raw ItemSparse
+        "Placeholder",  # id 274027
+        "[DNT] Crafted Tier Piece Placeholder",  # id 273878
+        "Magic Knucklebone (DND)",
+        "zzOLDCodex of Prayer of Fortitude",
     ],
 )
 def test_the_junk_name_matcher_catches_every_pattern_class(name: str):
@@ -142,10 +160,36 @@ def test_the_junk_name_matcher_catches_every_pattern_class(name: str):
         "Old Blunderbuss",  # real gun; "old" without the client's "(OLD)" marker
         "Grasp of the Old God",
         "Buru's Skull Fragment",
+        "Contest Winner's Tabard",  # contains "test" mid-word, no boundary
+        "The Greatest Race of Hunters",  # contains "test" mid-word ("Greatest")
+        "Rexxar's Testament",  # "Testament" is not a \btest\b or \btesting\b match
+        "Corrupt Tested Sample",  # "Tested" is not "testing"; no pattern matches it
+        "Un'Goro Tested Sample",
     ],
 )
 def test_the_junk_name_matcher_keeps_real_items_that_merely_contain_the_letters(name: str):
     assert is_junk_name(name) is False
+
+
+@pytest.mark.parametrize(
+    "name",
+    [
+        "Field Testing Kit",
+        "Sealed Field Testing Kit",
+        "Potion of Tradeskill Testing - Level 60",
+    ],
+)
+def test_the_testing_pattern_has_a_known_false_positive_on_real_consumables(name: str):
+    """These are real quest items, not QA junk -- but the "testing"/"qatest"
+    alternatives added to catch "Ring of Critical Testing" and "QATest ..."
+    (leaked into items/ once curve support gave build 1.60.1.69893's items real
+    values; see JUNK_NAME_PATTERN) cannot tell a QA marker's "Testing" from
+    ordinary English. Accepted rather than narrowed further: every name here is
+    InventoryType 0 in the raw client data (not equippable gear), so
+    build_class_items's own slot filter drops each one before is_junk_name is
+    ever called on it -- the false positive here has no effect on emitted
+    items/."""
+    assert is_junk_name(name) is True
 
 
 def test_only_uncommon_through_legendary_items_are_emitted():
@@ -334,6 +378,64 @@ def test_curves_whose_own_tables_are_incomplete_resolve_nothing():
     items = {i.id: i for r in build_all_1_60(incomplete) for i in r.items}
     assert 16866 not in items
     assert 30001 not in items
+
+
+def test_a_stat_over_the_level_60_sanity_cap_is_an_error_not_a_guess():
+    """A backstop behind JUNK_NAME_PATTERN, on the literal-amount path: three
+    QA rows (Ring of Critical Testing x2, QATest +1000 Spell Dmg Ring) leaked
+    into items/ with a 700-1000 stat once the curve resolver gave 1.60's items
+    real values, because none of their names matched JUNK_NAME_PATTERN at the
+    time. This asserts the cap independently of any name, on Era's literal path,
+    so the next unnamed leak fails normalize instead of shipping a number no
+    real level-60 item has (the highest real one in build 1.60.1.69893 is 46)."""
+    rows = read_csv(HERE / "fixtures/ItemSparse.csv")
+    row = next(r for r in rows if r["ID"] == "19325")  # Don Julio's Band: stat0 stamina
+    row["ItemLevel"] = "60"
+    row["StatModifier_bonusAmount_0"] = "999"
+    with pytest.raises(ItemDataError, match="999 stamina"):
+        build_class_items(
+            rows,
+            read_csv(HERE / "fixtures/Item.csv"),
+            read_csv(HERE / "fixtures/ChrClasses.csv"),
+            fixture_icons(),
+            "1.0.0.1",
+        )
+
+
+def test_armour_over_the_level_60_sanity_cap_is_an_error_not_a_guess():
+    """Same backstop, for armour (the highest real value in build 1.60.1.69893
+    is 1,833)."""
+    rows = read_csv(HERE / "fixtures/ItemSparse.csv")
+    row = next(r for r in rows if r["ID"] == "16866")  # Helm of Might
+    row["ItemLevel"] = "60"
+    row["Resistances_0"] = "9999"
+    with pytest.raises(ItemDataError, match="9999 armour"):
+        build_class_items(
+            rows,
+            read_csv(HERE / "fixtures/Item.csv"),
+            read_csv(HERE / "fixtures/ChrClasses.csv"),
+            fixture_icons(),
+            "1.0.0.1",
+        )
+
+
+def test_the_sanity_cap_also_guards_the_curve_resolved_path():
+    """The same guard applies whether armour/stats came from a literal column or
+    from item_curves.py's formula: a malformed StatPercentEditor on a 1.60-shaped
+    row is caught the same way."""
+    rows = read_csv(HERE / "fixtures/ItemSparse_1_60.csv")
+    row = next(r for r in rows if r["ID"] == "16866")  # Helm of Might
+    row["ItemLevel"] = "60"  # RandPropPoints fixture clamps to its ilvl-40 row
+    row["StatPercentEditor_0"] = "200000"  # an absurd 2000%, not a real percent
+    with pytest.raises(ItemDataError, match="stamina"):
+        build_class_items(
+            rows,
+            read_csv(HERE / "fixtures/Item.csv"),
+            read_csv(HERE / "fixtures/ChrClasses.csv"),
+            fixture_icons(),
+            "1.60.1.69893",
+            fixture_curves(),
+        )
 
 
 def test_an_item_missing_from_the_item_table_is_skipped_with_a_warning(caplog):
