@@ -501,7 +501,14 @@ func draftPhases(pulls []draftPull) ([]mechanics.Phase, []string) {
 			kept = append(kept, c)
 		}
 	}
-	sort.Slice(kept, func(i, j int) bool { return kept[i].firstMS < kept[j].firstMS })
+	// Candidates come out of a map, so two at the same instant would otherwise
+	// swap names between runs; the spell id breaks the tie the same way every time.
+	sort.SliceStable(kept, func(i, j int) bool {
+		if kept[i].firstMS != kept[j].firstMS {
+			return kept[i].firstMS < kept[j].firstMS
+		}
+		return kept[i].spellID < kept[j].spellID
+	})
 	phases := make([]mechanics.Phase, 0, len(kept))
 	evidence := make([]string, 0, len(kept))
 	for i, c := range kept {
