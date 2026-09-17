@@ -37,7 +37,8 @@
     },
     {
       term: 'Applied',
-      meaning: 'How many times an aura was put on that unit inside the window, refreshes not counted.',
+      meaning:
+        'How many times an aura was put on that unit inside the window, refreshes not counted. Under Auras applied, Events adds a "refreshed" line wherever the client wrote its own refresh event; a spell that re-applies itself instead of refreshing — Renewing Mist on this client — shows as applied again, so no "refreshed" line for a spell does not mean it never rolled.',
     },
     {
       term: 'Damage · DPS',
