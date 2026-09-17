@@ -70,7 +70,7 @@ def normalize_build(
     from pipeline.normalize.talent_trees import build_talent_trees
     from pipeline.normalize.talents import flat_talents, normalize_talents
     from pipeline.normalize.trait_trees import build_trait_talent_trees
-    from pipeline.normalize.traits import TraitRows, has_trait_trees
+    from pipeline.normalize.traits import TraitDataError, TraitRows, has_trait_trees
     from pipeline.normalize.zones import normalize_zones
     from pipeline.spelltext import load_spell_text
 
@@ -130,6 +130,17 @@ def normalize_build(
             build,
         )
         flat = flat_talents(talent_records)
+        if not flat:
+            # has_trait_trees only checked SkillLineXTraitTree; a build that
+            # populates that one table but is missing (or 404s on) another
+            # required trait table -- TraitNode, TraitNodeEntry,
+            # TraitDefinition, ... -- would otherwise reach here and commit
+            # an empty talents.json for a real class, silently, at exit 0.
+            raise TraitDataError(
+                f"build {build} names a class trait tree in SkillLineXTraitTree but the "
+                "trait reader produced zero talents; a required trait table is likely "
+                "missing or empty"
+            )
     else:
         talent_rows, tab_rows = t("Talent"), t("TalentTab")
         talent_records = build_talent_trees(

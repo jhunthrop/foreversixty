@@ -2,10 +2,13 @@ import json
 import shutil
 from pathlib import Path
 
+import pytest
+
 from pipeline.__main__ import main
 from pipeline.models import ClassTalents
 from pipeline.normalize import normalize_build
 from pipeline.normalize.talents import flat_talents
+from pipeline.normalize.traits import TraitDataError
 from pipeline.wago import OPTIONAL_TABLES, TABLES
 
 HERE = Path(__file__).parent
@@ -177,3 +180,21 @@ def test_normalize_build_picks_the_trait_reader_when_the_client_has_trait_trees(
         (node.model_dump() for node in flat_talents([warrior])), key=lambda n: n["id"]
     )
     assert flat == expected
+
+
+def test_a_populated_skill_line_x_trait_tree_with_no_nodes_is_an_error_not_an_empty_build(
+    tmp_path: Path,
+):
+    """has_trait_trees only looks at SkillLineXTraitTree; a build missing (or
+    404ing on) a different required trait table -- TraitNode here -- must not
+    silently commit a talents.json with zero rows for a class that really
+    does have a tree, at exit 0. build_trait_talent_trees' own shape checks
+    (a class tree's tabs must cover every one of its nodes) already catch
+    this particular gap and raise TraitDataError before normalize_build's own
+    "flat came back empty" backstop (added alongside this test) would even
+    run; both raise the same error type, so either one firing is the
+    behaviour this test is pinning."""
+    root = trait_switch_workspace(tmp_path)
+    (root / "1.0.0.1" / "raw" / "TraitNode.csv").write_text("ID\n", encoding="utf-8")
+    with pytest.raises(TraitDataError):
+        normalize_build("1.0.0.1", root=root, curated_dir=HERE / "fixtures/curated")
