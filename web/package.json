@@ -19,7 +19,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "test:e2e:real": "FOREVER_DATA=real playwright test real-data.spec.ts",
+    "test:e2e:real": "FOREVER_DATA=real playwright test tests/e2e/real-data.spec.ts --project=desktop",
     "test:e2e:phone": "playwright test report-phone.spec.ts rankings-phone.spec.ts character-phone.spec.ts guild-phone.spec.ts --project=mobile",
     "lhci": "lhci autorun",
     "deploy": "npm run build && wrangler deploy",
