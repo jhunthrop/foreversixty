@@ -159,6 +159,55 @@ func TestTheV22TestdataHasNoShapeTheMeasurementDoesNotName(t *testing.T) {
 	}
 }
 
+// TestRetailV22AcceptsExactlyTheMeasuredWidthsForEveryEvent is the converse
+// of TestTheV22TestdataCoversEveryMeasuredShape: it does not just check that
+// every measured width is accepted, but that nothing else is. A flag
+// cross-product that allows a wider set than the corpus ever writes (v22's
+// single-target/area tag, an aura's absorb size) silently misreads a line
+// at one of the extra widths instead of reporting a parse error, which is
+// why RetailV22.WidthOverrides exists for the shapes below.
+func TestRetailV22AcceptsExactlyTheMeasuredWidthsForEveryEvent(t *testing.T) {
+	l := RetailV22()
+	for _, ev := range sortedEventNames(v22MeasuredWidths) {
+		want := v22MeasuredWidths[ev]
+		if _, special := l.Specials[ev]; special {
+			// Specials declare their own widths directly; Widths does not
+			// apply to them.
+			continue
+		}
+		prefix, suffix, ok := l.Split(ev)
+		if !ok {
+			t.Errorf("%s: Split does not recognise this event", ev)
+			continue
+		}
+		got := l.Widths(prefix, suffix)
+		if !equalInts(got, want) {
+			t.Errorf("%s: accepted widths = %v, measured widths = %v", ev, got, want)
+		}
+	}
+}
+
+func sortedEventNames(m map[string][]int) []string {
+	out := make([]string, 0, len(m))
+	for ev := range m {
+		out = append(out, ev)
+	}
+	sort.Strings(out)
+	return out
+}
+
+func equalInts(a, b []int) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for i := range a {
+		if a[i] != b[i] {
+			return false
+		}
+	}
+	return true
+}
+
 func TestTheV22ExcerptHeaderIsVersion22(t *testing.T) {
 	text, err := os.ReadFile(v22Testdata[0])
 	if err != nil {

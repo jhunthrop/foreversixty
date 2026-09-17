@@ -7,7 +7,7 @@ package layout
 // MAP_CHANGE is the one shape absent from that log; its width comes from
 // wowcoach.gg/docs/combat-log/spec.yaml.
 func RetailV16() Layout {
-	return Layout{
+	l := Layout{
 		Name:      "retail-v16",
 		Version:   16,
 		ProjectID: 1,
@@ -94,6 +94,8 @@ func RetailV16() Layout {
 			},
 		},
 	}
+	l.widthCache = buildWidthCache(l)
+	return l
 }
 
 // RetailV22 is the modern retail dialect, COMBAT_LOG_VERSION 22,
@@ -108,7 +110,7 @@ func RetailV16() Layout {
 // gained a trailing single-target / area tag, and COMBATANT_INFO's stat
 // fields all moved one to the right.
 func RetailV22() Layout {
-	return Layout{
+	l := Layout{
 		Name:      "retail-v22",
 		Version:   22,
 		ProjectID: 1,
@@ -247,5 +249,41 @@ func RetailV22() Layout {
 				"versatility": 21, "armor": 24,
 			},
 		},
+		// The flag cross-product in widthsFor is a superset of what the
+		// corpus actually writes for these thirteen shapes: the
+		// single-target/area tag turns out to be mandatory wherever it
+		// appears at all (never optional), and which prefix carries it is
+		// not derivable from the Suffix flags a shape shares with other
+		// prefixes. Measured over the same 89 logs as the rest of this row;
+		// see docs/ledger/2026-09-16-retail-v22.md and
+		// measured_v22_test.go's v22MeasuredWidths, which this pins against.
+		WidthOverrides: map[string][]int{
+			// _DAMAGE, _DAMAGE_LANDED and _SPLIT: the tag is mandatory
+			// under a spell-triple prefix and never appears under SWING.
+			"SWING_DAMAGE":           {38},
+			"SWING_DAMAGE_LANDED":    {38},
+			"SPELL_DAMAGE":           {42},
+			"SPELL_PERIODIC_DAMAGE":  {42},
+			"RANGE_DAMAGE":           {42},
+			"DAMAGE_SPLIT":           {42},
+			// _MISSED: the tag is mandatory under SPELL and SPELL_PERIODIC,
+			// and never appears under RANGE, SWING or DAMAGE_SHIELD. Where
+			// it applies, base+1 is tag only, base+2 is tag+amount (BLOCK
+			// or RESIST), base+4 is tag+the three ABSORB extras; where it
+			// does not, only base and base+3 (ABSORB, untagged) occur.
+			"SPELL_MISSED":          {15, 16, 18},
+			"SPELL_PERIODIC_MISSED": {15, 18},
+			"RANGE_MISSED":          {14, 17},
+			"SWING_MISSED":          {11, 14},
+			"DAMAGE_SHIELD_MISSED":  {15},
+			// _AURA_BROKEN never carries the optional absorb size or its
+			// extra trailing number; _AURA_REFRESH carries the absorb size
+			// but never the extra number. Both are narrower than
+			// AuraCarriesAmount + AuraExtra alone would allow.
+			"SPELL_AURA_BROKEN":  {13},
+			"SPELL_AURA_REFRESH": {13, 14},
+		},
 	}
+	l.widthCache = buildWidthCache(l)
+	return l
 }

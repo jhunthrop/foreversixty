@@ -108,6 +108,42 @@ type Layout struct {
 	Specials  map[string]Special
 	Combatant Combatant
 	Verified  bool // the row was checked against a real log of this dialect
+
+	// WidthOverrides pins the exact accepted widths for one event (keyed by
+	// prefix+suffix, i.e. the event name Split would reassemble them into),
+	// replacing what the flag cross-product in widthsFor would otherwise
+	// compute. It exists because a suffix's optional fields do not always
+	// occur in every combination the flags allow for every prefix that
+	// shares it: version 22's single-target/area tag, for instance, is
+	// mandatory on SPELL_DAMAGE and absent on SWING_DAMAGE even though both
+	// use the "_DAMAGE" suffix and its Tag flag. A dialect with no
+	// exceptions leaves this nil.
+	WidthOverrides map[string][]int
+
+	// widthCache is the accepted-widths set for every (prefix, suffix) pair
+	// this row knows, built once when the row is finalised (by Lookup, or
+	// by a constructor that has no header to wait for) so that Widths, on
+	// the decoder's per-event path, is a map lookup rather than a slice
+	// built and sorted on every call. A row built by hand (a test's literal
+	// Layout{}, or layout.Infer's result) leaves it nil, and Widths falls
+	// back to computing the answer on the spot.
+	widthCache map[string][]int
+}
+
+// buildWidthCache computes the accepted-widths set for every (prefix,
+// suffix) pair l's Prefixes and Suffixes can combine into. It must be
+// called only after every field the computation reads (Advanced,
+// Prefixes, Suffixes, WidthOverrides) has its final value: Lookup zeroes
+// Advanced for a header that turns advanced logging off, and a cache built
+// before that would keep the wrong widths.
+func buildWidthCache(l Layout) map[string][]int {
+	cache := make(map[string][]int, len(l.Prefixes)*len(l.Suffixes))
+	for prefix := range l.Prefixes {
+		for suffix := range l.Suffixes {
+			cache[prefix+suffix] = widthsFor(l, prefix, suffix)
+		}
+	}
+	return cache
 }
 
 // Header is the COMBAT_LOG_VERSION line.
@@ -160,6 +196,7 @@ func Lookup(h Header) (Layout, bool) {
 		if !h.Advanced {
 			l.Advanced = 0
 		}
+		l.widthCache = buildWidthCache(l)
 		return l, true
 	}
 	return Layout{}, false
@@ -214,13 +251,30 @@ func (l Layout) Width(prefix, suffix string) (width, advAt int) {
 }
 
 // Widths returns every total field count this row accepts for a shape, in
-// ascending order. Width gives the base count the row's arithmetic
-// produces; the optional trailing fields a dialect may or may not write
-// (an absorb's extras, a Classic isOffHand, an aura's absorb size, version
-// 22's single-target tag) turn that one number into a small set. The
-// decoder checks membership in this set; the layout tests check the set
-// against the counts measured on real logs.
+// ascending order. When the row was finalised by Lookup, this is a lookup
+// into a cache built once for the whole row; a row built by hand computes
+// the answer on the spot, which is fine off the decoder's per-event path.
 func (l Layout) Widths(prefix, suffix string) []int {
+	if l.widthCache != nil {
+		if w, ok := l.widthCache[prefix+suffix]; ok {
+			return w
+		}
+	}
+	return widthsFor(l, prefix, suffix)
+}
+
+// widthsFor is the computation Widths caches. WidthOverrides, when it names
+// this event, is the exact answer: it exists precisely because the flag
+// cross-product below is a superset of what the dialect actually writes for
+// some (prefix, suffix) pairs. Absent an override, Width gives the base
+// count the row's arithmetic produces, and the optional trailing fields a
+// dialect may or may not write (an absorb's extras, a Classic isOffHand, an
+// aura's absorb size, version 22's single-target tag) turn that one number
+// into a small set.
+func widthsFor(l Layout, prefix, suffix string) []int {
+	if w, ok := l.WidthOverrides[prefix+suffix]; ok {
+		return w
+	}
 	base, _ := l.Width(prefix, suffix)
 	s := l.Suffixes[suffix]
 	widths := []int{base}

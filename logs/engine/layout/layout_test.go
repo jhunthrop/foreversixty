@@ -401,7 +401,11 @@ func TestLookupPicksRetailV22(t *testing.T) {
 
 // TestRetailV22WidthsMatchTheVerifiedCounts is the v22 twin of
 // TestRetailV16WidthsMatchTheVerifiedCounts. wantWidths is the complete set
-// the row accepts; the measured widths from the corpus must all be in it.
+// the row accepts, tightened by RetailV22's WidthOverrides to the explicit
+// combinations the 89-file corpus measured (see
+// docs/ledger/2026-09-16-retail-v22.md): a flag cross-product taken alone
+// would allow wider sets than these for several shapes below, which is
+// exactly why the override table exists.
 func TestRetailV22WidthsMatchTheVerifiedCounts(t *testing.T) {
 	l := RetailV22()
 	for _, tc := range []struct {
@@ -409,12 +413,12 @@ func TestRetailV22WidthsMatchTheVerifiedCounts(t *testing.T) {
 		wantWidths []int
 		wantAdvAt  int
 	}{
-		{"SPELL_DAMAGE", []int{41, 42}, 12},
-		{"SPELL_PERIODIC_DAMAGE", []int{41, 42}, 12},
-		{"RANGE_DAMAGE", []int{41, 42}, 12},
-		{"DAMAGE_SPLIT", []int{41, 42}, 12},
-		{"SWING_DAMAGE", []int{38, 39}, 9},
-		{"SWING_DAMAGE_LANDED", []int{38, 39}, 9},
+		{"SPELL_DAMAGE", []int{42}, 12},
+		{"SPELL_PERIODIC_DAMAGE", []int{42}, 12},
+		{"RANGE_DAMAGE", []int{42}, 12},
+		{"DAMAGE_SPLIT", []int{42}, 12},
+		{"SWING_DAMAGE", []int{38}, 9},
+		{"SWING_DAMAGE_LANDED", []int{38}, 9},
 		{"SPELL_DAMAGE_SUPPORT", []int{42}, 12},
 		{"SPELL_PERIODIC_DAMAGE_SUPPORT", []int{42}, 12},
 		{"RANGE_DAMAGE_SUPPORT", []int{42}, 12},
@@ -434,7 +438,8 @@ func TestRetailV22WidthsMatchTheVerifiedCounts(t *testing.T) {
 		{"SPELL_EMPOWER_INTERRUPT", []int{13}, -1},
 		{"SPELL_AURA_APPLIED", []int{13, 14, 15}, -1},
 		{"SPELL_AURA_REMOVED", []int{13, 14, 15}, -1},
-		{"SPELL_AURA_REFRESH", []int{13, 14, 15}, -1},
+		{"SPELL_AURA_REFRESH", []int{13, 14}, -1},
+		{"SPELL_AURA_BROKEN", []int{13}, -1},
 		{"SPELL_AURA_APPLIED_DOSE", []int{14}, -1},
 		{"SPELL_AURA_BROKEN_SPELL", []int{16}, -1},
 		{"SPELL_INTERRUPT", []int{15}, -1},
@@ -445,11 +450,11 @@ func TestRetailV22WidthsMatchTheVerifiedCounts(t *testing.T) {
 		{"SPELL_RESURRECT", []int{12}, -1},
 		{"SPELL_INSTAKILL", []int{13}, -1},
 		{"SPELL_EXTRA_ATTACKS", []int{13}, -1},
-		{"SWING_MISSED", []int{11, 12, 13, 14, 15}, -1},
-		{"RANGE_MISSED", []int{14, 15, 16, 17, 18}, -1},
-		{"SPELL_MISSED", []int{14, 15, 16, 17, 18}, -1},
-		{"SPELL_PERIODIC_MISSED", []int{14, 15, 16, 17, 18}, -1},
-		{"DAMAGE_SHIELD_MISSED", []int{14, 15, 16, 17, 18}, -1},
+		{"SWING_MISSED", []int{11, 14}, -1},
+		{"RANGE_MISSED", []int{14, 17}, -1},
+		{"SPELL_MISSED", []int{15, 16, 18}, -1},
+		{"SPELL_PERIODIC_MISSED", []int{15, 18}, -1},
+		{"DAMAGE_SHIELD_MISSED", []int{15}, -1},
 	} {
 		t.Run(tc.event, func(t *testing.T) {
 			prefix, suffix, ok := l.Split(tc.event)
