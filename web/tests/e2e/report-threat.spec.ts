@@ -147,6 +147,10 @@ test('a brushed window reads standing and built from the series, measured', asyn
   await expect(rows.first().getByTestId('threat-built')).toBeVisible();
   await expect(page.getByTestId('threat-share')).not.toHaveCount(0);
   await expect(page.getByTestId('threat-table').locator('ul[data-ranked="true"]')).toHaveCount(1);
+  // Shares are of the players' standings, so no row reads past 100% and the top row reads less
+  // than everyone put together.
+  const shares = await page.getByTestId('threat-share').allTextContents();
+  for (const text of shares) expect(Number.parseFloat(text)).toBeLessThanOrEqual(100);
   // The taunt keeps the pull's clock, so the same taunt reads the same time from either side.
   await expect(page.getByTestId('threat-taunts')).toContainText('8.5s');
 });

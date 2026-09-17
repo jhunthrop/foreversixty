@@ -278,11 +278,15 @@
   // the window. The enemies' own rows are outside the share: their threat is the model run
   // over their damage, and a raid that reads 52% of itself because the boss holds the rest
   // is a raid misled.
+  // A measured table shares against the players' measured standings: the page's
+  // `totalThreat` is the prorated window total from the whole-fight rows, which a standing
+  // (cumulative to the window's end) outgrows many times over, and dividing by it read as
+  // shares past 100%.
+  const playersTotal = $derived(
+    lines.filter((line) => isPlayer(line.guid)).reduce((sum, line) => sum + line.threat, 0),
+  );
   const total = $derived(
-    picked !== undefined
-      ? pickedTotal
-      : (totalThreat ??
-          lines.filter((line) => isPlayer(line.guid)).reduce((sum, line) => sum + line.threat, 0)),
+    picked !== undefined ? pickedTotal : allMeasured ? playersTotal : (totalThreat ?? playersTotal),
   );
   /** A row that has a share: every row on a picked enemy, only the players on the totals table. */
   const shares = (line: ThreatLine): boolean => picked !== undefined || isPlayer(line.guid);
@@ -377,8 +381,9 @@
     <p class="text-muted text-[12px]" data-testid="threat-incomplete">
       Threat model {modelVersion} does not yet carry every class's modifiers: a tank's stance, taunt and threat
       multipliers are not in it, so a tank can read below the damage dealers they were holding threat over. The
-      per-class table lands with Forever's ability data. Under a brushed window, threat is the fight's total scaled
-      by the window's share, not the window's own events.
+      per-class table lands with Forever's ability data.{#if scaled}
+        Under this window, threat is the fight's total scaled by the window's share, not the window's own
+        events.{/if}
     </p>
   {/if}
   {#if showChart}
