@@ -105,13 +105,42 @@ a build that has both real rows — 1.60 and any later one — not against the f
   any row with `PlayableRaceBit` -1 before slugifying, so it can never collide with a
   real race in `curated.merge_curated`'s by-slug lookup. Classic Era's `ChrRaces` has no
   `PlayableRaceBit` column at all, and every one of its rows is kept, as before.
-- The 1.60 client's `ItemSparse` has no `Resistances_*` or `StatModifier_bonusAmount_*`
-  columns at all: armour and stat amounts are computed client-side from curve tables
-  (`RandPropPoints`, `ItemArmorTotal`, `ItemArmorQuality`) that are not in `TABLES` and
-  this pipeline does not resolve. Per "only what the client states in a column is
-  emitted," a missing column reads as no data (armour 0, no stat contribution) rather
-  than an error. `_has_gear_value` still drops an armour piece with nothing to compare
-  it on, so **no non-weapon item survives from the 1.60 build's `items/` today** —
-  weapons are exempt from that clause and are unaffected. Resolving the curve tables is
-  future work, not attempted here: the formula is not stated in a column either, and
-  guessing at it risks silently wrong stats rather than an honest gap.
+- **Closed:** the 1.60 client's `ItemSparse` has no `Resistances_*` or
+  `StatModifier_bonusAmount_*` columns at all: armour and stat amounts are computed
+  client-side from curve tables instead. `TABLES` now carries all five —
+  `ItemArmorTotal`, `ItemArmorQuality`, `ItemArmorShield`, `ArmorLocation`,
+  `RandPropPoints` — as `OPTIONAL_TABLES` (a future product that truly lacks them
+  degrades to the pre-curve behaviour below rather than aborting the fetch).
+  `pipeline/normalize/item_curves.py` resolves the same numbers the client itself
+  would show:
+  - `armour = ItemArmorTotal[ilvl][type] × ItemArmorQuality[ilvl][quality] ×
+    ArmorLocation[slot][type]`, or `ItemArmorShield[ilvl][quality]` for a shield (no
+    location term). A robe (`InventoryType` 20) has no row of its own in
+    `ArmorLocation`; the client scores it the same as a chest (5).
+  - `stat amount = RandPropPoints[ilvl][quality-column][slot group] ×
+    StatPercentEditor_<n> / 10000`, where quality 2/3/4 map to RandPropPoints'
+    `Good`/`Superior`/`Epic` columns and quality 5 (legendary, which has no column of
+    its own) reuses `Epic`. `slot group` is `InventoryType` mapped to one of
+    RandPropPoints' 5 budget buckets (`STAT_BUDGET_GROUP_BY_INVENTORY_TYPE`) — major
+    armour pieces and 2H weapons in group 0, mid armour pieces and trinkets in 1,
+    jewelry/cloak/held-offhand in 2, 1H weapons in 3, ranged in 4.
+  - Both formulas were verified against build 1.60.1.69893's own tables and 2,830
+    items whose id, name, item level and quality are unchanged from
+    `builds/1.15.9.69722`: armour matched exactly on 2,197 of 2,200 real armour
+    pieces (the 3 misses are synthetic QA-named test rows, e.g. "90 Green Warrior
+    Gauntlets", not player gear), and stat amounts matched exactly on 1,357 of 1,364
+    items whose stat *keys* are also unchanged (99.5%; some 1.60 items were
+    re-itemized with different stats than their Era counterpart, which is expected
+    and outside what this cross-check measures).
+  - `_row_has_literal_amounts` (checking for `Resistances_0`) decides per row
+    whether a build states amounts literally (Era) or needs the curve (1.60); an Era
+    row's output is unaffected by curves being available.
+  - Consequence: build 1.60.1.69893's `items/` went from 3,616 rows (all weapons,
+    349–682 per class) to 23,669 rows (1,740–3,710 per class), 4,729 unique item
+    ids, of which 15,297 (class-duplicated) rows carry nonzero armour. See the
+    item-curves work's own report for the full before/after and a five-item
+    hand-check.
+  - What is still not curve-resolved: weapon damage (a separate curve this pipeline
+    does not touch; `_has_gear_value`'s weapon exemption is therefore still needed
+    and unchanged) and any stat whose `StatModifier_bonusStat_*` id is not in
+    `STAT_BY_MODIFIER_ID` (unchanged behaviour: `ItemDataError`, not a guess).
