@@ -185,6 +185,28 @@ def _band(pos_x: int) -> int:
     return sum(repaired > midpoint for midpoint in _BAND_MIDPOINTS)
 
 
+def _verify_tab_order(tree_id: int, tab_rows: list[dict[str, str]]) -> None:
+    """Confirm `TalentTab.OrderIndex` names exactly the positions 0..2, in order.
+
+    `read_trait_trees` pairs `tab_rows` (sorted by `OrderIndex`) with
+    `_tab_node_sets`'s result (ordered by `PosX` band) purely by list index --
+    nothing in the tables links a `TraitNodeGroup` to a `TalentTab` id
+    directly, so `OrderIndex` naming the same left-to-right position as the
+    band is the only thing that makes the pairing correct. A tab whose
+    `OrderIndex` is not its own rank among the tree's tabs (a gap, a
+    duplicate, anything but 0, 1, 2 in order) would zip against the wrong
+    band silently; this catches that before the zip happens.
+    """
+    for index, tab_row in enumerate(tab_rows):
+        order_index = int(tab_row["OrderIndex"])
+        if order_index != index:
+            raise TraitDataError(
+                f"tree {tree_id} tab {tab_row['ID']} ({tab_row['Name_lang']}) has "
+                f"OrderIndex {order_index}, not {index}; its TalentTab.OrderIndex "
+                "and its PosX band position disagree on where it sits"
+            )
+
+
 def _tab_node_sets(
     tree_id: int,
     tree_nodes: set[int],
@@ -312,9 +334,19 @@ def read_trait_trees(rows: TraitRows) -> list[TraitClassTree]:
     node_rows = {int(n["ID"]): n for n in rows.node}
     entries = {int(e["ID"]): e for e in rows.node_entry}
     definitions = {int(d["ID"]): d for d in rows.definition}
+    # The full build carries non-class trees too (covenant/soulbind trees and
+    # the like), and some of their nodes are choice nodes with more than one
+    # entry -- fine for them, meaningless for us. Scoping to nodes that
+    # actually belong to a class tree before the one-entry-per-node check
+    # keeps this reader from tripping over data it never reads.
+    class_tree_node_ids = {
+        node_id for node_id, node in node_rows.items() if int(node["TraitTreeID"]) in class_of_tree
+    }
     entry_of: dict[int, dict[str, str]] = {}
     for link in rows.node_x_entry:
         node_id = int(link["TraitNodeID"])
+        if node_id not in class_tree_node_ids:
+            continue
         if node_id in entry_of:
             raise TraitDataError(f"node {node_id} has more than one entry")
         entry = entries[int(link["TraitNodeEntryID"])]
@@ -342,6 +374,7 @@ def read_trait_trees(rows: TraitRows) -> list[TraitClassTree]:
                 f"class {class_id} has {len(tab_rows)} TalentTab rows, "
                 f"not {len(COLUMN_ORIGINS)}"
             )
+        _verify_tab_order(tree_id, tab_rows)
         node_sets = _tab_node_sets(tree_id, tree_nodes, rows, node_rows)
         tabs = tuple(
             TraitTab(

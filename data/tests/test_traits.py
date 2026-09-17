@@ -108,3 +108,52 @@ def test_a_tree_whose_groups_do_not_make_three_tabs_is_refused():
     ]
     with pytest.raises(TraitDataError, match="2 tabs"):
         read_trait_trees(trait_rows(node_group=groups, node_group_x_node=members))
+
+
+def test_a_tabs_order_index_disagreeing_with_its_column_band_is_refused():
+    # Protection's real OrderIndex is 2; break the 0..2 contiguity so its
+    # position in the OrderIndex-sorted list can no longer be trusted to line
+    # up with the PosX band _tab_node_sets computed for it.
+    tabs = read_csv(TRAITS / "TalentTab.csv")
+    for tab in tabs:
+        if tab["ID"] == "163":  # Protection
+            tab["OrderIndex"] = "5"
+    with pytest.raises(TraitDataError, match="163"):
+        read_trait_trees(trait_rows(talent_tab=tabs))
+
+
+def test_a_non_class_trees_choice_node_with_two_entries_is_ignored():
+    # A choice node with more than one TraitNodeEntry is ordinary in a
+    # non-class tree (covenant/soulbind-style trees in the full build); tree
+    # 9999 is never named by SkillLineXTraitTree.csv, so it is not one of the
+    # class trees this reader resolves and its node should simply be skipped.
+    nodes = [
+        *read_csv(TRAITS / "TraitNode.csv"),
+        {
+            "ID": "999001",
+            "TraitTreeID": "9999",
+            "PosX": "0",
+            "PosY": "0",
+            "Type": "0",
+            "Flags": "0",
+            "TraitSubTreeID": "0",
+        },
+    ]
+    choice_entry = {
+        "TraitDefinitionID": "700001",
+        "MaxRanks": "1",
+        "NodeEntryType": "0",
+        "TraitSubTreeID": "0",
+    }
+    entries = [
+        *read_csv(TRAITS / "TraitNodeEntry.csv"),
+        {"ID": "999101", **choice_entry},
+        {"ID": "999102", **choice_entry},
+    ]
+    links = [
+        *read_csv(TRAITS / "TraitNodeXTraitNodeEntry.csv"),
+        {"ID": "999201", "TraitNodeID": "999001", "TraitNodeEntryID": "999101", "_Index": "0"},
+        {"ID": "999202", "TraitNodeID": "999001", "TraitNodeEntryID": "999102", "_Index": "1"},
+    ]
+    (warrior,) = read_trait_trees(trait_rows(node=nodes, node_entry=entries, node_x_entry=links))
+    assert warrior.class_id == 1
