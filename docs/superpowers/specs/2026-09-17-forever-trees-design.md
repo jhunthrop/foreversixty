@@ -9,8 +9,7 @@ Forever beta client, build 1.60.1.69893.
 The planner shows Forever's talent trees from a Wowhead pre-beta snapshot (`data/raw-forever/`,
 470 talents, provisional spell ids 104724–113398) laid over Classic Era's tab data. The beta
 client now carries the real trees, in the modern trait tables rather than the legacy `Talent`
-table the pipeline reads: nine class trees of 50–54 nodes, 476 talents, real spell ids (112 in
-the 1.3M Forever range, the rest Era ids), each node's grid position, 96 prerequisite edges,
+table the pipeline reads: nine class trees of 50–54 nodes, 469 talents once two stale twin nodes are dropped, real spell ids (75 above the Era range, 43 of them in the 1.3M Forever range), each node's grid position, 96 prerequisite edges,
 rank caps, and the tab order and background art names in the legacy `TalentTab` rows that the
 client keeps for its UI. Reading those makes the planner true to the game in one change — the
 order (Warrior: Arms, Fury, Protection), the positions, the links — and gives every consumer
@@ -49,13 +48,13 @@ Measured on build 1.60.1.69893 (wago.tools serves each by name with `?build=`):
 
 | Table | Rows | Carries |
 |---|---|---|
-| `TraitTree` | 17 | one tree per class (9 mapped through `SkillLineXTraitTree`), plus non-class trees (Field Guide-style systems of 9–16 nodes) that are not talents |
+| `TraitTree` | 17 | one tree per class (9 mapped through `SkillLineXTraitTree`), plus non-class trees (Field Guide-style systems of 9–16 nodes) that are not talents; a class tree's three tabs are its maximal `TraitNodeGroup` rows, ordered by their `PosX` band, which equals `TalentTab.OrderIndex` |
 | `TraitNode` | 560 | `TraitTreeID`, `PosX`, `PosY` (grid position in a fixed unit), `Type`, `Flags` |
 | `TraitNodeEntry` | 656 | `TraitDefinitionID`, `MaxRanks` |
 | `TraitNodeXTraitNodeEntry` | 563 | node → entry |
-| `TraitDefinition` | ~650 | `SpellID`, `OverrideName`, `OverrideIcon` |
+| `TraitDefinition` | ~650 | one `SpellID` per talent (not per rank), `OverrideName`, `OverrideIcon`; per-rank values through `TraitDefinitionEffectPoints` → `CurvePoint` |
 | `TraitEdge` | 96 | `LeftTraitNodeID` → `RightTraitNodeID`, `Type`, `VisualStyle`: the prerequisite links |
-| `TraitCond` | 172 | conditions: points-spent gates per tier, required ranks |
+| `TraitCond` | 172 | the per-tier points-spent gates (5 per tier, 27 tabs) and three vestigial rows; a prerequisite's required rank is the prerequisite's own `MaxRanks` |
 | `TraitNodeGroup`, `TraitNodeGroupXTraitNode` | 368 / 2,159 | groupings (tiers and/or specs; to be measured) |
 | `SkillLineXTraitTree` | 9 | class skill line → tree |
 | `TalentTab` (legacy) | 27 | `Name`, `OrderIndex`, `BackgroundFile`, `ClassMask`: the three tabs per class in the game's order |
