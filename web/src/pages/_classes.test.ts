@@ -6,7 +6,7 @@
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { beforeAll, describe, expect, it } from 'vitest';
 import Classes from './classes.astro';
-import { raceRows } from '../lib/planner/reference';
+import { classRows, raceRows } from '../lib/planner/reference';
 
 let html: string;
 
@@ -20,6 +20,10 @@ describe('classes.astro', () => {
     for (const name of ['Warrior', 'Paladin', 'Druid', 'Undead', 'Tauren', 'Skyborne']) {
       expect(html).toContain(name);
     }
+  });
+
+  it('counts the classes and races from the data it renders', () => {
+    expect(html).toContain(`The ${classRows.length} classes, the ${raceRows.length} races`);
   });
 
   it('deep links every class into the planner', () => {
