@@ -5,6 +5,12 @@
   "build": "1.60.1.69893",
   "read_on": "2026-09-17",
   "note": "The Journal tables (JournalEncounter, JournalInstance) are not shipped by any Classic-lineage client, including this one; DungeonEncounter is the table the Classic client actually keys ENCOUNTER_START on. Every id below was read from the Forever beta client itself, not from Classic Era, so no fallback was needed.",
+  "finding_for_the_next_pass": {
+    "key": "SpellEffect rows at DifficultyID 186 (40-player) and 226 (20-player) are Forever's own overrides of a spell. Filtering SpellEffect on those two difficulty ids is the cheapest way to find the abilities this version actually authored or retuned, and is how the next pass should look for table rows rather than reading spell-id neighbourhoods by hand.",
+    "how_many": "111 spells carry a 186 or 226 override, which is also the set of instance-scoped spells Forever wrote for maps 409, 249 and 469.",
+    "which_family_of_ids": "107 of the 111 are written against the vanilla ids; only three are in the 46xxxx family that Season of Discovery introduced (460399 Destructor's Devastation, 461139 Flame Spear, 461343 Shazzrah's Curse). That is the evidence for betting the Molten Core tables on the vanilla ids.",
+    "verify_against_the_first_log": "Flame Spear and Shazzrah's Curse are the two abilities that exist in both families with a Forever override on the 46xxxx side, so they are the two whose ids the first real log should be checked against (the tables currently use 19781 and 19713)."
+  },
   "instances": [
     {
       "name": "Molten Core",

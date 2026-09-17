@@ -83,9 +83,10 @@ func TestEveryTableIsAnEncounterTheClientKnows(t *testing.T) {
 }
 
 // TestEveryPhaseTriggerIsUsable holds the phase triggers to what the engine can
-// actually fire on: a health threshold needs the boss's own name, which the
-// test above pins to the client's, and a spell trigger needs an id and a known
-// "on". Parse enforces the shape; this says the shape is enough to fire.
+// actually distinguish. Parse enforces the shape of a trigger; this enforces
+// that a table's triggers are different from each other and in the order the
+// fight reaches them, which Parse has no way to know and which a reader of the
+// rendered phases would be misled by.
 func TestEveryPhaseTriggerIsUsable(t *testing.T) {
 	entries, err := tables.ReadDir("tables")
 	if err != nil {
@@ -101,15 +102,24 @@ func TestEveryPhaseTriggerIsUsable(t *testing.T) {
 			t.Fatal(err)
 		}
 		seen := map[string]bool{}
+		// Health thresholds have to fall as the list goes on: the phases are in the
+		// order they happen, and a boss only loses health, so a later phase written
+		// at a higher percentage would fire before the one above it.
+		lastHealth := 100.0
 		for _, p := range table.Phases {
 			if seen[p.Name] {
 				t.Errorf("%s: two phases are both called %q", entry.Name(), p.Name)
 			}
 			seen[p.Name] = true
-			if p.Starts.HealthPct > 0 && table.Name == "" {
-				t.Errorf("%s: a health trigger is matched against the boss's name, which this table does not give",
-					entry.Name())
+			if p.Starts.HealthPct == 0 {
+				continue
 			}
+			if p.Starts.HealthPct >= lastHealth {
+				t.Errorf("%s: phase %q starts at %.0f%% health, at or above the %.0f%% before it;"+
+					" a boss passes thresholds on the way down, so this one fires first or never",
+					entry.Name(), p.Name, p.Starts.HealthPct, lastHealth)
+			}
+			lastHealth = p.Starts.HealthPct
 		}
 	}
 }
