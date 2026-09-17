@@ -1,0 +1,20 @@
+{
+  "encounter_id": 1084,
+  "name": "Onyxia",
+  "mechanics": [
+    { "spell_id": 18435, "name": "Flame Breath", "kind": "avoidable", "note": "Cone of fire out of her head. Only the tank should ever be standing in front of her.", "role": "tank" },
+    { "spell_id": 18500, "name": "Wing Buffet", "kind": "avoidable", "note": "Knocks everyone in front of her back and sheds threat. The tank takes it; anybody else in the cone was in the tank's spot.", "role": "tank" },
+    { "spell_id": 15847, "name": "Tail Sweep", "kind": "avoidable", "note": "Cone behind her, flinging whoever is in it towards the whelp caves. Nobody has a reason to be behind her tail." },
+    { "spell_id": 18392, "name": "Fireball", "kind": "avoidable", "note": "Thrown at a patch of floor while she is airborne; it burns the spot, so move off it." }
+  ],
+  "phases": [
+    {
+      "name": "Phase 2",
+      "starts": { "spell_id": 18392, "on": "cast_start" }
+    },
+    {
+      "name": "Phase 3",
+      "starts": { "health_pct": 40 }
+    }
+  ]
+}
