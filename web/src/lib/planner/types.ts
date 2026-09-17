@@ -30,6 +30,8 @@ export interface Talent {
   prereq_rank: number | null;
   /** Exactly `max_rank` entries. */
   ranks: TalentRank[];
+  /** The spell the client writes when the talent is learned. */
+  spell_id: number;
 }
 
 export interface TalentTree {
@@ -38,6 +40,8 @@ export interface TalentTree {
   /** Left-to-right order as in the client. */
   position: number;
   talents: Talent[];
+  /** Names the tree's art at `/data/<build>/trees/<background>.webp`. */
+  background: string;
 }
 
 export interface TalentFile {

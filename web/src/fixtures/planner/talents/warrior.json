@@ -30,7 +30,8 @@
               "spell_id": 10013,
               "description": "Reduces the rage cost of Heroic Strike by 3."
             }
-          ]
+          ],
+          "spell_id": 10011
         },
         {
           "id": 1002,
@@ -62,7 +63,8 @@
               "spell_id": 10025,
               "description": "Increases your chance to parry by 5%."
             }
-          ]
+          ],
+          "spell_id": 10021
         },
         {
           "id": 1003,
@@ -86,7 +88,8 @@
               "spell_id": 10033,
               "description": "Increases the damage of Rend by 15%."
             }
-          ]
+          ],
+          "spell_id": 10031
         },
         {
           "id": 1004,
@@ -118,7 +121,8 @@
               "spell_id": 10045,
               "description": "Retains up to 25 rage when you change stances."
             }
-          ]
+          ],
+          "spell_id": 10041
         },
         {
           "id": 1005,
@@ -134,7 +138,8 @@
               "spell_id": 10051,
               "description": "Your next 5 melee attacks strike an additional nearby target."
             }
-          ]
+          ],
+          "spell_id": 10051
         },
         {
           "id": 1006,
@@ -154,7 +159,8 @@
               "spell_id": 10062,
               "description": "Increases critical strike damage by 20%."
             }
-          ]
+          ],
+          "spell_id": 10061
         },
         {
           "id": 1007,
@@ -186,9 +192,11 @@
               "spell_id": 10075,
               "description": "Increases your chance to critically hit with axes by 5%."
             }
-          ]
+          ],
+          "spell_id": 10071
         }
-      ]
+      ],
+      "background": "fixture_arms"
     },
     {
       "id": 164,
@@ -225,7 +233,8 @@
               "spell_id": 20015,
               "description": "Increases the duration of your shouts by 50%."
             }
-          ]
+          ],
+          "spell_id": 20011
         },
         {
           "id": 2002,
@@ -257,7 +266,8 @@
               "spell_id": 20025,
               "description": "Increases your chance to critically hit by 5%."
             }
-          ]
+          ],
+          "spell_id": 20021
         },
         {
           "id": 2003,
@@ -289,7 +299,8 @@
               "spell_id": 20035,
               "description": "Gives you a 40% chance to generate an extra rage point on a melee hit."
             }
-          ]
+          ],
+          "spell_id": 20031
         },
         {
           "id": 2004,
@@ -321,7 +332,8 @@
               "spell_id": 20045,
               "description": "Increases the attack power of Battle Shout by 25%."
             }
-          ]
+          ],
+          "spell_id": 20041
         },
         {
           "id": 2005,
@@ -353,7 +365,8 @@
               "spell_id": 20055,
               "description": "Increases your melee damage by 15% after being critically hit."
             }
-          ]
+          ],
+          "spell_id": 20051
         },
         {
           "id": 2006,
@@ -369,7 +382,8 @@
               "spell_id": 20061,
               "description": "Increases your physical damage by 20% and raises damage taken by 20%."
             }
-          ]
+          ],
+          "spell_id": 20061
         },
         {
           "id": 2007,
@@ -401,9 +415,11 @@
               "spell_id": 20075,
               "description": "Increases your attack speed by 25% after a critical strike."
             }
-          ]
+          ],
+          "spell_id": 20071
         }
-      ]
+      ],
+      "background": "fixture_fury"
     }
   ]
 }

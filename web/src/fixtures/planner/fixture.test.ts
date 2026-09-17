@@ -46,7 +46,7 @@ describe('planner fixture talents', () => {
     }
   });
 
-  it('points every prerequisite at an earlier tier in the same tree', () => {
+  it('points every prerequisite at an earlier or equal tier in the same tree', () => {
     for (const tree of talents.trees) {
       const byId = new Map(tree.talents.map((t) => [t.id, t]));
       for (const talent of tree.talents) {
@@ -56,9 +56,21 @@ describe('planner fixture talents', () => {
         }
         const prereq = byId.get(talent.prereq_talent_id);
         expect(prereq).toBeDefined();
-        expect(prereq!.tier).toBeLessThan(talent.tier);
+        // The client has two same-row prerequisites (Priest Mind Flay ->
+        // Improved Mind Flay, Paladin Holy Shock -> Divine Precision), so a
+        // prerequisite is above or beside its dependent, never below.
+        expect(prereq!.tier).toBeLessThanOrEqual(talent.tier);
         expect(talent.prereq_rank).toBeGreaterThan(0);
         expect(talent.prereq_rank!).toBeLessThanOrEqual(prereq!.max_rank);
+      }
+    }
+  });
+
+  it('names a background per tree and the client spell per talent', () => {
+    for (const tree of talents.trees) {
+      expect(tree.background).toMatch(/^[a-z0-9_]+$/);
+      for (const talent of tree.talents) {
+        expect(talent.spell_id).toBe(talent.ranks[0].spell_id);
       }
     }
   });

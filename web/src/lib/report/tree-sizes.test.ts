@@ -13,6 +13,7 @@ function talentFile(sizes: number[]): TalentFile {
       id: index,
       name: `Tree ${index}`,
       position: index,
+      background: `tree_${index}`,
       talents: Array.from({ length: size }, (_, i) => ({
         id: i,
         name: `Talent ${i}`,
@@ -23,6 +24,7 @@ function talentFile(sizes: number[]): TalentFile {
         prereq_talent_id: null,
         prereq_rank: null,
         ranks: [],
+        spell_id: i,
       })),
     })),
   };
