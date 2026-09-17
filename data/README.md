@@ -144,3 +144,70 @@ a build that has both real rows — 1.60 and any later one — not against the f
     does not touch; `_has_gear_value`'s weapon exemption is therefore still needed
     and unchanged) and any stat whose `StatModifier_bonusStat_*` id is not in
     `STAT_BY_MODIFIER_ID` (unchanged behaviour: `ItemDataError`, not a guess).
+
+## What the beta client changed about the talents
+
+`diffs/wowhead-2026-09-14__1.60.1.69893.json` compares the pre-beta Wowhead
+snapshot the planner was built on against the trees read out of the beta
+client. Across all 27 trees: **1 talent added** (Hunter, Marksmanship:
+Improved Serpent Sting), **2 removed** (Druid Balance: Balance of Nature;
+Warrior Protection: Vitality), **2 renamed in place** (Rogue Combat: Restless
+Blades is Flawless Execution; Warlock Affliction: Drain Hope is Wrack), **4
+moved** (Shaman Restoration swaps Tidal Mastery and Totemic Focus; Warrior
+Protection moves Bastion and Focused Rage), **0 rank caps changed**, and **1
+prerequisite dropped** (Druid Balance: Nature's Majesty no longer requires
+Nature's Splendor, which broke the pair's two-way link).
+
+The snapshot stays committed as the record of what was believed before the
+beta. Nothing in the pipeline reads it to build the active site's trees any
+more; `python -m pipeline forever-talents` still regenerates the frozen
+`forever-prebeta` build, which exists only so links shared against it keep
+opening.
+
+## Re-emitting the Era build: two gaps this task found and fixed
+
+Regenerating `builds/1.15.9.69722` for Task 6 (the first time this worktree
+had ever fetched Era's raw tables, since they are git-ignored) surfaced three
+pre-existing gaps unrelated to talent trees, all now fixed:
+
+- `pipeline/normalize/item_curves.py`'s `load_item_curves` read only
+  `RandPropPoints`' `GoodF_0`-style float columns; Era's own `RandPropPoints`
+  has no `F` columns at all (only the integer `Good_0` style), so normalizing
+  Era crashed with `KeyError: 'GoodF_0'`. Now it prefers the float column
+  where the row has it and falls back to the integer column where it does
+  not — both hold the same values on build 1.60.1.69893 where both are
+  present.
+- `pipeline/spelltext.py`'s `_base_points` preferred `EffectBasePointsF`
+  whenever the column merely *existed*, which is true for both builds'
+  `SpellEffect` tables — but only build 1.60.1.69893 ever populates it; Era's
+  copy is uniformly `"0"` padding, so every Era description silently rendered
+  a tenth of its real number (e.g. "Reduces the cost of your Heroic Strike
+  ability by 1 rage point" became "by 0.1 rage point"). Confirmed against
+  every row of both builds' `SpellEffect` tables: Era's `EffectBasePoints`
+  (int) is always populated and its `EffectBasePointsF` always `"0"`; build
+  1.60.1.69893's `EffectBasePoints` is always empty and `EffectBasePointsF`
+  always carries the real value. The function now prefers the integer column
+  when present and falls back to the float column only when it is not.
+- `pipeline/normalize/gear.py`'s level-60 armour sanity cap (2,000) rejected
+  item 13375, "Crest of Retribution" — a real rare shield (`RequiredLevel`
+  55) with 2,057 armour that was in the originally-committed Era build but
+  had never been re-checked against the cap since it was added. Raised to
+  2,100.
+
+`data/curated/races.json` and `combos.json` now name the beta client's two
+real Skyborne rows (`high-order-skyborne` id 95, `windshaper-skyborne` id
+96) rather than the retired placeholder; Classic Era's own `ChrRaces` has no
+Skyborne row at all, so merging the curated files onto Era's races raises
+`CuratedError` by design (see `tests/test_curated.py`'s `real_merged`
+docstring — Era's committed `classes.json`/`races.json`/`combos.json` are a
+frozen historical artifact now that Skyborne is real client data rather than
+a placeholder, and are validated against the beta build instead). Task 6
+does not touch curated data, so re-emitting Era for this task only
+regenerated `talents.json`, `talents/*.json` and `manifest.json` — the three
+outputs Task 6's reader switch actually changes — leaving
+`classes.json`/`races.json`/`combos.json`/`items.json`/`items/`/`sets.json`/
+`zones.json`/`dungeons.json`/`spells.json` untouched on disk. `manifest.json`
+also picked up the correct hash for `classes.json` and `races.json`, which
+the previously-committed manifest had recorded incorrectly (stale from
+before those files were last regenerated) — `pipeline.manifest.verify` now
+returns `[]` for the Era build, which it would not have before this task.

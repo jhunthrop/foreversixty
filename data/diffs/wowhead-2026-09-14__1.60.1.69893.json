@@ -1,0 +1,176 @@
+{
+  "snapshot": "data/raw-forever/wowhead-talents-2026-09-14.json",
+  "build": "1.60.1.69893",
+  "totals": {
+    "snapshot": 470,
+    "build": 469
+  },
+  "trees": [
+    {
+      "tree_id": 163,
+      "tree": "Protection",
+      "added": [],
+      "removed": [
+        {
+          "cell": [
+            4,
+            3
+          ],
+          "name": "Vitality",
+          "ranks": 5
+        }
+      ],
+      "renamed": [],
+      "moved": [
+        {
+          "name": "Bastion",
+          "snapshot": [
+            5,
+            2
+          ],
+          "build": [
+            4,
+            3
+          ]
+        },
+        {
+          "name": "Focused Rage",
+          "snapshot": [
+            5,
+            0
+          ],
+          "build": [
+            5,
+            2
+          ]
+        }
+      ],
+      "rank_changes": [],
+      "prerequisite_changes": [],
+      "class_slug": "warrior"
+    },
+    {
+      "tree_id": 363,
+      "tree": "Marksmanship",
+      "added": [
+        {
+          "cell": [
+            3,
+            3
+          ],
+          "name": "Improved Serpent Sting",
+          "ranks": 5
+        }
+      ],
+      "removed": [],
+      "renamed": [],
+      "moved": [],
+      "rank_changes": [],
+      "prerequisite_changes": [],
+      "class_slug": "hunter"
+    },
+    {
+      "tree_id": 181,
+      "tree": "Combat",
+      "added": [],
+      "removed": [],
+      "renamed": [
+        {
+          "cell": [
+            3,
+            1
+          ],
+          "snapshot": "Restless Blades",
+          "build": "Flawless Execution"
+        }
+      ],
+      "moved": [],
+      "rank_changes": [],
+      "prerequisite_changes": [],
+      "class_slug": "rogue"
+    },
+    {
+      "tree_id": 262,
+      "tree": "Restoration",
+      "added": [],
+      "removed": [],
+      "renamed": [],
+      "moved": [
+        {
+          "name": "Tidal Mastery",
+          "snapshot": [
+            0,
+            2
+          ],
+          "build": [
+            3,
+            0
+          ]
+        },
+        {
+          "name": "Totemic Focus",
+          "snapshot": [
+            3,
+            0
+          ],
+          "build": [
+            0,
+            2
+          ]
+        }
+      ],
+      "rank_changes": [],
+      "prerequisite_changes": [],
+      "class_slug": "shaman"
+    },
+    {
+      "tree_id": 302,
+      "tree": "Affliction",
+      "added": [],
+      "removed": [],
+      "renamed": [
+        {
+          "cell": [
+            6,
+            1
+          ],
+          "snapshot": "Drain Hope",
+          "build": "Wrack"
+        }
+      ],
+      "moved": [],
+      "rank_changes": [],
+      "prerequisite_changes": [],
+      "class_slug": "warlock"
+    },
+    {
+      "tree_id": 283,
+      "tree": "Balance",
+      "added": [],
+      "removed": [
+        {
+          "cell": [
+            2,
+            3
+          ],
+          "name": "Balance of Nature",
+          "ranks": 5
+        }
+      ],
+      "renamed": [],
+      "moved": [],
+      "rank_changes": [],
+      "prerequisite_changes": [
+        {
+          "name": "Nature's Majesty",
+          "snapshot": [
+            "Nature's Splendor",
+            1
+          ],
+          "build": null
+        }
+      ],
+      "class_slug": "druid"
+    }
+  ]
+}
