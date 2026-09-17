@@ -95,6 +95,12 @@ class TalentEntry(BaseModel):
     prereq_talent_id: int | None
     prereq_rank: int | None
     ranks: list[TalentRank]
+    #: The client's own spell for the talent, which is what every consumer
+    #: keyed by spell id (the sim, the report's planner link) will see written
+    #: by the game. Appended last, like `background` below: the emitted key
+    #: order is the schema's only compatibility surface, so new fields go on
+    #: the end and existing ones never move.
+    spell_id: int
 
 
 class TalentTree(BaseModel):
@@ -102,6 +108,9 @@ class TalentTree(BaseModel):
     name: str
     position: int
     talents: list[TalentEntry]
+    #: The tab's `BackgroundFile`, lowercased. The site fetches the processed
+    #: image at `/data/<build>/trees/<background>.webp`.
+    background: str
 
 
 class ClassTalents(BaseModel):

@@ -20,8 +20,12 @@ RANK_COLUMNS = [f"SpellRank_{i}" for i in range(9)]
 UNKNOWN_TALENT_NAME = "Unknown talent"
 
 
-def _talent_name(talent_id: int, spell_id: int, spell_names: dict[int, str]) -> str:
-    """The first rank's spell name, or a placeholder that names the missing row."""
+def talent_name(talent_id: int, spell_id: int, spell_names: dict[int, str]) -> str:
+    """The first rank's spell name, or a placeholder that names the missing row.
+
+    Shared with `pipeline/normalize/trait_trees.py`, which names a talent the
+    same way off the client's trait tables.
+    """
     name = spell_names.get(spell_id)
     if name:
         return name
@@ -58,6 +62,7 @@ def build_talent_trees(
             "name": row["Name_lang"],
             "position": int(row["OrderIndex"]),
             "class_mask": int(row["ClassMask"]),
+            "background": row["BackgroundFile"].lower(),
         }
         for row in tab_rows
     ]
@@ -72,7 +77,7 @@ def build_talent_trees(
         talent_id = int(row["ID"])
         entry = TalentEntry(
             id=talent_id,
-            name=_talent_name(talent_id, ranks[0], spell_names),
+            name=talent_name(talent_id, ranks[0], spell_names),
             icon=resolve_icon(
                 spell_text.icon_file_id(ranks[0]),
                 icons,
@@ -87,6 +92,10 @@ def build_talent_trees(
                 TalentRank(spell_id=spell_id, description=spell_text.describe(spell_id))
                 for spell_id in ranks
             ],
+            # The legacy table's talent is a chain of per-rank spells, so the
+            # talent's own spell is the first rank's -- the same id the client
+            # writes when the talent is learned.
+            spell_id=ranks[0],
         )
         by_tab.setdefault(int(row["TabID"]), []).append(entry)
     records: list[ClassTalents] = []
@@ -99,6 +108,7 @@ def build_talent_trees(
                 name=tab["name"],
                 position=tab["position"],
                 talents=sorted(by_tab.get(tab["id"], []), key=lambda t: (t.tier, t.column, t.id)),
+                background=tab["background"],
             )
             for tab in sorted(tabs, key=lambda t: (t["position"], t["id"]))
             if tab["class_mask"] & class_mask

@@ -30,7 +30,8 @@
               "spell_id": 12664,
               "description": "Increases your Strength by 6%."
             }
-          ]
+          ],
+          "spell_id": 12282
         },
         {
           "id": 130,
@@ -50,7 +51,8 @@
               "spell_id": 12697,
               "description": "Reduces the cooldown of your Overpower by 2 sec."
             }
-          ]
+          ],
+          "spell_id": 12285
         },
         {
           "id": 142,
@@ -70,9 +72,11 @@
               "spell_id": 12297,
               "description": "A vicious strike that deals weapon damage plus 110 and wounds the target for 10 sec."
             }
-          ]
+          ],
+          "spell_id": 12294
         }
-      ]
+      ],
+      "background": "warriorarms"
     },
     {
       "id": 164,
@@ -93,9 +97,11 @@
               "spell_id": 21179,
               "description": "Causes 32 Fire damage over 12 sec."
             }
-          ]
+          ],
+          "spell_id": 21179
         }
-      ]
+      ],
+      "background": "warriorfury"
     }
   ]
 }
