@@ -419,6 +419,38 @@ def test_armour_over_the_level_60_sanity_cap_is_an_error_not_a_guess():
         )
 
 
+def test_the_level_60_armour_cap_admits_the_real_item_that_motivated_raising_it():
+    """MAX_LEVEL_60_ARMOR was raised from 2,000 to 2,100 (gear.py) because Era's
+    own ItemSparse carries item 13375, "Crest of Retribution" -- a real rare
+    shield, RequiredLevel 55, quality 3, with 2,057 armour -- which the old cap
+    rejected. Pinned here at 2,057 so the next tuning pass can't silently
+    re-break Era without a test noticing (see test_normalize_gear.py's other
+    cap test for the "still rejects nonsense" side of this).
+
+    Reuses fixtures/ItemSparse.csv's own 16866 row (present in both fixture
+    CSVs already) rather than adding item 13375 to the shared fixture files:
+    those are read by several other tests' golden-output comparisons, and a
+    third fixture item would need every one of those goldens updated for a
+    change that has nothing to do with them.
+    """
+    rows = read_csv(HERE / "fixtures/ItemSparse.csv")
+    row = next(r for r in rows if r["ID"] == "16866")  # Helm of Might, AllowableClass warrior
+    row["ItemLevel"] = "60"
+    row["RequiredLevel"] = "55"
+    row["OverallQualityID"] = "3"
+    row["Resistances_0"] = "2057"
+    records = build_class_items(
+        rows,
+        read_csv(HERE / "fixtures/Item.csv"),
+        read_csv(HERE / "fixtures/ChrClasses.csv"),
+        fixture_icons(),
+        "1.0.0.1",
+    )
+    (warrior,) = (r for r in records if r.class_slug == "warrior")
+    (item,) = (i for i in warrior.items if i.id == 16866)
+    assert item.armor == 2057
+
+
 def test_the_sanity_cap_also_guards_the_curve_resolved_path():
     """The same guard applies whether armour/stats came from a literal column or
     from item_curves.py's formula: a malformed StatPercentEditor on a 1.60-shaped
