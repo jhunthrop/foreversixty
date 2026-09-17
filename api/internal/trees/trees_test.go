@@ -285,6 +285,9 @@ func TestTalentBySpellIDFindsTheTalentTheClientWrites(t *testing.T) {
 	if _, ok := b.TalentBySpellID(99, 12281); ok {
 		t.Fatal("an unknown class must report false")
 	}
+	if _, ok := b.TalentBySpellID(1, 0); ok {
+		t.Fatal("spell id 0 must report false, not whichever talent loaded last")
+	}
 }
 
 func TestLatestPrefersAClientBuildOverANamedDataSet(t *testing.T) {
