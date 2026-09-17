@@ -3,7 +3,7 @@
   "name": "Golemagg the Incinerator",
   "mechanics": [
     { "spell_id": 19798, "name": "Earthquake", "kind": "avoidable", "note": "Shakes everyone near him; ranged taking it were inside a radius they never had to be in." },
-    { "spell_id": 13880, "name": "Magma Splash", "kind": "unavoidable", "note": "Stacks on everyone who melees him, shredding armour as it goes. The fight's damage, not anybody's mistake." },
+    { "spell_id": 13880, "name": "Magma Splash", "kind": "unavoidable", "note": "Stacks on everyone who melees him, shredding armour as it goes. The fight's damage, not anybody's mistake. Four spells in the client share this name; this is the one Forever retuned for the 40-player raid, which is how it was picked." },
     { "spell_id": 19820, "name": "Mangle", "kind": "unavoidable", "note": "The Core Ragers' bleed on whoever is holding them. Tank damage." }
   ]
 }
