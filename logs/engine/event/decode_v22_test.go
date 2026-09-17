@@ -271,8 +271,28 @@ func TestV22ArenaMatchStartDecodes(t *testing.T) {
 	}
 }
 
+// v22RawLines lexes path and returns every line, so a test can index a raw
+// field directly instead of trusting the same decoder it is checking.
+func v22RawLines(t *testing.T, path string) []lexer.Line {
+	t.Helper()
+	text, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var out []lexer.Line
+	l := lexer.New()
+	emit := func(ln lexer.Line) error { out = append(out, ln); return nil }
+	if err := l.Feed(text, 0, emit); err != nil {
+		t.Fatal(err)
+	}
+	if err := l.Flush(emit); err != nil {
+		t.Fatal(err)
+	}
+	return out
+}
+
 func TestV22CombatantInfoReadsTheShiftedStats(t *testing.T) {
-	by, _ := decodeV22File(t, "testdata/v22.log")
+	by, all := decodeV22File(t, "testdata/v22.log")
 	e := one(t, by, "COMBATANT_INFO", 0)
 	if e.Kind != CombatantInfo {
 		t.Fatalf("kind = %v: %s", e.Kind, e.Error)
@@ -296,13 +316,66 @@ func TestV22CombatantInfoReadsTheShiftedStats(t *testing.T) {
 	if c.Borrowed != "" {
 		t.Errorf("borrowed = %q, want empty: v22 writes no borrowed-power field", c.Borrowed)
 	}
-	// The advanced block's armor is the same number COMBATANT_INFO
-	// reports, which is what pinned the stat shift.
-	if c.Stats["armor"] <= 0 {
-		t.Errorf("armor = %d, want a positive value", c.Stats["armor"])
+
+	// The advanced block's armor is the same number COMBATANT_INFO reports
+	// at field 24, which is what pinned the stat shift, and field 23 (v16's
+	// armor index) is not: this is checked for every player in the
+	// excerpt, not just the first, by indexing the raw COMBATANT_INFO line
+	// directly rather than trusting Combatant.Stats, which reads the same
+	// index under test.
+	// The advanced block describes the event's source, not its target: a
+	// destination match would as often as not pick up whoever the player
+	// was fighting instead. Armor moves during the fight (stances, auras,
+	// trinket procs), so the cross-check is membership in every armor this
+	// player's source events ever reported, not equality with just one of
+	// them.
+	armorsOf := func(guid string) map[int64]bool {
+		set := map[int64]bool{}
+		for _, ev := range all {
+			if ev.Adv.OK && ev.Source.GUID == guid {
+				set[ev.Adv.Armor] = true
+			}
+		}
+		return set
+	}
+	found23, found24 := 0, 0
+	for _, ln := range v22RawLines(t, "testdata/v22.log") {
+		if len(ln.Params) == 0 || ln.Params[0] != "COMBATANT_INFO" {
+			continue
+		}
+		guid := ln.Params[1]
+		armors := armorsOf(guid)
+		if len(armors) == 0 {
+			t.Fatalf("no advanced-block event sourced by %s to cross-check armor against", guid)
+		}
+		if len(ln.Params) <= 24 {
+			t.Fatalf("COMBATANT_INFO for %s has only %d fields, want at least 25", guid, len(ln.Params))
+		}
+		if got := intOf(ln.Params[24]); !armors[got] {
+			t.Errorf("%s: CI[24] = %d, not among the armor values %s's own events report", guid, got, guid)
+		} else {
+			found24++
+		}
+		if got := intOf(ln.Params[23]); armors[got] {
+			found23++
+		}
+	}
+	if found24 == 0 {
+		t.Fatal("no player's CI[24] was checked against the advanced block")
+	}
+	if found23 != 0 {
+		t.Errorf("%d player(s) had CI[23] land among the advanced block's armor values too; "+
+			"the excerpt no longer distinguishes field 23 from field 24", found23)
 	}
 }
 
+// TestV22AuraWithTwoTrailingNumbers checks both of a 15-field aura line's
+// trailing numbers: the first is the absorb size, read into e.Absorbed; the
+// second is counted by the layout but not read into any field (see the
+// ledger). The fixture line has 0 for both, which proves too little on its
+// own, so a second, hand-built line with two distinct nonzero values pins
+// that the first is read as the absorb size and the second does not leak
+// into it (or into anything else that would make decoding fail).
 func TestV22AuraWithTwoTrailingNumbers(t *testing.T) {
 	by, _ := decodeV22File(t, "testdata/v22-shapes.log")
 	e := one(t, by, "SPELL_AURA_APPLIED", 0)
@@ -311,6 +384,27 @@ func TestV22AuraWithTwoTrailingNumbers(t *testing.T) {
 	}
 	if e.AuraType != "BUFF" && e.AuraType != "DEBUFF" {
 		t.Errorf("auraType = %q", e.AuraType)
+	}
+	if !e.Absorbed.OK || e.Absorbed.V != 0 {
+		t.Errorf("absorbed = %+v, want {0 true}: the fixture's absorb size", e.Absorbed)
+	}
+
+	d := NewDecoder(layout.RetailV22(), v22Base)
+	raw := `4/29/2026 21:04:30.621-5  SPELL_AURA_APPLIED,Player-1129-0BED7A21,"Nightwarrior-Jaedenar-US",0x10548,0x80000000,Player-1129-0BED7A21,"Nightwarrior-Jaedenar-US",0x10548,0x80000000,458245,"Second Wind",0x1,BUFF,500,999` + "\n"
+	l := lexer.New()
+	var got Event
+	emit := func(ln lexer.Line) error { got = d.Decode(ln); return nil }
+	if err := l.Feed([]byte(raw), 0, emit); err != nil {
+		t.Fatal(err)
+	}
+	if err := l.Flush(emit); err != nil {
+		t.Fatal(err)
+	}
+	if got.Kind != AuraApplied {
+		t.Fatalf("kind = %v: %s", got.Kind, got.Error)
+	}
+	if !got.Absorbed.OK || got.Absorbed.V != 500 {
+		t.Errorf("absorbed = %+v, want {500 true}: the first trailing number", got.Absorbed)
 	}
 }
 
