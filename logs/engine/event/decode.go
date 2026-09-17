@@ -4,7 +4,6 @@ package event
 import (
 	"fmt"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/jhunthrop/foreversixty/logs/engine/layout"
@@ -132,23 +131,21 @@ func readUnits(e *Event, p []string) {
 func (d *Decoder) decodeStandard(e Event, ln lexer.Line, prefix, suffix string) Event {
 	p := ln.Params
 	spec := d.lay.Suffixes[suffix]
-	want, advAt := d.lay.Width(prefix, suffix)
+	_, advAt := d.lay.Width(prefix, suffix)
 
-	// _MISSED carries three more fields, but only on an absorb; _DAMAGE on
-	// the Classic row carries an optional trailing isOffHand.
-	switch {
-	case spec.AbsorbExtra > 0 && len(p) == want+spec.AbsorbExtra:
-		want += spec.AbsorbExtra
-	case spec.OffHand && len(p) == want+1:
-		want++
+	// The row says which widths this shape may have: the base count plus
+	// whichever optional trailing fields the dialect writes. The exact
+	// width in hand then fixes where the suffix's own fields stop.
+	allowed := d.lay.Widths(prefix, suffix)
+	ok := false
+	for _, w := range allowed {
+		if len(p) == w {
+			ok = true
+		}
 	}
-	// An aura event may carry a trailing absorb size.
-	if strings.HasPrefix(suffix, "_AURA_") && !strings.HasSuffix(suffix, "_DOSE") &&
-		suffix != "_AURA_BROKEN_SPELL" && len(p) == want+1 {
-		want++
-	}
-	if len(p) != want {
-		return fail(e, ln, fmt.Sprintf("%s has %d fields, layout %q wants %d", e.Name, len(p), d.lay.Name, want))
+	if !ok {
+		return fail(e, ln, fmt.Sprintf("%s has %d fields, layout %q allows %v",
+			e.Name, len(p), d.lay.Name, allowed))
 	}
 
 	// Where the suffix's fields start. The inferred row derives Params
@@ -180,6 +177,17 @@ func (d *Decoder) decodeStandard(e Event, ln lexer.Line, prefix, suffix string) 
 	}
 	rest := p[i:]
 
+	// Version 22 ends a spell-prefixed damage or miss line with a
+	// single-target / area tag. It cannot be located by counting, because
+	// RANGE_DAMAGE writes it and RANGE_MISSED does not, so it is
+	// recognised by value: "ST" and "AOE" are the only two strings it ever
+	// holds, and every field it could be confused with (critical,
+	// isOffHand, crushing) holds "nil", "0" or "1".
+	if spec.Tag && len(rest) > 0 && isScopeTag(rest[len(rest)-1]) {
+		e.Scope = rest[len(rest)-1]
+		rest = rest[:len(rest)-1]
+	}
+
 	switch suffix {
 	case "_DAMAGE":
 		e.Kind = Damage
@@ -194,11 +202,34 @@ func (d *Decoder) decodeStandard(e Event, ln lexer.Line, prefix, suffix string) 
 		e.Kind = Missed
 		e.MissType = rest[0]
 		e.OffHand = boolOf(rest[1])
-		if len(rest) >= 5 {
+		switch {
+		case len(rest) >= 5:
+			// ABSORB: amountMissed, baseAmount, critical.
 			e.Amount, e.BaseAmount, e.Critical = optInt(rest[2]), optInt(rest[3]), boolOf(rest[4])
-		} else if len(rest) == 4 {
+		case len(rest) == 4:
 			e.Amount, e.Critical = optInt(rest[2]), boolOf(rest[3])
+		case len(rest) == 3:
+			// BLOCK and RESIST: the amount missed, and nothing else.
+			e.Amount = optInt(rest[2])
 		}
+	case "_SPLIT":
+		e.Kind = DamageSplit
+		readDamage(&e, rest, spec)
+	case "_SUPPORT":
+		// The supporting player's GUID is the last field; the ten before
+		// it are an ordinary damage suffix.
+		e.Kind = Damage
+		e.Supporter = rest[len(rest)-1]
+		readDamage(&e, rest[:len(rest)-1], spec)
+	case "_HEAL_SUPPORT":
+		e.Kind = Heal
+		e.Supporter = rest[len(rest)-1]
+		readHeal(&e, rest[:len(rest)-1], spec)
+	case "_EMPOWER_START":
+		e.Kind = EmpowerStart
+	case "_EMPOWER_END", "_EMPOWER_INTERRUPT":
+		e.Kind = EmpowerEnd
+		e.Stacks = optInt(rest[0]) // the empowerment stage reached
 	case "_ENERGIZE", "_DRAIN", "_LEECH":
 		e.Kind = Energize
 		e.Amount, e.OverEnergize = optInt(rest[0]), optInt(rest[1])
@@ -212,6 +243,9 @@ func (d *Decoder) decodeStandard(e Event, ln lexer.Line, prefix, suffix string) 
 		if len(rest) > 1 {
 			e.Absorbed = optInt(rest[1])
 		}
+		// A version 22 aura line may carry one more number after the
+		// absorb size. Its meaning is not pinned, so it is counted by the
+		// layout and left unread; see the ledger.
 	case "_AURA_APPLIED_DOSE", "_AURA_REMOVED_DOSE":
 		e.Kind = AuraDose
 		e.AuraType, e.Stacks = rest[0], optInt(rest[1])
@@ -289,6 +323,14 @@ func suffixNeeds(suffix string, spec layout.Suffix) int {
 		return 3
 	case "_CAST_FAILED", "_EXTRA_ATTACKS":
 		return 1
+	case "_SPLIT":
+		return 10
+	case "_SUPPORT":
+		return 11
+	case "_HEAL_SUPPORT":
+		return 6
+	case "_EMPOWER_END", "_EMPOWER_INTERRUPT":
+		return 1
 	default:
 		return 0
 	}
@@ -333,7 +375,36 @@ func readHeal(e *Event, rest []string, spec layout.Suffix) {
 	e.Critical = boolOf(rest[i+3])
 }
 
+// readAdvanced reads the advanced block. The two layouts differ by two
+// fields inserted after armor, which pushes absorb and every power field
+// down; reading a 19-field block with the 17-field offsets silently yields
+// a position of (0, 0) and a power type taken from the absorb slot, so the
+// length picks the mapping rather than an index guard.
 func readAdvanced(f []string) Advanced {
+	if len(f) == 19 {
+		return Advanced{
+			OK:           true,
+			InfoGUID:     f[0],
+			OwnerGUID:    f[1],
+			CurrentHP:    intOf(f[2]),
+			MaxHP:        intOf(f[3]),
+			AttackPower:  intOf(f[4]),
+			SpellPower:   intOf(f[5]),
+			Armor:        intOf(f[6]),
+			Versatility:  intOf(f[7]),
+			Unknown8:     intOf(f[8]),
+			Absorb:       intOf(f[9]),
+			PowerType:    intOf(f[10]),
+			CurrentPower: intOf(f[11]),
+			MaxPower:     intOf(f[12]),
+			PowerCost:    intOf(f[13]),
+			PositionX:    floatOf(f[14]),
+			PositionY:    floatOf(f[15]),
+			UIMapID:      intOf(f[16]),
+			Facing:       floatOf(f[17]),
+			Level:        intOf(f[18]),
+		}
+	}
 	if len(f) < 17 {
 		return Advanced{}
 	}
@@ -413,6 +484,9 @@ func boolOf(s string) OptBool {
 		return OptBool{V: s != "0", OK: true}
 	}
 }
+
+// isScopeTag reports whether a field is the single-target / area tag.
+func isScopeTag(s string) bool { return s == "ST" || s == "AOE" }
 
 func hex32(s string) uint32 {
 	v := optInt(s)

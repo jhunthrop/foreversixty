@@ -16,23 +16,30 @@ import (
 // width can be declared and still be too short for the branch that reads
 // it.
 var specialNeeds = map[string]int{
-	"UNIT_DIED":            layout.BaseParams,
-	"UNIT_DESTROYED":       layout.BaseParams,
-	"UNIT_DISSIPATES":      layout.BaseParams,
-	"PARTY_KILL":           layout.BaseParams,
-	"SPELL_ABSORBED":       layout.BaseParams,
-	"SPELL_HEAL_ABSORBED":  20,
-	"ENVIRONMENTAL_DAMAGE": layout.BaseParams,
-	"ENCOUNTER_START":      5,
-	"ENCOUNTER_END":        5,
-	"ZONE_CHANGE":          3,
-	"MAP_CHANGE":           3,
-	"CHALLENGE_MODE_START": 5,
-	"CHALLENGE_MODE_END":   4,
-	"ENCHANT_APPLIED":      12,
-	"ENCHANT_REMOVED":      12,
-	"EMOTE":                5,
-	"COMBATANT_INFO":       2,
+	"UNIT_DIED":              layout.BaseParams,
+	"UNIT_DESTROYED":         layout.BaseParams,
+	"UNIT_DISSIPATES":        layout.BaseParams,
+	"PARTY_KILL":             layout.BaseParams,
+	"SPELL_ABSORBED":         layout.BaseParams,
+	"SPELL_HEAL_ABSORBED":    20,
+	"ENVIRONMENTAL_DAMAGE":   layout.BaseParams,
+	"ENCOUNTER_START":        5,
+	"ENCOUNTER_END":          5,
+	"ZONE_CHANGE":            3,
+	"MAP_CHANGE":             3,
+	"CHALLENGE_MODE_START":   5,
+	"CHALLENGE_MODE_END":     4,
+	"ENCHANT_APPLIED":        12,
+	"ENCHANT_REMOVED":        12,
+	"EMOTE":                  5,
+	"COMBATANT_INFO":         2,
+	"SPELL_ABSORBED_SUPPORT": layout.BaseParams,
+	"ARENA_MATCH_START":      5,
+	"ARENA_MATCH_END":        5,
+	"STAGGER_CLEAR":          3,
+	"STAGGER_PREVENTED":      4,
+	"WORLD_MARKER_PLACED":    5,
+	"WORLD_MARKER_REMOVED":   2,
 }
 
 // decodeSpecial handles the events that do not follow the prefix/suffix
@@ -127,6 +134,44 @@ func (d *Decoder) decodeSpecial(e Event, ln lexer.Line) Event {
 		e.Dest = Unit{GUID: p[3], Name: nilless(p[4])}
 	case "COMBATANT_INFO":
 		return d.readCombatant(e, ln)
+	case "SPELL_ABSORBED_SUPPORT":
+		// The same shape as SPELL_ABSORBED with the supporting player's
+		// GUID appended; readAbsorbed walks from the front and stops at
+		// the fields it knows, so the GUID is taken off first.
+		short := ln
+		short.Params = p[:len(p)-1]
+		out := d.readAbsorbed(e, short)
+		out.Supporter = p[len(p)-1]
+		out.Raw = ln.Raw
+		return out
+	case "ARENA_MATCH_START":
+		e.Kind = ArenaMatchStart
+		e.Zone = &Zone{ID: intOf(p[1])}
+		e.Amount = optInt(p[2])    // bracket
+		e.ItemName = nilless(p[3]) // match type, e.g. "Rated Solo Shuffle"
+		e.Critical = OptBool{V: intOf(p[4]) == 1, OK: true}
+	case "ARENA_MATCH_END":
+		e.Kind = ArenaMatchEnd
+		e.Amount = optInt(p[1]) // winning team
+		e.Total = optInt(p[2])  // duration in seconds
+	case "STAGGER_CLEAR":
+		e.Kind = StaggerClear
+		e.Source = Unit{GUID: p[1]}
+		e.Amount = optInt(p[2])
+	case "STAGGER_PREVENTED":
+		e.Kind = StaggerPrevented
+		e.Source = Unit{GUID: p[1]}
+		e.Spell = Spell{ID: intOf(p[2])}
+		e.Amount = optInt(p[3])
+	case "WORLD_MARKER_PLACED":
+		e.Kind = WorldMarker
+		e.Zone = &Zone{ID: intOf(p[1])}
+		e.Amount = optInt(p[2])
+		e.Critical = OptBool{V: true, OK: true} // placed
+	case "WORLD_MARKER_REMOVED":
+		e.Kind = WorldMarker
+		e.Amount = optInt(p[1])
+		e.Critical = OptBool{V: false, OK: true} // removed
 	default:
 		e.Kind, e.Raw = Unknown, ln.Raw
 	}
@@ -244,29 +289,40 @@ func (d *Decoder) readCombatant(e Event, ln lexer.Line) Event {
 		return fail(e, ln, fmt.Sprintf("COMBATANT_INFO has %d fields, layout %q wants %d",
 			len(p), d.lay.Name, c.Params))
 	}
-	for _, at := range []int{c.SpecIndex, c.TalentIndex, c.PvPTalentIndex, c.BorrowIndex, c.GearIndex, c.AuraIndex} {
-		if at < 0 || at >= len(p) {
+	for _, at := range []int{c.SpecIndex, c.TalentIndex, c.PvPTalentIndex, c.GearIndex, c.AuraIndex} {
+		if at <= 0 || at >= len(p) {
 			return fail(e, ln, fmt.Sprintf("COMBATANT_INFO has %d fields, layout %q indexes field %d",
 				len(p), d.lay.Name, at))
 		}
 	}
+	// BorrowIndex is zero on a dialect that writes no borrowed-power
+	// field, and field zero is always the event name, so zero is an
+	// unambiguous "absent" rather than a missing bounds check.
+	if c.BorrowIndex < 0 || c.BorrowIndex >= len(p) {
+		return fail(e, ln, fmt.Sprintf("COMBATANT_INFO has %d fields, layout %q indexes field %d",
+			len(p), d.lay.Name, c.BorrowIndex))
+	}
+	stats := make(map[string]int64, len(c.StatIndex))
+	for name, at := range c.StatIndex {
+		if at <= 0 || at >= len(p) {
+			return fail(e, ln, fmt.Sprintf("COMBATANT_INFO has %d fields, layout %q reads %s from field %d",
+				len(p), d.lay.Name, name, at))
+		}
+		stats[name] = intOf(p[at])
+	}
 	e.Kind = CombatantInfo
 	info := &Combatant{
-		GUID:    p[1],
-		Faction: intOf(p[2]),
-		SpecID:  intOf(p[c.SpecIndex]),
-		Stats: map[string]int64{
-			"strength": intOf(p[3]), "agility": intOf(p[4]), "stamina": intOf(p[5]),
-			"intellect": intOf(p[6]), "dodge": intOf(p[7]), "parry": intOf(p[8]),
-			"block": intOf(p[9]), "crit": intOf(p[10]), "speed": intOf(p[13]),
-			"lifesteal": intOf(p[14]), "haste": intOf(p[15]), "avoidance": intOf(p[18]),
-			"mastery": intOf(p[19]), "versatility": intOf(p[20]), "armor": intOf(p[23]),
-		},
+		GUID:       p[1],
+		Faction:    intOf(p[2]),
+		SpecID:     intOf(p[c.SpecIndex]),
+		Stats:      stats,
 		Talents:    intList(p[c.TalentIndex]),
 		PvPTalents: intList(p[c.PvPTalentIndex]),
-		Borrowed:   p[c.BorrowIndex],
 		Gear:       gearList(p[c.GearIndex]),
 		Auras:      auraList(p[c.AuraIndex]),
+	}
+	if c.BorrowIndex > 0 {
+		info.Borrowed = p[c.BorrowIndex]
 	}
 	var sum, n int64
 	for _, it := range info.Gear {
@@ -301,16 +357,21 @@ func splitGroup(s string) []string {
 	return lexer.SplitParams(s)
 }
 
+// intList reads a flat list of integers such as v16's talent tuple
+// "(202751,262111,...)". Version 22's talent field nests one level deeper,
+// a list of (nodeID, entryID, rank) triples for the new talent trees, e.g.
+// "[(90326,112183,1),(90328,112185,1),...]"; a part that is not itself a
+// number is recursed into so every leaf integer still lands in one flat
+// list, and a v16 line, which nests nothing, recurses zero times.
 func intList(s string) []int64 {
-	parts := splitGroup(s)
-	out := make([]int64, 0, len(parts))
-	for _, p := range parts {
-		if v := optInt(strings.TrimSpace(p)); v.OK {
+	var out []int64
+	for _, p := range splitGroup(s) {
+		p = strings.TrimSpace(p)
+		if v := optInt(p); v.OK {
 			out = append(out, v.V)
+			continue
 		}
-	}
-	if len(out) == 0 {
-		return nil
+		out = append(out, intList(p)...)
 	}
 	return out
 }

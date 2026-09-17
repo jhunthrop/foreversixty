@@ -257,6 +257,15 @@ const swingEcho = 250 * time.Millisecond
 // the first is held until the second arrives and folded with its figures;
 // a swing with no landed line within the echo is folded as it was thrown.
 func (a *Accumulator) Add(e event.Event) {
+	// A _SUPPORT line restates damage or healing already reported on
+	// another line, attributing a slice of it to the player whose buff
+	// caused it (an Augmentation Evoker's Ebon Might, for instance).
+	// Counting it would double every augmented hit, so the accumulator
+	// skips it. Attributing support damage to the supporter is a report
+	// question and belongs to whichever lane owns that view.
+	if e.Supporter != "" {
+		return
+	}
 	a.flushSwings(e.Time)
 	if e.Kind == event.Damage && e.Name == "SWING_DAMAGE" {
 		a.noteTime(e)
