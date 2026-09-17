@@ -566,5 +566,6 @@
   "mechanics": {
     "table_found": false,
     "rows": []
-  }
+  },
+  "phases": []
 }

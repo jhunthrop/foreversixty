@@ -115,6 +115,10 @@ type Summary struct {
 	Roster         []RosterRow     `json:"roster"`
 
 	Mechanics MechanicsBlock `json:"mechanics"`
+	// Phases are the stretches this fight was fought in, from the encounter's
+	// curated table. Empty for an encounter with no table, no phases, or a pull
+	// that never reached one.
+	Phases []Phase `json:"phases"`
 }
 
 // threatPair is one player's running threat on one enemy: the total, and the
@@ -171,6 +175,9 @@ type Accumulator struct {
 	// it belongs to; mechanicEffects is every tick of a listed effect id.
 	mechanicCasts   map[int64][]mechanicCast
 	mechanicEffects map[int64][]mechanicEffect
+	// phaseAt is the first instant each of the encounter's phase triggers fired,
+	// by its index in the table's Phases.
+	phaseAt map[int]time.Time
 }
 
 // New returns an accumulator for one fight.
@@ -197,6 +204,7 @@ func New(o Options) *Accumulator {
 		mechanicHits:    map[int64]map[string]*MechanicHit{},
 		mechanicCasts:   map[int64][]mechanicCast{},
 		mechanicEffects: map[int64][]mechanicEffect{},
+		phaseAt:         map[int]time.Time{},
 	}
 }
 
@@ -340,6 +348,7 @@ func (a *Accumulator) addNow(e event.Event) {
 	a.addDamageAndHealing(e)
 	a.addCastsAndExchanges(e)
 	a.noteMechanicCast(e)
+	a.notePhase(e)
 	a.noteTaunt(e)
 	a.addAuras(e)
 	a.addResources(e)
@@ -414,6 +423,7 @@ func (a *Accumulator) Snapshot(f fight.Fight, engineVersion string) Summary {
 		Combatants:     a.combatantRows(),
 	}
 	s.Mechanics = a.mechanicsBlock(s.Deaths)
+	s.Phases = a.phaseRows(s.DurationMS)
 	s.Roster = a.rosterRows(f, s)
 	return s
 }

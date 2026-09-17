@@ -35,6 +35,7 @@ function everyArray(summary: Summary): unknown[][] {
     summary.threat,
     summary.combatants,
     summary.roster,
+    summary.phases,
     ...summary.damage_done.flatMap((actor) => [actor.abilities, actor.targets, actor.series]),
     ...summary.deaths.flatMap((death) => [death.last, death.auras_held, death.auras_lost]),
     ...summary.auras.flatMap((track) => [track.segments, track.appliers]),
@@ -186,6 +187,18 @@ describe('the checked-in report fixture', () => {
     expect(rows[2].dispelled ?? 0).toBe(0);
     // Skolex has no table at all, which is the mode's empty state.
     expect(four.mechanics).toEqual({ table_found: false, rows: [] });
+  });
+
+  it('splits the encounter into the phases its table names', () => {
+    // 9001's table opens Phase 2 on the Warden's Anima Surge cast, which starts at
+    // 20:12:14 -- fourteen seconds into the pull -- and is never completed. The opening
+    // stretch is Phase 1 and needs no entry in the table.
+    expect(three.phases).toEqual([
+      { name: 'Phase 1', start_ms: 0, end_ms: 14_000 },
+      { name: 'Phase 2', start_ms: 14_000, end_ms: 60_000 },
+    ]);
+    // Skolex has no table, so no phases and an empty list rather than a missing key.
+    expect(four.phases).toEqual([]);
   });
 
   it('parses a combatant with gear in the engine’s untagged Go field names', () => {
