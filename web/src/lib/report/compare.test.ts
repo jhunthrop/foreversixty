@@ -1,6 +1,13 @@
 // web/src/lib/report/compare.test.ts
 import { describe, expect, it } from 'vitest';
-import { abilityDiff, metricTable, phaseWindow, playerAbilityDiff, sharedPhases } from './compare';
+import {
+  abilityDiff,
+  metricTable,
+  phaseWindow,
+  playerAbilityDiff,
+  sharedPhases,
+  sideScaled,
+} from './compare';
 import type { Ability, Actor, Summary } from './types';
 
 function ability(spell_id: number, name: string, effective: number, via?: string): Ability {
@@ -139,5 +146,22 @@ describe('aligning two pulls by phase', () => {
     expect(sharedPhases(left, null)).toEqual([]);
     expect(phaseWindow(phased([]), 'Phase 2')).toBeNull();
     expect(phaseWindow(null, 'Phase 2')).toBeNull();
+  });
+});
+
+describe('sideScaled', () => {
+  const loaded = summary([]);
+  const aWindow = { startMs: 0, endMs: 20_000 };
+
+  it('is false with no window: the side reads its whole fight, measured rather than prorated', () => {
+    expect(sideScaled(loaded, null)).toBe(false);
+  });
+
+  it('is false with no summary: a side not yet loaded has nothing to prorate', () => {
+    expect(sideScaled(null, aWindow)).toBe(false);
+  });
+
+  it('is true only for a loaded side narrowed by a window, phase-picked or otherwise', () => {
+    expect(sideScaled(loaded, aWindow)).toBe(true);
   });
 });

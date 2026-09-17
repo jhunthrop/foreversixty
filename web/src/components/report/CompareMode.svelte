@@ -28,6 +28,7 @@
     phaseWindow,
     playerAbilityDiff,
     sharedPhases,
+    sideScaled,
     type AbilityDiff,
     type CompareMetric,
   } from '../../lib/report/compare';
@@ -171,8 +172,14 @@
   /**
    * Threat inside a window is the whole fight's total scaled, not measured (the Threat tab
    * greys it and says so); Compare marks it the same way rather than printing it as fact.
+   * "Inside a window" is each side's own effective window -- the page's shared one, or
+   * (Task 21) a picked phase's own span for that side -- so a phase-scoped threat figure
+   * is marked exactly like a window-scoped one, never printed as fact either.
    */
-  const threatScaled = $derived(window !== null && (metric === 'threat' || metric === 'tps'));
+  const threatScaled = $derived(
+    (sideScaled(leftWhole, leftWindow) || sideScaled(rightWhole, rightWindow)) &&
+      (metric === 'threat' || metric === 'tps'),
+  );
   const mark = $derived(threatScaled ? '~' : '');
   /** A difference as sign, mark, magnitude: "+~13,550" and "−~26,473" read the same way round. */
   const signed = (value: number): string =>
@@ -278,11 +285,12 @@
   /**
    * An ability split inside a window is prorated: window.ts scales each ability by the
    * window's share of its actor's total, because the summary keeps no per-ability series.
-   * So the ability table's own figures carry the tilde whenever a window is set, whatever
+   * So the ability table's own figures carry the tilde whenever a side has an effective
+   * window -- the page's shared one, or a picked phase's own span for that side -- whatever
    * the metric -- which is a different mark from `threatScaled`, the whole-table one that
    * only applies to the threat metrics.
    */
-  const splitScaled = $derived(leftWindow !== null || rightWindow !== null);
+  const splitScaled = $derived(sideScaled(leftWhole, leftWindow) || sideScaled(rightWhole, rightWindow));
   const splitMark = $derived(splitScaled ? '~' : '');
   /** A signed difference in the ability table, marked when the split it came from was scaled. */
   const splitSigned = (value: number): string =>

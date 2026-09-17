@@ -138,3 +138,16 @@ export function phaseWindow(summary: Summary | null, name: string): TimeWindow |
   const found = (summary?.phases ?? []).find((phase) => phase.name === name);
   return found === undefined ? null : { startMs: found.start_ms, endMs: found.end_ms };
 }
+
+/**
+ * Whether one side of a comparison is prorated rather than measured: a loaded side
+ * narrowed by a window -- the page's shared window, or (Task 21) a picked phase's own
+ * span for that side. A side with no summary yet has nothing to prorate, and a side with
+ * no window reads its whole fight measured, not scaled. Both `threatScaled` and
+ * `splitScaled` in CompareMode.svelte are `sideScaled(left, leftWindow) ||
+ * sideScaled(right, rightWindow)`, so a figure prorated on either side always carries the
+ * mark and a figure measured on both never does.
+ */
+export function sideScaled(summary: Summary | null, window: TimeWindow | null): boolean {
+  return summary !== null && window !== null;
+}
