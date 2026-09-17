@@ -263,7 +263,15 @@
    */
   const basePlayer = $derived.by(() => {
     if (source !== '' && source !== vs && left.roster.some((row) => row.guid === source)) return source;
-    return lines.find((line) => line.guid !== vs)?.guid ?? lines[0]?.guid ?? '';
+    // The metric's leader in this pull: the largest own figure, not the first row of the
+    // table, which is sorted by the difference to the other pull when one is picked.
+    const leader = lines
+      .filter((line) => line.guid !== vs)
+      .reduce<(typeof lines)[number] | undefined>(
+        (best, line) => (best === undefined || line.a > best.a ? line : best),
+        undefined,
+      );
+    return leader?.guid ?? lines[0]?.guid ?? '';
   });
   /** The players this pull's roster offers as a second player, the picked one excluded. */
   const vsOptions = $derived(

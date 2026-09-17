@@ -118,15 +118,13 @@
    * overkill. A blow with overkill was lethal whatever health the client's rounding
    * left on the line (a Gloom Squall at 14,141 with 14,140 over reads "1 of 32,540").
    */
-  function lethalHitMissing(death: Death): boolean {
+  function lethalHitMissing(death: Death, card: { events: LastEvent[]; pcts: (number | null)[] }): boolean {
     const blow = death.killing_blow;
-    return (
-      blow !== undefined &&
-      blow.max_hp !== undefined &&
-      blow.max_hp > 0 &&
-      (blow.hp_after ?? 0) > 0 &&
-      (blow.overkill ?? 0) <= 0
-    );
+    if (blow === undefined || (blow.overkill ?? 0) > 0) return false;
+    // The card's believed reading decides, not the raw one: a blow whose reading the card
+    // could not believe is read as the hit that ended them, never as "no lethal hit".
+    const left = blowPct(death, card);
+    return left !== null && left > 0;
   }
 
   function lastEvents(death: Death): LastEvent[] {
@@ -332,9 +330,10 @@
           {#if death.killing_blow}
             <span class="text-[13px]">
               <span
-                title={lethalHitMissing(death)
+                title={lethalHitMissing(death, card)
                   ? 'No damage line ended them: the death came from something the log does not write as damage (a fall, an instant kill, a timer running out), so this is the last hit before it'
-                  : 'The hit that ended them'}>{lethalHitMissing(death) ? 'last hit by' : 'killed by'}</span
+                  : 'The hit that ended them'}
+                >{lethalHitMissing(death, card) ? 'last hit by' : 'killed by'}</span
               >
               {sourceName(death.killing_blow.source_guid, death.killing_blow.source_name)} ·
               {NULL_GUID.test(death.killing_blow.source_guid) && death.killing_blow.spell_name === ''
@@ -376,7 +375,7 @@
           {#if shape(death, card.pcts)}
             <p class="text-[13px]" data-testid="death-shape">{shape(death, card.pcts)}</p>
           {/if}
-          {#if death.killing_blow && lethalHitMissing(death)}
+          {#if death.killing_blow && lethalHitMissing(death, card)}
             <p class="text-muted text-[13px]" data-testid="death-unlogged">
               The log shows no lethal hit: the last recorded hit left them at
               {#if blowPct(death, card) !== null}
@@ -402,7 +401,9 @@
                   <th class="py-1 pr-3 text-left font-bold">Ability</th>
                   <th class="hidden py-1 pr-3 text-left font-bold md:table-cell">From</th>
                   <th class="w-20 py-1 pr-3 text-right font-bold md:w-auto">Amount</th>
-                  <th class="w-24 py-1 text-left font-bold md:w-auto" title="Health left after the hit"
+                  <th
+                    class="w-24 py-1 text-left font-bold md:w-auto"
+                    title="Health left after the hit; blank when the log's reading cannot be believed (it rose above the reading before it with no heal between)"
                     >Health after</th
                   >
                 </tr>
@@ -459,7 +460,7 @@
                     {@const lethal = isKillingBlow(death, hit)}
                     <!-- The last recorded hit reads as the kill only when it was one: a hit that
                          left health behind keeps its own figure, as the sentence above says. -->
-                    {@const pct = lethal && !lethalHitMissing(death) ? 0 : card.pcts[i]}
+                    {@const pct = lethal && !lethalHitMissing(death, card) ? 0 : card.pcts[i]}
                     <tr class="border-line-soft border-b">
                       <td
                         class="text-muted tabular py-1 pr-3 font-mono"
