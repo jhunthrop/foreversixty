@@ -166,6 +166,23 @@ func TestLoadRejectsDuplicateTalentIDs(t *testing.T) {
 	}
 }
 
+func TestLoadRejectsDuplicateTalentSpellIDs(t *testing.T) {
+	dup := `{"build":"b","class_id":1,"class_slug":"warrior","trees":[{"id":161,"name":"Arms","position":0,` +
+		`"talents":[` +
+		`{"id":101,"name":"A","icon":"i","max_rank":1,"tier":0,"column":0,"prereq_talent_id":null,"prereq_rank":null,` +
+		`"spell_id":9,"ranks":[{"spell_id":9,"description":"one"}]},` +
+		`{"id":102,"name":"B","icon":"i","max_rank":1,"tier":0,"column":1,"prereq_talent_id":null,"prereq_rank":null,` +
+		`"spell_id":9,"ranks":[{"spell_id":9,"description":"two"}]}` +
+		`]}]}`
+	root := writeBuild(t, map[string]string{
+		"b/classes.json": oneClass, "b/races.json": oneRace, "b/combos.json": oneCombo,
+		"b/talents/warrior.json": dup,
+	})
+	if _, err := Load(root); err == nil || !strings.Contains(err.Error(), "duplicate talent spell id 9") {
+		t.Fatalf("err = %v, want duplicate talent spell id 9", err)
+	}
+}
+
 func TestClassesAreListedByID(t *testing.T) {
 	data, err := LoadFixture()
 	if err != nil {

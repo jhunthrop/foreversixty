@@ -113,6 +113,10 @@ func TestSplitReadsTalentsWrittenAsSpellIDs(t *testing.T) {
 	b, _ := data.Build("test-1")
 	i := New(b)
 	// 12281 is talent 101's spell, in Arms; 20000 is talent 201's, in Fury.
+	// 20000 is a fabricated id, not talent 201's real rank-1 spell (12321,
+	// see warrior.json) - it only needs to be unique in the fixture so this
+	// test can prove the cross-tree fallback (Talent miss, TalentBySpellID
+	// hit) resolves the right tree.
 	got := i.Split("Warrior", []int64{12281, 12281, 20000})
 	want := []int{2, 1}
 	if len(got) != len(want) {

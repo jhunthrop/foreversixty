@@ -413,6 +413,11 @@ func loadBuild(dir, version string) (*Build, error) {
 					return nil, fmt.Errorf("trees: %s: duplicate talent id %d in class %s", version, t.ID, c.Slug)
 				}
 				byTalentID[t.ID] = TalentRef{Talent: t, TreeID: tree.ID, TreeName: tree.Name, TreePosition: tree.Position}
+				if t.SpellID != 0 {
+					if _, dup := bySpellID[t.SpellID]; dup {
+						return nil, fmt.Errorf("trees: %s: duplicate talent spell id %d in class %s", version, t.SpellID, c.Slug)
+					}
+				}
 				bySpellID[t.SpellID] = byTalentID[t.ID]
 			}
 		}
