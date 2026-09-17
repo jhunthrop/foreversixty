@@ -1,0 +1,1188 @@
+{
+  "build": "1.60.1.69893",
+  "class_id": 8,
+  "class_slug": "mage",
+  "trees": [
+    {
+      "id": 81,
+      "name": "Arcane",
+      "position": 0,
+      "talents": [
+        {
+          "id": 74,
+          "name": "Arcane Subtlety",
+          "icon": "spell_holy_dispelmagic",
+          "max_rank": 2,
+          "tier": 0,
+          "column": 0,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 11210,
+              "description": "Reduces your target's resistance to all your spells by 15 and reduces the threat caused by your Arcane spells by 30%."
+            },
+            {
+              "spell_id": 12592,
+              "description": ""
+            }
+          ]
+        },
+        {
+          "id": 76,
+          "name": "Arcane Focus",
+          "icon": "spell_holy_devotion",
+          "max_rank": 5,
+          "tier": 0,
+          "column": 1,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 11222,
+              "description": "Improves your chance to hit with Arcane spells by 2%."
+            },
+            {
+              "spell_id": 12839,
+              "description": ""
+            },
+            {
+              "spell_id": 12840,
+              "description": ""
+            },
+            {
+              "spell_id": 12841,
+              "description": ""
+            },
+            {
+              "spell_id": 12842,
+              "description": ""
+            }
+          ]
+        },
+        {
+          "id": 80,
+          "name": "Improved Channeling",
+          "icon": "spell_nature_starfall",
+          "max_rank": 5,
+          "tier": 0,
+          "column": 2,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 11237,
+              "description": "Gives you a $m1% chance to avoid interruption caused by damage while channeling Arcane Missiles and a $m2% chance while casting Arcane Blast."
+            },
+            {
+              "spell_id": 12463,
+              "description": ""
+            },
+            {
+              "spell_id": 12464,
+              "description": ""
+            },
+            {
+              "spell_id": 16769,
+              "description": ""
+            },
+            {
+              "spell_id": 16770,
+              "description": ""
+            }
+          ]
+        },
+        {
+          "id": 78,
+          "name": "Wand Specialization",
+          "icon": "inv_wand_01",
+          "max_rank": 2,
+          "tier": 1,
+          "column": 0,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 6057,
+              "description": "Increases your damage with Wands by 13%."
+            },
+            {
+              "spell_id": 6085,
+              "description": ""
+            }
+          ]
+        },
+        {
+          "id": 1650,
+          "name": "Magic Absorption",
+          "icon": "spell_nature_astralrecalgroup",
+          "max_rank": 5,
+          "tier": 1,
+          "column": 1,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 29441,
+              "description": "Increases all your resistances by 2 and causes all spells you fully resist to restore 1% of your total mana. Cannot trigger more often than 1 time per sec."
+            },
+            {
+              "spell_id": 29444,
+              "description": ""
+            },
+            {
+              "spell_id": 29445,
+              "description": ""
+            },
+            {
+              "spell_id": 29446,
+              "description": ""
+            },
+            {
+              "spell_id": 29447,
+              "description": ""
+            }
+          ]
+        },
+        {
+          "id": 75,
+          "name": "Arcane Concentration",
+          "icon": "spell_shadow_manaburn",
+          "max_rank": 5,
+          "tier": 1,
+          "column": 2,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 11213,
+              "description": "Gives you a $m1% chance of entering a Clearcasting state after any damage spell hits a target.  The Clearcasting state reduces the mana cost of your next damage spell by 100%."
+            },
+            {
+              "spell_id": 12574,
+              "description": ""
+            },
+            {
+              "spell_id": 12575,
+              "description": ""
+            },
+            {
+              "spell_id": 12576,
+              "description": ""
+            },
+            {
+              "spell_id": 12577,
+              "description": ""
+            }
+          ]
+        },
+        {
+          "id": 82,
+          "name": "Arcane Geometry",
+          "icon": "inv_ability_mage_radiantspark",
+          "max_rank": 2,
+          "tier": 2,
+          "column": 0,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 11247,
+              "description": "Increases the range of your Arcane spells by $m1 yards."
+            },
+            {
+              "spell_id": 12606,
+              "description": "Increases the effect of your Amplify Magic and Dampen Magic spells by 50%."
+            }
+          ]
+        },
+        {
+          "id": 81,
+          "name": "Arcane Impact",
+          "icon": "spell_nature_wispsplode",
+          "max_rank": 3,
+          "tier": 2,
+          "column": 1,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 11242,
+              "description": "Increases the critical strike chance of your Arcane spells by $m1%."
+            },
+            {
+              "spell_id": 12467,
+              "description": ""
+            },
+            {
+              "spell_id": 12469,
+              "description": ""
+            }
+          ]
+        },
+        {
+          "id": 85,
+          "name": "Arcane Resilience",
+          "icon": "spell_arcane_arcaneresilience",
+          "max_rank": 1,
+          "tier": 2,
+          "column": 2,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 28574,
+              "description": "Increases your Armor by an amount equal to 50% of your Intellect."
+            }
+          ]
+        },
+        {
+          "id": 83,
+          "name": "Arcane Shielding",
+          "icon": "spell_shadow_detectlesserinvisibility",
+          "max_rank": 2,
+          "tier": 3,
+          "column": 0,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 11252,
+              "description": "Decreases the Mana lost per point of damage taken when your Mana Shield spell is active by $m1% and increases the resistances granted by your Mage Armor spell by $m2%."
+            },
+            {
+              "spell_id": 12605,
+              "description": ""
+            }
+          ]
+        },
+        {
+          "id": 88,
+          "name": "Improved Counterspell",
+          "icon": "spell_frost_iceshock",
+          "max_rank": 2,
+          "tier": 3,
+          "column": 1,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 11255,
+              "description": "Your Counterspell also Silences the target for ${$m1/1000} sec."
+            },
+            {
+              "spell_id": 12598,
+              "description": ""
+            }
+          ]
+        },
+        {
+          "id": 1142,
+          "name": "Arcane Meditation",
+          "icon": "spell_shadow_siphonmana",
+          "max_rank": 3,
+          "tier": 3,
+          "column": 3,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 18462,
+              "description": "Allows 50% of your Mana regeneration to continue while casting."
+            },
+            {
+              "spell_id": 18463,
+              "description": ""
+            },
+            {
+              "spell_id": 18464,
+              "description": ""
+            }
+          ]
+        },
+        {
+          "id": 86,
+          "name": "Presence of Mind",
+          "icon": "spell_nature_enchantarmor",
+          "max_rank": 1,
+          "tier": 4,
+          "column": 1,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 12043,
+              "description": "When activated, your next Mage spell with a casting time less than 10 sec becomes an instant cast spell."
+            }
+          ]
+        },
+        {
+          "id": 77,
+          "name": "Arcane Mind",
+          "icon": "spell_shadow_charm",
+          "max_rank": 5,
+          "tier": 4,
+          "column": 2,
+          "prereq_talent_id": 85,
+          "prereq_rank": 1,
+          "ranks": [
+            {
+              "spell_id": 11232,
+              "description": "Increases your Intellect by $m1% and increases the critical strike damage bonus of your Arcane spells by $m2%."
+            },
+            {
+              "spell_id": 12500,
+              "description": ""
+            },
+            {
+              "spell_id": 12501,
+              "description": ""
+            },
+            {
+              "spell_id": 12502,
+              "description": ""
+            },
+            {
+              "spell_id": 12503,
+              "description": ""
+            }
+          ]
+        },
+        {
+          "id": 421,
+          "name": "Arcane Instability",
+          "icon": "spell_shadow_teleport",
+          "max_rank": 3,
+          "tier": 5,
+          "column": 1,
+          "prereq_talent_id": 86,
+          "prereq_rank": 1,
+          "ranks": [
+            {
+              "spell_id": 15058,
+              "description": "Increases the damage done by your spells by $m1% and your critical strike chance by $m2%."
+            },
+            {
+              "spell_id": 15059,
+              "description": ""
+            },
+            {
+              "spell_id": 15060,
+              "description": ""
+            }
+          ]
+        },
+        {
+          "id": 87,
+          "name": "Arcane Power",
+          "icon": "spell_nature_lightning",
+          "max_rank": 1,
+          "tier": 6,
+          "column": 1,
+          "prereq_talent_id": 421,
+          "prereq_rank": 3,
+          "ranks": [
+            {
+              "spell_id": 12042,
+              "description": "For the next 15 sec, your spells deal 30% more damage while costing 30% more mana to cast."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 41,
+      "name": "Fire",
+      "position": 1,
+      "talents": [
+        {
+          "id": 26,
+          "name": "Improved Fireball",
+          "icon": "spell_fire_flamebolt",
+          "max_rank": 5,
+          "tier": 0,
+          "column": 1,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 11069,
+              "description": "Reduces the casting time of your Fireball and Frostfire Bolt spells by 0.5 sec."
+            },
+            {
+              "spell_id": 12338,
+              "description": ""
+            },
+            {
+              "spell_id": 12339,
+              "description": ""
+            },
+            {
+              "spell_id": 12340,
+              "description": ""
+            },
+            {
+              "spell_id": 12341,
+              "description": ""
+            }
+          ]
+        },
+        {
+          "id": 30,
+          "name": "Impact",
+          "icon": "spell_fire_meteorstorm",
+          "max_rank": 5,
+          "tier": 0,
+          "column": 2,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 11103,
+              "description": "Gives your Fire spells a $m1% chance to stun the target for 2 sec."
+            },
+            {
+              "spell_id": 12357,
+              "description": ""
+            },
+            {
+              "spell_id": 12358,
+              "description": ""
+            },
+            {
+              "spell_id": 12359,
+              "description": ""
+            },
+            {
+              "spell_id": 12360,
+              "description": ""
+            }
+          ]
+        },
+        {
+          "id": 34,
+          "name": "Ignite",
+          "icon": "spell_fire_incinerate",
+          "max_rank": 5,
+          "tier": 1,
+          "column": 0,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 11119,
+              "description": "Your critical strikes from Fire damage spells cause the target to burn for an additional $m1% of your spell's damage over 4 sec."
+            },
+            {
+              "spell_id": 11120,
+              "description": ""
+            },
+            {
+              "spell_id": 12846,
+              "description": ""
+            },
+            {
+              "spell_id": 12847,
+              "description": ""
+            },
+            {
+              "spell_id": 12848,
+              "description": ""
+            }
+          ]
+        },
+        {
+          "id": 28,
+          "name": "Flame Throwing",
+          "icon": "spell_fire_flare",
+          "max_rank": 2,
+          "tier": 1,
+          "column": 1,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 11100,
+              "description": "Increases the range of your Fire spells by 6 yards."
+            },
+            {
+              "spell_id": 12353,
+              "description": ""
+            }
+          ]
+        },
+        {
+          "id": 27,
+          "name": "Wake of Fire",
+          "icon": "spell_fire_lavaspawn",
+          "max_rank": 3,
+          "tier": 1,
+          "column": 2,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 11078,
+              "description": "Reduces the cooldown of your Fire Blast spell by ${2000/-1000} sec. Killing a non-trivial target increases the critical strike chance of your next Fire Blast cast within 20 sec by $m2%."
+            },
+            {
+              "spell_id": 11080,
+              "description": ""
+            },
+            {
+              "spell_id": 12342,
+              "description": ""
+            }
+          ]
+        },
+        {
+          "id": 1141,
+          "name": "Incineration",
+          "icon": "spell_fire_flameshock",
+          "max_rank": 2,
+          "tier": 2,
+          "column": 0,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 18459,
+              "description": "Increases the critical strike chance of your Fire Blast, Ice Lance, Arcane Blast, and Scorch spells by 6%."
+            },
+            {
+              "spell_id": 18460,
+              "description": ""
+            }
+          ]
+        },
+        {
+          "id": 31,
+          "name": "Improved Flamestrike",
+          "icon": "spell_fire_selfdestruct",
+          "max_rank": 3,
+          "tier": 2,
+          "column": 1,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 11108,
+              "description": "Increases the critical strike chance of your Flamestrike spell by 15%."
+            },
+            {
+              "spell_id": 12349,
+              "description": ""
+            },
+            {
+              "spell_id": 12350,
+              "description": ""
+            }
+          ]
+        },
+        {
+          "id": 29,
+          "name": "Pyroblast",
+          "icon": "spell_fire_fireball02",
+          "max_rank": 1,
+          "tier": 2,
+          "column": 2,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 11366,
+              "description": "Hurls an immense fiery boulder that causes 110 Fire damage and an additional 44 Fire damage over 12 sec."
+            }
+          ]
+        },
+        {
+          "id": 23,
+          "name": "Burning Soul",
+          "icon": "spell_fire_fire",
+          "max_rank": 2,
+          "tier": 2,
+          "column": 3,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 11083,
+              "description": "Gives your Fire spells a 70% chance to not lose casting time when you take damage and reduces the threat caused by your Fire spells by 30%."
+            },
+            {
+              "spell_id": 12351,
+              "description": ""
+            }
+          ]
+        },
+        {
+          "id": 25,
+          "name": "Improved Scorch",
+          "icon": "spell_fire_windsofwoe",
+          "max_rank": 3,
+          "tier": 3,
+          "column": 0,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 11095,
+              "description": "Your Scorch spell has a $m1% chance to cause your target to be vulnerable to Fire damage. This vulnerability increases all Fire damage you deal to your target by 3% and lasts 30 sec, stacking up to $22959u times."
+            },
+            {
+              "spell_id": 12872,
+              "description": ""
+            },
+            {
+              "spell_id": 12873,
+              "description": ""
+            }
+          ]
+        },
+        {
+          "id": 24,
+          "name": "Improved Fire Ward",
+          "icon": "spell_fire_firearmor",
+          "max_rank": 2,
+          "tier": 3,
+          "column": 1,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 11094,
+              "description": "Causes your Fire Ward to have a 20% chance to reflect Fire spells while active."
+            },
+            {
+              "spell_id": 13043,
+              "description": ""
+            }
+          ]
+        },
+        {
+          "id": 1639,
+          "name": "Master of Elements",
+          "icon": "spell_fire_masterofelements",
+          "max_rank": 3,
+          "tier": 3,
+          "column": 3,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 29074,
+              "description": "Your Fire and Frost critical strikes will refund 10% of their base mana cost."
+            },
+            {
+              "spell_id": 29075,
+              "description": ""
+            },
+            {
+              "spell_id": 29076,
+              "description": ""
+            }
+          ]
+        },
+        {
+          "id": 33,
+          "name": "Critical Mass",
+          "icon": "spell_nature_wispheal",
+          "max_rank": 3,
+          "tier": 4,
+          "column": 1,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 11115,
+              "description": "Increases the critical strike chance of your Fire spells by 2%."
+            },
+            {
+              "spell_id": 11367,
+              "description": ""
+            },
+            {
+              "spell_id": 11368,
+              "description": ""
+            }
+          ]
+        },
+        {
+          "id": 32,
+          "name": "Blast Wave",
+          "icon": "spell_holy_excorcism_02",
+          "max_rank": 1,
+          "tier": 4,
+          "column": 2,
+          "prereq_talent_id": 29,
+          "prereq_rank": 1,
+          "ranks": [
+            {
+              "spell_id": 11113,
+              "description": "A wave of flame radiates outward from the caster, damaging all enemies caught within the blast for 163 Fire damage, and Dazing them for 50% reduced movement speed for 6 sec."
+            }
+          ]
+        },
+        {
+          "id": 35,
+          "name": "Fire Power",
+          "icon": "spell_fire_immolation",
+          "max_rank": 5,
+          "tier": 5,
+          "column": 2,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 11124,
+              "description": "Increases the damage done by your Fire spells by 2%."
+            },
+            {
+              "spell_id": 12378,
+              "description": ""
+            },
+            {
+              "spell_id": 12398,
+              "description": ""
+            },
+            {
+              "spell_id": 12399,
+              "description": ""
+            },
+            {
+              "spell_id": 12400,
+              "description": ""
+            }
+          ]
+        },
+        {
+          "id": 36,
+          "name": "Combustion",
+          "icon": "spell_fire_sealoffire",
+          "max_rank": 1,
+          "tier": 6,
+          "column": 1,
+          "prereq_talent_id": 33,
+          "prereq_rank": 3,
+          "ranks": [
+            {
+              "spell_id": 11129,
+              "description": "When activated, this spell causes each of your Fire damage spell hits to increase your critical strike chance with Fire damage spells by 10%.  This effect lasts until you have caused $n non-periodic critical strikes with Fire spells."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 61,
+      "name": "Frost",
+      "position": 2,
+      "talents": [
+        {
+          "id": 70,
+          "name": "Frost Warding",
+          "icon": "spell_frost_frostward",
+          "max_rank": 2,
+          "tier": 0,
+          "column": 0,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 11189,
+              "description": "Increases the Armor and resistance given by your Frost Armor and Ice Armor spells by 15%. In addition, gives your Frost Ward a 10% chance to reflect Frost spells and effects while active."
+            },
+            {
+              "spell_id": 28332,
+              "description": ""
+            }
+          ]
+        },
+        {
+          "id": 37,
+          "name": "Improved Frostbolt",
+          "icon": "spell_frost_frostbolt02",
+          "max_rank": 5,
+          "tier": 0,
+          "column": 1,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 11070,
+              "description": "Reduces the casting time of your Frostbolt spell by 0.1 sec."
+            },
+            {
+              "spell_id": 12473,
+              "description": ""
+            },
+            {
+              "spell_id": 16763,
+              "description": ""
+            },
+            {
+              "spell_id": 16765,
+              "description": ""
+            },
+            {
+              "spell_id": 16766,
+              "description": ""
+            }
+          ]
+        },
+        {
+          "id": 1649,
+          "name": "Elemental Precision",
+          "icon": "spell_ice_magicdamage",
+          "max_rank": 3,
+          "tier": 0,
+          "column": 2,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 29438,
+              "description": "Improves your chance to hit with Frost and Fire spells by 6%."
+            },
+            {
+              "spell_id": 29439,
+              "description": ""
+            },
+            {
+              "spell_id": 29440,
+              "description": ""
+            }
+          ]
+        },
+        {
+          "id": 73,
+          "name": "Ice Shards",
+          "icon": "spell_frost_iceshard",
+          "max_rank": 5,
+          "tier": 1,
+          "column": 0,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 11207,
+              "description": "Increases the critical strike damage bonus of your Frost spells by 100%."
+            },
+            {
+              "spell_id": 12672,
+              "description": ""
+            },
+            {
+              "spell_id": 15047,
+              "description": ""
+            },
+            {
+              "spell_id": 15052,
+              "description": ""
+            },
+            {
+              "spell_id": 15053,
+              "description": ""
+            }
+          ]
+        },
+        {
+          "id": 38,
+          "name": "Frostbite",
+          "icon": "spell_frost_frostarmor",
+          "max_rank": 3,
+          "tier": 1,
+          "column": 1,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 11071,
+              "description": "Gives your Chill effects a 15% chance to Freeze the target for 5 sec."
+            },
+            {
+              "spell_id": 12496,
+              "description": ""
+            },
+            {
+              "spell_id": 12497,
+              "description": ""
+            }
+          ]
+        },
+        {
+          "id": 62,
+          "name": "Improved Frost Nova",
+          "icon": "spell_frost_freezingbreath",
+          "max_rank": 2,
+          "tier": 1,
+          "column": 2,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 11165,
+              "description": "Reduces the cooldown of your Frost Nova spell by 4 sec."
+            },
+            {
+              "spell_id": 12475,
+              "description": ""
+            }
+          ]
+        },
+        {
+          "id": 65,
+          "name": "Permafrost",
+          "icon": "spell_frost_wisp",
+          "max_rank": 3,
+          "tier": 1,
+          "column": 3,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 11175,
+              "description": "Increases the duration of your Chill effects by 33% and reduces the target's speed by an additional 10%."
+            },
+            {
+              "spell_id": 12569,
+              "description": ""
+            },
+            {
+              "spell_id": 12571,
+              "description": ""
+            }
+          ]
+        },
+        {
+          "id": 61,
+          "name": "Piercing Ice",
+          "icon": "spell_frost_frostbolt",
+          "max_rank": 3,
+          "tier": 2,
+          "column": 0,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 11151,
+              "description": "Increases the damage done by your Frost spells by 2%."
+            },
+            {
+              "spell_id": 12952,
+              "description": ""
+            },
+            {
+              "spell_id": 12953,
+              "description": ""
+            }
+          ]
+        },
+        {
+          "id": 69,
+          "name": "Cold Snap",
+          "icon": "spell_frost_wizardmark",
+          "max_rank": 1,
+          "tier": 2,
+          "column": 1,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 12472,
+              "description": "Finishes the remaining cooldown on all your other Frost spells."
+            }
+          ]
+        },
+        {
+          "id": 63,
+          "name": "Improved Blizzard",
+          "icon": "spell_frost_icestorm",
+          "max_rank": 3,
+          "tier": 2,
+          "column": 3,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 11185,
+              "description": "Adds a Chill effect to your Blizzard spell. This effect lowers the target's movement speed by $m1% for 1.5 sec."
+            },
+            {
+              "spell_id": 12487,
+              "description": ""
+            },
+            {
+              "spell_id": 12488,
+              "description": ""
+            }
+          ]
+        },
+        {
+          "id": 741,
+          "name": "Arctic Reach",
+          "icon": "spell_shadow_darkritual",
+          "max_rank": 2,
+          "tier": 3,
+          "column": 0,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 16757,
+              "description": "Increases the range of your Frostbolt and Blizzard spells and the radius of your Frost Nova and Cone of Cold spells by 10%."
+            },
+            {
+              "spell_id": 16758,
+              "description": ""
+            }
+          ]
+        },
+        {
+          "id": 66,
+          "name": "Frost Channeling",
+          "icon": "spell_frost_stun",
+          "max_rank": 3,
+          "tier": 3,
+          "column": 1,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 11160,
+              "description": "Reduces the mana cost of your Frost spells by 15% and reduces the threat caused by your Frost spells by 30%."
+            },
+            {
+              "spell_id": 12518,
+              "description": ""
+            },
+            {
+              "spell_id": 12519,
+              "description": ""
+            }
+          ]
+        },
+        {
+          "id": 67,
+          "name": "Shatter",
+          "icon": "spell_frost_frostshock",
+          "max_rank": 5,
+          "tier": 3,
+          "column": 2,
+          "prereq_talent_id": 62,
+          "prereq_rank": 2,
+          "ranks": [
+            {
+              "spell_id": 11170,
+              "description": "Increases the critical strike chance of all your spells against Frozen targets by $m1%."
+            },
+            {
+              "spell_id": 12982,
+              "description": ""
+            },
+            {
+              "spell_id": 12983,
+              "description": ""
+            },
+            {
+              "spell_id": 12984,
+              "description": ""
+            },
+            {
+              "spell_id": 12985,
+              "description": ""
+            }
+          ]
+        },
+        {
+          "id": 72,
+          "name": "Ice Block",
+          "icon": "spell_frost_frost",
+          "max_rank": 1,
+          "tier": 4,
+          "column": 1,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 11958,
+              "description": "You become encased in a block of ice, protecting you from all physical attacks and spells for 10 sec, but during that time you cannot attack, move, or cast spells."
+            }
+          ]
+        },
+        {
+          "id": 64,
+          "name": "Improved Cone of Cold",
+          "icon": "spell_frost_glacier",
+          "max_rank": 3,
+          "tier": 4,
+          "column": 2,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 11190,
+              "description": "Increases the damage dealt by your Cone of Cold spell by 15%."
+            },
+            {
+              "spell_id": 12489,
+              "description": ""
+            },
+            {
+              "spell_id": 12490,
+              "description": ""
+            }
+          ]
+        },
+        {
+          "id": 68,
+          "name": "Winter's Chill",
+          "icon": "spell_frost_chillingblast",
+          "max_rank": 5,
+          "tier": 5,
+          "column": 2,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 11180,
+              "description": "Gives your Frost damage spells a $m2% chance to apply the Winter's Chill effect, which increases the chance your Ice Lance and Frostbolt spells will critically hit the target by 2% for 15 sec. Stacks up to 5 times."
+            },
+            {
+              "spell_id": 28592,
+              "description": ""
+            },
+            {
+              "spell_id": 28593,
+              "description": ""
+            },
+            {
+              "spell_id": 28594,
+              "description": ""
+            },
+            {
+              "spell_id": 28595,
+              "description": ""
+            }
+          ]
+        },
+        {
+          "id": 71,
+          "name": "Ice Barrier",
+          "icon": "spell_ice_lament",
+          "max_rank": 1,
+          "tier": 6,
+          "column": 1,
+          "prereq_talent_id": 72,
+          "prereq_rank": 1,
+          "ranks": [
+            {
+              "spell_id": 11426,
+              "description": "Instantly shields you, absorbing 431 damage. Lasts 1 min. While the shield holds, your spellcasts will not be interrupted or delayed from taking damage.\r\n"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
