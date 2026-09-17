@@ -353,16 +353,27 @@ export interface WindowPreset {
 }
 
 /**
- * The spec asks for phase presets. Forever's encounters publish no phase data and the
- * engine records none, so until they do these are the presets the data supports.
+ * The window chips under the chart: the whole fight, the two fixed slices, each phase the
+ * encounter's curated table named, and one per death.
+ *
+ * `wholeDurationMs` is the fight's own length, which is not `summary.duration_ms` when a
+ * window is already set (scopeSummary narrows that to the window). The phases are the
+ * fight's own spans and must be clamped against the fight, or a chip set inside one
+ * window could not reach outside it.
  */
-export function windowPresets(summary: Summary): WindowPreset[] {
+export function windowPresets(summary: Summary, wholeDurationMs = summary.duration_ms): WindowPreset[] {
   const duration = summary.duration_ms;
   const presets: WindowPreset[] = [
     { label: 'Whole fight', window: null },
     { label: 'First 30s', window: clampWindow({ startMs: 0, endMs: 30_000 }, duration) },
     { label: 'Last 30s', window: clampWindow({ startMs: duration - 30_000, endMs: duration }, duration) },
   ];
+  for (const phase of summary.phases ?? []) {
+    presets.push({
+      label: `${phase.name} · ${formatDuration(phase.start_ms)} to ${formatDuration(phase.end_ms)}`,
+      window: clampWindow({ startMs: phase.start_ms, endMs: phase.end_ms }, wholeDurationMs),
+    });
+  }
   for (const death of summary.deaths) {
     presets.push({
       // The time is part of the label: one player can die twice in a fight (a battle

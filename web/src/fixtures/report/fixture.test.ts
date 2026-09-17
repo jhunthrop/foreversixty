@@ -35,7 +35,7 @@ function everyArray(summary: Summary): unknown[][] {
     summary.threat,
     summary.combatants,
     summary.roster,
-    summary.phases,
+    summary.phases ?? [],
     ...summary.damage_done.flatMap((actor) => [actor.abilities, actor.targets, actor.series]),
     ...summary.deaths.flatMap((death) => [death.last, death.auras_held, death.auras_lost]),
     ...summary.auras.flatMap((track) => [track.segments, track.appliers]),

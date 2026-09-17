@@ -138,6 +138,26 @@ describe('aggregateNight', () => {
     });
   });
 
+  it('folds the phase each pull reached into the night, by fight index', () => {
+    const fights = [fight(3, 'Kaal', false, 10_000), fight(4, 'Kaal', true, 10_000)];
+    const summaries = new Map([
+      [
+        3,
+        {
+          ...summary(3, 10_000, [roster('A', 1)]),
+          phases: [
+            { name: 'Phase 1', start_ms: 0, end_ms: 4000 },
+            { name: 'Phase 2', start_ms: 4000, end_ms: 10_000 },
+          ],
+        },
+      ],
+      [4, { ...summary(4, 10_000, [roster('A', 1)]), phases: [] }],
+    ]);
+    const night = aggregateNight(fights, summaries as never);
+    expect(night.phaseReached.get(3)).toBe('Phase 2');
+    expect(night.phaseReached.has(4)).toBe(false);
+  });
+
   it('folds the pulls into one summary the fight tabs can show, with deaths labelled by pull', () => {
     const withActors = new Map<number, Summary>([
       [

@@ -3,6 +3,7 @@
 // and one row per boss. A raid leader opens a log to compare the team across the night,
 // not to sum eighteen pulls by hand. Trash is left out, as it is from the rankings: a
 // trash pull's damage is mostly a function of how much trash there was.
+import { phaseReached } from './format';
 import { encounterKey, mechanicRowKey } from './mechanics';
 import { abilityKey } from './types';
 import type {
@@ -82,6 +83,8 @@ export interface Night {
   deaths: number;
   players: NightPlayer[];
   bosses: NightBoss[];
+  /** Per fight index, the phase that pull reached; only pulls whose summary loaded and had one. */
+  phaseReached: Map<number, string>;
 }
 
 function perSecond(total: number, ms: number): number {
@@ -109,6 +112,7 @@ export function aggregateNight(
   const encounters = fights.filter((fight) => fight.kind === 'encounter' && !fight.in_progress);
   const players = new Map<string, NightPlayer>();
   const bosses = new Map<string, NightBoss>();
+  const phases = new Map<number, string>();
   let time = 0;
   let deaths = 0;
   let loaded = 0;
@@ -139,6 +143,8 @@ export function aggregateNight(
     const summary = summaries.get(fight.index);
     if (summary === undefined) continue;
     loaded += 1;
+    const reached = phaseReached(summary.phases);
+    if (reached !== '') phases.set(fight.index, reached);
     time += summary.duration_ms;
     deaths += summary.deaths.length;
     for (const row of summary.roster) {
@@ -203,6 +209,7 @@ export function aggregateNight(
     deaths,
     players: rows,
     bosses: [...bosses.values()],
+    phaseReached: phases,
   };
 }
 

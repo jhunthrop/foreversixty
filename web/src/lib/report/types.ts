@@ -362,6 +362,13 @@ export interface RosterRow {
   dtps: number;
 }
 
+/** summary.Phase — one named stretch of a fight, from the encounter's curated table. */
+export interface Phase {
+  name: string;
+  start_ms: number;
+  end_ms: number;
+}
+
 /** summary.Summary — reports/<id>/fights/<n>/summary.json and live.json. */
 export interface Summary {
   /** Set by the whole-night fold: the pulls, in order, on the night's clock. */
@@ -388,6 +395,8 @@ export interface Summary {
   threat_by_target?: ThreatPair[];
   /** Absent from summaries written before engine 0.3.1. */
   taunts?: Taunt[];
+  /** The stretches this fight was fought in. Absent from summaries written before engine 0.5.1. */
+  phases?: Phase[];
 }
 
 /** units.Unit */

@@ -3,7 +3,7 @@
 // fight selector, the chart axis and a death's timestamp. Numbers render in --font-mono
 // with `tabular`, per design/DESIGN-SYSTEM.md.
 
-import type { Taunt } from './types';
+import type { Phase, Taunt } from './types';
 
 /**
  * Everything that tells one taunt from another: two tanks can taunt two adds on the
@@ -123,20 +123,33 @@ function trimZero(value: number): string {
   return value.toFixed(2).replace(/\.?0+$/, '');
 }
 
+/**
+ * The phase a fight ended in: the last one that started, since the engine writes them in
+ * order and runs the last one to the fight's end. '' when the encounter has no phases.
+ */
+export function phaseReached(phases: readonly Phase[] | undefined): string {
+  return phases === undefined || phases.length === 0 ? '' : phases[phases.length - 1].name;
+}
+
 /** A fight's outcome word for a list: Kill, Wipe, Live, or how much trash died. */
-export function outcomeLabel(fight: {
-  kind: string;
-  kill: boolean;
-  in_progress: boolean;
-  npc_kills: number;
-  boss_health_pct?: number;
-}): string {
+export function outcomeLabel(
+  fight: {
+    kind: string;
+    kill: boolean;
+    in_progress: boolean;
+    npc_kills: number;
+    boss_health_pct?: number;
+  },
+  phase = '',
+): string {
   if (fight.in_progress) return 'Live';
   if (fight.kind !== 'encounter') return `${fight.npc_kills} killed`;
   if (fight.kill) return 'Kill';
   // "Wipe 23%": how far the pull got, which is what separates one wipe from the next.
+  // With phases curated for the boss, how far is also which phase it died in.
   const health = fight.boss_health_pct;
-  return health !== undefined && health >= 0 ? `Wipe ${Math.round(health)}%` : 'Wipe';
+  const wipe = health !== undefined && health >= 0 ? `Wipe ${Math.round(health)}%` : 'Wipe';
+  return phase === '' ? wipe : `${wipe} · in ${phase}`;
 }
 
 export function formatPerSecond(total: number, ms: number): string {

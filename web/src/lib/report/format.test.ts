@@ -12,6 +12,7 @@ import {
   outcomeLabel,
   parseTitle,
   percentileToken,
+  phaseReached,
   schoolName,
   schoolToken,
   formatAmountLike,
@@ -95,6 +96,26 @@ describe('report formatting', () => {
     expect(schoolToken(undefined)).toBe('var(--color-school-physical)');
     expect(schoolToken(32)).toBe('var(--color-school-shadow)');
     expect(schoolToken(36)).toBe('var(--color-school-fire)');
+  });
+});
+
+describe('the phase a fight reached', () => {
+  it('is the last phase that started, and nothing when there are none', () => {
+    expect(
+      phaseReached([
+        { name: 'Phase 1', start_ms: 0, end_ms: 14_000 },
+        { name: 'Phase 2', start_ms: 14_000, end_ms: 60_000 },
+      ]),
+    ).toBe('Phase 2');
+    expect(phaseReached([])).toBe('');
+    expect(phaseReached(undefined)).toBe('');
+  });
+
+  it('a wipe’s outcome says which phase it got to; a kill’s does not need one', () => {
+    const base = { kind: 'encounter', kill: false, in_progress: false, npc_kills: 0 };
+    expect(outcomeLabel({ ...base, boss_health_pct: 59 }, 'Phase 3')).toBe('Wipe 59% · in Phase 3');
+    expect(outcomeLabel({ ...base, boss_health_pct: 59 })).toBe('Wipe 59%');
+    expect(outcomeLabel({ ...base, kill: true }, 'Phase 3')).toBe('Kill');
   });
 });
 

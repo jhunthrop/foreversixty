@@ -286,16 +286,52 @@ describe('presets', () => {
     expect(aroundWindow(59_000, 60_000)).toEqual({ startMs: 54_000, endMs: 60_000 });
   });
 
-  it('offers the whole fight, both thirty-second ends, and one preset per death', () => {
+  it('offers the whole fight, both thirty-second ends, one per phase, and one per death', () => {
     const presets = windowPresets(summary);
     expect(presets.map((preset) => preset.label)).toEqual([
       'Whole fight',
       'First 30s',
       'Last 30s',
+      'Phase 1 · 0.0s to 14.0s',
+      'Phase 2 · 14.0s to 1:00',
       '20s before Thalgrit died · 10.1s',
     ]);
     expect(presets[0].window).toBeNull();
-    expect(presets[3].window).toEqual({ startMs: 0, endMs: 11_000 });
+    expect(presets[5].window).toEqual({ startMs: 0, endMs: 11_000 });
+  });
+
+  it('offers each phase as a preset, in order, after the fixed ones', () => {
+    const phased: Summary = {
+      ...summary,
+      phases: [
+        { name: 'Phase 1', start_ms: 0, end_ms: 14_000 },
+        { name: 'Phase 2', start_ms: 14_000, end_ms: 60_000 },
+      ],
+    };
+    const presets = windowPresets(phased);
+    const phases = presets.filter((preset) => preset.label.startsWith('Phase'));
+    expect(phases.map((preset) => preset.label)).toEqual([
+      'Phase 1 · 0.0s to 14.0s',
+      'Phase 2 · 14.0s to 1:00',
+    ]);
+    expect(phases[1].window).toEqual({ startMs: 14_000, endMs: 60_000 });
+  });
+
+  it('clamps a phase against the whole fight, not against a window already set', () => {
+    const scopedToAWindow: Summary = {
+      ...summary,
+      duration_ms: 5000,
+      phases: [{ name: 'Phase 2', start_ms: 14_000, end_ms: 60_000 }],
+    };
+    const [phase] = windowPresets(scopedToAWindow, 60_000).filter((preset) =>
+      preset.label.startsWith('Phase'),
+    );
+    expect(phase.window).toEqual({ startMs: 14_000, endMs: 60_000 });
+  });
+
+  it('offers no phase presets for a fight that has none', () => {
+    const unphased: Summary = { ...summary, phases: undefined };
+    expect(windowPresets(unphased).some((preset) => preset.label.startsWith('Phase'))).toBe(false);
   });
 
   it('scales an ability’s overheal with its total, so the share holds inside a window', () => {
