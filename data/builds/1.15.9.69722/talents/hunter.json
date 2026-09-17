@@ -38,7 +38,8 @@
               "spell_id": 19556,
               "description": "While Aspect of the Hawk is active, all normal ranged attacks have a 5% chance of increasing ranged attack speed by 30% for 12 sec."
             }
-          ]
+          ],
+          "spell_id": 19552
         },
         {
           "id": 1389,
@@ -70,7 +71,8 @@
               "spell_id": 19587,
               "description": "Increases the Health of your pets by 15%."
             }
-          ]
+          ],
+          "spell_id": 19583
         },
         {
           "id": 1624,
@@ -90,7 +92,8 @@
               "spell_id": 19558,
               "description": "Increases the duration of your Eyes of the Beast by 60 sec."
             }
-          ]
+          ],
+          "spell_id": 19557
         },
         {
           "id": 1381,
@@ -122,7 +125,8 @@
               "spell_id": 24387,
               "description": "Increases the Dodge bonus of your Aspect of the Monkey by 5%."
             }
-          ]
+          ],
+          "spell_id": 19549
         },
         {
           "id": 1395,
@@ -146,7 +150,8 @@
               "spell_id": 19612,
               "description": "Increases the Armor rating of your pets by 30%."
             }
-          ]
+          ],
+          "spell_id": 19609
         },
         {
           "id": 1625,
@@ -166,7 +171,8 @@
               "spell_id": 19575,
               "description": "Revive Pet's casting time is reduced by 6 sec, mana cost is reduced by 40%, and increases the health your pet returns with by an additional 30%."
             }
-          ]
+          ],
+          "spell_id": 24443
         },
         {
           "id": 1384,
@@ -186,7 +192,8 @@
               "spell_id": 19560,
               "description": "Increases the speed bonus of your Aspect of the Cheetah and Aspect of the Pack by 6%."
             }
-          ]
+          ],
+          "spell_id": 19559
         },
         {
           "id": 1391,
@@ -202,7 +209,8 @@
               "spell_id": 19596,
               "description": "Increases the outdoor movement speed of your pets by 30%."
             }
-          ]
+          ],
+          "spell_id": 19596
         },
         {
           "id": 1396,
@@ -234,7 +242,8 @@
               "spell_id": 19620,
               "description": "Increases the damage done by your pets by 20%."
             }
-          ]
+          ],
+          "spell_id": 19616
         },
         {
           "id": 1385,
@@ -254,7 +263,8 @@
               "spell_id": 19573,
               "description": "Gives the Mend Pet spell a 50% chance of cleansing 1 Curse, Disease, Magic or Poison effect from the pet each tick."
             }
-          ]
+          ],
+          "spell_id": 19572
         },
         {
           "id": 1393,
@@ -286,7 +296,8 @@
               "spell_id": 19602,
               "description": "Increases the critical strike chance of your pets by 15%."
             }
-          ]
+          ],
+          "spell_id": 19598
         },
         {
           "id": 1388,
@@ -306,7 +317,8 @@
               "spell_id": 20895,
               "description": "While your pet is active, you and your pet will regenerate 2% of total health every 10 sec."
             }
-          ]
+          ],
+          "spell_id": 19578
         },
         {
           "id": 1387,
@@ -322,7 +334,8 @@
               "spell_id": 19577,
               "description": "Command your pet to intimidate the target on the next successful melee attack, causing a high amount of threat and stunning the target for 3 sec."
             }
-          ]
+          ],
+          "spell_id": 19577
         },
         {
           "id": 1390,
@@ -342,7 +355,8 @@
               "spell_id": 19592,
               "description": "Increases the Focus regeneration of your pets by 20%."
             }
-          ]
+          ],
+          "spell_id": 19590
         },
         {
           "id": 1397,
@@ -374,7 +388,8 @@
               "spell_id": 19625,
               "description": "Gives your pet a 100% chance to gain a 30% attack speed increase for 8 sec after dealing a critical strike."
             }
-          ]
+          ],
+          "spell_id": 19621
         },
         {
           "id": 1386,
@@ -390,9 +405,11 @@
               "spell_id": 19574,
               "description": "Send your pet into a rage causing 50% additional damage for 18 sec.  While enraged, the beast does not feel pity or remorse or fear and it cannot be stopped unless killed."
             }
-          ]
+          ],
+          "spell_id": 19574
         }
-      ]
+      ],
+      "background": "hunterbeastmastery"
     },
     {
       "id": 363,
@@ -429,7 +446,8 @@
               "spell_id": 19415,
               "description": "Gives your Concussive Shot a $h% chance to stun the target for 3 sec."
             }
-          ]
+          ],
+          "spell_id": 19407
         },
         {
           "id": 1342,
@@ -461,7 +479,8 @@
               "spell_id": 19420,
               "description": "Reduces the Mana cost of your Shots$?s446374[, Strikes,][] and Stings by 10%."
             }
-          ]
+          ],
+          "spell_id": 19416
         },
         {
           "id": 1343,
@@ -493,7 +512,8 @@
               "spell_id": 19425,
               "description": "Increases the Ranged Attack Power bonus of your Hunter's Mark spell by 15%."
             }
-          ]
+          ],
+          "spell_id": 19421
         },
         {
           "id": 1344,
@@ -525,7 +545,8 @@
               "spell_id": 19431,
               "description": "Increases your critical strike chance $?s446374[][with ranged weapons] by 5%."
             }
-          ]
+          ],
+          "spell_id": 19426
         },
         {
           "id": 1345,
@@ -541,7 +562,8 @@
               "spell_id": 19434,
               "description": "An aimed shot that increases ranged damage by 70."
             }
-          ]
+          ],
+          "spell_id": 19434
         },
         {
           "id": 1346,
@@ -573,7 +595,8 @@
               "spell_id": 19458,
               "description": "Reduces the cooldown of your Arcane Shot by 1 sec."
             }
-          ]
+          ],
+          "spell_id": 19454
         },
         {
           "id": 1352,
@@ -597,7 +620,8 @@
               "spell_id": 19500,
               "description": "Increases the range of your ranged weapons by 6 yards."
             }
-          ]
+          ],
+          "spell_id": 19498
         },
         {
           "id": 1348,
@@ -629,7 +653,8 @@
               "spell_id": 19468,
               "description": "Increases the damage done by your Serpent Sting by 10%."
             }
-          ]
+          ],
+          "spell_id": 19464
         },
         {
           "id": 1349,
@@ -661,7 +686,8 @@
               "spell_id": 19490,
               "description": "Increases your ranged weapon $?s446374[and melee ability ][]critical strike damage bonus by 30%."
             }
-          ]
+          ],
+          "spell_id": 19485
         },
         {
           "id": 1353,
@@ -677,7 +703,8 @@
               "spell_id": 19503,
               "description": "A short-range shot that deals 50% weapon damage and disorients the target for 4 sec.  Any damage caused will remove the effect.  Turns off your attack when used."
             }
-          ]
+          ],
+          "spell_id": 19503
         },
         {
           "id": 1347,
@@ -701,7 +728,8 @@
               "spell_id": 24691,
               "description": "Increases the damage done by your Multi-Shot and Volley spells by 15%."
             }
-          ]
+          ],
+          "spell_id": 19461
         },
         {
           "id": 1351,
@@ -725,7 +753,8 @@
               "spell_id": 19494,
               "description": "Reduces the Stamina of targets affected by your Scorpid Sting by 30% of the amount of Strength reduced."
             }
-          ]
+          ],
+          "spell_id": 19491
         },
         {
           "id": 1362,
@@ -757,7 +786,8 @@
               "spell_id": 19511,
               "description": "Increases the damage you deal with ranged weapons by 5%."
             }
-          ]
+          ],
+          "spell_id": 19507
         },
         {
           "id": 1361,
@@ -773,9 +803,11 @@
               "spell_id": 19506,
               "description": "Increases the $?$s446374 [ranged ][]attack power of party members within $a1 yards by 50$?$s446374 [ and the Hunter's ranged attack power by an additional 100][].  Lasts 30 min."
             }
-          ]
+          ],
+          "spell_id": 19506
         }
-      ]
+      ],
+      "background": "huntermarksmanship"
     },
     {
       "id": 362,
@@ -804,7 +836,8 @@
               "spell_id": 24295,
               "description": "Increases all damage caused against Beasts, Giants and Dragonkin targets by 3% and increases critical damage caused against Beasts, Giants and Dragonkin targets by an additional 3%."
             }
-          ]
+          ],
+          "spell_id": 24293
         },
         {
           "id": 1301,
@@ -828,7 +861,8 @@
               "spell_id": 19153,
               "description": "Increases all damage caused against Humanoid targets by 3% and increases critical damage caused against Humanoid targets by an additional 3%."
             }
-          ]
+          ],
+          "spell_id": 19151
         },
         {
           "id": 1311,
@@ -860,7 +894,8 @@
               "spell_id": 19300,
               "description": "Increases your Parry chance by 5%."
             }
-          ]
+          ],
+          "spell_id": 19295
         },
         {
           "id": 1304,
@@ -892,7 +927,8 @@
               "spell_id": 19390,
               "description": "Gives your Immolation Trap, Frost Trap, and Explosive Trap a $h% chance to entrap the target, preventing them from moving for 5 sec."
             }
-          ]
+          ],
+          "spell_id": 19184
         },
         {
           "id": 1621,
@@ -912,7 +948,8 @@
               "spell_id": 19160,
               "description": "Increases the critical strike chance of Raptor Strike and Mongoose Bite by 20%."
             }
-          ]
+          ],
+          "spell_id": 19159
         },
         {
           "id": 1305,
@@ -944,7 +981,8 @@
               "spell_id": 19235,
               "description": "Gives your Wing Clip ability a $h% chance to immobilize the target for 5 sec."
             }
-          ]
+          ],
+          "spell_id": 19228
         },
         {
           "id": 1306,
@@ -964,7 +1002,8 @@
               "spell_id": 19245,
               "description": "Increases the duration of Freezing and Frost trap effects by 30% and the damage of Immolation and Explosive trap effects by 30%."
             }
-          ]
+          ],
+          "spell_id": 19239
         },
         {
           "id": 1622,
@@ -996,7 +1035,8 @@
               "spell_id": 19259,
               "description": "Increases total health by 10%."
             }
-          ]
+          ],
+          "spell_id": 19255
         },
         {
           "id": 1308,
@@ -1012,7 +1052,8 @@
               "spell_id": 19263,
               "description": "When activated, increases your Dodge and Parry chance by 25% for 10 sec."
             }
-          ]
+          ],
+          "spell_id": 19263
         },
         {
           "id": 1322,
@@ -1032,7 +1073,8 @@
               "spell_id": 19377,
               "description": "Decreases the chance enemies will resist trap effects by 10%."
             }
-          ]
+          ],
+          "spell_id": 19376
         },
         {
           "id": 1310,
@@ -1056,7 +1098,8 @@
               "spell_id": 24283,
               "description": "Increases hit chance by 3% and increases the chance movement impairing effects will be resisted by an additional 15%."
             }
-          ]
+          ],
+          "spell_id": 19290
         },
         {
           "id": 1309,
@@ -1076,7 +1119,8 @@
               "spell_id": 19287,
               "description": "Reduces the chance your Feign Death ability will be resisted by 4%."
             }
-          ]
+          ],
+          "spell_id": 19286
         },
         {
           "id": 1321,
@@ -1100,7 +1144,8 @@
               "spell_id": 19373,
               "description": "Increases your critical strike chance with all attacks by 3%."
             }
-          ]
+          ],
+          "spell_id": 19370
         },
         {
           "id": 1312,
@@ -1116,7 +1161,8 @@
               "spell_id": 19306,
               "description": "A strike that becomes active after parrying an opponent's attack.  This attack deals 40 damage and immobilizes the target for 5 sec.  Counterattack cannot be blocked, dodged, or parried."
             }
-          ]
+          ],
+          "spell_id": 19306
         },
         {
           "id": 1303,
@@ -1148,7 +1194,8 @@
               "spell_id": 24297,
               "description": "Increases your Agility by 15%."
             }
-          ]
+          ],
+          "spell_id": 19168
         },
         {
           "id": 1325,
@@ -1164,9 +1211,11 @@
               "spell_id": 19386,
               "description": "A stinging shot that puts the target to sleep for 12 sec.  Any damage will cancel the effect.  When the target wakes up, the Sting causes 300 Nature damage over 6 sec.  Only usable out of combat.  Only one Sting per Hunter can be active on the target at a time."
             }
-          ]
+          ],
+          "spell_id": 19386
         }
-      ]
+      ],
+      "background": "huntersurvival"
     }
   ]
 }

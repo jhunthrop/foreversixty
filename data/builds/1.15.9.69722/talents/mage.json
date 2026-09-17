@@ -26,7 +26,8 @@
               "spell_id": 12592,
               "description": "Reduces your target's resistance to all your spells by 10 and reduces the threat caused by your Arcane spells by 40%."
             }
-          ]
+          ],
+          "spell_id": 11210
         },
         {
           "id": 76,
@@ -58,7 +59,8 @@
               "spell_id": 12842,
               "description": "Reduces the chance that the opponent can resist your Arcane spells by 10%."
             }
-          ]
+          ],
+          "spell_id": 11222
         },
         {
           "id": 80,
@@ -90,7 +92,8 @@
               "spell_id": 16770,
               "description": "Gives you a 100% chance to avoid interruption caused by damage while channeling Arcane Missiles$?s442543[, Regeneration, or Mass Regeneration, and a 70% chance to avoid interruption caused by damage while casting Arcane Blast or Spellfrost Bolt][]."
             }
-          ]
+          ],
+          "spell_id": 11237
         },
         {
           "id": 78,
@@ -110,7 +113,8 @@
               "spell_id": 6085,
               "description": "Increases your damage with Wands by 25%."
             }
-          ]
+          ],
+          "spell_id": 6057
         },
         {
           "id": 1650,
@@ -142,7 +146,8 @@
               "spell_id": 29447,
               "description": "Increases all resistances by 10 and causes all spells you fully resist to restore 5% of your total mana.  1 sec. cooldown."
             }
-          ]
+          ],
+          "spell_id": 29441
         },
         {
           "id": 75,
@@ -174,7 +179,8 @@
               "spell_id": 12577,
               "description": "Gives you a $h% chance of entering a Clearcasting state after any damage spell hits a target.  The Clearcasting state reduces the mana cost of your next damage spell by 100%."
             }
-          ]
+          ],
+          "spell_id": 11213
         },
         {
           "id": 82,
@@ -194,7 +200,8 @@
               "spell_id": 12606,
               "description": "Increases the effect of your Amplify Magic and Dampen Magic spells by 50%."
             }
-          ]
+          ],
+          "spell_id": 11247
         },
         {
           "id": 81,
@@ -218,7 +225,8 @@
               "spell_id": 12469,
               "description": "Increases the critical strike chance of your Arcane Explosion spell by an additional 6%."
             }
-          ]
+          ],
+          "spell_id": 11242
         },
         {
           "id": 85,
@@ -234,7 +242,8 @@
               "spell_id": 28574,
               "description": "Increases your armor by an amount equal to 50% of your Intellect."
             }
-          ]
+          ],
+          "spell_id": 28574
         },
         {
           "id": 83,
@@ -254,7 +263,8 @@
               "spell_id": 12605,
               "description": "Decreases the mana lost per point of damage taken when Mana Shield is active by 20%."
             }
-          ]
+          ],
+          "spell_id": 11252
         },
         {
           "id": 88,
@@ -274,7 +284,8 @@
               "spell_id": 12598,
               "description": "Gives your Counterspell a $h% chance to silence the target for 4 sec."
             }
-          ]
+          ],
+          "spell_id": 11255
         },
         {
           "id": 1142,
@@ -298,7 +309,8 @@
               "spell_id": 18464,
               "description": "Allows 15% of your Mana regeneration to continue while casting."
             }
-          ]
+          ],
+          "spell_id": 18462
         },
         {
           "id": 86,
@@ -314,7 +326,8 @@
               "spell_id": 12043,
               "description": "When activated, your next Mage spell with a casting time less than 10 sec becomes an instant cast spell."
             }
-          ]
+          ],
+          "spell_id": 12043
         },
         {
           "id": 77,
@@ -346,7 +359,8 @@
               "spell_id": 12503,
               "description": "Increases your maximum Mana by 10%."
             }
-          ]
+          ],
+          "spell_id": 11232
         },
         {
           "id": 421,
@@ -370,7 +384,8 @@
               "spell_id": 15060,
               "description": "Increases your spell damage and critical strike chance by 3%."
             }
-          ]
+          ],
+          "spell_id": 15058
         },
         {
           "id": 87,
@@ -386,9 +401,11 @@
               "spell_id": 12042,
               "description": "When activated, your spells deal 30% more damage while costing 30% more mana to cast.  This effect lasts 15 sec."
             }
-          ]
+          ],
+          "spell_id": 12042
         }
-      ]
+      ],
+      "background": "magearcane"
     },
     {
       "id": 41,
@@ -425,7 +442,8 @@
               "spell_id": 12341,
               "description": "Reduces the casting time of your Fireball spell by 0.5 sec."
             }
-          ]
+          ],
+          "spell_id": 11069
         },
         {
           "id": 30,
@@ -457,7 +475,8 @@
               "spell_id": 12360,
               "description": "Gives your Fire spells a $h% chance to stun the target for 2 sec."
             }
-          ]
+          ],
+          "spell_id": 11103
         },
         {
           "id": 34,
@@ -489,7 +508,8 @@
               "spell_id": 12848,
               "description": "Your critical strikes from Fire damage spells cause the target to burn for an additional 40% of your spell's damage over 4 sec."
             }
-          ]
+          ],
+          "spell_id": 11119
         },
         {
           "id": 28,
@@ -509,7 +529,8 @@
               "spell_id": 12353,
               "description": "Increases the range of your Fire spells by 6 yards."
             }
-          ]
+          ],
+          "spell_id": 11100
         },
         {
           "id": 27,
@@ -533,7 +554,8 @@
               "spell_id": 12342,
               "description": "Reduces the cooldown of your Fire Blast spell by 1.5 sec."
             }
-          ]
+          ],
+          "spell_id": 11078
         },
         {
           "id": 1141,
@@ -553,7 +575,8 @@
               "spell_id": 18460,
               "description": "Increases the critical strike chance of your Fire Blast and Scorch spells by 4%."
             }
-          ]
+          ],
+          "spell_id": 18459
         },
         {
           "id": 31,
@@ -577,7 +600,8 @@
               "spell_id": 12350,
               "description": "Increases the critical strike chance of your Flamestrike spell by 15%."
             }
-          ]
+          ],
+          "spell_id": 11108
         },
         {
           "id": 29,
@@ -593,7 +617,8 @@
               "spell_id": 11366,
               "description": "Hurls an immense fiery boulder that causes 141 to 187 Fire damage and an additional 56 Fire damage over 12 sec."
             }
-          ]
+          ],
+          "spell_id": 11366
         },
         {
           "id": 23,
@@ -613,7 +638,8 @@
               "spell_id": 12351,
               "description": "Gives your Fire spells a 70% chance to not lose casting time when you take damage and reduces the threat caused by your Fire spells by 30%."
             }
-          ]
+          ],
+          "spell_id": 11083
         },
         {
           "id": 25,
@@ -637,7 +663,8 @@
               "spell_id": 12873,
               "description": "Your Scorch spells have a 100% chance to cause your target to be vulnerable to Fire damage.  This vulnerability increases the Fire damage dealt to your target by 3% and lasts 30 sec.  Stacks up to $22959u times."
             }
-          ]
+          ],
+          "spell_id": 11095
         },
         {
           "id": 24,
@@ -657,7 +684,8 @@
               "spell_id": 13043,
               "description": "Causes your Fire Ward to have a 20% chance to reflect Fire spells while active."
             }
-          ]
+          ],
+          "spell_id": 11094
         },
         {
           "id": 1639,
@@ -681,7 +709,8 @@
               "spell_id": 29076,
               "description": "Your Fire and Frost spell criticals will refund 30% of their base mana cost."
             }
-          ]
+          ],
+          "spell_id": 29074
         },
         {
           "id": 33,
@@ -705,7 +734,8 @@
               "spell_id": 11368,
               "description": "Increases the critical strike chance of your Fire spells by 6%."
             }
-          ]
+          ],
+          "spell_id": 11115
         },
         {
           "id": 32,
@@ -721,7 +751,8 @@
               "spell_id": 11113,
               "description": "A wave of flame radiates outward from the caster, damaging all enemies caught within the blast for 154 to 186 Fire damage, and dazing them for 6 sec."
             }
-          ]
+          ],
+          "spell_id": 11113
         },
         {
           "id": 35,
@@ -753,7 +784,8 @@
               "spell_id": 12400,
               "description": "Increases the damage done by your Fire spells by 10%."
             }
-          ]
+          ],
+          "spell_id": 11124
         },
         {
           "id": 36,
@@ -769,9 +801,11 @@
               "spell_id": 11129,
               "description": "When activated, this spell causes each of your Fire damage spell hits to increase your critical strike chance with Fire damage spells by 10%.  This effect lasts until you have caused $n critical strikes with Fire spells."
             }
-          ]
+          ],
+          "spell_id": 11129
         }
-      ]
+      ],
+      "background": "magefire"
     },
     {
       "id": 61,
@@ -796,7 +830,8 @@
               "spell_id": 28332,
               "description": "Increases the armor and resistances given by your Frost Armor and Ice Armor spells by 30%.  In addition, gives your Frost Ward a 20% chance to reflect Frost spells and effects while active."
             }
-          ]
+          ],
+          "spell_id": 11189
         },
         {
           "id": 37,
@@ -828,7 +863,8 @@
               "spell_id": 16766,
               "description": "Reduces the casting time of your Frostbolt spell by 0.5 sec."
             }
-          ]
+          ],
+          "spell_id": 11070
         },
         {
           "id": 1649,
@@ -852,7 +888,8 @@
               "spell_id": 29440,
               "description": "Reduces the chance that the opponent can resist your Frost and Fire spells by 6%."
             }
-          ]
+          ],
+          "spell_id": 29438
         },
         {
           "id": 73,
@@ -884,7 +921,8 @@
               "spell_id": 15053,
               "description": "Increases the critical strike damage bonus of your Frost spells by 100%."
             }
-          ]
+          ],
+          "spell_id": 11207
         },
         {
           "id": 38,
@@ -908,7 +946,8 @@
               "spell_id": 12497,
               "description": "Gives your Chill effects a 15% chance to freeze the target for 5 sec."
             }
-          ]
+          ],
+          "spell_id": 11071
         },
         {
           "id": 62,
@@ -928,7 +967,8 @@
               "spell_id": 12475,
               "description": "Reduces the cooldown of your Frost Nova spell by 4 sec."
             }
-          ]
+          ],
+          "spell_id": 11165
         },
         {
           "id": 65,
@@ -952,7 +992,8 @@
               "spell_id": 12571,
               "description": "Increases the duration of your Chill effects by 3 $lsec:secs; and reduces the target's speed by an additional 10%."
             }
-          ]
+          ],
+          "spell_id": 11175
         },
         {
           "id": 61,
@@ -976,7 +1017,8 @@
               "spell_id": 12953,
               "description": "Increases the damage done by your Frost spells by 6%."
             }
-          ]
+          ],
+          "spell_id": 11151
         },
         {
           "id": 69,
@@ -992,7 +1034,8 @@
               "spell_id": 12472,
               "description": "When activated, this spell finishes the cooldown on all of your Frost spells."
             }
-          ]
+          ],
+          "spell_id": 12472
         },
         {
           "id": 63,
@@ -1016,7 +1059,8 @@
               "spell_id": 12488,
               "description": "Adds a chill effect to your Blizzard spell.  This effect lowers the target's movement speed by 65%.  Lasts 1.5 sec."
             }
-          ]
+          ],
+          "spell_id": 11185
         },
         {
           "id": 741,
@@ -1036,7 +1080,8 @@
               "spell_id": 16758,
               "description": "Increases the range of your Frostbolt and Blizzard spells and the radius of your Frost Nova and Cone of Cold spells by 20%."
             }
-          ]
+          ],
+          "spell_id": 16757
         },
         {
           "id": 66,
@@ -1060,7 +1105,8 @@
               "spell_id": 12519,
               "description": "Reduces the mana cost of your Frost spells by 15% and reduces the threat caused by your Frost spells by 30%."
             }
-          ]
+          ],
+          "spell_id": 11160
         },
         {
           "id": 67,
@@ -1092,7 +1138,8 @@
               "spell_id": 12985,
               "description": "Increases the critical strike chance of all your spells against frozen targets by 50%."
             }
-          ]
+          ],
+          "spell_id": 11170
         },
         {
           "id": 72,
@@ -1108,7 +1155,8 @@
               "spell_id": 11958,
               "description": "You become encased in a block of ice, protecting you from all physical attacks and spells for 10 sec, but during that time you cannot attack, move or cast spells."
             }
-          ]
+          ],
+          "spell_id": 11958
         },
         {
           "id": 64,
@@ -1132,7 +1180,8 @@
               "spell_id": 12490,
               "description": "Increases the damage dealt by your Cone of Cold spell by 35%."
             }
-          ]
+          ],
+          "spell_id": 11190
         },
         {
           "id": 68,
@@ -1164,7 +1213,8 @@
               "spell_id": 28595,
               "description": "Gives your Frost damage spells a $h% chance to apply the Winter's Chill effect, which increases the chance a Frost spell will critically hit the target by 2% for 15 sec.  Stacks up to 5 times."
             }
-          ]
+          ],
+          "spell_id": 11180
         },
         {
           "id": 71,
@@ -1180,9 +1230,11 @@
               "spell_id": 11426,
               "description": "Instantly shields you, absorbing 438 damage.  Lasts 1 min.  While the shield holds, spells will not be interrupted.\r\n"
             }
-          ]
+          ],
+          "spell_id": 11426
         }
-      ]
+      ],
+      "background": "magefrost"
     }
   ]
 }

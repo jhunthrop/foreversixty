@@ -38,7 +38,8 @@
               "spell_id": 18178,
               "description": "Reduces the chance for enemies to resist your Affliction spells by 10%."
             }
-          ]
+          ],
+          "spell_id": 18174
         },
         {
           "id": 1003,
@@ -70,7 +71,8 @@
               "spell_id": 17814,
               "description": "Reduces the casting time of your Corruption spell by 2 sec."
             }
-          ]
+          ],
+          "spell_id": 17810
         },
         {
           "id": 1006,
@@ -94,7 +96,8 @@
               "spell_id": 18181,
               "description": "Increases the effect of your Curse of Weakness by 20%."
             }
-          ]
+          ],
+          "spell_id": 18179
         },
         {
           "id": 1101,
@@ -114,7 +117,8 @@
               "spell_id": 18372,
               "description": "Gives you a 100% chance to get a 100% increase to your Mana regeneration for 10 sec if the target is killed by you while you drain its soul.  In addition your Mana may continue to regenerate while casting at 50% of normal."
             }
-          ]
+          ],
+          "spell_id": 18213
         },
         {
           "id": 1007,
@@ -134,7 +138,8 @@
               "spell_id": 18183,
               "description": "Increases the amount of Mana awarded by your Life Tap spell by 20%."
             }
-          ]
+          ],
+          "spell_id": 18182
         },
         {
           "id": 1004,
@@ -166,7 +171,8 @@
               "spell_id": 17808,
               "description": "Increases the Health drained by your Drain Life spell by 10%."
             }
-          ]
+          ],
+          "spell_id": 17804
         },
         {
           "id": 1284,
@@ -190,7 +196,8 @@
               "spell_id": 18830,
               "description": "Increases the damage done by your Curse of Agony by 6%."
             }
-          ]
+          ],
+          "spell_id": 18827
         },
         {
           "id": 1001,
@@ -222,7 +229,8 @@
               "spell_id": 17787,
               "description": "Gives you a 70% chance to avoid interruption caused by damage while channeling the Drain Life, Drain Mana, or Drain Soul spell."
             }
-          ]
+          ],
+          "spell_id": 17783
         },
         {
           "id": 1061,
@@ -238,7 +246,8 @@
               "spell_id": 18288,
               "description": "Increases the effect of your next Curse of Weakness or Curse of Agony by 50%, or your next Curse of Exhaustion by 20%.  Lasts 30 sec."
             }
-          ]
+          ],
+          "spell_id": 18288
         },
         {
           "id": 1021,
@@ -258,7 +267,8 @@
               "spell_id": 18219,
               "description": "Increases the range of your Affliction spells by 20%."
             }
-          ]
+          ],
+          "spell_id": 18218
         },
         {
           "id": 1002,
@@ -278,7 +288,8 @@
               "spell_id": 18095,
               "description": "Gives your Corruption and Drain Life spells a 4% chance to cause you to enter a Shadow Trance state after damaging the opponent.  The Shadow Trance state reduces the casting time of your next Shadow Bolt spell by 100%$?a403873[, resets the cooldown on Shadow Cleave, and increases your next Shadow Cleave's damage by 100%][]."
             }
-          ]
+          ],
+          "spell_id": 18094
         },
         {
           "id": 1121,
@@ -298,7 +309,8 @@
               "spell_id": 18393,
               "description": "Causes 30% of the Mana drained by your Drain Mana spell to damage the opponent."
             }
-          ]
+          ],
+          "spell_id": 17864
         },
         {
           "id": 1041,
@@ -314,7 +326,8 @@
               "spell_id": 18265,
               "description": "Transfers 15 health from the target to the caster every 3 sec.  Lasts 30 sec."
             }
-          ]
+          ],
+          "spell_id": 18265
         },
         {
           "id": 1081,
@@ -330,7 +343,8 @@
               "spell_id": 18223,
               "description": "Reduces the target's movement speed by 10% for 12 sec.  Only one Curse per Warlock can be active on any one target."
             }
-          ]
+          ],
+          "spell_id": 18223
         },
         {
           "id": 1082,
@@ -358,7 +372,8 @@
               "spell_id": 18313,
               "description": "Increases the speed reduction of your Curse of Exhaustion by 20%."
             }
-          ]
+          ],
+          "spell_id": 18310
         },
         {
           "id": 1042,
@@ -390,7 +405,8 @@
               "spell_id": 18275,
               "description": "Increases the damage dealt or life drained by your Shadow spells by 10%."
             }
-          ]
+          ],
+          "spell_id": 18271
         },
         {
           "id": 1022,
@@ -406,9 +422,11 @@
               "spell_id": 18220,
               "description": "Drains 150 of your pet's Mana, returning 100% to you."
             }
-          ]
+          ],
+          "spell_id": 18220
         }
-      ]
+      ],
+      "background": "warlockcurses"
     },
     {
       "id": 303,
@@ -433,7 +451,8 @@
               "spell_id": 18693,
               "description": "Increases the amount of Health restored by your Healthstone by 20%."
             }
-          ]
+          ],
+          "spell_id": 18692
         },
         {
           "id": 1222,
@@ -457,7 +476,8 @@
               "spell_id": 18696,
               "description": "Increases the effect of your Imp's Firebolt, Fire Shield, and Blood Pact spells by 30%."
             }
-          ]
+          ],
+          "spell_id": 18694
         },
         {
           "id": 1223,
@@ -489,7 +509,8 @@
               "spell_id": 18701,
               "description": "Increases your total Stamina by 15% but reduces your total Spirit by 5%."
             }
-          ]
+          ],
+          "spell_id": 18697
         },
         {
           "id": 1224,
@@ -509,7 +530,8 @@
               "spell_id": 18704,
               "description": "Increases the amount of Health transferred by your Health Funnel spell by 20%."
             }
-          ]
+          ],
+          "spell_id": 18703
         },
         {
           "id": 1225,
@@ -533,7 +555,8 @@
               "spell_id": 18707,
               "description": "Increases the effectiveness of your Voidwalker's Torment, Consume Shadows, Sacrifice and Suffering spells by 30%."
             }
-          ]
+          ],
+          "spell_id": 18705
         },
         {
           "id": 1242,
@@ -565,7 +588,8 @@
               "spell_id": 18746,
               "description": "Increases the maximum Mana of your Imp, Voidwalker, Succubus, Incubus, and Felhunter by 15%."
             }
-          ]
+          ],
+          "spell_id": 18731
         },
         {
           "id": 1243,
@@ -589,7 +613,8 @@
               "spell_id": 18756,
               "description": "Increases the effect of your Succubus' and Incubus' Lash of Pain and Soothing Kiss spells by 30%, and increases the duration of your Succubus' and Incubus' Seduction and Lesser Invisibility spells by 30%."
             }
-          ]
+          ],
+          "spell_id": 18754
         },
         {
           "id": 1226,
@@ -605,7 +630,8 @@
               "spell_id": 18708,
               "description": "Your next Imp, Voidwalker, Succubus, Incubus, or Felhunter Summon spell has its casting time reduced by 5.5 sec and its Mana cost reduced by 50%."
             }
-          ]
+          ],
+          "spell_id": 18708
         },
         {
           "id": 1241,
@@ -637,7 +663,8 @@
               "spell_id": 18752,
               "description": "Increases the maximum Health of your Imp, Voidwalker, Succubus, Incubus, and Felhunter by 15%."
             }
-          ]
+          ],
+          "spell_id": 18748
         },
         {
           "id": 1227,
@@ -657,7 +684,8 @@
               "spell_id": 18710,
               "description": "Reduces the casting time of your Imp, Voidwalker, Succubus, Incubus, and Felhunter Summoning spells by 4 sec and the Mana cost by 40%."
             }
-          ]
+          ],
+          "spell_id": 18709
         },
         {
           "id": 1262,
@@ -689,7 +717,8 @@
               "spell_id": 18773,
               "description": "Increases the damage done by your Voidwalker, Succubus, Incubus, and Felhunter's melee attacks by 20%."
             }
-          ]
+          ],
+          "spell_id": 18769
         },
         {
           "id": 1283,
@@ -721,7 +750,8 @@
               "spell_id": 18825,
               "description": "Reduces the Attack Speed and Casting Speed penalty of your Subjugate Demon spell by 10% and reduces the resist chance by 10%."
             }
-          ]
+          ],
+          "spell_id": 18821
         },
         {
           "id": 1281,
@@ -737,7 +767,8 @@
               "spell_id": 18788,
               "description": "When activated, sacrifices your summoned demon to grant you an effect that lasts 30 min.  The effect is canceled if any Demon is summoned.\r\n\r\nImp: Increases your Fire damage by 15%.\r\n\r\nVoidwalker: Restores 3% of total Health every 4 sec.\r\n\r\nSuccubus/Incubus: Increases your Shadow damage by 15%.\r\n\r\nFelhunter: Restores 2% of total Mana every 4 sec."
             }
-          ]
+          ],
+          "spell_id": 18788
         },
         {
           "id": 1261,
@@ -757,7 +788,8 @@
               "spell_id": 18768,
               "description": "Increases the bonus Fire damage from Firestones and the Firestone effect by 30%."
             }
-          ]
+          ],
+          "spell_id": 18767
         },
         {
           "id": 1244,
@@ -789,7 +821,8 @@
               "spell_id": 23825,
               "description": "Grants both the Warlock and the summoned demon an effect as long as that demon is active.\r\n\r\nImp - $?a403789[Increases][Reduces] threat caused by 20%.\r\n\r\nVoidwalker - Reduces physical damage taken by 10%.\r\n\r\nSuccubus/Incubus - Increases all damage caused by 10%.\r\n\r\nFelhunter - Increases all resistances by 1 per level."
             }
-          ]
+          ],
+          "spell_id": 23785
         },
         {
           "id": 1282,
@@ -805,7 +838,8 @@
               "spell_id": 19028,
               "description": "When active, 30% of all damage taken by the caster is taken by your Imp, Voidwalker, Succubus, Incubus, or Felhunter demon instead.  In addition, both the demon and master will inflict 3% more damage.  Lasts as long as the demon is active.$?s435395[\r\n\r\nCannot be used while Metamorphosis is active.][]\r\n"
             }
-          ]
+          ],
+          "spell_id": 19028
         },
         {
           "id": 1263,
@@ -825,9 +859,11 @@
               "spell_id": 18775,
               "description": "Increases the amount of damage absorbed by your Spellstone by 30%."
             }
-          ]
+          ],
+          "spell_id": 18774
         }
-      ]
+      ],
+      "background": "warlocksummoning"
     },
     {
       "id": 301,
@@ -864,7 +900,8 @@
               "spell_id": 17803,
               "description": "Your Shadow Bolt critical strikes increase Shadow damage dealt to the target by 20% until 4 non-periodic damage sources are applied.  Effect lasts a maximum of 12 sec."
             }
-          ]
+          ],
+          "spell_id": 17793
         },
         {
           "id": 941,
@@ -896,7 +933,8 @@
               "spell_id": 17782,
               "description": "Reduces the Mana cost of your Destruction spells by 5%."
             }
-          ]
+          ],
+          "spell_id": 17778
         },
         {
           "id": 943,
@@ -928,7 +966,8 @@
               "spell_id": 17792,
               "description": "Reduces the casting time of your Shadow Bolt and Immolate spells by 0.5 sec and your Soul Fire spell by 2 sec."
             }
-          ]
+          ],
+          "spell_id": 17788
         },
         {
           "id": 982,
@@ -960,7 +999,8 @@
               "spell_id": 18123,
               "description": "Gives your Destruction spells a $h% chance to daze the target for 5 sec."
             }
-          ]
+          ],
+          "spell_id": 18119
         },
         {
           "id": 983,
@@ -980,7 +1020,8 @@
               "spell_id": 18127,
               "description": "Reduces the casting time of your Imp's Firebolt spell by 1 sec."
             }
-          ]
+          ],
+          "spell_id": 18126
         },
         {
           "id": 984,
@@ -1000,7 +1041,8 @@
               "spell_id": 18129,
               "description": "Reduces the cooldown of your Succubus' and Incubus' Lash of Pain spell by 6 sec."
             }
-          ]
+          ],
+          "spell_id": 18128
         },
         {
           "id": 981,
@@ -1032,7 +1074,8 @@
               "spell_id": 18134,
               "description": "Increases the critical strike chance of your Destruction spells by 5%."
             }
-          ]
+          ],
+          "spell_id": 18130
         },
         {
           "id": 963,
@@ -1048,7 +1091,8 @@
               "spell_id": 17877,
               "description": "Instantly blasts the target for 87 to 99 Shadow damage.  If the target dies within 5 sec of Shadowburn, and yields experience or honor, the caster gains a Soul Shard."
             }
-          ]
+          ],
+          "spell_id": 17877
         },
         {
           "id": 985,
@@ -1068,7 +1112,8 @@
               "spell_id": 18136,
               "description": "Gives you a 70% chance to resist interruption caused by damage while channeling the Rain of Fire, Hellfire or Soul Fire spell."
             }
-          ]
+          ],
+          "spell_id": 18135
         },
         {
           "id": 964,
@@ -1088,7 +1133,8 @@
               "spell_id": 17918,
               "description": "Increases the range of your Destruction spells by 20%."
             }
-          ]
+          ],
+          "spell_id": 17917
         },
         {
           "id": 965,
@@ -1120,7 +1166,8 @@
               "spell_id": 17932,
               "description": "Increases the critical strike chance of your Searing Pain spell by 10%."
             }
-          ]
+          ],
+          "spell_id": 17927
         },
         {
           "id": 986,
@@ -1140,7 +1187,8 @@
               "spell_id": 18073,
               "description": "Gives your Rain of Fire, Hellfire, and Soul Fire spells a 26% chance to stun the target for 3 sec."
             }
-          ]
+          ],
+          "spell_id": 18096
         },
         {
           "id": 961,
@@ -1172,7 +1220,8 @@
               "spell_id": 17836,
               "description": "Increases the initial damage of your Immolate spell by 25%."
             }
-          ]
+          ],
+          "spell_id": 17815
         },
         {
           "id": 967,
@@ -1188,7 +1237,8 @@
               "spell_id": 17959,
               "description": "Increases the critical strike damage bonus of your Destruction spells by 100%."
             }
-          ]
+          ],
+          "spell_id": 17959
         },
         {
           "id": 966,
@@ -1220,7 +1270,8 @@
               "spell_id": 17958,
               "description": "Increases the damage done by your Fire spells by 10%."
             }
-          ]
+          ],
+          "spell_id": 17954
         },
         {
           "id": 968,
@@ -1236,9 +1287,11 @@
               "spell_id": 17962,
               "description": "Ignites a target that is already afflicted by Immolate, dealing 240 to 306 Fire damage and consuming the Immolate spell."
             }
-          ]
+          ],
+          "spell_id": 17962
         }
-      ]
+      ],
+      "background": "warlockdestruction"
     }
   ]
 }

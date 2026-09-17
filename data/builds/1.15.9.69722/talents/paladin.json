@@ -38,7 +38,8 @@
               "spell_id": 20266,
               "description": "Increases your Strength by 10%."
             }
-          ]
+          ],
+          "spell_id": 20262
         },
         {
           "id": 1449,
@@ -70,7 +71,8 @@
               "spell_id": 20261,
               "description": "Increases your total Intellect by 10%."
             }
-          ]
+          ],
+          "spell_id": 20257
         },
         {
           "id": 1432,
@@ -102,7 +104,8 @@
               "spell_id": 20208,
               "description": "Gives your Flash of Light and Holy Light spells a 70% chance to not lose casting time when you take damage."
             }
-          ]
+          ],
+          "spell_id": 20205
         },
         {
           "id": 1463,
@@ -134,7 +137,8 @@
               "spell_id": 20332,
               "description": "Increases the damage done by your Seal of Righteousness and Judgement of Righteousness by 15%."
             }
-          ]
+          ],
+          "spell_id": 20224
         },
         {
           "id": 1444,
@@ -158,7 +162,8 @@
               "spell_id": 20239,
               "description": "Increases the amount healed by your Holy Light and Flash of Light spells by 12%."
             }
-          ]
+          ],
+          "spell_id": 20237
         },
         {
           "id": 1435,
@@ -174,7 +179,8 @@
               "spell_id": 26573,
               "description": "Consecrates the land beneath Paladin, doing 64 Holy damage over 8 sec to enemies who enter the area."
             }
-          ]
+          ],
+          "spell_id": 26573
         },
         {
           "id": 1443,
@@ -194,7 +200,8 @@
               "spell_id": 20235,
               "description": "Gives the target of your Lay on Hands spell a 30% bonus to their armor value from items for 2 min.  In addition, the cooldown for your Lay on Hands spell is reduced by 20 min."
             }
-          ]
+          ],
+          "spell_id": 20234
         },
         {
           "id": 1628,
@@ -214,7 +221,8 @@
               "spell_id": 25836,
               "description": "Increases your chance to resist Fear and Disorient effects by an additional 10%."
             }
-          ]
+          ],
+          "spell_id": 9453
         },
         {
           "id": 1461,
@@ -246,7 +254,8 @@
               "spell_id": 20215,
               "description": "After getting a critical effect from your Flash of Light, Holy Light, or Holy Shock heal spell, gives you a $h% chance to gain Mana equal to the base cost of the spell."
             }
-          ]
+          ],
+          "spell_id": 20210
         },
         {
           "id": 1446,
@@ -266,7 +275,8 @@
               "spell_id": 20245,
               "description": "Increases the effect of your Blessing of Wisdom spell by 20%."
             }
-          ]
+          ],
+          "spell_id": 20244
         },
         {
           "id": 1433,
@@ -282,7 +292,8 @@
               "spell_id": 20216,
               "description": "When activated, gives your next Flash of Light, Holy Light, or Holy Shock spell a 100% critical effect chance."
             }
-          ]
+          ],
+          "spell_id": 20216
         },
         {
           "id": 1465,
@@ -306,7 +317,8 @@
               "spell_id": 20361,
               "description": "Increases the duration of your Judgement of Light and Judgement of Wisdom by 30 sec."
             }
-          ]
+          ],
+          "spell_id": 20359
         },
         {
           "id": 1627,
@@ -338,7 +350,8 @@
               "spell_id": 25829,
               "description": "Increases the critical effect chance of your Holy spells by 5%."
             }
-          ]
+          ],
+          "spell_id": 5923
         },
         {
           "id": 1502,
@@ -354,9 +367,11 @@
               "spell_id": 20473,
               "description": "Blasts the target with Holy energy, causing 204 to 220 Holy damage to an enemy, or 204 to 220 healing to an ally."
             }
-          ]
+          ],
+          "spell_id": 20473
         }
-      ]
+      ],
+      "background": "paladinholy"
     },
     {
       "id": 383,
@@ -393,7 +408,8 @@
               "spell_id": 20142,
               "description": "Increases the armor bonus of your Devotion Aura by 25%."
             }
-          ]
+          ],
+          "spell_id": 20138
         },
         {
           "id": 1421,
@@ -425,7 +441,8 @@
               "spell_id": 20137,
               "description": "Increases your chance to block attacks with your shield by 30% after being the victim of a critical strike.  Lasts 10 sec or $20134n blocks."
             }
-          ]
+          ],
+          "spell_id": 20127
         },
         {
           "id": 1630,
@@ -449,7 +466,8 @@
               "spell_id": 20193,
               "description": "Increases your chance to hit with melee weapons by 3%."
             }
-          ]
+          ],
+          "spell_id": 20189
         },
         {
           "id": 1425,
@@ -469,7 +487,8 @@
               "spell_id": 20175,
               "description": "Reduces the cooldown of your Blessing of Protection by 120 sec and increases the duration of your Blessing of Freedom by 6 sec."
             }
-          ]
+          ],
+          "spell_id": 20174
         },
         {
           "id": 1423,
@@ -501,7 +520,8 @@
               "spell_id": 20147,
               "description": "Increases your armor value from items by 10%."
             }
-          ]
+          ],
+          "spell_id": 20143
         },
         {
           "id": 1442,
@@ -517,7 +537,8 @@
               "spell_id": 20217,
               "description": "Places a Blessing on the friendly target, increasing total stats by 10% for 5 min.  Players may only have one Blessing on them per Paladin at any one time."
             }
-          ]
+          ],
+          "spell_id": 20217
         },
         {
           "id": 1501,
@@ -541,7 +562,8 @@
               "spell_id": 20470,
               "description": "Increases the amount of threat generated by your Righteous Fury spell by 50%."
             }
-          ]
+          ],
+          "spell_id": 20468
         },
         {
           "id": 1424,
@@ -565,7 +587,8 @@
               "spell_id": 20150,
               "description": "Increases the amount of damage absorbed by your shield by 30%."
             }
-          ]
+          ],
+          "spell_id": 20148
         },
         {
           "id": 1629,
@@ -597,7 +620,8 @@
               "spell_id": 20100,
               "description": "Increases your Defense skill by 10."
             }
-          ]
+          ],
+          "spell_id": 20096
         },
         {
           "id": 1521,
@@ -621,7 +645,8 @@
               "spell_id": 20489,
               "description": "Decreases the cooldown of your Hammer of Justice spell by 15 sec."
             }
-          ]
+          ],
+          "spell_id": 20487
         },
         {
           "id": 1626,
@@ -645,7 +670,8 @@
               "spell_id": 20256,
               "description": "Increases the effect of your Concentration Aura by an additional 15% and gives all group members affected by the aura an additional 15% chance to resist Silence and Interrupt effects."
             }
-          ]
+          ],
+          "spell_id": 20254
         },
         {
           "id": 1431,
@@ -661,7 +687,8 @@
               "spell_id": 20911,
               "description": "Places a Blessing on the friendly target, reducing damage dealt from all sources by up to 10 for 5 min.  In addition, when the target blocks a melee attack the attacker will take 14 Holy damage.  Players may only have one Blessing on them per Paladin at any one time."
             }
-          ]
+          ],
+          "spell_id": 20911
         },
         {
           "id": 1426,
@@ -693,7 +720,8 @@
               "spell_id": 20182,
               "description": "Gives you a $h% chance to gain an extra attack after being the victim of a critical strike."
             }
-          ]
+          ],
+          "spell_id": 20177
         },
         {
           "id": 1429,
@@ -725,7 +753,8 @@
               "spell_id": 20200,
               "description": "Increases the damage you deal with one-handed melee weapons by 10%."
             }
-          ]
+          ],
+          "spell_id": 20196
         },
         {
           "id": 1430,
@@ -741,9 +770,11 @@
               "spell_id": 20925,
               "description": "Increases chance to block by 30% for 10 sec, and deals 65 Holy damage for each attack blocked while active.  Damage caused by Holy Shield causes 20% additional threat.$?a456541[][ Each block expends a charge. $n charges.]$?s446847[\r\n\r\nActivating Holy Shield also grants you 2 Spell Power for each point of your defense skill beyond ${$PL*5}. Lasts 15 sec.][]"
             }
-          ]
+          ],
+          "spell_id": 20925
         }
-      ]
+      ],
+      "background": "paladinprotection"
     },
     {
       "id": 381,
@@ -780,7 +811,8 @@
               "spell_id": 20048,
               "description": "Increases the melee attack power bonus of your Blessing of Might by 20%."
             }
-          ]
+          ],
+          "spell_id": 20042
         },
         {
           "id": 1407,
@@ -812,7 +844,8 @@
               "spell_id": 20105,
               "description": "Reduces the Mana cost of your Judgement and Seal spells by 15%."
             }
-          ]
+          ],
+          "spell_id": 20101
         },
         {
           "id": 1631,
@@ -832,7 +865,8 @@
               "spell_id": 25957,
               "description": "Decreases the cooldown of your Judgement spell by 2 sec."
             }
-          ]
+          ],
+          "spell_id": 25956
         },
         {
           "id": 1464,
@@ -856,7 +890,8 @@
               "spell_id": 20337,
               "description": "Increases the melee attack power bonus of your Seal of the Crusader and the Holy damage increase of your Judgement of the Crusader by 15%."
             }
-          ]
+          ],
+          "spell_id": 20335
         },
         {
           "id": 1403,
@@ -888,7 +923,8 @@
               "spell_id": 20064,
               "description": "Increases your Parry chance by 5%."
             }
-          ]
+          ],
+          "spell_id": 20060
         },
         {
           "id": 1633,
@@ -902,17 +938,18 @@
           "ranks": [
             {
               "spell_id": 9452,
-              "description": "Gives the Paladin's damaging melee attacks a chance to reduce the target's Strength and Agility by 5%$?s462814[, reduce the target's Attack Power by ${$440667m1/-3}, and increase the Paladin's Attack Power by ${$440668m1/3}% for 30 sec.][10 sec.]"
+              "description": "Gives the Paladin's damaging melee attacks a chance to reduce the target's Strength and Agility by 5%$?s462814[, reduce the target's Attack Power by ${90/-3}, and increase the Paladin's Attack Power by ${15/3}% for 30 sec.][10 sec.]"
             },
             {
               "spell_id": 26016,
-              "description": "Gives the Paladin's damaging melee attacks a chance to reduce the target's Strength and Agility by 10%$?s462814[, reduce the target's Attack Power by ${$440667m1*2/-3}, and increase the Paladin's Attack Power by ${$440668m1*2/3}% for 30 sec.][10 sec.]"
+              "description": "Gives the Paladin's damaging melee attacks a chance to reduce the target's Strength and Agility by 10%$?s462814[, reduce the target's Attack Power by ${90*2/-3}, and increase the Paladin's Attack Power by ${15*2/3}% for 30 sec.][10 sec.]"
             },
             {
               "spell_id": 26021,
-              "description": "Gives the Paladin's damaging melee attacks a chance to reduce the target's Strength and Agility by 15%$?s462814[, reduce the target's Attack Power by ${$440667m1*-1}, and increase the Paladin's Attack Power by ${$440668m1}% for 30 sec.][10 sec.]"
+              "description": "Gives the Paladin's damaging melee attacks a chance to reduce the target's Strength and Agility by 15%$?s462814[, reduce the target's Attack Power by ${90*-1}, and increase the Paladin's Attack Power by ${15}% for 30 sec.][10 sec.]"
             }
-          ]
+          ],
+          "spell_id": 9452
         },
         {
           "id": 1411,
@@ -944,7 +981,8 @@
               "spell_id": 20121,
               "description": "Increases your chance to get a critical strike with melee weapons by 5%."
             }
-          ]
+          ],
+          "spell_id": 20117
         },
         {
           "id": 1481,
@@ -960,7 +998,8 @@
               "spell_id": 20375,
               "description": "Gives the Paladin a chance to deal additional Holy damage equal to 70% of normal weapon damage.  Only one Seal can be active on the Paladin at any one time.  Lasts 30 sec.\r\n\r\nUnleashing this Seal's energy will judge an enemy, instantly causing 46.5 to 50.5 Holy damage, 93 to 101 if the target is stunned or incapacitated."
             }
-          ]
+          ],
+          "spell_id": 20375
         },
         {
           "id": 1634,
@@ -980,7 +1019,8 @@
               "spell_id": 26023,
               "description": "Increases movement and mounted movement speed by 8%.  This does not stack with other movement speed increasing effects."
             }
-          ]
+          ],
+          "spell_id": 26022
         },
         {
           "id": 1632,
@@ -1000,7 +1040,8 @@
               "spell_id": 25988,
               "description": "All spell criticals against you cause 30% of the damage taken to the caster as well.  The damage caused by Eye for an Eye will not exceed 50% of the Paladin's total health."
             }
-          ]
+          ],
+          "spell_id": 9799
         },
         {
           "id": 1405,
@@ -1020,7 +1061,8 @@
               "spell_id": 20092,
               "description": "Increases the damage done by your Retribution Aura by 50%."
             }
-          ]
+          ],
+          "spell_id": 20091
         },
         {
           "id": 1410,
@@ -1044,7 +1086,8 @@
               "spell_id": 20113,
               "description": "Increases the damage you deal with two-handed melee weapons by 6%."
             }
-          ]
+          ],
+          "spell_id": 20111
         },
         {
           "id": 1409,
@@ -1060,7 +1103,8 @@
               "spell_id": 20218,
               "description": "Increases Holy damage done by party members within $a1 yards by 10%.  Players may only have one Aura on them per Paladin at any one time."
             }
-          ]
+          ],
+          "spell_id": 20218
         },
         {
           "id": 1402,
@@ -1092,7 +1136,8 @@
               "spell_id": 20059,
               "description": "Gives you a 15% bonus to Physical and Holy damage you deal for 8 sec after dealing a critical strike from a weapon swing, spell, or ability.$?s462814[ Also Reduces all Physical and Holy threat you generate by 30% while Righteous Fury is not active.][]"
             }
-          ]
+          ],
+          "spell_id": 20049
         },
         {
           "id": 1441,
@@ -1108,9 +1153,11 @@
               "spell_id": 20066,
               "description": "Puts the enemy target in a state of meditation, incapacitating them for up to 6 sec.  Any damage caused will awaken the target.  Only works against Humanoids."
             }
-          ]
+          ],
+          "spell_id": 20066
         }
-      ]
+      ],
+      "background": "paladincombat"
     }
   ]
 }
