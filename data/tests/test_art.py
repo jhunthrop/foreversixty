@@ -1,5 +1,8 @@
 import io
+import json
+from pathlib import Path
 
+import httpx
 import pytest
 from PIL import Image
 
@@ -9,6 +12,7 @@ from pipeline.art import (
     TREATMENT,
     ArtDataError,
     background_webp,
+    backgrounds_for_build,
     compose_background,
     process_pixel,
     talent_frame_ids,
@@ -61,9 +65,13 @@ def test_the_treatment_desaturates_darkens_and_tints_toward_the_palette():
     assert (max(after) - min(after)) < (max(before) - min(before)) / 2
     # Darker: nothing survives at its old brightness.
     assert sum(after) < sum(before) / 2
-    # And pulled most of the way to --color-raised.
-    for channel, tint in zip(after, TREATMENT.tint, strict=True):
-        assert abs(channel - tint) <= 30
+    # And moved substantially toward --color-raised, without being crushed all
+    # the way to it: tint_strength is deliberately low enough that a talent
+    # tree's own art stays recognisable behind the grid (fix round 1 --
+    # tint_strength=0.55 read as near-black on warriorarms and druidbalance).
+    before_distance = sum(abs(c - t) for c, t in zip(before, TREATMENT.tint, strict=True))
+    after_distance = sum(abs(c - t) for c, t in zip(after, TREATMENT.tint, strict=True))
+    assert after_distance < before_distance * 0.5
 
 
 def test_the_processed_image_matches_the_treatment_pixel_for_pixel():
@@ -128,3 +136,124 @@ def test_talent_frame_ids_pairs_each_background_with_its_four_quadrants():
         },
         "magearcane": {"TopLeft": 136900},
     }
+
+
+def test_talent_frame_ids_matches_the_quadrant_suffix_case_insensitively():
+    # 1.60.1.69893's own ManifestInterfaceData mixes cases within one build: most
+    # tabs are "DruidBalance-BottomLeft.blp" (mixed case) but all of Paladin
+    # Combat's are "PALADINCOMBAT-BOTTOMLEFT.BLP" (all caps). Both must resolve to
+    # the same canonical quadrant name and merge under the same lowercased
+    # background, or a build like that silently drops half its trees.
+    rows = [
+        {
+            "ID": "136912",
+            "FilePath": "Interface\\TALENTFRAME\\",
+            "FileName": "PaladinCombat-BottomLeft.blp",
+        },
+        {
+            "ID": "136913",
+            "FilePath": "Interface\\TALENTFRAME\\",
+            "FileName": "PALADINCOMBAT-BOTTOMRIGHT.BLP",
+        },
+    ]
+    assert talent_frame_ids(rows) == {
+        "paladincombat": {"BottomLeft": 136912, "BottomRight": 136913},
+    }
+
+
+#: Quadrant name -> the file data id it carries in the fixtures below.
+FRAME_IDS = {"TopLeft": 2001, "TopRight": 2002, "BottomLeft": 2003, "BottomRight": 2004}
+
+
+def _write_frame_manifest(raw_dir: Path, ids: dict[str, int], background: str = "TestTree") -> None:
+    raw_dir.mkdir(parents=True, exist_ok=True)
+    lines = ["ID,FilePath,FileName"]
+    for quadrant, file_id in ids.items():
+        lines.append(f"{file_id},Interface\\TALENTFRAME\\,{background}-{quadrant}.blp")
+    (raw_dir / "ManifestInterfaceData.csv").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def _write_tree_json(build_dir: Path, background: str = "testtree") -> None:
+    talents_dir = build_dir / "talents"
+    talents_dir.mkdir(parents=True, exist_ok=True)
+    (talents_dir / "warrior.json").write_text(
+        json.dumps({"trees": [{"background": background}]}), encoding="utf-8"
+    )
+
+
+def frame_transport(
+    calls: list[str],
+    sizes: dict[int, tuple[int, int]],
+    fail: frozenset[int] = frozenset(),
+) -> httpx.MockTransport:
+    def handler(request: httpx.Request) -> httpx.Response:
+        calls.append(request.url.path)
+        file_id = int(request.url.path.rsplit("/", 1)[-1])
+        if file_id in fail:
+            return httpx.Response(500, text="boom")
+        buffer = io.BytesIO()
+        Image.new("RGB", sizes[file_id], (10, 20, 30)).save(buffer, "PNG")
+        return httpx.Response(200, content=buffer.getvalue())
+
+    return httpx.MockTransport(handler)
+
+
+def _sizes_for(ids: dict[str, int]) -> dict[int, tuple[int, int]]:
+    return {file_id: QUADRANT_SIZES[quadrant] for quadrant, file_id in ids.items()}
+
+
+def test_backgrounds_for_build_reuses_the_blp_cache_on_a_second_call(tmp_path: Path):
+    build_dir = tmp_path / "builds" / "1.0.0.1"
+    _write_frame_manifest(build_dir / "raw", FRAME_IDS)
+    _write_tree_json(build_dir)
+    sizes = _sizes_for(FRAME_IDS)
+    cache_dir = tmp_path / "cache"
+
+    first_calls: list[str] = []
+    client = httpx.Client(transport=frame_transport(first_calls, sizes), base_url="https://x")
+    written = backgrounds_for_build(
+        "1.0.0.1", root=tmp_path / "builds", cache_dir=cache_dir, client=client
+    )
+    assert written == 1
+    assert len(first_calls) == 4  # one fetch per quadrant, nothing cached yet
+
+    # Delete the output but keep the BLP cache, and answer the second run with a
+    # client that would fail this assertion the moment it is asked anything: the
+    # rerun must resolve entirely from the cache, with zero new HTTP calls.
+    (build_dir / "trees" / "testtree.webp").unlink()
+    second_calls: list[str] = []
+    client_2 = httpx.Client(transport=frame_transport(second_calls, sizes), base_url="https://x")
+    written_again = backgrounds_for_build(
+        "1.0.0.1", root=tmp_path / "builds", cache_dir=cache_dir, client=client_2
+    )
+    assert written_again == 1
+    assert second_calls == []
+    assert (build_dir / "trees" / "testtree.webp").exists()
+
+
+def test_backgrounds_for_build_raises_naming_the_tree_and_missing_quadrant(tmp_path: Path):
+    build_dir = tmp_path / "builds" / "1.0.0.1"
+    partial = {q: i for q, i in FRAME_IDS.items() if q != "TopRight"}
+    _write_frame_manifest(build_dir / "raw", partial)
+    _write_tree_json(build_dir)
+    client = httpx.Client(transport=frame_transport([], _sizes_for(partial)), base_url="https://x")
+    with pytest.raises(ArtDataError, match=r"testtree.*TopRight"):
+        backgrounds_for_build(
+            "1.0.0.1", root=tmp_path / "builds", cache_dir=tmp_path / "cache", client=client
+        )
+
+
+def test_backgrounds_for_build_raises_on_an_http_error(tmp_path: Path):
+    build_dir = tmp_path / "builds" / "1.0.0.1"
+    _write_frame_manifest(build_dir / "raw", FRAME_IDS)
+    _write_tree_json(build_dir)
+    client = httpx.Client(
+        transport=frame_transport(
+            [], _sizes_for(FRAME_IDS), fail=frozenset({FRAME_IDS["TopLeft"]})
+        ),
+        base_url="https://x",
+    )
+    with pytest.raises(httpx.HTTPStatusError):
+        backgrounds_for_build(
+            "1.0.0.1", root=tmp_path / "builds", cache_dir=tmp_path / "cache", client=client
+        )
