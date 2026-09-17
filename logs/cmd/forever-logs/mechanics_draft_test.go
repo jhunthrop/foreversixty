@@ -186,3 +186,42 @@ func TestAddFightCountsPeriodicTicks(t *testing.T) {
 		t.Errorf("note = %q, want %q", m.Note, want)
 	}
 }
+
+// The fixture log has one pull of Warden Kelthas. Its Anima Surge cast starts once and
+// only once, so it is exactly the shape a phase trigger has; Frostbolt is a player's and
+// is not a candidate at all.
+func TestMechanicsDraftProposesPhaseCandidates(t *testing.T) {
+	var out, errOut bytes.Buffer
+	err := run([]string{"mechanics-draft", "-encounter", "9001",
+		"../../../web/src/fixtures/report/fixture.log"}, &out, &errOut)
+	if err != nil {
+		t.Fatal(err, errOut.String())
+	}
+	table, err := mechanics.Parse(out.Bytes())
+	if err != nil {
+		t.Fatalf("the draft must be a valid table: %v\n%s", err, out.String())
+	}
+	var surge *mechanics.Phase
+	for i := range table.Phases {
+		if table.Phases[i].Starts.SpellID == 334653 {
+			surge = &table.Phases[i]
+		}
+	}
+	if surge == nil {
+		t.Fatalf("Anima Surge must be a phase candidate: %+v", table.Phases)
+	}
+	if surge.Starts.On != mechanics.OnCastStart {
+		t.Errorf("a channel's candidate must key on its start, not its success: %+v", surge.Starts)
+	}
+	if surge.Name != "Phase 2" {
+		t.Errorf("the first candidate after the pull is Phase 2, got %q", surge.Name)
+	}
+	for _, p := range table.Phases {
+		if p.Starts.SpellID == 116 {
+			t.Errorf("a player's spell is not a phase candidate: %+v", p)
+		}
+	}
+	if !strings.Contains(errOut.String(), "Phase 2") {
+		t.Errorf("the evidence for each candidate must reach stderr:\n%s", errOut.String())
+	}
+}
