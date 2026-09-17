@@ -114,6 +114,86 @@ func TestMalformedLinesNeverPanic(t *testing.T) {
 	}
 }
 
+// TestAScopeTagLookalikeOnABaseWidthLineIsAParseErrorNotAPanic covers the
+// two shapes the final review proved panicked: a line at a width the row
+// accepts with no headroom past what the suffix reads, whose last field
+// happens to read literally "ST" or "AOE". Stripping it as a tag would
+// remove a field the switch in decodeStandard then indexes past.
+func TestAScopeTagLookalikeOnABaseWidthLineIsAParseErrorNotAPanic(t *testing.T) {
+	v22 := layout.RetailV22()
+	cases := []struct {
+		name string
+		text string
+	}{
+		// A real SPELL_DAMAGE line (42 fields, genuine trailing "ST") with
+		// its real tag dropped and the new last field ("crushing", nil in
+		// the source line) corrupted to read "ST": 41 fields, the width
+		// the row's arithmetic alone would produce before the tag.
+		{"SPELL_DAMAGE 41 fields ending ST", `7/1/2026 09:08:21.968-5  SPELL_DAMAGE,Player-3676-06EC6282,"Lothanhof-Area52-US",0x10548,0x80000000,Player-76-0C1789E9,"Ushiftingme-Sargeras-US",0x511,0x80000020,192109,"Lightning Shield",0x8,Player-76-0C1789E9,0000000000000000,582778,584080,2963,2849,924,3129,0,0,3,65,100,0,-10752.23,451.96,0,0.7226,298,1302,1616,-1,8,0,0,0,nil,nil,ST`},
+		// A real SPELL_MISSED line (BLOCK/RESIST shape) with its real tag
+		// dropped and the amount-missed field corrupted to read "AOE": 14
+		// fields, the row's base width for this suffix.
+		{"SPELL_MISSED 14 fields ending AOE", `4/29/2026 17:17:41.513-5  SPELL_MISSED,Player-76-0C18A6D7,"Dreadzy-Sargeras-US",0x511,0x80000000,Player-57-0A0B1B04,"Dîvînity-Illidan-US",0x10548,0x80000000,1715,"Hamstring",0x1,BLOCK,AOE`},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			ln := line(t, c.text)
+			e := decodeNoPanic(t, NewDecoder(v22, fixtureBase), ln)
+			if e.Kind != ParseError {
+				t.Fatalf("kind = %s, want parse_error (error: %s)", e.Kind, e.Error)
+			}
+			if e.Error == "" {
+				t.Error("a parse_error with no message says nothing to the conformance report")
+			}
+			if e.Raw != ln.Raw {
+				t.Errorf("raw = %q, want the whole line %q", e.Raw, ln.Raw)
+			}
+		})
+	}
+}
+
+// TestAnAcceptedWidthLineEndingInATagLookalikeIsNotStripped is the case the
+// two above cannot reach: a width the row accepts outright (SWING_DAMAGE at 38,
+// no tag in the shape) whose last field happens to read "ST". The guard must
+// leave it alone: the line decodes as damage with no scope, and never panics.
+func TestAnAcceptedWidthLineEndingInATagLookalikeIsNotStripped(t *testing.T) {
+	v22 := layout.RetailV22()
+	text := `7/1/2026 09:08:28.725-5  SWING_DAMAGE,Player-3676-06EC6282,"Lothanhof-Area52-US",0x10548,0x80000000,Player-76-0C1789E9,"Ushiftingme-Sargeras-US",0x511,0x80000020,Player-3676-06EC6282,0000000000000000,609501,620660,2636,712,1311,2329,0,0,0,250000,250000,0,-10749.91,464.25,0,1.1591,293,1593,2865,-1,1,0,0,0,nil,nil,ST`
+	ln := line(t, text)
+	if got := len(ln.Params); got != 38 {
+		t.Fatalf("the fixture line has %d fields, want the 38 a SWING_DAMAGE carries", got)
+	}
+	e := decodeNoPanic(t, NewDecoder(v22, fixtureBase), ln)
+	if e.Kind != Damage {
+		t.Fatalf("kind = %s, want damage (error: %s)", e.Kind, e.Error)
+	}
+	if e.Scope != "" {
+		t.Errorf("scope = %q, want none: a swing line carries no tag, so a trailing ST is a field", e.Scope)
+	}
+}
+
+// TestAWellFormedTaggedLineStillStripsTheTag is the converse of the panic
+// regression above: the suffixNeeds guard must not stop a genuinely tagged
+// line from having its tag read and stripped.
+func TestAWellFormedTaggedLineStillStripsTheTag(t *testing.T) {
+	v22 := layout.RetailV22()
+	text := `7/1/2026 09:08:21.968-5  SPELL_DAMAGE,Player-3676-06EC6282,"Lothanhof-Area52-US",0x10548,0x80000000,Player-76-0C1789E9,"Ushiftingme-Sargeras-US",0x511,0x80000020,192109,"Lightning Shield",0x8,Player-76-0C1789E9,0000000000000000,582778,584080,2963,2849,924,3129,0,0,3,65,100,0,-10752.23,451.96,0,0.7226,298,1302,1616,-1,8,0,0,0,nil,nil,nil,ST`
+	ln := line(t, text)
+	if got := len(ln.Params); got != 42 {
+		t.Fatalf("the fixture line has %d fields, want the 42 a tagged SPELL_DAMAGE carries", got)
+	}
+	e := decodeNoPanic(t, NewDecoder(v22, fixtureBase), ln)
+	if e.Kind != Damage {
+		t.Fatalf("kind = %s, want damage (error: %s)", e.Kind, e.Error)
+	}
+	if e.Scope != "ST" {
+		t.Errorf("scope = %q, want ST: the tag must still be recognised and stripped", e.Scope)
+	}
+	if !e.Amount.OK {
+		t.Error("amount was not read")
+	}
+}
+
 // TestSpellHealAbsorbedAtTheClassicWidthLeavesTotalUnset covers the
 // off-by-one against the Classic row's own contract: it allows width 20,
 // where the wiki's suffix stops before totalAmount.

@@ -54,6 +54,14 @@ const (
 	ChallengeModeStart
 	ChallengeModeEnd
 	Durability
+	DamageSplit
+	EmpowerStart
+	EmpowerEnd
+	ArenaMatchStart
+	ArenaMatchEnd
+	StaggerClear
+	StaggerPrevented
+	WorldMarker
 )
 
 var kindNames = map[Kind]string{
@@ -70,7 +78,11 @@ var kindNames = map[Kind]string{
 	ZoneChange: "zone_change", MapChange: "map_change",
 	CombatantInfo: "combatant_info", Enchant: "enchant", Emote: "emote",
 	ChallengeModeStart: "challenge_mode_start", ChallengeModeEnd: "challenge_mode_end",
-	Durability: "durability",
+	Durability:  "durability",
+	DamageSplit: "damage_split", EmpowerStart: "empower_start",
+	EmpowerEnd: "empower_end", ArenaMatchStart: "arena_match_start",
+	ArenaMatchEnd: "arena_match_end", StaggerClear: "stagger_clear",
+	StaggerPrevented: "stagger_prevented", WorldMarker: "world_marker",
 }
 
 func (k Kind) String() string {
@@ -114,14 +126,27 @@ type Spell struct {
 // level for an NPC and the player's item level for a player: one field,
 // two meanings, exactly as the game writes it.
 type Advanced struct {
-	OK           bool
-	InfoGUID     string
-	OwnerGUID    string
-	CurrentHP    int64
-	MaxHP        int64
-	AttackPower  int64
-	SpellPower   int64
-	Armor        int64
+	OK          bool
+	InfoGUID    string
+	OwnerGUID   string
+	CurrentHP   int64
+	MaxHP       int64
+	AttackPower int64
+	SpellPower  int64
+	Armor       int64
+	// Versatility is written only by combat-log version 22, at block
+	// offset 7. It tracks versatility buffs and nothing else, and across
+	// twelve players in two logs it is 1.8513x the versatility rating
+	// COMBATANT_INFO reports for the same character. Both logs are arena
+	// logs, where secondary stats are scaled, so the likeliest reading is
+	// that this is the unscaled rating; see
+	// docs/ledger/2026-09-16-retail-v22.md.
+	Versatility int64
+	// Unknown8 is block offset 8 in combat-log version 22. Zero for almost
+	// every unit; a small per-unit constant for a few. It matches no
+	// COMBATANT_INFO field and moves with nothing. It is read so that the
+	// nineteen fields account for themselves; see the ledger.
+	Unknown8     int64
 	Absorb       int64
 	PowerType    int64
 	CurrentPower int64
@@ -224,6 +249,16 @@ type Event struct {
 	FailedType string
 	EnvType    string
 	ItemName   string
+
+	// Scope is the single-target / area tag combat-log version 22 writes
+	// at the end of spell-prefixed damage and miss lines: "ST", "AOE", or
+	// empty on a dialect or an event that does not write one.
+	Scope string
+	// Supporter is the GUID of the player whose buff caused a _SUPPORT
+	// line's damage or healing. Empty on every other event. A _SUPPORT
+	// line restates damage already reported elsewhere, so the summary
+	// ignores these events rather than double-counting them.
+	Supporter string
 
 	Encounter *Encounter
 	Zone      *Zone
