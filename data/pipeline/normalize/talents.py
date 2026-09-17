@@ -1,4 +1,6 @@
-from pipeline.models import TalentNode
+from collections.abc import Sequence
+
+from pipeline.models import ClassTalents, TalentNode
 
 
 class TalentDataError(ValueError):
@@ -56,3 +58,28 @@ def normalize_talents(
             )
         )
     return out
+
+
+def flat_talents(records: Sequence[ClassTalents]) -> list[TalentNode]:
+    """The flat `talents.json` rows for already-built per-class records.
+
+    `normalize_talents` above reads the legacy `Talent` table directly; a build
+    whose trees came from the trait tables has no such table to read (the one
+    it ships holds Classic Era's talents), so the flat list is folded back out
+    of the per-class records instead. Both produce the same `TalentNode`.
+    """
+    return [
+        TalentNode(
+            id=talent.id,
+            tab_id=tree.id,
+            tab_name=tree.name,
+            class_id=record.class_id,
+            tier=talent.tier,
+            column=talent.column,
+            spell_ids=[rank.spell_id for rank in talent.ranks],
+            prereq_talent_id=talent.prereq_talent_id,
+        )
+        for record in records
+        for tree in record.trees
+        for talent in tree.talents
+    ]

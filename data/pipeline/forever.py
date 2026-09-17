@@ -43,6 +43,22 @@ CARRIED_OVER = (
 )
 
 
+def _file_digests(build_dir: Path) -> dict[str, str]:
+    """sha256 of every `*.json` file under `build_dir`, keyed by its relative path.
+
+    Shared between `write_forever_talents`, which writes this once, and
+    `fetch_missing_icons` below, which must refresh it: `_repoint_to_placeholder`
+    rewrites a `talents/*.json` file after the manifest was already written, and
+    a manifest whose digest no longer matches the file on disk is exactly what
+    `pipeline.manifest.verify` exists to catch.
+    """
+    return {
+        path.relative_to(build_dir).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
+        for path in sorted(build_dir.rglob("*.json"))
+        if path.name != "manifest.json"
+    }
+
+
 def write_forever_talents(snapshot: str, from_build: str, build: str) -> Path:
     root = Path(__file__).resolve().parents[2]
     builds = root / "data" / "builds"
@@ -78,21 +94,9 @@ def write_forever_talents(snapshot: str, from_build: str, build: str) -> Path:
         out = dst / "talents" / f"{entry.class_slug}.json"
         out.write_text(json.dumps(entry.model_dump(), indent=1, sort_keys=True) + "\n")
 
-    flat = [
-        {
-            "id": talent.id,
-            "tab_id": tree.id,
-            "tab_name": tree.name,
-            "class_id": entry.class_id,
-            "tier": talent.tier,
-            "column": talent.column,
-            "spell_ids": [rank.spell_id for rank in talent.ranks],
-            "prereq_talent_id": talent.prereq_talent_id,
-        }
-        for entry in per_class
-        for tree in entry.trees
-        for talent in tree.talents
-    ]
+    from pipeline.normalize.talents import flat_talents
+
+    flat = [node.model_dump() for node in flat_talents(per_class)]
     (dst / "talents.json").write_text(json.dumps(flat, indent=1, sort_keys=True) + "\n")
 
     for name in CARRIED_OVER:
@@ -107,12 +111,7 @@ def write_forever_talents(snapshot: str, from_build: str, build: str) -> Path:
     # The web's sync-data reads manifest["files"] and refuses to publish a build whose
     # manifest lists no talents/*.json, falling back to the checked-in fixture. The keys
     # are what it looks for; the digests let a later diff see a file move.
-    files: dict[str, str] = {}
-    for path in sorted(dst.rglob("*.json")):
-        if path.name == "manifest.json":
-            continue
-        rel = path.relative_to(dst).as_posix()
-        files[rel] = hashlib.sha256(path.read_bytes()).hexdigest()
+    files = _file_digests(dst)
 
     talent_count = sum(len(t.talents) for e in per_class for t in e.trees)
     prereq_count = sum(
@@ -246,6 +245,16 @@ def fetch_missing_icons(
             PLACEHOLDER_ICON,
             unresolved,
         )
+        if repointed:
+            # write_forever_talents already wrote manifest.json before this function
+            # ran; the repoint above just changed some of the talents/*.json files
+            # it hashed, so those digests are now stale.
+            manifest_path = build_dir / "manifest.json"
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            manifest["files"] = _file_digests(build_dir)
+            manifest_path.write_text(
+                json.dumps(manifest, indent=1, sort_keys=True) + "\n", encoding="utf-8"
+            )
     log.info("wrote %d icons into %s", written, icons_dir)
     return written, unresolved
 

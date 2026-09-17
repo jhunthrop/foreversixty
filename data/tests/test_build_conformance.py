@@ -22,7 +22,7 @@ BUILD = "1.15.9.69722"
 BUILD_DIR = Path("builds") / BUILD
 
 TALENT_FILE_KEYS = {"build", "class_id", "class_slug", "trees"}
-TREE_KEYS = {"id", "name", "position", "talents"}
+TREE_KEYS = {"id", "name", "position", "talents", "background"}
 TALENT_KEYS = {
     "id",
     "name",
@@ -33,6 +33,7 @@ TALENT_KEYS = {
     "prereq_talent_id",
     "prereq_rank",
     "ranks",
+    "spell_id",
 }
 RANK_KEYS = {"spell_id", "description"}
 

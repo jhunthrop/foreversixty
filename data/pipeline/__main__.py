@@ -34,6 +34,16 @@ def build_parser() -> argparse.ArgumentParser:
     d = sub.add_parser("diff", help="diff two normalized builds")
     d.add_argument("--from", dest="from_build", required=True)
     d.add_argument("--to", dest="to_build", required=True)
+
+    wd = sub.add_parser(
+        "wowhead-diff", help="diff a build's talent trees against the Wowhead snapshot"
+    )
+    wd.add_argument(
+        "--snapshot",
+        default="data/raw-forever/wowhead-talents-2026-09-14.json",
+        help="the saved Wowhead payload; see data/raw-forever/README.md",
+    )
+    wd.add_argument("--build", required=True)
     return p
 
 
@@ -69,6 +79,10 @@ def main(argv: list[str] | None = None) -> int:
         from pipeline.diff import diff_builds
 
         diff_builds(args.from_build, args.to_build)
+    elif args.command == "wowhead-diff":
+        from pipeline.wowhead_diff import write_snapshot_diff
+
+        write_snapshot_diff(args.snapshot, args.build)
     return 0
 
 

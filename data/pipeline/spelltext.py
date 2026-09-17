@@ -152,11 +152,23 @@ def _base_points(row: dict[str, str]) -> int:
     """The effect's base points: Classic Era exports the integer column, the 1.60 client
     (Forever beta) the modern float column; either way the formulas want a whole number.
     The 1.60 client also has no EffectDieSides (its spread is the Variance column, which
-    the descriptions do not use yet), so a missing die-sides column reads as no spread."""
-    raw = row.get("EffectBasePointsF")
+    the descriptions do not use yet), so a missing die-sides column reads as no spread.
+
+    Both builds' SpellEffect rows carry both column headers, but only one is ever
+    real: Era's own EffectBasePoints is always populated and its EffectBasePointsF
+    is always "0" (unused padding), while build 1.60.1.69893's EffectBasePoints is
+    always empty and EffectBasePointsF carries the real value -- confirmed against
+    every row of both builds' own SpellEffect tables (see data/README.md). Reading
+    the float column whenever it merely exists, as an earlier version of this
+    function did, silently zeroed every Era description's numbers (see
+    test_effect_base_points_read_the_float_column_when_the_build_has_it, which this
+    still satisfies: the integer column is genuinely absent from that test's beta
+    fixture, not merely empty).
+    """
+    raw = row.get("EffectBasePoints")
     if raw not in (None, ""):
-        return round(float(raw))
-    return int(row["EffectBasePoints"])
+        return int(raw)
+    return round(float(row["EffectBasePointsF"]))
 
 
 def load_spell_text(

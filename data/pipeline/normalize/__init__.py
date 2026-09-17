@@ -58,6 +58,7 @@ def normalize_build(
 ) -> NormalizeResult:
     from pipeline.csvio import read_csv
     from pipeline.curated import merge_curated
+    from pipeline.curves import load_rank_points
     from pipeline.icons import icon_names
     from pipeline.manifest import write_manifest
     from pipeline.normalize.classes import normalize_classes, normalize_races
@@ -67,7 +68,9 @@ def normalize_build(
     from pipeline.normalize.items import normalize_items
     from pipeline.normalize.spells import normalize_spells
     from pipeline.normalize.talent_trees import build_talent_trees
-    from pipeline.normalize.talents import normalize_talents
+    from pipeline.normalize.talents import flat_talents, normalize_talents
+    from pipeline.normalize.trait_trees import build_trait_talent_trees
+    from pipeline.normalize.traits import TraitRows, has_trait_trees
     from pipeline.normalize.zones import normalize_zones
     from pipeline.spelltext import load_spell_text
 
@@ -77,23 +80,65 @@ def normalize_build(
         raise SystemExit(f"no raw data at {raw}; run `python -m pipeline fetch` first")
     t = lambda name: read_csv(raw / f"{name}.csv")  # noqa: E731
 
+    # A table a build's client simply does not have (see wago.OPTIONAL_TABLES)
+    # is written as a header-only CSV by the fetch, but a build fetched before
+    # that table was added to TABLES has no file at all. Both mean "no rows".
+    def optional(name: str) -> list[dict[str, str]]:
+        path = raw / f"{name}.csv"
+        return read_csv(path) if path.exists() else []
+
     # Phase 0 flat entities.
     class_rows = t("ChrClasses")
     write_json(normalize_zones(t("AreaTable"), t("Map")), build_dir / "zones.json")
     write_json(normalize_dungeons(t("JournalInstance")), build_dir / "dungeons.json")
     write_json(normalize_items(t("ItemSparse"), t("Item")), build_dir / "items.json")
     write_json(normalize_spells(t("SpellName")), build_dir / "spells.json")
-    write_json(normalize_talents(t("Talent"), t("TalentTab")), build_dir / "talents.json")
 
     # Phase 1 planner data. Both directories are rebuilt from scratch so a class
     # that disappears between builds does not leave a stale file behind.
     spell_text = load_spell_text(t("Spell"), t("SpellMisc"), t("SpellEffect"), t("SpellDuration"))
     icons = icon_names(t("ManifestInterfaceData"))
     spell_names = {int(r["ID"]): r["Name_lang"] for r in t("SpellName")}
+
+    trait_rows = TraitRows(
+        skill_line=optional("SkillLine"),
+        skill_line_x_trait_tree=optional("SkillLineXTraitTree"),
+        talent_tab=t("TalentTab"),
+        chr_classes=class_rows,
+        node=optional("TraitNode"),
+        node_entry=optional("TraitNodeEntry"),
+        node_x_entry=optional("TraitNodeXTraitNodeEntry"),
+        definition=optional("TraitDefinition"),
+        edge=optional("TraitEdge"),
+        cond=optional("TraitCond"),
+        currency=optional("TraitCurrency"),
+        node_group=optional("TraitNodeGroup"),
+        node_group_x_node=optional("TraitNodeGroupXTraitNode"),
+    )
+
+    # The 1.60 client keeps Forever's talents in the trait tables; the legacy
+    # Talent table it still ships holds Classic Era's, so reading that here
+    # would draw the wrong trees. Classic Era has no class trait trees at all.
+    if has_trait_trees(trait_rows.skill_line_x_trait_tree):
+        talent_records = build_trait_talent_trees(
+            trait_rows,
+            class_rows,
+            spell_names,
+            spell_text,
+            load_rank_points(optional("TraitDefinitionEffectPoints"), optional("CurvePoint")),
+            icons,
+            build,
+        )
+        flat = flat_talents(talent_records)
+    else:
+        talent_rows, tab_rows = t("Talent"), t("TalentTab")
+        talent_records = build_talent_trees(
+            talent_rows, tab_rows, class_rows, spell_names, spell_text, icons, build
+        )
+        flat = normalize_talents(talent_rows, tab_rows)
+    write_json(flat, build_dir / "talents.json")
     shutil.rmtree(build_dir / "talents", ignore_errors=True)
-    for record in build_talent_trees(
-        t("Talent"), t("TalentTab"), class_rows, spell_names, spell_text, icons, build
-    ):
+    for record in talent_records:
         write_model(record, build_dir / "talents" / f"{record.class_slug}.json")
     item_sets = build_item_sets(t("ItemSet"), t("ItemSetSpell"), spell_text)
     write_json(item_sets, build_dir / "sets.json")

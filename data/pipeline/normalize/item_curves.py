@@ -133,9 +133,18 @@ def load_item_curves(
         int(row["ID"]): {col: float(row[col]) for col in LOCATION_COLUMN.values()}
         for row in armor_location_rows
     }
+    # Classic Era's RandPropPoints has only the integer Good_0.. columns; the
+    # 1.60 client's adds float GoodF_0.. twins carrying the same values (the
+    # client evidently switched to float storage at some point). Preferring
+    # the float column where it exists, and falling back to the integer one
+    # where it does not, resolves the same numbers on both schemas.
+    def _budget(row: dict[str, str], budget_column: str, group: int) -> float:
+        key = f"{budget_column}F_{group}"
+        return float(row[key] if key in row else row[f"{budget_column}_{group}"])
+
     rand_prop_points = {
         int(row["ID"]): {
-            budget_column: [float(row[f"{budget_column}F_{g}"]) for g in _GROUP_COLUMNS]
+            budget_column: [_budget(row, budget_column, g) for g in _GROUP_COLUMNS]
             for budget_column in ("Good", "Superior", "Epic")
         }
         for row in rand_prop_points_rows

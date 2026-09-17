@@ -28,9 +28,12 @@ SANITY_CHECK_ITEM_LEVEL = 60
 #: not real gear -- every QA/test row found in build 1.60.1.69893 (JUNK_NAME_PATTERN
 #: is the primary defence) cleared both by 4x or more. This is a backstop for the
 #: next one JUNK_NAME_PATTERN does not yet know to catch, not a tuned gameplay
-#: number.
+#: number. Raised from 2000 to 2100 when re-emitting build 1.15.9.69722 (Task 6,
+#: 2026-09-17): Era's own ItemSparse carries item 13375, "Crest of Retribution",
+#: a real rare shield (RequiredLevel 55, quality 3) with 2057 armour -- absent
+#: from 1.60.1.69893's own item set, so the original tuning pass never saw it.
 MAX_LEVEL_60_STAT = 200
-MAX_LEVEL_60_ARMOR = 2000
+MAX_LEVEL_60_ARMOR = 2100
 
 #: OverallQualityID values the planner keeps: uncommon, rare, epic, legendary.
 #: Poor (0) and common (1) are vendor trash the planner never recommends, and
