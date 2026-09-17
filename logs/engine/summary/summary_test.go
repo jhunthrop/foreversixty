@@ -3,6 +3,8 @@ package summary
 
 import (
 	"encoding/json"
+	"fmt"
+	"slices"
 	"testing"
 	"time"
 
@@ -1070,5 +1072,95 @@ func TestCastRowsNameTheCastersOwner(t *testing.T) {
 	// needs the two apart.
 	if got := row(pet, 17253).Name; got != "Ashfang" {
 		t.Errorf("the pet's row name = %q, want Ashfang", got)
+	}
+}
+
+// A guardian can cast before the log has said whose it is. The shaman's Greater Fire
+// Elemental starts its first Fire Blast on the tick it is summoned, and the summon line
+// flags it a neutral NPC, which is not ownable; the guardian flag and the advanced
+// block's owner GUID only arrive with the cast itself. Reading the owner when the row is
+// opened left the elemental owning itself, and its rows then belonged to no player's
+// scope and to no source of their own, so they vanished from the Casts tab entirely.
+func TestCastRowsOwnAGuardianTheSummonCouldNotClaim(t *testing.T) {
+	const elemental = "Creature-0-2085-2284-7855-95061-00006E99B6"
+	o, reg := opts(t)
+	a := New(o)
+	a.Start(at(0))
+	start := event.Event{Time: at(0.1), Kind: event.CastStart, Name: "SPELL_CAST_START",
+		Source: event.Unit{GUID: elemental, Name: "Greater Fire Elemental", Flags: 0x2112},
+		Spell:  event.Spell{ID: 57984, Name: "Fire Blast"}}
+	success := cast(0.3, elemental, boss, 57984, "Fire Blast")
+	success.Source.Flags = 0x2112
+	success.Adv = event.Advanced{OK: true, InfoGUID: elemental, OwnerGUID: mage,
+		CurrentHP: 100, MaxHP: 100}
+	events := []event.Event{
+		{Time: at(0), Kind: event.Summon, Name: "SPELL_SUMMON",
+			Source: event.Unit{GUID: mage, Name: "Morrowlyn-Nightslayer", Flags: 0x512},
+			// 0xa28 is what the client writes on the summon line: a neutral NPC, which
+			// is not on the summoner's side and so cannot be claimed by it yet.
+			Dest: event.Unit{GUID: elemental, Name: "Greater Fire Elemental", Flags: 0xa28}},
+		start,
+		success,
+	}
+	for _, e := range events {
+		reg.Observe(e)
+		a.Add(e)
+	}
+	s := a.Snapshot(fight.Fight{Index: 1, Kind: fight.Encounter, Start: at(0), End: at(3),
+		Players: []string{mage}}, "test")
+	if len(s.Casts) != 1 {
+		t.Fatalf("casts = %+v, want one row", s.Casts)
+	}
+	if got := s.Casts[0].OwnerGUID; got != mage {
+		t.Errorf("the guardian's row owner = %q, want the shaman %q", got, mage)
+	}
+	if got := s.Casts[0].Name; got != "Greater Fire Elemental" {
+		t.Errorf("the guardian's row name = %q, want its own", got)
+	}
+}
+
+// A pet resummoned mid-fight is a new GUID every time, so one statue channelling one
+// spell read as three rows of 15, 2 and 2 under its owner, scattered by a table that
+// sorts on the count. One owner, one pet name, one spell: one row.
+func TestCastRowsFoldARepeatedPetIntoOneRow(t *testing.T) {
+	o, reg := opts(t)
+	a := New(o)
+	a.Start(at(0))
+	var events []event.Event
+	// Three statues, summoned in turn, casting 3, 2 and 1 times.
+	for i, casts := range []int{3, 2, 1} {
+		guid := fmt.Sprintf("Creature-0-2085-2284-7855-60849-00006E99A%d", i)
+		events = append(events, event.Event{Time: at(float64(i * 10)), Kind: event.Summon,
+			Name:   "SPELL_SUMMON",
+			Source: event.Unit{GUID: healer, Name: "Sunwick-Nightslayer", Flags: 0x512},
+			Dest:   event.Unit{GUID: guid, Name: "Jade Serpent Statue", Flags: 0x2112}})
+		for n := range casts {
+			events = append(events, cast(float64(i*10+n+1), guid, tank, 198533, "Soothing Mist"))
+		}
+	}
+	for _, e := range events {
+		reg.Observe(e)
+		a.Add(e)
+	}
+	s := a.Snapshot(fight.Fight{Index: 1, Kind: fight.Encounter, Start: at(0), End: at(40),
+		Players: []string{healer, tank}}, "test")
+	var rows []CastRow
+	for _, r := range s.Casts {
+		if r.Name == "Jade Serpent Statue" {
+			rows = append(rows, r)
+		}
+	}
+	if len(rows) != 1 {
+		t.Fatalf("statue rows = %+v, want one", rows)
+	}
+	if rows[0].Succeeded != 6 {
+		t.Errorf("succeeded = %d, want 3+2+1", rows[0].Succeeded)
+	}
+	if rows[0].OwnerGUID != healer {
+		t.Errorf("owner = %q, want the healer %q", rows[0].OwnerGUID, healer)
+	}
+	want := []int64{1000, 2000, 3000, 11000, 12000, 21000}
+	if !slices.Equal(rows[0].Sequence, want) {
+		t.Errorf("sequence = %v, want the six casts in order %v", rows[0].Sequence, want)
 	}
 }

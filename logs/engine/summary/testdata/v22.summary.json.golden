@@ -16334,258 +16334,63 @@
       "spell_id": 428545,
       "spell_name": "Moonfire",
       "started": 0,
-      "succeeded": 2,
-      "failed": 0,
-      "cast_time_ms": 0,
-      "sequence": [
-        5951,
-        13212
-      ]
-    },
-    {
-      "guid": "Creature-0-3017-980-4755-103822-0000451F5A",
-      "name": "Treant",
-      "owner_guid": "Player-76-0C1789E9",
-      "spell_id": 428735,
-      "spell_name": "Harmony of the Grove",
-      "started": 0,
-      "succeeded": 1,
-      "failed": 0,
-      "cast_time_ms": 0,
-      "sequence": [
-        4375
-      ]
-    },
-    {
-      "guid": "Creature-0-3017-980-4755-103822-0000451F5A",
-      "name": "Treant",
-      "owner_guid": "Player-76-0C1789E9",
-      "spell_id": 449001,
-      "spell_name": "Power of Nature",
-      "started": 0,
-      "succeeded": 1,
-      "failed": 0,
-      "cast_time_ms": 0,
-      "sequence": [
-        4375
-      ]
-    },
-    {
-      "guid": "Creature-0-3017-980-4755-103822-0000451F78",
-      "name": "Treant",
-      "owner_guid": "Player-76-0C1789E9",
-      "spell_id": 428545,
-      "spell_name": "Moonfire",
-      "started": 0,
-      "succeeded": 1,
-      "failed": 0,
-      "cast_time_ms": 0,
-      "sequence": [
-        37447
-      ]
-    },
-    {
-      "guid": "Creature-0-3017-980-4755-103822-0000451F78",
-      "name": "Treant",
-      "owner_guid": "Player-76-0C1789E9",
-      "spell_id": 428735,
-      "spell_name": "Harmony of the Grove",
-      "started": 0,
-      "succeeded": 1,
-      "failed": 0,
-      "cast_time_ms": 0,
-      "sequence": [
-        34879
-      ]
-    },
-    {
-      "guid": "Creature-0-3017-980-4755-103822-0000451F78",
-      "name": "Treant",
-      "owner_guid": "Player-76-0C1789E9",
-      "spell_id": 449001,
-      "spell_name": "Power of Nature",
-      "started": 0,
-      "succeeded": 1,
-      "failed": 0,
-      "cast_time_ms": 0,
-      "sequence": [
-        34879
-      ]
-    },
-    {
-      "guid": "Creature-0-3017-980-4755-103822-0000451F79",
-      "name": "Treant",
-      "owner_guid": "Player-76-0C1789E9",
-      "spell_id": 428545,
-      "spell_name": "Moonfire",
-      "started": 0,
-      "succeeded": 1,
-      "failed": 0,
-      "cast_time_ms": 0,
-      "sequence": [
-        37446
-      ]
-    },
-    {
-      "guid": "Creature-0-3017-980-4755-103822-0000451F79",
-      "name": "Treant",
-      "owner_guid": "Player-76-0C1789E9",
-      "spell_id": 428735,
-      "spell_name": "Harmony of the Grove",
-      "started": 0,
-      "succeeded": 1,
-      "failed": 0,
-      "cast_time_ms": 0,
-      "sequence": [
-        35171
-      ]
-    },
-    {
-      "guid": "Creature-0-3017-980-4755-103822-0000451F79",
-      "name": "Treant",
-      "owner_guid": "Player-76-0C1789E9",
-      "spell_id": 449001,
-      "spell_name": "Power of Nature",
-      "started": 0,
-      "succeeded": 1,
-      "failed": 0,
-      "cast_time_ms": 0,
-      "sequence": [
-        35171
-      ]
-    },
-    {
-      "guid": "Creature-0-3017-980-4755-103822-0000C51F5A",
-      "name": "Treant",
-      "owner_guid": "Player-76-0C1789E9",
-      "spell_id": 428545,
-      "spell_name": "Moonfire",
-      "started": 0,
-      "succeeded": 2,
-      "failed": 0,
-      "cast_time_ms": 0,
-      "sequence": [
-        6747,
-        13212
-      ]
-    },
-    {
-      "guid": "Creature-0-3017-980-4755-103822-0000C51F5A",
-      "name": "Treant",
-      "owner_guid": "Player-76-0C1789E9",
-      "spell_id": 428735,
-      "spell_name": "Harmony of the Grove",
-      "started": 0,
-      "succeeded": 1,
-      "failed": 0,
-      "cast_time_ms": 0,
-      "sequence": [
-        4515
-      ]
-    },
-    {
-      "guid": "Creature-0-3017-980-4755-103822-0000C51F5A",
-      "name": "Treant",
-      "owner_guid": "Player-76-0C1789E9",
-      "spell_id": 449001,
-      "spell_name": "Power of Nature",
-      "started": 0,
-      "succeeded": 1,
-      "failed": 0,
-      "cast_time_ms": 0,
-      "sequence": [
-        4515
-      ]
-    },
-    {
-      "guid": "Creature-0-3017-980-4755-103822-0000C51F78",
-      "name": "Treant",
-      "owner_guid": "Player-76-0C1789E9",
-      "spell_id": 428545,
-      "spell_name": "Moonfire",
-      "started": 0,
-      "succeeded": 1,
-      "failed": 0,
-      "cast_time_ms": 0,
-      "sequence": [
-        36630
-      ]
-    },
-    {
-      "guid": "Creature-0-3017-980-4755-103822-0000C51F78",
-      "name": "Treant",
-      "owner_guid": "Player-76-0C1789E9",
-      "spell_id": 428735,
-      "spell_name": "Harmony of the Grove",
-      "started": 0,
-      "succeeded": 1,
-      "failed": 0,
-      "cast_time_ms": 0,
-      "sequence": [
-        35025
-      ]
-    },
-    {
-      "guid": "Creature-0-3017-980-4755-103822-0000C51F78",
-      "name": "Treant",
-      "owner_guid": "Player-76-0C1789E9",
-      "spell_id": 449001,
-      "spell_name": "Power of Nature",
-      "started": 0,
-      "succeeded": 1,
-      "failed": 0,
-      "cast_time_ms": 0,
-      "sequence": [
-        35025
-      ]
-    },
-    {
-      "guid": "Creature-0-3017-980-4755-103822-0001451F5A",
-      "name": "Treant",
-      "owner_guid": "Player-76-0C1789E9",
-      "spell_id": 428545,
-      "spell_name": "Moonfire",
-      "started": 0,
-      "succeeded": 2,
+      "succeeded": 9,
       "failed": 0,
       "cast_time_ms": 0,
       "sequence": [
         5950,
-        12393
+        5951,
+        6747,
+        12393,
+        13212,
+        13212,
+        36630,
+        37446,
+        37447
       ]
     },
     {
-      "guid": "Creature-0-3017-980-4755-103822-0001451F5A",
+      "guid": "Creature-0-3017-980-4755-103822-0000451F5A",
       "name": "Treant",
       "owner_guid": "Player-76-0C1789E9",
       "spell_id": 428735,
       "spell_name": "Harmony of the Grove",
       "started": 0,
-      "succeeded": 1,
+      "succeeded": 6,
       "failed": 0,
       "cast_time_ms": 0,
       "sequence": [
-        4669
+        4375,
+        4515,
+        4669,
+        34879,
+        35025,
+        35171
       ]
     },
     {
-      "guid": "Creature-0-3017-980-4755-103822-0001451F5A",
+      "guid": "Creature-0-3017-980-4755-103822-0000451F5A",
       "name": "Treant",
       "owner_guid": "Player-76-0C1789E9",
       "spell_id": 449001,
       "spell_name": "Power of Nature",
       "started": 0,
-      "succeeded": 1,
+      "succeeded": 6,
       "failed": 0,
       "cast_time_ms": 0,
       "sequence": [
-        4669
+        4375,
+        4515,
+        4669,
+        34879,
+        35025,
+        35171
       ]
     },
     {
       "guid": "Creature-0-3017-980-4755-255153-0000451F5F",
       "name": "Dark Minion",
-      "owner_guid": "Creature-0-3017-980-4755-255153-0000451F5F",
+      "owner_guid": "Player-3208-0E1007EF",
       "spell_id": 1264357,
       "spell_name": "Shoot",
       "started": 8,
@@ -16605,32 +16410,19 @@
     {
       "guid": "Creature-0-3017-980-4755-255261-0000451F55",
       "name": "Dryad",
-      "owner_guid": "Creature-0-3017-980-4755-255261-0000451F55",
+      "owner_guid": "Player-76-0C1789E9",
       "spell_id": 1264677,
       "spell_name": "Starsurge",
-      "started": 5,
-      "succeeded": 5,
+      "started": 8,
+      "succeeded": 7,
       "failed": 0,
-      "cast_time_ms": 7189,
+      "cast_time_ms": 9985,
       "sequence": [
         1693,
         3279,
         4860,
         6077,
-        7309
-      ]
-    },
-    {
-      "guid": "Creature-0-3017-980-4755-255261-0000451F6B",
-      "name": "Dryad",
-      "owner_guid": "Creature-0-3017-980-4755-255261-0000451F6B",
-      "spell_id": 1264677,
-      "spell_name": "Starsurge",
-      "started": 3,
-      "succeeded": 2,
-      "failed": 0,
-      "cast_time_ms": 2796,
-      "sequence": [
+        7309,
         22852,
         24266
       ]

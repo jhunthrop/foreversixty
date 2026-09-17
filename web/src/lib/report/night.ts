@@ -328,7 +328,11 @@ export function nightSummary(
         });
     }
     for (const row of summary.casts) {
-      const key = `${row.guid}|${row.spell_id}`;
+      // By the owner, the caster's name and the spell, not the GUID: a pet is a new GUID
+      // every summon, and eighteen "Jade Serpent Statue · Soothing Mist" rows at two
+      // casts each are one row at thirty-six. The engine folds a fight's casts the same
+      // way (summary/deaths.go's castRows), so the night agrees with the pulls it holds.
+      const key = `${row.owner_guid ?? row.guid}|${row.name}|${row.spell_id}`;
       const found = casts.get(key);
       const sequence = row.sequence.map((at) => at + offset);
       if (found === undefined) casts.set(key, { ...row, sequence });

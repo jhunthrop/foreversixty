@@ -3,6 +3,7 @@ package summary
 
 import (
 	"fmt"
+	"slices"
 	"sort"
 	"time"
 
@@ -642,10 +643,32 @@ func (a *Accumulator) auraRows() []AuraTrack {
 	return out
 }
 
+// castRows emits one row per owner, pet name and spell.
+//
+// The owner is read here rather than when the row was opened. A guardian
+// can cast before anything has told the registry whose it is: the shaman's
+// Greater Fire Elemental starts its first Fire Blast on the same tick it is
+// summoned, and that summon names a unit the log has so far flagged as a
+// neutral NPC, so it is not yet ownable. By the end of the fight the
+// advanced block on its own cast lines has named the owner, and a summary
+// is written then, so the late reading is the right one. Resolved at the
+// first cast, the elemental owned itself, and its rows fell off the Casts
+// tab entirely: no player's scope claimed them and it is offered as no
+// source of its own.
+//
+// Rows are then folded by owner, caster name and spell. A re-summoned pet
+// is a new GUID every time, so a healer who dropped three Jade Serpent
+// Statues read "Soothing Mist · via Jade Serpent Statue" on three separate
+// rows of 15, 2 and 2 and had to add them up by hand. One pet by that name,
+// one row: the counts sum, the cast times sum, the fail reasons merge and
+// the sequence is put back in order. A player's own rows fold into
+// themselves and are unchanged, since the owner is their own GUID and their
+// name is their own.
 func (a *Accumulator) castRows() []CastRow {
 	out := make([]CastRow, 0, len(a.casts))
 	for _, r := range a.casts {
 		row := r.CastRow
+		row.OwnerGUID = a.owner(row.GUID)
 		row.Sequence = copySlice(r.Sequence)
 		row.FailReasons = copyMap(r.FailReasons)
 		if row.Sequence == nil {
@@ -653,13 +676,50 @@ func (a *Accumulator) castRows() []CastRow {
 		}
 		out = append(out, row)
 	}
+	// Sorted before the fold so the row that survives a merge, and so its
+	// GUID, is the same one on every run over the same log.
 	sort.Slice(out, func(i, j int) bool {
 		if out[i].GUID != out[j].GUID {
 			return out[i].GUID < out[j].GUID
 		}
 		return out[i].SpellID < out[j].SpellID
 	})
-	return out
+	type ownedKey struct {
+		owner   string
+		name    string
+		spellID int64
+	}
+	folded := make([]CastRow, 0, len(out))
+	at := map[ownedKey]int{}
+	for _, row := range out {
+		k := ownedKey{owner: row.OwnerGUID, name: row.Name, spellID: row.SpellID}
+		i, ok := at[k]
+		if !ok {
+			at[k] = len(folded)
+			folded = append(folded, row)
+			continue
+		}
+		into := &folded[i]
+		into.Started += row.Started
+		into.Succeeded += row.Succeeded
+		into.Failed += row.Failed
+		into.CastTimeMS += row.CastTimeMS
+		into.Sequence = append(into.Sequence, row.Sequence...)
+		slices.Sort(into.Sequence)
+		for reason, n := range row.FailReasons {
+			if into.FailReasons == nil {
+				into.FailReasons = map[string]int64{}
+			}
+			into.FailReasons[reason] += n
+		}
+	}
+	sort.Slice(folded, func(i, j int) bool {
+		if folded[i].GUID != folded[j].GUID {
+			return folded[i].GUID < folded[j].GUID
+		}
+		return folded[i].SpellID < folded[j].SpellID
+	})
+	return folded
 }
 
 func (a *Accumulator) exchangeRows(kind string) []ExchangeRow {

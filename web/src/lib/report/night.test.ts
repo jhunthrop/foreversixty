@@ -60,6 +60,49 @@ function summary(fight_index: number, duration_ms: number, rows: RosterRow[]): S
   };
 }
 
+describe('nightSummary casts', () => {
+  const statue = (guid: string, succeeded: number, sequence: number[]) => ({
+    guid,
+    name: 'Jade Serpent Statue',
+    owner_guid: 'H',
+    spell_id: 198533,
+    spell_name: 'Soothing Mist',
+    started: 0,
+    succeeded,
+    failed: 0,
+    cast_time_ms: 0,
+    sequence,
+  });
+  const twoPulls = [fight(1, 'Kryxis', false, 10_000), fight(2, 'Kryxis', true, 10_000)];
+
+  it('folds a pet resummoned in another pull into one row', () => {
+    const one = { ...summary(1, 10_000, []), casts: [statue('pet-1', 2, [1000, 2000])] };
+    const two = { ...summary(2, 10_000, []), casts: [statue('pet-2', 3, [500, 600, 700])] };
+    const night = nightSummary(
+      twoPulls,
+      new Map([
+        [1, one],
+        [2, two],
+      ]),
+    );
+    expect(night.casts).toHaveLength(1);
+    expect(night.casts[0]).toMatchObject({ succeeded: 5, name: 'Jade Serpent Statue' });
+    expect(night.casts[0].sequence).toHaveLength(5);
+  });
+
+  it('keeps two casters’ own rows apart', () => {
+    const one = {
+      ...summary(1, 10_000, []),
+      casts: [
+        { ...statue('H', 1, [10]), name: 'Sunwick', owner_guid: 'H' },
+        { ...statue('M', 1, [20]), name: 'Morrowlyn', owner_guid: 'M' },
+      ],
+    };
+    const night = nightSummary([twoPulls[0]], new Map([[1, one]]));
+    expect(night.casts).toHaveLength(2);
+  });
+});
+
 describe('nightSummary auras', () => {
   const track = (target_guid: string, target_name: string, spell_id: number) => ({
     target_guid,
