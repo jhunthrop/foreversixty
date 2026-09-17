@@ -8,8 +8,3 @@ export const API_BASE_URL: string = import.meta.env.PUBLIC_API_BASE_URL ?? 'http
 
 /** The class the planner opens on when the query string does not say otherwise. */
 export const DEFAULT_CLASS_SLUG = 'warrior';
-
-// PREBETA_BUILD and treeSourceNotice live in tree-source.ts, which carries no
-// import.meta.env dependency; re-exported here so existing importers (Planner.svelte)
-// need not change.
-export { PREBETA_BUILD, treeSourceNotice } from './tree-source';

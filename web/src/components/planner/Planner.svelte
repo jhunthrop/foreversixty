@@ -5,7 +5,7 @@
      under them; phone shows one panel at a time behind a tab switcher (Tasks 9 and 17). -->
 <script lang="ts">
   import { untrack } from 'svelte';
-  import { DEFAULT_CLASS_SLUG, treeSourceNotice } from '../../lib/planner/config';
+  import { DEFAULT_CLASS_SLUG } from '../../lib/planner/config';
   import { decodeFS1, orderFromRanks } from '../../lib/planner/fs1';
   import {
     DATA_LOAD_FAILED,
@@ -17,6 +17,7 @@
   } from '../../lib/planner/load';
   import { createPlannerStore } from '../../lib/planner/store.svelte';
   import { SECONDARY_BUTTON } from '../../lib/planner/styles';
+  import { treeSourceNotice } from '../../lib/planner/tree-source';
   import type { BuildRecord, TalentFile } from '../../lib/planner/types';
   import GearPanel from './GearPanel.svelte';
   import OrderStrip from './OrderStrip.svelte';
