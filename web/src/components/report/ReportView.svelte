@@ -65,24 +65,29 @@
   import ActorTable from './ActorTable.svelte';
   import AuraTable from './AuraTable.svelte';
   import CastTable from './CastTable.svelte';
-  import CompareMode from './CompareMode.svelte';
   import DeathsTab from './DeathsTab.svelte';
-  import EventsView from './EventsView.svelte';
   import ExchangeTable from './ExchangeTable.svelte';
   import FightSelector from './FightSelector.svelte';
   import FilterBar from './FilterBar.svelte';
-  import MechanicsMode from './MechanicsMode.svelte';
   import ModeBar from './ModeBar.svelte';
   import NightView from './NightView.svelte';
   import Glossary from './Glossary.svelte';
   import RaidCooldowns from './RaidCooldowns.svelte';
-  import QueriesView from './QueriesView.svelte';
-  import RankingsMode from './RankingsMode.svelte';
   import ResourceGraphs from './ResourceGraphs.svelte';
   import SummaryTab from './SummaryTab.svelte';
   import ThreatTable from './ThreatTable.svelte';
   import TimeChart from './TimeChart.svelte';
-  import TimelinesView from './TimelinesView.svelte';
+  import { createLazyComponent } from '../../lib/report/lazy-component.svelte';
+  // Compare, Mechanics, Rankings, Timelines, Events and Queries are not the landing mode or
+  // view (Analyze / tables / summary is), so each ships as its own chunk fetched the first
+  // time its mode or view is actually picked, instead of sitting in every visitor's initial
+  // bundle. See lazy-component.svelte.ts.
+  const compareModeLazy = createLazyComponent(() => import('./CompareMode.svelte'));
+  const mechanicsModeLazy = createLazyComponent(() => import('./MechanicsMode.svelte'));
+  const rankingsModeLazy = createLazyComponent(() => import('./RankingsMode.svelte'));
+  const timelinesViewLazy = createLazyComponent(() => import('./TimelinesView.svelte'));
+  const eventsViewLazy = createLazyComponent(() => import('./EventsView.svelte'));
+  const queriesViewLazy = createLazyComponent(() => import('./QueriesView.svelte'));
   import {
     abilityOptions,
     applyActorFilters,
@@ -99,19 +104,13 @@
   import { phaseAt } from '../../lib/rankings/phases';
   import { inSource, scopeSource } from '../../lib/report/source';
   import { splitUnitName } from '../../lib/characters';
-  import {
-    loadEventStream,
-    measureAbilitySeries,
-    measureCasts,
-    measureExact,
-    measureTable,
-    sharedQueryLayer,
-    type CastCounts,
-    type ExactSplit,
-    type DeadSpan,
-    type ExactTotals,
-    type TargetScope,
-  } from '../../lib/report/exact';
+  // Value imports from exact.ts are deliberately absent: it pulls in the DuckDB query layer
+  // (src/lib/report/query.ts), which dynamically imports the multi-hundred-KB duckdb-wasm
+  // package. None of that belongs in the initial bundle everyone pays for on load -- every
+  // call site below imports exact.ts itself, dynamically, the first time a measured feature
+  // is actually used. Only the types are imported statically; a type-only import is erased
+  // at build and costs nothing.
+  import type { CastCounts, ExactSplit, DeadSpan, ExactTotals, TargetScope } from '../../lib/report/exact';
   import { resolveTreeSizes } from '../../lib/report/tree-sizes';
   import { REPORT_SKELETON_HTML } from '../../lib/report/skeleton';
   import { classSlugOf } from '../../lib/report/planner-link';
@@ -226,7 +225,8 @@
     exclude: ignoringDead ? deadSpans : [],
     ability: filters.ability ?? undefined,
   });
-  function measureRow(actor: Actor): Promise<ExactSplit> {
+  async function measureRow(actor: Actor): Promise<ExactSplit> {
+    const { measureExact, sharedQueryLayer } = await import('../../lib/report/exact');
     return measureExact(
       sharedQueryLayer(),
       eventsUrl(dataBase, state.fight, engineVersion),
@@ -294,6 +294,7 @@
     tableMeasuring = true;
     tableMeasureError = '';
     try {
+      const { measureTable, sharedQueryLayer } = await import('../../lib/report/exact');
       const measured = await measureTable(
         sharedQueryLayer(),
         eventsUrl(dataBase, state.fight, engineVersion),
@@ -333,6 +334,7 @@
   });
   async function runCastMeasure(token: number): Promise<void> {
     try {
+      const { measureCasts, sharedQueryLayer } = await import('../../lib/report/exact');
       const measured = await measureCasts(
         sharedQueryLayer(),
         eventsUrl(dataBase, state.fight, engineVersion),
@@ -384,6 +386,7 @@
     const token = ++chartedToken;
     chartedError = '';
     try {
+      const { measureAbilitySeries, sharedQueryLayer } = await import('../../lib/report/exact');
       const series = await measureAbilitySeries(
         sharedQueryLayer(),
         eventsUrl(dataBase, state.fight, engineVersion),
@@ -1245,6 +1248,32 @@
     poller.start();
     return () => poller.stop();
   });
+
+  // Each of these mirrors the `{#if}` its component renders under, below: the import starts
+  // the moment the mode or view it belongs to is actually selected, not before, and `load()`
+  // is a no-op once the chunk has resolved so re-entering a mode already visited this session
+  // costs nothing further.
+  $effect(() => {
+    if (state.mode === 'compare' && summary !== null && !nightMode) compareModeLazy.load();
+  });
+  $effect(() => {
+    if (state.mode === 'mechanics' && base !== null) mechanicsModeLazy.load();
+  });
+  $effect(() => {
+    if (state.mode === 'rankings' && fight !== null) rankingsModeLazy.load();
+  });
+  $effect(() => {
+    if (scoped !== null && !nightMode && state.mode === 'analyze' && state.view === 'timelines')
+      timelinesViewLazy.load();
+  });
+  $effect(() => {
+    if (scoped !== null && !nightMode && state.mode === 'analyze' && state.view === 'events')
+      eventsViewLazy.load();
+  });
+  $effect(() => {
+    if (scoped !== null && !nightMode && state.mode === 'analyze' && state.view === 'queries')
+      queriesViewLazy.load();
+  });
 </script>
 
 {#snippet parseRetry()}
@@ -1640,8 +1669,8 @@
           >.
         </p>
       {/if}
-      {#if scoped !== null && !nightMode && state.mode === 'analyze' && state.view === 'timelines'}
-        <TimelinesView
+      {#if scoped !== null && !nightMode && state.mode === 'analyze' && state.view === 'timelines' && timelinesViewLazy.current}
+        <timelinesViewLazy.current
           summary={scoped}
           window={timeWindow}
           {classOf}
@@ -1658,8 +1687,8 @@
           ].sort((a, b) => a.localeCompare(b))}
         />
       {/if}
-      {#if scoped !== null && !nightMode && state.mode === 'analyze' && state.view === 'events'}
-        <EventsView
+      {#if scoped !== null && !nightMode && state.mode === 'analyze' && state.view === 'events' && eventsViewLazy.current}
+        <eventsViewLazy.current
           summary={windowed ?? scoped}
           {classOf}
           names={unitNames}
@@ -1669,22 +1698,24 @@
           onPatch={patch}
           loadStream={nightMode
             ? undefined
-            : () =>
-                loadEventStream(
+            : async () => {
+                const { loadEventStream, sharedQueryLayer } = await import('../../lib/report/exact');
+                return loadEventStream(
                   sharedQueryLayer(),
                   eventsUrl(dataBase, state.fight, engineVersion),
                   cutWindow,
-                )}
+                );
+              }}
         />
       {/if}
       <!-- `scoped` only to say a summary has loaded, the same guard its three siblings
            use; the Queries view reads the fight's events.parquet, not the summary, and
            takes the window so a starting point is written for what is on screen. -->
-      {#if scoped !== null && !nightMode && state.mode === 'analyze' && state.view === 'queries'}
-        <QueriesView dataBaseUrl={dataBase} fightIndex={state.fight} window={timeWindow} />
+      {#if scoped !== null && !nightMode && state.mode === 'analyze' && state.view === 'queries' && queriesViewLazy.current}
+        <queriesViewLazy.current dataBaseUrl={dataBase} fightIndex={state.fight} window={timeWindow} />
       {/if}
-      {#if state.mode === 'compare' && summary !== null && !nightMode}
-        <CompareMode
+      {#if state.mode === 'compare' && summary !== null && !nightMode && compareModeLazy.current}
+        <compareModeLazy.current
           {fights}
           current={state.fight}
           dataBaseUrl={dataBase}
@@ -1698,8 +1729,8 @@
           onPatch={patch}
         />
       {/if}
-      {#if state.mode === 'rankings' && fight !== null}
-        <RankingsMode
+      {#if state.mode === 'rankings' && fight !== null && rankingsModeLazy.current}
+        <rankingsModeLazy.current
           {fight}
           {reportId}
           encounterSlug={currentEncounterSlug}
@@ -1711,8 +1742,8 @@
       <!-- The whole fight, never the window and never the source scope: `base`, not
            `scoped`. Over the night `base` is the fold, which carries the night's
            mechanics, so the mode draws there too. -->
-      {#if state.mode === 'mechanics' && base !== null}
-        <MechanicsMode
+      {#if state.mode === 'mechanics' && base !== null && mechanicsModeLazy.current}
+        <mechanicsModeLazy.current
           summary={base}
           {classOf}
           {nightMode}
