@@ -4,7 +4,7 @@ from pathlib import Path
 
 from pipeline.__main__ import main
 from pipeline.normalize import normalize_build
-from pipeline.wago import TABLES
+from pipeline.wago import OPTIONAL_TABLES, TABLES
 
 HERE = Path(__file__).parent
 # classes.json and races.json are compared against the merged goldens below,
@@ -19,10 +19,11 @@ def prepare(tmp_path: Path) -> Path:
         fixture = HERE / "fixtures" / f"{table}.csv"
         if fixture.exists():
             shutil.copy(fixture, raw / f"{table}.csv")
-        else:
-            # normalize_build does not read this table yet (e.g. the trait tables
-            # fetched for the talent-tree rewrite); stub it the same way
-            # download_table stubs a 404'd optional table for a real build.
+        elif table in OPTIONAL_TABLES:
+            # download_table writes this same stub for a 404'd optional table, so the
+            # normalizer sees what a real Era build gives it. A required table with no
+            # fixture is left absent on purpose: a normalizer that starts reading one
+            # must bring its fixture, and this test fails loudly until it does.
             (raw / f"{table}.csv").write_text("ID\n", encoding="utf-8")
     meta = {"product": "test", "build": "1.0.0.1", "fetched_at": "t"}
     (raw / "_meta.json").write_text(json.dumps(meta))
@@ -45,9 +46,7 @@ def test_phase_0_entities_still_match_golden(tmp_path: Path):
 
 def test_classes_and_races_are_merged_with_the_curated_facts(tmp_path: Path):
     out = run(tmp_path)
-    assert (out / "classes.json").read_text() == (
-        HERE / "golden/classes_merged.json"
-    ).read_text()
+    assert (out / "classes.json").read_text() == (HERE / "golden/classes_merged.json").read_text()
     assert (out / "races.json").read_text() == (HERE / "golden/races_merged.json").read_text()
 
 
