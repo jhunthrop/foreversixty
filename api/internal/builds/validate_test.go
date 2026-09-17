@@ -1,6 +1,8 @@
 package builds
 
 import (
+	"os"
+	"path/filepath"
 	"reflect"
 	"testing"
 
@@ -167,6 +169,37 @@ func TestValidateAcceptsAFullyLoadedBuild(t *testing.T) {
 	})
 	if got != nil {
 		t.Fatalf("fields = %#v, want nil", got)
+	}
+}
+
+// A share link's tree_version does not move when a newer build becomes active: it keeps
+// validating against the build it was made on for as long as that build's data is loaded.
+// trees.Load reads every build directory under TREE_DATA_DIR, not just the newest, and
+// Validate resolves in.TreeVersion directly rather than through Data.Latest(). Prove both by
+// loading the same fixture data under two version names and validating against the one that
+// is not "latest".
+func TestValidateSucceedsAgainstAnOlderNonActiveTreeVersion(t *testing.T) {
+	root := t.TempDir()
+	source := filepath.Join(trees.FixtureDir(), "test-1")
+	for _, version := range []string{"2.0.0.1", "1.0.0.1"} {
+		if err := os.CopyFS(filepath.Join(root, version), os.DirFS(source)); err != nil {
+			t.Fatalf("copy fixture into %s: %v", version, err)
+		}
+	}
+	data, err := trees.Load(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if latest, ok := data.Latest(); !ok || latest.Version != "2.0.0.1" {
+		t.Fatalf("latest = %+v, ok=%v; want 2.0.0.1 so 1.0.0.1 is genuinely non-active", latest, ok)
+	}
+
+	got := Validate(data, Input{
+		ClassID: 1, RaceID: 1, TreeVersion: "1.0.0.1",
+		PointOrder: []int{101, 201},
+	})
+	if got != nil {
+		t.Fatalf("a share made against the older, non-active tree_version must still validate; fields = %#v", got)
 	}
 }
 
