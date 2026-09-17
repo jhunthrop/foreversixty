@@ -53,8 +53,8 @@ func TestLookupPicksRetailV16AndHonoursTheAdvancedFlag(t *testing.T) {
 	if !ok || off.Advanced != 0 {
 		t.Fatalf("advanced off: advanced=%d ok=%v", off.Advanced, ok)
 	}
-	if _, ok := Lookup(Header{Version: 22, ProjectID: 1, Advanced: true}); ok {
-		t.Fatal("Lookup matched a version with no row; v22 is not implemented")
+	if _, ok := Lookup(Header{Version: 23, ProjectID: 1, Advanced: true}); ok {
+		t.Fatal("Lookup matched a version with no row; v23 is not implemented")
 	}
 }
 
@@ -374,5 +374,229 @@ func TestInferIsDeterministicOverTheWholeRow(t *testing.T) {
 		if !bytes.Equal(got, want) {
 			t.Fatalf("run %d produced a different row:\n got %s\nwant %s", i, got, want)
 		}
+	}
+}
+
+func TestLookupPicksRetailV22(t *testing.T) {
+	on, ok := Lookup(Header{Version: 22, ProjectID: 1, Advanced: true})
+	if !ok || on.Name != "retail-v22" || on.Advanced != 19 {
+		t.Fatalf("advanced on: name=%q advanced=%d ok=%v", on.Name, on.Advanced, ok)
+	}
+	if !on.Verified {
+		t.Error("retail-v22 must be a verified row")
+	}
+	if !on.StampYear || !on.StampZone {
+		t.Errorf("stampYear=%v stampZone=%v, want both true", on.StampYear, on.StampZone)
+	}
+	off, ok := Lookup(Header{Version: 22, ProjectID: 1, Advanced: false})
+	if !ok || off.Advanced != 0 {
+		t.Fatalf("advanced off: advanced=%d ok=%v", off.Advanced, ok)
+	}
+	// v16 must still win for version 16.
+	v16, ok := Lookup(Header{Version: 16, ProjectID: 1, Advanced: true})
+	if !ok || v16.Name != "retail-v16" || v16.Advanced != 17 {
+		t.Fatalf("v16 selection regressed: name=%q advanced=%d", v16.Name, v16.Advanced)
+	}
+}
+
+// TestRetailV22WidthsMatchTheVerifiedCounts is the v22 twin of
+// TestRetailV16WidthsMatchTheVerifiedCounts. wantWidths is the complete set
+// the row accepts; the measured widths from the corpus must all be in it.
+func TestRetailV22WidthsMatchTheVerifiedCounts(t *testing.T) {
+	l := RetailV22()
+	for _, tc := range []struct {
+		event      string
+		wantWidths []int
+		wantAdvAt  int
+	}{
+		{"SPELL_DAMAGE", []int{41, 42}, 12},
+		{"SPELL_PERIODIC_DAMAGE", []int{41, 42}, 12},
+		{"RANGE_DAMAGE", []int{41, 42}, 12},
+		{"DAMAGE_SPLIT", []int{41, 42}, 12},
+		{"SWING_DAMAGE", []int{38, 39}, 9},
+		{"SWING_DAMAGE_LANDED", []int{38, 39}, 9},
+		{"SPELL_DAMAGE_SUPPORT", []int{42}, 12},
+		{"SPELL_PERIODIC_DAMAGE_SUPPORT", []int{42}, 12},
+		{"RANGE_DAMAGE_SUPPORT", []int{42}, 12},
+		{"SWING_DAMAGE_LANDED_SUPPORT", []int{42}, 12},
+		{"SPELL_HEAL", []int{36}, 12},
+		{"SPELL_PERIODIC_HEAL", []int{36}, 12},
+		{"SPELL_HEAL_SUPPORT", []int{37}, 12},
+		{"SPELL_PERIODIC_HEAL_SUPPORT", []int{37}, 12},
+		{"SPELL_ENERGIZE", []int{35}, 12},
+		{"SPELL_PERIODIC_ENERGIZE", []int{35}, 12},
+		{"SPELL_DRAIN", []int{35}, 12},
+		{"SPELL_CAST_SUCCESS", []int{31}, 12},
+		{"SPELL_CAST_START", []int{12}, -1},
+		{"SPELL_CAST_FAILED", []int{13}, -1},
+		{"SPELL_EMPOWER_START", []int{12}, -1},
+		{"SPELL_EMPOWER_END", []int{13}, -1},
+		{"SPELL_EMPOWER_INTERRUPT", []int{13}, -1},
+		{"SPELL_AURA_APPLIED", []int{13, 14, 15}, -1},
+		{"SPELL_AURA_REMOVED", []int{13, 14, 15}, -1},
+		{"SPELL_AURA_REFRESH", []int{13, 14, 15}, -1},
+		{"SPELL_AURA_APPLIED_DOSE", []int{14}, -1},
+		{"SPELL_AURA_BROKEN_SPELL", []int{16}, -1},
+		{"SPELL_INTERRUPT", []int{15}, -1},
+		{"SPELL_DISPEL", []int{16}, -1},
+		{"SPELL_STOLEN", []int{16}, -1},
+		{"SPELL_SUMMON", []int{12}, -1},
+		{"SPELL_CREATE", []int{12}, -1},
+		{"SPELL_RESURRECT", []int{12}, -1},
+		{"SPELL_INSTAKILL", []int{13}, -1},
+		{"SPELL_EXTRA_ATTACKS", []int{13}, -1},
+		{"SWING_MISSED", []int{11, 12, 13, 14, 15}, -1},
+		{"RANGE_MISSED", []int{14, 15, 16, 17, 18}, -1},
+		{"SPELL_MISSED", []int{14, 15, 16, 17, 18}, -1},
+		{"SPELL_PERIODIC_MISSED", []int{14, 15, 16, 17, 18}, -1},
+		{"DAMAGE_SHIELD_MISSED", []int{14, 15, 16, 17, 18}, -1},
+	} {
+		t.Run(tc.event, func(t *testing.T) {
+			prefix, suffix, ok := l.Split(tc.event)
+			if !ok {
+				t.Fatalf("Split(%q) = %q %q, not known", tc.event, prefix, suffix)
+			}
+			_, advAt := l.Width(prefix, suffix)
+			if advAt != tc.wantAdvAt {
+				t.Errorf("advAt = %d, want %d", advAt, tc.wantAdvAt)
+			}
+			got := l.Widths(prefix, suffix)
+			if len(got) != len(tc.wantWidths) {
+				t.Fatalf("widths = %v, want %v", got, tc.wantWidths)
+			}
+			for i := range got {
+				if got[i] != tc.wantWidths[i] {
+					t.Fatalf("widths = %v, want %v", got, tc.wantWidths)
+				}
+			}
+		})
+	}
+}
+
+// TestRetailV22AcceptsEveryMeasuredWidth ties the row back to the corpus
+// measurement: every (event, width) pair seen in 26,030,980 real lines must
+// be a width the row accepts, whether the event is a prefix/suffix shape or
+// a special.
+func TestRetailV22AcceptsEveryMeasuredWidth(t *testing.T) {
+	l := RetailV22()
+	for event, widths := range v22MeasuredWidths {
+		if event == "COMBAT_LOG_VERSION" {
+			continue // the header is parsed before the row is consulted
+		}
+		for _, w := range widths {
+			if s, ok := l.Specials[event]; ok {
+				if !s.Accepts(w) {
+					t.Errorf("special %s does not accept measured width %d (accepts %v)", event, w, s.Widths)
+				}
+				continue
+			}
+			prefix, suffix, known := l.Split(event)
+			if !known {
+				t.Errorf("%s is neither a special nor a known prefix/suffix on retail-v22", event)
+				continue
+			}
+			found := false
+			for _, got := range l.Widths(prefix, suffix) {
+				if got == w {
+					found = true
+				}
+			}
+			if !found {
+				t.Errorf("%s width %d is not accepted (row accepts %v)", event, w, l.Widths(prefix, suffix))
+			}
+		}
+	}
+}
+
+// TestRetailV16WidthsAreUnchangedByTheWidthsHelper guards the refactor: the
+// set of widths the v16 row accepts must be exactly what the decoder
+// accepted before Widths existed.
+func TestRetailV16WidthsAreUnchangedByTheWidthsHelper(t *testing.T) {
+	l := RetailV16()
+	for _, tc := range []struct {
+		event string
+		want  []int
+	}{
+		{"SPELL_DAMAGE", []int{39}},
+		{"SWING_DAMAGE", []int{36}},
+		{"SPELL_HEAL", []int{34}},
+		{"SPELL_ENERGIZE", []int{33}},
+		{"SPELL_CAST_SUCCESS", []int{29}},
+		{"SPELL_MISSED", []int{14, 17}},
+		{"SWING_MISSED", []int{11, 14}},
+		{"SPELL_AURA_APPLIED", []int{13, 14}},
+		{"SPELL_AURA_APPLIED_DOSE", []int{14}},
+		{"SPELL_AURA_BROKEN_SPELL", []int{16}},
+	} {
+		t.Run(tc.event, func(t *testing.T) {
+			prefix, suffix, ok := l.Split(tc.event)
+			if !ok {
+				t.Fatalf("Split(%q) failed", tc.event)
+			}
+			got := l.Widths(prefix, suffix)
+			if len(got) != len(tc.want) {
+				t.Fatalf("widths = %v, want %v", got, tc.want)
+			}
+			for i := range got {
+				if got[i] != tc.want[i] {
+					t.Fatalf("widths = %v, want %v", got, tc.want)
+				}
+			}
+		})
+	}
+}
+
+// TestSplitPrefersThePrefixThatLeavesAKnownSuffix is the rule that lets the
+// v22 row register both SWING and SWING_DAMAGE_LANDED without the longer
+// one swallowing the shorter one's events.
+func TestSplitPrefersThePrefixThatLeavesAKnownSuffix(t *testing.T) {
+	l := RetailV22()
+	for _, tc := range []struct{ event, prefix, suffix string }{
+		{"SWING_DAMAGE_LANDED", "SWING", "_DAMAGE_LANDED"},
+		{"SWING_DAMAGE_LANDED_SUPPORT", "SWING_DAMAGE_LANDED", "_SUPPORT"},
+		{"SPELL_DAMAGE", "SPELL", "_DAMAGE"},
+		{"SPELL_DAMAGE_SUPPORT", "SPELL_DAMAGE", "_SUPPORT"},
+		{"SPELL_PERIODIC_DAMAGE", "SPELL_PERIODIC", "_DAMAGE"},
+		{"SPELL_PERIODIC_DAMAGE_SUPPORT", "SPELL_PERIODIC_DAMAGE", "_SUPPORT"},
+		{"RANGE_DAMAGE", "RANGE", "_DAMAGE"},
+		{"RANGE_DAMAGE_SUPPORT", "RANGE_DAMAGE", "_SUPPORT"},
+		{"SPELL_HEAL", "SPELL", "_HEAL"},
+		{"SPELL_HEAL_SUPPORT", "SPELL", "_HEAL_SUPPORT"},
+		{"DAMAGE_SPLIT", "DAMAGE", "_SPLIT"},
+		{"DAMAGE_SHIELD_MISSED", "DAMAGE_SHIELD", "_MISSED"},
+	} {
+		t.Run(tc.event, func(t *testing.T) {
+			prefix, suffix, ok := l.Split(tc.event)
+			if !ok || prefix != tc.prefix || suffix != tc.suffix {
+				t.Fatalf("Split(%q) = %q %q ok=%v, want %q %q true",
+					tc.event, prefix, suffix, ok, tc.prefix, tc.suffix)
+			}
+		})
+	}
+}
+
+// TestSplitIsUnchangedForRetailV16 is the other half: the new rule must not
+// move a single v16 event.
+func TestSplitIsUnchangedForRetailV16(t *testing.T) {
+	l := RetailV16()
+	for _, tc := range []struct {
+		event, prefix, suffix string
+		ok                    bool
+	}{
+		{"SPELL_DAMAGE", "SPELL", "_DAMAGE", true},
+		{"SPELL_PERIODIC_DAMAGE", "SPELL_PERIODIC", "_DAMAGE", true},
+		{"SPELL_BUILDING_DAMAGE", "SPELL_BUILDING", "_DAMAGE", true},
+		{"SWING_DAMAGE_LANDED", "SWING", "_DAMAGE_LANDED", true},
+		{"SPELL_AURA_APPLIED_DOSE", "SPELL", "_AURA_APPLIED_DOSE", true},
+		{"SPELL_MADE_UP", "SPELL", "_MADE_UP", false},
+		{"NOT_AN_EVENT", "", "", false},
+	} {
+		t.Run(tc.event, func(t *testing.T) {
+			prefix, suffix, ok := l.Split(tc.event)
+			if ok != tc.ok || prefix != tc.prefix || suffix != tc.suffix {
+				t.Fatalf("Split(%q) = %q %q ok=%v, want %q %q %v",
+					tc.event, prefix, suffix, ok, tc.prefix, tc.suffix, tc.ok)
+			}
+		})
 	}
 }

@@ -35,6 +35,23 @@ type Suffix struct {
 	OffHand     bool // a trailing isOffHand that may be absent
 	BaseAmount  bool // the damage suffix carries the unmodified base amount at index 1
 	HealedToHP  bool // the heal suffix carries healedToHP at index 0
+	// Tag marks a suffix whose line may end in the single-target / area
+	// tag, the two-valued field combat-log version 22 writes as "ST" or
+	// "AOE". It is optional because the same suffix is written with the
+	// tag under a SPELL prefix and without it under SWING, and because
+	// RANGE writes it on _DAMAGE but not on _MISSED. No prefix rule fits
+	// all four cases, so the decoder recognises the tag by its value; see
+	// isScopeTag in the event package.
+	Tag bool
+	// MissAmount marks a _MISSED suffix that carries one extra field, the
+	// amount missed, when the miss type is BLOCK or RESIST. ABSORB's three
+	// extras are counted by AbsorbExtra and are unaffected.
+	MissAmount bool
+	// AuraExtra marks an aura suffix that may carry a second trailing
+	// number after the absorb size. Version 22 writes two where version 16
+	// writes one; the second one's meaning is not pinned, so it is
+	// counted and not read.
+	AuraExtra bool
 }
 
 // Special describes an event that does not follow the prefix/suffix pattern.
@@ -66,9 +83,16 @@ type Combatant struct {
 	SpecIndex      int
 	TalentIndex    int
 	PvPTalentIndex int
-	BorrowIndex    int
-	GearIndex      int
-	AuraIndex      int
+	// BorrowIndex is the borrowed-power field, or 0 when the dialect
+	// writes none. Zero is unambiguous: field 0 is always the event name.
+	BorrowIndex int
+	GearIndex   int
+	AuraIndex   int
+	// StatIndex maps a stat name to the field that holds it. The names are
+	// the keys the decoder publishes in Combatant.Stats. A dialect that
+	// does not write a stat leaves it out of the map rather than pointing
+	// it at a field that means something else.
+	StatIndex map[string]int
 }
 
 // Layout is one dialect.
@@ -121,7 +145,7 @@ func ParseHeader(ln lexer.Line) (Header, bool) {
 }
 
 // rows is the table, most specific first.
-var rows = []Layout{RetailV16(), ClassicWiki()}
+var rows = []Layout{RetailV22(), RetailV16(), ClassicWiki()}
 
 // Lookup returns the row for a header, and whether one matched.
 func Lookup(h Header) (Layout, bool) {
@@ -144,10 +168,26 @@ func Lookup(h Header) (Layout, bool) {
 // Rows returns every registered row, for the conformance command.
 func Rows() []Layout { return append([]Layout(nil), rows...) }
 
-// Split separates an event name into its prefix and suffix using the longest
-// registered prefix. Events handled by Specials must be checked first.
+// Split separates an event name into its prefix and suffix. The winner is
+// the longest registered prefix whose remainder is a suffix this row knows,
+// which is what lets a row register both "SWING" and "SWING_DAMAGE_LANDED"
+// without the longer one swallowing the shorter one's events. When no
+// prefix leaves a known suffix the longest prefix match is reported with
+// ok false, so the caller's error names the closest thing the row knows.
+// Events handled by Specials must be checked first.
 func (l Layout) Split(event string) (prefix, suffix string, ok bool) {
-	best := ""
+	best, bestSuffix := "", ""
+	for p := range l.Prefixes {
+		if len(p) <= len(best) || !strings.HasPrefix(event, p) {
+			continue
+		}
+		if _, known := l.Suffixes[event[len(p):]]; known {
+			best, bestSuffix = p, event[len(p):]
+		}
+	}
+	if best != "" {
+		return best, bestSuffix, true
+	}
 	for p := range l.Prefixes {
 		if strings.HasPrefix(event, p) && len(p) > len(best) {
 			best = p
@@ -156,11 +196,7 @@ func (l Layout) Split(event string) (prefix, suffix string, ok bool) {
 	if best == "" {
 		return "", "", false
 	}
-	rest := event[len(best):]
-	if _, known := l.Suffixes[rest]; !known {
-		return best, rest, false
-	}
-	return best, rest, true
+	return best, event[len(best):], false
 }
 
 // Width returns the total field count an event of this shape must have, and
@@ -175,6 +211,57 @@ func (l Layout) Width(prefix, suffix string) (width, advAt int) {
 		width += l.Advanced
 	}
 	return width + s.Params, advAt
+}
+
+// Widths returns every total field count this row accepts for a shape, in
+// ascending order. Width gives the base count the row's arithmetic
+// produces; the optional trailing fields a dialect may or may not write
+// (an absorb's extras, a Classic isOffHand, an aura's absorb size, version
+// 22's single-target tag) turn that one number into a small set. The
+// decoder checks membership in this set; the layout tests check the set
+// against the counts measured on real logs.
+func (l Layout) Widths(prefix, suffix string) []int {
+	base, _ := l.Width(prefix, suffix)
+	s := l.Suffixes[suffix]
+	widths := []int{base}
+	if s.AbsorbExtra > 0 {
+		widths = append(widths, base+s.AbsorbExtra)
+	}
+	if s.MissAmount {
+		widths = append(widths, base+1)
+	}
+	if s.OffHand {
+		widths = append(widths, base+1)
+	}
+	if AuraCarriesAmount(suffix) {
+		widths = append(widths, base+1)
+		if s.AuraExtra {
+			widths = append(widths, base+2)
+		}
+	}
+	if s.Tag {
+		for _, w := range append([]int(nil), widths...) {
+			widths = append(widths, w+1)
+		}
+	}
+	sort.Ints(widths)
+	out := widths[:0]
+	for i, w := range widths {
+		if i == 0 || w != widths[i-1] {
+			out = append(out, w)
+		}
+	}
+	return out
+}
+
+// AuraCarriesAmount reports whether an aura suffix may be followed by the
+// size of the absorb the aura provides. The dose suffixes carry a stack
+// count in a field of their own and _AURA_BROKEN_SPELL carries the
+// breaking spell, so neither takes the optional amount.
+func AuraCarriesAmount(suffix string) bool {
+	return strings.HasPrefix(suffix, "_AURA_") &&
+		!strings.HasSuffix(suffix, "_DOSE") &&
+		suffix != "_AURA_BROKEN_SPELL"
 }
 
 // ParseStamp turns a timestamp into a time. prev is the time of the previous
