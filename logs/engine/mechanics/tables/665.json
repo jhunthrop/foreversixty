@@ -1,0 +1,8 @@
+{
+  "encounter_id": 665,
+  "name": "Gehennas",
+  "mechanics": [
+    { "spell_id": 19716, "name": "Gehennas' Curse", "kind": "dispel", "note": "Curse cutting healing on everyone in range; left up, the healers are working at a quarter strength." },
+    { "spell_id": 19717, "name": "Rain of Fire", "kind": "avoidable", "note": "Burns a patch of floor for several seconds; move out of it." }
+  ]
+}

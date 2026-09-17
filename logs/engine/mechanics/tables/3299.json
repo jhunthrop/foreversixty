@@ -1,0 +1,8 @@
+{
+  "encounter_id": 3299,
+  "name": "Fel Ancient",
+  "mechanics": [
+    { "spell_id": 1240706, "name": "Fel Timbers", "kind": "avoidable", "note": "The vines' hit: it catches everyone within a few yards of the player they were sent at, so spread." },
+    { "spell_id": 1263985, "name": "Fel Timbers", "kind": "avoidable", "note": "The fumes the same cast leaves on the ground afterwards; they only tick on whoever stays in them." }
+  ]
+}
