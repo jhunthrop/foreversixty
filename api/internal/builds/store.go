@@ -50,7 +50,7 @@ func (s *Store) Save(ctx context.Context, b Build) (Build, bool, error) {
 	if err != nil {
 		return Build{}, false, err
 	}
-	order, err := smallints(b.PointOrder)
+	order, err := integers(b.PointOrder)
 	if err != nil {
 		return Build{}, false, err
 	}
@@ -113,7 +113,7 @@ func (s *Store) Get(ctx context.Context, id string) (Build, error) {
 	b := Build{ID: id}
 	var (
 		classID, raceID int16
-		order           []int16
+		order           []int32
 		title           *string
 	)
 	err := s.Pool.QueryRow(ctx,
@@ -163,7 +163,7 @@ func (s *Store) GetMany(ctx context.Context, ids []string) (map[string]Build, er
 		var (
 			b               Build
 			classID, raceID int16
-			order           []int16
+			order           []int32
 			title           *string
 		)
 		if err := rows.Scan(&b.ID, &classID, &raceID, &b.TreeVersion, &order, &b.Gear, &title,
@@ -224,10 +224,20 @@ func smallint(v int, name string) (int16, error) {
 	return int16(v), nil
 }
 
-func smallints(in []int) ([]int16, error) {
-	out := make([]int16, len(in))
+// integer converts a validated talent id to point_order's element type. The
+// column is integer, not smallint, because the beta client's trait node ids
+// run into six digits, well past a smallint's range.
+func integer(v int, name string) (int32, error) {
+	if v < math.MinInt32 || v > math.MaxInt32 {
+		return 0, fmt.Errorf("builds: %s %d does not fit an integer column", name, v)
+	}
+	return int32(v), nil
+}
+
+func integers(in []int) ([]int32, error) {
+	out := make([]int32, len(in))
 	for i, v := range in {
-		s, err := smallint(v, "talent id")
+		s, err := integer(v, "talent id")
 		if err != nil {
 			return nil, err
 		}

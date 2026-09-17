@@ -3,7 +3,9 @@ package builds
 import (
 	"context"
 	"errors"
+	"math"
 	"os"
+	"slices"
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/api/internal/db"
@@ -219,6 +221,54 @@ func TestStoreGetManyOfNoIDsIsEmptyAndMakesNoQuery(t *testing.T) {
 	}
 }
 
+// TestStoreSaveRoundTripsASixDigitTalentID pins the fix for the beta
+// client's build failures: its trees use trait node ids running into six
+// digits (see data/builds/1.60.1.69893/talents/hunter.json), past a
+// smallint's range, which made every save on those trees 500.
+func TestStoreSaveRoundTripsASixDigitTalentID(t *testing.T) {
+	s := testStore(t)
+	ctx := context.Background()
+
+	b, err := New(Input{
+		ClassID: 1, RaceID: 1, TreeVersion: "test-1",
+		PointOrder: []int{104960},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	saved, created, err := s.Save(ctx, b)
+	if err != nil || !created {
+		t.Fatalf("save: created=%v err=%v", created, err)
+	}
+
+	got, err := s.Get(ctx, saved.ID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !slices.Equal(got.PointOrder, []int{104960}) {
+		t.Fatalf("point_order = %v, want [104960]", got.PointOrder)
+	}
+}
+
+// TestStoreSaveRejectsATalentIDAboveTheIntegerColumn guards the other side
+// of the widened column: a talent id past math.MaxInt32 still cannot be
+// stored, and Save must say so clearly rather than truncate it silently.
+func TestStoreSaveRejectsATalentIDAboveTheIntegerColumn(t *testing.T) {
+	s := testStore(t)
+	ctx := context.Background()
+
+	b, err := New(Input{
+		ClassID: 1, RaceID: 1, TreeVersion: "test-1",
+		PointOrder: []int{math.MaxInt32 + 1},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, _, err := s.Save(ctx, b); err == nil {
+		t.Fatal("want an error for a talent id that does not fit an integer column")
+	}
+}
+
 func TestStoreAddViewsIncrementsEachID(t *testing.T) {
 	s := testStore(t)
 	ctx := context.Background()
@@ -249,5 +299,56 @@ func TestStoreAddViewsIncrementsEachID(t *testing.T) {
 	got, err = s.Get(ctx, two.ID)
 	if err != nil || got.Views != 1 {
 		t.Fatalf("views = %d err=%v, want 1", got.Views, err)
+	}
+}
+
+// The rest of this file tests the smallint/integer conversion helpers
+// directly, so the bounds check runs in every environment even without
+// TEST_DATABASE_URL set.
+
+func TestIntegerAcceptsTheFullInt32RangeIncludingASixDigitTalentID(t *testing.T) {
+	for _, v := range []int{math.MinInt32, 0, 104960, math.MaxInt32} {
+		got, err := integer(v, "talent id")
+		if err != nil {
+			t.Fatalf("integer(%d): %v", v, err)
+		}
+		if int(got) != v {
+			t.Fatalf("integer(%d) = %d, want %d", v, got, v)
+		}
+	}
+}
+
+func TestIntegerRejectsValuesOutsideInt32(t *testing.T) {
+	for _, v := range []int{math.MaxInt32 + 1, math.MinInt32 - 1} {
+		if _, err := integer(v, "talent id"); err == nil {
+			t.Fatalf("integer(%d): want an error, got nil", v)
+		}
+	}
+}
+
+func TestIntegersConvertsEveryElement(t *testing.T) {
+	got, err := integers([]int{101, 104960, 201})
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := []int32{101, 104960, 201}
+	if !slices.Equal(got, want) {
+		t.Fatalf("integers = %v, want %v", got, want)
+	}
+}
+
+func TestIntegersRejectsAnOutOfRangeElement(t *testing.T) {
+	if _, err := integers([]int{101, math.MaxInt32 + 1}); err == nil {
+		t.Fatal("integers: want an error for an out-of-range talent id")
+	}
+}
+
+func TestSmallintStillRejectsAndAcceptsInt16Bounds(t *testing.T) {
+	if _, err := smallint(math.MaxInt16+1, "class_id"); err == nil {
+		t.Fatal("smallint: want an error above math.MaxInt16")
+	}
+	got, err := smallint(1, "class_id")
+	if err != nil || got != 1 {
+		t.Fatalf("smallint(1) = %d, err=%v", got, err)
 	}
 }
