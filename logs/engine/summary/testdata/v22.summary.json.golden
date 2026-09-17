@@ -16330,6 +16330,7 @@
     {
       "guid": "Creature-0-3017-980-4755-103822-0000451F5A",
       "name": "Treant",
+      "owner_guid": "Player-76-0C1789E9",
       "spell_id": 428545,
       "spell_name": "Moonfire",
       "started": 0,
@@ -16344,6 +16345,7 @@
     {
       "guid": "Creature-0-3017-980-4755-103822-0000451F5A",
       "name": "Treant",
+      "owner_guid": "Player-76-0C1789E9",
       "spell_id": 428735,
       "spell_name": "Harmony of the Grove",
       "started": 0,
@@ -16357,6 +16359,7 @@
     {
       "guid": "Creature-0-3017-980-4755-103822-0000451F5A",
       "name": "Treant",
+      "owner_guid": "Player-76-0C1789E9",
       "spell_id": 449001,
       "spell_name": "Power of Nature",
       "started": 0,
@@ -16370,6 +16373,7 @@
     {
       "guid": "Creature-0-3017-980-4755-103822-0000451F78",
       "name": "Treant",
+      "owner_guid": "Player-76-0C1789E9",
       "spell_id": 428545,
       "spell_name": "Moonfire",
       "started": 0,
@@ -16383,6 +16387,7 @@
     {
       "guid": "Creature-0-3017-980-4755-103822-0000451F78",
       "name": "Treant",
+      "owner_guid": "Player-76-0C1789E9",
       "spell_id": 428735,
       "spell_name": "Harmony of the Grove",
       "started": 0,
@@ -16396,6 +16401,7 @@
     {
       "guid": "Creature-0-3017-980-4755-103822-0000451F78",
       "name": "Treant",
+      "owner_guid": "Player-76-0C1789E9",
       "spell_id": 449001,
       "spell_name": "Power of Nature",
       "started": 0,
@@ -16409,6 +16415,7 @@
     {
       "guid": "Creature-0-3017-980-4755-103822-0000451F79",
       "name": "Treant",
+      "owner_guid": "Player-76-0C1789E9",
       "spell_id": 428545,
       "spell_name": "Moonfire",
       "started": 0,
@@ -16422,6 +16429,7 @@
     {
       "guid": "Creature-0-3017-980-4755-103822-0000451F79",
       "name": "Treant",
+      "owner_guid": "Player-76-0C1789E9",
       "spell_id": 428735,
       "spell_name": "Harmony of the Grove",
       "started": 0,
@@ -16435,6 +16443,7 @@
     {
       "guid": "Creature-0-3017-980-4755-103822-0000451F79",
       "name": "Treant",
+      "owner_guid": "Player-76-0C1789E9",
       "spell_id": 449001,
       "spell_name": "Power of Nature",
       "started": 0,
@@ -16448,6 +16457,7 @@
     {
       "guid": "Creature-0-3017-980-4755-103822-0000C51F5A",
       "name": "Treant",
+      "owner_guid": "Player-76-0C1789E9",
       "spell_id": 428545,
       "spell_name": "Moonfire",
       "started": 0,
@@ -16462,6 +16472,7 @@
     {
       "guid": "Creature-0-3017-980-4755-103822-0000C51F5A",
       "name": "Treant",
+      "owner_guid": "Player-76-0C1789E9",
       "spell_id": 428735,
       "spell_name": "Harmony of the Grove",
       "started": 0,
@@ -16475,6 +16486,7 @@
     {
       "guid": "Creature-0-3017-980-4755-103822-0000C51F5A",
       "name": "Treant",
+      "owner_guid": "Player-76-0C1789E9",
       "spell_id": 449001,
       "spell_name": "Power of Nature",
       "started": 0,
@@ -16488,6 +16500,7 @@
     {
       "guid": "Creature-0-3017-980-4755-103822-0000C51F78",
       "name": "Treant",
+      "owner_guid": "Player-76-0C1789E9",
       "spell_id": 428545,
       "spell_name": "Moonfire",
       "started": 0,
@@ -16501,6 +16514,7 @@
     {
       "guid": "Creature-0-3017-980-4755-103822-0000C51F78",
       "name": "Treant",
+      "owner_guid": "Player-76-0C1789E9",
       "spell_id": 428735,
       "spell_name": "Harmony of the Grove",
       "started": 0,
@@ -16514,6 +16528,7 @@
     {
       "guid": "Creature-0-3017-980-4755-103822-0000C51F78",
       "name": "Treant",
+      "owner_guid": "Player-76-0C1789E9",
       "spell_id": 449001,
       "spell_name": "Power of Nature",
       "started": 0,
@@ -16527,6 +16542,7 @@
     {
       "guid": "Creature-0-3017-980-4755-103822-0001451F5A",
       "name": "Treant",
+      "owner_guid": "Player-76-0C1789E9",
       "spell_id": 428545,
       "spell_name": "Moonfire",
       "started": 0,
@@ -16541,6 +16557,7 @@
     {
       "guid": "Creature-0-3017-980-4755-103822-0001451F5A",
       "name": "Treant",
+      "owner_guid": "Player-76-0C1789E9",
       "spell_id": 428735,
       "spell_name": "Harmony of the Grove",
       "started": 0,
@@ -16554,6 +16571,7 @@
     {
       "guid": "Creature-0-3017-980-4755-103822-0001451F5A",
       "name": "Treant",
+      "owner_guid": "Player-76-0C1789E9",
       "spell_id": 449001,
       "spell_name": "Power of Nature",
       "started": 0,
@@ -16567,6 +16585,7 @@
     {
       "guid": "Creature-0-3017-980-4755-255153-0000451F5F",
       "name": "Dark Minion",
+      "owner_guid": "Creature-0-3017-980-4755-255153-0000451F5F",
       "spell_id": 1264357,
       "spell_name": "Shoot",
       "started": 8,
@@ -16586,6 +16605,7 @@
     {
       "guid": "Creature-0-3017-980-4755-255261-0000451F55",
       "name": "Dryad",
+      "owner_guid": "Creature-0-3017-980-4755-255261-0000451F55",
       "spell_id": 1264677,
       "spell_name": "Starsurge",
       "started": 5,
@@ -16603,6 +16623,7 @@
     {
       "guid": "Creature-0-3017-980-4755-255261-0000451F6B",
       "name": "Dryad",
+      "owner_guid": "Creature-0-3017-980-4755-255261-0000451F6B",
       "spell_id": 1264677,
       "spell_name": "Starsurge",
       "started": 3,
@@ -16617,6 +16638,7 @@
     {
       "guid": "Creature-0-3017-980-4755-60561-0000451F6C",
       "name": "Earthgrab Totem",
+      "owner_guid": "Player-3676-06EC6282",
       "spell_id": 64695,
       "spell_name": "Earthgrab",
       "started": 0,
@@ -16630,6 +16652,7 @@
     {
       "guid": "Player-11-0E93D4E2",
       "name": "Skiimaster-Tichondrius-US",
+      "owner_guid": "Player-11-0E93D4E2",
       "spell_id": 17,
       "spell_name": "Power Word: Shield",
       "started": 0,
@@ -16644,6 +16667,7 @@
     {
       "guid": "Player-11-0E93D4E2",
       "name": "Skiimaster-Tichondrius-US",
+      "owner_guid": "Player-11-0E93D4E2",
       "spell_id": 585,
       "spell_name": "Smite",
       "started": 1,
@@ -16655,6 +16679,7 @@
     {
       "guid": "Player-11-0E93D4E2",
       "name": "Skiimaster-Tichondrius-US",
+      "owner_guid": "Player-11-0E93D4E2",
       "spell_id": 586,
       "spell_name": "Fade",
       "started": 0,
@@ -16668,6 +16693,7 @@
     {
       "guid": "Player-11-0E93D4E2",
       "name": "Skiimaster-Tichondrius-US",
+      "owner_guid": "Player-11-0E93D4E2",
       "spell_id": 589,
       "spell_name": "Shadow Word: Pain",
       "started": 0,
@@ -16684,6 +16710,7 @@
     {
       "guid": "Player-11-0E93D4E2",
       "name": "Skiimaster-Tichondrius-US",
+      "owner_guid": "Player-11-0E93D4E2",
       "spell_id": 2061,
       "spell_name": "Flash Heal",
       "started": 1,
@@ -16697,6 +16724,7 @@
     {
       "guid": "Player-11-0E93D4E2",
       "name": "Skiimaster-Tichondrius-US",
+      "owner_guid": "Player-11-0E93D4E2",
       "spell_id": 8092,
       "spell_name": "Mind Blast",
       "started": 1,
@@ -16710,6 +16738,7 @@
     {
       "guid": "Player-11-0E93D4E2",
       "name": "Skiimaster-Tichondrius-US",
+      "owner_guid": "Player-11-0E93D4E2",
       "spell_id": 8122,
       "spell_name": "Psychic Scream",
       "started": 0,
@@ -16723,6 +16752,7 @@
     {
       "guid": "Player-11-0E93D4E2",
       "name": "Skiimaster-Tichondrius-US",
+      "owner_guid": "Player-11-0E93D4E2",
       "spell_id": 10060,
       "spell_name": "Power Infusion",
       "started": 0,
@@ -16737,6 +16767,7 @@
     {
       "guid": "Player-11-0E93D4E2",
       "name": "Skiimaster-Tichondrius-US",
+      "owner_guid": "Player-11-0E93D4E2",
       "spell_id": 19236,
       "spell_name": "Desperate Prayer",
       "started": 0,
@@ -16750,6 +16781,7 @@
     {
       "guid": "Player-11-0E93D4E2",
       "name": "Skiimaster-Tichondrius-US",
+      "owner_guid": "Player-11-0E93D4E2",
       "spell_id": 33206,
       "spell_name": "Pain Suppression",
       "started": 0,
@@ -16764,6 +16796,7 @@
     {
       "guid": "Player-11-0E93D4E2",
       "name": "Skiimaster-Tichondrius-US",
+      "owner_guid": "Player-11-0E93D4E2",
       "spell_id": 47540,
       "spell_name": "Penance",
       "started": 0,
@@ -16779,6 +16812,7 @@
     {
       "guid": "Player-11-0E93D4E2",
       "name": "Skiimaster-Tichondrius-US",
+      "owner_guid": "Player-11-0E93D4E2",
       "spell_id": 121536,
       "spell_name": "Angelic Feather",
       "started": 0,
@@ -16792,6 +16826,7 @@
     {
       "guid": "Player-11-0E93D4E2",
       "name": "Skiimaster-Tichondrius-US",
+      "owner_guid": "Player-11-0E93D4E2",
       "spell_id": 194509,
       "spell_name": "Power Word: Radiance",
       "started": 2,
@@ -16806,6 +16841,7 @@
     {
       "guid": "Player-11-0E93D4E2",
       "name": "Skiimaster-Tichondrius-US",
+      "owner_guid": "Player-11-0E93D4E2",
       "spell_id": 421453,
       "spell_name": "Ultimate Penitence",
       "started": 1,
@@ -16819,6 +16855,7 @@
     {
       "guid": "Player-11-0E93D4E2",
       "name": "Skiimaster-Tichondrius-US",
+      "owner_guid": "Player-11-0E93D4E2",
       "spell_id": 472433,
       "spell_name": "Evangelism",
       "started": 0,
@@ -16832,6 +16869,7 @@
     {
       "guid": "Player-1136-09362954",
       "name": "Tyrim-Aegwynn-US",
+      "owner_guid": "Player-1136-09362954",
       "spell_id": 100,
       "spell_name": "Charge",
       "started": 0,
@@ -16846,6 +16884,7 @@
     {
       "guid": "Player-1136-09362954",
       "name": "Tyrim-Aegwynn-US",
+      "owner_guid": "Player-1136-09362954",
       "spell_id": 772,
       "spell_name": "Rend",
       "started": 0,
@@ -16859,6 +16898,7 @@
     {
       "guid": "Player-1136-09362954",
       "name": "Tyrim-Aegwynn-US",
+      "owner_guid": "Player-1136-09362954",
       "spell_id": 5308,
       "spell_name": "Execute",
       "started": 0,
@@ -16874,6 +16914,7 @@
     {
       "guid": "Player-1136-09362954",
       "name": "Tyrim-Aegwynn-US",
+      "owner_guid": "Player-1136-09362954",
       "spell_id": 23881,
       "spell_name": "Bloodthirst",
       "started": 0,
@@ -16888,6 +16929,7 @@
     {
       "guid": "Player-1136-09362954",
       "name": "Tyrim-Aegwynn-US",
+      "owner_guid": "Player-1136-09362954",
       "spell_id": 85288,
       "spell_name": "Raging Blow",
       "started": 0,
@@ -16909,6 +16951,7 @@
     {
       "guid": "Player-1136-09362954",
       "name": "Tyrim-Aegwynn-US",
+      "owner_guid": "Player-1136-09362954",
       "spell_id": 107570,
       "spell_name": "Storm Bolt",
       "started": 0,
@@ -16922,6 +16965,7 @@
     {
       "guid": "Player-1136-09362954",
       "name": "Tyrim-Aegwynn-US",
+      "owner_guid": "Player-1136-09362954",
       "spell_id": 126664,
       "spell_name": "Charge",
       "started": 0,
@@ -16936,6 +16980,7 @@
     {
       "guid": "Player-1136-09362954",
       "name": "Tyrim-Aegwynn-US",
+      "owner_guid": "Player-1136-09362954",
       "spell_id": 184367,
       "spell_name": "Rampage",
       "started": 0,
@@ -16951,6 +16996,7 @@
     {
       "guid": "Player-1136-09362954",
       "name": "Tyrim-Aegwynn-US",
+      "owner_guid": "Player-1136-09362954",
       "spell_id": 190411,
       "spell_name": "Whirlwind",
       "started": 0,
@@ -16964,6 +17010,7 @@
     {
       "guid": "Player-1136-09362954",
       "name": "Tyrim-Aegwynn-US",
+      "owner_guid": "Player-1136-09362954",
       "spell_id": 384110,
       "spell_name": "Wrecking Throw",
       "started": 0,
@@ -16977,6 +17024,7 @@
     {
       "guid": "Player-3208-0E1007EF",
       "name": "Curujinha-Nemesis-US",
+      "owner_guid": "Player-3208-0E1007EF",
       "spell_id": 781,
       "spell_name": "Disengage",
       "started": 0,
@@ -16990,6 +17038,7 @@
     {
       "guid": "Player-3208-0E1007EF",
       "name": "Curujinha-Nemesis-US",
+      "owner_guid": "Player-3208-0E1007EF",
       "spell_id": 5116,
       "spell_name": "Concussive Shot",
       "started": 0,
@@ -17003,6 +17052,7 @@
     {
       "guid": "Player-3208-0E1007EF",
       "name": "Curujinha-Nemesis-US",
+      "owner_guid": "Player-3208-0E1007EF",
       "spell_id": 19434,
       "spell_name": "Aimed Shot",
       "started": 3,
@@ -17018,6 +17068,7 @@
     {
       "guid": "Player-3208-0E1007EF",
       "name": "Curujinha-Nemesis-US",
+      "owner_guid": "Player-3208-0E1007EF",
       "spell_id": 56641,
       "spell_name": "Steady Shot",
       "started": 1,
@@ -17031,6 +17082,7 @@
     {
       "guid": "Player-3208-0E1007EF",
       "name": "Curujinha-Nemesis-US",
+      "owner_guid": "Player-3208-0E1007EF",
       "spell_id": 109248,
       "spell_name": "Binding Shot",
       "started": 0,
@@ -17044,6 +17096,7 @@
     {
       "guid": "Player-3208-0E1007EF",
       "name": "Curujinha-Nemesis-US",
+      "owner_guid": "Player-3208-0E1007EF",
       "spell_id": 147362,
       "spell_name": "Counter Shot",
       "started": 0,
@@ -17057,6 +17110,7 @@
     {
       "guid": "Player-3208-0E1007EF",
       "name": "Curujinha-Nemesis-US",
+      "owner_guid": "Player-3208-0E1007EF",
       "spell_id": 185358,
       "spell_name": "Arcane Shot",
       "started": 0,
@@ -17074,6 +17128,7 @@
     {
       "guid": "Player-3208-0E1007EF",
       "name": "Curujinha-Nemesis-US",
+      "owner_guid": "Player-3208-0E1007EF",
       "spell_id": 187650,
       "spell_name": "Freezing Trap",
       "started": 0,
@@ -17087,6 +17142,7 @@
     {
       "guid": "Player-3208-0E1007EF",
       "name": "Curujinha-Nemesis-US",
+      "owner_guid": "Player-3208-0E1007EF",
       "spell_id": 257044,
       "spell_name": "Rapid Fire",
       "started": 0,
@@ -17102,6 +17158,7 @@
     {
       "guid": "Player-3208-0E1007EF",
       "name": "Curujinha-Nemesis-US",
+      "owner_guid": "Player-3208-0E1007EF",
       "spell_id": 336126,
       "spell_name": "Gladiator's Medallion",
       "started": 0,
@@ -17115,6 +17172,7 @@
     {
       "guid": "Player-3208-0E1007EF",
       "name": "Curujinha-Nemesis-US",
+      "owner_guid": "Player-3208-0E1007EF",
       "spell_id": 345228,
       "spell_name": "Gladiator's Badge",
       "started": 0,
@@ -17128,6 +17186,7 @@
     {
       "guid": "Player-3208-0E1007EF",
       "name": "Curujinha-Nemesis-US",
+      "owner_guid": "Player-3208-0E1007EF",
       "spell_id": 356719,
       "spell_name": "Chimaeral Sting",
       "started": 0,
@@ -17141,6 +17200,7 @@
     {
       "guid": "Player-3208-0E1007EF",
       "name": "Curujinha-Nemesis-US",
+      "owner_guid": "Player-3208-0E1007EF",
       "spell_id": 392060,
       "spell_name": "Wailing Arrow",
       "started": 1,
@@ -17154,6 +17214,7 @@
     {
       "guid": "Player-3208-0E1007EF",
       "name": "Curujinha-Nemesis-US",
+      "owner_guid": "Player-3208-0E1007EF",
       "spell_id": 466930,
       "spell_name": "Black Arrow",
       "started": 0,
@@ -17167,6 +17228,7 @@
     {
       "guid": "Player-3208-0E1007EF",
       "name": "Curujinha-Nemesis-US",
+      "owner_guid": "Player-3208-0E1007EF",
       "spell_id": 474421,
       "spell_name": "Intimidation",
       "started": 0,
@@ -17180,6 +17242,7 @@
     {
       "guid": "Player-3676-06EC6282",
       "name": "Lothanhof-Area52-US",
+      "owner_guid": "Player-3676-06EC6282",
       "spell_id": 17364,
       "spell_name": "Stormstrike",
       "started": 0,
@@ -17196,6 +17259,7 @@
     {
       "guid": "Player-3676-06EC6282",
       "name": "Lothanhof-Area52-US",
+      "owner_guid": "Player-3676-06EC6282",
       "spell_id": 51485,
       "spell_name": "Earthgrab Totem",
       "started": 0,
@@ -17209,6 +17273,7 @@
     {
       "guid": "Player-3676-06EC6282",
       "name": "Lothanhof-Area52-US",
+      "owner_guid": "Player-3676-06EC6282",
       "spell_id": 51514,
       "spell_name": "Hex",
       "started": 2,
@@ -17222,6 +17287,7 @@
     {
       "guid": "Player-3676-06EC6282",
       "name": "Lothanhof-Area52-US",
+      "owner_guid": "Player-3676-06EC6282",
       "spell_id": 58875,
       "spell_name": "Spirit Walk",
       "started": 0,
@@ -17235,6 +17301,7 @@
     {
       "guid": "Player-3676-06EC6282",
       "name": "Lothanhof-Area52-US",
+      "owner_guid": "Player-3676-06EC6282",
       "spell_id": 60103,
       "spell_name": "Lava Lash",
       "started": 0,
@@ -17248,6 +17315,7 @@
     {
       "guid": "Player-3676-06EC6282",
       "name": "Lothanhof-Area52-US",
+      "owner_guid": "Player-3676-06EC6282",
       "spell_id": 108271,
       "spell_name": "Astral Shift",
       "started": 0,
@@ -17261,6 +17329,7 @@
     {
       "guid": "Player-3676-06EC6282",
       "name": "Lothanhof-Area52-US",
+      "owner_guid": "Player-3676-06EC6282",
       "spell_id": 187874,
       "spell_name": "Crash Lightning",
       "started": 0,
@@ -17274,6 +17343,7 @@
     {
       "guid": "Player-3676-06EC6282",
       "name": "Lothanhof-Area52-US",
+      "owner_guid": "Player-3676-06EC6282",
       "spell_id": 188196,
       "spell_name": "Lightning Bolt",
       "started": 6,
@@ -17292,6 +17362,7 @@
     {
       "guid": "Player-3676-06EC6282",
       "name": "Lothanhof-Area52-US",
+      "owner_guid": "Player-3676-06EC6282",
       "spell_id": 192077,
       "spell_name": "Wind Rush Totem",
       "started": 0,
@@ -17305,6 +17376,7 @@
     {
       "guid": "Player-3676-06EC6282",
       "name": "Lothanhof-Area52-US",
+      "owner_guid": "Player-3676-06EC6282",
       "spell_id": 196881,
       "spell_name": "Feral Lunge",
       "started": 0,
@@ -17318,6 +17390,7 @@
     {
       "guid": "Player-3676-06EC6282",
       "name": "Lothanhof-Area52-US",
+      "owner_guid": "Player-3676-06EC6282",
       "spell_id": 196884,
       "spell_name": "Feral Lunge",
       "started": 0,
@@ -17331,6 +17404,7 @@
     {
       "guid": "Player-3676-06EC6282",
       "name": "Lothanhof-Area52-US",
+      "owner_guid": "Player-3676-06EC6282",
       "spell_id": 197214,
       "spell_name": "Sundering",
       "started": 0,
@@ -17344,6 +17418,7 @@
     {
       "guid": "Player-3676-06EC6282",
       "name": "Lothanhof-Area52-US",
+      "owner_guid": "Player-3676-06EC6282",
       "spell_id": 204331,
       "spell_name": "Counterstrike Totem",
       "started": 0,
@@ -17357,6 +17432,7 @@
     {
       "guid": "Player-3676-06EC6282",
       "name": "Lothanhof-Area52-US",
+      "owner_guid": "Player-3676-06EC6282",
       "spell_id": 345228,
       "spell_name": "Gladiator's Badge",
       "started": 0,
@@ -17370,6 +17446,7 @@
     {
       "guid": "Player-3676-06EC6282",
       "name": "Lothanhof-Area52-US",
+      "owner_guid": "Player-3676-06EC6282",
       "spell_id": 378773,
       "spell_name": "Greater Purge",
       "started": 0,
@@ -17383,6 +17460,7 @@
     {
       "guid": "Player-3676-06EC6282",
       "name": "Lothanhof-Area52-US",
+      "owner_guid": "Player-3676-06EC6282",
       "spell_id": 384352,
       "spell_name": "Doom Winds",
       "started": 0,
@@ -17396,6 +17474,7 @@
     {
       "guid": "Player-3676-06EC6282",
       "name": "Lothanhof-Area52-US",
+      "owner_guid": "Player-3676-06EC6282",
       "spell_id": 444995,
       "spell_name": "Surging Totem",
       "started": 0,
@@ -17409,6 +17488,7 @@
     {
       "guid": "Player-3676-06EC6282",
       "name": "Lothanhof-Area52-US",
+      "owner_guid": "Player-3676-06EC6282",
       "spell_id": 467283,
       "spell_name": "Sundering",
       "started": 0,
@@ -17423,6 +17503,7 @@
     {
       "guid": "Player-3676-06EC6282",
       "name": "Lothanhof-Area52-US",
+      "owner_guid": "Player-3676-06EC6282",
       "spell_id": 469270,
       "spell_name": "Doom Winds",
       "started": 0,
@@ -17443,6 +17524,7 @@
     {
       "guid": "Player-3676-06EC6282",
       "name": "Lothanhof-Area52-US",
+      "owner_guid": "Player-3676-06EC6282",
       "spell_id": 470057,
       "spell_name": "Voltaic Blaze",
       "started": 0,
@@ -17457,6 +17539,7 @@
     {
       "guid": "Player-3725-0C61A6C9",
       "name": "Jupriesta-Frostmourne-US",
+      "owner_guid": "Player-3725-0C61A6C9",
       "spell_id": 17,
       "spell_name": "Power Word: Shield",
       "started": 0,
@@ -17472,6 +17555,7 @@
     {
       "guid": "Player-3725-0C61A6C9",
       "name": "Jupriesta-Frostmourne-US",
+      "owner_guid": "Player-3725-0C61A6C9",
       "spell_id": 528,
       "spell_name": "Dispel Magic",
       "started": 0,
@@ -17485,6 +17569,7 @@
     {
       "guid": "Player-3725-0C61A6C9",
       "name": "Jupriesta-Frostmourne-US",
+      "owner_guid": "Player-3725-0C61A6C9",
       "spell_id": 589,
       "spell_name": "Shadow Word: Pain",
       "started": 0,
@@ -17500,6 +17585,7 @@
     {
       "guid": "Player-3725-0C61A6C9",
       "name": "Jupriesta-Frostmourne-US",
+      "owner_guid": "Player-3725-0C61A6C9",
       "spell_id": 8092,
       "spell_name": "Mind Blast",
       "started": 1,
@@ -17513,6 +17599,7 @@
     {
       "guid": "Player-3725-0C61A6C9",
       "name": "Jupriesta-Frostmourne-US",
+      "owner_guid": "Player-3725-0C61A6C9",
       "spell_id": 10060,
       "spell_name": "Power Infusion",
       "started": 0,
@@ -17527,6 +17614,7 @@
     {
       "guid": "Player-3725-0C61A6C9",
       "name": "Jupriesta-Frostmourne-US",
+      "owner_guid": "Player-3725-0C61A6C9",
       "spell_id": 32379,
       "spell_name": "Shadow Word: Death",
       "started": 0,
@@ -17540,6 +17628,7 @@
     {
       "guid": "Player-3725-0C61A6C9",
       "name": "Jupriesta-Frostmourne-US",
+      "owner_guid": "Player-3725-0C61A6C9",
       "spell_id": 47540,
       "spell_name": "Penance",
       "started": 0,
@@ -17555,6 +17644,7 @@
     {
       "guid": "Player-3725-0C61A6C9",
       "name": "Jupriesta-Frostmourne-US",
+      "owner_guid": "Player-3725-0C61A6C9",
       "spell_id": 121536,
       "spell_name": "Angelic Feather",
       "started": 0,
@@ -17569,6 +17659,7 @@
     {
       "guid": "Player-3725-0C61A6C9",
       "name": "Jupriesta-Frostmourne-US",
+      "owner_guid": "Player-3725-0C61A6C9",
       "spell_id": 194509,
       "spell_name": "Power Word: Radiance",
       "started": 2,
@@ -17583,6 +17674,7 @@
     {
       "guid": "Player-3725-0C61A6C9",
       "name": "Jupriesta-Frostmourne-US",
+      "owner_guid": "Player-3725-0C61A6C9",
       "spell_id": 200829,
       "spell_name": "Plea",
       "started": 0,
@@ -17596,6 +17688,7 @@
     {
       "guid": "Player-3725-0C61A6C9",
       "name": "Jupriesta-Frostmourne-US",
+      "owner_guid": "Player-3725-0C61A6C9",
       "spell_id": 472433,
       "spell_name": "Evangelism",
       "started": 0,
@@ -17609,6 +17702,7 @@
     {
       "guid": "Player-3725-0C61A6C9",
       "name": "Jupriesta-Frostmourne-US",
+      "owner_guid": "Player-3725-0C61A6C9",
       "spell_id": 1253593,
       "spell_name": "Void Shield",
       "started": 0,
@@ -17622,6 +17716,7 @@
     {
       "guid": "Player-76-0C1789E9",
       "name": "Ushiftingme-Sargeras-US",
+      "owner_guid": "Player-76-0C1789E9",
       "spell_id": 339,
       "spell_name": "Entangling Roots",
       "started": 0,
@@ -17635,6 +17730,7 @@
     {
       "guid": "Player-76-0C1789E9",
       "name": "Ushiftingme-Sargeras-US",
+      "owner_guid": "Player-76-0C1789E9",
       "spell_id": 1126,
       "spell_name": "Mark of the Wild",
       "started": 0,
@@ -17648,6 +17744,7 @@
     {
       "guid": "Player-76-0C1789E9",
       "name": "Ushiftingme-Sargeras-US",
+      "owner_guid": "Player-76-0C1789E9",
       "spell_id": 1822,
       "spell_name": "Rake",
       "started": 0,
@@ -17661,6 +17758,7 @@
     {
       "guid": "Player-76-0C1789E9",
       "name": "Ushiftingme-Sargeras-US",
+      "owner_guid": "Player-76-0C1789E9",
       "spell_id": 1850,
       "spell_name": "Dash",
       "started": 0,
@@ -17675,6 +17773,7 @@
     {
       "guid": "Player-76-0C1789E9",
       "name": "Ushiftingme-Sargeras-US",
+      "owner_guid": "Player-76-0C1789E9",
       "spell_id": 5211,
       "spell_name": "Mighty Bash",
       "started": 0,
@@ -17688,6 +17787,7 @@
     {
       "guid": "Player-76-0C1789E9",
       "name": "Ushiftingme-Sargeras-US",
+      "owner_guid": "Player-76-0C1789E9",
       "spell_id": 5487,
       "spell_name": "Bear Form",
       "started": 0,
@@ -17702,6 +17802,7 @@
     {
       "guid": "Player-76-0C1789E9",
       "name": "Ushiftingme-Sargeras-US",
+      "owner_guid": "Player-76-0C1789E9",
       "spell_id": 22812,
       "spell_name": "Barkskin",
       "started": 0,
@@ -17715,6 +17816,7 @@
     {
       "guid": "Player-76-0C1789E9",
       "name": "Ushiftingme-Sargeras-US",
+      "owner_guid": "Player-76-0C1789E9",
       "spell_id": 22842,
       "spell_name": "Frenzied Regeneration",
       "started": 0,
@@ -17728,6 +17830,7 @@
     {
       "guid": "Player-76-0C1789E9",
       "name": "Ushiftingme-Sargeras-US",
+      "owner_guid": "Player-76-0C1789E9",
       "spell_id": 24858,
       "spell_name": "Moonkin Form",
       "started": 0,
@@ -17741,6 +17844,7 @@
     {
       "guid": "Player-76-0C1789E9",
       "name": "Ushiftingme-Sargeras-US",
+      "owner_guid": "Player-76-0C1789E9",
       "spell_id": 61391,
       "spell_name": "Typhoon",
       "started": 0,
@@ -17755,6 +17859,7 @@
     {
       "guid": "Player-76-0C1789E9",
       "name": "Ushiftingme-Sargeras-US",
+      "owner_guid": "Player-76-0C1789E9",
       "spell_id": 78674,
       "spell_name": "Starsurge",
       "started": 0,
@@ -17776,6 +17881,7 @@
     {
       "guid": "Player-76-0C1789E9",
       "name": "Ushiftingme-Sargeras-US",
+      "owner_guid": "Player-76-0C1789E9",
       "spell_id": 78675,
       "spell_name": "Solar Beam",
       "started": 0,
@@ -17789,6 +17895,7 @@
     {
       "guid": "Player-76-0C1789E9",
       "name": "Ushiftingme-Sargeras-US",
+      "owner_guid": "Player-76-0C1789E9",
       "spell_id": 93402,
       "spell_name": "Sunfire",
       "started": 0,
@@ -17803,6 +17910,7 @@
     {
       "guid": "Player-76-0C1789E9",
       "name": "Ushiftingme-Sargeras-US",
+      "owner_guid": "Player-76-0C1789E9",
       "spell_id": 102359,
       "spell_name": "Mass Entanglement",
       "started": 0,
@@ -17817,6 +17925,7 @@
     {
       "guid": "Player-76-0C1789E9",
       "name": "Ushiftingme-Sargeras-US",
+      "owner_guid": "Player-76-0C1789E9",
       "spell_id": 102383,
       "spell_name": "Wild Charge",
       "started": 0,
@@ -17830,6 +17939,7 @@
     {
       "guid": "Player-76-0C1789E9",
       "name": "Ushiftingme-Sargeras-US",
+      "owner_guid": "Player-76-0C1789E9",
       "spell_id": 102560,
       "spell_name": "Incarnation: Chosen of Elune",
       "started": 0,
@@ -17844,6 +17954,7 @@
     {
       "guid": "Player-76-0C1789E9",
       "name": "Ushiftingme-Sargeras-US",
+      "owner_guid": "Player-76-0C1789E9",
       "spell_id": 106898,
       "spell_name": "Stampeding Roar",
       "started": 0,
@@ -17857,6 +17968,7 @@
     {
       "guid": "Player-76-0C1789E9",
       "name": "Ushiftingme-Sargeras-US",
+      "owner_guid": "Player-76-0C1789E9",
       "spell_id": 190984,
       "spell_name": "Wrath",
       "started": 0,
@@ -17873,6 +17985,7 @@
     {
       "guid": "Player-76-0C1789E9",
       "name": "Ushiftingme-Sargeras-US",
+      "owner_guid": "Player-76-0C1789E9",
       "spell_id": 205636,
       "spell_name": "Force of Nature",
       "started": 0,
@@ -17887,6 +18000,7 @@
     {
       "guid": "Player-76-0C1789E9",
       "name": "Ushiftingme-Sargeras-US",
+      "owner_guid": "Player-76-0C1789E9",
       "spell_id": 336126,
       "spell_name": "Gladiator's Medallion",
       "started": 0,
@@ -17900,6 +18014,7 @@
     {
       "guid": "Player-76-0C1789E9",
       "name": "Ushiftingme-Sargeras-US",
+      "owner_guid": "Player-76-0C1789E9",
       "spell_id": 1233346,
       "spell_name": "Solar Eclipse",
       "started": 0,
@@ -17999,7 +18114,10 @@
       ],
       "gained": 0,
       "spent": 0,
-      "zero_ms": 9670
+      "zero_ms": 9670,
+      "max": 0,
+      "at_max_ms": 0,
+      "wasted": 0
     },
     {
       "guid": "Creature-0-3017-980-4755-103822-0000451F78",
@@ -18048,7 +18166,10 @@
       ],
       "gained": 0,
       "spent": 0,
-      "zero_ms": 3413
+      "zero_ms": 3413,
+      "max": 0,
+      "at_max_ms": 0,
+      "wasted": 0
     },
     {
       "guid": "Creature-0-3017-980-4755-103822-0000451F79",
@@ -18096,7 +18217,10 @@
       ],
       "gained": 0,
       "spent": 0,
-      "zero_ms": 2530
+      "zero_ms": 2530,
+      "max": 0,
+      "at_max_ms": 0,
+      "wasted": 0
     },
     {
       "guid": "Creature-0-3017-980-4755-103822-0000C51F5A",
@@ -18121,7 +18245,10 @@
       ],
       "gained": 0,
       "spent": 0,
-      "zero_ms": 9670
+      "zero_ms": 9670,
+      "max": 0,
+      "at_max_ms": 0,
+      "wasted": 0
     },
     {
       "guid": "Creature-0-3017-980-4755-103822-0000C51F78",
@@ -18170,7 +18297,10 @@
       ],
       "gained": 0,
       "spent": 0,
-      "zero_ms": 3514
+      "zero_ms": 3514,
+      "max": 0,
+      "at_max_ms": 0,
+      "wasted": 0
     },
     {
       "guid": "Creature-0-3017-980-4755-103822-0001451F5A",
@@ -18195,7 +18325,10 @@
       ],
       "gained": 0,
       "spent": 0,
-      "zero_ms": 9376
+      "zero_ms": 9376,
+      "max": 0,
+      "at_max_ms": 0,
+      "wasted": 0
     },
     {
       "guid": "Creature-0-3017-980-4755-233036-0000451F5F",
@@ -18222,7 +18355,10 @@
       ],
       "gained": 0,
       "spent": 0,
-      "zero_ms": 6809
+      "zero_ms": 6809,
+      "max": 0,
+      "at_max_ms": 0,
+      "wasted": 0
     },
     {
       "guid": "Creature-0-3017-980-4755-233037-0000451F5D",
@@ -18248,7 +18384,10 @@
       ],
       "gained": 0,
       "spent": 0,
-      "zero_ms": 6772
+      "zero_ms": 6772,
+      "max": 0,
+      "at_max_ms": 0,
+      "wasted": 0
     },
     {
       "guid": "Creature-0-3017-980-4755-255153-0000451F5F",
@@ -18288,7 +18427,10 @@
       ],
       "gained": 0,
       "spent": 0,
-      "zero_ms": 16574
+      "zero_ms": 16574,
+      "max": 0,
+      "at_max_ms": 0,
+      "wasted": 0
     },
     {
       "guid": "Creature-0-3017-980-4755-255261-0000451F55",
@@ -18306,7 +18448,10 @@
       ],
       "gained": 0,
       "spent": 0,
-      "zero_ms": 7069
+      "zero_ms": 7069,
+      "max": 0,
+      "at_max_ms": 0,
+      "wasted": 0
     },
     {
       "guid": "Creature-0-3017-980-4755-255261-0000451F6B",
@@ -18342,7 +18487,10 @@
       ],
       "gained": 0,
       "spent": 0,
-      "zero_ms": 3575
+      "zero_ms": 3575,
+      "max": 0,
+      "at_max_ms": 0,
+      "wasted": 0
     },
     {
       "guid": "Creature-0-3017-980-4755-60561-0000451F6C",
@@ -18390,7 +18538,10 @@
       ],
       "gained": 0,
       "spent": 0,
-      "zero_ms": 14959
+      "zero_ms": 14959,
+      "max": 0,
+      "at_max_ms": 0,
+      "wasted": 0
     },
     {
       "guid": "Player-11-0E93D4E2",
@@ -18439,7 +18590,10 @@
       ],
       "gained": 1300,
       "spent": 139960,
-      "zero_ms": 0
+      "zero_ms": 0,
+      "max": 260000,
+      "at_max_ms": 0,
+      "wasted": 0
     },
     {
       "guid": "Player-1136-09362954",
@@ -18489,7 +18643,10 @@
       ],
       "gained": 189,
       "spent": 4686,
-      "zero_ms": 0
+      "zero_ms": 0,
+      "max": 1000,
+      "at_max_ms": 6000,
+      "wasted": 66
     },
     {
       "guid": "Player-3208-0E1007EF",
@@ -18539,7 +18696,10 @@
       ],
       "gained": 47,
       "spent": 481,
-      "zero_ms": 0
+      "zero_ms": 0,
+      "max": 100,
+      "at_max_ms": 7000,
+      "wasted": 69
     },
     {
       "guid": "Player-3676-06EC6282",
@@ -18589,7 +18749,10 @@
       ],
       "gained": 0,
       "spent": 139314,
-      "zero_ms": 0
+      "zero_ms": 0,
+      "max": 250000,
+      "at_max_ms": 14000,
+      "wasted": 0
     },
     {
       "guid": "Player-3725-0C61A6C9",
@@ -18639,7 +18802,10 @@
       ],
       "gained": 7500,
       "spent": 149543,
-      "zero_ms": 0
+      "zero_ms": 0,
+      "max": 250000,
+      "at_max_ms": 0,
+      "wasted": 0
     },
     {
       "guid": "Player-76-0C1789E9",
@@ -18686,7 +18852,10 @@
       ],
       "gained": 0,
       "spent": 13900,
-      "zero_ms": 0
+      "zero_ms": 0,
+      "max": 262500,
+      "at_max_ms": 37000,
+      "wasted": 0
     },
     {
       "guid": "Player-76-0C1789E9",
@@ -18735,7 +18904,10 @@
       ],
       "gained": 62,
       "spent": 260,
-      "zero_ms": 0
+      "zero_ms": 0,
+      "max": 1000,
+      "at_max_ms": 0,
+      "wasted": 0
     },
     {
       "guid": "Player-76-0C1789E9",
@@ -18746,7 +18918,10 @@
       ],
       "gained": 0,
       "spent": 70,
-      "zero_ms": 0
+      "zero_ms": 0,
+      "max": 100,
+      "at_max_ms": 0,
+      "wasted": 0
     },
     {
       "guid": "Player-76-0C1789E9",
@@ -18794,7 +18969,10 @@
       ],
       "gained": 143,
       "spent": 3340,
-      "zero_ms": 0
+      "zero_ms": 0,
+      "max": 1200,
+      "at_max_ms": 0,
+      "wasted": 0
     }
   ],
   "threat": [

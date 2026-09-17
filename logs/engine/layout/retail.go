@@ -267,12 +267,12 @@ func RetailV22() Layout {
 		WidthOverrides: map[string][]int{
 			// _DAMAGE, _DAMAGE_LANDED and _SPLIT: the tag is mandatory
 			// under a spell-triple prefix and never appears under SWING.
-			"SWING_DAMAGE":           {38},
-			"SWING_DAMAGE_LANDED":    {38},
-			"SPELL_DAMAGE":           {42},
-			"SPELL_PERIODIC_DAMAGE":  {42},
-			"RANGE_DAMAGE":           {42},
-			"DAMAGE_SPLIT":           {42},
+			"SWING_DAMAGE":          {38},
+			"SWING_DAMAGE_LANDED":   {38},
+			"SPELL_DAMAGE":          {42},
+			"SPELL_PERIODIC_DAMAGE": {42},
+			"RANGE_DAMAGE":          {42},
+			"DAMAGE_SPLIT":          {42},
 			// _MISSED: the tag is mandatory under SPELL and SPELL_PERIODIC,
 			// and never appears under RANGE, SWING or DAMAGE_SHIELD. Where
 			// it applies, base+1 is tag only, base+2 is tag+amount (BLOCK
