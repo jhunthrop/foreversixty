@@ -351,14 +351,26 @@
    * The one ability drawn behind the main chart's series: a look, not a view, so it is
    * not in the url. Measured over the whole fight once and sliced by the brush like every
    * other line, and dropped whenever the fight, the tab or the source scope changes,
-   * because it answered a question about the table that was on screen then.
+   * because it answered a question about the table that was on screen then. A window is
+   * not one of those: reading the line against a stretch is the whole point of it, and
+   * the brush only slices a series that is already measured over the whole fight.
    */
   let chartedAbility = $state<{ key: string; label: string; token: string; series: number[] } | null>(null);
   let chartedError = $state('');
   /** The measure that is wanted now; an answer for an older pick is dropped. */
   let chartedToken = 0;
+  /**
+   * What the pick belongs to, as one string. `patch` replaces the whole `state` object on
+   * every url change, brushing included, so an effect that reads `state.fight` directly
+   * woke on every pointer move of a drag and cleared the line the reader had just asked
+   * for. Comparing the three values against the last ones they were dropped for keeps the
+   * clearing to a real change of fight, tab or source scope.
+   */
+  const chartedScope = $derived(`${state.fight}|${state.tab}|${state.source}|${String(nightMode)}`);
+  let chartedFor = chartedScope;
   $effect(() => {
-    void [state.fight, state.tab, state.source, nightMode];
+    if (chartedScope === chartedFor) return;
+    chartedFor = chartedScope;
     chartedAbility = null;
     chartedError = '';
     chartedToken += 1;

@@ -63,6 +63,26 @@ test('an ability goes on the main chart in its school colour and comes off again
   await expect(page.getByTestId('time-chart')).not.toContainText('Baelgrim · Slam');
 });
 
+test('a window change keeps the ability on the chart', async ({ page }) => {
+  test.slow();
+  await serveDuckdbRuntime(page);
+  await page.goto(`${FIGHT}&tab=damage-done`);
+  await page.getByTestId('actor-Player-4184-000000A1').getByRole('button').first().click();
+  const control = page
+    .getByTestId('row-abilities')
+    .getByRole('row', { name: /Slam/ })
+    .getByTestId('ability-chart');
+  // force: true -- see the note on the test above.
+  await control.click({ force: true });
+  await expect(page.getByTestId('time-chart')).toContainText('Baelgrim · Slam', { timeout: 60_000 });
+  // A window is a stretch to read the line against, not a different question: the pick
+  // and its measured whole-fight series survive it, and the brush only slices the line.
+  await page.getByTestId('window-presets').getByRole('button', { name: 'First 30s' }).click();
+  await expect(page).toHaveURL(/start=0&end=30000/);
+  await expect(page.getByTestId('time-chart')).toContainText('Baelgrim · Slam');
+  await expect(control).toHaveText('Off the chart');
+});
+
 test('picking a second ability replaces the first: one line at a time', async ({ page }) => {
   test.slow();
   await serveDuckdbRuntime(page);
