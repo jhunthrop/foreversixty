@@ -10,7 +10,7 @@
   "phases": [
     {
       "name": "Phase 2",
-      "starts": { "spell_id": 18392, "on": "cast_start" }
+      "starts": { "health_pct": 65 }
     },
     {
       "name": "Phase 3",
