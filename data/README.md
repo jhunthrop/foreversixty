@@ -25,6 +25,7 @@ builds/<build>/*.json           flat entities: zones, dungeons, items, spells,
 builds/<build>/talents/<class-slug>.json   per-class trees with rank descriptions
 builds/<build>/items/<class-slug>.json     per-class equippable items
 builds/<build>/icons/<name>.webp           64x64 icons for every talent and item above
+builds/<build>/trees/<background>.webp     320x384 background for every talent tree above
 builds/<build>/manifest.json    build, product, fetched_at, sha256 per emitted file
 curated/{classes,races,combos}.json        hand-maintained Forever facts (committed)
 diffs/<from>__<to>.json         added / removed / changed per entity
