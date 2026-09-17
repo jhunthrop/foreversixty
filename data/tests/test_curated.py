@@ -10,7 +10,6 @@ from pipeline.normalize import write_json, write_records
 from pipeline.normalize.classes import normalize_classes, normalize_races
 
 HERE = Path(__file__).parent
-ERA_BUILD = Path("builds/1.15.9.69722")
 #: The 1.60 client (Forever beta) is the first to export real Skyborne rows, so it is
 #: the build the real curated/ directory is now validated against: it is a strict
 #: superset of era's races and classes (every Classic race and class, plus the two
