@@ -186,13 +186,23 @@ test('a resource row’s cap figures sit beside the line at 360px', async ({ pag
   expect(box?.width ?? 0).toBeLessThanOrEqual(PHONE_WIDTH);
 });
 
-test('the on-the-chart control is a 44px target on a phone', async ({ page }) => {
+test('the on-the-chart control is a 44px target on a phone, one tap from the name', async ({ page }) => {
   await page.goto(`${REPORT}&tab=damage-done`);
   await page.getByTestId('actor-Player-4184-000000A1').getByRole('button').first().click();
   const control = page.getByTestId('ability-chart').first();
   await expect(control).toBeVisible();
   const box = await control.boundingBox();
   expect(box?.height ?? 0).toBeGreaterThanOrEqual(44);
+  // In the pinned ability column, not seven snapped swipes to the right of it: the
+  // control sits inside the first cell, at rest, so a plain tap reaches it. A forced
+  // click would pass wherever the button was, which is the whole point of not using one.
+  const cell = page.getByTestId('row-abilities').locator('tbody td').first();
+  const cellBox = await cell.boundingBox();
+  expect(box?.x ?? 0).toBeGreaterThanOrEqual(cellBox?.x ?? 0);
+  expect((box?.x ?? 0) + (box?.width ?? 0)).toBeLessThanOrEqual(
+    (cellBox?.x ?? 0) + (cellBox?.width ?? 0) + 1,
+  );
+  await control.click();
 });
 
 test('a phase preset is a 44px target on a phone', async ({ page }) => {

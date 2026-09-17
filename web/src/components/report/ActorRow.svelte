@@ -94,6 +94,23 @@
     charted?: string;
   } = $props();
 
+  /**
+   * Phone or not, from the same 767px breakpoint the `md:` classes use. The chart control
+   * sits in the pinned ability cell on a phone and in its own last column on a desktop;
+   * only one of the two is ever rendered, because two copies would give one ability two
+   * identical controls for a keyboard, a screen reader and a test to pick between.
+   */
+  let phone = $state(false);
+  $effect(() => {
+    const query = window.matchMedia('(max-width: 767px)');
+    const read = (): void => {
+      phone = query.matches;
+    };
+    read();
+    query.addEventListener('change', read);
+    return () => query.removeEventListener('change', read);
+  });
+
   /** Below ten one-second buckets, a percentage rounds to steps of 10% or coarser. */
   const ACTIVITY_SECONDS_BELOW_MS = 10_000;
 
@@ -299,6 +316,21 @@
   /** Measured healing carries what each unit did not need; the column exists only then. */
   const targetsOverheal = $derived(targetsByName.some((target) => target.overheal !== undefined));
 </script>
+
+<!-- One control, rendered in whichever place the current width puts it: beneath the
+     ability's name in the pinned column on a phone, in the table's last column on a
+     desktop. -->
+{#snippet chartButton(ability: Ability)}
+  <button
+    type="button"
+    class="text-nav inline-flex min-h-11 items-center text-[12px] font-bold tracking-[0.06em] uppercase md:min-h-9"
+    title="Draw this ability's amount per second behind the chart above"
+    aria-pressed={charted === chartKey(ability)}
+    data-testid="ability-chart"
+    onclick={() => onChart?.(actor, ability)}
+    >{charted === chartKey(ability) ? 'Off the chart' : 'On the chart'}</button
+  >
+{/snippet}
 
 <li class="border-line-soft border-b" data-testid={`actor-${actor.guid}`}>
   <button
@@ -522,7 +554,7 @@
                 title="A heal: how much of it was over. Damage: what did not land, by kind"
                 >{healing ? 'Over' : 'Not landed'}</th
               >
-              {#if onChart !== undefined}
+              {#if onChart !== undefined && !phone}
                 <th scope="col" class="py-1 pl-3 text-right font-normal"
                   ><span class="sr-only">On the chart</span></th
                 >
@@ -548,7 +580,12 @@
                         : `Two spells share this name; this is spell id ${ability.spell_id}`}
                       >{ability.spell_id === 0 ? 'swing' : `#${ability.spell_id}`}</span
                     >{/if}{#if schoolName(ability.school)}
-                    <span class="text-muted ml-1 text-[11px]">{schoolName(ability.school)}</span>{/if}</td
+                    <span class="text-muted ml-1 text-[11px]">{schoolName(ability.school)}</span
+                    >{/if}{#if onChart !== undefined && phone}
+                    <!-- Under the name, in the column that stays put: as the last of nine
+                         columns of a table that snaps one column at a time, this control
+                         was seven swipes from the ability it belongs to. -->
+                    <span class="block">{@render chartButton(ability)}</span>{/if}</td
                 >
                 <td
                   class="tabular py-1.5 pr-3 text-right font-mono whitespace-nowrap"
@@ -587,18 +624,8 @@
                   class="text-muted tabular max-w-[200px] py-1.5 text-left font-mono text-[12px] break-words md:max-w-none md:min-w-[220px] md:text-right md:whitespace-nowrap"
                   >{abilityNotes(ability).join(' · ')}</td
                 >
-                {#if onChart !== undefined}
-                  <td class="py-1.5 pl-3 text-right whitespace-nowrap">
-                    <button
-                      type="button"
-                      class="text-nav inline-flex min-h-11 items-center text-[12px] font-bold tracking-[0.06em] uppercase md:min-h-9"
-                      title="Draw this ability's amount per second behind the chart above"
-                      aria-pressed={charted === chartKey(ability)}
-                      data-testid="ability-chart"
-                      onclick={() => onChart?.(actor, ability)}
-                      >{charted === chartKey(ability) ? 'Off the chart' : 'On the chart'}</button
-                    >
-                  </td>
+                {#if onChart !== undefined && !phone}
+                  <td class="py-1.5 pl-3 text-right whitespace-nowrap">{@render chartButton(ability)}</td>
                 {/if}
               </tr>
             {/each}
