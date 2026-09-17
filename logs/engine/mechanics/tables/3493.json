@@ -1,0 +1,7 @@
+{
+  "encounter_id": 3493,
+  "name": "Faldrim Anvilmar",
+  "mechanics": [
+    { "spell_id": 1292602, "name": "Anvilmar's Curse", "kind": "dispel", "note": "Curse slowing the target's attacks and casts. It also grants immunity to poisons and bleeds, so it is a decurse worth thinking about rather than a reflex." }
+  ]
+}
