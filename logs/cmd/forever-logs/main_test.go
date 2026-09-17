@@ -4,6 +4,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -210,5 +211,54 @@ func TestAnUnknownLayoutNameIsRejected(t *testing.T) {
 func TestAMissingFileIsAnError(t *testing.T) {
 	if _, _, err := exec(t, "fights", filepath.Join(t.TempDir(), "absent.txt")); err == nil {
 		t.Fatal("want an error for a missing file")
+	}
+}
+
+// TestFightsOnAV22ExcerptReportsPlayers runs the committed v22 excerpt
+// through the fights command the way a user would, so the acceptance
+// numbers in the plan are checked by something that runs in CI rather than
+// only by the corpus sweep, which needs logs that are not in the repo.
+//
+// The plain-text fights report carries no layout field — only `parse` and
+// `conformance` print one — so the "not inferred" half of the acceptance
+// is covered by TestConformanceOnTheV22ExcerptIsClean below; this test
+// covers the half fights can actually show: the excerpt's player count.
+func TestFightsOnAV22ExcerptReportsPlayers(t *testing.T) {
+	var out strings.Builder
+	if err := run([]string{"fights", filepath.Join("..", "..", "engine", "event", "testdata", "v22.log")}, &out, io.Discard); err != nil {
+		t.Fatal(err)
+	}
+	got := out.String()
+	if !strings.Contains(got, "players=6") {
+		t.Errorf("the report does not show the excerpt's 6 players:\n%s", got)
+	}
+}
+
+// TestConformanceOnTheV22ExcerptIsClean is the in-repo half of the
+// acceptance: the committed excerpts must show the verified row, no parse
+// errors and no unknown events.
+func TestConformanceOnTheV22ExcerptIsClean(t *testing.T) {
+	var out strings.Builder
+	dir := filepath.Join("..", "..", "engine", "event", "testdata")
+	if err := run([]string{"conformance", "-json", dir}, &out, io.Discard); err != nil {
+		t.Fatal(err)
+	}
+	for _, line := range strings.Split(strings.TrimSpace(out.String()), "\n") {
+		var row ConformanceRow
+		if err := json.Unmarshal([]byte(line), &row); err != nil {
+			t.Fatal(err)
+		}
+		if !strings.Contains(row.Path, "v22") {
+			continue // the v16 fixture is covered by its own tests
+		}
+		if row.Layout != "retail-v22" || !row.Verified || row.Inferred {
+			t.Errorf("%s: layout=%s verified=%v inferred=%v", row.Path, row.Layout, row.Verified, row.Inferred)
+		}
+		if row.ParseErrors != 0 {
+			t.Errorf("%s: %d parse errors", row.Path, row.ParseErrors)
+		}
+		if len(row.UnknownEvents) != 0 {
+			t.Errorf("%s: unknown events %v", row.Path, row.UnknownEvents)
+		}
 	}
 }

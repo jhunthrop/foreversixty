@@ -21,6 +21,11 @@ import (
 // file. JSON is portable text, so it behaves the same on every runner.
 const goldenFile = "testdata/v16.summary.json.golden"
 
+// goldenFileV22 is the committed summary for the v22 excerpt. A second
+// dialect earns a second golden: the v16 one cannot catch a v22 field
+// landing in the wrong column.
+const goldenFileV22 = "testdata/v22.summary.json.golden"
+
 // regenEnv regenerates the golden instead of comparing against it.
 const regenEnv = "FOREVER_UPDATE_GOLDEN"
 
@@ -29,18 +34,33 @@ const regenEnv = "FOREVER_UPDATE_GOLDEN"
 const goldenEngineVersion = "golden"
 
 // fixtureSummary runs the hand-written v16 fixture through the real
-// pipeline — lexer, retail v16 decoder, unit registry, segmenter — and
-// returns the summary of the first fight that closes.
+// pipeline and returns the summary of the first fight that closes.
 func fixtureSummary(t *testing.T) (fight.Fight, Summary) {
 	t.Helper()
-	text, err := os.ReadFile(filepath.Join("..", "event", "testdata", "v16.log"))
+	return excerptSummary(t, filepath.Join("..", "event", "testdata", "v16.log"),
+		layout.RetailV16(), time.Date(2026, 9, 26, 0, 0, 0, 0, time.UTC))
+}
+
+// fixtureSummaryV22 does the same for the v22 excerpt. Version 22
+// timestamps carry a year, so the base is never consulted; a deliberately
+// wrong one is passed so that a regression that starts consulting it shows
+// up as a wildly wrong date rather than as a plausible one.
+func fixtureSummaryV22(t *testing.T) (fight.Fight, Summary) {
+	t.Helper()
+	return excerptSummary(t, filepath.Join("..", "event", "testdata", "v22.log"),
+		layout.RetailV22(), time.Date(2001, 1, 1, 0, 0, 0, 0, time.UTC))
+}
+
+// excerptSummary runs the given fixture through the real pipeline — lexer,
+// decoder, unit registry, segmenter — and returns the summary of the first
+// fight that closes.
+func excerptSummary(t *testing.T, path string, lay layout.Layout, base time.Time) (fight.Fight, Summary) {
+	t.Helper()
+	text, err := os.ReadFile(path)
 	if err != nil {
 		t.Fatal(err)
 	}
-	// The fixture's timestamps carry no year, so the clock is seeded the
-	// way a batch parse seeds it from the file's modification time.
-	base := time.Date(2026, 9, 26, 0, 0, 0, 0, time.UTC)
-	dec := event.NewDecoder(layout.RetailV16(), base)
+	dec := event.NewDecoder(lay, base)
 	reg := units.NewRegistry(units.Options{ClassBySpec: units.RetailSpecClass})
 	seg := fight.NewSegmenter(fight.DefaultOptions())
 
@@ -132,6 +152,57 @@ func TestTheGoldenSummaryIsStableAcrossRuns(t *testing.T) {
 		_, again := fixtureSummary(t)
 		if jsonIndentOf(t, again) != jsonIndentOf(t, first) {
 			t.Fatalf("run %d of the fixture produced a different summary", i)
+		}
+	}
+}
+
+func TestTheV22ExcerptSummaryMatchesTheCommittedGolden(t *testing.T) {
+	_, s := fixtureSummaryV22(t)
+	got := append([]byte(jsonIndentOf(t, s)), '\n')
+
+	if os.Getenv(regenEnv) != "" {
+		if err := os.MkdirAll(filepath.Dir(goldenFileV22), 0o755); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(goldenFileV22, got, 0o644); err != nil {
+			t.Fatal(err)
+		}
+		t.Logf("regenerated %s (%d bytes)", goldenFileV22, len(got))
+		return
+	}
+
+	want, err := os.ReadFile(goldenFileV22)
+	if err != nil {
+		t.Fatalf("%v\nregenerate it with: %s=1 go test ./engine/summary/ -run %s", err, regenEnv, t.Name())
+	}
+	if string(got) != string(want) {
+		t.Fatalf("the v22 excerpt's summary no longer matches %s.\n"+
+			"If the change is intended, regenerate with:\n"+
+			"    %s=1 go test ./engine/summary/ -run %s\n"+
+			"and review the diff in the commit.\ngot  %d bytes\nwant %d bytes",
+			goldenFileV22, regenEnv, t.Name(), len(got), len(want))
+	}
+}
+
+// TestTheV22SummaryIsDatedFromTheLineNotTheBase proves the excerpt's own
+// timestamps are used: the base handed to the decoder is in 2001 and the
+// log is from 2026.
+func TestTheV22SummaryIsDatedFromTheLineNotTheBase(t *testing.T) {
+	f, _ := fixtureSummaryV22(t)
+	if f.Start.Year() != 2026 {
+		t.Fatalf("fight starts in %d, want 2026: the year came from the base, not the line", f.Start.Year())
+	}
+	if _, off := f.Start.Zone(); off != -5*3600 {
+		t.Errorf("zone offset = %d seconds, want -18000", off)
+	}
+}
+
+func TestTheV22GoldenSummaryIsStableAcrossRuns(t *testing.T) {
+	_, first := fixtureSummaryV22(t)
+	for i := 0; i < 10; i++ {
+		_, again := fixtureSummaryV22(t)
+		if jsonIndentOf(t, again) != jsonIndentOf(t, first) {
+			t.Fatalf("run %d of the v22 excerpt produced a different summary", i)
 		}
 	}
 }
