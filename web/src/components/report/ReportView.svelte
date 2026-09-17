@@ -1681,6 +1681,7 @@
           rightIndex={state.compareWith}
           metric={state.compareMetric}
           vs={state.compareVs}
+          source={state.source}
           onPatch={patch}
         />
       {/if}

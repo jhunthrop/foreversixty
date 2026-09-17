@@ -65,6 +65,34 @@ test('picking a player compares the two inside this pull, and rides in the url',
   await expect(diff).toContainText('Frostbolt');
 });
 
+// Fight 3's DPS, rounded the way the cards round it: Baelgrim 73, Morrowlyn 52, Elyra 11.
+test('the two cards read the two players’ own totals, against each other', async ({ page }) => {
+  await page.goto(`${COMPARE}&vs=Player-4184-000000A3`);
+  const cards = page.getByTestId('compare-cards').locator('li');
+  await expect(cards).toHaveCount(2);
+  // The base is the metric's leader when Source names nobody.
+  const base = page.getByTestId('compare-card-Player-4184-000000A1');
+  await expect(base).toContainText('73 in this pull');
+  await expect(base).toContainText('52 for Morrowlyn');
+  await expect(base.getByTestId('compare-card-delta')).toHaveText('+21');
+  // And the other card is the same two numbers the other way round.
+  const other = page.getByTestId('compare-card-Player-4184-000000A3');
+  await expect(other).toContainText('52 in this pull');
+  await expect(other).toContainText('73 for Baelgrim');
+  await expect(other.getByTestId('compare-card-delta')).toHaveText('\u221221');
+});
+
+test('Source picks the base player, so a reader can compare themselves', async ({ page }) => {
+  await page.goto(`${COMPARE}&vs=Player-4184-000000A3&source=Player-4184-000000A5`);
+  await expect(page.getByTestId('compare-players-scope')).toContainText('Elyra Duskvale against Morrowlyn');
+  const mine = page.getByTestId('compare-card-Player-4184-000000A5');
+  await expect(mine).toContainText('11 in this pull');
+  await expect(mine).toContainText('52 for Morrowlyn');
+  await expect(mine.getByTestId('compare-card-delta')).toHaveText('\u221241');
+  // The leader is not on the panel at all: the question was about these two.
+  await expect(page.getByTestId('compare-card-Player-4184-000000A1')).toHaveCount(0);
+});
+
 test('the link alone opens on two players', async ({ page }) => {
   await page.goto(`${COMPARE}&vs=Player-4184-000000A3`);
   await expect(page.getByTestId('compare-vs')).toHaveValue('Player-4184-000000A3');

@@ -49,6 +49,7 @@
     rightIndex = null,
     metric: metricParam = '',
     vs = '',
+    source = '',
     onPatch,
   }: {
     fights: FightEntry[];
@@ -65,6 +66,8 @@
     metric?: string;
     /** The compared player's GUID from the url; '' compares two fights. */
     vs?: string;
+    /** The page's source scope: a player's GUID when one is picked, else a scope word. */
+    source?: string;
     onPatch: (patch: { compareWith?: number | null; compareMetric?: string; compareVs?: string }) => void;
   } = $props();
 
@@ -253,23 +256,45 @@
 
   /**
    * The player the picked one is compared against. With a player picked the question is
-   * "what did I do differently from them", so the first side is the pull's own top row of
-   * the metric — the player a reader is looking at — unless the url named it.
+   * "what did I do differently from them", and the "I" is the player the page is already
+   * scoped to: Source names them, so Source is the base whenever it names a player. With
+   * no player scope it falls back to the metric's leader, the row a reader lands on. Either
+   * way it is never the picked player, so the panel always holds two different people.
    */
-  const topPlayer = $derived(lines[0]?.guid ?? '');
+  const basePlayer = $derived.by(() => {
+    if (source !== '' && source !== vs && left.roster.some((row) => row.guid === source)) return source;
+    return lines.find((line) => line.guid !== vs)?.guid ?? lines[0]?.guid ?? '';
+  });
   /** The players this pull's roster offers as a second player, the picked one excluded. */
   const vsOptions = $derived(
     left.roster
-      .filter((row) => row.guid !== topPlayer)
+      .filter((row) => row.guid !== basePlayer)
       .map((row) => ({ guid: row.guid, name: splitUnitName(row.name).name }))
       .sort((a, b) => a.name.localeCompare(b.name)),
   );
   /** True while the mode is two players inside this pull rather than two pulls. */
-  const versusPlayer = $derived(vs !== '' && left.roster.some((row) => row.guid === vs));
-  /** The player table, cut to the two players when one is picked. */
-  const shownLines = $derived(
-    versusPlayer ? lines.filter((line) => line.guid === topPlayer || line.guid === vs) : lines,
-  );
+  const versusPlayer = $derived(vs !== '' && vs !== basePlayer && left.roster.some((row) => row.guid === vs));
+  /** The name a card and the scope line call a player by. */
+  function playerName(guid: string): string {
+    return splitUnitName(left.roster.find((row) => row.guid === guid)?.name ?? '').name;
+  }
+  /**
+   * The player table. Comparing two pulls it is every player, each against their own
+   * figure in the other pull. Comparing two players it is those two, each against the
+   * other's figure in this same pull (and window): the question is what one did that the
+   * other did not, so a card's "compared with" is the other player, never a second pull
+   * that is not part of this question at all.
+   */
+  const shownLines = $derived.by<Line[]>(() => {
+    if (!versusPlayer) return lines;
+    const base = lines.find((line) => line.guid === basePlayer);
+    const other = lines.find((line) => line.guid === vs);
+    if (base === undefined || other === undefined) return [];
+    return [
+      { ...base, b: other.a },
+      { ...other, b: base.a },
+    ];
+  });
   /** The ability rows the reader opened, by GUID: a row is opened, not a tab. */
   let openRows = $state<string[]>([]);
   function toggleRow(guid: string): void {
@@ -277,7 +302,7 @@
   }
   const splitTable = $derived(metricTable(metric));
   /** Two players inside this pull, ability by ability. */
-  const versusRows = $derived(versusPlayer ? playerAbilityDiff(left, topPlayer, vs, metric) : []);
+  const versusRows = $derived(versusPlayer ? playerAbilityDiff(left, basePlayer, vs, metric) : []);
   function rowsFor(guid: string): AbilityDiff[] {
     return abilityDiff(left, right, guid, metric);
   }
@@ -393,12 +418,14 @@
     <span
       class="tabular text-right font-mono"
       class:text-gold={line.a >= line.b}
-      title="This fight less the compared fight"
+      title={versusPlayer ? 'This player less the other one' : 'This fight less the compared fight'}
       data-testid="compare-card-delta">{signed(line.a - line.b)}</span
     >
     <span class="text-muted col-span-2 text-[12px]"
-      ><span class="tabular font-mono">{mark}{formatAmount(line.a)}</span> this fight ·
-      <span class="tabular font-mono">{mark}{formatAmount(line.b)}</span> compared with</span
+      ><span class="tabular font-mono">{mark}{formatAmount(line.a)}</span>
+      {versusPlayer ? 'in this pull' : 'this fight'} ·
+      <span class="tabular font-mono">{mark}{formatAmount(line.b)}</span>
+      {versusPlayer ? `for ${playerName(line.guid === basePlayer ? vs : basePlayer)}` : 'compared with'}</span
     >
     <span class="col-span-2">
       <button
@@ -542,21 +569,15 @@
     <p class="text-[14px]" role="alert">{error}</p>
   {:else if versusPlayer}
     <p class="text-muted text-[12px]" data-testid="compare-players-scope">
-      {splitUnitName(left.roster.find((row) => row.guid === topPlayer)?.name ?? '').name} against
-      {splitUnitName(left.roster.find((row) => row.guid === vs)?.name ?? '').name}, in this pull{window ===
-      null
+      {playerName(basePlayer)} against
+      {playerName(vs)}, in this pull{window === null
         ? ''
         : `'s ${formatDuration(window.startMs)} to ${formatDuration(window.endMs)}`}.
     </p>
     <ul class="flex flex-col" data-testid="compare-cards">
       {#each shownLines as line (line.guid)}{@render playerCard(line)}{/each}
     </ul>
-    {@render abilityTable(
-      versusRows,
-      splitUnitName(left.roster.find((row) => row.guid === topPlayer)?.name ?? '').name,
-      splitUnitName(left.roster.find((row) => row.guid === vs)?.name ?? '').name,
-      'compare-players',
-    )}
+    {@render abilityTable(versusRows, playerName(basePlayer), playerName(vs), 'compare-players')}
     <CopyCsv lines={playerCsv} label="Copy the two players as CSV" />
   {:else if right === null}
     <p class="text-muted text-[14px]">Pick a second fight, or a second player, to see the difference.</p>
