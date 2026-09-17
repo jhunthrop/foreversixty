@@ -172,6 +172,17 @@ describe('removal', () => {
       reason: messages.prereqMissing('Improved Battle Shout', 1, 'Booming Voice'),
     });
   });
+
+  it('refuses dropping a prerequisite below the rank a dependent still needs', () => {
+    // Deflection to rank 2 (what Tactical Mastery needs), then one point in it.
+    const order = [1002, 1002, 1004];
+    expect(canRemovePoint(index, order, 1002)).toEqual({
+      ok: false,
+      reason: messages.prereqMissing('Tactical Mastery', 2, 'Deflection'),
+    });
+    // With Deflection at 3 there is a point to spare, so it comes back out.
+    expect(canRemovePoint(index, [1002, 1002, 1002, 1004], 1002)).toEqual({ ok: true });
+  });
 });
 
 describe('rule 1: legal race and class combinations', () => {

@@ -148,13 +148,71 @@ export function canAddPoint(index: TalentIndex, order: number[], talentId: numbe
   return failure ? refuse(failure.message) : ALLOWED;
 }
 
+/** The index a `point_order[n]` field name refers to. */
+function fieldIndex(field: string): number {
+  return Number(field.slice('point_order['.length, -1));
+}
+
+/**
+ * A talent in `talentId`'s tree with a point spent on it in `order` that requires
+ * more rank in `talentId` than `newRank` would leave it. `validateOrder` cannot surface
+ * this on its own: rule 4 (prerequisite rank) is checked as an `else if` behind
+ * rule 3 (tier lock) for the *dependant's* own point, so if that point also happens
+ * to be tier-locked -- true whenever the candidate order is missing points
+ * elsewhere in the tree, as a partial or synthetic order can be -- the tier-lock
+ * message masks the prerequisite one entirely. Checking the dependant's rank
+ * requirement directly, against the prerequisite's rank rather than replaying the
+ * whole order, sidesteps that masking.
+ */
+function dependantNeedingMoreRank(
+  index: TalentIndex,
+  order: number[],
+  talentId: number,
+  newRank: number,
+): Talent | undefined {
+  const tree = index.treeOf.get(talentId);
+  return tree?.talents.find(
+    (talent) =>
+      talent.prereq_talent_id === talentId &&
+      order.includes(talent.id) &&
+      (talent.prereq_rank ?? 0) > newRank,
+  );
+}
+
+/**
+ * Removing a point can only be refused for a violation the removal itself causes.
+ * An order the caller hands in may already fail some other rule for reasons that
+ * have nothing to do with the point being removed (the UI never lets that happen
+ * in practice, but the check must not pretend a pre-existing problem is this
+ * removal's fault). So, beyond the direct prerequisite-rank check above, every
+ * other violation in the post-removal order is compared against the same point's
+ * violation, if any, in the order before removal -- matched by carrying the shift
+ * the removed slot introduces -- and only a violation that is new is grounds for
+ * refusal.
+ */
 export function canRemovePoint(index: TalentIndex, order: number[], talentId: number): Decision {
   if (!order.includes(talentId)) {
     const talent = index.byId.get(talentId);
     return refuse(talent ? messages.noPoints(talent.name) : messages.unknownTalent(talentId));
   }
-  const [failure] = validateOrder(index, withoutLastPoint(order, talentId));
-  return failure ? refuse(failure.message) : ALLOWED;
+  const talent = index.byId.get(talentId);
+  const newRank = order.filter((id) => id === talentId).length - 1;
+  const dependant = talent && dependantNeedingMoreRank(index, order, talentId, newRank);
+  if (dependant && talent) {
+    return refuse(messages.prereqMissing(dependant.name, dependant.prereq_rank ?? 0, talent.name));
+  }
+
+  const removedAt = order.lastIndexOf(talentId);
+  const before = new Map(
+    validateOrder(index, order).map((error) => [fieldIndex(error.field), error.message]),
+  );
+  const after = validateOrder(index, withoutLastPoint(order, talentId));
+  const newViolation = after.find((error) => {
+    const beforeIndex =
+      fieldIndex(error.field) < removedAt ? fieldIndex(error.field) : fieldIndex(error.field) + 1;
+    return before.get(beforeIndex) !== error.message;
+  });
+  return newViolation ? refuse(newViolation.message) : ALLOWED;
 }
 
 /** Rule 1. */
