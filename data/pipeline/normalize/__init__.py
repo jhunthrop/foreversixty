@@ -63,6 +63,7 @@ def normalize_build(
     from pipeline.normalize.classes import normalize_classes, normalize_races
     from pipeline.normalize.dungeons import normalize_dungeons
     from pipeline.normalize.gear import ItemDataError, build_class_items, build_item_sets
+    from pipeline.normalize.item_curves import load_item_curves
     from pipeline.normalize.items import normalize_items
     from pipeline.normalize.spells import normalize_spells
     from pipeline.normalize.talent_trees import build_talent_trees
@@ -98,8 +99,17 @@ def normalize_build(
     write_json(item_sets, build_dir / "sets.json")
     shutil.rmtree(build_dir / "items", ignore_errors=True)
     skipped: list[str] = []
+    curves = load_item_curves(
+        t("ItemArmorTotal"),
+        t("ItemArmorQuality"),
+        t("ItemArmorShield"),
+        t("ArmorLocation"),
+        t("RandPropPoints"),
+    )
     try:
-        class_items = build_class_items(t("ItemSparse"), t("Item"), class_rows, icons, build)
+        class_items = build_class_items(
+            t("ItemSparse"), t("Item"), class_rows, icons, build, curves
+        )
     except ItemDataError as error:
         logger.warning("items not emitted for build %s: %s", build, error)
         skipped.append(f"items/: {error}")

@@ -8,7 +8,8 @@ import re
 from pipeline.icons import resolve_icon
 from pipeline.models import ClassItems, GearItem, ItemSetBonus, ItemSetRecord
 from pipeline.normalize.classes import slugify
-from pipeline.proficiency import WEAPON, can_equip
+from pipeline.normalize.item_curves import ItemCurves, resolve_armor, stat_budget
+from pipeline.proficiency import ARMOR, WEAPON, can_equip
 from pipeline.spelltext import SpellText
 
 logger = logging.getLogger(__name__)
@@ -199,6 +200,28 @@ def _optional_int(row: dict[str, str], column: str) -> int | None:
     return _int(row, column)
 
 
+def _apply_stat(stats: dict[str, int], row: dict[str, str], index: int, amount: int) -> None:
+    """Add one StatModifier_bonusStat_<index> pair's amount to `stats`, if any.
+
+    Shared by the literal-amount path (_stats) and the curve-resolved path
+    (_curve_stats): both already know the stat id column exists (their
+    STAT_COLUMNS loop has not broken out yet) and differ only in how `amount`
+    was computed -- read straight from a column, or from a curve formula.
+    """
+    stat_id = _int(row, f"StatModifier_bonusStat_{index}")
+    if stat_id < 0:
+        return
+    if stat_id not in STAT_BY_MODIFIER_ID:
+        raise ItemDataError(
+            f"item {row['ID']} uses unknown stat modifier id {stat_id}; "
+            f"add it to STAT_BY_MODIFIER_ID in pipeline/normalize/gear.py"
+        )
+    key = STAT_BY_MODIFIER_ID[stat_id]
+    if key is None or amount == 0:
+        return
+    stats[key] = stats.get(key, 0) + amount
+
+
 def _stats(row: dict[str, str]) -> dict[str, int]:
     stats: dict[str, int] = {}
     for index in STAT_COLUMNS:
@@ -209,23 +232,34 @@ def _stats(row: dict[str, str]) -> dict[str, int]:
         # truncated row, which _column turns into an error.
         if stat_column not in row:
             break
-        stat_id = _int(row, stat_column)
-        if stat_id < 0:
-            continue
-        if stat_id not in STAT_BY_MODIFIER_ID:
-            raise ItemDataError(
-                f"item {row['ID']} uses unknown stat modifier id {stat_id}; "
-                f"add it to STAT_BY_MODIFIER_ID in pipeline/normalize/gear.py"
-            )
-        key = STAT_BY_MODIFIER_ID[stat_id]
         amount = _optional_int(row, f"StatModifier_bonusAmount_{index}") or 0
-        if key is None or amount == 0:
-            continue
-        stats[key] = stats.get(key, 0) + amount
+        _apply_stat(stats, row, index, amount)
     for index, key in RESISTANCE_KEYS.items():
         amount = _optional_int(row, f"Resistances_{index}") or 0
         if amount:
             stats[key] = stats.get(key, 0) + amount
+    return stats
+
+
+def _curve_stats(
+    row: dict[str, str], curves: ItemCurves, item_level: int, quality: int, inventory_type: int
+) -> dict[str, int]:
+    """The row's stats computed from the curve tables, for a client whose
+    ItemSparse states a stat type per slot (StatModifier_bonusStat_<n>) but no
+    amount: the amount is `budget * StatPercentEditor_<n> / 10000`, where
+    `budget` is the item's RandPropPoints stat-point budget. See item_curves.py
+    for the formula and its verification."""
+    budget = stat_budget(curves, item_level, quality, inventory_type)
+    if budget is None:
+        return {}
+    stats: dict[str, int] = {}
+    for index in STAT_COLUMNS:
+        stat_column = f"StatModifier_bonusStat_{index}"
+        if stat_column not in row:
+            break
+        editor_column = f"StatPercentEditor_{index}"
+        amount = round(budget * _int(row, editor_column) / 10000) if editor_column in row else 0
+        _apply_stat(stats, row, index, amount)
     return stats
 
 
@@ -256,6 +290,16 @@ def _has_gear_value(armor: int, stats: dict[str, int], item_class_id: int) -> bo
     return armor != 0 or any(stats.values())
 
 
+def _row_has_literal_amounts(row: dict[str, str]) -> bool:
+    """True when this build's ItemSparse states flat Resistances_*/
+    StatModifier_bonusAmount_* columns (Classic Era's shape), as opposed to the
+    curve-only shape the 1.60 client (Forever beta) uses -- see
+    pipeline/normalize/item_curves.py for the curve-resolved alternative. Both
+    columns disappear together (see data/README.md), so checking one suffices.
+    """
+    return "Resistances_0" in row
+
+
 def _icon_name(item_row: dict[str, str], icons: dict[int, str], display_name: str) -> str:
     """The item's icon name, falling back to the client's placeholder art.
 
@@ -275,18 +319,27 @@ def build_class_items(
     class_rows: list[dict[str, str]],
     icons: dict[int, str],
     build: str,
+    curves: ItemCurves | None = None,
 ) -> list[ClassItems]:
-    """One equippable item list per class. Raises ItemDataError if a row is unreadable."""
+    """One equippable item list per class. Raises ItemDataError if a row is unreadable.
+
+    `curves` resolves armour and stats for a build whose ItemSparse carries no
+    literal amounts (the 1.60 client / Forever beta); pass None (the default)
+    or an `ItemCurves` whose own tables are incomplete and such a row simply
+    gets no armour and no stats, exactly as before curve support existed.
+    """
     by_id = {_int(row, "ID"): row for row in item_rows}
     candidates: list[tuple[GearItem, int, int, int]] = []
     for row in sparse_rows:
-        slot = SLOT_BY_INVENTORY_TYPE.get(_int(row, "InventoryType"))
+        inventory_type = _int(row, "InventoryType")
+        slot = SLOT_BY_INVENTORY_TYPE.get(inventory_type)
         if slot is None:
             continue
         required_level = _int(row, "RequiredLevel")
         if required_level > MAX_PLAYER_LEVEL:
             continue
-        if _int(row, "OverallQualityID") not in PLANNER_QUALITIES:
+        quality = _int(row, "OverallQualityID")
+        if quality not in PLANNER_QUALITIES:
             continue
         display_name = _column(row, "Display_lang")
         if is_junk_name(display_name):
@@ -297,8 +350,21 @@ def build_class_items(
             logger.warning("item %s is in ItemSparse but not in Item; skipping it", item_id)
             continue
         item_class_id = _int(item_row, "ClassID")
-        armor = _optional_int(row, "Resistances_0") or 0
-        stats = _stats(row)
+        subclass_id = _int(item_row, "SubclassID")
+        item_level = _int(row, "ItemLevel")
+        if _row_has_literal_amounts(row):
+            armor = _optional_int(row, "Resistances_0") or 0
+            stats = _stats(row)
+        elif curves is not None and curves.available:
+            armor = (
+                resolve_armor(curves, item_level, quality, inventory_type, subclass_id)
+                if item_class_id == ARMOR
+                else 0
+            )
+            stats = _curve_stats(row, curves, item_level, quality, inventory_type)
+        else:
+            armor = 0
+            stats = {}
         if not _has_gear_value(armor, stats, item_class_id):
             continue
         item = GearItem(
@@ -306,9 +372,9 @@ def build_class_items(
             name=display_name,
             icon=_icon_name(item_row, icons, display_name),
             slot=slot,
-            quality=_int(row, "OverallQualityID"),
+            quality=quality,
             required_level=required_level,
-            item_level=_int(row, "ItemLevel"),
+            item_level=item_level,
             armor=armor,
             stats=stats,
             set_id=_int(row, "ItemSet") or None,
@@ -319,7 +385,7 @@ def build_class_items(
                 item,
                 _int(row, "AllowableClass"),
                 item_class_id,
-                _int(item_row, "SubclassID"),
+                subclass_id,
             )
         )
     records: list[ClassItems] = []

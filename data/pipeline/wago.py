@@ -27,11 +27,32 @@ TABLES = [
     "ChrRaces",
     "Talent",
     "TalentTab",
+    "ItemArmorTotal",
+    "ItemArmorQuality",
+    "ItemArmorShield",
+    "ArmorLocation",
+    "RandPropPoints",
 ]
 # Tables allowed to be missing (404) for a given product/build without aborting the
 # fetch. JournalInstance (the Dungeon Journal) predates Classic Era's client, so it
-# doesn't exist there. Any other 404 is treated as a real failure (e.g. a typo).
-OPTIONAL_TABLES = frozenset({"JournalInstance"})
+# doesn't exist there. The five curve tables resolve armour and stat amounts for a
+# client whose ItemSparse states no literal amounts (see
+# pipeline/normalize/item_curves.py); both wow_classic_era and wow_classic_beta
+# 1.60.1.69893 have them today, but they are listed here defensively in case a future
+# product truly lacks them -- normalize_build then falls back to no armour/stats for
+# that build's curve-shaped rows, the same honest gap as before curve support existed,
+# rather than aborting the fetch. Any other 404 is treated as a real failure (e.g. a
+# typo).
+OPTIONAL_TABLES = frozenset(
+    {
+        "JournalInstance",
+        "ItemArmorTotal",
+        "ItemArmorQuality",
+        "ItemArmorShield",
+        "ArmorLocation",
+        "RandPropPoints",
+    }
+)
 
 
 def latest_build(product: str, client: httpx.Client) -> str:
