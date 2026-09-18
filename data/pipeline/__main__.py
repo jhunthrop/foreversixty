@@ -51,6 +51,13 @@ def build_parser() -> argparse.ArgumentParser:
     )
     wd.add_argument("--build", required=True)
 
+    g = sub.add_parser("simproto", help="re-vendor the engine protos and regenerate bindings")
+    g.add_argument(
+        "--engine",
+        required=True,
+        help="path to the wowsims-forever checkout, e.g. $FOREVER_ENGINE_PATH",
+    )
+
     sp = sub.add_parser("specs", help="generate the Go and TypeScript spec lists")
     sp.add_argument("--go", default="../sim/specs/specs.go")
     sp.add_argument("--ts", default="../web/src/lib/sim/specs.ts")
@@ -106,6 +113,12 @@ def main(argv: list[str] | None = None) -> int:
         from pipeline.wowhead_diff import write_snapshot_diff
 
         write_snapshot_diff(args.snapshot, args.build)
+    elif args.command == "simproto":
+        from pathlib import Path
+
+        from pipeline.genproto import refresh
+
+        print(refresh(Path(args.engine), Path("proto"), Path("pipeline/simproto")))
     elif args.command == "specs":
         from pathlib import Path
 
