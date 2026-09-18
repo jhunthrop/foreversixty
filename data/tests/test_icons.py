@@ -88,6 +88,7 @@ def test_download_icons_writes_one_webp_per_name(tmp_path: Path):
         tmp_path / "icons",
         cache_dir=tmp_path / "cache",
         client=client,
+        version="1.0.0.1",
     )
     assert written == 2
     assert sorted(p.name for p in (tmp_path / "icons").iterdir()) == [
@@ -102,8 +103,8 @@ def test_download_icons_skips_work_that_is_already_done(tmp_path: Path):
     client = httpx.Client(transport=blp_transport(calls), base_url="https://wago.tools")
     args = ({132154: "ability_golemthunderclap"}, tmp_path / "icons")
     kwargs = {"cache_dir": tmp_path / "cache", "client": client}
-    assert download_icons(*args, **kwargs) == 1
-    assert download_icons(*args, **kwargs) == 0
+    assert download_icons(*args, **kwargs, version="1.0.0.1") == 1
+    assert download_icons(*args, **kwargs, version="1.0.0.1") == 0
     assert calls == ["/api/casc/132154"]
 
 
@@ -111,8 +112,8 @@ def test_download_icons_reuses_the_cache_when_the_output_is_gone(tmp_path: Path)
     calls: list[str] = []
     client = httpx.Client(transport=blp_transport(calls), base_url="https://wago.tools")
     kwargs = {"cache_dir": tmp_path / "cache", "client": client}
-    download_icons({132154: "a"}, tmp_path / "one", **kwargs)
-    download_icons({132154: "a"}, tmp_path / "two", **kwargs)
+    download_icons({132154: "a"}, tmp_path / "one", **kwargs, version="1.0.0.1")
+    download_icons({132154: "a"}, tmp_path / "two", **kwargs, version="1.0.0.1")
     assert calls == ["/api/casc/132154"]
     assert (tmp_path / "two" / "a.webp").exists()
 
@@ -122,7 +123,11 @@ def test_download_icons_skips_a_missing_file_id(tmp_path: Path):
         transport=blp_transport([], missing=frozenset({132154})), base_url="https://wago.tools"
     )
     written = download_icons(
-        {132154: "gone"}, tmp_path / "icons", cache_dir=tmp_path / "cache", client=client
+        {132154: "gone"},
+        tmp_path / "icons",
+        cache_dir=tmp_path / "cache",
+        client=client,
+        version="1.0.0.1",
     )
     assert written == 0
     assert not (tmp_path / "icons" / "gone.webp").exists()
@@ -218,9 +223,7 @@ def test_icons_for_build_downloads_what_the_build_refers_to(tmp_path: Path, monk
     assert (build_dir / "icons" / "ability_golemthunderclap.webp").exists()
 
 
-def test_download_icons_warns_on_a_name_collision_and_keeps_the_lower_id(
-    tmp_path: Path, caplog
-):
+def test_download_icons_warns_on_a_name_collision_and_keeps_the_lower_id(tmp_path: Path, caplog):
     calls: list[str] = []
     client = httpx.Client(transport=blp_transport(calls), base_url="https://wago.tools")
     with caplog.at_level("WARNING"):
@@ -229,6 +232,7 @@ def test_download_icons_warns_on_a_name_collision_and_keeps_the_lower_id(
             tmp_path / "icons",
             cache_dir=tmp_path / "cache",
             client=client,
+            version="1.0.0.1",
         )
     assert written == 1
     assert (tmp_path / "icons" / "shared.webp").exists()
@@ -254,7 +258,9 @@ def test_download_icons_creates_and_closes_its_own_client(tmp_path: Path, monkey
         return TrackingClient(*args, **kwargs)
 
     monkeypatch.setattr(httpx, "Client", fake_client)
-    written = download_icons({132154: "a"}, tmp_path / "icons", cache_dir=tmp_path / "cache")
+    written = download_icons(
+        {132154: "a"}, tmp_path / "icons", cache_dir=tmp_path / "cache", version="1.0.0.1"
+    )
     assert written == 1
     assert closed == [True]
     assert calls == ["/api/casc/132154"]
@@ -337,3 +343,41 @@ def test_wanted_icons_keeps_the_lowest_file_id_for_a_shared_name(tmp_path: Path,
         wanted = wanted_icons(tmp_path, {135274: "inv_sword_04", 99: "inv_sword_04"})
     assert wanted == {99: "inv_sword_04"}
     assert any("inv_sword_04" in record.getMessage() for record in caplog.records)
+
+
+def test_download_icons_pins_every_fetch_to_the_version_and_keys_the_cache_by_it(tmp_path: Path):
+    """A file data id is stable across builds but its bytes are not, so the version rides
+    on every request and the cache cannot hand one build's bytes to another."""
+    versions: list[str | None] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        versions.append(request.url.params.get("version"))
+        return httpx.Response(200, content=make_blp2())
+
+    client = httpx.Client(transport=httpx.MockTransport(handler), base_url="https://wago.tools")
+    download_icons(
+        {132154: "a"}, tmp_path / "one", cache_dir=tmp_path / "c", client=client, version="1.0.0.1"
+    )
+    download_icons(
+        {132154: "a"}, tmp_path / "two", cache_dir=tmp_path / "c", client=client, version="2.0.0.1"
+    )
+    assert versions == ["1.0.0.1", "2.0.0.1"]
+    assert (tmp_path / "c" / "1.0.0.1" / "132154.blp").exists()
+    assert (tmp_path / "c" / "2.0.0.1" / "132154.blp").exists()
+
+
+def test_download_icons_skips_an_icon_the_version_serves_empty(tmp_path: Path, caplog):
+    client = httpx.Client(
+        transport=httpx.MockTransport(lambda request: httpx.Response(200, content=b"")),
+        base_url="https://wago.tools",
+    )
+    written = download_icons(
+        {132154: "a"},
+        tmp_path / "icons",
+        cache_dir=tmp_path / "c",
+        client=client,
+        version="1.0.0.1",
+    )
+    assert written == 0
+    assert not (tmp_path / "icons" / "a.webp").exists()
+    assert "empty in CASC at version 1.0.0.1" in caplog.text
