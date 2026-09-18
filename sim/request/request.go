@@ -23,11 +23,6 @@ var (
 	ErrUnknownClass = errors.New("request: unknown class")
 	ErrUnknownSlot  = errors.New("request: unknown gear slot")
 	ErrUnknownSpec  = errors.New("request: unknown spec")
-	// ErrUnsupportedLevel is returned for a character the engine cannot
-	// simulate. The engine builds every character at its own fixed level
-	// and proto.Player has no level field, so a level-40 request would
-	// otherwise be answered with a level-60 sim and no warning.
-	ErrUnsupportedLevel = errors.New("request: unsupported character level")
 )
 
 // races and classes map our lower-kebab slugs onto the engine's enums.
@@ -111,9 +106,6 @@ func BuildWith(req api.SimRequest, opt Options) (*proto.RaidSimRequest, error) {
 	if !ok {
 		return nil, fmt.Errorf("%w: %q", ErrUnknownClass, ch.Class)
 	}
-	if ch.Level != engineCharacterLevel {
-		return nil, fmt.Errorf("%w: %d; the engine simulates level %d only", ErrUnsupportedLevel, ch.Level, engineCharacterLevel)
-	}
 	equipment, err := equipment(ch.Gear)
 	if err != nil {
 		return nil, err
@@ -128,9 +120,13 @@ func BuildWith(req api.SimRequest, opt Options) (*proto.RaidSimRequest, error) {
 	}
 
 	player := &proto.Player{
-		Name:          ch.Name,
-		Race:          race,
-		Class:         class,
+		Name:  ch.Name,
+		Race:  race,
+		Class: class,
+		// The engine carries no per-player level: sim/core builds every
+		// character at core.CharacterMaxLevel and proto.Player has no
+		// level field. api.SimRequest.Validate, which ran above, is
+		// what refuses any other level.
 		TalentsString: ch.Talents,
 		Equipment:     equipment,
 		Consumes:      cons,
@@ -178,12 +174,13 @@ func equipment(gear []api.GearSlot) (*proto.EquipmentSpec, error) {
 	return &proto.EquipmentSpec{Items: items}, nil
 }
 
-// biomeFor maps an encounter profile onto a biome. Today every profile
+// biomeFor maps an encounter profile onto a biome. The profile is
+// ignored until there is a table to read: today every profile
 // is BiomeUnknown: the data lane's zones.json has no biome column, so
 // there is nothing to map from, and inventing one would put a damage
 // multiplier on a guess. The function exists so the mapping has one
 // home when that table lands.
-func biomeFor(profile string) proto.Biome {
+func biomeFor(_ string) proto.Biome {
 	return proto.Biome_BiomeUnknown
 }
 
@@ -198,13 +195,6 @@ const (
 	// The engine's own UI preset opens a fury pull at no rage.
 	defaultStartingRage = 0
 )
-
-// engineCharacterLevel is the only level the engine simulates: sim/core
-// builds every character at core.CharacterMaxLevel and proto.Player
-// carries no level of its own. It is repeated here rather than imported
-// so this package depends on the engine's protobufs alone and not on the
-// simulator itself; a test asserts the two agree.
-const engineCharacterLevel = 60
 
 func encounter(e api.EncounterSpec) *proto.Encounter {
 	targets := make([]*proto.Target, e.Targets)

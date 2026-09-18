@@ -50,8 +50,16 @@ const (
 	MaxDurationSec = 480
 )
 
-// MaxLevel is Forever's level cap.
-const MaxLevel = 60
+// SimLevel is the only level a sim runs at. It is Forever's level cap
+// and it is also the engine's fixed one: sim/core builds every
+// character at core.CharacterMaxLevel and its Player protobuf carries
+// no level at all, so a level-40 request cannot be answered - it would
+// be simulated at 60 and reported without a word. Validating it here
+// keeps that refusal at the request rather than at the worker.
+const SimLevel = 60
+
+// MaxLevel is Forever's level cap, which is the same number.
+const MaxLevel = SimLevel
 
 type SimRequest struct {
 	EngineVersion string          `json:"engine_version"`
@@ -140,8 +148,8 @@ func (r SimRequest) Validate() error {
 	if r.Character.Race == "" {
 		errs = append(errs, errors.New("character.race is required"))
 	}
-	if r.Character.Level < 1 || r.Character.Level > MaxLevel {
-		errs = append(errs, fmt.Errorf("character.level must be between 1 and %d, got %d", MaxLevel, r.Character.Level))
+	if r.Character.Level != SimLevel {
+		errs = append(errs, fmt.Errorf("character.level must be %d, got %d; the engine simulates no other level", SimLevel, r.Character.Level))
 	}
 	return errors.Join(errs...)
 }

@@ -1,10 +1,12 @@
 package request
 
 import (
+	"bytes"
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/wowsims/classic/sim/core/proto"
+	googleproto "google.golang.org/protobuf/proto"
 )
 
 func fury() api.SimRequest {
@@ -51,8 +53,8 @@ func TestBuildProducesAPlayableRequest(t *testing.T) {
 	// The brief's draft asserted p.Level here. The engine carries no
 	// per-player level: sim/core builds every character at
 	// core.CharacterMaxLevel, and proto.Player has no level field, so
-	// there is nothing to assert on the request. Build instead refuses a
-	// level the engine cannot simulate - see
+	// there is nothing to assert on the request. api.SimRequest.Validate
+	// refuses any other level - see
 	// TestBuildRejectsALevelTheEngineCannotSimulate in mapping_test.go.
 	if p.TalentsString != "30305001302-05050005525010051" {
 		t.Errorf("TalentsString = %q", p.TalentsString)
@@ -209,19 +211,33 @@ func TestEveryPublishedRaceSlugMaps(t *testing.T) {
 }
 
 // Build must be deterministic: the same request twice must produce the
-// same protobuf, or a paired seed buys nothing.
+// same protobuf, or a paired seed buys nothing. The comparison is
+// deterministic wire bytes rather than String(), whose whitespace
+// protobuf-go randomises on purpose, so a map ranged without sorting
+// shows up here instead of hiding behind a per-process seed.
 func TestBuildIsDeterministic(t *testing.T) {
-	a, err := Build(fury())
+	marshal := googleproto.MarshalOptions{Deterministic: true}
+	first, err := buildBytes(marshal)
 	if err != nil {
 		t.Fatal(err)
 	}
-	b, err := Build(fury())
+	for i := 1; i < 20; i++ {
+		got, err := buildBytes(marshal)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !bytes.Equal(first, got) {
+			t.Fatalf("build %d differs from build 0", i)
+		}
+	}
+}
+
+func buildBytes(marshal googleproto.MarshalOptions) ([]byte, error) {
+	req, err := Build(fury())
 	if err != nil {
-		t.Fatal(err)
+		return nil, err
 	}
-	if a.String() != b.String() {
-		t.Errorf("two builds of one request differ:\n%s\n%s", a, b)
-	}
+	return marshal.Marshal(req)
 }
 
 func contains(h, n string) bool {

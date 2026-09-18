@@ -25,21 +25,28 @@ func TestSlotOrderMatchesTheEngineEnum(t *testing.T) {
 	}
 }
 
-// The level Build insists on is the engine's own, not a number of ours.
-func TestEngineCharacterLevelIsTheEngines(t *testing.T) {
-	if engineCharacterLevel != core.CharacterMaxLevel {
-		t.Errorf("engineCharacterLevel = %d, the engine builds characters at %d", engineCharacterLevel, core.CharacterMaxLevel)
+// The level the envelope insists on is the engine's own, not a number
+// of ours: sim/core builds every character at core.CharacterMaxLevel
+// and proto.Player has no level field, so nothing else can be run.
+func TestTheEnvelopesSimLevelIsTheEngines(t *testing.T) {
+	if api.SimLevel != core.CharacterMaxLevel {
+		t.Errorf("api.SimLevel = %d, the engine builds characters at %d", api.SimLevel, core.CharacterMaxLevel)
 	}
 }
 
 // The engine has no per-player level, so a request for anything but its
-// own level must fail rather than be answered with a level-60 sim.
+// own level must fail rather than be answered with a level-60 sim. The
+// envelope's own validation is where that refusal lives, so there is
+// one level rule in the module rather than two.
 func TestBuildRejectsALevelTheEngineCannotSimulate(t *testing.T) {
 	req := fury()
 	req.Character.Level = 40
 	_, err := Build(req)
-	if !errors.Is(err, ErrUnsupportedLevel) {
-		t.Fatalf("Build with a level-40 character returned %v, want ErrUnsupportedLevel", err)
+	if err == nil {
+		t.Fatal("a level-40 character was built without error")
+	}
+	if !contains(err.Error(), "character.level") {
+		t.Errorf("error %q does not name the level", err)
 	}
 }
 

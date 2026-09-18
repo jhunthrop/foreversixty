@@ -106,6 +106,10 @@ func TestValidateRejectsBadRequests(t *testing.T) {
 		{"no class", func(r *SimRequest) { r.Character.Class = "" }, "character.class"},
 		{"no race", func(r *SimRequest) { r.Character.Race = "" }, "character.race"},
 		{"no level", func(r *SimRequest) { r.Character.Level = 0 }, "character.level"},
+		// The engine has one level. A request for any other cannot be
+		// run, so it is refused here rather than queued and failed at
+		// the worker.
+		{"a level the engine cannot sim", func(r *SimRequest) { r.Character.Level = 40 }, "character.level"},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
