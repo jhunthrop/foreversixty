@@ -17,6 +17,7 @@ slot group rounds to the same integer). See data/README.md for the full check.
 from __future__ import annotations
 
 import bisect
+from collections.abc import Mapping
 from dataclasses import dataclass, field
 
 from pipeline.csvio import populated
@@ -165,11 +166,15 @@ def load_item_curves(
     )
 
 
-def _nearest(table: dict[int, object], item_level: int) -> object | None:
+def nearest_row[T](table: Mapping[int, T], item_level: int) -> T | None:
     """The value for the largest key <= `item_level`, clamped to the table's own
     range. The real curve tables are gapless from 1 to their max item level, so
     this is an exact lookup in production; a unit-test fixture only needs the
-    specific item levels its cases use, not every level in between."""
+    specific item levels its cases use, not every level in between.
+
+    Public because `pipeline/simdb/weapons.py` resolves the ItemDamage* curves
+    the same way, and the clamp is the part worth having one copy of.
+    """
     if not table:
         return None
     keys = sorted(table)
@@ -188,15 +193,15 @@ def resolve_armor(
     trinkets, librams, idols, totems -- see proficiency.py) or a curve table
     has no row for this item level."""
     if armor_subclass_id == SHIELD:
-        shield_row = _nearest(curves.armor_shield, item_level)
+        shield_row = nearest_row(curves.armor_shield, item_level)
         if shield_row is None:
             return 0
         return round(shield_row[quality])
     type_column = ARMOR_TYPE_COLUMN.get(armor_subclass_id)
     if type_column is None:
         return 0
-    total_row = _nearest(curves.armor_total, item_level)
-    quality_row = _nearest(curves.armor_quality, item_level)
+    total_row = nearest_row(curves.armor_total, item_level)
+    quality_row = nearest_row(curves.armor_quality, item_level)
     lookup_inventory_type = (
         CHEST_INVENTORY_TYPE if inventory_type == ROBE_INVENTORY_TYPE else inventory_type
     )
@@ -219,7 +224,7 @@ def stat_budget(
     group = STAT_BUDGET_GROUP_BY_INVENTORY_TYPE.get(inventory_type)
     if budget_column is None or group is None:
         return None
-    budgets_row = _nearest(curves.rand_prop_points, item_level)
+    budgets_row = nearest_row(curves.rand_prop_points, item_level)
     if budgets_row is None:
         return None
     return budgets_row[budget_column][group]
