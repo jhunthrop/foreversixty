@@ -187,7 +187,9 @@ func ParseHeader(ln lexer.Line) (Header, bool) {
 	return h, true
 }
 
-// rows is the table, most specific first.
+// rows is the table, most specific first. RetailV22 matches any project
+// that writes version 22, so a narrower version-22 row added later must
+// sit before it.
 var rows = []Layout{RetailV22(), RetailV16(), ClassicWiki()}
 
 // Lookup returns the row for a header, and whether one matched.
