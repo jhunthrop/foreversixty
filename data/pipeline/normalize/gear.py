@@ -376,6 +376,37 @@ def _icon_name(item_row: dict[str, str], icons: dict[int, str], display_name: st
     )
 
 
+def resolve_item_values(
+    sparse: dict[str, str],
+    item_row: dict[str, str],
+    curves: ItemCurves | None,
+) -> tuple[int, dict[str, int]]:
+    """One item's armour and stats, however this build states them.
+
+    Classic Era states both in columns; the 1.60 client (Forever beta) states
+    neither and computes them from the curve tables. That decision used to live
+    inside build_class_items, which meant the simulator's SimItem rows would
+    have had to make it a second time -- and a planner and a sim that disagree
+    about what an item is worth is the one bug neither would show. One function
+    now answers it for both. See item_curves.py for the formulas.
+    """
+    inventory_type = int_column(sparse, "InventoryType")
+    quality = int_column(sparse, "OverallQualityID")
+    item_level = int_column(sparse, "ItemLevel")
+    item_class_id = int_column(item_row, "ClassID")
+    subclass_id = int_column(item_row, "SubclassID")
+    if _row_has_literal_amounts(sparse):
+        return (_optional_int(sparse, "Resistances_0") or 0), _stats(sparse)
+    if curves is not None and curves.available:
+        armor = (
+            resolve_armor(curves, item_level, quality, inventory_type, subclass_id)
+            if item_class_id == ARMOR
+            else 0
+        )
+        return armor, _curve_stats(sparse, curves, item_level, quality, inventory_type)
+    return 0, {}
+
+
 def build_class_items(
     sparse_rows: list[dict[str, str]],
     item_rows: list[dict[str, str]],
@@ -415,19 +446,7 @@ def build_class_items(
         item_class_id = int_column(item_row, "ClassID")
         subclass_id = int_column(item_row, "SubclassID")
         item_level = int_column(row, "ItemLevel")
-        if _row_has_literal_amounts(row):
-            armor = _optional_int(row, "Resistances_0") or 0
-            stats = _stats(row)
-        elif curves is not None and curves.available:
-            armor = (
-                resolve_armor(curves, item_level, quality, inventory_type, subclass_id)
-                if item_class_id == ARMOR
-                else 0
-            )
-            stats = _curve_stats(row, curves, item_level, quality, inventory_type)
-        else:
-            armor = 0
-            stats = {}
+        armor, stats = resolve_item_values(row, item_row, curves)
         _check_level_60_sanity(item_id, display_name, item_level, armor, stats)
         if not _has_gear_value(armor, stats, item_class_id):
             continue
