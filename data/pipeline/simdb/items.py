@@ -177,18 +177,17 @@ def build_sim_items(
         subclass = int_column(item_row, "SubclassID")
 
         armor, resolved = resolve_item_values(sparse, item_row, curves)
-        stats: dict[str, float] = {key: float(value) for key, value in resolved.items()}
+        stat_pairs: list[tuple[str, float]] = list(resolved.items())
         if armor:
-            stats["armor"] = stats.get("armor", 0.0) + armor
+            stat_pairs.append(("armor", armor))
         bonus = equip.get(item_id, SpellBonus())
-        for key, amount in bonus.stats.items():
-            stats[key] = stats.get(key, 0.0) + amount
+        stat_pairs.extend(bonus.stats.items())
 
         item = pb.SimItem(
             id=item_id,
             name=column_value(sparse, "Display_lang"),
             type=pb.ItemType.Value(ITEM_TYPE_BY_INVENTORY_TYPE[inventory]),
-            stats=stat_array(stats),
+            stats=stat_array(stat_pairs),
             weapon_skills=weapon_skill_array(bonus.weapon_skills),
             bonus_physical_damage=bonus.bonus_physical_damage,
             class_allowlist=_class_allowlist(int_column(sparse, "AllowableClass")),
