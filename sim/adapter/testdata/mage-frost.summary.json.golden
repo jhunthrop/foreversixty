@@ -1,0 +1,825 @@
+{
+  "engine_version": "sim:golden",
+  "fight_index": 1,
+  "duration_ms": 179999,
+  "damage_done": [
+    {
+      "guid": "sim-player",
+      "name": "Frost",
+      "class": "mage",
+      "total": 127777,
+      "effective": 127777,
+      "active_ms": 179999,
+      "abilities": [
+        {
+          "spell_id": 25304,
+          "name": "spell:25304",
+          "school": 16,
+          "total": 127777,
+          "effective": 127777,
+          "hits": 32,
+          "crits": 32,
+          "ticks": 0,
+          "misses": {
+            "miss": 7
+          },
+          "min": 0,
+          "max": 0
+        },
+        {
+          "spell_id": 0,
+          "name": "other:5",
+          "total": 0,
+          "effective": 0,
+          "hits": 0,
+          "crits": 0,
+          "ticks": 0,
+          "min": 0,
+          "max": 0
+        },
+        {
+          "spell_id": 12472,
+          "name": "spell:12472",
+          "total": 0,
+          "effective": 0,
+          "hits": 0,
+          "crits": 0,
+          "ticks": 0,
+          "min": 0,
+          "max": 0
+        },
+        {
+          "spell_id": 5513,
+          "name": "item:5513",
+          "total": 0,
+          "effective": 0,
+          "hits": 0,
+          "crits": 0,
+          "ticks": 0,
+          "min": 0,
+          "max": 0
+        },
+        {
+          "spell_id": 8007,
+          "name": "item:8007",
+          "total": 0,
+          "effective": 0,
+          "hits": 0,
+          "crits": 0,
+          "ticks": 0,
+          "min": 0,
+          "max": 0
+        },
+        {
+          "spell_id": 1000101,
+          "name": "spell:1000101",
+          "total": 0,
+          "effective": 0,
+          "hits": 0,
+          "crits": 0,
+          "ticks": 0,
+          "min": 0,
+          "max": 0
+        },
+        {
+          "spell_id": 18820,
+          "name": "item:18820",
+          "total": 0,
+          "effective": 0,
+          "hits": 0,
+          "crits": 0,
+          "ticks": 0,
+          "min": 0,
+          "max": 0
+        },
+        {
+          "spell_id": 5514,
+          "name": "item:5514",
+          "total": 0,
+          "effective": 0,
+          "hits": 0,
+          "crits": 0,
+          "ticks": 0,
+          "min": 0,
+          "max": 0
+        },
+        {
+          "spell_id": 8008,
+          "name": "item:8008",
+          "total": 0,
+          "effective": 0,
+          "hits": 0,
+          "crits": 0,
+          "ticks": 0,
+          "min": 0,
+          "max": 0
+        }
+      ],
+      "targets": [
+        {
+          "guid": "sim-target-0",
+          "name": "Target 0",
+          "total": 127777
+        },
+        {
+          "guid": "sim-target-1",
+          "name": "Target 1",
+          "total": 0
+        }
+      ],
+      "series": []
+    }
+  ],
+  "damage_taken": [],
+  "healing": [],
+  "healing_taken": [],
+  "deaths": [],
+  "auras": [
+    {
+      "target_guid": "sim-player",
+      "target_name": "Frost",
+      "spell_id": 1000101,
+      "name": "spell:1000101",
+      "type": "buff",
+      "applications": 2,
+      "max_stacks": 0,
+      "uptime_ms": 179999,
+      "segments": [],
+      "appliers": [
+        "Frost"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Frost",
+      "spell_id": 9910,
+      "name": "spell:9910",
+      "type": "buff",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 179999,
+      "segments": [],
+      "appliers": [
+        "Frost"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Frost",
+      "spell_id": 20906,
+      "name": "spell:20906",
+      "type": "buff",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 179999,
+      "segments": [],
+      "appliers": [
+        "Frost"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Frost",
+      "spell_id": 20217,
+      "name": "spell:20217",
+      "type": "buff",
+      "applications": 2,
+      "max_stacks": 0,
+      "uptime_ms": 179999,
+      "segments": [],
+      "appliers": [
+        "Frost"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Frost",
+      "spell_id": 20218,
+      "name": "spell:20218",
+      "type": "buff",
+      "applications": 2,
+      "max_stacks": 0,
+      "uptime_ms": 179999,
+      "segments": [],
+      "appliers": [
+        "Frost"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Frost",
+      "spell_id": 10293,
+      "name": "spell:10293",
+      "type": "buff",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 179999,
+      "segments": [],
+      "appliers": [
+        "Frost"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Frost",
+      "spell_id": 10301,
+      "name": "spell:10301",
+      "type": "buff",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 179999,
+      "segments": [],
+      "appliers": [
+        "Frost"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Frost",
+      "spell_id": 25289,
+      "name": "spell:25289",
+      "type": "buff",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 179999,
+      "segments": [],
+      "appliers": [
+        "Frost"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Frost",
+      "spell_id": 25291,
+      "name": "spell:25291",
+      "type": "buff",
+      "applications": 2,
+      "max_stacks": 0,
+      "uptime_ms": 179999,
+      "segments": [],
+      "appliers": [
+        "Frost"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Frost",
+      "spell_id": 22888,
+      "name": "spell:22888",
+      "type": "buff",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 179999,
+      "segments": [],
+      "appliers": [
+        "Frost"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Frost",
+      "spell_id": 24425,
+      "name": "spell:24425",
+      "type": "buff",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 179999,
+      "segments": [],
+      "appliers": [
+        "Frost"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Frost",
+      "spell_id": 15366,
+      "name": "spell:15366",
+      "type": "buff",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 179999,
+      "segments": [],
+      "appliers": [
+        "Frost"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Frost",
+      "spell_id": 16609,
+      "name": "spell:16609",
+      "type": "buff",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 179999,
+      "segments": [],
+      "appliers": [
+        "Frost"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Frost",
+      "spell_id": 22817,
+      "name": "spell:22817",
+      "type": "buff",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 179999,
+      "segments": [],
+      "appliers": [
+        "Frost"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Frost",
+      "spell_id": 22818,
+      "name": "spell:22818",
+      "type": "buff",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 179999,
+      "segments": [],
+      "appliers": [
+        "Frost"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Frost",
+      "spell_id": 22820,
+      "name": "spell:22820",
+      "type": "buff",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 179999,
+      "segments": [],
+      "appliers": [
+        "Frost"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Frost",
+      "spell_id": 23768,
+      "name": "spell:23768",
+      "type": "buff",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 179999,
+      "segments": [],
+      "appliers": [
+        "Frost"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Frost",
+      "spell_id": 12577,
+      "name": "spell:12577",
+      "type": "buff",
+      "applications": 6,
+      "max_stacks": 0,
+      "uptime_ms": 74325,
+      "segments": [],
+      "appliers": [
+        "Frost"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Frost",
+      "spell_id": 18820,
+      "name": "item:18820",
+      "type": "buff",
+      "applications": 2,
+      "max_stacks": 0,
+      "uptime_ms": 30050,
+      "segments": [],
+      "appliers": [
+        "Frost"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Frost",
+      "spell_id": 11426,
+      "name": "spell:11426",
+      "type": "buff",
+      "applications": 0,
+      "max_stacks": 0,
+      "uptime_ms": 0,
+      "segments": [],
+      "appliers": [
+        "Frost"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Frost",
+      "spell_id": 13031,
+      "name": "spell:13031",
+      "type": "buff",
+      "applications": 0,
+      "max_stacks": 0,
+      "uptime_ms": 0,
+      "segments": [],
+      "appliers": [
+        "Frost"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Frost",
+      "spell_id": 13032,
+      "name": "spell:13032",
+      "type": "buff",
+      "applications": 0,
+      "max_stacks": 0,
+      "uptime_ms": 0,
+      "segments": [],
+      "appliers": [
+        "Frost"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Frost",
+      "spell_id": 13033,
+      "name": "spell:13033",
+      "type": "buff",
+      "applications": 0,
+      "max_stacks": 0,
+      "uptime_ms": 0,
+      "segments": [],
+      "appliers": [
+        "Frost"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Frost",
+      "spell_id": 10,
+      "name": "spell:10",
+      "type": "buff",
+      "applications": 0,
+      "max_stacks": 0,
+      "uptime_ms": 0,
+      "segments": [],
+      "appliers": [
+        "Frost"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Frost",
+      "spell_id": 6141,
+      "name": "spell:6141",
+      "type": "buff",
+      "applications": 0,
+      "max_stacks": 0,
+      "uptime_ms": 0,
+      "segments": [],
+      "appliers": [
+        "Frost"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Frost",
+      "spell_id": 8427,
+      "name": "spell:8427",
+      "type": "buff",
+      "applications": 0,
+      "max_stacks": 0,
+      "uptime_ms": 0,
+      "segments": [],
+      "appliers": [
+        "Frost"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Frost",
+      "spell_id": 10185,
+      "name": "spell:10185",
+      "type": "buff",
+      "applications": 0,
+      "max_stacks": 0,
+      "uptime_ms": 0,
+      "segments": [],
+      "appliers": [
+        "Frost"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Frost",
+      "spell_id": 10186,
+      "name": "spell:10186",
+      "type": "buff",
+      "applications": 0,
+      "max_stacks": 0,
+      "uptime_ms": 0,
+      "segments": [],
+      "appliers": [
+        "Frost"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Frost",
+      "spell_id": 10187,
+      "name": "spell:10187",
+      "type": "buff",
+      "applications": 0,
+      "max_stacks": 0,
+      "uptime_ms": 0,
+      "segments": [],
+      "appliers": [
+        "Frost"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Frost",
+      "spell_id": 2120,
+      "name": "spell:2120",
+      "type": "buff",
+      "applications": 0,
+      "max_stacks": 0,
+      "uptime_ms": 0,
+      "segments": [],
+      "appliers": [
+        "Frost"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Frost",
+      "spell_id": 2121,
+      "name": "spell:2121",
+      "type": "buff",
+      "applications": 0,
+      "max_stacks": 0,
+      "uptime_ms": 0,
+      "segments": [],
+      "appliers": [
+        "Frost"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Frost",
+      "spell_id": 8422,
+      "name": "spell:8422",
+      "type": "buff",
+      "applications": 0,
+      "max_stacks": 0,
+      "uptime_ms": 0,
+      "segments": [],
+      "appliers": [
+        "Frost"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Frost",
+      "spell_id": 8423,
+      "name": "spell:8423",
+      "type": "buff",
+      "applications": 0,
+      "max_stacks": 0,
+      "uptime_ms": 0,
+      "segments": [],
+      "appliers": [
+        "Frost"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Frost",
+      "spell_id": 10215,
+      "name": "spell:10215",
+      "type": "buff",
+      "applications": 0,
+      "max_stacks": 0,
+      "uptime_ms": 0,
+      "segments": [],
+      "appliers": [
+        "Frost"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Frost",
+      "spell_id": 10216,
+      "name": "spell:10216",
+      "type": "buff",
+      "applications": 0,
+      "max_stacks": 0,
+      "uptime_ms": 0,
+      "segments": [],
+      "appliers": [
+        "Frost"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Frost",
+      "spell_id": 12051,
+      "name": "spell:12051",
+      "type": "buff",
+      "applications": 0,
+      "max_stacks": 0,
+      "uptime_ms": 0,
+      "segments": [],
+      "appliers": [
+        "Frost"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Frost",
+      "spell_id": 12051,
+      "name": "spell:12051",
+      "type": "buff",
+      "applications": 0,
+      "max_stacks": 0,
+      "uptime_ms": 0,
+      "segments": [],
+      "appliers": [
+        "Frost"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Frost",
+      "spell_id": 0,
+      "name": "other:14",
+      "type": "buff",
+      "applications": 0,
+      "max_stacks": 0,
+      "uptime_ms": 0,
+      "segments": [],
+      "appliers": [
+        "Frost"
+      ]
+    }
+  ],
+  "casts": [
+    {
+      "guid": "sim-player",
+      "name": "Frost",
+      "owner_guid": "sim-player",
+      "spell_id": 25304,
+      "spell_name": "spell:25304",
+      "started": 71,
+      "succeeded": 71,
+      "failed": 0,
+      "cast_time_ms": 0,
+      "sequence": []
+    },
+    {
+      "guid": "sim-player",
+      "name": "Frost",
+      "owner_guid": "sim-player",
+      "spell_id": 0,
+      "spell_name": "other:5",
+      "started": 34,
+      "succeeded": 34,
+      "failed": 0,
+      "cast_time_ms": 0,
+      "sequence": []
+    },
+    {
+      "guid": "sim-player",
+      "name": "Frost",
+      "owner_guid": "sim-player",
+      "spell_id": 1000101,
+      "spell_name": "spell:1000101",
+      "started": 2,
+      "succeeded": 2,
+      "failed": 0,
+      "cast_time_ms": 0,
+      "sequence": []
+    },
+    {
+      "guid": "sim-player",
+      "name": "Frost",
+      "owner_guid": "sim-player",
+      "spell_id": 18820,
+      "spell_name": "item:18820",
+      "started": 2,
+      "succeeded": 2,
+      "failed": 0,
+      "cast_time_ms": 0,
+      "sequence": []
+    },
+    {
+      "guid": "sim-player",
+      "name": "Frost",
+      "owner_guid": "sim-player",
+      "spell_id": 12472,
+      "spell_name": "spell:12472",
+      "started": 1,
+      "succeeded": 1,
+      "failed": 0,
+      "cast_time_ms": 0,
+      "sequence": []
+    },
+    {
+      "guid": "sim-player",
+      "name": "Frost",
+      "owner_guid": "sim-player",
+      "spell_id": 5514,
+      "spell_name": "item:5514",
+      "started": 1,
+      "succeeded": 1,
+      "failed": 0,
+      "cast_time_ms": 0,
+      "sequence": []
+    },
+    {
+      "guid": "sim-player",
+      "name": "Frost",
+      "owner_guid": "sim-player",
+      "spell_id": 5513,
+      "spell_name": "item:5513",
+      "started": 0,
+      "succeeded": 0,
+      "failed": 0,
+      "cast_time_ms": 0,
+      "sequence": []
+    },
+    {
+      "guid": "sim-player",
+      "name": "Frost",
+      "owner_guid": "sim-player",
+      "spell_id": 8007,
+      "spell_name": "item:8007",
+      "started": 0,
+      "succeeded": 0,
+      "failed": 0,
+      "cast_time_ms": 0,
+      "sequence": []
+    },
+    {
+      "guid": "sim-player",
+      "name": "Frost",
+      "owner_guid": "sim-player",
+      "spell_id": 8008,
+      "spell_name": "item:8008",
+      "started": 0,
+      "succeeded": 0,
+      "failed": 0,
+      "cast_time_ms": 0,
+      "sequence": []
+    }
+  ],
+  "interrupts": [],
+  "dispels": [],
+  "resources": [
+    {
+      "guid": "sim-player",
+      "name": "Frost",
+      "power_type": 1,
+      "series": [],
+      "gained": 5237,
+      "spent": 5625,
+      "zero_ms": 0,
+      "max": 0,
+      "at_max_ms": 0,
+      "wasted": 2535
+    }
+  ],
+  "threat": [],
+  "threat_by_target": [],
+  "taunts": [],
+  "combatants": [],
+  "roster": [
+    {
+      "guid": "sim-player",
+      "name": "Frost",
+      "class": "mage",
+      "class_source": "sim",
+      "spec": "frost",
+      "role": "dps",
+      "active_ms": 179999,
+      "activity_pct": 100,
+      "deaths": 0,
+      "damage_done": 127777,
+      "healing_done": 0,
+      "damage_taken": 0,
+      "dps": 709.8726269908482,
+      "hps": 0,
+      "dtps": 0
+    }
+  ],
+  "mechanics": {
+    "table_found": false,
+    "rows": []
+  },
+  "phases": []
+}
