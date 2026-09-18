@@ -54,3 +54,29 @@ def refresh_manifest(build_dir: Path) -> dict:
         product=existing["product"],
         fetched_at=existing["fetched_at"],
     )
+
+
+def newest_build(root: Path = Path("builds")) -> str:
+    """The build directory whose manifest records the newest client fetch.
+
+    A test that means "the build the site runs on" names it here rather than
+    embedding the id: a build string in a test is an edit waiting to be
+    forgotten the next time a build lands, and the plan keeps build strings
+    inside `builds/` and the handful of single-build conformance tests.
+
+    A directory whose manifest has no `fetched_at` is not a client build --
+    `forever-prebeta` is regenerated from a Wowhead snapshot so links shared
+    against it keep opening -- and is skipped rather than sorted against a
+    null.
+    """
+    candidates: list[tuple[str, str]] = []
+    for path in sorted(root.glob(f"*/{MANIFEST}")):
+        manifest = json.loads(path.read_text(encoding="utf-8"))
+        fetched_at = manifest.get("fetched_at")
+        if fetched_at:
+            candidates.append((fetched_at, manifest["build"]))
+    if not candidates:
+        raise SystemExit(
+            f"no fetched build under {root}; run `python -m pipeline fetch` first"
+        )
+    return max(candidates)[1]

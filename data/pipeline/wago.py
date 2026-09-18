@@ -25,7 +25,6 @@ TABLES = [
     "SpellCooldowns",
     "SpellCastTimes",
     "SpellPower",
-    "SpellCategories",
     "SpellClassOptions",
     "SpellLevels",
     "SpellItemEnchantment",
@@ -59,8 +58,11 @@ TABLES = [
     "ArmorLocation",
     "RandPropPoints",
     # The simulator's own inputs. ItemEffect + ItemXItemEffect resolve an item's
-    # on-equip spells (pipeline/simdb/equip.py); the six spell tables are what
+    # on-equip spells (pipeline/simdb/equip.py); the five spell tables are what
     # `simconst` reads; SpellItemEnchantment is `simdb`'s enchant source.
+    # SpellCategories is deliberately absent: nothing reads Category or
+    # StartRecoveryCategory, and a spell's global cooldown is already
+    # SpellCooldowns.StartRecoveryTime.
     # ItemDamage* resolve weapon damage for a client whose ItemSparse states no
     # MinDamage_<n> (pipeline/simdb/weapons.py), the same way ItemArmor* resolve
     # armour. SpellScaling is deliberately absent: it 404s on this lineage.

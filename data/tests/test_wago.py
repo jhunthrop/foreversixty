@@ -100,7 +100,6 @@ def test_tables_cover_every_pipeline_input():
         "SpellCooldowns",
         "SpellCastTimes",
         "SpellPower",
-        "SpellCategories",
         "SpellClassOptions",
         "SpellLevels",
         "SpellItemEnchantment",
@@ -136,6 +135,13 @@ def test_tables_cover_every_pipeline_input():
         "ItemDamageThrown",
     ]
     assert "foreversixty-pipeline" in USER_AGENT
+
+
+def test_a_table_with_no_consumer_is_not_fetched():
+    """SpellCategories would be a download and a fixture nobody reads: nothing
+    this pipeline emits carries Category or StartRecoveryCategory, and a
+    spell's global cooldown is SpellCooldowns.StartRecoveryTime."""
+    assert "SpellCategories" not in TABLES
 
 
 def test_spell_scaling_is_not_fetched():
