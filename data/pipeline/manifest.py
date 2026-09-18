@@ -34,3 +34,23 @@ def verify(build_dir: Path) -> list[str]:
         for name, digest in m["files"].items()
         if not (build_dir / name).exists() or _sha256(build_dir / name) != digest
     ]
+
+
+def refresh_manifest(build_dir: Path) -> dict:
+    """Re-hash a build directory in place, keeping the provenance it already has.
+
+    `normalize` writes the manifest at the end of its run. A later command that
+    adds a file to the same build directory -- `simdb`, `simconst` -- would
+    otherwise leave a manifest that no longer covers the directory, and
+    `verify` would still pass, because it only checks the files it lists.
+    """
+    path = build_dir / MANIFEST
+    if not path.exists():
+        raise SystemExit(f"no {path}; run `python -m pipeline normalize` for this build first")
+    existing = read_manifest(build_dir)
+    return write_manifest(
+        build_dir,
+        build=existing["build"],
+        product=existing["product"],
+        fetched_at=existing["fetched_at"],
+    )

@@ -15,11 +15,20 @@ TABLES = [
     "JournalInstance",
     "ItemSparse",
     "Item",
+    "ItemEffect",
+    "ItemXItemEffect",
     "SpellName",
     "Spell",
     "SpellEffect",
     "SpellDuration",
     "SpellMisc",
+    "SpellCooldowns",
+    "SpellCastTimes",
+    "SpellPower",
+    "SpellCategories",
+    "SpellClassOptions",
+    "SpellLevels",
+    "SpellItemEnchantment",
     "ManifestInterfaceData",
     "ItemSet",
     "ItemSetSpell",
@@ -49,6 +58,17 @@ TABLES = [
     "ItemArmorShield",
     "ArmorLocation",
     "RandPropPoints",
+    # The simulator's own inputs. ItemEffect + ItemXItemEffect resolve an item's
+    # on-equip spells (pipeline/simdb/equip.py); the six spell tables are what
+    # `simconst` reads; SpellItemEnchantment is `simdb`'s enchant source.
+    # ItemDamage* resolve weapon damage for a client whose ItemSparse states no
+    # MinDamage_<n> (pipeline/simdb/weapons.py), the same way ItemArmor* resolve
+    # armour. SpellScaling is deliberately absent: it 404s on this lineage.
+    "ItemDamageOneHand",
+    "ItemDamageTwoHand",
+    "ItemDamageRanged",
+    "ItemDamageWand",
+    "ItemDamageThrown",
 ]
 # Tables allowed to be missing (404) for a given product/build without aborting the
 # fetch. JournalInstance (the Dungeon Journal) predates Classic Era's client, so it
@@ -77,6 +97,18 @@ OPTIONAL_TABLES = frozenset(
         "TraitCond",
         "TraitCurrency",
         "TraitDefinitionEffectPoints",
+        # The 1.60 client's ItemEffect has no ParentItemID: the item-to-effect
+        # link moved to its own table, which Classic Era 404s on. A build
+        # without it uses ParentItemID instead (pipeline/simdb/equip.py).
+        "ItemXItemEffect",
+        # Weapon damage curves, optional for the same reason the armour curves
+        # above are: a product that truly lacks them emits no weapon damage
+        # rather than aborting the fetch.
+        "ItemDamageOneHand",
+        "ItemDamageTwoHand",
+        "ItemDamageRanged",
+        "ItemDamageWand",
+        "ItemDamageThrown",
     }
 )
 

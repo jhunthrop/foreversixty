@@ -2,7 +2,9 @@ import hashlib
 import json
 from pathlib import Path
 
-from pipeline.manifest import read_manifest, verify, write_manifest
+import pytest
+
+from pipeline.manifest import read_manifest, refresh_manifest, verify, write_manifest
 
 
 def test_manifest_lists_files_with_sha256(tmp_path: Path):
@@ -45,3 +47,25 @@ def test_verify_reports_a_missing_nested_file(tmp_path: Path):
     write_manifest(tmp_path, "b", "p", "t")
     (tmp_path / "talents" / "warrior.json").unlink()
     assert verify(tmp_path) == ["talents/warrior.json"]
+
+
+def test_refresh_manifest_rehashes_without_losing_provenance(tmp_path: Path):
+    (tmp_path / "items.json").write_text("[]\n")
+    write_manifest(
+        tmp_path, build="1.2.3.4", product="wow_classic_beta", fetched_at="2026-01-01T00:00:00Z"
+    )
+    (tmp_path / "simdb.bin").write_bytes(b"\x08\x01")
+    refreshed = refresh_manifest(tmp_path)
+    assert refreshed["build"] == "1.2.3.4"
+    assert refreshed["product"] == "wow_classic_beta"
+    assert refreshed["fetched_at"] == "2026-01-01T00:00:00Z"
+    assert "simdb.bin" in refreshed["files"]
+    assert verify(tmp_path) == []
+
+
+def test_refresh_manifest_needs_a_manifest_to_refresh(tmp_path: Path):
+    """simdb and simconst write into a directory normalize has already filled.
+    Running one against a directory normalize has never touched is a mistake
+    worth naming, not a manifest invented from nothing."""
+    with pytest.raises(SystemExit, match="normalize"):
+        refresh_manifest(tmp_path)
