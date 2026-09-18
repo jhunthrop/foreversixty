@@ -157,7 +157,7 @@ and CSRF rules.
 | `POST /v1/sims` | optional session | `SimResult` with `Lane: "browser"` and `Raw` omitted | 201 `{ sim_id }`; saves a browser-run result |
 | `GET /v1/sims/{sim_id}` | none | | 200 `SimResult` |
 | `GET /v1/sims?mine=1&page=` | session | | 200 `{ rows: [ { sim_id, spec, dps, engine_version, created_at, title } ], total, page, per_page: 100 }` |
-| `POST /v1/sims/run` | session + CSRF + premium | `SimRequest` with `Raw` set | 202 `{ sim_id }`; dispatches the Cloud Run job |
+| `POST /v1/sims/run` | session + CSRF + premium | a plain JSON `SimRequest` (there is no `Raw`; the engine request is built server-side by `sim/request`) | 202 `{ sim_id }`; dispatches the Cloud Run job |
 | `GET /v1/sims/{sim_id}/progress` | none | | 200 `{ state: "queued"\|"running"\|"done"\|"error", iterations_done, dps? }` |
 | `GET /v1/specs` | none | | 200 `{ specs: [ { spec, state: "validated"\|"in_progress"\|"unsupported", median_gap, parses, worst_actions: [ { name, sim_casts, actual_casts } ], engine_version, updated_at } ] }` |
 | `GET /v1/characters/{region}/{ruleset}/{name}/sim-input` | optional session | | 200 `{ spec, gear, talents, buffs, captured_at, source }`: the character model from the newest available source. A character key is three path segments, so the route is spelled out the way the existing character route is, never as one `{character_key}` segment. **Armory is not a source yet**: nothing in the repo stores an Armory refresh, so today `source` is `"addon"` or `"fight"`, newest wins, and `"armory"` appears when that lands without the shape changing. |
@@ -172,7 +172,7 @@ returns it as `user.premium`** so the web can decide whether to offer the server
 
 **Parse job**: `api sim-run <sim_id>` is a Cloud Run job on the same image as the API, created once
 by hand like `parse-report`. The request and result cross between the route and the job through
-R2, not the database: `sims/<sim_id>/request.bin` holds the proto-encoded `RaidSimRequest` the
+R2, not the database: only `sims/<sim_id>/result.json` crosses through R2; the queued `SimRequest` is held as JSON in the `sims` row (amended 2026-09-18: `Raw` and `request.bin` never existed in the built module).
 route received, `sims/<sim_id>/result.json` the finished `SimResult`.
 
 **Validation job**: `api sim-validate` lives in `api/internal/sims` and runs on the API image,
