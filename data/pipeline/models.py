@@ -150,3 +150,12 @@ class ItemSetRecord(BaseModel):
     name: str
     item_ids: list[int]
     bonuses: list[ItemSetBonus]
+
+
+class SpecRecord(BaseModel):
+    spec: str
+    class_slug: str
+    spec_slug: str
+    name: str
+    role: str
+    tree_index: int

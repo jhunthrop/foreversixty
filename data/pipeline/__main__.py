@@ -47,6 +47,15 @@ def build_parser() -> argparse.ArgumentParser:
         help="the saved Wowhead payload; see data/raw-forever/README.md",
     )
     wd.add_argument("--build", required=True)
+
+    sp = sub.add_parser("specs", help="generate the Go and TypeScript spec lists")
+    sp.add_argument("--go", default="../sim/specs/specs.go")
+    sp.add_argument("--ts", default="../web/src/lib/sim/specs.ts")
+    sp.add_argument(
+        "--check",
+        action="store_true",
+        help="write nothing; exit non-zero if a generated file has drifted",
+    )
     return p
 
 
@@ -90,6 +99,20 @@ def main(argv: list[str] | None = None) -> int:
         from pipeline.wowhead_diff import write_snapshot_diff
 
         write_snapshot_diff(args.snapshot, args.build)
+    elif args.command == "specs":
+        from pathlib import Path
+
+        from pipeline.specs import check_specs, write_specs
+
+        if args.check:
+            stale = check_specs(Path("curated"), Path(args.go), Path(args.ts))
+            for path in stale:
+                logging.getLogger("pipeline").error(
+                    "%s does not match curated/specs.json; run `python -m pipeline specs`", path
+                )
+            return 1 if stale else 0
+        for path in write_specs(Path("curated"), Path(args.go), Path(args.ts)):
+            print(path)
     return 0
 
 
