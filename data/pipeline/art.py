@@ -31,6 +31,7 @@ from pathlib import Path
 import httpx
 from PIL import Image, ImageEnhance
 
+from pipeline.casc import CascMissing, fetch_casc_file
 from pipeline.icons import CACHE_DIR, _atomic_write
 from pipeline.wago import BASE_URL, USER_AGENT
 
@@ -270,20 +271,18 @@ def backgrounds_for_build(
                 )
             quadrants: dict[str, bytes] = {}
             for quadrant, file_id in ids.items():
-                cached = cache_dir / build / f"{file_id}.blp"
-                if not cached.exists():
-                    cached.parent.mkdir(parents=True, exist_ok=True)
-                    response = client.get(
-                        f"/api/casc/{file_id}", params={"version": build}, timeout=60
+                try:
+                    quadrants[quadrant] = fetch_casc_file(
+                        file_id, build, cache_dir=cache_dir, client=client, suffix=".blp"
                     )
-                    response.raise_for_status()
-                    if not response.content:
-                        raise ArtDataError(
-                            f"{background} {quadrant}: wago returned no bytes for file "
-                            f"{file_id} at version {build}"
-                        )
-                    _atomic_write(cached, response.content)
-                quadrants[quadrant] = cached.read_bytes()
+                except CascMissing as error:
+                    # The message is this module's, not the helper's: a tree is
+                    # named by its background and its quadrant, and
+                    # tests/test_art.py matches on "no bytes".
+                    raise ArtDataError(
+                        f"{background} {quadrant}: wago returned no bytes for file "
+                        f"{file_id} at version {build}"
+                    ) from error
             _atomic_write(target, background_webp(quadrants))
             written += 1
     finally:

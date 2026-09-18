@@ -20,6 +20,9 @@ def build_parser() -> argparse.ArgumentParser:
     a = sub.add_parser("tree-art", help="download and process each talent tree's background")
     a.add_argument("--build", required=True)
 
+    gt = sub.add_parser("gametables", help="fetch the client's GameTables for a build")
+    gt.add_argument("--build", required=True)
+
     ft = sub.add_parser(
         "forever-talents",
         help="build Forever talent files from a Wowhead snapshot (pre-beta only)",
@@ -84,6 +87,10 @@ def main(argv: list[str] | None = None) -> int:
         from pipeline.art import backgrounds_for_build
 
         backgrounds_for_build(args.build)
+    elif args.command == "gametables":
+        from pipeline.gametables import write_game_tables
+
+        print(write_game_tables(args.build))
     elif args.command == "forever-talents":
         from pipeline.forever import write_forever_talents
 
