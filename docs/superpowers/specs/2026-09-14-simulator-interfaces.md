@@ -234,8 +234,17 @@ Three new outputs from `python -m pipeline`, all under the existing build direct
   consumes table; its shape is owned by the data lane and confirmed by the engine lane.
   Icons are not in `SimDatabase` and stay in `data/builds/<build>/icons/` for the site.
 - `simconst` command → `data/builds/<build>/spellconst/<class-slug>.json`: per-spell constants
-  keyed by spell id (base points, coefficients where readable, cooldown ms, cast time ms, cost,
-  duration ms, school, family mask), for the engine's generated constants files.
+  keyed by spell id, for the engine's generated constants files. Exact shape (amended
+  2026-09-18 by the controller after the data lane emitted it and the engine's loader had
+  guessed an array form; the emitted form is binding):
+  `{ "build", "class_slug", "family", "spells": { "<spell id>": { "name", "rank",
+  "school_mask", "cast_time_ms", "gcd_ms", "cooldown_ms", "category_cooldown_ms",
+  "duration_ms", "cost", "cost_type", "spell_level", "family_mask": [4 ints],
+  "effects": [ { "index", "effect", "aura", "amount", "sp_coefficient", "ap_coefficient",
+  "period_ms", "misc_value", "trigger_spell" } ] } } }`. `spells` is an object keyed by the
+  id as a string; `family_mask` is the client's four mask columns verbatim; coefficients are
+  per effect, verbatim, zeros included; the engine derives any convention value and its
+  `unconfirmed` marker on its own side.
 - `data/curated/apl/<spec_slug>.json`: the default rotation per spec, an `APLRotation` protobuf in
   its JSON form plus `{ "sources": [ { label, url, kind } ], "notes": "" }`. Validated by the data
   tests against the engine's APL schema. **This file is canonical.** The engine's regression suite
