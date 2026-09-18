@@ -200,6 +200,23 @@ def _base_points(row: dict[str, str]) -> int:
     return round(float(row["EffectBasePointsF"]))
 
 
+def effect_amount(row: dict[str, str]) -> int:
+    """One SpellEffect row's final amount, on either client schema.
+
+    Classic Era states an amount one short and puts the last point in
+    EffectDieSides -- "Increase Spell Dam 85" is 84 + 1, "Attack Power 24" is
+    23 + 1. The 1.60 client (Forever beta) has no EffectDieSides column at all
+    and its EffectBasePointsF is already final: spell 9103, the "+8 Strength"
+    enchant's spell, reads 8 where Era read 7. Adding a missing die-sides
+    column as zero makes one expression right on both.
+
+    Public so `pipeline/simdb/equip.py` reads amounts the same way the
+    description renderer does; the per-build column choice lives in
+    `_base_points` and nowhere else.
+    """
+    return _base_points(row) + int(row.get("EffectDieSides") or 0)
+
+
 def load_spell_text(
     spell_rows: list[dict[str, str]],
     misc_rows: list[dict[str, str]],
