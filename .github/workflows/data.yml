@@ -50,6 +50,7 @@ jobs:
       - run: uv run python -m pipeline normalize --build "$BUILD"
       - run: uv run python -m pipeline icons --build "$BUILD"
       - run: uv run python -m pipeline tree-art --build "$BUILD"
+      - run: uv run python -m pipeline gametables --build "$BUILD"
       # Re-run the offline normalize so manifest.json also covers the icons and tree art
       # the steps above just wrote.
       - run: uv run python -m pipeline normalize --build "$BUILD"
