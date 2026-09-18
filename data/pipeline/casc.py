@@ -18,6 +18,7 @@ a file the build does not ship, and a redirect is neither.
 from __future__ import annotations
 
 import logging
+from enum import Enum
 from pathlib import Path
 
 import httpx
@@ -32,6 +33,19 @@ class CascError(ValueError):
     """CASC did not return a usable file for this id and build."""
 
 
+class CascMissingReason(Enum):
+    """Why a `CascMissing` was raised, as data rather than as prose.
+
+    A caller that needs to tell the two apart (`pipeline/icons.py` logs a
+    different warning for each) branches on this, not on `str(error)` --
+    matching on message text would silently misroute the moment either
+    message's wording changed.
+    """
+
+    NOT_FOUND = "not_found"
+    EMPTY = "empty"
+
+
 class CascMissing(CascError):
     """This build does not ship this file: a 404, or a 200 with no body.
 
@@ -42,6 +56,10 @@ class CascMissing(CascError):
     through, because a stat curve the engine needs and the client does not
     have is the whole point of failing loudly.
     """
+
+    def __init__(self, message: str, *, reason: CascMissingReason) -> None:
+        super().__init__(message)
+        self.reason = reason
 
 
 def fetch_casc_file(
@@ -72,7 +90,8 @@ def fetch_casc_file(
             )
         if response.status_code == 404:
             raise CascMissing(
-                f"file data id {file_id} is not in CASC at version {build}"
+                f"file data id {file_id} is not in CASC at version {build}",
+                reason=CascMissingReason.NOT_FOUND,
             )
         # Anything else non-2xx stays an httpx.HTTPStatusError: that is what
         # pipeline/art.py's own test already expects from a 500, and this
@@ -81,7 +100,8 @@ def fetch_casc_file(
         if not response.content:
             raise CascMissing(
                 f"file data id {file_id} is empty for build {build}; this build's "
-                f"client does not ship that file"
+                f"client does not ship that file",
+                reason=CascMissingReason.EMPTY,
             )
         data = response.content
     finally:

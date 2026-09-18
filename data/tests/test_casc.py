@@ -3,7 +3,7 @@ from pathlib import Path
 import httpx
 import pytest
 
-from pipeline.casc import CascError, CascMissing, fetch_casc_file
+from pipeline.casc import CascError, CascMissing, CascMissingReason, fetch_casc_file
 
 BUILD = "9.9.9.9"
 
@@ -69,8 +69,9 @@ def test_an_empty_body_is_a_missing_file_not_an_empty_one(tmp_path: Path):
     this lineage. Writing a zero-byte file would hand the engine an empty stat
     curve and no error."""
     client = client_for(transport([], body=b""))
-    with pytest.raises(CascMissing, match="1391669"):
+    with pytest.raises(CascMissing, match="1391669") as excinfo:
         fetch_casc_file(1391669, BUILD, cache_dir=tmp_path, client=client)
+    assert excinfo.value.reason is CascMissingReason.EMPTY
     assert not (tmp_path / BUILD).exists() or not list((tmp_path / BUILD).iterdir())
 
 
@@ -79,8 +80,9 @@ def test_a_404_is_the_same_missing_file(tmp_path: Path):
     caller that tolerates one tolerates both: icons warn and skip, game tables
     and tree art do not."""
     client = client_for(transport([], body=b'{"errors":"Not found."}', status=404))
-    with pytest.raises(CascMissing, match="1391669"):
+    with pytest.raises(CascMissing, match="1391669") as excinfo:
         fetch_casc_file(1391669, BUILD, cache_dir=tmp_path, client=client)
+    assert excinfo.value.reason is CascMissingReason.NOT_FOUND
 
 
 def test_a_redirect_is_an_error(tmp_path: Path):

@@ -119,7 +119,7 @@ def download_icons(
     # Imported here rather than at module scope: pipeline/casc.py imports
     # CACHE_DIR and _atomic_write from this module, so a top-level import
     # would make the two modules import each other at load time.
-    from pipeline.casc import CascMissing, fetch_casc_file
+    from pipeline.casc import CascMissing, CascMissingReason, fetch_casc_file
 
     own = client is None
     if client is None:
@@ -138,11 +138,14 @@ def download_icons(
                     file_id, version, cache_dir=cache_dir, client=client, suffix=".blp"
                 )
             except CascMissing as error:
-                # CascMissing covers both a 404 and an empty body; the wording
-                # below is this module's own, kept byte-for-byte what it was
-                # before the migration because tests/test_icons.py matches on
-                # the empty-body phrasing specifically.
-                if "empty" in str(error):
+                # CascMissing covers both a 404 and an empty body; branch on
+                # its structured `reason` rather than its message text, so a
+                # reword of either message in casc.py can't silently misroute
+                # this. The wording below is this module's own, kept
+                # byte-for-byte what it was before the migration because
+                # tests/test_icons.py matches on the empty-body phrasing
+                # specifically.
+                if error.reason is CascMissingReason.EMPTY:
                     logger.warning(
                         "icon %s (%s) is empty in CASC at version %s; skipping",
                         file_id,
