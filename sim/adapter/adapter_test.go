@@ -2,6 +2,7 @@ package adapter
 
 import (
 	"encoding/json"
+	"errors"
 	"math"
 	"testing"
 
@@ -398,6 +399,20 @@ func TestSummarizeRejectsFailures(t *testing.T) {
 	zero := resultWith(oneAction(), 0)
 	if _, err := Summarize(zero, req()); err == nil {
 		t.Fatal("a result with zero iterations was summarized without error")
+	}
+}
+
+// The api lane calls these two directly, and a nil result is what a
+// failed run hands back.
+func TestExportedHelpersSurviveANilResult(t *testing.T) {
+	if _, err := PlayerMetrics(nil); !errors.Is(err, ErrNoPlayer) {
+		t.Errorf("PlayerMetrics(nil) = %v, want ErrNoPlayer", err)
+	}
+	if got := DPS(nil); got != (api.Estimate{}) {
+		t.Errorf("DPS(nil) = %+v, want the zero estimate", got)
+	}
+	if _, err := Summarize(nil, req()); !errors.Is(err, ErrSimFailed) {
+		t.Errorf("Summarize(nil) = %v, want ErrSimFailed", err)
 	}
 }
 
