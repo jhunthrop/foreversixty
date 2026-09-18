@@ -205,3 +205,11 @@ class ClassSpellConstants(BaseModel):
     class_slug: str
     family: int
     spells: dict[str, SpellConstant]
+
+
+class ConsumableRecord(BaseModel):
+    id: int
+    name: str
+    quality: int
+    required_level: int
+    spell_ids: list[int]
