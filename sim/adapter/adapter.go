@@ -32,6 +32,11 @@ var (
 	// ErrNoPlayer is returned when the result carries no player metrics,
 	// which means the request had no player in party one.
 	ErrNoPlayer = errors.New("adapter: the result has no player metrics")
+	// ErrDuplicateRow is returned when two rows of the summary share the
+	// key the logs engine and the report components identify a row by.
+	// It cannot happen for a real fight and must not happen for a sim:
+	// a repeated key is a runtime error in the report's keyed blocks.
+	ErrDuplicateRow = errors.New("adapter: two summary rows share one key")
 )
 
 // playerGUID is the synthetic unit id the summary uses for the simmed
@@ -89,13 +94,16 @@ func Summarize(res *proto.RaidSimResult, req api.SimRequest) (summary.Summary, e
 		Phases:         []summary.Phase{},
 	}
 	out.Roster = roster(player, class, spec, out, durationMS)
+	if err := checkRowIdentity(out); err != nil {
+		return summary.Summary{}, err
+	}
 	return out, nil
 }
 
 // PlayerMetrics returns the first player of the first party, which is the
 // only player an individual sim has.
 func PlayerMetrics(res *proto.RaidSimResult) (*proto.UnitMetrics, error) {
-	if res.RaidMetrics == nil {
+	if res == nil || res.RaidMetrics == nil {
 		return nil, ErrNoPlayer
 	}
 	for _, party := range res.RaidMetrics.Parties {
@@ -154,6 +162,7 @@ func actorFrom(u *proto.UnitMetrics, guid, class string, iters float64, duration
 		a.Abilities = append(a.Abilities, ab)
 		a.Total += ab.Total
 	}
+	a.Abilities = foldAbilities(a.Abilities)
 	a.Effective = a.Total
 
 	idx := make([]int32, 0, len(perTarget))
@@ -206,12 +215,18 @@ func ability(am *proto.ActionMetrics, iters float64, perTarget map[int32]int64) 
 		ab.Hits += per(float64(t.Hits), iters)
 		ab.Crits += per(float64(t.Crits), iters)
 		ab.Ticks += per(float64(t.Ticks+t.CritTicks), iters)
-		addMiss(ab.Misses, "miss", t.Misses, iters)
-		addMiss(ab.Misses, "dodge", t.Dodges, iters)
-		addMiss(ab.Misses, "parry", t.Parries, iters)
-		addMiss(ab.Misses, "block", t.Blocks+t.BlockedCrits, iters)
-		addMiss(ab.Misses, "glance", t.Glances, iters)
-		addMiss(ab.Misses, "crush", t.Crushes, iters)
+		// The keys are the combat log's own, so a sim and a real fight
+		// aggregate together: MISS, DODGE, PARRY and BLOCK are its
+		// MissType strings verbatim (logs/engine/summary/damage.go
+		// writes e.MissType), and GLANCING and CRUSHING are its flag
+		// names, which the engine reports as counted outcomes where a
+		// log carries them on a landed hit.
+		addMiss(ab.Misses, "MISS", t.Misses, iters)
+		addMiss(ab.Misses, "DODGE", t.Dodges, iters)
+		addMiss(ab.Misses, "PARRY", t.Parries, iters)
+		addMiss(ab.Misses, "BLOCK", t.Blocks+t.BlockedCrits, iters)
+		addMiss(ab.Misses, "GLANCING", t.Glances, iters)
+		addMiss(ab.Misses, "CRUSHING", t.Crushes, iters)
 	}
 	if len(ab.Misses) == 0 {
 		ab.Misses = nil
@@ -221,11 +236,17 @@ func ability(am *proto.ActionMetrics, iters float64, perTarget map[int32]int64) 
 	return ab
 }
 
+// addMiss records an outcome the fight saw. A count that divides to
+// zero writes no key at all: "0 dodge" is not something a report row
+// should say, and a real fight's summary only carries the outcomes it
+// actually had.
 func addMiss(m map[string]int64, key string, count int32, iters float64) {
 	if count == 0 {
 		return
 	}
-	m[key] += per(float64(count), iters)
+	if n := per(float64(count), iters); n > 0 {
+		m[key] += n
+	}
 }
 
 // per divides an across-iterations total into a per-fight figure. It
@@ -257,6 +278,7 @@ func auras(u *proto.UnitMetrics) []summary.AuraTrack {
 			Appliers: []string{u.Name},
 		})
 	}
+	out = foldAuras(out)
 	sort.SliceStable(out, func(i, j int) bool { return out[i].UptimeMS > out[j].UptimeMS })
 	return out
 }
@@ -269,6 +291,7 @@ func casts(u *proto.UnitMetrics, iters float64) []summary.CastRow {
 	for i, pet := range u.Pets {
 		out = castsFor(pet, petGUID(i), playerGUID, iters, out)
 	}
+	out = foldCasts(out)
 	sort.SliceStable(out, func(i, j int) bool { return out[i].Succeeded > out[j].Succeeded })
 	return out
 }
@@ -379,28 +402,4 @@ func splitSpecSlug(slug string) (class, spec string) {
 		return slug, ""
 	}
 	return slug[:i], slug[i+1:]
-}
-
-// ActionName returns the spell id and a display name for an engine
-// ActionID. The engine's ids carry no names, so the name is the id in a
-// readable form; the web resolves real names from the build's own
-// spells.json, which it already loads for tooltips. Forever keeps vanilla
-// ids for abilities that already existed and uses ids above 1,000,000
-// only for new objects, so no translation table is needed on either side.
-func ActionName(id *proto.ActionID) (int64, string) {
-	if id == nil {
-		return 0, "Unknown"
-	}
-	switch raw := id.RawId.(type) {
-	case *proto.ActionID_SpellId:
-		if id.Tag != 0 {
-			return int64(raw.SpellId), fmt.Sprintf("spell:%d/%d", raw.SpellId, id.Tag)
-		}
-		return int64(raw.SpellId), fmt.Sprintf("spell:%d", raw.SpellId)
-	case *proto.ActionID_ItemId:
-		return int64(raw.ItemId), fmt.Sprintf("item:%d", raw.ItemId)
-	case *proto.ActionID_OtherId:
-		return 0, fmt.Sprintf("other:%d", int32(raw.OtherId))
-	}
-	return 0, "Unknown"
 }

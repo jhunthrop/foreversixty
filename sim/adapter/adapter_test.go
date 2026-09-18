@@ -142,8 +142,14 @@ func TestSummarizeDividesByIterations(t *testing.T) {
 	if ab.Resisted != 0 {
 		t.Errorf("Resisted = %d, want 0; the engine reports no resisted amount", ab.Resisted)
 	}
-	if ab.Misses["miss"] != 0 { // 20/100 = 0.2
-		t.Errorf("misses = %d, want 0", ab.Misses["miss"])
+	// The keys are the combat log's own uppercase miss types, so a sim
+	// and a real fight aggregate together; a count that divides to zero
+	// writes no key at all.
+	if ab.Misses["MISS"] != 0 { // 20/100 = 0.2
+		t.Errorf("misses = %d, want 0", ab.Misses["MISS"])
+	}
+	if _, ok := ab.Misses["DODGE"]; ok { // 10/100 = 0.1
+		t.Error(`Misses carries a "DODGE" key for an outcome that divides to zero`)
 	}
 	if len(a.Targets) != 1 || a.Targets[0].Total != 1000 {
 		t.Errorf("Targets = %+v, want one entry totalling 1000", a.Targets)

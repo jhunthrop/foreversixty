@@ -21,14 +21,14 @@
           "crits": 32,
           "ticks": 0,
           "misses": {
-            "miss": 7
+            "MISS": 7
           },
           "min": 0,
           "max": 0
         },
         {
-          "spell_id": 0,
-          "name": "other:5",
+          "spell_id": 22000005,
+          "name": "other:mana_gain",
           "total": 0,
           "effective": 0,
           "hits": 0,
@@ -49,7 +49,7 @@
           "max": 0
         },
         {
-          "spell_id": 5513,
+          "spell_id": 12005513,
           "name": "item:5513",
           "total": 0,
           "effective": 0,
@@ -60,7 +60,7 @@
           "max": 0
         },
         {
-          "spell_id": 8007,
+          "spell_id": 12008007,
           "name": "item:8007",
           "total": 0,
           "effective": 0,
@@ -82,7 +82,7 @@
           "max": 0
         },
         {
-          "spell_id": 18820,
+          "spell_id": 12018820,
           "name": "item:18820",
           "total": 0,
           "effective": 0,
@@ -93,7 +93,7 @@
           "max": 0
         },
         {
-          "spell_id": 5514,
+          "spell_id": 12005514,
           "name": "item:5514",
           "total": 0,
           "effective": 0,
@@ -104,7 +104,7 @@
           "max": 0
         },
         {
-          "spell_id": 8008,
+          "spell_id": 12008008,
           "name": "item:8008",
           "total": 0,
           "effective": 0,
@@ -390,7 +390,7 @@
     {
       "target_guid": "sim-player",
       "target_name": "Frost",
-      "spell_id": 18820,
+      "spell_id": 12018820,
       "name": "item:18820",
       "type": "buff",
       "applications": 2,
@@ -642,22 +642,8 @@
     {
       "target_guid": "sim-player",
       "target_name": "Frost",
-      "spell_id": 12051,
-      "name": "spell:12051",
-      "type": "buff",
-      "applications": 0,
-      "max_stacks": 0,
-      "uptime_ms": 0,
-      "segments": [],
-      "appliers": [
-        "Frost"
-      ]
-    },
-    {
-      "target_guid": "sim-player",
-      "target_name": "Frost",
-      "spell_id": 0,
-      "name": "other:14",
+      "spell_id": 22000014,
+      "name": "other:move",
       "type": "buff",
       "applications": 0,
       "max_stacks": 0,
@@ -685,8 +671,8 @@
       "guid": "sim-player",
       "name": "Frost",
       "owner_guid": "sim-player",
-      "spell_id": 0,
-      "spell_name": "other:5",
+      "spell_id": 22000005,
+      "spell_name": "other:mana_gain",
       "started": 34,
       "succeeded": 34,
       "failed": 0,
@@ -709,7 +695,7 @@
       "guid": "sim-player",
       "name": "Frost",
       "owner_guid": "sim-player",
-      "spell_id": 18820,
+      "spell_id": 12018820,
       "spell_name": "item:18820",
       "started": 2,
       "succeeded": 2,
@@ -733,7 +719,7 @@
       "guid": "sim-player",
       "name": "Frost",
       "owner_guid": "sim-player",
-      "spell_id": 5514,
+      "spell_id": 12005514,
       "spell_name": "item:5514",
       "started": 1,
       "succeeded": 1,
@@ -745,7 +731,7 @@
       "guid": "sim-player",
       "name": "Frost",
       "owner_guid": "sim-player",
-      "spell_id": 5513,
+      "spell_id": 12005513,
       "spell_name": "item:5513",
       "started": 0,
       "succeeded": 0,
@@ -757,7 +743,7 @@
       "guid": "sim-player",
       "name": "Frost",
       "owner_guid": "sim-player",
-      "spell_id": 8007,
+      "spell_id": 12008007,
       "spell_name": "item:8007",
       "started": 0,
       "succeeded": 0,
@@ -769,7 +755,7 @@
       "guid": "sim-player",
       "name": "Frost",
       "owner_guid": "sim-player",
-      "spell_id": 8008,
+      "spell_id": 12008008,
       "spell_name": "item:8008",
       "started": 0,
       "succeeded": 0,

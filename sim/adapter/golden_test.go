@@ -4,10 +4,18 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"strconv"
 	"testing"
 
+	"github.com/jhunthrop/foreversixty/logs/engine/summary"
 	"github.com/jhunthrop/foreversixty/sim/api"
 )
+
+// goldenSpecs are the specs a fixture and a golden are checked in for.
+var goldenSpecs = []struct{ spec, race, class string }{
+	{"warrior-fury", "orc", "warrior"},
+	{"mage-frost", "gnome", "mage"},
+}
 
 // regenEnv regenerates the goldens instead of comparing against them. The
 // same variable name the logs engine uses, so one habit covers both.
@@ -33,10 +41,7 @@ const goldenEngineVersion = "golden"
 //
 // and read the diff before committing it.
 func TestGoldenSummaries(t *testing.T) {
-	for _, tc := range []struct{ spec, race, class string }{
-		{"warrior-fury", "orc", "warrior"},
-		{"mage-frost", "gnome", "mage"},
-	} {
+	for _, tc := range goldenSpecs {
 		t.Run(tc.spec, func(t *testing.T) {
 			res, err := Fixture(tc.spec)
 			if err != nil {
@@ -133,4 +138,67 @@ func TestSummarizeIsDeterministic(t *testing.T) {
 			t.Fatalf("run %d differs from run 0; a map is being ranged without sorting", i)
 		}
 	}
+}
+
+// Every row of a golden must carry a key no other row of its table
+// carries. The logs engine's own maps make a duplicate impossible for a
+// real fight, and the report components key their {#each} blocks on
+// exactly these tuples, where Svelte 5 raises each_key_duplicate at
+// runtime: ActorRow.svelte and AbilityBar.svelte on
+// abilityKey = `${spell_id}|${via}` within one actor's rows,
+// CastTable.svelte on `${guid}-${spell_id}`, AuraTable.svelte on
+// `${target_guid}-${spell_id}`. This walks the committed goldens, which
+// is the artefact the web lane renders.
+func TestGoldenRowKeysAreUnique(t *testing.T) {
+	for _, tc := range goldenSpecs {
+		t.Run(tc.spec, func(t *testing.T) {
+			b, err := os.ReadFile(filepath.Join("testdata", tc.spec+".summary.json.golden"))
+			if err != nil {
+				t.Fatal(err)
+			}
+			var got summary.Summary
+			if err := json.Unmarshal(b, &got); err != nil {
+				t.Fatal(err)
+			}
+			for _, a := range got.DamageDone {
+				seen := map[string]bool{}
+				for _, ab := range a.Abilities {
+					k := key(ab.SpellID, a.GUID, ab.Via)
+					if seen[k] {
+						t.Errorf("actor %q has two ability rows keyed %s (%q)", a.Name, k, ab.Name)
+					}
+					seen[k] = true
+				}
+			}
+			seenCasts := map[string]bool{}
+			for _, c := range got.Casts {
+				k := key(c.SpellID, c.GUID, "")
+				if seenCasts[k] {
+					t.Errorf("two cast rows keyed %s (%q)", k, c.SpellName)
+				}
+				seenCasts[k] = true
+			}
+			seenAuras := map[string]bool{}
+			for _, au := range got.Auras {
+				k := key(au.SpellID, au.TargetGUID, "")
+				if seenAuras[k] {
+					t.Errorf("two aura rows keyed %s (%q)", k, au.Name)
+				}
+				seenAuras[k] = true
+			}
+			// A row id is either a real spell id the web can resolve or
+			// one of ours from the reserved space; nothing in between.
+			for _, a := range got.DamageDone {
+				for _, ab := range a.Abilities {
+					if ab.SpellID <= 0 {
+						t.Errorf("ability %q has no id; every row must be identifiable", ab.Name)
+					}
+				}
+			}
+		})
+	}
+}
+
+func key(id int64, scope, via string) string {
+	return scope + "|" + via + "|" + strconv.FormatInt(id, 10)
 }

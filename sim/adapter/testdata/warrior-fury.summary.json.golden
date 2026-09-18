@@ -21,14 +21,14 @@
           "crits": 46,
           "ticks": 0,
           "misses": {
-            "dodge": 5
+            "DODGE": 5
           },
           "min": 0,
           "max": 0
         },
         {
-          "spell_id": 0,
-          "name": "other:7",
+          "spell_id": 20022000007,
+          "name": "other:attack/2",
           "school": 2,
           "total": 54739,
           "effective": 54739,
@@ -36,9 +36,9 @@
           "crits": 54,
           "ticks": 0,
           "misses": {
-            "dodge": 6,
-            "glance": 43,
-            "miss": 3
+            "DODGE": 6,
+            "GLANCING": 43,
+            "MISS": 3
           },
           "min": 0,
           "max": 0
@@ -53,7 +53,7 @@
           "crits": 14,
           "ticks": 0,
           "misses": {
-            "dodge": 1
+            "DODGE": 1
           },
           "min": 0,
           "max": 0
@@ -68,14 +68,14 @@
           "crits": 12,
           "ticks": 0,
           "misses": {
-            "dodge": 1
+            "DODGE": 1
           },
           "min": 0,
           "max": 0
         },
         {
-          "spell_id": 0,
-          "name": "other:7",
+          "spell_id": 10022000007,
+          "name": "other:attack/1",
           "school": 2,
           "total": 13431,
           "effective": 13431,
@@ -83,9 +83,9 @@
           "crits": 7,
           "ticks": 0,
           "misses": {
-            "dodge": 1,
-            "glance": 7,
-            "miss": 2
+            "DODGE": 1,
+            "GLANCING": 7,
+            "MISS": 2
           },
           "min": 0,
           "max": 0
@@ -100,7 +100,7 @@
           "crits": 6,
           "ticks": 0,
           "misses": {
-            "dodge": 1
+            "DODGE": 1
           },
           "min": 0,
           "max": 0
@@ -114,15 +114,12 @@
           "hits": 2,
           "crits": 2,
           "ticks": 0,
-          "misses": {
-            "dodge": 0
-          },
           "min": 0,
           "max": 0
         },
         {
-          "spell_id": 0,
-          "name": "other:7",
+          "spell_id": 30022000007,
+          "name": "other:attack/3",
           "school": 2,
           "total": 1085,
           "effective": 1085,
@@ -130,9 +127,7 @@
           "crits": 1,
           "ticks": 0,
           "misses": {
-            "dodge": 0,
-            "glance": 1,
-            "miss": 0
+            "GLANCING": 1
           },
           "min": 0,
           "max": 0
@@ -159,13 +154,13 @@
           "crits": 5,
           "ticks": 0,
           "misses": {
-            "dodge": 1
+            "DODGE": 1
           },
           "min": 0,
           "max": 0
         },
         {
-          "spell_id": 14554,
+          "spell_id": 12014554,
           "name": "item:14554",
           "total": 0,
           "effective": 0,
@@ -217,14 +212,11 @@
           "hits": 1,
           "crits": 0,
           "ticks": 0,
-          "misses": {
-            "dodge": 0
-          },
           "min": 0,
           "max": 0
         },
         {
-          "spell_id": 25286,
+          "spell_id": 10002025286,
           "name": "spell:25286/1",
           "total": 0,
           "effective": 0,
@@ -235,8 +227,8 @@
           "max": 0
         },
         {
-          "spell_id": 0,
-          "name": "other:6",
+          "spell_id": 22000006,
+          "name": "other:rage_gain",
           "total": 0,
           "effective": 0,
           "hits": 0,
@@ -490,7 +482,7 @@
     {
       "target_guid": "sim-player",
       "target_name": "Fury",
-      "spell_id": 25286,
+      "spell_id": 10002025286,
       "name": "spell:25286/1",
       "type": "buff",
       "applications": 98,
@@ -504,7 +496,7 @@
     {
       "target_guid": "sim-player",
       "target_name": "Fury",
-      "spell_id": 20007,
+      "spell_id": 10002020007,
       "name": "spell:20007/1",
       "type": "buff",
       "applications": 7,
@@ -532,7 +524,7 @@
     {
       "target_guid": "sim-player",
       "target_name": "Fury",
-      "spell_id": 20007,
+      "spell_id": 20002020007,
       "name": "spell:20007/2",
       "type": "buff",
       "applications": 4,
@@ -574,7 +566,7 @@
     {
       "target_guid": "sim-player",
       "target_name": "Fury",
-      "spell_id": 14554,
+      "spell_id": 12014554,
       "name": "item:14554",
       "type": "buff",
       "applications": 1,
@@ -686,7 +678,7 @@
     {
       "target_guid": "sim-player",
       "target_name": "Fury",
-      "spell_id": 20569,
+      "spell_id": 10002020569,
       "name": "spell:20569/1",
       "type": "buff",
       "applications": 0,
@@ -700,8 +692,8 @@
     {
       "target_guid": "sim-player",
       "target_name": "Fury",
-      "spell_id": 0,
-      "name": "other:14",
+      "spell_id": 22000014,
+      "name": "other:move",
       "type": "buff",
       "applications": 0,
       "max_stacks": 0,
@@ -717,8 +709,8 @@
       "guid": "sim-player",
       "name": "Fury",
       "owner_guid": "sim-player",
-      "spell_id": 0,
-      "spell_name": "other:6",
+      "spell_id": 22000006,
+      "spell_name": "other:rage_gain",
       "started": 171,
       "succeeded": 171,
       "failed": 0,
@@ -729,8 +721,8 @@
       "guid": "sim-player",
       "name": "Fury",
       "owner_guid": "sim-player",
-      "spell_id": 0,
-      "spell_name": "other:7",
+      "spell_id": 20022000007,
+      "spell_name": "other:attack/2",
       "started": 107,
       "succeeded": 107,
       "failed": 0,
@@ -741,7 +733,7 @@
       "guid": "sim-player",
       "name": "Fury",
       "owner_guid": "sim-player",
-      "spell_id": 25286,
+      "spell_id": 10002025286,
       "spell_name": "spell:25286/1",
       "started": 98,
       "succeeded": 98,
@@ -777,8 +769,8 @@
       "guid": "sim-player",
       "name": "Fury",
       "owner_guid": "sim-player",
-      "spell_id": 0,
-      "spell_name": "other:7",
+      "spell_id": 10022000007,
+      "spell_name": "other:attack/1",
       "started": 17,
       "succeeded": 17,
       "failed": 0,
@@ -849,7 +841,7 @@
       "guid": "sim-player",
       "name": "Fury",
       "owner_guid": "sim-player",
-      "spell_id": 14554,
+      "spell_id": 12014554,
       "spell_name": "item:14554",
       "started": 1,
       "succeeded": 1,
@@ -897,8 +889,8 @@
       "guid": "sim-player",
       "name": "Fury",
       "owner_guid": "sim-player",
-      "spell_id": 0,
-      "spell_name": "other:7",
+      "spell_id": 30022000007,
+      "spell_name": "other:attack/3",
       "started": 1,
       "succeeded": 1,
       "failed": 0,
