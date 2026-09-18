@@ -58,6 +58,9 @@ def build_parser() -> argparse.ArgumentParser:
         help="path to the wowsims-forever checkout, e.g. $FOREVER_ENGINE_PATH",
     )
 
+    sc = sub.add_parser("simconst", help="write per-class spell constants for a build")
+    sc.add_argument("--build", required=True)
+
     sp = sub.add_parser("specs", help="generate the Go and TypeScript spec lists")
     sp.add_argument("--go", default="../sim/specs/specs.go")
     sp.add_argument("--ts", default="../web/src/lib/sim/specs.ts")
@@ -113,6 +116,10 @@ def main(argv: list[str] | None = None) -> int:
         from pipeline.wowhead_diff import write_snapshot_diff
 
         write_snapshot_diff(args.snapshot, args.build)
+    elif args.command == "simconst":
+        from pipeline.simconst import write_spell_constants
+
+        print(write_spell_constants(args.build))
     elif args.command == "simproto":
         from pathlib import Path
 

@@ -167,3 +167,41 @@ class AplDocument(BaseModel):
     rotation: dict
     sources: list[Source] = []
     notes: str = ""
+
+
+class SpellEffectConstant(BaseModel):
+    index: int
+    effect: int
+    aura: int
+    #: The amount the client shows, via pipeline.spelltext.effect_amount: the
+    #: 1.60 client states it outright, Classic Era states it one short with the
+    #: last point in EffectDieSides. One number, not two columns to recombine.
+    amount: int
+    sp_coefficient: float
+    ap_coefficient: float
+    period_ms: int
+    misc_value: int
+    trigger_spell: int
+
+
+class SpellConstant(BaseModel):
+    name: str
+    rank: int
+    school_mask: int
+    cast_time_ms: int
+    gcd_ms: int
+    cooldown_ms: int
+    category_cooldown_ms: int
+    duration_ms: int
+    cost: int
+    cost_type: int
+    spell_level: int
+    family_mask: list[int]
+    effects: list[SpellEffectConstant]
+
+
+class ClassSpellConstants(BaseModel):
+    build: str
+    class_slug: str
+    family: int
+    spells: dict[str, SpellConstant]
