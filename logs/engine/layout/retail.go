@@ -112,9 +112,13 @@ func RetailV16() Layout {
 // fields all moved one to the right.
 func RetailV22() Layout {
 	l := Layout{
-		Name:      "retail-v22",
-		Version:   22,
-		ProjectID: 1,
+		Name:    "retail-v22",
+		Version: 22,
+		// Retail writes PROJECT_ID 1 and WoW: Forever (build 1.60) writes
+		// 18, and both write this dialect line for line; the version alone
+		// selects it. Measured on a Forever beta log of 37,539 lines:
+		// engine/event/testdata/forever-1.60.log is its excerpt.
+		ProjectID: 0,
 		Advanced:  19,
 		StampYear: true,
 		StampZone: true,
@@ -146,7 +150,11 @@ func RetailV22() Layout {
 			// amount, baseAmount, overkill, school, resisted, blocked,
 			// absorbed, critical, glancing, crushing, then the optional
 			// "ST" / "AOE" tag.
-			"_DAMAGE":        {Params: 10, Advanced: true, BaseAmount: true, Tag: true},
+			"_DAMAGE": {Params: 10, Advanced: true, BaseAmount: true, Tag: true},
+			// DAMAGE_SHIELD (Thorns and its kin) is the same ten fields
+			// under the "DAMAGE" prefix; Forever writes it in the open
+			// world where retail's arena corpus never did.
+			"_SHIELD":        {Params: 10, Advanced: true, BaseAmount: true, Tag: true},
 			"_DAMAGE_LANDED": {Params: 10, Advanced: true, BaseAmount: true, Tag: true},
 			"_SPLIT":         {Params: 10, Advanced: true, BaseAmount: true, Tag: true},
 			// The same ten damage fields, then the supporting player's
@@ -273,16 +281,19 @@ func RetailV22() Layout {
 			"SPELL_PERIODIC_DAMAGE": {42},
 			"RANGE_DAMAGE":          {42},
 			"DAMAGE_SPLIT":          {42},
-			// _MISSED: the tag is mandatory under SPELL and SPELL_PERIODIC,
-			// and never appears under RANGE, SWING or DAMAGE_SHIELD. Where
+			"DAMAGE_SHIELD":         {42},
+			// _MISSED: the tag is mandatory under SPELL, SPELL_PERIODIC and
+			// DAMAGE_SHIELD, and never appears under RANGE or SWING. Where
 			// it applies, base+1 is tag only, base+2 is tag+amount (BLOCK
 			// or RESIST), base+4 is tag+the three ABSORB extras; where it
 			// does not, only base and base+3 (ABSORB, untagged) occur.
+			// DAMAGE_SHIELD_MISSED's amount form is Forever's (a RESIST
+			// with its amount); retail's corpus carried only IMMUNE.
 			"SPELL_MISSED":          {15, 16, 18},
 			"SPELL_PERIODIC_MISSED": {15, 18},
 			"RANGE_MISSED":          {14, 17},
 			"SWING_MISSED":          {11, 14},
-			"DAMAGE_SHIELD_MISSED":  {15},
+			"DAMAGE_SHIELD_MISSED":  {15, 16},
 			// _AURA_BROKEN never carries the optional absorb size or its
 			// extra trailing number; _AURA_REFRESH carries the absorb size
 			// but never the extra number. Both are narrower than

@@ -15,6 +15,9 @@ import (
 var v22Testdata = []string{
 	filepath.Join("..", "event", "testdata", "v22.log"),
 	filepath.Join("..", "event", "testdata", "v22-shapes.log"),
+	// WoW: Forever 1.60 writes the same dialect under PROJECT_ID 18; this
+	// excerpt is what its open-world shapes were measured from.
+	filepath.Join("..", "event", "testdata", "forever-1.60.log"),
 }
 
 // v22MeasuredWidths is the field count of every event shape the committed
@@ -29,7 +32,8 @@ var v22MeasuredWidths = map[string][]int{
 	"ARENA_MATCH_START":             {5},
 	"COMBATANT_INFO":                {34},
 	"COMBAT_LOG_VERSION":            {8},
-	"DAMAGE_SHIELD_MISSED":          {15},
+	"DAMAGE_SHIELD":                 {42},
+	"DAMAGE_SHIELD_MISSED":          {15, 16},
 	"DAMAGE_SPLIT":                  {42},
 	"EMOTE":                         {6},
 	"ENCHANT_APPLIED":               {12},

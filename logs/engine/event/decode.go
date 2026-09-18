@@ -202,6 +202,11 @@ func (d *Decoder) decodeStandard(e Event, ln lexer.Line, prefix, suffix string) 
 	case "_DAMAGE_LANDED":
 		e.Kind = DamageLanded
 		readDamage(&e, rest, spec)
+	case "_SHIELD":
+		// DAMAGE_SHIELD: damage the target's own aura dealt back, in the
+		// ordinary damage shape, credited to the aura's owner.
+		e.Kind = Damage
+		readDamage(&e, rest, spec)
 	case "_HEAL":
 		e.Kind = Heal
 		readHeal(&e, rest, spec)
@@ -330,7 +335,7 @@ func suffixNeeds(suffix string, spec layout.Suffix) int {
 		return 3
 	case "_CAST_FAILED", "_EXTRA_ATTACKS":
 		return 1
-	case "_SPLIT":
+	case "_SPLIT", "_SHIELD":
 		return 10
 	case "_SUPPORT":
 		return 11

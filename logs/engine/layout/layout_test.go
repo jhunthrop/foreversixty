@@ -377,6 +377,15 @@ func TestInferIsDeterministicOverTheWholeRow(t *testing.T) {
 	}
 }
 
+// WoW: Forever's client stamps PROJECT_ID 18 on the same version-22 dialect
+// retail stamps 1 on; the row must not be pinned to either.
+func TestLookupPicksRetailV22ForForeverProject18(t *testing.T) {
+	l, ok := Lookup(Header{Version: 22, ProjectID: 18, Advanced: true, Build: "1.60.1"})
+	if !ok || l.Name != "retail-v22" || !l.Verified || l.Advanced != 19 {
+		t.Fatalf("forever header: name=%q verified=%v advanced=%d ok=%v", l.Name, l.Verified, l.Advanced, ok)
+	}
+}
+
 func TestLookupPicksRetailV22(t *testing.T) {
 	on, ok := Lookup(Header{Version: 22, ProjectID: 1, Advanced: true})
 	if !ok || on.Name != "retail-v22" || on.Advanced != 19 {
@@ -417,6 +426,7 @@ func TestRetailV22WidthsMatchTheVerifiedCounts(t *testing.T) {
 		{"SPELL_PERIODIC_DAMAGE", []int{42}, 12},
 		{"RANGE_DAMAGE", []int{42}, 12},
 		{"DAMAGE_SPLIT", []int{42}, 12},
+		{"DAMAGE_SHIELD", []int{42}, 12},
 		{"SWING_DAMAGE", []int{38}, 9},
 		{"SWING_DAMAGE_LANDED", []int{38}, 9},
 		{"SPELL_DAMAGE_SUPPORT", []int{42}, 12},
@@ -454,7 +464,7 @@ func TestRetailV22WidthsMatchTheVerifiedCounts(t *testing.T) {
 		{"RANGE_MISSED", []int{14, 17}, -1},
 		{"SPELL_MISSED", []int{15, 16, 18}, -1},
 		{"SPELL_PERIODIC_MISSED", []int{15, 18}, -1},
-		{"DAMAGE_SHIELD_MISSED", []int{15}, -1},
+		{"DAMAGE_SHIELD_MISSED", []int{15, 16}, -1},
 	} {
 		t.Run(tc.event, func(t *testing.T) {
 			prefix, suffix, ok := l.Split(tc.event)
@@ -569,6 +579,7 @@ func TestSplitPrefersThePrefixThatLeavesAKnownSuffix(t *testing.T) {
 		{"SPELL_HEAL_SUPPORT", "SPELL", "_HEAL_SUPPORT"},
 		{"DAMAGE_SPLIT", "DAMAGE", "_SPLIT"},
 		{"DAMAGE_SHIELD_MISSED", "DAMAGE_SHIELD", "_MISSED"},
+		{"DAMAGE_SHIELD", "DAMAGE", "_SHIELD"},
 	} {
 		t.Run(tc.event, func(t *testing.T) {
 			prefix, suffix, ok := l.Split(tc.event)

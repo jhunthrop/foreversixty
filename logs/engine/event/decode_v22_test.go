@@ -41,7 +41,7 @@ func decodeV22File(t *testing.T, path string) (map[string][]Event, []Event) {
 }
 
 func TestEveryV22LineDecodesWithoutError(t *testing.T) {
-	for _, path := range []string{"testdata/v22.log", "testdata/v22-shapes.log"} {
+	for _, path := range []string{"testdata/v22.log", "testdata/v22-shapes.log", "testdata/forever-1.60.log"} {
 		t.Run(path, func(t *testing.T) {
 			_, all := decodeV22File(t, path)
 			if len(all) == 0 {
@@ -190,6 +190,41 @@ func TestV22SupportEventsNameTheSupporter(t *testing.T) {
 				t.Errorf("scope = %q; a support line ends in a GUID, not a tag", e.Scope)
 			}
 		})
+	}
+}
+
+// Forever writes DAMAGE_SHIELD (Thorns) in the open world; it is damage in
+// the ordinary spell-prefixed shape, credited to the aura's owner.
+func TestForeverDamageShieldIsDamage(t *testing.T) {
+	by, _ := decodeV22File(t, "testdata/forever-1.60.log")
+	e := one(t, by, "DAMAGE_SHIELD", 0)
+	if e.Kind != Damage {
+		t.Fatalf("kind = %v, want Damage", e.Kind)
+	}
+	if e.Spell.ID != 467 || e.Spell.Name != "Thorns" {
+		t.Errorf("spell = %+v, want Thorns (467)", e.Spell)
+	}
+	if !e.Adv.OK || !e.Amount.OK || !e.BaseAmount.OK {
+		t.Errorf("adv=%v amount=%+v base=%+v; the damage fields were not read", e.Adv.OK, e.Amount, e.BaseAmount)
+	}
+	if e.Scope != "ST" && e.Scope != "AOE" {
+		t.Errorf("scope = %q, want ST or AOE", e.Scope)
+	}
+}
+
+// Forever's DAMAGE_SHIELD_MISSED writes a RESIST with its amount before the
+// tag, one field wider than the IMMUNE form retail's corpus carried.
+func TestForeverDamageShieldMissedResistCarriesAmountAndTag(t *testing.T) {
+	by, _ := decodeV22File(t, "testdata/forever-1.60.log")
+	e := one(t, by, "DAMAGE_SHIELD_MISSED", 0)
+	if e.Kind != Missed || e.MissType != "RESIST" {
+		t.Fatalf("kind=%v missType=%q, want a RESIST miss", e.Kind, e.MissType)
+	}
+	if !e.Amount.OK {
+		t.Error("the resisted amount was not read")
+	}
+	if e.Scope != "ST" {
+		t.Errorf("scope = %q, want ST", e.Scope)
 	}
 }
 
