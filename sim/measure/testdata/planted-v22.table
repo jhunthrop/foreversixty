@@ -1,0 +1,22 @@
+forever-measure: Testwarrior-Beta, 302 events, 0 fights
+sheet: attack power 1200, spell power 500, armour 3000, max health 4000, level field 60 (item level for a player), from 190 advanced blocks
+
+PERIODIC DAMAGE: does it crit, and by how much
+  spell                    school    ticks  crits can crit      mean mean crit     mult
+  Rend                     physical     40     10     true     100.0     200.0    2.000
+  Corruption               magic        40     10     true     100.0     200.0    2.000
+
+ATTACK TABLE: the unified-hit and weapon-skill interaction
+  type      target                     lvl  swings    miss   dodge   parry  glance    crit
+  melee     Dummy                       63     100  10.00%  10.00%  10.00%  20.00%  20.00%
+
+PROCS: rate and internal cooldown
+  aura                      procs  swings  casts  per swing  per cast   min gap
+  Devilsaur Fury               10     100      0    10.000%    0.000%       45s
+
+DAMAGE: observed means, for coefficient fitting
+  spell                      hits       mean    stddev       per sp
+  Frostbolt                    40      500.0      50.0       1.0000
+
+NOT MEASURABLE FROM THIS LOG
+  - no ENCOUNTER_START in this log: it is open-world, so there is no COMBATANT_INFO, no per-fight segmentation, and nothing that needs the character's gear or talents at a pull.
