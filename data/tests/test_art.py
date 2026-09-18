@@ -288,6 +288,39 @@ def test_backgrounds_for_build_regenerates_the_webp_but_reuses_the_blp_cache(tmp
     assert target.read_bytes() == before  # same BLP input -> byte-identical re-emit
 
 
+def test_backgrounds_for_build_pins_every_fetch_to_the_build(tmp_path: Path):
+    """A file data id is stable across builds but its bytes are not, so the version
+    rides on every request and an empty body is an error, not an empty texture."""
+    build_dir = tmp_path / "builds" / "1.0.0.1"
+    _write_frame_manifest(build_dir / "raw", FRAME_IDS)
+    _write_tree_json(build_dir)
+    sizes = _sizes_for(FRAME_IDS)
+    versions: list[str | None] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        versions.append(request.url.params.get("version"))
+        file_id = int(request.url.path.rsplit("/", 1)[-1])
+        buffer = io.BytesIO()
+        Image.new("RGB", sizes[file_id], (10, 20, 30)).save(buffer, "PNG")
+        return httpx.Response(200, content=buffer.getvalue())
+
+    client = httpx.Client(transport=httpx.MockTransport(handler), base_url="https://x")
+    backgrounds_for_build(
+        "1.0.0.1", root=tmp_path / "builds", cache_dir=tmp_path / "c", client=client
+    )
+    assert versions == ["1.0.0.1"] * 4
+    assert (tmp_path / "c" / "1.0.0.1").is_dir(), "the cache is keyed by build as well as id"
+
+    empty = httpx.Client(
+        transport=httpx.MockTransport(lambda request: httpx.Response(200, content=b"")),
+        base_url="https://x",
+    )
+    with pytest.raises(ArtDataError, match="no bytes"):
+        backgrounds_for_build(
+            "1.0.0.1", root=tmp_path / "builds", cache_dir=tmp_path / "c2", client=empty
+        )
+
+
 def test_backgrounds_for_build_raises_naming_the_tree_and_missing_quadrant(tmp_path: Path):
     build_dir = tmp_path / "builds" / "1.0.0.1"
     partial = {q: i for q, i in FRAME_IDS.items() if q != "TopRight"}
