@@ -296,6 +296,29 @@ Binding for the other lanes:
 
 ## Web (web lane)
 
+Settled by the engine lane's Task 3 (amended 2026-09-18 by the controller; descriptive, no shape change):
+
+- **Row identity.** A `summary.Summary` row is keyed by `spell_id`: the client id for a plain untagged
+  spell, and a derived id at or above 2,000,000 for a tagged or ranked spell, an item, an `other`
+  action or an unknown one; unique per row, so the report components' keyed lists render a sim
+  result without collisions. Consumers key on the id, never on the name.
+- **Row naming.** The name is an action key, not a display name: `spell:<id>[/<tag>][+r<rank>]`,
+  `item:<id>[…]`, `other:<snake_name>[…]`, `unknown[…]`; the consumer resolves the display name
+  from the build's own tables.
+- **The id vocabulary.** Buff and consumable ids are exactly the entries of `sim/request/IDS.md`
+  (generated from the engine's protobuf descriptors; `KnownBuffs()`/`KnownConsumables()` enumerate
+  them); a consumable may be `item:<id>`, resolved through `data/builds/<build>/simconsumes.json`
+  (also a browser asset) via `request.BuildWith(req, Options{Consumables})`; weapon imbues are
+  slot-qualified (`off_hand_imbue:shadow_oil`); an unknown id is an error the UI surfaces.
+- **Level.** `CharacterSpec.level` is always `api.SimLevel` (60), enforced by `api.SimRequest.Validate`.
+- **Progress payload.** The wasm's `simRun` progress callback carries `Pick<SimResult, 'iterations_run' | 'dps'>`;
+  the engine lane's Task 13 builds the artifact to that shape.
+- **Budgets.** `/sim/<sim_id>` mounts the report component set and takes the report page's 200 ms
+  blocking-time budget; `/sim` and `/sim/specs` keep 100 ms.
+- **Character buffs.** The API's `sim-input` returns `buffs` as `IDS.md` ids (the API lane maps a
+  character's recorded buff spell ids onto the vocabulary); the web never maps spell ids itself.
+
+
 - Routes: `/sim` (the sim page), `/sim/<sim_id>` (a saved result), `/sim/specs` (support page).
   `/sim` and `/sim/specs` are static shells; `/sim/<sim_id>` is a static shell whose OG tags the
   Worker rewrites from the API, exactly as `/reports/<id>` does today.
