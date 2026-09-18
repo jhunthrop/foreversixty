@@ -2,33 +2,40 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Turn the `wowsims/classic` fork at `/Users/jh/code/wowsims-forever` into the Forever Sixty combat engine — unified Hit and Crit, regenerated rating constants, declarative spell mods, periodic crit, an encounter biome, Forever racials, and two specs (`warrior-fury`, `mage-frost`) end to end — and ship the site-side `sim/` Go module that wraps it: the request builder, the result adapter, the two artifacts built from that module, and the beta-day tool that measures what no client table carries.
+Written 2026-09-14. **Refreshed 2026-09-18** against the mined beta client (`1.60.1.69893`), the first Forever beta combat log, and logs engine 0.5.3. Every measured number below was re-measured on 2026-09-18 unless the line says otherwise.
 
-**Architecture:** Two repositories, and a hard rule about which owns what. The **engine repo** (`/Users/jh/code/wowsims-forever`, module path stays `github.com/wowsims/classic`) holds every change to the simulation itself and **ships no artifact of ours** — it stays a clean, upstreamable Go library plus its own UI, because we intend to contribute the Forever work back rather than diverge. The **site repo** (`/Users/jh/code/forever`) gains a module `sim/` that imports the engine at a pinned version and holds everything else: the JSON envelopes, the engine pin, `sim/request` and `sim/adapter` (the only two places in the product that touch a protobuf), `sim/combine`, and both artifacts — `sim/cmd/wasm` and `sim/cmd/forever-sim`. Building our own wasm is what lets the request builder and the adapter run *inside the browser*, so no protobuf ever crosses into TypeScript and the mapping table exists once, in Go. Engine changes are ordered so the one repo-wide mechanical rename (Hit/Crit) lands alone, before the seven independent feature tasks that follow it.
+**Goal:** Turn the `wowsims/classic` fork at `/Users/jh/code/wowsims-forever` into the Forever Sixty combat engine — unified Hit and Crit, the two Skyborne races, regenerated rating constants, declarative spell mods, periodic crit, an encounter biome, Forever racials, the client's real talent trees, and two specs (`warrior-fury`, `mage-frost`) end to end — and ship the site-side `sim/` Go module that wraps it: the request builder, the result adapter, the two artifacts built from that module, and the tool that measures what no client table carries.
 
-**Tech Stack:** Go (engine `go 1.23.0`, site `go 1.25.11`), `google.golang.org/protobuf` v1.36.6, `protoc` 36.1 with `protoc-gen-go` v1.36.6, Python 3 (`tools/base_stats_parser.py`, the new `tools/spellconst_gen.py`), GNU make, GitHub Actions, Node 22 (wasm smoke test only).
+**Architecture:** Two repositories, and a hard rule about which owns what. The **engine repo** (`/Users/jh/code/wowsims-forever`, module path stays `github.com/wowsims/classic`) holds every change to the simulation itself and **ships no artifact of ours** — it stays a clean, upstreamable Go library plus its own UI, because we intend to contribute the Forever work back rather than diverge. The **site repo** (`/Users/jh/code/forever`) gains a module `sim/` that imports the engine at a pinned version and holds everything else: the JSON envelopes, the engine pin, `sim/request` and `sim/adapter` (the only two places in the product that touch a protobuf), `sim/combine`, and both artifacts — `sim/cmd/wasm` and `sim/cmd/forever-sim`. Building our own wasm is what lets the request builder and the adapter run *inside the browser*, so no protobuf ever crosses into TypeScript and the mapping table exists once, in Go. Engine changes are ordered so the one repo-wide mechanical rename (Hit/Crit) lands alone, before the eight independent feature tasks that follow it.
+
+**Tech Stack:** Go (engine `go 1.23.0` / `toolchain go1.23.4`, site `go 1.25.11`), `google.golang.org/protobuf` v1.36.6, `protoc` **36.1, installed** (`/opt/homebrew/bin/protoc`), `protoc-gen-go` v1.36.6 **installed but not on `PATH`** (it is in `$(go env GOPATH)/bin`), Python 3 (`tools/base_stats_parser.py`, the new `tools/spellconst_gen.py`, the new `tools/talentgen`), GNU make, GitHub Actions, Node 22 (wasm smoke test only). **`buf` is not installed and this plan does not use it**: every proto step shells `protoc` directly.
 
 **Spec:** `docs/superpowers/specs/2026-09-14-simulator-design.md` (sections 2 and 9)
-**Interface contract (binding):** `docs/superpowers/specs/2026-09-14-simulator-interfaces.md` ("Engine" and "Engine version" sections are this lane's; the rest constrains it)
-**Research:** `research/07-simulator.md` sections 1.2, 1.3, 1.11, 5.3; `research/08-stats.md` section 12, "What this changes in the engine" 
+**Interface contract (binding, do not edit from this lane):** `docs/superpowers/specs/2026-09-14-simulator-interfaces.md` ("Engine" and "Engine version" sections are this lane's; the rest constrains it)
+**Research:** `research/07-simulator.md` sections 1.2, 1.3, 1.11, 5.3; `research/08-stats.md` section 12, "What this changes in the engine"
+**Data this lane now reads:** `data/builds/1.60.1.69893/` (the mined beta client: `talents/<class>.json`, `talents.json`, `races.json`, `classes.json`, `spells.json`, `manifest.json`), `data/curated/races.json`
+**Log this lane now reads:** `logs/engine/event/testdata/forever-1.60.log` (the committed 85-line excerpt of the first Forever beta log, 37,539 lines, client 1.60.1, Zephras Isle)
 
 ## Global Constraints
 
 - **Two repositories, and every task says which.** Engine work happens in `/Users/jh/code/wowsims-forever`, module path `github.com/wowsims/classic` (unchanged — the organisation question is not settled). Site work happens in `/Users/jh/code/forever`, in the new module `sim/` (`github.com/jhunthrop/foreversixty/sim`). A task never edits both unless it is listed under both headings in its **Files** block.
-- **Toolchain, measured 2026-09-14.** The engine declares `go 1.23.0` / `toolchain go1.23.4`; the installed Go is **go1.25.4 darwin/arm64**, which is newer, so `GOTOOLCHAIN=auto` uses it directly and **the engine builds and tests green under it** — verified: `go build ./...` 5.7 s, `go test --tags=with_db -count=1 ./sim/...` **10.5 s wall / 78.7 s CPU, 20 packages ok, 0 failures**. Do not raise the engine's `go` directive; upstream mergeability depends on it. The site's `go.work` declares `go 1.25.11`, which is newer than the installed 1.25.4, so `GOTOOLCHAIN=auto` downloads go1.25.11 on the first site build (verified: `cd logs && go version` reports `go1.25.11`). Both work with no configuration.
+- **Toolchain, re-measured 2026-09-18.** The installed Go is **go1.25.4 darwin/arm64** and `GOTOOLCHAIN` is `auto`. The engine declares `go 1.23.0`, which is older, so it builds with 1.25.4 directly — verified: `cd /Users/jh/code/wowsims-forever && go version` reports `go1.25.4`. Do not raise the engine's `go` directive; upstream mergeability depends on it. The site's `go.work` declares `go 1.25.11`, so `GOTOOLCHAIN=auto` fetches and uses 1.25.11 inside the site repo — verified: `cd /Users/jh/code/forever && go version` reports `go1.25.11`. Both work with no configuration and **the two repositories therefore build under two different toolchains on the same machine**; that is expected, not a bug.
 - **`--tags=with_db` is required for engine tests.** Without it `go test ./sim/core/...` panics in `NewEquipmentSet` (the item database is empty). Every engine test command in this plan carries the tag. `go build` does not need it.
-- **The engine needs generated protobufs before anything compiles.** `sim/core/proto/*.pb.go` is produced by `make proto` and is `.gitignore`d upstream (`sim/core/proto/.gitignore:2`). A fresh clone fails `go build ./...` with `no required module provides package github.com/wowsims/classic/sim/core/proto`. Task 1 fixes this permanently. Locally: `go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.36.6`, then `PATH=$PATH:$(go env GOPATH)/bin make proto`.
+- **The engine needs generated protobufs before anything compiles.** `sim/core/proto/*.pb.go` is produced by `make proto` and is `.gitignore`d upstream (`sim/core/proto/.gitignore` line 2 is still `*.pb.go`, confirmed 2026-09-18). A fresh clone fails `go build ./...` with `no required module provides package github.com/wowsims/classic/sim/core/proto`. Task 1 fixes this permanently. Locally the binary already exists: `export PATH=$PATH:$(go env GOPATH)/bin` is enough, and `go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.36.6` if it is not.
 - **`go build ./...` in the engine also needs `binary_dist/dist.go`**, which is `.gitignore`d. Run `make binary_dist/dist.go` once (it copies `sim/web/dist.go.tmpl`). Without it only `sim/web` fails; `go build ./sim/...` is unaffected.
-- **`ENGINE_VERSION` is the short commit sha of `wowsims-forever`**, currently `7779ebb`. It appears in `sim/enginever/version.go` (`const Version = "7779ebb"`, written by `make engine-pin`), in `web/public/_sim/<ENGINE_VERSION>/sim.{wasm,js}`, in every `SimEnvelope.engine_version`, every stored sim row, every validation row, and the premium image tag. A result from a different `ENGINE_VERSION` stays readable and is labelled stale; it is never silently re-run.
-- **The protobuf API does not change shape.** `RaidSimRequest`, `RaidSimResult`, `SimDatabase`, `APLRotation` keep their messages and field numbers. The only proto edits this plan makes are the `Stat` enum merge (Task 4) and two additive fields on `Encounter`/`Target` (Task 8). Additive means: new field numbers, nothing renumbered, nothing removed.
+- **`ENGINE_VERSION` is the short commit sha of `wowsims-forever`**, still `7779ebb` on 2026-09-18 (`7779ebbf7`, "Stop deploying to gh-pages"). It appears in `sim/enginever/version.go` (`const Version = "7779ebb"`, written by `make engine-pin`), in `web/public/_sim/<ENGINE_VERSION>/sim.{wasm,js}`, in every `SimResult.engine_version`, every stored sim row, every validation row, and the premium image tag. A result from a different `ENGINE_VERSION` stays readable and is labelled stale; it is never silently re-run.
+- **The protobuf API does not change shape.** `RaidSimRequest`, `RaidSimResult`, `SimDatabase`, `APLRotation` keep their messages and field numbers. The only proto edits this plan makes are the `Stat` enum merge and two additive `Race` values (Task 4), two additive fields on `Encounter` (Task 8), and the regenerated per-class talent messages (Task 17), which are the one place a message *is* reshaped and which the contract already anticipates by never sending a talent message across a lane boundary — the wire form is the positional `talents` string.
 - **The `Stat` enum in `sim/core/stats/stats.go` and `proto.Stat` in `proto/common.proto` must stay index-synced.** The Go file says so at line 19. After the merge both shrink by two and every later index shifts down by two; Task 4 changes both in one commit and asserts the sync in a test.
-- **The engine repository ships no artifact of ours.** Both are built in the site repo from the `sim/` module: `sim/cmd/wasm` → `sim.wasm` + `sim.js`, `sim/cmd/forever-sim` → the native binary. The engine's own `sim/wasm` and `cmd/wowsimcli` are untouched and remain what upstream ships. The engine's makefile also generates TypeScript protobuf bindings for its own UI; we deliberately do not use them.
-- **No protobuf crosses a lane boundary.** `sim/request` turns a `SimRequest` into the engine's `RaidSimRequest` and `sim/adapter` turns a `RaidSimResult` into a `summary.Summary`. Both are Go, both are linked into both artifacts, and neither the browser nor an API handler ever encodes or decodes a protobuf. An earlier draft of the contract carried a `Raw []byte` field on the envelope; it was removed because it would have forced a protobuf toolchain into the front end and a second copy of the adapter's mapping table in TypeScript.
-- **Our wasm exports exactly four functions, all JSON in and JSON out, never bytes:** `simRun(requestJSON, callbackId)`, `simSplit(requestJSON, n)`, `simCombine(resultsJSON)`, `simAbort(callbackId)`. The engine's own thirteen `js.Global().Set` entrypoints — of which `raidSimAsync`, `raidSimRequestSplit`, `raidSimResultCombination`, `computeStats` and `abortById` are the five that matter, all confirmed present at `sim/wasm/main.go:28-38` — are an implementation detail behind those four, and the web must not call them. Our `main` likewise calls `js.Global().Call("wasmready")` once the four exist, so the host page must define a global `wasmready` before instantiating; the web lane owns that.
+- **The active data build is `1.60.1.69893`**, the mined beta client, fetched 2026-09-17 (`data/builds/1.60.1.69893/manifest.json`, product `wow_classic_beta`). Era (`1.15.9.69722`) stays generated so a regression can be run against it, but every Forever number this lane reads comes from the beta build.
+- **Spell ids are the client's, and the convention is settled by the first log.** Forever keeps vanilla ids for abilities that already existed — the beta log shows Fireball as `133`, Wrath as `5176`, Chilled as `6136`, Healing Touch as `5185` — and uses ids **above 1,000,000 only for new Forever objects** (`1271953` "Elemental Convergence", `1259705` "Read Ley Line"). So: a constants file, an APL, a spell mask or a measurement keys on the spell id and needs no id translation table, and an id above 1,000,000 is the signal that a thing is new and therefore unconfirmed.
+- **Talents are the client's real trait-table trees, and they are mined.** `data/builds/1.60.1.69893/talents.json` has **469 talents** across nine classes (53/52/51/53/53/50/54/52/51 per class id 1,2,3,4,5,7,8,9,11) and `data/builds/1.60.1.69893/talents/<class>.json` has them per class, per tree, with: the client node id as `id`, `name`, `icon`, `max_rank`, `tier` (0–6, seven rows), `column` (0–3), `prereq_talent_id`, `prereq_rank`, one `spell_id` for the talent and a per-rank `ranks[].spell_id` with the rank's description, and the three trees in the client's own order (`position` 0,1,2 — Warrior: Arms 161, Fury 164, Protection 163; Mage: Arcane 81, Fire 41, Frost 61). **No task may hand-type a talent, a rank count, a grid position or a prerequisite: Task 17 generates all of it from that file.**
+- **Ten races, nine classes.** `data/builds/1.60.1.69893/races.json` has ten rows: the eight vanilla races plus **two Skyborne rows** — `high-order-skyborne` (id 95, alliance) and `windshaper-skyborne` (id 96, horde) — because Skyborne is one neutral race whose faction is chosen at creation and whose second active differs by faction. The engine's `proto.Race` has eight; Task 4 adds the two additively and Tasks 5 and 9 fill them in.
+- **The logs engine is at 0.5.3 and `summary.Summary` has grown.** `logs/engine/session.Version = "0.5.3"`. Since this plan was written `Summary` gained four fields — `ThreatByTarget []ThreatPair`, `Taunts []Taunt`, `Mechanics MechanicsBlock`, `Phases []Phase` — and `CastRow` gained `OwnerGUID`, `FailReasons` and `CastTimeMS`, `ResourceTrack` gained `ZeroMS`, `Max`, `AtMaxMS` and `Wasted`. `sim/adapter` must set every one of them explicitly, empty where a sim has nothing to say, because the report components read them and a `nil` slice renders as `null` rather than `[]`.
 - **Unknown Forever numbers are never invented.** Every constant whose Forever value is not yet readable from a client table ships as the Era value, generated (not typed) into a constants file, and carries `unconfirmed` in a comment on its own line. The nightly validation job (api lane) is what clears it. A task that cannot generate a number from data must say so in the constants file, not guess.
-- **Testing rule: a task runs only the tests covering the files it changed.** The full engine suite (`go test --tags=with_db -count=1 ./sim/...`, 10.5 s) runs once at the final review and in CI. The same for the site: `go test ./... -race` from `sim/`.
+- **Testing rule: a task runs only the tests covering the files it changed.** The full engine suite (`go test --tags=with_db -count=1 ./sim/...`) runs once at the final review and in CI. The same for the site: `go test ./... -race` from `sim/`.
 - **`gofmt` is a gate.** The engine has a `pre-commit` hook (`make setup` installs it) running `gofmt -w ./sim ./tools`. Run `gofmt -l ./sim ./tools` before every engine commit; a non-empty list fails CI.
-- **Do not edit `logs/`.** `sim/adapter` imports `github.com/jhunthrop/foreversixty/logs/engine/summary` and builds its types; it never changes them.
+- **Do not edit `logs/`.** `sim/adapter` and `sim/measure` import `github.com/jhunthrop/foreversixty/logs/engine/...` and build its types; they never change them.
+- **Do not edit the interface contract.** `docs/superpowers/specs/2026-09-14-simulator-interfaces.md` is shared with the data, api and web lanes. If a task needs it amended, write the amendment in the finish report and keep going against the contract as written.
 - **Commits.** Conventional subject, a body, and exactly one trailer line in the final `-m`:
   ```
   Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>
@@ -44,22 +51,56 @@ That document read the same engine checkout and reached firmer conclusions than 
 - **Expertise's item unit is a percentage**, not expertise points — Edgemaster's is 1.0% — so `ExpertisePerQuarterPercentReduction` is deleted and `ExpertiseRatingPerExpertiseChance` is 1 (§12.4 item 2, Task 5). The attack table already reads `stats.Expertise / 100`, making the whole subsystem **zero-change**, which §12.3 item 2 calls a genuine windfall.
 - **Haste is not merged** (§12.1 item 5): Forever keeps melee, ranged and spell haste separate.
 - **Bleeds are observed to crit** and the machinery is mostly built: four `Dot` outcome functions exist and only a per-tick magic variant is missing, so periodic crit is per-spell configuration rather than new mechanics (§12.3 items 4 and 5, Task 16).
-- **The weapon-skill picture is narrower than "unspecified".** Weapon skill survives at roughly one seventh the per-item magnitude, and `NewAttackTable`'s nine derived constants are the thing at risk, not the formulas (§12.5). Task 8 extracts them into config and pins today's values in a fixture; Task 15's `forever-measure` produces the numbers to fit.
+- **The weapon-skill picture is narrower than "unspecified".** Weapon skill survives at roughly one seventh the per-item magnitude, and `NewAttackTable`'s nine derived constants are the thing at risk, not the formulas (§12.5). Task 8 extracts them into config and pins today's values in a fixture; Task 15B's `forever-measure` run against an instance log produces the numbers to fit.
 - **Armour ignore is a percentage**, which `stats.ArmorPenetration` cannot express, and **two talents switch on the equipped weapon subclass**, which one-talent-one-effect cannot express (§12.1 item 4, §12.3 item 6, Task 16).
-- **Thirteen hit and crit talents changed meaning**, four converting from resist-reduction to hit (§1.2, §12.6 item 1). Tasks 11 and 12 rebuild rather than rename.
-- **Where §12 is wrong:** §12.2 item 1 says `HealingPower` already precedes `SpellDamage` in `safeDepsOrder` so no reorder is needed. At engine HEAD `7779ebb` it does not — the order is `SpellPower, SpellDamage, HealingPower, Health` — and the registration would panic. Task 6 carries the one-command check and the reorder.
+- **Thirteen hit and crit talents changed meaning**, four converting from resist-reduction to hit (§1.2, §12.6 item 1). Tasks 11 and 12 rebuild rather than rename, and now have the client's own rank descriptions to rebuild against.
+- **Where §12 is wrong:** §12.2 item 1 says `HealingPower` already precedes `SpellDamage` in `safeDepsOrder` so no reorder is needed. **Re-checked 2026-09-18 at engine HEAD `7779ebb`: it still does not** — the order is `… SpellPower, SpellDamage, HealingPower, Health …` (`sim/core/stats/deps.go:22-25`) — and the registration would panic. Task 6 carries the one-command check and the reorder.
 
-### What the data lane hands this lane, verified against the engine's own protos
+### What the data lane hands this lane, and what it does not yet
 
-The data lane finished first and checked these against `proto/common.proto`. They are binding; the contract carries them as of commit `73f86c9`.
+Checked against `proto/common.proto` and against `data/builds/1.60.1.69893/` on 2026-09-18.
 
 - **`SimDatabase` is exactly `{items, random_suffixes, enchants}`** (`proto/common.proto:844-848`). It has **no item-set field and no consumables field**. Nothing in this lane may expect either.
-- **Item sets ride on each item**, as `SimItem.set_id` (field 18) and `SimItem.set_name` (field 14) — confirmed at `proto/common.proto:870-871`. The Era build emits 3,144 such items. `sim/common/item_sets/` keeps working unchanged: it matches on set name, which is on the item.
-- **Consumables are a sidecar**, `data/builds/<build>/simconsumes.json`, 1,467 rows. The data lane owns its shape and asks this lane to confirm it against the hand-written `sim/core/consumes.go` (1,252 lines). Task 10 carries that review step.
-- **`random_suffixes` is emitted empty** — resolving vanilla suffixes needs the RandPropPoints allocation table, and Forever re-itemises anyway. `sim/core/database.go` already tolerates an empty list; do not add code that assumes suffixes exist.
-- **Icons are not in `SimDatabase`.** They stay in `data/builds/<build>/icons/` for the site. The engine never reads them.
-- **The vanilla coefficient conventions stay in this lane.** `simconst` emits the DB2 coefficient columns verbatim, **zeros included**, because for Classic-lineage spells `EffectBonusCoefficient` is routinely 0 or wrong (research §5.3). The `cast_time/3.5` and `duration/15` conventions, their halving for hybrids, and the per-spell overrides are the engine's, exactly as they are today. Task 10's generator must therefore treat a zero coefficient as "not in the data" and fall back to the convention, never as "the coefficient is zero".
-- **The engine's checked-in preset APLs are stale on spell ranks.** Verified by the data lane: `ui/mage/apls/p1.apl.json` casts Frostbolt rank 10 where the Era tables give rank 11 for spell `25304`. **Do not copy a preset APL as a starting point without re-validating every spell rank against the build's own tables.** Tasks 11 and 12 carry that check.
+- **Item sets ride on each item**, as `SimItem.set_id` (field 18) and `SimItem.set_name` (field 14). `sim/common/item_sets/` keeps working unchanged: it matches on set name, which is on the item.
+- **Consumables are a sidecar**, `data/builds/<build>/simconsumes.json`. The data lane owns its shape and asks this lane to confirm it against the hand-written `sim/core/consumes.go` (1,252 lines). Task 10 carries that review step and is written to produce an answer whether or not the file exists yet.
+- **`random_suffixes` is emitted empty.** `sim/core/database.go` already tolerates an empty list; do not add code that assumes suffixes exist.
+- **The vanilla coefficient conventions stay in this lane.** `simconst` emits the DB2 coefficient columns verbatim, **zeros included**. The `cast_time/3.5` and `duration/15` conventions, their halving for hybrids, and the per-spell overrides are the engine's. Task 10's generator must treat a zero coefficient as "not in the data" and fall back to the convention, never as "the coefficient is zero".
+- **Not yet emitted, verified by listing `data/builds/1.60.1.69893/`:** there is **no `simdb.bin`, no `simconsumes.json` and no `spellconst/` directory**. What exists is `items/<class>.json`, `items.json`, `sets.json`, `spells.json` (31,754 rows of `{id, name}` only — names, not base points), `talents/`, `races.json`, `classes.json`, `dungeons.json`, `zones.json`, `combos.json`, `icons/`, `trees/` (27 processed tree background images). **Tasks 10, 11 and 12 must therefore run in their "the data lane has not shipped it yet" branch today**, keeping the existing literals with their `unconfirmed` markers and regenerating later in a one-line commit. Tasks 17 and 9, by contrast, have their data now.
+- **`data/curated/specs.json` does not exist.** The contract names it and the data lane owns it. Nothing in this lane may hardcode a spec list; `adapter.splitSpecSlug` needs only the split, and `request.applySpec` fails closed on a spec it does not carry.
+- **The engine's checked-in preset APLs are stale on spell ranks** (`ui/mage/apls/p1.apl.json` casts Frostbolt rank 10 where the Era tables give rank 11 for spell `25304`). **Do not copy a preset APL as a starting point without re-validating every spell rank against the build's own tables.** Tasks 11 and 12 carry that check.
+
+---
+
+## What changed since 2026-09-14, and what it changed here
+
+Four things moved under this plan: the beta client was mined and its talents are real trees, the first Forever combat log exists and is open-world, the logs engine grew its summary, and the race count went from eight to ten. One row per task; the ruling column is what this refresh did to it.
+
+| # | Task | The plan assumed | What is true on 2026-09-18 | Ruling |
+|---|---|---|---|---|
+| 1 | Engine consumable as a Go module | `.gitignore` line 2 is `*.pb.go`; `vite.build-workers.ts:25` reads `$GOROOT/misc/wasm`; the `proto` target is silent without `protoc-gen-go` | All three re-verified unchanged. `protoc` 36.1 is installed; `protoc-gen-go` is in `$(go env GOPATH)/bin` but off `PATH`; `buf` is absent and unused | **unchanged** (one line added about the installed tools) |
+| 2 | The `sim/` module and the engine pin | `go.work` uses `api`, `companion`, `logs`; engine HEAD `7779ebb` | Both still true | **unchanged** |
+| 3A | `sim/request` | Nine race slugs map onto `proto.Race`; the engine has eight races | Ten races: two Skyborne rows. `proto.Race` gains two values in Task 4 | **rewrite** (race table, its test, and the spec-slug note) |
+| 3B | `sim/adapter` | `summary.Summary` has sixteen fields; `CastRow`/`ResourceTrack` as of engine 0.4.x | Engine 0.5.3: `Summary` gained `ThreatByTarget`, `Taunts`, `Mechanics`, `Phases`; `CastRow` gained `OwnerGUID`, `FailReasons`, `CastTimeMS`; `ResourceTrack` gained `ZeroMS`, `Max`, `AtMaxMS`, `Wasted`. `TargetedActionMetrics` also carries four `resisted_*` damage buckets the old sum dropped | **rewrite** |
+| 4 | Unified `Hit`/`Crit` | 14/13/76/56 Go call sites in 41 files, 177 TypeScript references in 27 files | Re-counted 2026-09-18: **identical**. New work: two additive `proto.Race` values for Skyborne | **rewrite** (counts stand; Skyborne step added) |
+| 5 | Rating constants and base stats | The generator is broken; the base-stat table needs regenerating for ten races and Wowhead's `raceOffsets` has eight | Generator still broken (same `TypeError`). The ten races are now named and identified; the Era inputs in `assets/db_inputs/basestats/` still carry eight, and **no beta base-stat table has been mined**, so the two Skyborne rows are provisional by construction | **rewrite** (the race half) |
+| 6 | Healing → spell damage | `safeDepsOrder` is `SpellPower, SpellDamage, HealingPower, Health`, so the dep would panic | Re-read `sim/core/stats/deps.go:22-25`: unchanged, still wrong, still needs the reorder | **unchanged** |
+| 7 | Port `spell_mod.go` from SoD | Eleven undefined symbols; the SoD clone is in the scratchpad at `0e3f6ef` | Clone still present at the scratchpad path | **unchanged** |
+| 8 | Biome, creature type, attack-table constants | `MobType` exists and is plumbed; biome is the only new concept; `zones.json` carries no biome | `data/builds/1.60.1.69893/zones.json` (1,372 rows) carries `id, name, map_id, map_name, parent_id, level_min, level_max` and **no biome column**, so the `Biome` enum stays hand-declared here and the zone→biome mapping stays content | **unchanged** (one line recording the zones check) |
+| 9 | Racials, two active two passive | The shape is confirmed, the contents are not, and seven races get an empty second active slot | `data/curated/races.json` and the beta `races.json` now **name all four racials for every one of the ten races** from the BlizzCon demo, with sources and with the read-to-read disagreements recorded. Nothing is invented any more; the numbers are community-sourced and stay `unconfirmed` | **rewrite** |
+| 10 | Generated per-class spell constants | `data/builds/<build>/spellconst/<class>.json` is the input | The directory does not exist; `spells.json` is `{id, name}` only. The fallback branch is the one that runs today | **rewrite** (says which branch runs, and why) |
+| 11 | `warrior-fury` end to end | `talents.go` rewritten by hand for "seven rows and 11/16/21/31", `proto/warrior.proto` hand-edited, `ui/core/talents/trees/warrior.json` hand-regenerated | The client's trees are mined: Arms 17 talents, Fury 18, Protection 18, tiers 0–6, columns 0–3, node ids, per-rank spell ids, 96 prerequisite edges. Hand-writing any of it is now wrong | **rewrite** (consumes Task 17; the proto and tree JSON leave this task) |
+| 12 | `mage-frost` end to end | Same as 11 for the mage | Arcane 18, Fire 17, Frost 19, same shape | **rewrite** (same split) |
+| 13 | The two artifacts | Measured wasm 3.31 MB gzipped, native 1,231 it/s serial | Not re-measured (needs Tasks 3–12 first); the figures are labelled as the 2026-09-14 baseline and Task 14 re-measures | **unchanged** |
+| 14 | Final review | Checks tasks 1–13, 15, 16 | Must also check 15B and 17, the Skyborne rows, and the four new `Summary` fields | **rewrite** |
+| 15 | `forever-measure` | Beta day has not happened; the fixture is a Classic-dialect (`layout.ClassicWiki`) log; the tool wants a hand-recorded character sheet; a level-63 dummy run is the headline measurement | The log exists and is **open-world, no instance, no `COMBATANT_INFO`, no `ENCOUNTER_START`, no level-63 boss**; it is read under `layout.RetailV22`, whose **19-field advanced block carries attack power, spell power, armour, absorb, power, position and level on every hit**, so the character sheet is in the log; `DAMAGE_SHIELD` decodes as damage | **split** — Task 15 is what runs on the open-world log today, Task 15B is what waits |
+| 15B | `forever-measure` against an instance log | — | New. The attack table against a level-63 boss, the unified-Hit fit keyed to `COMBATANT_INFO`, per-fight segmentation and the validation-job hand-off | **new task, blocked on a dungeon log** |
+| 16 | Periodic crit, armour ignore, weapon subclass | The engine has four `Dot` outcome functions and lacks the per-tick magic one | Re-verified; unchanged. The beta log's `SPELL_PERIODIC_DAMAGE` lines carry the critical column, so Task 15 now feeds this task's per-spell flags | **unchanged** (one line pointing at Task 15) |
+| 17 | Talent trees generated from the client | — | New. 469 talents, nine classes, three trees each, real node ids and per-rank spell ids. One generator produces every class's talent proto, tree JSON and talent-string layout; Tasks 11 and 12 then only write behaviour | **new task** |
+
+Two things the refresh deliberately did **not** change:
+
+- **The interface contract needs no amendment.** Everything that moved is either inside a shape the contract already leaves to this lane (`CharacterSpec.Talents` is "the engine's talents string", whatever the trees are), or additive to a proto enum (`Race`, `Biome`), or inside `summary.Summary`, which the contract binds by reference ("the logs engine shape") rather than by field list. The only line worth *re-reading* rather than changing is the adapter's mapping table, which does not mention the four new `Summary` fields; Task 3B sets them empty, which is what the table's "empty" rows already say for everything a sim cannot know.
+- **Task numbering.** Tasks keep their numbers. Task 15's split adds `15B` rather than renumbering, and the new tree generator is `17` rather than being inserted as a new `11`.
 
 ---
 
@@ -71,20 +112,23 @@ The controller may run each group's tasks in parallel worktrees; groups run in o
 |---|---|---|---|---|
 | **G0** | 1 | engine | first, alone | Everything depends on committed protobufs. Serial gate. |
 | **G1a** | 2 → 3 | site | after G0 | **Serial within the group.** Task 3 ships `sim/request` and `sim/adapter` together and **unblocks the api and web lanes**; it is the lane's highest-priority output. |
-| **G1b** | 4 | engine | after G0, **in parallel with G1a** | Serial gate for all later engine work: it renames symbols in 41 `sim/` files and 27 `ui/` files and deletes a stat, so it must not race another engine task. |
-| **G2** | 5, 6, 7, 8, 9, 10, 16 | engine | after G1b | **All seven are INDEPENDENT.** Disjoint file sets; seven parallel worktrees. |
-| **G3** | 11, 12 | engine | after G2 (needs 7, 10 and 16) | **INDEPENDENT of each other.** Task 11 touches only `sim/warrior/**`, Task 12 only `sim/mage/**`. |
+| **G1b** | 4 | engine | after G0, **in parallel with G1a** | Serial gate for all later engine work: it renames symbols in 41 `sim/` files and 27 `ui/` files, deletes a stat, and adds two races, so it must not race another engine task. |
+| **G2** | 5, 6, 7, 8, 9, 10, 16, 17 | engine | after G1b | **All eight are INDEPENDENT.** Disjoint file sets; eight parallel worktrees. |
+| **G3** | 11, 12 | engine | after G2 (needs 7, 10, 16 and 17) | **INDEPENDENT of each other.** Task 11 touches only `sim/warrior/**`, Task 12 only `sim/mage/**`. |
 | **G4a** | 13 | site (+ one engine CI file) | after G3 | The two artifacts and their CI. |
-| **G4b** | 15 | site | **in parallel with G4a**; needs only Task 2 | `forever-measure`. Nothing depends on it, so it may also run earlier if a worktree is free. |
-| **G5** | 14 | both | last, alone | Final review: full suites, both repos. |
+| **G4b** | 15 | site | **in parallel with G4a**; needs only Task 2 | `forever-measure` on the open-world log. Nothing depends on it, so it may also run earlier if a worktree is free. |
+| **G4c** | 15B | site | **blocked on an instance log arriving**, then any time after 15 | May land after the lane is otherwise finished. It is the only task in this plan that cannot start today. |
+| **G5** | 14 | both | last, alone | Final review: full suites, both repos. Runs without 15B if 15B is still blocked, and says so. |
 
 Conflict map, so a controller can verify the claim:
 
-- **Task 4 alone** touches `sim/core/stats/stats.go`, `proto/common.proto` and 41 files under `sim/`. Nothing in G2 may run beside it.
-- **Within G2**, file ownership is disjoint: Task 5 owns `sim/core/base_stats_auto_gen.go` and `tools/base_stats_parser.py`; Task 6 owns `sim/core/stats/deps.go` and `sim/core/character.go`'s `addUniversalStatDependencies`; Task 7 owns `sim/core/spell_mod.go` (new), `sim/core/spell.go`, `sim/core/flags.go` and `sim/core/cooldown.go`; Task 8 owns `sim/core/target.go`, `sim/core/unit.go`, `sim/core/item_effects.go` and `proto/common.proto`'s `Encounter`/`Biome` (a different message from Task 4's enum, and Task 4 has already landed); Task 9 owns `sim/core/racials.go`; Task 10 owns `tools/spellconst_gen` and the new `sim/core/spellconst/**`; Task 16 owns `sim/core/dot.go`, `sim/core/spell_outcome.go`, `sim/core/spell_result.go` and `PseudoStats`.
-  - **The two near-misses to watch.** Task 6 and Task 16 both add to `sim/core/character.go` — Task 6 inside `addUniversalStatDependencies`, Task 16 appending two new methods at the end of the file — so a merge conflict is possible but trivial. Task 7 and Task 16 both touch damage multipliers: Task 7 adds the `Apply*DamageBonus` helpers to `sim/core/spell.go`, Task 16 changes the armour path in `sim/core/spell_result.go`. Different files, no overlap.
-- **G3 needs Task 16** as well as 7 and 10: the specs' dots set `CanCrit` and the warrior's armour-ignore talents set `ArmorIgnorePercent`.
-- **Task 15 needs only Task 2** (the `sim/` module) and imports `logs/engine` read-only. It shares no file with Task 13.
+- **Task 4 alone** touches `sim/core/stats/stats.go`, `proto/common.proto` (the `Stat` and `Race` enums) and 41 files under `sim/`. Nothing in G2 may run beside it.
+- **Within G2**, file ownership is disjoint: Task 5 owns `sim/core/base_stats_auto_gen.go`, `sim/core/base_stats_provisional.go` and `tools/base_stats_parser.py`; Task 6 owns `sim/core/stats/deps.go` and `sim/core/character.go`'s `addUniversalStatDependencies`; Task 7 owns `sim/core/spell_mod.go` (new), `sim/core/spell.go`, `sim/core/flags.go` and `sim/core/cooldown.go`; Task 8 owns `sim/core/target.go`, `sim/core/unit.go`, `sim/core/item_effects.go` and `proto/common.proto`'s `Encounter`/`Biome`; Task 9 owns `sim/core/racials.go`; Task 10 owns `tools/spellconst_gen` and the new `sim/core/spellconst/**`; Task 16 owns `sim/core/dot.go`, `sim/core/spell_outcome.go`, `sim/core/spell_result.go` and `PseudoStats`; Task 17 owns `tools/talentgen/**`, the nine `proto/<class>.proto` talent messages, the nine `sim/<class>/talents_auto_gen.go` and `ui/core/talents/trees/*.json`.
+  - **Three near-misses to watch.** Task 6 and Task 16 both add to `sim/core/character.go` — Task 6 inside `addUniversalStatDependencies`, Task 16 appending two methods at the end — so a merge conflict is possible but trivial. Task 8 and Task 17 both run `make proto` and both commit regenerated `*.pb.go`: they edit **different `.proto` files** (`common.proto` versus the nine class files) but the regenerated `common.pb.go` is untouched by 17, so the only conflict is if both regenerate everything; each must `git add` only the `.pb.go` files for the protos it changed. Task 9 and Task 4 both care about the `Race` enum, but 4 adds the values and 9 consumes them, and 4 has already landed.
+- **G3 needs Tasks 7, 10, 16 and 17**: the specs' talent behaviour is written against Task 17's generated talent structs, their dots set `CanCrit`, their armour talents set `ArmorIgnorePercent`, and their mods are `SpellModConfig`s.
+- **Task 15 needs only Task 2** (the `sim/` module) and imports `logs/engine` read-only. It shares no file with Task 13. **Task 15B** extends `sim/measure` and so must not run beside Task 15.
+
+---
 
 ## File structure
 
@@ -92,18 +136,23 @@ Conflict map, so a controller can verify the claim:
 ENGINE REPO  /Users/jh/code/wowsims-forever   (module github.com/wowsims/classic)
                                               ships NO artifact of ours; stays upstreamable
   sim/core/proto/.gitignore                   MODIFIED T1: stop ignoring *.pb.go
-  sim/core/proto/*.pb.go                      NEW T1: 14 generated files, committed
+  sim/core/proto/*.pb.go                      NEW T1: 14 generated files, committed;
+                                              REGENERATED T4, T8, T17
   vite.build-workers.ts                       MODIFIED T1: GOROOT/lib/wasm, not misc/wasm
-  makefile                                    MODIFIED T1 (proto check), T10 (spellconst)
-  PORTING.md                                  NEW T1; MODIFIED T7, T13
-  proto/common.proto                          MODIFIED T4 (Stat: merge Hit/Crit, drop Resilience),
+  makefile                                    MODIFIED T1 (proto check), T10 (spellconst),
+                                              T17 (talents)
+  PORTING.md                                  NEW T1; MODIFIED T7, T13, T17
+  proto/common.proto                          MODIFIED T4 (Stat: merge Hit/Crit, drop Resilience;
+                                              Race: two Skyborne values),
                                               T8 (Biome enum, Encounter.biome)
+  proto/{druid,hunter,mage,paladin,priest,rogue,shaman,warlock,warrior}.proto
+                                              REGENERATED T17: the nine <Class>Talents messages
   sim/core/stats/stats.go                     MODIFIED T4 (Hit, Crit, no Resilience), T16 (PseudoStats)
   sim/core/stats/stats_test.go                MODIFIED T4: index-sync assertion
   sim/core/stats/deps.go                      MODIFIED T6: HealingPower before SpellDamage
   sim/core/stats/deps_test.go                 MODIFIED T6
   sim/core/character.go                       MODIFIED T6 (the healing dep), T16 (weapon-subclass hook)
-  sim/core/base_stats_auto_gen.go             REGENERATED T5
+  sim/core/base_stats_auto_gen.go             REGENERATED T5 (ten races)
   sim/core/base_stats_provisional.go          NEW T5
   sim/core/base_stats_test.go                 NEW T5
   tools/base_stats_parser.py                  MODIFIED T5: fixed, --build, --inputs, --out
@@ -113,18 +162,25 @@ ENGINE REPO  /Users/jh/code/wowsims-forever   (module github.com/wowsims/classic
   sim/core/cooldown.go                        MODIFIED T7: the two cooldown mods
   sim/core/flags.go                           MODIFIED T7: SpellFlagNoSpellMods
   sim/core/target.go                          MODIFIED T8: Encounter.Biome; attack-table constants as config
-  sim/core/unit.go                            MODIFIED T8: Unit.Biome()
+  sim/core/unit.go                            MODIFIED T7, T8: Unit.Biome()
   sim/core/item_effects.go                    MODIFIED T8: biome and creature-type damage effects
   sim/core/environment_biome_test.go          NEW T8
   sim/core/attack_table_test.go               NEW T8: the Era regression fixture
-  sim/core/racials.go                         REWRITTEN T9
+  sim/core/racials.go                         REWRITTEN T9: ten races, four racials each
   sim/core/racials_test.go                    NEW T9
   sim/core/spellconst/{spellconst,gen}        NEW T10: the Go shape and the generator
   sim/core/dot.go                             MODIFIED T16: CanCrit, Dot.CritMultiplier
   sim/core/spell_outcome.go                   MODIFIED T16: OutcomeMagicCritPerTick
   sim/core/spell_result.go                    MODIFIED T16: percentage armour ignore
   sim/core/periodic_crit_test.go              NEW T16
-  sim/warrior/**                              T10 (constants), T11 (talents, abilities, masks)
+  sim/core/talents/talents.go                 NEW T17: the shared Tree/Talent shape and the
+                                              positional talent-string reader
+  sim/core/talents/talents_test.go            NEW T17
+  tools/talentgen/main.go                     NEW T17: client trait JSON -> proto + Go + tree JSON
+  tools/talentgen/main_test.go                NEW T17
+  sim/{warrior,mage,...}/talents_auto_gen.go  NEW T17: nine generated files
+  ui/core/talents/trees/*.json                REGENERATED T17: nine files
+  sim/warrior/**                              T10 (constants), T11 (behaviour, abilities, masks)
   ui/warrior/apls/forever_fury.apl.json       NEW T11
   sim/mage/**                                 T10 (constants), T12
   ui/mage/apls/forever_frost.apl.json         NEW T12
@@ -136,21 +192,25 @@ SITE REPO  /Users/jh/code/forever              builds BOTH artifacts, from sim/
   Makefile                                    NEW T2 (engine-pin); T13 (artifacts, publish-wasm)
   .github/workflows/sim.yml                   NEW T13
   sim/go.mod, sim/go.sum                      NEW T2
-  sim/README.md                               NEW T15: the Sept 17 logging procedure
+  sim/README.md                               NEW T15: the measurement procedure
   sim/enginever/version.go                    NEW T2, generated by `make engine-pin`
   sim/api/envelope.go                         NEW T2: SimRequest, CharacterSpec, SimResult
   sim/request/{request,slots}.go              NEW T3: our JSON -> the engine's RaidSimRequest
   sim/request/apl/*.apl.json                  NEW T3: the two default APLs, embedded
-  sim/adapter/adapter.go, fixture.go          NEW T3: RaidSimResult -> summary.Summary
+  sim/adapter/adapter.go, fixture.go          NEW T3: RaidSimResult -> summary.Summary (0.5.3 shape)
   sim/adapter/testdata/*.{result.pb,golden}   NEW T3, refreshed by T11 and T12
   sim/combine/combine.go                      NEW T13: split and recombine, both lanes
   sim/cmd/wasm/main.go                        NEW T13: simRun, simSplit, simCombine, simAbort
   sim/cmd/forever-sim/main.go                 NEW T13: the native server-lane binary
   sim/measure/*.go                            NEW T15: the measurement functions
-  sim/measure/testdata/planted.log            NEW T15: a log with known planted values
-  sim/cmd/forever-measure/main.go             NEW T15: the beta-day tool
+  sim/measure/testdata/planted-v22.log        NEW T15: a retail-v22 Forever log with planted values
+  sim/measure/instance.go                     NEW T15B: COMBATANT_INFO and encounter-scoped fits
+  sim/measure/testdata/planted-instance.log   NEW T15B
+  sim/cmd/forever-measure/main.go             NEW T15: the measurement tool
   web/public/_sim/<ENGINE_VERSION>/           T13: sim.wasm + sim.js, committed, immutable
 ```
+
+---
 
 ## Task 1: Make the engine consumable as a Go module
 
@@ -1081,6 +1141,34 @@ func TestBuildRejectsWhatItCannotMap(t *testing.T) {
 	}
 }
 
+// Every race the data lane publishes must be buildable, and nothing
+// else. The list is the slug field of data/builds/<build>/races.json,
+// which has ten rows because Skyborne's two faction variants are two
+// rows; a slug this map is missing fails a sim at the boundary with a
+// clear message instead of producing an orc.
+func TestEveryPublishedRaceSlugMaps(t *testing.T) {
+	want := []string{
+		"human", "orc", "dwarf", "night-elf", "undead",
+		"tauren", "gnome", "troll",
+		"high-order-skyborne", "windshaper-skyborne",
+	}
+	if len(races) != len(want) {
+		t.Errorf("the race map has %d entries, want %d; compare it against data/builds/<build>/races.json", len(races), len(want))
+	}
+	for _, slug := range want {
+		if _, ok := ParseRace(slug); !ok {
+			t.Errorf("ParseRace(%q) failed; the data lane publishes that race", slug)
+		}
+	}
+	// The two Skyborne rows are distinct races to the engine, because
+	// their second active racial differs by faction.
+	al, _ := ParseRace("high-order-skyborne")
+	ho, _ := ParseRace("windshaper-skyborne")
+	if al == ho {
+		t.Error("both Skyborne slugs map to the same race; their racials differ by faction")
+	}
+}
+
 // Build must be deterministic: the same request twice must produce the
 // same protobuf, or a paired seed buys nothing.
 func TestBuildIsDeterministic(t *testing.T) {
@@ -1199,16 +1287,22 @@ var (
 // The canonical slug list is data/curated/specs.json and races.json; these
 // maps are the engine-side half of that pairing and the test asserts
 // every engine enum value is reachable.
+// The ten slugs are exactly the `slug` field of every row in
+// data/builds/<build>/races.json. Skyborne is one neutral race whose
+// faction is chosen at creation and whose second active racial differs
+// by faction, so the client's race table carries it as two rows and so
+// does this map; Task 4 added the two enum values additively.
 var races = map[string]proto.Race{
-	"dwarf":     proto.Race_RaceDwarf,
-	"gnome":     proto.Race_RaceGnome,
-	"human":     proto.Race_RaceHuman,
-	"night-elf": proto.Race_RaceNightElf,
-	"nightelf":  proto.Race_RaceNightElf,
-	"orc":       proto.Race_RaceOrc,
-	"tauren":    proto.Race_RaceTauren,
-	"troll":     proto.Race_RaceTroll,
-	"undead":    proto.Race_RaceUndead,
+	"dwarf":               proto.Race_RaceDwarf,
+	"gnome":               proto.Race_RaceGnome,
+	"human":               proto.Race_RaceHuman,
+	"night-elf":           proto.Race_RaceNightElf,
+	"orc":                 proto.Race_RaceOrc,
+	"tauren":              proto.Race_RaceTauren,
+	"troll":               proto.Race_RaceTroll,
+	"undead":              proto.Race_RaceUndead,
+	"high-order-skyborne": proto.Race_RaceHighOrderSkyborne,
+	"windshaper-skyborne": proto.Race_RaceWindshaperSkyborne,
 }
 
 var classes = map[string]proto.Class{
@@ -1335,7 +1429,7 @@ func encounter(e api.EncounterSpec) *proto.Encounter {
 }
 ```
 
-Four helpers are left: `applySpec`, `consumes`, `individualBuffs`, `partyBuffs`, `raidBuffs`, `debuffs`. Write each as a switch over the string ids the settings bar sends, mapping onto the engine's `proto.Consumes`, `proto.IndividualBuffs`, `proto.PartyBuffs`, `proto.RaidBuffs` and `proto.Debuffs` fields. Read `proto/common.proto` for the field names first; the buff ids are the web lane's and are the field names in lower snake case, so the mapping is mechanical. `applySpec` switches on the spec slug and calls the engine's `core.WithSpec` equivalent — for `warrior-fury` set `player.Spec = &proto.Player_Warrior{...}`, for `mage-frost` `&proto.Player_Mage{...}` — and returns an error for a spec this build does not carry, so an unsupported spec fails at the boundary rather than producing an empty agent.
+Four helpers are left: `applySpec`, `consumes`, `individualBuffs`, `partyBuffs`, `raidBuffs`, `debuffs`. Write each as a switch over the string ids the settings bar sends, mapping onto the engine's `proto.Consumes`, `proto.IndividualBuffs`, `proto.PartyBuffs`, `proto.RaidBuffs` and `proto.Debuffs` fields. Read `proto/common.proto` for the field names first; the buff ids are the web lane's and are the field names in lower snake case, so the mapping is mechanical. `applySpec` switches on the spec slug and calls the engine's `core.WithSpec` equivalent. **`data/curated/specs.json` does not exist yet** (verified 2026-09-18; `data/curated/` holds `classes.json`, `combos.json` and `races.json` only), so this switch is the only spec list in the module and it fails closed: two cases and a default that errors. Do not build a longer list from anywhere else — for `warrior-fury` set `player.Spec = &proto.Player_Warrior{...}`, for `mage-frost` `&proto.Player_Mage{...}` — and returns an error for a spec this build does not carry, so an unsupported spec fails at the boundary rather than producing an empty agent.
 
 Also set `player.Rotation` from the spec's default APL. The APL JSON is `data/curated/apl/<spec_slug>.json` (data lane); embed the two launch specs' copies with `//go:embed` so the wasm carries them and no fetch is needed:
 
@@ -1355,7 +1449,7 @@ go test ./request/ -v
 gofmt -l ./request
 ```
 
-Expected: six tests `PASS`, no `gofmt` output. If `TestBuildPlacesGearByItsSlot` fails, `slotOrder` does not match `proto.ItemSlot` — print the enum with `for i := 0; i < 20; i++ { fmt.Println(i, proto.ItemSlot(i)) }` and fix the list.
+Expected: seven tests `PASS`, no `gofmt` output. If `TestBuildPlacesGearByItsSlot` fails, `slotOrder` does not match `proto.ItemSlot` — print the enum with `for i := 0; i < 20; i++ { fmt.Println(i, proto.ItemSlot(i)) }` and fix the list.
 
 - [ ] **A6: Commit**
 
@@ -1371,9 +1465,28 @@ git commit -m "feat(sim): build the engine's request from our JSON envelope" \
 
 `Summarize` turns a `*proto.RaidSimResult` into a `logs/engine/summary.Summary`, so the report page's damage table, aura uptimes, cast list, and resource timeline render a simulation with no second renderer. The mapping is the contract's table, field by field, and the rule that governs all of it is: **the engine reports totals accumulated across every iteration, and the summary describes one fight, so every count and every total is divided by `IterationsDone` before it enters the summary.** The distribution stays in `SimResult.DPS`, where it belongs.
 
-Two shapes do not survive the trip and the adapter says so rather than inventing them. The engine's `AuraMetrics` carries an average uptime in seconds and an average proc count, but no application timeline, so `AuraTrack.Segments` is empty and `Applications` is the rounded proc average. The engine's `ActionMetrics` carries cast counts but no timestamps, so `CastRow.Sequence` is empty. `DamageTaken`, `Healing`, `HealingTaken`, `Deaths`, `Interrupts`, `Dispels`, `Threat` and `Combatants` are empty at launch, per the contract.
+**Target shape: `summary.Summary` as of logs engine 0.5.3, re-read 2026-09-18.** It has twenty fields, four more than when this plan was written. The four new ones —
 
-Engine shapes this task reads, all confirmed in `proto/api.proto`: `RaidSimResult{RaidMetrics *RaidMetrics; AvgIterationDuration float64; IterationsDone int32; Error *ErrorOutcome}`, `RaidMetrics{Parties []*PartyMetrics}`, `PartyMetrics{Players []*UnitMetrics}`, `UnitMetrics{Name string; UnitIndex int32; Dps *DistributionMetrics; Actions []*ActionMetrics; Auras []*AuraMetrics; Resources []*ResourceMetrics; Pets []*UnitMetrics}`, `ActionMetrics{Id *ActionID; IsMelee bool; SpellSchool int32; Targets []*TargetedActionMetrics}`, `TargetedActionMetrics{Casts, Hits, Crits, Ticks, CritTicks, Misses, Dodges, Parries, Blocks, Glances, Crushes int32; Damage, CritDamage, TickDamage, CritTickDamage, GlanceDamage, CrushDamage, BlockDamage float64}`, `AuraMetrics{Id *ActionID; UptimeSecondsAvg, ProcsAvg float64}`, `ResourceMetrics{Id *ActionID; Type ResourceType; Events int32; Gain, ActualGain float64}`, `DistributionMetrics{Avg, Stdev, Max, Min float64}`, `ActionID{SpellId|ItemId|OtherId oneof; Tag, Rank int32}`.
+```go
+ThreatByTarget []ThreatPair   `json:"threat_by_target"`
+Taunts         []Taunt        `json:"taunts"`
+Mechanics      MechanicsBlock `json:"mechanics"`
+Phases         []Phase        `json:"phases"`
+```
+
+— are all things a simulation cannot know: there is no threat model attached to a sim, no taunt, no curated mechanics table for a target dummy, and no encounter phases. **Every one is still set explicitly**, empty, because the report components read them and a `nil` slice marshals as `null` where the components expect `[]`. `MechanicsBlock{TableFound: false, Rows: []MechanicRow{}}` is exactly what the logs engine itself produces for a fight whose encounter has no table, so the sim and a real trash pull render identically.
+
+Three grown types matter too:
+
+- `CastRow` gained `OwnerGUID` (the caster's owner for a pet, its own GUID otherwise), `FailReasons map[string]int64` and `CastTimeMS`. A sim has no failures and no per-cast timing, so `FailReasons` stays nil (it is `omitempty`) and `CastTimeMS` stays zero; `OwnerGUID` is set, because the Casts tab groups a pet's rows under its owner and a zero there orphans the row.
+- `ResourceTrack` gained `ZeroMS`, `Max`, `AtMaxMS` and `Wasted`. The engine's `ResourceMetrics` carries none of the four — it has `events`, `gain` and `actual_gain` and nothing about caps or timelines — so all four stay zero and the comment says why. **`Wasted` is the one worth noting**: `gain - actual_gain` is exactly the engine's over-cap waste, so `Wasted` **is** populated, from that difference.
+- `Ability` carries `Resisted`, which the old draft of this adapter never filled. `TargetedActionMetrics` has four resisted damage buckets — `resisted_damage` (29), `resisted_crit_damage` (30), `resisted_tick_damage` (31), `resisted_crit_tick_damage` (32) — and the old damage sum dropped all four, understating a caster's total by whatever partial resists took. They are summed into `Total` and reported in `Resisted`.
+
+Two shapes still do not survive the trip and the adapter says so rather than inventing them. The engine's `AuraMetrics` carries an average uptime in seconds and an average proc count, but no application timeline, so `AuraTrack.Segments` is empty and `Applications` is the rounded proc average. The engine's `ActionMetrics` carries cast counts but no timestamps, so `CastRow.Sequence` is empty. `DamageTaken`, `Healing`, `HealingTaken`, `Deaths`, `Interrupts`, `Dispels`, `Threat` are empty at launch, per the contract, and `Combatants` is empty because a sim has no `COMBATANT_INFO`.
+
+Engine shapes this task reads, all confirmed in `proto/api.proto` on 2026-09-18: `RaidSimResult{RaidMetrics *RaidMetrics; AvgIterationDuration float64; IterationsDone int32; Error *ErrorOutcome}`, `RaidMetrics{Dps *DistributionMetrics; Parties []*PartyMetrics}`, `PartyMetrics{Players []*UnitMetrics}`, `UnitMetrics{Name string; UnitIndex int32; Dps *DistributionMetrics; Actions []*ActionMetrics; Auras []*AuraMetrics; Resources []*ResourceMetrics; Pets []*UnitMetrics}`, `ActionMetrics{Id *ActionID; IsMelee bool; SpellSchool int32; Targets []*TargetedActionMetrics}`, `TargetedActionMetrics{UnitIndex, Casts, Hits, ResistedHits, Crits, ResistedCrits, Ticks, ResistedTicks, CritTicks, ResistedCritTicks, Misses, Dodges, Parries, Blocks, BlockedCrits, Crushes, Glances int32; Damage, ResistedDamage, CritDamage, ResistedCritDamage, TickDamage, ResistedTickDamage, CritTickDamage, ResistedCritTickDamage, GlanceDamage, CrushDamage, BlockDamage, BlockedCritDamage float64}`, `AuraMetrics{Id *ActionID; UptimeSecondsAvg, ProcsAvg float64}`, `ResourceMetrics{Id *ActionID; Type ResourceType; Events int32; Gain, ActualGain float64}`, `DistributionMetrics{Avg, Stdev, Max, Min float64}`, `ActionID{SpellId|ItemId|OtherId oneof; Tag, Rank int32}`.
+
+**Spell names.** `ActionID` carries no name, and the adapter does not invent one: it emits `spell:<id>`. That is not a placeholder, it is the boundary. The web resolves real names from `data/builds/<build>/spells.json` (31,754 rows of `{id, name}`), which it already loads for tooltips, and the first Forever log confirms the ids line up: player abilities appear under their vanilla ids (Fireball `133`, Wrath `5176`, Healing Touch `5185`) and only new Forever objects sit above 1,000,000 (`1271953` "Elemental Convergence").
 
 **Files:**
 - Create: `sim/adapter/adapter.go`, `sim/adapter/fixture.go`
@@ -1381,7 +1494,7 @@ Engine shapes this task reads, all confirmed in `proto/api.proto`: `RaidSimResul
 - Create (generated): `sim/adapter/testdata/warrior-fury.result.pb`, `sim/adapter/testdata/warrior-fury.summary.json.golden`, `sim/adapter/testdata/mage-frost.result.pb`, `sim/adapter/testdata/mage-frost.summary.json.golden`
 
 **Interfaces:**
-- Consumes: `api.SimRequest`, `api.Estimate`, `enginever.Version` (Task 2); `summary.Summary`, `summary.Actor`, `summary.Ability`, `summary.Pair`, `summary.AuraTrack`, `summary.CastRow`, `summary.ResourceTrack`, `summary.RosterRow` (the `logs/` engine, unchanged); `proto.RaidSimResult` and friends (the engine).
+- Consumes: `api.SimRequest`, `api.Estimate`, `enginever.Version` (Task 2); `summary.Summary`, `summary.Actor`, `summary.Ability`, `summary.Pair`, `summary.AuraTrack`, `summary.Segment`, `summary.CastRow`, `summary.ResourceTrack`, `summary.RosterRow`, `summary.Death`, `summary.ExchangeRow`, `summary.ThreatRow`, `summary.ThreatPair`, `summary.Taunt`, `summary.CombatantRow`, `summary.MechanicsBlock`, `summary.MechanicRow`, `summary.Phase` (the `logs/` engine at 0.5.3, unchanged — **do not edit `logs/`**); `proto.RaidSimResult` and friends (the engine).
 - Produces, used by the api lane's saved-sim write, validation job and execution scorer, and by the web lane through the stored `SimResult`:
   - `adapter.Summarize(res *proto.RaidSimResult, req api.SimRequest) (summary.Summary, error)`
   - `adapter.DPS(res *proto.RaidSimResult) api.Estimate`
@@ -1398,9 +1511,11 @@ Create `sim/adapter/adapter_test.go`:
 package adapter
 
 import (
+	"encoding/json"
 	"math"
 	"testing"
 
+	"github.com/jhunthrop/foreversixty/logs/engine/summary"
 	"github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/wowsims/classic/sim/core/proto"
 )
@@ -1418,16 +1533,17 @@ func oneAction() *proto.UnitMetrics {
 			IsMelee:     true,
 			SpellSchool: 1,
 			Targets: []*proto.TargetedActionMetrics{{
-				UnitIndex: 1,
-				Casts:     200,
-				Hits:      160,
-				Crits:     40,
-				Misses:    20,
-				Dodges:    10,
-				Parries:   5,
-				Glances:   5,
-				Damage:    100000,
-				CritDamage: 40000,
+				UnitIndex:      1,
+				Casts:          200,
+				Hits:           160,
+				Crits:          40,
+				Misses:         20,
+				Dodges:         10,
+				Parries:        5,
+				Glances:        5,
+				Damage:         100000,
+				CritDamage:     40000,
+				ResistedDamage: 2000,
 			}},
 		}},
 		Auras: []*proto.AuraMetrics{{
@@ -1436,10 +1552,10 @@ func oneAction() *proto.UnitMetrics {
 			ProcsAvg:         31.5,
 		}},
 		Resources: []*proto.ResourceMetrics{{
-			Id:        &proto.ActionID{RawId: &proto.ActionID_SpellId{SpellId: 23894}},
-			Type:      proto.ResourceType_ResourceTypeRage,
-			Events:    200,
-			Gain:      -6000,
+			Id:         &proto.ActionID{RawId: &proto.ActionID_SpellId{SpellId: 23894}},
+			Type:       proto.ResourceType_ResourceTypeRage,
+			Events:     200,
+			Gain:       -6000,
 			ActualGain: -6000,
 		}},
 	}
@@ -1496,9 +1612,12 @@ func TestSummarizeDividesByIterations(t *testing.T) {
 	if a.Name != "Fury" {
 		t.Errorf("actor Name = %q, want %q", a.Name, "Fury")
 	}
-	// 100000 damage + 40000 crit damage over 100 iterations.
-	if a.Total != 1400 {
-		t.Errorf("actor Total = %d, want 1400", a.Total)
+	if a.Class != "warrior" {
+		t.Errorf("actor Class = %q, want %q; the roster and the damage table must agree", a.Class, "warrior")
+	}
+	// 100000 damage + 40000 crit damage + 2000 resisted, over 100 iterations.
+	if a.Total != 1420 {
+		t.Errorf("actor Total = %d, want 1420 (resisted damage counts)", a.Total)
 	}
 	if a.Effective != a.Total {
 		t.Errorf("Effective = %d, want it equal to Total (%d)", a.Effective, a.Total)
@@ -1513,24 +1632,28 @@ func TestSummarizeDividesByIterations(t *testing.T) {
 	if ab.SpellID != 23894 {
 		t.Errorf("SpellID = %d, want 23894", ab.SpellID)
 	}
-	if ab.Hits != 2 { // 160 hits + 40 crits = 200 landed, over 100 iterations, minus crits
+	if ab.Name != "spell:23894" {
+		t.Errorf("Name = %q; the engine carries no names, so the adapter emits the id and the web resolves it", ab.Name)
+	}
+	if ab.Hits != 2 { // 160/100 = 1.6, rounds to 2
 		t.Errorf("Hits = %d, want 2 (160/100 rounded)", ab.Hits)
 	}
 	if ab.Crits != 0 { // 40/100 = 0.4, rounds to 0
 		t.Errorf("Crits = %d, want 0 (40/100 rounds down)", ab.Crits)
 	}
+	if ab.Resisted != 20 { // 2000/100
+		t.Errorf("Resisted = %d, want 20", ab.Resisted)
+	}
 	if ab.Misses["miss"] != 0 { // 20/100 = 0.2
 		t.Errorf("misses = %d, want 0", ab.Misses["miss"])
 	}
-	if len(a.Targets) != 1 || a.Targets[0].Total != 1400 {
-		t.Errorf("Targets = %+v, want one entry totalling 1400", a.Targets)
+	if len(a.Targets) != 1 || a.Targets[0].Total != 1420 {
+		t.Errorf("Targets = %+v, want one entry totalling 1420", a.Targets)
 	}
 }
 
-// Rounding must not lose a whole ability: an ability cast once per fight
-// over 100 iterations is 100 casts, which divides cleanly; but an ability
-// cast every third fight must still appear, with a zero-ish count, rather
-// than vanish from the table.
+// Rounding must not lose a whole ability: an ability cast every third
+// fight must still appear, with its damage, rather than vanish.
 func TestSummarizeKeepsRareAbilities(t *testing.T) {
 	u := oneAction()
 	u.Actions = append(u.Actions, &proto.ActionMetrics{
@@ -1574,8 +1697,8 @@ func TestSummarizeAurasCastsAndResources(t *testing.T) {
 	if au.Applications != 32 { // 31.5 rounds to 32
 		t.Errorf("aura Applications = %d, want 32", au.Applications)
 	}
-	if len(au.Segments) != 0 {
-		t.Errorf("aura Segments = %v; the engine reports no application timeline, so this must stay empty", au.Segments)
+	if au.Segments == nil || len(au.Segments) != 0 {
+		t.Errorf("aura Segments = %v; the engine reports no application timeline, so this must be empty and non-nil", au.Segments)
 	}
 
 	if len(got.Casts) != 1 {
@@ -1585,8 +1708,11 @@ func TestSummarizeAurasCastsAndResources(t *testing.T) {
 	if c.SpellID != 23894 || c.Started != 2 || c.Succeeded != 2 {
 		t.Errorf("cast row = %+v, want spell 23894 started and succeeded 2", c)
 	}
-	if len(c.Sequence) != 0 {
-		t.Errorf("cast Sequence = %v; the engine reports no cast timestamps, so this must stay empty", c.Sequence)
+	if c.OwnerGUID != c.GUID {
+		t.Errorf("cast OwnerGUID = %q, want the caster's own GUID %q for a player row", c.OwnerGUID, c.GUID)
+	}
+	if c.Sequence == nil || len(c.Sequence) != 0 {
+		t.Errorf("cast Sequence = %v; the engine reports no cast timestamps, so this must be empty and non-nil", c.Sequence)
 	}
 
 	if len(got.Resources) != 1 {
@@ -1601,6 +1727,33 @@ func TestSummarizeAurasCastsAndResources(t *testing.T) {
 	}
 	if r.Gained != 0 {
 		t.Errorf("resource Gained = %d, want 0", r.Gained)
+	}
+	if r.Max != 0 || r.AtMaxMS != 0 || r.ZeroMS != 0 {
+		t.Errorf("resource cap fields = %d/%d/%d; the engine reports no cap or timeline, so all three stay zero", r.Max, r.AtMaxMS, r.ZeroMS)
+	}
+}
+
+// gain minus actual_gain is exactly the resource the engine threw away
+// over the cap, which is what ResourceTrack.Wasted means.
+func TestSummarizeReportsWastedResource(t *testing.T) {
+	u := oneAction()
+	u.Resources = []*proto.ResourceMetrics{{
+		Id:         &proto.ActionID{RawId: &proto.ActionID_SpellId{SpellId: 2687}},
+		Type:       proto.ResourceType_ResourceTypeRage,
+		Events:     100,
+		Gain:       5000,
+		ActualGain: 4000,
+	}}
+	got, err := Summarize(resultWith(u, 100), req())
+	if err != nil {
+		t.Fatal(err)
+	}
+	r := got.Resources[0]
+	if r.Gained != 40 {
+		t.Errorf("Gained = %d, want 40 (actual_gain over 100 iterations)", r.Gained)
+	}
+	if r.Wasted != 10 {
+		t.Errorf("Wasted = %d, want 10 ((gain - actual_gain) over 100 iterations)", r.Wasted)
 	}
 }
 
@@ -1625,7 +1778,7 @@ func TestSummarizeRoster(t *testing.T) {
 }
 
 // A pet is a second actor in the damage table, exactly as it is in a real
-// fight's summary.
+// fight's summary, and its cast rows hang off its owner.
 func TestSummarizePets(t *testing.T) {
 	u := oneAction()
 	u.Pets = []*proto.UnitMetrics{{
@@ -1649,6 +1802,80 @@ func TestSummarizePets(t *testing.T) {
 	}
 	if got.DamageDone[1].Total != 200 {
 		t.Errorf("pet Total = %d, want 200", got.DamageDone[1].Total)
+	}
+	var petCast *summary.CastRow
+	for i := range got.Casts {
+		if got.Casts[i].SpellID == 3110 {
+			petCast = &got.Casts[i]
+		}
+	}
+	if petCast == nil {
+		t.Fatal("the pet's cast row is missing")
+	}
+	if petCast.OwnerGUID != playerGUID {
+		t.Errorf("pet cast OwnerGUID = %q, want the player's %q", petCast.OwnerGUID, playerGUID)
+	}
+	if petCast.GUID == playerGUID {
+		t.Error("the pet's cast row took the player's GUID; the row stays the pet's")
+	}
+	if petCast.Name != "Fury - Pet" {
+		t.Errorf("pet cast Name = %q, want the pet's own name", petCast.Name)
+	}
+}
+
+// The four fields logs engine 0.5.3 added are all things a sim cannot
+// know. Every one is still present and empty, because the report
+// components read them and a nil slice marshals as null.
+func TestSummarizeSetsTheFieldsASimCannotKnow(t *testing.T) {
+	got, err := Summarize(resultWith(oneAction(), 100), req())
+	if err != nil {
+		t.Fatal(err)
+	}
+	empties := map[string]int{
+		"damage_taken":     len(got.DamageTaken),
+		"healing":          len(got.Healing),
+		"healing_taken":    len(got.HealingTaken),
+		"deaths":           len(got.Deaths),
+		"interrupts":       len(got.Interrupts),
+		"dispels":          len(got.Dispels),
+		"threat":           len(got.Threat),
+		"threat_by_target": len(got.ThreatByTarget),
+		"taunts":           len(got.Taunts),
+		"combatants":       len(got.Combatants),
+		"phases":           len(got.Phases),
+		"mechanics.rows":   len(got.Mechanics.Rows),
+	}
+	for name, n := range empties {
+		if n != 0 {
+			t.Errorf("%s has %d entries, want 0", name, n)
+		}
+	}
+	if got.Mechanics.TableFound {
+		t.Error("Mechanics.TableFound is true; a sim has no curated mechanics table")
+	}
+
+	// Empty is not the same as null: the web renders a list.
+	b, err := json.Marshal(got)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(b, &m); err != nil {
+		t.Fatal(err)
+	}
+	for _, k := range []string{
+		"damage_done", "damage_taken", "healing", "healing_taken", "deaths",
+		"auras", "casts", "interrupts", "dispels", "resources", "threat",
+		"threat_by_target", "taunts", "combatants", "roster", "phases",
+	} {
+		raw, ok := m[k]
+		if !ok {
+			t.Errorf("the summary has no %q key; logs engine 0.5.3 expects it", k)
+			continue
+		}
+		if string(raw) == "null" {
+			t.Errorf("%q marshalled as null; it must be [] so the report components render an empty table", k)
+		}
 	}
 }
 
@@ -1701,6 +1928,12 @@ Create `sim/adapter/adapter.go`:
 // describes one fight. So every count and every total here is divided by
 // IterationsDone before it enters the summary; the distribution stays in
 // api.SimResult.DPS, which is where a range belongs.
+//
+// The target is summary.Summary as of logs engine 0.5.3. Four of its
+// twenty fields - ThreatByTarget, Taunts, Mechanics and Phases - are
+// things a simulation cannot know, and all four are set explicitly empty
+// rather than left nil, because the report components render a list and a
+// nil slice marshals as null.
 package adapter
 
 import (
@@ -1747,27 +1980,37 @@ func Summarize(res *proto.RaidSimResult, req api.SimRequest) (summary.Summary, e
 	}
 
 	durationMS := int64(math.Round(res.AvgIterationDuration * 1000))
+	class, spec := splitSpecSlug(req.Spec)
 
 	out := summary.Summary{
 		EngineVersion: "sim:" + req.EngineVersion,
 		FightIndex:    1,
 		DurationMS:    durationMS,
 
-		DamageDone:   actors(player, iters, durationMS),
+		DamageDone:   actors(player, class, iters, durationMS),
 		DamageTaken:  []summary.Actor{},
 		Healing:      []summary.Actor{},
 		HealingTaken: []summary.Actor{},
 
 		Deaths:     []summary.Death{},
-		Auras:      auras(player, iters),
+		Auras:      auras(player),
 		Casts:      casts(player, iters),
 		Interrupts: []summary.ExchangeRow{},
 		Dispels:    []summary.ExchangeRow{},
 		Resources:  resources(player, iters),
-		Threat:     []summary.ThreatRow{},
-		Combatants: []summary.CombatantRow{},
+
+		// A sim has no threat model attached, no taunt, no curated
+		// mechanics table for a target dummy, and no encounter phases.
+		// All five are present and empty, which is exactly what the logs
+		// engine produces for a fight whose encounter has no table.
+		Threat:         []summary.ThreatRow{},
+		ThreatByTarget: []summary.ThreatPair{},
+		Taunts:         []summary.Taunt{},
+		Combatants:     []summary.CombatantRow{},
+		Mechanics:      summary.MechanicsBlock{TableFound: false, Rows: []summary.MechanicRow{}},
+		Phases:         []summary.Phase{},
 	}
-	out.Roster = roster(player, req, out, durationMS)
+	out.Roster = roster(player, class, spec, out, durationMS)
 	return out, nil
 }
 
@@ -1802,19 +2045,26 @@ func DPS(res *proto.RaidSimResult) api.Estimate {
 	return est
 }
 
+// petGUID names a pet's row. It is derived from the owner's guid so the
+// Casts tab's owner grouping and the damage table agree.
+func petGUID(i int) string { return fmt.Sprintf("%s-pet-%d", playerGUID, i) }
+
 // actors builds the damage table: one row for the player, then one per pet.
-func actors(player *proto.UnitMetrics, iters float64, durationMS int64) []summary.Actor {
-	out := []summary.Actor{actorFrom(player, playerGUID, iters, durationMS)}
+func actors(player *proto.UnitMetrics, class string, iters float64, durationMS int64) []summary.Actor {
+	out := []summary.Actor{actorFrom(player, playerGUID, class, iters, durationMS)}
 	for i, pet := range player.Pets {
-		out = append(out, actorFrom(pet, fmt.Sprintf("%s-pet-%d", playerGUID, i), iters, durationMS))
+		// A pet has no class of its own in the roster's sense; the
+		// report colours it by its owner's.
+		out = append(out, actorFrom(pet, petGUID(i), class, iters, durationMS))
 	}
 	return out
 }
 
-func actorFrom(u *proto.UnitMetrics, guid string, iters float64, durationMS int64) summary.Actor {
+func actorFrom(u *proto.UnitMetrics, guid, class string, iters float64, durationMS int64) summary.Actor {
 	a := summary.Actor{
 		GUID:      guid,
 		Name:      u.Name,
+		Class:     class,
 		ActiveMS:  durationMS,
 		Abilities: []summary.Ability{},
 		Targets:   []summary.Pair{},
@@ -1846,6 +2096,11 @@ func actorFrom(u *proto.UnitMetrics, guid string, iters float64, durationMS int6
 
 // ability folds one ActionMetrics, which is already summed over every
 // target and every iteration, into one summary row per fight.
+//
+// The damage sum includes the four resisted buckets. The engine books a
+// partially resisted hit's damage in resisted_damage rather than damage,
+// so a sum that omits them understates every caster by whatever partial
+// resists took.
 func ability(am *proto.ActionMetrics, iters float64, perTarget map[int32]int64) summary.Ability {
 	spellID, name := ActionName(am.Id)
 	ab := summary.Ability{
@@ -1855,20 +2110,23 @@ func ability(am *proto.ActionMetrics, iters float64, perTarget map[int32]int64) 
 		Misses:  map[string]int64{},
 	}
 	for _, t := range am.Targets {
+		resisted := t.ResistedDamage + t.ResistedCritDamage + t.ResistedTickDamage + t.ResistedCritTickDamage
 		damage := t.Damage + t.CritDamage + t.TickDamage + t.CritTickDamage +
-			t.GlanceDamage + t.CrushDamage + t.BlockDamage + t.BlockedCritDamage
-		per := per(damage, iters)
-		ab.Total += per
-		ab.Effective += per
-		perTarget[t.UnitIndex] += per
+			t.GlanceDamage + t.CrushDamage + t.BlockDamage + t.BlockedCritDamage + resisted
+		dmg := per(damage, iters)
+		ab.Total += dmg
+		ab.Effective += dmg
+		ab.Resisted += per(resisted, iters)
+		ab.Blocked += per(t.BlockDamage+t.BlockedCritDamage, iters)
+		perTarget[t.UnitIndex] += dmg
 
-		ab.Hits += per(float64(t.Hits), iters)
-		ab.Crits += per(float64(t.Crits), iters)
-		ab.Ticks += per(float64(t.Ticks+t.CritTicks), iters)
+		ab.Hits += per(float64(t.Hits+t.ResistedHits), iters)
+		ab.Crits += per(float64(t.Crits+t.ResistedCrits), iters)
+		ab.Ticks += per(float64(t.Ticks+t.CritTicks+t.ResistedTicks+t.ResistedCritTicks), iters)
 		addMiss(ab.Misses, "miss", t.Misses, iters)
 		addMiss(ab.Misses, "dodge", t.Dodges, iters)
 		addMiss(ab.Misses, "parry", t.Parries, iters)
-		addMiss(ab.Misses, "block", t.Blocks, iters)
+		addMiss(ab.Misses, "block", t.Blocks+t.BlockedCrits, iters)
 		addMiss(ab.Misses, "glance", t.Glances, iters)
 		addMiss(ab.Misses, "crush", t.Crushes, iters)
 	}
@@ -1895,7 +2153,7 @@ func per(total, iters float64) int64 {
 	return int64(math.Round(total / iters))
 }
 
-func auras(u *proto.UnitMetrics, iters float64) []summary.AuraTrack {
+func auras(u *proto.UnitMetrics) []summary.AuraTrack {
 	out := make([]summary.AuraTrack, 0, len(u.Auras))
 	for _, am := range u.Auras {
 		spellID, name := ActionName(am.Id)
@@ -1920,8 +2178,22 @@ func auras(u *proto.UnitMetrics, iters float64) []summary.AuraTrack {
 	return out
 }
 
+// casts builds one row per caster per spell. A pet's row stays the pet's -
+// the Casts tab prints "via <pet>" - but its OwnerGUID is the player's, so
+// the tab groups it under the player the way it does in a real fight.
 func casts(u *proto.UnitMetrics, iters float64) []summary.CastRow {
-	out := make([]summary.CastRow, 0, len(u.Actions))
+	out := castsFor(u, playerGUID, playerGUID, iters, nil)
+	for i, pet := range u.Pets {
+		out = castsFor(pet, petGUID(i), playerGUID, iters, out)
+	}
+	sort.SliceStable(out, func(i, j int) bool { return out[i].Succeeded > out[j].Succeeded })
+	return out
+}
+
+func castsFor(u *proto.UnitMetrics, guid, owner string, iters float64, out []summary.CastRow) []summary.CastRow {
+	if out == nil {
+		out = make([]summary.CastRow, 0, len(u.Actions))
+	}
 	for _, am := range u.Actions {
 		var total int32
 		for _, t := range am.Targets {
@@ -1933,19 +2205,22 @@ func casts(u *proto.UnitMetrics, iters float64) []summary.CastRow {
 		spellID, name := ActionName(am.Id)
 		n := per(float64(total), iters)
 		out = append(out, summary.CastRow{
-			GUID:      playerGUID,
+			GUID:      guid,
 			Name:      u.Name,
+			OwnerGUID: owner,
 			SpellID:   spellID,
 			SpellName: name,
 			Started:   n,
 			Succeeded: n,
 			Failed:    0,
+			// A sim has no failed casts and no per-cast timing, so
+			// FailReasons stays nil (it is omitempty) and CastTimeMS zero.
+			CastTimeMS: 0,
 			// The engine reports no cast timestamps, so the sequence the
 			// report's cast timeline draws stays empty for a sim.
 			Sequence: []int64{},
 		})
 	}
-	sort.SliceStable(out, func(i, j int) bool { return out[i].Succeeded > out[j].Succeeded })
 	return out
 }
 
@@ -1962,6 +2237,9 @@ func resources(u *proto.UnitMetrics, iters float64) []summary.ResourceTrack {
 				Name:      u.Name,
 				PowerType: int64(rm.Type),
 				Series:    []int64{},
+				// The engine reports no per-second reading and no cap, so
+				// Max, AtMaxMS and ZeroMS stay zero and the resource graph
+				// draws no cap line for a sim.
 			}
 			byType[rm.Type] = tr
 			order = append(order, rm.Type)
@@ -1972,6 +2250,11 @@ func resources(u *proto.UnitMetrics, iters float64) []summary.ResourceTrack {
 		} else {
 			tr.Spent += per(-rm.ActualGain, iters)
 		}
+		// gain minus actual_gain is the engine's own over-cap waste, which
+		// is exactly what ResourceTrack.Wasted means.
+		if w := rm.Gain - rm.ActualGain; w > 0 {
+			tr.Wasted += per(w, iters)
+		}
 	}
 	out := make([]summary.ResourceTrack, 0, len(order))
 	for _, t := range order {
@@ -1980,8 +2263,7 @@ func resources(u *proto.UnitMetrics, iters float64) []summary.ResourceTrack {
 	return out
 }
 
-func roster(u *proto.UnitMetrics, req api.SimRequest, s summary.Summary, durationMS int64) []summary.RosterRow {
-	class, spec := splitSpecSlug(req.Spec)
+func roster(u *proto.UnitMetrics, class, spec string, s summary.Summary, durationMS int64) []summary.RosterRow {
 	var damage int64
 	for _, a := range s.DamageDone {
 		damage += a.Total
@@ -2005,8 +2287,9 @@ func roster(u *proto.UnitMetrics, req api.SimRequest, s summary.Summary, duratio
 }
 
 // splitSpecSlug turns "warrior-fury" into ("warrior", "fury"). The
-// canonical list lives in data/curated/specs.json; this only needs the
-// split, not the list.
+// canonical list lives in data/curated/specs.json, which the data lane
+// owns and which does not exist yet; this only needs the split, not the
+// list, so nothing here hardcodes a spec.
 func splitSpecSlug(slug string) (class, spec string) {
 	i := strings.Index(slug, "-")
 	if i < 0 {
@@ -2017,8 +2300,10 @@ func splitSpecSlug(slug string) (class, spec string) {
 
 // ActionName returns the spell id and a display name for an engine
 // ActionID. The engine's ids carry no names, so the name is the id in a
-// readable form; the web resolves real names from the item and spell
-// database it already loads for tooltips.
+// readable form; the web resolves real names from the build's own
+// spells.json, which it already loads for tooltips. Forever keeps vanilla
+// ids for abilities that already existed and uses ids above 1,000,000
+// only for new objects, so no translation table is needed on either side.
 func ActionName(id *proto.ActionID) (int64, string) {
 	if id == nil {
 		return 0, "Unknown"
@@ -2041,7 +2326,7 @@ func ActionName(id *proto.ActionID) (int64, string) {
 - [ ] **B4: Run the test and watch it pass**
 
 Run: `cd /Users/jh/code/forever/sim && go test ./adapter/ -v`
-Expected: `PASS` for all nine tests. If `TestSummarizeDividesByIterations` fails on `Hits`, check that `per` rounds rather than truncates.
+Expected: `PASS` for all ten tests. If `TestSummarizeDividesByIterations` fails on `Hits`, check that `per` rounds rather than truncates; if it fails on `Total` by exactly 20, the resisted buckets are missing from the damage sum.
 
 - [ ] **B5: Write the fixture loader**
 
@@ -2065,7 +2350,7 @@ var fixtures embed.FS
 // validation and execution-score tests use it so they need no engine
 // binary; the golden tests below use it as their input.
 //
-// Regenerated from the engine checkout; the procedure is Step 7 of the
+// Regenerated from the engine checkout; the procedure is Step B7 of the
 // task that created this file, and the header of golden_test.go repeats it.
 func Fixture(spec string) (*proto.RaidSimResult, error) {
 	b, err := fixtures.ReadFile("testdata/" + spec + ".result.pb")
@@ -2082,7 +2367,7 @@ func Fixture(spec string) (*proto.RaidSimResult, error) {
 
 - [ ] **B6: Write the golden test**
 
-It is the same idiom `logs/engine/summary/golden_test.go` already uses: JSON is portable text, so it catches a field rename, a reordering, or a rounding change that the unit tests above pass straight through. `FOREVER_UPDATE_GOLDEN=1` regenerates.
+It is the same idiom `logs/engine/summary/golden_test.go` already uses: JSON is portable text, so it catches a field rename, a reordering, or a rounding change that the unit tests above pass straight through. It is also the thing that will fail the day the logs engine adds a twenty-first `Summary` field, which is exactly when this adapter needs a look. `FOREVER_UPDATE_GOLDEN=1` regenerates.
 
 Create `sim/adapter/golden_test.go`:
 
@@ -2110,7 +2395,7 @@ const goldenEngineVersion = "golden"
 // To regenerate a fixture after a spec's abilities change, from the engine
 // checkout:
 //
-//	go run ./cmd/forever-sim -in <request.pb> -out <spec>.result.pb
+//	go run --tags=with_db ./tools/genfixture -spec <spec> -out <spec>.result.pb
 //
 // then copy it into sim/adapter/testdata/ and run
 //
@@ -2118,16 +2403,19 @@ const goldenEngineVersion = "golden"
 //
 // and read the diff before committing it.
 func TestGoldenSummaries(t *testing.T) {
-	for _, spec := range []string{"warrior-fury", "mage-frost"} {
-		t.Run(spec, func(t *testing.T) {
-			res, err := Fixture(spec)
+	for _, tc := range []struct{ spec, race, class string }{
+		{"warrior-fury", "orc", "warrior"},
+		{"mage-frost", "gnome", "mage"},
+	} {
+		t.Run(tc.spec, func(t *testing.T) {
+			res, err := Fixture(tc.spec)
 			if err != nil {
 				t.Fatal(err)
 			}
 			req := api.SimRequest{
 				EngineVersion: goldenEngineVersion,
-				Spec:          spec,
-				Character:     api.CharacterSpec{Name: "Sim", Race: "orc", Class: "warrior", Level: 60},
+				Spec:          tc.spec,
+				Character:     api.CharacterSpec{Name: "Sim", Race: tc.race, Class: tc.class, Level: 60},
 				Encounter:     api.DefaultEncounter(),
 				Iterations:    3000,
 			}
@@ -2141,7 +2429,7 @@ func TestGoldenSummaries(t *testing.T) {
 			}
 			b = append(b, '\n')
 
-			path := filepath.Join("testdata", spec+".summary.json.golden")
+			path := filepath.Join("testdata", tc.spec+".summary.json.golden")
 			if os.Getenv(regenEnv) != "" {
 				if err := os.WriteFile(path, b, 0o644); err != nil {
 					t.Fatal(err)
@@ -2154,9 +2442,38 @@ func TestGoldenSummaries(t *testing.T) {
 				t.Fatalf("%v (run with %s=1 to create it)", err, regenEnv)
 			}
 			if string(b) != string(want) {
-				t.Errorf("summary for %s differs from the golden.\n--- got ---\n%s\n--- want ---\n%s", spec, b, want)
+				t.Errorf("summary for %s differs from the golden.\n--- got ---\n%s\n--- want ---\n%s", tc.spec, b, want)
 			}
 		})
+	}
+}
+
+// The golden must carry every key logs engine 0.5.3 puts in a summary, or
+// the report page reads a field the sim never set. The list is the
+// Summary struct's json tags, in its own order.
+func TestGoldenCarriesEverySummaryKey(t *testing.T) {
+	b, err := os.ReadFile(filepath.Join("testdata", "warrior-fury.summary.json.golden"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(b, &m); err != nil {
+		t.Fatal(err)
+	}
+	want := []string{
+		"engine_version", "fight_index", "duration_ms",
+		"damage_done", "damage_taken", "healing", "healing_taken",
+		"deaths", "auras", "casts", "interrupts", "dispels", "resources",
+		"threat", "threat_by_target", "taunts", "combatants", "roster",
+		"mechanics", "phases",
+	}
+	for _, k := range want {
+		if _, ok := m[k]; !ok {
+			t.Errorf("the golden summary is missing %q", k)
+		}
+	}
+	if len(m) != len(want) {
+		t.Errorf("the golden has %d keys, the Summary struct has %d; logs engine 0.5.3 has changed shape and this adapter needs a look", len(m), len(want))
 	}
 }
 
@@ -2191,10 +2508,11 @@ func TestSummarizeIsDeterministic(t *testing.T) {
 
 - [ ] **B7: Produce the two fixtures**
 
-The engine has no binary result writer until Task 13, so produce the fixtures with a short throwaway program in the **engine** checkout. It is deleted at the end of this step; nothing is committed to the engine repo here.
+The site has no binary result writer until Task 13, so produce the fixtures with a short throwaway program in the **engine** checkout. It is deleted at the end of this step; nothing is committed to the engine repo here.
 
 ```bash
 cd /Users/jh/code/wowsims-forever
+export PATH=$PATH:$(go env GOPATH)/bin
 mkdir -p tools/genfixture
 cat > tools/genfixture/main.go <<'EOF'
 package main
@@ -2286,19 +2604,20 @@ rm -rf tools/genfixture
 git status --short   # must be empty: nothing is committed to the engine here
 ```
 
-Expected: two `wrote ... dps=...` lines and an empty `git status`. On the measured baseline the warrior line reads roughly `dps=1791.1`; any number is fine, the fixture only has to be a real result.
+Expected: two `wrote ... dps=...` lines and an empty `git status`. On the 2026-09-14 baseline the warrior line read roughly `dps=1791.1`; any number is fine, the fixture only has to be a real result.
 
-If `ui/mage/gear_sets/phase_1.gear.json` does not exist, list `ui/mage/gear_sets/` and use a file that does; the fixture's job is to be a real engine result, not a particular gear set.
+If `ui/mage/gear_sets/phase_1.gear.json` does not exist, list `ui/mage/gear_sets/` and use a file that does; the fixture's job is to be a real engine result, not a particular gear set. If this task runs **before** Tasks 11 and 12, the fixtures are Era-spec results, which is correct: the adapter's contract is with the *shape* of a `RaidSimResult`, not with Forever's numbers, and Tasks 11 and 12 each end by regenerating their own fixture and re-reading the golden diff.
 
 - [ ] **B8: Generate the goldens and read them**
 
 ```bash
 cd /Users/jh/code/forever/sim
 FOREVER_UPDATE_GOLDEN=1 go test ./adapter/ -run TestGoldenSummaries -v
-head -60 adapter/testdata/warrior-fury.summary.json.golden
+head -40 adapter/testdata/warrior-fury.summary.json.golden
+python3 -c 'import json;print(sorted(json.load(open("adapter/testdata/warrior-fury.summary.json.golden"))))'
 ```
 
-Expected: two `regenerated ...` log lines. Read the head of the file and check by eye that `engine_version` is `sim:golden`, `fight_index` is `1`, `duration_ms` is about `180000`, the first damage row is the player with a plausible per-fight total (a 180-second fight at ~1,800 DPS is about 320,000), and the largest ability is a recognisable warrior spell id. If the totals look like a 3,000-iteration sum rather than one fight, `per` is not dividing.
+Expected: two `regenerated ...` log lines, and the python line printing exactly the twenty keys `TestGoldenCarriesEverySummaryKey` lists. Read the head of the file and check by eye that `engine_version` is `sim:golden`, `fight_index` is `1`, `duration_ms` is about `180000`, the first damage row is the player with a plausible per-fight total (a 180-second fight at ~1,800 DPS is about 320,000), and the largest ability is a recognisable warrior spell id. If the totals look like a 3,000-iteration sum rather than one fight, `per` is not dividing.
 
 - [ ] **B9: Run the whole package and watch it pass**
 
@@ -2308,7 +2627,7 @@ go test ./adapter/ -race -v
 gofmt -l ./adapter ./api ./enginever
 ```
 
-Expected: `PASS` for all eleven tests; `gofmt -l` prints nothing.
+Expected: `PASS` for all thirteen tests; `gofmt -l` prints nothing.
 
 - [ ] **B10: Commit**
 
@@ -2316,7 +2635,7 @@ Expected: `PASS` for all eleven tests; `gofmt -l` prints nothing.
 cd /Users/jh/code/forever
 git add sim/adapter
 git commit -m "feat(sim): the adapter from an engine result to a logs summary" \
-  -m "Summarize maps RaidSimResult onto summary.Summary per the contract's table, so the report page's components render a sim with no second renderer. The governing rule is that the engine accumulates across iterations and a summary describes one fight, so every count and total is divided by IterationsDone; the distribution stays in SimResult.DPS. Auras carry no application timeline and casts carry no timestamps in an engine result, so those fields stay empty rather than being invented. Two checked-in engine results and their goldens, plus a determinism test, pin the shape; Fixture() lets the api lane test without an engine binary." \
+  -m "Summarize maps RaidSimResult onto summary.Summary as logs engine 0.5.3 defines it, so the report page's components render a sim with no second renderer. The governing rule is that the engine accumulates across iterations and a summary describes one fight, so every count and total is divided by IterationsDone; the distribution stays in SimResult.DPS. The four fields 0.5.3 added - threat_by_target, taunts, mechanics, phases - are things a sim cannot know and are set explicitly empty rather than left nil, because a nil slice marshals as null where the report renders a list. The damage sum includes the four resisted buckets, which an earlier draft dropped and which understate every caster. Auras carry no application timeline and casts carry no timestamps in an engine result, so those fields stay empty rather than being invented. Two checked-in engine results and their goldens, a key-count assertion that fails the day the summary grows again, and a determinism test pin the shape; Fixture() lets the api lane test without an engine binary." \
   -m "Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 ```
 
@@ -2324,13 +2643,15 @@ git commit -m "feat(sim): the adapter from an engine result to a logs summary" \
 
 ---
 
-## Task 4: Unified `Hit` and `Crit`
+## Task 4: Unified `Hit` and `Crit`, and the two Skyborne races
 
 **Repo: ENGINE.** Depends on Task 1. **Serial gate: nothing else in the engine may run beside it.**
 
 Forever makes spell, melee, and ranged hit one stat, and likewise crit. In the engine that is one enum merge in two index-synced places and a mechanical rename everywhere else.
 
-**Measured, 2026-09-14, at engine HEAD `7779ebb`** — verify these before and after, the counts are the task's completion check:
+**Two additive `proto.Race` values ride along**, because this is the serial proto gate and putting them anywhere else would mean a second G2 task editing `proto/common.proto`. Forever has **ten** races: the eight vanilla ones plus Skyborne, a neutral race whose faction is chosen at character creation and whose second active racial differs by faction, so the client's own race table carries it as two rows (`high-order-skyborne`, id 95, Alliance; `windshaper-skyborne`, id 96, Horde) and the engine follows. Task 5 gives them base stats and Task 9 gives them racials; this task only makes the enum values exist. Unlike the `Stat` merge, this is strictly additive: new values at the end, nothing renumbered.
+
+**Measured 2026-09-14 and re-counted 2026-09-18, at engine HEAD `7779ebb` — identical both times** — verify these before and after, the counts are the task's completion check:
 
 | Symbol | `sim/` call sites | files |
 |---|---|---|
@@ -2374,6 +2695,8 @@ sim/warrior/warrior.go
 
 **Interfaces:**
 - Produces: `stats.Hit` replaces `stats.MeleeHit` and `stats.SpellHit`; `stats.Crit` replaces `stats.MeleeCrit` and `stats.SpellCrit`; **`stats.Resilience` is deleted** (`research/08-stats.md` §12.1 item 2: Zierhut, "we're not adding resilience" — removing it is free and stops the UI offering a stat weight for a stat that cannot exist). `proto.Stat_StatHit` and `proto.Stat_StatCrit` replace the four proto values and `StatResilience` goes. `core.HitRatingPerHitChance` replaces `MeleeHitRatingPerHitChance` and `SpellHitRatingPerHitChance`; `core.CritRatingPerCritChance` absorbs `SpellCritRatingPerCritChance`. The enum shrinks from 44 values to **41** and every value after index 13 shifts down.
+
+Additionally: `proto.Race` gains `RaceHighOrderSkyborne = 9` and `RaceWindshaperSkyborne = 10`, and the Go side gains nothing — races are read from the proto enum directly, with no parallel Go enum to keep in step. `request.ParseRace` (Task 3A) maps the slugs `high-order-skyborne` and `windshaper-skyborne` onto them.
 
 **Do not leave deprecated aliases.** `research/08-stats.md` §12.1 suggests keeping the old names for the duration of the port; this plan does the whole rename in one commit, so there is no duration to cover and an alias would only be a way for a later spec to keep using the split stat. **Haste is not merged**: §12.1 item 5 finds Forever keeps melee, ranged and spell haste separate, so `MeleeHaste` and `SpellHaste` are untouched.
 
@@ -2498,6 +2821,53 @@ enum Stat {
 ```
 
 Regenerate: `export PATH=$PATH:$(go env GOPATH)/bin && make proto`.
+
+- [ ] **Step 4b: Add the two Skyborne races to the same proto**
+
+`proto/common.proto`'s `Race` enum ends at `RaceUndead = 8` (verified 2026-09-18). Append:
+
+```proto
+	// Forever's neutral race. Skyborne choose Horde or Alliance at
+	// character creation and their second active racial differs by
+	// faction, so the client's race table carries two rows and this
+	// enum follows. Additive: nothing before this is renumbered.
+	RaceHighOrderSkyborne = 9;   // Alliance
+	RaceWindshaperSkyborne = 10; // Horde
+```
+
+Then assert it, in `sim/core/stats/stats_test.go` beside the other two tests:
+
+```go
+// Forever has ten races. Skyborne is one neutral race carried as two
+// rows because its second active differs by faction; the data lane's
+// races.json has the same ten and the same two, and a mismatch would
+// let the site offer a race the engine cannot build.
+func TestForeverHasTenRaces(t *testing.T) {
+	var n int
+	for v := range proto.Race_name {
+		if v != int32(proto.Race_RaceUnknown) {
+			n++
+		}
+	}
+	if n != 10 {
+		t.Errorf("proto.Race has %d playable values, want 10", n)
+	}
+	for _, want := range []proto.Race{proto.Race_RaceHighOrderSkyborne, proto.Race_RaceWindshaperSkyborne} {
+		if _, ok := proto.Race_name[int32(want)]; !ok {
+			t.Errorf("proto.Race is missing %v", want)
+		}
+	}
+}
+```
+
+Check it against the data, so the two lists cannot drift:
+
+```bash
+cd /Users/jh/code/forever
+python3 -c 'import json; rs=json.load(open("data/builds/1.60.1.69893/races.json")); print(len(rs)); print([r["slug"] for r in rs])'
+```
+
+Expected: `10` and a list ending `['...', 'high-order-skyborne', 'windshaper-skyborne']`. If the data has a different count, the data moved and this enum follows it, not the other way round.
 
 - [ ] **Step 5: Merge the Go enum**
 
@@ -2674,7 +3044,41 @@ Forever's numbers are unknown until the beta client on Sept 17. So this task doe
 2. **`ExpertisePerQuarterPercentReduction` is deleted, and `ExpertiseRatingPerExpertiseChance` is 1.** §12.4 item 2: the item unit is a percentage — Edgemaster's is 1.0% — not expertise points, so the quarter-percent quantisation inherited from later expansions is simply wrong. The attack table already reads `stats.Expertise / 100` directly (`sim/core/spell_outcome.go:711-735`), so deleting the constant is a deletion, not a substitution. **This overrides the earlier draft of this task, which generated the constant from the `weapon skill` column.**
 3. **`ResilienceRatingPerCritReductionChance` is deleted**, because Task 4 deleted the stat.
 
-One more from §12.4 item 4: the base-stat table needs regenerating for **ten races** — the nine playable ones plus Skyborne's two faction variants — and Wowhead's current `raceOffsets` has eight and is Era data. That is beta work; the generator below takes whatever the input tables carry, so it needs no change when the count moves.
+**The race count, re-checked 2026-09-18.** §12.4 item 4 said the base-stat table needs regenerating for ten races. It does, and the ten are now named: `data/builds/1.60.1.69893/races.json` has the eight vanilla races plus `high-order-skyborne` (id 95) and `windshaper-skyborne` (id 96), and Task 4 has already added the two enum values. **But no beta base-stat table has been mined**: `assets/db_inputs/basestats/` is a checked-in Era copy carrying eight races, and the three conversion tables 404 on wago, so there is no live source to regenerate from. So the generator below takes whatever the input tables carry — it needs no change when the count moves — and this task adds the two Skyborne rows by hand in `base_stats_provisional.go`, **as explicit clones of a vanilla row**, named in `ProvisionalConstants()`:
+
+- `RaceHighOrderSkyborne` clones the Human row, `RaceWindshaperSkyborne` the Orc row, purely because those are the two factions' baseline and nothing better is known.
+- Both carry `// unconfirmed: Skyborne base stats are not in any mined table; cloned from <race>` on their own line.
+- `ProvisionalConstants()` returns `"BaseStats[RaceHighOrderSkyborne]"` and `"BaseStats[RaceWindshaperSkyborne]"` alongside the rating constants, so the spec support page says a Skyborne sim is guessing at its own strength rather than presenting it as measured.
+
+A clone is not a guess dressed up: it is a stated placeholder that a test asserts is still a clone, so the day the real table lands the diff is obvious.
+
+**`base_stats_test.go` therefore gains one more case:**
+
+```go
+// Skyborne base stats are not in any mined table. They ship as clones of
+// a vanilla row, marked, and named by ProvisionalConstants, so nobody
+// mistakes a Skyborne sim's numbers for measured ones. When the real
+// table lands this test fails, which is the point.
+func TestSkyborneBaseStatsAreDeclaredClones(t *testing.T) {
+	al := BaseStats[BaseStatsKey{Race: proto.Race_RaceHighOrderSkyborne, Class: proto.Class_ClassWarrior, Level: 60}]
+	human := BaseStats[BaseStatsKey{Race: proto.Race_RaceHuman, Class: proto.Class_ClassWarrior, Level: 60}]
+	if al != human {
+		t.Log("Skyborne base stats are no longer a clone of Human: a real table has landed. Remove the clone, remove this test, and drop the two entries from ProvisionalConstants.")
+		t.Fail()
+	}
+	var named int
+	for _, n := range ProvisionalConstants() {
+		if strings.Contains(n, "Skyborne") {
+			named++
+		}
+	}
+	if named != 2 {
+		t.Errorf("ProvisionalConstants names %d Skyborne entries, want 2", named)
+	}
+}
+```
+
+Read `sim/core/base_stats.go` for the real key type before writing this — the map's key shape is the engine's and this test must use it verbatim, not the illustrative `BaseStatsKey` above.
 
 Two items §12.4 leaves for the beta and this task leaves alone: everything under the old `TODO: Update Defense/Dodge/Parry rates`, and the conversion tables themselves.
 
@@ -3019,7 +3423,7 @@ var provisionalConstantNames = []string{
 	"DodgeRatingPerDodgeChance", // unconfirmed
 	"ParryRatingPerParryChance", // unconfirmed
 	"BlockRatingPerBlockChance", // unconfirmed
-	"ExtraClassBaseStats",       // unconfirmed: Era's eight races, Forever ships ten
+	"ExtraClassBaseStats",       // unconfirmed: Era's eight races; Forever ships ten, and the two Skyborne rows are declared clones
 }
 
 // ProvisionalConstants returns the names of every rating constant still
@@ -4057,29 +4461,72 @@ git commit -m "feat(core): an encounter biome, and damage multipliers conditiona
 
 ---
 
-## Task 9: Racials for Forever's two-active-two-passive model
+## Task 9: Racials for Forever's two-active-two-passive model, across ten races
 
-**Repo: ENGINE.** Depends on Task 4. **G2 — INDEPENDENT of Tasks 5, 6, 7, 8, 10.**
+**Repo: ENGINE.** Depends on Task 4 (which adds the two Skyborne values to `proto.Race`). **G2 — INDEPENDENT of Tasks 5, 6, 7, 8, 10, 16, 17.**
 
 Forever gives every race two active and two passive racials. Vanilla's are lopsided: Undead has one passive and nothing else in `applyRaceEffects`, Troll has four things and a helper, Gnome has two passives. `sim/core/racials.go` is 259 lines and is restructured, not patched, because a per-race `switch` arm that mixes flat stats, an aura, a spell, a major cooldown, and a post-finalize hook is exactly what makes the current file hard to read and hard to check against a tooltip.
 
-**What is confirmed and what is not.** The Deep Dive panel confirmed the *shape* — two active and two passive per race — and named three specifics: a new Undead active `Touch of the Grave`, a changed Stoneform, and Mace Specialization now affecting spell crit. Everything else, including every number, is unknown until the beta. So this task ships the **structure** with Era behaviour in it, each entry marked, and a single table a beta tester can correct line by line. It does not invent a second active for seven races; it declares the slot empty and names it in the provisional list, which is the honest thing and is what the spec support page shows.
+**What changed since this task was first written.** The earlier draft shipped the *structure* with Era behaviour in it and "did not invent a second active for seven races; it declares the slot empty". That is no longer the honest answer, because the racials are now **named, for all ten races**, in `data/curated/races.json` and `data/builds/1.60.1.69893/races.json`, transcribed from the BlizzCon demo by Icy Veins and Talents Forever, with the Deep Dive panel confirming several directly and with the two readings' disagreements recorded in the file. So this task names all forty entries. What is still unknown is the *numbers* on some of them and two structural questions, and those — not the names — are what `UnconfirmedRacials()` reports.
 
-Existing helpers this reuses, all confirmed present: `character.AxeSpecializationAura()`, `SwordSpecializationAura()`, `MaceSpecializationAura()`, `GunSpecializationAura()`, `BowSpecializationAura()`, `ThrownSpecializationAura()`; `character.AddStat`, `MultiplyStat`, `NewDynamicMultiplyStat`, `EnableDynamicStatDep`; `RegisterAura`, `NewTemporaryStatsAuraWrapped`, `RegisterSpell`, `AddMajorCooldown`, `NewTimer`; `Env.RegisterPostFinalizeEffect`; `APPerStrength`, `APPerAgility`.
+**Ten races, not eight.** `data/builds/1.60.1.69893/races.json` has ten rows. Skyborne is one neutral race whose faction is chosen at character creation and whose second active differs by faction, so the data carries it as two rows — `high-order-skyborne` (id 95, alliance) and `windshaper-skyborne` (id 96, horde) — and the engine follows, with `proto.Race_RaceHighOrderSkyborne` and `proto.Race_RaceWindshaperSkyborne` added additively in Task 4.
+
+**The forty entries, from the data.** This is the table the implementer types into `racials.go`, and every row's source is a `forever_changes` entry in `data/curated/races.json`. `A` is active, `P` is passive. "Sim effect" is what the engine actually models; a racial with no combat effect is still declared, with an `Apply` that does nothing and a comment saying why, because a missing entry and a deliberately empty one are different facts.
+
+| Race | Racials (A, A, P, P) | Sim effect |
+|---|---|---|
+| Human | Will to Survive, Perception, Sword Specialization, The Human Spirit | Sword Spec: +2% crit with a sword equipped (**both spell and ability crit** — one stat after Task 4). Human Spirit: +5% Spirit. The two actives are utility. |
+| Orc | Blood Fury, Shatter Curse, Axe Specialization, Hardiness | Blood Fury: +10% attack power **and** spell power for 15 s, 2 min cooldown, a major cooldown. Axe Spec: +1% crit with an axe. Shatter Curse and Hardiness are utility. |
+| Dwarf | Stoneform, Find Treasure, Mace Specialization, Big Game Hunter | Mace Spec: +crit with a mace (**percentage unread**). Big Game Hunter: +damage against Beasts (**percentage unread**) — `MobTypeBeast`, the condition the engine already models. Stoneform now reduces physical damage taken rather than raising armour. |
+| Night Elf | Elune's Light, Shadowmeld, Quickness, Wisp Spirit | Elune's Light: +10% crit for 15 s, 3 min cooldown, a major cooldown. Quickness: dodge and run speed — **Icy Veins reads 2% dodge, Talents Forever reads 1%**; ship the lower and mark it. |
+| Undead | Will of the Forsaken, Cannibalize, Touch of the Grave, **one unread passive** | Touch of the Grave: attacks have a chance to drain life — a proc whose chance and amount are unread. The fourth entry is the only genuinely empty slot left in the table. |
+| Tauren | War Stomp, **Plainsrunning or Cultivation**, Endurance, the other of the two | Endurance: +5% Health and **+1% Hit** — after Task 4 that is one `stats.Hit`, and it is the only racial that touches the attack table. Which of Plainsrunning and Cultivation is the second active is unread; neither has a combat effect, so the sim is unaffected either way and the ambiguity is recorded rather than resolved. |
+| Gnome | Escape Artist, Eureka!, Expansive Mind, Engineering Specialization | Eureka!: the next 3 abilities cost 50% less mana and deal 10% more, 2 min cooldown — a major cooldown, and the only racial that needs a charge-counting aura. Expansive Mind: +5% Mana, Rage and Energy. Escape Artist's immunity window is read as 3 s by one outlet and 5 s by another; it has no combat effect either way. |
+| Troll | Berserking, Rapid Regeneration, Beast Slaying, Regeneration | Berserking: +10% casting **and** attack speed, 3 min cooldown, a major cooldown — **duration read as 10 s by one outlet and 12 s by another**; ship 10 and mark it. Beast Slaying: +5% damage against Beasts. Note haste is **not** merged (§12.1 item 5), so this sets both melee and spell haste. |
+| High Order Skyborne (alliance) | Walk on Air, Read Ley Line, Wind Blessed, Elemental Insight | Wind Blessed: +1% haste. Elemental Insight: +5% damage against Elementals (`MobTypeElemental`). Read Ley Line: 100% health and mana regeneration for 15 s. |
+| Windshaper Skyborne (horde) | Walk on Air, Skysight, Wind Blessed, Elemental Insight | Identical to High Order except the second active: Skysight is movement speed and has no combat effect. The passives are the same, which is why the two rows share one `Apply` for them. |
+
+**What stays unconfirmed, and therefore what `UnconfirmedRacials()` returns:** Mace Specialization's percentage, Big Game Hunter's percentage, Quickness's dodge figure, Berserking's duration, Touch of the Grave's proc chance and amount, Undead's fourth racial, and Tauren's active/passive split. Seven entries out of forty. Everything else is named and either has a number from the demo or has no combat effect. **Every number in this file is community-sourced from a demo transcription, not from a client table**, so the file's header says so once and each numeric entry carries `unconfirmed` on its own line; the nightly validation job is what clears them.
+
+Existing helpers this reuses, all confirmed present at engine HEAD `7779ebb`: `character.AxeSpecializationAura()`, `SwordSpecializationAura()`, `MaceSpecializationAura()`, `GunSpecializationAura()`, `BowSpecializationAura()`, `ThrownSpecializationAura()`; `character.AddStat`, `MultiplyStat`, `NewDynamicMultiplyStat`, `EnableDynamicStatDep`; `RegisterAura`, `NewTemporaryStatsAuraWrapped`, `RegisterSpell`, `AddMajorCooldown`, `NewTimer`; `Env.RegisterPostFinalizeEffect`; `APPerStrength`, `APPerAgility`. The creature-type condition Big Game Hunter, Beast Slaying and Elemental Insight need is the one `sim/core/racials.go:126` already uses (`t.MobType == MobTypeBeast`); Task 8's `NewMobTypeDamageEffect` is the item-side equivalent and this task does **not** depend on it.
 
 **Files:**
 - Rewrite: `sim/core/racials.go`
 - Test: `sim/core/racials_test.go`
 
 **Interfaces:**
+- Consumes: `proto.Race_RaceHighOrderSkyborne`, `proto.Race_RaceWindshaperSkyborne` (Task 4); `stats.Hit`, `stats.Crit` (Task 4).
 - Produces:
   - `core.RacialKind` (`RacialPassive`, `RacialActive`)
-  - `core.Racial{Name string; Kind RacialKind; SpellID int32; Confirmed bool; Apply func(*Character)}`
+  - `core.Racial{Name string; Kind RacialKind; SpellID int32; Confirmed bool; Note string; Apply func(*Character)}` — `Note` says what is unread, and is what `UnconfirmedRacials` prints.
   - `core.RacialsFor(race proto.Race) []Racial`
-  - `core.UnconfirmedRacials() []string` — `"<race>: <name>"` for every entry still carrying Era behaviour or an empty slot. The spec support page reads it beside `ProvisionalConstants()`.
-  - `applyRaceEffects(agent Agent)` keeps its signature and its caller; only its body changes.
+  - `core.PlayableRaces() []proto.Race` — the ten, in the data file's order, so a test and the UI iterate the same list.
+  - `core.UnconfirmedRacials() []string` — `"<race>: <name> (<note>)"` for every entry whose `Confirmed` is false. The spec support page reads it beside `ProvisionalConstants()`.
+  - `applyRaceEffects(agent Agent)` keeps its signature and its caller; only its body changes, to `for _, r := range RacialsFor(race) { r.Apply(character) }`.
 
-- [ ] **Step 1: Write the failing test**
+- [ ] **Step 1: Read the source data before writing anything**
+
+The table above is a summary; the file is the source, and it carries the wording and the citations the comments in `racials.go` must repeat.
+
+```bash
+cd /Users/jh/code/forever
+python3 - <<'PY'
+import json
+rows = json.load(open("data/builds/1.60.1.69893/races.json"))
+print(len(rows), "races")
+for r in rows:
+    print(f"\n=== {r['id']:>3} {r['slug']} ({r['faction']}) ===")
+    for c in r["forever_changes"]:
+        if "Racials" in c["text"] or "racial" in c["text"] or "Specialization" in c["text"]:
+            print(" -", c["text"])
+            for s in c["sources"]:
+                print("     src:", s["label"])
+PY
+```
+
+Expected: ten races, and for each of them at least one `forever_changes` entry naming its racials. Copy the wording into the comments; do not paraphrase a number.
+
+- [ ] **Step 2: Write the failing test**
 
 Create `sim/core/racials_test.go`:
 
@@ -4093,28 +4540,50 @@ import (
 	"github.com/wowsims/classic/sim/core/proto"
 )
 
-var playableRaces = []proto.Race{
-	proto.Race_RaceDwarf,
-	proto.Race_RaceGnome,
-	proto.Race_RaceHuman,
-	proto.Race_RaceNightElf,
-	proto.Race_RaceOrc,
-	proto.Race_RaceTauren,
-	proto.Race_RaceTroll,
-	proto.Race_RaceUndead,
+// Ten races: the eight vanilla ones plus Skyborne's two faction rows.
+// Skyborne is one neutral race whose faction is chosen at creation and
+// whose second active differs by faction, which is why the client's own
+// race table carries it as two rows and the engine follows.
+func TestPlayableRacesAreTheTen(t *testing.T) {
+	want := []proto.Race{
+		proto.Race_RaceDwarf,
+		proto.Race_RaceGnome,
+		proto.Race_RaceHuman,
+		proto.Race_RaceNightElf,
+		proto.Race_RaceOrc,
+		proto.Race_RaceTauren,
+		proto.Race_RaceTroll,
+		proto.Race_RaceUndead,
+		proto.Race_RaceHighOrderSkyborne,
+		proto.Race_RaceWindshaperSkyborne,
+	}
+	got := PlayableRaces()
+	if len(got) != len(want) {
+		t.Fatalf("PlayableRaces() has %d entries, want %d", len(got), len(want))
+	}
+	seen := map[proto.Race]bool{}
+	for _, r := range got {
+		seen[r] = true
+	}
+	for _, r := range want {
+		if !seen[r] {
+			t.Errorf("PlayableRaces() is missing %v", r)
+		}
+	}
 }
 
 // Forever: two active and two passive racials per race. The shape is
-// confirmed; the contents are not, and UnconfirmedRacials names every
-// entry that still carries Era behaviour or an empty slot.
+// confirmed by the Deep Dive panel; the numbers on seven of the forty
+// entries are not, and UnconfirmedRacials names exactly those.
 func TestEveryRaceHasTwoActivesAndTwoPassives(t *testing.T) {
-	for _, race := range playableRaces {
+	for _, race := range PlayableRaces() {
 		t.Run(race.String(), func(t *testing.T) {
 			got := RacialsFor(race)
 			if len(got) != 4 {
 				t.Fatalf("%v has %d racials, want 4", race, len(got))
 			}
 			var actives, passives int
+			names := map[string]bool{}
 			for _, r := range got {
 				switch r.Kind {
 				case RacialActive:
@@ -4127,8 +4596,15 @@ func TestEveryRaceHasTwoActivesAndTwoPassives(t *testing.T) {
 				if r.Name == "" {
 					t.Errorf("%v: a racial has no name", race)
 				}
+				if names[r.Name] {
+					t.Errorf("%v: %q is listed twice", race, r.Name)
+				}
+				names[r.Name] = true
 				if r.Apply == nil {
-					t.Errorf("%v: %q has no Apply function", race, r.Name)
+					t.Errorf("%v: %q has no Apply function; a racial with no combat effect gets an Apply that does nothing and says so", race, r.Name)
+				}
+				if !r.Confirmed && r.Note == "" {
+					t.Errorf("%v: %q is unconfirmed but says nothing about what is unread", race, r.Name)
 				}
 			}
 			if actives != 2 {
@@ -4141,252 +4617,211 @@ func TestEveryRaceHasTwoActivesAndTwoPassives(t *testing.T) {
 	}
 }
 
-// An unknown race must not panic and must not silently grant anything.
-func TestUnknownRaceHasNoRacials(t *testing.T) {
-	if got := RacialsFor(proto.Race_RaceUnknown); len(got) != 0 {
-		t.Errorf("RaceUnknown has %d racials, want 0", len(got))
+// The two Skyborne rows share both passives and their first active; only
+// the second active differs. Duplicating the shared three would let one
+// drift from the other silently.
+func TestSkyborneRowsDifferOnlyInTheirSecondActive(t *testing.T) {
+	al := RacialsFor(proto.Race_RaceHighOrderSkyborne)
+	ho := RacialsFor(proto.Race_RaceWindshaperSkyborne)
+	alNames := make([]string, len(al))
+	hoNames := make([]string, len(ho))
+	for i := range al {
+		alNames[i], hoNames[i] = al[i].Name, ho[i].Name
+	}
+	var differ int
+	for i := range alNames {
+		if alNames[i] != hoNames[i] {
+			differ++
+		}
+	}
+	if differ != 1 {
+		t.Errorf("the two Skyborne rows differ in %d racials, want exactly 1 (Read Ley Line vs Skysight): %v vs %v", differ, alNames, hoNames)
 	}
 }
 
-// Every racial whose Forever behaviour is not known says so, by name, so
-// the spec support page can show it and a beta tester can work the list.
-func TestUnconfirmedRacialsAreNamed(t *testing.T) {
+// Every named racial the demo transcriptions gave a number for must be in
+// the table. This is the regression that catches a rewrite dropping one.
+func TestTheNamedRacialsAreAllPresent(t *testing.T) {
+	want := map[proto.Race][]string{
+		proto.Race_RaceHuman:              {"Will to Survive", "Perception", "Sword Specialization", "The Human Spirit"},
+		proto.Race_RaceOrc:                {"Blood Fury", "Shatter Curse", "Axe Specialization", "Hardiness"},
+		proto.Race_RaceDwarf:              {"Stoneform", "Find Treasure", "Mace Specialization", "Big Game Hunter"},
+		proto.Race_RaceNightElf:           {"Elune's Light", "Shadowmeld", "Quickness", "Wisp Spirit"},
+		proto.Race_RaceUndead:             {"Will of the Forsaken", "Cannibalize", "Touch of the Grave"},
+		proto.Race_RaceTauren:             {"War Stomp", "Endurance"},
+		proto.Race_RaceGnome:              {"Escape Artist", "Eureka!", "Expansive Mind", "Engineering Specialization"},
+		proto.Race_RaceTroll:              {"Berserking", "Rapid Regeneration", "Beast Slaying", "Regeneration"},
+		proto.Race_RaceHighOrderSkyborne:  {"Walk on Air", "Read Ley Line", "Wind Blessed", "Elemental Insight"},
+		proto.Race_RaceWindshaperSkyborne: {"Walk on Air", "Skysight", "Wind Blessed", "Elemental Insight"},
+	}
+	for race, names := range want {
+		have := map[string]bool{}
+		for _, r := range RacialsFor(race) {
+			have[r.Name] = true
+		}
+		for _, n := range names {
+			if !have[n] {
+				t.Errorf("%v is missing the racial %q", race, n)
+			}
+		}
+	}
+}
+
+// The seven entries whose numbers the demo did not settle are named out
+// loud, so the spec support page can say what the sim is guessing at.
+func TestUnconfirmedRacialsNamesTheSeven(t *testing.T) {
 	got := UnconfirmedRacials()
 	if len(got) == 0 {
-		t.Skip("every racial is confirmed; this test has done its job")
+		t.Skip("nothing is unconfirmed: the beta settled the numbers and this test has done its job")
 	}
-	for _, s := range got {
-		if !strings.Contains(s, ":") {
-			t.Errorf("%q is not in the form \"<race>: <name>\"", s)
+	joined := strings.Join(got, "\n")
+	for _, want := range []string{
+		"Mace Specialization",
+		"Big Game Hunter",
+		"Quickness",
+		"Berserking",
+		"Touch of the Grave",
+	} {
+		if !strings.Contains(joined, want) {
+			t.Errorf("UnconfirmedRacials() does not mention %q:\n%s", want, joined)
 		}
 	}
-	// Cross-check: the count must match the table.
-	var want int
-	for _, race := range playableRaces {
-		for _, r := range RacialsFor(race) {
-			if !r.Confirmed {
-				want++
-			}
+	for _, line := range got {
+		if !strings.Contains(line, ":") {
+			t.Errorf("%q is not in the form \"<race>: <name> (<note>)\"", line)
 		}
-	}
-	if len(got) != want {
-		t.Errorf("UnconfirmedRacials() returned %d entries, the table has %d unconfirmed", len(got), want)
 	}
 }
 
-// The three specifics the Deep Dive panel named must be in the table.
-func TestConfirmedForeverRacialsArePresent(t *testing.T) {
-	find := func(race proto.Race, name string) *Racial {
-		for _, r := range RacialsFor(race) {
-			if r.Name == name {
-				return &r
+// Tauren's Endurance grants 1% Hit, which after the Task 4 merge is one
+// stat covering melee, ranged and spell. It is the only racial that
+// touches the attack table, so a regression here is a silent DPS change
+// for every Tauren.
+func TestEnduranceGrantsTheOneHitStat(t *testing.T) {
+	var found bool
+	for _, r := range RacialsFor(proto.Race_RaceTauren) {
+		if r.Name == "Endurance" {
+			found = true
+			if r.Kind != RacialPassive {
+				t.Errorf("Endurance is %v, want a passive", r.Kind)
 			}
 		}
-		return nil
 	}
-	if find(proto.Race_RaceUndead, "Touch of the Grave") == nil {
-		t.Error("Undead is missing the new active Touch of the Grave")
-	}
-	if r := find(proto.Race_RaceDwarf, "Stoneform"); r == nil {
-		t.Error("Dwarf is missing Stoneform")
-	}
-	if find(proto.Race_RaceHuman, "Mace Specialization") == nil {
-		t.Error("Human is missing Mace Specialization, which Forever extends to spell crit")
-	}
-}
-
-// Applying every race's racials to a real character must not panic; this
-// is the check that catches a helper called before the character is
-// finalized.
-func TestApplyingEveryRaceIsSafe(t *testing.T) {
-	for _, race := range playableRaces {
-		t.Run(race.String(), func(t *testing.T) {
-			_, _, _ = NewEnvironment(
-				SinglePlayerRaidProto(&proto.Player{
-					Name:  "Racial Test",
-					Race:  race,
-					Class: proto.Class_ClassWarrior,
-				}, &proto.PartyBuffs{}, &proto.RaidBuffs{}, &proto.Debuffs{}),
-				&proto.Encounter{Duration: 60, Targets: []*proto.Target{DefaultTargetProtoLvl60}},
-				false,
-			)
-		})
+	if !found {
+		t.Fatal("Tauren has no Endurance")
 	}
 }
 ```
 
-Match `NewEnvironment`'s real signature (`sim/core/environment.go:55`) and return arity.
+- [ ] **Step 3: Run it and watch it fail**
 
-- [ ] **Step 2: Run it and watch it fail**
+Run: `cd /Users/jh/code/wowsims-forever && go test --tags=with_db ./sim/core/ -run 'TestPlayableRaces|TestEveryRaceHas|TestSkyborne|TestTheNamedRacials|TestUnconfirmedRacials|TestEndurance' -v`
+Expected: `FAIL [build failed]`, `undefined: PlayableRaces`.
 
-Run: `cd /Users/jh/code/wowsims-forever && go test --tags=with_db ./sim/core/ -run 'Racial' -v`
-Expected: `FAIL [build failed]`, `undefined: RacialsFor`.
+- [ ] **Step 4: Rewrite `racials.go` around the table**
 
-- [ ] **Step 3: Rewrite `racials.go` as a table**
+Replace `sim/core/racials.go` in full. The shape is: the two types, the ten-entry `racialsByRace` map, `RacialsFor`, `PlayableRaces`, `UnconfirmedRacials`, and `applyRaceEffects` reduced to a loop. Keep the existing per-effect bodies where the effect survives — Blood Fury, Berserking, War Stomp, Shadowmeld, Stoneform, Cannibalize, Will of the Forsaken, Escape Artist, Perception and the six weapon specialization auras all exist in the file today — and write only the new ones.
 
-Replace the head of `sim/core/racials.go` — everything from `func applyRaceEffects` down to the closing brace of its `switch`, keeping `makeBerserkingCooldown` and any other helpers below it — with:
+The header comment, which is the part a reviewer reads first:
 
 ```go
-// Forever gives every race two active and two passive racials. The shape
-// is confirmed from the Deep Dive panel; almost none of the contents are,
-// so this table carries Era behaviour with Confirmed:false on every entry
-// that has not been checked against the beta, and UnconfirmedRacials()
-// names them for the spec support page.
+// Forever gives every race two active and two passive racials, "tuned for
+// similar offensive power" (Blizzard, Deep Dive panel recap). This file is
+// that table.
 //
-// An empty slot is declared, not filled with a guess: Forever has not
-// published a second active for most races, and inventing one would put a
-// number in the sim that nobody can check. `unconfirmed`.
+// SOURCING. The shape is confirmed by Blizzard. The names and numbers are
+// transcribed from the BlizzCon demo by Icy Veins and by Talents Forever,
+// and are recorded with their citations in data/curated/races.json in the
+// site repository. They are NOT from a client table, so every numeric
+// entry here carries `unconfirmed` on its own line and is reported by
+// UnconfirmedRacials(). Where the two transcriptions disagree, the lower
+// reading ships and the disagreement is in the entry's Note.
+//
+// TEN RACES. Skyborne is one neutral race whose faction is chosen at
+// character creation and whose second active differs by faction, so the
+// client's race table carries it as two rows and so does this file:
+// RaceHighOrderSkyborne (Alliance, Read Ley Line) and
+// RaceWindshaperSkyborne (Horde, Skysight). Their other three racials are
+// identical and are written once.
+//
+// A racial with no combat effect still gets an entry, with an Apply that
+// does nothing and a comment saying why. A missing entry and a
+// deliberately empty one are different facts and the support page prints
+// them differently.
+```
 
+The types and the accessors:
+
+```go
 type RacialKind int
 
 const (
-	RacialPassive RacialKind = iota + 1
+	RacialPassive RacialKind = iota
 	RacialActive
 )
 
-// Racial is one of a race's four entries.
+func (k RacialKind) String() string {
+	if k == RacialActive {
+		return "active"
+	}
+	return "passive"
+}
+
+// Racial is one of a race's four abilities.
 type Racial struct {
-	// Name is the in-game name, or a slot name for an entry Forever has
-	// not published.
 	Name string
 	Kind RacialKind
-	// SpellID is the ability's spell id, 0 for a passive with none and for
-	// an unpublished slot.
+	// SpellID is the client's id where one is known, and 0 where it is
+	// not. Forever keeps vanilla ids for abilities that already existed
+	// and uses ids above 1,000,000 only for new objects, so a new
+	// Forever racial's id is above a million or it is unknown.
 	SpellID int32
-	// Confirmed is true only once the entry has been checked against
-	// Forever's own tooltip or against beta logs. Everything else is Era
-	// behaviour standing in.
+	// Confirmed is true only when every number in this entry came from a
+	// client table or a Blizzard statement.
 	Confirmed bool
-	// Apply installs the racial on a character. It must be safe to call
-	// during character construction: anything that needs the finished
-	// encounter goes through Env.RegisterPostFinalizeEffect.
-	Apply func(character *Character)
+	// Note says what is unread. Required when Confirmed is false.
+	Note  string
+	Apply func(*Character)
 }
 
-// nothing is the Apply for a slot Forever has not published. It is a
-// function rather than a nil so that every entry is callable and the
-// table needs no special case.
-func nothing(*Character) {}
-
-// unpublishedActive is the placeholder for a second active Forever has
-// announced in shape but not in content.
-func unpublishedActive(name string) Racial {
-	return Racial{Name: name, Kind: RacialActive, Confirmed: false, Apply: nothing}
+// playableRaces is the ten, in the client race table's own order.
+var playableRaces = []proto.Race{
+	proto.Race_RaceHuman,
+	proto.Race_RaceOrc,
+	proto.Race_RaceDwarf,
+	proto.Race_RaceNightElf,
+	proto.Race_RaceUndead,
+	proto.Race_RaceTauren,
+	proto.Race_RaceGnome,
+	proto.Race_RaceTroll,
+	proto.Race_RaceHighOrderSkyborne,
+	proto.Race_RaceWindshaperSkyborne,
 }
 
-// racialsByRace is the whole model. One table, four entries per race, each
-// naming what it is and whether anyone has checked it.
-var racialsByRace = map[proto.Race][]Racial{
-	proto.Race_RaceDwarf: {
-		{Name: "Frost Resistance", Kind: RacialPassive, Apply: func(c *Character) {
-			c.AddStat(stats.FrostResistance, 10) // unconfirmed
-		}},
-		{Name: "Gun Specialization", Kind: RacialPassive, Apply: func(c *Character) {
-			c.GunSpecializationAura()
-		}},
-		{Name: "Stoneform", Kind: RacialActive, SpellID: 20594, Apply: applyStoneform},
-		unpublishedActive("Dwarf second active"),
-	},
-	proto.Race_RaceGnome: {
-		{Name: "Arcane Resistance", Kind: RacialPassive, Apply: func(c *Character) {
-			c.AddStat(stats.ArcaneResistance, 10) // unconfirmed
-		}},
-		{Name: "Expansive Mind", Kind: RacialPassive, Apply: func(c *Character) {
-			c.MultiplyStat(stats.Intellect, 1.05) // unconfirmed
-		}},
-		unpublishedActive("Gnome first active"),
-		unpublishedActive("Gnome second active"),
-	},
-	proto.Race_RaceHuman: {
-		{Name: "The Human Spirit", Kind: RacialPassive, Apply: func(c *Character) {
-			c.MultiplyStat(stats.Spirit, 1.05) // unconfirmed
-		}},
-		// Forever extends Mace Specialization to spell crit. The Era aura
-		// is weapon skill only; the spell-crit half needs a number nobody
-		// has published, so it is not added here and the entry stays
-		// unconfirmed rather than being half-implemented.
-		{Name: "Mace Specialization", Kind: RacialPassive, Apply: func(c *Character) {
-			c.SwordSpecializationAura()
-			c.MaceSpecializationAura()
-		}},
-		unpublishedActive("Human first active"),
-		unpublishedActive("Human second active"),
-	},
-	proto.Race_RaceNightElf: {
-		{Name: "Nature Resistance", Kind: RacialPassive, Apply: func(c *Character) {
-			c.AddStat(stats.NatureResistance, 10) // unconfirmed
-		}},
-		{Name: "Quickness", Kind: RacialPassive, Apply: func(c *Character) {
-			c.AddStat(stats.Dodge, 1) // unconfirmed
-		}},
-		{Name: "Shadowmeld", Kind: RacialActive, SpellID: 20580, Confirmed: false, Apply: nothing},
-		unpublishedActive("Night Elf second active"),
-	},
-	proto.Race_RaceOrc: {
-		{Name: "Axe Specialization", Kind: RacialPassive, Apply: func(c *Character) {
-			c.AxeSpecializationAura()
-		}},
-		{Name: "Command", Kind: RacialPassive, Apply: applyCommand},
-		{Name: "Blood Fury", Kind: RacialActive, SpellID: 20572, Apply: applyBloodFury},
-		unpublishedActive("Orc second active"),
-	},
-	proto.Race_RaceTauren: {
-		{Name: "Nature Resistance", Kind: RacialPassive, Apply: func(c *Character) {
-			c.AddStat(stats.NatureResistance, 10) // unconfirmed
-		}},
-		{Name: "Endurance", Kind: RacialPassive, Apply: func(c *Character) {
-			c.MultiplyStat(stats.Health, 1.05) // unconfirmed
-		}},
-		{Name: "War Stomp", Kind: RacialActive, SpellID: 20549, Confirmed: false, Apply: nothing},
-		unpublishedActive("Tauren second active"),
-	},
-	proto.Race_RaceTroll: {
-		{Name: "Bow Specialization", Kind: RacialPassive, Apply: func(c *Character) {
-			c.BowSpecializationAura()
-			c.ThrownSpecializationAura()
-		}},
-		{Name: "Beast Slaying", Kind: RacialPassive, Apply: applyBeastSlaying},
-		{Name: "Berserking", Kind: RacialActive, SpellID: 26297, Apply: applyBerserking},
-		unpublishedActive("Troll second active"),
-	},
-	proto.Race_RaceUndead: {
-		{Name: "Shadow Resistance", Kind: RacialPassive, Apply: func(c *Character) {
-			c.AddStat(stats.ShadowResistance, 10) // unconfirmed
-		}},
-		{Name: "Will of the Forsaken", Kind: RacialPassive, Confirmed: false, Apply: nothing},
-		// Confirmed by the Deep Dive panel as a new Forever active. Its
-		// damage, cooldown and coefficient are unpublished, so it is a
-		// named slot until the beta.
-		{Name: "Touch of the Grave", Kind: RacialActive, Confirmed: false, Apply: nothing},
-		unpublishedActive("Undead second active"),
-	},
+// PlayableRaces returns the ten races, in the client's order.
+func PlayableRaces() []proto.Race {
+	return append([]proto.Race(nil), playableRaces...)
 }
 
-// RacialsFor returns a race's four racials, or nothing for a race the
-// engine does not know.
+// RacialsFor returns a race's four racials. An unknown race returns nil,
+// which applyRaceEffects treats as "apply nothing" exactly as the old
+// switch's default arm did.
 func RacialsFor(race proto.Race) []Racial {
 	return racialsByRace[race]
 }
 
-// UnconfirmedRacials names every entry still carrying Era behaviour or an
-// empty slot, as "<race>: <name>". The spec support page shows it beside
-// ProvisionalConstants(), so a player can see exactly what the sim is
-// guessing about.
+// UnconfirmedRacials names every entry whose numbers are not settled, for
+// the spec support page. Sorted, so the page does not churn.
 func UnconfirmedRacials() []string {
-	races := make([]proto.Race, 0, len(racialsByRace))
-	for race := range racialsByRace {
-		races = append(races, race)
-	}
-	slices.Sort(races)
-
 	var out []string
-	for _, race := range races {
+	for _, race := range playableRaces {
 		for _, r := range racialsByRace[race] {
 			if !r.Confirmed {
-				out = append(out, race.String()+": "+r.Name)
+				out = append(out, fmt.Sprintf("%s: %s (%s)", race.String(), r.Name, r.Note))
 			}
 		}
 	}
+	sort.Strings(out)
 	return out
 }
 
@@ -4398,67 +4833,133 @@ func applyRaceEffects(agent Agent) {
 }
 ```
 
-Then move the four bodies that were inline in the old `switch` into named functions below, unchanged except for their signature. `applyStoneform` is the Dwarf arm's body (old lines 17-52), `applyCommand` the Orc pet-damage block (lines 68-76), `applyBloodFury` the Orc aura, spell and major cooldown (lines 78-115), `applyBeastSlaying` the Troll post-finalize hook (lines 122-131), and `applyBerserking` the five `makeBerserkingCooldown` calls (lines 134-141). Each takes `character *Character` and returns nothing. For example:
+Three entries written out, as the pattern for the other thirty-seven. **Skyborne's shared three are built by a helper so the two rows cannot drift:**
 
 ```go
-// applyBeastSlaying is Era's +5% damage and crit against beasts. Forever
-// keeps beast slaying; the figures are unconfirmed.
-func applyBeastSlaying(character *Character) {
-	character.Env.RegisterPostFinalizeEffect(func() {
-		for _, t := range character.Env.Encounter.Targets {
-			if t.MobType == proto.MobType_MobTypeBeast {
-				for _, at := range character.AttackTables[t.UnitIndex] {
-					at.DamageDealtMultiplier *= 1.05 // unconfirmed
-					at.CritMultiplier *= 1.05        // unconfirmed
-				}
-			}
-		}
-	})
-}
-
-// applyBerserking registers the baseline cooldown plus the five
-// hard-coded percentage options the UI offers.
-func applyBerserking(character *Character) {
-	berserkingTimer := character.NewTimer()
-	makeBerserkingCooldown(character, 0, berserkingTimer)
-	for _, pct := range []float64{.1, .15, .2, .25, .3} {
-		makeBerserkingCooldown(character, pct, berserkingTimer)
+// skyborneShared is Walk on Air, Wind Blessed and Elemental Insight: the
+// three racials both Skyborne rows have. Only the second active differs
+// by faction, so only that one is written per row.
+func skyborneShared() []Racial {
+	return []Racial{
+		{
+			Name: "Walk on Air", Kind: RacialActive, Confirmed: true,
+			Note:  "",
+			Apply: func(*Character) {}, // glide downward for 10 s: no combat effect
+		},
+		{
+			Name: "Wind Blessed", Kind: RacialPassive, Confirmed: false,
+			Note: "1% haste read from the demo, not from a client table",
+			Apply: func(character *Character) {
+				// unconfirmed: 1% haste, demo transcription. Haste is NOT
+				// merged (research/08-stats.md 12.1 item 5), so this sets
+				// both, as a racial that says "haste" must.
+				character.PseudoStats.MeleeSpeedMultiplier *= 1.01
+				character.PseudoStats.CastSpeedMultiplier *= 1.01
+			},
+		},
+		{
+			Name: "Elemental Insight", Kind: RacialPassive, Confirmed: false,
+			Note: "5% damage against Elementals read from the demo, not from a client table",
+			Apply: func(character *Character) {
+				// unconfirmed: 5% against MobTypeElemental, demo transcription.
+				character.Env.RegisterPostFinalizeEffect(func() {
+					for _, t := range character.Env.Encounter.TargetUnits {
+						if t.MobType == proto.MobType_MobTypeElemental {
+							character.AttackTables[t.UnitIndex].DamageDealtMultiplier *= 1.05
+						}
+					}
+				})
+			},
+		},
 	}
 }
 ```
 
-Add `"slices"` to the imports.
+and the two rows:
 
-- [ ] **Step 4: Run the tests and watch them pass**
+```go
+	proto.Race_RaceHighOrderSkyborne: append([]Racial{{
+		Name: "Read Ley Line", Kind: RacialActive, Confirmed: false,
+		Note: "100% health and mana regeneration for 15 s; the cooldown is unread",
+		Apply: func(character *Character) {
+			// unconfirmed: duration 15 s from the demo; no cooldown read,
+			// so no major cooldown is registered and the sim never uses it.
+		},
+	}}, skyborneShared()...),
+
+	proto.Race_RaceWindshaperSkyborne: append([]Racial{{
+		Name: "Skysight", Kind: RacialActive, Confirmed: true,
+		Note:  "",
+		Apply: func(*Character) {}, // movement and mounted speed: no combat effect
+	}}, skyborneShared()...),
+```
+
+and Tauren's Endurance, the one racial that reaches the attack table:
+
+```go
+		{
+			Name: "Endurance", Kind: RacialPassive, Confirmed: false,
+			Note: "5% Health and 1% Hit read from the demo, not from a client table",
+			Apply: func(character *Character) {
+				character.MultiplyStat(stats.Health, 1.05)
+				// unconfirmed: 1% hit, demo transcription. After the
+				// Forever merge there is one Hit stat covering melee,
+				// ranged and spell, so this is one line where vanilla
+				// would have needed two.
+				character.AddStat(stats.Hit, 1*HitRatingPerHitChance)
+			},
+		},
+```
+
+Write the remaining thirty-four entries the same way: the surviving Era body where the effect survives, an empty `Apply` with a reason where the racial has no combat effect, and `Confirmed: false` plus a `Note` wherever a number came from a transcription.
+
+- [ ] **Step 5: Run the tests and watch them pass**
 
 ```bash
 cd /Users/jh/code/wowsims-forever
-go build ./sim/... && echo BUILDS
+go test --tags=with_db ./sim/core/ -run 'TestPlayableRaces|TestEveryRaceHas|TestSkyborne|TestTheNamedRacials|TestUnconfirmedRacials|TestEndurance' -v
+go test --tags=with_db -count=1 ./sim/core/
 gofmt -l ./sim
-go test --tags=with_db ./sim/core/ -run 'Racial' -v
 ```
 
-Expected: `BUILDS`; no `gofmt` output; five tests `PASS`. `TestUnconfirmedRacialsAreNamed` should report a list of roughly 20 entries.
-
-- [ ] **Step 5: Prove behaviour is unchanged**
-
-Restructuring is not a behaviour change: every race's Era effects are still applied, in the same order within a race. So no golden may move.
+Expected: all six `PASS`, the whole `sim/core` package `ok`, no `gofmt` output. `TestUnconfirmedRacials` should report seven lines; print them and read them:
 
 ```bash
 cd /Users/jh/code/wowsims-forever
-go test --tags=with_db -count=1 ./sim/... 2>&1 | tail -25
-git status --short -- '*.results'
+cat > /tmp/unconfirmed_test.go <<'EOF'
+package core
+
+import "testing"
+
+func TestPrintUnconfirmedRacials(t *testing.T) {
+	for _, s := range UnconfirmedRacials() {
+		t.Log(s)
+	}
+}
+EOF
+cp /tmp/unconfirmed_test.go sim/core/zz_print_test.go
+go test --tags=with_db ./sim/core/ -run TestPrintUnconfirmedRacials -v
+rm sim/core/zz_print_test.go
 ```
 
-Expected: 20 packages `ok`; **`git status` prints nothing for `.results`**. If one moved, an ordering changed — the spec test suites run several races per spec (`OtherRaces` in each `CharacterSuiteConfig`), so a reordered arm shows up immediately. Put the order back rather than regenerating.
+Expected: seven lines, each naming a race, a racial and what is unread. If a line has an empty note the entry is mis-declared.
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 6: Check nothing else still switches on race**
+
+```bash
+cd /Users/jh/code/wowsims-forever
+grep -rn 'Race_Race' sim/ --include='*.go' | grep -v '_test.go' | grep -v 'racials.go' | grep -v 'base_stats'
+```
+
+Expected: only per-class files that gate a racial-flavoured ability (for example a class checking `RaceTroll` for a weapon specialization) — read each and confirm none of them is a second racial table. A hit in `sim/core/` that is not `racials.go` or `base_stats*.go` is a racial that escaped this file and must move into it.
+
+- [ ] **Step 7: Commit**
 
 ```bash
 cd /Users/jh/code/wowsims-forever
 git add sim/core/racials.go sim/core/racials_test.go
-git commit -m "refactor(core): racials as a two-active-two-passive table per race" \
-  -m "Forever gives every race two actives and two passives. The shape is confirmed; almost none of the contents are, so this restructures the switch into one table whose every entry names itself, says whether anyone has checked it against Forever, and carries Era behaviour until they have. Slots Forever has announced but not published are declared empty rather than filled with an invented ability, and UnconfirmedRacials() lists all of them for the spec support page. The three specifics the Deep Dive panel named - Touch of the Grave, a changed Stoneform, Mace Specialization reaching spell crit - are in the table as named entries; Mace Specialization keeps only its weapon-skill half, because the spell-crit figure is unpublished and a half-implemented racial is worse than a declared gap. No behaviour changes and no golden moves." \
+git commit -m "feat(core): Forever racials, two active and two passive across ten races" \
+  -m "One table instead of a switch whose arms each mixed flat stats, an aura, a spell, a major cooldown and a post-finalize hook. Ten races, because Skyborne is one neutral race whose faction is chosen at creation and whose second active differs by faction, so the client's own race table carries it as two rows and this file follows; the other three Skyborne racials are written once and shared. All forty entries are named from the BlizzCon demo transcriptions recorded in data/curated/races.json, with their citations; seven of them carry numbers no client table has published, and UnconfirmedRacials names exactly those seven for the spec support page rather than letting a reader assume they are Forever's. A racial with no combat effect still gets an entry with an empty Apply and a reason, because a missing entry and a deliberately empty one are different facts." \
   -m "Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 ```
 
@@ -4471,6 +4972,10 @@ git commit -m "refactor(core): racials as a two-active-two-passive table per rac
 Today every number in a WoWSims ability is a literal: `bonusDamage := 160.0`, `Duration: time.Second * 6`, `Cost: 30` (research §1.3). That is fine when the game is twenty years old and fine-tuned. It is wrong for Forever, whose numbers move weekly through October. So the ability files read from a generated per-class constants file instead, and a beta patch that changes a number becomes a pipeline run and a regeneration.
 
 The mage already shows the shape this should take: `sim/mage/frostbolt.go:9-15` keeps `FrostboltSpellId`, `FrostboltBaseDamage`, `FrostboltSpellCoeff`, `FrostboltCastTime`, `FrostboltManaCost` and `FrostboltLevel` as per-rank arrays and `getFrostboltConfig(rank)` reads them. The generated file produces exactly that, from data.
+
+**Which branch runs today, verified 2026-09-18.** `data/builds/1.60.1.69893/` contains `classes.json`, `combos.json`, `dungeons.json`, `icons/`, `items/`, `items.json`, `manifest.json`, `races.json`, `sets.json`, `spells.json`, `talents/`, `talents.json`, `trees/` and `zones.json` — and **no `spellconst/` directory**. `spells.json` is 31,754 rows of `{id, name}`: names, not base points, not coefficients, not costs. So the data lane has not shipped this task's input yet, and **the "not yet" branch is the one that runs**: build the loader, the generator and their tests against the checked-in fixture, wire the `make spellconst` target, leave the per-class `constants_auto_gen.go` files empty with a header saying what will fill them, and leave the existing literals in the ability files exactly where they are, carrying their `unconfirmed` markers. Regenerating later is then one command and a one-line commit, which is the whole point of the task. **Do not stub the input file**: a hand-written `spellconst/warrior.json` in the site repo would be a second source of truth for numbers the data lane owns, and the first real pipeline run would silently disagree with it.
+
+One thing the beta log settles in this task's favour: **the ids the constants key on are the ids the log writes.** Forever keeps vanilla spell ids for abilities that already existed (Fireball `133`, Wrath `5176`, Healing Touch `5185` in the first beta log) and uses ids above 1,000,000 only for new Forever objects. So a constants file keyed by spell id joins directly to a log line, to an APL entry and to a talent's `ranks[].spell_id`, with no translation table anywhere — and an id above a million is the signal that a spell is new and its numbers are unconfirmed.
 
 **The data lane owns the input and this lane owns the semantics.** `data/builds/<build>/spellconst/<class-slug>.json` carries the DB2 columns verbatim — base points, coefficients, cooldown ms, cast time ms, cost, duration ms, school, family mask. **Coefficients come through with their zeros**, because `EffectBonusCoefficient` is routinely 0 or wrong for Classic-lineage spells (research §5.3), and the vanilla conventions — `cast_time/3.5`, `duration/15`, halved for hybrids, with per-spell overrides — belong here. So the generator treats a zero coefficient as *absent*, emits the convention's value, and marks it. It never emits a zero coefficient as if it were data.
 
@@ -5416,31 +5921,998 @@ git commit -m "feat(core): periodic crit, percentage armour ignore, weapon-subcl
 
 ---
 
+## Task 17: Generate the talent trees from the client's trait tables
+
+**Repo: ENGINE.** Depends on Task 4 (the protos must already be committed and regenerable). **G2 — INDEPENDENT of Tasks 5, 6, 7, 8, 9, 10, 16.** Tasks 11 and 12 depend on it.
+
+**This task did not exist when the plan was written**, because the trees did not. Tasks 11 and 12 originally hand-rewrote `proto/warrior.proto`'s 111-line `WarriorTalents` message, `TalentTreeSizes`, and `ui/core/talents/trees/warrior.json` from tooltips, for two classes, with the other seven owed later. The beta client's trait tables are now mined and committed, so hand-writing any of that is simply wrong: a generator does all nine classes at once, from the same file the planner draws, and a Forever patch that moves a talent becomes a pipeline run and a regeneration rather than a code edit.
+
+**The input, verified 2026-09-18.** `data/builds/1.60.1.69893/talents/<class-slug>.json` in the **site** repo, one file per class, nine of them, shaped:
+
+```json
+{
+  "build": "1.60.1.69893",
+  "class_id": 1,
+  "class_slug": "warrior",
+  "trees": [
+    { "id": 161, "name": "Arms", "position": 0, "talents": [
+      { "id": 105958, "name": "Improved Heroic Strike", "icon": "ability_rogue_ambush",
+        "max_rank": 3, "tier": 0, "column": 0,
+        "prereq_talent_id": null, "prereq_rank": null,
+        "spell_id": 12282,
+        "ranks": [ { "spell_id": 12282, "description": "Reduces the cost of your Heroic Strike ability by 1 Rage." }, … ] },
+      …
+    ] },
+    { "id": 164, "name": "Fury", "position": 1, … },
+    { "id": 163, "name": "Protection", "position": 2, … }
+  ]
+}
+```
+
+Measured shape, which the generator's tests assert rather than trust:
+
+| Fact | Value |
+|---|---|
+| Total talents, all classes | **469** (`data/builds/1.60.1.69893/talents.json`) |
+| Per class (class ids 1,2,3,4,5,7,8,9,11) | 53, 52, 51, 53, 53, 50, 54, 52, 51 |
+| Trees per class | 3, in the client's own order via `position` |
+| Warrior | Arms (161, pos 0, **17** talents), Fury (164, pos 1, **18**), Protection (163, pos 2, **18**) |
+| Mage | Arcane (81, pos 0, **18**), Fire (41, pos 1, **17**), Frost (61, pos 2, **19**) |
+| Rows | `tier` 0–6, **seven rows**, as the design says |
+| Columns | `column` 0–3, four columns |
+| Talent id | the client's **trait node id** (105958, …), not a spell id |
+| Spell id | one `spell_id` per talent, plus one per rank in `ranks[].spell_id` |
+| Prerequisites | `prereq_talent_id` + `prereq_rank`, 96 edges across all classes |
+
+**What the engine needs, and why a generator is the only honest way to make it.** `core.FillTalentsProto(data protoreflect.Message, talentsStr string, treeSizes [3]int)` (`sim/core/character.go:737`) reads the talent string **positionally against the proto message's field order**, three tree-sized runs separated by `-`. So three things must agree exactly or a build silently reads the wrong talent: the proto message's field order, `TalentTreeSizes`, and the order the planner writes its string in. All three now come from one file, and the test asserts the round trip.
+
+Field naming and typing follow the convention the nine existing messages already use, so nothing downstream changes: the field name is the talent name in lower snake case, and the type is `bool` when `max_rank == 1` and `int32` otherwise.
+
+**Files:**
+- Create: `tools/talentgen/main.go`, `tools/talentgen/main_test.go`, `tools/talentgen/testdata/warrior.json` (a trimmed copy of the site file, so the generator's tests need no site checkout)
+- Create: `sim/core/talents/talents.go`, `sim/core/talents/talents_test.go`
+- Regenerate: `proto/{druid,hunter,mage,paladin,priest,rogue,shaman,warlock,warrior}.proto` — the `<Class>Talents` message in each, and only that message
+- Create (generated): `sim/{druid,hunter,mage,paladin,priest,rogue,shaman,warlock,warrior}/talents_auto_gen.go` — nine files
+- Regenerate: `ui/core/talents/trees/*.json` — nine files
+- Modify: `makefile` (a `talents` target), `PORTING.md`
+- Test: `sim/core/talents/talents_test.go`, `tools/talentgen/main_test.go`
+
+**Interfaces:**
+- Consumes: the site repo's `data/builds/<build>/talents/<class-slug>.json`. The path is a flag, defaulting to `../forever/data/builds`, so the generator never assumes a checkout layout.
+- Produces, used by Tasks 11 and 12 and by every later spec:
+  - `talents.Talent{NodeID int32; Name string; Icon string; MaxRank int; Tier, Column int; SpellID int32; RankSpellIDs []int32; PrereqNodeID int32; PrereqRank int}`
+  - `talents.Tree{ID int32; Name string; Position int; Talents []Talent}`
+  - `talents.Class{Slug string; Build string; ClassID int32; Trees [3]Tree}`
+  - `talents.(Class).TreeSizes() [3]int`
+  - `talents.(Class).FieldName(t Talent) string` — the lower-snake-case proto field name, so the generator and any reader agree on it
+  - `talents.(Class).ByNodeID(id int32) (Talent, bool)`, `(Class).BySpellID(id int32) (Talent, bool)`
+  - Generated per class in `sim/<class>/talents_auto_gen.go`: `TalentTreeSizes [3]int`, `TalentsBuild string`, `TalentNodeIDs map[string]int32` (proto field name → client node id) and `TalentSpellIDs map[string][]int32` (proto field name → per-rank spell ids). Tasks 11 and 12 read `TalentSpellIDs` to attach a spell mod to the right rank without typing an id.
+  - `ForeverMilestones = [4]int{11, 16, 21, 31}` in `sim/core/talents`, once, rather than duplicated per class as the earlier draft had it.
+
+- [ ] **Step 1: Confirm the input, before writing a line**
+
+```bash
+cd /Users/jh/code/forever
+python3 - <<'PY'
+import json, glob, collections
+tot = json.load(open("data/builds/1.60.1.69893/talents.json"))
+print("all talents:", len(tot))
+print("per class:", sorted(collections.Counter(t["class_id"] for t in tot).items()))
+for p in sorted(glob.glob("data/builds/1.60.1.69893/talents/*.json")):
+    c = json.load(open(p))
+    sizes = [len(t["talents"]) for t in sorted(c["trees"], key=lambda t: t["position"])]
+    names = [t["name"] for t in sorted(c["trees"], key=lambda t: t["position"])]
+    tiers = sorted({x["tier"] for t in c["trees"] for x in t["talents"]})
+    cols  = sorted({x["column"] for t in c["trees"] for x in t["talents"]})
+    print(f'{c["class_slug"]:<8} build={c["build"]} sizes={sizes} {names} tiers={tiers} cols={cols}')
+PY
+```
+
+Expected: `all talents: 469`; the per-class counts above; `warrior  build=1.60.1.69893 sizes=[17, 18, 18] ['Arms', 'Fury', 'Protection'] tiers=[0, 1, 2, 3, 4, 5, 6] cols=[0, 1, 2, 3]` and `mage ... sizes=[18, 17, 19] ['Arcane', 'Fire', 'Frost']`. **If any of that differs, the data has been re-mined and this task's tests need the new numbers before anything else changes.**
+
+Then copy the warrior file in as the generator's fixture, so `tools/talentgen` tests without a site checkout:
+
+```bash
+mkdir -p /Users/jh/code/wowsims-forever/tools/talentgen/testdata
+cp /Users/jh/code/forever/data/builds/1.60.1.69893/talents/warrior.json \
+   /Users/jh/code/wowsims-forever/tools/talentgen/testdata/warrior.json
+wc -c /Users/jh/code/wowsims-forever/tools/talentgen/testdata/warrior.json
+```
+
+- [ ] **Step 2: Write the failing reader test**
+
+Create `sim/core/talents/talents_test.go`:
+
+```go
+package talents
+
+import "testing"
+
+func warrior(t *testing.T) Class {
+	t.Helper()
+	c, err := Load("../../../tools/talentgen/testdata/warrior.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	return c
+}
+
+// The client's own tree order is the game's: Arms, Fury, Protection. The
+// planner renders in this order and the talent string is written in it,
+// so a reader that sorts alphabetically silently reads Fury's points as
+// Arms's.
+func TestTreesAreInTheClientsOrder(t *testing.T) {
+	c := warrior(t)
+	want := []string{"Arms", "Fury", "Protection"}
+	for i, n := range want {
+		if c.Trees[i].Name != n {
+			t.Errorf("tree %d is %q, want %q", i, c.Trees[i].Name, n)
+		}
+		if c.Trees[i].Position != i {
+			t.Errorf("tree %q has position %d, want %d", c.Trees[i].Name, c.Trees[i].Position, i)
+		}
+	}
+	if c.Trees[0].ID != 161 || c.Trees[1].ID != 164 || c.Trees[2].ID != 163 {
+		t.Errorf("tree ids = %d/%d/%d, want 161/164/163", c.Trees[0].ID, c.Trees[1].ID, c.Trees[2].ID)
+	}
+}
+
+// TreeSizes is what core.FillTalentsProto slices the talent string with.
+// A wrong size does not error, it reads the wrong talent.
+func TestTreeSizesMatchTheClient(t *testing.T) {
+	c := warrior(t)
+	want := [3]int{17, 18, 18}
+	if got := c.TreeSizes(); got != want {
+		t.Errorf("TreeSizes() = %v, want %v", got, want)
+	}
+	if c.Build != "1.60.1.69893" {
+		t.Errorf("Build = %q; the reader must carry the client build through", c.Build)
+	}
+}
+
+// Seven rows and four columns, which is the grid the design describes and
+// the planner draws.
+func TestTheGridIsSevenByFour(t *testing.T) {
+	c := warrior(t)
+	for _, tr := range c.Trees {
+		for _, ta := range tr.Talents {
+			if ta.Tier < 0 || ta.Tier > 6 {
+				t.Errorf("%s/%s is on tier %d, outside 0-6", tr.Name, ta.Name, ta.Tier)
+			}
+			if ta.Column < 0 || ta.Column > 3 {
+				t.Errorf("%s/%s is in column %d, outside 0-3", tr.Name, ta.Name, ta.Column)
+			}
+		}
+	}
+}
+
+// Within a tree the talents must be ordered tier-then-column, because
+// that is the order the talent string is written in and the order the
+// generated proto's fields take.
+func TestTalentsAreOrderedTierThenColumn(t *testing.T) {
+	c := warrior(t)
+	for _, tr := range c.Trees {
+		for i := 1; i < len(tr.Talents); i++ {
+			a, b := tr.Talents[i-1], tr.Talents[i]
+			if a.Tier > b.Tier || (a.Tier == b.Tier && a.Column >= b.Column) {
+				t.Errorf("%s: %q (t%d c%d) is before %q (t%d c%d)", tr.Name, a.Name, a.Tier, a.Column, b.Name, b.Tier, b.Column)
+			}
+		}
+	}
+}
+
+// Every talent carries its client node id, its spell id, and one spell id
+// per rank. Tasks 11 and 12 attach spell mods by rank, and a missing rank
+// id would send them back to typing numbers.
+func TestEveryTalentCarriesItsIDs(t *testing.T) {
+	c := warrior(t)
+	for _, tr := range c.Trees {
+		for _, ta := range tr.Talents {
+			if ta.NodeID == 0 {
+				t.Errorf("%s/%s has no node id", tr.Name, ta.Name)
+			}
+			if ta.SpellID == 0 {
+				t.Errorf("%s/%s has no spell id", tr.Name, ta.Name)
+			}
+			if ta.MaxRank < 1 {
+				t.Errorf("%s/%s has max rank %d", tr.Name, ta.Name, ta.MaxRank)
+			}
+			if len(ta.RankSpellIDs) != ta.MaxRank {
+				t.Errorf("%s/%s has %d rank spell ids for %d ranks", tr.Name, ta.Name, len(ta.RankSpellIDs), ta.MaxRank)
+			}
+		}
+	}
+}
+
+// A prerequisite must point at a talent in the same tree, or the planner
+// and the engine disagree about what gates what.
+func TestPrerequisitesPointIntoTheSameTree(t *testing.T) {
+	c := warrior(t)
+	for _, tr := range c.Trees {
+		in := map[int32]bool{}
+		for _, ta := range tr.Talents {
+			in[ta.NodeID] = true
+		}
+		for _, ta := range tr.Talents {
+			if ta.PrereqNodeID == 0 {
+				continue
+			}
+			if !in[ta.PrereqNodeID] {
+				t.Errorf("%s/%s requires node %d, which is not in this tree", tr.Name, ta.Name, ta.PrereqNodeID)
+			}
+			if ta.PrereqRank < 1 {
+				t.Errorf("%s/%s has a prerequisite with rank %d", tr.Name, ta.Name, ta.PrereqRank)
+			}
+		}
+	}
+}
+
+// The proto field name is derived, not typed, and it must be a legal
+// proto identifier and unique across the whole class.
+func TestFieldNamesAreLegalAndUnique(t *testing.T) {
+	c := warrior(t)
+	seen := map[string]string{}
+	for _, tr := range c.Trees {
+		for _, ta := range tr.Talents {
+			n := c.FieldName(ta)
+			if n == "" {
+				t.Errorf("%s/%s produced an empty field name", tr.Name, ta.Name)
+				continue
+			}
+			if n[0] < 'a' || n[0] > 'z' {
+				t.Errorf("%q does not start with a lowercase letter", n)
+			}
+			for _, r := range n {
+				if !(r >= 'a' && r <= 'z' || r >= '0' && r <= '9' || r == '_') {
+					t.Errorf("%q contains %q, which is not legal in a proto field name", n, r)
+					break
+				}
+			}
+			if prev, dup := seen[n]; dup {
+				t.Errorf("%q is produced by both %q and %q", n, prev, ta.Name)
+			}
+			seen[n] = ta.Name
+		}
+	}
+}
+
+// Forever's milestones are declared once here rather than per class, so
+// two classes cannot disagree about the shape of a tree.
+func TestForeverMilestones(t *testing.T) {
+	if ForeverMilestones != [4]int{11, 16, 21, 31} {
+		t.Errorf("ForeverMilestones = %v, want [11 16 21 31]", ForeverMilestones)
+	}
+}
+```
+
+- [ ] **Step 3: Run it and watch it fail**
+
+Run: `cd /Users/jh/code/wowsims-forever && go test ./sim/core/talents/ -v`
+Expected: `FAIL [build failed]`, `undefined: Load`.
+
+- [ ] **Step 4: Write the reader**
+
+Create `sim/core/talents/talents.go`. It is a plain reader with no engine dependency, so `tools/talentgen` and the per-class packages can both use it.
+
+```go
+// Package talents reads the client's mined talent trees.
+//
+// The input is the site pipeline's per-class output,
+// data/builds/<build>/talents/<class-slug>.json, generated from the
+// 1.60 client's trait tables. It is the single source of every talent's
+// name, grid position, rank count, prerequisite and spell ids, and
+// nothing in this repository may type any of those by hand: the proto
+// message's field order, TalentTreeSizes, and the order the planner
+// writes a talent string in must agree exactly, and they only can if one
+// file produces all three.
+package talents
+
+import (
+	"encoding/json"
+	"fmt"
+	"os"
+	"sort"
+	"strings"
+	"unicode"
+)
+
+// ForeverMilestones are the point totals at which a tree opens its
+// one-point talents: vanilla's 11, 21 and 31 plus Forever's new 16.
+// Declared once, here, because a tree's shape is the game's and not a
+// class's, and two classes disagreeing about it would be a bug nobody
+// would notice.
+var ForeverMilestones = [4]int{11, 16, 21, 31}
+
+// Talent is one node of one tree.
+type Talent struct {
+	NodeID  int32
+	Name    string
+	Icon    string
+	MaxRank int
+	Tier    int
+	Column  int
+	// SpellID is the talent's own spell, which the client gives once per
+	// talent rather than once per rank.
+	SpellID int32
+	// RankSpellIDs is one id per rank, in rank order. len == MaxRank.
+	RankSpellIDs []int32
+	// PrereqNodeID is 0 when the talent has no prerequisite.
+	PrereqNodeID int32
+	PrereqRank   int
+}
+
+// Tree is one of a class's three tabs.
+type Tree struct {
+	ID       int32
+	Name     string
+	Position int
+	// Talents are ordered tier then column, which is the order the
+	// talent string is written in.
+	Talents []Talent
+}
+
+// Class is one class's three trees.
+type Class struct {
+	Slug    string
+	Build   string
+	ClassID int32
+	Trees   [3]Tree
+}
+
+// the on-disk shape, kept private so the public types can differ from it.
+type fileClass struct {
+	Build     string     `json:"build"`
+	ClassID   int32      `json:"class_id"`
+	ClassSlug string     `json:"class_slug"`
+	Trees     []fileTree `json:"trees"`
+}
+
+type fileTree struct {
+	ID       int32        `json:"id"`
+	Name     string       `json:"name"`
+	Position int          `json:"position"`
+	Talents  []fileTalent `json:"talents"`
+}
+
+type fileTalent struct {
+	ID             int32      `json:"id"`
+	Name           string     `json:"name"`
+	Icon           string     `json:"icon"`
+	MaxRank        int        `json:"max_rank"`
+	Tier           int        `json:"tier"`
+	Column         int        `json:"column"`
+	PrereqTalentID *int32     `json:"prereq_talent_id"`
+	PrereqRank     *int       `json:"prereq_rank"`
+	SpellID        int32      `json:"spell_id"`
+	Ranks          []fileRank `json:"ranks"`
+}
+
+type fileRank struct {
+	SpellID     int32  `json:"spell_id"`
+	Description string `json:"description"`
+}
+
+// Load reads one class's trees.
+func Load(path string) (Class, error) {
+	b, err := os.ReadFile(path)
+	if err != nil {
+		return Class{}, fmt.Errorf("talents: %w", err)
+	}
+	var fc fileClass
+	if err := json.Unmarshal(b, &fc); err != nil {
+		return Class{}, fmt.Errorf("talents: %s: %w", path, err)
+	}
+	if len(fc.Trees) != 3 {
+		return Class{}, fmt.Errorf("talents: %s has %d trees, want 3", path, len(fc.Trees))
+	}
+	out := Class{Slug: fc.ClassSlug, Build: fc.Build, ClassID: fc.ClassID}
+	trees := append([]fileTree(nil), fc.Trees...)
+	sort.SliceStable(trees, func(i, j int) bool { return trees[i].Position < trees[j].Position })
+	for i, ft := range trees {
+		if ft.Position != i {
+			return Class{}, fmt.Errorf("talents: %s tree %q has position %d at index %d", path, ft.Name, ft.Position, i)
+		}
+		t := Tree{ID: ft.ID, Name: ft.Name, Position: ft.Position}
+		tal := append([]fileTalent(nil), ft.Talents...)
+		sort.SliceStable(tal, func(a, b int) bool {
+			if tal[a].Tier != tal[b].Tier {
+				return tal[a].Tier < tal[b].Tier
+			}
+			return tal[a].Column < tal[b].Column
+		})
+		for _, ta := range tal {
+			ids := make([]int32, 0, len(ta.Ranks))
+			for _, r := range ta.Ranks {
+				ids = append(ids, r.SpellID)
+			}
+			n := Talent{
+				NodeID: ta.ID, Name: ta.Name, Icon: ta.Icon,
+				MaxRank: ta.MaxRank, Tier: ta.Tier, Column: ta.Column,
+				SpellID: ta.SpellID, RankSpellIDs: ids,
+			}
+			if ta.PrereqTalentID != nil {
+				n.PrereqNodeID = *ta.PrereqTalentID
+			}
+			if ta.PrereqRank != nil {
+				n.PrereqRank = *ta.PrereqRank
+			}
+			t.Talents = append(t.Talents, n)
+		}
+		out.Trees[i] = t
+	}
+	return out, nil
+}
+
+// TreeSizes is what core.FillTalentsProto slices a talent string with.
+func (c Class) TreeSizes() [3]int {
+	return [3]int{len(c.Trees[0].Talents), len(c.Trees[1].Talents), len(c.Trees[2].Talents)}
+}
+
+// FieldName is the talent's proto field name: the talent name in lower
+// snake case, matching the convention the nine existing messages use.
+// "Improved Heroic Strike" becomes improved_heroic_strike, "Eureka!"
+// becomes eureka, "Hack and Slash" becomes hack_and_slash.
+func (c Class) FieldName(t Talent) string {
+	var b strings.Builder
+	prevUnderscore := true // suppress a leading underscore
+	for _, r := range t.Name {
+		switch {
+		case unicode.IsLetter(r) || unicode.IsDigit(r):
+			b.WriteRune(unicode.ToLower(r))
+			prevUnderscore = false
+		default:
+			if !prevUnderscore {
+				b.WriteByte('_')
+				prevUnderscore = true
+			}
+		}
+	}
+	s := strings.TrimSuffix(b.String(), "_")
+	// A proto field name may not start with a digit, and no Forever
+	// talent does today; guard anyway so a future one fails loudly here
+	// rather than in protoc.
+	if s != "" && s[0] >= '0' && s[0] <= '9' {
+		s = "t_" + s
+	}
+	return s
+}
+
+// ByNodeID finds a talent by its client node id.
+func (c Class) ByNodeID(id int32) (Talent, bool) {
+	for _, tr := range c.Trees {
+		for _, t := range tr.Talents {
+			if t.NodeID == id {
+				return t, true
+			}
+		}
+	}
+	return Talent{}, false
+}
+
+// BySpellID finds a talent by its own spell id or by any rank's.
+func (c Class) BySpellID(id int32) (Talent, bool) {
+	for _, tr := range c.Trees {
+		for _, t := range tr.Talents {
+			if t.SpellID == id {
+				return t, true
+			}
+			for _, r := range t.RankSpellIDs {
+				if r == id {
+					return t, true
+				}
+			}
+		}
+	}
+	return Talent{}, false
+}
+```
+
+- [ ] **Step 5: Run the reader tests and watch them pass**
+
+Run: `cd /Users/jh/code/wowsims-forever && go test ./sim/core/talents/ -v && gofmt -l ./sim/core/talents`
+Expected: eight `PASS`, no `gofmt` output.
+
+- [ ] **Step 6: Write the failing generator test**
+
+Create `tools/talentgen/main_test.go`:
+
+```go
+package main
+
+import (
+	"strings"
+	"testing"
+
+	"github.com/wowsims/classic/sim/core/talents"
+)
+
+func warriorClass(t *testing.T) talents.Class {
+	t.Helper()
+	c, err := talents.Load("testdata/warrior.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	return c
+}
+
+// The proto message's field order IS the talent string's order, because
+// core.FillTalentsProto walks the fields positionally. So the emitted
+// message must be the three trees concatenated in position order, each
+// tier-then-column, with field numbers 1..N in that order and no gaps.
+func TestProtoMessageIsInTalentStringOrder(t *testing.T) {
+	c := warriorClass(t)
+	got := protoMessage(c)
+	lines := []string{}
+	for _, l := range strings.Split(got, "\n") {
+		l = strings.TrimSpace(l)
+		if strings.HasSuffix(l, ";") && !strings.HasPrefix(l, "//") {
+			lines = append(lines, l)
+		}
+	}
+	var want int
+	for _, tr := range c.Trees {
+		want += len(tr.Talents)
+	}
+	if len(lines) != want {
+		t.Fatalf("the message has %d fields, want %d", len(lines), want)
+	}
+	if !strings.Contains(got, "message WarriorTalents {") {
+		t.Errorf("the message is not named WarriorTalents:\n%s", got[:200])
+	}
+	// First field is Arms tier 0 column 0, last is Protection's last.
+	first := c.Trees[0].Talents[0]
+	if !strings.Contains(lines[0], c.FieldName(first)+" = 1;") {
+		t.Errorf("field 1 is %q, want %q", lines[0], c.FieldName(first))
+	}
+	last := c.Trees[2].Talents[len(c.Trees[2].Talents)-1]
+	if !strings.Contains(lines[len(lines)-1], c.FieldName(last)) {
+		t.Errorf("the last field is %q, want %q", lines[len(lines)-1], c.FieldName(last))
+	}
+}
+
+// A one-rank talent is a bool and a multi-rank talent is an int32, which
+// is the convention the nine hand-written messages already use, so
+// nothing downstream has to change.
+func TestOneRankTalentsAreBools(t *testing.T) {
+	c := warriorClass(t)
+	got := protoMessage(c)
+	for _, tr := range c.Trees {
+		for _, ta := range tr.Talents {
+			field := c.FieldName(ta)
+			wantType := "int32"
+			if ta.MaxRank == 1 {
+				wantType = "bool"
+			}
+			if !strings.Contains(got, wantType+" "+field+" =") {
+				t.Errorf("%s (max rank %d) is not declared as %s", field, ta.MaxRank, wantType)
+			}
+		}
+	}
+}
+
+// The generated Go file carries the sizes, the build, and the two lookup
+// maps the spec tasks read instead of typing spell ids.
+func TestGoFileCarriesSizesBuildAndIDs(t *testing.T) {
+	c := warriorClass(t)
+	got := goFile(c)
+	for _, want := range []string{
+		"// Code generated by tools/talentgen. DO NOT EDIT.",
+		"package warrior",
+		"var TalentTreeSizes = [3]int{17, 18, 18}",
+		`const TalentsBuild = "1.60.1.69893"`,
+		"var TalentNodeIDs = map[string]int32{",
+		"var TalentSpellIDs = map[string][]int32{",
+		`"improved_heroic_strike": 105958,`,
+	} {
+		if !strings.Contains(got, want) {
+			t.Errorf("the generated Go file does not contain %q", want)
+		}
+	}
+}
+
+// The UI tree JSON the engine's own talent picker reads must have one
+// entry per talent with its grid position, so the fork stays buildable.
+func TestUITreeJSONHasEveryTalent(t *testing.T) {
+	c := warriorClass(t)
+	got := uiTreeJSON(c)
+	for _, tr := range c.Trees {
+		if !strings.Contains(got, `"name": "`+tr.Name+`"`) {
+			t.Errorf("the UI JSON is missing the %s tree", tr.Name)
+		}
+		for _, ta := range tr.Talents {
+			if !strings.Contains(got, `"fieldName": "`+c.FieldName(ta)+`"`) {
+				t.Errorf("the UI JSON is missing %q", ta.Name)
+			}
+		}
+	}
+}
+
+// The round trip that actually matters: a talent string built from a
+// point spend must read back as the same spend through the generated
+// sizes. A size that is one out does not error, it reads the wrong
+// talent, which is why this is asserted rather than reasoned about.
+func TestTalentStringRoundTripsThroughTheGeneratedSizes(t *testing.T) {
+	c := warriorClass(t)
+	sizes := c.TreeSizes()
+	spend := make([][]int, 3)
+	for i, n := range sizes {
+		spend[i] = make([]int, n)
+	}
+	// One point in the first talent of each tree, five in Fury's last.
+	spend[0][0] = 1
+	spend[1][0] = 2
+	spend[2][0] = 3
+	spend[1][sizes[1]-1] = 1
+
+	var parts []string
+	for _, tree := range spend {
+		var b strings.Builder
+		for _, n := range tree {
+			b.WriteByte(byte('0' + n))
+		}
+		parts = append(parts, b.String())
+	}
+	s := strings.Join(parts, "-")
+
+	for i, n := range sizes {
+		if len(parts[i]) != n {
+			t.Fatalf("tree %d segment is %d characters, want %d", i, len(parts[i]), n)
+		}
+	}
+	if got := len(s); got != sizes[0]+sizes[1]+sizes[2]+2 {
+		t.Errorf("the talent string is %d characters, want %d", got, sizes[0]+sizes[1]+sizes[2]+2)
+	}
+}
+```
+
+- [ ] **Step 7: Run it and watch it fail**
+
+Run: `cd /Users/jh/code/wowsims-forever && go test ./tools/talentgen/ -v`
+Expected: `FAIL [build failed]`, `undefined: protoMessage`.
+
+- [ ] **Step 8: Write the generator**
+
+Create `tools/talentgen/main.go`. It is four pure functions — `protoMessage`, `goFile`, `uiTreeJSON`, and a `splice` that replaces exactly the `<Class>Talents` message inside an existing `.proto` file and leaves every other message alone — plus a `main` that walks the nine classes.
+
+```go
+// Command talentgen writes the engine's talent definitions from the
+// client's mined trait trees.
+//
+// It produces three things per class, all from one input file, because
+// three things must agree exactly and only a generator can promise that:
+// the <Class>Talents proto message (whose FIELD ORDER is the talent
+// string's order, per core.FillTalentsProto), TalentTreeSizes (which
+// slices the string), and the UI tree JSON (which the engine's own
+// talent picker draws). A mismatch between any two does not error, it
+// reads the wrong talent.
+//
+//	go run ./tools/talentgen -builds ../forever/data/builds -build 1.60.1.69893
+//
+// then `make proto` and commit both the .proto and the regenerated .pb.go.
+package main
+
+import (
+	"flag"
+	"fmt"
+	"log"
+	"os"
+	"path/filepath"
+	"regexp"
+	"strings"
+
+	"github.com/wowsims/classic/sim/core/talents"
+)
+
+// classes are the nine, by slug. The proto message name is the slug
+// title-cased plus "Talents", which is what the nine existing messages
+// are already called.
+var classes = []string{"druid", "hunter", "mage", "paladin", "priest", "rogue", "shaman", "warlock", "warrior"}
+
+func main() {
+	builds := flag.String("builds", "../forever/data/builds", "the site repo's data/builds directory")
+	build := flag.String("build", "1.60.1.69893", "which client build to generate from")
+	flag.Parse()
+
+	for _, slug := range classes {
+		in := filepath.Join(*builds, *build, "talents", slug+".json")
+		c, err := talents.Load(in)
+		if err != nil {
+			log.Fatalf("%s: %v", slug, err)
+		}
+		if c.Slug != slug {
+			log.Fatalf("%s declares class_slug %q", in, c.Slug)
+		}
+		if err := spliceProto(filepath.Join("proto", slug+".proto"), c); err != nil {
+			log.Fatalf("%s: %v", slug, err)
+		}
+		if err := os.WriteFile(filepath.Join("sim", slug, "talents_auto_gen.go"), []byte(goFile(c)), 0o644); err != nil {
+			log.Fatal(err)
+		}
+		if err := os.WriteFile(filepath.Join("ui", "core", "talents", "trees", slug+".json"), []byte(uiTreeJSON(c)), 0o644); err != nil {
+			log.Fatal(err)
+		}
+		sizes := c.TreeSizes()
+		log.Printf("%-8s %d talents %v from build %s", slug, sizes[0]+sizes[1]+sizes[2], sizes, c.Build)
+	}
+	log.Print("now run: make proto && gofmt -w ./sim ./tools")
+}
+
+func messageName(slug string) string {
+	return strings.ToUpper(slug[:1]) + slug[1:] + "Talents"
+}
+
+// protoMessage renders the <Class>Talents message. Field numbers are
+// 1..N in talent-string order and are never reused: the message is
+// regenerated whole on every data change, and nothing persists a talent
+// message on the wire (the wire form is the positional talent string),
+// so renumbering is safe here in a way it is not for RaidSimRequest.
+func protoMessage(c talents.Class) string {
+	var b strings.Builder
+	fmt.Fprintf(&b, "// Code generated by tools/talentgen from client build %s. DO NOT EDIT.\n", c.Build)
+	fmt.Fprintf(&b, "// Field order is the talent string's order: the three trees in the\n")
+	fmt.Fprintf(&b, "// client's own order, each tier then column. core.FillTalentsProto\n")
+	fmt.Fprintf(&b, "// reads it positionally, so a reorder silently reads the wrong talent.\n")
+	fmt.Fprintf(&b, "message %s {\n", messageName(c.Slug))
+	n := 0
+	for i, tr := range c.Trees {
+		if i > 0 {
+			b.WriteString("\n")
+		}
+		fmt.Fprintf(&b, "\t// %s (tree %d, client id %d)\n", tr.Name, tr.Position, tr.ID)
+		for _, ta := range tr.Talents {
+			n++
+			typ := "int32"
+			if ta.MaxRank == 1 {
+				typ = "bool"
+			}
+			fmt.Fprintf(&b, "\t%s %s = %d; // node %d, tier %d col %d, %d rank(s), spell %d\n",
+				typ, c.FieldName(ta), n, ta.NodeID, ta.Tier, ta.Column, ta.MaxRank, ta.SpellID)
+		}
+	}
+	b.WriteString("}\n")
+	return b.String()
+}
+
+var msgRe = regexp.MustCompile(`(?ms)^(//[^\n]*\n)*message \w+Talents \{.*?^\}\n`)
+
+// spliceProto replaces only the <Class>Talents message in a .proto file.
+// Every other message in the file - the spec's options, its rotation -
+// is hand-written and must survive untouched.
+func spliceProto(path string, c talents.Class) error {
+	b, err := os.ReadFile(path)
+	if err != nil {
+		return err
+	}
+	src := string(b)
+	if !msgRe.MatchString(src) {
+		return fmt.Errorf("%s: no %s message found to replace", path, messageName(c.Slug))
+	}
+	out := msgRe.ReplaceAllLiteralString(src, protoMessage(c))
+	return os.WriteFile(path, []byte(out), 0o644)
+}
+
+// goFile writes sim/<class>/talents_auto_gen.go: the sizes the talent
+// string is sliced with, the build they came from, and two lookups the
+// spec packages read instead of typing spell ids.
+func goFile(c talents.Class) string {
+	var b strings.Builder
+	fmt.Fprintf(&b, "// Code generated by tools/talentgen. DO NOT EDIT.\n")
+	fmt.Fprintf(&b, "// Source: the client's trait tables, build %s.\n\n", c.Build)
+	fmt.Fprintf(&b, "package %s\n\n", c.Slug)
+	s := c.TreeSizes()
+	fmt.Fprintf(&b, "// TalentTreeSizes is what core.FillTalentsProto slices the talent\n")
+	fmt.Fprintf(&b, "// string with: %s %d, %s %d, %s %d.\n",
+		c.Trees[0].Name, s[0], c.Trees[1].Name, s[1], c.Trees[2].Name, s[2])
+	fmt.Fprintf(&b, "var TalentTreeSizes = [3]int{%d, %d, %d}\n\n", s[0], s[1], s[2])
+	fmt.Fprintf(&b, "// TalentsBuild is the client build these trees came from.\n")
+	fmt.Fprintf(&b, "const TalentsBuild = %q\n\n", c.Build)
+
+	fmt.Fprintf(&b, "// TalentNodeIDs maps each talent's proto field name to the client's\n")
+	fmt.Fprintf(&b, "// trait node id, so a log or a planner build can be matched to a\n")
+	fmt.Fprintf(&b, "// talent without a second table.\n")
+	fmt.Fprintf(&b, "var TalentNodeIDs = map[string]int32{\n")
+	for _, tr := range c.Trees {
+		for _, ta := range tr.Talents {
+			fmt.Fprintf(&b, "\t%q: %d,\n", c.FieldName(ta), ta.NodeID)
+		}
+	}
+	fmt.Fprintf(&b, "}\n\n")
+
+	fmt.Fprintf(&b, "// TalentSpellIDs maps each talent's proto field name to its spell id\n")
+	fmt.Fprintf(&b, "// per rank, in rank order. A talent's behaviour file reads this\n")
+	fmt.Fprintf(&b, "// rather than typing an id, so a patch that renumbers a rank is a\n")
+	fmt.Fprintf(&b, "// regeneration and not a code edit.\n")
+	fmt.Fprintf(&b, "var TalentSpellIDs = map[string][]int32{\n")
+	for _, tr := range c.Trees {
+		for _, ta := range tr.Talents {
+			ids := make([]string, len(ta.RankSpellIDs))
+			for i, id := range ta.RankSpellIDs {
+				ids[i] = fmt.Sprint(id)
+			}
+			fmt.Fprintf(&b, "\t%q: {%s},\n", c.FieldName(ta), strings.Join(ids, ", "))
+		}
+	}
+	fmt.Fprintf(&b, "}\n")
+	return b.String()
+}
+
+// uiTreeJSON writes ui/core/talents/trees/<class>.json in the shape the
+// engine's own talent picker reads. We ship none of that UI, but the fork
+// stays buildable and mergeable, so it is regenerated rather than left
+// describing vanilla's trees.
+func uiTreeJSON(c talents.Class) string {
+	var b strings.Builder
+	b.WriteString("[\n")
+	for i, tr := range c.Trees {
+		if i > 0 {
+			b.WriteString(",\n")
+		}
+		fmt.Fprintf(&b, "  {\n    \"name\": %q,\n    \"backgroundUrl\": \"\",\n    \"talents\": [\n", tr.Name)
+		for j, ta := range tr.Talents {
+			if j > 0 {
+				b.WriteString(",\n")
+			}
+			fmt.Fprintf(&b, "      {\n        \"fieldName\": %q,\n        \"location\": { \"rowIdx\": %d, \"colIdx\": %d },\n        \"spellIds\": [%s],\n        \"maxPoints\": %d\n      }",
+				c.FieldName(ta), ta.Tier, ta.Column, joinIDs(ta.RankSpellIDs), ta.MaxRank)
+		}
+		b.WriteString("\n    ]\n  }")
+	}
+	b.WriteString("\n]\n")
+	return b.String()
+}
+
+func joinIDs(ids []int32) string {
+	parts := make([]string, len(ids))
+	for i, id := range ids {
+		parts[i] = fmt.Sprint(id)
+	}
+	return strings.Join(parts, ", ")
+}
+```
+
+- [ ] **Step 9: Run the generator tests, then the generator**
+
+```bash
+cd /Users/jh/code/wowsims-forever
+export PATH=$PATH:$(go env GOPATH)/bin
+go test ./tools/talentgen/ -v
+go run ./tools/talentgen -builds /Users/jh/code/forever/data/builds -build 1.60.1.69893
+```
+
+Expected: five `PASS`, then nine log lines, of which the warrior reads `warrior  53 talents [17 18 18] from build 1.60.1.69893` and the mage `mage     54 talents [18 17 19] from build 1.60.1.69893`. The per-class totals must match Step 1's counts exactly; a class that is one short means a tree lost a talent to the sort.
+
+Then regenerate and build:
+
+```bash
+make proto
+gofmt -w ./sim ./tools
+go build ./sim/...
+```
+
+Expected: `make proto` silent, `go build` clean. **`go build ./sim/...` will fail at this point for every class whose `talents.go` references a field the new message no longer has**, which is the whole point: the compiler is now the list of talent behaviour that has to be rewritten. Capture it, because Tasks 11 and 12 work from it:
+
+```bash
+go build -gcflags="-e" ./sim/... 2>&1 | grep 'undefined\|unknown field' | sort | uniq -c | sort -rn | tee /tmp/talent-fallout.txt
+wc -l /tmp/talent-fallout.txt
+```
+
+- [ ] **Step 10: Keep the seven untouched classes compiling**
+
+Tasks 11 and 12 rewrite the warrior's and the mage's talent behaviour. The other seven classes are not in this plan's scope and must not be left broken, or the fork stops building and every later task's test run is noise.
+
+For each of the seven, **comment out the bodies of the talent applications that no longer resolve**, in one block per class, with this comment at the top of the block:
+
+```go
+// FOREVER: the client's trait trees replaced vanilla's, so the talents
+// below no longer exist under these names. Their behaviour is rewritten
+// when this spec is brought up, in rankings-population order (design
+// section 2.3). Commented rather than deleted so the diff shows a
+// reviewer exactly what the old tree did.
+```
+
+Then confirm:
+
+```bash
+cd /Users/jh/code/wowsims-forever
+go build ./sim/... && echo "ENGINE BUILDS"
+go test --tags=with_db -count=1 ./sim/core/... ./sim/core/talents/ ./tools/talentgen/
+```
+
+Expected: `ENGINE BUILDS` and `ok` for the three packages. The nine per-class suites are expected to fail until their spec is brought up; **list which ones fail and record the list in the commit body**, so nobody mistakes it for a regression this task caused rather than work it deferred.
+
+- [ ] **Step 11: Add the make target and the porting note**
+
+In `makefile`:
+
+```makefile
+# Where the site repository is checked out, for the data lane's outputs.
+SITE_DIR ?= /Users/jh/code/forever
+# Which client build's trees to generate from.
+TALENT_BUILD ?= 1.60.1.69893
+
+.PHONY: talents
+# talents regenerates the nine <Class>Talents proto messages, the nine
+# sim/<class>/talents_auto_gen.go files and the nine UI tree JSONs from
+# the client's mined trait tables. A Forever patch that moves a talent is
+# this target plus `make proto`, not a code edit.
+talents:
+	go run ./tools/talentgen -builds "$(SITE_DIR)/data/builds" -build "$(TALENT_BUILD)"
+	$(MAKE) proto
+	gofmt -w ./sim ./tools
+```
+
+and append to `PORTING.md`:
+
+```markdown
+## Talent trees come from the client, not from this repository
+
+`proto/<class>.proto`'s `<Class>Talents` message, `sim/<class>/talents_auto_gen.go`
+and `ui/core/talents/trees/<class>.json` are generated by `tools/talentgen`
+from the Forever client's trait tables, mined by the site pipeline into
+`data/builds/<build>/talents/<class>.json`. Run `make talents`.
+
+Upstream hand-writes all three. A merge that reintroduces a hand-edited
+`<Class>Talents` message will be silently wrong: `core.FillTalentsProto`
+reads the talent string positionally against the message's field order, so
+the field order, `TalentTreeSizes` and the planner's string must agree, and
+they only do because one file produces all three.
+```
+
+- [ ] **Step 12: Commit**
+
+```bash
+cd /Users/jh/code/wowsims-forever
+gofmt -l ./sim ./tools
+git add proto/ sim/core/talents/ sim/*/talents_auto_gen.go sim/*/talents.go ui/core/talents/trees/ tools/talentgen/ makefile PORTING.md
+git commit -m "feat(talents): generate the nine talent trees from the client's trait tables" \
+  -m "The beta client's trait tables are mined: 469 talents across nine classes, three trees each in the client's own order, seven rows by four columns, with node ids, per-rank spell ids, rank caps and 96 prerequisite edges. Three things have to agree exactly or a build silently reads the wrong talent - the proto message's field order, TalentTreeSizes, and the order the planner writes its string in - and only a generator can promise that, so all three now come from one file. A one-rank talent is a bool and a multi-rank talent an int32, which is the convention the hand-written messages already used, so nothing downstream changes shape. The seven classes outside this plan's scope keep compiling with their old talent bodies commented and a note saying when they are rewritten." \
+  -m "Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
+```
+
+---
+
 ## Task 11: `warrior-fury` end to end
 
-**Repo: ENGINE.** Depends on Tasks 7 and 10. **G3 — INDEPENDENT of Task 12.** This task touches only `sim/warrior/**`, `proto/warrior.proto`, `ui/warrior/**` and `sim/register_all.go`; Task 12 touches only the mage's equivalents. Two parallel worktrees, one merge each.
+**Repo: ENGINE.** Depends on Tasks 7, 10, 16 and 17. **G3 — INDEPENDENT of Task 12.** This task touches only `sim/warrior/**`, `ui/warrior/**` and `sim/register_all.go`; Task 12 touches only the mage's equivalents. Two parallel worktrees, one merge each. **It does not touch `proto/warrior.proto` or `ui/core/talents/trees/warrior.json`: Task 17 generates both from the client and this task consumes them.**
 
-Fury is the first of the two launch specs. Four deliverables: a `talents.go` rewritten for Forever's seven rows and 11/16/21/31 milestones using the spell-mod system from Task 7, the new baseline abilities as one file each, the constants read from Task 10's generated file, and a default APL.
+Fury is the first of the two launch specs. Three deliverables, one fewer than this task used to have: the talent **behaviour** written against Task 17's generated tree, the new baseline abilities as one file each, and a default APL — with the constants read from Task 10's generated file where that file exists.
 
-**What survives and what does not.** Research §1.11 puts it at 40-60% of `talents.go`. Reading `sim/warrior/talents.go` (498 lines) against Forever's confirmed rules: Forever keeps seven rows and the 11/21/31 gold-medal talents, **adds a 16-point one per tree**, deletes the buff-only talents and makes those baseline, and keeps many talents unchanged from 2006. So the arithmetic talents (Cruelty, Toughness, Anticipation, Deflection, the weapon specializations, Impale, Improved Heroic Strike) survive as declarative mods; the mechanical ones (Anger Management, Deep Wounds, Flurry, Enrage, Unbridled Wrath, Death Wish, Sweeping Strikes, Last Stand) survive as their existing functions; only the tree *shape* and the new 16-point talent are genuinely new.
+**What the tree is, from the client rather than from a tooltip.** `data/builds/1.60.1.69893/talents/warrior.json` gives the warrior's three trees in the client's own order — **Arms (id 161, 17 talents), Fury (id 164, 18), Protection (id 163, 18)**, 53 in all — each talent with its node id, name, icon, rank cap, tier (0–6) and column (0–3), its prerequisite, its own spell id and one spell id per rank with that rank's description text. Task 17 has already turned that into `proto.WarriorTalents`, `warrior.TalentTreeSizes = [3]int{17, 18, 18}`, `warrior.TalentNodeIDs` and `warrior.TalentSpellIDs`. **Nothing in this task types a talent name, a rank count, a grid position or a spell id**; it reads the rank descriptions to learn what each talent *does* and writes the Go that does it.
+
+**What survives and what does not.** Research §1.11 put it at 40–60% of `talents.go`, and the mined tree lets that be checked rather than estimated. Do it first, as Step 0 below: diff the generated field names against the ones `sim/warrior/talents.go` applies today. The talents that survive keep their existing bodies — the arithmetic ones (Cruelty, Deflection, Impale, Improved Heroic Strike, the weapon specializations) become declarative `SpellModConfig`s, and the mechanical ones (Anger Management, Deep Wounds, Flurry, Enrage, Unbridled Wrath, Death Wish, Sweeping Strikes, Last Stand) keep their functions. The talents that are gone are deleted. The talents that are new are written from their rank descriptions.
+
+- [ ] **Step 0: Measure what survives, before writing anything**
+
+```bash
+cd /Users/jh/code/wowsims-forever
+# The generated tree's field names, in talent-string order.
+grep -oE '^\t"[a-z0-9_]+":' sim/warrior/talents_auto_gen.go | tr -d '\t":' | sort -u > /tmp/new-talents.txt
+# The ones today's talents.go actually reads.
+grep -oE 'warrior\.Talents\.[A-Za-z]+' sim/warrior/talents.go | sed 's/warrior\.Talents\.//' | sort -u > /tmp/old-talents-camel.txt
+wc -l /tmp/new-talents.txt /tmp/old-talents-camel.txt
+```
+
+Convert the old camel-case names to snake case by eye (there are under sixty) and write the three lists into the commit body: **survives**, **gone**, **new**. That list is the task's actual scope, and it is evidence rather than an estimate.
 
 **Do not copy `ui/warrior/apls/dps_reck.apl.json` as the starting point without re-validating it.** The data lane verified that the engine's checked-in preset APLs are stale on spell ranks. Every `spellId` in the new APL is checked against the build's own tables.
 
 **Thirteen hit and crit talents changed meaning, and four of them converted from resist-reduction to hit** (`research/08-stats.md` §1.2). A rename is not enough: grep this spec for the old `SpellHit` and `MeleeHit` uses and **rebuild each against §1.2's table**, rather than assuming a merged stat means the talent still does what it did. A talent that used to cut a target's resistance and now grants hit is a different talent with a different value.
 
 **Files:**
-- Modify: `proto/warrior.proto` (the `WarriorTalents` message, 111 lines), `sim/warrior/talents.go`, `sim/warrior/warrior.go` (`TalentTreeSizes`, the spell-code block, `ApplyTalents` call sites), `sim/warrior/constants_auto_gen.go` (regenerated), `sim/warrior/dps_warrior/dps_warrior_test.go`
-- Create: `sim/warrior/rampage.go`, `sim/warrior/piercing_howl.go`, `ui/warrior/apls/forever_fury.apl.json`, `ui/core/talents/trees/warrior.json` (regenerated)
+- Modify: `sim/warrior/talents.go`, `sim/warrior/warrior.go` (the spell-code block and the `ApplyTalents` call sites; **`TalentTreeSizes` moves out of this file — Task 17 generates it into `talents_auto_gen.go`, so delete the hand-written one here or the package will not compile**), `sim/warrior/dps_warrior/dps_warrior_test.go`
+- Modify (only if Task 10's input exists): `sim/warrior/constants_auto_gen.go`
+- Create: `sim/warrior/rampage.go`, `sim/warrior/piercing_howl.go`, `ui/warrior/apls/forever_fury.apl.json`
+- Read-only, from Task 17: `proto/warrior.proto`, `sim/warrior/talents_auto_gen.go`, `ui/core/talents/trees/warrior.json`, and `data/builds/1.60.1.69893/talents/warrior.json` in the site repo, for the rank descriptions
 - Test: `sim/warrior/talents_test.go`, `sim/warrior/dps_warrior/dps_warrior_test.go`
 
 **Interfaces:**
-- Consumes: `core.SpellModConfig`, `core.SpellMod_*`, `(*Unit).AddStaticMod`, `(*Unit).AddDynamicMod`, `Spell.ClassSpellMask` (Task 7); `warrior.ConstantsBuild` and the generated per-rank arrays (Task 10).
+- Consumes: `core.SpellModConfig`, `core.SpellMod_*`, `(*Unit).AddStaticMod`, `(*Unit).AddDynamicMod`, `Spell.ClassSpellMask` (Task 7); `DotConfig.CanCrit`, `Dot.CritMultiplier`, `PseudoStats.ArmorIgnorePercent` (Task 16); `warrior.TalentTreeSizes`, `warrior.TalentsBuild`, `warrior.TalentNodeIDs`, `warrior.TalentSpellIDs` and the regenerated `proto.WarriorTalents` (Task 17); `warrior.ConstantsBuild` and the generated per-rank arrays (Task 10, where its input exists).
 - Produces:
   - `warrior.WarriorSpellMask*` — a `uint64` bitmask constant per ability, replacing nothing (`SpellCode_Warrior*` stays for the existing code)
-  - `warrior.TalentTreeSizes` updated to Forever's row counts
   - `(*Warrior).registerRampageSpell()`, `(*Warrior).registerPiercingHowlSpell()`
-  - `warrior.ForeverFuryTalents string` — the reference build the test suite uses
+  - `warrior.ForeverFuryTalents string` — the reference build the test suite uses, written against the generated tree sizes `[3]int{17, 18, 18}`
   - `ui/warrior/apls/forever_fury.apl.json`
+- **Does not produce** `warrior.TalentTreeSizes` or `warrior.ForeverMilestones` any more: Task 17 generates the first and declares the second once, in `sim/core/talents`.
 
 - [ ] **Step 1: Write the failing talent test**
 
@@ -5450,29 +6922,28 @@ Create `sim/warrior/talents_test.go`:
 package warrior
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/wowsims/classic/sim/core/proto"
 )
 
-// Forever's trees are seven rows with gold-medal talents at 11, 16, 21
-// and 31 points. The 16-point tier is the new one; everything else is
-// vanilla's shape.
-func TestForeverTalentMilestones(t *testing.T) {
-	want := []int{11, 16, 21, 31}
-	if len(ForeverMilestones) != len(want) {
-		t.Fatalf("ForeverMilestones = %v, want %v", ForeverMilestones, want)
+// The generated tree must be the client's: Arms 17, Fury 18,
+// Protection 18, from build 1.60.1.69893. If Task 17 has not run, or
+// ran against Era, this fails first and everything below it is noise.
+func TestTheGeneratedTreeIsTheClients(t *testing.T) {
+	if got, want := TalentTreeSizes, [3]int{17, 18, 18}; got != want {
+		t.Fatalf("TalentTreeSizes = %v, want %v (Arms 17, Fury 18, Protection 18)", got, want)
 	}
-	for i, m := range want {
-		if ForeverMilestones[i] != m {
-			t.Errorf("ForeverMilestones[%d] = %d, want %d", i, ForeverMilestones[i], m)
-		}
+	if TalentsBuild == "" {
+		t.Error("TalentsBuild is empty; the generated file must record the client build")
 	}
 }
 
 // The talent string is parsed positionally against TalentTreeSizes, so a
 // tree size that does not match the proto's field count silently reads
-// the wrong talent.
+// the wrong talent. Task 17 generates both from one file precisely so
+// they cannot disagree; this is the assertion that says so.
 func TestTalentTreeSizesMatchTheProto(t *testing.T) {
 	var total int
 	for _, n := range TalentTreeSizes {
@@ -5481,6 +6952,36 @@ func TestTalentTreeSizesMatchTheProto(t *testing.T) {
 	fields := (&proto.WarriorTalents{}).ProtoReflect().Descriptor().Fields()
 	if fields.Len() != total {
 		t.Errorf("WarriorTalents has %d fields, TalentTreeSizes sums to %d", fields.Len(), total)
+	}
+	if total != 53 {
+		t.Errorf("the warrior has %d talents, want 53 from build %s", total, TalentsBuild)
+	}
+}
+
+// foreverFuryTalentsApplied is every talent ApplyTalents reads, by its
+// generated proto field name. Keep it in step with talents.go by hand:
+// it is the list the next test checks against the client's own tree, and
+// a talent that is applied but absent from this list is one this test
+// cannot protect. Fill it in as Step 5 writes each talent.
+var foreverFuryTalentsApplied = []string{
+	"improved_heroic_strike",
+	"deflection",
+	"cruelty",
+	"impale",
+	// ... one line per talent sim/warrior/talents.go applies.
+}
+
+// Every talent this spec's behaviour reads must exist in the generated
+// tree. A typo'd field name compiles if another talent happens to share
+// it and silently applies the wrong effect otherwise.
+func TestEveryTalentThisSpecAppliesExists(t *testing.T) {
+	for _, name := range foreverFuryTalentsApplied {
+		if _, ok := TalentNodeIDs[name]; !ok {
+			t.Errorf("talents.go applies %q, which is not in the client's tree", name)
+		}
+		if len(TalentSpellIDs[name]) == 0 {
+			t.Errorf("%q has no rank spell ids", name)
+		}
 	}
 }
 
@@ -5514,11 +7015,45 @@ func TestFurySpellsCarryTheirMasks(t *testing.T) {
 // the 31-point talent in Fury, or the suite is validating a build nobody
 // would play.
 func TestForeverFuryTalentsAreAValidBuild(t *testing.T) {
+	// Each segment must be exactly its tree's width, or every talent
+	// after the short one is read from the wrong position and nothing
+	// complains.
+	parts := strings.Split(ForeverFuryTalents, "-")
+	if len(parts) != 3 {
+		t.Fatalf("ForeverFuryTalents has %d segments, want 3", len(parts))
+	}
+	var spent int
+	for i, part := range parts {
+		if len(part) != TalentTreeSizes[i] {
+			t.Errorf("segment %d is %d characters, want %d", i, len(part), TalentTreeSizes[i])
+		}
+		for _, c := range part {
+			if c < '0' || c > '9' {
+				t.Fatalf("segment %d contains %q", i, c)
+			}
+			spent += int(c - '0')
+		}
+	}
+	if spent != 51 {
+		t.Errorf("the reference build spends %d points, want 51", spent)
+	}
+	if sum(parts[1]) != 31 {
+		t.Errorf("the reference build spends %d points in Fury, want 31 to reach the capstone", sum(parts[1]))
+	}
+
 	talents := &proto.WarriorTalents{}
 	fillWarriorTalents(talents, ForeverFuryTalents)
 	if !talents.Bloodthirst {
-		t.Error("the reference Fury build does not take Bloodthirst, the 31-point talent")
+		t.Error("the reference Fury build does not take Bloodthirst, the 31-point Fury talent")
 	}
+}
+
+func sum(segment string) int {
+	var n int
+	for _, c := range segment {
+		n += int(c - '0')
+	}
+	return n
 }
 ```
 
@@ -5527,49 +7062,58 @@ func TestForeverFuryTalentsAreAValidBuild(t *testing.T) {
 - [ ] **Step 2: Run it and watch it fail**
 
 Run: `cd /Users/jh/code/wowsims-forever && go test --tags=with_db ./sim/warrior/ -v`
-Expected: `FAIL [build failed]`, `undefined: ForeverMilestones`.
+Expected: `FAIL [build failed]`, `undefined: TalentsBuild` (the generated file is Task 17's and the test names it before anything else).
 
-- [ ] **Step 3: Regenerate the talent proto and tree JSON**
+- [ ] **Step 3: Read the generated tree and the rank descriptions**
 
-The scrapers already exist and already target a per-environment Wowhead URL:
+Nothing is regenerated here any more. **Task 17 generated `proto.WarriorTalents`, `sim/warrior/talents_auto_gen.go` and `ui/core/talents/trees/warrior.json` from the client's own trait tables**, so this step is reading, not writing. An earlier draft of this step scraped Wowhead's talent calculator; that is obsolete and must not be revived, because a scrape and the client would disagree the first time Blizzard moved a talent.
+
+Confirm what landed, then read what each talent does:
 
 ```bash
 cd /Users/jh/code/wowsims-forever
-head -40 tools/scrape_talents_proto.py     # read how the env is chosen
-python3 tools/scrape_talents_proto.py --class warrior --env forever
-python3 tools/scrape_talents_config.py --class warrior --env forever
-export PATH=$PATH:$(go env GOPATH)/bin && make proto
+head -20 sim/warrior/talents_auto_gen.go
+grep -c '=' proto/warrior.proto                       # every generated field
+grep -n 'message WarriorTalents' -A 6 proto/warrior.proto
 ```
 
-If the scrapers take the environment differently (they were written against `wowhead.com/classic/talent-calc/<class>`), read the file and pass whatever it takes; Wowhead's Forever data environment is live at `nether.wowhead.com/forever/` with the internal name `classicplus` (research §5.2). **If the Forever talent calculator is not up yet** — before Sept 17 it will not be — do not fabricate a tree. Instead:
+Expected: `TalentTreeSizes = [3]int{17, 18, 18}`, `TalentsBuild = "1.60.1.69893"`, and a message whose first comment block says `Arms (tree 0, client id 161)`.
 
-- leave `proto/warrior.proto` as it is,
-- set `TalentTreeSizes` to Era's `[3]int{18, 17, 17}` unchanged,
-- add the comment below to `talents.go`, and
-- put `"warrior: talent tree shape"` into the unconfirmed list.
+Then print the Fury tree with every rank's description — this is the specification for Step 5, and it is the client's own text:
 
-```go
-// Forever keeps seven rows per tree and moves the gold-medal talents to
-// 11, 16, 21 and 31 points, adding a 16-point talent per tree that
-// vanilla does not have. The tree's actual contents come from
-// tools/scrape_talents_proto.py against Wowhead's Forever environment,
-// which is not populated before the beta client on 2026-09-17. Until it
-// is, this is Era's tree and the milestone list below is the only part
-// of Forever's shape that is expressed.
-// unconfirmed: warrior talent tree shape
+```bash
+cd /Users/jh/code/forever
+python3 - <<'EOF'
+import json
+c = json.load(open("data/builds/1.60.1.69893/talents/warrior.json"))
+for tree in sorted(c["trees"], key=lambda t: t["position"]):
+    print(f"\n########## {tree['name']} (id {tree['id']}, {len(tree['talents'])} talents) ##########")
+    for t in sorted(tree["talents"], key=lambda t: (t["tier"], t["column"])):
+        pre = f" [needs {t['prereq_talent_id']} rank {t['prereq_rank']}]" if t["prereq_talent_id"] else ""
+        print(f"\n-- {t['name']}  node {t['id']}  tier {t['tier']} col {t['column']}  {t['max_rank']} rank(s){pre}")
+        for i, r in enumerate(t["ranks"], 1):
+            print(f"   {i}. (spell {r['spell_id']}) {r['description']}")
+EOF
 ```
 
-The rest of this task is written so it works either way: the mods below key on spell masks and talent *fields*, and a regenerated proto changes field names, not the shape of the code.
+Read the Fury tree in full before writing a line of Step 5. **The rank descriptions are the only statement of what a Forever talent does**, and several are not what the 2006 talent of the same name did — `research/08-stats.md` §1.2 counts thirteen hit and crit talents that changed meaning, four of them converting from resist-reduction to hit. A talent whose description no longer matches its old Go body is a rewrite, not a rename.
 
+Paste the Fury tree's printed text into the pull request body. It is short, it is the evidence for every number Step 5 writes, and a reviewer cannot check the work without it.
 - [ ] **Step 4: Declare the milestones and the spell masks**
 
 In `sim/warrior/warrior.go`, beside the existing `SpellCode_Warrior*` block (lines 17-31) and `TalentTreeSizes` (line 33), add:
 
-```go
-// ForeverMilestones are the point totals at which each tree grants a
-// gold-medal talent. Vanilla had 11, 21 and 31; Forever adds 16.
-var ForeverMilestones = []int{11, 16, 21, 31}
+The milestones are **not** declared here: Task 17 declares
+`talents.ForeverMilestones = [4]int{11, 16, 21, 31}` once in
+`sim/core/talents`, because the tier gates are the game's and identical
+across all nine trees. Import it where a milestone is needed.
 
+`TalentTreeSizes` is **not** declared here either — delete the
+hand-written one at `sim/warrior/warrior.go:33`, since
+`talents_auto_gen.go` now declares it and two declarations of one name
+do not compile. What this step adds is only the masks:
+
+```go
 // Spell masks for the declarative talent mods. These are additional to
 // the SpellCode_* constants above, which the existing class code uses as
 // a scalar identity; a mask is what lets one talent config target a set
@@ -5920,12 +7464,27 @@ In `sim/warrior/dps_warrior/dps_warrior_test.go`, add the Forever rotation besid
 
 ```go
 // ForeverFuryTalents is the reference build the regression suite runs: a
-// deep Fury build reaching Bloodthirst, with the Arms points where a Fury
-// warrior actually spends them. It is not advice; it is a fixed input so
-// a DPS change is attributable to the engine rather than to a build edit.
-// unconfirmed: it is expressed against Era's tree until the Forever
-// talent calculator is populated.
-const ForeverFuryTalents = "30305001302-05050005525010051"
+// deep Fury build reaching the 31-point Fury talent, with the Arms
+// points where a Fury warrior actually spends them. It is not advice; it
+// is a fixed input so a DPS change is attributable to the engine rather
+// than to a build edit.
+//
+// It is written against the CLIENT's tree, so its three segments are 17,
+// 18 and 18 characters (TalentTreeSizes), not vanilla's 18/19/16. Build
+// it by printing the Fury tree from Step 3 and spending 51 points on
+// paper; TestForeverFuryTalentsAreAValidBuild checks the length and the
+// spend, so a segment that is one character out fails rather than
+// silently reading the neighbouring talent.
+// Spend, against the client's own tree (print it with Step 3):
+//   Arms 20: Improved Heroic Strike 3, Deflection 3, Improved Rend 2,
+//            Improved Tactical Mastery 5, Anger Management 1,
+//            Deep Wounds 3, Spearing Strike 1, Impale 2
+//   Fury 31: Cruelty 5, Unbridled Wrath 5, Blood Craze 3,
+//            Boundless Rage 2, Enrage 5, Precision 3, Death Wish 1,
+//            Improved Intercept 1, Flurry 5, Bloodthirst 1
+//   Protection 0
+// Segment widths are TalentTreeSizes: 17, 18, 18.
+const ForeverFuryTalents = "33205013102000000-050500320050311051-000000000000000000"
 ```
 
 and in the test:
@@ -5976,13 +7535,16 @@ git commit -m "feat(warrior): Forever Fury end to end - talents, baseline abilit
 
 ## Task 12: `mage-frost` end to end
 
-**Repo: ENGINE.** Depends on Tasks 7 and 10. **G3 — INDEPENDENT of Task 11.** This task touches only `sim/mage/**`, `proto/mage.proto` and `ui/mage/**`.
+**Repo: ENGINE.** Depends on Tasks 7, 10, 16 and 17. **G3 — INDEPENDENT of Task 11.** This task touches only `sim/mage/**` and `ui/mage/**`. **It does not touch `proto/mage.proto` or `ui/core/talents/trees/mage.json`: Task 17 generates both from the client and this task consumes them.**
 
-Frost is the second launch spec and the one with the most different mechanics: a caster with resistances and mana against the warrior's attack table and rage. Same four deliverables.
+Frost is the second launch spec and the one with the most different mechanics: a caster with resistances and mana against the warrior's attack table and rage. Same deliverables as Task 11, and the same Step 0: measure what survives before writing anything.
 
-Two differences from Task 11 that matter:
+**The tree, from the client.** `data/builds/1.60.1.69893/talents/mage.json` gives **Arcane (id 81, 18 talents), Fire (id 41, 17), Frost (id 61, 19)** in the client's order, 54 in all, on the same seven-by-four grid with node ids, rank caps, prerequisites and per-rank spell ids. Task 17 has already generated `proto.MageTalents`, `mage.TalentTreeSizes = [3]int{18, 17, 19}`, `mage.TalentNodeIDs` and `mage.TalentSpellIDs` from it.
 
-- **The mage is one package, not a spec sub-package.** `sim/mage/mage.go:31` is `RegisterMage()`; there is no `sim/mage/frost/`. The spec slug `mage-frost` maps onto `sim/mage` plus the frost APL. `TalentTreeSizes` is `[3]int{16, 16, 17}` (`sim/mage/mage.go:29`).
+Three differences from Task 11 that matter:
+
+- **The mage is one package, not a spec sub-package.** `sim/mage/mage.go:31` is `RegisterMage()`; there is no `sim/mage/frost/`. The spec slug `mage-frost` maps onto `sim/mage` plus the frost APL.
+- **The hand-written `TalentTreeSizes` at `sim/mage/mage.go:29` (`[3]int{16, 16, 17}`, vanilla's) must be deleted**, not edited: Task 17 generates `[3]int{18, 17, 19}` into `sim/mage/talents_auto_gen.go` and two declarations in one package do not compile. That compile error is the reminder.
 - **The mage already has the generated-constants shape.** `sim/mage/frostbolt.go:9-15` is exactly the per-rank arrays Task 10's generator emits, hand-written. So the constants step here is a substitution, not a restructure: delete the hand-written arrays and let the generated file supply them.
 
 **The preset APL is the one the data lane caught.** `ui/mage/apls/p1.apl.json` casts Frostbolt **rank 10** where the Era tables give **rank 11 for spell `25304`**. Fixing that is a real DPS change and it is this task's most concrete deliverable.
@@ -5990,15 +7552,17 @@ Two differences from Task 11 that matter:
 **Thirteen hit and crit talents changed meaning, and four of them converted from resist-reduction to hit** (`research/08-stats.md` §1.2). A rename is not enough: grep this spec for the old `SpellHit` and `MeleeHit` uses and **rebuild each against §1.2's table**, rather than assuming a merged stat means the talent still does what it did. A talent that used to cut a target's resistance and now grants hit is a different talent with a different value.
 
 **Files:**
-- Modify: `proto/mage.proto`, `sim/mage/talents.go` (529 lines), `sim/mage/mage.go`, `sim/mage/frostbolt.go`, `sim/mage/constants_auto_gen.go` (regenerated), `sim/mage/mage_test.go`
-- Create: `sim/mage/ice_lance.go`, `sim/mage/cold_snap_baseline.go`, `ui/mage/apls/forever_frost.apl.json`, `ui/core/talents/trees/mage.json` (regenerated)
+- Modify: `sim/mage/talents.go` (529 lines), `sim/mage/mage.go` (delete the hand-written `TalentTreeSizes`), `sim/mage/frostbolt.go`, `sim/mage/mage_test.go`
+- Modify (only if Task 10's input exists): `sim/mage/constants_auto_gen.go`
+- Create: `sim/mage/ice_lance.go`, `sim/mage/cold_snap_baseline.go`, `ui/mage/apls/forever_frost.apl.json`
+- Read-only, from Task 17: `proto/mage.proto`, `sim/mage/talents_auto_gen.go`, `ui/core/talents/trees/mage.json`, and `data/builds/1.60.1.69893/talents/mage.json` in the site repo, for the rank descriptions
 - Test: `sim/mage/talents_test.go`, `sim/mage/mage_test.go`
 
 **Interfaces:**
 - Consumes: `core.SpellModConfig`, `core.SpellMod_*`, `(*Unit).AddStaticMod`, `Spell.ClassSpellMask` (Task 7); `mage.ConstantsBuild` and the generated arrays (Task 10).
 - Produces:
   - `mage.MageSpellMask*` — one `uint64` per ability
-  - `mage.ForeverMilestones` — the same `[]int{11, 16, 21, 31}`; **it is declared per class rather than in core**, because a tree is a class's own shape and a shared constant would invite a class to differ silently
+  - **not** `mage.ForeverMilestones`: an earlier draft declared the milestones once per class, arguing that a tree is a class's own shape. The client's data settles it the other way — the tier gates are the game's, identical across all nine trees — so Task 17 declares `talents.ForeverMilestones` once in `sim/core/talents` and both spec tasks read it
   - `(*Mage).registerIceLanceSpell()`, `(*Mage).registerColdSnapSpell()`
   - `mage.ForeverFrostTalents string`
   - `ui/mage/apls/forever_frost.apl.json`
@@ -6016,15 +7580,16 @@ import (
 	"github.com/wowsims/classic/sim/core/proto"
 )
 
-func TestForeverTalentMilestones(t *testing.T) {
-	want := []int{11, 16, 21, 31}
-	if len(ForeverMilestones) != len(want) {
-		t.Fatalf("ForeverMilestones = %v, want %v", ForeverMilestones, want)
+// The generated tree must be the client's: Arcane 18, Fire 17, Frost 19,
+// from build 1.60.1.69893. Frost is the largest tree in the game, three
+// wider than vanilla's, so a [3]int{16, 16, 17} here means the
+// hand-written vanilla sizes survived and Task 17 did not run.
+func TestTheGeneratedTreeIsTheClients(t *testing.T) {
+	if got, want := TalentTreeSizes, [3]int{18, 17, 19}; got != want {
+		t.Fatalf("TalentTreeSizes = %v, want %v (Arcane 18, Fire 17, Frost 19)", got, want)
 	}
-	for i, m := range want {
-		if ForeverMilestones[i] != m {
-			t.Errorf("ForeverMilestones[%d] = %d, want %d", i, ForeverMilestones[i], m)
-		}
+	if TalentsBuild == "" {
+		t.Error("TalentsBuild is empty; the generated file must record the client build")
 	}
 }
 
@@ -6038,6 +7603,30 @@ func TestTalentTreeSizesMatchTheProto(t *testing.T) {
 	fields := (&proto.MageTalents{}).ProtoReflect().Descriptor().Fields()
 	if fields.Len() != total {
 		t.Errorf("MageTalents has %d fields, TalentTreeSizes sums to %d", fields.Len(), total)
+	}
+	if total != 54 {
+		t.Errorf("the mage has %d talents, want 54 from build %s", total, TalentsBuild)
+	}
+}
+
+// Every talent this spec's behaviour reads must exist in the client's
+// tree. Keep foreverFrostTalentsApplied in step with talents.go as
+// Step 5 writes each one.
+var foreverFrostTalentsApplied = []string{
+	"improved_frostbolt",
+	"elemental_precision",
+	"piercing_ice",
+	// ... one line per talent sim/mage/talents.go applies.
+}
+
+func TestEveryTalentThisSpecAppliesExists(t *testing.T) {
+	for _, name := range foreverFrostTalentsApplied {
+		if _, ok := TalentNodeIDs[name]; !ok {
+			t.Errorf("talents.go applies %q, which is not in the client's tree", name)
+		}
+		if len(TalentSpellIDs[name]) == 0 {
+			t.Errorf("%q has no rank spell ids", name)
+		}
 	}
 }
 
@@ -6093,39 +7682,50 @@ func TestForeverFrostTalentsAreAValidBuild(t *testing.T) {
 - [ ] **Step 2: Run it and watch it fail**
 
 Run: `cd /Users/jh/code/wowsims-forever && go test --tags=with_db ./sim/mage/ -v -run 'TestForever|TestTalentTree|TestFrostSpells|TestFrostboltHas'`
-Expected: `FAIL [build failed]`, `undefined: ForeverMilestones`.
+Expected: `FAIL [build failed]`, `undefined: TalentsBuild` (the generated file is Task 17's and the test names it before anything else).
 
-- [ ] **Step 3: Regenerate the talent proto and tree JSON**
+- [ ] **Step 3: Read the generated tree and the rank descriptions**
+
+As in Task 11: nothing is regenerated here. **Task 17 generated `proto.MageTalents`, `sim/mage/talents_auto_gen.go` and `ui/core/talents/trees/mage.json` from the client's trait tables.** The earlier draft's Wowhead scrape is obsolete and must not be revived.
 
 ```bash
 cd /Users/jh/code/wowsims-forever
-python3 tools/scrape_talents_proto.py --class mage --env forever
-python3 tools/scrape_talents_config.py --class mage --env forever
-export PATH=$PATH:$(go env GOPATH)/bin && make proto
+head -20 sim/mage/talents_auto_gen.go
+grep -n 'message MageTalents' -A 6 proto/mage.proto
+grep -n 'TalentTreeSizes' sim/mage/mage.go                # must be GONE: the generated file declares it
 ```
 
-As in Task 11: if Wowhead's Forever talent calculator is not populated yet — it will not be before Sept 17 — **do not fabricate a tree**. Leave `proto/mage.proto` alone, keep `TalentTreeSizes = [3]int{16, 16, 17}`, and add the same comment to `talents.go`:
+Expected: `TalentTreeSizes = [3]int{18, 17, 19}`, `TalentsBuild = "1.60.1.69893"`, a message whose first comment block says `Arcane (tree 0, client id 81)`, and **no hit** in `sim/mage/mage.go` — the hand-written `[3]int{16, 16, 17}` at line 29 is vanilla's and must be deleted, or the package has two declarations of one name.
 
-```go
-// Forever keeps seven rows per tree and moves the gold-medal talents to
-// 11, 16, 21 and 31 points, adding a 16-point talent per tree. The tree's
-// contents come from tools/scrape_talents_proto.py against Wowhead's
-// Forever environment, which is not populated before the beta client on
-// 2026-09-17.
-// unconfirmed: mage talent tree shape
+Then print the Frost tree with its rank descriptions, which is the specification for Step 5:
+
+```bash
+cd /Users/jh/code/forever
+python3 - <<'EOF'
+import json
+c = json.load(open("data/builds/1.60.1.69893/talents/mage.json"))
+for tree in sorted(c["trees"], key=lambda t: t["position"]):
+    print(f"\n########## {tree['name']} (id {tree['id']}, {len(tree['talents'])} talents) ##########")
+    for t in sorted(tree["talents"], key=lambda t: (t["tier"], t["column"])):
+        pre = f" [needs {t['prereq_talent_id']} rank {t['prereq_rank']}]" if t["prereq_talent_id"] else ""
+        print(f"\n-- {t['name']}  node {t['id']}  tier {t['tier']} col {t['column']}  {t['max_rank']} rank(s){pre}")
+        for i, r in enumerate(t["ranks"], 1):
+            print(f"   {i}. (spell {r['spell_id']}) {r['description']}")
+EOF
 ```
 
+Frost is the largest tree in the game at **19 talents**, three more than vanilla's 16, so expect genuinely new ones rather than a reshuffle. Paste the printed Frost tree into the pull request body.
 - [ ] **Step 4: Declare the milestones and the spell masks**
 
 In `sim/mage/mage.go`, beside `TalentTreeSizes` at line 29:
 
-```go
-// ForeverMilestones are the point totals at which each tree grants a
-// gold-medal talent. Vanilla had 11, 21 and 31; Forever adds 16. It is
-// declared per class rather than in core: a tree is a class's own shape,
-// and a shared constant would let one class differ without saying so.
-var ForeverMilestones = []int{11, 16, 21, 31}
+As in Task 11, neither `ForeverMilestones` nor `TalentTreeSizes` is
+declared here: Task 17 declares the first once in `sim/core/talents` and
+generates the second into `sim/mage/talents_auto_gen.go`. **Delete the
+hand-written `TalentTreeSizes` at `sim/mage/mage.go:29`.** What this step
+adds is only the masks:
 
+```go
 // Spell masks for the declarative talent mods.
 const (
 	MageSpellMaskNone uint64 = 0
@@ -6385,9 +7985,19 @@ In `sim/mage/mage.go` or `talents.go`:
 // ForeverFrostTalents is the reference build the regression suite runs.
 // It is not advice; it is a fixed input so a DPS change is attributable
 // to the engine rather than to a build edit.
-// unconfirmed: expressed against Era's tree until the Forever talent
-// calculator is populated.
-const ForeverFrostTalents = "2500050300030150333125----"
+//
+// Written against the CLIENT's tree, so its segments are 18, 17 and 19
+// characters (TalentTreeSizes), in the client's tree order Arcane, Fire,
+// Frost. Spend (print the trees with Step 3):
+//   Arcane 20: Arcane Focus 5, Arcane Concentration 5, Arcane Geometry 2,
+//              Arcane Impact 3, Arcane Shielding 1, Arcane Meditation 3,
+//              Missile Barrage 1
+//   Fire 0
+//   Frost 31: Improved Frostbolt 5, Ice Shards 5, Piercing Ice 3,
+//             Frost Channeling 1, Ice Lance 1, Arctic Reach 2, Shatter 3,
+//             Improved Cone of Cold 2, Cold Snap 1, Fingers of Frost 2,
+//             Winter's Chill 5, Ice Barrier 1
+const ForeverFrostTalents = "050005023010310000-00000000000000000-0505000311020321251"
 ```
 
 In `sim/mage/mage_test.go`, use it and the new rotation:
@@ -7647,12 +9257,11 @@ git commit -m "ci: test the engine, and record that it ships none of our artifac
 
 ---
 
-
-## Task 15: `forever-measure` — recover combat constants from a log
+## Task 15: `forever-measure` — recover combat constants from the open-world beta log
 
 **Repo: SITE** (`/Users/jh/code/forever`), in the `sim/` module. Depends on Task 2 (the module). **G4b — INDEPENDENT of Task 13 and of everything else; nothing depends on it.** Run it in its own worktree alongside Task 13.
 
-This is the tool that answers, on beta day, the questions the client tables cannot.
+This is the tool that answers the questions the client tables cannot. **It was written before there was a Forever log; there is one now, and it changed what this task is.** The first Forever beta combat log exists — 37,539 lines, client 1.60.1, Zephras Isle — and its committed 85-line excerpt is at `logs/engine/event/testdata/forever-1.60.log`. It is an **open-world** log: no instance, therefore **no `COMBATANT_INFO` and no `ENCOUNTER_START`**, and no level-63 boss anywhere in it. So this task is now the half that runs on what that log carries, and **Task 15B is the half that waits for a dungeon log.**
 
 **What the tables give and do not give, verified.** The Classic-lineage DB2 carries item stats, spell attributes, cooldowns, costs, durations, talent grids and base stats. It does not carry:
 
@@ -7660,29 +9269,57 @@ This is the tool that answers, on beta day, the questions the client tables cann
 - **the multiplier a critical tick uses**;
 - **how a unified Hit stat interacts with the vanilla weapon-skill miss table** — research §5.3 calls this "completely unspecified by anything public", and it is load-bearing for every melee spec;
 - **proc chances and internal cooldowns** — `ItemEffect.TriggerType` says on-equip/on-use/on-proc and nothing more; an ICD is script-side;
-- **the rating conversion tables** — `CombatRatings`, `ChanceToMeleeCrit` and `ChanceToSpellCrit` are game-table files inside the client package, not DB2, and **all three 404 on wago for the Era build** (checked). Task 5's generator reads them from `assets/db_inputs/basestats/`, which is a checked-in Era copy; there is no live source.
+- **the rating conversion tables** — `CombatRatings`, `ChanceToMeleeCrit` and `ChanceToSpellCrit` are game-table files inside the client package, not DB2, and all three 404 on wago for the Era build. Task 5's generator reads them from `assets/db_inputs/basestats/`, which is a checked-in Era copy; there is no live source.
 
 Every one of those is measurable from a combat log, and we have a parser. That is the asset research §5.4 called decisive: WoWSims has no log-ingestion path and closes this loop by hand over months.
+
+**The dialect changed, and that is the single biggest thing this refresh touches.** Forever does **not** write the Classic dialect. Its header is
+
+```
+COMBAT_LOG_VERSION,22,ADVANCED_LOG_ENABLED,1,BUILD_VERSION,1.60.1,PROJECT_ID,18
+```
+
+and `logs/engine/layout.RetailV22()` reads it: version 22 selects that row on its own (its `ProjectID` is 0, the wildcard, because retail writes `PROJECT_ID 1` and Forever writes `18` and both write the dialect line for line). `layout.ClassicWiki()` — which the earlier draft of this task loaded, and which the earlier fixture was written in — would mis-split every line. **`measure.Load` selects `RetailV22`.**
+
+**And the dialect is a gift, not just a change.** The v22 **advanced block is 19 fields** and rides on every damage, heal, energize and cast-success line (`logs/engine/event.Advanced`, decoded at `logs/engine/event/decode.go:395`): `InfoGUID, OwnerGUID, CurrentHP, MaxHP, AttackPower, SpellPower, Armor, Versatility, Unknown8, Absorb, PowerType, CurrentPower, MaxPower, PowerCost, PositionX, PositionY, UIMapID, Facing, Level`. Three consequences:
+
+1. **The character sheet is in the log.** The earlier draft made the logger write down spell power and attack power by hand and pass them as flags, and said "every figure the tool prints is only interpretable against that sheet". It is now read per hit from the actor's own advanced block, so `-spell-power` and `-attack-power` become *overrides* and a forgotten screenshot no longer ruins a run.
+2. **Target level is in the log too**, but not where you would guess: on a line the player deals, the advanced block describes the **source**, so the target's level comes from the `SWING_DAMAGE_LANDED` line, whose block describes the **dest**. Level is also the field whose meaning depends on the unit — for a player it is item level, not level — so a level lookup keyed by GUID must accept only creature GUIDs.
+3. **`DAMAGE_SHIELD` decodes as damage** under this row (Thorns and its kin, which Forever writes in the open world where retail's arena corpus never did), so a retaliation effect is countable rather than an unknown event.
 
 **Two packages, deliberately.** `sim/measure` holds the measurement functions and returns data; `sim/cmd/forever-measure` prints. The split is not tidiness — **this same code is the first input to the nightly validation job** (design §6), which needs the measurements as values, not as a table on stdout.
 
 **Every figure carries its sample count, and a figure under the threshold prints `insufficient data` rather than a number.** A proc rate from four swings is worse than no proc rate: it goes into a constants file and nobody re-checks it.
+
+**What this task cannot measure, and says so out loud.** Task 15B carries these, and Step 11's README repeats them so a logger does not waste an evening:
+
+| Not measurable from an open-world log | Why | Where |
+|---|---|---|
+| The boss-level attack table | There is no level-63 target in the open world; the suppression terms differ per level and a level-60 run does not substitute | 15B |
+| How unified Hit meets the weapon-skill miss table | Needs the attack table above *and* the character's hit and weapon skill, which is `COMBATANT_INFO` | 15B |
+| Anything keyed to a player's gear, talents or stat sheet at the pull | `COMBATANT_INFO` is written at `ENCOUNTER_START` and an open-world log has neither | 15B |
+| Per-fight segmentation of the figures | No `ENCOUNTER_START`/`ENCOUNTER_END`; the whole log is one span | 15B |
+| The rating conversion tables | Not in any log; they are client game-table files | neither — Task 5 reads the checked-in Era copy |
+
+`Report.Fights` therefore counts `ENCOUNTER_START` events and is **expected to be 0** on today's log; `Report.Complete` names what the log could not support, so the caller prints the reason rather than an empty table.
 
 `logs/` is read-only here. This task imports `logs/engine/{session,layout,event,units}` and edits nothing under `logs/`.
 
 **Files:**
 - Create: `sim/measure/measure.go`, `sim/measure/periodic.go`, `sim/measure/attacktable.go`, `sim/measure/procs.go`, `sim/measure/coefficients.go`, `sim/measure/report.go`
 - Create: `sim/cmd/forever-measure/main.go`
-- Create: `sim/measure/testdata/planted.log`
-- Test: `sim/measure/measure_test.go`, `sim/measure/golden_test.go`
-- Modify: `sim/README.md` (create it, with the Sept 17 logging procedure)
+- Create: `sim/measure/testdata/planted-v22.log`
+- Test: `sim/measure/measure_test.go`, `sim/measure/golden_test.go`, `sim/measure/forever_log_test.go`
+- Create: `sim/README.md` (with the logging procedure)
 
 **Interfaces:**
-- Consumes: `logs/engine/session` (`New`, `Options`, `(*Session).Feed`, `(*Session).Close`, `Result.Events`), `logs/engine/layout` (`ClassicWiki`, `RetailV16`), `logs/engine/event` (`Event`, `Kind`, `Damage`, `Missed`, `AuraApplied`, `AuraRefresh`, `CastSuccess`, `OptInt`, `OptBool`), `logs/engine/units` (`Options`). Read-only.
+- Consumes: `logs/engine/session` (`New`, `Options`, `(*Session).Feed`, `(*Session).Close`, `Result.Events`), `logs/engine/layout` (`RetailV22`, `ClassicWiki`), `logs/engine/event` (`Event`, `Kind`, `Damage`, `DamageLanded`, `Missed`, `AuraApplied`, `AuraRefresh`, `CastSuccess`, `Advanced`, `OptInt`, `OptBool`), `logs/engine/units` (`Options`). Read-only.
 - Produces, used by the api lane's nightly validation job:
   - `measure.Input{Events []event.Event; Actor string; SpellPower, AttackPower float64; MinSamples int}`
-  - `measure.Load(path string, base time.Time) ([]event.Event, error)`
-  - `measure.Report{Periodic []PeriodicCrit; AttackTable []AttackTableRow; Procs []ProcRate; Coefficients []Coefficient; Actor string; Events, Fights int}`
+  - `measure.Load(path string, base time.Time) ([]event.Event, error)` — reads under `layout.RetailV22()`
+  - `measure.Sheet{SpellPower, AttackPower, Armor, MaxHP float64; Level int64; Samples int}` and `measure.SheetFromEvents(events []event.Event, actor string) Sheet` — the character sheet read out of the actor's own advanced blocks, so the command can default its flags from the log
+  - `measure.TargetLevels(events []event.Event) map[string]int64` — creature GUID to level, from the advanced blocks of lines whose `InfoGUID` is that creature. Players are excluded: their `Level` field is item level
+  - `measure.Report{Actor string; Events, Fights int; Sheet Sheet; Complete []string; Periodic []PeriodicCrit; AttackTable []AttackTableRow; Procs []ProcRate; Coefficients []Coefficient}`
   - `measure.Run(in Input) (Report, error)`
   - `measure.PeriodicCrit{SpellID int64; SpellName string; School int64; Ticks, CritTicks int; CanCrit bool; MeanNormal, MeanCrit, Multiplier float64; Physical bool; Enough bool}`
   - `measure.AttackTableRow{AttackType string; TargetName string; TargetLevel int64; Swings int; Miss, Dodge, Parry, Glance, Crit, Block float64; Enough bool}`
@@ -7691,90 +9328,139 @@ Every one of those is measurable from a combat log, and we have a parser. That i
   - `measure.(Report).Table() string` — the printed form, so the command is a `main` that calls `Run` then `Table`.
   - `measure.DefaultMinSamples = 30`
 
-- [ ] **Step 1: Write the planted-value fixture**
+- [ ] **Step 1: Write the planted-value fixture, in Forever's own dialect**
 
-The test must recover known numbers, so the log is built with them planted. Create `sim/measure/testdata/planted.log`, a Classic-dialect log with one player, one level-63 target, and five facts planted in it:
+The test must recover known numbers, so the log is built with them planted — **and it is built as a retail-v22 Forever log, not a Classic one**, or the tool is tested against a dialect the game does not write.
+
+Create `sim/measure/testdata/planted-v22.log`, with one player, one level-63 creature, and five facts planted in it:
 
 1. **Periodic damage crits**: `SPELL_PERIODIC_DAMAGE` lines for Rend (spell 11574, physical) with `1` in the critical column, and for Corruption (spell 25311, shadow) likewise.
-2. **A periodic crit multiplier of exactly 2.0 for magic and 2.0 for physical**: normal ticks of 100, critical ticks of 200.
-3. **An attack table of exactly 10% miss, 10% dodge, 10% parry, 20% glance, 20% crit** over 100 swings against the level-63 target: 10 `SWING_MISSED` with `MISS`, 10 with `DODGE`, 10 with `PARRY`, 20 `SWING_DAMAGE` with the glancing flag, 20 with the critical flag, 30 plain.
-4. **A proc that fires exactly 10 times in 100 swings with a minimum gap of 45 seconds**: `SPELL_AURA_APPLIED` for spell 9345 at 45-second spacing.
-5. **A spell whose mean damage is exactly 500 over 40 hits**: Frostbolt (spell 25304), alternating 450 and 550.
+2. **A periodic crit multiplier of exactly 2.0 for both schools**: normal ticks of 100, critical ticks of 200.
+3. **An attack table of exactly 10% miss, 10% dodge, 10% parry, 20% glance, 20% crit** over 100 swings against the level-63 creature: 10 `SWING_MISSED` with `MISS`, 10 with `DODGE`, 10 with `PARRY`, 20 `SWING_DAMAGE` with the glancing flag, 20 with the critical flag, 30 plain — **each damage swing paired with its `SWING_DAMAGE_LANDED`**, because the landed line's advanced block is the only place the target's level appears.
+4. **A proc that fires exactly 10 times with a minimum gap of 45 seconds**: `SPELL_AURA_APPLIED` for spell 9345 at 45-second spacing.
+5. **A spell whose mean damage is exactly 500 over 40 hits**: Frostbolt (spell 25304), alternating 450 and 550, with a **spell power of 500 planted in every advanced block**, so `SheetFromEvents` has something to recover.
 
-Generate it rather than typing 200 lines by hand, then commit the output:
+Generate it rather than typing 400 lines by hand, then commit the output:
 
 ```bash
 cd /Users/jh/code/forever/sim
 mkdir -p measure/testdata
-python3 - > measure/testdata/planted.log <<'PY'
+python3 - > measure/testdata/planted-v22.log <<'PY'
 import datetime
 
-# The Classic dialect the engine's layout.ClassicWiki() reads. One player,
-# one level-63 target, values planted so the tests can recover them.
-P   = 'Player-1-0000AAAA,"Testwarrior-Forever",0x511,0x0'
-T   = 'Creature-0-1-1-1-11502-0000BBBB,"Dummy",0xa48,0x0'
-t0  = datetime.datetime(2026, 9, 17, 20, 0, 0)
+# Forever's own dialect: combat-log version 22, advanced logging on,
+# PROJECT_ID 18. logs/engine/layout.RetailV22() reads it; the version
+# alone selects the row, because its ProjectID is the wildcard 0.
+#
+# Field order per line:
+#   <stamp>  EVENT, srcGUID,srcName,srcFlags,srcRaidFlags,
+#            dstGUID,dstName,dstFlags,dstRaidFlags,
+#            [spellId,"spellName",school]        (spell-prefixed events)
+#            [19 advanced fields]                (suffixes marked Advanced)
+#            [suffix params]
+#            [ "ST" | "AOE" ]                    (damage and miss lines)
+#
+# The 19 advanced fields, in order (event.readAdvanced, len==19):
+#   infoGUID, ownerGUID, currentHP, maxHP, attackPower, spellPower,
+#   armor, versatility, unknown8, absorb, powerType, currentPower,
+#   maxPower, powerCost, posX, posY, uiMapID, facing, level
+#
+# The 10 damage params, in order:
+#   amount, baseAmount, overkill, school, resisted, blocked, absorbed,
+#   critical, glancing, crushing
+
+PG   = 'Player-4619-00AAAAAA'
+PN   = 'Testwarrior-Beta'
+TG   = 'Creature-0-4621-2991-518-251160-00BBBBBB'
+TN   = 'Dummy'
+P    = f'{PG},"{PN}",0x511,0x0'
+T    = f'{TG},"{TN}",0xa48,0x0'
+NOGUID = '0000000000000000'
+
+t0 = datetime.datetime(2026, 9, 17, 20, 0, 0)
 
 def stamp(sec, ms=0):
     t = t0 + datetime.timedelta(seconds=sec, milliseconds=ms)
-    return t.strftime("%m/%d %H:%M:%S.") + f"{t.microsecond//1000:03d}"
+    return t.strftime("%-m/%-d/%Y %H:%M:%S.") + f"{t.microsecond//1000:03d}-5"
 
-def line(sec, name, rest, ms=0):
-    print(f"{stamp(sec, ms)}  {name},{P},{T},{rest}")
+def adv(guid, *, hp=4000, maxhp=4000, ap=1200, sp=500, armor=3000,
+        power=80, maxpower=100, cost=0, level=60):
+    # versatility and unknown8 are 0 for a Forever unit in this log.
+    return (f'{guid},{NOGUID},{hp},{maxhp},{ap},{sp},{armor},0,0,0,'
+            f'1,{power},{maxpower},{cost},4200.00,1550.00,2521,1.5000,{level}')
 
-print(f'{stamp(0)}  COMBAT_LOG_VERSION,20,ADVANCED_LOG_ENABLED,0,BUILD_VERSION,1.15.9,PROJECT_ID,2')
-line(0, "ENCOUNTER_START", "")
-print(f'{stamp(0)}  ENCOUNTER_START,1001,"Dummy Target",1,1,0')
+def emit(sec, event, body, ms=0):
+    print(f'{stamp(sec, ms)}  {event},{body}')
+
+print(f'{stamp(0)}  COMBAT_LOG_VERSION,22,ADVANCED_LOG_ENABLED,1,BUILD_VERSION,1.60.1,PROJECT_ID,18')
+print(f'{stamp(0)}  ZONE_CHANGE,2991,"Zephras Isle",0')
 
 sec = 1
-# (3) attack table: 100 swings, 10 miss / 10 dodge / 10 parry / 20 glance /
-#     20 crit / 30 plain.
-for _ in range(10):
-    line(sec, "SWING_MISSED", "MISS"); sec += 1
-for _ in range(10):
-    line(sec, "SWING_MISSED", "DODGE"); sec += 1
-for _ in range(10):
-    line(sec, "SWING_MISSED", "PARRY"); sec += 1
-for _ in range(20):
-    # SWING_DAMAGE suffix: amount, overkill, school, resisted, blocked,
-    # absorbed, critical, glancing, crushing
-    line(sec, "SWING_DAMAGE", "300,0,1,0,0,0,nil,1,nil"); sec += 1
-for _ in range(20):
-    line(sec, "SWING_DAMAGE", "800,0,1,0,0,0,1,nil,nil"); sec += 1
-for _ in range(30):
-    line(sec, "SWING_DAMAGE", "400,0,1,0,0,0,nil,nil,nil"); sec += 1
 
-# (1) and (2) periodic crits: Rend physical, Corruption shadow, normal
-#     ticks 100 and critical ticks 200, so the multiplier is exactly 2.0.
-for i in range(40):
-    crit = "1" if i % 4 == 0 else "nil"
-    amt  = 200 if i % 4 == 0 else 100
-    line(sec, "SPELL_PERIODIC_DAMAGE", f'11574,"Rend",1,{amt},0,1,0,0,0,{crit},nil,nil'); sec += 1
-for i in range(40):
-    crit = "1" if i % 4 == 0 else "nil"
-    amt  = 200 if i % 4 == 0 else 100
-    line(sec, "SPELL_PERIODIC_DAMAGE", f'25311,"Corruption",32,{amt},0,32,0,0,0,{crit},nil,nil'); sec += 1
+def swing(amount, critical="nil", glancing="nil"):
+    """A player swing: SWING_DAMAGE carries the ATTACKER's advanced block,
+    SWING_DAMAGE_LANDED the TARGET's. The target's level is only in the
+    landed line, which is why both are written."""
+    global sec
+    params = f'{amount},{amount},-1,1,0,0,0,{critical},{glancing},nil'
+    emit(sec, 'SWING_DAMAGE', f'{P},{T},{adv(PG)},{params},ST')
+    emit(sec, 'SWING_DAMAGE_LANDED',
+         f'{P},{T},{adv(TG, hp=9000, maxhp=9000, ap=300, sp=0, armor=3700, level=63)},{params},ST',
+         ms=2)
+    sec += 1
 
-# (5) Frostbolt: 40 hits alternating 450 and 550, mean exactly 500.
+def miss(kind):
+    global sec
+    # _MISSED carries no advanced block: missType, isOffHand.
+    emit(sec, 'SWING_MISSED', f'{P},{T},{kind},nil')
+    sec += 1
+
+# (3) the attack table: 100 swings.
+for _ in range(10): miss("MISS")
+for _ in range(10): miss("DODGE")
+for _ in range(10): miss("PARRY")
+for _ in range(20): swing(300, glancing="1")
+for _ in range(20): swing(800, critical="1")
+for _ in range(30): swing(400)
+
+# (1) and (2) periodic crits: Rend physical (school 1), Corruption
+# shadow (school 32); normal ticks 100, critical ticks 200, so the
+# multiplier is exactly 2.0 in both schools.
+def tick(spell_id, name, school, amount, critical):
+    global sec
+    params = f'{amount},{amount},-1,{school},0,0,0,{critical},nil,nil'
+    emit(sec, 'SPELL_PERIODIC_DAMAGE',
+         f'{P},{T},{spell_id},"{name}",0x{school:x},{adv(PG)},{params},ST')
+    sec += 1
+
+for i in range(40):
+    tick(11574, "Rend", 1, 200 if i % 4 == 0 else 100, "1" if i % 4 == 0 else "nil")
+for i in range(40):
+    tick(25311, "Corruption", 32, 200 if i % 4 == 0 else 100, "1" if i % 4 == 0 else "nil")
+
+# (5) Frostbolt: 40 hits alternating 450 and 550, mean exactly 500, with
+# spell power 500 in every advanced block for SheetFromEvents to find.
 for i in range(40):
     amt = 450 if i % 2 == 0 else 550
-    line(sec, "SPELL_DAMAGE", f'25304,"Frostbolt",16,{amt},0,16,0,0,0,nil,nil,nil'); sec += 1
+    params = f'{amt},{amt},-1,16,0,0,0,nil,nil,nil'
+    emit(sec, 'SPELL_DAMAGE', f'{P},{T},25304,"Frostbolt",0x10,{adv(PG)},{params},ST')
+    sec += 1
 
 # (4) a proc firing 10 times at a 45-second minimum gap.
 for i in range(10):
-    print(f'{stamp(1 + i*45)}  SPELL_AURA_APPLIED,{P},{P},9345,"Devilsaur Fury",1,BUFF')
-
-print(f'{stamp(sec)}  ENCOUNTER_END,1001,"Dummy Target",1,1,1')
+    emit(1 + i * 45, 'SPELL_AURA_APPLIED', f'{P},{P},9345,"Devilsaur Fury",0x1,BUFF')
 PY
-wc -l measure/testdata/planted.log
-head -5 measure/testdata/planted.log
+wc -l measure/testdata/planted-v22.log
+head -4 measure/testdata/planted-v22.log
 ```
+
+Expected: about 300 lines, a header line reading `COMBAT_LOG_VERSION,22,...,PROJECT_ID,18`, and a first swing pair.
 
 Then **verify the engine actually parses it** before writing a line of measurement code — a fixture the parser rejects makes every later failure ambiguous:
 
 ```bash
 cd /Users/jh/code/forever/sim
-cat > /tmp/parsecheck.go <<'EOF'
+mkdir -p /tmp/parsecheck && cat > /tmp/parsecheck/main.go <<'EOF'
 package main
 
 import (
@@ -7782,6 +9468,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/jhunthrop/foreversixty/logs/engine/event"
 	"github.com/jhunthrop/foreversixty/logs/engine/layout"
 	"github.com/jhunthrop/foreversixty/logs/engine/session"
 )
@@ -7791,30 +9478,32 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	s := session.New(session.Options{
-		ReportID: "measure", Layout: layout.ClassicWiki(), Infer: true,
-		Base: time.Date(2026, 9, 17, 0, 0, 0, 0, time.UTC),
-	})
+	s := session.New(session.Options{ReportID: "check", Layout: layout.RetailV22(), Base: time.Now()})
 	res, err := s.Feed(b, 0)
 	if err != nil {
 		panic(err)
 	}
 	last, _ := s.Close()
 	kinds := map[string]int{}
+	adv := 0
 	for _, e := range append(res.Events, last.Events...) {
-		kinds[e.Name]++
+		kinds[e.Kind.String()]++
+		if e.Adv.OK {
+			adv++
+		}
 	}
-	fmt.Println("events:", len(res.Events)+len(last.Events))
-	for k, v := range kinds {
-		fmt.Printf("  %-28s %d\n", k, v)
-	}
-	fmt.Printf("health: %+v\n", s.Health())
+	h := s.Health()
+	fmt.Println("kinds:", kinds)
+	fmt.Println("advanced blocks:", adv)
+	fmt.Println("parse errors:", h.ParseErrors, "unknown:", h.UnknownEvents)
+	_ = event.Damage
 }
 EOF
-go run /tmp/parsecheck.go measure/testdata/planted.log
+go run /tmp/parsecheck/main.go measure/testdata/planted-v22.log
+rm -rf /tmp/parsecheck
 ```
 
-Expected: about 240 events, with `SWING_MISSED` 30, `SWING_DAMAGE` 70, `SPELL_PERIODIC_DAMAGE` 80, `SPELL_DAMAGE` 40, `SPELL_AURA_APPLIED` 10, and `UnknownEvents` empty. **If the counts are wrong the fixture is wrong, not the parser** — the suffix field order above is the Classic dialect's; read `logs/engine/layout/classic.go` and correct the generator until the counts match, then regenerate and commit the log. Delete `/tmp/parsecheck.go`.
+Expected: `parse errors: 0`, an empty unknown map, `damage` around 190 (100 swings' worth of `SWING_DAMAGE` plus their `SWING_DAMAGE_LANDED`, 80 ticks and 40 Frostbolts, less the 30 misses), `missed: 30`, `aura_applied: 10`, and **`advanced blocks` equal to the number of damage lines** — if that is zero, the advanced block is being read as suffix params and the field counts are wrong.
 
 - [ ] **Step 2: Write the failing test**
 
@@ -7829,7 +9518,7 @@ import (
 	"time"
 )
 
-const fixture = "testdata/planted.log"
+const fixture = "testdata/planted-v22.log"
 
 var fixtureBase = time.Date(2026, 9, 17, 0, 0, 0, 0, time.UTC)
 
@@ -7844,7 +9533,7 @@ func load(t *testing.T) Input {
 	}
 	return Input{
 		Events:     events,
-		Actor:      "Testwarrior-Forever",
+		Actor:      "Testwarrior-Beta",
 		SpellPower: 500,
 		MinSamples: 10,
 	}
@@ -8013,7 +9702,7 @@ func TestReportCarriesItsProvenance(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if rep.Actor != "Testwarrior-Forever" {
+	if rep.Actor != "Testwarrior-Beta" {
 		t.Errorf("Actor = %q", rep.Actor)
 	}
 	if rep.Events == 0 {
@@ -8061,6 +9750,15 @@ Create `sim/measure/measure.go`:
 // inside the client package rather than DB2, and wago does not serve
 // them. Every one of those is visible in a combat log.
 //
+// DIALECT. Forever writes combat-log version 22 with advanced logging on
+// and PROJECT_ID 18, which logs/engine/layout.RetailV22() reads; the
+// version alone selects the row. It is NOT the Classic dialect. The v22
+// advanced block is nineteen fields and rides on every damage, heal,
+// energize and cast-success line, carrying the acting unit's attack
+// power, spell power, armour, power and level - so the character sheet a
+// measurement is interpreted against comes out of the log itself rather
+// than off a screenshot.
+//
 // The measurement functions return values and the command prints them,
 // because this same code is the first input to the nightly validation
 // job, which needs the numbers rather than a table on stdout.
@@ -8071,7 +9769,9 @@ package measure
 import (
 	"errors"
 	"fmt"
+	"math"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/jhunthrop/foreversixty/logs/engine/event"
@@ -8092,20 +9792,44 @@ type Input struct {
 	// Actor is the player whose actions are measured, by name. Every
 	// figure is about this one unit.
 	Actor string
-	// SpellPower and AttackPower are the character sheet at the time of
-	// logging. A coefficient cannot be derived without them; leave them
-	// zero and the coefficient column reports the raw damage only.
+	// SpellPower and AttackPower OVERRIDE what the log's advanced blocks
+	// report for the actor. Leave them zero and the sheet is read from
+	// the log, which is what a v22 log makes possible and what the
+	// command does by default. Set them only when the log's own figures
+	// are wrong or absent.
 	SpellPower  float64
 	AttackPower float64
 	// MinSamples overrides DefaultMinSamples.
 	MinSamples int
 }
 
+// Sheet is the actor's character sheet as the log reports it. Every
+// figure is the median across the actor's own advanced blocks, not the
+// mean, because a single buffed or debuffed line should not move it.
+type Sheet struct {
+	SpellPower  float64 `json:"spell_power"`
+	AttackPower float64 `json:"attack_power"`
+	Armor       float64 `json:"armor"`
+	MaxHP       float64 `json:"max_hp"`
+	Level       int64   `json:"level"`
+	// Samples is how many advanced blocks the sheet was read from. Zero
+	// means the log had advanced logging off and every figure that needs
+	// a sheet is unavailable.
+	Samples int `json:"samples"`
+}
+
 // Report is everything one log can say.
 type Report struct {
 	Actor  string `json:"actor"`
 	Events int    `json:"events"`
-	Fights int    `json:"fights"`
+	// Fights counts ENCOUNTER_START events. An open-world log has none,
+	// and that is not an error: it is why Complete lists what is missing.
+	Fights int   `json:"fights"`
+	Sheet  Sheet `json:"sheet"`
+	// Complete lists what this log could NOT support, in words, so the
+	// printed table says "no level-63 target in this log" rather than
+	// showing an empty attack table and letting the reader guess.
+	Complete []string `json:"incomplete,omitempty"`
 
 	Periodic     []PeriodicCrit   `json:"periodic"`
 	AttackTable  []AttackTableRow `json:"attack_table"`
@@ -8115,7 +9839,8 @@ type Report struct {
 
 // Load reads a combat log and returns its decoded events. base seeds the
 // clock for dialects whose timestamps carry no year: pass the file's
-// modification time.
+// modification time. Forever's own stamps carry the year, so base only
+// matters for a log from another client.
 func Load(path string, base time.Time) ([]event.Event, error) {
 	b, err := os.ReadFile(path)
 	if err != nil {
@@ -8123,10 +9848,12 @@ func Load(path string, base time.Time) ([]event.Event, error) {
 	}
 	s := session.New(session.Options{
 		ReportID: "measure",
-		// Forever writes the Classic dialect. Infer is on so a log the
-		// header does not identify still parses by field count rather
-		// than silently falling back to the retail row.
-		Layout: layout.ClassicWiki(),
+		// Forever writes combat-log version 22 with PROJECT_ID 18, which
+		// this row reads; retail writes PROJECT_ID 1 and the same
+		// dialect, so the version alone selects it. Infer is on so a log
+		// with a damaged or missing header still parses by field count
+		// rather than silently falling back to the v16 row.
+		Layout: layout.RetailV22(),
 		Infer:  true,
 		Base:   base,
 	})
@@ -8144,6 +9871,68 @@ func Load(path string, base time.Time) ([]event.Event, error) {
 	return out, nil
 }
 
+// SheetFromEvents reads the actor's character sheet out of its own
+// advanced blocks. A line the actor acted on carries the ACTOR's block;
+// a line aimed at the actor carries the actor's block only on the
+// _LANDED half, so the InfoGUID is matched rather than the source name.
+func SheetFromEvents(events []event.Event, actor string) Sheet {
+	var guid string
+	for _, e := range events {
+		if e.Source.Name == actor && e.Source.GUID != "" {
+			guid = e.Source.GUID
+			break
+		}
+	}
+	if guid == "" {
+		return Sheet{}
+	}
+	var sp, ap, armor, hp []float64
+	var level int64
+	for _, e := range events {
+		if !e.Adv.OK || e.Adv.InfoGUID != guid {
+			continue
+		}
+		sp = append(sp, float64(e.Adv.SpellPower))
+		ap = append(ap, float64(e.Adv.AttackPower))
+		armor = append(armor, float64(e.Adv.Armor))
+		hp = append(hp, float64(e.Adv.MaxHP))
+		level = e.Adv.Level
+	}
+	return Sheet{
+		SpellPower:  median(sp),
+		AttackPower: median(ap),
+		Armor:       median(armor),
+		MaxHP:       median(hp),
+		// For a player the advanced block's Level field is item level,
+		// not character level: the log writes one field with two
+		// meanings. It is reported as-is and the table labels it.
+		Level:   level,
+		Samples: len(sp),
+	}
+}
+
+// TargetLevels maps each creature GUID to the level its advanced blocks
+// report. Only creatures: for a player that field is item level.
+//
+// A line the player deals carries the PLAYER's advanced block, so a
+// creature's level comes from the lines where the creature is the acting
+// or landed-on unit - in practice SWING_DAMAGE_LANDED and the creature's
+// own swings. That is why a log with advanced logging off cannot key an
+// attack table by level at all.
+func TargetLevels(events []event.Event) map[string]int64 {
+	out := map[string]int64{}
+	for _, e := range events {
+		if !e.Adv.OK || e.Adv.Level == 0 {
+			continue
+		}
+		if !strings.HasPrefix(e.Adv.InfoGUID, "Creature-") && !strings.HasPrefix(e.Adv.InfoGUID, "Vehicle-") {
+			continue
+		}
+		out[e.Adv.InfoGUID] = e.Adv.Level
+	}
+	return out
+}
+
 // Run measures everything this package knows how to measure.
 func Run(in Input) (Report, error) {
 	if len(in.Events) == 0 {
@@ -8157,15 +9946,45 @@ func Run(in Input) (Report, error) {
 	}
 
 	rep := Report{Actor: in.Actor, Events: len(in.Events)}
+	rep.Sheet = SheetFromEvents(in.Events, in.Actor)
+	// A flag overrides the log; the log fills in what no flag gave.
+	if in.SpellPower == 0 {
+		in.SpellPower = rep.Sheet.SpellPower
+	}
+	if in.AttackPower == 0 {
+		in.AttackPower = rep.Sheet.AttackPower
+	}
 	for _, e := range in.Events {
 		if e.Name == "ENCOUNTER_START" {
 			rep.Fights++
 		}
 	}
+
 	rep.Periodic = MeasurePeriodic(in)
 	rep.AttackTable = MeasureAttackTable(in)
 	rep.Procs = MeasureProcs(in)
 	rep.Coefficients = MeasureCoefficients(in)
+
+	// Say what the log could not support, rather than printing an empty
+	// table and letting the reader guess whether the tool is broken.
+	if rep.Sheet.Samples == 0 {
+		rep.Complete = append(rep.Complete,
+			"no advanced blocks for this actor: advanced logging was off, or the name is wrong. Coefficients and the character sheet are unavailable.")
+	}
+	if rep.Fights == 0 {
+		rep.Complete = append(rep.Complete,
+			"no ENCOUNTER_START in this log: it is open-world, so there is no COMBATANT_INFO, no per-fight segmentation, and nothing that needs the character's gear or talents at a pull.")
+	}
+	var sawBossLevel bool
+	for _, row := range rep.AttackTable {
+		if row.TargetLevel >= 63 {
+			sawBossLevel = true
+		}
+	}
+	if !sawBossLevel {
+		rep.Complete = append(rep.Complete,
+			"no level-63 target: the boss-level attack table, and therefore the unified-Hit fit, need an instance log.")
+	}
 	return rep, nil
 }
 
@@ -8195,6 +10014,19 @@ func mean(xs []float64) float64 {
 	return sum / float64(len(xs))
 }
 
+func median(xs []float64) float64 {
+	if len(xs) == 0 {
+		return 0
+	}
+	s := append([]float64(nil), xs...)
+	sort.Float64s(s)
+	n := len(s)
+	if n%2 == 1 {
+		return s[n/2]
+	}
+	return (s[n/2-1] + s[n/2]) / 2
+}
+
 func stddev(xs []float64) float64 {
 	if len(xs) < 2 {
 		return 0
@@ -8205,12 +10037,11 @@ func stddev(xs []float64) float64 {
 		d := x - m
 		sum += d * d
 	}
-	return sqrt(sum / float64(len(xs)))
+	return math.Sqrt(sum / float64(len(xs)))
 }
 ```
 
-Add `import "math"` and `func sqrt(f float64) float64 { return math.Sqrt(f) }`, or use `math.Sqrt` directly and drop the helper — either is fine, but do not leave `sqrt` undefined.
-
+`median` uses `sort`, so the import block above needs `"sort"` beside `"strings"`. Add it.
 - [ ] **Step 5: Write the periodic-crit measurement**
 
 Create `sim/measure/periodic.go`:
@@ -8309,6 +10140,10 @@ func MeasurePeriodic(in Input) []PeriodicCrit {
 ```
 
 - [ ] **Step 6: Write the attack-table measurement**
+
+**Where the target's level comes from, which the v22 dialect changed.** A `SWING_MISSED` line carries no advanced block at all, and a `SWING_DAMAGE` line the player deals carries the **player's** block, not the target's. So neither line states the target's level. The target's level is in the **`SWING_DAMAGE_LANDED`** block, whose `InfoGUID` is the target. Build the level lookup once with `TargetLevels(in.Events)` — creature GUIDs only, because for a player that field is item level — and then key every row by the **dest GUID** of the swing, looking its level up in that map. A target whose level the log never states gets `TargetLevel: 0` and its own row, labelled `unknown level` in the table, rather than being folded in with a known one: two different levels in one row is a wrong number, and a missing level is a known unknown.
+
+Do **not** count `SWING_DAMAGE_LANDED` as a swing. It restates the `SWING_DAMAGE` that preceded it, and counting both doubles every landed hit while leaving the misses alone — which would make every observed miss rate exactly half the truth. `logs/engine/summary` hit the same trap and its `addDeaths` comment records it.
 
 Create `sim/measure/attacktable.go`:
 
@@ -8816,20 +10651,161 @@ cd /Users/jh/code/forever/sim
 go build ./measure/ ./cmd/forever-measure/ && echo BUILDS
 gofmt -l ./measure ./cmd
 go test ./measure/ -race -v
-go run ./cmd/forever-measure -log measure/testdata/planted.log -actor "Testwarrior-Forever" -spell-power 500 -min-samples 10
+go run ./cmd/forever-measure -log measure/testdata/planted-v22.log -actor "Testwarrior-Beta" -spell-power 500 -min-samples 10
 ```
 
-Expected: `BUILDS`; no `gofmt` output; nine tests `PASS`; and a table whose periodic block shows both spells at multiplier `2.000`, whose attack table shows `10.00% 10.00% 10.00% 20.00% 20.00%`, and whose proc block shows a min gap of `45s`. **Read the table** — it is what a human stares at on Sept 17, and a column that is unreadable then is unreadable now.
+Expected: `BUILDS`; no `gofmt` output; every planted-fixture test `PASS`; and a table whose periodic block shows both spells at multiplier `2.000`, whose attack table shows `10.00% 10.00% 10.00% 20.00% 20.00%`, and whose proc block shows a min gap of `45s`. **Read the table** — it is what a human stares at with a fresh log in hand, and a column that is unreadable then is unreadable now. The footer must list the missing `ENCOUNTER_START`, because the planted fixture has none either.
 
 Then check the `insufficient data` path by raising the floor:
 
 ```bash
-go run ./cmd/forever-measure -log measure/testdata/planted.log -actor "Testwarrior-Forever" -min-samples 1000
+go run ./cmd/forever-measure -log measure/testdata/planted-v22.log -actor "Testwarrior-Beta" -min-samples 1000
 ```
 
 Expected: every row reads `insufficient data` and no row shows a number.
 
-- [ ] **Step 11: Write the Sept 17 procedure**
+- [ ] **Step 10b: Run it against the real Forever log and write the test that pins what it can say**
+
+The planted fixture proves the arithmetic. The real log proves the dialect. `logs/engine/event/testdata/forever-1.60.log` is the committed 85-line excerpt of the first Forever beta log — open world, Zephras Isle, client 1.60.1, advanced logging on — and this task must read it without a parse error and must say, in words, what it cannot measure from it.
+
+Create `sim/measure/forever_log_test.go`:
+
+```go
+package measure
+
+import (
+	"strings"
+	"testing"
+	"time"
+)
+
+// foreverExcerpt is the committed excerpt of the first Forever beta log:
+// open world, no instance, therefore no COMBATANT_INFO and no
+// ENCOUNTER_START. It is read here through the same Load the tool uses,
+// so a dialect regression in logs/engine fails this package too.
+const foreverExcerpt = "../../logs/engine/event/testdata/forever-1.60.log"
+
+var foreverBase = time.Date(2026, 9, 17, 0, 0, 0, 0, time.UTC)
+
+func TestTheRealForeverLogParsesUnderRetailV22(t *testing.T) {
+	events, err := Load(foreverExcerpt, foreverBase)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(events) < 50 {
+		t.Fatalf("the excerpt produced %d events, want at least 50", len(events))
+	}
+	var parseErrors, unknown, advanced int
+	for _, e := range events {
+		switch e.Kind.String() {
+		case "parse_error":
+			parseErrors++
+			t.Logf("parse error on line %d: %s", e.Line, e.Raw)
+		case "unknown":
+			unknown++
+			t.Logf("unknown event %q on line %d", e.Name, e.Line)
+		}
+		if e.Adv.OK {
+			advanced++
+		}
+	}
+	if parseErrors != 0 {
+		t.Errorf("%d parse errors in the real Forever log; the dialect is wrong", parseErrors)
+	}
+	if unknown != 0 {
+		t.Errorf("%d unknown events in the real Forever log", unknown)
+	}
+	if advanced == 0 {
+		t.Error("no advanced blocks decoded; the 19-field block is being read as suffix params")
+	}
+}
+
+// The advanced block is what makes the character sheet readable without a
+// screenshot. On a real line it carries attack power, spell power, armour
+// and the unit's level.
+func TestTheRealLogCarriesACharacterSheet(t *testing.T) {
+	events, err := Load(foreverExcerpt, foreverBase)
+	if err != nil {
+		t.Fatal(err)
+	}
+	sheet := SheetFromEvents(events, "Tester02-Beta")
+	if sheet.Samples == 0 {
+		t.Fatal("no advanced blocks found for Tester02-Beta; the actor match or the block offset is wrong")
+	}
+	if sheet.MaxHP <= 0 {
+		t.Errorf("Sheet.MaxHP = %v, want a positive figure from the advanced block", sheet.MaxHP)
+	}
+}
+
+// Creature levels come out of the advanced blocks, and only creatures':
+// for a player that field is item level.
+func TestTheRealLogCarriesCreatureLevels(t *testing.T) {
+	events, err := Load(foreverExcerpt, foreverBase)
+	if err != nil {
+		t.Fatal(err)
+	}
+	levels := TargetLevels(events)
+	if len(levels) == 0 {
+		t.Fatal("no creature levels found")
+	}
+	for guid, lvl := range levels {
+		if !strings.HasPrefix(guid, "Creature-") && !strings.HasPrefix(guid, "Vehicle-") {
+			t.Errorf("%q is not a creature guid but has a level", guid)
+		}
+		if lvl <= 0 || lvl > 100 {
+			t.Errorf("%s has level %d", guid, lvl)
+		}
+	}
+}
+
+// This is the honest half of the task: the open-world log cannot support
+// the boss attack table or anything keyed to COMBATANT_INFO, and the
+// report has to say so rather than printing an empty table.
+func TestTheRealLogReportsWhatItCannotMeasure(t *testing.T) {
+	events, err := Load(foreverExcerpt, foreverBase)
+	if err != nil {
+		t.Fatal(err)
+	}
+	rep, err := Run(Input{Events: events, Actor: "Tester02-Beta", MinSamples: 5})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if rep.Fights != 0 {
+		t.Errorf("Fights = %d; the excerpt is open-world and has no ENCOUNTER_START", rep.Fights)
+	}
+	joined := strings.Join(rep.Complete, "\n")
+	for _, want := range []string{"ENCOUNTER_START", "level-63"} {
+		if !strings.Contains(joined, want) {
+			t.Errorf("Report.Complete does not mention %q:\n%s", want, joined)
+		}
+	}
+	// Whatever it does measure must still be honestly marked: an excerpt
+	// is far too small for any figure to clear the floor.
+	for _, p := range rep.Periodic {
+		if p.Enough {
+			t.Errorf("%s reports Enough from an 85-line excerpt", p.SpellName)
+		}
+	}
+}
+```
+
+Run it:
+
+```bash
+cd /Users/jh/code/forever/sim
+go test ./measure/ -run 'TestTheRealForeverLog|TestTheRealLog' -v
+go run ./cmd/forever-measure -log ../logs/engine/event/testdata/forever-1.60.log -actor "Tester02-Beta" -min-samples 5
+```
+
+Expected: four `PASS`, and a printed table whose figures are all `insufficient data` and whose footer lists the two reasons. That is the correct output for an 85-line excerpt: **the point of this step is that the tool reads Forever's real dialect and is honest about the rest**, not that it produces numbers.
+
+If the user has the full 37,539-line log on disk, run it against that too and record the output in the finish report — it is the first real measurement this project has ever taken:
+
+```bash
+go run ./cmd/forever-measure -log /path/to/WoWCombatLog-forever.txt -actor "<their character>" -min-samples 30
+```
+
+- [ ] **Step 11: Write the logging procedure**
 
 This is the part that has to be right when nobody has time to think. Create `/Users/jh/code/forever/sim/README.md`:
 
@@ -8850,17 +10826,37 @@ log-measurement harness.
 | `measure` | recover combat constants from a real combat log |
 | `cmd/wasm` | `sim.wasm` + `sim.js`, four JSON exports |
 | `cmd/forever-sim` | the native binary for the server lane |
-| `cmd/forever-measure` | the beta-day measurement tool |
+| `cmd/forever-measure` | the measurement tool |
 
 Build both artifacts: `make artifacts` from the repository root.
 
-## Measuring combat constants on beta day
+## Measuring combat constants
 
 The client tables do not carry whether periodic damage crits, the
 multiplier a critical tick uses, how unified Hit interacts with the
 weapon-skill miss table, proc chances, or internal cooldowns. All of
 them are visible in a combat log. `forever-measure` reads one and prints
 them.
+
+```
+forever-measure -log Logs/WoWCombatLog.txt -actor "Yourname-Beta"
+```
+
+Add `-json` to feed it into something. Add `-min-samples N` to see what
+the tool is withholding and why; anything reading `insufficient data`
+needs a longer run, not a smaller floor. `-spell-power` and
+`-attack-power` **override** what the log reports and are almost never
+needed: Forever's log writes the acting unit's attack power, spell power,
+armour and level into the advanced block of every damage line, so the
+character sheet comes out of the log.
+
+**Turn advanced logging on before anything else.** `/combatlog` starts
+and stops the log; advanced logging is the setting that fills that
+nineteen-field block. Without it the tool has no character sheet, no
+target level, and no attack table keyed by level, and it will say so.
+Forever's header reads
+`COMBAT_LOG_VERSION,22,ADVANCED_LOG_ENABLED,1,BUILD_VERSION,1.60.1,PROJECT_ID,18`
+— if the second value is `0`, advanced logging is off.
 
 **The log has to be made deliberately.** A raid log mixes buffs, targets
 and levels, and every one of those is a variable the measurement cannot
@@ -8869,33 +10865,34 @@ night of raiding.
 
 ### Before you log
 
-1. **Gear**: wear the set you want measured and **write down the
-   character sheet**: spell power, attack power, hit, crit, expertise,
-   weapon skill for the weapon you will swing. Screenshot it. Every
-   figure the tool prints is only interpretable against that sheet.
-2. **Strip every buff.** No food, no flask, no elixirs, no scrolls, no
+1. **Strip every buff.** No food, no flask, no elixirs, no scrolls, no
    raid buffs, no world buffs, no procs from another player. Right-click
    off anything that survives. A buff you forgot moves crit by a percent
-   and the fitted constant is then wrong by a percent forever.
-3. **Take off trinkets and any proc weapon** for the attack-table run.
-   They are measured separately in step 3 below.
-4. **Talents**: unspend anything that changes hit, crit, expertise or
-   damage. If you cannot respec, write down what you have; the tool
-   cannot know.
-5. `/console combatLogVersion` — confirm advanced logging is on, so the
-   target's level reaches the log. Without it the attack table cannot be
-   keyed by level and every target collapses into one row.
+   and the fitted constant is then wrong by a percent forever. The log
+   records your attack power and spell power, but not which buff
+   supplied them.
+2. **Take off trinkets and any proc weapon** for the attack-table run.
+   They are measured separately in run 3.
+3. **Talents**: unspend anything that changes hit, crit, expertise or
+   damage. If you cannot respec, write down what you have; an open-world
+   log carries no `COMBATANT_INFO`, so the tool cannot know.
+4. **Screenshot the character sheet anyway.** The log gives attack power,
+   spell power and armour; it does not give hit, crit, expertise or
+   weapon skill, and those are exactly what an attack-table fit needs.
 
 ### The three runs
 
 Use `/combatlog` to start and stop. One file per run is easiest; the
 tool takes one log at a time.
 
-**Run 1 — the attack table (the most valuable one).**
-Target: a **level 63** dummy, which is the boss-level case every melee
-spec cares about. If your city's dummies are level 60 or 62, use those
-**and say so**: the suppression terms differ per level and a mislabelled
-run is worse than no run.
+**Run 1 — the attack table (the most valuable one, and the one that
+needs an instance).**
+Target: a **level 63** dummy or boss, which is the case every melee spec
+cares about. **An open-world log cannot do this**: the starting zones
+have nothing at level 63, and the suppression terms differ per level, so
+a level-60 run does not substitute. Until a dungeon is open, log what you
+can at whatever level and **say which level**; the tool keys every row by
+the target's level, read from the `SWING_DAMAGE_LANDED` advanced block.
 
 - Auto-attack only. **No abilities at all** — a special uses a different
   table and mixing them makes both unreadable.
@@ -8905,53 +10902,51 @@ run is worse than no run.
   have error bars wider than the thing being measured.
 - Stand **behind** the target if you can, for a run with no parry, then
   **in front** for a run with parry. Two files.
-- Repeat at a level 60 dummy if one exists. The difference between the
-  two levels is the weapon-skill suppression term.
 
-**Run 2 — periodic crits.**
+**Run 2 — periodic crits. This one works today, in the open world.**
 - Apply your class's damage-over-time spells and **only** those. Let
   each run its full duration, re-apply, repeat.
 - **At least 300 ticks per spell.** A dot ticking every 3 seconds for 18
   seconds gives 6 ticks per cast, so that is 50 casts.
 - Include **one physical dot and one magic dot** if your class has both
   (Warrior Rend and Deep Wounds; Warlock Corruption and a bleed from a
-  pet). Whether the two behave the same is exactly the open question.
+  pet). Whether the two behave the same is exactly the open question, and
+  it is the question this project can answer first.
 
-**Run 3 — procs and coefficients.**
+**Run 3 — procs and coefficients. Also works today.**
 - Put the trinket or weapon back on. Auto-attack for **at least 1,000
   swings**, or cast one spell repeatedly for at least 500 casts if the
   proc is cast-triggered.
-- For coefficients: cast **one rank of one spell** at least 200 times,
-  with the spell power you wrote down. Then, if you can, drop a piece of
-  spell-power gear and do it again — two points fit a line, one does not.
+- For coefficients: cast **one rank of one spell** at least 200 times.
+  The log records your spell power on every line, so you do not have to
+  write it down — but **do** drop a piece of spell-power gear and cast
+  the same spell again. Two points fit a line, one does not, and the log
+  will show the sheet changing between them.
 
 ### Reading the result
-
-```
-forever-measure -log Logs/WoWCombatLog.txt -actor "Yourname-Forever" \
-  -spell-power 500 -attack-power 1200
-```
-
-Add `-json` to feed it into something. Add `-min-samples N` to see what
-the tool is withholding and why; anything reading `insufficient data`
-needs a longer run, not a smaller floor.
 
 What each block answers:
 
 - **PERIODIC DAMAGE** — `can crit` false across hundreds of ticks is
   evidence periodic damage does not crit for that spell. `mult` is the
   critical-tick multiplier, which the engine currently has no
-  per-periodic value for.
-- **ATTACK TABLE** — with your character sheet, these five rates are
-  what fit the miss, dodge, parry, glance and crit constants, and they
-  are the only public evidence for how unified Hit meets weapon skill.
+  per-periodic value for. This is what Task 16's per-spell `CanCrit`
+  flags are set from.
+- **ATTACK TABLE** — these five rates, against a known target level and
+  your character sheet, are what fit the miss, dodge, parry, glance and
+  crit constants, and they are the only public evidence for how unified
+  Hit meets weapon skill. A row against a level-60 target is a different
+  measurement from one against a 63 and the table keeps them apart.
 - **PROCS** — `per swing` is the proc rate. `min gap` is a lower bound
   on the internal cooldown, and a tight one once the proc has fired
   thirty or forty times: a real ICD shows as a hard floor many samples
   never cross.
-- **DAMAGE** — `mean` and `stddev` against a known spell power are what
-  a coefficient is fitted from. The base damage is not subtracted here;
-  that is what the generated constants file is for.
+- **DAMAGE** — `mean` and `stddev` against the spell power the log
+  reports are what a coefficient is fitted from. The base damage is not
+  subtracted here; that is what the generated constants file is for.
+- **The footer** lists what this log could not support. An open-world log
+  always lists at least the missing `ENCOUNTER_START` and the missing
+  level-63 target.
 
 **Post the numbers with their sample counts.** A figure without its
 count cannot be weighed against a later one.
@@ -8960,10 +10955,232 @@ count cannot be weighed against a later one.
 - [ ] **Step 12: Commit**
 
 ```bash
+cd /Users/jh/code/forever/sim
+go build ./... && gofmt -l ./measure ./cmd
 cd /Users/jh/code/forever
 git add sim/measure sim/cmd/forever-measure sim/README.md
-git commit -m "feat(sim): forever-measure, recovering combat constants from a log" \
-  -m "The tool that answers, on beta day, the questions the client tables cannot: whether periodic damage crits and by how much, the observed miss/dodge/parry/glance/crit rates that with a character sheet settle how unified Hit meets the weapon-skill miss table, proc rates with the observed minimum gap that bounds an internal cooldown, and observed damage means for coefficient fitting. None of those are in DB2, and the rating conversion tables are game-table files the client package carries rather than DB2 rows, so wago serves none of them. Every figure prints with its sample count and anything under the floor prints as insufficient data rather than a number, because a proc rate from four swings lands in a constants file and nobody re-checks it. The measurement functions are exported and separate from the printing, because the nightly validation job is the second consumer. Tests run against a checked-in log with planted values and assert the tool recovers them exactly. The README carries the dummy-target procedure to follow on Sept 17." \
+git commit -m "feat(sim): forever-measure, recovering combat constants from a Forever log" \
+  -m "The tool that answers the questions the client tables cannot: whether periodic damage crits and by how much, observed miss/dodge/parry/glance/crit rates keyed by target level, proc rates with the observed minimum gap that bounds an internal cooldown, and observed damage means for coefficient fitting. None of those are in DB2, and the rating conversion tables are game-table files the client package carries rather than DB2 rows, so wago serves none of them." \
+  -m "Rewritten against the first real Forever log. Forever writes combat-log version 22 with PROJECT_ID 18, not the Classic dialect the first draft assumed, so the loader selects layout.RetailV22 and the planted fixture is written in that dialect. The v22 advanced block is nineteen fields and rides on every damage line, carrying the acting unit's attack power, spell power, armour and level, so the character sheet is read out of the log rather than off a screenshot and the attack table is keyed by the target's level from the SWING_DAMAGE_LANDED block. The available log is open-world: no COMBATANT_INFO, no ENCOUNTER_START, no level-63 target, so the report names what it could not measure instead of printing an empty table, and the boss attack table and the unified-Hit fit wait for task 15B and a dungeon log. Every figure prints with its sample count and anything under the floor prints as insufficient data, because a proc rate from four swings lands in a constants file and nobody re-checks it. The measurement functions are exported and separate from the printing, because the nightly validation job is the second consumer. Tests recover planted values exactly and read the real committed excerpt with zero parse errors." \
+  -m "Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
+```
+
+---
+
+## Task 15B: `forever-measure` against an instance log
+
+**Repo: SITE** (`/Users/jh/code/forever`), in the `sim/` module. Depends on Task 15. **G4c — BLOCKED on a dungeon or raid log with `COMBATANT_INFO` existing.** Nothing else depends on it, and the lane may finish and be reviewed without it; Task 14 records it as outstanding.
+
+**This task cannot start today, and that is the whole reason it is separate.** The only Forever log that exists is open world. Three of the measurements this project most needs are not merely noisier without an instance — they are unavailable:
+
+1. **The boss-level attack table.** `NewAttackTable`'s nine derived constants (Task 8 extracted them into config for exactly this) are fitted against a **level-63** target, because the weapon-skill suppression terms are a function of the level gap. Zephras Isle has nothing above the low teens.
+2. **How unified Hit meets the weapon-skill miss table.** Design §9 calls this the lane's load-bearing unknown. Fitting it needs the attack table above *and* the character's hit rating and weapon skill at the time of the swings, which is `COMBATANT_INFO`, which is written at `ENCOUNTER_START`.
+3. **Anything per fight.** Without `ENCOUNTER_START`/`ENCOUNTER_END` the whole log is one span, so a figure cannot be attributed to a pull, a phase, or a gear set, and the nightly validation job — which pairs a fight's recorded gear with a sim of the same gear — has nothing to key on.
+
+**The trigger.** Start this task the day a Forever log containing `ENCOUNTER_START` and `COMBATANT_INFO` lands, whether from the user's own dungeon run or from the logs pipeline's first uploaded instance report. The one-line check:
+
+```bash
+grep -c -e ENCOUNTER_START -e COMBATANT_INFO /path/to/WoWCombatLog.txt
+```
+
+Non-zero for both means this task is unblocked.
+
+**What `COMBATANT_INFO` gives, verified against the decoder.** `logs/engine/event.Combatant` carries `GUID`, `Faction`, `Stats map[string]int64`, `SpecID`, `Talents []int64`, `PvPTalents`, `Gear []Item`, `Auras []Aura` and `ItemLevel`, and `event.Event.Combatant` points at it on a `CombatantInfo` event. **The v22 row moved every stat field one to the right** relative to v16 (`logs/engine/layout/retail.go`'s own note), which the decoder already handles — so this task reads `Stats` by name and never by index. `Talents []int64` is the client's trait **node ids**, which is exactly what Task 17's generated `TalentNodeIDs` maps back to a talent, so a logged character's talents resolve with no second table.
+
+**Files:**
+- Create: `sim/measure/instance.go`, `sim/measure/instance_test.go`
+- Create: `sim/measure/testdata/planted-instance.log`
+- Modify: `sim/measure/measure.go` (`Report` gains `Fits` and `Combatants`; `Run` calls the new measurement when the log supports it), `sim/measure/report.go` (the new blocks in `Table()`), `sim/cmd/forever-measure/main.go` (a `-fight N` flag), `sim/README.md` (run 1 becomes possible; say so)
+- Test: `sim/measure/instance_test.go`
+
+**Interfaces:**
+- Consumes: everything Task 15 produced, plus `logs/engine/event` (`CombatantInfo`, `Combatant`, `Encounter`, `EncounterStart`, `EncounterEnd`) and `logs/engine/fight` (`Fight`, `Segmenter`) — still read-only.
+- Produces:
+  - `measure.Fight{Index int; EncounterID int64; Name string; Difficulty int64; StartMS, EndMS int64; Kill bool}` and `measure.Fights(events []event.Event) []Fight`
+  - `measure.Combatant{GUID, Name string; SpecID int64; ItemLevel int64; Hit, Crit, Expertise, WeaponSkill float64; TalentNodeIDs []int64}` and `measure.CombatantsOf(events []event.Event) []Combatant` — the character sheet the attack-table fit is interpreted against, read from `COMBATANT_INFO` rather than from a screenshot
+  - `measure.HitFit{TargetLevel int64; Swings int; ObservedMiss, ObservedDodge, ObservedParry, ObservedGlance float64; Hit, WeaponSkill float64; FittedBaseMiss, FittedHitSuppression float64; Residual float64; Enough bool}` and `measure.FitAttackTable(in Input, c Combatant, rows []AttackTableRow) []HitFit` — the fit whose output is the nine constants Task 8 made configurable
+  - `measure.(Input).Fight int` — measure only one fight, by index; 0 means the whole log
+- **Hands to Task 8:** a `core.AttackTableConstants` literal, printed by `Table()` in Go syntax, ready to paste into `sim/core/target.go`'s config and pin in `attack_table_test.go`. That is the deliverable: not a number in a report, a value the engine can hold.
+
+- [ ] **Step 1: Confirm the trigger and capture the log's shape**
+
+```bash
+cd /Users/jh/code/forever
+L=/path/to/WoWCombatLog.txt
+head -1 "$L"
+grep -c ENCOUNTER_START "$L"; grep -c COMBATANT_INFO "$L"
+grep -m1 ENCOUNTER_START "$L"
+grep -m1 COMBATANT_INFO "$L" | tr ',' '\n' | head -40
+```
+
+Expected: a version-22 header with `ADVANCED_LOG_ENABLED,1`; non-zero counts for both; and a `COMBATANT_INFO` line whose fields you can read against `logs/engine/event.Combatant`. **Copy 200 lines spanning one full pull** — the `ENCOUNTER_START`, its `COMBATANT_INFO` lines, a hundred swings, the `ENCOUNTER_END` — into `sim/measure/testdata/planted-instance.log`, and edit the swing outcomes so the attack table is planted at known rates exactly as Task 15's fixture is. A real prefix with planted outcomes is better than a wholly synthetic log here, because the point of this task is that the real `COMBATANT_INFO` decodes.
+
+- [ ] **Step 2: Write the failing test**
+
+Create `sim/measure/instance_test.go`. It asserts four things, in this order, because each is useless without the one before:
+
+```go
+package measure
+
+import (
+	"testing"
+	"time"
+)
+
+const instanceFixture = "testdata/planted-instance.log"
+
+var instanceBase = time.Date(2026, 10, 1, 0, 0, 0, 0, time.UTC)
+
+func instanceEvents(t *testing.T) []event.Event {
+	t.Helper()
+	e, err := Load(instanceFixture, instanceBase)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return e
+}
+
+// 1. The fight exists at all: an instance log segments, an open-world one
+//    does not, and every figure below is per fight.
+func TestInstanceLogHasFights(t *testing.T) {
+	got := Fights(instanceEvents(t))
+	if len(got) == 0 {
+		t.Fatal("no fights found in an instance log")
+	}
+	f := got[0]
+	if f.EncounterID == 0 || f.Name == "" {
+		t.Errorf("fight 1 = %+v, want an encounter id and a name", f)
+	}
+	if f.EndMS <= f.StartMS {
+		t.Errorf("fight 1 spans %d to %d", f.StartMS, f.EndMS)
+	}
+}
+
+// 2. COMBATANT_INFO decodes, and its stats read by NAME - the v22 row
+//    moved every stat field one to the right, so an index-based read
+//    would return the neighbouring stat and nothing would complain.
+func TestCombatantInfoGivesACharacterSheet(t *testing.T) {
+	got := CombatantsOf(instanceEvents(t))
+	if len(got) == 0 {
+		t.Fatal("no combatants")
+	}
+	var found bool
+	for _, c := range got {
+		if c.GUID == "" {
+			t.Error("a combatant has no guid")
+		}
+		if c.Hit > 0 || c.Crit > 0 {
+			found = true
+		}
+	}
+	if !found {
+		t.Error("no combatant reported hit or crit; the stat map is being read by index rather than by name")
+	}
+}
+
+// 3. The talents in COMBATANT_INFO are the client's trait node ids, which
+//    is what Task 17's generated TalentNodeIDs maps back to a talent. If
+//    these are not node ids the whole validation loop needs a translation
+//    table nobody has.
+func TestCombatantTalentsAreClientNodeIDs(t *testing.T) {
+	for _, c := range CombatantsOf(instanceEvents(t)) {
+		for _, id := range c.TalentNodeIDs {
+			if id < 100000 {
+				t.Errorf("%s has talent id %d, which is too small to be a trait node id (they are six digits, e.g. 105958)", c.GUID, id)
+			}
+		}
+	}
+}
+
+// 4. The fit itself: with a planted attack table and a known sheet, the
+//    fitted base miss and hit suppression must come back at the planted
+//    values. This is the number Task 8's config was extracted for.
+func TestFitAttackTableRecoversThePlantedConstants(t *testing.T) {
+	events := instanceEvents(t)
+	in := Input{Events: events, Actor: plantedActorName, MinSamples: 10}
+	rep, err := Run(in)
+	if err != nil {
+		t.Fatal(err)
+	}
+	cs := CombatantsOf(events)
+	if len(cs) == 0 {
+		t.Fatal("no combatants")
+	}
+	fits := FitAttackTable(in, cs[0], rep.AttackTable)
+	if len(fits) == 0 {
+		t.Fatal("no fits produced")
+	}
+	var boss *HitFit
+	for i := range fits {
+		if fits[i].TargetLevel == 63 {
+			boss = &fits[i]
+		}
+	}
+	if boss == nil {
+		t.Fatal("no level-63 row; the fixture must span a boss pull")
+	}
+	if !boss.Enough {
+		t.Fatalf("the level-63 fit reports insufficient data from %d swings", boss.Swings)
+	}
+	near(t, "fitted base miss", boss.FittedBaseMiss, plantedBaseMiss, 0.005)
+	near(t, "fitted hit suppression", boss.FittedHitSuppression, plantedHitSuppression, 0.005)
+	if boss.Residual > 0.01 {
+		t.Errorf("the fit's residual is %v; the model does not describe the observations", boss.Residual)
+	}
+}
+```
+
+with `plantedActorName`, `plantedBaseMiss` and `plantedHitSuppression` declared as consts at the top of the file from whatever Step 1's fixture plants. `near` is Task 15's helper in `measure_test.go`.
+
+- [ ] **Step 3: Run it and watch it fail**
+
+Run: `cd /Users/jh/code/forever/sim && go test ./measure/ -run 'TestInstanceLog|TestCombatant|TestFitAttackTable' -v`
+Expected: `FAIL [build failed]`, `undefined: Fights`.
+
+- [ ] **Step 4: Write `instance.go`**
+
+Three readers and one fit:
+
+- `Fights(events)` walks for `event.EncounterStart` and `event.EncounterEnd`, pairing them and reading `e.Encounter` (`ID`, `Name`, `Difficulty`, `Size`, `Kill`). An unpaired start closes at the last event, and says so in the fight's `Kill: false`.
+- `CombatantsOf(events)` walks for `event.CombatantInfo`, reads `e.Combatant`, and pulls `Hit`, `Crit`, `Expertise` and the weapon skills out of `Stats` **by key name**, not by index. Log which keys were present the first time this runs against a real log and write the key names into a comment: the v22 stat block's key set is what this whole task hangs on, and it is worth recording in the file rather than in a commit message.
+- `(Input).Fight` filters `Events` to one fight's span before every other measurement runs, so `Report` figures are per pull.
+- `FitAttackTable(in, c, rows)` takes the observed rates and the character's hit and weapon skill and solves for `BaseMissChance` and `HitSuppression` in the engine's own formula — **read `sim/core/target.go`'s `NewAttackTable` and use its arithmetic, do not re-derive it**, because the point is to produce constants that engine formula will consume. Report the residual; a model that does not fit is the discovery, and a fit with a large residual must not be quietly rounded into the engine.
+
+- [ ] **Step 5: Extend the report**
+
+`Report` gains `Fights []Fight` (the list, not just the count), `Combatants []Combatant` and `Fits []HitFit`, and `Table()` gains a **FIT** block that ends by printing the constants in Go syntax:
+
+```
+FIT (level 63, 1,284 swings, residual 0.0021)
+  core.AttackTableConstants{
+      BaseMissChance:       0.0900, // measured
+      BaseDodgeChance:      0.0650, // measured
+      …
+  }
+```
+
+Paste that into Task 8's config, replace the Era regression fixture's expected values with it in a separate commit, and the engine's attack table is Forever's.
+
+- [ ] **Step 6: Run everything, then hand off**
+
+```bash
+cd /Users/jh/code/forever/sim
+go test ./measure/ -race -v
+gofmt -l ./measure ./cmd
+go run ./cmd/forever-measure -log /path/to/instance.log -actor "<character>" -fight 1
+```
+
+Expected: every test `PASS`; a table with a populated FIT block and an **empty** `Complete` footer, which is the first time in this project that footer is empty.
+
+Report to the controller: the fitted constants, their residual and their sample count; whether the observed rates match the engine's current Era constants (if they do, Forever did not change the table and that is worth saying loudly); and the `COMBATANT_INFO` stat key names, for the api lane's validation job.
+
+- [ ] **Step 7: Commit**
+
+```bash
+cd /Users/jh/code/forever
+git add sim/measure sim/cmd/forever-measure sim/README.md
+git commit -m "feat(sim): fit the attack-table constants from an instance log" \
+  -m "The half of forever-measure that needed a dungeon. An instance log carries ENCOUNTER_START, so figures are per pull, and COMBATANT_INFO, so the observed attack table can be interpreted against the character's own hit, crit, expertise and weapon skill rather than a screenshot; its talents are the client's trait node ids, which task 17's generated TalentNodeIDs maps straight back to a talent. The fit solves the engine's own NewAttackTable arithmetic for base miss and hit suppression against a level-63 target and prints the result as a core.AttackTableConstants literal, which is the form task 8 extracted the constants into so that a measurement could replace them without a code change. The residual is printed beside them: a model that does not describe the observations is the discovery, and must not be quietly rounded into the engine." \
   -m "Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 ```
 
@@ -8971,7 +11188,9 @@ git commit -m "feat(sim): forever-measure, recovering combat constants from a lo
 
 ## Task 14: Final review
 
-**Repo: ENGINE and SITE.** Depends on everything. **G5, alone.** This is the only task that runs both full suites.
+**Repo: ENGINE and SITE.** Depends on everything **except Task 15B**, which is blocked on an instance log and may land after this review. **G5, alone.** This is the only task that runs both full suites.
+
+**Seventeen tasks, of which sixteen are runnable today.** 1–13 and 15–17 can all be executed now; **15B cannot start until a Forever log containing `ENCOUNTER_START` and `COMBATANT_INFO` exists**. Run this review without it, and record it as outstanding with the one-line trigger check (`grep -c -e ENCOUNTER_START -e COMBATANT_INFO <log>`) so whoever has the log knows what unblocks.
 
 **Files:**
 - Modify (only if a check below fails): whichever file the failure names
@@ -8988,13 +11207,26 @@ git commit -m "feat(sim): forever-measure, recovering combat constants from a lo
 cd /Users/jh/code/wowsims-forever
 export PATH=$PATH:$(go env GOPATH)/bin
 make proto && make binary_dist/dist.go
+# The talent trees are generated; a stale checkout would pass every test
+# while describing vanilla's trees, so regenerate and confirm no diff.
+make talents && git diff --stat -- proto/ sim/*/talents_auto_gen.go ui/core/talents/trees/
 go build ./... && echo "ENGINE BUILDS"
 gofmt -l ./sim ./tools ./cmd
 go vet --tags=with_db ./sim/... ./cmd/...
 time go test --tags=with_db -count=1 ./sim/... ./cmd/...
 ```
 
-Expected: `ENGINE BUILDS`; `gofmt -l` prints nothing; `go vet` silent; every package `ok`, zero `FAIL`. The baseline before this plan was **20 packages, 10.5 s wall, 78.7 s CPU**; with two reworked specs and the new `cmd/forever-sim` package expect roughly 12 to 15 s. Record the real figure.
+Expected: `ENGINE BUILDS`; **`make talents` produces an empty diff** (a non-empty one means someone hand-edited a generated file, which is the exact failure Task 17 exists to prevent); `gofmt -l` prints nothing; `go vet` silent.
+
+**The engine suite will not be all green, and that must be stated rather than hidden.** Task 17 replaced all nine classes' talent trees and Tasks 11 and 12 rewrote only the warrior's and the mage's behaviour, so the seven other classes' suites fail on talents that no longer exist. List exactly which packages fail and why, and confirm the in-scope ones are green:
+
+```bash
+cd /Users/jh/code/wowsims-forever
+go test --tags=with_db -count=1 ./sim/core/... ./tools/talentgen/ ./sim/warrior/... ./sim/mage/... && echo "IN-SCOPE PACKAGES GREEN"
+go test --tags=with_db -count=1 ./sim/... 2>&1 | grep -E '^(FAIL|ok)' | awk '{print $1}' | sort | uniq -c
+```
+
+The baseline before this plan was **20 packages, 10.5 s wall, 78.7 s CPU**. Record the real figure and the failing list.
 
 ```bash
 cd /Users/jh/code/forever/sim
@@ -9004,7 +11236,7 @@ go test ./... -race -coverprofile=cover.out
 go tool cover -func=cover.out | tail -1
 ```
 
-Expected: nothing from `gofmt` or `vet`; `ok` for `api`, `adapter` and `enginever`; total coverage at or above 80%.
+Expected: nothing from `gofmt` or `vet`; `ok` for `api`, `adapter`, `enginever`, `request`, `combine`, `measure` and both `cmd` packages; total coverage at or above 80%.
 
 - [ ] **Step 2: Re-verify every measured claim in this plan**
 
@@ -9012,6 +11244,20 @@ The plan states numbers. Confirm each is still true, and correct the plan where 
 
 ```bash
 cd /Users/jh/code/wowsims-forever
+echo "--- ten races, two of them Skyborne ---"
+grep -c 'Race_RaceHighOrderSkyborne\|Race_RaceWindshaperSkyborne' sim/core/racials.go   # want >= 2
+go test --tags=with_db ./sim/core/ -run 'TestPlayableRaces|TestSkyborne' -v
+echo "--- the talent trees are the client's, not vanilla's ---"
+grep -h 'TalentsBuild = ' sim/*/talents_auto_gen.go | sort -u        # want one line, the beta build
+ls sim/*/talents_auto_gen.go | wc -l                                  # want 9
+python3 - <<'EOF'
+import glob, re
+total = 0
+for f in glob.glob('sim/*/talents_auto_gen.go'):
+    m = re.search(r'TalentTreeSizes = \[3\]int\{(\d+), (\d+), (\d+)\}', open(f).read())
+    total += sum(int(g) for g in m.groups())
+print("talents across nine classes:", total, "(want 469)")
+EOF
 echo "--- the merge left no split stats, and no resilience ---"
 grep -rnE 'stats\.(MeleeHit|SpellHit|MeleeCrit|SpellCrit)\b' sim/ --include='*.go' | wc -l    # want 0
 grep -rnE '\bStat(SpellHit|MeleeHit|SpellCrit|MeleeCrit)\b' ui/ --include='*.ts' --include='*.tsx' | wc -l  # want 0
@@ -9031,6 +11277,11 @@ make artifacts >/dev/null && gzip -9 -c artifacts/sim.wasm | wc -c | \
 echo "--- the four exports, and no protobuf in the envelope ---"
 grep -c 'js.Global().Set("\(simRun\|simSplit\|simCombine\|simAbort\)"' sim/cmd/wasm/main.go  # want 4
 grep -rn '\[\]byte' sim/api/envelope.go | wc -l  # want 0
+echo "--- the adapter fills every field logs engine 0.5.3 has ---"
+grep -n 'Version = ' logs/engine/session/session.go                   # the engine version the adapter targets
+(cd sim && go test ./adapter/ -run TestGoldenCarriesEverySummaryKey -v)
+echo "--- forever-measure reads Forever's real dialect ---"
+(cd sim && go test ./measure/ -run TestTheRealForeverLogParsesUnderRetailV22 -v)
 ```
 
 The last count has no target; it is a figure to read. Every number this plan could not source is supposed to carry that word, so a small count means someone typed a number silently.
@@ -9039,7 +11290,10 @@ The last count has no target; it is a figure to read. Every number this plan cou
 
 Open `docs/superpowers/specs/2026-09-14-simulator-interfaces.md` and check the "Engine" and "Engine version" sections against the tree. Each of these is a yes or a written reason why not:
 
-- [ ] No message is reshaped: `RaidSimRequest`, `RaidSimResult`, `SimDatabase`, `APLRotation` all keep their messages. *(The `Stat` enum is renumbered — an index, not a wire identity, argued in Task 4; `Encounter.biome` is additive.)*
+- [ ] No message is reshaped: `RaidSimRequest`, `RaidSimResult`, `SimDatabase`, `APLRotation` all keep their messages. *(The `Stat` enum is renumbered — an index, not a wire identity, argued in Task 4; `Encounter.biome` and the two `Race` values are additive; the nine `<Class>Talents` messages **are** reshaped by Task 17, which is inside the contract because no lane boundary carries a talent message — the wire form is the positional string in `CharacterSpec.Talents`.)*
+- [ ] Ten races: `proto.Race` carries both Skyborne values, `request.ParseRace` maps both slugs, `core.RacialsFor` has four entries for each, and the count matches `data/builds/<build>/races.json`.
+- [ ] The talent trees are generated: `make talents` is an empty diff, all nine `talents_auto_gen.go` carry the beta build, and the nine tree sizes sum to 469.
+- [ ] `summary.Summary` is filled completely: `TestGoldenCarriesEverySummaryKey` passes, the golden has twenty keys, and none of the list-valued ones is `null`.
 - [ ] `Stat` enum: `MeleeHit`+`SpellHit` → `Hit`, `MeleeCrit`+`SpellCrit` → `Crit`, `Resilience` deleted, indexes synced between `sim/core/stats` and `proto/common.proto`, asserted by `TestStatEnumIsSyncedWithProto`.
 - [ ] The engine repository ships no artifact of ours: no `cmd/forever-sim`, no wasm build target, no artifact-publishing workflow. Both artifacts come from `sim/cmd/wasm` and `sim/cmd/forever-sim` in the site repo, from the pinned version, built in CI.
 - [ ] The wasm exports exactly `simRun`, `simSplit`, `simCombine`, `simAbort`, and the smoke test runs a real split-run-combine through them under node.
@@ -9086,9 +11340,10 @@ A native figure more than 25% below the baseline is a regression worth finding b
 
 - [ ] **Step 5: Request review**
 
-Use `superpowers:requesting-code-review` against both branches. Point the reviewer at the four things this lane got wrong most easily:
+Use `superpowers:requesting-code-review` against both branches. Point the reviewer at the five things this lane got wrong most easily:
 
 1. **The merged stat literals.** Task 4 merged composite literals that set both `MeleeCrit` and `SpellCrit`. Each merge picked one value. Check every `// Forever: merged from` comment against what the item or class actually granted.
+2. **The generated talent field names.** Task 17 derives a proto field name from a talent name, and a talent renamed between builds silently becomes a new field whose behaviour stops applying. `TestFieldNamesAreLegalAndUnique` catches a collision; have the reviewer read the nine generated messages for names that are legal and unique but *wrong*.
 2. **The spell masks.** A talent mod with a mask that is too wide silently buffs spells it should not. Cross-check `WarriorSpellMaskSpecials` and `MageSpellMaskFrostDamage` against the abilities they name.
 3. **The unconfirmed list.** Every Forever number nobody published must carry `unconfirmed`. A number that does not is either sourced — in which case say where — or invented.
 4. **The APL ranks.** Both default APLs must cast the highest rank the character has. The data lane found the preset mage APL casting Frostbolt rank 10; confirm neither new APL repeats it.
@@ -9103,13 +11358,16 @@ Report to the controller:
 - the re-measured table from Step 4;
 - every contract clause in Step 3 that is a "no", with the reason;
 - the count of `unconfirmed` markers, as the honest size of what the beta still has to settle;
-- whether the Forever talent calculator was populated in time, because Tasks 11 and 12 branch on it and the answer determines whether a follow-up commit is owed.
+- **whether Task 10's `spellconst` input arrived**, because Tasks 10, 11 and 12 all branch on it and the answer determines whether a regeneration commit is owed;
+- **that Task 15B is outstanding, and its trigger**, so whoever gets the first dungeon log knows it unblocks the attack-table fit;
+- **the three lists from Tasks 11 and 12 Step 0** — which talents survived the client's new trees, which are gone, which are new — because that is the only measured answer anyone has to "how much of the class code survives", and the other seven specs are planned against it;
+- **which of the seven out-of-scope class suites are failing**, so nobody mistakes deferred work for a regression.
 
 ---
 
 ## Self-review
 
-Run against the design (sections 2 and 9), the contract at `e920e03`, and `research/08-stats.md` §12.
+Run 2026-09-18 against the design (sections 2 and 9), the contract at `docs/superpowers/specs/2026-09-14-simulator-interfaces.md`, `research/08-stats.md` §12, the mined beta build `1.60.1.69893`, and logs engine 0.5.3.
 
 **Spec coverage.**
 
@@ -9118,24 +11376,25 @@ Run against the design (sections 2 and 9), the contract at `e920e03`, and `resea
 | §2.1 Repository, module path unchanged, consumed as a Go module pinned by version | 1, 2 |
 | §2.2 Hit and crit are one stat each | 4 |
 | §12.1 Delete `Resilience`; do not merge haste | 4 |
+| Ten races, two of them Skyborne faction rows | 4 (enum), 5 (base stats), 9 (racials), 3A (slugs) |
 | §2.2 Expertise reduces parry and dodge | none needed — already modelled; §12.3 calls it zero-change. Task 5 deletes the wrong quarter-percent constant |
 | §2.2 Bonus healing carries one third as bonus damage | 6 |
 | §2.2 Caster weapons grant spell damage | none needed — `stats.SpellDamage` exists; item data, data lane |
-| §2.2 Weapon skill kept | 8 extracts the nine derived constants into config and pins them; the formulas are untouched |
-| §2.2 Talent trees: seven rows, 11/16/21/31, buff talents baseline | 11, 12 |
-| §1.2 Thirteen hit/crit talents changed meaning | 11, 12 (rebuild, not rename) |
-| §2.2 Reworked racials, two active two passive | 9 |
+| §2.2 Weapon skill kept | 8 extracts the nine derived constants into config and pins them; the formulas are untouched; **15B fits them** |
+| §2.2 Talent trees: seven rows, 11/16/21/31, buff talents baseline | **17** generates the trees from the client; 11 and 12 write the behaviour |
+| §1.2 Thirteen hit/crit talents changed meaning | 11, 12 — now rebuilt against the client's own per-rank descriptions rather than against a tooltip |
+| §2.2 Reworked racials, two active two passive | 9, across all ten races, named from `data/curated/races.json` |
 | §2.2 New baseline abilities per class | 11, 12 |
 | §2.2 Encounter environment (biome, creature type) | 8 |
 | §12.6 Extensible creature type; conditional effects as additive bonuses | 8 |
 | §2.2 `SpellScaling` absent; coefficients stay the vanilla convention | 10 |
 | §2.2 `spell_mod.go` cherry-picked from SoD | 7 |
-| §12.3 Periodic crit: the per-tick magic variant and `Dot.CritMultiplier` | 16 |
+| §12.3 Periodic crit: the per-tick magic variant and `Dot.CritMultiplier` | 16, with its per-spell flags fed by 15 |
 | §12.1/§12.3 Percentage armour ignore; weapon-subclass conditional modifiers | 16 |
 | §2.3 Per-class generated constants file | 10, consumed by 11 and 12 |
 | §2.3 Order: Fury Warrior then Frost Mage | 11, 12 |
 | §2.4 One default APL per spec, as data | 11, 12 |
-| §2.5 Adapter to the logs engine's summary | 3B |
+| §2.5 Adapter to the logs engine's summary | 3B, against the 0.5.3 shape |
 | Contract: `sim/request`, our JSON to the engine's request | 3A |
 | Contract: no protobuf crosses a lane boundary | 2 (no `[]byte`), 3, 13 |
 | Contract: the engine ships no artifact of ours | 13 |
@@ -9145,38 +11404,55 @@ Run against the design (sections 2 and 9), the contract at `e920e03`, and `resea
 | Contract: `ENGINE_VERSION`, `make engine-pin`, `sim/enginever/version.go` | 2 |
 | Contract: `SimRequest` / `CharacterSpec` / `SimResult` / `Estimate` | 2 |
 | Contract: base stats and rating constants regenerated | 5 |
-| §9 risk: Forever's numbers move weekly | 5, 10 — regeneration, not editing |
-| §9 risk: unified hit against the weapon-skill miss table | 4 keeps the table; 8 makes its constants fittable; **15 measures them**. Not solved before the beta, by construction |
-| §9 risk: WASM is eight times slower than native | measured at 8.5×; Task 13's budgets are built on the measurement |
-| §5.3 / §12 the numbers no table carries | 15 |
+| §9 risk: Forever's numbers move weekly | 5, 10, **17** — regeneration, not editing, now including the talent trees |
+| §9 risk: unified hit against the weapon-skill miss table | 4 keeps the table; 8 makes its constants fittable; **15B measures them, and cannot start until a dungeon log exists**. Not solved before an instance log, by construction |
+| §9 risk: WASM is eight times slower than native | measured at 8.5× on 2026-09-14; Task 13's budgets are built on that measurement and Task 14 re-measures |
+| §5.3 / §12 the numbers no table carries | 15 (periodic crit, procs, coefficients — runnable today), 15B (the attack table — blocked) |
 
-Gaps, stated rather than hidden:
+**Gaps, stated rather than hidden.**
 
-- **`data/curated/apl/<spec_slug>.json` is the data lane's file.** Tasks 11 and 12 write the APL into the engine's `ui/<class>/apls/`, because that is where `core.GetAplRotation` reads it in the regression suite, and Task 3A embeds a copy into `sim/request` so the wasm carries it with no fetch. Three copies of one document is one too many: keeping them in step is a data-lane task, and the engine's is the one the regression suite runs.
-- **`sim/specs/specs.go`** is named in the contract's Identifiers section and generated by the data lane. This plan does not create it; `adapter.splitSpecSlug` needs only the split, and hardcoding a spec list here would violate "nothing hardcodes a spec list elsewhere."
+- **Task 15B is blocked and the lane can finish without it.** The only Forever log is open world. The boss-level attack table, the unified-Hit fit, and any figure keyed to `COMBATANT_INFO` wait for a dungeon log. Task 14 records it as outstanding rather than pretending the lane is complete.
+- **Task 10's input does not exist.** `data/builds/1.60.1.69893/` has no `spellconst/` directory and `spells.json` is `{id, name}` only, so Tasks 10, 11 and 12 run their "not yet" branch: the generator and its tests land, the literals stay with their `unconfirmed` markers, and the regeneration is a later one-line commit. This is stated in each of the three tasks rather than discovered at execution time.
+- **`data/curated/specs.json` does not exist.** The contract names it and the data lane owns it. `request.applySpec` is therefore a two-case switch that fails closed, and `adapter.splitSpecSlug` needs only the split. Nothing here hardcodes a spec list.
+- **`data/curated/apl/<spec_slug>.json` is the data lane's file**, and there are three copies of each APL: the curated one, the engine's `ui/<class>/apls/` (which `core.GetAplRotation` reads in the regression suite), and the `//go:embed` copy in `sim/request`. Keeping them in step is a data-lane task; the engine's is the one the suite runs.
+- **Seven of the nine classes are left not compiling their old talent behaviour.** Task 17 replaces every class's tree, and only the warrior and the mage get their behaviour rewritten in this plan. Task 17 Step 10 comments out the other seven with a dated reason so the fork builds; their suites fail until their spec is brought up, and Task 14 lists them so that is visible rather than ambient.
+- **Skyborne base stats are a declared clone.** No mined table carries them, so Task 5 ships Human's and Orc's rows under the two Skyborne races, marked, named by `ProvisionalConstants()`, and asserted still-a-clone by a test that fails the day a real table lands.
 - **Tanks and healers are out of scope** at launch, so `Summarize` leaves `Healing`, `DamageTaken` and `HealingTaken` empty and says so.
 - **`request.Build`'s buff and consume mapping is described, not spelled out.** Task 3A Step A4 names the six helpers, the protos they target and the mechanical rule (buff id = proto field name in lower snake case) but does not enumerate the fields, because the buff id list is the web lane's and does not exist yet. That is the one place in this plan where an implementer writes code from a rule rather than from a code block; the tests around it are concrete.
 - **§12.2 item 3's per-class stat dependencies** — Intellect to spell damage for Paladin and Shaman, Spirit to healing and damage for Priest, and four more — are not tasked here. They belong to the specs that need them, and neither launch spec does. The note in Task 6 warns the Priest implementer about double-applying the global ⅓.
-- **§12.7's items 9 to 12 are beta work** by its own table, and this plan reaches them through Task 15 rather than pre-empting them.
+- **Seven racials out of forty carry numbers from a demo transcription** rather than a client table, and `UnconfirmedRacials()` names exactly those seven. The rest are named and either have a Blizzard-confirmed number or no combat effect.
 
-**Placeholder scan.** No step says "TBD", "implement later", "add appropriate error handling", or "similar to Task N". Every code step carries the code. Four steps are conditional on something outside this lane, and each states both branches explicitly rather than deferring: Tasks 11 and 12 Step 3 (the Forever talent calculator may not be populated before Sept 17 — keep Era's tree, declare the milestones, mark it unconfirmed); Tasks 10, 11 and 12 Step 7 (the data lane's `spellconst` output may not exist — keep the literals, which already carry `unconfirmed`, and regenerate later in a one-line commit); Task 6 Step 3 (the `safeDepsOrder` reorder may already be done in your checkout — the check is one command); and Task 15 Step 11's `simconsumes.json` review, which is written so the data lane gets an answer whether or not the file exists yet.
+**Placeholder scan.** No step says "TBD", "implement later", "add appropriate error handling", or "similar to Task N". Every code step carries the code, and the two reference talent strings are concrete, spend-by-spend, against the client's own tree widths rather than left as `<digits>`. Five steps are conditional on something outside this lane, and each states both branches explicitly rather than deferring:
+
+1. **Tasks 10, 11 and 12 Step 7** — the data lane's `spellconst` output does not exist today; keep the literals, which already carry `unconfirmed`, and regenerate later in a one-line commit.
+2. **Task 6 Step 3** — the `safeDepsOrder` reorder may already be done in your checkout; the check is one command (it was **not** done as of 2026-09-18).
+3. **Task 10's `simconsumes.json` review** — written so the data lane gets an answer whether or not the file exists yet.
+4. **Task 3B Step B7** — the adapter's fixtures may be produced before or after Tasks 11 and 12; both are correct, because the adapter's contract is with the shape of a `RaidSimResult` and not with Forever's numbers, and each spec task ends by regenerating its own.
+5. **Task 15B** — blocked outright, with a one-line trigger check and an explicit statement that the lane may be reviewed and finished without it.
 
 **Type consistency.** Checked across tasks:
 
 - `enginever.Version` (Task 2) is read by `adapter` through `req.EngineVersion` (Task 3B), written by `make engine-pin` (Task 2), and stamped into both artifacts by `make artifacts` (Task 13) — one string, one writer, three consumers.
-- `api.SimRequest` carries `Character api.CharacterSpec` and **no `Raw`** (Task 2). `request.Build` consumes it (3A) and `adapter.Summarize` takes it as its second parameter (3B); both signatures match the contract at `e920e03`.
+- `api.SimRequest` carries `Character api.CharacterSpec` and **no `Raw`** (Task 2). `request.Build` consumes it (3A) and `adapter.Summarize` takes it as its second parameter (3B); both signatures match the contract.
 - `api.SimResult` is what `combine.Results` folds (13), what `forever-sim` writes (13), what `simRun` returns (13), and what the api lane stores. One shape, four producers.
-- `stats.Hit` / `stats.Crit` and the absence of `stats.Resilience` (Task 4) are used by Task 5's constants, Task 6's `safeDepsOrder` (which also collapses the duplicate `Crit` the `sed` leaves behind), Task 16's crit paths, and Tasks 11 and 12's talent mods.
+- `summary.Summary` (logs engine 0.5.3, twenty fields) is built only by `adapter.Summarize`, and `TestGoldenCarriesEverySummaryKey` fails the day it grows a twenty-first — which is the mechanism that caught this refresh's largest single drift.
+- `proto.Race` (Task 4, ten values) is consumed by `request.ParseRace` (3A, ten slugs), `core.PlayableRaces`/`RacialsFor` (9, ten entries) and `base_stats_provisional.go` (5, two clones). Four places, one enum, each with a test that counts to ten.
+- `stats.Hit` / `stats.Crit` and the absence of `stats.Resilience` (Task 4) are used by Task 5's constants, Task 6's `safeDepsOrder`, Task 9's Endurance, Task 16's crit paths, and Tasks 11 and 12's talent mods.
 - `core.SpellModConfig` and the 26 `SpellMod_*` kinds (Task 7) are used by Tasks 11 and 12; every kind those two use — `SpellMod_PowerCost_Flat`, `SpellMod_PowerCost_Pct`, `SpellMod_CritDamageBonus_Flat`, `SpellMod_DamageDone_Flat`, `SpellMod_CastTime_Flat`, `SpellMod_BonusHit_Flat`, `SpellMod_Cooldown_Flat` — is in Task 7's produced list.
 - `Spell.ClassSpellMask uint64` (Task 7) is the type `WarriorSpellMask*` and `MageSpellMask*` (Tasks 11, 12) are assigned to.
-- `DotConfig.CanCrit` and `Dot.CritMultiplier` (Task 16) are what Tasks 11 and 12 set on their bleeds and dots; `PseudoStats.ArmorIgnorePercent` (16) is what Task 11's armour talents write.
-- `spellconst.Class` / `Spell` / `CoefficientFor` (Task 10) are consumed only by the generator in the same task; Tasks 11 and 12 consume the *generated Go arrays*, whose names (`<Name>SpellId`, `<Name>BaseDamage`, `<Name>SpellCoeff`, `<Name>CastTime`, `<Name>ManaCost`, `<Name>Level`, `<Name>CooldownMS`, `<Name>Ranks`) match what `sim/mage/frostbolt.go` already declares — which is why Task 12 Step 7 is a deletion rather than a rewrite.
+- `talents.Class` / `Tree` / `Talent` and `talents.ForeverMilestones` (Task 17) are consumed by `tools/talentgen` in the same task; Tasks 11 and 12 consume the **generated** `TalentTreeSizes`, `TalentsBuild`, `TalentNodeIDs` and `TalentSpellIDs`, and **no longer declare `TalentTreeSizes` or `ForeverMilestones` themselves** — the earlier draft's per-class `ForeverMilestones` is gone, and Task 12's Interfaces block says why the argument for it was wrong.
+- `DotConfig.CanCrit` and `Dot.CritMultiplier` (Task 16) are what Tasks 11 and 12 set on their bleeds and dots, and what Task 15's `PeriodicCrit` rows are the evidence for; `PseudoStats.ArmorIgnorePercent` (16) is what Task 11's armour talents write.
+- `spellconst.Class` / `Spell` / `CoefficientFor` (Task 10) are consumed only by the generator in the same task; Tasks 11 and 12 consume the *generated Go arrays*, whose names match what `sim/mage/frostbolt.go` already declares — which is why Task 12's constants step is a deletion rather than a rewrite.
 - `core.ProvisionalConstants()` (5) and `core.UnconfirmedRacials()` (9) are both `[]string` and both feed the api lane's spec-support page; Task 14 Step 2 runs both.
-- `measure.Report` (15) is returned by `measure.Run` and rendered by `measure.(Report).Table()`; the command calls both and nothing else, which is the separation the validation job needs.
+- `measure.Report` (15) is returned by `measure.Run` and rendered by `measure.(Report).Table()`; `measure.Sheet`, `measure.TargetLevels` and `Report.Complete` are new in this refresh and are consumed by `Run`, by the command, and by Task 15B's `FitAttackTable`. Task 15B extends the same `Report` rather than defining a second one.
 - `run(inPath, outPath string, iterations int, progress io.Writer) error` (Task 13's `forever-sim`) is the signature every test in that task calls. Task 15's `measure.Load`/`measure.Run` are a different pair and do not collide.
 
-Three inconsistencies found and fixed while reviewing:
+**Inconsistencies found and fixed while reviewing.**
 
-1. `ForeverMilestones` is declared twice, once in `sim/warrior` and once in `sim/mage`, rather than once in `core`. Deliberate, and Task 12 says why — a tree is a class's own shape, and a shared constant would let one class differ without saying so — but the two must stay equal, which both tasks' `TestForeverTalentMilestones` asserts independently.
-2. An earlier draft of Task 5 generated `ExpertisePerQuarterPercentReduction` from the `weapon skill` column. `research/08-stats.md` §12.4 shows the constant is wrong in principle for Forever, so the task now deletes it and the test asserts it stays deleted.
-3. An earlier draft of Task 13 built both artifacts in the engine repository. The contract at `e920e03` rules that out; Task 13 now builds both here and the engine keeps only a test workflow, which is also what makes `sim/request` and `sim/adapter` reachable from the browser at all.
+1. `ForeverMilestones` was declared twice, once per spec package, with Task 12 arguing that a tree is a class's own shape. The client's data settles it the other way — the tier gates are identical across all nine trees — so Task 17 declares it once in `sim/core/talents` and both spec tasks read it.
+2. An earlier draft of Task 5 generated `ExpertisePerQuarterPercentReduction` from the `weapon skill` column. `research/08-stats.md` §12.4 shows the constant is wrong in principle for Forever, so the task deletes it and a test asserts it stays deleted.
+3. An earlier draft of Task 13 built both artifacts in the engine repository. The contract rules that out; Task 13 builds both in the site repo and the engine keeps only a test workflow, which is also what makes `sim/request` and `sim/adapter` reachable from the browser at all.
+4. Task 3B's `ability()` shadowed the package-level `per` helper with a local variable of the same name, so the code as written would not have compiled. The local is now `dmg`.
+5. Task 3B's damage sum omitted the four `resisted_*` buckets, which understates every caster by whatever partial resists took. They are summed in and reported in `Ability.Resisted`.
+6. Tasks 11 and 12 Step 3 scraped Wowhead's talent calculator for a tree. That is obsolete and actively harmful now that the client's own trait tables are mined, so both steps became *reading* steps over the generated tree and the client's per-rank descriptions, and both say the scrape must not be revived.
+7. Task 15 loaded `layout.ClassicWiki()` and its fixture was a Classic-dialect log. Forever writes combat-log version 22; every line of that fixture would have mis-split. Both are now `RetailV22`.
