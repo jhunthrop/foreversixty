@@ -17,6 +17,7 @@ import (
 	"errors"
 	"fmt"
 	"sort"
+	"strconv"
 	"strings"
 	"unicode"
 
@@ -109,19 +110,24 @@ func onEnumValue(fd protoreflect.FieldDescriptor) protoreflect.EnumNumber {
 	return 0
 }
 
-// consumes maps consumable ids onto the engine's Consumes message. An id
-// is an enum value name in lower snake case, optionally qualified by the
-// field it belongs in - "main_hand_imbue:shadow_oil" - which is how the
-// two weapon imbue slots are told apart.
-func consumes(ids []string) (*proto.Consumes, error) {
+// consumes maps consumable ids onto the engine's Consumes message.
+//
+// An id is one of two things: an engine enum value name in lower snake
+// case ("elixir_of_the_mongoose"), or a client item id from the build's
+// simconsumes.json ("item:13452"), which the table joins onto the same
+// enum value by name. Either may be qualified by the field it belongs
+// in - "main_hand_imbue:shadow_oil", "off_hand_imbue:item:3824" - which
+// is how the two weapon imbue slots are told apart.
+func consumes(ids []string, table *Consumables) (*proto.Consumes, error) {
 	out := &proto.Consumes{}
 	msg := out.ProtoReflect()
 	for _, id := range ids {
-		field, value, qualified := strings.Cut(id, ":")
-		if !qualified {
-			field, value = "", id
+		field, value := splitConsumeID(id)
+		key, err := consumeKey(value, table)
+		if err != nil {
+			return nil, fmt.Errorf("%w: %q", err, id)
 		}
-		matches := consumeFields(msg.Descriptor(), field, value)
+		matches := consumeFields(msg.Descriptor(), field, key)
 		switch len(matches) {
 		case 0:
 			return nil, fmt.Errorf("%w: %q", ErrUnknownConsume, id)
@@ -134,6 +140,46 @@ func consumes(ids []string) (*proto.Consumes, error) {
 		}
 	}
 	return out, nil
+}
+
+// splitConsumeID pulls off a field qualifier, if the id carries one.
+// "item" is not a field of Consumes, so a bare "item:13452" is the item
+// form rather than a qualified value.
+func splitConsumeID(id string) (field, value string) {
+	head, tail, ok := strings.Cut(id, ":")
+	if !ok || head == itemPrefix {
+		return "", id
+	}
+	return head, tail
+}
+
+// consumeKey turns the value half of an id into the lookup key an enum
+// value name normalises to. An item id needs the build's table; without
+// one, saying so beats resolving it to nothing.
+func consumeKey(value string, table *Consumables) (string, error) {
+	rest, ok := strings.CutPrefix(value, itemPrefix+":")
+	if !ok {
+		return value, nil
+	}
+	itemID, err := strconv.ParseInt(rest, 10, 64)
+	if err != nil {
+		return "", ErrUnknownConsume
+	}
+	if table == nil {
+		return "", fmt.Errorf("%w: no consumable table is loaded, so an item id cannot be resolved; pass one in Options, from data/builds/<build>/simconsumes.json",
+			ErrUnknownConsume)
+	}
+	key, ok := table.key(itemID)
+	if !ok {
+		return "", fmt.Errorf("%w: the build's simconsumes.json has no such item", ErrUnknownConsume)
+	}
+	return key, nil
+}
+
+// consumesDescriptor is the Consumes message's descriptor, which the
+// vocabulary and the item table both walk.
+func consumesDescriptor() protoreflect.MessageDescriptor {
+	return (&proto.Consumes{}).ProtoReflect().Descriptor()
 }
 
 // consumeMatch is one field of Consumes that can hold a consumable id,
@@ -157,9 +203,10 @@ func consumeFields(desc protoreflect.MessageDescriptor, field, value string) []c
 		switch fd.Kind() {
 		case protoreflect.EnumKind:
 			values := fd.Enum().Values()
+			enum := string(fd.Enum().Name())
 			for j := 0; j < values.Len(); j++ {
 				v := values.Get(j)
-				if v.Number() == 0 || snake(string(v.Name())) != value {
+				if v.Number() == 0 || !namesValue(string(v.Name()), enum, value) {
 					continue
 				}
 				out = append(out, consumeMatch{fd, protoreflect.ValueOfEnum(v.Number())})
@@ -173,6 +220,18 @@ func consumeFields(desc protoreflect.MessageDescriptor, field, value string) []c
 		}
 	}
 	return out
+}
+
+// namesValue reports whether an id names this enum value. Some values
+// repeat their enum's name - Food's GrilledSquid is FoodGrilledSquid -
+// and the item they are named after does not, so both the full name and
+// the name without that prefix answer to the id.
+func namesValue(valueName, enumName, id string) bool {
+	if snake(valueName) == id {
+		return true
+	}
+	stripped, ok := strings.CutPrefix(valueName, enumName)
+	return ok && stripped != "" && snake(stripped) == id
 }
 
 func fieldNames(matches []consumeMatch) []string {

@@ -76,8 +76,28 @@ func ParseClass(slug string) (proto.Class, bool) {
 	return c, ok
 }
 
-// Build turns a validated SimRequest into the engine's own request.
+// Options are the inputs a request needs that the module cannot embed.
+//
+// Today that is the build's consumable table. It belongs to a build
+// rather than to this code, so it is passed in rather than compiled in:
+// the api lane loads data/builds/<build>/simconsumes.json once at
+// startup and the wasm fetches the same file.
+type Options struct {
+	// Consumables resolves "item:<id>" consumable ids. Nil means a
+	// request may name consumables only by their engine value name; an
+	// item id then fails at the boundary rather than silently dropping
+	// a consumable the player counted on.
+	Consumables *Consumables
+}
+
+// Build turns a validated SimRequest into the engine's own request,
+// with no build-specific tables. See BuildWith.
 func Build(req api.SimRequest) (*proto.RaidSimRequest, error) {
+	return BuildWith(req, Options{})
+}
+
+// BuildWith turns a validated SimRequest into the engine's own request.
+func BuildWith(req api.SimRequest, opt Options) (*proto.RaidSimRequest, error) {
 	if err := req.Validate(); err != nil {
 		return nil, fmt.Errorf("request: %w", err)
 	}
@@ -98,7 +118,7 @@ func Build(req api.SimRequest) (*proto.RaidSimRequest, error) {
 	if err != nil {
 		return nil, err
 	}
-	cons, err := consumes(ch.Consumes)
+	cons, err := consumes(ch.Consumes, opt.Consumables)
 	if err != nil {
 		return nil, err
 	}

@@ -79,7 +79,7 @@ func TestUnknownBuffFails(t *testing.T) {
 // A consumable id is an enum value name; the field it belongs in is
 // found rather than tabulated.
 func TestConsumeIdsMapOntoTheirField(t *testing.T) {
-	got, err := consumes([]string{"elixir_of_the_mongoose", "flask_of_the_titans", "dragon_breath_chili"})
+	got, err := consumes([]string{"elixir_of_the_mongoose", "flask_of_the_titans", "dragon_breath_chili"}, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -97,14 +97,14 @@ func TestConsumeIdsMapOntoTheirField(t *testing.T) {
 // Both weapon imbue slots hold the same enum, so a bare imbue id says
 // nothing about which hand and must be refused rather than guessed.
 func TestAmbiguousConsumeMustBeQualified(t *testing.T) {
-	_, err := consumes([]string{"shadow_oil"})
+	_, err := consumes([]string{"shadow_oil"}, nil)
 	if !errors.Is(err, ErrAmbiguousConsume) {
 		t.Fatalf("a bare weapon imbue returned %v, want ErrAmbiguousConsume", err)
 	}
 	if !strings.Contains(err.Error(), "main_hand_imbue") || !strings.Contains(err.Error(), "off_hand_imbue") {
 		t.Errorf("the error does not name both slots: %v", err)
 	}
-	got, err := consumes([]string{"off_hand_imbue:shadow_oil"})
+	got, err := consumes([]string{"off_hand_imbue:shadow_oil"}, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -117,7 +117,7 @@ func TestAmbiguousConsumeMustBeQualified(t *testing.T) {
 }
 
 func TestUnknownConsumeFails(t *testing.T) {
-	if _, err := consumes([]string{"elixir_of_vulpera"}); !errors.Is(err, ErrUnknownConsume) {
+	if _, err := consumes([]string{"elixir_of_vulpera"}, nil); !errors.Is(err, ErrUnknownConsume) {
 		t.Fatalf("consumes with an unknown id returned %v, want ErrUnknownConsume", err)
 	}
 }
