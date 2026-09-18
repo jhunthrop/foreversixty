@@ -97,6 +97,51 @@ def test_every_spell_the_rotations_name_exists_with_that_rank():
     assert checked >= 10, "the written rotations should name at least ten spell references"
 
 
+#: Every distinct spell id the two written rotations name, mapped to the
+#: ability the rotation's own notes claim it is (e.g. "Death Wish on
+#: cooldown."). A rank match alone does not catch a wrong id: Death Wish is
+#: rankless, so the rank test above passed 12292 -- Sweeping Strikes --
+#: silently when the rotation's own notes said "Death Wish". This sidecar is
+#: the check that ties each id back to spells.json by name, not just by rank.
+EXPECTED_ABILITY_NAMES = {
+    "warrior-fury": {
+        25289: "Battle Shout",
+        2687: "Bloodrage",
+        12328: "Death Wish",
+        23894: "Bloodthirst",
+        1680: "Whirlwind",
+        20662: "Execute",
+        25286: "Heroic Strike",
+    },
+    "mage-frost": {
+        10199: "Fire Blast",
+        25304: "Frostbolt",
+    },
+}
+
+
+def test_every_named_spell_matches_its_own_label_by_name():
+    """Task 10 review, HIGH: warrior-fury's "Death Wish on cooldown" action cast
+    12292, which builds/1.60.1.69893/spells.json names Sweeping Strikes; Death
+    Wish is 12328. Cross-check every id a written rotation names against the
+    build's own spell names, not just its rank."""
+    spells_path = Path("builds") / newest_build() / "spells.json"
+    if not spells_path.exists():
+        pytest.skip("spells.json has not been generated yet")
+    by_id = {entry["id"]: entry["name"] for entry in json.loads(spells_path.read_text())}
+    for key, expected in EXPECTED_ABILITY_NAMES.items():
+        document = documents()[key]
+        named_ids = {spell_id for spell_id, _rank in action_ids(document.rotation)}
+        assert named_ids == set(expected), (
+            f"{key}'s sidecar of expected ability names is out of date with its rotation"
+        )
+        for spell_id, ability_name in expected.items():
+            assert by_id.get(spell_id) == ability_name, (
+                f"{key} names spell {spell_id} as {ability_name!r}; "
+                f"spells.json calls it {by_id.get(spell_id)!r}"
+            )
+
+
 def test_an_unknown_field_in_a_rotation_is_rejected():
     with pytest.raises(AplError, match="priorityLst"):
         parse_rotation({"type": "TypeAPL", "priorityLst": []})

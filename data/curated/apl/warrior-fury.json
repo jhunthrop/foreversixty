@@ -26,7 +26,7 @@
       },
       {
         "notes": "Death Wish on cooldown.",
-        "action": { "castSpell": { "spellId": { "spellId": 12292 } } }
+        "action": { "castSpell": { "spellId": { "spellId": 12328 } } }
       },
       {
         "notes": "Keep Battle Shout up.",
