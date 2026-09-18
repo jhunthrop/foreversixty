@@ -28,13 +28,13 @@ from __future__ import annotations
 import logging
 import re
 import shutil
-from collections import defaultdict
 from pathlib import Path
 
 from pipeline.csvio import read_csv
 from pipeline.manifest import refresh_manifest
 from pipeline.models import ClassSpellConstants, SpellConstant, SpellEffectConstant
 from pipeline.normalize import write_model
+from pipeline.simdb.equip import index_spell_effects
 from pipeline.spelltext import effect_amount
 
 logger = logging.getLogger(__name__)
@@ -99,11 +99,7 @@ def build_spell_constants(build: str, raw: Path) -> list[ClassSpellConstants]:
     levels = _by_spell_id(read_csv(raw / "SpellLevels.csv"))
     powers = _by_spell_id(read_csv(raw / "SpellPower.csv"))
 
-    effects: dict[int, list[dict[str, str]]] = defaultdict(list)
-    for row in read_csv(raw / "SpellEffect.csv"):
-        if row.get("DifficultyID", "0") not in ("0", ""):
-            continue
-        effects[int(row["SpellID"])].append(row)
+    effects = index_spell_effects(read_csv(raw / "SpellEffect.csv"))
 
     spells_by_slug: dict[str, dict[str, SpellConstant]] = {
         slug: {} for slug in SPELL_FAMILY_BY_CLASS_SLUG
