@@ -10,9 +10,10 @@ as a gap in the planner's item data. Measured on build 1.60.1.69893:
   eighteen -- Mace of Unending Life's +140 attack power, Atiesh's +420, Rune of
   the Guard Captain's +42/+42 -- exist in no column at all.
 * 1,995 of the 2,216 SpellItemEnchantment rows name an equip spell
-  (`Effect_<n> == 3` puts its id in `EffectArg_<n>`), and 1,334 end up carrying
-  stats. The enchant table would be nearly empty without this module, which is
-  now the main reason it exists.
+  (`Effect_<n> == 3` puts its id in `EffectArg_<n>`), and 1,255 end up carrying
+  stats through that spell (40 more carry only a weapon skill, which
+  `pb.SimEnchant` cannot represent). The enchant table would be nearly empty
+  without this module, which is now the main reason it exists.
 
 Two client-shape facts, both verified:
 

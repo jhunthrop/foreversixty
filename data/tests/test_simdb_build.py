@@ -25,8 +25,11 @@ EXPECTED_ITEMS = 4986
 EXPECTED_ENCHANTS = 2216
 EXPECTED_WEAPONS = 759
 EXPECTED_IN_A_SET = 828
-#: Controller ruling: 1,329, not the 1,334 the brief originally stated --
-#: measured against the committed build, matching equip.py's own docstring.
+#: 1,329 enchants carry a stat in the final database, counting every source:
+#: the direct ITEM_MOD/resistance slots plus equip-spell auras. A narrower
+#: count, 1,255, is the equip-spell path alone (40 more of that path's rows
+#: carry only a weapon skill, which `pb.SimEnchant` cannot represent) -- see
+#: pipeline/simdb/equip.py's module docstring, not this constant.
 EXPECTED_ENCHANTS_WITH_STATS = 1329
 
 
