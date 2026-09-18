@@ -192,19 +192,26 @@ def item_effect_spells(
     item_effect_rows: list[dict[str, str]],
     item_x_item_effect_rows: list[dict[str, str]],
     item_ids: Container[int],
+    trigger_types: Container[str] | None = frozenset({TRIGGER_ON_EQUIP}),
 ) -> dict[int, list[int]]:
-    """Item id -> the spell ids its on-equip effects cast, on either schema.
+    """Item id -> the spell ids its item effects cast, on either schema.
 
     Classic Era's ItemEffect names its item in ParentItemID. The 1.60 client
     dropped that column and links through ItemXItemEffect (ID, ItemEffectID,
     ItemID) instead, which Era in turn 404s on. Choosing per row means one
     reader works on both and neither build needs a flag.
+
+    `trigger_types` keeps only rows whose TriggerType is in it; the default,
+    on-equip only, is what `equip_bonuses` needs -- only an on-equip spell is
+    a stat the wearer carries. `build_consumables` passes `None` to keep
+    every trigger type: a potion's spell is on-use (TriggerType 2), and every
+    trigger type is consumable behaviour the engine needs to know about.
     """
     spells: dict[int, list[int]] = defaultdict(list)
     by_effect_id: dict[int, dict[str, str]] = {}
     for row in item_effect_rows:
         if "ParentItemID" in row:
-            if row.get("TriggerType") != TRIGGER_ON_EQUIP:
+            if trigger_types is not None and row.get("TriggerType") not in trigger_types:
                 continue
             item_id = int(row["ParentItemID"])
             if item_id in item_ids:
@@ -216,7 +223,9 @@ def item_effect_spells(
         if item_id not in item_ids:
             continue
         effect = by_effect_id.get(int(link["ItemEffectID"]))
-        if effect is None or effect.get("TriggerType") != TRIGGER_ON_EQUIP:
+        if effect is None:
+            continue
+        if trigger_types is not None and effect.get("TriggerType") not in trigger_types:
             continue
         spells[item_id].append(int(effect["SpellID"]))
     return dict(spells)

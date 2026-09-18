@@ -33,7 +33,7 @@ from pipeline.normalize import write_json
 from pipeline.normalize.gear import MAX_PLAYER_LEVEL, column_value, int_column, is_junk_name
 from pipeline.normalize.item_curves import load_item_curves
 from pipeline.simdb.enchants import build_sim_enchants
-from pipeline.simdb.equip import equip_bonuses, index_spell_effects
+from pipeline.simdb.equip import equip_bonuses, index_spell_effects, item_effect_spells
 from pipeline.simdb.items import build_sim_items, simdb_item_rows
 from pipeline.simdb.weapons import load_weapon_curves
 from pipeline.simproto import pb
@@ -56,27 +56,17 @@ def build_consumables(
     On build 1.60.1.69893 this is 1,579 rows. The engine hand-writes the
     effects; what it cannot hand-write is which item ids and spell ids Forever
     ships. Unlike the equip-bonus path this keeps every trigger type -- a
-    potion's spell is an on-use one -- so it walks the link tables itself
-    rather than through `equip_bonuses`.
+    potion's spell is an on-use one -- so it calls `item_effect_spells` with
+    `trigger_types=None` rather than that helper's on-equip-only default.
     """
     consumable_ids = {
         int_column(row, "ID")
         for row in item_rows
         if int_column(row, "ClassID") == ITEM_CLASS_CONSUMABLE
     }
-    spells: dict[int, list[int]] = {}
-    by_effect_id = {int(row["ID"]): row for row in item_effect_rows if "ParentItemID" not in row}
-    for row in item_effect_rows:
-        if "ParentItemID" not in row:
-            continue
-        item_id = int(row["ParentItemID"])
-        if item_id in consumable_ids:
-            spells.setdefault(item_id, []).append(int(row["SpellID"]))
-    for link in item_x_item_effect_rows:
-        item_id = int(link["ItemID"])
-        effect = by_effect_id.get(int(link["ItemEffectID"]))
-        if item_id in consumable_ids and effect is not None:
-            spells.setdefault(item_id, []).append(int(effect["SpellID"]))
+    spells = item_effect_spells(
+        item_effect_rows, item_x_item_effect_rows, consumable_ids, trigger_types=None
+    )
     records = []
     for row in sparse_rows:
         item_id = int_column(row, "ID")
