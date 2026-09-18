@@ -32,6 +32,24 @@
   const tooltipId = $derived(`talent-tip-${talent.id}`);
 
   let open = $state(false);
+  let tip: HTMLDivElement | undefined = $state();
+  // The tooltip hangs from the cell's left edge. Near the right of a tree that would push it
+  // past a phone's viewport and scroll the page sideways, and hanging it from the right edge
+  // instead can push it off the left on a narrow phone. So each opening measures the cell
+  // and slides the box just far enough to keep it inside the viewport with a small margin.
+  let shift = $state(0);
+  const VIEWPORT_MARGIN_PX = 8;
+  $effect(() => {
+    if (!open || !tip) {
+      shift = 0;
+      return;
+    }
+    const cell = tip.parentElement!.getBoundingClientRect();
+    const viewport = document.documentElement.clientWidth;
+    const maxLeft = viewport - VIEWPORT_MARGIN_PX - tip.offsetWidth;
+    const left = Math.max(VIEWPORT_MARGIN_PX, Math.min(cell.left, maxLeft));
+    shift = left - cell.left;
+  });
   let iconBroken = $state(false);
   let pressTimer: ReturnType<typeof setTimeout> | undefined;
   // True once the gesture in progress has removed its point. Two things would otherwise
@@ -141,7 +159,9 @@
     <div
       id={tooltipId}
       role="tooltip"
-      class="border-line bg-raised rounded-panel absolute top-full left-0 z-30 mt-2 flex w-[260px] flex-col gap-2 border p-3 shadow-[0_12px_30px_rgba(0,0,0,.45)]"
+      bind:this={tip}
+      style:left={`${shift}px`}
+      class="border-line bg-raised rounded-panel absolute top-full z-30 mt-2 flex w-[260px] flex-col gap-2 border p-3 shadow-[0_12px_30px_rgba(0,0,0,.45)]"
     >
       <span class="text-strong font-display text-[14px] font-bold">{talent.name}</span>
       <span class="tabular text-muted font-mono text-[12px]">
