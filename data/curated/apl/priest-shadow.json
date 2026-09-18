@@ -1,0 +1,10 @@
+{
+  "spec": "priest-shadow",
+  "state": "unwritten",
+  "notes": "",
+  "sources": [],
+  "rotation": {
+    "type": "TypeAPL",
+    "priorityList": []
+  }
+}

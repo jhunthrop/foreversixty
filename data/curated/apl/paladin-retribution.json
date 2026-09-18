@@ -1,0 +1,10 @@
+{
+  "spec": "paladin-retribution",
+  "state": "unwritten",
+  "notes": "",
+  "sources": [],
+  "rotation": {
+    "type": "TypeAPL",
+    "priorityList": []
+  }
+}

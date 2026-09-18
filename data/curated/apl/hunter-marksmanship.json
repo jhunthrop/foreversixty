@@ -1,0 +1,10 @@
+{
+  "spec": "hunter-marksmanship",
+  "state": "unwritten",
+  "notes": "",
+  "sources": [],
+  "rotation": {
+    "type": "TypeAPL",
+    "priorityList": []
+  }
+}

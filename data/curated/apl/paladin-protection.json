@@ -1,0 +1,10 @@
+{
+  "spec": "paladin-protection",
+  "state": "unwritten",
+  "notes": "",
+  "sources": [],
+  "rotation": {
+    "type": "TypeAPL",
+    "priorityList": []
+  }
+}

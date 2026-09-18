@@ -159,3 +159,11 @@ class SpecRecord(BaseModel):
     name: str
     role: str
     tree_index: int
+
+
+class AplDocument(BaseModel):
+    spec: str
+    state: str
+    rotation: dict
+    sources: list[Source] = []
+    notes: str = ""

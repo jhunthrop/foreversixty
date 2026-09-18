@@ -1,0 +1,10 @@
+{
+  "spec": "warlock-affliction",
+  "state": "unwritten",
+  "notes": "",
+  "sources": [],
+  "rotation": {
+    "type": "TypeAPL",
+    "priorityList": []
+  }
+}

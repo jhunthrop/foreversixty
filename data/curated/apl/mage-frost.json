@@ -1,0 +1,27 @@
+{
+  "spec": "mage-frost",
+  "state": "written",
+  "notes": "Vanilla Frost at 60 is Frostbolt spam. Fire Blast is the only other button worth a global, and only while mana is comfortable, because it is instant and benefits from the same spell power. Cold Snap and Ice Barrier are survival, not damage, and are left out. Every rank named here is checked against the spellconst of the newest client build in builds/ (the one its manifest.json records last).",
+  "sources": [
+    { "label": "wowsims/classic default Mage priority list", "url": "https://github.com/wowsims/classic/blob/master/ui/mage/apls/p1.apl.json", "kind": "community" },
+    { "label": "Warcraft Tavern: Classic Frost Mage DPS rotation", "url": "https://www.warcrafttavern.com/wow-classic/guides/dps-mage-rotation/", "kind": "community" },
+    { "label": "Forever Sixty default rotation, unvalidated until the nightly job runs", "url": "https://foreversixty.gg/sim/specs", "kind": "site" }
+  ],
+  "rotation": {
+    "type": "TypeAPL",
+    "priorityList": [
+      { "action": { "autocastOtherCooldowns": {} } },
+      {
+        "notes": "Fire Blast on cooldown while mana is comfortable: it is instant and a gain with spell power.",
+        "action": {
+          "condition": { "cmp": { "op": "OpGe", "lhs": { "currentManaPercent": {} }, "rhs": { "const": { "val": "30%" } } } },
+          "castSpell": { "spellId": { "spellId": 10199, "rank": 7 } }
+        }
+      },
+      {
+        "notes": "Frostbolt is the whole rotation otherwise.",
+        "action": { "castSpell": { "spellId": { "spellId": 25304, "rank": 11 } } }
+      }
+    ]
+  }
+}

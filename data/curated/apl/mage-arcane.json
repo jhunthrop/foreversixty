@@ -1,0 +1,10 @@
+{
+  "spec": "mage-arcane",
+  "state": "unwritten",
+  "notes": "",
+  "sources": [],
+  "rotation": {
+    "type": "TypeAPL",
+    "priorityList": []
+  }
+}

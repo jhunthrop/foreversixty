@@ -1,0 +1,10 @@
+{
+  "spec": "druid-balance",
+  "state": "unwritten",
+  "notes": "",
+  "sources": [],
+  "rotation": {
+    "type": "TypeAPL",
+    "priorityList": []
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "spec": "paladin-holy",
+  "state": "unwritten",
+  "notes": "",
+  "sources": [],
+  "rotation": {
+    "type": "TypeAPL",
+    "priorityList": []
+  }
+}
