@@ -3,9 +3,21 @@ name: web
 on:
   push:
     branches: [main]
-    paths: ['web/**', 'data/builds/**', '.github/workflows/web.yml']
+    paths:
+      - web/**
+      - sim/**
+      - data/builds/**
+      - Makefile
+      - .github/actions/pin-engine/**
+      - .github/workflows/web.yml
   pull_request:
-    paths: ['web/**', 'data/builds/**', '.github/workflows/web.yml']
+    paths:
+      - web/**
+      - sim/**
+      - data/builds/**
+      - Makefile
+      - .github/actions/pin-engine/**
+      - .github/workflows/web.yml
   workflow_dispatch:
 permissions:
   contents: read
@@ -21,7 +33,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version-file: web/.node-version, cache: npm, cache-dependency-path: web/package-lock.json }
+        with:
+          {
+            node-version-file: web/.node-version,
+            cache: npm,
+            cache-dependency-path: web/package-lock.json,
+          }
       - run: npm ci
       - run: npm run check
       - run: npm run lint
@@ -66,12 +83,61 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version-file: web/.node-version, cache: npm, cache-dependency-path: web/package-lock.json }
+        with:
+          {
+            node-version-file: web/.node-version,
+            cache: npm,
+            cache-dependency-path: web/package-lock.json,
+          }
       - run: npm ci
+      # The simulator's browser artifact (web/public/_sim/README.md's contract). setup-go
+      # before the pin, so `go mod tidy` runs on the version sim/go.mod declares rather than
+      # on whatever the runner image happens to ship -- same ordering as sim.yml's own jobs.
+      - uses: actions/setup-go@v5
+        with: { go-version-file: sim/go.mod, cache-dependency-path: sim/go.sum }
+      - uses: ./.github/actions/pin-engine
+      # These three run from the repository root, not web/ (this job's defaults.run), the
+      # same way sim.yml's "the active build's item database" step does.
+      - name: the active build's item database
+        working-directory: .
+        run: make simdb
+      - name: build sim.wasm, sim.js and forever-sim
+        working-directory: .
+        run: make artifacts
+      - name: publish the browser pair under web/public/_sim/<engine sha>/
+        working-directory: .
+        run: make publish-wasm
+      # web/public/_sim/README.md's contract is that the published directory's name IS the
+      # engine sha, and that sha must be the one web/src/lib/sim/version.ts's ENGINE_VERSION
+      # literal names -- version.test.ts asserts the same equality against
+      # sim/enginever/version.go, but that test runs the CHECKED-IN fake build in `verify`
+      # above, not this job, so the equality is asserted again here against what was just
+      # published, and a missing file (not merely a wrong sha) fails loudly rather than
+      # shipping a page whose engine.ts points at nothing.
+      - name: sim engine artifacts match the pinned version
+        working-directory: .
+        run: |
+          pin=$(sed -n 's/.*Version = "\(.*\)"/\1/p' sim/enginever/version.go)
+          test -n "$pin" || { echo "sim/enginever/version.go has no Version"; exit 1; }
+          web_version=$(sed -n "s/.*ENGINE_VERSION = '\([^']*\)'.*/\1/p" web/src/lib/sim/version.ts)
+          test -n "$web_version" || { echo "web/src/lib/sim/version.ts has no ENGINE_VERSION literal"; exit 1; }
+          if [ "$pin" != "$web_version" ]; then
+            echo "engine version mismatch: sim/enginever/version.go pins '$pin' but web/src/lib/sim/version.ts carries '$web_version'"
+            exit 1
+          fi
+          test -f "web/public/_sim/$pin/sim.wasm" || { echo "missing web/public/_sim/$pin/sim.wasm"; exit 1; }
+          test -f "web/public/_sim/$pin/sim.js"   || { echo "missing web/public/_sim/$pin/sim.js"; exit 1; }
+          echo "engine $pin: sim.wasm and sim.js published for the production build"
       # CF_PAGES makes the build fail if src/data/links.json still holds a PLACEHOLDER link.
       # FOREVER_DATA is unset here on purpose: a real build prerenders no fixture report,
       # rankings, character or guild page and publishes no public/logs-data/.
+      # PUBLIC_SIM_ENGINE=wasm is set ONLY here, for the production build: `verify` above (the
+      # test job and its Lighthouse run) keeps building and auditing the checked-in fake
+      # engine, unchanged, because none of the fixture pages this job's build even reaches
+      # exercise the real wasm.
       - run: CF_PAGES=1 npm run build
+        env:
+          PUBLIC_SIM_ENGINE: wasm
       # The two DuckDB engine modules are over Cloudflare's 25 MiB static-asset cap, so
       # they are served from the foreversixty-logs bucket by src/worker.ts instead of from
       # dist/ (web/README.md, "Deep queries"). `npm run build` staged them; putting them in

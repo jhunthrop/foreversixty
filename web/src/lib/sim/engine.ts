@@ -47,6 +47,9 @@ type WasmGlobals = {
   simCombine?: (resultsJSON: string) => string;
   simAbort?: (callbackId: string) => string;
   simProgress?: ProgressHandler;
+  /** Called by sim/cmd/wasm/main.go the moment the exports above and simEngineVersion are
+   * set -- see loadWasmEngine below for why the page must define this before go.run(). */
+  wasmready?: () => void;
 };
 
 /**
@@ -75,7 +78,25 @@ async function loadWasmEngine(version: string): Promise<EngineModule> {
     fetch(engineAssetUrl('sim.wasm', version)),
     go.importObject,
   );
-  void go.run(instance);
+  // main.go's main() calls `js.Global().Call("wasmready")` the instant the four exports and
+  // simEngineVersion are set, and blocks forever after (`select{}`) -- it never returns, so
+  // go.run()'s own promise cannot be the ready signal. Without this, main.go finds no
+  // `wasmready` function, panics on the call, and the Go runtime exits: every export it had
+  // just registered stops working, and every later call to it fails with "Go program has
+  // already exited". This must be set before go.run() starts running the program.
+  const ready = new Promise<void>((resolve) => {
+    globals.wasmready = resolve;
+  });
+  // A program that returns or throws before signalling wasmready never will: race the two so a
+  // panic during start-up surfaces as an error instead of a page that waits forever. The exit
+  // outcome is folded into a value (never a rejection) because after wasmready fires the run
+  // promise stays pending for the life of the page and a late exit must not go unhandled.
+  const exited = go.run(instance).then(
+    () => new Error('sim.wasm exited before signalling wasmready'),
+    (cause: unknown) => new Error(`sim.wasm failed before signalling wasmready: ${String(cause)}`),
+  );
+  const outcome = await Promise.race([ready, exited]);
+  if (outcome instanceof Error) throw outcome;
   if (typeof globals.simRun !== 'function') throw new Error('sim.wasm did not export simRun');
   return {
     simRun: (requestJSON, callbackId) => globals.simRun!(requestJSON, callbackId),
