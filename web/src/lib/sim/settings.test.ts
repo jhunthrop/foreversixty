@@ -150,6 +150,48 @@ describe('the setters never mutate and always clamp', () => {
   });
 });
 
+describe('the setters guard against non-finite input', () => {
+  // An emptied number input parses to NaN (or, briefly, Infinity); clamping that down to
+  // the minimum would pick a value nobody asked for, and JSON.stringify(NaN) is "null" on
+  // a wire field the contract requires as a plain number. Either way the setting has to
+  // stay where it was, not snap anywhere.
+  it('leaves duration where it was rather than producing NaN', () => {
+    const moved = withDuration(defaultSettings(), 300);
+    expect(withDuration(moved, NaN).encounter.duration_sec).toBe(300);
+    expect(withDuration(moved, Infinity).encounter.duration_sec).toBe(300);
+  });
+
+  it('leaves targets where they were rather than producing NaN', () => {
+    const moved = withTargets(defaultSettings(), 4);
+    expect(withTargets(moved, NaN).encounter.targets).toBe(4);
+    expect(withTargets(moved, Infinity).encounter.targets).toBe(4);
+  });
+
+  it('leaves variation where it was rather than producing NaN', () => {
+    const moved = withVariation(defaultSettings(), 0.1);
+    expect(withVariation(moved, NaN).encounter.variation).toBe(0.1);
+    expect(withVariation(moved, Infinity).encounter.variation).toBe(0.1);
+  });
+
+  it('leaves the target level where it was rather than producing NaN', () => {
+    const moved = withTargetLevel(defaultSettings(), 61);
+    expect(withTargetLevel(moved, NaN).encounter.target_level).toBe(61);
+    expect(withTargetLevel(moved, Infinity).encounter.target_level).toBe(61);
+  });
+
+  it('leaves target armor where it was rather than producing NaN', () => {
+    const moved = withTargetArmor(defaultSettings(), 3731);
+    expect(withTargetArmor(moved, NaN).encounter.target_armor).toBe(3731);
+    expect(withTargetArmor(moved, Infinity).encounter.target_armor).toBe(3731);
+  });
+
+  it('never lets a non-finite value reach the wire as null', () => {
+    const settings = withDuration(defaultSettings(), NaN);
+    const wire = JSON.parse(JSON.stringify(settings.encounter)) as Record<string, unknown>;
+    expect(wire.duration_sec).toBe(180);
+  });
+});
+
 describe('the style and the controls beside it', () => {
   it('writes the style’s fields through applyFightStyle', () => {
     const cleave = withStyle(defaultSettings(), 'cleave-5');

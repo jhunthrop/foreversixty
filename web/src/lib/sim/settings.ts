@@ -119,7 +119,16 @@ export function withPreset(settings: SimSettings, preset: BuffPresetId): SimSett
   };
 }
 
-function clamp(value: number, low: number, high: number): number {
+/**
+ * Clamps to [low, high], except a non-finite `value` -- NaN or +/-Infinity, the shape an
+ * emptied number input takes once parsed -- falls back to `current` instead. Snapping an
+ * emptied field to the minimum would silently pick a value nobody asked for; a clamped
+ * NaN would reach `JSON.stringify` as `null` on a field the contract requires as a plain
+ * `number`. Either way the setting has to stay where it was until a real number replaces
+ * it, which is what every numeric setter below relies on this for.
+ */
+function clamp(value: number, low: number, high: number, current: number): number {
+  if (!Number.isFinite(value)) return current;
   return Math.min(high, Math.max(low, value));
 }
 
@@ -129,8 +138,8 @@ function clamp(value: number, low: number, high: number): number {
  * so the label goes -- a run that says "Cleave, 3 targets" while simming four targets
  * would be a lie in the saved sim's own title.
  */
-function detached(encounter: EncounterSpec): EncounterSpec {
-  return { ...encounter, style: '' };
+function detached(encounter: EncounterSpec, overrides: Partial<EncounterSpec>): EncounterSpec {
+  return { ...encounter, style: '', ...overrides };
 }
 
 /** The style this encounter still is, or "" once a style-owned field was changed by hand. */
@@ -143,27 +152,37 @@ export function withStyle(settings: SimSettings, id: FightStyleId): SimSettings 
 }
 
 export function withDuration(settings: SimSettings, seconds: number): SimSettings {
-  const clamped = clamp(Math.round(seconds), MIN_DURATION_SEC, MAX_DURATION_SEC);
+  const clamped = clamp(
+    Math.round(seconds),
+    MIN_DURATION_SEC,
+    MAX_DURATION_SEC,
+    settings.encounter.duration_sec,
+  );
   return { ...settings, encounter: { ...settings.encounter, duration_sec: clamped } };
 }
 
 export function withTargets(settings: SimSettings, targets: number): SimSettings {
-  const clamped = clamp(Math.round(targets), 1, MAX_TARGETS);
-  return { ...settings, encounter: { ...detached(settings.encounter), targets: clamped } };
+  const clamped = clamp(Math.round(targets), 1, MAX_TARGETS, settings.encounter.targets);
+  return { ...settings, encounter: detached(settings.encounter, { targets: clamped }) };
 }
 
 export function withVariation(settings: SimSettings, variation: number): SimSettings {
-  const clamped = clamp(variation, 0, MAX_VARIATION);
+  const clamped = clamp(variation, 0, MAX_VARIATION, settings.encounter.variation);
   return { ...settings, encounter: { ...settings.encounter, variation: clamped } };
 }
 
 export function withTargetLevel(settings: SimSettings, level: number): SimSettings {
-  const clamped = clamp(Math.round(level), TARGET_LEVELS[0], TARGET_LEVELS[TARGET_LEVELS.length - 1]);
+  const clamped = clamp(
+    Math.round(level),
+    TARGET_LEVELS[0],
+    TARGET_LEVELS[TARGET_LEVELS.length - 1],
+    settings.encounter.target_level ?? DEFAULT_TARGET_LEVEL,
+  );
   return { ...settings, encounter: { ...settings.encounter, target_level: clamped } };
 }
 
 export function withTargetArmor(settings: SimSettings, armor: number): SimSettings {
-  const clamped = clamp(Math.round(armor), 0, MAX_TARGET_ARMOR);
+  const clamped = clamp(Math.round(armor), 0, MAX_TARGET_ARMOR, settings.encounter.target_armor ?? 0);
   return { ...settings, encounter: { ...settings.encounter, target_armor: clamped } };
 }
 
@@ -174,16 +193,15 @@ export function withTargetType(settings: SimSettings, type: string): SimSettings
 }
 
 export function withDummy(settings: SimSettings, on: boolean): SimSettings {
-  return { ...settings, encounter: { ...detached(settings.encounter), dummy: on } };
+  return { ...settings, encounter: detached(settings.encounter, { dummy: on }) };
 }
 
 export function withExecutePhase(settings: SimSettings, on: boolean): SimSettings {
   return {
     ...settings,
-    encounter: {
-      ...detached(settings.encounter),
+    encounter: detached(settings.encounter, {
       execute_ratio: on ? DEFAULT_ENCOUNTER.execute_ratio : 0,
-    },
+    }),
   };
 }
 
