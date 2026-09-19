@@ -11,9 +11,9 @@
 // dependency injection -- `StoreRequestDeps` is a plain object of getters, setters and the
 // store's own private helpers, built once in `store.svelte.ts` and closed over there. This
 // module never touches `$state` itself and needs no `.svelte.ts` extension.
-import { encodeFS1 } from '../planner/fs1';
+import { encodeFS1V2 } from '../planner/fs1';
 import { indexTalents } from '../planner/rules';
-import type { TalentFile } from '../planner/types';
+import type { Slot, TalentFile } from '../planner/types';
 import { gearFromSlots, ranksFromTalentsString, toCharacterSpec, type SimCharacter } from './character';
 import { simCopy } from './copy';
 import type { RequestValidation } from './engine';
@@ -131,9 +131,9 @@ export interface RequestMethods {
   validateRequest(json: string): Promise<RequestValidation>;
   /**
    * A pasted request as page state: settings and precision exactly, and the character
-   * through the same FS1 route "Run this yourself" already uses. The gear a `SimCharacter`
-   * carries is a map of item ids, so an enchant or suffix on a request's gear slot is
-   * dropped here -- `runRequest` below is what keeps it (Task 17 lifts this).
+   * through the same FS1 route "Run this yourself" already uses. `encodeFS1V2` carries the
+   * request's own gear list -- enchants and suffixes included (contract 10.5) -- so this is
+   * lossless for everything `CharacterSpec` models, the same as `runRequest` below.
    */
   applyRequest(request: SimRequest): Promise<void>;
   /** The edited request, run exactly as written. The escape hatch of design 8. */
@@ -174,14 +174,31 @@ export function createRequestMethods(deps: StoreRequestDeps): RequestMethods {
     async applyRequest(request: SimRequest): Promise<void> {
       deps.setSettings(settingsFromRequest(request));
       deps.setPrecisionId(precisionOf(request));
+      // encodeFS1V2, not encodeFS1: contract 10.5 lets a gear entry carry
+      // `item_id[:enchant[:suffix]]`, and `characterFromFs1` reads it straight back onto
+      // `gear_slots`. Apply is therefore lossless for everything `CharacterSpec` models,
+      // which is what makes a shared request a full reproduction rather than an
+      // approximation of one.
       await deps.adopt(
         deps.fromPlannerCode(
-          encodeFS1({
+          encodeFS1V2({
             dataBuild: deps.treeVersion,
             classSlug: request.character.class,
             raceSlug: request.character.race,
             treeRanks: ranksFromTalentsString(request.character.talents),
             gear: gearFromSlots(request.character.gear),
+            gearSlots: request.character.gear.map((slot) => ({
+              slot: slot.slot as Slot,
+              itemId: slot.item_id,
+              ...(slot.enchant === undefined ? {} : { enchant: slot.enchant }),
+              ...(slot.suffix === undefined ? {} : { suffix: slot.suffix }),
+            })),
+            bags: [],
+            bank: [],
+            sets: [],
+            loadouts: [],
+            professions: [...(request.character.professions ?? [])],
+            ignored: [],
           }),
         ),
       );

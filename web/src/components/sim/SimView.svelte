@@ -12,7 +12,8 @@
   import activeBuild from '../../data/active-build.json';
   import { battlenetStartUrl, fetchMe, type Me } from '../../lib/account/api';
   import type { CharacterPath } from '../../lib/characters';
-  import { encodeFS1 } from '../../lib/planner/fs1';
+  import { encodeFS1V2 } from '../../lib/planner/fs1';
+  import type { Slot } from '../../lib/planner/types';
   import { createLazyComponent, type LazyLoadState } from '../../lib/report/lazy-component.svelte';
   import { fetchReportMeta, fetchSummary } from '../../lib/report/load';
   import type { Summary } from '../../lib/report/types';
@@ -181,12 +182,27 @@
       ref !== ''
         ? withSimState(defaultSimState(), { source: kind, ref })
         : withSimState(defaultSimState(), {
-            code: encodeFS1({
+            // encodeFS1V2, not encodeFS1: the saved result's own gear list carries any
+            // enchant or suffix (contract 10.5), and dropping them here would lose exactly
+            // what characterFromFs1 now keeps.
+            code: encodeFS1V2({
               dataBuild: bootstrap.treeVersion,
               classSlug: savedResult.request.character.class,
               raceSlug: savedResult.request.character.race,
               treeRanks: ranksFromTalentsString(savedResult.request.character.talents),
               gear: gearFromSlots(savedResult.request.character.gear),
+              gearSlots: savedResult.request.character.gear.map((slot) => ({
+                slot: slot.slot as Slot,
+                itemId: slot.item_id,
+                ...(slot.enchant === undefined ? {} : { enchant: slot.enchant }),
+                ...(slot.suffix === undefined ? {} : { suffix: slot.suffix }),
+              })),
+              bags: [],
+              bank: [],
+              sets: [],
+              loadouts: [],
+              professions: [...(savedResult.request.character.professions ?? [])],
+              ignored: [],
             }),
           });
     window.location.href = `/sim${simSearch(target)}`;

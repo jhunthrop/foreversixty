@@ -428,10 +428,8 @@ export const simCopy = {
     'The exact JSON this run sends. Edit it and run it as written: anything the panels above do not offer is reachable here.',
   requestApply: 'Apply to the page',
   requestReset: 'Reset',
-  // Task 17 replaces this sentence with the lossless one once contract 10.5's per-slot
-  // enchant and suffix are on SimCharacter. Until then it states what actually happens.
   requestApplyNote:
-    'Rebuilds the settings, the precision and the character from this request. Per-slot enchants and suffixes are not part of the page’s character yet, so Apply drops them; Run keeps them.',
+    'Rebuilds the settings, the precision and the character from this request, enchants and suffixes included. Run sends the text exactly as typed instead, which is how a field no panel offers reaches the engine.',
   requestRun: 'Run this request',
   requestShare: 'Copy a link to this request',
   requestValid: 'The engine accepts this request.',

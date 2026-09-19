@@ -136,6 +136,15 @@ export function plannerLinkFor(input: PlannerLinkInput): PlannerLink | null {
     raceSlug: '',
     treeRanks: treeRanks ?? [[], [], []],
     gear: gearFromCombatant(input.combatant.gear),
+    // This link is version 1 -- nothing about a fight's gear carries an enchant, a suffix
+    // or a profession -- so every version 2 section is the empty default `encodeFS1`
+    // ignores anyway (it never reads past `gear`).
+    bags: [],
+    bank: [],
+    sets: [],
+    loadouts: [],
+    professions: [],
+    ignored: [],
   });
 
   return {

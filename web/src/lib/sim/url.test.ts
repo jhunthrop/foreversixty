@@ -50,14 +50,15 @@ describe('parseSimState', () => {
   });
 
   // An FS1 code is far longer than a ref (three tree strings, up to seventeen gear
-  // entries), so it gets its own, larger bound rather than sharing MAX_REF -- a real code
-  // comfortably fits under it, and a 3000-character query still cannot reach the decoder.
+  // entries, plus a version 2 code's optional bags, bank, named sets and loadouts), so it
+  // gets its own, larger bound rather than sharing MAX_REF -- a real code comfortably fits
+  // under it, and a query well past MAX_CODE_LENGTH still cannot reach the decoder.
   it('carries a real FS1 code whole, and caps a code far past what one reaches', () => {
     const code = `FS1:1.15.9.69722:warrior:orc:${'1'.repeat(40)}/0/0:${'head=12640,'.repeat(17).slice(0, -1)}`;
     expect(code.length).toBeGreaterThan(128);
-    expect(code.length).toBeLessThan(2048);
+    expect(code.length).toBeLessThan(16_384);
     expect(parseSimState(`?code=${encodeURIComponent(code)}`).code).toBe(code);
-    expect(parseSimState(`?code=${'x'.repeat(3000)}`).code).toHaveLength(0);
+    expect(parseSimState(`?code=${'x'.repeat(20_000)}`).code).toHaveLength(0);
   });
 });
 

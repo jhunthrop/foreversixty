@@ -16,7 +16,7 @@
 //     is ErrUnknownBuff or ErrUnknownConsume and fails the run, so nothing here invents one.
 import { simCopy } from './copy';
 import { pointsPerTree, ranksByTalent } from '../planner/derive';
-import { decodeFS1, orderFromRanks } from '../planner/fs1';
+import { decodeFS1, orderFromRanks, type FS1Item, type FS1Loadout, type FS1Set } from '../planner/fs1';
 import { indexTalents, type TalentIndex } from '../planner/rules';
 import type { PlannerStore } from '../planner/store.svelte';
 import type { BuildDraft, ClassRow, Gear, RaceRow, Slot, TalentFile } from '../planner/types';
@@ -38,6 +38,26 @@ export interface SimCharacter {
   buffs: string[];
   consumables: string[];
   source: CharacterSource;
+  /**
+   * The gear as the engine takes it, enchants and suffixes included (contract 10.5).
+   * `gear` above stays the planner's map of ids -- the strip, the planner link and
+   * `BuildDraft` all read it and none of them models an enchant -- and this is the
+   * authoritative list `toCharacterSpec` sends. The two always agree on item ids.
+   */
+  gear_slots: GearSlot[];
+  /** From the export's `professions=` section (contract 10.5). Empty for every other source. */
+  professions: string[];
+  /**
+   * Version 2 export sections (contract 7, corrected by 10.5). Empty for every other
+   * source and for a version 1 export. These are the candidate lists `/sim/gear`,
+   * `/sim/talents` and `/sim/drops` read; nothing on `/sim` itself renders them. They keep
+   * the decoder's own shapes, so part B converts an `FS1Set` into the envelope's `GearSet`
+   * once, where it builds the bulk request.
+   */
+  bags: FS1Item[];
+  bank: FS1Item[];
+  sets: FS1Set[];
+  loadouts: FS1Loadout[];
 }
 
 /**
@@ -127,6 +147,14 @@ export function fromBuildDraft(
     buffs: [...(extras.buffs ?? [])],
     consumables: [...(extras.consumables ?? [])],
     source: extras.source,
+    // A planner build has no enchants, so gear_slots is the id map converted -- the same
+    // "the two always agree on item ids" promise every other source keeps.
+    gear_slots: gearSlots(draft.gear ?? {}),
+    professions: [],
+    bags: [],
+    bank: [],
+    sets: [],
+    loadouts: [],
   };
 }
 
@@ -200,8 +228,9 @@ export function ranksFromTalentsString(talents: string): number[][] {
  * into a RaidSimRequest inside our own wasm, so this function is the whole of the web's
  * side of the conversion.
  *
- * `professions` is left unset rather than sent empty: nothing in the character model records
- * professions, and an empty array would claim we had looked and found none.
+ * `professions` is left unset rather than sent empty when the character has none recorded
+ * (contract 10.5's `professions=` section is the only source that ever fills it): an empty
+ * array would claim we had looked and found none.
  *
  * `cooldowns` is likewise omitted rather than sent as `[]`: an empty list would claim we
  * had scheduled something and found nothing, when the truth is "every cooldown on
@@ -222,9 +251,17 @@ export function toCharacterSpec(
     // would be rejected at the boundary rather than simmed as written.
     level: SIM_LEVEL,
     talents: talentsString(index, character.point_order),
-    gear: gearSlots(character.gear),
+    // The slot list when the source gave one, the id map otherwise. Never both, and never
+    // a merge: one of the two is the truth about this character's gear and it is this one.
+    gear:
+      character.gear_slots.length > 0
+        ? character.gear_slots.map((slot) => ({ ...slot }))
+        : gearSlots(character.gear),
     buffs: [...buffs],
     consumes: [...consumes],
+    // Still omitted when empty, for the reason the original comment gives: an empty list
+    // would claim we had looked and found none.
+    ...(character.professions.length === 0 ? {} : { professions: [...character.professions] }),
   };
   return cooldowns.length === 0
     ? spec
@@ -288,9 +325,26 @@ export function characterFromFs1(
       tree_version: decoded.build.dataBuild,
       point_order: order,
       gear: { ...decoded.build.gear },
+      gear_slots: (decoded.build.gearSlots ?? []).map((entry) => ({
+        slot: entry.slot,
+        item_id: entry.itemId,
+        ...(entry.enchant === undefined ? {} : { enchant: entry.enchant }),
+        ...(entry.suffix === undefined ? {} : { suffix: entry.suffix }),
+      })),
+      professions: [...decoded.build.professions],
       buffs: [],
       consumables: [],
       source,
+      bags: [...decoded.build.bags],
+      bank: [...decoded.build.bank],
+      sets: decoded.build.sets.map((set) => ({
+        name: set.name,
+        gear: set.gear.map((entry) => ({ ...entry })),
+      })),
+      loadouts: decoded.build.loadouts.map((row) => ({
+        name: row.name,
+        treeRanks: row.treeRanks.map((tree) => [...tree]),
+      })),
     },
   };
 }

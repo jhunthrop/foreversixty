@@ -10,24 +10,78 @@
 // A decoder failure names its reason. The addon spec requires it and it is the right call
 // anyway: "that code is FS2, this site reads FS1" tells someone what to do and "invalid
 // code" does not.
+//
+// Contract 7, corrected by 10.5: everything before the first `|` is version 1 unchanged --
+// every existing decoder keeps working -- and what follows is a fixed sequence of sections
+// (bags, bank, sets, loadouts, professions), each optional, each ignored (and named) by the
+// decoder when it does not recognise the section. 10.5 additionally lets a gear entry --
+// on the head, in a bag, in the bank, or inside a named set -- carry `item_id[:enchant[:suffix]]`
+// instead of a bare id; a bare id is still legal everywhere one was legal before, which is
+// what keeps a version 1 string readable by this decoder and a version 2 string's plain
+// entries readable by a version 1 one.
 import { canAddPoint, withPoint, type TalentIndex } from './rules';
 import { SLOTS, type Gear, type Slot } from './types';
 
 export const FS1_PREFIX = 'FS1';
 const TREES = 3;
-// A query string is attacker-controlled. A real code tops out around a few hundred characters
-// (build id, two slugs, three short talent strings, at most 17 gear entries); this is a
-// generous multiple of that, high enough to never clip a real code and low enough that nothing
-// past it is worth splitting or scanning.
-const MAX_CODE_LENGTH = 2048;
+/**
+ * Contract 7 raises this from 2,048: a version 2 code carries bags, bank, named sets and
+ * named loadouts, and a full bank is several thousand characters on its own. It is still a
+ * finite bound checked before any splitting, which is what keeps a hostile query value
+ * from doing real work.
+ */
+export const MAX_CODE_LENGTH = 16_384;
+
+/** One bag or bank item: `item_id[:enchant[:suffix]]`, with no slot in the string. */
+export interface FS1Item {
+  itemId: number;
+  enchant?: number;
+  suffix?: number;
+}
+
+/** One gear entry: `<slot>=item_id[:enchant[:suffix]]` (contract 10.5). */
+export interface FS1GearSlot {
+  slot: Slot;
+  itemId: number;
+  enchant?: number;
+  suffix?: number;
+}
+
+export interface FS1Set {
+  name: string;
+  gear: FS1GearSlot[];
+}
+
+export interface FS1Loadout {
+  name: string;
+  /** One array per tree, one entry per talent in tab order -- FS1Build.treeRanks's shape. */
+  treeRanks: number[][];
+}
 
 export interface FS1Build {
   dataBuild: string;
   classSlug: string;
   raceSlug: string;
-  /** One array per tree, one entry per talent in tab order. */
   treeRanks: number[][];
+  /**
+   * The planner's map of slot to item id. Lossy by design: the strip, the planner link and
+   * `BuildDraft` all read it and none of them models an enchant or a suffix.
+   */
   gear: Gear;
+  /**
+   * The whole truth about the gear, enchants and suffixes included (contract 10.5). The
+   * decoder always fills it; it is optional only so a caller holding nothing but a `Gear`
+   * map can still build an `FS1Build` without writing `gearSlotsFrom(gear)` by hand.
+   */
+  gearSlots?: FS1GearSlot[];
+  /** Version 2 (contract 7, corrected by 10.5). Empty for a version 1 code. */
+  bags: FS1Item[];
+  bank: FS1Item[];
+  sets: FS1Set[];
+  loadouts: FS1Loadout[];
+  professions: string[];
+  /** Section names the decoder did not recognise, reported rather than silently dropped. */
+  ignored: string[];
 }
 
 export type FS1Error = { ok: false; message: string };
@@ -39,12 +93,124 @@ function encodeTree(ranks: number[]): string {
   return trimmed === '' ? '0' : trimmed;
 }
 
-export function encodeFS1(build: FS1Build): string {
-  const trees = Array.from({ length: TREES }, (_, index) => encodeTree(build.treeRanks[index] ?? []));
-  const gear = SLOTS.filter((slot) => build.gear[slot] !== undefined)
-    .map((slot) => `${slot}=${build.gear[slot]}`)
+/** The three tree fields, slash-joined. `encodeFS1` and `encodeFS1V2` share it. */
+function encodeTrees(treeRanks: readonly number[][]): string {
+  return Array.from({ length: TREES }, (_, index) => encodeTree(treeRanks[index] ?? [])).join('/');
+}
+
+/** Version 1: bare ids, in SLOTS order. `encodeFS1`'s output is unchanged by 10.5. */
+function encodeGearList(gear: Gear): string {
+  return SLOTS.filter((slot) => gear[slot] !== undefined)
+    .map((slot) => `${slot}=${gear[slot]}`)
     .join(',');
-  return [FS1_PREFIX, build.dataBuild, build.classSlug, build.raceSlug, trees.join('/'), gear].join(':');
+}
+
+export function encodeFS1(build: FS1Build): string {
+  return [
+    FS1_PREFIX,
+    build.dataBuild,
+    build.classSlug,
+    build.raceSlug,
+    encodeTrees(build.treeRanks),
+    encodeGearList(build.gear),
+  ].join(':');
+}
+
+type Parsed<T> = { ok: true; value: T } | FS1Error;
+
+function parseTrees(field: string): Parsed<number[][]> {
+  const treeStrings = field.split('/');
+  if (treeStrings.length !== TREES) {
+    return { ok: false, message: `That code has ${treeStrings.length} talent trees; a build has ${TREES}.` };
+  }
+  const treeRanks: number[][] = [];
+  for (const tree of treeStrings) {
+    const ranks: number[] = [];
+    for (const digit of tree) {
+      const rank = Number.parseInt(digit, 36);
+      if (Number.isNaN(rank)) {
+        return { ok: false, message: `That code has an unreadable talent rank: ${digit}.` };
+      }
+      ranks.push(rank);
+    }
+    treeRanks.push(ranks);
+  }
+  return { ok: true, value: treeRanks };
+}
+
+/**
+ * `<slot>=item_id[:enchant[:suffix]]`, joined by commas (contract 10.5). A bare id is
+ * still legal, which is what keeps a version-1 string readable by this and a version-2
+ * string's plain entries readable by a version-1 decoder.
+ */
+function parseGearList(field: string): Parsed<FS1GearSlot[]> {
+  const slots: FS1GearSlot[] = [];
+  if (field === '') return { ok: true, value: slots };
+  for (const entry of field.split(',')) {
+    const [slot, value] = entry.split('=');
+    if (!(SLOTS as readonly string[]).includes(slot)) {
+      return { ok: false, message: `That code names a slot this planner does not have: ${slot}.` };
+    }
+    // Digits only, never Number.parseInt on the whole field: parseInt stops at the first
+    // non-digit and would silently turn "12640abc" into the item id 12640.
+    const parts = (value ?? '').split(':');
+    if (value === undefined || parts.length > 3 || parts.some((part) => !/^\d+$/.test(part))) {
+      return { ok: false, message: `That code has an unreadable gear entry: ${entry}.` };
+    }
+    const [itemId, enchant, suffix] = parts.map((part) => Number.parseInt(part, 10));
+    slots.push({
+      slot: slot as Slot,
+      itemId,
+      ...(enchant === undefined ? {} : { enchant }),
+      ...(suffix === undefined ? {} : { suffix }),
+    });
+  }
+  return { ok: true, value: slots };
+}
+
+/** The planner's lossy view of a gear list: slot to item id, enchants dropped. */
+function gearMapOf(slots: readonly FS1GearSlot[]): Gear {
+  const gear: Gear = {};
+  for (const entry of slots) gear[entry.slot] = entry.itemId;
+  return gear;
+}
+
+/** The inverse, for a caller holding only the planner's map. */
+export function gearSlotsFrom(gear: Gear): FS1GearSlot[] {
+  return SLOTS.filter((slot) => gear[slot] !== undefined).map((slot) => ({
+    slot,
+    itemId: gear[slot] as number,
+  }));
+}
+
+/** `item_id[:enchant[:suffix]]`, joined by commas. Each number is digits only, as gear is. */
+function parseItemList(field: string): Parsed<FS1Item[]> {
+  if (field === '') return { ok: true, value: [] };
+  const items: FS1Item[] = [];
+  for (const entry of field.split(',')) {
+    const parts = entry.split(':');
+    if (parts.length > 3 || parts.some((part) => !/^\d+$/.test(part))) {
+      return { ok: false, message: `That code has an unreadable item entry: ${entry}.` };
+    }
+    const [itemId, enchant, suffix] = parts.map((part) => Number.parseInt(part, 10));
+    items.push({
+      itemId,
+      ...(enchant === undefined ? {} : { enchant }),
+      ...(suffix === undefined ? {} : { suffix }),
+    });
+  }
+  return { ok: true, value: items };
+}
+
+/** `<name>=<payload>;…`, the name URL-encoded so it may carry `;`, `=` and `|`. */
+function parseNamed(field: string): { name: string; payload: string }[] {
+  if (field === '') return [];
+  return field.split(';').map((entry) => {
+    const split = entry.indexOf('=');
+    return split === -1
+      ? { name: decodeURIComponent(entry), payload: '' }
+      : { name: decodeURIComponent(entry.slice(0, split)), payload: entry.slice(split + 1) };
+  });
 }
 
 export function decodeFS1(code: string): FS1Result {
@@ -53,7 +219,11 @@ export function decodeFS1(code: string): FS1Result {
   if (code.length > MAX_CODE_LENGTH) {
     return { ok: false, message: 'That code is too long to read.' };
   }
-  const parts = code.trim().split(':');
+  // Version 2 first, because everything before the first pipe is version 1 unchanged
+  // (contract 7) -- so the version 1 parse below never has to know sections exist.
+  const [head, ...sections] = code.trim().split('|');
+
+  const parts = head.split(':');
   if (parts[0] !== FS1_PREFIX) {
     const named = parts[0] === undefined || parts[0] === '' ? 'unlabelled' : parts[0];
     return { ok: false, message: `That code is ${named}; this site reads ${FS1_PREFIX}.` };
@@ -61,42 +231,60 @@ export function decodeFS1(code: string): FS1Result {
   if (parts.length < 6) return { ok: false, message: 'That code is missing its talent and gear fields.' };
 
   const [, dataBuild, classSlug, raceSlug, treeField, ...gearParts] = parts;
-  const treeStrings = treeField.split('/');
-  if (treeStrings.length !== TREES) {
-    return { ok: false, message: `That code has ${treeStrings.length} talent trees; a build has ${TREES}.` };
-  }
+  const trees = parseTrees(treeField);
+  if (!trees.ok) return trees;
+  const gear = parseGearList(gearParts.join(':'));
+  if (!gear.ok) return gear;
 
-  const treeRanks: number[][] = [];
-  for (const tree of treeStrings) {
-    const ranks: number[] = [];
-    for (const digit of tree) {
-      const rank = Number.parseInt(digit, 36);
-      if (Number.isNaN(rank))
-        return { ok: false, message: `That code has an unreadable talent rank: ${digit}.` };
-      ranks.push(rank);
-    }
-    treeRanks.push(ranks);
-  }
+  const build: FS1Build = {
+    dataBuild,
+    classSlug,
+    raceSlug,
+    treeRanks: trees.value,
+    gear: gearMapOf(gear.value),
+    gearSlots: gear.value,
+    bags: [],
+    bank: [],
+    sets: [],
+    loadouts: [],
+    professions: [],
+    ignored: [],
+  };
 
-  const gear: Gear = {};
-  const gearField = gearParts.join(':');
-  if (gearField !== '') {
-    for (const entry of gearField.split(',')) {
-      const [slot, value] = entry.split('=');
-      if (!(SLOTS as readonly string[]).includes(slot)) {
-        return { ok: false, message: `That code names a slot this planner does not have: ${slot}.` };
+  for (const section of sections) {
+    const split = section.indexOf('=');
+    const name = split === -1 ? section : section.slice(0, split);
+    const field = split === -1 ? '' : section.slice(split + 1);
+    if (name === 'bags' || name === 'bank') {
+      const items = parseItemList(field);
+      if (!items.ok) return items;
+      build[name] = items.value;
+    } else if (name === 'sets') {
+      for (const { name: setName, payload } of parseNamed(field)) {
+        const setGear = parseGearList(payload);
+        if (!setGear.ok) return setGear;
+        build.sets.push({ name: setName, gear: setGear.value });
       }
-      // A strict digits-only match rather than Number.parseInt: parseInt stops at the first
-      // non-digit character and returns what came before it, so "12640abc" and "12640.5" would
-      // otherwise silently become the item id 12640 instead of being refused.
-      if (value === undefined || !/^\d+$/.test(value)) {
-        return { ok: false, message: `That code has an unreadable gear entry: ${entry}.` };
+    } else if (name === 'loadouts') {
+      for (const { name: loadoutName, payload } of parseNamed(field)) {
+        const loadoutTrees = parseTrees(payload);
+        if (!loadoutTrees.ok) return loadoutTrees;
+        build.loadouts.push({ name: loadoutName, treeRanks: loadoutTrees.value });
       }
-      gear[slot as Slot] = Number.parseInt(value, 10);
+    } else if (name === 'professions') {
+      // Slugs, unvalidated here: IDS.md's profession list is the vocabulary and
+      // sim/request refuses one it cannot map, naming it. Silently dropping a slug this
+      // decoder did not recognise would hide exactly that error.
+      build.professions = field === '' ? [] : field.split(',');
+    } else if (name !== '') {
+      // Contract 7: unknown sections are ignored by the decoder and reported in its
+      // result. An addon a version ahead of the site is a thing that will happen, and
+      // refusing its whole string would make the site useless the day it ships.
+      build.ignored.push(name);
     }
   }
 
-  return { ok: true, build: { dataBuild, classSlug, raceSlug, treeRanks, gear } };
+  return { ok: true, build };
 }
 
 export interface OrderFromRanks {
@@ -147,4 +335,73 @@ export function orderFromRanks(index: TalentIndex, treeRanks: number[][]): Order
     .sort((a, b) => a - b);
 
   return { order, dropped };
+}
+
+function encodeItems(items: readonly FS1Item[]): string {
+  return items
+    .map((item) =>
+      [item.itemId, item.enchant, item.suffix].filter((part): part is number => part !== undefined).join(':'),
+    )
+    .join(',');
+}
+
+/** Version 2: `<slot>=item_id[:enchant[:suffix]]`, in SLOTS order (contract 10.5). */
+function encodeGearSlots(slots: readonly FS1GearSlot[]): string {
+  const bySlot = new Map(slots.map((entry) => [entry.slot, entry]));
+  return SLOTS.filter((slot) => bySlot.has(slot))
+    .map((slot) => {
+      const entry = bySlot.get(slot) as FS1GearSlot;
+      return `${slot}=${[entry.itemId, entry.enchant, entry.suffix]
+        .filter((part): part is number => part !== undefined)
+        .join(':')}`;
+    })
+    .join(',');
+}
+
+/**
+ * Version 2: the version 1 string, then the sections in the contract's fixed order, each
+ * omitted when empty. Names are URL-encoded, so a set called "a;b=c|d" survives -- the
+ * three characters the grammar itself uses are the three a player is most likely to type.
+ *
+ * `encodeFS1` is untouched and still produces a version 1 string: the planner's own share
+ * links and the "Sim this build" URL are version 1 and there is nothing in them to carry.
+ */
+export function encodeFS1V2(build: FS1Build): string {
+  const sections: string[] = [];
+  if (build.bags.length > 0) sections.push(`bags=${encodeItems(build.bags)}`);
+  if (build.bank.length > 0) sections.push(`bank=${encodeItems(build.bank)}`);
+  if (build.sets.length > 0) {
+    sections.push(
+      `sets=${build.sets
+        .map((set) => `${encodeURIComponent(set.name)}=${encodeGearSlots(set.gear)}`)
+        .join(';')}`,
+    );
+  }
+  if (build.loadouts.length > 0) {
+    sections.push(
+      `loadouts=${build.loadouts
+        .map((loadout) => `${encodeURIComponent(loadout.name)}=${encodeTrees(loadout.treeRanks)}`)
+        .join(';')}`,
+    );
+  }
+  if (build.professions.length > 0) sections.push(`professions=${build.professions.join(',')}`);
+
+  // The head is version 1 unless a gear entry actually has something to say beyond its id,
+  // so a build with no enchants encodes byte-identically to `encodeFS1` -- which is what
+  // the first test in this task asserts, and what keeps a version-2 string readable by a
+  // version-1 decoder whenever it can be.
+  const slots = build.gearSlots ?? gearSlotsFrom(build.gear);
+  const rich = slots.some((entry) => entry.enchant !== undefined || entry.suffix !== undefined);
+  const head = rich
+    ? [
+        FS1_PREFIX,
+        build.dataBuild,
+        build.classSlug,
+        build.raceSlug,
+        encodeTrees(build.treeRanks),
+        encodeGearSlots(slots),
+      ].join(':')
+    : encodeFS1(build);
+
+  return [head, ...sections].join('|');
 }

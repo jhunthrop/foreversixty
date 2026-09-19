@@ -236,6 +236,12 @@ describe('toCharacterSpec', () => {
       tree_version: BUILD,
       point_order: order,
       gear: { head: 12640 },
+      gear_slots: [],
+      professions: [],
+      bags: [],
+      bank: [],
+      sets: [],
+      loadouts: [],
       buffs: [],
       consumables: [],
       source,
@@ -275,6 +281,12 @@ describe('toCharacterSpec', () => {
       tree_version: BUILD,
       point_order: [2001, 2002],
       gear: { head: 12640 },
+      gear_slots: [],
+      professions: [],
+      bags: [],
+      bank: [],
+      sets: [],
+      loadouts: [],
       buffs: [],
       consumables: [],
       source,
@@ -296,6 +308,12 @@ describe('toCharacterSpec cooldowns', () => {
       tree_version: BUILD,
       point_order: [2001, 2002],
       gear: { head: 12640 },
+      gear_slots: [],
+      professions: [],
+      bags: [],
+      bank: [],
+      sets: [],
+      loadouts: [],
       buffs: [],
       consumables: [],
       source,
@@ -315,6 +333,12 @@ describe('toCharacterSpec cooldowns', () => {
       tree_version: BUILD,
       point_order: [2001, 2002],
       gear: { head: 12640 },
+      gear_slots: [],
+      professions: [],
+      bags: [],
+      bank: [],
+      sets: [],
+      loadouts: [],
       buffs: [],
       consumables: [],
       source,
@@ -341,6 +365,12 @@ describe('the planner conversion, both ways', () => {
       tree_version: BUILD,
       point_order: order,
       gear: { head: 12640, main_hand: 11726 },
+      gear_slots: gearSlots({ head: 12640, main_hand: 11726 }),
+      professions: [],
+      bags: [],
+      bank: [],
+      sets: [],
+      loadouts: [],
       buffs: ['battle_shout'],
       consumables: ['elixir_of_the_mongoose'],
       source,
@@ -382,11 +412,119 @@ describe('the planner conversion, both ways', () => {
       tree_version: BUILD,
       point_order: [],
       gear: {},
+      gear_slots: [],
+      professions: [],
+      bags: [],
+      bank: [],
+      sets: [],
+      loadouts: [],
       buffs: [],
       consumables: [],
       source,
     };
     expect(toBuildDraft(character, classRows, raceRows)).toBeNull();
+  });
+});
+
+// Task 17. The plan's test block names fictional helpers (fixtureCharacter, fixtureIndex,
+// FURY_CODE, fixtureTalents, fixtureClasses, fixtureRaces, SOURCE); rewritten here against
+// this file's own real, async helpers (task-rulings.md, Task 17), keeping the plan's
+// assertions.
+describe('characterFromFs1 with version 2 sections', () => {
+  it('carries bags, bank, sets, loadouts and professions onto the character', async () => {
+    const [file, classRows, raceRows] = await Promise.all([warriorTalents(), classes(), races()]);
+    const code = `${FURY}|bags=16963|bank=19360:2505:1820|sets=AQ=head=21329|loadouts=Arms=5530515/0/0|professions=engineering,alchemy`;
+    const result = characterFromFs1(code, file, classRows, raceRows, source);
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.character.bags).toEqual([{ itemId: 16963 }]);
+    expect(result.character.bank).toEqual([{ itemId: 19360, enchant: 2505, suffix: 1820 }]);
+    expect(result.character.sets).toEqual([{ name: 'AQ', gear: [{ slot: 'head', itemId: 21329 }] }]);
+    expect(result.character.loadouts[0].name).toBe('Arms');
+    expect(result.character.professions).toEqual(['engineering', 'alchemy']);
+  });
+
+  it('carries a gear entry’s enchant and suffix (contract 10.5) onto gear_slots', async () => {
+    const [file, classRows, raceRows] = await Promise.all([warriorTalents(), classes(), races()]);
+    const result = characterFromFs1(
+      'FS1:1.15.9.69722:warrior:orc:0/5530515/0:head=12640:2504:1820',
+      file,
+      classRows,
+      raceRows,
+      source,
+    );
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.character.gear_slots).toEqual([
+      { slot: 'head', item_id: 12640, enchant: 2504, suffix: 1820 },
+    ]);
+    // The planner-facing map keeps the id alone, as every reader of it expects.
+    expect(result.character.gear).toEqual({ head: 12640 });
+  });
+
+  it('gives a version 1 export the empty lists rather than leaving them undefined', async () => {
+    const [file, classRows, raceRows] = await Promise.all([warriorTalents(), classes(), races()]);
+    const result = characterFromFs1(FURY, file, classRows, raceRows, source);
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.character.bags).toEqual([]);
+    expect(result.character.sets).toEqual([]);
+    expect(result.character.professions).toEqual([]);
+    expect(result.character.gear_slots.length).toBeGreaterThan(0);
+  });
+});
+
+describe('toCharacterSpec with per-slot enchants and professions', () => {
+  it('sends gear_slots verbatim rather than rebuilding the list from the id map', async () => {
+    const file = await warriorTalents();
+    const character: SimCharacter = {
+      name: 'Thrallgar',
+      spec: 'warrior-fury',
+      class_slug: 'warrior',
+      race_slug: 'orc',
+      talent_level: 22,
+      tree_version: BUILD,
+      point_order: [],
+      gear: { head: 12640 },
+      gear_slots: [{ slot: 'head', item_id: 12640, enchant: 2504, suffix: 1820 }],
+      professions: ['engineering'],
+      bags: [],
+      bank: [],
+      sets: [],
+      loadouts: [],
+      buffs: [],
+      consumables: [],
+      source,
+    };
+    const spec = toCharacterSpec(character, indexTalents(file), [], []);
+    expect(spec.gear).toEqual([{ slot: 'head', item_id: 12640, enchant: 2504, suffix: 1820 }]);
+    expect(spec.professions).toEqual(['engineering']);
+  });
+
+  it('falls back to the id map for a character that has no slot list', async () => {
+    const file = await warriorTalents();
+    const character: SimCharacter = {
+      name: 'Thrallgar',
+      spec: 'warrior-fury',
+      class_slug: 'warrior',
+      race_slug: 'orc',
+      talent_level: 22,
+      tree_version: BUILD,
+      point_order: [],
+      gear: { head: 12640 },
+      gear_slots: [],
+      professions: [],
+      bags: [],
+      bank: [],
+      sets: [],
+      loadouts: [],
+      buffs: [],
+      consumables: [],
+      source,
+    };
+    const spec = toCharacterSpec(character, indexTalents(file), [], []);
+    expect(spec.gear).toEqual([{ slot: 'head', item_id: 12640 }]);
+    expect(spec.professions).toBeUndefined();
   });
 });
 

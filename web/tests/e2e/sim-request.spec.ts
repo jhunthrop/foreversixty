@@ -113,3 +113,24 @@ test('a shared request link reproduces the whole page state', async ({ page }) =
   await expect(page.getByTestId('sim-targets')).toHaveValue('5');
   await expect(page.getByTestId('sim-duration')).toHaveValue('600');
 });
+
+test('Apply keeps a per-slot enchant and suffix', async ({ page }) => {
+  await page.goto('/sim');
+  await page.getByTestId('sim-addon-input').fill(FURY);
+  await page.getByTestId('sim-addon-load').click();
+  await expect(page.getByTestId('sim-character')).toBeVisible();
+
+  await page.getByTestId('sim-request-drawer').locator('summary').click();
+  const editor = page.getByTestId('sim-request-json');
+  const request = JSON.parse(await editor.inputValue());
+  request.character.gear = [{ slot: 'head', item_id: 12640, enchant: 2504, suffix: 1820 }];
+  await editor.fill(JSON.stringify(request, null, 2));
+  await page.getByTestId('sim-request-apply').click();
+
+  // The drawer re-seeds from the page's own request only on its first render, so reopen
+  // it on a fresh load to read what the page would now send.
+  await expect(page.getByTestId('sim-character')).toBeVisible();
+  await page.getByTestId('sim-request-reset').click();
+  const applied = JSON.parse(await editor.inputValue());
+  expect(applied.character.gear).toEqual([{ slot: 'head', item_id: 12640, enchant: 2504, suffix: 1820 }]);
+});

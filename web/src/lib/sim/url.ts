@@ -15,13 +15,13 @@ export type SimMode = (typeof MODES)[number];
 const MAX_REF = 128;
 
 /**
- * An FS1 code carries three tree strings and up to seventeen gear entries, easily several
- * hundred characters -- far past MAX_REF. `fs1.ts`'s own decoder refuses anything over 2048
- * characters for the same reason (a generous multiple of a real code, high enough to never
- * clip one); this mirrors that bound rather than importing it, since url.ts only ever needs
- * to cap an attacker-controlled query string before the code reaches a decoder at all.
+ * An FS1 code is now version 2 (contract 7): three tree strings, seventeen gear entries,
+ * and optionally a bag list, a bank list, named sets and named loadouts. `fs1.ts`'s own
+ * decoder refuses anything over MAX_CODE_LENGTH for the same reason; this mirrors that
+ * bound rather than importing it, since url.ts only ever needs to cap an
+ * attacker-controlled query string before the code reaches a decoder at all.
  */
-const MAX_CODE = 2048;
+const MAX_CODE = 16_384;
 
 /**
  * A base64url request is about a third larger than its JSON, and a real single-run request

@@ -68,6 +68,14 @@
     gear: Object.fromEntries(
       result.request.character.gear.map((slot): [string, number] => [slot.slot, slot.item_id]),
     ),
+    // The richest form available on this page: the stored request's own gear list,
+    // enchants and suffixes included, rather than a re-derivation from the lossy id map.
+    gear_slots: result.request.character.gear,
+    professions: [...(result.request.character.professions ?? [])],
+    bags: [],
+    bank: [],
+    sets: [],
+    loadouts: [],
     buffs: [...result.request.character.buffs],
     consumables: [...result.request.character.consumes],
     source: result.request.source,
