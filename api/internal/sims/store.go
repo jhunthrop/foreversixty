@@ -61,11 +61,28 @@ type Page struct {
 	PerPage int   `json:"per_page"`
 }
 
-// Progress is what a page following a server run is shown.
+// Progress is what a page following a server run is shown. The three
+// stage fields are zero for a plain run, which has no stages (contract
+// 2); a bulk run's carry the last tick the job wrote.
 type Progress struct {
 	State          string   `json:"state"`
 	IterationsDone int      `json:"iterations_done"`
 	DPS            *float64 `json:"dps,omitempty"`
+	Stage          int      `json:"stage"`
+	CombosDone     int      `json:"combos_done"`
+	CombosTotal    int      `json:"combos_total"`
+}
+
+// Tick is one progress report on its way into the row. It is this
+// package's own vocabulary rather than the runner's callback type, so
+// the store and its tests do not move when the engine's progress
+// stream gains a field.
+type Tick struct {
+	IterationsDone int
+	Mean           float64
+	Stage          int
+	CombosDone     int
+	CombosTotal    int
 }
 
 // Save writes a finished result. userID may be nil: an anonymous
@@ -230,7 +247,9 @@ func (s *Store) Progress(ctx context.Context, id string) (Progress, error) {
 		iter int
 	)
 	err := s.Pool.QueryRow(ctx,
-		`select state, dps_mean, iterations from sims where id = $1`, id).Scan(&p.State, &mean, &iter)
+		`select state, dps_mean, iterations, stage, combos_done, combos_total
+		 from sims where id = $1`, id).Scan(&p.State, &mean, &iter,
+		&p.Stage, &p.CombosDone, &p.CombosTotal)
 	if isNoRows(err) {
 		return Progress{}, ErrNotFound
 	}
@@ -244,14 +263,17 @@ func (s *Store) Progress(ctx context.Context, id string) (Progress, error) {
 }
 
 // Advance records a running job's partial estimate, so the page's DPS
-// figure refines while the job is still going. A row already in a
-// terminal state is left alone: a progress tick that arrives after
-// the result, or after a failure, would otherwise walk the run
-// backwards or revive an errored one.
-func (s *Store) Advance(ctx context.Context, id string, done int, mean float64) error {
+// figure refines and its stage line moves while the job is still
+// going. A row already in a terminal state is left alone: a progress
+// tick that arrives after the result, or after a failure, would
+// otherwise walk the run backwards or revive an errored one.
+func (s *Store) Advance(ctx context.Context, id string, t Tick) error {
 	_, err := s.Pool.Exec(ctx,
-		`update sims set state = $2, iterations = $3, dps_mean = $4 where id = $1 and state in ($5, $6)`,
-		id, StateRunning, done, mean, StateQueued, StateRunning)
+		`update sims set state = $2, iterations = $3, dps_mean = $4,
+		   stage = $5, combos_done = $6, combos_total = $7
+		 where id = $1 and state in ($8, $9)`,
+		id, StateRunning, t.IterationsDone, t.Mean,
+		t.Stage, t.CombosDone, t.CombosTotal, StateQueued, StateRunning)
 	if err != nil {
 		return fmt.Errorf("sims: advance %s: %w", id, err)
 	}

@@ -328,3 +328,27 @@ func TestTheJobMeasuresEveryDPSSpecAndOnlyThose(t *testing.T) {
 		t.Fatalf("%d rows written, want one per dps spec (%d)", n, len(DPSSpecs()))
 	}
 }
+
+func TestTheValidationJobStillRunsPlainSims(t *testing.T) {
+	// The nightly pass measures rotation fidelity, not the optimiser
+	// (design section 11). Every request it builds must stay a plain
+	// run: a bulk or weights request there would sim fifty parses
+	// dozens of times each and blow the job's budget.
+	h := newHarness(t)
+	engine := &runner.Fixture{}
+	top := fakeParses{bySpec: map[string][]Parse{"warrior-fury": parsesAt("warrior-fury", 1020)}}
+	d := h.validateDeps(top, engine, &alwaysBuilds{}, &fakeScores{})
+	_ = Validate(t.Context(), d, []string{"warrior-fury"}, "raids-1", testEngine)
+	asked := engine.Asked()
+	if len(asked) == 0 {
+		t.Fatal("the validation job ran nothing; the assertion below would be vacuous")
+	}
+	for _, req := range asked {
+		if req.Kind() != simapi.KindRun {
+			t.Fatalf("the validation job asked for a %s run: %+v", req.Kind(), req)
+		}
+		if req.Bulk != nil || req.Weights != nil {
+			t.Fatalf("the validation job built a bulk request: %+v", req)
+		}
+	}
+}

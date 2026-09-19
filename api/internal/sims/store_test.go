@@ -97,7 +97,9 @@ func TestAServerRunWalksQueuedThenRunningThenDone(t *testing.T) {
 		t.Fatalf("queued request: %+v", queued.Request)
 	}
 
-	if err := h.store.Advance(t.Context(), "dddddddddddd", 1500, 1000); err != nil {
+	if err := h.store.Advance(t.Context(), "dddddddddddd", Tick{
+		IterationsDone: 1500, Mean: 1000,
+	}); err != nil {
 		t.Fatal(err)
 	}
 	p, err = h.store.Progress(t.Context(), "dddddddddddd")
@@ -158,7 +160,9 @@ func TestAdvanceCannotReviveAFailedRun(t *testing.T) {
 	}
 	// A late or duplicate progress tick arriving after the failure must
 	// not walk the row back to running: error is terminal.
-	if err := h.store.Advance(t.Context(), "hhhhhhhhhhhh", 1500, 1000); err != nil {
+	if err := h.store.Advance(t.Context(), "hhhhhhhhhhhh", Tick{
+		IterationsDone: 1500, Mean: 1000,
+	}); err != nil {
 		t.Fatal(err)
 	}
 	p, err := h.store.Progress(t.Context(), "hhhhhhhhhhhh")
@@ -186,7 +190,9 @@ func TestAdvanceCannotReopenAFinishedRun(t *testing.T) {
 	}
 	// A late or duplicate progress tick arriving after the result must
 	// not overwrite it: done is terminal.
-	if err := h.store.Advance(t.Context(), "iiiiiiiiiiii", 1500, 1000); err != nil {
+	if err := h.store.Advance(t.Context(), "iiiiiiiiiiii", Tick{
+		IterationsDone: 1500, Mean: 1000,
+	}); err != nil {
 		t.Fatal(err)
 	}
 	p, err := h.store.Progress(t.Context(), "iiiiiiiiiiii")
