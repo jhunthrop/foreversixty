@@ -8,8 +8,8 @@ import {
   browserCap,
   finalIterations,
   isCapExceeded,
-  kindOf,
-  PRECISIONS,
+  requestKind,
+  BULK_PRECISIONS,
   type BulkMode,
   type BulkRequest,
   type BulkResult,
@@ -66,18 +66,18 @@ describe('browserCap', () => {
   });
 });
 
-describe('kindOf', () => {
+describe('requestKind', () => {
   it('derives run, gear, talents, drops and weights the way SimRequest.Kind() does', () => {
-    expect(kindOf(base)).toBe('run');
+    expect(requestKind(base)).toBe('run');
     for (const mode of ['gear', 'talents', 'drops'] as const) {
       const request: BulkRequest = {
         ...base,
         bulk: { mode, candidates: [], precision: 'normal', cap: BROWSER_CAP },
       };
-      expect(kindOf(request)).toBe(mode);
+      expect(requestKind(request)).toBe(mode);
     }
     const weights: WeightsRequest = { ...base, weights: { stats: ['crit'], reference: 'crit' } };
-    expect(kindOf(weights)).toBe('weights');
+    expect(requestKind(weights)).toBe('weights');
   });
 
   it('prefers bulk over weights, because a bulk request is never a weights run', () => {
@@ -86,7 +86,7 @@ describe('kindOf', () => {
       bulk: { mode: 'gear' as const, candidates: [], precision: 'fast' as const, cap: 400 },
       weights: { stats: ['crit'], reference: 'crit' },
     };
-    expect(kindOf(both)).toBe('gear');
+    expect(requestKind(both)).toBe('gear');
   });
 });
 
@@ -99,9 +99,9 @@ describe('isCapExceeded', () => {
   });
 });
 
-describe('PRECISIONS and finalIterations', () => {
+describe('BULK_PRECISIONS and finalIterations', () => {
   it('is the contract’s three, in ladder order', () => {
-    expect([...PRECISIONS]).toEqual(['fast', 'normal', 'high']);
+    expect([...BULK_PRECISIONS]).toEqual(['fast', 'normal', 'high']);
   });
 
   it('gives each precision its final-stage iteration count (contract 10.1 A3)', () => {
@@ -131,7 +131,7 @@ describe('STAGES_BY_PRECISION', () => {
 // a later task discovering it as a silent runtime mismatch. Nothing here needs a runtime
 // assertion because an interface has no runtime representation; the values still exercised
 // (mode, precision, kind, slot, origin) are read back to confirm the field names line up
-// with what `kindOf`/`isCapExceeded` above actually consume.
+// with what `requestKind`/`isCapExceeded` above actually consume.
 describe('the re-exported part-A shapes', () => {
   it('accepts a Candidate, TalentLoadout and GearSet shaped exactly as sim/api/envelope.go emits them', () => {
     const candidate: Candidate = {
@@ -169,7 +169,7 @@ describe('the re-exported part-A shapes', () => {
     expect(weight.stat).toBe('crit');
   });
 
-  it('accepts every SimKind value, the same vocabulary kindOf answers with', () => {
+  it('accepts every SimKind value, the same vocabulary requestKind answers with', () => {
     const kinds: SimKind[] = ['run', 'gear', 'talents', 'drops', 'weights'];
     expect(kinds).toHaveLength(5);
   });
@@ -226,9 +226,9 @@ describe('the new bulk-types declarations', () => {
     expect(doneAnswer.result?.lane).toBe('browser');
   });
 
-  it('accepts every BulkMode value and derives Precision from PRECISIONS', () => {
+  it('accepts every BulkMode value and derives Precision from BULK_PRECISIONS', () => {
     const modes: BulkMode[] = ['gear', 'talents', 'drops'];
-    const precisions: Precision[] = [...PRECISIONS];
+    const precisions: Precision[] = [...BULK_PRECISIONS];
     expect(modes).toHaveLength(3);
     expect(precisions).toEqual(['fast', 'normal', 'high']);
   });

@@ -42,8 +42,12 @@ export type {
   WeightsSpec,
 } from './types';
 export type { SimKind } from './kind';
-/** The plan's `kindOf`. `requestKind` is the same function under `api.SimRequest.Kind()`'s own name. */
-export { requestKind as kindOf } from './kind';
+/**
+ * The derived-kind function is part A's `requestKind`; no second name is introduced for it
+ * (controller ruling F11) -- re-exported under its own spelling, not an alias, so a later
+ * task can never end up choosing between two names for the same function.
+ */
+export { requestKind } from './kind';
 
 // --- new: the mode vocabulary and the precision ladder ---
 
@@ -51,12 +55,15 @@ export type BulkMode = 'gear' | 'talents' | 'drops';
 
 /**
  * The contract's three, in ladder order: more stages and fewer survivors, left to right.
- * This is `precision.ts`'s `BULK_PRECISIONS` re-exported under this module's own name --
- * `precision.ts`'s own `PRECISIONS` is a FOUR-value list that also carries `target-error`,
- * so it means something different from this lane's precision and is never shadowed here.
+ * A straight re-export of `precision.ts`'s own `BULK_PRECISIONS` -- one array, not a second
+ * one under a different name -- kept under its own name rather than rebranded to
+ * `PRECISIONS`: `precision.ts` already exports a *different*, four-value `PRECISIONS`
+ * (it also carries `target-error`), and a same-named-but-different export here would force
+ * every future file needing both to alias one on import, with no compiler signal until
+ * that exact moment.
  */
-export const PRECISIONS = BULK_PRECISIONS;
-export type Precision = (typeof PRECISIONS)[number];
+export { BULK_PRECISIONS } from './precision';
+export type Precision = (typeof BULK_PRECISIONS)[number];
 
 /**
  * How many stages a precision runs, for the progress line only. The iteration counts and
