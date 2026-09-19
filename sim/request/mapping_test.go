@@ -210,3 +210,18 @@ func TestBuildValidatesTheEnvelopeFirst(t *testing.T) {
 		t.Fatal("an empty request was built without error")
 	}
 }
+
+// api.GearSlots and request.slotOrder are the same list in two packages
+// - the envelope cannot import request, because request imports the
+// engine and the api module must not. So the two are proved equal here
+// rather than kept equal by hand.
+func TestGearSlotsMatchTheRequestTable(t *testing.T) {
+	if len(api.GearSlots) != len(slotOrder) {
+		t.Fatalf("api.GearSlots has %d entries, slotOrder has %d", len(api.GearSlots), len(slotOrder))
+	}
+	for i, want := range slotOrder {
+		if api.GearSlots[i] != want {
+			t.Errorf("slot %d is %q in the envelope and %q here", i, api.GearSlots[i], want)
+		}
+	}
+}

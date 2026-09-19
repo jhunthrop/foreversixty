@@ -8,6 +8,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/sim/internal/strcase"
 	"github.com/wowsims/classic/sim/core/proto"
+	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
 // Everything the vocabulary lists must resolve, or the settings bar
@@ -169,5 +170,212 @@ func TestIDsMarkdownIsCommitted(t *testing.T) {
 	}
 	if got := IDsMarkdown(); got != string(want) {
 		t.Error("IDS.md is out of date; run `go run ./internal/genids` from sim/ and commit the result")
+	}
+}
+
+// A graded buff is the engine's TristateEffect: value one is the plain
+// version and value two the talented one. The settings bar needs both,
+// so every tristate field answers to "<id>" and "<id>:improved".
+func TestGradedBuffIds(t *testing.T) {
+	got, err := buffsFor([]string{"battle_shout:improved", "power_word_fortitude"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.Raid.BattleShout != proto.TristateEffect_TristateEffectImproved {
+		t.Errorf("battle_shout:improved set %v, want the improved version", got.Raid.BattleShout)
+	}
+	if got.Raid.PowerWordFortitude != proto.TristateEffect_TristateEffectRegular {
+		t.Errorf("the plain id set %v", got.Raid.PowerWordFortitude)
+	}
+
+	// A field that is not graded has no improved form, and accepting
+	// one would silently apply the plain buff under a name that
+	// promised more.
+	if _, err := buffsFor([]string{"blessing_of_kings:improved"}); err == nil {
+		t.Error("an improved form of a boolean buff was accepted")
+	}
+	if _, err := buffsFor([]string{"no_such_buff:improved"}); err == nil {
+		t.Error("an improved form of an unknown buff was accepted")
+	}
+}
+
+func TestKnownBuffsListsBothForms(t *testing.T) {
+	ids := KnownBuffs()
+	for _, want := range []string{"battle_shout", "battle_shout:improved"} {
+		if !slices.Contains(ids, want) {
+			t.Errorf("KnownBuffs does not list %q", want)
+		}
+	}
+	if slices.Contains(ids, "blessing_of_kings:improved") {
+		t.Error("KnownBuffs lists an improved form for a buff that has none")
+	}
+	for _, id := range ids {
+		if _, err := buffsFor([]string{id}); err != nil {
+			t.Errorf("KnownBuffs lists %q, which does not resolve: %v", id, err)
+		}
+	}
+}
+
+// The world buffs are a section of IndividualBuffs, and the engine
+// marks the section with a comment and nothing machine-readable:
+// WorldBuffs() publishes every field numbered worldBuffFirstField or
+// higher, so the list is only ever as good as that boundary. Walking
+// the same message with the same boundary and comparing would prove
+// nothing, so the eight names are pinned here verbatim instead - the
+// way the stat ids are.
+//
+// Both directions matter. A world buff the engine gains is a decision
+// to publish and shows up here. And the risk the boundary actually
+// carries, which no derivation can catch: field 15 is reserved, so an
+// ordinary IndividualBuffs field appended at 16 would be published as
+// a world buff and grouped as one in the settings bar. That fails
+// here.
+func TestWorldBuffsMatchThePinnedList(t *testing.T) {
+	pinned := []string{
+		"fengus_ferocity",
+		"moldars_moxie",
+		"rallying_cry_of_the_dragonslayer",
+		"sayges_fortune",
+		"slipkiks_savvy",
+		"songflower_serenade",
+		"spirit_of_zandalar",
+		"warchiefs_blessing",
+	}
+	slices.Sort(pinned)
+	got := WorldBuffs()
+	if !slices.Equal(got, pinned) {
+		for _, id := range got {
+			if !slices.Contains(pinned, id) {
+				t.Errorf("WorldBuffs() publishes %q, which is not one of the pinned world buffs; if the engine gained a world buff, add it here deliberately, and if it gained an ordinary buff inside the numbered section, move the boundary", id)
+			}
+		}
+		for _, id := range pinned {
+			if !slices.Contains(got, id) {
+				t.Errorf("%q is a world buff and WorldBuffs() does not publish it", id)
+			}
+		}
+	}
+	if !slices.IsSorted(got) {
+		t.Error("WorldBuffs() is not sorted; the list is an interface and must be stable")
+	}
+	// A grouped id is an ordinary buff id: the settings bar sends it
+	// through the same resolver as any other.
+	for _, id := range got {
+		if _, err := buffsFor([]string{id}); err != nil {
+			t.Errorf("WorldBuffs() publishes %q, which does not resolve: %v", id, err)
+		}
+	}
+}
+
+// Stat ids are the engine's enum, so the weights panel is built from
+// the engine rather than from a table that would drift.
+func TestKnownStatsAreTheEnginesEnum(t *testing.T) {
+	ids := KnownStats()
+	if !slices.IsSorted(ids) {
+		t.Error("KnownStats is not sorted")
+	}
+	if len(ids) != len(proto.Stat_name) {
+		t.Errorf("KnownStats has %d entries, the enum has %d", len(ids), len(proto.Stat_name))
+	}
+	for _, id := range ids {
+		if _, ok := ParseStat(id); !ok {
+			t.Errorf("KnownStats lists %q, which does not resolve", id)
+		}
+	}
+	for _, want := range []string{"agility", "attack_power", "crit", "hit", "spell_power", "spell_haste", "melee_haste"} {
+		if !slices.Contains(ids, want) {
+			t.Errorf("KnownStats does not list %q", want)
+		}
+	}
+	// Section 1.4 says "haste"; the engine has two, and 10.8 settles
+	// it. Likewise there is one hit and one crit, not four.
+	for _, absent := range []string{"haste", "melee_crit", "spell_crit", "melee_hit", "spell_hit", "m_p5"} {
+		if _, ok := ParseStat(absent); ok {
+			t.Errorf("ParseStat resolved %q, which is not in the pinned vocabulary", absent)
+		}
+	}
+	if got, _ := ParseStat("crit"); got != proto.Stat_StatCrit {
+		t.Errorf("ParseStat(crit) = %v", got)
+	}
+	if got, _ := ParseStat("mp5"); got != proto.Stat_StatMP5 {
+		t.Errorf("ParseStat(mp5) = %v; strcase.Snake would spell it m_p5 and statSpellings is what stops it", got)
+	}
+}
+
+// The stat ids are an interface: the page builds the weights panel
+// from them, the addon's Pawn string names them, and specs.json's
+// reference_stat is one of them. So the whole list is pinned to the
+// contract's section 10.8 verbatim rather than being whatever the
+// derivation happens to produce.
+func TestKnownStatsMatchThePinnedList(t *testing.T) {
+	pinned := []string{
+		"strength", "agility", "stamina", "intellect", "spirit",
+		"spell_power", "arcane_power", "fire_power", "frost_power",
+		"holy_power", "nature_power", "shadow_power", "mp5", "hit",
+		"crit", "spell_haste", "spell_penetration", "attack_power",
+		"melee_haste", "armor_penetration", "expertise", "mana",
+		"energy", "rage", "armor", "ranged_attack_power", "defense",
+		"block", "block_value", "dodge", "parry", "health",
+		"arcane_resistance", "fire_resistance", "frost_resistance",
+		"nature_resistance", "shadow_resistance", "bonus_armor",
+		"healing_power", "spell_damage", "feral_attack_power",
+	}
+	slices.Sort(pinned)
+	got := KnownStats()
+	if !slices.Equal(got, pinned) {
+		// Name the difference both ways: a stat the engine gained is
+		// a decision to publish, and a stat it lost is a page control
+		// that would send an id nothing resolves.
+		for _, id := range got {
+			if !slices.Contains(pinned, id) {
+				t.Errorf("KnownStats lists %q, which the contract's 10.8 does not", id)
+			}
+		}
+		for _, id := range pinned {
+			if !slices.Contains(got, id) {
+				t.Errorf("the contract's 10.8 lists %q and KnownStats does not", id)
+			}
+		}
+	}
+}
+
+// gradedValue must answer to the engine's TristateEffect type, not to
+// "an enum with two or more non-zero values": IndividualBuffs.sayges_fortune
+// is a SaygesFortune enum with five non-zero values and is not graded, so
+// a check that inferred gradedness from value count alone would wrongly
+// mint a "sayges_fortune:improved" id. This walks every field of every
+// buff message and holds gradedValue to the single rule: graded iff the
+// field's enum is TristateEffect.
+func TestGradedValueIsTristateEffectOnly(t *testing.T) {
+	for _, msg := range buffMessages() {
+		desc := msg.ProtoReflect().Descriptor()
+		fields := desc.Fields()
+		for i := 0; i < fields.Len(); i++ {
+			fd := fields.Get(i)
+			if fd.Kind() != protoreflect.EnumKind {
+				continue
+			}
+			isTristate := fd.Enum().FullName() == tristateEffectFullName
+			_, graded := gradedValue(fd)
+			if graded != isTristate {
+				t.Errorf("%s.%s: gradedValue reports graded=%v, but its enum is %s (want graded=%v)",
+					desc.Name(), fd.Name(), graded, fd.Enum().FullName(), isTristate)
+			}
+		}
+	}
+}
+
+// The regression this bug caused directly: sayges_fortune is a
+// SaygesFortune field, not a TristateEffect one, and has no improved
+// form.
+func TestSaygesFortuneHasNoImprovedForm(t *testing.T) {
+	if _, err := buffsFor([]string{"sayges_fortune:improved"}); err == nil {
+		t.Error("sayges_fortune:improved resolved; SaygesFortune is not TristateEffect and has no graded form")
+	}
+	if slices.Contains(KnownBuffs(), "sayges_fortune:improved") {
+		t.Error("KnownBuffs lists sayges_fortune:improved, which does not resolve")
+	}
+	if !slices.Contains(KnownBuffs(), "sayges_fortune") {
+		t.Error("KnownBuffs should still list the plain sayges_fortune id")
 	}
 }

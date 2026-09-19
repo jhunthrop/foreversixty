@@ -17,6 +17,7 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/jhunthrop/foreversixty/sim/internal/statid"
 	"github.com/jhunthrop/foreversixty/sim/internal/strcase"
 	"github.com/wowsims/classic/sim/core/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
@@ -115,6 +116,12 @@ func buffVocabulary() []vocabularyEntry {
 			}
 			claimed[id] = true
 			out = append(out, vocabularyEntry{id: id, field: id, owner: string(desc.Name())})
+			// A graded field has a talented version, and the settings
+			// bar offers it as a third state rather than a second
+			// checkbox, so it needs an id of its own.
+			if _, graded := gradedValue(fd); graded {
+				out = append(out, vocabularyEntry{id: id + improvedSuffix, field: id, owner: string(desc.Name())})
+			}
 		}
 	}
 	return out
@@ -176,14 +183,28 @@ One id lands in exactly one message, the first of
 field of that name, so ` + "`blessing_of_wisdom`" + ` is the blessing on this
 player rather than the raid-wide aura of the same name. A boolean field
 is turned on, a count is set to one, and a graded field (the engine's
-` + "`TristateEffect`" + `) is set to its plain version; the settings bar has no
-id for the improved form yet.
+` + "`TristateEffect`" + `) has two ids: the plain name is the
+plain version and ` + "`<id>:improved`" + ` is the talented one. A buff that is
+not graded has no ` + "`:improved`" + ` form and naming one is an error.
 
 | id | lands in |
 | --- | --- |
 `)
 	for _, e := range sortedByID(buffVocabulary()) {
 		fmt.Fprintf(&b, "| `%s` | %s |\n", e.id, e.owner)
+	}
+
+	b.WriteString(`
+### World buffs
+
+The settings bar groups these separately: they are ` + "`IndividualBuffs`" + `
+fields like any other and take the same ids, but a player ticks them
+as a group — the Dire Maul tribute buffs, the Zandalar and Warchief's
+world enchantments, Rallying Cry, Songflower, Sayge's fortune.
+
+`)
+	for _, id := range WorldBuffs() {
+		fmt.Fprintf(&b, "- `%s`\n", id)
 	}
 
 	b.WriteString(`
@@ -231,11 +252,89 @@ nothing about why. A character with no professions is legal.
 	for _, e := range sortedByID(professionVocabulary()) {
 		fmt.Fprintf(&b, "| `%s` | Profession.%s |\n", e.id, e.field)
 	}
+
+	b.WriteString(`
+## Stats
+
+` + "`api.SimRequest.Weights`" + `'s ` + "`stats`" + ` and ` + "`reference`" + ` are these ids: the
+engine's ` + "`Stat`" + ` enum value names in lower snake case with the ` + "`Stat`" + `
+prefix stripped, with ` + "`MP5`" + ` spelled ` + "`mp5`" + `. There is no plain
+` + "`haste`" + `: Forever's engine carries ` + "`spell_haste`" + ` and ` + "`melee_haste`" + ` and
+they are different stats. There is one ` + "`hit`" + ` and one ` + "`crit`" + `, not a melee
+and a spell form of each. The reference stat is normalised to exactly
+1.0 and must be one of the stats being weighed; its per-spec default
+is ` + "`data/curated/specs.json`" + `'s ` + "`reference_stat`" + ` — ` + "`attack_power`" + ` for
+melee and hunters, ` + "`spell_power`" + ` for casters.
+
+| id | engine enum |
+| --- | --- |
+`)
+	for _, e := range sortedByID(statVocabulary()) {
+		fmt.Fprintf(&b, "| `%s` | Stat.%s |\n", e.id, e.field)
+	}
 	return b.String()
 }
 
 func sortedByID(entries []vocabularyEntry) []vocabularyEntry {
 	out := append([]vocabularyEntry(nil), entries...)
 	sort.SliceStable(out, func(i, j int) bool { return out[i].id < out[j].id })
+	return out
+}
+
+// worldBuffFirstField is where IndividualBuffs' world-buff section
+// starts. The engine marks the section with a comment and nothing
+// machine-readable, so the boundary is this number and
+// TestWorldBuffsMatchThePinnedList holds what it produces to the eight
+// names written down there: a world buff the engine gains, and an
+// ordinary buff appended past the boundary that would be published as
+// one, are both a failing test rather than a settings bar that is
+// quietly wrong.
+const worldBuffFirstField = 7
+
+// WorldBuffs lists the world-buff ids, sorted. They are IndividualBuffs
+// fields like any other - buffsFor needs no special case - but the
+// settings bar groups them, so the grouping is published rather than
+// guessed at from the names.
+func WorldBuffs() []string {
+	desc := (&proto.IndividualBuffs{}).ProtoReflect().Descriptor()
+	fields := desc.Fields()
+	out := make([]string, 0, 8)
+	for i := 0; i < fields.Len(); i++ {
+		fd := fields.Get(i)
+		if fd.Number() < worldBuffFirstField {
+			continue
+		}
+		out = append(out, string(fd.Name()))
+	}
+	sort.Strings(out)
+	return out
+}
+
+// ParseStat maps a stat id onto the engine's enum.
+//
+// The mapping itself lives in sim/internal/statid, a leaf package
+// sim/adapter depends on too - to read a StatWeightsResult back into
+// the envelope's named rows - and sim/request's own test suite links
+// sim/adapter (the rotation smoke test runs a built request through
+// it), so sim/adapter cannot import sim/request without a cycle. This
+// wrapper is what keeps every existing caller and test in this
+// package's vocabulary unchanged.
+func ParseStat(id string) (proto.Stat, bool) {
+	return statid.Parse(id)
+}
+
+// KnownStats lists every stat id a weights request may name, sorted.
+func KnownStats() []string {
+	return statid.Known()
+}
+
+// statVocabulary names every stat and the engine value it selects.
+func statVocabulary() []vocabularyEntry {
+	ids := statid.Known()
+	out := make([]vocabularyEntry, 0, len(ids))
+	for _, id := range ids {
+		s, _ := statid.Parse(id)
+		out = append(out, vocabularyEntry{id: id, field: s.String(), owner: "Stat"})
+	}
 	return out
 }

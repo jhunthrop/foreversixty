@@ -291,11 +291,16 @@ func sameRun(first, p api.SimResult) error {
 	return nil
 }
 
-// shape is a request with the two fields a split is allowed to vary
-// cleared, so two parts of one run compare equal.
+// shape is a request with the fields a split or a Smart Sim step is
+// allowed to vary cleared, so two parts of one run compare equal.
+//
+// TargetError joins the seed and the count because a step of a
+// target-error run is a fixed-count part of it: the loop owns the
+// target, the part does not.
 func shape(r api.SimRequest) api.SimRequest {
 	r.RandomSeed = 0
 	r.Iterations = 0
+	r.TargetError = 0
 	return r
 }
 

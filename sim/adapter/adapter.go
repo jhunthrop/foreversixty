@@ -24,6 +24,7 @@ import (
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
 	"github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/jhunthrop/foreversixty/sim/enginever"
+	"github.com/jhunthrop/foreversixty/sim/internal/statid"
 	"github.com/jhunthrop/foreversixty/sim/specs"
 	"github.com/wowsims/classic/sim/core/proto"
 )
@@ -516,4 +517,69 @@ func splitSpecSlug(slug string) (class, spec string) {
 		return slug, ""
 	}
 	return slug[:i], slug[i+1:]
+}
+
+// ErrNoWeights is returned when a stat weights result carries no DPS
+// weight block. There is nothing to report and nothing to normalise.
+var ErrNoWeights = errors.New("adapter: the result carries no stat weights")
+
+// Weights lifts the engine's stat weights into the envelope's named
+// rows.
+//
+// The engine answers with an array indexed by proto.Stat, which is a
+// hundred-odd slots of mostly zero; the envelope answers with the
+// stats the request asked for, in the order it asked, normalised so
+// the reference stat is exactly 1. Normalising here rather than on the
+// page is what makes the "copy for Pawn" string and the table the same
+// numbers.
+//
+// The engine already normalises when asked, through EpReferenceStat,
+// but it reports both the raw weights and the EP values and the two
+// are easy to confuse; taking the raw weights and dividing is one
+// arithmetic, in one place, that cannot pick the wrong block.
+func Weights(res *proto.StatWeightsResult, req api.SimRequest) ([]api.StatWeight, error) {
+	if req.Weights == nil {
+		return nil, fmt.Errorf("%w: the request asked for none", ErrNoWeights)
+	}
+	if res == nil {
+		return nil, fmt.Errorf("%w: nil result", ErrNoWeights)
+	}
+	if res.Error != nil && res.Error.Message != "" {
+		return nil, fmt.Errorf("%w: %s", ErrSimFailed, res.Error.Message)
+	}
+	values := res.GetDps()
+	if values.GetWeights() == nil {
+		return nil, ErrNoWeights
+	}
+	raw := values.GetWeights().GetStats()
+	stdev := values.GetWeightsStdev().GetStats()
+	at := func(s proto.Stat, from []float64) float64 {
+		if int(s) >= len(from) {
+			return 0
+		}
+		return from[s]
+	}
+
+	reference, ok := statid.Parse(req.Weights.Reference)
+	if !ok {
+		return nil, fmt.Errorf("%w: reference %q", ErrNoWeights, req.Weights.Reference)
+	}
+	scale := at(reference, raw)
+	if scale == 0 {
+		return nil, fmt.Errorf("%w: the reference stat %q weighs nothing, so nothing can be normalised against it", ErrNoWeights, req.Weights.Reference)
+	}
+
+	out := make([]api.StatWeight, 0, len(req.Weights.Stats))
+	for _, id := range req.Weights.Stats {
+		s, ok := statid.Parse(id)
+		if !ok {
+			return nil, fmt.Errorf("%w: %q", ErrNoWeights, id)
+		}
+		out = append(out, api.StatWeight{
+			Stat:   id,
+			Weight: at(s, raw) / scale,
+			Error:  at(s, stdev) / scale,
+		})
+	}
+	return out, nil
 }
