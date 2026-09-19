@@ -178,6 +178,23 @@ export function gearSlots(gear: Gear): GearSlot[] {
   });
 }
 
+/** The inverse of gearSlots: the engine's list back as the planner's Gear map. */
+export function gearFromSlots(gear: readonly GearSlot[]): Gear {
+  const out: Gear = {};
+  for (const { slot, item_id } of gear) out[slot as Slot] = item_id;
+  return out;
+}
+
+/**
+ * The inverse of talentsString: one decimal digit per talent in tab order, per tree,
+ * dash-joined ("01102123133-12312312-"). Every rank talentsString ever wrote is a single
+ * digit, so this is exact, unlike an FS1 code's own base-36 tree field, which loses
+ * nothing either but is not what CharacterSpec carries.
+ */
+export function ranksFromTalentsString(talents: string): number[][] {
+  return talents.split('-').map((tree) => Array.from(tree, (digit) => Number.parseInt(digit, 10) || 0));
+}
+
 /**
  * The character as the engine wants it: plain JSON, no protobuf. `sim/request` turns this
  * into a RaidSimRequest inside our own wasm, so this function is the whole of the web's

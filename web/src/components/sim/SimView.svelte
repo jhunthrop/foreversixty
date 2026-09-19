@@ -12,10 +12,12 @@
   import activeBuild from '../../data/active-build.json';
   import { battlenetStartUrl, fetchMe, type Me } from '../../lib/account/api';
   import type { CharacterPath } from '../../lib/characters';
+  import { encodeFS1 } from '../../lib/planner/fs1';
   import { createLazyComponent, type LazyLoadState } from '../../lib/report/lazy-component.svelte';
   import { fetchReportMeta, fetchSummary } from '../../lib/report/load';
   import type { Summary } from '../../lib/report/types';
   import { fetchSim, fetchSpecs, listMySims } from '../../lib/sim/api';
+  import { gearFromSlots, ranksFromTalentsString } from '../../lib/sim/character';
   import { compareSummaries } from '../../lib/sim/compare';
   import { simCopy } from '../../lib/sim/copy';
   import { settingsLabel } from '../../lib/sim/settings';
@@ -120,28 +122,54 @@
   let savedResult = $state<SimResult | null>(untrack(() => inlineResult));
   let savedError = $state<string | null>(null);
 
-  if (hasSavedSimId && savedResult === null && simId !== '') {
-    void fetchSim(simId)
-      .then((result) => (savedResult = result))
-      .catch((error) => {
-        savedError = error instanceof Error ? error.message : simCopy.loadFailed;
-      });
-  }
+  // One-time init reads of savedResult and simId, the same reason bootstrap and store
+  // above are wrapped: this runs once, at setup, never again as either changes. The
+  // .then/.catch callbacks below run later, as ordinary reactive writes -- untrack only
+  // covers the synchronous read that kicks the fetch off.
+  untrack(() => {
+    if (hasSavedSimId && savedResult === null && simId !== '') {
+      void fetchSim(simId)
+        .then((result) => (savedResult = result))
+        .catch((error) => {
+          savedError = error instanceof Error ? error.message : simCopy.loadFailed;
+        });
+    }
+  });
 
   /**
    * "Run this yourself", the stale-result remedy and the ordinary way off a saved page:
-   * opens /sim with the stored request's own source and ref, so the player can change
-   * something and run it themselves. It is a callback rather than an `<a href>` SavedSim
-   * builds itself so the URL is built with the same `sim/url.ts` vocabulary this file
-   * already owns for its own bootstrap, in one place. It is never triggered automatically
-   * -- only this handler, from the player's own click.
+   * opens /sim with a character loaded, so the player can change something and run it
+   * themselves. It is a callback rather than an `<a href>` SavedSim builds itself so the
+   * URL is built with the same `sim/url.ts` vocabulary this file already owns for its own
+   * bootstrap, in one place. It is never triggered automatically -- only this handler,
+   * from the player's own click.
+   *
+   * `source.kind`+`ref` round-trips correctly for `build` and `fight`: both always carry a
+   * non-empty `ref` (fromPlannerBuild, fromLoggedFight) that `bootstrapSource` can look
+   * back up. `addon` (a pasted or pushed FS1 export) and `manual` (a build adopted from the
+   * planner) never persist a `ref` at all -- `sources.ts`'s `fromAddonExport` and
+   * `character.ts`'s `characterFromPlanner` both write `ref: ''` -- so navigating with
+   * their `source`/`ref` landed on an empty `/sim?source=addon` with no character and no
+   * message (H4, final whole-branch review). The saved result's own `request.character`
+   * carries everything an FS1 code does, so this builds one and hands it to `/sim`'s
+   * existing `?code=` bootstrap -- the same path "Sim this build" already uses -- instead
+   * of a ref nothing wrote.
    */
   function onRerunSaved(): void {
     if (savedResult === null) return;
-    const target = withSimState(defaultSimState(), {
-      source: savedResult.request.source.kind,
-      ref: savedResult.request.source.ref,
-    });
+    const { kind, ref } = savedResult.request.source;
+    const target =
+      ref !== ''
+        ? withSimState(defaultSimState(), { source: kind, ref })
+        : withSimState(defaultSimState(), {
+            code: encodeFS1({
+              dataBuild: bootstrap.treeVersion,
+              classSlug: savedResult.request.character.class,
+              raceSlug: savedResult.request.character.race,
+              treeRanks: ranksFromTalentsString(savedResult.request.character.talents),
+              gear: gearFromSlots(savedResult.request.character.gear),
+            }),
+          });
     window.location.href = `/sim${simSearch(target)}`;
   }
 
@@ -365,7 +393,11 @@
   {#if lazy.error !== ''}
     <p class="text-muted px-[18px] text-[13px] md:px-0" role="alert" data-testid="sim-results-error">
       {lazy.error}
-      <button type="button" class="text-strong ml-1 underline" onclick={() => lazy.load()}>Try again</button>
+      <button
+        type="button"
+        class="text-strong ml-1 inline-flex min-h-11 items-center underline"
+        onclick={() => lazy.load()}>{simCopy.tryAgain}</button
+      >
     </p>
   {/if}
 {/snippet}
@@ -382,12 +414,14 @@
       </p>
     {/if}
   {:else}
-    <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1 px-[18px] md:px-0">
-      <h1 class="section-title">Simulator</h1>
-      <a
-        class="tabular text-muted ml-auto font-mono text-[12px]"
-        href="/sim/specs"
-        data-testid="sim-engine-version">{engineLabel(ENGINE_VERSION)}</a
+    <!-- No <h1> here: sim.astro and sim/specs.astro each carry their own, in the static
+         HTML, ahead of this island entirely -- an island-mounted heading is invisible to
+         Lighthouse's LCP measurement and, before this, was "Simulator" on both pages (M7,
+         final whole-branch review), which the spec-support page's own title disagreed
+         with. -->
+    <div class="flex flex-wrap items-baseline justify-end gap-x-4 gap-y-1 px-[18px] md:px-0">
+      <a class="tabular text-muted font-mono text-[12px]" href="/sim/specs" data-testid="sim-engine-version"
+        >{engineLabel(ENGINE_VERSION)}</a
       >
     </div>
 

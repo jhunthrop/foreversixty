@@ -11,7 +11,9 @@ import {
   characterFromFs1,
   characterFromPlanner,
   fromBuildDraft,
+  gearFromSlots,
   gearSlots,
+  ranksFromTalentsString,
   specForSplit,
   specOf,
   talentLevel,
@@ -163,6 +165,28 @@ describe('talentsString', () => {
   });
 });
 
+describe('ranksFromTalentsString, the inverse of talentsString', () => {
+  it('reads one decimal digit per talent in tab order, per tree', () => {
+    expect(ranksFromTalentsString('-5530515-')).toEqual([[], [5, 5, 3, 0, 5, 1, 5], []]);
+  });
+
+  it('round-trips a real talentsString exactly, one digit per talent', async () => {
+    const file = await warriorTalents();
+    // Five Booming Voice, five Cruelty, three Unbridled Wrath -- the same order the
+    // talentsString describe block above encodes to '-553'.
+    const order = [2001, 2001, 2001, 2001, 2001, 2002, 2002, 2002, 2002, 2002, 2003, 2003, 2003];
+    const encoded = talentsString(indexTalents(file), order);
+    expect(encoded).toBe('-553');
+    // Decoding what H4's saved-sim rerun actually receives (a CharacterSpec.talents
+    // string) reaches the same per-talent ranks a fresh encode started from.
+    expect(ranksFromTalentsString(encoded)).toEqual([[], [5, 5, 3]]);
+  });
+
+  it('is all empty trees for a build with no points', () => {
+    expect(ranksFromTalentsString('-')).toEqual([[], []]);
+  });
+});
+
 describe('gearSlots', () => {
   it('is one entry per equipped slot, in the planner’s own slot order', () => {
     expect(gearSlots({ main_hand: 11726, head: 12640 })).toEqual([
@@ -173,6 +197,24 @@ describe('gearSlots', () => {
 
   it('leaves an empty slot out rather than sending a zero item id', () => {
     expect(gearSlots({})).toEqual([]);
+  });
+});
+
+describe('gearFromSlots, the inverse of gearSlots', () => {
+  it('is the planner’s Gear map, keyed by slot', () => {
+    expect(gearFromSlots([{ slot: 'head', item_id: 12640 }, { slot: 'main_hand', item_id: 11726 }])).toEqual({
+      head: 12640,
+      main_hand: 11726,
+    });
+  });
+
+  it('round-trips gearSlots exactly', () => {
+    const gear = { main_hand: 11726, head: 12640 };
+    expect(gearFromSlots(gearSlots(gear))).toEqual(gear);
+  });
+
+  it('is empty for no gear', () => {
+    expect(gearFromSlots([])).toEqual({});
   });
 });
 

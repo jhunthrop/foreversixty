@@ -81,10 +81,19 @@ test.describe('a saved sim from the prerendered fixture', () => {
     await expect(page.getByTestId('sim-change-source')).toHaveCount(0);
   });
 
-  test('Run this yourself opens /sim with the stored request’s source', async ({ page }) => {
+  // H4 (final whole-branch review): the fixture's saved sim is addon-sourced with an empty
+  // ref (src/fixtures/sim/result.json's request.source is {kind:'addon', ref:''}), exactly
+  // the shape that used to land on a dead `/sim?source=addon` with no character and no
+  // message. The fix adopts the saved request's own request.character through /sim's
+  // existing ?code= bootstrap instead, so a character is on screen after the click.
+  test('Run this yourself opens /sim with the saved request’s own character, not a dead ref', async ({ page }) => {
     await page.goto('/sim/simfixtureab');
     await page.getByTestId('sim-run-yourself').click();
-    await expect(page).toHaveURL('/sim?source=addon');
+    await expect(page).toHaveURL(/\/sim\?code=/);
+    await expect(page.getByTestId('sim-character')).toBeVisible();
+    // The stored request's own character, not a guess: the same class and gear the saved
+    // sim ran with (src/fixtures/sim/result.json's request.character).
+    await expect(page.getByTestId('sim-slot-head')).toBeVisible();
   });
 });
 
