@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"slices"
 	"testing"
+
+	"github.com/jhunthrop/foreversixty/sim/specs"
 )
 
 func TestStateForIsTheDesignsDefinitionOfValidated(t *testing.T) {
@@ -268,5 +270,34 @@ func TestPutSpecComputesStateRatherThanTrustingTheCaller(t *testing.T) {
 	}
 	if fire.State != SpecInProgress {
 		t.Fatalf("mage-fire: %+v, want in_progress (an unmeasured gap cannot be validated)", fire)
+	}
+}
+
+func TestEverySpecCardNamesItsReferenceStat(t *testing.T) {
+	h := newHarness(t)
+	// A measured row and an unmeasured one both carry it: the weights
+	// page reads the reference off the card before anything has been
+	// simmed.
+	gap := 0.02
+	if err := h.store.PutSpec(t.Context(), SpecFidelity{
+		Spec: "warrior-fury", Parses: 50, MedianGap: &gap, EngineVersion: testEngine,
+	}); err != nil {
+		t.Fatal(err)
+	}
+	cards, err := h.store.Specs(t.Context())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(cards) == 0 {
+		t.Fatal("no cards at all")
+	}
+	for _, c := range cards {
+		want := specs.ByKey[c.Spec].ReferenceStat
+		if want == "" {
+			t.Fatalf("%s has no reference_stat in the generated spec list", c.Spec)
+		}
+		if c.ReferenceStat != want {
+			t.Errorf("%s: reference_stat %q, want %q", c.Spec, c.ReferenceStat, want)
+		}
 	}
 }
