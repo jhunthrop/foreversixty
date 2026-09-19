@@ -30,6 +30,13 @@
 // entryPointFor, which keeps that run on the engine's single-threaded
 // entry point because the concurrent path's sample is only an
 // approximation.
+//
+// A plain run asks for the sample, because that is the product's
+// behaviour and the page renders it. -no-sample is the opt-out, and it
+// is for the batch callers above: the nightly validation job and the
+// execution scorer run thousands of sims whose cast log nobody reads,
+// and each of those would otherwise give up the concurrent entry point
+// and replay one whole extra iteration to record it.
 package main
 
 import (
@@ -51,6 +58,7 @@ import (
 	"github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/jhunthrop/foreversixty/sim/enginever"
 	"github.com/jhunthrop/foreversixty/sim/internal/simdb"
+	"github.com/jhunthrop/foreversixty/sim/internal/simdrain"
 	"github.com/jhunthrop/foreversixty/sim/request"
 	engine "github.com/wowsims/classic/sim"
 	"github.com/wowsims/classic/sim/core"
@@ -73,6 +81,7 @@ func main() {
 	out := flag.String("out", "-", "SimResult JSON; - for stdout")
 	outProto := flag.String("out-proto", "", "write the engine's raw RaidSimResult protobuf here instead; only sim/adapter's fixture refresh wants this")
 	iterations := flag.Int("iterations", 0, "override the request's iteration count")
+	noSample := flag.Bool("no-sample", false, "skip the sample iteration: the run keeps the engine's concurrent entry point instead of replaying one fight single-threaded. For a batch caller - the nightly validation job, the execution scorer - whose cast log is never read")
 	progress := flag.Bool("progress", false, "write JSON-lines progress to stderr; the engine's own log output is wrapped as {\"log\":...} so every line of that stream parses")
 	version := flag.Bool("version", false, "print the engine version and exit")
 	flag.Parse()
@@ -105,7 +114,7 @@ func main() {
 	if *outProto != "" {
 		run, outPath = runProto, *outProto
 	}
-	if err := run(*in, outPath, *iterations, sink); err != nil {
+	if err := run(*in, outPath, overrides{iterations: *iterations, noSample: *noSample}, sink); err != nil {
 		fmt.Fprintln(os.Stderr, "forever-sim:", err)
 		switch {
 		case errors.Is(err, errBadInput):
@@ -119,10 +128,22 @@ func main() {
 	}
 }
 
+// overrides are the flags that change a request after it is read. They
+// travel as one value so adding the next one is not another positional
+// bool at every call site.
+type overrides struct {
+	// iterations replaces the request's count when above zero.
+	iterations int
+	// noSample sets api.SimRequest.NoSample, whatever the file said.
+	// It only ever turns the sample OFF: a request that wants one says
+	// so by being a plain run, which is the default.
+	noSample bool
+}
+
 // run is main's body, with its files and its progress sink as parameters
 // so it is testable.
-func run(inPath, outPath string, iterations int, progress io.Writer) error {
-	req, err := load(inPath, iterations)
+func run(inPath, outPath string, over overrides, progress io.Writer) error {
+	req, err := load(inPath, over)
 	if err != nil {
 		return err
 	}
@@ -147,8 +168,8 @@ func run(inPath, outPath string, iterations int, progress io.Writer) error {
 // ours. It exists for one caller: sim/adapter's fixtures are checked-in
 // RaidSimResult protobufs, so regenerating them needs the thing before
 // the adapter rather than after it. Everything else wants run.
-func runProto(inPath, outProtoPath string, iterations int, progress io.Writer) error {
-	req, err := load(inPath, iterations)
+func runProto(inPath, outProtoPath string, over overrides, progress io.Writer) error {
+	req, err := load(inPath, over)
 	if err != nil {
 		return err
 	}
@@ -166,8 +187,8 @@ func runProto(inPath, outProtoPath string, iterations int, progress io.Writer) e
 	return write(outProtoPath, b)
 }
 
-// load reads a SimRequest and applies the iteration override.
-func load(inPath string, iterations int) (api.SimRequest, error) {
+// load reads a SimRequest and applies the command line's overrides.
+func load(inPath string, over overrides) (api.SimRequest, error) {
 	var raw []byte
 	var err error
 	if inPath == "-" {
@@ -188,8 +209,13 @@ func load(inPath string, iterations int) (api.SimRequest, error) {
 	if err := dec.Decode(&req); err != nil {
 		return api.SimRequest{}, fmt.Errorf("%w: the input is not a SimRequest: %v", errBadInput, err)
 	}
-	if iterations > 0 {
-		req.Iterations = iterations
+	if over.iterations > 0 {
+		req.Iterations = over.iterations
+	}
+	// -no-sample can only take the sample away, never add one: a
+	// request that already opted out stays opted out.
+	if over.noSample {
+		req.NoSample = true
 	}
 	// An operator who wrote no engine version means this binary's.
 	// Naming a different one is refused by api.SimRequest.Validate.
@@ -282,56 +308,6 @@ func entryPointFor(sampleIteration bool) simEntryPoint {
 	return core.RunRaidSimConcurrentAsync
 }
 
-// drainToResult reads reporter until it has the engine's final result,
-// reporting every intermediate tick to enc along the way (enc may be
-// nil, when the caller asked for no progress output).
-//
-// It does NOT simply break on the first FinalRaidResult: run() sends
-// that message from INSIDE the producer goroutine, then keeps running
-// - for a sample request it still has to return up to runSim, which
-// replays the median iteration and only THEN sets
-// FinalRaidResult.SampleIteration on that same pointer, before closing
-// the channel. Breaking on sight of the message used to read the
-// struct while that replay was still in flight, which raced
-// SampleIteration nil almost every time. Draining to the channel's
-// close instead relies on Go's channel-close happens-before: whatever
-// the producer did before close(progress), including that mutation,
-// is guaranteed visible once range observes the close.
-//
-// That fix only holds for a SUCCESSFUL run, because the engine's sim
-// body is the only path that closes progress on its way out
-// (core/sim.go). Two other engine paths send a FinalRaidResult and
-// then return WITHOUT ever closing the channel: a failed
-// simsignals.RegisterWithId - an empty or duplicate request id -
-// inside RunRaidSimAsync/RunRaidSimConcurrentAsync (core/api.go), and
-// SimOptions.IsTest, which registers no closing defer at all
-// (core/sim.go) - this package's own requests never set IsTest, but
-// nothing stops a future caller from being the first to. A blanket
-// drain hangs forever on either. Neither ever carries a sample
-// (core/sim.go's replay is itself guarded on result.Error == nil), so
-// an error result has nothing left worth waiting for: take it and
-// stop rather than block on a close that may never come.
-func drainToResult(reporter chan *proto.ProgressMetrics, enc *json.Encoder) *proto.RaidSimResult {
-	var engineRes *proto.RaidSimResult
-	for p := range reporter {
-		if p.FinalRaidResult != nil {
-			engineRes = p.FinalRaidResult
-			if engineRes.Error != nil {
-				break
-			}
-			continue
-		}
-		if enc != nil {
-			_ = enc.Encode(struct {
-				Completed int32   `json:"completed"`
-				Total     int32   `json:"total"`
-				DPS       float64 `json:"dps"`
-			}{p.CompletedIterations, p.TotalIterations, p.Dps})
-		}
-	}
-	return engineRes
-}
-
 // execute is the engine half: our request in, the engine's own result
 // out, with progress reported as JSON lines along the way.
 func execute(req api.SimRequest, progress io.Writer) (*proto.RaidSimResult, error) {
@@ -361,12 +337,23 @@ func execute(req api.SimRequest, progress io.Writer) (*proto.RaidSimResult, erro
 	defer onInterrupt(id)()
 	entryPointFor(engineReq.SimOptions.GetSampleIteration())(engineReq, reporter, id)
 
-	var enc *json.Encoder
+	// A nil tick is the no-progress case; ToResult takes one.
+	var tick func(*proto.ProgressMetrics)
 	if progress != nil {
-		enc = json.NewEncoder(progress)
+		enc := json.NewEncoder(progress)
+		tick = func(p *proto.ProgressMetrics) {
+			_ = enc.Encode(struct {
+				Completed int32   `json:"completed"`
+				Total     int32   `json:"total"`
+				DPS       float64 `json:"dps"`
+			}{p.CompletedIterations, p.TotalIterations, p.Dps})
+		}
 	}
 
-	engineRes := drainToResult(reporter, enc)
+	// The drain loop lives in sim/internal/simdrain because sim/cmd/wasm
+	// runs the same one; its invariant (why this does not break on the
+	// first FinalRaidResult) is documented on ToResult.
+	engineRes := simdrain.ToResult(reporter, tick)
 	if engineRes == nil {
 		return nil, errors.New("the engine produced no result")
 	}

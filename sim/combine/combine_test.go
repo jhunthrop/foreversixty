@@ -504,3 +504,73 @@ func TestResultsIgnoresAPartWithNoDistribution(t *testing.T) {
 		t.Errorf("DPS range = [%v, %v], want [900, 1100]", out.DPS.Min, out.DPS.Max)
 	}
 }
+
+// A sample iteration is a whole replayed fight on a fresh Environment.
+// Every part used to inherit NoSample=false from the request, so a
+// four-way browser split paid four replays and Results then kept part
+// zero's and discarded the rest. Only part zero may be asked for one.
+func TestSplitAsksOnlyPartZeroForTheSample(t *testing.T) {
+	parts, err := Split(req(3000, 100), 4)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for i, p := range parts {
+		if want := i != 0; p.NoSample != want {
+			t.Errorf("part %d has no_sample=%v, want %v", i, p.NoSample, want)
+		}
+	}
+}
+
+// A request that had already opted out - a bulk stage, which sim/bulk
+// marks - must not have the sample put back on its first part.
+func TestSplitKeepsAnExistingSampleOptOut(t *testing.T) {
+	base := req(3000, 100)
+	base.NoSample = true
+	parts, err := Split(base, 4)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for i, p := range parts {
+		if !p.NoSample {
+			t.Errorf("part %d lost the request's no_sample opt-out", i)
+		}
+	}
+}
+
+// The other half of the split fix, and the load-bearing one: Split now
+// produces parts that differ in NoSample, so shape() must clear the
+// field before sameRun compares them. Without that clearing this fails
+// with ErrMixedParts ("asks a different question from part 0") and
+// every browser run - all of which go through simSplit - breaks.
+func TestPartsOfASplitRunCombineDespiteTheSampleOptOut(t *testing.T) {
+	reqs, err := Split(req(3000, 100), 4)
+	if err != nil {
+		t.Fatal(err)
+	}
+	parts := make([]api.SimResult, len(reqs))
+	for i, r := range reqs {
+		parts[i] = full(r.RandomSeed, r.Iterations, func(res *api.SimResult) { res.Request = r })
+	}
+	out, err := Results(parts)
+	if err != nil {
+		t.Fatalf("the parts combine.Split produced would not combine: %v", err)
+	}
+	if out.IterationsRun != 3000 {
+		t.Errorf("iterations_run = %d, want 3000", out.IterationsRun)
+	}
+}
+
+// Sample is part zero's, like the aura and cast tables: it is the one
+// recorded fight of the run, because Split asks no other part for one.
+func TestResultsKeepsPartZerosSample(t *testing.T) {
+	sample := []api.SampleCast{{AtMS: -1500, Action: "spell:23881"}, {AtMS: 0, Action: "other:attack"}}
+	zero := full(0, 750, func(r *api.SimResult) { r.Sample = sample })
+	one := full(750, 750, func(r *api.SimResult) { r.Request.NoSample = true })
+	out, err := Results([]api.SimResult{zero, one})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(out.Sample) != len(sample) || out.Sample[0].Action != sample[0].Action {
+		t.Errorf("combined sample = %+v, want part zero's %+v", out.Sample, sample)
+	}
+}

@@ -523,7 +523,7 @@ func splitSpecSlug(slug string) (class, spec string) {
 // the engine records when SimOptions.sample_iteration is set.
 //
 // Every row carries the summary's ACTION KEY - "spell:23881",
-// "item:13503", "other:melee" - and no display name. That is contract
+// "item:13503", "other:attack" - and no display name. That is contract
 // A12, and the reason is that the page already resolves a cast row's
 // name from the build's spells.json through resolveActionName; a name
 // baked in here would be a second vocabulary for the same action, and

@@ -71,7 +71,7 @@ func TestRunProducesASimResult(t *testing.T) {
 	out := filepath.Join(dir, "res.json")
 
 	var progress bytes.Buffer
-	if err := run(in, out, 0, &progress); err != nil {
+	if err := run(in, out, overrides{}, &progress); err != nil {
 		t.Fatalf("run: %v", err)
 	}
 
@@ -242,7 +242,7 @@ func TestProgressPayloadFields(t *testing.T) {
 		t.Fatal(err)
 	}
 	var progress bytes.Buffer
-	if err := run(in, filepath.Join(dir, "res.json"), 0, &progress); err != nil {
+	if err := run(in, filepath.Join(dir, "res.json"), overrides{}, &progress); err != nil {
 		t.Fatal(err)
 	}
 	lines := strings.Split(strings.TrimSpace(progress.String()), "\n")
@@ -278,7 +278,7 @@ func TestIterationsOverride(t *testing.T) {
 	// reproducing something quickly could not use the flag the binary
 	// offered them. An override goes through ValidatePart, which is
 	// the shape it is.
-	if err := run(in, out, 100, nil); err != nil {
+	if err := run(in, out, overrides{iterations: 100}, nil); err != nil {
 		t.Fatal(err)
 	}
 	b, _ := os.ReadFile(out)
@@ -291,7 +291,7 @@ func TestIterationsOverride(t *testing.T) {
 	}
 	// Bounded, not unbounded: a part is a share of a whole run and can
 	// never legitimately exceed the largest one.
-	if err := run(in, out, api.MaxIterations+1, nil); err == nil {
+	if err := run(in, out, overrides{iterations: api.MaxIterations + 1}, nil); err == nil {
 		t.Error("an override larger than the largest whole run was accepted")
 	}
 }
@@ -302,10 +302,10 @@ func TestBadInputIsRejected(t *testing.T) {
 	if err := os.WriteFile(in, []byte("{not json"), 0o644); err != nil {
 		t.Fatal(err)
 	}
-	if err := run(in, filepath.Join(dir, "res.json"), 0, nil); err == nil {
+	if err := run(in, filepath.Join(dir, "res.json"), overrides{}, nil); err == nil {
 		t.Fatal("junk input was accepted")
 	}
-	if err := run(filepath.Join(dir, "missing.json"), filepath.Join(dir, "res.json"), 0, nil); err == nil {
+	if err := run(filepath.Join(dir, "missing.json"), filepath.Join(dir, "res.json"), overrides{}, nil); err == nil {
 		t.Fatal("a missing input file was accepted")
 	}
 }
@@ -320,7 +320,7 @@ func TestOutProtoWritesAnEngineResult(t *testing.T) {
 		t.Fatal(err)
 	}
 	out := filepath.Join(dir, "res.pb")
-	if err := runProto(in, out, 0, nil); err != nil {
+	if err := runProto(in, out, overrides{}, nil); err != nil {
 		t.Fatalf("runProto: %v", err)
 	}
 	b, err := os.ReadFile(out)
@@ -340,7 +340,7 @@ func TestOutProtoWritesAnEngineResult(t *testing.T) {
 	if _, err := adapter.Summarize(res, api.SimRequest{EngineVersion: "t", Spec: "warrior-fury"}); err != nil {
 		t.Errorf("the written result does not summarize: %v", err)
 	}
-	if err := runProto(filepath.Join(dir, "missing.json"), out, 0, nil); err == nil {
+	if err := runProto(filepath.Join(dir, "missing.json"), out, overrides{}, nil); err == nil {
 		t.Error("runProto accepted a missing input file")
 	}
 }
@@ -364,7 +364,7 @@ func TestARequestTheBuilderRefusesIsBadInput(t *testing.T) {
 	if err := os.WriteFile(in, b, 0o644); err != nil {
 		t.Fatal(err)
 	}
-	err = run(in, filepath.Join(dir, "res.json"), 0, nil)
+	err = run(in, filepath.Join(dir, "res.json"), overrides{}, nil)
 	if err == nil {
 		t.Fatal("an unknown race was accepted")
 	}
@@ -409,72 +409,6 @@ func TestTheResultIsStampedWithTheBinarysOwnEngine(t *testing.T) {
 // and a request that did not ask for one must keep the fast concurrent
 // path - so this pins the mapping by function identity rather than by
 // running two full sims and hoping a stray difference shows through.
-// Two engine paths send a FinalRaidResult and then return WITHOUT ever
-// closing the channel (see drainToResult's own comment): a failed
-// simsignals.RegisterWithId, and SimOptions.IsTest. Neither is
-// reachable through a real request today - IDs are always fresh and
-// IsTest is always false - so this drives drainToResult directly
-// through a channel the test controls and deliberately never closes,
-// which is exactly what would hang forever on a drain that did not
-// stop for an error result. A timeout is the backstop in case a
-// regression brings the hang back.
-func TestDrainToResultStopsOnAnErrorResultEvenIfTheChannelNeverCloses(t *testing.T) {
-	reporter := make(chan *proto.ProgressMetrics, 1)
-	want := &proto.RaidSimResult{Error: &proto.ErrorOutcome{Message: "could not register for signals"}}
-	reporter <- &proto.ProgressMetrics{FinalRaidResult: want}
-	// No close(reporter): the point of this test.
-
-	done := make(chan *proto.RaidSimResult, 1)
-	go func() { done <- drainToResult(reporter, nil) }()
-
-	select {
-	case got := <-done:
-		if got != want {
-			t.Errorf("drainToResult returned %+v, want the error result", got)
-		}
-	case <-time.After(2 * time.Second):
-		t.Fatal("drainToResult hung on an error result from a channel that never closed")
-	}
-}
-
-// The successful-run counterpart: draining still waits for the close
-// (and so still sees a mutation the producer makes after sending the
-// message) when the result carries no error.
-func TestDrainToResultWaitsForCloseOnASuccessfulResult(t *testing.T) {
-	reporter := make(chan *proto.ProgressMetrics, 2)
-	result := &proto.RaidSimResult{IterationsDone: 500}
-	reporter <- &proto.ProgressMetrics{FinalRaidResult: result}
-
-	done := make(chan *proto.RaidSimResult, 1)
-	go func() {
-		done <- drainToResult(reporter, nil)
-	}()
-
-	select {
-	case <-done:
-		t.Fatal("drainToResult returned before the channel closed; a producer's post-send mutation would not be visible")
-	case <-time.After(50 * time.Millisecond):
-		// Still waiting, as it should be.
-	}
-
-	// The producer's "post-send mutation" - the real bug this fixed was
-	// FinalRaidResult.SampleIteration getting attached to the same
-	// pointer after the message was already sent. This only has
-	// meaning because drainToResult has not returned yet - see the
-	// case above.
-	result.SampleIteration = &proto.SampleIteration{Dps: 42}
-	close(reporter)
-
-	select {
-	case got := <-done:
-		if got != result || got.GetSampleIteration().GetDps() != 42 {
-			t.Errorf("drainToResult returned %+v, want the mutated result", got)
-		}
-	case <-time.After(2 * time.Second):
-		t.Fatal("drainToResult did not return after the channel closed")
-	}
-}
-
 func TestEntryPointForChoosesTheSerialPathOnlyForASample(t *testing.T) {
 	if got, want := reflect.ValueOf(entryPointFor(true)).Pointer(), reflect.ValueOf(core.RunRaidSimAsync).Pointer(); got != want {
 		t.Error("a sample request did not choose the engine's single-threaded entry point")
@@ -521,6 +455,99 @@ func TestExecuteOmitsTheSampleWhenNoSampleIsSet(t *testing.T) {
 	}
 }
 
+// -no-sample is the batch callers' opt-out. The binary's own header
+// names the nightly validation job and the execution scorer, and each
+// runs thousands of sims whose cast log nobody reads; without a flag
+// their only way to decline was to write api.SimRequest.NoSample into
+// the JSON, which that field's own doc used to reserve for sim/bulk.
+// The override is one-way: it can take the sample off, never put one
+// on.
+func TestNoSampleOverrideOnlyEverTurnsTheSampleOff(t *testing.T) {
+	dir := t.TempDir()
+	in := filepath.Join(dir, "req.json")
+	if err := os.WriteFile(in, smallRequest(t), 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	plain, err := load(in, overrides{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if plain.NoSample {
+		t.Error("a request loaded without -no-sample opted out of the sample")
+	}
+	off, err := load(in, overrides{noSample: true})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !off.NoSample {
+		t.Error("-no-sample did not reach api.SimRequest.NoSample")
+	}
+
+	// A request that already opted out keeps its own answer whether the
+	// flag is given or not.
+	var req api.SimRequest
+	if err := json.Unmarshal(smallRequest(t), &req); err != nil {
+		t.Fatal(err)
+	}
+	req.NoSample = true
+	b, err := json.Marshal(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	optedOut := filepath.Join(dir, "no-sample.json")
+	if err := os.WriteFile(optedOut, b, 0o644); err != nil {
+		t.Fatal(err)
+	}
+	stillOff, err := load(optedOut, overrides{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !stillOff.NoSample {
+		t.Error("a request that opted out had the sample put back")
+	}
+}
+
+// End to end through the real flag set: the binary must accept
+// -no-sample and the SimResult it writes must carry no sample rows.
+// This is what pins the flag to the override - the unit test above
+// covers the override alone, and a flag nobody wired to it would still
+// pass that.
+func TestTheBinaryAcceptsNoSample(t *testing.T) {
+	bin := filepath.Join(t.TempDir(), "forever-sim")
+	build := exec.Command("go", "build", "-o", bin, ".")
+	if out, err := build.CombinedOutput(); err != nil {
+		t.Fatalf("go build: %v\n%s", err, out)
+	}
+	dir := t.TempDir()
+	in := filepath.Join(dir, "req.json")
+	if err := os.WriteFile(in, smallRequest(t), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	out := filepath.Join(dir, "res.json")
+	cmd := exec.Command(bin, "-in", in, "-out", out, "-iterations", "50", "-no-sample")
+	if b, err := cmd.CombinedOutput(); err != nil {
+		t.Fatalf("forever-sim -no-sample: %v\n%s", err, b)
+	}
+	b, err := os.ReadFile(out)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var res api.SimResult
+	if err := json.Unmarshal(b, &res); err != nil {
+		t.Fatal(err)
+	}
+	if res.Error != "" {
+		t.Fatalf("the run failed: %s", res.Error)
+	}
+	if len(res.Sample) != 0 {
+		t.Errorf("-no-sample still produced %d sample rows", len(res.Sample))
+	}
+	if !res.Request.NoSample {
+		t.Error("the echoed request does not record the opt-out")
+	}
+}
+
 // -version prints the pin the binary was compiled with. sim/enginever
 // used to be imported by no Go file at all: both mains declared
 // `var Version = "dev"` and relied on -ldflags, so a plain `go build`
@@ -557,7 +584,7 @@ func TestUnknownFieldsAreRefused(t *testing.T) {
 	if err := os.WriteFile(in, b, 0o644); err != nil {
 		t.Fatal(err)
 	}
-	err = run(in, filepath.Join(dir, "res.json"), 0, nil)
+	err = run(in, filepath.Join(dir, "res.json"), overrides{}, nil)
 	if err == nil {
 		t.Fatal("a request carrying an unknown field was accepted")
 	}
@@ -602,7 +629,7 @@ func TestAnAbortedRunIsWrittenAsAnAbort(t *testing.T) {
 	if err := os.WriteFile(in, b, 0o644); err != nil {
 		t.Fatal(err)
 	}
-	err = run(in, out, 0, nil)
+	err = run(in, out, overrides{}, nil)
 	<-done
 	if !errors.Is(err, adapter.ErrAborted) {
 		t.Fatalf("run returned %v, want adapter.ErrAborted", err)

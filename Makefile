@@ -33,6 +33,12 @@ ENGINE_DIR ?= /Users/jh/code/wowsims-forever
 # future reformat of either line needs a matching update here, which is why
 # each rewrite ends in a grep that fails loudly rather than silently leaving
 # the old sha in place.
+#
+# A MISSING file is an error, not a configuration: all three are tracked, so
+# the only way one is absent is a rename or a deletion nobody told this
+# target about, and skipping it silently is exactly how the pin drifted
+# before. The "no sha to replace" case is a different thing and stays a
+# skip: a fixture may legitimately carry an empty engine_version.
 engine-pin:
 	@test -d "$(ENGINE_DIR)/.git" || { echo "no engine checkout at $(ENGINE_DIR); set ENGINE_DIR"; exit 1; }
 	@if [ -n "$$(git -C "$(ENGINE_DIR)" status --porcelain)" ]; then \
@@ -46,15 +52,18 @@ engine-pin:
 	  echo "engine-pin: sim/enginever/version.go still contains a literal percent sign - the printf substitution failed"; exit 1; \
 	fi; \
 	web_version=web/src/lib/sim/version.ts; \
-	if [ -f "$$web_version" ]; then \
-	  sed -i.bak -E "s/(export const ENGINE_VERSION = ')[0-9a-f]{7,12}(';)/\\1$$sha\\2/" "$$web_version"; \
-	  rm -f "$$web_version.bak"; \
-	  if ! grep -q "export const ENGINE_VERSION = '$$sha';" "$$web_version"; then \
-	    echo "engine-pin: failed to rewrite ENGINE_VERSION in $$web_version"; exit 1; \
-	  fi; \
+	if [ ! -f "$$web_version" ]; then \
+	  echo "engine-pin: $$web_version is missing; it is a tracked file and one of the places the pin lives"; exit 1; \
+	fi; \
+	sed -i.bak -E "s/(export const ENGINE_VERSION = ')[0-9a-f]{7,12}(';)/\\1$$sha\\2/" "$$web_version"; \
+	rm -f "$$web_version.bak"; \
+	if ! grep -q "export const ENGINE_VERSION = '$$sha';" "$$web_version"; then \
+	  echo "engine-pin: failed to rewrite ENGINE_VERSION in $$web_version"; exit 1; \
 	fi; \
 	for fixture in web/src/fixtures/sim/result.json web/src/fixtures/sim/specs.json; do \
-	  [ -f "$$fixture" ] || continue; \
+	  if [ ! -f "$$fixture" ]; then \
+	    echo "engine-pin: $$fixture is missing; it is a tracked file and one of the places the pin lives"; exit 1; \
+	  fi; \
 	  grep -qE '"engine_version": "(sim:)?[0-9a-f]{7,12}"' "$$fixture" || continue; \
 	  sed -i.bak -E "s/(\"engine_version\": \"(sim:)?)[0-9a-f]{7,12}(\")/\\1$$sha\\3/g" "$$fixture"; \
 	  rm -f "$$fixture.bak"; \

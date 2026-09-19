@@ -33,6 +33,7 @@ import (
 	"github.com/jhunthrop/foreversixty/sim/combine"
 	"github.com/jhunthrop/foreversixty/sim/enginever"
 	"github.com/jhunthrop/foreversixty/sim/internal/simdb"
+	"github.com/jhunthrop/foreversixty/sim/internal/simdrain"
 	"github.com/jhunthrop/foreversixty/sim/request"
 	engine "github.com/wowsims/classic/sim"
 	"github.com/wowsims/classic/sim/core"
@@ -143,36 +144,28 @@ func simRun(_ js.Value, args []js.Value) any {
 	// gives each worker one part.
 	core.RunRaidSimAsync(engineReq, reporter, callbackID)
 
-	var engineRes *proto.RaidSimResult
-	for p := range reporter {
-		if p.FinalRaidResult != nil {
-			// Not a bare break: see the matching comment in
-			// sim/cmd/forever-sim's execute for the full reasoning.
-			// Short version: draining to the channel's close (instead
-			// of breaking the instant a FinalRaidResult arrives) is
-			// what makes a sample request's SampleIteration mutation
-			// guaranteed-visible, but two engine paths send a
-			// FinalRaidResult and then return WITHOUT ever closing the
-			// channel - a failed simsignals.RegisterWithId, and
-			// SimOptions.IsTest (which this package's requests never
-			// set). Neither carries a sample, so an error result is
-			// still safe to take immediately rather than block
-			// forever waiting for a close that will not come.
-			engineRes = p.FinalRaidResult
-			if engineRes.Error != nil {
-				break
-			}
-			continue
+	// The drain loop is sim/internal/simdrain's, shared with
+	// sim/cmd/forever-sim and tested there: draining to the channel's
+	// close (rather than breaking the instant a FinalRaidResult
+	// arrives) is what makes a sample request's SampleIteration
+	// mutation guaranteed-visible, and stopping on an error result is
+	// what keeps a worker from wedging on a close that never comes.
+	// ToResult carries the whole argument; this lane supplies only the
+	// progress sink.
+	engineRes := simdrain.ToResult(reporter, func(p *proto.ProgressMetrics) {
+		cb := js.Global().Get("simProgress")
+		if cb.Type() != js.TypeFunction {
+			return
 		}
-		if cb := js.Global().Get("simProgress"); cb.Type() == js.TypeFunction {
-			if b, err := json.Marshal(api.Progress{
-				IterationsRun: int(p.CompletedIterations),
-				DPS:           api.Estimate{Mean: p.Dps},
-			}); err == nil {
-				cb.Invoke(callbackID, string(b))
-			}
+		b, err := json.Marshal(api.Progress{
+			IterationsRun: int(p.CompletedIterations),
+			DPS:           api.Estimate{Mean: p.Dps},
+		})
+		if err != nil {
+			return
 		}
-	}
+		cb.Invoke(callbackID, string(b))
+	})
 	if engineRes == nil {
 		return fail(req, "the engine produced no result")
 	}
