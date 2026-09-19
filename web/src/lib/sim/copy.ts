@@ -702,6 +702,13 @@ export const bulkCopy = {
   bulkFailed: 'The engine could not run these combinations.',
   lootFailed: 'The loot tables could not be read.',
   enchantsFailed: 'The enchant list could not be read.',
+  /**
+   * `api.ts`'s `fetchPhases` fallback message. Never actually shown: `phase.ts`'s own
+   * `fetchPhases` catches every failure and falls back to `BUILT_IN_PHASES` instead of
+   * surfacing an error, so the gate always has an answer -- but `call()` still needs a
+   * string for the error it swallows, and that string lives here like every other one.
+   */
+  phasesFailed: 'The phase table could not be read.',
   needCharacter: 'Load a character first.',
   needAddonForBags: 'Paste your addon export to see your bags and bank here.',
 } as const;

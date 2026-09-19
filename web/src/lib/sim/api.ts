@@ -14,8 +14,9 @@
 import { AccountError, requestEnvelope } from '../account/api';
 import type { CharacterPath } from '../characters';
 import { API_BASE_URL } from '../planner/config';
-import { simCopy } from './copy';
+import { bulkCopy, simCopy } from './copy';
 import type { KindFilter } from './history';
+import type { PhaseRow } from './phase';
 import type { SimInput, SimListPage, SimProgress, SimRequest, SimResult, SpecFidelity } from './types';
 
 export const PREMIUM_REQUIRED_STATUS = 402;
@@ -131,4 +132,17 @@ export async function fetchSpecs(apiBase: string = API_BASE_URL): Promise<SpecFi
 export function fetchSimInput(path: CharacterPath, apiBase: string = API_BASE_URL): Promise<SimInput> {
   const segments = [path.region, path.ruleset, path.slug].map(encodeURIComponent).join('/');
   return call<SimInput>(`/v1/characters/${segments}/sim-input`, apiBase, simCopy.characterFailed);
+}
+
+/**
+ * The content phase table (contract 10.6), straight off the wire. `phase.ts`'s own
+ * `fetchPhases` is the single call site: it wraps this in `BUILT_IN_PHASES`, the build-time
+ * fallback, so the gate always has an answer even when this call fails. No other module
+ * should call this directly -- read the phase table through `phase.ts` instead.
+ */
+export async function fetchPhases(apiBase: string = API_BASE_URL): Promise<PhaseRow[]> {
+  const data = await call<{ phases: PhaseRow[] }>('/v1/phases', apiBase, bulkCopy.phasesFailed, {
+    credentials: 'omit',
+  });
+  return data.phases;
 }
