@@ -57,6 +57,64 @@ func TestABrowserResultIsSavedAndReadBack(t *testing.T) {
 	}
 }
 
+// TestASaveAcceptsAResultFromAnOlderEngineAndReadsBackStale pins
+// HIGH-4: saving is not running, so a browser result naming an engine
+// build behind the deployment's pin is stored, not refused - the
+// member does not lose the sim they just ran to a stale WASM bundle.
+// It reads back through SimResult.Stale, the contract's own answer.
+func TestASaveAcceptsAResultFromAnOlderEngineAndReadsBackStale(t *testing.T) {
+	h := newHarness(t)
+	res := browserResult("warrior-fury", 1000)
+	res.EngineVersion, res.Request.EngineVersion = "anoldbuild", "anoldbuild"
+	body, err := json.Marshal(struct {
+		simapi.SimResult
+		Title string `json:"title"`
+	}{res, "an old build"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	out := struct {
+		SimID string `json:"sim_id"`
+	}{}
+	res2 := h.json(http.MethodPost, "/v1/sims", string(body))
+	if res2.StatusCode != http.StatusCreated {
+		t.Fatalf("status %d, want 201: a result from an older engine build must be saved, not refused", res2.StatusCode)
+	}
+	h.data(res2, &out)
+	if out.SimID == "" {
+		t.Fatal("no sim id came back")
+	}
+	var got simapi.SimResult
+	h.data(h.do(http.MethodGet, "/v1/sims/"+out.SimID, "", nil), &got)
+	if got.EngineVersion != "anoldbuild" || !got.Stale(testEngine) {
+		t.Errorf("engine_version %q did not read back stale against the pin %q", got.EngineVersion, testEngine)
+	}
+}
+
+// TestASaveRefusesAnAbortedResult pins the other half of HIGH-4's
+// ruling: ValidateSaved relaxes the engine-version check but still
+// refuses a partial run. The browser only ever posts a finished
+// result, so an aborted one reaching this route is malformed.
+func TestASaveRefusesAnAbortedResult(t *testing.T) {
+	h := newHarness(t)
+	res := browserResult("warrior-fury", 1000)
+	res.Aborted = true
+	body, err := json.Marshal(struct {
+		simapi.SimResult
+		Title string `json:"title"`
+	}{res, ""})
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := h.json(http.MethodPost, "/v1/sims", string(body))
+	if got.StatusCode != http.StatusBadRequest {
+		t.Fatalf("status %d, want 400", got.StatusCode)
+	}
+	if code := h.errorCode(got); code != "invalid" {
+		t.Fatalf("code %q", code)
+	}
+}
+
 func TestAnUnknownSimIs404(t *testing.T) {
 	h := newHarness(t)
 	res := h.do(http.MethodGet, "/v1/sims/zzzzzzzzzzzz", "", nil)

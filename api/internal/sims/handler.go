@@ -67,11 +67,19 @@ func Mount(mux *http.ServeMux, s *Service) {
 	}
 }
 
-func (s *Service) logger() *slog.Logger {
-	if s.Log != nil {
-		return s.Log
+// loggerOr returns l, or the package's shared default when l is nil.
+// Every deps struct in this package that carries an optional
+// *slog.Logger falls back the same way; this is the one place that
+// says so.
+func loggerOr(l *slog.Logger) *slog.Logger {
+	if l != nil {
+		return l
 	}
 	return slog.Default()
+}
+
+func (s *Service) logger() *slog.Logger {
+	return loggerOr(s.Log)
 }
 
 func (s *Service) fail(w http.ResponseWriter, r *http.Request, op string, err error, message string) {
@@ -103,7 +111,11 @@ func (s *Service) save(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	in.Request.Encounter = withEncounterDefaults(in.Request.Encounter)
-	if err := in.Request.Validate(); err != nil {
+	// A save is not a run: the engine that produced this result need
+	// not be this deployment's pin (ValidateSaved, not Validate) - a
+	// member's cached browser bundle can be a build behind without
+	// losing the sim they just ran.
+	if err := in.ValidateSaved(); err != nil {
 		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", err.Error(), nil)
 		return
 	}
