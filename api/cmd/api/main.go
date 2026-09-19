@@ -270,8 +270,14 @@ func serve(log *slog.Logger) error {
 
 	buildStore := &builds.Store{Pool: pool, Log: log}
 	views := builds.NewViews(buildStore, log)
+	// Built here, ahead of siteDeps, so the shared build page can find
+	// a build's simmed DPS for its card description; simStore is
+	// reused below for the sim service and scorer, which need the
+	// same pool.
+	simStore := &sims.Store{Pool: pool}
 	siteDeps := &site.Deps{
-		Store: buildStore, Data: treeData, PublicBaseURL: cfg.PublicBaseURL, Views: views, Log: log,
+		Store: buildStore, Data: treeData, PublicBaseURL: cfg.PublicBaseURL, Views: views,
+		Sims: simStore, Log: log,
 	}
 	buildsSvc := &builds.Service{
 		Store: buildStore, Data: treeData, PublicBaseURL: cfg.PublicBaseURL, Log: log,
@@ -317,7 +323,6 @@ func serve(log *slog.Logger) error {
 		TrustedProxyHops: cfg.TrustedProxyHops,
 	}
 
-	simStore := &sims.Store{Pool: pool}
 	deps.Sims = &sims.Service{
 		Store: simStore, Accounts: authStore, EngineVersion: enginever.Version, Log: log,
 	}

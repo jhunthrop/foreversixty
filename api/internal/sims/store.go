@@ -128,6 +128,46 @@ func (s *Store) Get(ctx context.Context, id string) (simapi.SimResult, error) {
 	return out, nil
 }
 
+// ForBuild answers the newest done sim run against a build: the row
+// whose stored request names buildID as its "build" source. This is
+// how the build's shared card and unfurl page find what a build
+// simmed to, once the planner has posted one. ok is false when the
+// build has never been simmed, or only a queued or errored run
+// exists for it.
+//
+// The filter walks the stored result's JSON with a path expression
+// (result -> 'request' -> 'source' ->> 'kind'/'ref') rather than a
+// generated column and index: EXPLAIN ANALYZE against 200k synthetic
+// rows still answers in about 15ms, and this query only ever runs
+// behind the build card's week-long cache, never on a hot path. See
+// the task report for the full measurement.
+func (s *Store) ForBuild(ctx context.Context, buildID string) (simapi.SimResult, bool, error) {
+	var (
+		id   string
+		body []byte
+	)
+	err := s.Pool.QueryRow(ctx,
+		`select id, result from sims
+		 where state = $1
+		   and result -> 'request' -> 'source' ->> 'kind' = $2
+		   and result -> 'request' -> 'source' ->> 'ref' = $3
+		 order by created_at desc
+		 limit 1`,
+		StateDone, simapi.SourceBuild, buildID).Scan(&id, &body)
+	if isNoRows(err) {
+		return simapi.SimResult{}, false, nil
+	}
+	if err != nil {
+		return simapi.SimResult{}, false, fmt.Errorf("sims: for build %s: %w", buildID, err)
+	}
+	var out simapi.SimResult
+	if err := json.Unmarshal(body, &out); err != nil {
+		return simapi.SimResult{}, false, fmt.Errorf("sims: decode for build %s: %w", buildID, err)
+	}
+	out.SimID = id
+	return out, true, nil
+}
+
 // Mine answers one page of a user's own sims, newest first.
 func (s *Store) Mine(ctx context.Context, userID int64, page int) (Page, error) {
 	if page < 1 {

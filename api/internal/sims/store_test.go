@@ -240,6 +240,70 @@ func TestSavingTheSameIdTwiceKeepsTheFirst(t *testing.T) {
 	}
 }
 
+// buildResult is a plausible finished sim whose source names a build,
+// for ForBuild's tests.
+func buildResult(buildID string, mean float64) simapi.SimResult {
+	r := browserResult("warrior-arms", mean)
+	r.Request.Source = simapi.CharacterSource{Kind: simapi.SourceBuild, Ref: buildID}
+	return r
+}
+
+func TestForBuildFindsTheNewestDoneSimForThatBuild(t *testing.T) {
+	h := newHarness(t)
+	if err := h.store.Save(t.Context(), "aaaaaaaaaaaa", &h.owner, "",
+		buildResult("znorjmts", 900)); err != nil {
+		t.Fatal(err)
+	}
+	if err := h.store.Save(t.Context(), "bbbbbbbbbbbb", &h.owner, "",
+		buildResult("znorjmts", 1500)); err != nil {
+		t.Fatal(err)
+	}
+	got, ok, err := h.store.ForBuild(t.Context(), "znorjmts")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !ok {
+		t.Fatal("ok = false, want a sim for this build")
+	}
+	if got.SimID != "bbbbbbbbbbbb" || got.DPS.Mean != 1500 {
+		t.Fatalf("got = %+v, want the newest save (1500)", got)
+	}
+}
+
+func TestForBuildIgnoresAnotherBuildsRefAndANonBuildSource(t *testing.T) {
+	h := newHarness(t)
+	if err := h.store.Save(t.Context(), "aaaaaaaaaaaa", &h.owner, "",
+		buildResult("otherbuild", 900)); err != nil {
+		t.Fatal(err)
+	}
+	if err := h.store.Save(t.Context(), "bbbbbbbbbbbb", &h.owner, "",
+		browserResult("warrior-fury", 1000)); err != nil {
+		t.Fatal(err)
+	}
+	_, ok, err := h.store.ForBuild(t.Context(), "znorjmts")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if ok {
+		t.Fatal("ForBuild found a sim for a build it was never run against")
+	}
+}
+
+func TestForBuildIgnoresASimThatIsNotDoneYet(t *testing.T) {
+	h := newHarness(t)
+	req := buildResult("znorjmts", 0).Request
+	if err := h.store.Queue(t.Context(), "cccccccccccc", h.owner, req); err != nil {
+		t.Fatal(err)
+	}
+	_, ok, err := h.store.ForBuild(t.Context(), "znorjmts")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if ok {
+		t.Fatal("ForBuild found a queued sim, which has not finished")
+	}
+}
+
 func TestTheResultKeyIsLaidOutLikeAReports(t *testing.T) {
 	if got := (Keys{SimID: "aaaaaaaaaaaa"}).Result(); got != "sims/aaaaaaaaaaaa/result.json" {
 		t.Errorf("result key %q", got)
