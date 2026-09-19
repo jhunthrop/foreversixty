@@ -38,9 +38,16 @@ type Store struct{ Pool *pgxpool.Pool }
 
 // Row is one line of the caller's own sim history.
 type Row struct {
-	SimID         string    `json:"sim_id"`
-	Spec          string    `json:"spec"`
-	DPS           float64   `json:"dps"`
+	SimID string `json:"sim_id"`
+	Spec  string `json:"spec"`
+	// Kind is which tool produced this row: run, gear, talents, drops
+	// or weights (contract 1.1).
+	Kind string  `json:"kind"`
+	DPS  float64 `json:"dps"`
+	// Headline is the one line the list shows, composed by Headline at
+	// write time and stored, because composing it on read would mean
+	// detoasting the whole result blob for every row on the page.
+	Headline      string    `json:"headline"`
 	EngineVersion string    `json:"engine_version"`
 	CreatedAt     time.Time `json:"created_at"`
 	Title         string    `json:"title"`
@@ -76,12 +83,12 @@ func (s *Store) Save(ctx context.Context, id string, userID *int64, title string
 		t = &title
 	}
 	_, err = s.Pool.Exec(ctx,
-		`insert into sims (id, user_id, spec, kind, engine_version, lane, dps_mean, dps_error,
-		   iterations, title, result, state)
-		 values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+		`insert into sims (id, user_id, spec, kind, headline, engine_version, lane,
+		   dps_mean, dps_error, iterations, title, result, state)
+		 values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
 		 on conflict (id) do nothing`,
-		id, userID, res.Request.Spec, res.Request.Kind(), res.EngineVersion, res.Lane,
-		res.DPS.Mean, res.DPS.Error, res.IterationsRun, t, body, StateDone)
+		id, userID, res.Request.Spec, res.Request.Kind(), Headline(res), res.EngineVersion,
+		res.Lane, res.DPS.Mean, res.DPS.Error, res.IterationsRun, t, body, StateDone)
 	if err != nil {
 		return fmt.Errorf("sims: save %s: %w", id, err)
 	}
@@ -169,28 +176,44 @@ func (s *Store) ForBuild(ctx context.Context, buildID string) (simapi.SimResult,
 	return out, true, nil
 }
 
-// Mine answers one page of a user's own sims, newest first.
-func (s *Store) Mine(ctx context.Context, userID int64, page int) (Page, error) {
+// Mine answers one page of a user's own sims, newest first. kind, when
+// set, is one of simapi.Kinds and narrows the list to that tool; "" is
+// every kind. The caller validates it — an unknown kind reaching here
+// would simply return nothing, which reads as "you have none" rather
+// than as the typo it is.
+func (s *Store) Mine(ctx context.Context, userID int64, page int, kind string) (Page, error) {
 	if page < 1 {
 		page = 1
 	}
 	out := Page{Rows: []Row{}, Page: page, PerPage: PerPage}
+	// One predicate, two queries: the count and the page must agree, and
+	// a literal `$2 = '' or kind = $2` would make the planner ignore
+	// sims_user_kind_idx for the filtered case, which is the case the
+	// index exists for.
+	where, args := "user_id = $1", []any{userID}
+	if kind != "" {
+		where += " and kind = $2"
+		args = append(args, kind)
+	}
 	if err := s.Pool.QueryRow(ctx,
-		`select count(*) from sims where user_id = $1`, userID).Scan(&out.Total); err != nil {
+		`select count(*) from sims where `+where, args...).Scan(&out.Total); err != nil {
 		return Page{}, fmt.Errorf("sims: count: %w", err)
 	}
 	rows, err := s.Pool.Query(ctx,
-		`select id, spec, dps_mean, engine_version, created_at, coalesce(title, '')
-		 from sims where user_id = $1
-		 order by created_at desc, id limit $2 offset $3`,
-		userID, PerPage, (page-1)*PerPage)
+		`select id, spec, kind, dps_mean, headline, engine_version, created_at,
+		        coalesce(title, '')
+		 from sims where `+where+
+			fmt.Sprintf(" order by created_at desc, id limit $%d offset $%d",
+				len(args)+1, len(args)+2),
+		append(args, PerPage, (page-1)*PerPage)...)
 	if err != nil {
 		return Page{}, fmt.Errorf("sims: list: %w", err)
 	}
 	defer rows.Close()
 	for rows.Next() {
 		var r Row
-		if err := rows.Scan(&r.SimID, &r.Spec, &r.DPS, &r.EngineVersion, &r.CreatedAt, &r.Title); err != nil {
+		if err := rows.Scan(&r.SimID, &r.Spec, &r.Kind, &r.DPS, &r.Headline,
+			&r.EngineVersion, &r.CreatedAt, &r.Title); err != nil {
 			return Page{}, fmt.Errorf("sims: scan: %w", err)
 		}
 		out.Rows = append(out.Rows, r)
@@ -251,8 +274,9 @@ func (s *Store) Finish(ctx context.Context, id string, res simapi.SimResult) err
 	}
 	_, err = s.Pool.Exec(ctx,
 		`update sims set engine_version = $2, dps_mean = $3, dps_error = $4,
-		   iterations = $5, result = $6, state = $7 where id = $1`,
-		id, res.EngineVersion, res.DPS.Mean, res.DPS.Error, res.IterationsRun, body, state)
+		   iterations = $5, result = $6, state = $7, headline = $8 where id = $1`,
+		id, res.EngineVersion, res.DPS.Mean, res.DPS.Error, res.IterationsRun, body, state,
+		Headline(res))
 	if err != nil {
 		return fmt.Errorf("sims: finish %s: %w", id, err)
 	}

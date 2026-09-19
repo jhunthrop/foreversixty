@@ -54,7 +54,7 @@ func TestMyHistoryIsMineAndNewestFirst(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	page, err := h.store.Mine(t.Context(), h.owner, 1)
+	page, err := h.store.Mine(t.Context(), h.owner, 1, "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -282,6 +282,97 @@ func TestEveryRowRecordsWhichToolProducedIt(t *testing.T) {
 		if got != c.want {
 			t.Errorf("%s: kind %q, want %q", c.id, got, c.want)
 		}
+	}
+}
+
+func TestMyHistoryCarriesTheKindAndHeadlineAndFiltersByKind(t *testing.T) {
+	h := newHarness(t)
+	plain := browserResult("warrior-fury", 1204.4)
+	if err := h.store.Save(t.Context(), "aaaaaaaaaaaa", &h.owner, "", plain); err != nil {
+		t.Fatal(err)
+	}
+	gear := browserResult("warrior-fury", 1204.4)
+	gear.Request.Bulk = &simapi.BulkSpec{Mode: simapi.KindGear, Precision: simapi.PrecisionNormal}
+	gear.Combos = []simapi.Combo{{
+		Substitutions: []simapi.Substitution{
+			{Kind: "item", ItemID: 17182, Name: "Vis'kag the Bloodletter", Origin: "bag"},
+		},
+		Delta: simapi.Estimate{Mean: 41.2},
+	}}
+	if err := h.store.Save(t.Context(), "bbbbbbbbbbbb", &h.owner, "", gear); err != nil {
+		t.Fatal(err)
+	}
+
+	all, err := h.store.Mine(t.Context(), h.owner, 1, "")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if all.Total != 2 {
+		t.Fatalf("total %d, want both kinds", all.Total)
+	}
+	byID := map[string]Row{}
+	for _, r := range all.Rows {
+		byID[r.SimID] = r
+	}
+	if got := byID["aaaaaaaaaaaa"]; got.Kind != simapi.KindRun || got.Headline != "1,204 DPS" {
+		t.Errorf("plain row: %+v", got)
+	}
+	if got := byID["bbbbbbbbbbbb"]; got.Kind != simapi.KindGear ||
+		got.Headline != "+41 DPS from Vis'kag the Bloodletter" {
+		t.Errorf("gear row: %+v", got)
+	}
+
+	only, err := h.store.Mine(t.Context(), h.owner, 1, simapi.KindGear)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if only.Total != 1 || len(only.Rows) != 1 || only.Rows[0].SimID != "bbbbbbbbbbbb" {
+		t.Fatalf("filtered: total %d rows %+v", only.Total, only.Rows)
+	}
+
+	none, err := h.store.Mine(t.Context(), h.owner, 1, simapi.KindDrops)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if none.Total != 0 || len(none.Rows) != 0 {
+		t.Fatalf("a kind with no rows: total %d rows %+v", none.Total, none.Rows)
+	}
+}
+
+func TestAServerRunsHeadlineIsWrittenWhenItFinishes(t *testing.T) {
+	h := newHarness(t)
+	req := browserResult("warrior-fury", 0).Request
+	req.Weights = &simapi.WeightsSpec{
+		// crit, not melee_crit: contract 10.8 carries one hit and one
+		// crit, not the lane-split melee/spell pairs.
+		Stats: []string{"crit", "agility"}, Reference: "crit",
+	}
+	if err := h.store.Queue(t.Context(), "cccccccccccc", h.owner, req); err != nil {
+		t.Fatal(err)
+	}
+	// A queued run has nothing to say yet.
+	queued, err := h.store.Mine(t.Context(), h.owner, 1, simapi.KindWeights)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(queued.Rows) != 1 || queued.Rows[0].Headline != "" {
+		t.Fatalf("queued row: %+v", queued.Rows)
+	}
+
+	done := browserResult("warrior-fury", 1000)
+	done.Lane, done.Request = simapi.LaneServer, req
+	done.Weights = []simapi.StatWeight{
+		{Stat: "crit", Weight: 1}, {Stat: "agility", Weight: 0.874},
+	}
+	if err := h.store.Finish(t.Context(), "cccccccccccc", done); err != nil {
+		t.Fatal(err)
+	}
+	finished, err := h.store.Mine(t.Context(), h.owner, 1, simapi.KindWeights)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(finished.Rows) != 1 || finished.Rows[0].Headline != "Crit 1.00 · Agility 0.87" {
+		t.Fatalf("finished row: %+v", finished.Rows)
 	}
 }
 

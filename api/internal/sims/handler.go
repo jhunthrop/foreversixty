@@ -167,7 +167,7 @@ func (s *Service) mine(w http.ResponseWriter, r *http.Request) {
 		}
 		page = n
 	}
-	out, err := s.Store.Mine(r.Context(), auth.ActorFrom(r.Context()).UserID, page)
+	out, err := s.Store.Mine(r.Context(), auth.ActorFrom(r.Context()).UserID, page, "")
 	if err != nil {
 		s.fail(w, r, "mine", err, "could not read your sims just now")
 		return
