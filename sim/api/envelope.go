@@ -18,8 +18,10 @@ import (
 	"errors"
 	"fmt"
 	"slices"
+	"strings"
 
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
+	"github.com/jhunthrop/foreversixty/sim/enginever"
 )
 
 // The five character sources.
@@ -29,6 +31,24 @@ const (
 	SourceBuild  = "build"
 	SourceFight  = "fight"
 	SourceManual = "manual"
+)
+
+// Sources is the closed set Validate checks CharacterSource.Kind
+// against. Declaring the constants without ever comparing to them let a
+// typo through as a stored row nothing could ever join on.
+var Sources = []string{SourceArmory, SourceAddon, SourceBuild, SourceFight, SourceManual}
+
+// The encounter profiles the contract names.
+//
+// ProfilePatchwerk is a stationary target that does nothing but be hit,
+// which is exactly what the sim already builds, so it and the empty
+// string are the same fight. ProfileEncounterPrefix names a curated
+// encounter; nothing simulates one yet - there is no zone-to-biome
+// table and no mechanics model - so it is refused at the boundary
+// rather than run as a patchwerk under an encounter's name.
+const (
+	ProfilePatchwerk       = "patchwerk"
+	ProfileEncounterPrefix = "encounter:"
 )
 
 // The two compute lanes.
@@ -64,8 +84,12 @@ const (
 // keeps that refusal at the request rather than at the worker.
 const SimLevel = 60
 
-// MaxLevel is Forever's level cap, which is the same number.
-const MaxLevel = SimLevel
+// BossLevel is the level of every target a sim fights: three above the
+// player, which is what the attack table's suppression terms are
+// derived against. sim/request builds the encounter at this level and
+// sim/measure refuses to fit a boss-level attack table from a log that
+// never saw one, so the two have to be the same number.
+const BossLevel = SimLevel + 3
 
 type SimRequest struct {
 	EngineVersion string          `json:"engine_version"`
@@ -146,8 +170,19 @@ func (r SimRequest) ValidatePart() error {
 // count must be one the settings bar offers.
 func (r SimRequest) validate(closedSet bool) error {
 	var errs []error
-	if r.EngineVersion == "" {
+	switch {
+	case r.EngineVersion == "":
 		errs = append(errs, errors.New("engine_version is required"))
+	case r.EngineVersion != enginever.Version:
+		// One string identifies the engine build everywhere, and this
+		// binary is one build. A request naming another cannot be
+		// answered here: the talents, the item rows and the spell
+		// constants all belong to the pinned sha, so running it anyway
+		// would produce a row stamped with a version that did not
+		// produce it. A stored result from an older engine is still
+		// readable and is labelled stale; re-running it is a new
+		// request, restamped by whoever asks.
+		errs = append(errs, fmt.Errorf("engine_version is %q, but this build is %q; a result is never produced by an engine other than the one it names", r.EngineVersion, enginever.Version))
 	}
 	if r.Spec == "" {
 		errs = append(errs, errors.New("spec is required"))
@@ -170,6 +205,12 @@ func (r SimRequest) validate(closedSet bool) error {
 	if r.Encounter.ExecuteRatio < 0 || r.Encounter.ExecuteRatio > 1 {
 		errs = append(errs, fmt.Errorf("execute_ratio must be between 0 and 1, got %v", r.Encounter.ExecuteRatio))
 	}
+	if !slices.Contains(Sources, r.Source.Kind) {
+		errs = append(errs, fmt.Errorf("source.kind must be one of %v, got %q", Sources, r.Source.Kind))
+	}
+	if err := validateProfile(r.Encounter.Profile); err != nil {
+		errs = append(errs, err)
+	}
 	if r.Character.Class == "" {
 		errs = append(errs, errors.New("character.class is required"))
 	}
@@ -180,6 +221,23 @@ func (r SimRequest) validate(closedSet bool) error {
 		errs = append(errs, fmt.Errorf("character.level must be %d, got %d; the engine simulates no other level", SimLevel, r.Character.Level))
 	}
 	return errors.Join(errs...)
+}
+
+// validateProfile refuses a profile the sim would otherwise accept and
+// then ignore. "" and "patchwerk" are the fight it builds; an
+// "encounter:<id>" is not, and nothing else is in the vocabulary.
+func validateProfile(profile string) error {
+	switch {
+	case profile == "" || profile == ProfilePatchwerk:
+		return nil
+	case strings.HasPrefix(profile, ProfileEncounterPrefix):
+		if id := strings.TrimPrefix(profile, ProfileEncounterPrefix); id == "" {
+			return fmt.Errorf("encounter.profile %q names no encounter", profile)
+		}
+		return fmt.Errorf("encounter.profile %q is not simulated yet: there is no encounter table, so the run would be a patchwerk reported under an encounter's name", profile)
+	default:
+		return fmt.Errorf("encounter.profile must be %q, %q or %q<id>, got %q", "", ProfilePatchwerk, ProfileEncounterPrefix, profile)
+	}
 }
 
 type SimResult struct {
@@ -195,6 +253,13 @@ type SimResult struct {
 	DurationMS    int64           `json:"duration_ms"`
 	Summary       summary.Summary `json:"summary"`
 	Error         string          `json:"error,omitempty"`
+	// Aborted says the run was stopped on request rather than failing.
+	// It is not an error: the user pressed Stop, IterationsRun is
+	// whatever completed, and the page says "stopped" rather than
+	// "something went wrong". The engine reports an abort as an
+	// ErrorOutcome with an EMPTY message, so a lane that only looked at
+	// Error reported it as a corrupt result.
+	Aborted bool `json:"aborted,omitempty"`
 }
 
 // Progress is what the browser's simRun progress callback carries:

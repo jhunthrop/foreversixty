@@ -28,7 +28,12 @@ var slotOrder = []string{
 // SlotCount is how many slots an EquipmentSpec always carries. Unfilled
 // slots are present and empty, because the engine indexes the array
 // rather than searching it.
-var SlotCount = len(slotOrder)
+//
+// It is a constant, not a var over len(slotOrder): an exported var is a
+// number any importer can assign to, and a shortened equipment array
+// reaches the engine as an index out of range.
+// TestSlotOrderMatchesTheEngineEnum holds it to the table.
+const SlotCount = 17
 
 var slotIndex = func() map[string]int {
 	m := make(map[string]int, len(slotOrder))

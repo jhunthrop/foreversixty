@@ -29,6 +29,7 @@ import (
 	"strings"
 
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
+	"github.com/jhunthrop/foreversixty/sim/internal/strcase"
 	"github.com/wowsims/classic/sim/core/proto"
 )
 
@@ -44,7 +45,7 @@ const (
 	// syntheticBase is the first id the adapter allocates for itself.
 	// Client spell ids are below it.
 	syntheticBase = 2_000_000
-	// kindStride is the width of one kind's block: five times the
+	// kindStride is the width of one kind's block: ten times the
 	// largest id a client carries.
 	kindStride = 10_000_000
 	// variantStride is the width of one (tag, rank) variant: the whole
@@ -127,24 +128,7 @@ func otherActionName(id proto.OtherAction) string {
 	if !ok {
 		return fmt.Sprintf("%d", int32(id))
 	}
-	return snake(strings.TrimPrefix(name, "OtherAction"))
-}
-
-// snake turns an upper-camel protobuf name into lower snake case.
-func snake(name string) string {
-	var b strings.Builder
-	b.Grow(len(name) + 4)
-	for i, r := range name {
-		if r >= 'A' && r <= 'Z' {
-			if i > 0 {
-				b.WriteByte('_')
-			}
-			b.WriteRune(r + ('a' - 'A'))
-			continue
-		}
-		b.WriteRune(r)
-	}
-	return b.String()
+	return strcase.Snake(strings.TrimPrefix(name, "OtherAction"))
 }
 
 // rowKey is one summary row's identity, as the logs engine's own maps

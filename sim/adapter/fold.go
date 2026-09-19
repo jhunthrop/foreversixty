@@ -12,7 +12,11 @@ package adapter
 // have, so identical rows are added together here instead, which is
 // exactly what the logs engine does with two events of one spell.
 
-import "github.com/jhunthrop/foreversixty/logs/engine/summary"
+import (
+	"slices"
+
+	"github.com/jhunthrop/foreversixty/logs/engine/summary"
+)
 
 // foldAbilities adds together the rows of one actor that share a spell
 // id and a pet, keeping first-seen order.
@@ -97,19 +101,10 @@ func foldAuras(rows []summary.AuraTrack) []summary.AuraTrack {
 			dst.MaxStacks = r.MaxStacks
 		}
 		for _, name := range r.Appliers {
-			if !contains(dst.Appliers, name) {
+			if !slices.Contains(dst.Appliers, name) {
 				dst.Appliers = append(dst.Appliers, name)
 			}
 		}
 	}
 	return out
-}
-
-func contains(list []string, want string) bool {
-	for _, s := range list {
-		if s == want {
-			return true
-		}
-	}
-	return false
 }

@@ -19,8 +19,8 @@ import (
 	"sort"
 	"strconv"
 	"strings"
-	"unicode"
 
+	"github.com/jhunthrop/foreversixty/sim/internal/strcase"
 	"github.com/wowsims/classic/sim/core/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
@@ -227,11 +227,11 @@ func consumeFields(desc protoreflect.MessageDescriptor, field, value string) []c
 // and the item they are named after does not, so both the full name and
 // the name without that prefix answer to the id.
 func namesValue(valueName, enumName, id string) bool {
-	if snake(valueName) == id {
+	if strcase.Snake(valueName) == id {
 		return true
 	}
 	stripped, ok := strings.CutPrefix(valueName, enumName)
-	return ok && stripped != "" && snake(stripped) == id
+	return ok && stripped != "" && strcase.Snake(stripped) == id
 }
 
 func fieldNames(matches []consumeMatch) []string {
@@ -241,22 +241,4 @@ func fieldNames(matches []consumeMatch) []string {
 	}
 	sort.Strings(names)
 	return names
-}
-
-// snake turns a protobuf enum value name into the id the settings bar
-// sends: ElixirOfTheMongoose becomes elixir_of_the_mongoose.
-func snake(name string) string {
-	var b strings.Builder
-	b.Grow(len(name) + 4)
-	for i, r := range name {
-		if unicode.IsUpper(r) {
-			if i > 0 {
-				b.WriteByte('_')
-			}
-			b.WriteRune(unicode.ToLower(r))
-			continue
-		}
-		b.WriteRune(r)
-	}
-	return b.String()
 }

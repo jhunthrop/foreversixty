@@ -16,6 +16,7 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/jhunthrop/foreversixty/sim/internal/strcase"
 	"github.com/wowsims/classic/sim/core/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
@@ -108,7 +109,7 @@ func consumeVocabulary() []vocabularyEntry {
 				if v.Number() == 0 {
 					continue
 				}
-				bare := snake(string(v.Name()))
+				bare := strcase.Snake(string(v.Name()))
 				id := bare
 				// Both weapon imbue slots hold one enum, so a bare imbue
 				// id names two fields and has to say which.

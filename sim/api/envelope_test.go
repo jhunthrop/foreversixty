@@ -5,6 +5,8 @@ import (
 	"slices"
 	"strings"
 	"testing"
+
+	"github.com/jhunthrop/foreversixty/sim/enginever"
 )
 
 // The JSON field names are the contract, shared verbatim with
@@ -12,7 +14,7 @@ import (
 // pins the wire form rather than the Go field names.
 func TestSimRequestJSONFieldNames(t *testing.T) {
 	req := SimRequest{
-		EngineVersion: "7779ebb",
+		EngineVersion: enginever.Version,
 		Spec:          "warrior-fury",
 		Source:        CharacterSource{Kind: SourceArmory, Ref: "us/normal/thrall", CapturedAt: "2026-09-14T00:00:00Z"},
 		Encounter:     DefaultEncounter(),
@@ -87,7 +89,8 @@ func TestDefaultEncounterMatchesTheContract(t *testing.T) {
 
 func TestValidateRejectsBadRequests(t *testing.T) {
 	good := SimRequest{
-		EngineVersion: "7779ebb", Spec: "mage-frost", Iterations: 3000,
+		EngineVersion: enginever.Version, Spec: "mage-frost", Iterations: 3000,
+		Source:    CharacterSource{Kind: SourceManual},
 		Encounter: DefaultEncounter(),
 		Character: CharacterSpec{Name: "Jaina", Race: "gnome", Class: "mage", Level: 60},
 	}
@@ -132,7 +135,7 @@ func TestValidateRejectsBadRequests(t *testing.T) {
 // be re-run by handing it straight back to sim/request.
 func TestSimResultRoundTripsItsRequest(t *testing.T) {
 	res := SimResult{
-		EngineVersion: "7779ebb",
+		EngineVersion: enginever.Version,
 		Request: SimRequest{
 			Spec:      "warrior-fury",
 			Character: CharacterSpec{Name: "Thrall", Race: "orc", Class: "warrior", Level: 60},
@@ -176,7 +179,8 @@ func TestStaleComparesEngineVersions(t *testing.T) {
 // combine.Split just handed it.
 func TestValidatePartAcceptsASplitShareAndNothingElse(t *testing.T) {
 	part := SimRequest{
-		EngineVersion: "7779ebb", Spec: "mage-frost", Iterations: 750,
+		EngineVersion: enginever.Version, Spec: "mage-frost", Iterations: 750,
+		Source:    CharacterSource{Kind: SourceManual},
 		Encounter: DefaultEncounter(),
 		Character: CharacterSpec{Name: "Jaina", Race: "gnome", Class: "mage", Level: 60},
 	}
@@ -265,5 +269,130 @@ func TestProgressIsAPickOfSimResult(t *testing.T) {
 		if dps[k] != 0.0 {
 			t.Errorf("dps.%s = %v mid-run, want 0 until the run completes", k, dps[k])
 		}
+	}
+}
+
+// One string identifies the engine build everywhere. A request naming
+// another cannot be answered by this binary: its talents, its item rows
+// and its spell constants all belong to the pinned sha, so running it
+// would produce a row stamped with a version that did not produce it -
+// and SimResult.Stale, which exists to catch exactly that, could never
+// fire because the stamp came from the claim.
+func TestValidateRefusesARequestForAnotherEngine(t *testing.T) {
+	req := SimRequest{
+		EngineVersion: "deadbee", Spec: "mage-frost", Iterations: 3000,
+		Source:    CharacterSource{Kind: SourceManual},
+		Encounter: DefaultEncounter(),
+		Character: CharacterSpec{Name: "Jaina", Race: "gnome", Class: "mage", Level: 60},
+	}
+	err := req.Validate()
+	if err == nil {
+		t.Fatal("a request naming another engine was accepted")
+	}
+	for _, want := range []string{"deadbee", enginever.Version} {
+		if !strings.Contains(err.Error(), want) {
+			t.Errorf("the error does not name %q: %v", want, err)
+		}
+	}
+	// A part of a split run is held to it too: a worker cannot smuggle
+	// a foreign engine version past the whole-request check.
+	if err := req.ValidatePart(); err == nil {
+		t.Error("ValidatePart accepted a request for another engine")
+	}
+	req.EngineVersion = enginever.Version
+	if err := req.Validate(); err != nil {
+		t.Errorf("the pinned engine's own version was rejected: %v", err)
+	}
+}
+
+// Source.Kind had five constants declared beside it and nothing ever
+// compared to them, so a typo rode through as a stored row nothing
+// could join on.
+func TestValidateChecksTheSourceKind(t *testing.T) {
+	req := SimRequest{
+		EngineVersion: enginever.Version, Spec: "mage-frost", Iterations: 3000,
+		Encounter: DefaultEncounter(),
+		Character: CharacterSpec{Name: "Jaina", Race: "gnome", Class: "mage", Level: 60},
+	}
+	for _, kind := range Sources {
+		r := req
+		r.Source.Kind = kind
+		if err := r.Validate(); err != nil {
+			t.Errorf("source kind %q was rejected: %v", kind, err)
+		}
+	}
+	for _, kind := range []string{"", "Armory", "wowhead", "addon "} {
+		r := req
+		r.Source.Kind = kind
+		if err := r.Validate(); err == nil {
+			t.Errorf("source kind %q was accepted", kind)
+		}
+	}
+}
+
+// The profile was accepted and then thrown away: biomeFor ignored its
+// argument, so "encounter:onyxia" produced a sim byte-identical to a
+// blank one and said nothing. The vocabulary is refused at the boundary
+// instead, and the one profile that IS what the sim builds is accepted.
+func TestValidateChecksTheEncounterProfile(t *testing.T) {
+	req := SimRequest{
+		EngineVersion: enginever.Version, Spec: "mage-frost", Iterations: 3000,
+		Source:    CharacterSource{Kind: SourceManual},
+		Encounter: DefaultEncounter(),
+		Character: CharacterSpec{Name: "Jaina", Race: "gnome", Class: "mage", Level: 60},
+	}
+	for _, profile := range []string{"", ProfilePatchwerk} {
+		r := req
+		r.Encounter.Profile = profile
+		if err := r.Validate(); err != nil {
+			t.Errorf("profile %q was rejected, and it is exactly the fight the sim builds: %v", profile, err)
+		}
+	}
+	for _, tc := range []struct{ profile, want string }{
+		{"encounter:onyxia", "not simulated yet"},
+		{"encounter:", "names no encounter"},
+		{"patchwork", "encounter.profile must be"},
+		{"Patchwerk", "encounter.profile must be"},
+	} {
+		r := req
+		r.Encounter.Profile = tc.profile
+		err := r.Validate()
+		if err == nil {
+			t.Errorf("profile %q was accepted and would have been ignored", tc.profile)
+			continue
+		}
+		if !strings.Contains(err.Error(), tc.want) {
+			t.Errorf("profile %q: error %v does not say %q", tc.profile, err, tc.want)
+		}
+	}
+}
+
+// An abort is a state of its own on the result, not an error string: a
+// run the user stopped is not a run that went wrong, and the two are
+// rendered differently.
+func TestAbortedIsOmittedWhenFalse(t *testing.T) {
+	b, err := json.Marshal(SimResult{EngineVersion: enginever.Version})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.Contains(string(b), "aborted") {
+		t.Errorf("a finished result carries an aborted key: %s", b)
+	}
+	b, err = json.Marshal(SimResult{EngineVersion: enginever.Version, Aborted: true})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(b), `"aborted":true`) {
+		t.Errorf("a stopped result does not say so: %s", b)
+	}
+}
+
+// BossLevel is one number two lanes read: sim/request builds the
+// encounter at it and sim/measure refuses a log that never saw it. If
+// they drifted the validation job would compare a sim against a log of
+// a different target tier and call the gap a modelling error.
+func TestBossLevelIsThreeAboveThePlayer(t *testing.T) {
+	if BossLevel != SimLevel+3 {
+		t.Errorf("BossLevel = %d, want %d", BossLevel, SimLevel+3)
 	}
 }

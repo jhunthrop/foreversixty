@@ -49,6 +49,14 @@ func MeasureCoefficients(in Input) []Coefficient {
 		if e.Glancing.OK && e.Glancing.V {
 			continue
 		}
+		// A partial block took damage away from the landing, so the
+		// amount is not the coefficient's: leaving it in dragged the
+		// mean down and widened the spread, which is the one figure
+		// this function exists to produce. The doc above always said
+		// blocked hits were excluded; now they are.
+		if e.Blocked.OK && e.Blocked.V > 0 {
+			continue
+		}
 		if _, ok := amounts[e.Spell.ID]; !ok {
 			names[e.Spell.ID] = e.Spell.Name
 			order = append(order, e.Spell.ID)

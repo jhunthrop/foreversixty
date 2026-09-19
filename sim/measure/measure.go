@@ -37,6 +37,7 @@ import (
 	"github.com/jhunthrop/foreversixty/logs/engine/event"
 	"github.com/jhunthrop/foreversixty/logs/engine/layout"
 	"github.com/jhunthrop/foreversixty/logs/engine/session"
+	"github.com/jhunthrop/foreversixty/sim/api"
 )
 
 // DefaultMinSamples is the floor below which a figure prints as
@@ -151,8 +152,7 @@ func SheetFromEvents(events []event.Event, actor string) Sheet {
 	if guid == "" {
 		return Sheet{}
 	}
-	var sp, ap, armor, hp []float64
-	var level int64
+	var sp, ap, armor, hp, level []float64
 	for _, e := range events {
 		if !e.Adv.OK || e.Adv.InfoGUID != guid {
 			continue
@@ -161,7 +161,7 @@ func SheetFromEvents(events []event.Event, actor string) Sheet {
 		ap = append(ap, float64(e.Adv.AttackPower))
 		armor = append(armor, float64(e.Adv.Armor))
 		hp = append(hp, float64(e.Adv.MaxHP))
-		level = e.Adv.Level
+		level = append(level, float64(e.Adv.Level))
 	}
 	return Sheet{
 		SpellPower:  median(sp),
@@ -170,8 +170,10 @@ func SheetFromEvents(events []event.Event, actor string) Sheet {
 		MaxHP:       median(hp),
 		// For a player the advanced block's Level field is item level,
 		// not character level: the log writes one field with two
-		// meanings. It is reported as-is and the table labels it.
-		Level:   level,
+		// meanings. The table labels it. It is the median like every
+		// other figure here - it used to be whichever line came last,
+		// so one weapon swap mid-log decided the whole sheet.
+		Level:   int64(median(level)),
 		Samples: len(sp),
 	}
 }
@@ -242,13 +244,13 @@ func Run(in Input) (Report, error) {
 	}
 	var sawBossLevel bool
 	for _, row := range rep.AttackTable {
-		if row.TargetLevel >= 63 {
+		if row.TargetLevel >= api.BossLevel {
 			sawBossLevel = true
 		}
 	}
 	if !sawBossLevel {
 		rep.Incomplete = append(rep.Incomplete,
-			"no level-63 target: the boss-level attack table, and therefore the unified-Hit fit, need an instance log.")
+			fmt.Sprintf("no level-%d target: the boss-level attack table, and therefore the unified-Hit fit, need an instance log.", api.BossLevel))
 	}
 	return rep, nil
 }

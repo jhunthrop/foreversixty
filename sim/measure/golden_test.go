@@ -3,6 +3,7 @@ package measure
 import (
 	"flag"
 	"os"
+	"strings"
 	"testing"
 )
 
@@ -51,7 +52,7 @@ func TestTableWithholdsEveryFigureUnderTheFloor(t *testing.T) {
 	}
 	out := rep.Table()
 	for _, forbidden := range []string{"2.000", "10.00%", "45s", "500.0"} {
-		if contains(out, forbidden) {
+		if strings.Contains(out, forbidden) {
 			t.Errorf("the table printed %q from below the sample floor:\n%s", forbidden, out)
 		}
 	}
