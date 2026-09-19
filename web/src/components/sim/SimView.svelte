@@ -29,6 +29,7 @@
   import { ENGINE_VERSION, engineLabel, isStale } from '../../lib/sim/version';
   import type { SimListRow, SimResult, SpecFidelity } from '../../lib/sim/types';
   import CharacterStrip from './CharacterStrip.svelte';
+  import DetailsCard from './DetailsCard.svelte';
   import LandingState from './LandingState.svelte';
   import RunControl from './RunControl.svelte';
   import SavedSim from './SavedSim.svelte';
@@ -523,6 +524,7 @@
           iterationsDone={store.iterationsDone}
           iterationsTotal={store.iterationsTotal}
           precisionId={store.precisionId}
+          relativeError={store.relativeError}
           premium={store.premium}
           message={store.message}
           detail={store.detail}
@@ -564,6 +566,10 @@
           {:else}
             {@render lazyFallback(simResultsLazy)}
           {/if}
+        {/if}
+
+        {#if store.result !== null && !comparing}
+          <DetailsCard result={store.result} />
         {/if}
 
         <!-- The save form (Task 17): disabled until there is a result, an inline

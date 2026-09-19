@@ -156,8 +156,6 @@ export const simCopy = {
   engineLoading: 'The engine is about 4 MB. It loads once and is cached after that.',
   iterations: 'iterations',
   progressLabel: 'Iterations complete',
-  highPrecision: 'High precision',
-  precisionNote: '10,000 iterations instead of 3,000: about half the error, about three times the wait.',
   runOnServers: 'Run on our servers',
   staleEngine: 'This result came from an older engine. Run it again for the current numbers.',
   /** The DPS figure's own unit label, beside the number. */
@@ -169,6 +167,33 @@ export const simCopy = {
    * happening rather than left reading "Stop" over a click that does nothing.
    */
   serverRunButton: 'Running on our servers…',
+
+  // --- Design 4.2: the precision control. ---
+  precision: 'Precision',
+  precisionLabel: {
+    fast: 'Fast, 500 iterations',
+    normal: 'Normal, 3,000 iterations',
+    high: 'High, 10,000 iterations',
+    'target-error': 'Until ±0.5%',
+  } as Record<string, string>,
+  /** Under the select while the target-error run is chosen; `ceiling` is the lane's. */
+  targetErrorNote: (ceiling: string): string =>
+    `Runs a thousand iterations at a time until the error is inside half a per cent, or until ${ceiling} iterations, whichever comes first.`,
+  /** The results line when the ceiling, not the target, is what stopped the run. */
+  targetErrorCeiling: (ceiling: string): string =>
+    `Stopped at ${ceiling} iterations with the error still outside half a per cent.`,
+
+  // --- Design 5.1: the details card. ---
+  details: 'This run',
+  detailsMargin: 'Margin of error',
+  /** The 95% band and the relative standard error, side by side and never conflated. */
+  detailsMarginValue: (band: string, percent: string): string => `± ${band} DPS · ${percent}`,
+  detailsIterations: 'Iterations',
+  detailsProcessing: 'Processing time',
+  detailsEngine: 'Engine',
+  detailsLane: 'Ran on',
+  detailsLaneBrowser: 'your browser',
+  detailsLaneServer: 'our servers',
 
   // --- Task 14: the results sentence and the report components. ---
   /** No damage at all: a rotation that never fired, not a rendering failure. */

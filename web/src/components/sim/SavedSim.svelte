@@ -21,6 +21,7 @@
   import type { SimResult } from '../../lib/sim/types';
   import { engineLabel, isStale } from '../../lib/sim/version';
   import CharacterStrip from './CharacterStrip.svelte';
+  import DetailsCard from './DetailsCard.svelte';
 
   let { result, onrerun }: { result: SimResult; onrerun: () => void } = $props();
 
@@ -167,6 +168,8 @@
 {:else}
   {@render lazyFallback(simResultsLazy)}
 {/if}
+
+<DetailsCard {result} />
 
 <div class="mx-[18px] flex flex-wrap items-center gap-3 md:mx-0">
   <button
