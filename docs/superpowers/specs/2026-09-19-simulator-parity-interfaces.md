@@ -531,3 +531,45 @@ gains per-slot enchant and suffix.
 - "My professions" reads `CharacterSpec.Profession`, filled by the export's
   new section; absent that, the crafted picker shows all professions and
   says why.
+
+### 10.8 Rulings from the plan revisions
+
+- **Faction enum.** `UIItem.FactionRestriction` lives in `ui.proto`, which
+  imports `common.proto`, so `SimItem` cannot reference it. `SimItem`
+  declares its own nested `FactionRestriction` enum with identical value
+  names and numbers, pinned to `UIItem`'s by a test.
+- **Progress callback.** `runner.Progress` is a function type and stays
+  byte-identical. The `sim` module adds `StageProgress func(api.Progress)`
+  and a `StageRunner` interface that `Native` and `Fixture` implement; the
+  API adopts the wider callback in its own task.
+- **Enchant table in the engine.** `SimEnchant` is not widened. `make simdb`
+  copies `data/builds/<build>/enchants.json` to
+  `sim/internal/simdb/enchants.json` for `go:embed`; `bulk.Options.Enchants`
+  is a test override over that default.
+- **Consumable substitutions.** `Substitution.Kind` gains `consumes`, with
+  `Name` the consumable ids joined by `, `; `sim/bulk` emits one per
+  combination that used an alternative list.
+- **Stat vocabulary, pinned.** The `proto.Stat` enum in snake case, with
+  `MP5` spelled `mp5`: `strength, agility, stamina, intellect, spirit,
+  spell_power, arcane_power, fire_power, frost_power, holy_power,
+  nature_power, shadow_power, mp5, hit, crit, spell_haste,
+  spell_penetration, attack_power, melee_haste, armor_penetration,
+  expertise, mana, energy, rage, armor, ranged_attack_power, defense,
+  block, block_value, dodge, parry, health, arcane_resistance,
+  fire_resistance, frost_resistance, nature_resistance, shadow_resistance,
+  bonus_armor, healing_power, spell_damage, feral_attack_power`. There is
+  no `melee_crit`, `spell_crit`, `melee_hit` or `spell_hit`: the engine
+  carries one `hit` and one `crit`. Weight pages offer the subset that
+  moves a spec's DPS; `reference_stat` defaults are `attack_power` for
+  melee and hunters, `spell_power` for casters.
+- **Client-side server cap.** The page gates the server-run button on
+  `Caps.server` before submitting; a server `cap_exceeded` that still
+  arrives shows the generic failure sentence. Acceptable: the numbers are
+  already on screen from `simCount`.
+- **Overlay `replace` is partial.** A `replace` entry names an `id` and only
+  the keys it changes; unnamed keys keep the generated value; a differing
+  `kind` is refused.
+- **Faction restriction comes from the fork database**, not the client
+  (`ItemSparse.AllowableRace` is unset on this build). `items.json` gains a
+  `faction_restriction` column from one fork-derived pass and
+  `pipeline/simdb` reads it; the loot step runs before the simdb step.

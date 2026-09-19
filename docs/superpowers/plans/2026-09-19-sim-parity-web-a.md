@@ -4,13 +4,14 @@
 
 **Goal:** Bring the existing `/sim` page to Raidbots parity on everything that is not a new route — fight styles, the full encounter panel, Smart-Sim precision, the whole buff/debuff/consumable panel, the report additions, the request drawer, FS1 version 2 input and history rows by kind.
 
-**Architecture:** Every new decision lives in a small, pure, unit-tested module under `web/src/lib/sim/` (or `web/src/lib/planner/fs1.ts` for the export string). Svelte components are pure renders of those modules over the island store, exactly as the lane already works. No statistics and no validation are written in TypeScript: the step loop asks the wasm (`simNeedsMore`), and the request drawer asks the wasm (`simValidate`). Part B (`/sim/gear`, `/sim/talents`, `/sim/drops`, `/sim/weights`) mounts the same store and imports the modules listed in each task's **Interfaces → Produces** block.
+**Architecture:** Every new decision lives in a small, pure, unit-tested module under `web/src/lib/sim/` (or `web/src/lib/planner/fs1.ts` for the export string). Svelte components are pure renders of those modules over the island store, exactly as the lane already works. No statistics, no validation and no expansion arithmetic are written in TypeScript: the step loop asks the wasm (`simNeedsMore`), the request drawer asks the wasm (`simValidate`), and part B's combination count asks the wasm (`simCount`) — all three ratified in contract 10.2. Part B (`/sim/gear`, `/sim/talents`, `/sim/drops`, `/sim/weights`) mounts the same store and imports the modules listed in each task's **Interfaces → Produces** block.
 
 **Tech Stack:** Astro 7, Svelte 5 runes islands, TypeScript strict, vitest (`src/**/*.test.ts`), Playwright (`tests/e2e/`, fake engine under `src/fixtures/sim/`), Tailwind 4, Lighthouse CI.
 
 **Spec:**
 - Design: `docs/superpowers/specs/2026-09-19-simulator-parity-design.md` (sections 4, 5, 8, 9 are this lane's)
 - Contract: `docs/superpowers/specs/2026-09-19-simulator-parity-interfaces.md` (sections 1.2, 1.5, 1.6, 1.7, 2, 4, 7, 9 bind this lane)
+- **Contract section 10 (commit `439f0b7`) is binding over all of the above** and settles every question the six lane plans raised. This lane's rulings are A3 (iterations and the 20–600 s duration range), A8 (`TargetArmorByLevel`), A11 (progress widening), A12 (`SampleCast` carries an action key), 10.2 (`simCount`, `simNeedsMore`, `simValidate`), 10.4 (`simbuffs.json`), 10.5 (FS1 gear enchants, suffixes and professions; `SimCharacter` per-slot enchant and suffix) and 10.7 (test ids are a minimum). A7 has the sim module generate IDS.md's `:improved` rows, World buffs and a new Stats section, all three of which this lane's generator reads.
 - Base contract it amends: `docs/superpowers/specs/2026-09-14-simulator-interfaces.md`
 
 ## Global Constraints
@@ -45,6 +46,7 @@ New files, and what each one is responsible for.
 | `src/lib/sim/precision.ts` | fast/normal/high/`until ±0.5%`, step size, lane ceilings |
 | `src/lib/sim/buffs.ts` | Grouping the engine's id vocabulary into the panel's sections; the three-way grade |
 | `src/lib/sim/buff-names.ts` | Display name and icon for a buff/consumable id, from the build |
+| `src/lib/sim/stats.ts` | Contract A7's stat vocabulary, for part B's weights page |
 | `src/lib/sim/cooldowns.ts` | `CooldownSpec` rows: on cooldown / on pull / at a time / at execute |
 | `src/lib/sim/details.ts` | The details card's figures: margin of error, iterations, processing time, lane |
 | `src/lib/sim/sample-log.ts` | `result.sample` into table rows, pre-pull separated, resource columns |
@@ -70,6 +72,7 @@ The contract makes the Go `json:` tags authoritative and `web/src/lib/sim/types.
 
 **Files:**
 - Modify: `src/lib/sim/types.ts`
+- Modify: `src/lib/sim/copy.ts`
 - Create: `src/lib/sim/kind.ts`
 - Create: `src/fixtures/sim/envelope-v2.json`
 - Test: `src/lib/sim/kind.test.ts`
@@ -77,8 +80,9 @@ The contract makes the Go `json:` tags authoritative and `web/src/lib/sim/types.
 **Interfaces:**
 - Consumes: nothing.
 - Produces:
-  - `types.ts`: `EncounterSpec` (+ `style?`, `movement?`, `targets_over_time?`, `target_level?`, `target_armor?`, `target_type?`, `dummy?`), `Movement`, `TargetCount`, `CooldownSpec`, `CharacterSpec` (+ `cooldowns?`), `SimRequest` (+ `bulk?`, `weights?`, `target_error?`), `BulkSpec`, `Candidate`, `TalentLoadout`, `GearSet`, `WeightsSpec`, `SimResult` (+ `combos?`, `equipped?`, `stages?`, `weights?`, `sample?`), `Combo`, `Substitution`, `Stage`, `StatWeight`, `SampleCast`, `SimProgress` (+ `stage?`, `combos_done?`, `combos_total?`), `SimListRow` (+ `kind`, `headline`), `STEP_ITERATIONS_DEFAULT`
+  - `types.ts`: `EncounterSpec` (+ `style?`, `movement?`, `targets_over_time?`, `target_level?`, `target_armor?`, `target_type?`, `dummy?`), `Movement`, `TargetCount`, `CooldownSpec`, `CharacterSpec` (+ `cooldowns?`), `SimRequest` (+ `bulk?`, `weights?`, `target_error?`), `BulkSpec` (with A5's `consumables?`), `Candidate` (with A6's `source_name?`), `TalentLoadout`, `GearSet`, `WeightsSpec`, `SimResult` (+ `combos?`, `equipped?`, `stages?`, `weights?`, `sample?`), `Combo`, `Substitution` (10.8: `kind` includes `consumes`), `Stage`, `StatWeight`, `SampleCast` (contract A12: `{ at_ms, action, target?, resources? }`), `SimProgress` (+ `stage?`, `combos_done?`, `combos_total?`), `SimListRow` (+ `kind`, `headline`), `STEP_ITERATIONS_DEFAULT`
   - `kind.ts`: `type SimKind = 'run' | 'gear' | 'talents' | 'drops' | 'weights'`, `SIM_KINDS: readonly SimKind[]`, `requestKind(request: Pick<SimRequest, 'bulk' | 'weights'>): SimKind`
+  - `copy.ts`: `simCopy.substitutionKindLabel: Record<string, string>` — the four `Substitution.kind` words, `consumes` included (10.8)
 
 - [ ] **Step 1: Write the failing test**
 
@@ -87,6 +91,7 @@ Create `src/lib/sim/kind.test.ts`:
 ```ts
 import { describe, expect, it } from 'vitest';
 import envelope from '../../fixtures/sim/envelope-v2.json';
+import { simCopy } from './copy';
 import { SIM_KINDS, requestKind } from './kind';
 import type { SimRequest, SimResult } from './types';
 
@@ -147,15 +152,26 @@ describe('the amended envelope', () => {
   });
 
   it('carries the new result fields under the contract’s names', () => {
+    // Contract A12: an action key, never a name and never a spell id.
     expect(fixture.result.sample?.[0]).toEqual({
       at_ms: -1500,
-      spell_id: 11305,
-      name: 'spell:11305',
+      action: 'spell:11305',
       resources: { rage: 0 },
     });
     expect(fixture.result.stages).toEqual([{ iterations: 1000, combos: 4 }]);
     expect(fixture.result.combos?.[0].group).toBe(0);
     expect(fixture.result.weights?.[0]).toEqual({ stat: 'crit', weight: 1, error: 0.02 });
+  });
+});
+
+describe('substitution kinds', () => {
+  it('names all four, including contract 10.8’s consumes', () => {
+    expect(Object.keys(simCopy.substitutionKindLabel).sort()).toEqual([
+      'consumes',
+      'item',
+      'set',
+      'talents',
+    ]);
   });
 });
 ```
@@ -271,14 +287,8 @@ Create `src/fixtures/sim/envelope-v2.json`:
       "phases": []
     },
     "sample": [
-      { "at_ms": -1500, "spell_id": 11305, "name": "spell:11305", "resources": { "rage": 0 } },
-      {
-        "at_ms": 320,
-        "spell_id": 25286,
-        "name": "spell:25286",
-        "target": "Target",
-        "resources": { "rage": 42 }
-      }
+      { "at_ms": -1500, "action": "spell:11305", "resources": { "rage": 0 } },
+      { "at_ms": 320, "action": "spell:25286", "target": "Target", "resources": { "rage": 42 } }
     ],
     "stages": [{ "iterations": 1000, "combos": 4 }],
     "equipped": { "mean": 1180, "stddev": 170, "error": 3.1, "min": 690, "max": 1760 },
@@ -397,6 +407,11 @@ export interface Candidate {
   suffix?: number;
   /** equipped | bag | bank | search | drop:<source-id> | set:<name>. */
   origin: string;
+  /**
+   * Contract A6: the human name of where it came from ("Ragnaros"), which the page fills
+   * from `loot.json` and the API's headline reads back off the substitution.
+   */
+  source_name?: string;
 }
 
 export interface TalentLoadout {
@@ -410,11 +425,20 @@ export interface GearSet {
 }
 
 export interface BulkSpec {
-  /** gear | talents | drops. */
+  /**
+   * gear | talents | drops. Contract A4: the mode decides the expansion and the design's
+   * `combinations` boolean is gone -- `gear` takes the product of every candidate group,
+   * `drops` and `talents` one substitution at a time.
+   */
   mode: string;
   candidates: Candidate[];
   talents?: TalentLoadout[];
   sets?: GearSet[];
+  /**
+   * Contract A5: alternative consumable lists tried as candidates in `gear` mode. Each
+   * inner list replaces `CharacterSpec.Consumes` for that combination.
+   */
+  consumables?: string[][];
   /** Slots never substituted. */
   locked?: string[];
   /** fast | normal | high. */
@@ -434,16 +458,26 @@ export interface WeightsSpec {
 
 ```ts
 export interface Substitution {
-  /** item | talents | set. */
+  /**
+   * item | talents | set | consumes. Contract 10.8 adds `consumes`: `sim/bulk` emits one
+   * per combination that used an alternative consumable list (`BulkSpec.consumables`),
+   * and `name` is that list's ids joined by ", ".
+   */
   kind: string;
   slot?: string;
   item_id?: number;
   enchant?: number;
   suffix?: number;
-  /** The loadout or set name, for a talents or set substitution. */
+  /**
+   * The loadout or set name — and, per contract A6, an item's name too, filled from
+   * simdb, so a combo row reads without a second lookup. For a `consumes` substitution
+   * (10.8) it is the consumable ids joined by ", ".
+   */
   name?: string;
   talents?: string;
   origin?: string;
+  /** Contract A6: copied from the candidate. */
+  source_name?: string;
 }
 
 export interface Combo {
@@ -467,11 +501,18 @@ export interface StatWeight {
   error: number;
 }
 
-/** One cast of the median-DPS iteration. `at_ms` is negative during the pre-pull. */
+/**
+ * One cast of the median-DPS iteration. `at_ms` is negative during the pre-pull.
+ *
+ * Contract A12: the row carries the summary's own action-key form (`spell:23881`,
+ * `item:13503`, `other:melee`) and nothing else -- no display name and no spell id. The
+ * page resolves the name with `resolveActionName`, exactly as it already does for every
+ * cast row, so the sample table can never disagree with the cast table about what an
+ * action is called.
+ */
 export interface SampleCast {
   at_ms: number;
-  spell_id: number;
-  name: string;
+  action: string;
   target?: string;
   /** rage, energy, mana, combo_points … after the cast. */
   resources?: Record<string, number>;
@@ -521,7 +562,26 @@ export interface SimListRow {
 }
 ```
 
-- [ ] **Step 5: Write `kind.ts`**
+- [ ] **Step 5: Name the four substitution kinds**
+
+A `Substitution` is rendered by part B's combo rows, but the words are this lane's, because every user-visible string on the simulator lives in `copy.ts`. Append inside `simCopy`:
+
+```ts
+  /**
+   * The four things a combination can substitute (contract 2, `kind`, as amended by
+   * 10.8). `consumes` is an alternative consumable list tried as a candidate, and its
+   * `name` is the ids joined by ", " -- so the row reads "Consumables: flask_of_supreme_power,
+   * elixir_of_the_mongoose" until buff-names.ts (Task 9) is given the list to prettify.
+   */
+  substitutionKindLabel: {
+    item: 'Item',
+    talents: 'Talents',
+    set: 'Set',
+    consumes: 'Consumables',
+  } as Record<string, string>,
+```
+
+- [ ] **Step 6: Write `kind.ts`**
 
 ```ts
 // web/src/lib/sim/kind.ts
@@ -552,7 +612,7 @@ export function requestKind(request: Pick<SimRequest, 'bulk' | 'weights'>): SimK
 }
 ```
 
-- [ ] **Step 6: Run the test to verify it passes**
+- [ ] **Step 7: Run the test to verify it passes**
 
 ```bash
 export PATH=/Users/jh/.nvm/versions/node/v22.12.0/bin:$PATH
@@ -561,28 +621,30 @@ cd /Users/jh/code/forever/web && npx vitest run src/lib/sim/kind.test.ts
 
 Expected: PASS, 8 tests.
 
-- [ ] **Step 7: Check types, lint and format**
+- [ ] **Step 8: Check types, lint and format**
 
 ```bash
 export PATH=/Users/jh/.nvm/versions/node/v22.12.0/bin:$PATH
 cd /Users/jh/code/forever/web && npx astro check && \
-  npx eslint src/lib/sim/kind.ts src/lib/sim/kind.test.ts src/lib/sim/types.ts && \
-  npx prettier --check src/lib/sim/kind.ts src/lib/sim/kind.test.ts src/lib/sim/types.ts src/fixtures/sim/envelope-v2.json
+  npx eslint src/lib/sim/kind.ts src/lib/sim/kind.test.ts src/lib/sim/types.ts src/lib/sim/copy.ts && \
+  npx prettier --check src/lib/sim/kind.ts src/lib/sim/kind.test.ts src/lib/sim/types.ts src/lib/sim/copy.ts src/fixtures/sim/envelope-v2.json
 ```
 
 Expected: 0 errors from each.
 
-- [ ] **Step 8: Commit**
+- [ ] **Step 9: Commit**
 
 ```bash
-cd /Users/jh/code/forever/web && git add src/lib/sim/types.ts src/lib/sim/kind.ts src/lib/sim/kind.test.ts src/fixtures/sim/envelope-v2.json && \
+cd /Users/jh/code/forever/web && git add src/lib/sim/types.ts src/lib/sim/kind.ts src/lib/sim/kind.test.ts src/lib/sim/copy.ts src/fixtures/sim/envelope-v2.json && \
 git commit -m "feat(sim): the amended request and result envelope in TypeScript
 
-Mirrors contract 1.2, 1.5, 1.7 and 2: the encounter's style, movement,
-target-count timeline, target level, armor, type and dummy flag; the
-request's target_error, bulk and weights blocks; the result's combos,
-equipped, stages, weights and sample. requestKind is the TypeScript
-mirror of api.SimRequest.Kind().
+Mirrors contract 1.2, 1.5, 1.7 and 2 as amended by section 10: the
+encounter's style, movement, target-count timeline, target level,
+armor, type and dummy flag; the request's target_error, bulk and
+weights blocks; the result's combos, equipped, stages, weights and
+sample, with A12's action-key sample row and 10.8's consumes
+substitution kind. requestKind is the TypeScript mirror of
+api.SimRequest.Kind().
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
@@ -1052,8 +1114,8 @@ Design 4.1 widens the fight-length range and exposes six controls the bar does n
 **Interfaces:**
 - Consumes: `styles.ts`'s `applyFightStyle`, `DEFAULT_STYLE_ID`, `FightStyleId` (Task 2); `types.ts`'s `TARGET_TYPE_IDS`, `CooldownSpec` (Task 1).
 - Produces:
-  - `settings.ts`: `MIN_DURATION_SEC = 20`, `MAX_DURATION_SEC = 600`, `DURATIONS`, `MAX_TARGETS = 10`, `VARIATIONS`, `MAX_VARIATION = 0.3`, `TARGET_LEVELS`, `DEFAULT_TARGET_LEVEL = 63`, `MAX_TARGET_ARMOR = 20000`, `TARGET_TYPES`, `interface SimSettings` (+ `cooldowns: CooldownSpec[]`), `defaultSettings()`, `withStyle`, `withDuration`, `withTargets`, `withVariation`, `withTargetLevel`, `withTargetArmor`, `withTargetType`, `withDummy`, `withExecutePhase`, `withPreset`, `executePhaseOn`, `styleIdOf(settings): string`, `settingsLabel`
-  - `copy.ts`: `simCopy.styleCustom`, `variation`, `variationNote`, `targetLevel`, `targetArmor`, `targetArmorPreset`, `targetType`, `targetTypeAny`, `targetTypeLabel`, `dummyTarget`, `dummyNote`, `moreSettings`
+  - `settings.ts`: `MIN_DURATION_SEC = 20`, `MAX_DURATION_SEC = 600`, `DURATIONS`, `MAX_TARGETS = 10`, `VARIATIONS`, `MAX_VARIATION = 0.3`, `TARGET_LEVELS`, `DEFAULT_TARGET_LEVEL = 63`, `TARGET_ARMOR_BY_LEVEL`, `MAX_TARGET_ARMOR = 20000`, `TARGET_TYPES`, `interface SimSettings` (+ `cooldowns: CooldownSpec[]`), `defaultSettings()`, `withStyle`, `withDuration`, `withTargets`, `withVariation`, `withTargetLevel`, `withTargetArmor`, `withTargetType`, `withDummy`, `withExecutePhase`, `withPreset`, `executePhaseOn`, `styleIdOf(settings): string`, `settingsLabel`
+  - `copy.ts`: `simCopy.styleCustom`, `variation`, `variationNote`, `targetLevel`, `targetArmor`, `targetArmorPreset(armor)`, `targetType`, `targetTypeAny`, `targetTypeLabel`, `dummyTarget`, `dummyNote`, `moreSettings`
 
 - [ ] **Step 1: Write the failing test**
 
@@ -1070,6 +1132,7 @@ import {
   MAX_TARGET_ARMOR,
   MAX_VARIATION,
   MIN_DURATION_SEC,
+  TARGET_ARMOR_BY_LEVEL,
   TARGET_LEVELS,
   TARGET_TYPES,
   VARIATIONS,
@@ -1169,6 +1232,11 @@ describe('the setters never mutate and always clamp', () => {
     expect(withTargetArmor(base, -10).encounter.target_armor).toBe(0);
     expect(withTargetArmor(base, 999999).encounter.target_armor).toBe(MAX_TARGET_ARMOR);
     expect(withTargetArmor(base, 3731).encounter.target_armor).toBe(3731);
+  });
+
+  it('publishes contract A8’s armor preset for each level, so the control can name the figure', () => {
+    expect(TARGET_ARMOR_BY_LEVEL).toEqual({ 60: 3300, 61: 3444, 62: 3588, 63: 3731 });
+    expect(TARGET_LEVELS.every((level) => TARGET_ARMOR_BY_LEVEL[level] > 0)).toBe(true);
   });
 
   it('accepts only the contract’s target types, and the empty string for “any”', () => {
@@ -1292,11 +1360,11 @@ In `src/lib/sim/copy.ts`, append inside `simCopy`:
   targetLevel: 'Target level',
   targetArmor: 'Target armor',
   /**
-   * Zero means the engine's own preset for the chosen level. The preset numbers live in
-   * the engine and are not published to the web, so the option says what it does rather
-   * than naming a figure this lane would have to invent.
+   * Zero means the preset for the chosen level, and contract A8 publishes the figure, so
+   * the empty field names it rather than leaving the player guessing what they are about
+   * to override.
    */
-  targetArmorPreset: 'Preset for the level',
+  targetArmorPreset: (armor: string): string => `${armor}, the preset for this level`,
   targetType: 'Target type',
   targetTypeAny: 'Any',
   targetTypeLabel: {
@@ -1327,9 +1395,9 @@ import { DEFAULT_ENCOUNTER, TARGET_TYPE_IDS, type CooldownSpec, type EncounterSp
 
 export { durationLabel, encounterLabel };
 
-// Design 4.1: twenty seconds to ten minutes. The old floor was a minute and the old
-// ceiling eight; both moved, so `api.MinDurationSec`/`MaxDurationSec` move with them --
-// see this plan's "Contract additions" note.
+// Design 4.1 and contract A3, which ratifies both numbers on the Go side too
+// (`api.MinDurationSec = 20`, `api.MaxDurationSec = 600`). The old floor was a minute and
+// the old ceiling eight.
 export const MIN_DURATION_SEC = 20;
 export const MAX_DURATION_SEC = 600;
 export const DURATION_STEP_SEC = 30;
@@ -1355,7 +1423,22 @@ export const VARIATIONS: readonly number[] = [0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3
 
 export const TARGET_LEVELS: readonly number[] = [60, 61, 62, 63];
 export const DEFAULT_TARGET_LEVEL = 63;
-/** A generous bound on the override field; the engine's own presets are far below it. */
+
+/**
+ * Contract A8: the engine's own 3,731 at level 63 and a linear fall to the level-60
+ * figure. `target_armor: 0` still means "the level's preset" and is what the request
+ * carries by default -- these numbers exist so the override control can say what it is
+ * overriding rather than showing an empty field. A better source replaces the three
+ * interior numbers on the Go side and here together.
+ */
+export const TARGET_ARMOR_BY_LEVEL: Record<number, number> = {
+  60: 3300,
+  61: 3444,
+  62: 3588,
+  63: 3731,
+};
+
+/** A generous bound on the override field; the presets above are far below it. */
 export const MAX_TARGET_ARMOR = 20_000;
 export const TARGET_TYPES: readonly string[] = TARGET_TYPE_IDS;
 ```
@@ -1633,6 +1716,7 @@ Expected: FAIL — `getByTestId('sim-style')` resolves to nothing.
   import { simCopy } from '../../lib/sim/copy';
   import {
     MAX_TARGET_ARMOR,
+    TARGET_ARMOR_BY_LEVEL,
     TARGET_LEVELS,
     TARGET_TYPES,
     VARIATIONS,
@@ -1655,6 +1739,13 @@ Expected: FAIL — `getByTestId('sim-style')` resolves to nothing.
   const control =
     'border-line-warm rounded-control bg-raised text-text min-h-11 min-w-0 border px-3 text-[14px] font-semibold md:min-h-9';
   const percent = (value: number): string => `${Math.round(value * 100)}%`;
+  // Contract A8's figure for whichever level is chosen, so an empty armor field says what
+  // the engine will use instead of nothing at all.
+  const armorPreset = $derived(
+    simCopy.targetArmorPreset(
+      (TARGET_ARMOR_BY_LEVEL[settings.encounter.target_level ?? 63] ?? 0).toLocaleString('en-US'),
+    ),
+  );
 </script>
 
 <details class="border-line-soft rounded-panel border" data-testid="sim-settings-more">
@@ -1703,8 +1794,8 @@ Expected: FAIL — `getByTestId('sim-style')` resolves to nothing.
         step="1"
         class={control}
         {disabled}
-        placeholder={simCopy.targetArmorPreset}
-        title={simCopy.targetArmorPreset}
+        placeholder={armorPreset}
+        title={armorPreset}
         value={settings.encounter.target_armor === 0 ? '' : String(settings.encounter.target_armor)}
         onchange={(event) => onchange(withTargetArmor(settings, Number(event.currentTarget.value)))}
         data-testid="sim-target-armor"
@@ -1885,11 +1976,11 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 
 ---
 
-### Task 5: The two new wasm exports, `simNeedsMore` and `simValidate`, through the pool
+### Task 5: The three wasm exports of contract 10.2 — `simNeedsMore`, `simValidate`, `simCount`
 
-Neither decision belongs in TypeScript. Whether a target-error run needs another step is the engine's arithmetic (`api.NeedsMoreIterations` on the Go side); whether an edited request is legal is `api.SimRequest.Validate`. Both reach the page as new wasm exports, routed to worker 0 the way `simSplit` and `simCombine` already are, because the main thread holds no engine instance.
+None of the three decisions belongs in TypeScript. Whether a target-error run needs another step is the engine's arithmetic (`api.NeedsMoreIterations`); whether an edited request is legal is `api.SimRequest.Validate`; how many combinations a bulk request expands to is `sim/bulk`'s count. All three reach the page as wasm exports, routed to worker 0 the way `simSplit` and `simCombine` already are, because the main thread holds no engine instance.
 
-> **Contract addition.** Section 4 of the interfaces document lists `simPlan`, `simRank` and `simWeights`. `simNeedsMore(resultJSON, requestJSON)` and `simValidate(requestJSON)` are not in it. This task pins their shapes; the sim module lane adds both rows to section 4 in its own commit.
+`simCount` is part B's — `/sim/gear` and `/sim/drops` show the live combination count and the cap notice with it — but it lands here, in the one task that widens `EngineModule`, the pool's message protocol, the real worker, the fake worker and the fake engine. Adding it later would mean editing the same five files a second time for one more message.
 
 **Files:**
 - Modify: `src/lib/sim/engine.ts`
@@ -1902,18 +1993,20 @@ Neither decision belongs in TypeScript. Whether a target-error run needs another
 **Interfaces:**
 - Consumes: `types.ts` (Task 1).
 - Produces:
-  - `engine.ts`: `EngineModule` (+ `simNeedsMore(resultJSON: string, requestJSON: string): string`, `simValidate(requestJSON: string): string`), `interface RequestValidation { ok: boolean; errors: RequestValidationError[] }`, `interface RequestValidationError { field: string; message: string }`
-  - `worker.ts`: `SimPool` (+ `needsMore(resultJSON: string, requestJSON: string): Promise<boolean>`, `validate(requestJSON: string): Promise<RequestValidation>`), `ToWorker` (+ `{ kind: 'needsMore' | 'validate' }` variants)
+  - `engine.ts`: `EngineModule` (+ `simNeedsMore(resultJSON: string, requestJSON: string): string`, `simValidate(requestJSON: string): string`, `simCount(requestJSON: string): string`), `interface RequestValidation { ok: boolean; errors: RequestValidationError[] }`, `interface RequestValidationError { field: string; message: string }`, `type CountAnswer = { ok: true; combinations: number } | { ok: false; cap: number; combinations: number }`
+  - `worker.ts`: `SimPool` (+ `needsMore(resultJSON: string, requestJSON: string): Promise<boolean>`, `validate(requestJSON: string): Promise<RequestValidation>`, `count(requestJSON: string): Promise<CountAnswer>`), `ToWorker` (+ `{ kind: 'needsMore' | 'validate' | 'count' }` variants)
 
-**Export shapes, pinned here:**
+**Export shapes, contract 10.2 verbatim:**
 
 ```
 simNeedsMore(resultJSON, requestJSON) -> {"needs_more": true}          | {"error": "..."}
 simValidate(requestJSON)              -> {"ok": false, "errors": [{"field":"iterations","message":"..."}]}
                                       | {"error": "..."}
+simCount(requestJSON)                 -> {"combinations": 38}
+                                      | {"error":"cap_exceeded","cap":400,"combinations":912}
 ```
 
-Both are synchronous and both fail the `errorJSON` way `simSplit` does, so `unwrapOrThrow` covers them.
+All three are synchronous. `simNeedsMore` and `simValidate` fail the `errorJSON` way `simSplit` does, so `unwrapOrThrow` covers them. `simCount` does not go through `unwrapOrThrow`: a cap breach is not an exception, it is an answer with two numbers in it that the cap notice renders, and throwing away `cap` and `combinations` to raise `Error("cap_exceeded")` would lose exactly the part part B needs.
 
 - [ ] **Step 1: Write the failing fake-engine test**
 
@@ -1992,6 +2085,42 @@ describe('simValidate', () => {
     expect(JSON.parse(engine.simValidate('{nope'))).toHaveProperty('error');
   });
 });
+
+describe('simCount', () => {
+  const bulk = (candidates: number, cap = 400): string =>
+    JSON.stringify({
+      ...fixtureRequest,
+      bulk: {
+        mode: 'gear',
+        candidates: Array.from({ length: candidates }, (_, i) => ({
+          slot: 'head',
+          item_id: 16963 + i,
+          origin: 'bag',
+        })),
+        precision: 'normal',
+        cap,
+      },
+    });
+
+  it('counts the combinations a bulk request expands to', () => {
+    const engine = createFakeEngine();
+    expect(JSON.parse(engine.simCount(bulk(3)))).toEqual({ combinations: 3 });
+  });
+
+  it('answers cap_exceeded with both numbers rather than throwing them away', () => {
+    const engine = createFakeEngine();
+    expect(JSON.parse(engine.simCount(bulk(5, 4)))).toEqual({
+      error: 'cap_exceeded',
+      cap: 4,
+      combinations: 5,
+    });
+  });
+
+  it('counts a request with no bulk block as no combinations at all', () => {
+    const engine = createFakeEngine();
+    expect(JSON.parse(engine.simCount(JSON.stringify(fixtureRequest)))).toEqual({ combinations: 0 });
+  });
+});
 ```
 
 Add the two fixture consts at the top of the file if they are not already there:
@@ -2030,6 +2159,13 @@ In `src/lib/sim/engine.ts`, add to `EngineModule`:
    * a string that is not a request at all.
    */
   simValidate(requestJSON: string): string;
+  /**
+   * How many combinations a bulk request expands to, without allocating the requests
+   * (contract 10.2). Part B's live combination count and cap notice. A breach answers
+   * `{"error":"cap_exceeded","cap":n,"combinations":n}`, which is an answer and not a
+   * failure, so this one is NOT passed through `unwrapOrThrow`.
+   */
+  simCount(requestJSON: string): string;
 ```
 
 and, beside it:
@@ -2046,6 +2182,11 @@ export interface RequestValidation {
   ok: boolean;
   errors: RequestValidationError[];
 }
+
+/** `simCount`'s two answers, both of them ordinary (contract 10.2). */
+export type CountAnswer =
+  | { ok: true; combinations: number }
+  | { ok: false; cap: number; combinations: number };
 ```
 
 Add the two to `WasmGlobals` and to the object `loadWasmEngine` returns:
@@ -2053,12 +2194,15 @@ Add the two to `WasmGlobals` and to the object `loadWasmEngine` returns:
 ```ts
   simNeedsMore?: (resultJSON: string, requestJSON: string) => string;
   simValidate?: (requestJSON: string) => string;
+  simCount?: (requestJSON: string) => string;
 ```
 
 ```ts
     simNeedsMore: (resultJSON, requestJSON) =>
       unwrapOrThrow(globals.simNeedsMore!(resultJSON, requestJSON)),
     simValidate: (requestJSON) => unwrapOrThrow(globals.simValidate!(requestJSON)),
+    // No unwrapOrThrow: `cap_exceeded` carries two numbers the page renders.
+    simCount: (requestJSON) => globals.simCount!(requestJSON),
 ```
 
 - [ ] **Step 4: Implement both in the fake engine**
@@ -2111,6 +2255,27 @@ In `src/fixtures/sim/engine-fake.ts`, add to the returned object:
       }
       return JSON.stringify({ ok: errors.length === 0, errors });
     },
+
+    simCount(requestJSON) {
+      let request: SimRequest;
+      try {
+        request = JSON.parse(requestJSON) as SimRequest;
+      } catch (error) {
+        return JSON.stringify({ error: error instanceof Error ? error.message : String(error) });
+      }
+      const bulk = request.bulk;
+      if (bulk === undefined) return JSON.stringify({ combinations: 0 });
+      // A stand-in for `sim/bulk`'s own expansion, which knows slot fit, unique-equipped
+      // and weapon shapes; the real wasm counts properly. The fake counts what it can see
+      // -- one combination per candidate, per talent loadout, per set -- which is enough
+      // for the page's cap notice and its e2e to be exercised honestly.
+      const combinations =
+        (bulk.candidates?.length ?? 0) + (bulk.talents?.length ?? 0) + (bulk.sets?.length ?? 0);
+      if (bulk.cap > 0 && combinations > bulk.cap) {
+        return JSON.stringify({ error: 'cap_exceeded', cap: bulk.cap, combinations });
+      }
+      return JSON.stringify({ combinations });
+    },
 ```
 
 - [ ] **Step 5: Run the fake-engine test to verify it passes**
@@ -2155,6 +2320,26 @@ describe('the pool routes the two synchronous exports to worker 0', () => {
     expect(bad.errors[0].field).toBe('spec');
     pool.terminate();
   });
+
+  it('answers count as a discriminated result, cap breach included', async () => {
+    const pool = createPool({ hardwareConcurrency: 2, spawn: () => createFakeWorker(createFakeEngine()) });
+    const bulk = (cap: number): string =>
+      JSON.stringify({
+        ...fixtureResult.request,
+        bulk: {
+          mode: 'gear',
+          candidates: [
+            { slot: 'head', item_id: 16963, origin: 'bag' },
+            { slot: 'head', item_id: 16964, origin: 'bag' },
+          ],
+          precision: 'normal',
+          cap,
+        },
+      });
+    expect(await pool.count(bulk(400))).toEqual({ ok: true, combinations: 2 });
+    expect(await pool.count(bulk(1))).toEqual({ ok: false, cap: 1, combinations: 2 });
+    pool.terminate();
+  });
 });
 ```
 
@@ -2180,6 +2365,7 @@ export type ToWorker =
   | { kind: 'combine'; token: number; results: string[] }
   | { kind: 'needsMore'; token: number; result: string; request: string }
   | { kind: 'validate'; token: number; request: string }
+  | { kind: 'count'; token: number; request: string }
   | { kind: 'abort'; callbackId: string };
 ```
 
@@ -2199,6 +2385,8 @@ export interface SimPool {
   needsMore(result: string, request: string): Promise<boolean>;
   /** `api.SimRequest.Validate` over an edited request. */
   validate(request: string): Promise<RequestValidation>;
+  /** How many combinations a bulk request expands to; a cap breach is an answer, not a throw. */
+  count(request: string): Promise<CountAnswer>;
   abort(callbackId: string): void;
   terminate(): void;
 }
@@ -2215,9 +2403,24 @@ and implement them beside `combine` in the returned object:
       const answer = await send<string>(0, (token) => ({ kind: 'validate', token, request }));
       return JSON.parse(answer) as RequestValidation;
     },
+    async count(request) {
+      const answer = await send<string>(0, (token) => ({ kind: 'count', token, request }));
+      const parsed = JSON.parse(answer) as {
+        error?: string;
+        cap?: number;
+        combinations?: number;
+      };
+      // `cap_exceeded` is the one error envelope on this lane that is a real answer; any
+      // other error from the engine is a genuine failure and is thrown as one.
+      if (parsed.error === 'cap_exceeded') {
+        return { ok: false, cap: parsed.cap ?? 0, combinations: parsed.combinations ?? 0 };
+      }
+      if (parsed.error !== undefined) throw new Error(parsed.error);
+      return { ok: true, combinations: parsed.combinations ?? 0 };
+    },
 ```
 
-with `import type { RequestValidation } from './engine';` at the top.
+with `import type { CountAnswer, RequestValidation } from './engine';` at the top.
 
 - [ ] **Step 9: Handle both in the real worker and the fake one**
 
@@ -2232,6 +2435,10 @@ In `src/lib/sim/sim.worker.ts`, add two branches to `handle()`, after the `combi
       reply({ kind: 'one', token, result: loaded.simValidate(message.request) });
       return;
     }
+    if (message.kind === 'count') {
+      reply({ kind: 'one', token, result: loaded.simCount(message.request) });
+      return;
+    }
 ```
 
 In `src/test-support/fake-worker.ts`, the same two, inside the `postMessage` chain between the `combine` branch and the `else`:
@@ -2241,6 +2448,8 @@ In `src/test-support/fake-worker.ts`, the same two, inside the `postMessage` cha
             emit({ kind: 'one', token, result: engine.simNeedsMore(message.result, message.request) });
           } else if (message.kind === 'validate') {
             emit({ kind: 'one', token, result: engine.simValidate(message.request) });
+          } else if (message.kind === 'count') {
+            emit({ kind: 'one', token, result: engine.simCount(message.request) });
 ```
 
 `createBrokenWorker` needs no change: it already answers every non-abort message with `{kind: 'failed'}`.
@@ -2262,13 +2471,14 @@ cd /Users/jh/code/forever/web && npx astro check && \
   npx eslint src/lib/sim/engine.ts src/lib/sim/worker.ts src/lib/sim/sim.worker.ts src/test-support/fake-worker.ts src/fixtures/sim/engine-fake.ts src/fixtures/sim/engine-fake.test.ts src/lib/sim/worker.test.ts && \
   npx prettier --check src/lib/sim/engine.ts src/lib/sim/worker.ts src/lib/sim/sim.worker.ts src/test-support/fake-worker.ts src/fixtures/sim/engine-fake.ts src/fixtures/sim/engine-fake.test.ts src/lib/sim/worker.test.ts && \
   git add -A src/lib/sim src/test-support src/fixtures/sim && \
-  git commit -m "feat(sim): simNeedsMore and simValidate, routed through the pool
+  git commit -m "feat(sim): the three exports of contract 10.2, through the pool
 
-Two synchronous wasm exports on worker 0, beside simSplit and
-simCombine. Whether a target-error run has another step and whether an
-edited request is legal are both the engine's decisions; neither is
-reimplemented in TypeScript. Both are additions to contract section 4
-and are pinned here as {needs_more} and {ok, errors[]}.
+simNeedsMore, simValidate and simCount on worker 0, beside simSplit and
+simCombine. Whether a target-error run has another step, whether an
+edited request is legal and how many combinations a bulk request
+expands to are all the engine's decisions; none is reimplemented in
+TypeScript. simCount's cap_exceeded keeps its two numbers rather than
+being thrown as an Error, because the cap notice renders both.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
@@ -2278,6 +2488,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ### Task 6: Precision — fast, normal, high, and "until ±0.5%"
 
 Design 4.2. The three fixed counts plus the step loop, with the lane's ceiling. `run.ts` grows the loop; the store grows one field.
+
+Two rulings bound it. **Contract A3**: a plain fixed run keeps the closed `ValidIterations` set, and a `TargetError` run's `Iterations` is instead "a positive multiple of `StepIterations` at or under `LaneIterationCeiling[lane]`", with `Validate` applying the rule for the request's kind — so nothing here needs a workaround for the closed set, and both ceilings are multiples of the step by construction. **Contract 10.2**: stage requests run unsplit, and `simSplit`/`simCombine` are for plain runs only — a target-error run *is* a plain run, so each of its steps still splits across the pool exactly as today's single run does. Only part B's bulk stages bypass the splitter.
 
 **Files:**
 - Create: `src/lib/sim/precision.ts`
@@ -2289,7 +2501,7 @@ Design 4.2. The three fixed counts plus the step loop, with the lane's ceiling. 
 **Interfaces:**
 - Consumes: `worker.ts`'s `SimPool.needsMore` (Task 5), `types.ts`'s `STEP_ITERATIONS_DEFAULT` (Task 1).
 - Produces:
-  - `precision.ts`: `type PrecisionId = 'fast' | 'normal' | 'high' | 'target-error'`, `PRECISIONS: readonly PrecisionId[]`, `BULK_PRECISIONS: readonly ('fast'|'normal'|'high')[]`, `PRECISION_ITERATIONS: Record<'fast'|'normal'|'high', number>`, `TARGET_ERROR = 0.005`, `STEP_ITERATIONS`, `LANE_ITERATION_CEILING: Record<'browser'|'server', number>`, `interface PrecisionPlan { iterations: number; targetError: number; step: number }`, `precisionPlan(id, lane)`, `precisionOf(request)`, `relativeError(estimate)`
+  - `precision.ts`: `type PrecisionId = 'fast' | 'normal' | 'high' | 'target-error'`, `PRECISIONS: readonly PrecisionId[]`, `BULK_PRECISIONS: readonly ('fast'|'normal'|'high')[]`, `PRECISION_ITERATIONS: Record<'fast'|'normal'|'high', number>`, `TARGET_ERROR = 0.005`, `STEP_ITERATIONS`, `LANE_ITERATION_CEILING: Record<'browser'|'server', number>`, `CAPS: Record<'browser'|'server', number>` (contract A2), `interface PrecisionPlan { iterations: number; targetError: number; step: number }`, `precisionPlan(id, lane)`, `precisionOf(request)`, `relativeError(estimate)`
   - `run.ts`: `RunInput` (+ `targetError?`, `stepIterations?`, `pool` unchanged), `RunUpdate` (+ `relativeError: number`)
   - `store.svelte.ts`: `precisionId` getter, `setPrecisionId(id: PrecisionId)`, `lane` getter
 
@@ -2301,6 +2513,7 @@ Create `src/lib/sim/precision.test.ts`:
 import { describe, expect, it } from 'vitest';
 import {
   BULK_PRECISIONS,
+  CAPS,
   LANE_ITERATION_CEILING,
   PRECISIONS,
   PRECISION_ITERATIONS,
@@ -2322,10 +2535,21 @@ describe('the precision vocabulary', () => {
     expect(BULK_PRECISIONS).toEqual(['fast', 'normal', 'high']);
   });
 
+  it('carries contract A2’s combination caps, the server one at five thousand', () => {
+    expect(CAPS).toEqual({ browser: 400, server: 5000 });
+  });
+
   it('carries the contract’s half a per cent, thousand-iteration step and lane ceilings', () => {
     expect(TARGET_ERROR).toBe(0.005);
     expect(STEP_ITERATIONS).toBe(1000);
     expect(LANE_ITERATION_CEILING).toEqual({ browser: 30_000, server: 100_000 });
+  });
+
+  it('keeps every ceiling a positive multiple of the step, which is contract A3’s rule', () => {
+    for (const ceiling of Object.values(LANE_ITERATION_CEILING)) {
+      expect(ceiling).toBeGreaterThan(0);
+      expect(ceiling % STEP_ITERATIONS).toBe(0);
+    }
   });
 });
 
@@ -2392,6 +2616,10 @@ Expected: FAIL — `Failed to resolve import "./precision"`.
 // ceiling is reached, and the results line says which of the two stopped it. The decision
 // itself is never taken here -- `SimPool.needsMore` asks the engine after every step (see
 // run.ts). This module only carries the numbers.
+//
+// Contract A3 requires a target-error run's `Iterations` to be a positive multiple of
+// `StepIterations` at or under the lane's ceiling; both ceilings below satisfy that, and
+// precision.test.ts asserts it so a future ceiling cannot quietly break `Validate`.
 import type { Estimate, SimRequest } from './types';
 import { STEP_ITERATIONS_DEFAULT } from './types';
 
@@ -2420,6 +2648,16 @@ export const TARGET_ERROR = 0.005;
 export const STEP_ITERATIONS = STEP_ITERATIONS_DEFAULT;
 
 export const LANE_ITERATION_CEILING: Record<Lane, number> = { browser: 30_000, server: 100_000 };
+
+/**
+ * Contract A2: how many combinations a bulk request may expand to on each lane. The
+ * server figure is 5,000, not the design's 20,000 -- at the measured native rate a
+ * 20,000-combination fast run cannot finish inside the job's fifteen minutes.
+ *
+ * Nothing on `/sim` uses this; it lives beside the iteration ceilings because they are
+ * the same kind of fact, and part B's cap notice would otherwise keep a second copy.
+ */
+export const CAPS: Record<Lane, number> = { browser: 400, server: 5000 };
 
 export interface PrecisionPlan {
   /** The count for a fixed run, the ceiling for a target-error run. */
@@ -3222,23 +3460,29 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 
 ### Task 8: The id vocabulary, generated from IDS.md, and the panel's grouping
 
-Design 4.3 wants the whole list, "grouped the way the engine groups them". The list itself is `sim/request/IDS.md`, generated by the engine from its own protobuf descriptors, and copying several hundred ids into `web/` would be a second copy to keep in step — which is exactly the reason `settings.ts`'s current comment gives for the preset being the only list it holds. So the vocabulary is generated into `src/data/generated/sim-ids.json` by a script, and `buffs.ts` holds only the grouping: a table from IDS.md's own "lands in" / "sets" column to a panel section. Graded ids (`<id>:improved`, contract 1.7) appear the day the sim module regenerates IDS.md, with no change here.
+Design 4.3 wants the whole list, "grouped the way the engine groups them". The list itself is `sim/request/IDS.md`, generated by the engine from its own protobuf descriptors, and copying several hundred ids into `web/` would be a second copy to keep in step — which is exactly the reason `settings.ts`'s current comment gives for the preset being the only list it holds. So the vocabulary is generated into `src/data/generated/sim-ids.json` by a script, and `buffs.ts` holds only the grouping: a table from IDS.md's own "lands in" / "sets" column to a panel section.
+
+Contract **A7** has the sim module lane regenerate IDS.md with three things it does not carry today: the graded `<id>:improved` rows (contract 1.7), a **World buffs** section, and a **Stats** section holding the fork's `proto.Stat` enum names in snake case. The parser reads all three now, so each appears with no change here the day it is generated — and the Stats vocabulary is what part B's `/sim/weights` builds its `WeightsSpec` from.
+
+Contract **10.8** pins that vocabulary exactly, so `stats.ts` carries the list verbatim as its fallback and a test asserts the generated section agrees with it whenever one exists. The engine has **one `hit` and one `crit`**: there is no `melee_hit`, `spell_hit`, `melee_crit` or `spell_crit` anywhere on this lane. Haste *is* split — `spell_haste` and `melee_haste` — and `MP5` is spelled `mp5`.
 
 **Files:**
 - Create: `scripts/ids-md.mjs`
 - Create: `scripts/sync-sim-ids.mjs`
 - Create: `src/lib/sim/buffs.ts`
+- Create: `src/lib/sim/stats.ts`
 - Modify: `package.json`
 - Modify: `src/lib/sim/copy.ts`
-- Test: `src/lib/sim/ids-md.test.ts`, `src/lib/sim/buffs.test.ts`
+- Test: `src/lib/sim/ids-md.test.ts`, `src/lib/sim/buffs.test.ts`, `src/lib/sim/stats.test.ts`
 
 **Interfaces:**
 - Consumes: nothing.
 - Produces:
-  - `scripts/ids-md.mjs`: `parseIdsMarkdown(markdown) -> { buffs: [{id, message}], consumables: [{id, sets}], professions: [string], worldBuffs: [string] }`
+  - `scripts/ids-md.mjs`: `parseIdsMarkdown(markdown) -> { buffs: [{id, message}], consumables: [{id, sets}], professions: [string], worldBuffs: [string], stats: [string] }`
   - `src/data/generated/sim-ids.json`: that object
-  - `buffs.ts`: `type BuffGroupId`, `BUFF_GROUPS: readonly BuffGroupId[]`, `interface BuffRow { id: string; group: BuffGroupId; graded: boolean; kind: 'buff' | 'consumable' }`, `buildCatalogue(ids): BuffRow[]`, `CATALOGUE: readonly BuffRow[]`, `rowsIn(group): BuffRow[]`, `type BuffGrade = 'off' | 'on' | 'improved'`, `IMPROVED_SUFFIX`, `gradeOf(selected, id)`, `setGrade(selected, id, grade)`
-  - `copy.ts`: `simCopy.buffGroupLabel: Record<string, string>`, `simCopy.gradeLabel: Record<string, string>`
+  - `buffs.ts`: `type BuffGroupId`, `BUFF_GROUPS: readonly BuffGroupId[]`, `interface BuffRow { id: string; group: BuffGroupId; graded: boolean; kind: 'buff' | 'consumable' }`, `interface SimIdsFile`, `buildCatalogue(ids): BuffRow[]`, `CATALOGUE: readonly BuffRow[]`, `rowsIn(group): BuffRow[]`, `type BuffGrade = 'off' | 'on' | 'improved'`, `IMPROVED_SUFFIX`, `gradeOf(selected, id)`, `setGrade(selected, id, grade)`
+  - `stats.ts`: `PINNED_STATS: readonly string[]` (contract 10.8, verbatim), `SIM_STATS: readonly string[]` (the generated section when there is one, `PINNED_STATS` until then), `statLabel(id: string): string` — **part B's `/sim/weights` builds `WeightsSpec.stats` and its reference picker from these**
+  - `copy.ts`: `simCopy.buffGroupLabel: Record<string, string>`, `simCopy.gradeLabel: Record<string, string>`, `simCopy.statLabel: Record<string, string>`
 
 - [ ] **Step 1: Write the failing parser test**
 
@@ -3284,6 +3528,16 @@ Prose the parser must skip, including a | pipe | in a sentence.
 | slug | engine enum |
 | --- | --- |
 | \`alchemy\` | Profession.Alchemy |
+
+## Stats
+
+| id | proto.Stat |
+| --- | --- |
+| \`attack_power\` | AttackPower |
+| \`crit\` | Crit |
+| \`melee_haste\` | MeleeHaste |
+| \`mp5\` | MP5 |
+| \`spell_haste\` | SpellHaste |
 `;
 
 describe('parseIdsMarkdown', () => {
@@ -3314,6 +3568,13 @@ describe('parseIdsMarkdown', () => {
     expect(parsed.professions).toEqual(['alchemy']);
   });
 
+  it('reads the Stats section contract A7 adds, in the enum’s own snake case', () => {
+    expect(parsed.stats).toEqual(['attack_power', 'crit', 'melee_haste', 'mp5', 'spell_haste']);
+    // A7 and 10.8: haste is split, MP5 is `mp5`, and hit and crit are single stats.
+    expect(parsed.stats).not.toContain('haste');
+    expect(parsed.stats).not.toContain('melee_crit');
+  });
+
   it('skips prose, headings and the separator row rather than reading them as ids', () => {
     expect(parsed.buffs.map((row) => row.id)).not.toContain('---');
     expect(parsed.buffs.map((row) => row.id)).not.toContain('id');
@@ -3326,6 +3587,7 @@ describe('parseIdsMarkdown', () => {
       consumables: [],
       professions: [],
       worldBuffs: [],
+      stats: [],
     });
   });
 });
@@ -3354,7 +3616,7 @@ Create `web/scripts/ids-md.mjs`:
 
 /** @typedef {{ id: string, message: string }} BuffIdRow */
 /** @typedef {{ id: string, sets: string }} ConsumableIdRow */
-/** @typedef {{ buffs: BuffIdRow[], consumables: ConsumableIdRow[], professions: string[], worldBuffs: string[] }} SimIds */
+/** @typedef {{ buffs: BuffIdRow[], consumables: ConsumableIdRow[], professions: string[], worldBuffs: string[], stats: string[] }} SimIds */
 
 /** A markdown table cell's contents, with the backticks IDS.md wraps every id in removed. */
 function cell(text) {
@@ -3402,11 +3664,15 @@ export function parseIdsMarkdown(markdown) {
   const consumableRows = sections.get('consumables') ?? [];
   const professionRows = sections.get('professions') ?? [];
   const worldRows = sections.get('world buffs') ?? [];
+  // Contract A7 adds both of these sections; absent ones read as empty lists, so this
+  // parser works against today's IDS.md and against the regenerated one unchanged.
+  const statRows = sections.get('stats') ?? [];
   return {
     buffs: buffRows.map((cells) => ({ id: cells[0], message: cells[1] ?? '' })),
     consumables: consumableRows.map((cells) => ({ id: cells[0], sets: cells[1] ?? '' })),
     professions: professionRows.map((cells) => cells[0]),
     worldBuffs: worldRows.map((cells) => cells[0]),
+    stats: statRows.map((cells) => cells[0]),
   };
 }
 ```
@@ -3550,6 +3816,7 @@ describe('the catalogue', () => {
       consumables: [],
       professions: [],
       worldBuffs: [],
+      stats: [],
     });
     expect(catalogue.map((row) => row.id)).toEqual(['battle_shout', 'thorns']);
     expect(catalogue.find((row) => row.id === 'battle_shout')?.graded).toBe(true);
@@ -3692,6 +3959,8 @@ export interface SimIdsFile {
   consumables: { id: string; sets: string }[];
   professions: string[];
   worldBuffs: string[];
+  /** Contract A7's Stats section. Read by stats.ts, not by the catalogue. */
+  stats: string[];
 }
 
 export interface BuffRow {
@@ -3830,31 +4099,284 @@ export function setGrade(selected: readonly string[], id: string, grade: BuffGra
 }
 ```
 
-- [ ] **Step 9: Run both tests**
+- [ ] **Step 9: Write the failing stats test**
+
+Create `src/lib/sim/stats.test.ts`:
+
+```ts
+import { describe, expect, it } from 'vitest';
+import generated from '../../data/generated/sim-ids.json';
+import { simCopy } from './copy';
+import { PINNED_STATS, SIM_STATS, statLabel } from './stats';
+
+describe('PINNED_STATS', () => {
+  it('is contract 10.8’s list, verbatim and in its order', () => {
+    expect(PINNED_STATS).toEqual([
+      'strength',
+      'agility',
+      'stamina',
+      'intellect',
+      'spirit',
+      'spell_power',
+      'arcane_power',
+      'fire_power',
+      'frost_power',
+      'holy_power',
+      'nature_power',
+      'shadow_power',
+      'mp5',
+      'hit',
+      'crit',
+      'spell_haste',
+      'spell_penetration',
+      'attack_power',
+      'melee_haste',
+      'armor_penetration',
+      'expertise',
+      'mana',
+      'energy',
+      'rage',
+      'armor',
+      'ranged_attack_power',
+      'defense',
+      'block',
+      'block_value',
+      'dodge',
+      'parry',
+      'health',
+      'arcane_resistance',
+      'fire_resistance',
+      'frost_resistance',
+      'nature_resistance',
+      'shadow_resistance',
+      'bonus_armor',
+      'healing_power',
+      'spell_damage',
+      'feral_attack_power',
+    ]);
+  });
+
+  it('carries one hit and one crit, and splits haste, which is 10.8’s whole point', () => {
+    expect(PINNED_STATS).toContain('hit');
+    expect(PINNED_STATS).toContain('crit');
+    expect(PINNED_STATS).toContain('spell_haste');
+    expect(PINNED_STATS).toContain('melee_haste');
+    expect(PINNED_STATS).toContain('mp5');
+    for (const forbidden of ['melee_hit', 'spell_hit', 'melee_crit', 'spell_crit', 'haste']) {
+      expect(PINNED_STATS, forbidden).not.toContain(forbidden);
+    }
+  });
+
+  it('names every one of them, so no weights row ever renders a raw id', () => {
+    for (const stat of PINNED_STATS) {
+      expect(simCopy.statLabel[stat], stat).toBeTruthy();
+    }
+  });
+
+  it('names nothing 10.8 does not list, so a stale label cannot outlive its stat', () => {
+    for (const named of Object.keys(simCopy.statLabel)) {
+      expect(PINNED_STATS, named).toContain(named);
+    }
+  });
+});
+
+describe('SIM_STATS', () => {
+  it('is the pinned list until IDS.md publishes a Stats section', () => {
+    expect(SIM_STATS).toEqual(generated.stats.length > 0 ? generated.stats : PINNED_STATS);
+  });
+
+  it('agrees with the pinned list whenever IDS.md does publish one', () => {
+    // The generated section and 10.8's pinning are the same vocabulary from two
+    // directions; if they ever disagree, one of them is wrong and this says so loudly
+    // rather than letting the page offer a stat the engine cannot weigh.
+    if (generated.stats.length > 0) expect([...generated.stats].sort()).toEqual([...PINNED_STATS].sort());
+  });
+});
+
+describe('statLabel', () => {
+  it('prefers the copy table’s name', () => {
+    expect(statLabel('attack_power')).toBe('Attack power');
+    expect(statLabel('spell_haste')).toBe('Spell haste');
+    expect(statLabel('mp5')).toBe('MP5');
+  });
+
+  it('humanises an id the copy table does not name, rather than showing the id raw', () => {
+    expect(statLabel('some_new_stat')).toBe('Some new stat');
+  });
+});
+```
+
+- [ ] **Step 10: Write `stats.ts` and its copy**
+
+Append to `simCopy`:
+
+```ts
+  /**
+   * Stat names, for the weights page (part B). The vocabulary is contract 10.8's pinning
+   * of the fork's `proto.Stat` enum in snake case: the engine carries ONE `hit` and ONE
+   * `crit` -- there is no `melee_hit`, `spell_hit`, `melee_crit` or `spell_crit` -- while
+   * haste IS split into `spell_haste` and `melee_haste`, and `MP5` is spelled `mp5`.
+   * One key per id in `PINNED_STATS`, no more and no fewer; stats.test.ts asserts both
+   * directions, so a renamed stat cannot leave a stale word behind.
+   */
+  statLabel: {
+    strength: 'Strength',
+    agility: 'Agility',
+    stamina: 'Stamina',
+    intellect: 'Intellect',
+    spirit: 'Spirit',
+    spell_power: 'Spell power',
+    arcane_power: 'Arcane power',
+    fire_power: 'Fire power',
+    frost_power: 'Frost power',
+    holy_power: 'Holy power',
+    nature_power: 'Nature power',
+    shadow_power: 'Shadow power',
+    mp5: 'MP5',
+    hit: 'Hit',
+    crit: 'Crit',
+    spell_haste: 'Spell haste',
+    spell_penetration: 'Spell penetration',
+    attack_power: 'Attack power',
+    melee_haste: 'Melee haste',
+    armor_penetration: 'Armor penetration',
+    expertise: 'Expertise',
+    mana: 'Mana',
+    energy: 'Energy',
+    rage: 'Rage',
+    armor: 'Armor',
+    ranged_attack_power: 'Ranged attack power',
+    defense: 'Defense',
+    block: 'Block',
+    block_value: 'Block value',
+    dodge: 'Dodge',
+    parry: 'Parry',
+    health: 'Health',
+    arcane_resistance: 'Arcane resistance',
+    fire_resistance: 'Fire resistance',
+    frost_resistance: 'Frost resistance',
+    nature_resistance: 'Nature resistance',
+    shadow_resistance: 'Shadow resistance',
+    bonus_armor: 'Bonus armor',
+    healing_power: 'Healing power',
+    spell_damage: 'Spell damage',
+    feral_attack_power: 'Feral attack power',
+  } as Record<string, string>,
+```
+
+Create `src/lib/sim/stats.ts`:
+
+```ts
+// web/src/lib/sim/stats.ts
+// The stat vocabulary: the fork's `proto.Stat` enum names in snake case, pinned verbatim
+// by contract 10.8 and generated into IDS.md's Stats section by the sim module (A7).
+//
+// Two things about this list are easy to get wrong and are wrong everywhere else:
+//
+//   * the engine carries ONE `hit` and ONE `crit`. There is no `melee_hit`, `spell_hit`,
+//     `melee_crit` or `spell_crit`, and a page that offered either pair would be asking
+//     for a weight the engine cannot compute;
+//   * haste IS split -- `spell_haste` and `melee_haste` -- so there is no bare `haste`.
+//
+// `MP5` is spelled `mp5`. 10.8 also fixes the reference defaults the weights page starts
+// on: `attack_power` for melee and hunters, `spell_power` for casters, served per spec as
+// `reference_stat` on GET /v1/specs, so no page hard-codes one.
+//
+// This is here rather than in buffs.ts because a stat is not a buff: buffs.ts owns the
+// panel's grouping and nothing else. Part B's /sim/weights is the only reader.
+import generated from '../../data/generated/sim-ids.json';
+import { simCopy } from './copy';
+
+/** Contract 10.8's list, verbatim and in its order. */
+export const PINNED_STATS: readonly string[] = [
+  'strength',
+  'agility',
+  'stamina',
+  'intellect',
+  'spirit',
+  'spell_power',
+  'arcane_power',
+  'fire_power',
+  'frost_power',
+  'holy_power',
+  'nature_power',
+  'shadow_power',
+  'mp5',
+  'hit',
+  'crit',
+  'spell_haste',
+  'spell_penetration',
+  'attack_power',
+  'melee_haste',
+  'armor_penetration',
+  'expertise',
+  'mana',
+  'energy',
+  'rage',
+  'armor',
+  'ranged_attack_power',
+  'defense',
+  'block',
+  'block_value',
+  'dodge',
+  'parry',
+  'health',
+  'arcane_resistance',
+  'fire_resistance',
+  'frost_resistance',
+  'nature_resistance',
+  'shadow_resistance',
+  'bonus_armor',
+  'healing_power',
+  'spell_damage',
+  'feral_attack_power',
+];
+
+/**
+ * The generated section when IDS.md has one, the pinned list until it does -- the same
+ * rule `buffs.ts` uses for the world buffs, and for the same reason: the generator is the
+ * long-term source of truth and the pinning is what makes the page correct today.
+ * stats.test.ts asserts the two agree whenever both exist.
+ */
+const published = (generated as { stats: string[] }).stats;
+
+export const SIM_STATS: readonly string[] = published.length > 0 ? published : PINNED_STATS;
+
+/** "attack_power" reads as "Attack power". The copy table first, then plain casing. */
+export function statLabel(id: string): string {
+  const named = simCopy.statLabel[id];
+  if (named !== undefined) return named;
+  const words = id.split('_').join(' ');
+  return words.charAt(0).toUpperCase() + words.slice(1);
+}
+```
+
+- [ ] **Step 11: Run all three tests**
 
 ```bash
 export PATH=/Users/jh/.nvm/versions/node/v22.12.0/bin:$PATH
-cd /Users/jh/code/forever/web && npx vitest run src/lib/sim/ids-md.test.ts src/lib/sim/buffs.test.ts
+cd /Users/jh/code/forever/web && npx vitest run src/lib/sim/ids-md.test.ts src/lib/sim/buffs.test.ts src/lib/sim/stats.test.ts
 ```
 
 Expected: PASS. If "holds every id the engine publishes" fails, the missing id's `Consumes` field is not in `BY_CONSUMES_FIELD`; add the row rather than loosening the test.
 
-- [ ] **Step 10: Check, lint, format, commit**
+- [ ] **Step 12: Check, lint, format, commit**
 
 ```bash
 export PATH=/Users/jh/.nvm/versions/node/v22.12.0/bin:$PATH
 cd /Users/jh/code/forever/web && npx astro check && \
-  npx eslint scripts/ids-md.mjs scripts/sync-sim-ids.mjs src/lib/sim/buffs.ts src/lib/sim/buffs.test.ts src/lib/sim/ids-md.test.ts && \
+  npx eslint scripts/ids-md.mjs scripts/sync-sim-ids.mjs src/lib/sim/buffs.ts src/lib/sim/stats.ts src/lib/sim/buffs.test.ts src/lib/sim/stats.test.ts src/lib/sim/ids-md.test.ts && \
   npx prettier --check scripts src/lib/sim package.json && \
   git add -A scripts src/lib/sim package.json && \
   git commit -m "feat(sim): the engine's id vocabulary, generated, and the panel's grouping
 
-sim/request/IDS.md is the only place the buff, consumable and
-profession vocabulary exists, so it is synced into
+sim/request/IDS.md is the only place the buff, consumable, profession
+and stat vocabulary exists, so it is synced into
 src/data/generated/sim-ids.json rather than copied by hand. buffs.ts
 holds the table from the engine's message and Consumes field to a panel
-section, and folds the contract's <id>:improved rows into a three-way
-grade on the plain id.
+section, folds the contract's <id>:improved rows into a three-way grade
+on the plain id, and stats.ts carries contract A7's Stats section for
+part B's weights page.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
@@ -3865,7 +4387,7 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 
 Design 4.3: "Each row is the id's display name and icon from the build". No such table exists in the build today, and this lane cannot invent one, so the loader is written the way `action-names.ts` already is: one optional file, and an honest fallback when it is absent — the humanised id, which is legible and true.
 
-> **Contract addition.** Section 6 lists `loot.json`, `enchants.json` and `suffixes.json`. A name-and-icon table for the buff/consumable vocabulary — `data/builds/<build>/simbuffs.json`, shape pinned below — is not in it. The data lane adds the row; this task ships the reader and the fallback so the panel is not blocked on it.
+> **Ratified by contract 10.4.** `data/builds/<build>/simbuffs.json` is now a named data file with exactly the shape below — `{ "entries": { "<id>": { "name", "icon" } } }` for every IDS.md buff, debuff, world buff and consumable id — and the data lane owns it. The humanised fallback stays: the file is `required: false` in the sync, so the panel works before the data lane's first emission and degrades honestly if a build ever ships without it.
 
 **Files:**
 - Create: `src/lib/sim/buff-names.ts`
@@ -3876,7 +4398,7 @@ Design 4.3: "Each row is the id's display name and icon from the build". No such
 - Consumes: `planner/load.ts`'s `dataUrl`, `fetchJson`.
 - Produces: `buff-names.ts`: `interface BuffNames { entries: Record<string, { name: string; icon: string }> }`, `loadBuffNames(build: string): Promise<BuffNames>`, `EMPTY_BUFF_NAMES`, `buffLabel(id: string, names: BuffNames | null): string`, `buffIcon(build: string, id: string, names: BuffNames | null): string | null`
 
-**The file shape, pinned:** `data/builds/<build>/simbuffs.json`
+**The file shape (contract 10.4):** `data/builds/<build>/simbuffs.json`
 
 ```json
 { "entries": { "battle_shout": { "name": "Battle Shout", "icon": "ability_warrior_battleshout" } } }
@@ -3949,8 +4471,8 @@ Expected: FAIL — `Failed to resolve import "./buff-names"`.
 // The same shape and the same rule as action-names.ts: the build publishes a table, an id
 // the table does not carry keeps a legible form of itself, and a build with no table at
 // all renders humanised ids -- which is honest and is not worth an error banner on a page
-// whose numbers are all correct. The table is `data/builds/<build>/simbuffs.json`; the
-// data lane adds it (see this task's contract note) and until it exists every row falls
+// whose numbers are all correct. The table is `data/builds/<build>/simbuffs.json`
+// (contract 10.4), owned by the data lane; until a build publishes one, every row falls
 // back.
 import { dataUrl, fetchJson } from '../planner/load';
 
@@ -4003,7 +4525,7 @@ In `scripts/sync-data.mjs`, add one row to `SYNC_ENTRIES`, beside `simconsumes.j
   { name: 'simbuffs.json', kind: 'file', required: false },
 ```
 
-`required: false` is the point: the panel works without it today and gains names and icons the day the data lane publishes one.
+`required: false` is the point: contract 10.4 names the file but the data lane emits it on its own schedule, so the panel works without it today and gains names and icons the day one appears.
 
 - [ ] **Step 5: Run the test and the sync**
 
@@ -4024,10 +4546,10 @@ cd /Users/jh/code/forever/web && npx astro check && \
   git add -A src/lib/sim scripts && \
   git commit -m "feat(sim): display names and icons for the engine's buff ids
 
-Reads data/builds/<build>/simbuffs.json the way action-names.ts reads
-its own table, and humanises the id when the build has none -- which is
-today, since section 6 of the contract does not list the file yet. The
-panel is therefore not blocked on the data lane.
+Reads contract 10.4's data/builds/<build>/simbuffs.json the way
+action-names.ts reads its own table, and humanises the id when the
+build has none. The file is optional in the sync, so the panel is not
+blocked on the data lane's first emission.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
@@ -4891,7 +5413,7 @@ Design 5.1's second and third bullets.
 
 **Buff uptime with counts.** `report/AuraTable.svelte` already renders an "Applied" column from `track.applications`, and `SimResults.svelte` already mounts it for both the Buffs and Debuffs tabs — so the column the design asks for exists and the work is to *prove* it, by giving the cell the testid the sim's own e2e can pin (the uptime cell has one; the count cell does not).
 
-**Sample iteration log.** `result.sample` (contract 2) is one iteration's casts in order, pre-pull separated, with the resources after each cast. A new results tab renders it.
+**Sample iteration log.** `result.sample` (contract 2, as amended by **A12**) is one iteration's casts in order, pre-pull separated, with the resources after each cast. Each row carries an *action key* — `spell:23881`, `item:13503`, `other:melee` — and neither a display name nor a spell id, so the table resolves names with `resolveActionName` exactly as the cast table does and the two can never disagree about what an action is called. A new results tab renders it.
 
 **Files:**
 - Create: `src/lib/sim/sample-log.ts`
@@ -4922,9 +5444,9 @@ import type { SampleCast } from './types';
 const names = { spell: { '25286': 'Heroic Strike', '11305': 'Bloodrage' }, item: {} };
 
 const sample: SampleCast[] = [
-  { at_ms: -1500, spell_id: 11305, name: 'spell:11305', resources: { rage: 0 } },
-  { at_ms: 320, spell_id: 25286, name: 'spell:25286', target: 'Target', resources: { rage: 42 } },
-  { at_ms: 1900, spell_id: 25286, name: 'spell:25286', target: 'Target', resources: { rage: 12, mana: 300 } },
+  { at_ms: -1500, action: 'spell:11305', resources: { rage: 0 } },
+  { at_ms: 320, action: 'spell:25286', target: 'Target', resources: { rage: 42 } },
+  { at_ms: 1900, action: 'spell:25286', target: 'Target', resources: { rage: 12, mana: 300 } },
 ];
 
 describe('sampleTime', () => {
@@ -4938,8 +5460,12 @@ describe('sampleTime', () => {
 describe('sampleLog', () => {
   const log = sampleLog(sample, names);
 
-  it('resolves every name through the build’s table, never rendering an engine key', () => {
+  it('resolves every action key through the build’s table, never rendering the key', () => {
     expect(log.rows.map((row) => row.name)).toEqual(['Bloodrage', 'Heroic Strike', 'Heroic Strike']);
+  });
+
+  it('keeps an “other” key readable without a table, the way every cast row does', () => {
+    expect(sampleLog([{ at_ms: 0, action: 'other:melee' }], null).rows[0].name).toBe('Melee');
   });
 
   it('marks the pre-pull casts and counts them, so the table can rule a line under them', () => {
@@ -4963,7 +5489,7 @@ describe('sampleLog', () => {
 
   it('puts a resource nothing anticipated after the known ones rather than dropping it', () => {
     const odd = sampleLog(
-      [{ at_ms: 0, spell_id: 1, name: 'spell:1', resources: { rage: 1, zeal: 2 } }],
+      [{ at_ms: 0, action: 'spell:1', resources: { rage: 1, zeal: 2 } }],
       names,
     );
     expect(odd.columns).toEqual(['rage', 'zeal']);
@@ -4992,8 +5518,12 @@ Expected: FAIL — `Failed to resolve import "./sample-log"`.
 // resources at each cast, and the note that it is one iteration and not a guide".
 //
 // The order is the engine's and is never sorted here: a cast log read out of order is not
-// a cast log. Names go through resolveActionName like every other row on this lane, so a
-// key never reaches the table.
+// a cast log.
+//
+// Contract A12: a row carries an action key (`spell:23881`, `item:13503`, `other:melee`)
+// and nothing else. Names go through resolveActionName like every other row on this lane,
+// so a key never reaches the table and the sample and cast tables can never name one
+// action two different ways.
 import { resolveActionName, type ActionNames } from './action-names';
 import type { SampleCast } from './types';
 
@@ -5043,11 +5573,13 @@ export function sampleLog(
   const extra = [...seen].filter((key) => !RESOURCE_ORDER.includes(key)).sort();
 
   const rows = sample.map((cast, index) => ({
-    key: `${index}-${cast.at_ms}-${cast.spell_id}`,
+    // The index is in the key because two casts can genuinely share an instant and an
+    // action, and Svelte 5 throws on a repeated {#each} key.
+    key: `${index}-${cast.at_ms}-${cast.action}`,
     atMs: cast.at_ms,
     prePull: cast.at_ms < 0,
     time: sampleTime(cast.at_ms),
-    name: resolveActionName(cast.name, names),
+    name: resolveActionName(cast.action, names),
     target: cast.target ?? '',
     resources: { ...(cast.resources ?? {}) },
   }));
@@ -5186,12 +5718,12 @@ Create `src/fixtures/sim/sample.json`:
 
 ```json
 [
-  { "at_ms": -3000, "spell_id": 11305, "name": "spell:11305", "resources": { "rage": 0 } },
-  { "at_ms": -1000, "spell_id": 6673, "name": "spell:6673", "resources": { "rage": 10 } },
-  { "at_ms": 150, "spell_id": 25286, "name": "spell:25286", "target": "Target", "resources": { "rage": 31 } },
-  { "at_ms": 1600, "spell_id": 25242, "name": "spell:25242", "target": "Target", "resources": { "rage": 9 } },
-  { "at_ms": 3050, "spell_id": 25286, "name": "spell:25286", "target": "Target", "resources": { "rage": 28 } },
-  { "at_ms": 4400, "spell_id": 11605, "name": "spell:11605", "target": "Target", "resources": { "rage": 7 } }
+  { "at_ms": -3000, "action": "spell:11305", "resources": { "rage": 0 } },
+  { "at_ms": -1000, "action": "spell:6673", "resources": { "rage": 10 } },
+  { "at_ms": 150, "action": "spell:25286", "target": "Target", "resources": { "rage": 31 } },
+  { "at_ms": 1600, "action": "other:melee", "target": "Target", "resources": { "rage": 9 } },
+  { "at_ms": 3050, "action": "spell:25286", "target": "Target", "resources": { "rage": 28 } },
+  { "at_ms": 4400, "action": "spell:11605", "target": "Target", "resources": { "rage": 7 } }
 ]
 ```
 
@@ -5254,9 +5786,11 @@ cd /Users/jh/code/forever/web && npx astro check && npx eslint src components te
 
 Design 5.1's sample log as a results tab: one iteration's casts in the
 engine's own order, the pre-pull ruled off, and the resources after
-each cast in their own columns. The aura table already carried an
-Applied count for both the buff and debuff tabs; it gains the testid
-its uptime cell already had so the sim's own suite can pin the number.
+each cast in their own columns. Each row carries contract A12's action
+key and the name is resolved with resolveActionName, so the sample and
+cast tables cannot name one action two ways. The aura table already
+carried an Applied count for both the buff and debuff tabs; it gains
+the testid its uptime cell already had.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
@@ -5803,7 +6337,7 @@ Design 8, contract 9's `sim-request-drawer`. The exact JSON the run will send, e
 
 Two buttons rather than one, because they are genuinely different things. **Apply to the page** rebuilds the page's own state from the request — settings, precision and the character — and is what a shared request from another player is for. **Run this request** sends the edited JSON exactly as typed, which is the escape hatch the design names: "any field the panel does not expose is reachable here". Apply cannot carry a field the page has no control for; Run can.
 
-> **Known limitation, stated in the drawer's own copy.** Apply rebuilds the character through the FS1 route (`encodeFS1` over the request's class, race, talents and gear), which is how `SimView`'s existing "Run this yourself" already works. `SimCharacter.gear` is a map of item ids, so a per-slot enchant or suffix in a pasted request is not part of the page's character model and is dropped by Apply. Run keeps it.
+> **Temporary, and lifted by Task 17.** Apply rebuilds the character through the FS1 route (`encodeFS1` over the request's class, race, talents and gear), which is how `SimView`'s existing "Run this yourself" already works. `SimCharacter.gear` is a map of item ids today, so a per-slot enchant or suffix in a pasted request is dropped by Apply and kept by Run; the drawer's copy says so. Contract 10.5 puts per-slot enchant and suffix on `SimCharacter` and lets an FS1 gear entry carry them, so **Task 17 upgrades this call to `encodeFS1V2`, makes Apply lossless, and replaces the note**. This task ships the honest version of the sentence rather than a promise.
 
 **Files:**
 - Create: `src/lib/sim/request-json.ts`
@@ -5978,6 +6512,8 @@ export function settingsFromRequest(request: SimRequest): SimSettings {
   requestNote:
     'The exact JSON this run sends. Edit it and run it as written: anything the panels above do not offer is reachable here.',
   requestApply: 'Apply to the page',
+  // Task 17 replaces this sentence with the lossless one once contract 10.5's per-slot
+  // enchant and suffix are on SimCharacter. Until then it states what actually happens.
   requestApplyNote:
     'Rebuilds the settings, the precision and the character from this request. Per-slot enchants and suffixes are not part of the page’s character yet, so Apply drops them; Run keeps them.',
   requestRun: 'Run this request',
@@ -6637,21 +7173,27 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 
 ---
 
-### Task 17: FS1 version 2
+### Task 17: FS1 version 2, with per-slot enchants, suffixes and professions
 
-Contract 7. Everything before the first `|` is version 1 unchanged, so every existing decoder keeps working; the sections after it are fixed in order, and unknown ones are ignored and reported.
+Contract 7 as corrected by **10.5**. Everything before the first `|` is version 1 unchanged, so every existing decoder keeps working; the sections after it are fixed in order, and unknown ones are ignored and reported. 10.5 adds three things to what section 7 said:
+
+- a `<gear>` entry and a `sets=` gear entry may carry `item_id[:enchant[:suffix]]`, exactly as a bag entry does — a version-1 decoder reading a bare id is unaffected, because a bare id is still a legal entry;
+- a `professions=<slug>,<slug>` section follows `loadouts=`;
+- `SimCharacter` gains per-slot enchant and suffix, which is what makes the request drawer's "Apply" lossless (Task 15's note comes off in this task).
 
 **Files:**
 - Modify: `src/lib/planner/fs1.ts`
 - Modify: `src/lib/sim/character.ts`
 - Modify: `src/lib/sim/url.ts` (`MAX_CODE`)
-- Test: `src/lib/planner/fs1.test.ts`, `src/lib/sim/character.test.ts`
+- Modify: `src/lib/sim/store.svelte.ts` (`applyRequest` becomes lossless)
+- Modify: `src/lib/sim/copy.ts` (`requestApplyNote`)
+- Test: `src/lib/planner/fs1.test.ts`, `src/lib/sim/character.test.ts`, `tests/e2e/sim-request.spec.ts`
 
 **Interfaces:**
-- Consumes: `planner/types.ts`'s `SLOTS`, `Gear`, `Slot`.
+- Consumes: `planner/types.ts`'s `SLOTS`, `Gear`, `Slot`; `sim/types.ts`'s `GearSlot`.
 - Produces:
-  - `fs1.ts`: `MAX_CODE_LENGTH = 16_384` (exported now), `interface FS1Item { itemId: number; enchant?: number; suffix?: number }`, `interface FS1Set { name: string; gear: Gear }`, `interface FS1Loadout { name: string; treeRanks: number[][] }`, `FS1Build` (+ `bags: FS1Item[]`, `bank: FS1Item[]`, `sets: FS1Set[]`, `loadouts: FS1Loadout[]`, `ignored: string[]`), `encodeFS1` (unchanged output), `encodeFS1V2(build: FS1Build): string`
-  - `character.ts`: `SimCharacter` (+ `bags: FS1Item[]`, `bank: FS1Item[]`, `sets: FS1Set[]`, `loadouts: FS1Loadout[]`) — **this is the block part B reads for its candidate lists.**
+  - `fs1.ts`: `MAX_CODE_LENGTH = 16_384` (exported now), `interface FS1Item { itemId: number; enchant?: number; suffix?: number }`, `interface FS1GearSlot { slot: Slot; itemId: number; enchant?: number; suffix?: number }`, `interface FS1Set { name: string; gear: FS1GearSlot[] }`, `interface FS1Loadout { name: string; treeRanks: number[][] }`, `FS1Build` (+ `gearSlots?: FS1GearSlot[]`, `bags: FS1Item[]`, `bank: FS1Item[]`, `sets: FS1Set[]`, `loadouts: FS1Loadout[]`, `professions: string[]`, `ignored: string[]`), `gearSlotsFrom(gear: Gear): FS1GearSlot[]`, `encodeFS1` (unchanged output), `encodeFS1V2(build: FS1Build): string`
+  - `character.ts`: `SimCharacter` (+ `gear_slots: GearSlot[]`, `professions: string[]`, `bags: FS1Item[]`, `bank: FS1Item[]`, `sets: FS1Set[]`, `loadouts: FS1Loadout[]`) — **this is the block part B reads for its candidate lists**; `toCharacterSpec` sends `gear_slots` and `professions` when it has them.
 
 - [ ] **Step 1: Write the failing test**
 
@@ -6666,11 +7208,37 @@ describe('version 2 sections', () => {
     expect(decoded.ok).toBe(true);
     if (!decoded.ok) return;
     expect(decoded.build.gear).toEqual({ head: 12640, main_hand: 11726 });
+    expect(decoded.build.gearSlots).toEqual([
+      { slot: 'head', itemId: 12640 },
+      { slot: 'main_hand', itemId: 11726 },
+    ]);
     expect(decoded.build.bags).toEqual([]);
     expect(decoded.build.bank).toEqual([]);
     expect(decoded.build.sets).toEqual([]);
     expect(decoded.build.loadouts).toEqual([]);
+    expect(decoded.build.professions).toEqual([]);
     expect(decoded.build.ignored).toEqual([]);
+  });
+
+  it('reads an enchant and a suffix on a gear entry (contract 10.5), keeping the id map lossy', () => {
+    const decoded = decodeFS1('FS1:1.15.9:warrior:orc:0/5530515/0:head=12640:2504,main_hand=11726:2505:1820');
+    expect(decoded.ok).toBe(true);
+    if (!decoded.ok) return;
+    // `gear` stays the planner's map of ids -- the strip, the planner link and the build
+    // draft all read it and none of them models an enchant.
+    expect(decoded.build.gear).toEqual({ head: 12640, main_hand: 11726 });
+    // `gearSlots` is the whole truth, and is what SimCharacter and the request carry.
+    expect(decoded.build.gearSlots).toEqual([
+      { slot: 'head', itemId: 12640, enchant: 2504 },
+      { slot: 'main_hand', itemId: 11726, enchant: 2505, suffix: 1820 },
+    ]);
+  });
+
+  it('reads the professions section', () => {
+    const decoded = decodeFS1(`${V1}|professions=engineering,blacksmithing`);
+    expect(decoded.ok).toBe(true);
+    if (!decoded.ok) return;
+    expect(decoded.build.professions).toEqual(['engineering', 'blacksmithing']);
   });
 
   it('reads bags and bank, with the optional enchant and suffix', () => {
@@ -6685,13 +7253,19 @@ describe('version 2 sections', () => {
     expect(decoded.build.bank).toEqual([{ itemId: 12640 }]);
   });
 
-  it('reads named sets whose gear is a version 1 gear list', () => {
-    const decoded = decodeFS1(`${V1}|sets=AQ%20set=head=21329,chest=21330;PvP=head=16963`);
+  it('reads named sets whose gear is a gear list, enchants and suffixes included', () => {
+    const decoded = decodeFS1(`${V1}|sets=AQ%20set=head=21329:2504,chest=21330;PvP=head=16963`);
     expect(decoded.ok).toBe(true);
     if (!decoded.ok) return;
     expect(decoded.build.sets).toEqual([
-      { name: 'AQ set', gear: { head: 21329, chest: 21330 } },
-      { name: 'PvP', gear: { head: 16963 } },
+      {
+        name: 'AQ set',
+        gear: [
+          { slot: 'head', itemId: 21329, enchant: 2504 },
+          { slot: 'chest', itemId: 21330 },
+        ],
+      },
+      { name: 'PvP', gear: [{ slot: 'head', itemId: 16963 }] },
     ]);
   });
 
@@ -6729,7 +7303,7 @@ describe('version 2 sections', () => {
 });
 
 describe('encodeFS1V2', () => {
-  it('is encodeFS1 exactly when there is nothing after the gear', () => {
+  it('is encodeFS1 exactly when there is nothing after the gear and nothing to enchant', () => {
     const build = {
       dataBuild: '1.15.9',
       classSlug: 'warrior',
@@ -6740,9 +7314,35 @@ describe('encodeFS1V2', () => {
       bank: [],
       sets: [],
       loadouts: [],
+      professions: [],
       ignored: [],
     };
     expect(encodeFS1V2(build)).toBe(encodeFS1(build));
+  });
+
+  it('writes an enchant and a suffix onto a gear entry, and round-trips them', () => {
+    const code = encodeFS1V2({
+      dataBuild: '1.15.9',
+      classSlug: 'warrior',
+      raceSlug: 'orc',
+      treeRanks: [[], [], []],
+      gear: { head: 12640 },
+      gearSlots: [{ slot: 'head', itemId: 12640, enchant: 2504, suffix: 1820 }],
+      bags: [],
+      bank: [],
+      sets: [],
+      loadouts: [],
+      professions: [],
+      ignored: [],
+    });
+    expect(code).toContain('head=12640:2504:1820');
+    const decoded = decodeFS1(code);
+    expect(decoded.ok).toBe(true);
+    if (decoded.ok) {
+      expect(decoded.build.gearSlots).toEqual([
+        { slot: 'head', itemId: 12640, enchant: 2504, suffix: 1820 },
+      ]);
+    }
   });
 
   it('writes the sections in the contract’s order and round-trips them', () => {
@@ -6754,14 +7354,16 @@ describe('encodeFS1V2', () => {
       gear: { head: 12640 },
       bags: [{ itemId: 16963, enchant: 2504 }],
       bank: [{ itemId: 19360, enchant: 2505, suffix: 1820 }],
-      sets: [{ name: 'AQ set', gear: { head: 21329 } }],
+      sets: [{ name: 'AQ set', gear: [{ slot: 'head' as const, itemId: 21329 }] }],
       loadouts: [{ name: 'Deep Fury', treeRanks: [[], [5, 5, 3, 0, 5, 1, 5], []] }],
+      professions: ['engineering', 'blacksmithing'],
       ignored: [],
     };
     const code = encodeFS1V2(build);
     expect(code.indexOf('|bags=')).toBeLessThan(code.indexOf('|bank='));
     expect(code.indexOf('|bank=')).toBeLessThan(code.indexOf('|sets='));
     expect(code.indexOf('|sets=')).toBeLessThan(code.indexOf('|loadouts='));
+    expect(code.indexOf('|loadouts=')).toBeLessThan(code.indexOf('|professions='));
 
     const decoded = decodeFS1(code);
     expect(decoded.ok).toBe(true);
@@ -6770,6 +7372,7 @@ describe('encodeFS1V2', () => {
     expect(decoded.build.bank).toEqual(build.bank);
     expect(decoded.build.sets).toEqual(build.sets);
     expect(decoded.build.loadouts[0].name).toBe('Deep Fury');
+    expect(decoded.build.professions).toEqual(['engineering', 'blacksmithing']);
   });
 
   it('escapes a name carrying the separators it would otherwise break on', () => {
@@ -6781,8 +7384,9 @@ describe('encodeFS1V2', () => {
       gear: {},
       bags: [],
       bank: [],
-      sets: [{ name: 'a;b=c|d', gear: { head: 1 } }],
+      sets: [{ name: 'a;b=c|d', gear: [{ slot: 'head' as const, itemId: 1 }] }],
       loadouts: [],
+      professions: [],
       ignored: [],
     });
     const decoded = decodeFS1(code);
@@ -6816,8 +7420,16 @@ Replace the constant and the `FS1Build` interface, then add the section parsing.
  */
 export const MAX_CODE_LENGTH = 16_384;
 
-/** One bag, bank or set item: `item_id[:enchant[:suffix]]`. */
+/** One bag or bank item: `item_id[:enchant[:suffix]]`, with no slot in the string. */
 export interface FS1Item {
+  itemId: number;
+  enchant?: number;
+  suffix?: number;
+}
+
+/** One gear entry: `<slot>=item_id[:enchant[:suffix]]` (contract 10.5). */
+export interface FS1GearSlot {
+  slot: Slot;
   itemId: number;
   enchant?: number;
   suffix?: number;
@@ -6825,7 +7437,7 @@ export interface FS1Item {
 
 export interface FS1Set {
   name: string;
-  gear: Gear;
+  gear: FS1GearSlot[];
 }
 
 export interface FS1Loadout {
@@ -6839,12 +7451,23 @@ export interface FS1Build {
   classSlug: string;
   raceSlug: string;
   treeRanks: number[][];
+  /**
+   * The planner's map of slot to item id. Lossy by design: the strip, the planner link and
+   * `BuildDraft` all read it and none of them models an enchant or a suffix.
+   */
   gear: Gear;
-  /** Version 2 (contract 7). Empty for a version 1 code. */
+  /**
+   * The whole truth about the gear, enchants and suffixes included (contract 10.5). The
+   * decoder always fills it; it is optional only so a caller holding nothing but a `Gear`
+   * map can still build an `FS1Build` without writing `gearSlotsFrom(gear)` by hand.
+   */
+  gearSlots?: FS1GearSlot[];
+  /** Version 2 (contract 7, corrected by 10.5). Empty for a version 1 code. */
   bags: FS1Item[];
   bank: FS1Item[];
   sets: FS1Set[];
   loadouts: FS1Loadout[];
+  professions: string[];
   /** Section names the decoder did not recognise, reported rather than silently dropped. */
   ignored: string[];
 }
@@ -6875,20 +7498,49 @@ function parseTrees(field: string): Parsed<number[][]> {
   return { ok: true, value: treeRanks };
 }
 
-function parseGearList(field: string): Parsed<Gear> {
-  const gear: Gear = {};
-  if (field === '') return { ok: true, value: gear };
+/**
+ * `<slot>=item_id[:enchant[:suffix]]`, joined by commas (contract 10.5). A bare id is
+ * still legal, which is what keeps a version-1 string readable by this and a version-2
+ * string's plain entries readable by a version-1 decoder.
+ */
+function parseGearList(field: string): Parsed<FS1GearSlot[]> {
+  const slots: FS1GearSlot[] = [];
+  if (field === '') return { ok: true, value: slots };
   for (const entry of field.split(',')) {
     const [slot, value] = entry.split('=');
     if (!(SLOTS as readonly string[]).includes(slot)) {
       return { ok: false, message: `That code names a slot this planner does not have: ${slot}.` };
     }
-    if (value === undefined || !/^\d+$/.test(value)) {
+    // Digits only, never Number.parseInt on the whole field: parseInt stops at the first
+    // non-digit and would silently turn "12640abc" into the item id 12640.
+    const parts = (value ?? '').split(':');
+    if (value === undefined || parts.length > 3 || parts.some((part) => !/^\d+$/.test(part))) {
       return { ok: false, message: `That code has an unreadable gear entry: ${entry}.` };
     }
-    gear[slot as Slot] = Number.parseInt(value, 10);
+    const [itemId, enchant, suffix] = parts.map((part) => Number.parseInt(part, 10));
+    slots.push({
+      slot: slot as Slot,
+      itemId,
+      ...(enchant === undefined ? {} : { enchant }),
+      ...(suffix === undefined ? {} : { suffix }),
+    });
   }
-  return { ok: true, value: gear };
+  return { ok: true, value: slots };
+}
+
+/** The planner's lossy view of a gear list: slot to item id, enchants dropped. */
+function gearMapOf(slots: readonly FS1GearSlot[]): Gear {
+  const gear: Gear = {};
+  for (const entry of slots) gear[entry.slot] = entry.itemId;
+  return gear;
+}
+
+/** The inverse, for a caller holding only the planner's map. */
+export function gearSlotsFrom(gear: Gear): FS1GearSlot[] {
+  return SLOTS.filter((slot) => gear[slot] !== undefined).map((slot) => ({
+    slot,
+    itemId: gear[slot] as number,
+  }));
 }
 
 /** `item_id[:enchant[:suffix]]`, joined by commas. Each number is digits only, as gear is. */
@@ -6951,11 +7603,13 @@ export function decodeFS1(code: string): FS1Result {
     classSlug,
     raceSlug,
     treeRanks: trees.value,
-    gear: gear.value,
+    gear: gearMapOf(gear.value),
+    gearSlots: gear.value,
     bags: [],
     bank: [],
     sets: [],
     loadouts: [],
+    professions: [],
     ignored: [],
   };
 
@@ -6979,6 +7633,11 @@ export function decodeFS1(code: string): FS1Result {
         if (!loadoutTrees.ok) return loadoutTrees;
         build.loadouts.push({ name: loadoutName, treeRanks: loadoutTrees.value });
       }
+    } else if (name === 'professions') {
+      // Slugs, unvalidated here: IDS.md's profession list is the vocabulary and
+      // sim/request refuses one it cannot map, naming it. Silently dropping a slug this
+      // decoder did not recognise would hide exactly that error.
+      build.professions = field === '' ? [] : field.split(',');
     } else if (name !== '') {
       // Contract 7: unknown sections are ignored by the decoder and reported in its
       // result. An addon a version ahead of the site is a thing that will happen, and
@@ -7004,9 +7663,23 @@ function encodeItems(items: readonly FS1Item[]): string {
     .join(',');
 }
 
+/** Version 1: bare ids, in SLOTS order. `encodeFS1`'s output is unchanged by 10.5. */
 function encodeGearList(gear: Gear): string {
   return SLOTS.filter((slot) => gear[slot] !== undefined)
     .map((slot) => `${slot}=${gear[slot]}`)
+    .join(',');
+}
+
+/** Version 2: `<slot>=item_id[:enchant[:suffix]]`, in SLOTS order (contract 10.5). */
+function encodeGearSlots(slots: readonly FS1GearSlot[]): string {
+  const bySlot = new Map(slots.map((entry) => [entry.slot, entry]));
+  return SLOTS.filter((slot) => bySlot.has(slot))
+    .map((slot) => {
+      const entry = bySlot.get(slot) as FS1GearSlot;
+      return `${slot}=${[entry.itemId, entry.enchant, entry.suffix]
+        .filter((part): part is number => part !== undefined)
+        .join(':')}`;
+    })
     .join(',');
 }
 
@@ -7025,7 +7698,7 @@ export function encodeFS1V2(build: FS1Build): string {
   if (build.sets.length > 0) {
     sections.push(
       `sets=${build.sets
-        .map((set) => `${encodeURIComponent(set.name)}=${encodeGearList(set.gear)}`)
+        .map((set) => `${encodeURIComponent(set.name)}=${encodeGearSlots(set.gear)}`)
         .join(';')}`,
     );
   }
@@ -7034,18 +7707,37 @@ export function encodeFS1V2(build: FS1Build): string {
       `loadouts=${build.loadouts
         .map(
           (loadout) =>
-            `${encodeURIComponent(loadout.name)}=${Array.from({ length: TREES }, (_, index) =>
-              encodeTree(loadout.treeRanks[index] ?? []),
-            ).join('/')}`,
+            `${encodeURIComponent(loadout.name)}=${encodeTrees(loadout.treeRanks)}`,
         )
         .join(';')}`,
     );
   }
-  return [encodeFS1(build), ...sections].join('|');
+  if (build.professions.length > 0) sections.push(`professions=${build.professions.join(',')}`);
+
+  // The head is version 1 unless a gear entry actually has something to say beyond its id,
+  // so a build with no enchants encodes byte-identically to `encodeFS1` -- which is what
+  // the first test in this task asserts, and what keeps a version-2 string readable by a
+  // version-1 decoder whenever it can be.
+  const slots = build.gearSlots ?? gearSlotsFrom(build.gear);
+  const rich = slots.some((entry) => entry.enchant !== undefined || entry.suffix !== undefined);
+  const head = rich
+    ? [FS1_PREFIX, build.dataBuild, build.classSlug, build.raceSlug, encodeTrees(build.treeRanks), encodeGearSlots(slots)].join(':')
+    : encodeFS1(build);
+
+  return [head, ...sections].join('|');
 }
 ```
 
-`encodeFS1`'s own gear line becomes `encodeGearList(build.gear)` so the two share one implementation.
+Two shared helpers fall out of this and both encoders use them, so neither can drift:
+
+```ts
+/** The three tree fields, slash-joined. `encodeFS1` and `encodeFS1V2` share it. */
+function encodeTrees(treeRanks: readonly number[][]): string {
+  return Array.from({ length: TREES }, (_, index) => encodeTree(treeRanks[index] ?? [])).join('/');
+}
+```
+
+`encodeFS1`'s body becomes `[FS1_PREFIX, build.dataBuild, build.classSlug, build.raceSlug, encodeTrees(build.treeRanks), encodeGearList(build.gear)].join(':')` — the same output it has today, now expressed through the two helpers — and `encodeFS1V2`'s loadout section uses `encodeTrees(loadout.treeRanks)`.
 
 - [ ] **Step 4: Raise the URL bound to match**
 
@@ -7068,23 +7760,64 @@ Append to `src/lib/sim/character.test.ts`:
 
 ```ts
 describe('characterFromFs1 with version 2 sections', () => {
-  it('carries bags, bank, sets and loadouts onto the character', () => {
-    const code = `${FURY_CODE}|bags=16963|bank=19360:2505:1820|sets=AQ=head=21329|loadouts=Arms=5530515/0/0`;
+  it('carries bags, bank, sets, loadouts and professions onto the character', () => {
+    const code = `${FURY_CODE}|bags=16963|bank=19360:2505:1820|sets=AQ=head=21329|loadouts=Arms=5530515/0/0|professions=engineering,alchemy`;
     const result = characterFromFs1(code, fixtureTalents, fixtureClasses, fixtureRaces, SOURCE);
     expect(result.ok).toBe(true);
     if (!result.ok) return;
     expect(result.character.bags).toEqual([{ itemId: 16963 }]);
     expect(result.character.bank).toEqual([{ itemId: 19360, enchant: 2505, suffix: 1820 }]);
-    expect(result.character.sets).toEqual([{ name: 'AQ', gear: { head: 21329 } }]);
+    expect(result.character.sets).toEqual([{ name: 'AQ', gear: [{ slot: 'head', itemId: 21329 }] }]);
     expect(result.character.loadouts[0].name).toBe('Arms');
+    expect(result.character.professions).toEqual(['engineering', 'alchemy']);
   });
 
-  it('gives a version 1 export the four empty lists rather than leaving them undefined', () => {
+  it('carries a gear entry’s enchant and suffix (contract 10.5) onto gear_slots', () => {
+    const result = characterFromFs1(
+      'FS1:1.15.9.69722:warrior:orc:0/5530515/0:head=12640:2504:1820',
+      fixtureTalents,
+      fixtureClasses,
+      fixtureRaces,
+      SOURCE,
+    );
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.character.gear_slots).toEqual([
+      { slot: 'head', item_id: 12640, enchant: 2504, suffix: 1820 },
+    ]);
+    // The planner-facing map keeps the id alone, as every reader of it expects.
+    expect(result.character.gear).toEqual({ head: 12640 });
+  });
+
+  it('gives a version 1 export the empty lists rather than leaving them undefined', () => {
     const result = characterFromFs1(FURY_CODE, fixtureTalents, fixtureClasses, fixtureRaces, SOURCE);
     expect(result.ok).toBe(true);
     if (!result.ok) return;
     expect(result.character.bags).toEqual([]);
     expect(result.character.sets).toEqual([]);
+    expect(result.character.professions).toEqual([]);
+    expect(result.character.gear_slots.length).toBeGreaterThan(0);
+  });
+});
+
+describe('toCharacterSpec with per-slot enchants and professions', () => {
+  it('sends gear_slots verbatim rather than rebuilding the list from the id map', () => {
+    const character = {
+      ...fixtureCharacter,
+      gear: { head: 12640 },
+      gear_slots: [{ slot: 'head', item_id: 12640, enchant: 2504, suffix: 1820 }],
+      professions: ['engineering'],
+    };
+    const spec = toCharacterSpec(character, fixtureIndex, [], []);
+    expect(spec.gear).toEqual([{ slot: 'head', item_id: 12640, enchant: 2504, suffix: 1820 }]);
+    expect(spec.professions).toEqual(['engineering']);
+  });
+
+  it('falls back to the id map for a character that has no slot list', () => {
+    const character = { ...fixtureCharacter, gear: { head: 12640 }, gear_slots: [], professions: [] };
+    const spec = toCharacterSpec(character, fixtureIndex, [], []);
+    expect(spec.gear).toEqual([{ slot: 'head', item_id: 12640 }]);
+    expect(spec.professions).toBeUndefined();
   });
 });
 ```
@@ -7107,9 +7840,20 @@ export interface SimCharacter {
   consumables: string[];
   source: CharacterSource;
   /**
-   * Version 2 export sections (contract 7). Empty for every other source and for a
-   * version 1 export. These are the candidate lists `/sim/gear`, `/sim/talents` and
-   * `/sim/drops` read; nothing on `/sim` itself renders them.
+   * The gear as the engine takes it, enchants and suffixes included (contract 10.5).
+   * `gear` above stays the planner's map of ids -- the strip, the planner link and
+   * `BuildDraft` all read it and none of them models an enchant -- and this is the
+   * authoritative list `toCharacterSpec` sends. The two always agree on item ids.
+   */
+  gear_slots: GearSlot[];
+  /** From the export's `professions=` section (contract 10.5). Empty for every other source. */
+  professions: string[];
+  /**
+   * Version 2 export sections (contract 7, corrected by 10.5). Empty for every other
+   * source and for a version 1 export. These are the candidate lists `/sim/gear`,
+   * `/sim/talents` and `/sim/drops` read; nothing on `/sim` itself renders them. They keep
+   * the decoder's own shapes, so part B converts an `FS1Set` into the envelope's `GearSet`
+   * once, where it builds the bulk request.
    */
   bags: FS1Item[];
   bank: FS1Item[];
@@ -7122,58 +7866,180 @@ export interface SimCharacter {
 
 ```ts
       gear: { ...decoded.build.gear },
+      gear_slots: (decoded.build.gearSlots ?? []).map((entry) => ({
+        slot: entry.slot,
+        item_id: entry.itemId,
+        ...(entry.enchant === undefined ? {} : { enchant: entry.enchant }),
+        ...(entry.suffix === undefined ? {} : { suffix: entry.suffix }),
+      })),
+      professions: [...decoded.build.professions],
       buffs: [],
       consumables: [],
       source,
       bags: [...decoded.build.bags],
       bank: [...decoded.build.bank],
-      sets: decoded.build.sets.map((set) => ({ name: set.name, gear: { ...set.gear } })),
+      sets: decoded.build.sets.map((set) => ({ name: set.name, gear: set.gear.map((e) => ({ ...e })) })),
       loadouts: decoded.build.loadouts.map((row) => ({
         name: row.name,
         treeRanks: row.treeRanks.map((tree) => [...tree]),
       })),
 ```
 
-`fromBuildDraft` — the other constructor — gets the four empty lists:
+`fromBuildDraft` — the other constructor — gets the empty lists. A planner build has no
+enchants, so its `gear_slots` is the id map converted, which keeps the "the two always
+agree on item ids" promise true for every source:
 
 ```ts
     consumables: [...(extras.consumables ?? [])],
     source: extras.source,
+    gear_slots: gearSlots(draft.gear ?? {}),
+    professions: [],
     bags: [],
     bank: [],
     sets: [],
     loadouts: [],
 ```
 
-and so does `SavedSim.svelte`'s `character` derived, and any other literal `astro check` names. Import the three types in `character.ts`:
+and so does `SavedSim.svelte`'s `character` derived — where `gear_slots` is
+`result.request.character.gear` itself, the richest form available on that page — plus any
+other literal `astro check` names. Import the types in `character.ts`:
 
 ```ts
 import { decodeFS1, orderFromRanks, type FS1Item, type FS1Loadout, type FS1Set } from '../planner/fs1';
 ```
 
-- [ ] **Step 6: Run the whole unit suite**
+Finally, `toCharacterSpec` sends the slot list and the professions:
 
-```bash
-export PATH=/Users/jh/.nvm/versions/node/v22.12.0/bin:$PATH
-cd /Users/jh/code/forever/web && npx vitest run && npx astro check
+```ts
+  const spec: CharacterSpec = {
+    name: character.name,
+    race: character.race_slug,
+    class: character.class_slug,
+    level: SIM_LEVEL,
+    talents: talentsString(index, character.point_order),
+    // The slot list when the source gave one, the id map otherwise. Never both, and never
+    // a merge: one of the two is the truth about this character's gear and it is this one.
+    gear:
+      character.gear_slots.length > 0
+        ? character.gear_slots.map((slot) => ({ ...slot }))
+        : gearSlots(character.gear),
+    buffs: [...buffs],
+    consumes: [...consumes],
+    // Still omitted when empty, for the reason the original comment gives: an empty list
+    // would claim we had looked and found none.
+    ...(character.professions.length === 0 ? {} : { professions: [...character.professions] }),
+  };
 ```
 
-Expected: PASS and 0 errors. `astro check` names every remaining `SimCharacter` literal that needs the four fields.
+- [ ] **Step 6: Make the drawer's Apply lossless**
 
-- [ ] **Step 7: Lint, format, commit**
+Contract 10.5 is what lifts Task 15's note. `applyRequest` round-trips the character through the FS1 route, so switching it from `encodeFS1` to `encodeFS1V2` with the request's own gear list carries the enchants and suffixes all the way back onto `SimCharacter.gear_slots`, and `toCharacterSpec` sends them again unchanged.
+
+In `src/lib/sim/store.svelte.ts`:
+
+```ts
+    async applyRequest(request: SimRequest): Promise<void> {
+      settings = settingsFromRequest(request);
+      precisionId = precisionOf(request);
+      // encodeFS1V2, not encodeFS1: contract 10.5 lets a gear entry carry
+      // `item_id[:enchant[:suffix]]`, and `characterFromFs1` reads it straight back onto
+      // `gear_slots`. Apply is therefore lossless for everything `CharacterSpec` models,
+      // which is what makes a shared request a full reproduction rather than an
+      // approximation of one.
+      await adopt(
+        fromPlannerCode(
+          encodeFS1V2({
+            dataBuild: init.treeVersion,
+            classSlug: request.character.class,
+            raceSlug: request.character.race,
+            treeRanks: ranksFromTalentsString(request.character.talents),
+            gear: gearFromSlots(request.character.gear),
+            gearSlots: request.character.gear.map((slot) => ({
+              slot: slot.slot as Slot,
+              itemId: slot.item_id,
+              ...(slot.enchant === undefined ? {} : { enchant: slot.enchant }),
+              ...(slot.suffix === undefined ? {} : { suffix: slot.suffix }),
+            })),
+            bags: [],
+            bank: [],
+            sets: [],
+            loadouts: [],
+            professions: [...(request.character.professions ?? [])],
+            ignored: [],
+          }),
+          ctx,
+        ),
+      );
+    },
+```
+
+with `encodeFS1V2` replacing `encodeFS1` in the import and `import type { Slot } from '../planner/types';` added. Do the same in `SimView.svelte`'s `onRerunSaved`, which builds a code from a saved result's gear for exactly the same reason and loses exactly the same fields today.
+
+Then replace the drawer's note in `src/lib/sim/copy.ts`:
+
+```ts
+  requestApplyNote:
+    'Rebuilds the settings, the precision and the character from this request, enchants and suffixes included. Run sends the text exactly as typed instead, which is how a field no panel offers reaches the engine.',
+```
+
+and delete the `// Task 17 replaces this sentence …` comment above it.
+
+- [ ] **Step 7: Prove Apply keeps an enchant**
+
+Append to `tests/e2e/sim-request.spec.ts`:
+
+```ts
+test('Apply keeps a per-slot enchant and suffix', async ({ page }) => {
+  await page.goto('/sim');
+  await page.getByTestId('sim-addon-input').fill(FURY);
+  await page.getByTestId('sim-addon-load').click();
+  await expect(page.getByTestId('sim-character')).toBeVisible();
+
+  await page.getByTestId('sim-request-drawer').locator('summary').click();
+  const editor = page.getByTestId('sim-request-json');
+  const request = JSON.parse(await editor.inputValue());
+  request.character.gear = [{ slot: 'head', item_id: 12640, enchant: 2504, suffix: 1820 }];
+  await editor.fill(JSON.stringify(request, null, 2));
+  await page.getByTestId('sim-request-apply').click();
+
+  // The drawer re-seeds from the page's own request only on its first render, so reopen
+  // it on a fresh load to read what the page would now send.
+  await expect(page.getByTestId('sim-character')).toBeVisible();
+  await page.getByTestId('sim-request-reset').click();
+  const applied = JSON.parse(await editor.inputValue());
+  expect(applied.character.gear).toEqual([
+    { slot: 'head', item_id: 12640, enchant: 2504, suffix: 1820 },
+  ]);
+});
+```
+
+- [ ] **Step 8: Run the whole unit suite and the drawer e2e**
 
 ```bash
 export PATH=/Users/jh/.nvm/versions/node/v22.12.0/bin:$PATH
-cd /Users/jh/code/forever/web && npx eslint src/lib src/components && npx prettier --check src/lib src/components && \
-  git add -A src/lib src/components && \
-  git commit -m "feat(sim): FS1 version 2 -- bags, bank, named sets and loadouts
+cd /Users/jh/code/forever/web && npx vitest run && npx astro check && \
+  E2E_PORT=4399 npx playwright test tests/e2e/sim-request.spec.ts --project=desktop
+```
 
-Contract 7. Everything before the first pipe is version 1 unchanged, so
-every existing decoder keeps working; the sections after it are fixed
-in order and an unknown one is ignored and named in the result rather
-than failing the whole string. MAX_CODE_LENGTH rises to 16,384 and
-url.ts's own bound with it. encodeFS1 still writes version 1;
-encodeFS1V2 is the one that writes sets.
+Expected: PASS and 0 errors. `astro check` names every remaining `SimCharacter` literal that needs the new fields.
+
+- [ ] **Step 9: Lint, format, commit**
+
+```bash
+export PATH=/Users/jh/.nvm/versions/node/v22.12.0/bin:$PATH
+cd /Users/jh/code/forever/web && npx eslint src/lib src/components tests/e2e && \
+  npx prettier --check src/lib src/components tests/e2e && \
+  git add -A src/lib src/components tests/e2e && \
+  git commit -m "feat(sim): FS1 version 2 -- bags, bank, sets, loadouts, professions
+
+Contract 7 as corrected by 10.5. Everything before the first pipe is
+version 1 unchanged, so every existing decoder keeps working; the
+sections after it are fixed in order and an unknown one is ignored and
+named in the result rather than failing the whole string. A gear entry
+may now carry item_id:enchant:suffix, SimCharacter gains gear_slots and
+professions beside the planner's lossy id map, and the request drawer's
+Apply is lossless because of it. MAX_CODE_LENGTH rises to 16,384 and
+url.ts's own bound with it.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
@@ -7725,45 +8591,118 @@ Everything part B (`/sim/gear`, `/sim/talents`, `/sim/drops`, `/sim/weights`) ma
 
 | Module | Exports |
 | --- | --- |
-| `src/lib/sim/types.ts` (1) | `EncounterSpec`, `Movement`, `TargetCount`, `TARGET_TYPE_IDS`, `TargetType`, `CooldownSpec`, `CharacterSpec`, `SimRequest`, `BulkSpec`, `Candidate`, `TalentLoadout`, `GearSet`, `WeightsSpec`, `SimResult`, `Combo`, `Substitution`, `Stage`, `StatWeight`, `SampleCast`, `SimProgress`, `SimListRow`, `DEFAULT_ENCOUNTER`, `STEP_ITERATIONS_DEFAULT` |
+| `src/lib/sim/types.ts` (1) | `EncounterSpec`, `Movement`, `TargetCount`, `TARGET_TYPE_IDS`, `TargetType`, `CooldownSpec`, `CharacterSpec`, `GearSlot`, `SimRequest`, `BulkSpec`, `Candidate`, `TalentLoadout`, `GearSet`, `WeightsSpec`, `SimResult`, `Combo`, `Substitution`, `Stage`, `StatWeight`, `SampleCast` (A12: `{ at_ms, action, target?, resources? }`), `SimProgress`, `SimListRow`, `DEFAULT_ENCOUNTER`, `STEP_ITERATIONS_DEFAULT` |
 | `src/lib/sim/kind.ts` (1) | `SimKind`, `SIM_KINDS`, `requestKind(request)` |
 | `src/lib/sim/styles.ts` (2) | `FightStyleId`, `FightStyle`, `FIGHT_STYLES`, `DEFAULT_STYLE_ID`, `fightStyle(id)`, `applyFightStyle(encounter, id)` |
-| `src/lib/sim/settings.ts` (3) | `SimSettings`, `defaultSettings()`, `withStyle`, `withDuration`, `withTargets`, `withVariation`, `withTargetLevel`, `withTargetArmor`, `withTargetType`, `withDummy`, `withExecutePhase`, `withPreset`, `executePhaseOn`, `styleIdOf`, `settingsLabel`, `durationLabel`, `encounterLabel`, `DURATIONS`, `MIN_DURATION_SEC`, `MAX_DURATION_SEC`, `MAX_TARGETS`, `VARIATIONS`, `MAX_VARIATION`, `TARGET_LEVELS`, `DEFAULT_TARGET_LEVEL`, `MAX_TARGET_ARMOR`, `TARGET_TYPES`, `BUFF_PRESETS`, `PRESET_BUFFS`, `PRESET_CONSUMABLES` |
-| `src/lib/sim/engine.ts` (5) | `EngineModule` (with `simNeedsMore`, `simValidate`), `RequestValidation`, `RequestValidationError` |
-| `src/lib/sim/worker.ts` (5) | `SimPool` (with `needsMore`, `validate`), `ToWorker`, `FromWorker`, `createPool`, `poolSize`, `MAX_WORKERS` |
-| `src/lib/sim/precision.ts` (6) | `Lane`, `PrecisionId`, `PRECISIONS`, `BULK_PRECISIONS`, `PRECISION_ITERATIONS`, `TARGET_ERROR`, `STEP_ITERATIONS`, `LANE_ITERATION_CEILING`, `PrecisionPlan`, `precisionPlan(id, lane)`, `precisionOf(request)`, `relativeError(estimate)` |
+| `src/lib/sim/settings.ts` (3) | `SimSettings`, `defaultSettings()`, `withStyle`, `withDuration`, `withTargets`, `withVariation`, `withTargetLevel`, `withTargetArmor`, `withTargetType`, `withDummy`, `withExecutePhase`, `withPreset`, `executePhaseOn`, `styleIdOf`, `settingsLabel`, `durationLabel`, `encounterLabel`, `DURATIONS`, `MIN_DURATION_SEC`, `MAX_DURATION_SEC`, `MAX_TARGETS`, `VARIATIONS`, `MAX_VARIATION`, `TARGET_LEVELS`, `DEFAULT_TARGET_LEVEL`, `TARGET_ARMOR_BY_LEVEL` (A8), `MAX_TARGET_ARMOR`, `TARGET_TYPES`, `BUFF_PRESETS`, `PRESET_BUFFS`, `PRESET_CONSUMABLES` |
+| `src/lib/sim/engine.ts` (5) | `EngineModule` (with `simNeedsMore`, `simValidate`, `simCount`), `RequestValidation`, `RequestValidationError`, `CountAnswer` |
+| `src/lib/sim/worker.ts` (5) | `SimPool` (with `needsMore`, `validate`, `count`), `ToWorker`, `FromWorker`, `createPool`, `poolSize`, `MAX_WORKERS` |
+| `src/lib/sim/precision.ts` (6) | `Lane`, `PrecisionId`, `PRECISIONS`, `BULK_PRECISIONS`, `PRECISION_ITERATIONS`, `TARGET_ERROR`, `STEP_ITERATIONS`, `LANE_ITERATION_CEILING`, `CAPS` (A2), `PrecisionPlan`, `precisionPlan(id, lane)`, `precisionOf(request)`, `relativeError(estimate)` |
 | `src/lib/sim/run.ts` (6) | `RunInput` (with `targetError`, `stepIterations`), `RunUpdate` (with `relativeError`), `RunHandle`, `buildSimRequest`, `runSim`, `SimRunError` |
 | `src/lib/sim/details.ts` (7) | `RunDetails`, `runDetails(result)`, `percentLabel(fraction)` |
 | `src/lib/sim/buffs.ts` (8, 10) | `BuffGroupId`, `BUFF_GROUPS`, `BuffRow`, `SimIdsFile`, `buildCatalogue(ids)`, `CATALOGUE`, `rowsIn(group)`, `BuffGrade`, `IMPROVED_SUFFIX`, `gradeOf`, `setGrade`, `Selection`, `withGrade`, `selectedIn`, `FALLBACK_WORLD_BUFFS` |
+| `src/lib/sim/stats.ts` (8) | `PINNED_STATS` (contract 10.8, verbatim), `SIM_STATS`, `statLabel(id)` — the `proto.Stat` vocabulary for `/sim/weights`: one `hit`, one `crit`, split haste, `mp5` |
 | `src/lib/sim/buff-names.ts` (9) | `BuffNames`, `EMPTY_BUFF_NAMES`, `loadBuffNames(build)`, `buffLabel(id, names)`, `buffIcon(build, id, names)` |
 | `src/lib/sim/cooldowns.ts` (11) | `CooldownMode`, `COOLDOWN_MODES`, `CooldownRow`, `executeStartSec`, `specFor`, `modeOf`, `rowsFor`, `withCooldown` |
-| `src/lib/sim/sample-log.ts` (12) | `SampleRow`, `SampleLog`, `RESOURCE_ORDER`, `sampleTime`, `sampleLog(sample, names)` |
+| `src/lib/sim/sample-log.ts` (12) | `SampleRow`, `SampleLog`, `RESOURCE_ORDER`, `sampleTime`, `sampleLog(sample, names)` — resolves A12's action keys |
 | `src/lib/sim/notify.ts` (14) | `Notifier`, `browserNotifier()`, `enableNotifications(notifier)`, `notifyFinished(notifier, enabled, title, body)` |
 | `src/lib/sim/request-json.ts` (15) | `MAX_REQUEST_CHARS`, `formatRequest(request)`, `ParsedRequest`, `parseRequest(text)`, `settingsFromRequest(request)` |
 | `src/lib/sim/url.ts` (16) | `SimState` (with `req`), `defaultSimState`, `parseSimState`, `simSearch`, `withSimState`, `MAX_REQUEST_PARAM`, `encodeRequestParam(request)`, `decodeRequestParam(value)` |
-| `src/lib/planner/fs1.ts` (17) | `MAX_CODE_LENGTH`, `FS1Item`, `FS1Set`, `FS1Loadout`, `FS1Build` (with `bags`, `bank`, `sets`, `loadouts`, `ignored`), `decodeFS1`, `encodeFS1`, `encodeFS1V2`, `orderFromRanks` |
-| `src/lib/sim/character.ts` (17) | `SimCharacter` (with `bags`, `bank`, `sets`, `loadouts`), `toCharacterSpec(character, index, buffs, consumes, cooldowns?)`, `characterFromFs1`, `fromBuildDraft`, `gearSlots`, `gearFromSlots`, `ranksFromTalentsString`, `talentsString`, `specOf`, `SIM_LEVEL` |
+| `src/lib/planner/fs1.ts` (17) | `MAX_CODE_LENGTH`, `FS1Item`, `FS1GearSlot`, `FS1Set` (`gear: FS1GearSlot[]`), `FS1Loadout`, `FS1Build` (with `gearSlots?`, `bags`, `bank`, `sets`, `loadouts`, `professions`, `ignored`), `gearSlotsFrom(gear)`, `decodeFS1`, `encodeFS1`, `encodeFS1V2`, `orderFromRanks` |
+| `src/lib/sim/character.ts` (17) | `SimCharacter` (with `gear_slots`, `professions`, `bags`, `bank`, `sets`, `loadouts`), `toCharacterSpec(character, index, buffs, consumes, cooldowns?)`, `characterFromFs1`, `fromBuildDraft`, `gearSlots`, `gearFromSlots`, `ranksFromTalentsString`, `talentsString`, `specOf`, `SIM_LEVEL` |
 | `src/lib/sim/history.ts` (18) | `KindFilter`, `KIND_FILTERS`, `kindOf(row)`, `headlineOf(row)`, `titleOf(row)` |
 | `src/lib/sim/api.ts` (18) | `listMySims(page?, apiBase?, kind?)`, plus the existing `saveSim`, `fetchSim`, `dispatchServerSim`, `fetchSimProgress`, `fetchSpecs`, `fetchSimInput`, `SimApiError` |
 | `src/lib/sim/store.svelte.ts` (6, 10, 14, 15, 16) | `createSimStore(init)`, `SimStoreInit` (with `request?`), `SimPhase`; on the store: `precisionId`, `setPrecisionId`, `relativeError`, `buffNames`, `reportTitle`, `setReportTitle`, `buildRequest()`, `validateRequest(json)`, `applyRequest(request)`, `runRequest(request)`, plus everything it already exposed |
 | `src/components/sim/` | `SettingsBar.svelte`, `SettingsSheet.svelte` (4), `BuffPanel.svelte` (10), `CooldownRows.svelte` (11), `DetailsCard.svelte` (7), `SampleLog.svelte` (12), `RotationCard.svelte` (13), `RequestDrawer.svelte` (15), `SimHistory.svelte` (18) |
 | `src/fixtures/sim/` | `styles.json` (2), `envelope-v2.json` (1), `sample.json` (12), and `engine-fake.ts` with `simNeedsMore`/`simValidate` (5) |
 
-Part B should **not** re-derive any of the following: a stopping rule for a target-error run (ask `pool.needsMore`), request validation (ask `pool.validate`), the fight-style expansion (`applyFightStyle`), the id grouping (`CATALOGUE`), or the ranking and grouping of bulk combos (the sim module's `simRank`).
+Part B should **not** re-derive any of the following: a stopping rule for a target-error run (ask `pool.needsMore`), request validation (ask `pool.validate`), a combination count or a cap check (ask `pool.count`, whose `cap_exceeded` answer carries both numbers), the fight-style expansion (`applyFightStyle`), the id grouping (`CATALOGUE`), the stat vocabulary (`SIM_STATS`), or the ranking and grouping of bulk combos (the sim module's `simRank`).
 
-## Contract additions and ambiguities
+Two shapes part B converts rather than this lane: an `FS1Set` (`{ name, gear: FS1GearSlot[] }`, the decoder's own shape) into the envelope's `GearSet` (`{ name, gear: GearSlot[] }`), and an `FS1Item` (no slot, because the export string carries none) into a `Candidate` once it has resolved the slot from the item table.
 
-Each one is a line the sim module, data or API lane has to add to a spec before this lane's code is correct against it. They are listed again in this plan's return so nobody has to read the whole document to find them.
+## Rulings applied, and what is still open
 
-1. **`simNeedsMore(resultJSON, requestJSON)` is not in contract section 4.** Task 5 pins it as `{"needs_more": boolean}` / `{"error": …}`; the Go original is `api.NeedsMoreIterations`.
-2. **`simValidate(requestJSON)` is not in contract section 4.** Task 5 pins it as `{"ok": boolean, "errors": [{"field","message"}]}` / `{"error": …}`; the Go original is `api.SimRequest.Validate`.
-3. **`api.ValidIterations` is a closed set of `{500, 3000, 10000}`**, so a target-error run's `Iterations` of 30,000 or 100,000 fails `Validate` today. Either the set gains the two lane ceilings, or `validate` skips the closed-set check when `TargetError > 0`. The second is the better rule and this plan assumes it.
-4. **`api.MinDurationSec`/`MaxDurationSec` are 60 and 480**, but design 4.1 asks for 20 seconds to 10 minutes and contract 1.5 does not amend them. Task 3 uses 20 and 600.
-5. **No name-and-icon table for the buff/consumable vocabulary is in contract section 6.** Task 9 pins `data/builds/<build>/simbuffs.json` as `{ "entries": { "<id>": { "name", "icon" } } }` and falls back to a humanised id until the data lane publishes one.
-6. **`IDS.md` has neither the `:improved` rows nor the World buffs section contract 1.7 promises.** Task 8's generator reads both the moment they appear; until then the graded set is empty and an eight-id fallback list supplies the world buffs.
-7. **Target-armor presets per level are engine-side and are not published to the web**, so the override control offers "Preset for the level" rather than naming a figure. Publishing them (in `simbuffs.json`'s file or another) would let the control show the number it is overriding.
-8. **No per-class list of major-cooldown spell ids exists in the build**, so Task 11 offers timing rows for ticked potions and explosives only, plus any `spell:<id>` an edited request already carries.
-9. **Contract 9's test-id list is a minimum, not a closed set.** This plan adds, in the same `sim-<thing>` shape: `sim-style-note`, `sim-settings-more`, `sim-variation`, `sim-target-level`, `sim-target-armor`, `sim-target-type`, `sim-dummy`, `sim-buff-panel`, `sim-buff-group-<group>`, `sim-buff-<id>`, `sim-cooldowns`, `sim-cooldown-<id>`, `sim-cooldown-at-<id>`, `sim-details-<row>`, `sim-details-engine`, `sim-details-ceiling`, `sim-sample-empty`, `sim-sample-row-<key>`, `sim-rotation-card`, `sim-rotation-card-link`, `sim-rotation-card-note`, `sim-report-title`, `sim-notify`, `sim-open-new-tab`, `sim-request-json`, `sim-request-errors`, `sim-request-error-<field>`, `sim-request-valid`, `sim-request-apply`, `sim-request-run`, `sim-request-share`, `sim-request-share-link`, `sim-request-share-error`, `sim-request-reset`, `sim-request-buffs`, `sim-history-filter`, `sim-history-kind-<id>`, `sim-history-headline-<id>`, and `aura-applied` on the shared report table.
-10. **Design 5.1's "the aura table gains a count column where it lacks one" describes a column that already exists.** `report/AuraTable.svelte` renders `track.applications` as "Applied" for both the buff and debuff tabs; Task 12 adds only the testid so the sim's own suite can pin it.
-11. **`Progress`'s `stage`, `combos_done` and `combos_total`** are mirrored in `types.ts` by Task 1 but nothing on `/sim` reads them; `sim-stage-progress` is part B's.
-12. **A pasted request's per-slot enchants and suffixes are dropped by the drawer's "Apply"**, because `SimCharacter.gear` is a map of item ids and the web has no enchant model yet. "Run this request" keeps them. Giving `SimCharacter` a per-slot enchant and suffix is a change part B may want anyway for Top Gear's "copy and modify".
+Contract section 10 (commit `439f0b7`) settled every question the first draft of this plan
+raised. This section records how each ruling landed, so an executor reading one task does
+not have to diff two specs to know why it says what it says.
+
+**Applied.**
+
+1. **10.2 ratifies `simNeedsMore` and `simValidate`** with exactly the shapes Task 5 had
+   pinned; the task's "contract addition" caveat is gone and it now cites 10.2.
+2. **A2, A4, A5 and A6 are part B's rulings, but their shapes live in this lane's files**,
+   so Task 1 mirrors `BulkSpec.consumables`, `Candidate.source_name` and
+   `Substitution.source_name`/`name`, records A4's "the mode decides the expansion" on
+   `BulkSpec.mode`, and Task 6 publishes `CAPS = {browser: 400, server: 5000}` beside the
+   iteration ceilings. Nothing on `/sim` reads any of them; they are here so part B does
+   not keep a second copy.
+3. **10.2 adds `simCount`.** Task 5 lands it beside the other two — same interface, same
+   pool message, same fake engine — so part B does not have to edit those five files
+   again. Its `cap_exceeded` answer keeps `cap` and `combinations` instead of being thrown
+   as an `Error`, because the cap notice renders both numbers.
+4. **A3 relaxes the iteration rule**: a fixed run keeps `ValidIterations`, a `TargetError`
+   run's `Iterations` is a positive multiple of `StepIterations` at or under the lane's
+   ceiling, and `MinDurationSec`/`MaxDurationSec` are 20 and 600. Task 6's workaround is
+   gone and a test now pins both ceilings as multiples of the step; Task 3's duration
+   comment cites A3 rather than asking for an amendment.
+5. **A8 gives `TargetArmorByLevel` real numbers** (`{60: 3300, 61: 3444, 62: 3588, 63:
+   3731}`). Task 3 publishes them and Task 4's armor field names the figure it is about to
+   override instead of saying "Preset for the level".
+6. **A12 changes `SampleCast`** to `{ at_ms, action, target, resources }`. Tasks 1 and 12,
+   `envelope-v2.json` and `sample.json` all carry an action key now, resolved through
+   `resolveActionName` exactly as a cast row is, and a test covers `other:melee`.
+7. **10.4 names `simbuffs.json`** with the shape Task 9 proposed. The task cites 10.4, and
+   the humanised fallback stays because the file is `required: false` in the sync.
+8. **10.5 puts per-slot enchant and suffix on `SimCharacter`** and lets `<gear>` and
+   `sets=` entries carry `item_id[:enchant[:suffix]]`, with a `professions=` section after
+   `loadouts=`. Task 17 now adds `FS1GearSlot`, `FS1Build.gearSlots`, `FS1Build.professions`,
+   `SimCharacter.gear_slots`, `SimCharacter.professions`, and upgrades the request drawer's
+   "Apply" to `encodeFS1V2` so it is lossless. Task 15 states the limitation as temporary
+   and names the task that lifts it.
+9. **A7 has the sim module generate IDS.md's `:improved` rows, World buffs and a new Stats
+   section.** Task 8's parser reads all three; the new `stats.ts` carries the stat
+   vocabulary for part B's weights page and asserts there is no bare `haste`.
+10. **10.7 makes section 9's test ids a minimum.** The page-local ids this plan adds are
+    listed below and follow the same `sim-<thing>` shape; no amendment is needed.
+11. **10.8 adds `consumes` to `Substitution.kind`** (with `name` the consumable ids joined
+    by `, `) and **pins the stat vocabulary**. Task 1 mirrors the kind and names all four
+    in `simCopy.substitutionKindLabel`; Task 8's `stats.ts` carries 10.8's list verbatim as
+    `PINNED_STATS`, and its test pins one `hit`, one `crit`, split haste and `mp5`, and
+    refuses `melee_hit`, `spell_hit`, `melee_crit`, `spell_crit` and a bare `haste`
+    anywhere on the lane.
+12. **A11 keeps the progress widening additive.** `SimProgress` mirrors `stage`,
+    `combos_done` and `combos_total`, and nothing on `/sim` reads them — `sim-stage-progress`
+    is part B's, as before.
+
+13. **10.8's client-side server cap is a no-op on `/sim` and is deliberately left to part
+    B.** A plain run expands to no combinations, so `Caps.server` gates nothing on the
+    page this lane owns; `CAPS` is exported from `precision.ts` (Task 6) so the bulk pages
+    gate their own server-run button on it, and a `cap_exceeded` that still arrives falls
+    through to `simCopy.failed`, which is what `runOnServer` already does with every
+    server error.
+
+**Still open — none blocking, each with the behaviour this plan ships meanwhile.**
+
+- **Major-cooldown spell ids are still unpublished.** No section of the contract gives the
+  web a per-class list, so Task 11 offers a timing row for every ticked potion and
+  explosive plus any `spell:<id>` an edited request already carries, and says so in the
+  panel's own copy. A published list makes the rows appear with no change to
+  `cooldowns.ts`.
+- **Design 5.1's "the aura table gains a count column where it lacks one" describes a
+  column that already exists.** `report/AuraTable.svelte` renders `track.applications` as
+  "Applied" for both the buff and debuff tabs, so Task 12 adds only the testid its uptime
+  cell already had. Nothing in section 10 contradicts this; it is recorded here so the
+  gap between the design's wording and the code is deliberate rather than missed.
+
+**Page-local test ids this plan adds** (10.7 permits them; listed so part B reuses the
+shapes rather than inventing parallel ones): `sim-style-note`, `sim-settings-more`,
+`sim-variation`, `sim-target-level`, `sim-target-armor`, `sim-target-type`, `sim-dummy`,
+`sim-buff-panel`, `sim-buff-group-<group>`, `sim-buff-<id>`, `sim-cooldowns`,
+`sim-cooldown-<id>`, `sim-cooldown-at-<id>`, `sim-details-<row>`, `sim-details-engine`,
+`sim-details-ceiling`, `sim-sample-empty`, `sim-sample-row-<key>`, `sim-rotation-card`,
+`sim-rotation-card-link`, `sim-rotation-card-note`, `sim-report-title`, `sim-notify`,
+`sim-open-new-tab`, `sim-request-json`, `sim-request-errors`, `sim-request-error-<field>`,
+`sim-request-valid`, `sim-request-apply`, `sim-request-run`, `sim-request-share`,
+`sim-request-share-link`, `sim-request-share-error`, `sim-request-reset`,
+`sim-request-buffs`, `sim-history-filter`, `sim-history-kind-<id>`,
+`sim-history-headline-<id>`, and `aura-applied` on the shared report table.

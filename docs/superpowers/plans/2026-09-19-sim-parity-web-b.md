@@ -8,7 +8,7 @@
 
 **Tech Stack:** Astro 7 (static, `build.format: 'file'`), Svelte 5 runes, Tailwind 4 over `web/src/styles/tokens.css`, TypeScript 6 strict, Vitest 5, Playwright 1.63, Node 22.12.0. **No new runtime or test dependency.**
 
-**Spec:** `docs/superpowers/specs/2026-09-19-simulator-parity-design.md` — sections 2, 3, 6, 7 and 10 are this lane. Binding contract: `docs/superpowers/specs/2026-09-19-simulator-parity-interfaces.md` — sections 1.3, 1.4, 2, 4, 6, 7, 8 and 9 bind this lane; **read-only, an amendment is requested in the finish report and never edited in place.** Supporting: `docs/superpowers/specs/2026-09-14-simulator-design.md` and `-interfaces.md` (what already exists), `design/DESIGN-SYSTEM.md`.
+**Spec:** `docs/superpowers/specs/2026-09-19-simulator-parity-design.md` — sections 2, 3, 6, 7 and 10 are this lane. Binding contract: `docs/superpowers/specs/2026-09-19-simulator-parity-interfaces.md` — sections 1.3, 1.4, 2, 4, 6, 7, 8 and 9 bind this lane, **as amended by its section 10 (2026-09-19, commit 439f0b7), which wins wherever it contradicts an earlier section.** The contract is read-only from here: section 10 *is* the amendment round, so no task in this plan asks for another one. Supporting: `docs/superpowers/specs/2026-09-14-simulator-design.md` and `-interfaces.md` (what already exists), `design/DESIGN-SYSTEM.md`.
 
 ---
 
@@ -39,11 +39,18 @@ Every task's requirements implicitly include this section.
 **Contract values, verbatim**
 
 - Bulk modes are `gear`, `talents`, `drops` (`BulkSpec.Mode`). Precisions are `fast`, `normal`, `high`. Result kinds are `run`, `gear`, `drops`, `talents`, `weights`, and **kind is derived, never sent**.
-- `Caps = {browser: 400, server: 20000}`. The browser cap is **halved to 200 when `navigator.hardwareConcurrency <= 4`** (design 2.3, "a phone gets half the cap"). The page echoes the cap it used in `BulkSpec.Cap`; the wasm enforces it and refuses with `ErrCapExceeded{Cap, Combinations}`. **The page never trims a candidate list to fit.**
+- **`Caps = {browser: 400, server: 5000}`** (contract 10.1 A2 — the server cap is 5,000, *not* the 20,000 of section 1.3: a 20,000-combination fast run cannot finish inside the job's 15-minute timeout). The browser cap is **halved to 200 when `navigator.hardwareConcurrency <= 4`** (design 2.3, "a phone gets half the cap"). The page echoes the cap it used in `BulkSpec.Cap`; the wasm enforces it and refuses with the structured `{"error":"cap_exceeded","cap":n,"combinations":n}` of contract 10.2. **The page never trims a candidate list to fit**, and the premium alternative it offers says 5,000.
+- **A bulk request's `Iterations` is its precision's final-stage count** (contract 10.1 A3): 3,000 for `fast` and `normal`, 10,000 for `high`. It is not a free number and it is not always 3,000.
+- **Mode decides expansion** (contract 10.1 A4): `gear` takes the product of every candidate group, `drops` and `talents` one substitution at a time. The design's `combinations` boolean does not exist.
 - Stage ladders, from contract 1.3, are the wasm's business and are mirrored in TypeScript **only** as a stage count for the progress line: `fast` 3 stages, `normal` 2, `high` 2.
 - `Candidate.Slot` is `""` for anything that fits more than one slot — rings, trinkets, weapons. Every other candidate carries its IDS.md slot name.
 - `Candidate.Origin` is one of `equipped`, `bag`, `bank`, `search`, `drop:<source-id>`, `set:<name>`.
 - `Combo.Group` is `0` for the leader's within-error group, then `1`, `2`, …. **The page never recomputes a statistic**: "within error" is `group === 0`, and a delta's error is `delta.error`.
+- **Names come back on the result, not from a re-join** (contract 10.1 A6): `Substitution.Name` is filled for items too (from simdb) and `Substitution.SourceName` is copied from the candidate. The page fills `Candidate.SourceName` from `loot.json` when it builds a drops request, and reads both back off the result rather than re-joining an id to a name.
+- **Stat ids are the fork's `proto.Stat` enum names in snake case, pinned in full by contract 10.8.** Haste is split (`melee_haste`, `spell_haste`); **hit and crit are not** — the engine carries one `hit` and one `crit`, and `melee_crit`, `spell_crit`, `melee_hit` and `spell_hit` do not exist. MP5 is `mp5`. `WeightsSpec.Reference` is required and uses this vocabulary, as does `specs.json`'s `reference_stat`, whose defaults are `attack_power` for melee and hunters and `spell_power` for casters.
+- **`Substitution.Kind` is closed at four:** `item`, `talents`, `set` and `consumes` (contract 10.8), the last carrying the consumable ids joined by `, ` in `Name`.
+- **The server-run button is gated client-side on `Caps.server`** before submitting (contract 10.8); a `cap_exceeded` that still arrives from the API shows the generic failure sentence, because `simCount` has already put both numbers on screen.
+- **Premium submit is `POST /v1/sims/run`** and `POST /v1/sims` remains the browser-result save (contract 10.6); both accept every kind.
 - Validation the page must satisfy before it sends: no candidate on a locked slot; `talents` mode has at least one loadout and **no** candidates; `drops` mode has candidates whose origins are all `drop:`; `gear` mode has at least one of candidates, talents or sets.
 - The engine version is `ENGINE_VERSION` from `web/src/lib/sim/version.ts`. **Never type a sha** into a component, test or fixture.
 - The active data build is `web/src/data/active-build.json`'s `build` field. **Never type a build id**; import it.
@@ -55,7 +62,7 @@ Every task's requirements implicitly include this section.
 
 - This lane: `sim-combos`, `sim-combo-row`, `sim-equipped-line`, `sim-cap-notice`, `sim-stage-progress`, `sim-source-picker`, `sim-source-<id>`, `sim-candidate-<slot>-<item>`, `sim-weights`, and `sim-precision` on the four tool pages.
 - Part A owns `sim-request-drawer`, `sim-style`, `sim-target-error`, `sim-sample-log`, `sim-details-card`, and `sim-precision` on `/sim`.
-- Nine further ids this lane adds (recorded in the finish report as a contract addition): `sim-combo-count`, `sim-slot-grid`, `sim-item-search`, `sim-enchant-<slot>-<id>`, `sim-lock-<slot>`, `sim-loadout-<name>`, `sim-set-<name>`, `sim-slot-summary`, `sim-pawn`.
+- Page-local ids this lane adds, which contract 10.7 explicitly permits ("test ids in section 9 are a minimum; page-local ids follow the same `sim-<thing>` shape"): `sim-combo-count`, `sim-slot-grid`, `sim-item-search`, `sim-enchant-<slot>-<id>`, `sim-lock-<slot>`, `sim-loadout-<name>`, `sim-set-<name>`, `sim-slot-summary`, `sim-pawn`, `sim-consumable-<id>`, `sim-kind-<kind>`, `sim-upcoming`, `sim-drops-by-boss`, `sim-drops-flat`, `sim-drops-pin-<item>`, `sim-weight-<stat>`.
 
 **Copy**
 
@@ -81,8 +88,10 @@ Every task's requirements implicitly include this section.
 1. `web/src/lib/sim/styles.ts` — `SIM_STYLES: readonly { id: string; label: string }[]` and `encounterForStyle(id: string, base: EncounterSpec): EncounterSpec`.
 2. `web/src/components/sim/SettingsPanel.svelte` — the full buff/consumable/encounter panel. Props `{ settings: SimSettings; spec: string; disabled: boolean; onchange: (next: SimSettings) => void }`.
 3. `web/src/components/sim/RequestDrawer.svelte` — Advanced (design 8). Props `{ request: unknown; onapply: (next: unknown) => void }`, test id `sim-request-drawer`.
-4. `decodeFS1` in `web/src/lib/planner/fs1.ts` returning `FS1Build` with `bags`, `bank`, `sets`, `loadouts`, and `SimCharacter` (`web/src/lib/sim/character.ts`) carrying the same four fields through `characterFromFs1`.
-5. `web/src/lib/sim/run.ts`'s step-loop `RunInput.targetError` — consumed only where a tool offers "until ±0.5%"; no tool in this plan does, so this is a compatibility dependency, not a functional one.
+4. `decodeFS1` in `web/src/lib/planner/fs1.ts` returning `FS1Build` with `bags`, `bank`, `sets`, `loadouts` and `professions` (contract 10.5's new `professions=` section), and `SimCharacter` (`web/src/lib/sim/character.ts`) carrying the same five through `characterFromFs1`.
+5. **`SimCharacter.gearSlots?: GearSlot[]`** — contract 10.5's "`SimCharacter` gains per-slot enchant and suffix", as the engine's own `GearSlot[]` beside the planner's id-only `gear` map. Part A owns the field and its name; this lane reads it in exactly one place (`seedRows` in `bulk-store.svelte.ts`) and in exactly one other (`toCharacterSpec`, which part A already changes to send it), so adopting a different name is a two-line change.
+6. **`SimCharacter.professions?: string[]`** — filled by the export's `professions=` section, and sent on as `CharacterSpec.professions`. Read by the Droptimizer's crafted split (contract 10.7).
+7. `web/src/lib/sim/run.ts`'s step-loop `RunInput.targetError`, and its use of the wasm's `simNeedsMore` — consumed only where a tool offers "until ±0.5%"; no tool in this plan does, so this is a compatibility dependency, not a functional one. This lane nevertheless declares `simNeedsMore` and `simValidate` on `EngineModule` (Task 3) and on the pool (Task 4), because contract 10.2 puts all three new exports in one table and splitting one file's surface across two lanes is how a merge conflict is made.
 
 ---
 
@@ -96,7 +105,8 @@ Every task's requirements implicitly include this section.
 | `run-shards.ts` | `runShards()`: one prepared `SimRequest` JSON through `simSplit`/`simRun`/`simCombine`. |
 | `bulk-run.ts` | The stage loop: `simPlan` → run → `simRank` → next stage or final. Progress, abort, cap. |
 | `bulk-store.svelte.ts` | The runes store all four tool pages mount over. |
-| `phase.ts` | Phase names and boundaries, from `src/data/phases.json`. |
+| `phase.ts` | Phase names and boundaries: `GET /v1/phases` at runtime, `src/data/phases.json` as the build-time fallback. |
+| `sim-buffs.ts` | `simbuffs.json`: the display name and icon for every IDS.md buff, debuff and consumable id. |
 | `loot.ts` | `loot.json` loader, the source tree, the item→source index, the phase gate. |
 | `enchants.ts` | `enchants.json` / `suffixes.json` loaders and per-slot filtering. |
 | `item-search.ts` | The search over `items.json`: name, min ilvl, slot, source, usable-only. |
@@ -135,7 +145,7 @@ Every task's requirements implicitly include this section.
 
 **Interfaces:**
 - Consumes: `SimRequest`, `SimResult`, `Estimate`, `GearSlot`, `SpecFidelity`, `SimListRow` from `./types`; `Item` from `../planner/types`.
-- Produces: everything later tasks type against — `BulkMode`, `Precision`, `PRECISIONS`, `Candidate`, `TalentLoadout`, `GearSet`, `BulkSpec`, `WeightsSpec`, `BulkRequest`, `WeightsRequest`, `Substitution`, `Combo`, `Stage`, `StatWeight`, `BulkResult`, `WeightsResult`, `Combination`, `StageRequests`, `RankAnswer`, `CapExceeded`, `SimKind`, `BROWSER_CAP`, `LOW_CORE_CAP`, `LOW_CORE_THRESHOLD`, `browserCap()`, `kindOf()`, `isCapExceeded()`; and `bulkCopy` from `./copy`.
+- Produces: everything later tasks type against — `BulkMode`, `Precision`, `PRECISIONS`, `STAGES_BY_PRECISION`, `finalIterations()`, `Candidate`, `TalentLoadout`, `GearSet`, `BulkSpec`, `WeightsSpec`, `BulkRequest`, `WeightsRequest`, `Substitution`, `Combo`, `Stage`, `StatWeight`, `BulkResult`, `WeightsResult`, `Combination`, `StageRequests`, `RankAnswer`, `CapExceeded`, `SimKind`, `BROWSER_CAP`, `SERVER_CAP`, `LOW_CORE_CAP`, `LOW_CORE_THRESHOLD`, `browserCap()`, `kindOf()`, `isCapExceeded()`; and `bulkCopy` from `./copy`.
 
 - [ ] **Step 1: Write the failing test**
 
@@ -147,7 +157,9 @@ import { describe, expect, it } from 'vitest';
 import {
   BROWSER_CAP,
   LOW_CORE_CAP,
+  SERVER_CAP,
   browserCap,
+  finalIterations,
   isCapExceeded,
   kindOf,
   PRECISIONS,
@@ -223,9 +235,22 @@ describe('isCapExceeded', () => {
   });
 });
 
-describe('PRECISIONS', () => {
+describe('PRECISIONS and finalIterations', () => {
   it('is the contract’s three, in ladder order', () => {
     expect([...PRECISIONS]).toEqual(['fast', 'normal', 'high']);
+  });
+
+  it('gives each precision its final-stage iteration count (contract 10.1 A3)', () => {
+    expect(finalIterations('fast')).toBe(3000);
+    expect(finalIterations('normal')).toBe(3000);
+    expect(finalIterations('high')).toBe(10_000);
+  });
+});
+
+describe('the lane caps', () => {
+  it('are 400 in the browser and 5,000 on the server (contract 10.1 A2)', () => {
+    expect(BROWSER_CAP).toBe(400);
+    expect(SERVER_CAP).toBe(5000);
   });
 });
 ```
@@ -271,6 +296,15 @@ export type Precision = (typeof PRECISIONS)[number];
 export const STAGES_BY_PRECISION: Record<Precision, number> = { fast: 3, normal: 2, high: 2 };
 
 /**
+ * The iteration count a bulk request carries in `SimRequest.iterations` -- its precision's
+ * FINAL stage, not 3,000 for everything (contract 10.1 A3). `Validate` applies the rule
+ * for the request's kind, so a `high` bulk request with 3,000 on it is refused.
+ */
+export function finalIterations(precision: Precision): number {
+  return precision === 'high' ? 10_000 : 3000;
+}
+
+/**
  * One substitution the planner may try. `slot` is "" for anything that fits more than one
  * slot -- rings, trinkets, weapons -- and sim/bulk decides which slot it lands in.
  */
@@ -281,6 +315,13 @@ export interface Candidate {
   suffix?: number;
   /** equipped | bag | bank | search | drop:<source-id> | set:<name> */
   origin: string;
+  /**
+   * Where it comes from, in words -- "Ragnaros", "Molten Core", "Blacksmithing" (contract
+   * 10.1 A6). The page fills it from `loot.json` when it builds a drops request; `Rank`
+   * copies it onto the substitution, and the API's headline reads it. It exists so the
+   * results view never re-joins a source id back to a name it already had.
+   */
+  source_name?: string;
 }
 
 export interface TalentLoadout {
@@ -298,6 +339,12 @@ export interface BulkSpec {
   candidates: Candidate[];
   talents?: TalentLoadout[];
   sets?: GearSet[];
+  /**
+   * Alternative consumable lists, tried as candidates in `gear` mode (contract 10.1 A5).
+   * Each inner list replaces `CharacterSpec.Consumes` wholesale for that combination, so
+   * "try each of these" is one inner list per consumable rather than every subset.
+   */
+  consumables?: string[][];
   /** Slots never substituted. */
   locked?: string[];
   precision: Precision;
@@ -321,15 +368,25 @@ export interface WeightsRequest extends SimRequest {
 }
 
 export interface Substitution {
-  kind: 'item' | 'talents' | 'set';
+  /**
+   * The four kinds, closed (contract 10.8): `consumes` is the alternative consumable list
+   * of 10.1 A5, and its `name` is the consumable ids joined by `, `. `sim/bulk` emits one
+   * per combination that used an alternative list.
+   */
+  kind: 'item' | 'talents' | 'set' | 'consumes';
   slot?: string;
   item_id?: number;
   enchant?: number;
   suffix?: number;
-  /** talents/set: the loadout or set name. */
+  /**
+   * The display name. Filled for items too, from simdb (contract 10.1 A6) -- so the page
+   * never joins an item id back to a name the result already carries.
+   */
   name?: string;
   talents?: string;
   origin?: string;
+  /** Copied from the candidate: "Ragnaros", "Blacksmithing" (contract 10.1 A6). */
+  source_name?: string;
 }
 
 export interface Combo {
@@ -371,6 +428,12 @@ export interface StageRequests {
   requests: SimRequest[];
   /** Parallel to Requests[1:]. */
   combos: Combination[];
+  /**
+   * The ladder's history so far (contract 10.1 A10): what each finished stage cost. It
+   * rides on the stage object across the wasm boundary so `Rank` can fill
+   * `SimResult.Stages` without the page keeping a tally of its own.
+   */
+  ran?: Stage[];
 }
 
 export interface Combination {
@@ -405,8 +468,15 @@ export function isCapExceeded(value: unknown): value is CapExceeded {
   );
 }
 
-/** The browser lane's cap (contract 1.3's `Caps`). */
+/** The browser lane's cap (contract 1.3's `Caps`, unchanged by section 10). */
 export const BROWSER_CAP = 400;
+/**
+ * The premium lane's cap. 5,000, not section 1.3's 20,000: contract 10.1 A2 lowered it
+ * because a 20,000-combination fast run cannot finish inside the job's 15-minute timeout.
+ * The page shows this number in the cap notice's premium alternative and refuses to
+ * dispatch a server run past it.
+ */
+export const SERVER_CAP = 5000;
 /** Design 2.3: "a phone gets half the cap by hardwareConcurrency". */
 export const LOW_CORE_CAP = BROWSER_CAP / 2;
 export const LOW_CORE_THRESHOLD = 4;
@@ -491,6 +561,10 @@ In `web/src/lib/planner/types.ts`, inside `interface Item`, after `unique`:
 
 - [ ] **Step 6: Append the copy block to `copy.ts`**
 
+Note the two numbers the contract's section 10 pins: `capPremiumNote` says **5,000**
+(10.1 A2), and `opensLater` is the copy for a source whose `opens` is the literal `"later"`
+(10.4) — an unreleased source with no announced date.
+
 At the very end of `web/src/lib/sim/copy.ts`, **after** the `} as const;` that closes `simCopy`:
 
 ```ts
@@ -530,6 +604,18 @@ export const bulkCopy = {
   withEnchant: 'With enchant',
   withSuffix: 'With suffix',
   keepCurrentEnchant: 'Keep current',
+  /**
+   * A `consumes` substitution on a results row (contract 10.8): the ids come back joined
+   * by ", ", and this is the only place they are turned into a phrase. Ids are legible in
+   * snake case -- "flask_of_supreme_power" -- so they are de-underscored rather than
+   * looked up: `simbuffs.json` is loaded per build and a saved result opened by someone
+   * else may not have it.
+   */
+  consumesChip: (ids: string): string =>
+    `With ${ids
+      .split(', ')
+      .map((id) => id.replaceAll('_', ' '))
+      .join(', ')}`,
   noEnchant: 'None',
   enchantCap: (cap: number): string => `At most ${cap} enchants per slot.`,
   noCandidates: 'Nothing ticked yet. Tick an item, a talent build or a set.',
@@ -587,7 +673,9 @@ export const bulkCopy = {
   capNotice: (cap: number, combinations: number): string =>
     `${combinations.toLocaleString('en-US')} combinations is past this browser’s limit of ${cap.toLocaleString('en-US')}. Untick ${(combinations - cap).toLocaleString('en-US')} of them, or run it on our servers.`,
   capPremium: 'Run on our servers',
-  capPremiumNote: 'Premium lifts the limit to 20,000 combinations and any precision.',
+  capPremiumNote: 'Premium lifts the limit to 5,000 combinations and any precision.',
+  serverCapNotice: (cap: number, combinations: number): string =>
+    `${combinations.toLocaleString('en-US')} combinations is past our servers’ limit of ${cap.toLocaleString('en-US')} too. Untick ${(combinations - cap).toLocaleString('en-US')} of them.`,
   lowCoreNote: (cap: number): string =>
     `This device reports four cores or fewer, so the limit here is ${cap.toLocaleString('en-US')} combinations.`,
 
@@ -634,6 +722,7 @@ export const bulkCopy = {
   showUpcoming: 'Show unreleased content',
   opensOn: (label: string, date: string): string => `${label}, ${date}`,
   notOpenYet: 'Not open yet',
+  opensLater: 'Not open yet; no date announced.',
   dropsUpgrades: (upgrades: number, drops: number): string =>
     `${upgrades} of the ${drops} drops here ${upgrades === 1 ? 'is an upgrade' : 'are upgrades'}`,
   dropsBest: 'Best here',
@@ -652,6 +741,9 @@ export const bulkCopy = {
   weightsCopyPawn: 'Copy for Pawn',
   weightsCopied: 'Copied',
   weightsPick: 'Stats to weigh',
+
+  // --- the request drawer's own one-liner, so Advanced is findable on every tool ---
+  advancedTitle: 'Request',
 
   // --- the rules card, design 3.2, in our words ---
   rulesTitle: 'How the combinations are built',
@@ -719,6 +811,7 @@ contains — and splitting them would leave half the suite unable to run.
 - Create: `web/src/fixtures/planner/loot.json`
 - Create: `web/src/fixtures/planner/enchants.json`
 - Create: `web/src/fixtures/planner/suffixes.json`
+- Create: `web/src/fixtures/planner/simbuffs.json`
 - Create: `web/src/data/phases.json`
 - Create: `web/src/fixtures/sim/bulk-fixture.test.ts`
 - Modify: `web/src/fixtures/sim/specs.json` (add `reference_stat` to all three rows)
@@ -729,7 +822,7 @@ contains — and splitting them would leave half the suite unable to run.
 
 **Interfaces:**
 - Consumes: `BulkResult`, `WeightsResult`, `StatWeight` (Task 1).
-- Produces: `fixtureBulkResult`, `fixtureWeightsResult`, `FIXTURE_LOOT_SOURCE`, `FIXTURE_MY_BUILD_ID` from `web/src/test-support/sim-api.ts`; the three data files at `/data/<build>/loot.json`, `enchants.json`, `suffixes.json`; `web/src/data/phases.json`.
+- Produces: `fixtureBulkResult`, `fixtureWeightsResult`, `FIXTURE_MY_BUILD_ID` from `web/src/test-support/sim-api.ts`; the four data files at `/data/<build>/loot.json`, `enchants.json`, `suffixes.json` and `simbuffs.json`; `web/src/data/phases.json`; and the `GET /v1/phases` and `GET /v1/builds?mine=1` stub routes.
 
 - [ ] **Step 1: Write the failing fixture test**
 
@@ -747,6 +840,7 @@ import specsJson from './specs.json';
 import lootJson from '../planner/loot.json';
 import enchantsJson from '../planner/enchants.json';
 import suffixesJson from '../planner/suffixes.json';
+import simbuffsJson from '../planner/simbuffs.json';
 import itemsJson from '../planner/items/warrior.json';
 import phasesJson from '../../data/phases.json';
 import type { BulkResult, WeightsResult } from '../../lib/sim/bulk-types';
@@ -829,18 +923,28 @@ describe('the loot fixture', () => {
     }
   });
 
-  it('names a phase only from the phase table', () => {
-    const names = new Set(phasesJson.map((phase) => phase.name));
+  it('names a phase only from the phase table, or the literal "later"', () => {
+    const names = new Set([...phasesJson.map((phase) => phase.name), 'later']);
     for (const source of lootJson.sources) {
       if (source.opens === undefined) continue;
       expect(names.has(source.opens), `source ${source.id} opens in ${source.opens}`).toBe(true);
     }
   });
+
+  it('spells every boss id as <source>:<npc-id>, per contract 10.4', () => {
+    for (const source of lootJson.sources) {
+      for (const boss of source.bosses ?? []) {
+        expect(boss.id).toBe(`${source.id}:${boss.npc_id}`);
+      }
+    }
+  });
 });
 
 describe('the enchant and suffix fixtures', () => {
-  it('gives every enchant at least one slot and an icon the fixture ships', () => {
+  it('keys every enchant by effect_id plus a spell or an item, per contract 10.4', () => {
     for (const enchant of enchantsJson) {
+      expect(enchant.effect_id).toBeGreaterThan(0);
+      expect(('spell_id' in enchant ? 1 : 0) + ('item_id' in enchant ? 1 : 0)).toBeGreaterThan(0);
       expect(enchant.slots.length).toBeGreaterThan(0);
       expect(enchant.icon.startsWith('fixture_')).toBe(true);
     }
@@ -857,9 +961,22 @@ describe('the enchant and suffix fixtures', () => {
 describe('the phase table', () => {
   it('is the four phases api/internal/phase names, in order, with the launch instant', () => {
     expect(phasesJson.map((phase) => phase.name)).toEqual(['pre-beta', 'beta', 'launch', 'raids-1']);
-    expect(phasesJson[2].starts).toBe('2026-11-04T23:00:00Z');
-    expect(phasesJson[3].starts).toBe('2026-12-09T00:00:00Z');
-    expect(phasesJson[0].starts).toBe('');
+    expect(phasesJson[2].start).toBe('2026-11-04T23:00:00Z');
+    expect(phasesJson[3].start).toBe('2026-12-09T00:00:00Z');
+    expect(phasesJson[0].start).toBe('');
+  });
+
+  it('carries no display label: contract 10.4 pins the shape at name and start', () => {
+    for (const phase of phasesJson) expect(Object.keys(phase).sort()).toEqual(['name', 'start']);
+  });
+});
+
+describe('the simbuffs fixture', () => {
+  it('names and illustrates every consumable the preset applies', () => {
+    for (const id of ['flask_of_supreme_power', 'elixir_of_the_mongoose']) {
+      expect(simbuffsJson.entries[id]?.name.length).toBeGreaterThan(0);
+      expect(simbuffsJson.entries[id]?.icon.startsWith('fixture_')).toBe(true);
+    }
   });
 });
 ```
@@ -876,19 +993,24 @@ Expected: FAIL, cannot resolve `./bulk-result.json`.
 
 ```json
 [
-  { "name": "pre-beta", "label": "Before beta", "starts": "" },
-  { "name": "beta", "label": "Beta", "starts": "2026-09-17T00:00:00Z" },
-  { "name": "launch", "label": "Launch", "starts": "2026-11-04T23:00:00Z" },
-  { "name": "raids-1", "label": "First raids", "starts": "2026-12-09T00:00:00Z" }
+  { "name": "pre-beta", "start": "" },
+  { "name": "beta", "start": "2026-09-17T00:00:00Z" },
+  { "name": "launch", "start": "2026-11-04T23:00:00Z" },
+  { "name": "raids-1", "start": "2026-12-09T00:00:00Z" }
 ]
 ```
 
-This is the web-side mirror of `api/internal/phase.Boundaries`, which that package's own
-header already calls a copy of the site's dates. There is no `GET /v1/phase` and this plan
-does not ask for one: the boundaries are four fixed instants, the API already treats the
-site as their source, and a phase gate that could change under a running deployment would
-re-bucket loot silently. When a date moves, this file and `api/internal/phase/phase.go`
-change together.
+Contract 10.4 makes `data/curated/phases.json` the source of truth — the file
+`api/internal/phase.Boundaries` is tested against — and has the pipeline emit it to
+`web/src/data/phases.json` in exactly this `[{ "name", "start" }]` shape. There is no
+`label` column: `phase.ts` carries the display names, because they are display copy and the
+data lane's file is data.
+
+The file checked in here is the pipeline's output, written by hand for now so this lane is
+not blocked on the data lane's emit step; the moment the pipeline writes it, this copy is
+overwritten and nothing else changes. At **runtime** the page prefers `GET /v1/phases`
+(contract 10.6) and falls back to this file, so a phase date that moves after a deploy is
+picked up without a rebuild.
 
 - [ ] **Step 4: Write `web/src/fixtures/sim/bulk-result.json`**
 
@@ -1014,7 +1136,7 @@ page renders `combos`, never a damage table.
     "iterations": 3000,
     "random_seed": 0,
     "weights": {
-      "stats": ["strength", "agility", "attack_power", "crit", "hit", "haste"],
+      "stats": ["strength", "agility", "attack_power", "crit", "hit", "melee_haste"],
       "reference": "attack_power"
     }
   },
@@ -1029,7 +1151,7 @@ page renders `combos`, never a damage table.
     { "stat": "crit", "weight": 21.7, "error": 0.9 },
     { "stat": "hit", "weight": 27.3, "error": 1.2 },
     { "stat": "agility", "weight": 1.32, "error": 0.05 },
-    { "stat": "haste", "weight": 18.4, "error": 1.1 }
+    { "stat": "melee_haste", "weight": 18.4, "error": 1.1 }
   ]
 }
 ```
@@ -1039,6 +1161,11 @@ page renders `combos`, never a damage table.
 Only the six fixture warrior items exist, so every source draws from them. The shape is
 contract 6.1 exactly.
 
+Source ids follow contract 10.4 exactly: `raid:<zone-slug>` and `raid:<zone-slug>:<npc-id>`,
+likewise `dungeon:`; `zone_id` is an AreaTable id (Molten Core is **2717**, not 409);
+`pvp:rank-<n>` carries the rank; and a source whose open date is unknown carries
+`"opens": "later"`.
+
 ```json
 {
   "sources": [
@@ -1046,11 +1173,11 @@ contract 6.1 exactly.
       "id": "raid:mc",
       "kind": "raid",
       "name": "Molten Core",
-      "zone_id": 409,
+      "zone_id": 2717,
       "opens": "raids-1",
       "bosses": [
-        { "id": "raid:mc:lucifron", "name": "Lucifron", "npc_id": 12118, "items": [16963] },
-        { "id": "raid:mc:ragnaros", "name": "Ragnaros", "npc_id": 11502, "items": [12784, 19325] }
+        { "id": "raid:mc:12118", "name": "Lucifron", "npc_id": 12118, "items": [16963] },
+        { "id": "raid:mc:11502", "name": "Ragnaros", "npc_id": 11502, "items": [12784, 19325] }
       ],
       "trash": [13968]
     },
@@ -1060,11 +1187,18 @@ contract 6.1 exactly.
       "name": "Hall of Thanes",
       "zone_id": 9001,
       "bosses": [
-        { "id": "dungeon:hall-of-thanes:thane-korgal", "name": "Thane Korgal", "npc_id": 90011, "items": [16966] }
+        { "id": "dungeon:hall-of-thanes:90011", "name": "Thane Korgal", "npc_id": 90011, "items": [16966] }
       ],
       "trash": [13968]
     },
-    { "id": "world:azuregos", "kind": "world", "name": "Azuregos", "zone_id": 16, "items": [19325] },
+    {
+      "id": "world:azuregos",
+      "kind": "world",
+      "name": "Azuregos",
+      "zone_id": 16,
+      "opens": "later",
+      "items": [19325]
+    },
     {
       "id": "crafted:blacksmithing",
       "kind": "crafted",
@@ -1095,41 +1229,65 @@ contract 6.1 exactly.
 
 - [ ] **Step 7: Write `web/src/fixtures/planner/enchants.json` and `suffixes.json`**
 
-`enchants.json`:
+`enchants.json` — keyed by `effect_id` plus `spell_id`/`item_id`, with `item_types` as the
+`EnchantType` shape restriction and `slots` derived from `type` and `extra_types`, per
+contract 10.4:
 
 ```json
 [
   {
-    "id": 2543,
+    "effect_id": 2543,
+    "spell_id": 23545,
     "name": "Lesser Arcanum of Voracity",
     "icon": "fixture_item_lionheart_helm",
     "slots": ["head", "legs"],
-    "item_types": ["cloth", "leather", "mail", "plate"],
+    "item_types": [1, 2, 3, 4],
     "classes": [],
     "stats": { "strength": 8 },
     "phase": "launch"
   },
   {
-    "id": 1900,
+    "effect_id": 1900,
+    "spell_id": 20034,
     "name": "Crusader",
     "icon": "fixture_item_arcanite_reaper",
     "slots": ["main_hand", "off_hand"],
-    "item_types": ["weapon"],
+    "item_types": [5],
     "classes": [],
     "stats": {},
     "phase": "launch"
   },
   {
-    "id": 2564,
+    "effect_id": 2564,
+    "item_id": 16252,
     "name": "Greater Stats",
     "icon": "fixture_item_spaulders_of_wrath",
     "slots": ["chest"],
-    "item_types": ["cloth", "leather", "mail", "plate"],
+    "item_types": [1, 2, 3, 4],
     "classes": [],
     "stats": { "strength": 4, "agility": 4 },
     "phase": "raids-1"
   }
 ]
+```
+
+`simbuffs.json` — contract 10.4's new file, the display name and icon for every IDS.md
+buff, debuff, world buff and consumable id. The slice carries the two the preset uses:
+
+```json
+{
+  "entries": {
+    "flask_of_supreme_power": {
+      "name": "Flask of Supreme Power",
+      "icon": "fixture_item_snakestone_charm"
+    },
+    "elixir_of_the_mongoose": {
+      "name": "Elixir of the Mongoose",
+      "icon": "fixture_item_band_of_accuria"
+    },
+    "battle_shout": { "name": "Battle Shout", "icon": "fixture_improved_battle_shout" }
+  }
+}
 ```
 
 `suffixes.json`:
@@ -1162,19 +1320,21 @@ In `web/src/fixtures/sim/specs.json`, add `"reference_stat"` after each row's
 In `web/scripts/sync-data.mjs`, inside `SYNC_ENTRIES`, after the `sets.json` line:
 
 ```js
-  // Contract 6: the Droptimizer's source tables and Top Gear's enchant and suffix lists.
-  // Optional the same way sets.json is -- a build the data lane has not regenerated ships
-  // none, and the pages say so rather than failing to render.
+  // Contract 6 and 10.4: the Droptimizer's source tables, Top Gear's enchant and suffix
+  // lists, and the buff/consumable name table. Optional the same way sets.json is -- a
+  // build the data lane has not regenerated ships none, and the pages say so rather than
+  // failing to render.
   { name: 'loot.json', kind: 'file', required: false },
   { name: 'enchants.json', kind: 'file', required: false },
   { name: 'suffixes.json', kind: 'file', required: false },
+  { name: 'simbuffs.json', kind: 'file', required: false },
 ```
 
 Then list the three in `web/src/fixtures/planner/manifest.json`'s `files` map, with their
 real hashes:
 
 ```bash
-cd web/src/fixtures/planner && shasum -a 256 loot.json enchants.json suffixes.json
+cd web/src/fixtures/planner && shasum -a 256 loot.json enchants.json suffixes.json simbuffs.json
 ```
 
 Add one `"loot.json": "<hash>"` entry per file, in the map's existing alphabetical order.
@@ -1196,14 +1356,26 @@ export const fixtureWeightsResult = fixtureWeightsJson as unknown as WeightsResu
 export const FIXTURE_MY_BUILD_ID = 'bld987654321';
 ```
 
-And, in `builtIn`, **above** the existing `GET /v1/builds/{id}` route (a narrower pattern
-must come first):
+And, in `builtIn`, the phases route (contract 10.6) beside the specs one:
+
+```ts
+    {
+      method: 'GET',
+      pattern: /\/v1\/phases$/,
+      respond: () => envelope({ phases: phasesJson }),
+    },
+```
+
+with `import phasesJson from '../data/phases.json';`.
+
+And, **above** the existing `GET /v1/builds/{id}` route (a narrower pattern must come
+first):
 
 ```ts
     // GET /v1/builds?mine=1 -- the signed-in player's saved builds, for Top Gear's talent
-    // candidate list. The route does not exist in the API yet (see the finish report's
-    // contract additions); the page treats any failure as "no saved builds" and says so,
-    // so this stub is what proves the success path.
+    // candidate list. Contract 10.6 adds `builds.user_id` and this route; the page still
+    // treats a failure as "no saved builds" and says so in one line, because an old
+    // deployment answers 404 and that is not worth an error banner.
     {
       method: 'GET',
       pattern: /\/v1\/builds\?/,
@@ -1263,7 +1435,7 @@ MSG
 
 ---
 
-### Task 3: The engine surface grows `simPlan`, `simRank` and `simWeights`, and the fake implements them
+### Task 3: The engine surface grows the six exports, and the fake implements them
 
 **Files:**
 - Modify: `web/src/lib/sim/engine.ts` (three functions on `EngineModule`, three globals on the wasm adapter)
@@ -1272,12 +1444,14 @@ MSG
 
 **Interfaces:**
 - Consumes: `StageRequests`, `RankAnswer`, `BulkRequest`, `WeightsRequest`, `Combination`, `Combo`, `Precision`, `isCapExceeded` (Task 1); the two result fixtures (Task 2).
-- Produces: on `EngineModule` —
-  - `simPlan(requestJSON: string): string` → `StageRequests` JSON or a `CapExceeded` JSON;
+- Produces: on `EngineModule`, the five of contract 4 and 10.2 this lane needs plus the two part A needs —
+  - `simPlan(requestJSON: string): string` → `StageRequests` JSON or the `cap_exceeded` JSON;
   - `simRank(requestJSON: string, stageJSON: string, resultsJSON: string): string` → `RankAnswer` JSON;
   - `simWeights(requestJSON: string, callbackId: string): Promise<string>` → `SimResult` JSON with `weights`;
-  - `simCount(requestJSON: string): string` → `{"combinations": n}` JSON or a `CapExceeded` JSON.
-- Also produces: `createFakeEngine(options)` honouring all four.
+  - `simCount(requestJSON: string): string` → `{"combinations": n}` JSON or the `cap_exceeded` JSON;
+  - `simValidate(requestJSON: string): string` → `{"ok": bool, "errors": [{"field","message"}]}`;
+  - `simNeedsMore(resultJSON: string, requestJSON: string): string` → `{"needs_more": bool}`.
+- Also produces: `createFakeEngine(options)` honouring all six.
 
 - [ ] **Step 1: Write the failing tests**
 
@@ -1332,6 +1506,30 @@ describe('the fake engine’s bulk exports', () => {
     expect(JSON.parse(engine.simCount(gearRequest()))).toEqual({ combinations: 3 });
   });
 
+  it('multiplies the gear product by the consumable alternatives (contract 10.1 A5)', () => {
+    const engine = createFakeEngine({ tickMs: 0, ticks: 1 });
+    const request = JSON.parse(gearRequest()) as BulkRequest;
+    request.bulk.consumables = [['flask_of_supreme_power'], ['elixir_of_the_mongoose']];
+    // (1 head + 1) x (1 shoulder + 1) x 2 consumable lists, minus the untouched base
+    expect(JSON.parse(engine.simCount(JSON.stringify(request)))).toEqual({ combinations: 7 });
+  });
+
+  it('answers simValidate and simNeedsMore in the shapes contract 10.2 names', () => {
+    const engine = createFakeEngine({ tickMs: 0, ticks: 1 });
+    expect(JSON.parse(engine.simValidate(gearRequest()))).toEqual({ ok: true, errors: [] });
+    const bad = JSON.parse(gearRequest()) as BulkRequest;
+    bad.bulk.precision = 'blazing' as never;
+    const answer = JSON.parse(engine.simValidate(JSON.stringify(bad))) as {
+      ok: boolean;
+      errors: { field: string; message: string }[];
+    };
+    expect(answer.ok).toBe(false);
+    expect(answer.errors[0].field).toBe('bulk.precision');
+    expect(JSON.parse(engine.simNeedsMore(JSON.stringify(fixtureBulkResult), gearRequest()))).toEqual({
+      needs_more: false,
+    });
+  });
+
   it('ranks a stage into the next one and finally into a result', async () => {
     const engine = createFakeEngine({ tickMs: 0, ticks: 1 });
     const request = gearRequest();
@@ -1356,6 +1554,14 @@ describe('the fake engine’s bulk exports', () => {
     const means = bulk!.combos.map((combo) => combo.dps.mean);
     expect([...means].sort((a, b) => b - a)).toEqual(means);
     expect(bulk!.combos[0].group).toBe(0);
+    // Contract 10.1 A6: an item substitution comes back named, so the page never re-joins.
+    expect(bulk!.combos[0].substitutions[0].name).toBeTruthy();
+  });
+
+  it('carries the ladder history on the stage object, not in the engine (contract 10.1 A10)', () => {
+    const engine = createFakeEngine({ tickMs: 0, ticks: 1 });
+    const stage = JSON.parse(engine.simPlan(gearRequest())) as StageRequests;
+    expect(stage.ran).toEqual([]);
   });
 
   it('answers a weights request with the reference stat at exactly 1', async () => {
@@ -1418,11 +1624,23 @@ In `web/src/lib/sim/engine.ts`, inside `interface EngineModule`, after `simAbort
   simWeights(requestJSON: string, callbackId: string): Promise<string>;
   /**
    * How many combinations a bulk request expands to, without building a single request for
-   * them. The live count on Top Gear runs on every checkbox tick, and simPlan allocates a
-   * whole SimRequest per combination -- up to 400 copies of a character -- which is far too
-   * much work for a keystroke.
+   * them (contract 10.2). The live count on Top Gear runs on every checkbox tick, and
+   * simPlan allocates a whole SimRequest per combination -- up to 400 copies of a
+   * character -- which is far too much work for a keystroke.
    */
   simCount(requestJSON: string): string;
+  /**
+   * `{"ok": bool, "errors": [{"field","message"}]}` (contract 10.2). The Advanced drawer
+   * validates an edited request with the same `Validate` the run would apply, so the
+   * errors it shows are the engine's own and not a second copy of the rules.
+   */
+  simValidate(requestJSON: string): string;
+  /**
+   * `{"needs_more": bool}` (contract 10.2, `api.NeedsMoreIterations`). The target-error
+   * step loop asks after each step whether to run another. Declared here rather than in
+   * part A's lane because all three of 10.2's exports belong to one file's surface.
+   */
+  simNeedsMore(resultJSON: string, requestJSON: string): string;
 ```
 
 In the same file, extend `WasmGlobals` and `loadWasmEngine`'s returned object:
@@ -1432,6 +1650,8 @@ In the same file, extend `WasmGlobals` and `loadWasmEngine`'s returned object:
   simRank?: (requestJSON: string, stageJSON: string, resultsJSON: string) => string;
   simWeights?: (requestJSON: string, callbackId: string) => Promise<string>;
   simCount?: (requestJSON: string) => string;
+  simValidate?: (requestJSON: string) => string;
+  simNeedsMore?: (resultJSON: string, requestJSON: string) => string;
 ```
 
 ```ts
@@ -1443,6 +1663,11 @@ In the same file, extend `WasmGlobals` and `loadWasmEngine`'s returned object:
     simRank: (requestJSON, stageJSON, resultsJSON) =>
       unwrapOrThrow(globals.simRank!(requestJSON, stageJSON, resultsJSON)),
     simWeights: (requestJSON, callbackId) => globals.simWeights!(requestJSON, callbackId),
+    // simValidate answers `{"ok": false, errors: [...]}` for an invalid request, which is a
+    // success of the call and not a failure of it, so it is not unwrapped either.
+    simValidate: (requestJSON) => globals.simValidate!(requestJSON),
+    simNeedsMore: (resultJSON, requestJSON) =>
+      unwrapOrThrow(globals.simNeedsMore!(resultJSON, requestJSON)),
 ```
 
 - [ ] **Step 4: Implement the four in the fake engine**
@@ -1450,16 +1675,21 @@ In the same file, extend `WasmGlobals` and `loadWasmEngine`'s returned object:
 In `web/src/fixtures/sim/engine-fake.ts`, add these imports and helpers above `createFakeEngine`:
 
 ```ts
+import fixtureItemsJson from '../planner/items/warrior.json';
+import type { Item } from '../../lib/planner/types';
 import {
-  STAGES_BY_PRECISION,
   type BulkRequest,
   type Combination,
   type Combo,
   type Precision,
+  type Stage,
   type StageRequests,
   type Substitution,
   type WeightsRequest,
 } from '../../lib/sim/bulk-types';
+
+/** simdb's stand-in, for the item names contract 10.1 A6 puts on every substitution. */
+const fixtureItems = fixtureItemsJson.items as unknown as Item[];
 
 /**
  * The iteration ladder, as contract 1.3 writes it. The real planner reads it from
@@ -1473,10 +1703,15 @@ const LADDER: Record<Precision, number[]> = {
 };
 
 /**
- * The fake's expansion: one combination per talent loadout, one per named set, and -- in
- * `gear` mode -- every non-empty subset of the candidates that uses each slot at most once.
- * `drops` and `talents` mode take one substitution at a time, which is exactly what
- * `combinations: false` means.
+ * The fake's expansion, following contract 10.1 A4: **mode decides**. `gear` takes the
+ * product of every candidate group -- one group per slot, each group being "keep what is
+ * equipped" plus that slot's candidates -- crossed with the consumable alternatives of
+ * A5; `drops` and `talents` take one substitution at a time. The empty product is the
+ * equipped set, which is `requests[0]` and not a combination, so it is dropped.
+ *
+ * Substitutions come back NAMED (contract 10.1 A6): the real planner reads the name from
+ * simdb, and the fake reads it from the fixture item file, so the page's "never re-join an
+ * id to a name" rule is exercised rather than merely asserted.
  *
  * A candidate whose slot is "" fits more than one slot and only the item database can say
  * which; the fake has no database, so it resolves every one to `finger1`. Nothing in the
@@ -1494,12 +1729,40 @@ function expand(request: BulkRequest): Combination[] {
       enchant: candidate.enchant,
       suffix: candidate.suffix,
       origin: candidate.origin,
+      name: itemName(candidate.item_id),
+      source_name: candidate.source_name,
     }));
 
-  const groups: Substitution[][] =
-    bulk.mode === 'gear'
-      ? subsets(itemSubs).filter((group) => group.length > 0 && distinctSlots(group))
-      : itemSubs.map((sub) => [sub]);
+  let groups: Substitution[][];
+  if (bulk.mode === 'gear') {
+    // The product of one group per slot, each group led by "nothing" -- which is exactly
+    // the set of subsets that use each slot at most once, in a stable order.
+    const bySlot = new Map<string, Substitution[]>();
+    for (const sub of itemSubs) {
+      const existing = bySlot.get(sub.slot ?? '');
+      if (existing === undefined) bySlot.set(sub.slot ?? '', [sub]);
+      else existing.push(sub);
+    }
+    let product: Substitution[][] = [[]];
+    for (const options of bySlot.values()) {
+      product = product.flatMap((base) => [base, ...options.map((sub) => [...base, sub])]);
+    }
+    // Consumable alternatives multiply the gear product (contract 10.1 A5). Each inner
+    // list is one alternative, reported as a `consume` substitution named by its ids.
+    const consumableLists = bulk.consumables ?? [];
+    if (consumableLists.length > 0) {
+      // Contract 10.8: the kind is `consumes` and the name is the ids joined by ", ".
+      product = product.flatMap((base) =>
+        consumableLists.map((list) => [
+          ...base,
+          { kind: 'consumes', name: list.join(', ') } as Substitution,
+        ]),
+      );
+    }
+    groups = product.filter((group) => group.length > 0).sort((a, b) => a.length - b.length);
+  } else {
+    groups = itemSubs.map((sub) => [sub]);
+  }
 
   for (const loadout of bulk.talents ?? []) {
     groups.push([{ kind: 'talents', name: loadout.name, talents: loadout.talents }]);
@@ -1512,25 +1775,24 @@ function expand(request: BulkRequest): Combination[] {
   }));
 }
 
-function distinctSlots(group: readonly Substitution[]): boolean {
-  const slots = group.map((sub) => sub.slot);
-  return new Set(slots).size === slots.length;
+/** The fixture item file stands in for simdb, so a substitution comes back named. */
+function itemName(itemId: number): string {
+  return fixtureItems.find((item) => item.id === itemId)?.name ?? `Item ${itemId}`;
 }
 
-/** Every subset, smallest first, so the order is stable and the cap counts the same twice. */
-function subsets(items: readonly Substitution[]): Substitution[][] {
-  let out: Substitution[][] = [[]];
-  for (const item of items) out = [...out, ...out.map((group) => [...group, item])];
-  return out.sort((a, b) => a.length - b.length);
-}
-
-/** The base character with the substitutions written into its gear and talents. */
+/** The base character with the substitutions written into its gear, talents and consumes. */
 function applySubstitutions(request: BulkRequest, substitutions: readonly Substitution[]): SimRequest {
   const gear = request.character.gear.map((slot) => ({ ...slot }));
   let talents = request.character.talents;
+  let consumes = [...request.character.consumes];
   for (const sub of substitutions) {
     if (sub.kind === 'talents') {
       talents = sub.talents ?? talents;
+      continue;
+    }
+    if (sub.kind === 'consumes') {
+      // A5: the inner list REPLACES the character's consumes for this combination.
+      consumes = (sub.name ?? '').split(', ').filter((id) => id !== '');
       continue;
     }
     if (sub.kind !== 'item') continue;
@@ -1540,7 +1802,7 @@ function applySubstitutions(request: BulkRequest, substitutions: readonly Substi
     else gear.push(next);
   }
   const { bulk: _bulk, ...base } = request;
-  return { ...base, character: { ...request.character, gear, talents } };
+  return { ...base, character: { ...request.character, gear, talents, consumes } };
 }
 
 /** The equipped set, with the bulk block stripped: it is a plain run like any other. */
@@ -1549,7 +1811,12 @@ function equippedRequest(request: BulkRequest, iterations: number): SimRequest {
   return { ...base, iterations };
 }
 
-function stageAt(request: BulkRequest, stage: number, combos: Combination[]): StageRequests {
+function stageAt(
+  request: BulkRequest,
+  stage: number,
+  combos: Combination[],
+  ran: Stage[],
+): StageRequests {
   const iterations = LADDER[request.bulk.precision][stage - 1];
   return {
     stage,
@@ -1559,6 +1826,9 @@ function stageAt(request: BulkRequest, stage: number, combos: Combination[]): St
       ...combos.map((combo) => ({ ...combo.request, iterations })),
     ],
     combos,
+    // Contract 10.1 A10: the ladder's history rides on the stage object across the
+    // boundary, so nothing stateful lives in the engine between calls.
+    ran: [...ran],
   };
 }
 ```
@@ -1576,10 +1846,41 @@ Then, inside the object `createFakeEngine` returns, after `simAbort`:
           combinations: combos.length,
         });
       }
-      return JSON.stringify(stageAt(request, 1, combos));
+      return JSON.stringify(stageAt(request, 1, combos, []));
+    },
+
+    simValidate(requestJSON) {
+      const request = JSON.parse(requestJSON) as BulkRequest;
+      const errors: { field: string; message: string }[] = [];
+      const bulk = request.bulk;
+      if (bulk !== undefined) {
+        if (!['fast', 'normal', 'high'].includes(bulk.precision)) {
+          errors.push({ field: 'bulk.precision', message: 'precision must be fast, normal or high' });
+        }
+        if (!['gear', 'talents', 'drops'].includes(bulk.mode)) {
+          errors.push({ field: 'bulk.mode', message: 'mode must be gear, talents or drops' });
+        }
+        // Contract 10.1 A3: a bulk request's iterations are its precision's final stage.
+        const wanted = bulk.precision === 'high' ? 10000 : 3000;
+        if (request.iterations !== wanted) {
+          errors.push({ field: 'iterations', message: `iterations must be ${wanted} for ${bulk.precision}` });
+        }
+      }
+      return JSON.stringify({ ok: errors.length === 0, errors });
+    },
+
+    simNeedsMore(resultJSON, requestJSON) {
+      const result = JSON.parse(resultJSON) as SimResult;
+      const request = JSON.parse(requestJSON) as SimRequest & { target_error?: number };
+      const target = request.target_error ?? 0;
+      if (target <= 0 || result.dps.mean === 0) return JSON.stringify({ needs_more: false });
+      return JSON.stringify({ needs_more: result.dps.error / result.dps.mean > target });
     },
 
     simCount(requestJSON) {
+      // Contract 10.2: counts without allocating a request per combination. The fake still
+      // expands -- there is no cheaper way over a fixture -- but it discards the requests,
+      // which is the contract the caller sees.
       const request = JSON.parse(requestJSON) as BulkRequest;
       const combinations = expand(request).length;
       if (combinations > request.bulk.cap) {
@@ -1598,7 +1899,10 @@ Then, inside the object `createFakeEngine` returns, after `simAbort`:
         .sort((a, b) => b.dps.mean - a.dps.mean);
 
       const ladder = LADDER[request.bulk.precision];
-      ranStages.push({ iterations: stage.iterations, combos: stage.combos.length });
+      const ran: Stage[] = [
+        ...(stage.ran ?? []),
+        { iterations: stage.iterations, combos: stage.combos.length },
+      ];
 
       if (stage.stage < ladder.length) {
         // The cut: the top half at every stage but the last. The real planner keeps a
@@ -1606,7 +1910,7 @@ Then, inside the object `createFakeEngine` returns, after `simAbort`:
         // fraction so a test can predict how many requests the next stage carries.
         const keep = Math.max(1, Math.ceil(scored.length / 2));
         const survivors = scored.slice(0, keep).map((entry) => entry.combo);
-        return JSON.stringify({ next: stageAt(request, stage.stage + 1, survivors) });
+        return JSON.stringify({ next: stageAt(request, stage.stage + 1, survivors, ran) });
       }
 
       // Within-error grouping: a run whose delta interval overlaps the leader's is group 0,
@@ -1630,8 +1934,6 @@ Then, inside the object `createFakeEngine` returns, after `simAbort`:
         combos.push({ substitutions: entry.combo.substitutions, dps: entry.dps, delta, group });
       }
 
-      const stages = [...ranStages];
-      ranStages.length = 0;
       return JSON.stringify({
         result: {
           ...results[0],
@@ -1639,7 +1941,7 @@ Then, inside the object `createFakeEngine` returns, after `simAbort`:
           lane: 'browser',
           combos,
           equipped,
-          stages,
+          stages: ran,
         },
       });
     },
@@ -1662,16 +1964,11 @@ Then, inside the object `createFakeEngine` returns, after `simAbort`:
     },
 ```
 
-Declare the stage accumulator next to `aborted`/`active` inside `createFakeEngine`:
+There is deliberately **no** stage accumulator inside `createFakeEngine`: contract 10.1
+A10 puts the ladder's history on `StageRequests.ran`, so the engine keeps nothing between
+calls and two runs in flight at once cannot mix their histories.
 
-```ts
-  // What each finished stage cost, accumulated across simRank calls and emptied into the
-  // final result -- the real planner tracks the same thing inside sim/bulk.
-  const ranStages: { iterations: number; combos: number }[] = [];
-```
-
-Note the `STAGES_BY_PRECISION` import is used by the test only; drop it from the fake's
-import list if eslint flags it unused.
+`STAGES_BY_PRECISION` is used by the test only, not by the fake; do not import it there.
 
 - [ ] **Step 5: Run the tests**
 
@@ -1690,13 +1987,15 @@ npx prettier --write src/lib/sim/engine.ts src/fixtures/sim/engine-fake.ts src/f
 cd /Users/jh/code/forever/.worktrees/sim-web
 git add web/src/lib/sim/engine.ts web/src/fixtures/sim/engine-fake.ts web/src/fixtures/sim/engine-fake.test.ts
 git commit -m "$(cat <<'MSG'
-feat(sim): simPlan, simRank, simWeights and simCount on the engine surface
+feat(sim): the six bulk exports on the engine surface
 
-The four exports every combination tool runs on, and a deterministic
-fake for them so the whole browser suite runs with no Go toolchain.
-simCount is an addition to contract 4: the live combination count fires
-on every checkbox tick and simPlan allocates a whole SimRequest per
-combination, which is far too much work for a keystroke.
+simPlan, simRank, simWeights, simCount, simValidate and simNeedsMore --
+contract 4 as amended by 10.2 -- and a deterministic fake for all six so
+the whole browser suite runs with no Go toolchain. Expansion follows
+10.1 A4 (mode decides) and A5 (consumable lists multiply the gear
+product); substitutions come back named per A6; the ladder's history
+rides on StageRequests.ran per A10, so the engine keeps no state
+between calls.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
 MSG
@@ -1705,7 +2004,7 @@ MSG
 
 ---
 
-### Task 4: The worker pool carries plan, rank, count and weights
+### Task 4: The worker pool carries plan, rank, count, validate, needsMore and weights
 
 The four new exports live in the wasm, the main thread holds no instance, and `simSplit` /
 `simCombine` are already routed to worker 0 for exactly that reason. These four follow the
@@ -1723,6 +2022,8 @@ same road.
   - `plan(requestJSON: string): Promise<string>`
   - `rank(requestJSON: string, stageJSON: string, resultsJSON: string): Promise<string>`
   - `count(requestJSON: string): Promise<string>`
+  - `validate(requestJSON: string): Promise<string>`
+  - `needsMore(resultJSON: string, requestJSON: string): Promise<string>`
   - `weights(requestJSON: string, callbackId: string, onProgress: (p: ShardProgress) => void): Promise<string>`
 
 - [ ] **Step 1: Write the failing test**
@@ -1750,6 +2051,11 @@ describe('the pool’s bulk messages', () => {
     const countJSON = await pool.count(request);
     expect(JSON.parse(countJSON)).toHaveProperty('combinations');
 
+    expect(JSON.parse(await pool.validate(request))).toHaveProperty('ok');
+    expect(
+      JSON.parse(await pool.needsMore(JSON.stringify(bulkResultJson), request)),
+    ).toHaveProperty('needs_more');
+
     const results = await Promise.all(
       stage.requests.map((entry, index) => pool.run([JSON.stringify(entry)], `t-${index}`, () => {})),
     );
@@ -1760,7 +2066,8 @@ describe('the pool’s bulk messages', () => {
     );
     expect(JSON.parse(rankJSON)).toHaveProperty('next');
 
-    // split/combine/plan/rank/count all go to worker 0; only `run` fans out.
+    // split/combine/plan/rank/count/validate/needs-more all go to worker 0; only `run`
+    // fans out. Contract 10.2 is explicit that a stage's requests run unsplit.
     expect(Math.min(...spawned)).toBe(0);
     pool.terminate();
   });
@@ -1807,6 +2114,8 @@ Add to `ToWorker`:
 ```ts
   | { kind: 'plan'; token: number; request: string }
   | { kind: 'count'; token: number; request: string }
+  | { kind: 'validate'; token: number; request: string }
+  | { kind: 'needs-more'; token: number; request: string; result: string }
   | { kind: 'rank'; token: number; request: string; stage: string; results: string }
   | { kind: 'weights'; token: number; callbackId: string; request: string }
 ```
@@ -1818,6 +2127,10 @@ Add to `SimPool`:
   plan(request: string): Promise<string>;
   /** simCount, on worker 0. Answers `{"combinations": n}` or the structured cap refusal. */
   count(request: string): Promise<string>;
+  /** simValidate, on worker 0. Answers `{"ok": bool, "errors": [...]}`. For part A's drawer. */
+  validate(request: string): Promise<string>;
+  /** simNeedsMore, on worker 0. Answers `{"needs_more": bool}`. For part A's step loop. */
+  needsMore(result: string, request: string): Promise<string>;
   /** simRank, on worker 0. Answers `{"next": …}` or `{"result": …}`. */
   rank(request: string, stage: string, results: string): Promise<string>;
   /** simWeights, on worker 0, with progress through the same shard callback a run uses. */
@@ -1836,6 +2149,12 @@ And to the object `createPool` returns, beside `split`/`combine`:
     },
     count(request) {
       return send<string>(0, (token) => ({ kind: 'count', token, request }));
+    },
+    validate(request) {
+      return send<string>(0, (token) => ({ kind: 'validate', token, request }));
+    },
+    needsMore(result, request) {
+      return send<string>(0, (token) => ({ kind: 'needs-more', token, request, result }));
     },
     rank(request, stage, results) {
       return send<string>(0, (token) => ({ kind: 'rank', token, request, stage, results }));
@@ -1860,6 +2179,14 @@ Inside `handle()`, after the `combine` branch and before the `run` fallthrough:
     }
     if (message.kind === 'count') {
       reply({ kind: 'one', token, result: loaded.simCount(message.request) });
+      return;
+    }
+    if (message.kind === 'validate') {
+      reply({ kind: 'one', token, result: loaded.simValidate(message.request) });
+      return;
+    }
+    if (message.kind === 'needs-more') {
+      reply({ kind: 'one', token, result: loaded.simNeedsMore(message.result, message.request) });
       return;
     }
     if (message.kind === 'rank') {
@@ -1896,6 +2223,10 @@ Inside `postMessage`'s async body, beside the `split`/`combine` branches:
             emit({ kind: 'one', token, result: engine.simPlan(message.request) });
           } else if (message.kind === 'count') {
             emit({ kind: 'one', token, result: engine.simCount(message.request) });
+          } else if (message.kind === 'validate') {
+            emit({ kind: 'one', token, result: engine.simValidate(message.request) });
+          } else if (message.kind === 'needs-more') {
+            emit({ kind: 'one', token, result: engine.simNeedsMore(message.result, message.request) });
           } else if (message.kind === 'rank') {
             emit({
               kind: 'one',
@@ -1932,13 +2263,16 @@ npx prettier --write src/lib/sim/worker.ts src/lib/sim/sim.worker.ts src/test-su
 cd /Users/jh/code/forever/.worktrees/sim-web
 git add web/src/lib/sim/worker.ts web/src/lib/sim/sim.worker.ts web/src/test-support/fake-worker.ts web/src/lib/sim/worker.test.ts
 git commit -m "$(cat <<'MSG'
-feat(sim): plan, rank, count and weights across the worker protocol
+feat(sim): the bulk exports across the worker protocol
 
-All four route to worker 0, the same rule and the same reason simSplit
-and simCombine already do: the main thread holds no wasm instance and
-loading a second copy for the sim page would cost its LCP budget for
-nothing. Weights progress goes through the run callback map, so the page
-renders one progress line for both.
+plan, rank, count, validate, needsMore and weights all route to worker
+0, the same rule and the same reason simSplit and simCombine already do:
+the main thread holds no wasm instance and loading a second copy for the
+sim page would cost its LCP budget for nothing. validate and needsMore
+are part A's to call, declared here because contract 10.2 puts all three
+new exports in one table and splitting one file's surface across two
+lanes is how a merge conflict is made. Weights progress goes through the
+run callback map, so the page renders one progress line for both.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
 MSG
@@ -1969,21 +2303,20 @@ MSG
   - `function stageProgressLine(progress: BulkProgress): string`
 - Also produces: `fetchBulkProgress(simId, apiBase?): Promise<BulkServerProgress>` from `./api`.
 
-**Two decisions this module makes, and the reason each is not the obvious one**
+**Two shapes of the work, both now written into the contract**
 
-1. **A stage's requests go through `pool.run` directly, not through `simSplit`/`simCombine` per
-   combination.** Contract 4 says a stage's requests run "exactly as it runs a single sim",
-   and the pool's `run` **is** that machinery — it is the fan-out `run.ts` hands its shards
-   to. A bulk stage request is already one indivisible unit of work, so splitting it into
-   eight shards of twelve iterations and combining them back would be the identity transform,
-   and it would funnel two extra messages per combination (up to 800 a stage) through worker
-   0, which is also the worker running combinations. Recorded in the finish report as a
-   contract clarification.
-2. **A stage runs in chunks of `pool.size`, and a stop keeps every finished chunk.** The
-   pool's `run` settles all-or-nothing and aborts its siblings on the first failure, so one
-   call per stage would throw away 399 finished combinations when the player presses Stop.
-   Chunking at the pool's own width loses at most one chunk and is what makes "abort returns
-   the partial" true.
+1. **A stage's requests go through `pool.run` unsplit.** Contract 10.2 settles it: "a
+   stage's request array goes through the worker pool as independent whole requests, in
+   chunks of the pool's width… `simSplit` and `simCombine` are for plain runs only." A
+   bulk stage request is one indivisible unit of work, so splitting it into eight shards of
+   twelve iterations and combining them back would be the identity transform, and it would
+   funnel two extra messages per combination (up to 800 a stage) through worker 0, which is
+   also a worker running combinations.
+2. **A stop keeps every finished chunk.** The pool's `run` settles all-or-nothing and
+   aborts its siblings on the first failure, so one call per stage would throw away 399
+   finished combinations when the player presses Stop. Chunking at the pool's own width —
+   which is what 10.2 prescribes anyway — loses at most one chunk and is what makes "abort
+   returns the partial" true.
 
 - [ ] **Step 1: Write the failing test**
 
@@ -2273,8 +2606,9 @@ function parseStage(json: string): StageRequests {
 }
 
 /**
- * The live combination count, for the run bar. Throws `BulkCapError` past the cap, because
- * the button has to say what would exceed it and by how much -- it never trims the list.
+ * The live combination count, for the run bar (`simCount`, contract 10.2). Throws
+ * `BulkCapError` past the cap, because the button has to say what would exceed it and by
+ * how much -- it never trims the list.
  */
 export async function countCombinations(pool: SimPool, request: BulkRequest): Promise<number> {
   const parsed: unknown = JSON.parse(await pool.count(JSON.stringify(request)));
@@ -2307,6 +2641,9 @@ function partialStage(
     iterations: stage.iterations,
     requests: [stage.requests[0], ...finishedCombos.map((combo) => combo.request)],
     combos: finishedCombos,
+    // The ladder's history travels with the stage (contract 10.1 A10), so a partial
+    // result still says what each finished stage cost rather than starting the tally over.
+    ran: stage.ran ?? [],
   };
 }
 
@@ -2516,11 +2853,13 @@ git add web/src/lib/sim/bulk-run.ts web/src/lib/sim/bulk-run.test.ts web/src/lib
 git commit -m "$(cat <<'MSG'
 feat(sim): the shared bulk stage loop
 
-simPlan, each stage's requests across every worker, simRank, repeat. No
-statistic exists here: expansion, staging, cuts and the within-error
-grouping are all sim/bulk's. A stage runs in chunks of the pool's width
-so a stop keeps every finished chunk and re-ranks it as a final stage,
-which is what makes the partial result real rather than aspirational.
+simPlan, each stage's requests across every worker unsplit, simRank,
+repeat -- the shape contract 10.2 settles. No statistic exists here:
+expansion, staging, cuts and the within-error grouping are all
+sim/bulk's, and the ladder's history rides on StageRequests.ran. A stage
+runs in chunks of the pool's width so a stop keeps every finished chunk
+and re-ranks it as a final stage, which is what makes the partial result
+real rather than aspirational.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
 MSG
@@ -2536,54 +2875,113 @@ MSG
 - Create: `web/src/lib/sim/loot.ts`, `web/src/lib/sim/loot.test.ts`
 
 **Interfaces:**
-- Consumes: `web/src/data/phases.json` (Task 2); `fetchJson`, `dataUrl`, `DataLoadError` from `../planner/load`; `bulkCopy` from `./copy`.
+- Consumes: `web/src/data/phases.json` (Task 2); `fetchJson`, `dataUrl`, `DataLoadError` from `../planner/load`; `call` from `./api`; `bulkCopy` from `./copy`.
 - Produces:
-  - phase.ts: `PhaseRow`, `PHASES`, `phaseAt(when)`, `phaseLabel(name)`, `phaseStart(name)`, `hasOpened(name, when)`, `openDateLabel(name)`
-  - loot.ts: `LootKind`, `LOOT_KINDS`, `LootBoss`, `LootSource`, `LootFile`, `loadLoot(build)`, `sourcesByItem(file)`, `groupSources(file)`, `itemsOfSource(source)`, `itemsOfBoss(source, bossId)`, `DEFAULT_OFF_KINDS`, `isOpen(source, when)`, `professionSplit(sources, professions)`, `SOURCE_KIND_LABELS`
+  - phase.ts: `PhaseRow`, `BUILT_IN_PHASES`, `PHASE_LATER`, `phaseAt(phases, when)`, `phaseLabel(name)`, `phaseStart(phases, name)`, `hasOpened(phases, name, when)`, `openDateLabel(phases, name)`, `fetchPhases(apiBase?)`
+  - loot.ts: `LootKind`, `LOOT_KINDS`, `LootBoss`, `LootSource`, `LootFile`, `loadLoot(build)`, `sourcesByItem(file)`, `groupSources(file)`, `itemsOfSource(source)`, `itemsOfBoss(source, bossId)`, `sourceNameOf(file, id)`, `DEFAULT_OFF_KINDS`, `isOpen(phases, source, when)`, `professionSplit(sources, professions)`, `SOURCE_KIND_LABELS`
+  - api.ts: `fetchPhases(apiBase?)` re-exported through `phase.ts` (the single call site).
 
 - [ ] **Step 1: Write the failing tests**
 
 `web/src/lib/sim/phase.test.ts`:
 
 ```ts
+// @vitest-environment jsdom
 // web/src/lib/sim/phase.test.ts
-import { describe, expect, it } from 'vitest';
-import { hasOpened, openDateLabel, phaseAt, phaseLabel, phaseStart, PHASES } from './phase';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { createSimApi, TEST_API } from '../../test-support/sim-api';
+import {
+  BUILT_IN_PHASES,
+  PHASE_LATER,
+  fetchPhases,
+  hasOpened,
+  openDateLabel,
+  phaseAt,
+  phaseLabel,
+  phaseStart,
+} from './phase';
+
+const api = createSimApi();
+const phases = BUILT_IN_PHASES;
+
+beforeEach(() => api.install());
+afterEach(() => api.reset());
 
 describe('phaseAt', () => {
   it('names the phase a moment falls in, the way api/internal/phase does', () => {
-    expect(phaseAt(new Date('2026-09-01T00:00:00Z'))).toBe('pre-beta');
-    expect(phaseAt(new Date('2026-09-17T00:00:00Z'))).toBe('beta');
-    expect(phaseAt(new Date('2026-11-04T22:59:00Z'))).toBe('beta');
-    expect(phaseAt(new Date('2026-11-04T23:00:00Z'))).toBe('launch');
-    expect(phaseAt(new Date('2026-12-09T00:00:00Z'))).toBe('raids-1');
-    expect(phaseAt(new Date('2027-03-01T00:00:00Z'))).toBe('raids-1');
+    expect(phaseAt(phases, new Date('2026-09-01T00:00:00Z'))).toBe('pre-beta');
+    expect(phaseAt(phases, new Date('2026-09-17T00:00:00Z'))).toBe('beta');
+    expect(phaseAt(phases, new Date('2026-11-04T22:59:00Z'))).toBe('beta');
+    expect(phaseAt(phases, new Date('2026-11-04T23:00:00Z'))).toBe('launch');
+    expect(phaseAt(phases, new Date('2026-12-09T00:00:00Z'))).toBe('raids-1');
+    expect(phaseAt(phases, new Date('2027-03-01T00:00:00Z'))).toBe('raids-1');
   });
 });
 
 describe('hasOpened', () => {
   it('treats a source with no phase as open from launch of the data', () => {
-    expect(hasOpened(undefined, new Date('2026-09-01T00:00:00Z'))).toBe(true);
+    expect(hasOpened(phases, undefined, new Date('2026-09-01T00:00:00Z'))).toBe(true);
   });
 
   it('gates a later phase and opens it on the instant', () => {
-    expect(hasOpened('raids-1', new Date('2026-12-08T23:59:00Z'))).toBe(false);
-    expect(hasOpened('raids-1', new Date('2026-12-09T00:00:00Z'))).toBe(true);
+    expect(hasOpened(phases, 'raids-1', new Date('2026-12-08T23:59:00Z'))).toBe(false);
+    expect(hasOpened(phases, 'raids-1', new Date('2026-12-09T00:00:00Z'))).toBe(true);
+  });
+
+  it('never opens the literal "later" (contract 10.4: an unknown date)', () => {
+    expect(PHASE_LATER).toBe('later');
+    expect(hasOpened(phases, PHASE_LATER, new Date('2099-01-01T00:00:00Z'))).toBe(false);
   });
 
   it('treats a phase nobody has heard of as not open, rather than as open', () => {
-    expect(hasOpened('season-of-mastery', new Date('2030-01-01T00:00:00Z'))).toBe(false);
+    expect(hasOpened(phases, 'season-of-mastery', new Date('2030-01-01T00:00:00Z'))).toBe(false);
   });
 });
 
 describe('labels', () => {
-  it('names each phase and dates the ones that have a date', () => {
+  it('names each phase from the display table, not from the data file', () => {
     expect(phaseLabel('raids-1')).toBe('First raids');
+    expect(phaseLabel(PHASE_LATER)).toBe('Later');
     expect(phaseLabel('nope')).toBe('nope');
-    expect(openDateLabel('raids-1')).toBe('9 December 2026');
-    expect(openDateLabel('pre-beta')).toBe('');
-    expect(phaseStart('pre-beta')).toBeNull();
-    expect(PHASES).toHaveLength(4);
+  });
+
+  it('dates the phases that have a date and nothing else', () => {
+    expect(openDateLabel(phases, 'raids-1')).toBe('9 December 2026');
+    expect(openDateLabel(phases, 'pre-beta')).toBe('');
+    expect(openDateLabel(phases, PHASE_LATER)).toBe('');
+    expect(phaseStart(phases, 'pre-beta')).toBeNull();
+    expect(BUILT_IN_PHASES).toHaveLength(4);
+  });
+});
+
+describe('fetchPhases', () => {
+  it('prefers GET /v1/phases at runtime', async () => {
+    api.route({
+      method: 'GET',
+      pattern: /\/v1\/phases$/,
+      respond: () =>
+        new Response(
+          JSON.stringify({
+            ok: true,
+            request_id: 'r',
+            error: null,
+            data: { phases: [{ name: 'raids-2', start: '2027-03-01T00:00:00Z' }] },
+          }),
+          { status: 200, headers: { 'content-type': 'application/json' } },
+        ),
+    });
+    await expect(fetchPhases(TEST_API)).resolves.toEqual([
+      { name: 'raids-2', start: '2027-03-01T00:00:00Z' },
+    ]);
+  });
+
+  it('falls back to the build-time table rather than leaving the gate unknown', async () => {
+    api.route({
+      method: 'GET',
+      pattern: /\/v1\/phases$/,
+      respond: () => new Response(null, { status: 500 }),
+    });
+    await expect(fetchPhases(TEST_API)).resolves.toEqual(BUILT_IN_PHASES);
   });
 });
 ```
@@ -2601,11 +2999,14 @@ import {
   itemsOfBoss,
   itemsOfSource,
   professionSplit,
+  sourceNameOf,
   sourcesByItem,
   type LootFile,
 } from './loot';
+import { BUILT_IN_PHASES } from './phase';
 
 const file = lootJson as unknown as LootFile;
+const phases = BUILT_IN_PHASES;
 
 describe('sourcesByItem', () => {
   it('lists every source an item drops from, boss and trash alike', () => {
@@ -2639,8 +3040,16 @@ describe('itemsOfSource and itemsOfBoss', () => {
   it('rolls a raid up to every boss plus its trash, and a boss down to its own', () => {
     const raid = file.sources.find((source) => source.id === 'raid:mc')!;
     expect(itemsOfSource(raid).sort()).toEqual([12784, 13968, 16963, 19325]);
-    expect(itemsOfBoss(raid, 'raid:mc:ragnaros')).toEqual([12784, 19325]);
-    expect(itemsOfBoss(raid, 'raid:mc:nobody')).toEqual([]);
+    expect(itemsOfBoss(raid, 'raid:mc:11502')).toEqual([12784, 19325]);
+    expect(itemsOfBoss(raid, 'raid:mc:99999')).toEqual([]);
+  });
+});
+
+describe('sourceNameOf', () => {
+  it('names a source and a boss, which is what Candidate.SourceName carries', () => {
+    expect(sourceNameOf(file, 'raid:mc')).toBe('Molten Core');
+    expect(sourceNameOf(file, 'raid:mc:11502')).toBe('Ragnaros');
+    expect(sourceNameOf(file, 'nothing')).toBe('');
   });
 });
 
@@ -2648,9 +3057,15 @@ describe('isOpen', () => {
   it('gates an unreleased raid and passes everything without a phase', () => {
     const raid = file.sources.find((source) => source.id === 'raid:mc')!;
     const dungeon = file.sources.find((source) => source.id === 'dungeon:hall-of-thanes')!;
-    expect(isOpen(raid, new Date('2026-11-05T00:00:00Z'))).toBe(false);
-    expect(isOpen(raid, new Date('2026-12-09T00:00:00Z'))).toBe(true);
-    expect(isOpen(dungeon, new Date('2026-09-19T00:00:00Z'))).toBe(true);
+    expect(isOpen(phases, raid, new Date('2026-11-05T00:00:00Z'))).toBe(false);
+    expect(isOpen(phases, raid, new Date('2026-12-09T00:00:00Z'))).toBe(true);
+    expect(isOpen(phases, dungeon, new Date('2026-09-19T00:00:00Z'))).toBe(true);
+  });
+
+  it('never opens a source whose date is unknown ("later", contract 10.4)', () => {
+    const world = file.sources.find((source) => source.id === 'world:azuregos')!;
+    expect(world.opens).toBe('later');
+    expect(isOpen(phases, world, new Date('2099-01-01T00:00:00Z'))).toBe(false);
   });
 });
 
@@ -2691,63 +3106,107 @@ Expected: FAIL, neither module resolves.
 // web/src/lib/sim/phase.ts
 // The content phases, and whether a loot source has opened yet.
 //
-// The table is web/src/data/phases.json, which is the site's own copy of
-// api/internal/phase.Boundaries -- and that package's header already says its dates are a
-// copy of this site's. There is no GET /v1/phase and this lane does not ask for one: the
-// boundaries are four fixed instants, and a phase gate that could change under a running
-// deployment would silently re-bucket loot a player was reading. When a date moves, this
-// file's JSON and api/internal/phase/phase.go change together.
-import phases from '../../data/phases.json';
+// Two sources, in this order (contract 10.4 and 10.6):
+//   * GET /v1/phases at runtime, so a date that moves after a deploy is picked up without
+//     a rebuild;
+//   * web/src/data/phases.json at build time, which the pipeline emits from
+//     data/curated/phases.json -- the file api/internal/phase.Boundaries is tested
+//     against -- as the fallback when the API is unreachable.
+//
+// The data file is `[{ "name", "start" }]` and carries no label: a label is display copy
+// and lives here, in DISPLAY_LABELS, beside the rest of this lane's words.
+import { API_BASE_URL } from '../planner/config';
+import builtIn from '../../data/phases.json';
 
 export interface PhaseRow {
   /** The stored, URL-safe name: pre-beta | beta | launch | raids-1. */
   name: string;
-  /** What a player calls it. */
-  label: string;
   /** RFC3339, or "" for the phase that has no start. */
-  starts: string;
+  start: string;
 }
 
-export const PHASES: readonly PhaseRow[] = phases as PhaseRow[];
+/** The build-time table, and the fallback when the API cannot be reached. */
+export const BUILT_IN_PHASES: readonly PhaseRow[] = builtIn as PhaseRow[];
+
+/**
+ * Contract 10.4: "a source whose date is unknown carries `opens: "later"`, which the page
+ * shows as unreleased without a date." It is never a row in the phase table, and it never
+ * opens.
+ */
+export const PHASE_LATER = 'later';
+
+const DISPLAY_LABELS: Record<string, string> = {
+  'pre-beta': 'Before beta',
+  beta: 'Beta',
+  launch: 'Launch',
+  'raids-1': 'First raids',
+  [PHASE_LATER]: 'Later',
+};
+
+/**
+ * The live table, or the build-time one. Every failure -- an unreachable API, a 500, a
+ * body that is not the expected shape -- falls back rather than throwing: a phase gate
+ * that cannot answer must not take the Droptimizer down with it.
+ */
+export async function fetchPhases(apiBase: string = API_BASE_URL): Promise<readonly PhaseRow[]> {
+  try {
+    const response = await fetch(`${apiBase}/v1/phases`, {
+      headers: { accept: 'application/json' },
+      credentials: 'omit',
+    });
+    if (!response.ok) return BUILT_IN_PHASES;
+    const envelope = (await response.json()) as { ok?: boolean; data?: { phases?: PhaseRow[] } };
+    const rows = envelope.data?.phases;
+    return Array.isArray(rows) && rows.length > 0 ? rows : BUILT_IN_PHASES;
+  } catch {
+    return BUILT_IN_PHASES;
+  }
+}
 
 /** The phase a moment falls in. Later boundaries win, so the last match is the answer. */
-export function phaseAt(when: Date): string {
-  let name = PHASES[0]?.name ?? '';
-  for (const phase of PHASES) {
-    if (phase.starts === '') continue;
-    if (when.getTime() >= Date.parse(phase.starts)) name = phase.name;
+export function phaseAt(phases: readonly PhaseRow[], when: Date): string {
+  let name = phases[0]?.name ?? '';
+  for (const phase of phases) {
+    if (phase.start === '') continue;
+    if (when.getTime() >= Date.parse(phase.start)) name = phase.name;
   }
   return name;
 }
 
-function rowOf(name: string): PhaseRow | undefined {
-  return PHASES.find((phase) => phase.name === name);
+function rowOf(phases: readonly PhaseRow[], name: string): PhaseRow | undefined {
+  return phases.find((phase) => phase.name === name);
 }
 
+/** What a player calls it. Display copy, not data -- the table carries no label column. */
 export function phaseLabel(name: string): string {
-  return rowOf(name)?.label ?? name;
+  return DISPLAY_LABELS[name] ?? name;
 }
 
-/** When the phase opens, or null for the one with no start and for a name we do not have. */
-export function phaseStart(name: string): Date | null {
-  const starts = rowOf(name)?.starts ?? '';
-  return starts === '' ? null : new Date(starts);
+/** When the phase opens, or null for the one with no start, for "later", and for an unknown. */
+export function phaseStart(phases: readonly PhaseRow[], name: string): Date | null {
+  const start = rowOf(phases, name)?.start ?? '';
+  return start === '' ? null : new Date(start);
 }
 
 /**
  * Whether content gated on this phase is available at `when`.
  *
- * An absent phase is open: contract 6.1 says "a source without it is open from launch". A
- * phase this build has never heard of is NOT open -- a loot file naming a phase the site
- * does not carry is ahead of the site, and showing its raid as live would be a lie in the
- * one direction that matters.
+ * An absent phase is open: contract 6.1 says "a source without it is open from launch".
+ * The literal "later" is never open (contract 10.4). A phase this build has never heard of
+ * is NOT open either -- a loot file naming a phase the site does not carry is ahead of the
+ * site, and showing its raid as live would be a lie in the one direction that matters.
  */
-export function hasOpened(name: string | undefined, when: Date): boolean {
+export function hasOpened(
+  phases: readonly PhaseRow[],
+  name: string | undefined,
+  when: Date,
+): boolean {
   if (name === undefined || name === '') return true;
-  const row = rowOf(name);
+  if (name === PHASE_LATER) return false;
+  const row = rowOf(phases, name);
   if (row === undefined) return false;
-  if (row.starts === '') return true;
-  return when.getTime() >= Date.parse(row.starts);
+  if (row.start === '') return true;
+  return when.getTime() >= Date.parse(row.start);
 }
 
 const DATE_FORMAT = new Intl.DateTimeFormat('en-GB', {
@@ -2757,9 +3216,9 @@ const DATE_FORMAT = new Intl.DateTimeFormat('en-GB', {
   timeZone: 'UTC',
 });
 
-/** "9 December 2026", or "" for a phase with no start. */
-export function openDateLabel(name: string): string {
-  const start = phaseStart(name);
+/** "9 December 2026", or "" for a phase with no start, for "later", and for an unknown. */
+export function openDateLabel(phases: readonly PhaseRow[], name: string): string {
+  const start = phaseStart(phases, name);
   return start === null ? '' : DATE_FORMAT.format(start);
 }
 ```
@@ -2768,15 +3227,22 @@ export function openDateLabel(name: string): string {
 
 ```ts
 // web/src/lib/sim/loot.ts
-// data/builds/<build>/loot.json: where every item comes from, contract 6.1.
+// data/builds/<build>/loot.json: where every item comes from, contract 6.1 as corrected by
+// 10.4 -- AreaTable zone ids, `<source>:<npc-id>` boss ids, `opens: "later"` for an
+// unknown date, and an empty boss name where neither database had one.
 //
 // The file is per build and item-id keyed through its sources, so the page never asks the
 // API where an item drops -- it is the same fetch-and-cache path items.json already takes.
 // Drop chances are in neither the fork's database nor the curated overlay, so nothing here
 // computes or exposes a probability.
+//
+// Contract 10.4 also warns that the re-itemised raid tier is thin: 1,809 of the fork's
+// sourced item ids do not exist in the 1.60 client, loot.json lists only items the build
+// has, and the first curated overlay records the gap per raid in its notes. The page shows
+// what the file contains and counts what it does not -- it never fabricates a drop.
 import { bulkCopy } from './copy';
 import { dataUrl, fetchJson, DataLoadError } from '../planner/load';
-import { hasOpened } from './phase';
+import { hasOpened, type PhaseRow } from './phase';
 
 export const LOOT_KINDS = ['raid', 'dungeon', 'world', 'crafted', 'rep', 'pvp', 'quest'] as const;
 export type LootKind = (typeof LOOT_KINDS)[number];
@@ -2795,18 +3261,26 @@ export const SOURCE_KIND_LABELS: Record<LootKind, string> = {
 export const DEFAULT_OFF_KINDS: readonly LootKind[] = ['quest'];
 
 export interface LootBoss {
+  /** `<source id>:<npc-id>` (contract 10.4). */
   id: string;
+  /** Empty when neither database names the boss; the picker shows the id in that case. */
   name: string;
   npc_id?: number;
   items: number[];
 }
 
 export interface LootSource {
+  /** `raid:<zone-slug>`, `dungeon:<zone-slug>`, `pvp:rank-<n>`, … (contract 10.4). */
   id: string;
   kind: LootKind;
   name: string;
+  /** An AreaTable id -- Molten Core is 2717, not 409 (contract 10.4). */
   zone_id?: number;
-  /** A phase name from web/src/data/phases.json; absent means open from launch. */
+  /**
+   * A phase name from the phase table; the literal `"later"` for a source whose date is
+   * unknown, which the page shows as unreleased without a date; absent means open from
+   * launch (contract 6.1 and 10.4).
+   */
   opens?: string;
   bosses?: LootBoss[];
   trash?: number[];
@@ -2878,8 +3352,21 @@ export function groupSources(file: LootFile): SourceGroup[] {
   });
 }
 
-export function isOpen(source: LootSource, when: Date): boolean {
-  return hasOpened(source.opens, when);
+export function isOpen(phases: readonly PhaseRow[], source: LootSource, when: Date): boolean {
+  return hasOpened(phases, source.opens, when);
+}
+
+/**
+ * A source or boss id as words -- "Molten Core", "Ragnaros" -- for `Candidate.SourceName`
+ * (contract 10.1 A6). The page fills it once, when it builds a drops request; every later
+ * read is off the result, never a second join.
+ */
+export function sourceNameOf(file: LootFile, id: string): string {
+  for (const source of file.sources) {
+    if (source.id === id) return source.name;
+    for (const boss of source.bosses ?? []) if (boss.id === id) return boss.name;
+  }
+  return '';
 }
 
 /**
@@ -2921,10 +3408,12 @@ git add web/src/lib/sim/phase.ts web/src/lib/sim/phase.test.ts web/src/lib/sim/l
 git commit -m "$(cat <<'MSG'
 feat(sim): the phase gate and the loot tables
 
-loot.json's sources, the item-to-source index the item search filters
-on, and the phase boundaries the Droptimizer gates unreleased raids
-with. The phase table is a checked-in mirror of api/internal/phase
-rather than an endpoint, for the reason that package's own header gives.
+loot.json's sources in contract 10.4's shape -- AreaTable zone ids,
+`<source>:<npc-id>` boss ids, `opens: "later"` for an unknown date --
+the item-to-source index the search filters on, and sourceNameOf, which
+is what fills Candidate.SourceName so the results never re-join an id to
+a name. Phases come from GET /v1/phases at runtime with the pipeline's
+web/src/data/phases.json as the build-time fallback (contract 10.6).
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
 MSG
@@ -2933,16 +3422,18 @@ MSG
 
 ---
 
-### Task 7: Enchants, suffixes and the item search
+### Task 7: Enchants, suffixes, buff names and the item search
 
 **Files:**
 - Create: `web/src/lib/sim/enchants.ts`, `web/src/lib/sim/enchants.test.ts`
+- Create: `web/src/lib/sim/sim-buffs.ts`, `web/src/lib/sim/sim-buffs.test.ts`
 - Create: `web/src/lib/sim/item-search.ts`, `web/src/lib/sim/item-search.test.ts`
 
 **Interfaces:**
 - Consumes: `loadLoot`, `sourcesByItem` (Task 6); `Item`, `Slot`, `SLOTS`, `SLOT_LABELS` and `slotsForItem` from the planner; `dataUrl`, `fetchJson`, `DataLoadError`.
 - Produces:
-  - enchants.ts: `EnchantRow`, `SuffixRow`, `loadEnchants(build)`, `loadSuffixes(build)`, `enchantsForSlot(rows, slot, item)`, `suffixesForItem(rows, item)`, `ENCHANTS_PER_SLOT_CAP`, `KEEP_CURRENT_ENCHANT`, `NO_ENCHANT`
+  - enchants.ts: `EnchantRow`, `SuffixRow`, `loadEnchants(build)`, `loadSuffixes(build)`, `enchantsForSlot(rows, slot, classSlug?)`, `suffixesForItem(rows, item)`, `ENCHANTS_PER_SLOT_CAP`, `KEEP_CURRENT_ENCHANT`, `NO_ENCHANT`
+  - sim-buffs.ts: `SimBuffRow`, `SimBuffFile`, `loadSimBuffs(build)`, `buffName(file, id)`, `buffIcon(file, id)`
   - item-search.ts: `ItemQuery`, `defaultItemQuery()`, `SEARCH_LIMIT`, `searchItems(items, query, ctx)`, `SearchContext`, `slotOptions()`
 
 - [ ] **Step 1: Write the failing tests**
@@ -2974,8 +3465,8 @@ const charm = items.find((item) => item.id === 13968)!;
 
 describe('enchantsForSlot', () => {
   it('offers only the enchants whose slot list names this slot', () => {
-    expect(enchantsForSlot(enchants, 'head').map((row) => row.id)).toEqual([2543]);
-    expect(enchantsForSlot(enchants, 'main_hand').map((row) => row.id)).toEqual([1900]);
+    expect(enchantsForSlot(enchants, 'head').map((row) => row.effect_id)).toEqual([2543]);
+    expect(enchantsForSlot(enchants, 'main_hand').map((row) => row.effect_id)).toEqual([1900]);
     expect(enchantsForSlot(enchants, 'neck')).toEqual([]);
   });
 
@@ -2999,6 +3490,12 @@ describe('the two sentinel enchant values', () => {
     expect(KEEP_CURRENT_ENCHANT).toBe(-1);
     expect(NO_ENCHANT).toBe(0);
     expect(ENCHANTS_PER_SLOT_CAP).toBe(4);
+  });
+});
+
+describe('the enchant row shape (contract 10.4)', () => {
+  it('is keyed by effect_id, which is what GearSlot.enchant carries', () => {
+    for (const row of enchants) expect(typeof row.effect_id).toBe('number');
   });
 });
 ```
@@ -3090,24 +3587,38 @@ Expected: FAIL, neither module resolves.
 
 ```ts
 // web/src/lib/sim/enchants.ts
-// data/builds/<build>/enchants.json and suffixes.json, contract 6.2 and 6.3.
+// data/builds/<build>/enchants.json and suffixes.json, contract 6.2 and 6.3 as corrected
+// by 10.4: rows are keyed by `effect_id` plus `spell_id`/`item_id`, `item_types` is the
+// `EnchantType` shape restriction, `slots` is derived by the data lane from `type` and
+// `extra_types`, and suffixes come from the fork database's `randomSuffixes` because this
+// build's client has no `ItemRandomSuffix` table.
 //
-// Both are optional: a build the data lane has not regenerated ships neither, and the
-// enchant column simply does not appear. Neither file is large enough to want pruning --
-// the fork's UIEnchant table is a few hundred rows and ItemRandomSuffix a few dozen -- so
+// Both files are optional: a build the data lane has not regenerated ships neither, and
+// the enchant column simply does not appear. Neither is large enough to want pruning, so
 // both are fetched whole, per build, and cached by the browser the way items.json is.
+//
+// These are the browser UI's copy. The planner inside the wasm does not read them:
+// contract 10.1 A9 embeds the same rows in `sim/internal/simdb`, so `Expand` needs no file
+// at runtime and the two can never disagree about what fits where.
 import { dataUrl, fetchJson, DataLoadError } from '../planner/load';
 import type { Item, StatKey } from '../planner/types';
 
 export interface EnchantRow {
-  /** The client's effect id, which is what GearSlot.enchant carries. */
-  id: number;
+  /**
+   * The client's enchantment effect id. This is the key (contract 10.4) and it is what
+   * `GearSlot.enchant` and `Candidate.enchant` carry.
+   */
+  effect_id: number;
+  /** The spell that applies it, where one does. */
+  spell_id?: number;
+  /** The item that applies it, where one does. One of the two is always present. */
+  item_id?: number;
   name: string;
   icon: string;
-  /** Planner slot names. */
+  /** Planner slot names, derived by the data lane from `type` and `extra_types`. */
   slots: string[];
-  /** cloth | leather | mail | plate | weapon | shield | …, from the fork's own table. */
-  item_types: string[];
+  /** The `EnchantType` shape restriction, as the fork's own numeric enum values. */
+  item_types: number[];
   /** Empty for an enchant every class can use. */
   classes: string[];
   stats: Partial<Record<StatKey, number>>;
@@ -3150,9 +3661,14 @@ export function loadSuffixes(build: string): Promise<SuffixRow[]> {
 }
 
 /**
- * The enchants this slot allows for this item. Both gates are the fork's own: the enchant's
- * slot list, and its item-type list where the file carries one. An enchant with an empty
- * `classes` is for everyone; one with a list is only for the classes in it.
+ * The enchants this slot allows. Two gates, both the fork's own: the enchant's slot list,
+ * and its class list where it has one (an empty `classes` is for everyone).
+ *
+ * `item_types` is deliberately NOT applied here. It is the `EnchantType` shape restriction
+ * and `items.json` rows carry no armour subclass to test it against, so the browser cannot
+ * evaluate it. `Expand` inside the wasm can, from simdb, and refuses a bad pairing at the
+ * boundary with its own words -- which is the honest failure, and better than a filter here
+ * that would have to guess.
  */
 export function enchantsForSlot(
   rows: readonly EnchantRow[],
@@ -3173,10 +3689,74 @@ export function suffixesForItem(rows: readonly SuffixRow[], item: Item): SuffixR
 }
 ```
 
-> **Note on `item_types`:** `items.json` carries no armour subclass, so the item-type gate
-> cannot be applied in the browser today and the filter above deliberately does not pretend
-> to. The engine refuses an enchant that does not fit at the boundary, verbatim, which is
-> the honest failure. Recorded in the finish report.
+- [ ] **Step 3b: Write `sim-buffs.ts` and its test**
+
+`web/src/lib/sim/sim-buffs.test.ts`:
+
+```ts
+// web/src/lib/sim/sim-buffs.test.ts
+import { describe, expect, it } from 'vitest';
+import simbuffsJson from '../../fixtures/planner/simbuffs.json';
+import { buffIcon, buffName, type SimBuffFile } from './sim-buffs';
+
+const file = simbuffsJson as unknown as SimBuffFile;
+
+describe('buffName and buffIcon', () => {
+  it('name and illustrate an id the file has', () => {
+    expect(buffName(file, 'flask_of_supreme_power')).toBe('Flask of Supreme Power');
+    expect(buffIcon(file, 'flask_of_supreme_power')).toBe('fixture_item_snakestone_charm');
+  });
+
+  it('fall back to a legible form of the id rather than to an empty row', () => {
+    expect(buffName(file, 'juju_power')).toBe('juju power');
+    expect(buffIcon(file, 'juju_power')).toBe('');
+  });
+
+  it('read an empty file without throwing', () => {
+    expect(buffName({ entries: {} }, 'battle_shout')).toBe('battle shout');
+  });
+});
+```
+
+```ts
+// web/src/lib/sim/sim-buffs.ts
+// data/builds/<build>/simbuffs.json (contract 10.4): the display name and icon for every
+// IDS.md buff, debuff, world buff and consumable id.
+//
+// The engine's ids are snake case and legible on their own -- "flask_of_supreme_power" --
+// so a missing row is a de-underscored id rather than a blank, and a build that ships no
+// file loses the icons and nothing else.
+import { dataUrl, fetchJson, DataLoadError } from '../planner/load';
+
+export interface SimBuffRow {
+  name: string;
+  icon: string;
+}
+
+export interface SimBuffFile {
+  entries: Record<string, SimBuffRow>;
+}
+
+const EMPTY: SimBuffFile = { entries: {} };
+
+export async function loadSimBuffs(build: string): Promise<SimBuffFile> {
+  try {
+    return await fetchJson<SimBuffFile>(dataUrl(build, 'simbuffs.json'));
+  } catch (error) {
+    if (error instanceof DataLoadError && error.status === 404) return EMPTY;
+    throw error;
+  }
+}
+
+export function buffName(file: SimBuffFile, id: string): string {
+  return file.entries[id]?.name ?? id.replaceAll('_', ' ');
+}
+
+/** "" when the file has no row: the caller draws no icon rather than a broken one. */
+export function buffIcon(file: SimBuffFile, id: string): string {
+  return file.entries[id]?.icon ?? '';
+}
+```
 
 - [ ] **Step 4: Write `item-search.ts`**
 
@@ -3251,7 +3831,7 @@ export function searchItems(
 - [ ] **Step 5: Run the tests**
 
 ```bash
-cd web && FOREVER_DATA=fixture npx vitest run src/lib/sim/enchants.test.ts src/lib/sim/item-search.test.ts
+cd web && FOREVER_DATA=fixture npx vitest run src/lib/sim/enchants.test.ts src/lib/sim/sim-buffs.test.ts src/lib/sim/item-search.test.ts
 ```
 
 Expected: PASS.
@@ -3260,17 +3840,20 @@ Expected: PASS.
 
 ```bash
 cd web && NO_COLOR=1 npx astro check
-npx eslint src/lib/sim/enchants.ts src/lib/sim/enchants.test.ts src/lib/sim/item-search.ts src/lib/sim/item-search.test.ts
-npx prettier --write src/lib/sim/enchants.ts src/lib/sim/enchants.test.ts src/lib/sim/item-search.ts src/lib/sim/item-search.test.ts
+npx eslint src/lib/sim/enchants.ts src/lib/sim/enchants.test.ts src/lib/sim/sim-buffs.ts src/lib/sim/sim-buffs.test.ts src/lib/sim/item-search.ts src/lib/sim/item-search.test.ts
+npx prettier --write src/lib/sim/enchants.ts src/lib/sim/enchants.test.ts src/lib/sim/sim-buffs.ts src/lib/sim/sim-buffs.test.ts src/lib/sim/item-search.ts src/lib/sim/item-search.test.ts
 cd /Users/jh/code/forever/.worktrees/sim-web
-git add web/src/lib/sim/enchants.ts web/src/lib/sim/enchants.test.ts web/src/lib/sim/item-search.ts web/src/lib/sim/item-search.test.ts
+git add web/src/lib/sim/enchants.ts web/src/lib/sim/enchants.test.ts web/src/lib/sim/sim-buffs.ts web/src/lib/sim/sim-buffs.test.ts web/src/lib/sim/item-search.ts web/src/lib/sim/item-search.test.ts
 git commit -m "$(cat <<'MSG'
-feat(sim): enchant and suffix lists, and the item search
+feat(sim): enchant, suffix and buff-name lists, and the item search
 
-Both data files are optional and a 404 is an empty list, so a build the
-data lane has not regenerated loses the column rather than the page. The
-search is client-side over the items file the gear grid already holds:
-name, minimum item level, slot, loot source, usable-only.
+Enchants are keyed by effect_id plus spell_id/item_id and item_types is
+the EnchantType shape restriction, per contract 10.4; the browser does
+not evaluate it, because items.json carries no armour subclass and the
+wasm's own Expand can (10.1 A9). simbuffs.json gives every IDS.md id a
+name and an icon. All three files are optional and a 404 is an empty
+list, so a build the data lane has not regenerated loses the column
+rather than the page.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
 MSG
@@ -3288,7 +3871,7 @@ MSG
 **Interfaces:**
 - Consumes: `Candidate`, `BulkSpec`, `BulkMode`, `Precision`, `Substitution` (Task 1); `NO_ENCHANT`, `KEEP_CURRENT_ENCHANT` (Task 7); `slotsForItem`, `SLOTS`, `SLOT_ALIASES`, `SLOT_LABELS`, `Item`, `Slot`, `GearSlot`.
 - Produces:
-  - candidates.ts: `CandidateRow`, `Origin`, `candidateKey(row)`, `envelopeSlotOf(item)`, `uiSlotsOf(item)`, `rowFor(item, slot, origin)`, `toggleRow(rows, key)`, `addRow(rows, row)`, `copyAndModify(rows, key, patch)`, `removeRow(rows, key)`, `toCandidates(rows, locked)`, `buildBulkSpec(input)`, `validateBulk(spec)`, `CANDIDATE_ROW_SEPARATOR`
+  - candidates.ts: `CandidateRow`, `Origin`, `candidateKey(row)`, `envelopeSlotOf(item)`, `uiSlotsOf(item)`, `rowFor(item, slot, origin, sourceName?)`, `toggleRow(rows, key)`, `addRow(rows, row)`, `copyAndModify(rows, key, patch)`, `removeRow(rows, key)`, `toCandidates(rows, locked)`, `buildBulkSpec(input)`, `validateBulk(spec)`, `CANDIDATE_ROW_SEPARATOR`
   - addon-export.ts: `gearEntry(slot)`, `addonGearList(gear)`, `addonStringFor(input)`
 
 - [ ] **Step 1: Write the failing tests**
@@ -3387,6 +3970,15 @@ describe('toCandidates', () => {
     expect(toCandidates(rows, [])).toEqual([
       { slot: 'head', item_id: 16963, origin: 'bag' },
       { slot: '', item_id: 19325, origin: 'equipped' },
+    ]);
+  });
+
+  it('carries the source name a drop was picked from (contract 10.1 A6)', () => {
+    const rows = [
+      { ...rowFor(helm, 'head', 'drop:raid:mc:11502', 'Ragnaros'), checked: true },
+    ];
+    expect(toCandidates(rows, [])).toEqual([
+      { slot: 'head', item_id: 16963, origin: 'drop:raid:mc:11502', source_name: 'Ragnaros' },
     ]);
   });
 
@@ -3545,6 +4137,13 @@ export interface CandidateRow {
   slot: Slot;
   item: Item;
   origin: Origin;
+  /**
+   * Where it comes from, in words -- "Ragnaros", "Blacksmithing" -- travelling to the
+   * engine as `Candidate.SourceName` (contract 10.1 A6) and coming back on the
+   * substitution, so the results view never re-joins an id to a name. Empty for anything
+   * that is not a drop.
+   */
+  sourceName: string;
   /** 0 inherits the equipped enchant; -1 is the page's "explicitly none". */
   enchant: number;
   suffix: number;
@@ -3580,8 +4179,8 @@ export function uiSlotsOf(item: Item): Slot[] {
   return slotsForItem(item);
 }
 
-export function rowFor(item: Item, slot: Slot, origin: Origin): CandidateRow {
-  return { slot, item, origin, enchant: NO_ENCHANT, suffix: 0, checked: false };
+export function rowFor(item: Item, slot: Slot, origin: Origin, sourceName = ''): CandidateRow {
+  return { slot, item, origin, sourceName, enchant: NO_ENCHANT, suffix: 0, checked: false };
 }
 
 export function toggleRow(rows: readonly CandidateRow[], key: string): CandidateRow[] {
@@ -3646,6 +4245,9 @@ export function toCandidates(rows: readonly CandidateRow[], locked: readonly str
       // KEEP_CURRENT_ENCHANT (-1) never travels -- both are an omitted field.
       if (row.enchant > 0) candidate.enchant = row.enchant;
       if (row.suffix > 0) candidate.suffix = row.suffix;
+      // Contract 10.1 A6: the page fills the source's name once, here, and reads it back
+      // off the substitution rather than joining the id to loot.json a second time.
+      if (row.sourceName !== '') candidate.source_name = row.sourceName;
       return candidate;
     });
 }
@@ -3706,10 +4308,10 @@ export function validateBulk(spec: BulkSpec): string | null {
 // "Copy to addon" (design 3.3): the winning set as an export string the companion and the
 // in-game addon read, so a player can see the swaps in game.
 //
-// The string is version 1 in every respect but one -- a gear entry may carry
-// `:enchant[:suffix]`, which contract 7 already spells for the bags and bank sections but
-// does not spell for `<gear>`. That is requested as a contract addition; a set with no
-// enchants encodes byte-for-byte as version 1 today, and every decoder reads it unchanged.
+// A gear entry carries `item_id[:enchant[:suffix]]`, which contract 10.5 makes explicit
+// for `<gear>` and `sets=` and not only for the bags and bank sections: "a version-1
+// decoder reading a bare id is unaffected". A set with no enchants therefore encodes
+// byte-for-byte as version 1, and every existing decoder reads it unchanged.
 import { FS1_PREFIX } from '../planner/fs1';
 import type { GearSlot } from './types';
 
@@ -3780,9 +4382,11 @@ feat(sim): the candidate row model and the addon export for a winner
 Rows are immutable and keyed on slot, item, enchant and suffix, so
 copy-and-modify is a new row beside the original rather than an edit.
 The envelope slot is "" for rings, trinkets and weapons, which is the
-contract's way of saying only the item database can place them. The
-contract's own bulk validation runs before the request is sent, so a
-refusal is a sentence beside the button rather than a wait.
+contract's way of saying only the item database can place them, and a
+drop carries its source's name so the results never re-join it (10.1
+A6). The gear entry's `item:enchant:suffix` form is contract 10.5's.
+The contract's own bulk validation runs before the request is sent, so
+a refusal is a sentence beside the button rather than a wait.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
 MSG
@@ -3799,8 +4403,9 @@ MSG
 
 **Interfaces:**
 - Consumes: `BulkResult`, `Combo`, `Substitution`, `WeightsResult`, `StatWeight` (Task 1); `Item`, `ItemSet`, `Slot`, `GearSlot`; `specRow`, `specLabel` from `./spec-label`; `classRows` from `../planner/reference`.
+- **The stat ids are pinned, not guessed:** contract 10.8 lists the whole `proto.Stat` vocabulary in snake case, and the test below asserts every id in `WEIGHT_STATS` is one of them. The two traps it guards: the engine has **one** `hit` and **one** `crit` (only haste is split, into `melee_haste` and `spell_haste`), and MP5 is `mp5`.
 - Produces:
-  - combos.ts: `ComboRow`, `comboRows(result)`, `percentOf(delta, equipped)`, `deltaLabel(delta)`, `winningGear(result)`, `slotSummary(result)`, `SlotSummaryRow`, `keepsSetBonus(combo, result, items, pieces)`, `headlineFor(result, nameOf)`, `substitutionLabel(sub, nameOf)`
+  - combos.ts: `ComboRow`, `comboRows(result)`, `percentOf(delta, equipped)`, `deltaLabel(delta)`, `winningGear(result)`, `slotSummary(result)`, `SlotSummaryRow`, `keepsSetBonus(combo, result, items, sets, pieces)`, `headlineFor(result)`, `substitutionLabel(sub)`, `sourceNameOfCombo(combo)`
   - weights.ts: `WEIGHT_STATS`, `WeightStat`, `statLabel(id)`, `defaultStatsFor(spec, referenceStat)`, `referenceFor(spec, rows)`, `pawnString(spec, weights)`, `weightScale(weights)`, `DEFAULT_REFERENCE`
 
 - [ ] **Step 1: Write the failing tests**
@@ -3820,6 +4425,7 @@ import {
   keepsSetBonus,
   percentOf,
   slotSummary,
+  sourceNameOfCombo,
   substitutionLabel,
   winningGear,
 } from './combos';
@@ -3829,7 +4435,6 @@ import type { Item, ItemSet } from '../planner/types';
 const result = bulkResultJson as unknown as BulkResult;
 const items = new Map((itemsJson.items as unknown as Item[]).map((item) => [item.id, item]));
 const sets = setsJson as unknown as ItemSet[];
-const nameOf = (id: number): string => items.get(id)?.name ?? `Item ${id}`;
 
 describe('comboRows', () => {
   it('ranks best first and gives every member of a within-error group the same rank', () => {
@@ -3871,6 +4476,7 @@ describe('slotSummary', () => {
     const rows = slotSummary(result);
     const head = rows.find((row) => row.slot === 'head')!;
     expect(head.item_id).toBe(16963);
+    expect(head.name).toBe('Helm of Wrath');
     // the single-substitution combo for that slot
     expect(head.gain).toBeCloseTo(38.6, 6);
     const shoulder = rows.find((row) => row.slot === 'shoulder')!;
@@ -3896,16 +4502,36 @@ describe('keepsSetBonus', () => {
 });
 
 describe('headlineFor and substitutionLabel', () => {
-  it('names the leader’s biggest change', () => {
-    expect(headlineFor(result, nameOf)).toBe('+41 DPS from Helm of Wrath');
+  it('names the leader’s biggest change from the result’s own name field', () => {
+    expect(headlineFor(result)).toBe('+41 DPS from Helm of Wrath');
   });
 
-  it('labels an item, a loadout and a set', () => {
-    expect(substitutionLabel({ kind: 'item', slot: 'head', item_id: 16963 }, nameOf)).toBe(
+  it('labels an item, a loadout, a set and a consumable list (contract 10.8)', () => {
+    expect(substitutionLabel({ kind: 'item', slot: 'head', item_id: 16963, name: 'Helm of Wrath' })).toBe(
       'Helm of Wrath',
     );
-    expect(substitutionLabel({ kind: 'talents', name: 'Deep Fury' }, nameOf)).toBe('Deep Fury');
-    expect(substitutionLabel({ kind: 'set', name: 'AQ set' }, nameOf)).toBe('AQ set');
+    expect(substitutionLabel({ kind: 'talents', name: 'Deep Fury' })).toBe('Deep Fury');
+    expect(substitutionLabel({ kind: 'set', name: 'AQ set' })).toBe('AQ set');
+    expect(substitutionLabel({ kind: 'consumes', name: 'flask_of_supreme_power' })).toBe(
+      'With flask of supreme power',
+    );
+  });
+
+  it('falls back to the item id only when the engine sent no name', () => {
+    expect(substitutionLabel({ kind: 'item', slot: 'head', item_id: 16963 })).toBe('Item 16963');
+  });
+});
+
+describe('sourceNameOfCombo', () => {
+  it('reads the boss off the substitution the engine copied it onto (contract 10.1 A6)', () => {
+    expect(
+      sourceNameOfCombo({
+        substitutions: [{ kind: 'item', item_id: 1, source_name: 'Ragnaros' }],
+        dps: result.equipped,
+        delta: result.equipped,
+        group: 0,
+      }),
+    ).toBe('Ragnaros');
   });
 });
 ```
@@ -3918,8 +4544,10 @@ import { describe, expect, it } from 'vitest';
 import weightsResultJson from '../../fixtures/sim/weights-result.json';
 import specsJson from '../../fixtures/sim/specs.json';
 import {
+  CASTER_REFERENCE,
   DEFAULT_REFERENCE,
   defaultStatsFor,
+  fallbackReferenceFor,
   pawnString,
   referenceFor,
   statLabel,
@@ -3938,9 +4566,13 @@ describe('referenceFor', () => {
     expect(referenceFor('mage-frost', specs)).toBe('spell_power');
   });
 
-  it('falls back rather than guessing when the list has no row or no column', () => {
-    expect(referenceFor('druid-balance', specs)).toBe(DEFAULT_REFERENCE);
+  it('falls back to the pinned default for the kind of spec, not to one number', () => {
+    // Contract 10.8: attack_power for melee and hunters, spell_power for casters.
     expect(referenceFor('warrior-fury', [])).toBe(DEFAULT_REFERENCE);
+    expect(referenceFor('mage-fire', [])).toBe(CASTER_REFERENCE);
+    expect(referenceFor('druid-balance', specs)).toBe(CASTER_REFERENCE);
+    expect(fallbackReferenceFor('hunter-marksmanship')).toBe(DEFAULT_REFERENCE);
+    expect(fallbackReferenceFor('nonesuch-spec')).toBe(DEFAULT_REFERENCE);
   });
 });
 
@@ -3981,6 +4613,39 @@ describe('pawnString', () => {
     );
   });
 });
+
+describe('the stat vocabulary (contract 10.8, pinned)', () => {
+  it('carries one hit and one crit, and splits only haste', () => {
+    const ids = WEIGHT_STATS.map((stat) => stat.id);
+    expect(ids).toContain('hit');
+    expect(ids).toContain('crit');
+    expect(ids).toContain('melee_haste');
+    expect(ids).toContain('spell_haste');
+    for (const wrong of ['melee_hit', 'spell_hit', 'melee_crit', 'spell_crit', 'haste']) {
+      expect(ids).not.toContain(wrong);
+    }
+  });
+
+  it('spells MP5 as mp5', () => {
+    const ids = WEIGHT_STATS.map((stat) => stat.id);
+    expect(ids).toContain('mp5');
+    expect(ids).not.toContain('m_p5');
+  });
+
+  it('offers only ids the pinned proto.Stat list carries', () => {
+    const pinned = new Set([
+      'strength', 'agility', 'stamina', 'intellect', 'spirit', 'spell_power', 'arcane_power',
+      'fire_power', 'frost_power', 'holy_power', 'nature_power', 'shadow_power', 'mp5', 'hit',
+      'crit', 'spell_haste', 'spell_penetration', 'attack_power', 'melee_haste',
+      'armor_penetration', 'expertise', 'mana', 'energy', 'rage', 'armor',
+      'ranged_attack_power', 'defense', 'block', 'block_value', 'dodge', 'parry', 'health',
+      'arcane_resistance', 'fire_resistance', 'frost_resistance', 'nature_resistance',
+      'shadow_resistance', 'bonus_armor', 'healing_power', 'spell_damage',
+      'feral_attack_power',
+    ]);
+    for (const stat of WEIGHT_STATS) expect(pinned.has(stat.id), stat.id).toBe(true);
+  });
+});
 ```
 
 - [ ] **Step 2: Run both and watch them fail**
@@ -3999,6 +4664,7 @@ Expected: FAIL, neither module resolves.
 // runs are within error of the leader, `delta` already carries its own error, and the
 // ordering is the planner's. This turns those into rows, labels and a winning gear list.
 import type { BulkResult, Combo, Substitution } from './bulk-types';
+import { bulkCopy } from './copy';
 import type { Estimate, GearSlot } from './types';
 import type { Item, ItemSet } from '../planner/types';
 
@@ -4064,6 +4730,8 @@ export function winningGear(result: BulkResult): GearSlot[] {
 export interface SlotSummaryRow {
   slot: string;
   item_id: number;
+  /** The item's own name, off the substitution (contract 10.1 A6). Never a re-join. */
+  name: string;
   /**
    * What this slot contributed on its own, from the combination that changed only this
    * slot. Null when no such combination exists -- a Droptimizer run has one per slot by
@@ -4091,6 +4759,7 @@ export function slotSummary(result: BulkResult): SlotSummaryRow[] {
     .map((sub) => ({
       slot: sub.slot,
       item_id: sub.item_id,
+      name: substitutionLabel(sub),
       gain: alone.get(`${sub.slot}:${sub.item_id}`) ?? null,
     }));
 }
@@ -4121,22 +4790,41 @@ export function keepsSetBonus(
   return sets.some((set) => (counts.get(set.id) ?? 0) >= pieces);
 }
 
-/** "Helm of Wrath", "Deep Fury", "AQ set" -- whatever this substitution actually changed. */
-export function substitutionLabel(sub: Substitution, nameOf: (itemId: number) => string): string {
-  if (sub.kind === 'item') return nameOf(sub.item_id ?? 0);
-  return sub.name ?? '';
+/**
+ * "Helm of Wrath", "Deep Fury", "AQ set" -- whatever this substitution actually changed.
+ *
+ * It reads `name`, which contract 10.1 A6 fills for items too, from simdb. There is no
+ * item-id join here and no item map parameter: the result already carries every name it
+ * needs, and re-deriving one from a per-class item file the reader may not have loaded is
+ * how a saved page ends up showing "Item 16963" for something the engine named.
+ */
+export function substitutionLabel(sub: Substitution): string {
+  // Contract 10.8: a `consumes` substitution's name is the ids joined by ", ", which is a
+  // list and not a phrase, so it is the one kind that goes through copy on its way out.
+  if (sub.kind === 'consumes') return bulkCopy.consumesChip(sub.name ?? '');
+  if (sub.name !== undefined && sub.name !== '') return sub.name;
+  return sub.kind === 'item' ? `Item ${sub.item_id ?? 0}` : '';
+}
+
+/** Where a Droptimizer combination's one substitution came from, in words. */
+export function sourceNameOfCombo(combo: Combo): string {
+  return combo.substitutions[0]?.source_name ?? '';
 }
 
 /**
- * The history and unfurl headline: "+41 DPS from Vis'kag". The leader's first substitution
- * is the one named -- the planner orders a combination's substitutions by the slot's own
+ * "+41 DPS from Vis'kag", for the page's own display. The leader's first substitution is
+ * the one named -- the planner orders a combination's substitutions by the slot's own
  * contribution, so the first is the one that carried it.
+ *
+ * The *stored* headline on a saved sim is not this: contract 10.6 has the API compose it
+ * at save time, with its own rules for several substitutions ("… and 2 more") and for an
+ * empty result ("no combinations"). `SimListRow.headline` is read, never recomputed.
  */
-export function headlineFor(result: BulkResult, nameOf: (itemId: number) => string): string {
+export function headlineFor(result: BulkResult): string {
   const winner = result.combos[0];
   if (winner === undefined) return '';
   const gain = deltaLabel(winner.delta).split(' ')[0];
-  const what = substitutionLabel(winner.substitutions[0], nameOf);
+  const what = substitutionLabel(winner.substitutions[0]);
   return what === '' ? `${gain} DPS` : `${gain} DPS from ${what}`;
 }
 ```
@@ -4147,9 +4835,26 @@ export function headlineFor(result: BulkResult, nameOf: (itemId: number) => stri
 // web/src/lib/sim/weights.ts
 // /sim/weights: which stats to weigh, which one is the reference, and the Pawn line.
 //
-// The stat ids are the engine's own (sim/request/IDS.md) and the reference comes from the
-// spec list, never from a table here: data/curated/specs.json is the canonical source and
-// GET /v1/specs carries it as `reference_stat` (contract 8).
+// The ids are the fork's `proto.Stat` enum names in snake case, pinned by contract 10.8
+// and published as IDS.md's **Stats** section, which the sim module generates from the
+// enum. Two spellings matter and are easy to get wrong:
+//
+//   * the engine carries ONE `hit` and ONE `crit`. There is no `melee_crit`, `spell_crit`,
+//     `melee_hit` or `spell_hit`; haste IS split (`melee_haste`, `spell_haste`), which is
+//     what makes the single hit and crit look like an oversight when they are not.
+//   * MP5 is `mp5`, not `m_p5`.
+//
+// The list below is the subset that moves a spec's DPS, which is what 10.8 says a weight
+// page offers -- the enum also carries defence, block, dodge, parry, resistances, health
+// and the school power stats, and none of them belongs in a DPS weight picker.
+//
+// `WeightsSpec.Reference` is required and uses the same vocabulary. The reference itself
+// comes from the spec list, never from a table here -- data/curated/specs.json is
+// canonical and GET /v1/specs carries it as `reference_stat`.
+//
+// The `pawn` column is Pawn's own vocabulary and is not a transformation of the id, which
+// is why it is a column. An empty `pawn` is a stat Pawn has no key for; it is left out of
+// the string rather than guessed at.
 import { classRows } from '../planner/reference';
 import { specRow } from './spec-label';
 import type { StatWeight } from './bulk-types';
@@ -4170,20 +4875,43 @@ export interface WeightStat {
 export const WEIGHT_STATS: readonly WeightStat[] = [
   { id: 'strength', label: 'Strength', pawn: 'Strength' },
   { id: 'agility', label: 'Agility', pawn: 'Agility' },
+  { id: 'stamina', label: 'Stamina', pawn: 'Stamina' },
   { id: 'intellect', label: 'Intellect', pawn: 'Intellect' },
   { id: 'spirit', label: 'Spirit', pawn: 'Spirit' },
   { id: 'attack_power', label: 'Attack power', pawn: 'AttackPower' },
+  { id: 'ranged_attack_power', label: 'Ranged attack power', pawn: 'RangedAttackPower' },
+  { id: 'feral_attack_power', label: 'Feral attack power', pawn: '' },
   { id: 'spell_power', label: 'Spell power', pawn: 'SpellDamage' },
-  { id: 'crit', label: 'Crit rating', pawn: 'CritRating' },
-  { id: 'hit', label: 'Hit rating', pawn: 'HitRating' },
-  { id: 'haste', label: 'Haste rating', pawn: 'HasteRating' },
+  { id: 'hit', label: 'Hit', pawn: 'HitRating' },
+  { id: 'crit', label: 'Crit', pawn: 'CritRating' },
+  { id: 'melee_haste', label: 'Melee haste', pawn: 'HasteRating' },
+  { id: 'spell_haste', label: 'Spell haste', pawn: 'SpellHasteRating' },
+  { id: 'spell_penetration', label: 'Spell penetration', pawn: 'SpellPenetration' },
+  { id: 'armor_penetration', label: 'Armor penetration', pawn: 'ArmorPenetration' },
   { id: 'expertise', label: 'Expertise', pawn: '' },
+  { id: 'mp5', label: 'Mana per 5', pawn: 'Mp5' },
 ];
 
 const BY_ID = new Map(WEIGHT_STATS.map((stat) => [stat.id, stat]));
 
-/** Attack power is the reference for a physical spec and the commonest of the two. */
+/**
+ * The fallback reference when the spec list has no row or no column. Contract 10.8 pins
+ * the defaults: `attack_power` for melee and hunters, `spell_power` for casters. It is a
+ * fallback only -- `reference_stat` on the spec row is the answer whenever there is one.
+ */
 export const DEFAULT_REFERENCE = 'attack_power';
+export const CASTER_REFERENCE = 'spell_power';
+
+/** The classes and specs whose damage scales with spell power rather than attack power. */
+const CASTER_CLASSES = new Set(['mage', 'warlock', 'priest']);
+const CASTER_SPECS = new Set(['druid-balance', 'shaman-elemental', 'paladin-holy']);
+
+export function fallbackReferenceFor(spec: string): string {
+  const row = specRow(spec);
+  if (row === null) return DEFAULT_REFERENCE;
+  if (CASTER_SPECS.has(row.spec) || CASTER_CLASSES.has(row.class_slug)) return CASTER_REFERENCE;
+  return DEFAULT_REFERENCE;
+}
 
 export function statLabel(id: string): string {
   return BY_ID.get(id)?.label ?? id;
@@ -4191,13 +4919,14 @@ export function statLabel(id: string): string {
 
 /**
  * The spec's own reference stat from the spec list. A spec the list has no row for, or a
- * row from a build predating the column, takes the default rather than a guess from the
- * class -- a wrong reference silently rescales every number on the page.
+ * row from a build predating the column, takes contract 10.8's own default for its kind of
+ * spec -- attack power for melee and hunters, spell power for casters -- which is the same
+ * rule the data lane applies when it writes the column, so the two cannot disagree.
  */
 export function referenceFor(spec: string, rows: readonly SpecFidelity[]): string {
   const row = rows.find((entry) => entry.spec === spec);
   const reference = row?.reference_stat ?? '';
-  return reference === '' ? DEFAULT_REFERENCE : reference;
+  return reference === '' ? fallbackReferenceFor(spec) : reference;
 }
 
 /**
@@ -4256,11 +4985,13 @@ git commit -m "$(cat <<'MSG'
 feat(sim): reading a ranked result, and the stat-weight vocabulary
 
 Ranks are shared across a within-error group because the planner already
-said which runs those are; nothing here recomputes a statistic. The
-per-slot summary reads a slot's contribution from the combination that
-changed only that slot, and says null rather than apportioning a total
-when no such combination was run. The reference stat comes from the spec
-list, never from a table in the web.
+said which runs those are; nothing here recomputes a statistic. Names
+come off the substitution the engine filled (contract 10.1 A6), so no
+view re-joins an item id to a per-class file the reader may not have.
+The per-slot summary reads a slot's contribution from the combination
+that changed only that slot, and says null rather than apportioning a
+total when no such combination was run. Stat ids are proto.Stat enum
+names with melee and spell split (10.1 A7), never a bare haste.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
 MSG
@@ -4388,6 +5119,18 @@ describe('the live combination count', () => {
     expect(s.capNotice).toEqual({ cap: 2, combinations: 3 });
     s.dispose();
   });
+
+  it('counts the consumable alternatives too (contract 10.1 A5)', async () => {
+    const s = store();
+    await s.loadAddon(FURY);
+    s.addSearchItem(16963);
+    s.toggleConsumable('flask_of_supreme_power');
+    s.toggleConsumable('elixir_of_the_mongoose');
+    await s.recount();
+    // (1 head + 1) x 2 consumable lists, minus the untouched base
+    expect(s.combinations).toBe(3);
+    s.dispose();
+  });
 });
 
 describe('running', () => {
@@ -4442,14 +5185,52 @@ describe('the droptimizer’s sources', () => {
     s.dispose();
   });
 
-  it('turns a picked boss into drop-origin candidates and nothing else', async () => {
+  it('turns a picked boss into drop-origin candidates carrying its name', async () => {
     const s = store('drops');
     await s.loadAddon(FURY);
-    s.toggleSource('raid:mc', 'raid:mc:ragnaros');
-    expect(s.rows.filter((row) => row.checked).map((row) => row.origin)).toEqual([
-      'drop:raid:mc:ragnaros',
-      'drop:raid:mc:ragnaros',
-    ]);
+    s.toggleSource('raid:mc', 'raid:mc:11502');
+    const picked = s.rows.filter((row) => row.checked);
+    expect(picked.map((row) => row.origin)).toEqual(['drop:raid:mc:11502', 'drop:raid:mc:11502']);
+    // Contract 10.1 A6: the name travels on the candidate, not on a later join.
+    expect(new Set(picked.map((row) => row.sourceName))).toEqual(new Set(['Ragnaros']));
+    s.dispose();
+  });
+
+  it('hides a source whose date is unknown until show-upcoming (contract 10.4)', async () => {
+    const s = store('drops');
+    await s.loadAddon(FURY);
+    expect(s.visibleSources.map((source) => source.id)).not.toContain('world:azuregos');
+    s.setShowUpcoming(true);
+    expect(s.visibleSources.map((source) => source.id)).toContain('world:azuregos');
+    s.dispose();
+  });
+});
+
+describe('the request’s iteration count', () => {
+  it('is the precision’s final stage, not always 3,000 (contract 10.1 A3)', async () => {
+    const s = store();
+    await s.loadAddon(FURY);
+    s.addSearchItem(16963);
+    s.setPrecision('high');
+    await s.run();
+    expect((s.result as BulkResult).request.iterations).toBe(10_000);
+    s.dispose();
+  });
+});
+
+describe('the server lane’s own cap', () => {
+  it('will not offer a premium run past 5,000 combinations (contract 10.1 A2)', async () => {
+    const s = store();
+    await s.loadAddon(FURY);
+    s.setPremium(true);
+    s.addSearchItem(16963);
+    await s.recount();
+    expect(s.serverCapNotice).toBeNull();
+    // A count the browser cap would refuse but the server cap allows still offers premium.
+    s.setCap(1);
+    await s.recount();
+    expect(s.capNotice).not.toBeNull();
+    expect(s.serverCapNotice).toBeNull();
     s.dispose();
   });
 });
@@ -4493,12 +5274,15 @@ import {
 import { needsRace, toCharacterSpec, type SimCharacter } from './character';
 import { bulkCopy, simCopy } from './copy';
 import { loadEnchants, loadSuffixes, type EnchantRow, type SuffixRow } from './enchants';
+import { loadSimBuffs, type SimBuffFile } from './sim-buffs';
+import { BUILT_IN_PHASES, fetchPhases, type PhaseRow } from './phase';
 import {
   DEFAULT_OFF_KINDS,
   itemsOfBoss,
   itemsOfSource,
   isOpen,
   loadLoot,
+  sourceNameOf,
   sourcesByItem,
   type LootFile,
   type LootSource,
@@ -4527,7 +5311,9 @@ import {
   type BulkRunHandle,
 } from './bulk-run';
 import {
+  SERVER_CAP,
   browserCap,
+  finalIterations,
   type BulkMode,
   type BulkRequest,
   type BulkResult,
@@ -4604,6 +5390,9 @@ export function createBulkStore(init: BulkStoreInit) {
   let loot = $state<LootFile>({ sources: [] });
   let sourceIndex = $state<Map<number, string[]>>(new Map());
   let specRows = $state<SpecFidelity[]>([]);
+  let simBuffs = $state<SimBuffFile>({ entries: {} });
+  // The build-time table until GET /v1/phases answers; see phase.ts's own header.
+  let phases = $state<readonly PhaseRow[]>(BUILT_IN_PHASES);
 
   let rows = $state<CandidateRow[]>([]);
   let locked = $state<string[]>([]);
@@ -4612,8 +5401,12 @@ export function createBulkStore(init: BulkStoreInit) {
   let precision = $state<Precision>('fast');
   let cap = $state(browserCap(init.hardwareConcurrency ?? globalThis.navigator?.hardwareConcurrency));
 
+  let consumableIds = $state<string[]>([]);
   let combinations = $state<number | null>(null);
   let capNotice = $state<{ cap: number; combinations: number } | null>(null);
+  // Set when the count is past the premium lane's own cap too, so the page does not offer
+  // a server run the API would refuse at submit (contract 10.1 A2, 5,000).
+  let serverCapNotice = $state<{ cap: number; combinations: number } | null>(null);
   let progress = $state<BulkProgress | null>(null);
   let result = $state<SimResult | null>(null);
 
@@ -4668,20 +5461,27 @@ export function createBulkStore(init: BulkStoreInit) {
    * means no enchant column.
    */
   async function loadDataFor(next: SimCharacter): Promise<void> {
-    const [itemFile, setFile, talents, enchantRows, suffixRows, lootFile] = await Promise.all([
-      loadItems(next.tree_version, next.class_slug).catch(() => null),
-      loadSets(next.tree_version).catch(() => []),
-      loadTalents(next.tree_version, next.class_slug).catch(() => null),
-      loadEnchants(next.tree_version).catch(() => []),
-      loadSuffixes(next.tree_version).catch(() => []),
-      loadLoot(next.tree_version).catch(() => ({ sources: [] }) as LootFile),
-    ]);
+    const [itemFile, setFile, talents, enchantRows, suffixRows, lootFile, buffFile, phaseRows] =
+      await Promise.all([
+        loadItems(next.tree_version, next.class_slug).catch(() => null),
+        loadSets(next.tree_version).catch(() => []),
+        loadTalents(next.tree_version, next.class_slug).catch(() => null),
+        loadEnchants(next.tree_version).catch(() => []),
+        loadSuffixes(next.tree_version).catch(() => []),
+        loadLoot(next.tree_version).catch(() => ({ sources: [] }) as LootFile),
+        loadSimBuffs(next.tree_version).catch(() => ({ entries: {} }) as SimBuffFile),
+        // Never rejects: phase.ts falls back to the build-time table rather than leaving
+        // the gate unknown.
+        fetchPhases(init.apiBase),
+      ]);
     items = new Map((itemFile?.items ?? []).map((item) => [item.id, item]));
     sets = setFile;
     talentFile = talents;
     enchants = enchantRows;
     suffixes = suffixRows;
     loot = lootFile;
+    simBuffs = buffFile;
+    phases = phaseRows;
     sourceIndex = sourcesByItem(lootFile);
     shownKinds = [...new Set(lootFile.sources.map((source) => source.kind))].filter(
       (kind) => !DEFAULT_OFF_KINDS.includes(kind),
@@ -4695,14 +5495,26 @@ export function createBulkStore(init: BulkStoreInit) {
    */
   function seedRows(next: SimCharacter): CandidateRow[] {
     const seeded: CandidateRow[] = [];
-    const add = (itemId: number, origin: Origin): void => {
+    const add = (itemId: number, origin: Origin, enchant = 0, suffix = 0): void => {
       const item = items.get(itemId);
       if (item === undefined) return;
-      for (const slot of uiSlotsOf(item)) seeded.push(rowFor(item, slot, origin));
+      for (const slot of uiSlotsOf(item)) {
+        seeded.push({ ...rowFor(item, slot, origin), enchant, suffix });
+      }
     };
-    for (const itemId of Object.values(next.gear)) if (itemId !== undefined) add(itemId, 'equipped');
-    for (const entry of next.bags ?? []) add(entry.item_id, 'bag');
-    for (const entry of next.bank ?? []) add(entry.item_id, 'bank');
+    // Contract 10.5 puts per-slot enchant and suffix on SimCharacter (part A's decoder),
+    // so an equipped row opens carrying the enchant the player actually has on -- which is
+    // what "an enchant you already have carries over" has to mean on screen as well as in
+    // the planner. `gearSlots` absent (an Armory or logged-fight source) falls back to the
+    // id-only map, and the rows simply carry no enchant.
+    const detailed = next.gearSlots ?? [];
+    if (detailed.length > 0) {
+      for (const slot of detailed) add(slot.item_id, 'equipped', slot.enchant ?? 0, slot.suffix ?? 0);
+    } else {
+      for (const itemId of Object.values(next.gear)) if (itemId !== undefined) add(itemId, 'equipped');
+    }
+    for (const entry of next.bags ?? []) add(entry.item_id, 'bag', entry.enchant ?? 0, entry.suffix ?? 0);
+    for (const entry of next.bank ?? []) add(entry.item_id, 'bank', entry.enchant ?? 0, entry.suffix ?? 0);
     return seeded;
   }
 
@@ -4713,12 +5525,15 @@ export function createBulkStore(init: BulkStoreInit) {
       const [sourceId, bossId] = pick.split('|');
       const source = loot.sources.find((entry) => entry.id === sourceId);
       if (source === undefined) continue;
-      const origin = `drop:${bossId === '' ? sourceId : bossId}` as Origin;
+      const pickedId = bossId === '' ? sourceId : bossId;
+      const origin = `drop:${pickedId}` as Origin;
+      // Contract 10.1 A6: the name is resolved once, here, and rides on the candidate.
+      const sourceName = sourceNameOf(loot, pickedId);
       for (const itemId of bossId === '' ? itemsOfSource(source) : itemsOfBoss(source, bossId)) {
         const item = items.get(itemId);
         if (item === undefined) continue;
         for (const slot of uiSlotsOf(item)) {
-          next.push({ ...rowFor(item, slot, origin), checked: true });
+          next.push({ ...rowFor(item, slot, origin, sourceName), checked: true });
         }
       }
     }
@@ -4727,7 +5542,18 @@ export function createBulkStore(init: BulkStoreInit) {
 
   function currentSpec(): BulkRequest['bulk'] | null {
     if (mode === null) return null;
-    return buildBulkSpec({ mode, rows, locked, loadouts, sets: namedSets, precision, cap });
+    return buildBulkSpec({
+      mode,
+      rows,
+      locked,
+      loadouts,
+      sets: namedSets,
+      precision,
+      cap,
+      // "Try each of these" is one alternative list per ticked consumable, not every
+      // subset of them (contract 10.1 A5).
+      consumables: consumableIds.map((id) => [id]),
+    });
   }
 
   function baseRequest(): BulkRequest | WeightsRequest | null {
@@ -4746,7 +5572,9 @@ export function createBulkStore(init: BulkStoreInit) {
       source: character.source,
       character: toCharacterSpec(character, index, settings.buffs, settings.consumables),
       encounter: settings.encounter,
-      iterations: 3000,
+      // Contract 10.1 A3: a bulk request's iterations ARE its precision's final stage, and
+      // `Validate` refuses anything else. A weights run is a plain fixed run.
+      iterations: init.tool === 'weights' ? 3000 : finalIterations(precision),
       random_seed: 0,
     };
     if (init.tool === 'weights') {
@@ -4781,14 +5609,22 @@ export function createBulkStore(init: BulkStoreInit) {
     try {
       combinations = await countCombinations(poolOnce(), request);
       capNotice = null;
+      serverCapNotice = null;
     } catch (error) {
       if (error instanceof BulkCapError) {
         combinations = error.combinations;
         capNotice = { cap: error.cap, combinations: error.combinations };
+        // Past the premium lane's own 5,000 too (contract 10.1 A2), so the page does not
+        // offer a server run the API would refuse at submit with `cap_exceeded`.
+        serverCapNotice =
+          error.combinations > SERVER_CAP
+            ? { cap: SERVER_CAP, combinations: error.combinations }
+            : null;
         return;
       }
       combinations = null;
       capNotice = null;
+      serverCapNotice = null;
     }
   }
 
@@ -4802,7 +5638,7 @@ export function createBulkStore(init: BulkStoreInit) {
       source: character.source,
       character: toCharacterSpec(character, index, settings.buffs, settings.consumables),
       encounter: settings.encounter,
-      iterations: 3000,
+      iterations: finalIterations(bulk.precision),
       random_seed: 0,
       bulk,
     };
@@ -4869,6 +5705,21 @@ export function createBulkStore(init: BulkStoreInit) {
     get capNotice() {
       return capNotice;
     },
+    /** Non-null only when even the premium lane's 5,000 would be exceeded. */
+    get serverCapNotice() {
+      return serverCapNotice;
+    },
+    get consumableIds() {
+      return consumableIds;
+    },
+    /** The buff/consumable name table, for the candidate list's labels. */
+    get simBuffs() {
+      return simBuffs;
+    },
+    /** The phase table the source picker gates on: live where the API answered. */
+    get phases() {
+      return phases;
+    },
     get progress() {
       return progress;
     },
@@ -4917,7 +5768,7 @@ export function createBulkStore(init: BulkStoreInit) {
       const at = clock();
       return loot.sources.filter(
         (source) =>
-          shownKinds.includes(source.kind) && (showUpcoming || isOpen(source, at)),
+          shownKinds.includes(source.kind) && (showUpcoming || isOpen(phases, source, at)),
       );
     },
 
@@ -5005,6 +5856,12 @@ export function createBulkStore(init: BulkStoreInit) {
     },
     removeNamedSet(name: string): void {
       namedSets = namedSets.filter((entry) => entry.name !== name);
+      scheduleCount();
+    },
+    toggleConsumable(id: string): void {
+      consumableIds = consumableIds.includes(id)
+        ? consumableIds.filter((entry) => entry !== id)
+        : [...consumableIds, id];
       scheduleCount();
     },
     toggleKind(kind: string): void {
@@ -5165,10 +6022,12 @@ export function createBulkStore(init: BulkStoreInit) {
 export type BulkStore = ReturnType<typeof createBulkStore>;
 ```
 
-> **If part A has not landed:** `SimCharacter` will not yet declare `bags`, `bank`, `sets`
-> or `loadouts`, and `seedRows`' two `next.bags ?? []` reads will not type-check. Add the
-> four fields as `readonly` optionals to `SimCharacter` in a **separate commit** on this
-> branch, note it in the commit body, and drop that commit when part A lands.
+> **If part A has not landed:** `SimCharacter` will not yet declare `bags`, `bank`, `sets`,
+> `loadouts`, `professions` or `gearSlots`, and `seedRows`' reads of them will not
+> type-check. Add the six as optionals to `SimCharacter` in a **separate commit** on this
+> branch, note it in the commit body, and drop that commit when part A lands. `bags` and
+> `bank` are `GearSlot[]`-shaped (`{ item_id, enchant?, suffix? }` per contract 10.5), not
+> bare ids.
 
 - [ ] **Step 4: Run the test**
 
@@ -5203,7 +6062,11 @@ Its own file, not more fields on /sim's store: the two share character
 loading through sources.ts and nothing else, and the parity spec's two
 web lanes must not edit one store. The pool is created on the first run,
 the live count is debounced, a cap refusal is two numbers rather than a
-trimmed list, and the premium lane posts the identical envelope.
+trimmed list, and the premium lane posts the identical envelope to
+POST /v1/sims/run (contract 10.6). Iterations are the precision's final
+stage per 10.1 A3; the phase gate prefers GET /v1/phases and falls back
+to the build-time table; a drop's source name travels on the candidate
+per 10.1 A6; and the page will not offer a server run past 5,000.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
 MSG
@@ -5915,13 +6778,13 @@ Expected: FAIL — `sim-slot-grid` never appears.
       onclick={() => onpick(NO_ENCHANT)}>{bulkCopy.noEnchant}</button
     >
   </li>
-  {#each allowed as enchant (enchant.id)}
+  {#each allowed as enchant (enchant.effect_id)}
     <li class="border-line-soft border-t">
       <button
         type="button"
         class="text-text flex min-h-11 w-full items-center gap-2 px-2 text-left text-[13px]"
-        data-testid={`sim-enchant-${slot}-${enchant.id}`}
-        onclick={() => onpick(enchant.id)}
+        data-testid={`sim-enchant-${slot}-${enchant.effect_id}`}
+        onclick={() => onpick(enchant.effect_id)}
       >
         <img
           src={dataUrl(treeVersion, `icons/${enchant.icon}.webp`)}
@@ -6244,26 +7107,28 @@ MSG
 - Create: `web/src/components/sim/tools/ItemSearch.svelte`
 - Create: `web/src/components/sim/tools/ConsumableCandidates.svelte`
 - Modify: `web/src/components/sim/tools/TopGear.svelte` (mount both)
-- Modify: `web/src/lib/sim/bulk-types.ts` (`BulkSpec.consumables`)
-- Modify: `web/src/lib/sim/candidates.ts` (`buildBulkSpec` carries them)
-- Modify: `web/src/lib/sim/bulk-store.svelte.ts` (`consumableSets`, `toggleConsumable`)
+- Modify: `web/src/lib/sim/candidates.ts` (`buildBulkSpec` carries `consumables`)
 - Modify: `web/src/lib/sim/candidates.test.ts`
 - Modify: `web/tests/e2e/sim-gear.spec.ts`
 
+`BulkSpec.consumables`, `store.consumableIds` and `store.toggleConsumable` already exist:
+Task 1 declared the field and Task 10 the state. This task is the control and the
+`buildBulkSpec` plumbing.
+
 **Interfaces:**
 - Consumes: `searchItems`, `defaultItemQuery`, `slotOptions`, `SEARCH_LIMIT`, `ItemQuery` (Task 7); `groupSources` (Task 6); `PRESET_CONSUMABLES` and `SimSettings` from `./settings`.
-- Produces: `BulkSpec.consumables?: string[][]`, `store.consumableSets`, `store.toggleConsumable(id)`.
+- Produces: `ItemSearch.svelte`, `ConsumableCandidates.svelte`, and `BulkSpecInput.consumables` on `buildBulkSpec`.
 
-> **Contract addition, requested in the finish report.** Design 3.1.5 asks for "try each of
-> these" on flasks, weapon oils and food, but contract 1.3's `BulkSpec` has no field for it:
-> a `Candidate` is an item in a gear slot, and a consumable is not. This task sends
-> `BulkSpec.Consumables [][]string` — each inner list is one alternative consumable set,
-> crossed with the gear combinations — and expects `Substitution.Kind` to gain `consume`
-> with the chosen ids in `Name`. **Until `sim/bulk` reads it the field is inert**: the wasm
-> ignores an unknown JSON key, `simCount` returns the same number, and the checkboxes change
-> nothing. That is why the e2e below asserts the control renders and travels in the request,
-> and **not** that the count moves — asserting a number the engine does not yet produce
-> would be a test that fails when the feature actually lands.
+> **Ratified by contract 10.1 A5.** `BulkSpec.Consumables [][]string` is a real field:
+> "alternative consumable lists tried as candidates in `gear` mode… Each inner list
+> replaces `CharacterSpec.Consumes` for that combination." It multiplies the gear product,
+> so the live count **does** move when a consumable is ticked, and the e2e asserts that.
+>
+> The result shape is settled too: contract 10.8 gives `Substitution.Kind` a fourth value,
+> `consumes`, with `Name` the consumable ids joined by `, `, and has `sim/bulk` emit one per
+> combination that used an alternative list. Task 1 types the union closed on those four,
+> Task 3's fake emits `kind: 'consumes'`, and `substitutionLabel` renders it through
+> `bulkCopy.consumesChip` -- a named kind, not an unknown.
 
 - [ ] **Step 1: Write the failing tests**
 
@@ -6326,15 +7191,19 @@ test('usable-only is on by default and can be turned off', async ({ page }) => {
   await expect(page.getByTestId('sim-search-usable')).not.toBeChecked();
 });
 
-test('a consumable can be ticked as a candidate and travels in the request', async ({ page }) => {
+test('a ticked consumable multiplies the combination count (contract 10.1 A5)', async ({ page }) => {
   await loadGear(page);
-  const requests: string[] = [];
-  await page.route('**/v1/sims/run', async (route) => {
-    requests.push(route.request().postData() ?? '');
-    await route.fulfill({ status: 402, body: '{"ok":false,"data":null,"error":{"message":"no"}}' });
-  });
+  await page.getByTestId('sim-search-add-16963').click();
+  await expect(page.getByTestId('sim-combo-count')).toHaveText('1 valid combination');
   await page.getByTestId('sim-consumable-flask_of_supreme_power').check();
-  await expect(page.getByTestId('sim-consumable-flask_of_supreme_power')).toBeChecked();
+  await page.getByTestId('sim-consumable-elixir_of_the_mongoose').check();
+  // (1 head + 1) x 2 alternatives, minus the untouched base
+  await expect(page.getByTestId('sim-combo-count')).toHaveText('3 valid combinations');
+});
+
+test('a consumable candidate is named, not spelled as an id', async ({ page }) => {
+  await loadGear(page);
+  await expect(page.getByTestId('sim-consumables')).toContainText('Flask of Supreme Power');
 });
 ```
 
@@ -6347,21 +7216,7 @@ E2E_PORT=4326 FOREVER_DATA=fixture npx playwright test tests/e2e/sim-gear.spec.t
 
 Expected: FAIL on the new cases only.
 
-- [ ] **Step 3: Carry consumables through the envelope**
-
-In `bulk-types.ts`, inside `BulkSpec`, after `sets`:
-
-```ts
-  /**
-   * Alternative consumable sets, each an inner list of IDS.md consumable ids, crossed with
-   * the gear combinations (design 3.1.5, "try each of these"). Absent means "use the
-   * character's own consumables as a setting", which is every run today.
-   *
-   * Contract addition: `BulkSpec` in contract 1.3 has no such field, and `sim/bulk` ignores
-   * it until it does. Requested in this lane's finish report.
-   */
-  consumables?: string[][];
-```
+- [ ] **Step 3: Carry consumables through `buildBulkSpec`**
 
 In `candidates.ts`, add `consumables?: string[][]` to `BulkSpecInput`, and in
 `buildBulkSpec`'s returned object:
@@ -6370,32 +7225,6 @@ In `candidates.ts`, add `consumables?: string[][]` to `BulkSpecInput`, and in
     ...(input.consumables !== undefined && input.consumables.length > 0
       ? { consumables: input.consumables.map((set) => [...set]) }
       : {}),
-```
-
-In `bulk-store.svelte.ts`, add the state and the two accessors:
-
-```ts
-  // Each ticked consumable is one alternative set of exactly one id: "try each of these"
-  // means each on its own, not every subset of them.
-  let consumableIds = $state<string[]>([]);
-```
-
-```ts
-    get consumableIds() {
-      return consumableIds;
-    },
-    toggleConsumable(id: string): void {
-      consumableIds = consumableIds.includes(id)
-        ? consumableIds.filter((entry) => entry !== id)
-        : [...consumableIds, id];
-      scheduleCount();
-    },
-```
-
-and pass them into both `currentSpec()` and `baseRequestForCount`'s `buildBulkSpec` call:
-
-```ts
-      consumables: consumableIds.map((id) => [id]),
 ```
 
 - [ ] **Step 4: Write `ItemSearch.svelte`**
@@ -6553,17 +7382,29 @@ and pass them into both `currentSpec()` and `baseRequestForCount`'s `buildBulkSp
 
 ```svelte
 <!-- web/src/components/sim/tools/ConsumableCandidates.svelte -->
-<!-- Design 3.1.5: the consumables the settings panel applies as a setting can instead be
-     tried one at a time as candidates. The list is the preset's own ids, not a second copy
-     of IDS.md -- settings.ts is the one place this lane names a consumable id. -->
+<!-- Design 3.1.5, ratified as BulkSpec.Consumables by contract 10.1 A5: the consumables the
+     settings panel applies as a setting can instead be tried one at a time as candidates,
+     each ticked one replacing CharacterSpec.Consumes wholesale for its combination.
+     The id list is the preset's own, not a second copy of IDS.md -- settings.ts is the one
+     place this lane names a consumable id -- and the names and icons come from
+     simbuffs.json (contract 10.4) rather than from a de-underscored id. -->
 <script lang="ts">
+  import { dataUrl } from '../../../lib/planner/load';
   import { bulkCopy } from '../../../lib/sim/copy';
   import { PRESET_CONSUMABLES } from '../../../lib/sim/settings';
+  import { buffIcon, buffName, type SimBuffFile } from '../../../lib/sim/sim-buffs';
 
   let {
     picked,
+    buffs,
+    treeVersion,
     ontoggle,
-  }: { picked: readonly string[]; ontoggle: (id: string) => void } = $props();
+  }: {
+    picked: readonly string[];
+    buffs: SimBuffFile;
+    treeVersion: string;
+    ontoggle: (id: string) => void;
+  } = $props();
 
   const offered = $derived([...new Set(PRESET_CONSUMABLES['raid-buffed'])]);
 </script>
@@ -6585,7 +7426,18 @@ and pass them into both `currentSpec()` and `baseRequestForCount`'s `buildBulkSp
             checked={picked.includes(id)}
             onchange={() => ontoggle(id)}
           />
-          {id.replaceAll('_', ' ')}
+          {#if buffIcon(buffs, id) !== ''}
+            <img
+              src={dataUrl(treeVersion, `icons/${buffIcon(buffs, id)}.webp`)}
+              alt=""
+              width="20"
+              height="20"
+              loading="lazy"
+              decoding="async"
+              class="rounded-control border-line h-5 w-5 border object-cover"
+            />
+          {/if}
+          {buffName(buffs, id)}
         </label>
       </li>
     {/each}
@@ -6605,7 +7457,12 @@ Inside the `{#if gearMode}` block, after `<SlotGrid … />`:
       treeVersion={store.character?.tree_version ?? ''}
       onadd={(itemId) => store.addSearchItem(itemId)}
     />
-    <ConsumableCandidates picked={store.consumableIds} ontoggle={(id) => store.toggleConsumable(id)} />
+    <ConsumableCandidates
+      picked={store.consumableIds}
+      buffs={store.simBuffs}
+      treeVersion={store.character?.tree_version ?? ''}
+      ontoggle={(id) => store.toggleConsumable(id)}
+    />
 ```
 
 with `import { SIM_LEVEL } from '../../../lib/sim/character';`, `import ItemSearch from
@@ -6633,10 +7490,10 @@ feat(sim): the item search, and consumables as candidates
 
 Search is client-side over the items file the grid already holds: name,
 minimum item level, slot, loot source, usable-only on by default.
-Consumable candidates send BulkSpec.consumables, which contract 1.3 does
-not yet have: the field is inert until sim/bulk reads it, so the test
-asserts the control and the request rather than a count the engine
-cannot yet move. Requested as a contract addition.
+Consumable candidates send BulkSpec.Consumables, which contract 10.1 A5
+makes a real field that multiplies the gear product -- so the live count
+moves when one is ticked, and the test asserts that. Names and icons
+come from simbuffs.json rather than from a de-underscored id.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
 MSG
@@ -6661,13 +7518,11 @@ MSG
 - **Consumes from part A:** `SimCharacter.loadouts?: { name: string; talents: string }[]` and `.sets?: { name: string; gear: GearSlot[] }[]`, both from the FS1 v2 decoder.
 - Produces: `fetchMyBuilds(page?, apiBase?): Promise<{ rows: BuildRecord[]; total: number; page: number; per_page: number }>`; `Planner.svelte`'s `oncode?: (code: string) => void`.
 
-> **Contract addition, requested in the finish report.** Design 3.1.6 wants "every planner
-> build saved by the signed-in player for this class", and no such route exists:
-> `api/internal/builds` mounts `POST /v1/builds` and `GET /v1/builds/{id}` only, and a build
-> is an anonymous content-hash record with no owner column. This task calls
-> `GET /v1/builds?mine=1` with the same page shape `GET /v1/sims?mine=1` uses, and **treats
-> every failure as "no saved builds"** with the copy `bulkCopy.talentsSavedUnavailable`, so
-> the page is complete the day the route lands and honest until then.
+> **Ratified by contract 10.6.** `builds` gains `user_id` (nullable, set on save when
+> signed in) and `GET /v1/builds?mine=1` lists the signed-in player's builds; the contract
+> names Top Gear's talent list as its reader. The page still **treats every failure as "no
+> saved builds"** with the copy `bulkCopy.talentsSavedUnavailable`: a deployment older than
+> the migration answers 404, and a list that came back empty is not worth an error banner.
 
 - [ ] **Step 1: Write the failing tests**
 
@@ -6760,12 +7615,11 @@ In `web/src/lib/sim/api.ts`, beside `listMySims`:
 
 ```ts
 /**
- * The signed-in player's saved planner builds, for Top Gear's talent candidates.
- *
- * `GET /v1/builds?mine=1` does not exist yet -- `api/internal/builds` mounts only the POST
- * and the by-id GET, and a build carries no owner column. The caller treats every failure
- * as "no saved builds" and says so in one line, so the page is complete the day the route
- * lands and honest until then. Requested as a contract addition.
+ * The signed-in player's saved planner builds, for Top Gear's talent candidates
+ * (contract 10.6: `builds.user_id` plus this route). The caller treats every failure as
+ * "no saved builds" and says so in one line -- a deployment older than migration 0014
+ * answers 404, and that is not worth an error banner on a page whose other numbers are
+ * all correct.
  */
 export function fetchMyBuilds(
   page: number = 1,
@@ -7143,12 +7997,13 @@ git add web/src/components web/src/lib/sim/api.ts web/src/lib/sim/api.test.ts we
 git commit -m "$(cat <<'MSG'
 feat(sim): talent loadouts and named sets as candidates
 
-The character's own build, the signed-in player's saved planner builds,
-the export's in-game loadouts, and a planner mounted inline as a lazy
-chunk so /sim/weights never downloads it. GET /v1/builds?mine=1 does not
-exist yet and every failure reads as "no saved builds" in one line, so
-the page is complete the day it lands. Named sets are the answer to Gear
-Compare: one candidate that replaces every slot at once.
+The character's own build, the signed-in player's saved planner builds
+through GET /v1/builds?mine=1 (contract 10.6), the export's in-game
+loadouts, and a planner mounted inline as a lazy chunk so /sim/weights
+never downloads it. A failure still reads as "no saved builds" in one
+line, because a deployment older than the migration answers 404. Named
+sets are the answer to Gear Compare: one candidate that replaces every
+slot at once.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
 MSG
@@ -7174,20 +8029,17 @@ MSG
 Append to `web/tests/e2e/sim-gear.spec.ts`:
 
 ```ts
-test('the cap notice says by how much, offers premium, and blocks the run', async ({ page }) => {
+test('four candidates are well under the cap, so no notice and a live run button', async ({
+  page,
+}) => {
   await loadGear(page);
-  // Four candidates in distinct slots expand past a cap of 2.
-  await page.getByTestId('sim-search-add-16963').click().catch(() => {});
-  await page.getByTestId('sim-item-search').getByRole('searchbox').fill('');
   for (const id of [16963, 16966, 13968, 19325]) {
     await page.getByTestId(`sim-search-add-${id}`).click();
   }
-  await page.evaluate(() => window.localStorage.clear());
-  const notice = page.getByTestId('sim-cap-notice');
-  // The desktop project reports 8+ cores, so the cap is 400 and four candidates fit; the
-  // notice must therefore be absent here. Its presence is asserted in the unit tests,
-  // where the cap is injectable.
-  await expect(notice).toHaveCount(0);
+  // The desktop project reports 8+ cores, so the cap is 400 and four candidates fit. The
+  // notice's own wording and its 5,000-combination premium alternative are asserted in
+  // the unit tests, where the cap is injectable.
+  await expect(page.getByTestId('sim-cap-notice')).toHaveCount(0);
   await expect(page.getByTestId('sim-run-bulk')).toBeEnabled();
 });
 
@@ -7303,7 +8155,7 @@ Expected: FAIL — `sim-run-bulk` does not exist.
         type="button"
         class="{SECONDARY_BUTTON} border-line-warm text-nav px-4"
         data-testid="sim-server-run"
-        disabled={running}
+        disabled={running || store.serverCapNotice !== null}
         onclick={() => void store.runOnServer()}>{bulkCopy.capPremium}</button
       >
     {/if}
@@ -7318,7 +8170,19 @@ Expected: FAIL — `sim-run-bulk` does not exist.
   {#if store.capNotice !== null}
     <p class="text-strong text-[13px]" role="alert" data-testid="sim-cap-notice">
       {bulkCopy.capNotice(store.capNotice.cap, store.capNotice.combinations)}
-      <span class="text-muted">{bulkCopy.capPremiumNote}</span>
+      {#if store.serverCapNotice === null}
+        <!-- Contract 10.1 A2: the premium lane's cap is 5,000, and bulkCopy.capPremiumNote
+             says that number. Offering it when the list is past 5,000 too would send the
+             player to a lane that refuses the same request. -->
+        <span class="text-muted">{bulkCopy.capPremiumNote}</span>
+      {:else}
+        <span class="text-muted"
+          >{bulkCopy.serverCapNotice(
+            store.serverCapNotice.cap,
+            store.serverCapNotice.combinations,
+          )}</span
+        >
+      {/if}
     </p>
   {/if}
 
@@ -7338,6 +8202,9 @@ Expected: FAIL — `sim-run-bulk` does not exist.
   {/if}
 </section>
 
+<!-- Design 8: the exact JSON the run will send, editable and validated by the engine's own
+     Validate through the wasm's simValidate (contract 10.2). Part A owns the component;
+     mounting it here is what gives every tool page the same escape hatch. -->
 <RequestDrawer request={store.requestPreview} onapply={(next) => store.applyRequest(next)} />
 ```
 
@@ -7382,7 +8249,7 @@ with, above the returned object:
       source: character.source,
       character: toCharacterSpec(character, index, settings.buffs, settings.consumables),
       encounter: settings.encounter,
-      iterations: 3000,
+      iterations: init.tool === 'weights' ? 3000 : finalIterations(precision),
       random_seed: 0,
     };
     if (init.tool === 'weights') {
@@ -7513,8 +8380,11 @@ Expected: FAIL — `sim-combos` never appears.
 
 ```svelte
 <!-- web/src/components/sim/tools/SubstitutionChips.svelte -->
-<!-- What a combination changed, as icon chips. An item chip carries the item's icon and
-     its name in the title; a loadout or a set chip is its name, because neither has one. -->
+<!-- What a combination changed, as icon chips.
+     The NAME always comes off the substitution -- contract 10.1 A6 fills it for items too,
+     from simdb -- so a chip is legible even where the per-class item file has not loaded.
+     The item map is consulted for the icon and the rarity colour only, which are the two
+     things the result does not carry. -->
 <script lang="ts">
   import { rarityClassFor } from '../../../lib/planner/items';
   import { dataUrl } from '../../../lib/planner/load';
@@ -7531,8 +8401,6 @@ Expected: FAIL — `sim-combos` never appears.
     items: ReadonlyMap<number, Item>;
     treeVersion: string;
   } = $props();
-
-  const nameOf = (itemId: number): string => items.get(itemId)?.name ?? `Item ${itemId}`;
 </script>
 
 <span class="flex flex-wrap items-center gap-1">
@@ -7540,7 +8408,9 @@ Expected: FAIL — `sim-combos` never appears.
     {@const item = sub.item_id === undefined ? undefined : items.get(sub.item_id)}
     <span
       class="border-line rounded-pill inline-flex items-center gap-1 border px-2 py-[2px] text-[12px]"
-      title={substitutionLabel(sub, nameOf)}
+      title={sub.source_name !== undefined && sub.source_name !== ''
+        ? `${substitutionLabel(sub)} · ${sub.source_name}`
+        : substitutionLabel(sub)}
     >
       {#if item !== undefined}
         <img
@@ -7552,10 +8422,10 @@ Expected: FAIL — `sim-combos` never appears.
           decoding="async"
           class="rounded-control h-4 w-4 object-cover"
         />
-        <span class={rarityClassFor(item.quality)}>{item.name}</span>
-      {:else}
-        <span class="text-text">{substitutionLabel(sub, nameOf)}</span>
       {/if}
+      <span class={item === undefined ? 'text-text' : rarityClassFor(item.quality)}>
+        {substitutionLabel(sub)}
+      </span>
     </span>
   {/each}
 </span>
@@ -7694,9 +8564,7 @@ Expected: FAIL — `sim-combos` never appears.
         {#each summary as row (`${row.slot}-${row.item_id}`)}
           <li class="border-line-soft flex min-h-11 items-center gap-3 border-b px-2 last:border-b-0">
             <span class="text-muted w-24 text-[12px]">{SLOT_LABELS[row.slot as Slot] ?? row.slot}</span>
-            <span class="text-text flex-1 text-[13px]">
-              {items.get(row.item_id)?.name ?? `Item ${row.item_id}`}
-            </span>
+            <span class="text-text flex-1 text-[13px]">{row.name}</span>
             <span class="tabular text-gold font-mono text-[13px]">
               {row.gain === null ? '—' : `+${Math.round(row.gain).toLocaleString('en-US')}`}
             </span>
@@ -7960,9 +8828,9 @@ MSG
 
 > **Source icons.** Design 6.1 says the picker shows "icons from the zone pages", and there
 > are none: `src/content/zones/*.md` and `src/content/dungeons/*.md` carry a title, a
-> continent and a level range, and nothing image-shaped. This task labels each group by kind
-> and each boss by name, and draws no icon rather than inventing one. Recorded in the finish
-> report.
+> continent and a level range, and nothing image-shaped. Contract 10.7 confirms it — "zone
+> icons do not exist in the content collection; the source picker labels by kind and name
+> and draws none" — so this task labels and draws none.
 
 - [ ] **Step 1: Write the failing e2e**
 
@@ -7998,30 +8866,33 @@ test('the picker groups every source kind and leaves quests off', async ({ page 
   await expect(page.getByTestId('sim-source-quest')).toBeVisible();
 });
 
-test('an unreleased raid is hidden until show-upcoming, and then carries its date', async ({
+test('an unreleased source is hidden until show-upcoming, and then says it has no date', async ({
   page,
 }) => {
   await loadDrops(page);
-  // The build clock is real, so the assertion is about the control, not about a date:
-  // toggling it must never remove a source, only add.
-  const before = await page.getByTestId('sim-source-picker').getByRole('checkbox').count();
+  // The fixture's world boss carries `opens: "later"` (contract 10.4), which never opens
+  // whatever the clock says -- so this is a date-independent assertion.
+  await expect(page.getByTestId('sim-source-world:azuregos')).toHaveCount(0);
   await page.getByTestId('sim-upcoming').check();
-  const after = await page.getByTestId('sim-source-picker').getByRole('checkbox').count();
-  expect(after).toBeGreaterThanOrEqual(before);
+  await expect(page.getByTestId('sim-source-world:azuregos')).toBeVisible();
+  await expect(page.getByTestId('sim-source-picker')).toContainText('no date announced');
 });
 
 test('picking a boss counts its drops, and running ranks them by source', async ({ page }) => {
   await loadDrops(page);
-  await page.getByTestId('sim-source-raid:mc:ragnaros').check();
+  await page.getByTestId('sim-source-raid:mc:11502').check();
   await expect(page.getByTestId('sim-combo-count')).toHaveText(/\d+ valid combinations?/);
   await page.getByTestId('sim-run-bulk').click();
   await expect(page.getByTestId('sim-drops-by-boss')).toBeVisible({ timeout: 25_000 });
+  // The boss is named from Substitution.SourceName, which the candidate carried in
+  // (contract 10.1 A6) -- the page does not re-join the origin id to loot.json.
+  await expect(page.getByTestId('sim-drops-by-boss')).toContainText('Ragnaros');
   await expect(page.getByTestId('sim-drops-flat')).toBeVisible();
 });
 
 test('a drop pins into Top Gear and arrives there ticked', async ({ page }) => {
   await loadDrops(page);
-  await page.getByTestId('sim-source-raid:mc:ragnaros').check();
+  await page.getByTestId('sim-source-raid:mc:11502').check();
   await page.getByTestId('sim-run-bulk').click();
   await expect(page.getByTestId('sim-drops-flat')).toBeVisible({ timeout: 25_000 });
   await page.getByTestId('sim-drops-pin-12784').click();
@@ -8063,10 +8934,11 @@ Expected: FAIL — no source picker.
     type LootFile,
     type LootSource,
   } from '../../../lib/sim/loot';
-  import { openDateLabel, phaseLabel } from '../../../lib/sim/phase';
+  import { PHASE_LATER, openDateLabel, phaseLabel, type PhaseRow } from '../../../lib/sim/phase';
 
   let {
     loot,
+    phases,
     shownKinds,
     showUpcoming,
     picked,
@@ -8077,6 +8949,7 @@ Expected: FAIL — no source picker.
     ontoggle,
   }: {
     loot: LootFile;
+    phases: readonly PhaseRow[];
     shownKinds: readonly string[];
     showUpcoming: boolean;
     picked: readonly string[];
@@ -8090,16 +8963,21 @@ Expected: FAIL — no source picker.
   const groups = $derived(groupSources(loot));
 
   function visible(source: LootSource): boolean {
-    return shownKinds.includes(source.kind) && (showUpcoming || isOpen(source, now));
+    return shownKinds.includes(source.kind) && (showUpcoming || isOpen(phases, source, now));
   }
 
   function isPicked(sourceId: string, bossId = ''): boolean {
     return picked.includes(`${sourceId}|${bossId}`);
   }
 
+  /**
+   * "First raids, 9 December 2026" for a dated phase, and the no-date sentence for the
+   * literal `"later"` -- contract 10.4's "shows as unreleased without a date".
+   */
   function gateLabel(source: LootSource): string {
-    if (source.opens === undefined || isOpen(source, now)) return '';
-    const date = openDateLabel(source.opens);
+    if (source.opens === undefined || isOpen(phases, source, now)) return '';
+    if (source.opens === PHASE_LATER) return bulkCopy.opensLater;
+    const date = openDateLabel(phases, source.opens);
     return date === '' ? bulkCopy.notOpenYet : bulkCopy.opensOn(phaseLabel(source.opens), date);
   }
 </script>
@@ -8179,7 +9057,9 @@ Expected: FAIL — no source picker.
                   checked={isPicked(source.id, boss.id)}
                   onchange={() => ontoggle(source.id, boss.id)}
                 />
-                <span class="flex-1">{boss.name}</span>
+                <!-- Contract 10.4: "a boss with no name in either database is emitted with
+                     an empty name". The id is the honest stand-in; inventing one is not. -->
+                <span class="flex-1">{boss.name === '' ? boss.id : boss.name}</span>
                 <span class="tabular text-muted font-mono text-[12px]">{boss.items.length}</span>
               </label>
             {/each}
@@ -8204,7 +9084,7 @@ Expected: FAIL — no source picker.
 <script lang="ts">
   import type { Item } from '../../../lib/planner/types';
   import type { BulkResult, Combo } from '../../../lib/sim/bulk-types';
-  import { comboRows, deltaLabel } from '../../../lib/sim/combos';
+  import { comboRows, deltaLabel, sourceNameOfCombo } from '../../../lib/sim/combos';
   import { bulkCopy } from '../../../lib/sim/copy';
   import type { LootFile } from '../../../lib/sim/loot';
   import SubstitutionChips from './SubstitutionChips.svelte';
@@ -8230,13 +9110,13 @@ Expected: FAIL — no source picker.
     return combo.substitutions[0]?.origin ?? '';
   }
 
-  function bossName(origin: string): string {
-    const id = origin.replace(/^drop:/, '');
-    for (const source of loot.sources) {
-      if (source.id === id) return source.name;
-      for (const boss of source.bosses ?? []) if (boss.id === id) return boss.name;
-    }
-    return id;
+  /**
+   * Contract 10.1 A6: the name rode in on `Candidate.SourceName` and came back on the
+   * substitution, so this reads it rather than joining the origin id to loot.json a second
+   * time. The id is the fallback for a result saved before the field existed.
+   */
+  function bossName(combo: Combo, origin: string): string {
+    return sourceNameOfCombo(combo) || origin.replace(/^drop:/, '');
   }
 
   const byBoss = $derived.by(() => {
@@ -8267,7 +9147,7 @@ Expected: FAIL — no source picker.
       {@const wins = group.filter((row) => row.combo.delta.mean > 0)}
       <div class="border-line rounded-panel border p-3">
         <header class="flex flex-wrap items-baseline justify-between gap-2">
-          <h4 class="text-strong text-[13px]">{bossName(origin)}</h4>
+          <h4 class="text-strong text-[13px]">{bossName(group[0].combo, origin)}</h4>
           <span class="text-muted text-[12px]">{bulkCopy.dropsUpgrades(wins.length, group.length)}</span>
         </header>
         {#if wins.length > 0}
@@ -8356,6 +9236,7 @@ Expected: FAIL — no source picker.
   {#if store.character !== null}
     <SourcePicker
       loot={store.loot}
+      phases={store.phases}
       shownKinds={store.shownKinds}
       showUpcoming={store.showUpcoming}
       picked={store.pickedBosses}
@@ -8437,10 +9318,13 @@ feat(sim): /sim/drops, the Droptimizer
 Raids by boss with trash, dungeons by boss, world bosses, crafted split
 by profession, reputation by standing, PvP by rank, and quests off by
 default. An unreleased source is hidden until show-upcoming and then
-carries the date it opens. No probability is shown anywhere: neither
-database records drop rates, so a boss reads "3 of the 11 drops here are
-upgrades", which is what the data supports. Source icons are not drawn
-because the zone pages carry none.
+carries the date it opens, or says none is announced when its `opens` is
+the literal "later" (contract 10.4). Bosses are named from
+Substitution.SourceName, which the candidate carried in (10.1 A6), so
+the results never re-join an origin id. No probability is shown
+anywhere: neither database records drop rates, so a boss reads "3 of the
+11 drops here are upgrades", which is what the data supports. Source
+icons are not drawn because the zone pages carry none (10.7).
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
 MSG
@@ -8509,6 +9393,7 @@ test('the stat picker defaults to the spec’s reference stat, first and ticked'
               worst_actions: [],
               engine_version: 'x',
               updated_at: null,
+              // Contract 10.1 A7: proto.Stat enum names in snake case.
               reference_stat: 'attack_power',
             },
           ],
@@ -8530,6 +9415,13 @@ test('a run renders a weight per stat with an error bar and a Pawn string', asyn
   await page.getByTestId('sim-run-bulk').click();
   await expect(page.getByTestId('sim-weights')).toBeVisible({ timeout: 25_000 });
   await expect(page.getByTestId('sim-weight-attack_power')).toContainText('1.00');
+  // Contract 10.8: haste is split, hit and crit are not.
+  await expect(page.getByTestId('sim-weight-melee_haste')).toBeVisible();
+  await expect(page.getByTestId('sim-weight-crit')).toBeVisible();
+  await expect(page.getByTestId('sim-weight-hit')).toBeVisible();
+  for (const wrong of ['haste', 'melee_crit', 'melee_hit']) {
+    await expect(page.getByTestId(`sim-weight-${wrong}`)).toHaveCount(0);
+  }
   await expect(page.getByTestId('sim-pawn')).toContainText('( Pawn: v1:');
   await page.getByTestId('sim-pawn-copy').click();
   await expect(page.getByTestId('sim-pawn-copy')).toHaveText('Copied');
@@ -8702,8 +9594,10 @@ feat(sim): /sim/weights, with the warning first
 
 The caution opens the page rather than footnoting it: the whole reason
 the page exists is that addons ask for a number the number cannot
-justify. The reference stat comes from GET /v1/specs and always leads
-the list, because everything on the page is scaled to it. Every weight
+justify. The reference stat comes from GET /v1/specs, is required by
+the envelope, and always leads the list, because everything on the page
+is scaled to it. Stat ids are contract 10.8's pinned proto.Stat
+list: one hit, one crit, haste split, mp5 spelled mp5. Every weight
 carries its error, as a bar and as a figure.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
@@ -8733,14 +9627,23 @@ Append to `web/src/lib/report/og-meta.test.ts`:
 
 ```ts
 describe('simShellMeta by kind', () => {
-  it('names Top Gear and its headline', () => {
+  it('names Top Gear and its headline, item included', () => {
     const meta = simShellMeta({ ...bulkResult, sim_id: 'simfixtureab' } as unknown as SimResult);
     expect(meta.title).toBe('Top Gear · Fury Warrior · Forever Sixty');
     expect(meta.description).toContain('6 combinations');
-    expect(meta.description).toContain('+41 DPS');
+    expect(meta.description).toContain('+41 DPS from Helm of Wrath');
   });
 
-  it('names stat weights and lists the top two', () => {
+  it('says "no combinations" for an empty result, as the API’s headline rule does', () => {
+    const meta = simShellMeta({
+      ...bulkResult,
+      sim_id: 'simfixtureab',
+      combos: [],
+    } as unknown as SimResult);
+    expect(meta.description).toContain('no combinations');
+  });
+
+  it('names stat weights and lists the top three', () => {
     const meta = simShellMeta({ ...weightsResult, sim_id: 'simfixtureab' } as unknown as SimResult);
     expect(meta.title).toBe('Stat weights · Fury Warrior · Forever Sixty');
     expect(meta.description).toContain('Attack power 1.00');
@@ -8866,9 +9769,7 @@ buttons, because a saved page belongs to whoever opened the link and not to the 
         {#each summary as row (`${row.slot}-${row.item_id}`)}
           <li class="border-line-soft flex min-h-11 items-center gap-3 border-b px-2 last:border-b-0">
             <span class="text-muted w-24 text-[12px]">{SLOT_LABELS[row.slot as Slot] ?? row.slot}</span>
-            <span class="text-text flex-1 text-[13px]">
-              {items.get(row.item_id)?.name ?? `Item ${row.item_id}`}
-            </span>
+            <span class="text-text flex-1 text-[13px]">{row.name}</span>
             <span class="tabular text-gold font-mono text-[13px]">
               {row.gain === null ? '—' : `+${Math.round(row.gain).toLocaleString('en-US')}`}
             </span>
@@ -8879,6 +9780,10 @@ buttons, because a saved page belongs to whoever opened the link and not to the 
   {/if}
 </section>
 ```
+
+The item file is fetched here for **icons and rarity colours only** — every name on the
+page comes off the result (contract 10.1 A6), so a saved sim whose class file 404s still
+reads correctly.
 
 `SavedWeights.svelte`:
 
@@ -9020,15 +9925,16 @@ export function simShellMeta(result: SimResult): ShellMeta {
   if (kind !== 'run') {
     const bulk = result as BulkResult;
     const combos = bulk.combos ?? [];
-    // The item's own name is not in the result -- a Substitution carries an id, and the
-    // item file is a per-class fetch this function must not make -- so the headline names
-    // the gain and leaves the item to the page.
-    const gain = combos.length > 0 ? deltaLabel(combos[0].delta) : '';
+    // Contract 10.1 A6 fills Substitution.Name for items too, so the unfurl can name the
+    // winning change without the per-class item file this function must never fetch.
+    // An empty result reads "no combinations", matching the API's own headline rule
+    // (contract 10.6) rather than inventing a second wording for the same state.
+    const headline = combos.length === 0 ? 'no combinations' : headlineFor(bulk);
     return {
       title: `${SIM_KIND_TITLES[kind]} · ${spec} · Forever Sixty`,
       description:
         `Simulated on engine ${result.engine_version}: ${combos.length} combinations, ` +
-        `best ${gain} DPS over what is equipped.`,
+        `${headline}.`,
       image: SITE_CARD,
       canonical,
     };
@@ -9039,7 +9945,7 @@ export function simShellMeta(result: SimResult): ShellMeta {
 ```
 
 with `import { kindOf, type BulkResult, type WeightsResult } from '../sim/bulk-types';`,
-`import { deltaLabel } from '../sim/combos';` and `import { statLabel } from '../sim/weights';`.
+`import { headlineFor } from '../sim/combos';` and `import { statLabel } from '../sim/weights';`.
 
 - [ ] **Step 6: Filter history by kind**
 
@@ -9071,7 +9977,10 @@ row's `headline` where the API sent one:
   </select>
 ```
 
-and, in each row, render `row.headline ?? ''` beside the title.
+and, in each row, render `row.headline ?? ''` beside the title. **It is never recomputed
+here**: contract 10.6 has the API compose it at save time, with its own rules for several
+substitutions ("… and 2 more") and for an empty result ("no combinations", "no upgrades",
+"no weights"), and a second composition in the browser would drift from the stored one.
 
 - [ ] **Step 7: Run the tests**
 
@@ -9095,10 +10004,12 @@ feat(sim): /sim/<id> renders every kind, and the unfurl names it
 
 Kind is derived from the stored request, never stored twice, and each
 kind's view is its own lazy chunk so a saved weights page downloads
-neither the damage tables nor the combination table. The saved view has
-no "open in planner" or "copy to addon": those act on the reader's own
-character, and a saved page is not theirs. History filters by kind and
-shows the API's own headline.
+neither the damage tables nor the combination table. The unfurl names
+the winning item, which it can because contract 10.1 A6 fills
+Substitution.Name from simdb. The saved view has no "open in planner"
+or "copy to addon": those act on the reader's own character, and a
+saved page is not theirs. History filters by kind and shows the API's
+own composed headline rather than recomputing one (contract 10.6).
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
 MSG
@@ -9408,6 +10319,13 @@ Part A's `SettingsPanel.svelte` and `RequestDrawer.svelte` are mounted by
 compile until they exist: stub both as one-line components in a separate commit, note it in
 the commit body, and delete the stubs when part A lands.
 
+A fourth file both lanes touch is **`web/src/lib/sim/engine.ts`**: this lane declares all
+three of contract 10.2's new exports (`simCount`, `simValidate`, `simNeedsMore`) on
+`EngineModule` and on the pool, in Tasks 3 and 4, precisely so part A does not also edit
+that surface. If part A has already added `simNeedsMore` or `simValidate`, keep its version
+and drop this lane's duplicate declaration; the signatures are the contract's and cannot
+differ.
+
 ---
 
 ## Self-review
@@ -9424,7 +10342,7 @@ the commit body, and delete the stubs when part A lands.
 | Design 3.1.2: slot grid, equipped/bag/bank/search/pinned rows, checkboxes, copy-and-modify (enchant, suffix), locks, rings and trinkets in one list | 8, 12 |
 | Design 3.1.3: item search over `items.json` — name, min ilvl, slot, source, usable-only | 7, 13 |
 | Design 3.1.4: per-slot enchant lists, "keep current", "none", a selection cap | 7, 12 |
-| Design 3.1.5: consumables as candidates | 13 (contract addition) |
+| Design 3.1.5 / contract 10.1 A5: consumables as candidates | 1, 13 |
 | Design 3.1.6: own talents, saved planner builds, export loadouts, add custom → planner inline | 14 |
 | Design 3.1.7: named sets from the export or a pasted second string | 14 |
 | Design 3.1.8: live combination count, precision, cap notice, lane switch, one button | 15 |
@@ -9432,25 +10350,72 @@ the commit body, and delete the stubs when part A lands.
 | Design 3.3: equipped baseline, ranked rows with delta ± error and percent, within-error grouping by `group`, per-slot summary, "Open in planner", "Copy to addon" | 8, 9, 16 |
 | Design 3.4 / `/sim/talents` | 17 |
 | Design 4.4: the 4-piece results filter | 9, 16 |
-| Design 6.1: every source kind, phase gate, "show upcoming" | 6, 18 |
+| Design 6.1: every source kind, phase gate, "show upcoming", no-date sources | 2, 6, 18 |
 | Design 6.2: `loot.json`, no probability shown | 6, 18 |
 | Design 6.3: results by source, best per boss, flat list, pin into Top Gear | 18 |
 | Design 7 / `/sim/weights`: warning, stat picker on `reference_stat`, error bars, Pawn | 9, 19 |
 | Design 5.2 / contract 9: `/sim/<id>` renders by kind; unfurl names the kind | 20 |
-| Design 9.3: history lists every kind, filterable | 20 |
-| Fixtures: bulk result, weights result, `loot.json`, `enchants.json`, `suffixes.json`, `specs.json` with `reference_stat`, the fake engine's three exports | 2, 3 |
+| Design 9.3: history lists every kind, filterable, with the API's headline | 20 |
+| Fixtures: bulk result, weights result, `loot.json`, `enchants.json`, `suffixes.json`, `simbuffs.json`, `phases.json`, `specs.json` with `reference_stat`, the fake engine's six exports | 2, 3 |
 | e2e per page, desktop and mobile; one gated real-engine Top Gear run | 12–21 |
 | vitest for every pure module | 1, 2, 5–10 |
 | Shell skeletons so CLS holds | 11, 21 |
 
+**Contract section 10 coverage** (the amendment round, 2026-09-19, commit 439f0b7).
+
+| Ruling | Where it lands |
+| --- | --- |
+| A1 lane-aware caps | Header; `browserCap`/`SERVER_CAP` (Task 1); the store's server-cap gate (Task 10) |
+| A2 server cap 5,000 | Task 1 `SERVER_CAP`; `bulkCopy.capPremiumNote`/`serverCapNotice` (Task 1); the run bar (Task 15) |
+| A3 a bulk request's iterations are its precision's final stage | `finalIterations` (Task 1); the store's request builders (Task 10); the fake's `simValidate` (Task 3) |
+| A4 mode decides expansion | The fake's `expand` (Task 3); no `combinations` boolean anywhere |
+| A5 `BulkSpec.Consumables` | Task 1 (field), Task 3 (expansion), Task 13 (control and count) |
+| A6 `Candidate.SourceName`, named item substitutions | Task 1 (fields), 6 (`sourceNameOf`), 8 (`toCandidates`), 9 (`substitutionLabel`, `slotSummary.name`), 16, 18, 20 |
+| A7 / 10.8 `proto.Stat` vocabulary pinned, required reference, per-kind defaults | `WEIGHT_STATS`, `fallbackReferenceFor` (Task 9); the weights fixture (Task 2); `/sim/weights` (Task 19) |
+| A9 enchants embedded in simdb | Noted in `enchants.ts`'s header (Task 7): the browser file is the UI's copy only |
+| A10 `StageRequests.Ran` | Task 1 (field), Task 3 (the fake keeps no state), Task 5 (`partialStage` carries it) |
+| A11 additive progress widening | `BulkServerProgress` (Task 5) |
+| 10.2 `simCount`, `simValidate`, `simNeedsMore`, the structured cap error, unsplit stages | Tasks 1, 3, 4, 5 |
+| 10.4 AreaTable zone ids, `<source>:<npc-id>` boss ids, `opens: "later"`, enchant keying, `simbuffs.json`, `data/curated/phases.json` | Tasks 2, 6, 7, 13, 18 |
+| 10.5 `item_id[:enchant[:suffix]]` in `<gear>`/`sets=`, `professions=`, per-slot enchant on `SimCharacter` | Task 8 (`addon-export`), Task 10 (`seedRows`), the Consumes block |
+| 10.6 `POST /v1/sims/run`, `GET /v1/builds?mine=1`, `GET /v1/phases`, `headline` composed at save time | Tasks 5, 6, 10, 14, 20 |
+| 10.7 test ids are a minimum, no zone icons, "my professions" | Header, Task 18 |
+| 10.8 `Substitution.Kind` gains `consumes` | Task 1 (closed union), Task 3 (the fake emits it), Task 9 (`substitutionLabel` via `bulkCopy.consumesChip`), Task 13 |
+| 10.8 stat vocabulary pinned, one `hit` and one `crit`, `mp5` | Task 9 (`WEIGHT_STATS` and the pinned-list test), Task 2 (fixture), Task 19 (e2e) |
+| 10.8 client-side server-cap gate | Task 10 (`serverCapNotice`), Task 15 (the disabled premium button) |
+
+**Rulings this lane does not carry.** A8 (`TargetArmorByLevel`) and A12 (`SampleCast` is
+action-keyed) are part A's settings panel and report work. 10.3, and 10.8's faction enum,
+progress callback and embedded enchant table, are the engine fork's and the sim module's.
+
+**Nothing in section 10 is left unapplied by this plan.** The two items the first revision
+flagged open — the substitution kind for a consumable list, and the exact stat spellings —
+are settled by 10.8 and carried above; the third, the client-side server-cap gate, is
+ratified as planned.
+
 **Not in this plan, and why.** The settings panel, fight styles, the precision/target-error
 control on `/sim`, the report additions (sample log, details card), the request drawer's own
 implementation and the FS1 v2 decoder are part A's. `sim/bulk`, the wasm exports, the API's
-migration 0014 and `loot.json`'s generation are other lanes'.
+migration 0014 and the generation of `loot.json`, `enchants.json`, `suffixes.json`,
+`simbuffs.json` and `phases.json` are other lanes'.
 
 **Type consistency.** `BulkStore` is the one store type; `CandidateRow` the one row type;
-`Origin` the one origin union; `Precision`, `BulkMode` and `SimKind` are declared once in
-`bulk-types.ts` and imported everywhere. `deltaLabel`, `comboRows` and `slotSummary` are used
-by `ComboResults`, `DropResults` and `SavedCombos` with identical signatures. `store.rows`,
-`store.locked`, `store.loadouts`, `store.namedSets`, `store.combinations`, `store.capNotice`,
-`store.progressLine`, `store.combos` and `store.weights` are the names every component reads.
+`Origin` the one origin union; `Substitution.kind` is closed at `item | talents | set |
+consumes` and every renderer goes through `substitutionLabel`; `Precision`, `BulkMode`,
+`SimKind`, `PhaseRow` and the two caps are declared once and imported everywhere. `substitutionLabel(sub)` takes one argument
+in `combos.ts`, `SubstitutionChips`, `ComboResults`, `DropResults`, `SavedCombos` and
+`og-meta.ts`; `headlineFor(result)` likewise. Every `phase.ts` function that needs the
+table takes it as its first parameter (`phaseAt`, `phaseStart`, `hasOpened`,
+`openDateLabel`), and `phaseLabel(name)` does not, because a label is display copy and not
+data. `isOpen(phases, source, when)` has that shape in `loot.ts`, its test, the store and
+`SourcePicker`. `store.rows`, `store.locked`, `store.loadouts`, `store.namedSets`,
+`store.consumableIds`, `store.combinations`, `store.capNotice`, `store.serverCapNotice`,
+`store.progressLine`, `store.phases`, `store.simBuffs`, `store.combos` and `store.weights`
+are the names every component reads.
+
+**Placeholder scan.** No "TBD", no "similar to Task N", no step that describes without
+showing. One step deliberately ends in a measurement rather than a literal — Task 21's
+replacement of the four shells' `min-h` reservations — and it names the command that takes
+it. That is a fact the plan cannot know before the pages are built, not a gap in it. The
+stat ids that were previously left to a `grep` are now pinned by contract 10.8 and asserted
+against the full list in Task 9.

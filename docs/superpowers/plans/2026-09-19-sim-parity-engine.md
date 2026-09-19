@@ -28,7 +28,9 @@ in this plan is committed there, not in the site repository.
 (section 4.1 and section 5.1) and
 `/Users/jh/code/forever/docs/superpowers/specs/2026-09-19-simulator-parity-interfaces.md`
 (section 5 is this lane's binding interface; section 1.5 and section 2's
-`SampleCast` are what this lane's output feeds).
+`SampleCast` are what this lane's output feeds; **section 10.3 is binding and
+wins wherever it contradicts section 5** — it ratifies this lane's field
+numbers and message shapes and adds the `SimItem` fields of Task 11).
 
 ## Global Constraints
 
@@ -214,7 +216,7 @@ Expected: PASS, both tests.
 cd /Users/jh/code/wowsims-forever
 gofmt -l sim/core/encounter_fields_test.go
 git add proto/common.proto sim/core/proto ui/core/proto sim/core/encounter_fields_test.go
-git commit -m "$(cat <<'MSG'
+git commit -F - <<'MSG'
 feat(core): Encounter carries movement, a target timeline and dummy mode
 
 The three fields the parity contract's section 5 names, at the field
@@ -223,7 +225,6 @@ same commit because the site consumes this module at a pinned sha.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
 MSG
-)"
 ```
 
 ---
@@ -661,7 +662,7 @@ is wrong — do not regenerate it.
 cd /Users/jh/code/wowsims-forever
 gofmt -l sim/core/encounter_movement.go sim/core/encounter_movement_test.go sim/core/target.go sim/core/movement.go sim/core/spell.go sim/core/cast.go sim/core/unit.go sim/core/sim.go
 git add sim/core/encounter_movement.go sim/core/encounter_movement_test.go sim/core/target.go sim/core/movement.go sim/core/spell.go sim/core/cast.go sim/core/unit.go sim/core/sim.go
-git commit -m "$(cat <<'MSG'
+git commit -F - <<'MSG'
 feat(core): encounters schedule movement windows
 
 An away window activates the movement aura, puts the player past melee
@@ -672,7 +673,6 @@ question of its own and IsMoving keeps meaning "out of position".
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
 MSG
-)"
 ```
 
 ---
@@ -876,7 +876,7 @@ Expected: PASS, all four tests.
 cd /Users/jh/code/wowsims-forever
 gofmt -l sim/encounter_movement_e2e_test.go
 git add sim/encounter_movement_e2e_test.go
-git commit -m "$(cat <<'MSG'
+git commit -F - <<'MSG'
 test(core): movement windows, end to end, on fury and frost
 
 Two reference specs and four claims: away movement costs a melee, a
@@ -886,7 +886,6 @@ No RunTestSuite and no golden, because this plan may not regenerate one.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
 MSG
-)"
 ```
 
 ---
@@ -1390,7 +1389,7 @@ and `TargetUnits` is the whole slice, so every golden must be unchanged.
 cd /Users/jh/code/wowsims-forever
 gofmt -l sim/core/encounter_targets.go sim/core/encounter_targets_test.go sim/core/target.go sim/core/environment.go sim/core/sim.go
 git add sim/core/encounter_targets.go sim/core/encounter_targets_test.go sim/core/target.go sim/core/environment.go sim/core/sim.go
-git commit -m "$(cat <<'MSG'
+git commit -F - <<'MSG'
 feat(core): targets activate and deactivate on a timeline
 
 The pool is sized to the timeline's largest count by repeating the last
@@ -1400,7 +1399,6 @@ deactivated target's auras expire and anyone aimed at it is retargeted.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
 MSG
-)"
 ```
 
 ---
@@ -1524,7 +1522,7 @@ Expected: PASS, three subtests plus the second test.
 cd /Users/jh/code/wowsims-forever
 gofmt -l sim/encounter_targets_e2e_test.go
 git add sim/encounter_targets_e2e_test.go
-git commit -m "$(cat <<'MSG'
+git commit -F - <<'MSG'
 test(core): the dungeon timeline, end to end, on fury and frost
 
 The contract's dungeon-pull timeline must land between a single-target
@@ -1534,7 +1532,6 @@ the pool.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
 MSG
-)"
 ```
 
 ---
@@ -1780,7 +1777,7 @@ Expected: PASS.
 cd /Users/jh/code/wowsims-forever
 gofmt -l sim/core/stats/stats.go sim/core/unit.go sim/core/target.go sim/core/environment.go sim/core/encounter_dummy_test.go
 git add sim/core/stats/stats.go sim/core/unit.go sim/core/target.go sim/core/environment.go sim/core/encounter_dummy_test.go
-git commit -m "$(cat <<'MSG'
+git commit -F - <<'MSG'
 feat(core): target-dummy mode
 
 Three switches for the contract's three clauses: the raid debuff panel is
@@ -1790,7 +1787,6 @@ rotation still debuffs the target, which is what a real dummy parse shows.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
 MSG
-)"
 ```
 
 ---
@@ -1934,7 +1930,7 @@ Expected: PASS, two subtests plus the Execute test.
 cd /Users/jh/code/wowsims-forever
 gofmt -l sim/encounter_dummy_e2e_test.go
 git add sim/encounter_dummy_e2e_test.go
-git commit -m "$(cat <<'MSG'
+git commit -F - <<'MSG'
 test(core): target-dummy mode, end to end, on fury and frost
 
 A dummy is worse than a real boss for both reference specs, and a warrior
@@ -1942,7 +1938,6 @@ never casts Execute on one however wide the request's execute window was.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
 MSG
-)"
 ```
 
 ---
@@ -1964,10 +1959,16 @@ MSG
   Task 9 fills these.
 
 `SimOptions` uses 1, 2, 3, 5, 6, 7, 8, 9 — take 10. `RaidSimResult` uses 1–7 —
-take 8. The cast carries the whole `ActionID`, not a bare spell id, because the
-engine has no display names: `Spell` has no name field at all, and the site
-already resolves `ActionID` to a name for the timeline. The sim module's
-`SampleCast.Name` is filled there.
+take 8. Contract 10.3 ratifies both numbers and both message shapes verbatim,
+so do not improvise on either.
+
+The cast carries the whole `ActionID`, not a bare spell id, because the engine
+has no display names: `core.Spell` has no name field at all. Contract 10.2's
+ruling A12 settles what happens downstream — the sim module renders the
+`ActionID` as an action key (`spell:23881`, `item:13503`, `other:melee`) and
+the page resolves the display name with `resolveActionName`, exactly as it
+already does for cast rows. `SpellID` and `Name` are gone from the sim module's
+`SampleCast`, so nothing asks this engine for a name.
 
 - [ ] **Step 1: Write the failing test**
 
@@ -2091,7 +2092,7 @@ Expected: both PASS.
 cd /Users/jh/code/wowsims-forever
 gofmt -l sim/core/sample_iteration_fields_test.go
 git add proto/api.proto sim/core/proto ui/core/proto sim/core/sample_iteration_fields_test.go
-git commit -m "$(cat <<'MSG'
+git commit -F - <<'MSG'
 feat(core): RaidSimResult.sample_iteration and its opt-in flag
 
 A cast carries the whole ActionID rather than a bare spell id: this
@@ -2101,7 +2102,6 @@ there and the id belongs here.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
 MSG
-)"
 ```
 
 ---
@@ -2565,7 +2565,7 @@ extra branch in `applyEffects` is one nil check, and no golden may move.
 cd /Users/jh/code/wowsims-forever
 gofmt -l sim/core/sample_iteration.go sim/core/sample_iteration_test.go sim/core/sim.go sim/core/spell.go sim/core/metrics_aggregator.go sim/core/sim_concurrent.go
 git add sim/core/sample_iteration.go sim/core/sample_iteration_test.go sim/core/sim.go sim/core/spell.go sim/core/metrics_aggregator.go sim/core/sim_concurrent.go
-git commit -m "$(cat <<'MSG'
+git commit -F - <<'MSG'
 feat(core): the median iteration's cast log, with resources
 
 Two passes, not a buffer: the run records sixteen bytes an iteration -
@@ -2577,7 +2577,6 @@ closest to the combined mean.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
 MSG
-)"
 ```
 
 ---
@@ -2738,7 +2737,7 @@ rotations do have one.
 cd /Users/jh/code/wowsims-forever
 gofmt -l sim/sample_iteration_e2e_test.go
 git add sim/sample_iteration_e2e_test.go
-git commit -m "$(cat <<'MSG'
+git commit -F - <<'MSG'
 test(core): the sample log, end to end, on fury and frost
 
 The four things the contract's SampleCast needs, proved on a real
@@ -2748,12 +2747,294 @@ ActionId on every row so the report can render it.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
 MSG
-)"
 ```
 
 ---
 
-### Task 11: The divergence note and the sha handoff
+### Task 11: The four `SimItem` fields the bulk planner expands on
+
+**Files:**
+- Modify: `proto/common.proto:887-909` (the `SimItem` message)
+- Modify: `sim/core/database_load.go:23-41` (the `with_db` SimItem build)
+- Modify: `sim/lib/library.go:106` (the shared-library SimItem build, same shape)
+- Regenerate: `sim/core/proto/common.pb.go`, `ui/core/proto/common.ts`
+- Test: `sim/core/simitem_fields_test.go` (create)
+
+**Interfaces:**
+- Consumes: nothing.
+- Produces: on `proto.SimItem` the fields `Unique bool` (20),
+  `RequiredLevel int32` (21), `FactionRestriction SimItem_FactionRestriction`
+  (22) and `RandomSuffixOptions []int32` (23), plus the nested enum
+  `SimItem.FactionRestriction` with values `FACTION_RESTRICTION_UNSPECIFIED`,
+  `FACTION_RESTRICTION_ALLIANCE_ONLY`, `FACTION_RESTRICTION_HORDE_ONLY`.
+  Nothing later in this plan consumes them; `sim/bulk`'s `Expand` on the sim
+  module lane does, and the site's data pipeline (`pipeline/simdb/items.py`)
+  fills them.
+
+Contract 10.3 asks for these four so the bulk planner can enforce its expansion
+rules — unique-equipped, required level, faction, and which suffixes an item
+rolls — without a second item table beside `simdb`. `SimItem` is the *reduced*
+item message the sim database stores; `UIItem` is the full one, and the fork's
+own `tools/database` already carries `unique`, `faction_restriction` and
+`random_suffix_options` on `UIItem`, so three of the four can be copied across
+here and one (`required_level`) has no source in this fork at all and stays
+zero until the site's pipeline writes it.
+
+**One deviation from the contract's wording, and why.** 10.3 spells the field's
+type `UIItem.FactionRestriction`. That type lives in `proto/ui.proto`, and
+`ui.proto` imports `common.proto` — so `common.proto` importing `ui.proto` back
+is a circular import that protoc refuses. Moving the enum up to `common.proto`
+and pointing `UIItem` at it would touch about twenty upstream call sites across
+`tools/database` and the UI, which is exactly the churn `PORTING.md` exists to
+avoid. So the enum is **redeclared nested inside `SimItem` with identical value
+names and identical numbers**: the wire bytes are the same, and the copy across
+is a plain enum conversion.
+
+`SimItem`'s comment says `NextIndex: 20`; 1–8, 11–15 and 17–19 are taken, so
+20, 21, 22 and 23 are exactly the free run the contract names.
+
+- [ ] **Step 1: Write the failing test**
+
+Create `sim/core/simitem_fields_test.go`:
+
+```go
+package core
+
+import (
+	"testing"
+
+	"github.com/wowsims/classic/sim/core/proto"
+	"google.golang.org/protobuf/reflect/protoreflect"
+)
+
+// The four fields sim/bulk's Expand reads to decide whether a candidate
+// item may go in a slot at all. They are a wire contract with the site's
+// data pipeline, which fills them, so the numbers are pinned here.
+func TestSimItemCarriesTheExpansionFields(t *testing.T) {
+	item := &proto.SimItem{
+		Id:                  12640,
+		Unique:              true,
+		RequiredLevel:       60,
+		FactionRestriction:  proto.SimItem_FACTION_RESTRICTION_HORDE_ONLY,
+		RandomSuffixOptions: []int32{1825, 1826},
+	}
+
+	if !item.GetUnique() {
+		t.Error("Unique did not round-trip")
+	}
+	if got := item.GetRequiredLevel(); got != 60 {
+		t.Errorf("RequiredLevel = %d, want 60", got)
+	}
+	if got := item.GetFactionRestriction(); got != proto.SimItem_FACTION_RESTRICTION_HORDE_ONLY {
+		t.Errorf("FactionRestriction = %v, want HORDE_ONLY", got)
+	}
+	if got := item.GetRandomSuffixOptions(); len(got) != 2 || got[1] != 1826 {
+		t.Errorf("RandomSuffixOptions = %v, want [1825 1826]", got)
+	}
+}
+
+func TestSimItemExpansionFieldNumbers(t *testing.T) {
+	fields := (&proto.SimItem{}).ProtoReflect().Descriptor().Fields()
+	for name, want := range map[string]int32{
+		"unique":                20,
+		"required_level":        21,
+		"faction_restriction":   22,
+		"random_suffix_options": 23,
+	} {
+		field := fields.ByName(protoreflect.Name(name))
+		if field == nil {
+			t.Fatalf("SimItem has no field %q", name)
+		}
+		if got := int32(field.Number()); got != want {
+			t.Errorf("SimItem.%s is field %d, want %d", name, got, want)
+		}
+	}
+}
+
+// SimItem.FactionRestriction is redeclared rather than imported from
+// UIItem, because common.proto cannot import ui.proto without a cycle.
+// Redeclared is only safe while the numbers match, so this pins them
+// against UIItem's - if upstream adds a fourth faction value to one and
+// not the other, this fails instead of the two silently disagreeing.
+func TestSimItemFactionRestrictionMatchesUIItem(t *testing.T) {
+	for _, tc := range []struct {
+		sim proto.SimItem_FactionRestriction
+		ui  proto.UIItem_FactionRestriction
+	}{
+		{proto.SimItem_FACTION_RESTRICTION_UNSPECIFIED, proto.UIItem_FACTION_RESTRICTION_UNSPECIFIED},
+		{proto.SimItem_FACTION_RESTRICTION_ALLIANCE_ONLY, proto.UIItem_FACTION_RESTRICTION_ALLIANCE_ONLY},
+		{proto.SimItem_FACTION_RESTRICTION_HORDE_ONLY, proto.UIItem_FACTION_RESTRICTION_HORDE_ONLY},
+	} {
+		if int32(tc.sim) != int32(tc.ui) {
+			t.Errorf("SimItem.%v = %d but UIItem.%v = %d", tc.sim, tc.sim, tc.ui, tc.ui)
+		}
+	}
+
+	simEnum := (&proto.SimItem{}).ProtoReflect().Descriptor().Enums().ByName("FactionRestriction")
+	if simEnum == nil {
+		t.Fatal("SimItem has no nested FactionRestriction enum")
+	}
+	uiEnum := (&proto.UIItem{}).ProtoReflect().Descriptor().Enums().ByName("FactionRestriction")
+	if uiEnum == nil {
+		t.Fatal("UIItem has no nested FactionRestriction enum")
+	}
+	if simEnum.Values().Len() != uiEnum.Values().Len() {
+		t.Errorf("SimItem.FactionRestriction has %d values, UIItem.FactionRestriction has %d; they must stay in step",
+			simEnum.Values().Len(), uiEnum.Values().Len())
+	}
+}
+
+// The loaded database carries the three fields the fork already knows.
+// This is what stops the copy in database_load.go being written and then
+// silently dropped in a later upstream merge.
+func TestLoadedDatabaseCarriesTheCopiedFields(t *testing.T) {
+	if !WITH_DB {
+		t.Skip("item database not loaded; run with --tags=with_db")
+	}
+
+	sawUnique, sawSuffixes := false, false
+	for _, item := range ItemsByID {
+		if item.Unique {
+			sawUnique = true
+		}
+		if len(item.RandomSuffixOptions) > 0 {
+			sawSuffixes = true
+		}
+		if sawUnique && sawSuffixes {
+			return
+		}
+	}
+	if !sawUnique {
+		t.Error("no loaded item is unique-equipped; the copy in database_load.go is missing")
+	}
+	if !sawSuffixes {
+		t.Error("no loaded item has suffix options; the copy in database_load.go is missing")
+	}
+}
+```
+
+If `core.Item` (the struct `ItemsByID` holds) turns out not to expose `Unique`
+or `RandomSuffixOptions`, that is the second half of Step 4 — the fields are
+added to the `Item` struct there, not removed from this test.
+
+- [ ] **Step 2: Run the test to verify it fails**
+
+Run: `cd /Users/jh/code/wowsims-forever && go test --tags=with_db ./sim/core/ -run 'SimItem|LoadedDatabase' -v`
+Expected: FAIL — compile error, `unknown field Unique in struct literal of type proto.SimItem`.
+
+- [ ] **Step 3: Add the proto fields**
+
+In `proto/common.proto`, replace the `SimItem` message's closing lines. Change:
+
+```proto
+	string set_name = 14;
+	int32 set_id = 18;
+	repeated double weapon_skills = 15;
+}
+```
+
+to:
+
+```proto
+	string set_name = 14;
+	int32 set_id = 18;
+	repeated double weapon_skills = 15;
+
+	// The four fields sim/bulk's Expand needs to decide whether a
+	// candidate may occupy a slot. Forever additions; see PORTING.md.
+	bool unique = 20;
+	int32 required_level = 21;
+
+	// Redeclared rather than imported from UIItem: ui.proto imports
+	// common.proto, so common.proto cannot import ui.proto back. The
+	// values and numbers are UIItem.FactionRestriction's, and
+	// TestSimItemFactionRestrictionMatchesUIItem keeps them in step.
+	enum FactionRestriction {
+		FACTION_RESTRICTION_UNSPECIFIED = 0;
+		FACTION_RESTRICTION_ALLIANCE_ONLY = 1;
+		FACTION_RESTRICTION_HORDE_ONLY = 2;
+	}
+	FactionRestriction faction_restriction = 22;
+
+	repeated int32 random_suffix_options = 23;
+}
+```
+
+and change the `// NextIndex: 20` comment above `message SimItem` to
+`// NextIndex: 24`.
+
+- [ ] **Step 4: Copy the three fields the fork already knows**
+
+In `sim/core/database_load.go`, add to the `&proto.SimItem{...}` literal, after
+`WeaponSkills:`:
+
+```go
+			Unique:              item.Unique,
+			FactionRestriction:  proto.SimItem_FactionRestriction(item.FactionRestriction),
+			RandomSuffixOptions: item.RandomSuffixOptions,
+```
+
+`RequiredLevel` is deliberately absent: neither `UIItem` nor this fork's
+database has a required level for an item, so it stays zero here and the
+site's `pipeline/simdb/items.py` fills it from the client's
+`ItemSparse.RequiredLevel`.
+
+Make the identical addition to the `&proto.SimItem{...}` literal in
+`sim/lib/library.go:106` — it is the same copy for the shared-library build,
+and leaving the two out of step is how one of them silently loses a field.
+
+Then check whether `core.Item` carries the fields the test reads:
+
+Run: `grep -n "Unique\|RandomSuffixOptions" sim/core/database.go`
+
+If the `Item` struct has neither, add both to it and to the function in that
+file that builds an `Item` from a `*proto.SimItem`, copying straight across:
+
+```go
+	Unique              bool
+	RandomSuffixOptions []int32
+```
+
+- [ ] **Step 5: Regenerate and verify**
+
+```bash
+cd /Users/jh/code/wowsims-forever
+make proto
+go test --tags=with_db ./sim/core/proto/ -run TestGeneratedProtosMatchSources -v
+go test --tags=with_db ./sim/core/ -run 'SimItem|LoadedDatabase' -v
+```
+Expected: both PASS, all four `SimItem` tests green.
+
+- [ ] **Step 6: Run the whole suite so no golden moved**
+
+Run: `go test --tags=with_db -count=1 ./sim/...`
+Expected: PASS. The four fields are read by nobody in this repository, so no
+golden may move.
+
+- [ ] **Step 7: gofmt and commit**
+
+```bash
+cd /Users/jh/code/wowsims-forever
+gofmt -l sim/core/simitem_fields_test.go sim/core/database_load.go sim/core/database.go sim/lib/library.go
+git add proto/common.proto sim/core/proto ui/core/proto sim/core/simitem_fields_test.go sim/core/database_load.go sim/core/database.go sim/lib/library.go
+git commit -F - <<'MSG'
+feat(core): SimItem carries unique, level, faction and suffix options
+
+The four fields sim/bulk's expansion rules need, so the planner does not
+have to carry a second item table beside simdb. FactionRestriction is
+redeclared nested in SimItem rather than imported from UIItem, because
+ui.proto imports common.proto and the reverse would be a cycle; the
+values and numbers match UIItem's and a test keeps them in step.
+required_level has no source in this fork and is filled by the site's
+data pipeline.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
+MSG
+```
+
+---
+
+### Task 12: The divergence note and the sha handoff
 
 **Files:**
 - Modify: `PORTING.md` (add a section before "No Forever artifacts are built here")
@@ -2764,7 +3045,7 @@ MSG
 
 `PORTING.md` is where this fork records what it added on top of
 `wowsims/classic`, so the next upstream merge knows what is ours. Four proto
-messages and five fields went in; they belong on that list.
+messages, one nested enum and nine fields went in; they belong on that list.
 
 - [ ] **Step 1: Add the section**
 
@@ -2772,12 +3053,13 @@ Insert into `PORTING.md`, immediately before the `## No Forever artifacts are
 built here` heading:
 
 ```markdown
-## Encounter and result fields upstream does not have
+## Encounter, result and item fields upstream does not have
 
-The Forever Sixty site's fight styles and sample-iteration report need
-five fields upstream has no equivalent for. They are additive: an
-encounter that sets none behaves exactly as it did before, which is why
-no `*.results` golden moved when they landed.
+The Forever Sixty site's fight styles, sample-iteration report and Top
+Gear planner need nine fields upstream has no equivalent for. They are
+additive: an encounter that sets none behaves exactly as it did before,
+and nothing in this repository reads the item fields, which is why no
+`*.results` golden moved when they landed.
 
 | Field | Message | Number | What it does |
 | --- | --- | --- | --- |
@@ -2786,13 +3068,27 @@ no `*.results` golden moved when they landed.
 | `target_dummy` | `Encounter` | 12 | No raid debuff panel, no execute window, no armor reduction |
 | `sample_iteration` | `RaidSimResult` | 8 | The median-DPS iteration's cast log, with resources after each cast |
 | `sample_iteration` | `SimOptions` | 10 | Opt in to the above; it costs one extra iteration and one environment |
+| `unique` | `SimItem` | 20 | Unique-equipped, for the site's combination planner |
+| `required_level` | `SimItem` | 21 | Filled by the site's data pipeline; this fork has no source for it |
+| `faction_restriction` | `SimItem` | 22 | Alliance-only / Horde-only |
+| `random_suffix_options` | `SimItem` | 23 | Which suffixes the item rolls |
 
 Supporting messages: `MovementPattern` and `TargetCountAt` in
 `common.proto`, `SampleCast` and `SampleIteration` in `api.proto`.
 
+`SimItem.FactionRestriction` is a **redeclaration** of
+`UIItem.FactionRestriction`, nested in `SimItem` with the same value
+names and the same numbers. It is not an import, because `ui.proto`
+imports `common.proto` and the reverse would be a cycle, and it is not a
+move, because moving the enum would touch about twenty upstream call
+sites. `TestSimItemFactionRestrictionMatchesUIItem` fails if the two ever
+stop agreeing.
+
 A `SampleCast` carries the whole `ActionID`, not a display name: this
-engine has none — `core.Spell` has no name field at all — and the site
-already resolves action ids to names for its cast timeline.
+engine has none — `core.Spell` has no name field at all. The site renders
+the id as an action key (`spell:23881`, `item:13503`, `other:melee`) and
+resolves the display name itself, the same way it already does for cast
+timeline rows.
 
 The behaviour lives in `sim/core/encounter_movement.go`,
 `sim/core/encounter_targets.go` and `sim/core/sample_iteration.go`, all
@@ -2805,12 +3101,11 @@ upstream merge cannot conflict with them.
 ```bash
 cd /Users/jh/code/wowsims-forever
 git add PORTING.md
-git commit -m "$(cat <<'MSG'
-docs(sim): record the five parity fields as deliberate divergences
+git commit -F - <<'MSG'
+docs(sim): record the nine parity fields as deliberate divergences
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
 MSG
-)"
 ```
 
 - [ ] **Step 3: Run the fork's whole gate one last time**
@@ -2834,9 +3129,15 @@ cd /Users/jh/code/wowsims-forever
 git rev-parse --short=9 HEAD
 ```
 
-Hand that nine-character sha to the **sim module lane**, which owns the pin
-bump. The engine lane never edits the site repository. What the sim module lane
-does with it:
+That nine-character sha is this lane's whole output to the rest of the round.
+The engine lane never edits the site repository; it hands the sha over and two
+other lanes move their pin with it. Contract 10.3's last bullet fixes the
+order, and the order is not cosmetic — the data lane's vendored protos are
+copied out of the engine checkout and must name the same sha the sim module
+already pinned, so a data bump that runs first records a sha the site is not
+yet building against.
+
+**First, the sim module lane** (owner of `sim/enginever/version.go`):
 
 1. `cd /Users/jh/code/forever && make engine-pin` — rewrites
    `sim/enginever/version.go` from this checkout's `HEAD`. It refuses a dirty
@@ -2846,50 +3147,77 @@ does with it:
 2. CI's `.github/actions/pin-engine` then rewrites `sim/go.mod`'s development
    replace to `github.com/jhunthrop/wowsims-forever@<that sha>`; nothing to do
    by hand. The site's `sim/` module consumes the generated Go protobuf package
-   straight out of the fork at that pseudo-version, which is why Task 1 and
-   Task 8 had to commit `sim/core/proto/*.pb.go` alongside the `.proto` edit.
+   straight out of the fork at that pseudo-version, which is why Tasks 1, 8 and
+   11 each had to commit `sim/core/proto/*.pb.go` alongside the `.proto` edit.
 
-There is a **second** pin, and it is not the sim module lane's: the data lane
-vendors the engine's `.proto` files into `data/proto/` with the sha recorded in
-`data/proto/ENGINE_SHA` (currently `464d1a14a`). Tasks 1 and 8 changed
-`common.proto` and `api.proto`, so that copy is now stale. Tell the **data
-lane** to run `python -m pipeline genproto` against this checkout, which
-re-copies the three vendored `.proto` files, regenerates
-`data/pipeline/simproto/` and rewrites `data/proto/ENGINE_SHA` to the same sha.
-The parity design's section 12 lane list does not mention this pin; it is real
-and it must be bumped in the same round or the data pipeline's bindings will not
-know the `Encounter` fields exist.
+**Then, in the same round, the data lane** (owner of `data/proto/ENGINE_SHA`):
+
+3. `python -m pipeline genproto` against this checkout — re-copies the three
+   vendored `.proto` files into `data/proto/`, regenerates
+   `data/pipeline/simproto/`, and rewrites `data/proto/ENGINE_SHA` (currently
+   `464d1a14a`) to the same sha. Tasks 1, 8 and 11 changed `common.proto` and
+   `api.proto`, so without this the pipeline's bindings do not know the
+   `Encounter` fields or the four `SimItem` fields exist — and
+   `pipeline/simdb/items.py` cannot fill the latter, which is the data lane's
+   own job under 10.3.
+
+Confirm both pins read the same sha before the round is called done.
 
 ---
 
 ## Self-review
 
-**Spec coverage** (contract section 5, the binding one for this lane):
+**Spec coverage** — contract section 5 plus the section 10.3 rulings, which are
+binding and win wherever they contradict section 5:
 
-| Requirement | Task |
-| --- | --- |
-| `MovementPattern` message, `movement = 10` | 1 |
-| `TargetCountAt` message, `targets_over_time = 11` | 1 |
-| `target_dummy = 12` | 1 |
-| Movement schedules moves out of range every interval for a duration | 2, 3 |
-| `casting_only` interrupts casting without moving | 2, 3 |
-| Targets activate and deactivate on a timeline | 4, 5 |
-| Pool sized to the maximum count | 4 |
-| `target_dummy` disables debuff application | 6, 7 |
-| `target_dummy` disables execute windows | 6, 7 |
-| `target_dummy` disables the target's armor reduction | 6 |
-| `RaidSimResult.sample_iteration`, median-DPS iteration | 8, 9 |
-| Resource readings after each cast (rage, energy, mana, combo points) | 9, 10 |
-| Pre-pull casts at negative times | 10 |
-| Regenerating the Go protobufs the way this repo does | 1, 8 (`make proto` + `TestGeneratedProtosMatchSources`) |
-| The site's vendored copy / pin handoff | 11 |
-| Tests per task in the fork's own style | every task |
-| Fury warrior and frost mage end to end per encounter feature | 3, 5, 7, 10 |
+| Requirement | Source | Task |
+| --- | --- | --- |
+| `MovementPattern` message, `movement = 10` | 5 | 1 |
+| `TargetCountAt` message, `targets_over_time = 11` | 5 | 1 |
+| `target_dummy = 12` | 5 | 1 |
+| Movement schedules moves out of range every interval for a duration | 5 | 2, 3 |
+| `casting_only` interrupts casting without moving | 5 | 2, 3 |
+| Targets activate and deactivate on a timeline | 5 | 4, 5 |
+| Pool sized to the maximum count | 5 | 4 |
+| The engine pads the target list by repeating the last target | 10.3 | 4 |
+| `target_dummy` disables debuff application | 5 | 6, 7 |
+| `target_dummy` disables execute windows | 5 | 6, 7 |
+| `target_dummy`: nothing lowers the target's armor from any source, the player's own debuffs still land | 10.3 | 6 |
+| `SimOptions.sample_iteration = 10` opts in | 10.3 | 8 |
+| `RaidSimResult.sample_iteration = 8`, `SampleIteration{dps, duration_seconds, casts}` | 10.3 | 8 |
+| `SampleCast{at_ms, action_id, target, resources}` | 10.3 | 8 |
+| The median-DPS iteration is the one sampled | 5 | 9 |
+| Resource readings after each cast (rage, energy, mana, combo points) | 2 | 9, 10 |
+| Pre-pull casts at negative times | 2 | 10 |
+| No `ActionID`-to-name resolution in the engine; the page uses `resolveActionName` | 10.1 A12 | 8 (note), 12 (PORTING.md) |
+| `SimItem.unique = 20`, `required_level = 21`, `faction_restriction = 22`, `random_suffix_options = 23` | 10.3 | 11 |
+| Regenerating the Go protobufs the way this repo does | task brief | 1, 8, 11 (`make proto` + `TestGeneratedProtosMatchSources`) |
+| Two pins move together, sim module first then data lane, same round | 10.3 | 12 |
+| Tests per task in the fork's own style | task brief | every task |
+| Fury warrior and frost mage end to end per encounter feature | task brief | 3, 5, 7, 10 |
+
+Not this lane's: everything in 10.1 except A12, all of 10.2 (sim module), 10.4
+(data), 10.5 (addon), 10.6 (API), 10.7 (web). A2's server cap of 5,000 and A8's
+`TargetArmorByLevel` are consumed by the site's request builder, not by the
+engine — this lane adds no cap and no armor preset.
+
+**Placeholder scan:** no "TBD", no "as above", no "similar to Task N". Every
+code step carries the literal code. Two steps deliberately instruct a temporary
+edit-and-restore to prove a test can fail (Tasks 3, 5, 7, 10) rather than
+`git stash`, which the global constraints forbid.
 
 **Types used consistently across tasks:** `MovementPattern` (core) in Tasks 2
 and 3; `TargetCount` / `AllTargetUnits` / `SetActiveTargetCount` in Tasks 4 and
 5; `Encounter.Dummy` / `ArmorReductionDisabled` in Tasks 6 and 7;
 `iterationSample` / `sampleRecorder` / `iterationSeed` / `reseedTo` /
-`LastIterationValue` in Task 9 only; `furyWarriorPlayer` / `frostMagePlayer` /
-`parityEncounter` / `runParitySim` / `parityIterations` defined once in Task 3
-and reused by Tasks 5, 7 and 10 in the same package.
+`LastIterationValue` in Task 9 only; `SimItem_FactionRestriction` in Task 11
+only; `furyWarriorPlayer` / `frostMagePlayer` / `parityEncounter` /
+`runParitySim` / `parityIterations` defined once in Task 3 and reused by Tasks
+5, 7 and 10 in the same package. `proto.SampleIteration` / `proto.SampleCast`
+are declared in Task 8 and filled in Task 9 with the same field spellings
+(`AtMs`, `ActionId`, `Target`, `Resources`, `Dps`, `DurationSeconds`, `Casts`).
+
+**Ordering:** Tasks 1–10 are a chain (each proto task precedes its behaviour
+task, each behaviour task precedes its end-to-end task). Task 11 is independent
+of 1–10 and may run in parallel with any of them. Task 12 must be last: it
+prints the sha the other two lanes pin.
