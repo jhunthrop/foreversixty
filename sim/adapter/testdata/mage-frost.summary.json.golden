@@ -7,18 +7,18 @@
       "guid": "sim-player",
       "name": "Sim",
       "class": "mage",
-      "total": 126058,
-      "effective": 126058,
+      "total": 91709,
+      "effective": 91709,
       "active_ms": 179856,
       "abilities": [
         {
           "spell_id": 25304,
           "name": "spell:25304",
           "school": 16,
-          "total": 126058,
-          "effective": 126058,
-          "hits": 0,
-          "crits": 59,
+          "total": 91709,
+          "effective": 91709,
+          "hits": 59,
+          "crits": 27,
           "ticks": 0,
           "misses": {
             "MISS": 12
@@ -49,6 +49,17 @@
           "max": 0
         },
         {
+          "spell_id": 1000101,
+          "name": "spell:1000101",
+          "total": 0,
+          "effective": 0,
+          "hits": 0,
+          "crits": 0,
+          "ticks": 0,
+          "min": 0,
+          "max": 0
+        },
+        {
           "spell_id": 12005514,
           "name": "item:5514",
           "total": 0,
@@ -62,17 +73,6 @@
         {
           "spell_id": 12008007,
           "name": "item:8007",
-          "total": 0,
-          "effective": 0,
-          "hits": 0,
-          "crits": 0,
-          "ticks": 0,
-          "min": 0,
-          "max": 0
-        },
-        {
-          "spell_id": 1000101,
-          "name": "spell:1000101",
           "total": 0,
           "effective": 0,
           "hits": 0,
@@ -119,7 +119,7 @@
         {
           "guid": "sim-target-0",
           "name": "Target 0",
-          "total": 126058
+          "total": 91709
         },
         {
           "guid": "sim-target-1",
@@ -795,10 +795,10 @@
       "active_ms": 179856,
       "activity_pct": 100,
       "deaths": 0,
-      "damage_done": 126058,
+      "damage_done": 91709,
       "healing_done": 0,
       "damage_taken": 0,
-      "dps": 700.8414708838442,
+      "dps": 509.8364165795497,
       "hps": 0,
       "dtps": 0
     }

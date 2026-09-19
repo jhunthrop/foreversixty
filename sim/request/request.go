@@ -14,6 +14,7 @@ import (
 	"fmt"
 
 	"github.com/jhunthrop/foreversixty/sim/api"
+	"github.com/jhunthrop/foreversixty/sim/specs"
 	"github.com/wowsims/classic/sim/core/proto"
 	"google.golang.org/protobuf/encoding/protojson"
 )
@@ -23,6 +24,17 @@ var (
 	ErrUnknownClass = errors.New("request: unknown class")
 	ErrUnknownSlot  = errors.New("request: unknown gear slot")
 	ErrUnknownSpec  = errors.New("request: unknown spec")
+	// ErrUnsupportedSpec is a spec on sim/specs' canonical list that
+	// this engine build has no agent for yet.
+	ErrUnsupportedSpec   = errors.New("request: unsupported spec")
+	ErrDuplicateSlot     = errors.New("request: two items in one gear slot")
+	ErrUnknownProfession = errors.New("request: unknown profession")
+	ErrTooManyProfession = errors.New("request: a character has at most two professions")
+	ErrDuplicateProfess  = errors.New("request: one profession listed twice")
+	// ErrSpecClassMismatch is returned when the spec and the class
+	// disagree. The engine would build the player from the class and the
+	// agent from the spec, and a warrior would run a mage's rotation.
+	ErrSpecClassMismatch = errors.New("request: the spec does not belong to the character's class")
 )
 
 // races and classes map our lower-kebab slugs onto the engine's enums.
@@ -59,6 +71,30 @@ var classes = map[string]proto.Class{
 	"warrior": proto.Class_ClassWarrior,
 }
 
+// professions maps our lower-kebab slugs onto the engine's enum. The
+// engine models a profession as a source of self-only recipes and
+// effects (Engineering's grenades and trinkets, Blacksmithing's socket),
+// so an unrecognised one is refused rather than dropped: a sim that
+// quietly ran without the profession the player counted on would report
+// a wrong number and say nothing about why.
+var professions = map[string]proto.Profession{
+	"alchemy":        proto.Profession_Alchemy,
+	"blacksmithing":  proto.Profession_Blacksmithing,
+	"enchanting":     proto.Profession_Enchanting,
+	"engineering":    proto.Profession_Engineering,
+	"herbalism":      proto.Profession_Herbalism,
+	"leatherworking": proto.Profession_Leatherworking,
+	"mining":         proto.Profession_Mining,
+	"skinning":       proto.Profession_Skinning,
+	"tailoring":      proto.Profession_Tailoring,
+}
+
+// ParseProfession maps a profession slug onto the engine's enum.
+func ParseProfession(slug string) (proto.Profession, bool) {
+	p, ok := professions[slug]
+	return p, ok
+}
+
 // ParseRace maps a race slug onto the engine's enum.
 func ParseRace(slug string) (proto.Race, bool) {
 	r, ok := races[slug]
@@ -84,13 +120,16 @@ type Options struct {
 	// a consumable the player counted on.
 	Consumables *Consumables
 
-	// SplitPart says this request is one worker's share of a run that
-	// combine.Split already divided, so it is validated with
-	// api.SimRequest.ValidatePart: everything except the closed set of
-	// iteration counts the settings bar offers, which a part is not one
-	// of by construction. The browser's worker pool sets it; a whole
-	// request from a client never does.
-	SplitPart bool
+	// OpenIterations validates the request with
+	// api.SimRequest.ValidatePart instead of Validate: everything except
+	// the closed set of iteration counts the settings bar offers.
+	//
+	// Two callers need it and both are the same shape - a run whose
+	// iteration count nobody chose from the UI. The browser's worker
+	// pool splits 3,000 four ways and each part asks for 750; the
+	// operator running forever-sim passes -iterations 100 to reproduce
+	// something quickly. A whole request from a client never sets it.
+	OpenIterations bool
 }
 
 // Build turns a validated SimRequest into the engine's own request,
@@ -102,7 +141,7 @@ func Build(req api.SimRequest) (*proto.RaidSimRequest, error) {
 // BuildWith turns a validated SimRequest into the engine's own request.
 func BuildWith(req api.SimRequest, opt Options) (*proto.RaidSimRequest, error) {
 	validate := req.Validate
-	if opt.SplitPart {
+	if opt.OpenIterations {
 		validate = req.ValidatePart
 	}
 	if err := validate(); err != nil {
@@ -118,7 +157,14 @@ func BuildWith(req api.SimRequest, opt Options) (*proto.RaidSimRequest, error) {
 	if !ok {
 		return nil, fmt.Errorf("%w: %q", ErrUnknownClass, ch.Class)
 	}
+	if err := checkSpecClass(req.Spec, ch.Class); err != nil {
+		return nil, err
+	}
 	equipment, err := equipment(ch.Gear)
+	if err != nil {
+		return nil, err
+	}
+	first, second, err := professionsFor(ch.Profession)
 	if err != nil {
 		return nil, err
 	}
@@ -143,6 +189,8 @@ func BuildWith(req api.SimRequest, opt Options) (*proto.RaidSimRequest, error) {
 		Equipment:     equipment,
 		Consumes:      cons,
 		Buffs:         buffs.Individual,
+		Profession1:   first,
+		Profession2:   second,
 	}
 	if err := applySpec(player, req.Spec); err != nil {
 		return nil, err
@@ -165,6 +213,46 @@ func BuildWith(req api.SimRequest, opt Options) (*proto.RaidSimRequest, error) {
 	}, nil
 }
 
+// checkSpecClass refuses a spec that belongs to another class. Without
+// it the player is built from Character.Class and the agent from Spec,
+// so an orc warrior carrying spec "mage-frost" reaches the engine as a
+// warrior running a frost mage's rotation and the result looks like a
+// number rather than a mistake. sim/specs is the authoritative pairing.
+func checkSpecClass(spec, class string) error {
+	known, ok := specs.ByKey[spec]
+	if !ok {
+		return fmt.Errorf("%w: %q", ErrUnknownSpec, spec)
+	}
+	if known.ClassSlug != class {
+		return fmt.Errorf("%w: %q is a %s spec, but character.class is %q", ErrSpecClassMismatch, spec, known.ClassSlug, class)
+	}
+	return nil
+}
+
+// professionsFor maps the character's professions onto the engine's two
+// slots. The engine carries exactly two, so a third is an error rather
+// than a silently dropped profession.
+func professionsFor(slugs []string) (proto.Profession, proto.Profession, error) {
+	if len(slugs) > 2 {
+		return 0, 0, fmt.Errorf("%w, got %d: %v", ErrTooManyProfession, len(slugs), slugs)
+	}
+	var out [2]proto.Profession
+	for i, slug := range slugs {
+		p, ok := ParseProfession(slug)
+		if !ok {
+			return 0, 0, fmt.Errorf("%w: %q", ErrUnknownProfession, slug)
+		}
+		// Two slots holding one profession is a client that meant to
+		// send two, and taking it would silently halve what the
+		// character has.
+		if i == 1 && p == out[0] {
+			return 0, 0, fmt.Errorf("%w: %q", ErrDuplicateProfess, slug)
+		}
+		out[i] = p
+	}
+	return out[0], out[1], nil
+}
+
 func equipment(gear []api.GearSlot) (*proto.EquipmentSpec, error) {
 	items := make([]*proto.ItemSpec, SlotCount)
 	for i := range items {
@@ -177,6 +265,12 @@ func equipment(gear []api.GearSlot) (*proto.EquipmentSpec, error) {
 		if !ok {
 			return nil, fmt.Errorf("%w: %q", ErrUnknownSlot, g.Slot)
 		}
+		// Last-wins would equip one of two rings and lose the other
+		// without a word, and the character the sim reports on would
+		// not be the one the planner sent.
+		if items[idx].Id != 0 {
+			return nil, fmt.Errorf("%w: %q holds both item %d and item %d", ErrDuplicateSlot, g.Slot, items[idx].Id, g.ItemID)
+		}
 		items[idx] = &proto.ItemSpec{
 			Id:           int32(g.ItemID),
 			Enchant:      int32(g.Enchant),
@@ -186,35 +280,71 @@ func equipment(gear []api.GearSlot) (*proto.EquipmentSpec, error) {
 	return &proto.EquipmentSpec{Items: items}, nil
 }
 
-// biomeFor maps an encounter profile onto a biome. The profile is
-// ignored until there is a table to read: today every profile
-// is BiomeUnknown: the data lane's zones.json has no biome column, so
-// there is nothing to map from, and inventing one would put a damage
-// multiplier on a guess. The function exists so the mapping has one
-// home when that table lands.
+// biomeFor maps an encounter profile onto a biome.
+//
+// Only the two profiles that mean "a stationary target and nothing else"
+// reach it: api.SimRequest.Validate refuses an "encounter:<id>" outright,
+// because the data lane's zones.json has no biome column and a sim that
+// answered one would be a patchwerk wearing an encounter's name. So
+// every profile here is BiomeUnknown, which matches no biome-conditional
+// trinket, which is exactly a vanilla fight. The function is where the
+// mapping goes when that table lands, and it is total by construction:
+// an unknown profile is already an error.
 func biomeFor(_ string) proto.Biome {
 	return proto.Biome_BiomeUnknown
 }
 
-// The target every sim fights. A boss is three levels above the player,
-// which is what the attack table's suppression terms are derived
-// against; the id and name are the engine's own target dummy.
+// The target every sim fights. The id and name are the engine's own
+// target dummy; the level is api.BossLevel, which sim/measure reads too.
 const (
 	targetDummyID   = 31146
 	targetDummyName = "Target Dummy"
-	targetBossLevel = 63
 	targetNotTanked = -1
 	// The engine's own UI preset opens a fury pull at no rage.
 	defaultStartingRage = 0
 )
 
+// The three health thresholds the engine's Encounter carries one
+// proportion for each of. They are percentages of the target's health,
+// and they are what makes the three fields three different questions:
+// ExecuteProportion_20 is the share of the fight spent below 20% health,
+// not the share spent in "the execute window".
+const (
+	executeThreshold20 = 20.0
+	executeThreshold25 = 25.0
+	executeThreshold35 = 35.0
+)
+
+// executeProportions turns the settings bar's one execute_ratio into the
+// engine's three nested windows.
+//
+// The ratio is the sub-20% share, because that is the window the control
+// is named for: Execute, Hammer of Wrath and Improved Expose Weakness
+// all start at 20%. The other two follow from one assumption about the
+// fight's shape - that the target's health falls at a steady rate, so
+// the time spent below X% is proportional to X. That assumption is the
+// engine's own: its reference encounters are {0.2, 0.25, 0.35}, which is
+// exactly what this returns for a ratio of 0.2.
+//
+// Setting all three to one number, as an earlier draft did, inflates the
+// Execute window by 25% at the default ratio and understates the sub-35%
+// one by 29%, and it describes a fight no health bar can produce: the
+// three are nested, so they can only be equal at 0 and at 1.
+func executeProportions(ratio float64) (below20, below25, below35 float64) {
+	scale := func(threshold float64) float64 {
+		return min(ratio*threshold/executeThreshold20, 1)
+	}
+	return scale(executeThreshold20), scale(executeThreshold25), scale(executeThreshold35)
+}
+
 func encounter(e api.EncounterSpec) *proto.Encounter {
+	below20, below25, below35 := executeProportions(e.ExecuteRatio)
 	targets := make([]*proto.Target, e.Targets)
 	for i := range targets {
 		targets[i] = &proto.Target{
 			Id:        targetDummyID,
 			Name:      targetDummyName,
-			Level:     targetBossLevel,
+			Level:     api.BossLevel,
 			MobType:   proto.MobType_MobTypeHumanoid,
 			TankIndex: targetNotTanked,
 		}
@@ -233,17 +363,22 @@ func encounter(e api.EncounterSpec) *proto.Encounter {
 		// The engine's variation is in seconds; ours is a fraction of
 		// the duration, because that is what the settings bar offers.
 		DurationVariation:    float64(e.DurationSec) * e.Variation,
-		ExecuteProportion_20: e.ExecuteRatio,
-		ExecuteProportion_25: e.ExecuteRatio,
-		ExecuteProportion_35: e.ExecuteRatio,
+		ExecuteProportion_20: below20,
+		ExecuteProportion_25: below25,
+		ExecuteProportion_35: below35,
 		Targets:              targets,
 	}
 }
 
-// aplFS carries the launch specs' default rotations, so the wasm needs no
-// fetch to attach one. They are the engine's own presets, copied from
-// ui/<class>/apls; Tasks 11 and 12 replace them with the Forever specs'
-// own, and the request builder's job is only to attach *a* rotation.
+// aplFS carries the launch specs' default rotations, so the wasm needs
+// no fetch to attach one.
+//
+// These files are GENERATED, by `make apl-sync`: each is the `rotation`
+// block of data/curated/apl/<spec>.json, which is the one place a
+// rotation is edited. The engine fork's ui/<class>/apls/forever_<spec>.apl.json
+// is the other copy of the same source, and `make apl-check` proves both
+// against it. Editing one here would make the artifacts measure a
+// rotation nobody wrote down.
 //
 //go:embed apl/*.apl.json
 var aplFS embed.FS
@@ -253,12 +388,13 @@ var aplFS embed.FS
 // owns. The spec's default rotation is the embedded APL of the same
 // name, so apl/<slug>.apl.json and this table stay in step.
 //
-// data/curated/specs.json does not exist yet, so this table is the only
-// spec list in the module and it fails closed: an unsupported spec is an
-// error at the boundary rather than a player the engine cannot build an
-// agent for. The option values are the engine's own UI presets
-// (ui/<class>/presets.ts); Tasks 11 and 12 own what Forever's specs
-// default to.
+// The canonical spec list is sim/specs, generated from
+// data/curated/specs.json, and checkSpecClass above is what refuses a
+// spec that is not on it or does not match the class. This table is the
+// narrower question of which of those specs the engine can build an
+// agent for today, and it fails closed: an unsupported spec is an error
+// at the boundary rather than a player with no rotation. The option
+// values are the engine's own UI presets (ui/<class>/presets.ts).
 var specOptions = map[string]func(*proto.Player){
 	"warrior-fury": func(p *proto.Player) {
 		p.Spec = &proto.Player_Warrior{Warrior: &proto.Warrior{
@@ -280,7 +416,7 @@ var specOptions = map[string]func(*proto.Player){
 func applySpec(player *proto.Player, slug string) error {
 	apply, ok := specOptions[slug]
 	if !ok {
-		return fmt.Errorf("%w: %q", ErrUnknownSpec, slug)
+		return fmt.Errorf("%w: %q; the launch specs are %v", ErrUnsupportedSpec, slug, supportedSpecs())
 	}
 	rot, err := rotation(slug)
 	if err != nil {
@@ -303,4 +439,16 @@ func rotation(name string) (*proto.APLRotation, error) {
 		return nil, fmt.Errorf("request: the embedded APL for %q is corrupt: %w", name, err)
 	}
 	return apl, nil
+}
+
+// supportedSpecs lists the specs specOptions can build an agent for, in
+// sim/specs' canonical order so the message is stable.
+func supportedSpecs() []string {
+	out := make([]string, 0, len(specOptions))
+	for _, s := range specs.All {
+		if _, ok := specOptions[s.Spec]; ok {
+			out = append(out, s.Spec)
+		}
+	}
+	return out
 }

@@ -14,6 +14,10 @@ coverage/
 # a deploy; whether that directory is committed or produced by the
 # deploy is the web lane's call, and nothing is committed there today.
 artifacts/
+# the coverage profile the sim workflow's floor check writes; the
+# figure is CI's, not an artefact
+sim/cover.out
+
 # the active build's item database, copied here by `make simdb` so both
 # artifacts can //go:embed it; data/builds/<build>/simdb.bin is the
 # committed original

@@ -4,23 +4,29 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"syscall"
 	"testing"
+	"time"
 
 	"github.com/jhunthrop/foreversixty/sim/adapter"
 	"github.com/jhunthrop/foreversixty/sim/api"
+	"github.com/jhunthrop/foreversixty/sim/enginever"
 	"github.com/wowsims/classic/sim/core/proto"
+	"github.com/wowsims/classic/sim/core/simsignals"
 	googleproto "google.golang.org/protobuf/proto"
 )
 
 func smallRequest(t *testing.T) []byte {
 	t.Helper()
 	req := api.SimRequest{
-		EngineVersion: "test",
+		EngineVersion: enginever.Version,
 		Spec:          "warrior-fury",
+		Source:        api.CharacterSource{Kind: api.SourceManual},
 		Character: api.CharacterSpec{
 			Name: "CLI Test", Race: "orc", Class: "warrior", Level: 60,
 			Talents: "30305001302-05050005525010051",
@@ -191,7 +197,14 @@ func TestIterationsOverride(t *testing.T) {
 		t.Fatal(err)
 	}
 	out := filepath.Join(dir, "res.json")
-	if err := run(in, out, 3000, nil); err != nil {
+	// 100 is deliberately NOT one of api.ValidIterations. The flag
+	// advertises "override the request's iteration count", and it used
+	// to die with "iterations must be one of [500 3000 10000]" for any
+	// number outside the settings bar's closed set - an operator
+	// reproducing something quickly could not use the flag the binary
+	// offered them. An override goes through ValidatePart, which is
+	// the shape it is.
+	if err := run(in, out, 100, nil); err != nil {
 		t.Fatal(err)
 	}
 	b, _ := os.ReadFile(out)
@@ -199,8 +212,13 @@ func TestIterationsOverride(t *testing.T) {
 	if err := json.Unmarshal(b, &res); err != nil {
 		t.Fatal(err)
 	}
-	if res.IterationsRun != 3000 {
-		t.Errorf("IterationsRun = %d, want the overridden 3000", res.IterationsRun)
+	if res.IterationsRun != 100 {
+		t.Errorf("IterationsRun = %d, want the overridden 100", res.IterationsRun)
+	}
+	// Bounded, not unbounded: a part is a share of a whole run and can
+	// never legitimately exceed the largest one.
+	if err := run(in, out, api.MaxIterations+1, nil); err == nil {
+		t.Error("an override larger than the largest whole run was accepted")
 	}
 }
 
@@ -253,10 +271,11 @@ func TestOutProtoWritesAnEngineResult(t *testing.T) {
 	}
 }
 
-// A request the engine cannot run is an engine failure, not bad input:
-// the two exit differently, and a caller that retries a bad request
-// forever is the thing the distinction prevents.
-func TestAnUnrunnableRequestIsNotBadInput(t *testing.T) {
+// A request the builder refuses IS bad input: it never reaches the
+// engine, and the exit code says so, because a caller that retried a
+// malformed request forever is what the distinction prevents. (The
+// test used to be named for the opposite of what it asserts.)
+func TestARequestTheBuilderRefusesIsBadInput(t *testing.T) {
 	dir := t.TempDir()
 	in := filepath.Join(dir, "req.json")
 	var req api.SimRequest
@@ -278,4 +297,199 @@ func TestAnUnrunnableRequestIsNotBadInput(t *testing.T) {
 	if !errors.Is(err, errBadInput) {
 		t.Errorf("error %v is not errBadInput; a request the builder refuses is bad input", err)
 	}
+}
+
+// The row's engine version is a fact about the binary that produced it,
+// not the request's claim. It used to be copied straight off the
+// request, so a cached request pinned to an old sha came back stamped
+// with the old sha and api.SimResult.Stale could never fire.
+func TestTheResultIsStampedWithTheBinarysOwnEngine(t *testing.T) {
+	var req api.SimRequest
+	if err := json.Unmarshal(smallRequest(t), &req); err != nil {
+		t.Fatal(err)
+	}
+	res, err := Execute(req, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if res.EngineVersion != enginever.Version {
+		t.Errorf("EngineVersion = %q, want %q", res.EngineVersion, enginever.Version)
+	}
+	if want := "sim:" + enginever.Version; res.Summary.EngineVersion != want {
+		t.Errorf("Summary.EngineVersion = %q, want %q", res.Summary.EngineVersion, want)
+	}
+	if res.Stale(enginever.Version) {
+		t.Error("a result this binary just produced reads as stale")
+	}
+	if !res.Stale("deadbee") {
+		t.Error("Stale never fires; the stamp is not a fact")
+	}
+}
+
+// -version prints the pin the binary was compiled with. sim/enginever
+// used to be imported by no Go file at all: both mains declared
+// `var Version = "dev"` and relied on -ldflags, so a plain `go build`
+// produced a binary that stamped "dev" on real rows.
+func TestTheBinaryKnowsItsOwnEngineWithoutLdflags(t *testing.T) {
+	bin := filepath.Join(t.TempDir(), "forever-sim")
+	build := exec.Command("go", "build", "-o", bin, ".")
+	if out, err := build.CombinedOutput(); err != nil {
+		t.Fatalf("go build: %v\n%s", err, out)
+	}
+	out, err := exec.Command(bin, "-version").Output()
+	if err != nil {
+		t.Fatalf("-version: %v", err)
+	}
+	if got := strings.TrimSpace(string(out)); got != enginever.Version {
+		t.Errorf("-version printed %q, want %q", got, enginever.Version)
+	}
+}
+
+// A field the envelope does not carry is a caller sending something
+// this build cannot honour, and running anyway would drop it silently.
+func TestUnknownFieldsAreRefused(t *testing.T) {
+	dir := t.TempDir()
+	in := filepath.Join(dir, "req.json")
+	var raw map[string]any
+	if err := json.Unmarshal(smallRequest(t), &raw); err != nil {
+		t.Fatal(err)
+	}
+	raw["covenant"] = "kyrian"
+	b, err := json.Marshal(raw)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(in, b, 0o644); err != nil {
+		t.Fatal(err)
+	}
+	err = run(in, filepath.Join(dir, "res.json"), 0, nil)
+	if err == nil {
+		t.Fatal("a request carrying an unknown field was accepted")
+	}
+	if !errors.Is(err, errBadInput) {
+		t.Errorf("error %v is not errBadInput", err)
+	}
+}
+
+// Stopping a run is something the caller asked for, not a corruption.
+// The engine reports an abort as an ErrorOutcome with an EMPTY message,
+// so the old guard - Error != nil && Message != "" - let it through and
+// the adapter then said "iterations_done is 0".
+func TestAnAbortedRunIsWrittenAsAnAbort(t *testing.T) {
+	var req api.SimRequest
+	if err := json.Unmarshal(smallRequest(t), &req); err != nil {
+		t.Fatal(err)
+	}
+	req.Iterations = api.MaxIterations
+
+	// Abort as soon as the run registers its id. runID is this
+	// process's counter, so the next id is the one Execute is about to
+	// take; the loop covers the race between registering and aborting.
+	next := fmt.Sprintf("forever-sim-%d-%d", os.Getpid(), runs.Load()+1)
+	done := make(chan struct{})
+	go func() {
+		defer close(done)
+		for i := 0; i < 2000; i++ {
+			if simsignals.AbortById(next) {
+				return
+			}
+			time.Sleep(time.Millisecond)
+		}
+	}()
+
+	dir := t.TempDir()
+	out := filepath.Join(dir, "res.json")
+	in := filepath.Join(dir, "req.json")
+	b, err := json.Marshal(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(in, b, 0o644); err != nil {
+		t.Fatal(err)
+	}
+	err = run(in, out, 0, nil)
+	<-done
+	if !errors.Is(err, adapter.ErrAborted) {
+		t.Fatalf("run returned %v, want adapter.ErrAborted", err)
+	}
+	if errors.Is(err, errBadInput) {
+		t.Error("an abort reads as bad input")
+	}
+
+	// The partial result is still written: the caller asked for the
+	// run to stop, and what it got is what it got.
+	raw, err := os.ReadFile(out)
+	if err != nil {
+		t.Fatalf("an aborted run wrote no result: %v", err)
+	}
+	var res api.SimResult
+	if err := json.Unmarshal(raw, &res); err != nil {
+		t.Fatal(err)
+	}
+	if !res.Aborted {
+		t.Error("the result does not say it was stopped")
+	}
+	if res.Error != "" {
+		t.Errorf("an abort carries an error message: %q", res.Error)
+	}
+	if res.EngineVersion != enginever.Version {
+		t.Errorf("EngineVersion = %q, want %q", res.EngineVersion, enginever.Version)
+	}
+	// And it is written in the SHAPE a finished result has. A zero
+	// summary.Summary marshals its lists as null, so a page rendering a
+	// stopped run would need a null check per key; the abort path
+	// carries adapter.EmptySummary() instead. Asserted on the bytes
+	// that were actually written, not on the struct, because it is the
+	// marshalling that differs.
+	var onDisk struct {
+		Summary map[string]json.RawMessage `json:"summary"`
+	}
+	if err := json.Unmarshal(raw, &onDisk); err != nil {
+		t.Fatal(err)
+	}
+	for _, key := range []string{"damage_done", "auras", "casts", "resources", "roster", "phases"} {
+		if got := string(onDisk.Summary[key]); got != "[]" {
+			t.Errorf("an aborted run wrote %q as %s, want []", key, got)
+		}
+	}
+}
+
+// The signal path: SIGINT and SIGTERM stop the run the way the
+// browser's Stop button does, through the engine's own abort signal,
+// rather than killing the process mid-write. The handler is installed
+// for the duration of a run, so the default "terminate" action is not
+// in force while this test raises the signal at itself.
+func TestASignalAbortsTheRun(t *testing.T) {
+	for _, sig := range []syscall.Signal{syscall.SIGINT, syscall.SIGTERM} {
+		t.Run(sig.String(), func(t *testing.T) {
+			id := runID()
+			signals, err := simsignals.RegisterWithId(id)
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer simsignals.UnregisterId(id)
+
+			stop := onInterrupt(id)
+			defer stop()
+			if err := syscall.Kill(os.Getpid(), sig); err != nil {
+				t.Fatal(err)
+			}
+			deadline := time.Now().Add(5 * time.Second)
+			for !signals.Abort.IsTriggered() {
+				if time.Now().After(deadline) {
+					t.Fatalf("%v did not abort the run", sig)
+				}
+				time.Sleep(time.Millisecond)
+			}
+		})
+	}
+
+	// Once the run is over the handler comes back down, so a later
+	// signal is the shell's business again and not a stale abort.
+	id := runID()
+	if _, err := simsignals.RegisterWithId(id); err != nil {
+		t.Fatal(err)
+	}
+	defer simsignals.UnregisterId(id)
+	onInterrupt(id)()
 }

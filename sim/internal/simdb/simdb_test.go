@@ -8,12 +8,13 @@ import (
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/sim/api"
+	"github.com/jhunthrop/foreversixty/sim/enginever"
 	"github.com/jhunthrop/foreversixty/sim/request"
 	"github.com/wowsims/classic/sim/core/proto"
 )
 
 func TestDatabaseLoads(t *testing.T) {
-	db, err := Database()
+	db, err := load()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -30,7 +31,7 @@ func TestDatabaseLoads(t *testing.T) {
 // "No item with id" - at the fixture refresh if we are lucky and in a
 // visitor's browser if we are not.
 func TestFixtureGearResolves(t *testing.T) {
-	db, err := Database()
+	db, err := load()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -61,6 +62,14 @@ func TestFixtureGearResolves(t *testing.T) {
 			if err := dec.Decode(&req); err != nil {
 				t.Fatalf("%v; if this is an unknown field, it belongs in %s.request.notes.md", err, spec)
 			}
+			// The fixture carries no engine_version: it is a request
+			// about a character and an encounter, and the engine that
+			// runs it is whichever binary is asked to. forever-sim
+			// fills the field in the same way.
+			if req.EngineVersion != "" {
+				t.Errorf("engine_version = %q; the fixture must not name an engine, or it expires on every pin", req.EngineVersion)
+			}
+			req.EngineVersion = enginever.Version
 			if err := req.Validate(); err != nil {
 				t.Errorf("the fixture request is not a valid SimRequest: %v", err)
 			}
@@ -87,7 +96,8 @@ func TestFixtureGearResolves(t *testing.T) {
 // that went through it must carry it on the player.
 func TestAttachPutsTheDatabaseOnEveryPlayer(t *testing.T) {
 	built, err := request.Build(api.SimRequest{
-		EngineVersion: "test", Spec: "warrior-fury",
+		EngineVersion: enginever.Version, Spec: "warrior-fury",
+		Source:     api.CharacterSource{Kind: api.SourceManual},
 		Character:  api.CharacterSpec{Name: "T", Race: "orc", Class: "warrior", Level: 60},
 		Encounter:  api.DefaultEncounter(),
 		Iterations: 500,

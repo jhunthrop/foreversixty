@@ -23,12 +23,22 @@ import (
 
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
 	"github.com/jhunthrop/foreversixty/sim/api"
+	"github.com/jhunthrop/foreversixty/sim/enginever"
+	"github.com/jhunthrop/foreversixty/sim/specs"
 	"github.com/wowsims/classic/sim/core/proto"
 )
 
 var (
 	// ErrSimFailed is returned when the engine itself reported a failure.
 	ErrSimFailed = errors.New("adapter: the engine reported an error")
+	// ErrAborted is returned when the run was stopped on request. It is
+	// not a failure: the user pressed Stop, there is nothing to report
+	// and nothing to fix. The engine says so with an ErrorOutcome whose
+	// Type is ErrorOutcomeAborted and whose Message is EMPTY, so a guard
+	// on the message alone lets an abort through and the caller then
+	// reports "iterations_done is 0" - a corrupt result - for something
+	// the user asked for.
+	ErrAborted = errors.New("adapter: the run was stopped")
 	// ErrNoPlayer is returned when the result carries no player metrics,
 	// which means the request had no player in party one.
 	ErrNoPlayer = errors.New("adapter: the result has no player metrics")
@@ -50,14 +60,64 @@ const playerGUID = "sim-player"
 // metrics for the player only.
 const auraTypeBuff = "BUFF"
 
+// EmptySummary is the summary of no fight: every list present and
+// empty, never absent. It is what a run that folded nothing still has
+// to carry.
+//
+// JSON has two ways to say "no rows" and only one of them is the shape
+// the web parses. A nil Go slice marshals as `null`, and an aborted
+// result used to be built from a zero summary.Summary, so `damage_done`
+// and fifteen other keys came back null where a finished result has
+// `[]`. Every consumer then needs a null check per key, on the one code
+// path - the user pressed Stop - least likely to be exercised.
+//
+// Summarize builds on this too, so the finished shape and the empty one
+// cannot drift apart. TestEverySummaryListIsEmptyNotNull walks the
+// struct by reflection, so a list field added to summary.Summary later
+// fails here rather than reaching the web as a null.
+func EmptySummary() summary.Summary {
+	return summary.Summary{
+		// The engine that RAN it, from the pin compiled into this
+		// binary - not req.EngineVersion, which is the client's claim.
+		// A cached request naming an old sha, re-run by a new build,
+		// used to come back stamped with the old one, and every stored
+		// row's provenance was hearsay.
+		EngineVersion: "sim:" + enginever.Version,
+
+		DamageDone:   []summary.Actor{},
+		DamageTaken:  []summary.Actor{},
+		Healing:      []summary.Actor{},
+		HealingTaken: []summary.Actor{},
+
+		Deaths:     []summary.Death{},
+		Auras:      []summary.AuraTrack{},
+		Casts:      []summary.CastRow{},
+		Interrupts: []summary.ExchangeRow{},
+		Dispels:    []summary.ExchangeRow{},
+		Resources:  []summary.ResourceTrack{},
+
+		// A sim has no threat model attached, no taunt, no curated
+		// mechanics table for a target dummy, and no encounter phases.
+		// All five are present and empty, which is exactly what the logs
+		// engine produces for a fight whose encounter has no table.
+		Threat:         []summary.ThreatRow{},
+		ThreatByTarget: []summary.ThreatPair{},
+		Taunts:         []summary.Taunt{},
+		Combatants:     []summary.CombatantRow{},
+		Roster:         []summary.RosterRow{},
+		Mechanics:      summary.MechanicsBlock{TableFound: false, Rows: []summary.MechanicRow{}},
+		Phases:         []summary.Phase{},
+	}
+}
+
 // Summarize maps an engine result onto the logs engine's Summary, per the
 // interface contract's mapping table.
 func Summarize(res *proto.RaidSimResult, req api.SimRequest) (summary.Summary, error) {
 	if res == nil {
 		return summary.Summary{}, fmt.Errorf("%w: nil result", ErrSimFailed)
 	}
-	if res.Error != nil && res.Error.Message != "" {
-		return summary.Summary{}, fmt.Errorf("%w: %s", ErrSimFailed, res.Error.Message)
+	if err := ResultError(res); err != nil {
+		return summary.Summary{}, err
 	}
 	iters := float64(res.IterationsDone)
 	if iters <= 0 {
@@ -71,39 +131,46 @@ func Summarize(res *proto.RaidSimResult, req api.SimRequest) (summary.Summary, e
 	durationMS := int64(math.Round(res.AvgIterationDuration * 1000))
 	class, spec := splitSpecSlug(req.Spec)
 
-	out := summary.Summary{
-		EngineVersion: "sim:" + req.EngineVersion,
-		FightIndex:    1,
-		DurationMS:    durationMS,
-
-		DamageDone:   actors(player, class, iters, durationMS),
-		DamageTaken:  []summary.Actor{},
-		Healing:      []summary.Actor{},
-		HealingTaken: []summary.Actor{},
-
-		Deaths:     []summary.Death{},
-		Auras:      auras(player),
-		Casts:      casts(player, iters),
-		Interrupts: []summary.ExchangeRow{},
-		Dispels:    []summary.ExchangeRow{},
-		Resources:  resources(player, iters),
-
-		// A sim has no threat model attached, no taunt, no curated
-		// mechanics table for a target dummy, and no encounter phases.
-		// All five are present and empty, which is exactly what the logs
-		// engine produces for a fight whose encounter has no table.
-		Threat:         []summary.ThreatRow{},
-		ThreatByTarget: []summary.ThreatPair{},
-		Taunts:         []summary.Taunt{},
-		Combatants:     []summary.CombatantRow{},
-		Mechanics:      summary.MechanicsBlock{TableFound: false, Rows: []summary.MechanicRow{}},
-		Phases:         []summary.Phase{},
-	}
+	// Start from the empty shape and fill in what this run measured, so
+	// the four lists a sim can populate are the ONLY difference between
+	// a finished summary and the one an aborted run carries. Building
+	// the two shapes separately is how they came to disagree.
+	out := EmptySummary()
+	out.FightIndex = 1
+	out.DurationMS = durationMS
+	out.DamageDone = actors(player, class, iters, durationMS)
+	out.Auras = auras(player)
+	out.Casts = casts(player, iters)
+	out.Resources = resources(player, iters)
 	out.Roster = roster(player, class, spec, out, durationMS)
 	if err := checkRowIdentity(out); err != nil {
 		return summary.Summary{}, err
 	}
 	return out, nil
+}
+
+// ResultError turns the engine's ErrorOutcome into one of ours, and
+// reports nil when the run completed.
+//
+// The engine has two kinds of unhappy ending and they need different
+// words in the UI: an abort is what the Stop button does, and a failure
+// is a bug or a bad request. Only the second carries a message, which
+// is why every caller must switch on Type rather than test the message
+// for emptiness.
+func ResultError(res *proto.RaidSimResult) error {
+	if res == nil {
+		return fmt.Errorf("%w: nil result", ErrSimFailed)
+	}
+	if res.Error == nil {
+		return nil
+	}
+	if res.Error.Type == proto.ErrorOutcomeType_ErrorOutcomeAborted {
+		return ErrAborted
+	}
+	if res.Error.Message == "" {
+		return fmt.Errorf("%w: no message", ErrSimFailed)
+	}
+	return fmt.Errorf("%w: %s", ErrSimFailed, res.Error.Message)
 }
 
 // PlayerMetrics returns the first player of the first party, which is the
@@ -218,8 +285,27 @@ func ability(am *proto.ActionMetrics, iters float64, perTarget map[int32]int64) 
 		// moment", says metrics_aggregator.go - and block_damage is the
 		// damage a blocked swing still dealt. Either one in these fields
 		// would print a number meaning the opposite of its column.
-		ab.Hits += per(float64(t.Hits), iters)
-		ab.Crits += per(float64(t.Crits), iters)
+		// Hits, Crits and Ticks are the LOGS ENGINE's definitions, not
+		// the engine's, because the report's components compute crit %
+		// as crits/hits and a sim and a real fight of the same shape
+		// have to print the same number.
+		//
+		// The logs engine (summary/damage.go's fold) increments Hits for
+		// every non-periodic landing whatever its outcome, Ticks for
+		// every periodic one, and Crits IN ADDITION whenever the landing
+		// was critical - so Hits is inclusive of crits and Crits spans
+		// ticks. sim/core's counters are disjoint instead: a crit never
+		// increments Hits, and Glances, Crushes, Blocks and BlockedCrits
+		// are each counted separately again. Copying them across as they
+		// stand prints a glancing-heavy warrior as having almost no
+		// hits, a dot as never critting, and a crit rate computed
+		// against the wrong denominator.
+		//
+		// Misses, dodges and parries are NOT landings and stay out of
+		// Hits; they are in the Misses map below, which is where the
+		// logs engine puts them too.
+		ab.Hits += per(float64(t.Hits+t.Crits+t.Glances+t.Crushes+t.Blocks+t.BlockedCrits), iters)
+		ab.Crits += per(float64(t.Crits+t.BlockedCrits+t.CritTicks), iters)
 		ab.Ticks += per(float64(t.Ticks+t.CritTicks), iters)
 		// The keys are the combat log's own, so a sim and a real fight
 		// aggregate together: MISS, DODGE, PARRY and BLOCK are its
@@ -227,6 +313,11 @@ func ability(am *proto.ActionMetrics, iters float64, perTarget map[int32]int64) 
 		// writes e.MissType), and GLANCING and CRUSHING are its flag
 		// names, which the engine reports as counted outcomes where a
 		// log carries them on a landed hit.
+		//
+		// A glance, a crush and a partial block therefore appear here
+		// AND in Hits above, which is what the report needs to print
+		// "58 glancing of 134 swings": they are landings that happened
+		// a particular way, not things that failed to land.
 		addMiss(ab.Misses, "MISS", t.Misses, iters)
 		addMiss(ab.Misses, "DODGE", t.Dodges, iters)
 		addMiss(ab.Misses, "PARRY", t.Parries, iters)
@@ -407,11 +498,19 @@ func roster(u *proto.UnitMetrics, class, spec string, s summary.Summary, duratio
 	}}
 }
 
-// splitSpecSlug turns "warrior-fury" into ("warrior", "fury"). The
-// canonical list lives in data/curated/specs.json, which the data lane
-// owns and which does not exist yet; this only needs the split, not the
-// list, so nothing here hardcodes a spec.
+// splitSpecSlug turns "warrior-fury" into ("warrior", "fury").
+//
+// The canonical pairing is sim/specs, generated from
+// data/curated/specs.json, and it is consulted first so a hyphenated
+// spec slug such as "hunter-beast-mastery" splits where the data lane
+// says it does rather than at the first hyphen. The fallback keeps the
+// function total for a slug the list has not got: the adapter's job is
+// to render a result, not to police one, and sim/request already
+// refused the request.
 func splitSpecSlug(slug string) (class, spec string) {
+	if known, ok := specs.ByKey[slug]; ok {
+		return known.ClassSlug, known.SpecSlug
+	}
 	i := strings.Index(slug, "-")
 	if i < 0 {
 		return slug, ""

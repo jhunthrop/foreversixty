@@ -15,7 +15,6 @@ from pathlib import Path
 
 import pytest
 
-from pipeline.csvio import read_csv
 from pipeline.simproto import pb
 
 BUILD = "1.60.1.69893"
@@ -26,6 +25,13 @@ EXPECTED_ITEMS = 4986
 EXPECTED_ENCHANTS = 2216
 EXPECTED_WEAPONS = 759
 EXPECTED_IN_A_SET = 828
+#: 334 InventoryType-{13,21} weapons split into two disjoint HandType buckets:
+#: 216 InventoryType 13 (one-hand, either hand) and 118 InventoryType 21
+#: (main-hand only). See pipeline/simdb/items.py's HAND_TYPE_BY_INVENTORY_TYPE
+#: and tests/test_simdb_items.py's test_inventory_type_13_is_one_hand_not_main_hand,
+#: which pins the mapping itself against the fixtures.
+EXPECTED_ONE_HAND_WEAPONS = 216
+EXPECTED_MAIN_HAND_WEAPONS = 118
 #: 1,329 enchants carry a stat in the final database, counting every source:
 #: the direct ITEM_MOD/resistance slots plus equip-spell auras. A narrower
 #: count, 1,255, is the equip-spell path alone (40 more of that path's rows
@@ -71,19 +77,25 @@ def test_one_hand_weapons_are_dual_wieldable_not_main_hand_locked():
     HAND_TYPE_BY_INVENTORY_TYPE. HandTypeMainHand is InventoryType 21's
     disjoint, main-hand-only bucket; collapsing 13 into it left the engine
     with zero HandTypeOneHand rows and no way to dual-wield a one-hand item
-    typed InventoryType 13."""
-    one_hand_ids = {
-        int(row["ID"])
-        for row in read_csv(BUILD_DIR / "raw" / "ItemSparse.csv")
-        if row.get("InventoryType") == "13"
-    }
-    one_hand_items = [row for row in database().items if row.id in one_hand_ids]
+    typed InventoryType 13.
+
+    This reads only the committed simdb.bin, which CI has -- the raw client
+    tables (builds/<build>/raw/) are never committed (see .gitignore), so a
+    row-level check against ItemSparse's InventoryType column cannot run
+    here. tests/test_simdb_items.py's test_inventory_type_13_is_one_hand_not_main_hand
+    pins the mapping itself against the fixtures instead; this test pins
+    that the regenerated database actually reflects it: HandTypeOneHand is
+    populated, and HandTypeMainHand holds only the true main-hand-only
+    (InventoryType 21) rows rather than the pre-fix total of both.
+    """
     one_hand = pb.HandType.Value("HandTypeOneHand")
     main_hand = pb.HandType.Value("HandTypeMainHand")
-    assert len(one_hand_items) > 0
-    assert all(row.hand_type == one_hand for row in one_hand_items)
-    assert not any(row.hand_type == main_hand for row in one_hand_items)
-    assert sum(1 for row in database().items if row.hand_type == one_hand) > 0
+    assert sum(1 for row in database().items if row.hand_type == one_hand) == (
+        EXPECTED_ONE_HAND_WEAPONS
+    )
+    assert sum(1 for row in database().items if row.hand_type == main_hand) == (
+        EXPECTED_MAIN_HAND_WEAPONS
+    )
 
 
 def test_enchants_carry_the_stats_their_equip_spells_grant():
@@ -111,15 +123,39 @@ def test_a_set_piece_carries_its_armour_and_its_set():
 
 def test_a_known_on_equip_stat_survived_the_round_trip():
     """Rune of the Guard Captain's +42 attack power is in no ItemSparse column;
-    its 7 hit is on the curve. Both must be in the same stat array.
+    its 7 hit rating is on the curve. Both must be in the same stat array.
 
     The engine lane has already collapsed MeleeHit/SpellHit into a single
     Hit stat, so this reads StatHit rather than the brief's StatMeleeHit.
+    The client's 7 is a combat-rating amount (ItemSparse's
+    StatModifier_bonusStat 31 is ITEM_MOD_HIT_RATING); the engine reads Hit
+    as a flat percentage, so simdb divides it by this build's level-60 hit
+    factor (10, from gametables/combatratings.txt) -- see
+    pipeline/simdb/ratings.py.
     """
     rune = item(19120)
     assert rune.stats[pb.Stat.Value("StatAttackPower")] == 42.0
     assert rune.stats[pb.Stat.Value("StatRangedAttackPower")] == 42.0
-    assert rune.stats[pb.Stat.Value("StatHit")] == 7.0
+    assert rune.stats[pb.Stat.Value("StatHit")] == pytest.approx(0.7)
+
+
+def test_item_hit_and_crit_are_percentages_not_combat_rating_points():
+    """Lionheart Helm (12640), Quick Strike Ring (18821) and Onyxia Tooth
+    Pendant (18404) state hit/crit through StatModifier_bonusStat ids 31/32
+    -- ITEM_MOD_HIT_RATING/ITEM_MOD_CRIT_RATING -- so ItemSparse's own
+    amounts (20 hit / 28 crit, 14 crit, 10 hit / 14 crit respectively) are
+    combat-rating points, not the flat percentage the engine's `StatHit` and
+    `StatCrit` are. Divided by this build's level-60 factors (hit 10, crit
+    14, from gametables/combatratings.txt -- see pipeline/simdb/ratings.py),
+    they are 2% hit / 2% crit, 1% crit, and 1% hit / 1% crit. Before this
+    conversion existed, every one of these was read as 10-28% hit or crit
+    outright, hit-capping and near-100%-crit-ing any character wearing one.
+    """
+    hit = pb.Stat.Value("StatHit")
+    crit = pb.Stat.Value("StatCrit")
+    assert (item(12640).stats[hit], item(12640).stats[crit]) == (2.0, 2.0)
+    assert item(18821).stats[crit] == 1.0
+    assert (item(18404).stats[hit], item(18404).stats[crit]) == (1.0, 1.0)
 
 
 def test_consumables_are_emitted_beside_the_protobuf():

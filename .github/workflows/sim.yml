@@ -2,9 +2,9 @@ name: sim
 on:
   push:
     branches: [main]
-    paths: ['sim/**', 'logs/**', 'Makefile', 'web/src/data/active-build.json', 'data/builds/*/simdb.bin', '.github/workflows/sim.yml', '.github/actions/pin-engine/**']
+    paths: ['sim/**', 'logs/**', 'Makefile', 'tools/apl_*.py', 'web/src/data/active-build.json', 'data/builds/*/simdb.bin', 'data/curated/apl/**', 'data/curated/specs.json', '.github/workflows/sim.yml', '.github/actions/pin-engine/**']
   pull_request:
-    paths: ['sim/**', 'logs/**', 'Makefile', 'web/src/data/active-build.json', 'data/builds/*/simdb.bin', '.github/workflows/sim.yml', '.github/actions/pin-engine/**']
+    paths: ['sim/**', 'logs/**', 'Makefile', 'tools/apl_*.py', 'web/src/data/active-build.json', 'data/builds/*/simdb.bin', 'data/curated/apl/**', 'data/curated/specs.json', '.github/workflows/sim.yml', '.github/actions/pin-engine/**']
   workflow_dispatch:
 permissions: { contents: read }
 concurrency:
@@ -44,6 +44,29 @@ jobs:
           awk -v t="$total" 'BEGIN { exit (t + 0 >= 80) ? 0 : 1 }' || {
             echo "coverage ${total}% is under the 80% floor"; exit 1; }
 
+  # "A rotation is edited only in data/curated/apl" was an invariant kept
+  # by hand across three copies per spec, and two of four had already
+  # drifted. `make apl-sync` writes the copies now and this is the gate
+  # that they were written; see tools/apl_check.py.
+  rotations:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: the pinned engine sha
+        id: pin
+        run: |
+          sha=$(sed -n 's/.*Version = "\(.*\)"/\1/p' sim/enginever/version.go)
+          test -n "$sha" || { echo "sim/enginever/version.go has no Version"; exit 1; }
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+      # The fork at the very sha the artifacts are built from, so this
+      # compares the rotations the shipped engine actually carries.
+      - uses: actions/checkout@v4
+        with:
+          repository: jhunthrop/wowsims-forever
+          ref: ${{ steps.pin.outputs.sha }}
+          path: .engine
+      - run: make apl-check ENGINE_DIR=.engine
+
   artifacts:
     needs: test
     runs-on: ubuntu-latest
@@ -59,15 +82,22 @@ jobs:
       - name: build
         working-directory: sim
         run: |
-          sha=$(sed -n 's/.*Version = "\(.*\)"/\1/p' enginever/version.go)
           mkdir -p ../artifacts
-          GOOS=js GOARCH=wasm go build -ldflags="-X 'main.Version=$sha'" -o ../artifacts/sim.wasm ./cmd/wasm
-          cp "$(go env GOROOT)/lib/wasm/wasm_exec.js" ../artifacts/sim.js
+          # No -ldflags -X: both mains import sim/enginever, so the pin
+          # is compiled in rather than injected here and in the Makefile
+          # and scraped out of version.go by a sed in each.
+          GOOS=js GOARCH=wasm go build -o ../artifacts/sim.wasm ./cmd/wasm
+          # install, not cp: wasm_exec.js is read-only inside GOROOT and
+          # cp copies the mode with it, so the next build over the same
+          # directory dies with "Permission denied" on its own output.
+          # The Makefile has said so since it was written; this copy had
+          # drifted back to cp.
+          install -m 0644 "$(go env GOROOT)/lib/wasm/wasm_exec.js" ../artifacts/sim.js
           # No --tags=with_db anywhere: that is the engine's vanilla
           # item table, and Forever re-itemises. Both artifacts embed
           # the active build's simdb.bin instead (make simdb, above).
-          GOOS=linux  GOARCH=amd64 go build -ldflags="-X 'main.Version=$sha' -s -w" -o ../artifacts/forever-sim-linux-amd64  ./cmd/forever-sim
-          GOOS=darwin GOARCH=arm64 go build -ldflags="-X 'main.Version=$sha' -s -w" -o ../artifacts/forever-sim-darwin-arm64 ./cmd/forever-sim
+          GOOS=linux  GOARCH=amd64 go build -ldflags="-s -w" -o ../artifacts/forever-sim-linux-amd64  ./cmd/forever-sim
+          GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -o ../artifacts/forever-sim-darwin-arm64 ./cmd/forever-sim
           cd ../artifacts && sha256sum * > SHA256SUMS && cat SHA256SUMS
       # The design budgets the browser download at 4 MB gzipped. The
       # engine alone measured 3.31 MB; this build adds request, adapter,
@@ -101,8 +131,13 @@ jobs:
           // did not make it into the wasm.
           const gearJSON = JSON.stringify(
             JSON.parse(await readFile('/tmp/warrior-fury.request.json', 'utf8')).character.gear);
+          // engine_version is filled in from the module's own global
+          // once it is up: the envelope refuses a request naming any
+          // other engine, so the page reads the sha off the wasm it is
+          // running rather than being told it by the server.
           const req = {
-            engine_version: 'ci', spec: 'warrior-fury',
+            engine_version: '', spec: 'warrior-fury',
+            source: { kind: 'manual', ref: '', captured_at: '2026-01-01T00:00:00Z' },
             character: { name: 'Thrall', race: 'orc', class: 'warrior', level: 60,
                          talents: '30305001302-05050005525010051', gear: [], buffs: [], consumes: [] },
             encounter: { duration_sec: 60, variation: 0, targets: 1, execute_ratio: 0.25, profile: '' },
@@ -126,6 +161,13 @@ jobs:
             const missing = ['simRun', 'simSplit', 'simCombine', 'simAbort']
               .filter(n => typeof globalThis[n] !== 'function');
             if (missing.length) { console.error('missing exports:', missing); process.exit(1); }
+            if (typeof globalThis.simEngineVersion !== 'string' || !globalThis.simEngineVersion) {
+              console.error('simEngineVersion:', globalThis.simEngineVersion); process.exit(1);
+            }
+            req.engine_version = globalThis.simEngineVersion;
+            // Stopping a run nobody started is a "no", not an error.
+            const abort = JSON.parse(globalThis.simAbort('no-such-run'));
+            if (abort.aborted !== false) { console.error('simAbort:', abort); process.exit(1); }
 
             const parts = JSON.parse(globalThis.simSplit(JSON.stringify(req), 2));
             if (!Array.isArray(parts) || parts.length !== 2) {

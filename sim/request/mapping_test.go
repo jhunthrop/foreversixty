@@ -6,6 +6,8 @@ import (
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/sim/api"
+	"github.com/jhunthrop/foreversixty/sim/internal/strcase"
+	"github.com/jhunthrop/foreversixty/sim/specs"
 	"github.com/wowsims/classic/sim/core"
 	"github.com/wowsims/classic/sim/core/proto"
 )
@@ -15,10 +17,16 @@ import (
 // trusted. proto.ItemSlot's names are the same names in upper camel.
 func TestSlotOrderMatchesTheEngineEnum(t *testing.T) {
 	if len(proto.ItemSlot_name) != SlotCount {
-		t.Fatalf("proto.ItemSlot has %d values, slotOrder has %d", len(proto.ItemSlot_name), SlotCount)
+		t.Fatalf("proto.ItemSlot has %d values, SlotCount is %d", len(proto.ItemSlot_name), SlotCount)
+	}
+	// SlotCount is a constant rather than len(slotOrder), so that an
+	// importer cannot assign to it and hand the engine a short
+	// equipment array. This is what keeps the two in step.
+	if len(slotOrder) != SlotCount {
+		t.Fatalf("slotOrder has %d entries, SlotCount is %d", len(slotOrder), SlotCount)
 	}
 	for i, want := range slotOrder {
-		got := snake(strings.TrimPrefix(proto.ItemSlot(i).String(), "ItemSlot"))
+		got := strcase.Snake(strings.TrimPrefix(proto.ItemSlot(i).String(), "ItemSlot"))
 		if got != want {
 			t.Errorf("slot %d is %q in the engine and %q here", i, got, want)
 		}
@@ -45,7 +53,7 @@ func TestBuildRejectsALevelTheEngineCannotSimulate(t *testing.T) {
 	if err == nil {
 		t.Fatal("a level-40 character was built without error")
 	}
-	if !contains(err.Error(), "character.level") {
+	if !strings.Contains(err.Error(), "character.level") {
 		t.Errorf("error %q does not name the level", err)
 	}
 }
@@ -136,6 +144,11 @@ func TestEverySpecAttachesOptionsAndARotation(t *testing.T) {
 		t.Run(slug, func(t *testing.T) {
 			req := fury()
 			req.Spec = slug
+			// The class has to follow the spec: they are cross-checked,
+			// so a warrior cannot be handed a mage's rotation.
+			req.Character.Class = specs.ByKey[slug].ClassSlug
+			req.Character.Talents = ""
+			req.Character.Gear = nil
 			got, err := Build(req)
 			if err != nil {
 				t.Fatal(err)
@@ -151,11 +164,39 @@ func TestEverySpecAttachesOptionsAndARotation(t *testing.T) {
 	}
 }
 
+// A spec on the canonical list that no agent exists for yet, and a
+// slug that is not a spec at all, are different refusals: the first is
+// "not yet", the second is "never".
 func TestBuildRejectsASpecItDoesNotCarry(t *testing.T) {
 	req := fury()
 	req.Spec = "shaman-enhancement"
+	req.Character.Class = "shaman"
+	req.Character.Talents = ""
+	req.Character.Gear = nil
+	if _, err := Build(req); !errors.Is(err, ErrUnsupportedSpec) {
+		t.Fatalf("Build with an unsupported spec returned %v, want ErrUnsupportedSpec", err)
+	}
+
+	req = fury()
+	req.Spec = "warrior-berserker"
 	if _, err := Build(req); !errors.Is(err, ErrUnknownSpec) {
-		t.Fatalf("Build with an unsupported spec returned %v, want ErrUnknownSpec", err)
+		t.Fatalf("Build with a spec that is not on the canonical list returned %v, want ErrUnknownSpec", err)
+	}
+}
+
+// A warrior carrying spec "mage-frost" used to build: the player came
+// from Character.Class and the agent from Spec, so the engine was
+// handed a warrior running a frost mage's priority list and answered
+// with a number. sim/specs is the authoritative pairing.
+func TestBuildRejectsASpecFromAnotherClass(t *testing.T) {
+	req := fury()
+	req.Spec = "mage-frost"
+	_, err := Build(req)
+	if !errors.Is(err, ErrSpecClassMismatch) {
+		t.Fatalf("Build accepted a warrior running mage-frost: %v", err)
+	}
+	if !strings.Contains(err.Error(), "mage") || !strings.Contains(err.Error(), "warrior") {
+		t.Errorf("the error names neither side of the mismatch: %v", err)
 	}
 }
 

@@ -45,8 +45,6 @@ type Consumables struct {
 	// names maps an item id onto the lookup key its name normalises to,
 	// which is the same key an engine enum value name normalises to.
 	names map[int64]string
-	// display keeps the item's own name, for error messages.
-	display map[int64]string
 }
 
 // simConsume is one row of simconsumes.json. Only the id and the name
@@ -65,16 +63,12 @@ func LoadConsumables(r io.Reader) (*Consumables, error) {
 	if len(rows) == 0 {
 		return nil, fmt.Errorf("request: simconsumes.json carries no consumables")
 	}
-	c := &Consumables{
-		names:   make(map[int64]string, len(rows)),
-		display: make(map[int64]string, len(rows)),
-	}
+	c := &Consumables{names: make(map[int64]string, len(rows))}
 	for _, row := range rows {
 		if row.ID == 0 || row.Name == "" {
 			return nil, fmt.Errorf("request: simconsumes.json has a row with no id or no name: %+v", row)
 		}
 		c.names[row.ID] = normalizeName(row.Name)
-		c.display[row.ID] = row.Name
 	}
 	return c, nil
 }
@@ -104,14 +98,6 @@ func (c *Consumables) key(id int64) (string, bool) {
 	}
 	k, ok := c.names[id]
 	return k, ok
-}
-
-// name returns the item's own name, for an error message.
-func (c *Consumables) name(id int64) string {
-	if c == nil {
-		return ""
-	}
-	return c.display[id]
 }
 
 // normalizeName turns an item name into the key an engine enum value

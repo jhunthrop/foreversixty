@@ -7,11 +7,18 @@ import (
 	"errors"
 	"fmt"
 	"math"
+	"reflect"
 	"sort"
 
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
 	"github.com/jhunthrop/foreversixty/sim/api"
 )
+
+// ErrMixedParts is returned when the parts are not shares of one run.
+// Pooling them would print one authoritative DPS for two different
+// characters, two different fights or two different engines, and
+// nothing downstream could tell.
+var ErrMixedParts = errors.New("combine: the parts are not shares of one run")
 
 // Split divides a request into n parts by iteration count.
 //
@@ -74,8 +81,14 @@ func Results(parts []api.SimResult) (api.SimResult, error) {
 		if p.Error != "" {
 			return api.SimResult{}, fmt.Errorf("combine: part %d failed: %s", i, p.Error)
 		}
+		if p.Aborted {
+			return api.SimResult{}, fmt.Errorf("combine: part %d was stopped before it finished", i)
+		}
 		if p.IterationsRun <= 0 {
 			return api.SimResult{}, fmt.Errorf("combine: part %d ran no iterations", i)
+		}
+		if err := sameRun(parts[0], p); err != nil {
+			return api.SimResult{}, fmt.Errorf("%w: part %d %v", ErrMixedParts, i, err)
 		}
 		total += p.IterationsRun
 	}
@@ -106,10 +119,20 @@ func Results(parts []api.SimResult) (api.SimResult, error) {
 		Mean:   mean,
 		StdDev: math.Sqrt(pooled),
 		Error:  math.Sqrt(pooled) / math.Sqrt(float64(total)),
-		Min:    parts[0].DPS.Min,
-		Max:    parts[0].DPS.Max,
 	}
+	// Min and Max are extremes over the parts. A part whose Max is zero
+	// reported no distribution at all, and folding its Min in would
+	// pull the run's minimum to zero - a figure no iteration produced.
+	first := true
 	for _, p := range parts {
+		if p.DPS.Max == 0 {
+			continue
+		}
+		if first {
+			out.DPS.Min, out.DPS.Max = p.DPS.Min, p.DPS.Max
+			first = false
+			continue
+		}
 		out.DPS.Min = math.Min(out.DPS.Min, p.DPS.Min)
 		out.DPS.Max = math.Max(out.DPS.Max, p.DPS.Max)
 	}
@@ -173,8 +196,11 @@ func weightSummaries(parts []api.SimResult, total int) summary.Summary {
 				order = append(order, src.GUID)
 				dst = &shell
 			}
-			dst.Total += weigh(src.Total, w)
-			dst.Effective += weigh(src.Effective, w)
+			// Total and Effective are NOT weighed here: they are
+			// recomputed from the merged ability rows below, because
+			// the adapter guarantees an actor's total is the sum of
+			// its rows and weighing the two independently breaks that
+			// by a rounding error per row.
 			dst.Overheal += weigh(src.Overheal, w)
 			dst.Absorbed += weigh(src.Absorbed, w)
 			dst.Targets = mergeTargets(dst.Targets, src.Targets, w)
@@ -218,8 +244,12 @@ func weightSummaries(parts []api.SimResult, total int) summary.Summary {
 	for _, guid := range order {
 		a := *actors[guid]
 		a.Abilities = make([]summary.Ability, 0, len(rowOrder[guid]))
+		a.Total, a.Effective = 0, 0
 		for _, k := range rowOrder[guid] {
-			a.Abilities = append(a.Abilities, *rows[guid][k])
+			ab := *rows[guid][k]
+			a.Total += ab.Total
+			a.Effective += ab.Effective
+			a.Abilities = append(a.Abilities, ab)
 		}
 		// The adapter's own order: damage descending. Ties break on the
 		// row's identity rather than on where it happened to arrive, so
@@ -240,6 +270,35 @@ func weightSummaries(parts []api.SimResult, total int) summary.Summary {
 	return out
 }
 
+// sameRun reports why two parts do not belong to one run, or nil.
+//
+// The three things that must match are the engine that ran them, the
+// spec they ran, and the request itself apart from the two fields
+// combine.Split is allowed to change: RandomSeed, which is offset per
+// part so the streams do not repeat, and Iterations, which is the
+// part's share. Everything else - gear, talents, buffs, encounter - is
+// what the DPS is a number about.
+func sameRun(first, p api.SimResult) error {
+	if p.EngineVersion != first.EngineVersion {
+		return fmt.Errorf("ran on engine %q, part 0 on %q", p.EngineVersion, first.EngineVersion)
+	}
+	if p.Request.Spec != first.Request.Spec {
+		return fmt.Errorf("is spec %q, part 0 is %q", p.Request.Spec, first.Request.Spec)
+	}
+	if !reflect.DeepEqual(shape(p.Request), shape(first.Request)) {
+		return errors.New("asks a different question from part 0")
+	}
+	return nil
+}
+
+// shape is a request with the two fields a split is allowed to vary
+// cleared, so two parts of one run compare equal.
+func shape(r api.SimRequest) api.SimRequest {
+	r.RandomSeed = 0
+	r.Iterations = 0
+	return r
+}
+
 // abilityKey is the identity a summary row is rendered by: the spell and,
 // for a pet's ability counted on its owner's row, which pet cast it.
 type abilityKey struct {
@@ -247,8 +306,11 @@ type abilityKey struct {
 	Via     string
 }
 
-// weigh takes an iteration-share of a per-fight figure.
-func weigh(v int64, w float64) int64 { return int64(float64(v) * w) }
+// weigh takes an iteration-share of a per-fight figure. It ROUNDS: a
+// truncation biases every row of a four-way split low by up to one per
+// part, which on a table of forty rows is a visible shortfall against
+// the same run done serially.
+func weigh(v int64, w float64) int64 { return int64(math.Round(float64(v) * w)) }
 
 // mergeTargets folds one part's per-target damage into the running table,
 // keyed by the target's guid. The slice it returns is always the

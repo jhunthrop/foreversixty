@@ -43,9 +43,6 @@ var load = sync.OnceValues(func() (*proto.SimDatabase, error) {
 	return db, nil
 })
 
-// Database returns the embedded item database, parsed once.
-func Database() (*proto.SimDatabase, error) { return load() }
-
 // Attach puts the database on every player of a built request, which is
 // what makes an item id resolve. It is called once per request rather
 // than once per process because the engine offers no other way in.

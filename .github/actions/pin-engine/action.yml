@@ -9,10 +9,10 @@ runs:
   steps:
     # The engine is a separate repository. CI REWRITES the development
     # replace to point at the fork at the pinned sha; it must not
-    # delete it, because the require is
-    # v0.0.0-00010101000000-000000000000 - a placeholder that resolves
-    # to nothing - and a deleted replace fails with a module-not-found
-    # error that reads like a network problem.
+    # delete it, because the require is github.com/wowsims/classic
+    # v1.0.14 - upstream's tag, which is NOT the fork - and a deleted
+    # replace silently builds against upstream instead of against the
+    # engine the artifacts are pinned to.
     #
     # `go mod edit -replace` writes the line whether or not one is
     # there, so this is idempotent and needs no sed.

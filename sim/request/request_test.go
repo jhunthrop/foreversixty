@@ -2,17 +2,22 @@ package request
 
 import (
 	"bytes"
+	"errors"
+	"math"
+	"strings"
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/sim/api"
+	"github.com/jhunthrop/foreversixty/sim/enginever"
 	"github.com/wowsims/classic/sim/core/proto"
 	googleproto "google.golang.org/protobuf/proto"
 )
 
 func fury() api.SimRequest {
 	return api.SimRequest{
-		EngineVersion: "7779ebb",
+		EngineVersion: enginever.Version,
 		Spec:          "warrior-fury",
+		Source:        api.CharacterSource{Kind: api.SourceManual},
 		Character: api.CharacterSpec{
 			Name:    "Thrall",
 			Race:    "orc",
@@ -127,13 +132,140 @@ func TestBuildCarriesTheEncounter(t *testing.T) {
 // BiomeUnknown - but the field is set explicitly, so a request that
 // silently left it at a zero value of some future different meaning
 // would fail here rather than quietly changing a trinket's damage.
-func TestBuildSetsTheEncounterBiome(t *testing.T) {
-	got, err := Build(fury())
+//
+// The old version of this test asserted that biomeFor's stub returned
+// its own constant and could not fail. What can fail is the profile
+// reaching here at all: an "encounter:<id>" used to be accepted and
+// then ignored, producing a sim byte-identical to a blank one under an
+// encounter's name.
+func TestTheEncounterProfileIsEitherHonouredOrRefused(t *testing.T) {
+	for _, profile := range []string{"", api.ProfilePatchwerk} {
+		req := fury()
+		req.Encounter.Profile = profile
+		got, err := Build(req)
+		if err != nil {
+			t.Fatalf("profile %q: %v", profile, err)
+		}
+		// A patchwerk IS what the sim builds - a stationary target and
+		// nothing else - so it is the same fight as the blank profile,
+		// and neither matches a biome-conditional trinket.
+		if got.Encounter.Biome != proto.Biome_BiomeUnknown {
+			t.Errorf("profile %q: Biome = %v, want BiomeUnknown", profile, got.Encounter.Biome)
+		}
+	}
+	req := fury()
+	req.Encounter.Profile = "encounter:onyxia"
+	if _, err := Build(req); err == nil {
+		t.Error("an encounter profile was accepted; the sim has no encounter table, so the run would be a patchwerk under another name")
+	}
+}
+
+// The three execute proportions are the share of the fight spent below
+// 20%, 25% and 35% health. They are NESTED, so setting all three to one
+// number - which is what the builder did - describes a fight no health
+// bar can produce, inflates the Execute window by 25% at the default
+// ratio and understates the sub-35% one by 29%.
+func TestExecuteWindowsAreNestedNotEqual(t *testing.T) {
+	// The engine's own reference encounters are {0.2, 0.25, 0.35}: the
+	// proportion equals the threshold, which is a target whose health
+	// falls at a steady rate. A ratio of 0.2 must reproduce it exactly,
+	// or the shape this derivation assumes is not the engine's.
+	b20, b25, b35 := executeProportions(0.2)
+	for _, tc := range []struct {
+		got, want float64
+		name      string
+	}{{b20, 0.2, "below20"}, {b25, 0.25, "below25"}, {b35, 0.35, "below35"}} {
+		if math.Abs(tc.got-tc.want) > 1e-9 {
+			t.Errorf("at ratio 0.2, %s = %v, want the engine's own %v", tc.name, tc.got, tc.want)
+		}
+	}
+
+	req := fury()
+	req.Encounter.ExecuteRatio = 0.25
+	got, err := Build(req)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if got.Encounter.Biome != proto.Biome_BiomeUnknown {
-		t.Errorf("Encounter.Biome = %v, want BiomeUnknown for a request with no encounter profile", got.Encounter.Biome)
+	e := got.Encounter
+	if e.ExecuteProportion_20 != 0.25 {
+		t.Errorf("ExecuteProportion_20 = %v, want the requested 0.25: the control names the Execute window", e.ExecuteProportion_20)
+	}
+	if !(e.ExecuteProportion_20 < e.ExecuteProportion_25 && e.ExecuteProportion_25 < e.ExecuteProportion_35) {
+		t.Errorf("the windows are not nested: %v, %v, %v", e.ExecuteProportion_20, e.ExecuteProportion_25, e.ExecuteProportion_35)
+	}
+
+	// The whole fight below 20% health means the whole fight below 25%
+	// and 35% too: nothing may exceed one.
+	b20, b25, b35 = executeProportions(1)
+	if b20 != 1 || b25 != 1 || b35 != 1 {
+		t.Errorf("at ratio 1 the windows are %v, %v, %v; a proportion over 1 is not a proportion", b20, b25, b35)
+	}
+	if b20, b25, b35 = executeProportions(0); b20 != 0 || b25 != 0 || b35 != 0 {
+		t.Errorf("at ratio 0 the windows are %v, %v, %v", b20, b25, b35)
+	}
+}
+
+// The engine carries two profession slots and reads them for
+// self-only recipes and effects. They were accepted at the boundary and
+// never looked at again, so a sim ran without the Engineering trinket
+// the player counted on and said nothing.
+func TestProfessionsReachThePlayer(t *testing.T) {
+	req := fury()
+	req.Character.Profession = []string{"engineering", "blacksmithing"}
+	got, err := Build(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	p := got.Raid.Parties[0].Players[0]
+	if p.Profession1 != proto.Profession_Engineering {
+		t.Errorf("Profession1 = %v, want Engineering", p.Profession1)
+	}
+	if p.Profession2 != proto.Profession_Blacksmithing {
+		t.Errorf("Profession2 = %v, want Blacksmithing", p.Profession2)
+	}
+
+	none := fury()
+	got, err = Build(none)
+	if err != nil {
+		t.Fatal(err)
+	}
+	p = got.Raid.Parties[0].Players[0]
+	if p.Profession1 != proto.Profession_ProfessionUnknown || p.Profession2 != proto.Profession_ProfessionUnknown {
+		t.Errorf("a character with no professions got %v and %v", p.Profession1, p.Profession2)
+	}
+
+	for _, tc := range []struct {
+		name string
+		list []string
+		want error
+	}{
+		{"a profession the engine has no enum for", []string{"cooking"}, ErrUnknownProfession},
+		{"a typo", []string{"Engineering"}, ErrUnknownProfession},
+		{"three of them", []string{"mining", "tailoring", "alchemy"}, ErrTooManyProfession},
+		{"one of them twice", []string{"mining", "mining"}, ErrDuplicateProfess},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			bad := fury()
+			bad.Character.Profession = tc.list
+			if _, err := Build(bad); !errors.Is(err, tc.want) {
+				t.Errorf("Build returned %v, want %v", err, tc.want)
+			}
+		})
+	}
+}
+
+// Two rings in finger1 used to equip one and lose the other with no
+// word, and the character the sim reported on was not the one the
+// planner sent.
+func TestADuplicateGearSlotIsRefused(t *testing.T) {
+	req := fury()
+	req.Character.Gear = append(req.Character.Gear, api.GearSlot{Slot: "main_hand", ItemID: 12345})
+	_, err := Build(req)
+	if !errors.Is(err, ErrDuplicateSlot) {
+		t.Fatalf("Build returned %v, want ErrDuplicateSlot", err)
+	}
+	if !strings.Contains(err.Error(), "12345") || !strings.Contains(err.Error(), "19352") {
+		t.Errorf("the error names neither item: %v", err)
 	}
 }
 
@@ -175,7 +307,7 @@ func TestBuildRejectsWhatItCannotMap(t *testing.T) {
 			if err == nil {
 				t.Fatalf("expected an error mentioning %q", tc.want)
 			}
-			if !contains(err.Error(), tc.want) {
+			if !strings.Contains(err.Error(), tc.want) {
 				t.Errorf("error %q does not mention %q", err, tc.want)
 			}
 		})
@@ -240,39 +372,30 @@ func buildBytes(marshal googleproto.MarshalOptions) ([]byte, error) {
 	return marshal.Marshal(req)
 }
 
-func contains(h, n string) bool {
-	for i := 0; i+len(n) <= len(h); i++ {
-		if h[i:i+len(n)] == n {
-			return true
-		}
-	}
-	return false
-}
-
 // The browser's worker pool builds one engine request per part, and a
 // part's iteration count is never one of api.ValidIterations: 3,000
-// over four workers is 750. Options.SplitPart is what lets that build,
+// over four workers is 750. Options.OpenIterations is what lets that build,
 // and it relaxes nothing else.
-func TestBuildWithSplitPartAcceptsAWorkersShare(t *testing.T) {
+func TestBuildWithOpenIterationsAcceptsAWorkersShare(t *testing.T) {
 	part := fury()
 	part.Iterations = 750
 
 	if _, err := Build(part); err == nil {
-		t.Error("Build accepted 750 iterations without SplitPart")
+		t.Error("Build accepted 750 iterations without OpenIterations")
 	}
-	got, err := BuildWith(part, Options{SplitPart: true})
+	got, err := BuildWith(part, Options{OpenIterations: true})
 	if err != nil {
-		t.Fatalf("BuildWith(SplitPart) rejected a worker's share: %v", err)
+		t.Fatalf("BuildWith(OpenIterations) rejected a worker's share: %v", err)
 	}
 	if got.SimOptions.Iterations != 750 {
 		t.Errorf("Iterations = %d, want 750", got.SimOptions.Iterations)
 	}
 
-	// SplitPart is about the iteration count and nothing else: a part
+	// OpenIterations is about the iteration count and nothing else: a part
 	// with a level the engine cannot sim is still refused.
 	bad := part
 	bad.Character.Level = 40
-	if _, err := BuildWith(bad, Options{SplitPart: true}); err == nil {
-		t.Error("BuildWith(SplitPart) accepted a level the engine cannot sim")
+	if _, err := BuildWith(bad, Options{OpenIterations: true}); err == nil {
+		t.Error("BuildWith(OpenIterations) accepted a level the engine cannot sim")
 	}
 }

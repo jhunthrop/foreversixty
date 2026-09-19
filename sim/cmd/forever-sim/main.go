@@ -14,6 +14,11 @@
 //	forever-sim -in request.json -out result.json -progress
 //	forever-sim -in - -out - < request.json > result.json
 //
+// SIGINT and SIGTERM stop the run the way the browser's Stop button
+// does, through the engine's own abort signal, and the partial run is
+// written out as a SimResult with aborted set rather than as a failure
+// or a half-written file.
+//
 // With -progress every line of stderr is JSON: our own
 // {"completed","total","dps"} ticks, and the engine's log output wrapped
 // as {"log": "..."} rather than interleaved raw.
@@ -31,27 +36,30 @@ import (
 	"io"
 	"log"
 	"os"
+	"os/signal"
+	"strings"
+	"sync"
 	"sync/atomic"
+	"syscall"
 	"time"
 
 	"github.com/jhunthrop/foreversixty/sim/adapter"
 	"github.com/jhunthrop/foreversixty/sim/api"
+	"github.com/jhunthrop/foreversixty/sim/enginever"
 	"github.com/jhunthrop/foreversixty/sim/internal/simdb"
 	"github.com/jhunthrop/foreversixty/sim/request"
 	engine "github.com/wowsims/classic/sim"
 	"github.com/wowsims/classic/sim/core"
 	"github.com/wowsims/classic/sim/core/proto"
+	"github.com/wowsims/classic/sim/core/simsignals"
 	googleproto "google.golang.org/protobuf/proto"
 )
-
-// Version is set by the makefile to the short sha of the engine the
-// binary was built against: the same string as enginever.Version.
-var Version = "dev"
 
 const (
 	exitOK      = 0
 	exitSimFail = 1
 	exitBadArgs = 2
+	exitAborted = 130 // the shell's convention for "killed by SIGINT"
 )
 
 var errBadInput = errors.New("bad input")
@@ -66,9 +74,15 @@ func main() {
 	flag.Parse()
 
 	if *version {
-		fmt.Println(Version)
+		fmt.Println(enginever.Version)
 		os.Exit(exitOK)
 	}
+
+	// Once, here, rather than once per run inside execute: the engine
+	// guards RegisterAll with an unsynchronised package bool, so two
+	// concurrent runs in one process are a data race and a possible
+	// double registration. The Cloud Run job is that concurrent caller.
+	engine.RegisterAll()
 
 	var sink io.Writer
 	if *progress {
@@ -89,8 +103,13 @@ func main() {
 	}
 	if err := run(*in, outPath, *iterations, sink); err != nil {
 		fmt.Fprintln(os.Stderr, "forever-sim:", err)
-		if errors.Is(err, errBadInput) {
+		switch {
+		case errors.Is(err, errBadInput):
 			os.Exit(exitBadArgs)
+		case errors.Is(err, adapter.ErrAborted):
+			// Stopping a run is something the operator asked for, and
+			// run has already written what completed.
+			os.Exit(exitAborted)
 		}
 		os.Exit(exitSimFail)
 	}
@@ -104,14 +123,20 @@ func run(inPath, outPath string, iterations int, progress io.Writer) error {
 		return err
 	}
 	res, err := Execute(req, progress)
-	if err != nil {
+	if err != nil && !errors.Is(err, adapter.ErrAborted) {
 		return err
 	}
-	b, err := json.Marshal(res)
-	if err != nil {
-		return fmt.Errorf("marshalling the result: %w", err)
+	// An abort still writes: the caller asked for the run to stop, and
+	// the partial result says how far it got. The error is returned
+	// afterwards so main can exit on it.
+	b, marshalErr := json.Marshal(res)
+	if marshalErr != nil {
+		return fmt.Errorf("marshalling the result: %w", marshalErr)
 	}
-	return write(outPath, b)
+	if writeErr := write(outPath, b); writeErr != nil {
+		return writeErr
+	}
+	return err
 }
 
 // runProto is run with the engine's own result as the output instead of
@@ -150,15 +175,22 @@ func load(inPath string, iterations int) (api.SimRequest, error) {
 		return api.SimRequest{}, fmt.Errorf("%w: reading the request: %v", errBadInput, err)
 	}
 
+	// Strictly: a field the envelope does not carry is a caller sending
+	// something this build cannot honour, and accepting it would run a
+	// sim that quietly ignored part of the request.
 	var req api.SimRequest
-	if err := json.Unmarshal(raw, &req); err != nil {
+	dec := json.NewDecoder(strings.NewReader(string(raw)))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&req); err != nil {
 		return api.SimRequest{}, fmt.Errorf("%w: the input is not a SimRequest: %v", errBadInput, err)
 	}
 	if iterations > 0 {
 		req.Iterations = iterations
 	}
+	// An operator who wrote no engine version means this binary's.
+	// Naming a different one is refused by api.SimRequest.Validate.
 	if req.EngineVersion == "" {
-		req.EngineVersion = Version
+		req.EngineVersion = enginever.Version
 	}
 	return req, nil
 }
@@ -176,7 +208,24 @@ func write(path string, b []byte) error {
 // middle, our envelope out. sim/cmd/wasm calls the same three steps.
 func Execute(req api.SimRequest, progress io.Writer) (api.SimResult, error) {
 	start := time.Now()
+	// EngineVersion is this binary's own, never the request's claim: a
+	// row's provenance is a fact about what produced it, and
+	// api.SimResult.Stale can only ever fire if it is one.
+	base := api.SimResult{EngineVersion: enginever.Version, Request: req, Lane: api.LaneServer}
 	engineRes, err := execute(req, progress)
+	if errors.Is(err, adapter.ErrAborted) {
+		base.Aborted = true
+		base.DurationMS = time.Since(start).Milliseconds()
+		if engineRes != nil {
+			base.IterationsRun = int(engineRes.IterationsDone)
+		}
+		// An abort folded no fight, but it still carries a summary of
+		// the same SHAPE as a finished one: a zero summary.Summary
+		// marshals its sixteen lists as null, and the page that renders
+		// a stopped run would need a null check per key.
+		base.Summary = adapter.EmptySummary()
+		return base, err
+	}
 	if err != nil {
 		return api.SimResult{}, err
 	}
@@ -184,15 +233,11 @@ func Execute(req api.SimRequest, progress io.Writer) (api.SimResult, error) {
 	if err != nil {
 		return api.SimResult{}, fmt.Errorf("adapting the result: %w", err)
 	}
-	return api.SimResult{
-		EngineVersion: req.EngineVersion,
-		Request:       req,
-		Lane:          api.LaneServer,
-		DPS:           adapter.DPS(engineRes),
-		IterationsRun: int(engineRes.IterationsDone),
-		DurationMS:    time.Since(start).Milliseconds(),
-		Summary:       sum,
-	}, nil
+	base.DPS = adapter.DPS(engineRes)
+	base.IterationsRun = int(engineRes.IterationsDone)
+	base.DurationMS = time.Since(start).Milliseconds()
+	base.Summary = sum
+	return base, nil
 }
 
 // runs counts the sims this process has started, so each gets a signal
@@ -206,9 +251,15 @@ func runID() string {
 // execute is the engine half: our request in, the engine's own result
 // out, with progress reported as JSON lines along the way.
 func execute(req api.SimRequest, progress io.Writer) (*proto.RaidSimResult, error) {
-	engine.RegisterAll()
+	// A test binary and any caller that is not main() still needs the
+	// registry, and sync.Once makes the second call free and safe.
+	registerOnce.Do(engine.RegisterAll)
 
-	engineReq, err := request.Build(req)
+	// OpenIterations: -iterations is an operator override, so the count
+	// is bounded rather than held to the closed set the settings bar
+	// offers. Without it `-iterations 100` died on "iterations must be
+	// one of [500 3000 10000]", which the flag's own help denies.
+	engineReq, err := request.BuildWith(req, request.Options{OpenIterations: true})
 	if err != nil {
 		return nil, fmt.Errorf("%w: %v", errBadInput, err)
 	}
@@ -222,7 +273,9 @@ func execute(req api.SimRequest, progress io.Writer) (*proto.RaidSimResult, erro
 	// A fresh id per run: simsignals.RegisterWithId refuses a duplicate,
 	// so a constant would collide the moment one process ran two sims -
 	// which the tests in this package already do.
-	core.RunRaidSimConcurrentAsync(engineReq, reporter, runID())
+	id := runID()
+	defer onInterrupt(id)()
+	core.RunRaidSimConcurrentAsync(engineReq, reporter, id)
 
 	var enc *json.Encoder
 	if progress != nil {
@@ -246,8 +299,39 @@ func execute(req api.SimRequest, progress io.Writer) (*proto.RaidSimResult, erro
 	if engineRes == nil {
 		return nil, errors.New("the engine produced no result")
 	}
-	if engineRes.Error != nil && engineRes.Error.Message != "" {
-		return nil, fmt.Errorf("the sim failed: %s", engineRes.Error.Message)
+	// Switching on the type, not on the message: an abort's
+	// ErrorOutcome carries none, so a message test reported Ctrl-C as
+	// a corrupt result.
+	if err := adapter.ResultError(engineRes); err != nil {
+		if errors.Is(err, adapter.ErrAborted) {
+			return engineRes, err
+		}
+		return nil, fmt.Errorf("the sim failed: %w", err)
 	}
 	return engineRes, nil
+}
+
+// registerOnce guards the engine's spell registry. The engine's own
+// guard is an unsynchronised package bool.
+var registerOnce sync.Once
+
+// onInterrupt makes SIGINT and SIGTERM abort the run with the id given,
+// and returns the function that takes the handler back down. The engine
+// answers an abort with a result rather than a panic, so the process
+// gets to write what completed instead of dying mid-file.
+func onInterrupt(id string) func() {
+	ch := make(chan os.Signal, 1)
+	signal.Notify(ch, os.Interrupt, syscall.SIGTERM)
+	done := make(chan struct{})
+	go func() {
+		select {
+		case <-ch:
+			simsignals.AbortById(id)
+		case <-done:
+		}
+	}()
+	return func() {
+		signal.Stop(ch)
+		close(done)
+	}
 }

@@ -1,13 +1,19 @@
 package adapter
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"math"
+	"reflect"
+	"slices"
+	"sort"
+	"strings"
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
 	"github.com/jhunthrop/foreversixty/sim/api"
+	"github.com/jhunthrop/foreversixty/sim/enginever"
 	"github.com/wowsims/classic/sim/core/proto"
 )
 
@@ -65,8 +71,9 @@ func resultWith(u *proto.UnitMetrics, iterations int32) *proto.RaidSimResult {
 
 func req() api.SimRequest {
 	return api.SimRequest{
-		EngineVersion: "7779ebb",
+		EngineVersion: enginever.Version,
 		Spec:          "warrior-fury",
+		Source:        api.CharacterSource{Kind: api.SourceManual},
 		Character:     api.CharacterSpec{Name: "Fury", Race: "orc", Class: "warrior", Level: 60},
 		Encounter:     api.DefaultEncounter(),
 		Iterations:    100,
@@ -78,8 +85,8 @@ func TestSummarizeHeader(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if got.EngineVersion != "sim:7779ebb" {
-		t.Errorf("EngineVersion = %q, want %q", got.EngineVersion, "sim:7779ebb")
+	if want := "sim:" + enginever.Version; got.EngineVersion != want {
+		t.Errorf("EngineVersion = %q, want %q", got.EngineVersion, want)
 	}
 	if got.FightIndex != 1 {
 		t.Errorf("FightIndex = %d, want 1", got.FightIndex)
@@ -130,8 +137,11 @@ func TestSummarizeDividesByIterations(t *testing.T) {
 	if ab.Name != "spell:23894" {
 		t.Errorf("Name = %q; the engine carries no names, so the adapter emits the id and the web resolves it", ab.Name)
 	}
-	if ab.Hits != 2 { // 160/100 = 1.6, rounds to 2
-		t.Errorf("Hits = %d, want 2 (160/100 rounded)", ab.Hits)
+	// Hits is every landing: 160 plain + 40 crits + 5 glances = 205
+	// over 100 iterations, which rounds to 2. See
+	// TestHitsAndCritsUseTheLogsEngineDefinitions for why.
+	if ab.Hits != 2 {
+		t.Errorf("Hits = %d, want 2 ((160+40+5)/100 rounded)", ab.Hits)
 	}
 	if ab.Crits != 0 { // 40/100 = 0.4, rounds to 0
 		t.Errorf("Crits = %d, want 0 (40/100 rounds down)", ab.Crits)
@@ -432,5 +442,245 @@ func TestDPS(t *testing.T) {
 	want := 120.5 / math.Sqrt(100)
 	if math.Abs(got.Error-want) > 1e-9 {
 		t.Errorf("DPS().Error = %v, want %v", got.Error, want)
+	}
+}
+
+// The summary's Hits, Crits and Ticks are the LOGS ENGINE's counters,
+// not sim/core's, and the two conventions are different in a way no
+// golden can catch on its own: a golden pins whatever the adapter does
+// today, which is how the disagreement survived a review.
+//
+// logs/engine/summary/damage.go's fold is the definition:
+//
+//	if periodic { ab.Ticks++ } else { ab.Hits++ }
+//	if e.Critical.V { ab.Crits++ }
+//
+// so Hits counts EVERY non-periodic landing whatever its outcome, Ticks
+// every periodic one, and Crits is a second count over both. The report
+// computes crit % as crits/hits against exactly that.
+//
+// sim/core's counters are disjoint: a crit never increments Hits, and
+// Glances, Crushes, Blocks and BlockedCrits are counted separately
+// again (spell_outcome.go). Copying them straight across printed a
+// glancing-heavy warrior as barely hitting, a dot as never critting,
+// and a crit rate over the wrong denominator - a sim and a real fight
+// of identical shape disagreeing inside one component.
+func TestHitsAndCritsUseTheLogsEngineDefinitions(t *testing.T) {
+	// Every landed outcome the engine counts, one apiece per iteration
+	// so nothing is lost to rounding, with distinct values so a swapped
+	// term shows up as a wrong number rather than a coincidence.
+	const iters = 1
+	u := &proto.UnitMetrics{
+		Name: "Fury",
+		Dps:  &proto.DistributionMetrics{Avg: 1, Stdev: 0, Max: 1, Min: 1},
+		Actions: []*proto.ActionMetrics{{
+			Id:      &proto.ActionID{RawId: &proto.ActionID_SpellId{SpellId: 23894}},
+			IsMelee: true,
+			Targets: []*proto.TargetedActionMetrics{{
+				UnitIndex:    1,
+				Casts:        1000,
+				Hits:         100,
+				Crits:        40,
+				Glances:      20,
+				Crushes:      10,
+				Blocks:       5,
+				BlockedCrits: 2,
+				Ticks:        7,
+				CritTicks:    3,
+				Misses:       11,
+				Dodges:       6,
+				Parries:      4,
+				Damage:       1000,
+			}},
+		}},
+	}
+	got, err := Summarize(resultWith(u, iters), req())
+	if err != nil {
+		t.Fatal(err)
+	}
+	ab := got.DamageDone[0].Abilities[0]
+
+	// Every non-periodic landing: 100 + 40 + 20 + 10 + 5 + 2.
+	if want := int64(177); ab.Hits != want {
+		t.Errorf("Hits = %d, want %d: a crit, a glance, a crush and a block all LANDED, and the logs engine counts each of them a hit", ab.Hits, want)
+	}
+	// Every critical landing, periodic included: 40 + 2 + 3.
+	if want := int64(45); ab.Crits != want {
+		t.Errorf("Crits = %d, want %d: a blocked crit and a critical tick are crits, and the report's crit %% is crits/hits", ab.Crits, want)
+	}
+	// Every periodic landing: 7 + 3.
+	if want := int64(10); ab.Ticks != want {
+		t.Errorf("Ticks = %d, want %d", ab.Ticks, want)
+	}
+	// Crits are a subset of the landings, never more of them, or the
+	// report prints a crit rate over 100%.
+	if ab.Crits > ab.Hits+ab.Ticks {
+		t.Errorf("crits %d exceed landings %d", ab.Crits, ab.Hits+ab.Ticks)
+	}
+	// The outcome keys are a cross-lane vocabulary and every one of
+	// them is exercised here with a count that survives the division,
+	// because a map read on a nil map returns zero and an assertion
+	// that only ever compares zero to zero cannot fail.
+	for key, want := range map[string]int64{
+		"MISS": 11, "DODGE": 6, "PARRY": 4,
+		"BLOCK":    7, // Blocks + BlockedCrits
+		"GLANCING": 20, "CRUSHING": 10,
+	} {
+		if ab.Misses[key] != want {
+			t.Errorf("Misses[%q] = %d, want %d", key, ab.Misses[key], want)
+		}
+	}
+}
+
+// An abort is not a corrupt result. The engine reports one with an
+// ErrorOutcome whose Type is ErrorOutcomeAborted and whose Message is
+// EMPTY, so every guard written as `Error != nil && Message != ""` let
+// it through and the user pressing Stop was told the result had zero
+// iterations.
+func TestAnAbortIsReportedAsAnAbort(t *testing.T) {
+	aborted := &proto.RaidSimResult{Error: &proto.ErrorOutcome{Type: proto.ErrorOutcomeType_ErrorOutcomeAborted}}
+	if err := ResultError(aborted); !errors.Is(err, ErrAborted) {
+		t.Errorf("ResultError(aborted) = %v, want ErrAborted", err)
+	}
+	if _, err := Summarize(aborted, req()); !errors.Is(err, ErrAborted) {
+		t.Errorf("Summarize(aborted) = %v, want ErrAborted", err)
+	}
+	if errors.Is(ResultError(aborted), ErrSimFailed) {
+		t.Error("an abort must not read as a failure: the user asked for it")
+	}
+
+	failed := &proto.RaidSimResult{Error: &proto.ErrorOutcome{Message: "boom"}}
+	if err := ResultError(failed); !errors.Is(err, ErrSimFailed) {
+		t.Errorf("ResultError(failed) = %v, want ErrSimFailed", err)
+	}
+	// An error outcome with neither a type nor a message is still an
+	// error, not a success.
+	if err := ResultError(&proto.RaidSimResult{Error: &proto.ErrorOutcome{}}); !errors.Is(err, ErrSimFailed) {
+		t.Errorf("ResultError(empty outcome) = %v, want ErrSimFailed", err)
+	}
+	if err := ResultError(resultWith(oneAction(), 100)); err != nil {
+		t.Errorf("ResultError(a good result) = %v, want nil", err)
+	}
+}
+
+// The spec slug splits where the canonical list says it does, not at
+// the first hyphen: "hunter-beast-mastery" is a hunter, spec
+// "beast-mastery".
+func TestSpecSlugSplitsOnTheCanonicalList(t *testing.T) {
+	for slug, want := range map[string][2]string{
+		"warrior-fury":         {"warrior", "fury"},
+		"hunter-beast-mastery": {"hunter", "beast-mastery"},
+		"nonsense":             {"nonsense", ""},
+		"not-a-spec":           {"not", "a-spec"},
+	} {
+		class, spec := splitSpecSlug(slug)
+		if class != want[0] || spec != want[1] {
+			t.Errorf("splitSpecSlug(%q) = (%q, %q), want (%q, %q)", slug, class, spec, want[0], want[1])
+		}
+	}
+}
+
+// A nil Go slice marshals as null, so a summary built as a zero value
+// hands the web `"damage_done": null` where a finished run hands it
+// `[]`. That is a null check per key on the path least likely to be
+// exercised - the user pressed Stop - so the abort path carries
+// EmptySummary() and this walks the marshalled JSON to prove it.
+//
+// The walk is by REFLECTION over summary.Summary rather than against a
+// list written down here: a list field added to that struct later must
+// fail this test rather than reach the web as a null.
+func TestEverySummaryListIsEmptyNotNull(t *testing.T) {
+	res := api.SimResult{
+		EngineVersion: enginever.Version,
+		Aborted:       true,
+		IterationsRun: 7,
+		Summary:       EmptySummary(),
+	}
+	b, err := json.Marshal(res)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var envelope struct {
+		Summary json.RawMessage `json:"summary"`
+	}
+	if err := json.Unmarshal(b, &envelope); err != nil {
+		t.Fatal(err)
+	}
+	decoded := map[string]json.RawMessage{}
+	if err := json.Unmarshal(envelope.Summary, &decoded); err != nil {
+		t.Fatal(err)
+	}
+
+	typ := reflect.TypeOf(summary.Summary{})
+	lists := 0
+	for i := 0; i < typ.NumField(); i++ {
+		field := typ.Field(i)
+		if field.Type.Kind() != reflect.Slice {
+			continue
+		}
+		lists++
+		key := strings.Split(field.Tag.Get("json"), ",")[0]
+		raw, ok := decoded[key]
+		if !ok {
+			t.Errorf("an aborted summary has no %q key (field %s)", key, field.Name)
+			continue
+		}
+		if string(raw) != "[]" {
+			t.Errorf("an aborted summary's %q is %s, want []", key, raw)
+		}
+	}
+	if lists == 0 {
+		t.Fatal("the reflection walk found no list fields; summary.Summary changed shape")
+	}
+
+	// The one list that is nested rather than top level.
+	var mechanics struct {
+		Rows json.RawMessage `json:"rows"`
+	}
+	if err := json.Unmarshal(decoded["mechanics"], &mechanics); err != nil {
+		t.Fatal(err)
+	}
+	if string(mechanics.Rows) != "[]" {
+		t.Errorf("an aborted summary's mechanics.rows is %s, want []", mechanics.Rows)
+	}
+
+	// And the summary holds no null at all, at any depth, which is the
+	// claim the web lane actually relies on. (The echoed request may
+	// hold nulls - those are the caller's own optional lists, and this
+	// synthetic request omits them.)
+	if bytes.Contains(envelope.Summary, []byte("null")) {
+		t.Errorf("an aborted summary marshals a null: %s", envelope.Summary)
+	}
+}
+
+// The empty shape and the finished one must carry the same keys, or
+// "the same shape as a completed result" is only true of the lists.
+func TestTheEmptyAndFinishedSummariesHaveTheSameKeys(t *testing.T) {
+	full, err := Fixture("warrior-fury")
+	if err != nil {
+		t.Fatal(err)
+	}
+	finished, err := Summarize(full, req())
+	if err != nil {
+		t.Fatal(err)
+	}
+	keys := func(s summary.Summary) []string {
+		b, err := json.Marshal(s)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var m map[string]json.RawMessage
+		if err := json.Unmarshal(b, &m); err != nil {
+			t.Fatal(err)
+		}
+		out := make([]string, 0, len(m))
+		for k := range m {
+			out = append(out, k)
+		}
+		sort.Strings(out)
+		return out
+	}
+	if got, want := keys(EmptySummary()), keys(finished); !slices.Equal(got, want) {
+		t.Errorf("the empty summary's keys are %v, the finished one's %v", got, want)
 	}
 }

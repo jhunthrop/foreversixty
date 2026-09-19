@@ -113,6 +113,7 @@ type SimResult struct {
     DurationMS    int64           `json:"duration_ms"`       // wall clock of the run
     Summary       summary.Summary `json:"summary"`           // logs engine shape, section below
     Error         string          `json:"error,omitempty"`
+    Aborted       bool            `json:"aborted,omitempty"` // stopped on request, not a failure; Summary/DPS are partial
 }
 
 type Estimate struct {
@@ -311,6 +312,7 @@ Settled by the engine lane's Task 3 (amended 2026-09-18 by the controller; descr
   (also a browser asset) via `request.BuildWith(req, Options{Consumables})`; weapon imbues are
   slot-qualified (`off_hand_imbue:shadow_oil`); an unknown id is an error the UI surfaces.
 - **Level.** `CharacterSpec.level` is always `api.SimLevel` (60), enforced by `api.SimRequest.Validate`.
+- **Engine version at the boundary.** `api.SimRequest.Validate` refuses a request whose `engine_version` is not `enginever.Version` (the artifact that runs it); every result is stamped with the running engine's `enginever.Version`, never the requested one, so `SimResult.Stale` compares real versions. A client that holds a stale `ENGINE_VERSION` reloads the wasm rather than retrying.
 - **Progress payload.** The wasm's `simRun` progress callback carries `Pick<SimResult, 'iterations_run' | 'dps'>`;
   the engine lane's Task 13 builds the artifact to that shape.
 - **Budgets.** `/sim/<sim_id>` mounts the report component set and takes the report page's 200 ms

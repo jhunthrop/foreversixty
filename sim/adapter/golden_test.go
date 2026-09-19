@@ -9,6 +9,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
 	"github.com/jhunthrop/foreversixty/sim/api"
+	"github.com/jhunthrop/foreversixty/sim/enginever"
 )
 
 // goldenSpecs are the specs a fixture and a golden are checked in for.
@@ -72,6 +73,16 @@ func TestGoldenSummaries(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
+			// The stamp is a FACT about the binary, never the
+			// request's claim, or a cached request pinned to an old
+			// sha would come back labelled with it and
+			// SimResult.Stale could never fire. It is asserted here
+			// and then normalised away, so the golden keeps pinning
+			// the adapter's shape without churning on every pin.
+			if want := "sim:" + enginever.Version; got.EngineVersion != want {
+				t.Errorf("EngineVersion = %q, want %q", got.EngineVersion, want)
+			}
+			got.EngineVersion = "sim:" + goldenEngineVersion
 			b, err := json.MarshalIndent(got, "", "  ")
 			if err != nil {
 				t.Fatal(err)

@@ -1,17 +1,20 @@
 package combine
 
 import (
+	"errors"
 	"fmt"
 	"math"
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
 	"github.com/jhunthrop/foreversixty/sim/api"
+	"github.com/jhunthrop/foreversixty/sim/enginever"
 )
 
 func req(iters int, seed int64) api.SimRequest {
 	return api.SimRequest{
-		EngineVersion: "7779ebb", Spec: "warrior-fury",
+		EngineVersion: enginever.Version, Spec: "warrior-fury",
+		Source:     api.CharacterSource{Kind: api.SourceManual},
 		Character:  api.CharacterSpec{Name: "T", Race: "orc", Class: "warrior", Level: 60},
 		Encounter:  api.DefaultEncounter(),
 		Iterations: iters, RandomSeed: seed,
@@ -62,13 +65,27 @@ func TestSplitHandlesARemainder(t *testing.T) {
 	}
 }
 
+// A worker pool asking for more parts than there are iterations is the
+// case the clamp exists for, and nothing exercised it: the old version
+// split 500 iterations 64 ways, where 64 < 500 and the clamp is never
+// taken, so the assertion could not fire.
 func TestSplitNeverExceedsTheIterationCount(t *testing.T) {
-	parts, err := Split(req(500, 0), 64)
+	parts, err := Split(req(8, 0), 64)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(parts) > 500 {
-		t.Errorf("got %d parts for 500 iterations", len(parts))
+	if len(parts) != 8 {
+		t.Fatalf("got %d parts for 8 iterations, want 8: a part with no iterations is a worker with nothing to do", len(parts))
+	}
+	var total int
+	for i, p := range parts {
+		if p.Iterations != 1 {
+			t.Errorf("part %d has %d iterations, want 1", i, p.Iterations)
+		}
+		total += p.Iterations
+	}
+	if total != 8 {
+		t.Errorf("the parts sum to %d, want 8", total)
 	}
 }
 
@@ -356,5 +373,116 @@ func TestResultsDoesNotTouchItsInput(t *testing.T) {
 	}
 	if src.Abilities[0].Misses["MISS"] != 4 {
 		t.Errorf("parts[0] misses = %v, want its own", src.Abilities[0].Misses)
+	}
+}
+
+// full is a whole part: the fields Results reads to decide the parts
+// belong to one run, plus a one-row damage table to merge.
+func full(seed int64, iters int, mut func(*api.SimResult)) api.SimResult {
+	r := api.SimResult{
+		EngineVersion: enginever.Version,
+		Request:       req(iters, seed),
+		Lane:          api.LaneBrowser,
+		IterationsRun: iters,
+		DPS:           api.Estimate{Mean: 1000, StdDev: 50, Min: 900, Max: 1100},
+		Summary: summary.Summary{DamageDone: []summary.Actor{{
+			GUID: "sim-player", Total: 900, Effective: 900,
+			Abilities: []summary.Ability{
+				{SpellID: 1, Total: 500, Effective: 500, Hits: 5, Crits: 1},
+				{SpellID: 2, Total: 400, Effective: 400, Hits: 3, Crits: 1},
+			},
+		}}},
+	}
+	if mut != nil {
+		mut(&r)
+	}
+	return r
+}
+
+// Results validated only "non-empty, no error, iterations > 0" and then
+// adopted part zero's request, spec and engine version wholesale. Two
+// different specs, or a mix of engine versions, pooled into one
+// authoritative-looking DPS and nothing downstream could tell.
+func TestResultsRefusesPartsFromDifferentRuns(t *testing.T) {
+	cases := []struct {
+		name string
+		mut  func(*api.SimResult)
+	}{
+		{"another engine", func(r *api.SimResult) { r.EngineVersion = "deadbee" }},
+		{"another spec", func(r *api.SimResult) { r.Request.Spec = "mage-frost" }},
+		{"another character", func(r *api.SimResult) { r.Request.Character.Race = "troll" }},
+		{"another encounter", func(r *api.SimResult) { r.Request.Encounter.DurationSec = 300 }},
+		{"different gear", func(r *api.SimResult) {
+			r.Request.Character.Gear = []api.GearSlot{{Slot: "head", ItemID: 1}}
+		}},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			_, err := Results([]api.SimResult{full(0, 750, nil), full(750, 750, tc.mut)})
+			if !errors.Is(err, ErrMixedParts) {
+				t.Errorf("Results returned %v, want ErrMixedParts", err)
+			}
+		})
+	}
+
+	// The two fields a split IS allowed to vary must still combine.
+	if _, err := Results([]api.SimResult{full(0, 750, nil), full(750, 250, nil)}); err != nil {
+		t.Errorf("Results refused two honest parts of one run: %v", err)
+	}
+
+	// A part that was stopped is not a share of a finished run either:
+	// pooling it reports a full run's precision over a partial sample.
+	_, err := Results([]api.SimResult{full(0, 750, nil), full(750, 750, func(r *api.SimResult) { r.Aborted = true })})
+	if err == nil {
+		t.Error("Results pooled a stopped part")
+	}
+}
+
+// The adapter guarantees an actor's total is the sum of its ability
+// rows; the report reads both. Weighing the two independently broke
+// that by a rounding error per row, and truncating biased every row low.
+func TestCombinedActorTotalsAreTheSumOfTheirRows(t *testing.T) {
+	// Four parts with a total that does not divide evenly by the
+	// weights, so the rounding is doing real work.
+	parts := []api.SimResult{
+		full(0, 751, nil), full(751, 750, nil), full(1501, 750, nil), full(2251, 749, nil),
+	}
+	out, err := Results(parts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, a := range out.Summary.DamageDone {
+		var sum, effective int64
+		for _, ab := range a.Abilities {
+			sum += ab.Total
+			effective += ab.Effective
+		}
+		if a.Total != sum {
+			t.Errorf("actor %q totals %d but its rows sum to %d", a.GUID, a.Total, sum)
+		}
+		if a.Effective != effective {
+			t.Errorf("actor %q effective is %d but its rows sum to %d", a.GUID, a.Effective, effective)
+		}
+	}
+	// Each part reported 900 per fight, so the weighted mean is 900:
+	// a truncating weigh gave 897 or worse.
+	if got := out.Summary.DamageDone[0].Total; got != 900 {
+		t.Errorf("the combined actor total is %d, want 900; the weights sum to one, so nothing should be lost", got)
+	}
+}
+
+// Min and Max are extremes over the parts. A part that reported no
+// distribution at all - Max zero - used to pull the run's minimum to
+// zero, a figure no iteration produced.
+func TestResultsIgnoresAPartWithNoDistribution(t *testing.T) {
+	out, err := Results([]api.SimResult{
+		full(0, 750, nil),
+		full(750, 750, func(r *api.SimResult) { r.DPS = api.Estimate{Mean: 1000} }),
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if out.DPS.Min != 900 || out.DPS.Max != 1100 {
+		t.Errorf("DPS range = [%v, %v], want [900, 1100]", out.DPS.Min, out.DPS.Max)
 	}
 }

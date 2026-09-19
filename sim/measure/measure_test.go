@@ -2,6 +2,7 @@ package measure
 
 import (
 	"math"
+	"strings"
 	"testing"
 	"time"
 )
@@ -178,7 +179,7 @@ func TestInsufficientDataIsNotANumber(t *testing.T) {
 		}
 	}
 	out := rep.Table()
-	if !contains(out, "insufficient data") {
+	if !strings.Contains(out, "insufficient data") {
 		t.Errorf("the table prints numbers it should have withheld:\n%s", out)
 	}
 }
@@ -205,13 +206,4 @@ func TestRunRejectsAnEmptyInput(t *testing.T) {
 	if _, err := Load("testdata/nope.log", fixtureBase); err == nil {
 		t.Fatal("a missing log was accepted")
 	}
-}
-
-func contains(h, n string) bool {
-	for i := 0; i+len(n) <= len(h); i++ {
-		if h[i:i+len(n)] == n {
-			return true
-		}
-	}
-	return false
 }
