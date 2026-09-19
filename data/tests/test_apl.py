@@ -91,11 +91,11 @@ def test_every_spell_the_rotations_name_exists_with_that_rank():
     is rank 10 where the client's 25304 is Rank 11. Check against the client.
 
     `ENGINE_AURA_IDS` is the one sanctioned exception, and only where the id
-    is never a `castSpell` target: mage-fire's Improved Scorch gate has to
-    read the aura the engine actually creates (12873), not the client's own
-    Fire Vulnerability (22959) -- spellconst is client data and cannot
-    confirm an id the engine registers internally, which is exactly the gap
-    that table exists to record."""
+    is never a `castSpell` target: it records an aura a rotation must gate on
+    an id the engine registers internally rather than the client's own copy
+    of the same ability -- spellconst is client data and cannot confirm an
+    id the engine only ever creates in Go. Empty today; populated the next
+    time a written rotation hits that gap."""
     if not SPELLCONST.exists():
         pytest.skip("spellconst has not been generated yet (Task 8)")
     by_class = {
@@ -117,11 +117,18 @@ def test_every_spell_the_rotations_name_exists_with_that_rank():
     assert checked >= 10, "the written rotations should name at least ten spell references"
 
 
-def test_an_engine_aura_exception_is_accepted_as_an_aura_but_rejected_as_a_cast():
+def test_an_engine_aura_exception_is_accepted_as_an_aura_but_rejected_as_a_cast(monkeypatch):
     """`ENGINE_AURA_IDS` may only excuse an aura reference from the spellconst
     check -- a `castSpell` naming the same id must still fail, because that is
-    the id the engine is actually asked to cast, exception table or not."""
-    exception_id = next(iter(ENGINE_AURA_IDS))
+    the id the engine is actually asked to cast, exception table or not.
+
+    This tests the mechanism, not today's table: `ENGINE_AURA_IDS` is empty
+    whenever every rotation's aura references match spellconst on their own
+    (fix round 3 removed its last entry, mage-fire's Improved Scorch gate,
+    along with the gate itself), and the mechanism still has to work the
+    next time an engine/client id divergence needs it."""
+    exception_id = 999999
+    monkeypatch.setitem(ENGINE_AURA_IDS, exception_id, "test-only exception")
 
     aura_reference = {
         "priorityList": [

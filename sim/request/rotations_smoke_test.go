@@ -119,28 +119,15 @@ func spellAction(spellID int) string { return fmt.Sprintf("{SpellID: %d}", spell
 //
 // Pinned to the engine at sim/enginever.Version.
 var smokeBuildWarnings = map[string]map[string]string{
-	"druid-feral": {
-		"{SpellID: 5217}": "FINDING (rotation lane): Tiger's Fury. sim/druid/tigers_fury.go " +
-			"registers one id per level and a level-60 druid gets 9846; 5217 is the level-25 " +
-			"rank, so this line is inert for every character the site sims.",
-	},
 	"hunter-beast-mastery": {
-		"{SpellID: 20904}": aimedShotFinding,
 		"{SpellID: 19574}": "Bestial Wrath is a talent (sim/hunter/talents.go); this build takes none.",
 	},
-	"hunter-marksmanship": {"{SpellID: 20904}": aimedShotFinding},
-	"hunter-survival":     {"{SpellID: 20904}": aimedShotFinding},
 	"mage-arcane": {
 		"{SpellID: 12042}": "Arcane Power is a talent (sim/mage/talents.go); this build takes none.",
 		"{SpellID: 12043}": "Presence of Mind is a talent (sim/mage/talents.go); this build takes none.",
 	},
 	"mage-fire": {
 		"{SpellID: 11129}": "Combustion is a talent (sim/mage/talents.go); this build takes none.",
-		"{SpellID: 12873}": "FINDING (rotation lane): the Improved Scorch debuff aura is created by " +
-			"sim/core/debuffs.go only when the raid turns the debuff on - the mage's own Scorch " +
-			"casts never create it - so the stack gate is a nil condition, which the engine treats " +
-			"as always true, and Fireball is never reached. The bug fix round 1 set out to fix is " +
-			"still there, one id further along.",
 	},
 	"priest-shadow": {
 		"{SpellID: 15473}": "Shadowform is a talent (sim/priest/talents.go); this build takes none.",
@@ -169,22 +156,12 @@ var smokeBuildWarnings = map[string]map[string]string{
 	"warlock-destruction": {
 		"{OtherID: 13}":    noPotionWarning,
 		"{SpellID: 18871}": "Shadowburn is gated on its talent (sim/warlock/shadowburn.go); this build takes none.",
-		"{SpellID: 1293817}": "FINDING (rotation lane): Conflagrate. sim/warlock/conflagrate.go " +
-			"registers the vanilla ids 17962/18930/18931/18932; 1293817 is the id the Forever " +
-			"talent table carries and nothing casts, so this line is inert for every character.",
+		"{SpellID: 18932}": "Conflagrate is gated on its talent (sim/warlock/conflagrate.go); this build takes none.",
 	},
 	"warrior-arms": {
 		"{SpellID: 21553}": "Mortal Strike is gated on its talent (sim/warrior/mortal_strike.go); this build takes none.",
-		"{SpellID: 11574}": "FINDING (rotation lane): Rend's upkeep gate is auraIsActive on the " +
-			"warrior, but Rend's DoT lives on the target. No aura resolves, the condition is nil, " +
-			"and APLAction.IsReady reads a nil condition as always true - so Rend is recast on " +
-			"every free global. This is the same defect shaman-enhancement's notes describe.",
 	},
 }
-
-const aimedShotFinding = "FINDING (engine + rotation lanes): Aimed Shot. The body of " +
-	"sim/hunter/aimed_shot.go's registerAimedShotSpell is commented out, so no hunter of any " +
-	"spec or talent build ever learns it, and all three hunter rotations are built around it."
 
 const noPotionWarning = "OtherActionPotion: this build carries no consumables, so there is " +
 	"no potion for the engine to resolve the action against."
