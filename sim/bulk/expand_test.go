@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"slices"
+	"strings"
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/sim/api"
@@ -35,6 +36,15 @@ import (
 // next one's.
 const (
 	itemHelm = 12640 // head: Lionheart Helm (also in the warrior-fury fixture)
+	// itemHelm2 is a second, unrelated real head item (Whitesoul Helm),
+	// for the "two candidates for one slot" and cap-counting cases.
+	// itemHelm+1 (12641) is Invulnerable Mail, a CHEST item - Task 14's
+	// own brief assumed a +1 neighbour the way itemRing and
+	// itemOneHander have one, but head has no such neighbour in this
+	// build, so this constant is a distinct id found the same way
+	// itemClassLocked and itemAllianceOnly were: a short scan of the
+	// embedded table for a row of the needed kind.
+	itemHelm2 = 12633 // head: Whitesoul Helm
 	// itemOneHander, +1 and +2 are three consecutive real one-handers
 	// (Silverbane Slicer, Guardian's Maulers, Swampspine Crusher; all
 	// main_hand/off_hand, unrestricted, level 40), for the dual-wield
@@ -66,7 +76,18 @@ const (
 	enchantWeapon    = 1900 // Enchant Weapon - Crusader: main_hand, off_hand
 	enchantTwoHand   = 1903 // Enchant 2H Weapon - Major Spirit: two-hand only
 	enchantHead      = 1506 // Lesser Arcanum of Voracity: head, legs (also in the fixture)
+	// itemUniqueRing is any unique-equipped ring in the active build.
+	// TestFindAUniqueRing prints candidates when this one stops being one.
+	itemUniqueRing = 19432
 )
+
+func TestFindAUniqueRing(t *testing.T) {
+	item, ok := simdb.Lookup(itemUniqueRing)
+	if ok && item.Unique && slices.Contains(item.Slots, "finger1") {
+		return
+	}
+	t.Errorf("item %d is no longer a unique ring in this build; pick another from the build's table", itemUniqueRing)
+}
 
 // base is a fury warrior with a full set of the fixture's own gear, so
 // every slot the tests substitute into is already filled.
@@ -410,5 +431,359 @@ func TestACombinationsRequestIsAPlainRun(t *testing.T) {
 	}
 	if got[0].Request.Spec != base().Spec || got[0].Request.Character.Talents != base().Character.Talents {
 		t.Error("a combination changed something other than the gear")
+	}
+}
+
+// Gear mode is every valid combination; drops and talents mode are one
+// substitution at a time. That is the whole difference between Top
+// Gear and Droptimizer, and it is the mode that says which.
+func TestGearModeCombinesAndDropsModeDoesNot(t *testing.T) {
+	two := []api.Candidate{candidate("head", itemHelm), candidate("finger2", itemRing+1)}
+	gearMode, err := Expand(withBulk(api.KindGear, two...))
+	if err != nil {
+		t.Fatal(err)
+	}
+	// head-or-not times finger2-or-not, minus the "neither" case,
+	// which is the equipped set and is not a combination.
+	if len(gearMode) != 3 {
+		t.Errorf("gear mode produced %d combinations, want 3", len(gearMode))
+	}
+	var both int
+	for _, c := range gearMode {
+		if len(slotsOf(c)) == 2 {
+			both++
+		}
+	}
+	if both != 1 {
+		t.Errorf("gear mode produced %d combinations that change both slots, want 1", both)
+	}
+
+	dropsCandidates := []api.Candidate{
+		{Slot: "head", ItemID: itemHelm, Origin: "drop:raid:mc:lucifron"},
+		{Slot: "finger2", ItemID: itemRing + 1, Origin: "drop:raid:mc:lucifron"},
+	}
+	dropsMode, err := Expand(withBulk(api.KindDrops, dropsCandidates...))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(dropsMode) != 2 {
+		t.Errorf("drops mode produced %d combinations, want 2", len(dropsMode))
+	}
+	for _, c := range dropsMode {
+		if len(slotsOf(c)) != 1 {
+			t.Errorf("drops mode changed %d slots at once", len(slotsOf(c)))
+		}
+	}
+}
+
+// Two candidates for one slot are alternatives, never both at once.
+func TestTwoCandidatesForOneSlotAreAlternatives(t *testing.T) {
+	got, err := Expand(withBulk(api.KindGear,
+		candidate("head", itemHelm), candidate("head", itemHelm2)))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(got) != 2 {
+		t.Fatalf("got %d combinations, want 2", len(got))
+	}
+	for _, c := range got {
+		if len(c.Substitutions) != 1 {
+			t.Errorf("two items landed in one slot: %+v", c.Substitutions)
+		}
+	}
+}
+
+func TestWeaponShapesAndDuplicates(t *testing.T) {
+	cases := []struct {
+		name       string
+		candidates []api.Candidate
+		edit       func(*api.SimRequest)
+		wantSlots  [][]string // the combinations, as sorted slot lists
+	}{
+		{
+			name:       "a two-hander competes with main-plus-off-hand",
+			candidates: []api.Candidate{{ItemID: itemTwoHander, Origin: api.OriginBag}},
+			// The off hand is emptied rather than the combination
+			// being thrown away: a two-hander IS a shape, and refusing
+			// it would mean Top Gear never ranked one.
+			wantSlots: [][]string{{"main_hand"}},
+		},
+		{
+			name:       "a one-hander is tried in both hands",
+			candidates: []api.Candidate{{ItemID: itemOneHander + 1, Origin: api.OriginBag}},
+			wantSlots:  [][]string{{"main_hand"}, {"off_hand"}},
+		},
+		{
+			name: "dual wield tries both orders",
+			candidates: []api.Candidate{
+				{ItemID: itemOneHander + 1, Origin: api.OriginBag},
+				{ItemID: itemOneHander + 2, Origin: api.OriginBag},
+			},
+			wantSlots: [][]string{
+				{"main_hand"}, {"off_hand"},
+				{"main_hand"}, {"off_hand"},
+				{"main_hand", "off_hand"}, {"main_hand", "off_hand"},
+			},
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			req := withBulk(api.KindGear, c.candidates...)
+			if c.edit != nil {
+				c.edit(&req)
+			}
+			got, err := Expand(req)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if len(got) != len(c.wantSlots) {
+				var shapes [][]string
+				for _, combo := range got {
+					shapes = append(shapes, slotsOf(combo))
+				}
+				t.Fatalf("got %d combinations %v, want %d %v", len(got), shapes, len(c.wantSlots), c.wantSlots)
+			}
+		})
+	}
+}
+
+// A two-hander in the main hand empties the off hand; nothing may be
+// wielded beside it.
+func TestATwoHanderEmptiesTheOffHand(t *testing.T) {
+	got, err := Expand(withBulk(api.KindGear, api.Candidate{ItemID: itemTwoHander, Origin: api.OriginBag}))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(got) != 1 {
+		t.Fatalf("got %d combinations", len(got))
+	}
+	if g := gearAt(got[0], "off_hand"); g.ItemID != 0 {
+		t.Errorf("a two-hander left item %d in the off hand", g.ItemID)
+	}
+}
+
+// The engine's own validity rules: one item cannot be in both ring
+// slots, nor both trinket slots, and two rings or trinkets sharing a
+// name are the same item at two qualities.
+func TestDuplicateRingsAndTrinketsAreRefused(t *testing.T) {
+	// finger1 already holds itemRing; offering it for finger2 would
+	// produce a character wearing two of one ring.
+	got, err := Expand(withBulk(api.KindGear, candidate("finger2", itemRing)))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(got) != 0 {
+		t.Errorf("the same ring was equipped twice: %+v", got[0].Request.Character.Gear)
+	}
+
+	got, err = Expand(withBulk(api.KindGear, candidate("trinket2", itemTrinket)))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(got) != 0 {
+		t.Errorf("the same trinket was equipped twice")
+	}
+}
+
+// Unique-equipped is one at a time anywhere, not one per slot.
+func TestUniqueEquippedIsRespected(t *testing.T) {
+	// itemUniqueRing must be a row whose Unique flag is set. Find one
+	// with the helper below and replace the constant if this id is not
+	// unique in the active build.
+	req := base()
+	req.Character.Gear = append(req.Character.Gear, api.GearSlot{Slot: "finger2", ItemID: itemUniqueRing})
+	req.Bulk = &api.BulkSpec{Mode: api.KindGear, Precision: api.PrecisionNormal, Cap: 400,
+		Candidates: []api.Candidate{candidate("finger1", itemUniqueRing)}}
+	got, err := Expand(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(got) != 0 {
+		t.Errorf("a unique-equipped item was equipped twice: %+v", got[0].Request.Character.Gear)
+	}
+}
+
+// Talent loadouts are a dimension of their own: in gear mode they
+// multiply the gear combinations, and in talents mode they are the
+// only candidates.
+func TestTalentLoadoutsAreADimension(t *testing.T) {
+	req := withBulk(api.KindGear, candidate("head", itemHelm))
+	req.Bulk.Talents = []api.TalentLoadout{
+		{Name: "Deep Fury", Talents: "30305001302-05050005525010052"},
+		{Name: "Two-hand Arms", Talents: "30305001302-05050005525010053"},
+	}
+	got, err := Expand(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	// (the helm, or not) times (own talents, Deep Fury, Two-hand Arms),
+	// minus the equipped set: 2 * 3 - 1 = 5.
+	if len(got) != 5 {
+		t.Errorf("got %d combinations, want 5", len(got))
+	}
+
+	only := withBulk(api.KindTalents)
+	only.Bulk.Candidates = nil
+	only.Bulk.Talents = req.Bulk.Talents
+	got, err = Expand(only)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(got) != 2 {
+		t.Fatalf("talents mode produced %d combinations, want 2", len(got))
+	}
+	for _, c := range got {
+		if len(c.Substitutions) != 1 || c.Substitutions[0].Kind != api.SubstitutionTalents {
+			t.Errorf("a talents-mode combination substituted gear: %+v", c.Substitutions)
+		}
+		if c.Request.Character.Talents == base().Character.Talents {
+			t.Error("a loadout did not reach the request")
+		}
+	}
+}
+
+// Alternative consumable lists are a dimension too, and each REPLACES
+// the character's own list rather than adding to it.
+func TestConsumableListsAreADimension(t *testing.T) {
+	req := withBulk(api.KindGear, candidate("head", itemHelm))
+	req.Character.Consumes = []string{"elixir_of_the_mongoose"}
+	req.Bulk.Consumables = [][]string{
+		{"flask_of_the_titans"},
+		{"juju_power", "juju_might"},
+	}
+	got, err := Expand(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	// (the helm, or not) times (own, flask, jujus), minus the
+	// equipped set with its own consumables: 2 * 3 - 1 = 5.
+	if len(got) != 5 {
+		t.Fatalf("got %d combinations, want 5", len(got))
+	}
+	var replaced int
+	for _, c := range got {
+		for _, sub := range c.Substitutions {
+			if sub.Kind != api.SubstitutionConsumes {
+				continue
+			}
+			replaced++
+			// The chip's label is the ids joined, so the API can
+			// compose a headline from Name whatever the kind is.
+			if sub.Name != strings.Join(sub.Consumes, ", ") || sub.Name == "" {
+				t.Errorf("the consumables chip is named %q for %v", sub.Name, sub.Consumes)
+			}
+			if len(c.Request.Character.Consumes) != len(sub.Consumes) {
+				t.Errorf("the request carries %v and the chip says %v",
+					c.Request.Character.Consumes, sub.Consumes)
+			}
+			for i := range sub.Consumes {
+				if c.Request.Character.Consumes[i] != sub.Consumes[i] {
+					t.Errorf("the request carries %v and the chip says %v",
+						c.Request.Character.Consumes, sub.Consumes)
+				}
+			}
+			if sub.Consumes[0] == "elixir_of_the_mongoose" {
+				t.Error("a consumables chip named the character's own list")
+			}
+		}
+	}
+	// Two alternatives times two gear choices.
+	if replaced != 4 {
+		t.Errorf("%d combinations changed the consumables, want 4", replaced)
+	}
+	// The combinations that did NOT change them still carry the
+	// character's own.
+	for _, c := range got {
+		if len(c.Substitutions) == 1 && c.Substitutions[0].Kind == api.SubstitutionItem {
+			if len(c.Request.Character.Consumes) != 1 || c.Request.Character.Consumes[0] != "elixir_of_the_mongoose" {
+				t.Errorf("a gear-only combination lost the character's consumables: %v", c.Request.Character.Consumes)
+			}
+		}
+	}
+}
+
+// A set replaces every slot at once, so it is an alternative to the
+// whole gear product rather than a member of it.
+func TestASetReplacesEverySlot(t *testing.T) {
+	req := withBulk(api.KindGear, candidate("head", itemHelm))
+	req.Bulk.Sets = []api.GearSet{{Name: "my AQ set", Gear: []api.GearSlot{
+		{Slot: "head", ItemID: itemHelm2},
+		{Slot: "main_hand", ItemID: itemTwoHander},
+	}}}
+	got, err := Expand(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	// the helm on its own, and the set: two combinations.
+	if len(got) != 2 {
+		t.Fatalf("got %d combinations, want 2", len(got))
+	}
+	var set *Combination
+	for i, c := range got {
+		if len(c.Substitutions) == 1 && c.Substitutions[0].Kind == api.SubstitutionSet {
+			set = &got[i]
+		}
+	}
+	if set == nil {
+		t.Fatal("no combination substituted the set")
+	}
+	if len(set.Request.Character.Gear) != 2 {
+		t.Errorf("the set did not replace the whole character's gear: %+v", set.Request.Character.Gear)
+	}
+	if set.Substitutions[0].Name != "my AQ set" {
+		t.Errorf("the chip does not name the set: %+v", set.Substitutions[0])
+	}
+}
+
+// The cap is a refusal with both numbers, never a silent trim: a
+// ranking of a subset nobody chose looks exactly like a ranking.
+func TestTheCapRefusesRatherThanTrims(t *testing.T) {
+	req := withBulk(api.KindGear,
+		candidate("head", itemHelm), candidate("head", itemHelm2),
+		candidate("finger2", itemRing+1), candidate("trinket2", itemTrinket+1))
+	req.Bulk.Cap = 3
+	_, err := Expand(req)
+	var capped api.ErrCapExceeded
+	if !errors.As(err, &capped) {
+		t.Fatalf("Expand = %v, want ErrCapExceeded", err)
+	}
+	if capped.Cap != 3 || capped.Combinations <= 3 {
+		t.Errorf("ErrCapExceeded = %+v", capped)
+	}
+}
+
+// The count and the plan are the same number, always. A count the
+// page shows and a plan the run executes that disagreed would be a
+// cap notice nobody could act on.
+func TestCountAgreesWithExpand(t *testing.T) {
+	req := withBulk(api.KindGear,
+		candidate("head", itemHelm), candidate("head", itemHelm2),
+		candidate("finger2", itemRing+1), candidate("trinket2", itemTrinket+1))
+	combos, err := Expand(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	n, err := Count(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if n != len(combos) {
+		t.Errorf("Count = %d, Expand = %d", n, len(combos))
+	}
+}
+
+// A count over the cap is the same refusal, with the same numbers.
+func TestCountRefusesOverTheCap(t *testing.T) {
+	req := withBulk(api.KindGear,
+		candidate("head", itemHelm), candidate("head", itemHelm2),
+		candidate("finger2", itemRing+1), candidate("trinket2", itemTrinket+1))
+	req.Bulk.Cap = 3
+	_, err := Count(req)
+	var capped api.ErrCapExceeded
+	if !errors.As(err, &capped) {
+		t.Fatalf("Count = %v, want ErrCapExceeded", err)
+	}
+	if capped.Cap != 3 {
+		t.Errorf("ErrCapExceeded = %+v", capped)
 	}
 }
