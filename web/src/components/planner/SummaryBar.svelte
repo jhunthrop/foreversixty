@@ -3,10 +3,19 @@
      gold accent. Pinned to the top of the viewport on phone (design/Mobile.dc.html keeps
      the current state above the fold), static on desktop. -->
 <script lang="ts">
+  import type { LiveDps } from '../../lib/planner/live-dps.svelte';
   import type { PlannerStore } from '../../lib/planner/store.svelte';
   import { MAX_POINTS } from '../../lib/planner/types';
+  import PlannerDps from './PlannerDps.svelte';
 
-  let { store }: { store: PlannerStore } = $props();
+  let { store, live, simHref }: { store: PlannerStore; live: LiveDps; simHref: string } = $props();
+
+  // The bar's one refusal line already carries the planner's own refusals (an illegal move,
+  // a read-only build); a failed live estimate is the same kind of fact -- something the
+  // player did produced no result -- so it goes in the same line rather than a second one.
+  // The planner's own refusal wins when both are set: it is about the edit that just
+  // happened, and the DPS failure describes the build as a whole.
+  const statusLine = $derived(store.refusal ?? (live.state === 'error' ? live.message : null) ?? '');
 
   const controlClass =
     'border-line-warm rounded-control bg-raised text-text h-11 min-w-[8rem] border px-3 text-[14px] font-semibold';
@@ -71,12 +80,14 @@
     </span>
   </div>
 
+  <PlannerDps {live} href={simHref} />
+
   <p
     role="status"
     aria-live="polite"
     class="text-muted order-last min-h-[20px] w-full text-[13px] leading-tight"
     data-testid="planner-refusal"
   >
-    {store.refusal ?? ''}
+    {statusLine}
   </p>
 </div>

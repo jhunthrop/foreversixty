@@ -18,6 +18,7 @@ import { simCopy } from './copy';
 import { pointsPerTree, ranksByTalent } from '../planner/derive';
 import { decodeFS1, orderFromRanks } from '../planner/fs1';
 import { indexTalents, type TalentIndex } from '../planner/rules';
+import type { PlannerStore } from '../planner/store.svelte';
 import type { BuildDraft, ClassRow, Gear, RaceRow, Slot, TalentFile } from '../planner/types';
 import { BASE_LEVEL, SLOTS } from '../planner/types';
 import { SPECS } from './specs';
@@ -127,6 +128,19 @@ export function fromBuildDraft(
     consumables: [...(extras.consumables ?? [])],
     source: extras.source,
   };
+}
+
+/**
+ * The planner's live state as a character. It is `fromBuildDraft` over `store.toDraft()`,
+ * so there is exactly one conversion in the codebase and the sim cannot disagree with the
+ * planner about what a build is. Null while the planner's data is still loading.
+ */
+export function characterFromPlanner(store: PlannerStore): SimCharacter | null {
+  if (store.talents === null || store.classes.length === 0) return null;
+  return fromBuildDraft(store.toDraft(), store.talents, store.classes, store.races, {
+    name: store.classRow?.name,
+    source: { kind: 'manual', ref: '', captured_at: new Date().toISOString() },
+  });
 }
 
 /**

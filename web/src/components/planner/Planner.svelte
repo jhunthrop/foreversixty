@@ -6,7 +6,9 @@
 <script lang="ts">
   import { untrack } from 'svelte';
   import { DEFAULT_CLASS_SLUG } from '../../lib/planner/config';
-  import { decodeFS1, orderFromRanks } from '../../lib/planner/fs1';
+  import { ranksByTalent } from '../../lib/planner/derive';
+  import { decodeFS1, encodeFS1, orderFromRanks } from '../../lib/planner/fs1';
+  import { createLiveDps } from '../../lib/planner/live-dps.svelte';
   import {
     DATA_LOAD_FAILED,
     DataLoadError,
@@ -15,10 +17,12 @@
     loadSets,
     loadTalents,
   } from '../../lib/planner/load';
+  import type { TalentIndex } from '../../lib/planner/rules';
   import { createPlannerStore } from '../../lib/planner/store.svelte';
   import { SECONDARY_BUTTON } from '../../lib/planner/styles';
   import { treeSourceNotice } from '../../lib/planner/tree-source';
   import type { BuildRecord, TalentFile } from '../../lib/planner/types';
+  import { characterFromPlanner } from '../../lib/sim/character';
   import GearPanel from './GearPanel.svelte';
   import OrderStrip from './OrderStrip.svelte';
   import SharePanel from './SharePanel.svelte';
@@ -120,6 +124,53 @@
       sourceId: record?.id ?? null,
       readOnly: record !== null,
     }),
+  );
+
+  // The live DPS estimate (Task 20). Created once -- createLiveDps holds no pool until the
+  // first request, so this costs nothing on mount and does not touch engine.ts until a talent
+  // or slot actually changes. `untrack` for the same reason the store above needs it: the
+  // factory call itself reads nothing reactive, and without it the compiler would warn that a
+  // value read once here looks like a dependency.
+  const live = untrack(() => createLiveDps());
+
+  // Every edit to the build re-requests an estimate; live.request debounces the burst into
+  // one run and cancels whatever was already in flight. `characterFromPlanner` returns null
+  // until the talent file has loaded, which `request` treats as "off" rather than an error.
+  $effect(() => {
+    void store.order;
+    void store.gear;
+    live.request(characterFromPlanner(store), store.talentIndex);
+  });
+
+  // No reactive reads of its own: this effect's body runs once, on mount, purely to register
+  // the teardown that runs it returns -- which is the only thing that has to happen when the
+  // planner unmounts, since `live.request` above already cancels and re-schedules on its own.
+  $effect(() => () => live.dispose());
+
+  /** The current build's talent ranks, one array per tree in tab order -- encodeFS1's shape. */
+  function treeRanksFor(index: TalentIndex, order: number[]): number[][] {
+    const ranks = ranksByTalent(order);
+    return index.trees.map((tree) => tree.talents.map((talent) => ranks.get(talent.id) ?? 0));
+  }
+
+  // "Sim this build": a saved build's own link when it has one, otherwise the build's own
+  // FS1 code -- the planner's export format, decoded by the same `decodeFS1` this component
+  // reads a code with. The link is always present so a player can reach the full results
+  // whether or not the live estimate above has run, or could run at all.
+  const simHref = $derived(
+    store.sourceId !== null
+      ? `/sim?source=build&ref=${encodeURIComponent(store.sourceId)}`
+      : store.talentIndex
+        ? `/sim?code=${encodeURIComponent(
+            encodeFS1({
+              dataBuild: store.treeVersion,
+              classSlug: store.classSlug,
+              raceSlug: store.raceSlug,
+              treeRanks: treeRanksFor(store.talentIndex, store.order),
+              gear: store.gear,
+            }),
+          )}`
+        : '/sim',
   );
 
   let status = $state<'loading' | 'ready' | 'failed'>('loading');
@@ -286,7 +337,7 @@
 </script>
 
 <div class="flex flex-col gap-[22px] md:gap-8" data-testid="planner">
-  <SummaryBar {store} />
+  <SummaryBar {store} {live} {simHref} />
 
   <p class="text-muted px-[18px] text-[13px] md:px-0">{treeSourceNotice(store.treeVersion)}</p>
 
