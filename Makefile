@@ -95,7 +95,17 @@ $(SIMDB_EMBED): $(SIMDB_SRC) $(ACTIVE_BUILD_JSON)
 # vanilla item table, which Forever re-itemises out from under; both
 # artifacts embed the active build's simdb.bin instead, which is what
 # `simdb` above puts in place and what sim/internal/simdb loads.
-artifacts: engine-pin simdb
+#
+# NOT a prerequisite here: engine-pin. It writes sim/enginever/version.go
+# from a LOCAL checkout at ENGINE_DIR, which does not exist on a CI
+# runner -- web.yml's deploy job builds these same artifacts for
+# publish-wasm below with sim/go.mod's replace already rewritten by
+# .github/actions/pin-engine (no local checkout needed) and
+# sim/enginever/version.go already committed. Forcing engine-pin here
+# would fail that build and, locally, would refuse a dirty engine
+# checkout on every `make artifacts` even when nobody meant to move the
+# pin. Bump the pin on purpose with `make engine-pin`, then build.
+artifacts: simdb
 	@mkdir -p $(ARTIFACT_DIR)
 #	Each build runs in its OWN subshell. An earlier draft chained two
 #	`cd sim` in one shell with `; \`, so the second ran from inside

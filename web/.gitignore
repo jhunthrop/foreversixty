@@ -47,3 +47,8 @@ public/duckdb/
 # the two DuckDB engine modules, which are over Cloudflare's static-asset limit and so are
 # deliberately kept out of public/ and dist/
 build/
+
+# published by `make publish-wasm` (root Makefile) into public/_sim/<engine sha>/, either by
+# web.yml's deploy job or by a developer proving the wasm build locally (public/_sim/README.md).
+# Nothing built is committed; the directory's own README is the only tracked file under here.
+public/_sim/*/
