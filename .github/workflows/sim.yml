@@ -60,11 +60,11 @@ jobs:
           echo "sha=$sha" >> "$GITHUB_OUTPUT"
       # The fork at the very sha the artifacts are built from, so this
       # compares the rotations the shipped engine actually carries.
-      - uses: actions/checkout@v4
-        with:
-          repository: jhunthrop/wowsims-forever
-          ref: ${{ steps.pin.outputs.sha }}
-          path: .engine
+      # actions/checkout treats a short sha as a branch name and fails to
+      # fetch it, so the fork is cloned and the pin checked out by hand.
+      - run: |
+          git clone --quiet --filter=blob:none https://github.com/jhunthrop/wowsims-forever .engine
+          git -C .engine checkout --quiet "${{ steps.pin.outputs.sha }}"
       - run: make apl-check ENGINE_DIR=.engine
 
   artifacts:
