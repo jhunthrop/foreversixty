@@ -8,7 +8,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.113.1
 	github.com/golang-migrate/migrate/v4 v4.20.1
 	github.com/jackc/pgx/v5 v5.11.0
-	github.com/jhunthrop/foreversixty/logs v0.0.0-00010101000000-000000000000
+	github.com/jhunthrop/foreversixty/logs v0.0.0
 	github.com/klauspost/compress v1.20.0
 	golang.org/x/image v0.45.0
 	golang.org/x/oauth2 v0.36.0
@@ -42,6 +42,7 @@ require (
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
 	github.com/jackc/puddle/v2 v2.2.2 // indirect
+	github.com/jhunthrop/foreversixty/sim v0.0.0-00010101000000-000000000000
 	github.com/lib/pq v1.10.9 // indirect
 	github.com/parquet-go/bitpack v1.0.0 // indirect
 	github.com/parquet-go/jsonlite v1.0.0 // indirect
@@ -65,3 +66,5 @@ require (
 )
 
 replace github.com/jhunthrop/foreversixty/logs => ../logs
+
+replace github.com/jhunthrop/foreversixty/sim => ../sim

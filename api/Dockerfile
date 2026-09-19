@@ -3,7 +3,7 @@
 #   docker build --build-arg VERSION=$(git rev-parse --short HEAD) -f api/Dockerfile -t foreversixty-api:local .
 # The API serves the planner's talent data out of the image, and it
 # builds against the engine in logs/ through the replace in api/go.mod,
-# so the context has to include data/builds and logs/.
+# so the context has to include data/builds, logs/ and sim/.
 FROM golang:1.25-alpine AS build
 WORKDIR /src
 ENV GOTOOLCHAIN=auto
@@ -14,10 +14,12 @@ ENV GOTOOLCHAIN=auto
 ENV GOWORK=off
 COPY api/go.mod api/go.sum ./api/
 COPY logs/go.mod logs/go.sum ./logs/
+COPY sim/go.mod ./sim/
 WORKDIR /src/api
 RUN go mod download
 WORKDIR /src
 COPY logs/ ./logs/
+COPY sim/ ./sim/
 COPY api/ ./api/
 WORKDIR /src/api
 ARG VERSION=dev
