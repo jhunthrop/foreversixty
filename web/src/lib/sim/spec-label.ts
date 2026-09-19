@@ -16,6 +16,17 @@ export function specRow(spec: string): Spec | null {
 }
 
 /**
+ * The spec's own display name, from the data lane's generated list -- never the slug with
+ * its first letter raised, which turns `beast-mastery` into `Beast-mastery`. An unknown
+ * slug falls back to itself, which is what `specRow` returning null means. Used wherever a
+ * spec is named on its own, without its class (the settings bar's rotation control and the
+ * rotation card); `specLabel` below is for the two-word form with the class joined in.
+ */
+export function specDisplayName(spec: string): string {
+  return specRow(spec)?.name ?? spec;
+}
+
+/**
  * "Fury Warrior". The spec's own name, then its class's, which is how every player and
  * every guide says it. An unknown slug is returned unchanged rather than guessed at: a spec
  * the site has not heard of yet must still be printable.

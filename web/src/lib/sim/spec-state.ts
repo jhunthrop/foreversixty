@@ -35,6 +35,16 @@ export function specPillClass(state: SpecState): string {
   return state === 'validated' ? 'pill pill-site' : 'pill pill-sample';
 }
 
+/**
+ * Whether a fidelity caution belongs on screen: a validated spec needs none, and neither
+ * does a spec the fidelity list has not answered for yet (`null` reads as "unknown", not
+ * as "unsupported"). Shared by the settings bar's pre-run footnote and the rotation card's
+ * post-run note -- the same fact stated at two points in the run, and one rule for it.
+ */
+export function needsFidelityNote(fidelity: SpecFidelity | null): boolean {
+  return fidelity !== null && fidelity.state !== 'validated';
+}
+
 export function mergeSpecRows(rows: readonly SpecFidelity[]): SpecFidelity[] {
   const bySpec = new Map(rows.map((row) => [row.spec, row]));
   return dpsSpecs().map(

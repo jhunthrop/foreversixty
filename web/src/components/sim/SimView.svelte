@@ -23,7 +23,13 @@
   import { settingsLabel } from '../../lib/sim/settings';
   import { SIM_SAVED_SKELETON_HTML } from '../../lib/sim/skeleton';
   import { parseFightRef } from '../../lib/sim/sources';
-  import { mergeSpecRows, specPillClass, specStateLabel, specStateNote } from '../../lib/sim/spec-state';
+  import {
+    mergeSpecRows,
+    needsFidelityNote,
+    specPillClass,
+    specStateLabel,
+    specStateNote,
+  } from '../../lib/sim/spec-state';
   import { createSimStore } from '../../lib/sim/store.svelte';
   import { defaultSimState, parseSimState, simSearch, withSimState } from '../../lib/sim/url';
   import { ENGINE_VERSION, engineLabel, isStale } from '../../lib/sim/version';
@@ -518,7 +524,7 @@
             onchange={(next) => store.setSettings(next)}
           />
         {/if}
-        {#if characterSpecRow !== null && characterSpecRow.state !== 'validated'}
+        {#if characterSpecRow !== null && needsFidelityNote(characterSpecRow)}
           <!-- A fidelity state labels, it never blocks: the run control below always
                renders once a character is loaded, and this is the one-line footnote
                linking to the full card on /sim/specs. -->

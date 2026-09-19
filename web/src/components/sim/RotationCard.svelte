@@ -7,14 +7,14 @@
      well" line: the absence of a caution is the message. -->
 <script lang="ts">
   import { simCopy } from '../../lib/sim/copy';
-  import { specRow } from '../../lib/sim/spec-label';
-  import { specPillClass, specStateLabel, specStateNote } from '../../lib/sim/spec-state';
+  import { specDisplayName } from '../../lib/sim/spec-label';
+  import { needsFidelityNote, specPillClass, specStateLabel, specStateNote } from '../../lib/sim/spec-state';
   import type { SpecFidelity } from '../../lib/sim/types';
 
   let { spec, fidelity }: { spec: string; fidelity: SpecFidelity | null } = $props();
 
-  const name = $derived(specRow(spec)?.name ?? spec);
-  const showNote = $derived(fidelity !== null && fidelity.state !== 'validated');
+  const name = $derived(specDisplayName(spec));
+  const showNote = $derived(needsFidelityNote(fidelity));
 </script>
 
 <section

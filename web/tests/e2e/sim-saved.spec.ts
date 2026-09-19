@@ -149,6 +149,35 @@ test('a saved sim names the rotation it used and carries its fidelity', async ({
   await expect(card.getByTestId('sim-rotation-card-note')).toBeVisible();
 });
 
+// Fix round 1, Finding 3: the card's defining behaviour -- a validated spec renders no
+// note at all, rather than a green "all is well" line -- had no coverage. Dropping the
+// `!== 'validated'` clause in needsFidelityNote would break nothing without this.
+test('a saved sim for a validated spec carries the rotation card with no fidelity note', async ({ page }) => {
+  await page.route('**/v1/specs', (route) =>
+    route.fulfill(
+      envelope({
+        specs: [
+          {
+            spec: 'warrior-fury',
+            state: 'validated',
+            median_gap: 0.02,
+            parses: 50,
+            worst_actions: [],
+            engine_version: activeBuild.build,
+            updated_at: '2026-01-01',
+          },
+        ],
+      }),
+    ),
+  );
+
+  await page.goto('/sim/simfixtureab');
+  const card = page.getByTestId('sim-rotation-card');
+  await expect(card).toBeVisible();
+  await expect(card.getByTestId('sim-rotation-card-link')).toHaveAttribute('href', '/sim/specs#warrior-fury');
+  await expect(card.getByTestId('sim-rotation-card-note')).toHaveCount(0);
+});
+
 test('a saved sim whose stored request has no gear shows the line, not the grid', async ({ page }) => {
   const id = 'simnogearabc';
   const noGearResult = {

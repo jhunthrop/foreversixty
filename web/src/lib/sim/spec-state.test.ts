@@ -5,7 +5,7 @@
 import { describe, expect, it } from 'vitest';
 import { simCopy } from './copy';
 import { dpsSpecs } from './spec-label';
-import { mergeSpecRows, specStateLabel, specStateNote } from './spec-state';
+import { mergeSpecRows, needsFidelityNote, specStateLabel, specStateNote } from './spec-state';
 import { ENGINE_VERSION } from './version';
 
 describe('specStateLabel and specStateNote', () => {
@@ -23,6 +23,42 @@ describe('specStateLabel and specStateNote', () => {
     expect(specStateNote('validated')).toContain('trustworthy');
     expect(specStateNote('in_progress')).toContain('a direction, not a figure');
     expect(specStateNote('unsupported')).toContain('It runs');
+  });
+});
+
+describe('needsFidelityNote', () => {
+  // Fix round 1, Finding 3: the shared predicate behind both the settings bar's pre-run
+  // footnote and the rotation card's post-run note. Direct coverage here so an inverted
+  // clause fails immediately, rather than only through a rendered component.
+  it('is false for a validated spec: the absence of a caution is the message', () => {
+    expect(
+      needsFidelityNote({
+        spec: 'warrior-fury',
+        state: 'validated',
+        median_gap: 0.02,
+        parses: 50,
+        worst_actions: [],
+        engine_version: ENGINE_VERSION,
+        updated_at: '2026-09-14T04:12:00Z',
+      }),
+    ).toBe(false);
+  });
+
+  it('is true for in_progress and unsupported, the two states the note exists to explain', () => {
+    const row = {
+      spec: 'warrior-fury',
+      median_gap: null,
+      parses: 0,
+      worst_actions: [] as never[],
+      engine_version: '',
+      updated_at: null,
+    };
+    expect(needsFidelityNote({ ...row, state: 'in_progress' })).toBe(true);
+    expect(needsFidelityNote({ ...row, state: 'unsupported' })).toBe(true);
+  });
+
+  it('is false for null: unknown yet is not the same as unsupported', () => {
+    expect(needsFidelityNote(null)).toBe(false);
   });
 });
 

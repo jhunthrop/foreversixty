@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { SPECS } from './specs';
-import { classOfSpec, dpsSpecs, specLabel, specRow } from './spec-label';
+import { classOfSpec, dpsSpecs, specDisplayName, specLabel, specRow } from './spec-label';
 
 const CURATED = path.resolve(import.meta.dirname, '../../../../data/curated/specs.json');
 
@@ -36,6 +36,19 @@ describe('specLabel', () => {
     expect(specLabel('warrior-gladiator')).toBe('warrior-gladiator');
     expect(classOfSpec('warrior-gladiator')).toBe('');
     expect(specRow('warrior-gladiator')).toBeNull();
+  });
+});
+
+describe('specDisplayName', () => {
+  // Fix round 1, Finding 1: extracted from SettingsBar.svelte's own rotationName, which
+  // duplicated this exact fallback. Shared now by the settings bar and the rotation card.
+  it('is the bare spec name, never the class joined in -- that is specLabel’s job', () => {
+    expect(specDisplayName('warrior-fury')).toBe('Fury');
+    expect(specDisplayName('mage-frost')).toBe('Frost');
+  });
+
+  it('degrades to the slug itself for a spec the list does not know, not a raised-case guess', () => {
+    expect(specDisplayName('warrior-gladiator')).toBe('warrior-gladiator');
   });
 });
 

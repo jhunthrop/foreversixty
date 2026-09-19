@@ -21,7 +21,7 @@
     type SimSettings,
   } from '../../lib/sim/settings';
   import { FIGHT_STYLES, fightStyle } from '../../lib/sim/styles';
-  import { specRow } from '../../lib/sim/spec-label';
+  import { specDisplayName } from '../../lib/sim/spec-label';
   import SettingsSheet from './SettingsSheet.svelte';
 
   let {
@@ -39,11 +39,7 @@
   const control =
     'border-line-warm rounded-control bg-raised text-text min-h-11 min-w-0 md:min-w-[7rem] border px-3 text-[14px] font-semibold md:min-h-9';
   const targets = Array.from({ length: MAX_TARGETS }, (_, i) => i + 1);
-  // The spec's own display name, from the data lane's generated list -- never the slug
-  // with its first letter raised, which turns `beast-mastery` into `Beast-mastery`. An
-  // unknown slug falls back to itself, which is what specRow returning null means.
-  const rotationName = $derived(specRow(spec)?.name ?? spec);
-  const rotationLabel = $derived(`${simCopy.rotationPrefix} ${rotationName}`);
+  const rotationLabel = $derived(`${simCopy.rotationPrefix} ${specDisplayName(spec)}`);
   const styleId = $derived(styleIdOf(settings));
   // Only the two movement styles carry a note (copy.ts's styleNote). Everything else
   // renders nothing at all rather than an empty paragraph that would reserve a line.
