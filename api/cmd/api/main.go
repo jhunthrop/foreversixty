@@ -32,6 +32,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/subscribe"
 	"github.com/jhunthrop/foreversixty/api/internal/trees"
 	"github.com/jhunthrop/foreversixty/sim/enginever"
+	"github.com/jhunthrop/foreversixty/sim/runner"
 )
 
 var version = "dev" // set with -ldflags "-X main.version=<git sha>"
@@ -49,14 +50,23 @@ const (
 
 func main() {
 	log := slog.New(slog.NewJSONHandler(os.Stdout, nil))
-	// The image is both the service and the parse job: Cloud Run runs
-	// it with `parse-report <id>` as its arguments for an upload.
-	if len(os.Args) > 1 && os.Args[1] == reports.ParseJobCommand {
-		if err := runParse(context.Background(), log, os.Args[2:]); err != nil {
-			log.Error("parse-report", "err", err)
-			os.Exit(1)
+	// The image is the service and every job: Cloud Run runs it with
+	// the job's name as its first container argument.
+	if len(os.Args) > 1 {
+		switch os.Args[1] {
+		case reports.ParseJobCommand:
+			if err := runParse(context.Background(), log, os.Args[2:]); err != nil {
+				log.Error(reports.ParseJobCommand, "err", err)
+				os.Exit(1)
+			}
+			return
+		case sims.SimRunJobCommand:
+			if err := runSim(context.Background(), log, os.Args[2:]); err != nil {
+				log.Error(sims.SimRunJobCommand, "err", err)
+				os.Exit(1)
+			}
+			return
 		}
-		return
 	}
 	if err := serve(log); err != nil {
 		log.Error("startup", "err", err)
@@ -126,6 +136,40 @@ func runParse(ctx context.Context, log *slog.Logger, args []string) error {
 		Reports: reportStore, Objects: client, Log: log,
 		Rank: &rankings.Store{Pool: pool, Specs: inferrer(treeData)},
 	}, args[0])
+}
+
+// runSim is the premium lane's Cloud Run job: run one sim natively
+// and exit.
+func runSim(ctx context.Context, log *slog.Logger, args []string) error {
+	if len(args) != 1 || args[0] == "" {
+		return fmt.Errorf("usage: api %s <sim_id>", sims.SimRunJobCommand)
+	}
+	cfg, pool, err := start(ctx)
+	if err != nil {
+		return err
+	}
+	defer pool.Close()
+	client := objects(cfg, log)
+	if client == nil {
+		return fmt.Errorf("%s needs R2 credentials", sims.SimRunJobCommand)
+	}
+	log.Info(sims.SimRunJobCommand, "sim", args[0], "engine", enginever.Version)
+	return sims.Run(ctx, sims.JobDeps{
+		Store: &sims.Store{Pool: pool}, Put: client, Engine: simEngine(log), Log: log,
+	}, args[0])
+}
+
+// simEngine is the runner every simulator job uses: the real binary
+// when the image carries one, and the checked-in fixture when it does
+// not, so a deployment without the artifact still answers instead of
+// failing. Task 15 is what puts the binary there.
+func simEngine(log *slog.Logger) runner.Runner {
+	if _, err := os.Stat(runner.DefaultBinary); err == nil {
+		return &runner.Native{}
+	}
+	log.Warn("sims", "state", "no engine binary at "+runner.DefaultBinary,
+		"effect", "sims answer from the checked-in fixture result")
+	return &runner.Fixture{}
 }
 
 // inferrer names specs from the newest client build's talent data.
