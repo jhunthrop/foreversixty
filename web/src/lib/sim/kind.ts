@@ -9,7 +9,9 @@ export type SimKind = 'run' | 'gear' | 'talents' | 'drops' | 'weights';
 
 export const SIM_KINDS: readonly SimKind[] = ['run', 'gear', 'talents', 'drops', 'weights'];
 
-const BULK_MODES: readonly SimKind[] = ['gear', 'talents', 'drops'];
+// Derived from SIM_KINDS rather than restated, so the two vocabularies cannot drift: every
+// kind but `run` and `weights` is a bulk mode.
+const BULK_MODES: readonly SimKind[] = SIM_KINDS.filter((kind) => kind !== 'run' && kind !== 'weights');
 
 /**
  * Bulk wins over weights: a request carrying both is malformed, and reporting one kind

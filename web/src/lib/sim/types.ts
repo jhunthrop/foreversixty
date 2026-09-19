@@ -89,8 +89,8 @@ export interface EncounterSpec {
   profile: string;
   /** The fight style's id: a label only. The fields above and below are what the engine reads. */
   style?: string;
-  movement?: Movement | null;
-  targets_over_time?: TargetCount[] | null;
+  movement?: Movement;
+  targets_over_time?: TargetCount[];
   /** 60..63; 63 is the default the engine assumes when this is absent. */
   target_level?: number;
   /** 0 means the level's preset, resolved inside the engine. */

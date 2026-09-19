@@ -4,10 +4,17 @@ import { simCopy } from './copy';
 import { SIM_KINDS, requestKind } from './kind';
 import type { SimRequest, SimResult } from './types';
 
-// The fixture is the contract's own shapes as data. Assigning it to the mirrored types is
-// the compile-time half of this test (`npx astro check`); the assertions below are the
-// runtime half -- that the key names the fixture uses are the ones the code reads.
-const fixture = envelope as unknown as { request: SimRequest; result: SimResult };
+// The fixture is the contract's own shapes as data. This single-level `as` (never through
+// `unknown`) is the compile-time half of this test (`npx astro check`): TypeScript's JSON
+// module inference widens the fixture's string literals (e.g. `source.kind: "addon"`) to
+// plain `string`, so a direct assignment or `satisfies` would reject every literal-union
+// field regardless of whether the fixture is correct. A single `as`, by contrast, checks
+// type comparability rather than plain assignability, which still requires every field
+// `SimRequest`/`SimResult` name to exist on the fixture with a comparable shape -- a
+// renamed, missing or wrongly-shaped field still fails `astro check` (verified: renaming
+// `request.spec` broke this cast with "Property 'spec' is missing"). The assertions below
+// are the runtime half -- that the key names the fixture uses are the ones the code reads.
+const fixture = envelope as { request: SimRequest; result: SimResult };
 
 describe('requestKind', () => {
   it('is run for a request with neither bulk nor weights', () => {
