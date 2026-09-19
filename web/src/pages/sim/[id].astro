@@ -1,0 +1,36 @@
+---
+// web/src/pages/sim/[id].astro
+// Only the fixture sim is prerendered, and only under FOREVER_DATA=fixture: every other id
+// is served by src/worker.ts from sim.html with its head rewritten. Prerendering the fixture
+// gives Lighthouse and Playwright a page with real content rather than an empty shell.
+import Base from '../../layouts/Base.astro';
+import { FIXTURE_SIM_ID, fixtureSimPaths } from '../../lib/report/shell-paths';
+import fixtureResult from '../../fixtures/sim/result.json';
+
+export function getStaticPaths() {
+  return fixtureSimPaths();
+}
+
+const { id } = Astro.params;
+const inline = id === FIXTURE_SIM_ID ? JSON.stringify(fixtureResult) : undefined;
+---
+
+<Base
+  title="Saved sim"
+  description="A saved World of Warcraft: Forever simulation: the character, the settings, and what the engine produced."
+  path={`/sim/${id}`}
+>
+  <link rel="stylesheet" href="/sim-island.css" slot="head" />
+  <main
+    id="main"
+    tabindex="-1"
+    class="mx-auto flex w-full max-w-[1344px] flex-col gap-[22px] pt-4 pb-10 md:gap-8 md:px-12 md:pt-7"
+  >
+    <div id="sim" data-sim-mount data-sim-id={id} data-sim-result={inline}>
+      <p class="text-muted px-[18px] text-[14px] md:px-0">
+        This saved sim needs JavaScript to render. The <a href="/sim">simulator</a> does too.
+      </p>
+    </div>
+    <script type="module" src="/sim-island.js"></script>
+  </main>
+</Base>

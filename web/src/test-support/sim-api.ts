@@ -15,13 +15,18 @@
 import { vi } from 'vitest';
 import fixtureResultJson from '../fixtures/sim/result.json';
 import fixtureSpecsJson from '../fixtures/sim/specs.json';
+import { FIXTURE_SIM_ID } from '../lib/report/shell-paths';
 import type { SimResult, SpecFidelity } from '../lib/sim/types';
 
 // Twelve characters of [a-z2-7], because that is what a sim_id is -- the same alphabet
 // and length as a report_id. It is not decoration: Task 22's Lighthouse entry for the
 // saved-sim page matches on /sim/[a-z2-7]{12}\.html, and an id with a digit outside the
 // alphabet silently falls into the catch-all at the wrong budget instead.
-export const FIXTURE_SIM_ID = 'simfixtureab';
+//
+// Re-exported rather than declared here: src/lib/report/shell-paths.ts is what
+// src/pages/sim/[id].astro prerenders against, so it is the one literal, and this module
+// (Node-only, like shell-paths.ts) just carries the name testers already import from here.
+export { FIXTURE_SIM_ID };
 export const NEW_SIM_ID = 'simnew234567';
 export const TEST_API = 'https://api.test';
 

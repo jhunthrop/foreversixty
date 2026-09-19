@@ -1,0 +1,26 @@
+---
+// web/src/pages/sim/specs.astro
+// Which specs the simulator is trusted for, and by how much. Static; the island fetches
+// GET /v1/specs.
+import Base from '../../layouts/Base.astro';
+---
+
+<Base
+  title="Spec support"
+  description="Which World of Warcraft: Forever specs the simulator models, how close each one is to real parses, and when the rest arrive."
+  path="/sim/specs"
+>
+  <link rel="stylesheet" href="/sim-island.css" slot="head" />
+  <main
+    id="main"
+    tabindex="-1"
+    class="mx-auto flex w-full max-w-[1344px] flex-col gap-[22px] pt-4 pb-10 md:gap-8 md:px-12 md:pt-7"
+  >
+    <div id="sim" data-sim-mount data-sim-view="specs">
+      <p class="text-muted px-[18px] text-[14px] md:px-0">
+        Spec support needs JavaScript. The <a href="/sim">simulator</a> does too.
+      </p>
+    </div>
+    <script type="module" src="/sim-island.js"></script>
+  </main>
+</Base>

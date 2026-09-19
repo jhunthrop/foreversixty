@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "build:island": "vite build --config vite.island.config.ts && vite build --config vite.report-island.config.ts",
+    "build:island": "vite build --config vite.island.config.ts && vite build --config vite.report-island.config.ts && vite build --config vite.sim-island.config.ts",
     "postbuild": "npm run build:island && node scripts/check-island-size.mjs",
     "preview": "astro preview",
     "check": "astro check",

@@ -39,3 +39,19 @@ export function fixtureCharacterPaths(): { params: { path: string } }[] {
 export function fixtureGuildPaths(): { params: { path: string } }[] {
   return process.env.FOREVER_DATA === 'fixture' ? [{ params: { path: FIXTURE_GUILD_PATH } }] : [];
 }
+
+// The simulator's fixture saved sim, same pairing as the four above: this is the id
+// Playwright navigates to, Lighthouse audits, and src/pages/sim/[id].astro prerenders, and
+// it must never ship in a real build. It matches src/test-support/sim-api.ts's
+// FIXTURE_SIM_ID and src/fixtures/sim/result.json's own sim_id; sim-api.ts imports it from
+// here so there is one literal.
+//
+// Twelve characters of [a-z2-7]: a real sim_id, not a readable approximation of one.
+// Task 22's Lighthouse entry for the saved-sim page matches /sim/[a-z2-7]{12}\.html, and
+// an id with a digit outside base32 falls into the catch-all at the wrong budget with
+// nothing failing.
+export const FIXTURE_SIM_ID = 'simfixtureab';
+
+export function fixtureSimPaths(): { params: { id: string } }[] {
+  return process.env.FOREVER_DATA === 'fixture' ? [{ params: { id: FIXTURE_SIM_ID } }] : [];
+}

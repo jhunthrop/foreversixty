@@ -16,6 +16,11 @@ import { gzipSync } from 'node:zlib';
 const BUDGETS = [
   { file: 'dist/planner-island.js', limitBytes: 60 * 1024 },
   { file: 'dist/report-island.js', limitBytes: 140 * 1024 },
+  // The sim island is the planner's gear grid plus the report's tables plus a run control.
+  // 90 KB gzipped is roughly twice what those parts weigh today and well under the report's
+  // ceiling; sim.wasm is not counted, since it is a separate immutable asset fetched after
+  // first paint and never on the LCP path.
+  { file: 'dist/sim-island.js', limitBytes: 90 * 1024 },
 ];
 
 // Rankings, Character and Guild are ordinary `client:load` Astro islands, not standalone
