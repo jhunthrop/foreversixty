@@ -363,6 +363,30 @@ func (s *Store) LinkCharacter(ctx context.Context, userID int64, c Character) er
 	return nil
 }
 
+// MemberKeys answers which of these character keys belong to an
+// account. The ingest asks once per fight, so it is one statement
+// rather than one per player.
+func (s *Store) MemberKeys(ctx context.Context, keys []string) (map[string]bool, error) {
+	out := make(map[string]bool, len(keys))
+	if len(keys) == 0 {
+		return out, nil
+	}
+	rows, err := s.Pool.Query(ctx,
+		`select key from characters where key = any($1) and user_id is not null`, keys)
+	if err != nil {
+		return nil, fmt.Errorf("auth: member keys: %w", err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var key string
+		if err := rows.Scan(&key); err != nil {
+			return nil, fmt.Errorf("auth: member keys: %w", err)
+		}
+		out[key] = true
+	}
+	return out, rows.Err()
+}
+
 // Guilds lists the guilds an account is a member of.
 func (s *Store) Guilds(ctx context.Context, userID int64) ([]Guild, error) {
 	rows, err := s.Pool.Query(ctx,

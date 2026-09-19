@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"strings"
 	"syscall"
 	"time"
@@ -33,6 +34,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/trees"
 	"github.com/jhunthrop/foreversixty/sim/enginever"
 	"github.com/jhunthrop/foreversixty/sim/runner"
+	"github.com/jhunthrop/foreversixty/sim/talents"
 )
 
 var version = "dev" // set with -ldflags "-X main.version=<git sha>"
@@ -181,6 +183,34 @@ func inferrer(data *trees.Data) *spec.Inferrer {
 	return spec.New(b)
 }
 
+// talentLayouts loads the newest build's talent layout, which is what
+// turns a fight's recorded talent ids into the engine's positional
+// string. A build with no layout is not fatal: the scorer then refuses
+// every character, which is what it already does for the missing race.
+func talentLayouts(dir string, data *trees.Data, log *slog.Logger) *talents.Layouts {
+	build, ok := data.Latest()
+	if !ok {
+		log.Warn("sims", "state", "no client build", "effect", "no execution scores")
+		return nil
+	}
+	layouts, err := talents.Load(filepath.Join(dir, build.Version, "talents"))
+	if err != nil {
+		log.Warn("sims", "state", "no talent layout", "err", err, "effect", "no execution scores")
+		return nil
+	}
+	return layouts
+}
+
+// scorerShim adapts the sims scorer to what the ingest asks for, so
+// neither package has to import the other. The conversion compiles
+// only while reports.ScoredFight and sims.FightAt have identical
+// fields in identical order, which is the drift check.
+type scorerShim struct{ s *sims.Scorer }
+
+func (a scorerShim) Schedule(f reports.ScoredFight) {
+	a.s.ScheduleFight(sims.FightAt(f))
+}
+
 func serve(log *slog.Logger) error {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
@@ -262,6 +292,7 @@ func serve(log *slog.Logger) error {
 	}
 
 	var sampler *parse.Worker
+	var scorer *sims.Scorer
 	if client != nil {
 		deps.Reports.Signer = client
 		sampler = parse.NewWorker(parse.Deps{
@@ -271,6 +302,16 @@ func serve(log *slog.Logger) error {
 		deps.Ingest = &reports.Ingest{
 			Store: reportStore, Put: client, Rank: rankStore, Samp: sampler, Log: log,
 		}
+		// After deps.Ingest exists, never beside the sampler above it:
+		// the next line needs the ingest to be there.
+		scorer = sims.NewScorer(sims.ScoreDeps{
+			Store: simStore, Scores: rankStore, Engine: simEngine(log),
+			Build:         sims.CombatantBuilder{Talents: talentLayouts(cfg.TreeDataDir, treeData, log)},
+			EngineVersion: enginever.Version, Log: log,
+		})
+		go scorer.Run(ctx)
+		deps.Ingest.Score = scorerShim{scorer}
+		deps.Ingest.Members = authStore
 		if runner, err := jobs.NewCloudRun(ctx, cfg.ParseJobProject, cfg.ParseJobRegion, cfg.ParseJobName); err != nil {
 			log.Warn("jobs", "state", "the parse job cannot be reached", "err", err,
 				"effect", "whole-file uploads are not offered")
@@ -320,6 +361,9 @@ func serve(log *slog.Logger) error {
 	views.Close()
 	if sampler != nil {
 		sampler.Close()
+	}
+	if scorer != nil {
+		scorer.Close()
 	}
 	log.Info("stopped")
 	return nil

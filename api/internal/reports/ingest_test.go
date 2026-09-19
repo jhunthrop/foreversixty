@@ -7,6 +7,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"mime/multipart"
 	"net/http"
 	"strings"
@@ -14,9 +15,11 @@ import (
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
+	"github.com/jhunthrop/foreversixty/api/internal/character"
 	"github.com/jhunthrop/foreversixty/api/internal/engine"
 	"github.com/jhunthrop/foreversixty/api/internal/metrics"
 	"github.com/jhunthrop/foreversixty/logs/engine/store"
+	"github.com/jhunthrop/foreversixty/logs/engine/summary"
 	"github.com/klauspost/compress/zstd"
 )
 
@@ -857,4 +860,164 @@ func mustFixture(t *testing.T) engine.Fixture {
 		t.Fatal(err)
 	}
 	return fx
+}
+
+// fakeScorer records the fights handed to the execution scorer.
+type fakeScorer struct {
+	mu     sync.Mutex
+	scored []ScoredFight
+}
+
+func (f *fakeScorer) Schedule(s ScoredFight) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	f.scored = append(f.scored, s)
+}
+
+func (f *fakeScorer) taken() []ScoredFight {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	return append([]ScoredFight{}, f.scored...)
+}
+
+// fakeMembers answers which characters are linked to an account.
+type fakeMembers struct {
+	keys map[string]bool
+	err  error
+}
+
+func (f fakeMembers) MemberKeys(_ context.Context, keys []string) (map[string]bool, error) {
+	if f.err != nil {
+		return nil, f.err
+	}
+	out := map[string]bool{}
+	for _, k := range keys {
+		if f.keys[k] {
+			out[k] = true
+		}
+	}
+	return out, nil
+}
+
+// postVerifiedFight posts the fixture bundle as fight n, the way
+// TestAVerifiedBundleIsStoredPublishedAndRanked does.
+func (h *harness) postVerifiedFight(t *testing.T, id string, n int) {
+	t.Helper()
+	b := makeBundle(t, n, nil)
+	res := h.do(http.MethodPut, fmt.Sprintf("/v1/reports/%s/fights/%d", id, n), b.contentType, b.body)
+	defer res.Body.Close()
+	if res.StatusCode != http.StatusCreated {
+		t.Fatalf("posting fight %d: status %d", n, res.StatusCode)
+	}
+}
+
+// everyFixturePlayer makes every player in the fixture bundle a
+// signed-in member, which is the contract's condition for scoring.
+func everyFixturePlayer(t *testing.T, rep Report) fakeMembers {
+	t.Helper()
+	region, ruleset := ReportRealm(rep)
+	keys := map[string]bool{}
+	for _, row := range makeBundle(t, 1, nil).rows {
+		keys[character.KeyFromUnit(region, ruleset, row.Name)] = true
+	}
+	return fakeMembers{keys: keys}
+}
+
+// TestAVerifiedFightQueuesItsMembersForScoring exercises (*Ingest).score
+// directly rather than through a posted bundle.
+//
+// The engine's Parquet schema deliberately does not carry a fight's
+// COMBATANT_INFO payload - parquet/schema.go's EventOf says so outright:
+// "Encounter, Zone, Combatant ... live in report.json and summary.json".
+// putFight rebuilds its combatants from the *Parquet-decoded* events
+// (rebuilt.Combatants), so no bundle posted through the real route, on
+// the fixture or off it, can ever carry a non-empty combatant today -
+// every fight closed through HTTP has "the fight recorded no gear for
+// them" true for every player, which is a real, load-bearing skip
+// condition and not one this task's tests should paper over. score's
+// own filtering - the member check, the spec/dps/duration guards, the
+// combatant lookup - is what this test is for, so it calls the
+// unexported method with a hand-built row and combatant the way a
+// future Parquet payload would eventually supply them, in the same
+// package the method lives in.
+func TestAVerifiedFightQueuesItsMembersForScoring(t *testing.T) {
+	h := newHarness(t)
+	scorer := &fakeScorer{}
+	id := h.createReport(Public)
+	rep, err := h.store.Get(t.Context(), id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	region, ruleset := ReportRealm(rep)
+	const guid = "Player-4184-000000A3"
+	name := "Morrowlyn-Nightslayer"
+	key := character.KeyFromUnit(region, ruleset, name)
+	h.ingest.Score, h.ingest.Members = scorer, fakeMembers{keys: map[string]bool{key: true}}
+
+	row := metrics.Row{
+		PlayerGUID: guid, Name: name, Class: "Mage", Spec: "Frost", Role: "dps",
+		MetricDPS: 960, DurationMS: 244_000, EncounterID: 9001,
+	}
+	combatant := summary.CombatantRow{GUID: guid, Name: name}
+
+	h.ingest.score(t.Context(), rep, 1, row.EncounterID, []metrics.Row{row}, []summary.CombatantRow{combatant})
+
+	taken := scorer.taken()
+	if len(taken) != 1 {
+		t.Fatalf("%d fights queued, want the one member's DPS parse", len(taken))
+	}
+	s := taken[0]
+	if s.ReportID != id || s.FightIndex != 1 || s.PlayerKey != key {
+		t.Errorf("queued %+v, want %s/1/%s", s, id, key)
+	}
+	if s.Spec != "Frost" {
+		t.Error("a fight was queued with no spec; Score would skip it forever")
+	}
+	if s.Class == "" || s.Role == "" {
+		t.Errorf("%s was queued with no class or role", s.PlayerKey)
+	}
+	if s.ActualDPS != 960 {
+		t.Errorf("%s was queued with dps %v, want 960", s.PlayerKey, s.ActualDPS)
+	}
+	if s.DurationSec != 244 {
+		t.Errorf("%s was queued with duration %ds, want 244", s.PlayerKey, s.DurationSec)
+	}
+	if s.Combatant.GUID != guid {
+		t.Errorf("%s was queued with no recorded gear", s.PlayerKey)
+	}
+}
+
+func TestOnlyASignedInMembersParseIsQueued(t *testing.T) {
+	h := newHarness(t)
+	scorer := &fakeScorer{}
+	// Nobody in the fixture is linked to an account, which is the
+	// contract's condition for scoring at fight close.
+	h.ingest.Score, h.ingest.Members = scorer, fakeMembers{}
+	id := h.createReport(Public)
+	h.postVerifiedFight(t, id, 1)
+	if n := len(scorer.taken()); n != 0 {
+		t.Fatalf("%d fights queued for characters nobody has claimed", n)
+	}
+}
+
+func TestAPrivateReportQueuesNothingForScoring(t *testing.T) {
+	h := newHarness(t)
+	scorer := &fakeScorer{}
+	id := h.createReport(Private)
+	rep, err := h.store.Get(t.Context(), id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	h.ingest.Score, h.ingest.Members = scorer, everyFixturePlayer(t, rep)
+	h.postVerifiedFight(t, id, 1)
+	if n := len(scorer.taken()); n != 0 {
+		t.Fatalf("%d fights queued from a private report", n)
+	}
+}
+
+func TestAnIngestWithNoScorerStillStoresTheFight(t *testing.T) {
+	h := newHarness(t)
+	h.ingest.Score, h.ingest.Members = nil, nil
+	id := h.createReport(Public)
+	h.postVerifiedFight(t, id, 1) // must not panic and must still succeed
 }

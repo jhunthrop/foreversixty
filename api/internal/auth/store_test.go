@@ -504,3 +504,36 @@ func TestANewAccountIsNotPremiumAndTheFlagIsReadBack(t *testing.T) {
 		t.Fatalf("unknown account: premium=%v err=%v", premium, err)
 	}
 }
+
+func TestMemberKeysAnswersOnlyClaimedCharacters(t *testing.T) {
+	store := &Store{Pool: testPool(t)}
+	u, err := store.UpsertEmailUser(t.Context(), "member@example.com")
+	if err != nil {
+		t.Fatal(err)
+	}
+	mine := Character{Key: "us/normal/baelgrim", Region: "us", Ruleset: "normal", Name: "Baelgrim"}
+	if err := store.LinkCharacter(t.Context(), u.ID, mine); err != nil {
+		t.Fatal(err)
+	}
+	// A character row nobody has claimed.
+	if _, err := store.Pool.Exec(t.Context(),
+		`insert into characters (key, region, ruleset, name) values ($1, 'us', 'normal', 'Nobody')
+		 on conflict (key) do nothing`, "us/normal/nobody"); err != nil {
+		t.Fatal(err)
+	}
+	got, err := store.MemberKeys(t.Context(),
+		[]string{"us/normal/baelgrim", "us/normal/nobody", "us/normal/never-seen"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !got["us/normal/baelgrim"] {
+		t.Error("a linked character is a member")
+	}
+	if got["us/normal/nobody"] || got["us/normal/never-seen"] {
+		t.Errorf("an unclaimed or unknown key is not a member: %v", got)
+	}
+	empty, err := store.MemberKeys(t.Context(), nil)
+	if err != nil || len(empty) != 0 {
+		t.Fatalf("no keys: %v %v", empty, err)
+	}
+}
