@@ -240,6 +240,51 @@ func TestSavingTheSameIdTwiceKeepsTheFirst(t *testing.T) {
 	}
 }
 
+func TestEveryRowRecordsWhichToolProducedIt(t *testing.T) {
+	h := newHarness(t)
+	// A browser save of a plain run.
+	if err := h.store.Save(t.Context(), "aaaaaaaaaaaa", &h.owner, "",
+		browserResult("warrior-fury", 1000)); err != nil {
+		t.Fatal(err)
+	}
+	// A queued server run of a Top Gear request.
+	gear := browserResult("warrior-fury", 0).Request
+	gear.Bulk = &simapi.BulkSpec{
+		Mode:      simapi.KindGear,
+		Precision: simapi.PrecisionNormal,
+		Cap:       simapi.Caps[simapi.LaneServer],
+		Candidates: []simapi.Candidate{
+			{Slot: "main_hand", ItemID: 19019, Origin: "bag"},
+		},
+	}
+	if err := h.store.Queue(t.Context(), "bbbbbbbbbbbb", h.owner, gear); err != nil {
+		t.Fatal(err)
+	}
+	// A queued weights run.
+	weights := browserResult("warrior-fury", 0).Request
+	weights.Weights = &simapi.WeightsSpec{
+		Stats: []string{"strength", "crit"}, Reference: "crit",
+	}
+	if err := h.store.Queue(t.Context(), "cccccccccccc", h.owner, weights); err != nil {
+		t.Fatal(err)
+	}
+
+	for _, c := range []struct{ id, want string }{
+		{"aaaaaaaaaaaa", simapi.KindRun},
+		{"bbbbbbbbbbbb", simapi.KindGear},
+		{"cccccccccccc", simapi.KindWeights},
+	} {
+		var got string
+		if err := h.store.Pool.QueryRow(t.Context(),
+			`select kind from sims where id = $1`, c.id).Scan(&got); err != nil {
+			t.Fatal(err)
+		}
+		if got != c.want {
+			t.Errorf("%s: kind %q, want %q", c.id, got, c.want)
+		}
+	}
+}
+
 // buildResult is a plausible finished sim whose source names a build,
 // for ForBuild's tests.
 func buildResult(buildID string, mean float64) simapi.SimResult {

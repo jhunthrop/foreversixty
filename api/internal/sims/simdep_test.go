@@ -1,6 +1,7 @@
 package sims
 
 import (
+	"reflect"
 	"slices"
 	"testing"
 
@@ -12,7 +13,9 @@ import (
 func TestTheEncounterDefaultsAreTheDesignsSettingsBar(t *testing.T) {
 	got := withEncounterDefaults(simapi.EncounterSpec{})
 	want := simapi.DefaultEncounter()
-	if got != want {
+	// EncounterSpec now carries TargetsOverTime ([]TargetCount), so it is
+	// no longer comparable with ==; DeepEqual is the correct successor.
+	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("defaults: got %+v want %+v", got, want)
 	}
 	if want.DurationSec != 180 || want.Targets != 1 {

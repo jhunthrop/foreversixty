@@ -76,12 +76,12 @@ func (s *Store) Save(ctx context.Context, id string, userID *int64, title string
 		t = &title
 	}
 	_, err = s.Pool.Exec(ctx,
-		`insert into sims (id, user_id, spec, engine_version, lane, dps_mean, dps_error,
+		`insert into sims (id, user_id, spec, kind, engine_version, lane, dps_mean, dps_error,
 		   iterations, title, result, state)
-		 values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+		 values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
 		 on conflict (id) do nothing`,
-		id, userID, res.Request.Spec, res.EngineVersion, res.Lane, res.DPS.Mean, res.DPS.Error,
-		res.IterationsRun, t, body, StateDone)
+		id, userID, res.Request.Spec, res.Request.Kind(), res.EngineVersion, res.Lane,
+		res.DPS.Mean, res.DPS.Error, res.IterationsRun, t, body, StateDone)
 	if err != nil {
 		return fmt.Errorf("sims: save %s: %w", id, err)
 	}
@@ -100,10 +100,11 @@ func (s *Store) Queue(ctx context.Context, id string, userID int64, req simapi.S
 		return fmt.Errorf("sims: encode %s: %w", id, err)
 	}
 	_, err = s.Pool.Exec(ctx,
-		`insert into sims (id, user_id, spec, engine_version, lane, dps_mean, dps_error,
+		`insert into sims (id, user_id, spec, kind, engine_version, lane, dps_mean, dps_error,
 		   iterations, result, state)
-		 values ($1, $2, $3, $4, $5, 0, 0, $6, $7, $8)`,
-		id, userID, req.Spec, req.EngineVersion, simapi.LaneServer, req.Iterations, body, StateQueued)
+		 values ($1, $2, $3, $4, $5, $6, 0, 0, $7, $8, $9)`,
+		id, userID, req.Spec, req.Kind(), req.EngineVersion, simapi.LaneServer,
+		req.Iterations, body, StateQueued)
 	if err != nil {
 		return fmt.Errorf("sims: queue %s: %w", id, err)
 	}
