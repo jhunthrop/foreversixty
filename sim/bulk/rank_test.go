@@ -37,11 +37,13 @@ func resultsForVaried(stage StageRequests, means, errs []float64) []api.SimResul
 			Lane:          api.LaneBrowser,
 			IterationsRun: stage.Iterations,
 			DPS:           api.Estimate{Mean: means[i], StdDev: errs[i] * 10, Error: errs[i]},
-			// A real run's Summary always carries the engine version;
-			// finalResult copies Requests[0]'s whole result (Task 17),
-			// so a fixture that left this zero could not tell "copied
-			// the equipped result" apart from "built an empty one".
-			Summary: summary.Summary{EngineVersion: enginever.Version},
+			// A real run's Summary always carries the engine version,
+			// and FightIndex is varied PER RESULT (0 for the equipped
+			// set, i for the rest): finalResult copies Requests[0]'s
+			// whole result (Task 17), and a fixture that stamped every
+			// result's Summary identically could not tell "copied the
+			// equipped result's" apart from "copied any result's".
+			Summary: summary.Summary{EngineVersion: enginever.Version, FightIndex: i},
 		}
 	}
 	return out
@@ -559,10 +561,17 @@ func TestTheLastRungProducesTheResult(t *testing.T) {
 	if final.Stages[1].Iterations != 3000 || final.Stages[1].Combos != len(last.Combos) {
 		t.Errorf("stage 2 = %+v", final.Stages[1])
 	}
-	// The summary is the equipped set's: a bulk report renders the
-	// baseline character's breakdown beside the ranking.
+	// The summary is the EQUIPPED set's, not any candidate's: a bulk
+	// report renders the baseline character's breakdown beside the
+	// ranking. FightIndex is stamped per result (see resultsForVaried),
+	// so this tells "copied results[0]'s Summary" apart from "copied
+	// some Summary" - a check on EngineVersion alone cannot, since the
+	// fixture gives every result the same one.
 	if final.Summary.EngineVersion == "" {
 		t.Error("the result carries no summary")
+	}
+	if final.Summary.FightIndex != 0 {
+		t.Errorf("Summary.FightIndex = %d, want 0 (the equipped set's, not a candidate's)", final.Summary.FightIndex)
 	}
 }
 
@@ -599,6 +608,33 @@ func TestWithinErrorGroups(t *testing.T) {
 			means:  []float64{1000, 1100},
 			stderr: 2,
 			groups: []int{0},
+		},
+		// Leader-anchored grouping (rank.go's group, comparing every
+		// row to its GROUP'S leader) and predecessor-chaining (comparing
+		// each row only to its immediate neighbour) agree on every case
+		// above - none of them actually exercises the reason rank.go's
+		// doc comment gives for anchoring on the leader instead of
+		// chaining. This one does: 1100 overlaps 1095 which overlaps
+		// 1090, so a chain would walk all three into one band even
+		// though 1100 and 1090 (a real 10-DPS-over-error-2 gap) do not
+		// overlap each other. Leader-anchored gives [0,0,1]; chaining
+		// gives [0,0,0], silently reporting a 10-DPS gap as a tie.
+		{
+			name:   "a chain of overlapping neighbours is not one tie",
+			means:  []float64{1000, 1100, 1095, 1090},
+			stderr: 2,
+			groups: []int{0, 0, 1},
+		},
+		// The same drift, sharper: six candidates 4 DPS apart with an
+		// error of 2 chain end to end (each overlaps its neighbour),
+		// but the group is capped at two members before the interval
+		// stops reaching back to 1120. Leader-anchored gives
+		// [0,0,1,1,2,2]; chaining would walk all six into [0,0,0,0,0,0].
+		{
+			name:   "a longer chain still breaks into bands",
+			means:  []float64{1000, 1120, 1116, 1112, 1108, 1104, 1100},
+			stderr: 2,
+			groups: []int{0, 0, 1, 1, 2, 2},
 		},
 	}
 	for _, c := range cases {

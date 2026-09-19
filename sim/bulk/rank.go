@@ -248,6 +248,14 @@ func finalResult(req api.SimRequest, stage StageRequests, ranked []scored, equip
 // predecessor is deliberate: chaining would walk a long tail of
 // overlapping neighbours into one band whose ends do not overlap at
 // all, and the page would rank a real 40-DPS gap as a tie.
+//
+// The comparison is between DELTA intervals, not DPS intervals, so
+// the equipped set's own error enters both sides of every combo-vs-
+// combo comparison and makes a tie slightly likelier than a direct
+// pairwise test of the two candidates' DPS would. That is deliberate
+// and consistent with score's stated conservatism (see its doc
+// comment): a later reader should not "fix" it by comparing DPS
+// directly.
 func group(combos []api.Combo) {
 	current := -1
 	var leader api.Estimate
