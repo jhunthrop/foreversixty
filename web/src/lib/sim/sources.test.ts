@@ -23,7 +23,30 @@ afterEach(() => api.reset());
 describe('fromStoredCharacter', () => {
   const path: CharacterPath = { region: 'us', ruleset: 'normal', slug: 'thrallgar' };
 
-  it('builds a character from the newest model the API holds', async () => {
+  // H3 (final whole-branch review): the real API's sim-input row never carries a race, so
+  // this is the shape createSimApi()'s default route now sends -- no override needed, and
+  // this is the behaviour every real call sees today. The three tests below that need a
+  // successful read add their own `race` to exercise "the day the API starts sending it".
+  it('refuses rather than substituting a race when the API records none', async () => {
+    const result = await fromStoredCharacter(path, ctx);
+    expect(result).toEqual({ ok: false, message: simCopy.unknownRace('none recorded') });
+  });
+
+  it('builds a character from the newest model the API holds, once a race exists', async () => {
+    api.route({
+      method: 'GET',
+      pattern: /\/v1\/characters\/[^/]+\/[^/]+\/[^/]+\/sim-input$/,
+      respond: () =>
+        envelope({
+          spec: 'warrior-fury',
+          gear: { slots: [12640] },
+          talents: '31/0/20',
+          buffs: ['battle_shout', 'blessing_of_kings'],
+          race: 'orc',
+          captured_at: '2026-09-14T09:40:00Z',
+          source: 'addon',
+        }),
+    });
     const result = await fromStoredCharacter(path, ctx);
     expect(result.ok).toBe(true);
     if (!result.ok) return;
@@ -31,30 +54,31 @@ describe('fromStoredCharacter', () => {
     expect(result.character.spec).toBe('warrior-fury');
     expect(result.character.class_slug).toBe('warrior');
     expect(result.character.race_slug).toBe('orc');
-    expect(result.character.gear.head).toBe(12640);
+    // The split ("31/0/20") gives a level -- 51 points, BASE_LEVEL + 51 clamped to 60 --
+    // but no per-talent order, so point_order and gear are honestly empty rather than
+    // guessed at from a shape this repository does not decode. See H3.
+    expect(result.character.talent_level).toBe(60);
+    expect(result.character.point_order).toEqual([]);
+    expect(result.character.gear).toEqual({});
     // Buff ids straight through: the API maps spell ids, the web never does.
     expect(result.character.buffs).toEqual(['battle_shout', 'blessing_of_kings']);
   });
 
-  it('refuses rather than substituting a race when the API records none', async () => {
+  it('records the source the API actually had, never "armory" by assumption', async () => {
     api.route({
       method: 'GET',
       pattern: /\/v1\/characters\/[^/]+\/[^/]+\/[^/]+\/sim-input$/,
       respond: () =>
         envelope({
           spec: 'warrior-fury',
-          gear: { head: 12640 },
-          talents: [2001],
+          gear: { slots: [12640] },
+          talents: '31/0/20',
           buffs: [],
+          race: 'orc',
           captured_at: '2026-09-14T09:40:00Z',
           source: 'addon',
         }),
     });
-    const result = await fromStoredCharacter(path, ctx);
-    expect(result).toEqual({ ok: false, message: simCopy.unknownRace('none recorded') });
-  });
-
-  it('records the source the API actually had, never "armory" by assumption', async () => {
     const result = await fromStoredCharacter(path, ctx);
     if (!result.ok) throw new Error(result.message);
     expect(result.character.source).toEqual({
@@ -71,8 +95,8 @@ describe('fromStoredCharacter', () => {
       respond: () =>
         envelope({
           spec: 'warrior-fury',
-          gear: { head: 12640 },
-          talents: [2001],
+          gear: { slots: [12640] },
+          talents: '31/0/20',
           buffs: [],
           race: 'orc',
           captured_at: '2026-09-14T09:40:00Z',

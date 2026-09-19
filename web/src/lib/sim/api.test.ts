@@ -110,7 +110,11 @@ describe('fetchSimInput', () => {
   it('reads the newest character model the API holds', async () => {
     const input = await fetchSimInput(path, TEST_API);
     expect(input.spec).toBe('warrior-fury');
-    expect(input.gear.head).toBe(12640);
+    // gear is the source's own opaque JSON (input.go's json.RawMessage), never the
+    // planner's slot-to-item map -- see H3 in the final whole-branch review.
+    expect(input.gear).toEqual({ slots: [12640, 11726] });
+    // talents is fight_metrics.talent_split -- points per tree, never a per-talent order.
+    expect(input.talents).toBe('31/0/20');
     // Buff ids, not spell ids: the amended contract puts the mapping on the API side.
     expect(input.buffs).toEqual(['battle_shout', 'blessing_of_kings']);
     // Armory is not a source yet; the API answers from the addon export or the last fight.

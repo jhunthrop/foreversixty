@@ -102,9 +102,8 @@ export async function fromStoredCharacter(path: CharacterPath, ctx: LoadContext)
 
   const classSlug = input.spec.split('-')[0];
   try {
-    // No loadTalents here: point_order and talent_level come straight off input.talents
-    // (the API's own id array), and nothing below reads a TalentFile -- so there is
-    // nothing to validate the ids against yet, and fetching one would be dead weight.
+    // No loadTalents here: nothing below reads a TalentFile, so fetching one would be
+    // dead weight -- see the point_order comment below for why.
     const { classes, races } = await reference(ctx);
     const classRow = classes.find((row) => row.slug === classSlug);
     if (classRow === undefined) return { ok: false, message: simCopy.characterFailed };
@@ -120,6 +119,16 @@ export async function fromStoredCharacter(path: CharacterPath, ctx: LoadContext)
       return { ok: false, message: simCopy.unknownRace(input.race ?? 'none recorded') };
     }
     const name = path.slug;
+    // `input.talents` is fight_metrics.talent_split -- points per tree as "31/0/20"
+    // (input.go's own comment: "the addon export is an opaque string this repository
+    // never parses, so a character who has never parsed has none"), never a per-talent
+    // order. That is enough for the level shown on the strip -- the same total
+    // fromLoggedFight's own `split` produces -- but not enough to say which talent was
+    // picked in which order, so point_order is honestly empty: the same "the page says
+    // the tree is empty" case fromLoggedFight already has for the same reason.
+    const totalPoints = input.talents
+      .split('/')
+      .reduce((sum, part) => sum + (Number.parseInt(part, 10) || 0), 0);
     return {
       ok: true,
       character: {
@@ -127,10 +136,15 @@ export async function fromStoredCharacter(path: CharacterPath, ctx: LoadContext)
         spec: input.spec,
         class_slug: classSlug,
         race_slug: raceRow.slug,
-        talent_level: talentLevel(input.talents),
+        talent_level: talentLevel(new Array<number>(totalPoints)),
         tree_version: ctx.treeVersion,
-        point_order: [...input.talents],
-        gear: { ...input.gear },
+        point_order: [],
+        // `input.gear`'s shape is the source's own -- the addon's own export JSON for an
+        // addon read, `{"trinkets": […]}` for a fight (input.go) -- and openapi.yaml
+        // leaves it an opaque object rather than the planner's slot-to-item map. Nothing
+        // in this repository decodes either shape yet, so gear starts empty rather than
+        // guessed at: the same honest-empty choice as point_order, above.
+        gear: {},
         // Buff ids straight through. The amended contract puts the spell-id mapping on the
         // API side -- "the web never maps spell ids itself" -- so `input.buffs` is already
         // the engine's vocabulary and anything it does not recognise surfaces as the

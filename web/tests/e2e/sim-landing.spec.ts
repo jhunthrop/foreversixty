@@ -38,10 +38,13 @@ const ME_NO_CHARACTERS = { ...ME, characters: [] };
 
 // Computed at test run time so the strip's relative-time pill reads "just now" regardless of
 // when the suite runs, the same way sim-sources.spec.ts's own addon-paste test gets there.
+// gear and talents match input.go's real shapes (H3, final whole-branch review): gear is
+// the source's own opaque JSON, never the planner's slot-to-item map, and talents is
+// fight_metrics.talent_split -- points per tree, never a per-talent id array.
 const THRALLGAR_INPUT = {
   spec: 'warrior-fury',
-  gear: { head: 12640, main_hand: 11726 },
-  talents: [2001, 2001, 2001, 2001, 2001, 2002, 2002],
+  gear: { slots: [12640, 11726] },
+  talents: '31/0/20',
   buffs: ['battle_shout'],
   race: 'orc',
   captured_at: new Date().toISOString(),
@@ -53,7 +56,7 @@ const THRALLGAR_INPUT = {
 const ROLAND_INPUT = {
   spec: 'mage-fire',
   gear: {},
-  talents: [],
+  talents: '',
   buffs: [],
   captured_at: new Date().toISOString(),
   source: 'fight',

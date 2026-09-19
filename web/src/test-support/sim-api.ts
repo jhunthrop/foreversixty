@@ -152,21 +152,24 @@ export function createSimApi(): SimApiStub {
       respond: () => envelope({ specs: fixtureSpecs }),
     },
     // Three path segments, not one key: the contract spells this route the way the existing
-    // character route is spelled. `source` is "addon" or "fight" -- Armory is not a source yet.
+    // character route is spelled. `source` is "addon" or "fight" -- Armory is not a source
+    // yet. Shape matches `api/internal/sims/input_test.go`'s own fixtures, not a guess:
+    // `gear` is the source's opaque JSON (`{"slots": […]}` there, for an addon read) and
+    // `talents` is `fight_metrics.talent_split`, "31/0/20". No `race`: the real API never
+    // sends one (final whole-branch review, H3) -- fromStoredCharacter always refuses on
+    // this default route the same way it does against the real API today, and the one test
+    // that needs a successful read adds its own `race` to exercise "the day the API starts
+    // sending it".
     {
       method: 'GET',
       pattern: /\/v1\/characters\/[^/]+\/[^/]+\/[^/]+\/sim-input$/,
       respond: () =>
         envelope({
           spec: 'warrior-fury',
-          gear: { head: 12640, main_hand: 11726 },
-          talents: [2001, 2001, 2001, 2001, 2001, 2002, 2002],
+          gear: { slots: [12640, 11726] },
+          talents: '31/0/20',
           // IDS.md ids, not spell ids: the API does the mapping (amended contract).
           buffs: ['battle_shout', 'blessing_of_kings'],
-          // Optional on SimInput and absent from the contract's row today. The stub sends
-          // it so the happy path is testable; the absent case has its own test in Task 7,
-          // and fromStoredCharacter refuses rather than substituting a race.
-          race: 'orc',
           captured_at: '2026-09-14T09:40:00Z',
           source: 'addon',
         }),
