@@ -15,6 +15,7 @@ from pathlib import Path
 
 import pytest
 
+from pipeline.csvio import read_csv
 from pipeline.simproto import pb
 
 BUILD = "1.60.1.69893"
@@ -62,6 +63,27 @@ def test_weapons_and_set_pieces_are_populated():
     assert len(in_a_set) == EXPECTED_IN_A_SET
     assert all(row.set_name for row in in_a_set)
     assert all(row.weapon_damage_max >= row.weapon_damage_min > 0 for row in weapons)
+
+
+def test_one_hand_weapons_are_dual_wieldable_not_main_hand_locked():
+    """InventoryType 13 (one-hand) must map to HandTypeOneHand, not
+    HandTypeMainHand -- see pipeline/simdb/items.py's
+    HAND_TYPE_BY_INVENTORY_TYPE. HandTypeMainHand is InventoryType 21's
+    disjoint, main-hand-only bucket; collapsing 13 into it left the engine
+    with zero HandTypeOneHand rows and no way to dual-wield a one-hand item
+    typed InventoryType 13."""
+    one_hand_ids = {
+        int(row["ID"])
+        for row in read_csv(BUILD_DIR / "raw" / "ItemSparse.csv")
+        if row.get("InventoryType") == "13"
+    }
+    one_hand_items = [row for row in database().items if row.id in one_hand_ids]
+    one_hand = pb.HandType.Value("HandTypeOneHand")
+    main_hand = pb.HandType.Value("HandTypeMainHand")
+    assert len(one_hand_items) > 0
+    assert all(row.hand_type == one_hand for row in one_hand_items)
+    assert not any(row.hand_type == main_hand for row in one_hand_items)
+    assert sum(1 for row in database().items if row.hand_type == one_hand) > 0
 
 
 def test_enchants_carry_the_stats_their_equip_spells_grant():
