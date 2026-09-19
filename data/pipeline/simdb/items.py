@@ -73,7 +73,7 @@ ITEM_TYPE_BY_INVENTORY_TYPE: dict[int, str] = {
 
 #: InventoryType -> HandType, for weapons only.
 HAND_TYPE_BY_INVENTORY_TYPE: dict[int, str] = {
-    13: "HandTypeMainHand",
+    13: "HandTypeOneHand",
     14: "HandTypeOffHand",
     17: "HandTypeTwoHand",
     21: "HandTypeMainHand",
