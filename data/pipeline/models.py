@@ -167,6 +167,13 @@ class AplDocument(BaseModel):
     rotation: dict
     sources: list[Source] = []
     notes: str = ""
+    #: Spell ids this rotation names on purpose that the pinned engine build
+    #: cannot act on yet -- a talent-granted ability with no spell file, or an
+    #: aura nothing registers. The notes say so in prose; this is the same
+    #: statement in a form a test can read, and the engine lane's rotation
+    #: smoke test holds the engine's own unknown-action warnings to exactly
+    #: this set. Empty is the normal case.
+    inert: list[int] = []
 
 
 class SpellEffectConstant(BaseModel):

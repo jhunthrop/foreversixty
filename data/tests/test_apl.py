@@ -9,6 +9,7 @@ from pipeline.apl import (
     ENGINE_AURA_IDS,
     AplError,
     action_ids,
+    aura_reference_ids,
     cast_spell_action_ids,
     load_all,
     load_apl,
@@ -331,3 +332,72 @@ def test_action_ids_finds_nested_spell_references():
 
 def test_action_ids_treats_a_rankless_reference_as_rank_zero():
     assert list(action_ids({"castSpell": {"spellId": {"spellId": 1680}}})) == [(1680, 0)]
+
+
+def test_every_declared_inert_id_is_named_by_its_own_rotation():
+    """`inert` is the machine-readable half of what the notes say in prose: the
+    spell ids whose lines this engine build warns about and skips. The engine
+    lane's rotation smoke test asserts the engine's own unknown-action
+    warnings equal this set, so an id here that the rotation never names would
+    be a smoke test that can never pass."""
+    for key, document in documents().items():
+        named = {spell_id for spell_id, _rank in action_ids(document.rotation)}
+        named |= {spell_id for spell_id, _rank in aura_reference_ids(document.rotation)}
+        assert set(document.inert) <= named, key
+
+
+def test_an_inert_id_the_rotation_does_not_name_is_rejected(tmp_path: Path):
+    path = tmp_path / "warrior-fury.json"
+    path.write_text(
+        json.dumps(
+            {
+                "spec": "warrior-fury",
+                "state": "written",
+                "notes": "Bloodthirst on cooldown.",
+                "inert": [23881],
+                "sources": [{"label": "l", "url": "https://example.com", "kind": "community"}],
+                "rotation": EMPTY_ROTATION,
+            }
+        )
+    )
+    with pytest.raises(AplError, match="23881"):
+        load_apl(path)
+
+
+def test_an_inert_id_listed_twice_is_rejected(tmp_path: Path):
+    path = tmp_path / "warrior-fury.json"
+    path.write_text(
+        json.dumps(
+            {
+                "spec": "warrior-fury",
+                "state": "written",
+                "notes": "Bloodthirst on cooldown.",
+                "inert": [23881, 23881],
+                "sources": [{"label": "l", "url": "https://example.com", "kind": "community"}],
+                "rotation": {
+                    "type": "TypeAPL",
+                    "priorityList": [{"action": {"castSpell": {"spellId": {"spellId": 23881}}}}],
+                },
+            }
+        )
+    )
+    with pytest.raises(AplError, match="twice"):
+        load_apl(path)
+
+
+def test_an_unwritten_rotation_may_not_declare_an_inert_line(tmp_path: Path):
+    path = tmp_path / "warrior-protection.json"
+    path.write_text(
+        json.dumps(
+            {
+                "spec": "warrior-protection",
+                "state": "unwritten",
+                "notes": "",
+                "inert": [23881],
+                "sources": [],
+                "rotation": EMPTY_ROTATION,
+            }
+        )
+    )
+    with pytest.raises(AplError, match="unwritten"):
+        load_apl(path)
