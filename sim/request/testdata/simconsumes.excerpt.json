@@ -1,0 +1,92 @@
+[
+  {
+    "id": 117,
+    "name": "Tough Jerky",
+    "quality": 1,
+    "required_level": 1,
+    "spell_ids": [
+      433
+    ]
+  },
+  {
+    "id": 3824,
+    "name": "Shadow Oil",
+    "quality": 1,
+    "required_level": 24,
+    "spell_ids": [
+      3594
+    ]
+  },
+  {
+    "id": 12820,
+    "name": "Winterfall Firewater",
+    "quality": 1,
+    "required_level": 45,
+    "spell_ids": [
+      17038
+    ]
+  },
+  {
+    "id": 13442,
+    "name": "Mighty Rage Potion",
+    "quality": 1,
+    "required_level": 46,
+    "spell_ids": [
+      17528
+    ]
+  },
+  {
+    "id": 13452,
+    "name": "Elixir of the Mongoose",
+    "quality": 1,
+    "required_level": 46,
+    "spell_ids": [
+      17538
+    ]
+  },
+  {
+    "id": 13510,
+    "name": "Flask of the Titans",
+    "quality": 1,
+    "required_level": 50,
+    "spell_ids": [
+      17626
+    ]
+  },
+  {
+    "id": 13928,
+    "name": "Grilled Squid",
+    "quality": 1,
+    "required_level": 35,
+    "spell_ids": [
+      1249522
+    ]
+  },
+  {
+    "id": 18641,
+    "name": "Dense Dynamite",
+    "quality": 1,
+    "required_level": 0,
+    "spell_ids": [
+      23063
+    ]
+  },
+  {
+    "id": 20749,
+    "name": "Brilliant Wizard Oil",
+    "quality": 1,
+    "required_level": 45,
+    "spell_ids": [
+      25122
+    ]
+  },
+  {
+    "id": 21151,
+    "name": "Rumsey Rum Black Label",
+    "quality": 1,
+    "required_level": 0,
+    "spell_ids": [
+      25804
+    ]
+  }
+]

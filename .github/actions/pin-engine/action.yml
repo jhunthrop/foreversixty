@@ -1,0 +1,32 @@
+name: pin the engine fork
+description: >
+  Rewrites sim/go.mod's development replace to the engine fork at the sha
+  in sim/enginever/version.go. Both jobs of the sim workflow need it - the
+  tests and the artifact build - and a second copy of the guards below
+  would be a second thing to keep right, so it lives here.
+runs:
+  using: composite
+  steps:
+    # The engine is a separate repository. CI REWRITES the development
+    # replace to point at the fork at the pinned sha; it must not
+    # delete it, because the require is github.com/wowsims/classic
+    # v1.0.14 - upstream's tag, which is NOT the fork - and a deleted
+    # replace silently builds against upstream instead of against the
+    # engine the artifacts are pinned to.
+    #
+    # `go mod edit -replace` writes the line whether or not one is
+    # there, so this is idempotent and needs no sed.
+    - shell: bash
+      working-directory: sim
+      run: |
+        sha=$(sed -n 's/.*Version = "\(.*\)"/\1/p' enginever/version.go)
+        test -n "$sha" || { echo "sim/enginever/version.go has no Version; run make engine-pin"; exit 1; }
+        # The pseudo-version go resolves for that sha. The @-form asks
+        # the proxy, which is what a consumer of this module would do.
+        go mod edit -replace "github.com/wowsims/classic=github.com/jhunthrop/wowsims-forever@$sha"
+        go mod tidy
+        echo "--- sim/go.mod after pinning ---"
+        grep -A1 'replace github.com/wowsims/classic' go.mod
+        grep -q 'jhunthrop/wowsims-forever' go.mod || { echo "the engine replace was not rewritten"; exit 1; }
+        grep -q '/Users/jh' go.mod && { echo "a developer path survived into CI"; exit 1; }
+        true

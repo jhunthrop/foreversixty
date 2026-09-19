@@ -1,0 +1,809 @@
+{
+  "engine_version": "sim:golden",
+  "fight_index": 1,
+  "duration_ms": 179856,
+  "damage_done": [
+    {
+      "guid": "sim-player",
+      "name": "Sim",
+      "class": "warrior",
+      "total": 186849,
+      "effective": 186849,
+      "active_ms": 179856,
+      "abilities": [
+        {
+          "spell_id": 25286,
+          "name": "spell:25286",
+          "school": 2,
+          "total": 64767,
+          "effective": 64767,
+          "hits": 58,
+          "crits": 30,
+          "ticks": 0,
+          "misses": {
+            "DODGE": 4,
+            "MISS": 2
+          },
+          "min": 0,
+          "max": 0
+        },
+        {
+          "spell_id": 23894,
+          "name": "spell:23894",
+          "school": 2,
+          "total": 33210,
+          "effective": 33210,
+          "hits": 25,
+          "crits": 12,
+          "ticks": 0,
+          "misses": {
+            "DODGE": 2,
+            "MISS": 1
+          },
+          "min": 0,
+          "max": 0
+        },
+        {
+          "spell_id": 20022000007,
+          "name": "other:attack/2",
+          "school": 2,
+          "total": 29119,
+          "effective": 29119,
+          "hits": 113,
+          "crits": 54,
+          "ticks": 0,
+          "misses": {
+            "DODGE": 9,
+            "GLANCING": 56,
+            "MISS": 19
+          },
+          "min": 0,
+          "max": 0
+        },
+        {
+          "spell_id": 20662,
+          "name": "spell:20662",
+          "school": 2,
+          "total": 25834,
+          "effective": 25834,
+          "hits": 18,
+          "crits": 8,
+          "ticks": 0,
+          "misses": {
+            "DODGE": 1,
+            "MISS": 1
+          },
+          "min": 0,
+          "max": 0
+        },
+        {
+          "spell_id": 10022000007,
+          "name": "other:attack/1",
+          "school": 2,
+          "total": 22339,
+          "effective": 22339,
+          "hits": 37,
+          "crits": 16,
+          "ticks": 0,
+          "misses": {
+            "DODGE": 3,
+            "GLANCING": 21,
+            "MISS": 11
+          },
+          "min": 0,
+          "max": 0
+        },
+        {
+          "spell_id": 1680,
+          "name": "spell:1680",
+          "school": 2,
+          "total": 10610,
+          "effective": 10610,
+          "hits": 12,
+          "crits": 6,
+          "ticks": 0,
+          "misses": {
+            "DODGE": 1
+          },
+          "min": 0,
+          "max": 0
+        },
+        {
+          "spell_id": 12867,
+          "name": "spell:12867",
+          "school": 2,
+          "total": 970,
+          "effective": 970,
+          "hits": 0,
+          "crits": 0,
+          "ticks": 15,
+          "min": 0,
+          "max": 0
+        },
+        {
+          "spell_id": 22000006,
+          "name": "other:rage_gain",
+          "total": 0,
+          "effective": 0,
+          "hits": 0,
+          "crits": 0,
+          "ticks": 0,
+          "min": 0,
+          "max": 0
+        },
+        {
+          "spell_id": 12328,
+          "name": "spell:12328",
+          "total": 0,
+          "effective": 0,
+          "hits": 0,
+          "crits": 0,
+          "ticks": 0,
+          "min": 0,
+          "max": 0
+        },
+        {
+          "spell_id": 2687,
+          "name": "spell:2687",
+          "total": 0,
+          "effective": 0,
+          "hits": 0,
+          "crits": 0,
+          "ticks": 0,
+          "min": 0,
+          "max": 0
+        },
+        {
+          "spell_id": 1719,
+          "name": "spell:1719",
+          "total": 0,
+          "effective": 0,
+          "hits": 0,
+          "crits": 0,
+          "ticks": 0,
+          "min": 0,
+          "max": 0
+        },
+        {
+          "spell_id": 20572,
+          "name": "spell:20572",
+          "total": 0,
+          "effective": 0,
+          "hits": 0,
+          "crits": 0,
+          "ticks": 0,
+          "min": 0,
+          "max": 0
+        },
+        {
+          "spell_id": 10002025286,
+          "name": "spell:25286/1",
+          "total": 0,
+          "effective": 0,
+          "hits": 0,
+          "crits": 0,
+          "ticks": 0,
+          "min": 0,
+          "max": 0
+        }
+      ],
+      "targets": [
+        {
+          "guid": "sim-target-0",
+          "name": "Target 0",
+          "total": 186849
+        },
+        {
+          "guid": "sim-target-1",
+          "name": "Target 1",
+          "total": 0
+        }
+      ],
+      "series": []
+    }
+  ],
+  "damage_taken": [],
+  "healing": [],
+  "healing_taken": [],
+  "deaths": [],
+  "auras": [
+    {
+      "target_guid": "sim-player",
+      "target_name": "Sim",
+      "spell_id": 9910,
+      "name": "spell:9910",
+      "type": "BUFF",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 179856,
+      "segments": [],
+      "appliers": [
+        "Sim"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Sim",
+      "spell_id": 20906,
+      "name": "spell:20906",
+      "type": "BUFF",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 179856,
+      "segments": [],
+      "appliers": [
+        "Sim"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Sim",
+      "spell_id": 25289,
+      "name": "spell:25289",
+      "type": "BUFF",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 179856,
+      "segments": [],
+      "appliers": [
+        "Sim"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Sim",
+      "spell_id": 25361,
+      "name": "spell:25361",
+      "type": "BUFF",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 179856,
+      "segments": [],
+      "appliers": [
+        "Sim"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Sim",
+      "spell_id": 25359,
+      "name": "spell:25359",
+      "type": "BUFF",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 179856,
+      "segments": [],
+      "appliers": [
+        "Sim"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Sim",
+      "spell_id": 22888,
+      "name": "spell:22888",
+      "type": "BUFF",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 179856,
+      "segments": [],
+      "appliers": [
+        "Sim"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Sim",
+      "spell_id": 24425,
+      "name": "spell:24425",
+      "type": "BUFF",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 179856,
+      "segments": [],
+      "appliers": [
+        "Sim"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Sim",
+      "spell_id": 15366,
+      "name": "spell:15366",
+      "type": "BUFF",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 179856,
+      "segments": [],
+      "appliers": [
+        "Sim"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Sim",
+      "spell_id": 16609,
+      "name": "spell:16609",
+      "type": "BUFF",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 179856,
+      "segments": [],
+      "appliers": [
+        "Sim"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Sim",
+      "spell_id": 22817,
+      "name": "spell:22817",
+      "type": "BUFF",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 179856,
+      "segments": [],
+      "appliers": [
+        "Sim"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Sim",
+      "spell_id": 22818,
+      "name": "spell:22818",
+      "type": "BUFF",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 179856,
+      "segments": [],
+      "appliers": [
+        "Sim"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Sim",
+      "spell_id": 22820,
+      "name": "spell:22820",
+      "type": "BUFF",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 179856,
+      "segments": [],
+      "appliers": [
+        "Sim"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Sim",
+      "spell_id": 23768,
+      "name": "spell:23768",
+      "type": "BUFF",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 179856,
+      "segments": [],
+      "appliers": [
+        "Sim"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Sim",
+      "spell_id": 2458,
+      "name": "spell:2458",
+      "type": "BUFF",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 179856,
+      "segments": [],
+      "appliers": [
+        "Sim"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Sim",
+      "spell_id": 12319,
+      "name": "spell:12319",
+      "type": "BUFF",
+      "applications": 127,
+      "max_stacks": 0,
+      "uptime_ms": 159532,
+      "segments": [],
+      "appliers": [
+        "Sim"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Sim",
+      "spell_id": 10002025286,
+      "name": "spell:25286/1",
+      "type": "BUFF",
+      "applications": 67,
+      "max_stacks": 0,
+      "uptime_ms": 92901,
+      "segments": [],
+      "appliers": [
+        "Sim"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Sim",
+      "spell_id": 11585,
+      "name": "spell:11585",
+      "type": "BUFF",
+      "applications": 21,
+      "max_stacks": 0,
+      "uptime_ms": 78967,
+      "segments": [],
+      "appliers": [
+        "Sim"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Sim",
+      "spell_id": 10002020007,
+      "name": "spell:20007/1",
+      "type": "BUFF",
+      "applications": 5,
+      "max_stacks": 0,
+      "uptime_ms": 63636,
+      "segments": [],
+      "appliers": [
+        "Sim"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Sim",
+      "spell_id": 20002020007,
+      "name": "spell:20007/2",
+      "type": "BUFF",
+      "applications": 3,
+      "max_stacks": 0,
+      "uptime_ms": 43712,
+      "segments": [],
+      "appliers": [
+        "Sim"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Sim",
+      "spell_id": 12328,
+      "name": "spell:12328",
+      "type": "BUFF",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 37198,
+      "segments": [],
+      "appliers": [
+        "Sim"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Sim",
+      "spell_id": 2687,
+      "name": "spell:2687",
+      "type": "BUFF",
+      "applications": 3,
+      "max_stacks": 0,
+      "uptime_ms": 34299,
+      "segments": [],
+      "appliers": [
+        "Sim"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Sim",
+      "spell_id": 20572,
+      "name": "spell:20572",
+      "type": "BUFF",
+      "applications": 2,
+      "max_stacks": 0,
+      "uptime_ms": 30000,
+      "segments": [],
+      "appliers": [
+        "Sim"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Sim",
+      "spell_id": 1719,
+      "name": "spell:1719",
+      "type": "BUFF",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 15000,
+      "segments": [],
+      "appliers": [
+        "Sim"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Sim",
+      "spell_id": 12317,
+      "name": "spell:12317",
+      "type": "BUFF",
+      "applications": 0,
+      "max_stacks": 0,
+      "uptime_ms": 0,
+      "segments": [],
+      "appliers": [
+        "Sim"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Sim",
+      "spell_id": 2457,
+      "name": "spell:2457",
+      "type": "BUFF",
+      "applications": 0,
+      "max_stacks": 0,
+      "uptime_ms": 0,
+      "segments": [],
+      "appliers": [
+        "Sim"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Sim",
+      "spell_id": 71,
+      "name": "spell:71",
+      "type": "BUFF",
+      "applications": 0,
+      "max_stacks": 0,
+      "uptime_ms": 0,
+      "segments": [],
+      "appliers": [
+        "Sim"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Sim",
+      "spell_id": 18499,
+      "name": "spell:18499",
+      "type": "BUFF",
+      "applications": 0,
+      "max_stacks": 0,
+      "uptime_ms": 0,
+      "segments": [],
+      "appliers": [
+        "Sim"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Sim",
+      "spell_id": 25288,
+      "name": "spell:25288",
+      "type": "BUFF",
+      "applications": 0,
+      "max_stacks": 0,
+      "uptime_ms": 0,
+      "segments": [],
+      "appliers": [
+        "Sim"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Sim",
+      "spell_id": 10002020569,
+      "name": "spell:20569/1",
+      "type": "BUFF",
+      "applications": 0,
+      "max_stacks": 0,
+      "uptime_ms": 0,
+      "segments": [],
+      "appliers": [
+        "Sim"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Sim",
+      "spell_id": 22000014,
+      "name": "other:move",
+      "type": "BUFF",
+      "applications": 0,
+      "max_stacks": 0,
+      "uptime_ms": 0,
+      "segments": [],
+      "appliers": [
+        "Sim"
+      ]
+    }
+  ],
+  "casts": [
+    {
+      "guid": "sim-player",
+      "name": "Sim",
+      "owner_guid": "sim-player",
+      "spell_id": 22000006,
+      "spell_name": "other:rage_gain",
+      "started": 222,
+      "succeeded": 222,
+      "failed": 0,
+      "cast_time_ms": 0,
+      "sequence": []
+    },
+    {
+      "guid": "sim-player",
+      "name": "Sim",
+      "owner_guid": "sim-player",
+      "spell_id": 20022000007,
+      "spell_name": "other:attack/2",
+      "started": 141,
+      "succeeded": 141,
+      "failed": 0,
+      "cast_time_ms": 0,
+      "sequence": []
+    },
+    {
+      "guid": "sim-player",
+      "name": "Sim",
+      "owner_guid": "sim-player",
+      "spell_id": 10002025286,
+      "spell_name": "spell:25286/1",
+      "started": 67,
+      "succeeded": 67,
+      "failed": 0,
+      "cast_time_ms": 0,
+      "sequence": []
+    },
+    {
+      "guid": "sim-player",
+      "name": "Sim",
+      "owner_guid": "sim-player",
+      "spell_id": 25286,
+      "spell_name": "spell:25286",
+      "started": 64,
+      "succeeded": 64,
+      "failed": 0,
+      "cast_time_ms": 0,
+      "sequence": []
+    },
+    {
+      "guid": "sim-player",
+      "name": "Sim",
+      "owner_guid": "sim-player",
+      "spell_id": 10022000007,
+      "spell_name": "other:attack/1",
+      "started": 51,
+      "succeeded": 51,
+      "failed": 0,
+      "cast_time_ms": 0,
+      "sequence": []
+    },
+    {
+      "guid": "sim-player",
+      "name": "Sim",
+      "owner_guid": "sim-player",
+      "spell_id": 23894,
+      "spell_name": "spell:23894",
+      "started": 27,
+      "succeeded": 27,
+      "failed": 0,
+      "cast_time_ms": 0,
+      "sequence": []
+    },
+    {
+      "guid": "sim-player",
+      "name": "Sim",
+      "owner_guid": "sim-player",
+      "spell_id": 1680,
+      "spell_name": "spell:1680",
+      "started": 14,
+      "succeeded": 14,
+      "failed": 0,
+      "cast_time_ms": 0,
+      "sequence": []
+    },
+    {
+      "guid": "sim-player",
+      "name": "Sim",
+      "owner_guid": "sim-player",
+      "spell_id": 2687,
+      "spell_name": "spell:2687",
+      "started": 3,
+      "succeeded": 3,
+      "failed": 0,
+      "cast_time_ms": 0,
+      "sequence": []
+    },
+    {
+      "guid": "sim-player",
+      "name": "Sim",
+      "owner_guid": "sim-player",
+      "spell_id": 20572,
+      "spell_name": "spell:20572",
+      "started": 2,
+      "succeeded": 2,
+      "failed": 0,
+      "cast_time_ms": 0,
+      "sequence": []
+    },
+    {
+      "guid": "sim-player",
+      "name": "Sim",
+      "owner_guid": "sim-player",
+      "spell_id": 12328,
+      "spell_name": "spell:12328",
+      "started": 1,
+      "succeeded": 1,
+      "failed": 0,
+      "cast_time_ms": 0,
+      "sequence": []
+    },
+    {
+      "guid": "sim-player",
+      "name": "Sim",
+      "owner_guid": "sim-player",
+      "spell_id": 1719,
+      "spell_name": "spell:1719",
+      "started": 1,
+      "succeeded": 1,
+      "failed": 0,
+      "cast_time_ms": 0,
+      "sequence": []
+    }
+  ],
+  "interrupts": [],
+  "dispels": [],
+  "resources": [
+    {
+      "guid": "sim-player",
+      "name": "Sim",
+      "power_type": 3,
+      "series": [],
+      "gained": 2482,
+      "spent": 2463,
+      "zero_ms": 0,
+      "max": 0,
+      "at_max_ms": 0,
+      "wasted": 6
+    }
+  ],
+  "threat": [],
+  "threat_by_target": [],
+  "taunts": [],
+  "combatants": [],
+  "roster": [
+    {
+      "guid": "sim-player",
+      "name": "Sim",
+      "class": "warrior",
+      "class_source": "sim",
+      "spec": "fury",
+      "role": "dps",
+      "active_ms": 179856,
+      "activity_pct": 100,
+      "deaths": 0,
+      "damage_done": 186849,
+      "healing_done": 0,
+      "damage_taken": 0,
+      "dps": 1038.660353207436,
+      "hps": 0,
+      "dtps": 0
+    }
+  ],
+  "mechanics": {
+    "table_found": false,
+    "rows": []
+  },
+  "phases": []
+}
