@@ -421,6 +421,26 @@ export const simCopy = {
   /** The seconds field's own accessible name, so several "at a time" rows read as distinct controls. */
   cooldownAtFor: (name: string): string => `${name}, at this second`,
 
+  // --- Task 15: the request drawer (design 8). The exact JSON a run sends, editable, with
+  // simValidate's own errors beside the fields they name. ---
+  requestDrawer: 'Request',
+  requestNote:
+    'The exact JSON this run sends. Edit it and run it as written: anything the panels above do not offer is reachable here.',
+  requestApply: 'Apply to the page',
+  requestReset: 'Reset',
+  // Task 17 replaces this sentence with the lossless one once contract 10.5's per-slot
+  // enchant and suffix are on SimCharacter. Until then it states what actually happens.
+  requestApplyNote:
+    'Rebuilds the settings, the precision and the character from this request. Per-slot enchants and suffixes are not part of the page’s character yet, so Apply drops them; Run keeps them.',
+  requestRun: 'Run this request',
+  requestValid: 'The engine accepts this request.',
+  requestTooLong: 'That request is too long to read.',
+  requestNotJson: 'That is not JSON.',
+  requestNotObject: 'A request is a JSON object.',
+  /** A `pool.validate` call that rejected without an `Error`, which nothing in this lane
+   *  actually throws -- kept as the honest fallback rather than assuming one shape. */
+  requestValidateFailed: 'The engine could not check this request.',
+
   /**
    * Stat names, for the weights page (part B). The vocabulary is contract 10.8's pinning
    * of the fork's `proto.Stat` enum in snake case: the engine carries ONE `hit` and ONE

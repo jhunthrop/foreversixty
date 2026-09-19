@@ -39,6 +39,7 @@
   import DetailsCard from './DetailsCard.svelte';
   import LandingState from './LandingState.svelte';
   import ReportOptions from './ReportOptions.svelte';
+  import RequestDrawer from './RequestDrawer.svelte';
   import RotationCard from './RotationCard.svelte';
   import RunControl from './RunControl.svelte';
   import SavedSim from './SavedSim.svelte';
@@ -557,6 +558,13 @@
             onchange={(next) => store.setSettings(next)}
           />
         {/if}
+        <RequestDrawer
+          request={store.buildRequest()}
+          disabled={store.phase === 'running' || store.serverRunning}
+          onvalidate={(json) => store.validateRequest(json)}
+          onapply={(request) => void store.applyRequest(request)}
+          onrun={(request) => void store.runRequest(request)}
+        />
         {#if characterSpecRow !== null && needsFidelityNote(characterSpecRow)}
           <!-- A fidelity state labels, it never blocks: the run control below always
                renders once a character is loaded, and this is the one-line footnote

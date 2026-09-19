@@ -22,6 +22,7 @@ import { EMPTY_BUFF_NAMES, loadBuffNames, type BuffNames } from './buff-names';
 import { simCopy } from './copy';
 import { EMPTY_ESTIMATE } from './estimate';
 import { precisionPlan, relativeError, type Lane, type PrecisionId } from './precision';
+import type { RequestValidation } from './engine';
 import { buildSimRequest, runSim, SimRunError, type RunHandle, type RunInput } from './run';
 import { defaultSettings, settingsLabel, type SimSettings } from './settings';
 import {
@@ -32,8 +33,9 @@ import {
   type LoadContext,
   type SourceResult,
 } from './sources';
+import { createRequestMethods, type StoreRequestDeps } from './store-request';
 import type { CharacterPath } from '../characters';
-import type { Estimate, SimProgress, SimResult, SourceKind } from './types';
+import type { Estimate, SimProgress, SimRequest, SimResult, SourceKind } from './types';
 import { createPool, type SimPool } from './worker';
 
 export type SimPhase = 'idle' | 'loading-character' | 'loading-engine' | 'running' | 'done' | 'error';
@@ -335,6 +337,56 @@ export function createSimStore(init: SimStoreInit) {
               : null;
           return load === null ? Promise.resolve() : adopt(load);
         })();
+
+  // Task 15: the request drawer's four methods, extracted into store-request.ts (712 of
+  // 800 lines here before this task; these four would have pushed it over). `$state`
+  // cannot cross the module boundary, so every field they touch is passed as a getter or
+  // setter closing over this function's own `let`s -- see store-request.ts's header for
+  // why, and StoreRequestDeps for exactly what "everything they touch" is.
+  const requestDeps: StoreRequestDeps = {
+    getCharacter: () => character,
+    getTalents: () => talents,
+    getSettings: () => settings,
+    setSettings: (value) => {
+      settings = value;
+    },
+    getPrecisionId: () => precisionId,
+    setPrecisionId: (value) => {
+      precisionId = value;
+    },
+    getResult: () => result,
+    setResult: (value) => {
+      result = value;
+    },
+    setMessage: (value) => {
+      message = value;
+    },
+    setDetail: (value) => {
+      detail = value;
+    },
+    setPhase: (value) => {
+      phase = value;
+    },
+    setProgress: (update) => {
+      estimate = update.estimate;
+      iterationsDone = update.iterationsDone;
+      iterationsTotal = update.iterationsTotal;
+      relative = update.relativeError;
+    },
+    getStopRequested: () => stopRequested,
+    setStopRequested: (value) => {
+      stopRequested = value;
+    },
+    setHandle: (value) => {
+      handle = value;
+    },
+    poolOnce,
+    adopt,
+    restorePreviousResult,
+    fromPlannerCode: (code) => fromPlannerCode(code, ctx),
+    treeVersion: init.treeVersion,
+  };
+  const requestMethods = createRequestMethods(requestDeps);
 
   return {
     /** Resolves once the URL's own bootstrap character, if any, has been adopted. */
@@ -673,6 +725,23 @@ export function createSimStore(init: SimStoreInit) {
         // running, and a newer runOnServer() call may have set it again by now.
         if (stillCurrent()) serverRunning = false;
       }
+    },
+
+    /** The request the page would send right now, or null with no character or talents. */
+    buildRequest(): SimRequest | null {
+      return requestMethods.buildRequest();
+    },
+    /** `api.SimRequest.Validate`, inside the wasm. Never a rule written here. */
+    validateRequest(json: string): Promise<RequestValidation> {
+      return requestMethods.validateRequest(json);
+    },
+    /** A pasted request as page state: settings, precision and the character it decodes to. */
+    applyRequest(request: SimRequest): Promise<void> {
+      return requestMethods.applyRequest(request);
+    },
+    /** The edited request, run exactly as written. The escape hatch of design 8. */
+    runRequest(request: SimRequest): Promise<void> {
+      return requestMethods.runRequest(request);
     },
 
     stop(): void {

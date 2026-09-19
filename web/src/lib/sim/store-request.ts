@@ -1,0 +1,190 @@
+// web/src/lib/sim/store-request.ts
+// The request drawer's four store methods, extracted from store.svelte.ts (ruling, Task
+// 15): `store.svelte.ts` was 712 of the lane's 800-line ceiling, and these four would have
+// pushed it past. The public surface does not move -- `store.svelte.ts` still exposes
+// `buildRequest`, `validateRequest`, `applyRequest` and `runRequest` as methods on the
+// store it returns; this module only holds their bodies.
+//
+// `$state` cannot cross a module boundary: the reactive fields these methods read and
+// write are `let` bindings inside `createSimStore`'s own closure, and Svelte's runes are
+// ordinary lexical `let`s under the hood, not a value that can be exported. So the seam is
+// dependency injection -- `StoreRequestDeps` is a plain object of getters, setters and the
+// store's own private helpers, built once in `store.svelte.ts` and closed over there. This
+// module never touches `$state` itself and needs no `.svelte.ts` extension.
+import { encodeFS1 } from '../planner/fs1';
+import { indexTalents } from '../planner/rules';
+import type { TalentFile } from '../planner/types';
+import { gearFromSlots, ranksFromTalentsString, toCharacterSpec, type SimCharacter } from './character';
+import { simCopy } from './copy';
+import type { RequestValidation } from './engine';
+import { EMPTY_ESTIMATE } from './estimate';
+import { precisionOf, precisionPlan, STEP_ITERATIONS, type PrecisionId } from './precision';
+import { settingsFromRequest } from './request-json';
+import { buildSimRequest, runSim, SimRunError, type RunHandle, type RunUpdate } from './run';
+import type { SimSettings } from './settings';
+import type { SourceResult } from './sources';
+import type { SimPhase } from './store.svelte';
+import type { SimRequest, SimResult } from './types';
+import type { SimPool } from './worker';
+
+/**
+ * Everything the four methods below need from `createSimStore`'s own closure. Every
+ * setter here mutates exactly the `$state` field `store.svelte.ts` declares under the
+ * matching name -- this module writes state, it just does not own any.
+ */
+export interface StoreRequestDeps {
+  getCharacter(): SimCharacter | null;
+  getTalents(): TalentFile | null;
+  getSettings(): SimSettings;
+  setSettings(value: SimSettings): void;
+  getPrecisionId(): PrecisionId;
+  setPrecisionId(value: PrecisionId): void;
+  getResult(): SimResult | null;
+  setResult(value: SimResult | null): void;
+  setMessage(value: string | null): void;
+  setDetail(value: string): void;
+  setPhase(value: SimPhase): void;
+  /** `estimate`, `iterationsDone`, `iterationsTotal` and `relative`, written together --
+   *  the same four fields `run()`'s own progress callback writes, from `RunUpdate`'s own
+   *  shape rather than a fifth copy of their names. */
+  setProgress(update: RunUpdate): void;
+  getStopRequested(): boolean;
+  setStopRequested(value: boolean): void;
+  setHandle(value: RunHandle | null): void;
+  /** Creates the pool on first use; every other lane already funnels through this. */
+  poolOnce(): SimPool;
+  /** The store's own single load-and-adopt path -- the failure rule lives there, once. */
+  adopt(load: Promise<SourceResult>): Promise<void>;
+  /** Puts the figure back to the last completed result after a cancelled run. */
+  restorePreviousResult(): void;
+  /** An FS1 code decoded into a `'manual'`-sourced character, bound to the store's own
+   *  `LoadContext`. */
+  fromPlannerCode(code: string): Promise<SourceResult>;
+  /** `init.treeVersion`, for the FS1 code `applyRequest` encodes. */
+  treeVersion: string;
+}
+
+export interface RequestMethods {
+  /**
+   * The request the page would send right now, or null while there is no character or no
+   * talent index. One function, so the drawer, and eventually the share link, can never
+   * disagree about what "this request" is -- the same reason `buildSimRequest` exists.
+   */
+  buildRequest(): SimRequest | null;
+  /** `api.SimRequest.Validate`, inside the wasm. Never a rule written here. */
+  validateRequest(json: string): Promise<RequestValidation>;
+  /**
+   * A pasted request as page state: settings and precision exactly, and the character
+   * through the same FS1 route "Run this yourself" already uses. The gear a `SimCharacter`
+   * carries is a map of item ids, so an enchant or suffix on a request's gear slot is
+   * dropped here -- `runRequest` below is what keeps it (Task 17 lifts this).
+   */
+  applyRequest(request: SimRequest): Promise<void>;
+  /** The edited request, run exactly as written. The escape hatch of design 8. */
+  runRequest(request: SimRequest): Promise<void>;
+}
+
+export function createRequestMethods(deps: StoreRequestDeps): RequestMethods {
+  return {
+    buildRequest(): SimRequest | null {
+      const character = deps.getCharacter();
+      if (character === null) return null;
+      const talentFile = deps.getTalents();
+      const index = talentFile === null ? null : indexTalents(talentFile);
+      if (index === null) return null;
+      const settings = deps.getSettings();
+      const plan = precisionPlan(deps.getPrecisionId(), 'browser');
+      return buildSimRequest({
+        spec: character.spec,
+        source: character.source,
+        character: toCharacterSpec(
+          character,
+          index,
+          settings.buffs,
+          settings.consumables,
+          settings.cooldowns,
+        ),
+        encounter: settings.encounter,
+        iterations: plan.iterations,
+        targetError: plan.targetError,
+        stepIterations: plan.step,
+      });
+    },
+
+    validateRequest(json: string): Promise<RequestValidation> {
+      return deps.poolOnce().validate(json);
+    },
+
+    async applyRequest(request: SimRequest): Promise<void> {
+      deps.setSettings(settingsFromRequest(request));
+      deps.setPrecisionId(precisionOf(request));
+      await deps.adopt(
+        deps.fromPlannerCode(
+          encodeFS1({
+            dataBuild: deps.treeVersion,
+            classSlug: request.character.class,
+            raceSlug: request.character.race,
+            treeRanks: ranksFromTalentsString(request.character.talents),
+            gear: gearFromSlots(request.character.gear),
+          }),
+        ),
+      );
+    },
+
+    async runRequest(request: SimRequest): Promise<void> {
+      deps.setMessage(null);
+      deps.setDetail('');
+      deps.setStopRequested(false);
+      deps.setPhase('loading-engine');
+      deps.setProgress({
+        estimate: EMPTY_ESTIMATE,
+        iterationsDone: 0,
+        iterationsTotal: request.iterations,
+        relativeError: 0,
+      });
+      deps.setPhase('running');
+
+      const handle = runSim(
+        deps.poolOnce(),
+        {
+          spec: request.spec,
+          source: request.source,
+          character: request.character,
+          encounter: request.encounter,
+          iterations: request.iterations,
+          randomSeed: request.random_seed,
+          targetError: request.target_error,
+          stepIterations: STEP_ITERATIONS,
+        },
+        (update) => {
+          // A shard can still report progress after stop() fires and before the engine
+          // has noticed the abort message -- same guard as run()'s own callback.
+          if (deps.getStopRequested()) return;
+          deps.setProgress(update);
+        },
+      );
+      deps.setHandle(handle);
+
+      try {
+        const finished = await handle.result;
+        if (deps.getStopRequested()) {
+          deps.setMessage(simCopy.stopped);
+          deps.restorePreviousResult();
+          deps.setPhase(deps.getResult() !== null ? 'done' : 'idle');
+          return;
+        }
+        deps.setResult(finished);
+        deps.setPhase('done');
+      } catch (error) {
+        const failure = error instanceof SimRunError ? error : null;
+        deps.setMessage(failure?.cancelled === true ? simCopy.stopped : (failure?.message ?? simCopy.failed));
+        // The engine's own words, kept beside ours -- same as run()'s own catch.
+        deps.setDetail(failure?.detail ?? '');
+        if (failure?.cancelled === true) deps.restorePreviousResult();
+        deps.setPhase(failure?.cancelled === true && deps.getResult() !== null ? 'done' : 'error');
+      } finally {
+        deps.setHandle(null);
+      }
+    },
+  };
+}
