@@ -356,4 +356,78 @@ export const simCopy = {
   } as Record<string, string>,
   dummyTarget: 'Target dummy',
   dummyNote: 'No debuffs, no execute window and no armor reduction, the way a dummy fights back.',
+
+  // --- Design 4.3: the full buff, debuff and consumable panel, behind "Custom". ---
+  buffPanel: 'Everything applied',
+  buffPanelNote:
+    'The engine’s own list. An id it cannot map fails the run and names itself, rather than being quietly dropped.',
+  buffGroupLabel: {
+    'raid-buffs': 'Raid buffs',
+    'party-buffs': 'Party buffs',
+    'player-buffs': 'On this player',
+    'world-buffs': 'World buffs',
+    debuffs: 'On the target',
+    flask: 'Flasks',
+    'battle-elixir': 'Battle elixirs',
+    'guardian-elixir': 'Guardian elixirs',
+    food: 'Food',
+    'weapon-imbue': 'Weapon oils and stones',
+    potion: 'Potions and runes',
+    explosive: 'Explosives',
+  } as Record<string, string>,
+  gradeLabel: { off: 'Off', on: 'On', improved: 'Improved' } as Record<string, string>,
+  /** The three-way control's own accessible name; the buff's name is beside it. */
+  gradeFor: (name: string): string => `${name}, how good a version`,
+
+  /**
+   * Stat names, for the weights page (part B). The vocabulary is contract 10.8's pinning
+   * of the fork's `proto.Stat` enum in snake case: the engine carries ONE `hit` and ONE
+   * `crit` -- there is no `melee_hit`, `spell_hit`, `melee_crit` or `spell_crit` -- while
+   * haste IS split into `spell_haste` and `melee_haste`, and `MP5` is spelled `mp5`.
+   * One key per id in `PINNED_STATS`, no more and no fewer; stats.test.ts asserts both
+   * directions, so a renamed stat cannot leave a stale word behind.
+   */
+  statLabel: {
+    strength: 'Strength',
+    agility: 'Agility',
+    stamina: 'Stamina',
+    intellect: 'Intellect',
+    spirit: 'Spirit',
+    spell_power: 'Spell power',
+    arcane_power: 'Arcane power',
+    fire_power: 'Fire power',
+    frost_power: 'Frost power',
+    holy_power: 'Holy power',
+    nature_power: 'Nature power',
+    shadow_power: 'Shadow power',
+    mp5: 'MP5',
+    hit: 'Hit',
+    crit: 'Crit',
+    spell_haste: 'Spell haste',
+    spell_penetration: 'Spell penetration',
+    attack_power: 'Attack power',
+    melee_haste: 'Melee haste',
+    armor_penetration: 'Armor penetration',
+    expertise: 'Expertise',
+    mana: 'Mana',
+    energy: 'Energy',
+    rage: 'Rage',
+    armor: 'Armor',
+    ranged_attack_power: 'Ranged attack power',
+    defense: 'Defense',
+    block: 'Block',
+    block_value: 'Block value',
+    dodge: 'Dodge',
+    parry: 'Parry',
+    health: 'Health',
+    arcane_resistance: 'Arcane resistance',
+    fire_resistance: 'Fire resistance',
+    frost_resistance: 'Frost resistance',
+    nature_resistance: 'Nature resistance',
+    shadow_resistance: 'Shadow resistance',
+    bonus_armor: 'Bonus armor',
+    healing_power: 'Healing power',
+    spell_damage: 'Spell damage',
+    feral_attack_power: 'Feral attack power',
+  } as Record<string, string>,
 } as const;
