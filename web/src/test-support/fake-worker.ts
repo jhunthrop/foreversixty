@@ -29,8 +29,9 @@ export function createFakeWorker(engine: EngineModule): PoolWorker {
     postMessage: (message: ToWorker) => {
       void (async () => {
         if (message.kind === 'abort') {
+          const prefix = `${message.callbackId}-`;
           for (const id of tokenOf.keys()) {
-            if (id.startsWith(message.callbackId)) engine.simAbort(id);
+            if (id.startsWith(prefix)) engine.simAbort(id);
           }
           return;
         }

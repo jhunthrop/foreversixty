@@ -152,15 +152,23 @@ export function createPool(options: PoolOptions = {}): SimPool {
       return send<string[]>(0, (token) => ({ kind: 'split', token, request, shards }));
     },
     run(shards, callbackId, onProgress) {
-      return Promise.all(
-        shards.map((request, index) =>
-          send<string>(
-            index % size,
-            (token) => ({ kind: 'run', token, callbackId: `${callbackId}-${index}`, request }),
-            (progress) => onProgress({ ...progress, shard: index }),
-          ),
+      const shardResults = shards.map((request, index) =>
+        send<string>(
+          index % size,
+          (token) => ({ kind: 'run', token, callbackId: `${callbackId}-${index}`, request }),
+          (progress) => onProgress({ ...progress, shard: index }),
         ),
       );
+      // One shard failing (an engine error, not a user abort) leaves the rest of this run's
+      // shards with nothing telling them to stop, since Promise.all settles on the first
+      // rejection but every other worker just keeps computing and posting progress into a
+      // closure the caller has already treated as dead. Aborting the run's own id catches
+      // every sibling shard through the same <callbackId>-<index> prefix rule the pool gives
+      // them, so a failure winds the whole run down instead of leaving orphans running.
+      return Promise.all(shardResults).catch((error: unknown) => {
+        abort(callbackId);
+        throw error;
+      });
     },
     combine(results) {
       return send<string>(0, (token) => ({ kind: 'combine', token, results: [...results] }));

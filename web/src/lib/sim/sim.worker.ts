@@ -35,8 +35,9 @@ function reply(message: FromWorker): void {
 
 async function handle(message: ToWorker): Promise<void> {
   if (message.kind === 'abort') {
+    const prefix = `${message.callbackId}-`;
     for (const callbackId of tokenOf.keys()) {
-      if (callbackId.startsWith(message.callbackId)) engine?.simAbort(callbackId);
+      if (callbackId.startsWith(prefix)) engine?.simAbort(callbackId);
     }
     return;
   }
