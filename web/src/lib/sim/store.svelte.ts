@@ -18,6 +18,7 @@ import { indexTalents } from '../planner/rules';
 import { dispatchServerSim, fetchSim, fetchSimProgress, saveSim, SimApiError } from './api';
 import { characterFromFs1, needsRace, toCharacterSpec, type SimCharacter } from './character';
 import { loadActionNames, type ActionNames } from './action-names';
+import { EMPTY_BUFF_NAMES, loadBuffNames, type BuffNames } from './buff-names';
 import { simCopy } from './copy';
 import { EMPTY_ESTIMATE } from './estimate';
 import { precisionPlan, relativeError, type Lane, type PrecisionId } from './precision';
@@ -165,6 +166,8 @@ export function createSimStore(init: SimStoreInit) {
   let talents = $state<TalentFile | null>(null);
   let actionNames = $state<ActionNames | null>(null);
   let loadedNamesFor = '';
+  let buffNames = $state<BuffNames | null>(null);
+  let loadedBuffNamesFor = '';
   let items = $state<Map<number, Item>>(toItemMap([]));
 
   let pool: SimPool | null = init.pool ?? null;
@@ -268,6 +271,7 @@ export function createSimStore(init: SimStoreInit) {
       races = [];
     }
     await ensureActionNames(outcome.character.class_slug);
+    await ensureBuffNames(outcome.character.tree_version);
   }
 
   /**
@@ -284,6 +288,21 @@ export function createSimStore(init: SimStoreInit) {
       actionNames = await loadActionNames(init.treeVersion, classSlug);
     } catch {
       actionNames = null;
+    }
+  }
+
+  /**
+   * The build's buff and consumable name table, once per build. A build with no table
+   * renders humanised ids, which is legible and honest -- the same rule, and the same
+   * reason, as `ensureActionNames` above.
+   */
+  async function ensureBuffNames(build: string): Promise<void> {
+    if (build === '' || loadedBuffNamesFor === build) return;
+    loadedBuffNamesFor = build;
+    try {
+      buffNames = await loadBuffNames(build);
+    } catch {
+      buffNames = EMPTY_BUFF_NAMES;
     }
   }
 
@@ -353,6 +372,9 @@ export function createSimStore(init: SimStoreInit) {
     },
     get actionNames() {
       return actionNames;
+    },
+    get buffNames() {
+      return buffNames;
     },
     get items() {
       return items;

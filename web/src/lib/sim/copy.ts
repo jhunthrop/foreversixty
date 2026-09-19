@@ -146,7 +146,6 @@ export const simCopy = {
   rotation: 'Rotation',
   rotationPrefix: 'Default for',
   rotationLink: 'what it does',
-  customPresetNote: 'Keeps the buffs already applied. Choosing each one individually arrives with Top Gear.',
 
   // --- Task 13: the run control and every state it has. ---
   run: 'Run sim',

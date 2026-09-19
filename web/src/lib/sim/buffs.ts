@@ -187,3 +187,34 @@ export function setGrade(selected: readonly string[], id: string, grade: BuffGra
   if (grade === 'off') return without;
   return [...without, grade === 'improved' ? improved : id];
 }
+
+/** The two id lists a `CharacterSpec` carries, and the shape the panel edits. */
+export interface Selection {
+  buffs: string[];
+  consumables: string[];
+}
+
+/**
+ * One row's grade, written into whichever of the two lists that row belongs to. The panel
+ * spreads the answer over the settings object, so a component never decides which list an
+ * id goes in -- the catalogue's `kind` does, and it came from IDS.md.
+ */
+export function withGrade(
+  selection: Selection,
+  row: Pick<BuffRow, 'id' | 'kind'>,
+  grade: BuffGrade,
+): Selection {
+  if (row.kind === 'consumable') {
+    return { ...selection, consumables: setGrade(selection.consumables, row.id, grade) };
+  }
+  return { ...selection, buffs: setGrade(selection.buffs, row.id, grade) };
+}
+
+/** The plain ids of one group that are on, for the group heading's count. */
+export function selectedIn(selection: Selection, group: BuffGroupId): string[] {
+  return rowsIn(group)
+    .filter(
+      (row) => gradeOf(row.kind === 'consumable' ? selection.consumables : selection.buffs, row.id) !== 'off',
+    )
+    .map((row) => row.id);
+}

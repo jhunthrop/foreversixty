@@ -28,6 +28,7 @@
   import { defaultSimState, parseSimState, simSearch, withSimState } from '../../lib/sim/url';
   import { ENGINE_VERSION, engineLabel, isStale } from '../../lib/sim/version';
   import type { SimListRow, SimResult, SpecFidelity } from '../../lib/sim/types';
+  import BuffPanel from './BuffPanel.svelte';
   import CharacterStrip from './CharacterStrip.svelte';
   import DetailsCard from './DetailsCard.svelte';
   import LandingState from './LandingState.svelte';
@@ -507,6 +508,15 @@
           disabled={store.phase === 'running' || store.serverRunning}
           onchange={(next) => store.setSettings(next)}
         />
+        {#if store.settings.preset === 'custom'}
+          <BuffPanel
+            settings={store.settings}
+            build={store.character.tree_version}
+            names={store.buffNames}
+            disabled={store.phase === 'running' || store.serverRunning}
+            onchange={(next) => store.setSettings(next)}
+          />
+        {/if}
         {#if characterSpecRow !== null && characterSpecRow.state !== 'validated'}
           <!-- A fidelity state labels, it never blocks: the run control below always
                renders once a character is loaded, and this is the one-line footnote

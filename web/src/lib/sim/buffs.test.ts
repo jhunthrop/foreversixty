@@ -1,7 +1,17 @@
 import { describe, expect, it } from 'vitest';
 import generated from '../../data/generated/sim-ids.json';
 import { simCopy } from './copy';
-import { BUFF_GROUPS, CATALOGUE, IMPROVED_SUFFIX, buildCatalogue, gradeOf, rowsIn, setGrade } from './buffs';
+import {
+  BUFF_GROUPS,
+  CATALOGUE,
+  IMPROVED_SUFFIX,
+  buildCatalogue,
+  gradeOf,
+  rowsIn,
+  selectedIn,
+  setGrade,
+  withGrade,
+} from './buffs';
 
 describe('the catalogue', () => {
   it('groups every buff by the message IDS.md says it lands in', () => {
@@ -115,5 +125,48 @@ describe('the three-way grade', () => {
 
   it('names the three grades', () => {
     expect(Object.keys(simCopy.gradeLabel).sort()).toEqual(['improved', 'off', 'on']);
+  });
+});
+
+describe('withGrade', () => {
+  const empty = { buffs: [], consumables: [] };
+
+  it('writes a buff into the buff list and a consumable into the consumable list', () => {
+    expect(withGrade(empty, { id: 'battle_shout', kind: 'buff' }, 'on')).toEqual({
+      buffs: ['battle_shout'],
+      consumables: [],
+    });
+    expect(withGrade(empty, { id: 'flask_of_supreme_power', kind: 'consumable' }, 'on')).toEqual({
+      buffs: [],
+      consumables: ['flask_of_supreme_power'],
+    });
+  });
+
+  it('carries the grade through to the id that is stored', () => {
+    expect(withGrade(empty, { id: 'battle_shout', kind: 'buff' }, 'improved').buffs).toEqual([
+      'battle_shout:improved',
+    ]);
+  });
+
+  it('leaves the other list untouched', () => {
+    const both = { buffs: ['thorns'], consumables: ['flask_of_supreme_power'] };
+    expect(withGrade(both, { id: 'thorns', kind: 'buff' }, 'off')).toEqual({
+      buffs: [],
+      consumables: ['flask_of_supreme_power'],
+    });
+  });
+
+  it('does not mutate the selection it was given', () => {
+    const both = { buffs: ['thorns'], consumables: [] };
+    withGrade(both, { id: 'thorns', kind: 'buff' }, 'off');
+    expect(both.buffs).toEqual(['thorns']);
+  });
+});
+
+describe('selectedIn', () => {
+  it('counts what is on in one group, graded or plain', () => {
+    const selection = { buffs: ['battle_shout:improved', 'thorns'], consumables: [] };
+    expect(selectedIn(selection, 'raid-buffs').sort()).toEqual(['battle_shout', 'thorns']);
+    expect(selectedIn(selection, 'debuffs')).toEqual([]);
   });
 });

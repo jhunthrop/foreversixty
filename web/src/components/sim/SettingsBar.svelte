@@ -128,7 +128,7 @@
         data-testid="sim-preset"
       >
         {#each BUFF_PRESETS as preset (preset.id)}
-          <option value={preset.id} title={preset.id === 'custom' ? simCopy.customPresetNote : undefined}>
+          <option value={preset.id}>
             {preset.label}
           </option>
         {/each}
