@@ -14,12 +14,13 @@ import (
 // that checked itself would agree with any typo.
 func TestEveryStyleExpandsToTheContractsFields(t *testing.T) {
 	cases := []struct {
-		id      string
-		targets int
-		execute float64
-		move    *api.Movement
-		overT   []api.TargetCount
-		dummy   bool
+		id         string
+		targets    int
+		execute    float64
+		move       *api.Movement
+		overT      []api.TargetCount
+		dummy      bool
+		targetType string
 	}{
 		{id: "patchwerk", targets: 1, execute: 0.25},
 		{id: "execute", targets: 1, execute: 0.35},
@@ -33,7 +34,8 @@ func TestEveryStyleExpandsToTheContractsFields(t *testing.T) {
 		{id: "dungeon", targets: 1, execute: 0, overT: []api.TargetCount{
 			{AtSec: 0, Count: 1}, {AtSec: 40, Count: 3}, {AtSec: 80, Count: 5},
 			{AtSec: 130, Count: 3}, {AtSec: 160, Count: 1}}},
-		{id: "dummy", targets: 1, execute: 0, dummy: true},
+		// Contract 10.8: a dummy has no creature type.
+		{id: "dummy", targets: 1, execute: 0, dummy: true, targetType: api.TargetTypeUnknown},
 	}
 	if len(cases) != len(StyleIDs) {
 		t.Fatalf("the contract lists %d styles and StyleIDs has %d: %v", len(cases), len(StyleIDs), StyleIDs)
@@ -58,6 +60,9 @@ func TestEveryStyleExpandsToTheContractsFields(t *testing.T) {
 			}
 			if got.Dummy != c.dummy {
 				t.Errorf("dummy = %v, want %v", got.Dummy, c.dummy)
+			}
+			if got.TargetType != c.targetType {
+				t.Errorf("target_type = %q, want %q", got.TargetType, c.targetType)
 			}
 			switch {
 			case c.move == nil && got.Movement != nil:
@@ -112,6 +117,21 @@ func TestExpandStyleKeepsWhatTheStyleDoesNotSet(t *testing.T) {
 	got, _ := ExpandStyle("cleave-3", base)
 	if got.DurationSec != 300 || got.Variation != 0.1 || got.TargetLevel != 61 || got.TargetArmor != 2500 || got.TargetType != "undead" {
 		t.Errorf("the style overwrote what it does not own: %+v", got)
+	}
+}
+
+// "dummy" is the one style that owns TargetType (contract 10.8): unlike
+// every other style, it must override whatever the caller chose rather
+// than leave it be.
+func TestDummyStyleOverridesTheCallersTargetType(t *testing.T) {
+	base := api.DefaultEncounter()
+	base.TargetType = "undead"
+	got, ok := ExpandStyle("dummy", base)
+	if !ok {
+		t.Fatal("ExpandStyle(\"dummy\") is not a style")
+	}
+	if got.TargetType != api.TargetTypeUnknown {
+		t.Errorf("target_type = %q, want %q", got.TargetType, api.TargetTypeUnknown)
 	}
 }
 

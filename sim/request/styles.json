@@ -75,6 +75,7 @@
     "id": "dummy",
     "targets": 1,
     "execute_ratio": 0,
+    "target_type": "unknown",
     "dummy": true
   }
 ]
