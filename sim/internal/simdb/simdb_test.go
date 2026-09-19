@@ -1,6 +1,7 @@
 package simdb
 
 import (
+	"bytes"
 	"encoding/json"
 	"os"
 	"path/filepath"
@@ -48,9 +49,24 @@ func TestFixtureGearResolves(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
+			// Strictly: the fixture requests are plain SimRequests and
+			// carry no key the envelope does not define. The envelope
+			// crosses lane boundaries - the web mirrors it tag for tag
+			// and the api lane decodes it - so provenance that means
+			// nothing to the product lives in the .request.notes.md
+			// beside each file, not in a field here.
+			dec := json.NewDecoder(bytes.NewReader(b))
+			dec.DisallowUnknownFields()
 			var req api.SimRequest
-			if err := json.Unmarshal(b, &req); err != nil {
-				t.Fatal(err)
+			if err := dec.Decode(&req); err != nil {
+				t.Fatalf("%v; if this is an unknown field, it belongs in %s.request.notes.md", err, spec)
+			}
+			if err := req.Validate(); err != nil {
+				t.Errorf("the fixture request is not a valid SimRequest: %v", err)
+			}
+			notes := filepath.Join("..", "..", "adapter", "testdata", spec+".request.notes.md")
+			if _, err := os.Stat(notes); err != nil {
+				t.Errorf("%s is missing; every re-pointed slot needs its reason written down", notes)
 			}
 			if len(req.Character.Gear) == 0 {
 				t.Fatal("the fixture request equips nothing; it is meant to be a real geared fight")

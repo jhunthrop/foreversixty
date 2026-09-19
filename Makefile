@@ -29,6 +29,11 @@ ARTIFACT_DIR ?= artifacts
 WEB_SIM_DIR   = web/public/_sim
 ACTIVE_BUILD_JSON = web/src/data/active-build.json
 SIMDB_EMBED   = sim/internal/simdb/simdb.bin
+# Read at parse time so the copy below has a real prerequisite: an earlier
+# version depended on active-build.json alone, and regenerating the build's
+# simdb.bin left the embedded copy stale while make reported nothing to do.
+ACTIVE_BUILD  = $(shell sed -n 's/.*"build"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' $(ACTIVE_BUILD_JSON) 2>/dev/null)
+SIMDB_SRC     = data/builds/$(ACTIVE_BUILD)/simdb.bin
 
 .PHONY: simdb
 # simdb copies the ACTIVE build's item database where sim/internal/simdb
@@ -45,14 +50,12 @@ SIMDB_EMBED   = sim/internal/simdb/simdb.bin
 # after a fresh clone.
 simdb: $(SIMDB_EMBED)
 
-$(SIMDB_EMBED): $(ACTIVE_BUILD_JSON)
-	@build=$$(sed -n 's/.*"build"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' $(ACTIVE_BUILD_JSON)); \
-	  test -n "$$build" || { echo "$(ACTIVE_BUILD_JSON) names no build"; exit 1; }; \
-	  src="data/builds/$$build/simdb.bin"; \
-	  test -f "$$src" || { echo "no $$src; the data lane's \`python -m pipeline simdb\` has not run for build $$build"; exit 1; }; \
-	  mkdir -p $(dir $(SIMDB_EMBED)); \
-	  cp "$$src" $(SIMDB_EMBED); \
-	  echo "embedded $$src ($$(wc -c < $(SIMDB_EMBED) | tr -d ' ') bytes)"
+$(SIMDB_EMBED): $(SIMDB_SRC) $(ACTIVE_BUILD_JSON)
+	@test -n "$(ACTIVE_BUILD)" || { echo "$(ACTIVE_BUILD_JSON) names no build"; exit 1; }
+	@test -f "$(SIMDB_SRC)" || { echo "no $(SIMDB_SRC); the data lane's \`python -m pipeline simdb\` has not run for build $(ACTIVE_BUILD)"; exit 1; }
+	@mkdir -p $(dir $(SIMDB_EMBED))
+	@cp "$(SIMDB_SRC)" $(SIMDB_EMBED)
+	@echo "embedded $(SIMDB_SRC) ($$(wc -c < $(SIMDB_EMBED) | tr -d ' ') bytes)"
 
 .PHONY: artifacts
 # artifacts builds the two things one pinned engine sha produces, both

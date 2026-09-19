@@ -100,12 +100,6 @@ type GearSlot struct {
 	ItemID  int    `json:"item_id"`
 	Enchant int    `json:"enchant,omitempty"`
 	Suffix  int    `json:"suffix,omitempty"`
-	// Notes is provenance, not input: free text saying where this choice
-	// came from when it was not the player's. Nothing reads it - Validate
-	// ignores it and request.Build never looks at it - and it is omitted
-	// from the wire unless something set it. sim/adapter's fixture
-	// requests use it to record why a slot holds the item it does.
-	Notes string `json:"notes,omitempty"`
 }
 
 type CharacterSource struct {

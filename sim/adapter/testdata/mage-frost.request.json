@@ -16,8 +16,7 @@
       {
         "slot": "head",
         "item_id": 23263,
-        "enchant": 1509,
-        "notes": "vanilla \"Arcanist Crown\" (16795) has no row in Forever's build; nearest by stat vector in the same slot"
+        "enchant": 1509
       },
       {
         "slot": "neck",
@@ -25,13 +24,11 @@
       },
       {
         "slot": "shoulder",
-        "item_id": 20357,
-        "notes": "vanilla \"Boreal Mantle\" (11782) has no row in Forever's build; nearest by stat vector in the same slot"
+        "item_id": 20357
       },
       {
         "slot": "back",
-        "item_id": 10249,
-        "notes": "vanilla \"Archivist Cape\" (13386) has no row in Forever's build; nearest by stat vector in the same slot"
+        "item_id": 10249
       },
       {
         "slot": "chest",
@@ -41,30 +38,25 @@
       {
         "slot": "wrist",
         "item_id": 22063,
-        "enchant": 1883,
-        "notes": "vanilla \"Arcanist Bindings\" (16799) has no row in Forever's build; nearest by stat vector in the same slot"
+        "enchant": 1883
       },
       {
         "slot": "hands",
-        "item_id": 20716,
-        "notes": "vanilla \"Hands of Power\" (13253) has no row in Forever's build; nearest by stat vector in the same slot"
+        "item_id": 20716
       },
       {
         "slot": "waist",
-        "item_id": 18405,
-        "notes": "vanilla \"Mana Igniting Cord\" (19136) has no row in Forever's build; nearest by stat vector in the same slot"
+        "item_id": 18405
       },
       {
         "slot": "legs",
         "item_id": 21346,
-        "enchant": 1509,
-        "notes": "vanilla \"Netherwind Pants\" (16915) has no row in Forever's build; nearest by stat vector in the same slot"
+        "enchant": 1509
       },
       {
         "slot": "feet",
         "item_id": 22084,
-        "enchant": 911,
-        "notes": "vanilla \"Arcanist Boots\" (16800) has no row in Forever's build; nearest by stat vector in the same slot"
+        "enchant": 911
       },
       {
         "slot": "finger1",
@@ -80,24 +72,20 @@
       },
       {
         "slot": "trinket2",
-        "item_id": 272438,
-        "notes": "vanilla \"Briarwood Reed\" (12930) has no row in Forever's build; nearest by stat vector in the same slot"
+        "item_id": 272438
       },
       {
         "slot": "main_hand",
         "item_id": 17015,
-        "enchant": 2504,
-        "notes": "vanilla \"Azuresong Mageblade\" (17103) has no row in Forever's build; nearest by stat vector in the same slot"
+        "enchant": 2504
       },
       {
         "slot": "off_hand",
-        "item_id": 11863,
-        "notes": "vanilla \"Drakestone\" (10796) has no row in Forever's build; nearest by stat vector in the same slot"
+        "item_id": 281720
       },
       {
         "slot": "ranged",
-        "item_id": 20363,
-        "notes": "vanilla \"Lunar Wand\" (15283) has no row in Forever's build; nearest by stat vector in the same slot"
+        "item_id": 20363
       }
     ],
     "buffs": [
