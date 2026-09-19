@@ -383,9 +383,26 @@ export function createSimStore(init: SimStoreInit) {
    * page" button and a followed share link run through the identical
    * `requestMethods.applyRequest`, so a link can never disagree with the button about what
    * applying a request does.
+   *
+   * `url.ts`'s `decodeRequestParam` refuses anything that does not look like a `SimRequest`
+   * at the top level, but it is a shape check, not a validator (its own doc comment says
+   * so) -- it does not look inside `character` or `encounter`, and the engine's own
+   * Validate never runs on this path at all (design 8's link applies instantly, without a
+   * round trip through the engine first). So `requestMethods.applyRequest` can still throw
+   * on a field the shape check cannot see, and `ready` is never awaited by the component
+   * that creates this store -- an uncaught throw here would be an unhandled rejection on
+   * page load for anyone who followed a bad link, not merely a console warning for the
+   * player who typed it. The catch below reuses `adopt()`'s own established refusal path
+   * (the same one a bad build id or an unreachable talent file already takes) rather than
+   * inventing a second "load failed" message: whatever throws, the player sees exactly
+   * what a rejected source already shows them.
    */
-  function applyRequestOnce(request: SimRequest): Promise<void> {
-    return requestMethods.applyRequest(request);
+  async function applyRequestOnce(request: SimRequest): Promise<void> {
+    try {
+      await requestMethods.applyRequest(request);
+    } catch {
+      await adopt(Promise.resolve({ ok: false, message: simCopy.characterFailed }));
+    }
   }
 
   // The URL's own bootstrap, kicked off once here rather than by the component: a share

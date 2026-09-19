@@ -136,6 +136,51 @@ describe('a request in the URL', () => {
     expect(decodeRequestParam('')).toBeNull();
   });
 
+  // Fix round 1: `decodeRequestParam` used to accept any non-null, non-array object, so a
+  // crafted `/sim?req=e30` ('e30' is base64url for '{}') passed it and then threw inside
+  // `settingsFromRequest` on the first field it reached for -- an unhandled rejection for
+  // anyone who followed the link. These pin the shape check that stops that at the door.
+  it('refuses an empty object -- the crafted /sim?req=e30 the review demonstrated', () => {
+    expect(decodeRequestParam('e30')).toBeNull();
+  });
+
+  it('refuses a partially-populated object that has some, but not all, required fields', () => {
+    // character and encounter alone were enough to pass the old check (a non-null, non-array
+    // object); every other required field -- engine_version, spec, source, iterations,
+    // random_seed -- is still missing.
+    const partial = { character: request.character, encounter: request.encounter } as unknown as SimRequest;
+    const encoded = encodeRequestParam(partial);
+    expect(encoded).not.toBeNull();
+    expect(decodeRequestParam(encoded!)).toBeNull();
+  });
+
+  it('accepts a request whose encoded size lands exactly on the budget, and refuses one byte more', () => {
+    // Grows a filler field one character at a time until the real, base64url-encoded
+    // output lands exactly on MAX_REQUEST_PARAM -- the boundary an off-by-one in either
+    // encodeRequestParam's `>` comparison or decodeRequestParam's own length gate would get
+    // wrong, unlike the 20,000-buffs test above, which overshoots by a wide margin.
+    let filler = '';
+    let padded = { ...request, character: { ...request.character, name: filler } };
+    let encoded = encodeRequestParam(padded);
+    while (encoded !== null && encoded.length < MAX_REQUEST_PARAM) {
+      filler += 'x';
+      padded = { ...request, character: { ...request.character, name: filler } };
+      encoded = encodeRequestParam(padded);
+    }
+    expect(encoded).not.toBeNull();
+    expect(encoded!.length).toBe(MAX_REQUEST_PARAM);
+    expect(decodeRequestParam(encoded!)).toEqual(padded);
+
+    // The length gate itself, not the content: one character past the budget is refused
+    // before decodeRequestParam even tries to parse anything.
+    expect(decodeRequestParam(`${encoded!}x`)).toBeNull();
+
+    // The real encoder agrees: one character more of input pushes the actual encoded
+    // output past the budget too.
+    filler += 'x';
+    expect(encodeRequestParam({ ...request, character: { ...request.character, name: filler } })).toBeNull();
+  });
+
   it('parses and writes the req parameter beside the others', () => {
     const encoded = encodeRequestParam(request)!;
     const state = parseSimState(`?req=${encoded}`);

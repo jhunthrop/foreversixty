@@ -12,6 +12,7 @@ import { simCopy } from './copy';
 import { withTargets } from './settings';
 import { createSimStore } from './store.svelte';
 import { createFakeWorker } from '../../test-support/fake-worker';
+import type { SimRequest } from './types';
 import { createPool, type PoolWorker } from './worker';
 
 const FURY = 'FS1:1.15.9.69722:warrior:orc:0/5530515/0:head=12640,main_hand=11726';
@@ -401,6 +402,64 @@ describe('createSimStore', () => {
       await sim.ready;
       expect(sim.character).toBeNull();
       expect(sim.message).toBe('That code is missing its talent and gear fields.');
+    });
+
+    // A share link's whole request (Task 16, design 8) -- the most specific thing a link
+    // can carry, so it wins over both `code` and `source`/`ref`.
+    const validRequest: SimRequest = {
+      engine_version: 'edc0c8e9a',
+      spec: 'warrior-fury',
+      source: { kind: 'addon', ref: '', captured_at: '2026-09-19T10:00:00Z' },
+      character: {
+        name: 'Thrallgar',
+        race: 'orc',
+        class: 'warrior',
+        level: 60,
+        talents: '-5530515-',
+        gear: [{ slot: 'head', item_id: 12640 }],
+        buffs: [],
+        consumes: [],
+      },
+      encounter: { duration_sec: 600, variation: 0.2, targets: 5, execute_ratio: 0.25, profile: '' },
+      iterations: 500,
+      random_seed: 0,
+    };
+
+    it('adopts a request bootstrap (design 8) at init, settings and all', async () => {
+      const sim = createSimStore({
+        treeVersion: '1.15.9.69722',
+        apiBase: 'https://api.test',
+        pool: createPool({ hardwareConcurrency: 2, spawn: () => fakeWorker() }),
+        request: validRequest,
+      });
+      await sim.ready;
+      expect(sim.character?.spec).toBe('warrior-fury');
+      expect(sim.settings.encounter.duration_sec).toBe(600);
+      expect(sim.settings.encounter.targets).toBe(5);
+    });
+
+    // Fix round 1: `url.ts`'s `decodeRequestParam` refuses anything that fails its own
+    // top-level shape check before this store ever sees it, but that check does not look
+    // inside `character` -- it cannot, without becoming the engine's own Validate. A
+    // request that passes the shape check but is missing a field `applyRequest` reaches
+    // for directly (here, `character.gear`, which `gearFromSlots` iterates without a null
+    // check) used to reject `ready` itself: an unhandled rejection on page load for anyone
+    // who followed a bad link, since the component that creates this store never awaits or
+    // catches `ready`. This pins the fallback instead.
+    it('falls back to the character-failed message, never an unhandled rejection, for a request that throws reaching for a field the shape check cannot see', async () => {
+      const { gear: _gear, ...characterWithoutGear } = validRequest.character;
+      const badRequest = { ...validRequest, character: characterWithoutGear } as unknown as SimRequest;
+
+      const sim = createSimStore({
+        treeVersion: '1.15.9.69722',
+        apiBase: 'https://api.test',
+        pool: createPool({ hardwareConcurrency: 2, spawn: () => fakeWorker() }),
+        request: badRequest,
+      });
+      await expect(sim.ready).resolves.toBeUndefined();
+      expect(sim.character).toBeNull();
+      expect(sim.message).toBe(simCopy.characterFailed);
+      expect(sim.phase).toBe('idle');
     });
   });
 

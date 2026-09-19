@@ -104,16 +104,44 @@ export function encodeRequestParam(request: SimRequest): string | null {
 }
 
 /**
- * A query value back into a request, or null. The query is attacker-controlled and this
- * value reaches the engine, so anything that is not a JSON object is refused here and the
- * engine's own Validate refuses the rest.
+ * Whether `value` has the top-level shape of a `SimRequest`: every required field present
+ * and of the right primitive kind. This is a shape check, not validation -- it does not
+ * look inside `character`, `source` or `encounter`, does not check `spec` against a known
+ * list, and does not run the engine's own rules (contract 10.2's `Validate`, which still
+ * owns whether the request is legal). It exists only so a query string nobody controls
+ * cannot reach `applyRequest` looking enough like a request to start mutating page state
+ * before some deeper, unanticipated field access throws.
+ */
+function looksLikeRequest(value: object): value is SimRequest {
+  const candidate = value as Record<string, unknown>;
+  return (
+    typeof candidate.engine_version === 'string' &&
+    typeof candidate.spec === 'string' &&
+    typeof candidate.source === 'object' &&
+    candidate.source !== null &&
+    typeof candidate.character === 'object' &&
+    candidate.character !== null &&
+    typeof candidate.encounter === 'object' &&
+    candidate.encounter !== null &&
+    typeof candidate.iterations === 'number' &&
+    typeof candidate.random_seed === 'number'
+  );
+}
+
+/**
+ * A query value back into a request, or null: empty, over budget, not base64url, not JSON,
+ * not an object, or missing (or wrongly typed) one of `SimRequest`'s required top-level
+ * fields -- `looksLikeRequest` above. This refuses anything that cannot plausibly be a
+ * request; it is not a substitute for the engine's own Validate, which the paste-and-apply
+ * path in the drawer still runs and this bootstrap path does not (design 8's link is meant
+ * to reproduce a request instantly, without a round trip through the engine first).
  */
 export function decodeRequestParam(value: string): SimRequest | null {
   if (value === '' || value.length > MAX_REQUEST_PARAM) return null;
   try {
     const parsed: unknown = JSON.parse(fromBase64Url(value));
     if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) return null;
-    return parsed as SimRequest;
+    return looksLikeRequest(parsed) ? parsed : null;
   } catch {
     return null;
   }
