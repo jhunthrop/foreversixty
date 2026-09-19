@@ -1,10 +1,34 @@
 {
   "spec": "mage-arcane",
-  "state": "unwritten",
-  "notes": "",
-  "sources": [],
+  "state": "written",
+  "notes": "Vanilla wowsims does not model an Arcane-specific preset (the fork's mage/apls/p1.apl.json is Fire, ui/mage/apls/forever_frost.apl.json is Frost); Arcane is adapted from the Forever talent tree instead. Forever's Arcane tree adds Arcane Blast (400574, tier2) as a spammable nuke and Missile Barrage (400588/400589) as a proc that empowers the next Arcane Missiles -- a combo the base wowsims/classic Arcane tree does not have. Arcane Blast applies its own stacking self-buff on cast (400573/400586 in spellconst, two near-identical records at rank 0), but which one the engine actually reads for stack count could not be confirmed from spellconst data alone, so this default does not gate Arcane Blast on stack count -- it is simply the fallback filler, with Arcane Missiles taking priority whenever Missile Barrage (400589) is up. Arcane Power and Presence of Mind are both off the global cooldown-costing category and are cast unconditionally on cooldown rather than sequenced around a specific nuke, which the validation job should revisit once stack-gating is confirmed against a build reference. Every rank named here is checked against the spellconst of the newest client build in builds/.",
+  "sources": [
+    { "label": "wowsims-forever mage default priority list (Fire-leaning, no Arcane preset exists)", "url": "https://github.com/jhunthrop/wowsims-forever/blob/464d1a14a6408956aecb14b3c5867392502db401/ui/mage/apls/p1.apl.json", "kind": "community" },
+    { "label": "Wowhead Classic: Arcane Mage DPS Rotation, Cooldowns, and Abilities", "url": "https://www.wowhead.com/classic/guide/mage-arcane-dps-rotation-cooldowns-abilities", "kind": "community" }
+  ],
   "rotation": {
     "type": "TypeAPL",
-    "priorityList": []
+    "priorityList": [
+      { "action": { "autocastOtherCooldowns": {} } },
+      {
+        "notes": "Arcane Power on cooldown: a flat 30 percent damage cooldown with no cast time of its own.",
+        "action": { "castSpell": { "spellId": { "spellId": 12042 } } }
+      },
+      {
+        "notes": "Presence of Mind on cooldown: free (no GCD) and makes the next cast instant.",
+        "action": { "castSpell": { "spellId": { "spellId": 12043 } } }
+      },
+      {
+        "notes": "Missile Barrage empowers Arcane Missiles: spend the proc before it expires.",
+        "action": {
+          "condition": { "auraIsActive": { "auraId": { "spellId": 400589 } } },
+          "castSpell": { "spellId": { "spellId": 25345, "rank": 8 } }
+        }
+      },
+      {
+        "notes": "Arcane Blast is the default filler and the spec's own stacking nuke; Forever adds it to the Arcane tree at tier 2.",
+        "action": { "castSpell": { "spellId": { "spellId": 400574, "rank": 1 } } }
+      }
+    ]
   }
 }

@@ -1,10 +1,61 @@
 {
   "spec": "priest-shadow",
-  "state": "unwritten",
-  "notes": "",
-  "sources": [],
+  "state": "written",
+  "notes": "Adapted from the fork's shadow_priest/apls/p1.apl.json. Its Devouring Plague was a stale rank (19279, rank 5) where the build's current top rank is 6 (19280) -- fixed here. Forever's Shadow tree adds a tier 5 talent, Early Demise, that raises Shadow Word: Death's critical strike chance below 20 percent target health; the base wowsims/classic Shadow tree has no execute button at all, so this rotation adds Shadow Word: Death (1309636) as an execute cast at isExecutePhase(E20), the same idiom warrior-fury uses for its own Execute. Shadowform is still cast at prepull, Shadow Word: Pain is maintained with the same fight-end guard as the source preset, and Inner Focus into Devouring Plague, Mind Blast on cooldown, and Mind Flay as filler are otherwise unchanged. Every rank named here is checked against the spellconst of the newest client build in builds/.",
+  "sources": [
+    { "label": "wowsims-forever shadow priest default priority list", "url": "https://github.com/jhunthrop/wowsims-forever/blob/464d1a14a6408956aecb14b3c5867392502db401/ui/shadow_priest/apls/p1.apl.json", "kind": "community" },
+    { "label": "Warcraft Tavern: Classic Shadow Priest DPS rotation", "url": "https://www.warcrafttavern.com/wow-classic/guides/shadow-priest-dps-rotation/", "kind": "community" }
+  ],
   "rotation": {
     "type": "TypeAPL",
-    "priorityList": []
+    "prepullActions": [
+      {
+        "action": { "castSpell": { "spellId": { "spellId": 15473 } } },
+        "doAtValue": { "const": { "val": "-1s" } }
+      }
+    ],
+    "priorityList": [
+      { "action": { "autocastOtherCooldowns": {} } },
+      {
+        "notes": "Shadow Word: Pain is kept up unless the fight is about to end, when refreshing it would waste most of the DoT.",
+        "action": {
+          "condition": {
+            "and": {
+              "vals": [
+                { "not": { "val": { "dotIsActive": { "spellId": { "spellId": 10894, "rank": 8 } } } } },
+                { "cmp": { "op": "OpGe", "lhs": { "remainingTime": {} }, "rhs": { "const": { "val": "10" } } } }
+              ]
+            }
+          },
+          "castSpell": { "spellId": { "spellId": 10894, "rank": 8 } }
+        }
+      },
+      {
+        "notes": "Shadow Word: Death as an execute below 20 percent target health -- Forever's Early Demise talent raises its crit chance in that window, which the base classic Shadow tree has no equivalent for.",
+        "action": {
+          "condition": { "isExecutePhase": { "threshold": "E20" } },
+          "castSpell": { "spellId": { "spellId": 1309636, "rank": 4 } }
+        }
+      },
+      {
+        "notes": "Inner Focus into Devouring Plague: a free, empowered cast of the priest's biggest single-target nuke.",
+        "action": {
+          "strictSequence": {
+            "actions": [
+              { "castSpell": { "spellId": { "spellId": 14751 } } },
+              { "castSpell": { "spellId": { "spellId": 19280, "rank": 6 } } }
+            ]
+          }
+        }
+      },
+      {
+        "notes": "Mind Blast on cooldown.",
+        "action": { "castSpell": { "spellId": { "spellId": 10947, "rank": 9 } } }
+      },
+      {
+        "notes": "Mind Flay fills every remaining global.",
+        "action": { "castSpell": { "spellId": { "spellId": 18807, "rank": 6 } } }
+      }
+    ]
   }
 }
