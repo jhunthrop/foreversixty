@@ -160,6 +160,7 @@
     estimate={result.dps}
     iterationsRun={result.iterations_run}
     actionNames={null}
+    sample={result.sample}
   />
 {:else}
   {@render lazyFallback(simResultsLazy)}

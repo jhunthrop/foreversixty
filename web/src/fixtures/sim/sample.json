@@ -1,0 +1,8 @@
+[
+  { "at_ms": -3000, "action": "spell:11305", "resources": { "rage": 0 } },
+  { "at_ms": -1000, "action": "spell:6673", "resources": { "rage": 10 } },
+  { "at_ms": 150, "action": "spell:25286", "target": "Target", "resources": { "rage": 31 } },
+  { "at_ms": 1600, "action": "other:melee", "target": "Target", "resources": { "rage": 9 } },
+  { "at_ms": 3050, "action": "spell:25286", "target": "Target", "resources": { "rage": 28 } },
+  { "at_ms": 4400, "action": "spell:11605", "target": "Target", "resources": { "rage": 7 } }
+]

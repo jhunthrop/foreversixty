@@ -230,7 +230,9 @@
             >
           </span>
           <span class="text-muted tabular text-right font-mono text-[13px]"
-            >{track.applications}<span class="label font-body ml-1.5 md:hidden">applied</span></span
+            ><span data-testid="aura-applied">{track.applications}</span><span
+              class="label font-body ml-1.5 md:hidden">applied</span
+            ></span
           >
         </li>
       {/each}

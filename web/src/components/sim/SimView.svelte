@@ -573,6 +573,7 @@
               estimate={store.result.dps}
               iterationsRun={store.result.iterations_run}
               actionNames={store.actionNames}
+              sample={store.result.sample}
             />
           {:else}
             {@render lazyFallback(simResultsLazy)}

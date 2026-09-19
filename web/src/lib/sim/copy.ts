@@ -247,6 +247,23 @@ export const simCopy = {
   tabDistribution: 'Distribution',
   resultsTablist: 'Results',
 
+  // --- Design 5.1: the sample iteration log. ---
+  tabSample: 'One iteration',
+  sampleNote:
+    'One iteration’s casts, in order. It is a sample of what the rotation did once, not a rotation guide, and the next iteration is a different fight.',
+  sampleEmpty: 'This result carries no sample iteration.',
+  samplePrePull: 'Before the pull',
+  sampleTimeHeading: 'At',
+  sampleCastHeading: 'Cast',
+  sampleTargetHeading: 'On',
+  resourceLabel: {
+    mana: 'Mana',
+    energy: 'Energy',
+    rage: 'Rage',
+    focus: 'Focus',
+    combo_points: 'Combo',
+  } as Record<string, string>,
+
   // --- Task 16: compare mode. The sim beside the fight it was built from. ---
   /** Compare mode with a fight that records no damage for this character. */
   compareNoPlayer: 'That fight has no damage recorded for this character.',

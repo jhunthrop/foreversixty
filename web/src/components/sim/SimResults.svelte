@@ -18,21 +18,25 @@
   import type { ActionNames } from '../../lib/sim/action-names';
   import { simCopy } from '../../lib/sim/copy';
   import { namedSummary, summarySentence } from '../../lib/sim/sentence';
-  import type { Estimate } from '../../lib/sim/types';
+  import type { Estimate, SampleCast } from '../../lib/sim/types';
   import type { Summary } from '../../lib/report/types';
   import DpsDistribution from './DpsDistribution.svelte';
+  import SampleLog from './SampleLog.svelte';
 
   let {
     summary,
     estimate,
     iterationsRun,
     actionNames,
+    sample,
   }: {
     summary: Summary;
     estimate: Estimate;
     iterationsRun: number;
     /** The build's name table (Task 23). Null until it loads; rows then read as keys. */
     actionNames: ActionNames | null;
+    /** One iteration's casts (Design 5.1). Undefined for a result the engine did not sample. */
+    sample: SampleCast[] | undefined;
   } = $props();
 
   const TABS = [
@@ -42,6 +46,7 @@
     { id: 'casts', label: simCopy.tabCasts },
     { id: 'resources', label: simCopy.tabResources },
     { id: 'timeline', label: simCopy.tabTimeline },
+    { id: 'sample', label: simCopy.tabSample },
     { id: 'distribution', label: simCopy.tabDistribution },
   ] as const;
 
@@ -113,6 +118,8 @@
       <!-- One iteration's real cast sequence, not an average: the engine's result carries a
            sample cast log, so the lane view means the same thing here as on a logged fight. -->
       <TimelinesView summary={named} window={fullWindow(named.duration_ms)} classOf={emptyClassMap} />
+    {:else if tab === 'sample'}
+      <SampleLog {sample} {actionNames} />
     {:else}
       <DpsDistribution {estimate} {iterationsRun} />
     {/if}

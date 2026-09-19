@@ -15,8 +15,13 @@
 import type { EngineModule, ProgressHandler } from '../../lib/sim/engine';
 import type { SimRequest, SimResult } from '../../lib/sim/types';
 import fixtureResultJson from './result.json';
+import sampleJson from './sample.json';
 
 const fixture = fixtureResultJson as unknown as SimResult;
+// Design 5.1's sample-iteration log needs a sample on every result the fixture engine
+// hands back, so /sim's own e2e can exercise the tab without a second fixture wired
+// through simSplit/simCombine.
+const fixtureSample = sampleJson as unknown as SimResult['sample'];
 
 export interface FakeEngineOptions {
   tickMs?: number;
@@ -137,6 +142,7 @@ export function createFakeEngine(options: FakeEngineOptions = {}): EngineModule 
           iterations_run: n,
           duration_ms: Date.now() - startedAt,
           summary: fixture.summary,
+          sample: fixtureSample,
         } satisfies SimResult);
       } finally {
         active.delete(callbackId);
@@ -177,6 +183,7 @@ export function createFakeEngine(options: FakeEngineOptions = {}): EngineModule 
         iterations_run: n,
         duration_ms: durationMs,
         summary: fixture.summary,
+        sample: fixtureSample,
       } satisfies SimResult);
     },
 

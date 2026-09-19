@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { expect, test, type Page } from '@playwright/test';
+import { simCopy } from '../../src/lib/sim/copy';
 
 // Same fixture as sim-run.spec.ts, sim-settings.spec.ts and sim-sources.spec.ts: an addon
 // export needs no API stub, so this reads the site's own active build id rather than
@@ -122,10 +123,40 @@ test('the Distribution tab shows the mean and five rows, and stands in for the m
 test('no brushable time chart exists anywhere on the page', async ({ page }) => {
   await loadFuryAndRun(page);
 
-  for (const tab of ['damage', 'buffs', 'debuffs', 'casts', 'resources', 'timeline', 'distribution']) {
+  for (const tab of [
+    'damage',
+    'buffs',
+    'debuffs',
+    'casts',
+    'resources',
+    'timeline',
+    'sample',
+    'distribution',
+  ]) {
     await page.getByTestId(`sim-tab-${tab}`).click();
     await expect(page.getByTestId('time-chart')).toHaveCount(0);
   }
+});
+
+test('the buffs tab counts applications and the sample tab shows one iteration', async ({ page }) => {
+  await loadFuryAndRun(page);
+
+  await page.getByTestId('sim-tab-buffs').click();
+  await expect(page.getByTestId('aura-applied').first()).toHaveText(/^\d+$/);
+
+  await page.getByTestId('sim-tab-sample').click();
+  const log = page.getByTestId('sim-sample-log');
+  await expect(log).toBeVisible();
+  // The fixture's first two casts are before the pull and are labelled as such.
+  await expect(log.getByText(simCopy.samplePrePull).first()).toBeVisible();
+  // public/data/<build>/simnames/warrior.json does not exist under FOREVER_DATA=fixture
+  // (see the note above loadFuryAndRun), so the sample log resolves nothing and renders
+  // the engine's own action keys -- the same thing the cast table renders in this
+  // environment. The resolved-name path is covered instead, with names injected, by
+  // src/lib/sim/sample-log.test.ts.
+  await expect(log).toContainText('spell:25286');
+  // Resources after each cast: the fixture's only pool is rage.
+  await expect(log.locator('th', { hasText: simCopy.resourceLabel.rage })).toHaveCount(1);
 });
 
 test.describe('phone', () => {
@@ -134,7 +165,16 @@ test.describe('phone', () => {
   test('every results tab clears 44px', async ({ page }) => {
     await loadFuryAndRun(page);
 
-    for (const tab of ['damage', 'buffs', 'debuffs', 'casts', 'resources', 'timeline', 'distribution']) {
+    for (const tab of [
+      'damage',
+      'buffs',
+      'debuffs',
+      'casts',
+      'resources',
+      'timeline',
+      'sample',
+      'distribution',
+    ]) {
       const box = await page.getByTestId(`sim-tab-${tab}`).boundingBox();
       expect(box?.height ?? 0, tab).toBeGreaterThanOrEqual(44);
     }
