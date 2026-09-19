@@ -1049,6 +1049,30 @@ func TestAPrivateReportQueuesNothingForScoring(t *testing.T) {
 	}
 }
 
+// TestAFailingMembershipReadStillStoresRanksAndAnswers201 pins
+// MEDIUM-9: fakeMembers.err is declared and honoured but no test ever
+// set it, so the guarantee that matters most about the scoring hook -
+// that a failing membership read still stores the fight, still ranks
+// it, and still returns 201 - had no coverage at all.
+func TestAFailingMembershipReadStillStoresRanksAndAnswers201(t *testing.T) {
+	h := newHarness(t)
+	scorer := &fakeScorer{}
+	h.ingest.Score, h.ingest.Members = scorer, fakeMembers{err: errors.New("membership lookup is down")}
+	id := h.createReport(Public)
+	h.postVerifiedFight(t, id, 1) // must still 201; asserts internally
+
+	if n := len(scorer.taken()); n != 0 {
+		t.Fatalf("%d fights queued despite a failing membership read", n)
+	}
+	fights, err := h.store.Fights(t.Context(), id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(fights) != 1 || !fights[0].Verified {
+		t.Fatalf("the fight was not stored as verified despite a failing membership read: %+v", fights)
+	}
+}
+
 func TestAnIngestWithNoScorerStillStoresTheFight(t *testing.T) {
 	h := newHarness(t)
 	h.ingest.Score, h.ingest.Members = nil, nil
