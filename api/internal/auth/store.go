@@ -47,6 +47,10 @@ type User struct {
 	Email     *string `json:"email"`
 	Role      string  `json:"role"`
 	Anonymize bool    `json:"anonymize"`
+	// Premium is whether this account may run sims on our servers. It
+	// is set by hand until payments are designed; no code here ever
+	// turns it on.
+	Premium bool `json:"premium"`
 }
 
 // PublicName is what strangers may be told an account is called: the
@@ -110,11 +114,12 @@ type Guild struct {
 // take them as one dependency.
 type Store struct{ Pool *pgxpool.Pool }
 
-const userColumns = `id, coalesce(bnet_sub, ''), battletag, email, role, anonymize`
+const userColumns = `id, coalesce(bnet_sub, ''), battletag, email, role, anonymize, premium`
 
 func scanUser(row pgx.Row) (User, error) {
 	var u User
-	if err := row.Scan(&u.ID, &u.BnetSub, &u.Battletag, &u.Email, &u.Role, &u.Anonymize); err != nil {
+	if err := row.Scan(&u.ID, &u.BnetSub, &u.Battletag, &u.Email, &u.Role, &u.Anonymize,
+		&u.Premium); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return User{}, ErrNotFound
 		}
@@ -392,4 +397,19 @@ func (s *Store) GuildRank(ctx context.Context, guildID, userID int64) (string, b
 		return "", false, fmt.Errorf("auth: guild rank: %w", err)
 	}
 	return rank, true, nil
+}
+
+// Premium reports whether an account may run sims on our servers. An
+// unknown id is not premium rather than an error: the caller is about
+// to answer 402 either way.
+func (s *Store) Premium(ctx context.Context, id int64) (bool, error) {
+	var premium bool
+	err := s.Pool.QueryRow(ctx, `select premium from users where id = $1`, id).Scan(&premium)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return false, nil
+	}
+	if err != nil {
+		return false, fmt.Errorf("auth: read premium %d: %w", id, err)
+	}
+	return premium, nil
 }

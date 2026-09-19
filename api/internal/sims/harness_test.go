@@ -17,6 +17,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/db"
+	"github.com/jhunthrop/foreversixty/api/internal/jobs"
 	"github.com/jhunthrop/foreversixty/logs/engine/store"
 	simapi "github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/jhunthrop/foreversixty/sim/enginever"
@@ -63,6 +64,8 @@ type harness struct {
 	server  *httptest.Server
 	actor   auth.Actor
 	owner   int64
+	jobs    *jobs.Fake
+	premium *fakePremium
 }
 
 func newHarness(t *testing.T) *harness {
@@ -80,7 +83,11 @@ func newHarness(t *testing.T) *harness {
 	h := &harness{t: t, store: &Store{Pool: pool}, dir: t.TempDir(), owner: owner.ID}
 	h.files = store.NewDir(h.dir)
 	h.actor = auth.Actor{UserID: owner.ID, Role: "user", Method: "session"}
-	h.service = &Service{Store: h.store, EngineVersion: testEngine, Log: quiet}
+	h.jobs, h.premium = &jobs.Fake{}, &fakePremium{}
+	h.service = &Service{
+		Store: h.store, Accounts: h.premium, Jobs: h.jobs,
+		EngineVersion: testEngine, Log: quiet,
+	}
 
 	mux := http.NewServeMux()
 	Mount(mux, h.service)
@@ -201,3 +208,11 @@ func browserResult(spec string, mean float64) simapi.SimResult {
 		IterationsRun: defaultIterations, DurationMS: 2400,
 	}
 }
+
+// fakePremium answers the premium question without an accounts table.
+type fakePremium struct {
+	premium bool
+	err     error
+}
+
+func (f fakePremium) Premium(context.Context, int64) (bool, error) { return f.premium, f.err }

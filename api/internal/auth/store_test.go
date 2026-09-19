@@ -2,6 +2,7 @@ package auth
 
 import (
 	"context"
+	"encoding/json"
 	"io"
 	"log/slog"
 	"net/http"
@@ -442,5 +443,64 @@ func TestPublicNameNeverCarriesTheEmailAddress(t *testing.T) {
 				t.Fatalf("PublicName() = %q, want %q", got, c.want)
 			}
 		})
+	}
+}
+
+func TestANewAccountIsNotPremiumAndTheFlagIsReadBack(t *testing.T) {
+	store := &Store{Pool: testPool(t)}
+	u, err := store.UpsertEmailUser(t.Context(), "premium@example.com")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if u.Premium {
+		t.Fatal("a new account must not be premium")
+	}
+	premium, err := store.Premium(t.Context(), u.ID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if premium {
+		t.Fatal("Premium reported true for a fresh account")
+	}
+
+	// The flag is set by hand; this is that hand.
+	if _, err := store.Pool.Exec(t.Context(),
+		`update users set premium = true where id = $1`, u.ID); err != nil {
+		t.Fatal(err)
+	}
+	premium, err = store.Premium(t.Context(), u.ID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !premium {
+		t.Fatal("Premium did not read the flag back")
+	}
+
+	// And /v1/me carries it, so the web knows whether to offer the
+	// server lane at all.
+	again, err := store.User(t.Context(), u.ID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !again.Premium {
+		t.Fatal("the user read does not carry the flag")
+	}
+	b, err := json.Marshal(again)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var raw map[string]any
+	if err := json.Unmarshal(b, &raw); err != nil {
+		t.Fatal(err)
+	}
+	if raw["premium"] != true {
+		t.Fatalf("the user JSON has no premium field: %s", b)
+	}
+
+	// An unknown account is not premium rather than an error: the
+	// caller is about to answer 402 either way.
+	premium, err = store.Premium(t.Context(), 0)
+	if err != nil || premium {
+		t.Fatalf("unknown account: premium=%v err=%v", premium, err)
 	}
 }

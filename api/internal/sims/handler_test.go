@@ -3,6 +3,7 @@ package sims
 import (
 	"encoding/json"
 	"net/http"
+	"net/http/httptest"
 	"strings"
 	"testing"
 	"unicode/utf8"
@@ -225,17 +226,22 @@ func TestTheStubbedRoutesAreMountedAndAnswer404(t *testing.T) {
 }
 
 // POST /v1/sims/run is not mounted at all when this deployment has
-// neither a job runner nor an accounts store behind it - the harness
-// wires up neither. The path still matches GET /v1/sims/{id}'s
-// pattern (id "run"), so the mux answers 405 rather than 404 - that
-// pattern is registered, just not for POST - which is still proof
-// the run route itself was never mounted.
+// neither a job runner nor an accounts store behind it. newHarness
+// wires up both (Task 5 needs a harness that can exercise the run
+// route), so this builds its own bare Service to exercise Mount's
+// guard directly. The path still matches GET /v1/sims/{id}'s pattern
+// (id "run"), so the mux answers 405 rather than 404 - that pattern
+// is registered, just not for POST - which is still proof the run
+// route itself was never mounted.
 func TestTheRunRouteIsNotMountedWithoutJobsAndAccounts(t *testing.T) {
-	h := newHarness(t)
-	res := h.json(http.MethodPost, "/v1/sims/run", `{}`)
-	res.Body.Close()
-	if res.StatusCode != http.StatusMethodNotAllowed {
-		t.Fatalf("status %d, want 405", res.StatusCode)
+	svc := &Service{Store: &Store{}, EngineVersion: testEngine}
+	mux := http.NewServeMux()
+	Mount(mux, svc)
+	req := httptest.NewRequest(http.MethodPost, "/v1/sims/run", strings.NewReader(`{}`))
+	rec := httptest.NewRecorder()
+	mux.ServeHTTP(rec, req)
+	if rec.Code != http.StatusMethodNotAllowed {
+		t.Fatalf("status %d, want 405", rec.Code)
 	}
 }
 
