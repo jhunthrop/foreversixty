@@ -1,0 +1,5 @@
+[
+  { "id": 16, "name": "Azshara", "map_id": 1, "map_name": "Kalimdor", "parent_id": null, "level_min": 45, "level_max": null },
+  { "id": 1581, "name": "The Deadmines", "map_id": 36, "map_name": "Deadmines", "parent_id": null, "level_min": null, "level_max": null },
+  { "id": 2717, "name": "Molten Core", "map_id": 409, "map_name": "Molten Core", "parent_id": null, "level_min": null, "level_max": null }
+]

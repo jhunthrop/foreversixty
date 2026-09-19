@@ -189,6 +189,46 @@ class EnchantRecord(BaseModel):
     item_id: int
 
 
+class LootBoss(BaseModel):
+    id: str
+    #: Empty where the fork database names no NPC for the id. 35 of the 67
+    #: raid bosses and 39 of the 230 dungeon bosses on the pinned fork are
+    #: in that state; an invented name would be worse than a blank one.
+    name: str
+    npc_id: int
+    items: list[int]
+
+
+class LootSource(BaseModel):
+    """One place loot comes from (parity contract 6.1).
+
+    Every key after `name` is optional and omitted when it does not apply
+    to the kind, which is what `write_document`'s `exclude_none` is for: a
+    crafted source carries `profession` and `items`, a raid carries
+    `zone_id`, `bosses` and `trash`.
+    """
+
+    id: str
+    kind: str
+    name: str
+    zone_id: int | None = None
+    #: A phase name from api/internal/phase. None means open from launch.
+    #: Never set by the generator -- only by a curated overlay, because the
+    #: databases state no dates.
+    opens: str | None = None
+    profession: str | None = None
+    faction_id: int | None = None
+    standing: str | None = None
+    rank: int | None = None
+    bosses: list[LootBoss] | None = None
+    trash: list[int] | None = None
+    items: list[int] | None = None
+
+
+class LootFile(BaseModel):
+    sources: list[LootSource]
+
+
 class SpecRecord(BaseModel):
     spec: str
     class_slug: str

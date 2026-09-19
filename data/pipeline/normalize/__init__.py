@@ -51,6 +51,18 @@ def write_model(record: BaseModel, path: Path) -> None:
     _write(record.model_dump(), path)
 
 
+def write_document(record: BaseModel, path: Path) -> None:
+    """Write a single record as a JSON object, dropping the keys it leaves unset.
+
+    `write_model` emits every field, which is right for a record whose shape
+    is fixed. `loot.json`'s sources are a union -- a crafted source has no
+    `bosses` and a raid has no `profession` -- and a file of nulls is a file
+    every consumer has to filter, so `None` means "not part of this kind"
+    and is left out.
+    """
+    _write(record.model_dump(exclude_none=True), path)
+
+
 def normalize_build(
     build: str,
     root: Path = Path("builds"),
