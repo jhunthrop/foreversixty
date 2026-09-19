@@ -46,6 +46,13 @@ export function slotOptions(): { slot: Slot; label: string }[] {
  * Best item level first, then name, so the top of the list is the part worth reading. The
  * design's own note stands: search can find items this character has no way to obtain, and
  * `usableOnly` is about what can be equipped, not about what can be got.
+ *
+ * Deliberately re-scans `items` on every call rather than building or caching an index:
+ * this runs against one class's `items.json` (a few hundred rows at most, called once per
+ * keystroke), and a full filter/sort/slice pass over that is cheap enough that an index
+ * would add invalidation logic for no measurable benefit. Revisit this if the item table a
+ * caller passes ever grows to thousands of rows (e.g. an all-classes search), where a
+ * per-keystroke linear scan would start to matter.
  */
 export function searchItems(items: readonly Item[], query: ItemQuery, ctx: SearchContext): Item[] {
   const needle = query.text.trim().toLowerCase();

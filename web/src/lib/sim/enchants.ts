@@ -12,10 +12,18 @@
 //     has nothing to do with this site's pre-beta/beta/launch/raids-1 phase table;
 //   - `spell_id` is always present and > 0 across all 173 real rows; `item_id` is the one
 //     that is sometimes 0. Both are always present, never optional.
-//   - a stat row's keys are not limited to the planner's `StatKey` set (the real file also
-//     carries `block_value`, `bonus_armor`, `fire_power`, `mana`, `melee_haste`, and more),
-//     so `stats` is a plain string-keyed record rather than `Partial<Record<StatKey, ...>>`.
-// `suffixes.json` matched contract 6.3's shape exactly, so `SuffixRow` is unchanged.
+//   - a stat row's keys are not limited to the planner's `StatKey` set. Enumerated by
+//     reading every distinct key across BOTH real files
+//     (data/builds/1.60.1.69893/enchants.json and suffixes.json): the real files also carry
+//     `arcane_power`, `block_value`, `bonus_armor`, `fire_power`, `frost_power`, `health`,
+//     `holy_power`, `mana`, `melee_haste`, `nature_power`, `ranged_attack_power`,
+//     `shadow_power` and `spell_damage` -- 13 keys outside `StatKey`. `EnchantStatKey`
+//     below is `StatKey` unioned with exactly those 13, so both `EnchantRow.stats` and
+//     `SuffixRow.stats` keep the same typo protection as every other stat map in the
+//     codebase while still typing the real data exactly, rather than widening to
+//     `Record<string, number>` and losing that protection altogether.
+// `suffixes.json` matched contract 6.3's shape exactly, so `SuffixRow` is unchanged beyond
+// the `stats` key widening above.
 //
 // Both files are optional: a build the data lane has not regenerated ships neither, and
 // the enchant/suffix columns simply do not appear. Neither is large enough to want pruning,
@@ -24,8 +32,30 @@
 // These are the browser UI's copy only. The planner inside the wasm does not read them:
 // contract A9 embeds the same rows in `sim/internal/simdb`, so `Expand` needs no file at
 // runtime and the two can never disagree about what fits where.
-import { dataUrl, fetchJson, DataLoadError } from '../planner/load';
-import type { Item } from '../planner/types';
+import { dataUrl, loadOptional } from '../planner/load';
+import type { Item, StatKey } from '../planner/types';
+
+/**
+ * `StatKey` plus every stat key the real enchant/suffix files carry that the planner's
+ * gear-stat set does not (see the file header for how this list was derived). A closed
+ * union rather than `Record<string, number>` so a typo in a consumer (`stats.melee_hast`)
+ * still fails to type-check.
+ */
+export type EnchantStatKey =
+  | StatKey
+  | 'arcane_power'
+  | 'block_value'
+  | 'bonus_armor'
+  | 'fire_power'
+  | 'frost_power'
+  | 'health'
+  | 'holy_power'
+  | 'mana'
+  | 'melee_haste'
+  | 'nature_power'
+  | 'ranged_attack_power'
+  | 'shadow_power'
+  | 'spell_damage';
 
 export interface EnchantRow {
   /**
@@ -45,8 +75,7 @@ export interface EnchantRow {
   item_types: string[];
   /** Empty for an enchant every class can use. */
   classes: string[];
-  /** Not limited to the planner's `StatKey` set -- see the file header. */
-  stats: Record<string, number>;
+  stats: Partial<Record<EnchantStatKey, number>>;
   /** The client's own small content-phase number, unrelated to the site's phase table. */
   phase: number;
 }
@@ -54,7 +83,7 @@ export interface EnchantRow {
 export interface SuffixRow {
   id: number;
   name: string;
-  stats: Record<string, number>;
+  stats: Partial<Record<EnchantStatKey, number>>;
 }
 
 /**
@@ -69,26 +98,12 @@ export const KEEP_CURRENT_ENCHANT = -1;
 /** Raidbots shows a per-slot selection cap; ours is four, which is a legible list. */
 export const ENCHANTS_PER_SLOT_CAP = 4;
 
-/**
- * Optional-file loader, matching `loadSets`'s own convention in `planner/load.ts`: a 404
- * means the build ships no such file and resolves to `empty`; every other failure is a
- * broken build and is rethrown.
- */
-async function loadOptional<T>(build: string, file: string, empty: T): Promise<T> {
-  try {
-    return await fetchJson<T>(dataUrl(build, file));
-  } catch (error) {
-    if (error instanceof DataLoadError && error.status === 404) return empty;
-    throw error;
-  }
-}
-
 export function loadEnchants(build: string): Promise<EnchantRow[]> {
-  return loadOptional<EnchantRow[]>(build, 'enchants.json', []);
+  return loadOptional<EnchantRow[]>(dataUrl(build, 'enchants.json'), []);
 }
 
 export function loadSuffixes(build: string): Promise<SuffixRow[]> {
-  return loadOptional<SuffixRow[]>(build, 'suffixes.json', []);
+  return loadOptional<SuffixRow[]>(dataUrl(build, 'suffixes.json'), []);
 }
 
 /**

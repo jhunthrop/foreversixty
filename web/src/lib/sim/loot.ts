@@ -12,7 +12,7 @@
 // sourced item ids do not exist in the 1.60 client, loot.json lists only items the build
 // has, and the first curated overlay records the gap per raid in its notes. The page shows
 // what the file contains and counts what it does not -- it never fabricates a drop.
-import { dataUrl, fetchJson, DataLoadError } from '../planner/load';
+import { dataUrl, loadOptional } from '../planner/load';
 import { bulkCopy } from './copy';
 import { hasOpened, type PhaseRow } from './phase';
 
@@ -77,12 +77,7 @@ const EMPTY: LootFile = { sources: [] };
  * Every other failure is a broken build and is rethrown.
  */
 export async function loadLoot(build: string): Promise<LootFile> {
-  try {
-    return await fetchJson<LootFile>(dataUrl(build, 'loot.json'));
-  } catch (error) {
-    if (error instanceof DataLoadError && error.status === 404) return EMPTY;
-    throw error;
-  }
+  return loadOptional<LootFile>(dataUrl(build, 'loot.json'), EMPTY);
 }
 
 /** Every item a source yields: its own list, every boss's, and its trash. */
