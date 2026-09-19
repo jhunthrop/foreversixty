@@ -142,10 +142,31 @@ func (s *Store) Specs(ctx context.Context) ([]SpecFidelity, error) {
 
 // PutSpec writes one spec's measurement. The nightly validation job
 // is the only caller.
+//
+// State is not taken from the caller: StateFor is the design's only
+// definition of "validated" (section 6), so PutSpec recomputes it
+// from MedianGap and Parses on every write rather than trusting
+// whatever the caller happened to set, which would let a bug in the
+// caller (or a manual correction) write a state that disagrees with
+// its own figures. A nil MedianGap - nothing measured yet - cannot
+// satisfy the gap test, so it can only read back in_progress (Parses
+// > 0) or unsupported, never validated.
 func (s *Store) PutSpec(ctx context.Context, f SpecFidelity) error {
 	if f.WorstActions == nil {
 		f.WorstActions = []WorstAction{}
 	}
+	// WorstActionsPerSpec bounds the list here, independent of the
+	// caller: this is the one place the constant it names is
+	// enforced, so an unbounded slice never reaches storage or the
+	// wire even if a future caller forgets to trim its own.
+	if len(f.WorstActions) > WorstActionsPerSpec {
+		f.WorstActions = f.WorstActions[:WorstActionsPerSpec]
+	}
+	gap := ValidatedGap // a nil MedianGap must fail StateFor's strict "< ValidatedGap" test
+	if f.MedianGap != nil {
+		gap = *f.MedianGap
+	}
+	f.State = StateFor(gap, f.Parses)
 	worst, err := json.Marshal(f.WorstActions)
 	if err != nil {
 		return fmt.Errorf("sims: encode worst actions for %s: %w", f.Spec, err)

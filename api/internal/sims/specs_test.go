@@ -2,6 +2,7 @@ package sims
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"slices"
 	"testing"
@@ -190,5 +191,82 @@ func TestOnlyAValidatedSpecIsScored(t *testing.T) {
 	}
 	if ok, err := h.store.Validated(t.Context(), "warrior-fury"); err != nil || !ok {
 		t.Fatalf("a validated spec is validated: ok=%v err=%v", ok, err)
+	}
+}
+
+// TestPutSpecBoundsWorstActionsToTheConstant pins the fix for the
+// review's HIGH finding: WorstActionsPerSpec is declared to bound the
+// list, so PutSpec has to be the one place that enforces it, rather
+// than trusting every future caller to trim its own slice first.
+func TestPutSpecBoundsWorstActionsToTheConstant(t *testing.T) {
+	h := newHarness(t)
+	given := make([]WorstAction, WorstActionsPerSpec+3)
+	for i := range given {
+		given[i] = WorstAction{SpellID: int64(i + 1), Name: fmt.Sprintf("Ability %d", i+1)}
+	}
+	if err := h.store.PutSpec(t.Context(), SpecFidelity{
+		Spec: "warrior-fury", WorstActions: given}); err != nil {
+		t.Fatal(err)
+	}
+	specs, err := h.store.Specs(t.Context())
+	if err != nil {
+		t.Fatal(err)
+	}
+	var fury SpecFidelity
+	for _, f := range specs {
+		if f.Spec == "warrior-fury" {
+			fury = f
+		}
+	}
+	if len(fury.WorstActions) != WorstActionsPerSpec {
+		t.Fatalf("%d worst actions, want the bound (%d)", len(fury.WorstActions), WorstActionsPerSpec)
+	}
+	for i, a := range fury.WorstActions {
+		if a.SpellID != given[i].SpellID {
+			t.Fatalf("worst action %d: spell %d, want %d (caller's order not kept)",
+				i, a.SpellID, given[i].SpellID)
+		}
+	}
+}
+
+// TestPutSpecComputesStateRatherThanTrustingTheCaller pins the fix
+// for the review's MEDIUM finding: StateFor is the design's only
+// definition of "validated", so PutSpec has to compute State itself
+// from MedianGap and Parses rather than writing whatever the caller
+// handed it, which could disagree with its own figures.
+func TestPutSpecComputesStateRatherThanTrustingTheCaller(t *testing.T) {
+	h := newHarness(t)
+
+	// The caller claims unsupported, but the figures clearly qualify
+	// as validated: the computed state wins.
+	gap := 0.02
+	if err := h.store.PutSpec(t.Context(), SpecFidelity{
+		Spec: "warrior-fury", State: SpecUnsupported, MedianGap: &gap, Parses: 60,
+		WorstActions: []WorstAction{}}); err != nil {
+		t.Fatal(err)
+	}
+	if ok, err := h.store.Validated(t.Context(), "warrior-fury"); err != nil || !ok {
+		t.Fatalf("the figures said validated regardless of the claimed state: ok=%v err=%v", ok, err)
+	}
+
+	// The caller claims validated, but there is no measured gap at
+	// all: an unmeasured gap can never read back validated.
+	if err := h.store.PutSpec(t.Context(), SpecFidelity{
+		Spec: "mage-fire", State: SpecValidated, Parses: 60,
+		WorstActions: []WorstAction{}}); err != nil {
+		t.Fatal(err)
+	}
+	specs, err := h.store.Specs(t.Context())
+	if err != nil {
+		t.Fatal(err)
+	}
+	var fire SpecFidelity
+	for _, f := range specs {
+		if f.Spec == "mage-fire" {
+			fire = f
+		}
+	}
+	if fire.State != SpecInProgress {
+		t.Fatalf("mage-fire: %+v, want in_progress (an unmeasured gap cannot be validated)", fire)
 	}
 }
