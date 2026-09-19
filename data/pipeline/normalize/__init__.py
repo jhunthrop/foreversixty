@@ -66,6 +66,7 @@ def normalize_build(
     from pipeline.normalize.gear import ItemDataError, build_class_items, build_item_sets
     from pipeline.normalize.item_curves import load_item_curves
     from pipeline.normalize.items import normalize_items
+    from pipeline.normalize.sockets import check_no_sockets
     from pipeline.normalize.spells import normalize_spells
     from pipeline.normalize.talent_trees import build_talent_trees
     from pipeline.normalize.talents import flat_talents, normalize_talents
@@ -89,6 +90,10 @@ def normalize_build(
 
     # Phase 0 flat entities.
     class_rows = t("ChrClasses")
+    # Contract 6.4: a socketed item means the gem decision in the parity
+    # design's section 4.4 no longer holds. Checked before anything is
+    # written, so a build that trips it leaves no half-emitted directory.
+    check_no_sockets(t("ItemSparse"), build)
     write_json(normalize_zones(t("AreaTable"), t("Map")), build_dir / "zones.json")
     write_json(normalize_dungeons(t("JournalInstance")), build_dir / "dungeons.json")
     write_json(normalize_items(t("ItemSparse"), t("Item")), build_dir / "items.json")
