@@ -32,6 +32,28 @@
 @import '@fontsource/barlow/latin-700.css';
 @import '@fontsource/jetbrains-mono/latin-500.css';
 
+/* Barlow 600 (semibold) overrides the import above's font-display: swap with `optional`
+   (final-review round 2: /sim.html measured a real 0.33 CLS from
+   barlow-latin-600-normal.woff2 loading -- the site-wide footer, which sits inside the
+   first viewport on a short page, shifts down when it swaps in, even with the
+   size-adjusted 'Barlow Fallback' below in play). Weights 400/700 keep the fontsource
+   default: they were measured clean on every audited page, this one included, so only 600
+   changes.
+   Same family, weight and style as the import above; the LAST matching @font-face wins for
+   font selection, so this is a display-strategy override, not a duplicate face. `optional`
+   means the browser uses Barlow 600 only if it is already cached by the time this text
+   first paints; otherwise the page keeps the fallback for the rest of that navigation
+   instead of swapping mid-render, which is the only display value that can never reflow. */
+@font-face {
+  font-family: 'Barlow';
+  font-style: normal;
+  font-weight: 600;
+  font-display: optional;
+  src:
+    url('@fontsource/barlow/files/barlow-latin-600-normal.woff2') format('woff2'),
+    url('@fontsource/barlow/files/barlow-latin-600-normal.woff') format('woff');
+}
+
 /* Barlow needs a size-adjusted fallback face: it is the family behind the LCP-candidate text
    on every audited page (the homepage's hero label, a dungeon page's lead paragraph), and a
    naive swap reflows that text once Barlow loads -- different fallback vs. Barlow glyph
