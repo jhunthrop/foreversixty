@@ -219,6 +219,11 @@ func Execute(req api.SimRequest, progress io.Writer) (api.SimResult, error) {
 		if engineRes != nil {
 			base.IterationsRun = int(engineRes.IterationsDone)
 		}
+		// An abort folded no fight, but it still carries a summary of
+		// the same SHAPE as a finished one: a zero summary.Summary
+		// marshals its sixteen lists as null, and the page that renders
+		// a stopped run would need a null check per key.
+		base.Summary = adapter.EmptySummary()
 		return base, err
 	}
 	if err != nil {

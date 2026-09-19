@@ -60,6 +60,56 @@ const playerGUID = "sim-player"
 // metrics for the player only.
 const auraTypeBuff = "BUFF"
 
+// EmptySummary is the summary of no fight: every list present and
+// empty, never absent. It is what a run that folded nothing still has
+// to carry.
+//
+// JSON has two ways to say "no rows" and only one of them is the shape
+// the web parses. A nil Go slice marshals as `null`, and an aborted
+// result used to be built from a zero summary.Summary, so `damage_done`
+// and fifteen other keys came back null where a finished result has
+// `[]`. Every consumer then needs a null check per key, on the one code
+// path - the user pressed Stop - least likely to be exercised.
+//
+// Summarize builds on this too, so the finished shape and the empty one
+// cannot drift apart. TestEverySummaryListIsEmptyNotNull walks the
+// struct by reflection, so a list field added to summary.Summary later
+// fails here rather than reaching the web as a null.
+func EmptySummary() summary.Summary {
+	return summary.Summary{
+		// The engine that RAN it, from the pin compiled into this
+		// binary - not req.EngineVersion, which is the client's claim.
+		// A cached request naming an old sha, re-run by a new build,
+		// used to come back stamped with the old one, and every stored
+		// row's provenance was hearsay.
+		EngineVersion: "sim:" + enginever.Version,
+
+		DamageDone:   []summary.Actor{},
+		DamageTaken:  []summary.Actor{},
+		Healing:      []summary.Actor{},
+		HealingTaken: []summary.Actor{},
+
+		Deaths:     []summary.Death{},
+		Auras:      []summary.AuraTrack{},
+		Casts:      []summary.CastRow{},
+		Interrupts: []summary.ExchangeRow{},
+		Dispels:    []summary.ExchangeRow{},
+		Resources:  []summary.ResourceTrack{},
+
+		// A sim has no threat model attached, no taunt, no curated
+		// mechanics table for a target dummy, and no encounter phases.
+		// All five are present and empty, which is exactly what the logs
+		// engine produces for a fight whose encounter has no table.
+		Threat:         []summary.ThreatRow{},
+		ThreatByTarget: []summary.ThreatPair{},
+		Taunts:         []summary.Taunt{},
+		Combatants:     []summary.CombatantRow{},
+		Roster:         []summary.RosterRow{},
+		Mechanics:      summary.MechanicsBlock{TableFound: false, Rows: []summary.MechanicRow{}},
+		Phases:         []summary.Phase{},
+	}
+}
+
 // Summarize maps an engine result onto the logs engine's Summary, per the
 // interface contract's mapping table.
 func Summarize(res *proto.RaidSimResult, req api.SimRequest) (summary.Summary, error) {
@@ -81,39 +131,17 @@ func Summarize(res *proto.RaidSimResult, req api.SimRequest) (summary.Summary, e
 	durationMS := int64(math.Round(res.AvgIterationDuration * 1000))
 	class, spec := splitSpecSlug(req.Spec)
 
-	out := summary.Summary{
-		// The engine that RAN it, from the pin compiled into this
-		// binary - not req.EngineVersion, which is the client's claim.
-		// A cached request naming an old sha, re-run by a new build,
-		// used to come back stamped with the old one, and every stored
-		// row's provenance was hearsay.
-		EngineVersion: "sim:" + enginever.Version,
-		FightIndex:    1,
-		DurationMS:    durationMS,
-
-		DamageDone:   actors(player, class, iters, durationMS),
-		DamageTaken:  []summary.Actor{},
-		Healing:      []summary.Actor{},
-		HealingTaken: []summary.Actor{},
-
-		Deaths:     []summary.Death{},
-		Auras:      auras(player),
-		Casts:      casts(player, iters),
-		Interrupts: []summary.ExchangeRow{},
-		Dispels:    []summary.ExchangeRow{},
-		Resources:  resources(player, iters),
-
-		// A sim has no threat model attached, no taunt, no curated
-		// mechanics table for a target dummy, and no encounter phases.
-		// All five are present and empty, which is exactly what the logs
-		// engine produces for a fight whose encounter has no table.
-		Threat:         []summary.ThreatRow{},
-		ThreatByTarget: []summary.ThreatPair{},
-		Taunts:         []summary.Taunt{},
-		Combatants:     []summary.CombatantRow{},
-		Mechanics:      summary.MechanicsBlock{TableFound: false, Rows: []summary.MechanicRow{}},
-		Phases:         []summary.Phase{},
-	}
+	// Start from the empty shape and fill in what this run measured, so
+	// the four lists a sim can populate are the ONLY difference between
+	// a finished summary and the one an aborted run carries. Building
+	// the two shapes separately is how they came to disagree.
+	out := EmptySummary()
+	out.FightIndex = 1
+	out.DurationMS = durationMS
+	out.DamageDone = actors(player, class, iters, durationMS)
+	out.Auras = auras(player)
+	out.Casts = casts(player, iters)
+	out.Resources = resources(player, iters)
 	out.Roster = roster(player, class, spec, out, durationMS)
 	if err := checkRowIdentity(out); err != nil {
 		return summary.Summary{}, err

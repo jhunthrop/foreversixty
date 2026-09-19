@@ -435,6 +435,23 @@ func TestAnAbortedRunIsWrittenAsAnAbort(t *testing.T) {
 	if res.EngineVersion != enginever.Version {
 		t.Errorf("EngineVersion = %q, want %q", res.EngineVersion, enginever.Version)
 	}
+	// And it is written in the SHAPE a finished result has. A zero
+	// summary.Summary marshals its lists as null, so a page rendering a
+	// stopped run would need a null check per key; the abort path
+	// carries adapter.EmptySummary() instead. Asserted on the bytes
+	// that were actually written, not on the struct, because it is the
+	// marshalling that differs.
+	var onDisk struct {
+		Summary map[string]json.RawMessage `json:"summary"`
+	}
+	if err := json.Unmarshal(raw, &onDisk); err != nil {
+		t.Fatal(err)
+	}
+	for _, key := range []string{"damage_done", "auras", "casts", "resources", "roster", "phases"} {
+		if got := string(onDisk.Summary[key]); got != "[]" {
+			t.Errorf("an aborted run wrote %q as %s, want []", key, got)
+		}
+	}
 }
 
 // The signal path: SIGINT and SIGTERM stop the run the way the

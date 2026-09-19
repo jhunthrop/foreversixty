@@ -1,9 +1,14 @@
 package adapter
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"math"
+	"reflect"
+	"slices"
+	"sort"
+	"strings"
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
@@ -572,5 +577,110 @@ func TestSpecSlugSplitsOnTheCanonicalList(t *testing.T) {
 		if class != want[0] || spec != want[1] {
 			t.Errorf("splitSpecSlug(%q) = (%q, %q), want (%q, %q)", slug, class, spec, want[0], want[1])
 		}
+	}
+}
+
+// A nil Go slice marshals as null, so a summary built as a zero value
+// hands the web `"damage_done": null` where a finished run hands it
+// `[]`. That is a null check per key on the path least likely to be
+// exercised - the user pressed Stop - so the abort path carries
+// EmptySummary() and this walks the marshalled JSON to prove it.
+//
+// The walk is by REFLECTION over summary.Summary rather than against a
+// list written down here: a list field added to that struct later must
+// fail this test rather than reach the web as a null.
+func TestEverySummaryListIsEmptyNotNull(t *testing.T) {
+	res := api.SimResult{
+		EngineVersion: enginever.Version,
+		Aborted:       true,
+		IterationsRun: 7,
+		Summary:       EmptySummary(),
+	}
+	b, err := json.Marshal(res)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var envelope struct {
+		Summary json.RawMessage `json:"summary"`
+	}
+	if err := json.Unmarshal(b, &envelope); err != nil {
+		t.Fatal(err)
+	}
+	decoded := map[string]json.RawMessage{}
+	if err := json.Unmarshal(envelope.Summary, &decoded); err != nil {
+		t.Fatal(err)
+	}
+
+	typ := reflect.TypeOf(summary.Summary{})
+	lists := 0
+	for i := 0; i < typ.NumField(); i++ {
+		field := typ.Field(i)
+		if field.Type.Kind() != reflect.Slice {
+			continue
+		}
+		lists++
+		key := strings.Split(field.Tag.Get("json"), ",")[0]
+		raw, ok := decoded[key]
+		if !ok {
+			t.Errorf("an aborted summary has no %q key (field %s)", key, field.Name)
+			continue
+		}
+		if string(raw) != "[]" {
+			t.Errorf("an aborted summary's %q is %s, want []", key, raw)
+		}
+	}
+	if lists == 0 {
+		t.Fatal("the reflection walk found no list fields; summary.Summary changed shape")
+	}
+
+	// The one list that is nested rather than top level.
+	var mechanics struct {
+		Rows json.RawMessage `json:"rows"`
+	}
+	if err := json.Unmarshal(decoded["mechanics"], &mechanics); err != nil {
+		t.Fatal(err)
+	}
+	if string(mechanics.Rows) != "[]" {
+		t.Errorf("an aborted summary's mechanics.rows is %s, want []", mechanics.Rows)
+	}
+
+	// And the summary holds no null at all, at any depth, which is the
+	// claim the web lane actually relies on. (The echoed request may
+	// hold nulls - those are the caller's own optional lists, and this
+	// synthetic request omits them.)
+	if bytes.Contains(envelope.Summary, []byte("null")) {
+		t.Errorf("an aborted summary marshals a null: %s", envelope.Summary)
+	}
+}
+
+// The empty shape and the finished one must carry the same keys, or
+// "the same shape as a completed result" is only true of the lists.
+func TestTheEmptyAndFinishedSummariesHaveTheSameKeys(t *testing.T) {
+	full, err := Fixture("warrior-fury")
+	if err != nil {
+		t.Fatal(err)
+	}
+	finished, err := Summarize(full, req())
+	if err != nil {
+		t.Fatal(err)
+	}
+	keys := func(s summary.Summary) []string {
+		b, err := json.Marshal(s)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var m map[string]json.RawMessage
+		if err := json.Unmarshal(b, &m); err != nil {
+			t.Fatal(err)
+		}
+		out := make([]string, 0, len(m))
+		for k := range m {
+			out = append(out, k)
+		}
+		sort.Strings(out)
+		return out
+	}
+	if got, want := keys(EmptySummary()), keys(finished); !slices.Equal(got, want) {
+		t.Errorf("the empty summary's keys are %v, the finished one's %v", got, want)
 	}
 }

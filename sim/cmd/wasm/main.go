@@ -61,16 +61,21 @@ func main() {
 // fail wraps an error as a SimResult, so every export returns the same
 // shape and the worker never has to distinguish a throw from a result.
 func fail(req api.SimRequest, msg string) string {
-	return result(api.SimResult{Request: req, Error: msg})
+	return result(api.SimResult{Request: req, Error: msg, Summary: adapter.EmptySummary()})
 }
 
 // stopped wraps an abort. It is not a failure - the user pressed Stop -
 // so it carries no error message and the page renders it as a run that
 // ended early rather than as something that went wrong.
 func stopped(req api.SimRequest, iterations int) string {
-	return result(api.SimResult{Request: req, Aborted: true, IterationsRun: iterations})
+	return result(api.SimResult{Request: req, Aborted: true, IterationsRun: iterations, Summary: adapter.EmptySummary()})
 }
 
+// Both carry adapter.EmptySummary() rather than a zero summary: a nil
+// Go slice marshals as null, so every export returns the same shape and
+// the page never has to null-check sixteen keys on the paths it is least
+// likely to have exercised.
+//
 // result stamps the two fields every export must fill the same way and
 // encodes. EngineVersion is enginever.Version, never the request's
 // claim: the row's provenance is a fact about the binary that produced
