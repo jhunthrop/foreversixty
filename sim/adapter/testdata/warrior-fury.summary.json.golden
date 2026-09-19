@@ -17,7 +17,7 @@
           "school": 2,
           "total": 104613,
           "effective": 104613,
-          "hits": 1,
+          "hits": 73,
           "crits": 71,
           "ticks": 0,
           "misses": {
@@ -32,7 +32,7 @@
           "school": 2,
           "total": 66651,
           "effective": 66651,
-          "hits": 0,
+          "hits": 24,
           "crits": 24,
           "ticks": 0,
           "misses": {
@@ -47,7 +47,7 @@
           "school": 2,
           "total": 37617,
           "effective": 37617,
-          "hits": 0,
+          "hits": 134,
           "crits": 77,
           "ticks": 0,
           "misses": {
@@ -63,7 +63,7 @@
           "school": 2,
           "total": 37178,
           "effective": 37178,
-          "hits": 0,
+          "hits": 21,
           "crits": 21,
           "ticks": 0,
           "misses": {
@@ -78,7 +78,7 @@
           "school": 2,
           "total": 27458,
           "effective": 27458,
-          "hits": 0,
+          "hits": 38,
           "crits": 22,
           "ticks": 0,
           "misses": {
@@ -94,7 +94,7 @@
           "school": 2,
           "total": 11793,
           "effective": 11793,
-          "hits": 0,
+          "hits": 11,
           "crits": 11,
           "ticks": 0,
           "misses": {
@@ -109,7 +109,7 @@
           "school": 2,
           "total": 263,
           "effective": 263,
-          "hits": 0,
+          "hits": 2,
           "crits": 2,
           "ticks": 0,
           "min": 0,
