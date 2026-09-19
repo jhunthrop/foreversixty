@@ -3,10 +3,15 @@ from pathlib import Path
 import pytest
 
 from pipeline.csvio import read_csv
-from pipeline.normalize.gear import ItemDataError
+from pipeline.forkdb import FACTION_RESTRICTIONS
 from pipeline.normalize.item_curves import load_item_curves
 from pipeline.simdb.equip import SpellBonus
-from pipeline.simdb.items import HAND_TYPE_BY_INVENTORY_TYPE, build_sim_items, simdb_item_rows
+from pipeline.simdb.items import (
+    FACTION_RESTRICTION_BY_SLUG,
+    HAND_TYPE_BY_INVENTORY_TYPE,
+    build_sim_items,
+    simdb_item_rows,
+)
 from pipeline.simdb.weapons import WeaponCurves, load_weapon_curves
 from pipeline.simproto import pb
 
@@ -233,5 +238,19 @@ def test_an_item_with_no_fork_column_is_left_unrestricted():
 
 
 def test_an_unknown_faction_restriction_slug_raises():
-    with pytest.raises(ItemDataError, match="bogus_slug"):
+    """Every other operator-facing failure on the simdb path -- a missing raw
+    directory, a build that skipped `loot` -- raises SystemExit directly
+    rather than being caught and converted somewhere upstream, since
+    `python -m pipeline simdb` does not catch anything from this path. An
+    unknown slug is the same kind of failure, so it raises the same way."""
+    with pytest.raises(SystemExit, match="bogus_slug"):
         built_item(12798, fork_columns={12798: ([], "bogus_slug")})
+
+
+def test_the_faction_vocabulary_is_the_same_on_both_ends():
+    """`pipeline/forkdb.py`'s FACTION_RESTRICTIONS is the write side (the
+    fork's faction enum -> the slug `loot` writes into items.json);
+    FACTION_RESTRICTION_BY_SLUG here is the read side. A lane adding a third
+    restriction to one without the other should get a red test here, not a
+    SystemExit the first time someone builds a simdb with that item."""
+    assert set(FACTION_RESTRICTIONS.values()) | {""} == set(FACTION_RESTRICTION_BY_SLUG)

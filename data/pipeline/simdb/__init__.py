@@ -21,9 +21,15 @@ ask for suffixes.
 
 `SimItem.random_suffix_options` and `.faction_restriction` (contract 10.3)
 come from `items.json`'s fork-derived columns instead, which `python -m
-pipeline loot` writes -- so `loot` must run before this command; `_fork_columns`
-below fails fast rather than silently treating a build that skipped it as one
-with no restrictions and no suffix options.
+pipeline loot` writes -- so `loot` must run before this command. `_fork_columns`
+below cannot detect every way that ordering was skipped (nothing here can tell
+"loot never ran" from "loot ran and genuinely found nothing" once `items.json`
+is the only input), but it does fail fast on the two shapes that are
+detectable: the columns being entirely absent (an older schema, or a
+hand-built build directory), and `loot`'s own output files sitting in the
+build directory while every row reads as unrestricted -- which is what
+re-running `normalize` after `loot` looks like, since that overwrites
+`items.json` from the model defaults and blanks both columns back out.
 """
 
 from __future__ import annotations
@@ -113,24 +119,55 @@ def _fork_columns(build_dir: Path) -> dict[int, tuple[list[int], str]]:
     They are read from `items.json` and not from the fork database directly
     so that `simdb` never needs an engine checkout; `python -m pipeline loot`
     is what puts them on `items.json`'s rows, which is why it runs first
-    (contract 10.8). A row missing either key means `loot` has never
-    populated this build's `items.json` -- that fails fast here rather than
-    reading as "no suffixes, no restriction", which is exactly what a build
-    that genuinely has none of either also looks like.
+    (contract 10.8). This catches the two shapes of "loot did not run" that
+    are actually detectable from `items.json` and the build directory alone:
+
+    * The columns are missing entirely -- an older schema, or a hand-built
+      build directory that never went through `normalize`.
+    * `items.json` is empty -- the same "no restrictions" shape as a build
+      that genuinely has none, but on zero rows it cannot be genuine.
+    * `loot`'s own output (`loot.json` or `suffixes.json`) sits in the build
+      directory, yet every row's `suffixes` and `faction_restriction` reads
+      empty -- which is what running `normalize` again *after* `loot` looks
+      like, since that overwrites `items.json` from the model defaults and
+      blanks both columns back out even though loot already ran once.
+
+    An individual item with `[]` and `""` is legitimate -- most items have
+    no random suffix and no faction restriction. What these checks refuse is
+    the whole build looking un-looted, not any one row looking unrestricted.
     """
     path = build_dir / "items.json"
     if not path.exists():
         raise SystemExit(f"no {path}; run `python -m pipeline normalize` for this build first")
     rows = json.loads(path.read_text(encoding="utf-8"))
-    missing = sorted(set(FORK_COLUMNS) - set(rows[0])) if rows else []
+    if not rows:
+        raise SystemExit(
+            f"{path} has no items; run `python -m pipeline normalize` for this build first"
+        )
+    missing = sorted(set(FORK_COLUMNS) - set(rows[0]))
     if missing:
         raise SystemExit(
             f"{path} is missing {missing}; run `python -m pipeline loot` for this build first"
         )
-    return {
+    columns = {
         int(row["id"]): (row.get("suffixes", []), row.get("faction_restriction", ""))
         for row in rows
     }
+    # Local import: pipeline.loot imports pipeline.simdb.statmap, so importing
+    # it at module scope here would be circular. By the time this runs,
+    # pipeline.simdb has already finished importing, so the cycle resolves.
+    from pipeline.loot import LOOT, SUFFIXES
+
+    loot_ran = any((build_dir / name).exists() for name in (LOOT, SUFFIXES))
+    all_unrestricted = all(not suffixes and not faction for suffixes, faction in columns.values())
+    if loot_ran and all_unrestricted:
+        raise SystemExit(
+            f"{path} has no suffixes or faction restrictions even though {LOOT} or "
+            f"{SUFFIXES} exists in {build_dir}; `normalize` likely ran again after "
+            "`loot` and blanked both columns -- re-run `python -m pipeline loot` for "
+            "this build"
+        )
+    return columns
 
 
 def _optional(raw: Path, name: str) -> list[dict[str, str]]:

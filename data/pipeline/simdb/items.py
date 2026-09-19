@@ -23,7 +23,6 @@ from collections.abc import Mapping
 from pipeline.normalize.gear import (
     MAX_PLAYER_LEVEL,
     PLANNER_QUALITIES,
-    ItemDataError,
     column_value,
     int_column,
     is_junk_name,
@@ -251,7 +250,7 @@ def build_sim_items(
         if suffix_options:
             item.random_suffix_options.extend(suffix_options)
         if restriction not in FACTION_RESTRICTION_BY_SLUG:
-            raise ItemDataError(
+            raise SystemExit(
                 f"item {item_id} has faction_restriction {restriction!r} in "
                 f"items.json; pipeline/simdb/items.py knows "
                 f"{sorted(FACTION_RESTRICTION_BY_SLUG)}"

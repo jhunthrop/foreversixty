@@ -167,3 +167,32 @@ def test_a_legitimately_empty_fork_column_is_not_mistaken_for_a_missing_one(
     database = parsed(write_sim_database("9.9.9.9", root=build_dir.parent))
     assert all(not item.random_suffix_options for item in database.items)
     assert all(not item.faction_restriction for item in database.items)
+
+
+def test_an_empty_items_json_is_a_clear_error(build_dir: Path):
+    """A build directory with items.json present but empty must not read as
+    an honestly-restriction-free build -- there is no build with zero items."""
+    (build_dir / "items.json").write_text("[]")
+    with pytest.raises(SystemExit, match="normalize"):
+        write_sim_database("9.9.9.9", root=build_dir.parent)
+
+
+def test_normalize_running_again_after_loot_is_a_clear_error(build_dir: Path):
+    """`loot` writes suffixes.json alongside items.json's two fork columns
+    (contract 10.8). If `normalize` then runs again, it overwrites items.json
+    from the model defaults and blanks both columns back out, but leaves
+    suffixes.json sitting in the build directory from the earlier `loot` run.
+    That combination -- loot's own output present, every item unrestricted --
+    is not a build that has never been looted; it is one that was looted and
+    then had the columns wiped, so the guard must catch it too."""
+    (build_dir / "suffixes.json").write_text("[]")
+    with pytest.raises(SystemExit, match="loot"):
+        write_sim_database("9.9.9.9", root=build_dir.parent)
+
+
+def test_loot_json_alone_also_trips_the_guard(build_dir: Path):
+    """Either of loot's own outputs is enough to prove loot ran; the guard
+    does not require both files."""
+    (build_dir / "loot.json").write_text("[]")
+    with pytest.raises(SystemExit, match="loot"):
+        write_sim_database("9.9.9.9", root=build_dir.parent)

@@ -179,7 +179,11 @@ def test_sim_items_carry_the_four_fields_contract_10_3_adds():
     assert sum(1 for item in items if item.random_suffix_options) == (
         EXPECTED_WITH_SUFFIX_OPTIONS
     )
-    assert all(item.required_level >= 0 for item in items)
+    # Dreadnaught Breastplate (22416), also pinned in
+    # test_a_set_piece_carries_its_armour_and_its_set -- `item.required_level
+    # >= 0` would pass even if the field were never populated, since the
+    # proto's int32 default is 0. This pins a real, known value instead.
+    assert item(22416).required_level == 60
     assert sum(1 for item in items if item.unique) == EXPECTED_UNIQUE
 
 
