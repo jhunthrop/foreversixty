@@ -97,12 +97,10 @@ test('a shared request link reproduces the whole page state', async ({ page }) =
   await page.getByTestId('sim-style').selectOption('cleave-5');
   await page.getByTestId('sim-duration').selectOption('600');
   await page.getByTestId('sim-request-drawer').locator('summary').click();
-  // The drawer seeds its textarea once, from whatever request existed at mount, and then
-  // "owns" it for the player (RequestDrawer.svelte's own comment) -- it does not
-  // re-seed on every settings change, since that would throw away an in-progress edit.
-  // Reset is the drawer's own way back to the page's current request, so this shares
-  // the style and duration just picked rather than the pre-mount defaults.
-  await page.getByTestId('sim-request-reset').click();
+  // The drawer tracks the page's own current request until the player edits the textarea
+  // (RequestDrawer.svelte's own comment, finding 2 of the final whole-branch review), so
+  // an untouched open already carries the style and duration just picked -- no reset
+  // needed to pick up settings changed before the drawer was ever opened.
   await page.getByTestId('sim-request-share').click();
 
   const url = await page.getByTestId('sim-request-share-link').inputValue();
@@ -112,6 +110,36 @@ test('a shared request link reproduces the whole page state', async ({ page }) =
   await expect(page.getByTestId('sim-character')).toBeVisible();
   await expect(page.getByTestId('sim-targets')).toHaveValue('5');
   await expect(page.getByTestId('sim-duration')).toHaveValue('600');
+});
+
+test('the drawer tracks page settings until the player edits, then keeps the edit', async ({ page }) => {
+  // Finding 2, final whole-branch review: the drawer used to seed its textarea once, at
+  // mount, from whatever request existed then -- so a settings change made after the
+  // drawer had already mounted (which is as soon as a character loads, not when the
+  // drawer is first opened) went stale in the textarea, and Share or Apply from it carried
+  // the old encounter with nothing on screen saying so.
+  await page.goto('/sim');
+  await page.getByTestId('sim-addon-input').fill(FURY);
+  await page.getByTestId('sim-addon-load').click();
+  await expect(page.getByTestId('sim-character')).toBeVisible();
+
+  // Change a setting before the drawer is ever opened -- the arrival-request case the
+  // fix targets -- then open it and see the change already there.
+  await page.getByTestId('sim-duration').selectOption('600');
+  await page.getByTestId('sim-request-drawer').locator('summary').click();
+  const editor = page.getByTestId('sim-request-json');
+  await expect.poll(async () => JSON.parse(await editor.inputValue()).encounter.duration_sec).toBe(600);
+
+  // The player's own edit stops the tracking: a further settings change must not
+  // overwrite what they typed.
+  const edited = JSON.stringify({ ...JSON.parse(await editor.inputValue()), iterations: 500 }, null, 2);
+  await editor.fill(edited);
+  await page.getByTestId('sim-duration').selectOption('300');
+  await expect(editor).toHaveValue(edited);
+
+  // Reset returns the textarea to tracking the page again.
+  await page.getByTestId('sim-request-reset').click();
+  await expect.poll(async () => JSON.parse(await editor.inputValue()).encounter.duration_sec).toBe(300);
 });
 
 test('Apply keeps a per-slot enchant and suffix', async ({ page }) => {
@@ -127,8 +155,9 @@ test('Apply keeps a per-slot enchant and suffix', async ({ page }) => {
   await editor.fill(JSON.stringify(request, null, 2));
   await page.getByTestId('sim-request-apply').click();
 
-  // The drawer re-seeds from the page's own request only on its first render, so reopen
-  // it on a fresh load to read what the page would now send.
+  // The drawer stopped tracking the page's request the moment the textarea above was
+  // edited (finding 2, final whole-branch review), so Reset is what reads back the
+  // request Apply actually built rather than the edit still sitting in the textarea.
   await expect(page.getByTestId('sim-character')).toBeVisible();
   await page.getByTestId('sim-request-reset').click();
   const applied = JSON.parse(await editor.inputValue());

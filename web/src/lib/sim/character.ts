@@ -16,7 +16,14 @@
 //     is ErrUnknownBuff or ErrUnknownConsume and fails the run, so nothing here invents one.
 import { simCopy } from './copy';
 import { pointsPerTree, ranksByTalent } from '../planner/derive';
-import { decodeFS1, orderFromRanks, type FS1Item, type FS1Loadout, type FS1Set } from '../planner/fs1';
+import {
+  decodeFS1,
+  encodeFS1V2,
+  orderFromRanks,
+  type FS1Item,
+  type FS1Loadout,
+  type FS1Set,
+} from '../planner/fs1';
 import { indexTalents, type TalentIndex } from '../planner/rules';
 import type { PlannerStore } from '../planner/store.svelte';
 import type { BuildDraft, ClassRow, Gear, RaceRow, Slot, TalentFile } from '../planner/types';
@@ -211,6 +218,41 @@ export function gearFromSlots(gear: readonly GearSlot[]): Gear {
   const out: Gear = {};
   for (const { slot, item_id } of gear) out[slot as Slot] = item_id;
   return out;
+}
+
+/**
+ * A `CharacterSpec` (the engine's own JSON shape) as an FS1 version 2 code -- the one place
+ * this conversion is written. "Run this yourself" (SimView.svelte, a saved result's own
+ * request) and the request drawer's Apply (store-request.ts, a pasted/edited request) both
+ * need a code to feed the store's existing `?code=`/`fromPlannerCode` bootstrap, and both
+ * used to build one by hand; the two copies drifted once already (final whole-branch
+ * review, finding 1) when `encodeFS1` was upgraded to `encodeFS1V2` in only one of them.
+ *
+ * `encodeFS1V2`, not `encodeFS1`: a `CharacterSpec.gear` entry carries any enchant or suffix
+ * (contract 10.5), and `encodeFS1` would drop exactly what `characterFromFs1` now keeps.
+ * The six version-2 sections travel empty -- a `CharacterSpec` never carries bags, bank,
+ * sets, loadouts, or a decoder's own `ignored` list; only `professions` round-trips.
+ */
+export function codeForCharacterSpec(spec: CharacterSpec, dataBuild: string): string {
+  return encodeFS1V2({
+    dataBuild,
+    classSlug: spec.class,
+    raceSlug: spec.race,
+    treeRanks: ranksFromTalentsString(spec.talents),
+    gear: gearFromSlots(spec.gear),
+    gearSlots: spec.gear.map((slot) => ({
+      slot: slot.slot as Slot,
+      itemId: slot.item_id,
+      ...(slot.enchant === undefined ? {} : { enchant: slot.enchant }),
+      ...(slot.suffix === undefined ? {} : { suffix: slot.suffix }),
+    })),
+    bags: [],
+    bank: [],
+    sets: [],
+    loadouts: [],
+    professions: [...(spec.professions ?? [])],
+    ignored: [],
+  });
 }
 
 /**

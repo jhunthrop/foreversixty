@@ -12,7 +12,7 @@ import {
   precisionPlan,
   relativeError,
 } from './precision';
-import type { SimRequest } from './types';
+import { ITERATIONS, type SimRequest } from './types';
 
 describe('the precision vocabulary', () => {
   it('is the design’s three counts plus the target-error run', () => {
@@ -46,6 +46,19 @@ describe('the precision vocabulary', () => {
   // above, which part B reads for its own bulk pages.
   it('carries contract A3’s bulk final-stage counts, a different map from the plain-run one', () => {
     expect(BULK_FINAL_ITERATIONS).toEqual({ fast: 3000, normal: 3000, high: 10_000 });
+  });
+
+  // Finding 5, final whole-branch review: types.ts's ITERATIONS (SharePanel.svelte,
+  // live-dps.svelte.ts) is the same three numbers as PRECISION_ITERATIONS here under
+  // different key names -- this module is the authority; ITERATIONS' own comment says so
+  // and points here. Nothing derives one from the other (that would need a circular value
+  // import between the two modules), so this is what would catch a future drift instead.
+  it('matches types.ts’ own ITERATIONS map, which this module is the authority for', () => {
+    expect(ITERATIONS).toEqual({
+      live: PRECISION_ITERATIONS.fast,
+      normal: PRECISION_ITERATIONS.normal,
+      precise: PRECISION_ITERATIONS.high,
+    });
   });
 });
 

@@ -12,13 +12,11 @@
   import activeBuild from '../../data/active-build.json';
   import { battlenetStartUrl, fetchMe, type Me } from '../../lib/account/api';
   import type { CharacterPath } from '../../lib/characters';
-  import { encodeFS1V2 } from '../../lib/planner/fs1';
-  import type { Slot } from '../../lib/planner/types';
   import { createLazyComponent, type LazyLoadState } from '../../lib/report/lazy-component.svelte';
   import { fetchReportMeta, fetchSummary } from '../../lib/report/load';
   import type { Summary } from '../../lib/report/types';
   import { fetchSim, fetchSpecs, listMySims } from '../../lib/sim/api';
-  import { gearFromSlots, ranksFromTalentsString } from '../../lib/sim/character';
+  import { codeForCharacterSpec } from '../../lib/sim/character';
   import { compareSummaries } from '../../lib/sim/compare';
   import { simCopy } from '../../lib/sim/copy';
   import type { KindFilter } from '../../lib/sim/history';
@@ -183,28 +181,9 @@
       ref !== ''
         ? withSimState(defaultSimState(), { source: kind, ref })
         : withSimState(defaultSimState(), {
-            // encodeFS1V2, not encodeFS1: the saved result's own gear list carries any
-            // enchant or suffix (contract 10.5), and dropping them here would lose exactly
-            // what characterFromFs1 now keeps.
-            code: encodeFS1V2({
-              dataBuild: bootstrap.treeVersion,
-              classSlug: savedResult.request.character.class,
-              raceSlug: savedResult.request.character.race,
-              treeRanks: ranksFromTalentsString(savedResult.request.character.talents),
-              gear: gearFromSlots(savedResult.request.character.gear),
-              gearSlots: savedResult.request.character.gear.map((slot) => ({
-                slot: slot.slot as Slot,
-                itemId: slot.item_id,
-                ...(slot.enchant === undefined ? {} : { enchant: slot.enchant }),
-                ...(slot.suffix === undefined ? {} : { suffix: slot.suffix }),
-              })),
-              bags: [],
-              bank: [],
-              sets: [],
-              loadouts: [],
-              professions: [...(savedResult.request.character.professions ?? [])],
-              ignored: [],
-            }),
+            // codeForCharacterSpec carries the saved result's own gear list, enchants and
+            // suffixes included (contract 10.5) -- character.ts's own reason.
+            code: codeForCharacterSpec(savedResult.request.character, bootstrap.treeVersion),
           });
     window.location.href = `/sim${simSearch(target)}`;
   }
@@ -700,7 +679,9 @@
                result it just saved. -->
         <div class="mx-[18px] flex flex-wrap items-center gap-3 md:mx-0" data-testid="sim-save">
           {#if savedUrl !== null}
+            <label class="sr-only" for="sim-save-link">{simCopy.savedLinkLabel}</label>
             <input
+              id="sim-save-link"
               type="text"
               readonly
               value={savedUrl}

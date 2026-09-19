@@ -11,9 +11,20 @@ import type { Summary } from '../report/types';
 /** Where the character came from. */
 export type SourceKind = 'armory' | 'addon' | 'build' | 'fight' | 'manual';
 
-/** The only iteration counts the contract allows. */
+/**
+ * The only iteration counts the contract allows.
+ *
+ * `precision.ts`'s `PRECISION_ITERATIONS` (`fast`/`normal`/`high`) is the authority for
+ * these same three numbers now -- `/sim` reads that one, not this one (finding 5, final
+ * whole-branch review). This map stays only because the planner's `SharePanel.svelte` and
+ * `live-dps.svelte.ts` still read it under these key names (`live`/`normal`/`precise`);
+ * deriving it from `PRECISION_ITERATIONS` would need a value import back into this module
+ * from one that already imports a value from here (`STEP_ITERATIONS_DEFAULT`), and a
+ * circular value import is not worth trading for one map derived from another with
+ * different key names. Keep the three numbers identical to `PRECISION_ITERATIONS`'
+ * `fast`/`normal`/`high` by hand; `precision.test.ts` is where a mismatch would first show.
+ */
 export const ITERATIONS = { live: 500, normal: 3000, precise: 10_000 } as const;
-export type IterationCount = (typeof ITERATIONS)[keyof typeof ITERATIONS];
 
 export interface CharacterSource {
   kind: SourceKind;

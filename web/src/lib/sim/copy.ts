@@ -304,6 +304,9 @@ export const simCopy = {
   historyEmpty: 'Nothing saved yet. Run a sim and press Save.',
   saveThisSim: 'Save this sim',
   saveTitleLabel: 'Name this sim',
+  /** sr-only label for the readonly saved-URL field (finding 3, final whole-branch review),
+   *  the same pattern RequestDrawer's own share link already uses. */
+  savedLinkLabel: 'Saved sim link',
   saveAction: 'Save',
   savingAction: 'Saving…',
   cancel: 'Cancel',

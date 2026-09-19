@@ -10,6 +10,7 @@ import {
   SIM_LEVEL,
   characterFromFs1,
   characterFromPlanner,
+  codeForCharacterSpec,
   fromBuildDraft,
   gearFromSlots,
   gearSlots,
@@ -525,6 +526,79 @@ describe('toCharacterSpec with per-slot enchants and professions', () => {
     const spec = toCharacterSpec(character, indexTalents(file), [], []);
     expect(spec.gear).toEqual([{ slot: 'head', item_id: 12640 }]);
     expect(spec.professions).toBeUndefined();
+  });
+});
+
+describe('codeForCharacterSpec', () => {
+  // Finding 1, final whole-branch review: SimView.svelte's "Run this yourself" and
+  // store-request.ts's Apply used to build this FS1 v2 code by hand, in two places that
+  // drifted once already. This is the one shared conversion now; the round trip through
+  // characterFromFs1 is what proves it is lossless the same way the two call sites relied
+  // on their own hand-written versions being.
+  it('round-trips a CharacterSpec through an FS1 v2 code, enchants, suffixes and professions included', async () => {
+    const file = await warriorTalents();
+    const character: SimCharacter = {
+      name: 'Thrallgar',
+      spec: 'warrior-fury',
+      class_slug: 'warrior',
+      race_slug: 'orc',
+      talent_level: 22,
+      tree_version: BUILD,
+      point_order: [],
+      gear: { head: 12640 },
+      gear_slots: [{ slot: 'head', item_id: 12640, enchant: 2504, suffix: 1820 }],
+      professions: ['engineering', 'alchemy'],
+      bags: [],
+      bank: [],
+      sets: [],
+      loadouts: [],
+      buffs: [],
+      consumables: [],
+      source,
+    };
+    const spec = toCharacterSpec(character, indexTalents(file), [], []);
+
+    const code = codeForCharacterSpec(spec, BUILD);
+
+    const [classRows, raceRows] = await Promise.all([classes(), races()]);
+    const decoded = characterFromFs1(code, file, classRows, raceRows, source);
+    expect(decoded.ok).toBe(true);
+    if (!decoded.ok) return;
+    expect(decoded.character.class_slug).toBe('warrior');
+    expect(decoded.character.race_slug).toBe('orc');
+    expect(decoded.character.gear_slots).toEqual([
+      { slot: 'head', item_id: 12640, enchant: 2504, suffix: 1820 },
+    ]);
+    expect(decoded.character.professions).toEqual(['engineering', 'alchemy']);
+    expect(talentsString(indexTalents(file), decoded.character.point_order)).toBe(spec.talents);
+  });
+
+  it('omits professions from the code when the spec has none', async () => {
+    const file = await warriorTalents();
+    const character: SimCharacter = {
+      name: 'Thrallgar',
+      spec: 'warrior-fury',
+      class_slug: 'warrior',
+      race_slug: 'orc',
+      talent_level: 22,
+      tree_version: BUILD,
+      point_order: [],
+      gear: { head: 12640 },
+      gear_slots: [],
+      professions: [],
+      bags: [],
+      bank: [],
+      sets: [],
+      loadouts: [],
+      buffs: [],
+      consumables: [],
+      source,
+    };
+    const spec = toCharacterSpec(character, indexTalents(file), [], []);
+
+    const code = codeForCharacterSpec(spec, BUILD);
+
+    expect(code.includes('professions=')).toBe(false);
   });
 });
 

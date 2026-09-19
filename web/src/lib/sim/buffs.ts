@@ -136,7 +136,12 @@ export function buildCatalogue(ids: SimIdsFile): BuffRow[] {
     kind: 'consumable' as const,
   }));
 
-  return [...buffs, ...consumables];
+  // Deduped by id, last write wins: IDS.md is generated in-repo so a repeat is unlikely,
+  // but it is the one input this module parses and trusts without a uniqueness check, and
+  // BuffPanel.svelte's `{#each rows as row (row.id)}` throws Svelte 5's own
+  // `each_key_duplicate` on a repeat -- a dead settings panel rather than a doubled row
+  // (finding 4, final whole-branch review).
+  return [...new Map([...buffs, ...consumables].map((row) => [row.id, row])).values()];
 }
 
 /**

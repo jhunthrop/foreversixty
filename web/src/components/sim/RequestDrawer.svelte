@@ -34,23 +34,30 @@
     onshare: (request: SimRequest) => string | null;
   } = $props();
 
-  // Seeded from the page's own request and then owned by the player: re-seeding it on
-  // every settings change would throw away what they were typing.
+  // Tracks the page's own request until the player's first edit, then stops: the drawer
+  // mounts as soon as a character loads (H, final whole-branch review, finding 2), so
+  // seeding once, at mount, carried whatever the *arrival* request happened to be --
+  // change the fight style after opening and the textarea, and a Share or Apply from it,
+  // went stale with nothing on screen saying so. Re-seeding on every `request` change
+  // instead -- right up until `edited` flips true -- fixes that without reintroducing the
+  // original problem seed-once solved: once the player has typed, the textarea is theirs
+  // and this effect stops touching it. `edited` is set only from the textarea's own real
+  // `input` event, never from this effect's own write to `text`, so a programmatic
+  // re-seed can never be mistaken for one.
   let text = $state('');
-  let seeded = $state(false);
+  let edited = $state(false);
   let check = $state<RequestCheck | null>(null);
   let shared = $state('');
   let shareError = $state('');
 
   $effect(() => {
-    if (!seeded && request !== null) {
-      text = formatRequest(request);
-      seeded = true;
-    }
+    if (!edited && request !== null) text = formatRequest(request);
   });
 
-  /** Back to the page's own current request, and clears whatever the last check said. */
+  /** Back to tracking the page's own current request, and clears whatever the last check
+   *  said. */
   function reset(): void {
+    edited = false;
     if (request !== null) text = formatRequest(request);
     check = null;
     shared = '';
@@ -110,6 +117,7 @@
       class="border-line-warm rounded-control bg-card-top text-text h-72 w-full border p-3 font-mono text-[12px]"
       spellcheck="false"
       bind:value={text}
+      oninput={() => (edited = true)}
       data-testid="sim-request-json"></textarea>
 
     {#if check !== null && (check.status === 'parse-error' || check.status === 'validate-error')}

@@ -85,6 +85,24 @@ describe('the catalogue', () => {
     expect(catalogue.find((row) => row.id === 'thorns')?.graded).toBe(false);
   });
 
+  it('dedups a duplicated id rather than emitting two rows for it', () => {
+    // Finding 4, final whole-branch review: IDS.md is generated, so a repeat is unlikely,
+    // but it is the one input this lane parses and trusts without a uniqueness check --
+    // BuffPanel.svelte's `{#each rows as row (row.id)}` throws `each_key_duplicate` on a
+    // repeat, which kills the whole settings panel rather than just doubling a row.
+    const catalogue = buildCatalogue({
+      buffs: [
+        { id: 'battle_shout', message: 'RaidBuffs' },
+        { id: 'battle_shout', message: 'RaidBuffs' },
+      ],
+      consumables: [],
+      professions: [],
+      worldBuffs: [],
+      stats: [],
+    });
+    expect(catalogue.map((row) => row.id)).toEqual(['battle_shout']);
+  });
+
   it('names every group', () => {
     for (const group of BUFF_GROUPS) {
       expect(simCopy.buffGroupLabel[group], group).toBeTruthy();
