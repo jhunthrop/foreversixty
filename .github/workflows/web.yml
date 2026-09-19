@@ -3,9 +3,21 @@ name: web
 on:
   push:
     branches: [main]
-    paths: ['web/**', 'data/builds/**', '.github/workflows/web.yml']
+    paths:
+      - web/**
+      - sim/**
+      - data/builds/**
+      - Makefile
+      - .github/actions/pin-engine/**
+      - .github/workflows/web.yml
   pull_request:
-    paths: ['web/**', 'data/builds/**', '.github/workflows/web.yml']
+    paths:
+      - web/**
+      - sim/**
+      - data/builds/**
+      - Makefile
+      - .github/actions/pin-engine/**
+      - .github/workflows/web.yml
   workflow_dispatch:
 permissions:
   contents: read
@@ -21,7 +33,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version-file: web/.node-version, cache: npm, cache-dependency-path: web/package-lock.json }
+        with:
+          {
+            node-version-file: web/.node-version,
+            cache: npm,
+            cache-dependency-path: web/package-lock.json,
+          }
       - run: npm ci
       - run: npm run check
       - run: npm run lint
@@ -66,7 +83,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version-file: web/.node-version, cache: npm, cache-dependency-path: web/package-lock.json }
+        with:
+          {
+            node-version-file: web/.node-version,
+            cache: npm,
+            cache-dependency-path: web/package-lock.json,
+          }
       - run: npm ci
       # The simulator's browser artifact (web/public/_sim/README.md's contract). setup-go
       # before the pin, so `go mod tidy` runs on the version sim/go.mod declares rather than
