@@ -9,6 +9,7 @@ import {
   fixtureResult,
 } from '../../test-support/sim-api';
 import { simCopy } from './copy';
+import { withTargets } from './settings';
 import { createSimStore } from './store.svelte';
 import { createFakeWorker } from '../../test-support/fake-worker';
 import { createPool, type PoolWorker } from './worker';
@@ -124,16 +125,19 @@ describe('createSimStore', () => {
     expect(await sim.save()).toMatch(/^[a-z2-7]{12}$/);
   });
 
-  it('carries an optional title on the saved body, and omits it when none is given', async () => {
+  it('carries an optional title on the saved body, and falls back to the report title when none is given', async () => {
     const sim = store();
     await sim.loadAddon(FURY);
     await sim.run();
 
-    await sim.save('Raid-buffed, 3:00, single target');
-    expect((api.lastBody() as { title?: string }).title).toBe('Raid-buffed, 3:00, single target');
+    await sim.save('My opener sim');
+    expect((api.lastBody() as { title?: string }).title).toBe('My opener sim');
 
+    // Task 14: an omitted title is no longer sent blank -- it falls back to the same
+    // `reportTitle` the save form itself is pre-filled with (design 5.4), so a caller that
+    // saves without a title still names the report rather than leaving it untitled.
     await sim.save();
-    expect((api.lastBody() as { title?: string }).title).toBeUndefined();
+    expect((api.lastBody() as { title?: string }).title).toBe('Raid-buffed, 3:00, single target');
   });
 
   it('returns null on a failed save without touching the run message', async () => {
@@ -390,6 +394,27 @@ describe('createSimStore', () => {
       expect(sim.result?.request.iterations).toBe(30_000);
       expect(sim.result?.iterations_run).toBeLessThanOrEqual(30_000);
       expect(sim.relativeError).toBeGreaterThan(0);
+    });
+  });
+
+  describe('the report title', () => {
+    it('defaults to the settings clause and changes with the settings', async () => {
+      const sim = store();
+      await sim.loadAddon(FURY);
+      expect(sim.reportTitle).toBe('Raid-buffed, 3:00, single target');
+      sim.setSettings(withTargets(sim.settings, 4));
+      expect(sim.reportTitle).toBe('Raid-buffed, 3:00, 4 targets');
+    });
+
+    it('keeps what the player typed, and an emptied field falls back rather than saving nothing', async () => {
+      const sim = store();
+      await sim.loadAddon(FURY);
+      sim.setReportTitle('Pre-raid, no world buffs');
+      expect(sim.reportTitle).toBe('Pre-raid, no world buffs');
+      sim.setSettings(withTargets(sim.settings, 4));
+      expect(sim.reportTitle).toBe('Pre-raid, no world buffs');
+      sim.setReportTitle('   ');
+      expect(sim.reportTitle).toBe('Raid-buffed, 3:00, 4 targets');
     });
   });
 });

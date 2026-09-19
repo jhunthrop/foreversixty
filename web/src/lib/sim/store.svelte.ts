@@ -23,7 +23,7 @@ import { simCopy } from './copy';
 import { EMPTY_ESTIMATE } from './estimate';
 import { precisionPlan, relativeError, type Lane, type PrecisionId } from './precision';
 import { buildSimRequest, runSim, SimRunError, type RunHandle, type RunInput } from './run';
-import { defaultSettings, type SimSettings } from './settings';
+import { defaultSettings, settingsLabel, type SimSettings } from './settings';
 import {
   fromAddonExport,
   fromLoggedFight,
@@ -143,6 +143,10 @@ export function createSimStore(init: SimStoreInit) {
   let character = $state<SimCharacter | null>(null);
   let settings = $state<SimSettings>(defaultSettings());
   let precisionId = $state<PrecisionId>('normal');
+  // Empty means "the settings clause", which moves with the settings; anything the player
+  // types wins until they clear it again. Blank-but-not-empty counts as empty: a title of
+  // three spaces is not a title.
+  let typedTitle = $state('');
   /** `error / mean` of the figure on screen, for the progress line and the details card. */
   let relative = $state(0);
   let estimate = $state<Estimate>(EMPTY_ESTIMATE);
@@ -338,6 +342,15 @@ export function createSimStore(init: SimStoreInit) {
     get precisionId() {
       return precisionId;
     },
+    /**
+     * The report's title: whatever the player typed, or the settings clause while they
+     * have typed nothing. This is what the save form, the finish notification and the
+     * saved link's own title all carry (design 5.4) -- one field, not three that could
+     * disagree.
+     */
+    get reportTitle() {
+      return typedTitle.trim() === '' ? settingsLabel(settings) : typedTitle;
+    },
     /** `error / mean` of the figure on screen, for the progress line and the details card. */
     get relativeError() {
       return relative;
@@ -424,6 +437,9 @@ export function createSimStore(init: SimStoreInit) {
     },
     setPrecisionId(value: PrecisionId): void {
       precisionId = value;
+    },
+    setReportTitle(value: string): void {
+      typedTitle = value;
     },
 
     loadAddon: (code: string) => adopt(fromAddonExport(code, ctx)),
@@ -665,8 +681,9 @@ export function createSimStore(init: SimStoreInit) {
      */
     async save(title?: string): Promise<string | null> {
       if (result === null) return null;
+      const chosen = title ?? (typedTitle.trim() === '' ? settingsLabel(settings) : typedTitle);
       try {
-        return await saveSim(result, init.apiBase, title ?? '');
+        return await saveSim(result, init.apiBase, chosen);
       } catch {
         return null;
       }

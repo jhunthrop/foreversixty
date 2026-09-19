@@ -20,7 +20,7 @@
   import { gearFromSlots, ranksFromTalentsString } from '../../lib/sim/character';
   import { compareSummaries } from '../../lib/sim/compare';
   import { simCopy } from '../../lib/sim/copy';
-  import { settingsLabel } from '../../lib/sim/settings';
+  import { browserNotifier, enableNotifications, notifyFinished } from '../../lib/sim/notify';
   import { SIM_SAVED_SKELETON_HTML } from '../../lib/sim/skeleton';
   import { parseFightRef } from '../../lib/sim/sources';
   import {
@@ -224,6 +224,38 @@
     if (signedIn) simHistoryLazy.load();
   });
 
+  // Design 5.4: the finish notification. `notifier` is the real Notification API, or null
+  // where the browser has none (notify.ts's own seam) -- read once, since the API itself
+  // never appears mid-session. Permission is asked for only from `toggleNotify`, the
+  // player's own click on the checkbox; nothing here asks on mount.
+  const notifier = untrack(() => browserNotifier());
+  let notifyWanted = $state(false);
+  // The id of the last result a notification was raised for, so a re-render never raises a
+  // second one for the same run.
+  let notifiedFor = $state('');
+
+  async function toggleNotify(wanted: boolean): Promise<void> {
+    notifyWanted = wanted && (await enableNotifications(notifier));
+  }
+
+  // Server runs only, per design 5.4: a browser run finishes on the tab you are looking at.
+  $effect(() => {
+    const finished = store.result;
+    if (finished !== null && finished.lane === 'server') {
+      // The key is the wall clock plus the figure, which no two runs of one session share.
+      const key = `${finished.duration_ms}-${finished.iterations_run}`;
+      if (key !== notifiedFor) {
+        notifiedFor = key;
+        notifyFinished(
+          notifier,
+          notifyWanted,
+          store.reportTitle,
+          simCopy.notifyBody(Math.round(finished.dps.mean).toLocaleString('en-US')),
+        );
+      }
+    }
+  });
+
   // The save form under the results (Task 17). `saveOpen`/`saveTitle` are the inline
   // form; `savedUrl` is what replaces it on success, exactly as `SharePanel.svelte`'s own
   // save flow does for a build. Any new run invalidates whatever the form was showing --
@@ -250,7 +282,7 @@
   const canSave = $derived(store.result !== null && store.result.aborted !== true);
 
   function openSaveForm(): void {
-    saveTitle = settingsLabel(store.settings);
+    saveTitle = store.reportTitle;
     saveFailed = false;
     savedUrl = null;
     saveOpen = true;
@@ -592,8 +624,39 @@
           <RotationCard spec={store.result.request.spec} fidelity={characterSpecRow} />
         {/if}
 
+        {#if store.result !== null}
+          <!-- Design 5.4: the report title and the finish notification. The title feeds
+               the save form, the notification and the saved link (openSaveForm reads
+               store.reportTitle below); the notification checkbox only appears where the
+               browser actually has a Notification API to ask. -->
+          <div class="mx-[18px] flex flex-wrap items-end gap-3 md:mx-0">
+            <label class="flex min-w-0 flex-1 flex-col gap-1 md:max-w-[420px]">
+              <span class="label text-muted">{simCopy.reportTitleLabel}</span>
+              <input
+                type="text"
+                class="border-line-warm rounded-control bg-raised text-text h-11 w-full border px-3 text-[14px]"
+                value={store.reportTitle}
+                onchange={(event) => store.setReportTitle(event.currentTarget.value)}
+                data-testid="sim-report-title"
+              />
+            </label>
+            {#if notifier !== null}
+              <label class="flex min-h-11 items-center gap-2 text-[13px]">
+                <input
+                  type="checkbox"
+                  class="accent-gold h-5 w-5"
+                  checked={notifyWanted}
+                  onchange={(event) => void toggleNotify(event.currentTarget.checked)}
+                  data-testid="sim-notify"
+                />
+                <span class="text-muted">{simCopy.notifyLabel}</span>
+              </label>
+            {/if}
+          </div>
+        {/if}
+
         <!-- The save form (Task 17): disabled until there is a result, an inline
-               title field pre-filled with the settings clause rather than a dialog, and
+               title field pre-filled with the report title rather than a dialog, and
                the saved link shown in place -- the page never navigates away from the
                result it just saved. -->
         <div class="mx-[18px] flex flex-wrap items-center gap-3 md:mx-0" data-testid="sim-save">
@@ -614,6 +677,15 @@
             >
               {savedLinkCopied ? simCopy.copied : simCopy.copyLink}
             </button>
+            <a
+              class="border-line-warm rounded-control text-nav label inline-flex min-h-11 items-center border px-4"
+              href={savedUrl}
+              target="_blank"
+              rel="noopener"
+              data-testid="sim-open-new-tab"
+            >
+              {simCopy.openInNewTab}
+            </a>
           {:else if saveOpen}
             <label class="flex flex-col gap-1">
               <span class="label text-muted">{simCopy.saveTitleLabel}</span>

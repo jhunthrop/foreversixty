@@ -113,3 +113,18 @@ test('the precision select offers four choices and the details card states the r
   await expect(page.getByTestId('sim-details-engine')).toHaveAttribute('href', '/sim/specs');
   await expect(page.getByTestId('sim-progress')).toContainText('%');
 });
+
+test('a finished run can be named, and the saved link opens in a new tab', async ({ page }) => {
+  await page.goto('/sim');
+  await page.getByTestId('sim-addon-input').fill(FURY);
+  await page.getByTestId('sim-addon-load').click();
+  await page.getByTestId('sim-precision').selectOption('fast');
+  await page.getByTestId('sim-run-button').click();
+  await expect(page.getByTestId('sim-details-card')).toBeVisible({ timeout: 30_000 });
+
+  const title = page.getByTestId('sim-report-title');
+  await expect(title).toHaveValue('Raid-buffed, 3:00, single target');
+  await title.fill('Pre-raid, no world buffs');
+  await page.getByTestId('sim-save-open').click();
+  await expect(page.getByTestId('sim-save-title')).toHaveValue('Pre-raid, no world buffs');
+});

@@ -291,6 +291,13 @@ export const simCopy = {
   simThisFight: 'Sim this fight',
   compareLoading: 'Reading the fight…',
 
+  // --- Design 5.4: report options. The title names the report before it is saved and is
+  // what the save form, the finish notification and the new-tab link all carry. ---
+  reportTitleLabel: 'Name this report',
+  notifyLabel: 'Tell me when a server run finishes',
+  notifyBody: (dps: string): string => `${dps} DPS. Your sim has finished.`,
+  openInNewTab: 'Open in a new tab',
+
   // --- Task 17: saved sims (/sim/<id>) and the history list. ---
   yourSims: 'Your sims',
   historyLoading: 'Reading your sims…',
