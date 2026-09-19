@@ -8,6 +8,7 @@
 // (contract 10.4), owned by the data lane; until a build publishes one, every row falls
 // back.
 import { dataUrl, fetchJson } from '../planner/load';
+import { humanise } from './humanise';
 
 export interface BuffNames {
   /** Engine id to its display name and the build's icon key (no extension). */
@@ -18,12 +19,6 @@ export const EMPTY_BUFF_NAMES: BuffNames = { entries: {} };
 
 export function loadBuffNames(build: string): Promise<BuffNames> {
   return fetchJson<BuffNames>(dataUrl(build, 'simbuffs.json'));
-}
-
-/** "flask_of_supreme_power" reads as "Flask of supreme power". Casing, not translation. */
-function humanise(snake: string): string {
-  const words = snake.split('_').join(' ');
-  return words.charAt(0).toUpperCase() + words.slice(1);
 }
 
 /**

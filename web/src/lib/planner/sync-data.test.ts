@@ -212,6 +212,11 @@ describe('SYNC_ENTRIES', () => {
     const trees = SYNC_ENTRIES.find((entry) => entry.name === 'trees');
     expect(trees).toEqual({ name: 'trees', kind: 'dir', required: false });
   });
+
+  it('publishes contract 10.4’s buff name and icon table, and does not require it', () => {
+    const simbuffs = SYNC_ENTRIES.find((entry) => entry.name === 'simbuffs.json');
+    expect(simbuffs).toEqual({ name: 'simbuffs.json', kind: 'file', required: false });
+  });
 });
 
 describe('resolveDataSource', () => {

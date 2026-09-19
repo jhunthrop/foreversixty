@@ -17,6 +17,7 @@
 // panel's grouping and nothing else. Part B's /sim/weights is the only reader.
 import generated from '../../data/generated/sim-ids.json';
 import { simCopy } from './copy';
+import { humanise } from './humanise';
 
 /** Contract 10.8's list, verbatim and in its order. */
 export const PINNED_STATS: readonly string[] = [
@@ -77,6 +78,5 @@ export const SIM_STATS: readonly string[] = published.length > 0 ? published : P
 export function statLabel(id: string): string {
   const named = simCopy.statLabel[id];
   if (named !== undefined) return named;
-  const words = id.split('_').join(' ');
-  return words.charAt(0).toUpperCase() + words.slice(1);
+  return humanise(id);
 }

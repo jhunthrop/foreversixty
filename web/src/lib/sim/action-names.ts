@@ -22,6 +22,7 @@
 // real display names from the combat log and must pass through untouched.
 import { dataUrl, fetchJson } from '../planner/load';
 import { simCopy } from './copy';
+import { humanise } from './humanise';
 
 /**
  * The first row id sim/adapter allocates for itself (its `syntheticBase`). Every client
@@ -72,12 +73,6 @@ export function parseActionKey(key: string): ActionKey | null {
   };
 }
 
-/** "rage_gain" reads as "Rage gain". The engine already chose the words; this is casing. */
-function sentenceCase(snake: string): string {
-  const words = snake.split('_').join(' ');
-  return words.charAt(0).toUpperCase() + words.slice(1);
-}
-
 /**
  * The name a player reads. `names` is null until the build's file has loaded, and an id the
  * build does not carry -- a racial from a class file we did not fetch, a proc from an item
@@ -87,8 +82,7 @@ export function resolveActionName(key: string, names: ActionNames | null): strin
   const parsed = parseActionKey(key);
   if (parsed === null) return key;
   if (parsed.kind === 'unknown') return key;
-  if (parsed.kind === 'other')
-    return sentenceCase(parsed.label) + simCopy.actionVariant(parsed.tag, parsed.rank);
+  if (parsed.kind === 'other') return humanise(parsed.label) + simCopy.actionVariant(parsed.tag, parsed.rank);
   const table = parsed.kind === 'spell' ? names?.spell : names?.item;
   const name = table?.[parsed.label];
   if (name === undefined) return key;
