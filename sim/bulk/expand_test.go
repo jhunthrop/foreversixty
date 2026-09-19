@@ -959,3 +959,32 @@ func TestWalkGearChoicesDoesNotMaterialiseTheProduct(t *testing.T) {
 			delta, float64(delta)/1e6, ceiling, float64(ceiling)/1e6)
 	}
 }
+
+// helmIDs are forty head items of the active build, usable by base()'s
+// orc warrior (unrestricted or warrior-usable, faction-open or Horde,
+// at or under the level cap), used to plan a stage with a known number
+// of distinguishable candidates. Any forty such heads will do;
+// TestHelmIDsAreHeads keeps them honest.
+var helmIDs = []int{
+	3836, 3837, 4322, 4323, 4368, 4373, 4385, 4393, 4543, 6720,
+	7048, 7050, 7130, 7915, 7922, 7931, 7934, 7937, 8174, 8176,
+	8191, 8201, 8208, 8214, 8348, 9653, 10008, 10024, 10025, 10030,
+	10032, 10033, 10041, 10499, 10500, 10501, 10502, 10503, 10504, 10506,
+}
+
+func TestHelmIDsAreHeads(t *testing.T) {
+	if len(helmIDs) < 40 {
+		t.Fatalf("helmIDs has %d entries, the rank tests need 40", len(helmIDs))
+	}
+	seen := map[int]bool{}
+	for _, id := range helmIDs {
+		item, ok := simdb.Lookup(id)
+		if !ok || !slices.Contains(item.Slots, "head") {
+			t.Errorf("item %d is not a head of this build", id)
+		}
+		if seen[id] {
+			t.Errorf("helmIDs lists %d twice", id)
+		}
+		seen[id] = true
+	}
+}
