@@ -55,9 +55,15 @@ def test_a_written_rotation_round_trips_unchanged():
         assert back == document.rotation, key
 
 
-def test_the_two_launch_specs_are_written_and_the_rest_are_not():
+def test_every_dps_spec_is_written_and_every_other_spec_is_not():
+    """The rotation lane ships one default APL per DPS spec (design section
+    2.4); tanks and healers have nothing to rotate through an APL yet. Roles
+    come from curated/specs.json, never a list typed into the test, so this
+    keeps working as more DPS specs land in other batches."""
+    roles = {spec.spec: spec.role for spec in load_specs(Path("curated"))}
     states = {key: document.state for key, document in documents().items()}
-    assert {key for key, state in states.items() if state == "written"} == WRITTEN
+    dps_specs = {spec for spec, role in roles.items() if role == "dps"}
+    assert {key for key, state in states.items() if state == "written"} == dps_specs
     assert set(states.values()) <= APL_STATES
 
 

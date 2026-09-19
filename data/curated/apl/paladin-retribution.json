@@ -1,10 +1,40 @@
 {
   "spec": "paladin-retribution",
-  "state": "unwritten",
-  "notes": "",
-  "sources": [],
+  "state": "written",
+  "notes": "Vanilla Retribution at 60 has very few buttons: keep Seal of Command up, Judgement it off on cooldown, autoattack, and swap to Hammer of Wrath in the execute window. The fork's retribution_paladin/apls/basic_ret.apl.json preset also seal-twists (swapping to Seal of Righteousness right before a melee swing lands, then back, to catch an extra on-swing proc) -- that is a real Classic Era optimization but it is fragile to encode correctly in one pass, so it is left out here and noted rather than copied in half-adapted; the validation job is the place to add it back once it can be checked against a real sim result. Hammer of Wrath (24239) is a rank the vanilla client never had at this level (rank 3, level 60) -- checked against this build's own spellconst, not remembered from live Classic. Nothing here is Forever-specific yet.",
+  "sources": [
+    { "label": "wowsims-forever default Retribution priority list (seal-twisting logic, adapted down to a plain seal-and-judge rotation)", "url": "https://github.com/wowsims/classic/blob/master/ui/retribution_paladin/apls/basic_ret.apl.json", "kind": "community" },
+    { "label": "Warcraft Tavern: Classic Retribution Paladin rotation (Seal of Command upkeep, Judgement of the Crusader, Hammer of Wrath execute)", "url": "https://www.warcrafttavern.com/wow-classic/guides/pve-retribution-paladin-rotations-cooldowns/", "kind": "community" },
+    { "label": "Forever Sixty default rotation, unvalidated until the nightly job runs", "url": "https://foreversixty.gg/sim/specs", "kind": "site" }
+  ],
   "rotation": {
     "type": "TypeAPL",
-    "priorityList": []
+    "prepullActions": [
+      {
+        "action": { "castSpell": { "spellId": { "spellId": 20375, "rank": 1 } } },
+        "doAtValue": { "const": { "val": "-1.5s" } }
+      }
+    ],
+    "priorityList": [
+      { "action": { "autocastOtherCooldowns": {} } },
+      {
+        "notes": "Judgement on cooldown: it is a free global that unloads the seal's judgement effect and starts its ten second cooldown again.",
+        "action": { "castSpell": { "spellId": { "spellId": 20271 } } }
+      },
+      {
+        "notes": "Keep Seal of Command up between judgements.",
+        "action": {
+          "condition": { "not": { "val": { "auraIsActive": { "auraId": { "spellId": 20375, "rank": 1 } } } } },
+          "castSpell": { "spellId": { "spellId": 20375, "rank": 1 } }
+        }
+      },
+      {
+        "notes": "Hammer of Wrath below 20 percent: this is the only other button Retribution has.",
+        "action": {
+          "condition": { "isExecutePhase": { "threshold": "E20" } },
+          "castSpell": { "spellId": { "spellId": 24239, "rank": 3 } }
+        }
+      }
+    ]
   }
 }

@@ -1,10 +1,48 @@
 {
   "spec": "rogue-assassination",
-  "state": "unwritten",
-  "notes": "",
-  "sources": [],
+  "state": "written",
+  "notes": "Vanilla Assassination at 60 does not have Envenom or a real Mutilate rotation -- those are later-expansion redesigns. The Forever talent tree adds a talent-granted Mutilate (spell 1310707) and a Venom proc (1310703) to this tree, but neither has a dedicated implementation under sim/rogue (grep only finds them in the auto-generated talent aura table, not in a file of their own the way sinister_strike.go or eviscerate.go exist), so the engine cannot cast them yet; this rotation names only the vanilla-implemented abilities and leaves the talent-granted ones for the validation job to revisit once the engine models them. The spec's own build (Cold Blood, Seal Fate, Vile Poisons) still uses Sinister Strike to build combo points and Eviscerate to spend them -- Cold Blood is the differentiator, popped right before the finisher for a guaranteed crit. Every rank named here is checked against this build's own spellconst.",
+  "sources": [
+    { "label": "wowsims-forever default rogue priority list (Sinister Strike builder / Eviscerate finisher; no Assassination-specific preset exists upstream)", "url": "https://github.com/wowsims/classic/blob/master/ui/rogue/apls/combat_sinister_strike.apl.json", "kind": "community" },
+    { "label": "Warcraft Tavern: Classic Assassination Rogue guide", "url": "https://www.warcrafttavern.com/wow-classic/guides/pve-assassination-rogue/", "kind": "community" },
+    { "label": "Forever Sixty default rotation, unvalidated until the nightly job runs", "url": "https://foreversixty.gg/sim/specs", "kind": "site" }
+  ],
   "rotation": {
     "type": "TypeAPL",
-    "priorityList": []
+    "priorityList": [
+      { "action": { "autocastOtherCooldowns": {} } },
+      {
+        "notes": "Keep Slice and Dice up so every combo point spent on it is not wasted swing time.",
+        "action": {
+          "condition": {
+            "and": {
+              "vals": [
+                { "cmp": { "op": "OpGe", "lhs": { "currentComboPoints": {} }, "rhs": { "const": { "val": "1" } } } },
+                { "not": { "val": { "auraIsActive": { "auraId": { "spellId": 6774, "rank": 2 } } } } }
+              ]
+            }
+          },
+          "castSpell": { "spellId": { "spellId": 6774, "rank": 2 } }
+        }
+      },
+      {
+        "notes": "Cold Blood right before the finisher for a guaranteed crit -- the Assassination burst button, since the spec has no Adrenaline Rush.",
+        "action": {
+          "condition": { "cmp": { "op": "OpGe", "lhs": { "currentComboPoints": {} }, "rhs": { "const": { "val": "5" } } } },
+          "castSpell": { "spellId": { "spellId": 14177 } }
+        }
+      },
+      {
+        "notes": "Eviscerate at five combo points.",
+        "action": {
+          "condition": { "cmp": { "op": "OpGe", "lhs": { "currentComboPoints": {} }, "rhs": { "const": { "val": "5" } } } },
+          "castSpell": { "spellId": { "spellId": 31016, "rank": 9 } }
+        }
+      },
+      {
+        "notes": "Sinister Strike as the combo point builder.",
+        "action": { "castSpell": { "spellId": { "spellId": 11294, "rank": 8 } } }
+      }
+    ]
   }
 }
