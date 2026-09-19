@@ -9,6 +9,7 @@ log-measurement harness.
 | `api` | `SimRequest` / `SimResult`, JSON, mirrored in `web/src/lib/sim/types.ts` |
 | `enginever` | the pinned engine sha, written only by `make engine-pin` |
 | `request` | our envelope to the engine's `RaidSimRequest` |
+| `request/apl` | the launch specs' rotations, written only by `make apl-sync` |
 | `adapter` | the engine's `RaidSimResult` to a `logs` summary |
 | `combine` | split a run across workers, put it back together |
 | `measure` | recover combat constants from a real combat log |
@@ -27,6 +28,35 @@ without it every `go build`, `go test` and `go vet` in this module fails
 with `pattern simdb.bin: no matching files found`. Neither artifact is
 built `--tags=with_db`: that tag carries the engine's vanilla item table,
 and Forever re-itemises.
+
+## The two targets that cross into the engine fork
+
+They do different things, and one of them was believed to do both, which
+is how two copies of a rotation drifted apart.
+
+`make engine-pin` writes `enginever/version.go` and nothing else. It
+reads the fork's HEAD - refusing a dirty checkout, because a sha that
+names a dirty tree names nothing - and writes the short sha into that one
+generated file. It never writes into the fork, and it does not carry
+rotations, presets or tables across.
+
+`make apl-sync` carries the rotations. For every
+`data/curated/apl/<spec>.json` marked `"state": "written"`, it writes the
+file's `rotation` block into two places: the fork's
+`ui/<class>/apls/forever_<spec>.apl.json`, which the fork's own spec
+tests run, and `request/apl/<spec>.apl.json`, which both artifacts embed.
+The curated file is the single place a rotation is edited; both of those
+are copies, and editing either one directly means the sim measures a
+rotation nobody wrote down.
+
+The copy is the curated bytes, dedented one level, rather than a
+re-print of the parsed JSON: the curated layout keeps a short object on
+one line and expands a long one, and re-printing would churn the fork's
+tree on formatting alone. Syncing an unchanged rotation writes nothing.
+
+`make apl-check` proves both copies against the curated source - a
+missing copy, a drifted copy, and a fork copy with no curated source all
+fail - so forgetting `apl-sync` is caught in CI rather than in a golden.
 
 ## Measuring combat constants
 

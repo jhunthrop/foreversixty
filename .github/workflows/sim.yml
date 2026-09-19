@@ -2,9 +2,9 @@ name: sim
 on:
   push:
     branches: [main]
-    paths: ['sim/**', 'logs/**', 'Makefile', 'tools/apl_check.py', 'web/src/data/active-build.json', 'data/builds/*/simdb.bin', 'data/curated/apl/**', '.github/workflows/sim.yml', '.github/actions/pin-engine/**']
+    paths: ['sim/**', 'logs/**', 'Makefile', 'tools/apl_*.py', 'web/src/data/active-build.json', 'data/builds/*/simdb.bin', 'data/curated/apl/**', 'data/curated/specs.json', '.github/workflows/sim.yml', '.github/actions/pin-engine/**']
   pull_request:
-    paths: ['sim/**', 'logs/**', 'Makefile', 'tools/apl_check.py', 'web/src/data/active-build.json', 'data/builds/*/simdb.bin', 'data/curated/apl/**', '.github/workflows/sim.yml', '.github/actions/pin-engine/**']
+    paths: ['sim/**', 'logs/**', 'Makefile', 'tools/apl_*.py', 'web/src/data/active-build.json', 'data/builds/*/simdb.bin', 'data/curated/apl/**', 'data/curated/specs.json', '.github/workflows/sim.yml', '.github/actions/pin-engine/**']
   workflow_dispatch:
 permissions: { contents: read }
 concurrency:
@@ -46,7 +46,8 @@ jobs:
 
   # "A rotation is edited only in data/curated/apl" was an invariant kept
   # by hand across three copies per spec, and two of four had already
-  # drifted. This is the gate; see tools/apl_check.py.
+  # drifted. `make apl-sync` writes the copies now and this is the gate
+  # that they were written; see tools/apl_check.py.
   rotations:
     runs-on: ubuntu-latest
     steps:

@@ -1,12 +1,26 @@
 # Repository-level targets. Each module keeps its own tooling; this file is
 # only for things that cross a module boundary.
+#
+# Two of them cross into the engine fork, and they do DIFFERENT things:
+#
+#   engine-pin  writes sim/enginever/version.go - the engine's short sha -
+#               and nothing else. It reads the fork; it never writes to it.
+#   apl-sync    copies each curated rotation into the fork's
+#               ui/<class>/apls/ and into sim/request/apl/. It writes
+#               rotations; it never touches the pin.
+#
+# Believing engine-pin carried rotations across is how two copies of a
+# rotation drifted, so neither target does the other's job and apl-check
+# proves the copies.
 
 # Where the engine fork is checked out. Override for a different location:
 #   make engine-pin ENGINE_DIR=/somewhere/else
 ENGINE_DIR ?= /Users/jh/code/wowsims-forever
 
 .PHONY: engine-pin
-# engine-pin writes sim/enginever/version.go from the engine checkout's HEAD.
+# engine-pin writes sim/enginever/version.go from the engine checkout's HEAD -
+# ONLY that file. It does not copy rotations, presets or anything else into or
+# out of the fork; `apl-sync` below is what carries rotations.
 # This is the only way that file is ever written. ENGINE_VERSION is the short
 # sha, and it names the wasm artifact directory, the premium image tag, and
 # every stored sim and validation row, so pinning a dirty tree would produce
@@ -122,22 +136,42 @@ publish-wasm: artifacts
 	echo "published to $(WEB_SIM_DIR)/$$sha"
 
 CURATED_APL_DIR = data/curated/apl
+CURATED_SPECS_JSON = data/curated/specs.json
+
+.PHONY: apl-sync
+# apl-sync copies every WRITTEN curated rotation into the two places that
+# run one. data/curated/apl/<spec>.json's `rotation` block is the single
+# source; the engine fork's ui/<class>/apls/forever_<spec>.apl.json is the
+# copy the fork's own spec tests run, and sim/request/apl/<spec>.apl.json
+# is the copy both artifacts embed. A spec still marked `unwritten` is a
+# placeholder and is skipped - copying it would hand the engine an empty
+# priority list.
+#
+# The copy is the curated BYTES, dedented one level, not a re-print of the
+# parsed value: the curated file's own layout keeps a short object on one
+# line and expands a long one, and no two JSON printers agree on where
+# that line falls, so re-printing would churn the fork's tree on
+# formatting alone. Syncing an unchanged rotation therefore writes
+# nothing, and the fork stays clean enough to pin.
+#
+# This target WRITES INTO THE FORK. It is the only thing here that does.
+# Run `make apl-check` after it, and commit the fork's side there.
+apl-sync:
+	@test -d "$(ENGINE_DIR)" || { echo "no engine checkout at $(ENGINE_DIR); set ENGINE_DIR"; exit 1; }
+	@ENGINE_DIR="$(ENGINE_DIR)" CURATED_APL_DIR="$(CURATED_APL_DIR)" \
+	  CURATED_SPECS_JSON="$(CURATED_SPECS_JSON)" python3 tools/apl_sync.py
 
 .PHONY: apl-check
-# apl-check holds the engine fork's checked-in rotations to the curated
-# ones. data/curated/apl/<spec>.json's `rotation` block is the single
-# source of a rotation; the fork's ui/<class>/apls/forever_<spec>.apl.json
-# is a copy of it that the fork's own spec tests run, and sim/request/apl
-# is a second copy the artifacts embed. Nothing enforced that before, and
-# two of the four copies had already drifted inside one lane - one of them
-# carrying a line the data lane had measured as a loss and deleted.
+# apl-check holds both derived copies to the curated one. It is what makes
+# apl-sync's output a rule rather than a habit: a written spec missing a
+# copy, a copy whose content drifted, or a fork copy whose curated source
+# went away all fail here, in CI as well as locally.
 #
-# The comparison is of PARSED json, not bytes: the two files are written
-# by different tools and differ in whitespace and key order while saying
-# the same thing. A difference in content is what matters and is what
-# fails here.
+# The comparison is of PARSED json, not bytes: what the copies must agree
+# on is the rotation.
 #
 # ENGINE_DIR is the engine checkout, as for engine-pin.
 apl-check:
 	@test -d "$(ENGINE_DIR)" || { echo "no engine checkout at $(ENGINE_DIR); set ENGINE_DIR"; exit 1; }
-	@ENGINE_DIR="$(ENGINE_DIR)" CURATED_APL_DIR="$(CURATED_APL_DIR)" python3 tools/apl_check.py
+	@ENGINE_DIR="$(ENGINE_DIR)" CURATED_APL_DIR="$(CURATED_APL_DIR)" \
+	  CURATED_SPECS_JSON="$(CURATED_SPECS_JSON)" python3 tools/apl_check.py

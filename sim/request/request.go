@@ -373,12 +373,12 @@ func encounter(e api.EncounterSpec) *proto.Encounter {
 // aplFS carries the launch specs' default rotations, so the wasm needs
 // no fetch to attach one.
 //
-// These two files are still the engine's Era presets, copied from
-// ui/<class>/apls, NOT the canonical rotations in data/curated/apl. The
-// canonical source is the curated file and `make apl-check` compares
-// the engine fork's own forever_<spec>.apl.json against it; bringing
-// these two into line moves both adapter fixtures, so it is done in the
-// same pass as the fixture regeneration rather than on its own.
+// These files are GENERATED, by `make apl-sync`: each is the `rotation`
+// block of data/curated/apl/<spec>.json, which is the one place a
+// rotation is edited. The engine fork's ui/<class>/apls/forever_<spec>.apl.json
+// is the other copy of the same source, and `make apl-check` proves both
+// against it. Editing one here would make the artifacts measure a
+// rotation nobody wrote down.
 //
 //go:embed apl/*.apl.json
 var aplFS embed.FS
