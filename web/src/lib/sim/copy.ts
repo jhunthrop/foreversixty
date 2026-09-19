@@ -136,4 +136,17 @@ export const simCopy = {
   rotationLink: 'what it does',
   settingsFootnote: 'Fight length varies by 20% between iterations, the way real pulls do.',
   customPresetNote: 'Keeps the buffs already applied. Choosing each one individually arrives with Top Gear.',
+
+  // --- Task 13: the run control and every state it has. ---
+  run: 'Run sim',
+  runAgain: 'Run again',
+  stop: 'Stop',
+  engineLoadingButton: 'Loading engine…',
+  engineLoading: 'The engine is about 4 MB. It loads once and is cached after that.',
+  iterations: 'iterations',
+  progressLabel: 'Iterations complete',
+  highPrecision: 'High precision',
+  precisionNote: '10,000 iterations instead of 3,000: about half the error, about three times the wait.',
+  runOnServers: 'Run on our servers',
+  staleEngine: 'This result came from an older engine. Run it again for the current numbers.',
 } as const;

@@ -15,7 +15,7 @@
 import { loadItems, loadReference, loadTalents } from '../planner/load';
 import type { ClassRow, Item, RaceRow, TalentFile } from '../planner/types';
 import { indexTalents } from '../planner/rules';
-import { dispatchServerSim, saveSim } from './api';
+import { dispatchServerSim, fetchSim, fetchSimProgress, saveSim, SimApiError } from './api';
 import { characterFromFs1, needsRace, toCharacterSpec, type SimCharacter } from './character';
 import { loadActionNames, type ActionNames } from './action-names';
 import { simCopy } from './copy';
@@ -31,10 +31,21 @@ import {
   type SourceResult,
 } from './sources';
 import type { CharacterPath } from '../characters';
-import type { Estimate, IterationCount, SimResult, SourceKind } from './types';
+import type { Estimate, IterationCount, SimProgress, SimResult, SourceKind } from './types';
 import { createPool, type SimPool } from './worker';
 
 export type SimPhase = 'idle' | 'loading-character' | 'loading-engine' | 'running' | 'done' | 'error';
+
+/**
+ * The server lane's poll interval (`runOnServer` below). `SimStoreInit.serverPollMs` is
+ * the seam a test overrides instead of mocking timers -- the same reason `run.ts` takes a
+ * `now` function rather than calling `Date.now()` itself.
+ */
+const DEFAULT_SERVER_POLL_MS = 2000;
+
+function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 /**
  * An unsaved planner build's own FS1 code, into a `'manual'`-sourced character. This is
@@ -119,6 +130,8 @@ export interface SimStoreInit {
   code?: string;
   source?: SourceKind | '';
   ref?: string;
+  /** Overrides `runOnServer`'s poll interval. Tests pass a short one; production takes the default. */
+  serverPollMs?: number;
 }
 
 export function createSimStore(init: SimStoreInit) {
@@ -162,6 +175,26 @@ export function createSimStore(init: SimStoreInit) {
   function poolOnce(): SimPool {
     pool ??= createPool({});
     return pool;
+  }
+
+  /**
+   * Puts the figure back to the last completed result after a cancelled run, rather than
+   * leaving it at whatever the aborted run's own progress happened to report last -- which
+   * can be `EMPTY_ESTIMATE`, since `run.ts`'s `execute()` reports that once, synchronously,
+   * before the pool's first real tick. Without this a fast Run-then-Stop blanks a good
+   * number the player never asked to discard; with it, "the number on screen is the one
+   * from before this run" (this file's own comment where `run()` calls it) is actually true.
+   */
+  function restorePreviousResult(): void {
+    if (result !== null) {
+      estimate = result.dps;
+      iterationsDone = result.iterations_run;
+      iterationsTotal = result.request.iterations;
+    } else {
+      estimate = EMPTY_ESTIMATE;
+      iterationsDone = 0;
+      iterationsTotal = 0;
+    }
   }
 
   /** Every source funnels through here, so the failure rule lives in one place. */
@@ -393,6 +426,7 @@ export function createSimStore(init: SimStoreInit) {
         // they asked to discard.
         if (stopRequested) {
           message = simCopy.stopped;
+          restorePreviousResult();
           phase = result !== null ? 'done' : 'idle';
           return;
         }
@@ -405,17 +439,41 @@ export function createSimStore(init: SimStoreInit) {
         // consumable id it could not map, and that is the only thing that says what to
         // change. RunControl renders it under the message, verbatim.
         detail = failure?.detail ?? '';
+        if (failure?.cancelled === true) restorePreviousResult();
         phase = failure?.cancelled === true && result !== null ? 'done' : 'error';
       } finally {
         handle = null;
       }
     },
 
-    /** Runs the same request on the server lane. Throws SimApiError; RunControl reads it. */
-    async runOnServer(): Promise<string> {
-      if (character === null) throw new Error(simCopy.noCharacter);
+    /**
+     * Runs the same request on the server lane, then polls it to a finish.
+     *
+     * `buildSimRequest` is the one place a `SimRequest` is assembled (`run()` above uses
+     * it too), so the browser and server lanes can never disagree about what they simmed.
+     * A 402 comes back from `dispatchServerSim` as a `SimApiError` already carrying
+     * `simCopy.premiumRequired` (api.ts's `asSimError`); it is shown as `message` and
+     * nothing else here has been touched yet, so the browser lane's own estimate and
+     * result stay on screen exactly as they were -- there is nothing to roll back.
+     *
+     * Once dispatched, `fetchSimProgress` is polled every `serverPollMs` (2s in
+     * production), updating `estimate.mean` and `iterationsDone` the way the browser
+     * pool's own progress callback does, so RunControl renders both lanes identically.
+     * `fetchSim` then fetches the finished result -- progress alone carries no summary.
+     */
+    async runOnServer(): Promise<void> {
+      if (character === null) {
+        message = simCopy.noCharacter;
+        return;
+      }
       const index = talents === null ? null : indexTalents(talents);
-      if (index === null) throw new Error(simCopy.failed);
+      if (index === null) {
+        message = simCopy.failed;
+        return;
+      }
+      message = null;
+      detail = '';
+
       const request = buildSimRequest({
         spec: character.spec,
         source: character.source,
@@ -423,7 +481,53 @@ export function createSimStore(init: SimStoreInit) {
         encounter: settings.encounter,
         iterations: precision,
       });
-      return dispatchServerSim(request, init.apiBase);
+
+      let simId: string;
+      try {
+        simId = await dispatchServerSim(request, init.apiBase);
+      } catch (error) {
+        message = error instanceof SimApiError ? error.message : simCopy.failed;
+        return;
+      }
+
+      phase = 'running';
+      iterationsTotal = precision;
+      iterationsDone = 0;
+
+      const pollMs = init.serverPollMs ?? DEFAULT_SERVER_POLL_MS;
+      for (;;) {
+        await delay(pollMs);
+        let progress: SimProgress;
+        try {
+          progress = await fetchSimProgress(simId, init.apiBase);
+        } catch (error) {
+          message = error instanceof SimApiError ? error.message : simCopy.failed;
+          phase = result !== null ? 'done' : 'error';
+          return;
+        }
+        iterationsDone = progress.iterations_done;
+        if (progress.dps !== undefined) estimate = { ...estimate, mean: progress.dps };
+
+        if (progress.state === 'error') {
+          message = simCopy.failed;
+          phase = result !== null ? 'done' : 'error';
+          return;
+        }
+        if (progress.state === 'done') {
+          try {
+            const finished = await fetchSim(simId, init.apiBase);
+            result = finished;
+            estimate = finished.dps;
+            iterationsDone = finished.iterations_run;
+            iterationsTotal = finished.request.iterations;
+            phase = 'done';
+          } catch (error) {
+            message = error instanceof SimApiError ? error.message : simCopy.failed;
+            phase = result !== null ? 'done' : 'error';
+          }
+          return;
+        }
+      }
     },
 
     stop(): void {

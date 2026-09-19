@@ -39,7 +39,20 @@ export interface MeGuild {
 }
 
 export interface Me {
-  user: { id: number; battletag: string | null; email: string | null; role: string; anonymize: boolean };
+  user: {
+    id: number;
+    battletag: string | null;
+    email: string | null;
+    role: string;
+    anonymize: boolean;
+    /**
+     * The premium flag, set by hand until payments exist (simulator contract). The web
+     * reads it to decide whether to offer the server lane at all, rather than offering
+     * the control and letting POST /v1/sims/run answer 402 -- a button that always fails
+     * is worse than no button.
+     */
+    premium: boolean;
+  };
   characters: MeCharacter[];
   guilds: MeGuild[];
 }

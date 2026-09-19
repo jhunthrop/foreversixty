@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { createFakeEngine } from '../../fixtures/sim/engine-fake';
-import { FIXTURE_BUILD_ID, createSimApi } from '../../test-support/sim-api';
+import { FIXTURE_BUILD_ID, createSimApi, envelope, fixtureResult } from '../../test-support/sim-api';
 import { simCopy } from './copy';
 import { createSimStore } from './store.svelte';
 import { createFakeWorker } from '../../test-support/fake-worker';
@@ -116,6 +116,67 @@ describe('createSimStore', () => {
     await sim.loadAddon(FURY);
     await sim.run();
     expect(await sim.save()).toMatch(/^[a-z2-7]{12}$/);
+  });
+
+  describe('runOnServer', () => {
+    function serverStore(pollMs = 1) {
+      return createSimStore({
+        treeVersion: '1.15.9.69722',
+        apiBase: 'https://api.test',
+        pool: createPool({ hardwareConcurrency: 2, spawn: () => fakeWorker() }),
+        serverPollMs: pollMs,
+      });
+    }
+
+    it('dispatches, polls, and adopts the finished server result', async () => {
+      // The built-in progress route always answers 'running'; this test's own route (read
+      // first -- api.route() prepends) carries the run to 'done' on the first poll.
+      api.route({
+        method: 'GET',
+        pattern: /\/v1\/sims\/([a-z2-7]{12})\/progress$/,
+        respond: () =>
+          envelope({
+            state: 'done',
+            iterations_done: fixtureResult.iterations_run,
+            dps: fixtureResult.dps.mean,
+          }),
+      });
+      api.route({
+        method: 'GET',
+        pattern: /\/v1\/sims\/([a-z2-7]{12})$/,
+        respond: () => envelope(fixtureResult),
+      });
+
+      const sim = serverStore();
+      await sim.loadAddon(FURY);
+      await sim.runOnServer();
+
+      expect(sim.phase).toBe('done');
+      expect(sim.message).toBeNull();
+      expect(sim.result?.sim_id).toBe(fixtureResult.sim_id);
+      expect(sim.iterationsDone).toBe(fixtureResult.iterations_run);
+      expect(sim.estimate.mean).toBe(fixtureResult.dps.mean);
+    });
+
+    it('shows the premium copy on a 402 and leaves the browser result untouched', async () => {
+      api.setPremium(false);
+      const sim = serverStore();
+      await sim.loadAddon(FURY);
+      await sim.run();
+      const browserResult = sim.result;
+
+      await sim.runOnServer();
+
+      expect(sim.message).toBe(simCopy.premiumRequired);
+      expect(sim.result).toBe(browserResult);
+      expect(sim.phase).toBe('done');
+    });
+
+    it('refuses to dispatch with no character rather than building an empty request', async () => {
+      const sim = serverStore();
+      await sim.runOnServer();
+      expect(sim.message).toBe(simCopy.noCharacter);
+    });
   });
 
   // --- The URL's own bootstrap: Planner.svelte's "Sim this build" link (unsaved build,

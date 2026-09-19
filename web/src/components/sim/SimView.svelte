@@ -10,13 +10,14 @@
 <script lang="ts">
   import { onMount, untrack } from 'svelte';
   import activeBuild from '../../data/active-build.json';
-  import { battlenetStartUrl } from '../../lib/account/api';
+  import { battlenetStartUrl, fetchMe } from '../../lib/account/api';
   import { simCopy } from '../../lib/sim/copy';
   import { createSimStore } from '../../lib/sim/store.svelte';
   import { parseSimState } from '../../lib/sim/url';
-  import { ENGINE_VERSION, engineLabel } from '../../lib/sim/version';
+  import { ENGINE_VERSION, engineLabel, isStale } from '../../lib/sim/version';
   import type { SimResult } from '../../lib/sim/types';
   import CharacterStrip from './CharacterStrip.svelte';
+  import RunControl from './RunControl.svelte';
   import SettingsBar from './SettingsBar.svelte';
   import SourceSwitcher from './SourceSwitcher.svelte';
 
@@ -52,6 +53,14 @@
   );
 
   onMount(() => {
+    // `user.premium` on GET /v1/me, per the simulator contract -- the server lane renders
+    // only once this answers true. A signed-out visitor and an unreachable API read the
+    // same way here (fetchMe resolves null, or the promise rejects and is swallowed): both
+    // mean "no premium control", the way Account.svelte's own `load()` already treats a
+    // failed fetchMe as "not signed in" rather than an error banner.
+    void fetchMe()
+      .then((me) => store.setPremium(me?.user.premium ?? false))
+      .catch(() => {});
     return () => store.dispose();
   });
 
@@ -106,6 +115,25 @@
         spec={store.character.spec}
         disabled={store.phase === 'running'}
         onchange={(next) => store.setSettings(next)}
+      />
+      <RunControl
+        phase={store.phase}
+        estimate={store.estimate}
+        iterationsDone={store.iterationsDone}
+        iterationsTotal={store.iterationsTotal}
+        precision={store.precision}
+        premium={store.premium}
+        message={store.message}
+        detail={store.detail}
+        racePending={store.needsRace}
+        staleVersion={store.result !== null && isStale(store.result.engine_version)
+          ? store.result.engine_version
+          : null}
+        onrun={() => void store.run()}
+        onstop={() => store.stop()}
+        onprecision={(value) => store.setPrecision(value)}
+        onserver={() => void store.runOnServer()}
+        onrerun={() => void store.run()}
       />
     {:else}
       <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="sim-empty">
