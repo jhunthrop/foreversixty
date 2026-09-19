@@ -3,7 +3,7 @@ import { existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { resolveDataSource, SYNC_ENTRIES, syncData } from '../../../scripts/sync-data.mjs';
+import { resolveDataSource, SYNC_ENTRIES, syncData, writeSimNames } from '../../../scripts/sync-data.mjs';
 
 const BUILD = '1.15.9.69722';
 const OTHER_BUILD = '1.16.0.70000';
@@ -224,5 +224,56 @@ describe('resolveDataSource', () => {
 
   it('refuses an unknown value rather than guessing', () => {
     expect(() => resolveDataSource('fixtures')).toThrow(/FOREVER_DATA must be one of real, fixture/);
+  });
+});
+
+describe('writeSimNames', () => {
+  it('prunes spells.json to the class’s own constants and its items', async () => {
+    const dir = mkdtempSync(path.join(tmpdir(), 'simnames-'));
+    const build = path.join(dir, 'build');
+    const out = path.join(dir, 'out');
+    mkdirSync(path.join(build, 'spellconst'), { recursive: true });
+    mkdirSync(path.join(build, 'items'), { recursive: true });
+    mkdirSync(out, { recursive: true });
+    writeFileSync(
+      path.join(build, 'spells.json'),
+      JSON.stringify([
+        { id: 25286, name: 'Heroic Strike' },
+        { id: 99999, name: 'Something Else' },
+      ]),
+    );
+    writeFileSync(
+      path.join(build, 'spellconst', 'warrior.json'),
+      JSON.stringify({
+        build: '1.60.1.69893',
+        class_slug: 'warrior',
+        family: 4,
+        spells: { '25286': { name: 'Heroic Strike' } },
+      }),
+    );
+    writeFileSync(
+      path.join(build, 'items', 'warrior.json'),
+      JSON.stringify({
+        build: '1.60.1.69893',
+        class_slug: 'warrior',
+        items: [{ id: 14554, name: 'Cloudkeeper Legplates' }],
+      }),
+    );
+
+    expect(await writeSimNames(build, out)).toEqual(['simnames/warrior.json']);
+
+    const table = JSON.parse(readFileSync(path.join(out, 'simnames', 'warrior.json'), 'utf8'));
+    expect(table.spell['25286']).toBe('Heroic Strike');
+    expect(table.spell['99999']).toBeUndefined();
+    expect(table.item['14554']).toBe('Cloudkeeper Legplates');
+    rmSync(dir, { recursive: true, force: true });
+  });
+
+  it('publishes nothing rather than failing when the build has no spellconst', async () => {
+    const dir = mkdtempSync(path.join(tmpdir(), 'simnames-none-'));
+    mkdirSync(path.join(dir, 'build'), { recursive: true });
+    mkdirSync(path.join(dir, 'out'), { recursive: true });
+    expect(await writeSimNames(path.join(dir, 'build'), path.join(dir, 'out'))).toEqual([]);
+    rmSync(dir, { recursive: true, force: true });
   });
 });
