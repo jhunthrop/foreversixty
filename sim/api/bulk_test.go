@@ -103,6 +103,11 @@ func TestBulkValidation(t *testing.T) {
 			r.Bulk.Candidates[0].Origin = "drop:raid:mc:lucifron"
 			r.Bulk.Consumables = [][]string{{"flask_of_the_titans"}}
 		}, "gear-mode dimension"},
+		{"a gear set in drops mode", func(r *SimRequest) {
+			r.Bulk.Mode = KindDrops
+			r.Bulk.Candidates[0].Origin = "drop:raid:mc:lucifron"
+			r.Bulk.Sets = []GearSet{{Name: "my AQ set", Gear: []GearSlot{{Slot: "head", ItemID: 16963}}}}
+		}, "gear-mode dimension"},
 		{"a candidate naming its source", func(r *SimRequest) {
 			r.Bulk.Mode = KindDrops
 			r.Bulk.Candidates[0].Origin = "drop:raid:mc:lucifron"

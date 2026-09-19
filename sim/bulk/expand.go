@@ -39,6 +39,14 @@ var (
 	// no row for. It is a refusal rather than a skip: an id nothing
 	// resolves is a client bug, and the engine would die mid-run on it.
 	ErrUnknownItem = errors.New("bulk: the build has no such item")
+	// ErrInvalidSet is returned for a named gear set that is not valid
+	// equipment on its own - a two-hander beside an off-hand, an item
+	// worn twice. It is a refusal rather than a skip: a set the player
+	// named and will look for in the results is exactly the malformed
+	// input the package doc says is refused, and valid() quietly
+	// dropping every combination that arm produces would leave the set
+	// missing with no explanation.
+	ErrInvalidSet = errors.New("bulk: a gear set is not valid equipment")
 )
 
 // Combination is one substitution set and the request that runs it.
@@ -69,11 +77,30 @@ func ExpandWith(req api.SimRequest, opt Options) ([]Combination, error) {
 	if err := req.Validate(); err != nil {
 		return nil, fmt.Errorf("bulk: %w", err)
 	}
+	if err := validSets(req.Bulk.Sets); err != nil {
+		return nil, err
+	}
 	places, err := placements(req, opt)
 	if err != nil {
 		return nil, err
 	}
 	return combinations(req, places)
+}
+
+// validSets refuses a named gear set that valid() would reject on its
+// own. apply's two-hand-clears-the-off-hand rule (below) only runs on
+// candidate placements, never on a set's own gear list - a set is a
+// whole loadout the page sent as-is - so an internally invalid set
+// would otherwise reach combinations, have every arm it produces
+// silently deleted by the validity filter, and vanish from the result
+// with nothing to say why.
+func validSets(sets []api.GearSet) error {
+	for _, set := range sets {
+		if !valid(set.Gear) {
+			return fmt.Errorf("%w: %q", ErrInvalidSet, set.Name)
+		}
+	}
+	return nil
 }
 
 // baseGear indexes the character's equipped gear by slot.
@@ -202,7 +229,9 @@ func enchantFor(c api.Candidate, slot string, item simdb.Item, class string, equ
 	return inherited, nil
 }
 
-// combinations builds every combination the mode allows.
+// combinations builds every combination the mode allows, retaining at
+// most Cap+1 of them - enough to prove a cap breach without holding
+// the whole product in memory at once.
 //
 // Gear mode is a product: each slot offers "keep what is equipped" or
 // one of its candidates, and the talent dimension offers "the
@@ -216,37 +245,53 @@ func enchantFor(c api.Candidate, slot string, item simdb.Item, class string, equ
 //
 // The equipped set is never a combination: Plan runs it separately, in
 // every stage, so that every delta is paired.
+//
+// gearCombinations and singleCombinations deliver one combination at a
+// time to keep, rather than building a slice: the talent and
+// consumables dimensions alone multiply (a 400-loadout, 2,000-list
+// gear request is 802,400 combinations before validity even runs), and
+// contract 10.2 has the page calling Count on every candidate tick, in
+// the browser, on a 32-bit wasm heap. keep runs valid() and counts
+// every one of them - the reported Combinations is exact, and
+// Expand/Count can never disagree with each other - but stops
+// retaining once it already has enough to answer the cap, so memory
+// here is O(Cap), not O(the product).
 func combinations(req api.SimRequest, places []placement) ([]Combination, error) {
 	var out []Combination
-	if req.Bulk.Mode == api.KindGear {
-		out = gearCombinations(req, places)
-	} else {
-		out = singleCombinations(req, places)
+	var total int
+	keep := func(c Combination) {
+		if !valid(c.Request.Character.Gear) {
+			return
+		}
+		total++
+		if len(out) <= req.Bulk.Cap {
+			out = append(out, c)
+		}
 	}
-	out = slices.DeleteFunc(out, func(c Combination) bool {
-		return !valid(c.Request.Character.Gear)
-	})
-	if len(out) > req.Bulk.Cap {
-		return nil, api.ErrCapExceeded{Cap: req.Bulk.Cap, Combinations: len(out)}
+	if req.Bulk.Mode == api.KindGear {
+		gearCombinations(req, places, keep)
+	} else {
+		singleCombinations(req, places, keep)
+	}
+	if total > req.Bulk.Cap {
+		return nil, api.ErrCapExceeded{Cap: req.Bulk.Cap, Combinations: total}
 	}
 	return out, nil
 }
 
 // singleCombinations is one substitution at a time: every placement on
 // its own, then every talent loadout on its own.
-func singleCombinations(req api.SimRequest, places []placement) []Combination {
-	out := make([]Combination, 0, len(places)+len(req.Bulk.Talents))
+func singleCombinations(req api.SimRequest, places []placement, keep func(Combination)) {
 	for _, p := range places {
-		out = append(out, apply(req, []placement{p}, nil, nil, nil))
+		keep(apply(req, []placement{p}, nil, nil, nil))
 	}
 	for i := range req.Bulk.Talents {
-		out = append(out, apply(req, nil, &req.Bulk.Talents[i], nil, nil))
+		keep(apply(req, nil, &req.Bulk.Talents[i], nil, nil))
 	}
-	return out
 }
 
 // gearCombinations is the product.
-func gearCombinations(req api.SimRequest, places []placement) []Combination {
+func gearCombinations(req api.SimRequest, places []placement, keep func(Combination)) {
 	// One bucket per slot, in the envelope's slot order so the product
 	// is enumerated the same way every time and two runs of the same
 	// request produce the same combination order.
@@ -295,7 +340,6 @@ func gearCombinations(req api.SimRequest, places []placement) []Combination {
 		drinks = append(drinks, &consumableChoice{Index: i, List: list})
 	}
 
-	out := make([]Combination, 0, len(sets)*len(loadouts)*len(drinks))
 	for _, chosen := range sets {
 		for _, loadout := range loadouts {
 			for _, drink := range drinks {
@@ -306,7 +350,7 @@ func gearCombinations(req api.SimRequest, places []placement) []Combination {
 					// against itself.
 					continue
 				}
-				out = append(out, apply(req, chosen, loadout, nil, drink))
+				keep(apply(req, chosen, loadout, nil, drink))
 			}
 		}
 	}
@@ -315,11 +359,10 @@ func gearCombinations(req api.SimRequest, places []placement) []Combination {
 	for i := range req.Bulk.Sets {
 		for _, loadout := range loadouts {
 			for _, drink := range drinks {
-				out = append(out, apply(req, nil, loadout, &req.Bulk.Sets[i], drink))
+				keep(apply(req, nil, loadout, &req.Bulk.Sets[i], drink))
 			}
 		}
 	}
-	return out
 }
 
 // sameWeaponTwice reports whether chosen substitutes the identical
@@ -355,7 +398,13 @@ func sameWeaponTwice(chosen []placement) bool {
 // valid is the engine's own isValidEquipment, over our gear list: no
 // two-hander beside an off-hand, no item in both ring or both trinket
 // slots, no two rings or trinkets sharing a name (which is the same
-// item at two qualities), and nothing unique-equipped worn twice.
+// item at two qualities), and nothing unique-equipped worn twice. It
+// is not the whole of the product's shape rules on its own -
+// sameWeaponTwice, just above, catches one physical one-hander being
+// offered for both hands within a single combination, which valid
+// cannot see because it only ever looks at one combination's finished
+// gear list, never at which placements were chosen together to build
+// it.
 //
 // It is re-expressed here rather than called because the engine's copy
 // works on a protobuf and this package holds no protobuf, and because
@@ -428,6 +477,19 @@ func apply(req api.SimRequest, places []placement, loadout *api.TalentLoadout, s
 		// A two-hander leaves no room for an off-hand. Clearing it is
 		// what makes "two-hand versus main-plus-off-hand" two competing
 		// shapes rather than one combination the engine would refuse.
+		//
+		// This walks places in the order sameWeaponTwice's caller built
+		// them, which follows api.GearSlots - main_hand ahead of
+		// off_hand - so an off-hand placement chosen alongside a
+		// two-hander is always set into gear AFTER this delete runs,
+		// leaving it in gear and off gets caught by valid()'s own
+		// two-hand check below instead of silently vanishing here. The
+		// subs slice built further down still appends every placement's
+		// chip unconditionally, though, so if api.GearSlots ever put
+		// off_hand ahead of main_hand, this delete would start firing
+		// AFTER an off-hand placement was set, removing it from gear
+		// while its Substitution chip survived into subs - a validated
+		// combination whose own chip names gear it does not carry.
 		if p.Slot == "main_hand" {
 			if item, ok := simdb.Lookup(p.Gear.ItemID); ok && item.HandType == simdb.HandTwo {
 				delete(gear, "off_hand")
@@ -464,13 +526,19 @@ func apply(req api.SimRequest, places []placement, loadout *api.TalentLoadout, s
 		// it: "flask or two elixirs" is a choice, and merging them
 		// would sim a character drinking both.
 		out.Character.Consumes = slices.Clone(consumes.List)
+		// The ids joined by ", " (contract 10.8). Every other kind of
+		// substitution puts its label in Name, and the API composes a
+		// headline from that one field without knowing what kind it
+		// is reading - so an empty list, which validate() blesses as
+		// "no consumables, a real thing to compare against," still
+		// needs a label rather than joining to "".
+		name := strings.Join(consumes.List, ", ")
+		if name == "" {
+			name = "no consumables"
+		}
 		subs = append(subs, api.Substitution{
-			Kind: api.SubstitutionConsumes,
-			// The ids joined by ", " (contract 10.8). Every other
-			// kind of substitution puts its label in Name, and the
-			// API composes a headline from that one field without
-			// knowing what kind it is reading.
-			Name:     strings.Join(consumes.List, ", "),
+			Kind:     api.SubstitutionConsumes,
+			Name:     name,
 			Consumes: slices.Clone(consumes.List),
 		})
 	}
@@ -484,8 +552,12 @@ func apply(req api.SimRequest, places []placement, loadout *api.TalentLoadout, s
 // unique-equipped item worn twice - can only be answered by looking
 // at the gear, so a closed-form count would be a different number
 // from the one Plan runs, which is the one thing a count must never
-// be. What it skips is allocating the stage's REQUESTS, which is the
-// expensive half and the reason the page can ask on every tick.
+// be. combinations enumerates the product one combination at a time
+// and keeps at most Cap+1 of them (see its doc comment), so Count's
+// memory cost tops out at the size of a request the cap would refuse
+// anyway, not the size of the request the candidates describe - which
+// is what makes it safe to call on every candidate tick (contract
+// 10.2), including from the browser's wasm heap.
 //
 // It answers the cap the same way Expand does, so "1,280 against a
 // cap of 400" is one message from one place.

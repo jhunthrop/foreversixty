@@ -702,6 +702,39 @@ func TestConsumableListsAreADimension(t *testing.T) {
 	}
 }
 
+// An empty alternative consumables list is a real thing to compare
+// against - api validation blesses it as "no consumables" - so its
+// chip needs a label too, not strings.Join(nil, ", ") = "".
+func TestAnEmptyConsumablesListIsNamed(t *testing.T) {
+	req := withBulk(api.KindGear, candidate("head", itemHelm))
+	req.Bulk.Consumables = [][]string{{}}
+	got, err := Expand(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var found bool
+	for _, c := range got {
+		for _, sub := range c.Substitutions {
+			if sub.Kind != api.SubstitutionConsumes {
+				continue
+			}
+			found = true
+			if sub.Name != "no consumables" {
+				t.Errorf("the empty consumables chip is named %q, want %q", sub.Name, "no consumables")
+			}
+			if len(sub.Consumes) != 0 {
+				t.Errorf("the empty consumables chip carries %v", sub.Consumes)
+			}
+			if len(c.Request.Character.Consumes) != 0 {
+				t.Errorf("the request carries %v for the empty alternative", c.Request.Character.Consumes)
+			}
+		}
+	}
+	if !found {
+		t.Fatal("no combination substituted the empty consumables list")
+	}
+}
+
 // A set replaces every slot at once, so it is an alternative to the
 // whole gear product rather than a member of it.
 func TestASetReplacesEverySlot(t *testing.T) {
@@ -732,6 +765,28 @@ func TestASetReplacesEverySlot(t *testing.T) {
 	}
 	if set.Substitutions[0].Name != "my AQ set" {
 		t.Errorf("the chip does not name the set: %+v", set.Substitutions[0])
+	}
+}
+
+// A set that is not valid equipment on its own - here, a two-hander
+// beside an off-hand - is refused outright rather than silently
+// dropped: apply's two-hand clearing only runs on candidate
+// placements, never on a set's own gear list, so an invalid set would
+// otherwise have every combination it produces deleted by valid() and
+// vanish from the result with nothing to say why. That is exactly the
+// malformed input the package doc says gets refused, not skipped.
+func TestAnInvalidSetIsRefused(t *testing.T) {
+	req := withBulk(api.KindGear, candidate("head", itemHelm))
+	req.Bulk.Sets = []api.GearSet{{Name: "bad set", Gear: []api.GearSlot{
+		{Slot: "main_hand", ItemID: itemTwoHander},
+		{Slot: "off_hand", ItemID: itemOffHand},
+	}}}
+	_, err := Expand(req)
+	if !errors.Is(err, ErrInvalidSet) {
+		t.Fatalf("Expand = %v, want ErrInvalidSet", err)
+	}
+	if !strings.Contains(err.Error(), "bad set") {
+		t.Errorf("error %q does not name the set", err)
 	}
 }
 
@@ -772,18 +827,29 @@ func TestCountAgreesWithExpand(t *testing.T) {
 	}
 }
 
-// A count over the cap is the same refusal, with the same numbers.
+// A count over the cap is the same refusal, with the same numbers -
+// not just the same Cap, but the exact same Combinations Expand would
+// have reported: combinations counts every combination it enumerates
+// before deciding what to retain, so the two can never disagree even
+// though Count never builds the requests Expand returns.
 func TestCountRefusesOverTheCap(t *testing.T) {
 	req := withBulk(api.KindGear,
 		candidate("head", itemHelm), candidate("head", itemHelm2),
 		candidate("finger2", itemRing+1), candidate("trinket2", itemTrinket+1))
 	req.Bulk.Cap = 3
-	_, err := Count(req)
-	var capped api.ErrCapExceeded
-	if !errors.As(err, &capped) {
-		t.Fatalf("Count = %v, want ErrCapExceeded", err)
+	_, expandErr := Expand(req)
+	_, countErr := Count(req)
+	var expandCapped, countCapped api.ErrCapExceeded
+	if !errors.As(expandErr, &expandCapped) {
+		t.Fatalf("Expand = %v, want ErrCapExceeded", expandErr)
 	}
-	if capped.Cap != 3 {
-		t.Errorf("ErrCapExceeded = %+v", capped)
+	if !errors.As(countErr, &countCapped) {
+		t.Fatalf("Count = %v, want ErrCapExceeded", countErr)
+	}
+	if countCapped.Cap != 3 {
+		t.Errorf("ErrCapExceeded = %+v", countCapped)
+	}
+	if countCapped != expandCapped {
+		t.Errorf("Count's cap error = %+v, Expand's = %+v", countCapped, expandCapped)
 	}
 }

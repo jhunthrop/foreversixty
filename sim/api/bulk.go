@@ -264,6 +264,16 @@ func (b *BulkSpec) validate(iterations int) []error {
 	if len(b.Consumables) > 0 && b.Mode != KindGear {
 		errs = append(errs, fmt.Errorf("bulk.consumables is a gear-mode dimension; mode is %q", b.Mode))
 	}
+	// A set replaces the whole gear list at once, which only gear mode's
+	// product has room for: drops and talents mode run one substitution
+	// at a time, and singleCombinations never reads Sets, so a set on
+	// one of those requests would otherwise be silently ignored rather
+	// than refused. KindTalents mode's own case below already covers
+	// this for itself with a combined message; this catches the mode
+	// that message does not - drops.
+	if len(b.Sets) > 0 && b.Mode != KindGear {
+		errs = append(errs, fmt.Errorf("bulk.sets is a gear-mode dimension; mode is %q", b.Mode))
+	}
 
 	switch b.Mode {
 	case KindGear:
