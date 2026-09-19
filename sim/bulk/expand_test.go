@@ -3,6 +3,7 @@ package bulk
 import (
 	"errors"
 	"fmt"
+	"runtime"
 	"slices"
 	"strings"
 	"testing"
@@ -719,8 +720,8 @@ func TestAnEmptyConsumablesListIsNamed(t *testing.T) {
 				continue
 			}
 			found = true
-			if sub.Name != "no consumables" {
-				t.Errorf("the empty consumables chip is named %q, want %q", sub.Name, "no consumables")
+			if sub.Name != api.NoConsumablesLabel {
+				t.Errorf("the empty consumables chip is named %q, want %q", sub.Name, api.NoConsumablesLabel)
 			}
 			if len(sub.Consumes) != 0 {
 				t.Errorf("the empty consumables chip carries %v", sub.Consumes)
@@ -851,5 +852,112 @@ func TestCountRefusesOverTheCap(t *testing.T) {
 	}
 	if countCapped != expandCapped {
 		t.Errorf("Count's cap error = %+v, Expand's = %+v", countCapped, expandCapped)
+	}
+}
+
+// A regression test for retention itself, not just for the count: a
+// future change that went back to `out := make([]Combination, 0,
+// len(sets)*len(loadouts)*len(drinks))` would still return the right
+// answer and pass every other test in this package - the count would
+// still be exact - but would allocate proportionally to the whole
+// product instead of to the cap. This exercises combinations' own
+// retention logic directly (talents mode, so gearCombinations and
+// walkGearChoices are not involved), pinning it at the small side of a
+// large gap: a 2,000-loadout request capped at 10 must not leave
+// anywhere near 2,000 combinations' worth of api.SimRequest behind.
+func TestCombinationsRetentionStaysAtTheCap(t *testing.T) {
+	req := withBulk(api.KindTalents)
+	req.Bulk.Candidates = nil
+	for i := 0; i < 2000; i++ {
+		req.Bulk.Talents = append(req.Bulk.Talents, api.TalentLoadout{
+			Name:    fmt.Sprintf("loadout-%d", i),
+			Talents: "30305001302-05050005525010051",
+		})
+	}
+	req.Bulk.Cap = 10
+
+	places, err := placements(req, Options{})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	runtime.GC()
+	var before runtime.MemStats
+	runtime.ReadMemStats(&before)
+
+	_, err = combinations(req, places)
+
+	// GC'd before reading "after" too: what must stay bounded is what
+	// combinations RETAINS, not the transient garbage from building and
+	// discarding 1,990 combinations along the way, which a full GC
+	// sweeps regardless of how this function is written.
+	runtime.GC()
+	var after runtime.MemStats
+	runtime.ReadMemStats(&after)
+
+	var capped api.ErrCapExceeded
+	if !errors.As(err, &capped) || capped.Combinations != 2000 {
+		t.Fatalf("combinations(...) = %v, want ErrCapExceeded{Combinations: 2000}", err)
+	}
+	// 2,000 retained api.SimRequests (each carrying the whole character
+	// plus gear) would be tens of megabytes; an 8 MB ceiling is nowhere
+	// near that, while comfortably absorbing this test's own one-time
+	// warm-up cost when it happens to run cold (first in the process,
+	// e.g. under `-run`) rather than after the rest of this package's
+	// suite.
+	const ceiling = 8 << 20 // 8 MB
+	if delta := int64(after.HeapAlloc) - int64(before.HeapAlloc); delta > ceiling {
+		t.Errorf("combinations left %d bytes (%.2f MB) live on the heap for a cap of 10, want under %d (%.0f MB)",
+			delta, float64(delta)/1e6, ceiling, float64(ceiling)/1e6)
+	}
+}
+
+// A regression test for walkGearChoices' laziness specifically: nine
+// slots with three candidates apiece is the exact shape that used to
+// materialise the whole [][]placement product - hundreds of megabytes
+// - before yielding a single combination. Synthetic slot names (not
+// real gear slots) keep this independent of simdb and of
+// sameWeaponTwice, which only ever looks at main_hand/off_hand.
+func TestWalkGearChoicesDoesNotMaterialiseTheProduct(t *testing.T) {
+	const slotCount, candidatesPerSlot = 9, 3
+	bySlot := map[string][]placement{}
+	slots := make([]string, 0, slotCount)
+	for i := 0; i < slotCount; i++ {
+		slot := fmt.Sprintf("synthetic-slot-%d", i)
+		slots = append(slots, slot)
+		for j := 0; j < candidatesPerSlot; j++ {
+			bySlot[slot] = append(bySlot[slot], placement{
+				Slot: slot,
+				Gear: api.GearSlot{Slot: slot, ItemID: i*100 + j},
+			})
+		}
+	}
+	// "keep" plus each slot's candidates, to the power of the slot
+	// count: (1+3)^9 = 262,144 - the shape the re-review measured at
+	// 739.4 MB before this fix.
+	want := 1
+	for range slots {
+		want *= candidatesPerSlot + 1
+	}
+
+	runtime.GC()
+	var before runtime.MemStats
+	runtime.ReadMemStats(&before)
+
+	var got int
+	walkGearChoices(slots, bySlot, func(chosen []placement) { got++ })
+
+	var after runtime.MemStats
+	runtime.ReadMemStats(&after)
+
+	if got != want {
+		t.Fatalf("walkGearChoices yielded %d combinations, want %d", got, want)
+	}
+	// Two orders of magnitude below the 739.4 MB the eager product used
+	// to cost for this exact shape, and well above ordinary GC noise.
+	const ceiling = 20 << 20 // 20 MB
+	if delta := after.HeapAlloc - before.HeapAlloc; delta > ceiling {
+		t.Errorf("walkGearChoices grew the heap by %d bytes (%.1f MB), want under %d (%.0f MB)",
+			delta, float64(delta)/1e6, ceiling, float64(ceiling)/1e6)
 	}
 }

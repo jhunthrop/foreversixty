@@ -535,6 +535,12 @@ const (
 	SubstitutionConsumes = "consumes"
 )
 
+// NoConsumablesLabel is a SubstitutionConsumes chip's Name when the
+// alternative list it names is empty. An empty list is a real
+// candidate to compare against - "no consumables" - not the absence of
+// one, so its chip needs a label rather than joining zero ids to "".
+const NoConsumablesLabel = "no consumables"
+
 // Substitution is one change from the base character.
 type Substitution struct {
 	Kind string `json:"kind"`

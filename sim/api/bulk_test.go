@@ -136,6 +136,24 @@ func TestBulkValidation(t *testing.T) {
 	}
 }
 
+// A talents-mode request carrying a set is one mistake, and gets one
+// error: the general "sets are a gear-mode dimension" check and the
+// talents-mode combined check used to both fire for it.
+func TestATalentsModeSetIsOneError(t *testing.T) {
+	req := gear()
+	req.Bulk.Mode = KindTalents
+	req.Bulk.Candidates = nil
+	req.Bulk.Talents = []TalentLoadout{{Name: "Deep Fury", Talents: "30305001302-05050005525010051"}}
+	req.Bulk.Sets = []GearSet{{Name: "PvP", Gear: []GearSlot{{Slot: "head", ItemID: 16963}}}}
+	err := req.Validate()
+	if err == nil {
+		t.Fatal("a talents request carrying a set was accepted")
+	}
+	if n := strings.Count(err.Error(), "gear-mode dimension"); n != 1 {
+		t.Errorf("error mentions \"gear-mode dimension\" %d times, want 1: %v", n, err)
+	}
+}
+
 // The ladders are the fork's fast_mode made explicit, and both lanes
 // read them, so their shape is pinned rather than trusted: one cut per
 // gap between stages, and a final count that is a number the settings

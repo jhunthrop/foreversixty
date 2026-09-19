@@ -284,9 +284,13 @@ func (b *BulkSpec) validate(iterations int) []error {
 		if len(b.Talents) == 0 {
 			errs = append(errs, errors.New("a talents request needs at least one talent loadout"))
 		}
-		if len(b.Candidates) != 0 || len(b.Sets) != 0 || len(b.Consumables) != 0 {
-			errs = append(errs, errors.New("a talents request carries no candidates, sets or consumable lists; everything but the talents is locked"))
+		if len(b.Candidates) != 0 || len(b.Consumables) != 0 {
+			errs = append(errs, errors.New("a talents request carries no candidates or consumable lists; everything but the talents is locked"))
 		}
+		// Sets is refused by the general gear-mode-dimension check above,
+		// which also covers drops mode; it is left out of the combined
+		// message here so a talents request carrying a set gets exactly
+		// one error, not two for one mistake.
 	case KindDrops:
 		for i, c := range b.Candidates {
 			if !strings.HasPrefix(c.Origin, OriginDropPrefix) {

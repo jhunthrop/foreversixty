@@ -250,14 +250,23 @@ func enchantFor(c api.Candidate, slot string, item simdb.Item, class string, equ
 // time to keep, rather than building a slice: the talent and
 // consumables dimensions alone multiply (a 400-loadout, 2,000-list
 // gear request is 802,400 combinations before validity even runs), and
-// contract 10.2 has the page calling Count on every candidate tick, in
-// the browser, on a 32-bit wasm heap. keep runs valid() and counts
-// every one of them - the reported Combinations is exact, and
-// Expand/Count can never disagree with each other - but stops
-// retaining once it already has enough to answer the cap, so memory
-// here is O(Cap), not O(the product).
+// so does the gear dimension on its own (nine single-item slots with
+// three candidates apiece is 262,144 gear shapes before the other two
+// dimensions touch it - see walkGearChoices, which walks that product
+// lazily rather than building it). Contract 10.2 has the page calling
+// Count on every candidate tick, in the browser, on a 32-bit wasm heap.
+// keep runs valid() and counts every one of them - the reported
+// Combinations is exact, and Expand/Count can never disagree with each
+// other - but stops retaining once it already has enough to answer the
+// cap. Retained memory is O(Cap); nothing proportional to any
+// dimension's full product - gear, talents or consumables - is ever
+// resident at once.
 func combinations(req api.SimRequest, places []placement) ([]Combination, error) {
-	var out []Combination
+	// Non-nil from the start: an expansion with no valid combinations is
+	// a real, empty result, not the absence of one, and should marshal
+	// as [] rather than null once a caller across the wasm boundary is
+	// reading this JSON.
+	out := []Combination{}
 	var total int
 	keep := func(c Combination) {
 		if !valid(c.Request.Character.Gear) {
@@ -306,25 +315,6 @@ func gearCombinations(req api.SimRequest, places []placement, keep func(Combinat
 		}
 	}
 
-	// Every choice of at most one placement per slot, including none.
-	sets := [][]placement{nil}
-	for _, slot := range slots {
-		next := make([][]placement, 0, len(sets)*(len(bySlot[slot])+1))
-		for _, chosen := range sets {
-			next = append(next, chosen)
-			for _, p := range bySlot[slot] {
-				next = append(next, append(append([]placement(nil), chosen...), p))
-			}
-		}
-		sets = next
-	}
-	// A one-hander with no slot named expands into two placements, one
-	// per hand, for the product above to choose between; choosing BOTH
-	// in one combination would wield one physical item in two slots at
-	// once. Two DIFFERENT one-handers dual-wielding each other is
-	// unaffected, since their items differ.
-	sets = slices.DeleteFunc(sets, sameWeaponTwice)
-
 	// The talent dimension: the character's own build, then each
 	// loadout. A nil loadout is "their own".
 	loadouts := make([]*api.TalentLoadout, 0, len(req.Bulk.Talents)+1)
@@ -340,7 +330,11 @@ func gearCombinations(req api.SimRequest, places []placement, keep func(Combinat
 		drinks = append(drinks, &consumableChoice{Index: i, List: list})
 	}
 
-	for _, chosen := range sets {
+	// Every choice of at most one placement per slot, including none -
+	// walked lazily (see walkGearChoices) rather than built as a slice,
+	// crossed with the talent and consumables dimensions as each one is
+	// produced.
+	walkGearChoices(slots, bySlot, func(chosen []placement) {
 		for _, loadout := range loadouts {
 			for _, drink := range drinks {
 				if len(chosen) == 0 && loadout == nil && drink == nil {
@@ -353,7 +347,7 @@ func gearCombinations(req api.SimRequest, places []placement, keep func(Combinat
 				keep(apply(req, chosen, loadout, nil, drink))
 			}
 		}
-	}
+	})
 	// A named set is a whole-gear alternative, so it is its own arm
 	// rather than a member of the product above.
 	for i := range req.Bulk.Sets {
@@ -363,6 +357,49 @@ func gearCombinations(req api.SimRequest, places []placement, keep func(Combinat
 			}
 		}
 	}
+}
+
+// walkGearChoices calls yield once for every choice of at most one
+// placement per slot - "keep what is equipped" or one of a slot's
+// candidates - crossed across every slot in slots, in the same order
+// the eager version of this product used to build as a
+// [][]placement: slots earlier in the list vary slower than slots
+// later in it, and within one slot "keep" is tried before its
+// candidates.
+//
+// It walks that product depth-first, one slot at a time, rather than
+// building it as a slice: nine single-item slots with three candidates
+// apiece is already 4^9 = 262,144 gear shapes before the talent and
+// consumables dimensions even multiply it further, and a request with
+// that many real, individually unremarkable bag candidates passes
+// validation. Holding the whole cross product, even just as
+// []placement slices with no requests built yet, is exactly the
+// O(product) memory the cap exists to keep off the browser's wasm
+// heap; walking it recursively keeps at most one partial choice per
+// slot on the call stack, which is O(len(slots)).
+//
+// A one-hander with no slot named expands into two placements, one per
+// hand, for this walk to choose between; yielding a chosen that picked
+// BOTH would wield one physical item in two slots at once, so
+// sameWeaponTwice filters at the leaf - the same place the eager
+// version filtered the fully-built product, and the only place a
+// chosen combination is complete enough to check.
+func walkGearChoices(slots []string, bySlot map[string][]placement, yield func([]placement)) {
+	var walk func(i int, chosen []placement)
+	walk = func(i int, chosen []placement) {
+		if i == len(slots) {
+			if !sameWeaponTwice(chosen) {
+				yield(chosen)
+			}
+			return
+		}
+		slot := slots[i]
+		walk(i+1, chosen)
+		for _, p := range bySlot[slot] {
+			walk(i+1, append(append([]placement(nil), chosen...), p))
+		}
+	}
+	walk(0, nil)
 }
 
 // sameWeaponTwice reports whether chosen substitutes the identical
@@ -482,14 +519,15 @@ func apply(req api.SimRequest, places []placement, loadout *api.TalentLoadout, s
 		// them, which follows api.GearSlots - main_hand ahead of
 		// off_hand - so an off-hand placement chosen alongside a
 		// two-hander is always set into gear AFTER this delete runs,
-		// leaving it in gear and off gets caught by valid()'s own
-		// two-hand check below instead of silently vanishing here. The
-		// subs slice built further down still appends every placement's
-		// chip unconditionally, though, so if api.GearSlots ever put
-		// off_hand ahead of main_hand, this delete would start firing
-		// AFTER an off-hand placement was set, removing it from gear
-		// while its Substitution chip survived into subs - a validated
-		// combination whose own chip names gear it does not carry.
+		// leaving it in gear so it gets caught by valid()'s own two-hand
+		// check (above, in this file) instead of silently vanishing
+		// here. The subs slice built further down still appends every
+		// placement's chip unconditionally, though, so if api.GearSlots
+		// ever put off_hand ahead of main_hand, this delete would start
+		// firing AFTER an off-hand placement was set, removing it from
+		// gear while its Substitution chip survived into subs - a
+		// validated combination whose own chip names gear it does not
+		// carry.
 		if p.Slot == "main_hand" {
 			if item, ok := simdb.Lookup(p.Gear.ItemID); ok && item.HandType == simdb.HandTwo {
 				delete(gear, "off_hand")
@@ -534,7 +572,7 @@ func apply(req api.SimRequest, places []placement, loadout *api.TalentLoadout, s
 		// needs a label rather than joining to "".
 		name := strings.Join(consumes.List, ", ")
 		if name == "" {
-			name = "no consumables"
+			name = api.NoConsumablesLabel
 		}
 		subs = append(subs, api.Substitution{
 			Kind:     api.SubstitutionConsumes,
