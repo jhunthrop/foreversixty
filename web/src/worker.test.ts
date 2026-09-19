@@ -828,7 +828,7 @@ describe('/sim/<sim_id>', () => {
     expect(response.status).toBe(200);
     expect(response.headers.get('cache-control')).toBe('public, max-age=60');
     expect(response.headers.get('x-robots-tag')).toBeNull();
-    expect(html).toContain('Fury Warrior, 1,370 DPS · Forever Sixty');
+    expect(html).toContain('Fury Warrior, 1,590 DPS · Forever Sixty');
     expect(html).toContain('https://foreversixty.gg/sim/simfixtureab');
   });
 
