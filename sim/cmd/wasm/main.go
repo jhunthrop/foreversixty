@@ -288,7 +288,11 @@ func simNeedsMore(_ js.Value, args []js.Value) any {
 }
 
 // simValidate(requestJSON) returns {"ok": bool, "errors": [...]}: the
-// same Validate the run applies, per field, for the request drawer.
+// same Validate the run applies, per field, for the request drawer. A
+// bad request body still comes back this way (see validateJSON); only
+// this wrapper's own arity check below returns the bare
+// {"error": "..."} shape, for a caller bug rather than a member's
+// request.
 func simValidate(_ js.Value, args []js.Value) any {
 	if len(args) < 1 {
 		return errorJSON("simValidate takes (requestJSON)")

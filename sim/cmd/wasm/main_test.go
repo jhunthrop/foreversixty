@@ -31,9 +31,11 @@ import (
 //     api.Progress because it is a contract with the web rather than a
 //     detail of this file;
 //   - the CI smoke test in .github/workflows/sim.yml instantiates the
-//     built wasm under node and asserts all the exports exist, that
-//     simRun returns a SimResult with a summary, and that the progress
-//     callback was called with that payload.
+//     built wasm under node and asserts simRun, simSplit, simCombine
+//     and simAbort exist, that simRun returns a SimResult with a
+//     summary, and that the progress callback was called with that
+//     payload. It does not yet check the five bulk exports this file
+//     tests; that is Task 25's file to extend.
 func TestWasmIsCoveredElsewhere(t *testing.T) {
 	t.Log("see the comment above: combine, forever-sim, and the CI smoke test")
 }
@@ -84,6 +86,9 @@ func TestRankJSONReturnsTheNextStageThenTheResult(t *testing.T) {
 	if first.Next == nil || first.Result != nil {
 		t.Fatalf("the first rung returned %s", out)
 	}
+	if len(first.Next.Ran) == 0 {
+		t.Errorf("next.ran is empty; the ladder's history should thread across the wasm boundary (contract A10)")
+	}
 
 	nextJSON, err := json.Marshal(first.Next)
 	if err != nil {
@@ -102,6 +107,9 @@ func TestRankJSONReturnsTheNextStageThenTheResult(t *testing.T) {
 	}
 	if len(last.Result.Combos) == 0 || last.Result.Equipped == nil {
 		t.Errorf("the finished result is %+v", last.Result)
+	}
+	if len(last.Result.Stages) != 2 {
+		t.Errorf("result.stages = %+v, want 2 entries for the normal ladder's two rungs", last.Result.Stages)
 	}
 }
 
@@ -244,6 +252,31 @@ func TestValidateJSONOfRubbish(t *testing.T) {
 	}
 	if got.OK || len(got.Errors) != 1 {
 		t.Errorf("rubbish came back %+v", got)
+	}
+}
+
+// A bare lowercase word at the front of a message is not automatically
+// a field: ValidateLane's own added messages, and several of
+// Validate's, start with ordinary prose ("the", "a") that the regex
+// alone cannot distinguish from a real field name. The first four cases
+// are measured straight off ValidateLane(LaneBrowser)'s real output for
+// a request over both lane caps and a bulk-plus-target-error request.
+func TestLeadingField(t *testing.T) {
+	for _, c := range []struct {
+		msg  string
+		want string
+	}{
+		{"the browser lane plans at most 400 combinations, and bulk.cap is 500", ""},
+		{"the browser lane runs at most 30000 iterations, and iterations is 10000000", ""},
+		{"a target-error run's iterations is at most 100000 on this lane, got 10000000", ""},
+		{"a request is one kind: a bulk or weights request runs its own iteration counts, so it carries no target_error", ""},
+		{"iterations must be one of [500 3000 10000], got 7", "iterations"},
+		{"targets must be between 1 and 10, got 99", "targets"},
+		{"bulk.candidates[2] is on \"head\", which is locked", "bulk.candidates[2]"},
+	} {
+		if got := leadingField(c.msg); got != c.want {
+			t.Errorf("leadingField(%q) = %q, want %q", c.msg, got, c.want)
+		}
 	}
 }
 

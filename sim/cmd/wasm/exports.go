@@ -18,18 +18,21 @@ import (
 	"github.com/jhunthrop/foreversixty/sim/bulk"
 )
 
-// decodeRequest parses one request strictly. A field the envelope does
-// not carry is a client sending something this build cannot honour -
-// a profession list to an older wasm, say - and running anyway would
-// drop it silently.
-func decodeRequest(s string) (api.SimRequest, error) {
-	var req api.SimRequest
+// strictDecode refuses a field the type does not carry. A page sending
+// something this wasm cannot honour is a version mismatch, and running
+// anyway would drop part of it silently.
+func strictDecode(s string, into any) error {
 	dec := json.NewDecoder(strings.NewReader(s))
 	dec.DisallowUnknownFields()
-	if err := dec.Decode(&req); err != nil {
-		return req, err
-	}
-	return req, nil
+	return dec.Decode(into)
+}
+
+// decodeRequest is strictDecode into an api.SimRequest - the one shape
+// every export's first argument is.
+func decodeRequest(s string) (api.SimRequest, error) {
+	var req api.SimRequest
+	err := strictDecode(s, &req)
+	return req, err
 }
 
 // errorJSON wraps a message as the {"error": "..."} shape every export
@@ -145,6 +148,16 @@ type fieldError struct {
 // SAME api.SimRequest.Validate the run will, and shows the failures
 // inline. Returning them one per field rather than as one joined
 // sentence is what lets the drawer mark the control.
+//
+// This is why an unparsable body still comes back as
+// {"ok": false, "errors": [...]} rather than the bare {"error": "..."}
+// shape: simValidate's contract (spec 10.2) is "any request in,
+// {ok, errors} out", so a request the drawer cannot even parse is
+// still a validation failure, not a thrown exception. The wrapper in
+// main.go has its own separate {"error": "..."} case for a caller that
+// gets simValidate's own arity wrong - that one is a programming
+// mistake in the caller, not a request from a member, and never
+// reaches this function.
 func validateJSON(requestJSON string) string {
 	out := struct {
 		OK     bool         `json:"ok"`
@@ -183,17 +196,49 @@ func flatten(err error) []string {
 
 // fieldToken matches the leading path of a validation message -
 // "iterations must be...", "bulk.candidates[2] is on..." - so the
-// drawer can mark the control that produced it. A message that does
-// not start with one gets an empty field and is shown at the top.
+// drawer can mark the control that produced it.
 var fieldToken = regexp.MustCompile(`^[a-z][a-z0-9_]*(\.[a-z0-9_]+|\[[0-9]+\])*`)
 
-// leadingField is the message's field path, or "".
+// topLevelFields is every SimRequest field Validate/ValidateLane names,
+// bare, at the very start of one of its own messages: "iterations must
+// be...", "targets must be...". A nested path ("bulk.candidates[2]",
+// "encounter.movement.kind") is trusted on its shape alone, but a bare
+// word is not, because ValidateLane's own added messages ("the browser
+// lane plans...", "the browser lane runs...") and several of Validate's
+// ("a split part's iterations...", "a request is one kind...") also
+// start with an ordinary lowercase word - "the", "a" - that the regex
+// alone cannot tell from a field name. Without this list leadingField
+// reports field "the" or "a" for exactly those messages, which marks no
+// control in the drawer and never falls back to the top-of-drawer
+// message its own doc comment promises.
+var topLevelFields = map[string]bool{
+	"iterations":     true,
+	"targets":        true,
+	"duration_sec":   true,
+	"spec":           true,
+	"lane":           true,
+	"engine_version": true,
+	"execute_ratio":  true,
+	"variation":      true,
+	"target_error":   true,
+}
+
+// leadingField is the message's field path, or "" when the message is
+// prose rather than a field name - which the drawer shows at the top
+// instead of against a control.
 func leadingField(msg string) string {
 	head, _, _ := strings.Cut(msg, " ")
-	if fieldToken.FindString(head) != head {
+	token := fieldToken.FindString(head)
+	if token != head {
 		return ""
 	}
-	return head
+	if strings.ContainsAny(token, ".[") {
+		return token
+	}
+	if topLevelFields[token] {
+		return token
+	}
+	return ""
 }
 
 // planErrorJSON is the error shape for simPlan and simCount.
@@ -206,22 +251,16 @@ func leadingField(msg string) string {
 func planErrorJSON(err error) string {
 	var capped api.ErrCapExceeded
 	if errors.As(err, &capped) {
+		// api.ErrCapExceeded already carries json:"cap" and
+		// json:"combinations" (sim/api/bulk.go); embedding it rather
+		// than repeating the two keys here keeps the web's two field
+		// names to one source of truth.
 		return encodeOrError(struct {
-			Error        string `json:"error"`
-			Cap          int    `json:"cap"`
-			Combinations int    `json:"combinations"`
-		}{"cap_exceeded", capped.Cap, capped.Combinations})
+			Error string `json:"error"`
+			api.ErrCapExceeded
+		}{"cap_exceeded", capped})
 	}
 	return errorJSON(err.Error())
-}
-
-// strictDecode refuses a field the type does not carry, the way
-// decodeRequest does: a page sending something this wasm cannot honour
-// is a version mismatch, and running anyway would drop part of it.
-func strictDecode(s string, into any) error {
-	dec := json.NewDecoder(strings.NewReader(s))
-	dec.DisallowUnknownFields()
-	return dec.Decode(into)
 }
 
 // encodeOrError marshals, or returns the {"error": ...} shape.
