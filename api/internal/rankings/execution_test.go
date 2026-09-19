@@ -2,6 +2,7 @@ package rankings
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"strings"
 	"testing"
@@ -156,5 +157,35 @@ func TestTheExecutionLeaderboardOnlyListsScoredFights(t *testing.T) {
 	}
 	if row.ExecutionScore == nil || *row.ExecutionScore != 0.92 {
 		t.Errorf("execution_score %v", row.ExecutionScore)
+	}
+}
+
+func TestSetExecutionScoreOnAMissingFightReturnsErrNoFight(t *testing.T) {
+	h := newHarness(t)
+	rep, index, key := h.seedRankedFight(t)
+
+	// A coordinate that names no row - a typo'd player key here - is
+	// silently discarded by a bare UPDATE with no rows matched, which
+	// the caller can't tell apart from a real write. It must surface
+	// as the sentinel instead.
+	err := h.store.SetExecutionScore(t.Context(), rep, index, key+"-typo", 0.5)
+	if !errors.Is(err, ErrNoFight) {
+		t.Fatalf("err = %v, want ErrNoFight", err)
+	}
+
+	// And a real coordinate is unaffected: the miss above wrote
+	// nothing, and a hit still updates the row.
+	if err := h.store.SetExecutionScore(t.Context(), rep, index, key, 0.5); err != nil {
+		t.Fatal(err)
+	}
+	var got float64
+	if err := h.pool.QueryRow(t.Context(),
+		`select execution_score from fight_metrics
+		 where report_id = $1 and fight_index = $2 and player_key = $3`,
+		rep, index, key).Scan(&got); err != nil {
+		t.Fatal(err)
+	}
+	if got != 0.5 {
+		t.Fatalf("execution_score = %v, want 0.5", got)
 	}
 }

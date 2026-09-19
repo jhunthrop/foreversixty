@@ -451,18 +451,31 @@ const (
 	ExecutionMax = 2.0
 )
 
+// ErrNoFight is returned when a (report_id, fight_index, player_key)
+// coordinate names no row in fight_metrics: a typo, a race with
+// RemoveReport, or a fight that never verified. Without this, a
+// zero-row update looks identical to a successful one and the caller
+// has no way to tell a score was silently dropped.
+var ErrNoFight = fmt.Errorf("rankings: no such fight")
+
 // SetExecutionScore writes one player's execution score on one fight,
 // clamped to [ExecutionMin, ExecutionMax]. The fight-close scorer and
 // the nightly job are the callers; both are idempotent, so this
-// simply overwrites whatever was there.
+// simply overwrites whatever was there. It returns ErrNoFight when the
+// coordinate matches no row, so the caller can tell that apart from a
+// score of zero having been written.
 func (s *Store) SetExecutionScore(ctx context.Context, reportID string, fightIndex int,
 	playerKey string, score float64) error {
 	score = min(max(score, ExecutionMin), ExecutionMax)
-	if _, err := s.Pool.Exec(ctx,
+	tag, err := s.Pool.Exec(ctx,
 		`update fight_metrics set execution_score = $4
 		 where report_id = $1 and fight_index = $2 and player_key = $3`,
-		reportID, fightIndex, playerKey, score); err != nil {
+		reportID, fightIndex, playerKey, score)
+	if err != nil {
 		return fmt.Errorf("rankings: execution score %s/%d/%s: %w", reportID, fightIndex, playerKey, err)
+	}
+	if tag.RowsAffected() == 0 {
+		return ErrNoFight
 	}
 	return nil
 }
