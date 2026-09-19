@@ -100,6 +100,12 @@ type GearSlot struct {
 	ItemID  int    `json:"item_id"`
 	Enchant int    `json:"enchant,omitempty"`
 	Suffix  int    `json:"suffix,omitempty"`
+	// Notes is provenance, not input: free text saying where this choice
+	// came from when it was not the player's. Nothing reads it - Validate
+	// ignores it and request.Build never looks at it - and it is omitted
+	// from the wire unless something set it. sim/adapter's fixture
+	// requests use it to record why a slot holds the item it does.
+	Notes string `json:"notes,omitempty"`
 }
 
 type CharacterSource struct {
@@ -195,6 +201,20 @@ type SimResult struct {
 	DurationMS    int64           `json:"duration_ms"`
 	Summary       summary.Summary `json:"summary"`
 	Error         string          `json:"error,omitempty"`
+}
+
+// Progress is what the browser's simRun progress callback carries:
+// Pick<SimResult, 'iterations_run' | 'dps'>, so the page reads a partial
+// result with the same two accessors it reads the finished one with.
+//
+// Only DPS.Mean is populated while a run is in flight - it is the
+// running mean the engine reports per batch - and the rest of the
+// Estimate stays zero until the run completes and a whole SimResult
+// replaces it. The callback's first argument is still the callback id
+// the page passed to simRun.
+type Progress struct {
+	IterationsRun int      `json:"iterations_run"`
+	DPS           Estimate `json:"dps"`
 }
 
 type Estimate struct {

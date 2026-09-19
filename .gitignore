@@ -12,6 +12,10 @@ coverage/
 # pinned engine sha. Only what `make publish-wasm` copies into
 # web/public/_sim/<sha>/ is committed.
 artifacts/
+# the active build's item database, copied here by `make simdb` so both
+# artifacts can //go:embed it; data/builds/<build>/simdb.bin is the
+# committed original
+sim/internal/simdb/simdb.bin
 
 # environment
 .env

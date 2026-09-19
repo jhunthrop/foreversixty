@@ -15,8 +15,18 @@ log-measurement harness.
 | `cmd/wasm` | `sim.wasm` + `sim.js`, four JSON exports |
 | `cmd/forever-sim` | the native binary for the server lane |
 | `cmd/forever-measure` | the measurement tool |
+| `internal/simdb` | the active build's item database, embedded in both artifacts |
 
 Build both artifacts: `make artifacts` from the repository root.
+
+**After a fresh clone, run `make simdb` once.** `internal/simdb` embeds
+`internal/simdb/simdb.bin`, which is a git-ignored copy of
+`data/builds/<build>/simdb.bin` for the build named by
+`web/src/data/active-build.json`; `//go:embed` resolves at compile time, so
+without it every `go build`, `go test` and `go vet` in this module fails
+with `pattern simdb.bin: no matching files found`. Neither artifact is
+built `--tags=with_db`: that tag carries the engine's vanilla item table,
+and Forever re-itemises.
 
 ## Measuring combat constants
 

@@ -24,45 +24,54 @@
       },
       {
         "slot": "shoulder",
-        "item_id": 12927
+        "item_id": 15055,
+        "notes": "vanilla \"Truestrike Shoulders\" (12927) has no row in Forever's build; nearest by stat vector in the same slot"
       },
       {
         "slot": "back",
-        "item_id": 18541,
-        "enchant": 849
+        "item_id": 20068,
+        "enchant": 849,
+        "notes": "vanilla \"Puissant Cape\" (18541) has no row in Forever's build; nearest by stat vector in the same slot"
       },
       {
         "slot": "chest",
-        "item_id": 11726,
-        "enchant": 1891
+        "item_id": 13090,
+        "enchant": 1891,
+        "notes": "vanilla \"Savage Gladiator Chain\" (11726) has no row in Forever's build; nearest by stat vector in the same slot"
       },
       {
         "slot": "wrist",
-        "item_id": 19146,
-        "enchant": 1885
+        "item_id": 275739,
+        "enchant": 1885,
+        "notes": "vanilla \"Wristguards of Stability\" (19146) has no row in Forever's build; nearest by stat vector in the same slot"
       },
       {
         "slot": "hands",
-        "item_id": 14551,
-        "enchant": 927
+        "item_id": 281280,
+        "enchant": 927,
+        "notes": "vanilla \"Edgemaster's Handguards\" (14551) has no row in Forever's build; nearest by stat vector in the same slot"
       },
       {
         "slot": "waist",
-        "item_id": 19137
+        "item_id": 20252,
+        "notes": "vanilla \"Onslaught Girdle\" (19137) has no row in Forever's build; nearest by stat vector in the same slot"
       },
       {
         "slot": "legs",
-        "item_id": 14554,
-        "enchant": 1506
+        "item_id": 22000,
+        "enchant": 1506,
+        "notes": "vanilla \"Cloudkeeper Legplates\" (14554) has no row in Forever's build; nearest by stat vector in the same slot"
       },
       {
         "slot": "feet",
-        "item_id": 14616,
-        "enchant": 911
+        "item_id": 20050,
+        "enchant": 911,
+        "notes": "vanilla \"Bloodmail Boots\" (14616) has no row in Forever's build; nearest by stat vector in the same slot"
       },
       {
         "slot": "finger1",
-        "item_id": 17063
+        "item_id": 20307,
+        "notes": "vanilla \"Band of Accuria\" (17063) has no row in Forever's build; nearest by stat vector in the same slot"
       },
       {
         "slot": "finger2",
@@ -70,25 +79,30 @@
       },
       {
         "slot": "trinket1",
-        "item_id": 11815
+        "item_id": 276337,
+        "notes": "vanilla \"Hand of Justice\" (11815) has no row in Forever's build; nearest by stat vector in the same slot"
       },
       {
         "slot": "trinket2",
-        "item_id": 13965
+        "item_id": 2820,
+        "notes": "vanilla \"Blackhand's Breadth\" (13965) has no row in Forever's build; nearest by stat vector in the same slot"
       },
       {
         "slot": "main_hand",
-        "item_id": 17075,
-        "enchant": 1900
+        "item_id": 21521,
+        "enchant": 1900,
+        "notes": "vanilla \"Vis'kag the Bloodletter\" (17075) has no row in Forever's build; nearest by stat vector in the same slot"
       },
       {
         "slot": "off_hand",
-        "item_id": 18832,
-        "enchant": 1900
+        "item_id": 272598,
+        "enchant": 1900,
+        "notes": "vanilla \"Brutality Blade\" (18832) has no row in Forever's build; nearest by stat vector in the same slot"
       },
       {
         "slot": "ranged",
-        "item_id": 17069
+        "item_id": 272594,
+        "notes": "vanilla \"Striker's Mark\" (17069) has no row in Forever's build; nearest by stat vector in the same slot"
       }
     ],
     "buffs": [

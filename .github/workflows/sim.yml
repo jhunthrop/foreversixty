@@ -2,9 +2,9 @@ name: sim
 on:
   push:
     branches: [main]
-    paths: ['sim/**', 'logs/**', '.github/workflows/sim.yml', '.github/actions/pin-engine/**']
+    paths: ['sim/**', 'logs/**', 'Makefile', 'web/src/data/active-build.json', 'data/builds/*/simdb.bin', '.github/workflows/sim.yml', '.github/actions/pin-engine/**']
   pull_request:
-    paths: ['sim/**', 'logs/**', '.github/workflows/sim.yml', '.github/actions/pin-engine/**']
+    paths: ['sim/**', 'logs/**', 'Makefile', 'web/src/data/active-build.json', 'data/builds/*/simdb.bin', '.github/workflows/sim.yml', '.github/actions/pin-engine/**']
   workflow_dispatch:
 permissions: { contents: read }
 concurrency:
@@ -23,6 +23,12 @@ jobs:
       - uses: actions/setup-go@v5
         with: { go-version-file: sim/go.mod, cache-dependency-path: sim/go.sum }
       - uses: ./.github/actions/pin-engine
+      # //go:embed resolves at compile time, so the active build's item
+      # database has to be in place before gofmt's siblings run, let
+      # alone the build.
+      - name: the active build's item database
+        working-directory: .
+        run: make simdb
       - name: gofmt
         run: |
           unformatted=$(gofmt -l .)
@@ -49,6 +55,7 @@ jobs:
       # development replace the test job rewrote and needs the same
       # rewrite; without it every build here resolves a path on a laptop.
       - uses: ./.github/actions/pin-engine
+      - run: make simdb
       - name: build
         working-directory: sim
         run: |
@@ -56,12 +63,11 @@ jobs:
           mkdir -p ../artifacts
           GOOS=js GOARCH=wasm go build -ldflags="-X 'main.Version=$sha'" -o ../artifacts/sim.wasm ./cmd/wasm
           cp "$(go env GOROOT)/lib/wasm/wasm_exec.js" ../artifacts/sim.js
-          # --tags=with_db on the native binary only: it embeds the
-          # engine's item database, which is what resolves a request's
-          # gear ids, and the server lane cannot run a geared character
-          # without it. The browser build leaves it out for the budget.
-          GOOS=linux  GOARCH=amd64 go build --tags=with_db -ldflags="-X 'main.Version=$sha' -s -w" -o ../artifacts/forever-sim-linux-amd64  ./cmd/forever-sim
-          GOOS=darwin GOARCH=arm64 go build --tags=with_db -ldflags="-X 'main.Version=$sha' -s -w" -o ../artifacts/forever-sim-darwin-arm64 ./cmd/forever-sim
+          # No --tags=with_db anywhere: that is the engine's vanilla
+          # item table, and Forever re-itemises. Both artifacts embed
+          # the active build's simdb.bin instead (make simdb, above).
+          GOOS=linux  GOARCH=amd64 go build -ldflags="-X 'main.Version=$sha' -s -w" -o ../artifacts/forever-sim-linux-amd64  ./cmd/forever-sim
+          GOOS=darwin GOARCH=arm64 go build -ldflags="-X 'main.Version=$sha' -s -w" -o ../artifacts/forever-sim-darwin-arm64 ./cmd/forever-sim
           cd ../artifacts && sha256sum * > SHA256SUMS && cat SHA256SUMS
       # The design budgets the browser download at 4 MB gzipped. The
       # engine alone measured 3.31 MB; this build adds request, adapter,
@@ -81,9 +87,15 @@ jobs:
       - name: wasm smoke test
         run: |
           cp artifacts/sim.wasm artifacts/sim.js /tmp/
+          cp sim/adapter/testdata/warrior-fury.request.json /tmp/
           cat > /tmp/smoke.mjs <<'EOF'
           import './sim.js';
           import { readFile } from 'node:fs/promises';
+          // The gear of the checked-in warrior fixture request: real
+          // Forever item ids, so this fails if the embedded database
+          // did not make it into the wasm.
+          const gearJSON = JSON.stringify(
+            JSON.parse(await readFile('/tmp/warrior-fury.request.json', 'utf8')).character.gear);
           const req = {
             engine_version: 'ci', spec: 'warrior-fury',
             character: { name: 'Thrall', race: 'orc', class: 'warrior', level: 60,
@@ -91,7 +103,20 @@ jobs:
             encounter: { duration_sec: 60, variation: 0, targets: 1, execute_ratio: 0.25, profile: '' },
             iterations: 500, random_seed: 1,
           };
-          globalThis.simProgress = () => {};
+          // The contract: simProgress(callbackId, progressJSON) where
+          // progressJSON is Pick<SimResult, 'iterations_run' | 'dps'>.
+          let progressSeen = 0;
+          globalThis.simProgress = (id, json) => {
+            const p = JSON.parse(json);
+            const keys = Object.keys(p).sort().join(',');
+            if (keys !== 'dps,iterations_run') {
+              console.error('progress payload keys', keys); process.exit(1);
+            }
+            if (typeof p.iterations_run !== 'number' || typeof p.dps.mean !== 'number') {
+              console.error('progress payload', p); process.exit(1);
+            }
+            progressSeen++;
+          };
           globalThis.wasmready = () => {
             const missing = ['simRun', 'simSplit', 'simCombine', 'simAbort']
               .filter(n => typeof globalThis[n] !== 'function');
@@ -112,8 +137,19 @@ jobs:
               console.error('no summary: sim/adapter did not run inside the wasm'); process.exit(1);
             }
             if (one.iterations_run !== 500) { console.error('iterations', one.iterations_run); process.exit(1); }
+            if (progressSeen === 0) { console.error('simProgress was never called'); process.exit(1); }
+            // Forever re-itemises, so a run that equips something is the
+            // only proof the embedded item database reached the engine.
+            const geared = { ...req, iterations: 500,
+              character: { ...req.character, gear: JSON.parse(gearJSON) } };
+            const g = JSON.parse(globalThis.simRun(JSON.stringify(geared), 'ci-gear'));
+            if (g.error) { console.error('geared simRun:', g.error); process.exit(1); }
+            if (!(g.dps.mean > one.dps.mean)) {
+              console.error('geared dps', g.dps.mean, 'is not above naked', one.dps.mean); process.exit(1);
+            }
             console.log('four exports, dps', one.dps.mean.toFixed(1), 'with',
-                        one.summary.damage_done[0].abilities.length, 'abilities in the summary');
+                        one.summary.damage_done[0].abilities.length, 'abilities in the summary,',
+                        progressSeen, 'progress calls, geared dps', g.dps.mean.toFixed(1));
             process.exit(0);
           };
           const go = new globalThis.Go();

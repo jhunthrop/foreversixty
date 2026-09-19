@@ -10,14 +10,11 @@
 // entrypoints are an implementation detail behind these four and the web
 // must not call them.
 //
-// This build carries no item database. The engine's --tags=with_db
-// embeds a 4.9 MB table, which measures 3.79 MB gzipped here against a
-// 4 MB budget, so the browser is meant to be handed the handful of items
-// a request actually equips rather than all of them - the same
-// arrangement request.Options.Consumables already has for the build's
-// consumable table. Until that lands a browser sim of a geared character
-// comes back with the engine's "No item with id"; sim/cmd/forever-sim,
-// which has the budget for it, is built with the tag.
+// The active build's item database is embedded through
+// sim/internal/simdb rather than taken from the engine's --tags=with_db
+// table, which is vanilla's and which Forever re-itemises out from
+// under. It costs 0.13 MB gzipped, so the browser can equip a real
+// Forever gear set inside the 4 MB budget.
 package main
 
 import (
@@ -28,6 +25,7 @@ import (
 	"github.com/jhunthrop/foreversixty/sim/adapter"
 	"github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/jhunthrop/foreversixty/sim/combine"
+	"github.com/jhunthrop/foreversixty/sim/internal/simdb"
 	"github.com/jhunthrop/foreversixty/sim/request"
 	engine "github.com/wowsims/classic/sim"
 	"github.com/wowsims/classic/sim/core"
@@ -68,7 +66,10 @@ func fail(req api.SimRequest, msg string) string {
 
 // simRun(requestJSON, callbackId) runs one request to completion and
 // returns SimResult JSON. Progress is reported by calling the global
-// simProgress(callbackId, completed, total, dps).
+// simProgress(callbackId, progressJSON), where progressJSON is an
+// api.Progress - Pick<SimResult, 'iterations_run' | 'dps'> - so the page
+// reads a partial result with the accessors it already has. JSON in,
+// JSON out, like everything else here.
 func simRun(_ js.Value, args []js.Value) any {
 	if len(args) < 2 {
 		return fail(api.SimRequest{}, "simRun takes (requestJSON, callbackId)")
@@ -89,6 +90,11 @@ func simRun(_ js.Value, args []js.Value) any {
 	if err != nil {
 		return fail(req, err.Error())
 	}
+	// Forever's own item rows, from the active build, embedded at build
+	// time: the browser has no protobuf and cannot send them.
+	if err := simdb.Attach(engineReq); err != nil {
+		return fail(req, err.Error())
+	}
 
 	start := time.Now()
 	reporter := make(chan *proto.ProgressMetrics, 32)
@@ -104,7 +110,12 @@ func simRun(_ js.Value, args []js.Value) any {
 			break
 		}
 		if cb := js.Global().Get("simProgress"); cb.Type() == js.TypeFunction {
-			cb.Invoke(callbackID, int(p.CompletedIterations), int(p.TotalIterations), p.Dps)
+			if b, err := json.Marshal(api.Progress{
+				IterationsRun: int(p.CompletedIterations),
+				DPS:           api.Estimate{Mean: p.Dps},
+			}); err == nil {
+				cb.Invoke(callbackID, string(b))
+			}
 		}
 	}
 	if engineRes == nil {

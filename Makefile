@@ -27,6 +27,32 @@ engine-pin:
 
 ARTIFACT_DIR ?= artifacts
 WEB_SIM_DIR   = web/public/_sim
+ACTIVE_BUILD_JSON = web/src/data/active-build.json
+SIMDB_EMBED   = sim/internal/simdb/simdb.bin
+
+.PHONY: simdb
+# simdb copies the ACTIVE build's item database where sim/internal/simdb
+# embeds it. Forever re-itemises, so the engine's own --tags=with_db
+# table - vanilla's - resolves almost none of a Forever gear set; this
+# file is what makes an item id mean something in both artifacts.
+#
+# The build is read from web/src/data/active-build.json and never typed
+# in, so switching builds is one edit in one place. The copy is
+# git-ignored; data/builds/<build>/simdb.bin is what is committed.
+#
+# Every `go build`, `go test` and `go vet` in sim/ needs this file,
+# because //go:embed resolves at compile time. Run `make simdb` once
+# after a fresh clone.
+simdb: $(SIMDB_EMBED)
+
+$(SIMDB_EMBED): $(ACTIVE_BUILD_JSON)
+	@build=$$(sed -n 's/.*"build"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' $(ACTIVE_BUILD_JSON)); \
+	  test -n "$$build" || { echo "$(ACTIVE_BUILD_JSON) names no build"; exit 1; }; \
+	  src="data/builds/$$build/simdb.bin"; \
+	  test -f "$$src" || { echo "no $$src; the data lane's \`python -m pipeline simdb\` has not run for build $$build"; exit 1; }; \
+	  mkdir -p $(dir $(SIMDB_EMBED)); \
+	  cp "$$src" $(SIMDB_EMBED); \
+	  echo "embedded $$src ($$(wc -c < $(SIMDB_EMBED) | tr -d ' ') bytes)"
 
 .PHONY: artifacts
 # artifacts builds the two things one pinned engine sha produces, both
@@ -34,15 +60,11 @@ WEB_SIM_DIR   = web/public/_sim
 # forever-sim for the server lane. The engine repository ships no
 # artifact of ours; it stays a clean upstreamable library.
 #
-# Only the native binary is built --tags=with_db. That tag embeds the
-# engine's 4.9 MB item database, which is what resolves the item ids in a
-# request's gear, and the server lane needs it exactly as the engine's own
-# wowsimcli does. The browser build leaves it out: measured, it costs
-# 0.38 MB gzipped and would leave the 4 MB budget 5% of headroom, so the
-# browser will be given its items from the site's own tables instead.
-# Until that lands, a browser sim of a geared character fails with the
-# engine's "No item with id" rather than silently simming a naked one.
-artifacts: engine-pin
+# Neither is built --tags=with_db. That tag carries the engine's own
+# vanilla item table, which Forever re-itemises out from under; both
+# artifacts embed the active build's simdb.bin instead, which is what
+# `simdb` above puts in place and what sim/internal/simdb loads.
+artifacts: engine-pin $(SIMDB_EMBED)
 	@mkdir -p $(ARTIFACT_DIR)
 	# Each build runs in its OWN subshell. An earlier draft chained two
 	# `cd sim` in one shell with `; \`, so the second ran from inside
@@ -52,7 +74,7 @@ artifacts: engine-pin
 	  test -n "$$sha" || { echo "sim/enginever/version.go has no Version"; exit 1; }; \
 	  (cd sim && GOOS=js GOARCH=wasm go build -ldflags="-X 'main.Version=$$sha'" \
 	    -o ../$(ARTIFACT_DIR)/sim.wasm ./cmd/wasm) && \
-	  (cd sim && go build --tags=with_db -ldflags="-X 'main.Version=$$sha' -s -w" \
+	  (cd sim && go build -ldflags="-X 'main.Version=$$sha' -s -w" \
 	    -o ../$(ARTIFACT_DIR)/forever-sim ./cmd/forever-sim)
 	# install, not cp: wasm_exec.js is read-only inside GOROOT, so a plain
 	# cp copies the mode too and the NEXT `make artifacts` dies with

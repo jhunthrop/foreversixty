@@ -5,7 +5,8 @@
 //
 // It reads and writes our envelope, not the engine's protobuf, because
 // sim/request and sim/adapter are linked in here and the boundary is
-// this binary's own. That is the same arrangement the browser gets from
+// this binary's own. The active build's item database is linked in too,
+// through sim/internal/simdb; see that package for why not --tags=with_db. That is the same arrangement the browser gets from
 // sim/cmd/wasm, which is the point: one mapping, one language, two lanes.
 //
 //	forever-sim -in request.json -out result.json -progress
@@ -27,6 +28,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/sim/adapter"
 	"github.com/jhunthrop/foreversixty/sim/api"
+	"github.com/jhunthrop/foreversixty/sim/internal/simdb"
 	"github.com/jhunthrop/foreversixty/sim/request"
 	engine "github.com/wowsims/classic/sim"
 	"github.com/wowsims/classic/sim/core"
@@ -187,6 +189,11 @@ func execute(req api.SimRequest, progress io.Writer) (*proto.RaidSimResult, erro
 	engineReq, err := request.Build(req)
 	if err != nil {
 		return nil, fmt.Errorf("%w: %v", errBadInput, err)
+	}
+	// Forever's own item rows, from the active build. Without them an
+	// item id resolves to nothing and the engine dies mid-run.
+	if err := simdb.Attach(engineReq); err != nil {
+		return nil, err
 	}
 
 	reporter := make(chan *proto.ProgressMetrics, 32)
