@@ -15,6 +15,7 @@ name for a stat, not one per consumer.
 
 from __future__ import annotations
 
+import re
 from collections.abc import Iterable, Mapping
 
 from pipeline.simproto import pb
@@ -75,6 +76,30 @@ PROTO_STAT_ALIASES: dict[str, tuple[str, ...]] = {
     #: rather than by waiting for the engine to drop one.
     "__probe__": ("StatNope",),
 }
+
+
+def stat_id(enum_name: str) -> str:
+    """A `proto.Stat` enum name as the request vocabulary's id.
+
+    Contract 10.1 A7: the stat ids `WeightsSpec.Reference` and
+    `specs.json`'s `reference_stat` use are the fork's own enum names in
+    lower snake case -- `StatSpellPower` is `spell_power`, `StatMeleeHaste`
+    is `melee_haste`, and there is deliberately no bare `haste`. Derived
+    from the enum rather than listed, so an engine that renames a stat
+    renames the id with it.
+
+    This is NOT `PROTO_STAT_ALIASES`. That is the planner's vocabulary,
+    which merges several enum values onto one key (`hit` covers both
+    `StatHit` and the lineage's `StatMeleeHit`) and exists to read item
+    columns; A7's is one id per enum value.
+    """
+    core = enum_name.removeprefix("Stat")
+    return re.sub(r"(?<=[a-z0-9])(?=[A-Z])", "_", core).lower()
+
+
+#: Every stat id A7's vocabulary has, from the vendored enum. 41 on the
+#: pinned engine, all distinct.
+STAT_IDS = frozenset(stat_id(name) for name in pb.Stat.keys())
 
 _STAT_COUNT = len(pb.Stat.keys())
 _WEAPON_SKILL_COUNT = len(pb.WeaponSkill.keys())

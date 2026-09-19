@@ -159,6 +159,11 @@ class SpecRecord(BaseModel):
     name: str
     role: str
     tree_index: int
+    #: The stat `StatWeights` normalises to 1.0 for this spec (parity
+    #: contract 1.4). Appended last, like `TalentEntry.spell_id`: the
+    #: emitted key order is the generated files' only compatibility
+    #: surface, so new fields go on the end and existing ones never move.
+    reference_stat: str
 
 
 class AplDocument(BaseModel):
