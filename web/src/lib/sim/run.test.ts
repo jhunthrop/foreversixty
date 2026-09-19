@@ -5,8 +5,8 @@ import { simCopy } from './copy';
 import { SimRunError, buildSimRequest, runSim, type RunInput, type RunUpdate } from './run';
 import { DEFAULT_ENCOUNTER, ITERATIONS } from './types';
 import { ENGINE_VERSION } from './version';
-import { createFakeWorker } from '../../test-support/fake-worker';
-import { createPool, type FromWorker, type PoolWorker, type ToWorker } from './worker';
+import { createBrokenWorker, createFakeWorker } from '../../test-support/fake-worker';
+import { createPool, type PoolWorker } from './worker';
 
 const input: RunInput = {
   spec: 'warrior-fury',
@@ -122,18 +122,7 @@ describe('runSim', () => {
   });
 
   it('reports an engine failure as a failure, with copy a player can read', async () => {
-    let emit: (data: FromWorker) => void = () => {};
-    const broken: PoolWorker = {
-      addEventListener: (_type, listener) => {
-        emit = (data) => listener({ data });
-      },
-      terminate: () => {},
-      postMessage: (message: ToWorker) => {
-        if (message.kind === 'abort') return;
-        emit({ kind: 'failed', token: message.token, message: 'wasm trap' });
-      },
-    };
-    const pool = createPool({ hardwareConcurrency: 1, spawn: () => broken });
+    const pool = createPool({ hardwareConcurrency: 1, spawn: () => createBrokenWorker() });
     const error = await runSim(pool, input, () => {}).result.catch((e: unknown) => e);
     expect((error as SimRunError).cancelled).toBe(false);
     expect((error as SimRunError).message).toBe(simCopy.failed);

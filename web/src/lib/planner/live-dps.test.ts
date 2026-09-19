@@ -4,8 +4,8 @@ import fixtureTalents from '../../fixtures/planner/talents/warrior.json';
 import { indexTalents, type TalentIndex } from './rules';
 import type { TalentFile } from './types';
 import { createFakeEngine } from '../../fixtures/sim/engine-fake';
-import { createFakeWorker } from '../../test-support/fake-worker';
-import { createPool, type FromWorker, type PoolWorker, type ToWorker } from '../sim/worker';
+import { createBrokenWorker, createFakeWorker } from '../../test-support/fake-worker';
+import { createPool, type PoolWorker } from '../sim/worker';
 import type { SimCharacter } from '../sim/character';
 import { LIVE_DEBOUNCE_MS, createLiveDps } from './live-dps.svelte';
 
@@ -103,18 +103,9 @@ describe('createLiveDps', () => {
   it('says so rather than throwing when the engine fails', async () => {
     const index = await warriorIndex();
     vi.useFakeTimers();
-    let emit: (data: FromWorker) => void = () => {};
-    const broken: PoolWorker = {
-      addEventListener: (_type, listener) => {
-        emit = (data) => listener({ data });
-      },
-      terminate: () => {},
-      postMessage: (message: ToWorker) => {
-        if (message.kind === 'abort') return;
-        emit({ kind: 'failed', token: message.token, message: 'wasm trap' });
-      },
-    };
-    const dps = createLiveDps({ pool: createPool({ hardwareConcurrency: 1, spawn: () => broken }) });
+    const dps = createLiveDps({
+      pool: createPool({ hardwareConcurrency: 1, spawn: () => createBrokenWorker() }),
+    });
     dps.request(character, index);
     await vi.runAllTimersAsync();
     expect(dps.state).toBe('error');
