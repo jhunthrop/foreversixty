@@ -455,6 +455,96 @@ type SimResult struct {
 	// ErrorOutcome with an EMPTY message, so a lane that only looked at
 	// Error reported it as a corrupt result.
 	Aborted bool `json:"aborted,omitempty"`
+	// Combos is the ranked answer to a bulk request, best first.
+	Combos []Combo `json:"combos,omitempty"`
+	// Equipped is the base character at the FINAL stage, which is what
+	// every Delta is measured against. It is a pointer so that "no
+	// baseline" and "a baseline of zero" are different things.
+	Equipped *Estimate `json:"equipped,omitempty"`
+	// Stages is what the planner actually ran, so the page can say
+	// "3 stages, 38 combinations" without recomputing the ladder.
+	Stages []Stage `json:"stages,omitempty"`
+	// Weights is the answer to a weights request.
+	Weights []StatWeight `json:"weights,omitempty"`
+	// Sample is one iteration's casts in order - the median-DPS one.
+	// It is a table view of the cast log, not a guide, and the page
+	// says so.
+	Sample []SampleCast `json:"sample,omitempty"`
+}
+
+// Combo is one substitution set's result.
+type Combo struct {
+	Substitutions []Substitution `json:"substitutions"`
+	DPS           Estimate       `json:"dps"`
+	// Delta is against Equipped, paired at the same stage, WITH ITS OWN
+	// ERROR - which is what lets the page say "within error" honestly
+	// instead of ranking noise.
+	Delta Estimate `json:"delta"`
+	// Group is 0 for the leader's within-error group, then 1, 2, and so
+	// on. Rows in one group are the same answer and the page ranks them
+	// the same.
+	Group int `json:"group"`
+}
+
+// The four things a combination can substitute.
+const (
+	SubstitutionItem     = "item"
+	SubstitutionTalents  = "talents"
+	SubstitutionSet      = "set"
+	SubstitutionConsumes = "consumes"
+)
+
+// Substitution is one change from the base character.
+type Substitution struct {
+	Kind string `json:"kind"`
+	// Slot is where an item landed. A ring or a trinket says which of
+	// the two slots it took, because that is the answer the player
+	// acts on.
+	Slot    string `json:"slot,omitempty"`
+	ItemID  int    `json:"item_id,omitempty"`
+	Enchant int    `json:"enchant,omitempty"`
+	Suffix  int    `json:"suffix,omitempty"`
+	// Name is the item's, the loadout's or the set's. An ITEM's name
+	// is filled too (from simdb, by sim/bulk): the API composes a
+	// headline - "+41 DPS from Vis'kag" - at save time and has no item
+	// table of its own, and a stored row read back years later still
+	// says what it was about.
+	Name    string `json:"name,omitempty"`
+	Talents string `json:"talents,omitempty"`
+	Origin  string `json:"origin,omitempty"`
+	// SourceName is copied from the candidate: the human name of where
+	// it came from, which is what a Droptimizer headline reads.
+	SourceName string `json:"source_name,omitempty"`
+	// Consumes is the alternative consumable list this combination
+	// ran, for a consumables substitution. Its Name is the same ids
+	// joined by ", ", so the API's headline and a chip's tooltip read
+	// the one field every other kind of substitution puts its label
+	// in (contract 10.8).
+	Consumes []string `json:"consumes,omitempty"`
+}
+
+// Stage is one rung of the ladder, as run.
+type Stage struct {
+	Iterations int `json:"iterations"`
+	Combos     int `json:"combos"`
+}
+
+// SampleCast is one cast of the sample iteration.
+type SampleCast struct {
+	// AtMS is negative during the pre-pull, which the page renders as
+	// its own section.
+	AtMS int64 `json:"at_ms"`
+	// Action is the summary's ACTION KEY - "spell:23881", "item:13503",
+	// "other:melee" - and not a display name. The page resolves the
+	// name with resolveActionName, exactly as it does for a cast row,
+	// so the two tables name one action one way and a sample row needs
+	// no second lookup table. An earlier draft carried a numeric
+	// SpellID and a Name; contract A12 removed both.
+	Action string `json:"action"`
+	Target string `json:"target,omitempty"`
+	// Resources are what the player held AFTER the cast: rage, energy,
+	// mana, combo_points.
+	Resources map[string]int `json:"resources,omitempty"`
 }
 
 // Progress is what the browser's simRun progress callback carries:
@@ -469,6 +559,11 @@ type SimResult struct {
 type Progress struct {
 	IterationsRun int      `json:"iterations_run"`
 	DPS           Estimate `json:"dps"`
+	// The three below are a bulk run's, and absent for a plain one:
+	// stage 1 of 3, 31 of 96 combinations. Stage numbers start at 1.
+	Stage       int `json:"stage,omitempty"`
+	CombosDone  int `json:"combos_done,omitempty"`
+	CombosTotal int `json:"combos_total,omitempty"`
 }
 
 type Estimate struct {
