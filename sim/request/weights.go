@@ -34,6 +34,13 @@ func BuildWeights(req api.SimRequest, opt Options) (*proto.StatWeightsRequest, e
 	if req.Weights == nil {
 		return nil, ErrNotWeights
 	}
+	// A weights sweep is one sub-sim per stat per direction, and no
+	// StatWeightsResult consumer ever reads a cast log: forcing
+	// NoSampleIteration here, regardless of what the caller's own opt
+	// asked for, is what keeps every one of those sub-sims from paying
+	// for a median-iteration replay nothing downstream looks at (the
+	// cost contract 10.3 exists to avoid).
+	opt.NoSampleIteration = true
 	run, err := BuildWith(req, opt)
 	if err != nil {
 		return nil, err

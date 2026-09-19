@@ -282,6 +282,56 @@ func entryPointFor(sampleIteration bool) simEntryPoint {
 	return core.RunRaidSimConcurrentAsync
 }
 
+// drainToResult reads reporter until it has the engine's final result,
+// reporting every intermediate tick to enc along the way (enc may be
+// nil, when the caller asked for no progress output).
+//
+// It does NOT simply break on the first FinalRaidResult: run() sends
+// that message from INSIDE the producer goroutine, then keeps running
+// - for a sample request it still has to return up to runSim, which
+// replays the median iteration and only THEN sets
+// FinalRaidResult.SampleIteration on that same pointer, before closing
+// the channel. Breaking on sight of the message used to read the
+// struct while that replay was still in flight, which raced
+// SampleIteration nil almost every time. Draining to the channel's
+// close instead relies on Go's channel-close happens-before: whatever
+// the producer did before close(progress), including that mutation,
+// is guaranteed visible once range observes the close.
+//
+// That fix only holds for a SUCCESSFUL run, because the engine's sim
+// body is the only path that closes progress on its way out
+// (core/sim.go). Two other engine paths send a FinalRaidResult and
+// then return WITHOUT ever closing the channel: a failed
+// simsignals.RegisterWithId - an empty or duplicate request id -
+// inside RunRaidSimAsync/RunRaidSimConcurrentAsync (core/api.go), and
+// SimOptions.IsTest, which registers no closing defer at all
+// (core/sim.go) - this package's own requests never set IsTest, but
+// nothing stops a future caller from being the first to. A blanket
+// drain hangs forever on either. Neither ever carries a sample
+// (core/sim.go's replay is itself guarded on result.Error == nil), so
+// an error result has nothing left worth waiting for: take it and
+// stop rather than block on a close that may never come.
+func drainToResult(reporter chan *proto.ProgressMetrics, enc *json.Encoder) *proto.RaidSimResult {
+	var engineRes *proto.RaidSimResult
+	for p := range reporter {
+		if p.FinalRaidResult != nil {
+			engineRes = p.FinalRaidResult
+			if engineRes.Error != nil {
+				break
+			}
+			continue
+		}
+		if enc != nil {
+			_ = enc.Encode(struct {
+				Completed int32   `json:"completed"`
+				Total     int32   `json:"total"`
+				DPS       float64 `json:"dps"`
+			}{p.CompletedIterations, p.TotalIterations, p.Dps})
+		}
+	}
+	return engineRes
+}
+
 // execute is the engine half: our request in, the engine's own result
 // out, with progress reported as JSON lines along the way.
 func execute(req api.SimRequest, progress io.Writer) (*proto.RaidSimResult, error) {
@@ -316,32 +366,7 @@ func execute(req api.SimRequest, progress io.Writer) (*proto.RaidSimResult, erro
 		enc = json.NewEncoder(progress)
 	}
 
-	var engineRes *proto.RaidSimResult
-	for p := range reporter {
-		if p.FinalRaidResult != nil {
-			// Not a break: run() sends this message from INSIDE the
-			// producer goroutine, then keeps running - it still has to
-			// return up to runSim, which (for a sample request) replays
-			// the median iteration and only THEN sets
-			// FinalRaidResult.SampleIteration on this same pointer,
-			// before closing the channel. Breaking here used to read
-			// the struct while that replay was still in flight, which
-			// raced SampleIteration nil more often than not. Draining
-			// to the close instead relies on the channel-close
-			// happens-before: everything the producer did before
-			// close(progress), including that mutation, is guaranteed
-			// visible once range sees the channel closed.
-			engineRes = p.FinalRaidResult
-			continue
-		}
-		if enc != nil {
-			_ = enc.Encode(struct {
-				Completed int32   `json:"completed"`
-				Total     int32   `json:"total"`
-				DPS       float64 `json:"dps"`
-			}{p.CompletedIterations, p.TotalIterations, p.Dps})
-		}
-	}
+	engineRes := drainToResult(reporter, enc)
 	if engineRes == nil {
 		return nil, errors.New("the engine produced no result")
 	}

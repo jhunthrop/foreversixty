@@ -146,14 +146,22 @@ func simRun(_ js.Value, args []js.Value) any {
 	var engineRes *proto.RaidSimResult
 	for p := range reporter {
 		if p.FinalRaidResult != nil {
-			// Not a break: see the matching comment in
-			// sim/cmd/forever-sim's execute. run() sends this message
-			// before a sample request's median-iteration replay has
-			// set FinalRaidResult.SampleIteration on the very same
-			// pointer, so breaking here used to read it too early.
-			// Draining to the channel's close is what makes that
-			// mutation guaranteed-visible.
+			// Not a bare break: see the matching comment in
+			// sim/cmd/forever-sim's execute for the full reasoning.
+			// Short version: draining to the channel's close (instead
+			// of breaking the instant a FinalRaidResult arrives) is
+			// what makes a sample request's SampleIteration mutation
+			// guaranteed-visible, but two engine paths send a
+			// FinalRaidResult and then return WITHOUT ever closing the
+			// channel - a failed simsignals.RegisterWithId, and
+			// SimOptions.IsTest (which this package's requests never
+			// set). Neither carries a sample, so an error result is
+			// still safe to take immediately rather than block
+			// forever waiting for a close that will not come.
 			engineRes = p.FinalRaidResult
+			if engineRes.Error != nil {
+				break
+			}
 			continue
 		}
 		if cb := js.Global().Get("simProgress"); cb.Type() == js.TypeFunction {

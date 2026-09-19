@@ -186,6 +186,53 @@ func TestProgressIsJSONLines(t *testing.T) {
 	}
 }
 
+// The inverse of TestProgressIsJSONLines, and the test that actually
+// pins entryPointFor's call site (main.go's own comment: "DO NOT
+// optimise this back"). TestEntryPointForChoosesTheSerialPathOnlyForASample
+// proves the mapping function in isolation, but nothing stopped someone
+// from reverting the ONE call to it - entryPointFor would just become
+// an unused function, which Go does not flag, and every other test
+// still passes because the concurrent path also returns a
+// SampleIteration (pickSampleIteration's approximation). Running the
+// real binary and checking stderr NEVER logs "concurrent sims" for a
+// plain request is what would actually catch that revert.
+func TestASampleRequestNeverLogsTheConcurrentPath(t *testing.T) {
+	dir := t.TempDir()
+	in := filepath.Join(dir, "req.json")
+	if err := os.WriteFile(in, smallRequest(t), 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	cmd := exec.Command(buildBinary(t), "-in", in, "-out", filepath.Join(dir, "res.json"), "-progress")
+	var stderr bytes.Buffer
+	cmd.Stderr = &stderr
+	if err := cmd.Run(); err != nil {
+		t.Fatalf("forever-sim: %v\n%s", err, stderr.String())
+	}
+
+	if strings.Contains(stderr.String(), "concurrent sims") {
+		t.Error("a plain (sample) request logged the concurrent path; entryPointFor's call site was reverted")
+	}
+
+	// And the positive half: it still produced a result with a sample,
+	// so this is not passing by accident (e.g. the run failing before
+	// it reaches either entry point).
+	out, err := os.ReadFile(filepath.Join(dir, "res.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var res api.SimResult
+	if err := json.Unmarshal(out, &res); err != nil {
+		t.Fatal(err)
+	}
+	if res.Error != "" {
+		t.Fatalf("the sim reported an error: %s", res.Error)
+	}
+	if len(res.Sample) == 0 {
+		t.Error("a plain request carried no sample")
+	}
+}
+
 // The same stream, in process, for the payload's own shape: run takes
 // the sink as a parameter precisely so this needs no subprocess.
 func TestProgressPayloadFields(t *testing.T) {
@@ -362,6 +409,72 @@ func TestTheResultIsStampedWithTheBinarysOwnEngine(t *testing.T) {
 // and a request that did not ask for one must keep the fast concurrent
 // path - so this pins the mapping by function identity rather than by
 // running two full sims and hoping a stray difference shows through.
+// Two engine paths send a FinalRaidResult and then return WITHOUT ever
+// closing the channel (see drainToResult's own comment): a failed
+// simsignals.RegisterWithId, and SimOptions.IsTest. Neither is
+// reachable through a real request today - IDs are always fresh and
+// IsTest is always false - so this drives drainToResult directly
+// through a channel the test controls and deliberately never closes,
+// which is exactly what would hang forever on a drain that did not
+// stop for an error result. A timeout is the backstop in case a
+// regression brings the hang back.
+func TestDrainToResultStopsOnAnErrorResultEvenIfTheChannelNeverCloses(t *testing.T) {
+	reporter := make(chan *proto.ProgressMetrics, 1)
+	want := &proto.RaidSimResult{Error: &proto.ErrorOutcome{Message: "could not register for signals"}}
+	reporter <- &proto.ProgressMetrics{FinalRaidResult: want}
+	// No close(reporter): the point of this test.
+
+	done := make(chan *proto.RaidSimResult, 1)
+	go func() { done <- drainToResult(reporter, nil) }()
+
+	select {
+	case got := <-done:
+		if got != want {
+			t.Errorf("drainToResult returned %+v, want the error result", got)
+		}
+	case <-time.After(2 * time.Second):
+		t.Fatal("drainToResult hung on an error result from a channel that never closed")
+	}
+}
+
+// The successful-run counterpart: draining still waits for the close
+// (and so still sees a mutation the producer makes after sending the
+// message) when the result carries no error.
+func TestDrainToResultWaitsForCloseOnASuccessfulResult(t *testing.T) {
+	reporter := make(chan *proto.ProgressMetrics, 2)
+	result := &proto.RaidSimResult{IterationsDone: 500}
+	reporter <- &proto.ProgressMetrics{FinalRaidResult: result}
+
+	done := make(chan *proto.RaidSimResult, 1)
+	go func() {
+		done <- drainToResult(reporter, nil)
+	}()
+
+	select {
+	case <-done:
+		t.Fatal("drainToResult returned before the channel closed; a producer's post-send mutation would not be visible")
+	case <-time.After(50 * time.Millisecond):
+		// Still waiting, as it should be.
+	}
+
+	// The producer's "post-send mutation" - the real bug this fixed was
+	// FinalRaidResult.SampleIteration getting attached to the same
+	// pointer after the message was already sent. This only has
+	// meaning because drainToResult has not returned yet - see the
+	// case above.
+	result.SampleIteration = &proto.SampleIteration{Dps: 42}
+	close(reporter)
+
+	select {
+	case got := <-done:
+		if got != result || got.GetSampleIteration().GetDps() != 42 {
+			t.Errorf("drainToResult returned %+v, want the mutated result", got)
+		}
+	case <-time.After(2 * time.Second):
+		t.Fatal("drainToResult did not return after the channel closed")
+	}
+}
+
 func TestEntryPointForChoosesTheSerialPathOnlyForASample(t *testing.T) {
 	if got, want := reflect.ValueOf(entryPointFor(true)).Pointer(), reflect.ValueOf(core.RunRaidSimAsync).Pointer(); got != want {
 		t.Error("a sample request did not choose the engine's single-threaded entry point")
