@@ -1,0 +1,113 @@
+{
+  "request": {
+    "engine_version": "edc0c8e9a",
+    "spec": "warrior-fury",
+    "source": { "kind": "addon", "ref": "", "captured_at": "2026-09-19T10:00:00Z" },
+    "character": {
+      "name": "Thrallgar",
+      "race": "orc",
+      "class": "warrior",
+      "level": 60,
+      "talents": "-5530515-",
+      "gear": [{ "slot": "head", "item_id": 12640 }],
+      "buffs": ["battle_shout:improved"],
+      "consumes": ["flask_of_supreme_power"],
+      "cooldowns": [{ "id": "spell:11305", "at_sec": [0, 90] }]
+    },
+    "encounter": {
+      "duration_sec": 180,
+      "variation": 0.2,
+      "targets": 1,
+      "execute_ratio": 0.25,
+      "profile": "",
+      "style": "light-movement",
+      "movement": { "interval_sec": 45, "duration_sec": 5, "kind": "away" },
+      "targets_over_time": [{ "at_sec": 0, "count": 1 }],
+      "target_level": 63,
+      "target_armor": 0,
+      "target_type": "humanoid",
+      "dummy": false
+    },
+    "iterations": 30000,
+    "random_seed": 0,
+    "target_error": 0.005,
+    "bulk": {
+      "mode": "gear",
+      "candidates": [{ "slot": "head", "item_id": 16963, "origin": "bag" }],
+      "talents": [{ "name": "Deep Fury", "talents": "-5530515-" }],
+      "sets": [{ "name": "AQ set", "gear": [{ "slot": "head", "item_id": 21329 }] }],
+      "locked": ["main_hand"],
+      "precision": "normal",
+      "cap": 400
+    },
+    "weights": { "stats": ["crit", "agility"], "reference": "crit" }
+  },
+  "result": {
+    "engine_version": "edc0c8e9a",
+    "request": {
+      "engine_version": "edc0c8e9a",
+      "spec": "warrior-fury",
+      "source": { "kind": "addon", "ref": "", "captured_at": "2026-09-19T10:00:00Z" },
+      "character": {
+        "name": "Thrallgar",
+        "race": "orc",
+        "class": "warrior",
+        "level": 60,
+        "talents": "-5530515-",
+        "gear": [],
+        "buffs": [],
+        "consumes": []
+      },
+      "encounter": {
+        "duration_sec": 180,
+        "variation": 0.2,
+        "targets": 1,
+        "execute_ratio": 0.25,
+        "profile": ""
+      },
+      "iterations": 3000,
+      "random_seed": 0
+    },
+    "lane": "browser",
+    "dps": { "mean": 1204.5, "stddev": 180.2, "error": 3.3, "min": 700, "max": 1800 },
+    "iterations_run": 3000,
+    "duration_ms": 4200,
+    "summary": {
+      "engine_version": "edc0c8e9a",
+      "fight_index": 0,
+      "duration_ms": 180000,
+      "damage_done": [],
+      "damage_taken": [],
+      "healing": [],
+      "healing_taken": [],
+      "deaths": [],
+      "auras": [],
+      "casts": [],
+      "interrupts": [],
+      "dispels": [],
+      "resources": [],
+      "threat": [],
+      "threat_by_target": [],
+      "taunts": [],
+      "combatants": [],
+      "roster": [],
+      "mechanics": [],
+      "phases": []
+    },
+    "sample": [
+      { "at_ms": -1500, "action": "spell:11305", "resources": { "rage": 0 } },
+      { "at_ms": 320, "action": "spell:25286", "target": "Target", "resources": { "rage": 42 } }
+    ],
+    "stages": [{ "iterations": 1000, "combos": 4 }],
+    "equipped": { "mean": 1180, "stddev": 170, "error": 3.1, "min": 690, "max": 1760 },
+    "combos": [
+      {
+        "substitutions": [{ "kind": "item", "slot": "head", "item_id": 16963, "origin": "bag" }],
+        "dps": { "mean": 1230, "stddev": 175, "error": 3.2, "min": 700, "max": 1810 },
+        "delta": { "mean": 50, "stddev": 20, "error": 1.1, "min": -10, "max": 110 },
+        "group": 0
+      }
+    ],
+    "weights": [{ "stat": "crit", "weight": 1, "error": 0.02 }]
+  }
+}

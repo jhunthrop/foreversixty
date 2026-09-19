@@ -263,4 +263,17 @@ export const simCopy = {
   savedLaneServer: 'our servers',
   /** The save button's disabled title when the last run was stopped rather than finished. */
   saveAbortedDisabled: 'A stopped run has nothing finished to save.',
+
+  /**
+   * The four things a combination can substitute (contract 2, `kind`, as amended by
+   * 10.8). `consumes` is an alternative consumable list tried as a candidate, and its
+   * `name` is the ids joined by ", " -- so the row reads "Consumables: flask_of_supreme_power,
+   * elixir_of_the_mongoose" until buff-names.ts (Task 9) is given the list to prettify.
+   */
+  substitutionKindLabel: {
+    item: 'Item',
+    talents: 'Talents',
+    set: 'Set',
+    consumes: 'Consumables',
+  } as Record<string, string>,
 } as const;
