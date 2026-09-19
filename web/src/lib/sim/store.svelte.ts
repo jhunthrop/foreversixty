@@ -172,6 +172,18 @@ export function createSimStore(init: SimStoreInit) {
   // that a resolved handle.result means the player's Stop click was too late to matter.
   let stopRequested = false;
 
+  // True for the duration of a runOnServer() call, set synchronously before its first
+  // `await` -- both the reentrancy guard (a second call while one is in flight is a no-op)
+  // and what RunControl disables the primary button on, the server lane's own equivalent
+  // of run()'s `phase = 'loading-engine'` guard.
+  let serverRunning = $state(false);
+  // Bumped by dispose() and by adopt() (a new character invalidates whatever server-lane
+  // poll was still running for the old one). runOnServer() captures its own generation and
+  // checks it against this after every `await`; once they disagree it returns without
+  // touching any more state, which is what keeps a disposed store's poll loop from writing
+  // to fields nothing renders any more.
+  let serverRunGeneration = 0;
+
   function poolOnce(): SimPool {
     pool ??= createPool({});
     return pool;
@@ -199,6 +211,10 @@ export function createSimStore(init: SimStoreInit) {
 
   /** Every source funnels through here, so the failure rule lives in one place. */
   async function adopt(load: Promise<SourceResult>): Promise<void> {
+    // A new character invalidates any server-lane poll still in flight for the old one --
+    // see runOnServer()'s own generation check.
+    serverRunGeneration += 1;
+    serverRunning = false;
     phase = 'loading-character';
     message = null;
     const outcome = await load;
@@ -324,6 +340,11 @@ export function createSimStore(init: SimStoreInit) {
     },
     get premium() {
       return premium;
+    },
+    /** True for the duration of a `runOnServer()` call. RunControl disables the primary
+     *  button and the server-lane button on it, the same way it does for `loadingEngine`. */
+    get serverRunning() {
+      return serverRunning;
     },
     /** The build's races, for the strip's picker. Empty until a character has loaded. */
     get races() {
@@ -460,8 +481,21 @@ export function createSimStore(init: SimStoreInit) {
      * production), updating `estimate.mean` and `iterationsDone` the way the browser
      * pool's own progress callback does, so RunControl renders both lanes identically.
      * `fetchSim` then fetches the finished result -- progress alone carries no summary.
+     *
+     * Two guards, both against the same class of bug -- state written by a run nothing
+     * wants any more:
+     *   - `serverRunning` is set synchronously, before the first `await`, so a second call
+     *     that lands while one is already in flight is a no-op. Without this a fast double
+     *     click dispatches (and pays for) the same premium run twice.
+     *   - `generation` is this call's own snapshot of `serverRunGeneration`. `dispose()`
+     *     and a new `adopt()` both bump the counter, and every state write below is guarded
+     *     by `stillCurrent()`, which compares the two. A poll that outlives the component
+     *     (a navigation away from /sim) or the character it was run for (a new source
+     *     pasted mid-poll) then stops touching `phase`/`estimate`/`result` on its next
+     *     check, rather than looping forever against a store nothing renders any more.
      */
     async runOnServer(): Promise<void> {
+      if (serverRunning) return;
       if (character === null) {
         message = simCopy.noCharacter;
         return;
@@ -471,62 +505,84 @@ export function createSimStore(init: SimStoreInit) {
         message = simCopy.failed;
         return;
       }
-      message = null;
-      detail = '';
 
-      const request = buildSimRequest({
-        spec: character.spec,
-        source: character.source,
-        character: toCharacterSpec(character, index, settings.buffs, settings.consumables),
-        encounter: settings.encounter,
-        iterations: precision,
-      });
+      serverRunning = true;
+      const generation = ++serverRunGeneration;
+      const stillCurrent = (): boolean => generation === serverRunGeneration;
 
-      let simId: string;
       try {
-        simId = await dispatchServerSim(request, init.apiBase);
-      } catch (error) {
-        message = error instanceof SimApiError ? error.message : simCopy.failed;
-        return;
-      }
+        message = null;
+        detail = '';
 
-      phase = 'running';
-      iterationsTotal = precision;
-      iterationsDone = 0;
+        const request = buildSimRequest({
+          spec: character.spec,
+          source: character.source,
+          character: toCharacterSpec(character, index, settings.buffs, settings.consumables),
+          encounter: settings.encounter,
+          iterations: precision,
+        });
 
-      const pollMs = init.serverPollMs ?? DEFAULT_SERVER_POLL_MS;
-      for (;;) {
-        await delay(pollMs);
-        let progress: SimProgress;
+        let simId: string;
         try {
-          progress = await fetchSimProgress(simId, init.apiBase);
+          simId = await dispatchServerSim(request, init.apiBase);
         } catch (error) {
-          message = error instanceof SimApiError ? error.message : simCopy.failed;
-          phase = result !== null ? 'done' : 'error';
+          if (stillCurrent()) message = error instanceof SimApiError ? error.message : simCopy.failed;
           return;
         }
-        iterationsDone = progress.iterations_done;
-        if (progress.dps !== undefined) estimate = { ...estimate, mean: progress.dps };
+        if (!stillCurrent()) return;
 
-        if (progress.state === 'error') {
-          message = simCopy.failed;
-          phase = result !== null ? 'done' : 'error';
-          return;
-        }
-        if (progress.state === 'done') {
+        iterationsTotal = precision;
+        iterationsDone = 0;
+
+        const pollMs = init.serverPollMs ?? DEFAULT_SERVER_POLL_MS;
+        for (;;) {
+          await delay(pollMs);
+          if (!stillCurrent()) return;
+
+          let progress: SimProgress;
           try {
-            const finished = await fetchSim(simId, init.apiBase);
-            result = finished;
-            estimate = finished.dps;
-            iterationsDone = finished.iterations_run;
-            iterationsTotal = finished.request.iterations;
-            phase = 'done';
+            progress = await fetchSimProgress(simId, init.apiBase);
           } catch (error) {
-            message = error instanceof SimApiError ? error.message : simCopy.failed;
-            phase = result !== null ? 'done' : 'error';
+            if (stillCurrent()) {
+              message = error instanceof SimApiError ? error.message : simCopy.failed;
+              phase = result !== null ? 'done' : 'error';
+            }
+            return;
           }
-          return;
+          if (!stillCurrent()) return;
+
+          iterationsDone = progress.iterations_done;
+          if (progress.dps !== undefined) estimate = { ...estimate, mean: progress.dps };
+
+          if (progress.state === 'error') {
+            message = simCopy.failed;
+            phase = result !== null ? 'done' : 'error';
+            return;
+          }
+          if (progress.state === 'done') {
+            try {
+              const finished = await fetchSim(simId, init.apiBase);
+              if (stillCurrent()) {
+                result = finished;
+                estimate = finished.dps;
+                iterationsDone = finished.iterations_run;
+                iterationsTotal = finished.request.iterations;
+                phase = 'done';
+              }
+            } catch (error) {
+              if (stillCurrent()) {
+                message = error instanceof SimApiError ? error.message : simCopy.failed;
+                phase = result !== null ? 'done' : 'error';
+              }
+            }
+            return;
+          }
         }
+      } finally {
+        // Only clears the flag this call itself set: dispose()/adopt() already cleared it
+        // (and moved the generation past this call's own) when they are the reason this is
+        // running, and a newer runOnServer() call may have set it again by now.
+        if (stillCurrent()) serverRunning = false;
       }
     },
 
@@ -547,6 +603,8 @@ export function createSimStore(init: SimStoreInit) {
 
     dispose(): void {
       handle?.cancel();
+      serverRunGeneration += 1;
+      serverRunning = false;
       pool?.terminate();
       pool = null;
     },

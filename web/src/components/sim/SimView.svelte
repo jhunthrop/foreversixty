@@ -76,6 +76,22 @@
   function onSignIn(): void {
     window.location.href = battlenetStartUrl(`${window.location.pathname}${window.location.search}`);
   }
+
+  // The stale-engine banner and pill describe a *settled* result, not one that is being
+  // re-run right now: while either lane is actively running, `store.result` still holds
+  // the old, stale result (neither lane clears it until a fresh one lands), so without this
+  // gate the stale banner's own "Run again" would render right alongside a live "Loading
+  // engine…"/"Stop" or the server-lane's own in-flight state -- two different "run this
+  // again" affordances on screen, one of them describing a run that already started.
+  const staleVersion = $derived(
+    store.result !== null &&
+      isStale(store.result.engine_version) &&
+      store.phase !== 'running' &&
+      store.phase !== 'loading-engine' &&
+      !store.serverRunning
+      ? store.result.engine_version
+      : null,
+  );
 </script>
 
 <div class="flex flex-col gap-[22px] md:gap-8" data-testid="sim-view">
@@ -113,7 +129,7 @@
       <SettingsBar
         settings={store.settings}
         spec={store.character.spec}
-        disabled={store.phase === 'running'}
+        disabled={store.phase === 'running' || store.serverRunning}
         onchange={(next) => store.setSettings(next)}
       />
       <RunControl
@@ -126,9 +142,8 @@
         message={store.message}
         detail={store.detail}
         racePending={store.needsRace}
-        staleVersion={store.result !== null && isStale(store.result.engine_version)
-          ? store.result.engine_version
-          : null}
+        {staleVersion}
+        serverRunning={store.serverRunning}
         onrun={() => void store.run()}
         onstop={() => store.stop()}
         onprecision={(value) => store.setPrecision(value)}

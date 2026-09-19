@@ -149,4 +149,13 @@ export const simCopy = {
   precisionNote: '10,000 iterations instead of 3,000: about half the error, about three times the wait.',
   runOnServers: 'Run on our servers',
   staleEngine: 'This result came from an older engine. Run it again for the current numbers.',
+  /** The DPS figure's own unit label, beside the number. */
+  dps: 'DPS',
+  /**
+   * The primary button's label while a server-lane run is in flight (fix round 1). The
+   * server lane has no cancel path yet -- `stop()` only knows how to abort the browser
+   * pool's own handle -- so the button is disabled and named for what is actually
+   * happening rather than left reading "Stop" over a click that does nothing.
+   */
+  serverRunButton: 'Running on our servers…',
 } as const;

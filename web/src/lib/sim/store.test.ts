@@ -1,7 +1,13 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { createFakeEngine } from '../../fixtures/sim/engine-fake';
-import { FIXTURE_BUILD_ID, createSimApi, envelope, fixtureResult } from '../../test-support/sim-api';
+import {
+  FIXTURE_BUILD_ID,
+  NEW_SIM_ID,
+  createSimApi,
+  envelope,
+  fixtureResult,
+} from '../../test-support/sim-api';
 import { simCopy } from './copy';
 import { createSimStore } from './store.svelte';
 import { createFakeWorker } from '../../test-support/fake-worker';
@@ -176,6 +182,107 @@ describe('createSimStore', () => {
       const sim = serverStore();
       await sim.runOnServer();
       expect(sim.message).toBe(simCopy.noCharacter);
+    });
+
+    it('a second call while one is in flight does not dispatch twice (reentrancy guard)', async () => {
+      let dispatches = 0;
+      api.route({
+        method: 'POST',
+        pattern: /\/v1\/sims\/run$/,
+        respond: () => {
+          dispatches += 1;
+          return envelope({ sim_id: NEW_SIM_ID }, 202);
+        },
+      });
+      api.route({
+        method: 'GET',
+        pattern: /\/v1\/sims\/([a-z2-7]{12})\/progress$/,
+        respond: () =>
+          envelope({
+            state: 'done',
+            iterations_done: fixtureResult.iterations_run,
+            dps: fixtureResult.dps.mean,
+          }),
+      });
+      api.route({
+        method: 'GET',
+        pattern: /\/v1\/sims\/([a-z2-7]{12})$/,
+        respond: () => envelope(fixtureResult),
+      });
+
+      const sim = serverStore();
+      await sim.loadAddon(FURY);
+
+      // Neither call is awaited before the second fires: runOnServer() sets its own
+      // reentrancy flag synchronously, before its first await, so the second call sees it
+      // already set and returns without ever building a request.
+      const first = sim.runOnServer();
+      const second = sim.runOnServer();
+      await Promise.all([first, second]);
+
+      expect(dispatches).toBe(1);
+      expect(sim.phase).toBe('done');
+    });
+
+    it('dispose() stops an in-flight poll and writes no more state', async () => {
+      let progressCalls = 0;
+      api.route({
+        method: 'GET',
+        pattern: /\/v1\/sims\/([a-z2-7]{12})\/progress$/,
+        respond: () => {
+          progressCalls += 1;
+          // Always 'running': without the dispose() guard this loop would poll forever.
+          return envelope({ state: 'running', iterations_done: progressCalls * 100, dps: 1600 });
+        },
+      });
+
+      const sim = serverStore(5);
+      await sim.loadAddon(FURY);
+      const run = sim.runOnServer();
+
+      // Let the dispatch resolve and at least one real poll tick land.
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      const callsAtDispose = progressCalls;
+      const iterationsAtDispose = sim.iterationsDone;
+      expect(callsAtDispose).toBeGreaterThan(0);
+
+      sim.dispose();
+      await run;
+      // A further window for a poll that ignored dispose() to prove it didn't.
+      await new Promise((resolve) => setTimeout(resolve, 60));
+
+      expect(progressCalls).toBe(callsAtDispose);
+      expect(sim.iterationsDone).toBe(iterationsAtDispose);
+      expect(sim.phase).not.toBe('done');
+      expect(sim.serverRunning).toBe(false);
+    });
+
+    it('a new adopt() mid-poll also stops it, rather than letting a stale poll overwrite the new character', async () => {
+      let progressCalls = 0;
+      api.route({
+        method: 'GET',
+        pattern: /\/v1\/sims\/([a-z2-7]{12})\/progress$/,
+        respond: () => {
+          progressCalls += 1;
+          return envelope({ state: 'running', iterations_done: progressCalls * 100, dps: 1600 });
+        },
+      });
+
+      const sim = serverStore(5);
+      await sim.loadAddon(FURY);
+      const run = sim.runOnServer();
+
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      expect(progressCalls).toBeGreaterThan(0);
+
+      await sim.loadBuild(FIXTURE_BUILD_ID);
+      const callsAfterAdopt = progressCalls;
+      await run;
+      await new Promise((resolve) => setTimeout(resolve, 60));
+
+      expect(progressCalls).toBe(callsAfterAdopt);
+      expect(sim.serverRunning).toBe(false);
+      expect(sim.character?.source.kind).toBe('build');
     });
   });
 

@@ -23,6 +23,7 @@
     detail,
     racePending,
     staleVersion,
+    serverRunning,
     onrun,
     onstop,
     onprecision,
@@ -46,6 +47,15 @@
      */
     racePending: boolean;
     staleVersion: string | null;
+    /**
+     * True while `store.runOnServer()` is in flight (fix round 1). Kept apart from
+     * `SimPhase` the way `racePending` is: a server run and a browser run are two
+     * independent lanes, so this cannot just be another value of `phase`. The primary
+     * button is disabled and relabelled while it is true -- the server lane has no cancel
+     * path yet, and a button that reads "Stop" over a click that does nothing is worse
+     * than one that is honestly unavailable.
+     */
+    serverRunning: boolean;
     onrun: () => void;
     onstop: () => void;
     onprecision: (value: IterationCount) => void;
@@ -66,15 +76,17 @@
   const percent = $derived(
     iterationsTotal > 0 ? Math.min(100, Math.round((iterationsDone / iterationsTotal) * 100)) : 0,
   );
-  const showBar = $derived(running || loadingEngine || phase === 'done');
+  const showBar = $derived(running || loadingEngine || serverRunning || phase === 'done');
   const label = $derived(
     running
       ? simCopy.stop
       : loadingEngine
         ? simCopy.engineLoadingButton
-        : phase === 'done'
-          ? simCopy.runAgain
-          : simCopy.run,
+        : serverRunning
+          ? simCopy.serverRunButton
+          : phase === 'done'
+            ? simCopy.runAgain
+            : simCopy.run,
   );
   const progressLine = $derived(
     phase === 'done'
@@ -90,7 +102,10 @@
   <button
     type="button"
     class="border-line-warm-strong rounded-control bg-card-top text-strong label min-h-11 w-full border px-5 disabled:opacity-50 md:w-auto md:min-w-[9rem]"
-    disabled={loadingEngine || phase === 'loading-character' || (racePending && !running)}
+    disabled={loadingEngine ||
+      phase === 'loading-character' ||
+      (racePending && !running) ||
+      (serverRunning && !running)}
     title={racePending && !running ? simCopy.pickRace : undefined}
     onclick={() => (running ? onstop() : onrun())}
     data-testid="sim-run-button"
@@ -100,11 +115,14 @@
 
   <div class="flex min-w-0 flex-1 flex-col gap-1">
     <div class="flex flex-wrap items-baseline gap-2">
-      <span class="tabular text-gold font-mono text-[32px] leading-none" data-testid="sim-dps">
+      <span
+        class={`tabular font-mono text-[32px] leading-none ${hasFigure ? 'text-gold' : 'text-muted'}`}
+        data-testid="sim-dps"
+      >
         {figure}
       </span>
       <span class="tabular text-muted font-mono text-[14px]" data-testid="sim-error">{band}</span>
-      <span class="label text-muted">DPS</span>
+      <span class="label text-muted">{simCopy.dps}</span>
       {#if staleVersion}
         <span class="pill pill-sample" data-testid="sim-stale-pill">{engineLabel(staleVersion)}</span>
       {/if}
@@ -136,7 +154,7 @@
         type="checkbox"
         class="accent-gold h-5 w-5"
         checked={precision === ITERATIONS.precise}
-        disabled={running}
+        disabled={running || serverRunning}
         title={simCopy.precisionNote}
         onchange={(event) =>
           onprecision(event.currentTarget.checked ? ITERATIONS.precise : ITERATIONS.normal)}
@@ -148,7 +166,7 @@
       <button
         type="button"
         class="border-line-warm rounded-control text-nav label min-h-11 border px-4 md:min-h-9"
-        disabled={running}
+        disabled={running || serverRunning}
         onclick={onserver}
         data-testid="sim-server-run">{simCopy.runOnServers}</button
       >
