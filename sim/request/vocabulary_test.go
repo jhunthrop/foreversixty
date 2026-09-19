@@ -5,6 +5,9 @@ import (
 	"os"
 	"slices"
 	"testing"
+
+	"github.com/jhunthrop/foreversixty/sim/internal/strcase"
+	"github.com/wowsims/classic/sim/core/proto"
 )
 
 // Everything the vocabulary lists must resolve, or the settings bar
@@ -55,6 +58,58 @@ func TestKnownConsumablesAllResolve(t *testing.T) {
 	}
 }
 
+func TestKnownProfessionsAllResolve(t *testing.T) {
+	ids := KnownProfessions()
+	if len(ids) == 0 {
+		t.Fatal("KnownProfessions is empty")
+	}
+	if !slices.IsSorted(ids) {
+		t.Error("KnownProfessions is not sorted; the list is an interface and must be stable")
+	}
+	for _, id := range ids {
+		if _, ok := ParseProfession(id); !ok {
+			t.Errorf("KnownProfessions lists %q, which does not resolve", id)
+		}
+		// And it resolves through the boundary too, not only through the
+		// parser: a slug the map knows but Build refuses is still a trap.
+		if _, _, err := professionsFor([]string{id}); err != nil {
+			t.Errorf("KnownProfessions lists %q, which Build refuses: %v", id, err)
+		}
+	}
+	if _, ok := ParseProfession("cooking"); ok {
+		t.Error("an unlisted profession slug resolved")
+	}
+}
+
+// The slugs are the site's own interface, so they are a map rather than
+// a descriptor walk - but the map must still name every profession the
+// engine has, or a character could carry one the sim cannot be told
+// about, and must name no value the engine dropped.
+func TestTheProfessionMapMatchesTheEngineEnum(t *testing.T) {
+	values := proto.Profession(0).Descriptor().Values()
+	fromEngine := map[string]bool{}
+	for i := 0; i < values.Len(); i++ {
+		v := values.Get(i)
+		if v.Number() == 0 { // ProfessionUnknown is "none", not a profession
+			continue
+		}
+		fromEngine[strcase.Snake(string(v.Name()))] = true
+	}
+	for slug := range fromEngine {
+		if _, ok := ParseProfession(slug); !ok {
+			t.Errorf("the engine has profession %q and the slug map does not; add it and regenerate IDS.md", slug)
+		}
+	}
+	for _, slug := range KnownProfessions() {
+		if !fromEngine[slug] {
+			t.Errorf("the slug map has profession %q the engine's enum does not", slug)
+		}
+	}
+	if len(fromEngine) != len(KnownProfessions()) {
+		t.Errorf("the engine has %d professions, the slug map %d", len(fromEngine), len(KnownProfessions()))
+	}
+}
+
 // The resolver accepts nothing the vocabulary does not list: an id that
 // works but is undocumented is a trap for the web lane.
 func TestTheVocabularyAndTheResolverAgree(t *testing.T) {
@@ -70,9 +125,18 @@ func TestTheVocabularyAndTheResolverAgree(t *testing.T) {
 			t.Errorf("the consumable walk resolves %q, which KnownConsumables does not list", e.id)
 		}
 	}
+	professions := KnownProfessions()
+	for _, e := range professionVocabulary() {
+		if !slices.Contains(professions, e.id) {
+			t.Errorf("the profession walk resolves %q, which KnownProfessions does not list", e.id)
+		}
+	}
 	// And an id off the list still fails.
 	if _, err := buffsFor([]string{"blessing_of_vulpera"}); !errors.Is(err, ErrUnknownBuff) {
 		t.Errorf("an unlisted buff id resolved: %v", err)
+	}
+	if _, _, err := professionsFor([]string{"cooking"}); !errors.Is(err, ErrUnknownProfession) {
+		t.Errorf("an unlisted profession slug resolved: %v", err)
 	}
 }
 
@@ -85,6 +149,12 @@ func TestTheWalkIsDeterministic(t *testing.T) {
 		}
 		if !slices.Equal(KnownConsumables(), KnownConsumables()) {
 			t.Fatal("KnownConsumables differs between calls")
+		}
+		// The profession list is built by ranging a map, which Go
+		// deliberately randomises, so the sort is what makes it an
+		// interface rather than a coin flip.
+		if !slices.Equal(KnownProfessions(), KnownProfessions()) {
+			t.Fatal("KnownProfessions differs between calls")
 		}
 	}
 }
