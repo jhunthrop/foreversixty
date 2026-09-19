@@ -1,0 +1,8 @@
+{
+  "sources": [
+    { "label": "A test source", "url": "https://example.invalid/two", "kind": "site" }
+  ],
+  "notes": "Gates the raid and drops a dungeon.",
+  "replace": [{ "id": "raid:molten-core", "opens": "later" }],
+  "remove": ["dungeon:the-deadmines"]
+}

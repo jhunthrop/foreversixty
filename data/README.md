@@ -10,6 +10,9 @@ uv run python -m pipeline fetch --product <forever product> --build <build>
 uv run python -m pipeline normalize --build <build>
 uv run python -m pipeline icons --build <build>
 uv run python -m pipeline tree-art --build <build>                    # then normalize again, so the manifest lists trees/
+uv run python -m pipeline loot --build <build> --engine "$FOREVER_ENGINE_PATH"   # needs raw/ and an engine checkout
+uv run python -m pipeline phases                                                 # emits web/src/data/phases.json
+uv run python -m pipeline phases --check                                         # CI's drift gate; writes nothing
 uv run python -m pipeline simdb --build <build>
 uv run python -m pipeline simconst --build <build>
 uv run python -m pipeline gametables --build <build>
@@ -21,9 +24,9 @@ uv run ruff check . && uv run pytest
 ```
 
 `fetch`, `icons`, `tree-art` and `gametables` are the only commands that use the network.
-`normalize`, `diff`, `simdb`, `simconst` and `specs` are offline and fully unit-tested
-against the fixtures in `tests/fixtures/`. `simproto` reads a local engine checkout and is
-the only command that needs one.
+`normalize`, `diff`, `simdb`, `simconst`, `phases` and `specs` are offline and fully
+unit-tested against the fixtures in `tests/fixtures/`. `simproto` and `loot` read a local
+engine checkout and are the only commands that need one.
 
 ## Layout
 ```
@@ -37,6 +40,17 @@ builds/<build>/trees/<background>.webp     320x384 background for every talent t
 builds/<build>/manifest.json    build, product, fetched_at, sha256 per emitted file
 builds/<build>/simdb.bin        the engine's SimDatabase protobuf (items, enchants)
 builds/<build>/simconsumes.json consumable items and the spells they cast
+builds/<build>/loot.json        every source the fork database and the client state, by kind
+builds/<build>/enchants.json    the enchants Top Gear's picker offers, with slots and classes
+                                (stats keyed by the planner's own vocabulary --
+                                pipeline/simdb/statmap.py's PROTO_STAT_ALIASES -- NOT
+                                contract 10.1 A7's reference_stat spellings)
+builds/<build>/suffixes.json    every random suffix and the stats it grants (same planner
+                                stat vocabulary as enchants.json above, not A7's)
+builds/<build>/simbuffs.json    a display name and icon per sim/request/IDS.md id
+curated/loot/*.json             overlays: Forever's own loot facts, with sources
+curated/simbuffs.json           the IDS.md ids no name join reaches, with sources
+curated/phases.json             the content phase calendar; emitted to web/src/data/phases.json
 builds/<build>/spellconst/<class-slug>.json  per-spell constants keyed by spell id
 builds/<build>/gametables/<name>.txt  the client's own base-mana, crit and rating curves
 curated/{classes,races,combos}.json        hand-maintained Forever facts (committed)
@@ -195,11 +209,23 @@ older-schema build works if one is ever fetched again.
    download, the new client does not ship that file: move it into
    `ABSENT_FROM_THE_CLASSIC_LINEAGE` and tell the engine lane, rather than dropping it
    quietly. If it raises a 400, the build string is wrong.
-6. Re-check the APL ranks: `uv run pytest tests/test_apl.py -q --no-cov`. Forever may
+6. Run `loot` **before** `simdb`, with an engine checkout: `uv run python -m pipeline loot
+   --build <build> --engine "$FOREVER_ENGINE_PATH"`. It needs the build's `raw/` the way
+   `simdb` does, plus the fork's `assets/database/db.json` at the pinned sha. It writes
+   `loot.json`, `enchants.json`, `suffixes.json`, `simbuffs.json` and `items.json`'s
+   `suffixes` and `faction_restriction` columns. `pipeline/simdb/items.py` does not read
+   either column yet -- that join is a separate, blocked task -- but once it does, the
+   order will matter, so keep running `loot` before `simdb` regardless. Its log line
+   states the coverage; compare it against
+   `tests/test_loot_build.py`'s constants before committing. Running `normalize` again
+   afterwards clears both columns, so re-run `loot` if you do. If it stops on an
+   unresolved IDS.md id, add that id to `curated/simbuffs.json` with the client row it
+   means and a source.
+7. Re-check the APL ranks: `uv run pytest tests/test_apl.py -q --no-cov`. Forever may
    renumber spell ranks, and a rotation naming a rank the client does not have is a
    spell the engine cannot resolve.
-7. Curate the Forever facts under `curated/` with their sources.
-8. Commit `builds/<build>/` and bump `web/src/data/active-build.json`.
+8. Curate the Forever facts under `curated/` with their sources.
+9. Commit `builds/<build>/` and bump `web/src/data/active-build.json`.
 
 ## Known gaps
 - The Classic Era client has no `JournalInstance` table, so `dungeons.json` is empty for
@@ -288,6 +314,24 @@ older-schema build works if one is ever fetched again.
     exemption is still needed and unchanged, and any stat whose
     `StatModifier_bonusStat_*` id is not in `STAT_BY_MODIFIER_ID` (unchanged behaviour:
     `ItemDataError`, not a guess).
+- `ItemRandomSuffix` 404s on build 1.60.1.69893 and `JournalInstance` 404s on both
+  Classic-lineage products, so neither random suffixes nor the Dungeon Journal comes
+  from the client: `suffixes.json` and `dungeons.json` have different answers to that.
+  Suffixes come from the engine fork's own database, which has them; `dungeons.json`
+  stays empty, and `loot.json` gets its dungeon and raid list from `Map.InstanceType`
+  instead.
+- The fork's item database is Classic Era's. Only 2,811 of its 7,553 item ids exist in
+  build 1.60.1.69893's `ItemSparse`, and 1,809 of the ids its sources name are absent
+  from the build's item table — Forever has re-itemised the raid tier and neither
+  database states a source for the replacements. Contract 10.4 has `loot.json` list
+  only items the build has, so those are left out and counted: Molten Core keeps 10 of
+  139, Zul'Gurub 2 of 98, and Onyxia's Lair 0 of 16. `curated/loot/` is where a sourced
+  Forever fact goes when one exists, and `forever-raid-phases.json` carries the gap
+  per raid.
+- 864 of the fork database's source entries have no kind in contract 6.1 — 501 plain
+  vendors (the 266 rank sets among them are covered by the `pvp` kind, read off the
+  client's `RequiredPVPRank`) and 363 open-world drops from NPCs the fork does not
+  name — and are dropped rather than guessed into a kind.
 
 ## What the beta client changed about the talents
 

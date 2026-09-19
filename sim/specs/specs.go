@@ -7,43 +7,44 @@ package specs
 // Spec is one playable specialisation. Spec is the spec key the whole site
 // keys on, for example "warrior-fury".
 type Spec struct {
-	Spec      string `json:"spec"`
-	ClassSlug string `json:"class_slug"`
-	SpecSlug  string `json:"spec_slug"`
-	Name      string `json:"name"`
-	Role      string `json:"role"`
-	TreeIndex int    `json:"tree_index"`
+	Spec          string `json:"spec"`
+	ClassSlug     string `json:"class_slug"`
+	SpecSlug      string `json:"spec_slug"`
+	Name          string `json:"name"`
+	Role          string `json:"role"`
+	TreeIndex     int    `json:"tree_index"`
+	ReferenceStat string `json:"reference_stat"`
 }
 
 // All is every spec, ordered by class slug then talent tree position.
 var All = []Spec{
-	{Spec: "druid-balance", ClassSlug: "druid", SpecSlug: "balance", Name: "Balance", Role: "dps", TreeIndex: 0},
-	{Spec: "druid-feral", ClassSlug: "druid", SpecSlug: "feral", Name: "Feral", Role: "dps", TreeIndex: 1},
-	{Spec: "druid-restoration", ClassSlug: "druid", SpecSlug: "restoration", Name: "Restoration", Role: "healer", TreeIndex: 2},
-	{Spec: "hunter-beast-mastery", ClassSlug: "hunter", SpecSlug: "beast-mastery", Name: "Beast Mastery", Role: "dps", TreeIndex: 0},
-	{Spec: "hunter-marksmanship", ClassSlug: "hunter", SpecSlug: "marksmanship", Name: "Marksmanship", Role: "dps", TreeIndex: 1},
-	{Spec: "hunter-survival", ClassSlug: "hunter", SpecSlug: "survival", Name: "Survival", Role: "dps", TreeIndex: 2},
-	{Spec: "mage-arcane", ClassSlug: "mage", SpecSlug: "arcane", Name: "Arcane", Role: "dps", TreeIndex: 0},
-	{Spec: "mage-fire", ClassSlug: "mage", SpecSlug: "fire", Name: "Fire", Role: "dps", TreeIndex: 1},
-	{Spec: "mage-frost", ClassSlug: "mage", SpecSlug: "frost", Name: "Frost", Role: "dps", TreeIndex: 2},
-	{Spec: "paladin-holy", ClassSlug: "paladin", SpecSlug: "holy", Name: "Holy", Role: "healer", TreeIndex: 0},
-	{Spec: "paladin-protection", ClassSlug: "paladin", SpecSlug: "protection", Name: "Protection", Role: "tank", TreeIndex: 1},
-	{Spec: "paladin-retribution", ClassSlug: "paladin", SpecSlug: "retribution", Name: "Retribution", Role: "dps", TreeIndex: 2},
-	{Spec: "priest-discipline", ClassSlug: "priest", SpecSlug: "discipline", Name: "Discipline", Role: "healer", TreeIndex: 0},
-	{Spec: "priest-holy", ClassSlug: "priest", SpecSlug: "holy", Name: "Holy", Role: "healer", TreeIndex: 1},
-	{Spec: "priest-shadow", ClassSlug: "priest", SpecSlug: "shadow", Name: "Shadow", Role: "dps", TreeIndex: 2},
-	{Spec: "rogue-assassination", ClassSlug: "rogue", SpecSlug: "assassination", Name: "Assassination", Role: "dps", TreeIndex: 0},
-	{Spec: "rogue-combat", ClassSlug: "rogue", SpecSlug: "combat", Name: "Combat", Role: "dps", TreeIndex: 1},
-	{Spec: "rogue-subtlety", ClassSlug: "rogue", SpecSlug: "subtlety", Name: "Subtlety", Role: "dps", TreeIndex: 2},
-	{Spec: "shaman-elemental", ClassSlug: "shaman", SpecSlug: "elemental", Name: "Elemental", Role: "dps", TreeIndex: 0},
-	{Spec: "shaman-enhancement", ClassSlug: "shaman", SpecSlug: "enhancement", Name: "Enhancement", Role: "dps", TreeIndex: 1},
-	{Spec: "shaman-restoration", ClassSlug: "shaman", SpecSlug: "restoration", Name: "Restoration", Role: "healer", TreeIndex: 2},
-	{Spec: "warlock-affliction", ClassSlug: "warlock", SpecSlug: "affliction", Name: "Affliction", Role: "dps", TreeIndex: 0},
-	{Spec: "warlock-demonology", ClassSlug: "warlock", SpecSlug: "demonology", Name: "Demonology", Role: "dps", TreeIndex: 1},
-	{Spec: "warlock-destruction", ClassSlug: "warlock", SpecSlug: "destruction", Name: "Destruction", Role: "dps", TreeIndex: 2},
-	{Spec: "warrior-arms", ClassSlug: "warrior", SpecSlug: "arms", Name: "Arms", Role: "dps", TreeIndex: 0},
-	{Spec: "warrior-fury", ClassSlug: "warrior", SpecSlug: "fury", Name: "Fury", Role: "dps", TreeIndex: 1},
-	{Spec: "warrior-protection", ClassSlug: "warrior", SpecSlug: "protection", Name: "Protection", Role: "tank", TreeIndex: 2},
+	{Spec: "druid-balance", ClassSlug: "druid", SpecSlug: "balance", Name: "Balance", Role: "dps", TreeIndex: 0, ReferenceStat: "spell_power"},
+	{Spec: "druid-feral", ClassSlug: "druid", SpecSlug: "feral", Name: "Feral", Role: "dps", TreeIndex: 1, ReferenceStat: "attack_power"},
+	{Spec: "druid-restoration", ClassSlug: "druid", SpecSlug: "restoration", Name: "Restoration", Role: "healer", TreeIndex: 2, ReferenceStat: "spell_power"},
+	{Spec: "hunter-beast-mastery", ClassSlug: "hunter", SpecSlug: "beast-mastery", Name: "Beast Mastery", Role: "dps", TreeIndex: 0, ReferenceStat: "attack_power"},
+	{Spec: "hunter-marksmanship", ClassSlug: "hunter", SpecSlug: "marksmanship", Name: "Marksmanship", Role: "dps", TreeIndex: 1, ReferenceStat: "attack_power"},
+	{Spec: "hunter-survival", ClassSlug: "hunter", SpecSlug: "survival", Name: "Survival", Role: "dps", TreeIndex: 2, ReferenceStat: "attack_power"},
+	{Spec: "mage-arcane", ClassSlug: "mage", SpecSlug: "arcane", Name: "Arcane", Role: "dps", TreeIndex: 0, ReferenceStat: "spell_power"},
+	{Spec: "mage-fire", ClassSlug: "mage", SpecSlug: "fire", Name: "Fire", Role: "dps", TreeIndex: 1, ReferenceStat: "spell_power"},
+	{Spec: "mage-frost", ClassSlug: "mage", SpecSlug: "frost", Name: "Frost", Role: "dps", TreeIndex: 2, ReferenceStat: "spell_power"},
+	{Spec: "paladin-holy", ClassSlug: "paladin", SpecSlug: "holy", Name: "Holy", Role: "healer", TreeIndex: 0, ReferenceStat: "spell_power"},
+	{Spec: "paladin-protection", ClassSlug: "paladin", SpecSlug: "protection", Name: "Protection", Role: "tank", TreeIndex: 1, ReferenceStat: "attack_power"},
+	{Spec: "paladin-retribution", ClassSlug: "paladin", SpecSlug: "retribution", Name: "Retribution", Role: "dps", TreeIndex: 2, ReferenceStat: "attack_power"},
+	{Spec: "priest-discipline", ClassSlug: "priest", SpecSlug: "discipline", Name: "Discipline", Role: "healer", TreeIndex: 0, ReferenceStat: "spell_power"},
+	{Spec: "priest-holy", ClassSlug: "priest", SpecSlug: "holy", Name: "Holy", Role: "healer", TreeIndex: 1, ReferenceStat: "spell_power"},
+	{Spec: "priest-shadow", ClassSlug: "priest", SpecSlug: "shadow", Name: "Shadow", Role: "dps", TreeIndex: 2, ReferenceStat: "spell_power"},
+	{Spec: "rogue-assassination", ClassSlug: "rogue", SpecSlug: "assassination", Name: "Assassination", Role: "dps", TreeIndex: 0, ReferenceStat: "attack_power"},
+	{Spec: "rogue-combat", ClassSlug: "rogue", SpecSlug: "combat", Name: "Combat", Role: "dps", TreeIndex: 1, ReferenceStat: "attack_power"},
+	{Spec: "rogue-subtlety", ClassSlug: "rogue", SpecSlug: "subtlety", Name: "Subtlety", Role: "dps", TreeIndex: 2, ReferenceStat: "attack_power"},
+	{Spec: "shaman-elemental", ClassSlug: "shaman", SpecSlug: "elemental", Name: "Elemental", Role: "dps", TreeIndex: 0, ReferenceStat: "spell_power"},
+	{Spec: "shaman-enhancement", ClassSlug: "shaman", SpecSlug: "enhancement", Name: "Enhancement", Role: "dps", TreeIndex: 1, ReferenceStat: "attack_power"},
+	{Spec: "shaman-restoration", ClassSlug: "shaman", SpecSlug: "restoration", Name: "Restoration", Role: "healer", TreeIndex: 2, ReferenceStat: "spell_power"},
+	{Spec: "warlock-affliction", ClassSlug: "warlock", SpecSlug: "affliction", Name: "Affliction", Role: "dps", TreeIndex: 0, ReferenceStat: "spell_power"},
+	{Spec: "warlock-demonology", ClassSlug: "warlock", SpecSlug: "demonology", Name: "Demonology", Role: "dps", TreeIndex: 1, ReferenceStat: "spell_power"},
+	{Spec: "warlock-destruction", ClassSlug: "warlock", SpecSlug: "destruction", Name: "Destruction", Role: "dps", TreeIndex: 2, ReferenceStat: "spell_power"},
+	{Spec: "warrior-arms", ClassSlug: "warrior", SpecSlug: "arms", Name: "Arms", Role: "dps", TreeIndex: 0, ReferenceStat: "attack_power"},
+	{Spec: "warrior-fury", ClassSlug: "warrior", SpecSlug: "fury", Name: "Fury", Role: "dps", TreeIndex: 1, ReferenceStat: "attack_power"},
+	{Spec: "warrior-protection", ClassSlug: "warrior", SpecSlug: "protection", Name: "Protection", Role: "tank", TreeIndex: 2, ReferenceStat: "attack_power"},
 }
 
 // ByKey indexes All by its spec key.

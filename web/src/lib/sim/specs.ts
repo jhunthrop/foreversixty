@@ -10,6 +10,7 @@ export interface Spec {
   name: string;
   role: SpecRole;
   tree_index: number;
+  reference_stat: string;
 }
 
 /** Every spec, ordered by class slug then talent tree position. */
@@ -21,6 +22,7 @@ export const SPECS: readonly Spec[] = [
     name: 'Balance',
     role: 'dps',
     tree_index: 0,
+    reference_stat: 'spell_power',
   },
   {
     spec: 'druid-feral',
@@ -29,6 +31,7 @@ export const SPECS: readonly Spec[] = [
     name: 'Feral',
     role: 'dps',
     tree_index: 1,
+    reference_stat: 'attack_power',
   },
   {
     spec: 'druid-restoration',
@@ -37,6 +40,7 @@ export const SPECS: readonly Spec[] = [
     name: 'Restoration',
     role: 'healer',
     tree_index: 2,
+    reference_stat: 'spell_power',
   },
   {
     spec: 'hunter-beast-mastery',
@@ -45,6 +49,7 @@ export const SPECS: readonly Spec[] = [
     name: 'Beast Mastery',
     role: 'dps',
     tree_index: 0,
+    reference_stat: 'attack_power',
   },
   {
     spec: 'hunter-marksmanship',
@@ -53,6 +58,7 @@ export const SPECS: readonly Spec[] = [
     name: 'Marksmanship',
     role: 'dps',
     tree_index: 1,
+    reference_stat: 'attack_power',
   },
   {
     spec: 'hunter-survival',
@@ -61,6 +67,7 @@ export const SPECS: readonly Spec[] = [
     name: 'Survival',
     role: 'dps',
     tree_index: 2,
+    reference_stat: 'attack_power',
   },
   {
     spec: 'mage-arcane',
@@ -69,6 +76,7 @@ export const SPECS: readonly Spec[] = [
     name: 'Arcane',
     role: 'dps',
     tree_index: 0,
+    reference_stat: 'spell_power',
   },
   {
     spec: 'mage-fire',
@@ -77,6 +85,7 @@ export const SPECS: readonly Spec[] = [
     name: 'Fire',
     role: 'dps',
     tree_index: 1,
+    reference_stat: 'spell_power',
   },
   {
     spec: 'mage-frost',
@@ -85,6 +94,7 @@ export const SPECS: readonly Spec[] = [
     name: 'Frost',
     role: 'dps',
     tree_index: 2,
+    reference_stat: 'spell_power',
   },
   {
     spec: 'paladin-holy',
@@ -93,6 +103,7 @@ export const SPECS: readonly Spec[] = [
     name: 'Holy',
     role: 'healer',
     tree_index: 0,
+    reference_stat: 'spell_power',
   },
   {
     spec: 'paladin-protection',
@@ -101,6 +112,7 @@ export const SPECS: readonly Spec[] = [
     name: 'Protection',
     role: 'tank',
     tree_index: 1,
+    reference_stat: 'attack_power',
   },
   {
     spec: 'paladin-retribution',
@@ -109,6 +121,7 @@ export const SPECS: readonly Spec[] = [
     name: 'Retribution',
     role: 'dps',
     tree_index: 2,
+    reference_stat: 'attack_power',
   },
   {
     spec: 'priest-discipline',
@@ -117,6 +130,7 @@ export const SPECS: readonly Spec[] = [
     name: 'Discipline',
     role: 'healer',
     tree_index: 0,
+    reference_stat: 'spell_power',
   },
   {
     spec: 'priest-holy',
@@ -125,6 +139,7 @@ export const SPECS: readonly Spec[] = [
     name: 'Holy',
     role: 'healer',
     tree_index: 1,
+    reference_stat: 'spell_power',
   },
   {
     spec: 'priest-shadow',
@@ -133,6 +148,7 @@ export const SPECS: readonly Spec[] = [
     name: 'Shadow',
     role: 'dps',
     tree_index: 2,
+    reference_stat: 'spell_power',
   },
   {
     spec: 'rogue-assassination',
@@ -141,6 +157,7 @@ export const SPECS: readonly Spec[] = [
     name: 'Assassination',
     role: 'dps',
     tree_index: 0,
+    reference_stat: 'attack_power',
   },
   {
     spec: 'rogue-combat',
@@ -149,6 +166,7 @@ export const SPECS: readonly Spec[] = [
     name: 'Combat',
     role: 'dps',
     tree_index: 1,
+    reference_stat: 'attack_power',
   },
   {
     spec: 'rogue-subtlety',
@@ -157,6 +175,7 @@ export const SPECS: readonly Spec[] = [
     name: 'Subtlety',
     role: 'dps',
     tree_index: 2,
+    reference_stat: 'attack_power',
   },
   {
     spec: 'shaman-elemental',
@@ -165,6 +184,7 @@ export const SPECS: readonly Spec[] = [
     name: 'Elemental',
     role: 'dps',
     tree_index: 0,
+    reference_stat: 'spell_power',
   },
   {
     spec: 'shaman-enhancement',
@@ -173,6 +193,7 @@ export const SPECS: readonly Spec[] = [
     name: 'Enhancement',
     role: 'dps',
     tree_index: 1,
+    reference_stat: 'attack_power',
   },
   {
     spec: 'shaman-restoration',
@@ -181,6 +202,7 @@ export const SPECS: readonly Spec[] = [
     name: 'Restoration',
     role: 'healer',
     tree_index: 2,
+    reference_stat: 'spell_power',
   },
   {
     spec: 'warlock-affliction',
@@ -189,6 +211,7 @@ export const SPECS: readonly Spec[] = [
     name: 'Affliction',
     role: 'dps',
     tree_index: 0,
+    reference_stat: 'spell_power',
   },
   {
     spec: 'warlock-demonology',
@@ -197,6 +220,7 @@ export const SPECS: readonly Spec[] = [
     name: 'Demonology',
     role: 'dps',
     tree_index: 1,
+    reference_stat: 'spell_power',
   },
   {
     spec: 'warlock-destruction',
@@ -205,6 +229,7 @@ export const SPECS: readonly Spec[] = [
     name: 'Destruction',
     role: 'dps',
     tree_index: 2,
+    reference_stat: 'spell_power',
   },
   {
     spec: 'warrior-arms',
@@ -213,6 +238,7 @@ export const SPECS: readonly Spec[] = [
     name: 'Arms',
     role: 'dps',
     tree_index: 0,
+    reference_stat: 'attack_power',
   },
   {
     spec: 'warrior-fury',
@@ -221,6 +247,7 @@ export const SPECS: readonly Spec[] = [
     name: 'Fury',
     role: 'dps',
     tree_index: 1,
+    reference_stat: 'attack_power',
   },
   {
     spec: 'warrior-protection',
@@ -229,6 +256,7 @@ export const SPECS: readonly Spec[] = [
     name: 'Protection',
     role: 'tank',
     tree_index: 2,
+    reference_stat: 'attack_power',
   },
 ];
 

@@ -1,15 +1,15 @@
 // Package phase is the content phase a fight belongs to, which is the
 // bracket rankings are grouped by.
 //
-// The boundaries are the site's own dates data
-// (web/src/data/dates.json), copied here as a table rather than read at
-// runtime: the API does not ship the site's source, the dates are four
-// fixed instants, and a ranking bracket that could change under a
-// running deployment would silently re-bucket stored rows.
+// The boundaries are data/curated/phases.json, copied here as a table
+// rather than read at runtime: the API does not ship the site's source,
+// the dates are four fixed instants, and a ranking bracket that could
+// change under a running deployment would silently re-bucket stored
+// rows. `python -m pipeline phases` emits the web's copy from the same
+// source.
 //
-// When a date moves or a phase is added, change this table,
-// data/curated/phases.json and the site's dates.json together;
-// boundaries_test.go fails if the first two disagree.
+// When a date moves or a phase is added, change that file and this
+// table together; boundaries_test.go fails if the two disagree.
 package phase
 
 import "time"
