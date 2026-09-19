@@ -84,8 +84,18 @@ describe('applyFightStyle', () => {
     const moving = applyFightStyle(DEFAULT_ENCOUNTER, 'heavy-movement');
     expect(moving.movement).toEqual({ interval_sec: 20, duration_sec: 5, kind: 'away' });
     const back = applyFightStyle(moving, 'patchwerk');
-    expect(back.movement).toBeNull();
-    expect(back.targets_over_time).toBeNull();
+    expect(back.movement).toBeUndefined();
+    expect(back.targets_over_time).toBeUndefined();
+  });
+
+  it('omits movement and targets_over_time from the wire shape when a style clears them', () => {
+    // The contract's fields are Go `omitempty` pointers/slices: the wire shape is the key
+    // absent, never `"movement":null`. This is the property that actually matters --
+    // `undefined` vs `null` is only how JS gets there.
+    const back = applyFightStyle(applyFightStyle(DEFAULT_ENCOUNTER, 'heavy-movement'), 'patchwerk');
+    const wire = JSON.parse(JSON.stringify(back)) as Record<string, unknown>;
+    expect('movement' in wire).toBe(false);
+    expect('targets_over_time' in wire).toBe(false);
   });
 
   it('gives the dungeon pull its target-count timeline and no execute window', () => {

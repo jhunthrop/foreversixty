@@ -131,15 +131,13 @@ export function applyFightStyle(encounter: EncounterSpec, id: FightStyleId): Enc
     style: style.id,
     targets: style.targets,
     execute_ratio: style.execute_ratio,
-    // `EncounterSpec.movement`/`targets_over_time` are typed `T | undefined` (Task 1's
-    // "optionals are `?` only, no `| null`"). Clearing a style's movement or timeline needs
-    // a value distinguishable from "never set", so this writes an explicit `null` here and
-    // casts past the narrower field type rather than silently leaving the previous style's
-    // block behind. See task-2-report.md for the conflict this papers over.
-    movement: (style.movement === null ? null : { ...style.movement }) as Movement | undefined,
-    targets_over_time: (style.targets_over_time === null
-      ? null
-      : style.targets_over_time.map((step) => ({ ...step }))) as TargetCount[] | undefined,
+    // `EncounterSpec.movement`/`targets_over_time` are `omitempty` on the Go side: the
+    // wire shape the contract specifies is the key absent, not `null`. `undefined` is the
+    // only value that reproduces that -- `JSON.stringify` drops an `undefined` field but
+    // still emits `"movement":null` for an explicit null.
+    movement: style.movement === null ? undefined : { ...style.movement },
+    targets_over_time:
+      style.targets_over_time === null ? undefined : style.targets_over_time.map((step) => ({ ...step })),
     dummy: style.dummy,
   };
 }
