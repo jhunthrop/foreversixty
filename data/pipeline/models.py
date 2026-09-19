@@ -168,6 +168,27 @@ class SuffixRecord(BaseModel):
     stats: dict[str, float]
 
 
+class EnchantRecord(BaseModel):
+    #: The effect id. NOT unique: the fork's own table repeats an effect
+    #: across the slots it can go in (19 of its 150 ids), which is why
+    #: `spell_id` and `item_id` are here too.
+    id: int
+    name: str
+    icon: str
+    #: The planner slot names this enchant can be applied in.
+    slots: list[str]
+    #: The shape of item it needs: normal, two_hand, shield, kit or staff.
+    item_types: list[str]
+    #: Class slugs allowed to use it. Empty means no restriction.
+    classes: list[str]
+    stats: dict[str, float]
+    phase: int
+    #: Appended after the contract's keys, for telling two rows with the
+    #: same effect id apart. 0 where the fork states neither.
+    spell_id: int
+    item_id: int
+
+
 class SpecRecord(BaseModel):
     spec: str
     class_slug: str

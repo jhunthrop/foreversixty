@@ -37,7 +37,15 @@ PROTO_STAT_ALIASES: dict[str, tuple[str, ...]] = {
     "stamina": ("StatStamina",),
     "intellect": ("StatIntellect",),
     "spirit": ("StatSpirit",),
+    #: A flat health bonus. The fork's own enchant table is the first thing
+    #: in this pipeline to state one (a "Minor Health" enchant effect).
+    "health": ("StatHealth",),
     "armor": ("StatArmor",),
+    #: Distinct from `armor`: the engine tracks an item's own Armor
+    #: separately from Armor added on top by a kit, buff or trinket, and
+    #: the weights UI (sim-parity-web-a's weight list) labels it "Bonus
+    #: armor" as its own option, so it is not folded into `armor` here.
+    "bonus_armor": ("StatBonusArmor",),
     "attack_power": ("StatAttackPower",),
     "ranged_attack_power": ("StatRangedAttackPower",),
     "feral_attack_power": ("StatFeralAttackPower",),

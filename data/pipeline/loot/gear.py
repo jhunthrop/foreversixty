@@ -19,8 +19,15 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from pipeline.forkdb import FACTION_RESTRICTIONS, ForkDatabase, decode
-from pipeline.models import Item, SuffixRecord
+from pipeline.forkdb import (
+    CLASS_SLUGS,
+    ENCHANT_TYPES,
+    FACTION_RESTRICTIONS,
+    ITEM_TYPE_SLOTS,
+    ForkDatabase,
+    decode,
+)
+from pipeline.models import EnchantRecord, Item, SuffixRecord
 from pipeline.normalize import write_json
 from pipeline.simdb.statmap import stat_keys
 
@@ -96,3 +103,48 @@ def apply_fork_columns(
         sum(1 for item in items if item.suffixes),
         sum(1 for item in items if item.faction_restriction),
     )
+
+
+def _enchant_icon(fork: ForkDatabase, row: dict) -> str:
+    """The enchant's art: its own item's icon where it has one, else its
+    spell's. Every row on the pinned fork resolves through one or the
+    other; a row that resolved through neither would reach the site as
+    `icons/.webp`, so it is refused rather than emitted blank."""
+    item_id, spell_id = int(row.get("itemId", 0)), int(row.get("spellId", 0))
+    icon = fork.item_icons.get(item_id) or fork.spell_icons.get(spell_id)
+    if not icon:
+        raise SystemExit(
+            f"enchant {row['effectId']} ({row.get('name', '?')}) has no icon in the "
+            f"fork's itemIcons or spellIcons"
+        )
+    return icon
+
+
+def build_enchants(fork: ForkDatabase) -> list[EnchantRecord]:
+    records = [
+        EnchantRecord(
+            id=int(row["effectId"]),
+            name=row["name"],
+            icon=_enchant_icon(fork, row),
+            slots=sorted(
+                {
+                    slot
+                    for item_type in [row["type"], *row.get("extraTypes", [])]
+                    for slot in decode(ITEM_TYPE_SLOTS, int(item_type), "enchant item type")
+                }
+            ),
+            item_types=[decode(ENCHANT_TYPES, int(row.get("enchantType", 0)), "enchant type")],
+            classes=sorted(
+                decode(CLASS_SLUGS, int(class_id), "enchant class")
+                for class_id in row.get("classAllowlist", [])
+            ),
+            stats=stat_keys(row.get("stats", [])),
+            phase=int(row.get("phase", 0)),
+            spell_id=int(row.get("spellId", 0)),
+            item_id=int(row.get("itemId", 0)),
+        )
+        for row in fork.enchants
+    ]
+    # Not `write_json`'s sort: `id` alone is not unique here, so the tie is
+    # broken by the spell and then the item, which together are.
+    return sorted(records, key=lambda record: (record.id, record.spell_id, record.item_id))

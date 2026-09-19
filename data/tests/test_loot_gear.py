@@ -5,6 +5,7 @@ from pathlib import Path
 from pipeline.forkdb import load_fork_database
 from pipeline.loot.gear import (
     apply_fork_columns,
+    build_enchants,
     build_suffixes,
     faction_restrictions,
     suffix_options,
@@ -80,3 +81,51 @@ def test_apply_fork_columns_is_idempotent(tmp_path):
     once = (build_dir / "items.json").read_bytes()
     apply_fork_columns(build_dir, options, restrictions)
     assert (build_dir / "items.json").read_bytes() == once
+
+
+def enchant(effect_id: int, spell_id: int):
+    for record in build_enchants(fork()):
+        if record.id == effect_id and record.spell_id == spell_id:
+            return record
+    raise AssertionError(f"no enchant {effect_id}/{spell_id}")
+
+
+def test_every_fork_enchant_row_is_emitted_even_when_it_shares_an_effect_id():
+    records = build_enchants(fork())
+    assert len(records) == 4
+    assert [r.id for r in records] == [15, 41, 41, 241]
+    assert [r.spell_id for r in records if r.id == 41] == [7418, 7420]
+
+
+def test_an_enchants_slots_come_from_its_item_type_and_extra_types():
+    assert enchant(41, 7420).slots == ["chest"]
+    assert enchant(41, 7418).slots == ["wrist"]
+    assert enchant(15, 2831).slots == ["chest", "feet", "hands", "legs"]
+    assert enchant(241, 7745).slots == ["main_hand", "off_hand"]
+
+
+def test_item_types_is_the_shape_restriction_not_the_slot():
+    assert enchant(41, 7420).item_types == ["normal"]
+    assert enchant(15, 2831).item_types == ["kit"]
+    assert enchant(241, 7745).item_types == ["two_hand"]
+
+
+def test_classes_are_slugs_and_sorted_and_empty_means_anyone():
+    assert enchant(15, 2831).classes == ["paladin", "warrior"]
+    assert enchant(41, 7420).classes == []
+
+
+def test_icons_come_from_the_item_when_there_is_one_and_the_spell_otherwise():
+    assert enchant(15, 2831).icon == "inv_misc_armorkit_17"
+    assert enchant(41, 7420).icon == "spell_holy_chest"
+
+
+def test_stats_and_phase_are_read_off_the_row():
+    # The fork encodes this kit's bonus at the engine's StatBonusArmor
+    # index, distinct from StatArmor -- see the note on `PROTO_STAT_ALIASES`
+    # in pipeline/simdb/statmap.py. The brief's draft of this test read
+    # "armor" here; that was measured against the wrong stat index.
+    assert enchant(15, 2831).stats == {"bonus_armor": 8.0}
+    assert enchant(241, 7745).stats == {"attack_power": 12.0}
+    assert enchant(241, 7745).phase == 2
+    assert enchant(41, 7418).phase == 0
