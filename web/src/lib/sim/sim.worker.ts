@@ -38,7 +38,13 @@ async function handle(message: ToWorker): Promise<void> {
   if (message.kind === 'abort') {
     const prefix = `${message.callbackId}-`;
     for (const callbackId of tokenOf.keys()) {
-      if (callbackId.startsWith(prefix)) engine?.simAbort(callbackId);
+      // A run's shards live under `${callbackId}-${index}` (the prefix match); a weights
+      // run is registered under its own callbackId verbatim, with no shard suffix, so it
+      // needs the exact-match branch too -- otherwise `pool.abort` can stop a run but never
+      // a weights call started with the same id.
+      if (callbackId === message.callbackId || callbackId.startsWith(prefix)) {
+        engine?.simAbort(callbackId);
+      }
     }
     return;
   }
@@ -67,6 +73,33 @@ async function handle(message: ToWorker): Promise<void> {
     }
     if (message.kind === 'count') {
       reply({ kind: 'one', token, result: loaded.simCount(message.request) });
+      return;
+    }
+    if (message.kind === 'plan') {
+      reply({ kind: 'one', token, result: loaded.simPlan(message.request) });
+      return;
+    }
+    if (message.kind === 'rank') {
+      reply({
+        kind: 'one',
+        token,
+        result: loaded.simRank(message.request, message.stage, message.results),
+      });
+      return;
+    }
+    if (message.kind === 'weights') {
+      // Registered in the same callbackId map a run uses, so simProgress reaches the pool
+      // through the identical path and the page's progress rendering does not fork.
+      tokenOf.set(message.callbackId, token);
+      try {
+        reply({
+          kind: 'one',
+          token,
+          result: await loaded.simWeights(message.request, message.callbackId),
+        });
+      } finally {
+        tokenOf.delete(message.callbackId);
+      }
       return;
     }
     tokenOf.set(message.callbackId, token);

@@ -19,6 +19,7 @@
 // standalone island build inline it (vite.island.config.ts allow-lists the PUBLIC_ prefix).
 // It defaults to 'fake' because sim.wasm does not exist yet; web.yml sets it to 'wasm' once
 // CI builds an artifact for the pinned sha.
+import type { StageRequests } from './bulk-types';
 import { ENGINE_VERSION, engineAssetUrl } from './version';
 
 export type EngineMode = 'fake' | 'wasm';
@@ -89,6 +90,13 @@ export interface RequestValidation {
 /** `simCount`'s two answers, both of them ordinary (contract 10.2). */
 export type CountAnswer =
   { ok: true; combinations: number } | { ok: false; cap: number; combinations: number };
+
+/**
+ * `simPlan`'s two answers. The refusal shape is identical to `CountAnswer`'s -- both wrap
+ * sim/bulk's ErrCapExceeded -- so it is reused rather than retyped; only the success shape
+ * differs (a `StageRequests`, not a bare count).
+ */
+export type PlanAnswer = { ok: true; stage: StageRequests } | Extract<CountAnswer, { ok: false }>;
 
 interface GoGlue {
   new (): { importObject: WebAssembly.Imports; run(instance: WebAssembly.Instance): Promise<void> };

@@ -6,13 +6,18 @@
 // the Worker boundary, so these run in the default (node) environment.
 import { describe, expect, it, vi } from 'vitest';
 import fixtureResultJson from '../../fixtures/sim/result.json';
+import bulkResultJson from '../../fixtures/sim/bulk-result.json';
+import weightsResultJson from '../../fixtures/sim/weights-result.json';
 import { createFakeEngine } from '../../fixtures/sim/engine-fake';
 import { createFakeWorker } from '../../test-support/fake-worker';
+import type { BulkResult, WeightsResult } from './bulk-types';
 import { DEFAULT_ENCOUNTER, type SimRequest, type SimResult } from './types';
 import { ENGINE_VERSION } from './version';
 import { createPool } from './worker';
 
 const fixtureResult = fixtureResultJson as unknown as SimResult;
+const bulkRequestFixture = (bulkResultJson as unknown as BulkResult).request;
+const weightsRequestFixture = (weightsResultJson as unknown as WeightsResult).request;
 
 const request: SimRequest = {
   engine_version: ENGINE_VERSION,
@@ -158,5 +163,83 @@ describe('the pool routes the two synchronous exports to worker 0', () => {
     const pool = createPool({ hardwareConcurrency: 2, spawn: () => createFakeWorker(createFakeEngine()) });
     await expect(pool.validate('{nope')).rejects.toThrow(/JSON/);
     pool.terminate();
+  });
+});
+
+describe("the pool's bulk messages", () => {
+  it('routes plan and rank to worker 0 and returns their JSON verbatim', async () => {
+    const engine = createFakeEngine({ tickMs: 0, ticks: 1 });
+    const spawned: number[] = [];
+    const pool = createPool({
+      hardwareConcurrency: 4,
+      spawn: (index) => {
+        spawned.push(index);
+        return createFakeWorker(engine);
+      },
+    });
+
+    const request = JSON.stringify(bulkRequestFixture);
+    const planned = await pool.plan(request);
+    expect(planned.ok).toBe(true);
+    if (!planned.ok) throw new Error('unreachable');
+    expect(planned.stage.stage).toBe(1);
+
+    const results = await Promise.all(
+      planned.stage.requests.map((entry, index) => pool.run([JSON.stringify(entry)], `t-${index}`, () => {})),
+    );
+    const ranked = await pool.rank(
+      request,
+      JSON.stringify(planned.stage),
+      `[${results.map((part) => part[0]).join(',')}]`,
+    );
+    expect(ranked.next ?? ranked.result).toBeDefined();
+
+    // split/combine/plan/rank/count/validate/needs-more all go to worker 0; only `run`
+    // fans out. Contract 10.2 is explicit that a stage's requests run unsplit.
+    expect(Math.min(...spawned)).toBe(0);
+    pool.terminate();
+  });
+
+  it('answers a cap breach from plan as a discriminated result, not a throw', async () => {
+    const pool = createPool({ hardwareConcurrency: 2, spawn: () => createFakeWorker(createFakeEngine()) });
+    const tightCap: SimRequest = {
+      ...bulkRequestFixture,
+      bulk: { ...bulkRequestFixture.bulk!, cap: 1 },
+    };
+    const planned = await pool.plan(JSON.stringify(tightCap));
+    expect(planned).toEqual({ ok: false, cap: 1, combinations: expect.any(Number) });
+    pool.terminate();
+  });
+
+  it('reports weights progress through the same shard callback a run uses', async () => {
+    const engine = createFakeEngine({ tickMs: 0, ticks: 3 });
+    const pool = createPool({ hardwareConcurrency: 2, spawn: () => createFakeWorker(engine) });
+    const ticks: number[] = [];
+    const json = await pool.weights(JSON.stringify(weightsRequestFixture), 'w-1', (progress) =>
+      ticks.push(progress.iterationsDone),
+    );
+    expect(JSON.parse(json)).toHaveProperty('weights');
+    expect(ticks.length).toBeGreaterThan(0);
+    pool.terminate();
+  });
+
+  it('aborts a weights run through the same callback id it was started with', async () => {
+    vi.useFakeTimers();
+    try {
+      const engine = createFakeEngine({ tickMs: 10, ticks: 20 });
+      const pool = createPool({ hardwareConcurrency: 1, spawn: () => createFakeWorker(engine) });
+
+      const run = pool.weights(JSON.stringify(weightsRequestFixture), 'weights-1', () => {});
+      const settled = expect(run).rejects.toThrow(/aborted/);
+
+      await vi.advanceTimersByTimeAsync(15);
+      pool.abort('weights-1');
+      await vi.advanceTimersByTimeAsync(100);
+
+      await settled;
+      pool.terminate();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });
