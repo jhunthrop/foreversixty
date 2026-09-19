@@ -176,6 +176,11 @@ test('a loaded character reaches the run button and the DPS figure in one scroll
 }) => {
   await loadFury(page);
 
+  // The secondary encounter controls only exist while the disclosure is open; the audit
+  // has to measure them, so it opens it the way a player does.
+  await page.getByTestId('sim-settings-more').locator('summary').click();
+  await expect(page.getByTestId('sim-variation')).toBeVisible();
+
   await noHorizontalScroll(page);
   await targetsAreBigEnough(page);
   await sectionsKeepGutter(page);

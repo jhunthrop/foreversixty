@@ -146,7 +146,6 @@ export const simCopy = {
   rotation: 'Rotation',
   rotationPrefix: 'Default for',
   rotationLink: 'what it does',
-  settingsFootnote: 'Fight length varies by 20% between iterations, the way real pulls do.',
   customPresetNote: 'Keeps the buffs already applied. Choosing each one individually arrives with Top Gear.',
 
   // --- Task 13: the run control and every state it has. ---
