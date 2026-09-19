@@ -276,6 +276,15 @@ func combinations(req api.SimRequest, places []placement) ([]Combination, error)
 		if len(out) <= req.Bulk.Cap {
 			out = append(out, c)
 		}
+		// retentionProbe exists only so a test can observe len(out)
+		// DURING enumeration, not after: on a cap breach out is
+		// discarded below in favor of the error, so a test that only
+		// inspects the return value can never tell retained-to-the-cap
+		// apart from retained-everything-then-thrown-away - both return
+		// (nil, ErrCapExceeded{...}) either way.
+		if retentionProbe != nil {
+			retentionProbe(len(out))
+		}
 	}
 	if req.Bulk.Mode == api.KindGear {
 		gearCombinations(req, places, keep)
@@ -287,6 +296,15 @@ func combinations(req api.SimRequest, places []placement) ([]Combination, error)
 	}
 	return out, nil
 }
+
+// retentionProbe is nil in production. A test sets it (and restores it
+// to nil when done) to watch combinations' retained count as it grows,
+// which is the only way to prove the len(out) <= req.Bulk.Cap guard is
+// doing anything: on a cap breach, the return value alone cannot tell
+// "retained at most Cap+1 throughout" apart from "retained everything,
+// then discarded it for the error" - both produce the identical
+// (nil, ErrCapExceeded{...}).
+var retentionProbe func(retained int)
 
 // singleCombinations is one substitution at a time: every placement on
 // its own, then every talent loadout on its own.

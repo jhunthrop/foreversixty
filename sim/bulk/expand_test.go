@@ -881,34 +881,32 @@ func TestCombinationsRetentionStaysAtTheCap(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	runtime.GC()
-	var before runtime.MemStats
-	runtime.ReadMemStats(&before)
+	// On a cap breach, combinations discards out and returns
+	// (nil, ErrCapExceeded{...}) either way - whether it retained at
+	// most Cap+1 throughout or retained all 2,000 and threw them away
+	// at the end. The return value alone cannot tell those apart, so
+	// retentionProbe watches len(out) DURING enumeration, which is the
+	// only place the guard's effect is observable at all.
+	var peak int
+	retentionProbe = func(retained int) {
+		if retained > peak {
+			peak = retained
+		}
+	}
+	defer func() { retentionProbe = nil }()
 
 	_, err = combinations(req, places)
-
-	// GC'd before reading "after" too: what must stay bounded is what
-	// combinations RETAINS, not the transient garbage from building and
-	// discarding 1,990 combinations along the way, which a full GC
-	// sweeps regardless of how this function is written.
-	runtime.GC()
-	var after runtime.MemStats
-	runtime.ReadMemStats(&after)
 
 	var capped api.ErrCapExceeded
 	if !errors.As(err, &capped) || capped.Combinations != 2000 {
 		t.Fatalf("combinations(...) = %v, want ErrCapExceeded{Combinations: 2000}", err)
 	}
-	// 2,000 retained api.SimRequests (each carrying the whole character
-	// plus gear) would be tens of megabytes; an 8 MB ceiling is nowhere
-	// near that, while comfortably absorbing this test's own one-time
-	// warm-up cost when it happens to run cold (first in the process,
-	// e.g. under `-run`) rather than after the rest of this package's
-	// suite.
-	const ceiling = 8 << 20 // 8 MB
-	if delta := int64(after.HeapAlloc) - int64(before.HeapAlloc); delta > ceiling {
-		t.Errorf("combinations left %d bytes (%.2f MB) live on the heap for a cap of 10, want under %d (%.0f MB)",
-			delta, float64(delta)/1e6, ceiling, float64(ceiling)/1e6)
+	// The guard is `if len(out) <= req.Bulk.Cap`, so out can reach
+	// Cap+1 elements (the one append that proves the guard is about to
+	// stop, not Cap itself) before it stops growing. Anything larger
+	// means retention is no longer bounded by the cap.
+	if want := req.Bulk.Cap + 1; peak > want {
+		t.Errorf("combinations retained %d combinations at once for a cap of %d, want at most %d", peak, req.Bulk.Cap, want)
 	}
 }
 
