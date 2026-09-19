@@ -55,6 +55,8 @@ jobs:
       - uses: google-github-actions/setup-gcloud@v2
       - run: gcloud auth configure-docker us-east1-docker.pkg.dev --quiet
       - run: docker build --build-arg VERSION=${{ github.sha }} -t $IMAGE -f api/Dockerfile .
+      - name: The image carries the engine
+        run: docker run --rm --entrypoint /engine/forever-sim $IMAGE -version
       - run: docker push $IMAGE
       - uses: google-github-actions/deploy-cloudrun@v2
         with:

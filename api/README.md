@@ -197,6 +197,22 @@ Scheduler and takes none. Both need `/engine/forever-sim` in the image
 to do real work — see "The engine binary" below — and fall back to the
 checked-in fixture result when it is absent.
 
+### The engine binary
+
+The simulator jobs run `/engine/forever-sim`. The image builds it from
+the `sim/` module against the sha in `sim/enginever/version.go`, in its
+own stage, rewriting that module's development `replace` to the
+published fork — so the engine the jobs run is the engine the pin
+names, and re-pinning is a one-line change plus a rebuild.
+
+A deployment whose image somehow lacks the binary still serves: the
+jobs log that they are answering from the checked-in fixture result and
+every sim comes back with the fixture's numbers.
+
+`forever-sim` resolves `item:<id>` consumables through the build's
+`data/builds/<build>/simconsumes.json`, which the image already carries
+at `/data`.
+
 ### Granting premium
 
 Premium is a flag on the account, set by hand until payments are
