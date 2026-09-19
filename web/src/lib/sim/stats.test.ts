@@ -89,12 +89,16 @@ describe('SIM_STATS', () => {
 
 describe('statLabel', () => {
   it('prefers the copy table’s name', () => {
-    expect(statLabel('attack_power')).toBe('Attack power');
-    expect(statLabel('spell_haste')).toBe('Spell haste');
-    expect(statLabel('mp5')).toBe('MP5');
+    expect(statLabel('attack_power')).toBe(simCopy.statLabel.attack_power);
+    expect(statLabel('spell_haste')).toBe(simCopy.statLabel.spell_haste);
+    expect(statLabel('mp5')).toBe(simCopy.statLabel.mp5);
   });
 
   it('humanises an id the copy table does not name, rather than showing the id raw', () => {
+    // Not simCopy.statLabel here: 'some_new_stat' is deliberately absent from the copy
+    // table, so this literal is the only thing pinning the humanisation rule. Asserting
+    // it against the copy table instead would make this tautological and let the
+    // humanisation logic rot unnoticed.
     expect(statLabel('some_new_stat')).toBe('Some new stat');
   });
 });
