@@ -976,11 +976,20 @@ func TestHelmIDsAreHeads(t *testing.T) {
 	if len(helmIDs) < 40 {
 		t.Fatalf("helmIDs has %d entries, the rank tests need 40", len(helmIDs))
 	}
+	// planOf substitutes every helmIDs entry into base()'s orc warrior,
+	// so a head this character could not actually equip (another
+	// class's, another faction's, above the level cap) would silently
+	// vanish from Expand's output rather than becoming its own combo -
+	// a check on slot and uniqueness alone would not catch that.
+	ch := base().Character
 	seen := map[int]bool{}
 	for _, id := range helmIDs {
 		item, ok := simdb.Lookup(id)
 		if !ok || !slices.Contains(item.Slots, "head") {
 			t.Errorf("item %d is not a head of this build", id)
+		}
+		if ok && !usable(item, ch) {
+			t.Errorf("item %d is not usable by base()'s character", id)
 		}
 		if seen[id] {
 			t.Errorf("helmIDs lists %d twice", id)

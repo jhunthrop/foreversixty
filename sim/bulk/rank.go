@@ -12,7 +12,6 @@ import (
 	"fmt"
 	"math"
 	"slices"
-	"sort"
 
 	"github.com/jhunthrop/foreversixty/sim/api"
 )
@@ -48,6 +47,12 @@ func Rank(req api.SimRequest, stage StageRequests, results []api.SimResult) (*St
 		return nil, nil, fmt.Errorf("%w: stage %d, and the %s ladder has %d", ErrStageMismatch, stage.Stage, req.Bulk.Precision, len(ladder.Iterations))
 	}
 	if stage.Stage == len(ladder.Iterations) {
+		// stage.Ran is every stage BEFORE this one; this last stage
+		// itself was never appended (Rank only appends when building a
+		// NEXT stage, below, and there is no next one here). Task 17's
+		// finalResult needs stage.Ran PLUS one entry for this stage
+		// (stage.Iterations, len(stage.Combos)) to fill SimResult.Stages
+		// completely.
 		final := finalResult(req, stage, ranked, equipped, results[0])
 		return nil, &final, nil
 	}
@@ -89,29 +94,70 @@ func score(stage StageRequests, results []api.SimResult) ([]scored, api.Estimate
 		if res.Aborted {
 			return nil, api.Estimate{}, fmt.Errorf("bulk: run %d of stage %d was stopped before it finished", i, stage.Stage)
 		}
+		// A result the right SIZE but the wrong ORDER would otherwise
+		// pass every check above and silently attribute one
+		// combination's DPS to another's substitutions - exactly what
+		// this error's own doc comment says never happens. Stage
+		// requests run through a worker pool with no ordering
+		// guarantee of their own (spec 10.2); this is the only place
+		// that checks results stayed lined up with the requests that
+		// produced them.
+		if res.IterationsRun != stage.Iterations {
+			return nil, api.Estimate{}, fmt.Errorf("%w: result %d ran %d iterations, stage %d runs %d", ErrStageMismatch, i, res.IterationsRun, stage.Stage, stage.Iterations)
+		}
+		if !slices.Equal(res.Request.Character.Gear, stage.Requests[i].Character.Gear) {
+			return nil, api.Estimate{}, fmt.Errorf("%w: result %d does not carry stage request %d's gear; results must stay in request order", ErrStageMismatch, i, i)
+		}
+		if math.IsNaN(res.DPS.Mean) || math.IsInf(res.DPS.Mean, 0) || math.IsNaN(res.DPS.Error) || math.IsInf(res.DPS.Error, 0) {
+			return nil, api.Estimate{}, fmt.Errorf("bulk: run %d of stage %d reported a non-finite DPS (mean %v, error %v); a NaN mean would sort as tied with everything and a NaN bar would make the cut keep everyone silently", i, stage.Stage, res.DPS.Mean, res.DPS.Error)
+		}
 	}
 	equipped := results[0].DPS
-	out := make([]scored, 0, len(stage.Combos))
+	// ranked pairs a scored combination with its precomputed sort key,
+	// so the key - which walks every substitution's chip - is built
+	// once per combination rather than twice per comparison inside the
+	// sort (O(n) chipKey calls instead of O(n log n) of them, which
+	// matters at the server's 5,000-combination cap).
+	type ranked struct {
+		scored
+		key string
+	}
+	tmp := make([]ranked, 0, len(stage.Combos))
 	for i, combo := range stage.Combos {
 		dps := results[i+1].DPS
-		out = append(out, scored{
-			Combo: combo,
-			DPS:   dps,
-			Delta: api.Estimate{
-				Mean:   dps.Mean - equipped.Mean,
-				StdDev: math.Hypot(dps.StdDev, equipped.StdDev),
-				Error:  math.Hypot(dps.Error, equipped.Error),
+		tmp = append(tmp, ranked{
+			scored: scored{
+				Combo: combo,
+				DPS:   dps,
+				Delta: api.Estimate{
+					Mean:   dps.Mean - equipped.Mean,
+					StdDev: math.Hypot(dps.StdDev, equipped.StdDev),
+					Error:  math.Hypot(dps.Error, equipped.Error),
+				},
 			},
+			key: chipKey(combo),
 		})
 	}
 	// Best first, and ties broken by the substitution chip so two runs
 	// of one request produce the same order.
-	sort.SliceStable(out, func(i, j int) bool {
-		if out[i].DPS.Mean != out[j].DPS.Mean {
-			return out[i].DPS.Mean > out[j].DPS.Mean
+	slices.SortStableFunc(tmp, func(a, b ranked) int {
+		switch {
+		case a.DPS.Mean > b.DPS.Mean:
+			return -1
+		case a.DPS.Mean < b.DPS.Mean:
+			return 1
+		case a.key < b.key:
+			return -1
+		case a.key > b.key:
+			return 1
+		default:
+			return 0
 		}
-		return chipKey(out[i].Combo) < chipKey(out[j].Combo)
 	})
+	out := make([]scored, len(tmp))
+	for i, r := range tmp {
+		out[i] = r.scored
+	}
 	return out, equipped, nil
 }
 
@@ -145,17 +191,25 @@ func applyCut(ranked []scored, cut api.Cut) []scored {
 	if keep >= len(ranked) {
 		return ranked
 	}
-	// The last survivor's lower bound is the bar; anything whose upper
-	// bound still reaches it is a tie with the cut.
+	// The last of the cut's own survivors sets the bar; every
+	// candidate past it is checked against that FIXED bar
+	// independently, per api.Cut's own doc: "keeping ANYTHING whose
+	// interval still overlaps the last survivor's" - not "a
+	// contiguous run starting there". Error varies candidate to
+	// candidate, so the overlap predicate is not monotone in
+	// mean-sorted order: a tight, non-overlapping candidate can sit
+	// ranked ABOVE a wide, overlapping one. Stopping at (or including
+	// up to) the first failure would either drop or wrongly keep a
+	// candidate the slack exists to protect, so this is a filter over
+	// the whole tail, not a shortened or widened prefix.
 	bar := ranked[keep-1].DPS.Mean - cut.SlackSE*ranked[keep-1].DPS.Error
-	for keep < len(ranked) {
-		s := ranked[keep]
-		if s.DPS.Mean+cut.SlackSE*s.DPS.Error < bar {
-			break
+	out := append([]scored(nil), ranked[:keep]...)
+	for _, s := range ranked[keep:] {
+		if s.DPS.Mean+cut.SlackSE*s.DPS.Error >= bar {
+			out = append(out, s)
 		}
-		keep++
 	}
-	return ranked[:keep]
+	return out
 }
 
 // finalResult is Task 17.
