@@ -94,4 +94,33 @@ export const simCopy = {
     if (rank !== 0) parts.push(`Rank ${rank}`);
     return parts.length === 0 ? '' : ` (${parts.join(', ')})`;
   },
+
+  // --- Task 11: the island store's own failures, and the character strip and source
+  // switcher's copy. ---
+  noCharacter: 'Load a character first.',
+  changeSource: 'Change source',
+  openInPlanner: 'Open in planner',
+  // Shown by the strip in place of the gear grid when `gearKnown` is false, which is a
+  // saved sim: the stored request carries item ids but the page has no item file for a
+  // class it learns only from the result (Task 17).
+  savedNoGear: 'The gear this was run with is not stored with the result.',
+
+  sourceAddonTitle: 'From the addon',
+  sourceAddonBody: 'Paste the export string from the Forever Sixty addon, or let the companion push it.',
+  sourceBuildTitle: 'From a build',
+  sourceBuildBody: 'Paste a planner link or its id.',
+  sourceFightTitle: 'From a logged fight',
+  sourceFightBody: 'Paste a report link, or open a fight from a report and choose Sim this fight.',
+  sourceAccountTitle: 'Your characters',
+  // Task 18 replaces this with the landing state's character list; Task 11 only lays out
+  // the card's signed-out and signed-in shells.
+  sourceAccountPlaceholder: 'Your characters will appear here.',
+
+  // --- Task 21: build unfurls carrying simmed DPS. ---
+  includeSimOnCard: 'Include a simmed DPS on the card',
+  buildSimUnavailable: 'Needs a DPS estimate first; change a talent or a slot to get one.',
+  buildSimRunning: 'Simming this build for the card…',
+  buildSimDone: (dps: string, version: string): string =>
+    `The card will show ${dps} DPS on engine ${version}.`,
+  buildSimSkipped: 'The card will not show a DPS figure; the sim did not finish.',
 } as const;

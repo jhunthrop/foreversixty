@@ -604,7 +604,7 @@
             </button>
           {/if}
 
-          <SharePanel {store} />
+          <SharePanel {store} {live} />
         {/if}
       </div>
 
