@@ -33,7 +33,7 @@
   import { createSimStore } from '../../lib/sim/store.svelte';
   import { defaultSimState, parseSimState, simSearch, withSimState } from '../../lib/sim/url';
   import { ENGINE_VERSION, engineLabel, isStale } from '../../lib/sim/version';
-  import type { SimListRow, SimRequest, SimResult, SpecFidelity } from '../../lib/sim/types';
+  import type { SimListRow, SimResult, SpecFidelity } from '../../lib/sim/types';
   import BuffPanel from './BuffPanel.svelte';
   import CharacterStrip from './CharacterStrip.svelte';
   import DetailsCard from './DetailsCard.svelte';
@@ -188,8 +188,7 @@
   // (`encodeRequestParam`/`decodeRequestParam`/`SimState.req` are that task's own additions),
   // so there is nothing real to build a link from today. `null` is RequestDrawer's own "too
   // long for a link" answer, which is what this honestly is until the encoder exists.
-  function shareUrlFor(_request: SimRequest): string | null {
-    void _request;
+  function shareUrlFor(): string | null {
     return null;
   }
 

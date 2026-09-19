@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createFakeEngine } from '../../fixtures/sim/engine-fake';
 import {
   FIXTURE_BUILD_ID,
@@ -32,6 +32,11 @@ function store() {
 const api = createSimApi();
 beforeEach(() => api.install());
 afterEach(() => api.reset());
+// A safety net for the fake-timers test below: if it ever fails before its own
+// `vi.useRealTimers()` line, fake timers must not leak into every test that runs after it
+// in this file (runOnServer's polling loop is setTimeout-based and would hang forever
+// under a clock nothing is advancing). A no-op when timers are already real.
+afterEach(() => vi.useRealTimers());
 
 describe('createSimStore', () => {
   it('opens with no character and nothing running', () => {
@@ -116,6 +121,41 @@ describe('createSimStore', () => {
     await running;
     expect(sim.message).toBe(simCopy.stopped);
     expect(sim.result).toBe(first);
+  });
+
+  // Fix round 2: run() and runRequest() both call store-request.ts's runAndSettle now,
+  // so this pins run()'s own half of the parity the review caught duplicated. The test
+  // above only exercises the resolved-after-stop branch (a same-tick fake worker settles
+  // before stop() can truly interrupt anything); this one forces the rejected/cancelled
+  // branch -- the one the brief's own runRequest snippet got wrong -- by aborting a
+  // shard genuinely in flight, the same technique run.test.ts's own cancel test uses.
+  it('restores the previous result and lands on done after a genuine cancel, not error', async () => {
+    vi.useFakeTimers();
+    const sim = createSimStore({
+      treeVersion: '1.15.9.69722',
+      apiBase: 'https://api.test',
+      pool: createPool({ hardwareConcurrency: 2, spawn: () => fakeWorker(20) }),
+    });
+    await sim.loadAddon(FURY);
+
+    const first = sim.run();
+    await vi.advanceTimersByTimeAsync(2000);
+    await first;
+    expect(sim.phase).toBe('done');
+    const firstResult = sim.result;
+    expect(firstResult).not.toBeNull();
+
+    const second = sim.run();
+    await vi.advanceTimersByTimeAsync(25);
+    sim.stop();
+    await vi.advanceTimersByTimeAsync(2000);
+    await second;
+
+    expect(sim.message).toBe(simCopy.stopped);
+    expect(sim.result).toBe(firstResult);
+    expect(sim.phase).toBe('done');
+
+    vi.useRealTimers();
   });
 
   it('saves a finished result and hands back its id', async () => {

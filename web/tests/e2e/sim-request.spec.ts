@@ -29,7 +29,7 @@ test('the drawer shows the exact request, validates an edit and runs it', async 
   // Syntax errors are caught before the engine is asked anything.
   await editor.fill('{ "spec": ');
   await page.getByTestId('sim-request-run').click();
-  await expect(page.getByTestId('sim-request-errors')).toContainText('not JSON');
+  await expect(page.getByTestId('sim-request-errors')).toContainText(simCopy.requestNotJson);
 
   // A legal edit runs exactly as written: 500 iterations, whatever the precision select says.
   await editor.fill(JSON.stringify({ ...JSON.parse(json), iterations: 500 }, null, 2));

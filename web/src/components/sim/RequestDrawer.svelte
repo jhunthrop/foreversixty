@@ -104,7 +104,9 @@
   </summary>
   <div class="flex flex-col gap-3 p-4 pt-0">
     <p class="text-muted text-[12px]">{simCopy.requestNote}</p>
+    <label class="sr-only" for="sim-request-json">{simCopy.requestDrawer}</label>
     <textarea
+      id="sim-request-json"
       class="border-line-warm rounded-control bg-card-top text-text h-72 w-full border p-3 font-mono text-[12px]"
       spellcheck="false"
       bind:value={text}
@@ -156,7 +158,9 @@
     {#if shareError !== ''}
       <p role="alert" class="text-strong text-[13px]" data-testid="sim-request-share-error">{shareError}</p>
     {:else if shared !== ''}
+      <label class="sr-only" for="sim-request-share-link">{simCopy.requestShare}</label>
       <input
+        id="sim-request-share-link"
         type="text"
         readonly
         value={shared}

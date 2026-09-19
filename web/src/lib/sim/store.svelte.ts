@@ -23,7 +23,7 @@ import { simCopy } from './copy';
 import { EMPTY_ESTIMATE } from './estimate';
 import { precisionPlan, relativeError, type Lane, type PrecisionId } from './precision';
 import type { RequestValidation } from './engine';
-import { buildSimRequest, runSim, SimRunError, type RunHandle, type RunInput } from './run';
+import { buildSimRequest, type RunHandle, type RunInput } from './run';
 import { defaultSettings, settingsLabel, type SimSettings } from './settings';
 import {
   fromAddonExport,
@@ -33,7 +33,7 @@ import {
   type LoadContext,
   type SourceResult,
 } from './sources';
-import { createRequestMethods, type StoreRequestDeps } from './store-request';
+import { createRequestMethods, runAndSettle, type StoreRequestDeps } from './store-request';
 import type { CharacterPath } from '../characters';
 import type { Estimate, SimProgress, SimRequest, SimResult, SourceKind } from './types';
 import { createPool, type SimPool } from './worker';
@@ -557,45 +557,9 @@ export function createSimStore(init: SimStoreInit) {
         stepIterations: plan.step,
       };
 
-      phase = 'running';
-      handle = runSim(poolOnce(), input, (update) => {
-        // A shard can still report progress after stop() fires and before the engine has
-        // noticed the abort message; the figure on screen must not keep moving once the
-        // player has asked it to stop.
-        if (stopRequested) return;
-        estimate = update.estimate;
-        iterationsDone = update.iterationsDone;
-        iterationsTotal = update.iterationsTotal;
-        relative = update.relativeError;
-      });
-
-      try {
-        const finished = await handle.result;
-        // handle.result can resolve with a real result even after stop(): the abort message
-        // and the engine's own last tick can cross in flight, and a shard mid-tick when the
-        // message arrives finishes it rather than discarding the work. The player's Stop
-        // still wins -- the number on screen is the one from before this run, not a result
-        // they asked to discard.
-        if (stopRequested) {
-          message = simCopy.stopped;
-          restorePreviousResult();
-          phase = result !== null ? 'done' : 'idle';
-          return;
-        }
-        result = finished;
-        phase = 'done';
-      } catch (error) {
-        const failure = error instanceof SimRunError ? error : null;
-        message = failure?.cancelled === true ? simCopy.stopped : (failure?.message ?? simCopy.failed);
-        // The engine's own words, kept beside ours: sim/request names the buff or
-        // consumable id it could not map, and that is the only thing that says what to
-        // change. RunControl renders it under the message, verbatim.
-        detail = failure?.detail ?? '';
-        if (failure?.cancelled === true) restorePreviousResult();
-        phase = failure?.cancelled === true && result !== null ? 'done' : 'error';
-      } finally {
-        handle = null;
-      }
+      // The cancel/restore/phase decision from here on is runRequest()'s own too --
+      // runAndSettle (store-request.ts) is the one place it is written.
+      await runAndSettle(requestDeps, poolOnce(), input);
     },
 
     /**

@@ -20,7 +20,7 @@ import type { RequestValidation } from './engine';
 import { EMPTY_ESTIMATE } from './estimate';
 import { precisionOf, precisionPlan, STEP_ITERATIONS, type PrecisionId } from './precision';
 import { settingsFromRequest } from './request-json';
-import { buildSimRequest, runSim, SimRunError, type RunHandle, type RunUpdate } from './run';
+import { buildSimRequest, runSim, SimRunError, type RunHandle, type RunInput, type RunUpdate } from './run';
 import type { SimSettings } from './settings';
 import type { SourceResult } from './sources';
 import type { SimPhase } from './store.svelte';
@@ -28,40 +28,96 @@ import type { SimRequest, SimResult } from './types';
 import type { SimPool } from './worker';
 
 /**
+ * Everything `runAndSettle` needs to run one `RunInput` to a finish or a stop. Both
+ * `run()` (store.svelte.ts) and `runRequest()` below build a deps object satisfying this
+ * (structurally -- `StoreRequestDeps` extends it) and hand it the input they each built
+ * their own way; from here on there is exactly one rule for what "cancelled" means.
+ */
+export interface RunSettleDeps {
+  getStopRequested(): boolean;
+  /** `estimate`, `iterationsDone`, `iterationsTotal` and `relative`, written together --
+   *  the four fields a run's own progress callback writes, from `RunUpdate`'s own shape
+   *  rather than a fifth copy of their names. */
+  setProgress(update: RunUpdate): void;
+  setPhase(value: SimPhase): void;
+  setMessage(value: string | null): void;
+  setDetail(value: string): void;
+  getResult(): SimResult | null;
+  setResult(value: SimResult | null): void;
+  setHandle(value: RunHandle | null): void;
+  /** Puts the figure back to the last completed result after a cancelled run. */
+  restorePreviousResult(): void;
+}
+
+/**
  * Everything the four methods below need from `createSimStore`'s own closure. Every
  * setter here mutates exactly the `$state` field `store.svelte.ts` declares under the
  * matching name -- this module writes state, it just does not own any.
  */
-export interface StoreRequestDeps {
+export interface StoreRequestDeps extends RunSettleDeps {
   getCharacter(): SimCharacter | null;
   getTalents(): TalentFile | null;
   getSettings(): SimSettings;
   setSettings(value: SimSettings): void;
   getPrecisionId(): PrecisionId;
   setPrecisionId(value: PrecisionId): void;
-  getResult(): SimResult | null;
-  setResult(value: SimResult | null): void;
-  setMessage(value: string | null): void;
-  setDetail(value: string): void;
-  setPhase(value: SimPhase): void;
-  /** `estimate`, `iterationsDone`, `iterationsTotal` and `relative`, written together --
-   *  the same four fields `run()`'s own progress callback writes, from `RunUpdate`'s own
-   *  shape rather than a fifth copy of their names. */
-  setProgress(update: RunUpdate): void;
-  getStopRequested(): boolean;
   setStopRequested(value: boolean): void;
-  setHandle(value: RunHandle | null): void;
   /** Creates the pool on first use; every other lane already funnels through this. */
   poolOnce(): SimPool;
   /** The store's own single load-and-adopt path -- the failure rule lives there, once. */
   adopt(load: Promise<SourceResult>): Promise<void>;
-  /** Puts the figure back to the last completed result after a cancelled run. */
-  restorePreviousResult(): void;
   /** An FS1 code decoded into a `'manual'`-sourced character, bound to the store's own
    *  `LoadContext`. */
   fromPlannerCode(code: string): Promise<SourceResult>;
   /** `init.treeVersion`, for the FS1 code `applyRequest` encodes. */
   treeVersion: string;
+}
+
+/**
+ * One `RunInput`, run to a finish or a stop. This is the cancel/restore/phase decision
+ * `run()` and `runRequest()` both need and, until this fix round, both duplicated --
+ * this lane's review has now caught that six times across the branch, and two copies of
+ * one rule drift the first time someone fixes only one of them. Callers differ only in
+ * how they build `RunInput` (`run()` from the page's own settings, `runRequest()` from
+ * the edited text); from `phase: 'running'` on, there is exactly one rule, here.
+ */
+export async function runAndSettle(deps: RunSettleDeps, pool: SimPool, input: RunInput): Promise<void> {
+  deps.setPhase('running');
+  const handle = runSim(pool, input, (update) => {
+    // A shard can still report progress after stop() fires and before the engine has
+    // noticed the abort message; the figure on screen must not keep moving once the
+    // player has asked it to stop.
+    if (deps.getStopRequested()) return;
+    deps.setProgress(update);
+  });
+  deps.setHandle(handle);
+
+  try {
+    const finished = await handle.result;
+    // handle.result can resolve with a real result even after stop(): the abort message
+    // and the engine's own last tick can cross in flight, and a shard mid-tick when the
+    // message arrives finishes it rather than discarding the work. The player's Stop
+    // still wins -- the number on screen is the one from before this run, not a result
+    // they asked to discard.
+    if (deps.getStopRequested()) {
+      deps.setMessage(simCopy.stopped);
+      deps.restorePreviousResult();
+      deps.setPhase(deps.getResult() !== null ? 'done' : 'idle');
+      return;
+    }
+    deps.setResult(finished);
+    deps.setPhase('done');
+  } catch (error) {
+    const failure = error instanceof SimRunError ? error : null;
+    deps.setMessage(failure?.cancelled === true ? simCopy.stopped : (failure?.message ?? simCopy.failed));
+    // The engine's own words, kept beside ours: sim/request names the buff or consumable
+    // id it could not map, and that is the only thing that says what to change.
+    deps.setDetail(failure?.detail ?? '');
+    if (failure?.cancelled === true) deps.restorePreviousResult();
+    deps.setPhase(failure?.cancelled === true && deps.getResult() !== null ? 'done' : 'error');
+  } finally {
+    deps.setHandle(null);
+  }
 }
 
 export interface RequestMethods {
@@ -142,49 +198,16 @@ export function createRequestMethods(deps: StoreRequestDeps): RequestMethods {
         iterationsTotal: request.iterations,
         relativeError: 0,
       });
-      deps.setPhase('running');
-
-      const handle = runSim(
-        deps.poolOnce(),
-        {
-          spec: request.spec,
-          source: request.source,
-          character: request.character,
-          encounter: request.encounter,
-          iterations: request.iterations,
-          randomSeed: request.random_seed,
-          targetError: request.target_error,
-          stepIterations: STEP_ITERATIONS,
-        },
-        (update) => {
-          // A shard can still report progress after stop() fires and before the engine
-          // has noticed the abort message -- same guard as run()'s own callback.
-          if (deps.getStopRequested()) return;
-          deps.setProgress(update);
-        },
-      );
-      deps.setHandle(handle);
-
-      try {
-        const finished = await handle.result;
-        if (deps.getStopRequested()) {
-          deps.setMessage(simCopy.stopped);
-          deps.restorePreviousResult();
-          deps.setPhase(deps.getResult() !== null ? 'done' : 'idle');
-          return;
-        }
-        deps.setResult(finished);
-        deps.setPhase('done');
-      } catch (error) {
-        const failure = error instanceof SimRunError ? error : null;
-        deps.setMessage(failure?.cancelled === true ? simCopy.stopped : (failure?.message ?? simCopy.failed));
-        // The engine's own words, kept beside ours -- same as run()'s own catch.
-        deps.setDetail(failure?.detail ?? '');
-        if (failure?.cancelled === true) deps.restorePreviousResult();
-        deps.setPhase(failure?.cancelled === true && deps.getResult() !== null ? 'done' : 'error');
-      } finally {
-        deps.setHandle(null);
-      }
+      await runAndSettle(deps, deps.poolOnce(), {
+        spec: request.spec,
+        source: request.source,
+        character: request.character,
+        encounter: request.encounter,
+        iterations: request.iterations,
+        randomSeed: request.random_seed,
+        targetError: request.target_error,
+        stepIterations: STEP_ITERATIONS,
+      });
     },
   };
 }
