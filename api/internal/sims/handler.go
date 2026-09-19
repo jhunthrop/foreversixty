@@ -42,6 +42,10 @@ type Service struct {
 	// Jobs starts the premium lane's Cloud Run job. Nil means the
 	// deployment cannot reach it, and the premium lane is not offered.
 	Jobs jobs.Runner
+	// Summaries reads stored fight summaries, for the buffs a
+	// character's last fight recorded. Nil means no bucket, and
+	// sim-input answers without them.
+	Summaries Getter
 	// EngineVersion is the pinned engine build this deployment runs.
 	EngineVersion string
 	Log           *slog.Logger
