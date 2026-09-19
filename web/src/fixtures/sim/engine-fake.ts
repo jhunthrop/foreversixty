@@ -14,10 +14,24 @@
 // generator rather than randomly, so a Playwright assertion on the DPS figure is stable.
 import type { EngineModule, ProgressHandler } from '../../lib/sim/engine';
 import type { SimRequest, SimResult } from '../../lib/sim/types';
+import {
+  type BulkRequest,
+  type Combination,
+  type Combo,
+  type Precision,
+  type Stage,
+  type StageRequests,
+  type Substitution,
+  type WeightsRequest,
+} from '../../lib/sim/bulk-types';
+import type { Item } from '../../lib/planner/types';
+import fixtureItemsJson from '../planner/items/warrior.json';
 import fixtureResultJson from './result.json';
 import sampleJson from './sample.json';
 
 const fixture = fixtureResultJson as unknown as SimResult;
+/** simdb's stand-in, for the item names contract 10.1 A6 puts on every substitution. */
+const fixtureItems = fixtureItemsJson.items as unknown as Item[];
 // Design 5.1's sample-iteration log needs a sample on every result the fixture engine
 // hands back, so /sim's own e2e can exercise the tab without a second fixture wired
 // through simSplit/simCombine.
@@ -75,6 +89,149 @@ const delay = (ms: number): Promise<void> =>
  * for input that is not JSON at all -- one place for the message-extraction logic. */
 const errorEnvelope = (error: unknown): string =>
   JSON.stringify({ error: error instanceof Error ? error.message : String(error) });
+
+/**
+ * The iteration ladder, as contract 1.3 writes it. The real planner reads it from sim/bulk;
+ * the fake repeats it because the fake IS the planner here, and the e2e suite asserts the
+ * progress line names the right stage count. The final entry of each row matches
+ * `BULK_FINAL_ITERATIONS` in `precision.ts` (3,000 fast/normal, 10,000 high); the earlier
+ * stages are a fixture-only ladder, not a value that crosses the wasm boundary.
+ */
+const LADDER: Record<Precision, number[]> = {
+  fast: [100, 1000, 3000],
+  normal: [1000, 3000],
+  high: [1000, 10000],
+};
+
+/** The fixture item file stands in for simdb, so a substitution comes back named. */
+function itemName(itemId: number): string {
+  return fixtureItems.find((item) => item.id === itemId)?.name ?? `Item ${itemId}`;
+}
+
+/**
+ * The fake's expansion, following contract 10.1 A4: **mode decides**. `gear` takes the
+ * product of every candidate group -- one group per slot, each group being "keep what is
+ * equipped" plus that slot's candidates -- crossed with the consumable alternatives of A5;
+ * `drops` and `talents` take one substitution at a time. The empty product (nothing
+ * substituted) is the equipped set, which is `requests[0]` and not a combination, so it is
+ * dropped.
+ *
+ * Substitutions come back NAMED (contract 10.1 A6): the real planner reads the name from
+ * simdb, and the fake reads it from the fixture item file, so the page's "never re-join an
+ * id to a name" rule is exercised rather than merely asserted.
+ *
+ * A candidate whose slot is "" fits more than one slot and only the item database can say
+ * which; the fake has no database, so it resolves every one to `finger1`. Nothing in the
+ * suite asserts on that resolution -- the real engine's own smoke test covers it.
+ *
+ * Consumable alternatives (A5) are crossed onto every gear combination, INCLUDING the one
+ * where gear is left untouched: A5 says "each inner list replaces Consumes for that
+ * combination", and a gear-untouched, consumes-changed run is a real, distinct combination
+ * (the base request's own consumes are `[]` in the fixtures, so neither alternative list is
+ * ever a no-op). There is therefore no "untouched base" left to subtract once a consumables
+ * list is present.
+ */
+function expand(request: BulkRequest): Combination[] {
+  const bulk = request.bulk;
+  const slotOf = (slot: string): string => (slot === '' ? 'finger1' : slot);
+  const itemSubs: Substitution[] = bulk.candidates
+    .filter((candidate) => !(bulk.locked ?? []).includes(slotOf(candidate.slot)))
+    .map((candidate) => ({
+      kind: 'item',
+      slot: slotOf(candidate.slot),
+      item_id: candidate.item_id,
+      enchant: candidate.enchant,
+      suffix: candidate.suffix,
+      origin: candidate.origin,
+      name: itemName(candidate.item_id),
+      source_name: candidate.source_name,
+    }));
+
+  let groups: Substitution[][];
+  if (bulk.mode === 'gear') {
+    // The product of one group per slot, each group led by "nothing" -- which is exactly
+    // the set of subsets that use each slot at most once, in a stable order.
+    const bySlot = new Map<string, Substitution[]>();
+    for (const sub of itemSubs) {
+      const existing = bySlot.get(sub.slot ?? '');
+      if (existing === undefined) bySlot.set(sub.slot ?? '', [sub]);
+      else existing.push(sub);
+    }
+    let product: Substitution[][] = [[]];
+    for (const options of bySlot.values()) {
+      product = product.flatMap((base) => [base, ...options.map((sub) => [...base, sub])]);
+    }
+    // Consumable alternatives multiply the WHOLE gear product, including the untouched
+    // entry (contract 10.1 A5): every base, whether it changed gear or not, gets tried
+    // against each alternative consumable list.
+    const consumableLists = bulk.consumables ?? [];
+    if (consumableLists.length > 0) {
+      product = product.flatMap((base) =>
+        consumableLists.map((list) => [...base, { kind: 'consumes', name: list.join(', ') } as Substitution]),
+      );
+    }
+    groups = product.filter((group) => group.length > 0).sort((a, b) => a.length - b.length);
+  } else {
+    groups = itemSubs.map((sub) => [sub]);
+  }
+
+  for (const loadout of bulk.talents ?? []) {
+    groups.push([{ kind: 'talents', name: loadout.name, talents: loadout.talents }]);
+  }
+  for (const set of bulk.sets ?? []) groups.push([{ kind: 'set', name: set.name }]);
+
+  return groups.map((substitutions) => ({
+    request: applySubstitutions(request, substitutions),
+    substitutions,
+  }));
+}
+
+/** The base character with the substitutions written into its gear, talents and consumes. */
+function applySubstitutions(request: BulkRequest, substitutions: readonly Substitution[]): SimRequest {
+  const gear = request.character.gear.map((slot) => ({ ...slot }));
+  let talents = request.character.talents;
+  let consumes = [...request.character.consumes];
+  for (const sub of substitutions) {
+    if (sub.kind === 'talents') {
+      talents = sub.talents ?? talents;
+      continue;
+    }
+    if (sub.kind === 'consumes') {
+      // A5: the inner list REPLACES the character's consumes for this combination.
+      consumes = (sub.name ?? '').split(', ').filter((id) => id !== '');
+      continue;
+    }
+    if (sub.kind !== 'item') continue;
+    const existing = gear.findIndex((slot) => slot.slot === sub.slot);
+    const next = { slot: sub.slot!, item_id: sub.item_id!, enchant: sub.enchant, suffix: sub.suffix };
+    if (existing >= 0) gear[existing] = next;
+    else gear.push(next);
+  }
+  const { bulk: _bulk, ...base } = request;
+  return { ...base, character: { ...request.character, gear, talents, consumes } };
+}
+
+/** The equipped set, with the bulk block stripped: it is a plain run like any other. */
+function equippedRequest(request: BulkRequest, iterations: number): SimRequest {
+  const { bulk: _bulk, ...base } = request;
+  return { ...base, iterations };
+}
+
+function stageAt(request: BulkRequest, stage: number, combos: Combination[], ran: Stage[]): StageRequests {
+  const iterations = LADDER[request.bulk.precision as Precision][stage - 1];
+  return {
+    stage,
+    iterations,
+    requests: [
+      equippedRequest(request, iterations),
+      ...combos.map((combo) => ({ ...combo.request, iterations })),
+    ],
+    combos,
+    // Contract 10.1 A10: the ladder's history rides on the stage object across the
+    // boundary, so nothing stateful lives in the engine between calls.
+    ran: [...ran],
+  };
+}
 
 export function createFakeEngine(options: FakeEngineOptions = {}): EngineModule {
   const tickMs = options.tickMs ?? 120;
@@ -191,6 +348,93 @@ export function createFakeEngine(options: FakeEngineOptions = {}): EngineModule 
       const registered = active.has(callbackId);
       if (registered) aborted.add(callbackId);
       return JSON.stringify({ aborted: registered });
+    },
+
+    simPlan(requestJSON) {
+      const request = JSON.parse(requestJSON) as BulkRequest;
+      const combos = expand(request);
+      if (combos.length > request.bulk.cap) {
+        return JSON.stringify({
+          error: 'cap_exceeded',
+          cap: request.bulk.cap,
+          combinations: combos.length,
+        });
+      }
+      return JSON.stringify(stageAt(request, 1, combos, []));
+    },
+
+    simRank(requestJSON, stageJSON, resultsJSON) {
+      const request = JSON.parse(requestJSON) as BulkRequest;
+      const stage = JSON.parse(stageJSON) as StageRequests;
+      const results = JSON.parse(resultsJSON) as SimResult[];
+      const equipped = results[0].dps;
+      const scored = stage.combos
+        .map((combo, index) => ({ combo, dps: results[index + 1].dps }))
+        .sort((a, b) => b.dps.mean - a.dps.mean);
+
+      const ladder = LADDER[request.bulk.precision as Precision];
+      const ran: Stage[] = [
+        ...(stage.ran ?? []),
+        { iterations: stage.iterations, combos: stage.combos.length },
+      ];
+
+      if (stage.stage < ladder.length) {
+        // The cut: the top half at every stage but the last. The real planner keeps a
+        // quarter plus anything within two standard errors; the fake keeps a fixed
+        // fraction so a test can predict how many requests the next stage carries.
+        const keep = Math.max(1, Math.ceil(scored.length / 2));
+        const survivors = scored.slice(0, keep).map((entry) => entry.combo);
+        return JSON.stringify({ next: stageAt(request, stage.stage + 1, survivors, ran) });
+      }
+
+      // Within-error grouping: a run whose delta interval overlaps the leader's is group 0,
+      // then each next non-overlapping run opens the next group.
+      const combos: Combo[] = [];
+      let group = 0;
+      let boundary = Number.POSITIVE_INFINITY;
+      for (const entry of scored) {
+        const delta = {
+          mean: entry.dps.mean - equipped.mean,
+          stddev: 0,
+          error: Math.hypot(entry.dps.error, equipped.error),
+          min: 0,
+          max: 0,
+        };
+        const high = delta.mean + 1.96 * delta.error;
+        if (high < boundary) {
+          if (Number.isFinite(boundary)) group += 1;
+          boundary = delta.mean - 1.96 * delta.error;
+        }
+        combos.push({ substitutions: entry.combo.substitutions, dps: entry.dps, delta, group });
+      }
+
+      return JSON.stringify({
+        result: {
+          ...results[0],
+          request,
+          lane: 'browser',
+          combos,
+          equipped,
+          stages: ran,
+        } satisfies SimResult,
+      });
+    },
+
+    async simWeights(requestJSON, callbackId) {
+      const request = JSON.parse(requestJSON) as WeightsRequest;
+      const base = await this.simRun(JSON.stringify({ ...request }), callbackId);
+      const result = JSON.parse(base) as SimResult;
+      // Seeded off the stat name, so the same request gives the same weights every time.
+      const weights = request.weights.stats.map((stat) => {
+        if (stat === request.weights.reference) return { stat, weight: 1, error: 0 };
+        const random = seeded([...stat].reduce((sum, ch) => sum + ch.charCodeAt(0), 0));
+        return {
+          stat,
+          weight: Math.round(random() * 3000) / 100,
+          error: Math.round(random() * 200) / 100 + 0.01,
+        };
+      });
+      return JSON.stringify({ ...result, request, weights });
     },
 
     simNeedsMore(resultJSON, requestJSON) {

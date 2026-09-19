@@ -2,11 +2,28 @@ import { describe, expect, it, vi } from 'vitest';
 import type { SimProgressUpdate, SimRequest, SimResult } from '../../lib/sim/types';
 import { DEFAULT_ENCOUNTER } from '../../lib/sim/types';
 import { ENGINE_VERSION } from '../../lib/sim/version';
+import {
+  isCapExceeded,
+  type BulkRequest,
+  type BulkResult,
+  type CapExceeded,
+  type Precision,
+  type RankAnswer,
+  type StageRequests,
+  type WeightsRequest,
+  type WeightsResult,
+} from '../../lib/sim/bulk-types';
 import { createFakeEngine } from './engine-fake';
 import fixtureResultJson from './result.json';
+import fixtureBulkResultJson from './bulk-result.json';
+import fixtureWeightsResultJson from './weights-result.json';
 
 const fixtureResult = fixtureResultJson as unknown as SimResult;
 const fixtureRequest = fixtureResult.request;
+const fixtureBulkResult = fixtureBulkResultJson as unknown as BulkResult & { request: BulkRequest };
+const fixtureWeightsResult = fixtureWeightsResultJson as unknown as WeightsResult & {
+  request: WeightsRequest;
+};
 
 const request: SimRequest = {
   engine_version: ENGINE_VERSION,
@@ -237,5 +254,144 @@ describe('simCount', () => {
   it('counts a request with no bulk block as no combinations at all', () => {
     const engine = createFakeEngine();
     expect(JSON.parse(engine.simCount(JSON.stringify(fixtureRequest)))).toEqual({ combinations: 0 });
+  });
+
+  // simCount shipped in part A as a per-list sum (candidates + talents + sets), not the
+  // product-of-groups contract 10.1 A4 asks for. simPlan below is new in this task and does
+  // the real expansion; simCount is left exactly as shipped (controller ruling: do not
+  // reimplement the existing three), so it under-counts once candidates span more than one
+  // slot or a consumables list is present. Flagged in the task-3 report for the controller.
+  it('under-counts against a multi-slot gear product, unlike the new simPlan (known gap)', () => {
+    const engine = createFakeEngine();
+    const request = {
+      ...fixtureRequest,
+      bulk: {
+        mode: 'gear',
+        candidates: [
+          { slot: 'head', item_id: 16963, origin: 'bag' },
+          { slot: 'shoulder', item_id: 16966, origin: 'bank' },
+        ],
+        talents: [],
+        sets: [],
+        precision: 'fast',
+        cap: 400,
+      },
+    };
+    // The real product of two single-slot groups is 3 (single, single, pair) -- see
+    // simPlan's own test below, which agrees. simCount's shipped sum gives 2.
+    expect(JSON.parse(engine.simCount(JSON.stringify(request)))).toEqual({ combinations: 2 });
+  });
+});
+
+describe('the fake engine’s bulk exports', () => {
+  const gearRequest = (cap = 400, precision: Precision = 'fast'): string =>
+    JSON.stringify({
+      ...fixtureBulkResult.request,
+      bulk: {
+        mode: 'gear',
+        candidates: [
+          { slot: 'head', item_id: 16963, origin: 'bag' },
+          { slot: 'shoulder', item_id: 16966, origin: 'bank' },
+        ],
+        talents: [],
+        sets: [],
+        locked: [],
+        precision,
+        cap,
+      },
+    });
+
+  it('plans the equipped set first and every combination after it', () => {
+    const engine = createFakeEngine({ tickMs: 0, ticks: 1 });
+    const stage = JSON.parse(engine.simPlan(gearRequest())) as StageRequests;
+    expect(stage.stage).toBe(1);
+    expect(stage.iterations).toBe(100);
+    // two singles plus the pair, plus the equipped set at index 0
+    expect(stage.requests).toHaveLength(4);
+    expect(stage.combos).toHaveLength(3);
+    expect(stage.requests[0].iterations).toBe(100);
+  });
+
+  it('starts a normal-precision plan at 1,000 iterations', () => {
+    const engine = createFakeEngine({ tickMs: 0, ticks: 1 });
+    const stage = JSON.parse(engine.simPlan(gearRequest(400, 'normal'))) as StageRequests;
+    expect(stage.iterations).toBe(1000);
+  });
+
+  it('refuses a plan past the cap with the count, and never trims', () => {
+    const engine = createFakeEngine({ tickMs: 0, ticks: 1 });
+    const refusal: unknown = JSON.parse(engine.simPlan(gearRequest(2)));
+    expect(isCapExceeded(refusal)).toBe(true);
+    expect((refusal as CapExceeded).combinations).toBe(3);
+    expect((refusal as CapExceeded).cap).toBe(2);
+  });
+
+  it('multiplies the gear product by the consumable alternatives (contract 10.1 A5)', () => {
+    const engine = createFakeEngine({ tickMs: 0, ticks: 1 });
+    const request = JSON.parse(gearRequest(20)) as BulkRequest;
+    request.bulk.consumables = [['flask_of_supreme_power'], ['elixir_of_the_mongoose']];
+    const stage = JSON.parse(engine.simPlan(JSON.stringify(request))) as StageRequests;
+    // (1 head + 1) x (1 shoulder + 1) combinations = 4, including gear left untouched; each
+    // one gets tried against both consumable lists (A5: "each inner list replaces Consumes
+    // for that combination"), so nothing is left "untouched" once a consumables list is
+    // present -- 4 x 2 = 8.
+    expect(stage.combos).toHaveLength(8);
+  });
+
+  it('answers simValidate and simNeedsMore in the shapes contract 10.2 names', () => {
+    const engine = createFakeEngine({ tickMs: 0, ticks: 1 });
+    expect(JSON.parse(engine.simValidate(gearRequest()))).toEqual({ ok: true, errors: [] });
+    expect(JSON.parse(engine.simNeedsMore(JSON.stringify(fixtureBulkResult), gearRequest()))).toEqual({
+      needs_more: false,
+    });
+  });
+
+  it('ranks a stage into the next one and finally into a result', async () => {
+    const engine = createFakeEngine({ tickMs: 0, ticks: 1 });
+    const request = gearRequest();
+    let stage = JSON.parse(engine.simPlan(request)) as StageRequests;
+    let final: SimResult | null = null;
+    for (let guard = 0; guard < 5 && final === null; guard += 1) {
+      const results = await Promise.all(
+        stage.requests.map((entry, index) =>
+          engine.simRun(JSON.stringify(entry), `plan-${stage.stage}-${index}`),
+        ),
+      );
+      const answer = JSON.parse(
+        engine.simRank(request, JSON.stringify(stage), `[${results.join(',')}]`),
+      ) as RankAnswer;
+      if (answer.result !== undefined) final = answer.result;
+      else stage = answer.next!;
+    }
+    const bulk = final as (SimResult & { combos: NonNullable<SimResult['combos']> }) | null;
+    expect(bulk).not.toBeNull();
+    expect(bulk!.stages!.map((entry) => entry.iterations)).toEqual([100, 1000, 3000]);
+    expect(bulk!.equipped!.mean).toBeGreaterThan(0);
+    const means = bulk!.combos.map((combo) => combo.dps.mean);
+    expect([...means].sort((a, b) => b - a)).toEqual(means);
+    expect(bulk!.combos[0].group).toBe(0);
+    // Contract 10.1 A6: an item substitution comes back named, so the page never re-joins.
+    expect(bulk!.combos[0].substitutions[0].name).toBeTruthy();
+  });
+
+  it('carries the ladder history on the stage object, not in the engine (contract 10.1 A10)', () => {
+    const engine = createFakeEngine({ tickMs: 0, ticks: 1 });
+    const stage = JSON.parse(engine.simPlan(gearRequest())) as StageRequests;
+    expect(stage.ran).toEqual([]);
+  });
+
+  it('answers a weights request with the reference stat at exactly 1', async () => {
+    const engine = createFakeEngine({ tickMs: 0, ticks: 1 });
+    const json = await engine.simWeights(JSON.stringify(fixtureWeightsResult.request), 'w-1');
+    const result = JSON.parse(json) as WeightsResult;
+    expect(result.weights.find((row) => row.stat === 'attack_power')?.weight).toBe(1);
+    expect(result.weights).toHaveLength(6);
+  });
+
+  it('gives the same numbers for the same request, twice', async () => {
+    const engine = createFakeEngine({ tickMs: 0, ticks: 1 });
+    const one = await engine.simWeights(JSON.stringify(fixtureWeightsResult.request), 'w-1');
+    const two = await engine.simWeights(JSON.stringify(fixtureWeightsResult.request), 'w-2');
+    expect(JSON.parse(one).weights).toEqual(JSON.parse(two).weights);
   });
 });
