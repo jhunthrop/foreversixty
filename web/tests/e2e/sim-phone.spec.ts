@@ -15,6 +15,13 @@ test.describe.configure({ mode: 'serial' });
 // which is the width the Global Constraints name, and overriding it here would audit a
 // size nothing else in the suite uses.
 
+// H2: every sibling phone spec (report-phone.spec.ts, rankings-phone.spec.ts,
+// character-phone.spec.ts, guild-phone.spec.ts) carries this guard; this file relies on
+// --project=mobile alone for its 412px width, so without it the desktop project ran it too
+// and failed on the shared desktop header's sub-44px nav links -- and, because the file is
+// serial, took the five cases after it down with it.
+test.skip(() => test.info().project.name !== 'mobile', 'phone layout only');
+
 const GUTTER = 18;
 const TARGET = 44;
 
