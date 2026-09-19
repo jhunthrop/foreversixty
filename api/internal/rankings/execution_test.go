@@ -53,6 +53,30 @@ func TestThePercentileRouteRefusesExecution(t *testing.T) {
 	}
 }
 
+// TestTheLeaderboardRouteAcceptsExecution is LOW-7: the accepting half
+// of the metric=execution gate was only exercised indirectly, through
+// the shared ValidMetric, never at the HTTP route ValidMetric guards.
+func TestTheLeaderboardRouteAcceptsExecution(t *testing.T) {
+	h := newHarness(t)
+	serve(t, h)
+	rep, index, key := h.seedRankedFight(t)
+	if err := h.store.SetExecutionScore(t.Context(), rep, index, key, 0.92); err != nil {
+		t.Fatal(err)
+	}
+	res := h.get("/v1/rankings?encounter=9001&metric=execution")
+	defer res.Body.Close()
+	if res.StatusCode != http.StatusOK {
+		t.Fatalf("status %d, want 200: metric=execution is a valid leaderboard metric", res.StatusCode)
+	}
+	var page struct {
+		Rows []Row `json:"rows"`
+	}
+	h.data(res, &page)
+	if len(page.Rows) != 1 || page.Rows[0].Value != 0.92 {
+		t.Fatalf("rows = %+v", page.Rows)
+	}
+}
+
 func TestAnExecutionScoreIsClampedAndReadBack(t *testing.T) {
 	h := newHarness(t)
 	rep, index, key := h.seedRankedFight(t)
