@@ -81,6 +81,11 @@ jobs:
           echo "sim.wasm gzipped: ${mb} MB"
           awk -v b="$bytes" 'BEGIN { exit (b <= 4*1048576) ? 0 : 1 }' || {
             echo "sim.wasm is ${mb} MB gzipped, over the 4 MB budget"; exit 1; }
+      # Pinned, because the smoke test below is the only end-to-end gate
+      # on the browser artifact and a runner-image bump would otherwise
+      # silently change the host it is proved against.
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
       # A wasm that does not instantiate fails in the visitor's browser,
       # not here. This runs a real 100-iteration sim through all four
       # exports and checks the summary came back with it.

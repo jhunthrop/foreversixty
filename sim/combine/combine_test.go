@@ -1,6 +1,7 @@
 package combine
 
 import (
+	"fmt"
 	"math"
 	"testing"
 
@@ -218,5 +219,142 @@ func TestResultsTakesTheSlowestPartsWallClock(t *testing.T) {
 	}
 	if got.DurationMS != 250 {
 		t.Errorf("DurationMS = %d, want the slowest part's 250", got.DurationMS)
+	}
+}
+
+// actorWith builds one part: an actor with the abilities given, in the
+// order given, which is what the adapter's damage-descending sort
+// produces and what differs between parts.
+func actorWith(iters int, guid string, abilities ...summary.Ability) api.SimResult {
+	return api.SimResult{
+		IterationsRun: iters,
+		Summary: summary.Summary{DamageDone: []summary.Actor{{
+			GUID: guid, Name: "Sim", Abilities: abilities,
+		}}},
+	}
+}
+
+func ab(id int64, total int64) summary.Ability {
+	return summary.Ability{SpellID: id, Name: "spell", Total: total, Effective: total}
+}
+
+func totals(t *testing.T, res api.SimResult) map[int64]int64 {
+	t.Helper()
+	if len(res.Summary.DamageDone) == 0 {
+		t.Fatal("no actors in the combined summary")
+	}
+	out := map[int64]int64{}
+	for _, a := range res.Summary.DamageDone[0].Abilities {
+		out[a.SpellID] = a.Total
+	}
+	return out
+}
+
+// The adapter sorts each part's abilities by damage, so two parts of one
+// split run order near-ties differently. Merging by slice position then
+// adds one spell's damage to another's with nothing to show for it, so
+// the merge is keyed on the row's identity instead.
+func TestResultsMergesRowsByIdentityNotPosition(t *testing.T) {
+	parts := []api.SimResult{
+		actorWith(1000, "sim-player", ab(111, 600), ab(222, 400)),
+		actorWith(1000, "sim-player", ab(222, 700), ab(111, 300)),
+	}
+	got, err := Results(parts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	// Half of each part: 111 is (600+300)/2, 222 is (400+700)/2. Merging
+	// by index would report 650 and 350.
+	want := map[int64]int64{111: 450, 222: 550}
+	for id, w := range want {
+		if got := totals(t, got)[id]; got != w {
+			t.Errorf("spell %d = %d, want %d", id, got, w)
+		}
+	}
+	// And the table comes out in the adapter's own order, damage first.
+	rows := got.Summary.DamageDone[0].Abilities
+	if len(rows) != 2 || rows[0].SpellID != 222 || rows[1].SpellID != 111 {
+		t.Errorf("rows = %v, want 222 then 111 by damage descending", rows)
+	}
+}
+
+// A proc that fires in one part and not another is a row one part does
+// not have. It must be added at its own identity, not folded into
+// whatever happened to sit at its index.
+func TestResultsAddsARowOnlyALaterPartHas(t *testing.T) {
+	parts := []api.SimResult{
+		actorWith(1000, "sim-player", ab(111, 600)),
+		actorWith(1000, "sim-player", ab(999, 900), ab(111, 500)),
+	}
+	// A pet only the later part saw is the same problem one level up.
+	parts[1].Summary.DamageDone = append(parts[1].Summary.DamageDone, summary.Actor{
+		GUID: "sim-player-pet-0", Name: "Pet", Total: 200,
+		Abilities: []summary.Ability{ab(777, 200)},
+	})
+
+	got, err := Results(parts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	rows := totals(t, got)
+	if len(rows) != 2 {
+		t.Errorf("the combined table has %d rows, want 2: %v", len(rows), rows)
+	}
+	if rows[111] != 550 {
+		t.Errorf("spell 111 = %d, want (600+500)/2 = 550", rows[111])
+	}
+	if rows[999] != 450 {
+		t.Errorf("spell 999 = %d, want 900/2 = 450; the proc row was folded away", rows[999])
+	}
+	if len(got.Summary.DamageDone) != 2 {
+		t.Fatalf("%d actors, want the player and the pet only the later part saw",
+			len(got.Summary.DamageDone))
+	}
+	pet := got.Summary.DamageDone[1]
+	if pet.GUID != "sim-player-pet-0" || pet.Total != 100 {
+		t.Errorf("pet row = %+v, want sim-player-pet-0 at 200/2 = 100", pet)
+	}
+}
+
+// Results must not write into what it was given: the same parts combined
+// twice must give the same answer, and a caller that keeps its parts
+// must still have them.
+func TestResultsDoesNotTouchItsInput(t *testing.T) {
+	parts := []api.SimResult{
+		actorWith(1000, "sim-player", ab(111, 600), ab(222, 400)),
+		actorWith(1000, "sim-player", ab(222, 700), ab(111, 300)),
+	}
+	parts[0].Summary.DamageDone[0].Total = 1000
+	parts[0].Summary.DamageDone[0].Targets = []summary.Pair{{GUID: "t1", Total: 1000}}
+	parts[0].Summary.DamageDone[0].Series = []int64{10, 20}
+	parts[0].Summary.DamageDone[0].Abilities[0].Misses = map[string]int64{"MISS": 4}
+
+	first, err := Results(parts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	second, err := Results(parts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got, want := totals(t, second), totals(t, first); fmt.Sprint(got) != fmt.Sprint(want) {
+		t.Errorf("a second Results gave %v, want the same %v", got, want)
+	}
+
+	src := parts[0].Summary.DamageDone[0]
+	if src.Total != 1000 {
+		t.Errorf("parts[0] actor Total = %d, want its own 1000", src.Total)
+	}
+	if src.Abilities[0].SpellID != 111 || src.Abilities[0].Total != 600 {
+		t.Errorf("parts[0] first ability = %+v, want spell 111 at 600", src.Abilities[0])
+	}
+	if len(src.Targets) != 1 || src.Targets[0].Total != 1000 {
+		t.Errorf("parts[0] targets = %v, want its own", src.Targets)
+	}
+	if len(src.Series) != 2 || src.Series[0] != 10 || src.Series[1] != 20 {
+		t.Errorf("parts[0] series = %v, want its own", src.Series)
+	}
+	if src.Abilities[0].Misses["MISS"] != 4 {
+		t.Errorf("parts[0] misses = %v, want its own", src.Abilities[0].Misses)
 	}
 }

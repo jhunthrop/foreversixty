@@ -48,11 +48,22 @@ SIMDB_SRC     = data/builds/$(ACTIVE_BUILD)/simdb.bin
 # Every `go build`, `go test` and `go vet` in sim/ needs this file,
 # because //go:embed resolves at compile time. Run `make simdb` once
 # after a fresh clone.
-simdb: $(SIMDB_EMBED)
+simdb: simdb-check $(SIMDB_EMBED)
+
+.PHONY: simdb-check
+# The diagnostics have to live in a phony target that runs BEFORE the
+# file rule. Inside the recipe they are unreachable: a missing source is
+# a prerequisite with no rule, so make refuses the target during
+# resolution - "No rule to make target data/builds//simdb.bin" - and the
+# recipe, guards and all, never runs. Depend on `simdb`, not on
+# $(SIMDB_EMBED), to get them.
+simdb-check:
+	@test -n "$(ACTIVE_BUILD)" || { \
+	  echo "$(ACTIVE_BUILD_JSON) names no build"; exit 1; }
+	@test -f "$(SIMDB_SRC)" || { \
+	  echo "no $(SIMDB_SRC); the data lane's \`python -m pipeline simdb\` has not run for build $(ACTIVE_BUILD)"; exit 1; }
 
 $(SIMDB_EMBED): $(SIMDB_SRC) $(ACTIVE_BUILD_JSON)
-	@test -n "$(ACTIVE_BUILD)" || { echo "$(ACTIVE_BUILD_JSON) names no build"; exit 1; }
-	@test -f "$(SIMDB_SRC)" || { echo "no $(SIMDB_SRC); the data lane's \`python -m pipeline simdb\` has not run for build $(ACTIVE_BUILD)"; exit 1; }
 	@mkdir -p $(dir $(SIMDB_EMBED))
 	@cp "$(SIMDB_SRC)" $(SIMDB_EMBED)
 	@echo "embedded $(SIMDB_SRC) ($$(wc -c < $(SIMDB_EMBED) | tr -d ' ') bytes)"
@@ -67,22 +78,22 @@ $(SIMDB_EMBED): $(SIMDB_SRC) $(ACTIVE_BUILD_JSON)
 # vanilla item table, which Forever re-itemises out from under; both
 # artifacts embed the active build's simdb.bin instead, which is what
 # `simdb` above puts in place and what sim/internal/simdb loads.
-artifacts: engine-pin $(SIMDB_EMBED)
+artifacts: engine-pin simdb
 	@mkdir -p $(ARTIFACT_DIR)
-	# Each build runs in its OWN subshell. An earlier draft chained two
-	# `cd sim` in one shell with `; \`, so the second ran from inside
-	# sim/ and failed, and the native binary was silently never built
-	# while the recipe reported success.
+#	Each build runs in its OWN subshell. An earlier draft chained two
+#	`cd sim` in one shell with `; \`, so the second ran from inside
+#	sim/ and failed, and the native binary was silently never built
+#	while the recipe reported success.
 	@sha=$$(sed -n 's/.*Version = "\(.*\)"/\1/p' sim/enginever/version.go); \
 	  test -n "$$sha" || { echo "sim/enginever/version.go has no Version"; exit 1; }; \
 	  (cd sim && GOOS=js GOARCH=wasm go build -ldflags="-X 'main.Version=$$sha'" \
 	    -o ../$(ARTIFACT_DIR)/sim.wasm ./cmd/wasm) && \
 	  (cd sim && go build -ldflags="-X 'main.Version=$$sha' -s -w" \
 	    -o ../$(ARTIFACT_DIR)/forever-sim ./cmd/forever-sim)
-	# install, not cp: wasm_exec.js is read-only inside GOROOT, so a plain
-	# cp copies the mode too and the NEXT `make artifacts` dies with
-	# "Permission denied" on its own output.
-	install -m 0644 "$$(go env GOROOT)/lib/wasm/wasm_exec.js" $(ARTIFACT_DIR)/sim.js
+#	install, not cp: wasm_exec.js is read-only inside GOROOT, so a plain
+#	cp copies the mode too and the NEXT `make artifacts` dies with
+#	"Permission denied" on its own output.
+	@install -m 0644 "$$(go env GOROOT)/lib/wasm/wasm_exec.js" $(ARTIFACT_DIR)/sim.js
 	@(cd $(ARTIFACT_DIR) && shasum -a 256 sim.wasm sim.js forever-sim > SHA256SUMS)
 	@test -x $(ARTIFACT_DIR)/forever-sim || { echo "forever-sim was not built"; exit 1; }
 	@ls -l $(ARTIFACT_DIR)

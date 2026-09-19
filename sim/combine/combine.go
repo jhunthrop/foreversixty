@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"math"
+	"sort"
 
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
 	"github.com/jhunthrop/foreversixty/sim/api"
@@ -55,6 +56,15 @@ func Split(req api.SimRequest, n int) ([]api.SimRequest, error) {
 }
 
 // Results combines partial results into one.
+//
+// DPS is pooled, IterationsRun summed, DurationMS the slowest part's, and
+// the damage table merged row by row by weightSummaries. Everything else
+// is the FIRST part's, presented as the whole run's: the request (whose
+// RandomSeed is the run's, because combine.Split gives part zero the
+// original), and the summary's aura, cast, resource and threat tables,
+// which are shares and averages the largest part already represents
+// within sampling error. Weighting the damage table is the part worth
+// doing exactly, because it is the one a viewer reads as a number.
 func Results(parts []api.SimResult) (api.SimResult, error) {
 	if len(parts) == 0 {
 		return api.SimResult{}, errors.New("combine: no results")
@@ -118,50 +128,173 @@ func Results(parts []api.SimResult) (api.SimResult, error) {
 	return out, nil
 }
 
-// weightSummaries averages the per-fight summaries by iteration share.
-// Each part's summary is already a per-fight average (sim/adapter divides
-// by IterationsDone), so combining them is a weighted mean of like
-// quantities rather than a re-sum.
+// weightSummaries averages the per-fight damage table by iteration
+// share. Each part's summary is already a per-fight average (sim/adapter
+// divides by IterationsDone), so combining them is a weighted mean of
+// like quantities rather than a re-sum.
+//
+// Rows are merged by identity, never by position: an actor by GUID and
+// an ability by the (SpellID, Via) pair the report keys its lists on.
+// The adapter sorts a part's abilities by Total descending, so two parts
+// of a split run order near-ties differently and a proc that fires in
+// one part and not another changes the row count - merging by slice
+// index would then add one spell's damage to another's and drop the odd
+// row, silently. A row only a later part has is added rather than folded
+// into whatever sat at its index.
+//
+// Nothing here touches a part. Every slice and map that is scaled is
+// copied first, so Results can be called twice on the same slice and a
+// caller that keeps its parts still has them.
 func weightSummaries(parts []api.SimResult, total int) summary.Summary {
 	out := parts[0].Summary
 	if len(parts) == 1 {
 		return out
 	}
-	// Damage totals and ability rows are the only fields a viewer reads
-	// as a number; auras, casts and resources are shares and averages
-	// that the largest part already represents within sampling error.
-	// Weighting the damage table is the part worth doing exactly.
-	scale := func(a *summary.Actor, w float64) {
-		a.Total = int64(float64(a.Total) * w)
-		a.Effective = int64(float64(a.Effective) * w)
-		for i := range a.Abilities {
-			a.Abilities[i].Total = int64(float64(a.Abilities[i].Total) * w)
-			a.Abilities[i].Effective = int64(float64(a.Abilities[i].Effective) * w)
-		}
-	}
-	merged := make([]summary.Actor, len(out.DamageDone))
-	copy(merged, out.DamageDone)
-	for i := range merged {
-		scale(&merged[i], float64(parts[0].IterationsRun)/float64(total))
-	}
-	for _, p := range parts[1:] {
+
+	// Actors keep the adapter's order - the player, then its pets - with
+	// any actor only a later part saw appended. Abilities are re-sorted
+	// on the way out, because their order is by damage and the damage is
+	// what just changed.
+	var order []string
+	actors := map[string]*summary.Actor{}
+	rows := map[string]map[abilityKey]*summary.Ability{}
+	var rowOrder = map[string][]abilityKey{}
+
+	for _, p := range parts {
 		w := float64(p.IterationsRun) / float64(total)
-		for i := range merged {
-			if i >= len(p.Summary.DamageDone) {
-				break
+		for _, src := range p.Summary.DamageDone {
+			dst, seen := actors[src.GUID]
+			if !seen {
+				shell := src
+				shell.Total, shell.Effective, shell.Overheal, shell.Absorbed = 0, 0, 0, 0
+				shell.Abilities, shell.Targets, shell.Series = nil, nil, nil
+				actors[src.GUID] = &shell
+				rows[src.GUID] = map[abilityKey]*summary.Ability{}
+				order = append(order, src.GUID)
+				dst = &shell
 			}
-			src := p.Summary.DamageDone[i]
-			merged[i].Total += int64(float64(src.Total) * w)
-			merged[i].Effective += int64(float64(src.Effective) * w)
-			for j := range merged[i].Abilities {
-				if j >= len(src.Abilities) {
-					break
+			dst.Total += weigh(src.Total, w)
+			dst.Effective += weigh(src.Effective, w)
+			dst.Overheal += weigh(src.Overheal, w)
+			dst.Absorbed += weigh(src.Absorbed, w)
+			dst.Targets = mergeTargets(dst.Targets, src.Targets, w)
+			dst.Series = mergeSeries(dst.Series, src.Series, w)
+
+			for _, ab := range src.Abilities {
+				k := abilityKey{SpellID: ab.SpellID, Via: ab.Via}
+				cur, seen := rows[src.GUID][k]
+				if !seen {
+					shell := ab
+					shell.Total, shell.Effective = 0, 0
+					shell.Overheal, shell.Overkill, shell.Absorbed = 0, 0, 0
+					shell.Resisted, shell.Blocked = 0, 0
+					shell.Hits, shell.Crits, shell.Ticks = 0, 0, 0
+					shell.Min, shell.Max = ab.Min, ab.Max
+					shell.Misses = nil
+					rows[src.GUID][k] = &shell
+					rowOrder[src.GUID] = append(rowOrder[src.GUID], k)
+					cur = &shell
 				}
-				merged[i].Abilities[j].Total += int64(float64(src.Abilities[j].Total) * w)
-				merged[i].Abilities[j].Effective += int64(float64(src.Abilities[j].Effective) * w)
+				cur.Total += weigh(ab.Total, w)
+				cur.Effective += weigh(ab.Effective, w)
+				cur.Overheal += weigh(ab.Overheal, w)
+				cur.Overkill += weigh(ab.Overkill, w)
+				cur.Absorbed += weigh(ab.Absorbed, w)
+				cur.Resisted += weigh(ab.Resisted, w)
+				cur.Blocked += weigh(ab.Blocked, w)
+				cur.Hits += weigh(ab.Hits, w)
+				cur.Crits += weigh(ab.Crits, w)
+				cur.Ticks += weigh(ab.Ticks, w)
+				// Min and Max are extremes, not averages: weighting them
+				// would report a spread no iteration ever saw.
+				cur.Min = min(cur.Min, ab.Min)
+				cur.Max = max(cur.Max, ab.Max)
+				cur.Misses = mergeMisses(cur.Misses, ab.Misses, w)
 			}
 		}
+	}
+
+	merged := make([]summary.Actor, 0, len(order))
+	for _, guid := range order {
+		a := *actors[guid]
+		a.Abilities = make([]summary.Ability, 0, len(rowOrder[guid]))
+		for _, k := range rowOrder[guid] {
+			a.Abilities = append(a.Abilities, *rows[guid][k])
+		}
+		// The adapter's own order: damage descending. Ties break on the
+		// row's identity rather than on where it happened to arrive, so
+		// the combined table is the same table whatever order the
+		// workers finished in.
+		sort.Slice(a.Abilities, func(i, j int) bool {
+			if a.Abilities[i].Total != a.Abilities[j].Total {
+				return a.Abilities[i].Total > a.Abilities[j].Total
+			}
+			if a.Abilities[i].SpellID != a.Abilities[j].SpellID {
+				return a.Abilities[i].SpellID < a.Abilities[j].SpellID
+			}
+			return a.Abilities[i].Via < a.Abilities[j].Via
+		})
+		merged = append(merged, a)
 	}
 	out.DamageDone = merged
 	return out
+}
+
+// abilityKey is the identity a summary row is rendered by: the spell and,
+// for a pet's ability counted on its owner's row, which pet cast it.
+type abilityKey struct {
+	SpellID int64
+	Via     string
+}
+
+// weigh takes an iteration-share of a per-fight figure.
+func weigh(v int64, w float64) int64 { return int64(float64(v) * w) }
+
+// mergeTargets folds one part's per-target damage into the running table,
+// keyed by the target's guid. The slice it returns is always the
+// caller's own.
+func mergeTargets(dst, src []summary.Pair, w float64) []summary.Pair {
+	for _, p := range src {
+		found := false
+		for i := range dst {
+			if dst[i].GUID == p.GUID {
+				dst[i].Total += weigh(p.Total, w)
+				found = true
+				break
+			}
+		}
+		if !found {
+			p.Total = weigh(p.Total, w)
+			dst = append(dst, p)
+		}
+	}
+	return dst
+}
+
+// mergeSeries folds one part's per-second timeline into the running one.
+// The index is a second, so the same second of two parts is the same
+// quantity; a part that ran longer extends the series.
+func mergeSeries(dst, src []int64, w float64) []int64 {
+	for len(dst) < len(src) {
+		dst = append(dst, 0)
+	}
+	for i, v := range src {
+		dst[i] += weigh(v, w)
+	}
+	return dst
+}
+
+// mergeMisses folds one part's outcome counters into the running map,
+// allocating rather than writing into the part's own.
+func mergeMisses(dst, src map[string]int64, w float64) map[string]int64 {
+	if len(src) == 0 {
+		return dst
+	}
+	if dst == nil {
+		dst = make(map[string]int64, len(src))
+	}
+	for k, v := range src {
+		dst[k] += weigh(v, w)
+	}
+	return dst
 }

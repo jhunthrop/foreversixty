@@ -9,8 +9,10 @@ dist/
 api/bin/
 coverage/
 # sim.wasm, sim.js and forever-sim, built by `make artifacts` at the
-# pinned engine sha. Only what `make publish-wasm` copies into
-# web/public/_sim/<sha>/ is committed.
+# pinned engine sha. Nothing built is committed from here. `make
+# publish-wasm` stages the browser pair under web/public/_sim/<sha>/ for
+# a deploy; whether that directory is committed or produced by the
+# deploy is the web lane's call, and nothing is committed there today.
 artifacts/
 # the active build's item database, copied here by `make simdb` so both
 # artifacts can //go:embed it; data/builds/<build>/simdb.bin is the

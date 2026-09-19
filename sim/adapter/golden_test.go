@@ -40,13 +40,20 @@ const goldenEngineVersion = "golden"
 //
 // The .request.json beside each fixture is the input: a real SimRequest,
 // so a fixture is a real sim of a request the product could send rather
-// than a second opinion about what a fury warrior is. Its gear is the
-// engine's own phase-one preset expressed as item ids, and its buffs are
-// the field names of core.Full{Raid,Individual,Debuffs} - the same set,
+// than a second opinion about what a fury warrior is. Its buffs are the
+// field names of core.Full{Raid,Individual,Debuffs} - the same set,
 // though a tristate lands on its plain form because the settings bar has
-// no id for the improved one (see request/buffs.go). forever-sim must be
-// built --tags=with_db or the gear ids resolve to nothing; `make
-// artifacts` does that.
+// no id for the improved one (see request/buffs.go). Its gear starts
+// from the engine's own phase-one preset, with every id Forever
+// re-itemised away replaced by the nearest row in the same slot.
+//
+// The gear is real Forever item ids, resolved from the active build's
+// database, which sim/internal/simdb embeds: run `make simdb` first if
+// the working tree has never had it (`make artifacts` depends on it).
+// Do NOT build with --tags=with_db - that is the engine's own vanilla
+// table, which resolves almost none of a Forever gear set and which
+// makes the engine panic at init over item effects this build has no
+// rows for. Each slot's provenance is in <spec>.request.notes.md.
 func TestGoldenSummaries(t *testing.T) {
 	for _, tc := range goldenSpecs {
 		t.Run(tc.spec, func(t *testing.T) {

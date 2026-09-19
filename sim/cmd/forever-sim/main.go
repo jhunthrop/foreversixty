@@ -6,11 +6,17 @@
 // It reads and writes our envelope, not the engine's protobuf, because
 // sim/request and sim/adapter are linked in here and the boundary is
 // this binary's own. The active build's item database is linked in too,
-// through sim/internal/simdb; see that package for why not --tags=with_db. That is the same arrangement the browser gets from
-// sim/cmd/wasm, which is the point: one mapping, one language, two lanes.
+// through sim/internal/simdb; see that package for why not
+// --tags=with_db. That is the same arrangement the browser gets from
+// sim/cmd/wasm, which is the point: one mapping, one language, two
+// lanes.
 //
 //	forever-sim -in request.json -out result.json -progress
 //	forever-sim -in - -out - < request.json > result.json
+//
+// With -progress every line of stderr is JSON: our own
+// {"completed","total","dps"} ticks, and the engine's log output wrapped
+// as {"log": "..."} rather than interleaved raw.
 //
 // Concurrency is automatic: core.RunRaidSimConcurrentAsync splits across
 // runtime.NumCPU() and recombines the distribution metrics, offsetting
@@ -23,7 +29,9 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"log"
 	"os"
+	"sync/atomic"
 	"time"
 
 	"github.com/jhunthrop/foreversixty/sim/adapter"
@@ -53,7 +61,7 @@ func main() {
 	out := flag.String("out", "-", "SimResult JSON; - for stdout")
 	outProto := flag.String("out-proto", "", "write the engine's raw RaidSimResult protobuf here instead; only sim/adapter's fixture refresh wants this")
 	iterations := flag.Int("iterations", 0, "override the request's iteration count")
-	progress := flag.Bool("progress", false, "write JSON-lines progress to stderr")
+	progress := flag.Bool("progress", false, "write JSON-lines progress to stderr; the engine's own log output is wrapped as {\"log\":...} so every line of that stream parses")
 	version := flag.Bool("version", false, "print the engine version and exit")
 	flag.Parse()
 
@@ -64,7 +72,13 @@ func main() {
 
 	var sink io.Writer
 	if *progress {
-		sink = os.Stderr
+		// One writer for the whole stream, and the engine's standard
+		// logger routed through it: see progress.go. Without this the
+		// engine's "Running N iterations" lands between two ticks and
+		// stderr is only mostly JSON.
+		stream := newProgressStderr(os.Stderr)
+		log.SetOutput(stream.LogOutput())
+		sink = stream
 	}
 	// -out-proto replaces -out rather than joining it: the one caller
 	// that wants the engine's own result wants nothing else.
@@ -181,6 +195,14 @@ func Execute(req api.SimRequest, progress io.Writer) (api.SimResult, error) {
 	}, nil
 }
 
+// runs counts the sims this process has started, so each gets a signal
+// id of its own.
+var runs atomic.Int64
+
+func runID() string {
+	return fmt.Sprintf("forever-sim-%d-%d", os.Getpid(), runs.Add(1))
+}
+
 // execute is the engine half: our request in, the engine's own result
 // out, with progress reported as JSON lines along the way.
 func execute(req api.SimRequest, progress io.Writer) (*proto.RaidSimResult, error) {
@@ -197,7 +219,10 @@ func execute(req api.SimRequest, progress io.Writer) (*proto.RaidSimResult, erro
 	}
 
 	reporter := make(chan *proto.ProgressMetrics, 32)
-	core.RunRaidSimConcurrentAsync(engineReq, reporter, "forever-sim")
+	// A fresh id per run: simsignals.RegisterWithId refuses a duplicate,
+	// so a constant would collide the moment one process ran two sims -
+	// which the tests in this package already do.
+	core.RunRaidSimConcurrentAsync(engineReq, reporter, runID())
 
 	var enc *json.Encoder
 	if progress != nil {
