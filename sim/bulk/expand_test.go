@@ -25,19 +25,47 @@ import (
 // these ever leaves the build, the eligibility cases below fail with
 // "placed in [] want [...]" or an unexpected error, which is the
 // signal to look it up again the same way.
+//
+// Every constant below - not just the ones this file happens to
+// Lookup itself - names the kind of row its name claims: a bare
+// itemRing IS a ring, itemOneHander+1 and +2 ARE one-handers too, not
+// just itemOneHander. Task 14 uses several of these bare and at +1/+2,
+// so a neighbour that merely compiles today but resolves to nothing -
+// or to the wrong kind - would pass this task's tests and fail the
+// next one's.
 const (
-	itemHelm      = 12640 // head: Lionheart Helm (also in the warrior-fury fixture)
-	itemOneHander = 7116  // one-hand, warrior-only: Heirloom Dagger (main_hand, off_hand)
-	itemTwoHander = 3488  // two-hand: Copper Battle Axe (main_hand only)
-	// itemOffHand+1 (11863) is White Bone Shredder, an off_hand-only item.
-	itemOffHand = 11862
-	// itemRing+1 (19382) is Pure Elementium Band, finger1/finger2.
-	itemRing = 19381
-	// itemTrinket+1 (19406) is Drake Fang Talisman, trinket1/trinket2.
-	itemTrinket    = 19405
-	enchantWeapon  = 1900 // Enchant Weapon - Crusader: main_hand, off_hand
-	enchantTwoHand = 1903 // Enchant 2H Weapon - Major Spirit: two-hand only
-	enchantHead    = 1506 // Lesser Arcanum of Voracity: head, legs (also in the fixture)
+	itemHelm = 12640 // head: Lionheart Helm (also in the warrior-fury fixture)
+	// itemOneHander, +1 and +2 are three consecutive real one-handers
+	// (Silverbane Slicer, Guardian's Maulers, Swampspine Crusher; all
+	// main_hand/off_hand, unrestricted, level 40), for the dual-wield
+	// placement cases and their +1/+2 neighbours.
+	itemOneHander = 277243
+	itemTwoHander = 3488 // two-hand: Copper Battle Axe (main_hand only)
+	// itemOffHand and +1 are two consecutive real off_hand-only items:
+	// Grand Marshal's Left Hand Blade, High Warlord's Left Claw.
+	itemOffHand = 18847
+	// itemRing and +1 are two consecutive real rings, finger1/finger2:
+	// Stalwart Watcher's Signet, Ferocious Watcher's Signet.
+	itemRing = 275980
+	// itemTrinket and +1 are two consecutive real trinkets,
+	// trinket1/trinket2: Weakness Analyzer, Serenity Field.
+	itemTrinket = 272438
+	// itemClassLocked is a one-hander restricted to warriors only
+	// (Heirloom Dagger) - the one constant above that must NOT be
+	// usable by every class, for the "another class's item" case
+	// below. It is kept separate from itemOneHander because no run of
+	// three consecutive one-handers in the build has a class-locked
+	// base: unrestricted and class-locked are two different needs,
+	// so they get two different constants.
+	itemClassLocked = 7116
+	// itemAllianceOnly is Lorekeeper's Staff: class-unrestricted and
+	// level 48, so faction is the only reason an orc cannot equip it -
+	// isolating the faction branch of usable() the way itemClassLocked
+	// isolates the class branch.
+	itemAllianceOnly = 19571
+	enchantWeapon    = 1900 // Enchant Weapon - Crusader: main_hand, off_hand
+	enchantTwoHand   = 1903 // Enchant 2H Weapon - Major Spirit: two-hand only
+	enchantHead      = 1506 // Lesser Arcanum of Voracity: head, legs (also in the fixture)
 )
 
 // base is a fury warrior with a full set of the fixture's own gear, so
@@ -180,8 +208,9 @@ func TestCandidatesTheCharacterCannotEquipAreSkipped(t *testing.T) {
 		edit func(*api.SimRequest)
 		item int
 	}{
-		{"another class's item", func(r *api.SimRequest) { r.Character.Class = "mage"; r.Spec = "mage-frost" }, itemOneHander},
+		{"another class's item", func(r *api.SimRequest) { r.Character.Class = "mage"; r.Spec = "mage-frost" }, itemClassLocked},
 		{"a locked slot", func(r *api.SimRequest) { r.Bulk.Locked = []string{"finger1", "finger2"} }, itemRing + 1},
+		{"an alliance-only item", func(*api.SimRequest) {}, itemAllianceOnly},
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
@@ -193,6 +222,40 @@ func TestCandidatesTheCharacterCannotEquipAreSkipped(t *testing.T) {
 			}
 			if len(got) != 0 {
 				t.Errorf("%d combinations survived: %v", len(got), slotsOf(got[0]))
+			}
+		})
+	}
+}
+
+// usable's three branches - class, level, faction - above are also
+// exercised end-to-end through real build rows, but the build's own
+// level cap means no item in it carries a RequiredLevel above
+// api.SimLevel (60): the sim never runs any other level, so nothing
+// upstream of usable ever itemises one. That branch can only be
+// proven directly, against a synthetic row, which this table does for
+// all three so they are checked the same way rather than two real
+// rows and one that cannot exist.
+func TestUsableEligibilityRules(t *testing.T) {
+	warrior := api.CharacterSpec{Class: "warrior", Race: "orc", Level: api.SimLevel}
+	cases := []struct {
+		name string
+		item simdb.Item
+		ch   api.CharacterSpec
+		want bool
+	}{
+		{"open to every class", simdb.Item{}, warrior, true},
+		{"restricted to a class the character has", simdb.Item{Classes: []string{"warrior"}}, warrior, true},
+		{"restricted to a class the character does not have", simdb.Item{Classes: []string{"mage"}}, warrior, false},
+		{"at the character's level", simdb.Item{RequiredLevel: api.SimLevel}, warrior, true},
+		{"above the character's level", simdb.Item{RequiredLevel: api.SimLevel + 1}, warrior, false},
+		{"faction-open", simdb.Item{Faction: simdb.FactionAny}, warrior, true},
+		{"the character's own faction", simdb.Item{Faction: simdb.FactionHorde}, warrior, true},
+		{"the other faction", simdb.Item{Faction: simdb.FactionAlliance}, warrior, false},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			if got := usable(c.item, c.ch); got != c.want {
+				t.Errorf("usable(%+v, %s/%s@%d) = %v, want %v", c.item, c.ch.Race, c.ch.Class, c.ch.Level, got, c.want)
 			}
 		})
 	}
@@ -238,7 +301,7 @@ func TestEnchantInheritance(t *testing.T) {
 		{"inherits the equipped weapon enchant", api.Candidate{Slot: "main_hand", ItemID: itemOneHander + 1, Origin: api.OriginBag}, enchantWeapon},
 		{"inherits nothing into an unenchanted slot", api.Candidate{Slot: "off_hand", ItemID: itemOffHand + 1, Origin: api.OriginBag}, 0},
 		{"keeps the enchant it was given", api.Candidate{Slot: "head", ItemID: itemHelm, Enchant: enchantHead, Origin: api.OriginBag}, enchantHead},
-		{"does not inherit an enchant that does not fit", api.Candidate{Slot: "main_hand", ItemID: itemTwoHander, Origin: api.OriginBag}, enchantWeapon},
+		{"inherits an enchant that has no item-type restriction onto a two-hander", api.Candidate{Slot: "main_hand", ItemID: itemTwoHander, Origin: api.OriginBag}, enchantWeapon},
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {

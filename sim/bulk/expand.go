@@ -154,6 +154,11 @@ func usable(item simdb.Item, ch api.CharacterSpec) bool {
 // list is short and stable - Forever's Skyborne choose a faction at
 // creation and the race slug says which - so it lives here rather than
 // pulling the build's race table into the planner.
+//
+// Keep in sync with data/builds/<build>/races.json, the pipeline's own
+// race-to-faction table: a race added there without a matching entry
+// here defaults to Alliance below, which drops every Horde-only
+// candidate for that race from the plan with no error.
 var hordeRaces = []string{"orc", "tauren", "troll", "undead", "windshaper-skyborne"}
 
 // factionOf is the faction a race belongs to.
