@@ -100,6 +100,31 @@ func (c *Consumables) key(id int64) (string, bool) {
 	return k, ok
 }
 
+// ItemID is key's item, and the reverse of key(): the cooldown panel
+// names a potion by the same id the consumable panel does, and the
+// engine wants an item id for its ActionID.
+//
+// It refuses an ambiguous key rather than picking one. Two client items
+// whose names normalise to the same key are two different potions, and
+// pinning the wrong one's timing would be a silently different run.
+func (c *Consumables) ItemID(key string) (int64, bool) {
+	if c == nil {
+		return 0, false
+	}
+	var found int64
+	var seen int
+	for id, k := range c.names {
+		if k == key {
+			found = id
+			seen++
+		}
+	}
+	if seen != 1 {
+		return 0, false
+	}
+	return found, true
+}
+
 // normalizeName turns an item name into the key an engine enum value
 // name normalises to: "Elixir of the Mongoose" and ElixirOfTheMongoose
 // both become elixir_of_the_mongoose. Punctuation is dropped, because

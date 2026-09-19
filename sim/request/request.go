@@ -176,6 +176,10 @@ func BuildWith(req api.SimRequest, opt Options) (*proto.RaidSimRequest, error) {
 	if err != nil {
 		return nil, err
 	}
+	cooldowns, err := cooldownsFor(ch.Cooldowns, opt.Consumables)
+	if err != nil {
+		return nil, err
+	}
 
 	player := &proto.Player{
 		Name:  ch.Name,
@@ -188,6 +192,7 @@ func BuildWith(req api.SimRequest, opt Options) (*proto.RaidSimRequest, error) {
 		TalentsString: ch.Talents,
 		Equipment:     equipment,
 		Consumes:      cons,
+		Cooldowns:     cooldowns,
 		Buffs:         buffs.Individual,
 		Profession1:   first,
 		Profession2:   second,
