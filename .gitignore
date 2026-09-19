@@ -55,3 +55,7 @@ logs/testdata/cache/
 
 # go workspace checksum file (regenerated; the modules are local)
 go.work.sum
+
+# the engine fork, cloned at the pin by CI (sim.yml's rotations job and
+# data.yml's fetch job) and by anyone reproducing them locally
+.engine/

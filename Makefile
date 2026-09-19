@@ -185,3 +185,38 @@ apl-check:
 	@test -d "$(ENGINE_DIR)" || { echo "no engine checkout at $(ENGINE_DIR); set ENGINE_DIR"; exit 1; }
 	@ENGINE_DIR="$(ENGINE_DIR)" CURATED_APL_DIR="$(CURATED_APL_DIR)" \
 	  CURATED_SPECS_JSON="$(CURATED_SPECS_JSON)" python3 tools/apl_check.py
+
+.PHONY: loot
+# loot regenerates the ACTIVE build's Droptimizer and Top Gear data:
+# loot.json, enchants.json, suffixes.json, and items.json's `suffixes`
+# column. Nothing in a DB2 export says which boss drops an item, so the
+# engine fork's own assets/database/db.json is the only source for it,
+# and this is the only target that reads it.
+#
+# Two prerequisites the target cannot supply itself:
+#   * the build's raw/ CSVs (Map.csv for the instance types,
+#     ItemSparse.csv for the PvP ranks), the same as `python -m pipeline
+#     simdb` -- run `python -m pipeline fetch` for the build first;
+#   * an engine checkout at ENGINE_DIR, as for engine-pin and apl-sync.
+#
+# ENGINE_DIR goes through `abspath` because the recipe runs from data/
+# and a relative override would resolve against the wrong root.
+loot:
+	@test -n "$(ACTIVE_BUILD)" || { echo "$(ACTIVE_BUILD_JSON) names no build"; exit 1; }
+	@test -f "$(ENGINE_DIR)/assets/database/db.json" || { \
+	  echo "no item database at $(ENGINE_DIR)/assets/database/db.json; set ENGINE_DIR"; exit 1; }
+	@test -d "data/builds/$(ACTIVE_BUILD)/raw" || { \
+	  echo "no data/builds/$(ACTIVE_BUILD)/raw; run \`python -m pipeline fetch\` first"; exit 1; }
+	@(cd data && uv run python -m pipeline loot \
+	  --build "$(ACTIVE_BUILD)" --engine "$(abspath $(ENGINE_DIR))")
+
+.PHONY: loot-check
+# loot-check is the offline gate on what `loot` wrote: the committed
+# build's counts, and the curated overlays' shape and provenance. It
+# needs no engine checkout and no raw/, which is why CI runs it in the
+# data workflow's test job (as part of pytest) rather than regenerating
+# -- the same split simdb.bin and gametables/ already have.
+loot-check:
+	@(cd data && uv run python -m pipeline phases --check)
+	@(cd data && uv run pytest tests/test_loot_build.py tests/test_loot_overlay.py \
+	  tests/test_loot_buffs.py tests/test_phases.py -q --no-cov)
