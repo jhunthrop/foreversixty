@@ -23,6 +23,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/jobs"
 	"github.com/jhunthrop/foreversixty/api/internal/mail"
 	"github.com/jhunthrop/foreversixty/api/internal/parse"
+	"github.com/jhunthrop/foreversixty/api/internal/phase"
 	"github.com/jhunthrop/foreversixty/api/internal/r2"
 	"github.com/jhunthrop/foreversixty/api/internal/rankings"
 	"github.com/jhunthrop/foreversixty/api/internal/reports"
@@ -65,6 +66,12 @@ func main() {
 		case sims.SimRunJobCommand:
 			if err := runSim(context.Background(), log, os.Args[2:]); err != nil {
 				log.Error(sims.SimRunJobCommand, "err", err)
+				os.Exit(1)
+			}
+			return
+		case sims.ValidateJobCommand:
+			if err := runValidate(context.Background(), log); err != nil {
+				log.Error(sims.ValidateJobCommand, "err", err)
 				os.Exit(1)
 			}
 			return
@@ -159,6 +166,30 @@ func runSim(ctx context.Context, log *slog.Logger, args []string) error {
 	return sims.Run(ctx, sims.JobDeps{
 		Store: &sims.Store{Pool: pool}, Put: client, Engine: simEngine(log), Log: log,
 	}, args[0])
+}
+
+// runValidate is the nightly Cloud Run job: measure every spec's
+// fidelity against the top parses and publish the figures.
+func runValidate(ctx context.Context, log *slog.Logger) error {
+	cfg, pool, err := start(ctx)
+	if err != nil {
+		return err
+	}
+	defer pool.Close()
+	client := objects(cfg, log)
+	if client == nil {
+		return fmt.Errorf("%s needs R2 credentials", sims.ValidateJobCommand)
+	}
+	at := phase.At(time.Now().UTC())
+	specs := sims.DPSSpecs()
+	log.Info(sims.ValidateJobCommand, "specs", len(specs), "phase", at,
+		"engine", enginever.Version)
+	return sims.Validate(ctx, sims.ValidateDeps{
+		Store:  &sims.Store{Pool: pool},
+		Top:    &sims.ParseReader{Pool: pool, Get: client, Log: log},
+		Engine: simEngine(log), Build: sims.NoBuilder{},
+		Scores: &rankings.Store{Pool: pool}, Log: log,
+	}, specs, at, enginever.Version)
 }
 
 // simEngine is the runner every simulator job uses: the real binary
