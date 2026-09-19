@@ -1,6 +1,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
+import { fixtureResult, fixtureSpecs } from '../../test-support/sim-api';
 import { ENGINE_VERSION, engineAssetUrl, engineLabel, isStale } from './version';
 
 // The engine lane's Go module is not on main yet -- this tree carries only the data lane's
@@ -50,5 +51,16 @@ describe('isStale', () => {
 describe('engineLabel', () => {
   it('reads as a version, not as a hash', () => {
     expect(engineLabel('6a1c2d9')).toBe('Engine 6a1c2d9');
+  });
+});
+
+describe('the fixtures', () => {
+  it('are pinned to the current engine, since JSON cannot import the constant', () => {
+    expect(fixtureResult.engine_version).toBe(ENGINE_VERSION);
+    expect(fixtureResult.request.engine_version).toBe(ENGINE_VERSION);
+    expect(fixtureResult.summary.engine_version).toBe(`sim:${ENGINE_VERSION}`);
+    for (const row of fixtureSpecs) {
+      if (row.engine_version !== null) expect(row.engine_version).toBe(ENGINE_VERSION);
+    }
   });
 });

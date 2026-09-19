@@ -1,0 +1,32 @@
+[
+  {
+    "spec": "warrior-fury",
+    "state": "validated",
+    "median_gap": 0.031,
+    "parses": 50,
+    "worst_actions": [
+      { "name": "Heroic Strike", "sim_casts": 57, "actual_casts": 44 },
+      { "name": "Whirlwind", "sim_casts": 22, "actual_casts": 19 }
+    ],
+    "engine_version": "df3b36e4c",
+    "updated_at": "2026-09-14T04:12:00Z"
+  },
+  {
+    "spec": "mage-frost",
+    "state": "in_progress",
+    "median_gap": 0.084,
+    "parses": 31,
+    "worst_actions": [{ "name": "Frostbolt", "sim_casts": 71, "actual_casts": 62 }],
+    "engine_version": "df3b36e4c",
+    "updated_at": "2026-09-14T04:12:00Z"
+  },
+  {
+    "spec": "rogue-combat",
+    "state": "unsupported",
+    "median_gap": null,
+    "parses": 0,
+    "worst_actions": [],
+    "engine_version": null,
+    "updated_at": "2026-09-14T04:12:00Z"
+  }
+]

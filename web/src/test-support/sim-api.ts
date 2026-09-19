@@ -1,0 +1,187 @@
+// web/src/test-support/sim-api.ts
+// The API does not run in this repository's tests, so every route the simulator contract
+// defines is answered here instead.
+//
+// This is the idiom the repository already has -- vi.stubGlobal('fetch', …) returning a
+// real Response, as src/lib/account/api.test.ts and src/lib/rankings/api.test.ts do -- with
+// the route table factored out so a route that changes shape changes in one place. An
+// unmatched request throws rather than falling through to the network: a test that calls a
+// route nobody wrote a handler for must fail loudly, not hang.
+//
+// lastBody(), lastUrl() and lastHeaders() exist because the assertions that matter are
+// often about what the client *sent*: that the character travelled, that a character key
+// was path-escaped rather than encoded, that the CSRF header was set, that the engine
+// version travelled. Recording them here keeps every test from re-wrapping fetch.
+import { vi } from 'vitest';
+import fixtureResultJson from '../fixtures/sim/result.json';
+import fixtureSpecsJson from '../fixtures/sim/specs.json';
+import type { SimResult, SpecFidelity } from '../lib/sim/types';
+
+// Twelve characters of [a-z2-7], because that is what a sim_id is -- the same alphabet
+// and length as a report_id. It is not decoration: Task 22's Lighthouse entry for the
+// saved-sim page matches on /sim/[a-z2-7]{12}\.html, and an id with a digit outside the
+// alphabet silently falls into the catch-all at the wrong budget instead.
+export const FIXTURE_SIM_ID = 'simfixtureab';
+export const NEW_SIM_ID = 'simnew234567';
+export const TEST_API = 'https://api.test';
+
+export const fixtureResult = fixtureResultJson as unknown as SimResult;
+export const fixtureSpecs = fixtureSpecsJson as unknown as SpecFidelity[];
+
+/** One route: the method, a pattern over the path, and what it answers. */
+export interface StubRoute {
+  method: string;
+  pattern: RegExp;
+  respond: (match: RegExpExecArray, request: Request) => Response | Promise<Response>;
+}
+
+export interface SimApiStub {
+  /** Installs the fetch stub. Call from `beforeEach`. */
+  install(): void;
+  /** Removes it and clears every recording. Call from `afterEach`. */
+  reset(): void;
+  /** Flips the premium flag POST /v1/sims/run checks. Reset by `reset()`. */
+  setPremium(value: boolean): void;
+  /** Adds a route ahead of the built-in ones, for a test that needs a different answer. */
+  route(route: StubRoute): void;
+  lastUrl(): string;
+  lastBody(): unknown;
+  lastHeaders(): Headers | null;
+}
+
+/** The Phase 0 envelope every route of ours answers in. */
+export function envelope(data: unknown, status = 200): Response {
+  return new Response(JSON.stringify({ ok: status < 400, data, error: null, request_id: 'req-test' }), {
+    status,
+    headers: { 'content-type': 'application/json' },
+  });
+}
+
+export function failure(message: string, status: number): Response {
+  return new Response(JSON.stringify({ ok: false, data: null, error: { message }, request_id: 'req-test' }), {
+    status,
+    headers: { 'content-type': 'application/json' },
+  });
+}
+
+export function createSimApi(): SimApiStub {
+  let premium = true;
+  let lastUrl = '';
+  let lastBody: unknown = null;
+  let lastHeaders: Headers | null = null;
+  let extra: StubRoute[] = [];
+
+  const builtIn: StubRoute[] = [
+    {
+      method: 'POST',
+      pattern: /\/v1\/sims$/,
+      respond: () => envelope({ sim_id: NEW_SIM_ID }, 201),
+    },
+    {
+      method: 'POST',
+      pattern: /\/v1\/sims\/run$/,
+      respond: () => (premium ? envelope({ sim_id: NEW_SIM_ID }, 202) : failure('premium required', 402)),
+    },
+    {
+      method: 'GET',
+      pattern: /\/v1\/sims\/([a-z2-7]{12})\/progress$/,
+      respond: () => envelope({ state: 'running', iterations_done: 4200, dps: 1559.7 }),
+    },
+    {
+      method: 'GET',
+      pattern: /\/v1\/sims\/([a-z2-7]{12})$/,
+      respond: (match) =>
+        match[1] === FIXTURE_SIM_ID ? envelope(fixtureResult) : failure('no such sim', 404),
+    },
+    {
+      method: 'GET',
+      pattern: /\/v1\/sims(\?|$)/,
+      respond: () =>
+        envelope({
+          rows: [
+            {
+              sim_id: FIXTURE_SIM_ID,
+              spec: 'warrior-fury',
+              dps: fixtureResult.dps.mean,
+              engine_version: fixtureResult.engine_version,
+              created_at: '2026-09-14T10:02:00Z',
+              title: 'Raid-buffed, 3:00, single target',
+            },
+          ],
+          total: 1,
+          page: 1,
+          per_page: 100,
+        }),
+    },
+    {
+      method: 'GET',
+      pattern: /\/v1\/specs$/,
+      respond: () => envelope({ specs: fixtureSpecs }),
+    },
+    // Three path segments, not one key: the contract spells this route the way the existing
+    // character route is spelled. `source` is "addon" or "fight" -- Armory is not a source yet.
+    {
+      method: 'GET',
+      pattern: /\/v1\/characters\/[^/]+\/[^/]+\/[^/]+\/sim-input$/,
+      respond: () =>
+        envelope({
+          spec: 'warrior-fury',
+          gear: { head: 12640, main_hand: 11726 },
+          talents: [2001, 2001, 2001, 2001, 2001, 2002, 2002],
+          // IDS.md ids, not spell ids: the API does the mapping (amended contract).
+          buffs: ['battle_shout', 'blessing_of_kings'],
+          // Optional on SimInput and absent from the contract's row today. The stub sends
+          // it so the happy path is testable; the absent case has its own test in Task 7,
+          // and fromStoredCharacter refuses rather than substituting a race.
+          race: 'orc',
+          captured_at: '2026-09-14T09:40:00Z',
+          source: 'addon',
+        }),
+    },
+  ];
+
+  async function handle(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
+    const request = input instanceof Request ? input : new Request(input, init);
+    lastUrl = request.url;
+    lastHeaders = new Headers(request.headers);
+    lastBody = null;
+    if (request.method !== 'GET') {
+      try {
+        lastBody = await request.clone().json();
+      } catch {
+        lastBody = null;
+      }
+    }
+    const path = new URL(request.url).pathname + new URL(request.url).search;
+    for (const route of [...extra, ...builtIn]) {
+      if (route.method !== request.method) continue;
+      const match = route.pattern.exec(path);
+      if (match !== null) return route.respond(match, request);
+    }
+    throw new Error(`unhandled request: ${request.method} ${request.url}`);
+  }
+
+  return {
+    install() {
+      vi.stubGlobal('fetch', vi.fn(handle));
+    },
+    reset() {
+      vi.unstubAllGlobals();
+      premium = true;
+      lastUrl = '';
+      lastBody = null;
+      lastHeaders = null;
+      extra = [];
+      document.cookie = 'fs_csrf=; Max-Age=0; path=/';
+    },
+    setPremium(value) {
+      premium = value;
+    },
+    route(route) {
+      extra = [route, ...extra];
+    },
+    lastUrl: () => lastUrl,
+    lastBody: () => lastBody,
+    lastHeaders: () => lastHeaders,
+  };
+}
