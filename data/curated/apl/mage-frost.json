@@ -1,7 +1,7 @@
 {
   "spec": "mage-frost",
   "state": "written",
-  "notes": "Vanilla Frost at 60 is Frostbolt spam. Fire Blast is the only other button worth a global, and only while mana is comfortable, because it is instant and benefits from the same spell power. Cold Snap and Ice Barrier are survival, not damage, and are left out. Every rank named here is checked against the spellconst of the newest client build in builds/ (the one its manifest.json records last).",
+  "notes": "Vanilla Frost at 60 is Frostbolt spam: with no Fire talents, working a Fire Blast cast into the rotation spends a global that Frostbolt would otherwise fill, for less damage -- the engine lane's spec tasks measured a 2.0 percent (FullBuffs) to 5.6 percent (NoBuffs) DPS loss versus Frostbolt alone, so Fire Blast is left out of the default rotation. Cold Snap and Ice Lance are the spec's own utility and are handled by Frost-specific logic, not this priority list. Every rank named here is checked against the spellconst of the newest client build in builds/ (the one its manifest.json records last).",
   "sources": [
     { "label": "wowsims/classic default Mage priority list", "url": "https://github.com/wowsims/classic/blob/master/ui/mage/apls/p1.apl.json", "kind": "community" },
     { "label": "Warcraft Tavern: Classic Frost Mage DPS rotation", "url": "https://www.warcrafttavern.com/wow-classic/guides/dps-mage-rotation/", "kind": "community" },
@@ -12,14 +12,7 @@
     "priorityList": [
       { "action": { "autocastOtherCooldowns": {} } },
       {
-        "notes": "Fire Blast on cooldown while mana is comfortable: it is instant and a gain with spell power.",
-        "action": {
-          "condition": { "cmp": { "op": "OpGe", "lhs": { "currentManaPercent": {} }, "rhs": { "const": { "val": "30%" } } } },
-          "castSpell": { "spellId": { "spellId": 10199, "rank": 7 } }
-        }
-      },
-      {
-        "notes": "Frostbolt is the whole rotation otherwise.",
+        "notes": "Frostbolt is the whole rotation.",
         "action": { "castSpell": { "spellId": { "spellId": 25304, "rank": 11 } } }
       }
     ]
