@@ -522,7 +522,7 @@
           estimate={store.estimate}
           iterationsDone={store.iterationsDone}
           iterationsTotal={store.iterationsTotal}
-          precision={store.precision}
+          precisionId={store.precisionId}
           premium={store.premium}
           message={store.message}
           detail={store.detail}
@@ -531,7 +531,7 @@
           serverRunning={store.serverRunning}
           onrun={() => void store.run()}
           onstop={() => store.stop()}
-          onprecision={(value) => store.setPrecision(value)}
+          onprecision={(value) => store.setPrecisionId(value)}
           onserver={() => void store.runOnServer()}
           onrerun={() => void store.run()}
         />

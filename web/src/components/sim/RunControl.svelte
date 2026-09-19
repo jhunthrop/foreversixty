@@ -8,8 +8,9 @@
 <script lang="ts">
   import { confidenceBand } from '../../lib/sim/estimate';
   import { simCopy } from '../../lib/sim/copy';
+  import type { PrecisionId } from '../../lib/sim/precision';
   import type { SimPhase } from '../../lib/sim/store.svelte';
-  import { ITERATIONS, type Estimate, type IterationCount } from '../../lib/sim/types';
+  import type { Estimate } from '../../lib/sim/types';
   import { engineLabel } from '../../lib/sim/version';
 
   let {
@@ -17,7 +18,7 @@
     estimate,
     iterationsDone,
     iterationsTotal,
-    precision,
+    precisionId,
     premium,
     message,
     detail,
@@ -34,7 +35,7 @@
     estimate: Estimate;
     iterationsDone: number;
     iterationsTotal: number;
-    precision: IterationCount;
+    precisionId: PrecisionId;
     premium: boolean;
     message: string | null;
     /** The engine's own words for the failure, shown verbatim under the message. Empty when there are none. */
@@ -58,7 +59,7 @@
     serverRunning: boolean;
     onrun: () => void;
     onstop: () => void;
-    onprecision: (value: IterationCount) => void;
+    onprecision: (value: PrecisionId) => void;
     onserver: () => void;
     onrerun: () => void;
   } = $props();
@@ -153,11 +154,10 @@
       <input
         type="checkbox"
         class="accent-gold h-5 w-5"
-        checked={precision === ITERATIONS.precise}
+        checked={precisionId === 'high'}
         disabled={running || serverRunning}
         title={simCopy.precisionNote}
-        onchange={(event) =>
-          onprecision(event.currentTarget.checked ? ITERATIONS.precise : ITERATIONS.normal)}
+        onchange={(event) => onprecision(event.currentTarget.checked ? 'high' : 'normal')}
         data-testid="sim-precision"
       />
       <span class="text-muted">{simCopy.highPrecision}</span>

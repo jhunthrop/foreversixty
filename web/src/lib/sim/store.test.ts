@@ -40,7 +40,7 @@ describe('createSimStore', () => {
     expect(sim.result).toBeNull();
     expect(sim.message).toBeNull();
     expect(sim.settings.encounter.duration_sec).toBe(180);
-    expect(sim.precision).toBe(3000);
+    expect(sim.precisionId).toBe('normal');
   });
 
   it('loads an addon export and lands on the character', async () => {
@@ -91,7 +91,7 @@ describe('createSimStore', () => {
   it('carries the precision toggle into the request', async () => {
     const sim = store();
     await sim.loadAddon(FURY);
-    sim.setPrecision(10_000);
+    sim.setPrecisionId('high');
     await sim.run();
     expect(sim.result?.request.iterations).toBe(10_000);
     expect(sim.result?.iterations_run).toBe(10_000);
@@ -357,6 +357,39 @@ describe('createSimStore', () => {
       await sim.ready;
       expect(sim.character).toBeNull();
       expect(sim.message).toBe('That code is missing its talent and gear fields.');
+    });
+  });
+
+  describe('precision', () => {
+    it('reports the browser lane by default and after run(), which is always the browser lane', async () => {
+      const sim = store();
+      expect(sim.lane).toBe('browser');
+      await sim.loadAddon(FURY);
+      await sim.run();
+      expect(sim.lane).toBe('browser');
+    });
+
+    it('opens on normal and carries the chosen precision into the request', async () => {
+      const sim = store();
+      await sim.loadAddon(FURY);
+      expect(sim.precisionId).toBe('normal');
+
+      sim.setPrecisionId('fast');
+      await sim.run();
+      expect(sim.result?.request.iterations).toBe(500);
+      expect(sim.result?.request.target_error).toBeUndefined();
+    });
+
+    it('a target-error run sends the lane’s ceiling and the target', async () => {
+      const sim = store();
+      await sim.loadAddon(FURY);
+      sim.setPrecisionId('target-error');
+      expect(sim.iterationsTotal).toBe(0);
+      await sim.run();
+      expect(sim.result?.request.target_error).toBe(0.005);
+      expect(sim.result?.request.iterations).toBe(30_000);
+      expect(sim.result?.iterations_run).toBeLessThanOrEqual(30_000);
+      expect(sim.relativeError).toBeGreaterThan(0);
     });
   });
 });

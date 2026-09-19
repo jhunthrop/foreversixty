@@ -20,6 +20,7 @@ import { characterFromFs1, needsRace, toCharacterSpec, type SimCharacter } from 
 import { loadActionNames, type ActionNames } from './action-names';
 import { simCopy } from './copy';
 import { EMPTY_ESTIMATE } from './estimate';
+import { precisionPlan, relativeError, type Lane, type PrecisionId } from './precision';
 import { buildSimRequest, runSim, SimRunError, type RunHandle, type RunInput } from './run';
 import { defaultSettings, type SimSettings } from './settings';
 import {
@@ -31,7 +32,7 @@ import {
   type SourceResult,
 } from './sources';
 import type { CharacterPath } from '../characters';
-import type { Estimate, IterationCount, SimProgress, SimResult, SourceKind } from './types';
+import type { Estimate, SimProgress, SimResult, SourceKind } from './types';
 import { createPool, type SimPool } from './worker';
 
 export type SimPhase = 'idle' | 'loading-character' | 'loading-engine' | 'running' | 'done' | 'error';
@@ -140,7 +141,9 @@ export function createSimStore(init: SimStoreInit) {
   let phase = $state<SimPhase>('idle');
   let character = $state<SimCharacter | null>(null);
   let settings = $state<SimSettings>(defaultSettings());
-  let precision = $state<IterationCount>(3000);
+  let precisionId = $state<PrecisionId>('normal');
+  /** `error / mean` of the figure on screen, for the progress line and the details card. */
+  let relative = $state(0);
   let estimate = $state<Estimate>(EMPTY_ESTIMATE);
   let iterationsDone = $state(0);
   let iterationsTotal = $state(0);
@@ -202,10 +205,12 @@ export function createSimStore(init: SimStoreInit) {
       estimate = result.dps;
       iterationsDone = result.iterations_run;
       iterationsTotal = result.request.iterations;
+      relative = relativeError(result.dps);
     } else {
       estimate = EMPTY_ESTIMATE;
       iterationsDone = 0;
       iterationsTotal = 0;
+      relative = 0;
     }
   }
 
@@ -231,6 +236,7 @@ export function createSimStore(init: SimStoreInit) {
     estimate = EMPTY_ESTIMATE;
     iterationsDone = 0;
     iterationsTotal = 0;
+    relative = 0;
     phase = 'idle';
     try {
       const file = await loadItems(outcome.character.tree_version, outcome.character.class_slug);
@@ -310,8 +316,21 @@ export function createSimStore(init: SimStoreInit) {
     get settings() {
       return settings;
     },
-    get precision() {
-      return precision;
+    get precisionId() {
+      return precisionId;
+    },
+    /** `error / mean` of the figure on screen, for the progress line and the details card. */
+    get relativeError() {
+      return relative;
+    },
+    /**
+     * Which lane the figure on screen ran on: `run()` is always `'browser'`,
+     * `runOnServer()` is always `'server'` -- there is no third. Reflects whichever ran
+     * most recently rather than a player-facing choice; `run()` and `runOnServer()` are
+     * two separate buttons, not one control with a lane setting.
+     */
+    get lane(): Lane {
+      return serverRunning ? 'server' : 'browser';
     },
     get estimate() {
       return estimate;
@@ -370,6 +389,7 @@ export function createSimStore(init: SimStoreInit) {
       estimate = EMPTY_ESTIMATE;
       iterationsDone = 0;
       iterationsTotal = 0;
+      relative = 0;
       message = null;
       phase = 'idle';
     },
@@ -380,8 +400,8 @@ export function createSimStore(init: SimStoreInit) {
     setSettings(next: SimSettings): void {
       settings = next;
     },
-    setPrecision(value: IterationCount): void {
-      precision = value;
+    setPrecisionId(value: PrecisionId): void {
+      precisionId = value;
     },
 
     loadAddon: (code: string) => adopt(fromAddonExport(code, ctx)),
@@ -395,6 +415,7 @@ export function createSimStore(init: SimStoreInit) {
       estimate = next.dps;
       iterationsDone = next.iterations_run;
       iterationsTotal = next.request.iterations;
+      relative = relativeError(next.dps);
       phase = 'done';
     },
 
@@ -407,8 +428,10 @@ export function createSimStore(init: SimStoreInit) {
       detail = '';
       stopRequested = false;
       phase = 'loading-engine';
-      iterationsTotal = precision;
+      const plan = precisionPlan(precisionId, 'browser');
+      iterationsTotal = plan.iterations;
       iterationsDone = 0;
+      relative = 0;
 
       // The talent index comes from the file the character was loaded with, so the engine's
       // talents string is built from the same data the strip is rendering.
@@ -424,7 +447,9 @@ export function createSimStore(init: SimStoreInit) {
         source: character.source,
         character: toCharacterSpec(character, index, settings.buffs, settings.consumables),
         encounter: settings.encounter,
-        iterations: precision,
+        iterations: plan.iterations,
+        targetError: plan.targetError,
+        stepIterations: plan.step,
       };
 
       phase = 'running';
@@ -436,6 +461,7 @@ export function createSimStore(init: SimStoreInit) {
         estimate = update.estimate;
         iterationsDone = update.iterationsDone;
         iterationsTotal = update.iterationsTotal;
+        relative = update.relativeError;
       });
 
       try {
@@ -514,12 +540,14 @@ export function createSimStore(init: SimStoreInit) {
         message = null;
         detail = '';
 
+        const plan = precisionPlan(precisionId, 'server');
         const request = buildSimRequest({
           spec: character.spec,
           source: character.source,
           character: toCharacterSpec(character, index, settings.buffs, settings.consumables),
           encounter: settings.encounter,
-          iterations: precision,
+          iterations: plan.iterations,
+          targetError: plan.targetError,
         });
 
         let simId: string;
@@ -531,8 +559,9 @@ export function createSimStore(init: SimStoreInit) {
         }
         if (!stillCurrent()) return;
 
-        iterationsTotal = precision;
+        iterationsTotal = plan.iterations;
         iterationsDone = 0;
+        relative = 0;
 
         const pollMs = init.serverPollMs ?? DEFAULT_SERVER_POLL_MS;
         for (;;) {
@@ -567,6 +596,7 @@ export function createSimStore(init: SimStoreInit) {
                 estimate = finished.dps;
                 iterationsDone = finished.iterations_run;
                 iterationsTotal = finished.request.iterations;
+                relative = relativeError(finished.dps);
                 phase = 'done';
               }
             } catch (error) {
