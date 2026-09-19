@@ -9,7 +9,7 @@ log-measurement harness.
 | `api` | `SimRequest` / `SimResult`, JSON, mirrored in `web/src/lib/sim/types.ts` |
 | `enginever` | the pinned engine sha, written only by `make engine-pin` |
 | `request` | our envelope to the engine's `RaidSimRequest` |
-| `request/apl` | the launch specs' rotations, written only by `make apl-sync` |
+| `request/apl` | every written spec's rotation, written only by `make apl-sync` |
 | `adapter` | the engine's `RaidSimResult` to a `logs` summary |
 | `combine` | split a run across workers, put it back together |
 | `measure` | recover combat constants from a real combat log |

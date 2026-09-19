@@ -161,8 +161,41 @@ def load_apl(path: Path) -> AplDocument:
             )
     if document.state == "written" and not document.sources:
         raise AplError(f"{path} is written but cites nothing; a rotation states a fact")
+    check_inert(path, document)
     parse_rotation(document.rotation)
     return document
+
+
+def check_inert(path: Path, document: AplDocument) -> None:
+    """Hold `inert` to the rotation it describes.
+
+    `inert` is the machine-readable half of what a written rotation's notes
+    already say in prose: the spell ids whose lines the pinned engine build
+    warns about and skips rather than casts. The engine lane's rotation smoke
+    test asserts the engine's own unknown-action warnings equal this set
+    exactly, so an id the rotation never names could never be warned about and
+    would make that assertion unsatisfiable -- a drifted declaration rather
+    than a finding about the engine.
+    """
+    if not document.inert:
+        return
+    if document.state != "written":
+        raise AplError(
+            f"{path} is unwritten but declares inert lines {document.inert}; "
+            f"an empty priority list names no spell"
+        )
+    seen = set()
+    for spell_id in document.inert:
+        if spell_id in seen:
+            raise AplError(f"{path} lists inert spell {spell_id} twice")
+        seen.add(spell_id)
+    named = {spell_id for spell_id, _rank in action_ids(document.rotation)}
+    named |= {spell_id for spell_id, _rank in aura_reference_ids(document.rotation)}
+    for spell_id in document.inert:
+        if spell_id not in named:
+            raise AplError(
+                f"{path} declares spell {spell_id} inert, but the rotation never names it"
+            )
 
 
 def load_all(apl_dir: Path = Path("curated/apl")) -> dict[str, AplDocument]:
