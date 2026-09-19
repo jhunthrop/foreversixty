@@ -14,6 +14,7 @@
 import { AccountError, requestEnvelope } from '../account/api';
 import type { CharacterPath } from '../characters';
 import { API_BASE_URL } from '../planner/config';
+import type { BulkServerProgress } from './bulk-types';
 import { bulkCopy, simCopy } from './copy';
 import type { KindFilter } from './history';
 import type { PhaseRow } from './phase';
@@ -112,6 +113,21 @@ export async function dispatchServerSim(
 
 export function fetchSimProgress(simId: string, apiBase: string = API_BASE_URL): Promise<SimProgress> {
   return call<SimProgress>(`/v1/sims/${simId}/progress`, apiBase, simCopy.loadFailed, {
+    credentials: 'omit',
+  });
+}
+
+/**
+ * The same route `fetchSimProgress` reads, typed for a bulk job's three extra columns. The
+ * premium bulk dispatch itself is `dispatchServerSim` unchanged: a `BulkRequest` is a
+ * `SimRequest`, the API derives the kind from the body, and a second POST helper would be a
+ * second place for the CSRF header to go wrong.
+ */
+export function fetchBulkProgress(
+  simId: string,
+  apiBase: string = API_BASE_URL,
+): Promise<BulkServerProgress> {
+  return call<BulkServerProgress>(`/v1/sims/${simId}/progress`, apiBase, simCopy.loadFailed, {
     credentials: 'omit',
   });
 }

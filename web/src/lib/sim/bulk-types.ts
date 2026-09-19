@@ -20,6 +20,7 @@ import type {
   BulkSpec,
   Combo,
   Estimate,
+  SimProgress,
   SimRequest,
   SimResult,
   Stage,
@@ -185,3 +186,17 @@ export function isCapExceeded(value: unknown): value is CapExceeded {
     typeof record.combinations === 'number'
   );
 }
+
+// --- new: GET /v1/sims/<id>/progress for a bulk job (contract 2, "Progress (+)") ---
+
+/**
+ * `fetchBulkProgress`'s answer. `SimProgress` (`./types`) already carries `stage`,
+ * `combos_done` and `combos_total` as optional fields -- Task 1 added them there directly
+ * (commit 9d96cac), which is contract A11's "additive progress widening" already done at
+ * the source. A plain alias, not a redeclared `extends` block: repeating those three fields
+ * on a second interface would be the same optional shape typed twice for no reason, and
+ * this lane's own DRY rule is "no code duplication... single source of truth". The alias
+ * still gives this lane the contract's own name to import from `./bulk-types`, its one
+ * import site, without a second place those three fields could drift out of sync.
+ */
+export type BulkServerProgress = SimProgress;

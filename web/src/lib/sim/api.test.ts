@@ -1,11 +1,12 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import type { CharacterPath } from '../characters';
-import { FIXTURE_SIM_ID, TEST_API, createSimApi, fixtureResult } from '../../test-support/sim-api';
+import { FIXTURE_SIM_ID, TEST_API, createSimApi, envelope, fixtureResult } from '../../test-support/sim-api';
 import {
   PREMIUM_REQUIRED_STATUS,
   SimApiError,
   dispatchServerSim,
+  fetchBulkProgress,
   fetchSim,
   fetchSimInput,
   fetchSimProgress,
@@ -100,6 +101,21 @@ describe('fetchSimProgress', () => {
     const progress = await fetchSimProgress(FIXTURE_SIM_ID, TEST_API);
     expect(progress.state).toBe('running');
     expect(progress.iterations_done).toBe(4200);
+  });
+});
+
+describe('fetchBulkProgress', () => {
+  it('reads the same route, typed for the bulk stage columns', async () => {
+    api.route({
+      method: 'GET',
+      pattern: /\/v1\/sims\/([a-z2-7]{12})\/progress$/,
+      respond: () =>
+        envelope({ state: 'running', iterations_done: 1800, stage: 2, combos_done: 4, combos_total: 9 }),
+    });
+    const progress = await fetchBulkProgress(FIXTURE_SIM_ID, TEST_API);
+    expect(progress.stage).toBe(2);
+    expect(progress.combos_done).toBe(4);
+    expect(progress.combos_total).toBe(9);
   });
 });
 
