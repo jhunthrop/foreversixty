@@ -29,8 +29,12 @@
   }: { settings: SimSettings; spec: string; disabled: boolean; onchange: (next: SimSettings) => void } =
     $props();
 
+  // min-w-0 on phone, not min-w-[7rem]: at 412px, five selects each demanding 112px force
+  // the row into an uneven two-column wrap with the gutter closed to 4px. Restored at md
+  // and up, where the row has the width to spare and the fixed minimum keeps every select
+  // the same size regardless of its shortest option's own text.
   const control =
-    'border-line-warm rounded-control bg-raised text-text min-h-11 min-w-[7rem] border px-3 text-[14px] font-semibold md:min-h-9';
+    'border-line-warm rounded-control bg-raised text-text min-h-11 min-w-0 md:min-w-[7rem] border px-3 text-[14px] font-semibold md:min-h-9';
   const targets = Array.from({ length: MAX_TARGETS }, (_, i) => i + 1);
   // The spec's own display name, from the data lane's generated list -- never the slug
   // with its first letter raised, which turns `beast-mastery` into `Beast-mastery`. An

@@ -53,7 +53,7 @@
          in a Svelte key. -->
     {#each comparison.abilities as row (row.spellId)}
       <div class={abilityRow} data-testid={`compare-ability-${row.spellId}`}>
-        <span class="text-strong truncate font-semibold">{row.name}</span>
+        <span class="text-strong min-w-0 truncate font-semibold">{row.name}</span>
         <span class="tabular text-right font-mono">{row.actualCasts}</span>
         <span class="tabular text-muted text-right font-mono">{row.simCasts}</span>
         <span class="tabular hidden text-right font-mono md:inline">{amount(row.actualDamage)}</span>
@@ -84,7 +84,7 @@
         class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_72px_72px] items-center gap-x-3 border-b px-3 py-2 text-[14px] last:border-b-0"
         data-testid={`compare-aura-${row.spellId}`}
       >
-        <span class="text-strong truncate font-semibold">{row.name}</span>
+        <span class="text-strong min-w-0 truncate font-semibold">{row.name}</span>
         <span class="tabular text-right font-mono">{pct(row.actualUptimeMs, actualDuration)}</span>
         <span class="tabular text-muted text-right font-mono">{pct(row.simUptimeMs, simDuration)}</span>
       </div>

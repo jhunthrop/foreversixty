@@ -72,8 +72,15 @@
 </p>
 
 <section class="flex flex-col gap-3" data-testid="sim-results">
+  <!-- No -mx-[18px] bleed here, unlike Header.astro's nav: that trick cancels a parent's
+       own px-[18px] padding, and this section's ancestors up to <main> carry none -- every
+       block in the sim island insets itself. Applying it anyway pushed this container 18px
+       past the viewport on each side, a real page-level horizontal scroll the phone audit
+       caught. px-[18px] alone already both insets the first tab to the page gutter and
+       gives the last tab the same padding once scrolled to, with the container's own box
+       never exceeding the viewport it already fills. -->
   <div
-    class="-mx-[18px] flex flex-nowrap gap-x-1 overflow-x-auto px-[18px] md:mx-0 md:flex-wrap md:px-0"
+    class="flex flex-nowrap gap-x-1 overflow-x-auto px-[18px] md:flex-wrap md:px-0"
     role="tablist"
     aria-label={simCopy.resultsTablist}
   >
