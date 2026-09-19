@@ -119,6 +119,6 @@ describe('applyFightStyle', () => {
     const base = { ...DEFAULT_ENCOUNTER };
     applyFightStyle(base, 'cleave-5');
     expect(base.targets).toBe(1);
-    expect(base.style).toBeUndefined();
+    expect(base.style).toBe('patchwerk');
   });
 });

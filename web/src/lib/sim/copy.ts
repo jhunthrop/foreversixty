@@ -303,4 +303,35 @@ export const simCopy = {
     'heavy-movement':
       'How much a movement window costs depends on the rotation’s own handling of it; no parse has measured this yet.',
   } as Record<string, string>,
+
+  // --- Task 3: the style select's "no style describes this any more" option, and the
+  // controls for fight length, variation, target level, armor, type and the dummy. ---
+  /** The style select's option for an encounter no style describes any more. */
+  styleCustom: 'Custom',
+  moreSettings: 'More settings',
+  variation: 'Length varies by',
+  variationNote: 'Every iteration draws its own fight length inside this band, the way real pulls do.',
+  targetLevel: 'Target level',
+  targetArmor: 'Target armor',
+  /**
+   * Zero means the preset for the chosen level, and contract A8 publishes the figure, so
+   * the empty field names it rather than leaving the player guessing what they are about
+   * to override.
+   */
+  targetArmorPreset: (armor: string): string => `${armor}, the preset for this level`,
+  targetType: 'Target type',
+  targetTypeAny: 'Any',
+  targetTypeLabel: {
+    humanoid: 'Humanoid',
+    undead: 'Undead',
+    beast: 'Beast',
+    demon: 'Demon',
+    dragonkin: 'Dragonkin',
+    elemental: 'Elemental',
+    giant: 'Giant',
+    mechanical: 'Mechanical',
+    unknown: 'Unknown',
+  } as Record<string, string>,
+  dummyTarget: 'Target dummy',
+  dummyNote: 'No debuffs, no execute window and no armor reduction, the way a dummy fights back.',
 } as const;

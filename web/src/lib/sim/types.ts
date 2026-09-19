@@ -113,6 +113,15 @@ export const DEFAULT_ENCOUNTER: EncounterSpec = {
   targets: 1,
   execute_ratio: 0.25,
   profile: '',
+  // Every field a style owns is present from the start rather than appearing the first
+  // time a style is chosen: `applyFightStyle` writes all of them on every call, and an
+  // encounter that sometimes carries a key and sometimes does not makes the request
+  // drawer's diff (Task 15) noisy for no reason.
+  style: 'patchwerk',
+  target_level: 63,
+  target_armor: 0,
+  target_type: '',
+  dummy: false,
 };
 
 export interface SimRequest {
