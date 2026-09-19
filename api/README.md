@@ -44,6 +44,9 @@ make run
 | `PARSE_JOB_NAME` | no | `parse-report` | The Cloud Run job that parses a whole-file upload. |
 | `PARSE_JOB_REGION` | no | `us-east1` | |
 | `PARSE_JOB_PROJECT` | no | `foreversixty` | The Google Cloud project the job lives in. |
+| `SIM_JOB_NAME` | no | `sim-run` | The Cloud Run job that runs one premium sim. |
+| `SIM_JOB_REGION` | no | `us-east1` | |
+| `SIM_JOB_PROJECT` | no | `foreversixty` | The Google Cloud project the sim jobs live in. |
 | `TREE_DATA_DIR` | no | `/data` | Directory holding one subdirectory per client build (`<build>/talents/*.json`, `<build>/items/*.json`, `<build>/{sets,classes,races,combos}.json`). The Docker image copies `data/builds` here. A missing or pre-Phase-1 directory is logged at startup and simply has no data: the service still serves health, version, and subscribe, and every save fails validation on `tree_version`. |
 
 Every Phase 3 variable is optional and degrades honestly: with no R2 credentials the service
@@ -175,6 +178,31 @@ gcloud run jobs add-iam-policy-binding parse-report --region us-east1 \
 
 Deploys update the job's image automatically (see `.github/workflows/api.yml`); the job needs
 the same secrets and variables as the service, minus `PORT`.
+
+### The simulator's Cloud Run jobs
+
+Both run the same image as the API, dispatched on their first argument.
+
+    gcloud run jobs create sim-run \
+      --image <the API image> --region us-east1 --args sim-run \
+      --cpu 4 --memory 4Gi --task-timeout 15m
+
+    gcloud run jobs create sim-validate \
+      --image <the API image> --region us-east1 --args sim-validate \
+      --cpu 4 --memory 4Gi --task-timeout 30m
+
+`sim-run` is executed by the API for one premium run and takes the sim
+id as a second argument; `sim-validate` is scheduled nightly by Cloud
+Scheduler and takes none. Both need `/engine/forever-sim` in the image
+to do real work — see "The engine binary" below — and fall back to the
+checked-in fixture result when it is absent.
+
+### Granting premium
+
+Premium is a flag on the account, set by hand until payments are
+designed. There is no code path that turns it on.
+
+    update users set premium = true where email = '<the tester>';
 
 ### The bucket's CORS rule
 

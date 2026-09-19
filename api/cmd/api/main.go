@@ -26,10 +26,12 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/rankings"
 	"github.com/jhunthrop/foreversixty/api/internal/reports"
 	"github.com/jhunthrop/foreversixty/api/internal/server"
+	"github.com/jhunthrop/foreversixty/api/internal/sims"
 	"github.com/jhunthrop/foreversixty/api/internal/site"
 	"github.com/jhunthrop/foreversixty/api/internal/spec"
 	"github.com/jhunthrop/foreversixty/api/internal/subscribe"
 	"github.com/jhunthrop/foreversixty/api/internal/trees"
+	"github.com/jhunthrop/foreversixty/sim/enginever"
 )
 
 var version = "dev" // set with -ldflags "-X main.version=<git sha>"
@@ -210,6 +212,11 @@ func serve(log *slog.Logger) error {
 		TrustedProxyHops: cfg.TrustedProxyHops,
 	}
 
+	simStore := &sims.Store{Pool: pool}
+	deps.Sims = &sims.Service{
+		Store: simStore, Accounts: authStore, EngineVersion: enginever.Version, Log: log,
+	}
+
 	var sampler *parse.Worker
 	if client != nil {
 		deps.Reports.Signer = client
@@ -227,6 +234,15 @@ func serve(log *slog.Logger) error {
 			deps.Uploads = &reports.Uploads{
 				Store: reportStore, R2: client, Jobs: runner, APIBaseURL: cfg.APIBaseURL, Log: log,
 			}
+		}
+		// The bucket, for the buffs sim-input reads out of a stored
+		// fight summary. Without it that read answers without buffs.
+		deps.Sims.Summaries = client
+		if runner, err := jobs.NewCloudRun(ctx, cfg.SimJobProject, cfg.SimJobRegion, cfg.SimJobName); err != nil {
+			log.Warn("jobs", "state", "the sim job cannot be reached", "err", err,
+				"effect", "running sims on our servers is not offered")
+		} else {
+			deps.Sims.Jobs = runner
 		}
 	}
 

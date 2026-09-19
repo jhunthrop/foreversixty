@@ -2,9 +2,9 @@ name: api
 on:
   push:
     branches: [main]
-    paths: ['api/**', 'logs/**', 'data/builds/**', '.github/workflows/api.yml']
+    paths: ['api/**', 'logs/**', 'sim/**', 'data/builds/**', '.github/workflows/api.yml']
   pull_request:
-    paths: ['api/**', 'logs/**', 'data/builds/**', '.github/workflows/api.yml']
+    paths: ['api/**', 'logs/**', 'sim/**', 'data/builds/**', '.github/workflows/api.yml']
   workflow_dispatch:
 jobs:
   test:
@@ -27,6 +27,17 @@ jobs:
         # -p 1: the database-backed packages share one Postgres and each
         # truncates the tables it uses, so they cannot run at once.
       - run: go test -race -cover -p 1 ./...
+        # sim/runner is this lane's package in the sim module. Only the
+        # engine-free packages are run here: sim/adapter and sim/request
+        # import the engine, which the engine lane's own workflow builds.
+        # GOWORK=off keeps the workspace (and its engine replace, which
+        # points at a local clone) out of it - verified: with GOWORK=off
+        # an engine-free package of the module builds, vets and tests
+        # with no engine checkout at all.
+      - name: Test the sim module's engine-free packages
+        working-directory: sim
+        env: { GOWORK: off }
+        run: go test -race -cover ./runner/ ./talents/ ./api/
   deploy:
     needs: test
     # Deploys only once the Google Cloud variables from api/README.md "First-time setup" exist.
@@ -50,14 +61,16 @@ jobs:
           service: api
           region: us-east1
           image: ${{ env.IMAGE }}
-        # The parse job is the same image run with different arguments,
-        # so it has to move with the service. The job is created once by
-        # hand (see api/README.md "The parse job"); until it exists this
-        # step says so rather than failing the deploy.
-      - name: Point the parse job at the new image
+        # Every job is the same image run with different arguments, so
+        # each has to move with the service. The jobs are created once
+        # by hand (see api/README.md); until one exists this step says
+        # so rather than failing the deploy.
+      - name: Point the jobs at the new image
         run: |
-          if gcloud run jobs describe parse-report --region us-east1 >/dev/null 2>&1; then
-            gcloud run jobs update parse-report --region us-east1 --image "$IMAGE"
-          else
-            echo "the parse-report job does not exist yet; skipping"
-          fi
+          for job in parse-report sim-run sim-validate; do
+            if gcloud run jobs describe "$job" --region us-east1 >/dev/null 2>&1; then
+              gcloud run jobs update "$job" --region us-east1 --image "$IMAGE"
+            else
+              echo "the $job job does not exist yet; skipping"
+            fi
+          done

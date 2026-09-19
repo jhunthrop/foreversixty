@@ -40,6 +40,8 @@ func TestOpenAPIListsEveryRoute(t *testing.T) {
 		"/v1/rankings", "/v1/rankings/percentile", "/v1/rankings/guilds",
 		"/v1/characters/{region}/{ruleset}/{name}", "/v1/guilds/{region}/{ruleset}/{name}",
 		"/v1/addon/exports", "/v1/addon/inbox", "/reports/{id}/card.png",
+		"/v1/sims", "/v1/sims/{id}", "/v1/sims/{id}/progress", "/v1/sims/run",
+		"/v1/specs", "/v1/characters/{region}/{ruleset}/{name}/sim-input",
 	}
 	for _, p := range requiredPaths {
 		if _, ok := paths[p]; !ok {
@@ -56,7 +58,7 @@ func TestOpenAPIListsEveryRoute(t *testing.T) {
 		t.Fatal("openapi.yaml missing 'components.schemas'")
 	}
 	for _, s := range []string{"Envelope", "Build", "BuildInput", "Report", "FightEntry",
-		"MetricsRow", "RankingRow"} {
+		"MetricsRow", "RankingRow", "SimResult", "SimRequest", "SimRow", "SpecFidelity", "User"} {
 		if _, ok := schemas[s]; !ok {
 			t.Errorf("openapi.yaml missing schema %s", s)
 		}
