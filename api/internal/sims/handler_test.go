@@ -205,6 +205,71 @@ func TestMyOwnSimsNeedASessionAndMineEqualsOne(t *testing.T) {
 	}
 }
 
+func TestMyOwnSimsFilterByKind(t *testing.T) {
+	h := newHarness(t)
+	saveBrowserResult(h, "warrior-fury", 1204.4, "a plain run")
+
+	gear := browserResult("mage-frost", 1100)
+	// Cap and Candidates are here only so ValidateSaved accepts the
+	// request on its way through POST /v1/sims; the headline this
+	// test checks is read from Combos, not from either field.
+	gear.Request.Bulk = &simapi.BulkSpec{
+		Mode: simapi.KindGear, Precision: simapi.PrecisionNormal,
+		Cap: simapi.Caps[simapi.LaneBrowser],
+		Candidates: []simapi.Candidate{
+			{Slot: "main_hand", ItemID: 19019, Origin: "bag"},
+		},
+	}
+	gear.Combos = []simapi.Combo{{
+		Substitutions: []simapi.Substitution{
+			{Kind: "item", ItemID: 19019, Name: "Thunderfury", Origin: "search"},
+		},
+		Delta: simapi.Estimate{Mean: 41.2},
+	}}
+	body, err := json.Marshal(struct {
+		simapi.SimResult
+		Title string `json:"title"`
+	}{gear, "top gear"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	h.data(h.json(http.MethodPost, "/v1/sims", string(body)), nil)
+
+	var all Page
+	h.data(h.do(http.MethodGet, "/v1/sims?mine=1", "", nil), &all)
+	if all.Total != 2 {
+		t.Fatalf("unfiltered total %d, want 2", all.Total)
+	}
+
+	var only Page
+	h.data(h.do(http.MethodGet, "/v1/sims?mine=1&kind=gear", "", nil), &only)
+	if only.Total != 1 || len(only.Rows) != 1 {
+		t.Fatalf("filtered: %+v", only)
+	}
+	if only.Rows[0].Kind != simapi.KindGear ||
+		only.Rows[0].Headline != "+41 DPS from Thunderfury" {
+		t.Fatalf("row: %+v", only.Rows[0])
+	}
+
+	// An empty kind is "every kind", not "a kind called empty".
+	var empty Page
+	h.data(h.do(http.MethodGet, "/v1/sims?mine=1&kind=", "", nil), &empty)
+	if empty.Total != 2 {
+		t.Fatalf("kind= total %d, want 2", empty.Total)
+	}
+}
+
+func TestAnUnknownKindIsRefusedRatherThanAnsweredEmpty(t *testing.T) {
+	h := newHarness(t)
+	res := h.do(http.MethodGet, "/v1/sims?mine=1&kind=topgear", "", nil)
+	if res.StatusCode != http.StatusBadRequest {
+		t.Fatalf("status %d, want 400", res.StatusCode)
+	}
+	if code := h.errorCode(res); code != "invalid" {
+		t.Fatalf("code %q, want invalid", code)
+	}
+}
+
 func TestAnAnonymousSaveIsStillShareable(t *testing.T) {
 	h := newHarness(t)
 	h.anonymous()

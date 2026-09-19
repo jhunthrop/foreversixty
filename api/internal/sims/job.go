@@ -24,7 +24,7 @@ const RunTimeout = 10 * time.Minute
 type JobDeps struct {
 	Store  *Store
 	Put    store.Putter
-	Engine runner.Runner
+	Engine runner.StageRunner
 	Log    *slog.Logger
 }
 
@@ -55,10 +55,13 @@ func Run(ctx context.Context, d JobDeps, simID string) error {
 	runCtx, cancel := context.WithTimeout(ctx, RunTimeout)
 	defer cancel()
 	started := time.Now()
-	res, err := d.Engine.Run(runCtx, req, func(done int, mean float64) {
+	res, err := d.Engine.RunStaged(runCtx, req, func(p simapi.Progress) {
 		// A progress write that fails is logged and the run carries
 		// on: the figure on the page is a courtesy, the result is not.
-		if err := d.Store.Advance(ctx, simID, done, mean); err != nil {
+		if err := d.Store.Advance(ctx, simID, Tick{
+			IterationsDone: p.IterationsRun, Mean: p.DPS.Mean,
+			Stage: p.Stage, CombosDone: p.CombosDone, CombosTotal: p.CombosTotal,
+		}); err != nil {
 			d.logger().Error("sims", "op", "progress", "sim", simID, "err", err)
 		}
 	})

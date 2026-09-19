@@ -54,7 +54,7 @@ func TestMyHistoryIsMineAndNewestFirst(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	page, err := h.store.Mine(t.Context(), h.owner, 1)
+	page, err := h.store.Mine(t.Context(), h.owner, 1, "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -97,7 +97,9 @@ func TestAServerRunWalksQueuedThenRunningThenDone(t *testing.T) {
 		t.Fatalf("queued request: %+v", queued.Request)
 	}
 
-	if err := h.store.Advance(t.Context(), "dddddddddddd", 1500, 1000); err != nil {
+	if err := h.store.Advance(t.Context(), "dddddddddddd", Tick{
+		IterationsDone: 1500, Mean: 1000,
+	}); err != nil {
 		t.Fatal(err)
 	}
 	p, err = h.store.Progress(t.Context(), "dddddddddddd")
@@ -158,7 +160,9 @@ func TestAdvanceCannotReviveAFailedRun(t *testing.T) {
 	}
 	// A late or duplicate progress tick arriving after the failure must
 	// not walk the row back to running: error is terminal.
-	if err := h.store.Advance(t.Context(), "hhhhhhhhhhhh", 1500, 1000); err != nil {
+	if err := h.store.Advance(t.Context(), "hhhhhhhhhhhh", Tick{
+		IterationsDone: 1500, Mean: 1000,
+	}); err != nil {
 		t.Fatal(err)
 	}
 	p, err := h.store.Progress(t.Context(), "hhhhhhhhhhhh")
@@ -186,7 +190,9 @@ func TestAdvanceCannotReopenAFinishedRun(t *testing.T) {
 	}
 	// A late or duplicate progress tick arriving after the result must
 	// not overwrite it: done is terminal.
-	if err := h.store.Advance(t.Context(), "iiiiiiiiiiii", 1500, 1000); err != nil {
+	if err := h.store.Advance(t.Context(), "iiiiiiiiiiii", Tick{
+		IterationsDone: 1500, Mean: 1000,
+	}); err != nil {
 		t.Fatal(err)
 	}
 	p, err := h.store.Progress(t.Context(), "iiiiiiiiiiii")
@@ -237,6 +243,142 @@ func TestSavingTheSameIdTwiceKeepsTheFirst(t *testing.T) {
 	}
 	if got.DPS.Mean != 900 {
 		t.Fatalf("mean %v, want the first save's 900", got.DPS.Mean)
+	}
+}
+
+func TestEveryRowRecordsWhichToolProducedIt(t *testing.T) {
+	h := newHarness(t)
+	// A browser save of a plain run.
+	if err := h.store.Save(t.Context(), "aaaaaaaaaaaa", &h.owner, "",
+		browserResult("warrior-fury", 1000)); err != nil {
+		t.Fatal(err)
+	}
+	// A queued server run of a Top Gear request.
+	gear := browserResult("warrior-fury", 0).Request
+	gear.Bulk = &simapi.BulkSpec{
+		Mode:      simapi.KindGear,
+		Precision: simapi.PrecisionNormal,
+		Cap:       simapi.Caps[simapi.LaneServer],
+		Candidates: []simapi.Candidate{
+			{Slot: "main_hand", ItemID: 19019, Origin: "bag"},
+		},
+	}
+	if err := h.store.Queue(t.Context(), "bbbbbbbbbbbb", h.owner, gear); err != nil {
+		t.Fatal(err)
+	}
+	// A queued weights run.
+	weights := browserResult("warrior-fury", 0).Request
+	weights.Weights = &simapi.WeightsSpec{
+		Stats: []string{"strength", "crit"}, Reference: "crit",
+	}
+	if err := h.store.Queue(t.Context(), "cccccccccccc", h.owner, weights); err != nil {
+		t.Fatal(err)
+	}
+
+	for _, c := range []struct{ id, want string }{
+		{"aaaaaaaaaaaa", simapi.KindRun},
+		{"bbbbbbbbbbbb", simapi.KindGear},
+		{"cccccccccccc", simapi.KindWeights},
+	} {
+		var got string
+		if err := h.store.Pool.QueryRow(t.Context(),
+			`select kind from sims where id = $1`, c.id).Scan(&got); err != nil {
+			t.Fatal(err)
+		}
+		if got != c.want {
+			t.Errorf("%s: kind %q, want %q", c.id, got, c.want)
+		}
+	}
+}
+
+func TestMyHistoryCarriesTheKindAndHeadlineAndFiltersByKind(t *testing.T) {
+	h := newHarness(t)
+	plain := browserResult("warrior-fury", 1204.4)
+	if err := h.store.Save(t.Context(), "aaaaaaaaaaaa", &h.owner, "", plain); err != nil {
+		t.Fatal(err)
+	}
+	gear := browserResult("warrior-fury", 1204.4)
+	gear.Request.Bulk = &simapi.BulkSpec{Mode: simapi.KindGear, Precision: simapi.PrecisionNormal}
+	gear.Combos = []simapi.Combo{{
+		Substitutions: []simapi.Substitution{
+			{Kind: "item", ItemID: 17182, Name: "Vis'kag the Bloodletter", Origin: "bag"},
+		},
+		Delta: simapi.Estimate{Mean: 41.2},
+	}}
+	if err := h.store.Save(t.Context(), "bbbbbbbbbbbb", &h.owner, "", gear); err != nil {
+		t.Fatal(err)
+	}
+
+	all, err := h.store.Mine(t.Context(), h.owner, 1, "")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if all.Total != 2 {
+		t.Fatalf("total %d, want both kinds", all.Total)
+	}
+	byID := map[string]Row{}
+	for _, r := range all.Rows {
+		byID[r.SimID] = r
+	}
+	if got := byID["aaaaaaaaaaaa"]; got.Kind != simapi.KindRun || got.Headline != "1,204 DPS" {
+		t.Errorf("plain row: %+v", got)
+	}
+	if got := byID["bbbbbbbbbbbb"]; got.Kind != simapi.KindGear ||
+		got.Headline != "+41 DPS from Vis'kag the Bloodletter" {
+		t.Errorf("gear row: %+v", got)
+	}
+
+	only, err := h.store.Mine(t.Context(), h.owner, 1, simapi.KindGear)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if only.Total != 1 || len(only.Rows) != 1 || only.Rows[0].SimID != "bbbbbbbbbbbb" {
+		t.Fatalf("filtered: total %d rows %+v", only.Total, only.Rows)
+	}
+
+	none, err := h.store.Mine(t.Context(), h.owner, 1, simapi.KindDrops)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if none.Total != 0 || len(none.Rows) != 0 {
+		t.Fatalf("a kind with no rows: total %d rows %+v", none.Total, none.Rows)
+	}
+}
+
+func TestAServerRunsHeadlineIsWrittenWhenItFinishes(t *testing.T) {
+	h := newHarness(t)
+	req := browserResult("warrior-fury", 0).Request
+	req.Weights = &simapi.WeightsSpec{
+		// crit, not melee_crit: contract 10.8 carries one hit and one
+		// crit, not the lane-split melee/spell pairs.
+		Stats: []string{"crit", "agility"}, Reference: "crit",
+	}
+	if err := h.store.Queue(t.Context(), "cccccccccccc", h.owner, req); err != nil {
+		t.Fatal(err)
+	}
+	// A queued run has nothing to say yet.
+	queued, err := h.store.Mine(t.Context(), h.owner, 1, simapi.KindWeights)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(queued.Rows) != 1 || queued.Rows[0].Headline != "" {
+		t.Fatalf("queued row: %+v", queued.Rows)
+	}
+
+	done := browserResult("warrior-fury", 1000)
+	done.Lane, done.Request = simapi.LaneServer, req
+	done.Weights = []simapi.StatWeight{
+		{Stat: "crit", Weight: 1}, {Stat: "agility", Weight: 0.874},
+	}
+	if err := h.store.Finish(t.Context(), "cccccccccccc", done); err != nil {
+		t.Fatal(err)
+	}
+	finished, err := h.store.Mine(t.Context(), h.owner, 1, simapi.KindWeights)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(finished.Rows) != 1 || finished.Rows[0].Headline != "Crit 1.00 · Agility 0.87" {
+		t.Fatalf("finished row: %+v", finished.Rows)
 	}
 }
 

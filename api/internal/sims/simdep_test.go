@@ -13,6 +13,8 @@ import (
 func TestTheEncounterDefaultsAreTheDesignsSettingsBar(t *testing.T) {
 	got := withEncounterDefaults(simapi.EncounterSpec{})
 	want := simapi.DefaultEncounter()
+	// EncounterSpec now carries TargetsOverTime ([]TargetCount), so it is
+	// no longer comparable with ==; DeepEqual is the correct successor.
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("defaults: got %+v want %+v", got, want)
 	}

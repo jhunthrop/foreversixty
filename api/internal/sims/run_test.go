@@ -79,6 +79,8 @@ func TestAPremiumRunIsQueuedDispatchedAndPollable(t *testing.T) {
 		t.Fatalf("engine version %q, want the deployment's pin", stored.Request.EngineVersion)
 	}
 	// The encounter the page left empty is the design's default.
+	// EncounterSpec now carries TargetsOverTime ([]TargetCount), so it is
+	// no longer comparable with ==; DeepEqual is the correct successor.
 	if !reflect.DeepEqual(stored.Request.Encounter, simapi.DefaultEncounter()) {
 		t.Fatalf("encounter defaults were not applied: %+v", stored.Request.Encounter)
 	}

@@ -9,6 +9,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/builds"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
+	"github.com/jhunthrop/foreversixty/api/internal/phase"
 	"github.com/jhunthrop/foreversixty/api/internal/rankings"
 	"github.com/jhunthrop/foreversixty/api/internal/reports"
 	"github.com/jhunthrop/foreversixty/api/internal/sims"
@@ -51,6 +52,13 @@ func NewRouter(d Deps) http.Handler {
 	})
 	mux.HandleFunc("GET /version", func(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteOK(w, r, http.StatusOK, map[string]string{"version": d.Version})
+	})
+	// The phase boundaries, for any client that has to bucket a date the
+	// same way the rankings do. Four fixed instants that change only with
+	// a deploy, so an hour at the edge is safe.
+	mux.HandleFunc("GET /v1/phases", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Cache-Control", "public, max-age=3600")
+		httpx.WriteOK(w, r, http.StatusOK, map[string]any{"phases": phase.Boundaries})
 	})
 	if d.Subscribe != nil {
 		subscribe.Mount(mux, d.Subscribe, d.Log, d.TrustedProxyHops)

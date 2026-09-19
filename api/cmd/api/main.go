@@ -196,7 +196,7 @@ func runValidate(ctx context.Context, log *slog.Logger) error {
 // when the image carries one, and the checked-in fixture when it does
 // not, so a deployment without the artifact still answers instead of
 // failing. Task 15 is what puts the binary there.
-func simEngine(log *slog.Logger) runner.Runner {
+func simEngine(log *slog.Logger) runner.StageRunner {
 	if _, err := os.Stat(runner.DefaultBinary); err == nil {
 		return &runner.Native{}
 	}

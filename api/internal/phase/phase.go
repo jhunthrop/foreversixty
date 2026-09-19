@@ -5,9 +5,11 @@
 // rather than read at runtime: the API does not ship the site's source,
 // the dates are four fixed instants, and a ranking bracket that could
 // change under a running deployment would silently re-bucket stored
-// rows. The API lane's phase_test.go is meant to hold this table to that
-// file, so the two cannot drift; `python -m pipeline phases` emits the
-// web's copy from the same source.
+// rows. `python -m pipeline phases` emits the web's copy from the same
+// source.
+//
+// When a date moves or a phase is added, change that file and this
+// table together; boundaries_test.go fails if the two disagree.
 package phase
 
 import "time"
@@ -21,10 +23,13 @@ const (
 	Raids1  = "raids-1"
 )
 
-// Boundary is one phase and the instant it opens.
+// Boundary is one phase and the instant it opens. The tags are what
+// GET /v1/phases serves; pre-beta's zero Start marshals as
+// "0001-01-01T00:00:00Z", which is the truth about a phase that has no
+// opening instant.
 type Boundary struct {
-	Name  string
-	Start time.Time
+	Name  string    `json:"name"`
+	Start time.Time `json:"start"`
 }
 
 // Boundaries are the phases in order. Launch is 15:00 PST on Nov 4,

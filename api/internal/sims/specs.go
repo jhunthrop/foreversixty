@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
+	"github.com/jhunthrop/foreversixty/sim/specs"
 )
 
 // The states a spec can be in on the support page.
@@ -52,7 +53,13 @@ type WorstAction struct {
 
 // SpecFidelity is one card on the support page.
 type SpecFidelity struct {
-	Spec          string        `json:"spec"`
+	Spec string `json:"spec"`
+	// ReferenceStat is the stat the weights tool normalises to 1.0 for
+	// this spec (contract A7), in the fork's proto.Stat vocabulary. It
+	// is read from the generated spec list rather than stored: it is a
+	// property of the spec, not of a measurement, and a row measured
+	// before the data lane changed it must not report the old one.
+	ReferenceStat string        `json:"reference_stat"`
 	State         string        `json:"state"`
 	MedianGap     *float64      `json:"median_gap"`
 	Parses        int           `json:"parses"`
@@ -88,11 +95,15 @@ func StateFor(medianGap float64, parses int) string {
 // that says so - which is what design section 4.4 asks for.
 func (s *Store) Specs(ctx context.Context) ([]SpecFidelity, error) {
 	byspec := map[string]SpecFidelity{}
-	for _, spec := range DPSSpecs() {
-		// No MedianGap and no UpdatedAt: nothing has measured this
-		// spec, and both fields marshal as null to say so.
-		byspec[spec] = SpecFidelity{
-			Spec: spec, State: SpecUnsupported, WorstActions: []WorstAction{},
+	for _, s := range specs.All {
+		if s.Role != roleDPS {
+			continue
+		}
+		// No MedianGap and no UpdatedAt: nothing has measured this spec,
+		// and both fields marshal as null to say so.
+		byspec[s.Spec] = SpecFidelity{
+			Spec: s.Spec, ReferenceStat: s.ReferenceStat,
+			State: SpecUnsupported, WorstActions: []WorstAction{},
 		}
 	}
 	rows, err := s.Pool.Query(ctx,
@@ -117,7 +128,10 @@ func (s *Store) Specs(ctx context.Context) ([]SpecFidelity, error) {
 			return nil, fmt.Errorf("sims: decode worst actions for %s: %w", f.Spec, err)
 		}
 		// A measured row for a spec that is no longer in the list is
-		// still shown: a rename should be visible, not silent.
+		// still shown: a rename should be visible, not silent. Its
+		// reference stat is simply blank, because the list no longer has
+		// one for it.
+		f.ReferenceStat = specs.ByKey[f.Spec].ReferenceStat
 		byspec[f.Spec] = f
 	}
 	if err := rows.Err(); err != nil {
