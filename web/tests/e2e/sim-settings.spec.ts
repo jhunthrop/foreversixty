@@ -68,14 +68,29 @@ test('the settings bar reads the defaults and every control changes the settings
   await page.getByTestId('sim-target-type').selectOption('undead');
   await expect(page.getByTestId('sim-target-type')).toHaveValue('undead');
 
+  // Re-attaching a style, then toggling execute phase or the dummy, detaches it again:
+  // withExecutePhase and withDummy both call settings.ts's `detached`, the same rule
+  // targets used above -- SettingsSheet.svelte's own header comment claims this for both.
+  await style.selectOption('patchwerk');
+  await expect(style).toHaveValue('patchwerk');
+
   const execute = page.getByTestId('sim-execute');
   await execute.uncheck();
   await expect(execute).not.toBeChecked();
+  await expect(style).toHaveValue('');
   await execute.check();
+
+  await style.selectOption('patchwerk');
+  await expect(style).toHaveValue('patchwerk');
 
   const dummy = page.getByTestId('sim-dummy');
   await dummy.check();
   await expect(dummy).toBeChecked();
+  await expect(style).toHaveValue('');
+
+  // Re-attaching Patchwerk above reset targets to its own count (1) each time; restore the
+  // 4 set by hand earlier so the persistence check below still sees it.
+  await page.getByTestId('sim-targets').selectOption('4');
 
   // The changes hold after the source switcher is reopened and the strip is brought back.
   await page.getByTestId('sim-change-source').click();

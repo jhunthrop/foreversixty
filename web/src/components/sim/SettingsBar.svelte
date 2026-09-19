@@ -20,7 +20,7 @@
     type BuffPresetId,
     type SimSettings,
   } from '../../lib/sim/settings';
-  import { FIGHT_STYLES } from '../../lib/sim/styles';
+  import { FIGHT_STYLES, fightStyle } from '../../lib/sim/styles';
   import { specRow } from '../../lib/sim/spec-label';
   import SettingsSheet from './SettingsSheet.svelte';
 
@@ -52,11 +52,12 @@
   // The <select>'s value is a plain string; FightStyleId is a literal union, so a raw cast
   // would let an id outside the contract's nine reach withStyle/applyFightStyle, which
   // (styles.ts) returns the encounter unchanged for an id it does not recognise -- the one
-  // branch of that function that is not a fresh object. Looking the value up in FIGHT_STYLES
-  // narrows it for real: only a member of that table is ever passed on.
+  // branch of that function that is not a fresh object. `fightStyle` is styles.ts's own
+  // safe, null-returning lookup for exactly this; re-deriving it here with a second
+  // `FIGHT_STYLES.find` would be the same rule kept in two places.
   function selectStyle(id: string): void {
-    const style = FIGHT_STYLES.find((row) => row.id === id);
-    if (style === undefined) return;
+    const style = fightStyle(id);
+    if (style === null) return;
     onchange(withStyle(settings, style.id));
   }
 </script>
