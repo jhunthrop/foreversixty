@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import worker from './worker';
+import worker, { type Env } from './worker';
 import { DUCKDB_WASM_VERSION, duckdbRuntimeUrl } from './lib/report/duckdb-runtime';
+import { fixtureResult } from './test-support/sim-api';
 
 const API_BASE_URL = 'https://api.foreversixty.test';
 
@@ -787,5 +788,75 @@ describe('shell routes with rewritten unfurl tags', () => {
       'https://foreversixty.gg/reports/NOT-AN-ID/extra',
     );
     expect(response.status).toBe(404);
+  });
+});
+
+// --- appended for Task 9: the sim shell route ---
+
+/** The Phase 0 envelope, the same shape every route in this repository answers in. */
+function json(body: unknown): Response {
+  return new Response(JSON.stringify(body), { status: 200, headers: { 'content-type': 'application/json' } });
+}
+
+/** An ASSETS binding that answers `matchPath` with `html` and 404s everything else. */
+function shellAssets(matchPath: string, html = SHELL_HTML) {
+  return {
+    fetch: vi.fn<AssetFetch>(async (request: Request) =>
+      new URL(request.url).pathname === matchPath
+        ? new Response(html, { status: 200, headers: { 'content-type': 'text/html' } })
+        : new Response('not found', { status: 404 }),
+    ),
+  };
+}
+
+describe('/sim/<sim_id>', () => {
+  it('serves sim.html with the head rewritten from the API', async () => {
+    const assets = shellAssets('/sim.html');
+    const upstream = vi.fn(async (request: Request) => {
+      expect(new URL(request.url).pathname).toBe('/v1/sims/simfixtureab');
+      return json({ ok: true, data: fixtureResult, error: null, request_id: 'r' });
+    });
+    vi.stubGlobal('fetch', upstream);
+    vi.stubGlobal('HTMLRewriter', FakeHTMLRewriter);
+
+    const response = await worker.fetch(new Request('https://foreversixty.gg/sim/simfixtureab'), {
+      API_BASE_URL: 'https://api.test',
+      ASSETS: assets,
+    } as unknown as Env);
+
+    const html = await response.text();
+    expect(response.status).toBe(200);
+    expect(response.headers.get('cache-control')).toBe('public, max-age=60');
+    expect(response.headers.get('x-robots-tag')).toBeNull();
+    expect(html).toContain('Fury Warrior, 1,370 DPS · Forever Sixty');
+    expect(html).toContain('https://foreversixty.gg/sim/simfixtureab');
+  });
+
+  it('serves the shell unrewritten and noindex when the API cannot answer', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => new Response('nope', { status: 500 })),
+    );
+    vi.stubGlobal('HTMLRewriter', FakeHTMLRewriter);
+    const response = await worker.fetch(new Request('https://foreversixty.gg/sim/simfixtureab'), {
+      API_BASE_URL: 'https://api.test',
+      ASSETS: shellAssets('/sim.html'),
+    } as unknown as Env);
+    expect(response.status).toBe(200);
+    expect(response.headers.get('x-robots-tag')).toBe('noindex');
+  });
+
+  it('leaves /sim and /sim/specs to the static assets, with no API call at all', async () => {
+    const upstream = vi.fn();
+    vi.stubGlobal('fetch', upstream);
+    const assets = { fetch: vi.fn(async () => new Response('static', { status: 200 })) };
+    for (const path of ['/sim', '/sim/specs', '/sim/not-an-id']) {
+      await worker.fetch(new Request(`https://foreversixty.gg${path}`), {
+        API_BASE_URL: 'https://api.test',
+        ASSETS: assets,
+      } as unknown as Env);
+    }
+    expect(upstream).not.toHaveBeenCalled();
+    expect(assets.fetch).toHaveBeenCalledTimes(3);
   });
 });

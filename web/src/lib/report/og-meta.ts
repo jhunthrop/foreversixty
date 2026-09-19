@@ -4,11 +4,14 @@
 //
 // Voice: reference, not pitch. A description states the numbers and the date and stops.
 import { rulesetLabel, type CharacterPath } from '../characters';
+import { encounterLabel } from '../sim/encounter';
+import { specLabel } from '../sim/spec-label';
+import type { SimResult } from '../sim/types';
 import type { ReportMeta } from './types';
 
 export const SITE_BASE_URL = 'https://foreversixty.gg';
 
-export type ShellKind = 'report' | 'rankings' | 'character' | 'guild';
+export type ShellKind = 'report' | 'rankings' | 'character' | 'guild' | 'sim';
 
 export interface ShellMeta {
   /** The whole <title>, including the site suffix. */
@@ -106,5 +109,36 @@ export function guildShellMeta(path: CharacterPath, head: GuildHead): ShellMeta 
     description: `${plural(kills, 'boss down', 'bosses down')} over ${plural(pulls, 'pull', 'pulls')}.`,
     image: SITE_CARD,
     canonical: `${SITE_BASE_URL}/guild/${path.region}/${path.ruleset}/${path.slug}`,
+  };
+}
+
+/**
+ * A saved sim's unfurl. There is no rendered card for a sim at launch -- the API draws one
+ * per report and per build, and a third renderer is its work, not this lane's -- so the
+ * site's own card stands in, the way the rankings and character shells already do.
+ *
+ * The description is the whole run in one sentence: the engine it came from, the figure and
+ * its 95% band, how many iterations bought that band, and the settings. Someone deciding
+ * whether to open the link has every number that would change their mind.
+ *
+ * `apiBase` is unused today -- unlike a report's card, a sim's image is always the site's
+ * own -- but kept in the signature to match reportShellMeta's and to need no signature
+ * change on the day the API does grow a per-sim card renderer.
+ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- see the doc comment above.
+export function simShellMeta(result: SimResult, _apiBase: string): ShellMeta {
+  const dps = Math.round(result.dps.mean).toLocaleString('en-US');
+  const band = Math.round(1.96 * result.dps.error).toLocaleString('en-US');
+  const iterations = result.request.iterations.toLocaleString('en-US');
+  // Whether the player carried a raid buff, read from the stored fact rather than guessed:
+  // a SimResult carries no buff preset, so this is true exactly when the summary records at
+  // least one BUFF-type aura track.
+  const buffed = result.summary.auras.some((track) => track.type === 'BUFF');
+  const settings = encounterLabel(result.request.encounter, buffed);
+  return {
+    title: `${specLabel(result.request.spec)}, ${dps} DPS · Forever Sixty`,
+    description: `Simulated on engine ${result.engine_version}: ${dps} DPS ± ${band} over ${iterations} iterations, ${settings}.`,
+    image: SITE_CARD,
+    canonical: `${SITE_BASE_URL}/sim/${result.sim_id ?? ''}`,
   };
 }
