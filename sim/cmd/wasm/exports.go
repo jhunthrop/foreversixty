@@ -201,16 +201,26 @@ var fieldToken = regexp.MustCompile(`^[a-z][a-z0-9_]*(\.[a-z0-9_]+|\[[0-9]+\])*`
 
 // topLevelFields is every SimRequest field Validate/ValidateLane names,
 // bare, at the very start of one of its own messages: "iterations must
-// be...", "targets must be...". A nested path ("bulk.candidates[2]",
-// "encounter.movement.kind") is trusted on its shape alone, but a bare
-// word is not, because ValidateLane's own added messages ("the browser
-// lane plans...", "the browser lane runs...") and several of Validate's
-// ("a split part's iterations...", "a request is one kind...") also
-// start with an ordinary lowercase word - "the", "a" - that the regex
-// alone cannot tell from a field name. Without this list leadingField
-// reports field "the" or "a" for exactly those messages, which marks no
-// control in the drawer and never falls back to the top-of-drawer
-// message its own doc comment promises.
+// be...", "targets must be...", "weights needs at least...". A nested
+// path ("bulk.candidates[2]", "encounter.movement.kind") is trusted on
+// its shape alone, but a bare word is not, because ValidateLane's own
+// added messages ("the browser lane plans...", "the browser lane
+// runs...") and several of Validate's ("a split part's iterations...",
+// "a request is one kind...") also start with an ordinary lowercase
+// word - "the", "a" - that the regex alone cannot tell from a field
+// name. Without this list leadingField reports field "the" or "a" for
+// exactly those messages, which marks no control in the drawer and
+// never falls back to the top-of-drawer message its own doc comment
+// promises.
+//
+// This list was built by walking every errors.New/fmt.Errorf call
+// under sim/api reachable from Validate/ValidateLane and noting which
+// ones are bare rather than dotted - not by reasoning from the field
+// list, since a field missing here (weights, initially) fails exactly
+// the same way a stray "the"/"a" does: silently, with no test to catch
+// it. Every other top-level field (source, character, encounter, bulk)
+// only ever appears in a dotted message ("source.kind", "bulk.mode",
+// ...), so it needs no entry here - the dot already trusts it.
 var topLevelFields = map[string]bool{
 	"iterations":     true,
 	"targets":        true,
@@ -221,13 +231,21 @@ var topLevelFields = map[string]bool{
 	"execute_ratio":  true,
 	"variation":      true,
 	"target_error":   true,
+	"weights":        true,
 }
 
 // leadingField is the message's field path, or "" when the message is
 // prose rather than a field name - which the drawer shows at the top
 // instead of against a control.
+//
+// A trailing colon is stripped before matching so a wrapped error -
+// "bulk.candidates[2]: origin must be one of ..." from
+// fmt.Errorf("bulk.candidates[%d]: %w", i, err) - still reports the
+// path in front of the colon, rather than losing its field to the one
+// character the wrap added.
 func leadingField(msg string) string {
 	head, _, _ := strings.Cut(msg, " ")
+	head = strings.TrimSuffix(head, ":")
 	token := fieldToken.FindString(head)
 	if token != head {
 		return ""

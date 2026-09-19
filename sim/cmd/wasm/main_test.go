@@ -273,6 +273,15 @@ func TestLeadingField(t *testing.T) {
 		{"iterations must be one of [500 3000 10000], got 7", "iterations"},
 		{"targets must be between 1 and 10, got 99", "targets"},
 		{"bulk.candidates[2] is on \"head\", which is locked", "bulk.candidates[2]"},
+		// weights is a real top-level SimRequest field reachable
+		// through ValidateLane, and, unlike every other top-level
+		// field, api/weights.go's own emptiness check produces it
+		// bare rather than dotted.
+		{"weights needs at least one stat to weigh", "weights"},
+		// bulk.go wraps validateOrigin's error as
+		// fmt.Errorf("bulk.candidates[%d]: %w", i, err); the trailing
+		// colon must not cost the wrapped message its field.
+		{`bulk.candidates[2]: origin must be one of [equipped bag bank search], "drop:"<id> or "set:"<name>, got "junk"`, "bulk.candidates[2]"},
 	} {
 		if got := leadingField(c.msg); got != c.want {
 			t.Errorf("leadingField(%q) = %q, want %q", c.msg, got, c.want)
