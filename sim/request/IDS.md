@@ -92,7 +92,6 @@ not graded has no `:improved` form and naming one is an error.
 | `retribution_aura:improved` | RaidBuffs |
 | `sanctity_aura` | RaidBuffs |
 | `sayges_fortune` | IndividualBuffs |
-| `sayges_fortune:improved` | IndividualBuffs |
 | `scorpid_sting` | Debuffs |
 | `scroll_of_agility` | RaidBuffs |
 | `scroll_of_intellect` | RaidBuffs |

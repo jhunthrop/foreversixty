@@ -8,6 +8,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/sim/internal/strcase"
 	"github.com/wowsims/classic/sim/core/proto"
+	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
 // Everything the vocabulary lists must resolve, or the settings bar
@@ -315,5 +316,46 @@ func TestKnownStatsMatchThePinnedList(t *testing.T) {
 				t.Errorf("the contract's 10.8 lists %q and KnownStats does not", id)
 			}
 		}
+	}
+}
+
+// gradedValue must answer to the engine's TristateEffect type, not to
+// "an enum with two or more non-zero values": IndividualBuffs.sayges_fortune
+// is a SaygesFortune enum with five non-zero values and is not graded, so
+// a check that inferred gradedness from value count alone would wrongly
+// mint a "sayges_fortune:improved" id. This walks every field of every
+// buff message and holds gradedValue to the single rule: graded iff the
+// field's enum is TristateEffect.
+func TestGradedValueIsTristateEffectOnly(t *testing.T) {
+	for _, msg := range buffMessages() {
+		desc := msg.ProtoReflect().Descriptor()
+		fields := desc.Fields()
+		for i := 0; i < fields.Len(); i++ {
+			fd := fields.Get(i)
+			if fd.Kind() != protoreflect.EnumKind {
+				continue
+			}
+			isTristate := fd.Enum().FullName() == tristateEffectFullName
+			_, graded := gradedValue(fd)
+			if graded != isTristate {
+				t.Errorf("%s.%s: gradedValue reports graded=%v, but its enum is %s (want graded=%v)",
+					desc.Name(), fd.Name(), graded, fd.Enum().FullName(), isTristate)
+			}
+		}
+	}
+}
+
+// The regression this bug caused directly: sayges_fortune is a
+// SaygesFortune field, not a TristateEffect one, and has no improved
+// form.
+func TestSaygesFortuneHasNoImprovedForm(t *testing.T) {
+	if _, err := buffsFor([]string{"sayges_fortune:improved"}); err == nil {
+		t.Error("sayges_fortune:improved resolved; SaygesFortune is not TristateEffect and has no graded form")
+	}
+	if slices.Contains(KnownBuffs(), "sayges_fortune:improved") {
+		t.Error("KnownBuffs lists sayges_fortune:improved, which does not resolve")
+	}
+	if !slices.Contains(KnownBuffs(), "sayges_fortune") {
+		t.Error("KnownBuffs should still list the plain sayges_fortune id")
 	}
 }

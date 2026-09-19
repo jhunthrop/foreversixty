@@ -124,26 +124,21 @@ func onEnumValue(fd protoreflect.FieldDescriptor) protoreflect.EnumNumber {
 	return 0
 }
 
-// gradedValue is the improved value of a graded field: the SECOND
-// non-zero value of its enum. A field with fewer than two is not
-// graded and has no improved form.
+// tristateEffectFullName identifies the engine's TristateEffect enum by
+// its protobuf type, not its shape. Several unrelated enums also carry
+// two or more non-zero values - IndividualBuffs.sayges_fortune is a
+// SaygesFortune with five - and grading is a property of TristateEffect
+// specifically, not of "an enum with enough values."
+var tristateEffectFullName = proto.TristateEffect(0).Descriptor().FullName()
+
+// gradedValue is the improved value of a graded field: the second
+// value of the engine's TristateEffect enum. A field of any other type,
+// including another enum, is not graded and has no improved form.
 func gradedValue(fd protoreflect.FieldDescriptor) (protoreflect.EnumNumber, bool) {
-	if fd.Kind() != protoreflect.EnumKind {
+	if fd.Kind() != protoreflect.EnumKind || fd.Enum().FullName() != tristateEffectFullName {
 		return 0, false
 	}
-	values := fd.Enum().Values()
-	var seen int
-	for i := 0; i < values.Len(); i++ {
-		n := values.Get(i).Number()
-		if n == 0 {
-			continue
-		}
-		seen++
-		if seen == 2 {
-			return n, true
-		}
-	}
-	return 0, false
+	return protoreflect.EnumNumber(proto.TristateEffect_TristateEffectImproved), true
 }
 
 // consumes maps consumable ids onto the engine's Consumes message.
