@@ -62,20 +62,54 @@ test('a pasted request loads the page state', async ({ page }) => {
   await expect(page.getByTestId('sim-request-buffs')).toHaveText('thorns');
 });
 
-test('sharing a request with nowhere to encode to yet shows the error, not a blank field', async ({
-  page,
-}) => {
-  // Task 16 owns the real encoder (url.ts's encodeRequestParam); until it lands,
-  // SimView's shareUrlFor honestly answers null, and this is the one path that is
-  // actually true today -- a share that returns null must show the error, never a blank
-  // or missing field.
+test('sharing a request past the URL budget shows the error, not a blank field', async ({ page }) => {
+  // The encoder (url.ts's encodeRequestParam) exists now (Task 16), so the only way
+  // shareUrlFor still answers null is a request genuinely past MAX_REQUEST_PARAM -- padded
+  // here with an oversized settings clause the engine happily accepts before the drawer
+  // even asks for a share link (settings aren't re-validated on share, only on
+  // apply/run/share's own verify() -- so this exercises the size gate on its own, not the
+  // engine's).
   await page.goto('/sim');
   await page.getByTestId('sim-addon-input').fill(FURY);
   await page.getByTestId('sim-addon-load').click();
   await expect(page.getByTestId('sim-character')).toBeVisible();
 
   await page.getByTestId('sim-request-drawer').locator('summary').click();
+  const editor = page.getByTestId('sim-request-json');
+  const request = JSON.parse(await editor.inputValue());
+  // Padding source.ref (types.ts: "character_key | "" | build id | ...", a free string,
+  // never validated against a known format) pushes well past the size gate without
+  // changing what the engine simulates, so this stays a request the engine's own
+  // Validate accepts -- the drawer's verify() must pass before onshare ever runs.
+  request.source.ref = 'x'.repeat(20_000);
+  await editor.fill(JSON.stringify(request, null, 2));
   await page.getByTestId('sim-request-share').click();
   await expect(page.getByTestId('sim-request-share-error')).toHaveText(simCopy.requestShareTooLong);
   await expect(page.getByTestId('sim-request-share-link')).toHaveCount(0);
+});
+
+test('a shared request link reproduces the whole page state', async ({ page }) => {
+  await page.goto('/sim');
+  await page.getByTestId('sim-addon-input').fill(FURY);
+  await page.getByTestId('sim-addon-load').click();
+  await expect(page.getByTestId('sim-character')).toBeVisible();
+
+  await page.getByTestId('sim-style').selectOption('cleave-5');
+  await page.getByTestId('sim-duration').selectOption('600');
+  await page.getByTestId('sim-request-drawer').locator('summary').click();
+  // The drawer seeds its textarea once, from whatever request existed at mount, and then
+  // "owns" it for the player (RequestDrawer.svelte's own comment) -- it does not
+  // re-seed on every settings change, since that would throw away an in-progress edit.
+  // Reset is the drawer's own way back to the page's current request, so this shares
+  // the style and duration just picked rather than the pre-mount defaults.
+  await page.getByTestId('sim-request-reset').click();
+  await page.getByTestId('sim-request-share').click();
+
+  const url = await page.getByTestId('sim-request-share-link').inputValue();
+  expect(url).toContain('/sim?req=');
+
+  await page.goto(url);
+  await expect(page.getByTestId('sim-character')).toBeVisible();
+  await expect(page.getByTestId('sim-targets')).toHaveValue('5');
+  await expect(page.getByTestId('sim-duration')).toHaveValue('600');
 });

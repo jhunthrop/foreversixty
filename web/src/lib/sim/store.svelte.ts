@@ -134,6 +134,12 @@ export interface SimStoreInit {
   code?: string;
   source?: SourceKind | '';
   ref?: string;
+  /**
+   * A whole request from a share link (`/sim?req=…`, design 8). It wins over `code` and
+   * over `source`/`ref`: it is the most specific thing a link can carry, and it carries
+   * the settings and the precision as well as the character.
+   */
+  request?: SimRequest;
   /** Overrides `runOnServer`'s poll interval. Tests pass a short one; production takes the default. */
   serverPollMs?: number;
 }
@@ -321,23 +327,6 @@ export function createSimStore(init: SimStoreInit) {
     }
   }
 
-  // The URL's own bootstrap, kicked off once here rather than by the component: `code` wins
-  // when present, otherwise `source`/`ref` dispatches to the same loaders `loadAddon`,
-  // `loadBuild` and `loadFight` expose below. Neither present resolves immediately, so
-  // `ready` is always safe to await. A refusal (a class mismatch, an unreachable talent, an
-  // unknown race) runs through `adopt()` exactly as a pasted source does: `message` carries
-  // the reason and a race-pending character still arrives, needing the strip's picker.
-  const ready: Promise<void> =
-    init.code !== undefined && init.code !== ''
-      ? adopt(fromPlannerCode(init.code, ctx))
-      : (() => {
-          const load =
-            init.source !== undefined && init.ref !== undefined && init.ref !== ''
-              ? bootstrapSource(init.source, init.ref, ctx)
-              : null;
-          return load === null ? Promise.resolve() : adopt(load);
-        })();
-
   // Task 15: the request drawer's four methods, extracted into store-request.ts (712 of
   // 800 lines here before this task; these four would have pushed it over). `$state`
   // cannot cross the module boundary, so every field they touch is passed as a getter or
@@ -387,6 +376,37 @@ export function createSimStore(init: SimStoreInit) {
     treeVersion: init.treeVersion,
   };
   const requestMethods = createRequestMethods(requestDeps);
+
+  /**
+   * Task 16: a share link's own bootstrap (`/sim?req=…`). Hoisted above `ready` so both it
+   * and the returned `applyRequest` method can call it -- the page's own "Apply to the
+   * page" button and a followed share link run through the identical
+   * `requestMethods.applyRequest`, so a link can never disagree with the button about what
+   * applying a request does.
+   */
+  function applyRequestOnce(request: SimRequest): Promise<void> {
+    return requestMethods.applyRequest(request);
+  }
+
+  // The URL's own bootstrap, kicked off once here rather than by the component: a share
+  // link's whole `request` wins over `code`, which wins over `source`/`ref` -- it is the
+  // most specific thing a link can carry (design 8). Neither present resolves immediately,
+  // so `ready` is always safe to await. A refusal (a class mismatch, an unreachable talent,
+  // an unknown race) runs through `adopt()` exactly as a pasted source does: `message`
+  // carries the reason and a race-pending character still arrives, needing the strip's
+  // picker.
+  const ready: Promise<void> =
+    init.request !== undefined
+      ? applyRequestOnce(init.request)
+      : init.code !== undefined && init.code !== ''
+        ? adopt(fromPlannerCode(init.code, ctx))
+        : (() => {
+            const load =
+              init.source !== undefined && init.ref !== undefined && init.ref !== ''
+                ? bootstrapSource(init.source, init.ref, ctx)
+                : null;
+            return load === null ? Promise.resolve() : adopt(load);
+          })();
 
   return {
     /** Resolves once the URL's own bootstrap character, if any, has been adopted. */
@@ -700,9 +720,7 @@ export function createSimStore(init: SimStoreInit) {
       return requestMethods.validateRequest(json);
     },
     /** A pasted request as page state: settings, precision and the character it decodes to. */
-    applyRequest(request: SimRequest): Promise<void> {
-      return requestMethods.applyRequest(request);
-    },
+    applyRequest: (request: SimRequest) => applyRequestOnce(request),
     /** The edited request, run exactly as written. The escape hatch of design 8. */
     runRequest(request: SimRequest): Promise<void> {
       return requestMethods.runRequest(request);

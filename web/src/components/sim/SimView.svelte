@@ -31,9 +31,16 @@
     specStateNote,
   } from '../../lib/sim/spec-state';
   import { createSimStore } from '../../lib/sim/store.svelte';
-  import { defaultSimState, parseSimState, simSearch, withSimState } from '../../lib/sim/url';
+  import {
+    decodeRequestParam,
+    defaultSimState,
+    encodeRequestParam,
+    parseSimState,
+    simSearch,
+    withSimState,
+  } from '../../lib/sim/url';
   import { ENGINE_VERSION, engineLabel, isStale } from '../../lib/sim/version';
-  import type { SimListRow, SimResult, SpecFidelity } from '../../lib/sim/types';
+  import type { SimListRow, SimRequest, SimResult, SpecFidelity } from '../../lib/sim/types';
   import BuffPanel from './BuffPanel.svelte';
   import CharacterStrip from './CharacterStrip.svelte';
   import DetailsCard from './DetailsCard.svelte';
@@ -60,7 +67,7 @@
   // bootstrap values, not bindings this island keeps synced against a changing URL.
   const bootstrap = untrack(() => {
     const search = window.location.search;
-    const { source, ref, code, mode } = parseSimState(search);
+    const { source, ref, code, req, mode } = parseSimState(search);
     // The mount element the shell can stamp a build id onto, the way planner-island.ts
     // reads `data-tree-version` off its own mount -- no /sim page stamps one yet, so this
     // falls back to the site's active build rather than an empty string no fetch would
@@ -70,7 +77,7 @@
     // specs.astro stamps `data-sim-view="specs"`; sim.astro and [id].astro stamp neither,
     // so an absent or unrecognised value reads as the ordinary simulator.
     const view: 'sim' | 'specs' = mount?.dataset.simView === 'specs' ? 'specs' : 'sim';
-    return { treeVersion, source, ref, code, mode, view };
+    return { treeVersion, source, ref, code, request: decodeRequestParam(req), mode, view };
   });
 
   // Compare mode loads its character through `enterCompare` below, never through the
@@ -83,6 +90,7 @@
   const store = untrack(() =>
     createSimStore({
       treeVersion: bootstrap.treeVersion,
+      request: bootstrap.request ?? undefined,
       source: bootstrap.mode === 'compare' ? undefined : bootstrap.source,
       ref: bootstrap.mode === 'compare' ? undefined : bootstrap.ref,
       code: bootstrap.code,
@@ -184,12 +192,11 @@
     window.location.href = `/sim${simSearch(target)}`;
   }
 
-  // Task 16 fills this in: `url.ts` carries no request-in-URL encoder yet
-  // (`encodeRequestParam`/`decodeRequestParam`/`SimState.req` are that task's own additions),
-  // so there is nothing real to build a link from today. `null` is RequestDrawer's own "too
-  // long for a link" answer, which is what this honestly is until the encoder exists.
-  function shareUrlFor(): string | null {
-    return null;
+  /** Design 8: a share URL of an edited request is a full reproduction. Null past the budget. */
+  function shareUrlFor(request: SimRequest): string | null {
+    const encoded = encodeRequestParam(request);
+    if (encoded === null) return null;
+    return `${window.location.origin}/sim${simSearch(withSimState(defaultSimState(), { req: encoded }))}`;
   }
 
   const comparison = $derived(
