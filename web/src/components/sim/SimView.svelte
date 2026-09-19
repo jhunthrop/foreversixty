@@ -17,6 +17,7 @@
   import { ENGINE_VERSION, engineLabel } from '../../lib/sim/version';
   import type { SimResult } from '../../lib/sim/types';
   import CharacterStrip from './CharacterStrip.svelte';
+  import SettingsBar from './SettingsBar.svelte';
   import SourceSwitcher from './SourceSwitcher.svelte';
 
   let { simId = '', inlineResult = null }: { simId?: string; inlineResult?: SimResult | null } = $props();
@@ -32,11 +33,7 @@
   // bootstrap values, not bindings this island keeps synced against a changing URL.
   const bootstrap = untrack(() => {
     const search = window.location.search;
-    const { source, ref } = parseSimState(search);
-    // `code` is not yet part of SimState's own vocabulary (url.ts), so it is read straight
-    // off the query string here rather than by editing that module for one field -- the
-    // decoder it reaches (decodeFS1) already bounds and validates it.
-    const code = new URLSearchParams(search).get('code') ?? undefined;
+    const { source, ref, code } = parseSimState(search);
     // The mount element the shell can stamp a build id onto, the way planner-island.ts
     // reads `data-tree-version` off its own mount -- no /sim page stamps one yet, so this
     // falls back to the site's active build rather than an empty string no fetch would
@@ -103,7 +100,14 @@
       />
     {/if}
 
-    {#if store.character === null}
+    {#if store.character !== null}
+      <SettingsBar
+        settings={store.settings}
+        spec={store.character.spec}
+        disabled={store.phase === 'running'}
+        onchange={(next) => store.setSettings(next)}
+      />
+    {:else}
       <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="sim-empty">
         {simCopy.emptyPrompt}
       </p>

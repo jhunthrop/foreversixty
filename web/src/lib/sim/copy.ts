@@ -123,4 +123,17 @@ export const simCopy = {
   buildSimDone: (dps: string, version: string): string =>
     `The card will show ${dps} DPS on engine ${version}.`,
   buildSimSkipped: 'The card will not show a DPS figure; the sim did not finish.',
+
+  // --- Task 12: the settings bar. Fight length, targets, execute phase and a named buff
+  // preset; the rotation is stated by name rather than offered as a control, since the APL
+  // builder is deferred (see SettingsBar.svelte's header note). ---
+  fightLength: 'Fight length',
+  targets: 'Targets',
+  executePhase: 'Execute phase',
+  buffs: 'Buffs',
+  rotation: 'Rotation',
+  rotationPrefix: 'Default for',
+  rotationLink: 'what it does',
+  settingsFootnote: 'Fight length varies by 20% between iterations, the way real pulls do.',
+  customPresetNote: 'Keeps the buffs already applied. Choosing each one individually arrives with Top Gear.',
 } as const;
