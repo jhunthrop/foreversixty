@@ -81,6 +81,7 @@ func TestMigrateCreatesBuildsWithTheContractColumns(t *testing.T) {
 		"title":        {"text", "YES"},
 		"created_at":   {"timestamp with time zone", "NO"},
 		"views":        {"bigint", "NO"},
+		"user_id":      {"bigint", "YES"},
 	}
 	if len(got) != len(want) {
 		t.Fatalf("columns = %v, want exactly %d columns", got, len(want))
