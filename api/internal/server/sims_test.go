@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/api/internal/reports"
@@ -26,6 +27,58 @@ func TestTheSimulatorRoutesAreMountedWhenTheServiceIs(t *testing.T) {
 		if w.Code == http.StatusNotFound {
 			t.Errorf("%s is not mounted", path)
 		}
+	}
+}
+
+// fakeJobRunner and fakePremiumer are the minimum a sims.Service needs
+// to mount POST /v1/sims/run at all - the one route whose registration
+// depends on runtime state rather than always being there.
+type fakeJobRunner struct{}
+
+func (fakeJobRunner) Run(context.Context, ...string) error { return nil }
+
+type fakePremiumer struct{}
+
+func (fakePremiumer) Premium(context.Context, int64) (bool, error) { return false, nil }
+
+// TestTheSaveMineAndRunRoutesAreMounted rounds out the mount check
+// above: POST /v1/sims and GET /v1/sims are always there, and POST
+// /v1/sims/run only when the service carries a job runner and an
+// accounts reader. A POST to an unmounted path is a 404 the rest of
+// this suite could not otherwise tell apart from a 405 or a session
+// check running.
+func TestTheSaveMineAndRunRoutesAreMounted(t *testing.T) {
+	h := NewRouter(Deps{Version: "test", Sims: &sims.Service{}})
+
+	// A nil store means save() fails once it reaches the store, past
+	// the router: not a 404.
+	w := httptest.NewRecorder()
+	h.ServeHTTP(w, httptest.NewRequest(http.MethodPost, "/v1/sims", strings.NewReader("{}")))
+	if w.Code == http.StatusNotFound {
+		t.Error("POST /v1/sims is not mounted")
+	}
+
+	// No session reaches RequireSession's own check, a 401 - still
+	// proof the route is mounted.
+	w = httptest.NewRecorder()
+	h.ServeHTTP(w, httptest.NewRequest(http.MethodGet, "/v1/sims", nil))
+	if w.Code != http.StatusUnauthorized {
+		t.Errorf("GET /v1/sims status %d, want 401 (mounted, no session)", w.Code)
+	}
+
+	w = httptest.NewRecorder()
+	h.ServeHTTP(w, httptest.NewRequest(http.MethodPost, "/v1/sims/run", strings.NewReader("{}")))
+	if w.Code != http.StatusNotFound {
+		t.Errorf("POST /v1/sims/run status %d, want 404 without Jobs and Accounts", w.Code)
+	}
+
+	withRun := NewRouter(Deps{Version: "test", Sims: &sims.Service{
+		Jobs: fakeJobRunner{}, Accounts: fakePremiumer{},
+	}})
+	w = httptest.NewRecorder()
+	withRun.ServeHTTP(w, httptest.NewRequest(http.MethodPost, "/v1/sims/run", strings.NewReader("{}")))
+	if w.Code == http.StatusNotFound {
+		t.Error("POST /v1/sims/run is not mounted when Jobs and Accounts are both set")
 	}
 }
 
