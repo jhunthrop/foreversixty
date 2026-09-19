@@ -48,11 +48,14 @@ const maxStderr = 8 << 10
 const maxStderrLine = 1 << 20
 
 // tick is one progress line on stderr, as forever-sim writes it with
-// -progress.
+// -progress. The three bulk fields are absent for a plain run.
 type tick struct {
-	Completed int     `json:"completed"`
-	Total     int     `json:"total"`
-	DPS       float64 `json:"dps"`
+	Completed   int     `json:"completed"`
+	Total       int     `json:"total"`
+	DPS         float64 `json:"dps"`
+	Stage       int     `json:"stage"`
+	CombosDone  int     `json:"combos_done"`
+	CombosTotal int     `json:"combos_total"`
 }
 
 // Native runs the forever-sim binary the image carries: the request
@@ -63,11 +66,22 @@ type Native struct {
 	Binary string
 }
 
-// Run executes one sim. A non-zero exit, or output that does not
-// decode, is an error; a result carrying its own Error field is
-// returned as a result, because the engine refusing a character is an
-// answer the caller stores rather than a failure of this process.
+// Run executes one sim, reporting the iteration count and the running
+// mean. It is RunStaged with the three bulk fields dropped.
 func (n *Native) Run(ctx context.Context, req api.SimRequest, onProgress Progress) (api.SimResult, error) {
+	var staged StageProgress
+	if onProgress != nil {
+		staged = func(p api.Progress) { onProgress(p.IterationsRun, p.DPS.Mean) }
+	}
+	return n.RunStaged(ctx, req, staged)
+}
+
+// RunStaged executes one sim, reporting the wider stage progress. A
+// non-zero exit, or output that does not decode, is an error; a
+// result carrying its own Error field is returned as a result,
+// because the engine refusing a character is an answer the caller
+// stores rather than a failure of this process.
+func (n *Native) RunStaged(ctx context.Context, req api.SimRequest, onProgress StageProgress) (api.SimResult, error) {
 	body, err := json.Marshal(req)
 	if err != nil {
 		return api.SimResult{}, fmt.Errorf("runner: encode request: %w", err)
@@ -118,7 +132,13 @@ func (n *Native) Run(ctx context.Context, req api.SimRequest, onProgress Progres
 				continue
 			}
 			if onProgress != nil {
-				onProgress(t.Completed, t.DPS)
+				onProgress(api.Progress{
+					IterationsRun: t.Completed,
+					DPS:           api.Estimate{Mean: t.DPS},
+					Stage:         t.Stage,
+					CombosDone:    t.CombosDone,
+					CombosTotal:   t.CombosTotal,
+				})
 			}
 		}
 		scanErr = scan.Err()

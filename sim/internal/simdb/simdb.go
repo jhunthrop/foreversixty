@@ -63,3 +63,19 @@ func Attach(req *proto.RaidSimRequest) error {
 	}
 	return nil
 }
+
+// AttachWeights puts the database on a stat weights request's player,
+// which is the same door as Attach's: proto.Player.Database, folded in
+// by core.NewCharacter. A weights run equips the character the same
+// way a DPS run does, so without it every item id resolves to nothing.
+func AttachWeights(req *proto.StatWeightsRequest) error {
+	db, err := load()
+	if err != nil {
+		return err
+	}
+	if req == nil || req.Player == nil {
+		return nil
+	}
+	req.Player.Database = db
+	return nil
+}

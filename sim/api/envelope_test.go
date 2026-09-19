@@ -2,12 +2,32 @@ package api
 
 import (
 	"encoding/json"
+	"reflect"
 	"slices"
 	"strings"
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/sim/enginever"
 )
+
+// runReq is a valid plain run: the smallest request Validate accepts.
+func runReq() SimRequest {
+	return SimRequest{
+		EngineVersion: enginever.Version,
+		Spec:          "warrior-fury",
+		Source:        CharacterSource{Kind: SourceManual},
+		Character: CharacterSpec{
+			Name:    "Thrall",
+			Race:    "orc",
+			Class:   "warrior",
+			Level:   SimLevel,
+			Talents: "30305001302-05050005525010051",
+		},
+		Encounter:  DefaultEncounter(),
+		Iterations: 3000,
+		RandomSeed: 7,
+	}
+}
 
 // The JSON field names are the contract, shared verbatim with
 // web/src/lib/sim/types.ts. A rename here is a break there, so the test
@@ -82,7 +102,10 @@ func TestSimRequestJSONFieldNames(t *testing.T) {
 func TestDefaultEncounterMatchesTheContract(t *testing.T) {
 	got := DefaultEncounter()
 	want := EncounterSpec{DurationSec: 180, Variation: 0.2, Targets: 1, ExecuteRatio: 0.25, Profile: ""}
-	if got != want {
+	// EncounterSpec now holds a slice (TargetsOverTime), which is not
+	// comparable with ==; reflect.DeepEqual is the same check for a
+	// struct this shallow.
+	if !reflect.DeepEqual(got, want) {
 		t.Errorf("DefaultEncounter() = %+v, want %+v", got, want)
 	}
 }

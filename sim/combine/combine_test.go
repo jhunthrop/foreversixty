@@ -438,6 +438,24 @@ func TestResultsRefusesPartsFromDifferentRuns(t *testing.T) {
 	}
 }
 
+// A Smart Sim step is a part of a target-error run. The parts carry no
+// target of their own, and the whole run's result does, so the shape
+// comparison must not call them different questions.
+func TestPartsOfATargetErrorRunCombine(t *testing.T) {
+	base := full(0, 750, func(r *api.SimResult) {
+		r.Request.TargetError = 0.005
+		r.Request.Iterations = 30000
+	})
+	other := full(750, 750, nil)
+	out, err := Results([]api.SimResult{base, other})
+	if err != nil {
+		t.Fatalf("two steps of one run were called different questions: %v", err)
+	}
+	if out.IterationsRun != base.IterationsRun+other.IterationsRun {
+		t.Errorf("iterations_run = %d", out.IterationsRun)
+	}
+}
+
 // The adapter guarantees an actor's total is the sum of its ability
 // rows; the report reads both. Weighing the two independently broke
 // that by a rounding error per row, and truncating biased every row low.

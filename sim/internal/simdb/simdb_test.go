@@ -125,3 +125,44 @@ func TestAttachPutsTheDatabaseOnEveryPlayer(t *testing.T) {
 		t.Errorf("Attach(empty) = %v, want nil", err)
 	}
 }
+
+// AttachWeights is the sibling of Attach for a stat weights request: the
+// database reaches the engine through the same proto.Player.Database
+// door, and a weights run equips the character the same way a DPS run
+// does.
+func TestAttachWeightsPutsTheDatabaseOnThePlayer(t *testing.T) {
+	built, err := request.BuildWeights(api.SimRequest{
+		EngineVersion: enginever.Version, Spec: "warrior-fury",
+		Source:    api.CharacterSource{Kind: api.SourceManual},
+		Character: api.CharacterSpec{Name: "T", Race: "orc", Class: "warrior", Level: 60},
+		Encounter: api.DefaultEncounter(),
+		Weights: &api.WeightsSpec{
+			Stats:     []string{"agility", "attack_power"},
+			Reference: "attack_power",
+		},
+		Iterations: 500,
+	}, request.Options{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if built.Player.Database != nil {
+		t.Fatal("request.BuildWeights attached a database of its own; simdb is meant to be the only source")
+	}
+	if err := AttachWeights(built); err != nil {
+		t.Fatal(err)
+	}
+	got := built.Player.Database
+	if got == nil || len(got.Items) == 0 {
+		t.Fatal("AttachWeights left the player without a database")
+	}
+
+	// A nil request, and a request with no player, are not errors: the
+	// callers check the build error first, and AttachWeights must not
+	// be a second place that can panic.
+	if err := AttachWeights(nil); err != nil {
+		t.Errorf("AttachWeights(nil) = %v, want nil", err)
+	}
+	if err := AttachWeights(&proto.StatWeightsRequest{}); err != nil {
+		t.Errorf("AttachWeights(empty) = %v, want nil", err)
+	}
+}

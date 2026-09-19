@@ -67,13 +67,40 @@ var ValidIterations = []int{500, 3000, 10000}
 // legitimately exceed one.
 var MaxIterations = slices.Max(ValidIterations)
 
+// StepIterations is how many iterations a target-error run adds at a
+// time. It is one number for both lanes: the browser's pool runs a step
+// as an ordinary sharded run and the native binary runs it in one go,
+// and a step of a different size in each would make the two report
+// different iteration counts for the same request.
+const StepIterations = 1000
+
+// LaneIterationCeiling bounds a target-error run that never reaches its
+// target. Without it a flat distribution would run until the tab was
+// closed.
+var LaneIterationCeiling = map[string]int{LaneBrowser: 30000, LaneServer: 100000}
+
 // MaxTargets is the settings bar's cap.
 const MaxTargets = 10
 
+// GearSlots is the slot vocabulary the envelope validates against. It is
+// the planner's own list and the order sim/request builds the engine's
+// positional equipment array in, which is why that package holds the
+// table and this one names it; sim/request's unexported slotOrder is
+// its source and TestGearSlotsMatchTheRequestTable proves the two
+// agree.
+var GearSlots = []string{
+	"head", "neck", "shoulder", "back", "chest", "wrist", "hands", "waist",
+	"legs", "feet", "finger1", "finger2", "trinket1", "trinket2",
+	"main_hand", "off_hand", "ranged",
+}
+
 // MinDurationSec and MaxDurationSec bound the fight-length control.
+// Twenty seconds is the shortest fight the ramp-up of any rotation
+// says anything about; ten minutes is longer than any encounter in
+// the game and is what a target dummy run is capped at.
 const (
-	MinDurationSec = 60
-	MaxDurationSec = 480
+	MinDurationSec = 20
+	MaxDurationSec = 600
 )
 
 // SimLevel is the only level a sim runs at. It is Forever's level cap
@@ -99,6 +126,20 @@ type SimRequest struct {
 	Encounter     EncounterSpec   `json:"encounter"`
 	Iterations    int             `json:"iterations"`
 	RandomSeed    int64           `json:"random_seed"`
+	// Bulk turns one character into many sims. A request without it is
+	// exactly today's single run; see sim/api/bulk.go.
+	Bulk *BulkSpec `json:"bulk,omitempty"`
+	// Weights asks for stat weights instead of a DPS run.
+	Weights *WeightsSpec `json:"weights,omitempty"`
+	// TargetError, when above zero, turns Iterations into a CEILING:
+	// the run continues in steps of StepIterations until DPS.Error over
+	// DPS.Mean is at or under it, or Iterations is reached. Zero is
+	// today's fixed-count run.
+	//
+	// This is Raidbots' Smart Sim, made visible. The results line says
+	// which of the two ended the run, which is why the loop is a loop
+	// over whole results rather than a number the engine is handed.
+	TargetError float64 `json:"target_error,omitempty"`
 }
 
 // CharacterSpec is everything the engine needs about the player, in JSON.
@@ -116,6 +157,21 @@ type CharacterSpec struct {
 	Buffs      []string   `json:"buffs"`
 	Consumes   []string   `json:"consumes"`
 	Profession []string   `json:"professions,omitempty"`
+	// Cooldowns is when to use the major cooldowns and potions the
+	// rotation would otherwise fire on cooldown.
+	Cooldowns []CooldownSpec `json:"cooldowns,omitempty"`
+}
+
+// CooldownSpec pins one cooldown's timings.
+type CooldownSpec struct {
+	// ID is "spell:<id>", "item:<id>", or a consumable id from IDS.md,
+	// which the build's consumable table resolves to an item.
+	ID string `json:"id"`
+	// AtSec are the times to use it, in fight seconds. Each value is
+	// one usage; usages past the list happen as soon as the rotation
+	// allows. An empty list is "on cooldown", which is the default the
+	// engine already has.
+	AtSec []float64 `json:"at_sec,omitempty"`
 }
 
 // GearSlot is one equipped item. Slot names are the planner's.
@@ -138,6 +194,102 @@ type EncounterSpec struct {
 	Targets      int     `json:"targets"`
 	ExecuteRatio float64 `json:"execute_ratio"`
 	Profile      string  `json:"profile"`
+
+	// Style is the page preset's LABEL and nothing more: the fields
+	// below carry what it expanded to. Storing the label as well as the
+	// fields is what lets a saved sim say "Heavy movement" after the
+	// preset's numbers have been retuned, and lets an edited request
+	// stop claiming a preset it no longer matches.
+	Style string `json:"style,omitempty"`
+
+	// Movement schedules time out of melee or out of casting.
+	Movement *Movement `json:"movement,omitempty"`
+
+	// TargetsOverTime OVERRIDES Targets when set: a dungeon pull is a
+	// boss and then packs, not a fixed count.
+	TargetsOverTime []TargetCount `json:"targets_over_time,omitempty"`
+
+	// TargetLevel is 60 to 63; 0 means BossLevel, which is what every
+	// sim fought before this field existed.
+	TargetLevel int `json:"target_level,omitempty"`
+
+	// TargetArmor overrides the level's preset. 0 means the preset -
+	// NOT an unarmoured target.
+	TargetArmor int `json:"target_armor,omitempty"`
+
+	// TargetType changes what Hunter and Warlock abilities do. "" is
+	// TargetTypeUnknown, which is what a target dummy is.
+	TargetType string `json:"target_type,omitempty"`
+
+	// Dummy is the training dummy: no debuffs, no execute window, no
+	// armor reduction.
+	Dummy bool `json:"dummy,omitempty"`
+}
+
+// Movement is a repeating window the player spends away from the target
+// or unable to cast.
+type Movement struct {
+	IntervalSec int    `json:"interval_sec"`
+	DurationSec int    `json:"duration_sec"`
+	Kind        string `json:"kind"`
+}
+
+// The two kinds of movement window. Away is out of melee range with no
+// casting; Casting interrupts spells while melee continues.
+const (
+	MovementAway    = "away"
+	MovementCasting = "casting"
+)
+
+// MovementKinds is the closed set.
+var MovementKinds = []string{MovementAway, MovementCasting}
+
+// TargetCount is one step of a target-count timeline: from AtSec, this
+// many targets are alive.
+type TargetCount struct {
+	AtSec int `json:"at_sec"`
+	Count int `json:"count"`
+}
+
+// The target levels the settings bar offers.
+const (
+	MinTargetLevel = SimLevel
+	MaxTargetLevel = BossLevel
+)
+
+// TargetArmorByLevel is the armor a target of each level carries when
+// the request does not override it.
+//
+// The boss row is the engine's own preset
+// (sim/encounters/default_presets.go); the three below it fall
+// linearly to the level-60 figure. Contract A8 ratifies these four
+// numbers and says a better source replaces the three interior ones.
+// They are here rather than in sim/request because the page shows the
+// preset beside the override control, and a second copy there would
+// drift from the number the sim actually ran.
+var TargetArmorByLevel = map[int]int{60: 3300, 61: 3444, 62: 3588, 63: 3731}
+
+// TargetArmorFor resolves an encounter's armor: the override when it is
+// set, otherwise the level's preset, otherwise the boss's.
+func TargetArmorFor(level, override int) int {
+	if override > 0 {
+		return override
+	}
+	if armor, ok := TargetArmorByLevel[level]; ok {
+		return armor
+	}
+	return TargetArmorByLevel[BossLevel]
+}
+
+// TargetTypeUnknown is a target with no creature type, which is what a
+// training dummy is and what every sim fought before this field.
+const TargetTypeUnknown = "unknown"
+
+// TargetTypes is the closed set, matching the engine's MobType enum.
+// sim/request proves the pairing against the enum.
+var TargetTypes = []string{
+	"beast", "demon", "dragonkin", "elemental", "giant",
+	"humanoid", "mechanical", "undead", TargetTypeUnknown,
 }
 
 // DefaultEncounter is the settings bar's opening state: a three-minute
@@ -196,10 +348,32 @@ func (r SimRequest) validate(closedSet, requireCurrentEngine bool) error {
 		errs = append(errs, errors.New("spec is required"))
 	}
 	switch {
-	case closedSet && !slices.Contains(ValidIterations, r.Iterations):
+	case r.Bulk != nil:
+		// A bulk request's count is the precision's, checked by
+		// BulkSpec.validate against the ladder.
+	case !closedSet:
+		// A split part comes first, ahead of the target-error case,
+		// because a part of a target-error run is both: combine.Split
+		// copies the whole request into each part, TargetError
+		// included, since the loop owns the target and the part is
+		// only a fixed-count share of one step. So a part's count is
+		// neither one of the settings bar's numbers nor a whole
+		// number of steps - a 1,000-iteration step split four ways is
+		// 250 - and only the outer bound applies.
+		if r.Iterations <= 0 || r.Iterations > MaxIterations {
+			errs = append(errs, fmt.Errorf("a split part's iterations must be between 1 and %d, got %d", MaxIterations, r.Iterations))
+		}
+	case r.TargetError > 0:
+		// A target-error run's Iterations is a ceiling, not a choice
+		// from the settings bar, so the closed set does not apply and
+		// neither does MaxIterations. It has to be a whole number of
+		// steps, because a step is what the loop adds.
+		errs = append(errs, validateCeiling(r.Iterations, largestCeiling())...)
+	case !slices.Contains(ValidIterations, r.Iterations):
 		errs = append(errs, fmt.Errorf("iterations must be one of %v, got %d", ValidIterations, r.Iterations))
-	case !closedSet && (r.Iterations <= 0 || r.Iterations > MaxIterations):
-		errs = append(errs, fmt.Errorf("a split part's iterations must be between 1 and %d, got %d", MaxIterations, r.Iterations))
+	}
+	if r.TargetError < 0 || r.TargetError >= 1 {
+		errs = append(errs, fmt.Errorf("target_error is a fraction of the mean, so it must be between 0 and 1, got %v", r.TargetError))
 	}
 	if r.Encounter.DurationSec < MinDurationSec || r.Encounter.DurationSec > MaxDurationSec {
 		errs = append(errs, fmt.Errorf("duration_sec must be between %d and %d, got %d", MinDurationSec, MaxDurationSec, r.Encounter.DurationSec))
@@ -212,6 +386,17 @@ func (r SimRequest) validate(closedSet, requireCurrentEngine bool) error {
 	}
 	if r.Encounter.ExecuteRatio < 0 || r.Encounter.ExecuteRatio > 1 {
 		errs = append(errs, fmt.Errorf("execute_ratio must be between 0 and 1, got %v", r.Encounter.ExecuteRatio))
+	}
+	errs = append(errs, validateEncounterAdditions(r.Encounter)...)
+	for i, cd := range r.Character.Cooldowns {
+		if cd.ID == "" {
+			errs = append(errs, fmt.Errorf("character.cooldowns[%d] has no id", i))
+		}
+		for j, at := range cd.AtSec {
+			if at < 0 {
+				errs = append(errs, fmt.Errorf("character.cooldowns[%d].at_sec[%d] is %v; a cooldown is used during the fight, and the pre-pull is the rotation's job", i, j, at))
+			}
+		}
 	}
 	if !slices.Contains(Sources, r.Source.Kind) {
 		errs = append(errs, fmt.Errorf("source.kind must be one of %v, got %q", Sources, r.Source.Kind))
@@ -227,6 +412,26 @@ func (r SimRequest) validate(closedSet, requireCurrentEngine bool) error {
 	}
 	if r.Character.Level != SimLevel {
 		errs = append(errs, fmt.Errorf("character.level must be %d, got %d; the engine simulates no other level", SimLevel, r.Character.Level))
+	}
+	if r.Bulk != nil {
+		errs = append(errs, r.Bulk.validate(r.Iterations)...)
+	}
+	if r.Weights != nil {
+		errs = append(errs, r.Weights.validate()...)
+	}
+	if r.Bulk != nil && r.Weights != nil {
+		// Kind() reads Bulk first, so a request carrying both would run
+		// as a bulk and silently answer a different question from the
+		// one the weights block asked.
+		errs = append(errs, errors.New("a request is one kind: it carries bulk or weights, never both"))
+	}
+	if r.TargetError > 0 && (r.Bulk != nil || r.Weights != nil) {
+		// The same reasoning: a bulk request's iteration counts are its
+		// precision's ladder and a weights request's are the engine's
+		// own, so neither loops towards a target. Accepting the field
+		// and then dropping it would report an answer at a precision
+		// nobody ran.
+		errs = append(errs, errors.New("a request is one kind: a bulk or weights request runs its own iteration counts, so it carries no target_error"))
 	}
 	return errors.Join(errs...)
 }
@@ -268,6 +473,96 @@ type SimResult struct {
 	// ErrorOutcome with an EMPTY message, so a lane that only looked at
 	// Error reported it as a corrupt result.
 	Aborted bool `json:"aborted,omitempty"`
+	// Combos is the ranked answer to a bulk request, best first.
+	Combos []Combo `json:"combos,omitempty"`
+	// Equipped is the base character at the FINAL stage, which is what
+	// every Delta is measured against. It is a pointer so that "no
+	// baseline" and "a baseline of zero" are different things.
+	Equipped *Estimate `json:"equipped,omitempty"`
+	// Stages is what the planner actually ran, so the page can say
+	// "3 stages, 38 combinations" without recomputing the ladder.
+	Stages []Stage `json:"stages,omitempty"`
+	// Weights is the answer to a weights request.
+	Weights []StatWeight `json:"weights,omitempty"`
+	// Sample is one iteration's casts in order - the median-DPS one.
+	// It is a table view of the cast log, not a guide, and the page
+	// says so.
+	Sample []SampleCast `json:"sample,omitempty"`
+}
+
+// Combo is one substitution set's result.
+type Combo struct {
+	Substitutions []Substitution `json:"substitutions"`
+	DPS           Estimate       `json:"dps"`
+	// Delta is against Equipped, paired at the same stage, WITH ITS OWN
+	// ERROR - which is what lets the page say "within error" honestly
+	// instead of ranking noise.
+	Delta Estimate `json:"delta"`
+	// Group is 0 for the leader's within-error group, then 1, 2, and so
+	// on. Rows in one group are the same answer and the page ranks them
+	// the same.
+	Group int `json:"group"`
+}
+
+// The four things a combination can substitute.
+const (
+	SubstitutionItem     = "item"
+	SubstitutionTalents  = "talents"
+	SubstitutionSet      = "set"
+	SubstitutionConsumes = "consumes"
+)
+
+// Substitution is one change from the base character.
+type Substitution struct {
+	Kind string `json:"kind"`
+	// Slot is where an item landed. A ring or a trinket says which of
+	// the two slots it took, because that is the answer the player
+	// acts on.
+	Slot    string `json:"slot,omitempty"`
+	ItemID  int    `json:"item_id,omitempty"`
+	Enchant int    `json:"enchant,omitempty"`
+	Suffix  int    `json:"suffix,omitempty"`
+	// Name is the item's, the loadout's or the set's. An ITEM's name
+	// is filled too (from simdb, by sim/bulk): the API composes a
+	// headline - "+41 DPS from Vis'kag" - at save time and has no item
+	// table of its own, and a stored row read back years later still
+	// says what it was about.
+	Name    string `json:"name,omitempty"`
+	Talents string `json:"talents,omitempty"`
+	Origin  string `json:"origin,omitempty"`
+	// SourceName is copied from the candidate: the human name of where
+	// it came from, which is what a Droptimizer headline reads.
+	SourceName string `json:"source_name,omitempty"`
+	// Consumes is the alternative consumable list this combination
+	// ran, for a consumables substitution. Its Name is the same ids
+	// joined by ", ", so the API's headline and a chip's tooltip read
+	// the one field every other kind of substitution puts its label
+	// in (contract 10.8).
+	Consumes []string `json:"consumes,omitempty"`
+}
+
+// Stage is one rung of the ladder, as run.
+type Stage struct {
+	Iterations int `json:"iterations"`
+	Combos     int `json:"combos"`
+}
+
+// SampleCast is one cast of the sample iteration.
+type SampleCast struct {
+	// AtMS is negative during the pre-pull, which the page renders as
+	// its own section.
+	AtMS int64 `json:"at_ms"`
+	// Action is the summary's ACTION KEY - "spell:23881", "item:13503",
+	// "other:melee" - and not a display name. The page resolves the
+	// name with resolveActionName, exactly as it does for a cast row,
+	// so the two tables name one action one way and a sample row needs
+	// no second lookup table. An earlier draft carried a numeric
+	// SpellID and a Name; contract A12 removed both.
+	Action string `json:"action"`
+	Target string `json:"target,omitempty"`
+	// Resources are what the player held AFTER the cast: rage, energy,
+	// mana, combo_points.
+	Resources map[string]int `json:"resources,omitempty"`
 }
 
 // Progress is what the browser's simRun progress callback carries:
@@ -282,6 +577,11 @@ type SimResult struct {
 type Progress struct {
 	IterationsRun int      `json:"iterations_run"`
 	DPS           Estimate `json:"dps"`
+	// The three below are a bulk run's, and absent for a plain one:
+	// stage 1 of 3, 31 of 96 combinations. Stage numbers start at 1.
+	Stage       int `json:"stage,omitempty"`
+	CombosDone  int `json:"combos_done,omitempty"`
+	CombosTotal int `json:"combos_total,omitempty"`
 }
 
 type Estimate struct {
@@ -315,4 +615,150 @@ func (r SimResult) ValidateSaved() error {
 		return errors.New("an aborted result cannot be saved")
 	}
 	return r.Request.validate(true, false)
+}
+
+// largestCeiling is the biggest target-error ceiling any lane allows.
+// Validate uses it because the envelope carries no lane; ValidateLane
+// narrows it.
+func largestCeiling() int {
+	return largestValue(LaneIterationCeiling)
+}
+
+// largestValue is the biggest value in a lane-keyed map of ints. Both
+// largestCeiling here and the bulk cap check in bulk.go need the
+// largest lane's number because Validate has no lane to look up; one
+// helper keeps the two loops from drifting apart.
+func largestValue(m map[string]int) int {
+	out := 0
+	for _, v := range m {
+		out = max(out, v)
+	}
+	return out
+}
+
+// validateCeiling holds a target-error run's ceiling to whole steps and
+// to a lane's limit.
+func validateCeiling(iterations, ceiling int) []error {
+	var errs []error
+	if iterations <= 0 || iterations%StepIterations != 0 {
+		errs = append(errs, fmt.Errorf("a target-error run's iterations is a ceiling and must be a positive multiple of %d, got %d", StepIterations, iterations))
+	}
+	if iterations > ceiling {
+		errs = append(errs, fmt.Errorf("a target-error run's iterations is at most %d on this lane, got %d", ceiling, iterations))
+	}
+	return errs
+}
+
+// ValidateLane is Validate plus the two limits that belong to a lane
+// rather than to the request: the combination cap and the target-error
+// ceiling. The envelope carries no lane - a request is a question, and
+// the same question can be asked of either - so Validate applies the
+// largest lane's numbers and this applies one lane's. The api handler
+// calls it with LaneServer and the page with LaneBrowser.
+func (r SimRequest) ValidateLane(lane string) error {
+	var errs []error
+	if err := r.Validate(); err != nil {
+		errs = append(errs, err)
+	}
+	capped, ok := Caps[lane]
+	ceiling := LaneIterationCeiling[lane]
+	if !ok {
+		return errors.Join(append(errs, fmt.Errorf("lane must be %q or %q, got %q", LaneBrowser, LaneServer, lane))...)
+	}
+	if r.Bulk != nil && r.Bulk.Cap > capped {
+		errs = append(errs, fmt.Errorf("the %s lane plans at most %d combinations, and bulk.cap is %d", lane, capped, r.Bulk.Cap))
+	}
+	if r.TargetError > 0 && r.Iterations > ceiling {
+		errs = append(errs, fmt.Errorf("the %s lane runs at most %d iterations, and iterations is %d", lane, ceiling, r.Iterations))
+	}
+	return errors.Join(errs...)
+}
+
+// NeedsMoreIterations reports whether a target-error run should run
+// another step.
+//
+// It lives here, in Go, because BOTH lanes loop and they must agree.
+// The browser runs each step as an ordinary sharded run through
+// simSplit/simRun/simCombine and asks this between steps; forever-sim
+// runs the step itself and asks the same function. A copy of this
+// arithmetic in TypeScript is exactly the drift the module exists to
+// prevent - the two would stop at different precisions and the same
+// request would report a different error bar depending on where it ran.
+//
+// A run that failed or was stopped never steps: there is nothing to
+// refine, and stepping would turn one bad answer into several. Neither
+// does a bulk run: its counts are its precision's ladder, its
+// Iterations is the last stage's and not a ceiling, and Validate
+// refuses the pairing outright - this is the same ruling stated where
+// the loop would otherwise act on it.
+func NeedsMoreIterations(res SimResult, req SimRequest) bool {
+	if req.TargetError <= 0 || req.Bulk != nil || res.Error != "" || res.Aborted {
+		return false
+	}
+	if res.IterationsRun >= req.Iterations {
+		return false
+	}
+	if res.DPS.Mean <= 0 {
+		// No mean yet, so no relative error either. One more step is
+		// the only way to learn anything, and the ceiling above is what
+		// stops it being forever.
+		return true
+	}
+	return res.DPS.Error/res.DPS.Mean > req.TargetError
+}
+
+// NextStepIterations is how many iterations the next step runs, and 0
+// when there is no next step. The last step is shortened rather than
+// overshooting, so a ceiling of 3,000 is 3,000 and never 3,500.
+func NextStepIterations(res SimResult, req SimRequest) int {
+	if !NeedsMoreIterations(res, req) {
+		return 0
+	}
+	return min(StepIterations, req.Iterations-res.IterationsRun)
+}
+
+// validateEncounterAdditions checks the fields the parity contract added
+// to EncounterSpec. They are all optional, so every check is on a value
+// the client actually sent.
+func validateEncounterAdditions(e EncounterSpec) []error {
+	var errs []error
+	if m := e.Movement; m != nil {
+		if !slices.Contains(MovementKinds, m.Kind) {
+			errs = append(errs, fmt.Errorf("encounter.movement.kind must be one of %v, got %q", MovementKinds, m.Kind))
+		}
+		if m.IntervalSec <= 0 {
+			errs = append(errs, fmt.Errorf("encounter.movement.interval_sec must be positive, got %d", m.IntervalSec))
+		}
+		if m.DurationSec <= 0 {
+			errs = append(errs, fmt.Errorf("encounter.movement.duration_sec must be positive, got %d", m.DurationSec))
+		}
+		if m.IntervalSec > 0 && m.DurationSec >= m.IntervalSec {
+			errs = append(errs, fmt.Errorf("encounter.movement.duration_sec (%d) must be shorter than the interval (%d), or the player never stands still", m.DurationSec, m.IntervalSec))
+		}
+	}
+	if len(e.TargetsOverTime) > 0 {
+		if e.TargetsOverTime[0].AtSec != 0 {
+			errs = append(errs, fmt.Errorf("encounter.targets_over_time starts at 0, not %d; the fight has targets from the pull", e.TargetsOverTime[0].AtSec))
+		}
+		prev := -1
+		for i, tc := range e.TargetsOverTime {
+			if tc.AtSec <= prev {
+				errs = append(errs, fmt.Errorf("encounter.targets_over_time must be in time order; entry %d is at %d after %d", i, tc.AtSec, prev))
+			}
+			prev = tc.AtSec
+			if tc.Count < 1 || tc.Count > MaxTargets {
+				errs = append(errs, fmt.Errorf("encounter.targets_over_time[%d].count must be between 1 and %d, got %d", i, MaxTargets, tc.Count))
+			}
+		}
+	}
+	if e.TargetLevel != 0 && (e.TargetLevel < MinTargetLevel || e.TargetLevel > MaxTargetLevel) {
+		errs = append(errs, fmt.Errorf("encounter.target_level must be between %d and %d, got %d", MinTargetLevel, MaxTargetLevel, e.TargetLevel))
+	}
+	if e.TargetArmor < 0 {
+		errs = append(errs, fmt.Errorf("encounter.target_armor must not be negative, got %d; 0 means the level's preset", e.TargetArmor))
+	}
+	if e.TargetType != "" && !slices.Contains(TargetTypes, e.TargetType) {
+		errs = append(errs, fmt.Errorf("encounter.target_type must be one of %v, got %q", TargetTypes, e.TargetType))
+	}
+	return errs
 }

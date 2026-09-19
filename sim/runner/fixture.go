@@ -38,8 +38,20 @@ type Fixture struct {
 }
 
 // Run answers from the fixture, reporting progress once at the
-// halfway mark and once at the end, the way a real run streams.
-func (f *Fixture) Run(_ context.Context, req api.SimRequest, onProgress Progress) (api.SimResult, error) {
+// halfway mark and once at the end, the way a real run streams. It is
+// RunStaged with the three bulk fields dropped.
+func (f *Fixture) Run(ctx context.Context, req api.SimRequest, onProgress Progress) (api.SimResult, error) {
+	var staged StageProgress
+	if onProgress != nil {
+		staged = func(p api.Progress) { onProgress(p.IterationsRun, p.DPS.Mean) }
+	}
+	return f.RunStaged(ctx, req, staged)
+}
+
+// RunStaged answers from the fixture, reporting the wider stage
+// progress. The fixture never runs stages, so the three bulk fields
+// stay zero, the same as a plain run's ticks.
+func (f *Fixture) RunStaged(_ context.Context, req api.SimRequest, onProgress StageProgress) (api.SimResult, error) {
 	f.mu.Lock()
 	f.Runs = append(f.Runs, req)
 	err, mean, aborted := f.Err, f.Mean, f.Aborted
@@ -63,19 +75,20 @@ func (f *Fixture) Run(_ context.Context, req api.SimRequest, onProgress Progress
 		out.DPS.Mean = mean
 	}
 	if onProgress != nil {
-		onProgress(req.Iterations/2, out.DPS.Mean)
-		onProgress(req.Iterations, out.DPS.Mean)
+		onProgress(api.Progress{IterationsRun: req.Iterations / 2, DPS: api.Estimate{Mean: out.DPS.Mean}})
+		onProgress(api.Progress{IterationsRun: req.Iterations, DPS: api.Estimate{Mean: out.DPS.Mean}})
 	}
 	return out, nil
 }
 
-// abortedResult builds the partial SimResult Run returns alongside
-// ErrAborted when Aborted is set: half the run, one progress tick,
-// Aborted true — the same shape forever-sim writes on exit 130.
-func (f *Fixture) abortedResult(req api.SimRequest, onProgress Progress) api.SimResult {
+// abortedResult builds the partial SimResult RunStaged returns
+// alongside ErrAborted when Aborted is set: half the run, one
+// progress tick, Aborted true — the same shape forever-sim writes on
+// exit 130.
+func (f *Fixture) abortedResult(req api.SimRequest, onProgress StageProgress) api.SimResult {
 	done := req.Iterations / 2
 	if onProgress != nil {
-		onProgress(done, 0)
+		onProgress(api.Progress{IterationsRun: done})
 	}
 	return api.SimResult{
 		EngineVersion: req.EngineVersion,
