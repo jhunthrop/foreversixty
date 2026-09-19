@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
+	simapi "github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/jhunthrop/foreversixty/sim/runner"
 )
 
@@ -159,7 +160,17 @@ func TestASpecWithNoParsesStaysUnsupportedWithANullGap(t *testing.T) {
 	}
 }
 
-func TestWithNoBuilderYesterdaysRowStands(t *testing.T) {
+// TestWithNoBuilderTheCardIsOverwrittenWithZeroUsableParses replaces
+// an earlier expectation that yesterday's row stood untouched when no
+// parse could be built at all. The controller's ruling (fix round 1)
+// is that a parse whose character cannot be built is skipped, not
+// fatal to the whole spec: the loop keeps going, and the card is
+// still written from whatever parses could be used - which, when
+// that is none of them, is a card with zero parses. StateFor is the
+// design's own definition of what state that gets: zero parses is
+// not "at least one measured", so it lands on SpecUnsupported, not on
+// yesterday's validated figure.
+func TestWithNoBuilderTheCardIsOverwrittenWithZeroUsableParses(t *testing.T) {
 	h := newHarness(t)
 	gap := 0.02
 	if err := h.store.PutSpec(t.Context(), SpecFidelity{
@@ -174,8 +185,54 @@ func TestWithNoBuilderYesterdaysRowStands(t *testing.T) {
 		t.Fatalf("a missing character source is not a failure: %v", err)
 	}
 	f := h.measured(t, "warrior-fury")
-	if f.State != SpecValidated || f.Parses != 60 {
-		t.Fatalf("yesterday's row was overwritten: %+v", f)
+	if f.State != SpecUnsupported || f.Parses != 0 {
+		t.Fatalf("card %+v, want overwritten to unsupported with zero parses", f)
+	}
+}
+
+// failsOnce refuses to build exactly one character, counted by call
+// order rather than by which parse it was asked for (parsesAt hands
+// every parse the same combatant, so the parses are otherwise
+// indistinguishable to a builder). It proves one bad parse does not
+// stop the rest.
+type failsOnce struct {
+	failAt int
+	calls  int
+}
+
+func (f *failsOnce) FightCharacter(_, class string, c summary.CombatantRow) (simapi.CharacterSpec, error) {
+	f.calls++
+	if f.calls == f.failAt {
+		return simapi.CharacterSpec{}, ErrNoCharacter
+	}
+	return simapi.CharacterSpec{
+		Name: c.Name, Race: "orc", Class: class, Level: simapi.SimLevel,
+		Talents: "-0550000505021051-05",
+	}, nil
+}
+
+// TestABuilderThatRefusesOneParseSkipsItAndCountsTheRest is the fix
+// round 1 regression test: of three parses, the middle one cannot be
+// built. It is skipped - logged and counted - and the other two still
+// land on the card.
+func TestABuilderThatRefusesOneParseSkipsItAndCountsTheRest(t *testing.T) {
+	h := newHarness(t)
+	top := fakeParses{bySpec: map[string][]Parse{
+		"mage-frost": parsesAt("mage-frost", 1000, 1010, 1020),
+	}}
+	build := &failsOnce{failAt: 2}
+	if err := Validate(t.Context(),
+		h.validateDeps(top, &runner.Fixture{Mean: 1000}, build, &fakeScores{}),
+		[]string{"mage-frost"}, "raids-1", testEngine); err != nil {
+		t.Fatal(err)
+	}
+	f := h.measured(t, "mage-frost")
+	if f.Parses != 2 {
+		t.Fatalf("parses %d, want 2: one of three parses could not be built", f.Parses)
+	}
+	if f.State != SpecInProgress {
+		t.Fatalf("state %q, want %q for two measured parses under the fifty-parse floor",
+			f.State, SpecInProgress)
 	}
 }
 

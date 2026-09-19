@@ -111,15 +111,21 @@ func validateSpec(ctx context.Context, d ValidateDeps, spec, phase, engineVersio
 		return err
 	}
 	var (
-		gaps  []float64
-		casts = map[int64]*WorstAction{}
+		gaps    []float64
+		casts   = map[int64]*WorstAction{}
+		skipped int
 	)
 	for _, p := range parses {
 		character, err := d.Build.FightCharacter(spec, p.Class, p.Combatant)
 		if errors.Is(err, ErrNoCharacter) {
-			// Nothing can be measured yet; yesterday's row stands,
-			// untouched.
-			return nil
+			// This one parse cannot be measured; the reason is logged
+			// and counted, and the rest of the spec's parses still
+			// run. The card below is written from whatever could be
+			// used, even if that is none of them.
+			skipped++
+			d.logger().Warn("sims", "op", "validate", "spec", spec,
+				"report", p.ReportID, "fight", p.FightIndex, "err", err)
+			continue
 		}
 		if err != nil {
 			return err
@@ -149,6 +155,11 @@ func validateSpec(ctx context.Context, d ValidateDeps, spec, phase, engineVersio
 			p.PlayerKey, p.ActualDPS/res.DPS.Mean); err != nil {
 			return err
 		}
+	}
+
+	if skipped > 0 {
+		d.logger().Warn("sims", "op", "validate", "spec", spec,
+			"parses", len(gaps), "skipped", skipped)
 	}
 
 	f := SpecFidelity{
