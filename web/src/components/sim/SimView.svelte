@@ -525,6 +525,7 @@
           iterationsTotal={store.iterationsTotal}
           precisionId={store.precisionId}
           relativeError={store.relativeError}
+          lane={store.lane}
           premium={store.premium}
           message={store.message}
           detail={store.detail}

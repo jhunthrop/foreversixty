@@ -8,6 +8,7 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { expect, test } from '@playwright/test';
+import { simCopy } from '../../src/lib/sim/copy';
 
 const ROOT = path.join(import.meta.dirname, '..', '..');
 const activeBuild = JSON.parse(readFileSync(path.join(ROOT, 'src', 'data', 'active-build.json'), 'utf8')) as {
@@ -20,6 +21,7 @@ const fixtureResult = JSON.parse(
   engine_version: string;
   iterations_run: number;
   duration_ms: number;
+  lane: 'browser' | 'server';
   request: { character: { gear: unknown[] } };
 };
 
@@ -67,6 +69,21 @@ test.describe('a saved sim from the prerendered fixture', () => {
 
     await expect(page.getByTestId('sim-results')).toBeVisible();
     await expect(page.getByTestId('sim-tab-damage')).toHaveAttribute('aria-selected', 'true');
+
+    // Fix round 1: the header no longer states iterations/processing time/lane a second
+    // time (they used to duplicate the details card below it) -- the card is now the one
+    // place these live, so this is where the saved page's own figures are pinned down.
+    await expect(page.getByTestId('sim-details-card')).toBeVisible();
+    await expect(page.getByTestId('sim-details-iterations')).toHaveText(
+      fixtureResult.iterations_run.toLocaleString('en-US'),
+    );
+    await expect(page.getByTestId('sim-details-processing')).toHaveText(
+      `${(fixtureResult.duration_ms / 1000).toFixed(1)} s`,
+    );
+    await expect(page.getByTestId('sim-details-lane')).toHaveText(
+      fixtureResult.lane === 'server' ? simCopy.detailsLaneServer : simCopy.detailsLaneBrowser,
+    );
+    await expect(page.getByTestId('sim-details-engine')).toHaveAttribute('href', '/sim/specs');
 
     // The fixture's stored request carries real gear entries, so `gearKnown` is true and
     // the strip renders the grid rather than `simCopy.savedNoGear` -- the inverse of a

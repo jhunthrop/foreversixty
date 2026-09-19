@@ -187,7 +187,7 @@ export const simCopy = {
   details: 'This run',
   detailsMargin: 'Margin of error',
   /** The 95% band and the relative standard error, side by side and never conflated. */
-  detailsMarginValue: (band: string, percent: string): string => `± ${band} DPS · ${percent}`,
+  detailsMarginValue: (band: string, percent: string): string => `± ${band} ${simCopy.dps} · ${percent}`,
   detailsIterations: 'Iterations',
   detailsProcessing: 'Processing time',
   detailsEngine: 'Engine',
@@ -283,8 +283,6 @@ export const simCopy = {
   copyLink: 'Copy link',
   copied: 'Copied',
   runThisYourself: 'Run this yourself',
-  savedLane: 'browser',
-  savedLaneServer: 'our servers',
   /** The save button's disabled title when the last run was stopped rather than finished. */
   saveAbortedDisabled: 'A stopped run has nothing finished to save.',
 

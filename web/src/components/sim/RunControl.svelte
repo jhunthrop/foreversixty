@@ -9,7 +9,7 @@
   import { confidenceBand } from '../../lib/sim/estimate';
   import { simCopy } from '../../lib/sim/copy';
   import { percentLabel } from '../../lib/sim/details';
-  import { LANE_ITERATION_CEILING, PRECISIONS, type PrecisionId } from '../../lib/sim/precision';
+  import { LANE_ITERATION_CEILING, PRECISIONS, type Lane, type PrecisionId } from '../../lib/sim/precision';
   import type { SimPhase } from '../../lib/sim/store.svelte';
   import type { Estimate } from '../../lib/sim/types';
   import { engineLabel } from '../../lib/sim/version';
@@ -21,6 +21,7 @@
     iterationsTotal,
     precisionId,
     relativeError,
+    lane,
     premium,
     message,
     detail,
@@ -40,6 +41,13 @@
     precisionId: PrecisionId;
     /** `error / mean` of the figure on screen, for the progress line's per cent. */
     relativeError: number;
+    /**
+     * Which lane the target-error note's ceiling names. `store.lane` -- reflects the lane
+     * the figure on screen most recently ran on, browser by default -- so a premium player
+     * who just ran on the server sees that lane's own ceiling (100,000), not the browser's,
+     * pinned regardless of which button they are looking at.
+     */
+    lane: Lane;
     premium: boolean;
     message: string | null;
     /** The engine's own words for the failure, shown verbatim under the message. Empty when there are none. */
@@ -182,7 +190,7 @@
 
   {#if precisionId === 'target-error'}
     <p class="text-muted order-last w-full text-[12px]" data-testid="sim-target-error">
-      {simCopy.targetErrorNote(LANE_ITERATION_CEILING.browser.toLocaleString('en-US'))}
+      {simCopy.targetErrorNote(LANE_ITERATION_CEILING[lane].toLocaleString('en-US'))}
     </p>
   {/if}
 

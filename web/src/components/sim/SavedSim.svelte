@@ -40,9 +40,6 @@
   // logs at least one BUFF-type aura, a solo one logs none.
   const buffed = $derived(result.summary.auras.some((track) => track.type === 'BUFF'));
   const encounterText = $derived(encounterLabel(result.request.encounter, buffed));
-  const runLine = $derived(
-    `${result.iterations_run.toLocaleString('en-US')} ${simCopy.iterations} · ${(result.duration_ms / 1000).toFixed(1)} s · ${result.lane === 'server' ? simCopy.savedLaneServer : simCopy.savedLane}`,
-  );
   // The request's own capture time is the only timestamp a SimResult carries; an absent one
   // (an empty string) is not turned into a fabricated date.
   const savedDate = $derived(result.request.source.captured_at.slice(0, 10));
@@ -137,7 +134,6 @@
     <span class="tabular text-muted font-mono text-[14px]" data-testid="sim-error">{band}</span>
   </div>
   <span class="text-muted text-[13px]" data-testid="sim-saved-encounter">{encounterText}</span>
-  <span class="tabular text-muted font-mono text-[13px]" data-testid="sim-saved-run">{runLine}</span>
   {#if stale}
     <span class="pill pill-sample" data-testid="sim-stale-pill">{engineLabel(result.engine_version)}</span>
   {:else}
