@@ -64,6 +64,14 @@ def build_parser() -> argparse.ArgumentParser:
     sd = sub.add_parser("simdb", help="build the engine's SimDatabase for a build")
     sd.add_argument("--build", required=True)
 
+    lt = sub.add_parser("loot", help="build the Droptimizer and Top Gear data for a build")
+    lt.add_argument("--build", required=True)
+    lt.add_argument(
+        "--engine",
+        required=True,
+        help="path to the wowsims-forever checkout, e.g. $FOREVER_ENGINE_PATH",
+    )
+
     sp = sub.add_parser("specs", help="generate the Go and TypeScript spec lists")
     sp.add_argument("--go", default="../sim/specs/specs.go")
     sp.add_argument("--ts", default="../web/src/lib/sim/specs.ts")
@@ -135,6 +143,13 @@ def main(argv: list[str] | None = None) -> int:
         from pipeline.simdb import write_sim_database
 
         print(write_sim_database(args.build))
+    elif args.command == "loot":
+        from pathlib import Path
+
+        from pipeline.loot import write_loot_files
+
+        for path in write_loot_files(args.build, Path(args.engine)):
+            print(path)
     elif args.command == "simproto":
         from pathlib import Path
 

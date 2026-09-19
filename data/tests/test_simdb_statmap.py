@@ -114,7 +114,11 @@ def test_stat_keys_reads_a_shared_index_back_as_the_first_name():
 
 
 def test_stat_keys_refuses_an_index_no_planner_key_covers():
+    # StatEnergy: a resource stat no enchant, suffix or item column has ever
+    # granted a flat bonus of, so PROTO_STAT_ALIASES has never needed a key
+    # for it (unlike StatMana, StatHealth and StatBonusArmor, which the real
+    # fork database's enchants and suffixes do state).
     array = [0.0] * (len(pb.Stat.keys()))
-    array[pb.Stat.Value("StatMana")] = 5
+    array[pb.Stat.Value("StatEnergy")] = 5
     with pytest.raises(StatMapError, match="no planner key"):
         stat_keys(array)

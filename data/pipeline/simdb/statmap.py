@@ -40,6 +40,11 @@ PROTO_STAT_ALIASES: dict[str, tuple[str, ...]] = {
     #: A flat health bonus. The fork's own enchant table is the first thing
     #: in this pipeline to state one (a "Minor Health" enchant effect).
     "health": ("StatHealth",),
+    #: A flat mana bonus. `STAT_BY_MODIFIER_ID` maps ItemSparse's own mana
+    #: modifier (id 0) to `None` because no Classic Era item uses it, but
+    #: the fork's enchant table states one directly (a "Minor Mana" enchant
+    #: effect), so the real database needs the key `stat_keys` reads back.
+    "mana": ("StatMana",),
     "armor": ("StatArmor",),
     #: Distinct from `armor`: the engine tracks an item's own Armor
     #: separately from Armor added on top by a kit, buff or trinket, and
