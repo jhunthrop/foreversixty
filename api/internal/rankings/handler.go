@@ -94,7 +94,7 @@ func (s *Service) rankings(w http.ResponseWriter, r *http.Request) {
 	if v := q.Get("metric"); v != "" {
 		if !ValidMetric(v) {
 			httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "that is not a metric",
-				map[string]string{"metric": "one of dps, hps, damage_taken"})
+				map[string]string{"metric": "one of " + strings.Join(Metrics, ", ")})
 			return
 		}
 		query.Metric = v
@@ -168,9 +168,11 @@ func (s *Service) percentile(w http.ResponseWriter, r *http.Request) {
 	if metric == "" {
 		metric = MetricDPS
 	}
-	if !ValidMetric(metric) {
+	// Not ValidMetric: a percentile is a place on a folded curve, and
+	// percentile_digests holds no curve for execution scores.
+	if !ValidDigestMetric(metric) {
 		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "that is not a metric",
-			map[string]string{"metric": "one of dps, hps, damage_taken"})
+			map[string]string{"metric": "one of " + strings.Join(DigestedMetrics, ", ")})
 		return
 	}
 	at := q.Get("phase")
