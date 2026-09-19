@@ -195,6 +195,15 @@ export interface Selection {
 }
 
 /**
+ * Which of the selection's two lists a row of this kind lives in. The one place the
+ * kind-to-list rule exists -- `withGrade`, `selectedIn` and the panel's own grade lookup
+ * all read it from here rather than each re-deriving the same branch.
+ */
+export function listFor(selection: Selection, kind: BuffRow['kind']): string[] {
+  return kind === 'consumable' ? selection.consumables : selection.buffs;
+}
+
+/**
  * One row's grade, written into whichever of the two lists that row belongs to. The panel
  * spreads the answer over the settings object, so a component never decides which list an
  * id goes in -- the catalogue's `kind` does, and it came from IDS.md.
@@ -205,16 +214,14 @@ export function withGrade(
   grade: BuffGrade,
 ): Selection {
   if (row.kind === 'consumable') {
-    return { ...selection, consumables: setGrade(selection.consumables, row.id, grade) };
+    return { ...selection, consumables: setGrade(listFor(selection, row.kind), row.id, grade) };
   }
-  return { ...selection, buffs: setGrade(selection.buffs, row.id, grade) };
+  return { ...selection, buffs: setGrade(listFor(selection, row.kind), row.id, grade) };
 }
 
 /** The plain ids of one group that are on, for the group heading's count. */
 export function selectedIn(selection: Selection, group: BuffGroupId): string[] {
   return rowsIn(group)
-    .filter(
-      (row) => gradeOf(row.kind === 'consumable' ? selection.consumables : selection.buffs, row.id) !== 'off',
-    )
+    .filter((row) => gradeOf(listFor(selection, row.kind), row.id) !== 'off')
     .map((row) => row.id);
 }

@@ -7,6 +7,7 @@ import {
   IMPROVED_SUFFIX,
   buildCatalogue,
   gradeOf,
+  listFor,
   rowsIn,
   selectedIn,
   setGrade,
@@ -125,6 +126,14 @@ describe('the three-way grade', () => {
 
   it('names the three grades', () => {
     expect(Object.keys(simCopy.gradeLabel).sort()).toEqual(['improved', 'off', 'on']);
+  });
+});
+
+describe('listFor', () => {
+  it('reads the buff list for a buff kind and the consumable list for a consumable kind', () => {
+    const selection = { buffs: ['thorns'], consumables: ['flask_of_supreme_power'] };
+    expect(listFor(selection, 'buff')).toBe(selection.buffs);
+    expect(listFor(selection, 'consumable')).toBe(selection.consumables);
   });
 });
 

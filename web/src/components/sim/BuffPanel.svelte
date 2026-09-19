@@ -12,6 +12,7 @@
   import {
     BUFF_GROUPS,
     gradeOf,
+    listFor,
     rowsIn,
     selectedIn,
     withGrade,
@@ -45,10 +46,6 @@
     onchange({ ...settings, ...withGrade(selection, row, grade) });
   }
 
-  function listOf(kind: 'buff' | 'consumable'): string[] {
-    return kind === 'consumable' ? settings.consumables : settings.buffs;
-  }
-
   function countIn(group: BuffGroupId): number {
     return selectedIn(selection, group).length;
   }
@@ -73,7 +70,7 @@
           {#each rows as row (row.id)}
             {@const label = buffLabel(row.id, names)}
             {@const icon = buffIcon(build, row.id, names)}
-            {@const grade = gradeOf(listOf(row.kind), row.id)}
+            {@const grade = gradeOf(listFor(selection, row.kind), row.id)}
             <li class="flex min-h-11 items-center gap-2 text-[13px] md:min-h-9">
               {#if icon !== null}
                 <!-- The name beside it carries the row, so the icon is decorative. -->
