@@ -27,4 +27,34 @@ export const simCopy = {
   // Used by the sim page (group D) and the planner's live estimate (group F), which run in
   // parallel. Both need the same sentence, so it starts here rather than in either.
   specUnsupportedLead: 'The simulator does not model this spec yet.',
+
+  // Task 8: the /sim empty state, shown before a character is loaded. Tasks 11-19 add to
+  // this block as they build the sections it currently stands in for.
+  emptyPrompt:
+    'Load a character to see what it does and why. Nothing you load here leaves your device unless you save the result.',
+
+  // --- Task 6: the three refusal sentences characterFromFs1 raises. ---
+  /** An addon export whose class is not the talent file's. */
+  classMismatch: (exported: string, loaded: string): string =>
+    `That export is a ${exported}; these are ${loaded} talents.`,
+  /**
+   * An addon export naming a race this build does not have. Forever's table has ten rows
+   * and two of them are new (high-order-skyborne, windshaper-skyborne), so an unknown slug
+   * means the export is from another build. There is no fallback race: substituting the
+   * first row would sim an orc's racials for a troll and say nothing.
+   */
+  unknownRace: (slug: string): string => `That export names a race this build does not have: ${slug}.`,
+  /** An addon export whose ranks cannot all be reached under the planner's own gates. */
+  unreachableTalents: (names: string): string =>
+    `That export is not a legal build: ${names} cannot be reached.`,
+
+  // --- Task 10: the execution score column, on the rankings, character and guild views. ---
+  /** The execution column's heading, on desktop. */
+  executionHeading: 'Exec',
+  /**
+   * Null is the common case at launch, so it reads as a normal state and not as a failure.
+   * It is the cell's title and its aria-label, and on phone it is the row's own text.
+   */
+  executionUnscored: 'Not scored yet: this spec is not validated, or the fight predates scoring.',
+  executionScored: (label: string): string => `${label} of what this gear can do, simulated`,
 } as const;
