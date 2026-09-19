@@ -12004,13 +12004,31 @@ time GOMAXPROCS=1 ./artifacts/forever-sim -in "$TMPDIR/bench-req.json" -out "$TM
 
 Divide 3,000 by each wall clock. Record:
 
-| Figure | Baseline (2026-09-14, HEAD 7779ebb) | Now |
+| Figure | Baseline (2026-09-14, HEAD 7779ebb) | Now (2026-09-18, engine 4bc7c2edf, site de5367d) |
 |---|---|---|
-| Native serial, 300 s Fury, 3,000 iters | 1,231 it/s, 2.44 s | |
-| Native 8-way | 7,936 it/s, 378 ms | |
-| WASM under node, 500 iters | 168 it/s | |
-| `sim.wasm` gzipped | 3.31 MB | |
-| Full engine suite | 10.5 s wall / 78.7 s CPU | |
+| Native serial, 300 s Fury, 3,000 iters | 1,231 it/s, 2.44 s | 1,020 it/s, 2.94 s (median of 4; best 2.81 s) — −17% |
+| Native 8-way | 7,936 it/s, 378 ms | 7,143 it/s, 420 ms (median of 4; best 393 ms) — −10% |
+| WASM under node, 500 iters | 168 it/s | 122 it/s, 4.10 s (median of 3, node 22.11) — −27% |
+| `sim.wasm` gzipped | 3.31 MB | 3.54 MB (3,708,376 B) — budget 4.00 MB, 88% of it |
+| Full engine suite | 10.5 s wall / 78.7 s CPU | 10.2 s wall / 29.4 s CPU, 25 packages, 0 failures |
+
+Measured on the 14-core host the baseline used, `make artifacts` from the site checkout,
+`./artifacts/forever-sim -version` printing `4bc7c2edf` (equal to the pin and to the fork
+HEAD). No native figure is more than 25% below the baseline, so the regression gate this
+step exists for does not fire. Three of the five figures need a word:
+
+- **Native serial, −17%, and 8-way, −10%.** Both are within the gate and both are expected:
+  the Fury spec the baseline timed was vanilla's, and this one runs the client's 51-point
+  tree with seventeen declarative spell mods and a periodic-crit path vanilla did not have.
+  The 8-way figure now splits across 14 cores rather than 8, which is why it moves less.
+- **WASM, −27%.** Outside the 25% band, but the band is written for native figures and this
+  one is not a like-for-like: the wasm now carries the embedded `simdb.bin` and the same
+  heavier spec. The native-to-wasm ratio, which is the number §9's risk is about, is
+  **8.4×** (1,020 / 122) against the 8.5× the design assumed — unchanged.
+- **Full engine suite, CPU down from 78.7 s to 29.4 s.** Not a speed-up: fourteen spec test
+  functions across twelve packages are `t.Skip`ped awaiting their Forever rewrites, so a
+  third of the work the baseline did is not being done. Wall clock is flat because the suite
+  is parallel and bounded by the slowest package.
 
 A native figure more than 25% below the baseline is a regression worth finding before this lane is declared done: the likely causes are an aura registered per iteration (which `sim/core/cooldown.go`'s "Over 100 timers!" panic catches at the extreme) or a spell mod re-evaluating on every cast.
 
