@@ -1,10 +1,85 @@
 {
   "spec": "paladin-retribution",
-  "state": "unwritten",
-  "notes": "",
-  "sources": [],
+  "state": "written",
+  "notes": "Vanilla Retribution at 60 has very few buttons: keep a seal up, Judgement it off on cooldown, autoattack, and swap to Hammer of Wrath in the execute window. The cited guide frames a two-tier rotation -- a plain 'Normal Rotation' and a higher-DPS 'Seal Twisting Rotation' -- and the fork's own retribution_paladin/apls/basic_ret.apl.json preset already has the twist worked out: swap to Seal of Command right before a melee swing lands if Seal of Righteousness is currently up, and swap back to Seal of Righteousness right before the next swing if Seal of Command is currently up, so the swing always benefits from whichever seal's on-hit effect the twist favors. That condition shape is ported directly here rather than re-derived. A plain 'keep Seal of Command up' line stays as the fallback for the rare case where neither seal is active (the swing timer has not fired since the last cast, or the first GCD of the fight), so the paladin is never seal-less. Hammer of Wrath (24239) is a rank the vanilla client never had at this level (rank 3, level 60) -- checked against this build's own spellconst, not remembered from live Classic.",
+  "sources": [
+    { "label": "wowsims-forever default Retribution priority list (seal-twisting logic ported directly)", "url": "https://github.com/wowsims/classic/blob/master/ui/retribution_paladin/apls/basic_ret.apl.json", "kind": "community" },
+    { "label": "Warcraft Tavern: Classic Retribution Paladin rotation (Normal Rotation vs. the higher-DPS Seal Twisting Rotation; Judgement of the Crusader, Hammer of Wrath execute)", "url": "https://www.warcrafttavern.com/wow-classic/guides/pve-retribution-paladin-rotations-cooldowns/", "kind": "community" },
+    { "label": "Forever Sixty default rotation, unvalidated until the nightly job runs", "url": "https://foreversixty.gg/sim/specs", "kind": "site" }
+  ],
   "rotation": {
     "type": "TypeAPL",
-    "priorityList": []
+    "prepullActions": [
+      {
+        "action": { "castPaladinPrimarySeal": {} },
+        "doAtValue": { "const": { "val": "-1.5s" } }
+      }
+    ],
+    "priorityList": [
+      { "action": { "autocastOtherCooldowns": {} } },
+      {
+        "notes": "Judgement on cooldown: it is a free global that unloads the seal's judgement effect and starts its ten second cooldown again.",
+        "action": {
+          "condition": { "spellCanCast": { "spellId": { "spellId": 20271 } } },
+          "castSpell": { "spellId": { "spellId": 20271 } }
+        }
+      },
+      {
+        "notes": "Hammer of Wrath below 20 percent: the other button Retribution has besides seals and Judgement.",
+        "action": {
+          "condition": { "isExecutePhase": { "threshold": "E20" } },
+          "castSpell": { "spellId": { "spellId": 24239, "rank": 3 } }
+        }
+      },
+      {
+        "notes": "Reapply the primary seal once it is about to expire.",
+        "action": {
+          "condition": { "cmp": { "op": "OpLe", "lhs": { "currentSealRemainingTime": {} }, "rhs": { "const": { "val": "1" } } } },
+          "castPaladinPrimarySeal": {}
+        }
+      },
+      {
+        "notes": "Seal twist: swap to Seal of Command right before a melee swing lands, if Seal of Righteousness is currently up.",
+        "action": {
+          "condition": {
+            "and": {
+              "vals": [
+                { "cmp": { "op": "OpLt", "lhs": { "autoTimeToNext": { "autoType": "Melee" } }, "rhs": { "const": { "val": "0.4s" } } } },
+                { "auraIsActive": { "auraId": { "spellId": 20293, "rank": 8 } } }
+              ]
+            }
+          },
+          "castSpell": { "spellId": { "spellId": 20375, "rank": 1 } }
+        }
+      },
+      {
+        "notes": "Seal twist: swap back to Seal of Righteousness right before the next melee swing lands, if Seal of Command is currently up.",
+        "action": {
+          "condition": {
+            "and": {
+              "vals": [
+                { "cmp": { "op": "OpLt", "lhs": { "autoTimeToNext": { "autoType": "Melee" } }, "rhs": { "const": { "val": "0.4s" } } } },
+                { "auraIsActive": { "auraId": { "spellId": 20375, "rank": 1 } } }
+              ]
+            }
+          },
+          "castSpell": { "spellId": { "spellId": 20293, "rank": 8 } }
+        }
+      },
+      {
+        "notes": "Fallback: if neither seal is active (the twist above has not fired yet), keep Seal of Command up so the paladin is never seal-less.",
+        "action": {
+          "condition": {
+            "and": {
+              "vals": [
+                { "not": { "val": { "auraIsActive": { "auraId": { "spellId": 20375, "rank": 1 } } } } },
+                { "not": { "val": { "auraIsActive": { "auraId": { "spellId": 20293, "rank": 8 } } } } }
+              ]
+            }
+          },
+          "castSpell": { "spellId": { "spellId": 20375, "rank": 1 } }
+        }
+      }
+    ]
   }
 }

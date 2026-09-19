@@ -1,10 +1,45 @@
 {
   "spec": "rogue-combat",
-  "state": "unwritten",
-  "notes": "",
-  "sources": [],
+  "state": "written",
+  "notes": "Vanilla Combat at 60: Sinister Strike builds combo points, Slice and Dice is kept up between finishers, Eviscerate spends five combo points, and Adrenaline Rush is the burst cooldown. Adapted from the fork's own combat_sinister_strike.apl.json down to the plain priority order -- its energy-pooling condition for Adrenaline Rush (cast only when about to waste an energy tick) is a real optimization but adds a comparison this rotation does not need to get the core loop right, so Adrenaline Rush is a bare cast here and the pooling nuance is left for the validation job. Combat has no Seal Fate, so combo points come in at a flat rate; the rotation does not need to branch on crit the way Assassination's does. Every rank named here is checked against this build's own spellconst.",
+  "sources": [
+    { "label": "wowsims-forever default Combat rogue priority list", "url": "https://github.com/wowsims/classic/blob/master/ui/rogue/apls/combat_sinister_strike.apl.json", "kind": "community" },
+    { "label": "Warcraft Tavern: Classic Combat Rogue guide", "url": "https://www.warcrafttavern.com/wow-classic/guides/pve-combat-rogue/", "kind": "community" },
+    { "label": "Forever Sixty default rotation, unvalidated until the nightly job runs", "url": "https://foreversixty.gg/sim/specs", "kind": "site" }
+  ],
   "rotation": {
     "type": "TypeAPL",
-    "priorityList": []
+    "priorityList": [
+      { "action": { "autocastOtherCooldowns": {} } },
+      {
+        "notes": "Keep Slice and Dice up so every combo point spent on it is not wasted swing time.",
+        "action": {
+          "condition": {
+            "and": {
+              "vals": [
+                { "cmp": { "op": "OpGe", "lhs": { "currentComboPoints": {} }, "rhs": { "const": { "val": "1" } } } },
+                { "not": { "val": { "auraIsActive": { "auraId": { "spellId": 6774, "rank": 2 } } } } }
+              ]
+            }
+          },
+          "castSpell": { "spellId": { "spellId": 6774, "rank": 2 } }
+        }
+      },
+      {
+        "notes": "Adrenaline Rush on cooldown: the Combat burst button, doubles energy regen for its duration.",
+        "action": { "castSpell": { "spellId": { "spellId": 13750 } } }
+      },
+      {
+        "notes": "Eviscerate at five combo points.",
+        "action": {
+          "condition": { "cmp": { "op": "OpGe", "lhs": { "currentComboPoints": {} }, "rhs": { "const": { "val": "5" } } } },
+          "castSpell": { "spellId": { "spellId": 31016, "rank": 9 } }
+        }
+      },
+      {
+        "notes": "Sinister Strike as the combo point builder.",
+        "action": { "castSpell": { "spellId": { "spellId": 11294, "rank": 8 } } }
+      }
+    ]
   }
 }

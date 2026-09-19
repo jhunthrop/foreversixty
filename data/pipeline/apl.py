@@ -68,6 +68,56 @@ def action_ids(node: Any) -> Iterator[tuple[int, int]]:
             yield from action_ids(value)
 
 
+def aura_reference_ids(node: Any) -> Iterator[tuple[int, int]]:
+    """Every (spell id, rank) referenced as an aura -- `auraIsActive`,
+    `auraNumStacks`, `auraRemainingTime`, and the engine's other aura-value
+    shapes all carry their ActionID under the `auraId` key, never `spellId`.
+    That is what lets `ENGINE_AURA_IDS` tell an aura reference apart from a
+    `castSpell` action naming the same id: only the former key means "check
+    whether this aura is active/stacked/expiring", never "cast this".
+    """
+    if isinstance(node, dict):
+        aura_id = node.get("auraId")
+        if isinstance(aura_id, dict) and isinstance(aura_id.get("spellId"), int):
+            yield aura_id["spellId"], int(aura_id.get("rank", 0))
+        for value in node.values():
+            yield from aura_reference_ids(value)
+    elif isinstance(node, list):
+        for value in node:
+            yield from aura_reference_ids(value)
+
+
+#: Aura ids the engine itself registers under a different number than the
+#: client's own copy of the same ability, confirmed by reading the engine's
+#: Go source (not guessed, and not something spellconst -- client data --
+#: can tell us on its own). `test_every_spell_the_rotations_name_exists_with_that_rank`
+#: accepts an id from this table only where a rotation references it as an
+#: aura (see `aura_reference_ids`); a `castSpell` action must still name an
+#: id spellconst has, exception table or not, because that is the id the
+#: engine is actually asked to cast. Delete an entry here the moment the
+#: engine registers the client's id instead, or spellconst grows an entry
+#: for the engine's id -- whichever the engine/data lanes land first.
+ENGINE_AURA_IDS: dict[int, str] = {
+    12873: (
+        "Improved Scorch debuff: the engine registers vanilla's id; the "
+        "client's is 22959 (engine follow-up recorded in the engine ledger)"
+    ),
+}
+
+
+def unchecked_engine_aura_ids(rotation: dict[str, Any]) -> set[int]:
+    """`ENGINE_AURA_IDS` entries this rotation may cite without a spellconst
+    entry: every occurrence of the id in this rotation is an aura reference,
+    and none is a `castSpell` target."""
+    cast_ids = {spell_id for spell_id, _rank, _tag in cast_spell_action_ids(rotation)}
+    aura_ids = {spell_id for spell_id, _rank in aura_reference_ids(rotation)}
+    return {
+        spell_id
+        for spell_id in ENGINE_AURA_IDS
+        if spell_id in aura_ids and spell_id not in cast_ids
+    }
+
+
 def cast_spell_action_ids(node: Any) -> Iterator[tuple[int, int, int]]:
     """Every (spell id, rank, tag) a `castSpell` action names.
 

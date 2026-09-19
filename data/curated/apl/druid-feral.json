@@ -1,10 +1,137 @@
 {
   "spec": "druid-feral",
-  "state": "unwritten",
-  "notes": "",
-  "sources": [],
+  "state": "written",
+  "notes": "Cat-form DPS at 60: Rake kept ticking, Shred building combo points, Rip as the 5-point finisher (Ferocious Bite once Rip is already up), Tiger's Fury taken on cooldown for the free energy. The fork's feral_druid/apls/feral.apl.json is the sim-tuned version of this same idea, but it names spell ids (17392, 9846, 13494, 17061, ...) that do not exist in this build's spellconst -- stale from an older client, exactly the kind of drift design section notes warn about -- so p1.apl.json (its minimal Shred-only fallback) is the starting point actually adapted here, filled out to a full finisher rotation with ranks checked against spellconst: Shred rank 5 (9830), Rake rank 4 (9904), Rip rank 6 (9896), Ferocious Bite rank 5 (31018), Tiger's Fury (5217, rankless). This spec stays in Cat Form for its entire rotation. Bear Form is not modeled here: Maul (48480) is the on-next-swing tank ability the engine keys off ON_NEXT_SWING_QUEUE_TAG, but the fork's own sim/druid/_maul.go is underscore-prefixed (excluded from its build) because bear-form tank druid is not implemented yet, so no rotation -- this one included -- can name 48480 today. Powershifting (Furor + Wolfshead Helm energy refunds on shifting out of and back into Cat Form), which the community guide treats as core to Classic Feral DPS, is a talent- and gear-dependent technique the APL value language here does not have a clean way to express yet; left out of the default, matching the measured-simplicity precedent set by mage-frost. Fix round 1: re-verified both dotIsActive conditions against the engine, since an id merely existing in spellconst is not enough (a totem-style buff/dummy split elsewhere in this fork resolves to a nil condition -- see shaman-enhancement's notes). sim/druid/rake.go and sim/druid/rip.go both set ActionID: core.ActionID{SpellID: <rank id>} directly on the spell, and their Dot lives on that same spell object (dotIsActive resolves via GetAPLSpell -> spell.Dot(target), not via a separate aura registry), so dotIsActive(9904) and dotIsActive(9896) both correctly find their DoTs. No change needed.",
+  "sources": [
+    {
+      "label": "wowsims-forever feral_druid p1 (Shred-only) priority list",
+      "url": "https://github.com/jhunthrop/wowsims-forever/blob/464d1a14a6408956aecb14b3c5867392502db401/ui/feral_druid/apls/p1.apl.json",
+      "kind": "community"
+    },
+    {
+      "label": "Warcraft Tavern: WoW Classic Feral Druid DPS rotation",
+      "url": "https://www.warcrafttavern.com/wow-classic/guides/pve-feral-druid-dps-rotations-cooldowns/",
+      "kind": "community"
+    }
+  ],
   "rotation": {
     "type": "TypeAPL",
-    "priorityList": []
+    "priorityList": [
+      {
+        "action": {
+          "autocastOtherCooldowns": {}
+        }
+      },
+      {
+        "notes": "Tiger's Fury on cooldown for the free energy; it costs nothing and the engine gates it on its own 30 second cooldown.",
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 5217
+            }
+          }
+        }
+      },
+      {
+        "notes": "Keep Rake ticking; it is a strong bleed that costs no combo point.",
+        "action": {
+          "condition": {
+            "not": {
+              "val": {
+                "dotIsActive": {
+                  "spellId": {
+                    "spellId": 9904,
+                    "rank": 4
+                  }
+                }
+              }
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 9904,
+              "rank": 4
+            }
+          }
+        }
+      },
+      {
+        "notes": "At 5 combo points, Rip if it is not already ticking.",
+        "action": {
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "cmp": {
+                    "op": "OpEq",
+                    "lhs": {
+                      "currentComboPoints": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "5"
+                      }
+                    }
+                  }
+                },
+                {
+                  "not": {
+                    "val": {
+                      "dotIsActive": {
+                        "spellId": {
+                          "spellId": 9896,
+                          "rank": 6
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 9896,
+              "rank": 6
+            }
+          }
+        }
+      },
+      {
+        "notes": "At 5 combo points with Rip already up, Ferocious Bite dumps them instead of capping out.",
+        "action": {
+          "condition": {
+            "cmp": {
+              "op": "OpEq",
+              "lhs": {
+                "currentComboPoints": {}
+              },
+              "rhs": {
+                "const": {
+                  "val": "5"
+                }
+              }
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 31018,
+              "rank": 5
+            }
+          }
+        }
+      },
+      {
+        "notes": "Shred builds combo points the rest of the time.",
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 9830,
+              "rank": 5
+            }
+          }
+        }
+      }
+    ]
   }
 }
