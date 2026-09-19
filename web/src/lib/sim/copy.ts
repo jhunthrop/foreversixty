@@ -119,7 +119,7 @@ export const simCopy = {
   // --- Task 21: build unfurls carrying simmed DPS. ---
   includeSimOnCard: 'Include a simmed DPS on the card',
   buildSimUnavailable: 'Needs a DPS estimate first; change a talent or a slot to get one.',
-  buildSimRunning: 'Simming this build for the card…',
+  buildSimRunning: 'Simming this build for the card, a few seconds…',
   buildSimDone: (dps: string, version: string): string =>
     `The card will show ${dps} DPS on engine ${version}.`,
   buildSimSkipped: 'The card will not show a DPS figure; the sim did not finish.',

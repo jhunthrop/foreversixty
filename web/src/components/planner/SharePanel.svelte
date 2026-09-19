@@ -37,6 +37,16 @@
   let cardDps = $state('');
   let cardVersion = $state('');
 
+  /**
+   * A talent edit and a re-save while the previous save's card sim is still running starts
+   * a second `attachSim` call over the same three `$state` variables above. Each call is
+   * stamped with the generation `share()` was on when it started; a call whose stamp no
+   * longer matches -- or whose build is no longer the one on screen -- writes nothing. The
+   * draft comparison in `share()` already drops a stale *build* response; this is that same
+   * discipline applied to the slower sim response layered on top of it.
+   */
+  let saveGeneration = 0;
+
   const saved = $derived(outcome !== null && outcome.ok ? outcome.build : null);
   const failure = $derived(outcome !== null && !outcome.ok ? outcome : null);
 
@@ -76,7 +86,12 @@
     cardVersion = '';
   });
 
-  async function attachSim(build: SavedBuild): Promise<void> {
+  /** True once a newer save has started, or the build on screen is no longer this one. */
+  function supersededSince(generation: number, build: SavedBuild): boolean {
+    return generation !== saveGeneration || saved?.id !== build.id;
+  }
+
+  async function attachSim(build: SavedBuild, generation: number): Promise<void> {
     const character = characterFromPlanner(store);
     if (!includeSim || character === null || store.talentIndex === null) return;
     cardState = 'running';
@@ -95,11 +110,15 @@
         () => {},
       ).result;
       await saveSim(result);
+      // A re-save started (and possibly finished) while this run was in flight. Its own
+      // attachSim call owns cardState/cardDps/cardVersion now; this one writes nothing.
+      if (supersededSince(generation, build)) return;
       cardDps = Math.round(result.dps.mean).toLocaleString('en-US');
       cardVersion = result.engine_version;
       cardState = 'done';
     } catch {
       // The build is saved and its link works. A background sim is not worth losing that.
+      if (supersededSince(generation, build)) return;
       cardState = 'skipped';
     }
   }
@@ -108,6 +127,11 @@
     saving = true;
     cardBroken = false;
     copied = false;
+    // Stamped onto this save's own attachSim call, below, before anything about it can be
+    // stale -- a later share() bumps this past whatever a still-running sim was stamped
+    // with, which is how that sim's eventual result recognises it no longer owns the card.
+    saveGeneration += 1;
+    const generation = saveGeneration;
     const draft = store.toDraft();
     const result = await saveBuild(draft);
     saving = false;
@@ -120,7 +144,7 @@
     // The sim is saved after the build, because it needs the build's id, and it never
     // blocks the link from showing: the share URL above is already on screen the moment
     // this line starts, and the running/done/skipped line below fills in beside it.
-    if (result.ok) void attachSim(result.build);
+    if (result.ok) void attachSim(result.build, generation);
   }
 
   async function copy(url: string): Promise<void> {
@@ -159,7 +183,7 @@
   </div>
 
   <label
-    class="text-muted flex min-h-6 w-fit items-center gap-2 text-[13px]"
+    class="text-muted flex min-h-11 w-fit items-center gap-2 text-[13px] md:min-h-0"
     title={canIncludeSim ? undefined : simCopy.buildSimUnavailable}
   >
     <input

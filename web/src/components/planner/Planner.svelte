@@ -385,14 +385,16 @@
        them and still moves the footer -- by the difference rather than by the whole planner.
        Re-derive them by loading /planner, setting this element's min-height to 0, and reading
        its `getBoundingClientRect().height` below and above the md breakpoint. They measure
-       737 at 360px and 1047.5 from md up (Task 11's tree header -- the border-b under the
-       tree name and its point count -- added about 9px over the 728/1038.5 this measured
-       before it; the other figures below quoting 616, 646.5, 962 and 1143 predate that change
-       by the same margin and were not re-measured, since none of them feeds this min-height
-       and re-deriving them needs gear- and read-only-mount scenarios outside what the
-       checked-in fixture data covers). Each value here is set a hair under what was measured,
-       because under costs a pixel of movement and over leaves dead space below the ready
-       planner for good.
+       793 at 360px and 1079 from md up (Task 21's "Include a simmed DPS on the card" checkbox
+       under the Share button, plus the row's own gap-3, added about 56px at 360px and 31.5px
+       from md up over the 737/1047.5 this measured before it -- most of that at 360px is the
+       fix-round bump from `min-h-6` to `min-h-11` so the checkbox clears the same 44px target
+       every other checkbox in the codebase does; the other figures below quoting 616, 646.5,
+       728, 962 and 1143 predate both that change and Task 11's tree header change before it
+       and were not re-measured, since none of them feeds this min-height and re-deriving them
+       needs gear- and read-only-mount scenarios outside what the checked-in fixture data
+       covers). Each value here is set a hair under what was measured, because under costs a
+       pixel of movement and over leaves dead space below the ready planner for good.
 
        The phone figure fell from 1412.5 to 728 when gear became the third tab: the gear panel
        used to stack under the trees there and now takes its turn in the same column. What is
@@ -447,7 +449,7 @@
        tracked `readOnly` would spend that growth shoving the footer down the moment it is
        pressed. /b/:id carries no CLS budget of its own -- it is server-rendered, so the
        island's whole planner arrives after first paint regardless of what this reserves. -->
-  <div class="flex min-h-[736px] flex-col gap-[22px] md:min-h-[1047px] md:gap-8">
+  <div class="flex min-h-[792px] flex-col gap-[22px] md:min-h-[1078px] md:gap-8">
     {#if status === 'loading'}
       <!-- The planner's own panel chrome rather than a bare line on a blank reserve: a
            viewport of empty space reads as a broken page, and the frame reads as the planner
