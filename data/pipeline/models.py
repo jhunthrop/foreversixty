@@ -28,6 +28,16 @@ class Item(BaseModel):
     class_id: int
     subclass_id: int
     inventory_type: int
+    #: The random suffixes this item rolls, from the engine fork's
+    #: `randomSuffixOptions` (parity contract 6.3). Empty for an item that
+    #: rolls none, and for every row until `python -m pipeline loot` has run
+    #: for the build -- `normalize` has no fork database to read.
+    suffixes: list[int] = []
+    #: "alliance_only", "horde_only", or "" for no restriction, from the
+    #: fork's `factionRestriction` (contract 10.3's `SimItem` field). The
+    #: client states none of this on build 1.60.1.69893, so like `suffixes`
+    #: it is empty until `loot` has run.
+    faction_restriction: str = ""
 
 
 class Spell(BaseModel):
@@ -150,6 +160,12 @@ class ItemSetRecord(BaseModel):
     name: str
     item_ids: list[int]
     bonuses: list[ItemSetBonus]
+
+
+class SuffixRecord(BaseModel):
+    id: int
+    name: str
+    stats: dict[str, float]
 
 
 class SpecRecord(BaseModel):

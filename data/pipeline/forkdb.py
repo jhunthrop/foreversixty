@@ -107,6 +107,12 @@ CLASS_SLUGS: dict[int, str] = {
     9: "warrior",
 }
 
+#: proto/ui.proto's `UIItem.FactionRestriction`, minus its unspecified
+#: zero. The client cannot supply this on build 1.60.1.69893 -- 19,066 of
+#: its 19,171 ItemSparse rows have AllowableRace -1/-1, the 819 the fork
+#: marks restricted among them -- so the fork is the only source.
+FACTION_RESTRICTIONS: dict[int, str] = {1: "alliance_only", 2: "horde_only"}
+
 
 def decode[T](table: dict[int, T], value: int, what: str) -> T:
     """`table[value]`, or a clear error naming the enum and the number.
