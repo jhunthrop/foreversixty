@@ -8,6 +8,7 @@ from pipeline.apl import (
     EMPTY_ROTATION,
     AplError,
     action_ids,
+    cast_spell_action_ids,
     load_all,
     load_apl,
     parse_rotation,
@@ -97,6 +98,77 @@ def test_every_spell_the_rotations_name_exists_with_that_rank():
     assert checked >= 10, "the written rotations should name at least ten spell references"
 
 
+#: On-next-swing abilities the fork (wowsims-forever's sim/) registers twice
+#: under one spell id: a tag-0 direct spell (`SpellFlagNoOnCastComplete`, no
+#: GCD -- meant to fire only when a queued swing lands) and an APL-castable
+#: queue action at a different tag (`core.ActionID.WithTag`). Untagged
+#: casts resolve to tag 0 (`core.ProtoToActionID` ignores rank), so casting a
+#: known on-next-swing spell id at any other tag is a free-swing bug, not a
+#: rotation choice.
+#:
+#: Grepped from wowsims-forever's sim/ for the registration pattern (a spell
+#: paired with a `WithTag`-suffixed queue spell flagged `SpellFlagAPL`):
+#: - sim/warrior/heroic_strike_cleave.go: Heroic Strike and Cleave queue at
+#:   tag 1 (`makeQueueSpellsAndAura`).
+#: - sim/druid/_maul.go: Maul queues at tag 1 the same way; the file is
+#:   underscore-prefixed (Go excludes it from the build) because bear-form
+#:   tank druid is not implemented yet in this fork, so no rotation can name
+#:   48480 today, but the id is kept here so one never regresses silently
+#:   once the spec ships.
+#: - sim/hunter/raptor_strike.go: Raptor Strike is the odd one out -- its
+#:   tag-1 spell is an internal damage sub-cast the tag-0 ability calls
+#:   itself, and the APL-castable queue (`SpellFlagAPL`) is tag 3
+#:   (`hunter.RaptorStrike.WithTag(3)`), not tag 1.
+ON_NEXT_SWING_QUEUE_TAG = {
+    25286: 1,  # Heroic Strike
+    20569: 1,  # Cleave
+    48480: 1,  # Maul
+    2973: 3,  # Raptor Strike rank 1
+    14260: 3,  # Raptor Strike rank 2
+    14261: 3,  # Raptor Strike rank 3
+    14262: 3,  # Raptor Strike rank 4
+    14263: 3,  # Raptor Strike rank 5
+    14264: 3,  # Raptor Strike rank 6
+    14265: 3,  # Raptor Strike rank 7
+    14266: 3,  # Raptor Strike rank 8
+}
+
+
+def test_on_next_swing_casts_use_the_engines_queue_tag():
+    """Task follow-up, HIGH: warrior-fury cast Heroic Strike (25286) with no
+    tag. The untagged id resolved to the tag-0 direct spell and was cast
+    every APL iteration as a free swing: 5,664 DPS instead of ~1,759 with the
+    queue tag."""
+    checked = 0
+    for key, document in documents().items():
+        for spell_id, _rank, tag in cast_spell_action_ids(document.rotation):
+            if spell_id in ON_NEXT_SWING_QUEUE_TAG:
+                assert tag == ON_NEXT_SWING_QUEUE_TAG[spell_id], (
+                    f"{key} casts on-next-swing spell {spell_id} with tag {tag}; "
+                    f"the engine's APL-castable queue is tag {ON_NEXT_SWING_QUEUE_TAG[spell_id]}"
+                )
+                checked += 1
+    assert checked >= 1, "no written rotation names a known on-next-swing spell"
+
+
+def test_cast_spell_action_ids_ignores_conditions_and_auras():
+    """Only a `castSpell` action's own ActionID carries a tag that matters for
+    casting; an `auraIsActive` condition referencing the same spell id is not
+    itself a cast and must not be mistaken for one."""
+    rotation = {
+        "priorityList": [
+            {
+                "action": {
+                    "condition": {"auraIsActive": {"auraId": {"spellId": 25286, "rank": 9}}},
+                    "castSpell": {"spellId": {"spellId": 25286, "rank": 9, "tag": 1}},
+                }
+            },
+            {"action": {"castSpell": {"spellId": {"itemId": 13446}}}},
+        ]
+    }
+    assert list(cast_spell_action_ids(rotation)) == [(25286, 9, 1)]
+
+
 #: Every distinct spell id the two written rotations name, mapped to the
 #: ability the rotation's own notes claim it is (e.g. "Death Wish on
 #: cooldown."). A rank match alone does not catch a wrong id: Death Wish is
@@ -114,7 +186,6 @@ EXPECTED_ABILITY_NAMES = {
         25286: "Heroic Strike",
     },
     "mage-frost": {
-        10199: "Fire Blast",
         25304: "Frostbolt",
     },
 }

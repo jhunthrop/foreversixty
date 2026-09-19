@@ -68,6 +68,36 @@ def action_ids(node: Any) -> Iterator[tuple[int, int]]:
             yield from action_ids(value)
 
 
+def cast_spell_action_ids(node: Any) -> Iterator[tuple[int, int, int]]:
+    """Every (spell id, rank, tag) a `castSpell` action names.
+
+    Unlike `action_ids`, this only looks at the ActionID a cast actually
+    resolves against -- not every id an aura or condition happens to
+    reference -- because tag only matters for what gets cast. The fork
+    registers some abilities twice under one spell id: a direct spell at tag
+    0 (`SpellFlagNoOnCastComplete`, no GCD) and, for an on-next-swing
+    ability, an APL-castable queue action at a nonzero tag
+    (`core.ActionID.WithTag` in sim/core/agent.go). `core.ProtoToActionID`
+    ignores rank, so a cast that omits tag resolves to tag 0 -- the direct
+    spell -- and is cast every APL iteration as a free swing.
+    """
+    if isinstance(node, dict):
+        cast = node.get("castSpell")
+        if isinstance(cast, dict):
+            spell_id_ref = cast.get("spellId")
+            if isinstance(spell_id_ref, dict) and isinstance(spell_id_ref.get("spellId"), int):
+                yield (
+                    spell_id_ref["spellId"],
+                    int(spell_id_ref.get("rank", 0)),
+                    int(spell_id_ref.get("tag", 0)),
+                )
+        for value in node.values():
+            yield from cast_spell_action_ids(value)
+    elif isinstance(node, list):
+        for value in node:
+            yield from cast_spell_action_ids(value)
+
+
 def load_apl(path: Path) -> AplDocument:
     document = AplDocument(**json.loads(path.read_text(encoding="utf-8")))
     if document.spec != path.stem:
