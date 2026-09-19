@@ -9,6 +9,7 @@
       { "spell_id": 1680, "name": "Whirlwind", "sim_casts": 22, "actual_casts": 19 }
     ],
     "engine_version": "8b2169e61",
+    "reference_stat": "attack_power",
     "updated_at": "2026-09-14T04:12:00Z"
   },
   {
@@ -18,6 +19,7 @@
     "parses": 31,
     "worst_actions": [{ "spell_id": 25304, "name": "Frostbolt", "sim_casts": 71, "actual_casts": 62 }],
     "engine_version": "8b2169e61",
+    "reference_stat": "spell_power",
     "updated_at": "2026-09-14T04:12:00Z"
   },
   {
@@ -27,6 +29,7 @@
     "parses": 0,
     "worst_actions": [],
     "engine_version": "",
+    "reference_stat": "attack_power",
     "updated_at": null
   }
 ]
