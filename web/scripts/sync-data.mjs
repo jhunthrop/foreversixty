@@ -43,6 +43,7 @@ export const SYNC_ENTRIES = [
   { name: 'spellconst', kind: 'dir', required: false },
   { name: 'spells.json', kind: 'file', required: false },
   { name: 'simconsumes.json', kind: 'file', required: false },
+  { name: 'simbuffs.json', kind: 'file', required: false },
 ];
 
 /** The files src/pages/classes.astro imports statically. */
