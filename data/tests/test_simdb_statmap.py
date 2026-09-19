@@ -6,6 +6,7 @@ from pipeline.simdb.statmap import (
     StatMapError,
     stat_array,
     stat_index,
+    stat_keys,
     weapon_skill_array,
     weapon_skill_index,
 )
@@ -94,3 +95,26 @@ def test_weapon_skills_use_their_own_enum():
 def test_an_unknown_weapon_skill_is_an_error():
     with pytest.raises(StatMapError, match="WeaponSkillSpoons"):
         weapon_skill_index("WeaponSkillSpoons")
+
+
+def test_stat_keys_is_the_inverse_of_stat_array():
+    array = stat_array({"strength": 10, "crit": 2.5, "attack_power": 40})
+    assert stat_keys(array) == {"strength": 10.0, "crit": 2.5, "attack_power": 40.0}
+
+
+def test_stat_keys_drops_zero_amounts():
+    assert stat_keys([0, 0, 0, 0]) == {}
+
+
+def test_stat_keys_reads_a_shared_index_back_as_the_first_name():
+    """Forever merges spell and melee hit into one stat, so `hit` and
+    `spell_hit` are the same index; the array can only be read back as one
+    of them, and PROTO_STAT_ALIASES' order decides which."""
+    assert stat_keys(stat_array({"spell_hit": 3})) == {"hit": 3.0}
+
+
+def test_stat_keys_refuses_an_index_no_planner_key_covers():
+    array = [0.0] * (len(pb.Stat.keys()))
+    array[pb.Stat.Value("StatMana")] = 5
+    with pytest.raises(StatMapError, match="no planner key"):
+        stat_keys(array)

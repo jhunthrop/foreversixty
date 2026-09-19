@@ -147,6 +147,46 @@ def stat_array(stats: StatPairs) -> list[float]:
     return _truncate(array)
 
 
+def _key_by_index() -> dict[int, str]:
+    """Engine stat index -> the planner key it is read back as.
+
+    Not a bijection: Forever merges spell and melee hit into one `Stat`, so
+    `hit` and `spell_hit` resolve to the same index (likewise crit). The
+    first key `PROTO_STAT_ALIASES` declares for an index wins, which is why
+    the merged names are declared before the vanilla-lineage ones.
+    """
+    by_index: dict[int, str] = {}
+    for key in PROTO_STAT_ALIASES:
+        if key.startswith("__"):
+            continue
+        by_index.setdefault(stat_index(key), key)
+    return by_index
+
+
+def stat_keys(array: Iterable[float]) -> dict[str, float]:
+    """The planner stat keys a `repeated double stats` array carries.
+
+    The inverse of `stat_array`, for reading the engine fork's own database
+    (enchants and random suffixes state their stats as that array and
+    nothing else). Zero amounts are dropped: an absent key means the row
+    grants none of that stat, which is what every consumer already assumes
+    of `GearItem.stats`.
+    """
+    by_index = _key_by_index()
+    out: dict[str, float] = {}
+    for index, amount in enumerate(array):
+        if not amount:
+            continue
+        key = by_index.get(index)
+        if key is None:
+            raise StatMapError(
+                f"stat index {index} has no planner key; add one to "
+                f"PROTO_STAT_ALIASES in pipeline/simdb/statmap.py"
+            )
+        out[key] = float(amount)
+    return out
+
+
 def weapon_skill_index(name: str) -> int:
     if name not in set(pb.WeaponSkill.keys()):
         raise StatMapError(f"{name!r} is not in the engine's WeaponSkill enum")
