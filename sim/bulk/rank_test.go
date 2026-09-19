@@ -6,6 +6,7 @@ import (
 	"slices"
 	"testing"
 
+	"github.com/jhunthrop/foreversixty/logs/engine/summary"
 	"github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/jhunthrop/foreversixty/sim/enginever"
 )
@@ -36,6 +37,11 @@ func resultsForVaried(stage StageRequests, means, errs []float64) []api.SimResul
 			Lane:          api.LaneBrowser,
 			IterationsRun: stage.Iterations,
 			DPS:           api.Estimate{Mean: means[i], StdDev: errs[i] * 10, Error: errs[i]},
+			// A real run's Summary always carries the engine version;
+			// finalResult copies Requests[0]'s whole result (Task 17),
+			// so a fixture that left this zero could not tell "copied
+			// the equipped result" apart from "built an empty one".
+			Summary: summary.Summary{EngineVersion: enginever.Version},
 		}
 	}
 	return out
@@ -178,16 +184,49 @@ func TestFastKeepsAQuarterThenTheTopTen(t *testing.T) {
 		t.Errorf("stage 3's Ran = %+v, want %+v", third.Ran, want)
 	}
 
-	// Rank must CLONE the history it is handed rather than alias it: a
-	// mutation of next.Ran's own element, made AFTER third was already
-	// built from it, must not reach back into what third.Ran already
-	// reported. (A length check alone cannot catch this - an append into
-	// spare capacity beyond next.Ran's own len leaves next.Ran's header
-	// untouched either way; only an in-place mutation of an element
-	// within bounds can expose shared backing storage.)
-	next.Ran[0].Combos = -1
-	if third.Ran[0].Combos == -1 {
-		t.Error("Rank aliased the Ran slice it was handed instead of cloning it")
+	// Whether Rank's OWN clone of stage.Ran (rank.go, ahead of the
+	// append that builds the next stage's history) protects against
+	// aliasing is covered directly by
+	// TestRankClonesStageRanBeforeAppending below, with a
+	// stage.Ran built to actually have spare capacity to expose it.
+	// Mutating next.Ran here after the fact would not do that: every
+	// StageRequests.Ran leaving this package already came out of
+	// stageRequests's own slices.Clone (plan.go), which always
+	// returns a slice at exactly len == cap, so the append that
+	// builds the FOLLOWING stage's history reallocates regardless of
+	// whether rank.go's own clone is present - there is no public
+	// path on which removing it changes next.Ran or third.Ran at all.
+}
+
+// rank.go's own clone of stage.Ran only has anything to protect
+// against if stage.Ran itself carries spare capacity - never true
+// along the public path, since stageRequests always hands one back at
+// exactly len == cap (see the test above). This builds that
+// impossible-in-practice case by hand, directly on the backing array,
+// so the defensive clone is pinned by something that would actually
+// fail if it were deleted: without it, Rank's append would write the
+// next stage's entry straight into the caller's own array at the
+// index one past stage.Ran's length, corrupting whatever ELSE views
+// that same backing array - which a plain "is next.Ran's own value
+// still correct" check can never observe, because everything Rank
+// hands back is itself freshly cloned downstream regardless.
+func TestRankClonesStageRanBeforeAppending(t *testing.T) {
+	req, stage := planOf(t, api.PrecisionNormal, 4)
+	results := resultsFor(stage, []float64{1000, 1010, 1020, 1030, 1040}, 1)
+
+	// backing has one live entry (what stage.Ran reports) and one
+	// spare slot that only a shared-array view can see.
+	backing := make([]api.Stage, 2)
+	backing[0] = api.Stage{Iterations: 999, Combos: 999}
+	sentinel := api.Stage{Iterations: -1, Combos: -1}
+	backing[1] = sentinel
+	stage.Ran = backing[:1:2] // len 1, cap 2: room for exactly one in-place append.
+
+	if _, _, err := Rank(req, stage, results); err != nil {
+		t.Fatal(err)
+	}
+	if full := backing[:2]; full[1] != sentinel {
+		t.Errorf("Rank wrote into stage.Ran's spare capacity instead of cloning it first: backing[1] = %+v, want the untouched sentinel %+v", full[1], sentinel)
 	}
 }
 
@@ -465,5 +504,162 @@ func TestHighKeepsTopTwenty(t *testing.T) {
 	}
 	if len(next.Combos) != 20 {
 		t.Errorf("kept %d of 30, want the top 20", len(next.Combos))
+	}
+}
+
+// The last rung produces a SimResult, not another stage.
+func TestTheLastRungProducesTheResult(t *testing.T) {
+	req, first := planOf(t, api.PrecisionNormal, 4)
+	means := []float64{1000, 1100, 1050, 1020, 990}
+	next, final, err := Rank(req, first, resultsFor(first, means, 2))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if final != nil || next == nil {
+		t.Fatal("the first of two rungs finished the run")
+	}
+
+	last := *next
+	lastMeans := means[:len(last.Requests)]
+	next, final, err = Rank(req, last, resultsFor(last, lastMeans, 2))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if next != nil || final == nil {
+		t.Fatal("the last rung did not finish the run")
+	}
+	if final.Equipped == nil || final.Equipped.Mean != 1000 {
+		t.Errorf("equipped = %+v, want the baseline 1000", final.Equipped)
+	}
+	if final.DPS.Mean != 1000 {
+		t.Errorf("the result's own DPS is %v; a bulk result's headline number is the equipped set's", final.DPS.Mean)
+	}
+	if final.IterationsRun != last.Iterations {
+		t.Errorf("iterations_run = %d, want the last stage's %d", final.IterationsRun, last.Iterations)
+	}
+	if final.Request.Bulk == nil {
+		t.Error("the result does not carry the request that produced it")
+	}
+	if len(final.Combos) != len(last.Combos) {
+		t.Fatalf("%d combos in the result and %d in the last stage", len(final.Combos), len(last.Combos))
+	}
+	if final.Combos[0].DPS.Mean != 1100 || final.Combos[0].Delta.Mean != 100 {
+		t.Errorf("the leader is %+v", final.Combos[0])
+	}
+	if len(final.Combos[0].Substitutions) == 0 {
+		t.Error("the leader carries no substitution chips")
+	}
+	// Every stage the ladder ran, in order, with what it ran.
+	if len(final.Stages) != 2 {
+		t.Fatalf("stages = %+v, want two", final.Stages)
+	}
+	if final.Stages[0].Iterations != 1000 || final.Stages[0].Combos != 4 {
+		t.Errorf("stage 1 = %+v", final.Stages[0])
+	}
+	if final.Stages[1].Iterations != 3000 || final.Stages[1].Combos != len(last.Combos) {
+		t.Errorf("stage 2 = %+v", final.Stages[1])
+	}
+	// The summary is the equipped set's: a bulk report renders the
+	// baseline character's breakdown beside the ranking.
+	if final.Summary.EngineVersion == "" {
+		t.Error("the result carries no summary")
+	}
+}
+
+// "Within error" is an overlap of delta intervals with the group's
+// leader, and the page ranks a group the same. Getting this wrong
+// makes noise look like a decision.
+func TestWithinErrorGroups(t *testing.T) {
+	cases := []struct {
+		name   string
+		means  []float64 // the equipped set first
+		stderr float64
+		groups []int // per combination, best first
+	}{
+		{
+			name:   "three clearly separated",
+			means:  []float64{1000, 1100, 1050, 1010},
+			stderr: 1,
+			groups: []int{0, 1, 2},
+		},
+		{
+			name:   "all one answer",
+			means:  []float64{1000, 1100, 1099, 1098},
+			stderr: 40,
+			groups: []int{0, 0, 0},
+		},
+		{
+			name:   "two tied, then one apart",
+			means:  []float64{1000, 1100, 1098, 1000},
+			stderr: 2,
+			groups: []int{0, 0, 1},
+		},
+		{
+			name:   "a single combination is its own group",
+			means:  []float64{1000, 1100},
+			stderr: 2,
+			groups: []int{0},
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			req, first := planOf(t, api.PrecisionNormal, len(c.means)-1)
+			next, _, err := Rank(req, first, resultsFor(first, c.means, c.stderr))
+			if err != nil {
+				t.Fatal(err)
+			}
+			last := *next
+			_, final, err := Rank(req, last, resultsFor(last, c.means[:len(last.Requests)], c.stderr))
+			if err != nil {
+				t.Fatal(err)
+			}
+			if len(final.Combos) != len(c.groups) {
+				t.Fatalf("%d combos, want %d", len(final.Combos), len(c.groups))
+			}
+			for i, want := range c.groups {
+				if final.Combos[i].Group != want {
+					t.Errorf("combo %d (%v DPS) is group %d, want %d",
+						i, final.Combos[i].DPS.Mean, final.Combos[i].Group, want)
+				}
+			}
+		})
+	}
+}
+
+// Three rungs, so the result's stage list is three entries and each
+// says what that rung actually ran.
+func TestAThreeRungLadderReportsEveryStage(t *testing.T) {
+	req, first := planOf(t, api.PrecisionFast, 40)
+	means := []float64{1000}
+	for i := 0; i < 40; i++ {
+		means = append(means, float64(1400-10*i))
+	}
+	second, _, err := Rank(req, first, resultsFor(first, means, 1))
+	if err != nil {
+		t.Fatal(err)
+	}
+	third, _, err := Rank(req, *second, resultsFor(*second, means[:len(second.Requests)], 1))
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, final, err := Rank(req, *third, resultsFor(*third, means[:len(third.Requests)], 1))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if final == nil {
+		t.Fatal("the third rung did not finish the run")
+	}
+	want := []api.Stage{
+		{Iterations: 100, Combos: 40},
+		{Iterations: 1000, Combos: len(second.Combos)},
+		{Iterations: 3000, Combos: len(third.Combos)},
+	}
+	if len(final.Stages) != 3 {
+		t.Fatalf("stages = %+v", final.Stages)
+	}
+	for i, w := range want {
+		if final.Stages[i] != w {
+			t.Errorf("stage %d = %+v, want %+v", i+1, final.Stages[i], w)
+		}
 	}
 }

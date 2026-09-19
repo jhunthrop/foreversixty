@@ -212,10 +212,61 @@ func applyCut(ranked []scored, cut api.Cut) []scored {
 	return out
 }
 
-// finalResult is Task 17.
+// finalResult turns the last stage into the answer.
+//
+// The headline DPS and the summary are the EQUIPPED set's: a Top Gear
+// report shows the character the player has, with the ranking beside
+// it, and a headline taken from the winner would tell them they
+// already do 1,100 DPS.
 func finalResult(req api.SimRequest, stage StageRequests, ranked []scored, equipped api.Estimate, base api.SimResult) api.SimResult {
 	out := base
 	out.Request = req
+	out.DPS = equipped
 	out.Equipped = &equipped
+	out.IterationsRun = stage.Iterations
+	out.Combos = make([]api.Combo, 0, len(ranked))
+	for _, s := range ranked {
+		out.Combos = append(out.Combos, api.Combo{
+			Substitutions: s.Combo.Substitutions,
+			DPS:           s.DPS,
+			Delta:         s.Delta,
+		})
+	}
+	group(out.Combos)
+	out.Stages = stagesOf(stage)
 	return out
+}
+
+// group numbers the within-error bands.
+//
+// A band starts at the first combination not yet in one, and every
+// following combination whose delta interval still overlaps THAT
+// leader's joins it. The intervals are one standard error either side,
+// which is the interval the page draws.
+//
+// Comparing each row to its group's leader rather than to its
+// predecessor is deliberate: chaining would walk a long tail of
+// overlapping neighbours into one band whose ends do not overlap at
+// all, and the page would rank a real 40-DPS gap as a tie.
+func group(combos []api.Combo) {
+	current := -1
+	var leader api.Estimate
+	for i := range combos {
+		d := combos[i].Delta
+		if current < 0 || d.Mean+d.Error < leader.Mean-leader.Error {
+			current++
+			leader = d
+		}
+		combos[i].Group = current
+	}
+}
+
+// stagesOf is what the ladder actually ran: the stages the request
+// carried through the loop (contract A10), plus the one that just
+// finished. Rank is called once per stage and holds no state between
+// calls, so stage.Ran - threaded across the wasm boundary inside
+// StageRequests - is the only place that history can live.
+func stagesOf(stage StageRequests) []api.Stage {
+	return append(append([]api.Stage(nil), stage.Ran...),
+		api.Stage{Iterations: stage.Iterations, Combos: len(stage.Combos)})
 }
