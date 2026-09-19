@@ -12,15 +12,19 @@
   import activeBuild from '../../data/active-build.json';
   import { battlenetStartUrl, fetchMe } from '../../lib/account/api';
   import { createLazyComponent, type LazyLoadState } from '../../lib/report/lazy-component.svelte';
+  import { fetchSpecs } from '../../lib/sim/api';
   import { simCopy } from '../../lib/sim/copy';
+  import { mergeSpecRows } from '../../lib/sim/spec-state';
   import { createSimStore } from '../../lib/sim/store.svelte';
   import { parseSimState } from '../../lib/sim/url';
   import { ENGINE_VERSION, engineLabel, isStale } from '../../lib/sim/version';
-  import type { SimResult } from '../../lib/sim/types';
+  import type { SimResult, SpecFidelity } from '../../lib/sim/types';
   import CharacterStrip from './CharacterStrip.svelte';
   import RunControl from './RunControl.svelte';
   import SettingsBar from './SettingsBar.svelte';
   import SourceSwitcher from './SourceSwitcher.svelte';
+  import SpecCard from './SpecCard.svelte';
+  import SpecGrid from './SpecGrid.svelte';
 
   let { simId = '', inlineResult = null }: { simId?: string; inlineResult?: SimResult | null } = $props();
 
@@ -40,8 +44,12 @@
     // reads `data-tree-version` off its own mount -- no /sim page stamps one yet, so this
     // falls back to the site's active build rather than an empty string no fetch would
     // resolve.
-    const treeVersion = document.getElementById('sim')?.dataset.treeVersion ?? activeBuild.build;
-    return { treeVersion, source, ref, code };
+    const mount = document.getElementById('sim');
+    const treeVersion = mount?.dataset.treeVersion ?? activeBuild.build;
+    // specs.astro stamps `data-sim-view="specs"`; sim.astro and [id].astro stamp neither,
+    // so an absent or unrecognised value reads as the ordinary simulator.
+    const view: 'sim' | 'specs' = mount?.dataset.simView === 'specs' ? 'specs' : 'sim';
+    return { treeVersion, source, ref, code, view };
   });
 
   const store = untrack(() =>
@@ -64,6 +72,42 @@
       .catch(() => {});
     return () => store.dispose();
   });
+
+  // The spec support list: `/sim/specs` renders it as a grid, and `/sim` needs it too, to
+  // know whether the loaded character's own spec is one the engine models at all. One
+  // small, cacheable, credential-free GET, so both views share it rather than each fetching
+  // their own copy.
+  let specRows = $state<SpecFidelity[] | null>(null);
+  let specsError = $state<string | null>(null);
+
+  async function loadSpecs(): Promise<void> {
+    specsError = null;
+    try {
+      specRows = await fetchSpecs();
+    } catch (error) {
+      specRows = null;
+      specsError = error instanceof Error ? error.message : simCopy.specsFailed;
+    }
+  }
+
+  // No reactive read inside, so this fires once, on mount, the way an `onMount` fetch would
+  // -- the effect form is what Task 15's brief calls for, since `/sim/specs`' own grid needs
+  // exactly this same one-shot load.
+  $effect(() => {
+    void loadSpecs();
+  });
+
+  /**
+   * The loaded character's own row, once the spec list has answered. Null while the list is
+   * still loading or failed, or before a character is on screen -- `null` reads as "unknown
+   * yet", not as "unsupported", so the run control stays up rather than flashing the
+   * unsupported card ahead of the real answer.
+   */
+  const characterSpecRow = $derived.by((): SpecFidelity | null => {
+    if (store.character === null || specRows === null) return null;
+    return mergeSpecRows(specRows).find((row) => row.spec === store.character?.spec) ?? null;
+  });
+  const specUnsupported = $derived(characterSpecRow?.state === 'unsupported');
 
   // Open until a character is on screen, or reopened by "Change source". The store's own
   // URL bootstrap (above) can land a character before this component's first render, so
@@ -123,7 +167,10 @@
     >
   </div>
 
-  {#if !hasSavedSimId}
+  {#if bootstrap.view === 'specs'}
+    <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="specs-intro">{simCopy.specsIntro}</p>
+    <SpecGrid rows={specRows} error={specsError} onretry={() => void loadSpecs()} />
+  {:else if !hasSavedSimId}
     {#if store.character !== null && !switcherOpen}
       <CharacterStrip
         character={store.character}
@@ -151,34 +198,46 @@
         disabled={store.phase === 'running' || store.serverRunning}
         onchange={(next) => store.setSettings(next)}
       />
-      <RunControl
-        phase={store.phase}
-        estimate={store.estimate}
-        iterationsDone={store.iterationsDone}
-        iterationsTotal={store.iterationsTotal}
-        precision={store.precision}
-        premium={store.premium}
-        message={store.message}
-        detail={store.detail}
-        racePending={store.needsRace}
-        {staleVersion}
-        serverRunning={store.serverRunning}
-        onrun={() => void store.run()}
-        onstop={() => store.stop()}
-        onprecision={(value) => store.setPrecision(value)}
-        onserver={() => void store.runOnServer()}
-        onrerun={() => void store.run()}
-      />
-      {#if store.result !== null}
-        {#if simResultsLazy.current}
-          <simResultsLazy.current
-            summary={store.result.summary}
-            estimate={store.result.dps}
-            iterationsRun={store.result.iterations_run}
-            actionNames={store.actionNames}
-          />
-        {:else}
-          {@render lazyFallback(simResultsLazy)}
+      {#if specUnsupported && characterSpecRow !== null}
+        <!-- Instead of the run control, the sentence and the results -- not above them.
+             The settings bar above still says what would be simulated; this says why it
+             cannot be, with the same card /sim/specs shows for this spec. -->
+        <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="spec-unsupported-lead">
+          {simCopy.specUnsupportedLead}
+        </p>
+        <div class="px-[18px] md:px-0">
+          <SpecCard row={characterSpecRow} actionNames={store.actionNames} compact />
+        </div>
+      {:else}
+        <RunControl
+          phase={store.phase}
+          estimate={store.estimate}
+          iterationsDone={store.iterationsDone}
+          iterationsTotal={store.iterationsTotal}
+          precision={store.precision}
+          premium={store.premium}
+          message={store.message}
+          detail={store.detail}
+          racePending={store.needsRace}
+          {staleVersion}
+          serverRunning={store.serverRunning}
+          onrun={() => void store.run()}
+          onstop={() => store.stop()}
+          onprecision={(value) => store.setPrecision(value)}
+          onserver={() => void store.runOnServer()}
+          onrerun={() => void store.run()}
+        />
+        {#if store.result !== null}
+          {#if simResultsLazy.current}
+            <simResultsLazy.current
+              summary={store.result.summary}
+              estimate={store.result.dps}
+              iterationsRun={store.result.iterations_run}
+              actionNames={store.actionNames}
+            />
+          {:else}
+            {@render lazyFallback(simResultsLazy)}
+          {/if}
         {/if}
       {/if}
     {:else}

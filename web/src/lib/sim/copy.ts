@@ -175,6 +175,29 @@ export const simCopy = {
     Shoot: 'auto shots',
   } as Record<string, string>,
 
+  // --- Task 15: the spec support page (/sim/specs) and the in-page unsupported-spec state.
+  // The pill's three words, their meaning for the number beside them, and the card's own
+  // sentences -- every one of them, so a copy change is one diff in this file rather than a
+  // hunt through SpecCard.svelte and SpecGrid.svelte for a literal.
+  specValidated: 'Validated',
+  specInProgress: 'In progress',
+  specNotYet: 'Not yet',
+  specValidatedNote: 'Within 5% of the top 50 parses. Numbers from this spec are trustworthy.',
+  specInProgressNote: 'Being corrected against real parses. Treat the number as a direction, not a figure.',
+  specNotYetNote: 'Not modelled yet. Specs arrive in the order people are actually playing them.',
+  specMedianGap: 'Median gap',
+  specOver: 'over',
+  specParse: 'parse',
+  specParses: 'parses',
+  specNoParses: 'No parses yet',
+  specWorstActions: 'Largest gaps',
+  specCast: 'cast',
+  specSimmed: 'simmed',
+  specsIntro:
+    'The simulator is only worth as much as its numbers. A nightly job sims the top 50 parses for each spec and publishes the gap here, whatever it is.',
+  specsLoading: 'Reading spec support…',
+  tryAgain: 'Try again',
+
   distMean: 'Mean DPS',
   distStdDev: 'Standard deviation',
   distLowest: 'Lowest iteration',
