@@ -22,6 +22,10 @@ sim/cover.out
 # artifacts can //go:embed it; data/builds/<build>/simdb.bin is the
 # committed original
 sim/internal/simdb/simdb.bin
+# the active build's enchant table, copied here by `make simdb` for the
+# same reason; data/builds/<build>/enchants.json is the committed
+# original
+sim/internal/simdb/enchants.json
 
 # environment
 .env

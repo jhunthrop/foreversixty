@@ -85,6 +85,8 @@ SIMDB_EMBED   = sim/internal/simdb/simdb.bin
 # simdb.bin left the embedded copy stale while make reported nothing to do.
 ACTIVE_BUILD  = $(shell sed -n 's/.*"build"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' $(ACTIVE_BUILD_JSON) 2>/dev/null)
 SIMDB_SRC     = data/builds/$(ACTIVE_BUILD)/simdb.bin
+ENCHANTS_EMBED = sim/internal/simdb/enchants.json
+ENCHANTS_SRC   = data/builds/$(ACTIVE_BUILD)/enchants.json
 
 .PHONY: simdb
 # simdb copies the ACTIVE build's item database where sim/internal/simdb
@@ -99,7 +101,7 @@ SIMDB_SRC     = data/builds/$(ACTIVE_BUILD)/simdb.bin
 # Every `go build`, `go test` and `go vet` in sim/ needs this file,
 # because //go:embed resolves at compile time. Run `make simdb` once
 # after a fresh clone.
-simdb: simdb-check $(SIMDB_EMBED)
+simdb: simdb-check $(SIMDB_EMBED) $(ENCHANTS_EMBED)
 
 .PHONY: simdb-check
 # The diagnostics have to live in a phony target that runs BEFORE the
@@ -113,11 +115,24 @@ simdb-check:
 	  echo "$(ACTIVE_BUILD_JSON) names no build"; exit 1; }
 	@test -f "$(SIMDB_SRC)" || { \
 	  echo "no $(SIMDB_SRC); the data lane's \`python -m pipeline simdb\` has not run for build $(ACTIVE_BUILD)"; exit 1; }
+	@test -f "$(ENCHANTS_SRC)" || { \
+	  echo "no $(ENCHANTS_SRC); the data lane's \`python -m pipeline simdb\` has not run for build $(ACTIVE_BUILD)"; exit 1; }
 
 $(SIMDB_EMBED): $(SIMDB_SRC) $(ACTIVE_BUILD_JSON)
 	@mkdir -p $(dir $(SIMDB_EMBED))
 	@cp "$(SIMDB_SRC)" $(SIMDB_EMBED)
 	@echo "embedded $(SIMDB_SRC) ($$(wc -c < $(SIMDB_EMBED) | tr -d ' ') bytes)"
+
+# The enchant table rides with the item database, for the same reason:
+# an enchant's slot and item-type restrictions are what sim/bulk needs
+# to know whether an enchant may go where a candidate is being sent,
+# and the engine's own SimEnchant carries an effect id and a stat
+# array and nothing else. Copied, not committed here; the committed
+# source is data/builds/<build>/enchants.json.
+$(ENCHANTS_EMBED): $(ENCHANTS_SRC) $(ACTIVE_BUILD_JSON)
+	@mkdir -p $(dir $(ENCHANTS_EMBED))
+	@cp "$(ENCHANTS_SRC)" $(ENCHANTS_EMBED)
+	@echo "embedded $(ENCHANTS_SRC) ($$(wc -c < $(ENCHANTS_EMBED) | tr -d ' ') bytes)"
 
 .PHONY: artifacts
 # artifacts builds the two things one pinned engine sha produces, both
