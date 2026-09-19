@@ -9,6 +9,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/jhunthrop/foreversixty/sim/enginever"
+	"github.com/jhunthrop/foreversixty/sim/internal/strcase"
 	"github.com/wowsims/classic/sim/core/proto"
 	googleproto "google.golang.org/protobuf/proto"
 )
@@ -397,5 +398,96 @@ func TestBuildWithOpenIterationsAcceptsAWorkersShare(t *testing.T) {
 	bad.Character.Level = 40
 	if _, err := BuildWith(bad, Options{OpenIterations: true}); err == nil {
 		t.Error("BuildWith(OpenIterations) accepted a level the engine cannot sim")
+	}
+}
+
+// The five encounter fields the parity contract added all reach the
+// engine, and the target the sim has always built is unchanged when
+// none of them is set.
+func TestEncounterCarriesTheParityFields(t *testing.T) {
+	req := fury()
+	req.Encounter.Movement = &api.Movement{IntervalSec: 20, DurationSec: 5, Kind: api.MovementCasting}
+	req.Encounter.TargetsOverTime = []api.TargetCount{{AtSec: 0, Count: 1}, {AtSec: 40, Count: 3}}
+	req.Encounter.TargetLevel = 61
+	req.Encounter.TargetArmor = 2500
+	req.Encounter.TargetType = "undead"
+	req.Encounter.Dummy = true
+
+	got, err := Build(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	e := got.Encounter
+	if m := e.GetMovement(); m == nil || m.IntervalSeconds != 20 || m.DurationSeconds != 5 || !m.CastingOnly {
+		t.Errorf("movement = %+v", e.GetMovement())
+	}
+	if len(e.GetTargetsOverTime()) != 2 || e.GetTargetsOverTime()[1].AtSeconds != 40 || e.GetTargetsOverTime()[1].Count != 3 {
+		t.Errorf("targets_over_time = %+v", e.GetTargetsOverTime())
+	}
+	if !e.GetTargetDummy() {
+		t.Error("target_dummy is not set")
+	}
+	// A timeline overrides the fixed count and the site sends ONE
+	// target: the engine pads the list up to the timeline's maximum
+	// itself (contract 10.3).
+	if len(e.Targets) != 1 {
+		t.Fatalf("the request carries %d targets; a timeline sends one and the engine pads", len(e.Targets))
+	}
+	for i, target := range e.Targets {
+		if target.Level != 61 {
+			t.Errorf("target %d is level %d", i, target.Level)
+		}
+		if target.MobType != proto.MobType_MobTypeUndead {
+			t.Errorf("target %d is %v", i, target.MobType)
+		}
+		if got := target.Stats[proto.Stat_StatArmor]; got != 2500 {
+			t.Errorf("target %d armor = %v, want the override 2500", i, got)
+		}
+	}
+}
+
+// Nothing set is the fight the sim has always built, plus the armor
+// preset the contract now says every target carries.
+func TestEncounterDefaultsAreUnchanged(t *testing.T) {
+	got, err := Build(fury())
+	if err != nil {
+		t.Fatal(err)
+	}
+	e := got.Encounter
+	if e.GetMovement() != nil || len(e.GetTargetsOverTime()) != 0 || e.GetTargetDummy() {
+		t.Errorf("a plain request set a parity field: %+v", e)
+	}
+	if len(e.Targets) != 1 {
+		t.Fatalf("targets = %d", len(e.Targets))
+	}
+	target := e.Targets[0]
+	if target.Level != api.BossLevel {
+		t.Errorf("level = %d, want %d", target.Level, api.BossLevel)
+	}
+	if target.MobType != proto.MobType_MobTypeHumanoid {
+		t.Errorf("mob_type = %v, want humanoid, which is what the sim has always fought", target.MobType)
+	}
+	if got := target.Stats[proto.Stat_StatArmor]; got != float64(api.TargetArmorByLevel[api.BossLevel]) {
+		t.Errorf("armor = %v, want the boss preset %d", got, api.TargetArmorByLevel[api.BossLevel])
+	}
+}
+
+// The target-type vocabulary is the engine's enum, and a name that
+// resolved to nothing would fight a creature with no type and change
+// what Hunter and Warlock abilities do without a word.
+func TestTargetTypesMatchTheEngineEnum(t *testing.T) {
+	for _, id := range api.TargetTypes {
+		if _, ok := mobTypes[id]; !ok {
+			t.Errorf("api.TargetTypes lists %q, which this package cannot map", id)
+		}
+	}
+	for value, name := range proto.MobType_name {
+		id := strcase.Snake(strings.TrimPrefix(name, "MobType"))
+		if _, ok := mobTypes[id]; !ok {
+			t.Errorf("the engine has MobType %s (%d) and no id maps to it", name, value)
+		}
+	}
+	if len(mobTypes) != len(proto.MobType_name) {
+		t.Errorf("mobTypes has %d entries, the enum has %d", len(mobTypes), len(proto.MobType_name))
 	}
 }

@@ -349,15 +349,101 @@ func executeProportions(ratio float64) (below20, below25, below35 float64) {
 	return scale(executeThreshold20), scale(executeThreshold25), scale(executeThreshold35)
 }
 
+// mobTypes maps our target-type ids onto the engine's enum. The ids are
+// the enum names in lower snake case with the prefix stripped, and
+// TestTargetTypesMatchTheEngineEnum holds the map to the enum in both
+// directions: a creature type the engine models and we cannot name is
+// a Hunter's Slaying bonus nobody can ask for.
+var mobTypes = map[string]proto.MobType{
+	"beast":               proto.MobType_MobTypeBeast,
+	"demon":               proto.MobType_MobTypeDemon,
+	"dragonkin":           proto.MobType_MobTypeDragonkin,
+	"elemental":           proto.MobType_MobTypeElemental,
+	"giant":               proto.MobType_MobTypeGiant,
+	"humanoid":            proto.MobType_MobTypeHumanoid,
+	"mechanical":          proto.MobType_MobTypeMechanical,
+	"undead":              proto.MobType_MobTypeUndead,
+	api.TargetTypeUnknown: proto.MobType_MobTypeUnknown,
+}
+
+// targetCount is how many targets the encounter needs BUILT.
+//
+// A target-count timeline overrides the fixed count, and the SITE
+// SENDS ONE TARGET for it: the engine pads the list by repeating the
+// last target up to the timeline's maximum (contract 10.3), so
+// building the pool here would be the same work done twice and would
+// disagree with the engine the day the padding rule changes.
+func targetCount(e api.EncounterSpec) int {
+	if len(e.TargetsOverTime) > 0 {
+		return 1
+	}
+	return e.Targets
+}
+
+// targetStats is one target's stat array, with the encounter's armor in
+// it. The engine indexes the array by proto.Stat, so it is built to the
+// enum's length rather than to the highest index we happen to set.
+func targetStats(e api.EncounterSpec) []float64 {
+	out := make([]float64, len(proto.Stat_name))
+	out[proto.Stat_StatArmor] = float64(api.TargetArmorFor(e.TargetLevel, e.TargetArmor))
+	return out
+}
+
+// movement turns our window into the engine's pattern. Our two kinds
+// are the engine's one boolean: "casting" interrupts spells without
+// moving, "away" leaves melee range too.
+func movement(m *api.Movement) *proto.MovementPattern {
+	if m == nil {
+		return nil
+	}
+	return &proto.MovementPattern{
+		IntervalSeconds: float64(m.IntervalSec),
+		DurationSeconds: float64(m.DurationSec),
+		CastingOnly:     m.Kind == api.MovementCasting,
+	}
+}
+
+// targetsOverTime turns our timeline into the engine's.
+func targetsOverTime(steps []api.TargetCount) []*proto.TargetCountAt {
+	if len(steps) == 0 {
+		return nil
+	}
+	out := make([]*proto.TargetCountAt, len(steps))
+	for i, s := range steps {
+		out[i] = &proto.TargetCountAt{AtSeconds: float64(s.AtSec), Count: int32(s.Count)}
+	}
+	return out
+}
+
 func encounter(e api.EncounterSpec) *proto.Encounter {
 	below20, below25, below35 := executeProportions(e.ExecuteRatio)
-	targets := make([]*proto.Target, e.Targets)
+	// A target dummy has no execute window: nothing kills it, so its
+	// health never falls. The envelope's Dummy flag is the one place
+	// that says so, rather than the page being asked to zero the ratio
+	// as well as tick the box.
+	if e.Dummy {
+		below20, below25, below35 = 0, 0, 0
+	}
+	level := e.TargetLevel
+	if level == 0 {
+		level = api.BossLevel
+	}
+	mob, ok := mobTypes[e.TargetType]
+	if !ok {
+		// "" is not a type the page offers; it is the shape of every
+		// request written before the field existed, and those fought a
+		// humanoid. Keeping that is what stops the pin bump changing
+		// every stored spec's number.
+		mob = proto.MobType_MobTypeHumanoid
+	}
+	targets := make([]*proto.Target, targetCount(e))
 	for i := range targets {
 		targets[i] = &proto.Target{
 			Id:        targetDummyID,
 			Name:      targetDummyName,
-			Level:     api.BossLevel,
-			MobType:   proto.MobType_MobTypeHumanoid,
+			Level:     int32(level),
+			MobType:   mob,
+			Stats:     targetStats(e),
 			TankIndex: targetNotTanked,
 		}
 	}
@@ -379,6 +465,9 @@ func encounter(e api.EncounterSpec) *proto.Encounter {
 		ExecuteProportion_25: below25,
 		ExecuteProportion_35: below35,
 		Targets:              targets,
+		Movement:             movement(e.Movement),
+		TargetsOverTime:      targetsOverTime(e.TargetsOverTime),
+		TargetDummy:          e.Dummy,
 	}
 }
 
