@@ -9,6 +9,25 @@ import (
 	"github.com/jhunthrop/foreversixty/sim/enginever"
 )
 
+// runReq is a valid plain run: the smallest request Validate accepts.
+func runReq() SimRequest {
+	return SimRequest{
+		EngineVersion: enginever.Version,
+		Spec:          "warrior-fury",
+		Source:        CharacterSource{Kind: SourceManual},
+		Character: CharacterSpec{
+			Name:    "Thrall",
+			Race:    "orc",
+			Class:   "warrior",
+			Level:   SimLevel,
+			Talents: "30305001302-05050005525010051",
+		},
+		Encounter:  DefaultEncounter(),
+		Iterations: 3000,
+		RandomSeed: 7,
+	}
+}
+
 // The JSON field names are the contract, shared verbatim with
 // web/src/lib/sim/types.ts. A rename here is a break there, so the test
 // pins the wire form rather than the Go field names.

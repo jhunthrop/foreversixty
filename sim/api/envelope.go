@@ -70,6 +70,18 @@ var MaxIterations = slices.Max(ValidIterations)
 // MaxTargets is the settings bar's cap.
 const MaxTargets = 10
 
+// GearSlots is the slot vocabulary the envelope validates against. It is
+// the planner's own list and the order sim/request builds the engine's
+// positional equipment array in, which is why that package holds the
+// table and this one names it; sim/request's unexported slotOrder is
+// its source and TestGearSlotsMatchTheRequestTable proves the two
+// agree.
+var GearSlots = []string{
+	"head", "neck", "shoulder", "back", "chest", "wrist", "hands", "waist",
+	"legs", "feet", "finger1", "finger2", "trinket1", "trinket2",
+	"main_hand", "off_hand", "ranged",
+}
+
 // MinDurationSec and MaxDurationSec bound the fight-length control.
 const (
 	MinDurationSec = 60
@@ -99,6 +111,9 @@ type SimRequest struct {
 	Encounter     EncounterSpec   `json:"encounter"`
 	Iterations    int             `json:"iterations"`
 	RandomSeed    int64           `json:"random_seed"`
+	// Bulk turns one character into many sims. A request without it is
+	// exactly today's single run; see sim/api/bulk.go.
+	Bulk *BulkSpec `json:"bulk,omitempty"`
 }
 
 // CharacterSpec is everything the engine needs about the player, in JSON.
@@ -196,6 +211,10 @@ func (r SimRequest) validate(closedSet, requireCurrentEngine bool) error {
 		errs = append(errs, errors.New("spec is required"))
 	}
 	switch {
+	case r.Bulk != nil:
+		// A bulk request's count is the precision's, checked by
+		// BulkSpec.validate against the ladder rather than against the
+		// settings bar's closed set.
 	case closedSet && !slices.Contains(ValidIterations, r.Iterations):
 		errs = append(errs, fmt.Errorf("iterations must be one of %v, got %d", ValidIterations, r.Iterations))
 	case !closedSet && (r.Iterations <= 0 || r.Iterations > MaxIterations):
@@ -227,6 +246,9 @@ func (r SimRequest) validate(closedSet, requireCurrentEngine bool) error {
 	}
 	if r.Character.Level != SimLevel {
 		errs = append(errs, fmt.Errorf("character.level must be %d, got %d; the engine simulates no other level", SimLevel, r.Character.Level))
+	}
+	if r.Bulk != nil {
+		errs = append(errs, r.Bulk.validate(r.Iterations)...)
 	}
 	return errors.Join(errs...)
 }
