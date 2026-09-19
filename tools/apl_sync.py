@@ -4,7 +4,7 @@
 not carry rotations across, which was believed for a while and is why
 two copies drifted. This is the target that carries them: for each
 data/curated/apl/<spec>.json with state "written", its `rotation` block
-is written to the engine fork's ui/<class>/apls/forever_<spec>.apl.json
+is written to the engine fork's ui/<ui dir>/apls/forever_<spec>.apl.json
 and to sim/request/apl/<spec>.apl.json, which both artifacts embed.
 
 The copies are the curated bytes, dedented one level (see
@@ -41,10 +41,10 @@ def main() -> int:
         print(f"apl-sync: no curated rotation in {curated_dir} is marked written", file=sys.stderr)
         return 1
 
-    for spec, class_slug, spec_slug, curated_path in written:
+    for spec, spec_slug, curated_path in written:
         text = apl_paths.extract_rotation(curated_path)
         for path in (
-            apl_paths.fork_path(engine_dir, class_slug, spec_slug),
+            apl_paths.fork_path(engine_dir, spec, spec_slug),
             apl_paths.site_path(repo_root, spec),
         ):
             # The fork's ui/<class> tree has to exist already: creating

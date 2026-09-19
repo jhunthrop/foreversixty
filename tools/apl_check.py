@@ -56,9 +56,10 @@ def main() -> int:
 
     failures = []
     checked_fork = set()
-    for spec, class_slug, spec_slug, curated_path in written:
+    fork_specs = apl_paths.fork_spec_keys(engine_dir, specs_json)
+    for spec, spec_slug, curated_path in written:
         curated = json.loads(curated_path.read_text())["rotation"]
-        fork = apl_paths.fork_path(engine_dir, class_slug, spec_slug)
+        fork = apl_paths.fork_path(engine_dir, spec, spec_slug)
         checked_fork.add(fork)
         for label, path in (("fork", fork), ("site", apl_paths.site_path(repo_root, spec))):
             failure = compare(label, path, curated_path, curated)
@@ -70,11 +71,14 @@ def main() -> int:
     # A fork copy with no written curated source is the other direction of
     # the same drift: the rotation the fork runs is one nobody maintains.
     for path in sorted(engine_dir.glob("ui/*/apls/forever_*.apl.json")):
-        if path not in checked_fork:
-            failures.append(
-                f"{path}: no curated source marked written at "
-                f"{curated_dir / (apl_paths.fork_spec_key(path) + '.json')}"
-            )
+        if path in checked_fork:
+            continue
+        spec = fork_specs.get(path)
+        failures.append(
+            f"{path}: no curated source marked written at {curated_dir / (spec + '.json')}"
+            if spec
+            else f"{path}: names no spec at all; no row of {specs_json} maps here"
+        )
 
     for failure in failures:
         print(f"apl-check: {failure}", file=sys.stderr)
