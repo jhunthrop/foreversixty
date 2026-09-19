@@ -91,7 +91,9 @@ export interface Estimate {
 
 /**
  * What `simRun` reports through its progress callback: the two fields of a `SimResult` the
- * pool needs to pool an estimate. Not a new shape — confirm it with the engine lane.
+ * pool needs to pool an estimate. The contract pins this to `Pick<SimResult,
+ * 'iterations_run' | 'dps'>` and `sim/cmd/wasm/main.go` builds exactly that shape — settled,
+ * not open.
  */
 export type SimProgressUpdate = Pick<SimResult, 'iterations_run' | 'dps'>;
 
@@ -146,18 +148,36 @@ export interface SpecFidelity {
   /** Median DPS gap as a fraction; null until the validation job has run. */
   median_gap: number | null;
   parses: number;
-  worst_actions: { name: string; sim_casts: number; actual_casts: number }[];
-  engine_version: string | null;
-  updated_at: string;
+  /**
+   * spell_id is the summary's row identity -- the same client id `compare.ts`'s two-tier
+   * join keys on -- and is what a future "link this action" feature would join a sim cast
+   * to a parsed one on. Unread today.
+   */
+  worst_actions: { spell_id: number; name: string; sim_casts: number; actual_casts: number }[];
+  /** `specs.go` coalesces this into a plain Go string; it is never null. */
+  engine_version: string;
+  /** Null for a card nothing has measured yet (`specs.go`'s UpdatedAt *time.Time). */
+  updated_at: string | null;
 }
 
 /** GET /v1/characters/{character_key}/sim-input. */
 export interface SimInput {
   spec: string;
-  /** Slot name to item id, the planner's own Gear shape. */
-  gear: Record<string, number>;
-  /** Talent ids in the order the points were spent. */
-  talents: number[];
+  /**
+   * The source's own opaque shape, never the planner's slot-to-item map: `input.go`'s
+   * `Gear json.RawMessage` is the addon's own export JSON for an addon-sourced read, or
+   * `{"trinkets": […]}` for a fight-sourced one -- two different, source-dependent shapes
+   * neither this file nor `openapi.yaml` (`gear: { type: object }`) pins down further.
+   * `sources.ts` does not attempt to decode it (see H3 in the final whole-branch review).
+   */
+  gear: unknown;
+  /**
+   * The fight's recorded talent split -- points per tree, e.g. `"31/0/20"` -- never a
+   * per-talent order (`fight_metrics.talent_split`; `input.go`: "the addon export is an
+   * opaque string this repository never parses, so a character who has never parsed has
+   * none"). Empty when nothing has recorded one.
+   */
+  talents: string;
   /**
    * Buff ids, in the engine's own vocabulary (`sim/request/IDS.md`) -- NOT spell ids. The
    * amended contract puts the mapping on the API side: "the web never maps spell ids

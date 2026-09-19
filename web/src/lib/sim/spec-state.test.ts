@@ -49,6 +49,11 @@ describe('mergeSpecRows', () => {
     expect(merged[0].state).toBe('unsupported');
     expect(merged[0].parses).toBe(0);
     expect(merged[0].median_gap).toBeNull();
+    // Matches specs.go's own default row for a spec nothing has measured yet: a null
+    // updated_at (never a string SpecCard would try to .slice()) and a coalesced '' engine
+    // version, not null. See C1.
+    expect(merged[0].updated_at).toBeNull();
+    expect(merged[0].engine_version).toBe('');
   });
 
   it('ignores a spec the API sent that the dps list does not have, tanks included', () => {

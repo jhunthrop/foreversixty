@@ -45,8 +45,8 @@ export function mergeSpecRows(rows: readonly SpecFidelity[]): SpecFidelity[] {
         median_gap: null,
         parses: 0,
         worst_actions: [],
-        engine_version: null,
-        updated_at: '',
+        engine_version: '',
+        updated_at: null,
       },
   );
 }

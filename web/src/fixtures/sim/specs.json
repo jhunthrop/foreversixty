@@ -5,8 +5,8 @@
     "median_gap": 0.031,
     "parses": 50,
     "worst_actions": [
-      { "name": "Heroic Strike", "sim_casts": 57, "actual_casts": 44 },
-      { "name": "Whirlwind", "sim_casts": 22, "actual_casts": 19 }
+      { "spell_id": 25286, "name": "Heroic Strike", "sim_casts": 57, "actual_casts": 44 },
+      { "spell_id": 1680, "name": "Whirlwind", "sim_casts": 22, "actual_casts": 19 }
     ],
     "engine_version": "edc0c8e9a",
     "updated_at": "2026-09-14T04:12:00Z"
@@ -16,7 +16,7 @@
     "state": "in_progress",
     "median_gap": 0.084,
     "parses": 31,
-    "worst_actions": [{ "name": "Frostbolt", "sim_casts": 71, "actual_casts": 62 }],
+    "worst_actions": [{ "spell_id": 25304, "name": "Frostbolt", "sim_casts": 71, "actual_casts": 62 }],
     "engine_version": "edc0c8e9a",
     "updated_at": "2026-09-14T04:12:00Z"
   },
@@ -26,7 +26,7 @@
     "median_gap": null,
     "parses": 0,
     "worst_actions": [],
-    "engine_version": null,
-    "updated_at": "2026-09-14T04:12:00Z"
+    "engine_version": "",
+    "updated_at": null
   }
 ]

@@ -68,6 +68,16 @@ test.describe('/sim/specs', () => {
     const feral = page.getByTestId('spec-druid-feral');
     await expect(feral.getByTestId('spec-state')).toHaveText('Not yet');
     await expect(feral.getByTestId('spec-figure')).toHaveText(simCopy.specNoParses);
+
+    // C1: rogue-combat is the fixture's own default (unmeasured) card -- null updated_at,
+    // '' engine_version -- exactly the shape the real API sends for every spec the nightly
+    // job has not measured. Before the fix, SpecCard's unguarded `.slice(0, 10)` threw here
+    // and took the whole grid down with it; the assertion above (every card rendered) would
+    // never have been reached. This one names the card and asserts it renders no footer at
+    // all, rather than a footer built from a null date.
+    const rogue = page.getByTestId('spec-rogue-combat');
+    await expect(rogue.getByTestId('spec-state')).toHaveText('Not yet');
+    await expect(rogue.getByTestId('spec-footer')).toHaveCount(0);
   });
 
   test('a hash link scrolls straight to that spec’s card', async ({ page }) => {

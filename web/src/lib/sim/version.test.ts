@@ -60,7 +60,7 @@ describe('the fixtures', () => {
     expect(fixtureResult.request.engine_version).toBe(ENGINE_VERSION);
     expect(fixtureResult.summary.engine_version).toBe(`sim:${ENGINE_VERSION}`);
     for (const row of fixtureSpecs) {
-      if (row.engine_version !== null) expect(row.engine_version).toBe(ENGINE_VERSION);
+      if (row.engine_version !== '') expect(row.engine_version).toBe(ENGINE_VERSION);
     }
   });
 });
