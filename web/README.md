@@ -345,6 +345,28 @@ at all).
 how close its simmed DPS runs to real parses; that judgment lives in the data this page
 reads (`GET /v1/specs`), never as a list hard-coded here.
 
+**Two performance follow-ups, recorded rather than fixed here (final whole-branch review,
+round 3):**
+
+- `/sim.html` and `/sim/specs.html` carry no `largest-contentful-paint` assertion in
+  `lighthouserc.json`, joining `planner.html`, `logs.html` and `reports/*.html` — all four
+  measure 2.1–2.5 s because each loads its own island's CSS as a separate, render-blocking
+  `<link rel="stylesheet">` rather than inlined the way the rest of the site's CSS is
+  (`inlineStylesheets: 'always'`, `styles/fonts.css`'s own comment). Closing the gap for
+  real, rather than exempting these pages from the budget, means inlining
+  `sim-island.css`/`planner-island.css`/`report-island.css` the same way — a site-wide
+  change, not this lane's alone.
+- The site-wide footer in `Base.astro` shifts (CLS ~0.33) when `barlow-latin-600-normal
+  .woff2` loads, on any page short enough for the footer to sit in the first viewport
+  (`/sim.html`, `/sim/<id>.html`). `styles/fonts.css`'s existing size-adjusted `Barlow
+  Fallback` face does not prevent it for this weight; a `font-display: optional` override
+  for weight 600 was tried and measured ineffective (the shift persisted identically) and
+  was reverted. A real fix needs either a correctly metric-matched fallback specifically
+  for Barlow 600 (re-measured with `@capsizecss/unpack` against the actual weight-600
+  glyphs, not assumed identical to 400/700 — see `styles/fonts.css`'s own note that they
+  are, which this finding calls into question) or another mechanism entirely; also
+  site-wide, not this lane's alone.
+
 ```bash
 FOREVER_DATA=fixture npx vitest run src/lib/sim src/fixtures/sim
 E2E_PORT=4325 FOREVER_DATA=fixture npx playwright test sim-
