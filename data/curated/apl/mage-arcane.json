@@ -1,7 +1,7 @@
 {
   "spec": "mage-arcane",
   "state": "written",
-  "notes": "Vanilla wowsims does not model an Arcane-specific preset (the fork's mage/apls/p1.apl.json is Fire, ui/mage/apls/forever_frost.apl.json is Frost); Arcane is adapted from the Forever talent tree instead. Forever's Arcane tree adds Arcane Blast (400574, tier2) as a spammable nuke and Missile Barrage (400588/400589) as a proc that empowers the next Arcane Missiles -- a combo the base wowsims/classic Arcane tree does not have. Arcane Blast applies its own stacking self-buff on cast (400573/400586 in spellconst, two near-identical records at rank 0), but which one the engine actually reads for stack count could not be confirmed from spellconst data alone, so this default does not gate Arcane Blast on stack count -- it is simply the fallback filler, with Arcane Missiles taking priority whenever Missile Barrage (400589) is up. Arcane Power and Presence of Mind are both off the global cooldown-costing category and are cast unconditionally on cooldown rather than sequenced around a specific nuke, which the validation job should revisit once stack-gating is confirmed against a build reference. Every rank named here is checked against the spellconst of the newest client build in builds/.",
+  "notes": "Vanilla wowsims does not model an Arcane-specific preset (the fork's mage/apls/p1.apl.json is Fire, ui/mage/apls/forever_frost.apl.json is Frost), so this was built from Forever's own Arcane talent tree plus a community guide, not a direct port. Fix round 1: two of this guide's own lines are presently inert in this engine build and are kept anyway per the fix-round-1 controller ruling, so the file states the intended design and upgrades itself once the engine catches up -- (1) Arcane Blast (400574): sim/mage/talents.go says outright the package does not register this spell yet; (2) the Missile Barrage gate on Arcane Missiles (400589): no aura is ever created under that id, because this package's Arcane Missiles channel is not re-costed/re-timed for the proc (also noted in sim/mage/talents.go). Both lines cast nothing today -- `notes` on each says so -- and an unconditional Arcane Missiles cast is added at the bottom of the priority list as the engine-castable Era filler that keeps this rotation actually dealing damage in the meantime; Era Arcane (before Arcane Blast existed) was itself an Arcane Missiles-spam rotation, so this is not a downgrade in spirit, only in ceiling. Arcane Missiles' own top rank (25345, rank 8) is also excluded by an off-by-one in the engine's registration loop (sim/mage/arcane_missiles.go: `for rank := 1; rank < ArcaneMissilesRanks; rank++`, so rank 8 never registers); every Arcane Missiles reference here uses 10212 (rank 7), the highest rank the engine actually registers, with the missing rank 8 recorded as an engine follow-up. Arcane Power and Presence of Mind are both confirmed castable and are kept on cooldown, off the GCD-costing category, ahead of a specific nuke. Every rank named here (other than the two flagged inert conditions) is checked against the spellconst of the newest client build in builds/.",
   "sources": [
     { "label": "wowsims-forever mage default priority list (Fire-leaning, no Arcane preset exists)", "url": "https://github.com/jhunthrop/wowsims-forever/blob/464d1a14a6408956aecb14b3c5867392502db401/ui/mage/apls/p1.apl.json", "kind": "community" },
     { "label": "Wowhead Classic: Arcane Mage DPS Rotation, Cooldowns, and Abilities", "url": "https://www.wowhead.com/classic/guide/mage-arcane-dps-rotation-cooldowns-abilities", "kind": "community" }
@@ -19,15 +19,19 @@
         "action": { "castSpell": { "spellId": { "spellId": 12043 } } }
       },
       {
-        "notes": "Missile Barrage empowers Arcane Missiles: spend the proc before it expires.",
+        "notes": "Inert until the engine implements Missile Barrage (sim/mage/talents.go): no aura is ever registered under 400589, so this condition never fires today. Kept because it is where the Arcane guide places the empowered-Missiles payoff.",
         "action": {
           "condition": { "auraIsActive": { "auraId": { "spellId": 400589 } } },
-          "castSpell": { "spellId": { "spellId": 25345, "rank": 8 } }
+          "castSpell": { "spellId": { "spellId": 10212, "rank": 7 } }
         }
       },
       {
-        "notes": "Arcane Blast is the default filler and the spec's own stacking nuke; Forever adds it to the Arcane tree at tier 2.",
+        "notes": "Inert until the engine implements Arcane Blast (sim/mage/talents.go says the spell is not registered yet). Kept because it is where the Arcane guide places its default filler.",
         "action": { "castSpell": { "spellId": { "spellId": 400574, "rank": 1 } } }
+      },
+      {
+        "notes": "Arcane Missiles is the engine-castable Era filler that keeps this rotation dealing damage while Arcane Blast and Missile Barrage are inert -- the pre-Arcane-Blast Era Arcane rotation was itself Missiles spam. Uses rank 7 (10212), the highest rank the engine's registration loop actually registers; rank 8 (25345) is excluded by an off-by-one there, recorded as an engine follow-up.",
+        "action": { "castSpell": { "spellId": { "spellId": 10212, "rank": 7 } } }
       }
     ]
   }
