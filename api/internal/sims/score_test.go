@@ -1,6 +1,7 @@
 package sims
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
@@ -285,6 +286,34 @@ func TestWithNoBuilderNothingIsScoredAndNothingFails(t *testing.T) {
 	}
 	if len(scores.calls) != 0 {
 		t.Fatal("something was scored with no character")
+	}
+}
+
+// TestASkippedCharacterLogsWhyRatherThanFailingSilently is the branch
+// that fires on every fight today: with no race source, the real
+// builder's ErrNoCharacter always trips, and Score must say so at Warn
+// - the same as every other skip reason below it - or a deployment
+// scoring nothing has no line explaining why.
+func TestASkippedCharacterLogsWhyRatherThanFailingSilently(t *testing.T) {
+	h := newHarness(t)
+	h.validate(t, "warrior-fury")
+	h.putSummary(t, "aaaaaaaaaaaa", 1, aScoredSummary())
+	var buf bytes.Buffer
+	deps := h.scoreDeps(&runner.Fixture{Mean: 1200}, CombatantBuilder{}, &fakeScores{})
+	deps.Log = slog.New(slog.NewTextHandler(&buf, nil))
+	if err := Score(t.Context(), deps, aTask()); err != nil {
+		t.Fatal(err)
+	}
+	out := buf.String()
+	for _, want := range []string{"report=aaaaaaaaaaaa", "fight=1", "player=us/normal/baelgrim"} {
+		if !strings.Contains(out, want) {
+			t.Fatalf("the skip was not logged with the fight reference (%q missing): %s", want, out)
+		}
+	}
+	for _, want := range []string{"race", "talent layout"} {
+		if !strings.Contains(out, want) {
+			t.Fatalf("the skip did not log the builder's reasons (%q missing): %s", want, out)
+		}
 	}
 }
 

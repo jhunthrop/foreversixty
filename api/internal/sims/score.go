@@ -255,6 +255,8 @@ func Score(ctx context.Context, d ScoreDeps, t ScoreTask) error {
 	}
 	character, err := d.Build.FightCharacter(spec, row.Class, combatant)
 	if errors.Is(err, ErrNoCharacter) {
+		d.logger().Warn("sims", "op", "score", "report", t.ReportID, "fight", t.FightIndex,
+			"player", t.PlayerKey, "err", err)
 		return nil
 	}
 	if err != nil {
