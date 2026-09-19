@@ -1,4 +1,5 @@
 import os
+import re
 from pathlib import Path
 
 import pytest
@@ -51,6 +52,10 @@ def test_the_engine_messages_this_lane_depends_on_exist():
         "set_name",
         "set_id",
         "weapon_skills",
+        "unique",
+        "required_level",
+        "faction_restriction",
+        "random_suffix_options",
     }
     assert set(pb.SimEnchant.DESCRIPTOR.fields_by_name) == {"effect_id", "stats"}
     assert set(pb.ItemSpec.DESCRIPTOR.fields_by_name) == {"id", "random_suffix", "enchant"}
@@ -85,3 +90,26 @@ def test_vendored_protos_match_the_engine_checkout():
         assert (PROTO_DIR / name).read_bytes() == expected, (
             f"{name} drifted; rerun `python -m pipeline simproto --engine $FOREVER_ENGINE_PATH`"
         )
+
+
+def test_the_vendored_pin_matches_the_engine_the_artifacts_are_built_from():
+    """Contract 10.3: the two pins move together, sim first. A data lane
+    pinned to a different sha would generate against a proto the shipped
+    engine does not have."""
+    sim = re.search(
+        r'Version = "(.*)"', Path("../sim/enginever/version.go").read_text(encoding="utf-8")
+    )
+    assert sim is not None
+    assert Path("proto/ENGINE_SHA").read_text(encoding="utf-8").strip() == sim.group(1)
+
+
+def test_sim_item_carries_the_fields_contract_10_3_adds():
+    from pipeline.simproto import pb
+
+    fields = {field.name for field in pb.SimItem.DESCRIPTOR.fields}
+    assert {
+        "unique",
+        "required_level",
+        "faction_restriction",
+        "random_suffix_options",
+    } <= fields

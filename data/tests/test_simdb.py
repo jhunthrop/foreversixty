@@ -6,6 +6,8 @@ import pytest
 
 from pipeline.csvio import read_csv
 from pipeline.manifest import verify, write_manifest
+from pipeline.normalize import write_json
+from pipeline.normalize.items import normalize_items
 from pipeline.simdb import build_consumables, write_sim_database
 from pipeline.simproto import pb
 
@@ -42,6 +44,15 @@ def build_dir(tmp_path: Path) -> Path:
     for source, name in RAW_FIXTURES:
         shutil.copyfile(source, build / "raw" / name)
     shutil.copyfile(SIM / "sets.json", build / "sets.json")
+    # items.json's `suffixes` and `faction_restriction` columns default empty
+    # via the Item model -- the same shape a build normalized before `loot`
+    # has run carries. _fork_columns only requires the keys to be present.
+    write_json(
+        normalize_items(
+            read_csv(build / "raw" / "ItemSparse.csv"), read_csv(build / "raw" / "Item.csv")
+        ),
+        build / "items.json",
+    )
     (build / "gametables").mkdir()
     shutil.copyfile(SIM / "combatratings.txt", build / "gametables" / "combatratings.txt")
     write_manifest(
@@ -62,7 +73,7 @@ def test_simdb_is_written_and_parses_back(build_dir: Path):
     database = parsed(path)
     ids = [item.id for item in database.items]
     assert ids == sorted(ids)
-    assert len(database.items) == 7
+    assert len(database.items) == 8
     # 934 "Sword Skill +3" grants only a weapon skill through its equip spell,
     # which SimEnchant has no field for -- pipeline.simdb.enchants still
     # emits it, with empty stats, and warns (see test_simdb_enchants.py's
@@ -124,4 +135,64 @@ def test_a_missing_raw_directory_is_a_clear_error(tmp_path: Path):
 def test_a_build_that_was_never_normalized_is_a_clear_error(build_dir: Path):
     (build_dir / "sets.json").unlink()
     with pytest.raises(SystemExit, match="normalize"):
+        write_sim_database("9.9.9.9", root=build_dir.parent)
+
+
+def test_a_build_missing_items_json_is_a_clear_error(build_dir: Path):
+    (build_dir / "items.json").unlink()
+    with pytest.raises(SystemExit, match="normalize"):
+        write_sim_database("9.9.9.9", root=build_dir.parent)
+
+
+def test_a_build_whose_loot_step_never_ran_is_a_clear_error(build_dir: Path):
+    """items.json from before `pipeline loot` populated its two fork columns
+    -- an older schema, or a hand-built build directory -- must not read as
+    an honestly-empty build. The guard names the missing columns and tells
+    the operator which command fills them."""
+    rows = json.loads((build_dir / "items.json").read_text())
+    for row in rows:
+        del row["suffixes"]
+        del row["faction_restriction"]
+    (build_dir / "items.json").write_text(json.dumps(rows))
+    with pytest.raises(SystemExit, match="loot"):
+        write_sim_database("9.9.9.9", root=build_dir.parent)
+
+
+def test_a_legitimately_empty_fork_column_is_not_mistaken_for_a_missing_one(
+    build_dir: Path,
+):
+    """Every item in this fixture's items.json genuinely has no suffixes and
+    no faction restriction -- the guard must not confuse that with the
+    column being absent."""
+    database = parsed(write_sim_database("9.9.9.9", root=build_dir.parent))
+    assert all(not item.random_suffix_options for item in database.items)
+    assert all(not item.faction_restriction for item in database.items)
+
+
+def test_an_empty_items_json_is_a_clear_error(build_dir: Path):
+    """A build directory with items.json present but empty must not read as
+    an honestly-restriction-free build -- there is no build with zero items."""
+    (build_dir / "items.json").write_text("[]")
+    with pytest.raises(SystemExit, match="normalize"):
+        write_sim_database("9.9.9.9", root=build_dir.parent)
+
+
+def test_normalize_running_again_after_loot_is_a_clear_error(build_dir: Path):
+    """`loot` writes suffixes.json alongside items.json's two fork columns
+    (contract 10.8). If `normalize` then runs again, it overwrites items.json
+    from the model defaults and blanks both columns back out, but leaves
+    suffixes.json sitting in the build directory from the earlier `loot` run.
+    That combination -- loot's own output present, every item unrestricted --
+    is not a build that has never been looted; it is one that was looted and
+    then had the columns wiped, so the guard must catch it too."""
+    (build_dir / "suffixes.json").write_text("[]")
+    with pytest.raises(SystemExit, match="loot"):
+        write_sim_database("9.9.9.9", root=build_dir.parent)
+
+
+def test_loot_json_alone_also_trips_the_guard(build_dir: Path):
+    """Either of loot's own outputs is enough to prove loot ran; the guard
+    does not require both files."""
+    (build_dir / "loot.json").write_text("[]")
+    with pytest.raises(SystemExit, match="loot"):
         write_sim_database("9.9.9.9", root=build_dir.parent)

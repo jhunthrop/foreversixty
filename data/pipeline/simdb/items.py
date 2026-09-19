@@ -128,6 +128,16 @@ PROTO_CLASS_BY_CHR_CLASS_ID: dict[int, str] = {
     11: "ClassDruid",
 }
 
+#: `items.json`'s `faction_restriction` column -> the proto enum value.
+#: The column's vocabulary is `pipeline/forkdb.py`'s FACTION_RESTRICTIONS;
+#: this is the other end of it, kept here because only simdb needs the
+#: enum and only forkdb needs the slug.
+FACTION_RESTRICTION_BY_SLUG: dict[str, str] = {
+    "": "FACTION_RESTRICTION_UNSPECIFIED",
+    "alliance_only": "FACTION_RESTRICTION_ALLIANCE_ONLY",
+    "horde_only": "FACTION_RESTRICTION_HORDE_ONLY",
+}
+
 
 def simdb_item_rows(
     sparse_rows: list[dict[str, str]],
@@ -170,12 +180,19 @@ def build_sim_items(
     curves: ItemCurves,
     weapon_curves: WeaponCurves,
     rating_factors: Mapping[str, float],
+    fork_columns: Mapping[int, tuple[list[int], str]],
 ) -> list[pb.SimItem]:
     """`rating_factors` is `ratings.load_rating_factors`'s output: level-60
     rating points per 1% for every `ItemSparse`-column stat the client states
     as a combat rating (hit, crit, dodge, parry, block, defense). It converts
     only `resolve_item_values`'s output -- an on-equip spell's stat (`equip`)
     already states a flat percentage; see `pipeline/simdb/ratings.py`.
+
+    `fork_columns` is item id -> (random suffix options, faction restriction
+    slug), read from `items.json`'s two fork-derived columns
+    (`pipeline/simdb/__init__.py`'s `_fork_columns`) rather than from the
+    fork database directly, so this module still needs no engine checkout.
+    An item with neither is absent from the mapping or maps to `([], "")`.
     """
     items: list[pb.SimItem] = []
     for sparse, item_row in pairs:
@@ -201,6 +218,8 @@ def build_sim_items(
             weapon_skills=weapon_skill_array(bonus.weapon_skills),
             bonus_physical_damage=bonus.bonus_physical_damage,
             class_allowlist=_class_allowlist(int_column(sparse, "AllowableClass")),
+            unique=int_column(sparse, "MaxCount") == 1,
+            required_level=int_column(sparse, "RequiredLevel"),
         )
         if class_id == ITEM_CLASS_ARMOR:
             if subclass in ARMOR_TYPE_BY_SUBCLASS:
@@ -226,5 +245,18 @@ def build_sim_items(
         if set_id:
             item.set_id = set_id
             item.set_name = set_names.get(set_id, "")
+
+        suffix_options, restriction = fork_columns.get(item_id, ([], ""))
+        if suffix_options:
+            item.random_suffix_options.extend(suffix_options)
+        if restriction not in FACTION_RESTRICTION_BY_SLUG:
+            raise SystemExit(
+                f"item {item_id} has faction_restriction {restriction!r} in "
+                f"items.json; pipeline/simdb/items.py knows "
+                f"{sorted(FACTION_RESTRICTION_BY_SLUG)}"
+            )
+        item.faction_restriction = pb.SimItem.FactionRestriction.Value(
+            FACTION_RESTRICTION_BY_SLUG[restriction]
+        )
         items.append(item)
     return items

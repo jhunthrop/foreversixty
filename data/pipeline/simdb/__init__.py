@@ -18,6 +18,18 @@ Two things the interface contract lists cannot be fields of that message:
 `random_suffixes` is emitted empty: `ItemRandomSuffix` 404s on build
 1.60.1.69893, Forever re-itemises the world anyway, and the contract does not
 ask for suffixes.
+
+`SimItem.random_suffix_options` and `.faction_restriction` (contract 10.3)
+come from `items.json`'s fork-derived columns instead, which `python -m
+pipeline loot` writes -- so `loot` must run before this command. `_fork_columns`
+below cannot detect every way that ordering was skipped (nothing here can tell
+"loot never ran" from "loot ran and genuinely found nothing" once `items.json`
+is the only input), but it does fail fast on the two shapes that are
+detectable: the columns being entirely absent (an older schema, or a
+hand-built build directory), and `loot`'s own output files sitting in the
+build directory while every row reads as unrestricted -- which is what
+re-running `normalize` after `loot` looks like, since that overwrites
+`items.json` from the model defaults and blanks both columns back out.
 """
 
 from __future__ import annotations
@@ -97,6 +109,67 @@ def _set_names(build_dir: Path) -> dict[int, str]:
     return {int(row["id"]): row["name"] for row in json.loads(path.read_text(encoding="utf-8"))}
 
 
+#: `items.json`'s two fork-derived columns (parity contract 10.3/10.8).
+FORK_COLUMNS = ("suffixes", "faction_restriction")
+
+
+def _fork_columns(build_dir: Path) -> dict[int, tuple[list[int], str]]:
+    """`items.json`'s two fork-derived columns, for `SimItem`.
+
+    They are read from `items.json` and not from the fork database directly
+    so that `simdb` never needs an engine checkout; `python -m pipeline loot`
+    is what puts them on `items.json`'s rows, which is why it runs first
+    (contract 10.8). This catches the two shapes of "loot did not run" that
+    are actually detectable from `items.json` and the build directory alone:
+
+    * The columns are missing entirely -- an older schema, or a hand-built
+      build directory that never went through `normalize`.
+    * `items.json` is empty -- the same "no restrictions" shape as a build
+      that genuinely has none, but on zero rows it cannot be genuine.
+    * `loot`'s own output (`loot.json` or `suffixes.json`) sits in the build
+      directory, yet every row's `suffixes` and `faction_restriction` reads
+      empty -- which is what running `normalize` again *after* `loot` looks
+      like, since that overwrites `items.json` from the model defaults and
+      blanks both columns back out even though loot already ran once.
+
+    An individual item with `[]` and `""` is legitimate -- most items have
+    no random suffix and no faction restriction. What these checks refuse is
+    the whole build looking un-looted, not any one row looking unrestricted.
+    """
+    path = build_dir / "items.json"
+    if not path.exists():
+        raise SystemExit(f"no {path}; run `python -m pipeline normalize` for this build first")
+    rows = json.loads(path.read_text(encoding="utf-8"))
+    if not rows:
+        raise SystemExit(
+            f"{path} has no items; run `python -m pipeline normalize` for this build first"
+        )
+    missing = sorted(set(FORK_COLUMNS) - set(rows[0]))
+    if missing:
+        raise SystemExit(
+            f"{path} is missing {missing}; run `python -m pipeline loot` for this build first"
+        )
+    columns = {
+        int(row["id"]): (row.get("suffixes", []), row.get("faction_restriction", ""))
+        for row in rows
+    }
+    # Local import: pipeline.loot imports pipeline.simdb.statmap, so importing
+    # it at module scope here would be circular. By the time this runs,
+    # pipeline.simdb has already finished importing, so the cycle resolves.
+    from pipeline.loot import LOOT, SUFFIXES
+
+    loot_ran = any((build_dir / name).exists() for name in (LOOT, SUFFIXES))
+    all_unrestricted = all(not suffixes and not faction for suffixes, faction in columns.values())
+    if loot_ran and all_unrestricted:
+        raise SystemExit(
+            f"{path} has no suffixes or faction restrictions even though {LOOT} or "
+            f"{SUFFIXES} exists in {build_dir}; `normalize` likely ran again after "
+            "`loot` and blanked both columns -- re-run `python -m pipeline loot` for "
+            "this build"
+        )
+    return columns
+
+
 def _optional(raw: Path, name: str) -> list[dict[str, str]]:
     """A table this build's client may not have (see wago.OPTIONAL_TABLES)."""
     path = raw / f"{name}.csv"
@@ -129,8 +202,11 @@ def build_sim_database(build_dir: Path) -> tuple[pb.SimDatabase, list[Consumable
     kept_ids = {int_column(sparse, "ID") for sparse, _ in pairs}
     equip = equip_bonuses(item_effect_rows, link_rows, effects_by_spell, kept_ids)
     rating_factors = load_rating_factors(build_dir)
+    fork_columns = _fork_columns(build_dir)
     database = pb.SimDatabase(
-        items=build_sim_items(pairs, set_names, equip, curves, weapon_curves, rating_factors),
+        items=build_sim_items(
+            pairs, set_names, equip, curves, weapon_curves, rating_factors, fork_columns
+        ),
         enchants=build_sim_enchants(
             read_csv(raw / "SpellItemEnchantment.csv"), effects_by_spell, rating_factors
         ),

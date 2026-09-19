@@ -100,6 +100,11 @@ reads nothing local but writes into the build directory, so it needs `normalize`
 run too. All three refresh `manifest.json` when they finish, so the manifest still covers
 the directory.
 
+`simdb` is also a consumer of `items.json`'s two fork-derived columns, `suffixes` and
+`faction_restriction` (contract 10.3), which `python -m pipeline loot` writes -- so run
+`loot` before `simdb` too. See "New build checklist" below for the order and what
+`simdb`'s `_fork_columns` guard actually catches if you get it wrong.
+
 `gametables/` is the one output that does not come from DB2. Vanilla's per-class base
 mana and its combat-rating conversions are in the client's `GameTables/*.txt`, which is
 what the engine's own `tools/base_stats_parser.py` reads; `GameTables`, `CombatRatings`,
@@ -199,28 +204,36 @@ older-schema build works if one is ever fetched again.
    missing from `STAT_BY_MODIFIER_ID` in `pipeline/normalize/gear.py`. Add it with the
    right planner stat key, or `None` if the planner does not track that stat, and run
    `normalize` again. Everything except `items/` is still written by the failed run.
-5. Run `gametables` before `simdb` -- `simdb` reads the new build's own
-   `gametables/combatratings.txt` for its hit/crit/dodge/parry/block rating factors (see
-   above) and raises a clear error if it is missing. Run `simconst` too, then commit
-   `simdb.bin`, `simconsumes.json`, `spellconst/` and `gametables/`. If `simdb` raises on an
-   unclassified aura, an unknown skill line or an unknown stat modifier id, classify it in
-   `pipeline/simdb/equip.py` or `pipeline/normalize/gear.py` from the spells that use it
-   and rerun -- do not widen a filter to make it pass. If `gametables` raises on an empty
-   download, the new client does not ship that file: move it into
-   `ABSENT_FROM_THE_CLASSIC_LINEAGE` and tell the engine lane, rather than dropping it
-   quietly. If it raises a 400, the build string is wrong.
-6. Run `loot` **before** `simdb`, with an engine checkout: `uv run python -m pipeline loot
+5. Run `loot` **before** `simdb`, with an engine checkout: `uv run python -m pipeline loot
    --build <build> --engine "$FOREVER_ENGINE_PATH"`. It needs the build's `raw/` the way
    `simdb` does, plus the fork's `assets/database/db.json` at the pinned sha. It writes
    `loot.json`, `enchants.json`, `suffixes.json`, `simbuffs.json` and `items.json`'s
-   `suffixes` and `faction_restriction` columns. `pipeline/simdb/items.py` does not read
-   either column yet -- that join is a separate, blocked task -- but once it does, the
-   order will matter, so keep running `loot` before `simdb` regardless. Its log line
-   states the coverage; compare it against
-   `tests/test_loot_build.py`'s constants before committing. Running `normalize` again
-   afterwards clears both columns, so re-run `loot` if you do. If it stops on an
-   unresolved IDS.md id, add that id to `curated/simbuffs.json` with the client row it
-   means and a source.
+   `suffixes` and `faction_restriction` columns, which `pipeline/simdb/items.py` reads back
+   into `SimItem.random_suffix_options` and `.faction_restriction` (contract 10.3).
+   `loot`'s log line states the coverage; compare it against `tests/test_loot_build.py`'s
+   constants before committing. Running `normalize` again afterwards clears both columns,
+   so re-run `loot` if you do -- `simdb`'s `_fork_columns` guard (next step) will refuse the
+   build if you forget, but treat this order as required rather than relying on the guard:
+   it cannot tell "loot never ran" from "loot ran and found nothing" on the one shape that
+   matters most, a build that skips this step outright and goes straight to `simdb`. If it
+   stops on an unresolved IDS.md id, add that id to `curated/simbuffs.json` with the client
+   row it means and a source.
+6. Run `gametables` before `simdb` -- `simdb` reads the new build's own
+   `gametables/combatratings.txt` for its hit/crit/dodge/parry/block rating factors (see
+   above) and raises a clear error if it is missing. Run `simconst` too, then run `simdb`
+   and commit `simdb.bin`, `simconsumes.json`, `spellconst/` and `gametables/`. `simdb`'s
+   `_fork_columns` guard refuses to build when `items.json`'s two fork columns are missing
+   outright (an older schema, or a hand-built build directory), when `items.json` has no
+   items at all, or when `loot`'s own output (`loot.json`/`suffixes.json`) is already
+   sitting in the build directory while every item still reads unrestricted -- the shape a
+   stray `normalize` re-run after `loot` leaves behind. It does not catch `loot` simply
+   never having been run, which is exactly why step 5 has to come first rather than being
+   a convention this step enforces. If `simdb` raises on an unclassified aura, an unknown
+   skill line or an unknown stat modifier id, classify it in `pipeline/simdb/equip.py` or
+   `pipeline/normalize/gear.py` from the spells that use it and rerun -- do not widen a
+   filter to make it pass. If `gametables` raises on an empty download, the new client does
+   not ship that file: move it into `ABSENT_FROM_THE_CLASSIC_LINEAGE` and tell the engine
+   lane, rather than dropping it quietly. If it raises a 400, the build string is wrong.
 7. Re-check the APL ranks: `uv run pytest tests/test_apl.py -q --no-cov`. Forever may
    renumber spell ranks, and a rotation naming a rank the client does not have is a
    spell the engine cannot resolve.
