@@ -147,6 +147,60 @@ func TestAQueuedRunThatCannotStartIsMarkedFailed(t *testing.T) {
 	}
 }
 
+func TestAdvanceCannotReviveAFailedRun(t *testing.T) {
+	h := newHarness(t)
+	if err := h.store.Queue(t.Context(), "hhhhhhhhhhhh", h.owner,
+		browserResult("warrior-fury", 0).Request); err != nil {
+		t.Fatal(err)
+	}
+	if err := h.store.Fail(t.Context(), "hhhhhhhhhhhh", "the job could not be started"); err != nil {
+		t.Fatal(err)
+	}
+	// A late or duplicate progress tick arriving after the failure must
+	// not walk the row back to running: error is terminal.
+	if err := h.store.Advance(t.Context(), "hhhhhhhhhhhh", 1500, 1000); err != nil {
+		t.Fatal(err)
+	}
+	p, err := h.store.Progress(t.Context(), "hhhhhhhhhhhh")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if p.State != StateError {
+		t.Fatalf("state %q, want %q; Advance revived a failed run", p.State, StateError)
+	}
+	if p.DPS != nil || p.IterationsDone != 0 {
+		t.Fatalf("progress: %+v; a terminal row must not pick up Advance's figures", p)
+	}
+}
+
+func TestAdvanceCannotReopenAFinishedRun(t *testing.T) {
+	h := newHarness(t)
+	if err := h.store.Queue(t.Context(), "iiiiiiiiiiii", h.owner,
+		browserResult("warrior-fury", 0).Request); err != nil {
+		t.Fatal(err)
+	}
+	done := browserResult("warrior-fury", 1042.5)
+	done.Lane = simapi.LaneServer
+	if err := h.store.Finish(t.Context(), "iiiiiiiiiiii", done); err != nil {
+		t.Fatal(err)
+	}
+	// A late or duplicate progress tick arriving after the result must
+	// not overwrite it: done is terminal.
+	if err := h.store.Advance(t.Context(), "iiiiiiiiiiii", 1500, 1000); err != nil {
+		t.Fatal(err)
+	}
+	p, err := h.store.Progress(t.Context(), "iiiiiiiiiiii")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if p.State != StateDone {
+		t.Fatalf("state %q, want %q; Advance reopened a finished run", p.State, StateDone)
+	}
+	if p.DPS == nil || *p.DPS != 1042.5 {
+		t.Fatalf("progress: %+v; Advance overwrote the finished result", p)
+	}
+}
+
 func TestAFinishedResultCarryingAnEngineErrorIsStoredAsAnError(t *testing.T) {
 	h := newHarness(t)
 	if err := h.store.Queue(t.Context(), "ffffffffffff", h.owner,

@@ -180,13 +180,14 @@ func (s *Store) Progress(ctx context.Context, id string) (Progress, error) {
 }
 
 // Advance records a running job's partial estimate, so the page's DPS
-// figure refines while the job is still going. A row already done is
-// left alone: a progress tick that arrives after the result would
-// otherwise walk the run backwards.
+// figure refines while the job is still going. A row already in a
+// terminal state is left alone: a progress tick that arrives after
+// the result, or after a failure, would otherwise walk the run
+// backwards or revive an errored one.
 func (s *Store) Advance(ctx context.Context, id string, done int, mean float64) error {
 	_, err := s.Pool.Exec(ctx,
-		`update sims set state = $2, iterations = $3, dps_mean = $4 where id = $1 and state <> $5`,
-		id, StateRunning, done, mean, StateDone)
+		`update sims set state = $2, iterations = $3, dps_mean = $4 where id = $1 and state in ($5, $6)`,
+		id, StateRunning, done, mean, StateQueued, StateRunning)
 	if err != nil {
 		return fmt.Errorf("sims: advance %s: %w", id, err)
 	}
