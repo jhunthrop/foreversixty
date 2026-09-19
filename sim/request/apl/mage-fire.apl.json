@@ -3,7 +3,7 @@
   "priorityList": [
     { "action": { "autocastOtherCooldowns": {} } },
     {
-      "notes": "Pop Combustion once Improved Scorch's debuff is fully stacked, for a guaranteed run of Fire crits. Fix round 1: tracks the engine's own debuff id (12873, sim/core/debuffs.go's ImprovedScorchAura), not the client's Fire Vulnerability (22959) the preset's stale reference resembled -- 12873 is not in spellconst, a flagged engine/data reconciliation gap, not an authoring error.",
+      "notes": "Pop Combustion once Improved Scorch's debuff is fully stacked on the current target, for a guaranteed run of Fire crits. Fix round 4: tracks the engine's own debuff id (12873, sim/core/debuffs.go's ImprovedScorchAura), which the mage's own Scorch casts stack when Improved Scorch is talented (sim/mage/talents.go's applyImprovedScorch, sim/mage/scorch.go's ApplyEffects) -- restored after fix round 3 mistakenly treated this as impossible. 12873 is not in spellconst (it is an engine-side aura id, not a client spell), a known, deliberate exception for this one condition.",
       "action": {
         "condition": {
           "cmp": {
@@ -16,7 +16,7 @@
       }
     },
     {
-      "notes": "Scorch to apply or refresh the five stacks of Improved Scorch's debuff before it falls off.",
+      "notes": "Scorch to apply or refresh the five stacks of Improved Scorch's debuff before it falls off. Fix round 4: restored (see top-level notes) -- this only ever stacks with the Improved Scorch talent taken, so it is functionally inert under this build's no-talent smoke run the same way Combustion above is, not a permanently uncastable line.",
       "action": {
         "condition": {
           "or": {
