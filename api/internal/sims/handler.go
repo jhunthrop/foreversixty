@@ -193,13 +193,17 @@ func (s *Service) progress(w http.ResponseWriter, r *http.Request) {
 }
 
 // trimTitle bounds the name a member gave a sim. A long title is cut
-// rather than refused: it is a label, not data. The cut is by rune, so
-// a title in any script keeps its last character whole and the stored
-// string is always valid UTF-8.
-func trimTitle(s string) string {
+// rather than refused: it is a label, not data.
+func trimTitle(s string) string { return trimRunes(s, maxTitle) }
+
+// trimRunes cuts s to at most max runes. The cut is by rune, so a string
+// in any script keeps its last character whole and the result is always
+// valid UTF-8. Both the member's title and the composed headline are
+// bounded this way.
+func trimRunes(s string, max int) string {
 	r := []rune(s)
-	if len(r) > maxTitle {
-		return string(r[:maxTitle])
+	if len(r) > max {
+		return string(r[:max])
 	}
 	return s
 }
