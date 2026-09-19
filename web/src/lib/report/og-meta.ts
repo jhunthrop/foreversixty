@@ -121,12 +121,10 @@ export function guildShellMeta(path: CharacterPath, head: GuildHead): ShellMeta 
  * its 95% band, how many iterations bought that band, and the settings. Someone deciding
  * whether to open the link has every number that would change their mind.
  *
- * `apiBase` is unused today -- unlike a report's card, a sim's image is always the site's
- * own -- but kept in the signature to match reportShellMeta's and to need no signature
- * change on the day the API does grow a per-sim card renderer.
+ * Takes no `apiBase`, unlike reportShellMeta: a sim's image is always the site's own card,
+ * never a per-sim render, so there is nothing here for an API origin to build.
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars -- see the doc comment above.
-export function simShellMeta(result: SimResult, _apiBase: string): ShellMeta {
+export function simShellMeta(result: SimResult): ShellMeta {
   const dps = Math.round(result.dps.mean).toLocaleString('en-US');
   const band = Math.round(1.96 * result.dps.error).toLocaleString('en-US');
   const iterations = result.request.iterations.toLocaleString('en-US');

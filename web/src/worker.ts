@@ -406,7 +406,7 @@ async function shellHead(url: URL, env: Env): Promise<ShellHead | null> {
     // saved sim is public by contract and every one of them is indexable.
     const data = await apiData<SimResult>(`${env.API_BASE_URL}/v1/sims/${sim[1]}`);
     if (data === null) return null;
-    return { meta: simShellMeta(data, env.API_BASE_URL), indexable: true };
+    return { meta: simShellMeta(data), indexable: true };
   }
 
   const rankings = RANKINGS_SLUG.exec(url.pathname);

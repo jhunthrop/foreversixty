@@ -103,7 +103,7 @@ describe('simShellMeta', () => {
   // rounds to 1,370 (not the 1,131 an earlier draft of this task's copy cited), and
   // dps.error is 3.16, so the 95% band is round(1.96 * 3.16) = round(6.1936) = 6 (not 5).
   it('names the spec and the figure in the title, and the run in the description', () => {
-    const meta = simShellMeta(result, 'https://api.test');
+    const meta = simShellMeta(result);
     expect(meta.title).toBe('Fury Warrior, 1,370 DPS · Forever Sixty');
     expect(meta.description).toBe(
       `Simulated on engine ${fixtureResult.engine_version}: 1,370 DPS ± 6 over 3,000 iterations, raid-buffed, 3:00, single target.`,
@@ -113,23 +113,17 @@ describe('simShellMeta', () => {
   });
 
   it('uses the spec slug itself when the spec list does not know it', () => {
-    const meta = simShellMeta(
-      { ...result, request: { ...result.request, spec: 'warrior-gladiator' } },
-      'https://api.test',
-    );
+    const meta = simShellMeta({ ...result, request: { ...result.request, spec: 'warrior-gladiator' } });
     expect(meta.title).toBe('warrior-gladiator, 1,370 DPS · Forever Sixty');
   });
 
   it('counts the iterations the run actually asked for', () => {
-    const meta = simShellMeta(
-      { ...result, request: { ...result.request, iterations: 10000 } },
-      'https://api.test',
-    );
+    const meta = simShellMeta({ ...result, request: { ...result.request, iterations: 10000 } });
     expect(meta.description).toContain('10,000 iterations');
   });
 
   it('says solo rather than raid-buffed when the summary records no buff on the player', () => {
-    const meta = simShellMeta({ ...result, summary: { ...result.summary, auras: [] } }, 'https://api.test');
+    const meta = simShellMeta({ ...result, summary: { ...result.summary, auras: [] } });
     expect(meta.description).toContain('solo, 3:00, single target');
     expect(meta.description).not.toContain('raid-buffed');
   });
