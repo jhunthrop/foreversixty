@@ -42,6 +42,8 @@ def build_dir(tmp_path: Path) -> Path:
     for source, name in RAW_FIXTURES:
         shutil.copyfile(source, build / "raw" / name)
     shutil.copyfile(SIM / "sets.json", build / "sets.json")
+    (build / "gametables").mkdir()
+    shutil.copyfile(SIM / "combatratings.txt", build / "gametables" / "combatratings.txt")
     write_manifest(
         build, build="9.9.9.9", product="wow_classic_beta", fetched_at="2026-01-01T00:00:00Z"
     )

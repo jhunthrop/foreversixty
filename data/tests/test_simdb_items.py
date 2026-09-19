@@ -1,5 +1,7 @@
 from pathlib import Path
 
+import pytest
+
 from pipeline.csvio import read_csv
 from pipeline.normalize.item_curves import load_item_curves
 from pipeline.simdb.equip import SpellBonus
@@ -10,6 +12,18 @@ from pipeline.simproto import pb
 HERE = Path(__file__).parent
 FIXTURES = HERE / "fixtures"
 SIM = FIXTURES / "sim"
+
+#: The committed build's own level-60 combatratings.txt row (see
+#: tests/fixtures/sim/combatratings.txt), so a fixture test exercises the
+#: same conversion the real build does.
+RATING_FACTORS = {
+    "hit": 10.0,
+    "crit": 14.0,
+    "dodge": 12.0,
+    "parry": 15.0,
+    "block": 5.0,
+    "defense": 1.0,
+}
 
 
 def curves():
@@ -41,7 +55,7 @@ def pairs():
 
 def built(set_names=None, equip=None):
     items = build_sim_items(
-        pairs(), set_names or {}, equip or {}, curves(), weapon_curves()
+        pairs(), set_names or {}, equip or {}, curves(), weapon_curves(), RATING_FACTORS
     )
     return {item.id: item for item in items}
 
@@ -74,6 +88,18 @@ def test_an_armour_piece_carries_its_curve_resolved_armour_and_stats():
     assert helm.stats[pb.Stat.Value("StatArmor")] == 608.0
     assert helm.stats[pb.Stat.Value("StatStamina")] == 35.0
     assert helm.stats[pb.Stat.Value("StatStrength")] == 15.0
+
+
+def test_a_column_stat_that_is_a_combat_rating_is_converted_to_a_percentage():
+    """Loop of Minor Fortitude (30006) carries 5 crit through the curve, the
+    same rating amount tests/test_normalize_gear.py checks the planner still
+    shows raw (`items[30006].stats == {"strength": 8, "crit": 5}`) -- the
+    planner keeps the rating number the client tooltip shows. simdb's own
+    stats are what the engine reads as a flat percentage, so 5 rating points
+    at this fixture's level-60 crit factor (14, see RATING_FACTORS above)
+    convert to 5 / 14 %."""
+    loop = built()[30006]
+    assert loop.stats[pb.Stat.Value("StatCrit")] == pytest.approx(5.0 / 14.0)
 
 
 def test_a_weapon_carries_its_damage_and_speed():
@@ -137,7 +163,9 @@ def test_a_negative_mask_that_is_not_minus_one_excludes_rather_than_permits():
     pair = pairs()[0]
     sparse = dict(pair[0])
     sparse["AllowableClass"] = "-1136"
-    item = build_sim_items([(sparse, pair[1])], {}, {}, curves(), weapon_curves())[0]
+    item = build_sim_items(
+        [(sparse, pair[1])], {}, {}, curves(), weapon_curves(), RATING_FACTORS
+    )[0]
     assert list(item.class_allowlist) == [
         pb.Class.Value("ClassMage"),
         pb.Class.Value("ClassPriest"),
@@ -155,7 +183,7 @@ def test_inventory_type_13_is_one_hand_not_main_hand():
 
 
 def test_a_build_with_no_weapon_curves_still_emits_its_items():
-    items = build_sim_items(pairs(), {}, {}, curves(), WeaponCurves())
+    items = build_sim_items(pairs(), {}, {}, curves(), WeaponCurves(), RATING_FACTORS)
     axe = {item.id: item for item in items}[12798]
     assert axe.weapon_speed == 0.0
     assert axe.type == pb.ItemType.Value("ItemTypeWeapon")

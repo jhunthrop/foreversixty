@@ -13,6 +13,17 @@ from pipeline.simproto import pb
 SIM = Path(__file__).parent / "fixtures" / "sim"
 SHIPPABLE = [352, 803, 930, 931, 934, 1900, 2504]
 
+#: The committed build's own level-60 combatratings.txt row (see
+#: tests/fixtures/sim/combatratings.txt).
+RATING_FACTORS = {
+    "hit": 10.0,
+    "crit": 14.0,
+    "dodge": 12.0,
+    "parry": 15.0,
+    "block": 5.0,
+    "defense": 1.0,
+}
+
 
 def rows():
     return read_csv(SIM / "SpellItemEnchantment.csv")
@@ -23,7 +34,7 @@ def effects():
 
 
 def enchants():
-    return {row.effect_id: row for row in build_sim_enchants(rows(), effects())}
+    return {row.effect_id: row for row in build_sim_enchants(rows(), effects(), RATING_FACTORS)}
 
 
 def test_an_equip_spell_enchant_resolves_through_its_spell():
@@ -57,12 +68,41 @@ def test_a_stat_the_planner_does_not_track_is_dropped_not_guessed():
 
 def test_an_unknown_stat_modifier_id_is_an_error():
     with pytest.raises(EnchantDataError, match=r"enchant 2505.*999"):
-        build_sim_enchants(read_csv(SIM / "SpellItemEnchantment_bad.csv"), effects())
+        build_sim_enchants(
+            read_csv(SIM / "SpellItemEnchantment_bad.csv"), effects(), RATING_FACTORS
+        )
 
 
 def test_every_enchant_row_is_emitted_and_sorted():
-    ids = [row.effect_id for row in build_sim_enchants(rows(), effects())]
+    ids = [row.effect_id for row in build_sim_enchants(rows(), effects(), RATING_FACTORS)]
     assert ids == sorted(ids) == SHIPPABLE
+
+
+def test_a_direct_stat_enchant_that_is_a_combat_rating_is_converted():
+    """A synthetic row granting 20 crit rating (mod id 32) through its own
+    EFFECT_STAT slot, not an equip spell -- the same rating-to-percentage
+    conversion items.py applies, exercised here on the enchant path. At this
+    fixture's level-60 crit factor (14) that is 20 / 14 %."""
+    rating_row = dict(rows()[0])
+    rating_row.update(
+        {
+            "ID": "9001",
+            "Effect_0": "5",
+            "EffectPointsMin_0": "20",
+            "EffectArg_0": "32",
+            "Effect_1": "0",
+            "EffectPointsMin_1": "0",
+            "EffectArg_1": "0",
+            "Effect_2": "0",
+            "EffectPointsMin_2": "0",
+            "EffectArg_2": "0",
+        }
+    )
+    built = {
+        row.effect_id: row
+        for row in build_sim_enchants([rating_row], effects(), RATING_FACTORS)
+    }
+    assert built[9001].stats[pb.Stat.Value("StatCrit")] == pytest.approx(20.0 / 14.0)
 
 
 def test_a_weapon_skill_only_equip_spell_is_dropped_with_a_warning(caplog):
@@ -88,6 +128,7 @@ def test_the_live_build_warns_about_every_weapon_skill_only_enchant(caplog):
         build_sim_enchants(
             read_csv(raw / "SpellItemEnchantment.csv"),
             index_spell_effects(read_csv(raw / "SpellEffect.csv")),
+            RATING_FACTORS,
         )
     dropped_ids = {
         match.group(1)
