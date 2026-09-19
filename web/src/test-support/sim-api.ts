@@ -129,22 +129,63 @@ export function createSimApi(): SimApiStub {
     {
       method: 'GET',
       pattern: /\/v1\/sims(\?|$)/,
-      respond: () =>
-        envelope({
-          rows: [
-            {
-              sim_id: FIXTURE_SIM_ID,
-              spec: 'warrior-fury',
-              dps: fixtureResult.dps.mean,
-              engine_version: fixtureResult.engine_version,
-              created_at: '2026-09-14T10:02:00Z',
-              title: 'Raid-buffed, 3:00, single target',
-            },
-          ],
-          total: 1,
-          page: 1,
-          per_page: 100,
-        }),
+      respond: (_match, request) => {
+        const wanted = new URL(request.url).searchParams.get('kind');
+        const rows = [
+          {
+            sim_id: FIXTURE_SIM_ID,
+            spec: 'warrior-fury',
+            dps: fixtureResult.dps.mean,
+            engine_version: fixtureResult.engine_version,
+            created_at: '2026-09-14T10:02:00Z',
+            title: 'Raid-buffed, 3:00, single target',
+            kind: 'run',
+            headline: '1,204 DPS',
+          },
+          {
+            sim_id: 'gearaaaaaaaa',
+            spec: 'warrior-fury',
+            dps: 1245,
+            engine_version: fixtureResult.engine_version,
+            created_at: '2026-09-15T10:02:00Z',
+            title: '',
+            kind: 'gear',
+            headline: '+41 DPS from Vis’kag',
+          },
+          {
+            sim_id: 'dropsaaaaaaa',
+            spec: 'warrior-fury',
+            dps: 1210,
+            engine_version: fixtureResult.engine_version,
+            created_at: '2026-09-16T10:02:00Z',
+            title: '',
+            kind: 'drops',
+            headline: '3 upgrades on Ragnaros',
+          },
+          {
+            sim_id: 'talentsaaaaa',
+            spec: 'warrior-fury',
+            dps: 1222,
+            engine_version: fixtureResult.engine_version,
+            created_at: '2026-09-17T10:02:00Z',
+            title: '',
+            kind: 'talents',
+            headline: '+18 DPS with ‘Deep Fury’',
+          },
+          {
+            sim_id: 'weightsaaaaa',
+            spec: 'warrior-fury',
+            dps: 0,
+            engine_version: fixtureResult.engine_version,
+            created_at: '2026-09-18T10:02:00Z',
+            title: '',
+            kind: 'weights',
+            headline: 'Crit 1.00 · Agility 0.87',
+          },
+        ];
+        const filtered = wanted === null ? rows : rows.filter((row) => row.kind === wanted);
+        return envelope({ rows: filtered, total: filtered.length, page: 1, per_page: 100 });
+      },
     },
     {
       method: 'GET',

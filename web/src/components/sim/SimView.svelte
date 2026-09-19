@@ -21,6 +21,7 @@
   import { gearFromSlots, ranksFromTalentsString } from '../../lib/sim/character';
   import { compareSummaries } from '../../lib/sim/compare';
   import { simCopy } from '../../lib/sim/copy';
+  import type { KindFilter } from '../../lib/sim/history';
   import { browserNotifier, enableNotifications, notifyFinished } from '../../lib/sim/notify';
   import { SIM_SAVED_SKELETON_HTML } from '../../lib/sim/skeleton';
   import { parseFightRef } from '../../lib/sim/sources';
@@ -237,16 +238,24 @@
   const signedIn = $derived(me !== null);
   let historyRows = $state<SimListRow[] | null>(null);
   let historyError = $state<string | null>(null);
+  // The history filter (Task 18). "all" sends no `kind=` at all -- see api.ts's listMySims.
+  let historyKind = $state<KindFilter>('all');
 
   async function loadHistory(): Promise<void> {
     historyError = null;
     try {
-      const page = await listMySims();
+      const page = await listMySims(1, undefined, historyKind);
       historyRows = page.rows;
     } catch (error) {
       historyRows = null;
       historyError = error instanceof Error ? error.message : simCopy.loadFailed;
     }
+  }
+
+  function setHistoryKind(next: KindFilter): void {
+    historyKind = next;
+    historyRows = null;
+    void loadHistory();
   }
 
   // Loaded lazily (Task 17): the history panel is empty weight for every signed-out
@@ -570,7 +579,12 @@
       {/if}
 
       {#if signedIn && simHistoryLazy.current}
-        <simHistoryLazy.current rows={historyRows} error={historyError} />
+        <simHistoryLazy.current
+          rows={historyRows}
+          error={historyError}
+          kind={historyKind}
+          onkind={setHistoryKind}
+        />
       {/if}
 
       {#if store.character !== null}

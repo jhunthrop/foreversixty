@@ -313,6 +313,18 @@ export const simCopy = {
   /** The save button's disabled title when the last run was stopped rather than finished. */
   saveAbortedDisabled: 'A stopped run has nothing finished to save.',
 
+  // --- Task 18: the history list, filterable by kind, each row carrying the API's
+  // own headline (design 9.3). ---
+  kindLabel: {
+    all: 'Everything',
+    run: 'Sim',
+    gear: 'Top Gear',
+    talents: 'Talents',
+    drops: 'Droptimizer',
+    weights: 'Stat weights',
+  } as Record<string, string>,
+  historyFilter: 'Show',
+
   /**
    * The four things a combination can substitute (contract 2, `kind`, as amended by
    * 10.8). `consumes` is an alternative consumable list tried as a candidate, and its
