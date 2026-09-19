@@ -95,6 +95,38 @@ function detailOf(cause: unknown): string {
 }
 
 /**
+ * The one error `runBulk` and `runWeightsRun` both raise for anything that is not already a
+ * `BulkCapError`/`BulkRunError` -- a stop reads as `simCopy.stopped` with no detail (the
+ * player asked for this, there is nothing to explain); anything else reads as
+ * `bulkCopy.bulkFailed` with the engine's own words attached.
+ */
+function toRunError(cancelled: boolean, cause: unknown): BulkRunError {
+  return new BulkRunError(
+    cancelled ? simCopy.stopped : bulkCopy.bulkFailed,
+    cancelled,
+    cancelled ? '' : detailOf(cause),
+    { cause },
+  );
+}
+
+/**
+ * The `cancelled` flag and the `cancel()` closure both `runBulk` and `runWeightsRun` need:
+ * flip the flag once, then re-post the pool's own abort under this run's callback id.
+ * `cancelled` is read, never written, outside this closure -- the flag lives here so the
+ * two callers cannot drift into checking two different booleans.
+ */
+function createCanceller(pool: SimPool, callbackId: string): { cancelled(): boolean; cancel(): void } {
+  let flag = false;
+  return {
+    cancelled: () => flag,
+    cancel() {
+      flag = true;
+      pool.abort(callbackId);
+    },
+  };
+}
+
+/**
  * The live combination count, for the run bar (`simCount`, contract 10.2). Throws
  * `BulkCapError` past the cap, because the button has to say what would exceed it and by
  * how much -- it never trims the list. `pool.count` already discriminates the cap refusal
@@ -151,7 +183,7 @@ export function runBulk(
   // would surface as a genuine engine error, not a silently wrong stage count.
   const stages = STAGES_BY_PRECISION[request.bulk.precision as Precision];
   const requestJSON = JSON.stringify(request);
-  let cancelled = false;
+  const canceller = createCanceller(pool, callbackId);
 
   async function execute(): Promise<SimResult> {
     const startedAt = now();
@@ -166,7 +198,7 @@ export function runBulk(
       const results: string[] = [];
       let stopped = false;
       for (const part of chunk(stage.requests, pool.size)) {
-        if (cancelled) {
+        if (canceller.cancelled()) {
           stopped = true;
           break;
         }
@@ -175,7 +207,7 @@ export function runBulk(
         try {
           results.push(...(await pool.run(shardsJSON, `${callbackId}-s${stage.stage}-${offset}`, () => {})));
         } catch (cause) {
-          if (!cancelled) throw cause;
+          if (!canceller.cancelled()) throw cause;
           stopped = true;
           break;
         }
@@ -187,7 +219,7 @@ export function runBulk(
         });
       }
 
-      if (stopped || cancelled) {
+      if (stopped || canceller.cancelled()) {
         // Nothing to hand back without the baseline: every delta is measured against it.
         if (results.length < 2) {
           throw new BulkRunError(simCopy.stopped, true, '');
@@ -223,21 +255,13 @@ export function runBulk(
 
   const result = execute().catch((cause: unknown) => {
     if (cause instanceof BulkCapError || cause instanceof BulkRunError) throw cause;
-    throw new BulkRunError(
-      cancelled ? simCopy.stopped : bulkCopy.bulkFailed,
-      cancelled,
-      cancelled ? '' : detailOf(cause),
-      { cause },
-    );
+    throw toRunError(canceller.cancelled(), cause);
   });
 
   return {
     callbackId,
     result,
-    cancel() {
-      cancelled = true;
-      pool.abort(callbackId);
-    },
+    cancel: canceller.cancel,
   };
 }
 
@@ -252,7 +276,7 @@ export function runWeightsRun(
   now: () => number = () => Date.now(),
 ): BulkRunHandle {
   const callbackId = nextCallbackId();
-  let cancelled = false;
+  const canceller = createCanceller(pool, callbackId);
 
   const result = (async (): Promise<SimResult> => {
     const startedAt = now();
@@ -267,20 +291,12 @@ export function runWeightsRun(
       duration_ms: Math.round(now() - startedAt),
     };
   })().catch((cause: unknown) => {
-    throw new BulkRunError(
-      cancelled ? simCopy.stopped : bulkCopy.bulkFailed,
-      cancelled,
-      cancelled ? '' : detailOf(cause),
-      { cause },
-    );
+    throw toRunError(canceller.cancelled(), cause);
   });
 
   return {
     callbackId,
     result,
-    cancel() {
-      cancelled = true;
-      pool.abort(callbackId);
-    },
+    cancel: canceller.cancel,
   };
 }

@@ -104,13 +104,23 @@ describe('runBulk', () => {
   });
 
   it('a stop returns the combinations that finished, marked partial', async () => {
-    // A one-worker pool runs the equipped baseline and each combo one request at a time,
-    // 60ms apiece (two 30ms ticks). By 135ms the baseline and the first combo have both
-    // finished and the second combo is mid-run (its next tick lands at 150ms), which is
-    // where the stop lands -- comfortably clear of either boundary.
-    const p = pool({ tickMs: 30, ticks: 2, size: 1 });
-    const handle = runBulk(p, gearRequest(), () => {});
-    await new Promise((resolve) => setTimeout(resolve, 135));
+    // Cancels the instant the progress callback reports the first combo done, rather than
+    // guessing a wall-clock offset: a one-worker pool runs the equipped baseline and each
+    // combo one request at a time, so `combosDone >= 1` fires exactly between the first
+    // combo finishing and the second one's `pool.run` call. `handle.cancel()` then runs as
+    // a microtask queued ahead of the second combo's own first tick (a real timer, however
+    // small `tickMs` is), so it always lands before that combo's engine call checks whether
+    // it was aborted -- deterministic regardless of runner speed or scheduling jitter, with
+    // no dependency on two independently-scheduled `setTimeout` chains landing in order.
+    const p = pool({ tickMs: 0, ticks: 1, size: 1 });
+    let resolveOneComboDone: () => void = () => {};
+    const oneComboDone = new Promise<void>((resolve) => {
+      resolveOneComboDone = resolve;
+    });
+    const handle = runBulk(p, gearRequest(), (progress) => {
+      if (progress.combosDone >= 1) resolveOneComboDone();
+    });
+    await oneComboDone;
     handle.cancel();
     const result = (await handle.result) as BulkResult;
     expect(result.aborted).toBe(true);
