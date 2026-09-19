@@ -67,6 +67,18 @@ var ValidIterations = []int{500, 3000, 10000}
 // legitimately exceed one.
 var MaxIterations = slices.Max(ValidIterations)
 
+// StepIterations is how many iterations a target-error run adds at a
+// time. It is one number for both lanes: the browser's pool runs a step
+// as an ordinary sharded run and the native binary runs it in one go,
+// and a step of a different size in each would make the two report
+// different iteration counts for the same request.
+const StepIterations = 1000
+
+// LaneIterationCeiling bounds a target-error run that never reaches its
+// target. Without it a flat distribution would run until the tab was
+// closed.
+var LaneIterationCeiling = map[string]int{LaneBrowser: 30000, LaneServer: 100000}
+
 // MaxTargets is the settings bar's cap.
 const MaxTargets = 10
 
@@ -114,6 +126,15 @@ type SimRequest struct {
 	// Bulk turns one character into many sims. A request without it is
 	// exactly today's single run; see sim/api/bulk.go.
 	Bulk *BulkSpec `json:"bulk,omitempty"`
+	// TargetError, when above zero, turns Iterations into a CEILING:
+	// the run continues in steps of StepIterations until DPS.Error over
+	// DPS.Mean is at or under it, or Iterations is reached. Zero is
+	// today's fixed-count run.
+	//
+	// This is Raidbots' Smart Sim, made visible. The results line says
+	// which of the two ended the run, which is why the loop is a loop
+	// over whole results rather than a number the engine is handed.
+	TargetError float64 `json:"target_error,omitempty"`
 }
 
 // CharacterSpec is everything the engine needs about the player, in JSON.
@@ -213,12 +234,20 @@ func (r SimRequest) validate(closedSet, requireCurrentEngine bool) error {
 	switch {
 	case r.Bulk != nil:
 		// A bulk request's count is the precision's, checked by
-		// BulkSpec.validate against the ladder rather than against the
-		// settings bar's closed set.
+		// BulkSpec.validate against the ladder.
+	case r.TargetError > 0:
+		// A target-error run's Iterations is a ceiling, not a choice
+		// from the settings bar, so the closed set does not apply and
+		// neither does MaxIterations. It has to be a whole number of
+		// steps, because a step is what the loop adds.
+		errs = append(errs, validateCeiling(r.Iterations, largestCeiling())...)
 	case closedSet && !slices.Contains(ValidIterations, r.Iterations):
 		errs = append(errs, fmt.Errorf("iterations must be one of %v, got %d", ValidIterations, r.Iterations))
 	case !closedSet && (r.Iterations <= 0 || r.Iterations > MaxIterations):
 		errs = append(errs, fmt.Errorf("a split part's iterations must be between 1 and %d, got %d", MaxIterations, r.Iterations))
+	}
+	if r.TargetError < 0 || r.TargetError >= 1 {
+		errs = append(errs, fmt.Errorf("target_error is a fraction of the mean, so it must be between 0 and 1, got %v", r.TargetError))
 	}
 	if r.Encounter.DurationSec < MinDurationSec || r.Encounter.DurationSec > MaxDurationSec {
 		errs = append(errs, fmt.Errorf("duration_sec must be between %d and %d, got %d", MinDurationSec, MaxDurationSec, r.Encounter.DurationSec))
@@ -337,4 +366,92 @@ func (r SimResult) ValidateSaved() error {
 		return errors.New("an aborted result cannot be saved")
 	}
 	return r.Request.validate(true, false)
+}
+
+// largestCeiling is the biggest target-error ceiling any lane allows.
+// Validate uses it because the envelope carries no lane; ValidateLane
+// narrows it.
+func largestCeiling() int {
+	out := 0
+	for _, c := range LaneIterationCeiling {
+		out = max(out, c)
+	}
+	return out
+}
+
+// validateCeiling holds a target-error run's ceiling to whole steps and
+// to a lane's limit.
+func validateCeiling(iterations, ceiling int) []error {
+	var errs []error
+	if iterations <= 0 || iterations%StepIterations != 0 {
+		errs = append(errs, fmt.Errorf("a target-error run's iterations is a ceiling and must be a positive multiple of %d, got %d", StepIterations, iterations))
+	}
+	if iterations > ceiling {
+		errs = append(errs, fmt.Errorf("a target-error run's iterations is at most %d on this lane, got %d", ceiling, iterations))
+	}
+	return errs
+}
+
+// ValidateLane is Validate plus the two limits that belong to a lane
+// rather than to the request: the combination cap and the target-error
+// ceiling. The envelope carries no lane - a request is a question, and
+// the same question can be asked of either - so Validate applies the
+// largest lane's numbers and this applies one lane's. The api handler
+// calls it with LaneServer and the page with LaneBrowser.
+func (r SimRequest) ValidateLane(lane string) error {
+	var errs []error
+	if err := r.Validate(); err != nil {
+		errs = append(errs, err)
+	}
+	capped, ok := Caps[lane]
+	ceiling := LaneIterationCeiling[lane]
+	if !ok {
+		return errors.Join(append(errs, fmt.Errorf("lane must be %q or %q, got %q", LaneBrowser, LaneServer, lane))...)
+	}
+	if r.Bulk != nil && r.Bulk.Cap > capped {
+		errs = append(errs, fmt.Errorf("the %s lane plans at most %d combinations, and bulk.cap is %d", lane, capped, r.Bulk.Cap))
+	}
+	if r.TargetError > 0 && r.Iterations > ceiling {
+		errs = append(errs, fmt.Errorf("the %s lane runs at most %d iterations, and iterations is %d", lane, ceiling, r.Iterations))
+	}
+	return errors.Join(errs...)
+}
+
+// NeedsMoreIterations reports whether a target-error run should run
+// another step.
+//
+// It lives here, in Go, because BOTH lanes loop and they must agree.
+// The browser runs each step as an ordinary sharded run through
+// simSplit/simRun/simCombine and asks this between steps; forever-sim
+// runs the step itself and asks the same function. A copy of this
+// arithmetic in TypeScript is exactly the drift the module exists to
+// prevent - the two would stop at different precisions and the same
+// request would report a different error bar depending on where it ran.
+//
+// A run that failed or was stopped never steps: there is nothing to
+// refine, and stepping would turn one bad answer into several.
+func NeedsMoreIterations(res SimResult, req SimRequest) bool {
+	if req.TargetError <= 0 || res.Error != "" || res.Aborted {
+		return false
+	}
+	if res.IterationsRun >= req.Iterations {
+		return false
+	}
+	if res.DPS.Mean <= 0 {
+		// No mean yet, so no relative error either. One more step is
+		// the only way to learn anything, and the ceiling above is what
+		// stops it being forever.
+		return true
+	}
+	return res.DPS.Error/res.DPS.Mean > req.TargetError
+}
+
+// NextStepIterations is how many iterations the next step runs, and 0
+// when there is no next step. The last step is shortened rather than
+// overshooting, so a ceiling of 3,000 is 3,000 and never 3,500.
+func NextStepIterations(res SimResult, req SimRequest) int {
+	if !NeedsMoreIterations(res, req) {
+		return 0
+	}
+	return min(StepIterations, req.Iterations-res.IterationsRun)
 }
