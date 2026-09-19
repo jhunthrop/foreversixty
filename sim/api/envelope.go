@@ -95,9 +95,12 @@ var GearSlots = []string{
 }
 
 // MinDurationSec and MaxDurationSec bound the fight-length control.
+// Twenty seconds is the shortest fight the ramp-up of any rotation
+// says anything about; ten minutes is longer than any encounter in
+// the game and is what a target dummy run is capped at.
 const (
-	MinDurationSec = 60
-	MaxDurationSec = 480
+	MinDurationSec = 20
+	MaxDurationSec = 600
 )
 
 // SimLevel is the only level a sim runs at. It is Forever's level cap
@@ -154,6 +157,21 @@ type CharacterSpec struct {
 	Buffs      []string   `json:"buffs"`
 	Consumes   []string   `json:"consumes"`
 	Profession []string   `json:"professions,omitempty"`
+	// Cooldowns is when to use the major cooldowns and potions the
+	// rotation would otherwise fire on cooldown.
+	Cooldowns []CooldownSpec `json:"cooldowns,omitempty"`
+}
+
+// CooldownSpec pins one cooldown's timings.
+type CooldownSpec struct {
+	// ID is "spell:<id>", "item:<id>", or a consumable id from IDS.md,
+	// which the build's consumable table resolves to an item.
+	ID string `json:"id"`
+	// AtSec are the times to use it, in fight seconds. Each value is
+	// one usage; usages past the list happen as soon as the rotation
+	// allows. An empty list is "on cooldown", which is the default the
+	// engine already has.
+	AtSec []float64 `json:"at_sec,omitempty"`
 }
 
 // GearSlot is one equipped item. Slot names are the planner's.
@@ -176,6 +194,102 @@ type EncounterSpec struct {
 	Targets      int     `json:"targets"`
 	ExecuteRatio float64 `json:"execute_ratio"`
 	Profile      string  `json:"profile"`
+
+	// Style is the page preset's LABEL and nothing more: the fields
+	// below carry what it expanded to. Storing the label as well as the
+	// fields is what lets a saved sim say "Heavy movement" after the
+	// preset's numbers have been retuned, and lets an edited request
+	// stop claiming a preset it no longer matches.
+	Style string `json:"style,omitempty"`
+
+	// Movement schedules time out of melee or out of casting.
+	Movement *Movement `json:"movement,omitempty"`
+
+	// TargetsOverTime OVERRIDES Targets when set: a dungeon pull is a
+	// boss and then packs, not a fixed count.
+	TargetsOverTime []TargetCount `json:"targets_over_time,omitempty"`
+
+	// TargetLevel is 60 to 63; 0 means BossLevel, which is what every
+	// sim fought before this field existed.
+	TargetLevel int `json:"target_level,omitempty"`
+
+	// TargetArmor overrides the level's preset. 0 means the preset -
+	// NOT an unarmoured target.
+	TargetArmor int `json:"target_armor,omitempty"`
+
+	// TargetType changes what Hunter and Warlock abilities do. "" is
+	// TargetTypeUnknown, which is what a target dummy is.
+	TargetType string `json:"target_type,omitempty"`
+
+	// Dummy is the training dummy: no debuffs, no execute window, no
+	// armor reduction.
+	Dummy bool `json:"dummy,omitempty"`
+}
+
+// Movement is a repeating window the player spends away from the target
+// or unable to cast.
+type Movement struct {
+	IntervalSec int    `json:"interval_sec"`
+	DurationSec int    `json:"duration_sec"`
+	Kind        string `json:"kind"`
+}
+
+// The two kinds of movement window. Away is out of melee range with no
+// casting; Casting interrupts spells while melee continues.
+const (
+	MovementAway    = "away"
+	MovementCasting = "casting"
+)
+
+// MovementKinds is the closed set.
+var MovementKinds = []string{MovementAway, MovementCasting}
+
+// TargetCount is one step of a target-count timeline: from AtSec, this
+// many targets are alive.
+type TargetCount struct {
+	AtSec int `json:"at_sec"`
+	Count int `json:"count"`
+}
+
+// The target levels the settings bar offers.
+const (
+	MinTargetLevel = SimLevel
+	MaxTargetLevel = BossLevel
+)
+
+// TargetArmorByLevel is the armor a target of each level carries when
+// the request does not override it.
+//
+// The boss row is the engine's own preset
+// (sim/encounters/default_presets.go); the three below it fall
+// linearly to the level-60 figure. Contract A8 ratifies these four
+// numbers and says a better source replaces the three interior ones.
+// They are here rather than in sim/request because the page shows the
+// preset beside the override control, and a second copy there would
+// drift from the number the sim actually ran.
+var TargetArmorByLevel = map[int]int{60: 3300, 61: 3444, 62: 3588, 63: 3731}
+
+// TargetArmorFor resolves an encounter's armor: the override when it is
+// set, otherwise the level's preset, otherwise the boss's.
+func TargetArmorFor(level, override int) int {
+	if override > 0 {
+		return override
+	}
+	if armor, ok := TargetArmorByLevel[level]; ok {
+		return armor
+	}
+	return TargetArmorByLevel[BossLevel]
+}
+
+// TargetTypeUnknown is a target with no creature type, which is what a
+// training dummy is and what every sim fought before this field.
+const TargetTypeUnknown = "unknown"
+
+// TargetTypes is the closed set, matching the engine's MobType enum.
+// sim/request proves the pairing against the enum.
+var TargetTypes = []string{
+	"beast", "demon", "dragonkin", "elemental", "giant",
+	"humanoid", "mechanical", "undead", TargetTypeUnknown,
 }
 
 // DefaultEncounter is the settings bar's opening state: a three-minute
@@ -262,6 +376,17 @@ func (r SimRequest) validate(closedSet, requireCurrentEngine bool) error {
 	}
 	if r.Encounter.ExecuteRatio < 0 || r.Encounter.ExecuteRatio > 1 {
 		errs = append(errs, fmt.Errorf("execute_ratio must be between 0 and 1, got %v", r.Encounter.ExecuteRatio))
+	}
+	errs = append(errs, validateEncounterAdditions(r.Encounter)...)
+	for i, cd := range r.Character.Cooldowns {
+		if cd.ID == "" {
+			errs = append(errs, fmt.Errorf("character.cooldowns[%d] has no id", i))
+		}
+		for j, at := range cd.AtSec {
+			if at < 0 {
+				errs = append(errs, fmt.Errorf("character.cooldowns[%d].at_sec[%d] is %v; a cooldown is used during the fight, and the pre-pull is the rotation's job", i, j, at))
+			}
+		}
 	}
 	if !slices.Contains(Sources, r.Source.Kind) {
 		errs = append(errs, fmt.Errorf("source.kind must be one of %v, got %q", Sources, r.Source.Kind))
@@ -473,4 +598,50 @@ func NextStepIterations(res SimResult, req SimRequest) int {
 		return 0
 	}
 	return min(StepIterations, req.Iterations-res.IterationsRun)
+}
+
+// validateEncounterAdditions checks the fields the parity contract added
+// to EncounterSpec. They are all optional, so every check is on a value
+// the client actually sent.
+func validateEncounterAdditions(e EncounterSpec) []error {
+	var errs []error
+	if m := e.Movement; m != nil {
+		if !slices.Contains(MovementKinds, m.Kind) {
+			errs = append(errs, fmt.Errorf("encounter.movement.kind must be one of %v, got %q", MovementKinds, m.Kind))
+		}
+		if m.IntervalSec <= 0 {
+			errs = append(errs, fmt.Errorf("encounter.movement.interval_sec must be positive, got %d", m.IntervalSec))
+		}
+		if m.DurationSec <= 0 {
+			errs = append(errs, fmt.Errorf("encounter.movement.duration_sec must be positive, got %d", m.DurationSec))
+		}
+		if m.IntervalSec > 0 && m.DurationSec >= m.IntervalSec {
+			errs = append(errs, fmt.Errorf("encounter.movement.duration_sec (%d) must be shorter than the interval (%d), or the player never stands still", m.DurationSec, m.IntervalSec))
+		}
+	}
+	if len(e.TargetsOverTime) > 0 {
+		if e.TargetsOverTime[0].AtSec != 0 {
+			errs = append(errs, fmt.Errorf("encounter.targets_over_time starts at 0, not %d; the fight has targets from the pull", e.TargetsOverTime[0].AtSec))
+		}
+		prev := -1
+		for i, tc := range e.TargetsOverTime {
+			if tc.AtSec <= prev {
+				errs = append(errs, fmt.Errorf("encounter.targets_over_time must be in time order; entry %d is at %d after %d", i, tc.AtSec, prev))
+			}
+			prev = tc.AtSec
+			if tc.Count < 1 || tc.Count > MaxTargets {
+				errs = append(errs, fmt.Errorf("encounter.targets_over_time[%d].count must be between 1 and %d, got %d", i, MaxTargets, tc.Count))
+			}
+		}
+	}
+	if e.TargetLevel != 0 && (e.TargetLevel < MinTargetLevel || e.TargetLevel > MaxTargetLevel) {
+		errs = append(errs, fmt.Errorf("encounter.target_level must be between %d and %d, got %d", MinTargetLevel, MaxTargetLevel, e.TargetLevel))
+	}
+	if e.TargetArmor < 0 {
+		errs = append(errs, fmt.Errorf("encounter.target_armor must not be negative, got %d; 0 means the level's preset", e.TargetArmor))
+	}
+	if e.TargetType != "" && !slices.Contains(TargetTypes, e.TargetType) {
+		errs = append(errs, fmt.Errorf("encounter.target_type must be one of %v, got %q", TargetTypes, e.TargetType))
+	}
+	return errs
 }

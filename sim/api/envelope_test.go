@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"reflect"
 	"slices"
 	"strings"
 	"testing"
@@ -101,7 +102,10 @@ func TestSimRequestJSONFieldNames(t *testing.T) {
 func TestDefaultEncounterMatchesTheContract(t *testing.T) {
 	got := DefaultEncounter()
 	want := EncounterSpec{DurationSec: 180, Variation: 0.2, Targets: 1, ExecuteRatio: 0.25, Profile: ""}
-	if got != want {
+	// EncounterSpec now holds a slice (TargetsOverTime), which is not
+	// comparable with ==; reflect.DeepEqual is the same check for a
+	// struct this shallow.
+	if !reflect.DeepEqual(got, want) {
 		t.Errorf("DefaultEncounter() = %+v, want %+v", got, want)
 	}
 }
