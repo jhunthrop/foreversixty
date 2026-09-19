@@ -9,7 +9,7 @@
 //
 // The pool tears itself down on pagehide, so a navigation mid-run leaves no workers behind.
 import type { ShardProgress } from './estimate';
-import type { CountAnswer, RequestValidation } from './engine';
+import { unwrapOrThrow, type CountAnswer, type RequestValidation } from './engine';
 import type { SimProgressUpdate } from './types';
 
 export const MAX_WORKERS = 8;
@@ -184,11 +184,15 @@ export function createPool(options: PoolOptions = {}): SimPool {
       return send<string>(0, (token) => ({ kind: 'combine', token, results: [...results] }));
     },
     async needsMore(result, request) {
-      const answer = await send<string>(0, (token) => ({ kind: 'needsMore', token, result, request }));
+      // The fake lane's answer has not necessarily been through unwrapOrThrow already (see
+      // fake-worker.ts): a malformed envelope must fail here no matter which lane produced it.
+      const answer = unwrapOrThrow(
+        await send<string>(0, (token) => ({ kind: 'needsMore', token, result, request })),
+      );
       return (JSON.parse(answer) as { needs_more?: boolean }).needs_more === true;
     },
     async validate(request) {
-      const answer = await send<string>(0, (token) => ({ kind: 'validate', token, request }));
+      const answer = unwrapOrThrow(await send<string>(0, (token) => ({ kind: 'validate', token, request })));
       return JSON.parse(answer) as RequestValidation;
     },
     async count(request) {

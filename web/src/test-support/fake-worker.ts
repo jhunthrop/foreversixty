@@ -6,7 +6,7 @@
 // It is deliberately not a mock: every message is handled the way sim.worker.ts handles it,
 // including the callbackId-to-token map that turns an engine progress callback into a
 // protocol message, and the prefix rule that makes one abort stop every shard of a run.
-import type { EngineModule } from '../lib/sim/engine';
+import { unwrapOrThrow, type EngineModule } from '../lib/sim/engine';
 import { combineInputFromShards, shardsFromSplit } from '../lib/sim/engine-protocol';
 import type { SimProgressUpdate } from '../lib/sim/types';
 import type { FromWorker, PoolWorker, ToWorker } from '../lib/sim/worker';
@@ -47,9 +47,13 @@ export function createFakeWorker(engine: EngineModule): PoolWorker {
           } else if (message.kind === 'combine') {
             emit({ kind: 'one', token, result: engine.simCombine(combineInputFromShards(message.results)) });
           } else if (message.kind === 'needsMore') {
-            emit({ kind: 'one', token, result: engine.simNeedsMore(message.result, message.request) });
+            emit({
+              kind: 'one',
+              token,
+              result: unwrapOrThrow(engine.simNeedsMore(message.result, message.request)),
+            });
           } else if (message.kind === 'validate') {
-            emit({ kind: 'one', token, result: engine.simValidate(message.request) });
+            emit({ kind: 'one', token, result: unwrapOrThrow(engine.simValidate(message.request)) });
           } else if (message.kind === 'count') {
             emit({ kind: 'one', token, result: engine.simCount(message.request) });
           } else {

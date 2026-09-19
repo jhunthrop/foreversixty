@@ -142,4 +142,21 @@ describe('the pool routes the two synchronous exports to worker 0', () => {
     expect(await pool.count(bulk(1))).toEqual({ ok: false, cap: 1, combinations: 2 });
     pool.terminate();
   });
+
+  // Fix round 1: neither pool.needsMore nor pool.validate inspected their answer for an
+  // `.error` field, unlike pool.count right above. On the fake lane -- the only one
+  // anything actually runs against today -- that meant needsMore silently resolved false
+  // and validate resolved an `{ok: undefined, errors: undefined}` wearing a valid type,
+  // instead of both rejecting the way an engine failure should surface through the pool.
+  it("rejects needsMore with the engine's own message for a malformed envelope", async () => {
+    const pool = createPool({ hardwareConcurrency: 2, spawn: () => createFakeWorker(createFakeEngine()) });
+    await expect(pool.needsMore('{nope', JSON.stringify(fixtureResult.request))).rejects.toThrow(/JSON/);
+    pool.terminate();
+  });
+
+  it("rejects validate with the engine's own message for a malformed envelope", async () => {
+    const pool = createPool({ hardwareConcurrency: 2, spawn: () => createFakeWorker(createFakeEngine()) });
+    await expect(pool.validate('{nope')).rejects.toThrow(/JSON/);
+    pool.terminate();
+  });
 });

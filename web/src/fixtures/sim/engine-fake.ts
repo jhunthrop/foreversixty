@@ -66,6 +66,11 @@ function statsOf(samples: number[]): SimResult['dps'] & { n: number } {
 const delay = (ms: number): Promise<void> =>
   ms <= 0 ? Promise.resolve() : new Promise((resolve) => setTimeout(resolve, ms));
 
+/** The `{"error": "..."}` envelope simNeedsMore, simValidate and simCount all answer with
+ * for input that is not JSON at all -- one place for the message-extraction logic. */
+const errorEnvelope = (error: unknown): string =>
+  JSON.stringify({ error: error instanceof Error ? error.message : String(error) });
+
 export function createFakeEngine(options: FakeEngineOptions = {}): EngineModule {
   const tickMs = options.tickMs ?? 120;
   const ticks = options.ticks ?? 10;
@@ -196,7 +201,7 @@ export function createFakeEngine(options: FakeEngineOptions = {}): EngineModule 
           result.iterations_run < request.iterations;
         return JSON.stringify({ needs_more: needsMore });
       } catch (error) {
-        return JSON.stringify({ error: error instanceof Error ? error.message : String(error) });
+        return errorEnvelope(error);
       }
     },
 
@@ -205,7 +210,7 @@ export function createFakeEngine(options: FakeEngineOptions = {}): EngineModule 
       try {
         request = JSON.parse(requestJSON) as SimRequest;
       } catch (error) {
-        return JSON.stringify({ error: error instanceof Error ? error.message : String(error) });
+        return errorEnvelope(error);
       }
       // A short stand-in for api.SimRequest.Validate: the checks the drawer's own tests
       // exercise. The real wasm runs the whole thing, and the drawer renders whatever
@@ -232,7 +237,7 @@ export function createFakeEngine(options: FakeEngineOptions = {}): EngineModule 
       try {
         request = JSON.parse(requestJSON) as SimRequest;
       } catch (error) {
-        return JSON.stringify({ error: error instanceof Error ? error.message : String(error) });
+        return errorEnvelope(error);
       }
       const bulk = request.bulk;
       if (bulk === undefined) return JSON.stringify({ combinations: 0 });

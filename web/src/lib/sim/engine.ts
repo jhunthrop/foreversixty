@@ -93,10 +93,12 @@ type WasmGlobals = {
 };
 
 /**
- * simSplit, simCombine and simAbort all fail the same way: `{"error": "..."}` JSON instead
- * of their success shape (main.go's errorJSON). simRun's failures are a full SimResult JSON
- * with `.error` set instead (main.go's fail()), which the caller already reads as a normal
- * result, so this check does not apply there.
+ * simSplit, simCombine, simAbort, simNeedsMore and simValidate all fail the same way:
+ * `{"error": "..."}` JSON instead of their success shape (main.go's errorJSON). simRun's
+ * failures are a full SimResult JSON with `.error` set instead (main.go's fail()), which the
+ * caller already reads as a normal result, so this check does not apply there. simCount is
+ * also excluded: its one error shape, `cap_exceeded`, is an answer carrying two numbers, not
+ * a failure, so it is never passed through this function.
  */
 export function unwrapOrThrow(json: string): string {
   const parsed: unknown = JSON.parse(json);
