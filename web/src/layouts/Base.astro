@@ -6,15 +6,20 @@
 // planner-island.css is the only stylesheet the API's server-rendered /b/{id} page links,
 // so a copy that lived only in this layout would leave that page in Georgia and Arial.
 import '../styles/fonts.css';
-// The two faces every page paints first are preloaded so the swap from the fallback face
+// The three faces every page paints first are preloaded so the swap from the fallback face
 // happens before first paint on most connections; Vite gives them the same hashed URL the
-// @fontsource CSS in fonts.css references, so no extra bytes are fetched.
+// @fontsource CSS in fonts.css references, so no extra bytes are fetched. Barlow 600 joins
+// 400 here for the same reason: it is the weight the header and footer paint with on every
+// page, so an unpreloaded 600 arrives late enough to shift them (final whole-branch review,
+// Lighthouse rounds 1-3 — layout-shifts kept naming barlow-latin-600-normal.woff2's load as
+// the footer's own shift, on whichever page's font timing happened to expose it that run).
 //
 // The data-og attributes are the selectors src/worker.ts rewrites through HTMLRewriter when
 // it serves a shell page for an id that did not exist at build time. Renaming one silently
 // stops that page's unfurl from updating, so src/pages/_shells.test.ts asserts they exist.
 import cinzel700Url from '@fontsource/cinzel/files/cinzel-latin-700-normal.woff2?url';
 import barlow400Url from '@fontsource/barlow/files/barlow-latin-400-normal.woff2?url';
+import barlow600Url from '@fontsource/barlow/files/barlow-latin-600-normal.woff2?url';
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
@@ -51,6 +56,7 @@ const ldNodes = path === '/' ? [websiteLd(), ...jsonLd] : jsonLd;
     <link rel="canonical" href={`${site}${path}`} data-og="canonical" />
     <link rel="preload" href={cinzel700Url} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={barlow400Url} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={barlow600Url} as="font" type="font/woff2" crossorigin />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta property="og:title" content={fullTitle} data-og="og-title" />
     <meta property="og:description" content={description} data-og="og-description" />
