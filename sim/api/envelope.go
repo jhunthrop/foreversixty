@@ -372,9 +372,17 @@ func (r SimResult) ValidateSaved() error {
 // Validate uses it because the envelope carries no lane; ValidateLane
 // narrows it.
 func largestCeiling() int {
+	return largestValue(LaneIterationCeiling)
+}
+
+// largestValue is the biggest value in a lane-keyed map of ints. Both
+// largestCeiling here and the bulk cap check in bulk.go need the
+// largest lane's number because Validate has no lane to look up; one
+// helper keeps the two loops from drifting apart.
+func largestValue(m map[string]int) int {
 	out := 0
-	for _, c := range LaneIterationCeiling {
-		out = max(out, c)
+	for _, v := range m {
+		out = max(out, v)
 	}
 	return out
 }

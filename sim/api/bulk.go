@@ -211,10 +211,7 @@ func (b *BulkSpec) validate(iterations int) []error {
 	if final, ok := FinalIterations(b.Precision); ok && iterations != final {
 		errs = append(errs, fmt.Errorf("a %s bulk request runs its last stage at %d, so iterations must be %d, got %d", b.Precision, final, final, iterations))
 	}
-	largest := 0
-	for _, c := range Caps {
-		largest = max(largest, c)
-	}
+	largest := largestValue(Caps)
 	if b.Cap <= 0 || b.Cap > largest {
 		errs = append(errs, fmt.Errorf("bulk.cap must be between 1 and %d, got %d", largest, b.Cap))
 	}
