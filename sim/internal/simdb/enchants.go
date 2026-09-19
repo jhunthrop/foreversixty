@@ -84,9 +84,13 @@ type Enchant struct {
 	// where it goes.
 	ItemTypes []string `json:"item_types"`
 	// Classes are the class slugs allowed to use it: the union of
-	// every sharer's classes. Empty means every class.
-	Classes []string           `json:"classes"`
-	Stats   map[string]float64 `json:"stats"`
+	// every sharer's classes, EXCEPT that an empty Classes (every
+	// class) absorbs rather than unions - if any sharer names no
+	// restriction, the merged enchant names none either. A naive
+	// element-union would instead keep a restriction one sharer never
+	// imposed, which is exactly the wrong-refusal EnchantFits exists
+	// to prevent (see the package doc comment).
+	Classes []string `json:"classes"`
 	// Phase is the lowest non-zero phase among its sharers, or 0 if
 	// every sharer is phase 0.
 	Phase int `json:"phase"`
@@ -96,16 +100,22 @@ type Enchant struct {
 // effect id are merged into one Enchant. spell_id and item_id
 // distinguish sharers in the source data but are not carried into
 // Enchant: sim/bulk asks whether an effect id fits somewhere, never
-// which spell cast it.
+// which spell cast it. stats is read by nothing here and is dropped
+// too, for a related reason: it is UI-facing flavor text, not what
+// the engine actually applies (SimEnchant's own stats, embedded
+// separately in simdb.bin, are authoritative), and at least one
+// shared id disagrees on it - id 848's two sharers carry
+// {"armor": 30.0} and {"bonus_armor": 30.0} - so keeping it on
+// Enchant would mean silently picking one sharer's answer over the
+// other's for a field nothing downstream reads.
 type enchantRow struct {
-	ID        int                `json:"id"`
-	Name      string             `json:"name"`
-	Icon      string             `json:"icon"`
-	Slots     []string           `json:"slots"`
-	ItemTypes []string           `json:"item_types"`
-	Classes   []string           `json:"classes"`
-	Stats     map[string]float64 `json:"stats"`
-	Phase     int                `json:"phase"`
+	ID        int      `json:"id"`
+	Name      string   `json:"name"`
+	Icon      string   `json:"icon"`
+	Slots     []string `json:"slots"`
+	ItemTypes []string `json:"item_types"`
+	Classes   []string `json:"classes"`
+	Phase     int      `json:"phase"`
 }
 
 // parseEnchants decodes and merges the table. It is separate from the
@@ -126,9 +136,9 @@ func parseEnchants(b []byte) (map[int]Enchant, error) {
 		}
 		existing, ok := out[row.ID]
 		if !ok {
-			// The first sharer in file order supplies Name, Icon and
-			// Stats; a later sharer only widens Slots, ItemTypes,
-			// Classes and lowers Phase.
+			// The first sharer in file order supplies Name and Icon; a
+			// later sharer only widens Slots and ItemTypes, merges
+			// Classes (see mergeClasses) and lowers Phase.
 			out[row.ID] = Enchant{
 				ID:        row.ID,
 				Name:      row.Name,
@@ -136,14 +146,13 @@ func parseEnchants(b []byte) (map[int]Enchant, error) {
 				Slots:     unique(row.Slots),
 				ItemTypes: unique(row.ItemTypes),
 				Classes:   unique(row.Classes),
-				Stats:     row.Stats,
 				Phase:     row.Phase,
 			}
 			continue
 		}
 		existing.Slots = union(existing.Slots, row.Slots)
 		existing.ItemTypes = union(existing.ItemTypes, row.ItemTypes)
-		existing.Classes = union(existing.Classes, row.Classes)
+		existing.Classes = mergeClasses(existing.Classes, row.Classes)
 		existing.Phase = lowestNonZero(existing.Phase, row.Phase)
 		out[row.ID] = existing
 	}
@@ -167,6 +176,21 @@ func union(a, b []string) []string {
 	out = append(out, b...)
 	slices.Sort(out)
 	return slices.Compact(out)
+}
+
+// mergeClasses merges two sharers' Classes with empty as an absorbing
+// wildcard rather than a plain union: an empty Classes means "every
+// class", and a merge of "every class" with any restriction is still
+// "every class", because the engine can apply whichever sharer granted
+// the widest access. Only when BOTH sharers restrict does the result
+// restrict, and even then as the union of who may use either sharer's
+// version - not the intersection, which would refuse a class one
+// sharer actually allows.
+func mergeClasses(a, b []string) []string {
+	if len(a) == 0 || len(b) == 0 {
+		return nil
+	}
+	return union(a, b)
 }
 
 // lowestNonZero is the lower of a and b, treating 0 as "no opinion"

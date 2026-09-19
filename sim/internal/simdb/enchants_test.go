@@ -122,6 +122,60 @@ func TestParseEnchantsMergesSharedIds(t *testing.T) {
 	}
 }
 
+// No real shared id in this build mixes a class-restricted sharer with
+// an unrestricted one (all 19 shared ids in the real file agree on
+// Classes), so this scenario is exercised with a synthetic fixture
+// rather than a cut from enchants.json. An empty Classes means "every
+// class"; merging it with a restriction must stay "every class", not
+// keep the restriction, because EnchantFits must never refuse a class
+// the engine would actually accept through the unrestricted sharer.
+func TestParseEnchantsClassRestrictionIsAbsorbedByAnUnrestrictedSharer(t *testing.T) {
+	synthetic := []byte(`[
+		{"id": 90000, "name": "Restricted Sharer", "icon": "x", "slots": ["head"], "item_types": ["kit"], "classes": ["mage"], "stats": {}, "phase": 0, "spell_id": 1, "item_id": 0},
+		{"id": 90000, "name": "Unrestricted Sharer", "icon": "x", "slots": ["legs"], "item_types": ["kit"], "classes": [], "stats": {}, "phase": 0, "spell_id": 2, "item_id": 0}
+	]`)
+	table, err := parseEnchants(synthetic)
+	if err != nil {
+		t.Fatal(err)
+	}
+	got, ok := table[90000]
+	if !ok {
+		t.Fatal("90000 missing")
+	}
+	if len(got.Classes) != 0 {
+		t.Errorf("merged Classes = %v, want empty (the unrestricted sharer should absorb the restriction)", got.Classes)
+	}
+	// A mage keeps fitting through the unrestricted sharer's slot.
+	if err := fits(table, 90000, "legs", Item{ID: 1}, "mage"); err != nil {
+		t.Errorf("fits = %v, want nil", err)
+	}
+	// So does a warrior: the restriction did not survive the merge.
+	if err := fits(table, 90000, "legs", Item{ID: 1}, "warrior"); err != nil {
+		t.Errorf("fits = %v, want nil", err)
+	}
+}
+
+func TestMergeClasses(t *testing.T) {
+	cases := []struct {
+		name string
+		a, b []string
+		want []string
+	}{
+		{name: "both unrestricted", a: nil, b: nil, want: nil},
+		{name: "one restricted, one not, absorbs to unrestricted", a: []string{"mage"}, b: nil, want: nil},
+		{name: "not restricted, one is, absorbs to unrestricted", a: nil, b: []string{"warrior"}, want: nil},
+		{name: "both restricted unions", a: []string{"mage"}, b: []string{"warrior"}, want: []string{"mage", "warrior"}},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			got := mergeClasses(c.a, c.b)
+			if !slices.Equal(got, c.want) {
+				t.Errorf("mergeClasses(%v, %v) = %v, want %v", c.a, c.b, got, c.want)
+			}
+		})
+	}
+}
+
 // The embedded copy is what both artifacts ship, so it has to load and
 // it has to carry the slot vocabulary the planner speaks. A stale copy
 // is a failing test here rather than an enchant silently refused in a
