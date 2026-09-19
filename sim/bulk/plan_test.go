@@ -2,6 +2,7 @@ package bulk
 
 import (
 	"encoding/json"
+	"errors"
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/sim/api"
@@ -99,7 +100,7 @@ func TestSeedsArePairedWithinAStageAndDifferBetweenThem(t *testing.T) {
 			t.Errorf("request %d has seed %d, request 0 has %d; a stage is paired", i, r.RandomSeed, seed)
 		}
 	}
-	second := stageRequests(req, 2, 1000, first.Combos)
+	second := stageRequests(req, 2, 1000, first.Combos, nil)
 	if second.Requests[0].RandomSeed == seed {
 		t.Error("stage 2 reuses stage 1's seed")
 	}
@@ -134,12 +135,66 @@ func TestStageRequestsJSONNames(t *testing.T) {
 			t.Errorf("a stage does not carry %q", key)
 		}
 	}
+	// "ran" is omitempty and stage 1 carries no history, so it is
+	// legitimately absent here - checked instead on a stage built with
+	// a non-empty history, below.
+	if _, ok := got["ran"]; ok {
+		t.Error(`stage 1's JSON carries "ran", but stage 1 has no history yet`)
+	}
 	var back StageRequests
 	if err := json.Unmarshal(b, &back); err != nil {
 		t.Fatal(err)
 	}
 	if back.Stage != stage.Stage || len(back.Requests) != len(stage.Requests) || len(back.Combos) != len(stage.Combos) {
 		t.Errorf("round trip lost something: %+v", back)
+	}
+}
+
+// A10: StageRequests.Ran carries the ladder's history across the wasm
+// boundary so Rank can fill SimResult.Stages. Stage 1 starts it empty;
+// this pins the shape once a caller (Rank, in Task 16) has threaded a
+// history in - the "ran" key, its round trip, and that it is a copy
+// rather than an alias of the slice passed in.
+func TestStageRequestsCarriesItsHistory(t *testing.T) {
+	req := withBulk(api.KindGear, candidate("head", itemHelm))
+	first, err := Plan(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(first.Ran) != 0 {
+		t.Errorf("stage 1 carries history %v, want none", first.Ran)
+	}
+
+	history := []api.Stage{{Iterations: first.Iterations, Combos: len(first.Combos)}}
+	second := stageRequests(req, 2, 1000, first.Combos, history)
+	if len(second.Ran) != 1 || second.Ran[0] != history[0] {
+		t.Fatalf("stage 2's Ran = %+v, want %+v", second.Ran, history)
+	}
+
+	// A mutation of the caller's slice after the call must not reach
+	// back into the stage already returned.
+	history[0].Combos = -1
+	if second.Ran[0].Combos == -1 {
+		t.Error("stageRequests aliased the caller's history slice instead of copying it")
+	}
+
+	b, err := json.Marshal(second)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var got map[string]json.RawMessage
+	if err := json.Unmarshal(b, &got); err != nil {
+		t.Fatal(err)
+	}
+	if _, ok := got["ran"]; !ok {
+		t.Error(`a stage with history does not carry "ran"`)
+	}
+	var back StageRequests
+	if err := json.Unmarshal(b, &back); err != nil {
+		t.Fatal(err)
+	}
+	if len(back.Ran) != len(second.Ran) || back.Ran[0] != second.Ran[0] {
+		t.Errorf("ran did not round trip: got %+v, want %+v", back.Ran, second.Ran)
 	}
 }
 
@@ -167,6 +222,26 @@ func TestPlanRefusesAnExpansionWithNothingInIt(t *testing.T) {
 	req.Spec = "mage-frost"
 	if _, err := Plan(req); err == nil {
 		t.Error("Plan accepted an expansion with no combinations")
+	}
+}
+
+// PlanWith is a thin wrapper around ExpandWith: a cap breach is
+// ExpandWith's own error, unwrapped and untouched, not a new "the plan
+// itself is too big" message the page would have to learn a second
+// wording for. Same fixture shape as expand_test.go's own
+// TestTheCapRefusesRatherThanTrims.
+func TestPlanWithPassesThroughACapBreach(t *testing.T) {
+	req := withBulk(api.KindGear,
+		candidate("head", itemHelm), candidate("head", itemHelm2),
+		candidate("finger2", itemRing+1), candidate("trinket2", itemTrinket+1))
+	req.Bulk.Cap = 3
+	_, err := Plan(req)
+	var capped api.ErrCapExceeded
+	if !errors.As(err, &capped) {
+		t.Fatalf("Plan = %v, want ErrCapExceeded", err)
+	}
+	if capped.Cap != 3 || capped.Combinations <= 3 {
+		t.Errorf("ErrCapExceeded = %+v", capped)
 	}
 }
 
