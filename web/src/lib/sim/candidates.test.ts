@@ -66,12 +66,46 @@ describe('the row list', () => {
     expect(again[2].checked).toBe(true);
   });
 
+  it('merges a drop origin and source name into an existing row rather than losing them', () => {
+    // The reviewer's scenario: an item is already a ticked row from bags, then the
+    // droptimizer offers the same equippable candidate again as a drop. The two share a
+    // key (origin is not part of it -- see candidateKey's own comment), so this must end
+    // up as ONE row, and that row must carry the drop's origin and source name, not the
+    // bag row's blank ones.
+    const fromBag = [{ ...rowFor(helm, 'head', 'bag'), checked: true }];
+    const asDrop = rowFor(helm, 'head', 'drop:raid:mc:11502', 'Ragnaros');
+    const merged = addRow(fromBag, asDrop);
+    expect(merged).toHaveLength(1);
+    expect(merged[0].origin).toBe('drop:raid:mc:11502');
+    expect(merged[0].sourceName).toBe('Ragnaros');
+    expect(merged[0].checked).toBe(true);
+
+    // And the reverse order: a drop row already present keeps its own origin and name
+    // when a plainer origin for the same candidate turns up afterwards.
+    const fromDrop = [{ ...asDrop, checked: true }];
+    const thenFromBag = addRow(fromDrop, rowFor(helm, 'head', 'bag'));
+    expect(thenFromBag).toHaveLength(1);
+    expect(thenFromBag[0].origin).toBe('drop:raid:mc:11502');
+    expect(thenFromBag[0].sourceName).toBe('Ragnaros');
+  });
+
   it('copies and modifies into a new, ticked row beside the original', () => {
     const next = copyAndModify(start, candidateKey(start[0]), { enchant: 2543 });
     expect(next).toHaveLength(3);
     expect(next[1].enchant).toBe(2543);
     expect(next[1].checked).toBe(true);
     expect(next[1].origin).toBe('bag');
+  });
+
+  it('ticks an already-present row instead of duplicating it when a copy lands on its key', () => {
+    const withBoth: CandidateRow[] = [
+      rowFor(helm, 'head', 'bag'),
+      { ...rowFor(helm, 'head', 'bag'), enchant: 2543 },
+    ];
+    const next = copyAndModify(withBoth, candidateKey(withBoth[0]), { enchant: 2543 });
+    expect(next).toHaveLength(2);
+    expect(next[1].checked).toBe(true);
+    expect(next[0]).toEqual(withBoth[0]);
   });
 
   it('removes by key', () => {
@@ -125,6 +159,24 @@ describe('buildBulkSpec and validateBulk', () => {
     expect(spec.cap).toBe(400);
     expect(spec.locked).toEqual(['main_hand']);
     expect(validateBulk(spec)).toBeNull();
+  });
+
+  it('refuses a spec with a candidate on a locked slot', () => {
+    // Unlike the "builds a gear spec" test above (locked: ['main_hand'], candidate on
+    // 'head' -- a spec where rule 1 cannot fire), this hand-builds a BulkSpec whose
+    // candidate's slot IS the locked one, so rule 1 actually fires at the validateBulk
+    // level (toCandidates's own locked-slot test, above, covers a different function).
+    const spec = buildBulkSpec({
+      mode: 'gear',
+      rows: [{ ...rowFor(helm, 'head', 'bag'), checked: true }],
+      locked: [],
+      loadouts: [],
+      sets: [],
+      precision: 'fast',
+      cap: 400,
+    });
+    const withLockedCandidate = { ...spec, locked: ['head'] };
+    expect(validateBulk(withLockedCandidate)).not.toBeNull();
   });
 
   it('refuses a talents spec that carries candidates, and one with no loadout', () => {

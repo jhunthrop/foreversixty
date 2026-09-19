@@ -6,7 +6,7 @@
 // in place would leave Svelte's `$state` array holding the same identity with different
 // contents, which is exactly the class of bug that makes a checkbox render one tick behind.
 import { bulkCopy } from './copy';
-import { KEEP_CURRENT_ENCHANT, NO_ENCHANT } from './enchants';
+import { NO_ENCHANT } from './enchants';
 import { slotsForItem } from '../planner/rules';
 import { SLOT_ALIASES, type Item, type Slot } from '../planner/types';
 import type { BulkMode, BulkSpec, Candidate, GearSet, Precision, TalentLoadout } from './bulk-types';
@@ -34,9 +34,22 @@ export interface CandidateRow {
 
 export const CANDIDATE_ROW_SEPARATOR = ':';
 
-/** Row identity: slot, item, enchant, suffix. A copy-and-modify is therefore a new row. */
+/**
+ * Row identity: slot, item, enchant, suffix. A copy-and-modify is therefore a new row.
+ *
+ * `origin` is deliberately NOT part of the key. A candidate's identity is what it would put
+ * in the equipped slot -- the same item, enchant and suffix reached from two different
+ * lists (ticked in bags, and also a droptimizer hit for the same drop) is one candidate,
+ * not two, and keying on origin as well would let it appear twice in one envelope. `addRow`
+ * below is where the two origins are reconciled instead of the key.
+ */
 export function candidateKey(row: Pick<CandidateRow, 'slot' | 'item' | 'enchant' | 'suffix'>): string {
   return [row.slot, row.item.id, row.enchant, row.suffix].join(CANDIDATE_ROW_SEPARATOR);
+}
+
+/** A `drop:<source-id>` origin, contract 1.3's most specific one. */
+function isDropOrigin(origin: Origin): boolean {
+  return origin.startsWith('drop:');
 }
 
 /**
@@ -69,13 +82,24 @@ export function toggleRow(rows: readonly CandidateRow[], key: string): Candidate
   return rows.map((row) => (candidateKey(row) === key ? { ...row, checked: !row.checked } : row));
 }
 
-/** Adds a row, or ticks the one already there -- adding the same item twice is not two rows. */
+/**
+ * Adds a row, or merges into the one already there -- adding the same item twice is not
+ * two rows. A same-key row keeps the richer provenance of the two: a `drop:` origin wins
+ * over a bare `equipped`/`bag`/`bank`/`search` one (so a droptimizer hit for an item
+ * already ticked from bags does not silently lose its source), and a non-empty
+ * `sourceName` wins over an absent or empty one. `checked` is true if either was.
+ */
 export function addRow(rows: readonly CandidateRow[], row: CandidateRow): CandidateRow[] {
   const key = candidateKey(row);
   if (rows.some((existing) => candidateKey(existing) === key)) {
-    return rows.map((existing) =>
-      candidateKey(existing) === key ? { ...existing, checked: existing.checked || row.checked } : existing,
-    );
+    return rows.map((existing) => {
+      if (candidateKey(existing) !== key) return existing;
+      const origin =
+        !isDropOrigin(existing.origin) && isDropOrigin(row.origin) ? row.origin : existing.origin;
+      const sourceName =
+        existing.sourceName === '' && row.sourceName !== '' ? row.sourceName : existing.sourceName;
+      return { ...existing, origin, sourceName, checked: existing.checked || row.checked };
+    });
   }
   return [...rows, row];
 }
@@ -123,12 +147,13 @@ export function toCandidates(rows: readonly CandidateRow[], locked: readonly str
         item_id: row.item.id,
         origin: row.origin,
       };
-      // NO_ENCHANT (0) is the wire's own "inherit the equipped enchant" and KEEP_CURRENT_ENCHANT
-      // (-1) is this page's "explicitly none" -- both mean the same thing on the wire, an
-      // omitted field, so neither ever travels as a literal number.
-      if (row.enchant !== NO_ENCHANT && row.enchant !== KEEP_CURRENT_ENCHANT) {
-        candidate.enchant = row.enchant;
-      }
+      // Only a real enchant id travels: NO_ENCHANT (0) is the wire's own "inherit the
+      // equipped enchant" and KEEP_CURRENT_ENCHANT (-1, from enchants.ts) is this page's
+      // "explicitly none" -- both mean the same thing on the wire, an omitted field. `> 0`
+      // is an allowlist, not a denylist of the two known sentinels: it excludes both by
+      // construction (KEEP_CURRENT_ENCHANT is already <= 0) and anything else this
+      // unconstrained field could hold that is not a real enchant id.
+      if (row.enchant > 0) candidate.enchant = row.enchant;
       if (row.suffix > 0) candidate.suffix = row.suffix;
       // Contract 10.1 A6: the page fills the source's name once, here, and reads it back
       // off the substitution rather than joining the id to loot.json a second time.
@@ -180,7 +205,7 @@ export function buildBulkSpec(input: BulkSpecInput): BulkSpec {
 export function validateBulk(spec: BulkSpec): string | null {
   const locked = spec.locked ?? [];
   if (spec.candidates.some((candidate) => locked.includes(candidate.slot))) {
-    return bulkCopy.noCandidates;
+    return bulkCopy.lockedHasCandidate;
   }
   if (spec.mode === 'talents') {
     return (spec.talents ?? []).length > 0 ? null : bulkCopy.noCandidates;

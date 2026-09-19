@@ -1,6 +1,7 @@
 // web/src/lib/sim/addon-export.test.ts
 import { describe, expect, it } from 'vitest';
 import { addonGearList, addonStringFor, gearEntry } from './addon-export';
+import { decodeFS1 } from '../planner/fs1';
 import type { GearSlot } from './types';
 
 const gear: GearSlot[] = [
@@ -35,5 +36,20 @@ describe('addonStringFor', () => {
     });
     expect(code.startsWith('FS1:1.60.1:warrior:orc:0/5530515/0:')).toBe(true);
     expect(code.endsWith(addonGearList(gear))).toBe(true);
+
+    // The title's claim, made good: round-trip through the real decoder rather than only
+    // checking the string's shape.
+    const decoded = decodeFS1(code);
+    expect(decoded.ok).toBe(true);
+    if (!decoded.ok) return;
+    expect(decoded.build.dataBuild).toBe('1.60.1');
+    expect(decoded.build.classSlug).toBe('warrior');
+    expect(decoded.build.raceSlug).toBe('orc');
+    expect(decoded.build.treeRanks).toEqual([[0], [5, 5, 3, 0, 5, 1, 5], [0]]);
+    expect(decoded.build.gearSlots).toEqual([
+      { slot: 'head', itemId: 16963, enchant: 2543 },
+      { slot: 'main_hand', itemId: 12784 },
+      { slot: 'trinket1', itemId: 13968, enchant: 0, suffix: 2 },
+    ]);
   });
 });

@@ -560,6 +560,8 @@ export const bulkCopy = {
   noEnchant: 'None',
   enchantCap: (cap: number): string => `At most ${cap} enchants per slot.`,
   noCandidates: 'Nothing ticked yet. Tick an item, a talent build or a set.',
+  /** validateBulk's rule 1: something is ticked, just on a slot that is locked. */
+  lockedHasCandidate: 'A locked slot cannot carry a candidate. Untick it or unlock the slot.',
   bagsNeedAddon: 'Your bags and bank come from the addon export; this character was loaded another way.',
   tryEach: 'Try each',
   consumableCandidates: 'Try each of these as a candidate rather than a setting.',
