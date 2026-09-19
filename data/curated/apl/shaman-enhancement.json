@@ -1,7 +1,7 @@
 {
   "spec": "shaman-enhancement",
   "state": "written",
-  "notes": "Vanilla Enhancement at 60: totems dropped before the pull, Stormstrike on cooldown, Flame Shock kept ticking, Earth Shock as the mana dump -- matching the community guide's 'totems > Stormstrike > Flame Shock (dot) > Frost/Earth Shock' summary. The fork's enhancement_shaman/apls/default.apl.json is the starting point, with two fixes: it casts Stormstrike (17364) at rank 1, but this build's spellconst has 17364 at rank 0 -- a stale label the rank-check test exists to catch -- so the rank is dropped here entirely, the same way a rankless spell like Tiger's Fury is written. It also checks Windfury Totem's remaining uptime against a second aura id (10611) that this build's spellconst does not have at all, so re-casting it here just checks the totem's own cast id instead, the same self-referential pattern the preset already uses for Strength of Earth and Grace of Air. Kept the preset's Searing Totem-only-with-20+-seconds-left and mana-percent-gated Earth Shock filler unchanged.",
+  "notes": "Vanilla Enhancement at 60: totems dropped before the pull, Stormstrike on cooldown, Flame Shock kept ticking, Earth Shock as the mana dump -- matching the community guide's 'totems > Stormstrike > Flame Shock (dot) > Frost/Earth Shock' summary. The fork's enhancement_shaman/apls/default.apl.json is the starting point. Fix round 1 (CRITICAL, replaces the first pass here): the first pass recast Windfury Totem on `not(auraIsActive({spellId: 10614}))`, reasoning it mirrored Strength of Earth's and Grace of Air's self-referential aura checks. That reasoning was wrong for all three: sim/shaman/air_totems.go registers Windfury's actual buff through a 'trigger dummy' aura with no ActionID set at all, plus a separately-tracked proc aura at SpellID 10611 (a buff-only id, never itself cast, so it does not appear in spellconst) -- no aura on the shaman is ever registered with ActionID.SpellID == 10614, so the old condition resolved to a nil APLValue, which APLAction.IsReady treats as unconditionally true, and Windfury would have been recast on every free GCD forever, starving everything below it in the priority list. Re-checking the same way turned up the identical bug one level deeper: sim/core/buffs.go's StrengthOfEarthTotemAura() and GraceOfAirTotemAura() helpers pick their buff aura's ActionID from IncludeAQ (sim/core/config.go: `const IncludeAQ = true` in this fork) rather than from whatever rank was actually cast -- IncludeAQ forces rank 5 (SpellID 25361) for Strength of Earth and rank 3 (SpellID 25359) for Grace of Air, always, regardless of which rank's totem spell triggered them. Checking auraIsActive against 10442 or 10627, as the preset and the first pass here both did, would have hit the exact same nil-condition bug. Fixed all three by switching to the engine's dedicated primitive for this, sim/shaman/apl_values.go's totemRemainingTime(totemType), which reads shaman.TotemExpirations directly and needs no aura or spell id at all: Strength of Earth against totemRemainingTime(Earth), Windfury against totemRemainingTime(Air). Also dropped Grace of Air Totem entirely rather than 'fix' it in place: it occupies the same Air totem slot as Windfury (sim/shaman/air_totems.go's setActiveAirTotem deactivates whichever air totem was previously active), so with Windfury correctly maintained ahead of it in priority, Grace of Air could now never actually fire -- dead code, not a rotation choice, and the guide's own totem summary calls Windfury 'typically' the air totem for Enhancement anyway. Now that Strength of Earth's buff is confirmed to key off rank 5 (25361), cast that rank directly instead of rank 4 (10442): same totem slot, better stats, no reason to downrank. Also re-verified Searing Totem's dotIsActive(10438) check: sim/shaman/fire_totems.go attaches its Dot directly to the same spell object as its own ActionID (no separate buff-aura helper, unlike the air totems), so that condition was already correct and is unchanged. Stormstrike's rank label was also wrong in the preset -- it cast rank 1, but this build's spellconst has 17364 at rank 0 -- so the rank is dropped entirely here, the same way a rankless spell like Tiger's Fury is written. Reordered autocastOtherCooldowns to be the first priority entry, matching the convention every other spec in this lane follows, instead of after the totem drops as the preset had it.",
   "sources": [
     {
       "label": "wowsims-forever enhancement_shaman default priority list",
@@ -21,23 +21,8 @@
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 10442,
-              "rank": 4
-            }
-          }
-        },
-        "doAtValue": {
-          "const": {
-            "val": "-4.5s"
-          }
-        }
-      },
-      {
-        "action": {
-          "castSpell": {
-            "spellId": {
-              "spellId": 10614,
-              "rank": 3
+              "spellId": 25361,
+              "rank": 5
             }
           }
         },
@@ -51,8 +36,8 @@
         "action": {
           "castSpell": {
             "spellId": {
-              "spellId": 10627,
-              "rank": 2
+              "spellId": 10614,
+              "rank": 3
             }
           }
         },
@@ -65,39 +50,50 @@
     ],
     "priorityList": [
       {
-        "notes": "Keep Strength of Earth Totem down; it is the earth totem slot for Enhancement.",
+        "action": {
+          "autocastOtherCooldowns": {}
+        }
+      },
+      {
+        "notes": "Keep Strength of Earth Totem down; totemRemainingTime is the engine's own primitive for 'does this totem slot need refreshing', and needs no aura or spell id to check.",
         "action": {
           "condition": {
-            "not": {
-              "val": {
-                "auraIsActive": {
-                  "auraId": {
-                    "spellId": 10442,
-                    "rank": 4
-                  }
+            "cmp": {
+              "op": "OpLe",
+              "lhs": {
+                "totemRemainingTime": {
+                  "totemType": "Earth"
+                }
+              },
+              "rhs": {
+                "const": {
+                  "val": "1.5"
                 }
               }
             }
           },
           "castSpell": {
             "spellId": {
-              "spellId": 10442,
-              "rank": 4
+              "spellId": 25361,
+              "rank": 5
             }
           }
         }
       },
       {
-        "notes": "Keep Windfury Totem down; it is the melee group's biggest damage totem.",
+        "notes": "Keep Windfury Totem down; it is the melee group's biggest damage totem and occupies the same Air slot Grace of Air would.",
         "action": {
           "condition": {
-            "not": {
-              "val": {
-                "auraIsActive": {
-                  "auraId": {
-                    "spellId": 10614,
-                    "rank": 3
-                  }
+            "cmp": {
+              "op": "OpLe",
+              "lhs": {
+                "totemRemainingTime": {
+                  "totemType": "Air"
+                }
+              },
+              "rhs": {
+                "const": {
+                  "val": "1.5"
                 }
               }
             }
@@ -108,34 +104,6 @@
               "rank": 3
             }
           }
-        }
-      },
-      {
-        "notes": "Keep Grace of Air Totem down for the agility.",
-        "action": {
-          "condition": {
-            "not": {
-              "val": {
-                "auraIsActive": {
-                  "auraId": {
-                    "spellId": 10627,
-                    "rank": 2
-                  }
-                }
-              }
-            }
-          },
-          "castSpell": {
-            "spellId": {
-              "spellId": 10627,
-              "rank": 2
-            }
-          }
-        }
-      },
-      {
-        "action": {
-          "autocastOtherCooldowns": {}
         }
       },
       {
