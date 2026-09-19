@@ -2,11 +2,13 @@ package runner
 
 import (
 	"context"
+	"errors"
 	"os"
 	"path/filepath"
 	"runtime"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/jhunthrop/foreversixty/sim/api"
 )
@@ -121,6 +123,22 @@ func TestNativeSaysWhichFailureItWas(t *testing.T) {
 		t.Fatal("expected an error on exit 2")
 	} else if !errorsIsBadInput(err) {
 		t.Fatalf("exit 2 is bad input: %v", err)
+	}
+}
+
+func TestNativeReturnsTheContextErrorWhenCancelled(t *testing.T) {
+	// The stub outlives the deadline, so the context kills it. The
+	// caller must be able to tell its own deadline apart from an
+	// engine crash, not just see "signal: killed".
+	bin := stubBinary(t, "cat > /dev/null\nsleep 5\n")
+	ctx, cancel := context.WithTimeout(context.Background(), 50*time.Millisecond)
+	defer cancel()
+	_, err := (&Native{Binary: bin}).Run(ctx, aRequest(), nil)
+	if err == nil {
+		t.Fatal("expected an error when the context is cancelled")
+	}
+	if !errors.Is(err, context.DeadlineExceeded) {
+		t.Fatalf("expected the error to wrap context.DeadlineExceeded: %v", err)
 	}
 }
 

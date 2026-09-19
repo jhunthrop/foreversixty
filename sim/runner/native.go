@@ -104,6 +104,13 @@ func (n *Native) Run(ctx context.Context, req api.SimRequest, onProgress Progres
 	wg.Wait()
 	waitErr := cmd.Wait()
 	if waitErr != nil {
+		// A cancelled or expired context is why the process died, not
+		// what it died of: exec reports a killed child as the opaque
+		// "signal: killed", which would otherwise mask the caller's
+		// own deadline behind an engine-failure-shaped error.
+		if ctxErr := ctx.Err(); ctxErr != nil {
+			return api.SimResult{}, fmt.Errorf("runner: %s: %w", bin, ctxErr)
+		}
 		var exit *exec.ExitError
 		if errors.As(waitErr, &exit) && exit.ExitCode() == exitBadInput {
 			return api.SimResult{}, fmt.Errorf("%w: %s: %s", ErrBadInput, bin, strings.TrimSpace(said.String()))
