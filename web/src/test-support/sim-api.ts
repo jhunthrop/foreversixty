@@ -12,11 +12,39 @@
 // often about what the client *sent*: that the character travelled, that a character key
 // was path-escaped rather than encoded, that the CSRF header was set, that the engine
 // version travelled. Recording them here keeps every test from re-wrapping fetch.
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
 import { vi } from 'vitest';
+import activeBuild from '../data/active-build.json';
 import fixtureResultJson from '../fixtures/sim/result.json';
 import fixtureSpecsJson from '../fixtures/sim/specs.json';
 import { FIXTURE_SIM_ID } from '../lib/report/shell-paths';
 import type { SimResult, SpecFidelity } from '../lib/sim/types';
+
+const WEB_ROOT = path.resolve(import.meta.dirname, '..', '..');
+
+/**
+ * The build `FOREVER_DATA=fixture` publishes to public/data/. scripts/sync-data.mjs names
+ * the published directory after src/data/active-build.json's own `build` field even under
+ * FOREVER_DATA=fixture -- only the *content* underneath it comes from src/fixtures/planner
+ * (whose own JSON files carry the build id they were captured against, '1.15.9.69722', which
+ * is not the directory name once the planner has moved to a later active build -- see
+ * src/lib/sim/character.test.ts's own note on the same fact). Reading the file rather than
+ * repeating the id keeps this from going stale the next time active-build.json moves, the
+ * way src/pages/_planner.test.ts already reads it for the same reason.
+ */
+export const FIXTURE_DATA_BUILD: string = activeBuild.build;
+export const FIXTURE_BUILD_ID = 'bld123456789';
+
+/** The planner's own data files, served from public/ the way the site serves them. */
+function dataFile(relative: string): Response {
+  try {
+    const body = readFileSync(path.join(WEB_ROOT, 'public/data', FIXTURE_DATA_BUILD, relative), 'utf8');
+    return new Response(body, { status: 200, headers: { 'content-type': 'application/json' } });
+  } catch {
+    return new Response(null, { status: 404 });
+  }
+}
 
 // Twelve characters of [a-z2-7], because that is what a sim_id is -- the same alphabet
 // and length as a report_id. It is not decoration: Task 22's Lighthouse entry for the
@@ -143,10 +171,48 @@ export function createSimApi(): SimApiStub {
           source: 'addon',
         }),
     },
+    // fromPlannerBuild's GET /v1/builds/{id} read (Task 7). The class and race ids are the
+    // fixture's own -- warrior is 1 and orc is 2 in src/fixtures/planner/classes.json and
+    // races.json -- so a test reads them from those files rather than repeating the numbers.
+    {
+      method: 'GET',
+      pattern: /\/v1\/builds\/([A-Za-z0-9]+)$/,
+      respond: (match) =>
+        match[1] !== FIXTURE_BUILD_ID
+          ? failure('no such build', 404)
+          : envelope({
+              id: FIXTURE_BUILD_ID,
+              class_id: 1,
+              race_id: 2,
+              tree_version: FIXTURE_DATA_BUILD,
+              point_order: [2001, 2001, 2001, 2001, 2001, 2002, 2002, 2002, 2002, 2002, 2003, 2003, 2003],
+              gear: { head: 12640 },
+              title: 'Fury opener',
+              created_at: '2026-09-13T20:00:00Z',
+              views: 4,
+            }),
+    },
+    // fromPlannerBuild and fromAddonExport (Task 7) both read /data/<build>/… files with
+    // lib/planner/load.ts's own loaders. Last and broadest on purpose: its capture is the
+    // whole remaining path, so talents/warrior.json and classes.json are both served by
+    // this one route rather than by two that could disagree, and it must stay ordered
+    // after every /v1/… route above or it would swallow them too.
+    {
+      method: 'GET',
+      pattern: /\/data\/[^/]+\/(.+)$/,
+      respond: (match) => dataFile(match[1]),
+    },
   ];
 
   async function handle(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
-    const request = input instanceof Request ? input : new Request(input, init);
+    // Every /v1/… caller builds an absolute url itself (requestEnvelope, report/load.ts's
+    // apiGet). Task 7's /data/<build>/… reads do not: the planner's own fetchJson(url) calls
+    // fetch() with dataUrl()'s root-relative path exactly as the browser would, resolving it
+    // against the page's own origin. Node's fetch has no page to resolve against, so a bare
+    // relative string is resolved against a fixed placeholder origin first -- routing below
+    // reads only the resulting pathname and search, so the origin itself is never observed.
+    const request =
+      input instanceof Request ? input : new Request(new URL(String(input), 'https://fixture.test'), init);
     lastUrl = request.url;
     lastHeaders = new Headers(request.headers);
     lastBody = null;

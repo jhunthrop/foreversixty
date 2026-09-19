@@ -57,4 +57,21 @@ export const simCopy = {
    */
   executionUnscored: 'Not scored yet: this spec is not validated, or the fight predates scoring.',
   executionScored: (label: string): string => `${label} of what this gear can do, simulated`,
+
+  // --- Task 7: the four character sources and the pill that says which. ---
+  buildNotFound: 'No build with that link.',
+  fightRefInvalid: 'That is not a fight link; it should look like abc123def456:2.',
+  fightNoCombatant: 'That fight did not record this character’s gear and talents.',
+  fightNoTalents:
+    'That fight recorded gear but not talent ranks, so the sim uses the gear and an empty tree.',
+  armorySignIn: 'Sign in with Battle.net to find your characters.',
+  // Armory itself is not a source yet (simulator contract, sim-input). Saying so is better
+  // than an Armory card that quietly serves an addon export under the wrong name.
+  armoryNotYet:
+    'Blizzard has no character profile API for Forever yet, so a signed-in character’s gear comes from your last addon export or your last logged fight. It will come from the Armory the day that exists.',
+  // A combat log records no race and this lane never guesses one; the strip asks instead.
+  pickRace: 'Pick your race; the combat log did not record it.',
+  pickRacePlaceholder: 'Choose a race',
+  // The landing state's companion line when fromStoredCharacter refuses for want of a race.
+  landingNoRace: 'Paste your addon export instead; it carries your race.',
 } as const;
