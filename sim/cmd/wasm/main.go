@@ -1,7 +1,11 @@
 //go:build js && wasm
 
 // Command wasm is the browser half of the sim. It exports exactly four
-// functions, all taking and returning JSON strings.
+// functions, all taking and returning JSON strings, plus one string
+// global, simEngineVersion, which is the engine sha this module was
+// built from. The page reads that global rather than being told the sha
+// by the server, so a request can never name an engine the wasm it is
+// running in is not.
 //
 // It exists in this repository rather than in the engine because
 // sim/request and sim/adapter are linked in here: the browser gets a
@@ -19,12 +23,15 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
+	"strings"
 	"syscall/js"
 	"time"
 
 	"github.com/jhunthrop/foreversixty/sim/adapter"
 	"github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/jhunthrop/foreversixty/sim/combine"
+	"github.com/jhunthrop/foreversixty/sim/enginever"
 	"github.com/jhunthrop/foreversixty/sim/internal/simdb"
 	"github.com/jhunthrop/foreversixty/sim/request"
 	engine "github.com/wowsims/classic/sim"
@@ -32,9 +39,6 @@ import (
 	"github.com/wowsims/classic/sim/core/proto"
 	"github.com/wowsims/classic/sim/core/simsignals"
 )
-
-// Version is set at build time to the pinned engine sha.
-var Version = "dev"
 
 func main() {
 	engine.RegisterAll()
@@ -44,7 +48,9 @@ func main() {
 	js.Global().Set("simSplit", js.FuncOf(simSplit))
 	js.Global().Set("simCombine", js.FuncOf(simCombine))
 	js.Global().Set("simAbort", js.FuncOf(simAbort))
-	js.Global().Set("simEngineVersion", js.ValueOf(Version))
+	// The pin is compiled in, not injected: a plain `go build ./cmd/wasm`
+	// used to produce "dev" and stamp it on real rows.
+	js.Global().Set("simEngineVersion", js.ValueOf(enginever.Version))
 
 	// The host page defines wasmready and is told the moment the four
 	// exports exist, so it never races them.
@@ -55,13 +61,42 @@ func main() {
 // fail wraps an error as a SimResult, so every export returns the same
 // shape and the worker never has to distinguish a throw from a result.
 func fail(req api.SimRequest, msg string) string {
-	b, _ := json.Marshal(api.SimResult{
-		EngineVersion: req.EngineVersion,
-		Request:       req,
-		Lane:          api.LaneBrowser,
-		Error:         msg,
-	})
+	return result(api.SimResult{Request: req, Error: msg})
+}
+
+// stopped wraps an abort. It is not a failure - the user pressed Stop -
+// so it carries no error message and the page renders it as a run that
+// ended early rather than as something that went wrong.
+func stopped(req api.SimRequest, iterations int) string {
+	return result(api.SimResult{Request: req, Aborted: true, IterationsRun: iterations})
+}
+
+// result stamps the two fields every export must fill the same way and
+// encodes. EngineVersion is enginever.Version, never the request's
+// claim: the row's provenance is a fact about the binary that produced
+// it, and api.SimResult.Stale can only fire if it is.
+func result(res api.SimResult) string {
+	res.EngineVersion = enginever.Version
+	res.Lane = api.LaneBrowser
+	b, err := json.Marshal(res)
+	if err != nil {
+		return errorJSON(err.Error())
+	}
 	return string(b)
+}
+
+// decodeRequest parses one request strictly. A field the envelope does
+// not carry is a client sending something this build cannot honour -
+// a profession list to an older wasm, say - and running anyway would
+// drop it silently.
+func decodeRequest(s string) (api.SimRequest, error) {
+	var req api.SimRequest
+	dec := json.NewDecoder(strings.NewReader(s))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&req); err != nil {
+		return req, err
+	}
+	return req, nil
 }
 
 // simRun(requestJSON, callbackId) runs one request to completion and
@@ -74,8 +109,8 @@ func simRun(_ js.Value, args []js.Value) any {
 	if len(args) < 2 {
 		return fail(api.SimRequest{}, "simRun takes (requestJSON, callbackId)")
 	}
-	var req api.SimRequest
-	if err := json.Unmarshal([]byte(args[0].String()), &req); err != nil {
+	req, err := decodeRequest(args[0].String())
+	if err != nil {
 		return fail(req, "the request is not valid JSON: "+err.Error())
 	}
 	callbackID := args[1].String()
@@ -83,10 +118,10 @@ func simRun(_ js.Value, args []js.Value) any {
 	// Every request the browser runs is a part: the worker pool calls
 	// simSplit first, even for one worker, and a part's iteration count
 	// is not one of api.ValidIterations by construction - 3,000 over
-	// four workers is 750. SplitPart relaxes that check and nothing
-	// else. The whole request was validated before it was split, by the
-	// page and by the api lane.
-	engineReq, err := request.BuildWith(req, request.Options{SplitPart: true})
+	// four workers is 750. OpenIterations relaxes that check and
+	// nothing else. The whole request was validated before it was split,
+	// by the page and by the api lane.
+	engineReq, err := request.BuildWith(req, request.Options{OpenIterations: true})
 	if err != nil {
 		return fail(req, err.Error())
 	}
@@ -121,38 +156,38 @@ func simRun(_ js.Value, args []js.Value) any {
 	if engineRes == nil {
 		return fail(req, "the engine produced no result")
 	}
-	if engineRes.Error != nil && engineRes.Error.Message != "" {
-		return fail(req, engineRes.Error.Message)
+	// An abort's ErrorOutcome carries no message, so this switches on
+	// the type. Testing the message alone let Stop through as a result
+	// with zero iterations, which the adapter then called corrupt.
+	if err := adapter.ResultError(engineRes); err != nil {
+		if errors.Is(err, adapter.ErrAborted) {
+			return stopped(req, int(engineRes.IterationsDone))
+		}
+		return fail(req, err.Error())
 	}
 
 	sum, err := adapter.Summarize(engineRes, req)
 	if err != nil {
 		return fail(req, err.Error())
 	}
-	b, err := json.Marshal(api.SimResult{
-		EngineVersion: req.EngineVersion,
+	return result(api.SimResult{
 		Request:       req,
-		Lane:          api.LaneBrowser,
 		DPS:           adapter.DPS(engineRes),
 		IterationsRun: int(engineRes.IterationsDone),
 		DurationMS:    time.Since(start).Milliseconds(),
 		Summary:       sum,
 	})
-	if err != nil {
-		return fail(req, err.Error())
-	}
-	return string(b)
 }
 
 // simSplit(requestJSON, n) returns a JSON array of n request JSONs, one
 // per worker, with the seeds already offset.
 func simSplit(_ js.Value, args []js.Value) any {
 	if len(args) < 2 {
-		return `{"error":"simSplit takes (requestJSON, n)"}`
+		return errorJSON("simSplit takes (requestJSON, n)")
 	}
-	var req api.SimRequest
-	if err := json.Unmarshal([]byte(args[0].String()), &req); err != nil {
-		return `{"error":"the request is not valid JSON"}`
+	req, err := decodeRequest(args[0].String())
+	if err != nil {
+		return errorJSON("the request is not valid JSON: " + err.Error())
 	}
 	parts, err := combine.Split(req, args[1].Int())
 	if err != nil {
@@ -169,29 +204,39 @@ func simSplit(_ js.Value, args []js.Value) any {
 // one SimResult JSON.
 func simCombine(_ js.Value, args []js.Value) any {
 	if len(args) < 1 {
-		return `{"error":"simCombine takes (resultsJSON)"}`
+		return errorJSON("simCombine takes (resultsJSON)")
 	}
 	var parts []api.SimResult
 	if err := json.Unmarshal([]byte(args[0].String()), &parts); err != nil {
-		return `{"error":"the results are not valid JSON"}`
+		return errorJSON("the results are not valid JSON: " + err.Error())
 	}
 	out, err := combine.Results(parts)
 	if err != nil {
-		return fail(api.SimRequest{}, err.Error())
+		return errorJSON(err.Error())
 	}
 	b, err := json.Marshal(out)
 	if err != nil {
-		return fail(api.SimRequest{}, err.Error())
+		return errorJSON(err.Error())
 	}
 	return string(b)
 }
 
-// simAbort(callbackId) stops a run started with the same id.
+// simAbort(callbackId) stops a run started with the same id and returns
+// {"aborted": true|false}, where false means no run is registered under
+// that id. It returns JSON rather than a bare boolean so that a wrong
+// call - which used to come back as the same `false` as "no such run" -
+// is distinguishable, and so that all four exports have one shape.
 func simAbort(_ js.Value, args []js.Value) any {
 	if len(args) < 1 {
-		return false
+		return errorJSON("simAbort takes (callbackId)")
 	}
-	return simsignals.AbortById(args[0].String())
+	b, err := json.Marshal(struct {
+		Aborted bool `json:"aborted"`
+	}{simsignals.AbortById(args[0].String())})
+	if err != nil {
+		return errorJSON(err.Error())
+	}
+	return string(b)
 }
 
 // errorJSON wraps a message as the {"error": "..."} shape simSplit's

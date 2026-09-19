@@ -41,7 +41,12 @@ func (s *progressStderr) LogOutput() io.Writer { return logLines{s} }
 
 type logLines struct{ out *progressStderr }
 
+// Write wraps one log write - which is often several lines, a panic
+// trace most of all - and emits it as ONE write on the shared stream.
+// Taking the mutex per line let a tick land in the middle of a trace,
+// which is the interleaving this file exists to prevent.
 func (l logLines) Write(p []byte) (int, error) {
+	var buf []byte
 	for _, line := range strings.Split(strings.TrimRight(string(p), "\n"), "\n") {
 		if line == "" {
 			continue
@@ -50,11 +55,18 @@ func (l logLines) Write(p []byte) (int, error) {
 			Log string `json:"log"`
 		}{line})
 		if err != nil {
-			continue
-		}
-		if _, err := l.out.Write(append(b, '\n')); err != nil {
+			// Dropping it would lose the one explanation a failed run
+			// has. The line is not JSON-encodable, so it is reported
+			// as the error it is rather than silently skipped.
 			return 0, err
 		}
+		buf = append(append(buf, b...), '\n')
+	}
+	if len(buf) == 0 {
+		return len(p), nil
+	}
+	if _, err := l.out.Write(buf); err != nil {
+		return 0, err
 	}
 	return len(p), nil
 }
