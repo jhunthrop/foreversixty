@@ -176,6 +176,13 @@ test('a loaded character reaches the run button and the DPS figure in one scroll
 }) => {
   await loadFury(page);
 
+  // Every disclosure this lane adds is closed on arrival. An open one would add height
+  // after hydration, which is the shift the shell's own min-h reservation exists to stop.
+  for (const testid of ['sim-settings-more', 'sim-request-drawer']) {
+    await expect(page.getByTestId(testid)).toBeVisible();
+    await expect(page.getByTestId(testid)).not.toHaveAttribute('open', '');
+  }
+
   // The secondary encounter controls only exist while the disclosure is open; the audit
   // has to measure them, so it opens it the way a player does.
   await page.getByTestId('sim-settings-more').locator('summary').click();
