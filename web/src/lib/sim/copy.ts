@@ -158,4 +158,34 @@ export const simCopy = {
    * happening rather than left reading "Stop" over a click that does nothing.
    */
   serverRunButton: 'Running on our servers…',
+
+  // --- Task 14: the results sentence and the report components. ---
+  /** No damage at all: a rotation that never fired, not a rendering failure. */
+  noDamage: 'This run recorded no damage; the rotation did not fire.',
+  /**
+   * Resolved names a sentence says differently from a table. The engine's own OtherAction
+   * names arrive as "Attack" and "Shoot" (sentence-cased by resolveActionName, Task 23),
+   * and a sentence about damage calls those white hits and auto shots. This is copy, not a
+   * mapping of engine ids -- there is no engine table in web/ and there must not be.
+   */
+  proseNames: {
+    Attack: 'white hits',
+    'Attack (2)': 'off-hand white hits',
+    'Attack (3)': 'extra white hits',
+    Shoot: 'auto shots',
+  } as Record<string, string>,
+
+  distMean: 'Mean DPS',
+  distStdDev: 'Standard deviation',
+  distLowest: 'Lowest iteration',
+  distHighest: 'Highest iteration',
+  distIterations: 'Iterations',
+  tabDamage: 'Damage',
+  tabBuffs: 'Buffs',
+  tabDebuffs: 'Debuffs',
+  tabCasts: 'Casts',
+  tabResources: 'Resources',
+  tabTimeline: 'Timeline',
+  tabDistribution: 'Distribution',
+  resultsTablist: 'Results',
 } as const;

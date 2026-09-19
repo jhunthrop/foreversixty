@@ -11,6 +11,7 @@
   import { onMount, untrack } from 'svelte';
   import activeBuild from '../../data/active-build.json';
   import { battlenetStartUrl, fetchMe } from '../../lib/account/api';
+  import { createLazyComponent, type LazyLoadState } from '../../lib/report/lazy-component.svelte';
   import { simCopy } from '../../lib/sim/copy';
   import { createSimStore } from '../../lib/sim/store.svelte';
   import { parseSimState } from '../../lib/sim/url';
@@ -92,7 +93,25 @@
       ? store.result.engine_version
       : null,
   );
+
+  // SimResults pulls in five report components and is never needed for /sim's first
+  // paint -- the page opens on an empty state with no result at all -- so it ships as its
+  // own chunk, loaded the moment a result actually lands, the same way ReportView.svelte
+  // lazy-loads Compare, Mechanics, Rankings, Timelines, Events and Queries.
+  const simResultsLazy = createLazyComponent(() => import('./SimResults.svelte'));
+  $effect(() => {
+    if (store.result !== null) simResultsLazy.load();
+  });
 </script>
+
+{#snippet lazyFallback(lazy: LazyLoadState)}
+  {#if lazy.error !== ''}
+    <p class="text-muted px-[18px] text-[13px] md:px-0" role="alert" data-testid="sim-results-error">
+      {lazy.error}
+      <button type="button" class="text-strong ml-1 underline" onclick={() => lazy.load()}>Try again</button>
+    </p>
+  {/if}
+{/snippet}
 
 <div class="flex flex-col gap-[22px] md:gap-8" data-testid="sim-view">
   <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1 px-[18px] md:px-0">
@@ -150,6 +169,18 @@
         onserver={() => void store.runOnServer()}
         onrerun={() => void store.run()}
       />
+      {#if store.result !== null}
+        {#if simResultsLazy.current}
+          <simResultsLazy.current
+            summary={store.result.summary}
+            estimate={store.result.dps}
+            iterationsRun={store.result.iterations_run}
+            actionNames={store.actionNames}
+          />
+        {:else}
+          {@render lazyFallback(simResultsLazy)}
+        {/if}
+      {/if}
     {:else}
       <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="sim-empty">
         {simCopy.emptyPrompt}
