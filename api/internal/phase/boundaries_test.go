@@ -2,8 +2,6 @@ package phase
 
 import (
 	"encoding/json"
-	"errors"
-	"io/fs"
 	"os"
 	"testing"
 	"time"
@@ -17,9 +15,6 @@ import (
 // exactly what this catches.
 func TestBoundariesMatchTheCuratedFile(t *testing.T) {
 	b, err := os.ReadFile("../../../data/curated/phases.json")
-	if errors.Is(err, fs.ErrNotExist) {
-		t.Skip("data/curated/phases.json is not on this branch yet; the data lane creates it (contract 10.4). Delete this skip when it lands.")
-	}
 	if err != nil {
 		t.Fatal(err)
 	}
