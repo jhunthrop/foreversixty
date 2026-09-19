@@ -244,6 +244,54 @@ export function createFakeEngine(options: FakeEngineOptions = {}): EngineModule 
   const active = new Set<string>();
   let progress: ProgressHandler = () => {};
 
+  // A plain closure, not a method on the returned object: `simWeights` calls this directly
+  // (task-3 fix round 1, finding 2) rather than through `this.simRun`, so it does not depend
+  // on being invoked through the exact object reference `createFakeEngine` returns -- every
+  // other cross-call in this file already goes through a local closure the same way.
+  async function runSim(requestJSON: string, callbackId: string): Promise<string> {
+    aborted.delete(callbackId);
+    active.add(callbackId);
+    try {
+      if (failWith !== '') {
+        await delay(tickMs);
+        throw new Error(failWith);
+      }
+      const request = JSON.parse(requestJSON) as SimRequest;
+      const random = seeded(request.random_seed * 7919 + request.iterations);
+      const samples: number[] = [];
+      const perTick = Math.max(1, Math.ceil(request.iterations / ticks));
+      const startedAt = Date.now();
+
+      while (samples.length < request.iterations) {
+        await delay(tickMs);
+        if (aborted.has(callbackId)) {
+          aborted.delete(callbackId);
+          throw new Error(`sim run ${callbackId} aborted`);
+        }
+        const upTo = Math.min(request.iterations, samples.length + perTick);
+        while (samples.length < upTo) {
+          samples.push(normal(random, fixture.dps.mean, fixture.dps.stddev));
+        }
+        const { n, ...dps } = statsOf(samples);
+        progress(callbackId, JSON.stringify({ iterations_run: n, dps }));
+      }
+
+      const { n, ...dps } = statsOf(samples);
+      return JSON.stringify({
+        engine_version: request.engine_version,
+        request,
+        lane: 'browser',
+        dps,
+        iterations_run: n,
+        duration_ms: Date.now() - startedAt,
+        summary: fixture.summary,
+        sample: fixtureSample,
+      } satisfies SimResult);
+    } finally {
+      active.delete(callbackId);
+    }
+  }
+
   return {
     onProgress(handler) {
       progress = handler;
@@ -262,49 +310,7 @@ export function createFakeEngine(options: FakeEngineOptions = {}): EngineModule 
       return JSON.stringify(parts);
     },
 
-    async simRun(requestJSON, callbackId) {
-      aborted.delete(callbackId);
-      active.add(callbackId);
-      try {
-        if (failWith !== '') {
-          await delay(tickMs);
-          throw new Error(failWith);
-        }
-        const request = JSON.parse(requestJSON) as SimRequest;
-        const random = seeded(request.random_seed * 7919 + request.iterations);
-        const samples: number[] = [];
-        const perTick = Math.max(1, Math.ceil(request.iterations / ticks));
-        const startedAt = Date.now();
-
-        while (samples.length < request.iterations) {
-          await delay(tickMs);
-          if (aborted.has(callbackId)) {
-            aborted.delete(callbackId);
-            throw new Error(`sim run ${callbackId} aborted`);
-          }
-          const upTo = Math.min(request.iterations, samples.length + perTick);
-          while (samples.length < upTo) {
-            samples.push(normal(random, fixture.dps.mean, fixture.dps.stddev));
-          }
-          const { n, ...dps } = statsOf(samples);
-          progress(callbackId, JSON.stringify({ iterations_run: n, dps }));
-        }
-
-        const { n, ...dps } = statsOf(samples);
-        return JSON.stringify({
-          engine_version: request.engine_version,
-          request,
-          lane: 'browser',
-          dps,
-          iterations_run: n,
-          duration_ms: Date.now() - startedAt,
-          summary: fixture.summary,
-          sample: fixtureSample,
-        } satisfies SimResult);
-      } finally {
-        active.delete(callbackId);
-      }
-    },
+    simRun: runSim,
 
     simCombine(resultsJSON) {
       const parts = JSON.parse(resultsJSON) as SimResult[];
@@ -422,7 +428,7 @@ export function createFakeEngine(options: FakeEngineOptions = {}): EngineModule 
 
     async simWeights(requestJSON, callbackId) {
       const request = JSON.parse(requestJSON) as WeightsRequest;
-      const base = await this.simRun(JSON.stringify({ ...request }), callbackId);
+      const base = await runSim(JSON.stringify({ ...request }), callbackId);
       const result = JSON.parse(base) as SimResult;
       // Seeded off the stat name, so the same request gives the same weights every time.
       const weights = request.weights.stats.map((stat) => {
@@ -492,12 +498,13 @@ export function createFakeEngine(options: FakeEngineOptions = {}): EngineModule 
       }
       const bulk = request.bulk;
       if (bulk === undefined) return JSON.stringify({ combinations: 0 });
-      // A stand-in for `sim/bulk`'s own expansion, which knows slot fit, unique-equipped
-      // and weapon shapes; the real wasm counts properly. The fake counts what it can see
-      // -- one combination per candidate, per talent loadout, per set -- which is enough
-      // for the page's cap notice and its e2e to be exercised honestly.
-      const combinations =
-        (bulk.candidates?.length ?? 0) + (bulk.talents?.length ?? 0) + (bulk.sets?.length ?? 0);
+      // Reuses simPlan's own `expand()` rather than re-deriving the arithmetic (controller
+      // ruling, task-3 fix round 1): simCount and simPlan must agree on what a request
+      // expands to, because Task 15's live cap-notice UI and its client-side server-cap
+      // gate both read simCount, and a fake that disagreed with simPlan would bake a wrong
+      // number into that UI and its tests. This one call site is now the only place the
+      // fake computes a combination count.
+      const combinations = expand(request as BulkRequest).length;
       if (bulk.cap > 0 && combinations > bulk.cap) {
         return JSON.stringify({ error: 'cap_exceeded', cap: bulk.cap, combinations });
       }

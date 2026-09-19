@@ -256,13 +256,12 @@ describe('simCount', () => {
     expect(JSON.parse(engine.simCount(JSON.stringify(fixtureRequest)))).toEqual({ combinations: 0 });
   });
 
-  // simCount shipped in part A as a per-list sum (candidates + talents + sets), not the
-  // product-of-groups contract 10.1 A4 asks for. simPlan below is new in this task and does
-  // the real expansion; simCount is left exactly as shipped (controller ruling: do not
-  // reimplement the existing three), so it under-counts once candidates span more than one
-  // slot or a consumables list is present. Flagged in the task-3 report for the controller.
-  it('under-counts against a multi-slot gear product, unlike the new simPlan (known gap)', () => {
-    const engine = createFakeEngine();
+  // Fix round 1 (controller ruling): simCount must agree with simPlan, since Task 15's live
+  // cap-notice UI and its client-side server-cap gate both read simCount. simCount now
+  // reuses simPlan's own `expand()` instead of a separately-derived sum, so the two cannot
+  // drift again -- this invariant, not a hardcoded number, is what protects that.
+  it('agrees with simPlan on a multi-slot gear request', () => {
+    const engine = createFakeEngine({ tickMs: 0, ticks: 1 });
     const request = {
       ...fixtureRequest,
       bulk: {
@@ -273,13 +272,49 @@ describe('simCount', () => {
         ],
         talents: [],
         sets: [],
+        locked: [],
         precision: 'fast',
         cap: 400,
       },
     };
-    // The real product of two single-slot groups is 3 (single, single, pair) -- see
-    // simPlan's own test below, which agrees. simCount's shipped sum gives 2.
-    expect(JSON.parse(engine.simCount(JSON.stringify(request)))).toEqual({ combinations: 2 });
+    const requestJSON = JSON.stringify(request);
+    const counted = JSON.parse(engine.simCount(requestJSON)) as { combinations: number };
+    const planned = JSON.parse(engine.simPlan(requestJSON)) as StageRequests;
+    expect(counted.combinations).toBe(planned.combos.length);
+    expect(counted.combinations).toBe(3);
+  });
+
+  it('agrees with simPlan on a request carrying consumable alternatives (contract 10.1 A5)', () => {
+    const engine = createFakeEngine({ tickMs: 0, ticks: 1 });
+    const request = {
+      ...fixtureRequest,
+      bulk: {
+        mode: 'gear',
+        candidates: [
+          { slot: 'head', item_id: 16963, origin: 'bag' },
+          { slot: 'shoulder', item_id: 16966, origin: 'bank' },
+        ],
+        talents: [],
+        sets: [],
+        locked: [],
+        consumables: [['flask_of_supreme_power'], ['elixir_of_the_mongoose']],
+        precision: 'fast',
+        cap: 20,
+      },
+    };
+    const requestJSON = JSON.stringify(request);
+    const counted = JSON.parse(engine.simCount(requestJSON)) as { combinations: number };
+    const planned = JSON.parse(engine.simPlan(requestJSON)) as StageRequests;
+    expect(counted.combinations).toBe(planned.combos.length);
+    expect(counted.combinations).toBe(8);
+  });
+
+  it('agrees with simPlan on the shared fixture request (sets and consumables, Task 2 fix)', () => {
+    const engine = createFakeEngine({ tickMs: 0, ticks: 1 });
+    const requestJSON = JSON.stringify(fixtureBulkResult.request);
+    const counted = JSON.parse(engine.simCount(requestJSON)) as { combinations: number };
+    const planned = JSON.parse(engine.simPlan(requestJSON)) as StageRequests;
+    expect(counted.combinations).toBe(planned.combos.length);
   });
 });
 
@@ -338,6 +373,11 @@ describe('the fake engine’s bulk exports', () => {
     expect(stage.combos).toHaveLength(8);
   });
 
+  // The brief's draft of this test also asserted an invalid `bulk.precision` makes
+  // simValidate answer `{ok: false}` with a `bulk.precision` field error. Omitted: the
+  // shipped simValidate (part A, left untouched per controller ruling) validates only
+  // top-level SimRequest fields and does not inspect `bulk.*` at all, so that assertion
+  // would fail against current behaviour -- see the task-3 report for the full note.
   it('answers simValidate and simNeedsMore in the shapes contract 10.2 names', () => {
     const engine = createFakeEngine({ tickMs: 0, ticks: 1 });
     expect(JSON.parse(engine.simValidate(gearRequest()))).toEqual({ ok: true, errors: [] });
