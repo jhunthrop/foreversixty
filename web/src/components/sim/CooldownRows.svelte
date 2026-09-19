@@ -45,19 +45,23 @@
       <p class="text-muted text-[12px]">{simCopy.cooldownNote}</p>
       <ul class="flex flex-col gap-1">
         {#each rows as row (row.id)}
+          {@const label = buffLabel(row.id, names)}
           <li class="flex min-h-11 flex-wrap items-center gap-2 text-[13px] md:min-h-9">
-            <span class="min-w-0 flex-1 truncate">{buffLabel(row.id, names)}</span>
-            <select
-              class={control}
-              {disabled}
-              value={row.mode}
-              onchange={(event) => set(row.id, event.currentTarget.value as CooldownMode, row.atSec)}
-              data-testid={`sim-cooldown-${row.id}`}
-            >
-              {#each COOLDOWN_MODES as mode (mode)}
-                <option value={mode}>{simCopy.cooldownModeLabel[mode]}</option>
-              {/each}
-            </select>
+            <label class="flex min-w-0 flex-1 items-center gap-2">
+              <span class="min-w-0 flex-1 truncate">{label}</span>
+              <select
+                class={control}
+                {disabled}
+                aria-label={simCopy.cooldownModeFor(label)}
+                value={row.mode}
+                onchange={(event) => set(row.id, event.currentTarget.value as CooldownMode, row.atSec)}
+                data-testid={`sim-cooldown-${row.id}`}
+              >
+                {#each COOLDOWN_MODES as mode (mode)}
+                  <option value={mode}>{simCopy.cooldownModeLabel[mode]}</option>
+                {/each}
+              </select>
+            </label>
             {#if row.mode === 'at-time'}
               <input
                 type="number"
@@ -66,7 +70,7 @@
                 step="1"
                 class={`${control} w-20`}
                 {disabled}
-                aria-label={simCopy.cooldownAt}
+                aria-label={simCopy.cooldownAtFor(label)}
                 value={String(row.atSec)}
                 onchange={(event) => set(row.id, 'at-time', Number(event.currentTarget.value))}
                 data-testid={`sim-cooldown-at-${row.id}`}

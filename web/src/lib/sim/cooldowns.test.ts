@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { COOLDOWN_MODES, executeStartSec, modeOf, rowsFor, specFor, withCooldown } from './cooldowns';
+import { simCopy } from './copy';
 import { DEFAULT_ENCOUNTER } from './types';
 
 const encounter = { ...DEFAULT_ENCOUNTER, duration_sec: 200, execute_ratio: 0.25 };
@@ -80,5 +81,18 @@ describe('withCooldown', () => {
     const specs = [{ id: 'a', at_sec: [0] }];
     withCooldown(specs, 'a', 'at-time', 10, encounter);
     expect(specs).toEqual([{ id: 'a', at_sec: [0] }]);
+  });
+});
+
+describe('the row controls’ accessible names', () => {
+  // CooldownRows.svelte gives the mode select and the seconds input each a per-row name
+  // built from these two helpers, mirroring gradeFor in BuffPanel.svelte. A shared,
+  // row-independent string here is exactly the defect the review caught: several rows
+  // would read as identical controls to a screen reader.
+  it('names each control by the row it belongs to, not a string every row shares', () => {
+    expect(simCopy.cooldownModeFor('Major mana potion')).toContain('Major mana potion');
+    expect(simCopy.cooldownAtFor('Major mana potion')).toContain('Major mana potion');
+    expect(simCopy.cooldownModeFor('Major mana potion')).not.toBe(simCopy.cooldownModeFor('Thistle tea'));
+    expect(simCopy.cooldownAtFor('Major mana potion')).not.toBe(simCopy.cooldownAtFor('Thistle tea'));
   });
 });

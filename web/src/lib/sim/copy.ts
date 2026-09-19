@@ -388,7 +388,10 @@ export const simCopy = {
     'at-time': 'At a time',
     'at-execute': 'At execute',
   } as Record<string, string>,
-  cooldownAt: 'Second',
+  /** The mode control's own accessible name; the row's own label is beside it, same as gradeFor. */
+  cooldownModeFor: (name: string): string => `${name}, when to use it`,
+  /** The seconds field's own accessible name, so several "at a time" rows read as distinct controls. */
+  cooldownAtFor: (name: string): string => `${name}, at this second`,
 
   /**
    * Stat names, for the weights page (part B). The vocabulary is contract 10.8's pinning

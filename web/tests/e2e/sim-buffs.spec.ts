@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { expect, test } from '@playwright/test';
+import { buffLabel } from '../../src/lib/sim/buff-names';
 
 const activeBuild = JSON.parse(
   readFileSync(path.join(import.meta.dirname, '..', '..', 'src', 'data', 'active-build.json'), 'utf8'),
@@ -64,6 +65,19 @@ test('Custom opens the whole vocabulary, grouped, and every tick reaches the req
   const world = page.getByTestId('sim-buff-group-world-buffs');
   await world.locator('summary').click();
   await expect(page.getByTestId('sim-buff-songflower_serenade')).toBeVisible();
+
+  // Ticking a potion offers it a cooldown timing row, and that row's mode control has a
+  // real, per-row accessible name -- not a shared, unassociated label -- so a screen reader
+  // user tabbing through several rows can tell them apart. getByRole's name match, not the
+  // testid, is what actually fails if the control loses its aria-label again.
+  const potions = page.getByTestId('sim-buff-group-potion');
+  await potions.locator('summary').click();
+  await page.getByTestId('sim-buff-major_mana_potion').check();
+  const cooldowns = page.getByTestId('sim-cooldowns');
+  await expect(cooldowns).toBeVisible();
+  await cooldowns.locator('summary').click();
+  const potionLabel = buffLabel('major_mana_potion', null);
+  await expect(page.getByRole('combobox', { name: new RegExp(potionLabel) })).toBeVisible();
 
   // The choice reaches the engine: run at the fastest precision and read back every request
   // string the run actually posted to a worker.
