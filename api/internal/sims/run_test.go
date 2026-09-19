@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"reflect"
 	"strings"
 	"testing"
 
@@ -78,7 +79,7 @@ func TestAPremiumRunIsQueuedDispatchedAndPollable(t *testing.T) {
 		t.Fatalf("engine version %q, want the deployment's pin", stored.Request.EngineVersion)
 	}
 	// The encounter the page left empty is the design's default.
-	if stored.Request.Encounter != simapi.DefaultEncounter() {
+	if !reflect.DeepEqual(stored.Request.Encounter, simapi.DefaultEncounter()) {
 		t.Fatalf("encounter defaults were not applied: %+v", stored.Request.Encounter)
 	}
 	// And the whole character is in the row, which is what the job
