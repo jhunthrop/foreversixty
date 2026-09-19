@@ -41,7 +41,10 @@
       : `${simCopy.specMedianGap} ${formatPercent(row.median_gap * 100)} ${simCopy.specOver} ${row.parses} ${row.parses === 1 ? simCopy.specParse : simCopy.specParses}`,
   );
   const footer = $derived(
-    [row.engine_version === '' ? '' : engineLabel(row.engine_version), row.updated_at === null ? '' : row.updated_at.slice(0, 10)]
+    [
+      row.engine_version === '' ? '' : engineLabel(row.engine_version),
+      row.updated_at === null ? '' : row.updated_at.slice(0, 10),
+    ]
       .filter((part) => part !== '')
       .join(' · '),
   );

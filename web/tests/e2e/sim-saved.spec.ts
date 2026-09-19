@@ -86,7 +86,9 @@ test.describe('a saved sim from the prerendered fixture', () => {
   // the shape that used to land on a dead `/sim?source=addon` with no character and no
   // message. The fix adopts the saved request's own request.character through /sim's
   // existing ?code= bootstrap instead, so a character is on screen after the click.
-  test('Run this yourself opens /sim with the saved request’s own character, not a dead ref', async ({ page }) => {
+  test('Run this yourself opens /sim with the saved request’s own character, not a dead ref', async ({
+    page,
+  }) => {
     await page.goto('/sim/simfixtureab');
     await page.getByTestId('sim-run-yourself').click();
     await expect(page).toHaveURL(/\/sim\?code=/);
@@ -121,7 +123,9 @@ test('a saved sim whose stored request has no gear shows the line, not the grid'
 // branch for the prerendered fixture (its result is inlined), so this is the only place
 // the loading skeleton is exercisable end to end. Mirrors report-phone.spec.ts's own
 // reserved-skeleton check for reports/[id].astro's report-skeleton.
-test('a saved sim shows the loading skeleton until the fetch resolves, then the real result', async ({ page }) => {
+test('a saved sim shows the loading skeleton until the fetch resolves, then the real result', async ({
+  page,
+}) => {
   const id = 'simloadingab';
   await page.route(`**/sim/${id}`, (route) =>
     route.fulfill({ status: 200, contentType: 'text/html', body: SHELL_HTML }),

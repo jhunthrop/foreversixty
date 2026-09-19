@@ -15,7 +15,11 @@
   import { rowLink } from '../../lib/report/format';
   import { simCopy } from '../../lib/sim/copy';
   import { mergeSpecRows } from '../../lib/sim/spec-state';
-  import { SPEC_CARD_SKELETON_CLASSES, SPEC_GRID_CLASSES, specSkeletonSlots } from '../../lib/sim/spec-skeleton';
+  import {
+    SPEC_CARD_SKELETON_CLASSES,
+    SPEC_GRID_CLASSES,
+    specSkeletonSlots,
+  } from '../../lib/sim/spec-skeleton';
   import type { SpecFidelity } from '../../lib/sim/types';
   import SpecCard from './SpecCard.svelte';
 

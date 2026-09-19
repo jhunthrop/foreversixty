@@ -37,18 +37,23 @@ const request: SimRequest = {
 };
 
 describe('sim/cmd/wasm/main.go, as shipped', () => {
-  it.skipIf(!mainGoPinned)('simSplit/simCombine cross the boundary as one JSON string, never a JS array', () => {
-    const src = readFileSync(MAIN_GO, 'utf8');
-    // simSplit: combine.Split returns []api.SimRequest, and the whole slice is marshalled
-    // as one value -- not marshalled per-element into a []string.
-    expect(src).toMatch(/func simSplit\([^)]*\)[\s\S]*?json\.Marshal\(parts\)/);
-    // simCombine: args[0].String() is unmarshalled as one JSON array, not iterated per-arg.
-    expect(src).toMatch(/var parts \[\]api\.SimResult[\s\S]*?json\.Unmarshal\(\[\]byte\(args\[0\]\.String\(\)\), &parts\)/);
-    // simAbort answers a JSON object so a malformed call is distinguishable from "no such run".
-    expect(src).toMatch(/Aborted bool `json:"aborted"`/);
-    // Every one of the three fails the same way.
-    expect(src).toMatch(/func errorJSON\(msg string\) string/);
-  });
+  it.skipIf(!mainGoPinned)(
+    'simSplit/simCombine cross the boundary as one JSON string, never a JS array',
+    () => {
+      const src = readFileSync(MAIN_GO, 'utf8');
+      // simSplit: combine.Split returns []api.SimRequest, and the whole slice is marshalled
+      // as one value -- not marshalled per-element into a []string.
+      expect(src).toMatch(/func simSplit\([^)]*\)[\s\S]*?json\.Marshal\(parts\)/);
+      // simCombine: args[0].String() is unmarshalled as one JSON array, not iterated per-arg.
+      expect(src).toMatch(
+        /var parts \[\]api\.SimResult[\s\S]*?json\.Unmarshal\(\[\]byte\(args\[0\]\.String\(\)\), &parts\)/,
+      );
+      // simAbort answers a JSON object so a malformed call is distinguishable from "no such run".
+      expect(src).toMatch(/Aborted bool `json:"aborted"`/);
+      // Every one of the three fails the same way.
+      expect(src).toMatch(/func errorJSON\(msg string\) string/);
+    },
+  );
 });
 
 describe('EngineModule (fake)', () => {
