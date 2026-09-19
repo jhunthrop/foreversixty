@@ -183,7 +183,7 @@ class ItemDataError(ValueError):
     """The item tables hold something this normalizer will not guess at."""
 
 
-def _column(row: dict[str, str], column: str) -> str:
+def column_value(row: dict[str, str], column: str) -> str:
     """One column's value, or ItemDataError if the row does not supply one.
 
     csv.DictReader pads a short row with None rather than dropping the key, so
@@ -191,7 +191,7 @@ def _column(row: dict[str, str], column: str) -> str:
     header that does not carry the column at all (for instance a bonusStat
     column with no paired bonusAmount). Both are unreadable, and this module
     raises rather than guess at them. Every ItemSparse and Item column read on
-    the build_class_items path goes through here or through _int, so a
+    the build_class_items path goes through here or through int_column, so a
     malformed row is always the ItemDataError the orchestrator catches, never a
     KeyError or TypeError that takes the whole run down with it.
     """
@@ -204,9 +204,9 @@ def _column(row: dict[str, str], column: str) -> str:
     return value
 
 
-def _int(row: dict[str, str], column: str) -> int:
+def int_column(row: dict[str, str], column: str) -> int:
     """One column's value as an int, or ItemDataError if it is not readable as one."""
-    value = _column(row, column)
+    value = column_value(row, column)
     try:
         return int(value)
     except ValueError as error:
@@ -225,11 +225,11 @@ def _optional_int(row: dict[str, str], column: str) -> int | None:
     entirely absent from the row is that -- an older-schema build (Classic Era) still
     carries every one of these columns, so this only ever fires on a build that truly
     lacks the column. A present key with an empty value is still a truncated row, and
-    _int still raises for that.
+    int_column still raises for that.
     """
     if column not in row:
         return None
-    return _int(row, column)
+    return int_column(row, column)
 
 
 def _apply_stat(stats: dict[str, int], row: dict[str, str], index: int, amount: int) -> None:
@@ -240,7 +240,7 @@ def _apply_stat(stats: dict[str, int], row: dict[str, str], index: int, amount: 
     STAT_COLUMNS loop has not broken out yet) and differ only in how `amount`
     was computed -- read straight from a column, or from a curve formula.
     """
-    stat_id = _int(row, f"StatModifier_bonusStat_{index}")
+    stat_id = int_column(row, f"StatModifier_bonusStat_{index}")
     if stat_id < 0:
         return
     if stat_id not in STAT_BY_MODIFIER_ID:
@@ -261,7 +261,7 @@ def _stats(row: dict[str, str]) -> dict[str, int]:
         # The live table carries all ten stat column pairs, but they are
         # contiguous: a header that stops early simply has fewer to read.
         # Only an absent key means that; a key whose value is missing is a
-        # truncated row, which _column turns into an error.
+        # truncated row, which column_value turns into an error.
         if stat_column not in row:
             break
         amount = _optional_int(row, f"StatModifier_bonusAmount_{index}") or 0
@@ -290,7 +290,11 @@ def _curve_stats(
         if stat_column not in row:
             break
         editor_column = f"StatPercentEditor_{index}"
-        amount = round(budget * _int(row, editor_column) / 10000) if editor_column in row else 0
+        amount = (
+            round(budget * int_column(row, editor_column) / 10000)
+            if editor_column in row
+            else 0
+        )
         _apply_stat(stats, row, index, amount)
     return stats
 
@@ -366,10 +370,41 @@ def _icon_name(item_row: dict[str, str], icons: dict[int, str], display_name: st
     no art for the item; see `pipeline.icons.resolve_icon` for what happens then.
     """
     return resolve_icon(
-        _int(item_row, "IconFileDataID"),
+        int_column(item_row, "IconFileDataID"),
         icons,
         f"item {item_row.get('ID', '?')} ({display_name})",
     )
+
+
+def resolve_item_values(
+    sparse: dict[str, str],
+    item_row: dict[str, str],
+    curves: ItemCurves | None,
+) -> tuple[int, dict[str, int]]:
+    """One item's armour and stats, however this build states them.
+
+    Classic Era states both in columns; the 1.60 client (Forever beta) states
+    neither and computes them from the curve tables. That decision used to live
+    inside build_class_items, which meant the simulator's SimItem rows would
+    have had to make it a second time -- and a planner and a sim that disagree
+    about what an item is worth is the one bug neither would show. One function
+    now answers it for both. See item_curves.py for the formulas.
+    """
+    inventory_type = int_column(sparse, "InventoryType")
+    quality = int_column(sparse, "OverallQualityID")
+    item_level = int_column(sparse, "ItemLevel")
+    item_class_id = int_column(item_row, "ClassID")
+    subclass_id = int_column(item_row, "SubclassID")
+    if _row_has_literal_amounts(sparse):
+        return (_optional_int(sparse, "Resistances_0") or 0), _stats(sparse)
+    if curves is not None and curves.available:
+        armor = (
+            resolve_armor(curves, item_level, quality, inventory_type, subclass_id)
+            if item_class_id == ARMOR
+            else 0
+        )
+        return armor, _curve_stats(sparse, curves, item_level, quality, inventory_type)
+    return 0, {}
 
 
 def build_class_items(
@@ -387,43 +422,31 @@ def build_class_items(
     or an `ItemCurves` whose own tables are incomplete and such a row simply
     gets no armour and no stats, exactly as before curve support existed.
     """
-    by_id = {_int(row, "ID"): row for row in item_rows}
+    by_id = {int_column(row, "ID"): row for row in item_rows}
     candidates: list[tuple[GearItem, int, int, int]] = []
     for row in sparse_rows:
-        inventory_type = _int(row, "InventoryType")
+        inventory_type = int_column(row, "InventoryType")
         slot = SLOT_BY_INVENTORY_TYPE.get(inventory_type)
         if slot is None:
             continue
-        required_level = _int(row, "RequiredLevel")
+        required_level = int_column(row, "RequiredLevel")
         if required_level > MAX_PLAYER_LEVEL:
             continue
-        quality = _int(row, "OverallQualityID")
+        quality = int_column(row, "OverallQualityID")
         if quality not in PLANNER_QUALITIES:
             continue
-        display_name = _column(row, "Display_lang")
+        display_name = column_value(row, "Display_lang")
         if is_junk_name(display_name):
             continue
-        item_id = _int(row, "ID")
+        item_id = int_column(row, "ID")
         item_row = by_id.get(item_id)
         if item_row is None:
             logger.warning("item %s is in ItemSparse but not in Item; skipping it", item_id)
             continue
-        item_class_id = _int(item_row, "ClassID")
-        subclass_id = _int(item_row, "SubclassID")
-        item_level = _int(row, "ItemLevel")
-        if _row_has_literal_amounts(row):
-            armor = _optional_int(row, "Resistances_0") or 0
-            stats = _stats(row)
-        elif curves is not None and curves.available:
-            armor = (
-                resolve_armor(curves, item_level, quality, inventory_type, subclass_id)
-                if item_class_id == ARMOR
-                else 0
-            )
-            stats = _curve_stats(row, curves, item_level, quality, inventory_type)
-        else:
-            armor = 0
-            stats = {}
+        item_class_id = int_column(item_row, "ClassID")
+        subclass_id = int_column(item_row, "SubclassID")
+        item_level = int_column(row, "ItemLevel")
+        armor, stats = resolve_item_values(row, item_row, curves)
         _check_level_60_sanity(item_id, display_name, item_level, armor, stats)
         if not _has_gear_value(armor, stats, item_class_id):
             continue
@@ -437,13 +460,13 @@ def build_class_items(
             item_level=item_level,
             armor=armor,
             stats=stats,
-            set_id=_int(row, "ItemSet") or None,
-            unique=_int(row, "MaxCount") == 1,
+            set_id=int_column(row, "ItemSet") or None,
+            unique=int_column(row, "MaxCount") == 1,
         )
         candidates.append(
             (
                 item,
-                _int(row, "AllowableClass"),
+                int_column(row, "AllowableClass"),
                 item_class_id,
                 subclass_id,
             )

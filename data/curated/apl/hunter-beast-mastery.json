@@ -1,0 +1,10 @@
+{
+  "spec": "hunter-beast-mastery",
+  "state": "unwritten",
+  "notes": "",
+  "sources": [],
+  "rotation": {
+    "type": "TypeAPL",
+    "priorityList": []
+  }
+}

@@ -83,18 +83,26 @@ def test_download_table_accepts_id_column_anywhere_in_header(tmp_path: Path):
     assert path.read_text() == "Name_lang,ID\nWarrior,1\n"
 
 
-def test_tables_cover_every_phase_1_input():
+def test_tables_cover_every_pipeline_input():
     assert TABLES == [
         "Map",
         "AreaTable",
         "JournalInstance",
         "ItemSparse",
         "Item",
+        "ItemEffect",
+        "ItemXItemEffect",
         "SpellName",
         "Spell",
         "SpellEffect",
         "SpellDuration",
         "SpellMisc",
+        "SpellCooldowns",
+        "SpellCastTimes",
+        "SpellPower",
+        "SpellClassOptions",
+        "SpellLevels",
+        "SpellItemEnchantment",
         "ManifestInterfaceData",
         "ItemSet",
         "ItemSetSpell",
@@ -120,8 +128,55 @@ def test_tables_cover_every_phase_1_input():
         "ItemArmorShield",
         "ArmorLocation",
         "RandPropPoints",
+        "ItemDamageOneHand",
+        "ItemDamageTwoHand",
+        "ItemDamageRanged",
+        "ItemDamageWand",
+        "ItemDamageThrown",
     ]
     assert "foreversixty-pipeline" in USER_AGENT
+
+
+def test_a_table_with_no_consumer_is_not_fetched():
+    """SpellCategories would be a download and a fixture nobody reads: nothing
+    this pipeline emits carries Category or StartRecoveryCategory, and a
+    spell's global cooldown is SpellCooldowns.StartRecoveryTime."""
+    assert "SpellCategories" not in TABLES
+
+
+def test_spell_scaling_is_not_fetched():
+    """research/07-simulator.md 5.3: SpellScaling 404s on the Classic lineage.
+
+    Confirmed again on build 1.60.1.69893. Vanilla spell coefficients are a
+    convention, not a table. Adding it here would fail every fetch, so the
+    absence is deliberate and tested.
+    """
+    assert "SpellScaling" not in TABLES
+
+
+def test_the_caster_damage_curves_are_not_fetched():
+    """ItemDamageOneHandCaster and ItemDamageTwoHandCaster are byte-identical to
+    their non-caster twins on build 1.60.1.69893, so fetching them would add two
+    downloads and a second copy of the same numbers."""
+    assert "ItemDamageOneHandCaster" not in TABLES
+    assert "ItemDamageTwoHandCaster" not in TABLES
+
+
+def test_the_tables_only_one_schema_has_are_optional():
+    """ItemXItemEffect is the modern client's item-to-effect link; Classic Era
+    carries ParentItemID on ItemEffect itself and 404s on it. The damage curves
+    are optional for the same reason the armour curves are: a product without
+    them degrades to no weapon damage rather than aborting the fetch."""
+    assert {
+        "ItemXItemEffect",
+        "ItemDamageOneHand",
+        "ItemDamageTwoHand",
+        "ItemDamageRanged",
+        "ItemDamageWand",
+        "ItemDamageThrown",
+    } <= OPTIONAL_TABLES
+    assert "ItemEffect" not in OPTIONAL_TABLES
+    assert "SpellItemEnchantment" not in OPTIONAL_TABLES
 
 
 #: Every trait table the 1.60 reader needs. Classic Era 1.15.9.69722 serves

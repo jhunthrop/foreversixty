@@ -1,0 +1,10 @@
+{
+  "spec": "priest-holy",
+  "state": "unwritten",
+  "notes": "",
+  "sources": [],
+  "rotation": {
+    "type": "TypeAPL",
+    "priorityList": []
+  }
+}

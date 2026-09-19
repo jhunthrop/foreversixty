@@ -1,0 +1,152 @@
+from pathlib import Path
+
+from pipeline.csvio import read_csv
+from pipeline.normalize.item_curves import load_item_curves
+from pipeline.simdb.equip import SpellBonus
+from pipeline.simdb.items import build_sim_items, simdb_item_rows
+from pipeline.simdb.weapons import WeaponCurves, load_weapon_curves
+from pipeline.simproto import pb
+
+HERE = Path(__file__).parent
+FIXTURES = HERE / "fixtures"
+SIM = FIXTURES / "sim"
+
+
+def curves():
+    return load_item_curves(
+        read_csv(FIXTURES / "ItemArmorTotal.csv"),
+        read_csv(FIXTURES / "ItemArmorQuality.csv"),
+        read_csv(FIXTURES / "ItemArmorShield.csv"),
+        read_csv(FIXTURES / "ArmorLocation.csv"),
+        read_csv(FIXTURES / "RandPropPoints.csv"),
+    )
+
+
+def weapon_curves():
+    return load_weapon_curves(
+        read_csv(SIM / "ItemDamageOneHand.csv"),
+        read_csv(SIM / "ItemDamageTwoHand.csv"),
+        read_csv(SIM / "ItemDamageRanged.csv"),
+        read_csv(SIM / "ItemDamageWand.csv"),
+        read_csv(SIM / "ItemDamageThrown.csv"),
+    )
+
+
+def pairs():
+    return simdb_item_rows(
+        read_csv(FIXTURES / "ItemSparse_1_60.csv"),
+        read_csv(FIXTURES / "Item.csv"),
+    )
+
+
+def built(set_names=None, equip=None):
+    items = build_sim_items(
+        pairs(), set_names or {}, equip or {}, curves(), weapon_curves()
+    )
+    return {item.id: item for item in items}
+
+
+def test_rows_are_sorted_by_item_id():
+    ids = [int(sparse["ID"]) for sparse, _ in pairs()]
+    assert ids == sorted(ids)
+
+
+def test_the_filter_keeps_every_equippable_row_the_planner_would_drop():
+    """The planner drops an item with no armour and no stats. The sim keeps it:
+    Annihilator's whole value is its damage, and so is a plain white weapon's."""
+    assert {int(sparse["ID"]) for sparse, _ in pairs()} == {
+        12798,
+        16866,
+        30001,
+        30002,
+        30003,
+        30005,
+        30006,
+    }
+
+
+def test_an_armour_piece_carries_its_curve_resolved_armour_and_stats():
+    """Helm of Might (16866): plate, item level 66, epic, head. The planner
+    emits 608 armour and 35 stamina / 15 strength for the same row."""
+    helm = built()[16866]
+    assert helm.type == pb.ItemType.Value("ItemTypeHead")
+    assert helm.armor_type == pb.ArmorType.Value("ArmorTypePlate")
+    assert helm.stats[pb.Stat.Value("StatArmor")] == 608.0
+    assert helm.stats[pb.Stat.Value("StatStamina")] == 35.0
+    assert helm.stats[pb.Stat.Value("StatStrength")] == 15.0
+
+
+def test_a_weapon_carries_its_damage_and_speed():
+    """Annihilator (12798): item level 63, rare, 2.4 second one-hand axe,
+    variance 0.6 -> 69 to 129."""
+    axe = built()[12798]
+    assert axe.type == pb.ItemType.Value("ItemTypeWeapon")
+    assert axe.weapon_type == pb.WeaponType.Value("WeaponTypeAxe")
+    assert axe.hand_type == pb.HandType.Value("HandTypeMainHand")
+    assert (axe.weapon_damage_min, axe.weapon_damage_max, axe.weapon_speed) == (69.0, 129.0, 2.4)
+
+
+def test_an_armour_piece_has_no_weapon_damage():
+    helm = built()[16866]
+    assert (helm.weapon_damage_min, helm.weapon_damage_max, helm.weapon_speed) == (0.0, 0.0, 0.0)
+
+
+def test_a_shield_is_a_weapon_type_not_an_armour_type():
+    shield = built()[30005]
+    assert shield.weapon_type == pb.WeaponType.Value("WeaponTypeShield")
+    assert shield.armor_type == pb.ArmorType.Value("ArmorTypeUnknown")
+
+
+def test_a_set_piece_carries_its_set_id_and_name():
+    helm = built(set_names={209: "Battlegear of Might"})[16866]
+    assert helm.set_id == 209
+    assert helm.set_name == "Battlegear of Might"
+
+
+def test_an_item_in_no_set_carries_neither():
+    axe = built()[12798]
+    assert axe.set_id == 0
+    assert axe.set_name == ""
+
+
+def test_an_on_equip_bonus_is_folded_into_the_stat_array():
+    bonus = SpellBonus(
+        stats={"attack_power": 62.0},
+        weapon_skills={"WeaponSkillAxes": 3.0},
+        bonus_physical_damage=2.0,
+    )
+    axe = built(equip={12798: bonus})[12798]
+    assert axe.stats[pb.Stat.Value("StatAttackPower")] == 62.0
+    assert axe.weapon_skills[pb.WeaponSkill.Value("WeaponSkillAxes")] == 3.0
+    assert axe.bonus_physical_damage == 2.0
+
+
+def test_an_unrestricted_item_has_an_empty_class_allowlist():
+    assert list(built()[12798].class_allowlist) == []
+
+
+def test_a_class_restricted_item_lists_the_proto_classes():
+    helm = built()[16866]  # AllowableClass 1: warrior only
+    assert list(helm.class_allowlist) == [pb.Class.Value("ClassWarrior")]
+
+
+def test_a_negative_mask_that_is_not_minus_one_excludes_rather_than_permits():
+    """Build 1.60.1.69893 uses masks like -1136, which is 'these classes' with
+    the sign bit set, not 'everyone'. Reading only `> 0` as restricted would
+    hand a priest-and-mage-and-warlock item to a warrior."""
+    pair = pairs()[0]
+    sparse = dict(pair[0])
+    sparse["AllowableClass"] = "-1136"
+    item = build_sim_items([(sparse, pair[1])], {}, {}, curves(), weapon_curves())[0]
+    assert list(item.class_allowlist) == [
+        pb.Class.Value("ClassMage"),
+        pb.Class.Value("ClassPriest"),
+        pb.Class.Value("ClassWarlock"),
+    ]
+
+
+def test_a_build_with_no_weapon_curves_still_emits_its_items():
+    items = build_sim_items(pairs(), {}, {}, curves(), WeaponCurves())
+    axe = {item.id: item for item in items}[12798]
+    assert axe.weapon_speed == 0.0
+    assert axe.type == pb.ItemType.Value("ItemTypeWeapon")

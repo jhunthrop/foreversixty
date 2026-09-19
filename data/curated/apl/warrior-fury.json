@@ -1,0 +1,65 @@
+{
+  "spec": "warrior-fury",
+  "state": "written",
+  "notes": "Vanilla Fury at 60: Bloodthirst on cooldown, Whirlwind while it is down, Execute below 20 percent, Heroic Strike as the rage dump. Rage, not the global cooldown, is the limiting resource, so Bloodrage and Death Wish are used on cooldown. Every rank named here is checked against the spellconst of the newest client build in builds/ (the one its manifest.json records last); a later Forever patch may renumber them and tests/test_apl.py will say so. Nothing here is Forever-specific yet: the validation job (design section 6) is the evidence for changing it.",
+  "sources": [
+    { "label": "wowsims/classic default Fury priority list", "url": "https://github.com/wowsims/classic/blob/master/ui/warrior/apls/dps_no_reck.apl.json", "kind": "community" },
+    { "label": "Warcraft Tavern: Classic Fury Warrior DPS rotation", "url": "https://www.warcrafttavern.com/wow-classic/guides/dps-warrior-rotation/", "kind": "community" },
+    { "label": "Forever Sixty default rotation, unvalidated until the nightly job runs", "url": "https://foreversixty.gg/sim/specs", "kind": "site" }
+  ],
+  "rotation": {
+    "type": "TypeAPL",
+    "prepullActions": [
+      {
+        "action": { "castSpell": { "spellId": { "spellId": 25289, "rank": 7 } } },
+        "doAtValue": { "const": { "val": "-1s" } }
+      }
+    ],
+    "priorityList": [
+      { "action": { "autocastOtherCooldowns": {} } },
+      {
+        "notes": "Bloodrage on cooldown: rage is the limiting resource for Fury.",
+        "action": {
+          "condition": { "cmp": { "op": "OpLt", "lhs": { "currentRage": {} }, "rhs": { "const": { "val": "80" } } } },
+          "castSpell": { "spellId": { "spellId": 2687 } }
+        }
+      },
+      {
+        "notes": "Death Wish on cooldown.",
+        "action": { "castSpell": { "spellId": { "spellId": 12328 } } }
+      },
+      {
+        "notes": "Keep Battle Shout up.",
+        "action": {
+          "condition": { "not": { "val": { "auraIsActive": { "auraId": { "spellId": 25289, "rank": 7 } } } } },
+          "castSpell": { "spellId": { "spellId": 25289, "rank": 7 } }
+        }
+      },
+      {
+        "notes": "Bloodthirst is the highest damage per rage button and comes off a six second cooldown.",
+        "action": { "castSpell": { "spellId": { "spellId": 23894, "rank": 4 } } }
+      },
+      {
+        "notes": "Whirlwind while Bloodthirst is down.",
+        "action": {
+          "condition": { "cmp": { "op": "OpGt", "lhs": { "spellTimeToReady": { "spellId": { "spellId": 23894, "rank": 4 } } }, "rhs": { "const": { "val": "1.5s" } } } },
+          "castSpell": { "spellId": { "spellId": 1680 } }
+        }
+      },
+      {
+        "notes": "Execute below 20 percent.",
+        "action": {
+          "condition": { "isExecutePhase": { "threshold": "E20" } },
+          "castSpell": { "spellId": { "spellId": 20662, "rank": 5 } }
+        }
+      },
+      {
+        "notes": "Heroic Strike as the rage dump, never below 40 rage.",
+        "action": {
+          "condition": { "cmp": { "op": "OpGe", "lhs": { "currentRage": {} }, "rhs": { "const": { "val": "40" } } } },
+          "castSpell": { "spellId": { "spellId": 25286, "rank": 9, "tag": 1 } }
+        }
+      }
+    ]
+  }
+}

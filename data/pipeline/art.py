@@ -31,6 +31,7 @@ from pathlib import Path
 import httpx
 from PIL import Image, ImageEnhance
 
+from pipeline.casc import CascMissing, fetch_casc_file
 from pipeline.icons import CACHE_DIR, _atomic_write
 from pipeline.wago import BASE_URL, USER_AGENT
 
@@ -235,10 +236,12 @@ def backgrounds_for_build(
 ) -> int:
     """Write one processed background per tree, regenerating every one on every call.
 
-    Only the fetched BLPs are cached (by CASC file data id, which does not change):
-    the emitted webp is always re-derived from them, so a change to TREATMENT or
-    DEAD_MARGIN_THRESHOLD takes effect on the next run instead of staying silently
-    stale behind a "the file already exists" skip.
+    Only the fetched BLPs are cached, keyed by build and CASC file data id: an id is
+    stable across builds but the bytes behind it are not, and every fetch pins the
+    build with `?version=` because wago's bare route serves whichever build is its
+    current default. The emitted webp is always re-derived from the cache, so a
+    change to TREATMENT or DEAD_MARGIN_THRESHOLD takes effect on the next run instead
+    of staying silently stale behind a "the file already exists" skip.
 
     Returns the number written.
     """
@@ -268,12 +271,18 @@ def backgrounds_for_build(
                 )
             quadrants: dict[str, bytes] = {}
             for quadrant, file_id in ids.items():
-                cached = cache_dir / f"{file_id}.blp"
-                if not cached.exists():
-                    response = client.get(f"/api/casc/{file_id}", timeout=60)
-                    response.raise_for_status()
-                    _atomic_write(cached, response.content)
-                quadrants[quadrant] = cached.read_bytes()
+                try:
+                    quadrants[quadrant] = fetch_casc_file(
+                        file_id, build, cache_dir=cache_dir, client=client, suffix=".blp"
+                    )
+                except CascMissing as error:
+                    # The message is this module's, not the helper's: a tree is
+                    # named by its background and its quadrant, and
+                    # tests/test_art.py matches on "no bytes".
+                    raise ArtDataError(
+                        f"{background} {quadrant}: wago returned no bytes for file "
+                        f"{file_id} at version {build}"
+                    ) from error
             _atomic_write(target, background_webp(quadrants))
             written += 1
     finally:

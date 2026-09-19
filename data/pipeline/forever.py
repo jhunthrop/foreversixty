@@ -229,6 +229,7 @@ def fetch_missing_icons(
             icons_dir,
             cache_dir=cache_dir,
             client=client,
+            version=fallback_build,
         )
     finally:
         if own:

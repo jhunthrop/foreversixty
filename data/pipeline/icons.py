@@ -105,13 +105,22 @@ def download_icons(
     out_dir: Path,
     cache_dir: Path = CACHE_DIR,
     client: httpx.Client | None = None,
+    *,
+    version: str,
 ) -> int:
     """Write out_dir/<name>.webp for each file id. Returns the number written.
 
-    Downloads land in cache_dir/<file id>.blp first, so a rerun after the
-    output directory is cleared costs nothing, and an icon that is already
-    converted is left alone.
+    Every fetch pins `version` (a client build): a file data id is stable across
+    builds but the bytes behind it are not, and wago's bare route serves whichever
+    build is its current default. Downloads land in cache_dir/<version>/<file id>.blp
+    first, so a rerun after the output directory is cleared costs nothing, and an
+    icon that is already converted is left alone.
     """
+    # Imported here rather than at module scope: pipeline/casc.py imports
+    # CACHE_DIR and _atomic_write from this module, so a top-level import
+    # would make the two modules import each other at load time.
+    from pipeline.casc import CascMissing, CascMissingReason, fetch_casc_file
+
     own = client is None
     if client is None:
         client = httpx.Client(base_url=BASE_URL, headers={"User-Agent": USER_AGENT})
@@ -124,15 +133,34 @@ def download_icons(
             target = out_dir / f"{name}.webp"
             if target.exists():
                 continue
-            cached = cache_dir / f"{file_id}.blp"
-            if not cached.exists():
-                response = client.get(f"/api/casc/{file_id}", timeout=60)
-                if response.status_code == 404:
-                    logger.warning("icon %s (%s) is not in CASC; skipping", file_id, name)
-                    continue
-                response.raise_for_status()
-                _atomic_write(cached, response.content)
-            _atomic_write(target, blp_to_webp(cached.read_bytes()))
+            try:
+                blp = fetch_casc_file(
+                    file_id, version, cache_dir=cache_dir, client=client, suffix=".blp"
+                )
+            except CascMissing as error:
+                # CascMissing covers both a 404 and an empty body; branch on
+                # its structured `reason` rather than its message text, so a
+                # reword of either message in casc.py can't silently misroute
+                # this. The wording below is this module's own, kept
+                # byte-for-byte what it was before the migration because
+                # tests/test_icons.py matches on the empty-body phrasing
+                # specifically.
+                if error.reason is CascMissingReason.EMPTY:
+                    logger.warning(
+                        "icon %s (%s) is empty in CASC at version %s; skipping",
+                        file_id,
+                        name,
+                        version,
+                    )
+                else:
+                    logger.warning(
+                        "icon %s (%s) is not in CASC at version %s; skipping",
+                        file_id,
+                        name,
+                        version,
+                    )
+                continue
+            _atomic_write(target, blp_to_webp(blp))
             written += 1
     finally:
         if own:
@@ -194,6 +222,6 @@ def icons_for_build(
         raise SystemExit(f"no raw data at {raw}; run `python -m pipeline fetch` first")
     names = icon_names(read_csv(raw / "ManifestInterfaceData.csv"))
     wanted = wanted_icons(build_dir, names)
-    written = download_icons(wanted, build_dir / "icons", cache_dir, client)
+    written = download_icons(wanted, build_dir / "icons", cache_dir, client, version=build)
     print(f"{written} icons written, {len(wanted)} referenced")
     return written

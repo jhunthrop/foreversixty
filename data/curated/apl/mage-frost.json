@@ -1,0 +1,20 @@
+{
+  "spec": "mage-frost",
+  "state": "written",
+  "notes": "Vanilla Frost at 60 is Frostbolt spam: with no Fire talents, working a Fire Blast cast into the rotation spends a global that Frostbolt would otherwise fill, for less damage -- the engine lane's spec tasks measured a 2.0 percent (FullBuffs) to 5.6 percent (NoBuffs) DPS loss versus Frostbolt alone, so Fire Blast is left out of the default rotation. Cold Snap and Ice Lance are the spec's own utility and are handled by Frost-specific logic, not this priority list. Every rank named here is checked against the spellconst of the newest client build in builds/ (the one its manifest.json records last).",
+  "sources": [
+    { "label": "wowsims/classic default Mage priority list", "url": "https://github.com/wowsims/classic/blob/master/ui/mage/apls/p1.apl.json", "kind": "community" },
+    { "label": "Warcraft Tavern: Classic Frost Mage DPS rotation", "url": "https://www.warcrafttavern.com/wow-classic/guides/dps-mage-rotation/", "kind": "community" },
+    { "label": "Forever Sixty default rotation, unvalidated until the nightly job runs", "url": "https://foreversixty.gg/sim/specs", "kind": "site" }
+  ],
+  "rotation": {
+    "type": "TypeAPL",
+    "priorityList": [
+      { "action": { "autocastOtherCooldowns": {} } },
+      {
+        "notes": "Frostbolt is the whole rotation.",
+        "action": { "castSpell": { "spellId": { "spellId": 25304, "rank": 11 } } }
+      }
+    ]
+  }
+}

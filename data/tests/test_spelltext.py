@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from pipeline.csvio import read_csv
-from pipeline.spelltext import load_spell_text
+from pipeline.spelltext import effect_amount, load_spell_text
 
 HERE = Path(__file__).parent
 
@@ -178,3 +178,20 @@ def test_overrides_replace_an_effects_value_for_one_rank():
 def test_overrides_reach_an_effect_the_spell_has_no_row_for():
     text = fixture_text()
     assert text.describe(12777, {1: 7}) == "Deals 4 damage and stuns for 7 sec."
+
+
+def test_effect_amount_folds_eras_die_side_into_the_amount():
+    """Era states "Attack Power 24" as 23 + 1."""
+    assert effect_amount(
+        {"EffectBasePoints": "23", "EffectBasePointsF": "0", "EffectDieSides": "1"}
+    ) == 24
+
+
+def test_effect_amount_reads_the_modern_column_as_final():
+    """The 1.60 client has no EffectDieSides and states 8 for the +8 Strength
+    enchant's spell, where Era stated 7 + 1."""
+    assert effect_amount({"EffectBasePointsF": "8"}) == 8
+
+
+def test_effect_amount_keeps_a_negative_amount_negative():
+    assert effect_amount({"EffectBasePointsF": "-40"}) == -40

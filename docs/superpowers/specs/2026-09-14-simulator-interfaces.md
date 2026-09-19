@@ -157,7 +157,7 @@ and CSRF rules.
 | `POST /v1/sims` | optional session | `SimResult` with `Lane: "browser"` and `Raw` omitted | 201 `{ sim_id }`; saves a browser-run result |
 | `GET /v1/sims/{sim_id}` | none | | 200 `SimResult` |
 | `GET /v1/sims?mine=1&page=` | session | | 200 `{ rows: [ { sim_id, spec, dps, engine_version, created_at, title } ], total, page, per_page: 100 }` |
-| `POST /v1/sims/run` | session + CSRF + premium | `SimRequest` with `Raw` set | 202 `{ sim_id }`; dispatches the Cloud Run job |
+| `POST /v1/sims/run` | session + CSRF + premium | a plain JSON `SimRequest` (there is no `Raw`; the engine request is built server-side by `sim/request`) | 202 `{ sim_id }`; dispatches the Cloud Run job |
 | `GET /v1/sims/{sim_id}/progress` | none | | 200 `{ state: "queued"\|"running"\|"done"\|"error", iterations_done, dps? }` |
 | `GET /v1/specs` | none | | 200 `{ specs: [ { spec, state: "validated"\|"in_progress"\|"unsupported", median_gap, parses, worst_actions: [ { name, sim_casts, actual_casts } ], engine_version, updated_at } ] }` |
 | `GET /v1/characters/{region}/{ruleset}/{name}/sim-input` | optional session | | 200 `{ spec, gear, talents, buffs, captured_at, source }`: the character model from the newest available source. A character key is three path segments, so the route is spelled out the way the existing character route is, never as one `{character_key}` segment. **Armory is not a source yet**: nothing in the repo stores an Armory refresh, so today `source` is `"addon"` or `"fight"`, newest wins, and `"armory"` appears when that lands without the shape changing. |
@@ -172,7 +172,7 @@ returns it as `user.premium`** so the web can decide whether to offer the server
 
 **Parse job**: `api sim-run <sim_id>` is a Cloud Run job on the same image as the API, created once
 by hand like `parse-report`. The request and result cross between the route and the job through
-R2, not the database: `sims/<sim_id>/request.bin` holds the proto-encoded `RaidSimRequest` the
+R2, not the database: only `sims/<sim_id>/result.json` crosses through R2; the queued `SimRequest` is held as JSON in the `sims` row (amended 2026-09-18: `Raw` and `request.bin` never existed in the built module).
 route received, `sims/<sim_id>/result.json` the finished `SimResult`.
 
 **Validation job**: `api sim-validate` lives in `api/internal/sims` and runs on the API image,
@@ -234,8 +234,17 @@ Three new outputs from `python -m pipeline`, all under the existing build direct
   consumes table; its shape is owned by the data lane and confirmed by the engine lane.
   Icons are not in `SimDatabase` and stay in `data/builds/<build>/icons/` for the site.
 - `simconst` command → `data/builds/<build>/spellconst/<class-slug>.json`: per-spell constants
-  keyed by spell id (base points, coefficients where readable, cooldown ms, cast time ms, cost,
-  duration ms, school, family mask), for the engine's generated constants files.
+  keyed by spell id, for the engine's generated constants files. Exact shape (amended
+  2026-09-18 by the controller after the data lane emitted it and the engine's loader had
+  guessed an array form; the emitted form is binding):
+  `{ "build", "class_slug", "family", "spells": { "<spell id>": { "name", "rank",
+  "school_mask", "cast_time_ms", "gcd_ms", "cooldown_ms", "category_cooldown_ms",
+  "duration_ms", "cost", "cost_type", "spell_level", "family_mask": [4 ints],
+  "effects": [ { "index", "effect", "aura", "amount", "sp_coefficient", "ap_coefficient",
+  "period_ms", "misc_value", "trigger_spell" } ] } } }`. `spells` is an object keyed by the
+  id as a string; `family_mask` is the client's four mask columns verbatim; coefficients are
+  per effect, verbatim, zeros included; the engine derives any convention value and its
+  `unconfirmed` marker on its own side.
 - `data/curated/apl/<spec_slug>.json`: the default rotation per spec, an `APLRotation` protobuf in
   its JSON form plus `{ "sources": [ { label, url, kind } ], "notes": "" }`. Validated by the data
   tests against the engine's APL schema. **This file is canonical.** The engine's regression suite
@@ -286,6 +295,29 @@ Binding for the other lanes:
   these four; the web must not call them.
 
 ## Web (web lane)
+
+Settled by the engine lane's Task 3 (amended 2026-09-18 by the controller; descriptive, no shape change):
+
+- **Row identity.** A `summary.Summary` row is keyed by `spell_id`: the client id for a plain untagged
+  spell, and a derived id at or above 2,000,000 for a tagged or ranked spell, an item, an `other`
+  action or an unknown one; unique per row, so the report components' keyed lists render a sim
+  result without collisions. Consumers key on the id, never on the name.
+- **Row naming.** The name is an action key, not a display name: `spell:<id>[/<tag>][+r<rank>]`,
+  `item:<id>[…]`, `other:<snake_name>[…]`, `unknown[…]`; the consumer resolves the display name
+  from the build's own tables.
+- **The id vocabulary.** Buff and consumable ids are exactly the entries of `sim/request/IDS.md`
+  (generated from the engine's protobuf descriptors; `KnownBuffs()`/`KnownConsumables()` enumerate
+  them); a consumable may be `item:<id>`, resolved through `data/builds/<build>/simconsumes.json`
+  (also a browser asset) via `request.BuildWith(req, Options{Consumables})`; weapon imbues are
+  slot-qualified (`off_hand_imbue:shadow_oil`); an unknown id is an error the UI surfaces.
+- **Level.** `CharacterSpec.level` is always `api.SimLevel` (60), enforced by `api.SimRequest.Validate`.
+- **Progress payload.** The wasm's `simRun` progress callback carries `Pick<SimResult, 'iterations_run' | 'dps'>`;
+  the engine lane's Task 13 builds the artifact to that shape.
+- **Budgets.** `/sim/<sim_id>` mounts the report component set and takes the report page's 200 ms
+  blocking-time budget; `/sim` and `/sim/specs` keep 100 ms.
+- **Character buffs.** The API's `sim-input` returns `buffs` as `IDS.md` ids (the API lane maps a
+  character's recorded buff spell ids onto the vocabulary); the web never maps spell ids itself.
+
 
 - Routes: `/sim` (the sim page), `/sim/<sim_id>` (a saved result), `/sim/specs` (support page).
   `/sim` and `/sim/specs` are static shells; `/sim/<sim_id>` is a static shell whose OG tags the

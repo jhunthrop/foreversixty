@@ -1,0 +1,3 @@
+ID,DifficultyID,BaseLevel,MaxLevel,SpellLevel,MaxPassiveAuraLevel,SpellID
+1,0,60,0,60,0,23894
+2,0,60,64,60,0,25304

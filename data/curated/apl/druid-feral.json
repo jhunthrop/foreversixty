@@ -1,0 +1,10 @@
+{
+  "spec": "druid-feral",
+  "state": "unwritten",
+  "notes": "",
+  "sources": [],
+  "rotation": {
+    "type": "TypeAPL",
+    "priorityList": []
+  }
+}

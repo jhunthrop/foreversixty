@@ -1,0 +1,10 @@
+{
+  "spec": "mage-fire",
+  "state": "unwritten",
+  "notes": "",
+  "sources": [],
+  "rotation": {
+    "type": "TypeAPL",
+    "priorityList": []
+  }
+}

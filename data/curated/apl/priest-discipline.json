@@ -1,0 +1,10 @@
+{
+  "spec": "priest-discipline",
+  "state": "unwritten",
+  "notes": "",
+  "sources": [],
+  "rotation": {
+    "type": "TypeAPL",
+    "priorityList": []
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "spec": "shaman-elemental",
+  "state": "unwritten",
+  "notes": "",
+  "sources": [],
+  "rotation": {
+    "type": "TypeAPL",
+    "priorityList": []
+  }
+}

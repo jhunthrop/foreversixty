@@ -20,6 +20,9 @@ def build_parser() -> argparse.ArgumentParser:
     a = sub.add_parser("tree-art", help="download and process each talent tree's background")
     a.add_argument("--build", required=True)
 
+    gt = sub.add_parser("gametables", help="fetch the client's GameTables for a build")
+    gt.add_argument("--build", required=True)
+
     ft = sub.add_parser(
         "forever-talents",
         help="build Forever talent files from a Wowhead snapshot (pre-beta only)",
@@ -47,6 +50,28 @@ def build_parser() -> argparse.ArgumentParser:
         help="the saved Wowhead payload; see data/raw-forever/README.md",
     )
     wd.add_argument("--build", required=True)
+
+    g = sub.add_parser("simproto", help="re-vendor the engine protos and regenerate bindings")
+    g.add_argument(
+        "--engine",
+        required=True,
+        help="path to the wowsims-forever checkout, e.g. $FOREVER_ENGINE_PATH",
+    )
+
+    sc = sub.add_parser("simconst", help="write per-class spell constants for a build")
+    sc.add_argument("--build", required=True)
+
+    sd = sub.add_parser("simdb", help="build the engine's SimDatabase for a build")
+    sd.add_argument("--build", required=True)
+
+    sp = sub.add_parser("specs", help="generate the Go and TypeScript spec lists")
+    sp.add_argument("--go", default="../sim/specs/specs.go")
+    sp.add_argument("--ts", default="../web/src/lib/sim/specs.ts")
+    sp.add_argument(
+        "--check",
+        action="store_true",
+        help="write nothing; exit non-zero if a generated file has drifted",
+    )
     return p
 
 
@@ -75,6 +100,10 @@ def main(argv: list[str] | None = None) -> int:
         from pipeline.art import backgrounds_for_build
 
         backgrounds_for_build(args.build)
+    elif args.command == "gametables":
+        from pipeline.gametables import write_game_tables
+
+        print(write_game_tables(args.build))
     elif args.command == "forever-talents":
         from pipeline.forever import write_forever_talents
 
@@ -90,6 +119,34 @@ def main(argv: list[str] | None = None) -> int:
         from pipeline.wowhead_diff import write_snapshot_diff
 
         write_snapshot_diff(args.snapshot, args.build)
+    elif args.command == "simconst":
+        from pipeline.simconst import write_spell_constants
+
+        print(write_spell_constants(args.build))
+    elif args.command == "simdb":
+        from pipeline.simdb import write_sim_database
+
+        print(write_sim_database(args.build))
+    elif args.command == "simproto":
+        from pathlib import Path
+
+        from pipeline.genproto import refresh
+
+        print(refresh(Path(args.engine), Path("proto"), Path("pipeline/simproto")))
+    elif args.command == "specs":
+        from pathlib import Path
+
+        from pipeline.specs import check_specs, write_specs
+
+        if args.check:
+            stale = check_specs(Path("curated"), Path(args.go), Path(args.ts))
+            for path in stale:
+                logging.getLogger("pipeline").error(
+                    "%s does not match curated/specs.json; run `python -m pipeline specs`", path
+                )
+            return 1 if stale else 0
+        for path in write_specs(Path("curated"), Path(args.go), Path(args.ts)):
+            print(path)
     return 0
 
 

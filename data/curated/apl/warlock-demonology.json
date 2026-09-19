@@ -1,0 +1,10 @@
+{
+  "spec": "warlock-demonology",
+  "state": "unwritten",
+  "notes": "",
+  "sources": [],
+  "rotation": {
+    "type": "TypeAPL",
+    "priorityList": []
+  }
+}
