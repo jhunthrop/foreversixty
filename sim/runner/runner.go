@@ -32,3 +32,12 @@ type Runner interface {
 var ErrBadInput = errors.New("runner: the engine refused the request")
 
 func isBadInput(err error) bool { return errors.Is(err, ErrBadInput) }
+
+// ErrAborted is what a runner returns when the engine stopped a run
+// before it finished, rather than failing it: a Cloud Run preemption,
+// an operator's --task-timeout, or SIGINT/SIGTERM forwarded to the
+// child. The result returned alongside it is not the zero value —
+// forever-sim writes a partial SimResult with Aborted set before it
+// exits, and Run decodes and returns that result together with this
+// error, so a caller sees both what happened and how far the run got.
+var ErrAborted = errors.New("runner: the engine stopped before the run finished")

@@ -1,6 +1,7 @@
 package runner
 
 import (
+	"bufio"
 	"context"
 	"errors"
 	"os"
@@ -142,6 +143,101 @@ func TestNativeReturnsTheContextErrorWhenCancelled(t *testing.T) {
 	}
 }
 
+func TestNativeReturnsThePartialResultAndErrAbortedOnExit130(t *testing.T) {
+	// forever-sim writes a complete-shaped SimResult with aborted set
+	// and then exits 130. The caller must get both: the partial result
+	// (so what completed is not lost) and a typed, errors.Is-able
+	// error (so the job never stores it as a finished run).
+	bin := stubBinary(t, `
+cat > /dev/null
+echo '{"completed":1500,"total":3000,"dps":700}' >&2
+printf '%s' '{"engine_version":"pinned","iterations_run":1500,"duration_ms":900,"aborted":true,"dps":{"mean":700}}'
+exit 130
+`)
+	var ticks []int
+	res, err := (&Native{Binary: bin}).Run(context.Background(), aRequest(),
+		func(done int, _ float64) { ticks = append(ticks, done) })
+	if !errors.Is(err, ErrAborted) {
+		t.Fatalf("err = %v, want ErrAborted", err)
+	}
+	if !res.Aborted || res.IterationsRun != 1500 {
+		t.Fatalf("result %+v, want the partial result preserved with Aborted set", res)
+	}
+	// The runner still owns the lane and the request, the same as a
+	// finished run, so a caller need not special-case an abort to
+	// store it.
+	if res.Lane != api.LaneServer || res.Request.Spec != "warrior-fury" {
+		t.Fatalf("lane %q request %+v", res.Lane, res.Request)
+	}
+	if len(ticks) != 1 || ticks[0] != 1500 {
+		t.Fatalf("ticks %v", ticks)
+	}
+}
+
+func TestNativeFallsBackToTheGenericErrorWhenAbortWroteNoResult(t *testing.T) {
+	// A crash before anything reached stdout still exits 130 (the
+	// signal handler ran) but there is no partial result to decode;
+	// this must not claim ErrAborted over nothing.
+	bin := stubBinary(t, "cat > /dev/null\necho 'panic: nil pointer' >&2\nexit 130\n")
+	res, err := (&Native{Binary: bin}).Run(context.Background(), aRequest(), nil)
+	if err == nil {
+		t.Fatal("expected an error")
+	}
+	if errors.Is(err, ErrAborted) {
+		t.Fatalf("no result was decoded, so this must not be ErrAborted: %v", err)
+	}
+	if res.Aborted {
+		t.Fatalf("expected the zero result: %+v", res)
+	}
+}
+
+func TestNativeSurvivesAStderrLineOver64KBAndKeepsReadingProgress(t *testing.T) {
+	// forever-sim wraps the engine's own log output as one
+	// {"log":"..."} line on the same stream as progress ticks. Before
+	// the buffer was enlarged, one line past bufio.Scanner's 64KB
+	// default silently killed the goroutine, and the progress bar
+	// froze with nothing to say why. A 100KB line must not stop later
+	// ticks from arriving.
+	bin := stubBinary(t, `
+cat > /dev/null
+long=$(head -c 100000 /dev/zero | tr '\0' 'x')
+printf '{"log":"%s"}\n' "$long" >&2
+echo '{"completed":2200,"total":3000,"dps":1010}' >&2
+printf '%s' '{"dps":{"mean":42},"iterations_run":5}'
+`)
+	var ticks []int
+	res, err := (&Native{Binary: bin}).Run(context.Background(), aRequest(),
+		func(done int, _ float64) { ticks = append(ticks, done) })
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(ticks) != 1 || ticks[0] != 2200 {
+		t.Fatalf("ticks %v: the progress tick after a >64KB stderr line was dropped", ticks)
+	}
+	if res.DPS.Mean != 42 {
+		t.Fatalf("result %+v", res)
+	}
+}
+
+func TestNativeSurfacesAScanErrorWhenTheProcessAlsoFails(t *testing.T) {
+	// A line past even the enlarged 1MB cap is still possible; when it
+	// coincides with the process itself failing, the caller should be
+	// told reading stderr also broke, not just left silently short.
+	bin := stubBinary(t, `
+cat > /dev/null
+head -c 1100000 /dev/zero | tr '\0' 'x' >&2
+echo >&2
+exit 1
+`)
+	_, err := (&Native{Binary: bin}).Run(context.Background(), aRequest(), nil)
+	if err == nil {
+		t.Fatal("expected an error")
+	}
+	if !errors.Is(err, bufio.ErrTooLong) {
+		t.Fatalf("expected the scan error to be surfaced: %v", err)
+	}
+}
+
 func TestNativeFailsWhenThereIsNoBinary(t *testing.T) {
 	if _, err := (&Native{Binary: "/nowhere/forever-sim"}).
 		Run(context.Background(), aRequest(), nil); err == nil {
@@ -210,6 +306,22 @@ func TestTheFixtureCanBePutOnAKnownNumberOrMadeToFail(t *testing.T) {
 	f = &Fixture{Err: context.DeadlineExceeded}
 	if _, err := f.Run(context.Background(), aRequest(), nil); err == nil {
 		t.Fatal("expected the configured error")
+	}
+}
+
+func TestTheFixtureCanSimulateAnAbort(t *testing.T) {
+	f := &Fixture{Aborted: true}
+	req := aRequest()
+	var last int
+	res, err := f.Run(context.Background(), req, func(done int, _ float64) { last = done })
+	if !errors.Is(err, ErrAborted) {
+		t.Fatalf("err = %v, want ErrAborted", err)
+	}
+	if !res.Aborted || res.IterationsRun != req.Iterations/2 {
+		t.Fatalf("result %+v", res)
+	}
+	if last != req.Iterations/2 {
+		t.Fatalf("last tick %d, want %d", last, req.Iterations/2)
 	}
 }
 

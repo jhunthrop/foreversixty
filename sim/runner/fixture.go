@@ -2,6 +2,7 @@ package runner
 
 import (
 	"context"
+	"fmt"
 	"sync"
 
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
@@ -27,6 +28,13 @@ type Fixture struct {
 	// Mean, when non-zero, overrides the fixture's DPS, so a test can
 	// put a scorer on a known ratio.
 	Mean float64
+	// Aborted, when true, makes Run answer the way Native does on
+	// forever-sim's exit 130: a partial SimResult with Aborted set,
+	// half the requested iterations run, and ErrAborted wrapped in
+	// the returned error — so a caller like sims.Run is tested
+	// against the real abort contract without invoking a binary.
+	// Err takes precedence when both are set.
+	Aborted bool
 }
 
 // Run answers from the fixture, reporting progress once at the
@@ -34,10 +42,13 @@ type Fixture struct {
 func (f *Fixture) Run(_ context.Context, req api.SimRequest, onProgress Progress) (api.SimResult, error) {
 	f.mu.Lock()
 	f.Runs = append(f.Runs, req)
-	err, mean := f.Err, f.Mean
+	err, mean, aborted := f.Err, f.Mean, f.Aborted
 	f.mu.Unlock()
 	if err != nil {
 		return api.SimResult{}, err
+	}
+	if aborted {
+		return f.abortedResult(req, onProgress), fmt.Errorf("%w: fixture", ErrAborted)
 	}
 	out := api.SimResult{
 		EngineVersion: req.EngineVersion,
@@ -56,6 +67,23 @@ func (f *Fixture) Run(_ context.Context, req api.SimRequest, onProgress Progress
 		onProgress(req.Iterations, out.DPS.Mean)
 	}
 	return out, nil
+}
+
+// abortedResult builds the partial SimResult Run returns alongside
+// ErrAborted when Aborted is set: half the run, one progress tick,
+// Aborted true — the same shape forever-sim writes on exit 130.
+func (f *Fixture) abortedResult(req api.SimRequest, onProgress Progress) api.SimResult {
+	done := req.Iterations / 2
+	if onProgress != nil {
+		onProgress(done, 0)
+	}
+	return api.SimResult{
+		EngineVersion: req.EngineVersion,
+		Request:       req,
+		Lane:          api.LaneServer,
+		IterationsRun: done,
+		Aborted:       true,
+	}
 }
 
 // Asked reports the requests handed to the fixture so far.

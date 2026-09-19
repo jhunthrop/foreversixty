@@ -129,6 +129,35 @@ func TestARequestTheEngineRefusesIsRecordedAndNotRetried(t *testing.T) {
 	}
 }
 
+func TestAnAbortedRunIsFailedNotStoredAsDone(t *testing.T) {
+	h := newHarness(t)
+	h.queued(t, "dddddddddddd", "warrior-fury")
+	// runner.Fixture{Aborted: true} answers the way Native does on
+	// forever-sim's exit 130: a partial result plus a wrapped
+	// runner.ErrAborted. The job must never store that partial result
+	// as a finished run.
+	err := Run(t.Context(), h.jobDeps(&runner.Fixture{Aborted: true}), "dddddddddddd")
+	if !errors.Is(err, runner.ErrAborted) {
+		t.Fatalf("err = %v, want the abort to reach the caller", err)
+	}
+
+	p, perr := h.store.Progress(t.Context(), "dddddddddddd")
+	if perr != nil {
+		t.Fatal(perr)
+	}
+	if p.State != StateError {
+		t.Fatalf("state %q, want %q: a partial result must never read as done", p.State, StateError)
+	}
+
+	stored, gerr := h.store.Get(t.Context(), "dddddddddddd")
+	if gerr != nil {
+		t.Fatal(gerr)
+	}
+	if stored.DPS.Mean != 0 || stored.IterationsRun != 0 {
+		t.Fatalf("the aborted run's partial result must not be written: %+v", stored)
+	}
+}
+
 func TestAnUnknownSimIsAnErrorAndWritesNothing(t *testing.T) {
 	h := newHarness(t)
 	if err := Run(t.Context(), h.jobDeps(&runner.Fixture{}), "zzzzzzzzzzzz"); err != ErrNotFound {

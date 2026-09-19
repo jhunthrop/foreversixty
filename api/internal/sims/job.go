@@ -3,6 +3,7 @@ package sims
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log/slog"
 	"time"
@@ -62,7 +63,15 @@ func Run(ctx context.Context, d JobDeps, simID string) error {
 		}
 	})
 	if err != nil {
-		return d.failed(ctx, simID, err)
+		if errors.Is(err, runner.ErrAborted) {
+			// The engine wrote a partial result before it stopped, but
+			// the runner already discards it here: a stopped run is
+			// never stored as a finished one, so the row is failed
+			// with why an operator can read, not the engine's own
+			// abort message.
+			return d.failed(ctx, simID, err, "stopped before completion")
+		}
+		return d.failed(ctx, simID, err, "")
 	}
 	res.SimID, res.Lane = simID, simapi.LaneServer
 	if res.DurationMS == 0 {
@@ -73,19 +82,26 @@ func Run(ctx context.Context, d JobDeps, simID string) error {
 	// needs one read and the history needs no bucket at all.
 	body, err := json.Marshal(res)
 	if err != nil {
-		return d.failed(ctx, simID, fmt.Errorf("sims: encode result %s: %w", simID, err))
+		return d.failed(ctx, simID, fmt.Errorf("sims: encode result %s: %w", simID, err), "")
 	}
 	if err := d.Put.Put(ctx, Keys{SimID: simID}.Result(), body, ResultPut); err != nil {
-		return d.failed(ctx, simID, err)
+		return d.failed(ctx, simID, err, "")
 	}
 	return d.Store.Finish(ctx, simID, res)
 }
 
 // failed records why a run did not finish and returns the original
-// error, so the job exits non-zero and the page stops polling.
-func (d JobDeps) failed(ctx context.Context, simID string, cause error) error {
+// error, so the job exits non-zero and the page stops polling. reason
+// is what the row remembers; an empty reason uses cause's own message,
+// which is the right default for an internal failure but wrong for an
+// abort, whose cause wraps the engine's own low-level wording rather
+// than something an operator reads on the row.
+func (d JobDeps) failed(ctx context.Context, simID string, cause error, reason string) error {
+	if reason == "" {
+		reason = cause.Error()
+	}
 	d.logger().Error("sims", "op", "run", "sim", simID, "err", cause)
-	if err := d.Store.Fail(ctx, simID, cause.Error()); err != nil {
+	if err := d.Store.Fail(ctx, simID, reason); err != nil {
 		return fmt.Errorf("%w (and the row could not be marked failed: %v)", cause, err)
 	}
 	return cause
