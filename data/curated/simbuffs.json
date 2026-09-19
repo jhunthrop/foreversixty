@@ -1,0 +1,31 @@
+{
+  "sources": [
+    {
+      "label": "Wowhead, Classic item and spell database",
+      "url": "https://www.wowhead.com/classic",
+      "kind": "community"
+    },
+    {
+      "label": "This site, build 1.60.1.69893's own items.json and spells.json",
+      "url": "https://foreversixty.gg/data/1.60.1.69893/items.json",
+      "kind": "site"
+    }
+  ],
+  "notes": "The fourteen sim request ids the engine spells differently from the client, so no name join reaches them. Each names the client row it means; the icon is that row's, read off the build. Four Atiesh ids share one item (22589) and differ only in which class's proc they name, which is why their display names are written out. `curse_of_elements` is the client's 'Curse of the Elements'; `elixir_of_firepower` is 'Elixir of Fire Power' (6373) and `elixir_of_ogres_strength` is 'Elixir of Ogre Strength' (3391), both without the engine's spelling; `sayges_fortune` is the Darkmoon Faire buff, whose client rows are one spell per stat, so it takes the generic name and the Strength row's icon. Delete an entry the day the join reaches it.",
+  "entries": {
+    "atiesh_druid": { "item_id": 22589, "name": "Atiesh (Druid)" },
+    "atiesh_mage": { "item_id": 22589, "name": "Atiesh (Mage)" },
+    "atiesh_priest": { "item_id": 22589, "name": "Atiesh (Priest)" },
+    "atiesh_warlock": { "item_id": 22589, "name": "Atiesh (Warlock)" },
+    "curse_of_elements": { "spell_id": 11723, "name": "Curse of the Elements" },
+    "sayges_fortune": { "spell_id": 23735, "name": "Sayge's Dark Fortune" },
+    "conjured_rogue_thistle_tea": { "item_id": 7676, "name": "Thistle Tea" },
+    "dragon_breath_chili": { "item_id": 12217, "name": "Dragonbreath Chili" },
+    "elixir_of_firepower": { "item_id": 6373, "name": "Elixir of Fire Power" },
+    "elixir_of_ogres_strength": { "item_id": 3391, "name": "Elixir of Ogre Strength" },
+    "food_bless_sunfruit": { "item_id": 13810, "name": "Blessed Sunfruit" },
+    "food_dirges_kick_chimaerok_chops": { "item_id": 21023, "name": "Dirge's Kickin' Chimaerok Chops" },
+    "food_smoked_desert_dumpling": { "item_id": 20452, "name": "Smoked Desert Dumplings" },
+    "sapper_goblin_sapper": { "item_id": 10646, "name": "Goblin Sapper Charge" }
+  }
+}

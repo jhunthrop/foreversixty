@@ -66,7 +66,9 @@
   "spellIcons": [
     { "id": 7420, "name": "Enchant Chest - Minor Health", "icon": "spell_holy_chest" },
     { "id": 7418, "name": "Enchant Bracer - Minor Health", "icon": "spell_holy_bracer" },
-    { "id": 7745, "name": "Enchant 2H Weapon - Minor Impact", "icon": "spell_fire_impact" }
+    { "id": 7745, "name": "Enchant 2H Weapon - Minor Impact", "icon": "spell_fire_impact" },
+    { "id": 24800, "name": "Grilled Squid", "icon": "inv_misc_fish_13" },
+    { "id": 7845, "name": "Elixir of Fire Power", "icon": "inv_potion_60" }
   ],
   "encounters": []
 }

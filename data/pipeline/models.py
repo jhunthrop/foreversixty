@@ -354,3 +354,29 @@ class ConsumableRecord(BaseModel):
     quality: int
     required_level: int
     spell_ids: list[int]
+
+
+class SimBuffEntry(BaseModel):
+    name: str
+    icon: str
+
+
+class SimBuffsFile(BaseModel):
+    """`simbuffs.json` (parity contract 10.4): the display name and icon
+    for every id `sim/request/IDS.md` lets a request name, so the settings
+    bar's full buff panel can render one."""
+
+    entries: dict[str, SimBuffEntry]
+
+
+class BuffOverride(BaseModel):
+    """A curated IDS.md entry: the display name, and the client row whose
+    icon it takes. Exactly one of the two ids. An explicit icon is not
+    accepted -- art the build does not ship would reach the site as a
+    404, and the point of naming a row is that the build resolves it."""
+
+    name: str
+    item_id: int = 0
+    spell_id: int = 0
+
+    model_config = {"extra": "forbid"}

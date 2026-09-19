@@ -37,6 +37,8 @@ def test_the_fixture_database_loads_every_table():
     assert fork.factions == {529: "Argent Dawn"}
     assert fork.item_icons[2304] == "inv_misc_armorkit_17"
     assert fork.spell_icons[7420] == "spell_holy_chest"
+    assert len(fork.spell_icon_rows) == 5
+    assert len(fork.item_icon_rows) == 1
 
 
 def test_the_tables_are_immutable():

@@ -140,6 +140,10 @@ class ForkDatabase:
     factions: dict[int, str]
     item_icons: dict[int, str]
     spell_icons: dict[int, str]
+    #: The raw icon rows, kept alongside the id maps because `simbuffs`
+    #: joins on the name in them and `enchants` joins on the id.
+    spell_icon_rows: tuple[dict, ...]
+    item_icon_rows: tuple[dict, ...]
 
 
 def _named(rows: list[dict]) -> dict[int, str]:
@@ -170,4 +174,6 @@ def load_fork_database(engine_dir: Path) -> ForkDatabase:
         factions=_named(raw.get("factions", [])),
         item_icons=_icons(raw.get("itemIcons", [])),
         spell_icons=_icons(raw.get("spellIcons", [])),
+        spell_icon_rows=tuple(raw.get("spellIcons", [])),
+        item_icon_rows=tuple(raw.get("itemIcons", [])),
     )
