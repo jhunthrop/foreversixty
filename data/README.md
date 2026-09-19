@@ -80,7 +80,8 @@ a build that has both real rows — 1.60 and any later one — not against the f
 ## Simulator outputs
 
 `simdb` and `simconst` read the same `builds/<build>/raw/` CSVs `normalize` does, so run
-`fetch` first. `simdb` also reads `sets.json`, so run `normalize` before it. `gametables`
+`fetch` first. `simdb` also reads `sets.json`, so run `normalize` before it, and
+`gametables/combatratings.txt` (see below), so run `gametables` before it too. `gametables`
 reads nothing local but writes into the build directory, so it needs `normalize` to have
 run too. All three refresh `manifest.json` when they finish, so the manifest still covers
 the directory.
@@ -138,6 +139,22 @@ Three things the sim needs that the planner's `items/` does not carry:
 - **Armour and stats without a column.** These are not re-read here: `simdb` calls
   `normalize/gear.py`'s `resolve_item_values`, the same function the planner uses, so
   the two can never disagree about what an item is worth.
+- **Hit, crit, dodge, parry and block as percentages.** The 1.60 client itemises these
+  through the full retail `ItemModType` vocabulary -- `StatModifier_bonusStat_31`/`32`
+  are literally `ITEM_MOD_HIT_RATING`/`ITEM_MOD_CRIT_RATING`, and 12-15 are the
+  defense/dodge/parry/block rating ids -- so `resolve_item_values`'s amount for these is
+  combat-rating points, not the flat percentage the engine's `Stat` array is (Forever has
+  no combat-rating system of its own; the engine's own rating constants are identity).
+  `pipeline/simdb/ratings.py` divides each by this build's own level-60
+  `gametables/combatratings.txt` row before it reaches `SimItem`/`SimEnchant` --
+  Lionheart Helm's 20 hit / 28 crit is 2%/2% once divided by that row's Hit (10) and
+  Crit (14). The planner's `items/` keeps the client's raw rating number unconverted,
+  matching what the in-game tooltip shows; only simdb's stats are percentages. Defense's
+  factor is 1 at every level Forever's client states, so converting it is a no-op kept
+  for symmetry; haste and expertise ratings are mapped to `None` in
+  `gear.STAT_BY_MODIFIER_ID` and never reach simdb at all. An on-equip spell's flat stat
+  (`equip.STAT_AURAS`) is never converted -- it already states a literal percentage, the
+  older Classic convention, not a rating.
 
 `python -m pipeline specs` regenerates `sim/specs/specs.go` and
 `web/src/lib/sim/specs.ts` from `curated/specs.json`. Run it after editing that file and
@@ -168,8 +185,10 @@ older-schema build works if one is ever fetched again.
    missing from `STAT_BY_MODIFIER_ID` in `pipeline/normalize/gear.py`. Add it with the
    right planner stat key, or `None` if the planner does not track that stat, and run
    `normalize` again. Everything except `items/` is still written by the failed run.
-5. Run `simdb`, `simconst` and `gametables` for the new build, then commit `simdb.bin`,
-   `simconsumes.json`, `spellconst/` and `gametables/`. If `simdb` raises on an
+5. Run `gametables` before `simdb` -- `simdb` reads the new build's own
+   `gametables/combatratings.txt` for its hit/crit/dodge/parry/block rating factors (see
+   above) and raises a clear error if it is missing. Run `simconst` too, then commit
+   `simdb.bin`, `simconsumes.json`, `spellconst/` and `gametables/`. If `simdb` raises on an
    unclassified aura, an unknown skill line or an unknown stat modifier id, classify it in
    `pipeline/simdb/equip.py` or `pipeline/normalize/gear.py` from the spells that use it
    and rerun -- do not widen a filter to make it pass. If `gametables` raises on an empty

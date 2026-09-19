@@ -35,6 +35,7 @@ from pipeline.normalize.item_curves import load_item_curves
 from pipeline.simdb.enchants import build_sim_enchants
 from pipeline.simdb.equip import equip_bonuses, index_spell_effects, item_effect_spells
 from pipeline.simdb.items import build_sim_items, simdb_item_rows
+from pipeline.simdb.ratings import load_rating_factors
 from pipeline.simdb.weapons import load_weapon_curves
 from pipeline.simproto import pb
 
@@ -127,9 +128,12 @@ def build_sim_database(build_dir: Path) -> tuple[pb.SimDatabase, list[Consumable
     pairs = simdb_item_rows(sparse_rows, item_rows)
     kept_ids = {int_column(sparse, "ID") for sparse, _ in pairs}
     equip = equip_bonuses(item_effect_rows, link_rows, effects_by_spell, kept_ids)
+    rating_factors = load_rating_factors(build_dir)
     database = pb.SimDatabase(
-        items=build_sim_items(pairs, set_names, equip, curves, weapon_curves),
-        enchants=build_sim_enchants(read_csv(raw / "SpellItemEnchantment.csv"), effects_by_spell),
+        items=build_sim_items(pairs, set_names, equip, curves, weapon_curves, rating_factors),
+        enchants=build_sim_enchants(
+            read_csv(raw / "SpellItemEnchantment.csv"), effects_by_spell, rating_factors
+        ),
     )
     consumables = build_consumables(sparse_rows, item_rows, item_effect_rows, link_rows)
     logger.info(

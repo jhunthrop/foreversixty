@@ -1,0 +1,211 @@
+name: sim
+on:
+  push:
+    branches: [main]
+    paths: ['sim/**', 'logs/**', 'Makefile', 'tools/apl_*.py', 'web/src/data/active-build.json', 'data/builds/*/simdb.bin', 'data/curated/apl/**', 'data/curated/specs.json', '.github/workflows/sim.yml', '.github/actions/pin-engine/**']
+  pull_request:
+    paths: ['sim/**', 'logs/**', 'Makefile', 'tools/apl_*.py', 'web/src/data/active-build.json', 'data/builds/*/simdb.bin', 'data/curated/apl/**', 'data/curated/specs.json', '.github/workflows/sim.yml', '.github/actions/pin-engine/**']
+  workflow_dispatch:
+permissions: { contents: read }
+concurrency:
+  group: sim-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: sim } }
+    steps:
+      - uses: actions/checkout@v4
+      # setup-go before the pin, so `go mod tidy` runs on the version
+      # sim/go.mod declares rather than on whatever the runner image
+      # happens to ship.
+      - uses: actions/setup-go@v5
+        with: { go-version-file: sim/go.mod, cache-dependency-path: sim/go.sum }
+      - uses: ./.github/actions/pin-engine
+      # //go:embed resolves at compile time, so the active build's item
+      # database has to be in place before gofmt's siblings run, let
+      # alone the build.
+      - name: the active build's item database
+        working-directory: .
+        run: make simdb
+      - name: gofmt
+        run: |
+          unformatted=$(gofmt -l .)
+          if [ -n "$unformatted" ]; then
+            echo "these files are not gofmt'd:"; echo "$unformatted"; exit 1
+          fi
+      - run: go vet ./...
+      - run: go test ./... -race -coverprofile=cover.out
+      - name: coverage floor
+        run: |
+          total=$(go tool cover -func=cover.out | awk '/^total:/ {print substr($3, 1, length($3)-1)}')
+          echo "total coverage ${total}%"
+          awk -v t="$total" 'BEGIN { exit (t + 0 >= 80) ? 0 : 1 }' || {
+            echo "coverage ${total}% is under the 80% floor"; exit 1; }
+
+  # "A rotation is edited only in data/curated/apl" was an invariant kept
+  # by hand across three copies per spec, and two of four had already
+  # drifted. `make apl-sync` writes the copies now and this is the gate
+  # that they were written; see tools/apl_check.py.
+  rotations:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: the pinned engine sha
+        id: pin
+        run: |
+          sha=$(sed -n 's/.*Version = "\(.*\)"/\1/p' sim/enginever/version.go)
+          test -n "$sha" || { echo "sim/enginever/version.go has no Version"; exit 1; }
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+      # The fork at the very sha the artifacts are built from, so this
+      # compares the rotations the shipped engine actually carries.
+      # actions/checkout treats a short sha as a branch name and fails to
+      # fetch it, so the fork is cloned and the pin checked out by hand.
+      - run: |
+          git clone --quiet --filter=blob:none https://github.com/jhunthrop/wowsims-forever .engine
+          git -C .engine checkout --quiet "${{ steps.pin.outputs.sha }}"
+      - run: make apl-check ENGINE_DIR=.engine
+
+  artifacts:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with: { go-version-file: sim/go.mod, cache-dependency-path: sim/go.sum }
+      # The artifact build is a fresh checkout, so it carries the same
+      # development replace the test job rewrote and needs the same
+      # rewrite; without it every build here resolves a path on a laptop.
+      - uses: ./.github/actions/pin-engine
+      - run: make simdb
+      - name: build
+        working-directory: sim
+        run: |
+          mkdir -p ../artifacts
+          # No -ldflags -X: both mains import sim/enginever, so the pin
+          # is compiled in rather than injected here and in the Makefile
+          # and scraped out of version.go by a sed in each.
+          GOOS=js GOARCH=wasm go build -o ../artifacts/sim.wasm ./cmd/wasm
+          # install, not cp: wasm_exec.js is read-only inside GOROOT and
+          # cp copies the mode with it, so the next build over the same
+          # directory dies with "Permission denied" on its own output.
+          # The Makefile has said so since it was written; this copy had
+          # drifted back to cp.
+          install -m 0644 "$(go env GOROOT)/lib/wasm/wasm_exec.js" ../artifacts/sim.js
+          # No --tags=with_db anywhere: that is the engine's vanilla
+          # item table, and Forever re-itemises. Both artifacts embed
+          # the active build's simdb.bin instead (make simdb, above).
+          GOOS=linux  GOARCH=amd64 go build -ldflags="-s -w" -o ../artifacts/forever-sim-linux-amd64  ./cmd/forever-sim
+          GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -o ../artifacts/forever-sim-darwin-arm64 ./cmd/forever-sim
+          cd ../artifacts && sha256sum * > SHA256SUMS && cat SHA256SUMS
+      # The design budgets the browser download at 4 MB gzipped. The
+      # engine alone measured 3.31 MB; this build adds request, adapter,
+      # combine and the logs summary. The gate is the budget, not the
+      # measurement, so a regression fails here rather than quietly
+      # costing every visitor a second.
+      - name: wasm size budget
+        run: |
+          bytes=$(gzip -9 -c artifacts/sim.wasm | wc -c)
+          mb=$(awk -v b="$bytes" 'BEGIN { printf "%.2f", b/1048576 }')
+          echo "sim.wasm gzipped: ${mb} MB"
+          awk -v b="$bytes" 'BEGIN { exit (b <= 4*1048576) ? 0 : 1 }' || {
+            echo "sim.wasm is ${mb} MB gzipped, over the 4 MB budget"; exit 1; }
+      # Pinned, because the smoke test below is the only end-to-end gate
+      # on the browser artifact and a runner-image bump would otherwise
+      # silently change the host it is proved against.
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      # A wasm that does not instantiate fails in the visitor's browser,
+      # not here. This runs a real 100-iteration sim through all four
+      # exports and checks the summary came back with it.
+      - name: wasm smoke test
+        run: |
+          cp artifacts/sim.wasm artifacts/sim.js /tmp/
+          cp sim/adapter/testdata/warrior-fury.request.json /tmp/
+          cat > /tmp/smoke.mjs <<'EOF'
+          import './sim.js';
+          import { readFile } from 'node:fs/promises';
+          // The gear of the checked-in warrior fixture request: real
+          // Forever item ids, so this fails if the embedded database
+          // did not make it into the wasm.
+          const gearJSON = JSON.stringify(
+            JSON.parse(await readFile('/tmp/warrior-fury.request.json', 'utf8')).character.gear);
+          // engine_version is filled in from the module's own global
+          // once it is up: the envelope refuses a request naming any
+          // other engine, so the page reads the sha off the wasm it is
+          // running rather than being told it by the server.
+          const req = {
+            engine_version: '', spec: 'warrior-fury',
+            source: { kind: 'manual', ref: '', captured_at: '2026-01-01T00:00:00Z' },
+            character: { name: 'Thrall', race: 'orc', class: 'warrior', level: 60,
+                         talents: '30305001302-05050005525010051', gear: [], buffs: [], consumes: [] },
+            encounter: { duration_sec: 60, variation: 0, targets: 1, execute_ratio: 0.25, profile: '' },
+            iterations: 500, random_seed: 1,
+          };
+          // The contract: simProgress(callbackId, progressJSON) where
+          // progressJSON is Pick<SimResult, 'iterations_run' | 'dps'>.
+          let progressSeen = 0;
+          globalThis.simProgress = (id, json) => {
+            const p = JSON.parse(json);
+            const keys = Object.keys(p).sort().join(',');
+            if (keys !== 'dps,iterations_run') {
+              console.error('progress payload keys', keys); process.exit(1);
+            }
+            if (typeof p.iterations_run !== 'number' || typeof p.dps.mean !== 'number') {
+              console.error('progress payload', p); process.exit(1);
+            }
+            progressSeen++;
+          };
+          globalThis.wasmready = () => {
+            const missing = ['simRun', 'simSplit', 'simCombine', 'simAbort']
+              .filter(n => typeof globalThis[n] !== 'function');
+            if (missing.length) { console.error('missing exports:', missing); process.exit(1); }
+            if (typeof globalThis.simEngineVersion !== 'string' || !globalThis.simEngineVersion) {
+              console.error('simEngineVersion:', globalThis.simEngineVersion); process.exit(1);
+            }
+            req.engine_version = globalThis.simEngineVersion;
+            // Stopping a run nobody started is a "no", not an error.
+            const abort = JSON.parse(globalThis.simAbort('no-such-run'));
+            if (abort.aborted !== false) { console.error('simAbort:', abort); process.exit(1); }
+
+            const parts = JSON.parse(globalThis.simSplit(JSON.stringify(req), 2));
+            if (!Array.isArray(parts) || parts.length !== 2) {
+              console.error('simSplit returned', parts); process.exit(1);
+            }
+            const results = parts.map((p, i) => JSON.parse(globalThis.simRun(JSON.stringify(p), 'ci' + i)));
+            for (const r of results) {
+              if (r.error) { console.error('simRun:', r.error); process.exit(1); }
+            }
+            const one = JSON.parse(globalThis.simCombine(JSON.stringify(results)));
+            if (one.error) { console.error('simCombine:', one.error); process.exit(1); }
+            if (!(one.dps.mean > 0)) { console.error('no dps:', one.dps); process.exit(1); }
+            if (!one.summary || !one.summary.damage_done || !one.summary.damage_done.length) {
+              console.error('no summary: sim/adapter did not run inside the wasm'); process.exit(1);
+            }
+            if (one.iterations_run !== 500) { console.error('iterations', one.iterations_run); process.exit(1); }
+            if (progressSeen === 0) { console.error('simProgress was never called'); process.exit(1); }
+            // Forever re-itemises, so a run that equips something is the
+            // only proof the embedded item database reached the engine.
+            const geared = { ...req, iterations: 500,
+              character: { ...req.character, gear: JSON.parse(gearJSON) } };
+            const g = JSON.parse(globalThis.simRun(JSON.stringify(geared), 'ci-gear'));
+            if (g.error) { console.error('geared simRun:', g.error); process.exit(1); }
+            if (!(g.dps.mean > one.dps.mean)) {
+              console.error('geared dps', g.dps.mean, 'is not above naked', one.dps.mean); process.exit(1);
+            }
+            console.log('four exports, dps', one.dps.mean.toFixed(1), 'with',
+                        one.summary.damage_done[0].abilities.length, 'abilities in the summary,',
+                        progressSeen, 'progress calls, geared dps', g.dps.mean.toFixed(1));
+            process.exit(0);
+          };
+          const go = new globalThis.Go();
+          const { instance } = await WebAssembly.instantiate(await readFile('/tmp/sim.wasm'), go.importObject);
+          go.run(instance);
+          EOF
+          cd /tmp && node smoke.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sim-${{ github.sha }}
+          path: artifacts/
+          retention-days: 90

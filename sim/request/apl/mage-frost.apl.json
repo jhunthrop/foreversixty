@@ -1,0 +1,10 @@
+{
+  "type": "TypeAPL",
+  "priorityList": [
+    { "action": { "autocastOtherCooldowns": {} } },
+    {
+      "notes": "Frostbolt is the whole rotation.",
+      "action": { "castSpell": { "spellId": { "spellId": 25304, "rank": 11 } } }
+    }
+  ]
+}
