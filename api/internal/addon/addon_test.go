@@ -260,7 +260,7 @@ func (h *harness) seedBuild() string {
 	if err != nil {
 		h.t.Fatal(err)
 	}
-	if _, _, err := h.builds.Save(context.Background(), b); err != nil {
+	if _, _, err := h.builds.Save(context.Background(), b, nil); err != nil {
 		h.t.Fatal(err)
 	}
 	return b.ID

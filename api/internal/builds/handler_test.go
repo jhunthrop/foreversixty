@@ -12,6 +12,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/trees"
 )
 
@@ -25,7 +26,7 @@ type fakeStore struct {
 
 func newFakeStore() *fakeStore { return &fakeStore{rows: map[string]Build{}} }
 
-func (f *fakeStore) Save(_ context.Context, b Build) (Build, bool, error) {
+func (f *fakeStore) Save(_ context.Context, b Build, _ *int64) (Build, bool, error) {
 	if f.err != nil {
 		return Build{}, false, f.err
 	}
@@ -48,6 +49,18 @@ func (f *fakeStore) Get(_ context.Context, id string) (Build, error) {
 	return b, nil
 }
 
+func (f *fakeStore) Mine(_ context.Context, userID int64, page int) (Page, error) {
+	if f.err != nil {
+		return Page{}, f.err
+	}
+	out := Page{Rows: []Build{}, Page: page, PerPage: PerPage}
+	for _, b := range f.rows {
+		out.Rows = append(out.Rows, b)
+	}
+	out.Total = len(out.Rows)
+	return out, nil
+}
+
 func testRouter(t *testing.T, store Storer) http.Handler {
 	t.Helper()
 	data, err := trees.LoadFixture()
@@ -62,6 +75,12 @@ func testRouter(t *testing.T, store Storer) http.Handler {
 		Log:           slog.New(slog.NewTextHandler(io.Discard, nil)),
 	}, 1)
 	return mux
+}
+
+// signedIn wraps r with a signed-in actor, the way api/internal/sims's
+// harness carries identity through its test server.
+func signedIn(r *http.Request) *http.Request {
+	return r.WithContext(auth.WithActor(r.Context(), auth.Actor{UserID: 1, Role: "user", Method: "session"}))
 }
 
 func postBuild(t *testing.T, h http.Handler, body string) *httptest.ResponseRecorder {
@@ -244,4 +263,23 @@ func errorCode(t *testing.T, rec *httptest.ResponseRecorder) string {
 		t.Fatalf("ok = true on an error response: %s", rec.Body.String())
 	}
 	return env.Error.Code
+}
+
+func TestMyOwnBuildsNeedASessionAndMineEqualsOne(t *testing.T) {
+	// The handler tests run against fakeStore, so this one checks the
+	// route's shape: the parameter is required and the session is.
+	store := &fakeStore{}
+	h := testRouter(t, store)
+
+	w := httptest.NewRecorder()
+	h.ServeHTTP(w, signedIn(httptest.NewRequest(http.MethodGet, "/v1/builds", nil)))
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("status %d, want 400 without mine=1", w.Code)
+	}
+
+	w = httptest.NewRecorder()
+	h.ServeHTTP(w, httptest.NewRequest(http.MethodGet, "/v1/builds?mine=1", nil))
+	if w.Code != http.StatusUnauthorized {
+		t.Errorf("status %d, want 401 without a session", w.Code)
+	}
 }

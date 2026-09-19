@@ -36,12 +36,20 @@ func (s *Store) logger() *slog.Logger {
 	return slog.Default()
 }
 
-// Save inserts b and returns the stored record with created true. When the
-// id already exists nothing is written and the existing record is returned
-// with created false, provided it really is the same build: an id is a
-// content hash, so the title that was saved first wins. An existing row
-// whose content differs is an id collision and returns ErrIDCollision.
-func (s *Store) Save(ctx context.Context, b Build) (Build, bool, error) {
+// Save inserts b and returns the stored record with created true. When
+// the id already exists nothing is written and the existing record is
+// returned with created false, provided it really is the same build: an
+// id is a content hash, so the title that was saved first wins. An
+// existing row whose content differs is an id collision and returns
+// ErrIDCollision.
+//
+// userID may be nil: an anonymous save is saved and shareable, it simply
+// has no owner and never appears in anyone's list. A signed-in save of a
+// build that already exists claims the row when nobody owns it yet —
+// otherwise a player could save a build somebody had already shared and
+// never find it in their own list — and leaves an owned row alone, the
+// way the first title wins.
+func (s *Store) Save(ctx context.Context, b Build, userID *int64) (Build, bool, error) {
 	classID, err := smallint(b.ClassID, "class_id")
 	if err != nil {
 		return Build{}, false, err
@@ -65,11 +73,11 @@ func (s *Store) Save(ctx context.Context, b Build) (Build, bool, error) {
 	}
 
 	err = s.Pool.QueryRow(ctx,
-		`insert into builds (id, class_id, race_id, tree_version, point_order, gear, title)
-		 values ($1, $2, $3, $4, $5, $6, $7)
+		`insert into builds (id, class_id, race_id, tree_version, point_order, gear, title, user_id)
+		 values ($1, $2, $3, $4, $5, $6, $7, $8)
 		 on conflict (id) do nothing
 		 returning created_at, views`,
-		b.ID, classID, raceID, b.TreeVersion, order, gear, title).
+		b.ID, classID, raceID, b.TreeVersion, order, gear, title, userID).
 		Scan(&b.CreatedAt, &b.Views)
 	if err == nil {
 		b.Gear = gear
@@ -87,6 +95,13 @@ func (s *Store) Save(ctx context.Context, b Build) (Build, bool, error) {
 		s.logger().Error("builds", "op", "save", "err", "id collision", "id", b.ID,
 			"stored", contentOf(existing), "incoming", contentOf(b))
 		return Build{}, false, fmt.Errorf("%w on %s", ErrIDCollision, b.ID)
+	}
+	if userID != nil {
+		if _, err := s.Pool.Exec(ctx,
+			`update builds set user_id = $2 where id = $1 and user_id is null`,
+			b.ID, *userID); err != nil {
+			return Build{}, false, fmt.Errorf("builds: claim %s: %w", b.ID, err)
+		}
 	}
 	return existing, false, nil
 }
@@ -109,25 +124,30 @@ func contentOf(b Build) string {
 		b.ClassID, b.RaceID, b.TreeVersion, b.PointOrder, b.Gear)
 }
 
-func (s *Store) Get(ctx context.Context, id string) (Build, error) {
-	b := Build{ID: id}
+// buildRow is what both a single-row query and a multi-row one satisfy,
+// so one function reads a build in one column order.
+type buildRow interface{ Scan(dest ...any) error }
+
+// buildColumns is that column order. Every query below selects exactly
+// these, in this order, and scanBuild reads them.
+const buildColumns = `id, class_id, race_id, tree_version, point_order, gear, title,
+	created_at, views`
+
+// scanBuild reads one row. It exists because Get, GetMany and Mine had
+// three copies of the same conversions between them, and a fourth was
+// one too many.
+func scanBuild(row buildRow) (Build, error) {
 	var (
+		b               Build
 		classID, raceID int16
 		order           []int32
 		title           *string
 	)
-	err := s.Pool.QueryRow(ctx,
-		`select class_id, race_id, tree_version, point_order, gear, title, created_at, views
-		 from builds where id = $1`, id).
-		Scan(&classID, &raceID, &b.TreeVersion, &order, &b.Gear, &title, &b.CreatedAt, &b.Views)
-	if errors.Is(err, pgx.ErrNoRows) {
-		return Build{}, ErrNotFound
+	if err := row.Scan(&b.ID, &classID, &raceID, &b.TreeVersion, &order, &b.Gear, &title,
+		&b.CreatedAt, &b.Views); err != nil {
+		return Build{}, err
 	}
-	if err != nil {
-		return Build{}, fmt.Errorf("builds: get %s: %w", id, err)
-	}
-	b.ClassID = int(classID)
-	b.RaceID = int(raceID)
+	b.ClassID, b.RaceID = int(classID), int(raceID)
 	b.PointOrder = make([]int, len(order))
 	for i, v := range order {
 		b.PointOrder[i] = int(v)
@@ -137,6 +157,17 @@ func (s *Store) Get(ctx context.Context, id string) (Build, error) {
 	}
 	if title != nil {
 		b.Title = *title
+	}
+	return b, nil
+}
+
+func (s *Store) Get(ctx context.Context, id string) (Build, error) {
+	b, err := scanBuild(s.Pool.QueryRow(ctx, `select `+buildColumns+` from builds where id = $1`, id))
+	if errors.Is(err, pgx.ErrNoRows) {
+		return Build{}, ErrNotFound
+	}
+	if err != nil {
+		return Build{}, fmt.Errorf("builds: get %s: %w", id, err)
 	}
 	return b, nil
 }
@@ -153,34 +184,15 @@ func (s *Store) GetMany(ctx context.Context, ids []string) (map[string]Build, er
 		return out, nil
 	}
 	rows, err := s.Pool.Query(ctx,
-		`select id, class_id, race_id, tree_version, point_order, gear, title, created_at, views
-		 from builds where id = any($1)`, ids)
+		`select `+buildColumns+` from builds where id = any($1)`, ids)
 	if err != nil {
 		return nil, fmt.Errorf("builds: get many: %w", err)
 	}
 	defer rows.Close()
 	for rows.Next() {
-		var (
-			b               Build
-			classID, raceID int16
-			order           []int32
-			title           *string
-		)
-		if err := rows.Scan(&b.ID, &classID, &raceID, &b.TreeVersion, &order, &b.Gear, &title,
-			&b.CreatedAt, &b.Views); err != nil {
+		b, err := scanBuild(rows)
+		if err != nil {
 			return nil, fmt.Errorf("builds: get many: %w", err)
-		}
-		b.ClassID = int(classID)
-		b.RaceID = int(raceID)
-		b.PointOrder = make([]int, len(order))
-		for i, v := range order {
-			b.PointOrder[i] = int(v)
-		}
-		if b.Gear == nil {
-			b.Gear = map[string]int{}
-		}
-		if title != nil {
-			b.Title = *title
 		}
 		out[b.ID] = b
 	}
@@ -188,6 +200,46 @@ func (s *Store) GetMany(ctx context.Context, ids []string) (map[string]Build, er
 		return nil, fmt.Errorf("builds: get many: %w", err)
 	}
 	return out, nil
+}
+
+// PerPage is the page size of a player's own build list, the same
+// hundred the sim history and the rankings use.
+const PerPage = 100
+
+// Page is one page of a player's own builds.
+type Page struct {
+	Rows    []Build `json:"rows"`
+	Total   int     `json:"total"`
+	Page    int     `json:"page"`
+	PerPage int     `json:"per_page"`
+}
+
+// Mine answers one page of a player's own builds, newest first.
+func (s *Store) Mine(ctx context.Context, userID int64, page int) (Page, error) {
+	if page < 1 {
+		page = 1
+	}
+	out := Page{Rows: []Build{}, Page: page, PerPage: PerPage}
+	if err := s.Pool.QueryRow(ctx,
+		`select count(*) from builds where user_id = $1`, userID).Scan(&out.Total); err != nil {
+		return Page{}, fmt.Errorf("builds: count: %w", err)
+	}
+	rows, err := s.Pool.Query(ctx,
+		`select `+buildColumns+` from builds where user_id = $1
+		 order by created_at desc, id limit $2 offset $3`,
+		userID, PerPage, (page-1)*PerPage)
+	if err != nil {
+		return Page{}, fmt.Errorf("builds: list: %w", err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		b, err := scanBuild(rows)
+		if err != nil {
+			return Page{}, fmt.Errorf("builds: scan: %w", err)
+		}
+		out.Rows = append(out.Rows, b)
+	}
+	return out, rows.Err()
 }
 
 // AddViews adds each count to the matching row's view counter in one round
