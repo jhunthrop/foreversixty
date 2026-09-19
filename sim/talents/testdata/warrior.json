@@ -1,0 +1,26 @@
+{
+  "build": "test",
+  "class_id": 1,
+  "class_slug": "warrior",
+  "trees": [
+    {
+      "id": 161,
+      "name": "Arms",
+      "position": 0,
+      "talents": [
+        { "id": 105958, "name": "Improved Heroic Strike", "max_rank": 3, "tier": 0, "column": 0 },
+        { "id": 105957, "name": "Deflection", "max_rank": 5, "tier": 0, "column": 1 },
+        { "id": 105956, "name": "Improved Rend", "max_rank": 3, "tier": 1, "column": 0 }
+      ]
+    },
+    {
+      "id": 164,
+      "name": "Fury",
+      "position": 1,
+      "talents": [
+        { "id": 105900, "name": "Booming Voice", "max_rank": 5, "tier": 0, "column": 0 },
+        { "id": 105901, "name": "Cruelty", "max_rank": 5, "tier": 0, "column": 1 }
+      ]
+    }
+  ]
+}

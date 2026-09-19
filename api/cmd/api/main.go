@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"strings"
 	"syscall"
 	"time"
@@ -22,14 +23,19 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/jobs"
 	"github.com/jhunthrop/foreversixty/api/internal/mail"
 	"github.com/jhunthrop/foreversixty/api/internal/parse"
+	"github.com/jhunthrop/foreversixty/api/internal/phase"
 	"github.com/jhunthrop/foreversixty/api/internal/r2"
 	"github.com/jhunthrop/foreversixty/api/internal/rankings"
 	"github.com/jhunthrop/foreversixty/api/internal/reports"
 	"github.com/jhunthrop/foreversixty/api/internal/server"
+	"github.com/jhunthrop/foreversixty/api/internal/sims"
 	"github.com/jhunthrop/foreversixty/api/internal/site"
 	"github.com/jhunthrop/foreversixty/api/internal/spec"
 	"github.com/jhunthrop/foreversixty/api/internal/subscribe"
 	"github.com/jhunthrop/foreversixty/api/internal/trees"
+	"github.com/jhunthrop/foreversixty/sim/enginever"
+	"github.com/jhunthrop/foreversixty/sim/runner"
+	"github.com/jhunthrop/foreversixty/sim/talents"
 )
 
 var version = "dev" // set with -ldflags "-X main.version=<git sha>"
@@ -47,14 +53,29 @@ const (
 
 func main() {
 	log := slog.New(slog.NewJSONHandler(os.Stdout, nil))
-	// The image is both the service and the parse job: Cloud Run runs
-	// it with `parse-report <id>` as its arguments for an upload.
-	if len(os.Args) > 1 && os.Args[1] == reports.ParseJobCommand {
-		if err := runParse(context.Background(), log, os.Args[2:]); err != nil {
-			log.Error("parse-report", "err", err)
-			os.Exit(1)
+	// The image is the service and every job: Cloud Run runs it with
+	// the job's name as its first container argument.
+	if len(os.Args) > 1 {
+		switch os.Args[1] {
+		case reports.ParseJobCommand:
+			if err := runParse(context.Background(), log, os.Args[2:]); err != nil {
+				log.Error(reports.ParseJobCommand, "err", err)
+				os.Exit(1)
+			}
+			return
+		case sims.SimRunJobCommand:
+			if err := runSim(context.Background(), log, os.Args[2:]); err != nil {
+				log.Error(sims.SimRunJobCommand, "err", err)
+				os.Exit(1)
+			}
+			return
+		case sims.ValidateJobCommand:
+			if err := runValidate(context.Background(), log); err != nil {
+				log.Error(sims.ValidateJobCommand, "err", err)
+				os.Exit(1)
+			}
+			return
 		}
-		return
 	}
 	if err := serve(log); err != nil {
 		log.Error("startup", "err", err)
@@ -126,6 +147,64 @@ func runParse(ctx context.Context, log *slog.Logger, args []string) error {
 	}, args[0])
 }
 
+// runSim is the premium lane's Cloud Run job: run one sim natively
+// and exit.
+func runSim(ctx context.Context, log *slog.Logger, args []string) error {
+	if len(args) != 1 || args[0] == "" {
+		return fmt.Errorf("usage: api %s <sim_id>", sims.SimRunJobCommand)
+	}
+	cfg, pool, err := start(ctx)
+	if err != nil {
+		return err
+	}
+	defer pool.Close()
+	client := objects(cfg, log)
+	if client == nil {
+		return fmt.Errorf("%s needs R2 credentials", sims.SimRunJobCommand)
+	}
+	log.Info(sims.SimRunJobCommand, "sim", args[0], "engine", enginever.Version)
+	return sims.Run(ctx, sims.JobDeps{
+		Store: &sims.Store{Pool: pool}, Put: client, Engine: simEngine(log), Log: log,
+	}, args[0])
+}
+
+// runValidate is the nightly Cloud Run job: measure every spec's
+// fidelity against the top parses and publish the figures.
+func runValidate(ctx context.Context, log *slog.Logger) error {
+	cfg, pool, err := start(ctx)
+	if err != nil {
+		return err
+	}
+	defer pool.Close()
+	client := objects(cfg, log)
+	if client == nil {
+		return fmt.Errorf("%s needs R2 credentials", sims.ValidateJobCommand)
+	}
+	at := phase.At(time.Now().UTC())
+	specs := sims.DPSSpecs()
+	log.Info(sims.ValidateJobCommand, "specs", len(specs), "phase", at,
+		"engine", enginever.Version)
+	return sims.Validate(ctx, sims.ValidateDeps{
+		Store:  &sims.Store{Pool: pool},
+		Top:    &sims.ParseReader{Pool: pool, Get: client, Log: log},
+		Engine: simEngine(log), Build: sims.NoBuilder{},
+		Scores: &rankings.Store{Pool: pool}, Log: log,
+	}, specs, at, enginever.Version)
+}
+
+// simEngine is the runner every simulator job uses: the real binary
+// when the image carries one, and the checked-in fixture when it does
+// not, so a deployment without the artifact still answers instead of
+// failing. Task 15 is what puts the binary there.
+func simEngine(log *slog.Logger) runner.Runner {
+	if _, err := os.Stat(runner.DefaultBinary); err == nil {
+		return &runner.Native{}
+	}
+	log.Warn("sims", "state", "no engine binary at "+runner.DefaultBinary,
+		"effect", "sims answer from the checked-in fixture result")
+	return &runner.Fixture{}
+}
+
 // inferrer names specs from the newest client build's talent data.
 func inferrer(data *trees.Data) *spec.Inferrer {
 	b, ok := data.Latest()
@@ -133,6 +212,34 @@ func inferrer(data *trees.Data) *spec.Inferrer {
 		return spec.New(nil)
 	}
 	return spec.New(b)
+}
+
+// talentLayouts loads the newest build's talent layout, which is what
+// turns a fight's recorded talent ids into the engine's positional
+// string. A build with no layout is not fatal: the scorer then refuses
+// every character, which is what it already does for the missing race.
+func talentLayouts(dir string, data *trees.Data, log *slog.Logger) *talents.Layouts {
+	build, ok := data.Latest()
+	if !ok {
+		log.Warn("sims", "state", "no client build", "effect", "no execution scores")
+		return nil
+	}
+	layouts, err := talents.Load(filepath.Join(dir, build.Version, "talents"))
+	if err != nil {
+		log.Warn("sims", "state", "no talent layout", "err", err, "effect", "no execution scores")
+		return nil
+	}
+	return layouts
+}
+
+// scorerShim adapts the sims scorer to what the ingest asks for, so
+// neither package has to import the other. The conversion compiles
+// only while reports.ScoredFight and sims.FightAt have identical
+// fields in identical order, which is the drift check.
+type scorerShim struct{ s *sims.Scorer }
+
+func (a scorerShim) Schedule(f reports.ScoredFight) {
+	a.s.ScheduleFight(sims.FightAt(f))
 }
 
 func serve(log *slog.Logger) error {
@@ -163,8 +270,14 @@ func serve(log *slog.Logger) error {
 
 	buildStore := &builds.Store{Pool: pool, Log: log}
 	views := builds.NewViews(buildStore, log)
+	// Built here, ahead of siteDeps, so the shared build page can find
+	// a build's simmed DPS for its card description; simStore is
+	// reused below for the sim service and scorer, which need the
+	// same pool.
+	simStore := &sims.Store{Pool: pool}
 	siteDeps := &site.Deps{
-		Store: buildStore, Data: treeData, PublicBaseURL: cfg.PublicBaseURL, Views: views, Log: log,
+		Store: buildStore, Data: treeData, PublicBaseURL: cfg.PublicBaseURL, Views: views,
+		Sims: simStore, Log: log,
 	}
 	buildsSvc := &builds.Service{
 		Store: buildStore, Data: treeData, PublicBaseURL: cfg.PublicBaseURL, Log: log,
@@ -210,7 +323,12 @@ func serve(log *slog.Logger) error {
 		TrustedProxyHops: cfg.TrustedProxyHops,
 	}
 
+	deps.Sims = &sims.Service{
+		Store: simStore, Accounts: authStore, EngineVersion: enginever.Version, Log: log,
+	}
+
 	var sampler *parse.Worker
+	var scorer *sims.Scorer
 	if client != nil {
 		deps.Reports.Signer = client
 		sampler = parse.NewWorker(parse.Deps{
@@ -220,6 +338,17 @@ func serve(log *slog.Logger) error {
 		deps.Ingest = &reports.Ingest{
 			Store: reportStore, Put: client, Rank: rankStore, Samp: sampler, Log: log,
 		}
+		// After deps.Ingest exists, never beside the sampler above it:
+		// the next line needs the ingest to be there.
+		scorer = sims.NewScorer(sims.ScoreDeps{
+			Store: simStore, Scores: rankStore, Engine: simEngine(log),
+			Build:         sims.CombatantBuilder{Talents: talentLayouts(cfg.TreeDataDir, treeData, log)},
+			Summaries:     client,
+			EngineVersion: enginever.Version, Log: log,
+		})
+		go scorer.Run(ctx)
+		deps.Ingest.Score = scorerShim{scorer}
+		deps.Ingest.Members = authStore
 		if runner, err := jobs.NewCloudRun(ctx, cfg.ParseJobProject, cfg.ParseJobRegion, cfg.ParseJobName); err != nil {
 			log.Warn("jobs", "state", "the parse job cannot be reached", "err", err,
 				"effect", "whole-file uploads are not offered")
@@ -227,6 +356,15 @@ func serve(log *slog.Logger) error {
 			deps.Uploads = &reports.Uploads{
 				Store: reportStore, R2: client, Jobs: runner, APIBaseURL: cfg.APIBaseURL, Log: log,
 			}
+		}
+		// The bucket, for the buffs sim-input reads out of a stored
+		// fight summary. Without it that read answers without buffs.
+		deps.Sims.Summaries = client
+		if runner, err := jobs.NewCloudRun(ctx, cfg.SimJobProject, cfg.SimJobRegion, cfg.SimJobName); err != nil {
+			log.Warn("jobs", "state", "the sim job cannot be reached", "err", err,
+				"effect", "running sims on our servers is not offered")
+		} else {
+			deps.Sims.Jobs = runner
 		}
 	}
 
@@ -260,6 +398,9 @@ func serve(log *slog.Logger) error {
 	views.Close()
 	if sampler != nil {
 		sampler.Close()
+	}
+	if scorer != nil {
+		scorer.Close()
 	}
 	log.Info("stopped")
 	return nil

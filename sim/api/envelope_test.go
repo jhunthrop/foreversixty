@@ -305,6 +305,49 @@ func TestValidateRefusesARequestForAnotherEngine(t *testing.T) {
 	}
 }
 
+// A save is not a run: ValidateSaved is what POST /v1/sims checks, and
+// it must accept a result from a build behind the deployment's own
+// pin - the browser's contract with the server is that a stale result
+// is stored and labelled, never refused.
+func TestValidateSavedAcceptsAnOlderEngineVersion(t *testing.T) {
+	res := SimResult{
+		EngineVersion: "anoldbuild",
+		Request: SimRequest{
+			EngineVersion: "anoldbuild", Spec: "mage-frost", Iterations: 3000,
+			Source:    CharacterSource{Kind: SourceManual},
+			Encounter: DefaultEncounter(),
+			Character: CharacterSpec{Name: "Jaina", Race: "gnome", Class: "mage", Level: 60},
+		},
+	}
+	if err := res.ValidateSaved(); err != nil {
+		t.Fatalf("a result from an older engine build was refused: %v", err)
+	}
+	// Validate itself still holds the run route to the current engine:
+	// ValidateSaved only relaxes the check for a save.
+	if err := res.Request.Validate(); err == nil {
+		t.Fatal("Validate accepted a request for another engine")
+	}
+}
+
+// ValidateSaved's other half: it refuses a partial run. The browser
+// only ever posts a result that finished, so an aborted one reaching
+// the save route is malformed, not merely stale.
+func TestValidateSavedRefusesAnAbortedResult(t *testing.T) {
+	res := SimResult{
+		EngineVersion: enginever.Version,
+		Request: SimRequest{
+			EngineVersion: enginever.Version, Spec: "mage-frost", Iterations: 3000,
+			Source:    CharacterSource{Kind: SourceManual},
+			Encounter: DefaultEncounter(),
+			Character: CharacterSpec{Name: "Jaina", Race: "gnome", Class: "mage", Level: 60},
+		},
+		Aborted: true,
+	}
+	if err := res.ValidateSaved(); err == nil {
+		t.Fatal("an aborted result was accepted for save")
+	}
+}
+
 // Source.Kind had five constants declared beside it and nothing ever
 // compared to them, so a typo rode through as a stored row nothing
 // could join on.

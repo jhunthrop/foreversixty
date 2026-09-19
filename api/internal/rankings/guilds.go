@@ -138,6 +138,10 @@ type RosterBest struct {
 	Metric      string    `json:"metric"`
 	Value       float64   `json:"value"`
 	FoughtAt    time.Time `json:"fought_at"`
+	// ExecutionScore is the fraction of what this raider's gear can
+	// do that they actually did on that parse, or null when it has
+	// none.
+	ExecutionScore *float64 `json:"execution_score"`
 }
 
 // GuildReport is one of a guild's reports, newest first.
@@ -215,7 +219,8 @@ func (s *Store) Guild(ctx context.Context, region, ruleset, name string) (Guild,
 	best, err := s.Pool.Query(ctx,
 		`select distinct on (m.player_key, m.encounter_id)
 		        m.player_key, m.player_name, coalesce(m.class, ''), coalesce(m.spec, ''),
-		        m.encounter_id, m.role, m.metric_dps, m.metric_hps, m.damage_taken, m.fought_at
+		        m.encounter_id, m.role, m.metric_dps, m.metric_hps, m.damage_taken, m.fought_at,
+		        m.execution_score
 		 from fight_metrics m join reports r on r.id = m.report_id
 		 where r.guild_id = $1 and m.kill and m.state <> 'removed'
 		 order by m.player_key, m.encounter_id, greatest(coalesce(m.metric_dps, 0),
@@ -233,7 +238,7 @@ func (s *Store) Guild(ctx context.Context, region, ruleset, name string) (Guild,
 			encounterID *int64
 		)
 		if err := best.Scan(&r.Player.Key, &r.Player.Name, &r.Player.Class, &r.Player.Spec,
-			&encounterID, &role, &dps, &hps, &taken, &r.FoughtAt); err != nil {
+			&encounterID, &role, &dps, &hps, &taken, &r.FoughtAt, &r.ExecutionScore); err != nil {
 			return Guild{}, false, fmt.Errorf("rankings: scan roster best: %w", err)
 		}
 		if encounterID != nil {

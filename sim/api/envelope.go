@@ -148,9 +148,13 @@ func DefaultEncounter() EncounterSpec {
 }
 
 // Validate checks everything a malformed client could get wrong, at the
-// boundary, before anything reaches the engine.
+// boundary, before anything reaches the engine. It requires the request
+// to name this build's own engine: a request is about to be run, and
+// running one build's request against another's talents, item rows and
+// spell constants would produce a row stamped with a version that did
+// not produce it.
 func (r SimRequest) Validate() error {
-	return r.validate(true)
+	return r.validate(true, true)
 }
 
 // ValidatePart is Validate for one worker's share of a split run.
@@ -163,25 +167,29 @@ func (r SimRequest) Validate() error {
 // its iterations, or one hand-rolled to ask for a million, is refused
 // here rather than at the worker.
 func (r SimRequest) ValidatePart() error {
-	return r.validate(false)
+	return r.validate(false, true)
 }
 
-// validate is the body of both. closedSet says whether the iteration
-// count must be one the settings bar offers.
-func (r SimRequest) validate(closedSet bool) error {
+// validate is the body of Validate, ValidatePart and ValidateSaved.
+// closedSet says whether the iteration count must be one the settings
+// bar offers; requireCurrentEngine says whether engine_version must
+// name this build - true for anything about to be run, false for a
+// result being saved, which named whatever engine actually produced
+// it.
+func (r SimRequest) validate(closedSet, requireCurrentEngine bool) error {
 	var errs []error
 	switch {
 	case r.EngineVersion == "":
 		errs = append(errs, errors.New("engine_version is required"))
-	case r.EngineVersion != enginever.Version:
+	case requireCurrentEngine && r.EngineVersion != enginever.Version:
 		// One string identifies the engine build everywhere, and this
-		// binary is one build. A request naming another cannot be
-		// answered here: the talents, the item rows and the spell
-		// constants all belong to the pinned sha, so running it anyway
-		// would produce a row stamped with a version that did not
-		// produce it. A stored result from an older engine is still
-		// readable and is labelled stale; re-running it is a new
-		// request, restamped by whoever asks.
+		// binary is one build. A request naming another cannot be run
+		// here: the talents, the item rows and the spell constants all
+		// belong to the pinned sha, so running it anyway would produce
+		// a row stamped with a version that did not produce it. A
+		// stored result from an older engine is still readable and is
+		// labelled stale; re-running it is a new request, restamped by
+		// whoever asks.
 		errs = append(errs, fmt.Errorf("engine_version is %q, but this build is %q; a result is never produced by an engine other than the one it names", r.EngineVersion, enginever.Version))
 	}
 	if r.Spec == "" {
@@ -289,4 +297,22 @@ type Estimate struct {
 // UI; it is never silently re-run.
 func (r SimResult) Stale(current string) bool {
 	return r.EngineVersion != current
+}
+
+// ValidateSaved checks a browser result on its way into POST /v1/sims.
+// Saving is not running: the result already exists, produced by
+// whatever engine the member's browser was holding, and the contract's
+// answer to a build behind the deployment's pin is to store it and
+// read it back stale (Stale), never to refuse it - a member who ran a
+// sim on a cached bundle from before the last deploy must not lose it
+// to a 400. So this checks the request's shape the way Validate does,
+// except which engine produced it, and refuses the one thing a saved
+// row cannot be: a partial run. The browser only ever posts a result
+// that finished; an aborted one belongs to the page's own history, not
+// the server's.
+func (r SimResult) ValidateSaved() error {
+	if r.Aborted {
+		return errors.New("an aborted result cannot be saved")
+	}
+	return r.Request.validate(true, false)
 }

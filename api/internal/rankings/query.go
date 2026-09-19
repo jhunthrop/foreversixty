@@ -43,6 +43,10 @@ type Row struct {
 	ReportID    string    `json:"report_id"`
 	FightIndex  int       `json:"fight_index"`
 	State       string    `json:"state"`
+	// ExecutionScore is the fraction of what this player's gear can
+	// do that they actually did. Null means the spec is not validated
+	// or the fight predates scoring.
+	ExecutionScore *float64 `json:"execution_score"`
 }
 
 // Page is a leaderboard page.
@@ -77,6 +81,8 @@ func metricColumn(metric string) string {
 		return "m.metric_hps"
 	case MetricDamageTaken:
 		return "m.damage_taken"
+	case MetricExecution:
+		return "m.execution_score"
 	default:
 		return "m.metric_dps"
 	}
@@ -85,6 +91,12 @@ func metricColumn(metric string) string {
 // where builds the shared filter for a leaderboard query.
 func (q Query) where(now time.Time) (string, []any, error) {
 	clauses := []string{"m.encounter_id = $1", "m.kill", "m.state <> 'removed'"}
+	if q.Metric == MetricExecution {
+		// A fight with no score is not last on the execution board,
+		// it is simply not on it: the spec is not validated, or the
+		// fight predates scoring.
+		clauses = append(clauses, "m.execution_score is not null")
+	}
 	args := []any{q.EncounterID}
 	add := func(sql string, value any) {
 		args = append(args, value)
@@ -140,7 +152,7 @@ func (s *Store) Rankings(ctx context.Context, q Query, now time.Time) (Page, err
 		`select m.player_key, m.player_name, coalesce(m.class, ''), coalesce(m.spec, ''),
 		        `+column+`, coalesce(m.ilvl, 0), coalesce(m.size, 0), m.fought_at,
 		        coalesce(m.duration_ms, 0), coalesce(m.talent_split, ''), m.trinkets, m.buff_count,
-		        m.report_id, m.fight_index, m.state, g.name, g.region, g.ruleset
+		        m.report_id, m.fight_index, m.state, m.execution_score, g.name, g.region, g.ruleset
 		 from fight_metrics m
 		 left join reports r on r.id = m.report_id
 		 left join guilds g on g.id = r.guild_id
@@ -160,7 +172,7 @@ func (s *Store) Rankings(ctx context.Context, q Query, now time.Time) (Page, err
 		)
 		if err := rows.Scan(&r.Player.Key, &r.Player.Name, &r.Player.Class, &r.Player.Spec,
 			&value, &r.Ilvl, &r.Size, &r.FoughtAt, &r.DurationMS, &r.TalentSplit, &r.Trinkets,
-			&r.BuffCount, &r.ReportID, &r.FightIndex, &r.State,
+			&r.BuffCount, &r.ReportID, &r.FightIndex, &r.State, &r.ExecutionScore,
 			&guildName, &region, &ruleset); err != nil {
 			return Page{}, fmt.Errorf("rankings: scan: %w", err)
 		}
@@ -209,6 +221,9 @@ type CharacterFight struct {
 	FoughtAt    time.Time `json:"fought_at"`
 	ReportID    string    `json:"report_id"`
 	FightIndex  int       `json:"fight_index"`
+	// ExecutionScore is the fraction of what this player's gear can
+	// do that they actually did, or null when the fight has no score.
+	ExecutionScore *float64 `json:"execution_score"`
 }
 
 // BuildSeen is one talent split a character has been seen in.
@@ -267,7 +282,7 @@ func (s *Store) Character(ctx context.Context, region, ruleset, name string) (Ch
 		`select m.encounter_id, m.difficulty, m.kill, m.role, m.metric_dps, m.metric_hps,
 		        m.damage_taken, coalesce(m.spec, ''), coalesce(m.talent_split, ''),
 		        coalesce(m.duration_ms, 0), m.fought_at, m.report_id, m.fight_index,
-		        coalesce(m.class, ''), coalesce(m.phase, '')
+		        coalesce(m.class, ''), coalesce(m.phase, ''), m.execution_score
 		 from fight_metrics m
 		 where m.player_key = $1 and m.state <> 'removed'
 		 order by m.fought_at desc limit $2`, key, HistoryLimit)
@@ -291,7 +306,7 @@ func (s *Store) Character(ctx context.Context, region, ruleset, name string) (Ch
 		)
 		if err := rows.Scan(&encounterID, &difficulty, &f.Kill, &role, &dps, &hps, &taken,
 			&f.Spec, &f.TalentSplit, &f.DurationMS, &f.FoughtAt, &f.ReportID, &f.FightIndex,
-			&class, &at); err != nil {
+			&class, &at, &f.ExecutionScore); err != nil {
 			return Character{}, false, fmt.Errorf("rankings: scan character history: %w", err)
 		}
 		found = true

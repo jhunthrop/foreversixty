@@ -21,6 +21,9 @@ const (
 	defaultParseJobName        = "parse-report"
 	defaultParseJobRegion      = "us-east1"
 	defaultParseJobProject     = "foreversixty"
+	defaultSimJobName          = "sim-run"
+	defaultSimJobRegion        = "us-east1"
+	defaultSimJobProject       = "foreversixty"
 )
 
 // defaultTrustedProxyHops is used when TRUSTED_PROXY_HOPS is not set. 1
@@ -87,6 +90,14 @@ type Config struct {
 	ParseJobName    string
 	ParseJobRegion  string
 	ParseJobProject string
+
+	// SimJobName, SimJobRegion and SimJobProject address the Cloud Run
+	// job that runs one premium sim. Both simulator jobs run on this
+	// image; the nightly validation job is scheduled, not dispatched
+	// from here, so it needs no address.
+	SimJobName    string
+	SimJobRegion  string
+	SimJobProject string
 }
 
 func Load(getenv func(string) string) (Config, error) {
@@ -146,6 +157,9 @@ func Load(getenv func(string) string) (Config, error) {
 		{&c.ParseJobName, "PARSE_JOB_NAME", defaultParseJobName},
 		{&c.ParseJobRegion, "PARSE_JOB_REGION", defaultParseJobRegion},
 		{&c.ParseJobProject, "PARSE_JOB_PROJECT", defaultParseJobProject},
+		{&c.SimJobName, "SIM_JOB_NAME", defaultSimJobName},
+		{&c.SimJobRegion, "SIM_JOB_REGION", defaultSimJobRegion},
+		{&c.SimJobProject, "SIM_JOB_PROJECT", defaultSimJobProject},
 	} {
 		*d.dst = getenv(d.env)
 		if *d.dst == "" {
