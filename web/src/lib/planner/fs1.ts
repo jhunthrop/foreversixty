@@ -74,18 +74,40 @@ export interface FS1Build {
    * map can still build an `FS1Build` without writing `gearSlotsFrom(gear)` by hand.
    */
   gearSlots?: FS1GearSlot[];
-  /** Version 2 (contract 7, corrected by 10.5). Empty for a version 1 code. */
-  bags: FS1Item[];
-  bank: FS1Item[];
-  sets: FS1Set[];
-  loadouts: FS1Loadout[];
-  professions: string[];
+  /**
+   * Version 2 (contract 7, corrected by 10.5), all optional (spec section 7's own words) --
+   * `decodeFS1` always fills them (with `[]` when the code carries no such section), but an
+   * `encodeFS1`/`encodeFS1V2` caller building a version 1 code has nothing to say about any
+   * of them and should not have to write six empty arrays to say so.
+   *
+   * `SimCharacter`'s mirrors of these (`character.ts`) are deliberately NOT optional: that
+   * interface is only ever the decoder's own output or another source's honest equivalent,
+   * every source can fill it, and optional there would push `?? []` onto every reader
+   * instead of onto the one place (`encodeFS1V2`) that actually needs a default.
+   */
+  bags?: FS1Item[];
+  bank?: FS1Item[];
+  sets?: FS1Set[];
+  loadouts?: FS1Loadout[];
+  professions?: string[];
   /** Section names the decoder did not recognise, reported rather than silently dropped. */
-  ignored: string[];
+  ignored?: string[];
 }
 
 export type FS1Error = { ok: false; message: string };
-export type FS1Result = { ok: true; build: FS1Build } | FS1Error;
+
+/**
+ * `decodeFS1`'s own return shape. `FS1Build` leaves `gearSlots` and the six version-2
+ * fields optional for an *encoder* caller with nothing to add (contract section 7's "all
+ * optional") -- but the decoder itself always fills every one of them, `[]` when the code
+ * carries no such section. Every reader of a decoded build (`character.ts`, this file's
+ * own tests) can therefore read them with no null check, which is the whole reason this
+ * type exists rather than reusing `FS1Build` as `decodeFS1`'s own return shape too.
+ */
+export type DecodedFS1Build = FS1Build &
+  Required<Pick<FS1Build, 'gearSlots' | 'bags' | 'bank' | 'sets' | 'loadouts' | 'professions' | 'ignored'>>;
+
+export type FS1Result = { ok: true; build: DecodedFS1Build } | FS1Error;
 
 function encodeTree(ranks: number[]): string {
   const digits = ranks.map((rank) => Math.max(0, Math.min(35, Math.round(rank))).toString(36));
@@ -147,14 +169,21 @@ function parseGearList(field: string): Parsed<FS1GearSlot[]> {
   const slots: FS1GearSlot[] = [];
   if (field === '') return { ok: true, value: slots };
   for (const entry of field.split(',')) {
-    const [slot, value] = entry.split('=');
+    const eq = entry.split('=');
+    // Exactly one `=`: `entry.split('=')` on "head=12640=99" is ["head","12640","99"], and
+    // destructuring only the first two would silently discard the "=99" instead of refusing
+    // an entry that is not this grammar's shape.
+    if (eq.length !== 2) {
+      return { ok: false, message: `That code has an unreadable gear entry: ${entry}.` };
+    }
+    const [slot, value] = eq;
     if (!(SLOTS as readonly string[]).includes(slot)) {
       return { ok: false, message: `That code names a slot this planner does not have: ${slot}.` };
     }
     // Digits only, never Number.parseInt on the whole field: parseInt stops at the first
     // non-digit and would silently turn "12640abc" into the item id 12640.
-    const parts = (value ?? '').split(':');
-    if (value === undefined || parts.length > 3 || parts.some((part) => !/^\d+$/.test(part))) {
+    const parts = value.split(':');
+    if (parts.length > 3 || parts.some((part) => !/^\d+$/.test(part))) {
       return { ok: false, message: `That code has an unreadable gear entry: ${entry}.` };
     }
     const [itemId, enchant, suffix] = parts.map((part) => Number.parseInt(part, 10));
@@ -202,14 +231,30 @@ function parseItemList(field: string): Parsed<FS1Item[]> {
   return { ok: true, value: items };
 }
 
+/**
+ * `decodeURIComponent`, but a malformed escape (a bare `%`, or `%` not followed by two hex
+ * digits) reads as itself rather than throwing. A `URIError` here would crash the caller --
+ * `Planner.svelte` calls `decodeFS1` synchronously with no `try`, and `sources.ts`'s
+ * `fromAddonExport` calls `characterFromFs1` outside its own -- over a set or loadout name
+ * a third-party addon exported without encoding, which is an honest string the player
+ * typed, not an attack to refuse.
+ */
+function decodeName(raw: string): string {
+  try {
+    return decodeURIComponent(raw);
+  } catch {
+    return raw;
+  }
+}
+
 /** `<name>=<payload>;…`, the name URL-encoded so it may carry `;`, `=` and `|`. */
 function parseNamed(field: string): { name: string; payload: string }[] {
   if (field === '') return [];
   return field.split(';').map((entry) => {
     const split = entry.indexOf('=');
     return split === -1
-      ? { name: decodeURIComponent(entry), payload: '' }
-      : { name: decodeURIComponent(entry.slice(0, split)), payload: entry.slice(split + 1) };
+      ? { name: decodeName(entry), payload: '' }
+      : { name: decodeName(entry.slice(0, split)), payload: entry.slice(split + 1) };
   });
 }
 
@@ -236,19 +281,24 @@ export function decodeFS1(code: string): FS1Result {
   const gear = parseGearList(gearParts.join(':'));
   if (!gear.ok) return gear;
 
-  const build: FS1Build = {
+  // No `: FS1Build` annotation: the decoder always fills every version-2 field (with `[]`
+  // when the code carries no such section), so this stays typed with them required rather
+  // than inheriting `FS1Build`'s own optionality -- which exists for an *encoder* caller
+  // with nothing to say, not for this function's own return value. A required field is
+  // still assignable to `DecodedFS1Build`, below, where `FS1Result` carries it.
+  const build = {
     dataBuild,
     classSlug,
     raceSlug,
     treeRanks: trees.value,
     gear: gearMapOf(gear.value),
     gearSlots: gear.value,
-    bags: [],
-    bank: [],
-    sets: [],
-    loadouts: [],
-    professions: [],
-    ignored: [],
+    bags: [] as FS1Item[],
+    bank: [] as FS1Item[],
+    sets: [] as FS1Set[],
+    loadouts: [] as FS1Loadout[],
+    professions: [] as string[],
+    ignored: [] as string[],
   };
 
   for (const section of sections) {
@@ -274,8 +324,10 @@ export function decodeFS1(code: string): FS1Result {
     } else if (name === 'professions') {
       // Slugs, unvalidated here: IDS.md's profession list is the vocabulary and
       // sim/request refuses one it cannot map, naming it. Silently dropping a slug this
-      // decoder did not recognise would hide exactly that error.
-      build.professions = field === '' ? [] : field.split(',');
+      // decoder did not recognise would hide exactly that error -- but an empty entry from
+      // a stray comma ("a,,b" or a trailing "a,") is not a slug at all, only a formatting
+      // artifact, so those alone are filtered rather than forwarded to fail there instead.
+      build.professions = field === '' ? [] : field.split(',').filter((slug) => slug !== '');
     } else if (name !== '') {
       // Contract 7: unknown sections are ignored by the decoder and reported in its
       // result. An addon a version ahead of the site is a thing that will happen, and
@@ -367,41 +419,46 @@ function encodeGearSlots(slots: readonly FS1GearSlot[]): string {
  * links and the "Sim this build" URL are version 1 and there is nothing in them to carry.
  */
 export function encodeFS1V2(build: FS1Build): string {
+  const bags = build.bags ?? [];
+  const bank = build.bank ?? [];
+  const sets = build.sets ?? [];
+  const loadouts = build.loadouts ?? [];
+  const professions = build.professions ?? [];
+
   const sections: string[] = [];
-  if (build.bags.length > 0) sections.push(`bags=${encodeItems(build.bags)}`);
-  if (build.bank.length > 0) sections.push(`bank=${encodeItems(build.bank)}`);
-  if (build.sets.length > 0) {
+  if (bags.length > 0) sections.push(`bags=${encodeItems(bags)}`);
+  if (bank.length > 0) sections.push(`bank=${encodeItems(bank)}`);
+  if (sets.length > 0) {
     sections.push(
-      `sets=${build.sets
-        .map((set) => `${encodeURIComponent(set.name)}=${encodeGearSlots(set.gear)}`)
-        .join(';')}`,
+      `sets=${sets.map((set) => `${encodeURIComponent(set.name)}=${encodeGearSlots(set.gear)}`).join(';')}`,
     );
   }
-  if (build.loadouts.length > 0) {
+  if (loadouts.length > 0) {
     sections.push(
-      `loadouts=${build.loadouts
+      `loadouts=${loadouts
         .map((loadout) => `${encodeURIComponent(loadout.name)}=${encodeTrees(loadout.treeRanks)}`)
         .join(';')}`,
     );
   }
-  if (build.professions.length > 0) sections.push(`professions=${build.professions.join(',')}`);
+  if (professions.length > 0) sections.push(`professions=${professions.join(',')}`);
 
-  // The head is version 1 unless a gear entry actually has something to say beyond its id,
-  // so a build with no enchants encodes byte-identically to `encodeFS1` -- which is what
-  // the first test in this task asserts, and what keeps a version-2 string readable by a
-  // version-1 decoder whenever it can be.
+  // Always built from the slot list, never delegated to `encodeFS1` -- a caller can hold
+  // `gearSlots` with nothing in `gear` (the doc comment on `FS1Build.gearSlots` invites
+  // exactly that: "a caller holding nothing but a Gear map" implies the reverse is legal
+  // too), and falling back to `encodeFS1(build)` for a "nothing enchanted" build used to
+  // read `build.gear` instead and silently drop every item in that case. `encodeGearSlots`
+  // produces byte-identical output to `encodeGearList` for a slot with no enchant or
+  // suffix, so `encodeFS1V2(build) === encodeFS1(build)` still holds whenever `build.gear`
+  // is the only source given.
   const slots = build.gearSlots ?? gearSlotsFrom(build.gear);
-  const rich = slots.some((entry) => entry.enchant !== undefined || entry.suffix !== undefined);
-  const head = rich
-    ? [
-        FS1_PREFIX,
-        build.dataBuild,
-        build.classSlug,
-        build.raceSlug,
-        encodeTrees(build.treeRanks),
-        encodeGearSlots(slots),
-      ].join(':')
-    : encodeFS1(build);
+  const head = [
+    FS1_PREFIX,
+    build.dataBuild,
+    build.classSlug,
+    build.raceSlug,
+    encodeTrees(build.treeRanks),
+    encodeGearSlots(slots),
+  ].join(':');
 
   return [head, ...sections].join('|');
 }

@@ -16,12 +16,22 @@ const MAX_REF = 128;
 
 /**
  * An FS1 code is now version 2 (contract 7): three tree strings, seventeen gear entries,
- * and optionally a bag list, a bank list, named sets and named loadouts. `fs1.ts`'s own
- * decoder refuses anything over MAX_CODE_LENGTH for the same reason; this mirrors that
- * bound rather than importing it, since url.ts only ever needs to cap an
- * attacker-controlled query string before the code reaches a decoder at all.
+ * and optionally a bag list, a bank list, named sets and named loadouts -- a full bank is
+ * several thousand characters on its own (`fs1.ts`'s own comment on `MAX_CODE_LENGTH`).
+ * `fs1.ts`'s own decoder refuses anything over `MAX_CODE_LENGTH` for the same reason; this
+ * mirrors that bound rather than importing it, since url.ts only ever needs to cap an
+ * attacker-controlled query string before the code reaches a decoder at all. Exported so
+ * a test can assert against it rather than hardcoding the number twice.
+ *
+ * This is deliberately larger than `MAX_REQUEST_PARAM`'s ~8 KB browser/proxy ceiling below,
+ * because it protects a different link: `?code=` is "Sim this build" / "Run this
+ * yourself", a one-way pointer at an export string, not the request-sharing path (`?req=`,
+ * contract 9) that has to survive being pasted into every chat client and proxy unmodified.
+ * A `?code=` link big enough to approach either bound is already a rare, large export; if a
+ * browser or proxy truncates it in transit, `decodeFS1` reports why, the same as it does
+ * for every other malformed input, rather than misreading a partial code as a smaller one.
  */
-const MAX_CODE = 16_384;
+export const MAX_CODE = 16_384;
 
 /**
  * A base64url request is about a third larger than its JSON, and a real single-run request

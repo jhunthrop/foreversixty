@@ -5,6 +5,7 @@ import {
   decodeRequestParam,
   defaultSimState,
   encodeRequestParam,
+  MAX_CODE,
   MAX_REQUEST_PARAM,
   parseSimState,
   simIdFrom,
@@ -56,9 +57,9 @@ describe('parseSimState', () => {
   it('carries a real FS1 code whole, and caps a code far past what one reaches', () => {
     const code = `FS1:1.15.9.69722:warrior:orc:${'1'.repeat(40)}/0/0:${'head=12640,'.repeat(17).slice(0, -1)}`;
     expect(code.length).toBeGreaterThan(128);
-    expect(code.length).toBeLessThan(16_384);
+    expect(code.length).toBeLessThan(MAX_CODE);
     expect(parseSimState(`?code=${encodeURIComponent(code)}`).code).toBe(code);
-    expect(parseSimState(`?code=${'x'.repeat(20_000)}`).code).toHaveLength(0);
+    expect(parseSimState(`?code=${'x'.repeat(MAX_CODE + 1000)}`).code).toHaveLength(0);
   });
 });
 

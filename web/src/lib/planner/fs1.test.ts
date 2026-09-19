@@ -16,31 +16,13 @@ describe('encodeFS1', () => {
         raceSlug: 'human',
         treeRanks: [[5, 0, 3, 2, 0, 0, 0, 0, 0], [0], [0]],
         gear: { head: 12640, chest: 11726 },
-        bags: [],
-        bank: [],
-        sets: [],
-        loadouts: [],
-        professions: [],
-        ignored: [],
       }),
     ).toBe('FS1:1.15.9.69722:paladin:human:5032/0/0:head=12640,chest=11726');
   });
 
   it('writes an empty gear field when nothing is equipped', () => {
     expect(
-      encodeFS1({
-        dataBuild: '1',
-        classSlug: 'mage',
-        raceSlug: 'gnome',
-        treeRanks: [[1], [], []],
-        gear: {},
-        bags: [],
-        bank: [],
-        sets: [],
-        loadouts: [],
-        professions: [],
-        ignored: [],
-      }),
+      encodeFS1({ dataBuild: '1', classSlug: 'mage', raceSlug: 'gnome', treeRanks: [[1], [], []], gear: {} }),
     ).toBe('FS1:1:mage:gnome:1/0/0:');
   });
 
@@ -51,12 +33,6 @@ describe('encodeFS1', () => {
       raceSlug: 'gnome',
       treeRanks: [[12], [], []],
       gear: {},
-      bags: [],
-      bank: [],
-      sets: [],
-      loadouts: [],
-      professions: [],
-      ignored: [],
     });
     expect(code).toContain(':c/0/0:');
   });
@@ -70,12 +46,6 @@ describe('decodeFS1', () => {
       raceSlug: 'human',
       treeRanks: [[5, 0, 3, 2], [0], [0]],
       gear: { head: 12640, chest: 11726 },
-      bags: [],
-      bank: [],
-      sets: [],
-      loadouts: [],
-      professions: [],
-      ignored: [],
     };
     const decoded = decodeFS1(encodeFS1(build));
     expect(decoded.ok).toBe(true);
@@ -249,6 +219,41 @@ describe('version 2 sections', () => {
     expect(decoded.message).toContain('notanid');
   });
 
+  it('refuses a gear entry carrying a second "=" rather than silently discarding it', () => {
+    const decoded = decodeFS1(`${V1.replace(':head=12640', ':head=12640=99')}`);
+    expect(decoded.ok).toBe(false);
+    if (decoded.ok) return;
+    expect(decoded.message).toContain('head=12640=99');
+  });
+
+  it('drops an empty profession slug from a stray comma rather than forwarding it', () => {
+    const decoded = decodeFS1(`${V1}|professions=engineering,,alchemy,`);
+    expect(decoded.ok).toBe(true);
+    if (!decoded.ok) return;
+    expect(decoded.build.professions).toEqual(['engineering', 'alchemy']);
+  });
+
+  // A malformed percent-encoding must never throw: `Planner.svelte` calls `decodeFS1`
+  // synchronously with no try, and `sources.ts`'s `fromAddonExport` calls
+  // `characterFromFs1` outside its own -- a third-party addon exporting a set or loadout
+  // name it did not URL-encode (a bare "%", or "%" not followed by two hex digits) is an
+  // honest string the player typed, not an attack to refuse.
+  it('reads a bare "%" in a set name as itself rather than throwing', () => {
+    expect(() => decodeFS1(`${V1}|sets=%`)).not.toThrow();
+    const decoded = decodeFS1(`${V1}|sets=%`);
+    expect(decoded.ok).toBe(true);
+    if (!decoded.ok) return;
+    expect(decoded.build.sets).toEqual([{ name: '%', gear: [] }]);
+  });
+
+  it('reads an unescaped "%" in a loadout name as itself rather than throwing', () => {
+    expect(() => decodeFS1(`${V1}|loadouts=Hit% Set=1/0/0`)).not.toThrow();
+    const decoded = decodeFS1(`${V1}|loadouts=Hit% Set=1/0/0`);
+    expect(decoded.ok).toBe(true);
+    if (!decoded.ok) return;
+    expect(decoded.build.loadouts[0].name).toBe('Hit% Set');
+  });
+
   it('accepts a code up to the new bound and refuses one past it', () => {
     expect(MAX_CODE_LENGTH).toBe(16_384);
     const long = `${V1}|bags=${Array.from({ length: 900 }, () => '16963').join(',')}`;
@@ -297,6 +302,46 @@ describe('encodeFS1V2', () => {
     if (decoded.ok) {
       expect(decoded.build.gearSlots).toEqual([{ slot: 'head', itemId: 12640, enchant: 2504, suffix: 1820 }]);
     }
+  });
+
+  it('accepts a build that omits every version 2 field, per the contract’s "all optional"', () => {
+    // Spec section 7: the decoder returns FS1Build's bags/bank/sets/loadouts "all
+    // optional". A version-1-only caller (Planner.svelte's own "Sim this build" link,
+    // for one) should not have to write six empty arrays to say it has nothing to add.
+    expect(
+      encodeFS1V2({
+        dataBuild: '1.15.9',
+        classSlug: 'warrior',
+        raceSlug: 'orc',
+        treeRanks: [[], [], []],
+        gear: { head: 12640 },
+      }),
+    ).toBe('FS1:1.15.9:warrior:orc:0/0/0:head=12640');
+  });
+
+  it('writes gear from gearSlots alone, rather than silently dropping it when gear is empty', () => {
+    // A caller can hold gearSlots with nothing mirrored into the lossy `gear` map -- the
+    // doc comment on FS1Build.gearSlots says as much. Falling through to encodeFS1 (which
+    // only ever reads `gear`) for a build with no enchant would have written no gear field
+    // at all here.
+    const code = encodeFS1V2({
+      dataBuild: '1.15.9',
+      classSlug: 'warrior',
+      raceSlug: 'orc',
+      treeRanks: [[], [], []],
+      gear: {},
+      gearSlots: [{ slot: 'head', itemId: 12640 }],
+      bags: [],
+      bank: [],
+      sets: [],
+      loadouts: [],
+      professions: [],
+      ignored: [],
+    });
+    expect(code).toContain('head=12640');
+    const decoded = decodeFS1(code);
+    expect(decoded.ok).toBe(true);
+    if (decoded.ok) expect(decoded.build.gearSlots).toEqual([{ slot: 'head', itemId: 12640 }]);
   });
 
   it('writes the sections in the contract’s order and round-trips them', () => {

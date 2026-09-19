@@ -325,7 +325,10 @@ export function characterFromFs1(
       tree_version: decoded.build.dataBuild,
       point_order: order,
       gear: { ...decoded.build.gear },
-      gear_slots: (decoded.build.gearSlots ?? []).map((entry) => ({
+      // decoded.build is DecodedFS1Build: the decoder always fills gearSlots (and every
+      // other version 2 field below), so no `?? []` is needed here the way an
+      // FS1Build-typed encoder caller would need one.
+      gear_slots: decoded.build.gearSlots.map((entry) => ({
         slot: entry.slot,
         item_id: entry.itemId,
         ...(entry.enchant === undefined ? {} : { enchant: entry.enchant }),
