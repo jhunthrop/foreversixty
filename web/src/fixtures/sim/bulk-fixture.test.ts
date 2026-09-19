@@ -52,15 +52,31 @@ describe('the bulk result fixture', () => {
     expect(new Set(bulk.combos.map((combo) => combo.group))).toEqual(new Set([0, 1, 2]));
   });
 
-  it('names a slot on every ring and trinket substitution, the way sim/bulk resolves them', () => {
+  it('names a slot, an item name and an origin on every item substitution, the way sim/bulk resolves them', () => {
     for (const combo of bulk.combos) {
       for (const sub of combo.substitutions) {
         if (sub.kind !== 'item') continue;
         expect(sub.slot).toBeTruthy();
         expect(sub.item_id).toBeGreaterThan(0);
         expect(sub.origin).toBeTruthy();
+        // Contract A6: the real API always fills an item substitution's name from simdb, so
+        // a combo row reads without a second lookup.
+        expect(sub.name).toBeTruthy();
       }
     }
+  });
+
+  it('exercises all four closed substitution kinds, so later tasks have one shared fixture instead of four ad hoc ones', () => {
+    const kinds = new Set(bulk.combos.flatMap((combo) => combo.substitutions.map((sub) => sub.kind)));
+    expect(kinds).toEqual(new Set(['item', 'talents', 'set', 'consumes']));
+    // A set substitution must name a set the request actually offered; a consumes
+    // substitution's name is its consumable ids joined by ", " (contract 10.8).
+    const setSub = bulk.combos.flatMap((combo) => combo.substitutions).find((sub) => sub.kind === 'set');
+    expect(bulk.request.bulk?.sets?.some((set) => set.name === setSub?.name)).toBe(true);
+    const consumesSub = bulk.combos
+      .flatMap((combo) => combo.substitutions)
+      .find((sub) => sub.kind === 'consumes');
+    expect(consumesSub?.name).toBe('flask_of_supreme_power, elixir_of_the_mongoose');
   });
 });
 
