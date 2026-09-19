@@ -1,0 +1,15 @@
+{
+  "sources": [
+    { "label": "A test source", "url": "https://example.invalid/one", "kind": "site" }
+  ],
+  "notes": "Adds a raid the databases have never heard of.",
+  "add": [
+    {
+      "id": "raid:barrow-deeps",
+      "kind": "raid",
+      "name": "Barrow Deeps",
+      "opens": "raids-1",
+      "items": [100]
+    }
+  ]
+}

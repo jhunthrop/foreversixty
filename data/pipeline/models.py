@@ -229,6 +229,51 @@ class LootFile(BaseModel):
     sources: list[LootSource]
 
 
+class LootSourcePatch(BaseModel):
+    """Contract 10.4's `replace` entry: a loot source with every key but
+    `id` optional, so gating a raid is one line instead of a restatement
+    of its eleven bosses. Only the keys the file actually writes are
+    applied -- `model_dump(exclude_unset=True)` is what tells "absent"
+    from "explicitly null".
+
+    `kind` is accepted but may not change: a source's kind decides the
+    shape of its id, which candidates carry as `drop:<source id>`, so
+    changing it would orphan every reference rather than edit one.
+    """
+
+    id: str
+    kind: str | None = None
+    name: str | None = None
+    zone_id: int | None = None
+    opens: str | None = None
+    profession: str | None = None
+    faction_id: int | None = None
+    standing: str | None = None
+    rank: int | None = None
+    bosses: list[LootBoss] | None = None
+    trash: list[int] | None = None
+    items: list[int] | None = None
+
+    model_config = {"extra": "forbid"}
+
+
+class LootOverlay(BaseModel):
+    """One `data/curated/loot/*.json`, in contract 10.4's shape.
+
+    `sources` and `notes` are the curated provenance every hand-maintained
+    fact here carries; `add`, `replace` and `remove` are the three
+    operations, as flat arrays.
+    """
+
+    sources: list[Source] = []
+    notes: str = ""
+    add: list[LootSource] = []
+    replace: list[LootSourcePatch] = []
+    remove: list[str] = []
+
+    model_config = {"extra": "forbid"}
+
+
 class SpecRecord(BaseModel):
     spec: str
     class_slug: str
