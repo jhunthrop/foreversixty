@@ -288,6 +288,13 @@ class SpecRecord(BaseModel):
     reference_stat: str
 
 
+class PhaseBoundary(BaseModel):
+    """One content phase and the instant it opens (parity contract 10.4)."""
+
+    name: str
+    start: str
+
+
 class AplDocument(BaseModel):
     spec: str
     state: str

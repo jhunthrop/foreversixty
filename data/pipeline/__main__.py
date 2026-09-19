@@ -72,6 +72,14 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="write nothing; exit non-zero if a generated file has drifted",
     )
+
+    ph = sub.add_parser("phases", help="emit the phase calendar for the web")
+    ph.add_argument("--web", default="../web/src/data/phases.json")
+    ph.add_argument(
+        "--check",
+        action="store_true",
+        help="write nothing; exit non-zero if the emitted file has drifted",
+    )
     return p
 
 
@@ -147,6 +155,20 @@ def main(argv: list[str] | None = None) -> int:
             return 1 if stale else 0
         for path in write_specs(Path("curated"), Path(args.go), Path(args.ts)):
             print(path)
+    elif args.command == "phases":
+        from pathlib import Path
+
+        from pipeline.phases import check_phases, write_phases
+
+        if args.check:
+            if check_phases(Path("curated"), Path(args.web)):
+                logging.getLogger("pipeline").error(
+                    "%s does not match curated/phases.json; run `python -m pipeline phases`",
+                    args.web,
+                )
+                return 1
+            return 0
+        print(write_phases(Path("curated"), Path(args.web)))
     return 0
 
 
