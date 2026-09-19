@@ -1,0 +1,854 @@
+{
+  "engine_version": "sim:golden",
+  "fight_index": 1,
+  "duration_ms": 179856,
+  "damage_done": [
+    {
+      "guid": "sim-player",
+      "name": "Fury",
+      "class": "warrior",
+      "total": 203227,
+      "effective": 203227,
+      "active_ms": 179856,
+      "abilities": [
+        {
+          "spell_id": 25286,
+          "name": "spell:25286",
+          "school": 2,
+          "total": 92100,
+          "effective": 92100,
+          "hits": 32,
+          "crits": 40,
+          "ticks": 0,
+          "misses": {
+            "DODGE": 4
+          },
+          "min": 0,
+          "max": 0
+        },
+        {
+          "spell_id": 20022000007,
+          "name": "other:attack/2",
+          "school": 2,
+          "total": 45850,
+          "effective": 45850,
+          "hits": 1,
+          "crits": 47,
+          "ticks": 0,
+          "misses": {
+            "DODGE": 5,
+            "GLANCING": 36,
+            "MISS": 1
+          },
+          "min": 0,
+          "max": 0
+        },
+        {
+          "spell_id": 20662,
+          "name": "spell:20662",
+          "school": 2,
+          "total": 38333,
+          "effective": 38333,
+          "hits": 7,
+          "crits": 14,
+          "ticks": 0,
+          "misses": {
+            "DODGE": 1
+          },
+          "min": 0,
+          "max": 0
+        },
+        {
+          "spell_id": 1680,
+          "name": "spell:1680",
+          "school": 2,
+          "total": 12098,
+          "effective": 12098,
+          "hits": 6,
+          "crits": 7,
+          "ticks": 0,
+          "misses": {
+            "DODGE": 1
+          },
+          "min": 0,
+          "max": 0
+        },
+        {
+          "spell_id": 10022000007,
+          "name": "other:attack/1",
+          "school": 2,
+          "total": 9792,
+          "effective": 9792,
+          "hits": 0,
+          "crits": 5,
+          "ticks": 0,
+          "misses": {
+            "DODGE": 1,
+            "GLANCING": 5,
+            "MISS": 2
+          },
+          "min": 0,
+          "max": 0
+        },
+        {
+          "spell_id": 7373,
+          "name": "spell:7373",
+          "school": 2,
+          "total": 2485,
+          "effective": 2485,
+          "hits": 14,
+          "crits": 16,
+          "ticks": 0,
+          "misses": {
+            "DODGE": 2
+          },
+          "min": 0,
+          "max": 0
+        },
+        {
+          "spell_id": 21140,
+          "name": "spell:21140",
+          "school": 2,
+          "total": 1522,
+          "effective": 1522,
+          "hits": 2,
+          "crits": 2,
+          "ticks": 0,
+          "min": 0,
+          "max": 0
+        },
+        {
+          "spell_id": 30022000007,
+          "name": "other:attack/3",
+          "school": 2,
+          "total": 683,
+          "effective": 683,
+          "hits": 0,
+          "crits": 0,
+          "ticks": 0,
+          "min": 0,
+          "max": 0
+        },
+        {
+          "spell_id": 12834,
+          "name": "spell:12834",
+          "school": 2,
+          "total": 364,
+          "effective": 364,
+          "hits": 0,
+          "crits": 0,
+          "ticks": 12,
+          "min": 0,
+          "max": 0
+        },
+        {
+          "spell_id": 12014554,
+          "name": "item:14554",
+          "total": 0,
+          "effective": 0,
+          "hits": 0,
+          "crits": 0,
+          "ticks": 0,
+          "min": 0,
+          "max": 0
+        },
+        {
+          "spell_id": 2687,
+          "name": "spell:2687",
+          "total": 0,
+          "effective": 0,
+          "hits": 0,
+          "crits": 0,
+          "ticks": 0,
+          "min": 0,
+          "max": 0
+        },
+        {
+          "spell_id": 1719,
+          "name": "spell:1719",
+          "total": 0,
+          "effective": 0,
+          "hits": 0,
+          "crits": 0,
+          "ticks": 0,
+          "min": 0,
+          "max": 0
+        },
+        {
+          "spell_id": 20572,
+          "name": "spell:20572",
+          "total": 0,
+          "effective": 0,
+          "hits": 0,
+          "crits": 0,
+          "ticks": 0,
+          "min": 0,
+          "max": 0
+        },
+        {
+          "spell_id": 10002025286,
+          "name": "spell:25286/1",
+          "total": 0,
+          "effective": 0,
+          "hits": 0,
+          "crits": 0,
+          "ticks": 0,
+          "min": 0,
+          "max": 0
+        },
+        {
+          "spell_id": 22000006,
+          "name": "other:rage_gain",
+          "total": 0,
+          "effective": 0,
+          "hits": 0,
+          "crits": 0,
+          "ticks": 0,
+          "min": 0,
+          "max": 0
+        }
+      ],
+      "targets": [
+        {
+          "guid": "sim-target-0",
+          "name": "Target 0",
+          "total": 203227
+        },
+        {
+          "guid": "sim-target-1",
+          "name": "Target 1",
+          "total": 0
+        }
+      ],
+      "series": []
+    }
+  ],
+  "damage_taken": [],
+  "healing": [],
+  "healing_taken": [],
+  "deaths": [],
+  "auras": [
+    {
+      "target_guid": "sim-player",
+      "target_name": "Fury",
+      "spell_id": 9910,
+      "name": "spell:9910",
+      "type": "buff",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 179856,
+      "segments": [],
+      "appliers": [
+        "Fury"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Fury",
+      "spell_id": 20906,
+      "name": "spell:20906",
+      "type": "buff",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 179856,
+      "segments": [],
+      "appliers": [
+        "Fury"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Fury",
+      "spell_id": 25289,
+      "name": "spell:25289",
+      "type": "buff",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 179856,
+      "segments": [],
+      "appliers": [
+        "Fury"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Fury",
+      "spell_id": 25361,
+      "name": "spell:25361",
+      "type": "buff",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 179856,
+      "segments": [],
+      "appliers": [
+        "Fury"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Fury",
+      "spell_id": 25359,
+      "name": "spell:25359",
+      "type": "buff",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 179856,
+      "segments": [],
+      "appliers": [
+        "Fury"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Fury",
+      "spell_id": 22888,
+      "name": "spell:22888",
+      "type": "buff",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 179856,
+      "segments": [],
+      "appliers": [
+        "Fury"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Fury",
+      "spell_id": 24425,
+      "name": "spell:24425",
+      "type": "buff",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 179856,
+      "segments": [],
+      "appliers": [
+        "Fury"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Fury",
+      "spell_id": 15366,
+      "name": "spell:15366",
+      "type": "buff",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 179856,
+      "segments": [],
+      "appliers": [
+        "Fury"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Fury",
+      "spell_id": 16609,
+      "name": "spell:16609",
+      "type": "buff",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 179856,
+      "segments": [],
+      "appliers": [
+        "Fury"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Fury",
+      "spell_id": 22817,
+      "name": "spell:22817",
+      "type": "buff",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 179856,
+      "segments": [],
+      "appliers": [
+        "Fury"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Fury",
+      "spell_id": 22818,
+      "name": "spell:22818",
+      "type": "buff",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 179856,
+      "segments": [],
+      "appliers": [
+        "Fury"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Fury",
+      "spell_id": 22820,
+      "name": "spell:22820",
+      "type": "buff",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 179856,
+      "segments": [],
+      "appliers": [
+        "Fury"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Fury",
+      "spell_id": 23768,
+      "name": "spell:23768",
+      "type": "buff",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 179856,
+      "segments": [],
+      "appliers": [
+        "Fury"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Fury",
+      "spell_id": 2458,
+      "name": "spell:2458",
+      "type": "buff",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 179856,
+      "segments": [],
+      "appliers": [
+        "Fury"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Fury",
+      "spell_id": 12319,
+      "name": "spell:12319",
+      "type": "buff",
+      "applications": 133,
+      "max_stacks": 0,
+      "uptime_ms": 171120,
+      "segments": [],
+      "appliers": [
+        "Fury"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Fury",
+      "spell_id": 10002025286,
+      "name": "spell:25286/1",
+      "type": "buff",
+      "applications": 88,
+      "max_stacks": 0,
+      "uptime_ms": 167305,
+      "segments": [],
+      "appliers": [
+        "Fury"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Fury",
+      "spell_id": 10002020007,
+      "name": "spell:20007/1",
+      "type": "buff",
+      "applications": 7,
+      "max_stacks": 0,
+      "uptime_ms": 72509,
+      "segments": [],
+      "appliers": [
+        "Fury"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Fury",
+      "spell_id": 11585,
+      "name": "spell:11585",
+      "type": "buff",
+      "applications": 15,
+      "max_stacks": 0,
+      "uptime_ms": 60703,
+      "segments": [],
+      "appliers": [
+        "Fury"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Fury",
+      "spell_id": 20002020007,
+      "name": "spell:20007/2",
+      "type": "buff",
+      "applications": 4,
+      "max_stacks": 0,
+      "uptime_ms": 45127,
+      "segments": [],
+      "appliers": [
+        "Fury"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Fury",
+      "spell_id": 2687,
+      "name": "spell:2687",
+      "type": "buff",
+      "applications": 3,
+      "max_stacks": 0,
+      "uptime_ms": 34173,
+      "segments": [],
+      "appliers": [
+        "Fury"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Fury",
+      "spell_id": 20572,
+      "name": "spell:20572",
+      "type": "buff",
+      "applications": 2,
+      "max_stacks": 0,
+      "uptime_ms": 30000,
+      "segments": [],
+      "appliers": [
+        "Fury"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Fury",
+      "spell_id": 12014554,
+      "name": "item:14554",
+      "type": "buff",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 30000,
+      "segments": [],
+      "appliers": [
+        "Fury"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Fury",
+      "spell_id": 1719,
+      "name": "spell:1719",
+      "type": "buff",
+      "applications": 1,
+      "max_stacks": 0,
+      "uptime_ms": 14354,
+      "segments": [],
+      "appliers": [
+        "Fury"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Fury",
+      "spell_id": 13048,
+      "name": "spell:13048",
+      "type": "buff",
+      "applications": 0,
+      "max_stacks": 0,
+      "uptime_ms": 0,
+      "segments": [],
+      "appliers": [
+        "Fury"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Fury",
+      "spell_id": 2457,
+      "name": "spell:2457",
+      "type": "buff",
+      "applications": 0,
+      "max_stacks": 0,
+      "uptime_ms": 0,
+      "segments": [],
+      "appliers": [
+        "Fury"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Fury",
+      "spell_id": 71,
+      "name": "spell:71",
+      "type": "buff",
+      "applications": 0,
+      "max_stacks": 0,
+      "uptime_ms": 0,
+      "segments": [],
+      "appliers": [
+        "Fury"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Fury",
+      "spell_id": 18499,
+      "name": "spell:18499",
+      "type": "buff",
+      "applications": 0,
+      "max_stacks": 0,
+      "uptime_ms": 0,
+      "segments": [],
+      "appliers": [
+        "Fury"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Fury",
+      "spell_id": 25288,
+      "name": "spell:25288",
+      "type": "buff",
+      "applications": 0,
+      "max_stacks": 0,
+      "uptime_ms": 0,
+      "segments": [],
+      "appliers": [
+        "Fury"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Fury",
+      "spell_id": 10002020569,
+      "name": "spell:20569/1",
+      "type": "buff",
+      "applications": 0,
+      "max_stacks": 0,
+      "uptime_ms": 0,
+      "segments": [],
+      "appliers": [
+        "Fury"
+      ]
+    },
+    {
+      "target_guid": "sim-player",
+      "target_name": "Fury",
+      "spell_id": 22000014,
+      "name": "other:move",
+      "type": "buff",
+      "applications": 0,
+      "max_stacks": 0,
+      "uptime_ms": 0,
+      "segments": [],
+      "appliers": [
+        "Fury"
+      ]
+    }
+  ],
+  "casts": [
+    {
+      "guid": "sim-player",
+      "name": "Fury",
+      "owner_guid": "sim-player",
+      "spell_id": 22000006,
+      "spell_name": "other:rage_gain",
+      "started": 105,
+      "succeeded": 105,
+      "failed": 0,
+      "cast_time_ms": 0,
+      "sequence": []
+    },
+    {
+      "guid": "sim-player",
+      "name": "Fury",
+      "owner_guid": "sim-player",
+      "spell_id": 20022000007,
+      "spell_name": "other:attack/2",
+      "started": 91,
+      "succeeded": 91,
+      "failed": 0,
+      "cast_time_ms": 0,
+      "sequence": []
+    },
+    {
+      "guid": "sim-player",
+      "name": "Fury",
+      "owner_guid": "sim-player",
+      "spell_id": 10002025286,
+      "spell_name": "spell:25286/1",
+      "started": 88,
+      "succeeded": 88,
+      "failed": 0,
+      "cast_time_ms": 0,
+      "sequence": []
+    },
+    {
+      "guid": "sim-player",
+      "name": "Fury",
+      "owner_guid": "sim-player",
+      "spell_id": 25286,
+      "spell_name": "spell:25286",
+      "started": 76,
+      "succeeded": 76,
+      "failed": 0,
+      "cast_time_ms": 0,
+      "sequence": []
+    },
+    {
+      "guid": "sim-player",
+      "name": "Fury",
+      "owner_guid": "sim-player",
+      "spell_id": 7373,
+      "spell_name": "spell:7373",
+      "started": 32,
+      "succeeded": 32,
+      "failed": 0,
+      "cast_time_ms": 0,
+      "sequence": []
+    },
+    {
+      "guid": "sim-player",
+      "name": "Fury",
+      "owner_guid": "sim-player",
+      "spell_id": 10022000007,
+      "spell_name": "other:attack/1",
+      "started": 14,
+      "succeeded": 14,
+      "failed": 0,
+      "cast_time_ms": 0,
+      "sequence": []
+    },
+    {
+      "guid": "sim-player",
+      "name": "Fury",
+      "owner_guid": "sim-player",
+      "spell_id": 1680,
+      "spell_name": "spell:1680",
+      "started": 14,
+      "succeeded": 14,
+      "failed": 0,
+      "cast_time_ms": 0,
+      "sequence": []
+    },
+    {
+      "guid": "sim-player",
+      "name": "Fury",
+      "owner_guid": "sim-player",
+      "spell_id": 21140,
+      "spell_name": "spell:21140",
+      "started": 4,
+      "succeeded": 4,
+      "failed": 0,
+      "cast_time_ms": 0,
+      "sequence": []
+    },
+    {
+      "guid": "sim-player",
+      "name": "Fury",
+      "owner_guid": "sim-player",
+      "spell_id": 2687,
+      "spell_name": "spell:2687",
+      "started": 3,
+      "succeeded": 3,
+      "failed": 0,
+      "cast_time_ms": 0,
+      "sequence": []
+    },
+    {
+      "guid": "sim-player",
+      "name": "Fury",
+      "owner_guid": "sim-player",
+      "spell_id": 20572,
+      "spell_name": "spell:20572",
+      "started": 2,
+      "succeeded": 2,
+      "failed": 0,
+      "cast_time_ms": 0,
+      "sequence": []
+    },
+    {
+      "guid": "sim-player",
+      "name": "Fury",
+      "owner_guid": "sim-player",
+      "spell_id": 30022000007,
+      "spell_name": "other:attack/3",
+      "started": 1,
+      "succeeded": 1,
+      "failed": 0,
+      "cast_time_ms": 0,
+      "sequence": []
+    },
+    {
+      "guid": "sim-player",
+      "name": "Fury",
+      "owner_guid": "sim-player",
+      "spell_id": 12014554,
+      "spell_name": "item:14554",
+      "started": 1,
+      "succeeded": 1,
+      "failed": 0,
+      "cast_time_ms": 0,
+      "sequence": []
+    },
+    {
+      "guid": "sim-player",
+      "name": "Fury",
+      "owner_guid": "sim-player",
+      "spell_id": 1719,
+      "spell_name": "spell:1719",
+      "started": 1,
+      "succeeded": 1,
+      "failed": 0,
+      "cast_time_ms": 0,
+      "sequence": []
+    }
+  ],
+  "interrupts": [],
+  "dispels": [],
+  "resources": [
+    {
+      "guid": "sim-player",
+      "name": "Fury",
+      "power_type": 3,
+      "series": [],
+      "gained": 2391,
+      "spent": 2380,
+      "zero_ms": 0,
+      "max": 0,
+      "at_max_ms": 0,
+      "wasted": 37
+    }
+  ],
+  "threat": [],
+  "threat_by_target": [],
+  "taunts": [],
+  "combatants": [],
+  "roster": [
+    {
+      "guid": "sim-player",
+      "name": "Fury",
+      "class": "warrior",
+      "class_source": "sim",
+      "spec": "fury",
+      "role": "dps",
+      "active_ms": 179856,
+      "activity_pct": 100,
+      "deaths": 0,
+      "damage_done": 203227,
+      "healing_done": 0,
+      "damage_taken": 0,
+      "dps": 1130.609857077844,
+      "hps": 0,
+      "dtps": 0
+    }
+  ],
+  "mechanics": {
+    "table_found": false,
+    "rows": []
+  },
+  "phases": []
+}
