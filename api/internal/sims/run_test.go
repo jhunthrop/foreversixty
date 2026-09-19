@@ -1,10 +1,14 @@
 package sims
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
+	"net/http/httptest"
+	"strings"
 	"testing"
 
+	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	simapi "github.com/jhunthrop/foreversixty/sim/api"
 )
 
@@ -117,6 +121,43 @@ func TestARunNobodyCanStartIsRecordedAsFailed(t *testing.T) {
 	}
 	if n != 1 {
 		t.Fatalf("%d failed rows, want 1", n)
+	}
+}
+
+// cancelingJobs fails a dispatch the way a client disconnect does:
+// the same event that makes Jobs.Run fail also cancels the request
+// context, so the compensating write right after it cannot rely on
+// that context still being alive.
+type cancelingJobs struct{ cancel context.CancelFunc }
+
+func (j cancelingJobs) Run(ctx context.Context, args ...string) error {
+	j.cancel()
+	return errAnyway
+}
+
+func TestARunNobodyCanStartIsRecordedAsFailedEvenWhenTheRequestContextIsDone(t *testing.T) {
+	h := newHarness(t)
+	h.premium.premium = true
+
+	ctx, cancel := context.WithCancel(auth.WithActor(context.Background(), h.actor))
+	h.service.Jobs = cancelingJobs{cancel: cancel}
+
+	r := httptest.NewRequest(http.MethodPost, "/v1/sims/run", strings.NewReader(runBody(t))).WithContext(ctx)
+	r.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+
+	h.service.run(w, r)
+
+	if w.Code != http.StatusBadGateway {
+		t.Fatalf("status %d, want 502", w.Code)
+	}
+	var n int
+	if err := h.store.Pool.QueryRow(t.Context(),
+		`select count(*) from sims where state = $1`, StateError).Scan(&n); err != nil {
+		t.Fatal(err)
+	}
+	if n != 1 {
+		t.Fatalf("%d failed rows, want 1: the compensating write must not ride the now-cancelled request context", n)
 	}
 }
 

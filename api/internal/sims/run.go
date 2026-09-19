@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
@@ -16,6 +17,11 @@ import (
 type Premiumer interface {
 	Premium(ctx context.Context, userID int64) (bool, error)
 }
+
+// failCompensationTimeout bounds the compensating write below: it
+// deliberately runs on a context the request's own cancellation
+// cannot touch, so it needs its own bound instead.
+const failCompensationTimeout = 5 * time.Second
 
 // run dispatches one premium server-lane sim. The row is written
 // before the job is started, so the job has the request to read and
@@ -56,10 +62,19 @@ func (s *Service) run(w http.ResponseWriter, r *http.Request) {
 	if err := s.Jobs.Run(r.Context(), SimRunJobCommand, id); err != nil {
 		// The row exists and carries the request, so the run can be
 		// retried; the row says it failed rather than sitting on
-		// "queued" forever.
+		// "queued" forever. The client disconnecting is one of the
+		// reasons Jobs.Run can fail in the first place, so this write
+		// must not ride the request's own (already-cancelled) context
+		// - that would make the exact outcome this branch exists to
+		// prevent. context.WithoutCancel keeps the request's values
+		// (request id, actor) without its cancellation; its own short
+		// timeout stands in for the one the request context would
+		// otherwise have provided.
 		s.logger().Error("sims", "id", httpx.RequestIDFrom(r.Context()), "op", "job",
 			"sim", id, "err", err)
-		if err := s.Store.Fail(r.Context(), id, "the job could not be started"); err != nil {
+		failCtx, cancel := context.WithTimeout(context.WithoutCancel(r.Context()), failCompensationTimeout)
+		defer cancel()
+		if err := s.Store.Fail(failCtx, id, "the job could not be started"); err != nil {
 			s.fail(w, r, "job", err, "could not start that run just now")
 			return
 		}
