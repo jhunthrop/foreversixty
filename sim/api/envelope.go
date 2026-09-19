@@ -126,6 +126,8 @@ type SimRequest struct {
 	// Bulk turns one character into many sims. A request without it is
 	// exactly today's single run; see sim/api/bulk.go.
 	Bulk *BulkSpec `json:"bulk,omitempty"`
+	// Weights asks for stat weights instead of a DPS run.
+	Weights *WeightsSpec `json:"weights,omitempty"`
 	// TargetError, when above zero, turns Iterations into a CEILING:
 	// the run continues in steps of StepIterations until DPS.Error over
 	// DPS.Mean is at or under it, or Iterations is reached. Zero is
@@ -278,6 +280,15 @@ func (r SimRequest) validate(closedSet, requireCurrentEngine bool) error {
 	}
 	if r.Bulk != nil {
 		errs = append(errs, r.Bulk.validate(r.Iterations)...)
+	}
+	if r.Weights != nil {
+		errs = append(errs, r.Weights.validate()...)
+	}
+	if r.Bulk != nil && r.Weights != nil {
+		// Kind() reads Bulk first, so a request carrying both would run
+		// as a bulk and silently answer a different question from the
+		// one the weights block asked.
+		errs = append(errs, errors.New("a request is one kind: it carries bulk or weights, never both"))
 	}
 	return errors.Join(errs...)
 }

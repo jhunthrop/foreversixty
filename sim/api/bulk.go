@@ -33,14 +33,15 @@ const (
 var BulkModes = []string{KindGear, KindTalents, KindDrops}
 
 // Kind reports which tool produced this request.
-//
-// Task 4 adds the weights arm; until then a request with no bulk
-// block is a run.
 func (r SimRequest) Kind() string {
-	if r.Bulk != nil {
+	switch {
+	case r.Bulk != nil:
 		return r.Bulk.Mode
+	case r.Weights != nil:
+		return KindWeights
+	default:
+		return KindRun
 	}
-	return KindRun
 }
 
 // BulkSpec is everything that turns one character into many sims.
