@@ -1,10 +1,10 @@
 {
   "spec": "hunter-beast-mastery",
   "state": "written",
-  "notes": "wowsims-forever models one Hunter spell package for all three specs (engine spec mapping, design section on the APL rotation lane); Beast Mastery, Marksmanship and Survival share this same Aimed Shot / Multi-Shot weave and differ mainly in which cooldowns and secondary shots they lean on. Community guides for Classic BM call the rotation 'Aimed Shot on cooldown, Multi-Shot filler, ignore Serpent Sting and Arcane Shot' -- this rotation follows that and adds Bestial Wrath, timing it (and the shared Rapid Fire weave) so both land together as the one big burst window a Classic-length fight allows. Every rank named here is checked against this build's own spellconst: the fork's p1.apl.json preset names Multi-Shot as spell 25294, which does not exist in this build at all (Multi-Shot only has one rank here, 2643), and calls Serpent Sting rank 8 when 25295 is actually rank 9 in this build's spellconst -- both fixed here rather than copied stale.",
+  "notes": "wowsims-forever models one Hunter spell package for all three specs (engine spec mapping, design section on the APL rotation lane); Beast Mastery, Marksmanship and Survival share this same Aimed Shot / Multi-Shot weave and differ mainly in which cooldowns and secondary shots they lean on. The cited Warcraft Tavern BM guide's own numbered rotation (step 7) says to cast and refresh Serpent Sting -- it only calls Arcane Shot a leveling-only filler, not Serpent Sting -- so Serpent Sting upkeep is kept here, in the same shape as hunter-marksmanship's. Bestial Wrath is added as the spec's own cooldown, timed with Rapid Fire so both land in the one burst window a Classic-length fight allows. Every rank named here is checked against this build's own spellconst: the fork's p1.apl.json preset names Multi-Shot as spell 25294, which does not exist in this build at all (Multi-Shot only has one rank here, 2643), and calls Serpent Sting rank 8 when 25295 is actually rank 9 in this build's spellconst -- both fixed here rather than copied stale.",
   "sources": [
     { "label": "wowsims-forever default hunter priority list (shared across all three hunter specs; Multi-Shot and Serpent Sting ranks corrected against this build)", "url": "https://github.com/wowsims/classic/blob/master/ui/hunter/apls/p1.apl.json", "kind": "community" },
-    { "label": "Warcraft Tavern: Classic Beast Mastery Hunter rotation (Aimed Shot on cooldown, Multi-Shot filler, Bestial Wrath and Rapid Fire together as the one burst window)", "url": "https://www.warcrafttavern.com/wow-classic/guides/pve-beast-mastery-hunter-rotations-cooldowns/", "kind": "community" },
+    { "label": "Warcraft Tavern: Classic Beast Mastery Hunter rotation (Aimed Shot on cooldown, Serpent Sting refreshed, Multi-Shot filler, Bestial Wrath and Rapid Fire together as the one burst window)", "url": "https://www.warcrafttavern.com/wow-classic/guides/pve-beast-mastery-hunter-rotations-cooldowns/", "kind": "community" },
     { "label": "Forever Sixty default rotation, unvalidated until the nightly job runs", "url": "https://foreversixty.gg/sim/specs", "kind": "site" }
   ],
   "rotation": {
@@ -44,6 +44,20 @@
         "action": {
           "condition": { "cmp": { "op": "OpGt", "lhs": { "autoTimeToNext": { "autoType": "Ranged" } }, "rhs": { "const": { "val": "1s" } } } },
           "castSpell": { "spellId": { "spellId": 20904, "rank": 6 } }
+        }
+      },
+      {
+        "notes": "Serpent Sting kept up whenever it is about to fall off and neither shot above is close to ready -- the cited guide's own rotation step, not skipped.",
+        "action": {
+          "condition": {
+            "and": {
+              "vals": [
+                { "cmp": { "op": "OpLt", "lhs": { "dotRemainingTime": { "spellId": { "spellId": 25295, "rank": 9 } } }, "rhs": { "const": { "val": "5s" } } } },
+                { "cmp": { "op": "OpGe", "lhs": { "spellTimeToReady": { "spellId": { "spellId": 20904, "rank": 6 } } }, "rhs": { "const": { "val": "0.5" } } } }
+              ]
+            }
+          },
+          "castSpell": { "spellId": { "spellId": 25295, "rank": 9 } }
         }
       },
       {
