@@ -357,9 +357,9 @@ round 3):**
   `sim-island.css`/`planner-island.css`/`report-island.css` the same way — a site-wide
   change, not this lane's alone.
 - The site-wide footer in `Base.astro` shifts (CLS ~0.33) when `barlow-latin-600-normal
-  .woff2` loads, on any page short enough for the footer to sit in the first viewport
+.woff2` loads, on any page short enough for the footer to sit in the first viewport
   (`/sim.html`, `/sim/<id>.html`). `styles/fonts.css`'s existing size-adjusted `Barlow
-  Fallback` face does not prevent it for this weight; a `font-display: optional` override
+Fallback` face does not prevent it for this weight; a `font-display: optional` override
   for weight 600 was tried and measured ineffective (the shift persisted identically) and
   was reverted. A real fix needs either a correctly metric-matched fallback specifically
   for Barlow 600 (re-measured with `@capsizecss/unpack` against the actual weight-600

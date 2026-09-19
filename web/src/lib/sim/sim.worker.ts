@@ -46,7 +46,11 @@ async function handle(message: ToWorker): Promise<void> {
   try {
     const loaded = await engineOnce();
     if (message.kind === 'split') {
-      reply({ kind: 'many', token, results: shardsFromSplit(loaded.simSplit(message.request, message.shards)) });
+      reply({
+        kind: 'many',
+        token,
+        results: shardsFromSplit(loaded.simSplit(message.request, message.shards)),
+      });
       return;
     }
     if (message.kind === 'combine') {

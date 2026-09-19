@@ -202,7 +202,12 @@ describe('gearSlots', () => {
 
 describe('gearFromSlots, the inverse of gearSlots', () => {
   it('is the planner’s Gear map, keyed by slot', () => {
-    expect(gearFromSlots([{ slot: 'head', item_id: 12640 }, { slot: 'main_hand', item_id: 11726 }])).toEqual({
+    expect(
+      gearFromSlots([
+        { slot: 'head', item_id: 12640 },
+        { slot: 'main_hand', item_id: 11726 },
+      ]),
+    ).toEqual({
       head: 12640,
       main_hand: 11726,
     });

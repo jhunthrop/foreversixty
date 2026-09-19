@@ -4,7 +4,11 @@
 // GET /v1/specs.
 import Base from '../../layouts/Base.astro';
 import { simCopy } from '../../lib/sim/copy';
-import { SPEC_CARD_SKELETON_CLASSES, SPEC_GRID_CLASSES, specSkeletonSlots } from '../../lib/sim/spec-skeleton';
+import {
+  SPEC_CARD_SKELETON_CLASSES,
+  SPEC_GRID_CLASSES,
+  specSkeletonSlots,
+} from '../../lib/sim/spec-skeleton';
 ---
 
 <Base
@@ -22,7 +26,9 @@ import { SPEC_CARD_SKELETON_CLASSES, SPEC_GRID_CLASSES, specSkeletonSlots } from
     <!-- Round 2 (Lighthouse): static, ahead of the island, and never replaced --
          specs-intro was the measured LCP element (its render was gated on hydration);
          SimView.svelte's specs branch no longer renders its own copy of this text. -->
-    <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="specs-intro">{simCopy.specsIntro}</p>
+    <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="specs-intro">
+      {simCopy.specsIntro}
+    </p>
     <!-- Round 5 (Lighthouse): #sim reserved no height at all before this -- the shell
          measured 42px, the hydrated grid (SpecGrid.svelte's own loading/error skeleton,
          dpsSpecs().length cards) measured 3684px, and mounting into that gap shoved the
@@ -34,7 +40,9 @@ import { SPEC_CARD_SKELETON_CLASSES, SPEC_GRID_CLASSES, specSkeletonSlots } from
          moves nothing. -->
     <div id="sim" data-sim-mount data-sim-view="specs">
       <div class={SPEC_GRID_CLASSES} data-testid="specs-grid" aria-hidden="true">
-        {specSkeletonSlots().map(() => <div class={SPEC_CARD_SKELETON_CLASSES} />)}
+        {specSkeletonSlots().map(() => (
+          <div class={SPEC_CARD_SKELETON_CLASSES} />
+        ))}
       </div>
       <noscript>
         <p class="text-muted px-[18px] text-[14px] md:px-0">
