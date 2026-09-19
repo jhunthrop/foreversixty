@@ -225,3 +225,22 @@ func TestGearSlotsMatchTheRequestTable(t *testing.T) {
 		}
 	}
 }
+
+// The parity contract's section 5 adds three encounter fields and one
+// result field to the fork. sim/request and sim/adapter are written
+// against them, so a pin moved backwards is a compile error here rather
+// than a field silently left at its zero value in a shipped artifact.
+func TestThePinnedEngineCarriesTheParityFields(t *testing.T) {
+	e := &proto.Encounter{
+		Movement:        &proto.MovementPattern{IntervalSeconds: 45, DurationSeconds: 5},
+		TargetsOverTime: []*proto.TargetCountAt{{AtSeconds: 0, Count: 1}},
+		TargetDummy:     true,
+	}
+	if e.GetMovement().GetIntervalSeconds() != 45 || len(e.GetTargetsOverTime()) != 1 || !e.GetTargetDummy() {
+		t.Fatal("the pinned engine's Encounter does not carry the parity fields")
+	}
+	r := &proto.RaidSimResult{SampleIteration: &proto.SampleIteration{}}
+	if r.GetSampleIteration() == nil {
+		t.Fatal("the pinned engine's RaidSimResult has no sample_iteration")
+	}
+}

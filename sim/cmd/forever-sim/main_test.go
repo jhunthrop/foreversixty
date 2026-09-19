@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"reflect"
 	"strings"
 	"syscall"
 	"testing"
@@ -16,6 +17,7 @@ import (
 	"github.com/jhunthrop/foreversixty/sim/adapter"
 	"github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/jhunthrop/foreversixty/sim/enginever"
+	"github.com/wowsims/classic/sim/core"
 	"github.com/wowsims/classic/sim/core/proto"
 	"github.com/wowsims/classic/sim/core/simsignals"
 	googleproto "google.golang.org/protobuf/proto"
@@ -42,6 +44,24 @@ func smallRequest(t *testing.T) []byte {
 	return b
 }
 
+// noSampleRequest is smallRequest with NoSample set, which is the one
+// thing that sends a plain-shaped request down the concurrent entry
+// point (see entryPointFor): a sample request stays single-threaded and
+// so it emits no "N concurrent sims" log line for a test that wants one.
+func noSampleRequest(t *testing.T) []byte {
+	t.Helper()
+	var req api.SimRequest
+	if err := json.Unmarshal(smallRequest(t), &req); err != nil {
+		t.Fatal(err)
+	}
+	req.NoSample = true
+	b, err := json.Marshal(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return b
+}
+
 func TestRunProducesASimResult(t *testing.T) {
 	dir := t.TempDir()
 	in := filepath.Join(dir, "req.json")
@@ -51,7 +71,7 @@ func TestRunProducesASimResult(t *testing.T) {
 	out := filepath.Join(dir, "res.json")
 
 	var progress bytes.Buffer
-	if err := run(in, out, 0, &progress); err != nil {
+	if err := run(in, out, overrides{}, &progress); err != nil {
 		t.Fatalf("run: %v", err)
 	}
 
@@ -105,10 +125,17 @@ func buildBinary(t *testing.T) string {
 // the other end - sim/runner.Native - is guessing which lines are its
 // own. This reads the real stderr of the real binary, because that is
 // the only place the two streams actually meet.
+//
+// It runs a NoSample request rather than smallRequest's plain shape:
+// a sample request now stays on the engine's single-threaded entry
+// point (entryPointFor), which - for a run this small - logs nothing
+// at all, and a test that wants an engine log line to wrap needs the
+// concurrent path's "N concurrent sims" line to prove the wrapper
+// against.
 func TestProgressIsJSONLines(t *testing.T) {
 	dir := t.TempDir()
 	in := filepath.Join(dir, "req.json")
-	if err := os.WriteFile(in, smallRequest(t), 0o644); err != nil {
+	if err := os.WriteFile(in, noSampleRequest(t), 0o644); err != nil {
 		t.Fatal(err)
 	}
 
@@ -159,6 +186,53 @@ func TestProgressIsJSONLines(t *testing.T) {
 	}
 }
 
+// The inverse of TestProgressIsJSONLines, and the test that actually
+// pins entryPointFor's call site (main.go's own comment: "DO NOT
+// optimise this back"). TestEntryPointForChoosesTheSerialPathOnlyForASample
+// proves the mapping function in isolation, but nothing stopped someone
+// from reverting the ONE call to it - entryPointFor would just become
+// an unused function, which Go does not flag, and every other test
+// still passes because the concurrent path also returns a
+// SampleIteration (pickSampleIteration's approximation). Running the
+// real binary and checking stderr NEVER logs "concurrent sims" for a
+// plain request is what would actually catch that revert.
+func TestASampleRequestNeverLogsTheConcurrentPath(t *testing.T) {
+	dir := t.TempDir()
+	in := filepath.Join(dir, "req.json")
+	if err := os.WriteFile(in, smallRequest(t), 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	cmd := exec.Command(buildBinary(t), "-in", in, "-out", filepath.Join(dir, "res.json"), "-progress")
+	var stderr bytes.Buffer
+	cmd.Stderr = &stderr
+	if err := cmd.Run(); err != nil {
+		t.Fatalf("forever-sim: %v\n%s", err, stderr.String())
+	}
+
+	if strings.Contains(stderr.String(), "concurrent sims") {
+		t.Error("a plain (sample) request logged the concurrent path; entryPointFor's call site was reverted")
+	}
+
+	// And the positive half: it still produced a result with a sample,
+	// so this is not passing by accident (e.g. the run failing before
+	// it reaches either entry point).
+	out, err := os.ReadFile(filepath.Join(dir, "res.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var res api.SimResult
+	if err := json.Unmarshal(out, &res); err != nil {
+		t.Fatal(err)
+	}
+	if res.Error != "" {
+		t.Fatalf("the sim reported an error: %s", res.Error)
+	}
+	if len(res.Sample) == 0 {
+		t.Error("a plain request carried no sample")
+	}
+}
+
 // The same stream, in process, for the payload's own shape: run takes
 // the sink as a parameter precisely so this needs no subprocess.
 func TestProgressPayloadFields(t *testing.T) {
@@ -168,7 +242,7 @@ func TestProgressPayloadFields(t *testing.T) {
 		t.Fatal(err)
 	}
 	var progress bytes.Buffer
-	if err := run(in, filepath.Join(dir, "res.json"), 0, &progress); err != nil {
+	if err := run(in, filepath.Join(dir, "res.json"), overrides{}, &progress); err != nil {
 		t.Fatal(err)
 	}
 	lines := strings.Split(strings.TrimSpace(progress.String()), "\n")
@@ -204,7 +278,7 @@ func TestIterationsOverride(t *testing.T) {
 	// reproducing something quickly could not use the flag the binary
 	// offered them. An override goes through ValidatePart, which is
 	// the shape it is.
-	if err := run(in, out, 100, nil); err != nil {
+	if err := run(in, out, overrides{iterations: 100}, nil); err != nil {
 		t.Fatal(err)
 	}
 	b, _ := os.ReadFile(out)
@@ -217,7 +291,7 @@ func TestIterationsOverride(t *testing.T) {
 	}
 	// Bounded, not unbounded: a part is a share of a whole run and can
 	// never legitimately exceed the largest one.
-	if err := run(in, out, api.MaxIterations+1, nil); err == nil {
+	if err := run(in, out, overrides{iterations: api.MaxIterations + 1}, nil); err == nil {
 		t.Error("an override larger than the largest whole run was accepted")
 	}
 }
@@ -228,10 +302,10 @@ func TestBadInputIsRejected(t *testing.T) {
 	if err := os.WriteFile(in, []byte("{not json"), 0o644); err != nil {
 		t.Fatal(err)
 	}
-	if err := run(in, filepath.Join(dir, "res.json"), 0, nil); err == nil {
+	if err := run(in, filepath.Join(dir, "res.json"), overrides{}, nil); err == nil {
 		t.Fatal("junk input was accepted")
 	}
-	if err := run(filepath.Join(dir, "missing.json"), filepath.Join(dir, "res.json"), 0, nil); err == nil {
+	if err := run(filepath.Join(dir, "missing.json"), filepath.Join(dir, "res.json"), overrides{}, nil); err == nil {
 		t.Fatal("a missing input file was accepted")
 	}
 }
@@ -246,7 +320,7 @@ func TestOutProtoWritesAnEngineResult(t *testing.T) {
 		t.Fatal(err)
 	}
 	out := filepath.Join(dir, "res.pb")
-	if err := runProto(in, out, 0, nil); err != nil {
+	if err := runProto(in, out, overrides{}, nil); err != nil {
 		t.Fatalf("runProto: %v", err)
 	}
 	b, err := os.ReadFile(out)
@@ -266,7 +340,7 @@ func TestOutProtoWritesAnEngineResult(t *testing.T) {
 	if _, err := adapter.Summarize(res, api.SimRequest{EngineVersion: "t", Spec: "warrior-fury"}); err != nil {
 		t.Errorf("the written result does not summarize: %v", err)
 	}
-	if err := runProto(filepath.Join(dir, "missing.json"), out, 0, nil); err == nil {
+	if err := runProto(filepath.Join(dir, "missing.json"), out, overrides{}, nil); err == nil {
 		t.Error("runProto accepted a missing input file")
 	}
 }
@@ -290,7 +364,7 @@ func TestARequestTheBuilderRefusesIsBadInput(t *testing.T) {
 	if err := os.WriteFile(in, b, 0o644); err != nil {
 		t.Fatal(err)
 	}
-	err = run(in, filepath.Join(dir, "res.json"), 0, nil)
+	err = run(in, filepath.Join(dir, "res.json"), overrides{}, nil)
 	if err == nil {
 		t.Fatal("an unknown race was accepted")
 	}
@@ -323,6 +397,154 @@ func TestTheResultIsStampedWithTheBinarysOwnEngine(t *testing.T) {
 	}
 	if !res.Stale("deadbee") {
 		t.Error("Stale never fires; the stamp is not a fact")
+	}
+}
+
+// A sample iteration is exact only on the engine's single-threaded
+// entry point (see entryPointFor's own comment): the concurrent split
+// keeps whichever shard's local median lands closest to the combined
+// mean, which the engine fork's own pickSampleIteration documents as
+// "a KNOWN APPROXIMATION, not the genuine global median". A request
+// that asked for a sample must not silently get that approximation,
+// and a request that did not ask for one must keep the fast concurrent
+// path - so this pins the mapping by function identity rather than by
+// running two full sims and hoping a stray difference shows through.
+func TestEntryPointForChoosesTheSerialPathOnlyForASample(t *testing.T) {
+	if got, want := reflect.ValueOf(entryPointFor(true)).Pointer(), reflect.ValueOf(core.RunRaidSimAsync).Pointer(); got != want {
+		t.Error("a sample request did not choose the engine's single-threaded entry point")
+	}
+	if got, want := reflect.ValueOf(entryPointFor(false)).Pointer(), reflect.ValueOf(core.RunRaidSimConcurrentAsync).Pointer(); got != want {
+		t.Error("a plain request did not choose the engine's concurrent entry point")
+	}
+}
+
+// A plain run - the shape every request has unless something says
+// otherwise - always asks for the sample and gets one back: the
+// report's sample card is not optional for a run nobody flagged as
+// one of many.
+func TestExecuteFillsTheSampleForAPlainRun(t *testing.T) {
+	var req api.SimRequest
+	if err := json.Unmarshal(smallRequest(t), &req); err != nil {
+		t.Fatal(err)
+	}
+	res, err := Execute(req, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(res.Sample) == 0 {
+		t.Error("a plain run carried no sample; the report's sample card would render nothing")
+	}
+}
+
+// api.SimRequest.NoSample is how a caller building dozens of stage
+// requests - one per bulk combination - says its cast log would never
+// be read. Setting it must turn the sample off end to end, not just at
+// the protobuf boundary.
+func TestExecuteOmitsTheSampleWhenNoSampleIsSet(t *testing.T) {
+	var req api.SimRequest
+	if err := json.Unmarshal(smallRequest(t), &req); err != nil {
+		t.Fatal(err)
+	}
+	req.NoSample = true
+	res, err := Execute(req, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(res.Sample) != 0 {
+		t.Errorf("a NoSample run carried %d sample rows, want 0", len(res.Sample))
+	}
+}
+
+// -no-sample is the batch callers' opt-out. The binary's own header
+// names the nightly validation job and the execution scorer, and each
+// runs thousands of sims whose cast log nobody reads; without a flag
+// their only way to decline was to write api.SimRequest.NoSample into
+// the JSON, which that field's own doc used to reserve for sim/bulk.
+// The override is one-way: it can take the sample off, never put one
+// on.
+func TestNoSampleOverrideOnlyEverTurnsTheSampleOff(t *testing.T) {
+	dir := t.TempDir()
+	in := filepath.Join(dir, "req.json")
+	if err := os.WriteFile(in, smallRequest(t), 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	plain, err := load(in, overrides{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if plain.NoSample {
+		t.Error("a request loaded without -no-sample opted out of the sample")
+	}
+	off, err := load(in, overrides{noSample: true})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !off.NoSample {
+		t.Error("-no-sample did not reach api.SimRequest.NoSample")
+	}
+
+	// A request that already opted out keeps its own answer whether the
+	// flag is given or not.
+	var req api.SimRequest
+	if err := json.Unmarshal(smallRequest(t), &req); err != nil {
+		t.Fatal(err)
+	}
+	req.NoSample = true
+	b, err := json.Marshal(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	optedOut := filepath.Join(dir, "no-sample.json")
+	if err := os.WriteFile(optedOut, b, 0o644); err != nil {
+		t.Fatal(err)
+	}
+	stillOff, err := load(optedOut, overrides{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !stillOff.NoSample {
+		t.Error("a request that opted out had the sample put back")
+	}
+}
+
+// End to end through the real flag set: the binary must accept
+// -no-sample and the SimResult it writes must carry no sample rows.
+// This is what pins the flag to the override - the unit test above
+// covers the override alone, and a flag nobody wired to it would still
+// pass that.
+func TestTheBinaryAcceptsNoSample(t *testing.T) {
+	bin := filepath.Join(t.TempDir(), "forever-sim")
+	build := exec.Command("go", "build", "-o", bin, ".")
+	if out, err := build.CombinedOutput(); err != nil {
+		t.Fatalf("go build: %v\n%s", err, out)
+	}
+	dir := t.TempDir()
+	in := filepath.Join(dir, "req.json")
+	if err := os.WriteFile(in, smallRequest(t), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	out := filepath.Join(dir, "res.json")
+	cmd := exec.Command(bin, "-in", in, "-out", out, "-iterations", "50", "-no-sample")
+	if b, err := cmd.CombinedOutput(); err != nil {
+		t.Fatalf("forever-sim -no-sample: %v\n%s", err, b)
+	}
+	b, err := os.ReadFile(out)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var res api.SimResult
+	if err := json.Unmarshal(b, &res); err != nil {
+		t.Fatal(err)
+	}
+	if res.Error != "" {
+		t.Fatalf("the run failed: %s", res.Error)
+	}
+	if len(res.Sample) != 0 {
+		t.Errorf("-no-sample still produced %d sample rows", len(res.Sample))
+	}
+	if !res.Request.NoSample {
+		t.Error("the echoed request does not record the opt-out")
 	}
 }
 
@@ -362,7 +584,7 @@ func TestUnknownFieldsAreRefused(t *testing.T) {
 	if err := os.WriteFile(in, b, 0o644); err != nil {
 		t.Fatal(err)
 	}
-	err = run(in, filepath.Join(dir, "res.json"), 0, nil)
+	err = run(in, filepath.Join(dir, "res.json"), overrides{}, nil)
 	if err == nil {
 		t.Fatal("a request carrying an unknown field was accepted")
 	}
@@ -407,7 +629,7 @@ func TestAnAbortedRunIsWrittenAsAnAbort(t *testing.T) {
 	if err := os.WriteFile(in, b, 0o644); err != nil {
 		t.Fatal(err)
 	}
-	err = run(in, out, 0, nil)
+	err = run(in, out, overrides{}, nil)
 	<-done
 	if !errors.Is(err, adapter.ErrAborted) {
 		t.Fatalf("run returned %v, want adapter.ErrAborted", err)

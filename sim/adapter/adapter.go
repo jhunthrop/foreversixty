@@ -519,6 +519,50 @@ func splitSpecSlug(slug string) (class, spec string) {
 	return slug[:i], slug[i+1:]
 }
 
+// Sample is one iteration's casts, in order: the median-DPS iteration
+// the engine records when SimOptions.sample_iteration is set.
+//
+// Every row carries the summary's ACTION KEY - "spell:23881",
+// "item:13503", "other:attack" - and no display name. That is contract
+// A12, and the reason is that the page already resolves a cast row's
+// name from the build's spells.json through resolveActionName; a name
+// baked in here would be a second vocabulary for the same action, and
+// the sample table and the cast table would disagree about what to
+// call a tagged or ranked spell.
+//
+// The engine's own at_ms is used as it stands: it is already
+// milliseconds (contract 10.3), and rounding a seconds figure here
+// used to be one more place the timeline and this table could
+// disagree about when something happened.
+//
+// No sample is not an error. A bulk stage does not ask for one, an
+// aborted run has none, and neither does a result from an engine
+// older than the field; the page renders the card only when there are
+// rows.
+func Sample(res *proto.RaidSimResult) []api.SampleCast {
+	casts := res.GetSampleIteration().GetCasts()
+	if len(casts) == 0 {
+		return nil
+	}
+	out := make([]api.SampleCast, 0, len(casts))
+	for _, c := range casts {
+		_, action := ActionName(c.GetActionId())
+		row := api.SampleCast{
+			AtMS:   c.GetAtMs(),
+			Action: action,
+			Target: c.GetTarget(),
+		}
+		if len(c.GetResources()) > 0 {
+			row.Resources = make(map[string]int, len(c.GetResources()))
+			for k, v := range c.GetResources() {
+				row.Resources[k] = int(v)
+			}
+		}
+		out = append(out, row)
+	}
+	return out
+}
+
 // ErrNoWeights is returned when a stat weights result carries no DPS
 // weight block. There is nothing to report and nothing to normalise.
 var ErrNoWeights = errors.New("adapter: the result carries no stat weights")

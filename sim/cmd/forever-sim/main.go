@@ -25,7 +25,18 @@
 //
 // Concurrency is automatic: core.RunRaidSimConcurrentAsync splits across
 // runtime.NumCPU() and recombines the distribution metrics, offsetting
-// each split's seed so the stream matches a serial run.
+// each split's seed so the stream matches a serial run. The one
+// exception is a request that asks for the sample iteration: see
+// entryPointFor, which keeps that run on the engine's single-threaded
+// entry point because the concurrent path's sample is only an
+// approximation.
+//
+// A plain run asks for the sample, because that is the product's
+// behaviour and the page renders it. -no-sample is the opt-out, and it
+// is for the batch callers above: the nightly validation job and the
+// execution scorer run thousands of sims whose cast log nobody reads,
+// and each of those would otherwise give up the concurrent entry point
+// and replay one whole extra iteration to record it.
 package main
 
 import (
@@ -47,6 +58,7 @@ import (
 	"github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/jhunthrop/foreversixty/sim/enginever"
 	"github.com/jhunthrop/foreversixty/sim/internal/simdb"
+	"github.com/jhunthrop/foreversixty/sim/internal/simdrain"
 	"github.com/jhunthrop/foreversixty/sim/request"
 	engine "github.com/wowsims/classic/sim"
 	"github.com/wowsims/classic/sim/core"
@@ -69,6 +81,7 @@ func main() {
 	out := flag.String("out", "-", "SimResult JSON; - for stdout")
 	outProto := flag.String("out-proto", "", "write the engine's raw RaidSimResult protobuf here instead; only sim/adapter's fixture refresh wants this")
 	iterations := flag.Int("iterations", 0, "override the request's iteration count")
+	noSample := flag.Bool("no-sample", false, "skip the sample iteration: the run keeps the engine's concurrent entry point instead of replaying one fight single-threaded. For a batch caller - the nightly validation job, the execution scorer - whose cast log is never read")
 	progress := flag.Bool("progress", false, "write JSON-lines progress to stderr; the engine's own log output is wrapped as {\"log\":...} so every line of that stream parses")
 	version := flag.Bool("version", false, "print the engine version and exit")
 	flag.Parse()
@@ -101,7 +114,7 @@ func main() {
 	if *outProto != "" {
 		run, outPath = runProto, *outProto
 	}
-	if err := run(*in, outPath, *iterations, sink); err != nil {
+	if err := run(*in, outPath, overrides{iterations: *iterations, noSample: *noSample}, sink); err != nil {
 		fmt.Fprintln(os.Stderr, "forever-sim:", err)
 		switch {
 		case errors.Is(err, errBadInput):
@@ -115,10 +128,22 @@ func main() {
 	}
 }
 
+// overrides are the flags that change a request after it is read. They
+// travel as one value so adding the next one is not another positional
+// bool at every call site.
+type overrides struct {
+	// iterations replaces the request's count when above zero.
+	iterations int
+	// noSample sets api.SimRequest.NoSample, whatever the file said.
+	// It only ever turns the sample OFF: a request that wants one says
+	// so by being a plain run, which is the default.
+	noSample bool
+}
+
 // run is main's body, with its files and its progress sink as parameters
 // so it is testable.
-func run(inPath, outPath string, iterations int, progress io.Writer) error {
-	req, err := load(inPath, iterations)
+func run(inPath, outPath string, over overrides, progress io.Writer) error {
+	req, err := load(inPath, over)
 	if err != nil {
 		return err
 	}
@@ -143,8 +168,8 @@ func run(inPath, outPath string, iterations int, progress io.Writer) error {
 // ours. It exists for one caller: sim/adapter's fixtures are checked-in
 // RaidSimResult protobufs, so regenerating them needs the thing before
 // the adapter rather than after it. Everything else wants run.
-func runProto(inPath, outProtoPath string, iterations int, progress io.Writer) error {
-	req, err := load(inPath, iterations)
+func runProto(inPath, outProtoPath string, over overrides, progress io.Writer) error {
+	req, err := load(inPath, over)
 	if err != nil {
 		return err
 	}
@@ -162,8 +187,8 @@ func runProto(inPath, outProtoPath string, iterations int, progress io.Writer) e
 	return write(outProtoPath, b)
 }
 
-// load reads a SimRequest and applies the iteration override.
-func load(inPath string, iterations int) (api.SimRequest, error) {
+// load reads a SimRequest and applies the command line's overrides.
+func load(inPath string, over overrides) (api.SimRequest, error) {
 	var raw []byte
 	var err error
 	if inPath == "-" {
@@ -184,8 +209,13 @@ func load(inPath string, iterations int) (api.SimRequest, error) {
 	if err := dec.Decode(&req); err != nil {
 		return api.SimRequest{}, fmt.Errorf("%w: the input is not a SimRequest: %v", errBadInput, err)
 	}
-	if iterations > 0 {
-		req.Iterations = iterations
+	if over.iterations > 0 {
+		req.Iterations = over.iterations
+	}
+	// -no-sample can only take the sample away, never add one: a
+	// request that already opted out stays opted out.
+	if over.noSample {
+		req.NoSample = true
 	}
 	// An operator who wrote no engine version means this binary's.
 	// Naming a different one is refused by api.SimRequest.Validate.
@@ -237,6 +267,7 @@ func Execute(req api.SimRequest, progress io.Writer) (api.SimResult, error) {
 	base.IterationsRun = int(engineRes.IterationsDone)
 	base.DurationMS = time.Since(start).Milliseconds()
 	base.Summary = sum
+	base.Sample = adapter.Sample(engineRes)
 	return base, nil
 }
 
@@ -246,6 +277,35 @@ var runs atomic.Int64
 
 func runID() string {
 	return fmt.Sprintf("forever-sim-%d-%d", os.Getpid(), runs.Add(1))
+}
+
+// simEntryPoint is the shared signature of the engine's two ways to run
+// a request: core.RunRaidSimAsync and core.RunRaidSimConcurrentAsync.
+type simEntryPoint func(*proto.RaidSimRequest, chan *proto.ProgressMetrics, string)
+
+// entryPointFor picks which of the engine's two entry points runs one
+// request.
+//
+// The concurrent path (core.RunRaidSimConcurrentAsync) splits the
+// iteration count across runtime.NumCPU() shards and, per the engine
+// fork's own pickSampleIteration (sim/core/sim_concurrent.go), keeps
+// whichever shard's LOCAL median lands closest to the combined mean -
+// its own comment calls this "a KNOWN APPROXIMATION, not the genuine
+// global median". The single-threaded path (core.RunRaidSimAsync, the
+// same one sim/cmd/wasm uses because wasm has no threads to split
+// across) computes the exact median over the whole run and never goes
+// through that approximation.
+//
+// A sample iteration exists to show the player one real fight, so a
+// request that asked for one gets the exact entry point rather than the
+// fast, approximate one; every other request keeps the concurrent
+// split. DO NOT "optimise" this back to always using the concurrent
+// call - that would swap an exact sample for a plausible-looking one.
+func entryPointFor(sampleIteration bool) simEntryPoint {
+	if sampleIteration {
+		return core.RunRaidSimAsync
+	}
+	return core.RunRaidSimConcurrentAsync
 }
 
 // execute is the engine half: our request in, the engine's own result
@@ -259,7 +319,7 @@ func execute(req api.SimRequest, progress io.Writer) (*proto.RaidSimResult, erro
 	// is bounded rather than held to the closed set the settings bar
 	// offers. Without it `-iterations 100` died on "iterations must be
 	// one of [500 3000 10000]", which the flag's own help denies.
-	engineReq, err := request.BuildWith(req, request.Options{OpenIterations: true})
+	engineReq, err := request.BuildWith(req, request.Options{OpenIterations: true, NoSampleIteration: req.NoSample})
 	if err != nil {
 		return nil, fmt.Errorf("%w: %v", errBadInput, err)
 	}
@@ -275,20 +335,13 @@ func execute(req api.SimRequest, progress io.Writer) (*proto.RaidSimResult, erro
 	// which the tests in this package already do.
 	id := runID()
 	defer onInterrupt(id)()
-	core.RunRaidSimConcurrentAsync(engineReq, reporter, id)
+	entryPointFor(engineReq.SimOptions.GetSampleIteration())(engineReq, reporter, id)
 
-	var enc *json.Encoder
+	// A nil tick is the no-progress case; ToResult takes one.
+	var tick func(*proto.ProgressMetrics)
 	if progress != nil {
-		enc = json.NewEncoder(progress)
-	}
-
-	var engineRes *proto.RaidSimResult
-	for p := range reporter {
-		if p.FinalRaidResult != nil {
-			engineRes = p.FinalRaidResult
-			break
-		}
-		if enc != nil {
+		enc := json.NewEncoder(progress)
+		tick = func(p *proto.ProgressMetrics) {
 			_ = enc.Encode(struct {
 				Completed int32   `json:"completed"`
 				Total     int32   `json:"total"`
@@ -296,6 +349,11 @@ func execute(req api.SimRequest, progress io.Writer) (*proto.RaidSimResult, erro
 			}{p.CompletedIterations, p.TotalIterations, p.Dps})
 		}
 	}
+
+	// The drain loop lives in sim/internal/simdrain because sim/cmd/wasm
+	// runs the same one; its invariant (why this does not break on the
+	// first FinalRaidResult) is documented on ToResult.
+	engineRes := simdrain.ToResult(reporter, tick)
 	if engineRes == nil {
 		return nil, errors.New("the engine produced no result")
 	}

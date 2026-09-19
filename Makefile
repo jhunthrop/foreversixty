@@ -18,13 +18,27 @@
 ENGINE_DIR ?= /Users/jh/code/wowsims-forever
 
 .PHONY: engine-pin
-# engine-pin writes sim/enginever/version.go from the engine checkout's HEAD -
-# ONLY that file. It does not copy rotations, presets or anything else into or
-# out of the fork; `apl-sync` below is what carries rotations.
-# This is the only way that file is ever written. ENGINE_VERSION is the short
-# sha, and it names the wasm artifact directory, the premium image tag, and
-# every stored sim and validation row, so pinning a dirty tree would produce
-# a version string that identifies nothing. Hence the cleanliness check.
+# engine-pin writes sim/enginever/version.go from the engine checkout's HEAD,
+# and mirrors the same sha into web/src/lib/sim/version.ts's ENGINE_VERSION
+# const and into the non-empty "engine_version" values in
+# web/src/fixtures/sim/*.json - every place in the tree that names the
+# pinned engine build. It does not copy rotations, presets or anything else
+# into or out of the fork; `apl-sync` below is what carries rotations.
+# This is the only way any of those values is ever written by hand - a human
+# editing one of them is exactly how they would drift, which is what
+# web/src/lib/sim/version.test.ts's pin assertion (and the fixtures test
+# beside it) exists to catch. The rewrites below are plain sed substitutions
+# keyed to the exact source-line shape - `export const ENGINE_VERSION =
+# '<sha>';` in version.ts, `"engine_version": "<sha>"` in the fixtures - so a
+# future reformat of either line needs a matching update here, which is why
+# each rewrite ends in a grep that fails loudly rather than silently leaving
+# the old sha in place.
+#
+# A MISSING file is an error, not a configuration: all three are tracked, so
+# the only way one is absent is a rename or a deletion nobody told this
+# target about, and skipping it silently is exactly how the pin drifted
+# before. The "no sha to replace" case is a different thing and stays a
+# skip: a fixture may legitimately carry an empty engine_version.
 engine-pin:
 	@test -d "$(ENGINE_DIR)/.git" || { echo "no engine checkout at $(ENGINE_DIR); set ENGINE_DIR"; exit 1; }
 	@if [ -n "$$(git -C "$(ENGINE_DIR)" status --porcelain)" ]; then \
@@ -37,6 +51,26 @@ engine-pin:
 	if grep -q '%' sim/enginever/version.go; then \
 	  echo "engine-pin: sim/enginever/version.go still contains a literal percent sign - the printf substitution failed"; exit 1; \
 	fi; \
+	web_version=web/src/lib/sim/version.ts; \
+	if [ ! -f "$$web_version" ]; then \
+	  echo "engine-pin: $$web_version is missing; it is a tracked file and one of the places the pin lives"; exit 1; \
+	fi; \
+	sed -i.bak -E "s/(export const ENGINE_VERSION = ')[0-9a-f]{7,12}(';)/\\1$$sha\\2/" "$$web_version"; \
+	rm -f "$$web_version.bak"; \
+	if ! grep -q "export const ENGINE_VERSION = '$$sha';" "$$web_version"; then \
+	  echo "engine-pin: failed to rewrite ENGINE_VERSION in $$web_version"; exit 1; \
+	fi; \
+	for fixture in web/src/fixtures/sim/result.json web/src/fixtures/sim/specs.json; do \
+	  if [ ! -f "$$fixture" ]; then \
+	    echo "engine-pin: $$fixture is missing; it is a tracked file and one of the places the pin lives"; exit 1; \
+	  fi; \
+	  grep -qE '"engine_version": "(sim:)?[0-9a-f]{7,12}"' "$$fixture" || continue; \
+	  sed -i.bak -E "s/(\"engine_version\": \"(sim:)?)[0-9a-f]{7,12}(\")/\\1$$sha\\3/g" "$$fixture"; \
+	  rm -f "$$fixture.bak"; \
+	  if ! grep -qE "\"engine_version\": \"(sim:)?$$sha\"" "$$fixture"; then \
+	    echo "engine-pin: failed to rewrite engine_version in $$fixture"; exit 1; \
+	  fi; \
+	done; \
 	echo "pinned engine version $$sha"
 
 ARTIFACT_DIR ?= artifacts

@@ -33,6 +33,7 @@ import (
 	"github.com/jhunthrop/foreversixty/sim/combine"
 	"github.com/jhunthrop/foreversixty/sim/enginever"
 	"github.com/jhunthrop/foreversixty/sim/internal/simdb"
+	"github.com/jhunthrop/foreversixty/sim/internal/simdrain"
 	"github.com/jhunthrop/foreversixty/sim/request"
 	engine "github.com/wowsims/classic/sim"
 	"github.com/wowsims/classic/sim/core"
@@ -126,7 +127,7 @@ func simRun(_ js.Value, args []js.Value) any {
 	// four workers is 750. OpenIterations relaxes that check and
 	// nothing else. The whole request was validated before it was split,
 	// by the page and by the api lane.
-	engineReq, err := request.BuildWith(req, request.Options{OpenIterations: true})
+	engineReq, err := request.BuildWith(req, request.Options{OpenIterations: true, NoSampleIteration: req.NoSample})
 	if err != nil {
 		return fail(req, err.Error())
 	}
@@ -143,21 +144,28 @@ func simRun(_ js.Value, args []js.Value) any {
 	// gives each worker one part.
 	core.RunRaidSimAsync(engineReq, reporter, callbackID)
 
-	var engineRes *proto.RaidSimResult
-	for p := range reporter {
-		if p.FinalRaidResult != nil {
-			engineRes = p.FinalRaidResult
-			break
+	// The drain loop is sim/internal/simdrain's, shared with
+	// sim/cmd/forever-sim and tested there: draining to the channel's
+	// close (rather than breaking the instant a FinalRaidResult
+	// arrives) is what makes a sample request's SampleIteration
+	// mutation guaranteed-visible, and stopping on an error result is
+	// what keeps a worker from wedging on a close that never comes.
+	// ToResult carries the whole argument; this lane supplies only the
+	// progress sink.
+	engineRes := simdrain.ToResult(reporter, func(p *proto.ProgressMetrics) {
+		cb := js.Global().Get("simProgress")
+		if cb.Type() != js.TypeFunction {
+			return
 		}
-		if cb := js.Global().Get("simProgress"); cb.Type() == js.TypeFunction {
-			if b, err := json.Marshal(api.Progress{
-				IterationsRun: int(p.CompletedIterations),
-				DPS:           api.Estimate{Mean: p.Dps},
-			}); err == nil {
-				cb.Invoke(callbackID, string(b))
-			}
+		b, err := json.Marshal(api.Progress{
+			IterationsRun: int(p.CompletedIterations),
+			DPS:           api.Estimate{Mean: p.Dps},
+		})
+		if err != nil {
+			return
 		}
-	}
+		cb.Invoke(callbackID, string(b))
+	})
 	if engineRes == nil {
 		return fail(req, "the engine produced no result")
 	}
@@ -181,6 +189,7 @@ func simRun(_ js.Value, args []js.Value) any {
 		IterationsRun: int(engineRes.IterationsDone),
 		DurationMS:    time.Since(start).Milliseconds(),
 		Summary:       sum,
+		Sample:        adapter.Sample(engineRes),
 	})
 }
 

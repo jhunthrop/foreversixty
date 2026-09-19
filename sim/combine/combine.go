@@ -33,6 +33,14 @@ var ErrMixedParts = errors.New("combine: the parts are not shares of one run")
 // over four workers is 750 - so a part is built with
 // request.Options{SplitPart: true}, which validates everything but the
 // closed set the settings bar offers.
+//
+// Only part zero is allowed to produce the sample iteration; every
+// later part is opted out. A sample costs a whole replayed iteration
+// on a fresh Environment, so leaving it on would make an N-way split
+// pay N replays and throw N-1 of them away - and combine.Results keeps
+// part zero's, so the discarded ones were never going to be read. A
+// request that had already opted out stays opted out: an N-way split
+// of a stage request must not put the sample back.
 func Split(req api.SimRequest, n int) ([]api.SimRequest, error) {
 	if n <= 0 {
 		return nil, fmt.Errorf("combine: split count must be positive, got %d", n)
@@ -55,6 +63,7 @@ func Split(req api.SimRequest, n int) ([]api.SimRequest, error) {
 			// it; spreading it would lose iterations to truncation.
 			part.Iterations += req.Iterations % n
 		}
+		part.NoSample = req.NoSample || i != 0
 		part.RandomSeed = seed
 		seed += int64(part.Iterations)
 		out[i] = part
@@ -68,10 +77,12 @@ func Split(req api.SimRequest, n int) ([]api.SimRequest, error) {
 // the damage table merged row by row by weightSummaries. Everything else
 // is the FIRST part's, presented as the whole run's: the request (whose
 // RandomSeed is the run's, because combine.Split gives part zero the
-// original), and the summary's aura, cast, resource and threat tables,
+// original), the summary's aura, cast, resource and threat tables,
 // which are shares and averages the largest part already represents
-// within sampling error. Weighting the damage table is the part worth
-// doing exactly, because it is the one a viewer reads as a number.
+// within sampling error, and Sample, which is part zero's one recorded
+// fight - combine.Split asks no other part for one, so there is exactly
+// one to take. Weighting the damage table is the part worth doing
+// exactly, because it is the one a viewer reads as a number.
 func Results(parts []api.SimResult) (api.SimResult, error) {
 	if len(parts) == 0 {
 		return api.SimResult{}, errors.New("combine: no results")
@@ -297,10 +308,19 @@ func sameRun(first, p api.SimResult) error {
 // TargetError joins the seed and the count because a step of a
 // target-error run is a fixed-count part of it: the loop owns the
 // target, the part does not.
+//
+// NoSample joins them because combine.Split sets it on every part but
+// the first, and it changes nothing the DPS is a number about - it
+// only says whether that part recorded one fight's casts on the way
+// past. Without clearing it here, sameRun would reject the very parts
+// Split produces with "asks a different question from part 0", and
+// every split run - which is every browser run - would fail to
+// combine.
 func shape(r api.SimRequest) api.SimRequest {
 	r.RandomSeed = 0
 	r.Iterations = 0
 	r.TargetError = 0
+	r.NoSample = false
 	return r
 }
 

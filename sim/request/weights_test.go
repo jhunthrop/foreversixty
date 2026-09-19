@@ -64,6 +64,23 @@ func TestBuildWeightsIsTheSameRunPlusStats(t *testing.T) {
 	}
 }
 
+// A weights sweep is one sub-sim per stat per direction, and no
+// StatWeightsResult consumer ever reads a cast log - so BuildWeights
+// must never ask the engine for one, regardless of what the caller's
+// own Options say. Passing NoSampleIteration: false here is the
+// point: if BuildWeights just forwarded the caller's opt unchanged, a
+// weights request would inherit a plain run's sample by default and
+// every sub-sim would pay for a replay nothing reads.
+func TestBuildWeightsNeverAsksForASample(t *testing.T) {
+	got, err := BuildWeights(weights(), Options{NoSampleIteration: false})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.SimOptions.GetSampleIteration() {
+		t.Error("a weights request asked for a sample iteration; no consumer reads a stat sweep's cast log")
+	}
+}
+
 func TestBuildWeightsRefusals(t *testing.T) {
 	if _, err := BuildWeights(fury(), Options{}); !errors.Is(err, ErrNotWeights) {
 		t.Error("BuildWeights accepted a plain run")

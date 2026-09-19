@@ -140,6 +140,20 @@ type SimRequest struct {
 	// which of the two ended the run, which is why the loop is a loop
 	// over whole results rather than a number the engine is handed.
 	TargetError float64 `json:"target_error,omitempty"`
+	// NoSample says this request's cast log would never be read, so
+	// the engine should not give up its concurrent entry point to
+	// replay one fight and record it.
+	//
+	// It is not a user setting and the page never sends it. Three
+	// callers do: sim/bulk sets it on every stage request, because a
+	// stage is a plain run by shape and has to be able to say it is
+	// not the run whose sample the report will show; sim/combine sets
+	// it on every part of a split but the first, because Results keeps
+	// part zero's sample and the rest would be replayed and thrown
+	// away; and a batch caller of forever-sim - the nightly validation
+	// job, the execution scorer - sets it through -no-sample, for the
+	// same reason on thousands of runs.
+	NoSample bool `json:"no_sample,omitempty"`
 }
 
 // CharacterSpec is everything the engine needs about the player, in JSON.
@@ -217,8 +231,18 @@ type EncounterSpec struct {
 	// NOT an unarmoured target.
 	TargetArmor int `json:"target_armor,omitempty"`
 
-	// TargetType changes what Hunter and Warlock abilities do. "" is
-	// TargetTypeUnknown, which is what a target dummy is.
+	// TargetType changes what Hunter and Warlock abilities do. "" maps
+	// to the engine's own default, MobTypeHumanoid (sim/request's
+	// encounter()), which is what every sim fought before this field
+	// existed - keeping that is what stops the pin bump changing every
+	// stored spec's number.
+	//
+	// Open contract question: a target dummy has no creature type at
+	// all, so Dummy arguably ought to imply MobTypeUnknown rather than
+	// inherit the humanoid default and hand out creature-type bonuses
+	// no real dummy would give. Contract 1.6 pins the fight-style
+	// table verbatim and the "dummy" style sets no TargetType, so
+	// changing it is a contract amendment, not a fix to make here.
 	TargetType string `json:"target_type,omitempty"`
 
 	// Dummy is the training dummy: no debuffs, no execute window, no
@@ -354,7 +378,7 @@ func (r SimRequest) validate(closedSet, requireCurrentEngine bool) error {
 	case !closedSet:
 		// A split part comes first, ahead of the target-error case,
 		// because a part of a target-error run is both: combine.Split
-		// copies the whole request into each part, TargetError
+		// copies the request into each part, TargetError
 		// included, since the loop owns the target and the part is
 		// only a fixed-count share of one step. So a part's count is
 		// neither one of the settings bar's numbers nor a whole
@@ -553,7 +577,7 @@ type SampleCast struct {
 	// its own section.
 	AtMS int64 `json:"at_ms"`
 	// Action is the summary's ACTION KEY - "spell:23881", "item:13503",
-	// "other:melee" - and not a display name. The page resolves the
+	// "other:attack" - and not a display name. The page resolves the
 	// name with resolveActionName, exactly as it does for a cast row,
 	// so the two tables name one action one way and a sample row needs
 	// no second lookup table. An earlier draft carried a numeric
