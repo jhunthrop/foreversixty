@@ -36,12 +36,12 @@ test('the sentence names the two biggest damage sources, their share and the big
 }) => {
   await loadFuryAndRun(page);
 
-  // spell:25286 (104,613) and spell:20662 (66,651) of the actor's 285,699 total is 60%;
+  // spell:25286 (64,767) and spell:23894 (33,210) of the actor's 186,849 total is 52%;
   // spell:9910 is the first 100%-uptime buff in the fixture's own array order (the tiebreak
   // summarySentence uses -- see sentence.ts -- keeps a stable sort's original order, unlike
   // AuraTable's own name-tiebroken sort below).
   await expect(page.getByTestId('sim-sentence')).toHaveText(
-    'spell:25286 and spell:20662 are 60% of your damage; spell:9910 is up 100% of the fight.',
+    'spell:25286 and spell:23894 are 52% of your damage; spell:9910 is up 100% of the fight.',
   );
 });
 
@@ -77,7 +77,7 @@ test('the Casts tab reads a cast row by its raw action key and count', async ({ 
   await page.getByTestId('sim-tab-casts').click();
   const row = page.getByTestId('cast-sim-player-23894');
   await expect(row).toContainText('spell:23894');
-  await expect(row).toContainText('23');
+  await expect(row).toContainText('27');
 });
 
 test('the Resources tab is empty: the fixture summary carries no non-zero resource series', async ({

@@ -8,7 +8,7 @@
 // has no Go toolchain; `make engine-pin` writes both, version.test.ts asserts they agree,
 // and web.yml runs that test.
 
-export const ENGINE_VERSION = 'df3b36e4c';
+export const ENGINE_VERSION = '464d1a14a';
 
 /** Where a version's browser artifacts live. Cached immutably, so the path carries the sha. */
 export function engineAssetUrl(file: 'sim.wasm' | 'sim.js', version: string = ENGINE_VERSION): string {
