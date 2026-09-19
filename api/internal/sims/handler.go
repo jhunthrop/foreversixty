@@ -5,13 +5,24 @@ import (
 	"errors"
 	"log/slog"
 	"net/http"
+	"slices"
 	"strconv"
+	"strings"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/api/internal/jobs"
 	simapi "github.com/jhunthrop/foreversixty/sim/api"
 )
+
+// filterKinds is the five kinds a history filter accepts, in the
+// contract's own order (contract 1.1). Composed from the envelope's
+// constants rather than spelled out, so the vocabulary has one source.
+// Replace this with simapi.Kinds if the sim module ever publishes one.
+var filterKinds = []string{
+	simapi.KindRun, simapi.KindGear, simapi.KindTalents,
+	simapi.KindDrops, simapi.KindWeights,
+}
 
 const (
 	// maxResultBytes bounds a posted browser result. A 3,000-iteration
@@ -167,7 +178,18 @@ func (s *Service) mine(w http.ResponseWriter, r *http.Request) {
 		}
 		page = n
 	}
-	out, err := s.Store.Mine(r.Context(), auth.ActorFrom(r.Context()).UserID, page, "")
+	// An unknown kind is refused rather than answered with an empty
+	// list: "you have no topgear sims" is a true sentence about a word
+	// that does not exist, and a typo in a link would read as a real
+	// (empty) answer forever.
+	kind := r.URL.Query().Get("kind")
+	if kind != "" && !slices.Contains(filterKinds, kind) {
+		httpx.WriteError(w, r, http.StatusBadRequest, "invalid",
+			"kind must be one of "+strings.Join(filterKinds, ", "),
+			map[string]string{"kind": strings.Join(filterKinds, "|")})
+		return
+	}
+	out, err := s.Store.Mine(r.Context(), auth.ActorFrom(r.Context()).UserID, page, kind)
 	if err != nil {
 		s.fail(w, r, "mine", err, "could not read your sims just now")
 		return
