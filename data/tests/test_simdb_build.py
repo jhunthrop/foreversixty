@@ -15,7 +15,6 @@ from pathlib import Path
 
 import pytest
 
-from pipeline.csvio import read_csv
 from pipeline.simproto import pb
 
 BUILD = "1.60.1.69893"
@@ -26,6 +25,13 @@ EXPECTED_ITEMS = 4986
 EXPECTED_ENCHANTS = 2216
 EXPECTED_WEAPONS = 759
 EXPECTED_IN_A_SET = 828
+#: 334 InventoryType-{13,21} weapons split into two disjoint HandType buckets:
+#: 216 InventoryType 13 (one-hand, either hand) and 118 InventoryType 21
+#: (main-hand only). See pipeline/simdb/items.py's HAND_TYPE_BY_INVENTORY_TYPE
+#: and tests/test_simdb_items.py's test_inventory_type_13_is_one_hand_not_main_hand,
+#: which pins the mapping itself against the fixtures.
+EXPECTED_ONE_HAND_WEAPONS = 216
+EXPECTED_MAIN_HAND_WEAPONS = 118
 #: 1,329 enchants carry a stat in the final database, counting every source:
 #: the direct ITEM_MOD/resistance slots plus equip-spell auras. A narrower
 #: count, 1,255, is the equip-spell path alone (40 more of that path's rows
@@ -71,19 +77,25 @@ def test_one_hand_weapons_are_dual_wieldable_not_main_hand_locked():
     HAND_TYPE_BY_INVENTORY_TYPE. HandTypeMainHand is InventoryType 21's
     disjoint, main-hand-only bucket; collapsing 13 into it left the engine
     with zero HandTypeOneHand rows and no way to dual-wield a one-hand item
-    typed InventoryType 13."""
-    one_hand_ids = {
-        int(row["ID"])
-        for row in read_csv(BUILD_DIR / "raw" / "ItemSparse.csv")
-        if row.get("InventoryType") == "13"
-    }
-    one_hand_items = [row for row in database().items if row.id in one_hand_ids]
+    typed InventoryType 13.
+
+    This reads only the committed simdb.bin, which CI has -- the raw client
+    tables (builds/<build>/raw/) are never committed (see .gitignore), so a
+    row-level check against ItemSparse's InventoryType column cannot run
+    here. tests/test_simdb_items.py's test_inventory_type_13_is_one_hand_not_main_hand
+    pins the mapping itself against the fixtures instead; this test pins
+    that the regenerated database actually reflects it: HandTypeOneHand is
+    populated, and HandTypeMainHand holds only the true main-hand-only
+    (InventoryType 21) rows rather than the pre-fix total of both.
+    """
     one_hand = pb.HandType.Value("HandTypeOneHand")
     main_hand = pb.HandType.Value("HandTypeMainHand")
-    assert len(one_hand_items) > 0
-    assert all(row.hand_type == one_hand for row in one_hand_items)
-    assert not any(row.hand_type == main_hand for row in one_hand_items)
-    assert sum(1 for row in database().items if row.hand_type == one_hand) > 0
+    assert sum(1 for row in database().items if row.hand_type == one_hand) == (
+        EXPECTED_ONE_HAND_WEAPONS
+    )
+    assert sum(1 for row in database().items if row.hand_type == main_hand) == (
+        EXPECTED_MAIN_HAND_WEAPONS
+    )
 
 
 def test_enchants_carry_the_stats_their_equip_spells_grant():
