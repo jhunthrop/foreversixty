@@ -17,8 +17,9 @@ One id lands in exactly one message, the first of
 field of that name, so `blessing_of_wisdom` is the blessing on this
 player rather than the raid-wide aura of the same name. A boolean field
 is turned on, a count is set to one, and a graded field (the engine's
-`TristateEffect`) is set to its plain version; the settings bar has no
-id for the improved form yet.
+`TristateEffect`) has two ids: the plain name is the
+plain version and `<id>:improved` is the talented one. A buff that is
+not graded has no `:improved` form and naming one is an error.
 
 | id | lands in |
 | --- | --- |
@@ -29,22 +30,31 @@ id for the improved form yet.
 | `atiesh_priest` | PartyBuffs |
 | `atiesh_warlock` | PartyBuffs |
 | `battle_shout` | RaidBuffs |
+| `battle_shout:improved` | RaidBuffs |
 | `battle_squawk` | RaidBuffs |
 | `blessing_of_kings` | IndividualBuffs |
 | `blessing_of_might` | IndividualBuffs |
+| `blessing_of_might:improved` | IndividualBuffs |
 | `blessing_of_sanctuary` | IndividualBuffs |
 | `blessing_of_wisdom` | IndividualBuffs |
+| `blessing_of_wisdom:improved` | IndividualBuffs |
 | `blood_pact` | RaidBuffs |
+| `blood_pact:improved` | RaidBuffs |
 | `crystal_yield` | Debuffs |
 | `curse_of_elements` | Debuffs |
 | `curse_of_recklessness` | Debuffs |
 | `curse_of_shadow` | Debuffs |
 | `curse_of_weakness` | Debuffs |
+| `curse_of_weakness:improved` | Debuffs |
 | `demoralizing_roar` | Debuffs |
+| `demoralizing_roar:improved` | Debuffs |
 | `demoralizing_shout` | Debuffs |
+| `demoralizing_shout:improved` | Debuffs |
 | `devotion_aura` | RaidBuffs |
+| `devotion_aura:improved` | RaidBuffs |
 | `divine_spirit` | RaidBuffs |
 | `expose_armor` | Debuffs |
+| `expose_armor:improved` | Debuffs |
 | `faerie_fire` | Debuffs |
 | `fengus_ferocity` | IndividualBuffs |
 | `fire_resistance_aura` | RaidBuffs |
@@ -54,27 +64,35 @@ id for the improved form yet.
 | `furious_howl` | RaidBuffs |
 | `gift_of_arthas` | Debuffs |
 | `gift_of_the_wild` | RaidBuffs |
+| `gift_of_the_wild:improved` | RaidBuffs |
 | `grace_of_air_totem` | RaidBuffs |
+| `grace_of_air_totem:improved` | RaidBuffs |
 | `hunters_mark` | Debuffs |
+| `hunters_mark:improved` | Debuffs |
 | `improved_scorch` | Debuffs |
 | `improved_shadow_bolt` | Debuffs |
 | `innervates` | IndividualBuffs |
 | `insect_swarm` | Debuffs |
 | `judgement_of_light` | Debuffs |
 | `judgement_of_the_crusader` | Debuffs |
+| `judgement_of_the_crusader:improved` | Debuffs |
 | `judgement_of_wisdom` | Debuffs |
 | `leader_of_the_pack` | RaidBuffs |
 | `mana_spring_totem` | RaidBuffs |
+| `mana_spring_totem:improved` | RaidBuffs |
 | `mana_tide_totems` | PartyBuffs |
 | `moldars_moxie` | IndividualBuffs |
 | `moonkin_aura` | RaidBuffs |
 | `nature_resistance_totem` | RaidBuffs |
 | `power_infusions` | IndividualBuffs |
 | `power_word_fortitude` | RaidBuffs |
+| `power_word_fortitude:improved` | RaidBuffs |
 | `rallying_cry_of_the_dragonslayer` | IndividualBuffs |
 | `retribution_aura` | RaidBuffs |
+| `retribution_aura:improved` | RaidBuffs |
 | `sanctity_aura` | RaidBuffs |
 | `sayges_fortune` | IndividualBuffs |
+| `sayges_fortune:improved` | IndividualBuffs |
 | `scorpid_sting` | Debuffs |
 | `scroll_of_agility` | RaidBuffs |
 | `scroll_of_intellect` | RaidBuffs |
@@ -89,15 +107,35 @@ id for the improved form yet.
 | `songflower_serenade` | IndividualBuffs |
 | `spirit_of_zandalar` | IndividualBuffs |
 | `stoneskin_totem` | RaidBuffs |
+| `stoneskin_totem:improved` | RaidBuffs |
 | `stormstrike` | Debuffs |
 | `strength_of_earth_totem` | RaidBuffs |
+| `strength_of_earth_totem:improved` | RaidBuffs |
 | `sunder_armor` | Debuffs |
 | `thorns` | RaidBuffs |
+| `thorns:improved` | RaidBuffs |
 | `thunder_clap` | Debuffs |
+| `thunder_clap:improved` | Debuffs |
 | `thunderfury` | Debuffs |
 | `trueshot_aura` | RaidBuffs |
 | `warchiefs_blessing` | IndividualBuffs |
 | `winters_chill` | Debuffs |
+
+### World buffs
+
+The settings bar groups these separately: they are `IndividualBuffs`
+fields like any other and take the same ids, but a player ticks them
+as a group — the Dire Maul tribute buffs, the Zandalar and Warchief's
+world enchantments, Rallying Cry, Songflower, Sayge's fortune.
+
+- `fengus_ferocity`
+- `moldars_moxie`
+- `rallying_cry_of_the_dragonslayer`
+- `sayges_fortune`
+- `slipkiks_savvy`
+- `songflower_serenade`
+- `spirit_of_zandalar`
+- `warchiefs_blessing`
 
 ## Consumables
 
@@ -283,3 +321,59 @@ nothing about why. A character with no professions is legal.
 | `mining` | Profession.Mining |
 | `skinning` | Profession.Skinning |
 | `tailoring` | Profession.Tailoring |
+
+## Stats
+
+`api.SimRequest.Weights`'s `stats` and `reference` are these ids: the
+engine's `Stat` enum value names in lower snake case with the `Stat`
+prefix stripped, with `MP5` spelled `mp5`. There is no plain
+`haste`: Forever's engine carries `spell_haste` and `melee_haste` and
+they are different stats. There is one `hit` and one `crit`, not a melee
+and a spell form of each. The reference stat is normalised to exactly
+1.0 and must be one of the stats being weighed; its per-spec default
+is `data/curated/specs.json`'s `reference_stat` — `attack_power` for
+melee and hunters, `spell_power` for casters.
+
+| id | engine enum |
+| --- | --- |
+| `agility` | Stat.StatAgility |
+| `arcane_power` | Stat.StatArcanePower |
+| `arcane_resistance` | Stat.StatArcaneResistance |
+| `armor` | Stat.StatArmor |
+| `armor_penetration` | Stat.StatArmorPenetration |
+| `attack_power` | Stat.StatAttackPower |
+| `block` | Stat.StatBlock |
+| `block_value` | Stat.StatBlockValue |
+| `bonus_armor` | Stat.StatBonusArmor |
+| `crit` | Stat.StatCrit |
+| `defense` | Stat.StatDefense |
+| `dodge` | Stat.StatDodge |
+| `energy` | Stat.StatEnergy |
+| `expertise` | Stat.StatExpertise |
+| `feral_attack_power` | Stat.StatFeralAttackPower |
+| `fire_power` | Stat.StatFirePower |
+| `fire_resistance` | Stat.StatFireResistance |
+| `frost_power` | Stat.StatFrostPower |
+| `frost_resistance` | Stat.StatFrostResistance |
+| `healing_power` | Stat.StatHealingPower |
+| `health` | Stat.StatHealth |
+| `hit` | Stat.StatHit |
+| `holy_power` | Stat.StatHolyPower |
+| `intellect` | Stat.StatIntellect |
+| `mana` | Stat.StatMana |
+| `melee_haste` | Stat.StatMeleeHaste |
+| `mp5` | Stat.StatMP5 |
+| `nature_power` | Stat.StatNaturePower |
+| `nature_resistance` | Stat.StatNatureResistance |
+| `parry` | Stat.StatParry |
+| `rage` | Stat.StatRage |
+| `ranged_attack_power` | Stat.StatRangedAttackPower |
+| `shadow_power` | Stat.StatShadowPower |
+| `shadow_resistance` | Stat.StatShadowResistance |
+| `spell_damage` | Stat.StatSpellDamage |
+| `spell_haste` | Stat.StatSpellHaste |
+| `spell_penetration` | Stat.StatSpellPenetration |
+| `spell_power` | Stat.StatSpellPower |
+| `spirit` | Stat.StatSpirit |
+| `stamina` | Stat.StatStamina |
+| `strength` | Stat.StatStrength |

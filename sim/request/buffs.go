@@ -38,6 +38,11 @@ var (
 	ErrAmbiguousConsume = errors.New("request: ambiguous consumable")
 )
 
+// improvedSuffix marks the talented version of a graded buff:
+// "battle_shout:improved". The plain id is the plain version, which is
+// what it has always meant, so every stored request keeps its meaning.
+const improvedSuffix = ":improved"
+
 // buffSet is the four buff messages a raid sim request carries. One id
 // lands in exactly one of them, so a buff named in two messages - a
 // paladin's blessing is both an individual buff and a raid-wide one - is
@@ -70,13 +75,25 @@ func buffsFor(ids []string) (buffSet, error) {
 }
 
 // enableField turns on the named field of the first message that has
-// one, and reports whether any did.
+// one, and reports whether any did. An id carrying improvedSuffix asks
+// for the second non-zero value of a graded field, and matches nothing
+// else: a boolean buff has no improved form, and answering one with the
+// plain buff would apply less than the id promised.
 func enableField(targets []protoreflect.ProtoMessage, id string) bool {
+	name, improved := strings.CutSuffix(id, improvedSuffix)
 	for _, target := range targets {
 		msg := target.ProtoReflect()
-		fd := msg.Descriptor().Fields().ByName(protoreflect.Name(id))
+		fd := msg.Descriptor().Fields().ByName(protoreflect.Name(name))
 		if fd == nil {
 			continue
+		}
+		if improved {
+			value, ok := gradedValue(fd)
+			if !ok {
+				return false
+			}
+			msg.Set(fd, protoreflect.ValueOfEnum(value))
+			return true
 		}
 		switch fd.Kind() {
 		case protoreflect.BoolKind:
@@ -86,9 +103,6 @@ func enableField(targets []protoreflect.ProtoMessage, id string) bool {
 			// stacks. One is the smallest thing "on" can mean.
 			msg.Set(fd, protoreflect.ValueOfInt32(1))
 		case protoreflect.EnumKind:
-			// TristateEffect and its kin: value one is the plain version
-			// of the buff, value two the talented one. The settings bar
-			// has no id for the improved form yet, so "on" is plain.
 			msg.Set(fd, protoreflect.ValueOfEnum(onEnumValue(fd)))
 		default:
 			continue
@@ -108,6 +122,28 @@ func onEnumValue(fd protoreflect.FieldDescriptor) protoreflect.EnumNumber {
 		}
 	}
 	return 0
+}
+
+// gradedValue is the improved value of a graded field: the SECOND
+// non-zero value of its enum. A field with fewer than two is not
+// graded and has no improved form.
+func gradedValue(fd protoreflect.FieldDescriptor) (protoreflect.EnumNumber, bool) {
+	if fd.Kind() != protoreflect.EnumKind {
+		return 0, false
+	}
+	values := fd.Enum().Values()
+	var seen int
+	for i := 0; i < values.Len(); i++ {
+		n := values.Get(i).Number()
+		if n == 0 {
+			continue
+		}
+		seen++
+		if seen == 2 {
+			return n, true
+		}
+	}
+	return 0, false
 }
 
 // consumes maps consumable ids onto the engine's Consumes message.
