@@ -1,7 +1,7 @@
 {
   "spec": "mage-fire",
   "state": "written",
-  "notes": "Adapted from the fork's shared mage default (ui/mage/apls/p1.apl.json), which is the Fire branch of a package that falls back to Frostbolt for non-Fire specs. Its Fireball and Frostbolt references were stale ranks (10) where the build's current top ranks are 12 (25306) and 11 (25304) respectively; Frostbolt is dropped entirely since this file is Fire-specific and never falls back to it. Fire Blast is added on cooldown as a free extra nuke per community guides, which the shared preset omitted. Fix round 1 had re-gated the Improved Scorch stack check from the client's Fire Vulnerability id (22959) to 12873, the id sim/core/debuffs.go's ImprovedScorchAura hardcodes -- on the theory that 12873 was at least an id the engine registers. Fix round 3: it is not one the mage's own Scorch casts ever produce. sim/core/debuffs.go creates that aura only when the raid's Improved Scorch debuff toggle is turned on from outside this character (a periodic application of its own); nothing in sim/mage triggers it. So the stack-gated Scorch upkeep line and the stack-gated Combustion pop were both reading a condition that can never resolve true under any mage-only rotation, which the nil-condition-reads-as-true behaviour of APLAction.IsReady turned into 'cast Scorch on every global, never reach Fireball or Combustion' -- the exact bug fix round 1 set out to remove, one id further along. There is no engine-castable way today for a mage's own APL to gate on Improved Scorch stacks, so the Scorch upkeep line is dropped outright (engine follow-up: model the mage's own Scorch applying the debuff, tracked in the engine ledger) and Combustion becomes an unconditional burst cooldown, the same shape Arcane Power and Presence of Mind use in mage-arcane -- it is talent-gated and unregistered under this bare build regardless (see smokeBuildWarnings), so the cooldown line documents intent rather than firing here. Fireball, at the current top rank, is now the sole filler. Every other rank named here is checked against the spellconst of the newest client build in builds/.",
+  "notes": "Adapted from the fork's shared mage default (ui/mage/apls/p1.apl.json), which is the Fire branch of a package that falls back to Frostbolt for non-Fire specs. Its Fireball and Frostbolt references were stale ranks (10) where the build's current top ranks are 12 (25306) and 11 (25304) respectively; Frostbolt is dropped entirely since this file is Fire-specific and never falls back to it. Fire Blast is added on cooldown as a free extra nuke per community guides, which the shared preset omitted. Fix round 1 re-gated the Improved Scorch stack check from the client's Fire Vulnerability id (22959) to 12873, the id sim/core/debuffs.go's ImprovedScorchAura hardcodes. Fix round 3 read that as a permanent engine gap -- 'the engine's Improved Scorch debuff aura is created only by the raid's own debuff toggle, never by this mage's own Scorch casts' -- deleted the Scorch-stacking mechanic entirely, and made Combustion an unconditional cooldown. The fix-round-3 re-review (fix-round-3-rereview.md) showed that premise false: sim/mage/talents.go's applyImprovedScorch() (called from every mage's normal ApplyTalents(), whenever Talents.ImprovedScorch != 0) wires mage.ImprovedScorchAuras to the *same* core.ImprovedScorchAura(12873) constructor the raid toggle uses, and sim/mage/scorch.go's ApplyEffects -- run by every Scorch rank -- rolls a 33/66/100% (by talent rank) chance per cast to Activate/AddStack that exact aura on the current target. The mage's own Scorch casts do stack 12873, gated behind the Improved Scorch talent Fire mages actually take; this line restores that mechanic (Combustion popped once the target is fully stacked, Scorch keeping the five stacks up and refreshed before they fall off, Fireball as the filler once the debuff is up), matching the cited guide's Fire rotation and mage-arcane's own precedent of naming a talent-dependent line that a no-talent smoke build cannot resolve. Under this bare smoke build (no talents at all) mage.ImprovedScorchAuras is never populated, so every auraIsActive/auraNumStacks/auraRemainingTime reference against 12873 on the current target finds no such aura, core.GetAPLAura logs its own 'No aura found' validation warning, and the whole nil-filtered `or` gate on the Scorch line collapses to nil -- which APLAction.IsReady reads as always-true, so Scorch is recast on every global under this one build. That is the build lacking the talent, not a defect in the gate; recorded as a written smokeBuildWarnings entry (mage-fire, {SpellID: 12873}), the same shape as the hunters' zero-SwingSpeed auto-shot artifact. Every other rank named here is checked against the spellconst of the newest client build in builds/; 12873 stays outside that check (ENGINE_AURA_IDS) since it is an aura the engine registers under its own id, confirmed present at sim/core/debuffs.go:624-637, not a client spellconst entry.",
   "sources": [
     { "label": "wowsims-forever mage default priority list (Fire branch)", "url": "https://github.com/jhunthrop/wowsims-forever/blob/464d1a14a6408956aecb14b3c5867392502db401/ui/mage/apls/p1.apl.json", "kind": "community" },
     { "label": "Warcraft Tavern: Classic Fire Mage DPS rotation", "url": "https://www.warcrafttavern.com/wow-classic/guides/dps-mage-rotation/", "kind": "community" }
@@ -11,15 +11,51 @@
     "priorityList": [
       { "action": { "autocastOtherCooldowns": {} } },
       {
-        "notes": "Combustion on cooldown, as a straight burst cooldown rather than gated on Improved Scorch stacks. Fix round 3: the engine only creates the Improved Scorch debuff aura (12873) from the raid's own debuff toggle, never from this mage's Scorch casts, so a stack gate can never resolve true here (engine follow-up: model the mage's own Scorch applying the debuff). Talent-gated and unregistered under this bare smoke build regardless (see smokeBuildWarnings) -- this line documents intent, the same shape Arcane Power and Presence of Mind use in mage-arcane.",
-        "action": { "castSpell": { "spellId": { "spellId": 11129 } } }
+        "notes": "Pop Combustion once Improved Scorch's debuff is fully stacked on the current target, for a guaranteed run of Fire crits. Fix round 4: tracks the engine's own debuff id (12873, sim/core/debuffs.go's ImprovedScorchAura), which the mage's own Scorch casts stack when Improved Scorch is talented (sim/mage/talents.go's applyImprovedScorch, sim/mage/scorch.go's ApplyEffects) -- restored after fix round 3 mistakenly treated this as impossible. 12873 is not in spellconst (it is an engine-side aura id, not a client spell), a known, deliberate exception for this one condition.",
+        "action": {
+          "condition": {
+            "cmp": {
+              "op": "OpGe",
+              "lhs": { "auraNumStacks": { "sourceUnit": { "type": "CurrentTarget" }, "auraId": { "spellId": 12873 } } },
+              "rhs": { "const": { "val": "5" } }
+            }
+          },
+          "castSpell": { "spellId": { "spellId": 11129 } }
+        }
       },
       {
-        "notes": "Fire Blast on cooldown as a free extra nuke that does not compete with Fireball for a global.",
+        "notes": "Scorch to apply or refresh the five stacks of Improved Scorch's debuff before it falls off. Fix round 4: restored (see top-level notes) -- this only ever stacks with the Improved Scorch talent taken, so it is functionally inert under this build's no-talent smoke run the same way Combustion above is, not a permanently uncastable line.",
+        "action": {
+          "condition": {
+            "or": {
+              "vals": [
+                { "not": { "val": { "auraIsActive": { "sourceUnit": { "type": "CurrentTarget" }, "auraId": { "spellId": 12873 } } } } },
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": { "auraNumStacks": { "sourceUnit": { "type": "CurrentTarget" }, "auraId": { "spellId": 12873 } } },
+                    "rhs": { "const": { "val": "5" } }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpLe",
+                    "lhs": { "auraRemainingTime": { "sourceUnit": { "type": "CurrentTarget" }, "auraId": { "spellId": 12873 } } },
+                    "rhs": { "const": { "val": "1.5s" } }
+                  }
+                }
+              ]
+            }
+          },
+          "castSpell": { "spellId": { "spellId": 10207, "rank": 7 } }
+        }
+      },
+      {
+        "notes": "Fire Blast on cooldown as a free extra nuke that does not compete for Scorch or Fireball casts.",
         "action": { "castSpell": { "spellId": { "spellId": 10199, "rank": 7 } } }
       },
       {
-        "notes": "Fireball is the primary filler. Fix round 3: Scorch is no longer cast at all -- with no working Improved Scorch stack gate available (see above), an unconditional Scorch line would simply win every global ahead of Fireball, the same defect fix round 1 tried and failed to remove.",
+        "notes": "Fireball is the primary filler once Improved Scorch's debuff is up.",
         "action": { "castSpell": { "spellId": { "spellId": 25306, "rank": 12 } } }
       }
     ]

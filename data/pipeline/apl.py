@@ -97,7 +97,16 @@ def aura_reference_ids(node: Any) -> Iterator[tuple[int, int]]:
 #: engine is actually asked to cast. Delete an entry here the moment the
 #: engine registers the client's id instead, or spellconst grows an entry
 #: for the engine's id -- whichever the engine/data lanes land first.
-ENGINE_AURA_IDS: dict[int, str] = {}
+ENGINE_AURA_IDS: dict[int, str] = {
+    12873: (
+        "Improved Scorch debuff: the engine registers this id "
+        "(sim/core/debuffs.go's ImprovedScorchAura) when the Improved "
+        "Scorch talent is taken (sim/mage/talents.go's applyImprovedScorch, "
+        "stacked by sim/mage/scorch.go's ApplyEffects) or the raid debuff "
+        "toggle is on; the client's own copy of the same debuff is 22959, "
+        "but nothing in the engine ever registers that id"
+    ),
+}
 
 
 def unchecked_engine_aura_ids(rotation: dict[str, Any]) -> set[int]:
