@@ -13,15 +13,18 @@
   import { loadItems } from '../../lib/planner/load';
   import type { Item } from '../../lib/planner/types';
   import { createLazyComponent, type LazyLoadState } from '../../lib/report/lazy-component.svelte';
+  import { fetchSpecs } from '../../lib/sim/api';
   import { SIM_LEVEL, type SimCharacter } from '../../lib/sim/character';
   import { simCopy } from '../../lib/sim/copy';
   import { encounterLabel } from '../../lib/sim/encounter';
   import { confidenceBand } from '../../lib/sim/estimate';
   import { specLabel } from '../../lib/sim/spec-label';
-  import type { SimResult } from '../../lib/sim/types';
+  import { mergeSpecRows } from '../../lib/sim/spec-state';
+  import type { SimResult, SpecFidelity } from '../../lib/sim/types';
   import { engineLabel, isStale } from '../../lib/sim/version';
   import CharacterStrip from './CharacterStrip.svelte';
   import DetailsCard from './DetailsCard.svelte';
+  import RotationCard from './RotationCard.svelte';
 
   let { result, onrerun }: { result: SimResult; onrerun: () => void } = $props();
 
@@ -83,6 +86,19 @@
       // The strip renders slot names and "Empty" without the item file; a failed fetch
       // must not stop the rest of the page from rendering.
       items = new Map();
+    }
+  })();
+
+  // One load, for this component's one unchanging result -- not an `$effect`, the same
+  // reason the item-file load above is not one. A failed fetch leaves the card without a
+  // fidelity note, which is the honest rendering of "we do not know yet".
+  let fidelity = $state<SpecFidelity | null>(null);
+  void (async () => {
+    try {
+      const rows = mergeSpecRows(await fetchSpecs());
+      fidelity = rows.find((row) => row.spec === result.request.spec) ?? null;
+    } catch {
+      fidelity = null;
     }
   })();
 
@@ -167,6 +183,8 @@
 {/if}
 
 <DetailsCard {result} />
+
+<RotationCard spec={result.request.spec} {fidelity} />
 
 <div class="mx-[18px] flex flex-wrap items-center gap-3 md:mx-0">
   <button

@@ -32,6 +32,7 @@
   import CharacterStrip from './CharacterStrip.svelte';
   import DetailsCard from './DetailsCard.svelte';
   import LandingState from './LandingState.svelte';
+  import RotationCard from './RotationCard.svelte';
   import RunControl from './RunControl.svelte';
   import SavedSim from './SavedSim.svelte';
   import SettingsBar from './SettingsBar.svelte';
@@ -582,6 +583,7 @@
 
         {#if store.result !== null && !comparing}
           <DetailsCard result={store.result} />
+          <RotationCard spec={store.result.request.spec} fidelity={characterSpecRow} />
         {/if}
 
         <!-- The save form (Task 17): disabled until there is a result, an inline

@@ -182,6 +182,10 @@ export const simCopy = {
   targetErrorCeiling: (ceiling: string): string =>
     `Stopped at ${ceiling} iterations with the error still outside half a per cent.`,
 
+  // --- Design 5.1: the rotation card beside a result. ---
+  rotationCard: 'Rotation',
+  rotationCardBody: (name: string): string => `This run used the default rotation for ${name}.`,
+
   // --- Design 5.1: the details card. ---
   details: 'This run',
   detailsMargin: 'Margin of error',

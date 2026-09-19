@@ -116,6 +116,39 @@ test.describe('a saved sim from the prerendered fixture', () => {
   });
 });
 
+// Task 13: the rotation card. The prerendered fixture's own client-side fetch of /v1/specs
+// has to be stubbed, the same way sim-specs.spec.ts stubs it, or the fidelity note has
+// nothing to render off of -- the card would show with no note and the second assertion
+// below would be checking an element that never appears.
+test('a saved sim names the rotation it used and carries its fidelity', async ({ page }) => {
+  await page.route('**/v1/specs', (route) =>
+    route.fulfill(
+      envelope({
+        specs: [
+          {
+            spec: 'warrior-fury',
+            state: 'in_progress',
+            median_gap: 0.08,
+            parses: 12,
+            worst_actions: [],
+            engine_version: activeBuild.build,
+            updated_at: '2026-01-01',
+          },
+        ],
+      }),
+    ),
+  );
+
+  await page.goto('/sim/simfixtureab');
+  const card = page.getByTestId('sim-rotation-card');
+  await expect(card).toBeVisible();
+  // The rotation is named by the spec's own display name, and links to its card.
+  await expect(card.getByTestId('sim-rotation-card-link')).toHaveAttribute('href', '/sim/specs#warrior-fury');
+  // The fixture's warrior-fury row is not validated, so the note is there; a validated
+  // spec renders the card without one.
+  await expect(card.getByTestId('sim-rotation-card-note')).toBeVisible();
+});
+
 test('a saved sim whose stored request has no gear shows the line, not the grid', async ({ page }) => {
   const id = 'simnogearabc';
   const noGearResult = {
