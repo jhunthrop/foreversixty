@@ -106,7 +106,7 @@
         <ul class="flex flex-col" data-testid="character-best">
           {#each data.best as row (`${row.encounter_id}-${row.difficulty}-${row.metric}`)}
             <li
-              class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-3 border-b px-2 py-2 text-[14px]"
+              class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto_auto_auto] items-center gap-3 border-b px-2 py-2 text-[14px]"
             >
               <a class="{rowLink} truncate" href={`/rankings/${encounterSlug(row.encounter)}`}>
                 {row.encounter}
@@ -125,6 +125,24 @@
               >
                 {formatAmount(Math.round(row.value))}
               </a>
+              <!-- This table has no `md:` breakpoint at all -- percentile and value are always
+                   visible, not desktop-gated -- so the execution cell is always visible too,
+                   unlike the same cell on "Every ranked fight" below. -->
+              {#if row.execution_score === null}
+                <span
+                  class="text-muted tabular text-right font-mono text-[13px]"
+                  title={executionTitle(null)}
+                  aria-label={executionTitle(null)}
+                  data-testid="character-best-execution">{executionLabel(null)}</span
+                >
+              {:else}
+                <a
+                  class="{rowLink} tabular justify-end text-right font-mono text-[13px]"
+                  href={executionHref(row.report_id, row.fight_index)}
+                  title={executionTitle(row.execution_score)}
+                  data-testid="character-best-execution">{executionLabel(row.execution_score)}</a
+                >
+              {/if}
             </li>
           {/each}
         </ul>
