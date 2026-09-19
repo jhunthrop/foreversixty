@@ -42,6 +42,14 @@ export interface AbilityDiff {
 }
 
 export interface AuraDiff {
+  /**
+   * The row's own identity, the same way `AbilityDiff.spellId` is: what the `{#each}` key
+   * is built from, never the name. Two real buffs at different spell ids can resolve to
+   * the same display name (a rank mismatch between the sim's loadout and the logged
+   * fight's is the ordinary way that happens), and Svelte 5 raises a runtime error on a
+   * repeated `{#each}` key -- so a name is never safe to key a rendered row on.
+   */
+  spellId: number;
   name: string;
   simUptimeMs: number;
   actualUptimeMs: number;
@@ -112,28 +120,31 @@ function damageByKey(
   return { damage, labels, ids };
 }
 
-/** Buff uptime per join key, for one actor. */
-function upByKey(summary: Summary, guid: string, names: ActionNames | null): Map<string, number> {
-  const up = new Map<string, number>();
-  for (const track of summary.auras) {
-    if (track.target_guid !== guid || track.type !== 'BUFF') continue;
-    const { key } = keyed(track.spell_id, track.name, names);
-    up.set(key, Math.max(up.get(key) ?? 0, track.uptime_ms));
-  }
-  return up;
-}
-
-function labelsOf(summary: Summary, guid: string, names: ActionNames | null): Map<string, string> {
+/** Buff uptime, label and identity per join key, for one actor -- `AuraDiff`'s own three
+ *  parallel maps, the same shape `damageByKey` builds for abilities and for the same
+ *  reason: a name is display text, never a row's identity. */
+function auraByKey(
+  summary: Summary,
+  guid: string,
+  names: ActionNames | null,
+): { uptime: Map<string, number>; labels: Map<string, string>; ids: Map<string, number> } {
+  const uptime = new Map<string, number>();
   const labels = new Map<string, string>();
+  const ids = new Map<string, number>();
   for (const track of summary.auras) {
     if (track.target_guid !== guid || track.type !== 'BUFF') continue;
     const { key, label } = keyed(track.spell_id, track.name, names);
+    uptime.set(key, Math.max(uptime.get(key) ?? 0, track.uptime_ms));
+    // First one wins, the same rule damageByKey uses: the sim side is read first.
     if (!labels.has(key)) labels.set(key, label);
+    if (!ids.has(key)) ids.set(key, track.spell_id);
   }
-  return labels;
+  return { uptime, labels, ids };
 }
 
-function pct(part: number, whole: number): number {
+/** Shared with CompareView.svelte's own display formatter, so the one rounding rule
+ *  ("whole percent, own duration") lives in one place. */
+export function pct(part: number, whole: number): number {
   return whole <= 0 ? 0 : Math.round((part / whole) * 100);
 }
 
@@ -192,15 +203,14 @@ export function compareSummaries(
     }))
     .sort((a, b) => Math.max(b.simDamage, b.actualDamage) - Math.max(a.simDamage, a.actualDamage));
 
-  const simUp = upByKey(sim, simActor.guid, names);
-  const actualUp = upByKey(actual, actualActor.guid, names);
-  const simAuraLabels = labelsOf(sim, simActor.guid, names);
-  const actualAuraLabels = labelsOf(actual, actualActor.guid, names);
-  const auras: AuraDiff[] = [...new Set([...simUp.keys(), ...actualUp.keys()])]
+  const simAura = auraByKey(sim, simActor.guid, names);
+  const actualAura = auraByKey(actual, actualActor.guid, names);
+  const auras: AuraDiff[] = [...new Set([...simAura.uptime.keys(), ...actualAura.uptime.keys()])]
     .map((key) => ({
-      name: simAuraLabels.get(key) ?? actualAuraLabels.get(key) ?? key,
-      simUptimeMs: simUp.get(key) ?? 0,
-      actualUptimeMs: actualUp.get(key) ?? 0,
+      spellId: simAura.ids.get(key) ?? actualAura.ids.get(key) ?? 0,
+      name: simAura.labels.get(key) ?? actualAura.labels.get(key) ?? key,
+      simUptimeMs: simAura.uptime.get(key) ?? 0,
+      actualUptimeMs: actualAura.uptime.get(key) ?? 0,
     }))
     .sort((a, b) => Math.max(b.simUptimeMs, b.actualUptimeMs) - Math.max(a.simUptimeMs, a.actualUptimeMs));
 

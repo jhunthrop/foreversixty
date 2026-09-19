@@ -9,7 +9,7 @@
     splitUnitName,
     type CharacterPath,
   } from '../lib/characters';
-  import { classColorVar, formatAmount } from '../lib/report/format';
+  import { classColorVar, formatAmount, rowLink } from '../lib/report/format';
   import { encounterSlug, fetchGuild, type GuildPage } from '../lib/rankings/api';
   import { RANKING_METRICS } from '../lib/rankings/url';
   import { executionLabel, executionTitle } from '../lib/sim/execution';
@@ -19,14 +19,6 @@
   const resolved = $derived(
     path ?? (typeof window === 'undefined' ? null : parseGuildPath(window.location.pathname)),
   );
-
-  /**
-   * An `<a>` is inline: its own box is only as tall as its text, not the `min-h-11` row it
-   * sits in. Rankings.svelte's row links already carry this fix; the phone audit here
-   * caught the same shape of miss on this page's encounter, roster and report links, so
-   * every anchor that is its own tap target gets it too, not just the row around it.
-   */
-  const rowLink = 'inline-flex min-h-11 items-center';
 
   let data = $state<GuildPage | null>(null);
   let status = $state<'loading' | 'ready' | 'failed' | 'missing'>('loading');

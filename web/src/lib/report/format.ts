@@ -6,6 +6,14 @@
 import type { Phase, Taunt } from './types';
 
 /**
+ * An `<a>` is inline: its own box is only as tall as its text, not the `min-h-11` row it
+ * sits in. Every row link across Character.svelte, Guild.svelte, Rankings.svelte and
+ * ReportView.svelte needs this same fix, so it lives once here rather than as four copies
+ * of the identical string.
+ */
+export const rowLink = 'inline-flex min-h-11 items-center';
+
+/**
  * Everything that tells one taunt from another: two tanks can taunt two adds on the
  * same millisecond, and over a night the same instant recurs in every pull, which the
  * label separates. Shared by the taunt list and the timeline marks, which key the same

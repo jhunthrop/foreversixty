@@ -7,7 +7,7 @@
      design system does not allow colour to carry meaning on its own anyway. -->
 <script lang="ts">
   import { simCopy } from '../../lib/sim/copy';
-  import type { Comparison } from '../../lib/sim/compare';
+  import { pct as pctOf, type Comparison } from '../../lib/sim/compare';
 
   let {
     comparison,
@@ -15,7 +15,9 @@
     actualDuration,
   }: { comparison: Comparison; simDuration: number; actualDuration: number } = $props();
 
-  const pct = (ms: number, of: number): string => (of <= 0 ? '0%' : `${Math.round((ms / of) * 100)}%`);
+  // The rounding rule itself (whole percent, own duration) lives once, in compare.ts, so
+  // this table's numbers and compareSummaries' own uptime lines can never round differently.
+  const pct = (ms: number, of: number): string => `${pctOf(ms, of)}%`;
   const amount = (value: number): string => Math.round(value).toLocaleString('en-US');
 
   const abilityRow =
@@ -73,10 +75,14 @@
       <span class="text-right">{simCopy.compareActual}</span>
       <span class="text-right">{simCopy.compareSimulated}</span>
     </div>
-    {#each comparison.auras as row (row.name)}
+    <!-- Keyed and tested by id, never by name, for the same reason the ability table is:
+         two real buffs at different spell ids (a rank mismatch between the sim's loadout
+         and the logged fight's) can resolve to the same display name, and a repeated
+         {#each} key is a Svelte 5 runtime error. -->
+    {#each comparison.auras as row (row.spellId)}
       <div
         class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_72px_72px] items-center gap-x-3 border-b px-3 py-2 text-[14px] last:border-b-0"
-        data-testid={`compare-aura-${row.name}`}
+        data-testid={`compare-aura-${row.spellId}`}
       >
         <span class="text-strong truncate font-semibold">{row.name}</span>
         <span class="tabular text-right font-mono">{pct(row.actualUptimeMs, actualDuration)}</span>

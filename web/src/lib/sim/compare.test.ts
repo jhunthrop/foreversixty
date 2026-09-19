@@ -218,4 +218,83 @@ describe('compareSummaries', () => {
     const comparison = compareSummaries(simSummary(), actualSummary(), 'Thrallgar', names);
     expect(comparison.lines.length).toBeLessThanOrEqual(MAX_ABILITY_LINES + MAX_AURA_LINES);
   });
+
+  it('gives every aura row a stable id, not just a name', () => {
+    const comparison = compareSummaries(simSummary(), actualSummary(), 'Thrallgar', names);
+    const flurry = comparison.auras.find((row) => row.name === 'Flurry');
+    expect(flurry?.spellId).toBe(12974);
+  });
+
+  it('keeps two same-named auras at different ids apart, each with its own identity', () => {
+    // Two real ranks of the same buff can resolve to the same display name -- one on the
+    // sim side, a different one logged -- and both are below SYNTHETIC_ID_BASE, so tier 1
+    // keys each by its own id and neither folds onto the other. CompareView.svelte's
+    // `{#each}` keys this table on `spellId`, and a Svelte 5 duplicate key throws at
+    // runtime, so this is the regression the aura table's own id field exists to prevent.
+    const sim: Summary = {
+      ...empty,
+      engine_version: 'sim:test',
+      fight_index: 1,
+      duration_ms: 100_000,
+      damage_done: [
+        {
+          guid: 'sim-player',
+          name: 'Fury',
+          class: 'warrior',
+          total: 100_000,
+          effective: 100_000,
+          active_ms: 100_000,
+          targets: [],
+          series: [],
+          abilities: [ability(1, 'Slam', 100_000)],
+        },
+      ],
+      casts: [],
+      auras: [
+        auraRow('sim-player', 100, 'Renewed Vigor', 50_000),
+        auraRow('sim-player', 200, 'Renewed Vigor', 30_000),
+      ],
+    };
+    const actual: Summary = {
+      ...empty,
+      engine_version: '0.5.3',
+      fight_index: 1,
+      duration_ms: 100_000,
+      damage_done: [
+        {
+          guid: 'log-player',
+          name: 'Thrallgar',
+          class: 'Warrior',
+          total: 90_000,
+          effective: 90_000,
+          active_ms: 100_000,
+          targets: [],
+          series: [],
+          abilities: [ability(1, 'Slam', 90_000)],
+        },
+      ],
+      casts: [],
+      auras: [auraRow('log-player', 100, 'Renewed Vigor', 40_000)],
+    };
+
+    const comparison = compareSummaries(sim, actual, 'Thrallgar', names);
+    const renewedVigor = comparison.auras.filter((row) => row.name === 'Renewed Vigor');
+    expect(renewedVigor).toHaveLength(2);
+    expect(renewedVigor.map((row) => row.spellId).sort((a, b) => a - b)).toEqual([100, 200]);
+    // Every row's identity is distinct, which is what CompareView's {#each} key needs.
+    const ids = comparison.auras.map((row) => row.spellId);
+    expect(new Set(ids).size).toBe(ids.length);
+  });
+
+  it('never mutates the summaries it compares', () => {
+    const sim = simSummary();
+    const actual = actualSummary();
+    const simSnapshot = structuredClone(sim);
+    const actualSnapshot = structuredClone(actual);
+
+    compareSummaries(sim, actual, 'Thrallgar', names);
+
+    expect(sim).toEqual(simSnapshot);
+    expect(actual).toEqual(actualSnapshot);
+  });
 });

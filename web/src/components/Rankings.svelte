@@ -13,7 +13,13 @@
     splitUnitName,
   } from '../lib/characters';
   import { SECONDARY_BUTTON, SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
-  import { classColorVar, formatAmount, formatDuration, percentileToken } from '../lib/report/format';
+  import {
+    classColorVar,
+    formatAmount,
+    formatDuration,
+    percentileToken,
+    rowLink,
+  } from '../lib/report/format';
   import { titleize } from '../lib/report/og-meta';
   import {
     fetchGuildRankings,
@@ -55,10 +61,6 @@
   let error = $state('');
 
   const select = 'border-line-warm bg-raised rounded-control text-text h-11 px-2 text-[13px] md:h-9';
-  /** A row link is centred in a box tall enough to clear the phone hit target on its own,
-      not just as part of the row it sits in -- a name, a talent split and "Report" are all
-      things a visitor taps directly. */
-  const rowLink = 'inline-flex min-h-11 items-center';
 
   function patch(next: Partial<RankingsState>): void {
     // Any filter change returns to page one: page three of a different filter is nothing.

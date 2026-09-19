@@ -26,6 +26,7 @@
     formatDuration,
     outcomeLabel,
     phaseReached,
+    rowLink,
     schoolToken,
   } from '../../lib/report/format';
   import {
@@ -117,9 +118,6 @@
   import { classSlugOf } from '../../lib/report/planner-link';
 
   let { reportId, inlineMeta = null }: { reportId: string; inlineMeta?: ReportMeta | null } = $props();
-
-  /** The fight header's own links, matched to Character.svelte, Guild.svelte and Rankings.svelte. */
-  const rowLink = 'inline-flex min-h-11 items-center';
 
   // untrack because inlineMeta is a one-shot bootstrap, not a binding: the shell renders
   // it once into data-report and never changes it, and reading a prop straight into

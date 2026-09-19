@@ -4,7 +4,7 @@
      a public report is enough to have one, which is the spec's position. -->
 <script lang="ts">
   import { parseCharacterPath, rulesetLabel, type CharacterPath } from '../lib/characters';
-  import { classColorVar, formatAmount, percentileToken } from '../lib/report/format';
+  import { classColorVar, formatAmount, percentileToken, rowLink } from '../lib/report/format';
   import { encounterSlug, fetchCharacter, type CharacterPage } from '../lib/rankings/api';
   import { RANKING_METRICS } from '../lib/rankings/url';
   import { executionHref, executionLabel, executionTitle } from '../lib/sim/execution';
@@ -14,14 +14,6 @@
   const resolved = $derived(
     path ?? (typeof window === 'undefined' ? null : parseCharacterPath(window.location.pathname)),
   );
-
-  /**
-   * An `<a>` is inline: its own box is only as tall as its text, not the `min-h-11` row it
-   * sits in. Rankings.svelte's row links already carry this fix; the phone audit here
-   * caught the same shape of miss on this page's encounter and value links, so every
-   * anchor that is its own tap target gets it too, not just the row around it.
-   */
-  const rowLink = 'inline-flex min-h-11 items-center';
 
   /**
    * A percentile beside a formatted amount has no column heading at any breakpoint --
