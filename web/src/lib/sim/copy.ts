@@ -276,4 +276,31 @@ export const simCopy = {
     set: 'Set',
     consumes: 'Consumables',
   } as Record<string, string>,
+
+  // --- Parity, contract 1.6: the fight styles. The ids are styles.ts's; the words are
+  // ours. Raidbots' own names are in the design's table and are deliberately not used:
+  // "Hectic Add Cleave" says nothing about how many adds there are.
+  fightStyle: 'Fight style',
+  styleLabel: {
+    patchwerk: 'Patchwerk',
+    execute: 'Execute heavy',
+    'light-movement': 'Light movement',
+    'heavy-movement': 'Heavy movement',
+    'cleave-2': 'Cleave, 2 targets',
+    'cleave-3': 'Cleave, 3 targets',
+    'cleave-5': 'Cleave, 5 targets',
+    dungeon: 'Dungeon pull',
+    dummy: 'Target dummy',
+  } as Record<string, string>,
+  /**
+   * Design risk 3: "a movement window is only as honest as each rotation's handling of
+   * it", so the two movement styles carry the caution until the validation job has parses
+   * for them. Every other style needs no note and has none.
+   */
+  styleNote: {
+    'light-movement':
+      'How much a movement window costs depends on the rotation’s own handling of it; no parse has measured this yet.',
+    'heavy-movement':
+      'How much a movement window costs depends on the rotation’s own handling of it; no parse has measured this yet.',
+  } as Record<string, string>,
 } as const;
