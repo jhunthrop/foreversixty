@@ -44,6 +44,12 @@ var (
 // so it gets a stable one that the report components treat identically.
 const playerGUID = "sim-player"
 
+// auraTypeBuff is the logs engine's own word for an aura on a friendly
+// unit, upper case as summary.Accumulator writes it. Its counterpart,
+// "DEBUFF", has no source in an engine result: sim/core reports aura
+// metrics for the player only.
+const auraTypeBuff = "BUFF"
+
 // Summarize maps an engine result onto the logs engine's Summary, per the
 // interface contract's mapping table.
 func Summarize(res *proto.RaidSimResult, req api.SimRequest) (summary.Summary, error) {
@@ -266,7 +272,16 @@ func auras(u *proto.UnitMetrics) []summary.AuraTrack {
 			TargetName: u.Name,
 			SpellID:    spellID,
 			Name:       name,
-			Type:       "buff",
+			// The vocabulary is the logs engine's, upper case: its
+			// accumulator writes "BUFF" and "DEBUFF" (summary.go's
+			// seedAuras and applyAura), and the report's shared
+			// AuraTable filters on exactly those two strings. A sim
+			// tracks only the player's own auras - the engine's
+			// UnitMetrics carries no aura row for anything on the
+			// target - so every row here is a BUFF, and the constant
+			// is named rather than spelled inline so the day a
+			// debuff appears there is one place to change.
+			Type: auraTypeBuff,
 			// AuraMetrics already reports per-iteration averages, so
 			// these are not divided again.
 			Applications: int64(math.Round(am.ProcsAvg)),

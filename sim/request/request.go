@@ -83,6 +83,14 @@ type Options struct {
 	// item id then fails at the boundary rather than silently dropping
 	// a consumable the player counted on.
 	Consumables *Consumables
+
+	// SplitPart says this request is one worker's share of a run that
+	// combine.Split already divided, so it is validated with
+	// api.SimRequest.ValidatePart: everything except the closed set of
+	// iteration counts the settings bar offers, which a part is not one
+	// of by construction. The browser's worker pool sets it; a whole
+	// request from a client never does.
+	SplitPart bool
 }
 
 // Build turns a validated SimRequest into the engine's own request,
@@ -93,7 +101,11 @@ func Build(req api.SimRequest) (*proto.RaidSimRequest, error) {
 
 // BuildWith turns a validated SimRequest into the engine's own request.
 func BuildWith(req api.SimRequest, opt Options) (*proto.RaidSimRequest, error) {
-	if err := req.Validate(); err != nil {
+	validate := req.Validate
+	if opt.SplitPart {
+		validate = req.ValidatePart
+	}
+	if err := validate(); err != nil {
 		return nil, fmt.Errorf("request: %w", err)
 	}
 	ch := req.Character

@@ -29,17 +29,31 @@ const goldenEngineVersion = "golden"
 // To regenerate a fixture after a spec's abilities change, from the
 // SITE module (never from the engine checkout):
 //
-//	go run --tags=with_db ./internal/genfixture -spec <spec> -out adapter/testdata/<spec>.result.pb
-//
-// or, once Task 13 has built it and deleted genfixture:
-//
-//	./artifacts/forever-sim -in <spec>.request.json -out-proto adapter/testdata/<spec>.result.pb
-//
-// then run
-//
+//	make artifacts                                   # at the pinned sha
+//	cd sim
+//	./../artifacts/forever-sim \
+//	  -in adapter/testdata/<spec>.request.json \
+//	  -out-proto adapter/testdata/<spec>.result.pb
 //	FOREVER_UPDATE_GOLDEN=1 go test ./adapter/
 //
 // and read the diff before committing it.
+//
+// The .request.json beside each fixture is the input: a real SimRequest,
+// so a fixture is a real sim of a request the product could send rather
+// than a second opinion about what a fury warrior is. Its buffs are the
+// field names of core.Full{Raid,Individual,Debuffs} - the same set,
+// though a tristate lands on its plain form because the settings bar has
+// no id for the improved one (see request/buffs.go). Its gear starts
+// from the engine's own phase-one preset, with every id Forever
+// re-itemised away replaced by the nearest row in the same slot.
+//
+// The gear is real Forever item ids, resolved from the active build's
+// database, which sim/internal/simdb embeds: run `make simdb` first if
+// the working tree has never had it (`make artifacts` depends on it).
+// Do NOT build with --tags=with_db - that is the engine's own vanilla
+// table, which resolves almost none of a Forever gear set and which
+// makes the engine panic at init over item effects this build has no
+// rows for. Each slot's provenance is in <spec>.request.notes.md.
 func TestGoldenSummaries(t *testing.T) {
 	for _, tc := range goldenSpecs {
 		t.Run(tc.spec, func(t *testing.T) {

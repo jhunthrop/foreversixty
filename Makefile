@@ -24,3 +24,88 @@ engine-pin:
 	  echo "engine-pin: sim/enginever/version.go still contains a literal percent sign - the printf substitution failed"; exit 1; \
 	fi; \
 	echo "pinned engine version $$sha"
+
+ARTIFACT_DIR ?= artifacts
+WEB_SIM_DIR   = web/public/_sim
+ACTIVE_BUILD_JSON = web/src/data/active-build.json
+SIMDB_EMBED   = sim/internal/simdb/simdb.bin
+# Read at parse time so the copy below has a real prerequisite: an earlier
+# version depended on active-build.json alone, and regenerating the build's
+# simdb.bin left the embedded copy stale while make reported nothing to do.
+ACTIVE_BUILD  = $(shell sed -n 's/.*"build"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' $(ACTIVE_BUILD_JSON) 2>/dev/null)
+SIMDB_SRC     = data/builds/$(ACTIVE_BUILD)/simdb.bin
+
+.PHONY: simdb
+# simdb copies the ACTIVE build's item database where sim/internal/simdb
+# embeds it. Forever re-itemises, so the engine's own --tags=with_db
+# table - vanilla's - resolves almost none of a Forever gear set; this
+# file is what makes an item id mean something in both artifacts.
+#
+# The build is read from web/src/data/active-build.json and never typed
+# in, so switching builds is one edit in one place. The copy is
+# git-ignored; data/builds/<build>/simdb.bin is what is committed.
+#
+# Every `go build`, `go test` and `go vet` in sim/ needs this file,
+# because //go:embed resolves at compile time. Run `make simdb` once
+# after a fresh clone.
+simdb: simdb-check $(SIMDB_EMBED)
+
+.PHONY: simdb-check
+# The diagnostics have to live in a phony target that runs BEFORE the
+# file rule. Inside the recipe they are unreachable: a missing source is
+# a prerequisite with no rule, so make refuses the target during
+# resolution - "No rule to make target data/builds//simdb.bin" - and the
+# recipe, guards and all, never runs. Depend on `simdb`, not on
+# $(SIMDB_EMBED), to get them.
+simdb-check:
+	@test -n "$(ACTIVE_BUILD)" || { \
+	  echo "$(ACTIVE_BUILD_JSON) names no build"; exit 1; }
+	@test -f "$(SIMDB_SRC)" || { \
+	  echo "no $(SIMDB_SRC); the data lane's \`python -m pipeline simdb\` has not run for build $(ACTIVE_BUILD)"; exit 1; }
+
+$(SIMDB_EMBED): $(SIMDB_SRC) $(ACTIVE_BUILD_JSON)
+	@mkdir -p $(dir $(SIMDB_EMBED))
+	@cp "$(SIMDB_SRC)" $(SIMDB_EMBED)
+	@echo "embedded $(SIMDB_SRC) ($$(wc -c < $(SIMDB_EMBED) | tr -d ' ') bytes)"
+
+.PHONY: artifacts
+# artifacts builds the two things one pinned engine sha produces, both
+# from the sim/ module: sim.wasm + sim.js for the browser, and
+# forever-sim for the server lane. The engine repository ships no
+# artifact of ours; it stays a clean upstreamable library.
+#
+# Neither is built --tags=with_db. That tag carries the engine's own
+# vanilla item table, which Forever re-itemises out from under; both
+# artifacts embed the active build's simdb.bin instead, which is what
+# `simdb` above puts in place and what sim/internal/simdb loads.
+artifacts: engine-pin simdb
+	@mkdir -p $(ARTIFACT_DIR)
+#	Each build runs in its OWN subshell. An earlier draft chained two
+#	`cd sim` in one shell with `; \`, so the second ran from inside
+#	sim/ and failed, and the native binary was silently never built
+#	while the recipe reported success.
+	@sha=$$(sed -n 's/.*Version = "\(.*\)"/\1/p' sim/enginever/version.go); \
+	  test -n "$$sha" || { echo "sim/enginever/version.go has no Version"; exit 1; }; \
+	  (cd sim && GOOS=js GOARCH=wasm go build -ldflags="-X 'main.Version=$$sha'" \
+	    -o ../$(ARTIFACT_DIR)/sim.wasm ./cmd/wasm) && \
+	  (cd sim && go build -ldflags="-X 'main.Version=$$sha' -s -w" \
+	    -o ../$(ARTIFACT_DIR)/forever-sim ./cmd/forever-sim)
+#	install, not cp: wasm_exec.js is read-only inside GOROOT, so a plain
+#	cp copies the mode too and the NEXT `make artifacts` dies with
+#	"Permission denied" on its own output.
+	@install -m 0644 "$$(go env GOROOT)/lib/wasm/wasm_exec.js" $(ARTIFACT_DIR)/sim.js
+	@(cd $(ARTIFACT_DIR) && shasum -a 256 sim.wasm sim.js forever-sim > SHA256SUMS)
+	@test -x $(ARTIFACT_DIR)/forever-sim || { echo "forever-sim was not built"; exit 1; }
+	@ls -l $(ARTIFACT_DIR)
+	@gzip -9 -c $(ARTIFACT_DIR)/sim.wasm | wc -c | \
+	  awk '{printf "sim.wasm gzipped: %.2f MB (budget 4.00, engine-only baseline 3.31)\n", $$1/1048576}'
+
+.PHONY: publish-wasm
+# publish-wasm puts the browser pair where the web loads them, under the
+# engine version, cached immutably so a new version never collides with a
+# cached old one.
+publish-wasm: artifacts
+	@sha=$$(sed -n 's/.*Version = "\(.*\)"/\1/p' sim/enginever/version.go); \
+	mkdir -p "$(WEB_SIM_DIR)/$$sha"; \
+	cp $(ARTIFACT_DIR)/sim.wasm $(ARTIFACT_DIR)/sim.js "$(WEB_SIM_DIR)/$$sha/"; \
+	echo "published to $(WEB_SIM_DIR)/$$sha"

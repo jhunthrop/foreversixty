@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"slices"
 	"strings"
 	"testing"
 )
@@ -166,5 +167,103 @@ func TestStaleComparesEngineVersions(t *testing.T) {
 	}
 	if !res.Stale("bbbbbbb") {
 		t.Error("a result from another engine build did not report stale")
+	}
+}
+
+// A worker's share of a split run is 750 iterations, or 250, or whatever
+// the division produced. Validate must refuse that and ValidatePart must
+// accept it, or the browser's worker pool cannot build the parts
+// combine.Split just handed it.
+func TestValidatePartAcceptsASplitShareAndNothingElse(t *testing.T) {
+	part := SimRequest{
+		EngineVersion: "7779ebb", Spec: "mage-frost", Iterations: 750,
+		Encounter: DefaultEncounter(),
+		Character: CharacterSpec{Name: "Jaina", Race: "gnome", Class: "mage", Level: 60},
+	}
+	if err := part.Validate(); err == nil {
+		t.Error("Validate accepted 750 iterations; the settings bar offers no such run")
+	}
+	if err := part.ValidatePart(); err != nil {
+		t.Errorf("ValidatePart rejected a split share: %v", err)
+	}
+
+	// Everything else Validate checks still applies to a part.
+	noRace := part
+	noRace.Character.Race = ""
+	if err := noRace.ValidatePart(); err == nil {
+		t.Error("ValidatePart accepted a part with no race")
+	}
+
+	// A part is a share of a whole request, so it is bounded by the
+	// largest whole request. Nothing may smuggle a million-iteration run
+	// past the closed set by calling itself a part.
+	for _, n := range []int{0, -1, MaxIterations + 1} {
+		bad := part
+		bad.Iterations = n
+		if err := bad.ValidatePart(); err == nil {
+			t.Errorf("ValidatePart accepted %d iterations", n)
+		}
+	}
+	if err := func() error { p := part; p.Iterations = MaxIterations; return p.ValidatePart() }(); err != nil {
+		t.Errorf("ValidatePart rejected the largest whole run: %v", err)
+	}
+}
+
+// MaxIterations is the top of ValidIterations rather than a second copy
+// of the number; adding a larger run to the closed set must move it.
+func TestMaxIterationsTracksTheClosedSet(t *testing.T) {
+	for _, n := range ValidIterations {
+		if n > MaxIterations {
+			t.Errorf("ValidIterations has %d, above MaxIterations %d", n, MaxIterations)
+		}
+	}
+	if !slices.Contains(ValidIterations, MaxIterations) {
+		t.Errorf("MaxIterations %d is not in ValidIterations %v", MaxIterations, ValidIterations)
+	}
+}
+
+// The progress payload is a contract with the web: the sim island reads
+// a partial result with the same accessors it reads a finished one with,
+// so the two keys must be SimResult's own.
+func TestProgressIsAPickOfSimResult(t *testing.T) {
+	b, err := json.Marshal(Progress{IterationsRun: 250, DPS: Estimate{Mean: 1427.4}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	var m map[string]any
+	if err := json.Unmarshal(b, &m); err != nil {
+		t.Fatal(err)
+	}
+	if len(m) != 2 {
+		t.Errorf("Progress has %d keys, want exactly iterations_run and dps: %v", len(m), m)
+	}
+	// The same two keys a SimResult carries, spelled the same way.
+	var res map[string]any
+	rb, err := json.Marshal(SimResult{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := json.Unmarshal(rb, &res); err != nil {
+		t.Fatal(err)
+	}
+	for _, k := range []string{"iterations_run", "dps"} {
+		if _, ok := m[k]; !ok {
+			t.Errorf("Progress is missing JSON key %q", k)
+		}
+		if _, ok := res[k]; !ok {
+			t.Errorf("SimResult has no key %q, so Progress is not a Pick of it", k)
+		}
+	}
+	dps, ok := m["dps"].(map[string]any)
+	if !ok {
+		t.Fatalf("dps is not an Estimate object: %T", m["dps"])
+	}
+	if dps["mean"] != 1427.4 {
+		t.Errorf("dps.mean = %v, want the running mean 1427.4", dps["mean"])
+	}
+	for _, k := range []string{"stddev", "error", "min", "max"} {
+		if dps[k] != 0.0 {
+			t.Errorf("dps.%s = %v mid-run, want 0 until the run completes", k, dps[k])
+		}
 	}
 }

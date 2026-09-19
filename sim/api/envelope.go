@@ -41,6 +41,12 @@ const (
 // estimate, the default, and the precision toggle.
 var ValidIterations = []int{500, 3000, 10000}
 
+// MaxIterations is the largest run anything may ask for. It is the top of
+// ValidIterations rather than a second copy of the number, and it bounds
+// a split part too: a part is a share of a whole request, so it can never
+// legitimately exceed one.
+var MaxIterations = slices.Max(ValidIterations)
+
 // MaxTargets is the settings bar's cap.
 const MaxTargets = 10
 
@@ -120,6 +126,25 @@ func DefaultEncounter() EncounterSpec {
 // Validate checks everything a malformed client could get wrong, at the
 // boundary, before anything reaches the engine.
 func (r SimRequest) Validate() error {
+	return r.validate(true)
+}
+
+// ValidatePart is Validate for one worker's share of a split run.
+//
+// It checks everything Validate checks except the closed iteration set:
+// combine.Split divides a request that has already passed Validate, and
+// 3,000 iterations over four workers is 750 - a number the settings bar
+// never offers and never should. The count still has to be positive and
+// no larger than the largest run the UI can ask for, so a part that lost
+// its iterations, or one hand-rolled to ask for a million, is refused
+// here rather than at the worker.
+func (r SimRequest) ValidatePart() error {
+	return r.validate(false)
+}
+
+// validate is the body of both. closedSet says whether the iteration
+// count must be one the settings bar offers.
+func (r SimRequest) validate(closedSet bool) error {
 	var errs []error
 	if r.EngineVersion == "" {
 		errs = append(errs, errors.New("engine_version is required"))
@@ -127,8 +152,11 @@ func (r SimRequest) Validate() error {
 	if r.Spec == "" {
 		errs = append(errs, errors.New("spec is required"))
 	}
-	if !slices.Contains(ValidIterations, r.Iterations) {
+	switch {
+	case closedSet && !slices.Contains(ValidIterations, r.Iterations):
 		errs = append(errs, fmt.Errorf("iterations must be one of %v, got %d", ValidIterations, r.Iterations))
+	case !closedSet && (r.Iterations <= 0 || r.Iterations > MaxIterations):
+		errs = append(errs, fmt.Errorf("a split part's iterations must be between 1 and %d, got %d", MaxIterations, r.Iterations))
 	}
 	if r.Encounter.DurationSec < MinDurationSec || r.Encounter.DurationSec > MaxDurationSec {
 		errs = append(errs, fmt.Errorf("duration_sec must be between %d and %d, got %d", MinDurationSec, MaxDurationSec, r.Encounter.DurationSec))
@@ -167,6 +195,20 @@ type SimResult struct {
 	DurationMS    int64           `json:"duration_ms"`
 	Summary       summary.Summary `json:"summary"`
 	Error         string          `json:"error,omitempty"`
+}
+
+// Progress is what the browser's simRun progress callback carries:
+// Pick<SimResult, 'iterations_run' | 'dps'>, so the page reads a partial
+// result with the same two accessors it reads the finished one with.
+//
+// Only DPS.Mean is populated while a run is in flight - it is the
+// running mean the engine reports per batch - and the rest of the
+// Estimate stays zero until the run completes and a whole SimResult
+// replaces it. The callback's first argument is still the callback id
+// the page passed to simRun.
+type Progress struct {
+	IterationsRun int      `json:"iterations_run"`
+	DPS           Estimate `json:"dps"`
 }
 
 type Estimate struct {

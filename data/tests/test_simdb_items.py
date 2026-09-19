@@ -3,7 +3,7 @@ from pathlib import Path
 from pipeline.csvio import read_csv
 from pipeline.normalize.item_curves import load_item_curves
 from pipeline.simdb.equip import SpellBonus
-from pipeline.simdb.items import build_sim_items, simdb_item_rows
+from pipeline.simdb.items import HAND_TYPE_BY_INVENTORY_TYPE, build_sim_items, simdb_item_rows
 from pipeline.simdb.weapons import WeaponCurves, load_weapon_curves
 from pipeline.simproto import pb
 
@@ -143,6 +143,15 @@ def test_a_negative_mask_that_is_not_minus_one_excludes_rather_than_permits():
         pb.Class.Value("ClassPriest"),
         pb.Class.Value("ClassWarlock"),
     ]
+
+
+def test_inventory_type_13_is_one_hand_not_main_hand():
+    """InventoryType 13 covers weapons a player may equip in either hand
+    (e.g. daggers, one-hand swords/maces/axes). HandTypeMainHand (21) is a
+    disjoint InventoryType reserved for main-hand-only weapons. Collapsing 13
+    into HandTypeMainHand left the engine with zero HandTypeOneHand rows,
+    which made every InventoryType-13 weapon un-offhandable."""
+    assert HAND_TYPE_BY_INVENTORY_TYPE[13] == "HandTypeOneHand"
 
 
 def test_a_build_with_no_weapon_curves_still_emits_its_items():
