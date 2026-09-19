@@ -12,8 +12,12 @@
   import activeBuild from '../../data/active-build.json';
   import { battlenetStartUrl, fetchMe } from '../../lib/account/api';
   import { createLazyComponent, type LazyLoadState } from '../../lib/report/lazy-component.svelte';
+  import { fetchReportMeta, fetchSummary } from '../../lib/report/load';
+  import type { Summary } from '../../lib/report/types';
   import { fetchSpecs } from '../../lib/sim/api';
+  import { compareSummaries } from '../../lib/sim/compare';
   import { simCopy } from '../../lib/sim/copy';
+  import { parseFightRef } from '../../lib/sim/sources';
   import { mergeSpecRows } from '../../lib/sim/spec-state';
   import { createSimStore } from '../../lib/sim/store.svelte';
   import { parseSimState } from '../../lib/sim/url';
@@ -39,7 +43,7 @@
   // bootstrap values, not bindings this island keeps synced against a changing URL.
   const bootstrap = untrack(() => {
     const search = window.location.search;
-    const { source, ref, code } = parseSimState(search);
+    const { source, ref, code, mode } = parseSimState(search);
     // The mount element the shell can stamp a build id onto, the way planner-island.ts
     // reads `data-tree-version` off its own mount -- no /sim page stamps one yet, so this
     // falls back to the site's active build rather than an empty string no fetch would
@@ -49,17 +53,74 @@
     // specs.astro stamps `data-sim-view="specs"`; sim.astro and [id].astro stamp neither,
     // so an absent or unrecognised value reads as the ordinary simulator.
     const view: 'sim' | 'specs' = mount?.dataset.simView === 'specs' ? 'specs' : 'sim';
-    return { treeVersion, source, ref, code, view };
+    return { treeVersion, source, ref, code, mode, view };
   });
 
+  // Compare mode loads its character through `enterCompare` below, never through the
+  // store's own URL bootstrap: both call the identical `fromLoggedFight(ref)`, and
+  // `adopt()` unconditionally clears `result` on every successful load, so a second,
+  // redundant bootstrap racing `enterCompare`'s own bootstrap could land after
+  // `store.run()` and null out the sim result `comparison` was just built from. One
+  // loader for one entry path avoids that race rather than trusting the two to agree on
+  // an order they are never sequenced to keep.
   const store = untrack(() =>
     createSimStore({
       treeVersion: bootstrap.treeVersion,
-      source: bootstrap.source,
-      ref: bootstrap.ref,
+      source: bootstrap.mode === 'compare' ? undefined : bootstrap.source,
+      ref: bootstrap.mode === 'compare' ? undefined : bootstrap.ref,
       code: bootstrap.code,
     }),
   );
+
+  // Compare mode's own state: `actual` is the logged fight's raw summary, read straight
+  // off the report lane's own loader (no second parse, no new API), and `comparing` gates
+  // every compare-only branch below so plain /sim never has to think about either.
+  let actual = $state<Summary | null>(null);
+  let comparing = $state(false);
+
+  /**
+   * Compare mode's whole entry path, called once from the same place the other `?source=`
+   * loaders are called -- never from a `$effect`, which would re-fetch the fight whenever
+   * anything unrelated in the store changed.
+   */
+  async function enterCompare(ref: string): Promise<void> {
+    const parsed = parseFightRef(ref);
+    if (parsed === null) {
+      store.setMessage(simCopy.fightRefInvalid);
+      return;
+    }
+    comparing = true;
+    // loadFight gives us the character; fromLoggedFight is what it calls underneath.
+    await store.loadFight(ref);
+    try {
+      const meta = await fetchReportMeta(parsed.reportId);
+      actual = await fetchSummary(meta.data_base_url, parsed.fightIndex);
+    } catch {
+      // A dead page helps nobody: keep the character, drop back to plain sim mode.
+      actual = null;
+      comparing = false;
+      store.setMessage(simCopy.fightNoCombatant);
+      return;
+    }
+    // The one place a sim starts without a press: the player already pressed something to
+    // get here, and a compare with nothing to compare against is not a page.
+    if (store.character !== null) await store.run();
+  }
+
+  if (bootstrap.mode === 'compare') void enterCompare(bootstrap.ref);
+
+  const comparison = $derived(
+    comparing && actual !== null && store.result !== null && store.character !== null
+      ? compareSummaries(store.result.summary, actual, store.character.name, store.actionNames)
+      : null,
+  );
+
+  // CompareView is never needed for /sim's first paint -- it only exists once a compare
+  // link is followed -- so it ships as its own chunk, the same way SimResults does below.
+  const compareViewLazy = createLazyComponent(() => import('./CompareView.svelte'));
+  $effect(() => {
+    if (comparison !== null) compareViewLazy.load();
+  });
 
   onMount(() => {
     // `user.premium` on GET /v1/me, per the simulator contract -- the server lane renders
@@ -227,7 +288,25 @@
           onserver={() => void store.runOnServer()}
           onrerun={() => void store.run()}
         />
-        {#if store.result !== null}
+        {#if comparing}
+          <!-- Replaces the sentence and the results, per Design 4.2 -- the strip, the
+               settings bar and the run control above stay exactly where they are. -->
+          {#if actual === null}
+            <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="compare-loading">
+              {simCopy.compareLoading}
+            </p>
+          {:else if comparison !== null}
+            {#if compareViewLazy.current}
+              <compareViewLazy.current
+                {comparison}
+                simDuration={store.result?.summary.duration_ms ?? 0}
+                actualDuration={actual.duration_ms}
+              />
+            {:else}
+              {@render lazyFallback(compareViewLazy)}
+            {/if}
+          {/if}
+        {:else if store.result !== null}
           {#if simResultsLazy.current}
             <simResultsLazy.current
               summary={store.result.summary}

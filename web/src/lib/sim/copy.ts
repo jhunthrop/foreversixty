@@ -211,4 +211,27 @@ export const simCopy = {
   tabTimeline: 'Timeline',
   tabDistribution: 'Distribution',
   resultsTablist: 'Results',
+
+  // --- Task 16: compare mode. The sim beside the fight it was built from. ---
+  /** Compare mode with a fight that records no damage for this character. */
+  compareNoPlayer: 'That fight has no damage recorded for this character.',
+  compareFootnote: 'The two fights are not the same length; every share is of its own fight.',
+  compareActual: 'This fight',
+  compareSimulated: 'Simulated',
+  /**
+   * The combat log's own word for an action the engine names differently. The engine writes
+   * its OtherAction name into the key (`other:attack`), the log writes what the client
+   * calls it (`Melee`), and compare mode joins those two rows -- so one of the two words
+   * has to win, and it is the log's, because that is the one the player recognises from
+   * their own report. Used only by compare.ts's join, never by a table on its own.
+   */
+  actionAliases: { Attack: 'Melee', Shoot: 'Auto Shot' } as Record<string, string>,
+  compareAbility: 'Ability',
+  compareBuff: 'Buff',
+  compareActualCasts: 'Cast',
+  compareSimCasts: 'Simmed',
+  compareActualDamage: 'Damage',
+  compareSimDamage: 'Simmed damage',
+  simThisFight: 'Sim this fight',
+  compareLoading: 'Reading the fight…',
 } as const;
