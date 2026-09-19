@@ -46,6 +46,12 @@ export function createFakeWorker(engine: EngineModule): PoolWorker {
             });
           } else if (message.kind === 'combine') {
             emit({ kind: 'one', token, result: engine.simCombine(combineInputFromShards(message.results)) });
+          } else if (message.kind === 'needsMore') {
+            emit({ kind: 'one', token, result: engine.simNeedsMore(message.result, message.request) });
+          } else if (message.kind === 'validate') {
+            emit({ kind: 'one', token, result: engine.simValidate(message.request) });
+          } else if (message.kind === 'count') {
+            emit({ kind: 'one', token, result: engine.simCount(message.request) });
           } else {
             tokenOf.set(message.callbackId, token);
             try {

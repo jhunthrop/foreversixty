@@ -9,6 +9,7 @@
 //
 // The pool tears itself down on pagehide, so a navigation mid-run leaves no workers behind.
 import type { ShardProgress } from './estimate';
+import type { CountAnswer, RequestValidation } from './engine';
 import type { SimProgressUpdate } from './types';
 
 export const MAX_WORKERS = 8;
@@ -26,6 +27,9 @@ export type ToWorker =
   | { kind: 'split'; token: number; request: string; shards: number }
   | { kind: 'run'; token: number; callbackId: string; request: string }
   | { kind: 'combine'; token: number; results: string[] }
+  | { kind: 'needsMore'; token: number; result: string; request: string }
+  | { kind: 'validate'; token: number; request: string }
+  | { kind: 'count'; token: number; request: string }
   | { kind: 'abort'; callbackId: string };
 
 export type FromWorker =
@@ -54,6 +58,12 @@ export interface SimPool {
     onProgress: (progress: ShardProgress) => void,
   ): Promise<string[]>;
   combine(results: readonly string[]): Promise<string>;
+  /** Whether a target-error run has another step to do. The engine decides, not the page. */
+  needsMore(result: string, request: string): Promise<boolean>;
+  /** `api.SimRequest.Validate` over an edited request. */
+  validate(request: string): Promise<RequestValidation>;
+  /** How many combinations a bulk request expands to; a cap breach is an answer, not a throw. */
+  count(request: string): Promise<CountAnswer>;
   abort(callbackId: string): void;
   terminate(): void;
 }
@@ -172,6 +182,29 @@ export function createPool(options: PoolOptions = {}): SimPool {
     },
     combine(results) {
       return send<string>(0, (token) => ({ kind: 'combine', token, results: [...results] }));
+    },
+    async needsMore(result, request) {
+      const answer = await send<string>(0, (token) => ({ kind: 'needsMore', token, result, request }));
+      return (JSON.parse(answer) as { needs_more?: boolean }).needs_more === true;
+    },
+    async validate(request) {
+      const answer = await send<string>(0, (token) => ({ kind: 'validate', token, request }));
+      return JSON.parse(answer) as RequestValidation;
+    },
+    async count(request) {
+      const answer = await send<string>(0, (token) => ({ kind: 'count', token, request }));
+      const parsed = JSON.parse(answer) as {
+        error?: string;
+        cap?: number;
+        combinations?: number;
+      };
+      // `cap_exceeded` is the one error envelope on this lane that is a real answer; any
+      // other error from the engine is a genuine failure and is thrown as one.
+      if (parsed.error === 'cap_exceeded') {
+        return { ok: false, cap: parsed.cap ?? 0, combinations: parsed.combinations ?? 0 };
+      }
+      if (parsed.error !== undefined) throw new Error(parsed.error);
+      return { ok: true, combinations: parsed.combinations ?? 0 };
     },
     abort,
     terminate,

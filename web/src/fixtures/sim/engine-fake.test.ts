@@ -3,6 +3,10 @@ import type { SimProgressUpdate, SimRequest, SimResult } from '../../lib/sim/typ
 import { DEFAULT_ENCOUNTER } from '../../lib/sim/types';
 import { ENGINE_VERSION } from '../../lib/sim/version';
 import { createFakeEngine } from './engine-fake';
+import fixtureResultJson from './result.json';
+
+const fixtureResult = fixtureResultJson as unknown as SimResult;
+const fixtureRequest = fixtureResult.request;
 
 const request: SimRequest = {
   engine_version: ENGINE_VERSION,
@@ -124,5 +128,114 @@ describe('simCombine', () => {
     expect(combined.dps.mean).toBeGreaterThan(0);
     expect(combined.dps.error).toBeCloseTo(combined.dps.stddev / Math.sqrt(3000), 9);
     expect(combined.summary.damage_done[0].guid).toBe('sim-player');
+  });
+});
+
+describe('simNeedsMore', () => {
+  const request = (over: Partial<SimRequest> = {}): string =>
+    JSON.stringify({ ...fixtureRequest, iterations: 30_000, target_error: 0.005, ...over });
+  const result = (mean: number, error: number, iterationsRun: number): string =>
+    JSON.stringify({
+      ...fixtureResult,
+      dps: { mean, stddev: 100, error, min: 0, max: 0 },
+      iterations_run: iterationsRun,
+    });
+
+  it('asks for more while the relative error is over the target', () => {
+    const engine = createFakeEngine();
+    expect(JSON.parse(engine.simNeedsMore(result(1000, 20, 2000), request()))).toEqual({
+      needs_more: true,
+    });
+  });
+
+  it('stops once the relative error is inside the target', () => {
+    const engine = createFakeEngine();
+    expect(JSON.parse(engine.simNeedsMore(result(1000, 4, 2000), request()))).toEqual({
+      needs_more: false,
+    });
+  });
+
+  it('stops at the ceiling however wide the band still is', () => {
+    const engine = createFakeEngine();
+    expect(JSON.parse(engine.simNeedsMore(result(1000, 99, 30_000), request()))).toEqual({
+      needs_more: false,
+    });
+  });
+
+  it('never asks for more on a fixed-count run', () => {
+    const engine = createFakeEngine();
+    expect(JSON.parse(engine.simNeedsMore(result(1000, 99, 500), request({ target_error: 0 })))).toEqual({
+      needs_more: false,
+    });
+  });
+
+  it('stops rather than dividing by a mean of zero', () => {
+    const engine = createFakeEngine();
+    expect(JSON.parse(engine.simNeedsMore(result(0, 0, 1000), request()))).toEqual({
+      needs_more: false,
+    });
+  });
+});
+
+describe('simValidate', () => {
+  it('passes the fixture request', () => {
+    const engine = createFakeEngine();
+    expect(JSON.parse(engine.simValidate(JSON.stringify(fixtureRequest)))).toEqual({
+      ok: true,
+      errors: [],
+    });
+  });
+
+  it('names every field it refuses, so the drawer can put each one beside its line', () => {
+    const engine = createFakeEngine();
+    const broken = { ...fixtureRequest, spec: '', iterations: 0 };
+    const answer = JSON.parse(engine.simValidate(JSON.stringify(broken))) as {
+      ok: boolean;
+      errors: { field: string; message: string }[];
+    };
+    expect(answer.ok).toBe(false);
+    expect(answer.errors.map((row) => row.field).sort()).toEqual(['iterations', 'spec']);
+    expect(answer.errors.every((row) => row.message.length > 0)).toBe(true);
+  });
+
+  it('answers the error envelope for a string that is not JSON at all', () => {
+    const engine = createFakeEngine();
+    expect(JSON.parse(engine.simValidate('{nope'))).toHaveProperty('error');
+  });
+});
+
+describe('simCount', () => {
+  const bulk = (candidates: number, cap = 400): string =>
+    JSON.stringify({
+      ...fixtureRequest,
+      bulk: {
+        mode: 'gear',
+        candidates: Array.from({ length: candidates }, (_, i) => ({
+          slot: 'head',
+          item_id: 16963 + i,
+          origin: 'bag',
+        })),
+        precision: 'normal',
+        cap,
+      },
+    });
+
+  it('counts the combinations a bulk request expands to', () => {
+    const engine = createFakeEngine();
+    expect(JSON.parse(engine.simCount(bulk(3)))).toEqual({ combinations: 3 });
+  });
+
+  it('answers cap_exceeded with both numbers rather than throwing them away', () => {
+    const engine = createFakeEngine();
+    expect(JSON.parse(engine.simCount(bulk(5, 4)))).toEqual({
+      error: 'cap_exceeded',
+      cap: 4,
+      combinations: 5,
+    });
+  });
+
+  it('counts a request with no bulk block as no combinations at all', () => {
+    const engine = createFakeEngine();
+    expect(JSON.parse(engine.simCount(JSON.stringify(fixtureRequest)))).toEqual({ combinations: 0 });
   });
 });

@@ -34,7 +34,44 @@ export interface EngineModule {
   /** Returns `{"aborted": boolean}` JSON -- false means no run was registered under that id. */
   simAbort(callbackId: string): string;
   onProgress(handler: ProgressHandler): void;
+  /**
+   * Whether a target-error run has another step to do. The decision is the engine's, not
+   * the page's: the page never computes a stopping rule over an estimate it did not pool.
+   * Returns `{"needs_more": boolean}`, or the `{"error": …}` envelope.
+   *
+   * Contract 10.2. The Go original is `api.NeedsMoreIterations`.
+   */
+  simNeedsMore(resultJSON: string, requestJSON: string): string;
+  /**
+   * `api.SimRequest.Validate`, for the request drawer (contract 10.2). Returns
+   * `{"ok": boolean, "errors": [{"field", "message"}]}`, or the `{"error": …}` envelope for
+   * a string that is not a request at all.
+   */
+  simValidate(requestJSON: string): string;
+  /**
+   * How many combinations a bulk request expands to, without allocating the requests
+   * (contract 10.2). Part B's live combination count and cap notice. A breach answers
+   * `{"error":"cap_exceeded","cap":n,"combinations":n}`, which is an answer and not a
+   * failure, so this one is NOT passed through `unwrapOrThrow`.
+   */
+  simCount(requestJSON: string): string;
 }
+
+export interface RequestValidationError {
+  /** The request's own JSON path, e.g. "iterations" or "encounter.targets". */
+  field: string;
+  /** The engine's own sentence, shown verbatim. */
+  message: string;
+}
+
+export interface RequestValidation {
+  ok: boolean;
+  errors: RequestValidationError[];
+}
+
+/** `simCount`'s two answers, both of them ordinary (contract 10.2). */
+export type CountAnswer =
+  { ok: true; combinations: number } | { ok: false; cap: number; combinations: number };
 
 interface GoGlue {
   new (): { importObject: WebAssembly.Imports; run(instance: WebAssembly.Instance): Promise<void> };
@@ -46,6 +83,9 @@ type WasmGlobals = {
   simSplit?: (requestJSON: string, n: number) => string;
   simCombine?: (resultsJSON: string) => string;
   simAbort?: (callbackId: string) => string;
+  simNeedsMore?: (resultJSON: string, requestJSON: string) => string;
+  simValidate?: (requestJSON: string) => string;
+  simCount?: (requestJSON: string) => string;
   simProgress?: ProgressHandler;
   /** Called by sim/cmd/wasm/main.go the moment the exports above and simEngineVersion are
    * set -- see loadWasmEngine below for why the page must define this before go.run(). */
@@ -103,6 +143,10 @@ async function loadWasmEngine(version: string): Promise<EngineModule> {
     simSplit: (requestJSON, n) => unwrapOrThrow(globals.simSplit!(requestJSON, n)),
     simCombine: (resultsJSON) => unwrapOrThrow(globals.simCombine!(resultsJSON)),
     simAbort: (callbackId) => unwrapOrThrow(globals.simAbort!(callbackId)),
+    simNeedsMore: (resultJSON, requestJSON) => unwrapOrThrow(globals.simNeedsMore!(resultJSON, requestJSON)),
+    simValidate: (requestJSON) => unwrapOrThrow(globals.simValidate!(requestJSON)),
+    // No unwrapOrThrow: `cap_exceeded` carries two numbers the page renders.
+    simCount: (requestJSON) => globals.simCount!(requestJSON),
     onProgress: (handler) => {
       globals.simProgress = handler;
     },
