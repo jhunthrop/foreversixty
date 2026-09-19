@@ -289,9 +289,10 @@ Binding for the other lanes:
 - The wasm exports exactly four functions, all taking and returning JSON strings, never bytes:
   - `simRun(requestJSON, callbackId)`: decode `SimRequest`, build the engine request, run it,
     adapt the result, return `SimResult` JSON. Reports progress through the callback.
-  - `simSplit(requestJSON, n)`: split by iterations for the worker pool, returning n request JSONs.
-  - `simCombine(resultsJSON)`: combine partial `SimResult`s into one.
-  - `simAbort(callbackId)`.
+  - `simSplit(requestJSON, n)`: split by iterations for the worker pool, returning ONE JSON string that encodes an array of n `SimRequest`s (never a JS array).
+  - `simCombine(resultsJSON)`: takes ONE JSON string encoding an array of partial `SimResult`s and returns one `SimResult` JSON.
+  - `simAbort(callbackId)`: returns `{"aborted": true|false}` as JSON (false = no run registered under that id).
+  - Every export takes and returns JSON strings; a call that fails returns `{"error": "..."}`. The shipped `sim/cmd/wasm/main.go` is the authority and the web's `engine.ts` and its fake mirror it exactly.
   The engine's own thirteen `js.Global().Set` entrypoints are an implementation detail behind
   these four; the web must not call them.
 
