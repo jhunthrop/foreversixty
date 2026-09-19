@@ -328,3 +328,83 @@ func TestTheFixtureCanSimulateAnAbort(t *testing.T) {
 // errorsIsBadInput is the test's own reader of the sentinel, so the
 // assertion reads as one line above.
 func errorsIsBadInput(err error) bool { return err != nil && isBadInput(err) }
+
+// A bulk run's progress lines carry the stage and the combination
+// counts, and the api lane shows them as "stage 2 of 3 - 31 of 96
+// combinations". A runner that dropped them would leave the page
+// watching an iteration count that restarts every combination.
+func TestNativeReportsStageProgress(t *testing.T) {
+	bin := stubBinary(t, `
+cat > /dev/null
+echo '{"completed":100,"total":400,"dps":900,"stage":1,"combos_done":1,"combos_total":4}' >&2
+echo '{"completed":200,"total":400,"dps":950,"stage":1,"combos_done":2,"combos_total":4}' >&2
+printf '%s' '{"dps":{"mean":950},"iterations_run":200}'
+`)
+	var seen []api.Progress
+	n := &Native{Binary: bin}
+	if _, err := n.RunStaged(context.Background(), aRequest(), func(p api.Progress) {
+		seen = append(seen, p)
+	}); err != nil {
+		t.Fatal(err)
+	}
+	if len(seen) != 2 {
+		t.Fatalf("saw %d progress ticks, want 2: %+v", len(seen), seen)
+	}
+	if seen[1].IterationsRun != 200 || seen[1].DPS.Mean != 950 {
+		t.Errorf("tick 1 = %+v", seen[1])
+	}
+	if seen[1].Stage != 1 || seen[1].CombosDone != 2 || seen[1].CombosTotal != 4 {
+		t.Errorf("tick 1 lost the stage fields: %+v", seen[1])
+	}
+}
+
+// A plain run's ticks carry no stage, and the fields stay zero rather
+// than being invented.
+func TestNativeReportsPlainProgress(t *testing.T) {
+	bin := stubBinary(t, `
+cat > /dev/null
+echo '{"completed":750,"total":3000,"dps":1010}' >&2
+printf '%s' '{"dps":{"mean":1010},"iterations_run":750}'
+`)
+	var seen []api.Progress
+	n := &Native{Binary: bin}
+	if _, err := n.RunStaged(context.Background(), aRequest(), func(p api.Progress) {
+		seen = append(seen, p)
+	}); err != nil {
+		t.Fatal(err)
+	}
+	if len(seen) != 1 || seen[0].Stage != 0 || seen[0].CombosTotal != 0 {
+		t.Errorf("a plain run's tick = %+v", seen)
+	}
+}
+
+// The old callback still exists and still works, because the api
+// module calls it and this module may merge first. A caller that
+// wants the stage fields type-asserts for StageRunner.
+func TestTheTwoCallbackShapesAgree(t *testing.T) {
+	bin := stubBinary(t, `
+cat > /dev/null
+echo '{"completed":200,"total":400,"dps":950,"stage":1,"combos_done":2,"combos_total":4}' >&2
+printf '%s' '{"dps":{"mean":950},"iterations_run":200}'
+`)
+	var done int
+	var mean float64
+	n := &Native{Binary: bin}
+	if _, err := n.Run(context.Background(), aRequest(), func(d int, m float64) {
+		done, mean = d, m
+	}); err != nil {
+		t.Fatal(err)
+	}
+	if done != 200 || mean != 950 {
+		t.Errorf("the plain callback saw %d, %v", done, mean)
+	}
+}
+
+// The interface assertions are the contract: every runner in this
+// package is both, so a caller can always ask for the wider callback.
+var (
+	_ Runner      = (*Native)(nil)
+	_ StageRunner = (*Native)(nil)
+	_ Runner      = (*Fixture)(nil)
+	_ StageRunner = (*Fixture)(nil)
+)
