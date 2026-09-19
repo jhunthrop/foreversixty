@@ -38,6 +38,7 @@
   import CharacterStrip from './CharacterStrip.svelte';
   import DetailsCard from './DetailsCard.svelte';
   import LandingState from './LandingState.svelte';
+  import ReportOptions from './ReportOptions.svelte';
   import RotationCard from './RotationCard.svelte';
   import RunControl from './RunControl.svelte';
   import SavedSim from './SavedSim.svelte';
@@ -628,31 +629,15 @@
           <!-- Design 5.4: the report title and the finish notification. The title feeds
                the save form, the notification and the saved link (openSaveForm reads
                store.reportTitle below); the notification checkbox only appears where the
-               browser actually has a Notification API to ask. -->
-          <div class="mx-[18px] flex flex-wrap items-end gap-3 md:mx-0">
-            <label class="flex min-w-0 flex-1 flex-col gap-1 md:max-w-[420px]">
-              <span class="label text-muted">{simCopy.reportTitleLabel}</span>
-              <input
-                type="text"
-                class="border-line-warm rounded-control bg-raised text-text h-11 w-full border px-3 text-[14px]"
-                value={store.reportTitle}
-                onchange={(event) => store.setReportTitle(event.currentTarget.value)}
-                data-testid="sim-report-title"
-              />
-            </label>
-            {#if notifier !== null}
-              <label class="flex min-h-11 items-center gap-2 text-[13px]">
-                <input
-                  type="checkbox"
-                  class="accent-gold h-5 w-5"
-                  checked={notifyWanted}
-                  onchange={(event) => void toggleNotify(event.currentTarget.checked)}
-                  data-testid="sim-notify"
-                />
-                <span class="text-muted">{simCopy.notifyLabel}</span>
-              </label>
-            {/if}
-          </div>
+               browser actually has a Notification API to ask (`notifier`, owned by this
+               file since the $effect above needs it in component scope). -->
+          <ReportOptions
+            title={store.reportTitle}
+            notifierAvailable={notifier !== null}
+            {notifyWanted}
+            ontitlechange={(value) => store.setReportTitle(value)}
+            onnotifychange={(wanted) => void toggleNotify(wanted)}
+          />
         {/if}
 
         <!-- The save form (Task 17): disabled until there is a result, an inline

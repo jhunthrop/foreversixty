@@ -42,7 +42,15 @@ export async function enableNotifications(notifier: Notifier | null): Promise<bo
   if (notifier === null) return false;
   if (notifier.permission === 'granted') return true;
   if (notifier.permission === 'denied') return false;
-  return (await notifier.request()) === 'granted';
+  try {
+    // A restrictive permissions policy (an embedding iframe, most often) can make
+    // `requestPermission()` reject or throw synchronously instead of resolving to
+    // 'denied' -- the same "must not take the page down with it" rule `show()` above
+    // follows. Either way reads as a refusal, never as a crash.
+    return (await notifier.request()) === 'granted';
+  } catch {
+    return false;
+  }
 }
 
 /** Shows one, if the player asked for them and the browser allows them. Returns whether it did. */

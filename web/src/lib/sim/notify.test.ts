@@ -36,6 +36,20 @@ describe('enableNotifications', () => {
   it('is false where the browser has no notifications at all', async () => {
     expect(await enableNotifications(null)).toBe(false);
   });
+
+  // Fix round 1, Finding 2 (Minor): a restrictive permissions policy (an embedding iframe,
+  // most often) can make `requestPermission()` reject instead of resolving to 'denied'.
+  // That must read as a refusal, the same as `show()`'s own guard against a Notification
+  // constructor that throws, never as an unhandled rejection surfacing through the
+  // checkbox's `void toggleNotify(...)`.
+  it('is false, not a throw, where asking itself fails', async () => {
+    const notifier: Notifier = {
+      permission: 'default',
+      request: vi.fn().mockRejectedValue(new Error('permissions policy')),
+      show: () => {},
+    };
+    await expect(enableNotifications(notifier)).resolves.toBe(false);
+  });
 });
 
 describe('notifyFinished', () => {

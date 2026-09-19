@@ -200,6 +200,15 @@ export function createSimStore(init: SimStoreInit) {
   }
 
   /**
+   * The one place the fallback-title rule lives: whatever the player typed, trimmed, or
+   * the settings clause when that is blank. `reportTitle` and `save()` both call this
+   * rather than each spelling the rule out -- fix round 1, Finding 1.
+   */
+  function fallbackTitle(): string {
+    return typedTitle.trim() === '' ? settingsLabel(settings) : typedTitle;
+  }
+
+  /**
    * Puts the figure back to the last completed result after a cancelled run, rather than
    * leaving it at whatever the aborted run's own progress happened to report last -- which
    * can be `EMPTY_ESTIMATE`, since `run.ts`'s `execute()` reports that once, synchronously,
@@ -349,7 +358,7 @@ export function createSimStore(init: SimStoreInit) {
      * disagree.
      */
     get reportTitle() {
-      return typedTitle.trim() === '' ? settingsLabel(settings) : typedTitle;
+      return fallbackTitle();
     },
     /** `error / mean` of the figure on screen, for the progress line and the details card. */
     get relativeError() {
@@ -673,15 +682,18 @@ export function createSimStore(init: SimStoreInit) {
 
     /**
      * Saves the last finished result, optionally under a title -- the contract's `sims.
-     * title` column, pre-filled by the caller with `settingsLabel(store.settings)` and
-     * editable before the press. Null on failure, without touching `message`: a save
-     * failure is the save form's own concern (`simCopy.saveFailed` beside its button, per
-     * the design), not the run control's -- setting the shared field here would raise a
-     * second, unrelated alert next to a run that did not fail.
+     * title` column. An omitted title falls back to `reportTitle` (the same rule the save
+     * form's own pre-fill and the finish notification use, design 5.4), so a caller that
+     * saves without one still names the report rather than leaving it untitled; a caller
+     * that does pass one (the save form, after the player has edited the field) wins.
+     * Null on failure, without touching `message`: a save failure is the save form's own
+     * concern (`simCopy.saveFailed` beside its button, per the design), not the run
+     * control's -- setting the shared field here would raise a second, unrelated alert
+     * next to a run that did not fail.
      */
     async save(title?: string): Promise<string | null> {
       if (result === null) return null;
-      const chosen = title ?? (typedTitle.trim() === '' ? settingsLabel(settings) : typedTitle);
+      const chosen = title ?? fallbackTitle();
       try {
         return await saveSim(result, init.apiBase, chosen);
       } catch {
