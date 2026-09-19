@@ -17,6 +17,7 @@ import json
 from pathlib import Path
 
 from pipeline.models import SpecRecord
+from pipeline.simdb.statmap import STAT_IDS
 
 ROLES = frozenset({"dps", "tank", "healer"})
 
@@ -47,6 +48,12 @@ def load_specs(curated_dir: Path = Path("curated")) -> list[SpecRecord]:
             raise SpecError(
                 f"spec {record.spec} has role {record.role!r}; use one of {sorted(ROLES)}"
             )
+        if record.reference_stat not in STAT_IDS:
+            raise SpecError(
+                f"spec {record.spec} has reference_stat {record.reference_stat!r}; "
+                f"contract 10.1 A7's vocabulary is the engine's Stat enum in snake "
+                f"case -- use one of {sorted(STAT_IDS)}"
+            )
         if record.spec in seen:
             raise SpecError(f"specs.json names {record.spec} twice")
         seen.add(record.spec)
@@ -57,7 +64,8 @@ def load_specs(curated_dir: Path = Path("curated")) -> list[SpecRecord]:
 def render_go(specs: list[SpecRecord]) -> str:
     rows = "\n".join(
         f'\t{{Spec: "{s.spec}", ClassSlug: "{s.class_slug}", SpecSlug: "{s.spec_slug}", '
-        f'Name: "{s.name}", Role: "{s.role}", TreeIndex: {s.tree_index}}},'
+        f'Name: "{s.name}", Role: "{s.role}", TreeIndex: {s.tree_index}, '
+        f'ReferenceStat: "{s.reference_stat}"}},'
         for s in specs
     )
     return f"""{GENERATED}
@@ -69,12 +77,13 @@ package specs
 // Spec is one playable specialisation. Spec is the spec key the whole site
 // keys on, for example "warrior-fury".
 type Spec struct {{
-\tSpec      string `json:"spec"`
-\tClassSlug string `json:"class_slug"`
-\tSpecSlug  string `json:"spec_slug"`
-\tName      string `json:"name"`
-\tRole      string `json:"role"`
-\tTreeIndex int    `json:"tree_index"`
+\tSpec          string `json:"spec"`
+\tClassSlug     string `json:"class_slug"`
+\tSpecSlug      string `json:"spec_slug"`
+\tName          string `json:"name"`
+\tRole          string `json:"role"`
+\tTreeIndex     int    `json:"tree_index"`
+\tReferenceStat string `json:"reference_stat"`
 }}
 
 // All is every spec, ordered by class slug then talent tree position.
@@ -102,6 +111,7 @@ def render_ts(specs: list[SpecRecord]) -> str:
         f"    name: '{s.name}',\n"
         f"    role: '{s.role}',\n"
         f"    tree_index: {s.tree_index},\n"
+        f"    reference_stat: '{s.reference_stat}',\n"
         f"  }},"
         for s in specs
     )
@@ -117,6 +127,7 @@ export interface Spec {{
   name: string;
   role: SpecRole;
   tree_index: number;
+  reference_stat: string;
 }}
 
 /** Every spec, ordered by class slug then talent tree position. */

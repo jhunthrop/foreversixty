@@ -64,6 +64,14 @@ def build_parser() -> argparse.ArgumentParser:
     sd = sub.add_parser("simdb", help="build the engine's SimDatabase for a build")
     sd.add_argument("--build", required=True)
 
+    lt = sub.add_parser("loot", help="build the Droptimizer and Top Gear data for a build")
+    lt.add_argument("--build", required=True)
+    lt.add_argument(
+        "--engine",
+        required=True,
+        help="path to the wowsims-forever checkout, e.g. $FOREVER_ENGINE_PATH",
+    )
+
     sp = sub.add_parser("specs", help="generate the Go and TypeScript spec lists")
     sp.add_argument("--go", default="../sim/specs/specs.go")
     sp.add_argument("--ts", default="../web/src/lib/sim/specs.ts")
@@ -71,6 +79,14 @@ def build_parser() -> argparse.ArgumentParser:
         "--check",
         action="store_true",
         help="write nothing; exit non-zero if a generated file has drifted",
+    )
+
+    ph = sub.add_parser("phases", help="emit the phase calendar for the web")
+    ph.add_argument("--web", default="../web/src/data/phases.json")
+    ph.add_argument(
+        "--check",
+        action="store_true",
+        help="write nothing; exit non-zero if the emitted file has drifted",
     )
     return p
 
@@ -127,6 +143,13 @@ def main(argv: list[str] | None = None) -> int:
         from pipeline.simdb import write_sim_database
 
         print(write_sim_database(args.build))
+    elif args.command == "loot":
+        from pathlib import Path
+
+        from pipeline.loot import write_loot_files
+
+        for path in write_loot_files(args.build, Path(args.engine)):
+            print(path)
     elif args.command == "simproto":
         from pathlib import Path
 
@@ -147,6 +170,20 @@ def main(argv: list[str] | None = None) -> int:
             return 1 if stale else 0
         for path in write_specs(Path("curated"), Path(args.go), Path(args.ts)):
             print(path)
+    elif args.command == "phases":
+        from pathlib import Path
+
+        from pipeline.phases import check_phases, write_phases
+
+        if args.check:
+            if check_phases(Path("curated"), Path(args.web)):
+                logging.getLogger("pipeline").error(
+                    "%s does not match curated/phases.json; run `python -m pipeline phases`",
+                    args.web,
+                )
+                return 1
+            return 0
+        print(write_phases(Path("curated"), Path(args.web)))
     return 0
 
 

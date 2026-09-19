@@ -1,0 +1,9 @@
+{
+  "sources": [
+    { "label": "A test source", "url": "https://example.invalid/buffs", "kind": "site" }
+  ],
+  "notes": "One id the name join cannot reach.",
+  "entries": {
+    "curse_of_elements": { "spell_id": 1459, "name": "Curse of the Elements" }
+  }
+}

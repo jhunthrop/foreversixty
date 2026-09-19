@@ -1,0 +1,6 @@
+[
+  { "name": "pre-beta", "start": "0001-01-01T00:00:00Z" },
+  { "name": "beta", "start": "2026-09-17T00:00:00Z" },
+  { "name": "launch", "start": "2026-11-04T23:00:00Z" },
+  { "name": "raids-1", "start": "2026-12-09T00:00:00Z" }
+]

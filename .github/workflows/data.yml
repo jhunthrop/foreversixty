@@ -3,9 +3,9 @@ name: data
 on:
   push:
     branches: [main]
-    paths: ['data/**', 'sim/specs/**', 'web/src/lib/sim/specs.ts', '.github/workflows/data.yml']
+    paths: ['data/**', 'sim/specs/**', 'sim/enginever/version.go', 'sim/request/IDS.md', 'web/src/lib/sim/specs.ts', 'web/src/data/phases.json', '.github/workflows/data.yml']
   pull_request:
-    paths: ['data/**', 'sim/specs/**', 'web/src/lib/sim/specs.ts', '.github/workflows/data.yml']
+    paths: ['data/**', 'sim/specs/**', 'sim/enginever/version.go', 'sim/request/IDS.md', 'web/src/lib/sim/specs.ts', 'web/src/data/phases.json', '.github/workflows/data.yml']
   workflow_dispatch:
     inputs:
       product: { description: 'wago.tools product key', required: true, default: 'wow_classic_era' }
@@ -26,6 +26,11 @@ jobs:
       # to either generated file, or to the curated list, that was never
       # regenerated.
       - run: uv run python -m pipeline specs --check
+      # phases, like specs, is not a per-build emitter, so the fetch job
+      # never runs it. This is the gate that web/src/data/phases.json was
+      # re-emitted after curated/phases.json moved -- and that nobody
+      # edited the generated copy by hand.
+      - run: uv run python -m pipeline phases --check
       - run: uv run pytest
   fetch:
     if: github.event_name == 'workflow_dispatch'
@@ -59,6 +64,29 @@ jobs:
       # Re-run the offline normalize so manifest.json also covers the icons and tree art
       # the steps above just wrote.
       - run: uv run python -m pipeline normalize --build "$BUILD"
+      # loot.json, enchants.json and suffixes.json come out of the engine
+      # fork's own item database, which is not in this repository: nothing
+      # in a DB2 export says which boss drops an item. The fork is cloned
+      # at the PINNED sha, the way sim.yml's `rotations` job does it
+      # (actions/checkout treats a short sha as a branch name and fails to
+      # fetch it), so the committed files name one engine build.
+      - name: the pinned engine sha
+        id: pin
+        working-directory: .
+        run: |
+          sha=$(sed -n 's/.*Version = "\(.*\)"/\1/p' sim/enginever/version.go)
+          test -n "$sha" || { echo "sim/enginever/version.go has no Version"; exit 1; }
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+      - name: the engine fork at the pin
+        working-directory: .
+        run: |
+          git clone --quiet --filter=blob:none https://github.com/jhunthrop/wowsims-forever .engine
+          git -C .engine checkout --quiet "${{ steps.pin.outputs.sha }}"
+      # Before simdb: it writes items.json's `suffixes` and
+      # `faction_restriction`, which pipeline/simdb/items.py reads into
+      # SimItem. Both refresh the same manifest, and the diff step at the
+      # end sees the finished directory either way.
+      - run: uv run python -m pipeline loot --build "$BUILD" --engine ../.engine
       # The simulator's outputs. All three read the same raw inputs normalize
       # does and all three refresh manifest.json, so they run after the
       # normalize that covers icons and tree art rather than before it.

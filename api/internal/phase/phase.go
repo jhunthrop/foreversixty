@@ -1,14 +1,13 @@
 // Package phase is the content phase a fight belongs to, which is the
 // bracket rankings are grouped by.
 //
-// The boundaries are the site's own dates data
-// (web/src/data/dates.json), copied here as a table rather than read at
-// runtime: the API does not ship the site's source, the dates are four
-// fixed instants, and a ranking bracket that could change under a
-// running deployment would silently re-bucket stored rows.
-//
-// When a date moves or a phase is added, change this table and the
-// site's dates.json together.
+// The boundaries are data/curated/phases.json, copied here as a table
+// rather than read at runtime: the API does not ship the site's source,
+// the dates are four fixed instants, and a ranking bracket that could
+// change under a running deployment would silently re-bucket stored
+// rows. The API lane's phase_test.go is meant to hold this table to that
+// file, so the two cannot drift; `python -m pipeline phases` emits the
+// web's copy from the same source.
 package phase
 
 import "time"

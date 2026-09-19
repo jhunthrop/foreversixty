@@ -4,6 +4,7 @@ from pathlib import Path
 import pytest
 
 from pipeline.manifest import newest_build
+from pipeline.simdb.statmap import STAT_IDS
 from pipeline.specs import (
     ROLES,
     SpecError,
@@ -88,6 +89,7 @@ def test_a_duplicate_spec_key_is_rejected(tmp_path: Path):
         "name": "Fury",
         "role": "dps",
         "tree_index": 1,
+        "reference_stat": "attack_power",
     }
     (tmp_path / "specs.json").write_text(json.dumps([entry, entry]))
     with pytest.raises(SpecError, match="warrior-fury"):
@@ -105,6 +107,7 @@ def test_a_key_that_is_not_its_two_slugs_is_rejected(tmp_path: Path):
                     "name": "Fury",
                     "role": "dps",
                     "tree_index": 1,
+                    "reference_stat": "attack_power",
                 }
             ]
         )
@@ -124,6 +127,7 @@ def test_an_unknown_role_is_rejected(tmp_path: Path):
                     "name": "Fury",
                     "role": "dancer",
                     "tree_index": 1,
+                    "reference_stat": "attack_power",
                 }
             ]
         )
@@ -172,3 +176,81 @@ def test_check_specs_names_the_file_that_drifted(tmp_path: Path):
     assert check_specs(CURATED, go_path, ts_path) == [ts_path]
     go_path.unlink()
     assert check_specs(CURATED, go_path, ts_path) == [go_path, ts_path]
+
+
+#: The parity contract's section 1.4 default per spec: attack power for
+#: melee and hunters, spell power for casters. Transcribed here from the
+#: plan's table rather than imported, so the curated file is checked
+#: against the decision and not against itself.
+REFERENCE_BY_SPEC = {
+    "druid-balance": "spell_power",
+    "druid-feral": "attack_power",
+    "druid-restoration": "spell_power",
+    "hunter-beast-mastery": "attack_power",
+    "hunter-marksmanship": "attack_power",
+    "hunter-survival": "attack_power",
+    "mage-arcane": "spell_power",
+    "mage-fire": "spell_power",
+    "mage-frost": "spell_power",
+    "paladin-holy": "spell_power",
+    "paladin-protection": "attack_power",
+    "paladin-retribution": "attack_power",
+    "priest-discipline": "spell_power",
+    "priest-holy": "spell_power",
+    "priest-shadow": "spell_power",
+    "rogue-assassination": "attack_power",
+    "rogue-combat": "attack_power",
+    "rogue-subtlety": "attack_power",
+    "shaman-elemental": "spell_power",
+    "shaman-enhancement": "attack_power",
+    "shaman-restoration": "spell_power",
+    "warlock-affliction": "spell_power",
+    "warlock-demonology": "spell_power",
+    "warlock-destruction": "spell_power",
+    "warrior-arms": "attack_power",
+    "warrior-fury": "attack_power",
+    "warrior-protection": "attack_power",
+}
+
+
+def test_every_spec_names_the_reference_stat_the_contract_gives_it():
+    assert {record.spec: record.reference_stat for record in specs()} == REFERENCE_BY_SPEC
+
+
+def test_the_stat_vocabulary_is_the_proto_enum_in_snake_case():
+    """Contract 10.1 A7. Spot values, plus the shape of the whole set, so a
+    renamed or added engine stat shows up here and not in a sim that
+    silently normalises to nothing."""
+    assert "spell_power" in STAT_IDS
+    assert "attack_power" in STAT_IDS
+    assert "spell_haste" in STAT_IDS and "melee_haste" in STAT_IDS
+    assert "haste" not in STAT_IDS
+    assert "mp5" in STAT_IDS
+    assert len(STAT_IDS) == 41
+    assert all(name == name.lower() for name in STAT_IDS)
+
+
+def test_a_reference_stat_the_engine_has_no_stat_for_is_refused(tmp_path):
+    rows = [
+        {
+            "spec": "warrior-arms",
+            "class_slug": "warrior",
+            "spec_slug": "arms",
+            "name": "Arms",
+            "role": "dps",
+            "tree_index": 0,
+            "reference_stat": "swagger",
+        }
+    ]
+    (tmp_path / "specs.json").write_text(json.dumps(rows), encoding="utf-8")
+    with pytest.raises(SpecError, match="reference_stat"):
+        load_specs(tmp_path)
+
+
+def test_both_generated_files_carry_the_reference_stat():
+    records = specs()
+    go, ts = render_go(records), render_ts(records)
+    assert 'ReferenceStat string `json:"reference_stat"`' in go
+    assert 'ReferenceStat: "attack_power"' in go
+    assert "reference_stat: string;" in ts
+    assert "reference_stat: 'spell_power'," in ts

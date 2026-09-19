@@ -28,7 +28,14 @@ def _read(curated_dir: Path, name: str) -> list[dict]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def _sources(raw: list[dict], where: str) -> list[Source]:
+def parse_sources(raw: list[dict], where: str) -> list[Source]:
+    """The provenance every curated fact carries, validated.
+
+    Public because `pipeline/loot/overlay.py` states the same rule about
+    the same vocabulary, and two copies of "at least one source, from this
+    list of kinds, with a non-empty label and url" is two things to keep
+    right.
+    """
     if not raw:
         raise CuratedError(f"{where} needs at least one source")
     sources = []
@@ -50,7 +57,7 @@ def _changes(raw: list[dict], where: str) -> list[ForeverChange]:
         text = entry.get("text", "").strip()
         if not text:
             raise CuratedError(f"{where} change {index} has no text")
-        sources = _sources(entry.get("sources", []), f"{where} change {index}")
+        sources = parse_sources(entry.get("sources", []), f"{where} change {index}")
         changes.append(ForeverChange(text=text, sources=sources))
     return changes
 
@@ -165,6 +172,6 @@ def _build_combos(
         seen.add((race_id, class_id))
         new_in_forever = bool(entry.get("new_in_forever", False))
         if new_in_forever:
-            _sources(entry.get("sources", []), where)
+            parse_sources(entry.get("sources", []), where)
         combos.append(Combo(race_id=race_id, class_id=class_id, new_in_forever=new_in_forever))
     return sorted(combos, key=lambda c: (c.race_id, c.class_id))

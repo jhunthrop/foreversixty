@@ -1,0 +1,74 @@
+{
+  "items": [
+    { "id": 100, "name": "Raid Boss Drop", "icon": "inv_a", "type": 5, "ilvl": 76, "phase": 1, "quality": 4,
+      "factionRestriction": 1,
+      "sources": [{ "drop": { "difficulty": 1, "npcId": 900, "zoneId": 2717 } }] },
+    { "id": 101, "name": "Raid Trash Drop", "icon": "inv_b", "type": 6, "ilvl": 66, "phase": 1, "quality": 3,
+      "sources": [{ "drop": { "difficulty": 1, "zoneId": 2717, "otherName": "Trash" } }] },
+    { "id": 102, "name": "Nameless Boss Drop", "icon": "inv_c", "type": 7, "ilvl": 76, "phase": 1, "quality": 4,
+      "sources": [{ "drop": { "difficulty": 1, "npcId": 901, "zoneId": 2717 } }] },
+    { "id": 103, "name": "Dungeon Boss Drop", "icon": "inv_d", "type": 8, "ilvl": 50, "phase": 1, "quality": 3,
+      "sources": [{ "drop": { "difficulty": 1, "npcId": 902, "zoneId": 1581 } }] },
+    { "id": 104, "name": "World Boss Drop", "icon": "inv_e", "type": 2, "ilvl": 74, "phase": 1, "quality": 4,
+      "sources": [{ "drop": { "difficulty": 1, "npcId": 903, "zoneId": 16 } }] },
+    { "id": 105, "name": "Roadside Mob Drop", "icon": "inv_f", "type": 9, "ilvl": 30, "phase": 1, "quality": 2,
+      "sources": [{ "drop": { "difficulty": 1, "npcId": 904, "zoneId": 16 } }] },
+    { "id": 106, "name": "Crafted Plate", "icon": "inv_g", "type": 5, "ilvl": 60, "phase": 1, "quality": 3,
+      "sources": [{ "crafted": { "profession": 2, "spellId": 9999 } }] },
+    { "id": 107, "name": "Exalted Cloak", "icon": "inv_h", "type": 4, "ilvl": 68, "phase": 1, "quality": 4,
+      "sources": [{ "rep": { "repFactionId": 529, "repLevel": 8, "playerFaction": 1 } }] },
+    { "id": 108, "name": "Quest Ring", "icon": "inv_i", "type": 11, "ilvl": 40, "phase": 1, "quality": 2,
+      "sources": [{ "quest": { "id": 42, "name": "A Small Errand" } }] },
+    { "id": 109, "name": "Vendor Trash", "icon": "inv_j", "type": 12, "ilvl": 20, "phase": 1, "quality": 1,
+      "sources": [{ "soldBy": { "npcId": 905, "npcName": "A Vendor", "zoneId": 16 } }] },
+    { "id": 110, "name": "Suffixed Sword", "icon": "inv_k", "type": 13, "ilvl": 45, "phase": 1, "quality": 2,
+      "randomSuffixOptions": [5, 6] },
+    { "id": 112, "name": "Two Sources", "icon": "inv_m", "type": 1, "ilvl": 70, "phase": 1, "quality": 4,
+      "sources": [
+        { "drop": { "difficulty": 1, "npcId": 900, "zoneId": 2717 } },
+        { "quest": { "id": 43, "name": "Another Errand" } }
+      ] },
+    { "id": 113, "name": "Re-itemised Away", "icon": "inv_n", "type": 5, "ilvl": 76, "phase": 1, "quality": 4,
+      "sources": [{ "drop": { "difficulty": 1, "npcId": 906, "zoneId": 2717 } }] }
+  ],
+  "randomSuffixes": [
+    { "id": 5, "name": "of Intellect", "stats": [0, 0, 0, 4] },
+    { "id": 6, "name": "of Strength", "stats": [7] }
+  ],
+  "enchants": [
+    { "effectId": 41, "spellId": 7420, "name": "Enchant Chest - Minor Health", "type": 5,
+      "stats": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12],
+      "quality": 1, "phase": 1 },
+    { "effectId": 41, "spellId": 7418, "name": "Enchant Bracer - Minor Health", "type": 6,
+      "stats": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12],
+      "quality": 1 },
+    { "effectId": 15, "itemId": 2304, "spellId": 2831, "name": "Light Armor Kit", "type": 5,
+      "extraTypes": [9, 7, 10], "enchantType": 3,
+      "stats": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8],
+      "quality": 1, "classAllowlist": [9, 4] },
+    { "effectId": 241, "spellId": 7745, "name": "Enchant 2H Weapon - Minor Impact", "type": 13,
+      "enchantType": 1,
+      "stats": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12],
+      "quality": 1, "phase": 2 }
+  ],
+  "zones": [
+    { "id": 2717, "name": "Molten Core", "expansion": 1 },
+    { "id": 1581, "name": "The Deadmines", "expansion": 1 }
+  ],
+  "npcs": [
+    { "id": 900, "name": "Big Boss", "zoneId": 2717 },
+    { "id": 902, "name": "Dungeon Boss", "zoneId": 1581 },
+    { "id": 903, "name": "Azuregos" },
+    { "id": 906, "name": "Re-itemised Boss", "zoneId": 2717 }
+  ],
+  "factions": [{ "id": 529, "name": "Argent Dawn", "expansion": 1 }],
+  "itemIcons": [{ "id": 2304, "name": "Light Armor Kit", "icon": "inv_misc_armorkit_17" }],
+  "spellIcons": [
+    { "id": 7420, "name": "Enchant Chest - Minor Health", "icon": "spell_holy_chest" },
+    { "id": 7418, "name": "Enchant Bracer - Minor Health", "icon": "spell_holy_bracer" },
+    { "id": 7745, "name": "Enchant 2H Weapon - Minor Impact", "icon": "spell_fire_impact" },
+    { "id": 24800, "name": "Grilled Squid", "icon": "inv_misc_fish_13" },
+    { "id": 7845, "name": "Elixir of Fire Power", "icon": "inv_potion_60" }
+  ],
+  "encounters": []
+}

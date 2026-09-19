@@ -1,0 +1,33 @@
+{
+  "sources": [
+    {
+      "label": "Blizzard, Deep Dive panel recap",
+      "url": "https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap",
+      "kind": "blizzard"
+    },
+    {
+      "label": "Blizzard, What's Next panel recap",
+      "url": "https://news.blizzard.com/en-gb/article/24303862/world-of-warcraft-forever-whats-next-panel-recap",
+      "kind": "blizzard"
+    }
+  ],
+  "notes": "When each raid opens, and what its loot table is missing. Nothing raids at launch on 4 November; the first tier opens on 9 December and is Barrow Deeps, Hyjal Summit and Onyxia. Of those three only Onyxia's Lair exists as a zone the fork database names, and the build filter removes it outright because all sixteen of its fork-database drops are gone from the 1.60 client, so it is added back here with its announced phase and an empty item list: the raid is real and dated, its Forever loot table is not known. Barrow Deeps and Hyjal Summit are not added at all -- the client has candidate maps (2817 Starfall Barrow Den, 2832 Nightmare Grove, 2995 Hyjal Crater) but nothing sourced maps the announced names onto those ids, and neither database gives them an item. The six Era raids the generator does emit have no announced date, so they carry opens 'later' rather than nothing, which would read as open from launch. The re-itemisation gap per raid, measured on the pinned fork against build 1.60.1.69893 as items kept of items the fork's sources name: Ahn'Qiraj 68 of 111, Blackwing Lair 21 of 132, Molten Core 10 of 139, Naxxramas 45 of 111, Onyxia's Lair 0 of 16, Ruins of Ahn'Qiraj 5 of 61, Zul'Gurub 2 of 98. Overall 1,809 of the 4,316 ids the fork's sources name are absent from this client's item table: Forever has re-itemised the raid tier -- Bonereaver's Edge 17076, Band of Accuria 17063 and every tier-1 and tier-2 set piece are gone -- and states no replacement's source anywhere, so raid Droptimizer stays honest and thin until replacements are curated here.",
+  "add": [
+    {
+      "id": "raid:onyxias-lair",
+      "kind": "raid",
+      "name": "Onyxia's Lair",
+      "zone_id": 2159,
+      "opens": "raids-1",
+      "items": []
+    }
+  ],
+  "replace": [
+    { "id": "raid:ahnqiraj", "opens": "later" },
+    { "id": "raid:blackwing-lair", "opens": "later" },
+    { "id": "raid:molten-core", "opens": "later" },
+    { "id": "raid:naxxramas", "opens": "later" },
+    { "id": "raid:ruins-of-ahnqiraj", "opens": "later" },
+    { "id": "raid:zulgurub", "opens": "later" }
+  ]
+}

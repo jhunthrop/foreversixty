@@ -28,6 +28,16 @@ class Item(BaseModel):
     class_id: int
     subclass_id: int
     inventory_type: int
+    #: The random suffixes this item rolls, from the engine fork's
+    #: `randomSuffixOptions` (parity contract 6.3). Empty for an item that
+    #: rolls none, and for every row until `python -m pipeline loot` has run
+    #: for the build -- `normalize` has no fork database to read.
+    suffixes: list[int] = []
+    #: "alliance_only", "horde_only", or "" for no restriction, from the
+    #: fork's `factionRestriction` (contract 10.3's `SimItem` field). The
+    #: client states none of this on build 1.60.1.69893, so like `suffixes`
+    #: it is empty until `loot` has run.
+    faction_restriction: str = ""
 
 
 class Spell(BaseModel):
@@ -152,6 +162,118 @@ class ItemSetRecord(BaseModel):
     bonuses: list[ItemSetBonus]
 
 
+class SuffixRecord(BaseModel):
+    id: int
+    name: str
+    stats: dict[str, float]
+
+
+class EnchantRecord(BaseModel):
+    #: The effect id. NOT unique: the fork's own table repeats an effect
+    #: across the slots it can go in (19 of its 150 ids), which is why
+    #: `spell_id` and `item_id` are here too.
+    id: int
+    name: str
+    icon: str
+    #: The planner slot names this enchant can be applied in.
+    slots: list[str]
+    #: The shape of item it needs: normal, two_hand, shield, kit or staff.
+    item_types: list[str]
+    #: Class slugs allowed to use it. Empty means no restriction.
+    classes: list[str]
+    stats: dict[str, float]
+    phase: int
+    #: Appended after the contract's keys, for telling two rows with the
+    #: same effect id apart. 0 where the fork states neither.
+    spell_id: int
+    item_id: int
+
+
+class LootBoss(BaseModel):
+    id: str
+    #: Empty where the fork database names no NPC for the id. 35 of the 67
+    #: raid bosses and 39 of the 230 dungeon bosses on the pinned fork are
+    #: in that state; an invented name would be worse than a blank one.
+    name: str
+    npc_id: int
+    items: list[int]
+
+
+class LootSource(BaseModel):
+    """One place loot comes from (parity contract 6.1).
+
+    Every key after `name` is optional and omitted when it does not apply
+    to the kind, which is what `write_document`'s `exclude_none` is for: a
+    crafted source carries `profession` and `items`, a raid carries
+    `zone_id`, `bosses` and `trash`.
+    """
+
+    id: str
+    kind: str
+    name: str
+    zone_id: int | None = None
+    #: A phase name from api/internal/phase. None means open from launch.
+    #: Never set by the generator -- only by a curated overlay, because the
+    #: databases state no dates.
+    opens: str | None = None
+    profession: str | None = None
+    faction_id: int | None = None
+    standing: str | None = None
+    rank: int | None = None
+    bosses: list[LootBoss] | None = None
+    trash: list[int] | None = None
+    items: list[int] | None = None
+
+
+class LootFile(BaseModel):
+    sources: list[LootSource]
+
+
+class LootSourcePatch(BaseModel):
+    """Contract 10.4's `replace` entry: a loot source with every key but
+    `id` optional, so gating a raid is one line instead of a restatement
+    of its eleven bosses. Only the keys the file actually writes are
+    applied -- `model_dump(exclude_unset=True)` is what tells "absent"
+    from "explicitly null".
+
+    `kind` is accepted but may not change: a source's kind decides the
+    shape of its id, which candidates carry as `drop:<source id>`, so
+    changing it would orphan every reference rather than edit one.
+    """
+
+    id: str
+    kind: str | None = None
+    name: str | None = None
+    zone_id: int | None = None
+    opens: str | None = None
+    profession: str | None = None
+    faction_id: int | None = None
+    standing: str | None = None
+    rank: int | None = None
+    bosses: list[LootBoss] | None = None
+    trash: list[int] | None = None
+    items: list[int] | None = None
+
+    model_config = {"extra": "forbid"}
+
+
+class LootOverlay(BaseModel):
+    """One `data/curated/loot/*.json`, in contract 10.4's shape.
+
+    `sources` and `notes` are the curated provenance every hand-maintained
+    fact here carries; `add`, `replace` and `remove` are the three
+    operations, as flat arrays.
+    """
+
+    sources: list[Source] = []
+    notes: str = ""
+    add: list[LootSource] = []
+    replace: list[LootSourcePatch] = []
+    remove: list[str] = []
+
+    model_config = {"extra": "forbid"}
+
+
 class SpecRecord(BaseModel):
     spec: str
     class_slug: str
@@ -159,6 +281,18 @@ class SpecRecord(BaseModel):
     name: str
     role: str
     tree_index: int
+    #: The stat `StatWeights` normalises to 1.0 for this spec (parity
+    #: contract 1.4). Appended last, like `TalentEntry.spell_id`: the
+    #: emitted key order is the generated files' only compatibility
+    #: surface, so new fields go on the end and existing ones never move.
+    reference_stat: str
+
+
+class PhaseBoundary(BaseModel):
+    """One content phase and the instant it opens (parity contract 10.4)."""
+
+    name: str
+    start: str
 
 
 class AplDocument(BaseModel):
@@ -220,3 +354,29 @@ class ConsumableRecord(BaseModel):
     quality: int
     required_level: int
     spell_ids: list[int]
+
+
+class SimBuffEntry(BaseModel):
+    name: str
+    icon: str
+
+
+class SimBuffsFile(BaseModel):
+    """`simbuffs.json` (parity contract 10.4): the display name and icon
+    for every id `sim/request/IDS.md` lets a request name, so the settings
+    bar's full buff panel can render one."""
+
+    entries: dict[str, SimBuffEntry]
+
+
+class BuffOverride(BaseModel):
+    """A curated IDS.md entry: the display name, and the client row whose
+    icon it takes. Exactly one of the two ids. An explicit icon is not
+    accepted -- art the build does not ship would reach the site as a
+    404, and the point of naming a row is that the build resolves it."""
+
+    name: str
+    item_id: int = 0
+    spell_id: int = 0
+
+    model_config = {"extra": "forbid"}

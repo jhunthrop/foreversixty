@@ -1,0 +1,664 @@
+{
+  "entries": {
+    "alcohol_gordok_green_grog": {
+      "name": "Gordok Green Grog",
+      "icon": "inv_drink_03"
+    },
+    "alcohol_kreegs_stout_beatdown": {
+      "name": "Kreeg's Stout Beatdown",
+      "icon": "inv_drink_05"
+    },
+    "alcohol_rumsey_rum_black_label": {
+      "name": "Rumsey Rum Black Label",
+      "icon": "inv_drink_04"
+    },
+    "alcohol_rumsey_rum_dark": {
+      "name": "Rumsey Rum Dark",
+      "icon": "inv_drink_04"
+    },
+    "alcohol_rumsey_rum_light": {
+      "name": "Rumsey Rum Light",
+      "icon": "inv_drink_08"
+    },
+    "arcane_brilliance": {
+      "name": "Arcane Brilliance",
+      "icon": "spell_holy_arcaneintellect"
+    },
+    "arcane_elixir": {
+      "name": "Arcane Elixir",
+      "icon": "inv_potion_30"
+    },
+    "aspect_of_the_wild": {
+      "name": "Aspect of the Wild",
+      "icon": "spell_nature_protectionformnature"
+    },
+    "atiesh_druid": {
+      "name": "Atiesh (Druid)",
+      "icon": "inv_staff_medivh"
+    },
+    "atiesh_mage": {
+      "name": "Atiesh (Mage)",
+      "icon": "inv_staff_medivh"
+    },
+    "atiesh_priest": {
+      "name": "Atiesh (Priest)",
+      "icon": "inv_staff_medivh"
+    },
+    "atiesh_warlock": {
+      "name": "Atiesh (Warlock)",
+      "icon": "inv_staff_medivh"
+    },
+    "battle_shout": {
+      "name": "Battle Shout",
+      "icon": "ability_warrior_battleshout"
+    },
+    "battle_squawk": {
+      "name": "Battle Squawk",
+      "icon": "inv_misc_birdbeck_01"
+    },
+    "blessing_of_kings": {
+      "name": "Blessing of Kings",
+      "icon": "spell_magic_magearmor"
+    },
+    "blessing_of_might": {
+      "name": "Blessing of Might",
+      "icon": "spell_holy_fistofjustice"
+    },
+    "blessing_of_sanctuary": {
+      "name": "Blessing of Sanctuary",
+      "icon": "spell_nature_lightningshield"
+    },
+    "blessing_of_wisdom": {
+      "name": "Blessing of Wisdom",
+      "icon": "spell_holy_sealofwisdom"
+    },
+    "blood_pact": {
+      "name": "Blood Pact",
+      "icon": "spell_shadow_bloodboil"
+    },
+    "bogling_root": {
+      "name": "Bogling Root",
+      "icon": "inv_misc_herb_07"
+    },
+    "cerebral_cortex_compound": {
+      "name": "Cerebral Cortex Compound",
+      "icon": "inv_potion_32"
+    },
+    "conjured_demonic_rune": {
+      "name": "Demonic Rune",
+      "icon": "inv_misc_rune_04"
+    },
+    "conjured_greater_healthstone": {
+      "name": "Greater Healthstone",
+      "icon": "inv_stone_04"
+    },
+    "conjured_healthstone": {
+      "name": "Healthstone",
+      "icon": "inv_stone_04"
+    },
+    "conjured_major_healthstone": {
+      "name": "Major Healthstone",
+      "icon": "inv_stone_04"
+    },
+    "conjured_minor_recombobulator": {
+      "name": "Minor Recombobulator",
+      "icon": "inv_gizmo_07"
+    },
+    "conjured_rogue_thistle_tea": {
+      "name": "Thistle Tea",
+      "icon": "inv_drink_milk_05"
+    },
+    "crystal_yield": {
+      "name": "Crystal Yield",
+      "icon": "inv_misc_gem_amethyst_01"
+    },
+    "curse_of_elements": {
+      "name": "Curse of the Elements",
+      "icon": "spell_shadow_chilltouch"
+    },
+    "curse_of_recklessness": {
+      "name": "Curse of Recklessness",
+      "icon": "spell_shadow_unholystrength"
+    },
+    "curse_of_shadow": {
+      "name": "Curse of Shadow",
+      "icon": "spell_shadow_curseofachimonde"
+    },
+    "curse_of_weakness": {
+      "name": "Curse of Weakness",
+      "icon": "spell_shadow_curseofmannoroth"
+    },
+    "dark_desire": {
+      "name": "Dark Desire",
+      "icon": "inv_valentineschocolate04"
+    },
+    "darnassus_gift_collection": {
+      "name": "Darnassus Gift Collection",
+      "icon": "inv_misc_gift_02"
+    },
+    "demoralizing_roar": {
+      "name": "Demoralizing Roar",
+      "icon": "classic_ability_druid_demoralizingroar"
+    },
+    "demoralizing_shout": {
+      "name": "Demoralizing Shout",
+      "icon": "ability_warrior_warcry"
+    },
+    "devotion_aura": {
+      "name": "Devotion Aura",
+      "icon": "spell_holy_devotionaura"
+    },
+    "divine_spirit": {
+      "name": "Divine Spirit",
+      "icon": "spell_holy_divinespirit"
+    },
+    "dragon_breath_chili": {
+      "name": "Dragonbreath Chili",
+      "icon": "inv_drink_17"
+    },
+    "elixir_of_agility": {
+      "name": "Elixir of Agility",
+      "icon": "temp"
+    },
+    "elixir_of_defense": {
+      "name": "Elixir of Defense",
+      "icon": "inv_potion_64"
+    },
+    "elixir_of_firepower": {
+      "name": "Elixir of Fire Power",
+      "icon": "inv_potion_55"
+    },
+    "elixir_of_fortitude": {
+      "name": "Elixir of Fortitude",
+      "icon": "inv_potion_43"
+    },
+    "elixir_of_frost_power": {
+      "name": "Elixir of Frost Power",
+      "icon": "inv_potion_03"
+    },
+    "elixir_of_giants": {
+      "name": "Elixir of Giants",
+      "icon": "inv_potion_61"
+    },
+    "elixir_of_greater_agility": {
+      "name": "Elixir of Greater Agility",
+      "icon": "inv_potion_94"
+    },
+    "elixir_of_greater_defense": {
+      "name": "Elixir of Greater Defense",
+      "icon": "inv_potion_65"
+    },
+    "elixir_of_greater_firepower": {
+      "name": "Elixir of Greater Firepower",
+      "icon": "inv_potion_60"
+    },
+    "elixir_of_lesser_agility": {
+      "name": "Elixir of Lesser Agility",
+      "icon": "temp"
+    },
+    "elixir_of_minor_defense": {
+      "name": "Elixir of Minor Defense",
+      "icon": "inv_potion_63"
+    },
+    "elixir_of_minor_fortitude": {
+      "name": "Elixir of Minor Fortitude",
+      "icon": "inv_potion_42"
+    },
+    "elixir_of_ogres_strength": {
+      "name": "Elixir of Ogre Strength",
+      "icon": "inv_potion_57"
+    },
+    "elixir_of_shadow_power": {
+      "name": "Elixir of Shadow Power",
+      "icon": "inv_potion_46"
+    },
+    "elixir_of_superior_defense": {
+      "name": "Elixir of Superior Defense",
+      "icon": "inv_potion_66"
+    },
+    "elixir_of_the_mongoose": {
+      "name": "Elixir of the Mongoose",
+      "icon": "inv_potion_32"
+    },
+    "explosive_dense_dynamite": {
+      "name": "Dense Dynamite",
+      "icon": "inv_misc_bomb_06"
+    },
+    "explosive_goblin_land_mine": {
+      "name": "Goblin Land Mine",
+      "icon": "temp"
+    },
+    "explosive_solid_dynamite": {
+      "name": "Solid Dynamite",
+      "icon": "spell_fire_selfdestruct"
+    },
+    "explosive_thorium_grenade": {
+      "name": "Thorium Grenade",
+      "icon": "inv_misc_bomb_08"
+    },
+    "expose_armor": {
+      "name": "Expose Armor",
+      "icon": "ability_warrior_riposte"
+    },
+    "faerie_fire": {
+      "name": "Faerie Fire",
+      "icon": "spell_nature_faeriefire"
+    },
+    "fengus_ferocity": {
+      "name": "Fengus' Ferocity",
+      "icon": "spell_nature_undyingstrength"
+    },
+    "fire_resistance_aura": {
+      "name": "Fire Resistance Aura",
+      "icon": "spell_fire_sealoffire"
+    },
+    "fire_resistance_totem": {
+      "name": "Fire Resistance Totem",
+      "icon": "spell_fireresistancetotem_01"
+    },
+    "fire_toasted_bun": {
+      "name": "Fire-toasted Bun",
+      "icon": "inv_misc_food_11"
+    },
+    "flask_of_chromatic_resistance": {
+      "name": "Flask of Chromatic Resistance",
+      "icon": "inv_potion_48"
+    },
+    "flask_of_distilled_wisdom": {
+      "name": "Flask of Distilled Wisdom",
+      "icon": "inv_potion_97"
+    },
+    "flask_of_supreme_power": {
+      "name": "Flask of Supreme Power",
+      "icon": "inv_potion_41"
+    },
+    "flask_of_the_titans": {
+      "name": "Flask of the Titans",
+      "icon": "inv_potion_62"
+    },
+    "food_bless_sunfruit": {
+      "name": "Blessed Sunfruit",
+      "icon": "inv_misc_food_41"
+    },
+    "food_blessed_sunfruit_juice": {
+      "name": "Blessed Sunfruit Juice",
+      "icon": "inv_drink_16"
+    },
+    "food_dirges_kick_chimaerok_chops": {
+      "name": "Dirge's Kickin' Chimaerok Chops",
+      "icon": "inv_misc_food_65"
+    },
+    "food_grilled_squid": {
+      "name": "Grilled Squid",
+      "icon": "inv_misc_fish_13"
+    },
+    "food_hot_wolf_ribs": {
+      "name": "Hot Wolf Ribs",
+      "icon": "spell_shadow_sealofkings"
+    },
+    "food_nightfin_soup": {
+      "name": "Nightfin Soup",
+      "icon": "inv_drink_17"
+    },
+    "food_runn_tum_tuber_surprise": {
+      "name": "Runn Tum Tuber Surprise",
+      "icon": "inv_misc_food_63"
+    },
+    "food_sagefish_delight": {
+      "name": "Sagefish Delight",
+      "icon": "spell_shadow_sealofkings"
+    },
+    "food_smoked_desert_dumpling": {
+      "name": "Smoked Desert Dumplings",
+      "icon": "inv_misc_food_64"
+    },
+    "food_smoked_sagefish": {
+      "name": "Smoked Sagefish",
+      "icon": "spell_shadow_sealofkings"
+    },
+    "food_tender_wolf_steak": {
+      "name": "Tender Wolf Steak",
+      "icon": "spell_shadow_sealofkings"
+    },
+    "frost_resistance_aura": {
+      "name": "Frost Resistance Aura",
+      "icon": "spell_frost_wizardmark"
+    },
+    "frost_resistance_totem": {
+      "name": "Frost Resistance Totem",
+      "icon": "spell_frostresistancetotem_01"
+    },
+    "furious_howl": {
+      "name": "Furious Howl",
+      "icon": "spell_nature_strength"
+    },
+    "gift_of_arthas": {
+      "name": "Gift of Arthas",
+      "icon": "spell_nature_nullifydisease"
+    },
+    "gift_of_the_wild": {
+      "name": "Gift of the Wild",
+      "icon": "spell_nature_regeneration"
+    },
+    "gizzard_gum": {
+      "name": "Gizzard Gum",
+      "icon": "inv_misc_food_30"
+    },
+    "grace_of_air_totem": {
+      "name": "Grace of Air Totem",
+      "icon": "spell_nature_invisibilitytotem"
+    },
+    "great_rage_potion": {
+      "name": "Great Rage Potion",
+      "icon": "temp"
+    },
+    "greater_arcane_elixir": {
+      "name": "Greater Arcane Elixir",
+      "icon": "inv_potion_25"
+    },
+    "greater_arcane_protection_potion": {
+      "name": "Greater Arcane Protection Potion",
+      "icon": "temp"
+    },
+    "greater_fire_protection_potion": {
+      "name": "Greater Fire Protection Potion",
+      "icon": "temp"
+    },
+    "greater_frost_protection_potion": {
+      "name": "Greater Frost Protection Potion",
+      "icon": "temp"
+    },
+    "greater_healing_potion": {
+      "name": "Greater Healing Potion",
+      "icon": "spell_nature_dryaddispelmagic"
+    },
+    "greater_holy_protection_potion": {
+      "name": "Greater Holy Protection Potion",
+      "icon": "temp"
+    },
+    "greater_mana_potion": {
+      "name": "Greater Mana Potion",
+      "icon": "temp"
+    },
+    "greater_nature_protection_potion": {
+      "name": "Greater Nature Protection Potion",
+      "icon": "temp"
+    },
+    "greater_shadow_protection_potion": {
+      "name": "Greater Shadow Protection Potion",
+      "icon": "temp"
+    },
+    "greater_stoneshield_potion": {
+      "name": "Greater Stoneshield Potion",
+      "icon": "temp"
+    },
+    "ground_scorpok_assay": {
+      "name": "Ground Scorpok Assay",
+      "icon": "inv_misc_dust_02"
+    },
+    "healing_potion": {
+      "name": "Healing Potion",
+      "icon": "temp"
+    },
+    "hunters_mark": {
+      "name": "Hunter's Mark",
+      "icon": "ability_hunter_snipershot"
+    },
+    "improved_scorch": {
+      "name": "Improved Scorch",
+      "icon": "spell_fire_soulburn"
+    },
+    "improved_shadow_bolt": {
+      "name": "Improved Shadow Bolt",
+      "icon": "spell_shadow_shadowbolt"
+    },
+    "innervates": {
+      "name": "Innervate",
+      "icon": "spell_nature_lightning"
+    },
+    "insect_swarm": {
+      "name": "Insect Swarm",
+      "icon": "spell_nature_insectswarm"
+    },
+    "judgement_of_light": {
+      "name": "Judgement of Light",
+      "icon": "spell_holy_healingaura"
+    },
+    "judgement_of_the_crusader": {
+      "name": "Judgement of the Crusader",
+      "icon": "spell_holy_holysmite"
+    },
+    "judgement_of_wisdom": {
+      "name": "Judgement of Wisdom",
+      "icon": "spell_holy_righteousnessaura"
+    },
+    "juju_might": {
+      "name": "Juju Might",
+      "icon": "inv_misc_monsterscales_07"
+    },
+    "juju_power": {
+      "name": "Juju Power",
+      "icon": "inv_misc_monsterscales_11"
+    },
+    "leader_of_the_pack": {
+      "name": "Leader of the Pack",
+      "icon": "spell_nature_unyeildingstamina"
+    },
+    "lesser_arcane_elixir": {
+      "name": "Lesser Arcane Elixir",
+      "icon": "inv_potion_108"
+    },
+    "lesser_healing_potion": {
+      "name": "Lesser Healing Potion",
+      "icon": "spell_nature_dryaddispelmagic"
+    },
+    "lesser_mana_potion": {
+      "name": "Lesser Mana Potion",
+      "icon": "temp"
+    },
+    "lesser_stoneshield_potion": {
+      "name": "Lesser Stoneshield Potion",
+      "icon": "temp"
+    },
+    "lung_juice_cocktail": {
+      "name": "Lung Juice Cocktail",
+      "icon": "inv_drink_12"
+    },
+    "mageblood_potion": {
+      "name": "Mageblood Potion",
+      "icon": "inv_potion_45"
+    },
+    "magic_resistance_potion": {
+      "name": "Magic Resistance Potion",
+      "icon": "temp"
+    },
+    "major_healing_potion": {
+      "name": "Major Healing Potion",
+      "icon": "temp"
+    },
+    "major_mana_potion": {
+      "name": "Major Mana Potion",
+      "icon": "inv_potion_76"
+    },
+    "mana_potion": {
+      "name": "Mana Potion",
+      "icon": "temp"
+    },
+    "mana_spring_totem": {
+      "name": "Mana Spring Totem",
+      "icon": "spell_nature_manaregentotem"
+    },
+    "mana_tide_totems": {
+      "name": "Mana Tide Totem",
+      "icon": "spell_frost_summonwaterelemental"
+    },
+    "mighty_rage_potion": {
+      "name": "Mighty Rage Potion",
+      "icon": "temp"
+    },
+    "moldars_moxie": {
+      "name": "Mol'dar's Moxie",
+      "icon": "spell_nature_massteleport"
+    },
+    "moonkin_aura": {
+      "name": "Moonkin Aura",
+      "icon": "spell_nature_moonglow"
+    },
+    "nature_resistance_totem": {
+      "name": "Nature Resistance Totem",
+      "icon": "spell_nature_natureresistancetotem"
+    },
+    "power_infusions": {
+      "name": "Power Infusion",
+      "icon": "spell_holy_powerinfusion"
+    },
+    "power_word_fortitude": {
+      "name": "Power Word: Fortitude",
+      "icon": "spell_holy_wordfortitude"
+    },
+    "r_o_i_d_s": {
+      "name": "R.O.I.D.S.",
+      "icon": "inv_stone_15"
+    },
+    "rage_potion": {
+      "name": "Rage Potion",
+      "icon": "temp"
+    },
+    "rallying_cry_of_the_dragonslayer": {
+      "name": "Rallying Cry of the Dragonslayer",
+      "icon": "inv_misc_head_dragon_01"
+    },
+    "retribution_aura": {
+      "name": "Retribution Aura",
+      "icon": "spell_holy_auraoflight"
+    },
+    "sanctity_aura": {
+      "name": "Sanctity Aura",
+      "icon": "spell_holy_mindvision"
+    },
+    "sapper_goblin_sapper": {
+      "name": "Goblin Sapper Charge",
+      "icon": "spell_fire_selfdestruct"
+    },
+    "sayges_fortune": {
+      "name": "Sayge's Dark Fortune",
+      "icon": "inv_misc_orb_02"
+    },
+    "scorpid_sting": {
+      "name": "Scorpid Sting",
+      "icon": "ability_hunter_criticalshot"
+    },
+    "scroll_of_agility": {
+      "name": "Scroll of Agility",
+      "icon": "inv_scroll_02"
+    },
+    "scroll_of_intellect": {
+      "name": "Scroll of Intellect",
+      "icon": "inv_scroll_01"
+    },
+    "scroll_of_protection": {
+      "name": "Scroll of Protection",
+      "icon": "inv_scroll_07"
+    },
+    "scroll_of_spirit": {
+      "name": "Scroll of Spirit",
+      "icon": "inv_scroll_01"
+    },
+    "scroll_of_stamina": {
+      "name": "Scroll of Stamina",
+      "icon": "inv_scroll_07"
+    },
+    "scroll_of_strength": {
+      "name": "Scroll of Strength",
+      "icon": "inv_scroll_02"
+    },
+    "shadow_protection": {
+      "name": "Shadow Protection",
+      "icon": "spell_shadow_antishadow"
+    },
+    "shadow_resistance_aura": {
+      "name": "Shadow Resistance Aura",
+      "icon": "spell_shadow_sealofkings"
+    },
+    "shadow_weaving": {
+      "name": "Shadow Weaving",
+      "icon": "spell_shadow_blackplague"
+    },
+    "sheen_of_zanza": {
+      "name": "Sheen of Zanza",
+      "icon": "inv_potion_29"
+    },
+    "slipkiks_savvy": {
+      "name": "Slip'kik's Savvy",
+      "icon": "spell_holy_lesserheal02"
+    },
+    "songflower_serenade": {
+      "name": "Songflower Serenade",
+      "icon": "spell_holy_mindvision"
+    },
+    "spirit_of_zandalar": {
+      "name": "Spirit of Zandalar",
+      "icon": "ability_creature_poison_05"
+    },
+    "spirit_of_zanza": {
+      "name": "Spirit of Zanza",
+      "icon": "inv_potion_30"
+    },
+    "stoneskin_totem": {
+      "name": "Stoneskin Totem",
+      "icon": "spell_nature_stoneskintotem"
+    },
+    "stormstrike": {
+      "name": "Stormstrike",
+      "icon": "spell_holy_sealofmight"
+    },
+    "strength_of_earth_totem": {
+      "name": "Strength of Earth Totem",
+      "icon": "spell_nature_earthbindtotem"
+    },
+    "sunder_armor": {
+      "name": "Sunder Armor",
+      "icon": "ability_warrior_sunder"
+    },
+    "superior_healing_potion": {
+      "name": "Superior Healing Potion",
+      "icon": "spell_nature_dryaddispelmagic"
+    },
+    "superior_mana_potion": {
+      "name": "Superior Mana Potion",
+      "icon": "temp"
+    },
+    "swiftness_of_zanza": {
+      "name": "Swiftness of Zanza",
+      "icon": "inv_potion_31"
+    },
+    "thorns": {
+      "name": "Thorns",
+      "icon": "spell_nature_thorns"
+    },
+    "thunder_clap": {
+      "name": "Thunder Clap",
+      "icon": "spell_nature_thunderclap"
+    },
+    "thunderfury": {
+      "name": "Thunderfury",
+      "icon": "spell_nature_cyclone"
+    },
+    "trueshot_aura": {
+      "name": "Trueshot Aura",
+      "icon": "ability_trueshot"
+    },
+    "warchiefs_blessing": {
+      "name": "Warchief's Blessing",
+      "icon": "spell_arcane_teleportorgrimmar"
+    },
+    "winterfall_firewater": {
+      "name": "Winterfall Firewater",
+      "icon": "inv_potion_92"
+    },
+    "winters_chill": {
+      "name": "Winter's Chill",
+      "icon": "spell_frost_chillingblast"
+    }
+  }
+}
