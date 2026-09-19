@@ -46,3 +46,20 @@ at a stat distance of 310.9. With InventoryType 13 mapped to
 A frost mage swings neither, and the fixture's numbers did not move; only the
 order of the zero-damage rows the engine reports changed with it. Nothing else
 in this table moved.
+
+
+## What the item-ratings fix did, and did not, change
+
+The database this fixture resolves against was regenerated when the data lane
+found that an item's hit, crit, dodge, parry and block were being written as
+the client's rating POINTS where the engine reads percentages (main `8aaeddc`;
+hit/10, crit/14, dodge/12, parry/15, block/5, the factors read from
+`gametables/combatratings.txt`). 702 item rows changed value.
+
+No id in the table above moved: the gear set is the same set of items, so no
+slot was re-pointed and nothing here needed rewriting. The DISTANCES quoted in
+the table are the ones computed at the time each slot was chosen, against the
+pre-fix stat vectors, and they have not been recomputed - the nearest row to a
+missing item could in principle be a different item under the corrected
+values. Re-point these at a curated Forever gear set when the data lane
+publishes one, and the distances go with it.
