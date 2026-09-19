@@ -158,3 +158,68 @@ func TestNeedsMoreIterations(t *testing.T) {
 		})
 	}
 }
+
+// A Smart Sim step is run the way any other run is run: split into
+// parts, run, combined. combine.Split copies the whole request into
+// each part, target included, because the loop owns the target and the
+// part is only a fixed-count share of one step - so ValidatePart must
+// accept a count that is neither on the settings bar nor a whole
+// number of steps.
+func TestASplitPartOfATargetErrorStepValidates(t *testing.T) {
+	step := targetErrorReq(0.005, 30000)
+	step.Iterations = StepIterations // one step of the loop
+
+	part := step
+	part.Iterations = StepIterations / 4 // combine.Split, four ways
+	if err := part.ValidatePart(); err != nil {
+		t.Fatalf("a %d-iteration part of a %d-iteration step was refused: %v", part.Iterations, StepIterations, err)
+	}
+
+	// The whole step is still held to the ceiling's rules, so the part
+	// passing is not the ceiling check going missing.
+	if err := step.Validate(); err != nil {
+		t.Fatalf("the step itself was refused: %v", err)
+	}
+	if err := part.Validate(); err == nil {
+		t.Error("Validate accepted a part's count; only ValidatePart may")
+	}
+
+	// And a part is still bounded: the target does not buy it an
+	// unlimited or an empty count.
+	for _, n := range []int{0, -1, MaxIterations + 1} {
+		bad := step
+		bad.Iterations = n
+		if err := bad.ValidatePart(); err == nil || !strings.Contains(err.Error(), "split part's iterations") {
+			t.Errorf("ValidatePart accepted %d iterations: %v", n, err)
+		}
+	}
+}
+
+// A request is one kind. A bulk request's counts are its precision's
+// ladder and a weights request's are the engine's own, so a target
+// carried alongside either would be accepted and then dropped by
+// whatever ran it.
+func TestATargetErrorIsRefusedAlongsideBulkOrWeights(t *testing.T) {
+	bulk := gear()
+	bulk.TargetError = 0.005
+	if err := bulk.Validate(); err == nil || !strings.Contains(err.Error(), "target_error") {
+		t.Errorf("a bulk request with a target was accepted: %v", err)
+	}
+
+	weights := weightsReq()
+	weights.TargetError = 0.005
+	if err := weights.Validate(); err == nil || !strings.Contains(err.Error(), "target_error") {
+		t.Errorf("a weights request with a target was accepted: %v", err)
+	}
+
+	// Validate refuses it, so the loop should never see one - but the
+	// loop is asked between steps by both lanes and must not step a
+	// bulk run even if one reaches it.
+	res := SimResult{IterationsRun: 100, DPS: Estimate{Mean: 1000, Error: 90}}
+	if NeedsMoreIterations(res, bulk) {
+		t.Error("NeedsMoreIterations wants another step of a bulk run")
+	}
+	if got := NextStepIterations(res, bulk); got != 0 {
+		t.Errorf("NextStepIterations = %d for a bulk run, want 0", got)
+	}
+}

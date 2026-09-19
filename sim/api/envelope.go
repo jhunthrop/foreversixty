@@ -351,16 +351,26 @@ func (r SimRequest) validate(closedSet, requireCurrentEngine bool) error {
 	case r.Bulk != nil:
 		// A bulk request's count is the precision's, checked by
 		// BulkSpec.validate against the ladder.
+	case !closedSet:
+		// A split part comes first, ahead of the target-error case,
+		// because a part of a target-error run is both: combine.Split
+		// copies the whole request into each part, TargetError
+		// included, since the loop owns the target and the part is
+		// only a fixed-count share of one step. So a part's count is
+		// neither one of the settings bar's numbers nor a whole
+		// number of steps - a 1,000-iteration step split four ways is
+		// 250 - and only the outer bound applies.
+		if r.Iterations <= 0 || r.Iterations > MaxIterations {
+			errs = append(errs, fmt.Errorf("a split part's iterations must be between 1 and %d, got %d", MaxIterations, r.Iterations))
+		}
 	case r.TargetError > 0:
 		// A target-error run's Iterations is a ceiling, not a choice
 		// from the settings bar, so the closed set does not apply and
 		// neither does MaxIterations. It has to be a whole number of
 		// steps, because a step is what the loop adds.
 		errs = append(errs, validateCeiling(r.Iterations, largestCeiling())...)
-	case closedSet && !slices.Contains(ValidIterations, r.Iterations):
+	case !slices.Contains(ValidIterations, r.Iterations):
 		errs = append(errs, fmt.Errorf("iterations must be one of %v, got %d", ValidIterations, r.Iterations))
-	case !closedSet && (r.Iterations <= 0 || r.Iterations > MaxIterations):
-		errs = append(errs, fmt.Errorf("a split part's iterations must be between 1 and %d, got %d", MaxIterations, r.Iterations))
 	}
 	if r.TargetError < 0 || r.TargetError >= 1 {
 		errs = append(errs, fmt.Errorf("target_error is a fraction of the mean, so it must be between 0 and 1, got %v", r.TargetError))
@@ -414,6 +424,14 @@ func (r SimRequest) validate(closedSet, requireCurrentEngine bool) error {
 		// as a bulk and silently answer a different question from the
 		// one the weights block asked.
 		errs = append(errs, errors.New("a request is one kind: it carries bulk or weights, never both"))
+	}
+	if r.TargetError > 0 && (r.Bulk != nil || r.Weights != nil) {
+		// The same reasoning: a bulk request's iteration counts are its
+		// precision's ladder and a weights request's are the engine's
+		// own, so neither loops towards a target. Accepting the field
+		// and then dropping it would report an answer at a precision
+		// nobody ran.
+		errs = append(errs, errors.New("a request is one kind: a bulk or weights request runs its own iteration counts, so it carries no target_error"))
 	}
 	return errors.Join(errs...)
 }
@@ -668,9 +686,13 @@ func (r SimRequest) ValidateLane(lane string) error {
 // request would report a different error bar depending on where it ran.
 //
 // A run that failed or was stopped never steps: there is nothing to
-// refine, and stepping would turn one bad answer into several.
+// refine, and stepping would turn one bad answer into several. Neither
+// does a bulk run: its counts are its precision's ladder, its
+// Iterations is the last stage's and not a ceiling, and Validate
+// refuses the pairing outright - this is the same ruling stated where
+// the loop would otherwise act on it.
 func NeedsMoreIterations(res SimResult, req SimRequest) bool {
-	if req.TargetError <= 0 || res.Error != "" || res.Aborted {
+	if req.TargetError <= 0 || req.Bulk != nil || res.Error != "" || res.Aborted {
 		return false
 	}
 	if res.IterationsRun >= req.Iterations {

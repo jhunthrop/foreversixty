@@ -284,9 +284,11 @@ func sortedByID(entries []vocabularyEntry) []vocabularyEntry {
 // worldBuffFirstField is where IndividualBuffs' world-buff section
 // starts. The engine marks the section with a comment and nothing
 // machine-readable, so the boundary is this number and
-// TestWorldBuffsCoverTheEnginesWorldBuffSection holds the list below to
-// it: a world buff the engine gains and this list misses is a failing
-// test rather than a buff no player can tick.
+// TestWorldBuffsMatchThePinnedList holds what it produces to the eight
+// names written down there: a world buff the engine gains, and an
+// ordinary buff appended past the boundary that would be published as
+// one, are both a failing test rather than a settings bar that is
+// quietly wrong.
 const worldBuffFirstField = 7
 
 // WorldBuffs lists the world-buff ids, sorted. They are IndividualBuffs

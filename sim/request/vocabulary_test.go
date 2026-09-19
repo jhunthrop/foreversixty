@@ -217,33 +217,53 @@ func TestKnownBuffsListsBothForms(t *testing.T) {
 }
 
 // The world buffs are a section of IndividualBuffs, and the engine
-// marks them only with a comment. So the list is written down here and
-// held to the message: the engine's world-buff fields are numbered from
-// worldBuffFirstField up, and a new one that nobody added to the list
-// fails rather than going missing from the settings bar.
-func TestWorldBuffsCoverTheEnginesWorldBuffSection(t *testing.T) {
-	names := map[string]bool{}
-	for _, id := range WorldBuffs() {
-		names[id] = true
+// marks the section with a comment and nothing machine-readable:
+// WorldBuffs() publishes every field numbered worldBuffFirstField or
+// higher, so the list is only ever as good as that boundary. Walking
+// the same message with the same boundary and comparing would prove
+// nothing, so the eight names are pinned here verbatim instead - the
+// way the stat ids are.
+//
+// Both directions matter. A world buff the engine gains is a decision
+// to publish and shows up here. And the risk the boundary actually
+// carries, which no derivation can catch: field 15 is reserved, so an
+// ordinary IndividualBuffs field appended at 16 would be published as
+// a world buff and grouped as one in the settings bar. That fails
+// here.
+func TestWorldBuffsMatchThePinnedList(t *testing.T) {
+	pinned := []string{
+		"fengus_ferocity",
+		"moldars_moxie",
+		"rallying_cry_of_the_dragonslayer",
+		"sayges_fortune",
+		"slipkiks_savvy",
+		"songflower_serenade",
+		"spirit_of_zandalar",
+		"warchiefs_blessing",
 	}
-	desc := (&proto.IndividualBuffs{}).ProtoReflect().Descriptor()
-	fields := desc.Fields()
-	var expected int
-	for i := 0; i < fields.Len(); i++ {
-		fd := fields.Get(i)
-		if fd.Number() < worldBuffFirstField {
-			continue
+	slices.Sort(pinned)
+	got := WorldBuffs()
+	if !slices.Equal(got, pinned) {
+		for _, id := range got {
+			if !slices.Contains(pinned, id) {
+				t.Errorf("WorldBuffs() publishes %q, which is not one of the pinned world buffs; if the engine gained a world buff, add it here deliberately, and if it gained an ordinary buff inside the numbered section, move the boundary", id)
+			}
 		}
-		expected++
-		if !names[string(fd.Name())] {
-			t.Errorf("IndividualBuffs.%s is a world buff and WorldBuffs() does not list it", fd.Name())
+		for _, id := range pinned {
+			if !slices.Contains(got, id) {
+				t.Errorf("%q is a world buff and WorldBuffs() does not publish it", id)
+			}
 		}
 	}
-	if len(names) != expected {
-		t.Errorf("WorldBuffs() has %d entries and IndividualBuffs has %d world-buff fields", len(names), expected)
-	}
-	if !slices.IsSorted(WorldBuffs()) {
+	if !slices.IsSorted(got) {
 		t.Error("WorldBuffs() is not sorted; the list is an interface and must be stable")
+	}
+	// A grouped id is an ordinary buff id: the settings bar sends it
+	// through the same resolver as any other.
+	for _, id := range got {
+		if _, err := buffsFor([]string{id}); err != nil {
+			t.Errorf("WorldBuffs() publishes %q, which does not resolve: %v", id, err)
+		}
 	}
 }
 
