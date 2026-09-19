@@ -207,11 +207,29 @@ names, and re-pinning is a one-line change plus a rebuild.
 
 A deployment whose image somehow lacks the binary still serves: the
 jobs log that they are answering from the checked-in fixture result and
-every sim comes back with the fixture's numbers.
+every sim comes back with the fixture's numbers. The deploy workflow
+does not rely on that fallback going unnoticed, though: right after
+`docker build` it runs the image's `/engine/forever-sim -version` and
+fails the deploy unless the output equals the pin in
+`sim/enginever/version.go` — a stale build-cache layer serving an old
+`sim/` tree at the right paths, with the wrong sha baked into its
+ldflags, would still make the binary run; it would not make it match.
 
 `forever-sim` resolves `item:<id>` consumables through the build's
 `data/builds/<build>/simconsumes.json`, which the image already carries
 at `/data`.
+
+The engine stage's own build-time cost is kept independent of how many
+client builds `data/builds/` holds: `sim/internal/simdb` needs only the
+active build's `simdb.bin`, so a plain local build (no extra arguments)
+copies every build's data and lets a `RUN` step pick the active one out
+— the same as `make simdb` does on a developer's machine — while the
+deploy workflow passes `--build-arg ENGINE_SIMDB_SOURCE=engine-source-active
+--build-arg ACTIVE_BUILD=<the active build>` (read from
+`web/src/data/active-build.json`, never typed) so the image copies
+exactly that one file instead. Both paths land at the same place before
+the build runs, so re-pinning or switching the active build never
+needs a Dockerfile change.
 
 ### Granting premium
 

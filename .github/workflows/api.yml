@@ -54,9 +54,36 @@ jobs:
           service_account: ${{ vars.GCP_DEPLOYER_SA }}
       - uses: google-github-actions/setup-gcloud@v2
       - run: gcloud auth configure-docker us-east1-docker.pkg.dev --quiet
-      - run: docker build --build-arg VERSION=${{ github.sha }} -t $IMAGE -f api/Dockerfile .
-      - name: The image carries the engine
-        run: docker run --rm --entrypoint /engine/forever-sim $IMAGE -version
+        # Read once, here, from the same two files the engine stage
+        # itself trusts: the active build (so the engine stage copies
+        # one build's simdb.bin instead of every build's ~83MB - see
+        # api/Dockerfile's ENGINE_SIMDB_SOURCE) and the pin (so the
+        # next step can fail the deploy if the image's binary ever
+        # answers with anything else).
+      - name: Read the active build and the engine pin
+        run: |
+          active=$(sed -n 's/.*"build"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' web/src/data/active-build.json)
+          test -n "$active" || { echo "web/src/data/active-build.json names no build"; exit 1; }
+          pin=$(grep 'const Version' sim/enginever/version.go | cut -d'"' -f2)
+          test -n "$pin" || { echo "sim/enginever/version.go has no Version"; exit 1; }
+          echo "ACTIVE_BUILD=$active" >> "$GITHUB_ENV"
+          echo "ENGINE_PIN=$pin" >> "$GITHUB_ENV"
+      - run: |
+          docker build --build-arg VERSION=${{ github.sha }} \
+            --build-arg ENGINE_SIMDB_SOURCE=engine-source-active \
+            --build-arg ACTIVE_BUILD="$ACTIVE_BUILD" \
+            -t $IMAGE -f api/Dockerfile .
+        # Not just that the binary runs: that it is the pinned engine.
+        # A stale build-cache layer could serve an old sim/ tree at the
+        # right paths with the wrong sha baked into its ldflags, and a
+        # bare `docker run ... -version` with no comparison would pass
+        # that just as happily as a correct image.
+      - name: The image carries the pinned engine
+        run: |
+          got=$(docker run --rm --entrypoint /engine/forever-sim $IMAGE -version)
+          echo "pin=$ENGINE_PIN got=$got"
+          test "$got" = "$ENGINE_PIN" || {
+            echo "the image's engine binary reports '$got', not the pinned '$ENGINE_PIN'"; exit 1; }
       - run: docker push $IMAGE
       - uses: google-github-actions/deploy-cloudrun@v2
         with:
