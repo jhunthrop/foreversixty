@@ -6,12 +6,14 @@ import pytest
 from pipeline.apl import (
     APL_STATES,
     EMPTY_ROTATION,
+    ENGINE_AURA_IDS,
     AplError,
     action_ids,
     cast_spell_action_ids,
     load_all,
     load_apl,
     parse_rotation,
+    unchecked_engine_aura_ids,
 )
 from pipeline.curated import SOURCE_KINDS
 from pipeline.manifest import newest_build
@@ -85,7 +87,14 @@ def test_an_unwritten_rotation_is_empty_rather_than_wrong():
 
 def test_every_spell_the_rotations_name_exists_with_that_rank():
     """The engine's own checked-in presets are stale on ranks -- their Frostbolt
-    is rank 10 where the client's 25304 is Rank 11. Check against the client."""
+    is rank 10 where the client's 25304 is Rank 11. Check against the client.
+
+    `ENGINE_AURA_IDS` is the one sanctioned exception, and only where the id
+    is never a `castSpell` target: mage-fire's Improved Scorch gate has to
+    read the aura the engine actually creates (12873), not the client's own
+    Fire Vulnerability (22959) -- spellconst is client data and cannot
+    confirm an id the engine registers internally, which is exactly the gap
+    that table exists to record."""
     if not SPELLCONST.exists():
         pytest.skip("spellconst has not been generated yet (Task 8)")
     by_class = {
@@ -94,7 +103,10 @@ def test_every_spell_the_rotations_name_exists_with_that_rank():
     checked = 0
     for key, document in documents().items():
         spells = by_class[key.split("-", 1)[0]]
+        exempt = unchecked_engine_aura_ids(document.rotation)
         for spell_id, rank in action_ids(document.rotation):
+            if spell_id in exempt:
+                continue
             assert str(spell_id) in spells, f"{key} names spell {spell_id}, which the build has not"
             assert spells[str(spell_id)]["rank"] == rank, (
                 f"{key} names spell {spell_id} at rank {rank}; "
@@ -102,6 +114,33 @@ def test_every_spell_the_rotations_name_exists_with_that_rank():
             )
             checked += 1
     assert checked >= 10, "the written rotations should name at least ten spell references"
+
+
+def test_an_engine_aura_exception_is_accepted_as_an_aura_but_rejected_as_a_cast():
+    """`ENGINE_AURA_IDS` may only excuse an aura reference from the spellconst
+    check -- a `castSpell` naming the same id must still fail, because that is
+    the id the engine is actually asked to cast, exception table or not."""
+    exception_id = next(iter(ENGINE_AURA_IDS))
+
+    aura_reference = {
+        "priorityList": [
+            {"action": {"condition": {"auraIsActive": {"auraId": {"spellId": exception_id}}}}}
+        ]
+    }
+    assert exception_id in unchecked_engine_aura_ids(aura_reference)
+
+    cast = {"priorityList": [{"action": {"castSpell": {"spellId": {"spellId": exception_id}}}}]}
+    assert exception_id not in unchecked_engine_aura_ids(cast)
+
+    both = {
+        "priorityList": [
+            {"action": {"condition": {"auraIsActive": {"auraId": {"spellId": exception_id}}}}},
+            {"action": {"castSpell": {"spellId": {"spellId": exception_id}}}},
+        ]
+    }
+    assert exception_id not in unchecked_engine_aura_ids(both), (
+        "an id this rotation also casts must still be checked against spellconst"
+    )
 
 
 #: On-next-swing abilities the fork (wowsims-forever's sim/) registers twice
