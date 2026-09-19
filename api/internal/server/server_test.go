@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"encoding/json"
 	"io"
 	"log/slog"
 	"net/http"
@@ -12,6 +13,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/builds"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
+	"github.com/jhunthrop/foreversixty/api/internal/phase"
 	"github.com/jhunthrop/foreversixty/api/internal/site"
 	"github.com/jhunthrop/foreversixty/api/internal/trees"
 )
@@ -27,6 +29,36 @@ func TestHealthAndVersion(t *testing.T) {
 		if rec.Code != 200 || !strings.Contains(rec.Body.String(), tc.want) {
 			t.Fatalf("%s: code=%d body=%s", tc.path, rec.Code, rec.Body.String())
 		}
+	}
+}
+
+func TestThePhasesRouteServesTheBoundaries(t *testing.T) {
+	h := NewRouter(Deps{Version: "test"})
+	w := httptest.NewRecorder()
+	h.ServeHTTP(w, httptest.NewRequest(http.MethodGet, "/v1/phases", nil))
+	if w.Code != http.StatusOK {
+		t.Fatalf("status %d, want 200", w.Code)
+	}
+	var env struct {
+		OK   bool `json:"ok"`
+		Data struct {
+			Phases []struct {
+				Name  string    `json:"name"`
+				Start time.Time `json:"start"`
+			} `json:"phases"`
+		} `json:"data"`
+	}
+	if err := json.NewDecoder(w.Body).Decode(&env); err != nil {
+		t.Fatal(err)
+	}
+	if !env.OK || len(env.Data.Phases) != len(phase.Boundaries) {
+		t.Fatalf("envelope: %+v", env)
+	}
+	if env.Data.Phases[0].Name != phase.Boundaries[0].Name {
+		t.Errorf("first phase %q, want %q", env.Data.Phases[0].Name, phase.Boundaries[0].Name)
+	}
+	if cc := w.Header().Get("Cache-Control"); !strings.Contains(cc, "public") {
+		t.Errorf("Cache-Control %q: four fixed instants are cacheable", cc)
 	}
 }
 

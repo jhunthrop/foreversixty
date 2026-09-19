@@ -7,8 +7,9 @@
 // fixed instants, and a ranking bracket that could change under a
 // running deployment would silently re-bucket stored rows.
 //
-// When a date moves or a phase is added, change this table and the
-// site's dates.json together.
+// When a date moves or a phase is added, change this table,
+// data/curated/phases.json and the site's dates.json together;
+// boundaries_test.go fails if the first two disagree.
 package phase
 
 import "time"
@@ -22,10 +23,13 @@ const (
 	Raids1  = "raids-1"
 )
 
-// Boundary is one phase and the instant it opens.
+// Boundary is one phase and the instant it opens. The tags are what
+// GET /v1/phases serves; pre-beta's zero Start marshals as
+// "0001-01-01T00:00:00Z", which is the truth about a phase that has no
+// opening instant.
 type Boundary struct {
-	Name  string
-	Start time.Time
+	Name  string    `json:"name"`
+	Start time.Time `json:"start"`
 }
 
 // Boundaries are the phases in order. Launch is 15:00 PST on Nov 4,
