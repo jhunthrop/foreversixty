@@ -31,6 +31,7 @@ import logging
 
 from pipeline.normalize.gear import RESISTANCE_KEYS, STAT_BY_MODIFIER_ID
 from pipeline.simdb.equip import SpellBonus, spell_bonus
+from pipeline.simdb.ratings import convert_rating_stats
 from pipeline.simdb.statmap import stat_array
 from pipeline.simproto import pb
 
@@ -81,7 +82,14 @@ def _warn_unrepresentable(enchant_id: str, bonus: SpellBonus) -> None:
 def build_sim_enchants(
     enchant_rows: list[dict[str, str]],
     effects_by_spell: dict[int, list[dict[str, str]]],
+    rating_factors: dict[str, float],
 ) -> list[pb.SimEnchant]:
+    """`rating_factors` is `ratings.load_rating_factors`'s output. A direct
+    `EFFECT_STAT` slot states a combat-rating amount for hit, crit, dodge,
+    parry, block and defense (see `pipeline/simdb/ratings.py`); an equip
+    spell's aura (`spell_bonus`, below) already states a flat percentage and
+    is never converted.
+    """
     enchants: list[pb.SimEnchant] = []
     for row in sorted(enchant_rows, key=lambda r: int(r["ID"])):
         pairs: list[tuple[str, float]] = []
@@ -100,7 +108,7 @@ def build_sim_enchants(
                     )
                 key = STAT_BY_MODIFIER_ID[arg]
                 if key is not None:
-                    pairs.append((key, amount))
+                    pairs.append((key, convert_rating_stats({key: amount}, rating_factors)[key]))
             elif effect == EFFECT_RESISTANCE and amount:
                 key = ENCHANT_RESISTANCE_BY_INDEX.get(arg)
                 if key:

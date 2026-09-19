@@ -123,15 +123,39 @@ def test_a_set_piece_carries_its_armour_and_its_set():
 
 def test_a_known_on_equip_stat_survived_the_round_trip():
     """Rune of the Guard Captain's +42 attack power is in no ItemSparse column;
-    its 7 hit is on the curve. Both must be in the same stat array.
+    its 7 hit rating is on the curve. Both must be in the same stat array.
 
     The engine lane has already collapsed MeleeHit/SpellHit into a single
     Hit stat, so this reads StatHit rather than the brief's StatMeleeHit.
+    The client's 7 is a combat-rating amount (ItemSparse's
+    StatModifier_bonusStat 31 is ITEM_MOD_HIT_RATING); the engine reads Hit
+    as a flat percentage, so simdb divides it by this build's level-60 hit
+    factor (10, from gametables/combatratings.txt) -- see
+    pipeline/simdb/ratings.py.
     """
     rune = item(19120)
     assert rune.stats[pb.Stat.Value("StatAttackPower")] == 42.0
     assert rune.stats[pb.Stat.Value("StatRangedAttackPower")] == 42.0
-    assert rune.stats[pb.Stat.Value("StatHit")] == 7.0
+    assert rune.stats[pb.Stat.Value("StatHit")] == pytest.approx(0.7)
+
+
+def test_item_hit_and_crit_are_percentages_not_combat_rating_points():
+    """Lionheart Helm (12640), Quick Strike Ring (18821) and Onyxia Tooth
+    Pendant (18404) state hit/crit through StatModifier_bonusStat ids 31/32
+    -- ITEM_MOD_HIT_RATING/ITEM_MOD_CRIT_RATING -- so ItemSparse's own
+    amounts (20 hit / 28 crit, 14 crit, 10 hit / 14 crit respectively) are
+    combat-rating points, not the flat percentage the engine's `StatHit` and
+    `StatCrit` are. Divided by this build's level-60 factors (hit 10, crit
+    14, from gametables/combatratings.txt -- see pipeline/simdb/ratings.py),
+    they are 2% hit / 2% crit, 1% crit, and 1% hit / 1% crit. Before this
+    conversion existed, every one of these was read as 10-28% hit or crit
+    outright, hit-capping and near-100%-crit-ing any character wearing one.
+    """
+    hit = pb.Stat.Value("StatHit")
+    crit = pb.Stat.Value("StatCrit")
+    assert (item(12640).stats[hit], item(12640).stats[crit]) == (2.0, 2.0)
+    assert item(18821).stats[crit] == 1.0
+    assert (item(18404).stats[hit], item(18404).stats[crit]) == (1.0, 1.0)
 
 
 def test_consumables_are_emitted_beside_the_protobuf():

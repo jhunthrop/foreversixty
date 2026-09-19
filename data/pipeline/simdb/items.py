@@ -30,6 +30,7 @@ from pipeline.normalize.gear import (
 )
 from pipeline.normalize.item_curves import ItemCurves
 from pipeline.simdb.equip import SpellBonus
+from pipeline.simdb.ratings import convert_rating_stats
 from pipeline.simdb.statmap import stat_array, weapon_skill_array
 from pipeline.simdb.weapons import WeaponCurves, weapon_damage
 from pipeline.simproto import pb
@@ -168,7 +169,14 @@ def build_sim_items(
     equip: Mapping[int, SpellBonus],
     curves: ItemCurves,
     weapon_curves: WeaponCurves,
+    rating_factors: Mapping[str, float],
 ) -> list[pb.SimItem]:
+    """`rating_factors` is `ratings.load_rating_factors`'s output: level-60
+    rating points per 1% for every `ItemSparse`-column stat the client states
+    as a combat rating (hit, crit, dodge, parry, block, defense). It converts
+    only `resolve_item_values`'s output -- an on-equip spell's stat (`equip`)
+    already states a flat percentage; see `pipeline/simdb/ratings.py`.
+    """
     items: list[pb.SimItem] = []
     for sparse, item_row in pairs:
         item_id = int_column(sparse, "ID")
@@ -177,7 +185,9 @@ def build_sim_items(
         subclass = int_column(item_row, "SubclassID")
 
         armor, resolved = resolve_item_values(sparse, item_row, curves)
-        stat_pairs: list[tuple[str, float]] = list(resolved.items())
+        stat_pairs: list[tuple[str, float]] = list(
+            convert_rating_stats(resolved, rating_factors).items()
+        )
         if armor:
             stat_pairs.append(("armor", armor))
         bonus = equip.get(item_id, SpellBonus())
