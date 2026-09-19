@@ -8,6 +8,7 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { expect, test, type Page } from '@playwright/test';
+import { assertNoHorizontalScroll } from './support/phone-scroll';
 
 test.describe.configure({ mode: 'serial' });
 // No test.use({ viewport }): the phone audit runs under --project=mobile (Pixel 7, 412px),
@@ -41,9 +42,19 @@ const COMPARE_REF = 'fixture2abcd:3';
 // or a colon that no `slug()` exists to clean.
 const HEROIC_STRIKE_SPELL_ID = 25286;
 
+/**
+ * Against `page.viewportSize()`, never the live `window.innerWidth` -- Chromium's mobile
+ * emulation widens the layout viewport to fit overflowing content, so `innerWidth` and
+ * `scrollWidth` grow together and a comparison between them silently reads ~0 overflow
+ * even while the page genuinely overflows the device's own width. This is not
+ * hypothetical: it is exactly how the per-tab sweep in "after a run..." below missed
+ * SimResults' `-mx-[18px]` tab-strip overflow (Fix round 1) until a fixed-width check
+ * caught it. See support/phone-scroll.ts's own header note; report-phone.spec.ts hit the
+ * same class of false negative first.
+ */
 async function noHorizontalScroll(page: Page): Promise<void> {
-  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
-  expect(overflow, 'page scrolls horizontally').toBeLessThanOrEqual(0);
+  const width = page.viewportSize()?.width ?? 0;
+  await assertNoHorizontalScroll(page, width);
 }
 
 async function targetsAreBigEnough(page: Page): Promise<void> {
@@ -153,7 +164,7 @@ test('nothing scrolls sideways and every target clears 44px on an empty /sim', a
   await sectionsKeepGutter(page);
 });
 
-test('a loaded character keeps the run button and the DPS figure in view, in a two-column gear grid, with no sideways scroll', async ({
+test('a loaded character reaches the run button and the DPS figure in one scroll after pressing run, in a two-column gear grid, with no sideways scroll', async ({
   page,
 }) => {
   await loadFury(page);
@@ -195,17 +206,16 @@ test('after a run, every result tab clears the width and the tab strip scrolls r
 
   const strip = await page.evaluate(() => {
     const tablist = document.querySelector('[role="tablist"]');
-    return {
-      scrollWidth: tablist?.scrollWidth ?? 0,
-      clientWidth: tablist?.clientWidth ?? 0,
-      pageScrollWidth: document.documentElement.scrollWidth,
-      pageClientWidth: document.documentElement.clientWidth,
-    };
+    return { scrollWidth: tablist?.scrollWidth ?? 0, clientWidth: tablist?.clientWidth ?? 0 };
   });
   expect(strip.scrollWidth, 'tab strip does not scroll').toBeGreaterThan(strip.clientWidth);
-  expect(strip.pageScrollWidth, 'the page scrolled sideways instead of the strip').toBeLessThanOrEqual(
-    strip.pageClientWidth,
-  );
+  // The strip scrolls; the page must not, re-checked once more here after the strip's own
+  // scroll interaction above. Fix round 1: before noHorizontalScroll compared against the
+  // fixed viewport width, this same overflow (the strip's own -mx-[18px] bleed, pushing
+  // the page 18px past the viewport on each side) passed every per-tab check silently,
+  // because comparing scrollWidth against the live window.innerWidth lets Chromium's
+  // mobile shrink-to-fit quirk widen both together.
+  await noHorizontalScroll(page);
 });
 
 test('compare mode stacks the ability table into one figure per row, with no sideways scroll', async ({
