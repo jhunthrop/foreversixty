@@ -100,7 +100,7 @@ test.describe('/sim/specs', () => {
   });
 });
 
-test.describe('the in-page unsupported-spec state', () => {
+test.describe('the in-page fidelity note', () => {
   // Combat Rogue: the fixture's data build only ships a warrior talent tree
   // (src/fixtures/planner/talents/warrior.json is the one file FOREVER_DATA=fixture
   // publishes), so this stubs `/data/<build>/talents/rogue.json` with the smallest legal
@@ -139,7 +139,15 @@ test.describe('the in-page unsupported-spec state', () => {
   };
   const ROGUE_FS1 = `FS1:${activeBuild.build}:rogue:orc:0/1/0:`;
 
-  test('replaces the run control with the spec’s own card, not just hides it', async ({ page }) => {
+  // Fury Warrior: the fixture's data build ships this class's talent tree directly
+  // (src/fixtures/planner/talents/warrior.json), so loading it needs no route stub -- the
+  // same character sim-run.spec.ts and sim-settings.spec.ts load. It is the fixture
+  // /v1/specs answer's own validated row.
+  const FURY_FS1 = `FS1:${activeBuild.build}:warrior:orc:0/5530515/0:head=12640,main_hand=11726`;
+
+  test('an unmeasured spec still runs, with a label linking to /sim/specs instead of a blocking card', async ({
+    page,
+  }) => {
     await stubSpecs(page);
     await page.route('**/data/*/talents/rogue.json', (route) =>
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(ROGUE_TALENTS) }),
@@ -150,8 +158,23 @@ test.describe('the in-page unsupported-spec state', () => {
     await page.getByTestId('sim-addon-load').click();
     await expect(page.getByTestId('sim-character')).toBeVisible();
 
-    await expect(page.getByTestId('spec-unsupported-lead')).toHaveText(simCopy.specUnsupportedLead);
-    await expect(page.getByTestId('spec-rogue-combat')).toBeVisible();
-    await expect(page.getByTestId('sim-run')).toHaveCount(0);
+    await expect(page.getByTestId('sim-run-button')).toHaveText('Run sim');
+    const note = page.getByTestId('spec-fidelity-note');
+    await expect(note).toContainText(simCopy.specNotYet);
+    await expect(note).toContainText(simCopy.specNotYetNote);
+  });
+
+  // Validated is the one state with nothing to say -- the settings bar above already named
+  // the spec being simulated, so a note reading "Validated ..." beside it would be noise.
+  test('a validated spec runs with no fidelity note at all', async ({ page }) => {
+    await stubSpecs(page);
+
+    await page.goto('/sim');
+    await page.getByTestId('sim-addon-input').fill(FURY_FS1);
+    await page.getByTestId('sim-addon-load').click();
+    await expect(page.getByTestId('sim-character')).toBeVisible();
+
+    await expect(page.getByTestId('sim-run-button')).toHaveText('Run sim');
+    await expect(page.getByTestId('spec-fidelity-note')).toHaveCount(0);
   });
 });

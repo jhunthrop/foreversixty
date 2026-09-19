@@ -23,7 +23,7 @@
   import { settingsLabel } from '../../lib/sim/settings';
   import { SIM_SAVED_SKELETON_HTML } from '../../lib/sim/skeleton';
   import { parseFightRef } from '../../lib/sim/sources';
-  import { mergeSpecRows } from '../../lib/sim/spec-state';
+  import { mergeSpecRows, specPillClass, specStateLabel, specStateNote } from '../../lib/sim/spec-state';
   import { createSimStore } from '../../lib/sim/store.svelte';
   import { defaultSimState, parseSimState, simSearch, withSimState } from '../../lib/sim/url';
   import { ENGINE_VERSION, engineLabel, isStale } from '../../lib/sim/version';
@@ -34,7 +34,6 @@
   import SavedSim from './SavedSim.svelte';
   import SettingsBar from './SettingsBar.svelte';
   import SourceSwitcher from './SourceSwitcher.svelte';
-  import SpecCard from './SpecCard.svelte';
   import SpecGrid from './SpecGrid.svelte';
 
   let { simId = '', inlineResult = null }: { simId?: string; inlineResult?: SimResult | null } = $props();
@@ -331,7 +330,6 @@
     if (store.character === null || specRows === null) return null;
     return mergeSpecRows(specRows).find((row) => row.spec === store.character?.spec) ?? null;
   });
-  const specUnsupported = $derived(characterSpecRow?.state === 'unsupported');
 
   // False until the player explicitly asks for the switcher -- the strip's "Change source",
   // the landing state's "Sim something else", or the no-characters card's account link.
@@ -508,134 +506,133 @@
           disabled={store.phase === 'running' || store.serverRunning}
           onchange={(next) => store.setSettings(next)}
         />
-        {#if specUnsupported && characterSpecRow !== null}
-          <!-- Instead of the run control, the sentence and the results -- not above them.
-               The settings bar above still says what would be simulated; this says why it
-               cannot be, with the same card /sim/specs shows for this spec. -->
-          <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="spec-unsupported-lead">
-            {simCopy.specUnsupportedLead}
+        {#if characterSpecRow !== null && characterSpecRow.state !== 'validated'}
+          <!-- A fidelity state labels, it never blocks: the run control below always
+               renders once a character is loaded, and this is the one-line footnote
+               linking to the full card on /sim/specs. -->
+          <p class="text-muted px-[18px] text-[13px] md:px-0" data-testid="spec-fidelity-note">
+            <a href="/sim/specs" class={specPillClass(characterSpecRow.state)}
+              >{specStateLabel(characterSpecRow.state)}</a
+            >
+            {specStateNote(characterSpecRow.state)}
           </p>
-          <div class="px-[18px] md:px-0">
-            <SpecCard row={characterSpecRow} actionNames={store.actionNames} compact />
-          </div>
-        {:else}
-          <RunControl
-            phase={store.phase}
-            estimate={store.estimate}
-            iterationsDone={store.iterationsDone}
-            iterationsTotal={store.iterationsTotal}
-            precision={store.precision}
-            premium={store.premium}
-            message={store.message}
-            detail={store.detail}
-            racePending={store.needsRace}
-            {staleVersion}
-            serverRunning={store.serverRunning}
-            onrun={() => void store.run()}
-            onstop={() => store.stop()}
-            onprecision={(value) => store.setPrecision(value)}
-            onserver={() => void store.runOnServer()}
-            onrerun={() => void store.run()}
-          />
-          {#if comparing}
-            <!-- Replaces the sentence and the results, per Design 4.2 -- the strip, the
+        {/if}
+        <RunControl
+          phase={store.phase}
+          estimate={store.estimate}
+          iterationsDone={store.iterationsDone}
+          iterationsTotal={store.iterationsTotal}
+          precision={store.precision}
+          premium={store.premium}
+          message={store.message}
+          detail={store.detail}
+          racePending={store.needsRace}
+          {staleVersion}
+          serverRunning={store.serverRunning}
+          onrun={() => void store.run()}
+          onstop={() => store.stop()}
+          onprecision={(value) => store.setPrecision(value)}
+          onserver={() => void store.runOnServer()}
+          onrerun={() => void store.run()}
+        />
+        {#if comparing}
+          <!-- Replaces the sentence and the results, per Design 4.2 -- the strip, the
                  settings bar and the run control above stay exactly where they are. -->
-            {#if actual === null}
-              <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="compare-loading">
-                {simCopy.compareLoading}
-              </p>
-            {:else if comparison !== null}
-              {#if compareViewLazy.current}
-                <compareViewLazy.current
-                  {comparison}
-                  simDuration={store.result?.summary.duration_ms ?? 0}
-                  actualDuration={actual.duration_ms}
-                />
-              {:else}
-                {@render lazyFallback(compareViewLazy)}
-              {/if}
-            {/if}
-          {:else if store.result !== null}
-            {#if simResultsLazy.current}
-              <simResultsLazy.current
-                summary={store.result.summary}
-                estimate={store.result.dps}
-                iterationsRun={store.result.iterations_run}
-                actionNames={store.actionNames}
+          {#if actual === null}
+            <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="compare-loading">
+              {simCopy.compareLoading}
+            </p>
+          {:else if comparison !== null}
+            {#if compareViewLazy.current}
+              <compareViewLazy.current
+                {comparison}
+                simDuration={store.result?.summary.duration_ms ?? 0}
+                actualDuration={actual.duration_ms}
               />
             {:else}
-              {@render lazyFallback(simResultsLazy)}
+              {@render lazyFallback(compareViewLazy)}
             {/if}
           {/if}
+        {:else if store.result !== null}
+          {#if simResultsLazy.current}
+            <simResultsLazy.current
+              summary={store.result.summary}
+              estimate={store.result.dps}
+              iterationsRun={store.result.iterations_run}
+              actionNames={store.actionNames}
+            />
+          {:else}
+            {@render lazyFallback(simResultsLazy)}
+          {/if}
+        {/if}
 
-          <!-- The save form (Task 17): disabled until there is a result, an inline
+        <!-- The save form (Task 17): disabled until there is a result, an inline
                title field pre-filled with the settings clause rather than a dialog, and
                the saved link shown in place -- the page never navigates away from the
                result it just saved. -->
-          <div class="mx-[18px] flex flex-wrap items-center gap-3 md:mx-0" data-testid="sim-save">
-            {#if savedUrl !== null}
+        <div class="mx-[18px] flex flex-wrap items-center gap-3 md:mx-0" data-testid="sim-save">
+          {#if savedUrl !== null}
+            <input
+              type="text"
+              readonly
+              value={savedUrl}
+              class="border-line-warm rounded-control bg-raised text-text h-11 min-w-0 flex-1 border px-3 text-[14px] md:max-w-[420px]"
+              data-testid="sim-save-link"
+              onclick={(event) => event.currentTarget.select()}
+            />
+            <button
+              type="button"
+              class="border-line-warm rounded-control text-nav label min-h-11 border px-4"
+              onclick={() => void copySavedLink()}
+              data-testid="sim-save-copy"
+            >
+              {savedLinkCopied ? simCopy.copied : simCopy.copyLink}
+            </button>
+          {:else if saveOpen}
+            <label class="flex flex-col gap-1">
+              <span class="label text-muted">{simCopy.saveTitleLabel}</span>
               <input
                 type="text"
-                readonly
-                value={savedUrl}
-                class="border-line-warm rounded-control bg-raised text-text h-11 min-w-0 flex-1 border px-3 text-[14px] md:max-w-[420px]"
-                data-testid="sim-save-link"
-                onclick={(event) => event.currentTarget.select()}
+                bind:value={saveTitle}
+                class="border-line-warm rounded-control bg-raised text-text h-11 w-[260px] border px-3 text-[14px]"
+                data-testid="sim-save-title"
               />
-              <button
-                type="button"
-                class="border-line-warm rounded-control text-nav label min-h-11 border px-4"
-                onclick={() => void copySavedLink()}
-                data-testid="sim-save-copy"
-              >
-                {savedLinkCopied ? simCopy.copied : simCopy.copyLink}
-              </button>
-            {:else if saveOpen}
-              <label class="flex flex-col gap-1">
-                <span class="label text-muted">{simCopy.saveTitleLabel}</span>
-                <input
-                  type="text"
-                  bind:value={saveTitle}
-                  class="border-line-warm rounded-control bg-raised text-text h-11 w-[260px] border px-3 text-[14px]"
-                  data-testid="sim-save-title"
-                />
-              </label>
-              <button
-                type="button"
-                class="border-line-warm-strong rounded-control bg-card-top text-strong label min-h-11 border px-5 disabled:opacity-50"
-                disabled={saving}
-                onclick={() => void confirmSave()}
-                data-testid="sim-save-confirm"
-              >
-                {saving ? simCopy.savingAction : simCopy.saveAction}
-              </button>
-              <button
-                type="button"
-                class="border-line-warm rounded-control text-nav label min-h-11 border px-4"
-                onclick={cancelSave}
-                data-testid="sim-save-cancel"
-              >
-                {simCopy.cancel}
-              </button>
-              {#if saveFailed}
-                <span role="alert" class="text-strong text-[13px]" data-testid="sim-save-error">
-                  {simCopy.saveFailed}
-                </span>
-              {/if}
-            {:else}
-              <button
-                type="button"
-                class="border-line-warm-strong rounded-control bg-card-top text-strong label min-h-11 border px-5 disabled:opacity-50"
-                disabled={!canSave}
-                title={store.result !== null && !canSave ? simCopy.saveAbortedDisabled : undefined}
-                onclick={openSaveForm}
-                data-testid="sim-save-open"
-              >
-                {simCopy.saveThisSim}
-              </button>
+            </label>
+            <button
+              type="button"
+              class="border-line-warm-strong rounded-control bg-card-top text-strong label min-h-11 border px-5 disabled:opacity-50"
+              disabled={saving}
+              onclick={() => void confirmSave()}
+              data-testid="sim-save-confirm"
+            >
+              {saving ? simCopy.savingAction : simCopy.saveAction}
+            </button>
+            <button
+              type="button"
+              class="border-line-warm rounded-control text-nav label min-h-11 border px-4"
+              onclick={cancelSave}
+              data-testid="sim-save-cancel"
+            >
+              {simCopy.cancel}
+            </button>
+            {#if saveFailed}
+              <span role="alert" class="text-strong text-[13px]" data-testid="sim-save-error">
+                {simCopy.saveFailed}
+              </span>
             {/if}
-          </div>
-        {/if}
+          {:else}
+            <button
+              type="button"
+              class="border-line-warm-strong rounded-control bg-card-top text-strong label min-h-11 border px-5 disabled:opacity-50"
+              disabled={!canSave}
+              title={store.result !== null && !canSave ? simCopy.saveAbortedDisabled : undefined}
+              onclick={openSaveForm}
+              data-testid="sim-save-open"
+            >
+              {simCopy.saveThisSim}
+            </button>
+          {/if}
+        </div>
       {:else}
         <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="sim-empty">
           {simCopy.emptyPrompt}

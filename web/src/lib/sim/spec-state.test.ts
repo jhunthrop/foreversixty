@@ -22,7 +22,7 @@ describe('specStateLabel and specStateNote', () => {
   it('says what each state means for the number on the page', () => {
     expect(specStateNote('validated')).toContain('trustworthy');
     expect(specStateNote('in_progress')).toContain('a direction, not a figure');
-    expect(specStateNote('unsupported')).toContain('the order people are actually playing them');
+    expect(specStateNote('unsupported')).toContain('It runs');
   });
 });
 

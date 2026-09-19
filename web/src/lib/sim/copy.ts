@@ -24,10 +24,6 @@ export const simCopy = {
   stopped: 'Stopped.',
   failed: 'The engine could not run this character.',
 
-  // Used by the sim page (group D) and the planner's live estimate (group F), which run in
-  // parallel. Both need the same sentence, so it starts here rather than in either.
-  specUnsupportedLead: 'The simulator does not model this spec yet.',
-
   // Task 8: the /sim empty state, shown before a character is loaded. Tasks 11-19 add to
   // this block as they build the sections it currently stands in for.
   emptyPrompt:
@@ -191,7 +187,7 @@ export const simCopy = {
     Shoot: 'auto shots',
   } as Record<string, string>,
 
-  // --- Task 15: the spec support page (/sim/specs) and the in-page unsupported-spec state.
+  // --- Task 15: the spec support page (/sim/specs) and the in-page fidelity note.
   // The pill's three words, their meaning for the number beside them, and the card's own
   // sentences -- every one of them, so a copy change is one diff in this file rather than a
   // hunt through SpecCard.svelte and SpecGrid.svelte for a literal.
@@ -200,7 +196,8 @@ export const simCopy = {
   specNotYet: 'Not yet',
   specValidatedNote: 'Within 5% of the top 50 parses. Numbers from this spec are trustworthy.',
   specInProgressNote: 'Being corrected against real parses. Treat the number as a direction, not a figure.',
-  specNotYetNote: 'Not modelled yet. Specs arrive in the order people are actually playing them.',
+  specNotYetNote:
+    "No parses have measured this spec yet. It runs; treat the number as the rotation's own, uncorrected.",
   specMedianGap: 'Median gap',
   specOver: 'over',
   specParse: 'parse',
