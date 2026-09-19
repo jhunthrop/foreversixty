@@ -427,7 +427,8 @@
         {/if}
       {:else if me !== null && me.characters.length === 0}
         <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="sim-no-characters">
-          {simCopy.noCharactersYet} <a class="text-nav underline" href="/logs">Logs</a>.
+          {simCopy.noCharactersYet}
+          <a class="text-nav underline" href="/logs">{simCopy.noCharactersYetLink}</a>
         </p>
         <SourceSwitcher
           busy={store.phase === 'loading-character'}

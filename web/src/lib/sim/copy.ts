@@ -127,6 +127,10 @@ export const simCopy = {
   landingSourceNote:
     'Gear comes from your last addon export or your last logged fight. Blizzard has no character profile API for Forever yet.',
   noCharactersYet: 'No characters yet. Install the addon and the companion, or paste an export.',
+  // The /logs link's own visible text, fix round 1 LOW-1: was a literal "Logs" and a
+  // trailing "." in SimView.svelte's template, outside this file's "every user-visible
+  // string" rule.
+  noCharactersYetLink: 'Logs.',
 
   // --- Task 21: build unfurls carrying simmed DPS. ---
   includeSimOnCard: 'Include a simmed DPS on the card',

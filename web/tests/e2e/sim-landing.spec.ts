@@ -87,6 +87,13 @@ test.describe('a signed-in member with characters', () => {
     await expect(page.getByTestId('sim-character-us/normal/roland')).toBeVisible();
     await expect(page.getByTestId('sim-sources')).toHaveCount(0);
     await expect(page.getByTestId('sim-landing-note')).toHaveText(simCopy.landingSourceNote);
+
+    // Fix round 1, MEDIUM-1: the row is a real link (`url.ts`'s own `simSearch`), not only
+    // the button beside it -- copyable, middle-clickable, opens in a new tab.
+    await expect(page.getByTestId('sim-character-link-us/normal/thrallgar')).toHaveAttribute(
+      'href',
+      '/sim?source=armory&ref=us%2Fnormal%2Fthrallgar',
+    );
   });
 
   test('pressing Sim loads the strip, with the source pill the API actually answered', async ({ page }) => {
@@ -123,6 +130,34 @@ test.describe('a signed-in member with characters', () => {
 
     await expect(page.getByTestId('sim-sources')).toBeVisible();
     await expect(page.getByTestId('sim-landing')).toHaveCount(0);
+  });
+
+  // Fix round 1, LOW-2: the `onback` round trip had no automated coverage, only a
+  // by-hand trace in the review. Both directions the review traced: landing -> switcher ->
+  // landing (nothing loaded yet), and strip -> switcher -> strip (a character already up).
+  test('Back to your characters returns to the landing state from the switcher', async ({ page }) => {
+    await page.goto('/sim');
+    await page.getByTestId('sim-other-character').click();
+    await expect(page.getByTestId('sim-sources')).toBeVisible();
+
+    await page.getByTestId('sim-back-to-characters').click();
+
+    await expect(page.getByTestId('sim-landing')).toBeVisible();
+    await expect(page.getByTestId('sim-sources')).toHaveCount(0);
+  });
+
+  test('Back to your characters returns to a loaded strip, not the landing state', async ({ page }) => {
+    await page.goto('/sim');
+    await page.getByTestId('sim-pick-us/normal/thrallgar').click();
+    await expect(page.getByTestId('sim-character')).toBeVisible();
+
+    await page.getByTestId('sim-change-source').click();
+    await expect(page.getByTestId('sim-sources')).toBeVisible();
+
+    await page.getByTestId('sim-back-to-characters').click();
+
+    await expect(page.getByTestId('sim-character')).toBeVisible();
+    await expect(page.getByTestId('sim-sources')).toHaveCount(0);
   });
 });
 
