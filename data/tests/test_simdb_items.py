@@ -3,6 +3,7 @@ from pathlib import Path
 import pytest
 
 from pipeline.csvio import read_csv
+from pipeline.normalize.gear import ItemDataError
 from pipeline.normalize.item_curves import load_item_curves
 from pipeline.simdb.equip import SpellBonus
 from pipeline.simdb.items import HAND_TYPE_BY_INVENTORY_TYPE, build_sim_items, simdb_item_rows
@@ -12,6 +13,11 @@ from pipeline.simproto import pb
 HERE = Path(__file__).parent
 FIXTURES = HERE / "fixtures"
 SIM = FIXTURES / "sim"
+
+#: tests/fixtures/ItemSparse_1_60.csv's row for MaxCount == 1 -- Novice's
+#: Cloth Robe's columns (30001) reused under an id (14152) already present
+#: in tests/fixtures/Item.csv, since simdb_item_rows keeps only ids in both.
+UNIQUE_FIXTURE_ID = 14152
 
 #: The committed build's own level-60 combatratings.txt row (see
 #: tests/fixtures/sim/combatratings.txt), so a fixture test exercises the
@@ -53,11 +59,21 @@ def pairs():
     )
 
 
-def built(set_names=None, equip=None):
+def built(set_names=None, equip=None, fork_columns=None):
     items = build_sim_items(
-        pairs(), set_names or {}, equip or {}, curves(), weapon_curves(), RATING_FACTORS
+        pairs(),
+        set_names or {},
+        equip or {},
+        curves(),
+        weapon_curves(),
+        RATING_FACTORS,
+        fork_columns or {},
     )
     return {item.id: item for item in items}
+
+
+def built_item(item_id, **kwargs):
+    return built(**kwargs)[item_id]
 
 
 def test_rows_are_sorted_by_item_id():
@@ -70,6 +86,7 @@ def test_the_filter_keeps_every_equippable_row_the_planner_would_drop():
     Annihilator's whole value is its damage, and so is a plain white weapon's."""
     assert {int(sparse["ID"]) for sparse, _ in pairs()} == {
         12798,
+        14152,
         16866,
         30001,
         30002,
@@ -164,7 +181,7 @@ def test_a_negative_mask_that_is_not_minus_one_excludes_rather_than_permits():
     sparse = dict(pair[0])
     sparse["AllowableClass"] = "-1136"
     item = build_sim_items(
-        [(sparse, pair[1])], {}, {}, curves(), weapon_curves(), RATING_FACTORS
+        [(sparse, pair[1])], {}, {}, curves(), weapon_curves(), RATING_FACTORS, {}
     )[0]
     assert list(item.class_allowlist) == [
         pb.Class.Value("ClassMage"),
@@ -183,7 +200,38 @@ def test_inventory_type_13_is_one_hand_not_main_hand():
 
 
 def test_a_build_with_no_weapon_curves_still_emits_its_items():
-    items = build_sim_items(pairs(), {}, {}, curves(), WeaponCurves(), RATING_FACTORS)
+    items = build_sim_items(pairs(), {}, {}, curves(), WeaponCurves(), RATING_FACTORS, {})
     axe = {item.id: item for item in items}[12798]
     assert axe.weapon_speed == 0.0
     assert axe.type == pb.ItemType.Value("ItemTypeWeapon")
+
+
+def test_unique_and_required_level_come_from_item_sparse():
+    item = built_item(16866)  # Helm of Might: MaxCount 0, RequiredLevel 60
+    assert item.unique is False
+    assert item.required_level == 60
+
+
+def test_max_count_one_is_unique():
+    assert built_item(UNIQUE_FIXTURE_ID).unique is True
+
+
+def test_the_fork_columns_are_carried_through_from_items_json():
+    item = built_item(12798, fork_columns={12798: ([5, 6], "horde_only")})
+    assert list(item.random_suffix_options) == [5, 6]
+    assert item.faction_restriction == pb.SimItem.FactionRestriction.Value(
+        "FACTION_RESTRICTION_HORDE_ONLY"
+    )
+
+
+def test_an_item_with_no_fork_column_is_left_unrestricted():
+    item = built_item(12798, fork_columns={})
+    assert list(item.random_suffix_options) == []
+    assert item.faction_restriction == pb.SimItem.FactionRestriction.Value(
+        "FACTION_RESTRICTION_UNSPECIFIED"
+    )
+
+
+def test_an_unknown_faction_restriction_slug_raises():
+    with pytest.raises(ItemDataError, match="bogus_slug"):
+        built_item(12798, fork_columns={12798: ([], "bogus_slug")})

@@ -18,6 +18,12 @@ Two things the interface contract lists cannot be fields of that message:
 `random_suffixes` is emitted empty: `ItemRandomSuffix` 404s on build
 1.60.1.69893, Forever re-itemises the world anyway, and the contract does not
 ask for suffixes.
+
+`SimItem.random_suffix_options` and `.faction_restriction` (contract 10.3)
+come from `items.json`'s fork-derived columns instead, which `python -m
+pipeline loot` writes -- so `loot` must run before this command; `_fork_columns`
+below fails fast rather than silently treating a build that skipped it as one
+with no restrictions and no suffix options.
 """
 
 from __future__ import annotations
@@ -97,6 +103,36 @@ def _set_names(build_dir: Path) -> dict[int, str]:
     return {int(row["id"]): row["name"] for row in json.loads(path.read_text(encoding="utf-8"))}
 
 
+#: `items.json`'s two fork-derived columns (parity contract 10.3/10.8).
+FORK_COLUMNS = ("suffixes", "faction_restriction")
+
+
+def _fork_columns(build_dir: Path) -> dict[int, tuple[list[int], str]]:
+    """`items.json`'s two fork-derived columns, for `SimItem`.
+
+    They are read from `items.json` and not from the fork database directly
+    so that `simdb` never needs an engine checkout; `python -m pipeline loot`
+    is what puts them on `items.json`'s rows, which is why it runs first
+    (contract 10.8). A row missing either key means `loot` has never
+    populated this build's `items.json` -- that fails fast here rather than
+    reading as "no suffixes, no restriction", which is exactly what a build
+    that genuinely has none of either also looks like.
+    """
+    path = build_dir / "items.json"
+    if not path.exists():
+        raise SystemExit(f"no {path}; run `python -m pipeline normalize` for this build first")
+    rows = json.loads(path.read_text(encoding="utf-8"))
+    missing = sorted(set(FORK_COLUMNS) - set(rows[0])) if rows else []
+    if missing:
+        raise SystemExit(
+            f"{path} is missing {missing}; run `python -m pipeline loot` for this build first"
+        )
+    return {
+        int(row["id"]): (row.get("suffixes", []), row.get("faction_restriction", ""))
+        for row in rows
+    }
+
+
 def _optional(raw: Path, name: str) -> list[dict[str, str]]:
     """A table this build's client may not have (see wago.OPTIONAL_TABLES)."""
     path = raw / f"{name}.csv"
@@ -129,8 +165,11 @@ def build_sim_database(build_dir: Path) -> tuple[pb.SimDatabase, list[Consumable
     kept_ids = {int_column(sparse, "ID") for sparse, _ in pairs}
     equip = equip_bonuses(item_effect_rows, link_rows, effects_by_spell, kept_ids)
     rating_factors = load_rating_factors(build_dir)
+    fork_columns = _fork_columns(build_dir)
     database = pb.SimDatabase(
-        items=build_sim_items(pairs, set_names, equip, curves, weapon_curves, rating_factors),
+        items=build_sim_items(
+            pairs, set_names, equip, curves, weapon_curves, rating_factors, fork_columns
+        ),
         enchants=build_sim_enchants(
             read_csv(raw / "SpellItemEnchantment.csv"), effects_by_spell, rating_factors
         ),

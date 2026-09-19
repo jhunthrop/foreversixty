@@ -213,10 +213,11 @@ older-schema build works if one is ever fetched again.
    --build <build> --engine "$FOREVER_ENGINE_PATH"`. It needs the build's `raw/` the way
    `simdb` does, plus the fork's `assets/database/db.json` at the pinned sha. It writes
    `loot.json`, `enchants.json`, `suffixes.json`, `simbuffs.json` and `items.json`'s
-   `suffixes` and `faction_restriction` columns. `pipeline/simdb/items.py` does not read
-   either column yet -- that join is a separate, blocked task -- but once it does, the
-   order will matter, so keep running `loot` before `simdb` regardless. Its log line
-   states the coverage; compare it against
+   `suffixes` and `faction_restriction` columns. `pipeline/simdb/items.py` reads both
+   columns back into `SimItem.random_suffix_options` and `.faction_restriction` (contract
+   10.3), so the order is not just a convention: `simdb` calls `_fork_columns`, which
+   raises a clear error naming the missing columns if `items.json` predates a `loot` run.
+   `loot`'s log line states the coverage; compare it against
    `tests/test_loot_build.py`'s constants before committing. Running `normalize` again
    afterwards clears both columns, so re-run `loot` if you do. If it stops on an
    unresolved IDS.md id, add that id to `curated/simbuffs.json` with the client row it

@@ -38,6 +38,19 @@ EXPECTED_MAIN_HAND_WEAPONS = 118
 #: carry only a weapon skill, which `pb.SimEnchant` cannot represent) -- see
 #: pipeline/simdb/equip.py's module docstring, not this constant.
 EXPECTED_ENCHANTS_WITH_STATS = 1329
+#: The committed database's four contract-10.3 fields, measured against
+#: the committed items.json that feeds two of them.
+#: MaxCount == 1 over the 4,986 items simdb_item_rows keeps (measured by
+#: running `pipeline loot` then `pipeline simdb` for 1.60.1.69893 and
+#: reading builds/1.60.1.69893/simdb.bin -- not the same population as
+#: items.json's, so this is not derivable from any earlier task's numbers).
+EXPECTED_UNIQUE = 933
+#: The whole-items.json figures from task 11's log line (loot: items.json:
+#: 69 with suffix options, 819 faction-restricted). simdb keeps only 4,986
+#: of the build's 19,171 items; both counts happen to survive that
+#: narrowing unchanged -- measured, not assumed.
+EXPECTED_FACTION_RESTRICTED = 819
+EXPECTED_WITH_SUFFIX_OPTIONS = 69
 
 
 @cache
@@ -156,6 +169,18 @@ def test_item_hit_and_crit_are_percentages_not_combat_rating_points():
     assert (item(12640).stats[hit], item(12640).stats[crit]) == (2.0, 2.0)
     assert item(18821).stats[crit] == 1.0
     assert (item(18404).stats[hit], item(18404).stats[crit]) == (1.0, 1.0)
+
+
+def test_sim_items_carry_the_four_fields_contract_10_3_adds():
+    items = database().items
+    assert sum(1 for item in items if item.faction_restriction) == (
+        EXPECTED_FACTION_RESTRICTED
+    )
+    assert sum(1 for item in items if item.random_suffix_options) == (
+        EXPECTED_WITH_SUFFIX_OPTIONS
+    )
+    assert all(item.required_level >= 0 for item in items)
+    assert sum(1 for item in items if item.unique) == EXPECTED_UNIQUE
 
 
 def test_consumables_are_emitted_beside_the_protobuf():
