@@ -43,10 +43,9 @@
   {/if}
 </div>
 
-<a
-  class="label text-nav flex min-h-11 items-center underline md:min-h-9"
-  {href}
-  data-testid="planner-sim-link"
->
+<!-- min-h-11 at every width, the same as GearPanel.svelte's slot buttons: no other control
+     in this lane shrinks its target on desktop, and a summary-bar row is exactly where a
+     mouse-only "it's fine above 44px on desktop" argument would first break the pattern. -->
+<a class="label text-nav flex min-h-11 items-center underline" {href} data-testid="planner-sim-link">
   {simCopy.simThisBuild}
 </a>

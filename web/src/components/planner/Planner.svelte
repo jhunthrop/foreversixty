@@ -23,6 +23,7 @@
   import { treeSourceNotice } from '../../lib/planner/tree-source';
   import type { BuildRecord, TalentFile } from '../../lib/planner/types';
   import { characterFromPlanner } from '../../lib/sim/character';
+  import { defaultSimState, simSearch, withSimState } from '../../lib/sim/url';
   import GearPanel from './GearPanel.svelte';
   import OrderStrip from './OrderStrip.svelte';
   import SharePanel from './SharePanel.svelte';
@@ -156,21 +157,28 @@
   // "Sim this build": a saved build's own link when it has one, otherwise the build's own
   // FS1 code -- the planner's export format, decoded by the same `decodeFS1` this component
   // reads a code with. The link is always present so a player can reach the full results
-  // whether or not the live estimate above has run, or could run at all.
+  // whether or not the live estimate above has run, or could run at all. Both branches go
+  // through `simSearch`/`withSimState` rather than building the query string by hand, so
+  // /sim's own URL state (lib/sim/url.ts) is the one place that encodes it.
   const simHref = $derived(
-    store.sourceId !== null
-      ? `/sim?source=build&ref=${encodeURIComponent(store.sourceId)}`
-      : store.talentIndex
-        ? `/sim?code=${encodeURIComponent(
-            encodeFS1({
-              dataBuild: store.treeVersion,
-              classSlug: store.classSlug,
-              raceSlug: store.raceSlug,
-              treeRanks: treeRanksFor(store.talentIndex, store.order),
-              gear: store.gear,
-            }),
-          )}`
-        : '/sim',
+    `/sim${simSearch(
+      withSimState(
+        defaultSimState(),
+        store.sourceId !== null
+          ? { source: 'build', ref: store.sourceId }
+          : store.talentIndex
+            ? {
+                code: encodeFS1({
+                  dataBuild: store.treeVersion,
+                  classSlug: store.classSlug,
+                  raceSlug: store.raceSlug,
+                  treeRanks: treeRanksFor(store.talentIndex, store.order),
+                  gear: store.gear,
+                }),
+              }
+            : {},
+      ),
+    )}`,
   );
 
   let status = $state<'loading' | 'ready' | 'failed'>('loading');

@@ -1,13 +1,15 @@
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
+import { createPlannerStore } from '../planner/store.svelte';
 import { indexTalents, validateOrder } from '../planner/rules';
-import type { ClassRow, RaceRow, TalentFile } from '../planner/types';
+import type { ClassRow, Combo, RaceRow, TalentFile } from '../planner/types';
 import { simCopy } from './copy';
 import { PRESET_BUFFS, PRESET_CONSUMABLES } from './settings';
 import {
   SIM_LEVEL,
   characterFromFs1,
+  characterFromPlanner,
   fromBuildDraft,
   gearSlots,
   specForSplit,
@@ -32,6 +34,7 @@ async function json<T>(relative: string): Promise<T> {
 const warriorTalents = (): Promise<TalentFile> => json<TalentFile>('talents/warrior.json');
 const classes = (): Promise<ClassRow[]> => json<ClassRow[]>('classes.json');
 const races = (): Promise<RaceRow[]> => json<RaceRow[]>('races.json');
+const combos = (): Promise<Combo[]> => json<Combo[]>('combos.json');
 
 const source: CharacterSource = { kind: 'addon', ref: '', captured_at: '2026-09-14T10:00:00Z' };
 const FURY = 'FS1:1.15.9.69722:warrior:orc:0/5530515/0:head=12640,main_hand=11726';
@@ -295,5 +298,75 @@ describe('the planner conversion, both ways', () => {
       source,
     };
     expect(toBuildDraft(character, classRows, raceRows)).toBeNull();
+  });
+});
+
+describe('characterFromPlanner', () => {
+  it('is null before the talent file has loaded', () => {
+    const store = createPlannerStore({ treeVersion: BUILD, classSlug: 'warrior', raceSlug: 'human' });
+    expect(characterFromPlanner(store)).toBeNull();
+  });
+
+  // Task 20 review, HIGH: store.toDraft() throws when classRow or raceRow cannot resolve
+  // (store.svelte.ts:319-321), and classSlug is untrusted input -- an unvalidated ?class=
+  // query string, or a decoded FS1 code naming a class the reference data does not have.
+  // Nothing repairs classSlug the way repairRaceForClass repairs raceSlug, so classRow stays
+  // null forever once the reference data has loaded. Before the fix, this called
+  // store.toDraft() anyway and threw, uncaught, inside Planner.svelte's automatic $effect.
+  it('is null, not a throw, when the class slug names no loaded class', async () => {
+    const [file, classRows, raceRows, comboRows] = await Promise.all([
+      warriorTalents(),
+      classes(),
+      races(),
+      combos(),
+    ]);
+    const store = createPlannerStore({ treeVersion: BUILD, classSlug: 'doesnotexist', raceSlug: 'human' });
+    store.setReference({ classes: classRows, races: raceRows, combos: comboRows });
+    store.setTalents(file);
+
+    expect(store.classRow).toBeNull();
+    expect(() => characterFromPlanner(store)).not.toThrow();
+    expect(characterFromPlanner(store)).toBeNull();
+  });
+
+  // The same failure mode, for a race the reference data does not have -- reachable the same
+  // way (an unvalidated ?race=, or a decoded FS1 code's race slug). setReference's own
+  // repairRaceForClass would otherwise silently move an unknown raceSlug to the first legal
+  // race for the class, so this passes no combos: with nothing legal to repair to, raceSlug
+  // stays unresolved and raceRow stays null, the way it would for a class/race pair this
+  // build's own combos.json genuinely has no entry for.
+  it('is null, not a throw, when the race slug names no loaded race', async () => {
+    const [file, classRows, raceRows] = await Promise.all([warriorTalents(), classes(), races()]);
+    const store = createPlannerStore({
+      treeVersion: BUILD,
+      classSlug: 'warrior',
+      raceSlug: 'doesnotexist',
+    });
+    store.setReference({ classes: classRows, races: raceRows, combos: [] });
+    store.setTalents(file);
+
+    expect(store.classRow).not.toBeNull();
+    expect(store.raceRow).toBeNull();
+    expect(() => characterFromPlanner(store)).not.toThrow();
+    expect(characterFromPlanner(store)).toBeNull();
+  });
+
+  it('carries the planner build through once the class and race both resolve', async () => {
+    const [file, classRows, raceRows, comboRows] = await Promise.all([
+      warriorTalents(),
+      classes(),
+      races(),
+      combos(),
+    ]);
+    const store = createPlannerStore({ treeVersion: BUILD, classSlug: 'warrior', raceSlug: 'orc' });
+    store.setReference({ classes: classRows, races: raceRows, combos: comboRows });
+    store.setTalents(file);
+    store.applyOrder([1001], {});
+
+    const character = characterFromPlanner(store);
+    expect(character).not.toBeNull();
+    expect(character?.class_slug).toBe('warrior');
+    expect(character?.race_slug).toBe('orc');
+    expect(character?.point_order).toEqual([1001]);
   });
 });

@@ -133,12 +133,19 @@ export function fromBuildDraft(
 /**
  * The planner's live state as a character. It is `fromBuildDraft` over `store.toDraft()`,
  * so there is exactly one conversion in the codebase and the sim cannot disagree with the
- * planner about what a build is. Null while the planner's data is still loading.
+ * planner about what a build is. Null while the planner's data is still loading, and null
+ * again when `classRow` or `raceRow` cannot resolve: `store.toDraft()` throws for either
+ * (`store.svelte.ts`'s own guard), and both can go unresolved on untrusted input this
+ * function does not control -- an unvalidated `?class=`/`?race=` query string, or a decoded
+ * FS1 code naming a class or race the reference data does not have. Treating that the same
+ * as "still loading" is what keeps the automatic `$effect` in `Planner.svelte` from throwing
+ * on a bad link instead of simply staying idle.
  */
 export function characterFromPlanner(store: PlannerStore): SimCharacter | null {
   if (store.talents === null || store.classes.length === 0) return null;
+  if (store.classRow === null || store.raceRow === null) return null;
   return fromBuildDraft(store.toDraft(), store.talents, store.classes, store.races, {
-    name: store.classRow?.name,
+    name: store.classRow.name,
     source: { kind: 'manual', ref: '', captured_at: new Date().toISOString() },
   });
 }
