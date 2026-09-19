@@ -617,5 +617,3 @@ export function createSimStore(init: SimStoreInit) {
     },
   };
 }
-
-export type SimStore = ReturnType<typeof createSimStore>;

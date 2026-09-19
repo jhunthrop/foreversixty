@@ -211,7 +211,6 @@ export const simCopy = {
   specSimmed: 'simmed',
   specsIntro:
     'The simulator is only worth as much as its numbers. A nightly job sims the top 50 parses for each spec and publishes the gap here, whatever it is.',
-  specsLoading: 'Reading spec support…',
   tryAgain: 'Try again',
 
   distMean: 'Mean DPS',

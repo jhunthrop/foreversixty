@@ -13,6 +13,7 @@
   import CastTable from '../report/CastTable.svelte';
   import ResourceGraphs from '../report/ResourceGraphs.svelte';
   import TimelinesView from '../report/TimelinesView.svelte';
+  import { rowLink } from '../../lib/report/format';
   import { fullWindow } from '../../lib/report/window';
   import type { ActionNames } from '../../lib/sim/action-names';
   import { simCopy } from '../../lib/sim/copy';
@@ -58,8 +59,7 @@
   const buffs = $derived(named.auras.filter((track) => track.type === 'BUFF'));
   const debuffs = $derived(named.auras.filter((track) => track.type === 'DEBUFF'));
 
-  const pill =
-    'inline-flex min-h-11 shrink-0 items-center px-3 text-[12px] font-bold tracking-[0.06em] uppercase md:min-h-9';
+  const pill = `${rowLink} shrink-0 px-3 text-[12px] font-bold tracking-[0.06em] uppercase md:min-h-9`;
 </script>
 
 <p

@@ -109,7 +109,11 @@
   {#if lazy.error !== ''}
     <p class="text-muted px-[18px] text-[13px] md:px-0" role="alert" data-testid="sim-results-error">
       {lazy.error}
-      <button type="button" class="text-strong ml-1 underline" onclick={() => lazy.load()}>Try again</button>
+      <button
+        type="button"
+        class="text-strong ml-1 inline-flex min-h-11 items-center underline"
+        onclick={() => lazy.load()}>{simCopy.tryAgain}</button
+      >
     </p>
   {/if}
 {/snippet}
