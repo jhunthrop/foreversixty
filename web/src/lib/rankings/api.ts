@@ -29,8 +29,8 @@ export class RankingsError extends Error {
   }
 }
 
-/** The contract's Amendments metric enum. */
-export type RankingMetric = 'dps' | 'hps' | 'damage_taken';
+/** The contract's Amendments metric enum, plus `execution` from the simulator contract. */
+export type RankingMetric = 'dps' | 'hps' | 'damage_taken' | 'execution';
 
 /** A ranking row's moderation state. */
 export type RankingState = 'ok' | 'at_risk' | 'removed';
@@ -51,6 +51,9 @@ export interface RankingRow {
   report_id: string;
   fight_index: number;
   state: RankingState;
+  /** actual / simulated, clamped to [0, 2]. Null when the spec is not validated or the
+   *  fight predates scoring. */
+  execution_score: number | null;
 }
 
 export interface RankingsPage {
@@ -83,6 +86,9 @@ export interface CharacterFight {
   fought_at: string;
   report_id: string;
   fight_index: number;
+  /** actual / simulated, clamped to [0, 2]. Null when the spec is not validated or the
+   *  fight predates scoring. */
+  execution_score: number | null;
 }
 
 /**
@@ -120,6 +126,11 @@ export interface GuildRosterBest {
   metric: RankingMetric;
   value: number;
   fought_at: string;
+  /** actual / simulated, clamped to [0, 2]. Null when the spec is not validated or the
+   *  fight predates scoring. There is no `report_id`/`fight_index` here -- `roster_best`
+   *  rows are per-encounter aggregates, not a single fight, so this score is never a link
+   *  into compare mode the way the rankings and character rows' scores are. */
+  execution_score: number | null;
 }
 
 export interface GuildPage {

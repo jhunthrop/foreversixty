@@ -7,6 +7,7 @@
   import { classColorVar, formatAmount, percentileToken } from '../lib/report/format';
   import { encounterSlug, fetchCharacter, type CharacterPage } from '../lib/rankings/api';
   import { RANKING_METRICS } from '../lib/rankings/url';
+  import { executionHref, executionLabel, executionTitle } from '../lib/sim/execution';
 
   let { path = null }: { path?: CharacterPath | null } = $props();
 
@@ -135,7 +136,7 @@
       <ul class="flex flex-col" data-testid="character-history">
         {#each data.history as row, index (`${row.report_id}-${row.fight_index}-${index}`)}
           <li
-            class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-3 border-b px-2 py-2 text-[14px] md:grid-cols-[96px_minmax(0,1fr)_88px_72px_88px]"
+            class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-3 border-b px-2 py-2 text-[14px] md:grid-cols-[96px_minmax(0,1fr)_88px_72px_88px_72px]"
           >
             <span class="text-muted tabular hidden font-mono text-[13px] md:inline"
               >{row.fought_at.slice(0, 10)}</span
@@ -157,6 +158,21 @@
             >
               {formatAmount(Math.round(row.value))}
             </span>
+            {#if row.execution_score === null}
+              <span
+                class="text-muted tabular hidden text-right font-mono text-[13px] md:inline"
+                title={executionTitle(null)}
+                aria-label={executionTitle(null)}
+                data-testid="character-execution">{executionLabel(null)}</span
+              >
+            {:else}
+              <a
+                class="{rowLink} tabular hidden text-right font-mono text-[13px] md:inline"
+                href={executionHref(row.report_id, row.fight_index)}
+                title={executionTitle(row.execution_score)}
+                data-testid="character-execution">{executionLabel(row.execution_score)}</a
+              >
+            {/if}
           </li>
         {/each}
       </ul>

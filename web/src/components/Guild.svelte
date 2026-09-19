@@ -12,6 +12,7 @@
   import { classColorVar, formatAmount } from '../lib/report/format';
   import { encounterSlug, fetchGuild, type GuildPage } from '../lib/rankings/api';
   import { RANKING_METRICS } from '../lib/rankings/url';
+  import { executionLabel, executionTitle } from '../lib/sim/execution';
 
   let { path = null }: { path?: CharacterPath | null } = $props();
 
@@ -135,7 +136,7 @@
         <ul class="flex flex-col" data-testid="guild-roster">
           {#each data.roster_best as row (`${row.player.key}-${row.encounter_id}-${row.metric}`)}
             <li
-              class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b px-2 py-2 text-[14px] md:grid-cols-[minmax(120px,1fr)_minmax(0,1fr)_96px]"
+              class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b px-2 py-2 text-[14px] md:grid-cols-[minmax(120px,1fr)_minmax(0,1fr)_96px_72px]"
             >
               <a
                 class="{rowLink} truncate font-semibold"
@@ -153,6 +154,15 @@
               >
                 {formatAmount(Math.round(row.value))}
               </span>
+              <!-- `roster_best` rows have no report_id/fight_index -- they are per-encounter
+                   aggregates, not one fight -- so this score is text, never a compare-mode link,
+                   unlike the same score on the rankings and character rows. -->
+              <span
+                class="text-muted tabular hidden text-right font-mono text-[13px] md:inline"
+                title={executionTitle(row.execution_score)}
+                aria-label={executionTitle(row.execution_score)}
+                data-testid="guild-execution">{executionLabel(row.execution_score)}</span
+              >
             </li>
           {/each}
         </ul>
