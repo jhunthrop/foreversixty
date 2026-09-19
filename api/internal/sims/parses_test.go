@@ -12,13 +12,22 @@ import (
 // seedParseRow writes one ranked, killing fight row in the given
 // phase, and the stored summary TopParses reads the combatant and
 // casts from - the ranking half and the bucket half of one parse.
-func seedParseRow(h *harness, reportID string, index int, key, name, spec, phase string, dps float64, sum summary.Summary) {
+// specSlug is the API's vocabulary ("warrior-fury"), what TopParses
+// is called with; the row itself is written the way the rankings
+// writer really writes it - class capitalized ("Warrior"), spec the
+// display name ("Fury") - so the fixture cannot hide a vocabulary
+// mismatch the way seeding the slug directly did.
+func seedParseRow(h *harness, reportID string, index int, key, name, specSlug, phase string, dps float64, sum summary.Summary) {
 	h.t.Helper()
+	specName, ok := specNameFor(specSlug)
+	if !ok {
+		h.t.Fatalf("seedParseRow: no spec matches slug %q", specSlug)
+	}
 	if _, err := h.store.Pool.Exec(h.t.Context(),
 		`insert into fight_metrics (report_id, fight_index, player_key, player_name, class, spec,
 		   role, metric_dps, duration_ms, kill, phase, fought_at, state)
-		 values ($1, $2, $3, $4, 'warrior', $5, 'dps', $6, 180000, true, $7, now(), 'ok')`,
-		reportID, index, key, name, spec, dps, phase); err != nil {
+		 values ($1, $2, $3, $4, 'Warrior', $5, 'dps', $6, 180000, true, $7, now(), 'ok')`,
+		reportID, index, key, name, specName, dps, phase); err != nil {
 		h.t.Fatal(err)
 	}
 	sum.FightIndex = index
@@ -65,7 +74,7 @@ func TestTopParsesReadsRankedFightsHighestDPSFirst(t *testing.T) {
 	if got[0].DurationSec != 180 {
 		t.Errorf("duration %d, want 180", got[0].DurationSec)
 	}
-	if got[0].Spec != "warrior-fury" || got[0].Class != "warrior" {
+	if got[0].Spec != "warrior-fury" || got[0].Class != "Warrior" {
 		t.Errorf("spec/class %+v", got[0])
 	}
 	if got[0].Combatant.Name != "Otherguy" {
@@ -86,7 +95,7 @@ func TestTopParsesSkipsAFightWithNoStoredSummary(t *testing.T) {
 	if _, err := h.store.Pool.Exec(h.t.Context(),
 		`insert into fight_metrics (report_id, fight_index, player_key, player_name, class, spec,
 		   role, metric_dps, duration_ms, kill, phase, fought_at, state)
-		 values ('repmissing', 1, 'us/normal/gone', 'Ghost', 'warrior', 'warrior-fury', 'dps', 900,
+		 values ('repmissing', 1, 'us/normal/gone', 'Ghost', 'Warrior', 'Fury', 'dps', 900,
 		   180000, true, 'raids-1', now(), 'ok')`); err != nil {
 		t.Fatal(err)
 	}

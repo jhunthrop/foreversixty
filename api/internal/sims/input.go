@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"strconv"
 	"strings"
@@ -66,6 +67,7 @@ func (s *Store) SimInput(ctx context.Context, key string) (Input, FightRef, bool
 		ref        FightRef
 		export     *string
 		exportAt   *time.Time
+		fightClass *string
 		fightSpec  *string
 		split      *string
 		fightAt    *time.Time
@@ -81,11 +83,11 @@ func (s *Store) SimInput(ctx context.Context, key string) (Input, FightRef, bool
 		return Input{}, FightRef{}, false, fmt.Errorf("sims: read export %s: %w", key, err)
 	}
 	err = s.Pool.QueryRow(ctx,
-		`select spec, talent_split, fought_at, trinkets, report_id, fight_index, player_name
+		`select class, spec, talent_split, fought_at, trinkets, report_id, fight_index, player_name
 		 from fight_metrics
 		 where player_key = $1 and state <> 'removed'
 		 order by fought_at desc limit 1`, key).
-		Scan(&fightSpec, &split, &fightAt, &trinkets, &reportID, &fightIndex, &playerName)
+		Scan(&fightClass, &fightSpec, &split, &fightAt, &trinkets, &reportID, &fightIndex, &playerName)
 	if err != nil && !isNoRows(err) {
 		return Input{}, FightRef{}, false, fmt.Errorf("sims: read last fight %s: %w", key, err)
 	}
@@ -93,8 +95,22 @@ func (s *Store) SimInput(ctx context.Context, key string) (Input, FightRef, bool
 	// Whatever the source of the gear, the spec, the talents and the
 	// fight to read buffs from come from the newest ranked fight: it is
 	// the only source in this repository that records any of them.
+	// fight_metrics.spec is a display name ("Fury"); every other
+	// simulator surface, this field included, speaks the site's spec
+	// slug ("warrior-fury") - specSlugFor is the one place that
+	// converts between them. A pair nothing matches is logged and
+	// dropped rather than passed through as the wrong vocabulary.
 	if fightSpec != nil {
-		out.Spec = *fightSpec
+		class := ""
+		if fightClass != nil {
+			class = *fightClass
+		}
+		if slug, ok := specSlugFor(class, *fightSpec); ok {
+			out.Spec = slug
+		} else {
+			slog.Default().Warn("sims", "op", "sim input", "character", key,
+				"class", class, "spec", *fightSpec, "err", "no spec matches this class/spec pair")
+		}
 	}
 	if split != nil {
 		out.Talents = *split

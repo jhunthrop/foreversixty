@@ -21,10 +21,7 @@ type ParseReader struct {
 }
 
 func (p *ParseReader) logger() *slog.Logger {
-	if p.Log != nil {
-		return p.Log
-	}
-	return slog.Default()
+	return loggerOr(p.Log)
 }
 
 // TopParses answers the n best DPS parses for one spec in one phase.
@@ -33,13 +30,22 @@ func (p *ParseReader) logger() *slog.Logger {
 // measurement, and measuring a character we cannot reconstruct would
 // make it worse rather than more complete.
 func (p *ParseReader) TopParses(ctx context.Context, spec, phase string, n int) ([]Parse, error) {
+	// spec is the API boundary's vocabulary, a slug ("warrior-fury");
+	// fight_metrics.spec holds the display name the rankings writer
+	// stores ("Fury"), the same vocabulary specSlugFor converts out
+	// of on the write path. Converting once, here, is the query's
+	// half of that one conversion.
+	name, ok := specNameFor(spec)
+	if !ok {
+		return nil, fmt.Errorf("sims: top parses: no spec matches slug %q", spec)
+	}
 	rows, err := p.Pool.Query(ctx,
 		`select m.report_id, m.fight_index, m.player_key, m.player_name,
 		        coalesce(m.class, ''), m.metric_dps, coalesce(m.duration_ms, 0)
 		 from fight_metrics m
 		 where m.spec = $1 and m.phase = $2 and m.kill and m.state <> 'removed'
 		   and m.role = $3 and m.metric_dps is not null and m.duration_ms > 0
-		 order by m.metric_dps desc limit $4`, spec, phase, roleDPS, n)
+		 order by m.metric_dps desc limit $4`, name, phase, roleDPS, n)
 	if err != nil {
 		return nil, fmt.Errorf("sims: top parses for %s: %w", spec, err)
 	}

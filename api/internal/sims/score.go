@@ -155,6 +155,20 @@ func specSlugFor(class, spec string) (string, bool) {
 	return "", false
 }
 
+// specNameFor is specSlugFor's inverse: the site's spec key
+// ("warrior-fury") back to the display name fight_metrics.spec
+// actually stores ("Fury"). It is the other half of the one place
+// this package converts between the API boundary's vocabulary
+// (slugs) and the column's (display names) - a caller holding only
+// the slug uses this to build a query against that column.
+func specNameFor(slug string) (string, bool) {
+	s, ok := specs.ByKey[slug]
+	if !ok {
+		return "", false
+	}
+	return s.Name, true
+}
+
 // rosterNamed finds one player's roster line in a fight's summary -
 // their class, spec name, role and dps - the way combatantNamed finds
 // their gear. Both search the same summary by the same name, because
@@ -204,10 +218,7 @@ type ScoreDeps struct {
 }
 
 func (d ScoreDeps) logger() *slog.Logger {
-	if d.Log != nil {
-		return d.Log
-	}
-	return slog.Default()
+	return loggerOr(d.Log)
 }
 
 // Score reads a fight's stored summary, finds the player's roster row

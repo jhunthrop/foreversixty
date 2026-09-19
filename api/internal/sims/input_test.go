@@ -35,22 +35,31 @@ func seedExport(h *harness, key, region, ruleset, name, export string, at time.T
 }
 
 // seedFightRow writes one ranked fight row for a character, and the
-// stored summary it points at, so the buff read has something to read.
-func seedFightRow(h *harness, key, name, spec string, at time.Time) {
+// stored summary it points at, so the buff read has something to
+// read. specSlug is the API's vocabulary ("warrior-fury"), the same
+// one SimInput must answer with; the row is written the way the
+// rankings writer really writes it - class and spec as separate
+// columns, spec the display name ("Fury") - so the fixture exercises
+// the same class/spec -> slug conversion the handler does.
+func seedFightRow(h *harness, key, name, class, specSlug string, at time.Time) {
 	h.t.Helper()
-	reportID := "rep" + spec
+	reportID := "rep" + specSlug
+	specName, ok := specNameFor(specSlug)
+	if !ok {
+		h.t.Fatalf("seedFightRow: no spec matches slug %q", specSlug)
+	}
 	if _, err := h.store.Pool.Exec(h.t.Context(),
-		`insert into fight_metrics (report_id, fight_index, player_key, player_name, spec,
+		`insert into fight_metrics (report_id, fight_index, player_key, player_name, class, spec,
 		   role, metric_dps, duration_ms, kill, fought_at, talent_split, trinkets, state)
-		 values ($1, 1, $2, $3, $4, 'dps', 1000, 180000, true, $5, '31/0/20',
+		 values ($1, 1, $2, $3, $4, $5, 'dps', 1000, 180000, true, $6, '31/0/20',
 		   array[19406, 13965]::bigint[], 'ok')`,
-		reportID, key, name, spec, at); err != nil {
+		reportID, key, name, class, specName, at); err != nil {
 		h.t.Fatal(err)
 	}
 	body, err := json.Marshal(summary.Summary{
 		FightIndex: 1,
 		Combatants: []summary.CombatantRow{{
-			GUID: "Player-1", Name: name, Spec: spec,
+			GUID: "Player-1", Name: name, Spec: specName,
 			RaidBuffs: []summary.AuraRef{
 				{SpellID: 20217, Name: "Blessing of Kings"},
 				{SpellID: 999999, Name: "Some Forever Aura Nobody Mapped"},
@@ -76,7 +85,7 @@ func TestSimInputPrefersTheNewerSource(t *testing.T) {
 	recent := time.Now().UTC().Add(-1 * time.Hour)
 
 	// Only a fight: the read falls back to it.
-	seedFightRow(h, key, "Baelgrim", "warrior-fury", recent)
+	seedFightRow(h, key, "Baelgrim", "Warrior", "warrior-fury", recent)
 	var in Input
 	h.data(h.do(http.MethodGet, "/v1/characters/us/normal/baelgrim/sim-input", "", nil), &in)
 	if in.Source != "fight" || in.Spec != "warrior-fury" {
@@ -140,7 +149,7 @@ func TestSimInputServesTheCharacterWithNoBucket(t *testing.T) {
 	h := newHarness(t)
 	ensureMetricsPartition(h)
 	h.service.Summaries = nil // a deployment with no R2 credentials
-	seedFightRow(h, "us/normal/baelgrim", "Baelgrim", "warrior-fury", time.Now().UTC())
+	seedFightRow(h, "us/normal/baelgrim", "Baelgrim", "Warrior", "warrior-fury", time.Now().UTC())
 	var in Input
 	h.data(h.do(http.MethodGet, "/v1/characters/us/normal/baelgrim/sim-input", "", nil), &in)
 	if in.Spec != "warrior-fury" || in.Talents != "31/0/20" {
@@ -167,7 +176,7 @@ func TestAnUnknownCharacterIs404(t *testing.T) {
 func TestSimInputIsNeverCachedForASignedInCaller(t *testing.T) {
 	h := newHarness(t)
 	ensureMetricsPartition(h)
-	seedFightRow(h, "us/normal/baelgrim", "Baelgrim", "mage-frost", time.Now().UTC())
+	seedFightRow(h, "us/normal/baelgrim", "Baelgrim", "Mage", "mage-frost", time.Now().UTC())
 
 	res := h.do(http.MethodGet, "/v1/characters/us/normal/baelgrim/sim-input", "", nil)
 	res.Body.Close()
