@@ -115,6 +115,37 @@ test('a saved sim whose stored request has no gear shows the line, not the grid'
   await expect(page.getByTestId('sim-slot-head')).toHaveCount(0);
 });
 
+// Round 3 (Lighthouse): the skeleton reserves the saved result's shape while a real,
+// non-prerendered id's GET /v1/sims/{id} is in flight -- sim/[id].astro's own shell (the
+// one Lighthouse measures) renders the identical string statically and never shows this
+// branch for the prerendered fixture (its result is inlined), so this is the only place
+// the loading skeleton is exercisable end to end. Mirrors report-phone.spec.ts's own
+// reserved-skeleton check for reports/[id].astro's report-skeleton.
+test('a saved sim shows the loading skeleton until the fetch resolves, then the real result', async ({ page }) => {
+  const id = 'simloadingab';
+  await page.route(`**/sim/${id}`, (route) =>
+    route.fulfill({ status: 200, contentType: 'text/html', body: SHELL_HTML }),
+  );
+  let release: (() => void) | undefined;
+  const held = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  await page.route(`**/v1/sims/${id}`, async (route) => {
+    await held;
+    await route.fulfill(envelope({ ...fixtureResult, sim_id: id }));
+  });
+
+  await page.goto(`/sim/${id}`);
+
+  await expect(page.getByTestId('sim-saved-skeleton')).toBeVisible();
+  await expect(page.getByTestId('sim-saved-header')).toHaveCount(0);
+
+  release?.();
+
+  await expect(page.getByTestId('sim-saved-header')).toBeVisible();
+  await expect(page.getByTestId('sim-saved-skeleton')).toHaveCount(0);
+});
+
 test('a stale engine version shows the pill and the sentence, and is never re-run automatically', async ({
   page,
 }) => {

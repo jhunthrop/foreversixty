@@ -21,6 +21,7 @@
   import { compareSummaries } from '../../lib/sim/compare';
   import { simCopy } from '../../lib/sim/copy';
   import { settingsLabel } from '../../lib/sim/settings';
+  import { SIM_SAVED_SKELETON_HTML } from '../../lib/sim/skeleton';
   import { parseFightRef } from '../../lib/sim/sources';
   import { mergeSpecRows } from '../../lib/sim/spec-state';
   import { createSimStore } from '../../lib/sim/store.svelte';
@@ -412,6 +413,13 @@
       <p class="text-muted px-[18px] text-[14px] md:px-0" role="alert" data-testid="sim-saved-error">
         {savedError}
       </p>
+    {:else}
+      <!-- Between mounting and a real, non-prerendered id's fetch resolving. Static,
+           trusted markup of our own (skeleton.ts): no data goes into it, and it is the
+           same string sim/[id].astro's own shell renders before hydration, so nothing
+           shifts between the two moments -- report/skeleton.ts's own reason. -->
+      <!-- eslint-disable-next-line svelte/no-at-html-tags -->
+      {@html SIM_SAVED_SKELETON_HTML}
     {/if}
   {:else}
     <!-- No <h1> here: sim.astro and sim/specs.astro each carry their own, in the static
