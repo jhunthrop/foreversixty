@@ -146,7 +146,7 @@ stores the fields and keeps `Style` as the label. Vocabulary and expansion:
 | `heavy-movement` | 1 | 0.25 | 20 s / 5 s / away | none | false |
 | `cleave-2`, `cleave-3`, `cleave-5` | 2, 3, 5 | 0.25 | none | none | false |
 | `dungeon` | 1 | 0 | none | 0 s: 1, 40 s: 3, 80 s: 5, 130 s: 3, 160 s: 1 | false |
-| `dummy` | 1 | 0 | none | none | true |
+| `dummy` | 1 | 0 | none | none | true (TargetType `unknown`) |
 
 ### 1.7 Buffs, consumables, cooldowns
 
@@ -533,6 +533,13 @@ gains per-slot enchant and suffix.
   says why.
 
 ### 10.8 Rulings from the plan revisions
+
+- **Dummy target type.** The `dummy` style sets `TargetType: "unknown"` so a
+  dummy collects no creature-type bonus; an empty `TargetType` elsewhere still
+  maps to humanoid.
+- **Sample opt-in stands.** `SimOptions.sample_iteration` is set for plain
+  runs only and forces the single-threaded engine path; bulk stages and
+  weights never ask for it. The opt-in is not inverted.
 
 - **Faction enum.** `UIItem.FactionRestriction` lives in `ui.proto`, which
   imports `common.proto`, so `SimItem` cannot reference it. `SimItem`
