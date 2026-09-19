@@ -38,8 +38,83 @@ jobs:
         working-directory: sim
         env: { GOWORK: off }
         run: go test -race -cover ./runner/ ./talents/ ./api/
-  deploy:
+  # BuildKit reads api/Dockerfile.dockerignore in preference to the
+  # repository root's .dockerignore - a per-Dockerfile ignore file
+  # that excludes something the engine stage needs breaks only under
+  # BuildKit, and the deploy job (below) is the only place that ever
+  # ran `docker build` before this job existed, only on push to main.
+  # This job builds the same image on every push and PR that can
+  # change it, with the same --build-args the deploy job uses, so a
+  # broken image is caught before it reaches deploy.
+  image:
     needs: test
+    runs-on: ubuntu-latest
+    env:
+      DOCKER_BUILDKIT: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with: { go-version-file: api/go.mod, cache-dependency-path: api/go.sum }
+        # Read once, here, from the same two files the engine stage
+        # itself trusts: the active build (so this builds with
+        # ENGINE_SIMDB_SOURCE=engine-source-active, exactly like
+        # deploy, instead of engine-source-all's every-build copy) and
+        # the pin (so the next step can fail this job if the image's
+        # binary ever answers with anything else).
+      - name: Read the active build and the engine pin
+        run: |
+          active=$(sed -n 's/.*"build"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' web/src/data/active-build.json)
+          test -n "$active" || { echo "web/src/data/active-build.json names no build"; exit 1; }
+          pin=$(grep 'const Version' sim/enginever/version.go | cut -d'"' -f2)
+          test -n "$pin" || { echo "sim/enginever/version.go has no Version"; exit 1; }
+          echo "ACTIVE_BUILD=$active" >> "$GITHUB_ENV"
+          echo "ENGINE_PIN=$pin" >> "$GITHUB_ENV"
+      - name: Build the image with BuildKit
+        run: |
+          docker build --build-arg VERSION=${{ github.sha }} \
+            --build-arg ENGINE_SIMDB_SOURCE=engine-source-active \
+            --build-arg ACTIVE_BUILD="$ACTIVE_BUILD" \
+            -t forever-api-image-check -f api/Dockerfile .
+        # Not just that the binary runs: that it is the pinned engine.
+        # A stale build-cache layer could serve an old sim/ tree at the
+        # right paths with the wrong sha baked into its ldflags, and a
+        # bare `docker run ... -version` with no comparison would pass
+        # that just as happily as a correct image.
+      - name: The image carries the pinned engine
+        run: |
+          got=$(docker run --rm --entrypoint /engine/forever-sim forever-api-image-check -version)
+          echo "pin=$ENGINE_PIN got=$got"
+          test "$got" = "$ENGINE_PIN" || {
+            echo "the image's engine binary reports '$got', not the pinned '$ENGINE_PIN'"; exit 1; }
+        # api/internal/sims/image_test.go's TestTheEngineBinaryReportsThePin
+        # looks for the engine at runner.DefaultBinary, a hardcoded
+        # absolute path (/engine/forever-sim) - not an env var - and
+        # skips cleanly whenever nothing is there, which is every
+        # environment except one built from this image. Putting the
+        # extracted binary at that exact path is what turns the skip
+        # into a real assertion against the image's own binary.
+      - name: Extract the engine binary to where the runner looks for it
+        run: |
+          sudo mkdir -p /engine
+          cid=$(docker create --entrypoint /engine/forever-sim forever-api-image-check)
+          sudo docker cp "$cid:/engine/forever-sim" /engine/forever-sim
+          docker rm "$cid" >/dev/null
+          sudo chmod 0755 /engine/forever-sim
+        # GOWORK=off for the same reason the sim-module step in the
+        # test job above needs it: sim/go.mod's development replace for
+        # github.com/wowsims/classic points at a developer's local
+        # clone, and go.work (at the repository root, auto-detected
+        # above this job's api/ working directory) would otherwise pull
+        # that unresolvable path into the whole workspace's build list.
+        # api/go.mod's own replaces resolve everything this package
+        # needs without it - verified: the import boundary (Step 3 of
+        # the lane's final review) never reaches wowsims/classic.
+      - name: The image tests, against the real engine
+        working-directory: api
+        env: { GOWORK: off }
+        run: go test ./internal/sims/ -run 'Image|Pin' -v
+  deploy:
+    needs: [test, image]
     # Deploys only once the Google Cloud variables from api/README.md "First-time setup" exist.
     if: github.ref == 'refs/heads/main' && github.event_name == 'push' && vars.GCP_WIF_PROVIDER != ''
     runs-on: ubuntu-latest
