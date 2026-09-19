@@ -14,17 +14,19 @@
   import { createLazyComponent, type LazyLoadState } from '../../lib/report/lazy-component.svelte';
   import { fetchReportMeta, fetchSummary } from '../../lib/report/load';
   import type { Summary } from '../../lib/report/types';
-  import { fetchSpecs } from '../../lib/sim/api';
+  import { fetchSim, fetchSpecs, listMySims } from '../../lib/sim/api';
   import { compareSummaries } from '../../lib/sim/compare';
   import { simCopy } from '../../lib/sim/copy';
+  import { settingsLabel } from '../../lib/sim/settings';
   import { parseFightRef } from '../../lib/sim/sources';
   import { mergeSpecRows } from '../../lib/sim/spec-state';
   import { createSimStore } from '../../lib/sim/store.svelte';
-  import { parseSimState } from '../../lib/sim/url';
+  import { defaultSimState, parseSimState, simSearch, withSimState } from '../../lib/sim/url';
   import { ENGINE_VERSION, engineLabel, isStale } from '../../lib/sim/version';
-  import type { SimResult, SpecFidelity } from '../../lib/sim/types';
+  import type { SimListRow, SimResult, SpecFidelity } from '../../lib/sim/types';
   import CharacterStrip from './CharacterStrip.svelte';
   import RunControl from './RunControl.svelte';
+  import SavedSim from './SavedSim.svelte';
   import SettingsBar from './SettingsBar.svelte';
   import SourceSwitcher from './SourceSwitcher.svelte';
   import SpecCard from './SpecCard.svelte';
@@ -109,6 +111,38 @@
 
   if (bootstrap.mode === 'compare') void enterCompare(bootstrap.ref);
 
+  // /sim/<sim_id>'s own entry path (Task 17), the saved-sim counterpart to `enterCompare`
+  // above: a prerendered fixture page already carries its result (`inlineResult`), so only
+  // the id-only case fetches. Called once, here, rather than from an `$effect` -- the same
+  // reason `enterCompare` is not one.
+  let savedResult = $state<SimResult | null>(untrack(() => inlineResult));
+  let savedError = $state<string | null>(null);
+
+  if (hasSavedSimId && savedResult === null && simId !== '') {
+    void fetchSim(simId)
+      .then((result) => (savedResult = result))
+      .catch((error) => {
+        savedError = error instanceof Error ? error.message : simCopy.loadFailed;
+      });
+  }
+
+  /**
+   * "Run this yourself", the stale-result remedy and the ordinary way off a saved page:
+   * opens /sim with the stored request's own source and ref, so the player can change
+   * something and run it themselves. It is a callback rather than an `<a href>` SavedSim
+   * builds itself so the URL is built with the same `sim/url.ts` vocabulary this file
+   * already owns for its own bootstrap, in one place. It is never triggered automatically
+   * -- only this handler, from the player's own click.
+   */
+  function onRerunSaved(): void {
+    if (savedResult === null) return;
+    const target = withSimState(defaultSimState(), {
+      source: savedResult.request.source.kind,
+      ref: savedResult.request.source.ref,
+    });
+    window.location.href = `/sim${simSearch(target)}`;
+  }
+
   const comparison = $derived(
     comparing && actual !== null && store.result !== null && store.character !== null
       ? compareSummaries(store.result.summary, actual, store.character.name, store.actionNames)
@@ -122,14 +156,108 @@
     if (comparison !== null) compareViewLazy.load();
   });
 
+  // The history panel (Task 17), for a signed-in player on plain /sim only -- set from
+  // `onMount`'s own `fetchMe` below, the same answer that already gates the premium
+  // control, so there is one signed-in check for the page rather than two.
+  let signedIn = $state(false);
+  let historyRows = $state<SimListRow[] | null>(null);
+  let historyError = $state<string | null>(null);
+
+  async function loadHistory(): Promise<void> {
+    historyError = null;
+    try {
+      const page = await listMySims();
+      historyRows = page.rows;
+    } catch (error) {
+      historyRows = null;
+      historyError = error instanceof Error ? error.message : simCopy.loadFailed;
+    }
+  }
+
+  // Loaded lazily (Task 17): the history panel is empty weight for every signed-out
+  // visitor and for /sim/<id>, where it never renders at all, and this file's compiled
+  // bundle is shared by all three /sim routes.
+  const simHistoryLazy = createLazyComponent(() => import('./SimHistory.svelte'));
+  $effect(() => {
+    if (signedIn) simHistoryLazy.load();
+  });
+
+  // The save form under the results (Task 17). `saveOpen`/`saveTitle` are the inline
+  // form; `savedUrl` is what replaces it on success, exactly as `SharePanel.svelte`'s own
+  // save flow does for a build. Any new run invalidates whatever the form was showing --
+  // a fresh result is a different sim to save, and an old saved link would be pointing at
+  // the wrong one.
+  let saveOpen = $state(false);
+  let saveTitle = $state('');
+  let saving = $state(false);
+  let saveFailed = $state(false);
+  let savedUrl = $state<string | null>(null);
+  let savedLinkCopied = $state(false);
+
+  $effect(() => {
+    void store.result;
+    saveOpen = false;
+    saveFailed = false;
+    savedUrl = null;
+    savedLinkCopied = false;
+  });
+
+  // A result the run loop reports as stopped rather than finished (`sim/api`'s additive
+  // `aborted`) has nothing complete to save -- the button stays disabled and says why,
+  // rather than saving a partial run under a title the player chose for a real result.
+  const canSave = $derived(store.result !== null && store.result.aborted !== true);
+
+  function openSaveForm(): void {
+    saveTitle = settingsLabel(store.settings);
+    saveFailed = false;
+    savedUrl = null;
+    saveOpen = true;
+  }
+
+  function cancelSave(): void {
+    saveOpen = false;
+    saveFailed = false;
+  }
+
+  async function confirmSave(): Promise<void> {
+    saving = true;
+    saveFailed = false;
+    const id = await store.save(saveTitle);
+    saving = false;
+    if (id === null) {
+      saveFailed = true;
+      return;
+    }
+    saveOpen = false;
+    savedUrl = `${window.location.origin}/sim/${id}`;
+  }
+
+  async function copySavedLink(): Promise<void> {
+    if (savedUrl === null) return;
+    try {
+      await navigator.clipboard.writeText(savedUrl);
+      savedLinkCopied = true;
+    } catch {
+      savedLinkCopied = false;
+    }
+  }
+
   onMount(() => {
     // `user.premium` on GET /v1/me, per the simulator contract -- the server lane renders
     // only once this answers true. A signed-out visitor and an unreachable API read the
     // same way here (fetchMe resolves null, or the promise rejects and is swallowed): both
     // mean "no premium control", the way Account.svelte's own `load()` already treats a
     // failed fetchMe as "not signed in" rather than an error banner.
+    //
+    // The same answer also gates the history panel (Task 17): `signedIn` is `me !== null`,
+    // and the panel's own `GET /v1/sims?mine=1` fires only then -- a signed-out visitor
+    // gets no second request for a list that would come back empty anyway.
     void fetchMe()
-      .then((me) => store.setPremium(me?.user.premium ?? false))
+      .then((me) => {
+        store.setPremium(me?.user.premium ?? false);
+        signedIn = me !== null;
+        if (signedIn) void loadHistory();
+      })
       .catch(() => {});
     return () => store.dispose();
   });
@@ -219,110 +347,194 @@
 {/snippet}
 
 <div class="flex flex-col gap-[22px] md:gap-8" data-testid="sim-view">
-  <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1 px-[18px] md:px-0">
-    <h1 class="section-title">Simulator</h1>
-    <a
-      class="tabular text-muted ml-auto font-mono text-[12px]"
-      href="/sim/specs"
-      data-testid="sim-engine-version">{engineLabel(ENGINE_VERSION)}</a
-    >
-  </div>
-
-  {#if bootstrap.view === 'specs'}
-    <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="specs-intro">{simCopy.specsIntro}</p>
-    <SpecGrid rows={specRows} error={specsError} onretry={() => void loadSpecs()} />
-  {:else if !hasSavedSimId}
-    {#if store.character !== null && !switcherOpen}
-      <CharacterStrip
-        character={store.character}
-        items={store.items}
-        races={store.races}
-        onchange={() => (switcherOpen = true)}
-        onrace={(slug) => store.setRace(slug)}
-      />
-    {:else}
-      <SourceSwitcher
-        busy={store.phase === 'loading-character'}
-        message={store.message}
-        signedIn={false}
-        onaddon={(code) => void store.loadAddon(code)}
-        onbuild={(id) => void store.loadBuild(id)}
-        onfight={(ref) => void store.loadFight(ref)}
-        onsignin={onSignIn}
-      />
+  {#if hasSavedSimId}
+    <!-- /sim/<sim_id>: read-only, and not the sim page with a result in it -- no switcher,
+         no settings bar, no run control. SavedSim composes its own heading. -->
+    {#if savedResult !== null}
+      <SavedSim result={savedResult} onrerun={onRerunSaved} />
+    {:else if savedError !== null}
+      <p class="text-muted px-[18px] text-[14px] md:px-0" role="alert" data-testid="sim-saved-error">
+        {savedError}
+      </p>
     {/if}
+  {:else}
+    <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1 px-[18px] md:px-0">
+      <h1 class="section-title">Simulator</h1>
+      <a
+        class="tabular text-muted ml-auto font-mono text-[12px]"
+        href="/sim/specs"
+        data-testid="sim-engine-version">{engineLabel(ENGINE_VERSION)}</a
+      >
+    </div>
 
-    {#if store.character !== null}
-      <SettingsBar
-        settings={store.settings}
-        spec={store.character.spec}
-        disabled={store.phase === 'running' || store.serverRunning}
-        onchange={(next) => store.setSettings(next)}
-      />
-      {#if specUnsupported && characterSpecRow !== null}
-        <!-- Instead of the run control, the sentence and the results -- not above them.
-             The settings bar above still says what would be simulated; this says why it
-             cannot be, with the same card /sim/specs shows for this spec. -->
-        <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="spec-unsupported-lead">
-          {simCopy.specUnsupportedLead}
-        </p>
-        <div class="px-[18px] md:px-0">
-          <SpecCard row={characterSpecRow} actionNames={store.actionNames} compact />
-        </div>
-      {:else}
-        <RunControl
-          phase={store.phase}
-          estimate={store.estimate}
-          iterationsDone={store.iterationsDone}
-          iterationsTotal={store.iterationsTotal}
-          precision={store.precision}
-          premium={store.premium}
-          message={store.message}
-          detail={store.detail}
-          racePending={store.needsRace}
-          {staleVersion}
-          serverRunning={store.serverRunning}
-          onrun={() => void store.run()}
-          onstop={() => store.stop()}
-          onprecision={(value) => store.setPrecision(value)}
-          onserver={() => void store.runOnServer()}
-          onrerun={() => void store.run()}
+    {#if bootstrap.view === 'specs'}
+      <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="specs-intro">{simCopy.specsIntro}</p>
+      <SpecGrid rows={specRows} error={specsError} onretry={() => void loadSpecs()} />
+    {:else}
+      {#if store.character !== null && !switcherOpen}
+        <CharacterStrip
+          character={store.character}
+          items={store.items}
+          races={store.races}
+          onchange={() => (switcherOpen = true)}
+          onrace={(slug) => store.setRace(slug)}
         />
-        {#if comparing}
-          <!-- Replaces the sentence and the results, per Design 4.2 -- the strip, the
-               settings bar and the run control above stay exactly where they are. -->
-          {#if actual === null}
-            <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="compare-loading">
-              {simCopy.compareLoading}
-            </p>
-          {:else if comparison !== null}
-            {#if compareViewLazy.current}
-              <compareViewLazy.current
-                {comparison}
-                simDuration={store.result?.summary.duration_ms ?? 0}
-                actualDuration={actual.duration_ms}
+      {:else}
+        <SourceSwitcher
+          busy={store.phase === 'loading-character'}
+          message={store.message}
+          signedIn={false}
+          onaddon={(code) => void store.loadAddon(code)}
+          onbuild={(id) => void store.loadBuild(id)}
+          onfight={(ref) => void store.loadFight(ref)}
+          onsignin={onSignIn}
+        />
+      {/if}
+
+      {#if signedIn && simHistoryLazy.current}
+        <simHistoryLazy.current rows={historyRows} error={historyError} />
+      {/if}
+
+      {#if store.character !== null}
+        <SettingsBar
+          settings={store.settings}
+          spec={store.character.spec}
+          disabled={store.phase === 'running' || store.serverRunning}
+          onchange={(next) => store.setSettings(next)}
+        />
+        {#if specUnsupported && characterSpecRow !== null}
+          <!-- Instead of the run control, the sentence and the results -- not above them.
+               The settings bar above still says what would be simulated; this says why it
+               cannot be, with the same card /sim/specs shows for this spec. -->
+          <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="spec-unsupported-lead">
+            {simCopy.specUnsupportedLead}
+          </p>
+          <div class="px-[18px] md:px-0">
+            <SpecCard row={characterSpecRow} actionNames={store.actionNames} compact />
+          </div>
+        {:else}
+          <RunControl
+            phase={store.phase}
+            estimate={store.estimate}
+            iterationsDone={store.iterationsDone}
+            iterationsTotal={store.iterationsTotal}
+            precision={store.precision}
+            premium={store.premium}
+            message={store.message}
+            detail={store.detail}
+            racePending={store.needsRace}
+            {staleVersion}
+            serverRunning={store.serverRunning}
+            onrun={() => void store.run()}
+            onstop={() => store.stop()}
+            onprecision={(value) => store.setPrecision(value)}
+            onserver={() => void store.runOnServer()}
+            onrerun={() => void store.run()}
+          />
+          {#if comparing}
+            <!-- Replaces the sentence and the results, per Design 4.2 -- the strip, the
+                 settings bar and the run control above stay exactly where they are. -->
+            {#if actual === null}
+              <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="compare-loading">
+                {simCopy.compareLoading}
+              </p>
+            {:else if comparison !== null}
+              {#if compareViewLazy.current}
+                <compareViewLazy.current
+                  {comparison}
+                  simDuration={store.result?.summary.duration_ms ?? 0}
+                  actualDuration={actual.duration_ms}
+                />
+              {:else}
+                {@render lazyFallback(compareViewLazy)}
+              {/if}
+            {/if}
+          {:else if store.result !== null}
+            {#if simResultsLazy.current}
+              <simResultsLazy.current
+                summary={store.result.summary}
+                estimate={store.result.dps}
+                iterationsRun={store.result.iterations_run}
+                actionNames={store.actionNames}
               />
             {:else}
-              {@render lazyFallback(compareViewLazy)}
+              {@render lazyFallback(simResultsLazy)}
             {/if}
           {/if}
-        {:else if store.result !== null}
-          {#if simResultsLazy.current}
-            <simResultsLazy.current
-              summary={store.result.summary}
-              estimate={store.result.dps}
-              iterationsRun={store.result.iterations_run}
-              actionNames={store.actionNames}
-            />
-          {:else}
-            {@render lazyFallback(simResultsLazy)}
-          {/if}
+
+          <!-- The save form (Task 17): disabled until there is a result, an inline
+               title field pre-filled with the settings clause rather than a dialog, and
+               the saved link shown in place -- the page never navigates away from the
+               result it just saved. -->
+          <div class="mx-[18px] flex flex-wrap items-center gap-3 md:mx-0" data-testid="sim-save">
+            {#if savedUrl !== null}
+              <input
+                type="text"
+                readonly
+                value={savedUrl}
+                class="border-line-warm rounded-control bg-raised text-text h-11 min-w-0 flex-1 border px-3 text-[14px] md:max-w-[420px]"
+                data-testid="sim-save-link"
+                onclick={(event) => event.currentTarget.select()}
+              />
+              <button
+                type="button"
+                class="border-line-warm rounded-control text-nav label min-h-11 border px-4"
+                onclick={() => void copySavedLink()}
+                data-testid="sim-save-copy"
+              >
+                {savedLinkCopied ? simCopy.copied : simCopy.copyLink}
+              </button>
+            {:else if saveOpen}
+              <label class="flex flex-col gap-1">
+                <span class="label text-muted">{simCopy.saveTitleLabel}</span>
+                <input
+                  type="text"
+                  bind:value={saveTitle}
+                  class="border-line-warm rounded-control bg-raised text-text h-11 w-[260px] border px-3 text-[14px]"
+                  data-testid="sim-save-title"
+                />
+              </label>
+              <button
+                type="button"
+                class="border-line-warm-strong rounded-control bg-card-top text-strong label min-h-11 border px-5 disabled:opacity-50"
+                disabled={saving}
+                onclick={() => void confirmSave()}
+                data-testid="sim-save-confirm"
+              >
+                {saving ? simCopy.savingAction : simCopy.saveAction}
+              </button>
+              <button
+                type="button"
+                class="border-line-warm rounded-control text-nav label min-h-11 border px-4"
+                onclick={cancelSave}
+                data-testid="sim-save-cancel"
+              >
+                {simCopy.cancel}
+              </button>
+              {#if saveFailed}
+                <span role="alert" class="text-strong text-[13px]" data-testid="sim-save-error">
+                  {simCopy.saveFailed}
+                </span>
+              {/if}
+            {:else}
+              <button
+                type="button"
+                class="border-line-warm-strong rounded-control bg-card-top text-strong label min-h-11 border px-5 disabled:opacity-50"
+                disabled={!canSave}
+                title={store.result !== null && !canSave ? simCopy.saveAbortedDisabled : undefined}
+                onclick={openSaveForm}
+                data-testid="sim-save-open"
+              >
+                {simCopy.saveThisSim}
+              </button>
+            {/if}
+          </div>
         {/if}
+      {:else}
+        <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="sim-empty">
+          {simCopy.emptyPrompt}
+        </p>
       {/if}
-    {:else}
-      <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="sim-empty">
-        {simCopy.emptyPrompt}
-      </p>
     {/if}
   {/if}
 </div>

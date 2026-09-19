@@ -234,4 +234,21 @@ export const simCopy = {
   compareSimDamage: 'Simmed damage',
   simThisFight: 'Sim this fight',
   compareLoading: 'Reading the fight…',
+
+  // --- Task 17: saved sims (/sim/<id>) and the history list. ---
+  yourSims: 'Your sims',
+  historyLoading: 'Reading your sims…',
+  historyEmpty: 'Nothing saved yet. Run a sim and press Save.',
+  saveThisSim: 'Save this sim',
+  saveTitleLabel: 'Name this sim',
+  saveAction: 'Save',
+  savingAction: 'Saving…',
+  cancel: 'Cancel',
+  copyLink: 'Copy link',
+  copied: 'Copied',
+  runThisYourself: 'Run this yourself',
+  savedLane: 'browser',
+  savedLaneServer: 'our servers',
+  /** The save button's disabled title when the last run was stopped rather than finished. */
+  saveAbortedDisabled: 'A stopped run has nothing finished to save.',
 } as const;

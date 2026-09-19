@@ -53,6 +53,14 @@ describe('saveSim', () => {
     await saveSim({ ...fixtureResult, sim_id: undefined }, TEST_API);
     expect(api.lastHeaders()?.get('x-csrf-token')).toBe('tok123');
   });
+
+  it('carries an optional title as a sibling of the request body, omitted when blank', async () => {
+    await saveSim({ ...fixtureResult, sim_id: undefined }, TEST_API, 'Raid-buffed, 3:00, single target');
+    expect((api.lastBody() as { title?: string }).title).toBe('Raid-buffed, 3:00, single target');
+
+    await saveSim({ ...fixtureResult, sim_id: undefined }, TEST_API);
+    expect('title' in (api.lastBody() as object)).toBe(false);
+  });
 });
 
 describe('listMySims', () => {

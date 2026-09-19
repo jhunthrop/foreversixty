@@ -124,6 +124,35 @@ describe('createSimStore', () => {
     expect(await sim.save()).toMatch(/^[a-z2-7]{12}$/);
   });
 
+  it('carries an optional title on the saved body, and omits it when none is given', async () => {
+    const sim = store();
+    await sim.loadAddon(FURY);
+    await sim.run();
+
+    await sim.save('Raid-buffed, 3:00, single target');
+    expect((api.lastBody() as { title?: string }).title).toBe('Raid-buffed, 3:00, single target');
+
+    await sim.save();
+    expect((api.lastBody() as { title?: string }).title).toBeUndefined();
+  });
+
+  it('returns null on a failed save without touching the run message', async () => {
+    api.route({
+      method: 'POST',
+      pattern: /\/v1\/sims$/,
+      respond: () =>
+        new Response(JSON.stringify({ ok: false, data: null, error: { message: 'boom' } }), {
+          status: 500,
+        }),
+    });
+    const sim = store();
+    await sim.loadAddon(FURY);
+    await sim.run();
+    const messageBefore = sim.message;
+    expect(await sim.save('My title')).toBeNull();
+    expect(sim.message).toBe(messageBefore);
+  });
+
   describe('runOnServer', () => {
     function serverStore(pollMs = 1) {
       return createSimStore({

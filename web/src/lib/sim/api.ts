@@ -53,10 +53,26 @@ async function call<T>(
   return data;
 }
 
-/** Saves a browser-run result. The whole request travels; it is plain JSON throughout. */
-export async function saveSim(result: SimResult, apiBase: string = API_BASE_URL): Promise<string> {
-  const body: SimResult = { ...result, lane: 'browser' };
+/**
+ * Saves a browser-run result. The whole request travels; it is plain JSON throughout.
+ *
+ * `title` is appended after `apiBase` rather than between it and `result`, even though it
+ * is the more commonly-passed of the two (Task 17's save form always sends one): every
+ * existing caller -- `SharePanel.svelte`, `store.svelte.ts`, `api.test.ts` -- already calls
+ * this with `apiBase` as the second positional argument, and inserting a parameter ahead of
+ * it would silently turn every one of those into a call that sends a build's own API origin
+ * as the sim's title. The contract's `title` column has no field on `SimResult` itself
+ * (only the `sims` table does), so it travels as a sibling key on the JSON body rather than
+ * an addition to the `SimResult` shape every reader of that type would then have to ignore.
+ */
+export async function saveSim(
+  result: SimResult,
+  apiBase: string = API_BASE_URL,
+  title: string = '',
+): Promise<string> {
+  const body: SimResult & { title?: string } = { ...result, lane: 'browser' };
   delete body.sim_id;
+  if (title !== '') body.title = title;
   const data = await call<{ sim_id: string }>('/v1/sims', apiBase, simCopy.saveFailed, {
     method: 'POST',
     body,

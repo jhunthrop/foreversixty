@@ -591,12 +591,19 @@ export function createSimStore(init: SimStoreInit) {
       handle?.cancel();
     },
 
-    async save(): Promise<string | null> {
+    /**
+     * Saves the last finished result, optionally under a title -- the contract's `sims.
+     * title` column, pre-filled by the caller with `settingsLabel(store.settings)` and
+     * editable before the press. Null on failure, without touching `message`: a save
+     * failure is the save form's own concern (`simCopy.saveFailed` beside its button, per
+     * the design), not the run control's -- setting the shared field here would raise a
+     * second, unrelated alert next to a run that did not fail.
+     */
+    async save(title?: string): Promise<string | null> {
       if (result === null) return null;
       try {
-        return await saveSim(result, init.apiBase);
-      } catch (error) {
-        message = error instanceof Error ? error.message : simCopy.saveFailed;
+        return await saveSim(result, init.apiBase, title ?? '');
+      } catch {
         return null;
       }
     },

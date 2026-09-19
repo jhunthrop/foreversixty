@@ -106,6 +106,13 @@ export interface SimResult {
   duration_ms: number;
   summary: Summary;
   error?: string;
+  /**
+   * Stopped on request, not a failure; `summary`/`dps` are partial. Additive
+   * (`aborted,omitempty` on `sim/api/envelope.go`'s `SimResult`) -- mirrored here because
+   * Task 17's save flow refuses to save an aborted result rather than storing a partial
+   * run under a player-chosen title.
+   */
+  aborted?: boolean;
 }
 
 /** One row of GET /v1/sims?mine=1. */

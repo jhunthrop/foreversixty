@@ -138,7 +138,14 @@
 
   <div class="flex flex-wrap items-baseline gap-3 text-[13px]">
     <span class="text-muted label">Talents</span>
-    <span class="tabular text-strong font-mono" data-testid="sim-talent-count">{split} points</span>
+    <!-- A saved sim's stored request carries the engine's talent *string*, not the
+         planner's point order (Task 17), so its `point_order` is always empty and `split`
+         is 0 -- not because the build spent nothing, but because this page cannot see the
+         order. Showing "0 points" would claim the build spent none, so the count is left
+         out entirely rather than printed wrong. -->
+    {#if split > 0}
+      <span class="tabular text-strong font-mono" data-testid="sim-talent-count">{split} points</span>
+    {/if}
     <a class="ml-auto" href={plannerHrefFor(character)} data-testid="sim-open-planner">
       {simCopy.openInPlanner}
     </a>
