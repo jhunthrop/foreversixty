@@ -11,3 +11,9 @@
 # src/worker.ts, which sets the same header itself.
 /duckdb/*
   Cache-Control: public, max-age=31536000, immutable
+
+# The simulator engine artifacts published by CI (web/public/_sim/README.md): the version
+# is in the path, so a new engine build is a new directory and nothing here is ever
+# revalidated.
+/_sim/*
+  Cache-Control: public, max-age=31536000, immutable

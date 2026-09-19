@@ -314,6 +314,42 @@ things throughout: nothing scrolls sideways at 360px, and every visible control 
 in its smallest dimension. `npm run test:e2e:phone` runs just these four, against whatever
 `dist/` the last build left behind, for a fast local check while iterating on layout.
 
+## Simulator
+
+Three routes. `/sim` and `/sim/specs` are static, prerendered pages, same as `/planner` and
+`/classes`. `/sim/<sim_id>` is Worker-served: `src/worker.ts`'s `SHELL_ROUTES` maps `/sim/`
+to the `/sim.html` asset and rewrites its head from `GET /v1/sims/{sim_id}` the same way it
+does for `/reports/<id>`, `/rankings/<slug>`, `/character/…` and `/guild/…` — a saved sim
+carries no visibility gate (every one is public by contract), so every one is indexable.
+
+The engine — `sim/request` and `sim/adapter` compiled to `sim.wasm` from the site's own
+`sim/` Go module — runs entirely in the visitor's browser; the server is never asked to
+simulate anything for the free lane (`RunControl`'s `premium` prop gates a separate,
+server-side run for premium accounts, whose entrypoint is `POST /v1/sims/run` — the browser
+lane stays free and unlimited either way). `web/src/lib/sim/engine.ts` reads
+`PUBLIC_SIM_ENGINE` at build time: `wasm` loads the real engine from
+`/_sim/<ENGINE_VERSION>/` (`web/public/_sim/README.md` documents that directory; CI builds
+and publishes it, and it is never committed), and the default, `fake`, swaps in
+`web/src/fixtures/sim/engine-fake.ts` over the same four functions so the pages, tests and
+this repository's own `npm run build` work with no Go toolchain and no wasm artifact at all.
+
+`postbuild`'s `scripts/check-island-size.mjs` holds three fixed-path bundles to a gzipped
+ceiling: `planner-island.js` at 60 KB, `report-island.js` at 140 KB, and `sim-island.js` —
+this lane's addition — at 90 KB. The engine itself never counts against that budget: it
+loads from the worker chunk after first paint, never from the island's own module graph
+(`grep -rn "_sim/" dist/sim-island.js dist/planner-island.js` finds nothing in either, and
+under the checked-in `fake` engine the wasm loader is dead code that never reaches `dist/`
+at all).
+
+`/sim/specs` renders each spec's `state` — `validated`, `in_progress` or `unsupported` — and
+how close its simmed DPS runs to real parses; that judgment lives in the data this page
+reads (`GET /v1/specs`), never as a list hard-coded here.
+
+```bash
+FOREVER_DATA=fixture npx vitest run src/lib/sim src/fixtures/sim
+E2E_PORT=4325 FOREVER_DATA=fixture npx playwright test sim-
+```
+
 ## Deploying this: two things you own
 
 Two pieces of the deploy are outside this repository's CI and were left for whoever runs
