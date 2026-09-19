@@ -1,17 +1,24 @@
 //go:build js && wasm
 
-// Command wasm is the browser half of the sim. It exports exactly four
-// functions, all taking and returning JSON strings, plus one string
-// global, simEngineVersion, which is the engine sha this module was
-// built from. The page reads that global rather than being told the sha
-// by the server, so a request can never name an engine the wasm it is
+// Command wasm is the browser half of the sim. It exports ten
+// functions - simRun, simSplit, simCombine, simAbort, simPlan,
+// simRank, simCount, simNeedsMore, simValidate and simWeights - all
+// taking and returning JSON strings, plus one string global,
+// simEngineVersion, which is the engine sha this module was built
+// from. The page reads that global rather than being told the sha by
+// the server, so a request can never name an engine the wasm it is
 // running in is not.
+//
+// simSplit and simCombine are for plain runs only: a bulk stage's
+// requests run whole and unsplit, one worker-pool slot per request, so
+// that "abort returns what finished" stays true and no request's
+// statistics are computed twice.
 //
 // It exists in this repository rather than in the engine because
 // sim/request and sim/adapter are linked in here: the browser gets a
 // finished SimResult with its summary.Summary already built by the same
 // Go code the server runs. The engine's own thirteen js.Global().Set
-// entrypoints are an implementation detail behind these four and the web
+// entrypoints are an implementation detail behind these ten and the web
 // must not call them.
 //
 // The active build's item database is embedded through
@@ -24,7 +31,6 @@ package main
 import (
 	"encoding/json"
 	"errors"
-	"strings"
 	"syscall/js"
 	"time"
 
@@ -49,12 +55,17 @@ func main() {
 	js.Global().Set("simSplit", js.FuncOf(simSplit))
 	js.Global().Set("simCombine", js.FuncOf(simCombine))
 	js.Global().Set("simAbort", js.FuncOf(simAbort))
+	js.Global().Set("simPlan", js.FuncOf(simPlan))
+	js.Global().Set("simRank", js.FuncOf(simRank))
+	js.Global().Set("simCount", js.FuncOf(simCount))
+	js.Global().Set("simNeedsMore", js.FuncOf(simNeedsMore))
+	js.Global().Set("simValidate", js.FuncOf(simValidate))
 	// The pin is compiled in, not injected: a plain `go build ./cmd/wasm`
 	// used to produce "dev" and stamp it on real rows.
 	js.Global().Set("simEngineVersion", js.ValueOf(enginever.Version))
 
-	// The host page defines wasmready and is told the moment the four
-	// exports exist, so it never races them.
+	// The host page defines wasmready and is told the moment every
+	// export exists, so it never races them.
 	js.Global().Call("wasmready")
 	select {}
 }
@@ -89,20 +100,6 @@ func result(res api.SimResult) string {
 		return errorJSON(err.Error())
 	}
 	return string(b)
-}
-
-// decodeRequest parses one request strictly. A field the envelope does
-// not carry is a client sending something this build cannot honour -
-// a profession list to an older wasm, say - and running anyway would
-// drop it silently.
-func decodeRequest(s string) (api.SimRequest, error) {
-	var req api.SimRequest
-	dec := json.NewDecoder(strings.NewReader(s))
-	dec.DisallowUnknownFields()
-	if err := dec.Decode(&req); err != nil {
-		return req, err
-	}
-	return req, nil
 }
 
 // simRun(requestJSON, callbackId) runs one request to completion and
@@ -239,7 +236,7 @@ func simCombine(_ js.Value, args []js.Value) any {
 // {"aborted": true|false}, where false means no run is registered under
 // that id. It returns JSON rather than a bare boolean so that a wrong
 // call - which used to come back as the same `false` as "no such run" -
-// is distinguishable, and so that all four exports have one shape.
+// is distinguishable, and so that every export has one shape.
 func simAbort(_ js.Value, args []js.Value) any {
 	if len(args) < 1 {
 		return errorJSON("simAbort takes (callbackId)")
@@ -253,16 +250,48 @@ func simAbort(_ js.Value, args []js.Value) any {
 	return string(b)
 }
 
-// errorJSON wraps a message as the {"error": "..."} shape simSplit's
-// caller reads. It goes through the JSON encoder rather than string
-// concatenation, because an engine error message carries quotes and a
-// hand-built string would hand the worker something it cannot parse.
-func errorJSON(msg string) string {
-	b, err := json.Marshal(struct {
-		Error string `json:"error"`
-	}{msg})
-	if err != nil {
-		return `{"error":"the error itself could not be encoded"}`
+// simPlan(requestJSON) returns the first stage of a bulk run:
+// {"stage":1,"iterations":100,"requests":[...],"combos":[...]}.
+func simPlan(_ js.Value, args []js.Value) any {
+	if len(args) < 1 {
+		return errorJSON("simPlan takes (requestJSON)")
 	}
-	return string(b)
+	return planJSON(args[0].String())
+}
+
+// simRank(requestJSON, stageJSON, resultsJSON) scores a finished stage
+// and returns {"next": stage} or {"result": SimResult}.
+func simRank(_ js.Value, args []js.Value) any {
+	if len(args) < 3 {
+		return errorJSON("simRank takes (requestJSON, stageJSON, resultsJSON)")
+	}
+	return rankJSON(args[0].String(), args[1].String(), args[2].String())
+}
+
+// simCount(requestJSON) returns {"combinations": n} without building
+// a single request, so the page can show the count on every tick.
+func simCount(_ js.Value, args []js.Value) any {
+	if len(args) < 1 {
+		return errorJSON("simCount takes (requestJSON)")
+	}
+	return countJSON(args[0].String())
+}
+
+// simNeedsMore(resultJSON, requestJSON) returns {"needs_more": bool}:
+// the Smart Sim decision, asked of Go so both lanes stop at the same
+// precision.
+func simNeedsMore(_ js.Value, args []js.Value) any {
+	if len(args) < 2 {
+		return errorJSON("simNeedsMore takes (resultJSON, requestJSON)")
+	}
+	return needsMoreJSON(args[0].String(), args[1].String())
+}
+
+// simValidate(requestJSON) returns {"ok": bool, "errors": [...]}: the
+// same Validate the run applies, per field, for the request drawer.
+func simValidate(_ js.Value, args []js.Value) any {
+	if len(args) < 1 {
+		return errorJSON("simValidate takes (requestJSON)")
+	}
+	return validateJSON(args[0].String())
 }
