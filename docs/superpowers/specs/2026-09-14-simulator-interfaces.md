@@ -113,6 +113,7 @@ type SimResult struct {
     DurationMS    int64           `json:"duration_ms"`       // wall clock of the run
     Summary       summary.Summary `json:"summary"`           // logs engine shape, section below
     Error         string          `json:"error,omitempty"`
+    Aborted       bool            `json:"aborted,omitempty"` // stopped on request, not a failure; Summary/DPS are partial
 }
 
 type Estimate struct {
