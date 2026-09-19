@@ -205,6 +205,13 @@ func TestSummarizeAurasCastsAndResources(t *testing.T) {
 	if au.Segments == nil || len(au.Segments) != 0 {
 		t.Errorf("aura Segments = %v; the engine reports no application timeline, so this must be empty and non-nil", au.Segments)
 	}
+	// The logs engine's vocabulary is upper case - its accumulator
+	// writes "BUFF" and "DEBUFF" - and the report's shared AuraTable
+	// filters on those two strings. A lower-case "buff" here renders as
+	// an aura of no known type and the filter drops the row.
+	if au.Type != "BUFF" {
+		t.Errorf("aura Type = %q, want %q; the web's AuraTable filters on the logs engine's upper-case vocabulary", au.Type, "BUFF")
+	}
 
 	if len(got.Casts) != 1 {
 		t.Fatalf("Casts has %d entries, want 1", len(got.Casts))

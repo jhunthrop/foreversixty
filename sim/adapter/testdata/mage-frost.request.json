@@ -1,0 +1,158 @@
+{
+  "engine_version": "fixture",
+  "spec": "mage-frost",
+  "source": {
+    "kind": "manual",
+    "ref": "",
+    "captured_at": "2026-09-18T00:00:00Z"
+  },
+  "character": {
+    "name": "Sim",
+    "race": "gnome",
+    "class": "mage",
+    "level": 60,
+    "talents": "050005023010310000-00000000000000000-0505000311020321251",
+    "gear": [
+      {
+        "slot": "head",
+        "item_id": 16795,
+        "enchant": 1509
+      },
+      {
+        "slot": "neck",
+        "item_id": 18814
+      },
+      {
+        "slot": "shoulder",
+        "item_id": 11782
+      },
+      {
+        "slot": "back",
+        "item_id": 13386
+      },
+      {
+        "slot": "chest",
+        "item_id": 14152,
+        "enchant": 1891
+      },
+      {
+        "slot": "wrist",
+        "item_id": 16799,
+        "enchant": 1883
+      },
+      {
+        "slot": "hands",
+        "item_id": 13253
+      },
+      {
+        "slot": "waist",
+        "item_id": 19136
+      },
+      {
+        "slot": "legs",
+        "item_id": 16915,
+        "enchant": 1509
+      },
+      {
+        "slot": "feet",
+        "item_id": 16800,
+        "enchant": 911
+      },
+      {
+        "slot": "finger1",
+        "item_id": 19147
+      },
+      {
+        "slot": "finger2",
+        "item_id": 19147
+      },
+      {
+        "slot": "trinket1",
+        "item_id": 18820
+      },
+      {
+        "slot": "trinket2",
+        "item_id": 12930
+      },
+      {
+        "slot": "main_hand",
+        "item_id": 17103,
+        "enchant": 2504
+      },
+      {
+        "slot": "off_hand",
+        "item_id": 10796
+      },
+      {
+        "slot": "ranged",
+        "item_id": 15283
+      }
+    ],
+    "buffs": [
+      "curse_of_elements",
+      "curse_of_recklessness",
+      "curse_of_shadow",
+      "curse_of_weakness",
+      "demoralizing_roar",
+      "demoralizing_shout",
+      "expose_armor",
+      "faerie_fire",
+      "improved_scorch",
+      "improved_shadow_bolt",
+      "insect_swarm",
+      "judgement_of_light",
+      "judgement_of_the_crusader",
+      "judgement_of_wisdom",
+      "scorpid_sting",
+      "shadow_weaving",
+      "stormstrike",
+      "sunder_armor",
+      "thunder_clap",
+      "winters_chill",
+      "blessing_of_kings",
+      "blessing_of_might",
+      "blessing_of_sanctuary",
+      "blessing_of_wisdom",
+      "fengus_ferocity",
+      "moldars_moxie",
+      "rallying_cry_of_the_dragonslayer",
+      "sayges_fortune",
+      "slipkiks_savvy",
+      "songflower_serenade",
+      "spirit_of_zandalar",
+      "warchiefs_blessing",
+      "arcane_brilliance",
+      "battle_shout",
+      "blood_pact",
+      "devotion_aura",
+      "divine_spirit",
+      "fire_resistance_aura",
+      "fire_resistance_totem",
+      "frost_resistance_aura",
+      "frost_resistance_totem",
+      "gift_of_the_wild",
+      "grace_of_air_totem",
+      "leader_of_the_pack",
+      "mana_spring_totem",
+      "moonkin_aura",
+      "nature_resistance_totem",
+      "power_word_fortitude",
+      "retribution_aura",
+      "sanctity_aura",
+      "shadow_protection",
+      "strength_of_earth_totem",
+      "thorns",
+      "trueshot_aura"
+    ],
+    "consumes": []
+  },
+  "encounter": {
+    "duration_sec": 180,
+    "variation": 0.2,
+    "targets": 1,
+    "execute_ratio": 0.25,
+    "profile": ""
+  },
+  "iterations": 3000,
+  "random_seed": 1
+}

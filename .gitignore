@@ -8,6 +8,10 @@ dist/
 .astro/
 api/bin/
 coverage/
+# sim.wasm, sim.js and forever-sim, built by `make artifacts` at the
+# pinned engine sha. Only what `make publish-wasm` copies into
+# web/public/_sim/<sha>/ is committed.
+artifacts/
 
 # environment
 .env

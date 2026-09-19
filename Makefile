@@ -24,3 +24,52 @@ engine-pin:
 	  echo "engine-pin: sim/enginever/version.go still contains a literal percent sign - the printf substitution failed"; exit 1; \
 	fi; \
 	echo "pinned engine version $$sha"
+
+ARTIFACT_DIR ?= artifacts
+WEB_SIM_DIR   = web/public/_sim
+
+.PHONY: artifacts
+# artifacts builds the two things one pinned engine sha produces, both
+# from the sim/ module: sim.wasm + sim.js for the browser, and
+# forever-sim for the server lane. The engine repository ships no
+# artifact of ours; it stays a clean upstreamable library.
+#
+# Only the native binary is built --tags=with_db. That tag embeds the
+# engine's 4.9 MB item database, which is what resolves the item ids in a
+# request's gear, and the server lane needs it exactly as the engine's own
+# wowsimcli does. The browser build leaves it out: measured, it costs
+# 0.38 MB gzipped and would leave the 4 MB budget 5% of headroom, so the
+# browser will be given its items from the site's own tables instead.
+# Until that lands, a browser sim of a geared character fails with the
+# engine's "No item with id" rather than silently simming a naked one.
+artifacts: engine-pin
+	@mkdir -p $(ARTIFACT_DIR)
+	# Each build runs in its OWN subshell. An earlier draft chained two
+	# `cd sim` in one shell with `; \`, so the second ran from inside
+	# sim/ and failed, and the native binary was silently never built
+	# while the recipe reported success.
+	@sha=$$(sed -n 's/.*Version = "\(.*\)"/\1/p' sim/enginever/version.go); \
+	  test -n "$$sha" || { echo "sim/enginever/version.go has no Version"; exit 1; }; \
+	  (cd sim && GOOS=js GOARCH=wasm go build -ldflags="-X 'main.Version=$$sha'" \
+	    -o ../$(ARTIFACT_DIR)/sim.wasm ./cmd/wasm) && \
+	  (cd sim && go build --tags=with_db -ldflags="-X 'main.Version=$$sha' -s -w" \
+	    -o ../$(ARTIFACT_DIR)/forever-sim ./cmd/forever-sim)
+	# install, not cp: wasm_exec.js is read-only inside GOROOT, so a plain
+	# cp copies the mode too and the NEXT `make artifacts` dies with
+	# "Permission denied" on its own output.
+	install -m 0644 "$$(go env GOROOT)/lib/wasm/wasm_exec.js" $(ARTIFACT_DIR)/sim.js
+	@(cd $(ARTIFACT_DIR) && shasum -a 256 sim.wasm sim.js forever-sim > SHA256SUMS)
+	@test -x $(ARTIFACT_DIR)/forever-sim || { echo "forever-sim was not built"; exit 1; }
+	@ls -l $(ARTIFACT_DIR)
+	@gzip -9 -c $(ARTIFACT_DIR)/sim.wasm | wc -c | \
+	  awk '{printf "sim.wasm gzipped: %.2f MB (budget 4.00, engine-only baseline 3.31)\n", $$1/1048576}'
+
+.PHONY: publish-wasm
+# publish-wasm puts the browser pair where the web loads them, under the
+# engine version, cached immutably so a new version never collides with a
+# cached old one.
+publish-wasm: artifacts
+	@sha=$$(sed -n 's/.*Version = "\(.*\)"/\1/p' sim/enginever/version.go); \
+	mkdir -p "$(WEB_SIM_DIR)/$$sha"; \
+	cp $(ARTIFACT_DIR)/sim.wasm $(ARTIFACT_DIR)/sim.js "$(WEB_SIM_DIR)/$$sha/"; \
+	echo "published to $(WEB_SIM_DIR)/$$sha"

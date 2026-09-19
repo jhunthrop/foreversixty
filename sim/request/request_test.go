@@ -248,3 +248,31 @@ func contains(h, n string) bool {
 	}
 	return false
 }
+
+// The browser's worker pool builds one engine request per part, and a
+// part's iteration count is never one of api.ValidIterations: 3,000
+// over four workers is 750. Options.SplitPart is what lets that build,
+// and it relaxes nothing else.
+func TestBuildWithSplitPartAcceptsAWorkersShare(t *testing.T) {
+	part := fury()
+	part.Iterations = 750
+
+	if _, err := Build(part); err == nil {
+		t.Error("Build accepted 750 iterations without SplitPart")
+	}
+	got, err := BuildWith(part, Options{SplitPart: true})
+	if err != nil {
+		t.Fatalf("BuildWith(SplitPart) rejected a worker's share: %v", err)
+	}
+	if got.SimOptions.Iterations != 750 {
+		t.Errorf("Iterations = %d, want 750", got.SimOptions.Iterations)
+	}
+
+	// SplitPart is about the iteration count and nothing else: a part
+	// with a level the engine cannot sim is still refused.
+	bad := part
+	bad.Character.Level = 40
+	if _, err := BuildWith(bad, Options{SplitPart: true}); err == nil {
+		t.Error("BuildWith(SplitPart) accepted a level the engine cannot sim")
+	}
+}

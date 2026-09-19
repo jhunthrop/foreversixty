@@ -29,17 +29,24 @@ const goldenEngineVersion = "golden"
 // To regenerate a fixture after a spec's abilities change, from the
 // SITE module (never from the engine checkout):
 //
-//	go run --tags=with_db ./internal/genfixture -spec <spec> -out adapter/testdata/<spec>.result.pb
-//
-// or, once Task 13 has built it and deleted genfixture:
-//
-//	./artifacts/forever-sim -in <spec>.request.json -out-proto adapter/testdata/<spec>.result.pb
-//
-// then run
-//
+//	make artifacts                                   # at the pinned sha
+//	cd sim
+//	./../artifacts/forever-sim \
+//	  -in adapter/testdata/<spec>.request.json \
+//	  -out-proto adapter/testdata/<spec>.result.pb
 //	FOREVER_UPDATE_GOLDEN=1 go test ./adapter/
 //
 // and read the diff before committing it.
+//
+// The .request.json beside each fixture is the input: a real SimRequest,
+// so a fixture is a real sim of a request the product could send rather
+// than a second opinion about what a fury warrior is. Its gear is the
+// engine's own phase-one preset expressed as item ids, and its buffs are
+// the field names of core.Full{Raid,Individual,Debuffs} - the same set,
+// though a tristate lands on its plain form because the settings bar has
+// no id for the improved one (see request/buffs.go). forever-sim must be
+// built --tags=with_db or the gear ids resolve to nothing; `make
+// artifacts` does that.
 func TestGoldenSummaries(t *testing.T) {
 	for _, tc := range goldenSpecs {
 		t.Run(tc.spec, func(t *testing.T) {
