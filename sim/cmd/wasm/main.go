@@ -302,9 +302,9 @@ func init() {
 // here would hang forever on the common case, not just the two rare
 // paths ToResult's own doc comment carves out. Taking the first
 // FinalWeightResult and stopping is therefore correct, not a shortcut
-// - and adapter.Weights already turns a non-nil res.Error into
-// ErrSimFailed, so there is nothing this loop would gain by looking at
-// it first.
+// - and whatever res.Error turns out to mean (an abort, or a real
+// failure) is weightsResult's decision below, not this loop's; nothing
+// here needs to inspect it first.
 func runWeights(req api.SimRequest, callbackID string) (api.SimResult, error) {
 	start := time.Now()
 	engineReq, err := request.BuildWeights(req, request.Options{OpenIterations: true})
@@ -321,11 +321,16 @@ func runWeights(req api.SimRequest, callbackID string) (api.SimResult, error) {
 	core.StatWeightsAsync(engineReq, reporter, callbackID)
 
 	var engineRes *proto.StatWeightsResult
+	// The engine's own running total across the WHOLE sweep, not the
+	// per-sim count: see weightsResult's doc comment on why
+	// req.Iterations is the wrong number to report.
+	var iterationsRun int
 	for p := range reporter {
 		if p.FinalWeightResult != nil {
 			engineRes = p.FinalWeightResult
 			break
 		}
+		iterationsRun = int(p.CompletedIterations)
 		if cb := js.Global().Get("simProgress"); cb.Type() == js.TypeFunction {
 			if b, err := json.Marshal(api.Progress{
 				IterationsRun: int(p.CompletedIterations),
@@ -343,17 +348,17 @@ func runWeights(req api.SimRequest, callbackID string) (api.SimResult, error) {
 	if engineRes == nil {
 		return api.SimResult{}, errors.New("the engine produced no weights")
 	}
-	weights, err := adapter.Weights(engineRes, req)
+	res, err := weightsResult(req, engineRes, iterationsRun)
 	if err != nil {
 		return api.SimResult{}, err
 	}
-	return api.SimResult{
-		Request:       req,
-		IterationsRun: req.Iterations,
-		DurationMS:    time.Since(start).Milliseconds(),
-		Summary:       adapter.EmptySummary(),
-		Weights:       weights,
-	}, nil
+	// Not set on an abort: stopped() never carried one either, since
+	// there is nothing about the elapsed wall time worth reporting for
+	// a run that did not finish.
+	if !res.Aborted {
+		res.DurationMS = time.Since(start).Milliseconds()
+	}
+	return res, nil
 }
 
 // simWeights(requestJSON, callbackId) computes stat weights and

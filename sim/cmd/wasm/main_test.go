@@ -13,6 +13,7 @@ import (
 	"github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/jhunthrop/foreversixty/sim/bulk"
 	"github.com/jhunthrop/foreversixty/sim/enginever"
+	"github.com/wowsims/classic/sim/core/proto"
 )
 
 // sim/cmd/wasm is a js/wasm-only package: syscall/js does not build on a
@@ -301,6 +302,15 @@ func TestWeightsJSONRefusals(t *testing.T) {
 	}{
 		{"not json", "{", "valid JSON"},
 		{"a plain run", plainFixtureRequest(t), "weights"},
+		// The first two cases both fail before reaching ValidateLane or
+		// the weightsRunner check: decodeRequest refuses "not json" and
+		// req.Weights == nil refuses "a plain run". A request that
+		// actually carries a weights block is what exercises those two
+		// later branches - on the host test build, weightsRunner is
+		// always nil, since only main.go's init() (js/wasm only) sets
+		// it, so this is also the real "no engine" refusal a browser
+		// build would never hit.
+		{"weights runner unset on this build", weightsFixtureRequest(t), "no engine"},
 	} {
 		t.Run(c.name, func(t *testing.T) {
 			out := weightsJSON(c.body, "cb")
@@ -354,6 +364,93 @@ func plainFixtureRequest(t *testing.T) string {
 		t.Fatal(err)
 	}
 	return string(out)
+}
+
+// weightsFixtureRequest is a valid weights request over the checked-in
+// warrior fixture, as JSON, valid against LaneBrowser. Unlike
+// plainFixtureRequest, it carries a Weights block, so it is what
+// reaches weightsJSON's ValidateLane and weightsRunner checks rather
+// than being refused earlier for carrying none.
+func weightsFixtureRequest(t *testing.T) string {
+	t.Helper()
+	b, err := os.ReadFile(filepath.Join("..", "..", "adapter", "testdata", "warrior-fury.request.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var req api.SimRequest
+	if err := json.Unmarshal(b, &req); err != nil {
+		t.Fatal(err)
+	}
+	req.EngineVersion = enginever.Version
+	req.Weights = &api.WeightsSpec{
+		Stats:     []string{"agility", "attack_power", "crit", "hit"},
+		Reference: "attack_power",
+	}
+	out, err := json.Marshal(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return string(out)
+}
+
+// Pressing Stop on a weights run must report an abort, not the generic
+// "carries no stat weights" adapter.Weights answers when the DPS block
+// is nil for any other reason. The engine reports Stop with an EMPTY
+// error message (core/simsignals/api_test.go's StatWeightsAsync case),
+// which is exactly what adapter.Weights does not special-case - so this
+// only passes if weightsResult checks the error's Type itself rather
+// than delegating straight to adapter.Weights.
+func TestWeightsResultReportsAnAbortRatherThanCorruption(t *testing.T) {
+	req := api.SimRequest{Weights: &api.WeightsSpec{Stats: []string{"crit"}, Reference: "crit"}}
+	aborted := &proto.StatWeightsResult{Error: &proto.ErrorOutcome{Type: proto.ErrorOutcomeType_ErrorOutcomeAborted}}
+
+	res, err := weightsResult(req, aborted, 4321)
+	if err != nil {
+		t.Fatalf("weightsResult returned an error for an abort: %v", err)
+	}
+	if !res.Aborted {
+		t.Errorf("res.Aborted = false, want true for ErrorOutcomeAborted")
+	}
+	if res.Error != "" {
+		t.Errorf("res.Error = %q, want empty - an abort is not a failure", res.Error)
+	}
+	if res.IterationsRun != 4321 {
+		t.Errorf("res.IterationsRun = %d, want the caller's running total 4321", res.IterationsRun)
+	}
+}
+
+// iterations_run is the engine's real running total across the WHOLE
+// sweep (2*len(stats)+1 sub-sims), not req.Iterations, the per-sim
+// count - a sweep over 4 stats at 3,000 iterations each runs 27,000,
+// not 3,000. A caller that saw no progress tick at all (0) falls back
+// to req.Iterations rather than reporting a bare zero.
+func TestWeightsResultIterationsRunIsTheSweepTotal(t *testing.T) {
+	req := api.SimRequest{
+		Iterations: 3000,
+		Weights:    &api.WeightsSpec{Stats: []string{"crit"}, Reference: "crit"},
+	}
+	stats := make([]float64, len(proto.Stat_name))
+	stats[proto.Stat_StatCrit] = 1.0
+	finished := &proto.StatWeightsResult{Dps: &proto.StatWeightValues{
+		Weights:      &proto.UnitStats{Stats: stats},
+		WeightsStdev: &proto.UnitStats{Stats: stats},
+	}}
+
+	res, err := weightsResult(req, finished, 27000)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if res.IterationsRun != 27000 {
+		t.Errorf("res.IterationsRun = %d, want the engine's own running total 27000, not req.Iterations", res.IterationsRun)
+	}
+
+	res, err = weightsResult(req, finished, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if res.IterationsRun != req.Iterations {
+		t.Errorf("res.IterationsRun = %d, want the req.Iterations fallback %d when no tick was ever seen", res.IterationsRun, req.Iterations)
+	}
 }
 
 // bulkFixtureRequest is a two-candidate Top Gear over the checked-in

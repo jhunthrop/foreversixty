@@ -18,6 +18,7 @@ import (
 	"github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/jhunthrop/foreversixty/sim/bulk"
 	"github.com/jhunthrop/foreversixty/sim/enginever"
+	"github.com/wowsims/classic/sim/core/proto"
 )
 
 // strictDecode refuses a field the type does not carry. A page sending
@@ -337,4 +338,51 @@ func weightsJSON(requestJSON, callbackID string) string {
 		return failJSON(req, err.Error())
 	}
 	return encodeOrError(stamp(res))
+}
+
+// weightsResult turns the engine's raw StatWeightsResult into the
+// SimResult simWeights answers with, or an error for the caller to wrap
+// as a failure. It touches no js.Value and calls no engine function, so
+// - unlike runWeights, which drives core.StatWeightsAsync and so needs
+// the wasm build - the accounting below is testable on the host:
+//
+//   - Abort. The engine reports Stop the same way here as on a plain
+//     run: an ErrorOutcome with Type ErrorOutcomeAborted and an EMPTY
+//     Message (fork core/sim.go; asserted for weights specifically by
+//     core/simsignals/api_test.go's StatWeightsAsync case).
+//     adapter.Weights only branches on a NON-EMPTY message, so an abort
+//     would otherwise fall through to res.GetDps() == nil and come back
+//     as ErrNoWeights - "the result carries no stat weights" - which
+//     misdescribes a Stop as a corrupt result. This mirrors simRun's
+//     adapter.ResultError type check for RaidSimResult; StatWeightsResult
+//     has no ResultError of its own to call.
+//   - Iterations. iterationsRun is the caller's running total from the
+//     engine's own progress ticks (ProgressMetrics.CompletedIterations),
+//     which is the real number of iterations a sweep ran - req.Iterations
+//     is only the PER-SIM count, and a sweep runs 2*len(stats)+1 sims. A
+//     caller that saw no progress tick before the final message (e.g. a
+//     sweep with no stats) passes 0, which falls back to req.Iterations
+//     rather than reporting a bare zero.
+func weightsResult(req api.SimRequest, engineRes *proto.StatWeightsResult, iterationsRun int) (api.SimResult, error) {
+	if iterationsRun == 0 {
+		iterationsRun = req.Iterations
+	}
+	if engineRes.GetError().GetType() == proto.ErrorOutcomeType_ErrorOutcomeAborted {
+		return api.SimResult{
+			Request:       req,
+			Aborted:       true,
+			IterationsRun: iterationsRun,
+			Summary:       adapter.EmptySummary(),
+		}, nil
+	}
+	weights, err := adapter.Weights(engineRes, req)
+	if err != nil {
+		return api.SimResult{}, err
+	}
+	return api.SimResult{
+		Request:       req,
+		IterationsRun: iterationsRun,
+		Summary:       adapter.EmptySummary(),
+		Weights:       weights,
+	}, nil
 }
