@@ -151,7 +151,7 @@ func (s *Store) ForBuild(ctx context.Context, buildID string) (simapi.SimResult,
 		 where state = $1
 		   and result -> 'request' -> 'source' ->> 'kind' = $2
 		   and result -> 'request' -> 'source' ->> 'ref' = $3
-		 order by created_at desc
+		 order by created_at desc, id desc
 		 limit 1`,
 		StateDone, simapi.SourceBuild, buildID).Scan(&id, &body)
 	if isNoRows(err) {

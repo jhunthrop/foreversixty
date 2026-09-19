@@ -75,10 +75,7 @@ type ValidateDeps struct {
 }
 
 func (d ValidateDeps) logger() *slog.Logger {
-	if d.Log != nil {
-		return d.Log
-	}
-	return slog.Default()
+	return loggerOr(d.Log)
 }
 
 // Validate sims the top parses of every spec in specs and writes each
