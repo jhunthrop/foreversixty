@@ -426,7 +426,9 @@
     </div>
 
     {#if bootstrap.view === 'specs'}
-      <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="specs-intro">{simCopy.specsIntro}</p>
+      <!-- Round 2 (Lighthouse): specs-intro is static now, in sim/specs.astro, ahead of
+           this island -- it was the measured LCP element and this branch used to render a
+           second, redundant copy of the exact same paragraph. Nothing here replaces it. -->
       <SpecGrid rows={specRows} error={specsError} onretry={() => void loadSpecs()} />
     {:else}
       {#if store.character !== null && !switcherOpen}

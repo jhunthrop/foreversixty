@@ -3,6 +3,7 @@
 // Static. The island reads ?source= and ?ref= in the browser, because the page is
 // prerendered and has no request to read.
 import Base from '../layouts/Base.astro';
+import { simCopy } from '../lib/sim/copy';
 ---
 
 <Base
@@ -18,11 +19,37 @@ import Base from '../layouts/Base.astro';
     class="mx-auto flex w-full max-w-[1344px] flex-col gap-[22px] pt-4 pb-10 md:gap-8 md:px-12 md:pt-7"
   >
     <h1 class="section-title px-[18px] text-[18px] md:px-0">Simulator</h1>
-    <div id="sim" data-sim-mount>
-      <p class="text-muted px-[18px] text-[14px] md:px-0">
-        The simulator needs JavaScript: it runs the engine in your browser rather than on our servers. The{' '}
-        <a href="/planner">build planner</a> works without it.
-      </p>
+    <!-- Round 2 (Lighthouse): the signed-out default view's own largest paragraph
+         (SourceSwitcher's addon-card body, simCopy.sourceAddonBody) painted from the
+         island only, so it was the measured LCP element and its 1600ms budget was gated on
+         full hydration (81% "Render Delay"). Emitting the identical text here, from the
+         shell, lets it paint at first paint instead -- but the first attempt (a bare `<p>`
+         directly under the h1) still measured the hydrated version as LCP: outside the
+         card, the paragraph wraps at a different width, so it is a different (larger)
+         painted box once SourceSwitcher mounts, and a larger box always wins the LCP race
+         over an earlier, smaller one. Nesting it in the exact card/grid/section SourceSwitcher
+         itself renders (`SourceSwitcher.svelte`'s own `card` class) gives the static
+         paragraph the identical wrap width, so its box is pixel-identical before and after
+         hydration and the earlier paint time is credited. sim-island.ts's replaceChildren()
+         still swaps this whole div's content for the real, interactive switcher, so the
+         min-h reservation below (measured against the real switcher's rendered height,
+         mobile/desktop) keeps that swap from moving the footer -- the same reserved-height
+         technique SpecGrid.svelte's skeleton already uses for the same reason. -->
+    <div id="sim" data-sim-mount class="min-h-[1044px] md:min-h-[531px]">
+      <section class="mx-[18px] flex flex-col gap-3 md:mx-0">
+        <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+          <div class="border-line bg-card-top rounded-panel flex flex-col gap-3 border p-4">
+            <h2 class="section-title text-[15px]">{simCopy.sourceAddonTitle}</h2>
+            <p class="text-muted text-[13px]">{simCopy.sourceAddonBody}</p>
+          </div>
+        </div>
+      </section>
+      <noscript>
+        <p class="text-muted px-[18px] text-[14px] md:px-0">
+          The simulator needs JavaScript: it runs the engine in your browser rather than on our servers. The{' '}
+          <a href="/planner">build planner</a> works without it.
+        </p>
+      </noscript>
     </div>
     <script type="module" src="/sim-island.js"></script>
   </main>

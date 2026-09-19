@@ -3,6 +3,7 @@
 // Which specs the simulator is trusted for, and by how much. Static; the island fetches
 // GET /v1/specs.
 import Base from '../../layouts/Base.astro';
+import { simCopy } from '../../lib/sim/copy';
 ---
 
 <Base
@@ -17,10 +18,16 @@ import Base from '../../layouts/Base.astro';
     class="mx-auto flex w-full max-w-[1344px] flex-col gap-[22px] pt-4 pb-10 md:gap-8 md:px-12 md:pt-7"
   >
     <h1 class="section-title px-[18px] text-[18px] md:px-0">Spec support</h1>
+    <!-- Round 2 (Lighthouse): static, ahead of the island, and never replaced --
+         specs-intro was the measured LCP element (its render was gated on hydration);
+         SimView.svelte's specs branch no longer renders its own copy of this text. -->
+    <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="specs-intro">{simCopy.specsIntro}</p>
     <div id="sim" data-sim-mount data-sim-view="specs">
-      <p class="text-muted px-[18px] text-[14px] md:px-0">
-        Spec support needs JavaScript. The <a href="/sim">simulator</a> does too.
-      </p>
+      <noscript>
+        <p class="text-muted px-[18px] text-[14px] md:px-0">
+          Spec support needs JavaScript. The <a href="/sim">simulator</a> does too.
+        </p>
+      </noscript>
     </div>
     <script type="module" src="/sim-island.js"></script>
   </main>
