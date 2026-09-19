@@ -3,14 +3,21 @@ import pytest
 from pipeline.normalize.gear import STAT_BY_MODIFIER_ID
 from pipeline.simdb.statmap import (
     PROTO_STAT_ALIASES,
+    STAT_IDS,
     StatMapError,
     stat_array,
+    stat_id,
     stat_index,
     stat_keys,
     weapon_skill_array,
     weapon_skill_index,
 )
 from pipeline.simproto import pb
+
+#: `pb.Stat` values gear, enchants and suffixes can never grant, so
+#: `PROTO_STAT_ALIASES` has never needed a key for either -- see
+#: `test_exactly_energy_and_rage_have_no_planner_stat_alias` below.
+UNGRANTABLE_RESOURCE_STATS = {"energy", "rage"}
 
 
 def test_a_plain_stat_resolves_to_the_proto_index():
@@ -122,3 +129,28 @@ def test_stat_keys_refuses_an_index_no_planner_key_covers():
     array[pb.Stat.Value("StatEnergy")] = 5
     with pytest.raises(StatMapError, match="no planner key"):
         stat_keys(array)
+
+
+def test_exactly_energy_and_rage_have_no_planner_stat_alias():
+    """`PROTO_STAT_ALIASES` grew three times during the parity lane --
+    `health`, `bonus_armor`, then `mana` -- each time because real data hit
+    an engine `Stat` the planner's vocabulary did not cover, and each time
+    that was discovered by a crash on a developer's machine rather than by
+    a check. This pins the gap the table has today (39 of the engine's 41
+    `Stat` values covered) as a deliberate, named fact rather than an
+    implicit one: a fourth alias gap becomes a failing test during a
+    regeneration instead of a `StatMapError` crash, and the engine adding a
+    42nd `Stat` at the next pin bump makes this test fail too, rather than
+    silently widening the gap.
+
+    The covered set is computed from `PROTO_STAT_ALIASES` itself, the same
+    way `statmap._key_by_index` does, so this test does not hard-code the
+    39 names it expects to resolve -- only the 2 it expects not to.
+    """
+    covered = {
+        stat_id(name)
+        for key in PROTO_STAT_ALIASES
+        if not key.startswith("__")
+        for name in [pb.Stat.Name(stat_index(key))]
+    }
+    assert STAT_IDS - covered == UNGRANTABLE_RESOURCE_STATS

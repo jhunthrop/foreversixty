@@ -1,9 +1,17 @@
 import json
 from pathlib import Path
 
+import pytest
+
 from pipeline.csvio import read_csv
-from pipeline.forkdb import load_fork_database
-from pipeline.loot.sources import KIND_ORDER, build_loot, instance_types, pvp_ranks
+from pipeline.forkdb import ForkDatabase, load_fork_database
+from pipeline.loot.sources import (
+    KIND_ORDER,
+    SourceIdCollision,
+    build_loot,
+    instance_types,
+    pvp_ranks,
+)
 
 HERE = Path(__file__).parent
 ENGINE = HERE / "fixtures/loot"
@@ -135,3 +143,28 @@ def test_the_stats_count_what_was_emitted_dropped_and_absent():
     assert stats.dropped_entries == 2
     # item 113, which the build's item table does not have
     assert stats.absent_items == 1
+
+
+def test_two_world_bosses_with_the_same_name_raise_instead_of_silently_colliding():
+    """`apply_overlays` keys its sources by id (`by_id = {source.id:
+    source for ...}`); two world npcs the fork names identically would
+    both slugify to the same `world:<slug>` id and one would silently
+    vanish. `build_loot` must refuse instead, the same policy this module
+    already applies to a dropped kind or an absent item."""
+    fork = ForkDatabase(
+        items=(
+            {"id": 1, "sources": [{"drop": {"npcId": 10, "zoneId": 0}}]},
+            {"id": 2, "sources": [{"drop": {"npcId": 20, "zoneId": 0}}]},
+        ),
+        enchants=(),
+        random_suffixes=(),
+        zones={},
+        npcs={10: "Doomsayer", 20: "Doomsayer"},
+        factions={},
+        item_icons={},
+        spell_icons={},
+        spell_icon_rows=(),
+        item_icon_rows=(),
+    )
+    with pytest.raises(SourceIdCollision, match="world:doomsayer"):
+        build_loot(fork, {}, {}, {}, {1, 2})

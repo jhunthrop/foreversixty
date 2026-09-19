@@ -261,6 +261,31 @@ def _pvp_sources(ranks: dict[int, int], build_items: set[int]) -> list[LootSourc
     ]
 
 
+class SourceIdCollision(SystemExit):
+    """Two sources slugified to the same id.
+
+    `apply_overlays` keys its sources by id (`by_id = {source.id: source
+    for ...}`); two sources sharing one id would silently collapse into
+    whichever the dict comprehension saw last, and a whole source's items
+    would vanish from `loot.json` with nothing to say so. This is the one
+    place that refuses instead, the same policy the rest of this module
+    applies to a source with no kind, a boss with no name, or an item this
+    build does not have.
+    """
+
+
+def _check_unique_ids(sources: list[LootSource]) -> None:
+    seen: set[str] = set()
+    for source in sources:
+        if source.id in seen:
+            raise SourceIdCollision(
+                f"two loot sources both slugify to id {source.id!r}; "
+                f"apply_overlays would silently keep only one of them. Rename "
+                f"the zone, NPC or faction that produced the collision."
+            )
+        seen.add(source.id)
+
+
 def source_item_ids(source: LootSource) -> set[int]:
     """Every item id one source names, wherever it names it."""
     return set(
@@ -289,6 +314,7 @@ def build_loot(
     # re-itemised away, like Onyxia's Lair on build 1.60.1.69893.
     sources = [source for source in sources if source_item_ids(source)]
     sources.sort(key=lambda source: (KIND_ORDER.index(source.kind), source.id))
+    _check_unique_ids(sources)
     named = {item_id for source in sources for item_id in source_item_ids(source)}
     return LootFile(sources=sources), LootStats(
         items=len(named),

@@ -16,6 +16,7 @@ from pathlib import Path
 from pipeline.forkdb import CLASS_SLUGS, ENCHANT_TYPES, PROFESSIONS, REP_LEVELS
 from pipeline.loot.buffs import SIMBUFFS, ids_md_ids
 from pipeline.loot.sources import KIND_ORDER
+from pipeline.simdb.statmap import PROTO_STAT_ALIASES, STAT_IDS
 
 BUILD = "1.60.1.69893"
 BUILD_DIR = Path("builds") / BUILD
@@ -93,6 +94,31 @@ SUFFIX_ROWS = 1168
 ITEMS_WITH_SUFFIXES = 69
 ITEMS_FACTION_RESTRICTED = 819
 SIMBUFF_ENTRIES = 165
+
+#: The stat keys `enchants.json` and `suffixes.json` emit, measured on the
+#: committed build. Both files use the planner's own stat vocabulary --
+#: `pipeline/simdb/statmap.py`'s `PROTO_STAT_ALIASES` keys, per
+#: `pipeline/loot/gear.py`'s module docstring -- and NOT contract 10.1 A7's
+#: `reference_stat` spellings (`stat_id`'s lower-snake `proto.Stat` names).
+#: `healing` (A7: `healing_power`) and `arcane_res` (A7: `arcane_resistance`)
+#: are the two keys below that prove the vocabularies genuinely disagree; a
+#: silent key rename here -- to A7's spelling or any other -- is a change
+#: to the site's contract with these two files and this test must catch it.
+ENCHANT_STAT_KEYS = {
+    "agility", "arcane_res", "armor", "attack_power", "block", "block_value",
+    "bonus_armor", "crit", "defense", "dodge", "fire_power", "fire_res",
+    "frost_power", "frost_res", "healing", "health", "hit", "intellect",
+    "mana", "melee_haste", "mp5", "nature_res", "ranged_attack_power",
+    "shadow_power", "shadow_res", "spell_damage", "spell_power", "spirit",
+    "stamina", "strength",
+}
+SUFFIX_STAT_KEYS = {
+    "agility", "arcane_power", "arcane_res", "attack_power", "block",
+    "defense", "dodge", "fire_power", "fire_res", "frost_power", "frost_res",
+    "healing", "holy_power", "intellect", "mp5", "nature_power", "nature_res",
+    "ranged_attack_power", "shadow_power", "shadow_res", "spell_power",
+    "spirit", "stamina", "strength",
+}
 
 PHASES = {"pre-beta", "beta", "launch", "raids-1"}
 OPENS_LATER = "later"
@@ -307,6 +333,26 @@ def test_the_suffix_table_is_complete_and_every_option_resolves():
     known = {row["id"] for row in rows}
     referenced = {suffix for row in items() for suffix in row["suffixes"]}
     assert referenced <= known
+
+
+def test_enchants_and_suffixes_use_the_planners_stat_vocabulary_not_a7s():
+    """A silent rename of these keys -- to contract 10.1 A7's
+    `reference_stat` spellings or anything else -- is a change to what
+    `enchants.json` and `suffixes.json` promise their readers; see
+    `pipeline/loot/gear.py`'s module docstring."""
+    enchant_keys = {key for row in enchants() for key in row["stats"]}
+    suffix_keys = {key for row in suffixes() for key in row["stats"]}
+    assert enchant_keys == ENCHANT_STAT_KEYS
+    assert suffix_keys == SUFFIX_STAT_KEYS
+    # Every key is a real PROTO_STAT_ALIASES entry -- the planner's
+    # vocabulary end to end. Many simple stats (strength, armor, crit, ...)
+    # happen to spell the same in both vocabularies; `healing` and
+    # `arcane_res` are the two committed keys that do not, which is the
+    # concrete proof the two vocabularies are not interchangeable.
+    assert enchant_keys | suffix_keys <= set(PROTO_STAT_ALIASES)
+    assert {"healing", "arcane_res"} <= enchant_keys
+    assert {"healing", "arcane_res"}.isdisjoint(STAT_IDS)
+    assert {"healing_power", "arcane_resistance"} <= STAT_IDS
 
 
 def test_items_json_carries_both_fork_columns_on_every_row():

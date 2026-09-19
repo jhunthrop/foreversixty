@@ -12,6 +12,16 @@ rather than from DB2:
   idea which of them a player can actually apply; the fork's `UIEnchant` is
   the curated 173 its own UI offers, with the slots, classes and phase the
   picker needs.
+
+`stats` on both records (via `stat_keys`) uses the planner's own stat
+vocabulary -- `pipeline/simdb/statmap.py`'s `PROTO_STAT_ALIASES` keys, the
+same ones `items/<class-slug>.json` uses -- not contract 10.1 A7's
+`reference_stat` vocabulary (`pipeline/simdb/statmap.py`'s `stat_id`, the
+fork's own `proto.Stat` enum names in lower snake case). The two disagree on
+spelling for at least `healing` (A7: `healing_power`) and `arcane_res` (A7:
+`arcane_resistance`); a consumer that maps `enchants.json`'s keys onto
+`proto.Stat` by name needs to translate through `PROTO_STAT_ALIASES`, not
+assume A7's spelling.
 """
 
 from __future__ import annotations

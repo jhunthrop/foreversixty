@@ -24,7 +24,7 @@ uv run ruff check . && uv run pytest
 ```
 
 `fetch`, `icons`, `tree-art` and `gametables` are the only commands that use the network.
-`normalize`, `diff`, `simdb`, `simconst`, `loot`, `phases` and `specs` are offline and fully
+`normalize`, `diff`, `simdb`, `simconst`, `phases` and `specs` are offline and fully
 unit-tested against the fixtures in `tests/fixtures/`. `simproto` and `loot` read a local
 engine checkout and are the only commands that need one.
 
@@ -42,7 +42,11 @@ builds/<build>/simdb.bin        the engine's SimDatabase protobuf (items, enchan
 builds/<build>/simconsumes.json consumable items and the spells they cast
 builds/<build>/loot.json        every source the fork database and the client state, by kind
 builds/<build>/enchants.json    the enchants Top Gear's picker offers, with slots and classes
-builds/<build>/suffixes.json    every random suffix and the stats it grants
+                                (stats keyed by the planner's own vocabulary --
+                                pipeline/simdb/statmap.py's PROTO_STAT_ALIASES -- NOT
+                                contract 10.1 A7's reference_stat spellings)
+builds/<build>/suffixes.json    every random suffix and the stats it grants (same planner
+                                stat vocabulary as enchants.json above, not A7's)
 builds/<build>/simbuffs.json    a display name and icon per sim/request/IDS.md id
 curated/loot/*.json             overlays: Forever's own loot facts, with sources
 curated/simbuffs.json           the IDS.md ids no name join reaches, with sources
@@ -209,8 +213,10 @@ older-schema build works if one is ever fetched again.
    --build <build> --engine "$FOREVER_ENGINE_PATH"`. It needs the build's `raw/` the way
    `simdb` does, plus the fork's `assets/database/db.json` at the pinned sha. It writes
    `loot.json`, `enchants.json`, `suffixes.json`, `simbuffs.json` and `items.json`'s
-   `suffixes` and `faction_restriction` columns -- which `simdb` then reads, so the order
-   is not optional -- and its log line states the coverage; compare it against
+   `suffixes` and `faction_restriction` columns. `pipeline/simdb/items.py` does not read
+   either column yet -- that join is a separate, blocked task -- but once it does, the
+   order will matter, so keep running `loot` before `simdb` regardless. Its log line
+   states the coverage; compare it against
    `tests/test_loot_build.py`'s constants before committing. Running `normalize` again
    afterwards clears both columns, so re-run `loot` if you do. If it stops on an
    unresolved IDS.md id, add that id to `curated/simbuffs.json` with the client row it

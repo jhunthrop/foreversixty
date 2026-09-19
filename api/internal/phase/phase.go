@@ -5,9 +5,9 @@
 // rather than read at runtime: the API does not ship the site's source,
 // the dates are four fixed instants, and a ranking bracket that could
 // change under a running deployment would silently re-bucket stored
-// rows. phase_test.go holds this table to that file, so the two cannot
-// drift; `python -m pipeline phases` emits the web's copy from the same
-// source.
+// rows. The API lane's phase_test.go is meant to hold this table to that
+// file, so the two cannot drift; `python -m pipeline phases` emits the
+// web's copy from the same source.
 package phase
 
 import "time"
