@@ -684,3 +684,74 @@ func TestTheEmptyAndFinishedSummariesHaveTheSameKeys(t *testing.T) {
 		t.Errorf("the empty summary's keys are %v, the finished one's %v", got, want)
 	}
 }
+
+// The engine answers with a UnitStats array indexed by proto.Stat; the
+// envelope answers with named rows in the order the request asked for
+// them, normalised so the reference stat is exactly 1.
+func TestWeightsMapping(t *testing.T) {
+	req := api.SimRequest{Weights: &api.WeightsSpec{
+		Stats:     []string{"agility", "attack_power", "crit"},
+		Reference: "attack_power",
+	}}
+	stats := make([]float64, len(proto.Stat_name))
+	stdev := make([]float64, len(proto.Stat_name))
+	stats[proto.Stat_StatAgility] = 1.1
+	stats[proto.Stat_StatAttackPower] = 1.0
+	stats[proto.Stat_StatCrit] = 12.0
+	stdev[proto.Stat_StatAgility] = 0.02
+	stdev[proto.Stat_StatAttackPower] = 0.01
+	stdev[proto.Stat_StatCrit] = 0.30
+
+	res := &proto.StatWeightsResult{Dps: &proto.StatWeightValues{
+		Weights:      &proto.UnitStats{Stats: stats},
+		WeightsStdev: &proto.UnitStats{Stats: stdev},
+	}}
+	got, err := Weights(res, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := []api.StatWeight{
+		{Stat: "agility", Weight: 1.1, Error: 0.02},
+		{Stat: "attack_power", Weight: 1.0, Error: 0.01},
+		{Stat: "crit", Weight: 12.0, Error: 0.30},
+	}
+	if len(got) != len(want) {
+		t.Fatalf("got %d weights, want %d: %+v", len(got), len(want), got)
+	}
+	for i := range want {
+		if got[i].Stat != want[i].Stat || got[i].Weight != want[i].Weight || got[i].Error != want[i].Error {
+			t.Errorf("weight %d = %+v, want %+v", i, got[i], want[i])
+		}
+	}
+}
+
+// A reference weight of zero cannot be normalised against, and
+// reporting infinities would render as a table of blanks.
+func TestWeightsRefusesAZeroReference(t *testing.T) {
+	req := api.SimRequest{Weights: &api.WeightsSpec{Stats: []string{"crit"}, Reference: "crit"}}
+	stats := make([]float64, len(proto.Stat_name))
+	res := &proto.StatWeightsResult{Dps: &proto.StatWeightValues{
+		Weights:      &proto.UnitStats{Stats: stats},
+		WeightsStdev: &proto.UnitStats{Stats: stats},
+	}}
+	if _, err := Weights(res, req); err == nil {
+		t.Error("a zero reference weight was normalised")
+	}
+}
+
+func TestWeightsRefusals(t *testing.T) {
+	req := api.SimRequest{Weights: &api.WeightsSpec{Stats: []string{"crit"}, Reference: "crit"}}
+	if _, err := Weights(nil, req); !errors.Is(err, ErrNoWeights) {
+		t.Error("a nil result was accepted")
+	}
+	if _, err := Weights(&proto.StatWeightsResult{}, req); !errors.Is(err, ErrNoWeights) {
+		t.Error("a result with no dps block was accepted")
+	}
+	failed := &proto.StatWeightsResult{Error: &proto.ErrorOutcome{Message: "the engine died"}}
+	if _, err := Weights(failed, req); err == nil {
+		t.Error("an engine failure was reported as weights")
+	}
+	if _, err := Weights(&proto.StatWeightsResult{}, api.SimRequest{}); err == nil {
+		t.Error("a request with no weights block was accepted")
+	}
+}

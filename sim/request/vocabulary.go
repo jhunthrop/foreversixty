@@ -17,6 +17,7 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/jhunthrop/foreversixty/sim/internal/statid"
 	"github.com/jhunthrop/foreversixty/sim/internal/strcase"
 	"github.com/wowsims/classic/sim/core/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
@@ -307,58 +308,30 @@ func WorldBuffs() []string {
 	return out
 }
 
-// statSpellings are the enum names strcase.Snake gets wrong.
-//
-// There is one. Snake inserts a separator before every capital, so
-// MP5 comes out "m_p5"; the contract pins it as "mp5" (10.8) and so
-// does every addon that reads a Pawn string. Listing the exception
-// beats hand-writing all forty-one ids, which would stop matching the
-// enum the first time the pin moved.
-var statSpellings = map[string]string{"MP5": "mp5"}
-
-// statID is one enum value's id: the value name with the Stat prefix
-// stripped, in lower snake case, with the spellings above applied.
-func statID(name string) string {
-	bare := strings.TrimPrefix(name, "Stat")
-	if fixed, ok := statSpellings[bare]; ok {
-		return fixed
-	}
-	return strcase.Snake(bare)
-}
-
-// statIDs is the engine's Stat enum, keyed by the id the weights panel
-// sends, so StatAttackPower is "attack_power". It is built from the
-// descriptor rather than written down, so a stat the engine gains is
-// offerable the day the pin moves; TestKnownStatsMatchThePinnedList
-// holds the result to the contract's vocabulary.
-var statIDs = func() map[string]proto.Stat {
-	out := make(map[string]proto.Stat, len(proto.Stat_name))
-	for value, name := range proto.Stat_name {
-		out[statID(name)] = proto.Stat(value)
-	}
-	return out
-}()
-
 // ParseStat maps a stat id onto the engine's enum.
+//
+// The mapping itself lives in sim/internal/statid, a leaf package
+// sim/adapter depends on too - to read a StatWeightsResult back into
+// the envelope's named rows - and sim/request's own test suite links
+// sim/adapter (the rotation smoke test runs a built request through
+// it), so sim/adapter cannot import sim/request without a cycle. This
+// wrapper is what keeps every existing caller and test in this
+// package's vocabulary unchanged.
 func ParseStat(id string) (proto.Stat, bool) {
-	s, ok := statIDs[id]
-	return s, ok
+	return statid.Parse(id)
 }
 
 // KnownStats lists every stat id a weights request may name, sorted.
 func KnownStats() []string {
-	out := make([]string, 0, len(statIDs))
-	for id := range statIDs {
-		out = append(out, id)
-	}
-	sort.Strings(out)
-	return out
+	return statid.Known()
 }
 
 // statVocabulary names every stat and the engine value it selects.
 func statVocabulary() []vocabularyEntry {
-	out := make([]vocabularyEntry, 0, len(statIDs))
-	for id, s := range statIDs {
+	ids := statid.Known()
+	out := make([]vocabularyEntry, 0, len(ids))
+	for _, id := range ids {
+		s, _ := statid.Parse(id)
 		out = append(out, vocabularyEntry{id: id, field: s.String(), owner: "Stat"})
 	}
 	return out
