@@ -236,7 +236,9 @@ pull, at a time, at execute) rides along in the same panel; the engine's
 Gems and sockets, catalyst charges, upgrade currencies and tracks, item
 sets with tier-bonus minimums, hero-talent trees, crafted-stat variants,
 bonus rolls, SimC version channel. The first six do not exist in the
-game; crafted variants are suffixes here and handled by copy-and-modify;
+game today: the 1.60 client's item table carries socket columns and none of its 19,171 items
+sets one, so the build validation gains a check that fails the pipeline the day a socketed
+item appears, which is the signal to design gems; crafted variants are suffixes here and handled by copy-and-modify;
 bonus rolls have no equivalent; the engine version is pinned and shown,
 not chosen. Tier set bonuses are counted by the engine from the gear
 itself, so a "minimum set bonus" filter is a results filter ("only combos

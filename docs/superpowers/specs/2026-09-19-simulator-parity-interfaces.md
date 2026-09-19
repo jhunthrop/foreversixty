@@ -1,0 +1,378 @@
+# Simulator parity: the interfaces
+
+**Date:** 2026-09-19
+**Design:** `2026-09-19-simulator-parity-design.md`
+**Amends:** `2026-09-14-simulator-interfaces.md`. Everything there stands;
+this document adds to it. Where a type below already exists, the new
+fields are marked `+`.
+
+The lanes (engine fork, `sim` module, data, API, web, addon) code against
+this document and nothing else. A lane that needs a name not written here
+adds it here first, in its own commit, and the other lanes pick it up.
+
+## 1. Request envelope (`sim/api/envelope.go`)
+
+### 1.1 Kinds
+
+```go
+const (
+    KindRun     = "run"      // one character, one result (today's request)
+    KindGear    = "gear"     // Top Gear: combinations of substitutions
+    KindTalents = "talents"  // talent loadouts only
+    KindDrops   = "drops"    // one substitution at a time, grouped by source
+    KindWeights = "weights"  // stat weights
+)
+
+// Kind is derived, never sent: a request with Bulk is gear, talents or
+// drops by Bulk.Mode; one with Weights is weights; otherwise run.
+func (r SimRequest) Kind() string
+```
+
+### 1.2 SimRequest
+
+```go
+type SimRequest struct {
+    // ... existing fields unchanged ...
+    Bulk    *BulkSpec    `json:"bulk,omitempty"`     // +
+    Weights *WeightsSpec `json:"weights,omitempty"`  // +
+    // TargetError, when > 0, turns Iterations into a ceiling: the run
+    // continues in steps of StepIterations until DPS.Error/DPS.Mean is
+    // at or under TargetError or Iterations is reached. 0 is today's
+    // fixed-count run.
+    TargetError float64 `json:"target_error,omitempty"` // +
+}
+
+const StepIterations = 1000
+var LaneIterationCeiling = map[string]int{LaneBrowser: 30000, LaneServer: 100000}
+```
+
+### 1.3 BulkSpec
+
+```go
+type BulkSpec struct {
+    Mode       string          `json:"mode"`        // gear | talents | drops
+    Candidates []Candidate     `json:"candidates"`
+    Talents    []TalentLoadout `json:"talents,omitempty"`
+    Sets       []GearSet       `json:"sets,omitempty"`
+    Locked     []string        `json:"locked,omitempty"`   // slots never substituted
+    Precision  string          `json:"precision"`          // fast | normal | high
+    Cap        int             `json:"cap"`                // the lane's cap, echoed so a saved request says what bounded it
+}
+
+type Candidate struct {
+    Slot    string `json:"slot"`              // IDS.md slot vocabulary; "" means "wherever it fits" (rings, trinkets, weapons)
+    ItemID  int    `json:"item_id"`
+    Enchant int    `json:"enchant,omitempty"` // 0 inherits the equipped enchant for the slot where it fits
+    Suffix  int    `json:"suffix,omitempty"`
+    Origin  string `json:"origin"`            // equipped | bag | bank | search | drop:<source-id> | set:<name>
+}
+
+type TalentLoadout struct {
+    Name    string `json:"name"`
+    Talents string `json:"talents"` // positional string, same as CharacterSpec.Talents
+}
+
+type GearSet struct {
+    Name string     `json:"name"`
+    Gear []GearSlot `json:"gear"`
+}
+
+const (
+    PrecisionFast   = "fast"
+    PrecisionNormal = "normal"
+    PrecisionHigh   = "high"
+)
+
+// Stages by precision: iterations per stage, and what survives each cut.
+// The equipped set runs in every stage.
+//   fast:   100 → top 25% (+ within 2 SE of the cut) → 1000 → top 10 (+ ties) → 3000
+//   normal: 1000 → top 10 (+ ties) → 3000
+//   high:   1000 → top 20 (+ ties) → 10000
+var Caps = map[string]int{LaneBrowser: 400, LaneServer: 20000}
+```
+
+Validation: `Mode` in the set; `Precision` in the set; `Cap` at most the
+lane's; no candidate on a locked slot; every `Origin` matches the pattern;
+`talents` mode has at least one loadout and no candidates; `drops` mode
+has candidates whose origins are all `drop:`; `gear` has at least one of
+candidates, talents or sets. Expansion above `Cap` is refused with
+`ErrCapExceeded{Cap, Combinations}`.
+
+### 1.4 WeightsSpec
+
+```go
+type WeightsSpec struct {
+    Stats     []string `json:"stats"`     // IDS.md stat ids: strength, agility, attack_power, crit, hit, haste, spell_power, ... 
+    Reference string   `json:"reference"` // the stat normalised to 1.0; the spec's default from data/curated/specs.json
+}
+```
+
+### 1.5 EncounterSpec
+
+```go
+type EncounterSpec struct {
+    // ... existing: DurationSec, Variation, Targets, ExecuteRatio, Profile ...
+    Style           string        `json:"style,omitempty"`             // + label only; see 1.6
+    Movement        *Movement     `json:"movement,omitempty"`          // +
+    TargetsOverTime []TargetCount `json:"targets_over_time,omitempty"` // + overrides Targets when set
+    TargetLevel     int           `json:"target_level,omitempty"`      // + 60..63, default 63
+    TargetArmor     int           `json:"target_armor,omitempty"`      // + 0 means the level's preset
+    TargetType      string        `json:"target_type,omitempty"`       // + humanoid | undead | beast | demon | dragonkin | elemental | giant | mechanical | unknown
+    Dummy           bool          `json:"dummy,omitempty"`             // + no debuffs, no execute, no armor reduction
+}
+
+type Movement struct {
+    IntervalSec int    `json:"interval_sec"`
+    DurationSec int    `json:"duration_sec"`
+    Kind        string `json:"kind"` // away (out of melee, no casting) | casting (spells interrupted, melee continues)
+}
+
+type TargetCount struct {
+    AtSec int `json:"at_sec"`
+    Count int `json:"count"`
+}
+```
+
+### 1.6 Styles
+
+A style is a page preset that expands to encounter fields; the envelope
+stores the fields and keeps `Style` as the label. Vocabulary and expansion:
+
+| Style id | Targets | ExecuteRatio | Movement | TargetsOverTime | Dummy |
+| --- | --- | --- | --- | --- | --- |
+| `patchwerk` | 1 | 0.25 | none | none | false |
+| `execute` | 1 | 0.35 | none | none | false |
+| `light-movement` | 1 | 0.25 | 45 s / 5 s / away | none | false |
+| `heavy-movement` | 1 | 0.25 | 20 s / 5 s / away | none | false |
+| `cleave-2`, `cleave-3`, `cleave-5` | 2, 3, 5 | 0.25 | none | none | false |
+| `dungeon` | 1 | 0 | none | 0 s: 1, 40 s: 3, 80 s: 5, 130 s: 3, 160 s: 1 | false |
+| `dummy` | 1 | 0 | none | none | true |
+
+### 1.7 Buffs, consumables, cooldowns
+
+- IDS.md gains graded ids: `<id>:improved` for every `TristateEffect`
+  field (e.g. `battle_shout:improved`). The plain id stays the plain form.
+- IDS.md gains a **World buffs** section listing every `IndividualBuffs`
+  world-buff field by its snake-case name.
+- `CharacterSpec` gains `Cooldowns []CooldownSpec` (+):
+
+```go
+type CooldownSpec struct {
+    ID    string    `json:"id"`     // spell id as "spell:<id>" or a consumable id from IDS.md
+    AtSec []float64 `json:"at_sec"` // times to use; empty means "on cooldown"
+}
+```
+
+## 2. Result envelope
+
+```go
+type SimResult struct {
+    // ... existing fields unchanged ...
+    Combos   []Combo      `json:"combos,omitempty"`   // + ranked, best first
+    Equipped *Estimate    `json:"equipped,omitempty"` // + the base character at the final stage
+    Stages   []Stage      `json:"stages,omitempty"`   // +
+    Weights  []StatWeight `json:"weights,omitempty"`  // +
+    Sample   []SampleCast `json:"sample,omitempty"`   // + one iteration's casts (the median-DPS iteration)
+}
+
+type Combo struct {
+    Substitutions []Substitution `json:"substitutions"`
+    DPS           Estimate       `json:"dps"`
+    Delta         Estimate       `json:"delta"` // against Equipped, paired at the same stage
+    Group         int            `json:"group"` // 0 for the leader's within-error group, then 1, 2, ...
+}
+
+type Substitution struct {
+    Kind    string `json:"kind"`              // item | talents | set
+    Slot    string `json:"slot,omitempty"`    // item: the slot it went into (rings and trinkets say which)
+    ItemID  int    `json:"item_id,omitempty"`
+    Enchant int    `json:"enchant,omitempty"`
+    Suffix  int    `json:"suffix,omitempty"`
+    Name    string `json:"name,omitempty"`    // talents/set: the loadout or set name
+    Talents string `json:"talents,omitempty"`
+    Origin  string `json:"origin,omitempty"`  // copied from the candidate
+}
+
+type Stage struct {
+    Iterations int `json:"iterations"`
+    Combos     int `json:"combos"`
+}
+
+type StatWeight struct {
+    Stat   string  `json:"stat"`
+    Weight float64 `json:"weight"` // Reference stat is exactly 1
+    Error  float64 `json:"error"`
+}
+
+type SampleCast struct {
+    AtMS      int64            `json:"at_ms"` // negative during pre-pull
+    SpellID   int64            `json:"spell_id"`
+    Name      string           `json:"name"`
+    Target    string           `json:"target,omitempty"`
+    Resources map[string]int   `json:"resources,omitempty"` // rage, energy, mana, combo_points after the cast
+}
+```
+
+`Progress` (+): `Stage int`, `CombosDone int`, `CombosTotal int`, all zero
+for a plain run.
+
+## 3. `sim/bulk` (new package)
+
+```go
+// Expand lists every valid combination for req. It reads item rows from
+// the same simdb the engine loads. ErrCapExceeded carries the count.
+func Expand(req api.SimRequest) ([]Combination, error)
+
+type Combination struct {
+    Request       api.SimRequest    // the base character with the substitutions applied
+    Substitutions []api.Substitution
+}
+
+// Plan is the first stage: the combinations plus the equipped set, each
+// as a request at the stage's iteration count. Stage numbers start at 1.
+func Plan(req api.SimRequest) (StageRequests, error)
+
+type StageRequests struct {
+    Stage      int
+    Iterations int
+    Requests   []api.SimRequest // Requests[0] is always the equipped set
+    Combos     []Combination    // parallel to Requests[1:]
+}
+
+// Rank scores a finished stage. It returns the next stage or, after the
+// final stage, the SimResult with Combos, Equipped and Stages filled.
+func Rank(req api.SimRequest, stage StageRequests, results []api.SimResult) (next *StageRequests, final *api.SimResult, err error)
+```
+
+Rules Expand enforces, each with a table test: slot fit by inventory type
+(`sim/internal/simdb`), class allowlist, required level, faction, unique
+and unique-category limits, rings and trinkets in both slots, two-hand
+versus main-plus-off-hand, dual-wield weapon order, enchant slot and item
+type fit, enchant inheritance from the equipped item, `Locked`.
+
+## 4. wasm exports (`sim/cmd/wasm`)
+
+All JSON strings in and out, failures `{"error": "..."}`, as today.
+
+| Export | In | Out |
+| --- | --- | --- |
+| `simPlan(requestJSON)` | a bulk SimRequest | `{"stage":1,"iterations":100,"requests":[SimRequest,...],"combos":[Combination,...]}` |
+| `simRank(requestJSON, stageJSON, resultsJSON)` | the request, the stage object simPlan/simRank returned, an array of SimResult in the same order | `{"next": stage}` or `{"result": SimResult}` |
+| `simWeights(requestJSON, callbackId)` | a weights SimRequest | SimResult with Weights; progress via `simProgress` |
+
+`simRun` is unchanged; the page runs each stage's requests through
+`simSplit`/`simRun`/`simCombine` exactly as it runs a single sim. The
+native `forever-sim` binary detects the kind and runs the plan-rank loop
+itself; `-progress` lines gain `stage`, `combos_done`, `combos_total`.
+
+## 5. Engine fork (behind the pin)
+
+`proto/common.proto` `Encounter` gains:
+
+```
+message MovementPattern { double interval_seconds = 1; double duration_seconds = 2; bool casting_only = 3; }
+MovementPattern movement = 10;
+message TargetCountAt { double at_seconds = 1; int32 count = 2; }
+repeated TargetCountAt targets_over_time = 11;
+bool target_dummy = 12;
+```
+
+Behaviour: `movement` schedules `MovementHandler` moves out of range for
+`duration_seconds` every `interval_seconds` (or, with `casting_only`,
+interrupts casting without moving); `targets_over_time` activates and
+deactivates targets from a pool sized to the maximum count;
+`target_dummy` disables debuff application, execute windows and the
+target's armor reduction. `RaidSimResult` gains `sample_iteration` with
+the cast log and resource readings of the median-DPS iteration.
+
+## 6. Data files
+
+### 6.1 `data/builds/<build>/loot.json`
+
+```json
+{
+  "sources": [
+    { "id": "raid:mc", "kind": "raid", "name": "Molten Core", "zone_id": 409, "opens": "raids-1",
+      "bosses": [ { "id": "raid:mc:lucifron", "name": "Lucifron", "npc_id": 12118, "items": [16800, 16803] } ],
+      "trash": [ 17011 ] },
+    { "id": "dungeon:brd", "kind": "dungeon", ... },
+    { "id": "world:azuregos", "kind": "world", "items": [...] },
+    { "id": "crafted:blacksmithing", "kind": "crafted", "profession": "blacksmithing", "items": [...] },
+    { "id": "rep:argent-dawn:exalted", "kind": "rep", "faction_id": 529, "standing": "exalted", "items": [...] },
+    { "id": "pvp:rank-10", "kind": "pvp", "rank": 10, "items": [...] },
+    { "id": "quest", "kind": "quest", "items": [...] }
+  ]
+}
+```
+
+Generated by the data lane from the fork database's `sources` (AtlasLoot
+and Wowhead), joined to the build's zones, then overlaid by
+`data/curated/loot/*.json`, which use the same shape plus `sources` and
+`notes` like every curated file and may add, replace or remove a source or
+an item. `opens` is a phase name from `api/internal/phase`; a source
+without it is open from launch.
+
+### 6.2 `data/builds/<build>/enchants.json`
+
+`[ { "id": <effect_id>, "name", "icon", "slots": ["head", ...], "item_types": [...], "classes": [...], "stats": {...}, "phase" } ]`
+from the fork database's `UIEnchant`, with Forever's additions overlaid
+from `data/curated/enchants.json`.
+
+### 6.3 `data/builds/<build>/suffixes.json`
+
+`[ { "id", "name", "stats": {...} } ]` from `ItemRandomSuffix`; `items.json`
+rows gain `suffixes: [id, ...]` where the item rolls one.
+
+### 6.4 Build validation
+
+The pipeline fails when any `ItemSparse` row has a non-zero
+`SocketType_*` (the gem signal from the design's section 4.4).
+
+## 7. The addon export, version 2 (`FS1`)
+
+```
+FS1:<build>:<class>:<race>:<t1>/<t2>/<t3>:<gear>|bags=<items>|bank=<items>|sets=<name>=<gear>;...|loadouts=<name>=<t1>/<t2>/<t3>;...
+```
+
+- Everything before the first `|` is version 1 unchanged, so every
+  existing decoder keeps working.
+- `<items>` is `item_id[:enchant[:suffix]]` joined by `,`; only
+  equippable items; empty sections are omitted.
+- `<gear>` inside `sets=` is the version-1 gear list; `<name>` is URL-encoded.
+- Order of sections is fixed as written; unknown sections are ignored by
+  the decoder and reported in its result as `ignored: [name]`.
+- The decoder (`web/src/lib/planner/fs1.ts`) returns `FS1Build` (+)
+  `bags`, `bank`, `sets`, `loadouts`, all optional. `MAX_CODE_LENGTH`
+  rises to 16,384.
+- The encoder lands in the in-game addon's `Export.lua` (the phase-2
+  addon design); the companion passes strings through untouched.
+
+## 8. API
+
+- `POST /v1/sims`: unchanged path and premium gate. A bulk or weights
+  request is validated with the server lane's cap; a cap breach answers
+  `400 cap_exceeded` with `{ "cap": 20000, "combinations": 31200 }`. A bulk
+  request the planner estimates past the job timeout answers `400
+  too_large` with the estimate in seconds.
+- `sims` (+): `kind text not null default 'run'`; migration `0014_sim_kinds`.
+  `Store.Queue` sets it from `req.Kind()`.
+- `GET /v1/sims/<id>`: unchanged; the result blob carries the new fields.
+- `GET /v1/sims?mine=1` (+) accepts `kind=`; rows carry `kind` and
+  `headline` (the API composes: run → "1,204 DPS"; gear → "+41 DPS from
+  Vis'kag"; drops → "3 upgrades on Ragnaros"; talents → "+18 DPS with
+  'Deep Fury'"; weights → "Crit 1.00 · Agility 0.87").
+- Progress rows carry `stage`, `combos_done`, `combos_total`.
+- `GET /v1/specs` (+) rows carry `reference_stat`.
+
+## 9. Web
+
+Routes: `/sim/gear`, `/sim/talents`, `/sim/drops`, `/sim/weights`, each
+an island over the same store as `/sim`. `/sim/<id>` renders by
+`result.request.Kind()`. Test ids: `sim-combos`, `sim-combo-row`,
+`sim-equipped-line`, `sim-cap-notice`, `sim-stage-progress`,
+`sim-source-picker`, `sim-source-<id>`, `sim-candidate-<slot>-<item>`,
+`sim-weights`, `sim-request-drawer`, `sim-style`, `sim-precision`,
+`sim-target-error`, `sim-sample-log`, `sim-details-card`.
+
+Share URLs carry the whole request as today; a bulk request above the URL
+budget is shared by its saved id only.
