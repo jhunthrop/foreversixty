@@ -112,9 +112,21 @@ export const simCopy = {
   sourceFightTitle: 'From a logged fight',
   sourceFightBody: 'Paste a report link, or open a fight from a report and choose Sim this fight.',
   sourceAccountTitle: 'Your characters',
-  // Task 18 replaces this with the landing state's character list; Task 11 only lays out
-  // the card's signed-out and signed-in shells.
-  sourceAccountPlaceholder: 'Your characters will appear here.',
+  // Task 18: the signed-in account card, once the switcher is reopened from the landing
+  // state below, returns to it rather than showing the Task 11 placeholder it used to.
+  backToCharacters: 'Back to your characters',
+
+  // --- Task 18: the signed-in landing state (design 4.6). A member who opens /sim sees
+  // their characters and one button each, and no form until they ask for one. ---
+  yourCharacters: 'Your characters',
+  simIt: 'Sim',
+  loading: 'Loading…',
+  otherCharacter: 'Sim something else',
+  // The contract's sim-input has no Armory source yet (sources.ts's own header note), so
+  // this says, out loud, where the gear behind every row actually comes from.
+  landingSourceNote:
+    'Gear comes from your last addon export or your last logged fight. Blizzard has no character profile API for Forever yet.',
+  noCharactersYet: 'No characters yet. Install the addon and the companion, or paste an export.',
 
   // --- Task 21: build unfurls carrying simmed DPS. ---
   includeSimOnCard: 'Include a simmed DPS on the card',

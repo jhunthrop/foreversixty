@@ -73,6 +73,12 @@ test.describe('a saved sim from the prerendered fixture', () => {
     // request with no gear at all, exercised below against a stubbed id.
     await expect(page.getByTestId('sim-slot-head')).toBeVisible();
     await expect(page.getByTestId('sim-no-gear')).toHaveCount(0);
+
+    // Controller addendum (Task 17's review, MEDIUM): the strip's "Change source" button
+    // was rendering live and focusable on this read-only page but wired to a no-op. There
+    // is nothing to change a source into here, so CharacterStrip's `readonly` prop hides it
+    // rather than leaving a button that does nothing for a player to find.
+    await expect(page.getByTestId('sim-change-source')).toHaveCount(0);
   });
 
   test('Run this yourself opens /sim with the stored request’s source', async ({ page }) => {

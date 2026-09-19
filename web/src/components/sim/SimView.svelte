@@ -10,7 +10,8 @@
 <script lang="ts">
   import { onMount, untrack } from 'svelte';
   import activeBuild from '../../data/active-build.json';
-  import { battlenetStartUrl, fetchMe } from '../../lib/account/api';
+  import { battlenetStartUrl, fetchMe, type Me } from '../../lib/account/api';
+  import type { CharacterPath } from '../../lib/characters';
   import { createLazyComponent, type LazyLoadState } from '../../lib/report/lazy-component.svelte';
   import { fetchReportMeta, fetchSummary } from '../../lib/report/load';
   import type { Summary } from '../../lib/report/types';
@@ -25,6 +26,7 @@
   import { ENGINE_VERSION, engineLabel, isStale } from '../../lib/sim/version';
   import type { SimListRow, SimResult, SpecFidelity } from '../../lib/sim/types';
   import CharacterStrip from './CharacterStrip.svelte';
+  import LandingState from './LandingState.svelte';
   import RunControl from './RunControl.svelte';
   import SavedSim from './SavedSim.svelte';
   import SettingsBar from './SettingsBar.svelte';
@@ -156,10 +158,13 @@
     if (comparison !== null) compareViewLazy.load();
   });
 
-  // The history panel (Task 17), for a signed-in player on plain /sim only -- set from
-  // `onMount`'s own `fetchMe` below, the same answer that already gates the premium
-  // control, so there is one signed-in check for the page rather than two.
-  let signedIn = $state(false);
+  // Set from `onMount`'s own `fetchMe` below, the same answer that already gates the
+  // premium control -- one fetch, read by the history panel (Task 17), the landing state
+  // and the source switcher's signed-in card (Task 18), rather than a signed-in flag each
+  // of them would otherwise need its own copy of.
+  let me = $state<Me | null>(null);
+  // The history panel (Task 17), for a signed-in player on plain /sim only.
+  const signedIn = $derived(me !== null);
   let historyRows = $state<SimListRow[] | null>(null);
   let historyError = $state<string | null>(null);
 
@@ -249,14 +254,15 @@
     // mean "no premium control", the way Account.svelte's own `load()` already treats a
     // failed fetchMe as "not signed in" rather than an error banner.
     //
-    // The same answer also gates the history panel (Task 17): `signedIn` is `me !== null`,
-    // and the panel's own `GET /v1/sims?mine=1` fires only then -- a signed-out visitor
+    // The same answer also gates the history panel (Task 17), the landing state and the
+    // source switcher's signed-in card (Task 18): `signedIn` above is `me !== null`, and
+    // the history panel's own `GET /v1/sims?mine=1` fires only then -- a signed-out visitor
     // gets no second request for a list that would come back empty anyway.
     void fetchMe()
-      .then((me) => {
-        store.setPremium(me?.user.premium ?? false);
-        signedIn = me !== null;
-        if (signedIn) void loadHistory();
+      .then((result) => {
+        me = result;
+        store.setPremium(result?.user.premium === true);
+        if (result !== null) void loadHistory();
       })
       .catch(() => {});
     return () => store.dispose();
@@ -298,10 +304,14 @@
   });
   const specUnsupported = $derived(characterSpecRow?.state === 'unsupported');
 
-  // Open until a character is on screen, or reopened by "Change source". The store's own
-  // URL bootstrap (above) can land a character before this component's first render, so
-  // this reads `store.character` rather than defaulting to a fixed value.
-  let switcherOpen = $state(store.character === null);
+  // False until the player explicitly asks for the switcher -- the strip's "Change source",
+  // the landing state's "Sim something else", or the no-characters card's account link.
+  // Design 4.6: a signed-in member with characters opens on the landing state instead of
+  // the switcher, so defaulting this to `store.character === null` (as it read before the
+  // landing state existed) would show the switcher on every first paint and the landing
+  // state would never appear. Once a character *is* on screen, the effect below keeps this
+  // false regardless, the same way it always has.
+  let switcherOpen = $state(false);
 
   $effect(() => {
     if (store.character !== null) switcherOpen = false;
@@ -309,6 +319,20 @@
 
   function onSignIn(): void {
     window.location.href = battlenetStartUrl(`${window.location.pathname}${window.location.search}`);
+  }
+
+  // The landing state's own busy key (Task 18): the row a pick is in flight for, so its
+  // button reads "Loading…" while every other row disables rather than reads it too.
+  // `store.loadStored`'s own `adopt()` is what sets `store.message` on a refusal -- the
+  // "no race recorded" case sources.ts's `fromStoredCharacter` returns when the API has not
+  // recorded one yet -- so the landing-state message below reads that field rather than a
+  // second one this function would have to keep in step with it.
+  let landingBusyKey = $state<string | null>(null);
+
+  async function pickCharacter(path: CharacterPath): Promise<void> {
+    landingBusyKey = `${path.region}/${path.ruleset}/${path.slug}`;
+    await store.loadStored(path);
+    landingBusyKey = null;
   }
 
   // The stale-engine banner and pill describe a *settled* result, not one that is being
@@ -379,15 +403,52 @@
           onchange={() => (switcherOpen = true)}
           onrace={(slug) => store.setRace(slug)}
         />
-      {:else}
+      {:else if me !== null && me.characters.length > 0 && !switcherOpen}
+        <!-- Design 4.6: a signed-in member sees their characters and one button each, and
+             no form until they ask for one -- so this replaces the switcher entirely rather
+             than sitting above it. -->
+        <LandingState
+          characters={me.characters}
+          busyKey={landingBusyKey}
+          onpick={(path) => void pickCharacter(path)}
+          onother={() => (switcherOpen = true)}
+        />
+        {#if store.message !== null}
+          <!-- The only failure a stored-character pick raises today is sources.ts's own
+               "no race recorded" refusal (a combat log carries none, and the API has not
+               started sending one for a stored character either) -- but whatever the
+               message, the remedy is the same: the addon export is the one source that
+               always carries a race, so the hint follows every refusal here rather than
+               only the one the copy names. -->
+          <p class="text-muted px-[18px] text-[14px] md:px-0" role="alert" data-testid="sim-landing-message">
+            {store.message}
+            {simCopy.landingNoRace}
+          </p>
+        {/if}
+      {:else if me !== null && me.characters.length === 0}
+        <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="sim-no-characters">
+          {simCopy.noCharactersYet} <a class="text-nav underline" href="/logs">Logs</a>.
+        </p>
         <SourceSwitcher
           busy={store.phase === 'loading-character'}
           message={store.message}
-          signedIn={false}
+          signedIn
           onaddon={(code) => void store.loadAddon(code)}
           onbuild={(id) => void store.loadBuild(id)}
           onfight={(ref) => void store.loadFight(ref)}
           onsignin={onSignIn}
+          onback={() => (switcherOpen = false)}
+        />
+      {:else}
+        <SourceSwitcher
+          busy={store.phase === 'loading-character'}
+          message={store.message}
+          signedIn={me !== null}
+          onaddon={(code) => void store.loadAddon(code)}
+          onbuild={(id) => void store.loadBuild(id)}
+          onfight={(ref) => void store.loadFight(ref)}
+          onsignin={onSignIn}
+          onback={() => (switcherOpen = false)}
         />
       {/if}
 

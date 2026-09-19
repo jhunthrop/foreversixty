@@ -151,7 +151,7 @@
   </p>
 {/if}
 
-<CharacterStrip {character} {items} {gearKnown} onchange={() => {}} />
+<CharacterStrip {character} {items} {gearKnown} readonly onchange={() => {}} />
 
 {#if simResultsLazy.current}
   <simResultsLazy.current

@@ -22,6 +22,7 @@
     items,
     races = [],
     gearKnown = true,
+    readonly = false,
     onchange,
     onrace = () => {},
   }: {
@@ -31,6 +32,10 @@
     races?: RaceRow[];
     /** False on a saved sim, whose stored request has no gear list. */
     gearKnown?: boolean;
+    /** True on /sim/<sim_id> (SavedSim.svelte): hides "Change source", which has nothing to
+     *  change on a read-only result -- the button was rendering live and focusable but
+     *  wired to a no-op (Task 17's review, MEDIUM). */
+    readonly?: boolean;
     onchange: () => void;
     /** The player answering the race question; the store replaces the character. */
     onrace?: (slug: string) => void;
@@ -89,14 +94,16 @@
       </label>
     {/if}
     <span class="pill pill-site" data-testid="sim-source-pill">{sourcePill(character.source)}</span>
-    <button
-      type="button"
-      class="border-line-warm rounded-control text-nav label ml-auto min-h-11 border px-3 md:min-h-9"
-      onclick={onchange}
-      data-testid="sim-change-source"
-    >
-      {simCopy.changeSource}
-    </button>
+    {#if !readonly}
+      <button
+        type="button"
+        class="border-line-warm rounded-control text-nav label ml-auto min-h-11 border px-3 md:min-h-9"
+        onclick={onchange}
+        data-testid="sim-change-source"
+      >
+        {simCopy.changeSource}
+      </button>
+    {/if}
   </div>
 
   {#if !gearKnown}

@@ -4,8 +4,10 @@
      it is the one that needs a sign-in and, until Blizzard ships a Forever profile API, is
      really the addon export under a different name -- which its own copy says out loud
      rather than letting a player assume their Armory gear is being read.
-     The signed-in card body is a placeholder: Task 18 replaces it with the landing state's
-     character list once that lane exists. -->
+     A signed-in member's own character list lives in LandingState.svelte, not here (Task
+     18): this switcher only reaches a signed-in member when they explicitly reopen it (from
+     the strip's "Change source", or the landing state's "Sim something else"), so the card's
+     signed-in body is a way back to that list rather than a second copy of it. -->
 <script lang="ts">
   import { simCopy } from '../../lib/sim/copy';
 
@@ -17,6 +19,7 @@
     onbuild,
     onfight,
     onsignin,
+    onback = () => {},
   }: {
     busy: boolean;
     message: string | null;
@@ -25,6 +28,8 @@
     onbuild: (id: string) => void;
     onfight: (ref: string) => void;
     onsignin: () => void;
+    /** Signed-in only: returns to the landing state's character list. */
+    onback?: () => void;
   } = $props();
 
   let addonCode = $state('');
@@ -123,9 +128,9 @@
     <div class={card} data-testid="sim-account-card">
       <h2 class="section-title text-[15px]">{simCopy.sourceAccountTitle}</h2>
       {#if signedIn}
-        <p class="text-muted text-[13px]" data-testid="sim-account-placeholder">
-          {simCopy.sourceAccountPlaceholder}
-        </p>
+        <button type="button" class={action} onclick={onback} data-testid="sim-back-to-characters">
+          {simCopy.backToCharacters}
+        </button>
       {:else}
         <p class="text-muted text-[13px]">{simCopy.armorySignIn}</p>
         <button type="button" class={action} onclick={onsignin} data-testid="sim-signin">
