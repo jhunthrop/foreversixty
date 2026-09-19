@@ -8,7 +8,10 @@
         "http://localhost/classes.html",
         "http://localhost/planner.html",
         "http://localhost/logs.html",
-        "http://localhost/reports/fixture2abcd.html"
+        "http://localhost/reports/fixture2abcd.html",
+        "http://localhost/sim.html",
+        "http://localhost/sim/specs.html",
+        "http://localhost/sim/simfixtureab.html"
       ],
       "numberOfRuns": 3,
       "settings": {
@@ -30,7 +33,7 @@
     "assert": {
       "assertMatrix": [
         {
-          "matchingUrlPattern": "^(?!.*/(?:index|planner|logs)\\.html$)(?!.*/reports/).*$",
+          "matchingUrlPattern": "^(?!.*/(?:index|planner|logs)\\.html$)(?!.*/reports/)(?!.*/sim(?:/specs)?\\.html$)(?!.*/sim/[a-z2-7]{12}\\.html$).*$",
           "aggregationMethod": "median",
           "assertions": {
             "categories:performance": ["error", { "minScore": 0.95 }],
@@ -69,6 +72,30 @@
         },
         {
           "matchingUrlPattern": ".*/reports/.*\\.html$",
+          "aggregationMethod": "median",
+          "assertions": {
+            "categories:performance": ["error", { "minScore": 0.9 }],
+            "categories:accessibility": ["error", { "minScore": 0.95 }],
+            "categories:seo": ["error", { "minScore": 0.95 }],
+            "categories:best-practices": ["warn", { "minScore": 0.95 }],
+            "total-blocking-time": ["error", { "maxNumericValue": 200 }],
+            "cumulative-layout-shift": ["error", { "maxNumericValue": 0.05 }]
+          }
+        },
+        {
+          "matchingUrlPattern": ".*/sim(?:/specs)?\\.html$",
+          "aggregationMethod": "median",
+          "assertions": {
+            "categories:performance": ["error", { "minScore": 0.95 }],
+            "categories:accessibility": ["error", { "minScore": 0.95 }],
+            "categories:seo": ["error", { "minScore": 0.95 }],
+            "categories:best-practices": ["warn", { "minScore": 0.95 }],
+            "total-blocking-time": ["error", { "maxNumericValue": 100 }],
+            "cumulative-layout-shift": ["error", { "maxNumericValue": 0.05 }]
+          }
+        },
+        {
+          "matchingUrlPattern": ".*/sim/[a-z2-7]{12}\\.html$",
           "aggregationMethod": "median",
           "assertions": {
             "categories:performance": ["error", { "minScore": 0.9 }],

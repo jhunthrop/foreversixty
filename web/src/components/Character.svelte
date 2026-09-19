@@ -4,23 +4,16 @@
      a public report is enough to have one, which is the spec's position. -->
 <script lang="ts">
   import { parseCharacterPath, rulesetLabel, type CharacterPath } from '../lib/characters';
-  import { classColorVar, formatAmount, percentileToken } from '../lib/report/format';
+  import { classColorVar, formatAmount, percentileToken, rowLink } from '../lib/report/format';
   import { encounterSlug, fetchCharacter, type CharacterPage } from '../lib/rankings/api';
   import { RANKING_METRICS } from '../lib/rankings/url';
+  import { executionHref, executionLabel, executionTitle } from '../lib/sim/execution';
 
   let { path = null }: { path?: CharacterPath | null } = $props();
 
   const resolved = $derived(
     path ?? (typeof window === 'undefined' ? null : parseCharacterPath(window.location.pathname)),
   );
-
-  /**
-   * An `<a>` is inline: its own box is only as tall as its text, not the `min-h-11` row it
-   * sits in. Rankings.svelte's row links already carry this fix; the phone audit here
-   * caught the same shape of miss on this page's encounter and value links, so every
-   * anchor that is its own tap target gets it too, not just the row around it.
-   */
-  const rowLink = 'inline-flex min-h-11 items-center';
 
   /**
    * A percentile beside a formatted amount has no column heading at any breakpoint --
@@ -105,7 +98,7 @@
         <ul class="flex flex-col" data-testid="character-best">
           {#each data.best as row (`${row.encounter_id}-${row.difficulty}-${row.metric}`)}
             <li
-              class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-3 border-b px-2 py-2 text-[14px]"
+              class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto_auto_auto] items-center gap-3 border-b px-2 py-2 text-[14px]"
             >
               <a class="{rowLink} truncate" href={`/rankings/${encounterSlug(row.encounter)}`}>
                 {row.encounter}
@@ -124,6 +117,24 @@
               >
                 {formatAmount(Math.round(row.value))}
               </a>
+              <!-- This table has no `md:` breakpoint at all -- percentile and value are always
+                   visible, not desktop-gated -- so the execution cell is always visible too,
+                   unlike the same cell on "Every ranked fight" below. -->
+              {#if row.execution_score === null}
+                <span
+                  class="text-muted tabular text-right font-mono text-[13px]"
+                  title={executionTitle(null)}
+                  aria-label={executionTitle(null)}
+                  data-testid="character-best-execution">{executionLabel(null)}</span
+                >
+              {:else}
+                <a
+                  class="{rowLink} tabular justify-end text-right font-mono text-[13px]"
+                  href={executionHref(row.report_id, row.fight_index)}
+                  title={executionTitle(row.execution_score)}
+                  data-testid="character-best-execution">{executionLabel(row.execution_score)}</a
+                >
+              {/if}
             </li>
           {/each}
         </ul>
@@ -135,7 +146,7 @@
       <ul class="flex flex-col" data-testid="character-history">
         {#each data.history as row, index (`${row.report_id}-${row.fight_index}-${index}`)}
           <li
-            class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-3 border-b px-2 py-2 text-[14px] md:grid-cols-[96px_minmax(0,1fr)_88px_72px_88px]"
+            class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-3 border-b px-2 py-2 text-[14px] md:grid-cols-[96px_minmax(0,1fr)_88px_72px_88px_72px]"
           >
             <span class="text-muted tabular hidden font-mono text-[13px] md:inline"
               >{row.fought_at.slice(0, 10)}</span
@@ -157,6 +168,21 @@
             >
               {formatAmount(Math.round(row.value))}
             </span>
+            {#if row.execution_score === null}
+              <span
+                class="text-muted tabular hidden text-right font-mono text-[13px] md:inline"
+                title={executionTitle(null)}
+                aria-label={executionTitle(null)}
+                data-testid="character-execution">{executionLabel(null)}</span
+              >
+            {:else}
+              <a
+                class="{rowLink} tabular hidden text-right font-mono text-[13px] md:inline"
+                href={executionHref(row.report_id, row.fight_index)}
+                title={executionTitle(row.execution_score)}
+                data-testid="character-execution">{executionLabel(row.execution_score)}</a
+              >
+            {/if}
           </li>
         {/each}
       </ul>

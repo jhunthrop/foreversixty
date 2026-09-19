@@ -1,0 +1,55 @@
+---
+// web/src/pages/sim/[id].astro
+// Only the fixture sim is prerendered, and only under FOREVER_DATA=fixture: every other id
+// is served by src/worker.ts from sim.html with its head rewritten. Prerendering the fixture
+// gives Lighthouse and Playwright a page with real content rather than an empty shell.
+import Base from '../../layouts/Base.astro';
+import { FIXTURE_SIM_ID, fixtureSimPaths } from '../../lib/report/shell-paths';
+import fixtureResult from '../../fixtures/sim/result.json';
+import { SIM_SAVED_SKELETON_HTML } from '../../lib/sim/skeleton';
+
+export function getStaticPaths() {
+  return fixtureSimPaths();
+}
+
+const { id } = Astro.params;
+const inline = id === FIXTURE_SIM_ID ? JSON.stringify(fixtureResult) : undefined;
+---
+
+<Base
+  title="Saved sim"
+  description="A saved World of Warcraft: Forever simulation: the character, the settings, and what the engine produced."
+  path={`/sim/${id}`}
+>
+  <link rel="stylesheet" href="/sim-island.css" slot="head" />
+  <main
+    id="main"
+    tabindex="-1"
+    class="mx-auto flex w-full max-w-[1344px] flex-col gap-[22px] pt-4 pb-10 md:gap-8 md:px-12 md:pt-7"
+  >
+    <!--
+      Round 3 (Lighthouse): reserves the saved sim's space before the island mounts, the
+      same reason and the same pattern reports/[id].astro uses -- without it the shell is
+      one line tall, the footer sits inside the viewport, and rendering the saved sim
+      shoves it down by roughly the result's own height (measured: 0.326 CLS on
+      /sim/simfixtureab.html, the footer moving with barlow-latin-600-normal.woff2's load
+      only made it visible; the mount swap alone is the real cause, on any font). Measured
+      on the fixture at 360px and 1280px: the hydrated view settles at ~1234px mobile /
+      ~900px desktop, so the reservation matches that height directly rather than guessing
+      a multiple of the viewport. SimView.svelte's own loading state ({@html
+      SIM_SAVED_SKELETON_HTML}, between mounting and a real (non-prerendered) id's fetch
+      resolving) renders the identical string, so nothing shifts between the two moments
+      report/skeleton.ts's own comment describes.
+    -->
+    <div
+      id="sim"
+      data-sim-mount
+      data-sim-id={id}
+      data-sim-result={inline}
+      class="min-h-[1234px] md:min-h-[900px]"
+    >
+      <Fragment set:html={SIM_SAVED_SKELETON_HTML} />
+    </div>
+    <script type="module" src="/sim-island.js"></script>
+  </main>
+</Base>

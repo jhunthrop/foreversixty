@@ -14,7 +14,7 @@ import { defineConfig } from 'vite';
  * which the Astro build cannot produce because its island chunks are hashed and referenced
  * only from its own HTML.
  */
-export function islandConfig(name: 'planner-island' | 'report-island') {
+export function islandConfig(name: 'planner-island' | 'report-island' | 'sim-island') {
   return {
     // Astro exposes PUBLIC_*; plain Vite exposes VITE_* only, so PUBLIC_API_BASE_URL has to be
     // allow-listed or lib/planner/config.ts would silently fall back to the default origin.

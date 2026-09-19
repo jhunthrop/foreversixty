@@ -40,6 +40,9 @@ export const SYNC_ENTRIES = [
   { name: 'classes.json', kind: 'file', required: true },
   { name: 'races.json', kind: 'file', required: true },
   { name: 'combos.json', kind: 'file', required: true },
+  { name: 'spellconst', kind: 'dir', required: false },
+  { name: 'spells.json', kind: 'file', required: false },
+  { name: 'simconsumes.json', kind: 'file', required: false },
 ];
 
 /** The files src/pages/classes.astro imports statically. */
@@ -178,8 +181,71 @@ async function resolveSourceDir({ repoRoot, webRoot, build, source, allowFixture
 }
 
 /**
- * Resets public/data/<build> and copies SYNC_ENTRIES from sourceDir into it. Throws when a
- * required entry is missing from sourceDir. Returns the names actually copied.
+ * public/data/<build>/simnames/<class>.json: spell and item ids to display names, for the
+ * simulator's results tables.
+ *
+ * The simulator's summary names abilities by engine action key (sim/adapter.ActionName), so
+ * the web has to resolve them. spells.json is 31,754 rows and 1.8 MB -- far too big to
+ * fetch on /sim -- so this prunes it to what a sim of that class can actually reference:
+ * every spell in the class's spellconst file (falling back to spells.json only for a name
+ * spellconst omits, never for membership), plus the class's own items for the item:<id>
+ * rows. items/<class>.json carries no spell, proc or on-use field -- its rows are only
+ * `{ id, name, icon, slot, quality, required_level, item_level, armor, stats, set_id,
+ * unique }` -- so a trinket's triggered spell is not pulled into `spell` from here; if that
+ * spell is not itself one of the class's own spellconst entries, resolveActionName falls
+ * back to the raw key for it, which is legible. A build without spellconst (an older one,
+ * or one the data lane has not regenerated) publishes nothing, and resolveActionName falls
+ * back to the key for everything.
+ * @param {string} buildDir source data/builds/<build>
+ * @param {string} outDir   public/data/<build>
+ * @returns {Promise<string[]>} the simnames/<class>.json paths written, relative to outDir
+ */
+export async function writeSimNames(buildDir, outDir) {
+  let spells;
+  try {
+    spells = JSON.parse(await readFile(path.join(buildDir, 'spells.json'), 'utf8'));
+  } catch {
+    return [];
+  }
+  const nameById = new Map(spells.map((row) => [String(row.id), row.name]));
+
+  let classFiles;
+  try {
+    classFiles = await readdir(path.join(buildDir, 'spellconst'));
+  } catch {
+    return [];
+  }
+
+  const written = [];
+  await mkdir(path.join(outDir, 'simnames'), { recursive: true });
+  for (const file of classFiles.filter((name) => name.endsWith('.json'))) {
+    const slug = file.replace(/\.json$/, '');
+    const constants = JSON.parse(await readFile(path.join(buildDir, 'spellconst', file), 'utf8'));
+    const spell = {};
+    for (const [id, row] of Object.entries(constants.spells ?? {})) {
+      spell[id] = row.name ?? nameById.get(id) ?? id;
+    }
+
+    const item = {};
+    try {
+      const items = JSON.parse(await readFile(path.join(buildDir, 'items', file), 'utf8'));
+      for (const row of items.items ?? []) item[String(row.id)] = row.name;
+    } catch {
+      // A class with no normalized item list publishes spell names only.
+    }
+
+    const target = path.join(outDir, 'simnames', file);
+    await writeFile(target, JSON.stringify({ build: constants.build, class_slug: slug, spell, item }));
+    written.push(`simnames/${file}`);
+  }
+  return written;
+}
+
+/**
+ * Resets public/data/<build> and copies SYNC_ENTRIES from sourceDir into it, then derives
+ * public/data/<build>/simnames/<class>.json from the same sourceDir (see `writeSimNames`).
+ * Throws when a required entry is missing from sourceDir. Returns the names actually
+ * copied or written, SYNC_ENTRIES first.
  * @param {{ repoRoot: string, webRoot: string, build: string, sourceDir: string }} options
  */
 async function copyBuild({ repoRoot, webRoot, build, sourceDir }) {
@@ -202,6 +268,8 @@ async function copyBuild({ repoRoot, webRoot, build, sourceDir }) {
     await cp(from, path.join(publicDir, entry.name), { recursive: entry.kind === 'dir' });
     copied.push(entry.name);
   }
+
+  copied.push(...(await writeSimNames(sourceDir, publicDir)));
 
   return copied;
 }

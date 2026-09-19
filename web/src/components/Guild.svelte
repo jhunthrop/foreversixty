@@ -9,23 +9,16 @@
     splitUnitName,
     type CharacterPath,
   } from '../lib/characters';
-  import { classColorVar, formatAmount } from '../lib/report/format';
+  import { classColorVar, formatAmount, rowLink } from '../lib/report/format';
   import { encounterSlug, fetchGuild, type GuildPage } from '../lib/rankings/api';
   import { RANKING_METRICS } from '../lib/rankings/url';
+  import { executionLabel, executionTitle } from '../lib/sim/execution';
 
   let { path = null }: { path?: CharacterPath | null } = $props();
 
   const resolved = $derived(
     path ?? (typeof window === 'undefined' ? null : parseGuildPath(window.location.pathname)),
   );
-
-  /**
-   * An `<a>` is inline: its own box is only as tall as its text, not the `min-h-11` row it
-   * sits in. Rankings.svelte's row links already carry this fix; the phone audit here
-   * caught the same shape of miss on this page's encounter, roster and report links, so
-   * every anchor that is its own tap target gets it too, not just the row around it.
-   */
-  const rowLink = 'inline-flex min-h-11 items-center';
 
   let data = $state<GuildPage | null>(null);
   let status = $state<'loading' | 'ready' | 'failed' | 'missing'>('loading');
@@ -135,7 +128,7 @@
         <ul class="flex flex-col" data-testid="guild-roster">
           {#each data.roster_best as row (`${row.player.key}-${row.encounter_id}-${row.metric}`)}
             <li
-              class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b px-2 py-2 text-[14px] md:grid-cols-[minmax(120px,1fr)_minmax(0,1fr)_96px]"
+              class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b px-2 py-2 text-[14px] md:grid-cols-[minmax(120px,1fr)_minmax(0,1fr)_96px_72px]"
             >
               <a
                 class="{rowLink} truncate font-semibold"
@@ -153,6 +146,15 @@
               >
                 {formatAmount(Math.round(row.value))}
               </span>
+              <!-- `roster_best` rows have no report_id/fight_index -- they are per-encounter
+                   aggregates, not one fight -- so this score is text, never a compare-mode link,
+                   unlike the same score on the rankings and character rows. -->
+              <span
+                class="text-muted tabular hidden text-right font-mono text-[13px] md:inline"
+                title={executionTitle(row.execution_score)}
+                aria-label={executionTitle(row.execution_score)}
+                data-testid="guild-execution">{executionLabel(row.execution_score)}</span
+              >
             </li>
           {/each}
         </ul>

@@ -26,7 +26,7 @@ function envelope(data: unknown, status = 200): Response {
 }
 
 const ME = {
-  user: { id: 7, battletag: 'Fixture#1234', email: null, role: 'user', anonymize: false },
+  user: { id: 7, battletag: 'Fixture#1234', email: null, role: 'user', anonymize: false, premium: false },
   characters: [
     {
       key: 'us/hardcore/elyra-duskvale',

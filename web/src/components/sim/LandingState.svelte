@@ -1,0 +1,118 @@
+<!-- web/src/components/sim/LandingState.svelte -->
+<!-- What a signed-in member sees when they open /sim: their characters, one button each,
+     and no form at all until they ask for one.
+     The footnote is not boilerplate. The contract's sim-input has no Armory source yet, so
+     the gear behind each of these rows is the member's last addon export or last logged
+     fight, and a member who assumed the Armory was being read would be wrong about how
+     fresh their gear is. The design's "last-logout gear" is precisely what an addon export
+     holds, so this is the feature through the source that exists. -->
+<script lang="ts">
+  import type { MeCharacter } from '../../lib/account/api';
+  import type { CharacterPath } from '../../lib/characters';
+  import { parseCharacterPath, rulesetLabel } from '../../lib/characters';
+  import { classColorVar } from '../../lib/report/format';
+  import { simCopy } from '../../lib/sim/copy';
+  import { defaultSimState, simSearch, withSimState } from '../../lib/sim/url';
+
+  let {
+    characters,
+    busyKey,
+    onpick,
+    onother,
+  }: {
+    characters: MeCharacter[];
+    busyKey: string | null;
+    onpick: (path: CharacterPath) => void;
+    onother: () => void;
+  } = $props();
+
+  // `MeCharacter.key` is already `<region>/<ruleset>/<slug>` (`characters.ts`'s own
+  // `characterKey` shape), so this reuses that module's validated parser -- the same
+  // region/ruleset/slug allow-listing `/character/<key>` and `/guild/<key>` already trust --
+  // rather than a hand-rolled split and a type cast past it. `/v1/me` is a trusted
+  // first-party response, so null is not expected in practice; it is still handled rather
+  // than assumed away, the same "validate at the boundary" rule every other source in this
+  // lane follows.
+  function pathOf(character: MeCharacter): CharacterPath | null {
+    return parseCharacterPath(`/character/${character.key}`);
+  }
+
+  /**
+   * The row's own link. Armory is not a loadable source yet (`store.svelte.ts`'s
+   * `bootstrapSource` has no case for it -- see that file's own header note), so following
+   * this URL on its own lands back on this same landing state rather than the character it
+   * names; picking, here or from a link followed elsewhere, is what actually loads one. The
+   * href exists so the row is a real link -- copyable, middle-clickable, opens in a new tab
+   * -- exactly as the design calls for, not so the URL alone reproduces the pick.
+   */
+  function hrefFor(character: MeCharacter): string {
+    return `/sim${simSearch(withSimState(defaultSimState(), { source: 'armory', ref: character.key }))}`;
+  }
+
+  /** A link that picks the character in place and still opens in a new tab from a middle
+   *  click -- the same pattern MechanicsMode.svelte's own `follow` uses for an in-place link. */
+  function follow(event: MouseEvent, path: CharacterPath): void {
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    onpick(path);
+  }
+</script>
+
+<section class="mx-[18px] flex flex-col gap-3 md:mx-0" data-testid="sim-landing">
+  <h2 class="section-title text-[15px]">{simCopy.yourCharacters}</h2>
+
+  <ul class="border-line bg-raised rounded-panel flex flex-col border">
+    {#each characters as character (character.key)}
+      {@const colour = classColorVar(character.class)}
+      {@const path = pathOf(character)}
+      <li
+        class="border-line-soft flex min-h-11 flex-wrap items-center gap-3 border-b px-3 py-2 last:border-b-0"
+        data-testid={`sim-character-${character.key}`}
+      >
+        <!-- The row's own link: the swatch, name and descriptor, not the "Sim" button below
+             (a button nested inside an anchor is invalid, doubly-interactive markup) -- the
+             two are siblings that do the same thing, the way the design calls for a row that
+             is a link and a button that is "the same action". -->
+        <a
+          class="flex min-h-11 min-w-0 flex-1 items-center gap-3"
+          href={hrefFor(character)}
+          onclick={(event) => path !== null && follow(event, path)}
+          data-testid={`sim-character-link-${character.key}`}
+        >
+          <span class="rounded-control h-7 w-7 shrink-0" style={`background: ${colour}`} aria-hidden="true"
+          ></span>
+          <span class="text-[15px] font-semibold" style={`color: ${colour}`}>{character.name}</span>
+          <span class="text-muted text-[13px]">
+            {rulesetLabel(character.ruleset)} · {character.region.toUpperCase()}
+          </span>
+        </a>
+        <!-- Every row disables while any one is busy, not just the busy row (fix round 1,
+             MEDIUM-2, accepted as-is). `store.svelte.ts`'s `adopt()` has no per-load
+             generation guard: two concurrent `loadStored()` calls would race the same
+             `character`/`message` state with no ordering guarantee, so a second click
+             landing mid-pick could silently discard the first. Disabling every row until the
+             in-flight one settles is the safer trade until adopt() grows that guard. -->
+        <button
+          type="button"
+          class="border-line-warm-strong rounded-control text-strong label ml-auto min-h-11 shrink-0 border px-4 disabled:opacity-50 md:min-h-9"
+          disabled={busyKey !== null || path === null}
+          onclick={() => path !== null && onpick(path)}
+          data-testid={`sim-pick-${character.key}`}
+        >
+          {busyKey === character.key ? simCopy.loading : simCopy.simIt}
+        </button>
+      </li>
+    {/each}
+  </ul>
+
+  <p class="text-muted text-[12px]" data-testid="sim-landing-note">{simCopy.landingSourceNote}</p>
+
+  <button
+    type="button"
+    class="text-nav label min-h-11 self-start underline md:min-h-9"
+    onclick={onother}
+    data-testid="sim-other-character"
+  >
+    {simCopy.otherCharacter}
+  </button>
+</section>

@@ -13,7 +13,13 @@
     splitUnitName,
   } from '../lib/characters';
   import { SECONDARY_BUTTON, SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
-  import { classColorVar, formatAmount, formatDuration, percentileToken } from '../lib/report/format';
+  import {
+    classColorVar,
+    formatAmount,
+    formatDuration,
+    percentileToken,
+    rowLink,
+  } from '../lib/report/format';
   import { titleize } from '../lib/report/og-meta';
   import {
     fetchGuildRankings,
@@ -31,6 +37,8 @@
     rankingsSearch,
     type RankingsState,
   } from '../lib/rankings/url';
+  import { simCopy } from '../lib/sim/copy';
+  import { executionHref, executionLabel, executionTitle } from '../lib/sim/execution';
 
   // The prerendered fixture page passes the slug; the Worker-served shell has none, so
   // the island reads it out of the path. One component, both routes.
@@ -53,10 +61,6 @@
   let error = $state('');
 
   const select = 'border-line-warm bg-raised rounded-control text-text h-11 px-2 text-[13px] md:h-9';
-  /** A row link is centred in a box tall enough to clear the phone hit target on its own,
-      not just as part of the row it sits in -- a name, a talent split and "Report" are all
-      things a visitor taps directly. */
-  const rowLink = 'inline-flex min-h-11 items-center';
 
   function patch(next: Partial<RankingsState>): void {
     // Any filter change returns to page one: page three of a different filter is nothing.
@@ -291,7 +295,7 @@
         {@const buildHref = plannerHref(row)}
         {@const characterLinkHref = characterRowHref(row)}
         <li
-          class="border-line-soft grid min-h-11 grid-cols-[40px_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px] md:grid-cols-[40px_minmax(140px,1.4fr)_minmax(120px,1fr)_72px_88px_96px_72px_88px]"
+          class="border-line-soft grid min-h-11 grid-cols-[40px_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px] md:grid-cols-[40px_minmax(140px,1.4fr)_minmax(120px,1fr)_72px_88px_72px_96px_72px_88px]"
           data-testid={`ranking-${row.rank}`}
         >
           <span
@@ -329,6 +333,23 @@
           </span>
           <span class="text-muted tabular hidden text-right font-mono text-[13px] md:inline">{row.size}</span>
           <span class="tabular text-right font-mono">{formatAmount(Math.round(row.value))}</span>
+          <!-- Desktop gets its own cell; on phone the same figure joins the row's own phone-only
+               line below, because a ninth column at phone width would push the name to one word. -->
+          {#if row.execution_score === null}
+            <span
+              class="text-muted tabular hidden text-right font-mono text-[13px] md:inline"
+              title={executionTitle(null)}
+              aria-label={executionTitle(null)}
+              data-testid="ranking-execution">{executionLabel(null)}</span
+            >
+          {:else}
+            <a
+              class="{rowLink} tabular hidden text-right font-mono text-[13px] md:inline"
+              href={executionHref(row.report_id, row.fight_index)}
+              title={executionTitle(row.execution_score)}
+              data-testid="ranking-execution">{executionLabel(row.execution_score)}</a
+            >
+          {/if}
           <span class="text-muted tabular hidden text-right font-mono text-[13px] md:inline">
             {row.fought_at.slice(0, 10)}
           </span>
@@ -346,6 +367,11 @@
               href={`/reports/${row.report_id}?fight=${row.fight_index}`}
               data-testid="ranking-report">Report</a
             >
+          </span>
+          <span class="text-muted label col-span-full md:hidden" data-testid="ranking-execution-phone">
+            {row.execution_score === null
+              ? simCopy.executionUnscored
+              : `${executionLabel(row.execution_score)} executed`}
           </span>
           {#if row.state !== 'ok'}
             <!-- Plain text, not a colour swatch: the row's own background or a coloured dot

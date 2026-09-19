@@ -10,8 +10,13 @@ import {
 
 describe('the rankings URL state', () => {
   it('offers the three character metrics and the three guild kinds spec section 6 names', () => {
-    expect(RANKING_METRICS.map((metric) => metric.id)).toEqual(['dps', 'hps', 'damage_taken']);
-    expect(RANKING_METRICS.map((metric) => metric.label)).toEqual(['Damage', 'Healing', 'Damage taken']);
+    expect(RANKING_METRICS.map((metric) => metric.id)).toEqual(['dps', 'hps', 'damage_taken', 'execution']);
+    expect(RANKING_METRICS.map((metric) => metric.label)).toEqual([
+      'Damage',
+      'Healing',
+      'Damage taken',
+      'Execution',
+    ]);
     expect(GUILD_KINDS.map((kind) => kind.id)).toEqual(['progress', 'speed', 'execution']);
   });
 
@@ -53,5 +58,21 @@ describe('the rankings URL state', () => {
     const state = { ...defaultRankingsState(), ruleset: 'pvp', metric: 'hps', page: 2 };
     expect(rankingsSearch(state)).toBe('?metric=hps&ruleset=pvp&page=2');
     expect(parseRankingsState(rankingsSearch(state))).toEqual(state);
+  });
+});
+
+describe('the execution metric', () => {
+  it('is offered as a sort order', () => {
+    expect(RANKING_METRICS.map((metric) => metric.id)).toContain('execution');
+  });
+
+  it('survives a round trip through the query string', () => {
+    expect(
+      parseRankingsState(rankingsSearch({ ...defaultRankingsState(), metric: 'execution' })).metric,
+    ).toBe('execution');
+  });
+
+  it('is still refused when the query names something else', () => {
+    expect(parseRankingsState('?metric=execution-but-not').metric).toBe('dps');
   });
 });

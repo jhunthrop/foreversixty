@@ -1,0 +1,80 @@
+<!-- web/src/components/sim/SpecCard.svelte -->
+<!-- "Can I trust this" in one card. The figure is whatever the validation job measured,
+     published either way -- the design's whole point is that the answer lives on the site
+     rather than in a footnote, so a bad gap is shown as plainly as a good one.
+     The cast-gap rows read actual first: the player's own number is the one they recognise
+     from their own log, and the simmed one is the claim being made about it. -->
+<script lang="ts">
+  // formatPercent is the site's one percentage formatter: one decimal and a % sign. Every
+  // other caller in report/format.ts pre-multiplies by 100 exactly as this does, so a
+  // hand-rolled toFixed(1) here would be a second formatter that drifts the day the first
+  // one changes.
+  import { classColorVar, formatPercent } from '../../lib/report/format';
+  import { resolveActionName, type ActionNames } from '../../lib/sim/action-names';
+  import { simCopy } from '../../lib/sim/copy';
+  import { classOfSpec, specLabel } from '../../lib/sim/spec-label';
+  import { specPillClass, specStateLabel, specStateNote } from '../../lib/sim/spec-state';
+  import type { SpecFidelity } from '../../lib/sim/types';
+  import { engineLabel } from '../../lib/sim/version';
+
+  let {
+    row,
+    actionNames = null,
+    compact = false,
+  }: {
+    row: SpecFidelity;
+    /**
+     * The build's name table (Task 23), for `worst_actions[].name`. `api sim-validate`
+     * compares a native engine result against a fight's summary, so a name there may be an
+     * engine action key. Null on `/sim/specs`, where cards for nine classes are shown at
+     * once and loading nine tables for three rows of text is not worth the bytes; the
+     * in-page unsupported card passes the store's, which is already loaded.
+     */
+    actionNames?: ActionNames | null;
+    compact?: boolean;
+  } = $props();
+
+  const colour = $derived(classColorVar(classOfSpec(row.spec)));
+  const figure = $derived(
+    row.median_gap === null
+      ? simCopy.specNoParses
+      : `${simCopy.specMedianGap} ${formatPercent(row.median_gap * 100)} ${simCopy.specOver} ${row.parses} ${row.parses === 1 ? simCopy.specParse : simCopy.specParses}`,
+  );
+  const footer = $derived(
+    [row.engine_version === '' ? '' : engineLabel(row.engine_version), row.updated_at === null ? '' : row.updated_at.slice(0, 10)]
+      .filter((part) => part !== '')
+      .join(' · '),
+  );
+</script>
+
+<article
+  id={row.spec}
+  class="border-line bg-card-top rounded-panel flex flex-col gap-3 border p-4"
+  data-testid={`spec-${row.spec}`}
+>
+  <div class="flex flex-wrap items-center gap-2">
+    <h3 class="text-[15px] font-semibold" style={`color: ${colour}`}>{specLabel(row.spec)}</h3>
+    <span class={specPillClass(row.state)} data-testid="spec-state">{specStateLabel(row.state)}</span>
+  </div>
+
+  <p class="tabular text-strong font-mono text-[13px]" data-testid="spec-figure">{figure}</p>
+  <p class="text-muted text-[13px]">{specStateNote(row.state)}</p>
+
+  {#if !compact && row.worst_actions.length > 0}
+    <div class="flex flex-col gap-1">
+      <span class="label text-muted">{simCopy.specWorstActions}</span>
+      {#each row.worst_actions.slice(0, 3) as action (action.name)}
+        <span class="tabular text-muted font-mono text-[12px]">
+          {resolveActionName(action.name, actionNames)}
+          {action.actual_casts}
+          {simCopy.specCast}, {action.sim_casts}
+          {simCopy.specSimmed}
+        </span>
+      {/each}
+    </div>
+  {/if}
+
+  {#if !compact && footer !== ''}
+    <p class="tabular text-muted mt-auto font-mono text-[12px]" data-testid="spec-footer">{footer}</p>
+  {/if}
+</article>

@@ -17,12 +17,14 @@ import {
   guildShellMeta,
   rankingsShellMeta,
   reportShellMeta,
+  simShellMeta,
   type CharacterHead,
   type GuildHead,
   type RankingsHead,
   type ShellMeta,
 } from './lib/report/og-meta';
 import type { ReportMeta } from './lib/report/types';
+import type { SimResult } from './lib/sim/types';
 
 export interface Env {
   /** Origin of the Go API, from `vars` in wrangler.jsonc. */
@@ -354,10 +356,12 @@ const SHELL_ROUTES = [
   { prefix: '/rankings/', asset: '/rankings.html' },
   { prefix: '/character/', asset: '/character.html' },
   { prefix: '/guild/', asset: '/guild.html' },
+  { prefix: '/sim/', asset: '/sim.html' },
 ] as const;
 
 const REPORT_ID = /^\/reports\/([a-z2-7]{12})$/;
 const RANKINGS_SLUG = /^\/rankings\/([a-z0-9-]{1,64})$/;
+const SIM_ID = /^\/sim\/([a-z2-7]{12})$/;
 
 /** Unwraps the Phase 0 envelope, or null for any failure at all: a shell is never worth an error page. */
 async function apiData<T>(url: string): Promise<T | null> {
@@ -394,6 +398,15 @@ async function shellHead(url: URL, env: Env): Promise<ShellHead | null> {
     const data = await apiData<ReportMeta>(`${env.API_BASE_URL}/v1/reports/${report[1]}`);
     if (data === null) return null;
     return { meta: reportShellMeta(data, env.API_BASE_URL), indexable: data.visibility === 'public' };
+  }
+
+  const sim = SIM_ID.exec(url.pathname);
+  if (sim !== null) {
+    // No visibility gate, unlike a report: GET /v1/sims/{sim_id} takes no auth, so every
+    // saved sim is public by contract and every one of them is indexable.
+    const data = await apiData<SimResult>(`${env.API_BASE_URL}/v1/sims/${sim[1]}`);
+    if (data === null) return null;
+    return { meta: simShellMeta(data), indexable: true };
   }
 
   const rankings = RANKINGS_SLUG.exec(url.pathname);
@@ -435,6 +448,7 @@ function shellPathIsAddressable(url: URL): boolean {
   return (
     REPORT_ID.test(url.pathname) ||
     RANKINGS_SLUG.test(url.pathname) ||
+    SIM_ID.test(url.pathname) ||
     parseCharacterPath(url.pathname) !== null ||
     parseGuildPath(url.pathname) !== null
   );

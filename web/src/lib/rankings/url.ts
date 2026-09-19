@@ -9,6 +9,7 @@ export const RANKING_METRICS = [
   { id: 'dps', label: 'Damage' },
   { id: 'hps', label: 'Healing' },
   { id: 'damage_taken', label: 'Damage taken' },
+  { id: 'execution', label: 'Execution' },
 ] as const;
 
 export const GUILD_KINDS = [

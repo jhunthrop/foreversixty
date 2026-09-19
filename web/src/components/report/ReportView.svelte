@@ -26,6 +26,7 @@
     formatDuration,
     outcomeLabel,
     phaseReached,
+    rowLink,
     schoolToken,
   } from '../../lib/report/format';
   import {
@@ -104,6 +105,7 @@
   import { phaseAt } from '../../lib/rankings/phases';
   import { inSource, scopeSource } from '../../lib/report/source';
   import { splitUnitName } from '../../lib/characters';
+  import { simCopy } from '../../lib/sim/copy';
   // Value imports from exact.ts are deliberately absent: it pulls in the DuckDB query layer
   // (src/lib/report/query.ts), which dynamically imports the multi-hundred-KB duckdb-wasm
   // package. None of that belongs in the initial bundle everyone pays for on load -- every
@@ -1322,6 +1324,13 @@
           <span class="pill pill-site" data-testid="report-live">Live</span>
         {/if}
       </span>
+      {#if fight}
+        <a
+          class={rowLink}
+          href={`/sim?source=fight&ref=${encodeURIComponent(`${reportId}:${state.fight}`)}&mode=compare`}
+          data-testid="report-sim-fight">{simCopy.simThisFight}</a
+        >
+      {/if}
       <button
         type="button"
         class="border-line-warm rounded-control text-text ml-auto inline-flex h-11 items-center border px-3 text-[12px] font-bold tracking-[0.06em] uppercase md:h-9"

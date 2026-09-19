@@ -13,10 +13,12 @@
     "binding": "ASSETS",
     // /b/* is the shared build proxy. /logs-data/* is report files out of the R2 bucket,
     // and /duckdb-runtime/* the two DuckDB engine modules out of the same one (they are
-    // over the 25 MiB static-asset cap; see scripts/duckdb-runtime.mjs). The four shell
+    // over the 25 MiB static-asset cap; see scripts/duckdb-runtime.mjs). The shell
     // prefixes are served from the static shells with their unfurl tags rewritten from the
-    // API's JSON (see src/worker.ts). Every other path is served from the assets with no
-    // Worker invocation, so the static site keeps its zero-runtime cost.
+    // API's JSON (see src/worker.ts). /sim itself is not listed: it is a plain static
+    // shell with no request-time id, and the tightest LCP budget on this lane. Every other
+    // path is served from the assets with no Worker invocation, so the static site keeps
+    // its zero-runtime cost.
     "run_worker_first": [
       "/b/*",
       "/logs-data/*",
@@ -25,6 +27,7 @@
       "/rankings/*",
       "/character/*",
       "/guild/*",
+      "/sim/*",
     ],
   },
   "r2_buckets": [

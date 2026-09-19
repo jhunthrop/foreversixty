@@ -9,6 +9,7 @@
 // report-brush.spec.ts all measure at. The project skip keeps the run to one device rather
 // than one per project, the same pairing report-brush.spec.ts uses.
 import { expect, test } from '@playwright/test';
+import { assertNoHorizontalScroll } from './support/phone-scroll';
 
 test.use({ viewport: { width: 360, height: 800 } });
 
@@ -45,12 +46,11 @@ test('nothing scrolls sideways on any tab or view', async ({ page }) => {
   for (const query of STATES) {
     await page.goto(`${REPORT}&${query}`);
     await expect(page.getByTestId('mode-bar')).toBeVisible();
-    // Against PHONE_WIDTH, not window.innerWidth. Content wider than the phone widens the
-    // emulated layout viewport with it -- innerWidth read 373 on this 360 viewport while
-    // Compare's table was overflowing -- so `scrollWidth > innerWidth` moves its own goal
-    // posts and silently passes over exactly the bug it is here to catch.
-    const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
-    expect(scrollWidth, query).toBeLessThanOrEqual(PHONE_WIDTH);
+    // Against PHONE_WIDTH, not window.innerWidth -- see support/phone-scroll.ts's header
+    // note: content wider than the phone widens the emulated layout viewport with it, so
+    // `scrollWidth > innerWidth` moves its own goal posts and silently passes over exactly
+    // the bug this sweep exists to catch.
+    await assertNoHorizontalScroll(page, PHONE_WIDTH, query);
   }
 });
 
