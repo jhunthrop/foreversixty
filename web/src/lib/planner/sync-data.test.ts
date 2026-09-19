@@ -276,4 +276,51 @@ describe('writeSimNames', () => {
     expect(await writeSimNames(path.join(dir, 'build'), path.join(dir, 'out'))).toEqual([]);
     rmSync(dir, { recursive: true, force: true });
   });
+
+  it('never adds a spell id from the item list -- items/<class>.json carries no proc or on-use field', async () => {
+    // Pins the doc comment's corrected claim: `spell` membership comes only from
+    // spellconst, never from `item`, because the normalized item rows this lane reads
+    // (id, name, icon, slot, quality, required_level, item_level, armor, stats, set_id,
+    // unique) have nowhere to carry a triggered spell id even if this function wanted to
+    // read one. An id that is both a trinket's item id and, coincidentally, a real spell
+    // id in spells.json must not leak into `spell` just because it showed up in `items`.
+    const dir = mkdtempSync(path.join(tmpdir(), 'simnames-item-spell-'));
+    const build = path.join(dir, 'build');
+    const out = path.join(dir, 'out');
+    mkdirSync(path.join(build, 'spellconst'), { recursive: true });
+    mkdirSync(path.join(build, 'items'), { recursive: true });
+    mkdirSync(out, { recursive: true });
+    writeFileSync(
+      path.join(build, 'spells.json'),
+      JSON.stringify([
+        { id: 25286, name: 'Heroic Strike' },
+        { id: 14554, name: 'Some Proc Effect' },
+      ]),
+    );
+    writeFileSync(
+      path.join(build, 'spellconst', 'warrior.json'),
+      JSON.stringify({
+        build: '1.60.1.69893',
+        class_slug: 'warrior',
+        family: 4,
+        spells: { '25286': { name: 'Heroic Strike' } },
+      }),
+    );
+    writeFileSync(
+      path.join(build, 'items', 'warrior.json'),
+      JSON.stringify({
+        build: '1.60.1.69893',
+        class_slug: 'warrior',
+        // id 14554 collides with the spells.json row above on purpose.
+        items: [{ id: 14554, name: 'Cloudkeeper Legplates' }],
+      }),
+    );
+
+    await writeSimNames(build, out);
+
+    const table = JSON.parse(readFileSync(path.join(out, 'simnames', 'warrior.json'), 'utf8'));
+    expect(table.item['14554']).toBe('Cloudkeeper Legplates');
+    expect(table.spell['14554']).toBeUndefined();
+    rmSync(dir, { recursive: true, force: true });
+  });
 });

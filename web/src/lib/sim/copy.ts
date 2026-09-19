@@ -74,4 +74,24 @@ export const simCopy = {
   pickRacePlaceholder: 'Choose a race',
   // The landing state's companion line when fromStoredCharacter refuses for want of a race.
   landingNoRace: 'Paste your addon export instead; it carries your race.',
+
+  // --- Task 20: live DPS in the planner. ---
+  /** The engine has no model for this spec, or the run otherwise failed. */
+  liveDpsFailed: 'DPS estimate unavailable for this build.',
+  /** The summary bar's fourth figure, beside Level, Split and Points. */
+  plannerDpsLabel: 'DPS',
+  /** The link that opens the full results for the build on the page. */
+  simThisBuild: 'Sim this build',
+
+  // --- Task 23: the parenthetical resolveActionName appends to a tagged or ranked
+  // action's name, so "Heroic Strike (2)" and "Heroic Strike (Rank 3)" read as the
+  // variant they are rather than as a duplicate row. tag and rank are ActionKey's own
+  // fields (action-names.ts): tag 0 is the plain action and shows no number; the engine's
+  // tag 1 is the *second* row of that action, so it reads as 2.
+  actionVariant: (tag: number, rank: number): string => {
+    const parts: string[] = [];
+    if (tag !== 0) parts.push(String(tag + 1));
+    if (rank !== 0) parts.push(`Rank ${rank}`);
+    return parts.length === 0 ? '' : ` (${parts.join(', ')})`;
+  },
 } as const;

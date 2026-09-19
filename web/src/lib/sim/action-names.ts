@@ -21,6 +21,7 @@
 // the names file is still loading, and in compare mode, where a logged fight's rows carry
 // real display names from the combat log and must pass through untouched.
 import { dataUrl, fetchJson } from '../planner/load';
+import { simCopy } from './copy';
 
 /**
  * The first row id sim/adapter allocates for itself (its `syntheticBase`). Every client
@@ -77,15 +78,6 @@ function sentenceCase(snake: string): string {
   return words.charAt(0).toUpperCase() + words.slice(1);
 }
 
-/** "(2)", "(Rank 3)", "(2, Rank 3)", or nothing for the plain action. */
-function variantSuffix(parsed: ActionKey): string {
-  const parts: string[] = [];
-  // The engine's tag 1 is the second row of that action, so it reads as 2.
-  if (parsed.tag !== 0) parts.push(String(parsed.tag + 1));
-  if (parsed.rank !== 0) parts.push(`Rank ${parsed.rank}`);
-  return parts.length === 0 ? '' : ` (${parts.join(', ')})`;
-}
-
 /**
  * The name a player reads. `names` is null until the build's file has loaded, and an id the
  * build does not carry -- a racial from a class file we did not fetch, a proc from an item
@@ -95,11 +87,12 @@ export function resolveActionName(key: string, names: ActionNames | null): strin
   const parsed = parseActionKey(key);
   if (parsed === null) return key;
   if (parsed.kind === 'unknown') return key;
-  if (parsed.kind === 'other') return sentenceCase(parsed.label) + variantSuffix(parsed);
+  if (parsed.kind === 'other')
+    return sentenceCase(parsed.label) + simCopy.actionVariant(parsed.tag, parsed.rank);
   const table = parsed.kind === 'spell' ? names?.spell : names?.item;
   const name = table?.[parsed.label];
   if (name === undefined) return key;
-  return name + variantSuffix(parsed);
+  return name + simCopy.actionVariant(parsed.tag, parsed.rank);
 }
 
 /** The build's name table for one class, published by scripts/sync-data.mjs. */
