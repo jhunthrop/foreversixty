@@ -376,3 +376,158 @@ an island over the same store as `/sim`. `/sim/<id>` renders by
 
 Share URLs carry the whole request as today; a bulk request above the URL
 budget is shared by its saved id only.
+
+## 10. Amendments after planning (2026-09-19)
+
+Six lane plans were written against sections 1–9 and reported where the
+contract was ambiguous, wrong, or silent. Every ruling below is binding;
+where it contradicts an earlier section, this section wins. Plans that
+carried their own "amend the contract" task drop it: this is that task.
+
+### 10.1 Envelope and validation
+
+- **A1. Lane-aware caps.** `SimRequest` carries no lane. `Validate` checks
+  `Bulk.Cap` against the largest lane's cap; `ValidateLane(lane string)`
+  checks against that lane's and is what the API handler and the page call.
+- **A2. Server cap is 5,000 combinations**, not 20,000: at the measured
+  native rate a 20,000-combination fast run cannot finish in the job's
+  15-minute timeout. `Caps = {browser: 400, server: 5000}`. The job timeout
+  stays 15 minutes. The `too_large` estimate uses
+  `measure.NativeIterationsPerCPUSecond` (the constant `sim/measure`
+  publishes from its benchmark, 1,218 today) × 4 CPUs × 840 seconds.
+- **A3. Iterations.** A plain fixed run keeps the closed set
+  `ValidIterations`. A bulk request's `Iterations` is its precision's
+  final-stage count (3,000; 10,000 for `high`). A `TargetError` run's
+  `Iterations` is a positive multiple of `StepIterations` at or under
+  `LaneIterationCeiling[lane]`. `Validate` applies the rule for the request's
+  kind. `MinDurationSec = 20`, `MaxDurationSec = 600`.
+- **A4. Mode decides expansion**; the design's `combinations` boolean is
+  gone. `gear` takes the product of every candidate group, `drops` and
+  `talents` one substitution at a time.
+- **A5. `BulkSpec.Consumables [][]string`** (+): alternative consumable
+  lists tried as candidates in `gear` mode (design 3.1 item 5). Each inner
+  list replaces `CharacterSpec.Consumes` for that combination.
+- **A6. `Candidate.SourceName string`** (+) and **`Substitution.Name` is
+  filled for items too** (from simdb) and gains **`SourceName`** (copied
+  from the candidate). The page fills `SourceName` from `loot.json` when it
+  builds a drops request; the API's headline reads it.
+- **A7. `WeightsSpec.Reference` is required.** The stat vocabulary is the
+  fork's `proto.Stat` enum names in snake case (`spell_haste` and
+  `melee_haste`, never a bare `haste`), published as a new **Stats** section
+  in IDS.md that the sim module generates from the enum. `specs.json`'s
+  `reference_stat` (data lane) and the generated `sim/specs` struct's
+  `ReferenceStat` (+) use that vocabulary; the API serves it on `/v1/specs`.
+- **A8. `TargetArmorByLevel`** = `{60: 3300, 61: 3444, 62: 3588, 63: 3731}`:
+  the engine's own 3,731 at 63 and a linear fall to the level-60 figure.
+  Ratified here; a better source replaces the three interior numbers.
+- **A9. `ExpandWith(req, Options)`** exists beside `Expand`. Options carry
+  the enchant table. The wasm and the native binary get enchants the way
+  they get items: `make simdb` embeds the fork database's enchants beside
+  its items in `sim/internal/simdb`, so `Expand` needs no file at runtime
+  and `enchants.json` (data lane) is the same rows for the browser UI.
+- **A10. `StageRequests.Ran []api.Stage`** (+) carries the ladder's history
+  across the wasm boundary so `Rank` can fill `SimResult.Stages`.
+- **A11. Progress widening is additive.** `runner.Progress` gains `Stage`,
+  `CombosDone`, `CombosTotal`; the type is not replaced, so the `api`
+  module keeps compiling when the `sim` module merges first.
+- **A12. Sample rows carry action keys, not names.** `SampleCast` is
+  `{ at_ms, action, target, resources }` where `action` is the summary's
+  action-key form (`spell:23881`, `item:13503`, `other:melee`) and the
+  page resolves the display name with `resolveActionName` exactly as it
+  does for cast rows. `SpellID` and `Name` are removed from section 2.
+
+### 10.2 wasm and native exports (section 4 additions)
+
+| Export | In | Out |
+| --- | --- | --- |
+| `simCount(requestJSON)` | a bulk request | `{"combinations": n}` — counts without allocating requests |
+| `simNeedsMore(resultJSON, requestJSON)` | a result and its request | `{"needs_more": bool}` (the Go original is `api.NeedsMoreIterations`) |
+| `simValidate(requestJSON)` | any request | `{"ok": bool, "errors": [{"field","message"}]}` |
+
+A cap breach from `simPlan` or `simCount` is
+`{"error":"cap_exceeded","cap":n,"combinations":n}`. The native binary
+gains `-plan` (print `simCount`'s answer and the first stage, run nothing),
+which is how the API counts combinations without importing `sim/internal`.
+
+Stage requests run unsplit: a stage's request array goes through the
+worker pool as independent whole requests, in chunks of the pool's width,
+which is what makes "abort returns the partial" true. `simSplit` and
+`simCombine` are for plain runs only.
+
+### 10.3 Engine fork (section 5 additions)
+
+- `SimOptions.sample_iteration = 10` (bool) opts in; the sim module sets it
+  for plain runs only, never for bulk stages.
+- `RaidSimResult.sample_iteration = 8` of
+  `SampleIteration { double dps = 1; double duration_seconds = 2; repeated SampleCast casts = 3; }`,
+  `SampleCast { int64 at_ms = 1; ActionID action_id = 2; string target = 3; map<string,int32> resources = 4; }`.
+- `SimItem` (the reduced item message simdb stores) gains
+  `bool unique = 20; int32 required_level = 21; UIItem.FactionRestriction faction_restriction = 22; repeated int32 random_suffix_options = 23;`
+  and the data lane fills them in `pipeline/simdb/items.py`.
+- `targets_over_time`: the engine pads the target list by repeating the
+  last target up to the timeline's maximum; the site sends one target.
+- `target_dummy`: the raid debuff panel is not applied and nothing lowers
+  the target's armor from any source; the player's own debuffs still land.
+- Two pins move together: `sim/enginever/version.go` (sim module lane) and
+  `data/proto/ENGINE_SHA` with the vendored protos (data lane, `python -m
+  pipeline genproto`), in that order, in the same round.
+
+### 10.4 Data files (section 6 corrections)
+
+- Zone ids are AreaTable ids (Molten Core is 2717). Source ids are
+  `raid:<zone-slug>` and `raid:<zone-slug>:<npc-id>`, likewise `dungeon:`;
+  a boss with no name in either database is emitted with an empty name.
+  `pvp:rank-<n>` comes from `ItemSparse.RequiredPVPRank`. Plain vendors
+  and unnamed open-world drops have no kind and are dropped, counted in the
+  pipeline's log.
+- `opens` is a phase name; a source whose date is unknown carries
+  `"opens": "later"`, which the page shows as unreleased without a date.
+- The curated overlay shape is `{ "sources": [...provenance...], "notes":
+  "...", "add": [loot sources], "replace": [loot sources], "remove": [ids] }`.
+- `enchants.json` rows are keyed by `effect_id` plus `spell_id`/`item_id`;
+  `item_types` is the `EnchantType` shape restriction; `slots` derives from
+  `type` and `extra_types`.
+- Suffixes come from the fork database's `randomSuffixes`; the client has
+  no `ItemRandomSuffix` table on this build.
+- New file **`data/builds/<build>/simbuffs.json`**:
+  `{ "entries": { "<id>": { "name", "icon" } } }` for every IDS.md buff,
+  debuff, world buff and consumable id.
+- New file **`data/curated/phases.json`**: `[ { "name", "start" } ]`, the
+  source of truth `api/internal/phase.Boundaries` is tested against, emitted
+  to `web/src/data/phases.json` by the pipeline.
+- The re-itemised raid tier: 1,809 of the fork's sourced item ids do not
+  exist in the 1.60 client. `loot.json` lists only items the build has;
+  the first overlay records the gap per raid in its notes. Raid Droptimizer
+  is honest and thin until sourced replacements are curated.
+
+### 10.5 Addon export (section 7 corrections)
+
+`<gear>` entries and `sets=` gear lists use `item_id[:enchant[:suffix]]`
+too; a version-1 decoder reading a bare id is unaffected. A
+`professions=<slug>,<slug>` section follows `loadouts=`. `SimCharacter`
+gains per-slot enchant and suffix.
+
+### 10.6 API (section 8 corrections)
+
+- The premium submit is **`POST /v1/sims/run`** (the existing route);
+  `POST /v1/sims` remains the browser-result save. Both accept every kind.
+- `cap_exceeded` and `too_large` fields travel as decimal strings
+  (`httpx.ErrorBody.Fields` is `map[string]string`).
+- Migration `0014_sim_kinds` adds `kind`, `headline text`, `stage int`,
+  `combos_done int`, `combos_total int`. `headline` is composed at save
+  time by the rules in 8 plus: several substitutions read "… and 2 more";
+  empty results read "no combinations", "no upgrades", "no weights".
+- `builds` gains `user_id` (nullable, set on save when signed in) and
+  **`GET /v1/builds?mine=1`** lists the signed-in player's builds; Top Gear's
+  talent list reads it.
+- **`GET /v1/phases`** returns `phases.json`'s boundaries.
+
+### 10.7 Web
+
+- Test ids in section 9 are a minimum; page-local ids follow the same
+  `sim-<thing>` shape.
+- Zone icons do not exist in the content collection; the source picker
+  labels by kind and name and draws none.
+- "My professions" reads `CharacterSpec.Profession`, filled by the export's
+  new section; absent that, the crafted picker shows all professions and
+  says why.
