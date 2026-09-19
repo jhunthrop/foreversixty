@@ -1,10 +1,219 @@
 {
   "spec": "shaman-enhancement",
-  "state": "unwritten",
-  "notes": "",
-  "sources": [],
+  "state": "written",
+  "notes": "Vanilla Enhancement at 60: totems dropped before the pull, Stormstrike on cooldown, Flame Shock kept ticking, Earth Shock as the mana dump -- matching the community guide's 'totems > Stormstrike > Flame Shock (dot) > Frost/Earth Shock' summary. The fork's enhancement_shaman/apls/default.apl.json is the starting point, with two fixes: it casts Stormstrike (17364) at rank 1, but this build's spellconst has 17364 at rank 0 -- a stale label the rank-check test exists to catch -- so the rank is dropped here entirely, the same way a rankless spell like Tiger's Fury is written. It also checks Windfury Totem's remaining uptime against a second aura id (10611) that this build's spellconst does not have at all, so re-casting it here just checks the totem's own cast id instead, the same self-referential pattern the preset already uses for Strength of Earth and Grace of Air. Kept the preset's Searing Totem-only-with-20+-seconds-left and mana-percent-gated Earth Shock filler unchanged.",
+  "sources": [
+    {
+      "label": "wowsims-forever enhancement_shaman default priority list",
+      "url": "https://github.com/jhunthrop/wowsims-forever/blob/464d1a14a6408956aecb14b3c5867392502db401/ui/enhancement_shaman/apls/default.apl.json",
+      "kind": "community"
+    },
+    {
+      "label": "Warcraft Tavern: WoW Classic PvE Enhancement Shaman guide",
+      "url": "https://www.warcrafttavern.com/wow-classic/guides/pve-enhancement-shaman/",
+      "kind": "community"
+    }
+  ],
   "rotation": {
     "type": "TypeAPL",
-    "priorityList": []
+    "prepullActions": [
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 10442,
+              "rank": 4
+            }
+          }
+        },
+        "doAtValue": {
+          "const": {
+            "val": "-4.5s"
+          }
+        }
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 10614,
+              "rank": 3
+            }
+          }
+        },
+        "doAtValue": {
+          "const": {
+            "val": "-3s"
+          }
+        }
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 10627,
+              "rank": 2
+            }
+          }
+        },
+        "doAtValue": {
+          "const": {
+            "val": "-1.5s"
+          }
+        }
+      }
+    ],
+    "priorityList": [
+      {
+        "notes": "Keep Strength of Earth Totem down; it is the earth totem slot for Enhancement.",
+        "action": {
+          "condition": {
+            "not": {
+              "val": {
+                "auraIsActive": {
+                  "auraId": {
+                    "spellId": 10442,
+                    "rank": 4
+                  }
+                }
+              }
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 10442,
+              "rank": 4
+            }
+          }
+        }
+      },
+      {
+        "notes": "Keep Windfury Totem down; it is the melee group's biggest damage totem.",
+        "action": {
+          "condition": {
+            "not": {
+              "val": {
+                "auraIsActive": {
+                  "auraId": {
+                    "spellId": 10614,
+                    "rank": 3
+                  }
+                }
+              }
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 10614,
+              "rank": 3
+            }
+          }
+        }
+      },
+      {
+        "notes": "Keep Grace of Air Totem down for the agility.",
+        "action": {
+          "condition": {
+            "not": {
+              "val": {
+                "auraIsActive": {
+                  "auraId": {
+                    "spellId": 10627,
+                    "rank": 2
+                  }
+                }
+              }
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 10627,
+              "rank": 2
+            }
+          }
+        }
+      },
+      {
+        "action": {
+          "autocastOtherCooldowns": {}
+        }
+      },
+      {
+        "notes": "Stormstrike on cooldown: it is the highest damage per global Enhancement has, on an 8 second cooldown.",
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 17364
+            }
+          }
+        }
+      },
+      {
+        "notes": "Keep Searing Totem down for the extra fire damage, but not with less than 20 seconds left -- no point paying for a totem that will barely tick.",
+        "action": {
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "not": {
+                    "val": {
+                      "dotIsActive": {
+                        "spellId": {
+                          "spellId": 10438,
+                          "rank": 6
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpGe",
+                    "lhs": {
+                      "remainingTime": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "20"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 10438,
+              "rank": 6
+            }
+          }
+        }
+      },
+      {
+        "notes": "Earth Shock is the mana dump once mana is comfortably above half.",
+        "action": {
+          "condition": {
+            "cmp": {
+              "op": "OpGe",
+              "lhs": {
+                "currentManaPercent": {}
+              },
+              "rhs": {
+                "const": {
+                  "val": "50%"
+                }
+              }
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 10414,
+              "rank": 7
+            }
+          }
+        }
+      }
+    ]
   }
 }

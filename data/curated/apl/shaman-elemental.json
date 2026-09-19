@@ -1,10 +1,186 @@
 {
   "spec": "shaman-elemental",
-  "state": "unwritten",
-  "notes": "",
-  "sources": [],
+  "state": "written",
+  "notes": "Vanilla Elemental at 60: Flame Shock kept ticking, Lightning Bolt spammed the rest of the time, Chain Lightning taking over on 2+ targets, with Searing Totem or Magma Totem dropped depending on target count -- matching the community guide's 'totems up, Flame Shock up, then Lightning Bolt' summary. The fork's elemental_shaman/apls/default.apl.json is the starting point but its final two lines are not adapted as-is: it casts Chain Lightning (10605) with no target-count condition ahead of Lightning Bolt in the priority list, which would fire Chain Lightning on every single-target cast too since it has no ability cooldown of its own -- gated it on numberTargets >= 2 here instead. It also filled its Lightning Bolt line with rank 4 (915) rather than the top rank; used rank 10 (15208), the highest this build's spellconst has, since nothing here calls for downranking. Left out the preset's mana-percent-gated Earth Shock filler: this build's spellconst gives Chain Lightning a 6 second category_cooldown_ms that Flame Shock and Earth Shock also carry, and it is not clear from spellconst alone whether that ties the three into one shared cooldown category in this fork -- a concern for the validation job, not something to guess at here.",
+  "sources": [
+    {
+      "label": "wowsims-forever elemental_shaman default priority list",
+      "url": "https://github.com/jhunthrop/wowsims-forever/blob/464d1a14a6408956aecb14b3c5867392502db401/ui/elemental_shaman/apls/default.apl.json",
+      "kind": "community"
+    },
+    {
+      "label": "Warcraft Tavern: WoW Classic PvE Elemental Shaman guide",
+      "url": "https://www.warcrafttavern.com/wow-classic/guides/pve-elemental-shaman/",
+      "kind": "community"
+    }
+  ],
   "rotation": {
     "type": "TypeAPL",
-    "priorityList": []
+    "prepullActions": [
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 15208,
+              "rank": 10
+            }
+          }
+        },
+        "doAtValue": {
+          "const": {
+            "val": "-2.5s"
+          }
+        }
+      }
+    ],
+    "priorityList": [
+      {
+        "action": {
+          "autocastOtherCooldowns": {}
+        }
+      },
+      {
+        "notes": "Single target: Searing Totem is the higher damage fire totem.",
+        "action": {
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "cmp": {
+                    "op": "OpEq",
+                    "lhs": {
+                      "numberTargets": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "1"
+                      }
+                    }
+                  }
+                },
+                {
+                  "not": {
+                    "val": {
+                      "dotIsActive": {
+                        "spellId": {
+                          "spellId": 10438,
+                          "rank": 6
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 10438,
+              "rank": 6
+            }
+          }
+        }
+      },
+      {
+        "notes": "2 or more targets: Magma Totem hits everyone standing in it instead.",
+        "action": {
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "cmp": {
+                    "op": "OpGe",
+                    "lhs": {
+                      "numberTargets": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "2"
+                      }
+                    }
+                  }
+                },
+                {
+                  "not": {
+                    "val": {
+                      "dotIsActive": {
+                        "spellId": {
+                          "spellId": 10587,
+                          "rank": 4
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 10587,
+              "rank": 4
+            }
+          }
+        }
+      },
+      {
+        "notes": "Keep Flame Shock on the target; it is cheap relative to its damage and does not compete with the GCD budget much.",
+        "action": {
+          "condition": {
+            "not": {
+              "val": {
+                "dotIsActive": {
+                  "spellId": {
+                    "spellId": 29228,
+                    "rank": 6
+                  }
+                }
+              }
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 29228,
+              "rank": 6
+            }
+          }
+        }
+      },
+      {
+        "notes": "2 or more targets: Chain Lightning hits all of them for close to single-target Lightning Bolt damage.",
+        "action": {
+          "condition": {
+            "cmp": {
+              "op": "OpGe",
+              "lhs": {
+                "numberTargets": {}
+              },
+              "rhs": {
+                "const": {
+                  "val": "2"
+                }
+              }
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 10605,
+              "rank": 4
+            }
+          }
+        }
+      },
+      {
+        "notes": "Lightning Bolt is the rest of the single-target rotation.",
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 15208,
+              "rank": 10
+            }
+          }
+        }
+      }
+    ]
   }
 }

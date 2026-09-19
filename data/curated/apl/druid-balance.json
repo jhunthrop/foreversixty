@@ -1,10 +1,109 @@
 {
   "spec": "druid-balance",
-  "state": "unwritten",
-  "notes": "",
-  "sources": [],
+  "state": "written",
+  "notes": "Vanilla Balance at 60 is Moonfire kept ticking and Starfire spammed the rest of the time; the fork's own balance.apl.json already does exactly that, plus two fight-end clips (Wrath, then the instant-cast Moonfire) so the last globals of an encounter are not wasted on a nuke that would not finish. Kept the preset's ranks and structure unchanged; the Forever build's spellconst just confirms Moonfire tops out at rank 10 (9835), Wrath at rank 8 (9912), and Starfire at rank 7 (25298) -- one rank higher on Wrath and Starfire than the classic 1.12 cap, so this is a Forever-only rank, not a vanilla one. The community guide also recommends weaving in Faerie Fire uptime and a second DoT (Insect Swarm) mana permitting; left both out for now, matching the mage-frost precedent of shipping the simpler, measured default and letting the validation job (design section 6) decide whether the extra globals are worth it here.",
+  "sources": [
+    {
+      "label": "wowsims-forever balance_druid default priority list",
+      "url": "https://github.com/jhunthrop/wowsims-forever/blob/464d1a14a6408956aecb14b3c5867392502db401/ui/balance_druid/apls/balance.apl.json",
+      "kind": "community"
+    },
+    {
+      "label": "Warcraft Tavern: WoW Classic Balance Druid PvE rotation",
+      "url": "https://www.warcrafttavern.com/wow-classic/guides/pve-balance-druid-rotations-cooldowns/",
+      "kind": "community"
+    }
+  ],
   "rotation": {
     "type": "TypeAPL",
-    "priorityList": []
+    "priorityList": [
+      {
+        "action": {
+          "autocastOtherCooldowns": {}
+        }
+      },
+      {
+        "notes": "Less than 1.5 seconds left in the fight: only the instant-cast Moonfire will land in time.",
+        "action": {
+          "condition": {
+            "cmp": {
+              "op": "OpLe",
+              "lhs": {
+                "remainingTime": {}
+              },
+              "rhs": {
+                "const": {
+                  "val": "1.5"
+                }
+              }
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 9835,
+              "rank": 10
+            }
+          }
+        }
+      },
+      {
+        "notes": "Less than 3.5 seconds left: Wrath's 2 second cast still finishes, Starfire's 3.5 second cast would not.",
+        "action": {
+          "condition": {
+            "cmp": {
+              "op": "OpLe",
+              "lhs": {
+                "remainingTime": {}
+              },
+              "rhs": {
+                "const": {
+                  "val": "3.5"
+                }
+              }
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 9912,
+              "rank": 8
+            }
+          }
+        }
+      },
+      {
+        "notes": "Keep Moonfire on the target; it is the cheapest DoT available and ticks the whole fight.",
+        "action": {
+          "condition": {
+            "not": {
+              "val": {
+                "dotIsActive": {
+                  "spellId": {
+                    "spellId": 9835,
+                    "rank": 10
+                  }
+                }
+              }
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 9835,
+              "rank": 10
+            }
+          }
+        }
+      },
+      {
+        "notes": "Starfire is the whole rest of the rotation once Moonfire is ticking.",
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 25298,
+              "rank": 7
+            }
+          }
+        }
+      }
+    ]
   }
 }
