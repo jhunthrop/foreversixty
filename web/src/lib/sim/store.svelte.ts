@@ -467,7 +467,13 @@ export function createSimStore(init: SimStoreInit) {
       const input: RunInput = {
         spec: character.spec,
         source: character.source,
-        character: toCharacterSpec(character, index, settings.buffs, settings.consumables),
+        character: toCharacterSpec(
+          character,
+          index,
+          settings.buffs,
+          settings.consumables,
+          settings.cooldowns,
+        ),
         encounter: settings.encounter,
         iterations: plan.iterations,
         targetError: plan.targetError,
@@ -566,7 +572,13 @@ export function createSimStore(init: SimStoreInit) {
         const request = buildSimRequest({
           spec: character.spec,
           source: character.source,
-          character: toCharacterSpec(character, index, settings.buffs, settings.consumables),
+          character: toCharacterSpec(
+            character,
+            index,
+            settings.buffs,
+            settings.consumables,
+            settings.cooldowns,
+          ),
           encounter: settings.encounter,
           iterations: plan.iterations,
           targetError: plan.targetError,

@@ -378,6 +378,18 @@ export const simCopy = {
   /** The three-way control's own accessible name; the buff's name is beside it. */
   gradeFor: (name: string): string => `${name}, how good a version`,
 
+  // --- Design 4.3's last sentence: the cooldown timing rows, inside the same panel. ---
+  cooldownTiming: 'When to use them',
+  cooldownNote:
+    'Only what is ticked above, plus anything a pasted request already schedules. Class cooldowns arrive when the build publishes their spell ids.',
+  cooldownModeLabel: {
+    'on-cooldown': 'On cooldown',
+    'on-pull': 'On the pull',
+    'at-time': 'At a time',
+    'at-execute': 'At execute',
+  } as Record<string, string>,
+  cooldownAt: 'Second',
+
   /**
    * Stat names, for the weights page (part B). The vocabulary is contract 10.8's pinning
    * of the fork's `proto.Stat` enum in snake case: the engine carries ONE `hit` and ONE

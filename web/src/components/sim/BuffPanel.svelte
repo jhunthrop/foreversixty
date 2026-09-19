@@ -22,6 +22,7 @@
   import { buffIcon, buffLabel, type BuffNames } from '../../lib/sim/buff-names';
   import { simCopy } from '../../lib/sim/copy';
   import type { SimSettings } from '../../lib/sim/settings';
+  import CooldownRows from './CooldownRows.svelte';
 
   let {
     settings,
@@ -111,4 +112,12 @@
       </details>
     {/if}
   {/each}
+
+  <CooldownRows
+    {settings}
+    {names}
+    {disabled}
+    ids={[...selectedIn(selection, 'potion'), ...selectedIn(selection, 'explosive')]}
+    {onchange}
+  />
 </section>

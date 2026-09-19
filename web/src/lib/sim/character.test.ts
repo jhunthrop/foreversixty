@@ -284,6 +284,48 @@ describe('toCharacterSpec', () => {
   });
 });
 
+describe('toCharacterSpec cooldowns', () => {
+  it('omits the key entirely when there are none, rather than sending an empty list', async () => {
+    const file = await warriorTalents();
+    const character: SimCharacter = {
+      name: 'Thrallgar',
+      spec: 'warrior-fury',
+      class_slug: 'warrior',
+      race_slug: 'orc',
+      talent_level: 11,
+      tree_version: BUILD,
+      point_order: [2001, 2002],
+      gear: { head: 12640 },
+      buffs: [],
+      consumables: [],
+      source,
+    };
+    const spec = toCharacterSpec(character, indexTalents(file), [], [], []);
+    expect(spec.cooldowns).toBeUndefined();
+  });
+
+  it('carries the rows through, copied rather than shared', async () => {
+    const file = await warriorTalents();
+    const character: SimCharacter = {
+      name: 'Thrallgar',
+      spec: 'warrior-fury',
+      class_slug: 'warrior',
+      race_slug: 'orc',
+      talent_level: 11,
+      tree_version: BUILD,
+      point_order: [2001, 2002],
+      gear: { head: 12640 },
+      buffs: [],
+      consumables: [],
+      source,
+    };
+    const rows = [{ id: 'major_mana_potion', at_sec: [0] }];
+    const spec = toCharacterSpec(character, indexTalents(file), [], [], rows);
+    expect(spec.cooldowns).toEqual(rows);
+    expect(spec.cooldowns).not.toBe(rows);
+  });
+});
+
 describe('the planner conversion, both ways', () => {
   it('round-trips a character through BuildDraft without losing a point or a slot', async () => {
     const [file, classRows, raceRows] = await Promise.all([warriorTalents(), classes(), races()]);

@@ -22,7 +22,7 @@ import type { PlannerStore } from '../planner/store.svelte';
 import type { BuildDraft, ClassRow, Gear, RaceRow, Slot, TalentFile } from '../planner/types';
 import { BASE_LEVEL, SLOTS } from '../planner/types';
 import { SPECS } from './specs';
-import type { CharacterSource, CharacterSpec, GearSlot } from './types';
+import type { CharacterSource, CharacterSpec, CooldownSpec, GearSlot } from './types';
 
 export interface SimCharacter {
   name: string;
@@ -202,14 +202,19 @@ export function ranksFromTalentsString(talents: string): number[][] {
  *
  * `professions` is left unset rather than sent empty: nothing in the character model records
  * professions, and an empty array would claim we had looked and found none.
+ *
+ * `cooldowns` is likewise omitted rather than sent as `[]`: an empty list would claim we
+ * had scheduled something and found nothing, when the truth is "every cooldown on
+ * cooldown", which is what an absent field means to the engine (contract 1.7).
  */
 export function toCharacterSpec(
   character: SimCharacter,
   index: TalentIndex,
   buffs: string[],
   consumes: string[],
+  cooldowns: readonly CooldownSpec[] = [],
 ): CharacterSpec {
-  return {
+  const spec: CharacterSpec = {
     name: character.name,
     race: character.race_slug,
     class: character.class_slug,
@@ -221,6 +226,9 @@ export function toCharacterSpec(
     buffs: [...buffs],
     consumes: [...consumes],
   };
+  return cooldowns.length === 0
+    ? spec
+    : { ...spec, cooldowns: cooldowns.map((row) => ({ ...row, at_sec: [...row.at_sec] })) };
 }
 
 export function plannerHrefFor(character: SimCharacter): string {
