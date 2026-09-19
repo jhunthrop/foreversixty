@@ -233,6 +233,7 @@ components:
           type: object
           description: The logs engine's per-fight summary, so the report components render a sim.
         error: { type: string }
+        aborted: { type: boolean, description: "The run was stopped on request rather than failing; iterations_run is whatever completed. Never true on a saved result - POST /v1/sims refuses one." }
     SimRow:
       type: object
       properties:
@@ -832,7 +833,7 @@ paths:
           schema: { type: string }
           description: "The numeric encounter id, or the slug /rankings/<encounter-slug> uses (the encounter name lowercased with spaces as -)"
         - { name: difficulty, in: query, schema: { type: integer } }
-        - { name: metric, in: query, schema: { type: string, enum: [dps, hps, damage_taken], default: dps } }
+        - { name: metric, in: query, schema: { type: string, enum: [dps, hps, damage_taken, execution], default: dps }, description: "execution has no percentile equivalent (see /v1/rankings/percentile)" }
         - { name: spec, in: query, schema: { type: string } }
         - { name: class, in: query, schema: { type: string } }
         - { name: phase, in: query, schema: { type: string, enum: [pre-beta, beta, launch, raids-1] } }
@@ -1058,7 +1059,7 @@ paths:
   /v1/characters/{region}/{ruleset}/{name}:
     get:
       summary: A character's bests, history, and the builds they have been seen in
-      description: "best[] and history[] rows are { encounter, encounter_id, difficulty, metric, value, percentile?, spec?, fought_at, report_id, fight_index }; builds_seen[] is { talent_split, spec?, first_seen }"
+      description: "best[] and history[] rows are { encounter, encounter_id, difficulty, metric, value, percentile?, spec?, fought_at, report_id, fight_index, execution_score? }; builds_seen[] is { talent_split, spec?, first_seen }"
       parameters:
         - { name: region, in: path, required: true, schema: { type: string, enum: [us, eu, kr, tw, cn] } }
         - { name: ruleset, in: path, required: true, schema: { type: string, enum: [normal, pvp, rp, hardcore] } }
@@ -1069,7 +1070,7 @@ paths:
   /v1/guilds/{region}/{ruleset}/{name}:
     get:
       summary: A guild's progression, roster bests, and reports
-      description: "progression[] rows are { encounter, encounter_id, difficulty, kills, pull_count, first_kill_at? }; roster_best[] rows are { player, encounter, encounter_id, metric, value, fought_at }"
+      description: "progression[] rows are { encounter, encounter_id, difficulty, kills, pull_count, first_kill_at? }; roster_best[] rows are { player, encounter, encounter_id, metric, value, fought_at, execution_score? }"
       parameters:
         - { name: region, in: path, required: true, schema: { type: string, enum: [us, eu, kr, tw, cn] } }
         - { name: ruleset, in: path, required: true, schema: { type: string, enum: [normal, pvp, rp, hardcore] } }
