@@ -169,8 +169,10 @@ func TestEverySpecAttachesOptionsAndARotation(t *testing.T) {
 // "not yet", the second is "never".
 func TestBuildRejectsASpecItDoesNotCarry(t *testing.T) {
 	req := fury()
-	req.Spec = "shaman-enhancement"
-	req.Character.Class = "shaman"
+	// A healer: the fork registers no agent for one, and the rotation
+	// lane has written no priority list for one either.
+	req.Spec = "priest-holy"
+	req.Character.Class = "priest"
 	req.Character.Talents = ""
 	req.Character.Gear = nil
 	if _, err := Build(req); !errors.Is(err, ErrUnsupportedSpec) {

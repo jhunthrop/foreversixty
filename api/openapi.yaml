@@ -163,6 +163,129 @@ components:
         report_id: { type: string }
         fight_index: { type: integer }
         state: { type: string, enum: [ok, at_risk, removed] }
+        execution_score: { type: number, nullable: true }
+    SimRequest:
+      type: object
+      required: [engine_version, spec, source, character, encounter, iterations]
+      properties:
+        engine_version:
+          type: string
+          description: The short sha of the engine build, from sim/enginever.
+        spec: { type: string, example: warrior-fury }
+        source:
+          type: object
+          properties:
+            kind: { type: string, enum: [armory, addon, build, fight, manual] }
+            ref: { type: string }
+            captured_at: { type: string, format: date-time }
+        character:
+          type: object
+          required: [race, class, level]
+          properties:
+            name: { type: string }
+            race: { type: string, example: orc }
+            class: { type: string, example: warrior }
+            level: { type: integer, maximum: 60 }
+            talents:
+              type: string
+              description: The engine's own positional talent string.
+            gear:
+              type: array
+              items:
+                type: object
+                properties:
+                  slot: { type: string }
+                  item_id: { type: integer }
+                  enchant: { type: integer }
+                  suffix: { type: integer }
+            buffs: { type: array, items: { type: string } }
+            consumes: { type: array, items: { type: string } }
+            professions: { type: array, items: { type: string } }
+        encounter:
+          type: object
+          properties:
+            duration_sec: { type: integer, default: 180, minimum: 60, maximum: 480 }
+            variation: { type: number, default: 0.2 }
+            targets: { type: integer, default: 1, minimum: 1, maximum: 10 }
+            execute_ratio: { type: number, default: 0.25 }
+            profile: { type: string }
+        iterations: { type: integer, enum: [500, 3000, 10000] }
+        random_seed: { type: integer, format: int64 }
+    SimResult:
+      type: object
+      required: [engine_version, lane, dps, iterations_run]
+      properties:
+        sim_id: { type: string }
+        engine_version: { type: string }
+        request: { $ref: '#/components/schemas/SimRequest' }
+        lane: { type: string, enum: [browser, server] }
+        dps:
+          type: object
+          properties:
+            mean: { type: number }
+            stddev: { type: number }
+            error: { type: number }
+            min: { type: number }
+            max: { type: number }
+        iterations_run: { type: integer }
+        duration_ms: { type: integer, format: int64 }
+        summary:
+          type: object
+          description: The logs engine's per-fight summary, so the report components render a sim.
+        error: { type: string }
+        aborted: { type: boolean, description: "The run was stopped on request rather than failing; iterations_run is whatever completed. Never true on a saved result - POST /v1/sims refuses one." }
+    SimRow:
+      type: object
+      properties:
+        sim_id: { type: string }
+        spec: { type: string }
+        dps: { type: number }
+        engine_version: { type: string }
+        created_at: { type: string, format: date-time }
+        title: { type: string }
+    SpecFidelity:
+      type: object
+      properties:
+        spec: { type: string }
+        state: { type: string, enum: [validated, in_progress, unsupported] }
+        median_gap: { type: number, nullable: true }
+        parses: { type: integer }
+        worst_actions:
+          type: array
+          items:
+            type: object
+            properties:
+              spell_id:
+                type: integer
+                format: int64
+                description: >-
+                  The summary's row identity: the client spell id for a plain
+                  spell, a reserved id above 2,000,000 for a tagged, item or
+                  other action.
+              name: { type: string }
+              sim_casts: { type: number }
+              actual_casts: { type: number }
+        engine_version: { type: string }
+        updated_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: Null until the nightly job has measured this spec.
+    User:
+      type: object
+      required: [id, role, anonymize, premium]
+      properties:
+        id: { type: integer, format: int64 }
+        battletag: { type: string, nullable: true }
+        email: { type: string, nullable: true, description: Shown only to the account itself. }
+        role: { type: string }
+        anonymize: { type: boolean }
+        premium:
+          type: boolean
+          description: >-
+            Whether this account may run sims on our servers. Set by hand until
+            payments exist; the web reads it to decide whether to offer the
+            server lane at all.
   responses:
     NotFound:
       description: "Unmatched routes return the envelope with code not_found"
@@ -424,7 +547,19 @@ paths:
     get:
       summary: The signed-in account, its characters and its guilds
       responses:
-        '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          user: { $ref: '#/components/schemas/User' }
         '401': { description: "Not signed in", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
     patch:
       summary: Set the read-time pseudonym flag
@@ -698,7 +833,7 @@ paths:
           schema: { type: string }
           description: "The numeric encounter id, or the slug /rankings/<encounter-slug> uses (the encounter name lowercased with spaces as -)"
         - { name: difficulty, in: query, schema: { type: integer } }
-        - { name: metric, in: query, schema: { type: string, enum: [dps, hps, damage_taken], default: dps } }
+        - { name: metric, in: query, schema: { type: string, enum: [dps, hps, damage_taken, execution], default: dps }, description: "execution has no percentile equivalent (see /v1/rankings/percentile)" }
         - { name: spec, in: query, schema: { type: string } }
         - { name: class, in: query, schema: { type: string } }
         - { name: phase, in: query, schema: { type: string, enum: [pre-beta, beta, launch, raids-1] } }
@@ -747,10 +882,184 @@ paths:
         - { name: phase, in: query, schema: { type: string } }
       responses:
         '200': { description: "rows", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+  /v1/sims:
+    post:
+      summary: Save a browser-run sim result
+      operationId: saveSim
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/SimResult'
+                - type: object
+                  properties:
+                    title: { type: string, maxLength: 120 }
+      responses:
+        '201':
+          description: Saved
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          sim_id: { type: string, minLength: 12, maxLength: 12 }
+        '400': { description: The body is not a runnable browser result }
+    get:
+      summary: The caller's own saved sims
+      operationId: listMySims
+      parameters:
+        - { name: mine, in: query, required: true, schema: { type: string, enum: ['1'] } }
+        - { name: page, in: query, schema: { type: integer, minimum: 1 } }
+      responses:
+        '200':
+          description: One page of the caller's sims
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          rows:
+                            type: array
+                            items: { $ref: '#/components/schemas/SimRow' }
+                          total: { type: integer }
+                          page: { type: integer }
+                          per_page: { type: integer, example: 100 }
+        '401': { description: Sign in first }
+  /v1/sims/run:
+    post:
+      summary: Run a sim on our servers (premium)
+      operationId: runSim
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/SimRequest' }
+      responses:
+        '202':
+          description: Dispatched
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          sim_id: { type: string }
+        '400': { description: The request cannot be run }
+        '401': { description: Sign in first }
+        '402': { description: 'premium_required: running on our servers is a premium feature' }
+        '502': { description: The run was recorded but could not be started }
+  /v1/sims/{id}:
+    get:
+      summary: One saved sim
+      operationId: getSim
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: The result
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data: { $ref: '#/components/schemas/SimResult' }
+        '404': { description: No such sim }
+  /v1/sims/{id}/progress:
+    get:
+      summary: How far a server-lane run has got
+      operationId: getSimProgress
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: The run's state
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          state: { type: string, enum: [queued, running, done, error] }
+                          iterations_done: { type: integer }
+                          dps: { type: number, nullable: true }
+        '404': { description: No such sim }
+  /v1/specs:
+    get:
+      summary: Every spec's simulator fidelity
+      operationId: listSpecs
+      responses:
+        '200':
+          description: The support page's data, one card per spec
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          specs:
+                            type: array
+                            items: { $ref: '#/components/schemas/SpecFidelity' }
+  /v1/characters/{region}/{ruleset}/{name}/sim-input:
+    get:
+      summary: The character model the sim page starts from
+      operationId: getSimInput
+      parameters:
+        - { name: region, in: path, required: true, schema: { type: string } }
+        - { name: ruleset, in: path, required: true, schema: { type: string } }
+        - { name: name, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: The newest of the addon export and the last fight
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          spec: { type: string }
+                          gear: { type: object }
+                          talents: { type: string }
+                          buffs:
+                            type: array
+                            items: { type: string }
+                            description: Engine buff ids, from sim/request/IDS.md.
+                          captured_at: { type: string, format: date-time }
+                          source: { type: string, enum: [addon, fight] }
+        '404': { description: No such character }
   /v1/characters/{region}/{ruleset}/{name}:
     get:
       summary: A character's bests, history, and the builds they have been seen in
-      description: "best[] and history[] rows are { encounter, encounter_id, difficulty, metric, value, percentile?, spec?, fought_at, report_id, fight_index }; builds_seen[] is { talent_split, spec?, first_seen }"
+      description: "best[] and history[] rows are { encounter, encounter_id, difficulty, metric, value, percentile?, spec?, fought_at, report_id, fight_index, execution_score? }; builds_seen[] is { talent_split, spec?, first_seen }"
       parameters:
         - { name: region, in: path, required: true, schema: { type: string, enum: [us, eu, kr, tw, cn] } }
         - { name: ruleset, in: path, required: true, schema: { type: string, enum: [normal, pvp, rp, hardcore] } }
@@ -761,7 +1070,7 @@ paths:
   /v1/guilds/{region}/{ruleset}/{name}:
     get:
       summary: A guild's progression, roster bests, and reports
-      description: "progression[] rows are { encounter, encounter_id, difficulty, kills, pull_count, first_kill_at? }; roster_best[] rows are { player, encounter, encounter_id, metric, value, fought_at }"
+      description: "progression[] rows are { encounter, encounter_id, difficulty, kills, pull_count, first_kill_at? }; roster_best[] rows are { player, encounter, encounter_id, metric, value, fought_at, execution_score? }"
       parameters:
         - { name: region, in: path, required: true, schema: { type: string, enum: [us, eu, kr, tw, cn] } }
         - { name: ruleset, in: path, required: true, schema: { type: string, enum: [normal, pvp, rp, hardcore] } }

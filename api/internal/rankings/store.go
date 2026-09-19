@@ -30,14 +30,38 @@ const (
 	MetricDPS         = "dps"
 	MetricHPS         = "hps"
 	MetricDamageTaken = "damage_taken"
+	// MetricExecution ranks on how much of what a player's gear can
+	// do they actually did, rather than on the raw number. It is the
+	// one metric that is not a column the ingest writes: the
+	// simulator fills it in per fight.
+	MetricExecution = "execution"
 )
 
-// Metrics is every valid metric.
-var Metrics = []string{MetricDPS, MetricHPS, MetricDamageTaken}
+// Metrics is every metric a leaderboard can be sorted by.
+var Metrics = []string{MetricDPS, MetricHPS, MetricDamageTaken, MetricExecution}
+
+// DigestedMetrics is every metric percentile_digests holds a curve
+// for, which is the smaller list: a percentile is a place on a
+// distribution the digest job folded, and nothing folds execution
+// scores. GET /v1/rankings/percentile reads this one, so asking it to
+// place an execution score is the 400 it was before this task rather
+// than a silent "no percentile for that".
+var DigestedMetrics = []string{MetricDPS, MetricHPS, MetricDamageTaken}
 
 // ValidMetric reports whether m is one of them.
 func ValidMetric(m string) bool {
 	for _, v := range Metrics {
+		if v == m {
+			return true
+		}
+	}
+	return false
+}
+
+// ValidDigestMetric reports whether a metric has a percentile curve.
+// Written as a loop, the way ValidMetric beside it already is.
+func ValidDigestMetric(m string) bool {
+	for _, v := range DigestedMetrics {
 		if v == m {
 			return true
 		}
@@ -417,4 +441,41 @@ func since(v string, now time.Time) (time.Time, error) {
 		}
 	}
 	return time.Time{}, fmt.Errorf("since must be empty, today, or a number of days like 7d")
+}
+
+// The bounds a stored execution score is clamped to. A ratio outside
+// them is a sim that went wrong rather than a player who played twice
+// as well as their gear allows, and the contract pins the range.
+const (
+	ExecutionMin = 0.0
+	ExecutionMax = 2.0
+)
+
+// ErrNoFight is returned when a (report_id, fight_index, player_key)
+// coordinate names no row in fight_metrics: a typo, a race with
+// RemoveReport, or a fight that never verified. Without this, a
+// zero-row update looks identical to a successful one and the caller
+// has no way to tell a score was silently dropped.
+var ErrNoFight = fmt.Errorf("rankings: no such fight")
+
+// SetExecutionScore writes one player's execution score on one fight,
+// clamped to [ExecutionMin, ExecutionMax]. The fight-close scorer and
+// the nightly job are the callers; both are idempotent, so this
+// simply overwrites whatever was there. It returns ErrNoFight when the
+// coordinate matches no row, so the caller can tell that apart from a
+// score of zero having been written.
+func (s *Store) SetExecutionScore(ctx context.Context, reportID string, fightIndex int,
+	playerKey string, score float64) error {
+	score = min(max(score, ExecutionMin), ExecutionMax)
+	tag, err := s.Pool.Exec(ctx,
+		`update fight_metrics set execution_score = $4
+		 where report_id = $1 and fight_index = $2 and player_key = $3`,
+		reportID, fightIndex, playerKey, score)
+	if err != nil {
+		return fmt.Errorf("rankings: execution score %s/%d/%s: %w", reportID, fightIndex, playerKey, err)
+	}
+	if tag.RowsAffected() == 0 {
+		return ErrNoFight
+	}
+	return nil
 }

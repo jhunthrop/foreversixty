@@ -1,10 +1,69 @@
 {
   "spec": "warlock-affliction",
-  "state": "unwritten",
-  "notes": "",
-  "sources": [],
+  "state": "written",
+  "notes": "Adapted from the fork's single shared warlock preset (ui/warlock/apls/rotation.apl.json), which wowsims models as one package for all three specs. That preset's Shadow Bolt was a stale rank (25307 cast at rank 9; the build's current top rank for 25307 is 10) -- fixed here. It kept Amplify Curse as a prepull (buffs the next curse) which Affliction alone talents into, so it stays; Demonic Sacrifice was dropped since sacrificing the pet is a Demonology-tree talent Affliction does not have. Immolate was dropped as a maintained DoT (Destruction's signature, not Affliction's) in favor of Bane of Agony and Corruption, and Wrack (1316697) is added as a third maintained DoT -- Forever's own tier 6 Affliction capstone, a 6 second instant DoT the base wowsims/classic Affliction tree does not have. Fix round 1: Wrack is not registered anywhere in sim/warlock (it exists only in the talent-tree metadata table, no spell file), so that line is presently inert and warns-and-skips every time it comes up; it is kept because it is the guide's own placement of the ability, and Shadow Bolt directly beneath it already catches the resulting free globals as the engine-castable Era filler, so nothing further needed adding. Confirmed clean by the fix-round-1 review: Bane of Agony (11713) is exactly the spell id the engine's curse registration (sim/warlock/curses.go, function name getCurseOfAgonyBaseConfig notwithstanding) uses, and is fully castable; the separate 'Curse of Agony' spellconst entries (18671/1233077) are unrelated tuning data referenced nowhere in the engine, so no change was needed there. Every rank named here (other than the flagged inert Wrack line) is checked against the spellconst of the newest client build in builds/.",
+  "inert": [1316697],
+  "sources": [
+    { "label": "wowsims-forever warlock default priority list (shared across all three specs)", "url": "https://github.com/jhunthrop/wowsims-forever/blob/464d1a14a6408956aecb14b3c5867392502db401/ui/warlock/apls/rotation.apl.json", "kind": "community" },
+    { "label": "Warcraft Tavern: Classic Affliction Warlock DPS rotation", "url": "https://www.warcrafttavern.com/wow-classic/guides/warlock-dps-rotation/", "kind": "community" }
+  ],
   "rotation": {
     "type": "TypeAPL",
-    "priorityList": []
+    "prepullActions": [
+      {
+        "action": { "castSpell": { "spellId": { "spellId": 18288 } } },
+        "doAtValue": { "const": { "val": "-5s" } }
+      }
+    ],
+    "priorityList": [
+      {
+        "notes": "Potion at the top of the fight if mana is already below 75 percent, or a mana gem below 60 percent, saved for the closing burn if the fight is nearly over.",
+        "action": {
+          "condition": {
+            "and": {
+              "vals": [
+                { "cmp": { "op": "OpGe", "lhs": { "remainingTime": {} }, "rhs": { "const": { "val": "15s" } } } },
+                { "cmp": { "op": "OpLe", "lhs": { "currentManaPercent": {} }, "rhs": { "const": { "val": "75%" } } } },
+                { "isExecutePhase": { "threshold": "E35" } }
+              ]
+            }
+          },
+          "castSpell": { "spellId": { "otherId": "OtherActionPotion" } }
+        }
+      },
+      { "action": { "autocastOtherCooldowns": {} } },
+      {
+        "notes": "Life Tap to keep casting once mana runs low; health is not a concern with three DoTs and Drain Life available.",
+        "action": {
+          "condition": { "cmp": { "op": "OpLt", "lhs": { "currentManaPercent": {} }, "rhs": { "const": { "val": "10%" } } } },
+          "castSpell": { "spellId": { "spellId": 11689, "rank": 6 } }
+        }
+      },
+      {
+        "notes": "Bane of Agony ramps up over its duration, so it goes down first and is refreshed on cooldown.",
+        "action": {
+          "condition": { "not": { "val": { "dotIsActive": { "spellId": { "spellId": 11713, "rank": 6 } } } } },
+          "castSpell": { "spellId": { "spellId": 11713, "rank": 6 } }
+        }
+      },
+      {
+        "notes": "Corruption is the cheapest DoT per damage and is kept up throughout.",
+        "action": {
+          "condition": { "not": { "val": { "dotIsActive": { "spellId": { "spellId": 25311, "rank": 7 } } } } },
+          "castSpell": { "spellId": { "spellId": 25311, "rank": 7 } }
+        }
+      },
+      {
+        "notes": "Inert until the engine registers Wrack (found only in sim/warlock's talent metadata table, no spell registration). Kept because it is Forever's own Affliction capstone; Shadow Bolt below already fills the globals this would otherwise use.",
+        "action": {
+          "condition": { "not": { "val": { "dotIsActive": { "spellId": { "spellId": 1316697, "rank": 1 } } } } },
+          "castSpell": { "spellId": { "spellId": 1316697, "rank": 1 } }
+        }
+      },
+      {
+        "notes": "Shadow Bolt fills every remaining global while the DoTs run their course.",
+        "action": { "castSpell": { "spellId": { "spellId": 25307, "rank": 10 } } }
+      }
+    ]
   }
 }

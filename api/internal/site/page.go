@@ -1,6 +1,7 @@
 package site
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"html/template"
@@ -96,18 +97,22 @@ var messagePage = template.Must(template.New("message").Parse(`<!doctype html>
 </html>
 `))
 
-// buildPageHTML renders the shared build page for b.
-func (d Deps) buildPageHTML(b builds.Build) (string, error) {
-	desc := builds.Describe(d.Data, b)
+// buildPageHTML renders the shared build page for b. A sim lookup
+// failure is logged and otherwise ignored: the page still renders,
+// simply without a DPS line in its description.
+func (d Deps) buildPageHTML(ctx context.Context, b builds.Build) (string, error) {
+	desc, err := builds.Describe(d.Data, b).WithSimDPS(ctx, b.ID, d.Sims)
+	if err != nil {
+		d.logger().Error("site", "op", "describe", "build", b.ID, "err", err)
+	}
 	record, err := json.Marshal(b)
 	if err != nil {
 		return "", fmt.Errorf("site: marshal record %s: %w", b.ID, err)
 	}
 	var out strings.Builder
 	err = buildPage.Execute(&out, pageData{
-		Title: fmt.Sprintf("%s · %s · Forever Sixty", desc.Title, desc.SplitText),
-		Description: fmt.Sprintf("%s build, %s at level %d. Forever Sixty build planner.",
-			desc.Heading, desc.SplitText, desc.Level),
+		Title:        fmt.Sprintf("%s · %s · Forever Sixty", desc.Title, desc.SplitText),
+		Description:  pageDescription(desc),
 		CanonicalURL: d.PublicBaseURL + "/b/" + b.ID,
 		CardURL:      d.PublicBaseURL + "/b/" + b.ID + "/card.png",
 		StylesURL:    d.PublicBaseURL + islandStylesPath,
@@ -122,6 +127,16 @@ func (d Deps) buildPageHTML(b builds.Build) (string, error) {
 		return "", fmt.Errorf("site: render build page %s: %w", b.ID, err)
 	}
 	return out.String(), nil
+}
+
+// pageDescription is the meta and og description text: the build's
+// shape, and its simmed DPS when Description carries a line for it.
+func pageDescription(desc builds.Description) string {
+	s := fmt.Sprintf("%s build, %s at level %d", desc.Heading, desc.SplitText, desc.Level)
+	if desc.DPSLine != "" {
+		s += ", simmed to " + desc.DPSLine
+	}
+	return s + ". Forever Sixty build planner."
 }
 
 // messageHTML renders the plain page used for a missing or unloadable build.

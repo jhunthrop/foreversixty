@@ -47,6 +47,10 @@ type User struct {
 	Email     *string `json:"email"`
 	Role      string  `json:"role"`
 	Anonymize bool    `json:"anonymize"`
+	// Premium is whether this account may run sims on our servers. It
+	// is set by hand until payments are designed; no code here ever
+	// turns it on.
+	Premium bool `json:"premium"`
 }
 
 // PublicName is what strangers may be told an account is called: the
@@ -110,11 +114,12 @@ type Guild struct {
 // take them as one dependency.
 type Store struct{ Pool *pgxpool.Pool }
 
-const userColumns = `id, coalesce(bnet_sub, ''), battletag, email, role, anonymize`
+const userColumns = `id, coalesce(bnet_sub, ''), battletag, email, role, anonymize, premium`
 
 func scanUser(row pgx.Row) (User, error) {
 	var u User
-	if err := row.Scan(&u.ID, &u.BnetSub, &u.Battletag, &u.Email, &u.Role, &u.Anonymize); err != nil {
+	if err := row.Scan(&u.ID, &u.BnetSub, &u.Battletag, &u.Email, &u.Role, &u.Anonymize,
+		&u.Premium); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return User{}, ErrNotFound
 		}
@@ -358,6 +363,30 @@ func (s *Store) LinkCharacter(ctx context.Context, userID int64, c Character) er
 	return nil
 }
 
+// MemberKeys answers which of these character keys belong to an
+// account. The ingest asks once per fight, so it is one statement
+// rather than one per player.
+func (s *Store) MemberKeys(ctx context.Context, keys []string) (map[string]bool, error) {
+	out := make(map[string]bool, len(keys))
+	if len(keys) == 0 {
+		return out, nil
+	}
+	rows, err := s.Pool.Query(ctx,
+		`select key from characters where key = any($1) and user_id is not null`, keys)
+	if err != nil {
+		return nil, fmt.Errorf("auth: member keys: %w", err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var key string
+		if err := rows.Scan(&key); err != nil {
+			return nil, fmt.Errorf("auth: member keys: %w", err)
+		}
+		out[key] = true
+	}
+	return out, rows.Err()
+}
+
 // Guilds lists the guilds an account is a member of.
 func (s *Store) Guilds(ctx context.Context, userID int64) ([]Guild, error) {
 	rows, err := s.Pool.Query(ctx,
@@ -392,4 +421,19 @@ func (s *Store) GuildRank(ctx context.Context, guildID, userID int64) (string, b
 		return "", false, fmt.Errorf("auth: guild rank: %w", err)
 	}
 	return rank, true, nil
+}
+
+// Premium reports whether an account may run sims on our servers. An
+// unknown id is not premium rather than an error: the caller is about
+// to answer 402 either way.
+func (s *Store) Premium(ctx context.Context, id int64) (bool, error) {
+	var premium bool
+	err := s.Pool.QueryRow(ctx, `select premium from users where id = $1`, id).Scan(&premium)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return false, nil
+	}
+	if err != nil {
+		return false, fmt.Errorf("auth: read premium %d: %w", id, err)
+	}
+	return premium, nil
 }

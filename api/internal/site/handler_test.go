@@ -18,6 +18,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/builds"
 	"github.com/jhunthrop/foreversixty/api/internal/card"
 	"github.com/jhunthrop/foreversixty/api/internal/trees"
+	simapi "github.com/jhunthrop/foreversixty/sim/api"
 )
 
 type fakeGetter struct{ rows map[string]builds.Build }
@@ -35,6 +36,18 @@ type failingGetter struct{ err error }
 
 func (f failingGetter) Get(context.Context, string) (builds.Build, error) {
 	return builds.Build{}, f.err
+}
+
+// fakeSims is a builds.SimLookup test double: the page's tests never
+// need a real sims.Store, only the three answers ForBuild can give.
+type fakeSims struct {
+	res simapi.SimResult
+	ok  bool
+	err error
+}
+
+func (f fakeSims) ForBuild(context.Context, string) (simapi.SimResult, bool, error) {
+	return f.res, f.ok, f.err
 }
 
 type recordingViews struct{ ids []string }
@@ -144,6 +157,59 @@ func TestBuildPageRecordsAView(t *testing.T) {
 	get(t, testPage(t, record, views), "/b/"+record.ID)
 	if len(views.ids) != 1 || views.ids[0] != record.ID {
 		t.Fatalf("recorded views = %v", views.ids)
+	}
+}
+
+func TestBuildPageDescriptionCarriesTheSimmedDPSLine(t *testing.T) {
+	record := sampleRecord(t, "Arms leveling")
+	data, err := trees.LoadFixture()
+	if err != nil {
+		t.Fatal(err)
+	}
+	mux := http.NewServeMux()
+	Mount(mux, Deps{
+		Store:         fakeGetter{rows: map[string]builds.Build{record.ID: record}},
+		Data:          data,
+		PublicBaseURL: "https://foreversixty.gg",
+		Sims:          fakeSims{ok: true, res: simapi.SimResult{DPS: simapi.Estimate{Mean: 12345, Error: 100}}},
+	})
+	body := get(t, mux, "/b/"+record.ID).Body.String()
+	want := `content="Human Warrior build, 6/1 at level 16, simmed to 12,345 DPS ±196. Forever Sixty build planner.">`
+	if !strings.Contains(body, want) {
+		t.Fatalf("page description is missing the DPS line:\n%s", body)
+	}
+}
+
+func TestBuildPageDescriptionHasNoDPSLineWithoutASim(t *testing.T) {
+	record := sampleRecord(t, "Arms leveling")
+	body := get(t, testPage(t, record, nil), "/b/"+record.ID).Body.String()
+	want := `content="Human Warrior build, 6/1 at level 16. Forever Sixty build planner.">`
+	if !strings.Contains(body, want) {
+		t.Fatalf("page description should have no DPS line without a lookup:\n%s", body)
+	}
+}
+
+func TestBuildPageToleratesASimLookupFailure(t *testing.T) {
+	record := sampleRecord(t, "Arms leveling")
+	data, err := trees.LoadFixture()
+	if err != nil {
+		t.Fatal(err)
+	}
+	mux := http.NewServeMux()
+	Mount(mux, Deps{
+		Store:         fakeGetter{rows: map[string]builds.Build{record.ID: record}},
+		Data:          data,
+		PublicBaseURL: "https://foreversixty.gg",
+		Sims:          fakeSims{err: errors.New("database is down")},
+		Log:           slog.New(slog.NewTextHandler(io.Discard, nil)),
+	})
+	rec := get(t, mux, "/b/"+record.ID)
+	if rec.Code != http.StatusOK {
+		t.Fatalf("code = %d, want 200: a sim lookup failure must never fail the card", rec.Code)
+	}
+	want := `content="Human Warrior build, 6/1 at level 16. Forever Sixty build planner.">`
+	if !strings.Contains(rec.Body.String(), want) {
+		t.Fatalf("page should render without a DPS line on a lookup error:\n%s", rec.Body.String())
 	}
 }
 

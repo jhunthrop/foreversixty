@@ -41,7 +41,11 @@ type Deps struct {
 	Data          *trees.Data
 	PublicBaseURL string
 	Views         ViewRecorder
-	Log           *slog.Logger
+	// Sims answers a build's newest simmed DPS for the page's meta
+	// description, once the planner has shared one. Nil is a valid
+	// deployment: the description simply carries no DPS line.
+	Sims builds.SimLookup
+	Log  *slog.Logger
 }
 
 // Mount registers the HTML build page and its preview card.
@@ -64,7 +68,7 @@ func (d Deps) page(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	page, err := d.buildPageHTML(b)
+	page, err := d.buildPageHTML(r.Context(), b)
 	if err != nil {
 		d.logger().Error("site", "id", httpx.RequestIDFrom(r.Context()), "op", "page", "build", b.ID, "err", err)
 		d.writeMessage(w, r, http.StatusInternalServerError, "Build unavailable",

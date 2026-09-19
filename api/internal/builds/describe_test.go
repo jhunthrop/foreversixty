@@ -1,9 +1,25 @@
 package builds
 
 import (
+	"context"
+	"errors"
 	"reflect"
 	"testing"
+
+	simapi "github.com/jhunthrop/foreversixty/sim/api"
 )
+
+// fakeSimLookup is a SimLookup test double: WithSimDPS's tests never
+// need a real sims.Store, only the three answers ForBuild can give.
+type fakeSimLookup struct {
+	res simapi.SimResult
+	ok  bool
+	err error
+}
+
+func (f fakeSimLookup) ForBuild(context.Context, string) (simapi.SimResult, bool, error) {
+	return f.res, f.ok, f.err
+}
 
 func TestDescribeCountsPointsPerTreeInClientOrder(t *testing.T) {
 	data := fixture(t)
@@ -50,5 +66,59 @@ func TestDescribeSurvivesATreeVersionWithNoData(t *testing.T) {
 	}
 	if got.Level != 10 {
 		t.Fatalf("level = %d", got.Level)
+	}
+}
+
+func TestWithSimDPSAddsTheLineWhenADoneSimExists(t *testing.T) {
+	sims := fakeSimLookup{ok: true, res: simapi.SimResult{DPS: simapi.Estimate{Mean: 12345.4, Error: 107.3}}}
+	got, err := Description{}.WithSimDPS(context.Background(), "znorjmts", sims)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.DPSLine != "12,345 DPS ±210" {
+		t.Fatalf("dps line = %q", got.DPSLine)
+	}
+}
+
+func TestWithSimDPSFormatsALargeMeanWithEveryComma(t *testing.T) {
+	sims := fakeSimLookup{ok: true, res: simapi.SimResult{DPS: simapi.Estimate{Mean: 1234567, Error: 500}}}
+	got, err := Description{}.WithSimDPS(context.Background(), "znorjmts", sims)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.DPSLine != "1,234,567 DPS ±980" {
+		t.Fatalf("dps line = %q", got.DPSLine)
+	}
+}
+
+func TestWithSimDPSLeavesTheLineEmptyWhenTheBuildHasNoSim(t *testing.T) {
+	got, err := Description{}.WithSimDPS(context.Background(), "znorjmts", fakeSimLookup{ok: false})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.DPSLine != "" {
+		t.Fatalf("dps line = %q, want empty when no sim was ever run", got.DPSLine)
+	}
+}
+
+func TestWithSimDPSReturnsALookupErrorAndLeavesTheLineEmpty(t *testing.T) {
+	got, err := Description{}.WithSimDPS(context.Background(), "znorjmts",
+		fakeSimLookup{err: errors.New("database is down")})
+	if err == nil {
+		t.Fatal("want an error from a failing lookup")
+	}
+	if got.DPSLine != "" {
+		t.Fatalf("dps line = %q, want empty on a lookup error - the card must still render", got.DPSLine)
+	}
+}
+
+func TestWithSimDPSIsANoOpWithoutALookup(t *testing.T) {
+	d := Description{Title: "Arms leveling"}
+	got, err := d.WithSimDPS(context.Background(), "znorjmts", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.DPSLine != "" || got.Title != "Arms leveling" {
+		t.Fatalf("got = %+v, want d unchanged with a nil lookup", got)
 	}
 }

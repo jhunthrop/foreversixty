@@ -1,10 +1,52 @@
 {
   "spec": "warlock-demonology",
-  "state": "unwritten",
-  "notes": "",
-  "sources": [],
+  "state": "written",
+  "notes": "Adapted from the fork's single shared warlock preset (ui/warlock/apls/rotation.apl.json). Dropped the shared preset's prepull Demonic Sacrifice (18788): the talent tree names that id as the tier 2 Demonology talent's own spell, but the build's spellconst has no entry for 18788 at all, so this build cannot cast it under that id -- a concern for the engine lane to resolve (either a different cast id for the sacrifice effect or the talent is not yet implemented client-side). Corruption and Life Tap were kept from the shared preset. Fixed the same stale Shadow Bolt rank the preset carried (25307 cast at rank 9 where the build's current top rank is 10). Immolate and the Bane of Agony curse maintenance from the shared preset were dropped -- Demonology's own capstone is meant to be Decimation (440870), a talent that is supposed to drop Soul Fire's 60 second cooldown to near nothing after a Shadow Bolt or Searing Pain crit. Fix round 1: Decimation has no implementation anywhere in sim/warlock (it exists only in the talent-tree metadata table), and sim/warlock/soul_fire.go hardcodes Soul Fire's cooldown as a flat, unconditional 60 seconds with nothing that shortens it on a crit -- so today Soul Fire is fully castable (rank 2, 17924, confirmed SpellFlagAPL) but only ever comes off cooldown once a minute, not near-continuously. Soul Fire is still placed ahead of the Shadow Bolt filler so it fires the instant it is off cooldown either way, but the priority is future-proofed for when Decimation lands rather than a description of today's cadence; Shadow Bolt fills the rest. Every rank named here is checked against the spellconst of the newest client build in builds/.",
+  "sources": [
+    { "label": "wowsims-forever warlock default priority list (shared across all three specs)", "url": "https://github.com/jhunthrop/wowsims-forever/blob/464d1a14a6408956aecb14b3c5867392502db401/ui/warlock/apls/rotation.apl.json", "kind": "community" },
+    { "label": "Warcraft Tavern: Classic Demonology Warlock DPS rotation", "url": "https://www.warcrafttavern.com/wow-classic/guides/warlock-dps-rotation/", "kind": "community" }
+  ],
   "rotation": {
     "type": "TypeAPL",
-    "priorityList": []
+    "priorityList": [
+      {
+        "notes": "Potion at the top of the fight if mana is already below 75 percent.",
+        "action": {
+          "condition": {
+            "and": {
+              "vals": [
+                { "cmp": { "op": "OpGe", "lhs": { "remainingTime": {} }, "rhs": { "const": { "val": "15s" } } } },
+                { "cmp": { "op": "OpLe", "lhs": { "currentManaPercent": {} }, "rhs": { "const": { "val": "75%" } } } },
+                { "isExecutePhase": { "threshold": "E35" } }
+              ]
+            }
+          },
+          "castSpell": { "spellId": { "otherId": "OtherActionPotion" } }
+        }
+      },
+      { "action": { "autocastOtherCooldowns": {} } },
+      {
+        "notes": "Life Tap to keep casting once mana runs low.",
+        "action": {
+          "condition": { "cmp": { "op": "OpLt", "lhs": { "currentManaPercent": {} }, "rhs": { "const": { "val": "10%" } } } },
+          "castSpell": { "spellId": { "spellId": 11689, "rank": 6 } }
+        }
+      },
+      {
+        "notes": "Corruption is cheap sustained damage that does not compete with Shadow Bolt casts.",
+        "action": {
+          "condition": { "not": { "val": { "dotIsActive": { "spellId": { "spellId": 25311, "rank": 7 } } } } },
+          "castSpell": { "spellId": { "spellId": 25311, "rank": 7 } }
+        }
+      },
+      {
+        "notes": "Soul Fire on cooldown. Future-proofed for Decimation (440870), which is meant to drop this 60 second cooldown to near nothing after a Shadow Bolt or Searing Pain crit -- not yet implemented in this engine build (sim/warlock/soul_fire.go has a flat, unshortened cooldown), so today this simply casts once a minute.",
+        "action": { "castSpell": { "spellId": { "spellId": 17924, "rank": 2 } } }
+      },
+      {
+        "notes": "Shadow Bolt is the default filler and what feeds Decimation's proc.",
+        "action": { "castSpell": { "spellId": { "spellId": 25307, "rank": 10 } } }
+      }
+    ]
   }
 }

@@ -117,6 +117,28 @@ func (h *harness) seedFight(reportID string, index int, at time.Time, bend func(
 
 func ptr[T any](v T) *T { return &v }
 
+// executionEncounterID is the fixture fight's encounter, the same one
+// the existing ranking tests query on.
+const executionEncounterID = 9001
+
+// seedRankedFight writes the fixture report and its first fight, and
+// returns the top DPS parse's coordinates: report id, fight index and
+// player key. It goes through seedReport and seedFight so the rows are
+// the ones the ingest really writes.
+func (h *harness) seedRankedFight(t *testing.T) (reportID string, index int, playerKey string) {
+	t.Helper()
+	reportID, index = "rptexecution", 1
+	h.seedReport(reportID)
+	h.seedFight(reportID, index, engine.FixtureBase, nil)
+	if err := h.pool.QueryRow(t.Context(),
+		`select player_key from fight_metrics
+		 where report_id = $1 and fight_index = $2 and role = 'dps'
+		 order by metric_dps desc limit 1`, reportID, index).Scan(&playerKey); err != nil {
+		t.Fatal(err)
+	}
+	return reportID, index, playerKey
+}
+
 func TestWriteFightStoresRowsAndADigest(t *testing.T) {
 	h := newHarness(t)
 	h.seedReport("report-one")

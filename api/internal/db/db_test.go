@@ -334,3 +334,62 @@ func TestMetricsPartitionNamesTheMonth(t *testing.T) {
 		t.Fatalf("partition = %q", got)
 	}
 }
+
+func TestMigrateCreatesTheSimulatorTables(t *testing.T) {
+	url := testURL(t)
+	if err := Migrate(url); err != nil {
+		t.Fatal(err)
+	}
+	pool, err := Connect(t.Context(), url)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer pool.Close()
+
+	for table, columns := range map[string][]string{
+		"sims": {"id", "user_id", "spec", "engine_version", "lane", "dps_mean",
+			"dps_error", "iterations", "title", "result", "state", "created_at"},
+		"sim_specs": {"spec", "state", "median_gap", "parses", "worst_actions",
+			"engine_version", "updated_at"},
+		"users":         {"premium"},
+		"fight_metrics": {"execution_score"},
+	} {
+		for _, c := range columns {
+			var n int
+			if err := pool.QueryRow(t.Context(),
+				`select count(*) from information_schema.columns
+				 where table_name = $1 and column_name = $2`, table, c).Scan(&n); err != nil {
+				t.Fatal(err)
+			}
+			if n != 1 {
+				t.Errorf("%s.%s is missing", table, c)
+			}
+		}
+	}
+
+	var n int
+	if err := pool.QueryRow(t.Context(),
+		`select count(*) from pg_indexes
+		 where indexname = 'fight_metrics_execution_idx'`).Scan(&n); err != nil {
+		t.Fatal(err)
+	}
+	if n != 1 {
+		t.Error("fight_metrics_execution_idx is missing")
+	}
+
+	// premium defaults to false: nothing in the code ever turns it on.
+	if _, err := pool.Exec(t.Context(),
+		`insert into users (email) values ('premium-default@example.com')
+		 on conflict (email) do nothing`); err != nil {
+		t.Fatal(err)
+	}
+	var premium bool
+	if err := pool.QueryRow(t.Context(),
+		`select premium from users where email = 'premium-default@example.com'`).
+		Scan(&premium); err != nil {
+		t.Fatal(err)
+	}
+	if premium {
+		t.Error("a new account must not be premium")
+	}
+}

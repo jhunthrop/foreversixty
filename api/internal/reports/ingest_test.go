@@ -7,16 +7,22 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"fmt"
+	"io"
 	"mime/multipart"
 	"net/http"
+	"os"
 	"strings"
 	"sync"
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
+	"github.com/jhunthrop/foreversixty/api/internal/character"
 	"github.com/jhunthrop/foreversixty/api/internal/engine"
 	"github.com/jhunthrop/foreversixty/api/internal/metrics"
+	"github.com/jhunthrop/foreversixty/logs/engine/event"
 	"github.com/jhunthrop/foreversixty/logs/engine/store"
+	"github.com/jhunthrop/foreversixty/logs/engine/summary"
 	"github.com/klauspost/compress/zstd"
 )
 
@@ -857,4 +863,219 @@ func mustFixture(t *testing.T) engine.Fixture {
 		t.Fatal(err)
 	}
 	return fx
+}
+
+// fakeScorer records the fights handed to the execution scorer.
+type fakeScorer struct {
+	mu     sync.Mutex
+	scored []ScoredFight
+}
+
+func (f *fakeScorer) Schedule(s ScoredFight) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	f.scored = append(f.scored, s)
+}
+
+func (f *fakeScorer) taken() []ScoredFight {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	return append([]ScoredFight{}, f.scored...)
+}
+
+// fakeMembers answers which characters are linked to an account.
+type fakeMembers struct {
+	keys map[string]bool
+	err  error
+}
+
+func (f fakeMembers) MemberKeys(_ context.Context, keys []string) (map[string]bool, error) {
+	if f.err != nil {
+		return nil, f.err
+	}
+	out := map[string]bool{}
+	for _, k := range keys {
+		if f.keys[k] {
+			out[k] = true
+		}
+	}
+	return out, nil
+}
+
+// postVerifiedFight posts the fixture bundle as fight n, the way
+// TestAVerifiedBundleIsStoredPublishedAndRanked does.
+func (h *harness) postVerifiedFight(t *testing.T, id string, n int) {
+	t.Helper()
+	b := makeBundle(t, n, nil)
+	res := h.do(http.MethodPut, fmt.Sprintf("/v1/reports/%s/fights/%d", id, n), b.contentType, b.body)
+	defer res.Body.Close()
+	if res.StatusCode != http.StatusCreated {
+		t.Fatalf("posting fight %d: status %d", n, res.StatusCode)
+	}
+}
+
+// everyFixturePlayer makes every player in the fixture bundle a
+// signed-in member, which is the contract's condition for scoring.
+func everyFixturePlayer(t *testing.T, rep Report) fakeMembers {
+	t.Helper()
+	region, ruleset := ReportRealm(rep)
+	keys := map[string]bool{}
+	for _, row := range makeBundle(t, 1, nil).rows {
+		keys[character.KeyFromUnit(region, ruleset, row.Name)] = true
+	}
+	return fakeMembers{keys: keys}
+}
+
+// dirGetter reads objects back out of the harness's local directory,
+// the way *r2.Client reads them out of the bucket - sims' own test
+// double, reimplemented here so this test can prove what it posted is
+// what a scorer would eventually read back, without this package
+// importing sims for it.
+type dirGetter struct{ root string }
+
+func (d dirGetter) Get(_ context.Context, key string) (io.ReadCloser, error) {
+	return os.Open(d.root + "/" + key)
+}
+
+// TestAVerifiedFightQueuesItsMembersForScoring posts through the real
+// route.
+//
+// The engine's Parquet schema deliberately does not carry a fight's
+// COMBATANT_INFO payload - parquet/schema.go's EventOf says so
+// outright: "Encounter, Zone, Combatant ... live in report.json and
+// summary.json" - so the ingest's fight-close hook never reads a
+// combatant from the events it rebuilds; it only ever hands the scorer
+// a fight reference and a player name. What this test can and does
+// prove through the real route is that queuing, and that the summary
+// the hook's own PUT stores in the bucket - the companion's own JSON,
+// bent here to carry a combatant the way a real companion export would
+// - is the exact object a scorer would later read back through
+// Service.Summaries to find that combatant. The bend only touches the
+// posted "summary" part, so the events-vs-metrics verification the
+// route runs is untouched and still agrees.
+func TestAVerifiedFightQueuesItsMembersForScoring(t *testing.T) {
+	h := newHarness(t)
+	scorer := &fakeScorer{}
+	id := h.createReport(Public)
+	rep, err := h.store.Get(t.Context(), id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	h.ingest.Score, h.ingest.Members = scorer, everyFixturePlayer(t, rep)
+
+	const guid = "Player-4184-000000A3"
+	const name = "Morrowlyn-Nightslayer"
+	b := makeBundleWith(t, func(parts map[string][]byte) {
+		var sum summary.Summary
+		if err := json.Unmarshal(parts["summary"], &sum); err != nil {
+			t.Fatal(err)
+		}
+		sum.Combatants = []summary.CombatantRow{{
+			GUID: guid, Name: name,
+			Gear: []event.Item{{ID: 17182, Enchants: []int64{2564}}},
+		}}
+		parts["summary"] = mustJSON(t, sum)
+	})
+	res := h.do(http.MethodPut, fmt.Sprintf("/v1/reports/%s/fights/1", id), b.contentType, b.body)
+	defer res.Body.Close()
+	if res.StatusCode != http.StatusCreated {
+		t.Fatalf("posting fight 1: status %d", res.StatusCode)
+	}
+
+	taken := scorer.taken()
+	if len(taken) == 0 {
+		t.Fatal("a verified fight queued nothing for scoring")
+	}
+	for _, s := range taken {
+		if s.ReportID != id || s.FightIndex != 1 {
+			t.Errorf("queued %+v, want %s/1", s, id)
+		}
+		if s.PlayerKey == "" {
+			t.Error("a fight was queued with no player key")
+		}
+		if s.PlayerName == "" {
+			t.Errorf("%s was queued with no player name; Score could not find their row", s.PlayerKey)
+		}
+	}
+
+	// And the summary this fight now has in the bucket really does
+	// carry the combatant a scorer would look for - the same object
+	// Service.Summaries reads.
+	body, err := (dirGetter{root: h.dir}).Get(t.Context(), Keys(id).FightSummary(1))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer body.Close()
+	var stored summary.Summary
+	if err := json.NewDecoder(body).Decode(&stored); err != nil {
+		t.Fatal(err)
+	}
+	found := false
+	for _, c := range stored.Combatants {
+		if c.GUID == guid && c.Name == name {
+			found = true
+		}
+	}
+	if !found {
+		t.Fatal("the stored summary lost the combatant a scorer would need")
+	}
+}
+
+func TestOnlyASignedInMembersParseIsQueued(t *testing.T) {
+	h := newHarness(t)
+	scorer := &fakeScorer{}
+	// Nobody in the fixture is linked to an account, which is the
+	// contract's condition for scoring at fight close.
+	h.ingest.Score, h.ingest.Members = scorer, fakeMembers{}
+	id := h.createReport(Public)
+	h.postVerifiedFight(t, id, 1)
+	if n := len(scorer.taken()); n != 0 {
+		t.Fatalf("%d fights queued for characters nobody has claimed", n)
+	}
+}
+
+func TestAPrivateReportQueuesNothingForScoring(t *testing.T) {
+	h := newHarness(t)
+	scorer := &fakeScorer{}
+	id := h.createReport(Private)
+	rep, err := h.store.Get(t.Context(), id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	h.ingest.Score, h.ingest.Members = scorer, everyFixturePlayer(t, rep)
+	h.postVerifiedFight(t, id, 1)
+	if n := len(scorer.taken()); n != 0 {
+		t.Fatalf("%d fights queued from a private report", n)
+	}
+}
+
+// TestAFailingMembershipReadStillStoresRanksAndAnswers201 pins
+// MEDIUM-9: fakeMembers.err is declared and honoured but no test ever
+// set it, so the guarantee that matters most about the scoring hook -
+// that a failing membership read still stores the fight, still ranks
+// it, and still returns 201 - had no coverage at all.
+func TestAFailingMembershipReadStillStoresRanksAndAnswers201(t *testing.T) {
+	h := newHarness(t)
+	scorer := &fakeScorer{}
+	h.ingest.Score, h.ingest.Members = scorer, fakeMembers{err: errors.New("membership lookup is down")}
+	id := h.createReport(Public)
+	h.postVerifiedFight(t, id, 1) // must still 201; asserts internally
+
+	if n := len(scorer.taken()); n != 0 {
+		t.Fatalf("%d fights queued despite a failing membership read", n)
+	}
+	fights, err := h.store.Fights(t.Context(), id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(fights) != 1 || !fights[0].Verified {
+		t.Fatalf("the fight was not stored as verified despite a failing membership read: %+v", fights)
+	}
+}
+
+func TestAnIngestWithNoScorerStillStoresTheFight(t *testing.T) {
+	h := newHarness(t)
+	h.ingest.Score, h.ingest.Members = nil, nil
+	id := h.createReport(Public)
+	h.postVerifiedFight(t, id, 1) // must not panic and must still succeed
 }

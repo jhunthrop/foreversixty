@@ -91,6 +91,38 @@ type Sampler interface {
 	Schedule(reportID string)
 }
 
+// ScoredFight is one parse handed to the execution scorer at fight
+// close: just enough to find the fight and the player's row in its
+// stored summary. Nothing about their gear, spec, role or dps rides
+// along - none of it survives the ingest's own Parquet rebuild
+// (COMBATANT_INFO never reaches it), so the scorer reads all of that
+// itself, from the fight's summary in the bucket, once it dequeues
+// this reference.
+type ScoredFight struct {
+	ReportID   string
+	FightIndex int
+	PlayerKey  string
+	// PlayerName is the summary's own key for this player - what the
+	// scorer's summary read matches rows on.
+	PlayerName string
+}
+
+// Members answers which of these character keys belong to a signed-in
+// account. The contract scores a fight "when the fight's player is a
+// signed-in member", and the character-to-account link is the API's:
+// *auth.Store satisfies this.
+type Members interface {
+	MemberKeys(ctx context.Context, keys []string) (map[string]bool, error)
+}
+
+// Scorer schedules one fight's execution score. It runs out of band,
+// like the sampler, so the companion's fight-close call returns at
+// once; *sims.Scorer satisfies it through ScheduleFight and the shim
+// in cmd/api.
+type Scorer interface {
+	Schedule(f ScoredFight)
+}
+
 // Ingest serves the companion's routes: one fight at a time, a live
 // snapshot while a fight is open, raw chunks in the background, and a
 // completion call at the end of the night.
@@ -99,7 +131,15 @@ type Ingest struct {
 	Put   store.Putter
 	Rank  Ranker
 	Samp  Sampler
-	Log   *slog.Logger
+	// Score computes the execution score for a ranked parse. Nil
+	// means the deployment has no engine, and fights close with the
+	// column null until the nightly job fills it.
+	Score Scorer
+	// Members says which of a fight's players are signed-in members,
+	// who are the only ones scored at fight close. Nil means nobody
+	// is, which is the honest answer for a deployment that cannot ask.
+	Members Members
+	Log     *slog.Logger
 }
 
 // MountIngest registers the companion's routes.
@@ -304,6 +344,7 @@ func (i *Ingest) putFight(w http.ResponseWriter, r *http.Request) {
 		i.fail(w, r, "fight", err, "could not store that fight just now")
 		return
 	}
+	i.score(r.Context(), rep, n, f.EncounterID, derived)
 	if err := i.WriteReportJSON(r.Context(), rep); err != nil {
 		i.fail(w, r, "fight", err, "could not store that fight just now")
 		return
@@ -334,6 +375,50 @@ func (i *Ingest) rank(ctx context.Context, rep Report, encounterID int64, n int,
 		Region: region, Ruleset: ruleset, GuildID: rep.GuildID,
 		Rows: rows, Combatants: combatants,
 	})
+}
+
+// score queues this fight's parses for an execution score, for the
+// players who are signed-in members - the contract's condition. Trash,
+// an unranked visibility, and a deployment with no engine or no way to
+// ask who is a member are all skipped.
+//
+// Nothing about gear, spec, role or dps is read here: none of it
+// survives the Parquet rebuild rows comes from (COMBATANT_INFO never
+// reaches it - logs/engine/parquet/schema.go says so outright), so the
+// scorer reads all of that itself, from the fight's stored summary,
+// once it dequeues the reference this hands over. This hook only ever
+// needs to know who fought and whether they are a member.
+//
+// It is deliberately best-effort and returns nothing. The score is
+// ambient, the nightly validation job recomputes it, and nothing
+// about a fight's storage or ranking may fail because a sim could
+// not be queued.
+func (i *Ingest) score(ctx context.Context, rep Report, n int, encounterID int64, rows []metrics.Row) {
+	if i.Score == nil || i.Members == nil || encounterID == 0 || !Ranked(rep.Visibility) {
+		return
+	}
+	region, ruleset := ReportRealm(rep)
+	keys := make([]string, 0, len(rows))
+	keyOf := make(map[string]string, len(rows))
+	for _, row := range rows {
+		key := character.KeyFromUnit(region, ruleset, row.Name)
+		keys = append(keys, key)
+		keyOf[row.PlayerGUID] = key
+	}
+	members, err := i.Members.MemberKeys(ctx, keys)
+	if err != nil {
+		i.logger().Error("ingest", "op", "score", "report", rep.ID, "err", err)
+		return
+	}
+	for _, row := range rows {
+		key := keyOf[row.PlayerGUID]
+		if !members[key] {
+			continue
+		}
+		i.Score.Schedule(ScoredFight{
+			ReportID: rep.ID, FightIndex: n, PlayerKey: key, PlayerName: row.Name,
+		})
+	}
 }
 
 // ReportRealm is the region and ruleset a report's players are keyed

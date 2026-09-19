@@ -2,9 +2,9 @@ name: sim
 on:
   push:
     branches: [main]
-    paths: ['sim/**', 'logs/**', 'Makefile', 'tools/apl_*.py', 'web/src/data/active-build.json', 'data/builds/*/simdb.bin', 'data/curated/apl/**', 'data/curated/specs.json', '.github/workflows/sim.yml', '.github/actions/pin-engine/**']
+    paths: ['sim/**', 'logs/**', 'Makefile', 'tools/apl_*.py', 'web/src/data/active-build.json', 'data/builds/*/simdb.bin', 'data/builds/*/races.json', 'data/builds/*/classes.json', 'data/builds/*/combos.json', 'data/curated/apl/**', 'data/curated/specs.json', '.github/workflows/sim.yml', '.github/actions/pin-engine/**']
   pull_request:
-    paths: ['sim/**', 'logs/**', 'Makefile', 'tools/apl_*.py', 'web/src/data/active-build.json', 'data/builds/*/simdb.bin', 'data/curated/apl/**', 'data/curated/specs.json', '.github/workflows/sim.yml', '.github/actions/pin-engine/**']
+    paths: ['sim/**', 'logs/**', 'Makefile', 'tools/apl_*.py', 'web/src/data/active-build.json', 'data/builds/*/simdb.bin', 'data/builds/*/races.json', 'data/builds/*/classes.json', 'data/builds/*/combos.json', 'data/curated/apl/**', 'data/curated/specs.json', '.github/workflows/sim.yml', '.github/actions/pin-engine/**']
   workflow_dispatch:
 permissions: { contents: read }
 concurrency:

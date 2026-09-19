@@ -1,10 +1,72 @@
 {
   "spec": "hunter-beast-mastery",
-  "state": "unwritten",
-  "notes": "",
-  "sources": [],
+  "state": "written",
+  "notes": "wowsims-forever models one Hunter spell package for all three specs (engine spec mapping, design section on the APL rotation lane); Beast Mastery, Marksmanship and Survival share this same Aimed Shot / Multi-Shot weave and differ mainly in which cooldowns and secondary shots they lean on. The cited Warcraft Tavern BM guide's own numbered rotation (step 7) says to cast and refresh Serpent Sting -- it only calls Arcane Shot a leveling-only filler, not Serpent Sting -- so Serpent Sting upkeep is kept here, in the same shape as hunter-marksmanship's. Bestial Wrath is added as the spec's own cooldown, timed with Rapid Fire so both land in the one burst window a Classic-length fight allows. Every rank named here is checked against this build's own spellconst: the fork's p1.apl.json preset names Multi-Shot as spell 25294, which does not exist in this build at all (Multi-Shot only has one rank here, 2643), and calls Serpent Sting rank 8 when 25295 is actually rank 9 in this build's spellconst -- both fixed here rather than copied stale.",
+  "sources": [
+    { "label": "wowsims-forever default hunter priority list (shared across all three hunter specs; Multi-Shot and Serpent Sting ranks corrected against this build)", "url": "https://github.com/wowsims/classic/blob/master/ui/hunter/apls/p1.apl.json", "kind": "community" },
+    { "label": "Warcraft Tavern: Classic Beast Mastery Hunter rotation (Aimed Shot on cooldown, Serpent Sting refreshed, Multi-Shot filler, Bestial Wrath and Rapid Fire together as the one burst window)", "url": "https://www.warcrafttavern.com/wow-classic/guides/pve-beast-mastery-hunter-rotations-cooldowns/", "kind": "community" },
+    { "label": "Forever Sixty default rotation, unvalidated until the nightly job runs", "url": "https://foreversixty.gg/sim/specs", "kind": "site" }
+  ],
   "rotation": {
     "type": "TypeAPL",
-    "priorityList": []
+    "prepullActions": [
+      {
+        "action": { "castSpell": { "spellId": { "spellId": 25296, "rank": 7 } } },
+        "doAtValue": { "const": { "val": "-10s" } }
+      },
+      {
+        "action": { "castSpell": { "spellId": { "spellId": 20904, "rank": 6 } } },
+        "doAtValue": { "const": { "val": "-3.5s" } }
+      }
+    ],
+    "priorityList": [
+      { "action": { "autocastOtherCooldowns": {} } },
+      {
+        "notes": "Bestial Wrath on cooldown: with Rapid Fire below, this is the one burst window a Classic-length fight allows.",
+        "action": { "castSpell": { "spellId": { "spellId": 19574 } } }
+      },
+      {
+        "notes": "Rapid Fire timed to land with an incoming auto shot just as Aimed Shot is about to come off cooldown, so both benefit.",
+        "action": {
+          "condition": {
+            "and": {
+              "vals": [
+                { "cmp": { "op": "OpLt", "lhs": { "autoTimeToNext": { "autoType": "Ranged" } }, "rhs": { "const": { "val": "0.1" } } } },
+                { "cmp": { "op": "OpLt", "lhs": { "spellTimeToReady": { "spellId": { "spellId": 20904, "rank": 6 } } }, "rhs": { "const": { "val": "0.5" } } } }
+              ]
+            }
+          },
+          "castSpell": { "spellId": { "spellId": 3045 } }
+        }
+      },
+      {
+        "notes": "Aimed Shot on cooldown, timed so its cast does not clip the next auto shot.",
+        "action": {
+          "condition": { "cmp": { "op": "OpGt", "lhs": { "autoTimeToNext": { "autoType": "Ranged" } }, "rhs": { "const": { "val": "1s" } } } },
+          "castSpell": { "spellId": { "spellId": 20904, "rank": 6 } }
+        }
+      },
+      {
+        "notes": "Serpent Sting kept up whenever it is about to fall off and neither shot above is close to ready -- the cited guide's own rotation step, not skipped.",
+        "action": {
+          "condition": {
+            "and": {
+              "vals": [
+                { "cmp": { "op": "OpLt", "lhs": { "dotRemainingTime": { "spellId": { "spellId": 25295, "rank": 9 } } }, "rhs": { "const": { "val": "5s" } } } },
+                { "cmp": { "op": "OpGe", "lhs": { "spellTimeToReady": { "spellId": { "spellId": 20904, "rank": 6 } } }, "rhs": { "const": { "val": "0.5" } } } }
+              ]
+            }
+          },
+          "castSpell": { "spellId": { "spellId": 25295, "rank": 9 } }
+        }
+      },
+      {
+        "notes": "Multi-Shot as the filler between Aimed Shots.",
+        "action": {
+          "condition": { "cmp": { "op": "OpGt", "lhs": { "autoTimeToNext": { "autoType": "Ranged" } }, "rhs": { "const": { "val": "0.5s" } } } },
+          "castSpell": { "spellId": { "spellId": 2643, "rank": 1 } }
+        }
+      }
+    ]
   }
 }

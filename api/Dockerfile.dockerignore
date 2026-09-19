@@ -3,7 +3,11 @@
 # <dockerfile>.dockerignore in preference to the context root's
 # .dockerignore, which keeps this file next to the Dockerfile it serves.
 # Everything the image needs is api/ and logs/ (minus their test-only
-# files) and data/builds.
+# files), sim/ (minus its test-only files, except sim/adapter's
+# testdata, which sim/adapter/fixture.go embeds at compile time via
+# //go:embed), data/builds, and the one engine-stage input under web/
+# (web/src/data/active-build.json, which the engine stage reads to
+# pick which build's simdb.bin to embed).
 .git
 .github
 .superpowers
@@ -13,6 +17,7 @@ design
 docs
 research
 web
+!web/src/data/active-build.json
 data/pipeline
 data/tests
 data/diffs
@@ -25,4 +30,5 @@ api/bin
 api/docker-compose.test.yml
 logs/bench
 **/testdata
+!sim/adapter/testdata
 **/*.md

@@ -145,6 +145,9 @@ func TestPhase3DefaultsAreUsableWithoutAnyNewVariables(t *testing.T) {
 	if c.ParseJobName != "parse-report" || c.ParseJobRegion != "us-east1" || c.ParseJobProject != "foreversixty" {
 		t.Errorf("parse job = %s/%s/%s", c.ParseJobProject, c.ParseJobRegion, c.ParseJobName)
 	}
+	if c.SimJobName != "sim-run" || c.SimJobRegion != "us-east1" || c.SimJobProject != "foreversixty" {
+		t.Errorf("sim job = %s/%s/%s", c.SimJobProject, c.SimJobRegion, c.SimJobName)
+	}
 	if c.R2Configured() {
 		t.Error("R2 must not read as configured with no credentials")
 	}

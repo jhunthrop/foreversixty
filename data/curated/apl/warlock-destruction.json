@@ -1,10 +1,73 @@
 {
   "spec": "warlock-destruction",
-  "state": "unwritten",
-  "notes": "",
-  "sources": [],
+  "state": "written",
+  "notes": "Adapted from the fork's single shared warlock preset (ui/warlock/apls/rotation.apl.json). Kept Immolate maintenance, the Shadowburn execute, and Life Tap; moved the Shadowburn execute condition from a fixed remaining-fight-time check to isExecutePhase(E20), matching the target-health idiom used elsewhere in this lane rather than only firing at the very end of a fight. Amplify Curse and Demonic Sacrifice were dropped: Destruction does not talent into either. Immolate is now cast at prepull so the DoT is already ticking when the fight opens. Conflagrate (1293817) and Incinerate (412758) are Forever's own tier 3 and tier 6 Destruction talents -- the base wowsims/classic Destruction tree has neither -- and both require Immolate on the target. Fix round 1: Incinerate is not registered anywhere in sim/warlock (it exists only in the talent-tree metadata table, no spell file, no ActionID) -- it was this file's only unconditional filler with nothing beneath it, so once Immolate was up and Conflagrate on cooldown this rotation had nothing left to cast. The Incinerate line is kept (it is the guide's own placement of Destruction's signature filler) and Shadow Bolt (25307, corrected to the build's current top rank 10 from the shared preset's stale rank 9) is added beneath it as the engine-castable Era filler, so the rotation still deals damage today and upgrades itself once Incinerate lands. An earlier draft of these notes claimed the Shadow Bolt rank fix had already been made in this file; it had not -- Shadow Bolt had been removed outright rather than rank-corrected, which this fix round corrects by actually adding it. Every rank named here (other than the flagged inert Incinerate line) is checked against the spellconst of the newest client build in builds/.",
+  "inert": [412758],
+  "sources": [
+    { "label": "wowsims-forever warlock default priority list (shared across all three specs)", "url": "https://github.com/jhunthrop/wowsims-forever/blob/464d1a14a6408956aecb14b3c5867392502db401/ui/warlock/apls/rotation.apl.json", "kind": "community" },
+    { "label": "Warcraft Tavern: Classic Destruction Warlock DPS rotation", "url": "https://www.warcrafttavern.com/wow-classic/guides/warlock-dps-rotation/", "kind": "community" }
+  ],
   "rotation": {
     "type": "TypeAPL",
-    "priorityList": []
+    "prepullActions": [
+      {
+        "action": { "castSpell": { "spellId": { "spellId": 25309, "rank": 8 } } },
+        "doAtValue": { "const": { "val": "-1.5s" } }
+      }
+    ],
+    "priorityList": [
+      {
+        "notes": "Potion at the top of the fight if mana is already below 75 percent.",
+        "action": {
+          "condition": {
+            "and": {
+              "vals": [
+                { "cmp": { "op": "OpGe", "lhs": { "remainingTime": {} }, "rhs": { "const": { "val": "15s" } } } },
+                { "cmp": { "op": "OpLe", "lhs": { "currentManaPercent": {} }, "rhs": { "const": { "val": "75%" } } } },
+                { "isExecutePhase": { "threshold": "E35" } }
+              ]
+            }
+          },
+          "castSpell": { "spellId": { "otherId": "OtherActionPotion" } }
+        }
+      },
+      { "action": { "autocastOtherCooldowns": {} } },
+      {
+        "notes": "Life Tap to keep casting once mana runs low.",
+        "action": {
+          "condition": { "cmp": { "op": "OpLt", "lhs": { "currentManaPercent": {} }, "rhs": { "const": { "val": "10%" } } } },
+          "castSpell": { "spellId": { "spellId": 11689, "rank": 6 } }
+        }
+      },
+      {
+        "notes": "Immolate is the DoT both Conflagrate and Incinerate need on the target, so it is refreshed the moment it falls off.",
+        "action": {
+          "condition": { "not": { "val": { "dotIsActive": { "spellId": { "spellId": 25309, "rank": 8 } } } } },
+          "castSpell": { "spellId": { "spellId": 25309, "rank": 8 } }
+        }
+      },
+      {
+        "notes": "Conflagrate consumes part of Immolate's remaining damage as instant burst; only worth casting while Immolate is up.",
+        "action": {
+          "condition": { "dotIsActive": { "spellId": { "spellId": 25309, "rank": 8 } } },
+          "castSpell": { "spellId": { "spellId": 1293817, "rank": 1 } }
+        }
+      },
+      {
+        "notes": "Shadowburn as the execute finisher below 20 percent target health.",
+        "action": {
+          "condition": { "isExecutePhase": { "threshold": "E20" } },
+          "castSpell": { "spellId": { "spellId": 18871, "rank": 6 } }
+        }
+      },
+      {
+        "notes": "Inert until the engine registers Incinerate (found only in sim/warlock's talent metadata table, no spell registration). Kept as Destruction's signature filler, dealing bonus damage while Immolate is active.",
+        "action": { "castSpell": { "spellId": { "spellId": 412758, "rank": 1 } } }
+      },
+      {
+        "notes": "Shadow Bolt is the engine-castable Era filler while Incinerate is inert -- without it this rotation has nothing left to cast once Immolate is up and Conflagrate is on cooldown.",
+        "action": { "castSpell": { "spellId": { "spellId": 25307, "rank": 10 } } }
+      }
+    ]
   }
 }

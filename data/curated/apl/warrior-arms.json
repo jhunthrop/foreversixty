@@ -1,10 +1,69 @@
 {
   "spec": "warrior-arms",
-  "state": "unwritten",
-  "notes": "",
-  "sources": [],
+  "state": "written",
+  "notes": "Vanilla Arms at 60: Rend and Mortal Strike are the priority openers, Overpower is a bare cast so it only lands when the dodge-triggered aura from sim/warrior/overpower.go is up, and Heroic Strike is the rage dump. Arms has no Death Wish (that talent lives in the Fury tree only), so Recklessness is the burst cooldown instead. The fork's warrior/apls/dps_no_reck.apl.json preset is actually Bloodthirst-based (a Fury list despite the generic name); there is no Arms-specific preset upstream, so this is adapted from it plus the community rotation order. The cited Warcraft Tavern guide has a dedicated Arms Warrior PvE rotation section reading, verbatim: 'Keep Rend applied at all times on your primary target. After that, use Mortal Strike on cooldown. When MS is on cooldown, use Overpower as a filler ability. When MS and OP are on cooldown, use Heroic Strike or Cleave depending on the number of enemies.' -- this file's order matches that sentence exactly. The guide does not put Execute in that same priority sentence and calls the ability 'a touchy topic' for Arms given the spec's poor rage generation; Execute is kept here anyway, gated to the execute-phase window and ordered below Overpower so it never competes with Mortal Strike or Overpower for a global, which is a defensible read of the guide's caution rather than a contradiction of it. Every rank named here is checked against the spellconst of the newest client build in builds/ -- Overpower and Mortal Strike each carry an extra low rank in this build that vanilla did not have, so the highest-numbered rank, not the highest rank number remembered from live Classic, is what is named. Nothing here is Forever-specific yet: the validation job (design section 6) is the evidence for changing it.",
+  "sources": [
+    { "label": "wowsims-forever default warrior priority list (Bloodthirst-based, no Arms-specific preset exists upstream)", "url": "https://github.com/wowsims/classic/blob/master/ui/warrior/apls/dps_no_reck.apl.json", "kind": "community" },
+    { "label": "Warcraft Tavern: WoW Classic PvE DPS Warrior guide, Arms section (Rend upkeep, Mortal Strike on cooldown, Overpower as filler, Heroic Strike/Cleave when both are down)", "url": "https://www.warcrafttavern.com/wow-classic/guides/pve-dps-warrior/", "kind": "community" },
+    { "label": "Forever Sixty default rotation, unvalidated until the nightly job runs", "url": "https://foreversixty.gg/sim/specs", "kind": "site" }
+  ],
   "rotation": {
     "type": "TypeAPL",
-    "priorityList": []
+    "prepullActions": [
+      {
+        "action": { "castSpell": { "spellId": { "spellId": 25289, "rank": 7 } } },
+        "doAtValue": { "const": { "val": "-1s" } }
+      }
+    ],
+    "priorityList": [
+      { "action": { "autocastOtherCooldowns": {} } },
+      {
+        "notes": "Bloodrage on cooldown: rage is the limiting resource, same as Fury.",
+        "action": {
+          "condition": { "cmp": { "op": "OpLt", "lhs": { "currentRage": {} }, "rhs": { "const": { "val": "80" } } } },
+          "castSpell": { "spellId": { "spellId": 2687 } }
+        }
+      },
+      {
+        "notes": "Recklessness on cooldown: Arms has no Death Wish, so this is the burst cooldown.",
+        "action": { "castSpell": { "spellId": { "spellId": 1719 } } }
+      },
+      {
+        "notes": "Keep Battle Shout up.",
+        "action": {
+          "condition": { "not": { "val": { "auraIsActive": { "auraId": { "spellId": 25289, "rank": 7 } } } } },
+          "castSpell": { "spellId": { "spellId": 25289, "rank": 7 } }
+        }
+      },
+      {
+        "notes": "Keep Rend up: Improved Rend and Deep Wounds both want the bleed ticking.",
+        "action": {
+          "condition": { "not": { "val": { "auraIsActive": { "auraId": { "spellId": 11574, "rank": 7 } } } } },
+          "castSpell": { "spellId": { "spellId": 11574, "rank": 7 } }
+        }
+      },
+      {
+        "notes": "Mortal Strike is the highest damage per rage button and comes off a six second cooldown.",
+        "action": { "castSpell": { "spellId": { "spellId": 21553, "rank": 4 } } }
+      },
+      {
+        "notes": "Overpower is a bare cast: the engine's ExtraCastCondition only lets it land while the dodge-triggered proc aura is up, so it is a free line that falls through otherwise.",
+        "action": { "castSpell": { "spellId": { "spellId": 11585, "rank": 4 } } }
+      },
+      {
+        "notes": "Execute below 20 percent.",
+        "action": {
+          "condition": { "isExecutePhase": { "threshold": "E20" } },
+          "castSpell": { "spellId": { "spellId": 20662, "rank": 5 } }
+        }
+      },
+      {
+        "notes": "Heroic Strike as the rage dump, never below 40 rage.",
+        "action": {
+          "condition": { "cmp": { "op": "OpGe", "lhs": { "currentRage": {} }, "rhs": { "const": { "val": "40" } } } },
+          "castSpell": { "spellId": { "spellId": 25286, "rank": 9, "tag": 1 } }
+        }
+      }
+    ]
   }
 }

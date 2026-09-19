@@ -302,6 +302,13 @@ const (
 	targetNotTanked = -1
 	// The engine's own UI preset opens a fury pull at no rage.
 	defaultStartingRage = 0
+	// The feral UI preset's assumed player reaction time, in
+	// milliseconds; the spec's rotation code shifts its clip windows by
+	// it and zero would model a player who never misses a tick.
+	defaultLatencyMS = 100
+	// A hunter pet that is alive for the whole fight. The UI preset's
+	// default, and the only honest one for a patchwerk.
+	fullPetUptime = 1.0
 )
 
 // The three health thresholds the engine's Encounter carries one
@@ -370,7 +377,7 @@ func encounter(e api.EncounterSpec) *proto.Encounter {
 	}
 }
 
-// aplFS carries the launch specs' default rotations, so the wasm needs
+// aplFS carries every written spec's default rotation, so the wasm needs
 // no fetch to attach one.
 //
 // These files are GENERATED, by `make apl-sync`: each is the `rotation`
@@ -395,20 +402,117 @@ var aplFS embed.FS
 // agent for today, and it fails closed: an unsupported spec is an error
 // at the boundary rather than a player with no rotation. The option
 // values are the engine's own UI presets (ui/<class>/presets.ts).
+// One class the engine models as a single package serves every one of
+// its specs from one set of options - the fork has one hunter, mage,
+// rogue and warlock package, and one DPS warrior package for Arms and
+// Fury - so those specs share a function here rather than repeating
+// it. A spec the fork models on its own gets its own.
 var specOptions = map[string]func(*proto.Player){
-	"warrior-fury": func(p *proto.Player) {
-		p.Spec = &proto.Player_Warrior{Warrior: &proto.Warrior{
-			Options: &proto.Warrior_Options{
-				StartingRage: defaultStartingRage,
-				Shout:        proto.WarriorShout_WarriorShoutBattle,
-			},
-		}}
-	},
-	"mage-frost": func(p *proto.Player) {
-		p.Spec = &proto.Player_Mage{Mage: &proto.Mage{
-			Options: &proto.Mage_Options{Armor: proto.Mage_Options_MoltenArmor},
-		}}
-	},
+	"druid-balance":        balanceDruidOptions,
+	"druid-feral":          feralDruidOptions,
+	"hunter-beast-mastery": hunterOptions,
+	"hunter-marksmanship":  hunterOptions,
+	"hunter-survival":      hunterOptions,
+	"mage-arcane":          mageOptions,
+	"mage-fire":            mageOptions,
+	"mage-frost":           mageOptions,
+	"paladin-retribution":  retributionPaladinOptions,
+	"priest-shadow":        shadowPriestOptions,
+	"rogue-assassination":  rogueOptions,
+	"rogue-combat":         rogueOptions,
+	"rogue-subtlety":       rogueOptions,
+	"shaman-elemental":     elementalShamanOptions,
+	"shaman-enhancement":   enhancementShamanOptions,
+	"warlock-affliction":   warlockOptions,
+	"warlock-demonology":   warlockOptions,
+	"warlock-destruction":  warlockOptions,
+	"warrior-arms":         warriorOptions,
+	"warrior-fury":         warriorOptions,
+}
+
+func balanceDruidOptions(p *proto.Player) {
+	p.Spec = &proto.Player_BalanceDruid{BalanceDruid: &proto.BalanceDruid{
+		// The engine reads the innervate target through this reference
+		// and a nil one is a nil dereference, not a druid who innervates
+		// nobody. The empty reference is the UI's own default: self.
+		Options: &proto.BalanceDruid_Options{InnervateTarget: &proto.UnitReference{}},
+	}}
+}
+
+func feralDruidOptions(p *proto.Player) {
+	p.Spec = &proto.Player_FeralDruid{FeralDruid: &proto.FeralDruid{
+		Options: &proto.FeralDruid_Options{
+			InnervateTarget: &proto.UnitReference{},
+			LatencyMs:       defaultLatencyMS,
+		},
+	}}
+}
+
+func hunterOptions(p *proto.Player) {
+	p.Spec = &proto.Player_Hunter{Hunter: &proto.Hunter{
+		Options: &proto.Hunter_Options{
+			Ammo:           proto.Hunter_Options_ThoriumHeadedArrow,
+			QuiverBonus:    proto.Hunter_Options_Speed15,
+			PetType:        proto.Hunter_Options_Cat,
+			PetAttackSpeed: proto.Hunter_Options_OneTwo,
+			PetUptime:      fullPetUptime,
+		},
+	}}
+}
+
+func mageOptions(p *proto.Player) {
+	p.Spec = &proto.Player_Mage{Mage: &proto.Mage{
+		Options: &proto.Mage_Options{Armor: proto.Mage_Options_MoltenArmor},
+	}}
+}
+
+func retributionPaladinOptions(p *proto.Player) {
+	p.Spec = &proto.Player_RetributionPaladin{RetributionPaladin: &proto.RetributionPaladin{
+		Options: &proto.PaladinOptions{
+			PrimarySeal: proto.PaladinSeal_Righteousness,
+			Aura:        proto.PaladinAura_SanctityAura,
+		},
+	}}
+}
+
+func shadowPriestOptions(p *proto.Player) {
+	p.Spec = &proto.Player_ShadowPriest{ShadowPriest: &proto.ShadowPriest{
+		Options: &proto.ShadowPriest_Options{},
+	}}
+}
+
+func rogueOptions(p *proto.Player) {
+	p.Spec = &proto.Player_Rogue{Rogue: &proto.Rogue{Options: &proto.RogueOptions{}}}
+}
+
+func elementalShamanOptions(p *proto.Player) {
+	p.Spec = &proto.Player_ElementalShaman{ElementalShaman: &proto.ElementalShaman{
+		Options: &proto.ElementalShaman_Options{},
+	}}
+}
+
+func enhancementShamanOptions(p *proto.Player) {
+	p.Spec = &proto.Player_EnhancementShaman{EnhancementShaman: &proto.EnhancementShaman{
+		Options: &proto.EnhancementShaman_Options{SyncType: proto.ShamanSyncType_Auto},
+	}}
+}
+
+func warlockOptions(p *proto.Player) {
+	p.Spec = &proto.Player_Warlock{Warlock: &proto.Warlock{
+		Options: &proto.WarlockOptions{
+			Armor:  proto.WarlockOptions_DemonArmor,
+			Summon: proto.WarlockOptions_Succubus,
+		},
+	}}
+}
+
+func warriorOptions(p *proto.Player) {
+	p.Spec = &proto.Player_Warrior{Warrior: &proto.Warrior{
+		Options: &proto.Warrior_Options{
+			StartingRage: defaultStartingRage,
+			Shout:        proto.WarriorShout_WarriorShoutBattle,
+		},
+	}}
 }
 
 // applySpec attaches the spec's options and its default rotation. The
@@ -416,7 +520,7 @@ var specOptions = map[string]func(*proto.Player){
 func applySpec(player *proto.Player, slug string) error {
 	apply, ok := specOptions[slug]
 	if !ok {
-		return fmt.Errorf("%w: %q; the launch specs are %v", ErrUnsupportedSpec, slug, supportedSpecs())
+		return fmt.Errorf("%w: %q; the specs this build carries are %v", ErrUnsupportedSpec, slug, supportedSpecs())
 	}
 	rot, err := rotation(slug)
 	if err != nil {
