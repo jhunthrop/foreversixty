@@ -209,13 +209,13 @@ func TestAnUnknownSimsProgressIs404(t *testing.T) {
 	}
 }
 
-// The three routes Tasks 5, 6 and 7 fill in are mounted, even though
-// this task leaves them as stubs: a request reaching one of them
-// answers a plain 404 rather than a routing failure.
+// The sim-input route Task 7 fills in is mounted, even though this
+// task leaves it as a stub: a request reaching it answers a plain 404
+// rather than a routing failure. GET /v1/specs left this map when
+// Task 6 gave it a real handler; its own tests are in specs_test.go.
 func TestTheStubbedRoutesAreMountedAndAnswer404(t *testing.T) {
 	h := newHarness(t)
 	for name, res := range map[string]*http.Response{
-		"specs":     h.do(http.MethodGet, "/v1/specs", "", nil),
 		"sim-input": h.do(http.MethodGet, "/v1/characters/us/normal/baelgrim/sim-input", "", nil),
 	} {
 		res.Body.Close()

@@ -2,8 +2,6 @@ package sims
 
 import "net/http"
 
-// These two handlers are written in Tasks 6 and 7. Each of those
-// tasks deletes its stub from this file; the file goes with the last
-// of them.
-func (s *Service) specs(w http.ResponseWriter, r *http.Request)    { http.NotFound(w, r) }
+// This handler is written in Task 7, which deletes its stub from this
+// file; the file goes with it.
 func (s *Service) simInput(w http.ResponseWriter, r *http.Request) { http.NotFound(w, r) }
