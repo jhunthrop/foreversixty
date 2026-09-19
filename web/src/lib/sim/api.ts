@@ -15,6 +15,7 @@ import { AccountError, requestEnvelope } from '../account/api';
 import type { CharacterPath } from '../characters';
 import { API_BASE_URL } from '../planner/config';
 import { simCopy } from './copy';
+import type { KindFilter } from './history';
 import type { SimInput, SimListPage, SimProgress, SimRequest, SimResult, SpecFidelity } from './types';
 
 export const PREMIUM_REQUIRED_STATUS = 402;
@@ -84,8 +85,16 @@ export function fetchSim(simId: string, apiBase: string = API_BASE_URL): Promise
   return call<SimResult>(`/v1/sims/${simId}`, apiBase, simCopy.loadFailed, { credentials: 'omit' });
 }
 
-export function listMySims(page: number = 1, apiBase: string = API_BASE_URL): Promise<SimListPage> {
-  return call<SimListPage>(`/v1/sims?mine=1&page=${page}`, apiBase, simCopy.loadFailed);
+export function listMySims(
+  page: number = 1,
+  apiBase: string = API_BASE_URL,
+  kind: KindFilter = 'all',
+): Promise<SimListPage> {
+  // "all" is the absence of the parameter, not a value: contract 8 gives `kind=` a closed
+  // vocabulary of five and adding a sixth for "no filter" would be a word the API has to
+  // know about for no reason.
+  const filter = kind === 'all' ? '' : `&kind=${kind}`;
+  return call<SimListPage>(`/v1/sims?mine=1&page=${page}${filter}`, apiBase, simCopy.loadFailed);
 }
 
 /** The premium lane. Throws SimApiError with status 402 when the account is not premium. */

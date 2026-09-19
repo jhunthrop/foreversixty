@@ -13,14 +13,18 @@
   import { loadItems } from '../../lib/planner/load';
   import type { Item } from '../../lib/planner/types';
   import { createLazyComponent, type LazyLoadState } from '../../lib/report/lazy-component.svelte';
+  import { fetchSpecs } from '../../lib/sim/api';
   import { SIM_LEVEL, type SimCharacter } from '../../lib/sim/character';
   import { simCopy } from '../../lib/sim/copy';
   import { encounterLabel } from '../../lib/sim/encounter';
   import { confidenceBand } from '../../lib/sim/estimate';
   import { specLabel } from '../../lib/sim/spec-label';
-  import type { SimResult } from '../../lib/sim/types';
+  import { mergeSpecRows } from '../../lib/sim/spec-state';
+  import type { SimResult, SpecFidelity } from '../../lib/sim/types';
   import { engineLabel, isStale } from '../../lib/sim/version';
   import CharacterStrip from './CharacterStrip.svelte';
+  import DetailsCard from './DetailsCard.svelte';
+  import RotationCard from './RotationCard.svelte';
 
   let { result, onrerun }: { result: SimResult; onrerun: () => void } = $props();
 
@@ -39,9 +43,6 @@
   // logs at least one BUFF-type aura, a solo one logs none.
   const buffed = $derived(result.summary.auras.some((track) => track.type === 'BUFF'));
   const encounterText = $derived(encounterLabel(result.request.encounter, buffed));
-  const runLine = $derived(
-    `${result.iterations_run.toLocaleString('en-US')} ${simCopy.iterations} · ${(result.duration_ms / 1000).toFixed(1)} s · ${result.lane === 'server' ? simCopy.savedLaneServer : simCopy.savedLane}`,
-  );
   // The request's own capture time is the only timestamp a SimResult carries; an absent one
   // (an empty string) is not turned into a fabricated date.
   const savedDate = $derived(result.request.source.captured_at.slice(0, 10));
@@ -67,6 +68,14 @@
     gear: Object.fromEntries(
       result.request.character.gear.map((slot): [string, number] => [slot.slot, slot.item_id]),
     ),
+    // The richest form available on this page: the stored request's own gear list,
+    // enchants and suffixes included, rather than a re-derivation from the lossy id map.
+    gear_slots: result.request.character.gear,
+    professions: [...(result.request.character.professions ?? [])],
+    bags: [],
+    bank: [],
+    sets: [],
+    loadouts: [],
     buffs: [...result.request.character.buffs],
     consumables: [...result.request.character.consumes],
     source: result.request.source,
@@ -85,6 +94,19 @@
       // The strip renders slot names and "Empty" without the item file; a failed fetch
       // must not stop the rest of the page from rendering.
       items = new Map();
+    }
+  })();
+
+  // One load, for this component's one unchanging result -- not an `$effect`, the same
+  // reason the item-file load above is not one. A failed fetch leaves the card without a
+  // fidelity note, which is the honest rendering of "we do not know yet".
+  let fidelity = $state<SpecFidelity | null>(null);
+  void (async () => {
+    try {
+      const rows = mergeSpecRows(await fetchSpecs());
+      fidelity = rows.find((row) => row.spec === result.request.spec) ?? null;
+    } catch {
+      fidelity = null;
     }
   })();
 
@@ -136,7 +158,6 @@
     <span class="tabular text-muted font-mono text-[14px]" data-testid="sim-error">{band}</span>
   </div>
   <span class="text-muted text-[13px]" data-testid="sim-saved-encounter">{encounterText}</span>
-  <span class="tabular text-muted font-mono text-[13px]" data-testid="sim-saved-run">{runLine}</span>
   {#if stale}
     <span class="pill pill-sample" data-testid="sim-stale-pill">{engineLabel(result.engine_version)}</span>
   {:else}
@@ -163,10 +184,15 @@
     estimate={result.dps}
     iterationsRun={result.iterations_run}
     actionNames={null}
+    sample={result.sample}
   />
 {:else}
   {@render lazyFallback(simResultsLazy)}
 {/if}
+
+<DetailsCard {result} />
+
+<RotationCard spec={result.request.spec} {fidelity} />
 
 <div class="mx-[18px] flex flex-wrap items-center gap-3 md:mx-0">
   <button

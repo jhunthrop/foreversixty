@@ -1,0 +1,83 @@
+{
+  "note": "Contract 2026-09-19-simulator-parity-interfaces.md section 1.6. Shared by web/src/lib/sim/styles.ts and the sim module's own style table; both test against this file so neither can drift.",
+  "styles": [
+    {
+      "id": "patchwerk",
+      "targets": 1,
+      "execute_ratio": 0.25,
+      "movement": null,
+      "targets_over_time": null,
+      "dummy": false
+    },
+    {
+      "id": "execute",
+      "targets": 1,
+      "execute_ratio": 0.35,
+      "movement": null,
+      "targets_over_time": null,
+      "dummy": false
+    },
+    {
+      "id": "light-movement",
+      "targets": 1,
+      "execute_ratio": 0.25,
+      "movement": { "interval_sec": 45, "duration_sec": 5, "kind": "away" },
+      "targets_over_time": null,
+      "dummy": false
+    },
+    {
+      "id": "heavy-movement",
+      "targets": 1,
+      "execute_ratio": 0.25,
+      "movement": { "interval_sec": 20, "duration_sec": 5, "kind": "away" },
+      "targets_over_time": null,
+      "dummy": false
+    },
+    {
+      "id": "cleave-2",
+      "targets": 2,
+      "execute_ratio": 0.25,
+      "movement": null,
+      "targets_over_time": null,
+      "dummy": false
+    },
+    {
+      "id": "cleave-3",
+      "targets": 3,
+      "execute_ratio": 0.25,
+      "movement": null,
+      "targets_over_time": null,
+      "dummy": false
+    },
+    {
+      "id": "cleave-5",
+      "targets": 5,
+      "execute_ratio": 0.25,
+      "movement": null,
+      "targets_over_time": null,
+      "dummy": false
+    },
+    {
+      "id": "dungeon",
+      "targets": 1,
+      "execute_ratio": 0,
+      "movement": null,
+      "targets_over_time": [
+        { "at_sec": 0, "count": 1 },
+        { "at_sec": 40, "count": 3 },
+        { "at_sec": 80, "count": 5 },
+        { "at_sec": 130, "count": 3 },
+        { "at_sec": 160, "count": 1 }
+      ],
+      "dummy": false
+    },
+    {
+      "id": "dummy",
+      "targets": 1,
+      "execute_ratio": 0,
+      "movement": null,
+      "targets_over_time": null,
+      "dummy": true
+    }
+  ]
+}

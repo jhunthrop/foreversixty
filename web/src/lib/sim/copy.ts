@@ -146,8 +146,6 @@ export const simCopy = {
   rotation: 'Rotation',
   rotationPrefix: 'Default for',
   rotationLink: 'what it does',
-  settingsFootnote: 'Fight length varies by 20% between iterations, the way real pulls do.',
-  customPresetNote: 'Keeps the buffs already applied. Choosing each one individually arrives with Top Gear.',
 
   // --- Task 13: the run control and every state it has. ---
   run: 'Run sim',
@@ -157,8 +155,6 @@ export const simCopy = {
   engineLoading: 'The engine is about 4 MB. It loads once and is cached after that.',
   iterations: 'iterations',
   progressLabel: 'Iterations complete',
-  highPrecision: 'High precision',
-  precisionNote: '10,000 iterations instead of 3,000: about half the error, about three times the wait.',
   runOnServers: 'Run on our servers',
   staleEngine: 'This result came from an older engine. Run it again for the current numbers.',
   /** The DPS figure's own unit label, beside the number. */
@@ -170,6 +166,37 @@ export const simCopy = {
    * happening rather than left reading "Stop" over a click that does nothing.
    */
   serverRunButton: 'Running on our servers…',
+
+  // --- Design 4.2: the precision control. ---
+  precision: 'Precision',
+  precisionLabel: {
+    fast: 'Fast, 500 iterations',
+    normal: 'Normal, 3,000 iterations',
+    high: 'High, 10,000 iterations',
+    'target-error': 'Until ±0.5%',
+  } as Record<string, string>,
+  /** Under the select while the target-error run is chosen; `ceiling` is the lane's. */
+  targetErrorNote: (ceiling: string): string =>
+    `Runs a thousand iterations at a time until the error is inside half a per cent, or until ${ceiling} iterations, whichever comes first.`,
+  /** The results line when the ceiling, not the target, is what stopped the run. */
+  targetErrorCeiling: (ceiling: string): string =>
+    `Stopped at ${ceiling} iterations with the error still outside half a per cent.`,
+
+  // --- Design 5.1: the rotation card beside a result. ---
+  rotationCard: 'Rotation',
+  rotationCardBody: (name: string): string => `This run used the default rotation for ${name}.`,
+
+  // --- Design 5.1: the details card. ---
+  details: 'This run',
+  detailsMargin: 'Margin of error',
+  /** The 95% band and the relative standard error, side by side and never conflated. */
+  detailsMarginValue: (band: string, percent: string): string => `± ${band} ${simCopy.dps} · ${percent}`,
+  detailsIterations: 'Iterations',
+  detailsProcessing: 'Processing time',
+  detailsEngine: 'Engine',
+  detailsLane: 'Ran on',
+  detailsLaneBrowser: 'your browser',
+  detailsLaneServer: 'our servers',
 
   // --- Task 14: the results sentence and the report components. ---
   /** No damage at all: a rotation that never fired, not a rendering failure. */
@@ -224,6 +251,23 @@ export const simCopy = {
   tabDistribution: 'Distribution',
   resultsTablist: 'Results',
 
+  // --- Design 5.1: the sample iteration log. ---
+  tabSample: 'One iteration',
+  sampleNote:
+    'One iteration’s casts, in order. It is a sample of what the rotation did once, not a rotation guide, and the next iteration is a different fight.',
+  sampleEmpty: 'This result carries no sample iteration.',
+  samplePrePull: 'Before the pull',
+  sampleTimeHeading: 'At',
+  sampleCastHeading: 'Cast',
+  sampleTargetHeading: 'On',
+  resourceLabel: {
+    mana: 'Mana',
+    energy: 'Energy',
+    rage: 'Rage',
+    focus: 'Focus',
+    combo_points: 'Combo',
+  } as Record<string, string>,
+
   // --- Task 16: compare mode. The sim beside the fight it was built from. ---
   /** Compare mode with a fight that records no damage for this character. */
   compareNoPlayer: 'That fight has no damage recorded for this character.',
@@ -247,20 +291,220 @@ export const simCopy = {
   simThisFight: 'Sim this fight',
   compareLoading: 'Reading the fight…',
 
+  // --- Design 5.4: report options. The title names the report before it is saved and is
+  // what the save form, the finish notification and the new-tab link all carry. ---
+  reportTitleLabel: 'Name this report',
+  notifyLabel: 'Tell me when a server run finishes',
+  notifyBody: (dps: string): string => `${dps} DPS. Your sim has finished.`,
+  openInNewTab: 'Open in a new tab',
+
   // --- Task 17: saved sims (/sim/<id>) and the history list. ---
   yourSims: 'Your sims',
   historyLoading: 'Reading your sims…',
   historyEmpty: 'Nothing saved yet. Run a sim and press Save.',
   saveThisSim: 'Save this sim',
   saveTitleLabel: 'Name this sim',
+  /** sr-only label for the readonly saved-URL field (finding 3, final whole-branch review),
+   *  the same pattern RequestDrawer's own share link already uses. */
+  savedLinkLabel: 'Saved sim link',
   saveAction: 'Save',
   savingAction: 'Saving…',
   cancel: 'Cancel',
   copyLink: 'Copy link',
   copied: 'Copied',
   runThisYourself: 'Run this yourself',
-  savedLane: 'browser',
-  savedLaneServer: 'our servers',
   /** The save button's disabled title when the last run was stopped rather than finished. */
   saveAbortedDisabled: 'A stopped run has nothing finished to save.',
+
+  // --- Task 18: the history list, filterable by kind, each row carrying the API's
+  // own headline (design 9.3). ---
+  kindLabel: {
+    all: 'Everything',
+    run: 'Sim',
+    gear: 'Top Gear',
+    talents: 'Talents',
+    drops: 'Droptimizer',
+    weights: 'Stat weights',
+  } as Record<string, string>,
+  historyFilter: 'Show',
+
+  /**
+   * The four things a combination can substitute (contract 2, `kind`, as amended by
+   * 10.8). `consumes` is an alternative consumable list tried as a candidate, and its
+   * `name` is the ids joined by ", " -- so the row reads "Consumables: flask_of_supreme_power,
+   * elixir_of_the_mongoose" until buff-names.ts (Task 9) is given the list to prettify.
+   */
+  substitutionKindLabel: {
+    item: 'Item',
+    talents: 'Talents',
+    set: 'Set',
+    consumes: 'Consumables',
+  } as Record<string, string>,
+
+  // --- Parity, contract 1.6: the fight styles. The ids are styles.ts's; the words are
+  // ours. Raidbots' own names are in the design's table and are deliberately not used:
+  // "Hectic Add Cleave" says nothing about how many adds there are.
+  fightStyle: 'Fight style',
+  styleLabel: {
+    patchwerk: 'Patchwerk',
+    execute: 'Execute heavy',
+    'light-movement': 'Light movement',
+    'heavy-movement': 'Heavy movement',
+    'cleave-2': 'Cleave, 2 targets',
+    'cleave-3': 'Cleave, 3 targets',
+    'cleave-5': 'Cleave, 5 targets',
+    dungeon: 'Dungeon pull',
+    dummy: 'Target dummy',
+  } as Record<string, string>,
+  /**
+   * Design risk 3: "a movement window is only as honest as each rotation's handling of
+   * it", so the two movement styles carry the caution until the validation job has parses
+   * for them. Every other style needs no note and has none.
+   */
+  styleNote: {
+    'light-movement':
+      'How much a movement window costs depends on the rotation’s own handling of it; no parse has measured this yet.',
+    'heavy-movement':
+      'How much a movement window costs depends on the rotation’s own handling of it; no parse has measured this yet.',
+  } as Record<string, string>,
+
+  // --- Task 3: the style select's "no style describes this any more" option, and the
+  // controls for fight length, variation, target level, armor, type and the dummy. ---
+  /** The style select's option for an encounter no style describes any more. */
+  styleCustom: 'Custom',
+  moreSettings: 'More settings',
+  variation: 'Length varies by',
+  variationNote: 'Every iteration draws its own fight length inside this band, the way real pulls do.',
+  targetLevel: 'Target level',
+  targetArmor: 'Target armor',
+  /**
+   * Zero means the preset for the chosen level, and contract A8 publishes the figure, so
+   * the empty field names it rather than leaving the player guessing what they are about
+   * to override.
+   */
+  targetArmorPreset: (armor: string): string => `${armor}, the preset for this level`,
+  targetType: 'Target type',
+  targetTypeAny: 'Any',
+  targetTypeLabel: {
+    humanoid: 'Humanoid',
+    undead: 'Undead',
+    beast: 'Beast',
+    demon: 'Demon',
+    dragonkin: 'Dragonkin',
+    elemental: 'Elemental',
+    giant: 'Giant',
+    mechanical: 'Mechanical',
+    unknown: 'Unknown',
+  } as Record<string, string>,
+  dummyTarget: 'Target dummy',
+  dummyNote: 'No debuffs, no execute window and no armor reduction, the way a dummy fights back.',
+
+  // --- Design 4.3: the full buff, debuff and consumable panel, behind "Custom". ---
+  buffPanel: 'Everything applied',
+  buffPanelNote:
+    'The engine’s own list. An id it cannot map fails the run and names itself, rather than being quietly dropped.',
+  buffGroupLabel: {
+    'raid-buffs': 'Raid buffs',
+    'party-buffs': 'Party buffs',
+    'player-buffs': 'On this player',
+    'world-buffs': 'World buffs',
+    debuffs: 'On the target',
+    flask: 'Flasks',
+    'battle-elixir': 'Battle elixirs',
+    'guardian-elixir': 'Guardian elixirs',
+    food: 'Food',
+    'weapon-imbue': 'Weapon oils and stones',
+    potion: 'Potions and runes',
+    explosive: 'Explosives',
+  } as Record<string, string>,
+  gradeLabel: { off: 'Off', on: 'On', improved: 'Improved' } as Record<string, string>,
+  /** The three-way control's own accessible name; the buff's name is beside it. */
+  gradeFor: (name: string): string => `${name}, how good a version`,
+
+  // --- Design 4.3's last sentence: the cooldown timing rows, inside the same panel. ---
+  cooldownTiming: 'When to use them',
+  cooldownNote:
+    'Only what is ticked above, plus anything a pasted request already schedules. Class cooldowns arrive when the build publishes their spell ids.',
+  cooldownModeLabel: {
+    'on-cooldown': 'On cooldown',
+    'on-pull': 'On the pull',
+    'at-time': 'At a time',
+    'at-execute': 'At execute',
+  } as Record<string, string>,
+  /** The mode control's own accessible name; the row's own label is beside it, same as gradeFor. */
+  cooldownModeFor: (name: string): string => `${name}, when to use it`,
+  /** The seconds field's own accessible name, so several "at a time" rows read as distinct controls. */
+  cooldownAtFor: (name: string): string => `${name}, at this second`,
+
+  // --- Task 15: the request drawer (design 8). The exact JSON a run sends, editable, with
+  // simValidate's own errors beside the fields they name. ---
+  requestDrawer: 'Request',
+  requestNote:
+    'The exact JSON this run sends. Edit it and run it as written: anything the panels above do not offer is reachable here.',
+  requestApply: 'Apply to the page',
+  requestReset: 'Reset',
+  requestApplyNote:
+    'Rebuilds the settings, the precision and the character from this request, enchants and suffixes included. Run sends the text exactly as typed instead, which is how a field no panel offers reaches the engine.',
+  requestRun: 'Run this request',
+  requestShare: 'Copy a link to this request',
+  requestValid: 'The engine accepts this request.',
+  requestTooLong: 'That request is too long to read.',
+  requestNotJson: 'That is not JSON.',
+  requestNotObject: 'A request is a JSON object.',
+  requestShareTooLong: 'This request is too long for a link. Save it and share the saved link instead.',
+  /** A `pool.validate` call that rejected without an `Error`, which nothing in this lane
+   *  actually throws -- kept as the honest fallback rather than assuming one shape. */
+  requestValidateFailed: 'The engine could not check this request.',
+
+  /**
+   * Stat names, for the weights page (part B). The vocabulary is contract 10.8's pinning
+   * of the fork's `proto.Stat` enum in snake case: the engine carries ONE `hit` and ONE
+   * `crit` -- there is no `melee_hit`, `spell_hit`, `melee_crit` or `spell_crit` -- while
+   * haste IS split into `spell_haste` and `melee_haste`, and `MP5` is spelled `mp5`.
+   * One key per id in `PINNED_STATS`, no more and no fewer; stats.test.ts asserts both
+   * directions, so a renamed stat cannot leave a stale word behind.
+   */
+  statLabel: {
+    strength: 'Strength',
+    agility: 'Agility',
+    stamina: 'Stamina',
+    intellect: 'Intellect',
+    spirit: 'Spirit',
+    spell_power: 'Spell power',
+    arcane_power: 'Arcane power',
+    fire_power: 'Fire power',
+    frost_power: 'Frost power',
+    holy_power: 'Holy power',
+    nature_power: 'Nature power',
+    shadow_power: 'Shadow power',
+    mp5: 'MP5',
+    hit: 'Hit',
+    crit: 'Crit',
+    spell_haste: 'Spell haste',
+    spell_penetration: 'Spell penetration',
+    attack_power: 'Attack power',
+    melee_haste: 'Melee haste',
+    armor_penetration: 'Armor penetration',
+    expertise: 'Expertise',
+    mana: 'Mana',
+    energy: 'Energy',
+    rage: 'Rage',
+    armor: 'Armor',
+    ranged_attack_power: 'Ranged attack power',
+    defense: 'Defense',
+    block: 'Block',
+    block_value: 'Block value',
+    dodge: 'Dodge',
+    parry: 'Parry',
+    health: 'Health',
+    arcane_resistance: 'Arcane resistance',
+    fire_resistance: 'Fire resistance',
+    frost_resistance: 'Frost resistance',
+    nature_resistance: 'Nature resistance',
+    shadow_resistance: 'Shadow resistance',
+    bonus_armor: 'Bonus armor',
+    healing_power: 'Healing power',
+    spell_damage: 'Spell damage',
+    feral_attack_power: 'Feral attack power',
+  } as Record<string, string>,
 } as const;

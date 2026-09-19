@@ -8,6 +8,7 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { expect, test } from '@playwright/test';
+import { simCopy } from '../../src/lib/sim/copy';
 
 const ROOT = path.join(import.meta.dirname, '..', '..');
 const activeBuild = JSON.parse(readFileSync(path.join(ROOT, 'src', 'data', 'active-build.json'), 'utf8')) as {
@@ -20,6 +21,7 @@ const fixtureResult = JSON.parse(
   engine_version: string;
   iterations_run: number;
   duration_ms: number;
+  lane: 'browser' | 'server';
   request: { character: { gear: unknown[] } };
 };
 
@@ -68,6 +70,21 @@ test.describe('a saved sim from the prerendered fixture', () => {
     await expect(page.getByTestId('sim-results')).toBeVisible();
     await expect(page.getByTestId('sim-tab-damage')).toHaveAttribute('aria-selected', 'true');
 
+    // Fix round 1: the header no longer states iterations/processing time/lane a second
+    // time (they used to duplicate the details card below it) -- the card is now the one
+    // place these live, so this is where the saved page's own figures are pinned down.
+    await expect(page.getByTestId('sim-details-card')).toBeVisible();
+    await expect(page.getByTestId('sim-details-iterations')).toHaveText(
+      fixtureResult.iterations_run.toLocaleString('en-US'),
+    );
+    await expect(page.getByTestId('sim-details-processing')).toHaveText(
+      `${(fixtureResult.duration_ms / 1000).toFixed(1)} s`,
+    );
+    await expect(page.getByTestId('sim-details-lane')).toHaveText(
+      fixtureResult.lane === 'server' ? simCopy.detailsLaneServer : simCopy.detailsLaneBrowser,
+    );
+    await expect(page.getByTestId('sim-details-engine')).toHaveAttribute('href', '/sim/specs');
+
     // The fixture's stored request carries real gear entries, so `gearKnown` is true and
     // the strip renders the grid rather than `simCopy.savedNoGear` -- the inverse of a
     // request with no gear at all, exercised below against a stubbed id.
@@ -97,6 +114,68 @@ test.describe('a saved sim from the prerendered fixture', () => {
     // sim ran with (src/fixtures/sim/result.json's request.character).
     await expect(page.getByTestId('sim-slot-head')).toBeVisible();
   });
+});
+
+// Task 13: the rotation card. The prerendered fixture's own client-side fetch of /v1/specs
+// has to be stubbed, the same way sim-specs.spec.ts stubs it, or the fidelity note has
+// nothing to render off of -- the card would show with no note and the second assertion
+// below would be checking an element that never appears.
+test('a saved sim names the rotation it used and carries its fidelity', async ({ page }) => {
+  await page.route('**/v1/specs', (route) =>
+    route.fulfill(
+      envelope({
+        specs: [
+          {
+            spec: 'warrior-fury',
+            state: 'in_progress',
+            median_gap: 0.08,
+            parses: 12,
+            worst_actions: [],
+            engine_version: activeBuild.build,
+            updated_at: '2026-01-01',
+          },
+        ],
+      }),
+    ),
+  );
+
+  await page.goto('/sim/simfixtureab');
+  const card = page.getByTestId('sim-rotation-card');
+  await expect(card).toBeVisible();
+  // The rotation is named by the spec's own display name, and links to its card.
+  await expect(card.getByTestId('sim-rotation-card-link')).toHaveAttribute('href', '/sim/specs#warrior-fury');
+  // The fixture's warrior-fury row is not validated, so the note is there; a validated
+  // spec renders the card without one.
+  await expect(card.getByTestId('sim-rotation-card-note')).toBeVisible();
+});
+
+// Fix round 1, Finding 3: the card's defining behaviour -- a validated spec renders no
+// note at all, rather than a green "all is well" line -- had no coverage. Dropping the
+// `!== 'validated'` clause in needsFidelityNote would break nothing without this.
+test('a saved sim for a validated spec carries the rotation card with no fidelity note', async ({ page }) => {
+  await page.route('**/v1/specs', (route) =>
+    route.fulfill(
+      envelope({
+        specs: [
+          {
+            spec: 'warrior-fury',
+            state: 'validated',
+            median_gap: 0.02,
+            parses: 50,
+            worst_actions: [],
+            engine_version: activeBuild.build,
+            updated_at: '2026-01-01',
+          },
+        ],
+      }),
+    ),
+  );
+
+  await page.goto('/sim/simfixtureab');
+  const card = page.getByTestId('sim-rotation-card');
+  await expect(card).toBeVisible();
+  await expect(card.getByTestId('sim-rotation-card-link')).toHaveAttribute('href', '/sim/specs#warrior-fury');
+  await expect(card.getByTestId('sim-rotation-card-note')).toHaveCount(0);
 });
 
 test('a saved sim whose stored request has no gear shows the line, not the grid', async ({ page }) => {

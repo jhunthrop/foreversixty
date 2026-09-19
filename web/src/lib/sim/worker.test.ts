@@ -5,11 +5,14 @@
 // fake worker (backed by the fake engine, exercising the real message protocol) stand in for
 // the Worker boundary, so these run in the default (node) environment.
 import { describe, expect, it, vi } from 'vitest';
+import fixtureResultJson from '../../fixtures/sim/result.json';
 import { createFakeEngine } from '../../fixtures/sim/engine-fake';
 import { createFakeWorker } from '../../test-support/fake-worker';
-import { DEFAULT_ENCOUNTER, type SimRequest } from './types';
+import { DEFAULT_ENCOUNTER, type SimRequest, type SimResult } from './types';
 import { ENGINE_VERSION } from './version';
 import { createPool } from './worker';
+
+const fixtureResult = fixtureResultJson as unknown as SimResult;
 
 const request: SimRequest = {
   engine_version: ENGINE_VERSION,
@@ -88,5 +91,72 @@ describe('createPool abort', () => {
     } finally {
       vi.useRealTimers();
     }
+  });
+});
+
+describe('the pool routes the two synchronous exports to worker 0', () => {
+  it('answers needsMore as a boolean', async () => {
+    const pool = createPool({ hardwareConcurrency: 2, spawn: () => createFakeWorker(createFakeEngine()) });
+    const request = JSON.stringify({ ...fixtureResult.request, iterations: 30_000, target_error: 0.005 });
+    const wide = JSON.stringify({
+      ...fixtureResult,
+      dps: { mean: 1000, stddev: 100, error: 40, min: 0, max: 0 },
+      iterations_run: 1000,
+    });
+    const narrow = JSON.stringify({
+      ...fixtureResult,
+      dps: { mean: 1000, stddev: 100, error: 1, min: 0, max: 0 },
+      iterations_run: 1000,
+    });
+    expect(await pool.needsMore(wide, request)).toBe(true);
+    expect(await pool.needsMore(narrow, request)).toBe(false);
+    pool.terminate();
+  });
+
+  it('answers validate as the parsed envelope', async () => {
+    const pool = createPool({ hardwareConcurrency: 2, spawn: () => createFakeWorker(createFakeEngine()) });
+    const good = await pool.validate(JSON.stringify(fixtureResult.request));
+    expect(good).toEqual({ ok: true, errors: [] });
+    const bad = await pool.validate(JSON.stringify({ ...fixtureResult.request, spec: '' }));
+    expect(bad.ok).toBe(false);
+    expect(bad.errors[0].field).toBe('spec');
+    pool.terminate();
+  });
+
+  it('answers count as a discriminated result, cap breach included', async () => {
+    const pool = createPool({ hardwareConcurrency: 2, spawn: () => createFakeWorker(createFakeEngine()) });
+    const bulk = (cap: number): string =>
+      JSON.stringify({
+        ...fixtureResult.request,
+        bulk: {
+          mode: 'gear',
+          candidates: [
+            { slot: 'head', item_id: 16963, origin: 'bag' },
+            { slot: 'head', item_id: 16964, origin: 'bag' },
+          ],
+          precision: 'normal',
+          cap,
+        },
+      });
+    expect(await pool.count(bulk(400))).toEqual({ ok: true, combinations: 2 });
+    expect(await pool.count(bulk(1))).toEqual({ ok: false, cap: 1, combinations: 2 });
+    pool.terminate();
+  });
+
+  // Fix round 1: neither pool.needsMore nor pool.validate inspected their answer for an
+  // `.error` field, unlike pool.count right above. On the fake lane -- the only one
+  // anything actually runs against today -- that meant needsMore silently resolved false
+  // and validate resolved an `{ok: undefined, errors: undefined}` wearing a valid type,
+  // instead of both rejecting the way an engine failure should surface through the pool.
+  it("rejects needsMore with the engine's own message for a malformed envelope", async () => {
+    const pool = createPool({ hardwareConcurrency: 2, spawn: () => createFakeWorker(createFakeEngine()) });
+    await expect(pool.needsMore('{nope', JSON.stringify(fixtureResult.request))).rejects.toThrow(/JSON/);
+    pool.terminate();
+  });
+
+  it("rejects validate with the engine's own message for a malformed envelope", async () => {
+    const pool = createPool({ hardwareConcurrency: 2, spawn: () => createFakeWorker(createFakeEngine()) });
+    await expect(pool.validate('{nope')).rejects.toThrow(/JSON/);
+    pool.terminate();
   });
 });

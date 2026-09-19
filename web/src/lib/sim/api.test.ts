@@ -69,6 +69,15 @@ describe('listMySims', () => {
     expect(page.per_page).toBe(100);
     expect(page.rows[0].spec).toBe('warrior-fury');
   });
+
+  it('asks for every kind by default and for one when filtered', async () => {
+    await listMySims(1, TEST_API);
+    expect(api.lastUrl()).toContain('/v1/sims?mine=1&page=1');
+    expect(api.lastUrl()).not.toContain('kind=');
+
+    await listMySims(1, TEST_API, 'gear');
+    expect(api.lastUrl()).toContain('kind=gear');
+  });
 });
 
 describe('dispatchServerSim', () => {

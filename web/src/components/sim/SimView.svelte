@@ -12,24 +12,42 @@
   import activeBuild from '../../data/active-build.json';
   import { battlenetStartUrl, fetchMe, type Me } from '../../lib/account/api';
   import type { CharacterPath } from '../../lib/characters';
-  import { encodeFS1 } from '../../lib/planner/fs1';
   import { createLazyComponent, type LazyLoadState } from '../../lib/report/lazy-component.svelte';
   import { fetchReportMeta, fetchSummary } from '../../lib/report/load';
   import type { Summary } from '../../lib/report/types';
   import { fetchSim, fetchSpecs, listMySims } from '../../lib/sim/api';
-  import { gearFromSlots, ranksFromTalentsString } from '../../lib/sim/character';
+  import { codeForCharacterSpec } from '../../lib/sim/character';
   import { compareSummaries } from '../../lib/sim/compare';
   import { simCopy } from '../../lib/sim/copy';
-  import { settingsLabel } from '../../lib/sim/settings';
+  import type { KindFilter } from '../../lib/sim/history';
+  import { browserNotifier, enableNotifications, notifyFinished } from '../../lib/sim/notify';
   import { SIM_SAVED_SKELETON_HTML } from '../../lib/sim/skeleton';
   import { parseFightRef } from '../../lib/sim/sources';
-  import { mergeSpecRows, specPillClass, specStateLabel, specStateNote } from '../../lib/sim/spec-state';
+  import {
+    mergeSpecRows,
+    needsFidelityNote,
+    specPillClass,
+    specStateLabel,
+    specStateNote,
+  } from '../../lib/sim/spec-state';
   import { createSimStore } from '../../lib/sim/store.svelte';
-  import { defaultSimState, parseSimState, simSearch, withSimState } from '../../lib/sim/url';
+  import {
+    decodeRequestParam,
+    defaultSimState,
+    encodeRequestParam,
+    parseSimState,
+    simSearch,
+    withSimState,
+  } from '../../lib/sim/url';
   import { ENGINE_VERSION, engineLabel, isStale } from '../../lib/sim/version';
-  import type { SimListRow, SimResult, SpecFidelity } from '../../lib/sim/types';
+  import type { SimListRow, SimRequest, SimResult, SpecFidelity } from '../../lib/sim/types';
+  import BuffPanel from './BuffPanel.svelte';
   import CharacterStrip from './CharacterStrip.svelte';
+  import DetailsCard from './DetailsCard.svelte';
   import LandingState from './LandingState.svelte';
+  import ReportOptions from './ReportOptions.svelte';
+  import RequestDrawer from './RequestDrawer.svelte';
+  import RotationCard from './RotationCard.svelte';
   import RunControl from './RunControl.svelte';
   import SavedSim from './SavedSim.svelte';
   import SettingsBar from './SettingsBar.svelte';
@@ -49,7 +67,7 @@
   // bootstrap values, not bindings this island keeps synced against a changing URL.
   const bootstrap = untrack(() => {
     const search = window.location.search;
-    const { source, ref, code, mode } = parseSimState(search);
+    const { source, ref, code, req, mode } = parseSimState(search);
     // The mount element the shell can stamp a build id onto, the way planner-island.ts
     // reads `data-tree-version` off its own mount -- no /sim page stamps one yet, so this
     // falls back to the site's active build rather than an empty string no fetch would
@@ -59,7 +77,7 @@
     // specs.astro stamps `data-sim-view="specs"`; sim.astro and [id].astro stamp neither,
     // so an absent or unrecognised value reads as the ordinary simulator.
     const view: 'sim' | 'specs' = mount?.dataset.simView === 'specs' ? 'specs' : 'sim';
-    return { treeVersion, source, ref, code, mode, view };
+    return { treeVersion, source, ref, code, request: decodeRequestParam(req), mode, view };
   });
 
   // Compare mode loads its character through `enterCompare` below, never through the
@@ -72,6 +90,7 @@
   const store = untrack(() =>
     createSimStore({
       treeVersion: bootstrap.treeVersion,
+      request: bootstrap.request ?? undefined,
       source: bootstrap.mode === 'compare' ? undefined : bootstrap.source,
       ref: bootstrap.mode === 'compare' ? undefined : bootstrap.ref,
       code: bootstrap.code,
@@ -162,15 +181,18 @@
       ref !== ''
         ? withSimState(defaultSimState(), { source: kind, ref })
         : withSimState(defaultSimState(), {
-            code: encodeFS1({
-              dataBuild: bootstrap.treeVersion,
-              classSlug: savedResult.request.character.class,
-              raceSlug: savedResult.request.character.race,
-              treeRanks: ranksFromTalentsString(savedResult.request.character.talents),
-              gear: gearFromSlots(savedResult.request.character.gear),
-            }),
+            // codeForCharacterSpec carries the saved result's own gear list, enchants and
+            // suffixes included (contract 10.5) -- character.ts's own reason.
+            code: codeForCharacterSpec(savedResult.request.character, bootstrap.treeVersion),
           });
     window.location.href = `/sim${simSearch(target)}`;
+  }
+
+  /** Design 8: a share URL of an edited request is a full reproduction. Null past the budget. */
+  function shareUrlFor(request: SimRequest): string | null {
+    const encoded = encodeRequestParam(request);
+    if (encoded === null) return null;
+    return `${window.location.origin}/sim${simSearch(withSimState(defaultSimState(), { req: encoded }))}`;
   }
 
   const comparison = $derived(
@@ -195,16 +217,24 @@
   const signedIn = $derived(me !== null);
   let historyRows = $state<SimListRow[] | null>(null);
   let historyError = $state<string | null>(null);
+  // The history filter (Task 18). "all" sends no `kind=` at all -- see api.ts's listMySims.
+  let historyKind = $state<KindFilter>('all');
 
   async function loadHistory(): Promise<void> {
     historyError = null;
     try {
-      const page = await listMySims();
+      const page = await listMySims(1, undefined, historyKind);
       historyRows = page.rows;
     } catch (error) {
       historyRows = null;
       historyError = error instanceof Error ? error.message : simCopy.loadFailed;
     }
+  }
+
+  function setHistoryKind(next: KindFilter): void {
+    historyKind = next;
+    historyRows = null;
+    void loadHistory();
   }
 
   // Loaded lazily (Task 17): the history panel is empty weight for every signed-out
@@ -213,6 +243,38 @@
   const simHistoryLazy = createLazyComponent(() => import('./SimHistory.svelte'));
   $effect(() => {
     if (signedIn) simHistoryLazy.load();
+  });
+
+  // Design 5.4: the finish notification. `notifier` is the real Notification API, or null
+  // where the browser has none (notify.ts's own seam) -- read once, since the API itself
+  // never appears mid-session. Permission is asked for only from `toggleNotify`, the
+  // player's own click on the checkbox; nothing here asks on mount.
+  const notifier = untrack(() => browserNotifier());
+  let notifyWanted = $state(false);
+  // The id of the last result a notification was raised for, so a re-render never raises a
+  // second one for the same run.
+  let notifiedFor = $state('');
+
+  async function toggleNotify(wanted: boolean): Promise<void> {
+    notifyWanted = wanted && (await enableNotifications(notifier));
+  }
+
+  // Server runs only, per design 5.4: a browser run finishes on the tab you are looking at.
+  $effect(() => {
+    const finished = store.result;
+    if (finished !== null && finished.lane === 'server') {
+      // The key is the wall clock plus the figure, which no two runs of one session share.
+      const key = `${finished.duration_ms}-${finished.iterations_run}`;
+      if (key !== notifiedFor) {
+        notifiedFor = key;
+        notifyFinished(
+          notifier,
+          notifyWanted,
+          store.reportTitle,
+          simCopy.notifyBody(Math.round(finished.dps.mean).toLocaleString('en-US')),
+        );
+      }
+    }
   });
 
   // The save form under the results (Task 17). `saveOpen`/`saveTitle` are the inline
@@ -241,7 +303,7 @@
   const canSave = $derived(store.result !== null && store.result.aborted !== true);
 
   function openSaveForm(): void {
-    saveTitle = settingsLabel(store.settings);
+    saveTitle = store.reportTitle;
     saveFailed = false;
     savedUrl = null;
     saveOpen = true;
@@ -496,7 +558,12 @@
       {/if}
 
       {#if signedIn && simHistoryLazy.current}
-        <simHistoryLazy.current rows={historyRows} error={historyError} />
+        <simHistoryLazy.current
+          rows={historyRows}
+          error={historyError}
+          kind={historyKind}
+          onkind={setHistoryKind}
+        />
       {/if}
 
       {#if store.character !== null}
@@ -506,7 +573,24 @@
           disabled={store.phase === 'running' || store.serverRunning}
           onchange={(next) => store.setSettings(next)}
         />
-        {#if characterSpecRow !== null && characterSpecRow.state !== 'validated'}
+        {#if store.settings.preset === 'custom'}
+          <BuffPanel
+            settings={store.settings}
+            build={store.character.tree_version}
+            names={store.buffNames}
+            disabled={store.phase === 'running' || store.serverRunning}
+            onchange={(next) => store.setSettings(next)}
+          />
+        {/if}
+        <RequestDrawer
+          request={store.buildRequest()}
+          disabled={store.phase === 'running' || store.serverRunning}
+          onvalidate={(json) => store.validateRequest(json)}
+          onapply={(request) => void store.applyRequest(request)}
+          onrun={(request) => void store.runRequest(request)}
+          onshare={(request) => shareUrlFor(request)}
+        />
+        {#if characterSpecRow !== null && needsFidelityNote(characterSpecRow)}
           <!-- A fidelity state labels, it never blocks: the run control below always
                renders once a character is loaded, and this is the one-line footnote
                linking to the full card on /sim/specs. -->
@@ -522,7 +606,9 @@
           estimate={store.estimate}
           iterationsDone={store.iterationsDone}
           iterationsTotal={store.iterationsTotal}
-          precision={store.precision}
+          precisionId={store.precisionId}
+          relativeError={store.relativeError}
+          lane={store.lane}
           premium={store.premium}
           message={store.message}
           detail={store.detail}
@@ -531,7 +617,7 @@
           serverRunning={store.serverRunning}
           onrun={() => void store.run()}
           onstop={() => store.stop()}
-          onprecision={(value) => store.setPrecision(value)}
+          onprecision={(value) => store.setPrecisionId(value)}
           onserver={() => void store.runOnServer()}
           onrerun={() => void store.run()}
         />
@@ -560,19 +646,42 @@
               estimate={store.result.dps}
               iterationsRun={store.result.iterations_run}
               actionNames={store.actionNames}
+              sample={store.result.sample}
             />
           {:else}
             {@render lazyFallback(simResultsLazy)}
           {/if}
         {/if}
 
+        {#if store.result !== null && !comparing}
+          <DetailsCard result={store.result} />
+          <RotationCard spec={store.result.request.spec} fidelity={characterSpecRow} />
+        {/if}
+
+        {#if store.result !== null}
+          <!-- Design 5.4: the report title and the finish notification. The title feeds
+               the save form, the notification and the saved link (openSaveForm reads
+               store.reportTitle below); the notification checkbox only appears where the
+               browser actually has a Notification API to ask (`notifier`, owned by this
+               file since the $effect above needs it in component scope). -->
+          <ReportOptions
+            title={store.reportTitle}
+            notifierAvailable={notifier !== null}
+            {notifyWanted}
+            ontitlechange={(value) => store.setReportTitle(value)}
+            onnotifychange={(wanted) => void toggleNotify(wanted)}
+          />
+        {/if}
+
         <!-- The save form (Task 17): disabled until there is a result, an inline
-               title field pre-filled with the settings clause rather than a dialog, and
+               title field pre-filled with the report title rather than a dialog, and
                the saved link shown in place -- the page never navigates away from the
                result it just saved. -->
         <div class="mx-[18px] flex flex-wrap items-center gap-3 md:mx-0" data-testid="sim-save">
           {#if savedUrl !== null}
+            <label class="sr-only" for="sim-save-link">{simCopy.savedLinkLabel}</label>
             <input
+              id="sim-save-link"
               type="text"
               readonly
               value={savedUrl}
@@ -588,6 +697,15 @@
             >
               {savedLinkCopied ? simCopy.copied : simCopy.copyLink}
             </button>
+            <a
+              class="border-line-warm rounded-control text-nav label inline-flex min-h-11 items-center border px-4"
+              href={savedUrl}
+              target="_blank"
+              rel="noopener"
+              data-testid="sim-open-new-tab"
+            >
+              {simCopy.openInNewTab}
+            </a>
           {:else if saveOpen}
             <label class="flex flex-col gap-1">
               <span class="label text-muted">{simCopy.saveTitleLabel}</span>

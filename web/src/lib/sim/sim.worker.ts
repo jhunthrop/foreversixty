@@ -57,6 +57,18 @@ async function handle(message: ToWorker): Promise<void> {
       reply({ kind: 'one', token, result: loaded.simCombine(combineInputFromShards(message.results)) });
       return;
     }
+    if (message.kind === 'needsMore') {
+      reply({ kind: 'one', token, result: loaded.simNeedsMore(message.result, message.request) });
+      return;
+    }
+    if (message.kind === 'validate') {
+      reply({ kind: 'one', token, result: loaded.simValidate(message.request) });
+      return;
+    }
+    if (message.kind === 'count') {
+      reply({ kind: 'one', token, result: loaded.simCount(message.request) });
+      return;
+    }
     tokenOf.set(message.callbackId, token);
     try {
       reply({ kind: 'one', token, result: await loaded.simRun(message.request, message.callbackId) });

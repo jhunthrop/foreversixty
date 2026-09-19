@@ -1,10 +1,29 @@
 import { describe, expect, it } from 'vitest';
-import { defaultSimState, parseSimState, simIdFrom, simSearch, withSimState } from './url';
+import envelope from '../../fixtures/sim/envelope-v2.json';
+import type { SimRequest } from './types';
+import {
+  decodeRequestParam,
+  defaultSimState,
+  encodeRequestParam,
+  MAX_CODE,
+  MAX_REQUEST_PARAM,
+  parseSimState,
+  simIdFrom,
+  simSearch,
+  withSimState,
+} from './url';
 
 describe('parseSimState', () => {
   it('is the default for an empty query', () => {
     expect(parseSimState('')).toEqual(defaultSimState());
-    expect(defaultSimState()).toEqual({ source: '', ref: '', code: '', mode: 'sim', fight: '' });
+    expect(defaultSimState()).toEqual({
+      source: '',
+      ref: '',
+      code: '',
+      req: '',
+      mode: 'sim',
+      fight: '',
+    });
   });
 
   it('reads every parameter the page writes', () => {
@@ -16,6 +35,7 @@ describe('parseSimState', () => {
       source: 'fight',
       ref: 'fixture2abcd:2',
       code: 'FS1:1.15.9.69722:warrior:orc:3/0/0:',
+      req: '',
       mode: 'compare',
       fight: 'fixture2abcd:3',
     });
@@ -31,14 +51,15 @@ describe('parseSimState', () => {
   });
 
   // An FS1 code is far longer than a ref (three tree strings, up to seventeen gear
-  // entries), so it gets its own, larger bound rather than sharing MAX_REF -- a real code
-  // comfortably fits under it, and a 3000-character query still cannot reach the decoder.
+  // entries, plus a version 2 code's optional bags, bank, named sets and loadouts), so it
+  // gets its own, larger bound rather than sharing MAX_REF -- a real code comfortably fits
+  // under it, and a query well past MAX_CODE_LENGTH still cannot reach the decoder.
   it('carries a real FS1 code whole, and caps a code far past what one reaches', () => {
     const code = `FS1:1.15.9.69722:warrior:orc:${'1'.repeat(40)}/0/0:${'head=12640,'.repeat(17).slice(0, -1)}`;
     expect(code.length).toBeGreaterThan(128);
-    expect(code.length).toBeLessThan(2048);
+    expect(code.length).toBeLessThan(MAX_CODE);
     expect(parseSimState(`?code=${encodeURIComponent(code)}`).code).toBe(code);
-    expect(parseSimState(`?code=${'x'.repeat(3000)}`).code).toHaveLength(0);
+    expect(parseSimState(`?code=${'x'.repeat(MAX_CODE + 1000)}`).code).toHaveLength(0);
   });
 });
 
@@ -59,6 +80,7 @@ describe('simSearch', () => {
       source: 'fight' as const,
       ref: 'fixture2abcd:2',
       code: 'FS1:1.15.9.69722:warrior:orc:0/0/0:',
+      req: '',
       mode: 'compare' as const,
       fight: 'fixture2abcd:3',
     };
@@ -86,5 +108,89 @@ describe('simIdFrom', () => {
     expect(simIdFrom('/sim/specs')).toBe('');
     expect(simIdFrom('/sim/TOOSHORT')).toBe('');
     expect(simIdFrom('/reports/fixture2abcd')).toBe('');
+  });
+});
+
+describe('a request in the URL', () => {
+  const request = (envelope as unknown as { request: SimRequest }).request;
+
+  it('round-trips a request through the query string', () => {
+    const encoded = encodeRequestParam(request);
+    expect(encoded).not.toBeNull();
+    expect(decodeRequestParam(encoded!)).toEqual(request);
+  });
+
+  it('is URL-safe: no +, / or = to be mangled by a chat client', () => {
+    expect(encodeRequestParam(request)!).toMatch(/^[A-Za-z0-9_-]+$/);
+  });
+
+  it('refuses a request past the budget rather than writing a link that will be cut', () => {
+    const huge = {
+      ...request,
+      character: { ...request.character, buffs: Array.from({ length: 20_000 }, (_, i) => `b${i}`) },
+    };
+    expect(encodeRequestParam(huge)).toBeNull();
+  });
+
+  it('answers null for a value that is not a request, however it is malformed', () => {
+    expect(decodeRequestParam('not-base64!!')).toBeNull();
+    expect(decodeRequestParam(btoa('[1,2,3]').replaceAll('=', ''))).toBeNull();
+    expect(decodeRequestParam('')).toBeNull();
+  });
+
+  // Fix round 1: `decodeRequestParam` used to accept any non-null, non-array object, so a
+  // crafted `/sim?req=e30` ('e30' is base64url for '{}') passed it and then threw inside
+  // `settingsFromRequest` on the first field it reached for -- an unhandled rejection for
+  // anyone who followed the link. These pin the shape check that stops that at the door.
+  it('refuses an empty object -- the crafted /sim?req=e30 the review demonstrated', () => {
+    expect(decodeRequestParam('e30')).toBeNull();
+  });
+
+  it('refuses a partially-populated object that has some, but not all, required fields', () => {
+    // character and encounter alone were enough to pass the old check (a non-null, non-array
+    // object); every other required field -- engine_version, spec, source, iterations,
+    // random_seed -- is still missing.
+    const partial = { character: request.character, encounter: request.encounter } as unknown as SimRequest;
+    const encoded = encodeRequestParam(partial);
+    expect(encoded).not.toBeNull();
+    expect(decodeRequestParam(encoded!)).toBeNull();
+  });
+
+  it('accepts a request whose encoded size lands exactly on the budget, and refuses one byte more', () => {
+    // Grows a filler field one character at a time until the real, base64url-encoded
+    // output lands exactly on MAX_REQUEST_PARAM -- the boundary an off-by-one in either
+    // encodeRequestParam's `>` comparison or decodeRequestParam's own length gate would get
+    // wrong, unlike the 20,000-buffs test above, which overshoots by a wide margin.
+    let filler = '';
+    let padded = { ...request, character: { ...request.character, name: filler } };
+    let encoded = encodeRequestParam(padded);
+    while (encoded !== null && encoded.length < MAX_REQUEST_PARAM) {
+      filler += 'x';
+      padded = { ...request, character: { ...request.character, name: filler } };
+      encoded = encodeRequestParam(padded);
+    }
+    expect(encoded).not.toBeNull();
+    expect(encoded!.length).toBe(MAX_REQUEST_PARAM);
+    expect(decodeRequestParam(encoded!)).toEqual(padded);
+
+    // The length gate itself, not the content: one character past the budget is refused
+    // before decodeRequestParam even tries to parse anything.
+    expect(decodeRequestParam(`${encoded!}x`)).toBeNull();
+
+    // The real encoder agrees: one character more of input pushes the actual encoded
+    // output past the budget too.
+    filler += 'x';
+    expect(encodeRequestParam({ ...request, character: { ...request.character, name: filler } })).toBeNull();
+  });
+
+  it('parses and writes the req parameter beside the others', () => {
+    const encoded = encodeRequestParam(request)!;
+    const state = parseSimState(`?req=${encoded}`);
+    expect(state.req).toBe(encoded);
+    expect(simSearch({ ...defaultSimState(), req: encoded })).toBe(`?req=${encoded}`);
+  });
+
+  it('drops a req parameter past the budget instead of handing a truncated one to the decoder', () => {
+    expect(parseSimState(`?req=${'a'.repeat(MAX_REQUEST_PARAM + 1)}`).req).toBe('');
   });
 });

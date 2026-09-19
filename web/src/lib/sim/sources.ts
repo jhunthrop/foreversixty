@@ -27,6 +27,7 @@ import {
   PENDING_RACE,
   characterFromFs1,
   fromBuildDraft,
+  gearSlots,
   specForSplit,
   talentLevel,
   type SimCharacter,
@@ -145,6 +146,15 @@ export async function fromStoredCharacter(path: CharacterPath, ctx: LoadContext)
         // in this repository decodes either shape yet, so gear starts empty rather than
         // guessed at: the same honest-empty choice as point_order, above.
         gear: {},
+        // No enchant or suffix data on this source either, so gear_slots is the (empty) id
+        // map converted -- the same "the two always agree on item ids" promise every other
+        // source keeps.
+        gear_slots: [],
+        professions: [],
+        bags: [],
+        bank: [],
+        sets: [],
+        loadouts: [],
         // Buff ids straight through. The amended contract puts the spell-id mapping on the
         // API side -- "the web never maps spell ids itself" -- so `input.buffs` is already
         // the engine's vocabulary and anything it does not recognise surfaces as the
@@ -283,6 +293,15 @@ export async function fromLoggedFight(ref: string, ctx: LoadContext): Promise<So
         tree_version: ctx.treeVersion,
         point_order,
         gear: gearFromCombatant(combatant.gear),
+        // A fight's gear carries no enchant or suffix either, so gear_slots is the id map
+        // converted -- the same "the two always agree on item ids" promise every other
+        // source keeps.
+        gear_slots: gearSlots(gearFromCombatant(combatant.gear)),
+        professions: [],
+        bags: [],
+        bank: [],
+        sets: [],
+        loadouts: [],
         // Same as above: the fight records spell ids and CharacterSpec wants buff ids, so
         // the settings bar's preset stands in until one vocabulary maps onto the other.
         buffs: [],

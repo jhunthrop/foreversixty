@@ -11,9 +11,20 @@ import type { Summary } from '../report/types';
 /** Where the character came from. */
 export type SourceKind = 'armory' | 'addon' | 'build' | 'fight' | 'manual';
 
-/** The only iteration counts the contract allows. */
+/**
+ * The only iteration counts the contract allows.
+ *
+ * `precision.ts`'s `PRECISION_ITERATIONS` (`fast`/`normal`/`high`) is the authority for
+ * these same three numbers now -- `/sim` reads that one, not this one (finding 5, final
+ * whole-branch review). This map stays only because the planner's `SharePanel.svelte` and
+ * `live-dps.svelte.ts` still read it under these key names (`live`/`normal`/`precise`);
+ * deriving it from `PRECISION_ITERATIONS` would need a value import back into this module
+ * from one that already imports a value from here (`STEP_ITERATIONS_DEFAULT`), and a
+ * circular value import is not worth trading for one map derived from another with
+ * different key names. Keep the three numbers identical to `PRECISION_ITERATIONS`'
+ * `fast`/`normal`/`high` by hand; `precision.test.ts` is where a mismatch would first show.
+ */
 export const ITERATIONS = { live: 500, normal: 3000, precise: 10_000 } as const;
-export type IterationCount = (typeof ITERATIONS)[keyof typeof ITERATIONS];
 
 export interface CharacterSource {
   kind: SourceKind;
@@ -49,7 +60,36 @@ export interface CharacterSpec {
   buffs: string[];
   consumes: string[];
   professions?: string[];
+  /** When to use each major cooldown and potion. Absent means "everything on cooldown". */
+  cooldowns?: CooldownSpec[];
 }
+
+/** A movement window the APL's movement conditions honour (contract 1.5). */
+export interface Movement {
+  interval_sec: number;
+  duration_sec: number;
+  /** away: out of melee, no casting. casting: spells interrupted, melee continues. */
+  kind: 'away' | 'casting';
+}
+
+/** A step in the target-count timeline. Overrides `targets` when the list is non-empty. */
+export interface TargetCount {
+  at_sec: number;
+  count: number;
+}
+
+export const TARGET_TYPE_IDS = [
+  'humanoid',
+  'undead',
+  'beast',
+  'demon',
+  'dragonkin',
+  'elemental',
+  'giant',
+  'mechanical',
+  'unknown',
+] as const;
+export type TargetType = (typeof TARGET_TYPE_IDS)[number];
 
 export interface EncounterSpec {
   duration_sec: number;
@@ -58,6 +98,24 @@ export interface EncounterSpec {
   execute_ratio: number;
   /** "" | "patchwerk" | "encounter:<encounter_id>". */
   profile: string;
+  /** The fight style's id: a label only. The fields above and below are what the engine reads. */
+  style?: string;
+  movement?: Movement;
+  targets_over_time?: TargetCount[];
+  /** 60..63; 63 is the default the engine assumes when this is absent. */
+  target_level?: number;
+  /** 0 means the level's preset, resolved inside the engine. */
+  target_armor?: number;
+  target_type?: TargetType | '';
+  /** No debuffs, no execute, no armor reduction. */
+  dummy?: boolean;
+}
+
+/** When to use a cooldown. Empty `at_sec` means "on cooldown" (contract 1.7). */
+export interface CooldownSpec {
+  /** "spell:<id>" or a consumable id from IDS.md. */
+  id: string;
+  at_sec: number[];
 }
 
 export const DEFAULT_ENCOUNTER: EncounterSpec = {
@@ -66,6 +124,15 @@ export const DEFAULT_ENCOUNTER: EncounterSpec = {
   targets: 1,
   execute_ratio: 0.25,
   profile: '',
+  // Every field a style owns is present from the start rather than appearing the first
+  // time a style is chosen: `applyFightStyle` writes all of them on every call, and an
+  // encounter that sometimes carries a key and sometimes does not makes the request
+  // drawer's diff (Task 15) noisy for no reason.
+  style: 'patchwerk',
+  target_level: 63,
+  target_armor: 0,
+  target_type: '',
+  dummy: false,
 };
 
 export interface SimRequest {
@@ -75,9 +142,76 @@ export interface SimRequest {
   source: CharacterSource;
   character: CharacterSpec;
   encounter: EncounterSpec;
+  /** With `target_error` set this is the ceiling, not the count. */
   iterations: number;
   /** 0 means random; paired runs set it. */
   random_seed: number;
+  /**
+   * When > 0, the run continues in `STEP_ITERATIONS_DEFAULT` steps until
+   * `dps.error / dps.mean` is at or under this, or `iterations` is reached. 0 is a
+   * fixed-count run. Contract 1.2.
+   */
+  target_error?: number;
+  bulk?: BulkSpec;
+  weights?: WeightsSpec;
+}
+
+/** Contract 1.2. The size of one step of a target-error run. */
+export const STEP_ITERATIONS_DEFAULT = 1000;
+
+export interface Candidate {
+  /** IDS.md slot vocabulary; "" means "wherever it fits" (rings, trinkets, weapons). */
+  slot: string;
+  item_id: number;
+  /** 0 inherits the equipped enchant for the slot where it fits. */
+  enchant?: number;
+  suffix?: number;
+  /** equipped | bag | bank | search | drop:<source-id> | set:<name>. */
+  origin: string;
+  /**
+   * Contract A6: the human name of where it came from ("Ragnaros"), which the page fills
+   * from `loot.json` and the API's headline reads back off the substitution.
+   */
+  source_name?: string;
+}
+
+export interface TalentLoadout {
+  name: string;
+  talents: string;
+}
+
+export interface GearSet {
+  name: string;
+  gear: GearSlot[];
+}
+
+export interface BulkSpec {
+  /**
+   * gear | talents | drops. Contract A4: the mode decides the expansion and the design's
+   * `combinations` boolean is gone -- `gear` takes the product of every candidate group,
+   * `drops` and `talents` one substitution at a time.
+   */
+  mode: string;
+  candidates: Candidate[];
+  talents?: TalentLoadout[];
+  sets?: GearSet[];
+  /**
+   * Contract A5: alternative consumable lists tried as candidates in `gear` mode. Each
+   * inner list replaces `CharacterSpec.Consumes` for that combination.
+   */
+  consumables?: string[][];
+  /** Slots never substituted. */
+  locked?: string[];
+  /** fast | normal | high. */
+  precision: string;
+  /** The lane's cap, echoed so a saved request says what bounded it. */
+  cap: number;
+}
+
+export interface WeightsSpec {
+  stats: string[];
+  /** The stat normalised to 1.0. */
+  reference: string;
 }
 
 export interface Estimate {
@@ -97,6 +231,67 @@ export interface Estimate {
  */
 export type SimProgressUpdate = Pick<SimResult, 'iterations_run' | 'dps'>;
 
+export interface Substitution {
+  /**
+   * item | talents | set | consumes. Contract 10.8 adds `consumes`: `sim/bulk` emits one
+   * per combination that used an alternative consumable list (`BulkSpec.consumables`),
+   * and `name` is that list's ids joined by ", ".
+   */
+  kind: string;
+  slot?: string;
+  item_id?: number;
+  enchant?: number;
+  suffix?: number;
+  /**
+   * The loadout or set name — and, per contract A6, an item's name too, filled from
+   * simdb, so a combo row reads without a second lookup. For a `consumes` substitution
+   * (10.8) it is the consumable ids joined by ", ".
+   */
+  name?: string;
+  talents?: string;
+  origin?: string;
+  /** Contract A6: copied from the candidate. */
+  source_name?: string;
+}
+
+export interface Combo {
+  substitutions: Substitution[];
+  dps: Estimate;
+  /** Against `equipped`, paired at the same stage. */
+  delta: Estimate;
+  /** 0 for the leader's within-error group, then 1, 2, … */
+  group: number;
+}
+
+export interface Stage {
+  iterations: number;
+  combos: number;
+}
+
+export interface StatWeight {
+  stat: string;
+  /** The reference stat is exactly 1. */
+  weight: number;
+  error: number;
+}
+
+/**
+ * One cast of the median-DPS iteration. `at_ms` is negative during the pre-pull.
+ *
+ * Contract A12: the row carries the summary's own action-key form (`spell:23881`,
+ * `item:13503`, `other:melee`) and nothing else -- no display name and no spell id. The
+ * page resolves the name with `resolveActionName`, exactly as it already does for every
+ * cast row, so the sample table can never disagree with the cast table about what an
+ * action is called.
+ */
+export interface SampleCast {
+  at_ms: number;
+  action: string;
+  target?: string;
+  /** rage, energy, mana, combo_points … after the cast. */
+  resources?: Record<string, number>;
+}
+
 export interface SimResult {
   sim_id?: string;
   engine_version: string;
@@ -115,6 +310,14 @@ export interface SimResult {
    * run under a player-chosen title.
    */
   aborted?: boolean;
+  /** Ranked, best first. Bulk kinds only. */
+  combos?: Combo[];
+  /** The base character at the final stage. Bulk kinds only. */
+  equipped?: Estimate;
+  stages?: Stage[];
+  weights?: StatWeight[];
+  /** One iteration's casts, the median-DPS one. */
+  sample?: SampleCast[];
 }
 
 /** One row of GET /v1/sims?mine=1. */
@@ -125,6 +328,10 @@ export interface SimListRow {
   engine_version: string;
   created_at: string;
   title: string;
+  /** run | gear | drops | talents | weights. Absent on a row saved before migration 0014. */
+  kind?: string;
+  /** The API's own one-line summary, e.g. "+41 DPS from Vis'kag". */
+  headline?: string;
 }
 
 export interface SimListPage {
@@ -138,6 +345,9 @@ export interface SimProgress {
   state: 'queued' | 'running' | 'done' | 'error';
   iterations_done: number;
   dps?: number;
+  stage?: number;
+  combos_done?: number;
+  combos_total?: number;
 }
 
 export type SpecState = 'validated' | 'in_progress' | 'unsupported';

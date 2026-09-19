@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { expect, test, type Page } from '@playwright/test';
+import { simCopy } from '../../src/lib/sim/copy';
 
 // Same fixture as sim-settings.spec.ts and sim-sources.spec.ts: an addon export needs no
 // API stub, so this reads the site's own active build id rather than hardcoding one.
@@ -33,7 +34,7 @@ test('the run control moves idle -> running -> done, and a cancel keeps the last
   await expect(page.getByTestId('sim-progress')).toHaveText(/\d+ of 3,000 iterations/);
 
   await expect(button).toHaveText('Run again', { timeout: 5000 });
-  await expect(page.getByTestId('sim-progress')).toHaveText('3,000 iterations');
+  await expect(page.getByTestId('sim-progress')).toHaveText(/^3,000 iterations/);
   await expect(page.getByTestId('sim-error')).toHaveText(/^± \d/);
 
   const finishedFigure = await page.getByTestId('sim-dps').textContent();
@@ -75,9 +76,9 @@ test('every settings control is disabled while the run control reads Stop, and r
 test('high precision runs 10,000 iterations instead of 3,000', async ({ page }) => {
   await loadFury(page);
 
-  await page.getByTestId('sim-precision').check();
+  await page.getByTestId('sim-precision').selectOption('high');
   await page.getByTestId('sim-run-button').click();
-  await expect(page.getByTestId('sim-progress')).toHaveText('10,000 iterations', { timeout: 8000 });
+  await expect(page.getByTestId('sim-progress')).toHaveText(/^10,000 iterations/, { timeout: 8000 });
 });
 
 test('the server lane is not offered to a signed-out visitor', async ({ page }) => {
@@ -85,4 +86,45 @@ test('the server lane is not offered to a signed-out visitor', async ({ page }) 
 
   await expect(page.getByTestId('sim-run')).toBeVisible();
   await expect(page.getByTestId('sim-server-run')).toHaveCount(0);
+});
+
+test('the precision select offers four choices and the details card states the run', async ({ page }) => {
+  await page.goto('/sim');
+  await page.getByTestId('sim-addon-input').fill(FURY);
+  await page.getByTestId('sim-addon-load').click();
+  await expect(page.getByTestId('sim-character')).toBeVisible();
+
+  const precision = page.getByTestId('sim-precision');
+  await expect(precision).toHaveValue('normal');
+  await expect(precision.locator('option')).toHaveCount(4);
+  await expect(page.getByTestId('sim-target-error')).toBeHidden();
+
+  await precision.selectOption('target-error');
+  await expect(page.getByTestId('sim-target-error')).toContainText('30,000');
+
+  // Fast keeps the browser suite quick; the card is the same card at every precision.
+  await precision.selectOption('fast');
+  await page.getByTestId('sim-run-button').click();
+  await expect(page.getByTestId('sim-details-card')).toBeVisible({ timeout: 30_000 });
+  await expect(page.getByTestId('sim-details-iterations')).toHaveText('500');
+  await expect(page.getByTestId('sim-details-margin')).toContainText(simCopy.dps);
+  await expect(page.getByTestId('sim-details-margin')).toContainText('%');
+  await expect(page.getByTestId('sim-details-lane')).toHaveText(simCopy.detailsLaneBrowser);
+  await expect(page.getByTestId('sim-details-engine')).toHaveAttribute('href', '/sim/specs');
+  await expect(page.getByTestId('sim-progress')).toContainText('%');
+});
+
+test('a finished run can be named, and the saved link opens in a new tab', async ({ page }) => {
+  await page.goto('/sim');
+  await page.getByTestId('sim-addon-input').fill(FURY);
+  await page.getByTestId('sim-addon-load').click();
+  await page.getByTestId('sim-precision').selectOption('fast');
+  await page.getByTestId('sim-run-button').click();
+  await expect(page.getByTestId('sim-details-card')).toBeVisible({ timeout: 30_000 });
+
+  const title = page.getByTestId('sim-report-title');
+  await expect(title).toHaveValue('Raid-buffed, 3:00, single target');
+  await title.fill('Pre-raid, no world buffs');
+  await page.getByTestId('sim-save-open').click();
+  await expect(page.getByTestId('sim-save-title')).toHaveValue('Pre-raid, no world buffs');
 });

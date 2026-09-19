@@ -1,9 +1,10 @@
 <!-- web/src/components/sim/SettingsBar.svelte -->
-<!-- The five things that change the number, and nothing else. Variation and the encounter
-     profile are fixed at the contract's defaults and stated in the footnote rather than
-     exposed: a control nobody moves is a control that costs a phone row. The rotation is
-     text, not a disabled select, because the APL builder is deferred and a greyed-out
-     control would promise it. -->
+<!-- The five primary controls that change the number, plus the fight-style picker that
+     writes several of them at once. The six secondary controls -- variation, target level,
+     armor, type, execute phase and the dummy -- live in SettingsSheet.svelte's disclosure,
+     closed on arrival so a control nobody moves costs no phone row. The rotation is text,
+     not a disabled select, because the APL builder is deferred and a greyed-out control
+     would promise it. -->
 <script lang="ts">
   import { simCopy } from '../../lib/sim/copy';
   import {
@@ -11,15 +12,17 @@
     DURATIONS,
     MAX_TARGETS,
     durationLabel,
-    executePhaseOn,
+    styleIdOf,
     withDuration,
-    withExecutePhase,
     withPreset,
+    withStyle,
     withTargets,
     type BuffPresetId,
     type SimSettings,
   } from '../../lib/sim/settings';
-  import { specRow } from '../../lib/sim/spec-label';
+  import { FIGHT_STYLES, fightStyle } from '../../lib/sim/styles';
+  import { specDisplayName } from '../../lib/sim/spec-label';
+  import SettingsSheet from './SettingsSheet.svelte';
 
   let {
     settings,
@@ -36,11 +39,23 @@
   const control =
     'border-line-warm rounded-control bg-raised text-text min-h-11 min-w-0 md:min-w-[7rem] border px-3 text-[14px] font-semibold md:min-h-9';
   const targets = Array.from({ length: MAX_TARGETS }, (_, i) => i + 1);
-  // The spec's own display name, from the data lane's generated list -- never the slug
-  // with its first letter raised, which turns `beast-mastery` into `Beast-mastery`. An
-  // unknown slug falls back to itself, which is what specRow returning null means.
-  const rotationName = $derived(specRow(spec)?.name ?? spec);
-  const rotationLabel = $derived(`${simCopy.rotationPrefix} ${rotationName}`);
+  const rotationLabel = $derived(`${simCopy.rotationPrefix} ${specDisplayName(spec)}`);
+  const styleId = $derived(styleIdOf(settings));
+  // Only the two movement styles carry a note (copy.ts's styleNote). Everything else
+  // renders nothing at all rather than an empty paragraph that would reserve a line.
+  const styleNote = $derived(simCopy.styleNote[styleId] ?? '');
+
+  // The <select>'s value is a plain string; FightStyleId is a literal union, so a raw cast
+  // would let an id outside the contract's nine reach withStyle/applyFightStyle, which
+  // (styles.ts) returns the encounter unchanged for an id it does not recognise -- the one
+  // branch of that function that is not a fresh object. `fightStyle` is styles.ts's own
+  // safe, null-returning lookup for exactly this; re-deriving it here with a second
+  // `FIGHT_STYLES.find` would be the same rule kept in two places.
+  function selectStyle(id: string): void {
+    const style = fightStyle(id);
+    if (style === null) return;
+    onchange(withStyle(settings, style.id));
+  }
 </script>
 
 <section
@@ -48,6 +63,27 @@
   data-testid="sim-settings"
 >
   <div class="flex flex-wrap items-end gap-4 md:gap-5">
+    <label class="flex flex-col gap-1">
+      <span class="label text-muted">{simCopy.fightStyle}</span>
+      <select
+        class={control}
+        {disabled}
+        value={styleId}
+        onchange={(event) => selectStyle(event.currentTarget.value)}
+        data-testid="sim-style"
+      >
+        <!-- The empty option exists only while the encounter has been detached from a
+             style by hand (settings.ts's `detached`); it is never a thing to choose, so it
+             is hidden the rest of the time rather than offered as a tenth style. -->
+        {#if styleId === ''}
+          <option value="">{simCopy.styleCustom}</option>
+        {/if}
+        {#each FIGHT_STYLES as style (style.id)}
+          <option value={style.id}>{simCopy.styleLabel[style.id] ?? style.id}</option>
+        {/each}
+      </select>
+    </label>
+
     <label class="flex flex-col gap-1">
       <span class="label text-muted">{simCopy.fightLength}</span>
       <select
@@ -78,20 +114,6 @@
       </select>
     </label>
 
-    <label class="flex min-h-11 flex-col gap-1 md:min-h-0">
-      <span class="label text-muted">{simCopy.executePhase}</span>
-      <span class="flex min-h-11 items-center md:min-h-9">
-        <input
-          type="checkbox"
-          class="accent-gold h-5 w-5"
-          {disabled}
-          checked={executePhaseOn(settings)}
-          onchange={(event) => onchange(withExecutePhase(settings, event.currentTarget.checked))}
-          data-testid="sim-execute"
-        />
-      </span>
-    </label>
-
     <label class="flex flex-col gap-1">
       <span class="label text-muted">{simCopy.buffs}</span>
       <select
@@ -102,7 +124,7 @@
         data-testid="sim-preset"
       >
         {#each BUFF_PRESETS as preset (preset.id)}
-          <option value={preset.id} title={preset.id === 'custom' ? simCopy.customPresetNote : undefined}>
+          <option value={preset.id}>
             {preset.label}
           </option>
         {/each}
@@ -120,5 +142,9 @@
     </div>
   </div>
 
-  <p class="text-muted text-[12px]" data-testid="sim-settings-footnote">{simCopy.settingsFootnote}</p>
+  {#if styleNote !== ''}
+    <p class="text-muted text-[12px]" data-testid="sim-style-note">{styleNote}</p>
+  {/if}
+
+  <SettingsSheet {settings} {disabled} {onchange} />
 </section>

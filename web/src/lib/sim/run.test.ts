@@ -6,7 +6,7 @@ import { SimRunError, buildSimRequest, runSim, type RunInput, type RunUpdate } f
 import { DEFAULT_ENCOUNTER, ITERATIONS } from './types';
 import { ENGINE_VERSION } from './version';
 import { createBrokenWorker, createFakeWorker } from '../../test-support/fake-worker';
-import { createPool, type PoolWorker } from './worker';
+import { createPool, type PoolWorker, type SimPool } from './worker';
 
 const input: RunInput = {
   spec: 'warrior-fury',
@@ -61,6 +61,7 @@ describe('runSim', () => {
       estimate: { mean: 0, stddev: 0, error: 0, min: 0, max: 0 },
       iterationsDone: 0,
       iterationsTotal: 3000,
+      relativeError: 0,
     });
     const progressed = updates.map((u) => u.iterationsDone);
     expect(progressed).toEqual([...progressed].sort((a, b) => a - b));
@@ -151,6 +152,78 @@ describe('runSim', () => {
     const pool = createPool({ hardwareConcurrency: 8, spawn: () => fakeWorker() });
     const result = await runSim(pool, { ...input, iterations: 3 }, () => {}).result;
     expect(result.iterations_run).toBe(3);
+    pool.terminate();
+  });
+});
+
+describe('a target-error run', () => {
+  /**
+   * A fake engine whose relative error shrinks with every step, so the loop terminates on
+   * the engine's own answer rather than on a count this test chose. `tickMs: 0` keeps it
+   * instant; `ticks: 1` keeps the progress traffic down.
+   */
+  function stepPool(): SimPool {
+    return createPool({
+      hardwareConcurrency: 2,
+      spawn: () => createFakeWorker(createFakeEngine({ tickMs: 0, ticks: 1 })),
+    });
+  }
+
+  it('runs in thousand-iteration steps and stops when the engine says the band is inside the target', async () => {
+    const pool = stepPool();
+    const updates: RunUpdate[] = [];
+    const handle = runSim(
+      pool,
+      { ...input, iterations: 30_000, targetError: 0.005, stepIterations: 1000 },
+      (update) => updates.push(update),
+    );
+    const result = await handle.result;
+
+    // Every step is a multiple of the step size, nothing overshoots the ceiling, and the
+    // pooled figure is the whole run's, not the last step's.
+    expect(result.iterations_run % 1000).toBe(0);
+    expect(result.iterations_run).toBeGreaterThanOrEqual(1000);
+    expect(result.iterations_run).toBeLessThanOrEqual(30_000);
+    expect(result.dps.error / result.dps.mean).toBeLessThanOrEqual(0.005);
+    expect(result.request.target_error).toBe(0.005);
+    // The ceiling is what the request carries, so a saved sim says what bounded it.
+    expect(result.request.iterations).toBe(30_000);
+    // The progress line has an error to show from the first step onwards.
+    expect(updates.at(-1)?.relativeError).toBeLessThanOrEqual(0.005);
+    expect(updates.at(-1)?.iterationsDone).toBe(result.iterations_run);
+    pool.terminate();
+  });
+
+  it('stops at the ceiling when the band never closes', async () => {
+    const pool = stepPool();
+    const handle = runSim(
+      pool,
+      { ...input, iterations: 3000, targetError: 0.0000001, stepIterations: 1000 },
+      () => {},
+    );
+    const result = await handle.result;
+    expect(result.iterations_run).toBe(3000);
+    pool.terminate();
+  });
+
+  it('is today’s single pass when no target error is asked for', async () => {
+    const pool = stepPool();
+    const handle = runSim(pool, { ...input, iterations: 500 }, () => {});
+    const result = await handle.result;
+    expect(result.iterations_run).toBe(500);
+    expect(result.request.target_error).toBeUndefined();
+    pool.terminate();
+  });
+
+  it('a stop between steps ends the run rather than starting another one', async () => {
+    const pool = stepPool();
+    const handle = runSim(
+      pool,
+      { ...input, iterations: 30_000, targetError: 0.0000001, stepIterations: 1000 },
+      () => {},
+    );
+    handle.cancel();
+    await expect(handle.result).rejects.toThrow(SimRunError);
     pool.terminate();
   });
 });

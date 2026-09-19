@@ -8,8 +8,10 @@
 <script lang="ts">
   import { confidenceBand } from '../../lib/sim/estimate';
   import { simCopy } from '../../lib/sim/copy';
+  import { percentLabel } from '../../lib/sim/details';
+  import { LANE_ITERATION_CEILING, PRECISIONS, type Lane, type PrecisionId } from '../../lib/sim/precision';
   import type { SimPhase } from '../../lib/sim/store.svelte';
-  import { ITERATIONS, type Estimate, type IterationCount } from '../../lib/sim/types';
+  import type { Estimate } from '../../lib/sim/types';
   import { engineLabel } from '../../lib/sim/version';
 
   let {
@@ -17,7 +19,9 @@
     estimate,
     iterationsDone,
     iterationsTotal,
-    precision,
+    precisionId,
+    relativeError,
+    lane,
     premium,
     message,
     detail,
@@ -34,7 +38,16 @@
     estimate: Estimate;
     iterationsDone: number;
     iterationsTotal: number;
-    precision: IterationCount;
+    precisionId: PrecisionId;
+    /** `error / mean` of the figure on screen, for the progress line's per cent. */
+    relativeError: number;
+    /**
+     * Which lane the target-error note's ceiling names. `store.lane` -- reflects the lane
+     * the figure on screen most recently ran on, browser by default -- so a premium player
+     * who just ran on the server sees that lane's own ceiling (100,000), not the browser's,
+     * pinned regardless of which button they are looking at.
+     */
+    lane: Lane;
     premium: boolean;
     message: string | null;
     /** The engine's own words for the failure, shown verbatim under the message. Empty when there are none. */
@@ -58,7 +71,7 @@
     serverRunning: boolean;
     onrun: () => void;
     onstop: () => void;
-    onprecision: (value: IterationCount) => void;
+    onprecision: (value: PrecisionId) => void;
     onserver: () => void;
     onrerun: () => void;
   } = $props();
@@ -88,10 +101,11 @@
             ? simCopy.runAgain
             : simCopy.run,
   );
+  const errorText = $derived(relativeError > 0 ? ` · ${percentLabel(relativeError)}` : '');
   const progressLine = $derived(
     phase === 'done'
-      ? `${iterationsDone.toLocaleString('en-US')} ${simCopy.iterations}`
-      : `${iterationsDone.toLocaleString('en-US')} of ${iterationsTotal.toLocaleString('en-US')} ${simCopy.iterations}`,
+      ? `${iterationsDone.toLocaleString('en-US')} ${simCopy.iterations}${errorText}`
+      : `${iterationsDone.toLocaleString('en-US')} of ${iterationsTotal.toLocaleString('en-US')} ${simCopy.iterations}${errorText}`,
   );
 </script>
 
@@ -149,18 +163,19 @@
   </div>
 
   <div class="flex flex-wrap items-center gap-3">
-    <label class="flex min-h-11 items-center gap-2 text-[13px] md:min-h-0">
-      <input
-        type="checkbox"
-        class="accent-gold h-5 w-5"
-        checked={precision === ITERATIONS.precise}
+    <label class="flex flex-col gap-1">
+      <span class="label text-muted">{simCopy.precision}</span>
+      <select
+        class="border-line-warm rounded-control bg-raised text-text min-h-11 min-w-0 border px-3 text-[14px] font-semibold md:min-h-9"
         disabled={running || serverRunning}
-        title={simCopy.precisionNote}
-        onchange={(event) =>
-          onprecision(event.currentTarget.checked ? ITERATIONS.precise : ITERATIONS.normal)}
+        value={precisionId}
+        onchange={(event) => onprecision(event.currentTarget.value as PrecisionId)}
         data-testid="sim-precision"
-      />
-      <span class="text-muted">{simCopy.highPrecision}</span>
+      >
+        {#each PRECISIONS as id (id)}
+          <option value={id}>{simCopy.precisionLabel[id] ?? id}</option>
+        {/each}
+      </select>
     </label>
     {#if premium}
       <button
@@ -172,6 +187,12 @@
       >
     {/if}
   </div>
+
+  {#if precisionId === 'target-error'}
+    <p class="text-muted order-last w-full text-[12px]" data-testid="sim-target-error">
+      {simCopy.targetErrorNote(LANE_ITERATION_CEILING[lane].toLocaleString('en-US'))}
+    </p>
+  {/if}
 
   {#if staleVersion}
     <p class="order-last w-full text-[13px]" data-testid="sim-stale">

@@ -15,8 +15,13 @@
 import type { EngineModule, ProgressHandler } from '../../lib/sim/engine';
 import type { SimRequest, SimResult } from '../../lib/sim/types';
 import fixtureResultJson from './result.json';
+import sampleJson from './sample.json';
 
 const fixture = fixtureResultJson as unknown as SimResult;
+// Design 5.1's sample-iteration log needs a sample on every result the fixture engine
+// hands back, so /sim's own e2e can exercise the tab without a second fixture wired
+// through simSplit/simCombine.
+const fixtureSample = sampleJson as unknown as SimResult['sample'];
 
 export interface FakeEngineOptions {
   tickMs?: number;
@@ -65,6 +70,11 @@ function statsOf(samples: number[]): SimResult['dps'] & { n: number } {
 
 const delay = (ms: number): Promise<void> =>
   ms <= 0 ? Promise.resolve() : new Promise((resolve) => setTimeout(resolve, ms));
+
+/** The `{"error": "..."}` envelope simNeedsMore, simValidate and simCount all answer with
+ * for input that is not JSON at all -- one place for the message-extraction logic. */
+const errorEnvelope = (error: unknown): string =>
+  JSON.stringify({ error: error instanceof Error ? error.message : String(error) });
 
 export function createFakeEngine(options: FakeEngineOptions = {}): EngineModule {
   const tickMs = options.tickMs ?? 120;
@@ -132,6 +142,7 @@ export function createFakeEngine(options: FakeEngineOptions = {}): EngineModule 
           iterations_run: n,
           duration_ms: Date.now() - startedAt,
           summary: fixture.summary,
+          sample: fixtureSample,
         } satisfies SimResult);
       } finally {
         active.delete(callbackId);
@@ -172,6 +183,7 @@ export function createFakeEngine(options: FakeEngineOptions = {}): EngineModule 
         iterations_run: n,
         duration_ms: durationMs,
         summary: fixture.summary,
+        sample: fixtureSample,
       } satisfies SimResult);
     },
 
@@ -179,6 +191,73 @@ export function createFakeEngine(options: FakeEngineOptions = {}): EngineModule 
       const registered = active.has(callbackId);
       if (registered) aborted.add(callbackId);
       return JSON.stringify({ aborted: registered });
+    },
+
+    simNeedsMore(resultJSON, requestJSON) {
+      try {
+        const result = JSON.parse(resultJSON) as SimResult;
+        const request = JSON.parse(requestJSON) as SimRequest;
+        const target = request.target_error ?? 0;
+        // Four ways to be done, and the real engine agrees on all four: this was not a
+        // target-error run; nothing has been measured, so a relative error is undefined;
+        // the band is inside the target; or the ceiling is reached.
+        const needsMore =
+          target > 0 &&
+          result.dps.mean > 0 &&
+          result.dps.error / result.dps.mean > target &&
+          result.iterations_run < request.iterations;
+        return JSON.stringify({ needs_more: needsMore });
+      } catch (error) {
+        return errorEnvelope(error);
+      }
+    },
+
+    simValidate(requestJSON) {
+      let request: SimRequest;
+      try {
+        request = JSON.parse(requestJSON) as SimRequest;
+      } catch (error) {
+        return errorEnvelope(error);
+      }
+      // A short stand-in for api.SimRequest.Validate: the checks the drawer's own tests
+      // exercise. The real wasm runs the whole thing, and the drawer renders whatever
+      // fields come back, so a fake that refuses fewer things cannot make the page wrong.
+      const errors: { field: string; message: string }[] = [];
+      if (request.engine_version === undefined || request.engine_version === '') {
+        errors.push({ field: 'engine_version', message: 'engine_version is required' });
+      }
+      if (request.spec === undefined || request.spec === '') {
+        errors.push({ field: 'spec', message: 'spec is required' });
+      }
+      if (!(request.iterations > 0)) {
+        errors.push({ field: 'iterations', message: 'iterations must be a positive number' });
+      }
+      const targets = request.encounter?.targets;
+      if (targets !== undefined && (targets < 1 || targets > 10)) {
+        errors.push({ field: 'encounter.targets', message: 'targets must be between 1 and 10' });
+      }
+      return JSON.stringify({ ok: errors.length === 0, errors });
+    },
+
+    simCount(requestJSON) {
+      let request: SimRequest;
+      try {
+        request = JSON.parse(requestJSON) as SimRequest;
+      } catch (error) {
+        return errorEnvelope(error);
+      }
+      const bulk = request.bulk;
+      if (bulk === undefined) return JSON.stringify({ combinations: 0 });
+      // A stand-in for `sim/bulk`'s own expansion, which knows slot fit, unique-equipped
+      // and weapon shapes; the real wasm counts properly. The fake counts what it can see
+      // -- one combination per candidate, per talent loadout, per set -- which is enough
+      // for the page's cap notice and its e2e to be exercised honestly.
+      const combinations =
+        (bulk.candidates?.length ?? 0) + (bulk.talents?.length ?? 0) + (bulk.sets?.length ?? 0);
+      if (bulk.cap > 0 && combinations > bulk.cap) {
+        return JSON.stringify({ error: 'cap_exceeded', cap: bulk.cap, combinations });
+      }
+      return JSON.stringify({ combinations });
     },
   };
 }

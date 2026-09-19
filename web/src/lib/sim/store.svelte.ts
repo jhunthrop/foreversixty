@@ -18,10 +18,13 @@ import { indexTalents } from '../planner/rules';
 import { dispatchServerSim, fetchSim, fetchSimProgress, saveSim, SimApiError } from './api';
 import { characterFromFs1, needsRace, toCharacterSpec, type SimCharacter } from './character';
 import { loadActionNames, type ActionNames } from './action-names';
+import { EMPTY_BUFF_NAMES, loadBuffNames, type BuffNames } from './buff-names';
 import { simCopy } from './copy';
 import { EMPTY_ESTIMATE } from './estimate';
-import { buildSimRequest, runSim, SimRunError, type RunHandle, type RunInput } from './run';
-import { defaultSettings, type SimSettings } from './settings';
+import { precisionPlan, relativeError, type Lane, type PrecisionId } from './precision';
+import type { RequestValidation } from './engine';
+import { buildSimRequest, type RunHandle, type RunInput } from './run';
+import { defaultSettings, settingsLabel, type SimSettings } from './settings';
 import {
   fromAddonExport,
   fromLoggedFight,
@@ -30,8 +33,9 @@ import {
   type LoadContext,
   type SourceResult,
 } from './sources';
+import { createRequestMethods, runAndSettle, type StoreRequestDeps } from './store-request';
 import type { CharacterPath } from '../characters';
-import type { Estimate, IterationCount, SimProgress, SimResult, SourceKind } from './types';
+import type { Estimate, SimProgress, SimRequest, SimResult, SourceKind } from './types';
 import { createPool, type SimPool } from './worker';
 
 export type SimPhase = 'idle' | 'loading-character' | 'loading-engine' | 'running' | 'done' | 'error';
@@ -130,6 +134,12 @@ export interface SimStoreInit {
   code?: string;
   source?: SourceKind | '';
   ref?: string;
+  /**
+   * A whole request from a share link (`/sim?req=…`, design 8). It wins over `code` and
+   * over `source`/`ref`: it is the most specific thing a link can carry, and it carries
+   * the settings and the precision as well as the character.
+   */
+  request?: SimRequest;
   /** Overrides `runOnServer`'s poll interval. Tests pass a short one; production takes the default. */
   serverPollMs?: number;
 }
@@ -140,7 +150,13 @@ export function createSimStore(init: SimStoreInit) {
   let phase = $state<SimPhase>('idle');
   let character = $state<SimCharacter | null>(null);
   let settings = $state<SimSettings>(defaultSettings());
-  let precision = $state<IterationCount>(3000);
+  let precisionId = $state<PrecisionId>('normal');
+  // Empty means "the settings clause", which moves with the settings; anything the player
+  // types wins until they clear it again. Blank-but-not-empty counts as empty: a title of
+  // three spaces is not a title.
+  let typedTitle = $state('');
+  /** `error / mean` of the figure on screen, for the progress line and the details card. */
+  let relative = $state(0);
   let estimate = $state<Estimate>(EMPTY_ESTIMATE);
   let iterationsDone = $state(0);
   let iterationsTotal = $state(0);
@@ -162,6 +178,8 @@ export function createSimStore(init: SimStoreInit) {
   let talents = $state<TalentFile | null>(null);
   let actionNames = $state<ActionNames | null>(null);
   let loadedNamesFor = '';
+  let buffNames = $state<BuffNames | null>(null);
+  let loadedBuffNamesFor = '';
   let items = $state<Map<number, Item>>(toItemMap([]));
 
   let pool: SimPool | null = init.pool ?? null;
@@ -190,6 +208,15 @@ export function createSimStore(init: SimStoreInit) {
   }
 
   /**
+   * The one place the fallback-title rule lives: whatever the player typed, trimmed, or
+   * the settings clause when that is blank. `reportTitle` and `save()` both call this
+   * rather than each spelling the rule out -- fix round 1, Finding 1.
+   */
+  function fallbackTitle(): string {
+    return typedTitle.trim() === '' ? settingsLabel(settings) : typedTitle;
+  }
+
+  /**
    * Puts the figure back to the last completed result after a cancelled run, rather than
    * leaving it at whatever the aborted run's own progress happened to report last -- which
    * can be `EMPTY_ESTIMATE`, since `run.ts`'s `execute()` reports that once, synchronously,
@@ -202,10 +229,12 @@ export function createSimStore(init: SimStoreInit) {
       estimate = result.dps;
       iterationsDone = result.iterations_run;
       iterationsTotal = result.request.iterations;
+      relative = relativeError(result.dps);
     } else {
       estimate = EMPTY_ESTIMATE;
       iterationsDone = 0;
       iterationsTotal = 0;
+      relative = 0;
     }
   }
 
@@ -231,6 +260,7 @@ export function createSimStore(init: SimStoreInit) {
     estimate = EMPTY_ESTIMATE;
     iterationsDone = 0;
     iterationsTotal = 0;
+    relative = 0;
     phase = 'idle';
     try {
       const file = await loadItems(outcome.character.tree_version, outcome.character.class_slug);
@@ -262,6 +292,7 @@ export function createSimStore(init: SimStoreInit) {
       races = [];
     }
     await ensureActionNames(outcome.character.class_slug);
+    await ensureBuffNames(outcome.character.tree_version);
   }
 
   /**
@@ -281,22 +312,118 @@ export function createSimStore(init: SimStoreInit) {
     }
   }
 
-  // The URL's own bootstrap, kicked off once here rather than by the component: `code` wins
-  // when present, otherwise `source`/`ref` dispatches to the same loaders `loadAddon`,
-  // `loadBuild` and `loadFight` expose below. Neither present resolves immediately, so
-  // `ready` is always safe to await. A refusal (a class mismatch, an unreachable talent, an
-  // unknown race) runs through `adopt()` exactly as a pasted source does: `message` carries
-  // the reason and a race-pending character still arrives, needing the strip's picker.
+  /**
+   * The build's buff and consumable name table, once per build. A build with no table
+   * renders humanised ids, which is legible and honest -- the same rule, and the same
+   * reason, as `ensureActionNames` above.
+   */
+  async function ensureBuffNames(build: string): Promise<void> {
+    if (build === '' || loadedBuffNamesFor === build) return;
+    loadedBuffNamesFor = build;
+    try {
+      buffNames = await loadBuffNames(build);
+    } catch {
+      buffNames = EMPTY_BUFF_NAMES;
+    }
+  }
+
+  // Task 15: the request drawer's four methods, extracted into store-request.ts (712 of
+  // 800 lines here before this task; these four would have pushed it over). `$state`
+  // cannot cross the module boundary, so every field they touch is passed as a getter or
+  // setter closing over this function's own `let`s -- see store-request.ts's header for
+  // why, and StoreRequestDeps for exactly what "everything they touch" is.
+  const requestDeps: StoreRequestDeps = {
+    getCharacter: () => character,
+    getTalents: () => talents,
+    getSettings: () => settings,
+    setSettings: (value) => {
+      settings = value;
+    },
+    getPrecisionId: () => precisionId,
+    setPrecisionId: (value) => {
+      precisionId = value;
+    },
+    getResult: () => result,
+    setResult: (value) => {
+      result = value;
+    },
+    setMessage: (value) => {
+      message = value;
+    },
+    setDetail: (value) => {
+      detail = value;
+    },
+    setPhase: (value) => {
+      phase = value;
+    },
+    setProgress: (update) => {
+      estimate = update.estimate;
+      iterationsDone = update.iterationsDone;
+      iterationsTotal = update.iterationsTotal;
+      relative = update.relativeError;
+    },
+    getStopRequested: () => stopRequested,
+    setStopRequested: (value) => {
+      stopRequested = value;
+    },
+    setHandle: (value) => {
+      handle = value;
+    },
+    poolOnce,
+    adopt,
+    restorePreviousResult,
+    fromPlannerCode: (code) => fromPlannerCode(code, ctx),
+    treeVersion: init.treeVersion,
+  };
+  const requestMethods = createRequestMethods(requestDeps);
+
+  /**
+   * Task 16: a share link's own bootstrap (`/sim?req=…`). Hoisted above `ready` so both it
+   * and the returned `applyRequest` method can call it -- the page's own "Apply to the
+   * page" button and a followed share link run through the identical
+   * `requestMethods.applyRequest`, so a link can never disagree with the button about what
+   * applying a request does.
+   *
+   * `url.ts`'s `decodeRequestParam` refuses anything that does not look like a `SimRequest`
+   * at the top level, but it is a shape check, not a validator (its own doc comment says
+   * so) -- it does not look inside `character` or `encounter`, and the engine's own
+   * Validate never runs on this path at all (design 8's link applies instantly, without a
+   * round trip through the engine first). So `requestMethods.applyRequest` can still throw
+   * on a field the shape check cannot see, and `ready` is never awaited by the component
+   * that creates this store -- an uncaught throw here would be an unhandled rejection on
+   * page load for anyone who followed a bad link, not merely a console warning for the
+   * player who typed it. The catch below reuses `adopt()`'s own established refusal path
+   * (the same one a bad build id or an unreachable talent file already takes) rather than
+   * inventing a second "load failed" message: whatever throws, the player sees exactly
+   * what a rejected source already shows them.
+   */
+  async function applyRequestOnce(request: SimRequest): Promise<void> {
+    try {
+      await requestMethods.applyRequest(request);
+    } catch {
+      await adopt(Promise.resolve({ ok: false, message: simCopy.characterFailed }));
+    }
+  }
+
+  // The URL's own bootstrap, kicked off once here rather than by the component: a share
+  // link's whole `request` wins over `code`, which wins over `source`/`ref` -- it is the
+  // most specific thing a link can carry (design 8). Neither present resolves immediately,
+  // so `ready` is always safe to await. A refusal (a class mismatch, an unreachable talent,
+  // an unknown race) runs through `adopt()` exactly as a pasted source does: `message`
+  // carries the reason and a race-pending character still arrives, needing the strip's
+  // picker.
   const ready: Promise<void> =
-    init.code !== undefined && init.code !== ''
-      ? adopt(fromPlannerCode(init.code, ctx))
-      : (() => {
-          const load =
-            init.source !== undefined && init.ref !== undefined && init.ref !== ''
-              ? bootstrapSource(init.source, init.ref, ctx)
-              : null;
-          return load === null ? Promise.resolve() : adopt(load);
-        })();
+    init.request !== undefined
+      ? applyRequestOnce(init.request)
+      : init.code !== undefined && init.code !== ''
+        ? adopt(fromPlannerCode(init.code, ctx))
+        : (() => {
+            const load =
+              init.source !== undefined && init.ref !== undefined && init.ref !== ''
+                ? bootstrapSource(init.source, init.ref, ctx)
+                : null;
+            return load === null ? Promise.resolve() : adopt(load);
+          })();
 
   return {
     /** Resolves once the URL's own bootstrap character, if any, has been adopted. */
@@ -310,8 +437,30 @@ export function createSimStore(init: SimStoreInit) {
     get settings() {
       return settings;
     },
-    get precision() {
-      return precision;
+    get precisionId() {
+      return precisionId;
+    },
+    /**
+     * The report's title: whatever the player typed, or the settings clause while they
+     * have typed nothing. This is what the save form, the finish notification and the
+     * saved link's own title all carry (design 5.4) -- one field, not three that could
+     * disagree.
+     */
+    get reportTitle() {
+      return fallbackTitle();
+    },
+    /** `error / mean` of the figure on screen, for the progress line and the details card. */
+    get relativeError() {
+      return relative;
+    },
+    /**
+     * Which lane the figure on screen ran on: `run()` is always `'browser'`,
+     * `runOnServer()` is always `'server'` -- there is no third. Reflects whichever ran
+     * most recently rather than a player-facing choice; `run()` and `runOnServer()` are
+     * two separate buttons, not one control with a lane setting.
+     */
+    get lane(): Lane {
+      return serverRunning ? 'server' : 'browser';
     },
     get estimate() {
       return estimate;
@@ -334,6 +483,9 @@ export function createSimStore(init: SimStoreInit) {
     },
     get actionNames() {
       return actionNames;
+    },
+    get buffNames() {
+      return buffNames;
     },
     get items() {
       return items;
@@ -370,6 +522,7 @@ export function createSimStore(init: SimStoreInit) {
       estimate = EMPTY_ESTIMATE;
       iterationsDone = 0;
       iterationsTotal = 0;
+      relative = 0;
       message = null;
       phase = 'idle';
     },
@@ -380,8 +533,11 @@ export function createSimStore(init: SimStoreInit) {
     setSettings(next: SimSettings): void {
       settings = next;
     },
-    setPrecision(value: IterationCount): void {
-      precision = value;
+    setPrecisionId(value: PrecisionId): void {
+      precisionId = value;
+    },
+    setReportTitle(value: string): void {
+      typedTitle = value;
     },
 
     loadAddon: (code: string) => adopt(fromAddonExport(code, ctx)),
@@ -395,6 +551,7 @@ export function createSimStore(init: SimStoreInit) {
       estimate = next.dps;
       iterationsDone = next.iterations_run;
       iterationsTotal = next.request.iterations;
+      relative = relativeError(next.dps);
       phase = 'done';
     },
 
@@ -407,8 +564,10 @@ export function createSimStore(init: SimStoreInit) {
       detail = '';
       stopRequested = false;
       phase = 'loading-engine';
-      iterationsTotal = precision;
+      const plan = precisionPlan(precisionId, 'browser');
+      iterationsTotal = plan.iterations;
       iterationsDone = 0;
+      relative = 0;
 
       // The talent index comes from the file the character was loaded with, so the engine's
       // talents string is built from the same data the strip is rendering.
@@ -422,49 +581,22 @@ export function createSimStore(init: SimStoreInit) {
       const input: RunInput = {
         spec: character.spec,
         source: character.source,
-        character: toCharacterSpec(character, index, settings.buffs, settings.consumables),
+        character: toCharacterSpec(
+          character,
+          index,
+          settings.buffs,
+          settings.consumables,
+          settings.cooldowns,
+        ),
         encounter: settings.encounter,
-        iterations: precision,
+        iterations: plan.iterations,
+        targetError: plan.targetError,
+        stepIterations: plan.step,
       };
 
-      phase = 'running';
-      handle = runSim(poolOnce(), input, (update) => {
-        // A shard can still report progress after stop() fires and before the engine has
-        // noticed the abort message; the figure on screen must not keep moving once the
-        // player has asked it to stop.
-        if (stopRequested) return;
-        estimate = update.estimate;
-        iterationsDone = update.iterationsDone;
-        iterationsTotal = update.iterationsTotal;
-      });
-
-      try {
-        const finished = await handle.result;
-        // handle.result can resolve with a real result even after stop(): the abort message
-        // and the engine's own last tick can cross in flight, and a shard mid-tick when the
-        // message arrives finishes it rather than discarding the work. The player's Stop
-        // still wins -- the number on screen is the one from before this run, not a result
-        // they asked to discard.
-        if (stopRequested) {
-          message = simCopy.stopped;
-          restorePreviousResult();
-          phase = result !== null ? 'done' : 'idle';
-          return;
-        }
-        result = finished;
-        phase = 'done';
-      } catch (error) {
-        const failure = error instanceof SimRunError ? error : null;
-        message = failure?.cancelled === true ? simCopy.stopped : (failure?.message ?? simCopy.failed);
-        // The engine's own words, kept beside ours: sim/request names the buff or
-        // consumable id it could not map, and that is the only thing that says what to
-        // change. RunControl renders it under the message, verbatim.
-        detail = failure?.detail ?? '';
-        if (failure?.cancelled === true) restorePreviousResult();
-        phase = failure?.cancelled === true && result !== null ? 'done' : 'error';
-      } finally {
-        handle = null;
-      }
+      // The cancel/restore/phase decision from here on is runRequest()'s own too --
+      // runAndSettle (store-request.ts) is the one place it is written.
+      await runAndSettle(requestDeps, poolOnce(), input);
     },
 
     /**
@@ -514,12 +646,20 @@ export function createSimStore(init: SimStoreInit) {
         message = null;
         detail = '';
 
+        const plan = precisionPlan(precisionId, 'server');
         const request = buildSimRequest({
           spec: character.spec,
           source: character.source,
-          character: toCharacterSpec(character, index, settings.buffs, settings.consumables),
+          character: toCharacterSpec(
+            character,
+            index,
+            settings.buffs,
+            settings.consumables,
+            settings.cooldowns,
+          ),
           encounter: settings.encounter,
-          iterations: precision,
+          iterations: plan.iterations,
+          targetError: plan.targetError,
         });
 
         let simId: string;
@@ -531,8 +671,9 @@ export function createSimStore(init: SimStoreInit) {
         }
         if (!stillCurrent()) return;
 
-        iterationsTotal = precision;
+        iterationsTotal = plan.iterations;
         iterationsDone = 0;
+        relative = 0;
 
         const pollMs = init.serverPollMs ?? DEFAULT_SERVER_POLL_MS;
         for (;;) {
@@ -567,6 +708,7 @@ export function createSimStore(init: SimStoreInit) {
                 estimate = finished.dps;
                 iterationsDone = finished.iterations_run;
                 iterationsTotal = finished.request.iterations;
+                relative = relativeError(finished.dps);
                 phase = 'done';
               }
             } catch (error) {
@@ -586,6 +728,21 @@ export function createSimStore(init: SimStoreInit) {
       }
     },
 
+    /** The request the page would send right now, or null with no character or talents. */
+    buildRequest(): SimRequest | null {
+      return requestMethods.buildRequest();
+    },
+    /** `api.SimRequest.Validate`, inside the wasm. Never a rule written here. */
+    validateRequest(json: string): Promise<RequestValidation> {
+      return requestMethods.validateRequest(json);
+    },
+    /** A pasted request as page state: settings, precision and the character it decodes to. */
+    applyRequest: (request: SimRequest) => applyRequestOnce(request),
+    /** The edited request, run exactly as written. The escape hatch of design 8. */
+    runRequest(request: SimRequest): Promise<void> {
+      return requestMethods.runRequest(request);
+    },
+
     stop(): void {
       stopRequested = true;
       handle?.cancel();
@@ -593,16 +750,20 @@ export function createSimStore(init: SimStoreInit) {
 
     /**
      * Saves the last finished result, optionally under a title -- the contract's `sims.
-     * title` column, pre-filled by the caller with `settingsLabel(store.settings)` and
-     * editable before the press. Null on failure, without touching `message`: a save
-     * failure is the save form's own concern (`simCopy.saveFailed` beside its button, per
-     * the design), not the run control's -- setting the shared field here would raise a
-     * second, unrelated alert next to a run that did not fail.
+     * title` column. An omitted title falls back to `reportTitle` (the same rule the save
+     * form's own pre-fill and the finish notification use, design 5.4), so a caller that
+     * saves without one still names the report rather than leaving it untitled; a caller
+     * that does pass one (the save form, after the player has edited the field) wins.
+     * Null on failure, without touching `message`: a save failure is the save form's own
+     * concern (`simCopy.saveFailed` beside its button, per the design), not the run
+     * control's -- setting the shared field here would raise a second, unrelated alert
+     * next to a run that did not fail.
      */
     async save(title?: string): Promise<string | null> {
       if (result === null) return null;
+      const chosen = title ?? fallbackTitle();
       try {
-        return await saveSim(result, init.apiBase, title ?? '');
+        return await saveSim(result, init.apiBase, chosen);
       } catch {
         return null;
       }
