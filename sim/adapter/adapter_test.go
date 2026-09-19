@@ -755,3 +755,92 @@ func TestWeightsRefusals(t *testing.T) {
 		t.Error("a request with no weights block was accepted")
 	}
 }
+
+// One iteration's casts, in order, with the pre-pull negative and each
+// row carrying the summary's ACTION KEY rather than a display name -
+// the page resolves the name with resolveActionName exactly as it
+// does for a cast row (contract A12).
+func TestSampleMapsTheEnginesCastLog(t *testing.T) {
+	res := &proto.RaidSimResult{SampleIteration: &proto.SampleIteration{
+		Dps:             1038.66,
+		DurationSeconds: 60,
+		Casts: []*proto.SampleCast{
+			{AtMs: -1500, ActionId: &proto.ActionID{RawId: &proto.ActionID_SpellId{SpellId: 1719}}},
+			{AtMs: 0, ActionId: &proto.ActionID{RawId: &proto.ActionID_SpellId{SpellId: 23881}},
+				Target: "Target Dummy", Resources: map[string]int32{"rage": 26}},
+			{AtMs: 1502, ActionId: &proto.ActionID{RawId: &proto.ActionID_ItemId{ItemId: 13442}}},
+			{AtMs: 2000, ActionId: &proto.ActionID{RawId: &proto.ActionID_OtherId{OtherId: proto.OtherAction_OtherActionAttack}}},
+		},
+	}}
+
+	got := Sample(res)
+	if len(got) != 4 {
+		t.Fatalf("got %d casts, want 4", len(got))
+	}
+	if got[0].AtMS != -1500 {
+		t.Errorf("the pre-pull cast is at %d ms, want -1500", got[0].AtMS)
+	}
+	if got[0].Action != "spell:1719" {
+		t.Errorf("an untagged spell is %q, want its action key", got[0].Action)
+	}
+	if got[1].Target != "Target Dummy" || got[1].Resources["rage"] != 26 {
+		t.Errorf("cast 1 = %+v", got[1])
+	}
+	if got[2].AtMS != 1502 {
+		t.Errorf("cast 2 is at %d ms, want 1502", got[2].AtMS)
+	}
+	// An item and an "other" action take the same key form the cast
+	// table's rows take, so the page resolves one name one way.
+	_, wantItem := ActionName(&proto.ActionID{RawId: &proto.ActionID_ItemId{ItemId: 13442}})
+	if got[2].Action != wantItem {
+		t.Errorf("the item cast is %q, want %q", got[2].Action, wantItem)
+	}
+	if got[3].Action != "other:attack" {
+		t.Errorf("the white swing is %q", got[3].Action)
+	}
+	// No display name anywhere: the page resolves them, and a name
+	// baked in here would be a second vocabulary.
+	for i, c := range got {
+		if c.Action == "" {
+			t.Errorf("cast %d has no action key", i)
+		}
+	}
+}
+
+// A result with no sample is not an error: an aborted run, a bulk
+// stage and an older engine all produce one, and the page renders the
+// card only when there are rows.
+func TestSampleOfNothingIsNothing(t *testing.T) {
+	if got := Sample(nil); got != nil {
+		t.Errorf("Sample(nil) = %+v", got)
+	}
+	if got := Sample(&proto.RaidSimResult{}); got != nil {
+		t.Errorf("a result with no sample produced %+v", got)
+	}
+	if got := Sample(&proto.RaidSimResult{SampleIteration: &proto.SampleIteration{}}); got != nil {
+		t.Errorf("an empty sample produced %+v", got)
+	}
+}
+
+// The checked-in fixtures are real engine output, so the mapping is
+// proved against one rather than only against hand-built messages.
+func TestSampleOfTheWarriorFixture(t *testing.T) {
+	res, err := Fixture("warrior-fury")
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := Sample(res)
+	if len(got) == 0 {
+		t.Skip("the checked-in fixture predates sample_iteration; refresh it with `forever-sim -out-proto`")
+	}
+	var last int64 = -1 << 62
+	for i, c := range got {
+		if c.AtMS < last {
+			t.Errorf("cast %d is at %d ms, after %d; the sample is in cast order", i, c.AtMS, last)
+		}
+		last = c.AtMS
+		if c.Action == "" {
+			t.Errorf("cast %d has no action key", i)
+		}
+	}
+}

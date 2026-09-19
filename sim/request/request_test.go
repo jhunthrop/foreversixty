@@ -491,3 +491,27 @@ func TestTargetTypesMatchTheEngineEnum(t *testing.T) {
 		t.Errorf("mobTypes has %d entries, the enum has %d", len(mobTypes), len(proto.MobType_name))
 	}
 }
+
+// The sample iteration is opt-in, and a bulk stage does not opt in:
+// its request is one of dozens and its cast log would be dozens of
+// logs nobody reads, paid for on every combination.
+func TestTheSampleIterationIsAskedForOnPlainRunsOnly(t *testing.T) {
+	plain, err := Build(fury())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !plain.SimOptions.GetSampleIteration() {
+		t.Error("a plain run did not ask for a sample iteration")
+	}
+
+	// A stage request is a plain run by shape - sim/bulk clears the
+	// bulk block - so the flag is switched off by the ONE thing that
+	// distinguishes it: the caller says so.
+	stage, err := BuildWith(fury(), Options{OpenIterations: true, NoSampleIteration: true})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if stage.SimOptions.GetSampleIteration() {
+		t.Error("a stage request asked for a sample iteration")
+	}
+}

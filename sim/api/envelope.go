@@ -140,6 +140,12 @@ type SimRequest struct {
 	// which of the two ended the run, which is why the loop is a loop
 	// over whole results rather than a number the engine is handed.
 	TargetError float64 `json:"target_error,omitempty"`
+	// NoSample says this request is one of many and its cast log
+	// would never be read: sim/bulk sets it on every stage request.
+	// It is not a user setting and the page never sends it; it exists
+	// so a stage request, which is a plain run by shape, can say that
+	// it is not the run whose sample the report will show.
+	NoSample bool `json:"no_sample,omitempty"`
 }
 
 // CharacterSpec is everything the engine needs about the player, in JSON.

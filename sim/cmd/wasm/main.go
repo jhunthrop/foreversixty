@@ -126,7 +126,7 @@ func simRun(_ js.Value, args []js.Value) any {
 	// four workers is 750. OpenIterations relaxes that check and
 	// nothing else. The whole request was validated before it was split,
 	// by the page and by the api lane.
-	engineReq, err := request.BuildWith(req, request.Options{OpenIterations: true})
+	engineReq, err := request.BuildWith(req, request.Options{OpenIterations: true, NoSampleIteration: req.NoSample})
 	if err != nil {
 		return fail(req, err.Error())
 	}
@@ -146,8 +146,15 @@ func simRun(_ js.Value, args []js.Value) any {
 	var engineRes *proto.RaidSimResult
 	for p := range reporter {
 		if p.FinalRaidResult != nil {
+			// Not a break: see the matching comment in
+			// sim/cmd/forever-sim's execute. run() sends this message
+			// before a sample request's median-iteration replay has
+			// set FinalRaidResult.SampleIteration on the very same
+			// pointer, so breaking here used to read it too early.
+			// Draining to the channel's close is what makes that
+			// mutation guaranteed-visible.
 			engineRes = p.FinalRaidResult
-			break
+			continue
 		}
 		if cb := js.Global().Get("simProgress"); cb.Type() == js.TypeFunction {
 			if b, err := json.Marshal(api.Progress{
@@ -181,6 +188,7 @@ func simRun(_ js.Value, args []js.Value) any {
 		IterationsRun: int(engineRes.IterationsDone),
 		DurationMS:    time.Since(start).Milliseconds(),
 		Summary:       sum,
+		Sample:        adapter.Sample(engineRes),
 	})
 }
 

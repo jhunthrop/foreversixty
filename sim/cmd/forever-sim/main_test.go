@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"reflect"
 	"strings"
 	"syscall"
 	"testing"
@@ -16,6 +17,7 @@ import (
 	"github.com/jhunthrop/foreversixty/sim/adapter"
 	"github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/jhunthrop/foreversixty/sim/enginever"
+	"github.com/wowsims/classic/sim/core"
 	"github.com/wowsims/classic/sim/core/proto"
 	"github.com/wowsims/classic/sim/core/simsignals"
 	googleproto "google.golang.org/protobuf/proto"
@@ -35,6 +37,24 @@ func smallRequest(t *testing.T) []byte {
 		Iterations: 500,
 		RandomSeed: 1,
 	}
+	b, err := json.Marshal(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return b
+}
+
+// noSampleRequest is smallRequest with NoSample set, which is the one
+// thing that sends a plain-shaped request down the concurrent entry
+// point (see entryPointFor): a sample request stays single-threaded and
+// so it emits no "N concurrent sims" log line for a test that wants one.
+func noSampleRequest(t *testing.T) []byte {
+	t.Helper()
+	var req api.SimRequest
+	if err := json.Unmarshal(smallRequest(t), &req); err != nil {
+		t.Fatal(err)
+	}
+	req.NoSample = true
 	b, err := json.Marshal(req)
 	if err != nil {
 		t.Fatal(err)
@@ -105,10 +125,17 @@ func buildBinary(t *testing.T) string {
 // the other end - sim/runner.Native - is guessing which lines are its
 // own. This reads the real stderr of the real binary, because that is
 // the only place the two streams actually meet.
+//
+// It runs a NoSample request rather than smallRequest's plain shape:
+// a sample request now stays on the engine's single-threaded entry
+// point (entryPointFor), which - for a run this small - logs nothing
+// at all, and a test that wants an engine log line to wrap needs the
+// concurrent path's "N concurrent sims" line to prove the wrapper
+// against.
 func TestProgressIsJSONLines(t *testing.T) {
 	dir := t.TempDir()
 	in := filepath.Join(dir, "req.json")
-	if err := os.WriteFile(in, smallRequest(t), 0o644); err != nil {
+	if err := os.WriteFile(in, noSampleRequest(t), 0o644); err != nil {
 		t.Fatal(err)
 	}
 
@@ -323,6 +350,61 @@ func TestTheResultIsStampedWithTheBinarysOwnEngine(t *testing.T) {
 	}
 	if !res.Stale("deadbee") {
 		t.Error("Stale never fires; the stamp is not a fact")
+	}
+}
+
+// A sample iteration is exact only on the engine's single-threaded
+// entry point (see entryPointFor's own comment): the concurrent split
+// keeps whichever shard's local median lands closest to the combined
+// mean, which the engine fork's own pickSampleIteration documents as
+// "a KNOWN APPROXIMATION, not the genuine global median". A request
+// that asked for a sample must not silently get that approximation,
+// and a request that did not ask for one must keep the fast concurrent
+// path - so this pins the mapping by function identity rather than by
+// running two full sims and hoping a stray difference shows through.
+func TestEntryPointForChoosesTheSerialPathOnlyForASample(t *testing.T) {
+	if got, want := reflect.ValueOf(entryPointFor(true)).Pointer(), reflect.ValueOf(core.RunRaidSimAsync).Pointer(); got != want {
+		t.Error("a sample request did not choose the engine's single-threaded entry point")
+	}
+	if got, want := reflect.ValueOf(entryPointFor(false)).Pointer(), reflect.ValueOf(core.RunRaidSimConcurrentAsync).Pointer(); got != want {
+		t.Error("a plain request did not choose the engine's concurrent entry point")
+	}
+}
+
+// A plain run - the shape every request has unless something says
+// otherwise - always asks for the sample and gets one back: the
+// report's sample card is not optional for a run nobody flagged as
+// one of many.
+func TestExecuteFillsTheSampleForAPlainRun(t *testing.T) {
+	var req api.SimRequest
+	if err := json.Unmarshal(smallRequest(t), &req); err != nil {
+		t.Fatal(err)
+	}
+	res, err := Execute(req, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(res.Sample) == 0 {
+		t.Error("a plain run carried no sample; the report's sample card would render nothing")
+	}
+}
+
+// api.SimRequest.NoSample is how a caller building dozens of stage
+// requests - one per bulk combination - says its cast log would never
+// be read. Setting it must turn the sample off end to end, not just at
+// the protobuf boundary.
+func TestExecuteOmitsTheSampleWhenNoSampleIsSet(t *testing.T) {
+	var req api.SimRequest
+	if err := json.Unmarshal(smallRequest(t), &req); err != nil {
+		t.Fatal(err)
+	}
+	req.NoSample = true
+	res, err := Execute(req, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(res.Sample) != 0 {
+		t.Errorf("a NoSample run carried %d sample rows, want 0", len(res.Sample))
 	}
 }
 

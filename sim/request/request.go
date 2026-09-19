@@ -130,6 +130,15 @@ type Options struct {
 	// operator running forever-sim passes -iterations 100 to reproduce
 	// something quickly. A whole request from a client never sets it.
 	OpenIterations bool
+
+	// NoSampleIteration switches off the engine's sample cast log.
+	//
+	// One caller sets it: sim/bulk's stage requests. A bulk stage is
+	// dozens of runs and the page shows one cast log, so recording
+	// one per combination is paid for on every sim and read on none.
+	// A plain run always records it, because the report's sample card
+	// is not optional.
+	NoSampleIteration bool
 }
 
 // Build turns a validated SimRequest into the engine's own request,
@@ -214,6 +223,9 @@ func BuildWith(req api.SimRequest, opt Options) (*proto.RaidSimRequest, error) {
 			// IsTest caps concurrency at three splits and adds
 			// per-iteration bookkeeping; it is never right for a real run.
 			IsTest: false,
+			// The median-DPS iteration's cast log, for the report's
+			// sample card. See Options.NoSampleIteration.
+			SampleIteration: !opt.NoSampleIteration,
 		},
 	}, nil
 }

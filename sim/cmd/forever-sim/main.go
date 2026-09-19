@@ -25,7 +25,11 @@
 //
 // Concurrency is automatic: core.RunRaidSimConcurrentAsync splits across
 // runtime.NumCPU() and recombines the distribution metrics, offsetting
-// each split's seed so the stream matches a serial run.
+// each split's seed so the stream matches a serial run. The one
+// exception is a request that asks for the sample iteration: see
+// entryPointFor, which keeps that run on the engine's single-threaded
+// entry point because the concurrent path's sample is only an
+// approximation.
 package main
 
 import (
@@ -237,6 +241,7 @@ func Execute(req api.SimRequest, progress io.Writer) (api.SimResult, error) {
 	base.IterationsRun = int(engineRes.IterationsDone)
 	base.DurationMS = time.Since(start).Milliseconds()
 	base.Summary = sum
+	base.Sample = adapter.Sample(engineRes)
 	return base, nil
 }
 
@@ -246,6 +251,35 @@ var runs atomic.Int64
 
 func runID() string {
 	return fmt.Sprintf("forever-sim-%d-%d", os.Getpid(), runs.Add(1))
+}
+
+// simEntryPoint is the shared signature of the engine's two ways to run
+// a request: core.RunRaidSimAsync and core.RunRaidSimConcurrentAsync.
+type simEntryPoint func(*proto.RaidSimRequest, chan *proto.ProgressMetrics, string)
+
+// entryPointFor picks which of the engine's two entry points runs one
+// request.
+//
+// The concurrent path (core.RunRaidSimConcurrentAsync) splits the
+// iteration count across runtime.NumCPU() shards and, per the engine
+// fork's own pickSampleIteration (sim/core/sim_concurrent.go), keeps
+// whichever shard's LOCAL median lands closest to the combined mean -
+// its own comment calls this "a KNOWN APPROXIMATION, not the genuine
+// global median". The single-threaded path (core.RunRaidSimAsync, the
+// same one sim/cmd/wasm uses because wasm has no threads to split
+// across) computes the exact median over the whole run and never goes
+// through that approximation.
+//
+// A sample iteration exists to show the player one real fight, so a
+// request that asked for one gets the exact entry point rather than the
+// fast, approximate one; every other request keeps the concurrent
+// split. DO NOT "optimise" this back to always using the concurrent
+// call - that would swap an exact sample for a plausible-looking one.
+func entryPointFor(sampleIteration bool) simEntryPoint {
+	if sampleIteration {
+		return core.RunRaidSimAsync
+	}
+	return core.RunRaidSimConcurrentAsync
 }
 
 // execute is the engine half: our request in, the engine's own result
@@ -259,7 +293,7 @@ func execute(req api.SimRequest, progress io.Writer) (*proto.RaidSimResult, erro
 	// is bounded rather than held to the closed set the settings bar
 	// offers. Without it `-iterations 100` died on "iterations must be
 	// one of [500 3000 10000]", which the flag's own help denies.
-	engineReq, err := request.BuildWith(req, request.Options{OpenIterations: true})
+	engineReq, err := request.BuildWith(req, request.Options{OpenIterations: true, NoSampleIteration: req.NoSample})
 	if err != nil {
 		return nil, fmt.Errorf("%w: %v", errBadInput, err)
 	}
@@ -275,7 +309,7 @@ func execute(req api.SimRequest, progress io.Writer) (*proto.RaidSimResult, erro
 	// which the tests in this package already do.
 	id := runID()
 	defer onInterrupt(id)()
-	core.RunRaidSimConcurrentAsync(engineReq, reporter, id)
+	entryPointFor(engineReq.SimOptions.GetSampleIteration())(engineReq, reporter, id)
 
 	var enc *json.Encoder
 	if progress != nil {
@@ -285,8 +319,20 @@ func execute(req api.SimRequest, progress io.Writer) (*proto.RaidSimResult, erro
 	var engineRes *proto.RaidSimResult
 	for p := range reporter {
 		if p.FinalRaidResult != nil {
+			// Not a break: run() sends this message from INSIDE the
+			// producer goroutine, then keeps running - it still has to
+			// return up to runSim, which (for a sample request) replays
+			// the median iteration and only THEN sets
+			// FinalRaidResult.SampleIteration on this same pointer,
+			// before closing the channel. Breaking here used to read
+			// the struct while that replay was still in flight, which
+			// raced SampleIteration nil more often than not. Draining
+			// to the close instead relies on the channel-close
+			// happens-before: everything the producer did before
+			// close(progress), including that mutation, is guaranteed
+			// visible once range sees the channel closed.
 			engineRes = p.FinalRaidResult
-			break
+			continue
 		}
 		if enc != nil {
 			_ = enc.Encode(struct {
