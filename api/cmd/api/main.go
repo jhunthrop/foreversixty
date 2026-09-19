@@ -307,6 +307,7 @@ func serve(log *slog.Logger) error {
 		scorer = sims.NewScorer(sims.ScoreDeps{
 			Store: simStore, Scores: rankStore, Engine: simEngine(log),
 			Build:         sims.CombatantBuilder{Talents: talentLayouts(cfg.TreeDataDir, treeData, log)},
+			Summaries:     client,
 			EngineVersion: enginever.Version, Log: log,
 		})
 		go scorer.Run(ctx)

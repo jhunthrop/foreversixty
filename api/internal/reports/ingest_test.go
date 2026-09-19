@@ -8,8 +8,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"mime/multipart"
 	"net/http"
+	"os"
 	"strings"
 	"sync"
 	"testing"
@@ -18,6 +20,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/character"
 	"github.com/jhunthrop/foreversixty/api/internal/engine"
 	"github.com/jhunthrop/foreversixty/api/internal/metrics"
+	"github.com/jhunthrop/foreversixty/logs/engine/event"
 	"github.com/jhunthrop/foreversixty/logs/engine/store"
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
 	"github.com/klauspost/compress/zstd"
@@ -923,23 +926,33 @@ func everyFixturePlayer(t *testing.T, rep Report) fakeMembers {
 	return fakeMembers{keys: keys}
 }
 
-// TestAVerifiedFightQueuesItsMembersForScoring exercises (*Ingest).score
-// directly rather than through a posted bundle.
+// dirGetter reads objects back out of the harness's local directory,
+// the way *r2.Client reads them out of the bucket - sims' own test
+// double, reimplemented here so this test can prove what it posted is
+// what a scorer would eventually read back, without this package
+// importing sims for it.
+type dirGetter struct{ root string }
+
+func (d dirGetter) Get(_ context.Context, key string) (io.ReadCloser, error) {
+	return os.Open(d.root + "/" + key)
+}
+
+// TestAVerifiedFightQueuesItsMembersForScoring posts through the real
+// route.
 //
 // The engine's Parquet schema deliberately does not carry a fight's
-// COMBATANT_INFO payload - parquet/schema.go's EventOf says so outright:
-// "Encounter, Zone, Combatant ... live in report.json and summary.json".
-// putFight rebuilds its combatants from the *Parquet-decoded* events
-// (rebuilt.Combatants), so no bundle posted through the real route, on
-// the fixture or off it, can ever carry a non-empty combatant today -
-// every fight closed through HTTP has "the fight recorded no gear for
-// them" true for every player, which is a real, load-bearing skip
-// condition and not one this task's tests should paper over. score's
-// own filtering - the member check, the spec/dps/duration guards, the
-// combatant lookup - is what this test is for, so it calls the
-// unexported method with a hand-built row and combatant the way a
-// future Parquet payload would eventually supply them, in the same
-// package the method lives in.
+// COMBATANT_INFO payload - parquet/schema.go's EventOf says so
+// outright: "Encounter, Zone, Combatant ... live in report.json and
+// summary.json" - so the ingest's fight-close hook never reads a
+// combatant from the events it rebuilds; it only ever hands the scorer
+// a fight reference and a player name. What this test can and does
+// prove through the real route is that queuing, and that the summary
+// the hook's own PUT stores in the bucket - the companion's own JSON,
+// bent here to carry a combatant the way a real companion export would
+// - is the exact object a scorer would later read back through
+// Service.Summaries to find that combatant. The bend only touches the
+// posted "summary" part, so the events-vs-metrics verification the
+// route runs is untouched and still agrees.
 func TestAVerifiedFightQueuesItsMembersForScoring(t *testing.T) {
 	h := newHarness(t)
 	scorer := &fakeScorer{}
@@ -948,42 +961,63 @@ func TestAVerifiedFightQueuesItsMembersForScoring(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	region, ruleset := ReportRealm(rep)
+	h.ingest.Score, h.ingest.Members = scorer, everyFixturePlayer(t, rep)
+
 	const guid = "Player-4184-000000A3"
-	name := "Morrowlyn-Nightslayer"
-	key := character.KeyFromUnit(region, ruleset, name)
-	h.ingest.Score, h.ingest.Members = scorer, fakeMembers{keys: map[string]bool{key: true}}
-
-	row := metrics.Row{
-		PlayerGUID: guid, Name: name, Class: "Mage", Spec: "Frost", Role: "dps",
-		MetricDPS: 960, DurationMS: 244_000, EncounterID: 9001,
+	const name = "Morrowlyn-Nightslayer"
+	b := makeBundleWith(t, func(parts map[string][]byte) {
+		var sum summary.Summary
+		if err := json.Unmarshal(parts["summary"], &sum); err != nil {
+			t.Fatal(err)
+		}
+		sum.Combatants = []summary.CombatantRow{{
+			GUID: guid, Name: name,
+			Gear: []event.Item{{ID: 17182, Enchants: []int64{2564}}},
+		}}
+		parts["summary"] = mustJSON(t, sum)
+	})
+	res := h.do(http.MethodPut, fmt.Sprintf("/v1/reports/%s/fights/1", id), b.contentType, b.body)
+	defer res.Body.Close()
+	if res.StatusCode != http.StatusCreated {
+		t.Fatalf("posting fight 1: status %d", res.StatusCode)
 	}
-	combatant := summary.CombatantRow{GUID: guid, Name: name}
-
-	h.ingest.score(t.Context(), rep, 1, row.EncounterID, []metrics.Row{row}, []summary.CombatantRow{combatant})
 
 	taken := scorer.taken()
-	if len(taken) != 1 {
-		t.Fatalf("%d fights queued, want the one member's DPS parse", len(taken))
+	if len(taken) == 0 {
+		t.Fatal("a verified fight queued nothing for scoring")
 	}
-	s := taken[0]
-	if s.ReportID != id || s.FightIndex != 1 || s.PlayerKey != key {
-		t.Errorf("queued %+v, want %s/1/%s", s, id, key)
+	for _, s := range taken {
+		if s.ReportID != id || s.FightIndex != 1 {
+			t.Errorf("queued %+v, want %s/1", s, id)
+		}
+		if s.PlayerKey == "" {
+			t.Error("a fight was queued with no player key")
+		}
+		if s.PlayerName == "" {
+			t.Errorf("%s was queued with no player name; Score could not find their row", s.PlayerKey)
+		}
 	}
-	if s.Spec != "Frost" {
-		t.Error("a fight was queued with no spec; Score would skip it forever")
+
+	// And the summary this fight now has in the bucket really does
+	// carry the combatant a scorer would look for - the same object
+	// Service.Summaries reads.
+	body, err := (dirGetter{root: h.dir}).Get(t.Context(), Keys(id).FightSummary(1))
+	if err != nil {
+		t.Fatal(err)
 	}
-	if s.Class == "" || s.Role == "" {
-		t.Errorf("%s was queued with no class or role", s.PlayerKey)
+	defer body.Close()
+	var stored summary.Summary
+	if err := json.NewDecoder(body).Decode(&stored); err != nil {
+		t.Fatal(err)
 	}
-	if s.ActualDPS != 960 {
-		t.Errorf("%s was queued with dps %v, want 960", s.PlayerKey, s.ActualDPS)
+	found := false
+	for _, c := range stored.Combatants {
+		if c.GUID == guid && c.Name == name {
+			found = true
+		}
 	}
-	if s.DurationSec != 244 {
-		t.Errorf("%s was queued with duration %ds, want 244", s.PlayerKey, s.DurationSec)
-	}
-	if s.Combatant.GUID != guid {
-		t.Errorf("%s was queued with no recorded gear", s.PlayerKey)
+	if !found {
+		t.Fatal("the stored summary lost the combatant a scorer would need")
 	}
 }
 

@@ -2,6 +2,7 @@ package sims
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"io"
 	"log/slog"
@@ -9,6 +10,7 @@ import (
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/logs/engine/event"
+	"github.com/jhunthrop/foreversixty/logs/engine/store"
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
 	simapi "github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/jhunthrop/foreversixty/sim/runner"
@@ -51,7 +53,8 @@ func (a *alwaysBuilds) FightCharacter(_, class string, c summary.CombatantRow) (
 func (h *harness) scoreDeps(engine runner.Runner, build Builder, scores Scores) ScoreDeps {
 	return ScoreDeps{
 		Store: h.store, Scores: scores, Engine: engine, Build: build,
-		EngineVersion: testEngine, Log: slog.New(slog.NewTextHandler(io.Discard, nil)),
+		Summaries: dirGetter{root: h.dir}, EngineVersion: testEngine,
+		Log: slog.New(slog.NewTextHandler(io.Discard, nil)),
 	}
 }
 
@@ -66,19 +69,46 @@ func (h *harness) validate(t *testing.T, spec string) {
 	}
 }
 
+// putSummary writes a fight's summary where fightSummary reads it from
+// - the harness's local directory, standing in for the bucket - the
+// same object dirGetter and *r2.Client both serve back from.
+func (h *harness) putSummary(t *testing.T, reportID string, index int, sum summary.Summary) {
+	t.Helper()
+	body, err := json.Marshal(sum)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := h.files.Put(t.Context(), store.Keys{ReportID: reportID}.FightSummary(index), body, ResultPut); err != nil {
+		t.Fatal(err)
+	}
+}
+
+// aScoredSummary is a fight's stored summary carrying one DPS player,
+// Baelgrim, a fury warrior - the shape Score reads once the ingest
+// hands it only a fight reference and a player name.
+func aScoredSummary() summary.Summary {
+	return summary.Summary{
+		DurationMS: 180_000,
+		Roster: []summary.RosterRow{
+			{GUID: "Player-1", Name: "Baelgrim", Class: "Warrior", Spec: "Fury", Role: roleDPS, DPS: 960},
+		},
+		Combatants: []summary.CombatantRow{
+			{GUID: "Player-1", Name: "Baelgrim", Talents: []int64{105958, 105957}},
+		},
+	}
+}
+
 func aTask() ScoreTask {
 	return ScoreTask{
 		ReportID: "aaaaaaaaaaaa", FightIndex: 1, PlayerKey: "us/normal/baelgrim",
-		Spec: "warrior-fury", Class: "warrior", Role: roleDPS,
-		ActualDPS: 960, DurationSec: 180,
-		Combatant: summary.CombatantRow{GUID: "Player-1", Name: "Baelgrim",
-			Talents: []int64{105958, 105957}},
+		PlayerName: "Baelgrim",
 	}
 }
 
 func TestAValidatedSpecIsScoredAsActualOverSimmed(t *testing.T) {
 	h := newHarness(t)
 	h.validate(t, "warrior-fury")
+	h.putSummary(t, "aaaaaaaaaaaa", 1, aScoredSummary())
 	scores := &fakeScores{}
 	// 960 actual against 1200 simmed is 0.8.
 	if err := Score(t.Context(),
@@ -100,9 +130,11 @@ func TestAValidatedSpecIsScoredAsActualOverSimmed(t *testing.T) {
 func TestTheScoredSimRunsTheFightThatHappened(t *testing.T) {
 	h := newHarness(t)
 	h.validate(t, "warrior-fury")
+	sum := aScoredSummary()
+	sum.DurationMS = 244_000
+	h.putSummary(t, "aaaaaaaaaaaa", 1, sum)
 	engine := &runner.Fixture{Mean: 1200}
 	task := aTask()
-	task.DurationSec = 244
 	if err := Score(t.Context(), h.scoreDeps(engine, &alwaysBuilds{}, &fakeScores{}), task); err != nil {
 		t.Fatal(err)
 	}
@@ -123,6 +155,9 @@ func TestTheScoredSimRunsTheFightThatHappened(t *testing.T) {
 	if req.EngineVersion != testEngine || req.Iterations != defaultIterations {
 		t.Errorf("request %+v", req)
 	}
+	if req.Spec != "warrior-fury" {
+		t.Errorf("spec %q, want the slug derived from the roster row", req.Spec)
+	}
 	if err := req.Validate(); err != nil {
 		t.Errorf("the scorer built a request the envelope rejects: %v", err)
 	}
@@ -131,19 +166,35 @@ func TestTheScoredSimRunsTheFightThatHappened(t *testing.T) {
 func TestARoleTheSimulatorDoesNotModelIsDropped(t *testing.T) {
 	h := newHarness(t)
 	h.validate(t, "warrior-fury")
+	sum := aScoredSummary()
+	sum.Roster[0].Role = "healer"
+	h.putSummary(t, "aaaaaaaaaaaa", 1, sum)
 	scores, build := &fakeScores{}, &alwaysBuilds{}
-	task := aTask()
-	task.Role = "healer"
-	if err := Score(t.Context(), h.scoreDeps(&runner.Fixture{Mean: 1200}, build, scores), task); err != nil {
+	if err := Score(t.Context(), h.scoreDeps(&runner.Fixture{Mean: 1200}, build, scores), aTask()); err != nil {
 		t.Fatal(err)
 	}
 	if len(scores.calls) != 0 || build.asked != 0 {
 		t.Fatalf("a healer was scored: %d scores, %d builds", len(scores.calls), build.asked)
 	}
 	// The role rule lives here and nowhere else, so the ingest can
-	// hand over everything it has without knowing it.
+	// hand over a fight reference without knowing which roles the
+	// simulator models.
 	if roleDPS != "dps" {
 		t.Fatalf("roleDPS = %q", roleDPS)
+	}
+}
+
+func TestASpecTheDataLaneDoesNotNameIsSkippedRatherThanGuessed(t *testing.T) {
+	h := newHarness(t)
+	sum := aScoredSummary()
+	sum.Roster[0].Class, sum.Roster[0].Spec = "Warrior", "Not A Real Spec"
+	h.putSummary(t, "aaaaaaaaaaaa", 1, sum)
+	scores, build := &fakeScores{}, &alwaysBuilds{}
+	if err := Score(t.Context(), h.scoreDeps(&runner.Fixture{Mean: 1200}, build, scores), aTask()); err != nil {
+		t.Fatal(err)
+	}
+	if len(scores.calls) != 0 || build.asked != 0 {
+		t.Fatalf("an unmatched class/spec was scored: %d scores, %d builds", len(scores.calls), build.asked)
 	}
 }
 
@@ -184,8 +235,32 @@ func TestTheRealBuilderSaysEveryFieldItIsMissing(t *testing.T) {
 	}
 }
 
+func TestSpecSlugForMatchesTheDataLanesClassAndSpecName(t *testing.T) {
+	got, ok := specSlugFor("Warrior", "Fury")
+	if !ok || got != "warrior-fury" {
+		t.Fatalf("specSlugFor(Warrior, Fury) = %q, %v, want warrior-fury, true", got, ok)
+	}
+	// The class match is case-insensitive against the roster's
+	// capitalised text; the spec name is not - it is matched
+	// verbatim against specs.All's own Name field.
+	got, ok = specSlugFor("warrior", "Fury")
+	if !ok || got != "warrior-fury" {
+		t.Fatalf("specSlugFor(warrior, Fury) = %q, %v, want warrior-fury, true", got, ok)
+	}
+	if _, ok := specSlugFor("Warrior", "fury"); ok {
+		t.Fatal("a lowercase spec name matched; the site's spec names are never guessed at")
+	}
+	if _, ok := specSlugFor("Warrior", "Holy"); ok {
+		t.Fatal("a spec no warrior has matched")
+	}
+	if _, ok := specSlugFor("Not A Class", "Fury"); ok {
+		t.Fatal("an unknown class matched something")
+	}
+}
+
 func TestAnUnvalidatedSpecIsNotScoredAtAll(t *testing.T) {
 	h := newHarness(t)
+	h.putSummary(t, "aaaaaaaaaaaa", 1, aScoredSummary())
 	scores, build := &fakeScores{}, &alwaysBuilds{}
 	if err := Score(t.Context(),
 		h.scoreDeps(&runner.Fixture{Mean: 1200}, build, scores), aTask()); err != nil {
@@ -202,6 +277,7 @@ func TestAnUnvalidatedSpecIsNotScoredAtAll(t *testing.T) {
 func TestWithNoBuilderNothingIsScoredAndNothingFails(t *testing.T) {
 	h := newHarness(t)
 	h.validate(t, "warrior-fury")
+	h.putSummary(t, "aaaaaaaaaaaa", 1, aScoredSummary())
 	scores := &fakeScores{}
 	if err := Score(t.Context(),
 		h.scoreDeps(&runner.Fixture{Mean: 1200}, NoBuilder{}, scores), aTask()); err != nil {
@@ -212,9 +288,20 @@ func TestWithNoBuilderNothingIsScoredAndNothingFails(t *testing.T) {
 	}
 }
 
+func TestWithNoSummariesNothingIsScoredAndNothingFails(t *testing.T) {
+	h := newHarness(t)
+	h.validate(t, "warrior-fury")
+	deps := h.scoreDeps(&runner.Fixture{Mean: 1200}, &alwaysBuilds{}, &fakeScores{})
+	deps.Summaries = nil
+	if err := Score(t.Context(), deps, aTask()); err != nil {
+		t.Fatalf("no bucket is not a failure: %v", err)
+	}
+}
+
 func TestASimThatProducedNothingLeavesTheColumnNull(t *testing.T) {
 	h := newHarness(t)
 	h.validate(t, "warrior-fury")
+	h.putSummary(t, "aaaaaaaaaaaa", 1, aScoredSummary())
 	scores := &fakeScores{}
 	if err := Score(t.Context(),
 		h.scoreDeps(&runner.Fixture{Mean: -1}, &alwaysBuilds{}, scores), aTask()); err != nil {
@@ -228,6 +315,7 @@ func TestASimThatProducedNothingLeavesTheColumnNull(t *testing.T) {
 func TestAnEngineFailureIsReportedRatherThanSwallowed(t *testing.T) {
 	h := newHarness(t)
 	h.validate(t, "warrior-fury")
+	h.putSummary(t, "aaaaaaaaaaaa", 1, aScoredSummary())
 	if err := Score(t.Context(),
 		h.scoreDeps(&runner.Fixture{Err: errAnyway}, &alwaysBuilds{}, &fakeScores{}),
 		aTask()); err == nil {
@@ -238,6 +326,9 @@ func TestAnEngineFailureIsReportedRatherThanSwallowed(t *testing.T) {
 func TestTheScorerDrainsWhatWasQueuedBeforeItClosed(t *testing.T) {
 	h := newHarness(t)
 	h.validate(t, "warrior-fury")
+	for i := 1; i <= 3; i++ {
+		h.putSummary(t, "aaaaaaaaaaaa", i, aScoredSummary())
+	}
 	scores := &fakeScores{}
 	s := NewScorer(h.scoreDeps(&runner.Fixture{Mean: 1200}, &alwaysBuilds{}, scores))
 	go s.Run(t.Context())

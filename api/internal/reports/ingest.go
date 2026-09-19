@@ -92,18 +92,19 @@ type Sampler interface {
 }
 
 // ScoredFight is one parse handed to the execution scorer at fight
-// close. It carries the gear the fight recorded, which is what makes
-// the score "how much of what your gear can do did you do".
+// close: just enough to find the fight and the player's row in its
+// stored summary. Nothing about their gear, spec, role or dps rides
+// along - none of it survives the ingest's own Parquet rebuild
+// (COMBATANT_INFO never reaches it), so the scorer reads all of that
+// itself, from the fight's summary in the bucket, once it dequeues
+// this reference.
 type ScoredFight struct {
-	ReportID    string
-	FightIndex  int
-	PlayerKey   string
-	Spec        string
-	Class       string
-	Role        string
-	ActualDPS   float64
-	DurationSec int
-	Combatant   summary.CombatantRow
+	ReportID   string
+	FightIndex int
+	PlayerKey  string
+	// PlayerName is the summary's own key for this player - what the
+	// scorer's summary read matches rows on.
+	PlayerName string
 }
 
 // Members answers which of these character keys belong to a signed-in
@@ -343,7 +344,7 @@ func (i *Ingest) putFight(w http.ResponseWriter, r *http.Request) {
 		i.fail(w, r, "fight", err, "could not store that fight just now")
 		return
 	}
-	i.score(r.Context(), rep, n, f.EncounterID, derived, rebuilt.Combatants)
+	i.score(r.Context(), rep, n, f.EncounterID, derived)
 	if err := i.WriteReportJSON(r.Context(), rep); err != nil {
 		i.fail(w, r, "fight", err, "could not store that fight just now")
 		return
@@ -378,28 +379,25 @@ func (i *Ingest) rank(ctx context.Context, rep Report, encounterID int64, n int,
 
 // score queues this fight's parses for an execution score, for the
 // players who are signed-in members - the contract's condition. Trash,
-// an unranked visibility, a deployment with no engine or no way to ask
-// who is a member, and a player the fight recorded no gear for are all
-// skipped.
+// an unranked visibility, and a deployment with no engine or no way to
+// ask who is a member are all skipped.
 //
-// The role is passed through rather than filtered here: which roles
-// the simulator models is sims.Score's rule, and writing it twice is
-// how the two copies drift.
+// Nothing about gear, spec, role or dps is read here: none of it
+// survives the Parquet rebuild rows comes from (COMBATANT_INFO never
+// reaches it - logs/engine/parquet/schema.go says so outright), so the
+// scorer reads all of that itself, from the fight's stored summary,
+// once it dequeues the reference this hands over. This hook only ever
+// needs to know who fought and whether they are a member.
 //
 // It is deliberately best-effort and returns nothing. The score is
 // ambient, the nightly validation job recomputes it, and nothing
 // about a fight's storage or ranking may fail because a sim could
 // not be queued.
-func (i *Ingest) score(ctx context.Context, rep Report, n int, encounterID int64,
-	rows []metrics.Row, combatants []summary.CombatantRow) {
+func (i *Ingest) score(ctx context.Context, rep Report, n int, encounterID int64, rows []metrics.Row) {
 	if i.Score == nil || i.Members == nil || encounterID == 0 || !Ranked(rep.Visibility) {
 		return
 	}
 	region, ruleset := ReportRealm(rep)
-	byGUID := make(map[string]summary.CombatantRow, len(combatants))
-	for _, c := range combatants {
-		byGUID[c.GUID] = c
-	}
 	keys := make([]string, 0, len(rows))
 	keyOf := make(map[string]string, len(rows))
 	for _, row := range rows {
@@ -414,17 +412,11 @@ func (i *Ingest) score(ctx context.Context, rep Report, n int, encounterID int64
 	}
 	for _, row := range rows {
 		key := keyOf[row.PlayerGUID]
-		if !members[key] || row.Spec == "" || row.MetricDPS <= 0 || row.DurationMS <= 0 {
-			continue
-		}
-		c, ok := byGUID[row.PlayerGUID]
-		if !ok {
+		if !members[key] {
 			continue
 		}
 		i.Score.Schedule(ScoredFight{
-			ReportID: rep.ID, FightIndex: n, PlayerKey: key,
-			Spec: row.Spec, Class: row.Class, Role: row.Role, ActualDPS: row.MetricDPS,
-			DurationSec: int(row.DurationMS / 1000), Combatant: c,
+			ReportID: rep.ID, FightIndex: n, PlayerKey: key, PlayerName: row.Name,
 		})
 	}
 }

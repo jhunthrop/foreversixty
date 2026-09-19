@@ -14,32 +14,30 @@ import (
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
 	simapi "github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/jhunthrop/foreversixty/sim/runner"
+	"github.com/jhunthrop/foreversixty/sim/specs"
 	"github.com/jhunthrop/foreversixty/sim/talents"
 )
 
-// ScoreTask is one fight's player to score, as the ingest's
-// fight-close path hands it over.
+// ScoreTask is one fight's player to score, as the ingest's fight-close
+// path hands it over: just enough to find the fight's stored summary
+// and the player's row in it.
+//
+// Nothing else rides along - not class, spec, role, actual dps,
+// duration, or gear - because none of it survives the path the ingest
+// itself works from. The ingest rebuilds a fight from the companion's
+// posted Parquet events, and COMBATANT_INFO never reaches that
+// rebuild: logs/engine/parquet/schema.go's EventOf says so outright,
+// "Encounter, Zone, Combatant ... live in report.json and
+// summary.json". So Score reads the fight's own stored summary - the
+// companion's JSON, not a Parquet reconstruction - and finds
+// everything else there.
 type ScoreTask struct {
 	ReportID   string
 	FightIndex int
 	PlayerKey  string
-	Spec       string
-	Class      string
-	// Role is the metrics row's role. The simulator models DPS only at
-	// launch, and Score is the one place that knows it, so the ingest
-	// hands over every parse it has and this drops the rest.
-	Role string
-	// ActualDPS is what the player actually did, from the fight's own
-	// metrics row.
-	ActualDPS float64
-	// DurationSec is the fight's length, so the sim runs the fight
-	// that happened rather than the default three minutes.
-	DurationSec int
-	// Combatant is the gear, talents, consumables, and raid buffs the
-	// fight recorded for this player. It is what the character is
-	// built from, and it is why the score is "what your gear can do"
-	// rather than "what a best-in-slot character can do".
-	Combatant summary.CombatantRow
+	// PlayerName is the summary's own key for a player: what
+	// combatantNamed and rosterNamed below match rows on.
+	PlayerName string
 }
 
 // Builder turns a fight's recorded combatant into the sim envelope's
@@ -140,6 +138,36 @@ func gearFrom(items []event.Item) []simapi.GearSlot {
 	return out
 }
 
+// specSlugFor turns a summary roster row's class ("Mage") and spec
+// name ("Frost") into the site's spec key ("mage-frost") - the only
+// form Store.Validated and the sim envelope accept. specs.All is the
+// data lane's generated list; nothing here hand-writes a spec name. A
+// class/spec combination that matches no entry is not a spec this
+// simulator can score, and is never passed through as plain text -
+// the caller logs the reason and skips instead.
+func specSlugFor(class, spec string) (string, bool) {
+	classSlug := strings.ToLower(class)
+	for _, s := range specs.All {
+		if s.ClassSlug == classSlug && s.Name == spec {
+			return s.Spec, true
+		}
+	}
+	return "", false
+}
+
+// rosterNamed finds one player's roster line in a fight's summary -
+// their class, spec name, role and dps - the way combatantNamed finds
+// their gear. Both search the same summary by the same name, because
+// that is the one identifier every row in it carries.
+func rosterNamed(s summary.Summary, name string) (summary.RosterRow, bool) {
+	for _, r := range s.Roster {
+		if r.Name == name {
+			return r, true
+		}
+	}
+	return summary.RosterRow{}, false
+}
+
 // Scores writes one player's execution score on one fight. The
 // rankings store satisfies it; holding it as an interface keeps sims
 // from importing rankings, which imports reports, which would be a
@@ -164,6 +192,12 @@ type ScoreDeps struct {
 	Scores Scores
 	Engine runner.Runner
 	Build  Builder
+	// Summaries reads a fight's stored summary out of the bucket - the
+	// one source in this pipeline that ever carries a combatant, since
+	// it is the companion's own JSON rather than a Parquet
+	// reconstruction. Nil means this deployment has no bucket, and
+	// Score no-ops for every task, logging why rather than failing.
+	Summaries Getter
 	// EngineVersion is the pin the score was computed against.
 	EngineVersion string
 	Log           *slog.Logger
@@ -176,24 +210,50 @@ func (d ScoreDeps) logger() *slog.Logger {
 	return slog.Default()
 }
 
-// Score runs one fight's sim and writes the ratio. A spec that is not
-// validated is skipped silently: the score would be a number nobody
-// should read.
+// Score reads a fight's stored summary, finds the player's roster row
+// and recorded combatant there, and - if their spec is validated -
+// runs the fight they played and writes the ratio.
 func Score(ctx context.Context, d ScoreDeps, t ScoreTask) error {
-	if t.Role != roleDPS {
-		// Tanks and healers are research problems and stay out of the
-		// first cut (design, "Scope at launch"). The ingest does not
-		// know that; this does.
+	if d.Summaries == nil {
+		d.logger().Warn("sims", "op", "score", "report", t.ReportID, "fight", t.FightIndex,
+			"err", "no bucket to read the fight summary from")
 		return nil
 	}
-	ok, err := d.Store.Validated(ctx, t.Spec)
+	sum, err := fightSummary(ctx, d.Summaries, t.ReportID, t.FightIndex)
+	if err != nil {
+		return fmt.Errorf("sims: score %s/%d: %w", t.ReportID, t.FightIndex, err)
+	}
+	row, ok := rosterNamed(sum, t.PlayerName)
+	if !ok {
+		d.logger().Warn("sims", "op", "score", "report", t.ReportID, "fight", t.FightIndex,
+			"err", "the summary has no roster row for "+t.PlayerName)
+		return nil
+	}
+	if row.Role != roleDPS {
+		// Tanks and healers are research problems and stay out of the
+		// first cut (design, "Scope at launch").
+		return nil
+	}
+	spec, ok := specSlugFor(row.Class, row.Spec)
+	if !ok {
+		d.logger().Warn("sims", "op", "score", "report", t.ReportID, "fight", t.FightIndex,
+			"err", fmt.Sprintf("no spec matches class %q spec %q", row.Class, row.Spec))
+		return nil
+	}
+	validated, err := d.Store.Validated(ctx, spec)
 	if err != nil {
 		return err
 	}
-	if !ok {
+	if !validated {
 		return nil
 	}
-	character, err := d.Build.FightCharacter(t.Spec, t.Class, t.Combatant)
+	combatant, ok := combatantNamed(sum, t.PlayerName)
+	if !ok {
+		d.logger().Warn("sims", "op", "score", "report", t.ReportID, "fight", t.FightIndex,
+			"err", "the summary has no combatant for "+t.PlayerName)
+		return nil
+	}
+	character, err := d.Build.FightCharacter(spec, row.Class, combatant)
 	if errors.Is(err, ErrNoCharacter) {
 		return nil
 	}
@@ -201,13 +261,13 @@ func Score(ctx context.Context, d ScoreDeps, t ScoreTask) error {
 		return fmt.Errorf("sims: build character %s/%d: %w", t.ReportID, t.FightIndex, err)
 	}
 	req := simapi.SimRequest{
-		EngineVersion: d.EngineVersion, Spec: t.Spec, Iterations: ScoreIterations,
+		EngineVersion: d.EngineVersion, Spec: spec, Iterations: ScoreIterations,
 		Source: simapi.CharacterSource{
 			Kind: simapi.SourceFight,
 			Ref:  fmt.Sprintf("%s:%d", t.ReportID, t.FightIndex),
 		},
 		Character: character,
-		Encounter: withEncounterDefaults(simapi.EncounterSpec{DurationSec: t.DurationSec}),
+		Encounter: withEncounterDefaults(simapi.EncounterSpec{DurationSec: int(sum.DurationMS / 1000)}),
 	}
 	runCtx, cancel := context.WithTimeout(ctx, ScoreTimeout)
 	defer cancel()
@@ -223,7 +283,7 @@ func Score(ctx context.Context, d ScoreDeps, t ScoreTask) error {
 		return nil
 	}
 	return d.Scores.SetExecutionScore(ctx, t.ReportID, t.FightIndex, t.PlayerKey,
-		t.ActualDPS/res.DPS.Mean)
+		row.DPS/res.DPS.Mean)
 }
 
 // ScoreQueueDepth is how many fights may wait to be scored. Beyond it
@@ -304,15 +364,10 @@ func (s *Scorer) Close() {
 // package has to import the other; the fields are the same, and the
 // conversion in ScheduleFight compiles only while they stay that way.
 type FightAt struct {
-	ReportID    string
-	FightIndex  int
-	PlayerKey   string
-	Spec        string
-	Class       string
-	Role        string
-	ActualDPS   float64
-	DurationSec int
-	Combatant   summary.CombatantRow
+	ReportID   string
+	FightIndex int
+	PlayerKey  string
+	PlayerName string
 }
 
 // ScheduleFight queues a fight the ingest closed.
