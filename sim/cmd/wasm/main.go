@@ -60,6 +60,7 @@ func main() {
 	js.Global().Set("simCount", js.FuncOf(simCount))
 	js.Global().Set("simNeedsMore", js.FuncOf(simNeedsMore))
 	js.Global().Set("simValidate", js.FuncOf(simValidate))
+	js.Global().Set("simWeights", js.FuncOf(simWeights))
 	// The pin is compiled in, not injected: a plain `go build ./cmd/wasm`
 	// used to produce "dev" and stamp it on real rows.
 	js.Global().Set("simEngineVersion", js.ValueOf(enginever.Version))
@@ -70,38 +71,6 @@ func main() {
 	select {}
 }
 
-// fail wraps an error as a SimResult, so every export returns the same
-// shape and the worker never has to distinguish a throw from a result.
-func fail(req api.SimRequest, msg string) string {
-	return result(api.SimResult{Request: req, Error: msg, Summary: adapter.EmptySummary()})
-}
-
-// stopped wraps an abort. It is not a failure - the user pressed Stop -
-// so it carries no error message and the page renders it as a run that
-// ended early rather than as something that went wrong.
-func stopped(req api.SimRequest, iterations int) string {
-	return result(api.SimResult{Request: req, Aborted: true, IterationsRun: iterations, Summary: adapter.EmptySummary()})
-}
-
-// Both carry adapter.EmptySummary() rather than a zero summary: a nil
-// Go slice marshals as null, so every export returns the same shape and
-// the page never has to null-check sixteen keys on the paths it is least
-// likely to have exercised.
-//
-// result stamps the two fields every export must fill the same way and
-// encodes. EngineVersion is enginever.Version, never the request's
-// claim: the row's provenance is a fact about the binary that produced
-// it, and api.SimResult.Stale can only fire if it is.
-func result(res api.SimResult) string {
-	res.EngineVersion = enginever.Version
-	res.Lane = api.LaneBrowser
-	b, err := json.Marshal(res)
-	if err != nil {
-		return errorJSON(err.Error())
-	}
-	return string(b)
-}
-
 // simRun(requestJSON, callbackId) runs one request to completion and
 // returns SimResult JSON. Progress is reported by calling the global
 // simProgress(callbackId, progressJSON), where progressJSON is an
@@ -110,11 +79,11 @@ func result(res api.SimResult) string {
 // JSON out, like everything else here.
 func simRun(_ js.Value, args []js.Value) any {
 	if len(args) < 2 {
-		return fail(api.SimRequest{}, "simRun takes (requestJSON, callbackId)")
+		return failJSON(api.SimRequest{}, "simRun takes (requestJSON, callbackId)")
 	}
 	req, err := decodeRequest(args[0].String())
 	if err != nil {
-		return fail(req, "the request is not valid JSON: "+err.Error())
+		return failJSON(req, "the request is not valid JSON: "+err.Error())
 	}
 	callbackID := args[1].String()
 
@@ -126,12 +95,12 @@ func simRun(_ js.Value, args []js.Value) any {
 	// by the page and by the api lane.
 	engineReq, err := request.BuildWith(req, request.Options{OpenIterations: true, NoSampleIteration: req.NoSample})
 	if err != nil {
-		return fail(req, err.Error())
+		return failJSON(req, err.Error())
 	}
 	// Forever's own item rows, from the active build, embedded at build
 	// time: the browser has no protobuf and cannot send them.
 	if err := simdb.Attach(engineReq); err != nil {
-		return fail(req, err.Error())
+		return failJSON(req, err.Error())
 	}
 
 	start := time.Now()
@@ -164,30 +133,38 @@ func simRun(_ js.Value, args []js.Value) any {
 		cb.Invoke(callbackID, string(b))
 	})
 	if engineRes == nil {
-		return fail(req, "the engine produced no result")
+		return failJSON(req, "the engine produced no result")
 	}
 	// An abort's ErrorOutcome carries no message, so this switches on
 	// the type. Testing the message alone let Stop through as a result
 	// with zero iterations, which the adapter then called corrupt.
 	if err := adapter.ResultError(engineRes); err != nil {
 		if errors.Is(err, adapter.ErrAborted) {
-			return stopped(req, int(engineRes.IterationsDone))
+			// Not a failure - the user pressed Stop - so it carries no
+			// error message and the page renders it as a run that
+			// ended early rather than as something that went wrong.
+			return encodeOrError(stamp(api.SimResult{
+				Request:       req,
+				Aborted:       true,
+				IterationsRun: int(engineRes.IterationsDone),
+				Summary:       adapter.EmptySummary(),
+			}))
 		}
-		return fail(req, err.Error())
+		return failJSON(req, err.Error())
 	}
 
 	sum, err := adapter.Summarize(engineRes, req)
 	if err != nil {
-		return fail(req, err.Error())
+		return failJSON(req, err.Error())
 	}
-	return result(api.SimResult{
+	return encodeOrError(stamp(api.SimResult{
 		Request:       req,
 		DPS:           adapter.DPS(engineRes),
 		IterationsRun: int(engineRes.IterationsDone),
 		DurationMS:    time.Since(start).Milliseconds(),
 		Summary:       sum,
 		Sample:        adapter.Sample(engineRes),
-	})
+	}))
 }
 
 // simSplit(requestJSON, n) returns a JSON array of n request JSONs, one
@@ -298,4 +275,93 @@ func simValidate(_ js.Value, args []js.Value) any {
 		return errorJSON("simValidate takes (requestJSON)")
 	}
 	return validateJSON(args[0].String())
+}
+
+func init() {
+	weightsRunner = runWeights
+}
+
+// runWeights is the engine half of simWeights.
+//
+// The engine runs the same character twice per stat, a little above
+// and a little below, so this is a raid sim request with a stat list
+// - which is exactly what request.BuildWeights builds. Progress is
+// the engine's own per-sim ticks, reported through the simProgress
+// global a plain run already uses, so the page's progress handling is
+// unchanged.
+//
+// This does NOT go through sim/internal/simdrain.ToResult, unlike
+// simRun. That helper drains to the channel's close because a
+// SUCCESSFUL raid sim closes progress on its way out (core/sim.go) and
+// the sample-iteration mutation after the final message is only
+// visible once that close is observed. core.StatWeightsAsync has no
+// such path: on every outcome - success, sim error, or a failed
+// signals registration - it sends exactly one
+// ProgressMetrics.FinalWeightResult and returns without ever closing
+// the channel (core/api.go, core/statweight.go). Draining to close
+// here would hang forever on the common case, not just the two rare
+// paths ToResult's own doc comment carves out. Taking the first
+// FinalWeightResult and stopping is therefore correct, not a shortcut
+// - and adapter.Weights already turns a non-nil res.Error into
+// ErrSimFailed, so there is nothing this loop would gain by looking at
+// it first.
+func runWeights(req api.SimRequest, callbackID string) (api.SimResult, error) {
+	start := time.Now()
+	engineReq, err := request.BuildWeights(req, request.Options{OpenIterations: true})
+	if err != nil {
+		return api.SimResult{}, err
+	}
+	// Forever's own item rows: a weights run equips the character the
+	// same way a DPS run does.
+	if err := simdb.AttachWeights(engineReq); err != nil {
+		return api.SimResult{}, err
+	}
+
+	reporter := make(chan *proto.ProgressMetrics, 32)
+	core.StatWeightsAsync(engineReq, reporter, callbackID)
+
+	var engineRes *proto.StatWeightsResult
+	for p := range reporter {
+		if p.FinalWeightResult != nil {
+			engineRes = p.FinalWeightResult
+			break
+		}
+		if cb := js.Global().Get("simProgress"); cb.Type() == js.TypeFunction {
+			if b, err := json.Marshal(api.Progress{
+				IterationsRun: int(p.CompletedIterations),
+				DPS:           api.Estimate{Mean: p.Dps},
+				// A weights run is many sims, so the page shows the
+				// same "n of m" line a bulk stage does rather than a
+				// bare iteration count that restarts per stat.
+				CombosDone:  int(p.CompletedSims),
+				CombosTotal: int(p.TotalSims),
+			}); err == nil {
+				cb.Invoke(callbackID, string(b))
+			}
+		}
+	}
+	if engineRes == nil {
+		return api.SimResult{}, errors.New("the engine produced no weights")
+	}
+	weights, err := adapter.Weights(engineRes, req)
+	if err != nil {
+		return api.SimResult{}, err
+	}
+	return api.SimResult{
+		Request:       req,
+		IterationsRun: req.Iterations,
+		DurationMS:    time.Since(start).Milliseconds(),
+		Summary:       adapter.EmptySummary(),
+		Weights:       weights,
+	}, nil
+}
+
+// simWeights(requestJSON, callbackId) computes stat weights and
+// returns a SimResult with Weights filled. Progress is reported the
+// way simRun reports it.
+func simWeights(_ js.Value, args []js.Value) any {
+	if len(args) < 2 {
+		return errorJSON("simWeights takes (requestJSON, callbackId)")
+	}
+	return weightsJSON(args[0].String(), args[1].String())
 }

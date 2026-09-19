@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/sim/adapter"
@@ -286,6 +287,39 @@ func TestLeadingField(t *testing.T) {
 		if got := leadingField(c.msg); got != c.want {
 			t.Errorf("leadingField(%q) = %q, want %q", c.msg, got, c.want)
 		}
+	}
+}
+
+// The weights export's host-testable half is the shape of its
+// refusals: running the engine needs a browser, but a malformed
+// request must come back as a result, not a throw, on every lane.
+func TestWeightsJSONRefusals(t *testing.T) {
+	for _, c := range []struct {
+		name string
+		body string
+		want string
+	}{
+		{"not json", "{", "valid JSON"},
+		{"a plain run", plainFixtureRequest(t), "weights"},
+	} {
+		t.Run(c.name, func(t *testing.T) {
+			out := weightsJSON(c.body, "cb")
+			var res api.SimResult
+			if err := json.Unmarshal([]byte(out), &res); err != nil {
+				t.Fatalf("weightsJSON returned %s", out)
+			}
+			if res.Error == "" {
+				t.Fatalf("a bad request returned no error: %s", out)
+			}
+			if !strings.Contains(res.Error, c.want) {
+				t.Errorf("error %q does not mention %q", res.Error, c.want)
+			}
+			// Every export answers in the same shape, so the page
+			// never has to distinguish a throw from a result.
+			if res.Summary.DamageDone == nil {
+				t.Error("a failed weights run carries a null summary; it must carry the empty one")
+			}
+		})
 	}
 }
 

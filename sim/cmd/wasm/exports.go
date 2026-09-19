@@ -14,8 +14,10 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/jhunthrop/foreversixty/sim/adapter"
 	"github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/jhunthrop/foreversixty/sim/bulk"
+	"github.com/jhunthrop/foreversixty/sim/enginever"
 )
 
 // strictDecode refuses a field the type does not carry. A page sending
@@ -288,4 +290,51 @@ func encodeOrError(v any) string {
 		return errorJSON(err.Error())
 	}
 	return string(b)
+}
+
+// stamp fills the two fields every export sets the same way.
+// EngineVersion is enginever.Version, never the request's claim: a
+// row's provenance is a fact about the binary that produced it.
+func stamp(res api.SimResult) api.SimResult {
+	res.EngineVersion = enginever.Version
+	res.Lane = api.LaneBrowser
+	return res
+}
+
+// failJSON wraps an error as a SimResult, so every export returns the
+// same shape and the worker never has to distinguish a throw from a
+// result. The empty summary rather than a zero one: a nil Go slice
+// marshals as null, and the page would need a null check per key on
+// the path least likely to be exercised.
+func failJSON(req api.SimRequest, msg string) string {
+	return encodeOrError(stamp(api.SimResult{Request: req, Error: msg, Summary: adapter.EmptySummary()}))
+}
+
+// weightsRunner is the engine half of simWeights, supplied by the
+// wasm build. The host build has none, so weightsJSON's refusals are
+// testable without syscall/js and the engine call is not duplicated.
+var weightsRunner func(req api.SimRequest, callbackID string) (api.SimResult, error)
+
+// weightsJSON is simWeights' body: a weights SimRequest in, a
+// SimResult with Weights out. Progress is reported through the same
+// simProgress global a plain run uses.
+func weightsJSON(requestJSON, callbackID string) string {
+	req, err := decodeRequest(requestJSON)
+	if err != nil {
+		return failJSON(req, "the request is not valid JSON: "+err.Error())
+	}
+	if req.Weights == nil {
+		return failJSON(req, "simWeights takes a request with a weights block; this one has none")
+	}
+	if err := req.ValidateLane(api.LaneBrowser); err != nil {
+		return failJSON(req, err.Error())
+	}
+	if weightsRunner == nil {
+		return failJSON(req, "this build has no engine; simWeights runs only in the browser")
+	}
+	res, err := weightsRunner(req, callbackID)
+	if err != nil {
+		return failJSON(req, err.Error())
+	}
+	return encodeOrError(stamp(res))
 }
