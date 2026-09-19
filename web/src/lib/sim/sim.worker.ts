@@ -6,6 +6,7 @@
 // keeps a callbackId-to-token map and translates each callback into a message for the pool.
 /// <reference lib="webworker" />
 import { loadEngine, type EngineModule } from './engine';
+import { combineInputFromShards, shardsFromSplit } from './engine-protocol';
 import type { SimProgressUpdate } from './types';
 import type { FromWorker, ToWorker } from './worker';
 
@@ -45,11 +46,11 @@ async function handle(message: ToWorker): Promise<void> {
   try {
     const loaded = await engineOnce();
     if (message.kind === 'split') {
-      reply({ kind: 'many', token, results: loaded.simSplit(message.request, message.shards) });
+      reply({ kind: 'many', token, results: shardsFromSplit(loaded.simSplit(message.request, message.shards)) });
       return;
     }
     if (message.kind === 'combine') {
-      reply({ kind: 'one', token, result: loaded.simCombine(message.results) });
+      reply({ kind: 'one', token, result: loaded.simCombine(combineInputFromShards(message.results)) });
       return;
     }
     tokenOf.set(message.callbackId, token);

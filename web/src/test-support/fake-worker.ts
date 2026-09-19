@@ -7,6 +7,7 @@
 // including the callbackId-to-token map that turns an engine progress callback into a
 // protocol message, and the prefix rule that makes one abort stop every shard of a run.
 import type { EngineModule } from '../lib/sim/engine';
+import { combineInputFromShards, shardsFromSplit } from '../lib/sim/engine-protocol';
 import type { SimProgressUpdate } from '../lib/sim/types';
 import type { FromWorker, PoolWorker, ToWorker } from '../lib/sim/worker';
 
@@ -38,9 +39,13 @@ export function createFakeWorker(engine: EngineModule): PoolWorker {
         const token = message.token;
         try {
           if (message.kind === 'split') {
-            emit({ kind: 'many', token, results: engine.simSplit(message.request, message.shards) });
+            emit({
+              kind: 'many',
+              token,
+              results: shardsFromSplit(engine.simSplit(message.request, message.shards)),
+            });
           } else if (message.kind === 'combine') {
-            emit({ kind: 'one', token, result: engine.simCombine(message.results) });
+            emit({ kind: 'one', token, result: engine.simCombine(combineInputFromShards(message.results)) });
           } else {
             tokenOf.set(message.callbackId, token);
             try {
@@ -57,6 +62,26 @@ export function createFakeWorker(engine: EngineModule): PoolWorker {
           emit({ kind: 'failed', token, message: (error as Error).message });
         }
       })();
+    },
+  };
+}
+
+/**
+ * The failure-path counterpart to createFakeWorker: a worker that answers every run with
+ * `{kind: 'failed'}`, for the "an engine failure surfaces as a failure" tests -- previously
+ * a byte-identical 10-line fixture hand-rolled at `run.test.ts:124` and
+ * `live-dps.test.ts:106` (L8, final whole-branch review).
+ */
+export function createBrokenWorker(message = 'wasm trap'): PoolWorker {
+  let emit: (data: FromWorker) => void = () => {};
+  return {
+    addEventListener: (_type, listener) => {
+      emit = (data) => listener({ data });
+    },
+    terminate: () => {},
+    postMessage: (toWorker: ToWorker) => {
+      if (toWorker.kind === 'abort') return;
+      emit({ kind: 'failed', token: toWorker.token, message });
     },
   };
 }

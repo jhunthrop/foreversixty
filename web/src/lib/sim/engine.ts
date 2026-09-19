@@ -27,9 +27,12 @@ export type ProgressHandler = (callbackId: string, progressJSON: string) => void
 
 export interface EngineModule {
   simRun(requestJSON: string, callbackId: string): Promise<string>;
-  simSplit(requestJSON: string, n: number): string[];
-  simCombine(resultsJSON: string[]): string;
-  simAbort(callbackId: string): void;
+  /** Returns ONE JSON string encoding a SimRequest[] (main.go's simSplit), never a JS array. */
+  simSplit(requestJSON: string, n: number): string;
+  /** Takes ONE JSON string encoding a SimResult[] (main.go's simCombine); returns one SimResult JSON. */
+  simCombine(resultsJSON: string): string;
+  /** Returns `{"aborted": boolean}` JSON -- false means no run was registered under that id. */
+  simAbort(callbackId: string): string;
   onProgress(handler: ProgressHandler): void;
 }
 
@@ -40,11 +43,27 @@ interface GoGlue {
 type WasmGlobals = {
   Go?: GoGlue;
   simRun?: (requestJSON: string, callbackId: string) => Promise<string>;
-  simSplit?: (requestJSON: string, n: number) => string[];
-  simCombine?: (resultsJSON: string[]) => string;
-  simAbort?: (callbackId: string) => void;
+  simSplit?: (requestJSON: string, n: number) => string;
+  simCombine?: (resultsJSON: string) => string;
+  simAbort?: (callbackId: string) => string;
   simProgress?: ProgressHandler;
 };
+
+/**
+ * simSplit, simCombine and simAbort all fail the same way: `{"error": "..."}` JSON instead
+ * of their success shape (main.go's errorJSON). simRun's failures are a full SimResult JSON
+ * with `.error` set instead (main.go's fail()), which the caller already reads as a normal
+ * result, so this check does not apply there.
+ */
+export function unwrapOrThrow(json: string): string {
+  const parsed: unknown = JSON.parse(json);
+  const error =
+    typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed)
+      ? (parsed as { error?: unknown }).error
+      : undefined;
+  if (typeof error === 'string') throw new Error(error);
+  return json;
+}
 
 async function loadWasmEngine(version: string): Promise<EngineModule> {
   const glueUrl = engineAssetUrl('sim.js', version);
@@ -60,9 +79,9 @@ async function loadWasmEngine(version: string): Promise<EngineModule> {
   if (typeof globals.simRun !== 'function') throw new Error('sim.wasm did not export simRun');
   return {
     simRun: (requestJSON, callbackId) => globals.simRun!(requestJSON, callbackId),
-    simSplit: (requestJSON, n) => globals.simSplit!(requestJSON, n),
-    simCombine: (resultsJSON) => globals.simCombine!(resultsJSON),
-    simAbort: (callbackId) => globals.simAbort!(callbackId),
+    simSplit: (requestJSON, n) => unwrapOrThrow(globals.simSplit!(requestJSON, n)),
+    simCombine: (resultsJSON) => unwrapOrThrow(globals.simCombine!(resultsJSON)),
+    simAbort: (callbackId) => unwrapOrThrow(globals.simAbort!(callbackId)),
     onProgress: (handler) => {
       globals.simProgress = handler;
     },

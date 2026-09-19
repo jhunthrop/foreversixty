@@ -24,27 +24,35 @@ const request: SimRequest = {
 };
 
 const json = (value: SimRequest): string => JSON.stringify(value);
-const iterationsOf = (requestJSON: string): number => (JSON.parse(requestJSON) as SimRequest).iterations;
 const resultOf = (resultJSON: string): SimResult => JSON.parse(resultJSON) as SimResult;
+// simSplit returns ONE JSON string encoding a SimRequest[] (main.go), never a JS array.
+const splitOf = (splitJSON: string): SimRequest[] => JSON.parse(splitJSON) as SimRequest[];
 
 describe('simSplit', () => {
+  it('returns one JSON string, not a JS array', () => {
+    const engine = createFakeEngine({ tickMs: 0 });
+    const splitJSON = engine.simSplit(json(request), 8);
+    expect(typeof splitJSON).toBe('string');
+    expect(Array.isArray(splitJSON)).toBe(false);
+  });
+
   it('splits iterations so the shards sum to the original', () => {
     const engine = createFakeEngine({ tickMs: 0 });
-    const shards = engine.simSplit(json(request), 8);
+    const shards = splitOf(engine.simSplit(json(request), 8));
     expect(shards).toHaveLength(8);
-    expect(shards.reduce((sum, shard) => sum + iterationsOf(shard), 0)).toBe(3000);
+    expect(shards.reduce((sum, shard) => sum + shard.iterations, 0)).toBe(3000);
   });
 
   it('never emits a shard with no iterations', () => {
     const engine = createFakeEngine({ tickMs: 0 });
-    expect(engine.simSplit(json({ ...request, iterations: 3 }), 8)).toHaveLength(3);
+    expect(splitOf(engine.simSplit(json({ ...request, iterations: 3 }), 8))).toHaveLength(3);
   });
 
-  it('returns requests, not bytes, so the pool can pass them straight back in', () => {
+  it('returns request objects, not JSON strings, so the pool re-stringifies each shard', () => {
     const engine = createFakeEngine({ tickMs: 0 });
-    const [first] = engine.simSplit(json(request), 4);
-    expect(() => JSON.parse(first) as SimRequest).not.toThrow();
-    expect((JSON.parse(first) as SimRequest).character.talents).toBe('-5530515-');
+    const [first] = splitOf(engine.simSplit(json(request), 4));
+    expect(typeof first).toBe('object');
+    expect(first.character.talents).toBe('-5530515-');
   });
 });
 
@@ -80,30 +88,38 @@ describe('simRun', () => {
     expect(c.dps.mean).not.toBe(a.dps.mean);
   });
 
-  it('rejects when the run is aborted mid-flight', async () => {
+  it('rejects when the run is aborted mid-flight, and simAbort answers {"aborted": true}', async () => {
     vi.useFakeTimers();
     const engine = createFakeEngine({ tickMs: 10, ticks: 4 });
     const pending = engine.simRun(json(request), 'run-abort');
     const settled = expect(pending).rejects.toThrow('aborted');
     await vi.advanceTimersByTimeAsync(15);
-    engine.simAbort('run-abort');
+    expect(JSON.parse(engine.simAbort('run-abort'))).toEqual({ aborted: true });
     await vi.advanceTimersByTimeAsync(50);
     await settled;
     vi.useRealTimers();
   });
 
-  it('ignores an abort for a run that was never started', () => {
+  it('answers {"aborted": false} for a run that was never started, distinguishing it from a real stop', () => {
     const engine = createFakeEngine({ tickMs: 0 });
-    expect(() => engine.simAbort('nobody')).not.toThrow();
+    expect(JSON.parse(engine.simAbort('nobody'))).toEqual({ aborted: false });
   });
 });
 
 describe('simCombine', () => {
+  it('takes one JSON string, not a JS array', async () => {
+    const engine = createFakeEngine({ tickMs: 0 });
+    const shards = splitOf(engine.simSplit(json(request), 4)).map((shard) => json(shard));
+    const results = await Promise.all(shards.map((shard, i) => engine.simRun(shard, `s${i}`)));
+    const combinedJSON = engine.simCombine(JSON.stringify(results.map((r) => resultOf(r))));
+    expect(typeof combinedJSON).toBe('string');
+  });
+
   it('pools the shard distributions into one finished result', async () => {
     const engine = createFakeEngine({ tickMs: 0 });
-    const shards = engine.simSplit(json(request), 4);
+    const shards = splitOf(engine.simSplit(json(request), 4)).map((shard) => json(shard));
     const results = await Promise.all(shards.map((shard, i) => engine.simRun(shard, `s${i}`)));
-    const combined = resultOf(engine.simCombine(results));
+    const combined = resultOf(engine.simCombine(JSON.stringify(results.map((r) => resultOf(r)))));
     expect(combined.iterations_run).toBe(3000);
     expect(combined.dps.mean).toBeGreaterThan(0);
     expect(combined.dps.error).toBeCloseTo(combined.dps.stddev / Math.sqrt(3000), 9);

@@ -71,6 +71,10 @@ export function createFakeEngine(options: FakeEngineOptions = {}): EngineModule 
   const ticks = options.ticks ?? 10;
   const failWith = options.failWith ?? '';
   const aborted = new Set<string>();
+  // Tracks a run's callback id for exactly as long as simRun is in flight, so simAbort can
+  // answer {"aborted": false} for an id nothing registered -- main.go's own distinction
+  // between "you stopped it" and "you called this wrong".
+  const active = new Set<string>();
   let progress: ProgressHandler = () => {};
 
   return {
@@ -83,55 +87,59 @@ export function createFakeEngine(options: FakeEngineOptions = {}): EngineModule 
       const used = Math.max(1, Math.min(n, request.iterations));
       const base = Math.floor(request.iterations / used);
       const remainder = request.iterations % used;
-      return Array.from({ length: used }, (_, i) =>
-        JSON.stringify({
-          ...request,
-          iterations: base + (i < remainder ? 1 : 0),
-          random_seed: request.random_seed === 0 ? i + 1 : request.random_seed * 1000 + i,
-        } satisfies SimRequest),
-      );
+      const parts: SimRequest[] = Array.from({ length: used }, (_, i) => ({
+        ...request,
+        iterations: base + (i < remainder ? 1 : 0),
+        random_seed: request.random_seed === 0 ? i + 1 : request.random_seed * 1000 + i,
+      }));
+      return JSON.stringify(parts);
     },
 
     async simRun(requestJSON, callbackId) {
       aborted.delete(callbackId);
-      if (failWith !== '') {
-        await delay(tickMs);
-        throw new Error(failWith);
-      }
-      const request = JSON.parse(requestJSON) as SimRequest;
-      const random = seeded(request.random_seed * 7919 + request.iterations);
-      const samples: number[] = [];
-      const perTick = Math.max(1, Math.ceil(request.iterations / ticks));
-      const startedAt = Date.now();
+      active.add(callbackId);
+      try {
+        if (failWith !== '') {
+          await delay(tickMs);
+          throw new Error(failWith);
+        }
+        const request = JSON.parse(requestJSON) as SimRequest;
+        const random = seeded(request.random_seed * 7919 + request.iterations);
+        const samples: number[] = [];
+        const perTick = Math.max(1, Math.ceil(request.iterations / ticks));
+        const startedAt = Date.now();
 
-      while (samples.length < request.iterations) {
-        await delay(tickMs);
-        if (aborted.has(callbackId)) {
-          aborted.delete(callbackId);
-          throw new Error(`sim run ${callbackId} aborted`);
+        while (samples.length < request.iterations) {
+          await delay(tickMs);
+          if (aborted.has(callbackId)) {
+            aborted.delete(callbackId);
+            throw new Error(`sim run ${callbackId} aborted`);
+          }
+          const upTo = Math.min(request.iterations, samples.length + perTick);
+          while (samples.length < upTo) {
+            samples.push(normal(random, fixture.dps.mean, fixture.dps.stddev));
+          }
+          const { n, ...dps } = statsOf(samples);
+          progress(callbackId, JSON.stringify({ iterations_run: n, dps }));
         }
-        const upTo = Math.min(request.iterations, samples.length + perTick);
-        while (samples.length < upTo) {
-          samples.push(normal(random, fixture.dps.mean, fixture.dps.stddev));
-        }
+
         const { n, ...dps } = statsOf(samples);
-        progress(callbackId, JSON.stringify({ iterations_run: n, dps }));
+        return JSON.stringify({
+          engine_version: request.engine_version,
+          request,
+          lane: 'browser',
+          dps,
+          iterations_run: n,
+          duration_ms: Date.now() - startedAt,
+          summary: fixture.summary,
+        } satisfies SimResult);
+      } finally {
+        active.delete(callbackId);
       }
-
-      const { n, ...dps } = statsOf(samples);
-      return JSON.stringify({
-        engine_version: request.engine_version,
-        request,
-        lane: 'browser',
-        dps,
-        iterations_run: n,
-        duration_ms: Date.now() - startedAt,
-        summary: fixture.summary,
-      } satisfies SimResult);
     },
 
     simCombine(resultsJSON) {
-      const parts = resultsJSON.map((text) => JSON.parse(text) as SimResult);
+      const parts = JSON.parse(resultsJSON) as SimResult[];
       let n = 0;
       let sum = 0;
       let sumSquares = 0;
@@ -168,7 +176,9 @@ export function createFakeEngine(options: FakeEngineOptions = {}): EngineModule 
     },
 
     simAbort(callbackId) {
-      aborted.add(callbackId);
+      const registered = active.has(callbackId);
+      if (registered) aborted.add(callbackId);
+      return JSON.stringify({ aborted: registered });
     },
   };
 }
