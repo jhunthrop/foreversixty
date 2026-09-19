@@ -1,10 +1,14 @@
 <!-- web/src/components/sim/SpecGrid.svelte -->
-<!-- Three states, one grid: loading (skeleton cards at the grid's own height, so the page
-     does not reflow when the answer lands -- the LCP budget is measured on /sim/specs too),
-     failed (one alert line and a retry), and answered. The answered state always renders
+<!-- Three states, one grid container: loading (skeleton cards at the grid's own height, so
+     the page does not reflow when the answer lands -- the LCP budget is measured on
+     /sim/specs too), failed (an alert row inside that same container, above the same
+     skeleton placeholders -- not a reflow to one bare line, which used to collapse the page
+     by the grid's full height the moment a fetch failed; see the Lighthouse findings in the
+     final whole-branch review), and answered. The answered state always renders
      `dpsSpecs().length` cards, from mergeSpecRows: a spec the API said nothing about reads
      "Not yet" rather than being missing from the grid. -->
 <script lang="ts">
+  import { rowLink } from '../../lib/report/format';
   import { simCopy } from '../../lib/sim/copy';
   import { dpsSpecs } from '../../lib/sim/spec-label';
   import { mergeSpecRows } from '../../lib/sim/spec-state';
@@ -37,18 +41,19 @@
   });
 </script>
 
-{#if error !== null}
-  <p class="text-muted px-[18px] text-[14px] md:px-0" role="alert" data-testid="specs-error">
-    {error}
-    <button
-      type="button"
-      class="text-strong ml-1 inline-flex min-h-11 items-center underline underline-offset-2"
-      data-testid="specs-retry"
-      onclick={() => onretry()}>{simCopy.tryAgain}</button
-    >
-  </p>
-{:else if rows === null}
+{#if rows === null}
   <div class={grid} data-testid="specs-grid">
+    {#if error !== null}
+      <p class="text-muted col-span-full text-[14px]" role="alert" data-testid="specs-error">
+        {error}
+        <button
+          type="button"
+          class={`text-strong ml-1 ${rowLink} underline underline-offset-2`}
+          data-testid="specs-retry"
+          onclick={() => onretry()}>{simCopy.tryAgain}</button
+        >
+      </p>
+    {/if}
     {#each skeletonSlots as slot (slot)}
       <div class="bg-card-top border-line rounded-panel min-h-[168px] border" aria-hidden="true"></div>
     {/each}
