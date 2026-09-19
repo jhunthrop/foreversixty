@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { expect, test } from '@playwright/test';
+import { simCopy } from '../../src/lib/sim/copy';
 
 const activeBuild = JSON.parse(
   readFileSync(path.join(import.meta.dirname, '..', '..', 'src', 'data', 'active-build.json'), 'utf8'),
@@ -59,4 +60,22 @@ test('a pasted request loads the page state', async ({ page }) => {
   await expect(page.getByTestId('sim-preset')).toHaveValue('custom');
   await expect(page.getByTestId('sim-precision')).toHaveValue('fast');
   await expect(page.getByTestId('sim-request-buffs')).toHaveText('thorns');
+});
+
+test('sharing a request with nowhere to encode to yet shows the error, not a blank field', async ({
+  page,
+}) => {
+  // Task 16 owns the real encoder (url.ts's encodeRequestParam); until it lands,
+  // SimView's shareUrlFor honestly answers null, and this is the one path that is
+  // actually true today -- a share that returns null must show the error, never a blank
+  // or missing field.
+  await page.goto('/sim');
+  await page.getByTestId('sim-addon-input').fill(FURY);
+  await page.getByTestId('sim-addon-load').click();
+  await expect(page.getByTestId('sim-character')).toBeVisible();
+
+  await page.getByTestId('sim-request-drawer').locator('summary').click();
+  await page.getByTestId('sim-request-share').click();
+  await expect(page.getByTestId('sim-request-share-error')).toHaveText(simCopy.requestShareTooLong);
+  await expect(page.getByTestId('sim-request-share-link')).toHaveCount(0);
 });

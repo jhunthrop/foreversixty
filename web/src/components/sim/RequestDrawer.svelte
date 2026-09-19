@@ -22,6 +22,7 @@
     onvalidate,
     onapply,
     onrun,
+    onshare,
   }: {
     /** The request the page would send now. Null while there is no character. */
     request: SimRequest | null;
@@ -29,6 +30,8 @@
     onvalidate: (json: string) => Promise<RequestValidation>;
     onapply: (request: SimRequest) => void;
     onrun: (request: SimRequest) => void;
+    /** Returns the share URL, or null when the request is past the URL budget. */
+    onshare: (request: SimRequest) => string | null;
   } = $props();
 
   // Seeded from the page's own request and then owned by the player: re-seeding it on
@@ -36,6 +39,8 @@
   let text = $state('');
   let seeded = $state(false);
   let check = $state<RequestCheck | null>(null);
+  let shared = $state('');
+  let shareError = $state('');
 
   $effect(() => {
     if (!seeded && request !== null) {
@@ -48,9 +53,13 @@
   function reset(): void {
     if (request !== null) text = formatRequest(request);
     check = null;
+    shared = '';
+    shareError = '';
   }
 
   async function verify(): Promise<SimRequest | null> {
+    shared = '';
+    shareError = '';
     const result = await checkRequest(text, onvalidate);
     check = result;
     return result.status === 'valid' ? result.request : null;
@@ -64,6 +73,22 @@
   async function run(): Promise<void> {
     const ok = await verify();
     if (ok !== null) onrun(ok);
+  }
+
+  async function share(): Promise<void> {
+    const ok = await verify();
+    if (ok === null) return;
+    const url = onshare(ok);
+    if (url === null) {
+      shareError = simCopy.requestShareTooLong;
+      return;
+    }
+    shared = url;
+    try {
+      await navigator.clipboard.writeText(url);
+    } catch {
+      /* the field below holds it; a browser that refuses the clipboard is not an error */
+    }
   }
 
   const button =
@@ -119,11 +144,27 @@
       >
         {simCopy.requestRun}
       </button>
+      <button type="button" class={button} onclick={() => void share()} data-testid="sim-request-share">
+        {simCopy.requestShare}
+      </button>
       <button type="button" class={button} onclick={reset} data-testid="sim-request-reset">
         {simCopy.requestReset}
       </button>
     </div>
     <p class="text-muted text-[12px]">{simCopy.requestApplyNote}</p>
+
+    {#if shareError !== ''}
+      <p role="alert" class="text-strong text-[13px]" data-testid="sim-request-share-error">{shareError}</p>
+    {:else if shared !== ''}
+      <input
+        type="text"
+        readonly
+        value={shared}
+        class="border-line-warm rounded-control bg-raised text-text h-11 w-full border px-3 text-[13px]"
+        data-testid="sim-request-share-link"
+        onclick={(event) => event.currentTarget.select()}
+      />
+    {/if}
 
     <!-- The buff list as plain text, so a test (and a person) can read what is actually
          going to the engine without parsing the textarea. -->

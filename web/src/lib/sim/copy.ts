@@ -433,10 +433,12 @@ export const simCopy = {
   requestApplyNote:
     'Rebuilds the settings, the precision and the character from this request. Per-slot enchants and suffixes are not part of the page’s character yet, so Apply drops them; Run keeps them.',
   requestRun: 'Run this request',
+  requestShare: 'Copy a link to this request',
   requestValid: 'The engine accepts this request.',
   requestTooLong: 'That request is too long to read.',
   requestNotJson: 'That is not JSON.',
   requestNotObject: 'A request is a JSON object.',
+  requestShareTooLong: 'This request is too long for a link. Save it and share the saved link instead.',
   /** A `pool.validate` call that rejected without an `Error`, which nothing in this lane
    *  actually throws -- kept as the honest fallback rather than assuming one shape. */
   requestValidateFailed: 'The engine could not check this request.',
