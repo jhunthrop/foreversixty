@@ -9,6 +9,7 @@ import (
 	"log/slog"
 	"net/http"
 	"net/http/httptest"
+	"slices"
 	"strings"
 	"testing"
 
@@ -19,14 +20,27 @@ import (
 // fakeStore is an in-memory Storer: the handlers' contract with the store is
 // small enough that a map is a better test double than a live Postgres.
 type fakeStore struct {
-	rows  map[string]Build
-	saves int
-	err   error
+	rows map[string]Build
+	// owners is who saved each row, the column 0015 added. Mine honours
+	// it, because that handoff — the handler's actor reaching the
+	// store's filter — is the whole authorization surface of the list.
+	owners map[string]*int64
+	saves  int
+	err    error
 }
 
-func newFakeStore() *fakeStore { return &fakeStore{rows: map[string]Build{}} }
+func newFakeStore() *fakeStore {
+	return &fakeStore{rows: map[string]Build{}, owners: map[string]*int64{}}
+}
 
-func (f *fakeStore) Save(_ context.Context, b Build, _ *int64) (Build, bool, error) {
+// seed puts a row in the store already owned, so a list test does not
+// have to post one build per user through the save route.
+func (f *fakeStore) seed(b Build, owner int64) {
+	f.rows[b.ID] = b
+	f.owners[b.ID] = &owner
+}
+
+func (f *fakeStore) Save(_ context.Context, b Build, owner *int64) (Build, bool, error) {
 	if f.err != nil {
 		return Build{}, false, f.err
 	}
@@ -35,6 +49,7 @@ func (f *fakeStore) Save(_ context.Context, b Build, _ *int64) (Build, bool, err
 		return existing, false, nil
 	}
 	f.rows[b.ID] = b
+	f.owners[b.ID] = owner
 	return b, true, nil
 }
 
@@ -53,10 +68,13 @@ func (f *fakeStore) Mine(_ context.Context, userID int64, page int) (Page, error
 	if f.err != nil {
 		return Page{}, f.err
 	}
-	out := Page{Rows: []Build{}, Page: page, PerPage: PerPage}
-	for _, b := range f.rows {
-		out.Rows = append(out.Rows, b)
+	out := Page{Rows: []Build{}, Page: clampPage(page), PerPage: PerPage}
+	for id, b := range f.rows {
+		if owner := f.owners[id]; owner != nil && *owner == userID {
+			out.Rows = append(out.Rows, b)
+		}
 	}
+	slices.SortFunc(out.Rows, func(a, b Build) int { return strings.Compare(a.ID, b.ID) })
 	out.Total = len(out.Rows)
 	return out, nil
 }
@@ -79,8 +97,13 @@ func testRouter(t *testing.T, store Storer) http.Handler {
 
 // signedIn wraps r with a signed-in actor, the way api/internal/sims's
 // harness carries identity through its test server.
-func signedIn(r *http.Request) *http.Request {
-	return r.WithContext(auth.WithActor(r.Context(), auth.Actor{UserID: 1, Role: "user", Method: "session"}))
+func signedIn(r *http.Request) *http.Request { return signedInAs(r, 1) }
+
+// signedInAs is signedIn for a named account, which is what the list
+// test needs: two accounts, one list each.
+func signedInAs(r *http.Request, userID int64) *http.Request {
+	return r.WithContext(auth.WithActor(r.Context(),
+		auth.Actor{UserID: userID, Role: "user", Method: "session"}))
 }
 
 func postBuild(t *testing.T, h http.Handler, body string) *httptest.ResponseRecorder {
@@ -281,5 +304,78 @@ func TestMyOwnBuildsNeedASessionAndMineEqualsOne(t *testing.T) {
 	h.ServeHTTP(w, httptest.NewRequest(http.MethodGet, "/v1/builds?mine=1", nil))
 	if w.Code != http.StatusUnauthorized {
 		t.Errorf("status %d, want 401 without a session", w.Code)
+	}
+}
+
+// TestMyOwnBuildsAreOnlyMine drives the handler's actor through to the
+// store's owner filter. It is the builds side of what the sims package
+// proves against Postgres: the list is an authorization surface, and
+// the handoff from the signed-in actor to the store's user id is the
+// part that has to be right.
+func TestMyOwnBuildsAreOnlyMine(t *testing.T) {
+	const mine, theirs = int64(7), int64(8)
+	store := newFakeStore()
+	store.seed(Build{ID: "aaaaaaaa", Title: "my arms"}, mine)
+	store.seed(Build{ID: "bbbbbbbb", Title: "my fury"}, mine)
+	store.seed(Build{ID: "cccccccc", Title: "their frost"}, theirs)
+	h := testRouter(t, store)
+
+	for _, c := range []struct {
+		user int64
+		want []string
+	}{
+		{mine, []string{"aaaaaaaa", "bbbbbbbb"}},
+		{theirs, []string{"cccccccc"}},
+	} {
+		w := httptest.NewRecorder()
+		h.ServeHTTP(w, signedInAs(httptest.NewRequest(http.MethodGet, "/v1/builds?mine=1", nil), c.user))
+		if w.Code != http.StatusOK {
+			t.Fatalf("user %d: status %d, body %s", c.user, w.Code, w.Body.String())
+		}
+		if got := w.Header().Get("Cache-Control"); got != "private, no-store" {
+			t.Errorf("user %d: cache-control = %q", c.user, got)
+		}
+		var env struct {
+			OK   bool `json:"ok"`
+			Data Page `json:"data"`
+		}
+		if err := json.Unmarshal(w.Body.Bytes(), &env); err != nil {
+			t.Fatalf("user %d: %v (%s)", c.user, err, w.Body.String())
+		}
+		got := make([]string, 0, len(env.Data.Rows))
+		for _, b := range env.Data.Rows {
+			got = append(got, b.ID)
+		}
+		if !slices.Equal(got, c.want) {
+			t.Errorf("user %d: rows = %v, want %v", c.user, got, c.want)
+		}
+		if env.Data.Total != len(c.want) {
+			t.Errorf("user %d: total = %d, want %d", c.user, env.Data.Total, len(c.want))
+		}
+	}
+}
+
+// TestMyOwnBuildsClampAnAbsurdPage pins the overflow: (page-1)*PerPage
+// past the int range would hand Postgres a negative OFFSET, which is a
+// 500 where an empty page is the true answer.
+func TestMyOwnBuildsClampAnAbsurdPage(t *testing.T) {
+	store := newFakeStore()
+	store.seed(Build{ID: "aaaaaaaa"}, 7)
+	h := testRouter(t, store)
+
+	w := httptest.NewRecorder()
+	h.ServeHTTP(w, signedInAs(httptest.NewRequest(http.MethodGet,
+		"/v1/builds?mine=1&page=9223372036854775807", nil), 7))
+	if w.Code != http.StatusOK {
+		t.Fatalf("status %d, body %s", w.Code, w.Body.String())
+	}
+	var env struct {
+		Data Page `json:"data"`
+	}
+	if err := json.Unmarshal(w.Body.Bytes(), &env); err != nil {
+		t.Fatal(err)
+	}
+	if env.Data.Page != MaxPage {
+		t.Errorf("page = %d, want it clamped to %d", env.Data.Page, MaxPage)
 	}
 }

@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"os"
 	"testing"
@@ -10,6 +11,9 @@ import (
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/source/iofs"
 	"github.com/jackc/pgx/v5/pgxpool"
+
+	"github.com/jhunthrop/foreversixty/api/internal/sims"
+	simapi "github.com/jhunthrop/foreversixty/sim/api"
 )
 
 func testURL(t *testing.T) string {
@@ -349,7 +353,10 @@ func TestMigrateCreatesTheSimulatorTables(t *testing.T) {
 
 	for table, columns := range map[string][]string{
 		"sims": {"id", "user_id", "spec", "engine_version", "lane", "dps_mean",
-			"dps_error", "iterations", "title", "result", "state", "created_at"},
+			"dps_error", "iterations", "title", "result", "state", "created_at",
+			// 0014's five: which tool produced the row, the line the
+			// history list shows, and a bulk run's stage counters.
+			"kind", "headline", "stage", "combos_done", "combos_total"},
 		"sim_specs": {"spec", "state", "median_gap", "parses", "worst_actions",
 			"engine_version", "updated_at"},
 		"users":         {"premium"},
@@ -368,14 +375,19 @@ func TestMigrateCreatesTheSimulatorTables(t *testing.T) {
 		}
 	}
 
-	var n int
-	if err := pool.QueryRow(t.Context(),
-		`select count(*) from pg_indexes
-		 where indexname = 'fight_metrics_execution_idx'`).Scan(&n); err != nil {
-		t.Fatal(err)
-	}
-	if n != 1 {
-		t.Error("fight_metrics_execution_idx is missing")
+	// The indexes the filtered list queries were written against: without
+	// them the kind filter and the owner filter are sequential scans.
+	for _, index := range []string{
+		"fight_metrics_execution_idx", "sims_user_kind_idx", "builds_user_idx",
+	} {
+		var n int
+		if err := pool.QueryRow(t.Context(),
+			`select count(*) from pg_indexes where indexname = $1`, index).Scan(&n); err != nil {
+			t.Fatal(err)
+		}
+		if n != 1 {
+			t.Errorf("%s is missing", index)
+		}
 	}
 
 	// premium defaults to false: nothing in the code ever turns it on.
@@ -392,5 +404,113 @@ func TestMigrateCreatesTheSimulatorTables(t *testing.T) {
 	}
 	if premium {
 		t.Error("a new account must not be premium")
+	}
+}
+
+// TestMigration0016BackfillsOlderSimHeadlines pins the backfill in 0016
+// against the Go function it has to agree with. Every row saved before
+// 0014 introduced kind/headline is necessarily a plain run, so its
+// headline is exactly what sims.Headline composes for that branch — the
+// rounding rule (halves away from zero) and the thousands grouping
+// included.
+//
+// The backfill lives in 0016 rather than in 0014 itself because 0014
+// already shipped and ran against production; golang-migrate never
+// re-runs an applied migration, so the fix had to be a follow-up
+// migration instead of an edit to one already applied.
+//
+// The rows are inserted while the schema is at 0014/0015 (kind and
+// headline exist, defaulted), so they are genuinely in the pre-0016
+// shape rather than post-0016 rows with the column blanked.
+func TestMigration0016BackfillsOlderSimHeadlines(t *testing.T) {
+	url := testURL(t)
+	if err := Migrate(url); err != nil {
+		t.Fatal(err)
+	}
+	// Whatever this test asserts, the shared database is left at the latest version.
+	t.Cleanup(func() {
+		if err := Migrate(url); err != nil {
+			t.Errorf("restoring the latest migration: %v", err)
+		}
+	})
+	pool, err := Connect(context.Background(), url)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer pool.Close()
+
+	cases := []struct {
+		id     string
+		mean   float64
+		state  string
+		preset string // non-"": headline is already set to this before the backfill runs, and must survive untouched
+	}{
+		{id: "mig16-zero", mean: 0, state: "done"},             // a zero is "0 DPS", not ""
+		{id: "mig16-sub1k", mean: 942.4, state: "done"},        // under a thousand: no comma
+		{id: "mig16-halfdown", mean: 1000.5, state: "done"},    // halves go away from zero,
+		{id: "mig16-halfup", mean: 1001.5, state: "done"},      // ... never to even
+		{id: "mig16-grouped", mean: 1234567.89, state: "done"}, // three-digit groups
+		{id: "mig16-queued", mean: 1500, state: "queued"},      // no result yet: no headline
+		{id: "mig16-errored", mean: 1500, state: "error"},      // no result at all: no headline
+		// Idempotence: a done row that already carries a headline must not
+		// be overwritten, whether the backfill runs once or is re-run.
+		{id: "mig16-preset", mean: 1500, state: "done", preset: "999 DPS (preset, do not overwrite)"},
+	}
+	results := map[string]simapi.SimResult{}
+	for _, c := range cases {
+		results[c.id] = simapi.SimResult{
+			SimID: c.id, EngineVersion: "0.0.0-test", Lane: simapi.LaneBrowser,
+			Request: simapi.SimRequest{Spec: "warrior-fury"},
+			DPS:     simapi.Estimate{Mean: c.mean},
+		}
+	}
+	t.Cleanup(func() {
+		p, err := Connect(context.Background(), url)
+		if err != nil {
+			t.Errorf("cleaning up the backfill rows: %v", err)
+			return
+		}
+		defer p.Close()
+		for _, c := range cases {
+			if _, err := p.Exec(context.Background(), `delete from sims where id = $1`, c.id); err != nil {
+				t.Errorf("cleaning up %s: %v", c.id, err)
+			}
+		}
+	})
+
+	migrateTo(t, url, 15)
+	for _, c := range cases {
+		body, err := json.Marshal(results[c.id])
+		if err != nil {
+			t.Fatal(err)
+		}
+		if _, err := pool.Exec(context.Background(),
+			`insert into sims (id, spec, engine_version, lane, dps_mean, dps_error,
+			   iterations, result, state, headline)
+			 values ($1, 'warrior-fury', '0.0.0-test', 'browser', $2, 0, 1000, $3, $4, $5)`,
+			c.id, c.mean, body, c.state, c.preset); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	if err := Migrate(url); err != nil {
+		t.Fatal(err)
+	}
+	for _, c := range cases {
+		var kind, headline string
+		if err := pool.QueryRow(context.Background(),
+			`select kind, headline from sims where id = $1`, c.id).Scan(&kind, &headline); err != nil {
+			t.Fatal(err)
+		}
+		if kind != simapi.KindRun {
+			t.Errorf("%s: kind = %q, want %q", c.id, kind, simapi.KindRun)
+		}
+		want := c.preset
+		if want == "" && c.state == "done" {
+			want = sims.Headline(results[c.id])
+		}
+		if headline != want {
+			t.Errorf("%s (%v, %s): headline = %q, want %q", c.id, c.mean, c.state, headline, want)
+		}
 	}
 }
