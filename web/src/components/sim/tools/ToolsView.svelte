@@ -15,7 +15,7 @@
   import { createBulkStore, type SimTool } from '../../../lib/sim/bulk-store.svelte';
   import type { Origin } from '../../../lib/sim/candidates';
   import { bulkCopy, simCopy } from '../../../lib/sim/copy';
-  import { syncTabHrefs, tabStateFor } from '../../../lib/sim/tabs';
+  import { syncTabHrefs } from '../../../lib/sim/tabs';
   import { parseSimState } from '../../../lib/sim/url';
   import CharacterStrip from '../CharacterStrip.svelte';
   import SourceSwitcher from '../SourceSwitcher.svelte';
@@ -60,9 +60,17 @@
   // Keeps the loaded character on every tab in SimTabs.astro's strip (task-1-brief.md),
   // the same rewrite SimView.svelte's own effect performs for /sim, /sim/[id] and
   // /sim/specs: whenever this island's own character changes, every tab's href is
-  // rewritten to carry the same `?source=&ref=` query the page itself bootstraps from.
+  // rewritten to carry the same query its own destination can actually bootstrap from --
+  // `?source=&ref=`, or `store.characterCode` (bulk-store.svelte.ts) on the two tabs that
+  // read `?code=` (`SIM_TABS`' own `supportsCode`; the four tools tabs never do, so a
+  // ref-less character's fallback code never reaches them, fix round 1 Finding A).
   $effect(() => {
-    syncTabHrefs(tabStateFor(store.character === null ? null : store.character.source));
+    const source = store.character === null ? null : store.character.source;
+    // `store.characterCode` costs a talent-index rebuild (bulk-store-request.ts's own
+    // `characterSpecOrNull`), read only when `source.ref` is empty and there is actually a
+    // fallback to try -- the same guard SimView.svelte's own effect applies.
+    const fallbackCode = source !== null && source.ref === '' ? store.characterCode : null;
+    syncTabHrefs(source, fallbackCode);
   });
 
   /**

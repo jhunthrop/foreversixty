@@ -12,13 +12,26 @@
 // (Global Constraint 10) for a change that is not itself new copy.
 import { KIND_TITLES, simCopy } from './copy';
 import type { SourceKind } from './types';
-import { defaultSimState, simSearch, withSimState, type SimState } from './url';
+import { defaultSimState, MAX_CODE, simSearch, withSimState, type SimState } from './url';
 
 /** One entry in the tab strip every simulator page carries. */
 export interface SimTabEntry {
   readonly id: 'quick-sim' | 'gear' | 'drops' | 'talents' | 'weights' | 'specs';
   readonly label: string;
   readonly href: string;
+  /**
+   * Whether this tab's own destination can bootstrap a character from `?code=` -- true for
+   * `quick-sim` and `specs` (SimView.svelte's store, `store.svelte.ts`'s `fromPlannerCode`
+   * branch of its init), false for the four tools-island tabs (ToolsView.svelte /
+   * bulk-store.svelte.ts, which bootstrap only from `?source=&ref=` and have never read
+   * `?code=` at all). `syncTabHrefs` reads this per tab (fix round 1, Finding A) so a
+   * fallback FS1 code -- the only escape hatch for a `ref`-less character -- is never
+   * offered to a tab that cannot consume it: that would be exactly the inert-query problem
+   * this fallback exists to avoid, just moved rather than fixed. Adding `?code=` support
+   * to the tools island is a real feature, not a fix-round-sized change, so it stays out of
+   * scope here.
+   */
+  readonly supportsCode: boolean;
 }
 
 /**
@@ -27,12 +40,12 @@ export interface SimTabEntry {
  * produces once a character is loaded.
  */
 export const SIM_TABS: readonly SimTabEntry[] = [
-  { id: 'quick-sim', label: simCopy.tabQuickSim, href: '/sim' },
-  { id: 'gear', label: KIND_TITLES.gear, href: '/sim/gear' },
-  { id: 'drops', label: KIND_TITLES.drops, href: '/sim/drops' },
-  { id: 'talents', label: simCopy.tabTalents, href: '/sim/talents' },
-  { id: 'weights', label: simCopy.tabWeights, href: '/sim/weights' },
-  { id: 'specs', label: simCopy.tabSpecs, href: '/sim/specs' },
+  { id: 'quick-sim', label: simCopy.tabQuickSim, href: '/sim', supportsCode: true },
+  { id: 'gear', label: KIND_TITLES.gear, href: '/sim/gear', supportsCode: false },
+  { id: 'drops', label: KIND_TITLES.drops, href: '/sim/drops', supportsCode: false },
+  { id: 'talents', label: simCopy.tabTalents, href: '/sim/talents', supportsCode: false },
+  { id: 'weights', label: simCopy.tabWeights, href: '/sim/weights', supportsCode: false },
+  { id: 'specs', label: simCopy.tabSpecs, href: '/sim/specs', supportsCode: true },
 ];
 
 /** The attribute `SimTabs.astro` stamps on each `<a>`, and `syncTabHrefs` below reads to
@@ -57,27 +70,60 @@ export interface TabSource {
   readonly ref: string;
 }
 
-/** `source` (a loaded character's own `.source`) as the `SimState` the tab strip's hrefs
- *  should carry: `defaultSimState()` -- so every href stays bare -- when there is none. */
-export function tabStateFor(source: TabSource | null): SimState {
-  return source === null
-    ? defaultSimState()
-    : withSimState(defaultSimState(), { source: source.kind, ref: source.ref });
+/**
+ * `source` (a loaded character's own `.source`) as the `SimState` the tab strip's hrefs
+ * should carry.
+ *
+ * `source.ref` is empty for an `addon`- or `manual`-kind character (sources.ts,
+ * `store.svelte.ts`'s `fromPlannerCode`): neither a pasted export nor a hand-entered FS1
+ * code has a server-side ref to round-trip through `?source=&ref=`, and the newcomer
+ * persona's addon paste is the product's primary entry path (task-1-brief.md fix round 1,
+ * Finding A) -- so `?source=addon` alone would be an inert query that looks like it
+ * restores the character and does not. `fallbackCode` is the same escape hatch
+ * `store-request.ts`'s own "Run this yourself" link already falls back to for the
+ * identical case: a fresh FS1 v2 code derived from the character as currently loaded
+ * (`codeForCharacterSpec`), passed in by the caller (never computed here -- deriving one
+ * needs an engine-shaped `CharacterSpec`, which only the calling store can build).
+ * `fallbackCode` past `MAX_CODE` is treated as unusable, the same as `parseSimState` would
+ * silently drop it on the other end: a link this function will not itself honour is not
+ * emitted at all, so the strip degrades to bare rather than to another inert query.
+ *
+ * Falls back to `defaultSimState()` -- every href stays bare -- when there is no character,
+ * or no source, or no usable ref and no usable fallback code.
+ */
+export function tabStateFor(source: TabSource | null, fallbackCode: string | null = null): SimState {
+  if (source === null) return defaultSimState();
+  if (source.ref !== '') return withSimState(defaultSimState(), { source: source.kind, ref: source.ref });
+  if (fallbackCode !== null && fallbackCode !== '' && fallbackCode.length <= MAX_CODE) {
+    return withSimState(defaultSimState(), { code: fallbackCode });
+  }
+  return defaultSimState();
 }
 
 /**
  * Rewrites every tab already in the DOM (`SIM_TAB_ATTR` identifies each `<a>`, stamped by
- * `SimTabs.astro`) to carry `state`'s query, so the strip keeps the loaded character across
- * a click to another tool. Called from an `$effect` in both `SimView.svelte` and
+ * `SimTabs.astro`) to carry the loaded character's query, so the strip keeps it across a
+ * click to another tool. Called from an `$effect` in both `SimView.svelte` and
  * `ToolsView.svelte` -- the one place either island reacts to its own character/state
  * changes already -- so a link is never stale for longer than a render. A tab missing from
  * the DOM (a page this component is not on) is silently skipped rather than an error: the
  * strip is identical on every page, but `root` may be scoped to less than the whole
  * document in a test.
+ *
+ * `state` is computed once per tab, not once for the whole strip: `fallbackCode` (see
+ * `tabStateFor`) is only ever passed on to a tab whose own `supportsCode` is true, so a tab
+ * that cannot bootstrap from `?code=` gets `source`/`ref` or a bare href instead, never a
+ * query it cannot itself honour.
  */
-export function syncTabHrefs(state: SimState, root: ParentNode = document): void {
+export function syncTabHrefs(
+  source: TabSource | null,
+  fallbackCode: string | null,
+  root: ParentNode = document,
+): void {
   for (const tab of SIM_TABS) {
     const anchor = root.querySelector<HTMLAnchorElement>(`[${SIM_TAB_ATTR}="${tab.id}"]`);
-    if (anchor !== null) anchor.href = tabHref(tab.href, state);
+    if (anchor === null) continue;
+    const state = tabStateFor(source, tab.supportsCode ? fallbackCode : null);
+    anchor.href = tabHref(tab.href, state);
   }
 }

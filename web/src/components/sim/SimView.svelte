@@ -31,7 +31,7 @@
     specStateNote,
   } from '../../lib/sim/spec-state';
   import { createSimStore } from '../../lib/sim/store.svelte';
-  import { syncTabHrefs, tabStateFor } from '../../lib/sim/tabs';
+  import { syncTabHrefs } from '../../lib/sim/tabs';
   import {
     decodeRequestParam,
     defaultSimState,
@@ -407,14 +407,31 @@
     if (store.character !== null) switcherOpen = false;
   });
 
+  /**
+   * A fresh FS1 v2 code for the loaded character, the same conversion the share link below
+   * ("Run this yourself") already falls back to when a saved result has no ref of its own
+   * to point at. The tab strip's own fallback for the identical case (fix round 1, Finding
+   * A): `tabStateFor` only reaches for this when `store.character.source.ref` is empty --
+   * an addon paste or a `?code=` link, the newcomer persona's primary entry path -- so
+   * `store.buildRequest()` (which needs the talent file to have resolved) runs only then,
+   * not on every character.
+   */
+  function fallbackTabCode(): string | null {
+    if (store.character === null || store.character.source.ref !== '') return null;
+    const request = store.buildRequest();
+    return request === null ? null : codeForCharacterSpec(request.character, bootstrap.treeVersion);
+  }
+
   // Keeps the loaded character on every tab in SimTabs.astro's strip (task-1-brief.md):
   // whenever the character this island holds changes -- loaded, changed source, or cleared
-  // -- every tab's href is rewritten to carry the same `?source=&ref=` query this page
-  // itself would bootstrap from. The strip lives above this island's own mount point
-  // (SimTabs.astro's own comment), so `syncTabHrefs` reaches it through `document` rather
-  // than this component's own root.
+  // -- every tab's href is rewritten to carry the same query its own destination can
+  // actually bootstrap from (`?source=&ref=`, or `?code=` only on the two tabs that read
+  // it, `SIM_TABS`' own `supportsCode`). The strip lives above this island's own mount
+  // point (SimTabs.astro's own comment), so `syncTabHrefs` reaches it through `document`
+  // rather than this component's own root.
   $effect(() => {
-    syncTabHrefs(tabStateFor(store.character === null ? null : store.character.source));
+    const source = store.character === null ? null : store.character.source;
+    syncTabHrefs(source, fallbackTabCode());
   });
 
   function onSignIn(): void {

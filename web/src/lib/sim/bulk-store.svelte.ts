@@ -27,6 +27,7 @@ import { MAX_SERVER_POLLS, runServerJob } from './bulk-server-run';
 import {
   applyRequestFields,
   buildRequest,
+  characterCode,
   previewRequest,
   recount as recountCombinations,
   runBulkAndSettle,
@@ -315,6 +316,7 @@ export function createBulkStore(init: BulkStoreInit) {
   const requestDeps: BulkRequestDeps = {
     tool: init.tool,
     mode,
+    treeVersion: init.treeVersion,
     getCharacter: () => character,
     getTalentFile: () => talentFile,
     getSettings: () => settings,
@@ -522,6 +524,11 @@ export function createBulkStore(init: BulkStoreInit) {
     /** Exactly what a run would send, for part A's Advanced drawer (design 8). */
     get requestPreview() {
       return previewRequest(requestDeps);
+    },
+    /** A fresh FS1 code for the loaded character, or null -- the tab strip's own fallback
+     *  for a `source.ref`-less character (bulk-store-request.ts's own comment). */
+    get characterCode() {
+      return characterCode(requestDeps);
     },
     /**
      * A request edited in the drawer, adopted whole. Only the two blocks this store owns

@@ -29,6 +29,14 @@ const meta = JSON.parse(
 // character rather than `simCopy.fightNoCombatant`.
 const FIGHT_REF = 'fixture2abcd:3';
 
+// The addon-paste path (sim-sources.spec.ts's own fixture): an `addon`-kind character,
+// whose `source.ref` is always '' (sources.ts's `fromAddonExport`) -- fix round 1, Finding
+// A's own case.
+const activeBuild = JSON.parse(readFileSync(path.join(ROOT, 'src', 'data', 'active-build.json'), 'utf8')) as {
+  build: string;
+};
+const FURY = `FS1:${activeBuild.build}:warrior:orc:0/5530515/0:head=12640,main_hand=11726`;
+
 async function stubFightMeta(page: import('@playwright/test').Page): Promise<void> {
   await page.route('**/v1/reports/fixture2abcd', (route) =>
     route.fulfill({
@@ -98,19 +106,85 @@ test.describe('the simulator tab strip', () => {
       `/sim/talents${expectedQuery}`,
     );
   });
+
+  // Fix round 1, Finding A: an addon paste is "the primary path into the product" (the
+  // newcomer persona review) and stamps `source.ref: ''` -- before this fix every tab's
+  // href read `?source=addon`, a query that looks like it restores the character and
+  // silently does not. Quick Sim (SimView.svelte's own store reads `?code=`) gets a working
+  // fallback link; Top Gear (ToolsView.svelte / bulk-store.svelte.ts, which has never read
+  // `?code=`) gets a bare href instead -- never a `?code=` it cannot itself honour, which
+  // would just move the inert-query problem rather than fix it (`SIM_TABS`' own
+  // `supportsCode`).
+  test('an addon-pasted character gets a working ?code= href only where the destination can use it', async ({
+    page,
+  }) => {
+    await page.goto('/sim');
+    await page.getByTestId('sim-addon-input').fill(FURY);
+    await page.getByTestId('sim-addon-load').click();
+    await expect(page.getByTestId('sim-character')).toBeVisible();
+
+    // The fallback code needs the store's own talent index, which resolves slightly after
+    // `character` itself does (bulk-store.svelte.ts's own `adopt()`, same ordering
+    // store.svelte.ts uses) -- `toHaveAttribute` polls for it rather than reading the
+    // attribute once, racing that resolve.
+    const quickSim = page.getByTestId('sim-nav-tab-quick-sim');
+    await expect(quickSim).toHaveAttribute('href', /^\/sim\?code=/);
+    const quickSimHref = await quickSim.getAttribute('href');
+    const query = new URL(quickSimHref ?? '', page.url()).searchParams;
+    expect(query.get('source'), 'no source= for a ref-less character').toBeNull();
+    expect(query.get('ref'), 'no ref= for a ref-less character').toBeNull();
+
+    // Top Gear cannot bootstrap from ?code= (ToolsView.svelte has never read it), so it
+    // stays bare rather than carrying a query it cannot itself honour.
+    await expect(page.getByTestId('sim-nav-tab-gear')).toHaveAttribute('href', '/sim/gear');
+
+    // Proves the Quick Sim link, once followed, genuinely restores the character -- not
+    // merely that it carries a code= parameter.
+    await page.goto(quickSimHref ?? '/sim');
+    await expect(page.getByTestId('sim-character')).toBeVisible();
+    await expect(page.getByTestId('sim-character-descriptor')).toContainText('Fury Warrior');
+  });
+
+  // The tools island's own `characterCode` fallback (bulk-store.svelte.ts): from /sim/gear,
+  // the four tools tabs stay bare (none of them read ?code=) while the two SimView-served
+  // tabs on the same strip still get the working fallback link.
+  test('from the tools island, only the SimView-served tabs get the ?code= fallback', async ({ page }) => {
+    await page.goto('/sim/gear');
+    await page.getByTestId('sim-addon-input').fill(FURY);
+    await page.getByTestId('sim-addon-load').click();
+    await expect(page.getByTestId('sim-character')).toBeVisible();
+
+    const specs = page.getByTestId('sim-nav-tab-specs');
+    await expect(specs).toHaveAttribute('href', /^\/sim\/specs\?code=/);
+    const specsHref = await specs.getAttribute('href');
+    expect(new URL(specsHref ?? '', page.url()).searchParams.get('source')).toBeNull();
+
+    for (const id of ['gear', 'drops', 'talents', 'weights']) {
+      await expect(
+        page.getByTestId(`sim-nav-tab-${id}`),
+        `${id} cannot bootstrap from ?code=`,
+      ).toHaveAttribute('href', `/sim/${id}`);
+    }
+  });
 });
 
 test.describe('the simulator tab strip at phone width', () => {
   // 390x844, the width task-1-brief.md's own acceptance criterion names.
   test.use({ viewport: { width: 390, height: 844 } });
 
-  test('scrolls sideways within itself rather than the page, and every tab clears 44px', async ({ page }) => {
+  test('scrolls sideways within itself rather than the page, and every tab clears 44x44', async ({
+    page,
+  }) => {
     await page.goto('/sim');
     await assertNoHorizontalScroll(page, 390);
 
     for (const tab of SIM_TABS) {
       const box = await page.getByTestId(`sim-nav-tab-${tab.id}`).boundingBox();
+      // design/DESIGN-SYSTEM.md's "44px minimum hit targets" is both dimensions, not just
+      // height (fix round 1, Finding B) -- a tab this short in either one is not a real
+      // 44x44 target even where the other clears it.
       expect(box?.height ?? 0, `${tab.id} height`).toBeGreaterThanOrEqual(44);
+      expect(box?.width ?? 0, `${tab.id} width`).toBeGreaterThanOrEqual(44);
     }
 
     const strip = await page.evaluate(() => {

@@ -37,7 +37,7 @@ import {
   type WeightsRequest,
 } from './bulk-types';
 import { buildBulkSpec, validateBulk, type CandidateRow } from './candidates';
-import { toCharacterSpec, type SimCharacter } from './character';
+import { codeForCharacterSpec, toCharacterSpec, type SimCharacter } from './character';
 import { bulkCopy, simCopy } from './copy';
 import type { RequestValidation } from './engine';
 import { PRECISION_ITERATIONS } from './precision';
@@ -52,6 +52,9 @@ export interface BulkRequestDeps {
   tool: SimTool;
   /** null only for the `weights` tool, which sends no `bulk` block at all. */
   mode: BulkMode | null;
+  /** `init.treeVersion`, for the FS1 code `characterCode` below encodes -- a plain field,
+   *  not a getter, the same as `tool`/`mode` above: it never changes after construction. */
+  treeVersion: string;
   getCharacter(): SimCharacter | null;
   getTalentFile(): TalentFile | null;
   getSettings(): SimSettings;
@@ -82,6 +85,20 @@ function characterSpecOrNull(deps: BulkRequestDeps): CharacterSpec | null {
   if (character === null || talentFile === null) return null;
   const settings = deps.getSettings();
   return toCharacterSpec(character, indexTalents(talentFile), settings.buffs, settings.consumables);
+}
+
+/**
+ * A fresh FS1 v2 code for the loaded character, or null while there is none (or no talent
+ * file yet) to encode. The same conversion `store-request.ts`'s own "Run this yourself"
+ * link already uses for a saved result with no ref to point at -- `lib/sim/tabs.ts`'s
+ * `tabStateFor` calls this through the store's own `characterCode` getter as the identical
+ * fallback for the tab strip (task-1-brief.md fix round 1, Finding A): the tools island has
+ * no single-character `buildRequest()` the way `/sim`'s own store does, so this is that
+ * store's narrow equivalent.
+ */
+export function characterCode(deps: BulkRequestDeps): string | null {
+  const spec = characterSpecOrNull(deps);
+  return spec === null ? null : codeForCharacterSpec(spec, deps.treeVersion);
 }
 
 /**
