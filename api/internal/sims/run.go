@@ -72,6 +72,14 @@ func (s *Service) run(w http.ResponseWriter, r *http.Request) {
 	if req.Bulk != nil && s.checkSize(w, r, req) {
 		return
 	}
+	// A weights request has no combinations for the Planner to size,
+	// but it is not unbounded either: simapi.WeightsIterations costs
+	// it directly from the engine's own stat-weights arithmetic, and
+	// checkWeightsSize runs it through the same too_large estimate
+	// checkSize does for bulk.
+	if req.Weights != nil && s.checkWeightsSize(w, r, req) {
+		return
+	}
 
 	id := auth.Base32ID(auth.ReportIDChars)
 	if err := s.Store.Queue(r.Context(), id, actor.UserID, req); err != nil {
@@ -156,16 +164,42 @@ func (s *Service) checkSize(w http.ResponseWriter, r *http.Request, req simapi.S
 		// platform stops leaves a row that never reaches a terminal
 		// state, and the member has waited a quarter of an hour to find
 		// out. The estimate is what they trim against.
-		httpx.WriteError(w, r, http.StatusBadRequest, "too_large",
-			fmt.Sprintf("that run is about %d seconds of engine time; a run on our servers stops at %d",
-				est, budget),
-			map[string]string{
-				"estimate_sec": strconv.Itoa(est),
-				"budget_sec":   strconv.Itoa(budget),
-			})
+		s.writeTooLarge(w, r, est, budget)
 		return true
 	}
 	return false
+}
+
+// checkWeightsSize is checkSize's counterpart for a weights request. A
+// weights request has no combinations - runner.Planner refuses
+// req.Bulk == nil outright (ErrBadInput) rather than skip a check it
+// has nothing to answer - so there is no cap to breach and nothing to
+// plan; simapi.WeightsIterations costs it directly from the request's
+// own iterations and stat count, the same arithmetic
+// sim/core/statweight.go runs, and that estimate goes through the
+// identical too_large check a bulk request's does.
+func (s *Service) checkWeightsSize(w http.ResponseWriter, r *http.Request, req simapi.SimRequest) bool {
+	budget := int(BulkBudget.Seconds())
+	if est := estimateSec(simapi.WeightsIterations(req)); est > budget {
+		s.writeTooLarge(w, r, est, budget)
+		return true
+	}
+	return false
+}
+
+// writeTooLarge is the one place that turns an engine-time estimate
+// and the job budget into the 400 too_large body: checkSize and
+// checkWeightsSize both refuse a request this way, and a single
+// writer is what keeps their bodies from drifting apart the way
+// writeCapExceeded already does for a cap breach.
+func (s *Service) writeTooLarge(w http.ResponseWriter, r *http.Request, estSec, budgetSec int) {
+	httpx.WriteError(w, r, http.StatusBadRequest, "too_large",
+		fmt.Sprintf("that run is about %d seconds of engine time; a run on our servers stops at %d",
+			estSec, budgetSec),
+		map[string]string{
+			"estimate_sec": strconv.Itoa(estSec),
+			"budget_sec":   strconv.Itoa(budgetSec),
+		})
 }
 
 // writeCapExceeded is the one place that turns a lane's cap and a

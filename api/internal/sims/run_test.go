@@ -341,57 +341,92 @@ func TestABulkRunPastTheBudgetIsRefusedWithItsEstimate(t *testing.T) {
 	}
 }
 
-// TestAWeightsRunIsAcceptedUnsizedAndBoundOnlyByTheJobTimeout pins the
-// honest current behaviour, not the brief's original assertion that a
-// weights request is planned: runner.Native.Plan and runner.Fixture.Plan
-// both refuse req.Bulk == nil with ErrBadInput (sim/runner/native.go,
-// sim/runner/fixture.go), and a weights request carries req.Weights
-// instead of req.Bulk. checkSize's req.Bulk != nil guard (Task 5) is
-// therefore load-bearing, not incidental: without it, every weights
-// submit would 500 rather than skip a check it has no combinations to
-// answer.
-//
-// That means a weights run today has no submit-time size estimate at
-// all - it is bounded only by timeoutFor's BulkBudget once it is
-// running, the same as an unusually large bulk run that slipped under
-// its cap. sim/api exports WeightsSpec, StatWeight and an unexported
-// validate, and nothing that costs a weights run in iterations; adding
-// one would mean guessing whether the engine runs one sim per stat or
-// two (plus/minus delta), and that guess would become a number shown
-// to a user in a refusal. For a weights run to get an estimate, the
-// module needs to publish its own iteration-cost function the way
-// sim/api.LadderIterations does for bulk, and this package would then
-// call it here exactly as checkSize already calls the planner for bulk.
-func TestAWeightsRunIsAcceptedUnsizedAndBoundOnlyByTheJobTimeout(t *testing.T) {
-	h := newHarness(t)
-	h.premium.premium = true
-	// Cap 0: weights expand to no combinations, so the cap test must not
-	// fire on a zero and refuse every one of them.
-	h.planner.summary = simapi.PlanSummary{
-		Kind: simapi.KindWeights, Combinations: 0, Cap: 0, IterationsTotal: 60_000,
-	}
+// weightsBody is a well-formed weights submit for POST /v1/sims/run,
+// mirroring runBody and bulkBody above.
+func weightsBody(t *testing.T, iterations int, stats []string, reference string) string {
+	t.Helper()
 	b, err := json.Marshal(simapi.SimRequest{
-		EngineVersion: testEngine, Spec: "warrior-fury", Iterations: defaultIterations,
+		EngineVersion: testEngine, Spec: "warrior-fury", Iterations: iterations,
 		Source:    simapi.CharacterSource{Kind: simapi.SourceAddon, Ref: "us/normal/baelgrim"},
 		Character: aCharacter("warrior", "orc"),
-		Weights: &simapi.WeightsSpec{
-			Stats: []string{"strength", "crit"}, Reference: "crit",
-		},
+		Weights:   &simapi.WeightsSpec{Stats: stats, Reference: reference},
 	})
 	if err != nil {
 		t.Fatal(err)
 	}
-	if res := h.json(http.MethodPost, "/v1/sims/run", string(b)); res.StatusCode != http.StatusAccepted {
+	return string(b)
+}
+
+// TestALegalWeightsRunIsQueuedAfterASizeCheck closes the gap
+// TestAWeightsRunPastTheBudgetIsRefusedWithItsEstimate below exists to
+// catch: runner.Native.Plan and runner.Fixture.Plan both refuse
+// req.Bulk == nil with ErrBadInput (sim/runner/native.go,
+// sim/runner/fixture.go), and a weights request carries req.Weights
+// instead of req.Bulk, so checkSize's req.Bulk != nil guard still
+// skips the planner call for one. checkWeightsSize sizes it instead,
+// from simapi.WeightsIterations rather than the Planner, and a legal
+// weights request comfortably fits the budget
+// (TestTheMaxWeightsRequestFitsTheBudget in simdep_test.go), so it is
+// still queued exactly as before.
+func TestALegalWeightsRunIsQueuedAfterASizeCheck(t *testing.T) {
+	h := newHarness(t)
+	h.premium.premium = true
+	body := weightsBody(t, defaultIterations, []string{"strength", "crit"}, "crit")
+	if res := h.json(http.MethodPost, "/v1/sims/run", body); res.StatusCode != http.StatusAccepted {
 		t.Fatalf("status %d, want 202", res.StatusCode)
 	}
 	// Not planned: a weights request has no Bulk block, so checkSize's
-	// req.Bulk != nil guard skips the planner call entirely.
+	// req.Bulk != nil guard skips the planner call entirely; sizing it
+	// is checkWeightsSize's job, not the Planner's.
 	if len(h.planner.asked) != 0 {
 		t.Fatalf("a weights request has nothing for the planner to size, but it was asked: %d plans",
 			len(h.planner.asked))
 	}
 	if ran := h.jobs.Ran(); len(ran) != 1 {
 		t.Fatalf("%d jobs dispatched, want 1: an accepted weights run must still be queued", len(ran))
+	}
+}
+
+// TestAWeightsRunPastTheBudgetIsRefusedWithItsEstimate pins the fix:
+// a weights request now goes through the same too_large estimate a
+// bulk request does, sized from simapi.WeightsIterations rather than
+// the Planner. checkWeightsSize is exercised directly rather than
+// through h.json: WeightsSpec.validate legitimately bounds Stats to
+// the pinned vocabulary (at most 41 ids, see
+// sim/api.KnownStats), and TestTheMaxWeightsRequestFitsTheBudget
+// proves the largest request that vocabulary and MaxIterations can
+// legally produce still fits the budget - so the only way to reach
+// this refusal at all is a Stats slice checkWeightsSize's own
+// arithmetic does not care is malformed, since it reads len(Stats)
+// directly and does not revalidate it.
+func TestAWeightsRunPastTheBudgetIsRefusedWithItsEstimate(t *testing.T) {
+	h := newHarness(t)
+	req := simapi.SimRequest{
+		EngineVersion: testEngine, Spec: "warrior-fury", Iterations: preciseIterations,
+		Source:    simapi.CharacterSource{Kind: simapi.SourceAddon, Ref: "us/normal/baelgrim"},
+		Character: aCharacter("warrior", "orc"),
+		Weights:   &simapi.WeightsSpec{Stats: make([]string, 1000), Reference: "crit"},
+	}
+	wantEst := estimateSec(simapi.WeightsIterations(req))
+	budget := int(BulkBudget.Seconds())
+	if wantEst <= budget {
+		t.Fatalf("the fixture does not exceed the budget: %ds vs %ds", wantEst, budget)
+	}
+
+	r := httptest.NewRequest(http.MethodPost, "/v1/sims/run", nil)
+	w := httptest.NewRecorder()
+	if refused := h.service.checkWeightsSize(w, r, req); !refused {
+		t.Fatal("an oversized weights request was not refused")
+	}
+	if w.Code != http.StatusBadRequest {
+		t.Fatalf("status %d, want 400", w.Code)
+	}
+	code, fields := refusal(t, w.Result())
+	if code != "too_large" {
+		t.Fatalf("code %q, want too_large", code)
+	}
+	if fields["estimate_sec"] != strconv.Itoa(wantEst) || fields["budget_sec"] != strconv.Itoa(budget) {
+		t.Fatalf("fields %+v, want estimate_sec=%d budget_sec=%d", fields, wantEst, budget)
 	}
 }
 

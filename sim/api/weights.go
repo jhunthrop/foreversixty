@@ -12,6 +12,7 @@ package api
 import (
 	"errors"
 	"fmt"
+	"slices"
 )
 
 // WeightsSpec asks for stat weights instead of a DPS number.
@@ -39,10 +40,42 @@ type StatWeight struct {
 	Error  float64 `json:"error"`
 }
 
+// KnownStats is the closed vocabulary a weights request may name: the
+// ids sim/request/IDS.md's Stats section publishes, which
+// sim/internal/statid generates from the engine's own Stat enum
+// (proto.Stat_name). sim/api may not import the engine's proto - no
+// protobuf crosses a lane boundary - so this is a copy rather than a
+// call across that boundary; sim/request's
+// TestAPIKnownStatsMatchTheGeneratedVocabulary proves the copy has
+// not drifted from the generator's own list. It is sorted so an error
+// message that lists it reads the same way twice.
+var KnownStats = []string{
+	"agility", "arcane_power", "arcane_resistance", "armor",
+	"armor_penetration", "attack_power", "block", "block_value",
+	"bonus_armor", "crit", "defense", "dodge", "energy", "expertise",
+	"feral_attack_power", "fire_power", "fire_resistance", "frost_power",
+	"frost_resistance", "healing_power", "health", "hit", "holy_power",
+	"intellect", "mana", "melee_haste", "mp5", "nature_power",
+	"nature_resistance", "parry", "rage", "ranged_attack_power",
+	"shadow_power", "shadow_resistance", "spell_damage", "spell_haste",
+	"spell_penetration", "spell_power", "spirit", "stamina", "strength",
+}
+
 func (w *WeightsSpec) validate() []error {
 	var errs []error
 	if len(w.Stats) == 0 {
 		errs = append(errs, errors.New("weights needs at least one stat to weigh"))
+	}
+	// Bounded before the per-id walk below: a request with more stats
+	// than the vocabulary has cannot be legal no matter what the ids
+	// are (there is nowhere for a 42nd distinct, known id to come
+	// from), and refusing it here in one error is both the honest
+	// answer and what keeps an oversized Stats array from being
+	// walked id by id for nothing.
+	if len(w.Stats) > len(KnownStats) {
+		errs = append(errs, fmt.Errorf("weights.stats has %d entries; the vocabulary only has %d",
+			len(w.Stats), len(KnownStats)))
+		return errs
 	}
 	seen := map[string]bool{}
 	for _, s := range w.Stats {
@@ -52,8 +85,12 @@ func (w *WeightsSpec) validate() []error {
 		}
 		if seen[s] {
 			errs = append(errs, fmt.Errorf("weights.stats has %q listed twice", s))
+			continue
 		}
 		seen[s] = true
+		if !slices.Contains(KnownStats, s) {
+			errs = append(errs, fmt.Errorf("weights.stats has %q, which is not a known stat id; see sim/request/IDS.md", s))
+		}
 	}
 	switch {
 	case w.Reference == "":
@@ -62,4 +99,31 @@ func (w *WeightsSpec) validate() []error {
 		errs = append(errs, fmt.Errorf("weights.reference is %q, which is not one of the stats it weighs (%v); the reference is normalised to 1 and there would be nothing to normalise", w.Reference, w.Stats))
 	}
 	return errs
+}
+
+// WeightsIterations is the engine's own stat-weights arithmetic
+// (sim/core/statweight.go in the wowsims fork,
+// buildStatWeightRequests and runStatWeights), expressed exactly
+// rather than approximated:
+//
+// The request's own Iterations is halved once, for RNG parity between
+// the "more of this stat" and "less of this stat" runs, and that
+// halved count becomes the size of EVERY sim pass the sweep runs: one
+// baseline pass, then one low pass and one high pass per distinct
+// stat being weighed. The reference stat is always one of them
+// (WeightsSpec.validate requires it), and a repeated id is refused
+// there too, so the distinct count is exactly len(req.Weights.Stats).
+// That makes the total iterations run:
+//
+//	(Iterations / 2) * (1 + 2*len(Stats))
+//
+// the baseline's one pass plus two passes per stat, every pass at
+// half the requested count. It returns 0 for a request with no
+// Weights block, the way LadderIterations has nothing to cost for a
+// request with no Bulk block.
+func WeightsIterations(req SimRequest) int {
+	if req.Weights == nil {
+		return 0
+	}
+	return (req.Iterations / 2) * (1 + 2*len(req.Weights.Stats))
 }

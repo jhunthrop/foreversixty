@@ -371,6 +371,26 @@ func TestValidateSavedRefusesAnAbortedResult(t *testing.T) {
 	}
 }
 
+// A result carrying an Error is the failure case Store.Finish already
+// tells apart from a done one - storing it under Aborted's check alone
+// would let it through as "done" with a confident, wrong "0 DPS"
+// headline.
+func TestValidateSavedRefusesAResultCarryingAnError(t *testing.T) {
+	res := SimResult{
+		EngineVersion: enginever.Version,
+		Request: SimRequest{
+			EngineVersion: enginever.Version, Spec: "mage-frost", Iterations: 3000,
+			Source:    CharacterSource{Kind: SourceManual},
+			Encounter: DefaultEncounter(),
+			Character: CharacterSpec{Name: "Jaina", Race: "gnome", Class: "mage", Level: 60},
+		},
+		Error: "engine panicked",
+	}
+	if err := res.ValidateSaved(); err == nil {
+		t.Fatal("a result carrying an error was accepted for save")
+	}
+}
+
 // Source.Kind had five constants declared beside it and nothing ever
 // compared to them, so a typo rode through as a stored row nothing
 // could join on.

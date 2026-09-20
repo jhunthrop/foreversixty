@@ -158,16 +158,29 @@ func (h *harness) data(res *http.Response, into any) {
 // errorCode reads the code of a failing envelope.
 func (h *harness) errorCode(res *http.Response) string {
 	h.t.Helper()
+	return h.errorBody(res).Code
+}
+
+// errorBody decodes a failing envelope's error object, code and
+// message together. errorCode is the common case; a test that also
+// needs the message reads it straight from here rather than through
+// a second single-field accessor.
+func (h *harness) errorBody(res *http.Response) struct {
+	Code    string `json:"code"`
+	Message string `json:"message"`
+} {
+	h.t.Helper()
 	defer res.Body.Close()
 	var env struct {
 		Error struct {
-			Code string `json:"code"`
+			Code    string `json:"code"`
+			Message string `json:"message"`
 		} `json:"error"`
 	}
 	if err := json.NewDecoder(res.Body).Decode(&env); err != nil {
 		h.t.Fatal(err)
 	}
-	return env.Error.Code
+	return env.Error
 }
 
 // ensureMetricsPartition makes the monthly fight_metrics partitions

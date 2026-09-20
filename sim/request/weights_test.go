@@ -2,6 +2,7 @@ package request
 
 import (
 	"errors"
+	"slices"
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/sim/api"
@@ -85,11 +86,46 @@ func TestBuildWeightsRefusals(t *testing.T) {
 	if _, err := BuildWeights(fury(), Options{}); !errors.Is(err, ErrNotWeights) {
 		t.Error("BuildWeights accepted a plain run")
 	}
+	// "haste" is refused before BuildWeights' own ParseStat loop ever
+	// runs: BuildWith validates the request first, and
+	// WeightsSpec.validate now bounds Stats to api.KnownStats -
+	// TestAPIKnownStatsMatchTheGeneratedVocabulary below pins that
+	// copy against this package's own KnownStats(), the same
+	// vocabulary ParseStat resolves against. ParseStat's ErrUnknownStat
+	// stays as the loop's own defense - reachable only if that copy
+	// ever drifts from the generated list - rather than being removed
+	// as dead code, since the two lists are independently maintained.
 	req := weights()
 	req.Weights.Stats = []string{"haste", "attack_power"}
 	req.Weights.Reference = "attack_power"
-	_, err := BuildWeights(req, Options{})
-	if !errors.Is(err, ErrUnknownStat) {
-		t.Errorf("BuildWeights = %v, want ErrUnknownStat for a stat the engine does not carry", err)
+	if _, err := BuildWeights(req, Options{}); err == nil {
+		t.Error("BuildWeights accepted a stat id outside the vocabulary")
+	}
+}
+
+// sim/api may not import the engine's proto - no protobuf crosses a
+// lane boundary - so api.KnownStats is a copy of KnownStats rather
+// than a call to it, kept only so WeightsSpec.validate can bound a
+// request's size at the envelope's own boundary. This is the one
+// place both lists are in scope together, and it is what keeps the
+// copy from drifting the day the engine's Stat enum gains or loses a
+// value: the same day TestKnownStatsAreTheEnginesEnum would fail if
+// this package's own list moved, this test fails if the copy did not
+// move with it.
+func TestAPIKnownStatsMatchTheGeneratedVocabulary(t *testing.T) {
+	want := KnownStats()
+	got := slices.Clone(api.KnownStats)
+	slices.Sort(got)
+	if !slices.Equal(got, want) {
+		for _, id := range got {
+			if !slices.Contains(want, id) {
+				t.Errorf("api.KnownStats lists %q, which the generated vocabulary does not", id)
+			}
+		}
+		for _, id := range want {
+			if !slices.Contains(got, id) {
+				t.Errorf("the generated vocabulary lists %q and api.KnownStats does not", id)
+			}
+		}
 	}
 }

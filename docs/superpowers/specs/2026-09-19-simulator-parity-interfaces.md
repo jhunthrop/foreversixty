@@ -603,3 +603,25 @@ gains per-slot enchant and suffix.
   mage-frost about 25,000. The constant sizes the Cloud Run job, whose vCPU
   is slower than the laptop, so the old figure is kept as a conservative
   bound until it is measured on the job itself.
+- **`ValidateSaved` refuses a result carrying `Error`.** A non-empty
+  `Error` is the same failure `Store.Finish` already stores under
+  `StateError` rather than `StateDone`; without this check, `POST
+  /v1/sims` stored the identical shape as `done`, with a headline
+  reading its zero fields as a confident "0 DPS".
+- **`sim/api.WeightsIterations` costs a weights request the way
+  `LadderIterations` costs a bulk one.** It is `(Iterations / 2) *
+  (1 + 2*len(Stats))` - the engine's own
+  `buildStatWeightRequests`/`runStatWeights` (`sim/core/statweight.go`
+  in the wowsims fork) halve `Iterations` once for RNG parity, then
+  run the baseline plus one low and one high pass per distinct stat,
+  every pass at that halved count. `WeightsSpec.validate` now also
+  bounds `Stats` to the pinned vocabulary (`sim/api.KnownStats`, a
+  copy of `sim/request/IDS.md`'s Stats section kept in sync by
+  `sim/request`'s `TestAPIKnownStatsMatchTheGeneratedVocabulary`) and
+  to at most that vocabulary's size, and `POST /v1/sims/run` runs a
+  weights request through the same `too_large` estimate a bulk request
+  gets, from `WeightsIterations` rather than the Planner (which
+  refuses `req.Bulk == nil` outright). At today's constants no legal
+  weights request reaches it - `TestTheMaxWeightsRequestFitsTheBudget`
+  pins that - so the guard is what protects the budget the day
+  `MaxIterations` or the vocabulary grows.
