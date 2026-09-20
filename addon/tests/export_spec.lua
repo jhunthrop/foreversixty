@@ -139,7 +139,10 @@ describe("Export", function()
 		assert.is_truthy(assert(Export.string(DATA)):find("|professions=cooking", 1, true))
 	end)
 
-	it("refuses to export a character with no points spent", function()
+	it("exports a character with no points spent, as an all-zero tree", function()
+		-- Controller ruling 5. encodeTree already emits "0" for an all-zero
+		-- tree and the site decoder accepts it, so the level-8 beta tester
+		-- gets an importable code rather than a refusal.
 		character({ talents = {
 			{ name = "Holy", talents = {
 				{ name = "Improved Holy Strike", tier = 1, column = 1, rank = 0, maxRank = 2 },
@@ -148,8 +151,15 @@ describe("Export", function()
 			{ name = "Retribution", talents = {} },
 		} })
 		local code, message = Export.string(DATA)
-		assert.is_nil(code)
-		assert.are.equal(require("Locale").exportNoTalents, message)
+		assert.is_nil(message)
+		assert.is_truthy(code:find(":0/0/0:", 1, true))
+	end)
+
+	it("stamps when the record was written so the tab can say so", function()
+		character({})
+		_G.ForeverSixtyDB = nil
+		Export.save(DATA)
+		assert.are.equal(_G.date(), _G.ForeverSixtyDB.savedAt)
 	end)
 
 	it("saves the record shape the companion walks for", function()

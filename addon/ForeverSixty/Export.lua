@@ -46,6 +46,9 @@ Export.BANK_BAGS = { -1, 5, 6, 7, 8, 9, 10, 11 }
 --- GetCurrentRegion's numbering. Spike check 13 confirms it.
 Export.REGION_NAMES = { [1] = "US", [2] = "KR", [3] = "EU", [4] = "TW", [5] = "CN" }
 
+--- How ForeverSixtyDB.savedAt reads. The Export tab shows it verbatim.
+Export.SAVED_AT_FORMAT = "%Y-%m-%d %H:%M"
+
 --- Client race token -> the site's race slug, for the eight base races. A
 --- rule cannot produce this map: `Scourge` is the client's token for what
 --- the site calls `undead` -- no amount of casing or hyphenation gets there
@@ -110,7 +113,9 @@ local function isEquippable(link)
 		and equipSlot ~= "INVTYPE_BAG"
 end
 
-local function itemsInBags(bags)
+--- Public because the Export tab counts what is carried and banked
+--- without rebuilding the whole string to do it.
+function Export.itemsInBags(bags)
 	local items = {}
 	for _, bag in ipairs(bags) do
 		for slot = 1, Export.containerSize(bag) do
@@ -124,7 +129,7 @@ local function itemsInBags(bags)
 	return items
 end
 
-local function equippedSlots()
+function Export.equippedSlots()
 	local slots = {}
 	for _, entry in ipairs(Export.INVENTORY_SLOTS) do
 		local id = itemIdOf(GetInventoryItemLink("player", entry.id))
@@ -177,7 +182,7 @@ end
 --- count rather than iterating the return values directly: `ipairs` on a
 --- plain table literal stops at the first nil and silently drops every
 --- profession after it.
-local function professions()
+function Export.professionSlugs()
 	if GetProfessions == nil then
 		return {}
 	end
@@ -196,17 +201,6 @@ local function professions()
 	return slugs
 end
 
-local function hasAPoint(treeRanks)
-	for _, tree in ipairs(treeRanks) do
-		for _, rank in ipairs(tree) do
-			if rank > 0 then
-				return true
-			end
-		end
-	end
-	return false
-end
-
 --- The export string, or nil and the reason.
 function Export.string(data)
 	-- The class slug comes from the locale-neutral class token (see
@@ -218,18 +212,15 @@ function Export.string(data)
 	if treeRanks == nil then
 		return nil, string.format(L.codecUnknownClass, tostring(classSlug))
 	end
-	if not hasAPoint(treeRanks) then
-		return nil, L.exportNoTalents
-	end
 	return Codec.encodeFS1({
 		dataBuild = data.build,
 		classSlug = classSlug,
 		raceSlug = raceSlugOf(),
 		treeRanks = treeRanks,
-		gearSlots = equippedSlots(),
-		bags = itemsInBags(Export.CARRIED_BAGS),
-		bank = itemsInBags(Export.BANK_BAGS),
-		professions = professions(),
+		gearSlots = Export.equippedSlots(),
+		bags = Export.itemsInBags(Export.CARRIED_BAGS),
+		bank = Export.itemsInBags(Export.BANK_BAGS),
+		professions = Export.professionSlugs(),
 	})
 end
 
@@ -254,6 +245,10 @@ function Export.save(data)
 	local region = Export.REGION_NAMES[GetCurrentRegion and GetCurrentRegion() or 0] or ""
 	ForeverSixtyDB = ForeverSixtyDB or {}
 	ForeverSixtyDB.characters = ForeverSixtyDB.characters or {}
+	-- Stamped on the DB, not on the character record: the Export tab shows
+	-- one "last saved" line, and a player with four characters wants the
+	-- last time anything was written, not the last time this one was.
+	ForeverSixtyDB.savedAt = date(Export.SAVED_AT_FORMAT)
 	ForeverSixtyDB.characters[region .. "/" .. realm .. "/" .. name] = {
 		name = name,
 		class = UnitClass("player"),
@@ -264,19 +259,6 @@ function Export.save(data)
 		export = code,
 	}
 	return code
-end
-
---- The copyable edit box. Read-only by intent: the player copies out of it
---- and nothing is ever typed in.
-function Export.show(data)
-	local code, message = Export.string(data)
-	Export.frame = Export.frame or CreateFrame("Frame", "ForeverSixtyExportFrame", UIParent)
-	Export.box = Export.box or CreateFrame("EditBox", "ForeverSixtyExportBox", Export.frame)
-	Export.box:SetText(code or message or "")
-	Export.box:HighlightText()
-	Export.box:SetFocus()
-	Export.frame:Show()
-	return code, message
 end
 
 ns.Export = Export

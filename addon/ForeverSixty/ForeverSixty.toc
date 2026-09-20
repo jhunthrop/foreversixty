@@ -16,4 +16,5 @@ Widgets.lua
 Export.lua
 Follow.lua
 Gear.lua
+views\ExportView.lua
 Options.lua

@@ -75,7 +75,10 @@ function Options.handle(input)
 	local data = Options.data
 	local command, rest = (input or ""):match("^(%S*)%s*(.*)$")
 	if command == "export" then
-		local code, message = Export.show(data)
+		-- The window is the copy surface now (views/ExportView.lua); this
+		-- branch only produces the line /fs prints when the chat pref is
+		-- on, so it wants the string, not a frame.
+		local code, message = Export.string(data)
 		return { code or message }
 	elseif command == "follow" then
 		if rest ~= "" then

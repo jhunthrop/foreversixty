@@ -26,7 +26,21 @@ local L = {
 	-- Export
 	exportTitle = "Your character, for the planner",
 	exportHint = "Copy this and paste it into the Import from addon box at foreversixty.gg/planner.",
-	exportNoTalents = "Spend a talent point first; there is nothing to export yet.",
+	-- exportNoTalents is deleted with the refusal it belonged to
+	-- (controller ruling 5); this is the summary's line, not an error.
+	exportNoPoints = "No talent points yet",
+	exportCopy = "Copy for the site",
+	exportCopied = "Selected -- press Ctrl+C",
+	-- "<tree> <points>", joined by exportTreeSeparator: "Arms 0 · Fury 0 · Protection 0".
+	exportTree = "%s %d",
+	exportTreeSeparator = " · ",
+	exportSlots = "%d of %d slots",
+	exportBags = "%d in your bags, %d in the bank",
+	exportProfessions = "Professions: %s",
+	exportProfessionSeparator = ", ",
+	exportNoProfessions = "No professions yet",
+	exportSavedAt = "Last saved on logout: %s",
+	exportNotYet = "Not yet",
 
 	-- Codec refusals. Each names what is wrong, never a generic failure.
 	-- Note: the `|` -> `||` doubling that escapes a refused fragment against
