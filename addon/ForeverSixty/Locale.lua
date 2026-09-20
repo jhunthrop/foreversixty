@@ -19,6 +19,8 @@ local L = {
 
 	-- Codec refusals. Each names what is wrong, never a generic failure.
 	codecWrongPrefix = "That code is %s; this addon reads %s.",
+	-- What a code with no prefix at all is called, for codecWrongPrefix.
+	codecUnlabelled = "unlabelled",
 	codecShort = "That code is missing its talent and gear fields.",
 	codecTrees = "That code has %d talent trees; a build has %d.",
 	codecRank = "That code has an unreadable talent rank: %s.",

@@ -20,6 +20,21 @@ local function trimmed(treeRanks)
 	return trees
 end
 
+-- Each invalid vector trips one specific refusal. Asserting only that
+-- *something* was refused would pass a regression that routed a code into
+-- the wrong branch, so the expected message is named per vector -- built
+-- from ns.L, so a wording change is still one diff in Locale.lua.
+local L = require("Locale")
+local REFUSALS = {
+	["a foreign prefix"] = string.format(L.codecWrongPrefix, "FS2", "FS1"),
+	["no prefix at all"] = string.format(L.codecWrongPrefix, "paladin", "FS1"),
+	["two trees instead of three"] = string.format(L.codecTrees, 2, 3),
+	["a slot this planner does not have"] = string.format(L.codecSlot, "tabard"),
+	["a gear entry with two equals signs"] = string.format(L.codecGearEntry, "head=12640=99"),
+	["a non-numeric item id"] = string.format(L.codecGearEntry, "head=12640abc"),
+	["too few fields"] = L.codecShort,
+}
+
 describe("Codec FS1", function()
 	local Codec, vectors
 
@@ -54,8 +69,9 @@ describe("Codec FS1", function()
 			for _, vector in ipairs(vectors.fs1Invalid) do
 				local build, message = Codec.decodeFS1(vector.code)
 				assert.is_nil(build, vector.name)
-				assert.is_string(message, vector.name)
-				assert.is_true(#message > 0, vector.name)
+				local expected = REFUSALS[vector.name]
+				assert.is_string(expected, vector.name .. ": no expected refusal on file for this vector")
+				assert.are.equal(expected, message, vector.name)
 			end
 		end)
 

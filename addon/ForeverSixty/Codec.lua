@@ -297,7 +297,7 @@ function Codec.decodeFS1(code)
 
 	local parts = split(head, ":")
 	if parts[1] ~= Codec.FS1_PREFIX then
-		local named = (parts[1] == nil or parts[1] == "") and "unlabelled" or parts[1]
+		local named = (parts[1] == nil or parts[1] == "") and L.codecUnlabelled or parts[1]
 		return nil, string.format(L.codecWrongPrefix, named, Codec.FS1_PREFIX)
 	end
 	if #parts < 6 then
