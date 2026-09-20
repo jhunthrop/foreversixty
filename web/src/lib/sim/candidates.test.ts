@@ -143,6 +143,27 @@ describe('toCandidates', () => {
     const rows = [{ ...rowFor(helm, 'head', 'bag'), checked: true, enchant: NO_ENCHANT }];
     expect(toCandidates(rows, [])[0].enchant).toBeUndefined();
   });
+
+  it('never sends a checked row the engine does not know about', () => {
+    const rows = [
+      { ...rowFor(helm, 'head', 'bag', '', false), checked: true },
+      { ...rowFor(ring, 'finger1', 'equipped'), checked: true },
+    ];
+    // Structural, not merely a UI affordance: this is the guard that stands even if a
+    // checkbox that should have been disabled somehow was not (candidates.ts's own
+    // comment on `known` explains why both exist).
+    expect(toCandidates(rows, [])).toEqual([{ slot: '', item_id: 19325, origin: 'equipped' }]);
+  });
+});
+
+describe('rowFor', () => {
+  it('defaults known to true, so every existing caller is unaffected', () => {
+    expect(rowFor(helm, 'head', 'bag').known).toBe(true);
+  });
+
+  it('carries an explicit known through', () => {
+    expect(rowFor(helm, 'head', 'bag', '', false).known).toBe(false);
+  });
 });
 
 describe('buildBulkSpec and validateBulk', () => {

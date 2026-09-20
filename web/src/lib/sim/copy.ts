@@ -566,6 +566,16 @@ export const bulkCopy = {
    *  wire's own value, not a display string, so the row shows this generic word instead --
    *  the same treatment `pinned` already gives a `drop:<source-id>` origin. */
   fromSet: 'Set',
+  /**
+   * A candidate row whose item id is absent from the build's `simitems.json` -- the
+   * embedded engine database does not carry it (`ItemSparse` and `Item` disagree on which
+   * ids exist for a build; see `pipeline/simdb/items.py`'s module docstring), so `simCount`
+   * would refuse the whole request with `bulk: the build has no such item: <id>` if this
+   * row were ever checked. `CandidateRows.svelte` disables the row and shows this instead
+   * of hiding it: the item is real (it is equipped, bagged, banked or dropped), and a row
+   * that silently vanished would look like data loss rather than a known limitation.
+   */
+  notInSimulator: 'Not in the simulator’s item table',
   lockSlot: 'Lock to equipped',
   lockedSlot: 'Locked',
   copyAndModify: 'Copy and modify',

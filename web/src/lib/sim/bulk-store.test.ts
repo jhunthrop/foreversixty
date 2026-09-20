@@ -395,6 +395,34 @@ describe('addSearchItem', () => {
     expect(s.message).toBe(bulkCopy.itemNotAdded(999_999));
     s.dispose();
   });
+
+  it('adds a row the engine does not know about unticked and marked unknown, not vanished (fix round 5)', async () => {
+    // 21550 (Idol of the White Stag) is in the class file but deliberately left out of
+    // the fixture's simitems.json -- the same shape as the real defect this fixes
+    // (item 16963 has an Item.csv row but no ItemSparse row on build 1.60.1.69893).
+    const s = store('gear');
+    await s.loadAddon(FURY);
+    expect(s.knownItems?.has(21550)).toBe(false);
+    expect(s.addSearchItem(21550)).toBe(true);
+    const row = s.rows.find((entry) => entry.item.id === 21550);
+    expect(row).toBeDefined();
+    expect(row?.known).toBe(false);
+    // Unticked, not ticked-but-excluded: a checked, disabled checkbox would read as
+    // "included and you cannot change that", exactly backwards for a row toCandidates
+    // will never send.
+    expect(row?.checked).toBe(false);
+    s.dispose();
+  });
+
+  it('adds a known row ticked, exactly as before this field existed', async () => {
+    const s = store('gear');
+    await s.loadAddon(FURY);
+    expect(s.knownItems?.has(16966)).toBe(true);
+    s.addSearchItem(16966);
+    const row = s.rows.find((entry) => entry.item.id === 16966);
+    expect(row).toMatchObject({ known: true, checked: true });
+    s.dispose();
+  });
 });
 
 describe('the request’s iteration count', () => {

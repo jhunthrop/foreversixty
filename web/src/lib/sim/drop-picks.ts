@@ -9,6 +9,7 @@ import { rowFor, uiSlotsOf, type CandidateRow, type Origin } from './candidates'
 import { DEFAULT_OFF_KINDS, isOpen, itemsOfBoss, itemsOfSource, sourceNameOf } from './loot';
 import type { LootFile, LootSource } from './loot';
 import type { PhaseRow } from './phase';
+import { isKnownItem } from './sim-items';
 import type { Item } from '../planner/types';
 
 /** The kinds a freshly loaded build's sources open with: every kind but the off-by-default ones. */
@@ -50,6 +51,15 @@ export function rowsFromPicks(
   picked: readonly string[],
   loot: LootFile,
   items: ReadonlyMap<number, Item>,
+  /**
+   * `sim-items.ts`'s known ids, `null` when the build ships no `simitems.json` -- the same
+   * "nothing to filter against" default `isKnownItem` already gives. A boss can legitimately
+   * drop an item the engine's database does not carry (the re-itemised raid tier is thin,
+   * per loot.ts's own header); the row still shows, ticked, but disabled -- removing it
+   * from the picker entirely would make the boss look like it drops nothing rather than
+   * naming a known limitation.
+   */
+  known: ReadonlySet<number> | null = null,
 ): CandidateRow[] {
   const rows: CandidateRow[] = [];
   for (const pick of picked) {
@@ -63,8 +73,9 @@ export function rowsFromPicks(
     for (const itemId of bossId === '' ? itemsOfSource(source) : itemsOfBoss(source, bossId)) {
       const item = items.get(itemId);
       if (item === undefined) continue;
+      const itemKnown = isKnownItem(itemId, known);
       for (const slot of uiSlotsOf(item)) {
-        rows.push({ ...rowFor(item, slot, origin, sourceName), checked: true });
+        rows.push({ ...rowFor(item, slot, origin, sourceName, itemKnown), checked: itemKnown });
       }
     }
   }

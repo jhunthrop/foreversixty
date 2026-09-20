@@ -80,7 +80,7 @@
           type="checkbox"
           class="h-5 w-5"
           checked={row.checked}
-          disabled={locked}
+          disabled={locked || !row.known}
           onchange={() => ontoggle(candidateKey(row))}
         />
         <img
@@ -96,13 +96,25 @@
           {row.item.name}
         </span>
         <span class="text-muted text-[12px]">{originLabel(row.origin)}</span>
+        <!-- The engine's SimDatabase does not carry this item id (sim-items.ts's
+             `isKnownItem`, set on the row when it was added). The checkbox above is
+             disabled rather than the row hidden -- the item is real, and vanishing it would
+             look like data loss rather than naming a known limitation. -->
+        {#if !row.known}
+          <span
+            class="text-muted text-[12px]"
+            data-testid={`sim-candidate-unknown-${row.slot}-${row.item.id}`}
+          >
+            {bulkCopy.notInSimulator}
+          </span>
+        {/if}
         <span class="tabular text-muted ml-auto font-mono text-[12px]">{row.item.item_level}</span>
       </label>
       <button
         type="button"
         class="{SECONDARY_BUTTON} border-line-warm text-nav px-3 disabled:opacity-50"
         aria-expanded={openKey === candidateKey(row)}
-        disabled={locked}
+        disabled={locked || !row.known}
         onclick={() => (openKey = openKey === candidateKey(row) ? null : candidateKey(row))}
       >
         {bulkCopy.copyAndModify}

@@ -44,6 +44,11 @@ export const SYNC_ENTRIES = [
   { name: 'loot.json', kind: 'file', required: false },
   { name: 'enchants.json', kind: 'file', required: false },
   { name: 'suffixes.json', kind: 'file', required: false },
+  // The item ids the engine's embedded SimDatabase actually carries (pipeline/simdb/
+  // items.py's simdb_item_rows) -- every bulk candidate source filters against it. Optional
+  // like the three above: a build the data lane has not regenerated this file for ships
+  // none, and an absent file means "do not filter" (sim/sim-items.ts's loadSimItems).
+  { name: 'simitems.json', kind: 'file', required: false },
   { name: 'classes.json', kind: 'file', required: true },
   { name: 'races.json', kind: 'file', required: true },
   { name: 'combos.json', kind: 'file', required: true },

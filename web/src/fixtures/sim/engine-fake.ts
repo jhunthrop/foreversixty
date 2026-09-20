@@ -48,6 +48,15 @@ export interface FakeEngineOptions {
    * tells a player what to change.
    */
   failWith?: string;
+  /**
+   * The item ids the fake's own "database" carries, mirroring `simCount`'s real-engine
+   * refusal for a candidate id outside it: `{"error": "bulk: the build has no such item:
+   * <id>"}`. `undefined` (the default, and every caller before this option existed) means
+   * "do not check" -- every candidate id is accepted, the fake's original behaviour. This
+   * exists so the web lane can prove its own handling of that refusal (bulk-store-request.ts's
+   * `recount`, the disabled-row UI on an unknown candidate) without a real wasm build.
+   */
+  knownItemIds?: ReadonlySet<number>;
 }
 
 function seeded(seed: number): () => number {
@@ -237,6 +246,7 @@ export function createFakeEngine(options: FakeEngineOptions = {}): EngineModule 
   const tickMs = options.tickMs ?? 120;
   const ticks = options.ticks ?? 10;
   const failWith = options.failWith ?? '';
+  const knownItemIds = options.knownItemIds;
   const aborted = new Set<string>();
   // Tracks a run's callback id for exactly as long as simRun is in flight, so simAbort can
   // answer {"aborted": false} for an id nothing registered -- main.go's own distinction
@@ -498,6 +508,16 @@ export function createFakeEngine(options: FakeEngineOptions = {}): EngineModule 
       }
       const bulk = request.bulk;
       if (bulk === undefined) return JSON.stringify({ combinations: 0 });
+      // The real engine refuses a candidate id its embedded database does not carry before
+      // it ever counts anything (`bulk: the build has no such item: <id>`); `knownItemIds`
+      // is how a caller opts this fake into the same check, one candidate at a time, in
+      // the order the real one would find them.
+      if (knownItemIds !== undefined) {
+        const unknown = bulk.candidates.find((candidate) => !knownItemIds.has(candidate.item_id));
+        if (unknown !== undefined) {
+          return JSON.stringify({ error: `bulk: the build has no such item: ${unknown.item_id}` });
+        }
+      }
       // Reuses simPlan's own `expand()` rather than re-deriving the arithmetic (controller
       // ruling, task-3 fix round 1): simCount and simPlan must agree on what a request
       // expands to, because Task 15's live cap-notice UI and its client-side server-cap
