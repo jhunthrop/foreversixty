@@ -115,7 +115,10 @@ describe("Follow", function()
 		local text = Follow.refresh(DATA)
 		assert.are.equal(1, #state.frames)
 		assert.is_truthy(text:find("Improved Holy Strike", 1, true))
-		assert.is_true(state.frames[1].shown)
+		-- Assert the recorded call, not the resulting `shown` flag: the mock
+		-- now creates every frame already shown, so the flag alone would
+		-- stay true even if Follow.lua's Show() call were deleted.
+		assert.is_true(mock.countCalls(state.frames[1], "Show") > 0)
 
 		-- A second call must not build a second frame.
 		local text2 = Follow.refresh(DATA)

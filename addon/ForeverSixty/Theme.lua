@@ -113,17 +113,22 @@ function Theme.rgb(hex, alpha)
 		alpha or 1
 end
 
---- Ask the client once whether it has a template, by trying to use it.
---- There is no API that answers this; building one throwaway frame is the
---- question. The frame is never shown and never reused -- WoW cannot
---- destroy a frame, so this deliberately costs at most one per template.
-function Theme.hasTemplate(name)
-	local known = Theme.templates[name]
+--- Ask the client once whether it has a template for a given frame kind, by
+--- trying to use it. There is no API that answers this; building one
+--- throwaway frame is the question. The frame is never shown and never
+--- reused -- WoW cannot destroy a frame, so this deliberately costs at most
+--- one per kind/template pair. The probe is asked with the same kind the
+--- real frame will be built with: a template that applies to a Button may
+--- not apply to a Frame, so probing with a fixed kind would misreport for
+--- any template used on a different one.
+function Theme.hasTemplate(kind, name)
+	Theme.templates[kind] = Theme.templates[kind] or {}
+	local known = Theme.templates[kind][name]
 	if known ~= nil then
 		return known
 	end
-	local present = pcall(CreateFrame, "Frame", nil, UIParent, name)
-	Theme.templates[name] = present
+	local present = pcall(CreateFrame, kind, nil, UIParent, name)
+	Theme.templates[kind][name] = present
 	if not present then
 		Theme.note(string.format(L.diagNoTemplate, name))
 	end
@@ -132,24 +137,36 @@ end
 
 --- A frame with the template if the client has it, bare if it does not.
 --- The second return says which, so a caller can draw its own chrome.
+--- The probe passing does not guarantee the real create call will succeed
+--- too -- a real kind/parent combination the probe did not exercise can
+--- still be refused -- so the real call is itself pcall'd; either failure
+--- degrades to a bare frame rather than raising out of this file.
 function Theme.createFrame(kind, name, parent, templateKey)
 	local template = templateKey ~= nil and Theme.TEMPLATES[templateKey] or nil
-	if template ~= nil and Theme.hasTemplate(template) then
-		return CreateFrame(kind, name, parent, template), true
+	if template ~= nil and Theme.hasTemplate(kind, template) then
+		local ok, frame = pcall(CreateFrame, kind, name, parent, template)
+		if ok then
+			return frame, true
+		end
+		Theme.note(string.format(L.diagNoTemplate, template))
 	end
 	return CreateFrame(kind, name, parent), false
 end
 
 --- A font string on the client's own font, or on the shipped TTF when the
 --- font object is missing -- a font string with neither draws nothing.
+--- Two distinct ways a font object can be missing: CreateFontString itself
+--- can raise, or it can succeed while inheriting nothing (the likelier
+--- case -- inherits is only a name, and the client silently drops it when
+--- the font object it names does not exist). Both are checked.
 function Theme.fontString(parent, layer, fontKey)
 	local font = Theme.FONTS[fontKey] or Theme.FONTS.normal
 	local ok, region = pcall(parent.CreateFontString, parent, nil, layer, font)
-	if ok and region ~= nil then
+	if ok and region ~= nil and region:GetFont() ~= nil then
 		return region
 	end
 	Theme.note(string.format(L.diagNoTemplate, font))
-	region = parent:CreateFontString(nil, layer)
+	region = (ok and region ~= nil) and region or parent:CreateFontString(nil, layer)
 	region:SetFont(Theme.FALLBACK_FONT.path, Theme.FALLBACK_FONT.size)
 	return region
 end
@@ -277,15 +294,26 @@ end
 
 --- The game's own item tooltip. SetHyperlink when there is a link (it
 --- carries enchants and suffixes); SetItemByID for a planned item the
---- player has never seen, which has no link yet.
+--- player has never seen, which has no link yet. Each is guarded on its
+--- own: this file's contract is that a missing capability degrades, never
+--- raises, and SetItemByID in particular is a genuinely open question on
+--- the 1.60 client.
 function Theme.showItemTooltip(owner, itemId, link)
 	if type(GameTooltip) ~= "table" then
 		return false
 	end
 	GameTooltip:SetOwner(owner, "ANCHOR_RIGHT")
 	if link ~= nil then
+		if type(GameTooltip.SetHyperlink) ~= "function" then
+			Theme.note(string.format(L.diagNoTooltipApi, "SetHyperlink"))
+			return false
+		end
 		GameTooltip:SetHyperlink(link)
 	elseif itemId ~= nil then
+		if type(GameTooltip.SetItemByID) ~= "function" then
+			Theme.note(string.format(L.diagNoTooltipApi, "SetItemByID"))
+			return false
+		end
 		GameTooltip:SetItemByID(itemId)
 	end
 	GameTooltip:Show()

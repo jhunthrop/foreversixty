@@ -42,6 +42,15 @@ function mock.install(state)
 		end
 		state.templates = named
 	end
+	-- Font object names this "client" actually has, empty by default like
+	-- state.templates -- see CreateFontString above.
+	do
+		local named = {}
+		for _, font in ipairs(state.fonts or {}) do
+			named[font] = true
+		end
+		state.fonts = named
+	end
 	-- Every string the addon actually printed, in order, so a spec can
 	-- assert on Options.run's output without a chat frame.
 	state.printed = {}
@@ -214,6 +223,18 @@ function mock.install(state)
 		function frame:GetText()
 			return self.text
 		end
+		--- SetFontObject/GetFont are real methods (not the fabricated
+		--- recorder) so CreateFontString below can make a region that
+		--- genuinely reports a font, for Theme.fontString's success case;
+		--- the fabricated recorder's nil return is what stands in for a
+		--- client that inherited nothing, for its fallback case.
+		function frame:SetFontObject(fontObject)
+			record(self, "SetFontObject", fontObject)
+			self.font = fontObject
+		end
+		function frame:GetFont()
+			return self.font
+		end
 		function frame:Show()
 			record(self, "Show")
 			self.shown = true
@@ -293,9 +314,18 @@ function mock.install(state)
 			-- the client's 5.1, and .luacheckrc puts tests/ on lua54.
 			return table.unpack(self.children)
 		end
+		--- `inherits` is only a name; the real client silently gives the
+		--- region no font when no font object by that name exists, rather
+		--- than raising. `state.fonts` is the set of font object names
+		--- this "client" actually has -- empty by default, like
+		--- `state.templates` -- so a spec opts a name in rather than
+		--- Theme.fontString's fallback being untestable.
 		function frame:CreateFontString(fontName, layer, inherits)
 			local region = newFrame("FontString", fontName, self, nil, false)
 			region.layer, region.inherits = layer, inherits
+			if inherits ~= nil and state.fonts[inherits] then
+				region:SetFontObject(inherits)
+			end
 			self.regions[#self.regions + 1] = region
 			return region
 		end

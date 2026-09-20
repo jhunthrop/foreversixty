@@ -46,17 +46,17 @@ describe("Theme", function()
 
 	it("says a template this client has is present", function()
 		start({ templates = ALL_TEMPLATES })
-		assert.is_true(Theme.hasTemplate("UIPanelButtonTemplate"))
+		assert.is_true(Theme.hasTemplate("Button", "UIPanelButtonTemplate"))
 	end)
 
 	it("says a template this client lacks is absent rather than erroring", function()
 		start({ templates = {} })
-		assert.is_false(Theme.hasTemplate("UIPanelButtonTemplate"))
+		assert.is_false(Theme.hasTemplate("Button", "UIPanelButtonTemplate"))
 	end)
 
 	it("records the missing template where /fs diag can read it", function()
 		start({ templates = {} })
-		Theme.hasTemplate("UIPanelButtonTemplate")
+		Theme.hasTemplate("Button", "UIPanelButtonTemplate")
 		assert.are.same(
 			{ string.format(L.diagNoTemplate, "UIPanelButtonTemplate") },
 			Theme.diagnostics())
@@ -64,9 +64,9 @@ describe("Theme", function()
 
 	it("asks the client about a template only once", function()
 		start({ templates = ALL_TEMPLATES })
-		Theme.hasTemplate("UIPanelButtonTemplate")
+		Theme.hasTemplate("Button", "UIPanelButtonTemplate")
 		local after = #state.frames
-		Theme.hasTemplate("UIPanelButtonTemplate")
+		Theme.hasTemplate("Button", "UIPanelButtonTemplate")
 		assert.are.equal(after, #state.frames)
 	end)
 
@@ -82,6 +82,27 @@ describe("Theme", function()
 		local frame, used = Theme.createFrame("Button", nil, _G.UIParent, "button")
 		assert.is_false(used)
 		assert.is_nil(frame.template)
+	end)
+
+	it("keeps the client's own font when the inherited font object exists", function()
+		start({ fonts = { "GameFontNormal" } })
+		local frame = _G.CreateFrame("Frame")
+		local region = Theme.fontString(frame, "ARTWORK", "normal")
+		assert.are.equal("GameFontNormal", region:GetFont())
+		assert.is_nil(mock.firstCall(region, "SetFont"))
+	end)
+
+	it("falls back to the shipped font when the inherited font object is missing", function()
+		start()
+		local frame = _G.CreateFrame("Frame")
+		local region = Theme.fontString(frame, "ARTWORK", "normal")
+		local call = mock.firstCall(region, "SetFont")
+		assert.is_not_nil(call)
+		assert.are.equal(Theme.FALLBACK_FONT.path, call[1])
+		assert.are.equal(Theme.FALLBACK_FONT.size, call[2])
+		assert.are.same(
+			{ string.format(L.diagNoTemplate, "GameFontNormal") },
+			Theme.diagnostics())
 	end)
 
 	it("takes the class's own colour for the header", function()
@@ -198,7 +219,10 @@ describe("Theme", function()
 		assert.are.equal("texture", Theme.showGlow(button))
 		assert.are.equal(#Theme.EDGES, #button.foreverSixtyGlow)
 		for _, edge in ipairs(button.foreverSixtyGlow) do
-			assert.is_true(edge.shown)
+			-- A texture is already shown at creation, so asserting
+			-- edge.shown alone would pass even if setShown(edges, true)
+			-- were never called; assert the recorded call instead.
+			assert.is_true(mock.countCalls(edge, "Show") > 0)
 		end
 		assert.are.equal("texture", Theme.hideGlow(button))
 		for _, edge in ipairs(button.foreverSixtyGlow) do
@@ -215,9 +239,48 @@ describe("Theme", function()
 		assert.is_not_nil(mock.firstCall(texture, "SetTexture"))
 	end)
 
+	it("does nothing on a client with no GameTooltip at all", function()
+		start()
+		_G.GameTooltip = nil
+		assert.is_false(Theme.showItemTooltip(_G.UIParent, 123, nil))
+		assert.is_false(Theme.hideTooltip())
+	end)
+
+	it("shows a seen item's own tooltip via SetHyperlink when there is a link", function()
+		start()
+		local owner = _G.UIParent
+		assert.is_true(Theme.showItemTooltip(owner, nil, "|Hitem:1234|h"))
+		assert.are.same({ method = "SetHyperlink", n = 1, "|Hitem:1234|h" },
+			mock.firstCall(_G.GameTooltip, "SetHyperlink"))
+		assert.are.equal(1, mock.countCalls(_G.GameTooltip, "Show"))
+	end)
+
+	it("shows a planned item with no link yet via SetItemByID", function()
+		start()
+		local owner = _G.UIParent
+		assert.is_true(Theme.showItemTooltip(owner, 1234, nil))
+		assert.are.same({ method = "SetItemByID", n = 1, 1234 },
+			mock.firstCall(_G.GameTooltip, "SetItemByID"))
+	end)
+
+	it("records and refuses a planned item when the client has no SetItemByID", function()
+		start({ missingMethods = { SetItemByID = true } })
+		local owner = _G.UIParent
+		assert.is_false(Theme.showItemTooltip(owner, 1234, nil))
+		assert.are.same(
+			{ string.format(L.diagNoTooltipApi, "SetItemByID") },
+			Theme.diagnostics())
+	end)
+
+	it("hides the tooltip through the client's own GameTooltip", function()
+		start()
+		assert.is_true(Theme.hideTooltip())
+		assert.are.equal(1, mock.countCalls(_G.GameTooltip, "Hide"))
+	end)
+
 	it("forgets what it learned about the client on reset", function()
 		start({ templates = {} })
-		Theme.hasTemplate("UIPanelButtonTemplate")
+		Theme.hasTemplate("Button", "UIPanelButtonTemplate")
 		assert.are.equal(1, #Theme.diagnostics())
 		Theme.reset()
 		assert.are.same({}, Theme.diagnostics())
