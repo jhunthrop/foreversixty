@@ -12,6 +12,24 @@
 // things a simulation cannot know, and all four are set explicitly empty
 // rather than left nil, because the report components render a list and a
 // nil slice marshals as null.
+//
+// Summary.DurationMS is a DERIVED clock, not a measured one. The engine
+// reports one iteration length, AvgIterationDuration, but that is the
+// MEAN of the per-iteration durations, while every damage figure in the
+// summary is the across-iterations TOTAL divided by IterationsDone - the
+// mean of the per-iteration damage. The headline DPS the page shows
+// beside the table (DPS(res).Mean, res.RaidMetrics.Dps.Avg) is a third
+// thing again: the mean of the per-iteration DPS VALUES. Because the
+// encounter's length varies (encounter.variation), the mean of a
+// quotient is not the quotient of the means, so "table damage / mean
+// iteration length" and "mean of per-iteration DPS" disagree by a
+// fraction of a percent - small, but visible as three different numbers
+// on one result card. deriveDurationMS instead picks the duration that
+// makes the two agree exactly (to the precision an integer millisecond
+// allows): it is therefore close to, but not exactly, the mean iteration
+// length, and it is computed from the summary's own already-rounded
+// actor totals so that this rounding does not reopen the disagreement it
+// exists to close.
 package adapter
 
 import (
@@ -129,7 +147,7 @@ func Summarize(res *proto.RaidSimResult, req api.SimRequest) (summary.Summary, e
 		return summary.Summary{}, err
 	}
 
-	durationMS := int64(math.Round(res.AvgIterationDuration * 1000))
+	avgIterationMS := int64(math.Round(res.AvgIterationDuration * 1000))
 	class, spec := splitSpecSlug(req.Spec)
 
 	// Start from the empty shape and fill in what this run measured, so
@@ -138,8 +156,18 @@ func Summarize(res *proto.RaidSimResult, req api.SimRequest) (summary.Summary, e
 	// the two shapes separately is how they came to disagree.
 	out := EmptySummary()
 	out.FightIndex = 1
+	out.DamageDone = actors(player, class, iters)
+
+	// The clock is derived from the actors just built - the summary's
+	// own integer totals, player and pets together - not from the raw
+	// float totals, and not measured from the engine's iteration timer.
+	// See the package comment for why.
+	durationMS := deriveDurationMS(sumActorTotals(out.DamageDone), DPS(res).Mean, avgIterationMS)
 	out.DurationMS = durationMS
-	out.DamageDone = actors(player, class, iters, durationMS)
+	for i := range out.DamageDone {
+		out.DamageDone[i].ActiveMS = durationMS
+	}
+
 	out.Auras = auras(player)
 	out.Casts = casts(player, iters)
 	out.Resources = resources(player, iters)
@@ -210,27 +238,34 @@ func DPS(res *proto.RaidSimResult) api.Estimate {
 func petGUID(i int) string { return fmt.Sprintf("%s-pet-%d", playerGUID, i) }
 
 // actors builds the damage table: one row for the player, then one per pet.
-func actors(player *proto.UnitMetrics, class string, iters float64, durationMS int64) []summary.Actor {
-	out := []summary.Actor{actorFrom(player, playerGUID, class, iters, durationMS)}
+// ActiveMS is left zero here - the fight clock is not known until every
+// actor's total is, so Summarize fills it in once deriveDurationMS has run.
+func actors(player *proto.UnitMetrics, class string, iters float64) []summary.Actor {
+	out := []summary.Actor{actorFrom(player, playerGUID, class, iters)}
 	for i, pet := range player.Pets {
 		// A pet has no class of its own in the roster's sense; the
 		// report colours it by its owner's.
-		out = append(out, actorFrom(pet, petGUID(i), class, iters, durationMS))
+		out = append(out, actorFrom(pet, petGUID(i), class, iters))
 	}
 	return out
 }
 
-func actorFrom(u *proto.UnitMetrics, guid, class string, iters float64, durationMS int64) summary.Actor {
+func actorFrom(u *proto.UnitMetrics, guid, class string, iters float64) summary.Actor {
 	a := summary.Actor{
 		GUID:      guid,
 		Name:      u.Name,
 		Class:     class,
-		ActiveMS:  durationMS,
 		Abilities: []summary.Ability{},
 		Targets:   []summary.Pair{},
 		Series:    []int64{},
 	}
-	perTarget := map[int32]int64{}
+	// perTarget accumulates each target's UNROUNDED share of the
+	// damage - ability() adds the raw per-iteration float, not its own
+	// rounded total - so the apportion call below is the only rounding
+	// a target total goes through. Rounding it once per ability first,
+	// as this used to, and once more per target after, is exactly how
+	// the column stopped summing to the row.
+	perTarget := map[int32]float64{}
 	for _, am := range u.Actions {
 		ab := ability(am, iters, perTarget)
 		a.Abilities = append(a.Abilities, ab)
@@ -244,11 +279,20 @@ func actorFrom(u *proto.UnitMetrics, guid, class string, iters float64, duration
 		idx = append(idx, k)
 	}
 	sort.Slice(idx, func(i, j int) bool { return idx[i] < idx[j] })
-	for _, i := range idx {
+	shares := make([]float64, len(idx))
+	for i, k := range idx {
+		shares[i] = perTarget[k]
+	}
+	// One apportionment of the actor's already-rounded Total across the
+	// targets, so the column sums to exactly what the row says rather
+	// than to whatever independent per-target rounding happened to add
+	// up to.
+	targetTotals := apportion(a.Total, shares)
+	for i, k := range idx {
 		a.Targets = append(a.Targets, summary.Pair{
-			GUID:  fmt.Sprintf("sim-target-%d", i),
-			Name:  fmt.Sprintf("Target %d", i),
-			Total: perTarget[i],
+			GUID:  fmt.Sprintf("sim-target-%d", k),
+			Name:  fmt.Sprintf("Target %d", k),
+			Total: targetTotals[i],
 		})
 	}
 	sort.SliceStable(a.Abilities, func(i, j int) bool { return a.Abilities[i].Total > a.Abilities[j].Total })
@@ -317,7 +361,7 @@ func combatLogSchool(engineMask int32) int64 {
 // (metrics_aggregator.go) - so adding them would count a crit twice and
 // a partially resisted crit four times. The same holds for the outcome
 // counters: resisted_hits is the subset of hits that partly resisted.
-func ability(am *proto.ActionMetrics, iters float64, perTarget map[int32]int64) summary.Ability {
+func ability(am *proto.ActionMetrics, iters float64, perTarget map[int32]float64) summary.Ability {
 	spellID, name := ActionName(am.Id)
 	ab := summary.Ability{
 		SpellID: spellID,
@@ -329,7 +373,11 @@ func ability(am *proto.ActionMetrics, iters float64, perTarget map[int32]int64) 
 		dmg := per(t.Damage, iters)
 		ab.Total += dmg
 		ab.Effective += dmg
-		perTarget[t.UnitIndex] += dmg
+		// The target's share is the raw per-iteration float, not dmg -
+		// dmg is already rounded, and summing rounded shares is the
+		// independent-rounding bug actorFrom's apportion call exists to
+		// undo.
+		perTarget[t.UnitIndex] += t.Damage / iters
 
 		// Resisted and Blocked stay zero. The summary means the damage a
 		// resist or a block took away, and the engine tracks neither:

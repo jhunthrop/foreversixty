@@ -1,7 +1,7 @@
 {
   "engine_version": "sim:golden",
   "fight_index": 1,
-  "duration_ms": 179856,
+  "duration_ms": 179894,
   "damage_done": [
     {
       "guid": "sim-player",
@@ -9,7 +9,7 @@
       "class": "warrior",
       "total": 186849,
       "effective": 186849,
-      "active_ms": 179856,
+      "active_ms": 179894,
       "abilities": [
         {
           "spell_id": 25286,
@@ -778,7 +778,7 @@
       "class_source": "sim",
       "spec": "fury",
       "role": "dps",
-      "active_ms": 179856,
+      "active_ms": 179894,
       "activity_pct": 100,
       "deaths": 0,
       "damage_done": 186849,

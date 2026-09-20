@@ -1,7 +1,7 @@
 {
   "engine_version": "sim:golden",
   "fight_index": 1,
-  "duration_ms": 179856,
+  "duration_ms": 179879,
   "damage_done": [
     {
       "guid": "sim-player",
@@ -9,7 +9,7 @@
       "class": "mage",
       "total": 91709,
       "effective": 91709,
-      "active_ms": 179856,
+      "active_ms": 179879,
       "abilities": [
         {
           "spell_id": 25304,
@@ -780,7 +780,7 @@
       "class_source": "sim",
       "spec": "frost",
       "role": "dps",
-      "active_ms": 179856,
+      "active_ms": 179879,
       "activity_pct": 100,
       "deaths": 0,
       "damage_done": 91709,

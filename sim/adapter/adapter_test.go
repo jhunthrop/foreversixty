@@ -91,8 +91,18 @@ func TestSummarizeHeader(t *testing.T) {
 	if got.FightIndex != 1 {
 		t.Errorf("FightIndex = %d, want 1", got.FightIndex)
 	}
-	if got.DurationMS != 180000 {
-		t.Errorf("DurationMS = %d, want 180000 (avg_iteration_duration * 1000)", got.DurationMS)
+	// DurationMS is now DERIVED (task 3), not the measured
+	// avg_iteration_duration: it is the duration that makes total
+	// damage / duration equal DPS(res).Mean exactly. oneAction()'s
+	// actor totals 1000 (100000 damage over 100 iterations) and
+	// resultWith wires RaidMetrics.Dps.Avg to 1791.1, so the derived
+	// duration is round(1000/1791.1*1000) = 558, not the 180000 that
+	// avg_iteration_duration (180s) alone would give - this fixture's
+	// two numbers were never meant to agree; TestGoldenSummaries is
+	// where headline-equals-table is actually proved, against real
+	// engine output.
+	if got.DurationMS != 558 {
+		t.Errorf("DurationMS = %d, want 558 (derived: total damage / DPS.Mean)", got.DurationMS)
 	}
 }
 
@@ -124,8 +134,10 @@ func TestSummarizeDividesByIterations(t *testing.T) {
 	if a.Effective != a.Total {
 		t.Errorf("Effective = %d, want it equal to Total (%d)", a.Effective, a.Total)
 	}
-	if a.ActiveMS != 180000 {
-		t.Errorf("ActiveMS = %d, want the fight duration 180000", a.ActiveMS)
+	// See TestSummarizeHeader: the fight duration is now derived, not
+	// avg_iteration_duration, so ActiveMS follows the same 558.
+	if a.ActiveMS != 558 {
+		t.Errorf("ActiveMS = %d, want the derived fight duration 558", a.ActiveMS)
 	}
 	if len(a.Abilities) != 1 {
 		t.Fatalf("actor has %d abilities, want 1", len(a.Abilities))
