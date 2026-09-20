@@ -2210,7 +2210,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "When struck in combat inflicts 3 Nature damage to the attacker.",
       "set_id": null,
       "unique": false
     },
@@ -2448,7 +2448,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Increases your effective stealth detection level by ${15/5}.",
       "set_id": null,
       "unique": false
     },
@@ -2917,7 +2917,7 @@
       "speed": 1.6,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Your healing spells have a $h% chance to remove 1 Poison effect from the target.",
       "set_id": null,
       "unique": false
     },
@@ -3708,7 +3708,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Increases your effective stealth level by ${8/5}.",
       "set_id": 512,
       "unique": false
     },
@@ -4253,7 +4253,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Underwater breath lasts 100% longer than normal.",
       "set_id": null,
       "unique": false
     },
@@ -4426,7 +4426,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Chance on harmful spell cast to reduce target enemy's attack power by 60 for 30 sec.\r\n",
       "set_id": null,
       "unique": false
     },
@@ -4560,7 +4560,7 @@
       "speed": 2.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Increased Fist Weapons +4.",
       "set_id": null,
       "unique": false
     },
@@ -5732,7 +5732,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "While equipped, the wearer suffers less damage from falls.",
       "set_id": null,
       "unique": false
     },
@@ -6316,7 +6316,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases your effective stealth detection level by ${15/5} for 10 sec, then reduces your effective stealth detection level by ${30/-5} for 20 sec.",
+      "effect_text": "Reduces the hit chance of Charm effects against you by 6%. Increases your effective stealth detection level by ${15/5} for 10 sec, then reduces your effective stealth detection level by ${30/-5} for 20 sec.",
       "set_id": null,
       "unique": false
     },
@@ -11417,7 +11417,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Reduces the hit chance of Fear effects against you by 4%.",
       "set_id": null,
       "unique": false
     },
@@ -11662,7 +11662,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Increases the critical hit chance of Wrath and Starfire by 2%.",
       "set_id": 479,
       "unique": true
     },
@@ -18771,7 +18771,7 @@
       "speed": 2.2,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Increases the critical strike chance of your Lightning Bolt spell by 1%.",
       "set_id": null,
       "unique": false
     },
@@ -18927,7 +18927,7 @@
       "speed": 3.6,
       "dps": 0.0,
       "two_hand": true,
-      "effect_text": "",
+      "effect_text": "Increases the damage dealt by your Stormstrike ability by 10%.",
       "set_id": null,
       "unique": false
     },
@@ -19609,7 +19609,7 @@
       "speed": 2.4,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Increases the critical strike chance of your Healing Wave and Lesser Healing Wave spells by 2%.",
       "set_id": null,
       "unique": false
     },
@@ -23943,7 +23943,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "5% chance of dealing 40 Fire damage on a successful melee attack.",
       "set_id": null,
       "unique": false
     },
@@ -25179,7 +25179,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Increases your lockpicking skill slightly.",
       "set_id": null,
       "unique": false
     },
@@ -27467,7 +27467,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Run speed increased slightly.",
       "set_id": null,
       "unique": true
     },
@@ -27489,7 +27489,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Run speed increased slightly.",
       "set_id": null,
       "unique": true
     },
@@ -27534,7 +27534,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Run speed increased slightly.",
       "set_id": null,
       "unique": true
     },
@@ -27579,7 +27579,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Run speed increased slightly.",
       "set_id": null,
       "unique": true
     },
@@ -27645,7 +27645,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Run speed increased slightly.",
       "set_id": null,
       "unique": true
     },
@@ -27797,7 +27797,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Run speed increased slightly.",
       "set_id": null,
       "unique": true
     },
@@ -27819,7 +27819,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Run speed increased slightly.",
       "set_id": null,
       "unique": true
     },
@@ -27864,7 +27864,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Run speed increased slightly.",
       "set_id": null,
       "unique": true
     },
@@ -27909,7 +27909,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Run speed increased slightly.",
       "set_id": null,
       "unique": true
     },
@@ -27975,7 +27975,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Run speed increased slightly.",
       "set_id": null,
       "unique": true
     },
@@ -28600,7 +28600,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Increases swim speed by 15%.",
       "set_id": null,
       "unique": false
     },
@@ -29130,7 +29130,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "When struck by a melee attacker, that attacker has a 5% chance of being put to sleep for 10 sec.  Only affects enemies level 50 and below.",
       "set_id": null,
       "unique": false
     },
@@ -30405,7 +30405,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Reduces your damage taken by 5% in the Battle Ring and The Maul.",
       "set_id": null,
       "unique": false
     },
@@ -31449,7 +31449,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Run speed increased slightly.",
       "set_id": null,
       "unique": true
     },
@@ -31495,7 +31495,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Run speed increased slightly.",
       "set_id": null,
       "unique": true
     },
@@ -31541,7 +31541,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Run speed increased slightly.",
       "set_id": null,
       "unique": true
     },
@@ -31607,7 +31607,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Run speed increased slightly.",
       "set_id": null,
       "unique": true
     },
@@ -31653,7 +31653,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Run speed increased slightly.",
       "set_id": null,
       "unique": true
     },
@@ -31699,7 +31699,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Run speed increased slightly.",
       "set_id": null,
       "unique": true
     },
@@ -33341,7 +33341,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "You gain an additional ${50/10} Rage from activating Enrage and an additional 20 Energy from activating Tiger's Fury.",
       "set_id": null,
       "unique": false
     },
@@ -33746,7 +33746,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Increases your effective stealth level by ${6/5}.",
       "set_id": null,
       "unique": false
     },
@@ -34226,7 +34226,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Increases the effects that healing and mana potions have on the wearer by 20%.",
       "set_id": null,
       "unique": false
     },
@@ -35764,7 +35764,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Run speed increased slightly.",
       "set_id": null,
       "unique": true
     },
@@ -35811,7 +35811,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Run speed increased slightly.",
       "set_id": null,
       "unique": true
     },
@@ -35858,7 +35858,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Run speed increased slightly.",
       "set_id": null,
       "unique": true
     },
@@ -35991,7 +35991,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Run speed increased slightly.",
       "set_id": null,
       "unique": true
     },
@@ -36038,7 +36038,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Run speed increased slightly.",
       "set_id": null,
       "unique": true
     },
@@ -36085,7 +36085,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Run speed increased slightly.",
       "set_id": null,
       "unique": true
     },
@@ -36823,7 +36823,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Absorbs 1080 damage.  Lasts 20 sec.",
+      "effect_text": "Absorbs 1080 damage.  Lasts 20 sec. Reduces your damage taken by 6% in the Battle Ring and The Maul.",
       "set_id": null,
       "unique": false
     },
@@ -37041,7 +37041,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Your casts of $?s2060[Greater Heal]?s5185[Healing Touch]?s331[Healing Wave]?s635[Holy Light][Greater Heal, Healing Touch, Healing Wave, or Holy Light] in combat grant up to 40 increased healing and up to 13 increased damage for 15 sec.",
       "set_id": null,
       "unique": false
     },
@@ -38402,7 +38402,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "When struck in combat inflicts 2 Fire damage to the attacker.",
       "set_id": null,
       "unique": false
     },
@@ -39844,7 +39844,7 @@
       "speed": 3.2,
       "dps": 0.0,
       "two_hand": true,
-      "effect_text": "",
+      "effect_text": "$@spelldesc16939",
       "set_id": null,
       "unique": false
     },
@@ -40280,7 +40280,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Protects the wearer from being fully engulfed by Shadow Flame.",
       "set_id": null,
       "unique": false
     },
@@ -40398,7 +40398,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Increases your effective stealth detection level by ${10/5}.",
       "set_id": 381,
       "unique": false
     },
@@ -40563,7 +40563,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Increases your effective stealth detection level by ${10/5}.",
       "set_id": 382,
       "unique": false
     },
@@ -40757,7 +40757,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Increases your effective stealth detection level by ${10/5}.",
       "set_id": 551,
       "unique": false
     },
@@ -40931,7 +40931,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Increases your effective stealth detection level by ${10/5}.",
       "set_id": 539,
       "unique": false
     },
@@ -41148,7 +41148,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Increases your effective stealth detection level by ${10/5}.",
       "set_id": 2081,
       "unique": false
     },
@@ -41448,7 +41448,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Increases your effective stealth detection level by ${10/5}.",
       "set_id": 2080,
       "unique": false
     },
@@ -43553,7 +43553,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Increases your effective stealth detection level by ${10/5}.",
       "set_id": null,
       "unique": true
     },
@@ -43720,7 +43720,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Run speed increased slightly.",
       "set_id": 485,
       "unique": true
     },
@@ -43767,7 +43767,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Run speed increased slightly.",
       "set_id": 486,
       "unique": true
     },
@@ -43814,7 +43814,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Run speed increased slightly.",
       "set_id": 488,
       "unique": true
     },
@@ -43946,7 +43946,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Run speed increased slightly.",
       "set_id": 473,
       "unique": true
     },
@@ -43993,7 +43993,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Run speed increased slightly.",
       "set_id": 471,
       "unique": true
     },
@@ -44040,7 +44040,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Run speed increased slightly.",
       "set_id": 472,
       "unique": true
     },
@@ -44187,7 +44187,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Increases your effective stealth detection level by ${10/5}.",
       "set_id": null,
       "unique": true
     },
@@ -44860,7 +44860,7 @@
       "speed": 3.7,
       "dps": 0.0,
       "two_hand": true,
-      "effect_text": "",
+      "effect_text": "Gives 40 additional armor to nearby party members for 4 min. Players may only have one aura on them per paladin at any one time.",
       "set_id": null,
       "unique": false
     },
@@ -46319,7 +46319,7 @@
       "speed": 2.9,
       "dps": 0.0,
       "two_hand": true,
-      "effect_text": "Creates a portal, teleporting group members that use it to Karazhan.",
+      "effect_text": "Increases the spell critical chance of all party members within $a1 yards by 2%. Creates a portal, teleporting group members that use it to Karazhan.",
       "set_id": null,
       "unique": false
     },
@@ -46343,7 +46343,7 @@
       "speed": 2.9,
       "dps": 0.0,
       "two_hand": true,
-      "effect_text": "Creates a portal, teleporting group members that use it to Karazhan.",
+      "effect_text": "Increases damage and healing done by magical spells and effects of all party members within $a1 yards by up to 33.  Creates a portal, teleporting group members that use it to Karazhan.",
       "set_id": null,
       "unique": false
     },
@@ -46368,7 +46368,7 @@
       "speed": 2.9,
       "dps": 0.0,
       "two_hand": true,
-      "effect_text": "Creates a portal, teleporting group members that use it to Karazhan.",
+      "effect_text": "Increases healing done by magical spells and effects of all party members within $a1 yards by up to 62.  Creates a portal, teleporting group members that use it to Karazhan.",
       "set_id": null,
       "unique": false
     },
@@ -46393,7 +46393,7 @@
       "speed": 2.9,
       "dps": 0.0,
       "two_hand": true,
-      "effect_text": "Creates a portal, teleporting group members that use it to Karazhan.",
+      "effect_text": "Restores 11 mana per 5 seconds to all party members within $a1 yards. Creates a portal, teleporting group members that use it to Karazhan.",
       "set_id": null,
       "unique": false
     },
@@ -46461,7 +46461,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Underwater Breath lasts 50% longer than normal.",
       "set_id": null,
       "unique": true
     },
@@ -46784,7 +46784,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Adds 2 fire damage to your melee attacks.",
       "set_id": null,
       "unique": false
     },
@@ -46927,7 +46927,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Increases your effective stealth detection level by ${10/5}.",
       "set_id": null,
       "unique": true
     },
@@ -47092,7 +47092,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Increases your effective stealth detection level by ${10/5}.",
       "set_id": null,
       "unique": false
     },
@@ -49544,7 +49544,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Increases your effective stealth detection level by ${10/5}.",
       "set_id": null,
       "unique": true
     },
@@ -50028,7 +50028,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Reduces the hit chance of Silence effects against you by 10%.",
       "set_id": null,
       "unique": false
     },
@@ -51009,7 +51009,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Increases your effective stealth detection level by ${10/5}.",
       "set_id": null,
       "unique": true
     },
@@ -51469,7 +51469,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Increases your effective stealth detection level by ${10/5}.",
       "set_id": null,
       "unique": true
     },
@@ -52340,7 +52340,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Increases your effective stealth detection level by ${10/5}.",
       "set_id": 398,
       "unique": false
     },
@@ -52365,7 +52365,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Increases your effective stealth detection level by ${10/5}.",
       "set_id": 2076,
       "unique": false
     },
@@ -52388,7 +52388,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Increases your effective stealth detection level by ${10/5}.",
       "set_id": 2079,
       "unique": false
     },
@@ -53614,7 +53614,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Increases your effective stealth detection level by ${10/5}.",
       "set_id": 397,
       "unique": false
     },
@@ -53639,7 +53639,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Increases your effective stealth detection level by ${10/5}.",
       "set_id": 2077,
       "unique": false
     },
@@ -53662,7 +53662,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Increases your effective stealth detection level by ${10/5}.",
       "set_id": 2078,
       "unique": false
     },
@@ -55612,7 +55612,7 @@
       "speed": 3.7,
       "dps": 0.0,
       "two_hand": true,
-      "effect_text": "Hurls a fiery ball that causes 303 Fire damage and an additional 75 damage over 10 sec.",
+      "effect_text": "Hurls a fiery ball that causes 303 Fire damage and an additional 75 damage over 10 sec. Deals 5 Fire damage to anyone who strikes you with a melee attack.",
       "set_id": null,
       "unique": true
     },
@@ -55725,7 +55725,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "When struck in combat inflicts 4 Nature damage to the attacker.",
       "set_id": null,
       "unique": false
     },
@@ -55750,7 +55750,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "When struck in combat inflicts 4 Nature damage to the attacker.",
       "set_id": null,
       "unique": false
     },

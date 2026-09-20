@@ -1571,7 +1571,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "When struck in combat inflicts 3 Nature damage to the attacker.",
       "set_id": null,
       "unique": false
     },
@@ -1762,7 +1762,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Increases your effective stealth detection level by ${15/5}.",
       "set_id": null,
       "unique": false
     },
@@ -2291,7 +2291,7 @@
       "speed": 1.6,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Your healing spells have a $h% chance to remove 1 Poison effect from the target.",
       "set_id": null,
       "unique": false
     },
@@ -3222,7 +3222,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Underwater breath lasts 100% longer than normal.",
       "set_id": null,
       "unique": false
     },
@@ -3265,7 +3265,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Chance on harmful spell cast to reduce target enemy's attack power by 60 for 30 sec.\r\n",
       "set_id": null,
       "unique": false
     },
@@ -4209,7 +4209,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "While equipped, the wearer suffers less damage from falls.",
       "set_id": null,
       "unique": false
     },
@@ -4558,7 +4558,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases your effective stealth detection level by ${15/5} for 10 sec, then reduces your effective stealth detection level by ${30/-5} for 20 sec.",
+      "effect_text": "Reduces the hit chance of Charm effects against you by 6%. Increases your effective stealth detection level by ${15/5} for 10 sec, then reduces your effective stealth detection level by ${30/-5} for 20 sec.",
       "set_id": null,
       "unique": false
     },
@@ -6664,7 +6664,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Reduces the cooldown of Counterspell by 2 sec.",
       "set_id": 482,
       "unique": true
     },
@@ -19279,7 +19279,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Run speed increased slightly.",
       "set_id": null,
       "unique": true
     },
@@ -19411,7 +19411,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Run speed increased slightly.",
       "set_id": null,
       "unique": true
     },
@@ -19927,7 +19927,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Increases swim speed by 15%.",
       "set_id": null,
       "unique": false
     },
@@ -21128,7 +21128,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Reduces your damage taken by 5% in the Battle Ring and The Maul.",
       "set_id": null,
       "unique": false
     },
@@ -21814,7 +21814,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Run speed increased slightly.",
       "set_id": null,
       "unique": true
     },
@@ -21881,7 +21881,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Run speed increased slightly.",
       "set_id": null,
       "unique": true
     },
@@ -23720,7 +23720,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Increases the effects that healing and mana potions have on the wearer by 20%.",
       "set_id": null,
       "unique": false
     },
@@ -24784,7 +24784,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Run speed increased slightly.",
       "set_id": null,
       "unique": true
     },
@@ -24896,7 +24896,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Run speed increased slightly.",
       "set_id": null,
       "unique": true
     },
@@ -25504,7 +25504,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Absorbs 1080 damage.  Lasts 20 sec.",
+      "effect_text": "Absorbs 1080 damage.  Lasts 20 sec. Reduces your damage taken by 6% in the Battle Ring and The Maul.",
       "set_id": null,
       "unique": false
     },
@@ -25680,7 +25680,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Your casts of $?s2060[Greater Heal]?s5185[Healing Touch]?s331[Healing Wave]?s635[Holy Light][Greater Heal, Healing Touch, Healing Wave, or Holy Light] in combat grant up to 40 increased healing and up to 13 increased damage for 15 sec.",
       "set_id": null,
       "unique": false
     },
@@ -26463,7 +26463,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "When struck in combat inflicts 2 Fire damage to the attacker.",
       "set_id": null,
       "unique": false
     },
@@ -27481,7 +27481,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Protects the wearer from being fully engulfed by Shadow Flame.",
       "set_id": null,
       "unique": false
     },
@@ -27573,7 +27573,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Increases the damage absorbed by your Mana Shield by 285.",
       "set_id": 546,
       "unique": false
     },
@@ -27896,7 +27896,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Increases the damage absorbed by your Mana Shield by 285.",
       "set_id": 343,
       "unique": false
     },
@@ -29347,7 +29347,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Increases the damage absorbed by your Mana Shield by 285.",
       "set_id": 341,
       "unique": true
     },
@@ -29508,7 +29508,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Run speed increased slightly.",
       "set_id": 485,
       "unique": true
     },
@@ -29639,7 +29639,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Run speed increased slightly.",
       "set_id": 473,
       "unique": true
     },
@@ -29777,7 +29777,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Increases the damage absorbed by your Mana Shield by 285.",
       "set_id": null,
       "unique": true
     },
@@ -31533,7 +31533,7 @@
       "speed": 2.9,
       "dps": 0.0,
       "two_hand": true,
-      "effect_text": "Creates a portal, teleporting group members that use it to Karazhan.",
+      "effect_text": "Increases the spell critical chance of all party members within $a1 yards by 2%. Creates a portal, teleporting group members that use it to Karazhan.",
       "set_id": null,
       "unique": false
     },
@@ -31557,7 +31557,7 @@
       "speed": 2.9,
       "dps": 0.0,
       "two_hand": true,
-      "effect_text": "Creates a portal, teleporting group members that use it to Karazhan.",
+      "effect_text": "Increases damage and healing done by magical spells and effects of all party members within $a1 yards by up to 33.  Creates a portal, teleporting group members that use it to Karazhan.",
       "set_id": null,
       "unique": false
     },
@@ -31582,7 +31582,7 @@
       "speed": 2.9,
       "dps": 0.0,
       "two_hand": true,
-      "effect_text": "Creates a portal, teleporting group members that use it to Karazhan.",
+      "effect_text": "Increases healing done by magical spells and effects of all party members within $a1 yards by up to 62.  Creates a portal, teleporting group members that use it to Karazhan.",
       "set_id": null,
       "unique": false
     },
@@ -31607,7 +31607,7 @@
       "speed": 2.9,
       "dps": 0.0,
       "two_hand": true,
-      "effect_text": "Creates a portal, teleporting group members that use it to Karazhan.",
+      "effect_text": "Restores 11 mana per 5 seconds to all party members within $a1 yards. Creates a portal, teleporting group members that use it to Karazhan.",
       "set_id": null,
       "unique": false
     },
@@ -31675,7 +31675,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Underwater Breath lasts 50% longer than normal.",
       "set_id": null,
       "unique": true
     },
@@ -31992,7 +31992,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Adds 2 fire damage to your melee attacks.",
       "set_id": null,
       "unique": false
     },
@@ -32111,7 +32111,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Increases the damage absorbed by your Mana Shield by 285.",
       "set_id": 542,
       "unique": true
     },
@@ -33946,7 +33946,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Increases the damage absorbed by your Mana Shield by 285.",
       "set_id": null,
       "unique": true
     },
@@ -34268,7 +34268,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Reduces the hit chance of Silence effects against you by 10%.",
       "set_id": null,
       "unique": false
     },
@@ -34874,7 +34874,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Increases the damage absorbed by your Mana Shield by 285.",
       "set_id": null,
       "unique": true
     },
@@ -35256,7 +35256,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Increases the damage absorbed by your Mana Shield by 285.",
       "set_id": null,
       "unique": true
     },
@@ -35868,7 +35868,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Increases the damage absorbed by your Mana Shield by 285.",
       "set_id": 387,
       "unique": false
     },
@@ -36427,7 +36427,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "Increases the damage absorbed by your Mana Shield by 285.",
       "set_id": 388,
       "unique": false
     },
@@ -38066,7 +38066,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "When struck in combat inflicts 4 Nature damage to the attacker.",
       "set_id": null,
       "unique": false
     },
@@ -38091,7 +38091,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "",
+      "effect_text": "When struck in combat inflicts 4 Nature damage to the attacker.",
       "set_id": null,
       "unique": false
     },

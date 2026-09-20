@@ -19,15 +19,21 @@ grants only a weapon skill or only physical damage (Forever's re-itemised
 world has both, per `equip.py`'s own docstring) contributes nothing to a
 `GearItem` until one of those gets its own field, and none exists yet.
 
-`equip.item_effect_spells` takes an `item_ids` container specifically so a
-caller can review the auras it names in advance for the item set it ships;
-checking an item outside that set fails the whole run over an aura nobody
-has reviewed (see its docstring). `.stats(item_id)` and `.text(item_id)`
-below are therefore per-item and lazy: each call resolves the aura table
-only for the single item asked about, so an item `build_class_items` never
-keeps (a gamemaster or test row, or simply an item off this build's own
-class lists) can never fail the run merely because *its* equip spell
-happens to carry an aura nobody has classified yet.
+Two different things happen at two different times, and it matters which:
+
+* **Grouping** an item's ItemEffect/ItemXItemEffect rows by item id and
+  trigger type touches no aura data at all -- it is done once, eagerly, in
+  `__init__`, over every item either table names (not only the build's
+  shipped item set), because it cannot fail: nothing here is unclassified,
+  there is only rows to sort into buckets.
+* **Classifying** an aura -- turning a `SpellEffect` row into a stat, via
+  `equip.spell_bonus` -- happens lazily, in `.stats()`/`.text()`, and only
+  for the single item asked about. `equip.item_effect_spells`'s own
+  docstring explains why: checking an item outside the caller's shipped set
+  fails the whole run over an aura nobody has reviewed for it.
+  `build_class_items` never keeps a gamemaster/test row or an item off this
+  build's own class lists, so that item's equip spell -- however strange
+  its aura -- can never fail the run merely because nobody asked about it.
 
 An aura this table does not know raises rather than being dropped, by way
 of `equip.EquipEffectError` (aliased here as `UnknownAuraError`, so a
@@ -64,13 +70,27 @@ UnknownAuraError = EquipEffectError
 _EQUIP_ONLY: Container[str] = frozenset({TRIGGER_ON_EQUIP})
 
 
-class EffectIndex:
-    """One item's equip stats and effect text, resolved lazily per item.
+def _named_item_ids(
+    item_effect_rows: Sequence[Mapping[str, str]],
+    item_x_item_effect_rows: Sequence[Mapping[str, str]],
+) -> set[int]:
+    """Every item id either table names, on either schema.
 
-    Built once per build from the raw `ItemEffect`, `ItemXItemEffect` and
-    `SpellEffect` tables and a `SpellText` for descriptions. `__init__` does
-    no per-item work at all -- see the module docstring for why that is
-    deferred to `.stats()`/`.text()`.
+    Not a filter -- `item_effect_spells` takes an `item_ids` container to
+    let a caller restrict *which* items' auras get reviewed (see the module
+    docstring's "classifying" bullet); grouping has no auras to review, so
+    this passes every item id the raw rows themselves already carry, which
+    restricts nothing.
+    """
+    ids = {int(row["ParentItemID"]) for row in item_effect_rows if "ParentItemID" in row}
+    ids.update(int(row["ItemID"]) for row in item_x_item_effect_rows)
+    return ids
+
+
+class EffectIndex:
+    """Every item's equip stats and effect text, grouped once and
+    classified lazily per item -- see the module docstring for the
+    distinction and why each half is timed the way it is.
     """
 
     def __init__(
@@ -80,18 +100,17 @@ class EffectIndex:
         spell_effect_rows: Sequence[Mapping[str, str]],
         spell_text: SpellText,
     ) -> None:
-        self._item_effect_rows = list(item_effect_rows)
-        self._item_x_item_effect_rows = list(item_x_item_effect_rows)
+        item_effect_rows = list(item_effect_rows)
+        item_x_item_effect_rows = list(item_x_item_effect_rows)
+        item_ids = _named_item_ids(item_effect_rows, item_x_item_effect_rows)
+        self._equip_spells_by_item = item_effect_spells(
+            item_effect_rows, item_x_item_effect_rows, item_ids, trigger_types=_EQUIP_ONLY
+        )
+        self._all_spells_by_item = item_effect_spells(
+            item_effect_rows, item_x_item_effect_rows, item_ids, trigger_types=None
+        )
         self._effects_by_spell = index_spell_effects(list(spell_effect_rows))
         self._spell_text = spell_text
-
-    def _spells_for(self, item_id: int, trigger_types: Container[str] | None) -> list[int]:
-        return item_effect_spells(
-            self._item_effect_rows,
-            self._item_x_item_effect_rows,
-            {item_id},
-            trigger_types=trigger_types,
-        ).get(item_id, [])
 
     def stats(self, item_id: int) -> dict[str, int]:
         """The item's on-equip spells' stats, summed and rounded to `int`.
@@ -100,24 +119,33 @@ class EffectIndex:
         `pipeline.simdb.equip` has not classified -- see the module
         docstring for why that is not silently dropped.
         """
-        equip_spell_ids = self._spells_for(item_id, _EQUIP_ONLY)
+        equip_spell_ids = self._equip_spells_by_item.get(item_id, [])
         if not equip_spell_ids:
             return {}
         bonus = spell_bonus(equip_spell_ids, self._effects_by_spell)
         return {key: int(round(amount)) for key, amount in bonus.stats.items()}
 
     def text(self, item_id: int) -> str:
-        """The item's use/proc spells' descriptions, joined with a space.
+        """The item's spell descriptions that are not already counted as a stat.
 
-        Equip auras are already stats (see `.stats()`); repeating them as
-        prose here would double them on screen, so a spell counted there is
-        left out here.
+        An on-equip spell that produced at least one stat in `.stats()` is
+        left out here -- repeating it as prose would double it on screen.
+        An on-equip spell that produced *no* stat (only a weapon skill, only
+        physical damage, or an aura `equip.STAT_AURAS`/`IGNORED_AURAS`
+        deliberately maps to nothing) is not excluded: nothing else on the
+        item represents it, so its description is the only place it shows up
+        at all. A use or proc spell (any other trigger type) is never
+        excluded regardless.
         """
-        equip_spell_ids = set(self._spells_for(item_id, _EQUIP_ONLY))
-        other_spell_ids = self._spells_for(item_id, None)
+        equip_spell_ids = self._equip_spells_by_item.get(item_id, [])
+        equip_ids_with_stats = {
+            spell_id
+            for spell_id in equip_spell_ids
+            if spell_bonus([spell_id], self._effects_by_spell).stats
+        }
         parts = [
             self._spell_text.describe(spell_id)
-            for spell_id in other_spell_ids
-            if spell_id not in equip_spell_ids
+            for spell_id in self._all_spells_by_item.get(item_id, [])
+            if spell_id not in equip_ids_with_stats
         ]
         return " ".join(part for part in parts if part)

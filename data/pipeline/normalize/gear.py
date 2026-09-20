@@ -203,6 +203,15 @@ RESISTANCE_KEYS: dict[int, str] = {
 #: occupy both hands -- which a bow does answer yes to.
 TWO_HAND_INVENTORY_TYPES = frozenset({15, 17, 25, 26})
 
+#: Stat keys that are a combat-rating point count when ItemSparse states
+#: them (`STAT_BY_MODIFIER_ID`'s 12/13/14/15/31/32/48) but a flat literal
+#: percentage when an on-equip spell states them instead
+#: (`pipeline.simdb.equip.STAT_AURAS`'s 47/49/51/52/54/55/138/552, plus the
+#: MOD_SKILL/defense branch) -- see data/README.md, "Hit, crit, dodge, parry
+#: and block as percentages". The two units cannot be summed into one
+#: `stats` entry; `_merge_effect_stats` raises rather than do it.
+RATING_FAMILY_STAT_KEYS = frozenset({"hit", "crit", "dodge", "parry", "block", "defense"})
+
 
 class ItemDataError(ValueError):
     """The item tables hold something this normalizer will not guess at."""
@@ -473,6 +482,37 @@ def resolve_item_values(
     return 0, {}
 
 
+def _merge_effect_stats(
+    stats: dict[str, int], item_id: int, display_name: str, effects: EffectIndex
+) -> None:
+    """Fold an item's on-equip spell stats into its ItemSparse-sourced ones.
+
+    Almost always safe to just add: the two sources agree on units for
+    every stat except the rating family (hit, crit, dodge, parry, block,
+    defense). There, ItemSparse's own `StatModifier_bonusStat` columns state
+    a combat-rating point count -- `pipeline/simdb/ratings.py` converts it
+    for the simulator, but `items/<class-slug>.json` itself keeps the raw
+    rating, matching what the client's own tooltip shows -- while an
+    on-equip spell's flat stat (`pipeline.simdb.equip.STAT_AURAS`) already
+    states a literal percentage, the older Classic itemisation convention
+    (see data/README.md, "Hit, crit, dodge, parry and block as
+    percentages"). Summing a rating into a percentage would silently
+    produce a number that is neither. No item on build 1.60.1.69893 mixes
+    the two -- see test_an_equip_percentage_never_meets_an_itemsparse_rating
+    -- so this raises rather than guess which side is right the first time
+    one does.
+    """
+    for key, amount in effects.stats(item_id).items():
+        if key in RATING_FAMILY_STAT_KEYS and stats.get(key):
+            raise ItemDataError(
+                f"item {item_id} ({display_name}) has {stats[key]} {key} from ItemSparse's "
+                f"own rating columns and {amount} more {key} from an on-equip spell; these "
+                f"are different units (data/README.md, 'Hit, crit, dodge, parry and block "
+                f"as percentages') and pipeline/normalize/gear.py will not sum them blindly"
+            )
+        stats[key] = stats.get(key, 0) + amount
+
+
 def build_class_items(
     sparse_rows: list[dict[str, str]],
     item_rows: list[dict[str, str]],
@@ -521,8 +561,7 @@ def build_class_items(
         item_level = int_column(row, "ItemLevel")
         armor, stats = resolve_item_values(row, item_row, curves)
         if effects is not None:
-            for key, amount in effects.stats(item_id).items():
-                stats[key] = stats.get(key, 0) + amount
+            _merge_effect_stats(stats, item_id, display_name, effects)
         _check_level_60_sanity(item_id, display_name, item_level, armor, stats)
         if not _has_gear_value(armor, stats, item_class_id):
             continue

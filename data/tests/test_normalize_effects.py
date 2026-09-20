@@ -75,6 +75,64 @@ def test_an_unmapped_aura_raises_rather_than_being_guessed():
         idx.stats(9)
 
 
+def test_an_equip_spell_that_yields_no_stat_still_contributes_its_text():
+    """A weapon-skill-only (or otherwise stat-less) on-equip spell is not
+    counted in `.stats()` -- `equip.spell_bonus` drops weapon skills -- so
+    it must not be silently dropped from `.text()` either: nothing else on
+    the item represents it. Aura 30 (MOD_SKILL) with a weapon skill line
+    (43, swords) produces a `weapon_skills` entry and no `stats` entry.
+    """
+    idx = index(
+        [{"ParentItemID": "9", "SpellID": "106", "TriggerType": str(EQUIP_TRIGGER)}],
+        [effect(106, 30, 4, misc=43)],
+        {106: "Increased swords skill."},
+    )
+    assert idx.stats(9) == {}
+    assert idx.text(9) == "Increased swords skill."
+
+
+def test_an_equip_spell_that_yields_a_stat_is_left_out_of_the_text():
+    idx = index(
+        [{"ParentItemID": "9", "SpellID": "100", "TriggerType": str(EQUIP_TRIGGER)}],
+        [effect(100, 13, 23, misc=126)],
+        {100: "Increases spell power."},
+    )
+    assert idx.stats(9) == {"spell_power": 23}
+    assert idx.text(9) == ""
+
+
+def test_the_1_60_schema_links_through_item_x_item_effect():
+    """The 1.60 client's own ItemEffect has no ParentItemID; the link is the
+    separate ItemXItemEffect table (see `equip.py`'s docstring and R3). This
+    drives `EffectIndex` through exactly that shape rather than Era's.
+    """
+    idx = EffectIndex(
+        [{"ID": "500", "SpellID": "100", "TriggerType": str(EQUIP_TRIGGER)}],
+        [{"ID": "1", "ItemEffectID": "500", "ItemID": "9"}],
+        [effect(100, 13, 23, misc=126)],
+        _spell_text({}),
+    )
+    assert idx.stats(9) == {"spell_power": 23}
+
+
+def test_mod_stat_misc_minus_one_is_all_five_primaries():
+    """SPELL_AURA_MOD_STAT (29) with misc -1 expands to all five primary
+    stats -- the brief mapped this to None claiming a caller expands it,
+    when no caller did; `equip.spell_bonus` is the one that actually does.
+    """
+    idx = index(
+        [{"ParentItemID": "9", "SpellID": "105", "TriggerType": str(EQUIP_TRIGGER)}],
+        [effect(105, 29, 4, misc=-1)],
+    )
+    assert idx.stats(9) == {
+        "strength": 4,
+        "agility": 4,
+        "stamina": 4,
+        "intellect": 4,
+        "spirit": 4,
+    }
+
+
 def test_every_stat_key_equip_can_produce_is_in_the_planners_vocabulary():
     """R4: item `stats` keys are the planner's own vocabulary -- exactly the
     keys of `pipeline.simdb.statmap.PROTO_STAT_ALIASES`, which
