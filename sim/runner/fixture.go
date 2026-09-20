@@ -35,6 +35,17 @@ type Fixture struct {
 	// against the real abort contract without invoking a binary.
 	// Err takes precedence when both are set.
 	Aborted bool
+	// PlanCombinations is the combination count Plan answers with on
+	// success, and what its IterationsTotal is computed from. Zero is
+	// a valid answer - an empty bulk expansion - not "unset": unlike
+	// Mean, a combination count has no obvious checked-in baseline to
+	// default to instead.
+	PlanCombinations int
+	// CapBreach, when set, makes Plan answer this error instead of a
+	// summary - the fixture's way of exercising the cap_exceeded path
+	// without a bulk request large enough to hit one for real. Err
+	// takes precedence over it, the same as Err does over Aborted.
+	CapBreach *api.ErrCapExceeded
 }
 
 // Run answers from the fixture, reporting progress once at the
@@ -97,6 +108,46 @@ func (f *Fixture) abortedResult(req api.SimRequest, onProgress StageProgress) ap
 		IterationsRun: done,
 		Aborted:       true,
 	}
+}
+
+// Plan answers Plan from configuration, never from a real bulk
+// expansion: Fixture imports neither sim/bulk nor sim/internal, so it
+// could not compute one even if it wanted to. PlanCombinations is
+// what a success answers with; CapBreach, when set, is returned
+// instead of a summary, and Err takes precedence over both - the same
+// order Err takes over Aborted in RunStaged.
+//
+// It refuses a request with no Bulk block and one whose precision has
+// no ladder, the same two things Native.Plan refuses, and the same
+// way: ErrBadInput. Fixture exists to stand in for Native behind the
+// Planner interface in another lane's tests, so a caller that never
+// runs against the real binary must still see the real binary's
+// refusals - the alternative is a bug that only ever ships behind the
+// fixture.
+func (f *Fixture) Plan(_ context.Context, req api.SimRequest) (api.PlanSummary, error) {
+	if req.Bulk == nil {
+		return api.PlanSummary{}, fmt.Errorf("%w: Plan takes a bulk request; this one has none", ErrBadInput)
+	}
+	f.mu.Lock()
+	f.Runs = append(f.Runs, req)
+	err, combos, breach := f.Err, f.PlanCombinations, f.CapBreach
+	f.mu.Unlock()
+	if err != nil {
+		return api.PlanSummary{}, err
+	}
+	if breach != nil {
+		return api.PlanSummary{}, *breach
+	}
+	ladder, ok := api.Ladders[req.Bulk.Precision]
+	if !ok {
+		return api.PlanSummary{}, fmt.Errorf("%w: no ladder for precision %q", ErrBadInput, req.Bulk.Precision)
+	}
+	return api.PlanSummary{
+		Kind:            req.Kind(),
+		Combinations:    combos,
+		Cap:             req.Bulk.Cap,
+		IterationsTotal: api.LadderIterations(ladder, combos),
+	}, nil
 }
 
 // Asked reports the requests handed to the fixture so far.

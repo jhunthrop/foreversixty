@@ -46,6 +46,20 @@ type StageRunner interface {
 	RunStaged(ctx context.Context, req api.SimRequest, onProgress StageProgress) (api.SimResult, error)
 }
 
+// Planner counts a bulk request without running it: the API's submit
+// handler needs to know how many combinations a request expands to,
+// and what the whole ladder would cost, before it queues anything
+// (contract 10.2, contract 8's too_large). It stands on its own
+// rather than embedding Runner: StageRunner embeds Runner because
+// RunStaged really is a wider Run - the same request, more reported -
+// but Plan answers a different question about the same request, not
+// a wider answer to Run's question, and a caller that only counts a
+// submission has no reason to also be handed Run. Native and Fixture
+// satisfy both anyway.
+type Planner interface {
+	Plan(ctx context.Context, req api.SimRequest) (api.PlanSummary, error)
+}
+
 // ErrBadInput is what a runner returns when the binary refused the
 // request itself (exit 2): retrying it unchanged will fail the same
 // way, so a caller records it rather than requeueing.

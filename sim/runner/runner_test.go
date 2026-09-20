@@ -405,6 +405,8 @@ printf '%s' '{"dps":{"mean":950},"iterations_run":200}'
 var (
 	_ Runner      = (*Native)(nil)
 	_ StageRunner = (*Native)(nil)
+	_ Planner     = (*Native)(nil)
 	_ Runner      = (*Fixture)(nil)
 	_ StageRunner = (*Fixture)(nil)
+	_ Planner     = (*Fixture)(nil)
 )
