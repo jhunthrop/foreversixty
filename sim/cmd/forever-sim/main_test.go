@@ -364,6 +364,34 @@ func TestOutProtoWritesAnEngineResult(t *testing.T) {
 	}
 }
 
+// -out-proto ignores -plan by design (runProto has one caller and it
+// always runs a plain sim), so combining them would silently run a
+// full sim when the caller asked for nothing to run. main refuses the
+// combination outright rather than trap a caller who tried both.
+func TestPlanAndOutProtoAreRefused(t *testing.T) {
+	bin := filepath.Join(t.TempDir(), "forever-sim")
+	build := exec.Command("go", "build", "-o", bin, ".")
+	if out, err := build.CombinedOutput(); err != nil {
+		t.Fatalf("go build: %v\n%s", err, out)
+	}
+	dir := t.TempDir()
+	in := filepath.Join(dir, "req.json")
+	if err := os.WriteFile(in, smallRequest(t), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	cmd := exec.Command(bin, "-in", in, "-out-proto", filepath.Join(dir, "res.pb"), "-plan")
+	var stderr bytes.Buffer
+	cmd.Stderr = &stderr
+	err := cmd.Run()
+	var exitErr *exec.ExitError
+	if !errors.As(err, &exitErr) || exitErr.ExitCode() != exitBadArgs {
+		t.Fatalf("forever-sim -plan -out-proto exited %v, want exit %d; stderr: %s", err, exitBadArgs, stderr.String())
+	}
+	if _, statErr := os.Stat(filepath.Join(dir, "res.pb")); statErr == nil {
+		t.Error("-plan -out-proto still ran a sim and wrote a result")
+	}
+}
+
 // A request the builder refuses IS bad input: it never reaches the
 // engine, and the exit code says so, because a caller that retried a
 // malformed request forever is what the distinction prevents. (The

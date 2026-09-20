@@ -99,6 +99,14 @@ func main() {
 		fmt.Println(enginever.Version)
 		os.Exit(exitOK)
 	}
+	// -out-proto ignores planOnly by design (see runProto's own doc): it
+	// exists for one caller regenerating a plain-run fixture. Accepting
+	// -plan alongside it silently, and then running a full sim anyway,
+	// is a trap; refuse the combination instead.
+	if *plan && *outProto != "" {
+		fmt.Fprintln(os.Stderr, "forever-sim:", fmt.Errorf("%w: -plan and -out-proto cannot be combined", errBadInput))
+		os.Exit(exitBadArgs)
+	}
 
 	// Once, here, rather than once per run inside execute: the engine
 	// guards RegisterAll with an unsynchronised package bool, so two

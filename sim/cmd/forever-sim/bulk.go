@@ -21,6 +21,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"slices"
 	"time"
 
 	"github.com/jhunthrop/foreversixty/sim/adapter"
@@ -101,7 +102,14 @@ func writeStageTick(progress io.Writer, stage bulk.StageRequests, done int) {
 }
 
 // abortedBulk is what a stopped bulk run writes: the request, the
-// stage it reached, and nothing pretending to be a ranking.
+// stages it reached, and nothing pretending to be a ranking.
+//
+// Stages is stage.Ran - every stage already finished before this one -
+// plus this one, the same formula bulk.Rank uses to finish a completed
+// run (see rank.go's stagesOf). Reporting just the current stage would
+// silently drop every earlier one: an abort mid-stage-2 would then
+// claim the run only ever reached stage 2's own iteration count, one
+// stage total, when stage 1 actually finished first at its own count.
 func abortedBulk(req api.SimRequest, stage bulk.StageRequests, start time.Time) api.SimResult {
 	return api.SimResult{
 		EngineVersion: enginever.Version,
@@ -110,6 +118,6 @@ func abortedBulk(req api.SimRequest, stage bulk.StageRequests, start time.Time) 
 		Aborted:       true,
 		DurationMS:    time.Since(start).Milliseconds(),
 		Summary:       adapter.EmptySummary(),
-		Stages:        []api.Stage{{Iterations: stage.Iterations, Combos: len(stage.Combos)}},
+		Stages:        append(slices.Clone(stage.Ran), api.Stage{Iterations: stage.Iterations, Combos: len(stage.Combos)}),
 	}
 }
