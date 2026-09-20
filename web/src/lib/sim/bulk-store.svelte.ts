@@ -69,7 +69,7 @@ import {
 import { loadLoot, sourcesByItem, type LootFile } from './loot';
 import { BUILT_IN_PHASES, fetchPhases, type PhaseRow } from './phase';
 import { loadItems, loadSets, loadTalents } from '../planner/load';
-import type { Item, ItemSet, Slot, TalentFile } from '../planner/types';
+import { SLOTS, type Item, type ItemSet, type Slot, type TalentFile } from '../planner/types';
 import { defaultSettings, type SimSettings } from './settings';
 import { loadSimBuffs, type SimBuffFile } from './sim-buffs';
 import {
@@ -217,6 +217,11 @@ export function createBulkStore(init: BulkStoreInit) {
     combinations = null;
     await loadDataFor(outcome.character);
     rows = seedRows(outcome.character);
+    // Design 3.4: talent compare is Top Gear with the gear locked. Locking every slot here
+    // rather than hiding the grid means the invariant holds for the request too -- the
+    // contract validates "no candidate on a locked slot", and a page that only hid the UI
+    // could still send one through the request drawer.
+    if (init.tool === 'talents') locked = [...SLOTS];
     // `drops` mode's candidates are the picked sources alone (validateBulk rule 3) -- a
     // fresh load has no picks yet, so this replaces the seeded equipped/bag/bank rows with
     // the empty list rather than leaving them there for a mode that must refuse them.

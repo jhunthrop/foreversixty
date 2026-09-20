@@ -437,3 +437,25 @@ describe('saving a browser result', () => {
     s.dispose();
   });
 });
+
+describe('talent compare', () => {
+  it('locks every slot the moment a character loads, so nothing gear-shaped can be sent', async () => {
+    const s = store('talents');
+    await s.loadAddon(FURY);
+    expect(s.locked).toEqual(expect.arrayContaining(['head', 'main_hand', 'finger1']));
+    s.dispose();
+  });
+
+  it('sends the loadouts and nothing else', async () => {
+    const s = store('talents');
+    await s.loadAddon(FURY);
+    s.addSearchItem(16963);
+    s.addLoadout({ name: 'Deep Fury', talents: '0-5530515-' });
+    await s.run();
+    const bulk = (s.result as BulkResult).request.bulk!;
+    expect(bulk.mode).toBe('talents');
+    expect(bulk.candidates).toEqual([]);
+    expect(bulk.talents).toEqual([{ name: 'Deep Fury', talents: '0-5530515-' }]);
+    s.dispose();
+  });
+});
