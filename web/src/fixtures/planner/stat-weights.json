@@ -2,18 +2,18 @@
   {
     "spec": "warrior-arms",
     "weights": {
-      "strength": 1.0,
-      "agility": 0.5,
-      "stamina": 0.0,
-      "crit": 2.0,
-      "hit": 1.5,
-      "attack_power": 0.3,
-      "defense": 0.0,
-      "armor": 0.05
+      "strength": 2,
+      "agility": 1.1,
+      "stamina": 0,
+      "crit": 20,
+      "hit": 25,
+      "attack_power": 1,
+      "defense": 0,
+      "armor": 0.01
     },
     "sources": [
       {
-        "label": "Wowhead Classic, Arms Warrior Stat Priority",
+        "label": "Placeholder — the [data] lane’s stat-weights.json is authoritative",
         "url": "https://www.wowhead.com/classic/guide/classes/warrior/arms/dps-stat-priority",
         "kind": "community"
       }

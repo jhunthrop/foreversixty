@@ -107,7 +107,8 @@ export function createPlannerStore(init: PlannerInit) {
   /**
    * Moves `raceSlug` to the first race legal for `classId` if the current one is not (or is
    * unresolvable). Leaves `raceSlug` alone when no legal race exists. Used by data loading
-   * (`setReference`) and by class switches (`selectClass`) so the two never drift apart.
+   * (`setReference`), by class switches (`selectClass`) and by addon imports
+   * (`loadImported`) so the three never drift apart.
    */
   function repairRaceForClass(classId: number): void {
     const currentRaceId = races.find((r) => r.slug === raceSlug)?.id ?? -1;
@@ -243,6 +244,13 @@ export function createPlannerStore(init: PlannerInit) {
       title = '';
       sourceId = null;
       refusal = null;
+      // The third writer of classSlug/raceSlug, so it repairs the pair exactly as
+      // `setReference` and `selectClass` do. `decodeFS1` validates neither field, so an
+      // export can name a race that does not exist (leaving `raceRow` null, which makes
+      // `toDraft()` throw) or a race that cannot be this class (a combo the API refuses and
+      // the race select cannot even show).
+      const imported = classes.find((c) => c.slug === build.classSlug);
+      if (imported) repairRaceForClass(imported.id);
     },
 
     setItems(file: ItemFile): void {

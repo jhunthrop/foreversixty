@@ -34,6 +34,8 @@ const SLOT_SET = new Set<string>(SLOTS);
  *  order): `stamina` sorts before `spell_power` because the pinned enum does, and the
  *  shared fixture vectors -- and the addon's own encoder -- are generated in that order. */
 const STAT_ORDER = new Map(PINNED_STATS.map((name, index) => [name, index]));
+/** A stat value on the wire: an optional minus, then a decimal with no redundant zeros. */
+const CANONICAL_INTEGER = /^(?:0|-?[1-9]\d*)$/;
 
 export interface FSB1Point {
   tab: number;
@@ -57,6 +59,17 @@ export interface FSB1Build {
 
 export type FSB1Result = { ok: true; build: FSB1Build } | { ok: false; message: string };
 
+/**
+ * One base-36 digit. The clamp is a last resort, not a range policy: the only caller is
+ * `build-code.ts`'s `pointsOf`, whose tab/tier/column all come out of an indexed talent
+ * file (at most 3 tabs, 9 tiers, 4 columns, every one of them 1-based), so nothing in the
+ * app can reach it. It clamps rather than throws because `encodeFSB1` is called from a
+ * `$derived` in the share panel, where a throw would take the whole planner down for a
+ * data defect that costs at worst one wrong character. A clamped 0 is refused by
+ * `parseOrder` on the far side; a clamped 35 is a cell no real tree has. If a future
+ * caller can legitimately exceed the range, it must widen the encoding rather than lean
+ * on this.
+ */
 function toBase36(value: number): string {
   return DIGITS[Math.min(35, Math.max(0, Math.round(value)))];
 }
@@ -83,7 +96,13 @@ function encodeStats(stats: Record<string, number>): string {
   return Object.keys(stats)
     .sort((a, b) => {
       const [rankA, rankB] = [statRank(a), statRank(b)];
-      return rankA !== rankB ? rankA - rankB : a.localeCompare(b);
+      // Byte order, never `localeCompare`: collation folds case (`'B'.localeCompare('a')`
+      // is 1 where `'B' < 'a'` is true) and is environment-dependent, so two browsers
+      // could produce two codes for one build -- the exact invariant this sort exists to
+      // hold. Lua's `table.sort` on strings compares bytes, so this is also the branch the
+      // parallel Codec.lua encoder has to reproduce.
+      if (rankA !== rankB) return rankA - rankB;
+      return a < b ? -1 : a > b ? 1 : 0;
     })
     .map((name) => `${name}=${Math.round(stats[name])}`)
     .join(';');
@@ -138,9 +157,21 @@ function parseStats(field: string): Parsed<Record<string, number>> {
     if (at === -1) return { ok: false, message: addonCopy.statPair(pair) };
     const name = pair.slice(0, at);
     const value = pair.slice(at + 1);
-    // Digits only, never Number.parseInt on the field: parseInt stops at the first
-    // non-digit and would turn "lots" into NaN and "30x" into 30.
-    if (name === '' || !/^\d+$/.test(value)) return { ok: false, message: addonCopy.statPair(pair) };
+    // A canonical decimal integer, never Number.parseInt on the raw field: parseInt stops
+    // at the first non-digit and would turn "lots" into NaN and "30x" into 30.
+    //
+    // The sign is part of the grammar because real items carry negative stats -- 43 values
+    // across data/builds/<build>/items/*.json, Ring of Scorn's spirit -3 among them. The
+    // encoder copies an item's stats through verbatim, so a decoder that refused a minus
+    // sign would refuse this site's own "Copy addon code" output; and dropping the penalty
+    // instead would make the addon score a cursed item as though it had none.
+    //
+    // Canonical, so one build is still one string: "-0", "+3", "007" and "--3" are all
+    // refused, because `encodeStats` emits none of them and two spellings of one number
+    // would be two codes for one build.
+    if (name === '' || !CANONICAL_INTEGER.test(value)) {
+      return { ok: false, message: addonCopy.statPair(pair) };
+    }
     stats[name] = Number.parseInt(value, 10);
   }
   return { ok: true, value: stats };
@@ -171,6 +202,12 @@ export function decodeFSB1(code: string): FSB1Result {
     return { ok: false, message: addonCopy.wrongPrefix(named, FSB1_PREFIX) };
   }
   if (parts.length < 5) return { ok: false, message: addonCopy.shortCode };
+  // `parts.length < 5` catches a field that is missing; these two catch one that is present
+  // but empty, which is the same defect with a colon in front of it. `order` and `gear` are
+  // both legitimately empty (a fresh build has no points and no gear); the data build and
+  // the class are not -- the addon can neither check staleness nor find a tree without them.
+  if (parts[1] === '') return { ok: false, message: addonCopy.emptyField(addonCopy.dataBuildField) };
+  if (parts[2] === '') return { ok: false, message: addonCopy.emptyField(addonCopy.classField) };
   const order = parseOrder(parts[3]);
   if (!order.ok) return order;
   const gear = parseGear(parts.slice(4).join(':'));

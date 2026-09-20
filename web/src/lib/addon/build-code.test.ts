@@ -121,6 +121,26 @@ describe('addonCodeFor', () => {
     expect(code).toBe('FSB1:1:paladin::');
   });
 
+  it('round-trips an item with a negative stat, sign intact', () => {
+    // Ring of Scorn (spirit -3) and 42 other negative stat values are real equippable
+    // items. The encoder copies item.stats through verbatim, so the decoder has to read
+    // what it wrote: a player wearing one must not get a code the addon refuses, and the
+    // penalty must not be quietly dropped on the way either.
+    const code = addonCodeFor({
+      dataBuild: '1.60.1.69893',
+      classSlug: 'warrior',
+      order: [],
+      gear: { finger1: 3235 },
+      talents: indexTalents(talents),
+      items: new Map([[3235, item(3235, { stamina: 4, spirit: -3 })]]),
+    });
+    expect(code).toBe('FSB1:1.60.1.69893:warrior::finger1=3235:stamina=4;spirit=-3');
+    const result = decodeFSB1(code);
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.build.gear).toEqual([{ slot: 'finger1', itemId: 3235, stats: { stamina: 4, spirit: -3 } }]);
+  });
+
   it('omits a zero armour value rather than writing armor=0', () => {
     const code = addonCodeFor({
       dataBuild: '1',

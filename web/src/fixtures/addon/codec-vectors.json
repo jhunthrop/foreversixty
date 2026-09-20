@@ -8,7 +8,25 @@
         "dataBuild": "1.60.1.69893",
         "classSlug": "paladin",
         "raceSlug": "human",
-        "treeRanks": [[5, 0, 3, 2, 0, 0, 0, 0, 0], [0], [0]],
+        "treeRanks": [
+          [
+            5,
+            0,
+            3,
+            2,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0
+          ],
+          [
+            0
+          ]
+        ],
         "gearSlots": [
           {
             "slot": "head",
@@ -34,7 +52,35 @@
         "dataBuild": "1.60.1.69893",
         "classSlug": "mage",
         "raceSlug": "gnome",
-        "treeRanks": [[0], [0], [5, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5]],
+        "treeRanks": [
+          [
+            0
+          ],
+          [
+            0
+          ],
+          [
+            5,
+            5,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            5
+          ]
+        ],
         "gearSlots": [],
         "bags": [],
         "bank": [],
@@ -51,7 +97,19 @@
         "dataBuild": "1.60.1.69893",
         "classSlug": "rogue",
         "raceSlug": "orc",
-        "treeRanks": [[0], [5, 5, 3], [0]],
+        "treeRanks": [
+          [
+            0
+          ],
+          [
+            5,
+            5,
+            3
+          ],
+          [
+            0
+          ]
+        ],
         "gearSlots": [
           {
             "slot": "main_hand",
@@ -79,7 +137,17 @@
         "dataBuild": "1.60.1.69893",
         "classSlug": "warrior",
         "raceSlug": "tauren",
-        "treeRanks": [[5], [0], [0]],
+        "treeRanks": [
+          [
+            5
+          ],
+          [
+            0
+          ],
+          [
+            0
+          ]
+        ],
         "gearSlots": [
           {
             "slot": "head",
@@ -116,7 +184,17 @@
         "dataBuild": "1.60.1.69893",
         "classSlug": "druid",
         "raceSlug": "night-elf",
-        "treeRanks": [[5], [0], [0]],
+        "treeRanks": [
+          [
+            5
+          ],
+          [
+            0
+          ],
+          [
+            0
+          ]
+        ],
         "gearSlots": [
           {
             "slot": "head",
@@ -139,7 +217,19 @@
         "loadouts": [
           {
             "name": "Deep Feral",
-            "treeRanks": [[0], [5, 5, 3], [0]]
+            "treeRanks": [
+              [
+                0
+              ],
+              [
+                5,
+                5,
+                3
+              ],
+              [
+                0
+              ]
+            ]
           }
         ],
         "professions": [],
@@ -153,13 +243,26 @@
         "dataBuild": "1.60.1.69893",
         "classSlug": "priest",
         "raceSlug": "human",
-        "treeRanks": [[0], [0], [5]],
+        "treeRanks": [
+          [
+            0
+          ],
+          [
+            0
+          ],
+          [
+            5
+          ]
+        ],
         "gearSlots": [],
         "bags": [],
         "bank": [],
         "sets": [],
         "loadouts": [],
-        "professions": ["enchanting", "tailoring"],
+        "professions": [
+          "enchanting",
+          "tailoring"
+        ],
         "ignored": []
       }
     },
@@ -170,14 +273,26 @@
         "dataBuild": "1.60.1.69893",
         "classSlug": "priest",
         "raceSlug": "human",
-        "treeRanks": [[0], [0], [5]],
+        "treeRanks": [
+          [
+            0
+          ],
+          [
+            0
+          ],
+          [
+            5
+          ]
+        ],
         "gearSlots": [],
         "bags": [],
         "bank": [],
         "sets": [],
         "loadouts": [],
         "professions": [],
-        "ignored": ["pets"]
+        "ignored": [
+          "pets"
+        ]
       }
     }
   ],
@@ -292,6 +407,25 @@
           }
         ]
       }
+    },
+    {
+      "name": "an item with a negative stat",
+      "code": "FSB1:1.60.1.69893:warrior::finger1=3235:stamina=4;spirit=-3",
+      "build": {
+        "dataBuild": "1.60.1.69893",
+        "classSlug": "warrior",
+        "order": [],
+        "gear": [
+          {
+            "slot": "finger1",
+            "itemId": 3235,
+            "stats": {
+              "stamina": 4,
+              "spirit": -3
+            }
+          }
+        ]
+      }
     }
   ],
   "fsb1Invalid": [
@@ -318,6 +452,22 @@
     {
       "name": "a non-numeric stat value",
       "code": "FSB1:1.60.1.69893:paladin::head=12640:stamina=lots"
+    },
+    {
+      "name": "a doubled minus sign on a stat value",
+      "code": "FSB1:1.60.1.69893:paladin::head=12640:spirit=--3"
+    },
+    {
+      "name": "a negative zero, which no encoder writes",
+      "code": "FSB1:1.60.1.69893:paladin::head=12640:spirit=-0"
+    },
+    {
+      "name": "an empty data build field",
+      "code": "FSB1::paladin:111:"
+    },
+    {
+      "name": "an empty class field",
+      "code": "FSB1:1.60.1.69893::111:"
     }
   ]
 }

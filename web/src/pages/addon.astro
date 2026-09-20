@@ -8,12 +8,14 @@ import { addonCopy } from '../lib/addon/copy';
 import activeBuild from '../data/active-build.json';
 import communityLinks from '../data/links.json';
 
-// The three install routes. CurseForge and Wago point at their project search pages until
-// the user has created those projects (the design's "User-owned prerequisites") -- honest
-// links, not slugs no one can verify yet. The GitHub one is derived from links.json's
-// githubRepo, the same source Footer.astro's Contribute link uses, so there is one place
-// that names the repo; `/releases/latest` is a stable redirect that needs no edit per
-// release and works before the [ci] lane has cut its first tag.
+// The three install routes. The CurseForge and Wago URLs are this addon's own project
+// slugs on those two managers -- the addresses the projects will have once the user has
+// created them (the design's "User-owned prerequisites"), so neither resolves yet. The
+// brief is to ship the page now rather than wait on the [ci] lane. The GitHub one is
+// derived from links.json's githubRepo, the same source Footer.astro's Contribute link
+// uses, so there is one place that names the repo; `/releases/latest` is a stable
+// redirect that needs no edit per release and works before the [ci] lane has cut its
+// first tag.
 export const CURSEFORGE_URL = 'https://www.curseforge.com/wow/addons/foreversixty';
 export const WAGO_URL = 'https://addons.wago.io/addons/foreversixty';
 export const GITHUB_RELEASES_URL = `${communityLinks.githubRepo}/releases/latest`;

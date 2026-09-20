@@ -11,9 +11,16 @@
   import { addonCodeFor } from '../../lib/addon/build-code';
   import { addonCopy } from '../../lib/addon/copy';
   import type { LiveDps } from '../../lib/planner/live-dps.svelte';
-  import { cardUrlFor, saveBuild, type SaveOutcome, type SavedBuild } from '../../lib/planner/share';
+  import {
+    cardUrlFor,
+    saveBuild,
+    UNSAVABLE_BUILD_MESSAGE,
+    type SaveOutcome,
+    type SavedBuild,
+  } from '../../lib/planner/share';
   import { MAX_TITLE_LENGTH, type PlannerStore } from '../../lib/planner/store.svelte';
   import { SECONDARY_BUTTON } from '../../lib/planner/styles';
+  import type { BuildDraft } from '../../lib/planner/types';
   import { saveSim } from '../../lib/sim/api';
   import { characterFromPlanner, toCharacterSpec } from '../../lib/sim/character';
   import { simCopy } from '../../lib/sim/copy';
@@ -30,9 +37,18 @@
 
   let saving = $state(false);
   let outcome = $state<SaveOutcome | null>(null);
-  let copied = $state(false);
   let cardBroken = $state(false);
-  let addonCopied = $state(false);
+  /**
+   * Which button last copied, or null. One flag for both buttons rather than one each:
+   * only one thing can be on the clipboard, so only one button should say so, and the two
+   * then behave identically instead of the panel having two copy buttons with two idioms.
+   *
+   * No timer. "Copied" stands until the build changes, which the $effect below already
+   * watches for -- and it is true for exactly that long, because the text on the clipboard
+   * goes stale at exactly that moment. A timed revert would need a cleared handle, a named
+   * duration and a cleanup on destroy to say something less accurate.
+   */
+  let copiedFrom = $state<'link' | 'addon' | null>(null);
 
   // Derived, not computed on click: the button is disabled while there is nothing to
   // copy, and a $derived keeps that in step with every talent and gear edit for free.
@@ -51,13 +67,12 @@
         }),
   );
 
-  async function copyAddonCode(): Promise<void> {
+  async function copyToClipboard(text: string, source: 'link' | 'addon'): Promise<void> {
     try {
-      await navigator.clipboard.writeText(addonCode);
-      addonCopied = true;
-      setTimeout(() => (addonCopied = false), 2000);
+      await navigator.clipboard.writeText(text);
+      copiedFrom = source;
     } catch {
-      addonCopied = false;
+      copiedFrom = null;
     }
   }
 
@@ -110,7 +125,7 @@
     void store.order.length;
     void store.gear;
     outcome = null;
-    copied = false;
+    copiedFrom = null;
     cardState = 'idle';
     cardDps = '';
     cardVersion = '';
@@ -153,37 +168,49 @@
     }
   }
 
+  /**
+   * The draft, or null when the store cannot compose one. `toDraft()` throws when the class
+   * or race does not resolve against the loaded reference data; unguarded, that throw
+   * escapes `share()` before `saving = false` and leaves the button reading "Saving" for
+   * the rest of the session with nothing said. The store repairs both fields on every write
+   * it owns, so this should be unreachable -- a permanently stuck button is too bad a
+   * failure mode to leave resting on that.
+   */
+  function draftOrNull(): BuildDraft | null {
+    try {
+      return store.toDraft();
+    } catch {
+      return null;
+    }
+  }
+
   async function share(): Promise<void> {
     saving = true;
     cardBroken = false;
-    copied = false;
+    copiedFrom = null;
     // Stamped onto this save's own attachSim call, below, before anything about it can be
     // stale -- a later share() bumps this past whatever a still-running sim was stamped
     // with, which is how that sim's eventual result recognises it no longer owns the card.
     saveGeneration += 1;
     const generation = saveGeneration;
-    const draft = store.toDraft();
+    const draft = draftOrNull();
+    if (draft === null) {
+      saving = false;
+      outcome = { ok: false, message: UNSAVABLE_BUILD_MESSAGE, fields: {} };
+      return;
+    }
     const result = await saveBuild(draft);
     saving = false;
     // The grid stays editable while a save is in flight -- a slow API should not lock the
     // planner -- so the build this response describes may no longer be the current one.
     // Comparing the drafts rather than disabling input catches every kind of edit (points,
     // gear, title, even a class switch) and discards a response that arrives stale.
-    if (JSON.stringify(store.toDraft()) !== JSON.stringify(draft)) return;
+    if (JSON.stringify(draftOrNull()) !== JSON.stringify(draft)) return;
     outcome = result;
     // The sim is saved after the build, because it needs the build's id, and it never
     // blocks the link from showing: the share URL above is already on screen the moment
     // this line starts, and the running/done/skipped line below fills in beside it.
     if (result.ok) void attachSim(result.build, generation);
-  }
-
-  async function copy(url: string): Promise<void> {
-    try {
-      await navigator.clipboard.writeText(url);
-      copied = true;
-    } catch {
-      copied = false;
-    }
   }
 
   $effect(() => () => pool?.terminate());
@@ -215,9 +242,9 @@
       class={NEUTRAL_BUTTON}
       data-testid="copy-addon-code"
       disabled={addonCode === ''}
-      onclick={copyAddonCode}
+      onclick={() => copyToClipboard(addonCode, 'addon')}
     >
-      {addonCopied ? addonCopy.copiedAddonCode : addonCopy.copyAddonCode}
+      {copiedFrom === 'addon' ? addonCopy.copiedAddonCode : addonCopy.copyAddonCode}
     </button>
   </div>
   <p class="text-muted text-[13px]">{addonCopy.addonCodeHint}</p>
@@ -249,8 +276,8 @@
     <div class="border-line bg-raised rounded-panel flex flex-col gap-3 border p-3">
       <div class="flex flex-wrap items-center gap-3">
         <a href={saved.url} class="font-mono text-[14px]" data-testid="share-link">{saved.url}</a>
-        <button type="button" class={NEUTRAL_BUTTON} onclick={() => copy(saved.url)}>
-          {copied ? 'Copied' : 'Copy link'}
+        <button type="button" class={NEUTRAL_BUTTON} onclick={() => copyToClipboard(saved.url, 'link')}>
+          {copiedFrom === 'link' ? 'Copied' : 'Copy link'}
         </button>
       </div>
       {#if cardState !== 'idle'}

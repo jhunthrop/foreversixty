@@ -10,6 +10,7 @@
   import type { PlannerStore } from '../../lib/planner/store.svelte';
   import { SLOTS, SLOT_LABELS, STAT_LABELS, type Slot, type StatKey } from '../../lib/planner/types';
   import { specLabel } from '../../lib/sim/spec-label';
+  import { statLabel } from '../../lib/sim/stats';
   import ItemPicker from './ItemPicker.svelte';
 
   let { store, weights = [] }: { store: PlannerStore; weights?: WeightsFile } = $props();
@@ -98,7 +99,7 @@
       <p class="text-muted text-[13px]">{addonCopy.weightsAreOpinions}</p>
       <ul class="text-muted text-[13px]">
         {#each Object.entries(specWeights.weights).sort( ([a], [b]) => a.localeCompare(b) ) as [stat, weight] (stat)}
-          <li>{stat}: {weight}</li>
+          <li>{statLabel(stat)}: {weight}</li>
         {/each}
       </ul>
       <ul class="text-[13px]">

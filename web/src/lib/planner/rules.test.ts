@@ -275,4 +275,50 @@ describe('rule 6: two-handed main hand', () => {
     ]) as never;
     expect(validateGear(items, { main_hand: 1, off_hand: 2 })).toEqual([]);
   });
+
+  // `canEquip` is the gate the planner actually runs (`store.equip` calls it on every
+  // click); `validateGear` has no production caller. Both directions are checked there, so
+  // the rule refuses the click rather than only the save that would have followed it.
+  it('refuses equipping an off-hand while a two-handed main hand is on', () => {
+    const items = new Map([
+      [1, { id: 1, slot: 'main_hand', two_hand: true, name: 'Big Axe' }],
+      [2, { id: 2, slot: 'off_hand', two_hand: false, name: 'Shield' }],
+    ]) as never;
+    expect(canEquip(items, { main_hand: 1 }, 'off_hand', 2)).toEqual({
+      ok: false,
+      reason: messages.twoHandOffHand('Big Axe'),
+    });
+  });
+
+  it('refuses equipping a two-handed main hand while an off-hand is on', () => {
+    const items = new Map([
+      [1, { id: 1, slot: 'main_hand', two_hand: true, name: 'Big Axe' }],
+      [2, { id: 2, slot: 'off_hand', two_hand: false, name: 'Shield' }],
+    ]) as never;
+    expect(canEquip(items, { off_hand: 2 }, 'main_hand', 1)).toEqual({
+      ok: false,
+      reason: messages.twoHandOffHand('Big Axe'),
+    });
+  });
+
+  it('allows each half of the pair when the other slot is empty or one-handed', () => {
+    const items = new Map([
+      [1, { id: 1, slot: 'main_hand', two_hand: true, name: 'Big Axe' }],
+      [2, { id: 2, slot: 'off_hand', two_hand: false, name: 'Shield' }],
+      [3, { id: 3, slot: 'main_hand', two_hand: false, name: 'Sword' }],
+    ]) as never;
+    expect(canEquip(items, {}, 'main_hand', 1)).toEqual({ ok: true });
+    expect(canEquip(items, {}, 'off_hand', 2)).toEqual({ ok: true });
+    expect(canEquip(items, { main_hand: 3 }, 'off_hand', 2)).toEqual({ ok: true });
+  });
+
+  it('reports the pair from whole-map validation too, without saying it twice', () => {
+    const items = new Map([
+      [1, { id: 1, slot: 'main_hand', two_hand: true, name: 'Big Axe' }],
+      [2, { id: 2, slot: 'off_hand', two_hand: false, name: 'Shield' }],
+    ]) as never;
+    const errors = validateGear(items, { main_hand: 1, off_hand: 2 });
+    expect(errors.filter((error) => error.field === 'gear.off_hand')).toHaveLength(1);
+    expect(errors.every((error) => error.message === messages.twoHandOffHand('Big Axe'))).toBe(true);
+  });
 });

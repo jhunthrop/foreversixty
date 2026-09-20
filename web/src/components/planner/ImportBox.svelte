@@ -45,6 +45,7 @@
     class="border-line rounded-control bg-card-top min-h-11 w-full border px-2 py-1 font-mono text-[13px]"
     rows="2"
     placeholder={addonCopy.importPlaceholder}
+    aria-label={addonCopy.importTitle}
     bind:value={code}
     data-testid="import-code"></textarea>
   <button

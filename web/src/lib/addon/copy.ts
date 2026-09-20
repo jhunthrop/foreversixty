@@ -18,6 +18,10 @@ export const addonCopy = {
   unknownSlot: (slot: string): string => `That code names a slot this planner does not have: ${slot}.`,
   gearEntry: (entry: string): string => `That code has an unreadable gear entry: ${entry}.`,
   statPair: (pair: string): string => `That code has an unreadable stat: ${pair}.`,
+  emptyField: (field: string): string => `That code’s ${field} field is empty.`,
+  /** Names the wire field in `emptyField`; the grammar's own two mandatory fields. */
+  dataBuildField: 'data build',
+  classField: 'class',
 
   // --- share panel ---
   copyAddonCode: 'Copy addon code',

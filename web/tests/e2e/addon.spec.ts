@@ -81,7 +81,12 @@ test.describe('the addon flows', () => {
     await page.goto('/planner');
     await page.getByTestId('import-code').fill('FS2:nope');
     await page.getByTestId('import-submit').click();
-    await expect(page.getByTestId('import-error')).toHaveText(addonCopy.wrongPrefix('FS2', 'FS1'));
+    // The literal, not `addonCopy.wrongPrefix('FS2', 'FS1')`: this refusal comes out of
+    // `planner/fs1.ts`, which owns its own strings and has no copy file, and `addonCopy`'s
+    // template is FSB1's. The two read identically today by coincidence, so asserting the
+    // FSB1 constant here would keep passing if fs1's wording changed. `import.test.ts`
+    // asserts the same message as a literal for the same reason.
+    await expect(page.getByTestId('import-error')).toHaveText('That code is FS2; this site reads FS1.');
   });
 
   test('an export for another class is refused by name rather than reconstructed', async ({ page }) => {
@@ -115,11 +120,17 @@ test.describe('the addon flows', () => {
 
   test('the gear panel shows the spec’s weights with their sources', async ({ page }) => {
     await page.goto('/planner');
-    await page.getByTestId('gear-weights').click();
-    await expect(page.getByTestId('gear-weights')).toContainText(addonCopy.weightsAreOpinions);
-    await expect(page.getByTestId('gear-weights').getByRole('link').first()).toHaveAttribute(
-      'href',
-      /^https:/,
-    );
+    const weights = page.getByTestId('gear-weights');
+    // `toContainText` reads textContent, which a closed <details> still has -- so the proof
+    // that the disclosure actually opened has to come first, and from its `open` state.
+    await expect(weights).not.toHaveAttribute('open');
+    await weights.click();
+    await expect(weights).toHaveAttribute('open', '');
+    await expect(weights).toContainText(addonCopy.weightsAreOpinions);
+    // The weights list reads its stats through `statLabel`, the same table the totals above
+    // it use -- "Attack power", never the raw contract id `attack_power`.
+    await expect(weights).toContainText('Attack power');
+    await expect(weights).not.toContainText('attack_power');
+    await expect(weights.getByRole('link').first()).toHaveAttribute('href', /^https:/);
   });
 });
