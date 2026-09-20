@@ -41,7 +41,11 @@ describe("the repository's .luacheckrc", function()
 			"expected the luacheck report to name the offending field `unpack`; got:\n" .. report)
 	end)
 
-	it("rejects utf8, a 5.4-only stdlib table, under the repo's std", function()
+	-- utf8 does not exist as a global under std = lua51 at all, so luacheck
+	-- reports W113 "accessing undefined variable utf8" here -- not a W143
+	-- undefined-field finding the way table.unpack above is (table itself
+	-- is a real lua51 global; only its unpack field is missing).
+	it("rejects utf8, a 5.4-only global undefined in lua51, under the repo's std", function()
 		local report, exitCode = checkUnderRepoConfig("return utf8.len\n")
 		assert.is_true(exitCode ~= 0,
 			"expected `luacheck --config .luacheckrc -` to reject utf8.len (utf8 does not " ..

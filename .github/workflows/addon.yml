@@ -8,12 +8,14 @@ on:
       - web/src/fixtures/addon/**
       - tools/gen-codec-vectors.mjs
       - .github/workflows/addon.yml
+      - .github/workflows/addon-release.yml
   pull_request:
     paths:
       - addon/**
       - web/src/fixtures/addon/**
       - tools/gen-codec-vectors.mjs
       - .github/workflows/addon.yml
+      - .github/workflows/addon-release.yml
   workflow_dispatch:
 permissions: { contents: read }
 concurrency:
