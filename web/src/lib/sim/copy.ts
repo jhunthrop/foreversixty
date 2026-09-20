@@ -30,12 +30,14 @@ export const KIND_TITLES = {
  * labels, which numbered a *row*, not a hand -- tag 1 (main hand) rendered as "Attack (2)"
  * -- and which this file's own proseNames table below then matched against the wrong
  * hand (dps-minmaxer review round 1, D2: a two-handed build's only attack row was
- * described as off-hand damage). Declared here, above simCopy -- the same place
- * KIND_TITLES sits, and for the same reason -- so simCopy's own actionAliases (the
- * compare-mode table further down) can build its "Melee" entries from these three
- * strings instead of re-typing them: one source of truth for the text, not two.
+ * described as off-hand damage). Declared here, above simCopy and exported by name --
+ * the same shape KIND_TITLES already uses in this file, and for the same reason: a plain
+ * module-level constant, not a simCopy property, is what a value needs to be when both
+ * simCopy's own actionAliases (the compare-mode table further down, built from these
+ * three strings instead of re-typing them) and other modules (action-names.ts,
+ * sentence.ts) must read it by name.
  */
-const attackHandName: Record<'main' | 'off' | 'extra', string> = {
+export const attackHandName: Record<'main' | 'off' | 'extra', string> = {
   main: 'Main-hand attacks',
   off: 'Off-hand attacks',
   extra: 'Extra attacks',
@@ -47,7 +49,7 @@ const attackHandName: Record<'main' | 'off' | 'extra', string> = {
  * bug this block fixes: a display string is not a stable key, and copy.ts must not become
  * a second, driftable mapping from the same tag.
  */
-const attackHandProse: Record<'main' | 'off' | 'extra', string> = {
+export const attackHandProse: Record<'main' | 'off' | 'extra', string> = {
   main: 'main-hand white hits',
   off: 'off-hand white hits',
   extra: 'extra white hits',
@@ -138,14 +140,6 @@ export const simCopy = {
     if (rank !== 0) parts.push(`Rank ${rank}`);
     return parts.length === 0 ? '' : ` (${parts.join(', ')})`;
   },
-
-  // --- Lane W1 (persona round 1: results, labels, weights) ---
-  // attackHandName and attackHandProse are declared above, beside KIND_TITLES: this
-  // object's own actionAliases (further down) reads them too, and a property here cannot
-  // reference a sibling property while this literal is still being built.
-  attackHandName,
-  attackHandProse,
-  // --- Lane W1 (persona round 1: results, labels, weights) ---
 
   // --- Task 11: the island store's own failures, and the character strip and source
   // switcher's copy. ---
@@ -259,12 +253,12 @@ export const simCopy = {
   noDamage: 'This run recorded no damage; the rotation did not fire.',
   /**
    * Resolved names a sentence says differently from a table, for the "other" actions that
-   * are not the tagged auto-attack (that one is attackHandProse, above, read straight off
-   * the tag). The engine's own OtherAction names arrive as "Attack" (only its untagged
-   * form -- a synthetic fixture's placeholder, since a real fight always tags the swing)
-   * and "Shoot", and a sentence about damage calls those white hits and auto shots. This is
-   * copy, not a mapping of engine ids -- there is no engine table in web/ and there must
-   * not be.
+   * are not the tagged auto-attack (that one is attackHandProse, exported near the top of
+   * this file, read straight off the tag). The engine's own OtherAction names arrive as
+   * "Attack" (only its untagged form -- a synthetic fixture's placeholder, since a real
+   * fight always tags the swing) and "Shoot", and a sentence about damage calls those
+   * white hits and auto shots. This is copy, not a mapping of engine ids -- there is no
+   * engine table in web/ and there must not be.
    */
   proseNames: {
     Attack: 'white hits',

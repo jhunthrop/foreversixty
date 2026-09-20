@@ -21,7 +21,7 @@
 // the names file is still loading, and in compare mode, where a logged fight's rows carry
 // real display names from the combat log and must pass through untouched.
 import { dataUrl, fetchJson } from '../planner/load';
-import { simCopy } from './copy';
+import { attackHandName, simCopy } from './copy';
 import { humanise } from './humanise';
 
 /**
@@ -109,7 +109,7 @@ export function resolveActionName(key: string, names: ActionNames | null): strin
   if (parsed.kind === 'other') {
     if (parsed.label === 'attack') {
       const hand = attackHand(parsed.tag);
-      if (hand !== null) return simCopy.attackHandName[hand];
+      if (hand !== null) return attackHandName[hand];
     }
     return humanise(parsed.label) + simCopy.actionVariant(parsed.tag, parsed.rank);
   }

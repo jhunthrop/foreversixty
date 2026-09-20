@@ -7,7 +7,7 @@
 // SimResult keeps the engine's keys, because that is what POST /v1/sims saves and what a
 // compare against a later engine version matches on.
 import { attackHand, parseActionKey, resolveActionName, type ActionNames } from './action-names';
-import { simCopy } from './copy';
+import { attackHandProse, simCopy } from './copy';
 import type { Actor, Summary } from '../report/types';
 
 /**
@@ -22,7 +22,7 @@ function prose(key: string, resolvedName: string): string {
   const parsed = parseActionKey(key);
   if (parsed?.kind === 'other' && parsed.label === 'attack') {
     const hand = attackHand(parsed.tag);
-    if (hand !== null) return simCopy.attackHandProse[hand];
+    if (hand !== null) return attackHandProse[hand];
   }
   return simCopy.proseNames[resolvedName] ?? resolvedName;
 }
