@@ -16,7 +16,7 @@ const FS1_CODES = [
   ['version 1, no gear', 'FS1:1.60.1.69893:mage:gnome:0/0/5500000000000000005:'],
   ['version 2, enchant and suffix on a slot', 'FS1:1.60.1.69893:rogue:orc:0/553/0:main_hand=19865:2564:1825,off_hand=17075'],
   ['version 2, bags and bank', 'FS1:1.60.1.69893:warrior:tauren:5/0/0:head=12640|bags=11726,19865:2564|bank=12640,11726'],
-  ['version 2, a named set and a named loadout', 'FS1:1.60.1.69893:druid:night-elf:5/0/0:head=12640|sets=Tank=head=12640|loadouts=Deep%20Feral=0/553/0'],
+  ['version 2, a named set and a named loadout', 'FS1:1.60.1.69893:druid:night-elf:5/0/0:head=12640|sets=Tank%3Bmain=head=12640|loadouts=Deep%20Feral=0/553/0'],
   ['version 2, professions', 'FS1:1.60.1.69893:priest:human:0/0/5:|professions=enchanting,tailoring'],
   ['version 2, an unknown section is ignored and named', 'FS1:1.60.1.69893:priest:human:0/0/5:|pets=1,2'],
 ];

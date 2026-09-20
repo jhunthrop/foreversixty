@@ -179,7 +179,7 @@
     },
     {
       "name": "version 2, a named set and a named loadout",
-      "code": "FS1:1.60.1.69893:druid:night-elf:5/0/0:head=12640|sets=Tank=head=12640|loadouts=Deep%20Feral=0/553/0",
+      "code": "FS1:1.60.1.69893:druid:night-elf:5/0/0:head=12640|sets=Tank%3Bmain=head=12640|loadouts=Deep%20Feral=0/553/0",
       "build": {
         "dataBuild": "1.60.1.69893",
         "classSlug": "druid",
@@ -205,7 +205,7 @@
         "bank": [],
         "sets": [
           {
-            "name": "Tank",
+            "name": "Tank;main",
             "gear": [
               {
                 "slot": "head",
