@@ -1,8 +1,8 @@
 ---
-title: 'The simulator now runs Top Gear, Droptimizer, talent compare and stat weights.'
+title: 'The simulator now runs Top Gear, Droptimizer, talent compare and stat weights for damage specs.'
 date: 2026-09-20
 kind: site
-note: 'Every spec is still "not yet" measured, and raid drops are thin until the re-itemised tier is curated.'
+note: 'Damage specs only, not healers or tanks. Every one of those specs is still "not yet" measured, and raid drops are thin until the re-itemised tier is curated.'
 updated: 2026-09-20
 confidence: confirmed
 sources:
@@ -11,7 +11,7 @@ sources:
     kind: site
 ---
 
-/sim gained three tools beside the plain run. Top Gear ranks gear and consumable combinations against your current set, one slot or several at once. Droptimizer ranks every drop from the bosses you pick, boss by boss. Talent compare ranks loadouts against each other, your own saved builds included. A fourth tool, stat weights, turns a finished run into the per-point numbers some addons ask for, with the same caution attached everywhere it appears on this site: it holds near the gear you have now and stops holding the moment a set bonus, a proc, or a cap changes. Sim the actual items in Top Gear instead, when you can.
+/sim gained three tools for damage specs, beside the plain run. Top Gear ranks gear and consumable combinations against your current set, one slot or several at once. Droptimizer ranks every drop from the bosses you pick, boss by boss. Talent compare ranks loadouts against each other, your own saved builds included. A fourth tool, stat weights, turns a finished run into the per-point numbers some addons ask for, with the same caution attached everywhere it appears on this site: it holds near the gear you have now and stops holding the moment a set bonus, a proc, or a cap changes. Sim the actual items in Top Gear instead, when you can.
 
 Every tool shares what a plain run already had: fight style, three precision levels, the full buff panel, and the same sample log on /sim. All four run free in the browser; a run past the browser lane's own cap runs on the server instead, for premium accounts.
 
