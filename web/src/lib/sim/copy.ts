@@ -6,6 +6,21 @@
 //
 // Voice, per design/DESIGN-SYSTEM.md: reference, not pitch. State the number and stop.
 
+/**
+ * One name per sim kind, for every site that names one: each tool page's `<title>`, `<h1>`
+ * and `<noscript>`, the history filter and its rows, the saved page and the unfurl. A
+ * shared constant rather than a key on each export below, so a kind cannot end up called
+ * two things in two places -- "Talents" in the history and "Talent compare" on the page it
+ * links to (final whole-branch review, Minor 3). `run` is not here: a plain run's title is
+ * its own DPS-led sentence, not a kind word.
+ */
+export const KIND_TITLES = {
+  gear: 'Top Gear',
+  talents: 'Talent compare',
+  drops: 'Droptimizer',
+  weights: 'Stat weights',
+} as const;
+
 export const simCopy = {
   /** Network and API failures. */
   saveFailed: 'The sim could not be saved; try again.',
@@ -321,10 +336,7 @@ export const simCopy = {
   kindLabel: {
     all: 'Everything',
     run: 'Sim',
-    gear: 'Top Gear',
-    talents: 'Talents',
-    drops: 'Droptimizer',
-    weights: 'Stat weights',
+    ...KIND_TITLES,
   } as Record<string, string>,
   historyFilter: 'Show',
 
@@ -518,16 +530,16 @@ export const simCopy = {
  */
 export const bulkCopy = {
   // --- page titles and the one-line standfirst under each ---
-  gearTitle: 'Top Gear',
+  gearTitle: KIND_TITLES.gear,
   gearIntro:
     'Tick the items, enchants, talents and sets you want tried. Every valid combination is simulated and ranked against what you have on.',
-  talentsTitle: 'Talent compare',
+  talentsTitle: KIND_TITLES.talents,
   talentsIntro:
     'Your build against every other build you have, ranked. Gear is locked to what you are wearing, so the only thing that changes is the tree.',
-  dropsTitle: 'Droptimizer',
+  dropsTitle: KIND_TITLES.drops,
   dropsIntro:
     'Pick where you are going. Every item those bosses drop is simulated one at a time against your current set, and the upgrades are listed by boss.',
-  weightsTitle: 'Stat weights',
+  weightsTitle: KIND_TITLES.weights,
   weightsIntro: 'What one point of each stat is worth, for the addons that ask for a number.',
   weightsWarning:
     'A stat weight is a straight-line guess at something that is not a straight line: it holds near the gear you have now and stops holding as soon as a set bonus, a proc or a hit cap changes. Sim the actual items in Top Gear instead. These are here because addons want them.',
@@ -581,6 +593,13 @@ export const bulkCopy = {
   noCandidates: 'Nothing ticked yet. Tick an item, a talent build or a set.',
   /** validateBulk's rule 1: something is ticked, just on a slot that is locked. */
   lockedHasCandidate: 'A locked slot cannot carry a candidate. Untick it or unlock the slot.',
+  /**
+   * validateBulk's rule 2, second half: a `talents` request carries loadouts and NO
+   * candidates. The locked-slot rule cannot stand in for this one -- a ring, trinket or
+   * weapon candidate's `Candidate.Slot` is `""` (contract 1.3), and `""` is never in
+   * `locked` -- so a multi-slot candidate would otherwise reach the engine.
+   */
+  talentsHasCandidate: 'A talent compare changes only the tree. Untick every item candidate.',
   bagsNeedAddon: 'Your bags and bank come from the addon export; this character was loaded another way.',
   tryEach: 'Try each',
   consumableCandidates: 'Try each of these as a candidate rather than a setting.',
@@ -658,6 +677,12 @@ export const bulkCopy = {
    * not a name a player should ever read verbatim.
    */
   offHandEmptied: 'Off-hand emptied',
+  /**
+   * A bulk unfurl's headline when the run ranked nothing, matching the API's own headline
+   * rule (contract 10.6) rather than inventing a second wording for the same state. It
+   * reads mid-sentence, so it is lower case.
+   */
+  noCombinations: 'no combinations',
   withinError: 'Within error of the leader',
   withinErrorNote:
     'These runs are too close to separate at this many iterations. Run again at a higher precision to tell them apart.',

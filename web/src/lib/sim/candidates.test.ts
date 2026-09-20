@@ -15,6 +15,7 @@ import {
   validateBulk,
   type CandidateRow,
 } from './candidates';
+import { bulkCopy } from './copy';
 import { KEEP_CURRENT_ENCHANT, NO_ENCHANT } from './enchants';
 import type { Item } from '../planner/types';
 
@@ -200,6 +201,27 @@ describe('buildBulkSpec and validateBulk', () => {
       cap: 400,
     });
     expect(validateBulk(empty)).not.toBeNull();
+  });
+
+  it('refuses a hand-built talents spec carrying a multi-slot candidate', () => {
+    // The locked-slot rule cannot catch this one: a candidate fitting more than one slot
+    // carries `Candidate.Slot === ""` (contract 1.3) and `""` is never in `locked`. Only
+    // the "talents mode has NO candidates" rule refuses it (final whole-branch review,
+    // Important 4).
+    const spec = buildBulkSpec({
+      mode: 'talents',
+      rows: [],
+      locked: ['head', 'main_hand'],
+      loadouts: [{ name: 'A', talents: '0-1-' }],
+      sets: [],
+      precision: 'normal',
+      cap: 400,
+    });
+    const withRing = {
+      ...spec,
+      candidates: [{ slot: '', item_id: 19325, origin: 'bag' }],
+    };
+    expect(validateBulk(withRing)).toBe(bulkCopy.talentsHasCandidate);
   });
 
   it('refuses a drops spec whose candidates are not all from a drop', () => {

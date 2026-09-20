@@ -213,6 +213,12 @@ export function validateBulk(spec: BulkSpec): string | null {
     return bulkCopy.lockedHasCandidate;
   }
   if (spec.mode === 'talents') {
+    // Both halves of the rule. The locked-slot check above cannot stand in for the second:
+    // a candidate fitting more than one slot carries `Candidate.Slot === ""` (contract 1.3
+    // -- rings, trinkets, weapons), and `""` can never appear in `locked`, so such a
+    // candidate reached the engine on a talents request (final whole-branch review,
+    // Important 4).
+    if (spec.candidates.length > 0) return bulkCopy.talentsHasCandidate;
     return (spec.talents ?? []).length > 0 ? null : bulkCopy.noCandidates;
   }
   if (spec.mode === 'drops') {

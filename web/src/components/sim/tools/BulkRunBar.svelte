@@ -19,6 +19,16 @@
 
   let { store }: { store: BulkStore } = $props();
 
+  /**
+   * The weights tool sends no `bulk` block at all (bulk-store.svelte.ts's `mode` is null
+   * for it), so `recount` never runs and `combinations` never leaves null -- the count
+   * would read "Counting combinations…" for as long as the page is open. Precision is dead
+   * there too: `buildRequest` sends `PRECISION_ITERATIONS.normal` for a weights run and
+   * ignores `precision` entirely, so the select and its note would describe stages this
+   * page does not have (final whole-branch review, Important 2). The run button, the cap
+   * notice, the lane switch and the drawer are shared by all four tools and stay.
+   */
+  const combinationTool = $derived(store.tool !== 'weights');
   const running = $derived(store.phase === 'running' || store.serverRunning);
   const countLabel = $derived(
     store.combinations === null ? bulkCopy.combinationsCounting : bulkCopy.combinations(store.combinations),
@@ -42,24 +52,26 @@
   data-testid="sim-run-bulk-bar"
 >
   <div class="flex flex-wrap items-center gap-4">
-    <span class="tabular text-strong font-mono text-[14px]" data-testid="sim-combo-count">
-      {countLabel}
-    </span>
+    {#if combinationTool}
+      <span class="tabular text-strong font-mono text-[14px]" data-testid="sim-combo-count">
+        {countLabel}
+      </span>
 
-    <label class="text-muted flex items-center gap-2 text-[12px]">
-      {bulkCopy.precisionLabel}
-      <select
-        data-testid="sim-precision"
-        class="border-line-warm rounded-control bg-bg text-text h-11 border px-2 text-[14px]"
-        disabled={running}
-        value={store.precision}
-        onchange={(event) => store.setPrecision(event.currentTarget.value as Precision)}
-      >
-        {#each BULK_PRECISIONS as precision (precision)}
-          <option value={precision}>{PRECISION_LABELS[precision]}</option>
-        {/each}
-      </select>
-    </label>
+      <label class="text-muted flex items-center gap-2 text-[12px]">
+        {bulkCopy.precisionLabel}
+        <select
+          data-testid="sim-precision"
+          class="border-line-warm rounded-control bg-bg text-text h-11 border px-2 text-[14px]"
+          disabled={running}
+          value={store.precision}
+          onchange={(event) => store.setPrecision(event.currentTarget.value as Precision)}
+        >
+          {#each BULK_PRECISIONS as precision (precision)}
+            <option value={precision}>{PRECISION_LABELS[precision]}</option>
+          {/each}
+        </select>
+      </label>
+    {/if}
 
     <button
       type="button"
@@ -82,7 +94,9 @@
     {/if}
   </div>
 
-  <p class="text-muted text-[12px]">{bulkCopy.precisionNote[store.precision]}</p>
+  {#if combinationTool}
+    <p class="text-muted text-[12px]">{bulkCopy.precisionNote[store.precision]}</p>
+  {/if}
 
   {#if store.cap === LOW_CORE_CAP}
     <p class="text-muted text-[12px]" data-testid="sim-low-core">{bulkCopy.lowCoreNote(store.cap)}</p>

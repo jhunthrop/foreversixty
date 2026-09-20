@@ -532,7 +532,12 @@ describe('talent compare', () => {
     await s.run();
     const bulk = (s.result as BulkResult).request.bulk!;
     expect(bulk.mode).toBe('talents');
+    // The two halves of validateBulk's talents rule, as they actually reach the wire: every
+    // gear slot locked, and not one candidate -- an item ticked before the tool was opened
+    // (addSearchItem above) is dropped rather than sent (final whole-branch review,
+    // Important 4).
     expect(bulk.candidates).toEqual([]);
+    expect(bulk.locked).toEqual(expect.arrayContaining(['head', 'main_hand', 'finger1']));
     expect(bulk.talents).toEqual([{ name: 'Deep Fury', talents: '0-5530515-' }]);
     s.dispose();
   });

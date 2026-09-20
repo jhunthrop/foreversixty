@@ -2,6 +2,7 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { expect, test, type Page } from '@playwright/test';
+import { bulkCopy } from '../../src/lib/sim/copy';
 
 const activeBuild = JSON.parse(
   readFileSync(path.join(import.meta.dirname, '..', '..', 'src', 'data', 'active-build.json'), 'utf8'),
@@ -20,8 +21,11 @@ test('the page opens with the warning, above everything else', async ({ page }) 
   await page.goto('/sim/weights');
   const warning = page.getByTestId('sim-weights-warning');
   await expect(warning).toBeVisible();
-  await expect(warning).toContainText('not a straight line');
-  await expect(warning.getByRole('link', { name: /Top Gear/i })).toHaveAttribute('href', '/sim/gear');
+  await expect(warning).toContainText(bulkCopy.weightsWarning);
+  await expect(warning.getByRole('link', { name: bulkCopy.weightsWarningLink })).toHaveAttribute(
+    'href',
+    '/sim/gear',
+  );
 });
 
 test('the stat picker defaults to the spec’s reference stat, first and ticked', async ({ page }) => {
@@ -86,7 +90,7 @@ test('a run renders a weight per stat with an error bar and a Pawn string', asyn
   }
   await expect(page.getByTestId('sim-pawn')).toContainText('( Pawn: v1:');
   await page.getByTestId('sim-pawn-copy').click();
-  await expect(page.getByTestId('sim-pawn-copy')).toHaveText('Copied');
+  await expect(page.getByTestId('sim-pawn-copy')).toHaveText(bulkCopy.weightsCopied);
 });
 
 test('a weights run never shows a DPS figure on the progress line', async ({ page }) => {
@@ -104,4 +108,15 @@ test('there is no slot grid, no source picker and no named sets', async ({ page 
   await expect(page.getByTestId('sim-slot-grid')).toHaveCount(0);
   await expect(page.getByTestId('sim-source-picker')).toHaveCount(0);
   await expect(page.getByTestId('sim-named-sets')).toHaveCount(0);
+});
+
+test('the run bar shows no combination count and no precision control', async ({ page }) => {
+  // Important 2, final whole-branch review: the weights tool sends no `bulk` block, so the
+  // count never resolves (it would read "Counting combinations…" forever) and `precision`
+  // is ignored by `buildRequest` entirely. Neither control belongs on this page. The run
+  // bar itself is still here -- it carries the run button the tests above press.
+  await loadWeights(page);
+  await expect(page.getByTestId('sim-run-bulk-bar')).toBeVisible();
+  await expect(page.getByTestId('sim-combo-count')).toHaveCount(0);
+  await expect(page.getByTestId('sim-precision')).toHaveCount(0);
 });
