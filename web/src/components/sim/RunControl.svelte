@@ -10,11 +10,13 @@
   import { simCopy } from '../../lib/sim/copy';
   import { percentLabel } from '../../lib/sim/details';
   import { LANE_ITERATION_CEILING, PRECISIONS, type Lane, type PrecisionId } from '../../lib/sim/precision';
+  import { isSimulatedSpec, specDisplayName } from '../../lib/sim/spec-label';
   import type { SimPhase } from '../../lib/sim/store.svelte';
   import type { Estimate } from '../../lib/sim/types';
   import { engineLabel } from '../../lib/sim/version';
 
   let {
+    spec,
     phase,
     estimate,
     iterationsDone,
@@ -34,6 +36,10 @@
     onserver,
     onrerun,
   }: {
+    /** The loaded character's spec. Task 3 (healer review): a healer or tank spec disables
+     *  the button and shows the honest line beside it instead of the run this control
+     *  would otherwise offer. */
+    spec: string;
     phase: SimPhase;
     estimate: Estimate;
     iterationsDone: number;
@@ -79,6 +85,7 @@
   const running = $derived(phase === 'running');
   const loadingEngine = $derived(phase === 'loading-engine');
   const hasFigure = $derived(estimate.mean > 0);
+  const simulated = $derived(isSimulatedSpec(spec));
 
   const figure = $derived(hasFigure ? Math.round(estimate.mean).toLocaleString('en-US') : '—');
   const band = $derived(
@@ -119,7 +126,8 @@
     disabled={loadingEngine ||
       phase === 'loading-character' ||
       (racePending && !running) ||
-      (serverRunning && !running)}
+      (serverRunning && !running) ||
+      (!simulated && !running)}
     title={racePending && !running ? simCopy.pickRace : undefined}
     onclick={() => (running ? onstop() : onrun())}
     data-testid="sim-run-button"
@@ -187,6 +195,12 @@
       >
     {/if}
   </div>
+
+  {#if !simulated}
+    <p class="text-strong order-last w-full text-[13px]" data-testid="sim-run-not-simulated">
+      {simCopy.runNotSimulated(specDisplayName(spec))}
+    </p>
+  {/if}
 
   {#if precisionId === 'target-error'}
     <p class="text-muted order-last w-full text-[12px]" data-testid="sim-target-error">

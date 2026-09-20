@@ -631,6 +631,7 @@
           </p>
         {/if}
         <RunControl
+          spec={store.character.spec}
           phase={store.phase}
           estimate={store.estimate}
           iterationsDone={store.iterationsDone}
