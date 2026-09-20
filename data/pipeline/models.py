@@ -286,6 +286,19 @@ class SpecRecord(BaseModel):
     #: emitted key order is the generated files' only compatibility
     #: surface, so new fields go on the end and existing ones never move.
     reference_stat: str
+    #: The stats that actually move this spec's damage or healing - the
+    #: closed list `/sim/weights` offers, so a warrior is never asked
+    #: about spirit and a healer never sees unexplained zeros for
+    #: expertise. Follows reference_stat's own path: read here, checked
+    #: against the engine's vocabulary, emitted to sim/specs/specs.go's
+    #: generated Spec.WeightStats. specs.py's load_specs enforces the
+    #: two content rules a physical/caster split can check without a
+    #: per-spec table: reference_stat is always a member, and every id
+    #: is a known stat. The full physical-vs-caster forbidden-pair rule
+    #: is pinned by a Go test over specs.All (sim/specs/specs_test.go),
+    #: which is what actually documents which stats belong to which
+    #: kind of spec.
+    weight_stats: list[str]
 
 
 class PhaseBoundary(BaseModel):
