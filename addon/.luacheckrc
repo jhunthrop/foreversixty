@@ -18,7 +18,7 @@ read_globals = {
 	"UnitClass", "UnitRace", "UnitLevel", "UnitName", "GetRealmName", "GetCurrentRegion",
 	"GetProfessions", "GetProfessionInfo", "GetBuildInfo",
 	-- UI
-	"CreateFrame", "UIParent", "GameTooltip", "SlashCmdList", "StaticPopupDialogs",
+	"CreateFrame", "UIParent", "GameTooltip", "StaticPopupDialogs",
 	"InterfaceOptions_AddCategory", "Settings",
 	"NUM_BANKGENERIC_SLOTS", "NUM_BANKBAGSLOTS", "BANK_CONTAINER",
 	"TalentFrame", "PlayerTalentFrame",
@@ -28,7 +28,10 @@ read_globals = {
 	"ForeverSixtyInbox",
 }
 
-globals = { "SLASH_FOREVERSIXTY1", "SLASH_FOREVERSIXTY2", "ForeverSixtyDB" }
+-- SlashCmdList is a table the client owns; Options.register sets a field on
+-- it (SlashCmdList["FOREVERSIXTY"] = ...), which luacheck flags as writing a
+-- read-only global's field unless it is listed here rather than above.
+globals = { "SLASH_FOREVERSIXTY1", "SLASH_FOREVERSIXTY2", "ForeverSixtyDB", "SlashCmdList" }
 
 files["tests/"] = {
 	std = "+busted",
