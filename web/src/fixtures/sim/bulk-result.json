@@ -1,0 +1,164 @@
+{
+  "engine_version": "edc0c8e9a",
+  "request": {
+    "engine_version": "edc0c8e9a",
+    "spec": "warrior-fury",
+    "source": { "kind": "addon", "ref": "", "captured_at": "2026-09-19T09:00:00Z" },
+    "character": {
+      "name": "Fury",
+      "race": "orc",
+      "class": "warrior",
+      "level": 60,
+      "talents": "0-5530515-",
+      "gear": [
+        { "slot": "head", "item_id": 12640 },
+        { "slot": "main_hand", "item_id": 12784 },
+        { "slot": "finger1", "item_id": 19325 }
+      ],
+      "buffs": ["battle_shout"],
+      "consumes": []
+    },
+    "encounter": {
+      "duration_sec": 180,
+      "variation": 0.2,
+      "targets": 1,
+      "execute_ratio": 0.25,
+      "profile": ""
+    },
+    "iterations": 3000,
+    "random_seed": 0,
+    "bulk": {
+      "mode": "gear",
+      "candidates": [
+        { "slot": "head", "item_id": 16963, "origin": "bag" },
+        { "slot": "shoulder", "item_id": 16966, "origin": "bank" },
+        { "slot": "", "item_id": 13968, "origin": "search" },
+        { "slot": "", "item_id": 19325, "origin": "equipped" }
+      ],
+      "talents": [{ "name": "Deep Fury", "talents": "0-5530515-" }],
+      "sets": [
+        {
+          "name": "Battlegear of Wrath",
+          "gear": [
+            { "slot": "head", "item_id": 16963 },
+            { "slot": "shoulder", "item_id": 16966 }
+          ]
+        }
+      ],
+      "consumables": [["flask_of_supreme_power", "elixir_of_the_mongoose"]],
+      "locked": [],
+      "precision": "fast",
+      "cap": 400
+    }
+  },
+  "lane": "browser",
+  "dps": { "mean": 1502.4, "stddev": 210.5, "error": 3.84, "min": 900.1, "max": 2100.7 },
+  "iterations_run": 3000,
+  "duration_ms": 8420,
+  "summary": {
+    "engine_version": "edc0c8e9a",
+    "fight_index": 0,
+    "duration_ms": 180000,
+    "damage_done": [],
+    "damage_taken": [],
+    "healing": [],
+    "healing_taken": [],
+    "deaths": [],
+    "auras": [],
+    "casts": [],
+    "interrupts": [],
+    "dispels": [],
+    "resources": [],
+    "threat": [],
+    "combatants": [],
+    "roster": []
+  },
+  "equipped": { "mean": 1461.2, "stddev": 208.9, "error": 3.81, "min": 880.4, "max": 2044.9 },
+  "stages": [
+    { "iterations": 100, "combos": 6 },
+    { "iterations": 1000, "combos": 4 },
+    { "iterations": 3000, "combos": 3 }
+  ],
+  "combos": [
+    {
+      "substitutions": [
+        { "kind": "item", "slot": "head", "item_id": 16963, "origin": "bag", "name": "Helm of Wrath" },
+        {
+          "kind": "item",
+          "slot": "shoulder",
+          "item_id": 16966,
+          "origin": "bank",
+          "name": "Spaulders of Wrath"
+        }
+      ],
+      "dps": { "mean": 1502.4, "stddev": 210.5, "error": 3.84, "min": 900.1, "max": 2100.7 },
+      "delta": { "mean": 41.2, "stddev": 0, "error": 5.41, "min": 0, "max": 0 },
+      "group": 0
+    },
+    {
+      "substitutions": [
+        { "kind": "item", "slot": "head", "item_id": 16963, "origin": "bag", "name": "Helm of Wrath" }
+      ],
+      "dps": { "mean": 1499.8, "stddev": 209.7, "error": 3.83, "min": 899.2, "max": 2098.1 },
+      "delta": { "mean": 38.6, "stddev": 0, "error": 5.4, "min": 0, "max": 0 },
+      "group": 0
+    },
+    {
+      "substitutions": [
+        {
+          "kind": "item",
+          "slot": "shoulder",
+          "item_id": 16966,
+          "origin": "bank",
+          "name": "Spaulders of Wrath"
+        }
+      ],
+      "dps": { "mean": 1480.1, "stddev": 209.1, "error": 3.82, "min": 890.3, "max": 2070.6 },
+      "delta": { "mean": 18.9, "stddev": 0, "error": 5.39, "min": 0, "max": 0 },
+      "group": 1
+    },
+    {
+      "substitutions": [
+        {
+          "kind": "item",
+          "slot": "trinket1",
+          "item_id": 13968,
+          "origin": "search",
+          "name": "Snakestone Charm"
+        }
+      ],
+      "dps": { "mean": 1474.5, "stddev": 208.8, "error": 3.81, "min": 888.7, "max": 2061.2 },
+      "delta": { "mean": 13.3, "stddev": 0, "error": 5.39, "min": 0, "max": 0 },
+      "group": 1
+    },
+    {
+      "substitutions": [
+        {
+          "kind": "item",
+          "slot": "finger2",
+          "item_id": 19325,
+          "origin": "equipped",
+          "name": "Band of Accuria"
+        }
+      ],
+      "dps": { "mean": 1463.0, "stddev": 208.9, "error": 3.81, "min": 881.0, "max": 2046.3 },
+      "delta": { "mean": 1.8, "stddev": 0, "error": 5.38, "min": 0, "max": 0 },
+      "group": 2
+    },
+    {
+      "substitutions": [{ "kind": "talents", "name": "Deep Fury", "talents": "0-5530515-" }],
+      "dps": { "mean": 1459.4, "stddev": 208.4, "error": 3.8, "min": 879.6, "max": 2041.0 },
+      "delta": { "mean": -1.8, "stddev": 0, "error": 5.38, "min": 0, "max": 0 },
+      "group": 2
+    },
+    {
+      "substitutions": [
+        { "kind": "set", "name": "Battlegear of Wrath" },
+        { "kind": "consumes", "name": "flask_of_supreme_power, elixir_of_the_mongoose" }
+      ],
+      "dps": { "mean": 1455.0, "stddev": 207.9, "error": 3.79, "min": 876.2, "max": 2034.8 },
+      "delta": { "mean": -6.2, "stddev": 0, "error": 5.38, "min": 0, "max": 0 },
+      "group": 2
+    }
+  ]
+}

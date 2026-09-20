@@ -1,21 +1,25 @@
 // web/src/lib/sim/engine.ts
-// The four functions our sim.wasm exports, and the two implementations of them: the
-// checked-in fake, and the real one loaded from /_sim/<ENGINE_VERSION>/.
+// The functions our sim.wasm exports, and the two implementations of them: the checked-in
+// fake, and the real one loaded from /_sim/<ENGINE_VERSION>/. Contract 4 names four
+// (simRun/simSplit/simCombine/simAbort); contract 10.2 adds simNeedsMore, simValidate and
+// simCount; this lane (sim-parity-web-b, task 3) adds simPlan, simRank and simWeights for
+// the bulk and weights tools.
 //
-// All four take and return JSON strings, never bytes. The contract's rule is that no
+// All of them take and return JSON strings, never bytes. The contract's rule is that no
 // protobuf crosses a lane boundary: we build sim.wasm ourselves from the site's sim/ Go
 // module, which imports the engine as a library, so sim/request and sim/adapter both run
 // INSIDE the wasm. The browser hands it a SimRequest and gets back a SimResult whose
 // summary.Summary was built by the same Go code the server lane runs. There is therefore no
 // protobuf toolchain in web/, no request encoder, and no TypeScript copy of the adapter.
 //
-// The engine's own thirteen js.Global().Set entrypoints sit behind these four and are not
-// ours to call; this interface does not name them, which is the enforcement.
+// The engine's own js.Global().Set entrypoints sit behind these and are not ours to call;
+// this interface does not name them, which is the enforcement.
 //
 // PUBLIC_SIM_ENGINE is read through import.meta.env so both the Astro build and the
 // standalone island build inline it (vite.island.config.ts allow-lists the PUBLIC_ prefix).
 // It defaults to 'fake' because sim.wasm does not exist yet; web.yml sets it to 'wasm' once
 // CI builds an artifact for the pinned sha.
+import type { StageRequests } from './bulk-types';
 import { ENGINE_VERSION, engineAssetUrl } from './version';
 
 export type EngineMode = 'fake' | 'wasm';
@@ -33,6 +37,20 @@ export interface EngineModule {
   simCombine(resultsJSON: string): string;
   /** Returns `{"aborted": boolean}` JSON -- false means no run was registered under that id. */
   simAbort(callbackId: string): string;
+  /**
+   * The bulk planner's first stage (contract 4). Returns a StageRequests JSON whose
+   * `requests[0]` is always the equipped set, or the structured cap refusal
+   * `{"error":"cap_exceeded","cap":n,"combinations":n}` -- the one error shape that is not
+   * a bare `{"error": "..."}`, because the page has to say by how much the list overran.
+   */
+  simPlan(requestJSON: string): string;
+  /**
+   * Scores a finished stage. Returns `{"next": stage}` or `{"result": SimResult}`.
+   * `resultsJSON` is an array of SimResult in the same order as the stage's requests.
+   */
+  simRank(requestJSON: string, stageJSON: string, resultsJSON: string): string;
+  /** A weights run, progress through the same `simProgress` callback simRun uses. */
+  simWeights(requestJSON: string, callbackId: string): Promise<string>;
   onProgress(handler: ProgressHandler): void;
   /**
    * Whether a target-error run has another step to do. The decision is the engine's, not
@@ -73,6 +91,13 @@ export interface RequestValidation {
 export type CountAnswer =
   { ok: true; combinations: number } | { ok: false; cap: number; combinations: number };
 
+/**
+ * `simPlan`'s two answers. The refusal shape is identical to `CountAnswer`'s -- both wrap
+ * sim/bulk's ErrCapExceeded -- so it is reused rather than retyped; only the success shape
+ * differs (a `StageRequests`, not a bare count).
+ */
+export type PlanAnswer = { ok: true; stage: StageRequests } | Extract<CountAnswer, { ok: false }>;
+
 interface GoGlue {
   new (): { importObject: WebAssembly.Imports; run(instance: WebAssembly.Instance): Promise<void> };
 }
@@ -83,6 +108,9 @@ type WasmGlobals = {
   simSplit?: (requestJSON: string, n: number) => string;
   simCombine?: (resultsJSON: string) => string;
   simAbort?: (callbackId: string) => string;
+  simPlan?: (requestJSON: string) => string;
+  simRank?: (requestJSON: string, stageJSON: string, resultsJSON: string) => string;
+  simWeights?: (requestJSON: string, callbackId: string) => Promise<string>;
   simNeedsMore?: (resultJSON: string, requestJSON: string) => string;
   simValidate?: (requestJSON: string) => string;
   simCount?: (requestJSON: string) => string;
@@ -93,12 +121,14 @@ type WasmGlobals = {
 };
 
 /**
- * simSplit, simCombine, simAbort, simNeedsMore and simValidate all fail the same way:
- * `{"error": "..."}` JSON instead of their success shape (main.go's errorJSON). simRun's
+ * simSplit, simCombine, simAbort, simNeedsMore, simValidate and simRank all fail the same
+ * way: `{"error": "..."}` JSON instead of their success shape (main.go's errorJSON). simRun's
  * failures are a full SimResult JSON with `.error` set instead (main.go's fail()), which the
- * caller already reads as a normal result, so this check does not apply there. simCount is
- * also excluded: its one error shape, `cap_exceeded`, is an answer carrying two numbers, not
- * a failure, so it is never passed through this function.
+ * caller already reads as a normal result, so this check does not apply there. simCount and
+ * simPlan are also excluded: their one error shape, `cap_exceeded`, is an answer carrying two
+ * numbers, not a failure, so it is never passed through this function. simWeights answers
+ * through the same `simProgress` callback and promise simRun uses, and is not unwrapped here
+ * either -- its own rejection is the failure signal.
  */
 export function unwrapOrThrow(json: string): string {
   const parsed: unknown = JSON.parse(json);
@@ -145,6 +175,13 @@ async function loadWasmEngine(version: string): Promise<EngineModule> {
     simSplit: (requestJSON, n) => unwrapOrThrow(globals.simSplit!(requestJSON, n)),
     simCombine: (resultsJSON) => unwrapOrThrow(globals.simCombine!(resultsJSON)),
     simAbort: (callbackId) => unwrapOrThrow(globals.simAbort!(callbackId)),
+    // simPlan and simCount are NOT run through unwrapOrThrow: `cap_exceeded` is a legal,
+    // structured answer the caller reads rather than a failure it throws on. Every other
+    // failure from them is still a bare `{"error": "..."}` and bulk-run.ts raises it.
+    simPlan: (requestJSON) => globals.simPlan!(requestJSON),
+    simRank: (requestJSON, stageJSON, resultsJSON) =>
+      unwrapOrThrow(globals.simRank!(requestJSON, stageJSON, resultsJSON)),
+    simWeights: (requestJSON, callbackId) => globals.simWeights!(requestJSON, callbackId),
     simNeedsMore: (resultJSON, requestJSON) => unwrapOrThrow(globals.simNeedsMore!(resultJSON, requestJSON)),
     simValidate: (requestJSON) => unwrapOrThrow(globals.simValidate!(requestJSON)),
     // No unwrapOrThrow: `cap_exceeded` carries two numbers the page renders.

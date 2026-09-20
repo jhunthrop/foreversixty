@@ -1,0 +1,61 @@
+{
+  "engine_version": "edc0c8e9a",
+  "request": {
+    "engine_version": "edc0c8e9a",
+    "spec": "warrior-fury",
+    "source": { "kind": "addon", "ref": "", "captured_at": "2026-09-19T09:00:00Z" },
+    "character": {
+      "name": "Fury",
+      "race": "orc",
+      "class": "warrior",
+      "level": 60,
+      "talents": "0-5530515-",
+      "gear": [{ "slot": "head", "item_id": 12640 }],
+      "buffs": ["battle_shout"],
+      "consumes": []
+    },
+    "encounter": {
+      "duration_sec": 180,
+      "variation": 0.2,
+      "targets": 1,
+      "execute_ratio": 0.25,
+      "profile": ""
+    },
+    "iterations": 3000,
+    "random_seed": 0,
+    "weights": {
+      "stats": ["strength", "agility", "attack_power", "crit", "hit", "melee_haste"],
+      "reference": "attack_power"
+    }
+  },
+  "lane": "browser",
+  "dps": { "mean": 1461.2, "stddev": 208.9, "error": 3.81, "min": 880.4, "max": 2044.9 },
+  "iterations_run": 3000,
+  "duration_ms": 12040,
+  "summary": {
+    "engine_version": "edc0c8e9a",
+    "fight_index": 0,
+    "duration_ms": 180000,
+    "damage_done": [],
+    "damage_taken": [],
+    "healing": [],
+    "healing_taken": [],
+    "deaths": [],
+    "auras": [],
+    "casts": [],
+    "interrupts": [],
+    "dispels": [],
+    "resources": [],
+    "threat": [],
+    "combatants": [],
+    "roster": []
+  },
+  "weights": [
+    { "stat": "attack_power", "weight": 1, "error": 0 },
+    { "stat": "strength", "weight": 2.14, "error": 0.06 },
+    { "stat": "crit", "weight": 21.7, "error": 0.9 },
+    { "stat": "hit", "weight": 27.3, "error": 1.2 },
+    { "stat": "agility", "weight": 1.32, "error": 0.05 },
+    { "stat": "melee_haste", "weight": 18.4, "error": 1.1 }
+  ]
+}

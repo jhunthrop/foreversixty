@@ -1,0 +1,5 @@
+[
+  { "id": 1, "name": "of the Bear", "stats": { "strength": 9, "stamina": 9 } },
+  { "id": 2, "name": "of the Tiger", "stats": { "agility": 9, "strength": 9 } },
+  { "id": 3, "name": "of Power", "stats": { "attack_power": 20 } }
+]

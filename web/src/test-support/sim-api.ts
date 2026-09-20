@@ -16,9 +16,13 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { vi } from 'vitest';
 import activeBuild from '../data/active-build.json';
+import phasesJson from '../data/phases.json';
+import fixtureBulkJson from '../fixtures/sim/bulk-result.json';
 import fixtureResultJson from '../fixtures/sim/result.json';
 import fixtureSpecsJson from '../fixtures/sim/specs.json';
+import fixtureWeightsJson from '../fixtures/sim/weights-result.json';
 import { FIXTURE_SIM_ID } from '../lib/report/shell-paths';
+import type { BulkResult, WeightsResult } from '../lib/sim/bulk-types';
 import type { SimResult, SpecFidelity } from '../lib/sim/types';
 
 const WEB_ROOT = path.resolve(import.meta.dirname, '..', '..');
@@ -60,6 +64,11 @@ export const TEST_API = 'https://api.test';
 
 export const fixtureResult = fixtureResultJson as unknown as SimResult;
 export const fixtureSpecs = fixtureSpecsJson as unknown as SpecFidelity[];
+export const fixtureBulkResult = fixtureBulkJson as unknown as BulkResult;
+export const fixtureWeightsResult = fixtureWeightsJson as unknown as WeightsResult;
+
+/** The signed-in player's one saved planner build, for Top Gear's talent candidates. */
+export const FIXTURE_MY_BUILD_ID = 'bld987654321';
 
 /** One route: the method, a pattern over the path, and what it answers. */
 export interface StubRoute {
@@ -192,6 +201,11 @@ export function createSimApi(): SimApiStub {
       pattern: /\/v1\/specs$/,
       respond: () => envelope({ specs: fixtureSpecs }),
     },
+    {
+      method: 'GET',
+      pattern: /\/v1\/phases$/,
+      respond: () => envelope({ phases: phasesJson }),
+    },
     // Three path segments, not one key: the contract spells this route the way the existing
     // character route is spelled. `source` is "addon" or "fight" -- Armory is not a source
     // yet. Shape matches `api/internal/sims/input_test.go`'s own fixtures, not a guess:
@@ -213,6 +227,36 @@ export function createSimApi(): SimApiStub {
           buffs: ['battle_shout', 'blessing_of_kings'],
           captured_at: '2026-09-14T09:40:00Z',
           source: 'addon',
+        }),
+    },
+    // GET /v1/builds?mine=1 -- the signed-in player's saved builds, for Top Gear's talent
+    // candidate list. Contract 10.6 adds `builds.user_id` and this route; the page still
+    // treats a failure as "no saved builds" and says so in one line, because an old
+    // deployment answers 404 and that is not worth an error banner. A narrower pattern than
+    // the /v1/builds/{id} route below, so it must come first: the path this route matches
+    // ("/v1/builds?mine=1") never has a "/" right after "builds", so the two never actually
+    // collide, but ordering it first keeps that true by construction rather than by accident.
+    {
+      method: 'GET',
+      pattern: /\/v1\/builds\?/,
+      respond: () =>
+        envelope({
+          rows: [
+            {
+              id: FIXTURE_MY_BUILD_ID,
+              class_id: 1,
+              race_id: 2,
+              tree_version: FIXTURE_DATA_BUILD,
+              point_order: [2001, 2001, 2001, 2001, 2001, 2002, 2002, 2002, 2002, 2002],
+              gear: {},
+              title: 'Deep Fury',
+              created_at: '2026-09-18T12:00:00Z',
+              views: 2,
+            },
+          ],
+          total: 1,
+          page: 1,
+          per_page: 100,
         }),
     },
     // fromPlannerBuild's GET /v1/builds/{id} read (Task 7). The class and race ids are the

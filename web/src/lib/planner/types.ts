@@ -163,6 +163,12 @@ export interface Item {
   stats: Partial<Record<StatKey, number>>;
   set_id: number | null;
   unique: boolean;
+  /**
+   * The random-suffix ids this item can roll (contract 6.3: "items.json rows gain
+   * `suffixes: [id, ...]` where the item rolls one"). Absent on a build the data lane has
+   * not regenerated, and on every item that rolls none.
+   */
+  suffixes?: number[];
 }
 
 export interface ItemFile {

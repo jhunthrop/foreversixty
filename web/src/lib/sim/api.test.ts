@@ -1,11 +1,21 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import type { CharacterPath } from '../characters';
-import { FIXTURE_SIM_ID, TEST_API, createSimApi, fixtureResult } from '../../test-support/sim-api';
+import {
+  FIXTURE_MY_BUILD_ID,
+  FIXTURE_SIM_ID,
+  TEST_API,
+  createSimApi,
+  envelope,
+  failure,
+  fixtureResult,
+} from '../../test-support/sim-api';
 import {
   PREMIUM_REQUIRED_STATUS,
   SimApiError,
   dispatchServerSim,
+  fetchBulkProgress,
+  fetchMyBuilds,
   fetchSim,
   fetchSimInput,
   fetchSimProgress,
@@ -80,6 +90,19 @@ describe('listMySims', () => {
   });
 });
 
+describe('fetchMyBuilds', () => {
+  it('reads the signed-in player’s saved builds', async () => {
+    const page = await fetchMyBuilds(1, TEST_API);
+    expect(page.rows[0].id).toBe(FIXTURE_MY_BUILD_ID);
+    expect(api.lastUrl()).toContain('/v1/builds?mine=1&page=1');
+  });
+
+  it('raises a SimApiError the caller can treat as "none" rather than as a page failure', async () => {
+    api.route({ method: 'GET', pattern: /\/v1\/builds\?/, respond: () => failure('nope', 404) });
+    await expect(fetchMyBuilds(1, TEST_API)).rejects.toBeInstanceOf(SimApiError);
+  });
+});
+
 describe('dispatchServerSim', () => {
   it('returns the id the premium lane will write to', async () => {
     const id = await dispatchServerSim(fixtureResult.request, TEST_API);
@@ -100,6 +123,21 @@ describe('fetchSimProgress', () => {
     const progress = await fetchSimProgress(FIXTURE_SIM_ID, TEST_API);
     expect(progress.state).toBe('running');
     expect(progress.iterations_done).toBe(4200);
+  });
+});
+
+describe('fetchBulkProgress', () => {
+  it('reads the same route, typed for the bulk stage columns', async () => {
+    api.route({
+      method: 'GET',
+      pattern: /\/v1\/sims\/([a-z2-7]{12})\/progress$/,
+      respond: () =>
+        envelope({ state: 'running', iterations_done: 1800, stage: 2, combos_done: 4, combos_total: 9 }),
+    });
+    const progress = await fetchBulkProgress(FIXTURE_SIM_ID, TEST_API);
+    expect(progress.stage).toBe(2);
+    expect(progress.combos_done).toBe(4);
+    expect(progress.combos_total).toBe(9);
   });
 });
 

@@ -14,8 +14,11 @@
 import { AccountError, requestEnvelope } from '../account/api';
 import type { CharacterPath } from '../characters';
 import { API_BASE_URL } from '../planner/config';
-import { simCopy } from './copy';
+import type { BuildRecord } from '../planner/types';
+import type { BulkServerProgress } from './bulk-types';
+import { bulkCopy, simCopy } from './copy';
 import type { KindFilter } from './history';
+import type { PhaseRow } from './phase';
 import type { SimInput, SimListPage, SimProgress, SimRequest, SimResult, SpecFidelity } from './types';
 
 export const PREMIUM_REQUIRED_STATUS = 402;
@@ -85,6 +88,21 @@ export function fetchSim(simId: string, apiBase: string = API_BASE_URL): Promise
   return call<SimResult>(`/v1/sims/${simId}`, apiBase, simCopy.loadFailed, { credentials: 'omit' });
 }
 
+/**
+ * The signed-in player's saved planner builds, for Top Gear's talent candidate list
+ * (contract 10.6: `builds.user_id` plus this route). Every failure -- a deployment older
+ * than the migration answers 404, and an empty list is not an error at all -- is the
+ * caller's to treat as "no saved builds" in one line (`bulkCopy.talentsSavedUnavailable`)
+ * rather than an error banner on a page whose other numbers are all correct; this function
+ * itself only throws the ordinary `SimApiError` every other read here throws.
+ */
+export function fetchMyBuilds(
+  page: number = 1,
+  apiBase: string = API_BASE_URL,
+): Promise<{ rows: BuildRecord[]; total: number; page: number; per_page: number }> {
+  return call(`/v1/builds?mine=1&page=${page}`, apiBase, simCopy.loadFailed);
+}
+
 export function listMySims(
   page: number = 1,
   apiBase: string = API_BASE_URL,
@@ -115,6 +133,21 @@ export function fetchSimProgress(simId: string, apiBase: string = API_BASE_URL):
   });
 }
 
+/**
+ * The same route `fetchSimProgress` reads, typed for a bulk job's three extra columns. The
+ * premium bulk dispatch itself is `dispatchServerSim` unchanged: a `BulkRequest` is a
+ * `SimRequest`, the API derives the kind from the body, and a second POST helper would be a
+ * second place for the CSRF header to go wrong.
+ */
+export function fetchBulkProgress(
+  simId: string,
+  apiBase: string = API_BASE_URL,
+): Promise<BulkServerProgress> {
+  return call<BulkServerProgress>(`/v1/sims/${simId}/progress`, apiBase, simCopy.loadFailed, {
+    credentials: 'omit',
+  });
+}
+
 export async function fetchSpecs(apiBase: string = API_BASE_URL): Promise<SpecFidelity[]> {
   const data = await call<{ specs: SpecFidelity[] }>('/v1/specs', apiBase, simCopy.specsFailed, {
     credentials: 'omit',
@@ -131,4 +164,17 @@ export async function fetchSpecs(apiBase: string = API_BASE_URL): Promise<SpecFi
 export function fetchSimInput(path: CharacterPath, apiBase: string = API_BASE_URL): Promise<SimInput> {
   const segments = [path.region, path.ruleset, path.slug].map(encodeURIComponent).join('/');
   return call<SimInput>(`/v1/characters/${segments}/sim-input`, apiBase, simCopy.characterFailed);
+}
+
+/**
+ * The content phase table (contract 10.6), straight off the wire. `phase.ts`'s own
+ * `fetchPhases` is the single call site: it wraps this in `BUILT_IN_PHASES`, the build-time
+ * fallback, so the gate always has an answer even when this call fails. No other module
+ * should call this directly -- read the phase table through `phase.ts` instead.
+ */
+export async function fetchPhases(apiBase: string = API_BASE_URL): Promise<PhaseRow[]> {
+  const data = await call<{ phases: PhaseRow[] }>('/v1/phases', apiBase, bulkCopy.phasesFailed, {
+    credentials: 'omit',
+  });
+  return data.phases;
 }

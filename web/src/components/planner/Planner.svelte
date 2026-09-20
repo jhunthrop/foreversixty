@@ -35,11 +35,18 @@
     classSlug = DEFAULT_CLASS_SLUG,
     raceSlug,
     record = null,
+    oncode,
   }: {
     treeVersion: string;
     classSlug?: string;
     raceSlug?: string;
     record?: BuildRecord | null;
+    /**
+     * Called with the build's own FS1 code whenever it changes. Top Gear's "add a build"
+     * (Task 14's TalentCandidates) mounts this component inline and reads the code back
+     * through it; /planner and /b/:id pass nothing and the callback never fires.
+     */
+    oncode?: (code: string) => void;
   } = $props();
 
   // The page is static, so ?class= and ?race= can only be read in the browser. A record
@@ -154,28 +161,44 @@
     return index.trees.map((tree) => tree.talents.map((talent) => ranks.get(talent.id) ?? 0));
   }
 
-  // "Sim this build": a saved build's own link when it has one, otherwise the build's own
-  // FS1 code -- the planner's export format, decoded by the same `decodeFS1` this component
-  // reads a code with. The link is always present so a player can reach the full results
-  // whether or not the live estimate above has run, or could run at all. Both branches go
-  // through `simSearch`/`withSimState` rather than building the query string by hand, so
-  // /sim's own URL state (lib/sim/url.ts) is the one place that encodes it.
+  /**
+   * The build's own FS1 code -- the planner's export format, decoded by the same
+   * `decodeFS1` this component reads a code with. Derived once so `simHref` (below) and an
+   * embedder's `oncode` (Top Gear's "add a build") always read the identical encoding of
+   * the identical build, rather than each calling `encodeFS1` with the same arguments a
+   * second time and risking the two drifting apart.
+   */
+  const liveCode = $derived(
+    store.talentIndex === null
+      ? ''
+      : encodeFS1({
+          dataBuild: store.treeVersion,
+          classSlug: store.classSlug,
+          raceSlug: store.raceSlug,
+          treeRanks: treeRanksFor(store.talentIndex, store.order),
+          gear: store.gear,
+        }),
+  );
+
+  // A `$effect` rather than a call inside a derivation: a derivation must stay a pure read,
+  // and calling `oncode` is a side effect that has to run again on every build change.
+  $effect(() => {
+    if (liveCode !== '') oncode?.(liveCode);
+  });
+
+  // "Sim this build": a saved build's own link when it has one, otherwise `liveCode` above.
+  // The link is always present so a player can reach the full results whether or not the
+  // live estimate has run, or could run at all. Both branches go through
+  // `simSearch`/`withSimState` rather than building the query string by hand, so /sim's own
+  // URL state (lib/sim/url.ts) is the one place that encodes it.
   const simHref = $derived(
     `/sim${simSearch(
       withSimState(
         defaultSimState(),
         store.sourceId !== null
           ? { source: 'build', ref: store.sourceId }
-          : store.talentIndex
-            ? {
-                code: encodeFS1({
-                  dataBuild: store.treeVersion,
-                  classSlug: store.classSlug,
-                  raceSlug: store.raceSlug,
-                  treeRanks: treeRanksFor(store.talentIndex, store.order),
-                  gear: store.gear,
-                }),
-              }
+          : liveCode !== ''
+            ? { code: liveCode }
             : {},
       ),
     )}`,

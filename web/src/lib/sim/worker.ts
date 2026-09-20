@@ -8,8 +8,9 @@
 // when, which is the ownership the contract's Web section specifies.
 //
 // The pool tears itself down on pagehide, so a navigation mid-run leaves no workers behind.
+import type { RankAnswer, StageRequests } from './bulk-types';
 import type { ShardProgress } from './estimate';
-import { unwrapOrThrow, type CountAnswer, type RequestValidation } from './engine';
+import { unwrapOrThrow, type CountAnswer, type PlanAnswer, type RequestValidation } from './engine';
 import type { SimProgressUpdate } from './types';
 
 export const MAX_WORKERS = 8;
@@ -30,6 +31,9 @@ export type ToWorker =
   | { kind: 'needsMore'; token: number; result: string; request: string }
   | { kind: 'validate'; token: number; request: string }
   | { kind: 'count'; token: number; request: string }
+  | { kind: 'plan'; token: number; request: string }
+  | { kind: 'rank'; token: number; request: string; stage: string; results: string }
+  | { kind: 'weights'; token: number; callbackId: string; request: string }
   | { kind: 'abort'; callbackId: string };
 
 export type FromWorker =
@@ -64,6 +68,16 @@ export interface SimPool {
   validate(request: string): Promise<RequestValidation>;
   /** How many combinations a bulk request expands to; a cap breach is an answer, not a throw. */
   count(request: string): Promise<CountAnswer>;
+  /** The bulk planner's first stage, on worker 0. A cap breach is an answer, not a throw. */
+  plan(request: string): Promise<PlanAnswer>;
+  /** Scores a finished bulk stage, on worker 0. `next` for another stage, `result` for the last. */
+  rank(request: string, stage: string, results: string): Promise<RankAnswer>;
+  /** A weights run, on worker 0, progress through the same shard callback a run uses. */
+  weights(
+    request: string,
+    callbackId: string,
+    onProgress: (progress: ShardProgress) => void,
+  ): Promise<string>;
   abort(callbackId: string): void;
   terminate(): void;
 }
@@ -209,6 +223,34 @@ export function createPool(options: PoolOptions = {}): SimPool {
       }
       if (parsed.error !== undefined) throw new Error(parsed.error);
       return { ok: true, combinations: parsed.combinations ?? 0 };
+    },
+    async plan(request) {
+      const answer = await send<string>(0, (token) => ({ kind: 'plan', token, request }));
+      const parsed = JSON.parse(answer) as {
+        error?: string;
+        cap?: number;
+        combinations?: number;
+      };
+      // `cap_exceeded` is the one error envelope simPlan answers with rather than throws;
+      // every other failure is a genuine `{"error": "..."}` (see engine.ts's simPlan doc).
+      if (parsed.error === 'cap_exceeded') {
+        return { ok: false, cap: parsed.cap ?? 0, combinations: parsed.combinations ?? 0 };
+      }
+      if (parsed.error !== undefined) throw new Error(parsed.error);
+      return { ok: true, stage: parsed as unknown as StageRequests };
+    },
+    async rank(request, stage, results) {
+      const answer = unwrapOrThrow(
+        await send<string>(0, (token) => ({ kind: 'rank', token, request, stage, results })),
+      );
+      return JSON.parse(answer) as RankAnswer;
+    },
+    weights(request, callbackId, onProgress) {
+      return send<string>(
+        0,
+        (token) => ({ kind: 'weights', token, callbackId, request }),
+        (progress) => onProgress({ ...progress, shard: 0 }),
+      );
     },
     abort,
     terminate,

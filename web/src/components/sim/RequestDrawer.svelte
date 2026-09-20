@@ -23,6 +23,7 @@
     onapply,
     onrun,
     onshare,
+    canShare = true,
   }: {
     /** The request the page would send now. Null while there is no character. */
     request: SimRequest | null;
@@ -30,8 +31,18 @@
     onvalidate: (json: string) => Promise<RequestValidation>;
     onapply: (request: SimRequest) => void;
     onrun: (request: SimRequest) => void;
-    /** Returns the share URL, or null when the request is past the URL budget. */
-    onshare: (request: SimRequest) => string | null;
+    /** Returns the share URL, or null when the request is past the URL budget. Only called
+     *  (and the Share affordance only rendered) when `canShare` is true. */
+    onshare?: (request: SimRequest) => string | null;
+    /**
+     * Whether this page can turn a request into a shareable link at all. Design 8's Share
+     * assumes the reader can round-trip `?req=` back into this same page -- true for `/sim`
+     * (the only reader today), so this defaults to `true` and that call site is unaffected.
+     * The four bulk/weights tool pages have no such reader yet, so they pass `false` and the
+     * whole Share affordance (button, result, error) disappears rather than the page
+     * inventing a message for a feature it does not have.
+     */
+    canShare?: boolean;
   } = $props();
 
   // Tracks the page's own request until the player's first edit, then stops: the drawer
@@ -83,6 +94,7 @@
   }
 
   async function share(): Promise<void> {
+    if (onshare === undefined) return;
     const ok = await verify();
     if (ok === null) return;
     const url = onshare(ok);
@@ -154,18 +166,20 @@
       >
         {simCopy.requestRun}
       </button>
-      <button type="button" class={button} onclick={() => void share()} data-testid="sim-request-share">
-        {simCopy.requestShare}
-      </button>
+      {#if canShare}
+        <button type="button" class={button} onclick={() => void share()} data-testid="sim-request-share">
+          {simCopy.requestShare}
+        </button>
+      {/if}
       <button type="button" class={button} onclick={reset} data-testid="sim-request-reset">
         {simCopy.requestReset}
       </button>
     </div>
     <p class="text-muted text-[12px]">{simCopy.requestApplyNote}</p>
 
-    {#if shareError !== ''}
+    {#if canShare && shareError !== ''}
       <p role="alert" class="text-strong text-[13px]" data-testid="sim-request-share-error">{shareError}</p>
-    {:else if shared !== ''}
+    {:else if canShare && shared !== ''}
       <label class="sr-only" for="sim-request-share-link">{simCopy.requestShare}</label>
       <input
         id="sim-request-share-link"

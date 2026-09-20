@@ -6,6 +6,21 @@
 //
 // Voice, per design/DESIGN-SYSTEM.md: reference, not pitch. State the number and stop.
 
+/**
+ * One name per sim kind, for every site that names one: each tool page's `<title>`, `<h1>`
+ * and `<noscript>`, the history filter and its rows, the saved page and the unfurl. A
+ * shared constant rather than a key on each export below, so a kind cannot end up called
+ * two things in two places -- "Talents" in the history and "Talent compare" on the page it
+ * links to (final whole-branch review, Minor 3). `run` is not here: a plain run's title is
+ * its own DPS-led sentence, not a kind word.
+ */
+export const KIND_TITLES = {
+  gear: 'Top Gear',
+  talents: 'Talent compare',
+  drops: 'Droptimizer',
+  weights: 'Stat weights',
+} as const;
+
 export const simCopy = {
   /** Network and API failures. */
   saveFailed: 'The sim could not be saved; try again.',
@@ -321,10 +336,7 @@ export const simCopy = {
   kindLabel: {
     all: 'Everything',
     run: 'Sim',
-    gear: 'Top Gear',
-    talents: 'Talents',
-    drops: 'Droptimizer',
-    weights: 'Stat weights',
+    ...KIND_TITLES,
   } as Record<string, string>,
   historyFilter: 'Show',
 
@@ -507,4 +519,269 @@ export const simCopy = {
     spell_damage: 'Spell damage',
     feral_attack_power: 'Feral attack power',
   } as Record<string, string>,
+} as const;
+
+/**
+ * The simulator's combination tools: Top Gear, talent compare, Droptimizer and stat
+ * weights. A second export rather than more keys on `simCopy` so the parity work's two web
+ * lanes append at different anchors in this file and never collide; every rule above
+ * applies unchanged -- components import from here and tests assert against these
+ * constants, never against a literal.
+ */
+export const bulkCopy = {
+  // --- page titles and the one-line standfirst under each ---
+  gearTitle: KIND_TITLES.gear,
+  gearIntro:
+    'Tick the items, enchants, talents and sets you want tried. Every valid combination is simulated and ranked against what you have on.',
+  talentsTitle: KIND_TITLES.talents,
+  talentsIntro:
+    'Your build against every other build you have, ranked. Gear is locked to what you are wearing, so the only thing that changes is the tree.',
+  dropsTitle: KIND_TITLES.drops,
+  dropsIntro:
+    'Pick where you are going. Every item those bosses drop is simulated one at a time against your current set, and the upgrades are listed by boss.',
+  weightsTitle: KIND_TITLES.weights,
+  weightsIntro: 'What one point of each stat is worth, for the addons that ask for a number.',
+  weightsWarning:
+    'A stat weight is a straight-line guess at something that is not a straight line: it holds near the gear you have now and stops holding as soon as a set bonus, a proc or a hit cap changes. Sim the actual items in Top Gear instead. These are here because addons want them.',
+  weightsWarningLink: 'Open Top Gear',
+  /**
+   * Each tool page's `<noscript>` fallback. A single parameterised entry rather than four
+   * keyed strings (`gearNeedsJs`/`talentsNeedsJs`/...): the four sentences differ only in
+   * the tool's own label, and the tail -- "it runs the engine in your browser rather than
+   * on our servers" -- is otherwise copy-pasted verbatim four times, which is exactly the
+   * duplication `bulkCopy` exists to avoid. Rendered with `set:html` (the string's own
+   * anchor markup is authored here, never user data), the same way `TOOL_SKELETONS` and
+   * `Base.astro`'s own JSON-LD script already render trusted static HTML.
+   */
+  needsJs: (tool: string): string =>
+    `${tool} needs JavaScript: it runs the engine in your browser rather than on our servers. The <a href="/sim">simulator</a> says the same.`,
+
+  // --- candidates ---
+  equipped: 'Equipped',
+  bags: 'Bags',
+  bank: 'Bank',
+  fromSearch: 'Search',
+  pinned: 'Pinned',
+  /** A `set:<name>` origin candidate (Task 14's NamedSets). The name after the colon is the
+   *  wire's own value, not a display string, so the row shows this generic word instead --
+   *  the same treatment `pinned` already gives a `drop:<source-id>` origin. */
+  fromSet: 'Set',
+  lockSlot: 'Lock to equipped',
+  lockedSlot: 'Locked',
+  copyAndModify: 'Copy and modify',
+  withEnchant: 'With enchant',
+  withSuffix: 'With suffix',
+  keepCurrentEnchant: 'Keep current',
+  /**
+   * A `consumes` substitution on a results row (contract 10.8): the ids come back joined
+   * by ", ", and this is the only place they are turned into a phrase. Ids are legible in
+   * snake case -- "flask_of_supreme_power" -- so they are de-underscored rather than
+   * looked up: `simbuffs.json` is loaded per build and a saved result opened by someone
+   * else may not have it.
+   */
+  consumesChip: (ids: string): string =>
+    `With ${ids
+      .split(', ')
+      .map((id) => id.replaceAll('_', ' '))
+      .join(', ')}`,
+  noEnchant: 'None',
+  /** Distinct from `noEnchant` ("None", a real pickable row): this is the placeholder shown
+   *  instead of the enchant list when a slot allows none at all, so the two never render as
+   *  two adjacent, differently-meant "None" rows. */
+  noEnchantsAvailable: 'No enchants for this slot.',
+  enchantCap: (cap: number): string => `At most ${cap} enchants per slot.`,
+  noCandidates: 'Nothing ticked yet. Tick an item, a talent build or a set.',
+  /** validateBulk's rule 1: something is ticked, just on a slot that is locked. */
+  lockedHasCandidate: 'A locked slot cannot carry a candidate. Untick it or unlock the slot.',
+  /**
+   * validateBulk's rule 2, second half: a `talents` request carries loadouts and NO
+   * candidates. The locked-slot rule cannot stand in for this one -- a ring, trinket or
+   * weapon candidate's `Candidate.Slot` is `""` (contract 1.3), and `""` is never in
+   * `locked` -- so a multi-slot candidate would otherwise reach the engine.
+   */
+  talentsHasCandidate: 'A talent compare changes only the tree. Untick every item candidate.',
+  bagsNeedAddon: 'Your bags and bank come from the addon export; this character was loaded another way.',
+  tryEach: 'Try each',
+  consumableCandidates: 'Try each of these as a candidate rather than a setting.',
+
+  // --- item search ---
+  searchLabel: 'Find an item',
+  searchPlaceholder: 'Name',
+  searchMinItemLevel: 'Minimum item level',
+  searchSlot: 'Slot',
+  searchSource: 'Source',
+  searchAnySlot: 'Any slot',
+  searchAnySource: 'Anywhere',
+  searchUsableOnly: 'Only items this character can equip',
+  searchNoResults: 'No item in this class’s list matches.',
+  searchTruncated: (shown: number, total: number): string =>
+    `Showing ${shown} of ${total}. Narrow the search.`,
+  searchAdd: 'Add',
+  searchAdded: 'Added',
+
+  // --- talents and sets ---
+  talentsOwn: 'Your current build',
+  talentsSaved: 'Your saved builds',
+  talentsLoadouts: 'In-game loadouts',
+  talentsAddCustom: 'Add a build',
+  talentsNoSaved: 'No saved builds for this class yet.',
+  talentsSavedUnavailable: 'Your saved builds could not be read; the rest of the page still works.',
+  setsTitle: 'Whole sets',
+  setsIntro: 'A set replaces every slot at once. Paste a second export string to add one.',
+  setsPaste: 'Paste an export string',
+  setsAdd: 'Add set',
+  /** A set already ticked as a candidate (Task 14's NamedSets), offered back off. */
+  setsRemove: 'Remove',
+  setsBadCode: 'That is not an export string this build can read.',
+
+  // --- the run bar ---
+  combinations: (n: number): string =>
+    `${n.toLocaleString('en-US')} valid ${n === 1 ? 'combination' : 'combinations'}`,
+  combinationsCounting: 'Counting combinations…',
+  precisionLabel: 'Precision',
+  precisionFast: 'Fast',
+  precisionNormal: 'Normal',
+  precisionHigh: 'High',
+  precisionNote: {
+    fast: 'Three stages: everything at 100 iterations, the survivors at 1,000, the finalists at 3,000.',
+    normal: 'Two stages: everything at 1,000 iterations, the finalists at 3,000.',
+    high: 'Two stages: everything at 1,000 iterations, twice as many finalists at 10,000.',
+  } as Record<string, string>,
+  runBulk: 'Run',
+  runBulkAgain: 'Run again',
+  stopBulk: 'Stop',
+  stageProgress: (stage: number, stages: number, done: number, total: number): string =>
+    `stage ${stage} of ${stages} · ${done.toLocaleString('en-US')} of ${total.toLocaleString('en-US')} combinations`,
+  partial: 'Stopped. These are the combinations that finished.',
+  capNotice: (cap: number, combinations: number): string =>
+    `${combinations.toLocaleString('en-US')} combinations is past this browser’s limit of ${cap.toLocaleString('en-US')}. Untick ${(combinations - cap).toLocaleString('en-US')} of them, or run it on our servers.`,
+  capPremium: 'Run on our servers',
+  capPremiumNote: 'Premium lifts the limit to 5,000 combinations and any precision.',
+  serverCapNotice: (cap: number, combinations: number): string =>
+    `${combinations.toLocaleString('en-US')} combinations is past our servers’ limit of ${cap.toLocaleString('en-US')} too. Untick ${(combinations - cap).toLocaleString('en-US')} of them.`,
+  lowCoreNote: (cap: number): string =>
+    `This device reports four cores or fewer, so the limit here is ${cap.toLocaleString('en-US')} combinations.`,
+
+  // --- results ---
+  resultsEquipped: 'What you have on',
+  resultsRank: '#',
+  resultsChange: 'Change',
+  resultsDps: 'DPS',
+  resultsDelta: 'Gain',
+  resultsPercent: '%',
+  /**
+   * Engine-lane rule 5: a two-hander replacing a main-plus-off-hand pair emits a second
+   * substitution, `{kind: "item", slot: "off_hand", item_id: 0, name: "<item removed>"}`.
+   * `SubstitutionChips.svelte` renders that sentinel through this string instead of the
+   * substitution's own `name` -- the emptied slot is not an item, and "<item removed>" is
+   * not a name a player should ever read verbatim.
+   */
+  offHandEmptied: 'Off-hand emptied',
+  /**
+   * A bulk unfurl's headline when the run ranked nothing, matching the API's own headline
+   * rule (contract 10.6) rather than inventing a second wording for the same state. It
+   * reads mid-sentence, so it is lower case.
+   */
+  noCombinations: 'no combinations',
+  withinError: 'Within error of the leader',
+  withinErrorNote:
+    'These runs are too close to separate at this many iterations. Run again at a higher precision to tell them apart.',
+  noGain: 'Nothing here beats what you are wearing.',
+  slotSummary: 'By slot',
+  slotSummaryNote: 'What the winning set uses in each slot, and what that slot contributed.',
+  openInPlanner: 'Open in planner',
+  copyToAddon: 'Copy to addon',
+  copiedToAddon: 'Copied',
+  keepFourPiece: 'Only combinations keeping a 4-piece set bonus',
+  ranAtStages: (stages: { iterations: number; combos: number }[]): string =>
+    stages
+      .map(
+        (stage) => `${stage.combos.toLocaleString('en-US')} at ${stage.iterations.toLocaleString('en-US')}`,
+      )
+      .join(' · '),
+
+  // --- droptimizer ---
+  sourcesRaids: 'Raids',
+  sourcesDungeons: 'Dungeons',
+  sourcesWorld: 'World bosses',
+  sourcesCrafted: 'Crafted',
+  sourcesRep: 'Reputation',
+  sourcesPvp: 'PvP',
+  sourcesQuests: 'Quests',
+  sourcesQuestNote: 'Off by default: a quest reward is a one-time source.',
+  sourcesMyProfessions: 'My professions',
+  sourcesAllProfessions: 'All professions',
+  sourcesProfessionsUnknown:
+    'Nothing has recorded this character’s professions, so every profession is listed.',
+  sourcesTrash: 'Trash and chests',
+  sourcesWholeRaid: 'Every boss',
+  showUpcoming: 'Show unreleased content',
+  opensOn: (label: string, date: string): string => `${label}, ${date}`,
+  notOpenYet: 'Not open yet',
+  opensLater: 'Not open yet; no date announced.',
+  dropsUpgrades: (upgrades: number, drops: number): string =>
+    `${upgrades} of the ${drops} drops here ${upgrades === 1 ? 'is an upgrade' : 'are upgrades'}`,
+  dropsBest: 'Best here',
+  dropsEveryUpgrade: 'Every upgrade',
+  dropsByBoss: 'By boss',
+  dropsPin: 'Pin into Top Gear',
+  dropsPinned: 'Pinned',
+  dropsNoChance:
+    'Neither database records drop rates, so nothing here is a probability. It is a count of what drops and what would be an upgrade.',
+  dropsNothing: 'No source ticked yet.',
+
+  // --- stat weights ---
+  weightsStat: 'Stat',
+  weightsWeight: 'Weight',
+  weightsReference: 'Reference',
+  weightsCopyPawn: 'Copy for Pawn',
+  weightsCopied: 'Copied',
+  weightsPick: 'Stats to weigh',
+  /** bulk-store.svelte.ts's `baseRequest` refusal when `stats` is empty: `WeightsSpec.
+   *  Reference` is required (contract 10.8), so an empty list has nothing to send. */
+  weightsNeedStats: 'Pick at least one stat to weigh.',
+
+  // --- the request drawer's own one-liner, so Advanced is findable on every tool ---
+  advancedTitle: 'Request',
+
+  // --- the rules card, design 3.2, in our words ---
+  rulesTitle: 'How the combinations are built',
+  rules: [
+    'An enchant you already have carries over to a candidate in the same slot where it fits.',
+    'Rings and trinkets are tried in both slots.',
+    'A two-hander and a one-hander with an off-hand are competing shapes, not two slots.',
+    'A dual-wield spec tries each weapon pair both ways round.',
+    'Unique-equipped is respected, including unique categories.',
+    'Nothing this character cannot equip is ever simulated.',
+    'Item search can find items this character has no way to obtain.',
+  ] as readonly string[],
+
+  // --- failures ---
+  planFailed: 'The combinations could not be worked out.',
+  bulkFailed: 'The engine could not run these combinations.',
+  /**
+   * `bulk-run.ts`'s `BulkValidationError` headline (engine-lane rule 2): `simValidate`
+   * refused the request outright, before `simCount`/`simPlan` ever got to answer a cap or
+   * combination question about it. The engine's own per-field messages are the `detail`
+   * shown alongside this, exactly like a run failure's `detail`.
+   */
+  requestInvalid: 'This request is not valid.',
+  lootFailed: 'The loot tables could not be read.',
+  enchantsFailed: 'The enchant list could not be read.',
+  /**
+   * `api.ts`'s `fetchPhases` fallback message. Never actually shown: `phase.ts`'s own
+   * `fetchPhases` catches every failure and falls back to `BUILT_IN_PHASES` instead of
+   * surfacing an error, so the gate always has an answer -- but `call()` still needs a
+   * string for the error it swallows, and that string lives here like every other one.
+   */
+  phasesFailed: 'The phase table could not be read.',
+  needCharacter: 'Load a character first.',
+  needAddonForBags: 'Paste your addon export to see your bags and bank here.',
+  /**
+   * `addSearchItem`'s miss path (fix round 2, the player-visible half of fix round 1's
+   * Finding 2): a Droptimizer pin or an item search "Add" whose item this class's file has
+   * never heard of. Named by id, not by name -- the item's name is exactly what this store
+   * could not look up, so there is nothing else to call it.
+   */
+  itemNotAdded: (itemId: number): string => `Item ${itemId} could not be added to this character.`,
 } as const;

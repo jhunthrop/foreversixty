@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import fixtureMeta from '../../fixtures/report/meta.json';
-import { fixtureResult } from '../../test-support/sim-api';
+import { fixtureBulkResult, fixtureResult, fixtureWeightsResult } from '../../test-support/sim-api';
 import type { ReportMeta } from './types';
 import {
   characterShellMeta,
@@ -126,5 +126,38 @@ describe('simShellMeta', () => {
     const meta = simShellMeta({ ...result, summary: { ...result.summary, auras: [] } });
     expect(meta.description).toContain('solo, 3:00, single target');
     expect(meta.description).not.toContain('raid-buffed');
+  });
+});
+
+describe('simShellMeta by kind', () => {
+  it('names Top Gear and its headline, item included', () => {
+    const meta = simShellMeta({ ...fixtureBulkResult, sim_id: 'simfixtureab' });
+    expect(meta.title).toBe('Top Gear · Fury Warrior · Forever Sixty');
+    // The fixture's own combo count, not a typed-out literal: Task 9's report already
+    // documents this same fixture carrying 7 combos (a 7th was added by a fix round after
+    // the plan's own draft was written against a 6-combo fixture), and hardcoding either
+    // number here would drift the moment the fixture changes again.
+    expect(meta.description).toContain(`${fixtureBulkResult.combos.length} combinations`);
+    expect(meta.description).toContain('+41 DPS from Helm of Wrath');
+  });
+
+  it('says "no combinations" for an empty result, as the API’s headline rule does', () => {
+    const meta = simShellMeta({
+      ...fixtureBulkResult,
+      sim_id: 'simfixtureab',
+      combos: [],
+    });
+    expect(meta.description).toContain('no combinations');
+  });
+
+  it('names stat weights and lists the top three', () => {
+    const meta = simShellMeta({ ...fixtureWeightsResult, sim_id: 'simfixtureab' });
+    expect(meta.title).toBe('Stat weights · Fury Warrior · Forever Sixty');
+    expect(meta.description).toContain('Attack power 1.00');
+  });
+
+  it('leaves a plain run exactly as it was', () => {
+    const meta = simShellMeta(fixtureResult);
+    expect(meta.title).toContain('DPS · Forever Sixty');
   });
 });

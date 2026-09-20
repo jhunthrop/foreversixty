@@ -32,7 +32,10 @@ export function createFakeWorker(engine: EngineModule): PoolWorker {
         if (message.kind === 'abort') {
           const prefix = `${message.callbackId}-`;
           for (const id of tokenOf.keys()) {
-            if (id.startsWith(prefix)) engine.simAbort(id);
+            // Mirrors sim.worker.ts: a run's shards live under `${callbackId}-${index}`
+            // (the prefix match); a weights run is registered under its own callbackId
+            // verbatim, so it needs the exact-match branch too.
+            if (id === message.callbackId || id.startsWith(prefix)) engine.simAbort(id);
           }
           return;
         }
@@ -56,6 +59,27 @@ export function createFakeWorker(engine: EngineModule): PoolWorker {
             emit({ kind: 'one', token, result: unwrapOrThrow(engine.simValidate(message.request)) });
           } else if (message.kind === 'count') {
             emit({ kind: 'one', token, result: engine.simCount(message.request) });
+          } else if (message.kind === 'plan') {
+            // Not unwrapped: `cap_exceeded` is a legal answer simPlan gives, not a failure
+            // (mirrors `count` right above, and engine.ts's own simPlan doc).
+            emit({ kind: 'one', token, result: engine.simPlan(message.request) });
+          } else if (message.kind === 'rank') {
+            emit({
+              kind: 'one',
+              token,
+              result: unwrapOrThrow(engine.simRank(message.request, message.stage, message.results)),
+            });
+          } else if (message.kind === 'weights') {
+            tokenOf.set(message.callbackId, token);
+            try {
+              emit({
+                kind: 'one',
+                token,
+                result: await engine.simWeights(message.request, message.callbackId),
+              });
+            } finally {
+              tokenOf.delete(message.callbackId);
+            }
           } else {
             tokenOf.set(message.callbackId, token);
             try {

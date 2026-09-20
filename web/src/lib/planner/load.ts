@@ -50,17 +50,24 @@ export async function loadItems(build: string, classSlug: string): Promise<ItemF
 }
 
 /**
- * Sets are optional: a build without normalized items ships no sets.json, and only that --
- * a 404 -- resolves to an empty list. A 5xx, an unreachable network or a malformed file is a
- * broken build, not an absent one, so it is rethrown rather than rendered as "no sets".
+ * The shared shape of every optional build file: sets, loot, enchants, suffixes and
+ * simbuffs are all "a build the data lane has not regenerated ships none of this," where
+ * only a 404 means "absent" and every other failure (5xx, an unreachable network, a
+ * malformed file) is a broken build, not an absent one, and is rethrown rather than
+ * rendered as "nothing here."
  */
-export async function loadSets(build: string): Promise<ItemSet[]> {
+export async function loadOptional<T>(url: string, empty: T): Promise<T> {
   try {
-    return await fetchJson<ItemSet[]>(dataUrl(build, 'sets.json'));
+    return await fetchJson<T>(url);
   } catch (error) {
-    if (error instanceof DataLoadError && error.status === 404) return [];
+    if (error instanceof DataLoadError && error.status === 404) return empty;
     throw error;
   }
+}
+
+/** Sets are optional: a build without normalized items ships no sets.json. */
+export async function loadSets(build: string): Promise<ItemSet[]> {
+  return loadOptional<ItemSet[]>(dataUrl(build, 'sets.json'), []);
 }
 
 export async function loadReference(build: string): Promise<ReferenceData> {

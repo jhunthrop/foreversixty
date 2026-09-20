@@ -1,0 +1,57 @@
+{
+  "sources": [
+    {
+      "id": "raid:molten-core",
+      "kind": "raid",
+      "name": "Molten Core",
+      "zone_id": 2717,
+      "opens": "raids-1",
+      "bosses": [
+        { "id": "raid:molten-core:12118", "name": "Lucifron", "npc_id": 12118, "items": [16963] },
+        { "id": "raid:molten-core:11502", "name": "Ragnaros", "npc_id": 11502, "items": [12784, 19325] }
+      ],
+      "trash": [13968]
+    },
+    {
+      "id": "dungeon:hall-of-thanes",
+      "kind": "dungeon",
+      "name": "Hall of Thanes",
+      "zone_id": 9001,
+      "bosses": [
+        { "id": "dungeon:hall-of-thanes:90011", "name": "Thane Korgal", "npc_id": 90011, "items": [16966] }
+      ],
+      "trash": [13968]
+    },
+    {
+      "id": "world:azuregos",
+      "kind": "world",
+      "name": "Azuregos",
+      "opens": "later",
+      "items": [19325]
+    },
+    {
+      "id": "crafted:blacksmithing",
+      "kind": "crafted",
+      "name": "Blacksmithing",
+      "profession": "blacksmithing",
+      "items": [12784]
+    },
+    {
+      "id": "crafted:tailoring",
+      "kind": "crafted",
+      "name": "Tailoring",
+      "profession": "tailoring",
+      "items": [12640]
+    },
+    {
+      "id": "rep:argent-dawn:exalted",
+      "kind": "rep",
+      "name": "Argent Dawn",
+      "faction_id": 529,
+      "standing": "exalted",
+      "items": [13968]
+    },
+    { "id": "pvp:rank-10", "kind": "pvp", "name": "Rank 10", "rank": 10, "items": [16966] },
+    { "id": "quest", "kind": "quest", "name": "Quests", "items": [12640] }
+  ]
+}

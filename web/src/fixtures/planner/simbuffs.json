@@ -1,0 +1,13 @@
+{
+  "entries": {
+    "flask_of_supreme_power": {
+      "name": "Flask of Supreme Power",
+      "icon": "fixture_item_snakestone_charm"
+    },
+    "elixir_of_the_mongoose": {
+      "name": "Elixir of the Mongoose",
+      "icon": "fixture_item_band_of_accuria"
+    },
+    "battle_shout": { "name": "Battle Shout", "icon": "fixture_improved_battle_shout" }
+  }
+}

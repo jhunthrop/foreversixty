@@ -366,6 +366,13 @@ export interface SpecFidelity {
   worst_actions: { spell_id: number; name: string; sim_casts: number; actual_casts: number }[];
   /** `specs.go` coalesces this into a plain Go string; it is never null. */
   engine_version: string;
+  /**
+   * The stat `/sim/weights` normalises to 1.0 for this spec, from data/curated/specs.json
+   * (contract 8, `GET /v1/specs` (+)). Optional because a build predating the column, or a
+   * spec nobody has set one for, sends no value; `weights.ts`'s own fallback is the first
+   * stat the spec's class uses.
+   */
+  reference_stat?: string;
   /** Null for a card nothing has measured yet (`specs.go`'s UpdatedAt *time.Time). */
   updated_at: string | null;
 }

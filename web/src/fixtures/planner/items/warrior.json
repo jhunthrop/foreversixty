@@ -95,7 +95,8 @@
         "defense": 7
       },
       "set_id": null,
-      "unique": false
+      "unique": false,
+      "suffixes": [1, 2]
     }
   ]
 }

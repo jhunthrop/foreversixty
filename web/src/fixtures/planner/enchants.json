@@ -1,0 +1,38 @@
+[
+  {
+    "id": 2543,
+    "name": "Lesser Arcanum of Voracity",
+    "icon": "fixture_item_lionheart_helm",
+    "slots": ["head", "legs"],
+    "item_types": ["normal"],
+    "classes": [],
+    "stats": { "strength": 8 },
+    "phase": 0,
+    "spell_id": 23545,
+    "item_id": 0
+  },
+  {
+    "id": 1900,
+    "name": "Enchant Weapon - Crusader",
+    "icon": "fixture_item_arcanite_reaper",
+    "slots": ["main_hand", "off_hand"],
+    "item_types": ["normal"],
+    "classes": [],
+    "stats": {},
+    "phase": 0,
+    "spell_id": 20034,
+    "item_id": 0
+  },
+  {
+    "id": 2564,
+    "name": "Enchant Chest - Greater Stats",
+    "icon": "fixture_item_spaulders_of_wrath",
+    "slots": ["chest"],
+    "item_types": ["kit"],
+    "classes": [],
+    "stats": { "strength": 4, "agility": 4 },
+    "phase": 5,
+    "spell_id": 25086,
+    "item_id": 16252
+  }
+]

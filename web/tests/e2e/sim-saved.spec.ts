@@ -25,6 +25,17 @@ const fixtureResult = JSON.parse(
   request: { character: { gear: unknown[] } };
 };
 
+// Task 20: a saved Top Gear/talents/drops result and a saved weights result, at /sim/<id>.
+// Read as plain JSON (not an ES import) for the same reason `fixtureResult` above is --
+// Playwright's own Node loader needs an import attribute this repo's other e2e specs never
+// carry for a bare `.json` import.
+const bulkFixture: Record<string, unknown> = JSON.parse(
+  readFileSync(path.join(ROOT, 'src', 'fixtures', 'sim', 'bulk-result.json'), 'utf8'),
+) as Record<string, unknown>;
+const weightsFixture: Record<string, unknown> = JSON.parse(
+  readFileSync(path.join(ROOT, 'src', 'fixtures', 'sim', 'weights-result.json'), 'utf8'),
+) as Record<string, unknown>;
+
 const FURY = `FS1:${activeBuild.build}:warrior:orc:0/5530515/0:head=12640,main_hand=11726`;
 
 function envelope(data: unknown, status = 200) {
@@ -194,6 +205,46 @@ test('a saved sim whose stored request has no gear shows the line, not the grid'
 
   await expect(page.getByTestId('sim-no-gear')).toBeVisible();
   await expect(page.getByTestId('sim-slot-head')).toHaveCount(0);
+});
+
+test.describe('a saved sim renders the results view its own kind calls for', () => {
+  test('a saved Top Gear result renders its ranked table, not a damage breakdown', async ({ page }) => {
+    const id = 'simbulk23456';
+    await page.route(`**/sim/${id}`, (route) =>
+      route.fulfill({ status: 200, contentType: 'text/html', body: SHELL_HTML }),
+    );
+    await page.route(`**/v1/sims/${id}`, (route) => route.fulfill(envelope({ ...bulkFixture, sim_id: id })));
+
+    await page.goto(`/sim/${id}`);
+
+    await expect(page.getByTestId('sim-combos')).toBeVisible();
+    await expect(page.getByTestId('sim-combo-row').first()).toBeVisible();
+    // The plain-run damage-breakdown view (SimResults.svelte's own `data-testid="sim-results"`)
+    // never mounts for a bulk kind -- the kind switch picks exactly one results view.
+    await expect(page.getByTestId('sim-results')).toHaveCount(0);
+  });
+
+  test('a saved weights result renders its table and its Pawn string', async ({ page }) => {
+    // The brief's own draft id ("simweight3456") is 13 characters -- one over
+    // `SIM_ID_PATTERN`'s `[a-z2-7]{12}` (contract: a sim_id is always exactly 12) -- and
+    // silently fails to match, which routes the page to the plain, no-character /sim
+    // landing state instead of a saved sim at all. This id is the same twelve characters,
+    // trimmed to fit the real pattern.
+    const id = 'simweight345';
+    await page.route(`**/sim/${id}`, (route) =>
+      route.fulfill({ status: 200, contentType: 'text/html', body: SHELL_HTML }),
+    );
+    await page.route(`**/v1/sims/${id}`, (route) =>
+      route.fulfill(envelope({ ...weightsFixture, sim_id: id })),
+    );
+
+    await page.goto(`/sim/${id}`);
+
+    await expect(page.getByTestId('sim-weights')).toBeVisible();
+    await expect(page.getByTestId('sim-pawn')).toContainText('( Pawn: v1:');
+    // A weights result has no gear story (design 7): the strip's grid does not claim one.
+    await expect(page.getByTestId('sim-slot-head')).toHaveCount(0);
+  });
 });
 
 // Round 3 (Lighthouse): the skeleton reserves the saved result's shape while a real,

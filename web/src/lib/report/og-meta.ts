@@ -3,10 +3,19 @@
 // without a Workers runtime; src/worker.ts only wires the values into HTMLRewriter.
 //
 // Voice: reference, not pitch. A description states the numbers and the date and stops.
+//
+// The sim shell's kind words and its empty-result headline come from sim/copy.ts, not from
+// a fourth copy here: this module already imports sim/bulk-types, sim/combos and
+// sim/weights, and sim/combos itself imports bulkCopy, so there is no dependency left to
+// avoid (final whole-branch review, Minor 2).
 import { rulesetLabel, type CharacterPath } from '../characters';
+import { requestKind, type BulkResult, type WeightsResult } from '../sim/bulk-types';
+import { headlineFor } from '../sim/combos';
+import { bulkCopy, KIND_TITLES } from '../sim/copy';
 import { encounterLabel } from '../sim/encounter';
 import { specLabel } from '../sim/spec-label';
 import type { SimResult } from '../sim/types';
+import { statLabel } from '../sim/weights';
 import type { ReportMeta } from './types';
 
 export const SITE_BASE_URL = 'https://foreversixty.gg';
@@ -119,12 +128,50 @@ export function guildShellMeta(path: CharacterPath, head: GuildHead): ShellMeta 
  *
  * The description is the whole run in one sentence: the engine it came from, the figure and
  * its 95% band, how many iterations bought that band, and the settings. Someone deciding
- * whether to open the link has every number that would change their mind.
+ * whether to open the link has every number that would change their mind. A bulk kind
+ * (gear/talents/drops) says the combination count and the leader's own headline instead --
+ * there is no single DPS figure worth leading with when the page is a ranked table -- and
+ * weights says the top few stats rather than a figure that was never the point of the run.
  *
  * Takes no `apiBase`, unlike reportShellMeta: a sim's image is always the site's own card,
  * never a per-sim render, so there is nothing here for an API origin to build.
  */
 export function simShellMeta(result: SimResult): ShellMeta {
+  const kind = requestKind(result.request);
+  const canonical = `${SITE_BASE_URL}/sim/${result.sim_id ?? ''}`;
+  const spec = specLabel(result.request.spec);
+
+  if (kind === 'weights') {
+    const weights = (result as WeightsResult).weights ?? [];
+    const top = weights
+      .slice(0, 3)
+      .map((row) => `${statLabel(row.stat)} ${row.weight.toFixed(2)}`)
+      .join(' · ');
+    return {
+      title: `${KIND_TITLES.weights} · ${spec} · Forever Sixty`,
+      description: `Simulated on engine ${result.engine_version}: ${top}.`,
+      image: SITE_CARD,
+      canonical,
+    };
+  }
+
+  if (kind !== 'run') {
+    const bulk = result as BulkResult;
+    const combos = bulk.combos ?? [];
+    // Contract 10.1 A6 fills Substitution.Name for items too, so the unfurl can name the
+    // winning change without the per-class item file this function must never fetch. An
+    // empty result reads "no combinations", matching the API's own headline rule (contract
+    // 10.6) rather than inventing a second wording for the same state.
+    const headline = combos.length === 0 ? bulkCopy.noCombinations : headlineFor(bulk);
+    return {
+      title: `${KIND_TITLES[kind]} · ${spec} · Forever Sixty`,
+      description:
+        `Simulated on engine ${result.engine_version}: ${combos.length} combinations, ` + `${headline}.`,
+      image: SITE_CARD,
+      canonical,
+    };
+  }
+
   const dps = Math.round(result.dps.mean).toLocaleString('en-US');
   const band = Math.round(1.96 * result.dps.error).toLocaleString('en-US');
   const iterations = result.request.iterations.toLocaleString('en-US');
@@ -134,9 +181,9 @@ export function simShellMeta(result: SimResult): ShellMeta {
   const buffed = result.summary.auras.some((track) => track.type === 'BUFF');
   const settings = encounterLabel(result.request.encounter, buffed);
   return {
-    title: `${specLabel(result.request.spec)}, ${dps} DPS · Forever Sixty`,
+    title: `${spec}, ${dps} DPS · Forever Sixty`,
     description: `Simulated on engine ${result.engine_version}: ${dps} DPS ± ${band} over ${iterations} iterations, ${settings}.`,
     image: SITE_CARD,
-    canonical: `${SITE_BASE_URL}/sim/${result.sim_id ?? ''}`,
+    canonical,
   };
 }
