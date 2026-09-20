@@ -12,6 +12,12 @@ local REFUSALS = {
 	["a slot this planner does not have"] = string.format(L.codecSlot, "tabard"),
 	["a stat with no value"] = string.format(L.codecStatPair, "stamina"),
 	["a non-numeric stat value"] = string.format(L.codecStatPair, "stamina=lots"),
+	["a stat value of negative zero"] = string.format(L.codecStatPair, "parry=-0"),
+	["a stat value with a leading plus sign"] = string.format(L.codecStatPair, "parry=+3"),
+	["a stat value with a leading zero"] = string.format(L.codecStatPair, "parry=007"),
+	["a stat value with a doubled sign"] = string.format(L.codecStatPair, "parry=--3"),
+	["an empty data build field"] = string.format(L.codecEmptyField, "data build"),
+	["an empty class field"] = string.format(L.codecEmptyField, "class"),
 }
 
 describe("Codec FSB1", function()
@@ -73,6 +79,25 @@ describe("Codec FSB1", function()
 		))
 		assert.are.equal(
 			"FSB1:1.60.1.69893:paladin:111112121:head=12640:spell_power=23;stamina=17",
+			Codec.encodeFSB1(build)
+		)
+	end)
+
+	it("sorts a gear entry's stats in byte order, not case-insensitively", function()
+		-- Pins table.sort's plain byte comparison against a future
+		-- localeCompare-style comparator on either side of this format:
+		-- uppercase letters (0x41-0x5A) sort before lowercase (0x61-0x7A)
+		-- in byte order, so "Zeta" sorts before "apple" even though a
+		-- case-insensitive comparator would put them the other way round.
+		-- "Zeta" is not a real contract-10.8 stat name -- 10.8's vocabulary
+		-- is all lowercase -- it exists here only to give the comparator an
+		-- uppercase/lowercase pair to distinguish; do not "fix" it to a
+		-- real stat name.
+		local build = assert(Codec.decodeFSB1(
+			"FSB1:1.60.1.69893:paladin:111112121:head=12640:apple=1;Zeta=2"
+		))
+		assert.are.equal(
+			"FSB1:1.60.1.69893:paladin:111112121:head=12640:Zeta=2;apple=1",
 			Codec.encodeFSB1(build)
 		)
 	end)
