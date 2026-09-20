@@ -155,6 +155,19 @@ describe("Options", function()
 		assert.are.equal(Options.run, SlashCmdList["FOREVERSIXTY"])
 	end)
 
+	it("binds the slash commands by itself when the game loads it through the TOC", function()
+		-- Nothing else in the addon calls register(): the file has to do it
+		-- on load, and only under the client's (addonName, ns) calling
+		-- convention, never under require.
+		_G.SlashCmdList = {}
+		local chunk = assert(loadfile("ForeverSixty/Options.lua"))
+		local ns = {}
+		local loaded = chunk("ForeverSixty", ns)
+		assert.are.equal(loaded, ns.Options)
+		assert.are.equal(loaded.run, SlashCmdList["FOREVERSIXTY"])
+		assert.are.equal("/fs", SLASH_FOREVERSIXTY1)
+	end)
+
 	it("the registered handler routes to handle and prints each line through the chat prefix", function()
 		Options.register()
 		SlashCmdList["FOREVERSIXTY"]("")

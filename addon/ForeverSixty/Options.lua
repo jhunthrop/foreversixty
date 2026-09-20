@@ -5,7 +5,11 @@
 -- on what a player would read without a chat frame; `run` is the thin
 -- printing wrapper the slash command is bound to.
 local _, ns = ...
-ns = type(ns) == "table" and ns or {}
+-- The game loads this file with (addonName, ns); busted's require passes
+-- nothing. That is the one signal for "running in the client", and it is
+-- what decides whether the slash command binds itself at load below.
+local inGame = type(ns) == "table"
+ns = inGame and ns or {}
 local L = ns.L or require("Locale")
 local Data = ns.Data or require("Data")
 local Export = ns.Export or require("Export")
@@ -129,4 +133,7 @@ function Options.register()
 end
 
 ns.Options = Options
+if inGame then
+	Options.register()
+end
 return Options
