@@ -3,6 +3,7 @@ import { createServer } from 'vite';
 import { addonCopy } from '../../src/lib/addon/copy';
 import type * as Fsb1Module from '../../src/lib/addon/fsb1';
 import { ACTIVE_BUILD } from './support/active-build';
+import { openGear } from './support/planner';
 
 // Not a plain `import { decodeFSB1 } from '../../src/lib/addon/fsb1'`: fsb1.ts imports
 // PINNED_STATS from sim/stats.ts, which imports a generated `.json` file at module scope
@@ -38,6 +39,10 @@ test.describe('the addon flows', () => {
     // Spend a point and equip something, so the code carries both halves. Talent 1001
     // (Improved Heroic Strike) is spendable from an empty build.
     await page.getByTestId('talent-1001').click();
+    // Below md the gear panel is the last tab rather than part of the column, so the slot
+    // has to be brought on screen before it can be clicked. The talent click comes first
+    // because selecting the Gear tab hides the tree grid it needs.
+    await openGear(page);
     await page.getByTestId('slot-head').click();
     // The picker's header carries its own "Close" button ahead of the item rows, so the
     // item rows are matched by their own testid rather than "first button in the panel".
@@ -108,6 +113,7 @@ test.describe('the addon flows', () => {
     // The head slot carries the fixture's only two head items (Lionheart Helm, Helm of
     // Wrath), which is enough to exercise the sort.
     await page.goto('/planner');
+    await openGear(page);
     await page.getByTestId('slot-head').click();
     const picker = page.getByTestId('item-picker');
     await picker.getByTestId('sort-by-score').check();
@@ -120,6 +126,7 @@ test.describe('the addon flows', () => {
 
   test('the gear panel shows the spec’s weights with their sources', async ({ page }) => {
     await page.goto('/planner');
+    await openGear(page);
     const weights = page.getByTestId('gear-weights');
     // `toContainText` reads textContent, which a closed <details> still has -- so the proof
     // that the disclosure actually opened has to come first, and from its `open` state.

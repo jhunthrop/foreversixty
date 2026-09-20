@@ -419,27 +419,59 @@
        them and still moves the footer -- by the difference rather than by the whole planner.
        Re-derive them by loading /planner, setting this element's min-height to 0, and reading
        its `getBoundingClientRect().height` below and above the md breakpoint. They measure
-       793 at 360px and 1079 from md up (Task 21's "Include a simmed DPS on the card" checkbox
-       under the Share button, plus the row's own gap-3, added about 56px at 360px and 31.5px
-       from md up over the 737/1047.5 this measured before it -- most of that at 360px is the
-       fix-round bump from `min-h-6` to `min-h-11` so the checkbox clears the same 44px target
-       every other checkbox in the codebase does; the other figures below quoting 616, 646.5,
-       728, 962 and 1143 predate both that change and Task 11's tree header change before it
-       and were not re-measured, since none of them feeds this min-height and re-deriving them
-       needs gear- and read-only-mount scenarios outside what the checked-in fixture data
-       covers). Each value here is set a hair under what was measured, because under costs a
-       pixel of movement and over leaves dead space below the ready planner for good.
+       1039.5 at 360px and 1379 from md up (the addon lane's Task 16 added `<ImportBox>` --
+       a heading, a two-row textarea and a submit button -- inside this region on the
+       non-read-only mount, plus SharePanel's "Copy addon code" button next to Share and the
+       always-present hint paragraph under that row; together that grew the region by about
+       246.5px at 360px and 300px from md up over the 793/1079 this measured before it. The
+       gearless-desktop figure below quoting 616 is on the same non-read-only mount as this
+       min-height, so it too now understates the ready height by roughly that same growth
+       and was not re-measured (it stays far enough under either reserve for the conclusion
+       below to hold regardless). The read-only figures quoting 646.5 and 962 are unaffected
+       by this lane -- ImportBox and SharePanel's addon-code button are both `!readOnly`-only
+       -- and remain as measured; both predate the Task 21 checkbox change and Task 11's tree
+       header change before it, and were not re-measured, since neither feeds this min-height
+       and re-deriving them needs a gear-mount scenario outside what the checked-in fixture
+       data covers). Each value here is the measured natural rounded up to the whole pixel --
+       1039.5 becomes 1040, and 1379 is already whole. That is the convention the base reserve
+       followed too: its 792 and 1078 were that build's loaded naturals exactly, leaving zero
+       residual travel. Under costs movement; over costs only dead space, so where the
+       measurement is fractional, round up.
 
-       The phone figure fell from 1412.5 to 728 when gear became the third tab: the gear panel
-       used to stack under the trees there and now takes its turn in the same column. What is
-       reserved for is the tab the planner lands on, which is the first tree. Opening Gear
-       grows the region to 1143 and pushes the footer down by the difference, and that is
-       deliberate -- it is a tap rather than an unprompted shift, the same kind of movement
-       showing the order strip or opening an item picker already makes, and none of it is
-       what CLS measures. Reserving the gear height instead would buy that back at the price
-       of 415px of dead space under every build that never opens the tab. Desktop is untouched
-       by the tab strip (it is md:hidden, and the gear panel still sits under the order strip
-       there), so the md figure is unchanged.
+       Two things this comment used to have wrong, both settled by measurement. A reserve that
+       is *too large* does not haul the footer up in the failed-to-load state: the min-height
+       sits on the container wrapping all three branches, so a larger reserve binds identically
+       in every one of them -- it buys dead space, never movement. Failed-to-load's own natural
+       height is 171.5 at 360px and 144 from md up, far below any candidate reserve, so the
+       reserve is what that branch measures whatever the reserve is. The only constraint on
+       this number is `reserve >= the loaded natural`; overshooting costs blank space alone.
+       And the Playwright *project* is irrelevant to every height here: Pixel 7 and Desktop
+       Chrome return byte-identical heights at equal viewports, and
+       tests/e2e/planner-phone.spec.ts sets its own
+       `test.use({ viewport: { width: 360, height: 800 } })`, which overrides the mobile
+       project's 412px -- so `--project=mobile` measures 360px, not 412. Only viewport width
+       moves these numbers.
+
+       One standing caveat, as true of the base reserve as of this one: every figure in this
+       comment is measured against the *fixture* build (FOREVER_DATA=fixture, a two-tree
+       warrior), so the reserve has only ever been sized to the fixture's loaded height -- at
+       the base too, to the pixel. Real data has never been inside it, before this lane or
+       after. Restoring the equality restores the invariant this lane broke and opens no new
+       real-data gap; sizing for real data is a separate question from this fix.
+
+       The phone figure fell from 1412.5 to 728 (predating this lane) when gear became the
+       third tab: the gear panel used to stack under the trees there and now takes its turn
+       in the same column. What is reserved for is the tab the planner lands on, which is the
+       first tree, and that tab now measures 1039.5 with the import box and addon-code
+       controls counted in -- both sit above the tab content, so they add the same height
+       whichever tab is open. Opening Gear now measures 1516.5 (was 1143 before this lane) and
+       pushes the footer down by the difference, and that is deliberate -- it is a tap rather
+       than an unprompted shift, the same kind of movement showing the order strip or opening
+       an item picker already makes, and none of it is what CLS measures. Reserving the gear
+       height instead would buy that back at the price of 477.5px of dead space under every
+       build that never opens the tab. Desktop is untouched by the tab strip (it is md:hidden,
+       and the gear panel still sits under the order strip there), so the md figure carries
+       the same ImportBox/addon-code growth as the rest of the toolbar.
 
        This still earns its keep even though the ready planner is now tall enough that the
        footer is below the fold in both states, and the numbers are here so the question does
@@ -471,19 +503,20 @@
 
        A class the build ships no item file for loses the gear panel, and with it the Gear
        tab. On a phone that changes nothing: the tree tab is what is reserved for, and it
-       measures the same 728. On desktop the panel leaves the column and the ready planner
-       comes in at 616, some 421px under the md reserve, which is dead space rather than
-       movement and stays the safe direction to err.
+       measures the same 1039.5. On desktop the panel leaves the column and the ready planner
+       comes in at 616 (stale, see above -- still comfortably under the 1379 md reserve
+       either way), which is dead space rather than movement and stays the safe direction to
+       err.
 
        Fork replaces Reset and drops the SharePanel section, but only on the read-only mount --
        the editable toolbar this measures is untouched. The read-only mount is the shorter one,
-       646.5 and 962, so it sits about 80px under the reserve and leaves that much space above
+       646.5 and 962, so it sits well under the reserve and leaves that much space above
        the footer on the API's /b/:id. Reserving the taller figure in both is deliberate:
        Fork grows the toolbar back to the editable height, and a reserve that
        tracked `readOnly` would spend that growth shoving the footer down the moment it is
        pressed. /b/:id carries no CLS budget of its own -- it is server-rendered, so the
        island's whole planner arrives after first paint regardless of what this reserves. -->
-  <div class="flex min-h-[792px] flex-col gap-[22px] md:min-h-[1078px] md:gap-8">
+  <div class="flex min-h-[1040px] flex-col gap-[22px] md:min-h-[1379px] md:gap-8">
     {#if status === 'loading'}
       <!-- The planner's own panel chrome rather than a bare line on a blank reserve: a
            viewport of empty space reads as a broken page, and the frame reads as the planner
