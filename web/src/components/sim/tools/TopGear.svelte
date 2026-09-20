@@ -8,7 +8,9 @@
          the combination count. Both only make sense in gear mode (search adds a gear
          candidate; a consumable list only multiplies `gear` mode's product, contract
          10.1 A5), so both live inside the same `gearMode` guard as the slot grid.
-       - Task 14 inserts TalentCandidates and NamedSets here, in the same place.
+       - Task 14's TalentCandidates sits outside the gearMode guard (talent compare is
+         loadouts only, contract 10.1's talents mode has no gear candidates) and its
+         NamedSets sits inside it, beside ItemSearch and ConsumableCandidates.
        - Task 15 inserts BulkRunBar (which itself mounts SettingsPanel and RequestDrawer)
          here, after the candidate sections and before the combination count.
        - Task 16 inserts ComboResults here, after the run bar.
@@ -22,7 +24,9 @@
   import { bulkCopy } from '../../../lib/sim/copy';
   import ConsumableCandidates from './ConsumableCandidates.svelte';
   import ItemSearch from './ItemSearch.svelte';
+  import NamedSets from './NamedSets.svelte';
   import SlotGrid from './SlotGrid.svelte';
+  import TalentCandidates from './TalentCandidates.svelte';
 
   // `me` is part of the pinned prop shape ToolsView.svelte passes to every tool view, but
   // the slot grid itself has no use for it -- Task 15's BulkRunBar is where a signed-out
@@ -58,6 +62,22 @@
       buffs={store.simBuffs}
       treeVersion={store.character?.tree_version ?? ''}
       ontoggle={(id) => store.toggleConsumable(id)}
+    />
+    {#if store.character !== null}
+      <NamedSets
+        character={store.character}
+        sets={store.namedSets}
+        onadd={(set) => store.addNamedSet(set)}
+        onremove={(name) => store.removeNamedSet(name)}
+      />
+    {/if}
+  {/if}
+
+  {#if store.character !== null}
+    <TalentCandidates
+      character={store.character}
+      picked={store.loadouts}
+      ontoggle={(loadout, on) => (on ? store.addLoadout(loadout) : store.removeLoadout(loadout.name))}
     />
   {/if}
 

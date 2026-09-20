@@ -611,6 +611,8 @@ export const bulkCopy = {
   setsIntro: 'A set replaces every slot at once. Paste a second export string to add one.',
   setsPaste: 'Paste an export string',
   setsAdd: 'Add set',
+  /** A set already ticked as a candidate (Task 14's NamedSets), offered back off. */
+  setsRemove: 'Remove',
   setsBadCode: 'That is not an export string this build can read.',
 
   // --- the run bar ---

@@ -14,6 +14,7 @@
 import { AccountError, requestEnvelope } from '../account/api';
 import type { CharacterPath } from '../characters';
 import { API_BASE_URL } from '../planner/config';
+import type { BuildRecord } from '../planner/types';
 import type { BulkServerProgress } from './bulk-types';
 import { bulkCopy, simCopy } from './copy';
 import type { KindFilter } from './history';
@@ -85,6 +86,21 @@ export async function saveSim(
 
 export function fetchSim(simId: string, apiBase: string = API_BASE_URL): Promise<SimResult> {
   return call<SimResult>(`/v1/sims/${simId}`, apiBase, simCopy.loadFailed, { credentials: 'omit' });
+}
+
+/**
+ * The signed-in player's saved planner builds, for Top Gear's talent candidate list
+ * (contract 10.6: `builds.user_id` plus this route). Every failure -- a deployment older
+ * than the migration answers 404, and an empty list is not an error at all -- is the
+ * caller's to treat as "no saved builds" in one line (`bulkCopy.talentsSavedUnavailable`)
+ * rather than an error banner on a page whose other numbers are all correct; this function
+ * itself only throws the ordinary `SimApiError` every other read here throws.
+ */
+export function fetchMyBuilds(
+  page: number = 1,
+  apiBase: string = API_BASE_URL,
+): Promise<{ rows: BuildRecord[]; total: number; page: number; per_page: number }> {
+  return call(`/v1/builds?mine=1&page=${page}`, apiBase, simCopy.loadFailed);
 }
 
 export function listMySims(

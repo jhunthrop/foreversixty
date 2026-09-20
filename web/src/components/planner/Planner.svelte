@@ -35,11 +35,18 @@
     classSlug = DEFAULT_CLASS_SLUG,
     raceSlug,
     record = null,
+    oncode,
   }: {
     treeVersion: string;
     classSlug?: string;
     raceSlug?: string;
     record?: BuildRecord | null;
+    /**
+     * Called with the build's own FS1 code whenever it changes. Top Gear's "add a build"
+     * (Task 14's TalentCandidates) mounts this component inline and reads the code back
+     * through it; /planner and /b/:id pass nothing and the callback never fires.
+     */
+    oncode?: (code: string) => void;
   } = $props();
 
   // The page is static, so ?class= and ?race= can only be read in the browser. A record
@@ -180,6 +187,27 @@
       ),
     )}`,
   );
+
+  /**
+   * The same code `simHref` embeds, handed to an embedder that asked for it. A `$effect`
+   * rather than a call inside a derivation: a derivation must stay a pure read, and calling
+   * `oncode` is a side effect that has to run again on every build change.
+   */
+  const liveCode = $derived(
+    store.talentIndex === null
+      ? ''
+      : encodeFS1({
+          dataBuild: store.treeVersion,
+          classSlug: store.classSlug,
+          raceSlug: store.raceSlug,
+          treeRanks: treeRanksFor(store.talentIndex, store.order),
+          gear: store.gear,
+        }),
+  );
+
+  $effect(() => {
+    if (liveCode !== '') oncode?.(liveCode);
+  });
 
   let status = $state<'loading' | 'ready' | 'failed'>('loading');
   let attempt = $state(0);

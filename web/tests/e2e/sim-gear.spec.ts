@@ -120,3 +120,56 @@ test('a consumable candidate is named, not spelled as an id', async ({ page }) =
   await loadGear(page);
   await expect(page.getByTestId('sim-consumables')).toContainText('Flask of Supreme Power');
 });
+
+test('the talent list offers the character’s own build and a saved one', async ({ page }) => {
+  await page.route('**/v1/builds?mine=1*', (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        ok: true,
+        request_id: 'r',
+        error: null,
+        data: {
+          rows: [
+            {
+              id: 'bld987654321',
+              class_id: 1,
+              race_id: 2,
+              tree_version: activeBuild.build,
+              point_order: [2001, 2001, 2001, 2001, 2001],
+              gear: {},
+              title: 'Deep Fury',
+              created_at: '2026-09-18T12:00:00Z',
+              views: 2,
+            },
+          ],
+          total: 1,
+          page: 1,
+          per_page: 100,
+        },
+      }),
+    }),
+  );
+  await loadGear(page);
+  await expect(page.getByTestId('sim-loadout-current')).toBeVisible();
+  await page.getByTestId('sim-loadout-Deep Fury').check();
+  await expect(page.getByTestId('sim-loadout-Deep Fury')).toBeChecked();
+});
+
+test('a pasted second export string becomes a named set', async ({ page }) => {
+  await loadGear(page);
+  await page.getByTestId('sim-set-input').fill(`${FURY}`);
+  await page.getByTestId('sim-set-name').fill('PvP set');
+  await page.getByTestId('sim-set-add').click();
+  await expect(page.getByTestId('sim-set-PvP set')).toBeVisible();
+});
+
+test('a set that is not an export string says so and adds nothing', async ({ page }) => {
+  await loadGear(page);
+  await page.getByTestId('sim-set-input').fill('FS2:nope');
+  await page.getByTestId('sim-set-name').fill('Bad');
+  await page.getByTestId('sim-set-add').click();
+  await expect(page.getByTestId('sim-set-error')).toBeVisible();
+  await expect(page.getByTestId('sim-set-Bad')).toHaveCount(0);
+});

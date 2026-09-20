@@ -1,12 +1,21 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import type { CharacterPath } from '../characters';
-import { FIXTURE_SIM_ID, TEST_API, createSimApi, envelope, fixtureResult } from '../../test-support/sim-api';
+import {
+  FIXTURE_MY_BUILD_ID,
+  FIXTURE_SIM_ID,
+  TEST_API,
+  createSimApi,
+  envelope,
+  failure,
+  fixtureResult,
+} from '../../test-support/sim-api';
 import {
   PREMIUM_REQUIRED_STATUS,
   SimApiError,
   dispatchServerSim,
   fetchBulkProgress,
+  fetchMyBuilds,
   fetchSim,
   fetchSimInput,
   fetchSimProgress,
@@ -78,6 +87,19 @@ describe('listMySims', () => {
 
     await listMySims(1, TEST_API, 'gear');
     expect(api.lastUrl()).toContain('kind=gear');
+  });
+});
+
+describe('fetchMyBuilds', () => {
+  it('reads the signed-in player’s saved builds', async () => {
+    const page = await fetchMyBuilds(1, TEST_API);
+    expect(page.rows[0].id).toBe(FIXTURE_MY_BUILD_ID);
+    expect(api.lastUrl()).toContain('/v1/builds?mine=1&page=1');
+  });
+
+  it('raises a SimApiError the caller can treat as "none" rather than as a page failure', async () => {
+    api.route({ method: 'GET', pattern: /\/v1\/builds\?/, respond: () => failure('nope', 404) });
+    await expect(fetchMyBuilds(1, TEST_API)).rejects.toBeInstanceOf(SimApiError);
   });
 });
 

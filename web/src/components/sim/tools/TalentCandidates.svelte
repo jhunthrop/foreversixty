@@ -1,0 +1,208 @@
+<!-- web/src/components/sim/tools/TalentCandidates.svelte -->
+<!-- Design 3.1.6: the character's own build, every planner build the signed-in player has
+     saved for this class, the in-game loadouts the addon export carried, and "add a build"
+     which mounts the planner inline and reads its code back. The planner is a large
+     component and /sim/weights must never download it, so it ships as its own lazy chunk,
+     opened only when the player actually asks for it -- the same idiom SimView.svelte and
+     ReportView.svelte already use for their own non-default views/modes. -->
+<script lang="ts">
+  import { onMount } from 'svelte';
+  import { decodeFS1, orderFromRanks } from '../../../lib/planner/fs1';
+  import { loadTalents } from '../../../lib/planner/load';
+  import { indexTalents } from '../../../lib/planner/rules';
+  import { SECONDARY_BUTTON } from '../../../lib/planner/styles';
+  import type { BuildRecord, TalentFile } from '../../../lib/planner/types';
+  import { createLazyComponent, type LazyLoadState } from '../../../lib/report/lazy-component.svelte';
+  import { fetchMyBuilds } from '../../../lib/sim/api';
+  import type { TalentLoadout } from '../../../lib/sim/bulk-types';
+  import { talentsString, type SimCharacter } from '../../../lib/sim/character';
+  import { bulkCopy, simCopy } from '../../../lib/sim/copy';
+
+  let {
+    character,
+    picked,
+    ontoggle,
+  }: {
+    character: SimCharacter;
+    picked: readonly TalentLoadout[];
+    ontoggle: (loadout: TalentLoadout, on: boolean) => void;
+  } = $props();
+
+  let talents = $state<TalentFile | null>(null);
+  let saved = $state<BuildRecord[] | null>(null);
+  let savedFailed = $state(false);
+  let plannerOpen = $state(false);
+  let customCode = $state('');
+
+  const plannerLazy = createLazyComponent(() => import('../../planner/Planner.svelte'));
+
+  onMount(() => {
+    void loadTalents(character.tree_version, character.class_slug)
+      .then((file) => (talents = file))
+      .catch(() => (talents = null));
+    // Contract 10.6's own ruling: every failure -- a 404 from a deployment older than the
+    // migration, or anything else -- reads as "no saved builds", one line, no error banner,
+    // because the rest of the page is correct without this list.
+    void fetchMyBuilds()
+      .then((page) => {
+        saved = page.rows.filter((row) => row.tree_version === character.tree_version);
+      })
+      .catch(() => {
+        saved = [];
+        savedFailed = true;
+      });
+  });
+
+  const index = $derived(talents === null ? null : indexTalents(talents));
+
+  /** The character's own build, always the first row, available once talents load. */
+  const own = $derived<TalentLoadout | null>(
+    index === null
+      ? null
+      : { name: bulkCopy.talentsOwn, talents: talentsString(index, character.point_order) },
+  );
+
+  /** A saved build's point order as the engine's talents string, through the one converter. */
+  function loadoutFor(record: BuildRecord): TalentLoadout | null {
+    if (index === null) return null;
+    return {
+      name: record.title === undefined || record.title === '' ? record.id : record.title,
+      talents: talentsString(index, record.point_order),
+    };
+  }
+
+  const savedLoadouts = $derived(
+    (saved ?? []).map(loadoutFor).filter((entry): entry is TalentLoadout => entry !== null),
+  );
+
+  /**
+   * The addon export's in-game loadouts (part A's FS1 v2 decoder). `SimCharacter.loadouts`
+   * carries the decoder's own shape -- one rank array per tree -- not the engine's talents
+   * string, so each one goes through the same rank-to-order-to-string pipeline
+   * `characterFromFs1` already uses for the character itself.
+   */
+  const exported = $derived<TalentLoadout[]>(
+    index === null
+      ? []
+      : character.loadouts.map((loadout) => {
+          const { order } = orderFromRanks(index, loadout.treeRanks);
+          return { name: loadout.name, talents: talentsString(index, order) };
+        }),
+  );
+
+  function isPicked(loadout: TalentLoadout): boolean {
+    return picked.some((entry) => entry.name === loadout.name);
+  }
+
+  /** The inline planner's code, turned into a loadout the moment the player accepts it. */
+  function addCustom(): void {
+    if (index === null || customCode === '') return;
+    const decoded = decodeFS1(customCode);
+    if (!decoded.ok) return;
+    const { order } = orderFromRanks(index, decoded.build.treeRanks);
+    ontoggle({ name: `Build ${picked.length + 1}`, talents: talentsString(index, order) }, true);
+    plannerOpen = false;
+    customCode = '';
+  }
+</script>
+
+{#snippet lazyFallback(lazy: LazyLoadState)}
+  {#if lazy.error !== ''}
+    <p class="text-muted text-[13px]" role="alert">
+      {lazy.error}
+      <button
+        type="button"
+        class="text-strong ml-1 inline-flex min-h-11 items-center underline"
+        onclick={() => lazy.load()}>{simCopy.tryAgain}</button
+      >
+    </p>
+  {/if}
+{/snippet}
+
+<section
+  class="border-line rounded-panel mx-[18px] flex flex-col gap-2 border p-3 md:mx-0"
+  data-testid="sim-talent-candidates"
+>
+  <h3 class="section-title text-[14px]">{bulkCopy.talentsSaved}</h3>
+
+  {#if own !== null}
+    <label class="text-text flex min-h-11 items-center gap-2 text-[13px]">
+      <input
+        type="checkbox"
+        class="h-5 w-5"
+        data-testid="sim-loadout-current"
+        checked={isPicked(own)}
+        onchange={(event) => ontoggle(own, event.currentTarget.checked)}
+      />
+      {bulkCopy.talentsOwn}
+    </label>
+  {/if}
+
+  {#each savedLoadouts as loadout (loadout.name)}
+    <label class="text-text flex min-h-11 items-center gap-2 text-[13px]">
+      <input
+        type="checkbox"
+        class="h-5 w-5"
+        data-testid={`sim-loadout-${loadout.name}`}
+        checked={isPicked(loadout)}
+        onchange={(event) => ontoggle(loadout, event.currentTarget.checked)}
+      />
+      {loadout.name}
+    </label>
+  {/each}
+
+  {#if savedFailed}
+    <p class="text-muted text-[12px]" data-testid="sim-loadouts-unavailable">
+      {bulkCopy.talentsSavedUnavailable}
+    </p>
+  {:else if savedLoadouts.length === 0 && saved !== null}
+    <p class="text-muted text-[12px]">{bulkCopy.talentsNoSaved}</p>
+  {/if}
+
+  {#if exported.length > 0}
+    <h4 class="text-muted text-[12px]">{bulkCopy.talentsLoadouts}</h4>
+    {#each exported as loadout (loadout.name)}
+      <label class="text-text flex min-h-11 items-center gap-2 text-[13px]">
+        <input
+          type="checkbox"
+          class="h-5 w-5"
+          data-testid={`sim-loadout-${loadout.name}`}
+          checked={isPicked(loadout)}
+          onchange={(event) => ontoggle(loadout, event.currentTarget.checked)}
+        />
+        {loadout.name}
+      </label>
+    {/each}
+  {/if}
+
+  <button
+    type="button"
+    class="{SECONDARY_BUTTON} border-line-warm text-nav w-fit px-3"
+    data-testid="sim-loadout-add"
+    onclick={() => {
+      plannerOpen = !plannerOpen;
+      if (plannerOpen) plannerLazy.load();
+    }}>{bulkCopy.talentsAddCustom}</button
+  >
+
+  {#if plannerOpen}
+    <div class="border-line rounded-panel border p-2" data-testid="sim-inline-planner">
+      {#if plannerLazy.current}
+        <plannerLazy.current
+          treeVersion={character.tree_version}
+          classSlug={character.class_slug}
+          raceSlug={character.race_slug}
+          oncode={(code: string) => (customCode = code)}
+        />
+        <button
+          type="button"
+          class="{SECONDARY_BUTTON} border-line-warm text-nav mt-2 w-fit px-3"
+          data-testid="sim-loadout-accept"
+          onclick={addCustom}>{bulkCopy.talentsAddCustom}</button
+        >
+      {:else}
+        {@render lazyFallback(plannerLazy)}
+      {/if}
+    </div>
+  {/if}
+</section>
