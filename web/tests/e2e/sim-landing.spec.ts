@@ -183,4 +183,7 @@ test('a signed-in member with no characters gets the switcher and the noCharacte
   await expect(page.getByTestId('sim-sources')).toBeVisible();
   await expect(page.getByTestId('sim-landing')).toHaveCount(0);
   await expect(page.getByTestId('sim-no-characters')).toContainText(simCopy.noCharactersYet);
+  // Nothing to go back to: the account card carries no "Back to your characters" button
+  // here (it used to, and clicking it re-rendered this same state).
+  await expect(page.getByTestId('sim-back-to-characters')).toHaveCount(0);
 });

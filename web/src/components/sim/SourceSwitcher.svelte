@@ -20,6 +20,7 @@
     onfight,
     onsignin,
     onback = () => {},
+    hasCharacters = true,
   }: {
     busy: boolean;
     message: string | null;
@@ -30,6 +31,9 @@
     onsignin: () => void;
     /** Signed-in only: returns to the landing state's character list. */
     onback?: () => void;
+    /** False for a signed-in account with no characters: there is nothing to go back to,
+     *  so the account card carries only its note. */
+    hasCharacters?: boolean;
   } = $props();
 
   let addonCode = $state('');
@@ -127,11 +131,11 @@
 
     <div class={card} data-testid="sim-account-card">
       <h2 class="section-title text-[15px]">{simCopy.sourceAccountTitle}</h2>
-      {#if signedIn}
+      {#if signedIn && hasCharacters}
         <button type="button" class={action} onclick={onback} data-testid="sim-back-to-characters">
           {simCopy.backToCharacters}
         </button>
-      {:else}
+      {:else if !signedIn}
         <p class="text-muted text-[13px]">{simCopy.armorySignIn}</p>
         <button type="button" class={action} onclick={onsignin} data-testid="sim-signin">
           Sign in with Battle.net
