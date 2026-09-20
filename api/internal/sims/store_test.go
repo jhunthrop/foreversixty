@@ -1,6 +1,7 @@
 package sims
 
 import (
+	"math"
 	"testing"
 
 	simapi "github.com/jhunthrop/foreversixty/sim/api"
@@ -225,6 +226,20 @@ func TestAFinishedResultCarryingAnEngineErrorIsStoredAsAnError(t *testing.T) {
 	if p.State != StateError {
 		t.Fatalf("state %q, want %q", p.State, StateError)
 	}
+	// And it composes no headline. Headline would read the failed
+	// result's zero fields as an answer — "0 DPS" — which is a sentence
+	// claiming the run finished and found nothing. The row carries its
+	// state instead, which is what the list has to show.
+	page, err := h.store.Mine(t.Context(), h.owner, 1, "")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(page.Rows) != 1 {
+		t.Fatalf("rows = %+v, want the one failed run", page.Rows)
+	}
+	if got := page.Rows[0]; got.Headline != "" || got.State != StateError {
+		t.Fatalf("failed row: %+v; want an empty headline and state %q", got, StateError)
+	}
 }
 
 func TestSavingTheSameIdTwiceKeepsTheFirst(t *testing.T) {
@@ -320,7 +335,8 @@ func TestMyHistoryCarriesTheKindAndHeadlineAndFiltersByKind(t *testing.T) {
 	for _, r := range all.Rows {
 		byID[r.SimID] = r
 	}
-	if got := byID["aaaaaaaaaaaa"]; got.Kind != simapi.KindRun || got.Headline != "1,204 DPS" {
+	if got := byID["aaaaaaaaaaaa"]; got.Kind != simapi.KindRun || got.Headline != "1,204 DPS" ||
+		got.State != StateDone {
 		t.Errorf("plain row: %+v", got)
 	}
 	if got := byID["bbbbbbbbbbbb"]; got.Kind != simapi.KindGear ||
@@ -361,7 +377,8 @@ func TestAServerRunsHeadlineIsWrittenWhenItFinishes(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(queued.Rows) != 1 || queued.Rows[0].Headline != "" {
+	if len(queued.Rows) != 1 || queued.Rows[0].Headline != "" ||
+		queued.Rows[0].State != StateQueued {
 		t.Fatalf("queued row: %+v", queued.Rows)
 	}
 
@@ -377,8 +394,33 @@ func TestAServerRunsHeadlineIsWrittenWhenItFinishes(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(finished.Rows) != 1 || finished.Rows[0].Headline != "Crit 1.00 · Agility 0.87" {
+	if len(finished.Rows) != 1 || finished.Rows[0].Headline != "Crit 1.00 · Agility 0.87" ||
+		finished.Rows[0].State != StateDone {
 		t.Fatalf("finished row: %+v", finished.Rows)
+	}
+}
+
+// TestAnAbsurdPageIsClampedRatherThanFailing pins the overflow:
+// (page-1)*PerPage past the int range wraps negative, and Postgres
+// refuses a negative OFFSET — a 500 where an empty page is the answer.
+func TestAnAbsurdPageIsClampedRatherThanFailing(t *testing.T) {
+	h := newHarness(t)
+	if err := h.store.Save(t.Context(), "aaaaaaaaaaaa", &h.owner, "",
+		browserResult("warrior-fury", 900)); err != nil {
+		t.Fatal(err)
+	}
+	page, err := h.store.Mine(t.Context(), h.owner, math.MaxInt, "")
+	if err != nil {
+		t.Fatalf("an absurd page must be empty, not an error: %v", err)
+	}
+	if page.Page != MaxPage {
+		t.Errorf("page = %d, want it clamped to %d", page.Page, MaxPage)
+	}
+	if len(page.Rows) != 0 {
+		t.Errorf("rows = %+v, want none that far in", page.Rows)
+	}
+	if page.Total != 1 {
+		t.Errorf("total = %d; the count is of the whole list, not the page", page.Total)
 	}
 }
 

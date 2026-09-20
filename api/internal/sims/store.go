@@ -33,6 +33,27 @@ const (
 // hundred the rankings and report lists use.
 const PerPage = 100
 
+// MaxPage bounds the page a list may be asked for. Past it
+// (page-1)*PerPage overflows int and Postgres is handed a negative
+// OFFSET, which is an error where an empty page is the true answer.
+// Ten million rows deep is far past any history anyone has, so the
+// clamp costs nothing real.
+const MaxPage = 100_000
+
+// clampPage holds a requested page inside the range whose offset is
+// representable, so an absurd page number is an empty page rather than
+// a failed query.
+func clampPage(page int) int {
+	switch {
+	case page < 1:
+		return 1
+	case page > MaxPage:
+		return MaxPage
+	default:
+		return page
+	}
+}
+
 // Store is every sims-table read and write.
 type Store struct{ Pool *pgxpool.Pool }
 
@@ -47,7 +68,11 @@ type Row struct {
 	// Headline is the one line the list shows, composed by Headline at
 	// write time and stored, because composing it on read would mean
 	// detoasting the whole result blob for every row on the page.
-	Headline      string    `json:"headline"`
+	Headline string `json:"headline"`
+	// State is the row's own state: done, error, running or queued. A
+	// failed run has no headline to show, and without this the page
+	// could not tell that from a row whose headline is simply missing.
+	State         string    `json:"state"`
 	EngineVersion string    `json:"engine_version"`
 	CreatedAt     time.Time `json:"created_at"`
 	Title         string    `json:"title"`
@@ -199,9 +224,7 @@ func (s *Store) ForBuild(ctx context.Context, buildID string) (simapi.SimResult,
 // would simply return nothing, which reads as "you have none" rather
 // than as the typo it is.
 func (s *Store) Mine(ctx context.Context, userID int64, page int, kind string) (Page, error) {
-	if page < 1 {
-		page = 1
-	}
+	page = clampPage(page)
 	out := Page{Rows: []Row{}, Page: page, PerPage: PerPage}
 	// One predicate, two queries: the count and the page must agree, and
 	// a literal `$2 = '' or kind = $2` would make the planner ignore
@@ -217,7 +240,7 @@ func (s *Store) Mine(ctx context.Context, userID int64, page int, kind string) (
 		return Page{}, fmt.Errorf("sims: count: %w", err)
 	}
 	rows, err := s.Pool.Query(ctx,
-		`select id, spec, kind, dps_mean, headline, engine_version, created_at,
+		`select id, spec, kind, dps_mean, headline, state, engine_version, created_at,
 		        coalesce(title, '')
 		 from sims where `+where+
 			fmt.Sprintf(" order by created_at desc, id limit $%d offset $%d",
@@ -229,7 +252,7 @@ func (s *Store) Mine(ctx context.Context, userID int64, page int, kind string) (
 	defer rows.Close()
 	for rows.Next() {
 		var r Row
-		if err := rows.Scan(&r.SimID, &r.Spec, &r.Kind, &r.DPS, &r.Headline,
+		if err := rows.Scan(&r.SimID, &r.Spec, &r.Kind, &r.DPS, &r.Headline, &r.State,
 			&r.EngineVersion, &r.CreatedAt, &r.Title); err != nil {
 			return Page{}, fmt.Errorf("sims: scan: %w", err)
 		}
@@ -294,11 +317,20 @@ func (s *Store) Finish(ctx context.Context, id string, res simapi.SimResult) err
 	if res.Error != "" {
 		state = StateError
 	}
+	// Only a run that succeeded gets a headline. Headline reads a failed
+	// result's zero fields as an answer — "0 DPS", or "no combinations" —
+	// and those are sentences claiming the run finished and found
+	// nothing. A failed row carries its state instead, the same way
+	// Fail's does, so the two failure modes read alike.
+	headline := ""
+	if state == StateDone {
+		headline = Headline(res)
+	}
 	_, err = s.Pool.Exec(ctx,
 		`update sims set engine_version = $2, dps_mean = $3, dps_error = $4,
 		   iterations = $5, result = $6, state = $7, headline = $8 where id = $1`,
 		id, res.EngineVersion, res.DPS.Mean, res.DPS.Error, res.IterationsRun, body, state,
-		Headline(res))
+		headline)
 	if err != nil {
 		return fmt.Errorf("sims: finish %s: %w", id, err)
 	}

@@ -95,14 +95,14 @@ func StateFor(medianGap float64, parses int) string {
 // that says so - which is what design section 4.4 asks for.
 func (s *Store) Specs(ctx context.Context) ([]SpecFidelity, error) {
 	byspec := map[string]SpecFidelity{}
-	for _, s := range specs.All {
-		if s.Role != roleDPS {
+	for _, sp := range specs.All {
+		if sp.Role != roleDPS {
 			continue
 		}
 		// No MedianGap and no UpdatedAt: nothing has measured this spec,
 		// and both fields marshal as null to say so.
-		byspec[s.Spec] = SpecFidelity{
-			Spec: s.Spec, ReferenceStat: s.ReferenceStat,
+		byspec[sp.Spec] = SpecFidelity{
+			Spec: sp.Spec, ReferenceStat: sp.ReferenceStat,
 			State: SpecUnsupported, WorstActions: []WorstAction{},
 		}
 	}

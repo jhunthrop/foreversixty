@@ -206,6 +206,25 @@ func (s *Store) GetMany(ctx context.Context, ids []string) (map[string]Build, er
 // hundred the sim history and the rankings use.
 const PerPage = 100
 
+// MaxPage bounds the page a list may be asked for, the same way the sim
+// history's does: past it (page-1)*PerPage overflows int and Postgres is
+// handed a negative OFFSET, which is an error where an empty page is the
+// true answer.
+const MaxPage = 100_000
+
+// clampPage holds a requested page inside the range whose offset is
+// representable.
+func clampPage(page int) int {
+	switch {
+	case page < 1:
+		return 1
+	case page > MaxPage:
+		return MaxPage
+	default:
+		return page
+	}
+}
+
 // Page is one page of a player's own builds.
 type Page struct {
 	Rows    []Build `json:"rows"`
@@ -216,9 +235,7 @@ type Page struct {
 
 // Mine answers one page of a player's own builds, newest first.
 func (s *Store) Mine(ctx context.Context, userID int64, page int) (Page, error) {
-	if page < 1 {
-		page = 1
-	}
+	page = clampPage(page)
 	out := Page{Rows: []Build{}, Page: page, PerPage: PerPage}
 	if err := s.Pool.QueryRow(ctx,
 		`select count(*) from builds where user_id = $1`, userID).Scan(&out.Total); err != nil {
