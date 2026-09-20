@@ -59,6 +59,47 @@ def _file_digests(build_dir: Path) -> dict[str, str]:
     }
 
 
+def _active_client_item_ids(root: Path) -> set[int]:
+    """Item ids the client the site actually serves has an `ItemSparse` row for.
+
+    `web/src/data/active-build.json` names that build. No committed file carries its
+    `ItemSparse` table directly (raw CSVs are gitignored), but `items.json` is a
+    straight join of `ItemSparse` against `Item` (see `pipeline.normalize.items.
+    normalize_items`), so its id set is exactly the join key this function needs.
+    """
+    active_build = json.loads(
+        (root / "web" / "src" / "data" / "active-build.json").read_text()
+    )["build"]
+    items = json.loads((root / "data" / "builds" / active_build / "items.json").read_text())
+    return {item["id"] for item in items}
+
+
+def _copy_class_items(src_dir: Path, dst_dir: Path, valid_ids: set[int]) -> None:
+    """Copy each per-class item file, dropping ids the active client cannot equip.
+
+    `src_dir` is a different build's own `items/`, carried over wholesale because the
+    Forever build this writes fetches no items of its own (see the module docstring).
+    That source build's ids are not all ids the client actually running the simulator
+    recognises -- item 16963, "Helm of Wrath", is in Classic Era's `ItemSparse` but not
+    in the 1.60 client's -- and `sim/bulk` refuses any such id outright, so shipping it
+    here would be a phantom recommendation the planner could offer but the engine
+    would reject.
+    """
+    dst_dir.mkdir(parents=True, exist_ok=True)
+    for path in sorted(src_dir.glob("*.json")):
+        payload = json.loads(path.read_text())
+        before = payload["items"]
+        payload["items"] = [item for item in before if item["id"] in valid_ids]
+        dropped = len(before) - len(payload["items"])
+        log.info(
+            "%s: dropped %d/%d item(s) absent from the active client's ItemSparse",
+            path.stem,
+            dropped,
+            len(before),
+        )
+        (dst_dir / path.name).write_text(json.dumps(payload, indent=1, sort_keys=True) + "\n")
+
+
 def write_forever_talents(snapshot: str, from_build: str, build: str) -> Path:
     root = Path(__file__).resolve().parents[2]
     builds = root / "data" / "builds"
@@ -106,7 +147,7 @@ def write_forever_talents(snapshot: str, from_build: str, build: str) -> Path:
         shutil.copytree(src / "icons", dst / "icons")
     # The planner's gear picker reads the per-class item files, not items.json alone.
     if (src / "items").is_dir() and not (dst / "items").exists():
-        shutil.copytree(src / "items", dst / "items")
+        _copy_class_items(src / "items", dst / "items", _active_client_item_ids(root))
     if (src / "trees").is_dir() and not (dst / "trees").exists():
         shutil.copytree(src / "trees", dst / "trees")
 
