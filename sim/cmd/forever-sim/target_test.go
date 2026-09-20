@@ -170,12 +170,11 @@ func TestExecuteToTargetAbortOnFirstStepReturnsThePartial(t *testing.T) {
 // An abort AFTER at least one step has already finished has real data
 // to report: the loop keeps the pooled result of the steps that
 // completed and drops the interrupted one rather than merging a
-// result Execute never computed a DPS for. The stop itself needs no
-// Aborted flag here - the pooled result's own IterationsRun, next to
-// the request's unchanged TargetError, already tells a caller who
-// checks api.NeedsMoreIterations that this run stopped short of its
-// target, which is what an aborted-with-zero-data run cannot say for
-// itself.
+// result Execute never computed a DPS for. That data is still written
+// out AND the result says it was stopped - adapter.ErrAborted and
+// Aborted: true - the same as every other abort path, rather than
+// leaving a reader to infer the stop from TargetError and
+// IterationsRun alone.
 func TestExecuteToTargetAbortAfterAStepKeepsWhatCompleted(t *testing.T) {
 	if testing.Short() {
 		t.Skip("runs the engine")
@@ -192,14 +191,17 @@ func TestExecuteToTargetAbortAfterAStepKeepsWhatCompleted(t *testing.T) {
 	res, err := ExecuteToTarget(req, nil)
 	<-done
 
-	if err != nil {
-		t.Fatalf("ExecuteToTarget = %v, want nil: a completed step is a usable answer", err)
+	if !errors.Is(err, adapter.ErrAborted) {
+		t.Fatalf("ExecuteToTarget = %v, want adapter.ErrAborted", err)
 	}
-	if res.Aborted {
-		t.Error("a stop after a full step completed is not flagged aborted")
+	if !res.Aborted {
+		t.Error("a stop after a full step completed must still say it was stopped")
 	}
 	if res.IterationsRun != api.StepIterations {
 		t.Errorf("iterations_run = %d, want exactly the one completed step (%d); the interrupted step must not be merged in", res.IterationsRun, api.StepIterations)
+	}
+	if res.EngineVersion == "" || res.Lane != api.LaneServer {
+		t.Errorf("the completed step's provenance must survive the abort: engine=%q lane=%q", res.EngineVersion, res.Lane)
 	}
 }
 

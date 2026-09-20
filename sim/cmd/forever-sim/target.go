@@ -44,6 +44,7 @@ func ExecuteToTarget(req api.SimRequest, progress io.Writer) (api.SimResult, err
 	var parts []api.SimResult
 	pooled := api.SimResult{Request: req}
 	seed := req.RandomSeed
+	var aborted bool
 
 	for {
 		step := api.NextStepIterations(pooled, req)
@@ -73,7 +74,10 @@ func ExecuteToTarget(req api.SimRequest, progress io.Writer) (api.SimResult, err
 					return res, err
 				}
 				// What completed is still an answer, and the caller
-				// asked for the stop.
+				// asked for the stop - both are true, so the pooled
+				// result is written AND marked below, rather than
+				// picking one over the other.
+				aborted = true
 				break
 			}
 			return api.SimResult{}, err
@@ -95,6 +99,15 @@ func ExecuteToTarget(req api.SimRequest, progress io.Writer) (api.SimResult, err
 	pooled.EngineVersion = enginever.Version
 	pooled.Lane = api.LaneServer
 	pooled.DurationMS = time.Since(start).Milliseconds()
+	if aborted {
+		// The pooled steps are still the answer - combine.Results
+		// already merged only the ones that finished - but the run
+		// did not reach its target or its ceiling, and the caller
+		// asked for the stop, so the result says so rather than
+		// leaving it for a reader to infer from TargetError alone.
+		pooled.Aborted = true
+		return pooled, adapter.ErrAborted
+	}
 	return pooled, nil
 }
 
