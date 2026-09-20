@@ -56,3 +56,26 @@ Run on one character per role and tick here:
       highlights it.
 - [ ] `/fs gear` lists at least one bagged item scored against the planned set.
 - [ ] Logging out writes `ForeverSixtyDB.characters`; the companion picks it up.
+
+## Releasing
+
+```bash
+git tag addon-v1.0.0
+git push origin addon-v1.0.0
+```
+
+`addon-release.yml` runs luacheck, busted, and the Lua 5.1 syntax check, builds
+the zip with the BigWigs packager, checks that its single top-level folder is
+`ForeverSixty/` and that the specs, `.pkgmeta` and `.superpowers` are not inside
+it, and attaches it to a GitHub release.
+
+Publishing to CurseForge and Wago Addons needs two repository secrets, both
+user-owned: `CF_API_KEY` and `WAGO_API_TOKEN`. When neither is set the workflow
+still finishes green and posts a notice saying nothing was published, so the lane
+can be proved before the accounts exist. Add `## X-Curse-Project-ID` and
+`## X-Wago-ID` to `ForeverSixty.toc` once the projects do exist, using the
+literal numeric IDs CurseForge and Wago assign -- neither is a packager
+substitution keyword, so a placeholder token must never sit in that file.
+
+Run it without a tag from the Actions tab (`Run workflow`, `dry_run: true`) to build
+the zip and publish nothing.

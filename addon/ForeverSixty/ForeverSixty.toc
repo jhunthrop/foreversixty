@@ -4,7 +4,6 @@
 ## Author: foreversixty.gg
 ## Version: @project-version@
 ## X-Website: https://foreversixty.gg/addon
-## X-Curse-Project-ID: @project-id@
 ## SavedVariables: ForeverSixtyDB, ForeverSixtyInbox
 
 Locale.lua

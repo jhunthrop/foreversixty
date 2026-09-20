@@ -69,3 +69,8 @@ go.work.sum
 # the engine fork, cloned at the pin by CI (sim.yml's rotations job and
 # data.yml's fetch job) and by anyone reproducing them locally
 .engine/
+
+# the BigWigs packager's own output, produced locally by running
+# release.sh against addon/ForeverSixty (or by addon-release.yml in CI);
+# never the source of a commit
+addon/ForeverSixty/.release/
