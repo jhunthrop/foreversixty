@@ -24,7 +24,9 @@ test('the settings bar reads the defaults and every control changes the settings
   await expect(page.getByTestId('sim-targets')).toHaveValue('1');
   await expect(page.getByTestId('sim-preset')).toHaveValue('raid-buffed');
   await expect(page.getByTestId('sim-rotation')).toHaveText('Default for Fury');
-  await expect(page.getByTestId('sim-rotation-link')).toHaveAttribute('href', '/sim/specs#warrior-fury');
+  // Final whole-branch review, C1: this trigger no longer navigates at all (it opens an
+  // in-page drawer, tests/e2e/sim-rotation-drawer.spec.ts's own coverage) -- an `href`
+  // assertion here used to pin the very navigation that fix removed.
 
   // Fight style: the contract's nine, plus nothing. Choosing one writes its fields.
   const style = page.getByTestId('sim-style');
@@ -110,7 +112,8 @@ test('the settings bar is hidden until a character is loaded', async ({ page }) 
  * consumables, +6% over Solo where vanilla's real answer for a melee is +60% to +120%.
  * This reads the fix from the same three places a reviewer's repro read the bug --
  * "what's in it", the Custom panel's own counters, and the request the browser actually
- * sends -- rather than only a unit test on the PRESET_BUFFS/PRESET_CONSUMABLES constants.
+ * sends -- rather than only a unit test on settings.ts's own PRESET_BUFFS constant and
+ * presetConsumables function.
  */
 test('Raid-buffed is the full standard set: "what’s in it" names it, Custom’s counters show it, and the request carries it', async ({
   page,

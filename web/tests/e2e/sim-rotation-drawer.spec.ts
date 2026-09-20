@@ -2,10 +2,19 @@
 // Task 6 (newcomer BLOCKER, tank MAJOR): "what it does" beside ROTATION used to link to
 // /sim/specs#<spec>, which explains parse fidelity rather than the rotation, and threw away
 // the loaded character and the finished run on the way -- browser Back did not restore
-// either. This proves the fix from the browser, on both reviewers' own repros (newcomer:
-// load a Frost Mage; tank: load an Arms Warrior; run a sim, click "what it does"): the
-// trigger opens an in-page drawer, the character and the result stay on screen, and the
-// URL never changes.
+// either.
+//
+// Final whole-branch review, C1: both reviewers' own repros -- newcomer: load a Frost Mage,
+// click "what it does"; tank: load an Arms Warrior, click "what it does" -- load a
+// character and click, without ever running a sim first. RotationCard, whose Disclosure
+// this suite originally tested, does not render until a run finishes (SimView.svelte:
+// `store.result !== null`), so a test that ran a sim before clicking never actually
+// exercised the reviewers' repro -- it exercised the settings bar's still-broken plain
+// `<a>`'s already-safe successor instead, once main had one. The first two tests below now
+// run the reviewers' own pre-run repro, on the settings bar's own trigger
+// (`sim-rotation-link`); the Escape test keeps the post-run path covered, on
+// RotationCard's own trigger (`sim-rotation-card-link`), so both render paths this branch
+// now shares one component between (RotationDisclosure.svelte) stay proven.
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { expect, test, type Page } from '@playwright/test';
@@ -82,29 +91,28 @@ async function loadArmsWarrior(page: Page): Promise<void> {
   await expect(page.getByTestId('sim-character')).toBeVisible();
 }
 
-test('"what it does" opens the rotation in a drawer, without losing the character or the run', async ({
+// The newcomer's own repro, verbatim: /sim -> load a Frost Mage -> click "what it does" --
+// no run, ever. Scoped to the settings bar's own section (`sim-settings`), the only place
+// this trigger exists before a run finishes.
+test('"what it does" opens the rotation in a drawer, without a run or losing the character (newcomer repro, pre-run)', async ({
   page,
 }) => {
   await loadFrostMage(page);
 
-  await page.getByTestId('sim-run-button').click();
-  await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 5000 });
-  const finishedFigure = await page.getByTestId('sim-dps').textContent();
   const url = page.url();
+  const settings = page.getByTestId('sim-settings');
+  await settings.getByTestId('sim-rotation-link').click();
 
-  const card = page.getByTestId('sim-rotation-card');
-  await card.getByTestId('sim-rotation-card-link').click();
-
-  const panel = card.getByTestId('sim-rotation-drawer-panel');
+  const panel = settings.getByTestId('sim-rotation-drawer-panel');
   await expect(panel).toBeVisible();
   await expect(panel.getByTestId('sim-rotation-drawer-steps')).toContainText(
     'Frostbolt is the whole rotation.',
   );
 
-  // The point of the fix: no navigation happened at all, so nothing was there to lose.
+  // The point of the fix: no navigation happened at all, so nothing was there to lose --
+  // the newcomer's repro never ran a sim before clicking, and neither does this.
   expect(page.url()).toBe(url);
   await expect(page.getByTestId('sim-character')).toBeVisible();
-  await expect(page.getByTestId('sim-dps')).toHaveText(finishedFigure ?? '');
 
   // The fidelity detail is still one click away, in a new tab rather than carrying this one
   // away.
@@ -113,33 +121,27 @@ test('"what it does" opens the rotation in a drawer, without losing the characte
   await expect(fidelityLink).toHaveAttribute('target', '_blank');
 });
 
-// The tank's own repro (tank review, MAJOR): /sim -> load an Arms Warrior -> click "what
-// it does" -> used to land on /sim/specs#warrior-arms with the character gone, and Back
-// did not restore it. Same assertions as the Frost Mage flow above, on the other spec the
-// two named reviewer repros actually reproduced against.
-test('the tank’s repro: an Arms Warrior’s "what it does" opens in place, character and result stay on screen', async ({
+// The tank's own repro (tank review, MAJOR), verbatim: /sim -> load an Arms Warrior -> Load
+// -> click "what it does" -> used to land on /sim/specs#warrior-arms with the character
+// gone, and Back did not restore it. No run here either -- the point is that Back is never
+// needed because nothing ever navigated.
+test('the tank’s repro: an Arms Warrior’s "what it does" opens in place, no run and no navigation needed', async ({
   page,
 }) => {
   await loadArmsWarrior(page);
 
-  await page.getByTestId('sim-run-button').click();
-  await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 5000 });
-  const finishedFigure = await page.getByTestId('sim-dps').textContent();
   const url = page.url();
+  const settings = page.getByTestId('sim-settings');
+  await settings.getByTestId('sim-rotation-link').click();
 
-  const card = page.getByTestId('sim-rotation-card');
-  await card.getByTestId('sim-rotation-card-link').click();
-
-  const panel = card.getByTestId('sim-rotation-drawer-panel');
+  const panel = settings.getByTestId('sim-rotation-drawer-panel');
   await expect(panel).toBeVisible();
   await expect(panel.getByTestId('sim-rotation-drawer-steps')).toContainText(
     'Bloodrage on cooldown: rage is the limiting resource, same as Fury.',
   );
 
-  // The point of the fix: no navigation happened at all, so nothing was there to lose.
   expect(page.url()).toBe(url);
   await expect(page.getByTestId('sim-character')).toBeVisible();
-  await expect(page.getByTestId('sim-dps')).toHaveText(finishedFigure ?? '');
 
   const fidelityLink = panel.getByTestId('sim-rotation-drawer-fidelity-link');
   await expect(fidelityLink).toHaveAttribute('href', '/sim/specs#warrior-arms');
@@ -147,7 +149,9 @@ test('the tank’s repro: an Arms Warrior’s "what it does" opens in place, cha
 });
 
 // Escape closes the drawer and returns focus to the trigger -- Disclosure.svelte's own
-// contract (Ruling 3), proven here rather than assumed for this caller.
+// contract (Ruling 3), proven here rather than assumed for this caller. This is also the
+// suite's one remaining post-run case (final whole-branch review, C1): RotationCard's own
+// copy of RotationDisclosure, the render path that only exists once a result is on screen.
 test('Escape closes the rotation drawer and returns focus to the trigger', async ({ page }) => {
   await loadFrostMage(page);
   // RotationCard only renders once a run has finished (SimView.svelte: `store.result !==
@@ -182,8 +186,12 @@ test('/sim/specs carries the same rotation prose on the mage-frost card', async 
   await page.goto('/sim/specs');
   const card = page.getByTestId('spec-mage-frost');
   await expect(card).toBeVisible();
-  await card.getByTestId('spec-rotation-trigger').click();
-  await expect(card.getByTestId('spec-rotation-steps')).toContainText('Frostbolt is the whole rotation.');
+  // Final whole-branch review, I2: suffixed with the spec so the 20 damage-spec cards on
+  // this page never share one testid (or one unscoped accessible name) between them.
+  await card.getByTestId('spec-rotation-trigger-mage-frost').click();
+  await expect(card.getByTestId('spec-rotation-steps-mage-frost')).toContainText(
+    'Frostbolt is the whole rotation.',
+  );
   // Same trigger text as RotationCard's own -- one voice for "what does this rotation do".
-  await expect(card.getByTestId('spec-rotation-trigger')).toHaveText(simCopy.rotationLink);
+  await expect(card.getByTestId('spec-rotation-trigger-mage-frost')).toHaveText(simCopy.rotationLink);
 });

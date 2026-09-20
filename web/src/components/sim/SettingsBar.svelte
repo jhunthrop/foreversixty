@@ -23,9 +23,10 @@
     type SimSettings,
   } from '../../lib/sim/settings';
   import { FIGHT_STYLES, fightStyle } from '../../lib/sim/styles';
-  import { referenceStatOf, specDisplayName } from '../../lib/sim/spec-label';
+  import { isSimulatedSpec, referenceStatOf, specDisplayName } from '../../lib/sim/spec-label';
   import Disclosure from './Disclosure.svelte';
   import HelpNote from './HelpNote.svelte';
+  import RotationDisclosure from './RotationDisclosure.svelte';
   import SettingsSheet from './SettingsSheet.svelte';
 
   let {
@@ -59,7 +60,9 @@
   const control =
     'border-line-warm rounded-control bg-raised text-text min-h-11 min-w-0 md:min-w-[7rem] border px-3 text-[14px] font-semibold md:min-h-9';
   const targets = Array.from({ length: MAX_TARGETS }, (_, i) => i + 1);
-  const rotationLabel = $derived(`${simCopy.rotationPrefix} ${specDisplayName(spec)}`);
+  const specName = $derived(specDisplayName(spec));
+  const simulatedSpec = $derived(isSimulatedSpec(spec));
+  const rotationLabel = $derived(`${simCopy.rotationPrefix} ${specName}`);
   const styleId = $derived(styleIdOf(settings));
   // Only the two movement styles carry a note (copy.ts's styleNote). Everything else
   // renders nothing at all rather than an empty paragraph that would reserve a line.
@@ -211,20 +214,33 @@
 
     <div class="flex flex-col gap-1">
       <span class="label text-muted">{simCopy.rotation}</span>
-      <span class="flex min-h-11 items-center gap-2 text-[14px] md:min-h-9">
-        <span class="text-strong font-semibold" data-testid="sim-rotation">{rotationLabel}</span>
-        <!-- 68px wide already clears the 44px hit-target floor, but its own line-height
-             does not; the row around it already reserves min-h-11 (44px) on mobile, so
-             giving the link itself the same min-height fills that already-reserved space
-             rather than growing the row further. -->
-        <a
-          href={`/sim/specs#${spec}`}
-          class="inline-flex min-h-11 items-center text-[13px] md:min-h-0"
-          data-testid="sim-rotation-link"
-        >
-          {simCopy.rotationLink}
-        </a>
-      </span>
+      {#if simulatedSpec}
+        <span class="flex min-h-11 items-center gap-2 text-[14px] md:min-h-9">
+          <span class="text-strong font-semibold" data-testid="sim-rotation">{rotationLabel}</span>
+          <!-- Final whole-branch review, C1: this used to be a plain `<a href="/sim/specs#<spec>">`
+               -- the settings bar's own copy of RotationCard's "what it does" trigger, except
+               unfixed: every persona repro that mattered (newcomer, tank) clicked this one, not
+               RotationCard's, because none of them ran a sim first and RotationCard does not
+               render until one has. RotationDisclosure (extracted from RotationCard.svelte) is
+               the same never-navigates control both places now, so the character and the
+               settings on screen survive either trigger. 68px wide already clears the 44px
+               hit-target floor, but its own line-height does not; the row around it already
+               reserves min-h-11 (44px) on mobile, so giving the trigger the same min-height
+               fills that already-reserved space rather than growing the row further. -->
+          <RotationDisclosure
+            {spec}
+            idPrefix="sim-rotation"
+            triggerClass="inline-flex min-h-11 items-center text-[13px] md:min-h-0"
+            triggerTestId="sim-rotation-link"
+          />
+        </span>
+      {:else}
+        <span class="flex min-h-11 items-center text-[14px] md:min-h-9">
+          <span class="text-strong font-semibold" data-testid="sim-rotation">
+            {simCopy.rotationNotSimulated(specName)}
+          </span>
+        </span>
+      {/if}
     </div>
   </div>
 

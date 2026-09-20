@@ -103,6 +103,11 @@ test('/sim: a Restoration Druid loads the strip, but the run control is disabled
   // character -- gear, talents, header -- whatever the spec.
   await expect(page.getByTestId('sim-character')).toContainText('Restoration Druid');
 
+  // Final whole-branch review, C2 (healer review MAJOR, quoted verbatim: "'ROTATION --
+  // Default for Restoration' is a false statement"): SettingsBar's own rotation row used to
+  // read this unconditionally. It now reads the same honest line RotationCard already had.
+  await expect(page.getByTestId('sim-rotation')).toHaveText(simCopy.rotationNotSimulated('Restoration'));
+
   const button = page.getByTestId('sim-run-button');
   await expect(button).toBeDisabled();
 

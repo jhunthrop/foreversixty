@@ -49,11 +49,13 @@
   // mounts.
   const unsimulatedSpecs = nonDpsSpecs();
 
-  // "/sim/specs#warrior-fury" from the settings bar's rotation link: the browser's own
-  // fragment scroll fires once, on the shell's first paint, long before this island fetches
-  // and renders a single card -- so the scroll has to happen here, once the row it names
-  // actually exists in the DOM, rather than being left to a navigation the browser already
-  // finished acting on.
+  // "/sim/specs#warrior-fury" from RotationDisclosure's own fidelity-detail link (opened in
+  // a new tab, both from the settings bar and from RotationCard -- final whole-branch review
+  // C1 stopped the settings bar's own copy of this control from navigating the current tab
+  // at all): the browser's own fragment scroll fires once, on the shell's first paint, long
+  // before this island fetches and renders a single card -- so the scroll has to happen
+  // here, once the row it names actually exists in the DOM, rather than being left to a
+  // navigation the browser already finished acting on.
   $effect(() => {
     if (rows === null) return;
     const id = window.location.hash.slice(1);
