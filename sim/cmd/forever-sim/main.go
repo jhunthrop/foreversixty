@@ -13,6 +13,13 @@
 //
 //	forever-sim -in request.json -out result.json -progress
 //	forever-sim -in - -out - < request.json > result.json
+//	forever-sim -plan -in request.json -out -
+//
+// The binary detects the request's kind from the request itself
+// (api.SimRequest.Kind) rather than from a flag: a gear, talents or
+// drops request runs the plan-rank loop over sim/bulk's stages
+// instead of one plain sim, and -plan answers "how many combinations,
+// and what would the first stage be" without running anything.
 //
 // SIGINT and SIGTERM stop the run the way the browser's Stop button
 // does, through the engine's own abort signal, and the partial run is
@@ -56,6 +63,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/sim/adapter"
 	"github.com/jhunthrop/foreversixty/sim/api"
+	"github.com/jhunthrop/foreversixty/sim/bulk"
 	"github.com/jhunthrop/foreversixty/sim/enginever"
 	"github.com/jhunthrop/foreversixty/sim/internal/simdb"
 	"github.com/jhunthrop/foreversixty/sim/internal/simdrain"
@@ -82,6 +90,7 @@ func main() {
 	outProto := flag.String("out-proto", "", "write the engine's raw RaidSimResult protobuf here instead; only sim/adapter's fixture refresh wants this")
 	iterations := flag.Int("iterations", 0, "override the request's iteration count")
 	noSample := flag.Bool("no-sample", false, "skip the sample iteration: the run keeps the engine's concurrent entry point instead of replaying one fight single-threaded. For a batch caller - the nightly validation job, the execution scorer - whose cast log is never read")
+	plan := flag.Bool("plan", false, "print the combination count and the first stage as JSON, and run nothing; the API counts a bulk request this way")
 	progress := flag.Bool("progress", false, "write JSON-lines progress to stderr; the engine's own log output is wrapped as {\"log\":...} so every line of that stream parses")
 	version := flag.Bool("version", false, "print the engine version and exit")
 	flag.Parse()
@@ -114,7 +123,7 @@ func main() {
 	if *outProto != "" {
 		run, outPath = runProto, *outProto
 	}
-	if err := run(*in, outPath, overrides{iterations: *iterations, noSample: *noSample}, sink); err != nil {
+	if err := run(*in, outPath, overrides{iterations: *iterations, noSample: *noSample}, *plan, sink); err != nil {
 		fmt.Fprintln(os.Stderr, "forever-sim:", err)
 		switch {
 		case errors.Is(err, errBadInput):
@@ -142,12 +151,15 @@ type overrides struct {
 
 // run is main's body, with its files and its progress sink as parameters
 // so it is testable.
-func run(inPath, outPath string, over overrides, progress io.Writer) error {
+func run(inPath, outPath string, over overrides, planOnly bool, progress io.Writer) error {
 	req, err := load(inPath, over)
 	if err != nil {
 		return err
 	}
-	res, err := Execute(req, progress)
+	if planOnly {
+		return writePlan(req, outPath)
+	}
+	res, err := dispatch(req, bulk.Options{}, progress)
 	if err != nil && !errors.Is(err, adapter.ErrAborted) {
 		return err
 	}
@@ -164,11 +176,78 @@ func run(inPath, outPath string, over overrides, progress io.Writer) error {
 	return err
 }
 
+// dispatch picks the pipeline the request's kind asks for. The kind is
+// derived from the request, never passed as a flag: an operator who
+// could say "run this as a bulk" could say it of a request with no
+// bulk block.
+func dispatch(req api.SimRequest, opt bulk.Options, progress io.Writer) (api.SimResult, error) {
+	switch req.Kind() {
+	case api.KindGear, api.KindTalents, api.KindDrops:
+		return executeBulk(req, opt, progress)
+	case api.KindWeights:
+		// Task 24 adds the weights run; until then the binary refuses
+		// rather than silently running a plain sim of a request that
+		// asked for something else.
+		return api.SimResult{}, fmt.Errorf("%w: weights requests are not yet supported by this binary", errBadInput)
+	default:
+		return Execute(req, progress)
+	}
+}
+
+// writePlan answers -plan: how many combinations, and what the first
+// stage would be, without running a sim.
+//
+// The API calls it to count a request at submit time. It could not
+// call bulk.Count directly: sim/bulk reaches sim/internal/simdb for
+// the item rows, and an internal package is not importable from
+// another module. So the binary the job already ships is the door.
+//
+// A cap breach comes back as the SAME structured error the wasm
+// returns, so the API answers 400 cap_exceeded from either lane
+// without parsing a sentence.
+func writePlan(req api.SimRequest, outPath string) error {
+	if req.Bulk == nil {
+		return fmt.Errorf("%w: -plan takes a bulk request; this one has none", errBadInput)
+	}
+	stage, err := bulk.PlanWith(req, bulk.Options{})
+	if err != nil {
+		var capped api.ErrCapExceeded
+		if errors.As(err, &capped) {
+			b, marshalErr := json.Marshal(struct {
+				Error        string `json:"error"`
+				Cap          int    `json:"cap"`
+				Combinations int    `json:"combinations"`
+			}{"cap_exceeded", capped.Cap, capped.Combinations})
+			if marshalErr != nil {
+				return marshalErr
+			}
+			if writeErr := write(outPath, b); writeErr != nil {
+				return writeErr
+			}
+			return fmt.Errorf("%w: %v", errBadInput, err)
+		}
+		return fmt.Errorf("%w: %v", errBadInput, err)
+	}
+	b, err := json.Marshal(struct {
+		Combinations int                `json:"combinations"`
+		Stage        bulk.StageRequests `json:"stage"`
+	}{len(stage.Combos), stage})
+	if err != nil {
+		return err
+	}
+	return write(outPath, b)
+}
+
 // runProto is run with the engine's own result as the output instead of
 // ours. It exists for one caller: sim/adapter's fixtures are checked-in
 // RaidSimResult protobufs, so regenerating them needs the thing before
 // the adapter rather than after it. Everything else wants run.
-func runProto(inPath, outProtoPath string, over overrides, progress io.Writer) error {
+//
+// planOnly is accepted only so runProto's signature matches run's: main
+// assigns whichever of the two -out-proto picks to one local variable
+// and calls it uniformly. runProto's one caller regenerates fixtures
+// from a plain request, so the flag means nothing here.
+func runProto(inPath, outProtoPath string, over overrides, _ bool, progress io.Writer) error {
 	req, err := load(inPath, over)
 	if err != nil {
 		return err
