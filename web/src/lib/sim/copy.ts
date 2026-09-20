@@ -248,8 +248,18 @@ export const simCopy = {
   specWorstActions: 'Largest gaps',
   specCast: 'cast',
   specSimmed: 'simmed',
+  /**
+   * Final whole-branch review, I3: this used to say the nightly job "sims the top 50
+   * parses ... and publishes the gap here, whatever it is", present tense, as if every
+   * spec below already had an answer. The changelog this same lane wrote
+   * (content/changelog/2026-09-20-simulator-tools-are-live.md) says the opposite: "nothing
+   * has been checked against a real parse, because there are no real parses yet" -- and
+   * every row on this page still reads `specNotYetNote`, because `mergeSpecRows`
+   * (spec-state.ts) has no rows to merge. The job (`api sim-validate`) is real, scheduled
+   * code; it has simply never had a real parse to measure yet. This says both things.
+   */
   specsIntro:
-    'The simulator is only worth as much as its numbers. A nightly job sims the top 50 parses for each of the 20 damage specs it covers and publishes the gap here, whatever it is. The other 7 specs, healers and tanks, are not simulated yet.',
+    'The simulator is only worth as much as its numbers. A nightly job is built to sim the top 50 parses for each of the 20 damage specs it covers and publish the gap here, whatever it is. No real parses exist yet, so every damage spec below still reads "Not yet". The other 7 specs, healers and tanks, are not simulated yet.',
   tryAgain: 'Try again',
 
   distMean: 'Mean DPS',
@@ -657,8 +667,16 @@ export const simCopy = {
    * disclosure does not, "what does this control do", and says so rather than repeating
    * the list.
    */
+  /**
+   * Final whole-branch review, I1: the sentence said "Raid-buffed applies the standard set
+   * a 40-player raid provides", which a raid does not: eight of the ids it applies are
+   * world buffs (Songflower, Dragonslayer, Zandalar, Warchief's, the three Dire Maul
+   * buffs) and seven to nine more are consumables out of the player's own bags (settings.ts's
+   * `presetConsumables`) -- neither comes from a raid, and together they are most of the
+   * preset's own gain. This names what actually supplies each part instead.
+   */
   buffsHelp:
-    'Which buffs and consumables the run applies. Raid-buffed applies the standard set a 40-player raid provides; Solo applies none; Custom lets you build your own list. "What\'s in it" shows exactly what the selected preset applies.',
+    'Which buffs and consumables the run applies. Raid-buffed applies the full standard set: raid, party and self buffs, target debuffs, world buffs, and the consumables in your own bags; Solo applies none; Custom lets you build your own list. "What\'s in it" shows exactly what the selected preset applies.',
   targetLevelHelp: 'The boss level the run’s numbers — armor, resistances — are drawn from.',
   /**
    * Newcomer MINOR (213-216): the field showed 3,731 as placeholder text with a `title=`
