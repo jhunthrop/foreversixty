@@ -21,6 +21,12 @@ const BUDGETS = [
   // ceiling; sim.wasm is not counted, since it is a separate immutable asset fetched after
   // first paint and never on the LCP path.
   { file: 'dist/sim-island.js', limitBytes: 90 * 1024 },
+  // The four combination tools: a candidate grid, an item search, a source picker and two
+  // results views, each a lazily-imported chunk off one entry. 70 KB gzipped for the entry
+  // is roughly twice what the shared parts (the character strip, the source switcher, the
+  // run bar) weigh; the per-tool chunks are not counted here because none of them is on any
+  // page's LCP path -- the shell paints its own skeleton first.
+  { file: 'dist/sim-tools-island.js', limitBytes: 70 * 1024 },
 ];
 
 // Rankings, Character and Guild are ordinary `client:load` Astro islands, not standalone

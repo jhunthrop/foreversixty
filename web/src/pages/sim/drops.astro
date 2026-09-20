@@ -1,0 +1,46 @@
+---
+// web/src/pages/sim/drops.astro
+// Static. The island reads ?source= and ?ref= in the browser, because the page is
+// prerendered and has no request to read.
+//
+// The skeleton below is the same string ToolsView.svelte renders while its view chunk
+// resolves (bulk-skeleton.ts is the one source both read), so the mount swap moves nothing
+// and the page holds its CLS budget -- the identical reservation technique sim/[id].astro
+// and sim/specs.astro already use, and for the identical reason.
+//
+// The min-h reservation below is a placeholder: Task 20 measures this page at 360px and
+// 1280px with the fixture character loaded and replaces it with the real number, exactly as
+// sim/[id].astro's own comment describes.
+import Base from '../../layouts/Base.astro';
+import { bulkCopy } from '../../lib/sim/copy';
+import { TOOL_SKELETONS } from '../../lib/sim/bulk-skeleton';
+---
+
+<Base
+  title="Droptimizer"
+  description="Simulate every item a boss drops against the set you are wearing, and see which drops are upgrades."
+  path="/sim/drops"
+  session
+>
+  <link rel="stylesheet" href="/sim-tools-island.css" slot="head" />
+  <main
+    id="main"
+    tabindex="-1"
+    class="mx-auto flex w-full max-w-[1344px] flex-col gap-[22px] pt-4 pb-10 md:gap-8 md:px-12 md:pt-7"
+  >
+    <h1 class="section-title px-[18px] text-[18px] md:px-0">{bulkCopy.dropsTitle}</h1>
+    <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="sim-tool-intro">
+      {bulkCopy.dropsIntro}
+    </p>
+    <div id="sim-tools" data-sim-tool="drops" class="min-h-[1080px] md:min-h-[760px]">
+      <Fragment set:html={TOOL_SKELETONS.drops} />
+      <noscript>
+        <p class="text-muted px-[18px] text-[14px] md:px-0">
+          The Droptimizer needs JavaScript: it runs the engine in your browser rather than on our servers. The{' '}
+          <a href="/sim">simulator</a> says the same.
+        </p>
+      </noscript>
+    </div>
+    <script type="module" src="/sim-tools-island.js" is:inline></script>
+  </main>
+</Base>

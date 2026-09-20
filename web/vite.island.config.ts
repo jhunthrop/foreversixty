@@ -14,7 +14,7 @@ import { defineConfig } from 'vite';
  * which the Astro build cannot produce because its island chunks are hashed and referenced
  * only from its own HTML.
  */
-export function islandConfig(name: 'planner-island' | 'report-island' | 'sim-island') {
+export function islandConfig(name: 'planner-island' | 'report-island' | 'sim-island' | 'sim-tools-island') {
   return {
     // Astro exposes PUBLIC_*; plain Vite exposes VITE_* only, so PUBLIC_API_BASE_URL has to be
     // allow-listed or lib/planner/config.ts would silently fall back to the default origin.
@@ -26,6 +26,9 @@ export function islandConfig(name: 'planner-island' | 'report-island' | 'sim-isl
       cssCodeSplit: false,
       sourcemap: false,
       // Nothing here is dynamically imported, so the entry needs no preload polyfill.
+      // sim-tools-island is the exception: it lazily imports one view chunk per tool page,
+      // so /sim/weights never downloads the slot grid. The chunks take
+      // `${name}-[hash].js`, which is already the chunkFileNames rule below.
       modulePreload: false,
       // A plain entry with pinned output names rather than `build.lib`. Library mode inlines
       // every referenced asset as a base64 data URL whatever `assetsInlineLimit` says, and
