@@ -38,7 +38,8 @@ function Follow.restore(data)
 	if type(saved) ~= "table" or saved.code == nil then
 		return nil
 	end
-	return Follow.load(saved.code, data, saved.name)
+	local build = Follow.load(saved.code, data, saved.name)
+	return build
 end
 
 function Follow.forget()
@@ -102,18 +103,6 @@ function Follow.line(data, build, ranks)
 	-- moved. Naming the cell is more use than naming nothing.
 	local name = talent and talent.name or string.format(L.followUnknownCell, point.tier, point.column)
 	return string.format(L.followNext, name, tab, point.tier)
-end
-
---- The frame. Created on first use, never on load: an addon that builds
---- frames at login costs every player that time whether they use it or not.
-function Follow.refresh(data)
-	local ranks = Talents.readRanks(data)
-	Follow.frame = Follow.frame or CreateFrame("Frame", "ForeverSixtyFollowFrame", UIParent)
-	Follow.text = Follow.text or Follow.frame:CreateFontString()
-	Follow.text:SetText(Follow.line(data, Follow.build, ranks))
-	Follow.frame:Show()
-	Follow.highlight(data, ranks)
-	return Follow.text:GetText()
 end
 
 --- Highlight the next point's button in the talent window, when it is open.

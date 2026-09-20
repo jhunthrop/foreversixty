@@ -102,30 +102,6 @@ describe("Follow", function()
 		assert.are.equal(string.format(Locale.followNext, unknownName, "Holy", 9), line)
 	end)
 
-	it("refresh builds one frame and keeps using it", function()
-		assert(Follow.load(CODE, DATA))
-		local state = mock.install({
-			talents = {
-				{ name = "Holy", talents = {} },
-				{ name = "Protection", talents = {} },
-				{ name = "Retribution", talents = {} },
-			},
-		})
-
-		local text = Follow.refresh(DATA)
-		assert.are.equal(1, #state.frames)
-		assert.is_truthy(text:find("Improved Holy Strike", 1, true))
-		-- Assert the recorded call, not the resulting `shown` flag: the mock
-		-- now creates every frame already shown, so the flag alone would
-		-- stay true even if Follow.lua's Show() call were deleted.
-		assert.is_true(mock.countCalls(state.frames[1], "Show") > 0)
-
-		-- A second call must not build a second frame.
-		local text2 = Follow.refresh(DATA)
-		assert.are.equal(1, #state.frames)
-		assert.are.equal(text, text2)
-	end)
-
 	it("highlight acts on the open talent frame", function()
 		assert(Follow.load(CODE, DATA))
 		mock.install({})

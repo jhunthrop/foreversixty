@@ -101,6 +101,12 @@ local L = {
 	followInbox = "A build arrived from the companion",
 	followInboxLoad = "Load it",
 
+	-- The tracker. followNext supplies the "<talent> (<tree>, tier n)"
+	-- half, so the two surfaces cannot drift apart.
+	trackerNext = "Next: %s",
+	trackerProgress = "%d of %d",
+	trackerComplete = "Build complete",
+
 	-- Gear
 	gearTitle = "Upgrades",
 	gearNoWeights = "No stat weights for this spec yet, so nothing is scored.",
