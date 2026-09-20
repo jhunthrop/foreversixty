@@ -1,0 +1,10 @@
+-- addon/.busted
+-- Run from addon/: `busted`
+return {
+	default = {
+		ROOT = { "tests" },
+		lpath = "./ForeverSixty/?.lua;./tests/?.lua",
+		pattern = "_spec",
+		verbose = true,
+	},
+}
