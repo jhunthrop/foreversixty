@@ -53,6 +53,22 @@ describe('searchItems', () => {
     expect(off).toHaveLength(items.length);
   });
 
+  it('drops an item the engine does not know about when a known set is given, and keeps it when there is none', () => {
+    // 21550 (Idol of the White Stag) is the fixture item deliberately left out of
+    // simitems.json -- see web/src/fixtures/planner/simitems.json's own header comment.
+    const known = new Set(items.filter((item) => item.id !== 21550).map((item) => item.id));
+    const filtered = searchItems(items, defaultItemQuery(), { ...ctx, known });
+    expect(filtered.map((item) => item.id)).not.toContain(21550);
+    expect(filtered).toHaveLength(items.length - 1);
+
+    // `known` absent (every caller before this field existed) and `known: null` (a build
+    // that ships no simitems.json) both mean "nothing to filter" -- 21550 is back.
+    expect(searchItems(items, defaultItemQuery(), ctx).map((item) => item.id)).toContain(21550);
+    expect(searchItems(items, defaultItemQuery(), { ...ctx, known: null }).map((item) => item.id)).toContain(
+      21550,
+    );
+  });
+
   it('never returns more than the limit', () => {
     const many = Array.from({ length: SEARCH_LIMIT + 20 }, (_, i) => ({ ...items[0], id: 1000 + i }));
     expect(searchItems(many, defaultItemQuery(), ctx)).toHaveLength(SEARCH_LIMIT);

@@ -256,6 +256,24 @@ describe('simCount', () => {
     expect(JSON.parse(engine.simCount(JSON.stringify(fixtureRequest)))).toEqual({ combinations: 0 });
   });
 
+  it('accepts every candidate id when knownItemIds is not configured, the fake’s original behaviour', () => {
+    const engine = createFakeEngine();
+    expect(JSON.parse(engine.simCount(bulk(2)))).toEqual({ combinations: 2 });
+  });
+
+  it('refuses a candidate id outside knownItemIds the way the real engine refuses an unknown item', () => {
+    const engine = createFakeEngine({ knownItemIds: new Set([16963]) });
+    // bulk(2) names 16963 and 16964; 16964 is the one outside the known set.
+    expect(JSON.parse(engine.simCount(bulk(2)))).toEqual({
+      error: 'bulk: the build has no such item: 16964',
+    });
+  });
+
+  it('still counts normally once every candidate id is inside knownItemIds', () => {
+    const engine = createFakeEngine({ knownItemIds: new Set([16963, 16964, 16965]) });
+    expect(JSON.parse(engine.simCount(bulk(3)))).toEqual({ combinations: 3 });
+  });
+
   // Fix round 1 (controller ruling): simCount must agree with simPlan, since Task 15's live
   // cap-notice UI and its client-side server-cap gate both read simCount. simCount now
   // reuses simPlan's own `expand()` instead of a separately-derived sum, so the two cannot

@@ -56,7 +56,7 @@
     <ItemSearch
       items={[...store.items.values()]}
       loot={store.loot}
-      ctx={{ level: SIM_LEVEL, sourcesByItem: store.sourceIndex }}
+      ctx={{ level: SIM_LEVEL, sourcesByItem: store.sourceIndex, known: store.knownItems }}
       treeVersion={store.character?.tree_version ?? ''}
       onadd={(itemId) => store.addSearchItem(itemId)}
     />

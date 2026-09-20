@@ -55,6 +55,7 @@ logger = logging.getLogger(__name__)
 
 SIMDB = "simdb.bin"
 SIMCONSUMES = "simconsumes.json"
+SIMITEMS = "simitems.json"
 ITEM_CLASS_CONSUMABLE = 0
 
 
@@ -224,12 +225,34 @@ def build_sim_database(build_dir: Path) -> tuple[pb.SimDatabase, list[Consumable
     return database, consumables
 
 
+def write_sim_items(build: str, database: pb.SimDatabase, build_dir: Path) -> Path:
+    """`simitems.json`: the item ids `simdb_item_rows` kept, for the web lane.
+
+    `build_sim_items` emits exactly one `SimItem` per kept `(ItemSparse, Item)`
+    pair (see its module docstring) and never reorders them, so
+    `database.items`'s ids are already `simdb_item_rows`'s kept set in its
+    sorted order -- this does not need the raw tables or the intermediate
+    `pairs` list a caller built `database` from, only `database` itself.
+
+    The web's bulk pages (item search, bag, bank, sets, Droptimizer sources)
+    load this to filter candidates down to items the embedded engine
+    database actually carries: `ItemSparse` and `Item` disagree on which ids
+    exist (`items.py`'s module docstring), and a candidate id the planner
+    knows but the engine does not makes `simCount` fail outright.
+    """
+    path = build_dir / SIMITEMS
+    payload = {"build": build, "items": [item.id for item in database.items]}
+    path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    return path
+
+
 def write_sim_database(build: str, root: Path = Path("builds")) -> Path:
     build_dir = root / build
     database, consumables = build_sim_database(build_dir)
     path = build_dir / SIMDB
     path.write_bytes(database.SerializeToString(deterministic=True))
     write_json(consumables, build_dir / SIMCONSUMES)
+    write_sim_items(build, database, build_dir)
     refresh_manifest(build_dir)
     logger.info("wrote %s (%d bytes)", path, path.stat().st_size)
     return path

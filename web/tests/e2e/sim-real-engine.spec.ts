@@ -88,7 +88,10 @@ test('a real wasm run against the fixture character returns a positive DPS', asy
   // test cannot reach: the browser fetching, instantiating and running THIS published
   // artifact through the real RunControl wiring, for the "normal" run every visitor gets.
   await expect(button).toHaveText('Run again', { timeout: 30_000 });
-  await expect(page.getByTestId('sim-progress')).toHaveText('3,000 iterations');
+  // toContainText, not toHaveText: the progress line now carries a percentage too
+  // ("3,000 iterations · 0.13%"), and this test only needs to prove the iteration count
+  // landed, not pin the line's exact full text.
+  await expect(page.getByTestId('sim-progress')).toContainText('3,000 iterations');
 
   const dpsText = await page.getByTestId('sim-dps').textContent();
   expect(dpsText).not.toBeNull();

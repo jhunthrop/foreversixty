@@ -61,6 +61,7 @@ import {
 import { loadLoot, sourcesByItem, type LootFile } from './loot';
 import { BUILT_IN_PHASES, fetchPhases, type PhaseRow } from './phase';
 import { loadItems, loadSets, loadTalents } from '../planner/load';
+import { isKnownItem, knownItemIds, loadSimItems } from './sim-items';
 import { SLOTS, type Item, type ItemSet, type Slot, type TalentFile } from '../planner/types';
 import { defaultSettings, type SimSettings } from './settings';
 import { loadSimBuffs, type SimBuffFile } from './sim-buffs';
@@ -146,6 +147,10 @@ export function createBulkStore(init: BulkStoreInit) {
   let suffixes = $state<SuffixRow[]>([]);
   let loot = $state<LootFile>({ sources: [] });
   let sourceIndex = $state<Map<number, string[]>>(emptySourceIndex());
+  // The engine's embedded item universe (sim-items.ts). `null` means the build ships no
+  // simitems.json -- every candidate source below treats that the same as "nothing to
+  // filter against" (isKnownItem's own default), not "everything is unknown".
+  let knownItems = $state<Set<number> | null>(null);
   let specRows = $state<SpecFidelity[]>([]);
   let simBuffs = $state<SimBuffFile>({ entries: {} });
   // The build-time table until GET /v1/phases answers; see phase.ts's own header.
@@ -217,7 +222,7 @@ export function createBulkStore(init: BulkStoreInit) {
     // `drops` mode's candidates are the picked sources alone (validateBulk rule 3) -- a
     // fresh load has no picks yet, so this replaces the seeded equipped/bag/bank rows with
     // the empty list rather than leaving them there for a mode that must refuse them.
-    if (init.tool === 'drops') rows = rowsFromPicks(pickedBosses, loot, items);
+    if (init.tool === 'drops') rows = rowsFromPicks(pickedBosses, loot, items, knownItems);
     stats = seededStats(init.tool, character, specRows, stats);
     // Set only now, not before `loadDataFor`/`seedRows` above: setting it earlier left a
     // window where the page looked settled (`phase === 'idle'`) while `items` was still
@@ -232,7 +237,7 @@ export function createBulkStore(init: BulkStoreInit) {
    * means no enchant column.
    */
   async function loadDataFor(next: SimCharacter): Promise<void> {
-    const [itemFile, setFile, talents, enchantRows, suffixRows, lootFile, buffFile, phaseRows] =
+    const [itemFile, setFile, talents, enchantRows, suffixRows, lootFile, buffFile, phaseRows, simItemFile] =
       await Promise.all([
         loadItems(next.tree_version, next.class_slug).catch(() => null),
         loadSets(next.tree_version).catch(() => []),
@@ -244,6 +249,9 @@ export function createBulkStore(init: BulkStoreInit) {
         // Never rejects: phase.ts falls back to the build-time table rather than leaving
         // the gate unknown.
         fetchPhases(init.apiBase),
+        // A failed fetch degrades to "nothing to filter against" -- the same fallback
+        // knownItemIds(null) already gives a build that ships no simitems.json at all.
+        loadSimItems(next.tree_version).catch(() => null),
       ]);
     items = toItemMap(itemFile?.items ?? []);
     sets = setFile;
@@ -255,6 +263,7 @@ export function createBulkStore(init: BulkStoreInit) {
     phases = phaseRows;
     sourceIndex = sourcesByItem(lootFile);
     shownKinds = initialShownKinds(lootFile);
+    knownItems = knownItemIds(simItemFile);
   }
 
   /**
@@ -270,8 +279,9 @@ export function createBulkStore(init: BulkStoreInit) {
     const add = (itemId: number, origin: Origin, enchant = 0, suffix = 0): void => {
       const item = items.get(itemId);
       if (item === undefined) return;
+      const known = isKnownItem(itemId, knownItems);
       for (const slot of uiSlotsOf(item)) {
-        seeded.push({ ...rowFor(item, slot, origin), enchant, suffix });
+        seeded.push({ ...rowFor(item, slot, origin, '', known), enchant, suffix });
       }
     };
     for (const slot of next.gear_slots) add(slot.item_id, 'equipped', slot.enchant ?? 0, slot.suffix ?? 0);
@@ -401,6 +411,9 @@ export function createBulkStore(init: BulkStoreInit) {
     },
     get sourceIndex() {
       return sourceIndex;
+    },
+    get knownItems() {
+      return knownItems;
     },
     get specRows() {
       return specRows;
@@ -589,8 +602,15 @@ export function createBulkStore(init: BulkStoreInit) {
         message = bulkCopy.itemNotAdded(itemId);
         return false;
       }
+      // A row the engine does not know about is added unticked, not ticked-but-excluded:
+      // `toCandidates` would drop it from the outgoing request either way (candidates.ts's
+      // `known` guard), but a checked, disabled checkbox reads as "this is included and
+      // you cannot change that" -- exactly backwards for a candidate that can never be
+      // included. `CandidateRows.svelte` disables the checkbox regardless of `checked`, so
+      // this only changes what it shows, not what it would do if it could be ticked.
+      const known = isKnownItem(itemId, knownItems);
       for (const slot of uiSlotsOf(item)) {
-        rows = addRow(rows, { ...rowFor(item, slot, origin, sourceName), checked: true });
+        rows = addRow(rows, { ...rowFor(item, slot, origin, sourceName, known), checked: known });
       }
       scheduleCount();
       return true;
@@ -608,8 +628,17 @@ export function createBulkStore(init: BulkStoreInit) {
       loadouts = loadouts.filter((entry) => entry.name !== name);
       scheduleCount();
     },
+    /**
+     * A named set is one whole-outfit candidate (design 3.1.7), with no per-slot row in the
+     * grid to disable -- so unlike a search, bag, bank or Droptimizer candidate, an unknown
+     * item here cannot be shown disabled and left in. It is dropped from the set instead:
+     * that slot simply is not substituted for this candidate (the same as a slot the export
+     * never named), rather than refusing the whole set over one item the engine does not
+     * carry, or sending a `simCount` refusal for the whole request.
+     */
     addNamedSet(set: GearSet): void {
-      namedSets = [...namedSets.filter((entry) => entry.name !== set.name), set];
+      const known = { ...set, gear: set.gear.filter((slot) => isKnownItem(slot.item_id, knownItems)) };
+      namedSets = [...namedSets.filter((entry) => entry.name !== set.name), known];
       scheduleCount();
     },
     removeNamedSet(name: string): void {
@@ -631,7 +660,7 @@ export function createBulkStore(init: BulkStoreInit) {
     /** A boss, or a whole source when `bossId` is empty. */
     toggleSource(sourceId: string, bossId = ''): void {
       pickedBosses = togglePick(pickedBosses, sourceId, bossId);
-      rows = rowsFromPicks(pickedBosses, loot, items);
+      rows = rowsFromPicks(pickedBosses, loot, items, knownItems);
       scheduleCount();
     },
 

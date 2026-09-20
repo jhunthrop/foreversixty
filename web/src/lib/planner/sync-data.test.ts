@@ -217,6 +217,11 @@ describe('SYNC_ENTRIES', () => {
     const simbuffs = SYNC_ENTRIES.find((entry) => entry.name === 'simbuffs.json');
     expect(simbuffs).toEqual({ name: 'simbuffs.json', kind: 'file', required: false });
   });
+
+  it('publishes the engine’s known item ids, and does not require them', () => {
+    const simitems = SYNC_ENTRIES.find((entry) => entry.name === 'simitems.json');
+    expect(simitems).toEqual({ name: 'simitems.json', kind: 'file', required: false });
+  });
 });
 
 describe('resolveDataSource', () => {

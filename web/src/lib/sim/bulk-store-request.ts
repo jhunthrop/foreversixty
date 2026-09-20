@@ -196,13 +196,17 @@ export async function recount(deps: RecountDeps): Promise<void> {
       deps.setMessage(error.message);
       deps.setDetail(error.detail);
     } else {
-      // Not a cap or validation refusal: a genuine engine error while merely counting. The
-      // count blanks rather than showing a stale number; `detail` carries the reason for a
-      // component that wants it -- `run()` raises the same failure, with `message` set,
-      // the moment the player actually presses Run.
+      // Not a cap or validation refusal: a genuine engine error while merely counting -- an
+      // unknown candidate item id (`bulk: the build has no such item: <id>`) is the case
+      // this was written for. The count blanks rather than showing a stale number, and
+      // unlike the old behaviour, `message` is set too: leaving it unset made `detail`
+      // invisible (`sim-message` only renders when `message !== null`, the same gate the
+      // `BulkValidationError` branch above already respects), which is exactly how this
+      // used to read "Counting combinations…" forever with no explanation on screen.
       deps.setCombinations(null);
       deps.setCapNotice(null);
       deps.setServerCapNotice(null);
+      deps.setMessage(bulkCopy.countFailed);
       deps.setDetail(error instanceof Error ? error.message : '');
     }
   } finally {

@@ -30,8 +30,22 @@
    */
   const combinationTool = $derived(store.tool !== 'weights');
   const running = $derived(store.phase === 'running' || store.serverRunning);
+  /**
+   * `store.combinations` stays `null` both while a count is in flight and after one has
+   * failed (bulk-store-request.ts's `recount`, generic branch) -- the two used to look
+   * identical here, so a failed count read "Counting combinations…" forever with no
+   * indication anything had gone wrong. `store.message` is what tells them apart: it is
+   * cleared at the top of every `recount` call and only set on a real failure, so a
+   * non-null message with a null count means the answer already arrived (badly) rather
+   * than still being awaited. The real explanation is the `sim-message` block below this
+   * bar; this placeholder just gets out of its way instead of contradicting it.
+   */
   const countLabel = $derived(
-    store.combinations === null ? bulkCopy.combinationsCounting : bulkCopy.combinations(store.combinations),
+    store.combinations !== null
+      ? bulkCopy.combinations(store.combinations)
+      : store.message !== null
+        ? ''
+        : bulkCopy.combinationsCounting,
   );
   const PRECISION_LABELS: Record<Precision, string> = {
     fast: bulkCopy.precisionFast,

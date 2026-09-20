@@ -24,6 +24,18 @@ export interface SearchContext {
   level: number;
   /** From `loot.ts`'s `sourcesByItem`. Empty when the build ships no loot file. */
   sourcesByItem: Map<number, string[]>;
+  /**
+   * From `sim-items.ts`'s `knownItemIds`: the ids the engine's embedded database carries.
+   * `undefined` (every existing caller before this field existed) and `null` (a build that
+   * ships no `simitems.json`) both mean "nothing to filter against" -- search results
+   * still show every item this class can equip. Unlike `usableOnly`, this is never a
+   * player-facing toggle: an item the engine does not know about cannot be simulated no
+   * matter what the character could otherwise wear, so search simply never offers it
+   * (`CandidateRows.svelte`'s disabled row is for candidates that reach the grid some
+   * other way -- bags, bank, a Droptimizer pick, an old pinned link -- where the item is
+   * real and hiding it would look like data loss; a fresh search has no such row yet).
+   */
+  known?: ReadonlySet<number> | null;
 }
 
 /**
@@ -55,6 +67,8 @@ function matchesQuery(item: Item, query: ItemQuery, ctx: SearchContext): boolean
     return false;
   }
   if (query.usableOnly && item.required_level > ctx.level) return false;
+  const known = ctx.known ?? null;
+  if (known !== null && !known.has(item.id)) return false;
   return true;
 }
 

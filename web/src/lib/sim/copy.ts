@@ -566,6 +566,16 @@ export const bulkCopy = {
    *  wire's own value, not a display string, so the row shows this generic word instead --
    *  the same treatment `pinned` already gives a `drop:<source-id>` origin. */
   fromSet: 'Set',
+  /**
+   * A candidate row whose item id is absent from the build's `simitems.json` -- the
+   * embedded engine database does not carry it (`ItemSparse` and `Item` disagree on which
+   * ids exist for a build; see `pipeline/simdb/items.py`'s module docstring), so `simCount`
+   * would refuse the whole request with `bulk: the build has no such item: <id>` if this
+   * row were ever checked. `CandidateRows.svelte` disables the row and shows this instead
+   * of hiding it: the item is real (it is equipped, bagged, banked or dropped), and a row
+   * that silently vanished would look like data loss rather than a known limitation.
+   */
+  notInSimulator: 'Not in the simulator’s item table',
   lockSlot: 'Lock to equipped',
   lockedSlot: 'Locked',
   copyAndModify: 'Copy and modify',
@@ -759,6 +769,15 @@ export const bulkCopy = {
   // --- failures ---
   planFailed: 'The combinations could not be worked out.',
   bulkFailed: 'The engine could not run these combinations.',
+  /**
+   * `recount`'s generic branch (bulk-store-request.ts): a count failed for a reason that is
+   * neither a cap notice nor `BulkValidationError`'s pre-flight refusal -- an unknown
+   * candidate item id (`bulk: the build has no such item: <id>`) is the case this was
+   * written for, but the branch covers any engine error while merely counting. `detail`
+   * carries the engine's own message beside this one, the same pairing `bulkFailed` uses
+   * for a run failure.
+   */
+  countFailed: 'The engine could not count these combinations.',
   /**
    * `bulk-run.ts`'s `BulkValidationError` headline (engine-lane rule 2): `simValidate`
    * refused the request outright, before `simCount`/`simPlan` ever got to answer a cap or

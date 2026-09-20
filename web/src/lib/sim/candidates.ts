@@ -30,6 +30,16 @@ export interface CandidateRow {
   enchant: number;
   suffix: number;
   checked: boolean;
+  /**
+   * False when this item's id is absent from the build's `simitems.json` -- the engine's
+   * embedded database does not carry it (sim-items.ts), so `simCount` would refuse the
+   * whole request outright if this row were ever sent (`bulk: the build has no such item:
+   * <id>`). `CandidateRows.svelte` disables the row instead of hiding it: the item is
+   * real (equipped, bagged, banked or dropped), so vanishing it would look like data loss.
+   * `toCandidates` below is the second, structural guard -- a row can never reach the wire
+   * unknown, whatever the UI does or fails to disable.
+   */
+  known: boolean;
 }
 
 export const CANDIDATE_ROW_SEPARATOR = ':';
@@ -74,8 +84,8 @@ export function uiSlotsOf(item: Item): Slot[] {
   return slotsForItem(item);
 }
 
-export function rowFor(item: Item, slot: Slot, origin: Origin, sourceName = ''): CandidateRow {
-  return { slot, item, origin, sourceName, enchant: NO_ENCHANT, suffix: 0, checked: false };
+export function rowFor(item: Item, slot: Slot, origin: Origin, sourceName = '', known = true): CandidateRow {
+  return { slot, item, origin, sourceName, enchant: NO_ENCHANT, suffix: 0, checked: false, known };
 }
 
 export function toggleRow(rows: readonly CandidateRow[], key: string): CandidateRow[] {
@@ -139,27 +149,32 @@ export function removeRow(rows: readonly CandidateRow[], key: string): Candidate
  * sending a request it knows will be refused.
  */
 export function toCandidates(rows: readonly CandidateRow[], locked: readonly string[]): Candidate[] {
-  return rows
-    .filter((row) => row.checked && !locked.includes(row.slot))
-    .map((row) => {
-      const candidate: Candidate = {
-        slot: envelopeSlotOf(row.item),
-        item_id: row.item.id,
-        origin: row.origin,
-      };
-      // Only a real enchant id travels: NO_ENCHANT (0) is the wire's own "inherit the
-      // equipped enchant" and KEEP_CURRENT_ENCHANT (-1, from enchants.ts) is this page's
-      // "explicitly none" -- both mean the same thing on the wire, an omitted field. `> 0`
-      // is an allowlist, not a denylist of the two known sentinels: it excludes both by
-      // construction (KEEP_CURRENT_ENCHANT is already <= 0) and anything else this
-      // unconstrained field could hold that is not a real enchant id.
-      if (row.enchant > 0) candidate.enchant = row.enchant;
-      if (row.suffix > 0) candidate.suffix = row.suffix;
-      // Contract 10.1 A6: the page fills the source's name once, here, and reads it back
-      // off the substitution rather than joining the id to loot.json a second time.
-      if (row.sourceName !== '') candidate.source_name = row.sourceName;
-      return candidate;
-    });
+  return (
+    rows
+      // `!row.known` is a second, structural guard beside the disabled checkbox
+      // `CandidateRows.svelte` renders: a row the engine does not recognise can never reach
+      // the wire, whatever state the UI happens to be in.
+      .filter((row) => row.checked && row.known && !locked.includes(row.slot))
+      .map((row) => {
+        const candidate: Candidate = {
+          slot: envelopeSlotOf(row.item),
+          item_id: row.item.id,
+          origin: row.origin,
+        };
+        // Only a real enchant id travels: NO_ENCHANT (0) is the wire's own "inherit the
+        // equipped enchant" and KEEP_CURRENT_ENCHANT (-1, from enchants.ts) is this page's
+        // "explicitly none" -- both mean the same thing on the wire, an omitted field. `> 0`
+        // is an allowlist, not a denylist of the two known sentinels: it excludes both by
+        // construction (KEEP_CURRENT_ENCHANT is already <= 0) and anything else this
+        // unconstrained field could hold that is not a real enchant id.
+        if (row.enchant > 0) candidate.enchant = row.enchant;
+        if (row.suffix > 0) candidate.suffix = row.suffix;
+        // Contract 10.1 A6: the page fills the source's name once, here, and reads it back
+        // off the substitution rather than joining the id to loot.json a second time.
+        if (row.sourceName !== '') candidate.source_name = row.sourceName;
+        return candidate;
+      })
+  );
 }
 
 export interface BulkSpecInput {

@@ -75,6 +75,20 @@ def test_item_ids_are_sorted_and_unique():
     assert len(set(ids)) == len(ids)
 
 
+def test_simitems_json_agrees_with_simdb_bin():
+    """simitems.json is the web lane's own copy of simdb.bin's item universe (Contract
+    10.1 A6's candidate filtering): every bulk candidate source there filters against it,
+    so a stale or hand-edited copy would let the web offer a candidate id the engine is
+    about to refuse -- the exact defect this file exists to prevent. `write_sim_items`
+    (pipeline/simdb/__init__.py) derives it from `database.items` in the same run that
+    writes `simdb.bin`, so the two can never legitimately disagree.
+    """
+    simitems = json.loads((BUILD_DIR / "simitems.json").read_text(encoding="utf-8"))
+    assert simitems["build"] == BUILD
+    assert simitems["items"] == sorted(row.id for row in database().items)
+    assert len(simitems["items"]) == EXPECTED_ITEMS
+
+
 def test_weapons_and_set_pieces_are_populated():
     weapons = [row for row in database().items if row.weapon_speed > 0]
     in_a_set = [row for row in database().items if row.set_id]
