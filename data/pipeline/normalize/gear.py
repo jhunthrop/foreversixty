@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 import re
+from typing import NamedTuple
 
 from pipeline.icons import resolve_icon
 from pipeline.models import ClassItems, GearItem, ItemSetBonus, ItemSetRecord
@@ -178,6 +179,21 @@ RESISTANCE_KEYS: dict[int, str] = {
     6: "arcane_res",
 }
 
+#: InventoryType values that occupy both hands: two-handed melee (17),
+#: bows (15), guns (26) and crossbows (26 shares the ranged type), plus
+#: fishing poles (23 is off-hand-only so it is not here). A ranged weapon
+#: counts because rule 6's question is "may an off-hand item sit beside
+#: this", and in Classic itemisation a bow and a shield do coexist -- but
+#: the engine models a two-handed ranged weapon as occupying the ranged
+#: slot alone, and the planner mirrors the engine.
+#:
+#: Not the same question as `pipeline.simdb.weapons.TWO_HAND_INVENTORY_TYPE`
+#: (17 only): that constant picks which melee damage curve a weapon scores
+#: on, and a ranged weapon is never on that path -- it is resolved by
+#: SubclassID instead. This set answers validation rule 6 -- does this item
+#: occupy both hands -- which a bow does answer yes to.
+TWO_HAND_INVENTORY_TYPES = frozenset({15, 17, 25, 26})
+
 
 class ItemDataError(ValueError):
     """The item tables hold something this normalizer will not guess at."""
@@ -271,6 +287,47 @@ def _stats(row: dict[str, str]) -> dict[str, int]:
         if amount:
             stats[key] = stats.get(key, 0) + amount
     return stats
+
+
+class WeaponFields(NamedTuple):
+    """The gear tail's weapon numbers, computed once per row."""
+
+    damage_min: int
+    damage_max: int
+    speed: float
+    dps: float
+    two_hand: bool
+
+
+def weapon_fields(row: dict[str, str]) -> WeaponFields:
+    """Weapon damage, speed and the two-handed flag for one ItemSparse row.
+
+    Every number is optional: the 1.60 client computes weapon damage from
+    curve tables this pipeline does not resolve, so a missing column is an
+    honest zero rather than a malformed row. A present but non-numeric
+    column is still an ItemDataError, through int_column.
+
+    `pipeline/simdb/weapons.py` resolves the simulator's own weapon damage
+    and speed off the client's ItemDamage* curve tables -- the same numbers
+    this function leaves at zero when ItemSparse states no literal damage
+    column. The two are deliberate siblings, not an oversight: wiring the
+    curve resolver in here is not available, since `simdb/weapons.py`
+    already imports `pipeline.normalize.gear` (this module), so importing it
+    back would be a circular import, and its `WeaponCurves` are a simdb-stage
+    input this normalize stage does not build. On build 1.60.1.69893 every
+    weapon here therefore has damage_min = damage_max = dps = 0 and only
+    speed and two_hand real -- that is the intended, documented behaviour,
+    not a bug.
+    """
+    delay = _optional_int(row, "ItemDelay") or 0
+    damage_min = _optional_int(row, "ItemDamageMin_0") or 0
+    damage_max = _optional_int(row, "ItemDamageMax_0") or 0
+    speed = round(delay / 1000, 2)
+    # Never divide by a zero speed: an item with damage and no delay is a
+    # thrown weapon or a malformed row, and either way it has no dps.
+    dps = round((damage_min + damage_max) / 2 / speed, 2) if speed > 0 else 0.0
+    two_hand = int_column(row, "InventoryType") in TWO_HAND_INVENTORY_TYPES
+    return WeaponFields(damage_min, damage_max, speed, dps, two_hand)
 
 
 def _curve_stats(
@@ -450,6 +507,7 @@ def build_class_items(
         _check_level_60_sanity(item_id, display_name, item_level, armor, stats)
         if not _has_gear_value(armor, stats, item_class_id):
             continue
+        weapon = weapon_fields(row)
         item = GearItem(
             id=item_id,
             name=display_name,
@@ -460,6 +518,11 @@ def build_class_items(
             item_level=item_level,
             armor=armor,
             stats=stats,
+            damage_min=weapon.damage_min,
+            damage_max=weapon.damage_max,
+            speed=weapon.speed,
+            dps=weapon.dps,
+            two_hand=weapon.two_hand,
             set_id=int_column(row, "ItemSet") or None,
             unique=int_column(row, "MaxCount") == 1,
         )

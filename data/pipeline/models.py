@@ -140,6 +140,19 @@ class GearItem(BaseModel):
     item_level: int
     armor: int
     stats: dict[str, int]
+    #: Weapon damage per swing and the swing itself, from ItemSparse's
+    #: ItemDamageMin_0/ItemDamageMax_0/ItemDelay. Zero for anything that is
+    #: not a weapon, and zero on a build whose client computes damage from
+    #: curves this pipeline does not resolve.
+    damage_min: int = 0
+    damage_max: int = 0
+    #: Seconds, ItemDelay / 1000.
+    speed: float = 0.0
+    #: Derived: the mid damage over the speed, 0.0 when either is unknown.
+    dps: float = 0.0
+    #: True for anything occupying both hands. Validation rule 6 refuses an
+    #: off-hand item beside one.
+    two_hand: bool = False
     set_id: int | None
     unique: bool
 
