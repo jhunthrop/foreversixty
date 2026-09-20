@@ -172,6 +172,10 @@ jobs:
           service: api
           region: us-east1
           image: ${{ env.IMAGE }}
+          # The service container runs the planner (forever-sim -plan) whose
+          # answer nears 22 MB at the server cap; 256Mi at concurrency 80
+          # is not enough headroom. Conservative; api/README.md says so.
+          flags: --memory=512Mi
         # Every job is the same image run with different arguments, so
         # each has to move with the service. The jobs are created once
         # by hand (see api/README.md); until one exists this step says
