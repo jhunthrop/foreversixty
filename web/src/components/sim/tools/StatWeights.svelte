@@ -19,8 +19,10 @@
   import { SECONDARY_BUTTON } from '../../../lib/planner/styles';
   import type { BulkStore } from '../../../lib/sim/bulk-store.svelte';
   import { bulkCopy } from '../../../lib/sim/copy';
+  import { specLabel } from '../../../lib/sim/spec-label';
   import { pawnString, statLabel, weightScale, WEIGHT_STATS } from '../../../lib/sim/weights';
   import BulkRunBar from './BulkRunBar.svelte';
+  import SaveSimForm from './SaveSimForm.svelte';
 
   let { store }: { store: BulkStore; me: Me | null } = $props();
 
@@ -30,6 +32,17 @@
   const pawn = $derived(
     store.weights.length === 0 ? '' : pawnString(store.character?.spec ?? '', store.weights),
   );
+
+  /**
+   * `store.save` (bulk-store.svelte.ts) has no fallback title of its own, the same as every
+   * other tool page's save form -- see ComboResults.svelte's identical comment. A weights
+   * run has no winner to headline, so this names the tool and the spec instead, the same
+   * two-part title SavedSim.svelte gives a saved weights page's own <h1>.
+   */
+  const saveTitleFor = $derived(`${bulkCopy.weightsTitle} · ${specLabel(store.character?.spec ?? '')}`);
+
+  /** A stopped run has nothing finished worth naming and saving. */
+  const canSave = $derived(store.result?.aborted !== true);
 
   function togglePick(id: string): void {
     if (id === store.referenceStat) return;
@@ -132,6 +145,12 @@
           {copied ? bulkCopy.weightsCopied : bulkCopy.weightsCopyPawn}
         </button>
       </div>
+
+      <!-- Contract 10.6: saved sims of every kind are public at /sim/<id>. A finished
+           weights run saves through the identical component and flow Top Gear and talent
+           compare already use (SaveSimForm.svelte, ComboResults.svelte's own extraction),
+           rather than a second, drifting copy of the same save form. -->
+      <SaveSimForm onsave={(title) => store.save(title)} titleFor={saveTitleFor} {canSave} />
     </section>
   {/if}
 </div>
