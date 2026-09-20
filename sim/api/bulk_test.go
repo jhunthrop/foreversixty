@@ -103,6 +103,11 @@ func TestBulkValidation(t *testing.T) {
 			r.Bulk.Candidates[0].Origin = "drop:raid:mc:lucifron"
 			r.Bulk.Consumables = [][]string{{"flask_of_the_titans"}}
 		}, "gear-mode dimension"},
+		{"a gear set in drops mode", func(r *SimRequest) {
+			r.Bulk.Mode = KindDrops
+			r.Bulk.Candidates[0].Origin = "drop:raid:mc:lucifron"
+			r.Bulk.Sets = []GearSet{{Name: "my AQ set", Gear: []GearSlot{{Slot: "head", ItemID: 16963}}}}
+		}, "gear-mode dimension"},
 		{"a candidate naming its source", func(r *SimRequest) {
 			r.Bulk.Mode = KindDrops
 			r.Bulk.Candidates[0].Origin = "drop:raid:mc:lucifron"
@@ -128,6 +133,24 @@ func TestBulkValidation(t *testing.T) {
 				t.Errorf("error %q does not mention %q", err, c.want)
 			}
 		})
+	}
+}
+
+// A talents-mode request carrying a set is one mistake, and gets one
+// error: the general "sets are a gear-mode dimension" check and the
+// talents-mode combined check used to both fire for it.
+func TestATalentsModeSetIsOneError(t *testing.T) {
+	req := gear()
+	req.Bulk.Mode = KindTalents
+	req.Bulk.Candidates = nil
+	req.Bulk.Talents = []TalentLoadout{{Name: "Deep Fury", Talents: "30305001302-05050005525010051"}}
+	req.Bulk.Sets = []GearSet{{Name: "PvP", Gear: []GearSlot{{Slot: "head", ItemID: 16963}}}}
+	err := req.Validate()
+	if err == nil {
+		t.Fatal("a talents request carrying a set was accepted")
+	}
+	if n := strings.Count(err.Error(), "gear-mode dimension"); n != 1 {
+		t.Errorf("error mentions \"gear-mode dimension\" %d times, want 1: %v", n, err)
 	}
 }
 
@@ -186,6 +209,78 @@ func TestCapExceededCarriesBothNumbers(t *testing.T) {
 	for _, want := range []string{"400", "1280"} {
 		if !strings.Contains(err.Error(), want) {
 			t.Errorf("%q does not name %s", err, want)
+		}
+	}
+}
+
+// LadderIterations is the arithmetic two lanes read: sim/measure
+// proves the server cap against the native job's budget with it, and
+// the api lane's submit-time "too_large" estimate (contract 8) quotes
+// the same sum. It used to be an unexported helper inside
+// sim/measure's own _test.go, where the api module could not call it
+// and would have had to write a second copy.
+//
+// The branches are checked directly because the shipped ladders
+// exercise only two of the three: PrecisionFast's first cut is a
+// Fraction and every other cut is a Top, so a Cut with neither - which
+// keeps everyone - has no ladder to reach it.
+func TestLadderIterationsSumsEveryStage(t *testing.T) {
+	cases := []struct {
+		name         string
+		ladder       Ladder
+		combinations int
+		want         int
+	}{
+		{
+			name: "a fraction cut rounds up", // 101x10, then ceil(0.25x100)=25 +1 x100
+			ladder: Ladder{
+				Iterations: []int{10, 100},
+				Cuts:       []Cut{{Fraction: 0.25, SlackSE: 2}},
+			},
+			combinations: 100,
+			want:         101*10 + 26*100,
+		},
+		{
+			name: "a top cut, and it cannot keep more than there are",
+			ladder: Ladder{
+				Iterations: []int{10, 100},
+				Cuts:       []Cut{{Top: 50, SlackSE: 2}},
+			},
+			combinations: 3,
+			want:         4*10 + 4*100,
+		},
+		{
+			name: "a cut that is neither keeps everyone",
+			ladder: Ladder{
+				Iterations: []int{10, 100},
+				Cuts:       []Cut{{SlackSE: 2}},
+			},
+			combinations: 3,
+			want:         4*10 + 4*100,
+		},
+		{
+			name:         "one stage has no cut to apply",
+			ladder:       Ladder{Iterations: []int{3000}},
+			combinations: 7,
+			want:         8 * 3000,
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			if got := LadderIterations(c.ladder, c.combinations); got != c.want {
+				t.Errorf("LadderIterations = %d, want %d", got, c.want)
+			}
+		})
+	}
+}
+
+// The equipped set runs in every stage - that is what pairs a delta
+// with something - so a stage of n survivors is n+1 runs, never n.
+func TestLadderIterationsCountsTheEquippedSetInEveryStage(t *testing.T) {
+	for _, precision := range Precisions {
+		ladder := Ladders[precision]
+		if got, bare := LadderIterations(ladder, 0), 0; got <= bare {
+			t.Errorf("%s with no combinations at all sums to %d; the equipped baseline still runs every stage", precision, got)
 		}
 	}
 }

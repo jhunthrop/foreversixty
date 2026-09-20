@@ -62,6 +62,25 @@ func noSampleRequest(t *testing.T) []byte {
 	return b
 }
 
+// fixtureRequest loads a checked-in SimRequest fixture from
+// sim/adapter/testdata, decoded strictly so a field this build cannot
+// honour is caught by the loader rather than silently ignored.
+func fixtureRequest(t *testing.T, spec string) api.SimRequest {
+	t.Helper()
+	path := filepath.Join("..", "..", "adapter", "testdata", spec+".request.json")
+	b, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var req api.SimRequest
+	dec := json.NewDecoder(bytes.NewReader(b))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&req); err != nil {
+		t.Fatalf("%s is not a SimRequest: %v", path, err)
+	}
+	return req
+}
+
 func TestRunProducesASimResult(t *testing.T) {
 	dir := t.TempDir()
 	in := filepath.Join(dir, "req.json")
@@ -71,7 +90,7 @@ func TestRunProducesASimResult(t *testing.T) {
 	out := filepath.Join(dir, "res.json")
 
 	var progress bytes.Buffer
-	if err := run(in, out, overrides{}, &progress); err != nil {
+	if err := run(in, out, overrides{}, false, &progress); err != nil {
 		t.Fatalf("run: %v", err)
 	}
 
@@ -242,7 +261,7 @@ func TestProgressPayloadFields(t *testing.T) {
 		t.Fatal(err)
 	}
 	var progress bytes.Buffer
-	if err := run(in, filepath.Join(dir, "res.json"), overrides{}, &progress); err != nil {
+	if err := run(in, filepath.Join(dir, "res.json"), overrides{}, false, &progress); err != nil {
 		t.Fatal(err)
 	}
 	lines := strings.Split(strings.TrimSpace(progress.String()), "\n")
@@ -278,7 +297,7 @@ func TestIterationsOverride(t *testing.T) {
 	// reproducing something quickly could not use the flag the binary
 	// offered them. An override goes through ValidatePart, which is
 	// the shape it is.
-	if err := run(in, out, overrides{iterations: 100}, nil); err != nil {
+	if err := run(in, out, overrides{iterations: 100}, false, nil); err != nil {
 		t.Fatal(err)
 	}
 	b, _ := os.ReadFile(out)
@@ -291,7 +310,7 @@ func TestIterationsOverride(t *testing.T) {
 	}
 	// Bounded, not unbounded: a part is a share of a whole run and can
 	// never legitimately exceed the largest one.
-	if err := run(in, out, overrides{iterations: api.MaxIterations + 1}, nil); err == nil {
+	if err := run(in, out, overrides{iterations: api.MaxIterations + 1}, false, nil); err == nil {
 		t.Error("an override larger than the largest whole run was accepted")
 	}
 }
@@ -302,10 +321,10 @@ func TestBadInputIsRejected(t *testing.T) {
 	if err := os.WriteFile(in, []byte("{not json"), 0o644); err != nil {
 		t.Fatal(err)
 	}
-	if err := run(in, filepath.Join(dir, "res.json"), overrides{}, nil); err == nil {
+	if err := run(in, filepath.Join(dir, "res.json"), overrides{}, false, nil); err == nil {
 		t.Fatal("junk input was accepted")
 	}
-	if err := run(filepath.Join(dir, "missing.json"), filepath.Join(dir, "res.json"), overrides{}, nil); err == nil {
+	if err := run(filepath.Join(dir, "missing.json"), filepath.Join(dir, "res.json"), overrides{}, false, nil); err == nil {
 		t.Fatal("a missing input file was accepted")
 	}
 }
@@ -320,7 +339,7 @@ func TestOutProtoWritesAnEngineResult(t *testing.T) {
 		t.Fatal(err)
 	}
 	out := filepath.Join(dir, "res.pb")
-	if err := runProto(in, out, overrides{}, nil); err != nil {
+	if err := runProto(in, out, overrides{}, false, nil); err != nil {
 		t.Fatalf("runProto: %v", err)
 	}
 	b, err := os.ReadFile(out)
@@ -340,8 +359,36 @@ func TestOutProtoWritesAnEngineResult(t *testing.T) {
 	if _, err := adapter.Summarize(res, api.SimRequest{EngineVersion: "t", Spec: "warrior-fury"}); err != nil {
 		t.Errorf("the written result does not summarize: %v", err)
 	}
-	if err := runProto(filepath.Join(dir, "missing.json"), out, overrides{}, nil); err == nil {
+	if err := runProto(filepath.Join(dir, "missing.json"), out, overrides{}, false, nil); err == nil {
 		t.Error("runProto accepted a missing input file")
+	}
+}
+
+// -out-proto ignores -plan by design (runProto has one caller and it
+// always runs a plain sim), so combining them would silently run a
+// full sim when the caller asked for nothing to run. main refuses the
+// combination outright rather than trap a caller who tried both.
+func TestPlanAndOutProtoAreRefused(t *testing.T) {
+	bin := filepath.Join(t.TempDir(), "forever-sim")
+	build := exec.Command("go", "build", "-o", bin, ".")
+	if out, err := build.CombinedOutput(); err != nil {
+		t.Fatalf("go build: %v\n%s", err, out)
+	}
+	dir := t.TempDir()
+	in := filepath.Join(dir, "req.json")
+	if err := os.WriteFile(in, smallRequest(t), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	cmd := exec.Command(bin, "-in", in, "-out-proto", filepath.Join(dir, "res.pb"), "-plan")
+	var stderr bytes.Buffer
+	cmd.Stderr = &stderr
+	err := cmd.Run()
+	var exitErr *exec.ExitError
+	if !errors.As(err, &exitErr) || exitErr.ExitCode() != exitBadArgs {
+		t.Fatalf("forever-sim -plan -out-proto exited %v, want exit %d; stderr: %s", err, exitBadArgs, stderr.String())
+	}
+	if _, statErr := os.Stat(filepath.Join(dir, "res.pb")); statErr == nil {
+		t.Error("-plan -out-proto still ran a sim and wrote a result")
 	}
 }
 
@@ -364,7 +411,7 @@ func TestARequestTheBuilderRefusesIsBadInput(t *testing.T) {
 	if err := os.WriteFile(in, b, 0o644); err != nil {
 		t.Fatal(err)
 	}
-	err = run(in, filepath.Join(dir, "res.json"), overrides{}, nil)
+	err = run(in, filepath.Join(dir, "res.json"), overrides{}, false, nil)
 	if err == nil {
 		t.Fatal("an unknown race was accepted")
 	}
@@ -584,7 +631,7 @@ func TestUnknownFieldsAreRefused(t *testing.T) {
 	if err := os.WriteFile(in, b, 0o644); err != nil {
 		t.Fatal(err)
 	}
-	err = run(in, filepath.Join(dir, "res.json"), overrides{}, nil)
+	err = run(in, filepath.Join(dir, "res.json"), overrides{}, false, nil)
 	if err == nil {
 		t.Fatal("a request carrying an unknown field was accepted")
 	}
@@ -629,7 +676,7 @@ func TestAnAbortedRunIsWrittenAsAnAbort(t *testing.T) {
 	if err := os.WriteFile(in, b, 0o644); err != nil {
 		t.Fatal(err)
 	}
-	err = run(in, out, overrides{}, nil)
+	err = run(in, out, overrides{}, false, nil)
 	<-done
 	if !errors.Is(err, adapter.ErrAborted) {
 		t.Fatalf("run returned %v, want adapter.ErrAborted", err)

@@ -85,6 +85,8 @@ SIMDB_EMBED   = sim/internal/simdb/simdb.bin
 # simdb.bin left the embedded copy stale while make reported nothing to do.
 ACTIVE_BUILD  = $(shell sed -n 's/.*"build"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' $(ACTIVE_BUILD_JSON) 2>/dev/null)
 SIMDB_SRC     = data/builds/$(ACTIVE_BUILD)/simdb.bin
+ENCHANTS_EMBED = sim/internal/simdb/enchants.json
+ENCHANTS_SRC   = data/builds/$(ACTIVE_BUILD)/enchants.json
 
 .PHONY: simdb
 # simdb copies the ACTIVE build's item database where sim/internal/simdb
@@ -99,7 +101,7 @@ SIMDB_SRC     = data/builds/$(ACTIVE_BUILD)/simdb.bin
 # Every `go build`, `go test` and `go vet` in sim/ needs this file,
 # because //go:embed resolves at compile time. Run `make simdb` once
 # after a fresh clone.
-simdb: simdb-check $(SIMDB_EMBED)
+simdb: simdb-check $(SIMDB_EMBED) $(ENCHANTS_EMBED)
 
 .PHONY: simdb-check
 # The diagnostics have to live in a phony target that runs BEFORE the
@@ -113,11 +115,74 @@ simdb-check:
 	  echo "$(ACTIVE_BUILD_JSON) names no build"; exit 1; }
 	@test -f "$(SIMDB_SRC)" || { \
 	  echo "no $(SIMDB_SRC); the data lane's \`python -m pipeline simdb\` has not run for build $(ACTIVE_BUILD)"; exit 1; }
+	@test -f "$(ENCHANTS_SRC)" || { \
+	  echo "no $(ENCHANTS_SRC); the data lane's \`python -m pipeline simdb\` has not run for build $(ACTIVE_BUILD)"; exit 1; }
 
 $(SIMDB_EMBED): $(SIMDB_SRC) $(ACTIVE_BUILD_JSON)
 	@mkdir -p $(dir $(SIMDB_EMBED))
 	@cp "$(SIMDB_SRC)" $(SIMDB_EMBED)
 	@echo "embedded $(SIMDB_SRC) ($$(wc -c < $(SIMDB_EMBED) | tr -d ' ') bytes)"
+
+# The enchant table rides with the item database, for the same reason:
+# an enchant's slot and item-type restrictions are what sim/bulk needs
+# to know whether an enchant may go where a candidate is being sent,
+# and the engine's own SimEnchant carries an effect id and a stat
+# array and nothing else. Copied, not committed here; the committed
+# source is data/builds/<build>/enchants.json.
+$(ENCHANTS_EMBED): $(ENCHANTS_SRC) $(ACTIVE_BUILD_JSON)
+	@mkdir -p $(dir $(ENCHANTS_EMBED))
+	@cp "$(ENCHANTS_SRC)" $(ENCHANTS_EMBED)
+	@echo "embedded $(ENCHANTS_SRC) ($$(wc -c < $(ENCHANTS_EMBED) | tr -d ' ') bytes)"
+
+WEB_SIM_DATA  = web/src/data/sim-styles.json
+SIM_STYLES    = sim/request/styles.json
+
+.PHONY: sim-styles
+# sim-styles copies the fight-style table where the web reads it.
+#
+# The table is Go - a style expands to encounter fields, and the page
+# applies the same expansion, so a second hand-kept copy in TypeScript
+# would drift the first time a preset was retuned. `go run
+# ./internal/genstyles` renders the Go map to sim/request/styles.json,
+# this copies it to web/src/data/, and the web lane's own test
+# compares its table against that file.
+#
+# Unlike simdb.bin, BOTH files are committed: the web build reads the
+# copy, and a generated file the build depends on cannot be
+# git-ignored on a runner that never runs make.
+sim-styles: $(SIM_STYLES)
+	@cp "$(SIM_STYLES)" "$(WEB_SIM_DATA)"
+	@echo "copied $(SIM_STYLES) to $(WEB_SIM_DATA)"
+
+# The generator and the api types it renders are prerequisites too,
+# not just the table it reads: styles.go holds the map, but
+# genstyles/main.go decides the JSON shape and sim/api holds the
+# encounter fields a style expands into, so a change to either of
+# those with styles.go untouched used to leave a stale styles.json
+# behind locally and fail only in CI's styles-check.
+$(SIM_STYLES): sim/request/styles.go sim/internal/genstyles/main.go $(filter-out %_test.go,$(wildcard sim/api/*.go))
+	@(cd sim && go run ./internal/genstyles)
+
+.PHONY: styles-check
+# styles-check proves both derived copies against the Go table, the way
+# apl-check proves the rotations. A retuned preset that never reached
+# the page is a failing pipeline rather than two products quietly
+# disagreeing about what "Heavy movement" means.
+#
+# The rendered copy goes to a mktemp file removed by a trap, not to a
+# fixed /tmp path: a predictable name is a file another user on a
+# shared machine can own, and then this target fails on every run with
+# a permission error nobody can clear.
+styles-check:
+	@set -e; \
+	  tmp=$$(mktemp); \
+	  trap 'rm -f "$$tmp"' EXIT INT TERM; \
+	  (cd sim && go run ./internal/genstyles "$$tmp"); \
+	  diff -u "$(SIM_STYLES)" "$$tmp" || { \
+	    echo "$(SIM_STYLES) is stale; run \`cd sim && go run ./internal/genstyles\`"; exit 1; }; \
+	  diff -u "$(SIM_STYLES)" "$(WEB_SIM_DATA)" || { \
+	    echo "$(WEB_SIM_DATA) is stale; run \`make sim-styles\`"; exit 1; }; \
+	  echo "the fight-style table matches in all three places"
 
 .PHONY: artifacts
 # artifacts builds the two things one pinned engine sha produces, both

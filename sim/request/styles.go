@@ -13,7 +13,9 @@ package request
 //
 // A style sets only the fields it owns. Fight length, variation, target
 // level, armor and type are the player's and survive a style change,
-// which is what makes the style control a preset rather than a reset.
+// which is what makes the style control a preset rather than a reset -
+// except "dummy", which overrides target type to say a dummy has none
+// (contract 10.8).
 
 import (
 	"encoding/json"
@@ -28,7 +30,13 @@ type style struct {
 	ExecuteRatio    float64           `json:"execute_ratio"`
 	Movement        *api.Movement     `json:"movement,omitempty"`
 	TargetsOverTime []api.TargetCount `json:"targets_over_time,omitempty"`
-	Dummy           bool              `json:"dummy,omitempty"`
+	// TargetType is unset for every style but "dummy": target type is
+	// ordinarily the player's own field and survives a style change
+	// (see the package doc above), so this is only applied when a
+	// style declares it - a style that leaves it "" must not reset
+	// whatever the caller already chose.
+	TargetType string `json:"target_type,omitempty"`
+	Dummy      bool   `json:"dummy,omitempty"`
 }
 
 // StyleIDs is the vocabulary, in the order the page lists it.
@@ -78,8 +86,9 @@ var styles = map[string]style{
 	}},
 	// A training dummy has no debuffs, no execute and no armor
 	// reduction; the engine's target_dummy flag is what turns all
-	// three off at once.
-	"dummy": {Targets: 1, ExecuteRatio: 0, Dummy: true},
+	// three off at once. It also has no creature type - contract 10.8
+	// - so it collects no Hunter/Warlock creature-type bonus.
+	"dummy": {Targets: 1, ExecuteRatio: 0, TargetType: api.TargetTypeUnknown, Dummy: true},
 }
 
 // ExpandStyle applies a style to an encounter, keeping every field the
@@ -95,6 +104,9 @@ func ExpandStyle(id string, base api.EncounterSpec) (api.EncounterSpec, bool) {
 	out.Targets = s.Targets
 	out.ExecuteRatio = s.ExecuteRatio
 	out.Dummy = s.Dummy
+	if s.TargetType != "" {
+		out.TargetType = s.TargetType
+	}
 	out.Movement = nil
 	if s.Movement != nil {
 		// A copy: the map's pointer is shared by every caller, and a

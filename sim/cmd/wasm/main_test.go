@@ -2,11 +2,28 @@
 
 package main
 
-import "testing"
+import (
+	"encoding/json"
+	"os"
+	"path/filepath"
+	"strings"
+	"testing"
+
+	"github.com/jhunthrop/foreversixty/sim/adapter"
+	"github.com/jhunthrop/foreversixty/sim/api"
+	"github.com/jhunthrop/foreversixty/sim/bulk"
+	"github.com/jhunthrop/foreversixty/sim/enginever"
+	"github.com/wowsims/classic/sim/core/proto"
+)
 
 // sim/cmd/wasm is a js/wasm-only package: syscall/js does not build on a
-// host platform, so there is nothing here to unit test. The four
-// exports' behaviour is covered three ways instead:
+// host platform, so main.go's js.Func wrappers cannot be exercised here.
+// The JSON bodies they wrap - planJSON, rankJSON, countJSON,
+// needsMoreJSON, validateJSON and the rest of exports.go - carry no
+// build tag and are tested below; only the js.Value unwrapping in
+// main.go is not, and that unwrapping is a one-line args[i].String()
+// call per wrapper. The four original exports' behaviour is covered
+// three further ways:
 //
 //   - sim/combine's tests cover simSplit and simCombine, which are thin
 //     wrappers over Split and Results;
@@ -16,12 +33,477 @@ import "testing"
 //     api.Progress because it is a contract with the web rather than a
 //     detail of this file;
 //   - the CI smoke test in .github/workflows/sim.yml instantiates the
-//     built wasm under node and asserts all four exports exist, that
-//     simRun returns a SimResult with a summary, and that the progress
-//     callback was called with that payload.
-//
-// This file exists so `go test ./...` does not report the package as
-// untested without saying why.
+//     built wasm under node and asserts all ten exports exist
+//     (simRun, simSplit, simCombine, simAbort, simPlan, simRank,
+//     simCount, simNeedsMore, simValidate, simWeights), that simRun
+//     returns a SimResult with a summary, that the progress callback
+//     was called with that payload, and runs a four-candidate Top
+//     Gear request through simCount, simPlan, simRank and simValidate
+//     end to end (Task 25).
 func TestWasmIsCoveredElsewhere(t *testing.T) {
 	t.Log("see the comment above: combine, forever-sim, and the CI smoke test")
+}
+
+// The two bulk exports are thin: the wrappers unwrap js.Value and the
+// functions below do the work, so the work is testable on the host
+// and the wrappers carry nothing that could be wrong.
+func TestPlanJSONRoundTrip(t *testing.T) {
+	req := bulkFixtureRequest(t)
+	out := planJSON(req)
+	var stage bulk.StageRequests
+	if err := json.Unmarshal([]byte(out), &stage); err != nil {
+		t.Fatalf("simPlan returned %s", out)
+	}
+	if stage.Stage != 1 || len(stage.Requests) != len(stage.Combos)+1 {
+		t.Errorf("stage = %+v", stage)
+	}
+}
+
+func TestPlanJSONReportsAnError(t *testing.T) {
+	out := planJSON("not json")
+	var e struct {
+		Error string `json:"error"`
+	}
+	if err := json.Unmarshal([]byte(out), &e); err != nil || e.Error == "" {
+		t.Errorf("simPlan of rubbish returned %s", out)
+	}
+}
+
+func TestRankJSONReturnsTheNextStageThenTheResult(t *testing.T) {
+	reqJSON := bulkFixtureRequest(t)
+	stageJSON := planJSON(reqJSON)
+
+	var stage bulk.StageRequests
+	if err := json.Unmarshal([]byte(stageJSON), &stage); err != nil {
+		t.Fatal(err)
+	}
+	resultsJSON := fakeResultsJSON(t, stage)
+
+	out := rankJSON(reqJSON, stageJSON, resultsJSON)
+	var first struct {
+		Next   *bulk.StageRequests `json:"next"`
+		Result *api.SimResult      `json:"result"`
+	}
+	if err := json.Unmarshal([]byte(out), &first); err != nil {
+		t.Fatalf("simRank returned %s", out)
+	}
+	if first.Next == nil || first.Result != nil {
+		t.Fatalf("the first rung returned %s", out)
+	}
+	if len(first.Next.Ran) == 0 {
+		t.Errorf("next.ran is empty; the ladder's history should thread across the wasm boundary (contract A10)")
+	}
+
+	nextJSON, err := json.Marshal(first.Next)
+	if err != nil {
+		t.Fatal(err)
+	}
+	out = rankJSON(reqJSON, string(nextJSON), fakeResultsJSON(t, *first.Next))
+	var last struct {
+		Next   *bulk.StageRequests `json:"next"`
+		Result *api.SimResult      `json:"result"`
+	}
+	if err := json.Unmarshal([]byte(out), &last); err != nil {
+		t.Fatalf("simRank returned %s", out)
+	}
+	if last.Next != nil || last.Result == nil {
+		t.Fatalf("the last rung returned %s", out)
+	}
+	if len(last.Result.Combos) == 0 || last.Result.Equipped == nil {
+		t.Errorf("the finished result is %+v", last.Result)
+	}
+	if len(last.Result.Stages) != 2 {
+		t.Errorf("result.stages = %+v, want 2 entries for the normal ladder's two rungs", last.Result.Stages)
+	}
+}
+
+// The count the page shows as candidates are ticked is the planner's
+// own, so a cap notice and a refused run are the same number.
+func TestCountJSON(t *testing.T) {
+	var got struct {
+		Combinations int `json:"combinations"`
+	}
+	if err := json.Unmarshal([]byte(countJSON(bulkFixtureRequest(t))), &got); err != nil {
+		t.Fatal(err)
+	}
+	if got.Combinations != 3 {
+		t.Errorf("combinations = %d, want 3 for two candidates in two slots", got.Combinations)
+	}
+}
+
+// A cap breach is a STRUCTURED error, not a sentence: the page draws a
+// notice with both numbers in it and the API answers 400 cap_exceeded
+// with the same two fields, so neither parses prose.
+func TestCapExceededIsStructured(t *testing.T) {
+	var req api.SimRequest
+	if err := json.Unmarshal([]byte(bulkFixtureRequest(t)), &req); err != nil {
+		t.Fatal(err)
+	}
+	req.Bulk.Cap = 1
+	body, err := json.Marshal(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, out := range []string{planJSON(string(body)), countJSON(string(body))} {
+		var got struct {
+			Error        string `json:"error"`
+			Cap          int    `json:"cap"`
+			Combinations int    `json:"combinations"`
+		}
+		if err := json.Unmarshal([]byte(out), &got); err != nil {
+			t.Fatalf("returned %s", out)
+		}
+		if got.Error != "cap_exceeded" || got.Cap != 1 || got.Combinations <= 1 {
+			t.Errorf("cap breach returned %s", out)
+		}
+	}
+}
+
+// The Smart Sim decision crosses the boundary so the page never
+// reimplements it.
+func TestNeedsMoreJSON(t *testing.T) {
+	reqJSON := bulkFixtureRequest(t)
+	var req api.SimRequest
+	if err := json.Unmarshal([]byte(reqJSON), &req); err != nil {
+		t.Fatal(err)
+	}
+	req.Bulk = nil
+	req.TargetError = 0.005
+	req.Iterations = 30000
+	body, _ := json.Marshal(req)
+
+	for _, c := range []struct {
+		name string
+		res  api.SimResult
+		want bool
+	}{
+		{"still noisy", api.SimResult{IterationsRun: 2000, DPS: api.Estimate{Mean: 1000, Error: 20}}, true},
+		{"precise enough", api.SimResult{IterationsRun: 2000, DPS: api.Estimate{Mean: 1000, Error: 4}}, false},
+	} {
+		t.Run(c.name, func(t *testing.T) {
+			resJSON, _ := json.Marshal(c.res)
+			var got struct {
+				NeedsMore bool `json:"needs_more"`
+			}
+			out := needsMoreJSON(string(resJSON), string(body))
+			if err := json.Unmarshal([]byte(out), &got); err != nil {
+				t.Fatalf("returned %s", out)
+			}
+			if got.NeedsMore != c.want {
+				t.Errorf("needs_more = %v, want %v", got.NeedsMore, c.want)
+			}
+		})
+	}
+}
+
+// The request drawer validates with the SAME Validate the run uses,
+// and shows the errors inline, so it needs them one per field rather
+// than as one joined sentence.
+func TestValidateJSON(t *testing.T) {
+	var ok struct {
+		OK     bool `json:"ok"`
+		Errors []struct {
+			Field   string `json:"field"`
+			Message string `json:"message"`
+		} `json:"errors"`
+	}
+	if err := json.Unmarshal([]byte(validateJSON(plainFixtureRequest(t))), &ok); err != nil {
+		t.Fatal(err)
+	}
+	if !ok.OK || len(ok.Errors) != 0 {
+		t.Errorf("a valid request came back %+v", ok)
+	}
+
+	var req api.SimRequest
+	if err := json.Unmarshal([]byte(plainFixtureRequest(t)), &req); err != nil {
+		t.Fatal(err)
+	}
+	req.Iterations = 7
+	req.Encounter.Targets = 99
+	body, _ := json.Marshal(req)
+	out := validateJSON(string(body))
+	if err := json.Unmarshal([]byte(out), &ok); err != nil {
+		t.Fatalf("returned %s", out)
+	}
+	if ok.OK || len(ok.Errors) < 2 {
+		t.Fatalf("two broken fields came back %s", out)
+	}
+	fields := map[string]bool{}
+	for _, e := range ok.Errors {
+		fields[e.Field] = true
+		if e.Message == "" {
+			t.Errorf("an error with no message: %+v", e)
+		}
+	}
+	for _, want := range []string{"iterations", "targets"} {
+		if !fields[want] {
+			t.Errorf("no error names %q: %s", want, out)
+		}
+	}
+}
+
+// Rubbish is an error shape, not a throw, on every export.
+func TestValidateJSONOfRubbish(t *testing.T) {
+	var got struct {
+		OK     bool `json:"ok"`
+		Errors []struct {
+			Field   string `json:"field"`
+			Message string `json:"message"`
+		} `json:"errors"`
+	}
+	if err := json.Unmarshal([]byte(validateJSON("{")), &got); err != nil {
+		t.Fatal(err)
+	}
+	if got.OK || len(got.Errors) != 1 {
+		t.Errorf("rubbish came back %+v", got)
+	}
+}
+
+// A bare lowercase word at the front of a message is not automatically
+// a field: ValidateLane's own added messages, and several of
+// Validate's, start with ordinary prose ("the", "a") that the regex
+// alone cannot distinguish from a real field name. The first four cases
+// are measured straight off ValidateLane(LaneBrowser)'s real output for
+// a request over both lane caps and a bulk-plus-target-error request.
+func TestLeadingField(t *testing.T) {
+	for _, c := range []struct {
+		msg  string
+		want string
+	}{
+		{"the browser lane plans at most 400 combinations, and bulk.cap is 500", ""},
+		{"the browser lane runs at most 30000 iterations, and iterations is 10000000", ""},
+		{"a target-error run's iterations is at most 100000 on this lane, got 10000000", ""},
+		{"a request is one kind: a bulk or weights request runs its own iteration counts, so it carries no target_error", ""},
+		{"iterations must be one of [500 3000 10000], got 7", "iterations"},
+		{"targets must be between 1 and 10, got 99", "targets"},
+		{"bulk.candidates[2] is on \"head\", which is locked", "bulk.candidates[2]"},
+		// weights is a real top-level SimRequest field reachable
+		// through ValidateLane, and, unlike every other top-level
+		// field, api/weights.go's own emptiness check produces it
+		// bare rather than dotted.
+		{"weights needs at least one stat to weigh", "weights"},
+		// bulk.go wraps validateOrigin's error as
+		// fmt.Errorf("bulk.candidates[%d]: %w", i, err); the trailing
+		// colon must not cost the wrapped message its field.
+		{`bulk.candidates[2]: origin must be one of [equipped bag bank search], "drop:"<id> or "set:"<name>, got "junk"`, "bulk.candidates[2]"},
+	} {
+		if got := leadingField(c.msg); got != c.want {
+			t.Errorf("leadingField(%q) = %q, want %q", c.msg, got, c.want)
+		}
+	}
+}
+
+// The weights export's host-testable half is the shape of its
+// refusals: running the engine needs a browser, but a malformed
+// request must come back as a result, not a throw, on every lane.
+func TestWeightsJSONRefusals(t *testing.T) {
+	for _, c := range []struct {
+		name string
+		body string
+		want string
+	}{
+		{"not json", "{", "valid JSON"},
+		{"a plain run", plainFixtureRequest(t), "weights"},
+		// The first two cases both fail before reaching ValidateLane or
+		// the weightsRunner check: decodeRequest refuses "not json" and
+		// req.Weights == nil refuses "a plain run". A request that
+		// actually carries a weights block is what exercises those two
+		// later branches - on the host test build, weightsRunner is
+		// always nil, since only main.go's init() (js/wasm only) sets
+		// it, so this is also the real "no engine" refusal a browser
+		// build would never hit.
+		{"weights runner unset on this build", weightsFixtureRequest(t), "no engine"},
+	} {
+		t.Run(c.name, func(t *testing.T) {
+			out := weightsJSON(c.body, "cb")
+			var res api.SimResult
+			if err := json.Unmarshal([]byte(out), &res); err != nil {
+				t.Fatalf("weightsJSON returned %s", out)
+			}
+			if res.Error == "" {
+				t.Fatalf("a bad request returned no error: %s", out)
+			}
+			if !strings.Contains(res.Error, c.want) {
+				t.Errorf("error %q does not mention %q", res.Error, c.want)
+			}
+			// Every export answers in the same shape, so the page
+			// never has to distinguish a throw from a result.
+			if res.Summary.DamageDone == nil {
+				t.Error("a failed weights run carries a null summary; it must carry the empty one")
+			}
+		})
+	}
+}
+
+func TestRankJSONReportsAMismatch(t *testing.T) {
+	reqJSON := bulkFixtureRequest(t)
+	out := rankJSON(reqJSON, planJSON(reqJSON), `[]`)
+	var e struct {
+		Error string `json:"error"`
+	}
+	if err := json.Unmarshal([]byte(out), &e); err != nil || e.Error == "" {
+		t.Errorf("simRank of no results returned %s", out)
+	}
+}
+
+// plainFixtureRequest is a plain (non-bulk) request over the checked-in
+// warrior fixture, as JSON, valid against LaneBrowser. simValidate's
+// happy path needs a request that is not bulk, since bulkFixtureRequest
+// exists for the bulk exports.
+func plainFixtureRequest(t *testing.T) string {
+	t.Helper()
+	b, err := os.ReadFile(filepath.Join("..", "..", "adapter", "testdata", "warrior-fury.request.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var req api.SimRequest
+	if err := json.Unmarshal(b, &req); err != nil {
+		t.Fatal(err)
+	}
+	req.EngineVersion = enginever.Version
+	out, err := json.Marshal(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return string(out)
+}
+
+// weightsFixtureRequest is a valid weights request over the checked-in
+// warrior fixture, as JSON, valid against LaneBrowser. Unlike
+// plainFixtureRequest, it carries a Weights block, so it is what
+// reaches weightsJSON's ValidateLane and weightsRunner checks rather
+// than being refused earlier for carrying none.
+func weightsFixtureRequest(t *testing.T) string {
+	t.Helper()
+	b, err := os.ReadFile(filepath.Join("..", "..", "adapter", "testdata", "warrior-fury.request.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var req api.SimRequest
+	if err := json.Unmarshal(b, &req); err != nil {
+		t.Fatal(err)
+	}
+	req.EngineVersion = enginever.Version
+	req.Weights = &api.WeightsSpec{
+		Stats:     []string{"agility", "attack_power", "crit", "hit"},
+		Reference: "attack_power",
+	}
+	out, err := json.Marshal(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return string(out)
+}
+
+// Pressing Stop on a weights run must report an abort, not the generic
+// "carries no stat weights" adapter.Weights answers when the DPS block
+// is nil for any other reason. The engine reports Stop with an EMPTY
+// error message (core/simsignals/api_test.go's StatWeightsAsync case),
+// which is exactly what adapter.Weights does not special-case - so this
+// only passes if weightsResult checks the error's Type itself rather
+// than delegating straight to adapter.Weights.
+func TestWeightsResultReportsAnAbortRatherThanCorruption(t *testing.T) {
+	req := api.SimRequest{Weights: &api.WeightsSpec{Stats: []string{"crit"}, Reference: "crit"}}
+	aborted := &proto.StatWeightsResult{Error: &proto.ErrorOutcome{Type: proto.ErrorOutcomeType_ErrorOutcomeAborted}}
+
+	res, err := weightsResult(req, aborted, 4321)
+	if err != nil {
+		t.Fatalf("weightsResult returned an error for an abort: %v", err)
+	}
+	if !res.Aborted {
+		t.Errorf("res.Aborted = false, want true for ErrorOutcomeAborted")
+	}
+	if res.Error != "" {
+		t.Errorf("res.Error = %q, want empty - an abort is not a failure", res.Error)
+	}
+	if res.IterationsRun != 4321 {
+		t.Errorf("res.IterationsRun = %d, want the caller's running total 4321", res.IterationsRun)
+	}
+}
+
+// iterations_run is the engine's real running total across the WHOLE
+// sweep (2*len(stats)+1 sub-sims), not req.Iterations, the per-sim
+// count - a sweep over 4 stats at 3,000 iterations each runs 27,000,
+// not 3,000. A caller that saw no progress tick at all (0) falls back
+// to req.Iterations rather than reporting a bare zero.
+func TestWeightsResultIterationsRunIsTheSweepTotal(t *testing.T) {
+	req := api.SimRequest{
+		Iterations: 3000,
+		Weights:    &api.WeightsSpec{Stats: []string{"crit"}, Reference: "crit"},
+	}
+	stats := make([]float64, len(proto.Stat_name))
+	stats[proto.Stat_StatCrit] = 1.0
+	finished := &proto.StatWeightsResult{Dps: &proto.StatWeightValues{
+		Weights:      &proto.UnitStats{Stats: stats},
+		WeightsStdev: &proto.UnitStats{Stats: stats},
+	}}
+
+	res, err := weightsResult(req, finished, 27000)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if res.IterationsRun != 27000 {
+		t.Errorf("res.IterationsRun = %d, want the engine's own running total 27000, not req.Iterations", res.IterationsRun)
+	}
+
+	res, err = weightsResult(req, finished, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if res.IterationsRun != req.Iterations {
+		t.Errorf("res.IterationsRun = %d, want the req.Iterations fallback %d when no tick was ever seen", res.IterationsRun, req.Iterations)
+	}
+}
+
+// bulkFixtureRequest is a two-candidate Top Gear over the checked-in
+// warrior fixture, as JSON.
+func bulkFixtureRequest(t *testing.T) string {
+	t.Helper()
+	b, err := os.ReadFile(filepath.Join("..", "..", "adapter", "testdata", "warrior-fury.request.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var req api.SimRequest
+	if err := json.Unmarshal(b, &req); err != nil {
+		t.Fatal(err)
+	}
+	req.EngineVersion = enginever.Version
+	req.Iterations = 3000
+	head := req.Character.Gear[0]
+	req.Bulk = &api.BulkSpec{
+		Mode:      api.KindGear,
+		Precision: api.PrecisionNormal,
+		Cap:       api.Caps[api.LaneBrowser],
+		Candidates: []api.Candidate{
+			{Slot: "head", ItemID: head.ItemID, Origin: api.OriginBag},
+			{Slot: "neck", ItemID: req.Character.Gear[1].ItemID, Origin: api.OriginBag},
+		},
+	}
+	out, err := json.Marshal(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return string(out)
+}
+
+// fakeResultsJSON answers a stage with plausible numbers, so the wasm
+// boundary can be tested without running the engine on the host.
+func fakeResultsJSON(t *testing.T, stage bulk.StageRequests) string {
+	t.Helper()
+	out := make([]api.SimResult, len(stage.Requests))
+	for i := range stage.Requests {
+		out[i] = api.SimResult{
+			EngineVersion: enginever.Version,
+			Request:       stage.Requests[i],
+			Lane:          api.LaneBrowser,
+			IterationsRun: stage.Iterations,
+			DPS:           api.Estimate{Mean: 1000 + float64(i)*10, StdDev: 200, Error: 4},
+			Summary:       adapter.EmptySummary(),
+		}
+	}
+	b, err := json.Marshal(out)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return string(b)
 }

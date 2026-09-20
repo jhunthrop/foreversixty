@@ -12,6 +12,7 @@ package api
 import (
 	"errors"
 	"fmt"
+	"math"
 	"slices"
 	"strings"
 )
@@ -159,6 +160,53 @@ var Ladders = map[string]Ladder{
 	},
 }
 
+// LadderIterations is what a whole bulk expansion costs: every stage
+// of this ladder, summed.
+//
+// The equipped set runs in every stage - that is what pairs a delta
+// with something - so a stage of n surviving candidates is n+1 runs.
+// Between stages a cut keeps a fraction of the survivors or a fixed
+// top few.
+//
+// It is a floor, not the exact figure: Cut.SlackSE keeps anything
+// whose interval still overlaps the last survivor's, so a real stage
+// runs at least this many and usually a few more. That makes "over
+// budget" a certainty and "under budget" the optimistic reading,
+// which is the right way round for a cap.
+//
+// It lives here, beside Ladders and Caps, because two lanes read it
+// and they must read the same one: sim/measure proves
+// Caps[LaneServer] against the native job's iteration budget with it,
+// and the api lane's submit-time "too_large" estimate (contract 8)
+// quotes the same arithmetic. It was an unexported helper in
+// sim/measure's own _test.go, where the api module could not reach
+// it and would have had to reimplement it - which is the divergence
+// sim/bulk and this package exist to prevent.
+func LadderIterations(l Ladder, combinations int) int {
+	total := 0
+	survivors := combinations
+	for i, iterations := range l.Iterations {
+		total += (survivors + 1) * iterations
+		if i < len(l.Cuts) {
+			survivors = l.Cuts[i].survivors(survivors)
+		}
+	}
+	return total
+}
+
+// survivors is how many candidates this cut keeps of n, ignoring
+// SlackSE for the reason LadderIterations gives.
+func (c Cut) survivors(n int) int {
+	switch {
+	case c.Fraction > 0:
+		return int(math.Ceil(c.Fraction * float64(n)))
+	case c.Top > 0:
+		return min(c.Top, n)
+	default:
+		return n
+	}
+}
+
 // FinalIterations is the iteration count a precision's last stage runs
 // at, which is what a bulk request's Iterations field must say.
 func FinalIterations(precision string) (int, bool) {
@@ -180,8 +228,17 @@ func FinalIterations(precision string) (int, bool) {
 // a 20,000-combination fast run does not finish inside the Cloud Run
 // job's 15-minute timeout at that rate. The timeout stays; the cap
 // moved. The api lane's "too_large" estimate is built from the same
-// constant - NativeIterationsPerCPUSecond x 4 CPUs x 840 seconds - so
-// the cap and the estimate cannot disagree.
+// constant - NativeIterationsPerCPUSecond x 4 CPUs x 840 seconds -
+// and from LadderIterations above, so the cap and the estimate cannot
+// disagree.
+//
+// The argument behind 5,000 is written entirely about a FAST run.
+// Normal and high are both a single 1,000-iteration first stage over
+// every combination - ten times the fast ladder's first rung - and
+// neither fits the job budget at this cap; sim/measure's
+// TestTheServerCapFitsTheJobBudget asserts that overrun rather than
+// hiding it. Whether the cap is per-precision is an open contract
+// question (A2).
 var Caps = map[string]int{LaneBrowser: 400, LaneServer: 5000}
 
 // ErrCapExceeded is returned when an expansion is larger than the lane
@@ -264,6 +321,16 @@ func (b *BulkSpec) validate(iterations int) []error {
 	if len(b.Consumables) > 0 && b.Mode != KindGear {
 		errs = append(errs, fmt.Errorf("bulk.consumables is a gear-mode dimension; mode is %q", b.Mode))
 	}
+	// A set replaces the whole gear list at once, which only gear mode's
+	// product has room for: drops and talents mode run one substitution
+	// at a time, and singleCombinations never reads Sets, so a set on
+	// one of those requests would otherwise be silently ignored rather
+	// than refused. KindTalents mode's own case below already covers
+	// this for itself with a combined message; this catches the mode
+	// that message does not - drops.
+	if len(b.Sets) > 0 && b.Mode != KindGear {
+		errs = append(errs, fmt.Errorf("bulk.sets is a gear-mode dimension; mode is %q", b.Mode))
+	}
 
 	switch b.Mode {
 	case KindGear:
@@ -274,9 +341,13 @@ func (b *BulkSpec) validate(iterations int) []error {
 		if len(b.Talents) == 0 {
 			errs = append(errs, errors.New("a talents request needs at least one talent loadout"))
 		}
-		if len(b.Candidates) != 0 || len(b.Sets) != 0 || len(b.Consumables) != 0 {
-			errs = append(errs, errors.New("a talents request carries no candidates, sets or consumable lists; everything but the talents is locked"))
+		if len(b.Candidates) != 0 || len(b.Consumables) != 0 {
+			errs = append(errs, errors.New("a talents request carries no candidates or consumable lists; everything but the talents is locked"))
 		}
+		// Sets is refused by the general gear-mode-dimension check above,
+		// which also covers drops mode; it is left out of the combined
+		// message here so a talents request carrying a set gets exactly
+		// one error, not two for one mistake.
 	case KindDrops:
 		for i, c := range b.Candidates {
 			if !strings.HasPrefix(c.Origin, OriginDropPrefix) {

@@ -1,17 +1,24 @@
 //go:build js && wasm
 
-// Command wasm is the browser half of the sim. It exports exactly four
-// functions, all taking and returning JSON strings, plus one string
-// global, simEngineVersion, which is the engine sha this module was
-// built from. The page reads that global rather than being told the sha
-// by the server, so a request can never name an engine the wasm it is
+// Command wasm is the browser half of the sim. It exports ten
+// functions - simRun, simSplit, simCombine, simAbort, simPlan,
+// simRank, simCount, simNeedsMore, simValidate and simWeights - all
+// taking and returning JSON strings, plus one string global,
+// simEngineVersion, which is the engine sha this module was built
+// from. The page reads that global rather than being told the sha by
+// the server, so a request can never name an engine the wasm it is
 // running in is not.
+//
+// simSplit and simCombine are for plain runs only: a bulk stage's
+// requests run whole and unsplit, one worker-pool slot per request, so
+// that "abort returns what finished" stays true and no request's
+// statistics are computed twice.
 //
 // It exists in this repository rather than in the engine because
 // sim/request and sim/adapter are linked in here: the browser gets a
 // finished SimResult with its summary.Summary already built by the same
 // Go code the server runs. The engine's own thirteen js.Global().Set
-// entrypoints are an implementation detail behind these four and the web
+// entrypoints are an implementation detail behind these ten and the web
 // must not call them.
 //
 // The active build's item database is embedded through
@@ -24,7 +31,6 @@ package main
 import (
 	"encoding/json"
 	"errors"
-	"strings"
 	"syscall/js"
 	"time"
 
@@ -49,60 +55,20 @@ func main() {
 	js.Global().Set("simSplit", js.FuncOf(simSplit))
 	js.Global().Set("simCombine", js.FuncOf(simCombine))
 	js.Global().Set("simAbort", js.FuncOf(simAbort))
+	js.Global().Set("simPlan", js.FuncOf(simPlan))
+	js.Global().Set("simRank", js.FuncOf(simRank))
+	js.Global().Set("simCount", js.FuncOf(simCount))
+	js.Global().Set("simNeedsMore", js.FuncOf(simNeedsMore))
+	js.Global().Set("simValidate", js.FuncOf(simValidate))
+	js.Global().Set("simWeights", js.FuncOf(simWeights))
 	// The pin is compiled in, not injected: a plain `go build ./cmd/wasm`
 	// used to produce "dev" and stamp it on real rows.
 	js.Global().Set("simEngineVersion", js.ValueOf(enginever.Version))
 
-	// The host page defines wasmready and is told the moment the four
-	// exports exist, so it never races them.
+	// The host page defines wasmready and is told the moment every
+	// export exists, so it never races them.
 	js.Global().Call("wasmready")
 	select {}
-}
-
-// fail wraps an error as a SimResult, so every export returns the same
-// shape and the worker never has to distinguish a throw from a result.
-func fail(req api.SimRequest, msg string) string {
-	return result(api.SimResult{Request: req, Error: msg, Summary: adapter.EmptySummary()})
-}
-
-// stopped wraps an abort. It is not a failure - the user pressed Stop -
-// so it carries no error message and the page renders it as a run that
-// ended early rather than as something that went wrong.
-func stopped(req api.SimRequest, iterations int) string {
-	return result(api.SimResult{Request: req, Aborted: true, IterationsRun: iterations, Summary: adapter.EmptySummary()})
-}
-
-// Both carry adapter.EmptySummary() rather than a zero summary: a nil
-// Go slice marshals as null, so every export returns the same shape and
-// the page never has to null-check sixteen keys on the paths it is least
-// likely to have exercised.
-//
-// result stamps the two fields every export must fill the same way and
-// encodes. EngineVersion is enginever.Version, never the request's
-// claim: the row's provenance is a fact about the binary that produced
-// it, and api.SimResult.Stale can only fire if it is.
-func result(res api.SimResult) string {
-	res.EngineVersion = enginever.Version
-	res.Lane = api.LaneBrowser
-	b, err := json.Marshal(res)
-	if err != nil {
-		return errorJSON(err.Error())
-	}
-	return string(b)
-}
-
-// decodeRequest parses one request strictly. A field the envelope does
-// not carry is a client sending something this build cannot honour -
-// a profession list to an older wasm, say - and running anyway would
-// drop it silently.
-func decodeRequest(s string) (api.SimRequest, error) {
-	var req api.SimRequest
-	dec := json.NewDecoder(strings.NewReader(s))
-	dec.DisallowUnknownFields()
-	if err := dec.Decode(&req); err != nil {
-		return req, err
-	}
-	return req, nil
 }
 
 // simRun(requestJSON, callbackId) runs one request to completion and
@@ -113,11 +79,11 @@ func decodeRequest(s string) (api.SimRequest, error) {
 // JSON out, like everything else here.
 func simRun(_ js.Value, args []js.Value) any {
 	if len(args) < 2 {
-		return fail(api.SimRequest{}, "simRun takes (requestJSON, callbackId)")
+		return failJSON(api.SimRequest{}, "simRun takes (requestJSON, callbackId)")
 	}
 	req, err := decodeRequest(args[0].String())
 	if err != nil {
-		return fail(req, "the request is not valid JSON: "+err.Error())
+		return failJSON(req, "the request is not valid JSON: "+err.Error())
 	}
 	callbackID := args[1].String()
 
@@ -129,12 +95,12 @@ func simRun(_ js.Value, args []js.Value) any {
 	// by the page and by the api lane.
 	engineReq, err := request.BuildWith(req, request.Options{OpenIterations: true, NoSampleIteration: req.NoSample})
 	if err != nil {
-		return fail(req, err.Error())
+		return failJSON(req, err.Error())
 	}
 	// Forever's own item rows, from the active build, embedded at build
 	// time: the browser has no protobuf and cannot send them.
 	if err := simdb.Attach(engineReq); err != nil {
-		return fail(req, err.Error())
+		return failJSON(req, err.Error())
 	}
 
 	start := time.Now()
@@ -167,30 +133,38 @@ func simRun(_ js.Value, args []js.Value) any {
 		cb.Invoke(callbackID, string(b))
 	})
 	if engineRes == nil {
-		return fail(req, "the engine produced no result")
+		return failJSON(req, "the engine produced no result")
 	}
 	// An abort's ErrorOutcome carries no message, so this switches on
 	// the type. Testing the message alone let Stop through as a result
 	// with zero iterations, which the adapter then called corrupt.
 	if err := adapter.ResultError(engineRes); err != nil {
 		if errors.Is(err, adapter.ErrAborted) {
-			return stopped(req, int(engineRes.IterationsDone))
+			// Not a failure - the user pressed Stop - so it carries no
+			// error message and the page renders it as a run that
+			// ended early rather than as something that went wrong.
+			return encodeOrError(stamp(api.SimResult{
+				Request:       req,
+				Aborted:       true,
+				IterationsRun: int(engineRes.IterationsDone),
+				Summary:       adapter.EmptySummary(),
+			}))
 		}
-		return fail(req, err.Error())
+		return failJSON(req, err.Error())
 	}
 
 	sum, err := adapter.Summarize(engineRes, req)
 	if err != nil {
-		return fail(req, err.Error())
+		return failJSON(req, err.Error())
 	}
-	return result(api.SimResult{
+	return encodeOrError(stamp(api.SimResult{
 		Request:       req,
 		DPS:           adapter.DPS(engineRes),
 		IterationsRun: int(engineRes.IterationsDone),
 		DurationMS:    time.Since(start).Milliseconds(),
 		Summary:       sum,
 		Sample:        adapter.Sample(engineRes),
-	})
+	}))
 }
 
 // simSplit(requestJSON, n) returns a JSON array of n request JSONs, one
@@ -239,7 +213,7 @@ func simCombine(_ js.Value, args []js.Value) any {
 // {"aborted": true|false}, where false means no run is registered under
 // that id. It returns JSON rather than a bare boolean so that a wrong
 // call - which used to come back as the same `false` as "no such run" -
-// is distinguishable, and so that all four exports have one shape.
+// is distinguishable, and so that every export has one shape.
 func simAbort(_ js.Value, args []js.Value) any {
 	if len(args) < 1 {
 		return errorJSON("simAbort takes (callbackId)")
@@ -253,16 +227,146 @@ func simAbort(_ js.Value, args []js.Value) any {
 	return string(b)
 }
 
-// errorJSON wraps a message as the {"error": "..."} shape simSplit's
-// caller reads. It goes through the JSON encoder rather than string
-// concatenation, because an engine error message carries quotes and a
-// hand-built string would hand the worker something it cannot parse.
-func errorJSON(msg string) string {
-	b, err := json.Marshal(struct {
-		Error string `json:"error"`
-	}{msg})
-	if err != nil {
-		return `{"error":"the error itself could not be encoded"}`
+// simPlan(requestJSON) returns the first stage of a bulk run:
+// {"stage":1,"iterations":100,"requests":[...],"combos":[...]}.
+func simPlan(_ js.Value, args []js.Value) any {
+	if len(args) < 1 {
+		return errorJSON("simPlan takes (requestJSON)")
 	}
-	return string(b)
+	return planJSON(args[0].String())
+}
+
+// simRank(requestJSON, stageJSON, resultsJSON) scores a finished stage
+// and returns {"next": stage} or {"result": SimResult}.
+func simRank(_ js.Value, args []js.Value) any {
+	if len(args) < 3 {
+		return errorJSON("simRank takes (requestJSON, stageJSON, resultsJSON)")
+	}
+	return rankJSON(args[0].String(), args[1].String(), args[2].String())
+}
+
+// simCount(requestJSON) returns {"combinations": n} without building
+// a single request, so the page can show the count on every tick.
+func simCount(_ js.Value, args []js.Value) any {
+	if len(args) < 1 {
+		return errorJSON("simCount takes (requestJSON)")
+	}
+	return countJSON(args[0].String())
+}
+
+// simNeedsMore(resultJSON, requestJSON) returns {"needs_more": bool}:
+// the Smart Sim decision, asked of Go so both lanes stop at the same
+// precision.
+func simNeedsMore(_ js.Value, args []js.Value) any {
+	if len(args) < 2 {
+		return errorJSON("simNeedsMore takes (resultJSON, requestJSON)")
+	}
+	return needsMoreJSON(args[0].String(), args[1].String())
+}
+
+// simValidate(requestJSON) returns {"ok": bool, "errors": [...]}: the
+// same Validate the run applies, per field, for the request drawer. A
+// bad request body still comes back this way (see validateJSON); only
+// this wrapper's own arity check below returns the bare
+// {"error": "..."} shape, for a caller bug rather than a member's
+// request.
+func simValidate(_ js.Value, args []js.Value) any {
+	if len(args) < 1 {
+		return errorJSON("simValidate takes (requestJSON)")
+	}
+	return validateJSON(args[0].String())
+}
+
+func init() {
+	weightsRunner = runWeights
+}
+
+// runWeights is the engine half of simWeights.
+//
+// The engine runs the same character twice per stat, a little above
+// and a little below, so this is a raid sim request with a stat list
+// - which is exactly what request.BuildWeights builds. Progress is
+// the engine's own per-sim ticks, reported through the simProgress
+// global a plain run already uses, so the page's progress handling is
+// unchanged.
+//
+// This does NOT go through sim/internal/simdrain.ToResult, unlike
+// simRun. That helper drains to the channel's close because a
+// SUCCESSFUL raid sim closes progress on its way out (core/sim.go) and
+// the sample-iteration mutation after the final message is only
+// visible once that close is observed. core.StatWeightsAsync has no
+// such path: on every outcome - success, sim error, or a failed
+// signals registration - it sends exactly one
+// ProgressMetrics.FinalWeightResult and returns without ever closing
+// the channel (core/api.go, core/statweight.go). Draining to close
+// here would hang forever on the common case, not just the two rare
+// paths ToResult's own doc comment carves out. Taking the first
+// FinalWeightResult and stopping is therefore correct, not a shortcut
+// - and whatever res.Error turns out to mean (an abort, or a real
+// failure) is weightsResult's decision below, not this loop's; nothing
+// here needs to inspect it first.
+func runWeights(req api.SimRequest, callbackID string) (api.SimResult, error) {
+	start := time.Now()
+	engineReq, err := request.BuildWeights(req, request.Options{OpenIterations: true})
+	if err != nil {
+		return api.SimResult{}, err
+	}
+	// Forever's own item rows: a weights run equips the character the
+	// same way a DPS run does.
+	if err := simdb.AttachWeights(engineReq); err != nil {
+		return api.SimResult{}, err
+	}
+
+	reporter := make(chan *proto.ProgressMetrics, 32)
+	core.StatWeightsAsync(engineReq, reporter, callbackID)
+
+	var engineRes *proto.StatWeightsResult
+	// The engine's own running total across the WHOLE sweep, not the
+	// per-sim count: see weightsResult's doc comment on why
+	// req.Iterations is the wrong number to report.
+	var iterationsRun int
+	for p := range reporter {
+		if p.FinalWeightResult != nil {
+			engineRes = p.FinalWeightResult
+			break
+		}
+		iterationsRun = int(p.CompletedIterations)
+		if cb := js.Global().Get("simProgress"); cb.Type() == js.TypeFunction {
+			if b, err := json.Marshal(api.Progress{
+				IterationsRun: int(p.CompletedIterations),
+				DPS:           api.Estimate{Mean: p.Dps},
+				// A weights run is many sims, so the page shows the
+				// same "n of m" line a bulk stage does rather than a
+				// bare iteration count that restarts per stat.
+				CombosDone:  int(p.CompletedSims),
+				CombosTotal: int(p.TotalSims),
+			}); err == nil {
+				cb.Invoke(callbackID, string(b))
+			}
+		}
+	}
+	if engineRes == nil {
+		return api.SimResult{}, errors.New("the engine produced no weights")
+	}
+	res, err := weightsResult(req, engineRes, iterationsRun)
+	if err != nil {
+		return api.SimResult{}, err
+	}
+	// Not set on an abort: stopped() never carried one either, since
+	// there is nothing about the elapsed wall time worth reporting for
+	// a run that did not finish.
+	if !res.Aborted {
+		res.DurationMS = time.Since(start).Milliseconds()
+	}
+	return res, nil
+}
+
+// simWeights(requestJSON, callbackId) computes stat weights and
+// returns a SimResult with Weights filled. Progress is reported the
+// way simRun reports it.
+func simWeights(_ js.Value, args []js.Value) any {
+	if len(args) < 2 {
+		return errorJSON("simWeights takes (requestJSON, callbackId)")
+	}
+	return weightsJSON(args[0].String(), args[1].String())
 }

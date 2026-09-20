@@ -237,12 +237,11 @@ type EncounterSpec struct {
 	// existed - keeping that is what stops the pin bump changing every
 	// stored spec's number.
 	//
-	// Open contract question: a target dummy has no creature type at
-	// all, so Dummy arguably ought to imply MobTypeUnknown rather than
-	// inherit the humanoid default and hand out creature-type bonuses
-	// no real dummy would give. Contract 1.6 pins the fight-style
-	// table verbatim and the "dummy" style sets no TargetType, so
-	// changing it is a contract amendment, not a fix to make here.
+	// Contract 10.8 settles the dummy case: a target dummy has no
+	// creature type at all, so the "dummy" style sets TargetType to
+	// TargetTypeUnknown, which maps to MobTypeUnknown and collects no
+	// Hunter/Warlock creature-type bonus. An empty TargetType anywhere
+	// else still maps to humanoid.
 	TargetType string `json:"target_type,omitempty"`
 
 	// Dummy is the training dummy: no debuffs, no execute window, no
@@ -535,6 +534,12 @@ const (
 	SubstitutionSet      = "set"
 	SubstitutionConsumes = "consumes"
 )
+
+// NoConsumablesLabel is a SubstitutionConsumes chip's Name when the
+// alternative list it names is empty. An empty list is a real
+// candidate to compare against - "no consumables" - not the absence of
+// one, so its chip needs a label rather than joining zero ids to "".
+const NoConsumablesLabel = "no consumables"
 
 // Substitution is one change from the base character.
 type Substitution struct {
