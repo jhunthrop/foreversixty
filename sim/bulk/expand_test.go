@@ -1009,6 +1009,151 @@ func TestCountIsBoundedInTimeAndNotJustInMemory(t *testing.T) {
 	}
 }
 
+// duplicateWeaponRequest offers the SAME dual-wieldable item id k
+// times with no slot named, beside a few armour slots. Every entry
+// becomes two placements (one per hand), so the weapon sub-product is
+// (k+1)^2 leaves of which k^2 are thrown away by sameWeaponTwice -
+// and because main_hand and off_hand sit next to last in
+// api.GearSlots, the whole of that sub-product is re-walked for every
+// choice of the outer armour slots.
+//
+// Nothing here is malformed: Validate accepts it, and a page that
+// lists a player's bags without collapsing duplicate stacks builds it
+// by accident.
+func duplicateWeaponRequest(t *testing.T, k, armourSlots int) api.SimRequest {
+	t.Helper()
+	req := base()
+	candidates := make([]api.Candidate, 0, k+armourSlots*5)
+	for i := 0; i < k; i++ {
+		candidates = append(candidates, api.Candidate{ItemID: itemOneHander, Origin: api.OriginBag})
+	}
+	for _, slot := range budgetSlotOrder[:armourSlots] {
+		for _, id := range budgetSlots[slot][:5] {
+			candidates = append(candidates, candidate(slot, id))
+		}
+	}
+	req.Bulk = &api.BulkSpec{
+		Mode: api.KindGear, Precision: api.PrecisionNormal,
+		Cap: api.Caps[api.LaneBrowser], Candidates: candidates,
+	}
+	if err := req.Validate(); err != nil {
+		t.Fatalf("the duplicate-weapon request does not validate: %v", err)
+	}
+	return req
+}
+
+// The work budget bounds LEAVES WALKED, not apply() calls.
+//
+// The first version charged only inside keep, so a leaf rejected by
+// sameWeaponTwice cost a full recursive descent and a scan for free.
+// That is the shape above, and it is not a rounding error: 500
+// duplicate entries beside three armour slots took 16.7 seconds and
+// k=1,000 took 37.1 - worse than the 23.1 that motivated the budget
+// in the first place, and growing linearly in k rather than reaching
+// any ceiling. TestCountIsBoundedInTimeAndNotJustInMemory cannot see
+// it, because its 9x5 shape has no weapon candidates at all.
+//
+// After charging at the leaf: 35 ms and 29 ms. The bound here is the
+// same deliberately loose 10 seconds the other one uses.
+func TestCountIsBoundedInTimeWithDuplicateWeaponCandidates(t *testing.T) {
+	const limit = 10 * time.Second
+	for _, c := range []struct{ k, armourSlots int }{{500, 3}, {1000, 3}} {
+		t.Run(fmt.Sprintf("k=%d", c.k), func(t *testing.T) {
+			req := duplicateWeaponRequest(t, c.k, c.armourSlots)
+
+			start := time.Now()
+			_, err := Count(req)
+			elapsed := time.Since(start)
+
+			var capped api.ErrCapExceeded
+			if !errors.As(err, &capped) {
+				t.Fatalf("Count = %v, want ErrCapExceeded", err)
+			}
+			if elapsed > limit {
+				t.Errorf("Count of %d duplicate weapon candidates took %s, want under %s; leaves rejected by sameWeaponTwice are not being charged to the work budget",
+					c.k, elapsed.Round(time.Millisecond), limit)
+			}
+		})
+	}
+}
+
+// The charge lands on the leaf itself, not only on the combinations a
+// leaf produces. Pinned by arithmetic rather than by a clock, so it
+// says WHY the timing above holds.
+func TestEveryLeafIsChargedIncludingTheFilteredOnes(t *testing.T) {
+	const k = 20
+	req := duplicateWeaponRequest(t, k, 0)
+	places, err := placements(req, Options{})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	b := &budget{cap: api.Caps[api.LaneServer], limit: math.MaxInt}
+	if !gearCombinations(req, places, b) {
+		t.Fatal("an unlimited budget stopped the walk")
+	}
+
+	// Two slots, k placements each: (k+1)^2 leaves. Of those, k^2 pick
+	// the same item in both hands and are filtered; the 2k+1 that
+	// survive each yield one combination, except the empty choice,
+	// which is the equipped baseline and is skipped before it is
+	// charged.
+	const leaves = (k + 1) * (k + 1)
+	const kept = 2*k + 1 - 1
+	if want := leaves + kept; b.spent != want {
+		t.Errorf("the walk spent %d units, want %d (%d leaves + %d combinations); a filtered leaf is not being charged",
+			b.spent, want, leaves, kept)
+	}
+	if b.total != kept {
+		t.Errorf("counted %d valid combinations, want %d", b.total, kept)
+	}
+	// The point of the arithmetic: most of the work is leaves nothing
+	// is built from, so a budget charged only where a request is built
+	// bounds a small fraction of it.
+	if leaves <= 2*kept {
+		t.Fatalf("this case is meant to be dominated by filtered leaves and is not: %d leaves, %d kept", leaves, kept)
+	}
+}
+
+// A walk that ends exactly on its budget has FINISHED, and must not
+// be reported as stopped early: an expansion of precisely
+// ExpandWorkBudget units would otherwise be refused with an estimate
+// when it had in fact counted itself exactly.
+func TestTheWorkBudgetAllowsExactlyItsLimitAndNotOneMore(t *testing.T) {
+	b := &budget{limit: 3}
+	for i := 1; i <= 3; i++ {
+		if !b.charge() {
+			t.Fatalf("charge %d of 3 was refused", i)
+		}
+	}
+	if b.charge() {
+		t.Error("a fourth unit was charged against a limit of three")
+	}
+	if b.spent != 3 {
+		t.Errorf("spent = %d, want 3; a refused charge must not count", b.spent)
+	}
+
+	// The same property through the walkers, on a real product.
+	req := bagsRequest(t, 2)
+	places, err := placements(req, Options{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	measure := &budget{cap: api.Caps[api.LaneServer], limit: math.MaxInt}
+	if !gearCombinations(req, places, measure) {
+		t.Fatal("an unlimited budget stopped the walk")
+	}
+
+	exact := &budget{cap: api.Caps[api.LaneServer], limit: measure.spent}
+	if !gearCombinations(req, places, exact) {
+		t.Errorf("a walk that spends exactly its %d-unit budget reported stopping early", measure.spent)
+	}
+	tight := &budget{cap: api.Caps[api.LaneServer], limit: measure.spent - 1}
+	if gearCombinations(req, places, tight) {
+		t.Errorf("a walk one unit over its %d-unit budget reported finishing", measure.spent-1)
+	}
+}
+
 // Past the budget the refusal still names a number, and it is the
 // product's arithmetic size rather than a partial count: a page that
 // said "250,001 combinations" for a ten-million-shape request would
@@ -1139,7 +1284,13 @@ func TestWalkGearChoicesDoesNotMaterialiseTheProduct(t *testing.T) {
 	runtime.ReadMemStats(&before)
 
 	var got int
-	if !walkGearChoices(slots, bySlot, func(chosen []placement) bool { got++; return true }) {
+	// A budget with room for the whole product, so this measures
+	// laziness and nothing else. The shape is deliberately the
+	// historical one (262,144 leaves), which is above
+	// ExpandWorkBudget - the work budget is a separate property with
+	// its own tests.
+	b := &budget{cap: want, limit: want + 1}
+	if !walkGearChoices(slots, bySlot, b, func(chosen []placement) bool { got++; return true }) {
 		t.Fatal("walkGearChoices stopped early for a yield that never asked it to")
 	}
 
