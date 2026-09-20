@@ -255,6 +255,58 @@ func actorFrom(u *proto.UnitMetrics, guid, class string, iters float64, duration
 	return a
 }
 
+// engineSchoolToLogBit maps one bit of the engine's own school mask
+// (core.SpellSchool, sim/core/spell_school.go in the wowsims-forever
+// fork: Physical 2, Arcane 4, Fire 8, Frost 16, Holy 32, Nature 64,
+// Shadow 128 - bit 1 is reserved for SpellSchoolNone and never set) onto
+// the matching bit of the combat log's school mask (Physical 1, Holy 2,
+// Fire 4, Nature 8, Frost 16, Shadow 32, Arcane 64 - web/src/lib/report/
+// format.ts's schoolName and schoolColour). The two masks assign the
+// same seven schools to different bit positions because the log's mask
+// has no placeholder for "no school" the way the engine's does, so
+// every school after Physical is shifted one slot from the other's.
+// Frost is the sole bit the two happen to share (16 in both); it is
+// listed here anyway, and again in the test, so a future reader does
+// not "simplify" it out on the strength of the coincidence.
+var engineSchoolToLogBit = map[int64]int64{
+	2:   1,  // Physical -> Physical
+	4:   64, // Arcane   -> Arcane
+	8:   4,  // Fire     -> Fire
+	16:  16, // Frost    -> Frost (coincidentally identical)
+	32:  2,  // Holy     -> Holy
+	64:  8,  // Nature   -> Nature
+	128: 32, // Shadow   -> Shadow
+}
+
+// combatLogSchool translates am.SpellSchool - the engine's core school
+// mask - into the combat log's school mask, which is what
+// summary.Ability.School carries and what the report page reads
+// (engineSchoolToLogBit above names both sides). A spell can carry more
+// than one school at once (the engine has combined-school spells), so
+// each set bit is looked up and OR'd back together rather than looking
+// the whole value up as one key - a whole-value lookup would silently
+// drop the second school off a combined mask, and schoolName joins
+// combined names with "/" expecting both bits to survive.
+//
+// 0 (SpellSchoolNone - a melee swing has no school of its own) maps to
+// 0: the report already treats a non-positive mask as Physical, so
+// mapping it to 1 here would be a second answer to a question the web
+// already answers. A bit engineSchoolToLogBit does not recognize -
+// something the engine grows later that this table has not been taught
+// - is dropped rather than folded into a real school: silently mapping
+// it to the wrong school would be worse than losing it, and a map read
+// on a missing key already returns 0, so dropping it costs nothing extra
+// here.
+func combatLogSchool(engineMask int32) int64 {
+	var out int64
+	for bit := int64(1); bit <= int64(engineMask); bit <<= 1 {
+		if int64(engineMask)&bit != 0 {
+			out |= engineSchoolToLogBit[bit]
+		}
+	}
+	return out
+}
+
 // ability folds one ActionMetrics, which is already summed over every
 // target and every iteration, into one summary row per fight.
 //
@@ -270,7 +322,7 @@ func ability(am *proto.ActionMetrics, iters float64, perTarget map[int32]int64) 
 	ab := summary.Ability{
 		SpellID: spellID,
 		Name:    name,
-		School:  int64(am.SpellSchool),
+		School:  combatLogSchool(am.SpellSchool),
 		Misses:  map[string]int64{},
 	}
 	for _, t := range am.Targets {

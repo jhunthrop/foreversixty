@@ -14,7 +14,7 @@
         {
           "spell_id": 25286,
           "name": "spell:25286",
-          "school": 2,
+          "school": 1,
           "total": 64767,
           "effective": 64767,
           "hits": 58,
@@ -30,7 +30,7 @@
         {
           "spell_id": 23894,
           "name": "spell:23894",
-          "school": 2,
+          "school": 1,
           "total": 33210,
           "effective": 33210,
           "hits": 25,
@@ -46,7 +46,7 @@
         {
           "spell_id": 20022000007,
           "name": "other:attack/2",
-          "school": 2,
+          "school": 1,
           "total": 29119,
           "effective": 29119,
           "hits": 113,
@@ -63,7 +63,7 @@
         {
           "spell_id": 20662,
           "name": "spell:20662",
-          "school": 2,
+          "school": 1,
           "total": 25834,
           "effective": 25834,
           "hits": 18,
@@ -79,7 +79,7 @@
         {
           "spell_id": 10022000007,
           "name": "other:attack/1",
-          "school": 2,
+          "school": 1,
           "total": 22339,
           "effective": 22339,
           "hits": 37,
@@ -96,7 +96,7 @@
         {
           "spell_id": 1680,
           "name": "spell:1680",
-          "school": 2,
+          "school": 1,
           "total": 10610,
           "effective": 10610,
           "hits": 12,
@@ -111,7 +111,7 @@
         {
           "spell_id": 12867,
           "name": "spell:12867",
-          "school": 2,
+          "school": 1,
           "total": 970,
           "effective": 970,
           "hits": 0,

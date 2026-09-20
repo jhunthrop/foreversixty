@@ -844,3 +844,82 @@ func TestSampleOfTheWarriorFixture(t *testing.T) {
 		}
 	}
 }
+
+// combatLogSchool must map the engine's core school bitmask onto the
+// combat log's, bit by bit: the persona review that found this bug saw
+// every warrior ability, and only warrior abilities, render as school
+// "Holy" (engine 2, Physical, misread as log 2, Holy) because the two
+// masks assign the same schools to different bit positions.
+func TestCombatLogSchool(t *testing.T) {
+	tests := []struct {
+		name   string
+		engine int32
+		want   int64
+	}{
+		{"none maps to none, not to Physical's bit", 0, 0},
+		{"warrior physical ability: the bug this task fixes", 2, 1},
+		// Frost is the one school the two masks happen to place on the
+		// same bit. It is still listed explicitly in
+		// engineSchoolToLogBit and tested here so nobody later
+		// "simplifies" the table by dropping the identity entry.
+		{"frost mage frost ability: coincidentally identical on both masks", 16, 16},
+		{"holy", 32, 2},
+		{"arcane", 4, 64},
+		{"fire", 8, 4},
+		{"nature", 64, 8},
+		{"shadow", 128, 32},
+		{"combined mask ORs both translated bits: Frost|Shadow", 16 | 128, 16 | 32},
+		{"a bit the table does not know is dropped, not mapped to a wrong school", 1 << 20, 0},
+		{"an unmapped bit combined with a known one drops only the unknown bit", 2 | (1 << 20), 1},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			if got := combatLogSchool(tc.engine); got != tc.want {
+				t.Errorf("combatLogSchool(%d) = %d, want %d", tc.engine, got, tc.want)
+			}
+		})
+	}
+}
+
+// The mapping has to be wired into ability(), not just correct in
+// isolation: this pins Summarize's output for a warrior's physical
+// ability (the exact case the persona review flagged) and a frost
+// mage's frost ability (the coincidentally-identical case, which would
+// pass even if ability() still wrote am.SpellSchool straight through).
+func TestSummarizeTranslatesAbilitySchool(t *testing.T) {
+	const iters = 1
+	tests := []struct {
+		name       string
+		spellID    int32
+		engineMask int32
+		wantSchool int64
+	}{
+		{"warrior physical ability", 23894, 2, 1},
+		{"frost mage frost ability", 25304, 16, 16},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			u := &proto.UnitMetrics{
+				Name: "Sim",
+				Dps:  &proto.DistributionMetrics{Avg: 1, Stdev: 0, Max: 1, Min: 1},
+				Actions: []*proto.ActionMetrics{{
+					Id:          &proto.ActionID{RawId: &proto.ActionID_SpellId{SpellId: tc.spellID}},
+					SpellSchool: tc.engineMask,
+					Targets: []*proto.TargetedActionMetrics{{
+						UnitIndex: 1,
+						Hits:      1,
+						Damage:    100,
+					}},
+				}},
+			}
+			got, err := Summarize(resultWith(u, iters), req())
+			if err != nil {
+				t.Fatal(err)
+			}
+			ab := got.DamageDone[0].Abilities[0]
+			if ab.School != tc.wantSchool {
+				t.Errorf("School = %d, want %d", ab.School, tc.wantSchool)
+			}
+		})
+	}
+}
