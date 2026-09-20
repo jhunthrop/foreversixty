@@ -648,6 +648,7 @@ export const bulkCopy = {
   combinations: (n: number): string =>
     `${n.toLocaleString('en-US')} valid ${n === 1 ? 'combination' : 'combinations'}`,
   combinationsCounting: 'Counting combinations…',
+  combinationsNone: 'Nothing to try yet. Tick an item, a build or a source that fits your character.',
   precisionLabel: 'Precision',
   precisionFast: 'Fast',
   precisionNormal: 'Normal',

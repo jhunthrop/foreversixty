@@ -75,7 +75,9 @@ test('the combination count moves as candidates are ticked', async ({ page }) =>
   // alternate directly rather than through an escaping helper this file would be the only
   // caller of.
   await expect(page.getByTestId('sim-combo-count')).toHaveText(
-    new RegExp(`${bulkCopy.combinations(0)}|${bulkCopy.combinationsCounting}`),
+    new RegExp(
+      `${bulkCopy.combinations(0)}|${bulkCopy.combinationsCounting}|${bulkCopy.combinationsNone.replace(/[.]/g, '\\.')}`,
+    ),
   );
   await page.getByTestId('sim-candidate-head-12640').getByRole('checkbox').check();
   await expect(page.getByTestId('sim-combo-count')).toHaveText(bulkCopy.combinations(1));

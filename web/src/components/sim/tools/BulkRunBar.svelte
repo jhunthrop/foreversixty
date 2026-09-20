@@ -45,7 +45,17 @@
       ? bulkCopy.combinations(store.combinations)
       : store.message !== null
         ? ''
-        : bulkCopy.combinationsCounting,
+        : store.phase === 'counting'
+          ? bulkCopy.combinationsCounting
+          : bulkCopy.combinationsNone,
+  );
+  /**
+   * A combination tool with nothing to run: no count yet (nothing ticked, or a source
+   * whose drops none of this character can wear, which `recount` exits on before it ever
+   * counts) or a count of zero. The weights page has no count and is never gated on one.
+   */
+  const nothingToRun = $derived(
+    combinationTool && (store.combinations === null || store.combinations === 0) && store.phase !== 'running',
   );
   const PRECISION_LABELS: Record<Precision, string> = {
     fast: bulkCopy.precisionFast,
@@ -91,7 +101,10 @@
       type="button"
       class="{SECONDARY_BUTTON} border-line-warm text-nav px-4"
       data-testid="sim-run-bulk"
-      disabled={store.capNotice !== null || store.character === null || store.phase === 'loading-character'}
+      disabled={store.capNotice !== null ||
+        store.character === null ||
+        store.phase === 'loading-character' ||
+        (nothingToRun && !running)}
       onclick={() => (running ? store.stop() : void store.run())}
     >
       {#if running}{bulkCopy.stopBulk}{:else if store.result !== null}{bulkCopy.runBulkAgain}{:else}{bulkCopy.runBulk}{/if}
