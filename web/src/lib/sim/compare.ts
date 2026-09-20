@@ -22,7 +22,7 @@
 // outcome: the table then says the sim did something the fight did not, which is visible,
 // rather than folding two different actions together, which is not. In particular two
 // id-zero rows on the log side stay apart, because tier 2 keys them by name.
-import { SYNTHETIC_ID_BASE, resolveActionName, type ActionNames } from './action-names';
+import { SYNTHETIC_ID_BASE, parseActionKey, resolveActionName, type ActionNames } from './action-names';
 import { simCopy } from './copy';
 import type { Summary } from '../report/types';
 import { playerActor } from './sentence';
@@ -81,9 +81,14 @@ interface Keyed {
 }
 
 function keyed(spellId: number, rawName: string, names: ActionNames | null): Keyed {
-  const label = resolveActionName(rawName, names);
+  const label = resolveActionName(rawName, names).replace(VARIANT, '');
   if (spellId > 0 && spellId < SYNTHETIC_ID_BASE) return { key: `id:${spellId}`, label };
-  const base = label.replace(VARIANT, '');
+  // A tagged or ranked row of a real spell ("spell:25286/1", row id 10002025286) is the
+  // same action as its plain row for a join: the log has one Heroic Strike, and two sim
+  // rows shown under one name would otherwise print the same line twice.
+  const parsed = parseActionKey(rawName);
+  if (parsed !== null && parsed.kind === 'spell' && parsed.id > 0) return { key: `id:${parsed.id}`, label };
+  const base = label;
   const aliased = simCopy.actionAliases[base] ?? base;
   return { key: `name:${aliased.trim().toLowerCase()}`, label: aliased };
 }

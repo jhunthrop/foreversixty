@@ -31,7 +31,10 @@
 
   {#if comparison.lines.length > 0}
     <ul class="flex flex-col gap-1 px-[18px] md:px-0" data-testid="compare-lines">
-      {#each comparison.lines as line (line)}
+      <!-- Keyed by position, never by text: a line is prose, not an identity, and two rows
+           can word the same gap identically. A repeated {#each} key is a Svelte 5 runtime
+           error, and the list is rebuilt whole on every new result anyway. -->
+      {#each comparison.lines as line, index (index)}
         <li class="text-[14px]">{line}</li>
       {/each}
     </ul>

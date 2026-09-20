@@ -165,6 +165,24 @@ describe('compareSummaries', () => {
     expect(row?.spellId).toBe(10022000007);
   });
 
+  it('joins a tagged row of a real spell onto its plain row, by the client id they share', () => {
+    // The real engine reports Heroic Strike twice -- "spell:25286" and the tagged
+    // "spell:25286/1" at a derived id -- and the log reports it once. One row, damage and
+    // casts summed, one line about it; a second row under the same name printed the same
+    // sentence twice, which is a repeated {#each} key on the page.
+    const sim = simSummary();
+    sim.damage_done[0].abilities.push(ability(10002025286, 'spell:25286/1', 30_000));
+    sim.damage_done[0].total += 30_000;
+    sim.casts.push(castRow('sim-player', 10002025286, 'spell:25286/1', 3));
+    const comparison = compareSummaries(sim, actualSummary(), 'Thrallgar', names);
+    const rows = comparison.abilities.filter((row) => row.name === 'Heroic Strike');
+    expect(rows).toHaveLength(1);
+    expect(rows[0]?.spellId).toBe(25286);
+    expect(rows[0]?.simDamage).toBe(150_000);
+    expect(rows[0]?.simCasts).toBe(44);
+    expect(new Set(comparison.lines).size).toBe(comparison.lines.length);
+  });
+
   it('never joins two different actions by number just because both are id zero', () => {
     const sim = simSummary();
     const actual = actualSummary();
