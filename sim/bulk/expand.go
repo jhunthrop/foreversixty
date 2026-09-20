@@ -263,12 +263,18 @@ func enchantFor(c api.Candidate, slot string, item simdb.Item, class string, equ
 // api.Caps[api.LaneServer] = 5,000, fifty times smaller) and far below
 // anything that takes a perceptible time to enumerate: spending the
 // whole of it measured 0.25s on a plain gear product and 0.03s on the
-// duplicate-weapon shape below. Reaching it therefore
-// already proves the cap is breached, so the REFUSAL is exact even
-// though the number quoted with it becomes an arithmetic upper bound
-// (upperBound, below) rather than the enumerated count. A request that
-// finishes enumerating under the budget still reports the precise
-// count it always did.
+// duplicate-weapon shape below. A request that finishes enumerating
+// under the budget reports the precise count it always did; a request
+// that spends the budget is refused, and the number quoted with the
+// refusal is an arithmetic upper bound (upperBound, below) rather
+// than an enumerated count.
+//
+// KNOWN DEFECT: spending the budget is treated as proof of a cap
+// breach, and it is not proof. A request whose product is large but
+// whose VALID count is small is refused when it should have been
+// served. This is a real, reproducible wrong answer, in both lanes,
+// and the paragraphs below are the note to read before touching any
+// of this.
 //
 // WHAT IT CHARGES is every unit of enumeration work, not only the
 // combinations that survive to be counted (see budget.charge). The
@@ -287,14 +293,54 @@ func enchantFor(c api.Candidate, slot string, item simdb.Item, class string, equ
 // reaching any ceiling. Charging at the leaf, before the filter, is
 // what makes the bound a bound.
 //
-// The one shape the trade gets wrong is a request whose validity
-// filter rejects nearly everything - twenty-five identically named
-// rings offered to both finger slots, twenty-five identically named
-// trinkets to both trinket slots, which enumerates 457,000 shapes of
-// which only 2,601 are valid. That is refused here and would have
-// fitted. It is not a shape any of the three tools builds, and the
-// alternative - enumerating without a bound so that case can be
-// answered - is the freeze this constant exists to prevent.
+// HOW TO REPRODUCE THE DEFECT. It needs many duplicate entries of one
+// item that fits two slots - a ring, a trinket, a one-hander. Nothing
+// about that is malformed: req.Validate() accepts it, BulkSpec places
+// no limit on len(Candidates), and a page listing a player's bags
+// without collapsing duplicate stacks builds it by accident. Both
+// figures below are measured, not derived.
+//
+//	Server cap, api.Caps[api.LaneServer] = 5,000. k duplicate
+//	entries of one dual-wieldable item with no slot named, beside a
+//	neck and a head slot. At k=100 the count finishes inside the
+//	budget and returns its exact 4,823. At k=102 it spends the
+//	budget and is REFUSED - and the true valid count there is 4,919,
+//	comfortably under the cap. Two extra duplicate entries turn a
+//	servable request into a refusal.
+//
+//	Browser cap, api.Caps[api.LaneBrowser] = 400. k duplicate
+//	entries of the ring the character is ALREADY WEARING. Every leaf
+//	here is charged twice - once walked, once built - because
+//	sameWeaponTwice does not look at finger slots, so the budget
+//	arrives at about half the k the weapon shape needs, while only
+//	one leaf per row is valid. k=352 is served with its exact 352;
+//	k=353 through k=400 are all REFUSED with true valid counts of
+//	353 to 400, every one of them at or under the cap. (k=401 is a
+//	true breach, correctly refused.) The window is narrow but it is
+//	there: the browser lane is NOT exempt.
+//
+// WHY THE OBVIOUS FIX IS NOT APPLIED HERE. Refusing only once the
+// breach is proven - carrying on past the budget while the valid
+// count is still under the cap - fixes both cases above and was
+// implemented and measured. It makes the PROOF unbounded. In the
+// duplicate-ring shape one valid combination appears per k+1 leaves,
+// so proving a breach costs Cap x (k+1) leaves: 34.6 seconds at
+// k=10,000 and 67.8 at k=20,000, linear in k with no ceiling, on the
+// path contract 10.2 has the page calling on every candidate tick.
+// That trades a false refusal for a frozen tab, so it was reverted.
+// A sound O(placements) LOWER bound on the valid count - count the
+// placements whose single substitution is valid, and refuse outright
+// when that exceeds Cap - would make the proof cheap without ever
+// refusing falsely, and is the first thing to try.
+//
+// THE REAL FIX IS CANDIDATE DE-DUPLICATION, and it deletes this whole
+// class rather than mitigating it: k identical entries produce k
+// identical placements and k byte-identical combinations, so the
+// duplicate-ring shape goes from 100 million leaves to four. It is
+// deferred because collapsing them changes the reported count, which
+// is contract-visible (contract 10.2: the page's count and the
+// planner's must be the same number). Until it lands, every bound in
+// this file is scaffolding around its absence.
 const ExpandWorkBudget = 250_000
 
 // budget is what combinations keeps while it walks the product: the
