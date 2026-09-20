@@ -10,6 +10,7 @@
     ],
     "engine_version": "8b2169e61",
     "reference_stat": "attack_power",
+    "weight_stats": ["attack_power", "strength", "agility", "crit", "hit", "melee_haste"],
     "updated_at": "2026-09-14T04:12:00Z"
   },
   {

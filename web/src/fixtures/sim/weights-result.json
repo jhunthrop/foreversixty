@@ -55,7 +55,7 @@
     { "stat": "strength", "weight": 2.14, "error": 0.06 },
     { "stat": "crit", "weight": 21.7, "error": 0.9 },
     { "stat": "hit", "weight": 27.3, "error": 1.2 },
-    { "stat": "agility", "weight": 1.32, "error": 0.05 },
+    { "stat": "agility", "weight": 1.32, "error": 1.45, "insignificant": true },
     { "stat": "melee_haste", "weight": 18.4, "error": 1.1 }
   ]
 }

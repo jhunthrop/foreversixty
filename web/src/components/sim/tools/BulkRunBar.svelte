@@ -13,7 +13,8 @@
   import { SECONDARY_BUTTON } from '../../../lib/planner/styles';
   import type { BulkStore } from '../../../lib/sim/bulk-store.svelte';
   import { BULK_PRECISIONS, LOW_CORE_CAP, type Precision } from '../../../lib/sim/bulk-types';
-  import { bulkCopy } from '../../../lib/sim/copy';
+  import { bulkCopy, simCopy } from '../../../lib/sim/copy';
+  import PrecisionSelect from '../PrecisionSelect.svelte';
   import RequestDrawer from '../RequestDrawer.svelte';
   import SettingsBar from '../SettingsBar.svelte';
 
@@ -22,11 +23,14 @@
   /**
    * The weights tool sends no `bulk` block at all (bulk-store.svelte.ts's `mode` is null
    * for it), so `recount` never runs and `combinations` never leaves null -- the count
-   * would read "Counting combinations…" for as long as the page is open. Precision is dead
-   * there too: `buildRequest` sends `PRECISION_ITERATIONS.normal` for a weights run and
-   * ignores `precision` entirely, so the select and its note would describe stages this
-   * page does not have (final whole-branch review, Important 2). The run button, the cap
-   * notice, the lane switch and the drawer are shared by all four tools and stay.
+   * would read "Counting combinations…" for as long as the page is open, so the count and
+   * its cap machinery stay behind this flag. Precision is NOT dead there any more
+   * (dps-minmaxer review round 1, D45: the weights page shipped with no working precision
+   * control at all): `buildRequest` now sends `deps.getPrecision()`'s own iteration count
+   * for a weights run, the same `store.precision` this bar already reads and writes for
+   * the other three tools -- see the select below, which renders for every tool and only
+   * swaps its label text and drops the staged note when `combinationTool` is false, since
+   * a weights run is one flat iteration count with no stage ladder to describe.
    */
   const combinationTool = $derived(store.tool !== 'weights');
   const running = $derived(store.phase === 'running' || store.serverRunning);
@@ -62,6 +66,15 @@
     normal: bulkCopy.precisionNormal,
     high: bulkCopy.precisionHigh,
   };
+  /**
+   * A combination tool's word is a bare "Fast"/"Normal"/"High" -- `precisionNote` below
+   * says what it means. The weights tool has no stage note to say it for, so it takes
+   * `/sim`'s own three fixed-count labels instead ("Fast, 500 iterations", ...) -- the
+   * identical `simCopy.precisionLabel` map `RunControl.svelte` reads from, unmodified,
+   * rather than a second sentence saying the same thing a different way.
+   */
+  const precisionLabelFor = (id: Precision): string =>
+    combinationTool ? PRECISION_LABELS[id] : (simCopy.precisionLabel[id] ?? id);
 </script>
 
 <SettingsBar
@@ -80,22 +93,19 @@
       <span class="tabular text-strong font-mono text-[14px]" data-testid="sim-combo-count">
         {countLabel}
       </span>
-
-      <label class="text-muted flex items-center gap-2 text-[12px]">
-        {bulkCopy.precisionLabel}
-        <select
-          data-testid="sim-precision"
-          class="border-line-warm rounded-control bg-bg text-text h-11 border px-2 text-[14px]"
-          disabled={running}
-          value={store.precision}
-          onchange={(event) => store.setPrecision(event.currentTarget.value as Precision)}
-        >
-          {#each BULK_PRECISIONS as precision (precision)}
-            <option value={precision}>{PRECISION_LABELS[precision]}</option>
-          {/each}
-        </select>
-      </label>
     {/if}
+
+    <label class="text-muted flex items-center gap-2 text-[12px]">
+      {bulkCopy.precisionLabel}
+      <PrecisionSelect
+        class="border-line-warm rounded-control bg-bg text-text h-11 border px-2 text-[14px]"
+        value={store.precision}
+        options={BULK_PRECISIONS}
+        labelFor={precisionLabelFor}
+        disabled={running}
+        onchange={(value) => store.setPrecision(value as Precision)}
+      />
+    </label>
 
     <button
       type="button"

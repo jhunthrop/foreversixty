@@ -104,12 +104,43 @@ export function referenceFor(spec: string, rows: readonly SpecFidelity[]): strin
 }
 
 /**
- * What the picker opens with: the reference stat first, then every stat that can matter.
- * The list is not pruned by class -- a spec that gains nothing from spirit gets a weight of
- * about zero, which is itself the answer, and pruning would hide it.
+ * The spec's own `weight_stats` column from `GET /v1/specs`, or `undefined` when the list
+ * has no row for this spec, or the row predates the column -- "the engine did not say",
+ * which `pickableStatsFor` below treats as the full pinned vocabulary rather than an empty
+ * picker.
  */
-export function defaultStatsFor(_spec: string, referenceStat: string): string[] {
-  const rest = WEIGHT_STATS.filter((stat) => stat.id !== referenceStat).map((stat) => stat.id);
+export function weightStatsFor(spec: string, rows: readonly SpecFidelity[]): readonly string[] | undefined {
+  return rows.find((entry) => entry.spec === spec)?.weight_stats;
+}
+
+/**
+ * The stats the picker actually offers: `weightStats`, in the engine's own order, when the
+ * spec's `GET /v1/specs` row sent one (contract 8 (+)). Absent or empty falls back to the
+ * full pinned vocabulary (`WEIGHT_STATS`) unchanged -- "the engine did not say" is not "the
+ * engine said everything", so the fallback must not be dressed up as a curated list (dps-
+ * minmaxer review round 1, D45's "only the spec's stats" requirement, contract 10.8: this
+ * removes the retail-only entries -- Expertise, spell haste, armor penetration, MP5, feral
+ * attack power -- from a 1.60 spec by construction, once the engine stops naming them,
+ * rather than by a second, hand-maintained deny-list here).
+ */
+export function pickableStatsFor(weightStats: readonly string[] | undefined): readonly WeightStat[] {
+  if (weightStats === undefined || weightStats.length === 0) return WEIGHT_STATS;
+  return weightStats.map((id) => BY_ID.get(id) ?? { id, label: statLabel(id), pawn: '' });
+}
+
+/**
+ * What the picker opens with: the reference stat first, then every stat that can matter --
+ * "can matter" being `weightStats` when the spec sent one, the full pinned vocabulary
+ * otherwise. The list is not pruned by class beyond that -- a spec that gains nothing from
+ * spirit gets a weight of about zero, which is itself the answer, and pruning would hide it.
+ */
+export function defaultStatsFor(
+  _spec: string,
+  referenceStat: string,
+  weightStats?: readonly string[],
+): string[] {
+  const pickable = pickableStatsFor(weightStats);
+  const rest = pickable.filter((stat) => stat.id !== referenceStat).map((stat) => stat.id);
   return [referenceStat, ...rest];
 }
 
@@ -120,9 +151,24 @@ export function weightScale(weights: readonly StatWeight[]): number {
 }
 
 /**
+ * Whether a weight belongs in the Pawn string and reads as a real number rather than as
+ * noise -- `false` when the engine flagged `insignificant` (D45: a weight the error bar
+ * swallows still printed to two decimals with a Pawn export beneath it). The one predicate
+ * `pawnString` and every "is this row greyed" check in the table components share, so
+ * neither can drift from the other (D46: the Pawn string used to disagree with which rows
+ * the table showed as meaningful -- see weights.test.ts's own regression guard).
+ */
+export function isSignificant(weight: Pick<StatWeight, 'insignificant'>): boolean {
+  return weight.insignificant !== true;
+}
+
+/**
  * Pawn's v1 line, which is what the addon pastes. A stat Pawn has no key for is left out
  * rather than guessed at: Pawn ignores a key it does not know, but it warns about it, and a
- * warning nobody can act on is worse than an absent stat.
+ * warning nobody can act on is worse than an absent stat. A weight the engine flagged
+ * `insignificant` is left out too, for the same reason as an unknown Pawn key: a number that
+ * cannot be told apart from zero is not something Pawn's own weighted sum should treat as
+ * real (D45/D46).
  */
 export function pawnString(spec: string, weights: readonly StatWeight[]): string {
   const row = specRow(spec);
@@ -130,9 +176,25 @@ export function pawnString(spec: string, weights: readonly StatWeight[]): string
   const name = row === null ? spec : specLabel(spec);
   const parts = [`Class=${className}`, `Spec=${row?.name ?? spec}`];
   for (const weight of weights) {
+    if (!isSignificant(weight)) continue;
     const key = BY_ID.get(weight.stat)?.pawn ?? '';
     if (key === '') continue;
     parts.push(`${key}=${weight.weight.toFixed(2)}`);
   }
   return `( Pawn: v1: "${name}": ${parts.join(', ')} )`;
+}
+
+/**
+ * The healer-sim defect (BLOCKER 2): a Restoration Druid string ran on `/sim/weights` for
+ * 64 seconds and said nothing, because nothing anywhere checked whether the engine models
+ * this spec's damage at all before sending it a request. The simulator's own scope is dps
+ * specs only (`spec-label.ts`'s `dpsSpecs`, design "Scope at launch": "tanks and healers
+ * are research problems and stay out of the first cut") -- the identical `role` column
+ * already used to build that list is the answer here too, so this is that same fact, not a
+ * second table that could disagree with it. An unrecognised spec (`specRow` returns null)
+ * reads as unsupported as well: a spec nothing here has heard of is exactly as unable to be
+ * simulated as one this build knows is a healer.
+ */
+export function isDpsSpec(spec: string): boolean {
+  return specRow(spec)?.role === 'dps';
 }

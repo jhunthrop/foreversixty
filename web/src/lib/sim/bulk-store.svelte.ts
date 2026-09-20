@@ -74,6 +74,7 @@ import {
   type SourceResult,
 } from './sources';
 import type { SimResult, SourceKind, SpecFidelity } from './types';
+import { weightStatsFor } from './weights';
 import { createPool, type SimPool } from './worker';
 
 export const TOOLS = ['gear', 'talents', 'drops', 'weights'] as const;
@@ -499,6 +500,15 @@ export function createBulkStore(init: BulkStoreInit) {
     },
     get referenceStat() {
       return referenceStat();
+    },
+    /**
+     * The current character's spec's own `weight_stats` from `GET /v1/specs`, or
+     * `undefined` when the list has no row, or no column, for it -- `weights.ts`'s
+     * `pickableStatsFor`/`WEIGHTS_STATS_FROM_ENGINE` both key off this same optionality, so
+     * the picker and its explainer can never disagree about whether the list is curated.
+     */
+    get weightStats() {
+      return weightStatsFor(character?.spec ?? '', specRows);
     },
     /** The sources the picker draws: kind ticked on, and released unless asked otherwise. */
     get visibleSources() {

@@ -7,13 +7,17 @@ import {
   DEFAULT_REFERENCE,
   defaultStatsFor,
   fallbackReferenceFor,
+  isDpsSpec,
+  isSignificant,
   pawnString,
+  pickableStatsFor,
   referenceFor,
   statLabel,
   weightScale,
+  weightStatsFor,
   WEIGHT_STATS,
 } from './weights';
-import type { WeightsResult } from './bulk-types';
+import type { StatWeight, WeightsResult } from './bulk-types';
 import type { SpecFidelity } from './types';
 
 const result = weightsResultJson as unknown as WeightsResult;
@@ -42,6 +46,11 @@ describe('defaultStatsFor', () => {
     expect(stats.filter((stat) => stat === 'attack_power')).toHaveLength(1);
     expect(new Set(stats).size).toBe(stats.length);
   });
+
+  it('is scoped to weightStats when the spec sent one, the reference stat still first', () => {
+    const stats = defaultStatsFor('warrior-fury', 'attack_power', ['attack_power', 'strength', 'agility']);
+    expect(stats).toEqual(['attack_power', 'strength', 'agility']);
+  });
 });
 
 describe('statLabel', () => {
@@ -60,9 +69,11 @@ describe('weightScale', () => {
 
 describe('pawnString', () => {
   it('is a Pawn v1 line with the class, the spec and two decimals a piece', () => {
+    // The fixture's own "agility" row is insignificant (weight 1.32, error 1.45) -- left
+    // out here the same way a stat Pawn has no key for is, below.
     expect(pawnString('warrior-fury', result.weights)).toBe(
       '( Pawn: v1: "Fury Warrior": Class=Warrior, Spec=Fury, AttackPower=1.00, Strength=2.14, ' +
-        'CritRating=21.70, HitRating=27.30, Agility=1.32, HasteRating=18.40 )',
+        'CritRating=21.70, HitRating=27.30, HasteRating=18.40 )',
     );
   });
 
@@ -70,6 +81,95 @@ describe('pawnString', () => {
     expect(pawnString('warrior-fury', [{ stat: 'nonesuch', weight: 3, error: 0 }])).toBe(
       '( Pawn: v1: "Fury Warrior": Class=Warrior, Spec=Fury )',
     );
+  });
+
+  it('D45: leaves out a weight the engine flagged insignificant', () => {
+    const weights: StatWeight[] = [
+      { stat: 'attack_power', weight: 1, error: 0 },
+      { stat: 'crit', weight: 14.37, error: 22.55, insignificant: true },
+    ];
+    expect(pawnString('warrior-fury', weights)).toBe(
+      '( Pawn: v1: "Fury Warrior": Class=Warrior, Spec=Fury, AttackPower=1.00 )',
+    );
+  });
+
+  it('D46: never disagrees with isSignificant about which rows are included -- the regression guard', () => {
+    // The table greys a row exactly when `isSignificant` is false (StatWeights.svelte,
+    // SavedWeights.svelte); pawnString must include exactly the rows that predicate calls
+    // significant, and no others, for every row that has a Pawn key at all. Asserted
+    // generically -- over the whole pinned vocabulary, not one hand-picked stat -- so this
+    // guard cannot be satisfied by coincidence the way a single fixed-string test could be.
+    const weights: StatWeight[] = WEIGHT_STATS.map((stat, index) => ({
+      stat: stat.id,
+      weight: index + 1,
+      error: 0.1,
+      insignificant: index % 2 === 0,
+    }));
+    const pawn = pawnString('warrior-fury', weights);
+    for (const row of weights) {
+      const key = WEIGHT_STATS.find((stat) => stat.id === row.stat)?.pawn ?? '';
+      if (key === '') continue; // Pawn has no key for this stat regardless of significance.
+      const included = pawn.includes(`${key}=`);
+      expect(included, `${row.stat} (insignificant: ${row.insignificant})`).toBe(isSignificant(row));
+    }
+  });
+});
+
+describe('isSignificant', () => {
+  it('treats absent or false insignificant as significant', () => {
+    expect(isSignificant({ insignificant: undefined })).toBe(true);
+    expect(isSignificant({ insignificant: false })).toBe(true);
+    expect(isSignificant({})).toBe(true);
+  });
+
+  it('treats insignificant: true as not significant', () => {
+    expect(isSignificant({ insignificant: true })).toBe(false);
+  });
+});
+
+describe('pickableStatsFor (sub-item 4: only the spec’s own stats)', () => {
+  it('offers the full pinned vocabulary when the engine sent no weight_stats', () => {
+    expect(pickableStatsFor(undefined)).toBe(WEIGHT_STATS);
+    expect(pickableStatsFor([])).toBe(WEIGHT_STATS);
+  });
+
+  it('offers only the spec’s own stats, in the engine’s order, when it sent one', () => {
+    const pickable = pickableStatsFor(['attack_power', 'strength']);
+    expect(pickable.map((stat) => stat.id)).toEqual(['attack_power', 'strength']);
+    // Retail-only entries (D45) are never offered once the engine names its own list --
+    // by construction (they are simply not in the list), not by a deny-list here.
+    for (const wrong of ['expertise', 'spell_haste', 'armor_penetration', 'mp5', 'feral_attack_power']) {
+      expect(pickable.map((stat) => stat.id)).not.toContain(wrong);
+    }
+  });
+});
+
+describe('weightStatsFor', () => {
+  it('reads the spec’s own weight_stats column from GET /v1/specs', () => {
+    expect(weightStatsFor('warrior-fury', specs)).toEqual([
+      'attack_power',
+      'strength',
+      'agility',
+      'crit',
+      'hit',
+      'melee_haste',
+    ]);
+  });
+
+  it('is undefined for a spec with no row, or a row predating the column', () => {
+    expect(weightStatsFor('mage-frost', specs)).toBeUndefined();
+    expect(weightStatsFor('nonesuch-spec', specs)).toBeUndefined();
+  });
+});
+
+describe('isDpsSpec (sub-item 5: the honest refusal)', () => {
+  it('is true for a dps spec', () => {
+    expect(isDpsSpec('warrior-fury')).toBe(true);
+  });
+
+  it('is false for a healer or tank spec, and for an unrecognised one', () => {
+    expect(isDpsSpec('druid-restoration')).toBe(false);
+    expect(isDpsSpec('nonesuch-spec')).toBe(false);
   });
 });
 

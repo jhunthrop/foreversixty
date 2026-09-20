@@ -38,13 +38,14 @@ import {
 } from './bulk-types';
 import { buildBulkSpec, validateBulk, type CandidateRow } from './candidates';
 import { toCharacterSpec, type SimCharacter } from './character';
-import { bulkCopy, simCopy } from './copy';
+import { bulkCopy, simCopy, weightsUnsupportedSpec } from './copy';
 import type { RequestValidation } from './engine';
 import { PRECISION_ITERATIONS } from './precision';
+import { specLabel } from './spec-label';
 import type { SimSettings } from './settings';
 import type { CharacterSpec, SimResult, SpecFidelity } from './types';
 import { ENGINE_VERSION } from './version';
-import { defaultStatsFor, referenceFor } from './weights';
+import { defaultStatsFor, isDpsSpec, referenceFor, weightStatsFor } from './weights';
 import type { SimPool } from './worker';
 
 /** Everything `envelope`/`currentSpec`/the four request methods read or write. */
@@ -219,13 +220,25 @@ export type RequestOutcome = { request: BulkRequest | WeightsRequest } | { error
 /** `store.svelte.ts`'s own `buildRequest`, for a bulk or weights request. Refuses with a
  *  reason rather than throwing: `run()` shows the reason as `message`, never a stack trace. */
 export function buildRequest(deps: BulkRequestDeps): RequestOutcome {
-  if (deps.getCharacter() === null) return { error: bulkCopy.needCharacter };
+  const character = deps.getCharacter();
+  if (character === null) return { error: bulkCopy.needCharacter };
   if (deps.tool === 'weights') {
+    // The healer-sim defect (BLOCKER 2): a spec the engine has no dps model for used to
+    // reach the pool and fail silently for 64 seconds. Refused here, before any engine
+    // call, with a sentence a player can act on -- never the engine's own words, which
+    // name internal spec ids (final whole-branch review: a raw `combine: part 0 failed:
+    // request: …` string shown verbatim).
+    if (!isDpsSpec(character.spec)) {
+      return { error: weightsUnsupportedSpec(specLabel(character.spec)) };
+    }
     // Contract 10.8: `WeightsSpec.Reference` is required. An empty `stats` list has
     // nothing to send as one.
     const stats = deps.getStats();
     if (stats.length === 0) return { error: bulkCopy.weightsNeedStats };
-    const base = envelope(deps, PRECISION_ITERATIONS.normal);
+    // D45: a weights run used to ignore `precision` entirely and always send `normal`'s
+    // 3,000 -- the fixed count `PRECISION_ITERATIONS` already carries for a flat (non-
+    // staged) run, the same map `/sim`'s own plain run reads for `fast`/`normal`/`high`.
+    const base = envelope(deps, PRECISION_ITERATIONS[deps.getPrecision()]);
     if (base === null) return { error: simCopy.failed };
     // The store's own `referenceStat`, not a second read of `stats[0]`: the page renders
     // "Reference: …" from the former, and two derivations of the one value is how the line
@@ -248,7 +261,7 @@ export function buildRequest(deps: BulkRequestDeps): RequestOutcome {
 export function previewRequest(deps: BulkRequestDeps): BulkRequest | WeightsRequest | null {
   if (deps.getCharacter() === null) return null;
   if (deps.tool === 'weights') {
-    const base = envelope(deps, PRECISION_ITERATIONS.normal);
+    const base = envelope(deps, PRECISION_ITERATIONS[deps.getPrecision()]);
     const stats = deps.getStats();
     return base === null
       ? null
@@ -302,7 +315,11 @@ export function seededStats(
   currentStats: string[],
 ): string[] {
   if (tool !== 'weights' || currentStats.length > 0 || character === null) return currentStats;
-  return defaultStatsFor(character.spec, referenceFor(character.spec, specRows));
+  return defaultStatsFor(
+    character.spec,
+    referenceFor(character.spec, specRows),
+    weightStatsFor(character.spec, specRows),
+  );
 }
 
 /** Everything `runBulkAndSettle` needs from the store's own `$state`. */

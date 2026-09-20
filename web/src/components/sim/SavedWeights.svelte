@@ -9,12 +9,18 @@
      Task 9's, unmodified. The bar geometry is presentation math over those two numbers, the
      same local helper `StatWeights.svelte` (Task 19) already uses -- not extracted into a
      shared function, per that task's own report, so it is re-declared here rather than
-     imported from a component this page does not otherwise depend on. Task 20. -->
+     imported from a component this page does not otherwise depend on. Task 20.
+
+     D45/D46: a saved run's own greyed rows and Pawn string follow the live tool page's
+     rules exactly, off the same `isSignificant`/`pawnString` -- a shared link is exactly
+     where someone meets these weights without having read the caution above (this file's
+     own header), so a saved page that still bolded a row the engine called noise, or
+     printed it into the Pawn string, would be D45/D46 again with a permalink. -->
 <script lang="ts">
   import { SECONDARY_BUTTON } from '../../lib/planner/styles';
   import type { WeightsResult } from '../../lib/sim/bulk-types';
-  import { bulkCopy } from '../../lib/sim/copy';
-  import { pawnString, statLabel, weightScale } from '../../lib/sim/weights';
+  import { bulkCopy, WEIGHT_INSIGNIFICANT_LABEL } from '../../lib/sim/copy';
+  import { isSignificant, pawnString, statLabel, weightScale } from '../../lib/sim/weights';
 
   let { result }: { result: WeightsResult } = $props();
 
@@ -53,8 +59,11 @@
   <ul class="flex flex-col">
     {#each result.weights as row (row.stat)}
       {@const geometry = bar(row.weight, row.error)}
+      {@const significant = isSignificant(row)}
       <li
-        class="border-line-soft grid min-h-11 grid-cols-[minmax(120px,1fr)_minmax(0,3fr)_88px] items-center gap-x-3 border-b px-2 py-2"
+        class="border-line-soft grid min-h-11 grid-cols-[minmax(120px,1fr)_minmax(0,3fr)_88px] items-center gap-x-3 border-b px-2 py-2 {significant
+          ? ''
+          : 'opacity-50'}"
         data-testid={`sim-weight-${row.stat}`}
       >
         <span class="text-text text-[13px]">{statLabel(row.stat)}</span>
@@ -69,6 +78,11 @@
         <span class="tabular text-strong ml-auto font-mono text-[13px]">
           {row.weight.toFixed(2)}
           <span class="text-muted">± {row.error.toFixed(2)}</span>
+          {#if !significant}
+            <span class="text-muted block font-sans text-[11px]" data-testid={`sim-weight-note-${row.stat}`}>
+              {WEIGHT_INSIGNIFICANT_LABEL}
+            </span>
+          {/if}
         </span>
       </li>
     {/each}

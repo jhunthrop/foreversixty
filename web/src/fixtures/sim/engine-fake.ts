@@ -444,11 +444,13 @@ export function createFakeEngine(options: FakeEngineOptions = {}): EngineModule 
       const weights = request.weights.stats.map((stat) => {
         if (stat === request.weights.reference) return { stat, weight: 1, error: 0 };
         const random = seeded([...stat].reduce((sum, ch) => sum + ch.charCodeAt(0), 0));
-        return {
-          stat,
-          weight: Math.round(random() * 3000) / 100,
-          error: Math.round(random() * 200) / 100 + 0.01,
-        };
+        const weight = Math.round(random() * 3000) / 100;
+        const error = Math.round(random() * 200) / 100 + 0.01;
+        // Lane G's own field, typed and driven here so the UI and its tests see it end to
+        // end before the real engine sends it (D45): a weight the error bar swallows --
+        // the figure is not clearly bigger than its own uncertainty -- is not distinguish-
+        // able from zero.
+        return { stat, weight, error, ...(weight <= error ? { insignificant: true } : {}) };
       });
       return JSON.stringify({ ...result, request, weights });
     },

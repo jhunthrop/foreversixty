@@ -273,6 +273,14 @@ export interface StatWeight {
   /** The reference stat is exactly 1. */
   weight: number;
   error: number;
+  /**
+   * `true` when the engine judges this weight not distinguishable from zero -- the error
+   * bar swallows the figure (D45: `AP 1.00 ± 11.32`, `Expertise 13.10 ± 33.02`). Absent or
+   * `false` reads as significant; a build predating this column sends neither, and
+   * `weights.ts`'s `isSignificant` treats that the same way. Lane G's field, typed and
+   * driven here from the fake engine and the fixtures until it lands for real.
+   */
+  insignificant?: boolean;
 }
 
 /**
@@ -373,6 +381,16 @@ export interface SpecFidelity {
    * stat the spec's class uses.
    */
   reference_stat?: string;
+  /**
+   * The stat ids `/sim/weights` offers to weigh for this spec, in the engine's own order,
+   * from `data/curated/specs.json` (contract 8, `GET /v1/specs` (+)) -- the field D45's fix
+   * uses to stop offering retail-only stats (Expertise, spell haste, armor penetration,
+   * MP5, feral attack power) a 1.60 spec cannot weigh. Optional for the same reason as
+   * `reference_stat`: a build predating the column, or a spec nobody has set a list for,
+   * sends none, and `weights.ts`'s own `pickableStatsFor` falls back to the full pinned
+   * vocabulary rather than claiming a curated list that was never sent.
+   */
+  weight_stats?: readonly string[];
   /** Null for a card nothing has measured yet (`specs.go`'s UpdatedAt *time.Time). */
   updated_at: string | null;
 }

@@ -85,6 +85,36 @@ export const AURA_EMPTY_MESSAGE: Record<'BUFF' | 'DEBUFF', string> = {
   DEBUFF:
     "The simulator doesn't report debuff uptime yet; see Casts for how many times each one was applied.",
 };
+/**
+ * The weights table's greyed row, for a weight the engine flagged `insignificant` (D45: the
+ * dps-minmaxer defect -- every error bar bigger than its own weight, printed to two
+ * decimals with a Pawn export beneath it). A plain module-level constant, not a `bulkCopy`
+ * property, for the same reason as `AURA_EMPTY_MESSAGE` above: `weights.ts` does not read
+ * copy, and both `StatWeights.svelte` and `SavedWeights.svelte` need the identical sentence
+ * rather than each carrying their own -- one row-label string, read by name from the one
+ * place every string on this lane lives.
+ */
+export const WEIGHT_INSIGNIFICANT_LABEL = 'not distinguishable from zero';
+/**
+ * Sub-item 4's "and says so": shown under the weights picker only when the spec's own
+ * `weight_stats` came back non-empty, since that is the only time the claim is true. An
+ * absent list falls back to the full pinned vocabulary (`weights.ts`'s `WEIGHT_STATS`) with
+ * no explainer at all -- "the engine did not say" must not be dressed up as "the engine
+ * said these are the only ones that matter" (D45's retail-stat-list defect: Expertise,
+ * spell haste, armor penetration, MP5, feral attack power offered to a 1.60 spec).
+ */
+export const WEIGHTS_STATS_FROM_ENGINE = 'These are the stats the engine weighs for this spec.';
+/**
+ * The healer-sim defect (BLOCKER 2): a Restoration Druid string ran on `/sim/weights` for
+ * 64 seconds and then said nothing. `bulk-store-request.ts`'s `buildRequest` refuses before
+ * the request ever reaches the pool, with this sentence -- never the engine's own words,
+ * which name internal spec ids the drawer's own `detail` row already shows verbatim for a
+ * genuine engine refusal (final whole-branch review: a raw `combine: part 0 failed:
+ * request: …` string is not something a player can act on). `specName` is the display name
+ * (`specLabel`), never the wire's own spec key, for the same reason.
+ */
+export const weightsUnsupportedSpec = (specName: string): string =>
+  `The engine doesn't simulate ${specName} -- stat weights need a dps spec.`;
 // --- Lane W1 (persona round 1: results, labels, weights) ---
 
 export const simCopy = {
