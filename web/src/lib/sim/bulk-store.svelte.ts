@@ -48,6 +48,7 @@ import {
 } from './candidates';
 import { needsRace, type SimCharacter } from './character';
 import type { CharacterPath } from '../characters';
+import { bulkCopy } from './copy';
 import type { RequestValidation } from './engine';
 import { loadEnchants, loadSuffixes, type EnchantRow, type SuffixRow } from './enchants';
 import {
@@ -565,16 +566,19 @@ export function createBulkStore(init: BulkStoreInit) {
      * effect gates on `phase === 'idle'`, which is only true once `items` is populated, so a
      * pin arriving through the normal flow always finds its item here -- but a stale or
      * cross-class item id in the URL is still a real, reachable case (fix round 1, Finding
-     * 2's "say so" ask), and a bare `return` for it would be the exact silent no-op that
-     * finding called the worst failure mode. `detail` is this store's existing free-form
-     * diagnostic channel (already carries raw engine/error text elsewhere in this file, never
-     * a `bulkCopy` sentence) -- reused here rather than inventing a `message` string, since
-     * `message` is player-facing copy this file does not own the vocabulary for.
+     * 2's "say so" ask). A miss now sets `message` to `bulkCopy.itemNotAdded(itemId)` --
+     * player-visible copy, not only the internal `detail` fix round 1 left this as (fix
+     * round 2: a `detail`-only write is invisible, since `BulkRunBar` only renders `detail`
+     * inside `{#if message !== null}`). Set here, once, rather than at each of the two call
+     * sites (`ToolsView`'s pin effect, `TopGear`'s item-search "Add"): one place owns what
+     * "the item was not found" means to the player, and neither caller has to remember to
+     * check the boolean for the message to appear -- though both still can, for their own
+     * reasons, since the boolean is still returned.
      */
     addSearchItem(itemId: number, origin: Origin = 'search', sourceName = ''): boolean {
       const item = items.get(itemId);
       if (item === undefined) {
-        detail = `item ${itemId} is not in this character's item file`;
+        message = bulkCopy.itemNotAdded(itemId);
         return false;
       }
       for (const slot of uiSlotsOf(item)) {

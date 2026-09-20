@@ -383,12 +383,16 @@ describe('addSearchItem', () => {
     s.dispose();
   });
 
-  it('says so, rather than returning quietly, when the item is not in this character’s file (fix round 1, Finding 2)', async () => {
+  it('says so to the player, not only internally, when the item is not in this character’s file (fix round 2)', async () => {
+    // Fix round 1 (Finding 2) only set `detail`, which `BulkRunBar` renders solely inside
+    // `{#if message !== null}` -- invisible on its own. This asserts the actual
+    // player-visible surface (`message`, `bulkCopy`'s own copy), not the store's internal
+    // `detail` field the round-1 test checked instead.
     const s = store('gear');
     await s.loadAddon(FURY);
-    expect(s.detail).toBe('');
+    expect(s.message).toBeNull();
     expect(s.addSearchItem(999_999)).toBe(false);
-    expect(s.detail).not.toBe('');
+    expect(s.message).toBe(bulkCopy.itemNotAdded(999_999));
     s.dispose();
   });
 });

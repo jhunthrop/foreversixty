@@ -752,4 +752,11 @@ export const bulkCopy = {
   phasesFailed: 'The phase table could not be read.',
   needCharacter: 'Load a character first.',
   needAddonForBags: 'Paste your addon export to see your bags and bank here.',
+  /**
+   * `addSearchItem`'s miss path (fix round 2, the player-visible half of fix round 1's
+   * Finding 2): a Droptimizer pin or an item search "Add" whose item this class's file has
+   * never heard of. Named by id, not by name -- the item's name is exactly what this store
+   * could not look up, so there is nothing else to call it.
+   */
+  itemNotAdded: (itemId: number): string => `Item ${itemId} could not be added to this character.`,
 } as const;

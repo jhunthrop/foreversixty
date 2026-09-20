@@ -272,6 +272,19 @@ test('a pin arriving with a source-carrying link lands ticked, upgrading an exis
   await expect(row).toContainText(bulkCopy.pinned);
 });
 
+test('a pin for an item this character has no file entry for tells the player, not just the store', async ({
+  page,
+}) => {
+  // Fix round 2: fix round 1's own fix only set `store.detail`, which `BulkRunBar` renders
+  // solely inside `{#if message !== null}` -- a stale or cross-class pin id still failed
+  // completely silently to the player. This asserts what actually reaches the screen.
+  const params = new URLSearchParams({ source: 'addon', ref: FURY, pin: '999999' });
+  await page.goto(`/sim/gear?${params.toString()}`);
+  await expect(page.getByTestId('sim-character')).toBeVisible();
+  await expect(page.getByTestId('sim-message')).toBeVisible();
+  await expect(page.getByTestId('sim-message')).toContainText(bulkCopy.itemNotAdded(999_999));
+});
+
 test('the page never shows a probability', async ({ page }) => {
   await loadDrops(page);
   await expect(page.getByTestId('sim-drops-note')).toHaveCount(0);
