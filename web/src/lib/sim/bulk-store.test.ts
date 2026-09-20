@@ -16,7 +16,7 @@ import { createBulkStore, MODE_OF_TOOL, TOOLS } from './bulk-store.svelte';
 import { SERVER_CAP } from './bulk-types';
 import { validateBulk } from './candidates';
 import { bulkCopy, simCopy } from './copy';
-import { createPool } from './worker';
+import { createPool, type SimPool } from './worker';
 import type { BulkRequest, BulkResult } from './bulk-types';
 
 const FURY = `FS1:${FIXTURE_DATA_BUILD}:warrior:orc:0/5530515/0:head=12640,main_hand=12784`;
@@ -26,6 +26,8 @@ interface StoreOverrides {
   hardwareConcurrency?: number;
   failWith?: string;
   serverPollLimit?: number;
+  /** Injected whole, bypassing `createFakeEngine`: a pool built to fail in a specific way. */
+  pool?: SimPool;
 }
 
 function store(tool: (typeof TOOLS)[number] = 'gear', overrides: StoreOverrides = {}) {
@@ -37,7 +39,7 @@ function store(tool: (typeof TOOLS)[number] = 'gear', overrides: StoreOverrides 
     hardwareConcurrency: overrides.hardwareConcurrency ?? 8,
     serverPollMs: 1,
     serverPollLimit: overrides.serverPollLimit,
-    pool: createPool({ hardwareConcurrency: 4, spawn: () => createFakeWorker(engine) }),
+    pool: overrides.pool ?? createPool({ hardwareConcurrency: 4, spawn: () => createFakeWorker(engine) }),
     now: () => new Date('2026-12-10T00:00:00Z'),
   });
 }
@@ -200,6 +202,52 @@ describe('the live combination count', () => {
     expect(s.detail).toBe('');
     expect(s.combinations).toBe(3);
     expect(s.capNotice).toBeNull();
+    s.dispose();
+  });
+
+  it('surfaces the engine’s own refusal on the generic branch, rather than sticking on "Counting combinations…" (fix round 4)', async () => {
+    // A pool whose `count` throws for a reason that is neither `cap_exceeded` (an answer,
+    // not a throw) nor a validation refusal -- exactly what worker.ts's own `count()`
+    // does for any other `{"error": "..."}` envelope, such as the real engine's answer to
+    // a candidate id its embedded database does not carry: `bulk: the build has no such
+    // item: 16963`. Every other SimPool method throws if this test calls it by mistake.
+    const notUsedHere = (name: string) => (): never => {
+      throw new Error(`unexpected call to SimPool.${name} in this test`);
+    };
+    const throwingPool: SimPool = {
+      size: 1,
+      split: notUsedHere('split'),
+      run: notUsedHere('run'),
+      combine: notUsedHere('combine'),
+      needsMore: notUsedHere('needsMore'),
+      validate: async () => ({ ok: true, errors: [] }),
+      count: async () => {
+        throw new Error('bulk: the build has no such item: 16963');
+      },
+      plan: notUsedHere('plan'),
+      rank: notUsedHere('rank'),
+      weights: notUsedHere('weights'),
+      abort: notUsedHere('abort'),
+      // s.dispose() below calls this unconditionally; unlike every other method here it is
+      // not part of what this test is proving, so it is a harmless no-op rather than a
+      // failure trigger.
+      terminate: () => {},
+    };
+    const s = store('gear', { pool: throwingPool });
+    await s.loadAddon(FURY);
+    s.addSearchItem(16966);
+    await s.recount();
+    expect(s.combinations).toBeNull();
+    expect(s.capNotice).toBeNull();
+    expect(s.serverCapNotice).toBeNull();
+    expect(s.message).toBe(bulkCopy.countFailed);
+    expect(s.detail).toBe('bulk: the build has no such item: 16963');
+    // The bug this pins: `phase` used to reach 'idle' correctly (the `finally` block
+    // already did that), but `combinations` stayed `null` with no `message` set, so the
+    // run bar's own countLabel derivation (BulkRunBar.svelte) had no way to tell "still
+    // counting" apart from "counting already failed" and showed
+    // `bulkCopy.combinationsCounting` forever. `message` is what tells them apart now.
+    expect(s.phase).toBe('idle');
     s.dispose();
   });
 });

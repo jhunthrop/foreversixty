@@ -770,6 +770,15 @@ export const bulkCopy = {
   planFailed: 'The combinations could not be worked out.',
   bulkFailed: 'The engine could not run these combinations.',
   /**
+   * `recount`'s generic branch (bulk-store-request.ts): a count failed for a reason that is
+   * neither a cap notice nor `BulkValidationError`'s pre-flight refusal -- an unknown
+   * candidate item id (`bulk: the build has no such item: <id>`) is the case this was
+   * written for, but the branch covers any engine error while merely counting. `detail`
+   * carries the engine's own message beside this one, the same pairing `bulkFailed` uses
+   * for a run failure.
+   */
+  countFailed: 'The engine could not count these combinations.',
+  /**
    * `bulk-run.ts`'s `BulkValidationError` headline (engine-lane rule 2): `simValidate`
    * refused the request outright, before `simCount`/`simPlan` ever got to answer a cap or
    * combination question about it. The engine's own per-field messages are the `detail`
