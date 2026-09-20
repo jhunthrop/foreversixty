@@ -11,7 +11,11 @@
         "http://localhost/reports/fixture2abcd.html",
         "http://localhost/sim.html",
         "http://localhost/sim/specs.html",
-        "http://localhost/sim/simfixtureab.html"
+        "http://localhost/sim/simfixtureab.html",
+        "http://localhost/sim/gear.html",
+        "http://localhost/sim/talents.html",
+        "http://localhost/sim/drops.html",
+        "http://localhost/sim/weights.html"
       ],
       "numberOfRuns": 3,
       "settings": {
@@ -33,7 +37,7 @@
     "assert": {
       "assertMatrix": [
         {
-          "matchingUrlPattern": "^(?!.*/(?:index|planner|logs)\\.html$)(?!.*/reports/)(?!.*/sim(?:/specs)?\\.html$)(?!.*/sim/[a-z2-7]{12}\\.html$).*$",
+          "matchingUrlPattern": "^(?!.*/(?:index|planner|logs)\\.html$)(?!.*/reports/)(?!.*/sim(?:/specs|/gear|/talents|/drops|/weights)?\\.html$)(?!.*/sim/[a-z2-7]{12}\\.html$).*$",
           "aggregationMethod": "median",
           "assertions": {
             "categories:performance": ["error", { "minScore": 0.95 }],
@@ -83,7 +87,7 @@
           }
         },
         {
-          "matchingUrlPattern": ".*/sim(?:/specs)?\\.html$",
+          "matchingUrlPattern": ".*/sim(?:/specs|/gear|/talents|/drops|/weights)?\\.html$",
           "aggregationMethod": "median",
           "assertions": {
             "categories:performance": ["error", { "minScore": 0.95 }],

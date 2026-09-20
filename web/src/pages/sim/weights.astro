@@ -8,9 +8,9 @@
 // and the page holds its CLS budget -- the identical reservation technique sim/[id].astro
 // and sim/specs.astro already use, and for the identical reason.
 //
-// The min-h reservation below is a placeholder: Task 20 measures this page at 360px and
-// 1280px with the fixture character loaded and replaces it with the real number, exactly as
-// sim/[id].astro's own comment describes.
+// The min-h reservation below is measured (Task 21): the fixture character loaded at 360px
+// and 1280px, sim-tools's own rendered height rounded up -- so the mount swap moves nothing
+// and the page holds its CLS budget, exactly as sim/[id].astro's own comment describes.
 import Base from '../../layouts/Base.astro';
 import { bulkCopy } from '../../lib/sim/copy';
 import { TOOL_SKELETONS } from '../../lib/sim/bulk-skeleton';
@@ -32,7 +32,7 @@ import { TOOL_SKELETONS } from '../../lib/sim/bulk-skeleton';
     <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="sim-tool-intro">
       {bulkCopy.weightsIntro}
     </p>
-    <div id="sim-tools" data-sim-tool="weights" class="min-h-[820px] md:min-h-[560px]">
+    <div id="sim-tools" data-sim-tool="weights" class="min-h-[2003px] md:min-h-[1111px]">
       <Fragment set:html={TOOL_SKELETONS.weights} />
       <noscript>
         <p class="text-muted px-[18px] text-[14px] md:px-0" set:html={bulkCopy.needsJs('Stat weights')} />
