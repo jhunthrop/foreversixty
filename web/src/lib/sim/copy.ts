@@ -558,6 +558,32 @@ export const simCopy = {
     'Simulate your damage spec’s talent builds against each other on the gear you are wearing, and see which tree actually wins.',
   weightsDescription:
     'What one point of each stat is worth for your damage spec, with the caveat that comes with it.',
+  /**
+   * Task 3 (healer review MAJOR): RotationCard's honest branch for a spec
+   * `isSimulatedSpec` says no to -- replaces "Default for <name>" and the dead "what it
+   * does" anchor rather than showing either. `name` is `specDisplayName`, the same bare
+   * form `rotationCardBody` already takes, so the two read as one voice with only the verb
+   * changed.
+   */
+  rotationNotSimulated: (name: string): string => `No rotation yet — ${name} is not simulated.`,
+  /**
+   * Task 3 (healer review MAJOR/BLOCKER): the line beside a Run control disabled for an
+   * unsimulated spec -- RunControl's single button and BulkRunBar's four tool pages alike,
+   * so `/sim/gear`, `/sim/drops`, `/sim/talents` and `/sim/weights` all read the same
+   * sentence a healer or tank sees on `/sim` itself. A `<p>`, never a `title=` (Task 7 is
+   * removing every one of those in this lane).
+   */
+  runNotSimulated: (name: string): string => `${name} is not simulated yet; there is nothing to run.`,
+  /**
+   * Task 3 (healer review MAJOR): the one shape `humaniseEngineError` (lib/sim/engine-error.ts)
+   * translates -- sim/request's `unsupported spec: "<id>"` names the engine's own id
+   * ("druid-restoration"), which nobody but this codebase reads as a spec. `name` is
+   * `specLabel`, not `specDisplayName`: this is the defensive branch for a spec the web
+   * thought it simulated and the engine still refused, so the sentence has to be
+   * unambiguous on its own without a settings bar or a character strip beside it to supply
+   * the class (Restoration alone is two different specs, on two different classes).
+   */
+  engineUnsupportedSpec: (name: string): string => `The engine does not simulate ${name} yet.`,
   // --- end Lane W2 ---
 } as const;
 

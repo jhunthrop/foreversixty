@@ -40,6 +40,7 @@ import { buildBulkSpec, validateBulk, type CandidateRow } from './candidates';
 import { codeForCharacterSpec, toCharacterSpec, type SimCharacter } from './character';
 import { bulkCopy, simCopy } from './copy';
 import type { RequestValidation } from './engine';
+import { humaniseEngineError } from './engine-error';
 import { PRECISION_ITERATIONS } from './precision';
 import type { SimSettings } from './settings';
 import type { CharacterSpec, SimResult, SpecFidelity } from './types';
@@ -211,7 +212,7 @@ export async function recount(deps: RecountDeps): Promise<void> {
       deps.setCapNotice(null);
       deps.setServerCapNotice(null);
       deps.setMessage(error.message);
-      deps.setDetail(error.detail);
+      deps.setDetail(humaniseEngineError(error.detail));
     } else {
       // Not a cap or validation refusal: a genuine engine error while merely counting -- an
       // unknown candidate item id (`bulk: the build has no such item: <id>`) is the case
@@ -224,7 +225,7 @@ export async function recount(deps: RecountDeps): Promise<void> {
       deps.setCapNotice(null);
       deps.setServerCapNotice(null);
       deps.setMessage(bulkCopy.countFailed);
-      deps.setDetail(error instanceof Error ? error.message : '');
+      deps.setDetail(humaniseEngineError(error instanceof Error ? error.message : ''));
     }
   } finally {
     if (deps.getPhase() === 'counting') deps.setPhase('idle');
@@ -383,7 +384,10 @@ export async function runBulkAndSettle(
     deps.setMessage(
       failure?.cancelled === true ? simCopy.stopped : (failure?.message ?? bulkCopy.bulkFailed),
     );
-    deps.setDetail(failure?.detail ?? '');
+    // humaniseEngineError (Task 3, healer review): a no-op for every shape but one -- an
+    // unsupported-spec refusal, which names the engine's own spec id rather than a fact a
+    // player can act on.
+    deps.setDetail(humaniseEngineError(failure?.detail ?? ''));
     deps.setPhase(failure?.cancelled === true && deps.getResult() !== null ? 'done' : 'error');
   } finally {
     deps.setHandle(null);

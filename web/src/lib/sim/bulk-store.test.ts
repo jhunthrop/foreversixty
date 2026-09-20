@@ -256,6 +256,37 @@ describe('the live combination count', () => {
     expect(s.phase).toBe('idle');
     s.dispose();
   });
+
+  // Task 3 (healer review): the count can fail this same way -- a spec the web thinks is
+  // dps and the engine still refuses -- before the player ever reaches the run button, so
+  // the generic branch above gets the identical humaniseEngineError treatment as a run.
+  it('humanises an unsupported-spec refusal on the generic branch too', async () => {
+    const notUsedHere = (name: string) => (): never => {
+      throw new Error(`unexpected call to SimPool.${name} in this test`);
+    };
+    const throwingPool: SimPool = {
+      size: 1,
+      split: notUsedHere('split'),
+      run: notUsedHere('run'),
+      combine: notUsedHere('combine'),
+      needsMore: notUsedHere('needsMore'),
+      validate: async () => ({ ok: true, errors: [] }),
+      count: async () => {
+        throw new Error('unsupported spec: "druid-restoration"');
+      },
+      plan: notUsedHere('plan'),
+      rank: notUsedHere('rank'),
+      weights: notUsedHere('weights'),
+      abort: notUsedHere('abort'),
+      terminate: () => {},
+    };
+    const s = store('gear', { pool: throwingPool });
+    await s.loadAddon(FURY);
+    s.addSearchItem(16966);
+    await s.recount();
+    expect(s.detail).toBe('The engine does not simulate Restoration Druid yet.');
+    s.dispose();
+  });
 });
 
 describe('running', () => {
@@ -320,6 +351,23 @@ describe('running', () => {
     expect(s.phase).toBe('error');
     expect(s.message).toBe(bulkCopy.bulkFailed);
     expect(s.detail).toBe('boom');
+    s.dispose();
+  });
+
+  // Task 3 (healer review, BulkRunBar's own detail line): the same humaniseEngineError
+  // rule store-request.test.ts pins for the single-run store, exercised here for the bulk
+  // one -- runBulkAndSettle is a second, independent place the raw engine text used to
+  // reach `detail` unchanged.
+  it('humanises an unsupported-spec failure rather than showing the engine’s own spec id', async () => {
+    const s = store('gear', {
+      failWith: 'combine: part 0 failed: request: unsupported spec: "druid-restoration"',
+    });
+    await s.loadAddon(FURY);
+    s.addSearchItem(16963);
+    await s.run();
+    expect(s.phase).toBe('error');
+    expect(s.detail).toBe('The engine does not simulate Restoration Druid yet.');
+    expect(s.detail).not.toContain('unsupported spec');
     s.dispose();
   });
 
