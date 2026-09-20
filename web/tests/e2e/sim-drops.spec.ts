@@ -216,9 +216,13 @@ test('the flat list only lists genuine upgrades, and the boss card names the tru
   // Three drops came back: +80, +30 and an exact tie (the drop that is already equipped).
   // Only the two genuine upgrades get a pin button -- a tie is not "an upgrade" (design
   // 6.3; the production predicate is `> 0`, restored in fix round 1, Finding 1).
-  await expect(page.getByTestId('sim-drops-pin-19325')).toBeVisible();
-  await expect(page.getByTestId('sim-drops-pin-16963')).toBeVisible();
-  await expect(page.getByTestId('sim-drops-pin-12784')).toHaveCount(0);
+  //
+  // The id is `<slot>:<item>`, not the item alone: a candidate fitting more than one slot
+  // carries `Candidate.Slot === ""` and can be tried in either of its slots, which is two
+  // rows with one item id (final whole-branch review, Minor 7).
+  await expect(page.getByTestId('sim-drops-pin-finger1:19325')).toBeVisible();
+  await expect(page.getByTestId('sim-drops-pin-head:16963')).toBeVisible();
+  await expect(page.getByTestId('sim-drops-pin-main_hand:12784')).toHaveCount(0);
 
   await expect(page.getByTestId('sim-drops-by-boss')).toContainText(bulkCopy.dropsUpgrades(2, 3));
   // "Best here" is the +80 drop specifically, not merely the first or only member of the
@@ -233,8 +237,8 @@ test('a drop pins into Top Gear, carrying its origin in the URL', async ({ page 
   await page.getByTestId('sim-source-raid:molten-core:11502').check();
   await expect(page.getByTestId('sim-server-run')).toBeVisible();
   await page.getByTestId('sim-server-run').click();
-  await expect(page.getByTestId('sim-drops-pin-19325')).toBeVisible({ timeout: 10_000 });
-  await page.getByTestId('sim-drops-pin-19325').click();
+  await expect(page.getByTestId('sim-drops-pin-finger1:19325')).toBeVisible({ timeout: 10_000 });
+  await page.getByTestId('sim-drops-pin-finger1:19325').click();
   await expect(page).toHaveURL(/\/sim\/gear\?.*pin=19325.*pinOrigin=drop.*pinName=Ragnaros/);
   // No ?source=/?ref= rode along with the pin (the addon code was typed by hand, not
   // arrived at through a source-carrying link), so Top Gear opens on the switcher rather

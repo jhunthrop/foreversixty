@@ -14,8 +14,7 @@
   import { TOOL_SKELETONS } from '../../../lib/sim/bulk-skeleton';
   import { createBulkStore, type SimTool } from '../../../lib/sim/bulk-store.svelte';
   import type { Origin } from '../../../lib/sim/candidates';
-  import { simCopy } from '../../../lib/sim/copy';
-  import { bulkCopy } from '../../../lib/sim/copy';
+  import { bulkCopy, simCopy } from '../../../lib/sim/copy';
   import { parseSimState } from '../../../lib/sim/url';
   import CharacterStrip from '../CharacterStrip.svelte';
   import SourceSwitcher from '../SourceSwitcher.svelte';

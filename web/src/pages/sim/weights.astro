@@ -17,7 +17,7 @@ import { TOOL_SKELETONS } from '../../lib/sim/bulk-skeleton';
 ---
 
 <Base
-  title="Stat weights"
+  title={bulkCopy.weightsTitle}
   description="What one point of each stat is worth for your character, with the caveat that comes with it."
   path="/sim/weights"
   session
@@ -35,7 +35,10 @@ import { TOOL_SKELETONS } from '../../lib/sim/bulk-skeleton';
     <div id="sim-tools" data-sim-tool="weights" class="min-h-[2003px] md:min-h-[1111px]">
       <Fragment set:html={TOOL_SKELETONS.weights} />
       <noscript>
-        <p class="text-muted px-[18px] text-[14px] md:px-0" set:html={bulkCopy.needsJs('Stat weights')} />
+        <p
+          class="text-muted px-[18px] text-[14px] md:px-0"
+          set:html={bulkCopy.needsJs(bulkCopy.weightsTitle)}
+        />
       </noscript>
     </div>
     <script type="module" src="/sim-tools-island.js" is:inline></script>

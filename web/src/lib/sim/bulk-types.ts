@@ -74,6 +74,16 @@ export type Precision = (typeof BULK_PRECISIONS)[number];
 export const STAGES_BY_PRECISION: Record<Precision, number> = { fast: 3, normal: 2, high: 2 };
 
 /**
+ * `BulkSpec.precision` is a bare `string` on the wire, so anything that reads one back --
+ * a request hand-edited in the drawer, a stored request replayed by the premium lane --
+ * must narrow it rather than cast it (final whole-branch review, Minor 8). The caller
+ * decides the fallback; this only answers whether the value is one of the three.
+ */
+export function isBulkPrecision(value: string): value is Precision {
+  return (BULK_PRECISIONS as readonly string[]).includes(value);
+}
+
+/**
  * The iteration count a bulk request carries in `SimRequest.iterations` -- its precision's
  * FINAL stage, not `precision.ts`'s plain-run count (contract 10.1 A3). Wraps
  * `BULK_FINAL_ITERATIONS`, the one place 3,000/10,000 are typed, rather than repeating

@@ -289,6 +289,13 @@ export function createBulkStore(init: BulkStoreInit) {
   }
 
   /**
+   * The one stat every weight is normalised against. It always leads `stats`
+   * (StatWeights.svelte keeps it there), and it is defined here once so the page's
+   * "Reference: …" line and `WeightsSpec.Reference` on the wire cannot drift apart.
+   */
+  const referenceStat = (): string => stats[0] ?? '';
+
+  /**
    * Everything `bulk-store-request.ts`'s functions need from this closure, built once:
    * `$state` cannot cross a module boundary, so every field is a getter or a setter here
    * rather than the module reading/writing `$state` itself (Task 15 -- this store's own
@@ -309,6 +316,7 @@ export function createBulkStore(init: BulkStoreInit) {
     getCap: () => cap,
     getConsumableIds: () => consumableIds,
     getStats: () => stats,
+    getReferenceStat: () => referenceStat(),
     setPrecision: (value) => (precision = value),
     setCap: (value) => (cap = value),
     setLocked: (value) => (locked = value),
@@ -477,7 +485,7 @@ export function createBulkStore(init: BulkStoreInit) {
       return stats;
     },
     get referenceStat() {
-      return stats[0] ?? '';
+      return referenceStat();
     },
     /** The sources the picker draws: kind ticked on, and released unless asked otherwise. */
     get visibleSources() {

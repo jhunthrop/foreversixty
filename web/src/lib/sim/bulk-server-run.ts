@@ -7,7 +7,7 @@
 // applies to its own `$state`.
 import { dispatchServerSim, fetchBulkProgress, fetchSim, SimApiError } from './api';
 import type { BulkProgress } from './bulk-run';
-import type { BulkRequest, WeightsRequest } from './bulk-types';
+import { isBulkPrecision, STAGES_BY_PRECISION, type BulkRequest, type WeightsRequest } from './bulk-types';
 import { bulkCopy } from './copy';
 import type { SimResult } from './types';
 
@@ -68,9 +68,13 @@ export async function runServerJob(
   }
 
   // The API's own `SimProgress` carries no total stage count (only the current `stage`), so
-  // this is carried forward locally rather than read back off the store's own `progress` --
-  // decoupling this loop from the store's state entirely.
-  let stages = 1;
+  // it is derived here from the request this job was dispatched with rather than read back
+  // off the store's own `progress` -- decoupling this loop from the store's state entirely.
+  // It used to be a hard-coded 1, which rendered "stage 2 of 1" on every server run past
+  // the first stage (final whole-branch review, Minor 4). A weights run has one wasm call
+  // and no bulk ladder at all, so it stays at one stage.
+  const precision = request.bulk?.precision;
+  const stages = precision !== undefined && isBulkPrecision(precision) ? STAGES_BY_PRECISION[precision] : 1;
 
   for (let attempt = 0; ; attempt += 1) {
     if (attempt >= options.pollLimit) {
@@ -98,7 +102,6 @@ export async function runServerJob(
     if (!options.isCurrent()) return;
 
     if (row.stage !== undefined && row.combos_total !== undefined) {
-      if (row.combos_total === 0) stages = 1;
       onUpdate({
         kind: 'progress',
         progress: {

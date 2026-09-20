@@ -17,7 +17,7 @@ import { TOOL_SKELETONS } from '../../lib/sim/bulk-skeleton';
 ---
 
 <Base
-  title="Top Gear"
+  title={bulkCopy.gearTitle}
   description="Simulate every combination of the gear, enchants, talents and sets you have, and see which one is actually best."
   path="/sim/gear"
   session
@@ -35,7 +35,7 @@ import { TOOL_SKELETONS } from '../../lib/sim/bulk-skeleton';
     <div id="sim-tools" data-sim-tool="gear" class="min-h-[2995px] md:min-h-[1985px]">
       <Fragment set:html={TOOL_SKELETONS.gear} />
       <noscript>
-        <p class="text-muted px-[18px] text-[14px] md:px-0" set:html={bulkCopy.needsJs('Top Gear')} />
+        <p class="text-muted px-[18px] text-[14px] md:px-0" set:html={bulkCopy.needsJs(bulkCopy.gearTitle)} />
       </noscript>
     </div>
     <script type="module" src="/sim-tools-island.js" is:inline></script>

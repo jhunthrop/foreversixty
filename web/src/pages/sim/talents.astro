@@ -17,7 +17,7 @@ import { TOOL_SKELETONS } from '../../lib/sim/bulk-skeleton';
 ---
 
 <Base
-  title="Talent compare"
+  title={bulkCopy.talentsTitle}
   description="Simulate your talent builds against each other on the gear you are wearing, and see which tree actually wins."
   path="/sim/talents"
   session
@@ -35,7 +35,10 @@ import { TOOL_SKELETONS } from '../../lib/sim/bulk-skeleton';
     <div id="sim-tools" data-sim-tool="talents" class="min-h-[1531px] md:min-h-[967px]">
       <Fragment set:html={TOOL_SKELETONS.talents} />
       <noscript>
-        <p class="text-muted px-[18px] text-[14px] md:px-0" set:html={bulkCopy.needsJs('Talent compare')} />
+        <p
+          class="text-muted px-[18px] text-[14px] md:px-0"
+          set:html={bulkCopy.needsJs(bulkCopy.talentsTitle)}
+        />
       </noscript>
     </div>
     <script type="module" src="/sim-tools-island.js" is:inline></script>

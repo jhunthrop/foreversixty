@@ -12,6 +12,7 @@
   import type { BulkResult, Combo } from '../../../lib/sim/bulk-types';
   import { comboRows, deltaLabel, sourceNameOfCombo, type ComboRow } from '../../../lib/sim/combos';
   import { bulkCopy } from '../../../lib/sim/copy';
+  import { confidenceBand } from '../../../lib/sim/estimate';
   import SubstitutionChips from './SubstitutionChips.svelte';
 
   let {
@@ -28,6 +29,19 @@
   } = $props();
 
   const rows = $derived(comboRows(result));
+
+  /**
+   * `slot:item_id`, not the item id alone. A candidate fitting more than one slot carries
+   * `Candidate.Slot === ""` (contract 1.3 -- rings, trinkets, weapons) and the planner may
+   * try the same item in either of its slots, which is two combinations with one item id:
+   * keyed on the id alone Svelte sees a duplicate key, and the pin button's test id is
+   * duplicated with it (final whole-branch review, Minor 7). The rank is the fallback for a
+   * combination with no substitution at all.
+   */
+  function comboKey(row: ComboRow): string {
+    const sub = row.combo.substitutions[0];
+    return sub?.item_id === undefined ? String(row.rank) : `${sub.slot ?? ''}:${sub.item_id}`;
+  }
 
   /** A drops run is one substitution per combination, so a row's origin names its boss. */
   function originOf(combo: Combo): string {
@@ -87,7 +101,7 @@
 
   <p class="tabular text-strong font-mono text-[14px]" data-testid="sim-equipped-line">
     {bulkCopy.resultsEquipped}: {Math.round(result.equipped.mean).toLocaleString('en-US')}
-    ± {Math.round(1.96 * result.equipped.error).toLocaleString('en-US')}
+    ± {Math.round(confidenceBand(result.equipped)).toLocaleString('en-US')}
   </p>
 
   <section class="flex flex-col gap-3" data-testid="sim-drops-by-boss">
@@ -105,7 +119,7 @@
           </p>
         {/if}
         <ul class="flex flex-col">
-          {#each group as row (row.combo.substitutions[0]?.item_id ?? row.rank)}
+          {#each group as row (comboKey(row))}
             <li
               class="border-line-soft flex min-h-11 items-center gap-3 border-b px-2 py-1 last:border-b-0"
               data-testid="sim-combo-row"
@@ -128,8 +142,8 @@
       <p class="text-muted text-[13px]">{bulkCopy.noGain}</p>
     {:else}
       <ul class="flex flex-col">
-        {#each upgrades as row (row.combo.substitutions[0]?.item_id ?? row.rank)}
-          {@const itemId = row.combo.substitutions[0]?.item_id ?? 0}
+        {#each upgrades as row (comboKey(row))}
+          {@const pinId = comboKey(row)}
           <li class="border-line-soft flex min-h-11 items-center gap-3 border-b px-2 py-1 last:border-b-0">
             <SubstitutionChips substitutions={row.combo.substitutions} {items} {treeVersion} />
             <span class="tabular text-gold ml-auto font-mono text-[13px]">
@@ -138,7 +152,7 @@
             <button
               type="button"
               class="{SECONDARY_BUTTON} border-line-warm text-nav px-3"
-              data-testid={`sim-drops-pin-${itemId}`}
+              data-testid={`sim-drops-pin-${pinId}`}
               onclick={() => pin(row)}>{bulkCopy.dropsPin}</button
             >
           </li>

@@ -3,9 +3,15 @@
 // without a Workers runtime; src/worker.ts only wires the values into HTMLRewriter.
 //
 // Voice: reference, not pitch. A description states the numbers and the date and stops.
+//
+// The sim shell's kind words and its empty-result headline come from sim/copy.ts, not from
+// a fourth copy here: this module already imports sim/bulk-types, sim/combos and
+// sim/weights, and sim/combos itself imports bulkCopy, so there is no dependency left to
+// avoid (final whole-branch review, Minor 2).
 import { rulesetLabel, type CharacterPath } from '../characters';
 import { requestKind, type BulkResult, type WeightsResult } from '../sim/bulk-types';
 import { headlineFor } from '../sim/combos';
+import { bulkCopy, KIND_TITLES } from '../sim/copy';
 import { encounterLabel } from '../sim/encounter';
 import { specLabel } from '../sim/spec-label';
 import type { SimResult } from '../sim/types';
@@ -115,14 +121,6 @@ export function guildShellMeta(path: CharacterPath, head: GuildHead): ShellMeta 
   };
 }
 
-/** A saved sim's title word for every kind but a plain run, which keeps its own DPS-led form. */
-const SIM_KIND_TITLES: Record<'gear' | 'talents' | 'drops' | 'weights', string> = {
-  gear: 'Top Gear',
-  talents: 'Talent compare',
-  drops: 'Droptimizer',
-  weights: 'Stat weights',
-};
-
 /**
  * A saved sim's unfurl. There is no rendered card for a sim at launch -- the API draws one
  * per report and per build, and a third renderer is its work, not this lane's -- so the
@@ -150,7 +148,7 @@ export function simShellMeta(result: SimResult): ShellMeta {
       .map((row) => `${statLabel(row.stat)} ${row.weight.toFixed(2)}`)
       .join(' · ');
     return {
-      title: `${SIM_KIND_TITLES.weights} · ${spec} · Forever Sixty`,
+      title: `${KIND_TITLES.weights} · ${spec} · Forever Sixty`,
       description: `Simulated on engine ${result.engine_version}: ${top}.`,
       image: SITE_CARD,
       canonical,
@@ -164,9 +162,9 @@ export function simShellMeta(result: SimResult): ShellMeta {
     // winning change without the per-class item file this function must never fetch. An
     // empty result reads "no combinations", matching the API's own headline rule (contract
     // 10.6) rather than inventing a second wording for the same state.
-    const headline = combos.length === 0 ? 'no combinations' : headlineFor(bulk);
+    const headline = combos.length === 0 ? bulkCopy.noCombinations : headlineFor(bulk);
     return {
-      title: `${SIM_KIND_TITLES[kind]} · ${spec} · Forever Sixty`,
+      title: `${KIND_TITLES[kind]} · ${spec} · Forever Sixty`,
       description:
         `Simulated on engine ${result.engine_version}: ${combos.length} combinations, ` + `${headline}.`,
       image: SITE_CARD,

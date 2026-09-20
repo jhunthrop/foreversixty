@@ -28,6 +28,7 @@ import type { BulkPhase, SimTool } from './bulk-store.svelte';
 import {
   SERVER_CAP,
   finalIterations,
+  isBulkPrecision,
   type BulkMode,
   type BulkRequest,
   type GearSet,
@@ -62,6 +63,8 @@ export interface BulkRequestDeps {
   getCap(): number;
   getConsumableIds(): string[];
   getStats(): string[];
+  /** The one stat `WeightsSpec.Reference` must name -- the store's own, never re-derived. */
+  getReferenceStat(): string;
   setPrecision(value: Precision): void;
   setCap(value: number): void;
   setLocked(value: string[]): void;
@@ -220,7 +223,10 @@ export function buildRequest(deps: BulkRequestDeps): RequestOutcome {
     if (stats.length === 0) return { error: bulkCopy.weightsNeedStats };
     const base = envelope(deps, PRECISION_ITERATIONS.normal);
     if (base === null) return { error: simCopy.failed };
-    return { request: { ...base, weights: { stats: [...stats], reference: stats[0] } } };
+    // The store's own `referenceStat`, not a second read of `stats[0]`: the page renders
+    // "Reference: …" from the former, and two derivations of the one value is how the line
+    // and the request come to disagree (final whole-branch review, Minor 8).
+    return { request: { ...base, weights: { stats: [...stats], reference: deps.getReferenceStat() } } };
   }
   // Contract 10.1 A3: a bulk request's iterations ARE its precision's final stage.
   const base = envelope(deps, finalIterations(deps.getPrecision()));
@@ -240,7 +246,9 @@ export function previewRequest(deps: BulkRequestDeps): BulkRequest | WeightsRequ
   if (deps.tool === 'weights') {
     const base = envelope(deps, PRECISION_ITERATIONS.normal);
     const stats = deps.getStats();
-    return base === null ? null : { ...base, weights: { stats: [...stats], reference: stats[0] ?? '' } };
+    return base === null
+      ? null
+      : { ...base, weights: { stats: [...stats], reference: deps.getReferenceStat() } };
   }
   const base = envelope(deps, finalIterations(deps.getPrecision()));
   if (base === null) return null;
@@ -258,7 +266,10 @@ export function previewRequest(deps: BulkRequestDeps): BulkRequest | WeightsRequ
 export function applyRequestFields(deps: BulkRequestDeps, next: unknown): void {
   const parsed = next as Partial<BulkRequest & WeightsRequest>;
   if (parsed.bulk !== undefined) {
-    deps.setPrecision(parsed.bulk.precision as Precision);
+    // Narrowed, never cast: a drawer-edited `precision` is whatever the player typed, and
+    // a cast would have put "quick" into the store and through to the wire. An unreadable
+    // value leaves the store's own precision alone (final whole-branch review, Minor 8).
+    if (isBulkPrecision(parsed.bulk.precision)) deps.setPrecision(parsed.bulk.precision);
     deps.setCap(parsed.bulk.cap);
     deps.setLocked([...(parsed.bulk.locked ?? [])]);
     deps.setLoadouts([...(parsed.bulk.talents ?? [])]);

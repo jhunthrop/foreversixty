@@ -17,7 +17,7 @@ import { TOOL_SKELETONS } from '../../lib/sim/bulk-skeleton';
 ---
 
 <Base
-  title="Droptimizer"
+  title={bulkCopy.dropsTitle}
   description="Simulate every item a boss drops against the set you are wearing, and see which drops are upgrades."
   path="/sim/drops"
   session
@@ -35,7 +35,10 @@ import { TOOL_SKELETONS } from '../../lib/sim/bulk-skeleton';
     <div id="sim-tools" data-sim-tool="drops" class="min-h-[2116px] md:min-h-[1459px]">
       <Fragment set:html={TOOL_SKELETONS.drops} />
       <noscript>
-        <p class="text-muted px-[18px] text-[14px] md:px-0" set:html={bulkCopy.needsJs('The Droptimizer')} />
+        <p
+          class="text-muted px-[18px] text-[14px] md:px-0"
+          set:html={bulkCopy.needsJs(bulkCopy.dropsTitle)}
+        />
       </noscript>
     </div>
     <script type="module" src="/sim-tools-island.js" is:inline></script>
