@@ -57,6 +57,8 @@ export const messages = {
   wrongSlot: (itemName: string, slotLabel: string): string => `${itemName} cannot go in ${slotLabel}`,
   duplicateUnique: (itemName: string): string => `${itemName} is unique; equip it once`,
   illegalCombo: (raceName: string, className: string): string => `${raceName} cannot be a ${className}`,
+  twoHandOffHand: (mainHandName: string): string =>
+    `${mainHandName} is two-handed; there is no room for an off-hand item`,
 } as const;
 
 export function indexTalents(file: TalentFile): TalentIndex {
@@ -252,5 +254,14 @@ export function validateGear(items: Map<number, Item>, gear: Gear): FieldError[]
     const decision = canEquip(items, rest, slot, itemId);
     if (!decision.ok) errors.push({ field: `gear.${slot}`, message: decision.reason });
   }
+
+  // Rule 6, the client mirror: an off-hand item with a two-handed main hand is refused.
+  // The API states the same rule against the same `two_hand` field; this is the copy the
+  // planner can enforce before a save round-trip.
+  const mainHand = gear.main_hand === undefined ? undefined : items.get(gear.main_hand);
+  if (mainHand?.two_hand === true && gear.off_hand !== undefined) {
+    errors.push({ field: 'gear.off_hand', message: messages.twoHandOffHand(mainHand.name) });
+  }
+
   return errors;
 }

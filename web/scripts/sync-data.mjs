@@ -37,6 +37,10 @@ export const SYNC_ENTRIES = [
   { name: 'icons', kind: 'dir', required: false },
   { name: 'trees', kind: 'dir', required: false },
   { name: 'sets.json', kind: 'file', required: false },
+  // Contract 10.8: the gear panel's weighted score, one entry per spec. Optional like
+  // sets.json -- a build the data lane has not regenerated ([data] Task 2's output) ships
+  // none, and the gear panel shows why rather than a score (addonCopy.weightsMissing).
+  { name: 'stat-weights.json', kind: 'file', required: false },
   // Contract 6 and 10.4: the Droptimizer's source tables and Top Gear's enchant and suffix
   // lists. Optional the same way sets.json is -- a build the data lane has not regenerated
   // ships none, and the pages say so rather than failing to render. simbuffs.json (the

@@ -96,4 +96,30 @@ test.describe('the addon flows', () => {
       addonCopy.importWrongClass('paladin', 'warrior'),
     );
   });
+
+  test('the item picker sorts by score', async ({ page }) => {
+    // No ?class=paladin: the fixture (FOREVER_DATA=fixture) has no paladin data at all, so
+    // this runs against the planner's default class, the fixture's own two-tree warrior.
+    // The head slot carries the fixture's only two head items (Lionheart Helm, Helm of
+    // Wrath), which is enough to exercise the sort.
+    await page.goto('/planner');
+    await page.getByTestId('slot-head').click();
+    const picker = page.getByTestId('item-picker');
+    await picker.getByTestId('sort-by-score').check();
+
+    const scores = await picker.getByTestId('item-score').allTextContents();
+    expect(scores.length).toBeGreaterThan(1);
+    const numbers = scores.map(Number);
+    expect(numbers).toEqual([...numbers].sort((a, b) => b - a));
+  });
+
+  test('the gear panel shows the spec’s weights with their sources', async ({ page }) => {
+    await page.goto('/planner');
+    await page.getByTestId('gear-weights').click();
+    await expect(page.getByTestId('gear-weights')).toContainText(addonCopy.weightsAreOpinions);
+    await expect(page.getByTestId('gear-weights').getByRole('link').first()).toHaveAttribute(
+      'href',
+      /^https:/,
+    );
+  });
 });

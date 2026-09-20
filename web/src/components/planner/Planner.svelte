@@ -5,6 +5,7 @@
      under them; phone shows one panel at a time behind a tab switcher (Tasks 9 and 17). -->
 <script lang="ts">
   import { untrack } from 'svelte';
+  import type { WeightsFile } from '../../lib/addon/score';
   import activeBuild from '../../data/active-build.json';
   import { DEFAULT_CLASS_SLUG } from '../../lib/planner/config';
   import { ranksByTalent } from '../../lib/planner/derive';
@@ -17,6 +18,7 @@
     loadReference,
     loadSets,
     loadTalents,
+    loadWeights,
   } from '../../lib/planner/load';
   import type { TalentIndex } from '../../lib/planner/rules';
   import { createPlannerStore } from '../../lib/planner/store.svelte';
@@ -208,6 +210,8 @@
 
   let status = $state<'loading' | 'ready' | 'failed'>('loading');
   let attempt = $state(0);
+  /** The build's stat weights (Task 19). Empty until loaded, or on a build with none. */
+  let weights = $state<WeightsFile>([]);
   // Reset asks in the toolbar rather than through window.confirm: a browser dialog cannot be
   // styled, cannot say what it is about to clear, and reads badly on phone.
   let confirmingReset = $state(false);
@@ -320,6 +324,11 @@
         if (stale()) return;
         store.setItems({ build: store.treeVersion, class_slug: slug, items: [] });
       }
+      // Weights are optional the same way sets and items are: a build the data lane has
+      // not regenerated ships none, and loadWeights already returns [] for a 404. Any
+      // other failure here is rethrown into the outer catch, the same line loadSets draws.
+      weights = await loadWeights(store.treeVersion);
+      if (stale()) return;
       status = 'ready';
     } catch {
       // A stale run's failure is not this class's failure: the run that replaced it owns the
@@ -666,7 +675,7 @@
           aria-labelledby="gear-tab"
           class="flex-col md:flex {activeTree === gearTabIndex ? 'flex' : 'hidden'}"
         >
-          <GearPanel {store} />
+          <GearPanel {store} {weights} />
         </div>
       {/if}
     {/if}

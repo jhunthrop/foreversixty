@@ -169,6 +169,19 @@ export interface Item {
    * not regenerated, and on every item that rolls none.
    */
   suffixes?: number[];
+  /**
+   * Weapon fields ([data] Tasks 5 and 6): min and max weapon damage, speed in seconds, and
+   * the derived DPS. Optional the same way `suffixes` is above -- absent on a build the
+   * data lane has not regenerated, and on every item that is not a weapon.
+   */
+  damage_min?: number;
+  damage_max?: number;
+  speed?: number;
+  dps?: number;
+  /** True for a two-handed weapon; rule 6's client mirror refuses an off-hand beside one. */
+  two_hand?: boolean;
+  /** The weapon's on-hit or on-use effect text, when it has one. */
+  effect_text?: string;
 }
 
 export interface ItemFile {

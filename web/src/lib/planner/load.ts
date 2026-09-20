@@ -1,6 +1,7 @@
 // web/src/lib/planner/load.ts
 // Every planner fetch. The files live under /data/<build>/ so the browser caches them
 // per build id and a data swap never serves stale trees.
+import type { WeightsFile } from '../addon/score';
 import type { ReferenceData } from './store.svelte';
 import type { ClassRow, Combo, ItemFile, ItemSet, RaceRow, TalentFile } from './types';
 
@@ -68,6 +69,15 @@ export async function loadOptional<T>(url: string, empty: T): Promise<T> {
 /** Sets are optional: a build without normalized items ships no sets.json. */
 export async function loadSets(build: string): Promise<ItemSet[]> {
   return loadOptional<ItemSet[]>(dataUrl(build, 'sets.json'), []);
+}
+
+/**
+ * The build's stat weights. Missing is not an error: a build directory emitted before
+ * the weights existed, or a preview deployment on older data, should show the gear panel
+ * with no score column rather than failing to render at all.
+ */
+export async function loadWeights(treeVersion: string): Promise<WeightsFile> {
+  return loadOptional<WeightsFile>(dataUrl(treeVersion, 'stat-weights.json'), []);
 }
 
 export async function loadReference(build: string): Promise<ReferenceData> {

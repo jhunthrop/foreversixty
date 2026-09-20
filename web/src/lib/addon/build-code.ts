@@ -3,25 +3,10 @@
 // reads. Everything here is client-side: the addon code is generated in the browser from
 // what the share panel is already holding, so no API route and no second copy of the item
 // database is involved.
+import { CONTRACT_STAT_NAMES } from './score';
 import { encodeFSB1, type FSB1GearSlot, type FSB1Point } from './fsb1';
 import type { TalentIndex } from '../planner/rules';
 import { SLOTS, type Gear, type Item, type Slot } from '../planner/types';
-
-/**
- * The planner's own stat keys to parity contract 10.8's, for the three that differ.
- * `data/pipeline/normalize/gear.py` writes `healing`, `fire_res` and friends; the engine's
- * `Stat` enum -- which is what `Data.lua`'s weights are keyed by and what the addon scores
- * against -- spells them out. A key not in here passes through unchanged, which is the
- * common case.
- */
-const CONTRACT_STAT_NAMES: Record<string, string> = {
-  healing: 'healing_power',
-  fire_res: 'fire_resistance',
-  frost_res: 'frost_resistance',
-  nature_res: 'nature_resistance',
-  shadow_res: 'shadow_resistance',
-  arcane_res: 'arcane_resistance',
-};
 
 export interface BuildCodeInput {
   dataBuild: string;

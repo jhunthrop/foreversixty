@@ -2,13 +2,17 @@
 <!-- The 17-slot grid, the summed stats, and the active set bonuses. Two columns of slots on
      phone, four from md up; every slot button clears 44px. -->
 <script lang="ts">
+  import { addonCopy } from '../../lib/addon/copy';
+  import { scoreItem, specKeyFor, weightsFor, type WeightsFile } from '../../lib/addon/score';
+  import { pointsPerTree } from '../../lib/planner/derive';
   import { rarityClassFor } from '../../lib/planner/items';
   import { dataUrl } from '../../lib/planner/load';
   import type { PlannerStore } from '../../lib/planner/store.svelte';
   import { SLOTS, SLOT_LABELS, STAT_LABELS, type Slot, type StatKey } from '../../lib/planner/types';
+  import { specLabel } from '../../lib/sim/spec-label';
   import ItemPicker from './ItemPicker.svelte';
 
-  let { store }: { store: PlannerStore } = $props();
+  let { store, weights = [] }: { store: PlannerStore; weights?: WeightsFile } = $props();
 
   let openSlot = $state<Slot | null>(null);
 
@@ -16,6 +20,22 @@
     (Object.entries(store.statTotals) as [StatKey, number][]).sort(([a], [b]) =>
       STAT_LABELS[a].localeCompare(STAT_LABELS[b]),
     ),
+  );
+
+  const specKey = $derived(
+    store.talentIndex === null
+      ? ''
+      : specKeyFor(store.classSlug, pointsPerTree(store.talentIndex, store.order)),
+  );
+  const specWeights = $derived(weightsFor(weights, specKey));
+  const setScore = $derived(
+    specWeights === undefined
+      ? null
+      : SLOTS.reduce((total, slot) => {
+          const id = store.gear[slot];
+          const item = id === undefined ? undefined : store.itemIndex.get(id);
+          return item === undefined ? total : total + scoreItem(item, specWeights.weights);
+        }, 0),
   );
 </script>
 
@@ -64,7 +84,29 @@
   </div>
 
   {#if openSlot}
-    <ItemPicker {store} slot={openSlot} onclose={() => (openSlot = null)} />
+    <ItemPicker {store} slot={openSlot} weights={specWeights?.weights} onclose={() => (openSlot = null)} />
+  {/if}
+
+  {#if specWeights === undefined}
+    <p class="text-muted text-[13px]" data-testid="gear-no-weights">{addonCopy.weightsMissing}</p>
+  {:else}
+    <p class="text-[13px]" data-testid="gear-set-score">
+      {addonCopy.scoreColumn}: {setScore?.toFixed(1)}
+    </p>
+    <details data-testid="gear-weights">
+      <summary class="text-muted text-[13px]">{addonCopy.weightsTitle(specLabel(specKey))}</summary>
+      <p class="text-muted text-[13px]">{addonCopy.weightsAreOpinions}</p>
+      <ul class="text-muted text-[13px]">
+        {#each Object.entries(specWeights.weights).sort( ([a], [b]) => a.localeCompare(b) ) as [stat, weight] (stat)}
+          <li>{stat}: {weight}</li>
+        {/each}
+      </ul>
+      <ul class="text-[13px]">
+        {#each specWeights.sources as source (source.url)}
+          <li><a class="underline" href={source.url} rel="noopener">{source.label}</a></li>
+        {/each}
+      </ul>
+    </details>
   {/if}
 
   <div class="grid grid-cols-1 gap-4 md:grid-cols-2">

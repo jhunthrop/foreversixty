@@ -257,3 +257,22 @@ describe('validateOrder with more than one offending index', () => {
     ]);
   });
 });
+
+describe('rule 6: two-handed main hand', () => {
+  it('refuses an off-hand item beside a two-handed main hand', () => {
+    const items = new Map([
+      [1, { id: 1, slot: 'main_hand', two_hand: true, name: 'Big Axe' }],
+      [2, { id: 2, slot: 'off_hand', two_hand: false, name: 'Shield' }],
+    ]) as never;
+    const errors = validateGear(items, { main_hand: 1, off_hand: 2 });
+    expect(errors.map((error) => error.message)).toContain(messages.twoHandOffHand('Big Axe'));
+  });
+
+  it('allows an off-hand item beside a one-handed main hand', () => {
+    const items = new Map([
+      [1, { id: 1, slot: 'main_hand', two_hand: false, name: 'Sword' }],
+      [2, { id: 2, slot: 'off_hand', two_hand: false, name: 'Shield' }],
+    ]) as never;
+    expect(validateGear(items, { main_hand: 1, off_hand: 2 })).toEqual([]);
+  });
+});
