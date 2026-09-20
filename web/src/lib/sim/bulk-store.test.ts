@@ -4,22 +4,38 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { createFakeEngine } from '../../fixtures/sim/engine-fake';
 import { createFakeWorker } from '../../test-support/fake-worker';
-import { createSimApi, FIXTURE_DATA_BUILD, fixtureResult, TEST_API } from '../../test-support/sim-api';
+import {
+  createSimApi,
+  envelope,
+  FIXTURE_DATA_BUILD,
+  fixtureResult,
+  NEW_SIM_ID,
+  TEST_API,
+} from '../../test-support/sim-api';
 import { createBulkStore, MODE_OF_TOOL, TOOLS } from './bulk-store.svelte';
+import { SERVER_CAP } from './bulk-types';
+import { bulkCopy, simCopy } from './copy';
 import { createPool } from './worker';
 import type { BulkResult } from './bulk-types';
 
 const FURY = `FS1:${FIXTURE_DATA_BUILD}:warrior:orc:0/5530515/0:head=12640,main_hand=12784`;
 const api = createSimApi();
 
-function store(tool: (typeof TOOLS)[number] = 'gear') {
-  const engine = createFakeEngine({ tickMs: 0, ticks: 1 });
+interface StoreOverrides {
+  hardwareConcurrency?: number;
+  failWith?: string;
+  serverPollLimit?: number;
+}
+
+function store(tool: (typeof TOOLS)[number] = 'gear', overrides: StoreOverrides = {}) {
+  const engine = createFakeEngine({ tickMs: 0, ticks: 1, failWith: overrides.failWith ?? '' });
   return createBulkStore({
     tool,
     treeVersion: FIXTURE_DATA_BUILD,
     apiBase: TEST_API,
-    hardwareConcurrency: 8,
+    hardwareConcurrency: overrides.hardwareConcurrency ?? 8,
     serverPollMs: 1,
+    serverPollLimit: overrides.serverPollLimit,
     pool: createPool({ hardwareConcurrency: 4, spawn: () => createFakeWorker(engine) }),
     now: () => new Date('2026-12-10T00:00:00Z'),
   });
@@ -80,6 +96,12 @@ describe('the cap', () => {
     expect(wide.cap).toBe(400);
     wide.dispose();
   });
+
+  it('is 200 on four cores or fewer', () => {
+    const narrow = store('gear', { hardwareConcurrency: 4 });
+    expect(narrow.cap).toBe(200);
+    narrow.dispose();
+  });
 });
 
 describe('the live combination count', () => {
@@ -124,6 +146,24 @@ describe('the live combination count', () => {
     expect(s.combinations).toBe(4);
     s.dispose();
   });
+
+  it('derives the server cap notice directly from the count, not only through a browser cap refusal', async () => {
+    const s = store();
+    await s.loadAddon(FURY);
+    s.addSearchItem(16963);
+    // A cap generous enough that the browser lane never refuses, so the success branch of
+    // recount() is the one that must derive serverCapNotice (fix round 1, Minor). Ticking
+    // 2,501 distinct consumable "lists" pushes the count past 5,000 without needing more
+    // items than the fixture has: one slot's product before consumables is 2 (keep,
+    // substitute); crossed by 2,501 lists is 5,002.
+    s.setCap(10_000);
+    for (let i = 0; i < 2501; i += 1) s.toggleConsumable(`fake_consumable_${i}`);
+    await s.recount();
+    expect(s.combinations).toBe(5002);
+    expect(s.capNotice).toBeNull();
+    expect(s.serverCapNotice).toEqual({ cap: SERVER_CAP, combinations: 5002 });
+    s.dispose();
+  });
 });
 
 describe('running', () => {
@@ -164,6 +204,57 @@ describe('running', () => {
     expect(s.referenceStat).toBe('attack_power');
     await s.run();
     expect(s.weights.find((row) => row.stat === 'attack_power')?.weight).toBe(1);
+    s.dispose();
+  });
+
+  it('refuses a weights run with no stats picked, before the engine ever sees it', async () => {
+    const s = store('weights');
+    await s.loadAddon(FURY);
+    // adopt() seeds `stats` as soon as a character loads (fix round 1, Important 2), so an
+    // empty list only happens once a player clears the picker entirely -- exercised here
+    // directly, since `setStats([])` is exactly that.
+    s.setStats([]);
+    await s.run();
+    expect(s.result).toBeNull();
+    expect(s.message).toBe(bulkCopy.weightsNeedStats);
+    s.dispose();
+  });
+
+  it('lands on error with the engine’s own detail when a run genuinely fails', async () => {
+    const s = store('gear', { failWith: 'boom' });
+    await s.loadAddon(FURY);
+    s.addSearchItem(16963);
+    await s.run();
+    expect(s.phase).toBe('error');
+    expect(s.message).toBe(bulkCopy.bulkFailed);
+    expect(s.detail).toBe('boom');
+    s.dispose();
+  });
+});
+
+describe('stopping', () => {
+  it('cancels a browser run with nothing survived yet', async () => {
+    const s = store();
+    await s.loadAddon(FURY);
+    s.addSearchItem(16963);
+    const running = s.run();
+    s.stop();
+    await running;
+    expect(s.message).toBe(simCopy.stopped);
+    s.dispose();
+  });
+
+  it('also unwinds an in-flight premium poll -- one Stop button covers both lanes (fix round 1, Important 1)', async () => {
+    const s = store();
+    await s.loadAddon(FURY);
+    s.addSearchItem(16963);
+    const running = s.runOnServer();
+    expect(s.serverRunning).toBe(true);
+    s.stop();
+    // Flips immediately, before the in-flight poll has had a chance to notice on its own.
+    expect(s.serverRunning).toBe(false);
+    await running;
+    expect(s.serverRunning).toBe(false);
     s.dispose();
   });
 });
@@ -243,33 +334,80 @@ describe('the premium lane', () => {
       pattern: /\/v1\/sims\/simnew234567\/progress$/,
       respond: () => {
         polls += 1;
-        return new Response(
-          JSON.stringify({
-            ok: true,
-            data:
-              polls < 2
-                ? { state: 'running', iterations_done: 100, stage: 1, combos_done: 0, combos_total: 1 }
-                : { state: 'done', iterations_done: 3000 },
-            error: null,
-            request_id: 'req-test',
-          }),
-          { status: 200, headers: { 'content-type': 'application/json' } },
+        return envelope(
+          polls < 2
+            ? { state: 'running', iterations_done: 100, stage: 1, combos_done: 0, combos_total: 1 }
+            : { state: 'done', iterations_done: 3000 },
         );
       },
     });
     api.route({
       method: 'GET',
       pattern: /\/v1\/sims\/simnew234567$/,
-      respond: () =>
-        new Response(JSON.stringify({ ok: true, data: fixtureResult, error: null, request_id: 'req-test' }), {
-          status: 200,
-          headers: { 'content-type': 'application/json' },
-        }),
+      respond: () => envelope(fixtureResult),
     });
     await s.runOnServer();
     expect(s.serverRunning).toBe(false);
     expect(s.phase).toBe('done');
     expect(s.result).not.toBeNull();
+    s.dispose();
+  });
+
+  it('surfaces a dispatch failure as a message, not a hang', async () => {
+    const s = store();
+    await s.loadAddon(FURY);
+    s.addSearchItem(16963);
+    api.setPremium(false); // the built-in POST /v1/sims/run route answers 402 when not premium
+    await s.runOnServer();
+    expect(s.serverRunning).toBe(false);
+    expect(s.message).toBe(simCopy.premiumRequired);
+    s.dispose();
+  });
+
+  it('lands on error when the server job itself reports one', async () => {
+    const s = store();
+    await s.loadAddon(FURY);
+    s.addSearchItem(16963);
+    api.route({
+      method: 'GET',
+      pattern: /\/v1\/sims\/simnew234567\/progress$/,
+      respond: () => envelope({ state: 'error', iterations_done: 0 }),
+    });
+    await s.runOnServer();
+    expect(s.serverRunning).toBe(false);
+    expect(s.phase).toBe('error');
+    expect(s.message).toBe(bulkCopy.bulkFailed);
+    s.dispose();
+  });
+
+  it('gives up after its poll ceiling rather than looping forever (fix round 1, Important 1)', async () => {
+    const s = store('gear', { serverPollLimit: 3 });
+    await s.loadAddon(FURY);
+    s.addSearchItem(16963);
+    // The default progress route always answers 'running' -- never done, never error.
+    await s.runOnServer();
+    expect(s.serverRunning).toBe(false);
+    expect(s.phase).toBe('error');
+    expect(s.message).toBe(bulkCopy.bulkFailed);
+    s.dispose();
+  });
+});
+
+describe('saving a browser result', () => {
+  it('saves the finished result and returns its sim_id, mirroring /sim’s own save()', async () => {
+    const s = store();
+    await s.loadAddon(FURY);
+    s.addSearchItem(16963);
+    await s.run();
+    const id = await s.save('My gear run');
+    expect(id).toBe(NEW_SIM_ID);
+    s.dispose();
+  });
+
+  it('returns null when there is nothing to save', async () => {
+    const s = store();
+    const id = await s.save();
+    expect(id).toBeNull();
     s.dispose();
   });
 });

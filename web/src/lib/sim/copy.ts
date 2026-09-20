@@ -683,6 +683,9 @@ export const bulkCopy = {
   weightsCopyPawn: 'Copy for Pawn',
   weightsCopied: 'Copied',
   weightsPick: 'Stats to weigh',
+  /** bulk-store.svelte.ts's `baseRequest` refusal when `stats` is empty: `WeightsSpec.
+   *  Reference` is required (contract 10.8), so an empty list has nothing to send. */
+  weightsNeedStats: 'Pick at least one stat to weigh.',
 
   // --- the request drawer's own one-liner, so Advanced is findable on every tool ---
   advancedTitle: 'Request',

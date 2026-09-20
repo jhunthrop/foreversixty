@@ -11,7 +11,7 @@
 //   * a failed load keeps the character already on screen;
 //   * the pool is created on the first run, never on mount -- the wasm is 4 MB and these
 //     pages have the site's Lighthouse budget.
-import { dispatchServerSim, fetchBulkProgress, fetchSim, fetchSpecs, SimApiError } from './api';
+import { fetchSpecs, saveSim } from './api';
 import {
   BulkCapError,
   BulkRunError,
@@ -33,8 +33,8 @@ import {
   type StatWeight,
   type TalentLoadout,
   type WeightsRequest,
-  type WeightsResult,
 } from './bulk-types';
+import { MAX_SERVER_POLLS, runServerJob } from './bulk-server-run';
 import {
   addRow,
   buildBulkSpec,
@@ -61,6 +61,7 @@ import {
 import { loadLoot, sourcesByItem, type LootFile } from './loot';
 import { BUILT_IN_PHASES, fetchPhases, type PhaseRow } from './phase';
 import { loadItems, loadSets, loadTalents } from '../planner/load';
+import { PRECISION_ITERATIONS } from './precision';
 import { indexTalents } from '../planner/rules';
 import type { Item, ItemSet, Slot, TalentFile } from '../planner/types';
 import { defaultSettings, type SimSettings } from './settings';
@@ -93,8 +94,6 @@ export type BulkPhase = 'idle' | 'loading-character' | 'counting' | 'running' | 
 const DEFAULT_SERVER_POLL_MS = 2000;
 const COUNT_DEBOUNCE_MS = 250;
 
-const delay = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
-
 /**
  * Plain `Map`s and `Date`s, not `SvelteMap`/`SvelteDate`: `items` and `sourceIndex` are
  * replaced wholesale on every load and only ever read by key, so per-entry tracking would be
@@ -126,6 +125,8 @@ export interface BulkStoreInit {
   source?: SourceKind | '';
   ref?: string;
   serverPollMs?: number;
+  /** Injected by tests; production uses `MAX_SERVER_POLLS`. */
+  serverPollLimit?: number;
   /** Injected by tests, so the phase gate is not a clock-dependent assertion. */
   now?: () => Date;
 }
@@ -210,13 +211,17 @@ export function createBulkStore(init: BulkStoreInit) {
     capNotice = null;
     serverCapNotice = null;
     combinations = null;
-    phase = 'idle';
     await loadDataFor(outcome.character);
     rows = seedRows(outcome.character);
     // `drops` mode's candidates are the picked sources alone (validateBulk rule 3) -- a
     // fresh load has no picks yet, so this replaces the seeded equipped/bag/bank rows with
     // the empty list rather than leaving them there for a mode that must refuse them.
     if (init.tool === 'drops') rows = rowsFromPicks(pickedBosses, loot, items);
+    seedStatsIfNeeded();
+    // Set only now, not before `loadDataFor`/`seedRows` above: setting it earlier left a
+    // window where the page looked settled (`phase === 'idle'`) while `items` was still
+    // empty and `talentFile` still null (fix round 1, Minor).
+    phase = 'idle';
   }
 
   /**
@@ -254,14 +259,10 @@ export function createBulkStore(init: BulkStoreInit) {
   /**
    * The grid opens with what the character is wearing, plus whatever the addon export's
    * bags and bank carried (part A's FS1 v2 decoder). Nothing is ticked: a page that
-   * pre-ticks is a page that runs something the player did not choose.
-   *
-   * Contract 10.5 puts per-slot enchant and suffix on `SimCharacter.gear_slots` (part A's
-   * decoder), so an equipped row opens carrying the enchant the player actually has on --
-   * which is what "an enchant you already have carries over" has to mean on screen as well
-   * as in the planner. `gear_slots`/`bags`/`bank` are required arrays on every source (never
-   * `undefined`): a source with nothing to say about one leaves it `[]`, so this reads them
-   * directly rather than falling back to the id-only `gear` map.
+   * pre-ticks is a page that runs something the player did not choose. Contract 10.5 puts
+   * per-slot enchant and suffix on `gear_slots`, so an equipped row carries the enchant the
+   * player actually has on. `gear_slots`/`bags`/`bank` are required, non-`undefined` arrays
+   * on every source, so this reads them directly rather than falling back to `gear`.
    */
   function seedRows(next: SimCharacter): CandidateRow[] {
     const seeded: CandidateRow[] = [];
@@ -302,29 +303,62 @@ export function createBulkStore(init: BulkStoreInit) {
     });
   }
 
-  function baseRequest(): BulkRequest | WeightsRequest | null {
-    if (character === null) {
-      message = bulkCopy.needCharacter;
-      return null;
-    }
+  /**
+   * The fields a bulk and a weights request share, or null while a character or its talent
+   * file is missing. One function so `run()`'s envelope and `recount()`'s can never drift
+   * apart (fix round 1, Important 4) -- only `iterations` and the trailing block differ.
+   */
+  function envelope(iterations: number): Omit<BulkRequest, 'bulk'> | null {
     const spec = characterSpecOrNull();
-    if (spec === null) {
-      message = simCopy.failed;
-      return null;
-    }
-    const base = {
+    if (spec === null || character === null) return null;
+    return {
       engine_version: ENGINE_VERSION,
       spec: character.spec,
       source: character.source,
       character: spec,
       encounter: settings.encounter,
-      // Contract 10.1 A3: a bulk request's iterations ARE its precision's final stage, and
-      // `Validate` refuses anything else. A weights run is a plain fixed run.
-      iterations: init.tool === 'weights' ? 3000 : finalIterations(precision),
+      iterations,
       random_seed: 0,
     };
+  }
+
+  /**
+   * The weights picker's seed, run whenever a character or the spec list newly become
+   * available -- `loadSpecs()` may resolve before or after `loadAddon()` (Task 11's own
+   * `onMount` order), and `stats` must not stay empty forever either way (fix round 1,
+   * Important 2). Guarded on `stats.length === 0`, so a player's own edits are never lost.
+   */
+  function seedStatsIfNeeded(): void {
+    if (init.tool !== 'weights' || stats.length > 0 || character === null) return;
+    stats = defaultStatsFor(character.spec, referenceFor(character.spec, specRows));
+  }
+
+  function baseRequest(): BulkRequest | WeightsRequest | null {
+    if (character === null) {
+      message = bulkCopy.needCharacter;
+      return null;
+    }
     if (init.tool === 'weights') {
-      return { ...base, weights: { stats: [...stats], reference: stats[0] ?? '' } };
+      // Contract 10.8: `WeightsSpec.Reference` is required. An empty `stats` list has
+      // nothing to send as one, and running would otherwise fail only after the engine
+      // rejects the request (fix round 1, Important 2).
+      if (stats.length === 0) {
+        message = bulkCopy.weightsNeedStats;
+        return null;
+      }
+      const base = envelope(PRECISION_ITERATIONS.normal);
+      if (base === null) {
+        message = simCopy.failed;
+        return null;
+      }
+      return { ...base, weights: { stats: [...stats], reference: stats[0] } };
+    }
+    // Contract 10.1 A3: a bulk request's iterations ARE its precision's final stage, and
+    // `Validate` refuses anything else.
+    const base = envelope(finalIterations(precision));
+    if (base === null) {
+      message = simCopy.failed;
+      return null;
     }
     const bulk = currentSpec();
     if (bulk === null) return null;
@@ -348,27 +382,23 @@ export function createBulkStore(init: BulkStoreInit) {
     if (bulk === null || validateBulk(bulk) !== null) {
       combinations = null;
       capNotice = null;
+      // The invalid-spec exit used to leave a stale server-cap notice on screen after the
+      // player unticked everything past 5,000 (fix round 1, Important 3) -- every exit now
+      // clears all three of the same fields.
+      serverCapNotice = null;
       return;
     }
-    const spec = characterSpecOrNull();
-    if (spec === null || character === null) return;
-    const request: BulkRequest = {
-      engine_version: ENGINE_VERSION,
-      spec: character.spec,
-      source: character.source,
-      character: spec,
-      encounter: settings.encounter,
-      // `BulkSpec.precision` is `string` on the wire (types.ts mirrors the Go tag loosely);
-      // narrowed the same way bulk-run.ts's own stage loop does -- this request only ever
-      // carries a precision `setPrecision` wrote, so the cast never hides a real mismatch.
-      iterations: finalIterations(bulk.precision as Precision),
-      random_seed: 0,
-      bulk,
-    };
+    const base = envelope(finalIterations(precision));
+    if (base === null) return;
+    const request: BulkRequest = { ...base, bulk };
+    phase = 'counting';
     try {
       combinations = await countCombinations(poolOnce(), request);
       capNotice = null;
-      serverCapNotice = null;
+      // Derived directly from the count on the success path too, not only through a
+      // `BulkCapError` (fix round 1, Minor): `setCap()` is public, so a browser cap raised
+      // past 5,000 must not let a 6,000-combination count succeed without this notice.
+      serverCapNotice = combinations > SERVER_CAP ? { cap: SERVER_CAP, combinations } : null;
     } catch (error) {
       if (error instanceof BulkCapError) {
         combinations = error.combinations;
@@ -377,11 +407,18 @@ export function createBulkStore(init: BulkStoreInit) {
         // offer a server run the API would refuse at submit with `cap_exceeded`.
         serverCapNotice =
           error.combinations > SERVER_CAP ? { cap: SERVER_CAP, combinations: error.combinations } : null;
-        return;
+      } else {
+        // Not a cap refusal: a genuine engine error while merely counting. The count
+        // blanks rather than showing a stale number; `detail` carries the reason for a
+        // component that wants it -- `run()` raises the same failure, with `message` set,
+        // the moment the player actually presses Run.
+        combinations = null;
+        capNotice = null;
+        serverCapNotice = null;
+        detail = error instanceof Error ? error.message : '';
       }
-      combinations = null;
-      capNotice = null;
-      serverCapNotice = null;
+    } finally {
+      if (phase === 'counting') phase = 'idle';
     }
   }
 
@@ -475,7 +512,7 @@ export function createBulkStore(init: BulkStoreInit) {
       return result?.combos ?? [];
     },
     get weights(): StatWeight[] {
-      return (result as WeightsResult | null)?.weights ?? [];
+      return result?.weights ?? [];
     },
     get message() {
       return message;
@@ -520,9 +557,7 @@ export function createBulkStore(init: BulkStoreInit) {
       } catch {
         specRows = [];
       }
-      if (init.tool === 'weights' && stats.length === 0 && character !== null) {
-        stats = defaultStatsFor(character.spec, referenceFor(character.spec, specRows));
-      }
+      seedStatsIfNeeded();
     },
 
     setPremium(value: boolean): void {
@@ -623,11 +658,17 @@ export function createBulkStore(init: BulkStoreInit) {
     },
 
     async run(): Promise<void> {
+      // A premium poll owns `result`/`phase` while it runs; refuse rather than race it,
+      // the same guard `runOnServer()` puts on itself (fix round 1, Minor).
+      if (serverRunning) return;
       const request = baseRequest();
       if (request === null) {
         phase = 'idle';
         return;
       }
+      // Invalidates a premium poll that might still be resolving from an earlier
+      // generation (fix round 1, Minor).
+      serverGeneration += 1;
       message = null;
       detail = '';
       stopRequested = false;
@@ -668,12 +709,17 @@ export function createBulkStore(init: BulkStoreInit) {
     stop(): void {
       stopRequested = true;
       handle?.cancel();
+      // One Stop button covers both lanes (fix round 1, Important 1): bumping the
+      // generation unwinds the premium poll on its next `await`, and `serverRunning` flips
+      // now rather than waiting for that poll to notice.
+      serverGeneration += 1;
+      serverRunning = false;
     },
 
     /**
-     * The same envelope, on the premium lane. `dispatchServerSim` is the single-run
-     * dispatch unchanged: a bulk request IS a SimRequest, the API derives the kind from the
-     * body, and the progress route carries the three bulk columns.
+     * The same envelope, on the premium lane. The dispatch-and-poll mechanics live in
+     * `bulk-server-run.ts` (fix round 1's split, for the 800-line cap); this is only the
+     * wiring from that module's updates onto this store's own `$state`.
      */
     async runOnServer(): Promise<void> {
       if (serverRunning) return;
@@ -682,62 +728,49 @@ export function createBulkStore(init: BulkStoreInit) {
       serverRunning = true;
       const generation = ++serverGeneration;
       const current = (): boolean => generation === serverGeneration;
+      message = null;
+      detail = '';
       try {
-        message = null;
-        detail = '';
-        let simId: string;
-        try {
-          simId = await dispatchServerSim(request, init.apiBase);
-        } catch (error) {
-          if (current()) message = error instanceof SimApiError ? error.message : bulkCopy.bulkFailed;
-          return;
-        }
-        for (;;) {
-          await delay(init.serverPollMs ?? DEFAULT_SERVER_POLL_MS);
-          if (!current()) return;
-          let row;
-          try {
-            row = await fetchBulkProgress(simId, init.apiBase);
-          } catch (error) {
-            if (current()) {
-              message = error instanceof SimApiError ? error.message : bulkCopy.bulkFailed;
-              phase = result !== null ? 'done' : 'error';
+        await runServerJob(
+          request,
+          {
+            apiBase: init.apiBase,
+            pollMs: init.serverPollMs ?? DEFAULT_SERVER_POLL_MS,
+            pollLimit: init.serverPollLimit ?? MAX_SERVER_POLLS,
+            isCurrent: current,
+            hasPriorResult: () => result !== null,
+          },
+          (update) => {
+            if (update.kind === 'progress') progress = update.progress;
+            else if (update.kind === 'message') message = update.message;
+            else if (update.kind === 'failed') {
+              message = update.message;
+              phase = update.phase;
+            } else {
+              result = update.result;
+              progress = null;
+              phase = 'done';
             }
-            return;
-          }
-          if (!current()) return;
-          if (row.stage !== undefined && row.combos_total !== undefined) {
-            progress = {
-              stage: row.stage,
-              stages: row.combos_total === 0 ? 1 : (progress?.stages ?? 1),
-              combosDone: row.combos_done ?? 0,
-              combosTotal: row.combos_total,
-            };
-          }
-          if (row.state === 'error') {
-            message = bulkCopy.bulkFailed;
-            phase = result !== null ? 'done' : 'error';
-            return;
-          }
-          if (row.state === 'done') {
-            try {
-              const finished = await fetchSim(simId, init.apiBase);
-              if (current()) {
-                result = finished;
-                progress = null;
-                phase = 'done';
-              }
-            } catch (error) {
-              if (current()) {
-                message = error instanceof SimApiError ? error.message : bulkCopy.bulkFailed;
-                phase = result !== null ? 'done' : 'error';
-              }
-            }
-            return;
-          }
-        }
+          },
+        );
       } finally {
         if (current()) serverRunning = false;
+      }
+    },
+
+    /**
+     * Saves a finished browser-lane result via `POST /v1/sims` (contract 10.6: that route
+     * "remains the browser-result save" for every kind) -- mirrors `store.svelte.ts`'s own
+     * `save()`: same signature, null on failure without touching `message` (a save failure
+     * is the save form's own concern). No `result.lane` check: a server-lane result already
+     * has its own `sim_id`, so wiring this to only a browser-lane result is Task 16's job.
+     */
+    async save(title?: string): Promise<string | null> {
+      if (result === null) return null;
+      try {
+        return await saveSim(result, init.apiBase, title);
+      } catch {
+        return null;
       }
     },
 
