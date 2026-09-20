@@ -39,6 +39,106 @@ async function loadDrops(page: Page, code = FURY): Promise<void> {
   await expect(page.getByTestId('sim-source-picker')).toBeVisible();
 }
 
+const envelope = (data: unknown) => ({
+  status: 200,
+  contentType: 'application/json',
+  body: JSON.stringify({ data, error: null }),
+});
+
+const STUB_SIM_ID = 'zzzzzzzzzzz2';
+
+/**
+ * A hand-built drops result with genuine, distinct deltas -- the checked-in fake engine
+ * (browser lane) ties every combination with the equipped baseline exactly (same
+ * `random_seed` and `iterations` for every request in a stage, `engine-fake.ts`'s own
+ * header), so proving "Every upgrade" excludes a tie/downgrade and "Best here" names the
+ * true best needs a result the fake engine did not compute. Dispatched through the premium
+ * lane (`page.route`, real HTTP calls the engine never touches) so the production code
+ * under test -- `DropResults.svelte`'s own `isUpgrade` filter, restored to `> 0` in fix
+ * round 1 -- is exercised unmodified, and nothing about the fake engine's determinism
+ * changes.
+ *
+ * Three combos, one boss (Ragnaros): +80 (the true best), +30 (a lesser but real upgrade,
+ * proving "Best here" picks the leader rather than merely the only or first member), and an
+ * exact tie at the already-equipped Arcanite Reaper (not an upgrade).
+ */
+const STUB_RESULT = {
+  engine_version: 'test-engine',
+  request: { engine_version: 'test-engine', spec: 'warrior-fury', iterations: 3000, random_seed: 0 },
+  lane: 'server',
+  dps: { mean: 1000, stddev: 50, error: 5, min: 900, max: 1100 },
+  iterations_run: 3000,
+  duration_ms: 500,
+  summary: {},
+  equipped: { mean: 1000, stddev: 50, error: 5, min: 900, max: 1100 },
+  stages: [{ iterations: 3000, combos: 3 }],
+  combos: [
+    {
+      substitutions: [
+        {
+          kind: 'item',
+          slot: 'finger1',
+          item_id: 19325,
+          name: 'Band of Accuria',
+          origin: 'drop:raid:molten-core:11502',
+          source_name: 'Ragnaros',
+        },
+      ],
+      dps: { mean: 1080, stddev: 50, error: 5, min: 980, max: 1180 },
+      delta: { mean: 80, stddev: 0, error: 8, min: 0, max: 0 },
+      group: 0,
+    },
+    {
+      substitutions: [
+        {
+          kind: 'item',
+          slot: 'head',
+          item_id: 16963,
+          name: 'Helm of Wrath',
+          origin: 'drop:raid:molten-core:11502',
+          source_name: 'Ragnaros',
+        },
+      ],
+      dps: { mean: 1030, stddev: 50, error: 5, min: 930, max: 1130 },
+      delta: { mean: 30, stddev: 0, error: 6, min: 0, max: 0 },
+      group: 1,
+    },
+    {
+      substitutions: [
+        {
+          kind: 'item',
+          slot: 'main_hand',
+          item_id: 12784,
+          name: 'Arcanite Reaper',
+          origin: 'drop:raid:molten-core:11502',
+          source_name: 'Ragnaros',
+        },
+      ],
+      dps: { mean: 1000, stddev: 50, error: 5, min: 900, max: 1100 },
+      delta: { mean: 0, stddev: 0, error: 5, min: 0, max: 0 },
+      group: 2,
+    },
+  ],
+};
+
+/**
+ * Signs the visitor in as premium and answers the premium lane's own three routes --
+ * `POST /v1/sims/run`, `GET /v1/sims/<id>/progress`, `GET /v1/sims/<id>` -- so
+ * `runOnServer()` lands on `STUB_RESULT` without a real API anywhere. `runServerJob` always
+ * waits one full `serverPollMs` (2,000ms, unconfigured here) before its first poll, so
+ * callers give the run bar a generous timeout rather than the browser lane's own.
+ */
+async function stubPremiumRun(page: Page): Promise<void> {
+  await page.route('**/v1/me', (route) =>
+    route.fulfill(envelope({ user: { premium: true }, characters: [] })),
+  );
+  await page.route('**/v1/sims/run', (route) => route.fulfill(envelope({ sim_id: STUB_SIM_ID })));
+  await page.route(`**/v1/sims/${STUB_SIM_ID}/progress`, (route) =>
+    route.fulfill(envelope({ state: 'done', iterations_done: 3000 })),
+  );
+  await page.route(`**/v1/sims/${STUB_SIM_ID}`, (route) => route.fulfill(envelope(STUB_RESULT)));
+}
+
 test('the picker groups every source kind and leaves quests off', async ({ page }) => {
   await loadDrops(page);
   // Molten Core (raids-1) and Azuregos (opens: "later") are both gated ahead of today, so
@@ -104,24 +204,72 @@ test('picking a boss counts its drops, and running ranks them by source', async 
   await expect(page.getByTestId('sim-drops-flat')).toBeVisible();
 });
 
-test('a drop pins into Top Gear, carrying its origin in the URL', async ({ page }) => {
+test('the flat list only lists genuine upgrades, and the boss card names the true best', async ({ page }) => {
+  await stubPremiumRun(page);
   await loadDrops(page);
   await page.getByTestId('sim-upcoming').check();
   await page.getByTestId('sim-source-raid:molten-core:11502').check();
-  await page.getByTestId('sim-run-bulk').click();
-  await expect(page.getByTestId('sim-drops-flat')).toBeVisible({ timeout: 25_000 });
-  // Either of Ragnaros's two drops will do -- this test cares that pinning works, not
-  // which item the flat list lists first.
-  const pinButton = page.locator('[data-testid^="sim-drops-pin-"]').first();
-  await expect(pinButton).toBeVisible();
-  const itemId = (await pinButton.getAttribute('data-testid'))?.replace('sim-drops-pin-', '') ?? '';
-  await pinButton.click();
-  await expect(page).toHaveURL(new RegExp(`/sim/gear\\?.*pin=${itemId}.*pinOrigin=drop`));
+  await expect(page.getByTestId('sim-server-run')).toBeVisible();
+  await page.getByTestId('sim-server-run').click();
+  await expect(page.getByTestId('sim-drops-flat')).toBeVisible({ timeout: 10_000 });
+
+  // Three drops came back: +80, +30 and an exact tie (the drop that is already equipped).
+  // Only the two genuine upgrades get a pin button -- a tie is not "an upgrade" (design
+  // 6.3; the production predicate is `> 0`, restored in fix round 1, Finding 1).
+  await expect(page.getByTestId('sim-drops-pin-19325')).toBeVisible();
+  await expect(page.getByTestId('sim-drops-pin-16963')).toBeVisible();
+  await expect(page.getByTestId('sim-drops-pin-12784')).toHaveCount(0);
+
+  await expect(page.getByTestId('sim-drops-by-boss')).toContainText(bulkCopy.dropsUpgrades(2, 3));
+  // "Best here" is the +80 drop specifically, not merely the first or only member of the
+  // group (fix round 1, Minor: two real upgrades under one boss, not one).
+  await expect(page.getByTestId('sim-drops-best')).toContainText('+80');
+});
+
+test('a drop pins into Top Gear, carrying its origin in the URL', async ({ page }) => {
+  await stubPremiumRun(page);
+  await loadDrops(page);
+  await page.getByTestId('sim-upcoming').check();
+  await page.getByTestId('sim-source-raid:molten-core:11502').check();
+  await expect(page.getByTestId('sim-server-run')).toBeVisible();
+  await page.getByTestId('sim-server-run').click();
+  await expect(page.getByTestId('sim-drops-pin-19325')).toBeVisible({ timeout: 10_000 });
+  await page.getByTestId('sim-drops-pin-19325').click();
+  await expect(page).toHaveURL(/\/sim\/gear\?.*pin=19325.*pinOrigin=drop.*pinName=Ragnaros/);
   // No ?source=/?ref= rode along with the pin (the addon code was typed by hand, not
   // arrived at through a source-carrying link), so Top Gear opens on the switcher rather
   // than a character -- the pin itself is still held (ToolsView's own effect) for the
   // moment one loads.
   await expect(page.getByTestId('sim-tools-empty')).toBeVisible();
+});
+
+test('a pin arriving with a source-carrying link lands ticked, upgrading an existing row rather than duplicating it', async ({
+  page,
+}) => {
+  // Simulates a "sim this build" link into /sim/drops whose pin then carries ?source=&ref=
+  // forward to /sim/gear, so the pin lands on a character that is already loading rather
+  // than an empty switcher -- fix round 1, Finding 2's own race: `ToolsView`'s pin effect
+  // used to gate on `character !== null` alone, which is already true before `items` is
+  // populated, so `addSearchItem` could silently find nothing and no-op. Gating on
+  // `phase === 'idle'` too closes that window; this proves it end to end rather than only
+  // in the unit test.
+  const params = new URLSearchParams({
+    source: 'addon',
+    ref: FURY,
+    pin: '12784',
+    pinOrigin: 'drop:raid:molten-core:11502',
+    pinName: 'Ragnaros',
+  });
+  await page.goto(`/sim/gear?${params.toString()}`);
+  await expect(page.getByTestId('sim-character')).toBeVisible();
+
+  // main_hand=12784 is already an equipped row from FURY's own gear -- the pin must
+  // upgrade it in place (drop origin, "Ragnaros" as its source, ticked), not add a second
+  // row for the same item (candidates.ts's `addRow`, the provenance-merge rule).
+  const row = page.getByTestId('sim-candidate-main_hand-12784');
+  await expect(row).toHaveCount(1);
+  await expect(row.getByRole('checkbox')).toBeChecked();
+  await expect(row).toContainText(bulkCopy.pinned);
 });
 
 test('the page never shows a probability', async ({ page }) => {

@@ -336,6 +336,43 @@ describe('the droptimizer’s sources', () => {
   });
 });
 
+describe('addSearchItem', () => {
+  it('carries a pinned drop’s origin and source name onto the new row (fix round 1, Finding 2)', async () => {
+    const s = store('gear');
+    await s.loadAddon(FURY);
+    const added = s.addSearchItem(16963, 'drop:raid:molten-core:12118', 'Lucifron');
+    expect(added).toBe(true);
+    const row = s.rows.find((entry) => entry.item.id === 16963);
+    expect(row?.origin).toBe('drop:raid:molten-core:12118');
+    expect(row?.sourceName).toBe('Lucifron');
+    expect(row?.checked).toBe(true);
+    s.dispose();
+  });
+
+  it('merges into an existing row rather than duplicating it, upgrading a bare origin to the drop’s', async () => {
+    const s = store('gear');
+    await s.loadAddon(FURY);
+    // main_hand=12784 is already an equipped row (FURY's own gear) before the pin arrives.
+    expect(s.rows.filter((row) => row.item.id === 12784)).toHaveLength(1);
+    s.addSearchItem(12784, 'drop:raid:molten-core:11502', 'Ragnaros');
+    const matches = s.rows.filter((row) => row.item.id === 12784);
+    expect(matches).toHaveLength(1);
+    expect(matches[0].origin).toBe('drop:raid:molten-core:11502');
+    expect(matches[0].sourceName).toBe('Ragnaros');
+    expect(matches[0].checked).toBe(true);
+    s.dispose();
+  });
+
+  it('says so, rather than returning quietly, when the item is not in this character’s file (fix round 1, Finding 2)', async () => {
+    const s = store('gear');
+    await s.loadAddon(FURY);
+    expect(s.detail).toBe('');
+    expect(s.addSearchItem(999_999)).toBe(false);
+    expect(s.detail).not.toBe('');
+    s.dispose();
+  });
+});
+
 describe('the request’s iteration count', () => {
   it('is the precision’s final stage, not always 3,000 (contract 10.1 A3)', async () => {
     const s = store();

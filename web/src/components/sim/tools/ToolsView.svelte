@@ -58,16 +58,21 @@
   });
 
   /**
-   * A Droptimizer pin (Task 18), applied the first time a character is on screen -- whether
-   * it arrived with this navigation (`?source=&ref=` alongside `?pin=`) or the player picked
-   * one afterwards through the switcher. `addSearchItem` needs the item map, which only
-   * exists once `store.character !== null` (the same reason `seedRows` runs inside
-   * `adopt()`), so this cannot fire from `onMount` directly. `pinOrigin` is trusted only as
-   * a `drop:` origin -- anything else falls back to a plain search hit, the same one a pin
-   * with no origin at all produces.
+   * A Droptimizer pin (Task 18), applied the first time a character is truly settled on
+   * screen -- whether it arrived with this navigation (`?source=&ref=` alongside `?pin=`)
+   * or the player picked one afterwards through the switcher.
+   *
+   * Gated on `phase === 'idle'`, not `character !== null` alone (fix round 1, Finding 2):
+   * `adopt()` sets `character` well before `items` is populated -- `phase` is deliberately
+   * held at `'loading-character'` until `loadDataFor`/`seedRows` finish (bulk-store.svelte.ts's
+   * own comment on that exact race). Gating on `character` alone let this effect fire into
+   * an empty item map, where `addSearchItem` would silently find nothing and no-op -- exactly
+   * the window `adopt()` was written to close for `seedRows`, reopened here for the pin.
+   * `phase === 'idle'` is the same signal `adopt()` itself waits for before considering a
+   * load "settled".
    */
   $effect(() => {
-    if (pinApplied || store.character === null) return;
+    if (pinApplied || store.phase !== 'idle' || store.character === null) return;
     pinApplied = true;
     if (bootstrap.pin === '') return;
     const itemId = Number.parseInt(bootstrap.pin, 10);

@@ -60,20 +60,20 @@
   });
 
   /**
-   * "Beat what you have on, or tied it" -- `>= 0`, not `> 0`. A genuine downgrade is left
-   * out; an exact tie is kept in. With a real engine a tie is a measure-zero event and this
-   * reads the same as "> 0" in practice, but the checked-in fixture engine (engine-fake.ts's
-   * own header) seeds every combination's samples off `(random_seed, iterations)` alone,
-   * both identical for the equipped baseline and every substitution in a stage -- so it
-   * ties every combo with the baseline exactly, always. A strict "> 0" filter would leave
-   * this list permanently empty against that engine, and the pin flow below would have
-   * nothing to click in the whole suite.
+   * A genuine upgrade, strictly -- design 6.3's own predicate. A tie (delta exactly 0, e.g.
+   * a drop that is already equipped) is not an upgrade and does not belong in "Every
+   * upgrade" or count toward a boss's "Best here" line. (Fix round 1, Finding 1: this used
+   * to read `>= 0` to work around the checked-in fake engine tying every combination with
+   * the equipped baseline exactly -- a real production-semantics change to dodge a test
+   * fixture's determinism, and the wrong fix. The e2e spec now stubs a premium server-run
+   * result with genuine positive deltas instead, so this predicate can stay what the design
+   * says.)
    */
-  function notWorse(row: ComboRow): boolean {
-    return row.combo.delta.mean >= 0;
+  function isUpgrade(row: ComboRow): boolean {
+    return row.combo.delta.mean > 0;
   }
 
-  const upgrades = $derived(rows.filter(notWorse));
+  const upgrades = $derived(rows.filter(isUpgrade));
 
   function pin(row: ComboRow): void {
     const sub = row.combo.substitutions[0];
@@ -93,14 +93,14 @@
   <section class="flex flex-col gap-3" data-testid="sim-drops-by-boss">
     <h3 class="section-title text-[14px]">{bulkCopy.dropsByBoss}</h3>
     {#each byBoss as [origin, group] (origin)}
-      {@const wins = group.filter(notWorse)}
+      {@const wins = group.filter(isUpgrade)}
       <div class="border-line rounded-panel border p-3">
         <header class="flex flex-wrap items-baseline justify-between gap-2">
           <h4 class="text-strong text-[13px]">{bossName(group[0].combo, origin)}</h4>
           <span class="text-muted text-[12px]">{bulkCopy.dropsUpgrades(wins.length, group.length)}</span>
         </header>
         {#if wins.length > 0}
-          <p class="tabular text-gold font-mono text-[13px]">
+          <p class="tabular text-gold font-mono text-[13px]" data-testid="sim-drops-best">
             {bulkCopy.dropsBest}: {deltaLabel(wins[0].combo.delta)}
           </p>
         {/if}

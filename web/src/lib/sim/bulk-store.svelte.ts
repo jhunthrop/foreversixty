@@ -605,14 +605,28 @@ export function createBulkStore(init: BulkStoreInit) {
      * `sourceName` carries a pin's boss/source name through to the row (contract 10.1 A6),
      * so `addRow`'s own provenance merge can prefer it over a bare, unnamed origin already
      * ticked from bags or equipped.
+     *
+     * Returns whether the item was actually found and added. `ToolsView.svelte`'s own pin
+     * effect gates on `phase === 'idle'`, which is only true once `items` is populated, so a
+     * pin arriving through the normal flow always finds its item here -- but a stale or
+     * cross-class item id in the URL is still a real, reachable case (fix round 1, Finding
+     * 2's "say so" ask), and a bare `return` for it would be the exact silent no-op that
+     * finding called the worst failure mode. `detail` is this store's existing free-form
+     * diagnostic channel (already carries raw engine/error text elsewhere in this file, never
+     * a `bulkCopy` sentence) -- reused here rather than inventing a `message` string, since
+     * `message` is player-facing copy this file does not own the vocabulary for.
      */
-    addSearchItem(itemId: number, origin: Origin = 'search', sourceName = ''): void {
+    addSearchItem(itemId: number, origin: Origin = 'search', sourceName = ''): boolean {
       const item = items.get(itemId);
-      if (item === undefined) return;
+      if (item === undefined) {
+        detail = `item ${itemId} is not in this character's item file`;
+        return false;
+      }
       for (const slot of uiSlotsOf(item)) {
         rows = addRow(rows, { ...rowFor(item, slot, origin, sourceName), checked: true });
       }
       scheduleCount();
+      return true;
     },
     toggleLock(slot: Slot): void {
       locked = locked.includes(slot) ? locked.filter((entry) => entry !== slot) : [...locked, slot];
