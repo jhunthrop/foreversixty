@@ -650,6 +650,14 @@ export const bulkCopy = {
   resultsDps: 'DPS',
   resultsDelta: 'Gain',
   resultsPercent: '%',
+  /**
+   * Engine-lane rule 5: a two-hander replacing a main-plus-off-hand pair emits a second
+   * substitution, `{kind: "item", slot: "off_hand", item_id: 0, name: "<item removed>"}`.
+   * `SubstitutionChips.svelte` renders that sentinel through this string instead of the
+   * substitution's own `name` -- the emptied slot is not an item, and "<item removed>" is
+   * not a name a player should ever read verbatim.
+   */
+  offHandEmptied: 'Off-hand emptied',
   withinError: 'Within error of the leader',
   withinErrorNote:
     'These runs are too close to separate at this many iterations. Run again at a higher precision to tell them apart.',

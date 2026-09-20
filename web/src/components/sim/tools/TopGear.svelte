@@ -87,13 +87,22 @@
   <BulkRunBar {store} />
 
   {#if store.result !== null}
-    <ComboResults
-      result={store.result as BulkResult}
-      items={store.items}
-      sets={store.sets}
-      treeVersion={store.character?.tree_version ?? ''}
-      partial={store.result.aborted === true}
-      onsave={(title) => store.save(title)}
-    />
+    <!-- Fix round 1, finding 1: `runBulkAndSettle` never nulls `result` before a finished
+         run replaces it, so `store.result` goes straight from result A to result B and
+         this `{#if}` alone never unmounts ComboResults -- its local save/copy/filter state
+         (saveOpen, savedUrl, addonCopied, keepSet, ...) would otherwise survive into the
+         next run's own display. `{#key store.result}` remounts on every genuinely new
+         result (bulk-store-request.ts's `runBulkAndSettle` always assigns a freshly built
+         object, never mutates the old one in place), which resets all of it for free. -->
+    {#key store.result}
+      <ComboResults
+        result={store.result as BulkResult}
+        items={store.items}
+        sets={store.sets}
+        treeVersion={store.character?.tree_version ?? ''}
+        partial={store.result.aborted === true}
+        onsave={(title) => store.save(title)}
+      />
+    {/key}
   {/if}
 </div>

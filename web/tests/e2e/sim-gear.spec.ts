@@ -290,7 +290,7 @@ test('the winner opens in the planner and copies to the addon', async ({ page, c
   await expect(page.getByTestId('sim-open-in-planner')).toHaveAttribute('href', /\/planner\?/);
 
   await page.getByTestId('sim-copy-addon').click();
-  await expect(page.getByTestId('sim-copy-addon')).toHaveText('Copied');
+  await expect(page.getByTestId('sim-copy-addon')).toHaveText(bulkCopy.copiedToAddon);
   const copied = await page.evaluate(() => navigator.clipboard.readText());
   expect(copied.startsWith('FS1:')).toBe(true);
 });

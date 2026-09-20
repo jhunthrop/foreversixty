@@ -14,6 +14,7 @@
   import { addonStringFor } from '../../../lib/sim/addon-export';
   import type { BulkResult } from '../../../lib/sim/bulk-types';
   import { codeForCharacterSpec } from '../../../lib/sim/character';
+  import { confidenceBand } from '../../../lib/sim/estimate';
   import {
     comboRows,
     deltaLabel,
@@ -61,7 +62,7 @@
   const winner = $derived(winningGear(result));
 
   const equippedFigure = $derived(Math.round(result.equipped.mean).toLocaleString('en-US'));
-  const equippedBand = $derived(Math.round(1.96 * result.equipped.error).toLocaleString('en-US'));
+  const equippedBand = $derived(Math.round(confidenceBand(result.equipped)).toLocaleString('en-US'));
 
   /** The winning set into the planner, through the same ?code= bootstrap /sim already uses. */
   const plannerHref = $derived(
@@ -152,29 +153,72 @@
   {#if rows.length === 0}
     <p class="text-muted text-[13px]">{bulkCopy.noGain}</p>
   {:else}
-    <ul class="flex flex-col">
-      {#each rows as row (row.combo.substitutions
+    <!-- A generic ARIA table, not <ul>/<li>: the grid already carries five columns and
+         needs their headers announced (finding 4, fix round 1) -- role="row"/"columnheader"/
+         "cell" on plain divs, rather than fighting <ul>'s own implicit list semantics. -->
+    <div role="table" class="flex flex-col">
+      <div
+        class="text-muted grid grid-cols-[28px_minmax(0,2fr)_84px_96px_56px] items-center gap-x-3 px-2 pb-1 text-[11px] tracking-wide uppercase"
+        role="row"
+      >
+        <span role="columnheader">{bulkCopy.resultsRank}</span>
+        <span role="columnheader">{bulkCopy.resultsChange}</span>
+        <span role="columnheader" class="ml-auto">{bulkCopy.resultsDps}</span>
+        <span role="columnheader" class="ml-auto">{bulkCopy.resultsDelta}</span>
+        <span role="columnheader" class="ml-auto">{bulkCopy.resultsPercent}</span>
+      </div>
+      {#each rows as row, index (row.combo.substitutions
         .map((sub) => `${sub.kind}:${sub.slot ?? ''}:${sub.item_id ?? sub.name ?? ''}`)
         .join('|'))}
-        <li
-          class="border-line-soft grid min-h-11 grid-cols-[28px_minmax(0,2fr)_84px_96px_56px] items-center gap-x-3 border-b px-2 py-2"
+        <!-- Fix round 1, minor 2: a real visual boundary at the end of the leader's
+             within-error group, not only a repeated rank digit in a 28px column. -->
+        {@const groupEnd = index === rows.length - 1 || rows[index + 1].combo.group !== row.combo.group}
+        <div
+          class="grid min-h-11 grid-cols-[28px_minmax(0,2fr)_84px_96px_56px] items-center gap-x-3 border-b px-2 py-2 {groupEnd
+            ? 'border-line-warm'
+            : 'border-line-soft'}"
+          role="row"
+          aria-label={row.withinError ? bulkCopy.withinError : undefined}
           data-testid="sim-combo-row"
         >
-          <span class="tabular text-muted font-mono text-[12px]">{row.rank}</span>
-          <SubstitutionChips substitutions={row.combo.substitutions} {items} {treeVersion} />
-          <span class="tabular text-strong ml-auto font-mono text-[13px]">
+          <span
+            class="tabular text-muted font-mono text-[12px]"
+            role="cell"
+            aria-label={`${bulkCopy.resultsRank} ${row.rank}`}
+          >
+            {row.rank}
+          </span>
+          <span role="cell">
+            <SubstitutionChips substitutions={row.combo.substitutions} {items} {treeVersion} />
+          </span>
+          <span
+            class="tabular text-strong ml-auto font-mono text-[13px]"
+            role="cell"
+            aria-label={`${bulkCopy.resultsDps} ${Math.round(row.combo.dps.mean).toLocaleString('en-US')}`}
+          >
             {Math.round(row.combo.dps.mean).toLocaleString('en-US')}
           </span>
-          <span class="tabular text-gold ml-auto font-mono text-[13px]">
+          <span
+            class="tabular text-gold ml-auto font-mono text-[13px]"
+            role="cell"
+            aria-label={`${bulkCopy.resultsDelta} ${deltaLabel(row.combo.delta)}`}
+          >
             {deltaLabel(row.combo.delta)}
           </span>
-          <span class="tabular text-muted ml-auto font-mono text-[12px]">
+          <span
+            class="tabular text-muted ml-auto font-mono text-[12px]"
+            role="cell"
+            aria-label={`${bulkCopy.resultsPercent} ${row.percent.toFixed(1)}%`}
+          >
             {row.percent.toFixed(1)}%
           </span>
-        </li>
+        </div>
       {/each}
-    </ul>
-    <p class="text-muted text-[12px]">{bulkCopy.withinErrorNote}</p>
+    </div>
+    <!-- Fix round 1, minor 1: nothing to "tell apart" with exactly one finalist. -->
+    {#if rows.length > 1}
+      <p class="text-muted text-[12px]">{bulkCopy.withinErrorNote}</p>
+    {/if}
   {/if}
 
   {#if summary.length > 0}
