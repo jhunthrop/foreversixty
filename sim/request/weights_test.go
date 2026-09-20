@@ -131,6 +131,82 @@ func TestANativeWeightsRunMovesMeleeHaste(t *testing.T) {
 	t.Fatal("melee_haste is not in the result")
 }
 
+// TestANativeWeightsRunsTheIterationCountItsOwnFormulaPredicts pins
+// api.WeightsIterations' formula against what the engine's sweep
+// actually runs, not against a second copy of the same formula.
+//
+// adapter.Weights divides the engine's population standard deviation
+// by sqrt(N) to turn it into a standard error, where N =
+// req.Iterations * api.WeightsIterationsFactor. That denominator is
+// only correct because sim/core/statweight.go's
+// buildStatWeightRequests halves SimOptions.Iterations exactly ONCE
+// (sim/core/statweight.go:122 in the fork) and then runs a low pass
+// and a high pass of that halved size per stat, plus one halved
+// baseline pass - (X/2)+(X/2) == X. api's own
+// TestWeightsConvertsPopulationStdevToStandardError pins only the
+// FORM of that arithmetic: it computes N as Iterations*Factor on both
+// sides of its own assertion, so it would still pass if a future
+// engine pin stopped halving, halved twice, or dropped a pass. Every
+// error bar on /sim/weights would then be silently wrong by a
+// constant factor and no existing test would fail.
+//
+// This test runs the real sweep instead of re-deriving the formula:
+// core.StatWeightsAsync's own running total
+// (ProgressMetrics.CompletedIterations, read on the last progress
+// tick before FinalWeightResult - the same pattern sim/cmd/forever-
+// sim's executeWeights uses to report iterations_run) is the engine's
+// own count of iterations it actually ran, not a number this test
+// computes - and must equal what api.WeightsIterations(req) predicts.
+// The stat list and iteration count are kept small only for runtime;
+// the halve-once-then-merge invariant being pinned does not depend on
+// their size.
+func TestANativeWeightsRunsTheIterationCountItsOwnFormulaPredicts(t *testing.T) {
+	registerEngine.Do(engine.RegisterAll)
+
+	req := representativeWarriorWeights()
+	// A short stat list and few iterations: this test cares about how
+	// many iterations the engine ran, not about the weights it
+	// computed, so it does not need melee_haste's real gear-driven
+	// effect to clear noise the way TestANativeWeightsRunMovesMeleeHaste
+	// does.
+	req.Weights.Stats = []string{"attack_power", "crit"}
+	req.Iterations = 20
+	req.RandomSeed = 5
+
+	engineReq, err := BuildWeights(req, Options{OpenIterations: true})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := simdb.AttachWeights(engineReq); err != nil {
+		t.Fatal(err)
+	}
+
+	reporter := make(chan *proto.ProgressMetrics, 32)
+	core.StatWeightsAsync(engineReq, reporter, t.Name())
+
+	// core.StatWeightsAsync never closes reporter - it sends exactly
+	// one FinalWeightResult and returns (sim/cmd/forever-sim's
+	// executeWeights has the same note) - so this takes the first
+	// FinalWeightResult and stops, remembering the last
+	// CompletedIterations tick before it as the engine's own total.
+	var iterationsRun int32
+	for p := range reporter {
+		if p.FinalWeightResult != nil {
+			if p.FinalWeightResult.Error != nil && p.FinalWeightResult.Error.Message != "" {
+				t.Fatalf("weights run failed: %s", p.FinalWeightResult.Error.Message)
+			}
+			break
+		}
+		iterationsRun = p.CompletedIterations
+	}
+
+	if want := int32(api.WeightsIterations(req)); iterationsRun != want {
+		t.Fatalf("engine ran %d iterations, want %d from api.WeightsIterations - "+
+			"the halve-once-then-merge invariant adapter.Weights' sqrt(N) "+
+			"error-bar conversion depends on has changed", iterationsRun, want)
+	}
+}
+
 // The weights request is the SAME player, buffs, encounter and options
 // as a DPS run - that is the whole point of reusing BuildWith - plus
 // the stats to weigh.
