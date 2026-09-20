@@ -7,6 +7,7 @@ import weightsResultJson from '../../fixtures/sim/weights-result.json';
 import {
   BulkCapError,
   BulkRunError,
+  BulkValidationError,
   chunk,
   countCombinations,
   runBulk,
@@ -15,6 +16,7 @@ import {
   type BulkProgress,
 } from './bulk-run';
 import type { BulkRequest, BulkResult, WeightsRequest, WeightsResult } from './bulk-types';
+import type { SimRequest, SimResult } from './types';
 import { createPool, type SimPool } from './worker';
 
 const baseRequest = (bulkResultJson as unknown as BulkResult).request as BulkRequest;
@@ -75,6 +77,22 @@ describe('countCombinations', () => {
     expect(error).toBeInstanceOf(BulkCapError);
     expect((error as BulkCapError).cap).toBe(2);
     expect((error as BulkCapError).combinations).toBe(3);
+    p.terminate();
+  });
+
+  it('validates before counting: a malformed request surfaces its own errors, not a count (engine-lane rule 2)', async () => {
+    const p = pool();
+    const countSpy = vi.spyOn(p, 'count');
+    const invalid: BulkRequest = { ...gearRequest(), iterations: 0 };
+    const error = await countCombinations(p, invalid).catch((e: unknown) => e);
+    expect(error).toBeInstanceOf(BulkValidationError);
+    expect((error as BulkValidationError).errors).toEqual([
+      { field: 'iterations', message: 'iterations must be a positive number' },
+    ]);
+    expect((error as BulkValidationError).detail).toBe('iterations: iterations must be a positive number');
+    // The one thing this rule exists to prevent: a bad request must never reach `simCount`
+    // and come back as a cap or combination answer that means nothing.
+    expect(countSpy).not.toHaveBeenCalled();
     p.terminate();
   });
 });
@@ -157,6 +175,114 @@ describe('runBulk', () => {
     expect(result.duration_ms).toBe(3500);
     p.terminate();
   });
+
+  it('stamps the wall clock on the abort-with-partial exit path too (engine-lane rule 4)', async () => {
+    // Browser results otherwise report `duration_ms: 0` until something stamps them; the
+    // success path is covered above, this pins the OTHER exit path `finish()` shares with
+    // it -- a stop that still has a partial result to hand back.
+    const p = pool({ tickMs: 0, ticks: 1, size: 1 });
+    const clock = vi.fn().mockReturnValueOnce(2000).mockReturnValue(2750);
+    let resolveOneComboDone: () => void = () => {};
+    const oneComboDone = new Promise<void>((resolve) => {
+      resolveOneComboDone = resolve;
+    });
+    const handle = runBulk(
+      p,
+      gearRequest(),
+      (progress) => {
+        if (progress.combosDone >= 1) resolveOneComboDone();
+      },
+      clock,
+    );
+    await oneComboDone;
+    handle.cancel();
+    const result = (await handle.result) as BulkResult;
+    expect(result.aborted).toBe(true);
+    expect(result.duration_ms).toBe(750);
+    p.terminate();
+  });
+});
+
+describe('order preservation (engine-lane rule 1)', () => {
+  it('keeps results in request order even when shards resolve out of order', async () => {
+    // A stub SimPool, not the fake engine: every combo in a real stage shares the same
+    // `random_seed`/iterations and so produces byte-identical DPS (Task 3's report), which
+    // makes it impossible to tell combos apart by their results at all. Here each request
+    // carries its own `random_seed` as a fingerprint, and `run()` deliberately resolves the
+    // LAST shard of each chunk first -- proving that a reordering bug in `runBulk`'s own
+    // chunking/collection (not `pool.run`'s `Promise.all`, which is a language guarantee)
+    // would be caught: `rank` is handed the wrong-order results if one exists anywhere on
+    // this path.
+    const fixtureSummary = (bulkResultJson as unknown as BulkResult).summary;
+    const { bulk, ...bare } = baseRequest;
+    void bulk;
+    const withSeed = (seed: number): SimRequest => ({ ...bare, random_seed: seed });
+    const resultFor = (request: SimRequest): SimResult => ({
+      engine_version: request.engine_version,
+      request,
+      lane: 'browser',
+      dps: { mean: request.random_seed, stddev: 0, error: 0, min: 0, max: 0 },
+      iterations_run: request.iterations,
+      duration_ms: 0,
+      summary: fixtureSummary,
+    });
+
+    const rankCalls: string[] = [];
+    const notUsed = (): never => {
+      throw new Error('not used by this test');
+    };
+    const stubPool: SimPool = {
+      size: 2,
+      split: notUsed,
+      combine: notUsed,
+      needsMore: notUsed,
+      validate: notUsed,
+      count: notUsed,
+      weights: notUsed,
+      abort: () => {},
+      terminate: () => {},
+      async plan() {
+        return {
+          ok: true,
+          stage: {
+            stage: 1,
+            iterations: 100,
+            requests: [0, 1, 2, 3].map(withSeed),
+            combos: [1, 2, 3].map((seed) => ({ request: withSeed(seed), substitutions: [] })),
+            ran: [],
+          },
+        };
+      },
+      run(shards) {
+        const promises = shards.map(
+          (json, index) =>
+            new Promise<string>((resolve) => {
+              const request = JSON.parse(json) as SimRequest;
+              const reverseDelay = (shards.length - 1 - index) * 5;
+              setTimeout(() => resolve(JSON.stringify(resultFor(request))), reverseDelay);
+            }),
+        );
+        return Promise.all(promises);
+      },
+      async rank(_request, _stage, resultsJSON) {
+        rankCalls.push(resultsJSON);
+        const result: BulkResult = {
+          ...resultFor(bare),
+          combos: [],
+          equipped: { mean: 0, stddev: 0, error: 0, min: 0, max: 0 },
+          stages: [],
+        };
+        return { result };
+      },
+    };
+
+    const handle = runBulk(stubPool, gearRequest(), () => {});
+    await handle.result;
+
+    expect(rankCalls).toHaveLength(1);
+    const seenSeeds = (JSON.parse(rankCalls[0]) as SimResult[]).map((r) => r.dps.mean);
+    expect(seenSeeds).toEqual([0, 1, 2, 3]);
+  });
 });
 
 describe('runWeightsRun', () => {
@@ -167,6 +293,15 @@ describe('runWeightsRun', () => {
     const result = (await handle.result) as WeightsResult;
     expect(result.weights.length).toBe(6);
     expect(ticks.length).toBeGreaterThan(0);
+    p.terminate();
+  });
+
+  it('stamps the wall clock (engine-lane rule 4)', async () => {
+    const p = pool({ tickMs: 0, ticks: 3 });
+    const clock = vi.fn().mockReturnValueOnce(500).mockReturnValue(900);
+    const handle = runWeightsRun(p, weightsRequest, () => {}, clock);
+    const result = await handle.result;
+    expect(result.duration_ms).toBe(400);
     p.terminate();
   });
 });

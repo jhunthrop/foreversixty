@@ -32,6 +32,7 @@ import {
   type StageRequests,
   type WeightsRequest,
 } from './bulk-types';
+import type { RequestValidationError } from './engine';
 import type { SimResult } from './types';
 import type { SimPool } from './worker';
 
@@ -43,6 +44,24 @@ export class BulkCapError extends Error {
   ) {
     super(bulkCopy.capNotice(cap, combinations));
     this.name = 'BulkCapError';
+  }
+}
+
+/**
+ * `simValidate` refused the request before `simCount` ever got to answer a cap or
+ * combination question about it (engine-lane rule 2: `simPlan`/`simCount` enforce the cap
+ * "as sent" -- a malformed request must surface its own errors, not a cap or count answer
+ * that happens to fall out of whatever the engine made of it). `detail` is every field the
+ * engine named, joined into one line, the same shape `BulkRunError.detail` already gives
+ * the store to render.
+ */
+export class BulkValidationError extends Error {
+  readonly detail: string;
+
+  constructor(readonly errors: RequestValidationError[]) {
+    super(bulkCopy.requestInvalid);
+    this.name = 'BulkValidationError';
+    this.detail = errors.map((error) => `${error.field}: ${error.message}`).join('; ');
   }
 }
 
@@ -127,13 +146,20 @@ function createCanceller(pool: SimPool, callbackId: string): { cancelled(): bool
 }
 
 /**
- * The live combination count, for the run bar (`simCount`, contract 10.2). Throws
- * `BulkCapError` past the cap, because the button has to say what would exceed it and by
- * how much -- it never trims the list. `pool.count` already discriminates the cap refusal
- * from a genuine engine failure (the latter rejects the promise on its own).
+ * The live combination count, for the run bar (`simCount`, contract 10.2). Validates first
+ * (engine-lane rule 2): `simCount` enforces the cap against whatever it makes of a malformed
+ * request, so a bad request must surface as `BulkValidationError`, never as a cap notice or
+ * a combination number that means nothing. Only a request `simValidate` accepts reaches
+ * `pool.count`. Throws `BulkCapError` past the cap, because the button has to say what
+ * would exceed it and by how much -- it never trims the list. `pool.count` already
+ * discriminates the cap refusal from a genuine engine failure (the latter rejects the
+ * promise on its own).
  */
 export async function countCombinations(pool: SimPool, request: BulkRequest): Promise<number> {
-  const answer = await pool.count(JSON.stringify(request));
+  const requestJSON = JSON.stringify(request);
+  const validation = await pool.validate(requestJSON);
+  if (!validation.ok) throw new BulkValidationError(validation.errors);
+  const answer = await pool.count(requestJSON);
   if (!answer.ok) throw new BulkCapError(answer.cap, answer.combinations);
   return answer.combinations;
 }
@@ -195,6 +221,18 @@ export function runBulk(
 
       // Index 0 is the equipped set and every later index is combos[index - 1]; the chunks
       // keep that order, so a partial rank can pair them back up by position.
+      //
+      // Engine-lane rule 1: `simRank` must see these results in the exact order `simPlan`/
+      // `simRank` handed the requests out, never completion order. `chunk()` slices
+      // `stage.requests` in place (no reordering), `part.map(JSON.stringify)` preserves
+      // that same order, and `pool.run`'s own `Promise.all(shardResults)` returns its array
+      // indexed by each shard's ORIGINAL position -- guaranteed by the language, regardless
+      // of which shard's engine call actually finishes first. `results.push(...)` then
+      // appends one whole, already-ordered chunk at a time, and chunks themselves run
+      // strictly in sequence (this `for` loop `await`s each one before starting the next),
+      // so nothing along this path can ever splice a later-finishing result ahead of an
+      // earlier request. See `bulk-run.test.ts`'s `'keeps results in request order even
+      // when shards resolve out of order'` for the test that would catch a regression here.
       const results: string[] = [];
       let stopped = false;
       for (const part of chunk(stage.requests, pool.size)) {

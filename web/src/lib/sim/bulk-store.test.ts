@@ -165,6 +165,23 @@ describe('the live combination count', () => {
     expect(s.serverCapNotice).toEqual({ cap: SERVER_CAP, combinations: 5002 });
     s.dispose();
   });
+
+  it('validates before counting: a malformed request shows its own errors, not a stale count (engine-lane rule 2)', async () => {
+    const s = store();
+    await s.loadAddon(FURY);
+    s.addSearchItem(16963);
+    // `simValidate` refuses more than 10 targets; nothing in the store clamps `encounter`
+    // the way the target-count control's own `withTargets` does, so a hand-built settings
+    // object can still reach `recount()` with one out of range.
+    s.setSettings({ ...s.settings, encounter: { ...s.settings.encounter, targets: 15 } });
+    await s.recount();
+    expect(s.combinations).toBeNull();
+    expect(s.capNotice).toBeNull();
+    expect(s.serverCapNotice).toBeNull();
+    expect(s.message).toBe(bulkCopy.requestInvalid);
+    expect(s.detail).toContain('targets must be between 1 and 10');
+    s.dispose();
+  });
 });
 
 describe('running', () => {

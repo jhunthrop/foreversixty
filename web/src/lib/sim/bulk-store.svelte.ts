@@ -14,6 +14,7 @@
 import { fetchSpecs, saveSim } from './api';
 import {
   BulkCapError,
+  BulkValidationError,
   countCombinations,
   stageProgressLine,
   type BulkProgress,
@@ -376,9 +377,21 @@ export function createBulkStore(init: BulkStoreInit) {
         // offer a server run the API would refuse at submit with `cap_exceeded`.
         serverCapNotice =
           error.combinations > SERVER_CAP ? { cap: SERVER_CAP, combinations: error.combinations } : null;
+      } else if (error instanceof BulkValidationError) {
+        // Engine-lane rule 2: `countCombinations` now validates before it counts, so a
+        // malformed request lands here instead of a meaningless cap or count answer. Unlike
+        // the generic branch below, this is always actionable by the player (something on
+        // the request itself is wrong), so it surfaces through `message`/`detail` the same
+        // way a run failure does -- `sim-message` is gated on `message !== null`, so leaving
+        // it unset (as the generic branch does) would make `detail` invisible.
+        combinations = null;
+        capNotice = null;
+        serverCapNotice = null;
+        message = error.message;
+        detail = error.detail;
       } else {
-        // Not a cap refusal: a genuine engine error while merely counting. The count
-        // blanks rather than showing a stale number; `detail` carries the reason for a
+        // Not a cap or validation refusal: a genuine engine error while merely counting. The
+        // count blanks rather than showing a stale number; `detail` carries the reason for a
         // component that wants it -- `run()` raises the same failure, with `message` set,
         // the moment the player actually presses Run.
         combinations = null;

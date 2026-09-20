@@ -726,6 +726,13 @@ export const bulkCopy = {
   // --- failures ---
   planFailed: 'The combinations could not be worked out.',
   bulkFailed: 'The engine could not run these combinations.',
+  /**
+   * `bulk-run.ts`'s `BulkValidationError` headline (engine-lane rule 2): `simValidate`
+   * refused the request outright, before `simCount`/`simPlan` ever got to answer a cap or
+   * combination question about it. The engine's own per-field messages are the `detail`
+   * shown alongside this, exactly like a run failure's `detail`.
+   */
+  requestInvalid: 'This request is not valid.',
   lootFailed: 'The loot tables could not be read.',
   enchantsFailed: 'The enchant list could not be read.',
   /**
