@@ -74,6 +74,30 @@ export function parseActionKey(key: string): ActionKey | null {
 }
 
 /**
+ * The hand an auto-attack tag names -- wowsims/classic's own AutoAttacks constants
+ * (sim/core/attack.go): `tagMainhand = 1`, `tagOffhand = 2`, `tagExtraAttack = 3`. This is
+ * the only place either number is read: resolveActionName below and sentence.ts's own
+ * prose both call it rather than pattern-matching a rendered name, so a hand can never
+ * read one way in a table and a different way in the summary sentence. A tag this build
+ * has never seen -- 0, the untagged placeholder a synthetic fixture still uses, or a
+ * future engine tag -- returns null, and the caller falls back to a humanised label.
+ */
+export type AttackHand = 'main' | 'off' | 'extra';
+
+export function attackHand(tag: number): AttackHand | null {
+  switch (tag) {
+    case 1:
+      return 'main';
+    case 2:
+      return 'off';
+    case 3:
+      return 'extra';
+    default:
+      return null;
+  }
+}
+
+/**
  * The name a player reads. `names` is null until the build's file has loaded, and an id the
  * build does not carry -- a racial from a class file we did not fetch, a proc from an item
  * the player does not own in this build -- keeps its key rather than becoming "Unknown".
@@ -82,7 +106,13 @@ export function resolveActionName(key: string, names: ActionNames | null): strin
   const parsed = parseActionKey(key);
   if (parsed === null) return key;
   if (parsed.kind === 'unknown') return key;
-  if (parsed.kind === 'other') return humanise(parsed.label) + simCopy.actionVariant(parsed.tag, parsed.rank);
+  if (parsed.kind === 'other') {
+    if (parsed.label === 'attack') {
+      const hand = attackHand(parsed.tag);
+      if (hand !== null) return simCopy.attackHandName[hand];
+    }
+    return humanise(parsed.label) + simCopy.actionVariant(parsed.tag, parsed.rank);
+  }
   const table = parsed.kind === 'spell' ? names?.spell : names?.item;
   const name = table?.[parsed.label];
   if (name === undefined) return key;

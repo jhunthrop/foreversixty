@@ -106,6 +106,36 @@ export const simCopy = {
     return parts.length === 0 ? '' : ` (${parts.join(', ')})`;
   },
 
+  // --- Lane W1 (persona round 1: results, labels, weights) ---
+  /**
+   * The auto-attack tag names the hand it swung from -- wowsims/classic's own AutoAttacks
+   * constants (sim/core/attack.go): tagMainhand = 1, tagOffhand = 2, tagExtraAttack = 3.
+   * action-names.ts's attackHand() is the only place either number is read; every table,
+   * cast list and timeline reads this name. This replaces the old "Attack (2)"/"Attack (3)"
+   * labels, which numbered a *row*, not a hand -- tag 1 (main hand) rendered as "Attack (2)"
+   * -- and which this file's own proseNames table below then matched against the wrong
+   * hand (dps-minmaxer review round 1, D2: a two-handed build's only attack row was
+   * described as off-hand damage).
+   */
+  attackHandName: {
+    main: 'Main-hand attacks',
+    off: 'Off-hand attacks',
+    extra: 'Extra attacks',
+  } as Record<'main' | 'off' | 'extra', string>,
+  /**
+   * The same three hands, worded to flow inside summarySentence's prose ("main-hand white
+   * hits", not "Main-hand attacks"). Read directly off the tag by sentence.ts, the same way
+   * attackHandName above is -- never off attackHandName's own rendered text, which is the
+   * bug this block fixes: a display string is not a stable key, and copy.ts must not become
+   * a second, driftable mapping from the same tag.
+   */
+  attackHandProse: {
+    main: 'main-hand white hits',
+    off: 'off-hand white hits',
+    extra: 'extra white hits',
+  } as Record<'main' | 'off' | 'extra', string>,
+  // --- Lane W1 (persona round 1: results, labels, weights) ---
+
   // --- Task 11: the island store's own failures, and the character strip and source
   // switcher's copy. ---
   noCharacter: 'Load a character first.',
@@ -217,15 +247,16 @@ export const simCopy = {
   /** No damage at all: a rotation that never fired, not a rendering failure. */
   noDamage: 'This run recorded no damage; the rotation did not fire.',
   /**
-   * Resolved names a sentence says differently from a table. The engine's own OtherAction
-   * names arrive as "Attack" and "Shoot" (sentence-cased by resolveActionName, Task 23),
-   * and a sentence about damage calls those white hits and auto shots. This is copy, not a
-   * mapping of engine ids -- there is no engine table in web/ and there must not be.
+   * Resolved names a sentence says differently from a table, for the "other" actions that
+   * are not the tagged auto-attack (that one is attackHandProse, above, read straight off
+   * the tag). The engine's own OtherAction names arrive as "Attack" (only its untagged
+   * form -- a synthetic fixture's placeholder, since a real fight always tags the swing)
+   * and "Shoot", and a sentence about damage calls those white hits and auto shots. This is
+   * copy, not a mapping of engine ids -- there is no engine table in web/ and there must
+   * not be.
    */
   proseNames: {
     Attack: 'white hits',
-    'Attack (2)': 'off-hand white hits',
-    'Attack (3)': 'extra white hits',
     Shoot: 'auto shots',
   } as Record<string, string>,
 
@@ -294,9 +325,18 @@ export const simCopy = {
    * its OtherAction name into the key (`other:attack`), the log writes what the client
    * calls it (`Melee`), and compare mode joins those two rows -- so one of the two words
    * has to win, and it is the log's, because that is the one the player recognises from
-   * their own report. Used only by compare.ts's join, never by a table on its own.
+   * their own report. Used only by compare.ts's join, never by a table on its own. All
+   * three attackHandName forms alias to "Melee" too: a combat log records one melee row
+   * for both hands, so the sim's separate main-hand and off-hand rows must still fold onto
+   * it, the same way they did before those two had distinct names (Lane W1).
    */
-  actionAliases: { Attack: 'Melee', Shoot: 'Auto Shot' } as Record<string, string>,
+  actionAliases: {
+    Attack: 'Melee',
+    'Main-hand attacks': 'Melee',
+    'Off-hand attacks': 'Melee',
+    'Extra attacks': 'Melee',
+    Shoot: 'Auto Shot',
+  } as Record<string, string>,
   compareAbility: 'Ability',
   compareBuff: 'Buff',
   compareActualCasts: 'Cast',

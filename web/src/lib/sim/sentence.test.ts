@@ -69,6 +69,30 @@ describe('summarySentence', () => {
     expect(summarySentence(one, names)).toBe('Heroic Strike is 100% of your damage.');
   });
 
+  it('names the main hand, not off-hand, for a two-handed build’s only attack row', () => {
+    // dps-minmaxer review round 1, D2: a two-handed build's only auto-attack row is the
+    // main hand. The engine tags it other:attack/1 (sim/core/attack.go: tagMainhand = 1);
+    // this pins that the sentence reads it as the main hand and never as off-hand.
+    const base = twoAbilities();
+    const actor = base.damage_done[0];
+    const twoHander: Summary = {
+      ...withoutAuras(base),
+      damage_done: [
+        {
+          ...actor,
+          total: 610,
+          abilities: [
+            { ...actor.abilities[0], spell_id: 20022000007, name: 'other:attack/1', total: 400 },
+            { ...actor.abilities[0], spell_id: 25286, name: 'spell:25286', total: 210 },
+          ],
+        },
+      ],
+    };
+    expect(summarySentence(twoHander, names)).toBe(
+      'main-hand white hits and Heroic Strike are 100% of your damage.',
+    );
+  });
+
   it('falls back to the action key rather than a blank when the build has no name', () => {
     const base = twoAbilities();
     const actor = base.damage_done[0];

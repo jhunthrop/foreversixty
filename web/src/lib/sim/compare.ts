@@ -14,8 +14,9 @@
 //      name table loaded.
 //   2. `name:<resolved, de-variant, aliased, case-folded>` otherwise -- the tagged, item and
 //      "other" rows, whose ids are the adapter's own arithmetic, plus the log's id-zero
-//      rows. The variant suffix is dropped so the sim's tagged melee rows fold onto
-//      one, and simCopy.actionAliases turns the engine's "Attack" into the log's "Melee".
+//      rows. simCopy.actionAliases turns each of the engine's own attack names -- "Attack"
+//      and the tagged hands, "Main-hand attacks", "Off-hand attacks", "Extra attacks" --
+//      into the log's single "Melee", so the sim's separate hand rows fold onto one.
 //
 // Anything matched by neither is its own row with a zero on one side. That is the honest
 // outcome: the table then says the sim did something the fight did not, which is visible,
