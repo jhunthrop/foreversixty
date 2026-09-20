@@ -4,8 +4,10 @@
      is read once here rather than branched on in every child.
 
      This is the composition every later Top Gear task adds a section to:
-       - Task 13 inserts ItemSearch and the consumables picker here, between the slot grid
-         and the combination count.
+       - Task 13's ItemSearch and ConsumableCandidates sit here, between the slot grid and
+         the combination count. Both only make sense in gear mode (search adds a gear
+         candidate; a consumable list only multiplies `gear` mode's product, contract
+         10.1 A5), so both live inside the same `gearMode` guard as the slot grid.
        - Task 14 inserts TalentCandidates and NamedSets here, in the same place.
        - Task 15 inserts BulkRunBar (which itself mounts SettingsPanel and RequestDrawer)
          here, after the candidate sections and before the combination count.
@@ -16,7 +18,10 @@
   import type { Me } from '../../../lib/account/api';
   import type { Slot } from '../../../lib/planner/types';
   import type { BulkStore } from '../../../lib/sim/bulk-store.svelte';
+  import { SIM_LEVEL } from '../../../lib/sim/character';
   import { bulkCopy } from '../../../lib/sim/copy';
+  import ConsumableCandidates from './ConsumableCandidates.svelte';
+  import ItemSearch from './ItemSearch.svelte';
   import SlotGrid from './SlotGrid.svelte';
 
   // `me` is part of the pinned prop shape ToolsView.svelte passes to every tool view, but
@@ -40,6 +45,19 @@
       ontoggle={(key) => store.toggleRow(key)}
       oncopy={(key, patch) => store.copyAndModify(key, patch)}
       onlock={(slot: Slot) => store.toggleLock(slot)}
+    />
+    <ItemSearch
+      items={[...store.items.values()]}
+      loot={store.loot}
+      ctx={{ level: SIM_LEVEL, sourcesByItem: store.sourceIndex }}
+      treeVersion={store.character?.tree_version ?? ''}
+      onadd={(itemId) => store.addSearchItem(itemId)}
+    />
+    <ConsumableCandidates
+      picked={store.consumableIds}
+      buffs={store.simBuffs}
+      treeVersion={store.character?.tree_version ?? ''}
+      ontoggle={(id) => store.toggleConsumable(id)}
     />
   {/if}
 

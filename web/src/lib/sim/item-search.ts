@@ -43,6 +43,22 @@ export function slotOptions(): { slot: Slot; label: string }[] {
 }
 
 /**
+ * The one predicate `searchItems` and `matchCount` both filter on, so the two never drift
+ * apart into two different definitions of "matches".
+ */
+function matchesQuery(item: Item, query: ItemQuery, ctx: SearchContext): boolean {
+  const needle = query.text.trim().toLowerCase();
+  if (needle !== '' && !item.name.toLowerCase().includes(needle)) return false;
+  if (item.item_level < query.minItemLevel) return false;
+  if (query.slot !== '' && !slotsForItem(item).includes(query.slot as Slot)) return false;
+  if (query.sourceId !== '' && !(ctx.sourcesByItem.get(item.id) ?? []).includes(query.sourceId)) {
+    return false;
+  }
+  if (query.usableOnly && item.required_level > ctx.level) return false;
+  return true;
+}
+
+/**
  * Best item level first, then name, so the top of the list is the part worth reading. The
  * design's own note stands: search can find items this character has no way to obtain, and
  * `usableOnly` is about what can be equipped, not about what can be got.
@@ -55,18 +71,16 @@ export function slotOptions(): { slot: Slot; label: string }[] {
  * per-keystroke linear scan would start to matter.
  */
 export function searchItems(items: readonly Item[], query: ItemQuery, ctx: SearchContext): Item[] {
-  const needle = query.text.trim().toLowerCase();
   return items
-    .filter((item) => {
-      if (needle !== '' && !item.name.toLowerCase().includes(needle)) return false;
-      if (item.item_level < query.minItemLevel) return false;
-      if (query.slot !== '' && !slotsForItem(item).includes(query.slot as Slot)) return false;
-      if (query.sourceId !== '' && !(ctx.sourcesByItem.get(item.id) ?? []).includes(query.sourceId)) {
-        return false;
-      }
-      if (query.usableOnly && item.required_level > ctx.level) return false;
-      return true;
-    })
+    .filter((item) => matchesQuery(item, query, ctx))
     .sort((a, b) => b.item_level - a.item_level || a.name.localeCompare(b.name))
     .slice(0, SEARCH_LIMIT);
+}
+
+/**
+ * How many items match `query` before the `SEARCH_LIMIT` slice -- what `ItemSearch.svelte`
+ * needs to say "showing 100 of 143" rather than silently dropping the rest with no notice.
+ */
+export function matchCount(items: readonly Item[], query: ItemQuery, ctx: SearchContext): number {
+  return items.filter((item) => matchesQuery(item, query, ctx)).length;
 }

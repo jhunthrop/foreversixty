@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import itemsJson from '../../fixtures/planner/items/warrior.json';
 import lootJson from '../../fixtures/planner/loot.json';
-import { defaultItemQuery, searchItems, SEARCH_LIMIT, type SearchContext } from './item-search';
+import { defaultItemQuery, matchCount, searchItems, SEARCH_LIMIT, type SearchContext } from './item-search';
 import { sourcesByItem, type LootFile } from './loot';
 import type { Item } from '../planner/types';
 
@@ -56,6 +56,15 @@ describe('searchItems', () => {
   it('never returns more than the limit', () => {
     const many = Array.from({ length: SEARCH_LIMIT + 20 }, (_, i) => ({ ...items[0], id: 1000 + i }));
     expect(searchItems(many, defaultItemQuery(), ctx)).toHaveLength(SEARCH_LIMIT);
+  });
+});
+
+describe('matchCount', () => {
+  it('agrees with searchItems under the limit, and counts past it where searchItems truncates', () => {
+    expect(matchCount(items, defaultItemQuery(), ctx)).toBe(items.length);
+    expect(matchCount(items, { ...defaultItemQuery(), text: 'wrath' }, ctx)).toBe(2);
+    const many = Array.from({ length: SEARCH_LIMIT + 20 }, (_, i) => ({ ...items[0], id: 1000 + i }));
+    expect(matchCount(many, defaultItemQuery(), ctx)).toBe(SEARCH_LIMIT + 20);
   });
 });
 

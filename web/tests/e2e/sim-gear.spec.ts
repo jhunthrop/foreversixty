@@ -53,3 +53,43 @@ test('the combination count moves as candidates are ticked', async ({ page }) =>
   await page.getByTestId('sim-candidate-head-12640').getByRole('checkbox').check();
   await expect(page.getByTestId('sim-combo-count')).toHaveText('1 valid combination');
 });
+
+test('the item search adds a candidate and says how it was filtered', async ({ page }) => {
+  await loadGear(page);
+  const search = page.getByTestId('sim-item-search');
+  await expect(search).toBeVisible();
+  await search.getByRole('searchbox').fill('wrath');
+  await expect(page.getByTestId('sim-search-result-16963')).toBeVisible();
+  await expect(page.getByTestId('sim-search-result-12640')).toHaveCount(0);
+  await page.getByTestId('sim-search-add-16963').click();
+  await expect(page.getByTestId('sim-candidate-head-16963').getByRole('checkbox')).toBeChecked();
+});
+
+test('the source filter narrows the search to one boss’s loot', async ({ page }) => {
+  await loadGear(page);
+  await page.getByTestId('sim-search-source').selectOption('world:azuregos');
+  await expect(page.getByTestId('sim-search-result-19325')).toBeVisible();
+  await expect(page.getByTestId('sim-search-result-16963')).toHaveCount(0);
+});
+
+test('usable-only is on by default and can be turned off', async ({ page }) => {
+  await loadGear(page);
+  await expect(page.getByTestId('sim-search-usable')).toBeChecked();
+  await page.getByTestId('sim-search-usable').uncheck();
+  await expect(page.getByTestId('sim-search-usable')).not.toBeChecked();
+});
+
+test('a ticked consumable multiplies the combination count (contract 10.1 A5)', async ({ page }) => {
+  await loadGear(page);
+  await page.getByTestId('sim-search-add-16963').click();
+  await expect(page.getByTestId('sim-combo-count')).toHaveText('1 valid combination');
+  await page.getByTestId('sim-consumable-flask_of_supreme_power').check();
+  await page.getByTestId('sim-consumable-elixir_of_the_mongoose').check();
+  // (1 head + 1) x 2 alternatives
+  await expect(page.getByTestId('sim-combo-count')).toHaveText('4 valid combinations');
+});
+
+test('a consumable candidate is named, not spelled as an id', async ({ page }) => {
+  await loadGear(page);
+  await expect(page.getByTestId('sim-consumables')).toContainText('Flask of Supreme Power');
+});

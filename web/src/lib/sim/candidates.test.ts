@@ -228,3 +228,30 @@ describe('buildBulkSpec and validateBulk', () => {
     expect(validateBulk(spec)).not.toBeNull();
   });
 });
+
+describe('consumable candidates', () => {
+  it('travels as a list of alternative sets, and is absent when nothing is picked', () => {
+    const spec = buildBulkSpec({
+      mode: 'gear',
+      rows: [{ ...rowFor(helm, 'head', 'bag'), checked: true }],
+      locked: [],
+      loadouts: [],
+      sets: [],
+      precision: 'fast',
+      cap: 400,
+      consumables: [['flask_of_supreme_power'], ['elixir_of_the_mongoose']],
+    });
+    expect(spec.consumables).toEqual([['flask_of_supreme_power'], ['elixir_of_the_mongoose']]);
+
+    const none = buildBulkSpec({
+      mode: 'gear',
+      rows: [{ ...rowFor(helm, 'head', 'bag'), checked: true }],
+      locked: [],
+      loadouts: [],
+      sets: [],
+      precision: 'fast',
+      cap: 400,
+    });
+    expect(none.consumables).toBeUndefined();
+  });
+});
