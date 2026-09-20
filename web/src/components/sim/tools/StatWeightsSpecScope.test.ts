@@ -51,10 +51,12 @@ describe('StatWeights: weight_stats resolves through the curated spec list, and 
 
     const { body } = render(StatWeights, { props: { store, me: null } });
     expect(body).toContain(WEIGHTS_STATS_FROM_ENGINE);
-    expect(body).toContain('data-testid="sim-weight-pick-expertise"');
+    expect(body).toContain('data-testid="sim-weight-pick-melee_haste"');
     // mp5/spell_haste/feral_attack_power are retail-only and never in warrior-fury's own
-    // curated list (D45).
+    // curated list (D45); expertise and armor penetration do not exist on the 1.60 client
+    // and left every curated list in 3d364a9.
     expect(body).not.toContain('data-testid="sim-weight-pick-mp5"');
+    expect(body).not.toContain('data-testid="sim-weight-pick-expertise"');
   });
 
   it('never shows the note over the fallback list -- an explicit empty weight_stats falls back exactly like an absent one', async () => {
