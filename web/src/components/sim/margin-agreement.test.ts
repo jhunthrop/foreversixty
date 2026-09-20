@@ -19,6 +19,10 @@ const dps: Estimate = { mean: 1000, stddev: 100, error: 4, min: 0, max: 0 };
 function renderHeadline(estimate: Estimate): string {
   const { body } = render(RunControl, {
     props: {
+      // Task 3's own gate: RunControl reads the loaded character's spec to decide whether
+      // it may offer a run at all, so the headline this test measures only renders for a
+      // simulated dps spec.
+      spec: 'warrior-fury',
       phase: 'done' as SimPhase,
       estimate,
       iterationsDone: 3000,

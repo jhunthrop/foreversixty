@@ -6,6 +6,7 @@
      controls and reports what the player did with them. -->
 <script lang="ts">
   import { simCopy } from '../../lib/sim/copy';
+  import HelpNote from './HelpNote.svelte';
 
   let {
     title,
@@ -36,15 +37,20 @@
     />
   </label>
   {#if notifierAvailable}
-    <label class="flex min-h-11 items-center gap-2 text-[13px]">
-      <input
-        type="checkbox"
-        class="accent-gold h-5 w-5"
-        checked={notifyWanted}
-        onchange={(event) => onnotifychange(event.currentTarget.checked)}
-        data-testid="sim-notify"
-      />
-      <span class="text-muted">{simCopy.notifyLabel}</span>
-    </label>
+    <div class="flex flex-col gap-1">
+      <label class="flex min-h-11 items-center gap-2 text-[13px]">
+        <input
+          type="checkbox"
+          class="accent-gold h-5 w-5"
+          checked={notifyWanted}
+          onchange={(event) => onnotifychange(event.currentTarget.checked)}
+          data-testid="sim-notify"
+        />
+        <span class="text-muted">{simCopy.notifyLabel}</span>
+      </label>
+      <HelpNote label={simCopy.notifyLabel} id="sim-notify">
+        <p>{simCopy.notifyHelp}</p>
+      </HelpNote>
+    </div>
   {/if}
 </div>

@@ -15,6 +15,7 @@
     TARGET_TYPES,
     VARIATIONS,
     executePhaseOn,
+    styleIdOf,
     targetArmorField,
     withDummy,
     withExecutePhase,
@@ -24,6 +25,7 @@
     withVariation,
     type SimSettings,
   } from '../../lib/sim/settings';
+  import HelpNote from './HelpNote.svelte';
 
   let {
     settings,
@@ -36,7 +38,8 @@
   const percent = (value: number): string => `${Math.round(value * 100)}%`;
   // tank MAJOR, review.md:227-229: armor 0 means the level's preset, not an empty field --
   // `targetArmorField` decides what the input DISPLAYS; the wire value settings.ts sends
-  // stays 0 until the player types something else.
+  // stays 0 until the player types something else. It is also the one source of both the
+  // preset figure and the level that figure came from, for the help note below.
   const armorField = $derived(targetArmorField(settings.encounter));
   // Contract A8's figure for whichever level is chosen, so an empty armor field says what
   // the engine will use instead of nothing at all. Fix round 1 Minor 1: derived from
@@ -44,6 +47,33 @@
   // rather than a second, independent `TARGET_ARMOR_BY_LEVEL` lookup that only agreed with
   // it by coincidence (it used a different fallback, `?? 63` vs. `DEFAULT_TARGET_LEVEL`).
   const armorPreset = $derived(simCopy.targetArmorPreset(armorField.preset.toLocaleString('en-US')));
+  // Task 7 (newcomer MINOR 213-216): the field's own current state, not the placeholder
+  // repeated as a tooltip -- `target_armor: 0` is settings.ts's "use the level's preset".
+  const armorEmpty = $derived(settings.encounter.target_armor === 0);
+  // Both sentences, in both states: Task 7's own "is the preset in effect or is it
+  // overridden", plus task 4b's `targetArmorNote` -- which is what the hover-less `<p>`
+  // under this field used to say, and the only place the LEVEL that preset belongs to is
+  // named. Merging the two lanes, that fact moves into the help rather than being dropped
+  // with the paragraph that carried it.
+  const armorHelp = $derived(
+    `${
+      armorEmpty
+        ? simCopy.targetArmorEmptyHelp(armorPreset)
+        : simCopy.targetArmorSetHelp(
+            (settings.encounter.target_armor ?? 0).toLocaleString('en-US'),
+            armorPreset,
+          )
+    } ${toolFixCopy.targetArmorNote(armorField.level, armorField.preset)}`,
+  );
+  // Task 7 (newcomer MINOR 204-207): "Execute phase" said nothing about whether the current
+  // fight style actually carries one. `styleIdOf` reads the same style the settings bar's
+  // own select shows -- "Custom" once a style-owned field (this one included) is detached.
+  const currentStyleId = $derived(styleIdOf(settings));
+  const currentStyleLabel = $derived(
+    currentStyleId === '' ? simCopy.styleCustom : (simCopy.styleLabel[currentStyleId] ?? currentStyleId),
+  );
+  const executeOn = $derived(executePhaseOn(settings));
+  const executePercent = $derived(String(Math.round(settings.encounter.execute_ratio * 100)));
 </script>
 
 <details class="border-line-soft rounded-panel border" data-testid="sim-settings-more">
@@ -52,92 +82,106 @@
   </summary>
 
   <div class="grid grid-cols-2 gap-3 p-3 pt-0 md:grid-cols-4">
-    <label class="flex min-w-0 flex-col gap-1">
-      <span class="label text-muted">{simCopy.variation}</span>
-      <select
-        class={control}
-        {disabled}
-        value={String(settings.encounter.variation)}
-        onchange={(event) => onchange(withVariation(settings, Number(event.currentTarget.value)))}
-        data-testid="sim-variation"
-      >
-        {#each VARIATIONS as value (value)}
-          <option value={String(value)}>{percent(value)}</option>
-        {/each}
-      </select>
-      <!-- Task 5 (newcomer MAJOR, review.md:360-363): was a hover-only `title`, invisible on
-           a phone. Visible text instead, the same treatment Task 4 already gave the
-           target-armor field in this same grid -- one more field, the same house pattern. -->
-      <p class="text-muted text-[12px]" data-testid="sim-variation-note">{simCopy.variationNote}</p>
-    </label>
-
-    <label class="flex min-w-0 flex-col gap-1">
-      <span class="label text-muted">{simCopy.targetLevel}</span>
-      <select
-        class={control}
-        {disabled}
-        value={String(settings.encounter.target_level ?? 63)}
-        onchange={(event) => onchange(withTargetLevel(settings, Number(event.currentTarget.value)))}
-        data-testid="sim-target-level"
-      >
-        {#each TARGET_LEVELS as level (level)}
-          <option value={String(level)}>{level}</option>
-        {/each}
-      </select>
-    </label>
-
-    <label class="flex min-w-0 flex-col gap-1">
-      <span class="label text-muted">{simCopy.targetArmor}</span>
-      <input
-        type="number"
-        min="0"
-        max={MAX_TARGET_ARMOR}
-        step="1"
-        class={control}
-        {disabled}
-        placeholder={armorPreset}
-        value={armorField.value}
-        onchange={(event) => onchange(withTargetArmor(settings, Number(event.currentTarget.value)))}
-        data-testid="sim-target-armor"
-      />
-      <!-- Fix round, Minor 1: `armorField.level`, not a second `settings.encounter.
-           target_level ?? DEFAULT_TARGET_LEVEL` lookup -- `targetArmorField` already
-           computed the level `preset` came from, so this reads that same value instead of
-           re-deriving one that only agreed with it by coincidence. -->
-      <p class="text-muted text-[12px]" data-testid="sim-target-armor-note">
-        {toolFixCopy.targetArmorNote(armorField.level, armorField.preset)}
-      </p>
-    </label>
-
-    <label class="flex min-w-0 flex-col gap-1">
-      <span class="label text-muted">{simCopy.targetType}</span>
-      <select
-        class={control}
-        {disabled}
-        value={settings.encounter.target_type ?? ''}
-        onchange={(event) => onchange(withTargetType(settings, event.currentTarget.value))}
-        data-testid="sim-target-type"
-      >
-        <option value="">{simCopy.targetTypeAny}</option>
-        {#each TARGET_TYPES as id (id)}
-          <option value={id}>{simCopy.targetTypeLabel[id] ?? id}</option>
-        {/each}
-      </select>
-    </label>
-
-    <label class="flex min-h-11 items-center gap-2 text-[13px]">
-      <input
-        type="checkbox"
-        class="accent-gold h-5 w-5"
-        {disabled}
-        checked={executePhaseOn(settings)}
-        onchange={(event) => onchange(withExecutePhase(settings, event.currentTarget.checked))}
-        data-testid="sim-execute"
-      />
-      <span class="text-muted">{simCopy.executePhase}</span>
-    </label>
+    <div class="flex min-w-0 flex-col gap-1">
+      <label class="flex min-w-0 flex-col gap-1">
+        <span class="label text-muted">{simCopy.variation}</span>
+        <select
+          class={control}
+          {disabled}
+          value={String(settings.encounter.variation)}
+          onchange={(event) => onchange(withVariation(settings, Number(event.currentTarget.value)))}
+          data-testid="sim-variation"
+        >
+          {#each VARIATIONS as value (value)}
+            <option value={String(value)}>{percent(value)}</option>
+          {/each}
+        </select>
+      </label>
+      <HelpNote label={simCopy.variation} id="sim-variation" {disabled}>
+        <p>{simCopy.variationNote}</p>
+      </HelpNote>
+    </div>
 
     <div class="flex min-w-0 flex-col gap-1">
+      <label class="flex min-w-0 flex-col gap-1">
+        <span class="label text-muted">{simCopy.targetLevel}</span>
+        <select
+          class={control}
+          {disabled}
+          value={String(settings.encounter.target_level ?? 63)}
+          onchange={(event) => onchange(withTargetLevel(settings, Number(event.currentTarget.value)))}
+          data-testid="sim-target-level"
+        >
+          {#each TARGET_LEVELS as level (level)}
+            <option value={String(level)}>{level}</option>
+          {/each}
+        </select>
+      </label>
+      <HelpNote label={simCopy.targetLevel} id="sim-target-level" {disabled}>
+        <p>{simCopy.targetLevelHelp}</p>
+      </HelpNote>
+    </div>
+
+    <div class="flex min-w-0 flex-col gap-1">
+      <label class="flex min-w-0 flex-col gap-1">
+        <span class="label text-muted">{simCopy.targetArmor}</span>
+        <input
+          type="number"
+          min="0"
+          max={MAX_TARGET_ARMOR}
+          step="1"
+          class={control}
+          {disabled}
+          placeholder={armorPreset}
+          value={armorField.value}
+          onchange={(event) => onchange(withTargetArmor(settings, Number(event.currentTarget.value)))}
+          data-testid="sim-target-armor"
+        />
+      </label>
+      <HelpNote label={simCopy.targetArmor} id="sim-target-armor" {disabled}>
+        <p>{armorHelp}</p>
+      </HelpNote>
+    </div>
+
+    <div class="flex min-w-0 flex-col gap-1">
+      <label class="flex min-w-0 flex-col gap-1">
+        <span class="label text-muted">{simCopy.targetType}</span>
+        <select
+          class={control}
+          {disabled}
+          value={settings.encounter.target_type ?? ''}
+          onchange={(event) => onchange(withTargetType(settings, event.currentTarget.value))}
+          data-testid="sim-target-type"
+        >
+          <option value="">{simCopy.targetTypeAny}</option>
+          {#each TARGET_TYPES as id (id)}
+            <option value={id}>{simCopy.targetTypeLabel[id] ?? id}</option>
+          {/each}
+        </select>
+      </label>
+      <HelpNote label={simCopy.targetType} id="sim-target-type" {disabled}>
+        <p>{simCopy.targetTypeHelp}</p>
+      </HelpNote>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <label class="flex min-h-11 items-center gap-2 text-[13px]">
+        <input
+          type="checkbox"
+          class="accent-gold h-5 w-5"
+          {disabled}
+          checked={executeOn}
+          onchange={(event) => onchange(withExecutePhase(settings, event.currentTarget.checked))}
+          data-testid="sim-execute"
+        />
+        <span class="text-muted">{simCopy.executePhase}</span>
+      </label>
+      <HelpNote label={simCopy.executePhase} id="sim-execute" {disabled}>
+        <p>{simCopy.executePhaseHelp(executeOn, executePercent, currentStyleLabel)}</p>
+      </HelpNote>
+    </div>
+
+    <div class="flex flex-col gap-1">
       <label class="flex min-h-11 items-center gap-2 text-[13px]">
         <input
           type="checkbox"
@@ -149,10 +193,9 @@
         />
         <span class="text-muted">{simCopy.dummyTarget}</span>
       </label>
-      <!-- Task 5 (newcomer MAJOR, review.md:360-363): was a hover-only `title`, invisible on
-           a phone. Visible text instead, the same treatment Task 4 already gave the
-           target-armor field above. -->
-      <p class="text-muted text-[12px]" data-testid="sim-dummy-note">{simCopy.dummyNote}</p>
+      <HelpNote label={simCopy.dummyTarget} id="sim-dummy" {disabled}>
+        <p>{simCopy.dummyNote}</p>
+      </HelpNote>
     </div>
   </div>
 </details>

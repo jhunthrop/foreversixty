@@ -37,9 +37,10 @@ import {
   type WeightsRequest,
 } from './bulk-types';
 import { buildBulkSpec, validateBulk, type CandidateRow } from './candidates';
-import { toCharacterSpec, type SimCharacter } from './character';
+import { codeForCharacterSpec, toCharacterSpec, type SimCharacter } from './character';
 import { bulkCopy, simCopy, weightsUnsupportedSpec } from './copy';
 import type { RequestValidation } from './engine';
+import { humaniseEngineError } from './engine-error';
 import type { Lane } from './precision';
 import { specLabel } from './spec-label';
 import type { SimSettings } from './settings';
@@ -53,6 +54,9 @@ export interface BulkRequestDeps {
   tool: SimTool;
   /** null only for the `weights` tool, which sends no `bulk` block at all. */
   mode: BulkMode | null;
+  /** `init.treeVersion`, for the FS1 code `characterCode` below encodes -- a plain field,
+   *  not a getter, the same as `tool`/`mode` above: it never changes after construction. */
+  treeVersion: string;
   getCharacter(): SimCharacter | null;
   getTalentFile(): TalentFile | null;
   getSettings(): SimSettings;
@@ -83,6 +87,20 @@ function characterSpecOrNull(deps: BulkRequestDeps): CharacterSpec | null {
   if (character === null || talentFile === null) return null;
   const settings = deps.getSettings();
   return toCharacterSpec(character, indexTalents(talentFile), settings.buffs, settings.consumables);
+}
+
+/**
+ * A fresh FS1 v2 code for the loaded character, or null while there is none (or no talent
+ * file yet) to encode. The same conversion `store-request.ts`'s own "Run this yourself"
+ * link already uses for a saved result with no ref to point at -- `lib/sim/tabs.ts`'s
+ * `tabStateFor` calls this through the store's own `characterCode` getter as the identical
+ * fallback for the tab strip (task-1-brief.md fix round 1, Finding A): the tools island has
+ * no single-character `buildRequest()` the way `/sim`'s own store does, so this is that
+ * store's narrow equivalent.
+ */
+export function characterCode(deps: BulkRequestDeps): string | null {
+  const spec = characterSpecOrNull(deps);
+  return spec === null ? null : codeForCharacterSpec(spec, deps.treeVersion);
 }
 
 /**
@@ -195,7 +213,7 @@ export async function recount(deps: RecountDeps): Promise<void> {
       deps.setCapNotice(null);
       deps.setServerCapNotice(null);
       deps.setMessage(error.message);
-      deps.setDetail(error.detail);
+      deps.setDetail(humaniseEngineError(error.detail));
     } else {
       // Not a cap or validation refusal: a genuine engine error while merely counting -- an
       // unknown candidate item id (`bulk: the build has no such item: <id>`) is the case
@@ -208,7 +226,7 @@ export async function recount(deps: RecountDeps): Promise<void> {
       deps.setCapNotice(null);
       deps.setServerCapNotice(null);
       deps.setMessage(bulkCopy.countFailed);
-      deps.setDetail(error instanceof Error ? error.message : '');
+      deps.setDetail(humaniseEngineError(error instanceof Error ? error.message : ''));
     }
   } finally {
     if (deps.getPhase() === 'counting') deps.setPhase('idle');
@@ -416,7 +434,10 @@ export async function runBulkAndSettle(
     deps.setMessage(
       failure?.cancelled === true ? simCopy.stopped : (failure?.message ?? bulkCopy.bulkFailed),
     );
-    deps.setDetail(failure?.detail ?? '');
+    // humaniseEngineError (Task 3, healer review): a no-op for every shape but one -- an
+    // unsupported-spec refusal, which names the engine's own spec id rather than a fact a
+    // player can act on.
+    deps.setDetail(humaniseEngineError(failure?.detail ?? ''));
     deps.setPhase(failure?.cancelled === true && deps.getResult() !== null ? 'done' : 'error');
   } finally {
     deps.setHandle(null);

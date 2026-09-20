@@ -63,7 +63,7 @@ describe('settingsFromRequest', () => {
   it('fills an absent encounter field from the defaults rather than leaving it undefined', () => {
     const thin = { ...request, encounter: { ...request.encounter, target_level: undefined } };
     expect(settingsFromRequest(thin as SimRequest).encounter.target_level).toBe(
-      defaultSettings().encounter.target_level,
+      defaultSettings('attack_power').encounter.target_level,
     );
   });
 

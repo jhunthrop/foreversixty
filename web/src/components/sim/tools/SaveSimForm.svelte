@@ -138,14 +138,10 @@
     >
       {simCopy.saveThisSim}
     </button>
-    <!-- Task 5 (newcomer MAJOR, review.md:360-363): was a hover-only `title` on the disabled
-         button -- doubly unreachable on a phone, since a disabled control never fires the
-         tap that would have to reveal it anyway. Visible text beside the button instead,
-         shown only while it is actually true (the button is disabled). -->
+    <!-- Task 7: the disabled reason, said plainly rather than in a title= that never fires
+         on touch -- the same pattern Task 3 used for a disabled Run. -->
     {#if !canSave}
-      <span class="text-muted text-[12px]" data-testid="sim-save-disabled-note">
-        {simCopy.saveAbortedDisabled}
-      </span>
+      <p class="text-muted text-[12px]" data-testid="sim-save-disabled-note">{simCopy.saveAbortedDisabled}</p>
     {/if}
   {/if}
 </div>

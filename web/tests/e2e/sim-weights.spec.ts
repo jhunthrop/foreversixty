@@ -57,6 +57,20 @@ test('the page opens with the warning, above everything else', async ({ page }) 
   );
 });
 
+// Residual regressions fix, Finding 1: BulkRunBar mounts SettingsBar with `spec=''` (no
+// character loaded) -- the only page among the four tools that renders the settings bar in
+// this state (/sim/gear, /sim/drops and /sim/talents do not). SettingsBar used to fall into
+// its unsimulated-spec branch here too, and `specDisplayName('')` returns `''`, so the
+// rotation row read "No rotation yet —  is not simulated." -- a double space and a sentence
+// with no subject. There is nothing to claim about a rotation with no character on screen,
+// so the row must render no value at all in this state.
+test('with no character loaded, the settings bar makes no rotation claim at all', async ({ page }) => {
+  await page.goto('/sim/weights');
+  await expect(page.getByTestId('sim-settings')).toBeVisible();
+  await expect(page.getByTestId('sim-rotation')).toHaveCount(0);
+  await expect(page.getByText(/is not simulated/)).toHaveCount(0);
+});
+
 test('the stat picker defaults to the spec’s reference stat, first and ticked', async ({ page }) => {
   await page.route('**/v1/specs', (route) =>
     route.fulfill({

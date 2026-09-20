@@ -63,6 +63,36 @@ describe('FIGHT_STYLES', () => {
     expect(Object.keys(simCopy.styleNote).sort()).toEqual(['heavy-movement', 'light-movement']);
   });
 
+  /**
+   * Task 7 (newcomer BLOCKER: a nine-option dropdown with no explanation of what any word
+   * means). Fight style's HelpNote body names all nine, not eight -- every style FIGHT_STYLES
+   * lists needs a clause in `simCopy.fightStyleOptions`, and this fails loudly the day a
+   * tenth style is added and nobody wrote its clause.
+   */
+  it('explains every style’s real behaviour, not just its name, in the help note', () => {
+    for (const style of FIGHT_STYLES) {
+      expect(simCopy.fightStyleOptions[style.id], style.id).toBeTruthy();
+    }
+  });
+
+  /**
+   * The cleave styles' execute_ratio is PLAIN_EXECUTE (0.25), the same as Patchwerk's --
+   * every target in a cleave fight shares one synchronised execute window, which "Cleave, N
+   * targets" does not say by itself. The dungeon style's schedule is fixed at 160 seconds
+   * regardless of the chosen Fight length. Both are surprising enough that report writing
+   * flagged them (task-7-brief.md's own warning against flattering copy); this pins the
+   * facts the help note's wording rests on so a future table change cannot go unnoticed.
+   */
+  it('cleave styles share Patchwerk’s execute threshold, and the dungeon style’s schedule ends at 160 seconds', () => {
+    const patchwerkExecuteRatio = fightStyle('patchwerk')?.execute_ratio;
+    for (const id of ['cleave-2', 'cleave-3', 'cleave-5'] as const) {
+      expect(fightStyle(id)?.execute_ratio, id).toBe(patchwerkExecuteRatio);
+    }
+    const dungeonSteps = fightStyle('dungeon')?.targets_over_time ?? [];
+    expect(dungeonSteps[dungeonSteps.length - 1]).toEqual({ at_sec: 160, count: 1 });
+    expect(fightStyle('dungeon')?.execute_ratio).toBe(0);
+  });
+
   it('answers null for an id nothing defines rather than guessing', () => {
     expect(fightStyle('raidbots-patchwerk')).toBeNull();
     expect(fightStyle('')).toBeNull();

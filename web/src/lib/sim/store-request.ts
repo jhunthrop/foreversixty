@@ -16,6 +16,7 @@ import type { TalentFile } from '../planner/types';
 import { codeForCharacterSpec, toCharacterSpec, type SimCharacter } from './character';
 import { simCopy } from './copy';
 import type { RequestValidation } from './engine';
+import { humaniseEngineError } from './engine-error';
 import { EMPTY_ESTIMATE } from './estimate';
 import { precisionOf, precisionPlan, STEP_ITERATIONS, type PrecisionId } from './precision';
 import { settingsFromRequest } from './request-json';
@@ -111,7 +112,10 @@ export async function runAndSettle(deps: RunSettleDeps, pool: SimPool, input: Ru
     deps.setMessage(failure?.cancelled === true ? simCopy.stopped : (failure?.message ?? simCopy.failed));
     // The engine's own words, kept beside ours: sim/request names the buff or consumable
     // id it could not map, and that is the only thing that says what to change.
-    deps.setDetail(failure?.detail ?? '');
+    // humaniseEngineError (Task 3, healer review) is a no-op for that -- it only rewrites
+    // the one shape a player cannot read as-is, an unsupported-spec refusal naming the
+    // engine's own spec id.
+    deps.setDetail(humaniseEngineError(failure?.detail ?? ''));
     if (failure?.cancelled === true) deps.restorePreviousResult();
     deps.setPhase(failure?.cancelled === true && deps.getResult() !== null ? 'done' : 'error');
   } finally {

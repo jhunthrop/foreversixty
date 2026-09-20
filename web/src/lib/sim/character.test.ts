@@ -6,7 +6,7 @@ import { createPlannerStore } from '../planner/store.svelte';
 import { indexTalents, validateOrder } from '../planner/rules';
 import type { ClassRow, Combo, RaceRow, TalentFile } from '../planner/types';
 import { simCopy } from './copy';
-import { PRESET_BUFFS, PRESET_CONSUMABLES } from './settings';
+import { CASTER_CONSUMABLES, PHYSICAL_CONSUMABLES, RAID_BUFFS } from './settings';
 import {
   SIM_LEVEL,
   characterFromFs1,
@@ -332,7 +332,7 @@ describe('toCharacterSpec', () => {
     // sim/request/buffs.go reads ids off the protobuf descriptors: RaidBuffs.battle_shout
     // is "battle_shout", AgilityElixir.ElixirOfTheMongoose is "elixir_of_the_mongoose", and
     // an off-hand imbue is slot-qualified. An unknown id fails the whole run.
-    for (const id of [...PRESET_BUFFS['raid-buffed'], ...PRESET_CONSUMABLES['raid-buffed']]) {
+    for (const id of [...RAID_BUFFS, ...PHYSICAL_CONSUMABLES, ...CASTER_CONSUMABLES]) {
       expect(id).toMatch(/^[a-z0-9_]+(:[a-z0-9_]+)?$/);
     }
   });

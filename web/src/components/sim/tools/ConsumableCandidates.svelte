@@ -8,22 +8,27 @@
 <script lang="ts">
   import { dataUrl } from '../../../lib/planner/load';
   import { bulkCopy } from '../../../lib/sim/copy';
-  import { PRESET_CONSUMABLES } from '../../../lib/sim/settings';
+  import { presetConsumables } from '../../../lib/sim/settings';
+  import { referenceStatOf } from '../../../lib/sim/spec-label';
   import { buffIcon, buffName, type SimBuffFile } from '../../../lib/sim/sim-buffs';
 
   let {
     picked,
     buffs,
     treeVersion,
+    spec,
     ontoggle,
   }: {
     picked: readonly string[];
     buffs: SimBuffFile;
     treeVersion: string;
+    /** Task 4: the physical and caster consumable halves differ (Ruling 2), keyed off this
+     *  character's own `reference_stat`. */
+    spec: string;
     ontoggle: (id: string) => void;
   } = $props();
 
-  const offered = $derived([...new Set(PRESET_CONSUMABLES['raid-buffed'])]);
+  const offered = $derived([...new Set(presetConsumables('raid-buffed', referenceStatOf(spec)))]);
 </script>
 
 <section

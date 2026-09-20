@@ -10,6 +10,7 @@
 import { simCopy } from './copy';
 import type { RequestValidation, RequestValidationError } from './engine';
 import { defaultSettings, type SimSettings } from './settings';
+import { referenceStatOf } from './spec-label';
 import type { SimRequest } from './types';
 
 /**
@@ -71,7 +72,7 @@ function withDefined<T extends object>(base: T, patch: T): T {
  * under one would mean the next preset change silently discarded it.
  */
 export function settingsFromRequest(request: SimRequest): SimSettings {
-  const base = defaultSettings();
+  const base = defaultSettings(referenceStatOf(request.spec));
   return {
     encounter: withDefined(base.encounter, request.encounter),
     preset: 'custom',

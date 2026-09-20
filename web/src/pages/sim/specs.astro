@@ -8,7 +8,10 @@ import {
   SPEC_CARD_SKELETON_CLASSES,
   SPEC_GRID_CLASSES,
   specSkeletonSlots,
+  unsimulatedSpecSkeletonSlots,
 } from '../../lib/sim/spec-skeleton';
+import ScopeNote from '../../components/sim/ScopeNote.astro';
+import SimTabs from '../../components/sim/SimTabs.astro';
 ---
 
 <Base
@@ -22,7 +25,9 @@ import {
     tabindex="-1"
     class="mx-auto flex w-full max-w-[1344px] flex-col gap-[22px] pt-4 pb-10 md:gap-8 md:px-12 md:pt-7"
   >
+    <SimTabs currentPath="/sim/specs" />
     <h1 class="section-title px-[18px] text-[18px] md:px-0">Spec support</h1>
+    <ScopeNote />
     <!-- Round 2 (Lighthouse): static, ahead of the island, and never replaced --
          specs-intro was the measured LCP element (its render was gated on hydration);
          SimView.svelte's specs branch no longer renders its own copy of this text. -->
@@ -37,12 +42,27 @@ import {
          Rendering the identical skeleton here -- spec-skeleton.ts is the one source both
          this shell and SpecGrid.svelte read, so the two can never drift back out of sync
          the way the missing reservation itself was allowed to -- means the mount swap
-         moves nothing. -->
+         moves nothing. Task 2 adds the second (unsimulated) group below, under its own
+         heading, at the same skeleton-card technique so its own reservation never drifts
+         from SpecGrid.svelte's real render either. -->
     <div id="sim" data-sim-mount data-sim-view="specs">
-      <div class={SPEC_GRID_CLASSES} data-testid="specs-grid" aria-hidden="true">
-        {specSkeletonSlots().map(() => (
-          <div class={SPEC_CARD_SKELETON_CLASSES} />
-        ))}
+      <div class="flex flex-col gap-6">
+        <div class="flex flex-col gap-3">
+          <h2 class="section-title px-[18px] text-[15px] md:px-0">{simCopy.specsSimulatedHeading}</h2>
+          <div class={SPEC_GRID_CLASSES} data-testid="specs-grid" aria-hidden="true">
+            {specSkeletonSlots().map(() => (
+              <div class={SPEC_CARD_SKELETON_CLASSES} />
+            ))}
+          </div>
+        </div>
+        <div class="flex flex-col gap-3">
+          <h2 class="section-title px-[18px] text-[15px] md:px-0">{simCopy.specsUnsimulatedHeading}</h2>
+          <div class={SPEC_GRID_CLASSES} data-testid="specs-grid-unsimulated" aria-hidden="true">
+            {unsimulatedSpecSkeletonSlots().map(() => (
+              <div class={SPEC_CARD_SKELETON_CLASSES} />
+            ))}
+          </div>
+        </div>
       </div>
       <noscript>
         <p class="text-muted px-[18px] text-[14px] md:px-0">

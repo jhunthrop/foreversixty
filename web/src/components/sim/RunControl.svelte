@@ -10,12 +10,15 @@
   import { simCopy } from '../../lib/sim/copy';
   import { percentLabel } from '../../lib/sim/details';
   import { LANE_ITERATION_CEILING, PRECISIONS, type Lane, type PrecisionId } from '../../lib/sim/precision';
+  import { isSimulatedSpec, specDisplayName } from '../../lib/sim/spec-label';
   import type { SimPhase } from '../../lib/sim/store.svelte';
   import type { Estimate } from '../../lib/sim/types';
   import { engineLabel } from '../../lib/sim/version';
+  import HelpNote from './HelpNote.svelte';
   import PrecisionSelect from './PrecisionSelect.svelte';
 
   let {
+    spec,
     phase,
     estimate,
     iterationsDone,
@@ -35,6 +38,10 @@
     onserver,
     onrerun,
   }: {
+    /** The loaded character's spec. Task 3 (healer review): a healer or tank spec disables
+     *  the button and shows the honest line beside it instead of the run this control
+     *  would otherwise offer. */
+    spec: string;
     phase: SimPhase;
     estimate: Estimate;
     iterationsDone: number;
@@ -80,6 +87,7 @@
   const running = $derived(phase === 'running');
   const loadingEngine = $derived(phase === 'loading-engine');
   const hasFigure = $derived(estimate.mean > 0);
+  const simulated = $derived(isSimulatedSpec(spec));
 
   const figure = $derived(hasFigure ? Math.round(estimate.mean).toLocaleString('en-US') : '—');
   const band = $derived(hasFigure && estimate.error > 0 ? `± ${formatMargin(confidenceBand(estimate))}` : '');
@@ -116,8 +124,8 @@
     disabled={loadingEngine ||
       phase === 'loading-character' ||
       (racePending && !running) ||
-      (serverRunning && !running)}
-    title={racePending && !running ? simCopy.pickRace : undefined}
+      (serverRunning && !running) ||
+      (!simulated && !running)}
     onclick={() => (running ? onstop() : onrun())}
     data-testid="sim-run-button"
   >
@@ -159,28 +167,39 @@
     {/if}
   </div>
 
-  <div class="flex flex-wrap items-center gap-3">
-    <label class="flex flex-col gap-1">
-      <span class="label text-muted">{simCopy.precision}</span>
-      <PrecisionSelect
-        class="border-line-warm rounded-control bg-raised text-text min-h-11 min-w-0 border px-3 text-[14px] font-semibold md:min-h-9"
-        value={precisionId}
-        options={PRECISIONS}
-        labelFor={(id) => simCopy.precisionLabel[id] ?? id}
-        disabled={running || serverRunning}
-        onchange={(value) => onprecision(value as PrecisionId)}
-      />
-    </label>
+  <div class="flex flex-wrap items-end gap-3">
+    <div class="flex flex-col gap-1">
+      <label class="flex flex-col gap-1">
+        <span class="label text-muted">{simCopy.precision}</span>
+        <PrecisionSelect
+          class="border-line-warm rounded-control bg-raised text-text min-h-11 min-w-0 border px-3 text-[14px] font-semibold md:min-h-9"
+          value={precisionId}
+          options={PRECISIONS}
+          labelFor={(id) => simCopy.precisionLabel[id] ?? id}
+          disabled={running || serverRunning}
+          onchange={(value) => onprecision(value as PrecisionId)}
+        />
+      </label>
+      <HelpNote label={simCopy.precision} id="sim-precision" disabled={running || serverRunning}>
+        <p>{simCopy.precisionHelp}</p>
+      </HelpNote>
+    </div>
     {#if premium}
       <button
         type="button"
         class="border-line-warm rounded-control text-nav label min-h-11 border px-4 md:min-h-9"
-        disabled={running || serverRunning}
+        disabled={running || serverRunning || !simulated}
         onclick={onserver}
         data-testid="sim-server-run">{simCopy.runOnServers}</button
       >
     {/if}
   </div>
+
+  {#if !simulated}
+    <p class="text-strong order-last w-full text-[13px]" data-testid="sim-run-not-simulated">
+      {simCopy.runNotSimulated(specDisplayName(spec))}
+    </p>
+  {/if}
 
   {#if precisionId === 'target-error'}
     <p class="text-muted order-last w-full text-[12px]" data-testid="sim-target-error">

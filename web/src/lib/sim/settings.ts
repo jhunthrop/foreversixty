@@ -2,6 +2,7 @@
 // needs them too and it is built by a group that runs in parallel with this one. They are
 // re-exported so every caller has one import for "the settings vocabulary".
 import { durationLabel, encounterLabel } from './encounter';
+import { referenceStatOf } from './spec-label';
 import { applyFightStyle, DEFAULT_STYLE_ID, type FightStyleId } from './styles';
 import { DEFAULT_ENCOUNTER, TARGET_TYPE_IDS, type CooldownSpec, type EncounterSpec } from './types';
 
@@ -67,28 +68,125 @@ export type BuffPresetId = (typeof BUFF_PRESETS)[number]['id'];
 // is an enum value name or a client item id spelled "item:<id>", either optionally
 // qualified by its field and an imbue always ("off_hand_imbue:shadow_oil"). An id the
 // engine cannot map is ErrUnknownBuff, ErrUnknownConsume or ErrAmbiguousConsume and fails
-// the whole run, so every id below is checked against IDS.md in Step 5a.
+// the whole run, so every id below is checked against IDS.md (settings.test.ts, over the
+// same generated catalogue buffs.ts builds its panel from).
 //
 // This is a preset, not a picker, and the preset is the only list this file holds. The full
 // vocabulary is several hundred entries and it lives in IDS.md; copying it into web/ would
 // be a second copy to keep in step with the descriptors that generate it. The settings bar
-// (Task 12) offers this preset plus a custom list, and surfaces the engine's own error
-// verbatim when an id in that list does not resolve.
-export const PRESET_BUFFS: Record<Exclude<BuffPresetId, 'custom'>, string[]> = {
-  'raid-buffed': [
-    'blessing_of_kings',
-    'battle_shout',
-    'gift_of_the_wild',
-    'power_word_fortitude',
-    'arcane_brilliance',
-  ],
+// offers this preset plus a custom list, and surfaces the engine's own error verbatim when
+// an id in that list does not resolve.
+//
+// Task 4 (dps-minmaxer D16 BLOCKER): the old preset was five buffs and two consumables,
+// +6% over Solo where vanilla's real answer for a melee is +60% to +120%. This is the full
+// standard set instead, copied verbatim from sim/adapter/testdata/warrior-fury.request.json
+// (identical in mage-frost.request.json, so the buff half never splits by spec -- Ruling 2).
+export const RAID_BUFFS: readonly string[] = [
+  'curse_of_elements',
+  'curse_of_recklessness',
+  'curse_of_shadow',
+  'curse_of_weakness',
+  'demoralizing_roar',
+  'demoralizing_shout',
+  'expose_armor',
+  'faerie_fire',
+  'improved_scorch',
+  'improved_shadow_bolt',
+  'insect_swarm',
+  'judgement_of_light',
+  'judgement_of_the_crusader',
+  'judgement_of_wisdom',
+  'scorpid_sting',
+  'shadow_weaving',
+  'stormstrike',
+  'sunder_armor',
+  'thunder_clap',
+  'winters_chill',
+  'blessing_of_kings',
+  'blessing_of_might',
+  'blessing_of_sanctuary',
+  'blessing_of_wisdom',
+  'fengus_ferocity',
+  'moldars_moxie',
+  'rallying_cry_of_the_dragonslayer',
+  'sayges_fortune',
+  'slipkiks_savvy',
+  'songflower_serenade',
+  'spirit_of_zandalar',
+  'warchiefs_blessing',
+  'arcane_brilliance',
+  'battle_shout',
+  'blood_pact',
+  'devotion_aura',
+  'divine_spirit',
+  'fire_resistance_aura',
+  'fire_resistance_totem',
+  'frost_resistance_aura',
+  'frost_resistance_totem',
+  'gift_of_the_wild',
+  'grace_of_air_totem',
+  'leader_of_the_pack',
+  'mana_spring_totem',
+  'moonkin_aura',
+  'nature_resistance_totem',
+  'power_word_fortitude',
+  'retribution_aura',
+  'sanctity_aura',
+  'shadow_protection',
+  'strength_of_earth_totem',
+  'thorns',
+  'trueshot_aura',
+];
+
+export const PRESET_BUFFS: Record<Exclude<BuffPresetId, 'custom'>, readonly string[]> = {
+  'raid-buffed': RAID_BUFFS,
   solo: [],
 };
 
-export const PRESET_CONSUMABLES: Record<Exclude<BuffPresetId, 'custom'>, string[]> = {
-  'raid-buffed': ['flask_of_supreme_power', 'elixir_of_the_mongoose'],
-  solo: [],
-};
+/**
+ * Consumables split by role (task-4-brief.md, Ruling 2): the engine's `Consumes` has one
+ * field per effect, so a caster's flask and a warrior's flask can never both apply at once.
+ * The off-hand imbue in `PHYSICAL_CONSUMABLES` is included even for a character with no
+ * off-hand weapon -- the engine ignores an imbue it has nowhere to apply, so this file does
+ * not branch on gear.
+ */
+export const PHYSICAL_CONSUMABLES: readonly string[] = [
+  'flask_of_the_titans',
+  'elixir_of_the_mongoose',
+  'juju_power',
+  'winterfall_firewater',
+  'food_bless_sunfruit',
+  'main_hand_imbue:elemental_sharpening_stone',
+  'off_hand_imbue:elemental_sharpening_stone',
+  'ground_scorpok_assay',
+  'mighty_rage_potion',
+];
+
+export const CASTER_CONSUMABLES: readonly string[] = [
+  'flask_of_supreme_power',
+  'greater_arcane_elixir',
+  'food_nightfin_soup',
+  'main_hand_imbue:brilliant_wizard_oil',
+  'cerebral_cortex_compound',
+  'mageblood_potion',
+  'major_mana_potion',
+];
+
+/**
+ * The Raid-buffed preset's consumable half, keyed off `Spec.reference_stat` (specs.ts) --
+ * `'spell_power'` is caster, anything else physical. Physical is the deliberate fallback
+ * for a spec `reference_stat` does not resolve, since an unrecognised spec still needs an
+ * answer from `defaultSettings()`: an empty preset that still claims "Raid-buffed" would be
+ * worse than defaulting to the wrong half, and every spec the site simulates but one
+ * (druid-balance and the other caster specs) is physical to begin with.
+ */
+export function presetConsumables(
+  preset: Exclude<BuffPresetId, 'custom'>,
+  referenceStat: string,
+): readonly string[] {
+  if (preset === 'solo') return [];
+  return referenceStat === 'spell_power' ? CASTER_CONSUMABLES : PHYSICAL_CONSUMABLES;
+}
 
 export interface SimSettings {
   encounter: EncounterSpec;
@@ -99,24 +197,45 @@ export interface SimSettings {
   cooldowns: CooldownSpec[];
 }
 
-export function defaultSettings(): SimSettings {
+/**
+ * `referenceStat` is `Spec.reference_stat` ('attack_power' | 'spell_power'), or the result
+ * of `spec-label.ts`'s `referenceStatOf` for a caller that only has the spec slug -- both
+ * this and `withPreset` stay pure over it rather than resolving a spec themselves, so a
+ * store can call them from wherever it already knows the answer (live-dps.svelte.ts and
+ * SharePanel.svelte know it from the character in hand; the sim/bulk stores own the
+ * re-apply, below).
+ */
+export function defaultSettings(referenceStat: string): SimSettings {
   return {
     encounter: applyFightStyle({ ...DEFAULT_ENCOUNTER }, DEFAULT_STYLE_ID),
     preset: 'raid-buffed',
     buffs: [...PRESET_BUFFS['raid-buffed']],
-    consumables: [...PRESET_CONSUMABLES['raid-buffed']],
+    consumables: [...presetConsumables('raid-buffed', referenceStat)],
     cooldowns: [],
   };
 }
 
-export function withPreset(settings: SimSettings, preset: BuffPresetId): SimSettings {
+export function withPreset(settings: SimSettings, preset: BuffPresetId, referenceStat: string): SimSettings {
   if (preset === 'custom') return { ...settings, preset };
   return {
     ...settings,
     preset,
     buffs: [...PRESET_BUFFS[preset]],
-    consumables: [...PRESET_CONSUMABLES[preset]],
+    consumables: [...presetConsumables(preset, referenceStat)],
   };
+}
+
+/**
+ * The store's own re-apply rule (task-4-brief.md's ambiguity, resolved): a preset is
+ * spec-dependent now, so a store calls this after adopting a new character, and only this
+ * -- never `defaultSettings()` again -- so a run in progress, a typed title or any other
+ * settings field the player already touched survives a character swap. A no-op for Custom:
+ * switching from a mage to a warrior must not silently discard a player's own ticks, only
+ * the wizard oil a *preset* would have carried. Pure, like `withPreset` itself.
+ */
+export function withSpecForPreset(settings: SimSettings, spec: string): SimSettings {
+  if (settings.preset === 'custom') return settings;
+  return withPreset(settings, settings.preset, referenceStatOf(spec));
 }
 
 /**

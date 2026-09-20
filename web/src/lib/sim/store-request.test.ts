@@ -155,6 +155,29 @@ describe('createRequestMethods -- runRequest', () => {
     vi.useRealTimers();
   });
 
+  // Task 3 (healer review MAJOR): the raw `unsupported spec: "…"` shape must never reach
+  // `detail` as-is, even on the drawer's own run path -- runAndSettle is the one place both
+  // run() and runRequest() land, so this is the one test that has to pass for either.
+  it('humanises an unsupported-spec failure rather than showing the engine’s own spec id', async () => {
+    const pool = createPool({
+      hardwareConcurrency: 1,
+      spawn: () =>
+        createFakeWorker(
+          createFakeEngine({
+            tickMs: 0,
+            failWith: 'combine: part 0 failed: request: unsupported spec: "druid-restoration"',
+          }),
+        ),
+    });
+    const { deps, snapshot } = harness(pool, null);
+    const methods = createRequestMethods(deps);
+    await methods.runRequest(request);
+    expect(snapshot().phase).toBe('error');
+    expect(snapshot().detail).toBe('The engine does not simulate Restoration Druid yet.');
+    expect(snapshot().detail).not.toContain('unsupported spec');
+    pool.terminate();
+  });
+
   it('a cancelled run with nothing to restore still reports stopped, on phase error', async () => {
     vi.useFakeTimers();
     const pool = createPool({ hardwareConcurrency: 2, spawn: () => fakeWorker(20) });

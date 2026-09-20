@@ -71,6 +71,11 @@
         <span class={item === undefined ? 'text-text' : rarityClassFor(item.quality)}>
           {substitutionChipLabel(sub)}
         </span>
+        <!-- Task 7: the source name used to be hidden in a title= (never fires on touch).
+             Shown inline, muted, only when the substitution actually carries one. -->
+        {#if sub.source_name !== undefined && sub.source_name !== ''}
+          <span class="text-muted" data-testid="sim-substitution-source">· {sub.source_name}</span>
+        {/if}
       </span>
     {/if}
   {/each}

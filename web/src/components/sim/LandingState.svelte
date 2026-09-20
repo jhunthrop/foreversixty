@@ -106,6 +106,11 @@
   </ul>
 
   <p class="text-muted text-[12px]" data-testid="sim-landing-note">{simCopy.landingSourceNote}</p>
+  <!-- task-2-brief.md: this is what a signed-in member reads first on /sim, before they
+       have picked a character -- the same scope sentence the Astro shell already carries
+       above the fold, repeated here since a member who scrolled straight to their
+       character list may never have read the shell's own copy. -->
+  <p class="text-muted text-[12px]" data-testid="sim-landing-scope-note">{simCopy.scopeNote}</p>
 
   <button
     type="button"

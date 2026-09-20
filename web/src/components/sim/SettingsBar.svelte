@@ -6,7 +6,9 @@
      not a disabled select, because the APL builder is deferred and a greyed-out control
      would promise it. -->
 <script lang="ts">
+  import type { BuffNames } from '../../lib/sim/buff-names';
   import { simCopy, toolFixCopy } from '../../lib/sim/copy';
+  import { presetSummary } from '../../lib/sim/preset-summary';
   import {
     BUFF_PRESETS,
     DURATIONS,
@@ -21,7 +23,10 @@
     type SimSettings,
   } from '../../lib/sim/settings';
   import { FIGHT_STYLES, fightStyle, targetsSummary } from '../../lib/sim/styles';
-  import { specDisplayName } from '../../lib/sim/spec-label';
+  import { isSimulatedSpec, referenceStatOf, specDisplayName } from '../../lib/sim/spec-label';
+  import Disclosure from './Disclosure.svelte';
+  import HelpNote from './HelpNote.svelte';
+  import RotationDisclosure from './RotationDisclosure.svelte';
   import SettingsSheet from './SettingsSheet.svelte';
 
   let {
@@ -29,8 +34,24 @@
     spec,
     disabled,
     onchange,
-  }: { settings: SimSettings; spec: string; disabled: boolean; onchange: (next: SimSettings) => void } =
-    $props();
+    /** Task 4: named rows for "what's in it". Null before the build's table has loaded --
+     *  buffLabel's own humanised fallback still names every row, so the disclosure is never
+     *  wrong to open early. */
+    names = null,
+  }: {
+    settings: SimSettings;
+    spec: string;
+    disabled: boolean;
+    onchange: (next: SimSettings) => void;
+    names?: BuffNames | null;
+  } = $props();
+
+  const referenceStat = $derived(referenceStatOf(spec));
+  // Custom has its own always-visible panel (BuffPanel.svelte) for exactly this, so the
+  // disclosure only exists for the two static presets it actually summarises.
+  const presetGroups = $derived(
+    settings.preset === 'custom' ? [] : presetSummary(settings.preset, referenceStat, names),
+  );
 
   // min-w-0 on phone, not min-w-[7rem]: at 412px, five selects each demanding 112px force
   // the row into an uneven two-column wrap with the gutter closed to 4px. Restored at md
@@ -39,7 +60,9 @@
   const control =
     'border-line-warm rounded-control bg-raised text-text min-h-11 min-w-0 md:min-w-[7rem] border px-3 text-[14px] font-semibold md:min-h-9';
   const targets = Array.from({ length: MAX_TARGETS }, (_, i) => i + 1);
-  const rotationLabel = $derived(`${simCopy.rotationPrefix} ${specDisplayName(spec)}`);
+  const specName = $derived(specDisplayName(spec));
+  const simulatedSpec = $derived(isSimulatedSpec(spec));
+  const rotationLabel = $derived(`${simCopy.rotationPrefix} ${specName}`);
   const styleId = $derived(styleIdOf(settings));
   // Only the two movement styles carry a note (copy.ts's styleNote). Everything else
   // renders nothing at all rather than an empty paragraph that would reserve a line.
@@ -73,107 +96,184 @@
   data-testid="sim-settings"
 >
   <div class="flex flex-wrap items-end gap-4 md:gap-5">
-    <label class="flex flex-col gap-1">
-      <span class="label text-muted">{simCopy.fightStyle}</span>
-      <select
-        class={control}
-        {disabled}
-        value={styleId}
-        onchange={(event) => selectStyle(event.currentTarget.value)}
-        data-testid="sim-style"
-      >
-        <!-- The empty option exists only while the encounter has been detached from a
-             style by hand (settings.ts's `detached`); it is never a thing to choose, so it
-             is hidden the rest of the time rather than offered as a tenth style. -->
-        {#if styleId === ''}
-          <option value="">{simCopy.styleCustom}</option>
-        {/if}
-        {#each FIGHT_STYLES as style (style.id)}
-          <option value={style.id}>{simCopy.styleLabel[style.id] ?? style.id}</option>
-        {/each}
-      </select>
-    </label>
-
-    <label class="flex flex-col gap-1">
-      <span class="label text-muted">{simCopy.fightLength}</span>
-      <select
-        class={control}
-        {disabled}
-        value={String(settings.encounter.duration_sec)}
-        onchange={(event) => onchange(withDuration(settings, Number(event.currentTarget.value)))}
-        data-testid="sim-duration"
-      >
-        {#each DURATIONS as seconds (seconds)}
-          <option value={String(seconds)}>{durationLabel(seconds)}</option>
-        {/each}
-      </select>
-    </label>
-
-    {#if targetsInfo.timeline}
-      <!-- Read-only: the fight style (or, once detached, the ramp it left behind) owns the
-           target count here, and editing a ramp with a single-number select would be a lie
-           either way. A <div>, not a <label> (fix round 1 Minor 2): a <label> forms no
-           accessible-name association with a non-form element, and the rotation block just
-           below has the right pattern for exactly this -- a visible label span stacked over
-           a value span, no form control involved. Carries the same data-testid the <select>
-           below carries so existing tests and e2e still find the control regardless of
-           which branch renders. -->
-      <div class="flex flex-col gap-1">
-        <span class="label text-muted">{simCopy.targets}</span>
-        <span class={`${control} flex items-center`} data-testid="sim-targets">
-          {toolFixCopy.targetsTimeline(targetsInfo.first, targetsInfo.max)}
-        </span>
-      </div>
-    {:else}
+    <div class="flex flex-col gap-1">
       <label class="flex flex-col gap-1">
-        <span class="label text-muted">{simCopy.targets}</span>
+        <span class="label text-muted">{simCopy.fightStyle}</span>
         <select
           class={control}
           {disabled}
-          value={String(settings.encounter.targets)}
-          onchange={(event) => onchange(withTargets(settings, Number(event.currentTarget.value)))}
-          data-testid="sim-targets"
+          value={styleId}
+          onchange={(event) => selectStyle(event.currentTarget.value)}
+          data-testid="sim-style"
         >
-          {#each targets as count (count)}
-            <option value={String(count)}>{count}</option>
+          <!-- The empty option exists only while the encounter has been detached from a
+               style by hand (settings.ts's `detached`); it is never a thing to choose, so
+               it is hidden the rest of the time rather than offered as a tenth style. -->
+          {#if styleId === ''}
+            <option value="">{simCopy.styleCustom}</option>
+          {/if}
+          {#each FIGHT_STYLES as style (style.id)}
+            <option value={style.id}>{simCopy.styleLabel[style.id] ?? style.id}</option>
           {/each}
         </select>
       </label>
-    {/if}
+      <HelpNote label={simCopy.fightStyle} id="sim-style" {disabled}>
+        <p>{simCopy.fightStyleHelp}</p>
+        <dl class="flex flex-col gap-1" data-testid="sim-style-help-options">
+          {#each FIGHT_STYLES as style (style.id)}
+            <div>
+              <dt class="text-text font-semibold">{simCopy.styleLabel[style.id] ?? style.id}</dt>
+              <dd>{simCopy.fightStyleOptions[style.id] ?? ''}</dd>
+            </div>
+          {/each}
+        </dl>
+      </HelpNote>
+    </div>
 
-    <label class="flex flex-col gap-1">
-      <span class="label text-muted">{simCopy.buffs}</span>
-      <select
-        class={control}
-        {disabled}
-        value={settings.preset}
-        onchange={(event) => onchange(withPreset(settings, event.currentTarget.value as BuffPresetId))}
-        data-testid="sim-preset"
-      >
-        {#each BUFF_PRESETS as preset (preset.id)}
-          <option value={preset.id}>
-            {preset.label}
-          </option>
-        {/each}
-      </select>
-    </label>
+    <div class="flex flex-col gap-1">
+      <label class="flex flex-col gap-1">
+        <span class="label text-muted">{simCopy.fightLength}</span>
+        <select
+          class={control}
+          {disabled}
+          value={String(settings.encounter.duration_sec)}
+          onchange={(event) => onchange(withDuration(settings, Number(event.currentTarget.value)))}
+          data-testid="sim-duration"
+        >
+          {#each DURATIONS as seconds (seconds)}
+            <option value={String(seconds)}>{durationLabel(seconds)}</option>
+          {/each}
+        </select>
+      </label>
+      <HelpNote label={simCopy.fightLength} id="sim-duration" {disabled}>
+        <p>{simCopy.fightLengthHelp}</p>
+      </HelpNote>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      {#if targetsInfo.timeline}
+        <!-- Read-only: the fight style (or, once detached, the ramp it left behind) owns the
+             target count here, and editing a ramp with a single-number select would be a lie
+             either way. A <div>, not a <label> (fix round 1 Minor 2): a <label> forms no
+             accessible-name association with a non-form element, and the rotation block just
+             below has the right pattern for exactly this -- a visible label span stacked over
+             a value span, no form control involved. Carries the same data-testid the <select>
+             below carries so existing tests and e2e still find the control regardless of
+             which branch renders. -->
+        <div class="flex flex-col gap-1">
+          <span class="label text-muted">{simCopy.targets}</span>
+          <span class={`${control} flex items-center`} data-testid="sim-targets">
+            {toolFixCopy.targetsTimeline(targetsInfo.first, targetsInfo.max)}
+          </span>
+        </div>
+      {:else}
+        <label class="flex flex-col gap-1">
+          <span class="label text-muted">{simCopy.targets}</span>
+          <select
+            class={control}
+            {disabled}
+            value={String(settings.encounter.targets)}
+            onchange={(event) => onchange(withTargets(settings, Number(event.currentTarget.value)))}
+            data-testid="sim-targets"
+          >
+            {#each targets as count (count)}
+              <option value={String(count)}>{count}</option>
+            {/each}
+          </select>
+        </label>
+      {/if}
+      <HelpNote label={simCopy.targets} id="sim-targets" {disabled}>
+        <p>{simCopy.targetsHelp}</p>
+      </HelpNote>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <label class="flex flex-col gap-1">
+        <span class="label text-muted">{simCopy.buffs}</span>
+        <select
+          class={control}
+          {disabled}
+          value={settings.preset}
+          onchange={(event) =>
+            onchange(withPreset(settings, event.currentTarget.value as BuffPresetId, referenceStat))}
+          data-testid="sim-preset"
+        >
+          {#each BUFF_PRESETS as preset (preset.id)}
+            <option value={preset.id}>
+              {preset.label}
+            </option>
+          {/each}
+        </select>
+      </label>
+      <div class="flex flex-wrap items-center gap-3">
+        <HelpNote label={simCopy.buffs} id="sim-preset" {disabled}>
+          <p>{simCopy.buffsHelp}</p>
+        </HelpNote>
+        {#if settings.preset !== 'custom'}
+          <Disclosure
+            label={simCopy.whatsInIt}
+            id="sim-preset-summary"
+            {disabled}
+            triggerClass="label text-nav text-[12px] underline decoration-dotted underline-offset-2"
+            panelClass="border-line-soft rounded-panel flex flex-col gap-2 border p-3"
+            triggerTestId="sim-preset-summary-trigger"
+            panelTestId="sim-preset-summary-panel"
+          >
+            {#if presetGroups.length === 0}
+              <p class="text-muted text-[12px]">{simCopy.whatsInItEmpty}</p>
+            {/if}
+            {#each presetGroups as group (group.group)}
+              <div>
+                <p class="label text-muted text-[11px]">
+                  {simCopy.buffGroupLabel[group.group] ?? group.group}
+                </p>
+                <ul class="text-text flex flex-wrap gap-x-3 gap-y-1 text-[12px]">
+                  {#each group.rows as row (row.id)}
+                    <li data-testid={`sim-preset-summary-${row.id}`}>{row.label}</li>
+                  {/each}
+                </ul>
+              </div>
+            {/each}
+          </Disclosure>
+        {/if}
+      </div>
+    </div>
 
     <div class="flex flex-col gap-1">
       <span class="label text-muted">{simCopy.rotation}</span>
-      <span class="flex min-h-11 items-center gap-2 text-[14px] md:min-h-9">
-        <span class="text-strong font-semibold" data-testid="sim-rotation">{rotationLabel}</span>
-        <!-- 68px wide already clears the 44px hit-target floor, but its own line-height
-             does not; the row around it already reserves min-h-11 (44px) on mobile, so
-             giving the link itself the same min-height fills that already-reserved space
-             rather than growing the row further. -->
-        <a
-          href={`/sim/specs#${spec}`}
-          class="inline-flex min-h-11 items-center text-[13px] md:min-h-0"
-          data-testid="sim-rotation-link"
-        >
-          {simCopy.rotationLink}
-        </a>
-      </span>
+      {#if simulatedSpec}
+        <span class="flex min-h-11 items-center gap-2 text-[14px] md:min-h-9">
+          <span class="text-strong font-semibold" data-testid="sim-rotation">{rotationLabel}</span>
+          <!-- Final whole-branch review, C1: this used to be a plain `<a href="/sim/specs#<spec>">`
+               -- the settings bar's own copy of RotationCard's "what it does" trigger, except
+               unfixed: every persona repro that mattered (newcomer, tank) clicked this one, not
+               RotationCard's, because none of them ran a sim first and RotationCard does not
+               render until one has. RotationDisclosure (extracted from RotationCard.svelte) is
+               the same never-navigates control both places now, so the character and the
+               settings on screen survive either trigger. 68px wide already clears the 44px
+               hit-target floor, but its own line-height does not; the row around it already
+               reserves min-h-11 (44px) on mobile, so giving the trigger the same min-height
+               fills that already-reserved space rather than growing the row further. -->
+          <RotationDisclosure
+            {spec}
+            idPrefix="sim-rotation"
+            triggerClass="inline-flex min-h-11 items-center text-[13px] md:min-h-0"
+            triggerTestId="sim-rotation-link"
+          />
+        </span>
+      {:else if spec !== ''}
+        <span class="flex min-h-11 items-center text-[14px] md:min-h-9">
+          <span class="text-strong font-semibold" data-testid="sim-rotation">
+            {simCopy.rotationNotSimulated(specName)}
+          </span>
+        </span>
+      {/if}
+      <!-- Residual regressions fix, Finding 1: `spec === ''` is no character loaded at all,
+           not an unsimulated spec -- `specDisplayName('')` returns `''`, and
+           `rotationNotSimulated('')` reads "No rotation yet —  is not simulated.", a
+           sentence with a missing subject. There is nothing to claim about a rotation with
+           no character on screen, so this row renders no value at all rather than naming a
+           spec that does not exist. -->
     </div>
   </div>
 

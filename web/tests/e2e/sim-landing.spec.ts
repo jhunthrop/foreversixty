@@ -90,6 +90,9 @@ test.describe('a signed-in member with characters', () => {
     await expect(page.getByTestId('sim-character-us/normal/roland')).toBeVisible();
     await expect(page.getByTestId('sim-sources')).toHaveCount(0);
     await expect(page.getByTestId('sim-landing-note')).toHaveText(simCopy.landingSourceNote);
+    // task-2-brief.md: the landing state is what a signed-in member reads first, so it
+    // carries the DPS-only scope sentence too, not only the Astro shell above it.
+    await expect(page.getByTestId('sim-landing-scope-note')).toHaveText(simCopy.scopeNote);
 
     // Fix round 1, MEDIUM-1: the row is a real link (`url.ts`'s own `simSearch`), not only
     // the button beside it -- copyable, middle-clickable, opens in a new tab.

@@ -51,3 +51,43 @@ export function classOfSpec(spec: string): string {
 export function dpsSpecs(): readonly Spec[] {
   return SPECS.filter((row) => row.role === 'dps');
 }
+
+/**
+ * The complement of dpsSpecs(): the 7 healer and tank specs the launch scope excludes
+ * (task-2-brief.md). Filtered the same way, from the same canonical list, so the two can
+ * never drift into double-counting or dropping a spec -- `/sim/specs`' "these 20 work,
+ * these 7 do not" split reads both.
+ */
+export function nonDpsSpecs(): readonly Spec[] {
+  return SPECS.filter((row) => row.role !== 'dps');
+}
+
+/**
+ * Task 3 (healer review, honest round 1): the one predicate every honest-UI decision reads
+ * -- RotationCard's rotation claim, RunControl's and BulkRunBar's run gate, and
+ * humaniseEngineError's defensive translation all ask this, never `role === 'dps'` again
+ * for themselves. Agrees with `dpsSpecs()`/`nonDpsSpecs()` by construction (the same
+ * `specRow(spec)?.role === 'dps'` test, just per-spec rather than filtering the whole
+ * list), so the three can never drift into disagreeing about which specs the site
+ * simulates.
+ *
+ * Fails closed: `specRow` returns null for a spec string the canonical list does not
+ * carry, and `null?.role === 'dps'` is `false` -- an unknown spec is never simulated,
+ * never "true until proven otherwise".
+ */
+export function isSimulatedSpec(spec: string): boolean {
+  return specRow(spec)?.role === 'dps';
+}
+
+/**
+ * Task 4 (dps-minmaxer BLOCKER): the stat that splits the Raid-buffed preset's consumable
+ * half in two, physical from caster (settings.ts's `presetConsumables`). Ruling 2 keys the
+ * split off `Spec.reference_stat`, never off class names, so a spec's own generated row is
+ * the only source this reads. An unknown spec -- one `specRow` cannot resolve, or a spec
+ * the canonical list carries with no `reference_stat` at all -- returns `'attack_power'`:
+ * the physical set is the deliberate fallback (settings.ts explains why at its own call
+ * site), never an empty preset that still claims "Raid-buffed".
+ */
+export function referenceStatOf(spec: string): string {
+  return specRow(spec)?.reference_stat ?? 'attack_power';
+}

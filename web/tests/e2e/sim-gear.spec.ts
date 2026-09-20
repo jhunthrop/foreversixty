@@ -125,7 +125,11 @@ test('a ticked consumable multiplies the combination count (contract 10.1 A5)', 
   await loadGear(page);
   await page.getByTestId('sim-search-add-16963').click();
   await expect(page.getByTestId('sim-combo-count')).toHaveText(bulkCopy.combinations(1));
-  await page.getByTestId('sim-consumable-flask_of_supreme_power').check();
+  // FURY is warrior-fury (reference_stat attack_power), so the candidates offered are the
+  // physical consumable set (settings.ts's PHYSICAL_CONSUMABLES) -- flask_of_the_titans and
+  // elixir_of_the_mongoose replace the pre-Task-4 flask_of_supreme_power (now caster-only),
+  // same two Consumes fields (flask, battle-elixir) the multiplier below counts on.
+  await page.getByTestId('sim-consumable-flask_of_the_titans').check();
   await page.getByTestId('sim-consumable-elixir_of_the_mongoose').check();
   // (1 head + 1) x 2 alternatives
   await expect(page.getByTestId('sim-combo-count')).toHaveText(bulkCopy.combinations(4));
@@ -133,7 +137,7 @@ test('a ticked consumable multiplies the combination count (contract 10.1 A5)', 
 
 test('a consumable candidate is named, not spelled as an id', async ({ page }) => {
   await loadGear(page);
-  await expect(page.getByTestId('sim-consumables')).toContainText('Flask of Supreme Power');
+  await expect(page.getByTestId('sim-consumables')).toContainText('Elixir of the Mongoose');
 });
 
 /** One `/v1/builds?mine=1` row, titled `title`, on the character's own class/tree/build. */

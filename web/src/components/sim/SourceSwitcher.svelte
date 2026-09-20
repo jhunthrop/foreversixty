@@ -145,6 +145,11 @@
     </div>
   </div>
 
+  <!-- task-2-brief.md: this switcher is what a signed-out visitor reads first on /sim --
+       the same scope sentence the Astro shell already carries above the fold, repeated
+       here since it sits below the shell's own copy of it once the island mounts. -->
+  <p class="text-muted text-[12px]" data-testid="sim-sources-scope-note">{simCopy.scopeNote}</p>
+
   {#if message}
     <p role="alert" class="text-strong text-[13px]" data-testid="sim-source-message">{message}</p>
   {/if}

@@ -359,8 +359,18 @@ export const simCopy = {
   specWorstActions: 'Largest gaps',
   specCast: 'cast',
   specSimmed: 'simmed',
+  /**
+   * Final whole-branch review, I3: this used to say the nightly job "sims the top 50
+   * parses ... and publishes the gap here, whatever it is", present tense, as if every
+   * spec below already had an answer. The changelog this same lane wrote
+   * (content/changelog/2026-09-20-simulator-tools-are-live.md) says the opposite: "nothing
+   * has been checked against a real parse, because there are no real parses yet" -- and
+   * every row on this page still reads `specNotYetNote`, because `mergeSpecRows`
+   * (spec-state.ts) has no rows to merge. The job (`api sim-validate`) is real, scheduled
+   * code; it has simply never had a real parse to measure yet. This says both things.
+   */
   specsIntro:
-    'The simulator is only worth as much as its numbers. A nightly job sims the top 50 parses for each spec and publishes the gap here, whatever it is.',
+    'The simulator is only worth as much as its numbers. A nightly job is built to sim the top 50 parses for each of the 20 damage specs it covers and publish the gap here, whatever it is. No real parses exist yet, so every damage spec below still reads "Not yet". The other 7 specs, healers and tanks, are not simulated yet.',
   tryAgain: 'Try again',
 
   distMean: 'Mean DPS',
@@ -639,6 +649,182 @@ export const simCopy = {
     spell_damage: 'Spell damage',
     feral_attack_power: 'Feral attack power',
   } as Record<string, string>,
+
+  // --- Lane W2 (navigation, honesty, presets) — persona round 1. ---
+  /** SimTabs.astro's accessible name for the strip; source: lib/sim/tabs.ts. */
+  simTabsLabel: 'Simulator pages',
+  tabQuickSim: 'Quick Sim',
+  tabTalents: 'Talents',
+  /** The strip's short label for `KIND_TITLES.weights` ("Stat weights"). */
+  tabWeights: 'Weights',
+  tabSpecs: 'Spec support',
+  /**
+   * Task 2: the site never said the simulator is DPS-only (healer/tank persona review
+   * BLOCKERs). One sentence, one key, rendered in every simulator page's static Astro
+   * shell -- near the `<h1>`, above the fold at 390x844 -- plus LandingState.svelte and
+   * SourceSwitcher.svelte, since those are what a signed-out visitor reads first.
+   */
+  scopeNote: 'The simulator runs damage specs only. Healing and tanking specs are not simulated yet.',
+  /** `/sim/specs`: heading over the 20 dps cards the grid has always shown. */
+  specsSimulatedHeading: 'Damage specs',
+  /** `/sim/specs`: heading over the 7 healer/tank cards, grouped below rather than
+   *  interleaved, so the page reads as "these 20 work, these 7 do not". */
+  specsUnsimulatedHeading: 'Healers and tanks',
+  /** Exact body text task-2-brief.md specifies, verbatim, for every card in that second
+   *  group -- no fidelity pill, no engine stamp, no "Not yet" badge link. */
+  specsUnsimulatedBody: 'Not simulated yet — damage specs first; healers and tanks come later',
+  /**
+   * Fix round 1, Finding B: the `<Base description="...">` strings are what a healer or
+   * tank reads in a search result or a link preview -- the first place the DPS-only claim
+   * reaches them, and the four tool pages' descriptions still carried the same unconditional
+   * promise the visible intros (bulkCopy.gearIntro etc.) were already scoped for. Scoped the
+   * same way, moved here since a description is a user-visible string like any other.
+   */
+  gearDescription:
+    'Simulate every combination of the gear, enchants, talents and sets you have for your damage spec, and see which one is actually best.',
+  dropsDescription:
+    'Simulate every item a boss drops against your damage spec’s current set, and see which drops are upgrades.',
+  talentsDescription:
+    'Simulate your damage spec’s talent builds against each other on the gear you are wearing, and see which tree actually wins.',
+  weightsDescription:
+    'What one point of each stat is worth for your damage spec, with the caveat that comes with it.',
+  /**
+   * Task 3 (healer review MAJOR): RotationCard's honest branch for a spec
+   * `isSimulatedSpec` says no to -- replaces "Default for <name>" and the dead "what it
+   * does" anchor rather than showing either. `name` is `specDisplayName`, the same bare
+   * form `rotationCardBody` already takes, so the two read as one voice with only the verb
+   * changed.
+   */
+  rotationNotSimulated: (name: string): string => `No rotation yet — ${name} is not simulated.`,
+  /**
+   * Task 3 (healer review MAJOR/BLOCKER): the line beside a Run control disabled for an
+   * unsimulated spec -- RunControl's single button and BulkRunBar's four tool pages alike,
+   * so `/sim/gear`, `/sim/drops`, `/sim/talents` and `/sim/weights` all read the same
+   * sentence a healer or tank sees on `/sim` itself. A `<p>`, never a `title=` (Task 7 is
+   * removing every one of those in this lane).
+   */
+  runNotSimulated: (name: string): string => `${name} is not simulated yet; there is nothing to run.`,
+  /**
+   * Task 3 (healer review MAJOR): the one shape `humaniseEngineError` (lib/sim/engine-error.ts)
+   * translates -- sim/request's `unsupported spec: "<id>"` names the engine's own id
+   * ("druid-restoration"), which nobody but this codebase reads as a spec. `name` is
+   * `specLabel`, not `specDisplayName`: this is the defensive branch for a spec the web
+   * thought it simulated and the engine still refused, so the sentence has to be
+   * unambiguous on its own without a settings bar or a character strip beside it to supply
+   * the class (Restoration alone is two different specs, on two different classes).
+   */
+  engineUnsupportedSpec: (name: string): string => `The engine does not simulate ${name} yet.`,
+  /**
+   * Task 4 (dps-minmaxer BLOCKER, tank/newcomer/raid-leader MAJOR): the disclosure beside
+   * the Buffs control (Disclosure.svelte, Ruling 3) that lists what a static preset
+   * actually applies, so a player never has to switch to Custom just to see it.
+   */
+  whatsInIt: "What's in it",
+  /** Solo's own answer: no groups, so the panel says so rather than rendering empty. */
+  whatsInItEmpty: 'Nothing. Solo applies no buffs and no consumables.',
+  /**
+   * Task 6 (newcomer BLOCKER, tank MAJOR): RotationCard's "what it does" trigger
+   * (`rotationLink`, unchanged) no longer navigates to /sim/specs#<spec>, which explains
+   * parse fidelity, not the rotation, and threw away the loaded character and the finished
+   * run on the way -- Back did not restore either. It opens an in-page drawer instead; this
+   * is the drawer's own opening sentence, naming the spec so the drawer (and /sim/specs' own
+   * copy of it) reads on its own.
+   */
+  rotationDrawerIntro: (name: string): string => `${name}'s default rotation, in the order it casts:`,
+  /** The drawer and /sim/specs' per-card panel alike, for a spec whose curated file has no
+   *  step notes yet (sync-rotations.mjs's own "not fatal" case) -- so the drawer never opens
+   *  on a blank list with no explanation. */
+  rotationDrawerEmpty: 'No step-by-step notes for this rotation yet.',
+  /** The drawer's own link to the fidelity detail the drawer does not repeat -- opens a new
+   *  tab so the character and the finished run stay on this one either way. */
+  rotationDrawerFidelityLink: 'fidelity detail on /sim/specs',
+
+  // --- Task 7 (newcomer BLOCKER: `[data-tooltip],[role=tooltip],abbr,.tooltip` was 0 on a
+  // phone; the two explanations on /sim were `title=`, which never fires on touch, and
+  // most controls had none at all). HelpNote.svelte's own copy: the trigger's accessible
+  // name and every control's note body. ---
+  /** HelpNote's trigger text and accessible name alike -- "What Fight style means". */
+  helpTrigger: (label: string): string => `What ${label} means`,
+  /**
+   * Fight style's own note, before the nine-style breakdown: what the control writes and
+   * the same detach rule `targets`, `execute phase` and `dummy` already carry a caution
+   * for (settings.ts's `detached`).
+   */
+  fightStyleHelp:
+    'Sets the target count, movement and execute threshold together. Changing any of those by hand below detaches the encounter from its style, and the select reads "Custom".',
+  /**
+   * The nine styles' real behaviour, one clause each, read from styles.ts's own table
+   * (FIGHT_STYLES) and applyFightStyle rather than guessed from the name -- "Cleave" does
+   * not say its targets share Patchwerk's execute threshold, and "Dungeon pull" does not
+   * say its schedule is fixed at 160 seconds regardless of Fight length. One key, rendered
+   * as a `<dl>` (SettingsBar.svelte), not nine.
+   */
+  fightStyleOptions: {
+    patchwerk: 'One target, standing still for the whole fight, with an execute phase below 25% health.',
+    execute: 'One target, standing still, with a wider execute phase: below 35% health instead of 25%.',
+    'light-movement':
+      'One target, forced out of melee range for 5 seconds every 45 seconds; no parse has measured the cost of that yet.',
+    'heavy-movement':
+      'One target, forced out of melee range for 5 seconds every 20 seconds; no parse has measured the cost of that yet.',
+    'cleave-2':
+      'Two targets, both present and taking damage for the whole fight, sharing the same 25% execute threshold as Patchwerk.',
+    'cleave-3':
+      'Three targets, all present and taking damage for the whole fight, sharing the same 25% execute threshold as Patchwerk.',
+    'cleave-5':
+      'Five targets, all present and taking damage for the whole fight, sharing the same 25% execute threshold as Patchwerk.',
+    dungeon:
+      'One target that becomes three at 40 seconds, five at 80, back to three at 130 and one at 160 — a fixed schedule, not a repeating pull. No execute phase at any point, and the count stays at one for the rest of the fight if Fight length runs past 160 seconds.',
+    dummy:
+      'One target that takes no debuffs, no execute phase and no armor reduction — a plain damage check, not a boss fight.',
+  } as Record<string, string>,
+  fightLengthHelp:
+    'How long each iteration runs, in seconds. Every iteration is exactly this length unless "Length varies by" adds a random band around it.',
+  targetsHelp:
+    'How many targets the rotation is simulated against, all present and taking damage for the whole fight. A fight style above can set this for you; changing it by hand detaches the encounter from that style.',
+  /**
+   * Buffs already has Task 4's "what's in it" disclosure beside it, naming exactly what
+   * the selected preset applies -- this note answers the different question that
+   * disclosure does not, "what does this control do", and says so rather than repeating
+   * the list.
+   */
+  /**
+   * Final whole-branch review, I1: the sentence said "Raid-buffed applies the standard set
+   * a 40-player raid provides", which a raid does not: eight of the ids it applies are
+   * world buffs (Songflower, Dragonslayer, Zandalar, Warchief's, the three Dire Maul
+   * buffs) and seven to nine more are consumables out of the player's own bags (settings.ts's
+   * `presetConsumables`) -- neither comes from a raid, and together they are most of the
+   * preset's own gain. This names what actually supplies each part instead.
+   */
+  buffsHelp:
+    'Which buffs and consumables the run applies. Raid-buffed applies the full standard set: raid, party and self buffs, target debuffs, world buffs, and the consumables in your own bags; Solo applies none; Custom lets you build your own list. "What\'s in it" shows exactly what the selected preset applies.',
+  targetLevelHelp: 'The boss level the run’s numbers — armor, resistances — are drawn from.',
+  /**
+   * Newcomer MINOR (213-216): the field showed 3,731 as placeholder text with a `title=`
+   * of the same string, so a player could not tell whether that figure was in effect or
+   * the field was empty. These two say the current state plainly instead of repeating the
+   * placeholder. `preset` is SettingsSheet's own `armorPreset` string (already "3,731, the
+   * preset for this level"), passed in rather than rebuilt here.
+   */
+  targetArmorEmptyHelp: (preset: string): string => `Empty; the engine uses ${preset} instead.`,
+  targetArmorSetHelp: (value: string, preset: string): string => `Set to ${value}, overriding ${preset}.`,
+  targetTypeHelp:
+    'Restricts the run to abilities and talents that only affect this creature type. "Any" applies no restriction.',
+  /**
+   * Newcomer MINOR (204-207): "Execute phase" was ticked by default under Patchwerk with
+   * no way to tell whether the run actually had one. This says the current state, not just
+   * the concept -- `on` is settings.ts's own `executePhaseOn`, `percent` the encounter's
+   * real `execute_ratio` as a whole number, and `styleLabel` the fight style currently
+   * governing it (or "Custom" once detached).
+   */
+  executePhaseHelp: (on: boolean, percent: string, styleLabel: string): string =>
+    on
+      ? `On: this run currently simulates an execute phase below ${percent}% target health, under ${styleLabel}.`
+      : `Off: ${styleLabel} has no execute phase, so this run has none.`,
+  precisionHelp:
+    'How many iterations this run computes before stopping. More iterations narrow the confidence band beside the DPS figure. "Until ±0.5%" keeps running until the error is that tight or the lane’s own iteration ceiling, whichever comes first.',
+  notifyHelp:
+    'Asks the browser for permission to show a notification when a run started on our servers finishes, so you do not have to keep this tab in front to see it.',
+  // --- end Lane W2 ---
 } as const;
 
 /**
@@ -652,15 +838,16 @@ export const bulkCopy = {
   // --- page titles and the one-line standfirst under each ---
   gearTitle: KIND_TITLES.gear,
   gearIntro:
-    'Tick the items, enchants, talents and sets you want tried. Every valid combination is simulated and ranked against what you have on.',
+    'Tick the items, enchants, talents and sets you want tried for your damage spec. Every valid combination is simulated and ranked against what you have on.',
   talentsTitle: KIND_TITLES.talents,
   talentsIntro:
-    'Your build against every other build you have, ranked. Gear is locked to what you are wearing, so the only thing that changes is the tree.',
+    'Your damage spec’s build against every other build you have, ranked. Gear is locked to what you are wearing, so the only thing that changes is the tree.',
   dropsTitle: KIND_TITLES.drops,
   dropsIntro:
-    'Pick where you are going. Every item those bosses drop is simulated one at a time against your current set, and the upgrades are listed by boss.',
+    'Pick where you are going. Every item those bosses drop is simulated one at a time against your damage spec’s current set, and the upgrades are listed by boss.',
   weightsTitle: KIND_TITLES.weights,
-  weightsIntro: 'What one point of each stat is worth, for the addons that ask for a number.',
+  weightsIntro:
+    'What one point of each stat is worth for your damage spec, for the addons that ask for a number.',
   weightsWarning:
     'A stat weight is a straight-line guess at something that is not a straight line: it holds near the gear you have now and stops holding as soon as a set bonus, a proc or a hit cap changes. Sim the actual items in Top Gear instead. These are here because addons want them.',
   weightsWarningLink: 'Open Top Gear',

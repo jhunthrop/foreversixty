@@ -27,6 +27,7 @@ import { MAX_SERVER_POLLS, runServerJob } from './bulk-server-run';
 import {
   applyRequestFields,
   buildRequest,
+  characterCode,
   previewRequest,
   recount as recountCombinations,
   runBulkAndSettle,
@@ -64,7 +65,7 @@ import { BUILT_IN_PHASES, fetchPhases, type PhaseRow } from './phase';
 import { loadItems, loadSets, loadTalents } from '../planner/load';
 import { isKnownItem, knownItemIds, loadSimItems } from './sim-items';
 import { SLOTS, type Item, type ItemSet, type Slot, type TalentFile } from '../planner/types';
-import { defaultSettings, type SimSettings } from './settings';
+import { defaultSettings, withSpecForPreset, type SimSettings } from './settings';
 import { loadSimBuffs, type SimBuffFile } from './sim-buffs';
 import {
   fromAddonExport,
@@ -137,7 +138,7 @@ export function createBulkStore(init: BulkStoreInit) {
 
   let phase = $state<BulkPhase>('idle');
   let character = $state<SimCharacter | null>(null);
-  let settings = $state<SimSettings>(defaultSettings());
+  let settings = $state<SimSettings>(defaultSettings('attack_power'));
   let message = $state<string | null>(null);
   let detail = $state('');
   let premium = $state(false);
@@ -216,6 +217,7 @@ export function createBulkStore(init: BulkStoreInit) {
       return;
     }
     character = outcome.character;
+    settings = withSpecForPreset(settings, outcome.character.spec);
     result = null;
     progress = null;
     capNotice = null;
@@ -325,6 +327,7 @@ export function createBulkStore(init: BulkStoreInit) {
   const requestDeps: BulkRequestDeps = {
     tool: init.tool,
     mode,
+    treeVersion: init.treeVersion,
     getCharacter: () => character,
     getTalentFile: () => talentFile,
     getSettings: () => settings,
@@ -544,6 +547,11 @@ export function createBulkStore(init: BulkStoreInit) {
     /** Exactly what a run would send, for part A's Advanced drawer (design 8). */
     get requestPreview() {
       return previewRequest(requestDeps);
+    },
+    /** A fresh FS1 code for the loaded character, or null -- the tab strip's own fallback
+     *  for a `source.ref`-less character (bulk-store-request.ts's own comment). */
+    get characterCode() {
+      return characterCode(requestDeps);
     },
     /**
      * A request edited in the drawer, adopted whole. Only the two blocks this store owns

@@ -24,7 +24,9 @@ test('the settings bar reads the defaults and every control changes the settings
   await expect(page.getByTestId('sim-targets')).toHaveValue('1');
   await expect(page.getByTestId('sim-preset')).toHaveValue('raid-buffed');
   await expect(page.getByTestId('sim-rotation')).toHaveText('Default for Fury');
-  await expect(page.getByTestId('sim-rotation-link')).toHaveAttribute('href', '/sim/specs#warrior-fury');
+  // Final whole-branch review, C1: this trigger no longer navigates at all (it opens an
+  // in-page drawer, tests/e2e/sim-rotation-drawer.spec.ts's own coverage) -- an `href`
+  // assertion here used to pin the very navigation that fix removed.
 
   // Fight style: the contract's nine, plus nothing. Choosing one writes its fields.
   const style = page.getByTestId('sim-style');
@@ -103,4 +105,64 @@ test('the settings bar is hidden until a character is loaded', async ({ page }) 
   await page.goto('/sim');
   await expect(page.getByTestId('sim-settings')).toBeHidden();
   await expect(page.getByTestId('sim-empty')).toBeVisible();
+});
+
+/**
+ * Task 4 (dps-minmaxer D16 BLOCKER): the old Raid-buffed preset was five buffs and two
+ * consumables, +6% over Solo where vanilla's real answer for a melee is +60% to +120%.
+ * This reads the fix from the same three places a reviewer's repro read the bug --
+ * "what's in it", the Custom panel's own counters, and the request the browser actually
+ * sends -- rather than only a unit test on settings.ts's own PRESET_BUFFS constant and
+ * presetConsumables function.
+ */
+test('Raid-buffed is the full standard set: "what’s in it" names it, Custom’s counters show it, and the request carries it', async ({
+  page,
+}) => {
+  await page.goto('/sim');
+  await page.getByTestId('sim-addon-input').fill(FURY);
+  await page.getByTestId('sim-addon-load').click();
+  await expect(page.getByTestId('sim-character')).toBeVisible();
+  await expect(page.getByTestId('sim-preset')).toHaveValue('raid-buffed');
+
+  // "What's in it" is one click away (Disclosure.svelte, Ruling 3) and names the preset's
+  // own ids -- humanised, never bare, even over this repo's sparse fixture name table
+  // (src/fixtures/planner/simbuffs.json has no row for either id below).
+  const trigger = page.getByTestId('sim-preset-summary-trigger');
+  await expect(trigger).toBeVisible();
+  await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+  await trigger.click();
+  const panel = page.getByTestId('sim-preset-summary-panel');
+  await expect(panel).toBeVisible();
+  await expect(trigger).toHaveAttribute('aria-expanded', 'true');
+  await expect(panel).toContainText(/sunder armor/i);
+  await expect(panel).toContainText(/songflower/i);
+
+  // Escape closes it and returns focus to the trigger, wherever the panel's own content
+  // put it (Ruling 3's keyboard requirement).
+  await page.keyboard.press('Escape');
+  await expect(panel).toBeHidden();
+  await expect(trigger).toBeFocused();
+  await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+
+  // Switching to Custom carries every tick across (withPreset(..., 'custom')), so the
+  // panel's own counters read the real totals now -- the findings' own quote was "RAID
+  // BUFFS 4/30, ... ON THE TARGET 0/24, ... WEAPON OILS AND STONES 0/48".
+  await page.getByTestId('sim-preset').selectOption('custom');
+  const groupCount = async (group: string): Promise<number> => {
+    const text = await page.getByTestId(`sim-buff-group-${group}`).locator('span.tabular').textContent();
+    return Number((text ?? '0/0').split('/')[0]);
+  };
+  expect(await groupCount('raid-buffs')).toBeGreaterThan(4);
+  expect(await groupCount('debuffs')).toBeGreaterThan(0);
+  expect(await groupCount('weapon-imbue')).toBeGreaterThan(0);
+
+  // The request the browser would actually send carries the expanded preset -- the REQUEST
+  // drawer's own rendering of it, not only the settings object a unit test can see.
+  await page.getByTestId('sim-preset').selectOption('raid-buffed');
+  await page.getByTestId('sim-request-drawer').locator('summary').click();
+  await expect(page.getByTestId('sim-request-buffs')).toContainText('sunder_armor');
+  await expect(page.getByTestId('sim-request-buffs')).toContainText('blessing_of_kings');
+  await expect(page.getByTestId('sim-request-json')).toHaveValue(
+    /main_hand_imbue:elemental_sharpening_stone/,
+  );
 });

@@ -127,12 +127,19 @@ test.describe('touch help and hit targets at 390x844 (Task 5)', () => {
     await page.getByTestId('sim-settings-more').locator('summary').click();
 
     // SettingsSheet.svelte:61 and :142 carried `title={simCopy.variationNote}` and
-    // `title={simCopy.dummyNote}` -- never reachable on a phone. Both are plain paragraphs
-    // now, so the same words are on the page without a hover.
-    await expect(page.getByTestId('sim-variation-note')).toBeVisible();
-    await expect(page.getByTestId('sim-variation-note')).toHaveText(simCopy.variationNote);
-    await expect(page.getByTestId('sim-dummy-note')).toBeVisible();
-    await expect(page.getByTestId('sim-dummy-note')).toHaveText(simCopy.dummyNote);
+    // `title={simCopy.dummyNote}` -- never reachable on a phone. Both words reach a phone
+    // now: Task 5's plain paragraphs became Task 7's HelpNote (Disclosure.svelte), one
+    // tappable trigger per control, so the assertion is the same two sentences arriving on
+    // screen after a tap rather than a `<p>` that was always there.
+    for (const [id, text] of [
+      ['sim-variation', simCopy.variationNote],
+      ['sim-dummy', simCopy.dummyNote],
+    ] as const) {
+      const trigger = page.getByTestId(`${id}-help-trigger`);
+      await expect(trigger).toBeVisible();
+      await trigger.click();
+      await expect(page.getByTestId(`${id}-help-panel`)).toHaveText(text);
+    }
 
     // sim-execute/sim-dummy: the drawn mark stays 20x20 on purpose -- native `accent-gold`,
     // never resized, per the brief's own "without changing the visual size of the tick" --

@@ -164,7 +164,13 @@ test.describe('a saved sim from the prerendered fixture', () => {
 // has to be stubbed, the same way sim-specs.spec.ts stubs it, or the fidelity note has
 // nothing to render off of -- the card would show with no note and the second assertion
 // below would be checking an element that never appears.
-test('a saved sim names the rotation it used and carries its fidelity', async ({ page }) => {
+//
+// Task 6: "what it does" no longer links straight to /sim/specs#<spec> -- it opens the
+// rotation drawer in place, and the fidelity link moves inside that drawer. Clicking it
+// open is this test's own proof the trigger is a Disclosure now, not a navigating anchor.
+test('a saved sim names the rotation it used, opens its drawer, and carries its fidelity', async ({
+  page,
+}) => {
   await page.route('**/v1/specs', (route) =>
     route.fulfill(
       envelope({
@@ -186,8 +192,19 @@ test('a saved sim names the rotation it used and carries its fidelity', async ({
   await page.goto('/sim/simfixtureab');
   const card = page.getByTestId('sim-rotation-card');
   await expect(card).toBeVisible();
-  // The rotation is named by the spec's own display name, and links to its card.
-  await expect(card.getByTestId('sim-rotation-card-link')).toHaveAttribute('href', '/sim/specs#warrior-fury');
+  const url = page.url();
+
+  // The trigger opens the drawer in place -- no navigation.
+  await card.getByTestId('sim-rotation-card-link').click();
+  const panel = card.getByTestId('sim-rotation-card-drawer-panel');
+  await expect(panel).toBeVisible();
+  expect(page.url()).toBe(url);
+
+  // The fidelity link moved inside the drawer, and opens a new tab rather than this one.
+  const fidelityLink = panel.getByTestId('sim-rotation-drawer-fidelity-link');
+  await expect(fidelityLink).toHaveAttribute('href', '/sim/specs#warrior-fury');
+  await expect(fidelityLink).toHaveAttribute('target', '_blank');
+
   // The fixture's warrior-fury row is not validated, so the note is there; a validated
   // spec renders the card without one.
   await expect(card.getByTestId('sim-rotation-card-note')).toBeVisible();
@@ -218,7 +235,10 @@ test('a saved sim for a validated spec carries the rotation card with no fidelit
   await page.goto('/sim/simfixtureab');
   const card = page.getByTestId('sim-rotation-card');
   await expect(card).toBeVisible();
-  await expect(card.getByTestId('sim-rotation-card-link')).toHaveAttribute('href', '/sim/specs#warrior-fury');
+  await card.getByTestId('sim-rotation-card-link').click();
+  await expect(
+    card.getByTestId('sim-rotation-card-drawer-panel').getByTestId('sim-rotation-drawer-fidelity-link'),
+  ).toHaveAttribute('href', '/sim/specs#warrior-fury');
   await expect(card.getByTestId('sim-rotation-card-note')).toHaveCount(0);
 });
 

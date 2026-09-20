@@ -12,7 +12,7 @@ import type { WeightsRequest } from './bulk-types';
 import { bulkCopy, weightsUnsupportedSpec } from './copy';
 import { PRECISION_ITERATIONS } from './precision';
 import { defaultSettings } from './settings';
-import { specLabel } from './spec-label';
+import { referenceStatOf, specLabel } from './spec-label';
 import { WEIGHTS_BROWSER_DEFAULT_ITERATIONS } from './weights';
 import type { SimCharacter } from './character';
 import type { SimPool } from './worker';
@@ -51,6 +51,10 @@ function deps(overrides: Partial<BulkRequestDeps> = {}): BulkRequestDeps {
   return {
     tool: 'weights',
     mode: null,
+    // `characterCode` (the tab strip's FS1 fallback) is the only reader of this, and no
+    // test here calls it -- but it is a plain required field on `BulkRequestDeps`, so the
+    // stub carries the same placeholder build the `character()` helper above uses.
+    treeVersion: 'test',
     getCharacter: () => character('warrior-fury'),
     getTalentFile: unreached('getTalentFile') as BulkRequestDeps['getTalentFile'],
     getSettings: unreached('getSettings') as BulkRequestDeps['getSettings'],
@@ -108,7 +112,7 @@ describe('buildRequest: precision drives the weights iteration count (sub-item 1
     deps({
       getPrecision: () => id,
       getTalentFile: () => warriorTalents,
-      getSettings: () => defaultSettings(),
+      getSettings: () => defaultSettings(referenceStatOf('warrior-fury')),
     });
 
   // Task 8, sub-item 2: `buildRequest` defaults to the browser lane (the same lane `run()`
@@ -138,7 +142,7 @@ describe('buildRequest: the browser lane is guarded, the server lane is not (Tas
     deps({
       getPrecision: () => 'fast',
       getTalentFile: () => warriorTalents,
-      getSettings: () => defaultSettings(),
+      getSettings: () => defaultSettings(referenceStatOf('warrior-fury')),
     });
 
   it('sends the guarded count when called with no lane at all (run()’s own call), the same as an explicit browser lane', () => {
