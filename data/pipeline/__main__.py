@@ -88,6 +88,22 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="write nothing; exit non-zero if the emitted file has drifted",
     )
+
+    w = sub.add_parser("weights", help="emit a build's copy of the curated stat weights")
+    w.add_argument("--build", required=True)
+    w.add_argument(
+        "--check",
+        action="store_true",
+        help="write nothing; exit non-zero if the emitted file has drifted",
+    )
+
+    ad = sub.add_parser("addon-data", help="emit addon-data.json and the addon's Data.lua")
+    ad.add_argument("--build", required=True)
+    ad.add_argument(
+        "--check",
+        action="store_true",
+        help="write nothing; exit non-zero if either emitted file has drifted",
+    )
     return p
 
 
@@ -184,6 +200,39 @@ def main(argv: list[str] | None = None) -> int:
                 return 1
             return 0
         print(write_phases(Path("curated"), Path(args.web)))
+    elif args.command == "weights":
+        from pipeline.weights import check_weights, write_weights
+
+        if args.check:
+            if check_weights(args.build):
+                logging.getLogger("pipeline").error(
+                    "builds/%s/stat-weights.json does not match curated/stat-weights.json; "
+                    "run `python -m pipeline weights --build %s`",
+                    args.build,
+                    args.build,
+                )
+                return 1
+            return 0
+        print(write_weights(args.build))
+    elif args.command == "addon-data":
+        from pipeline.addondata import check_addon_data, write_addon_data
+        from pipeline.addonlua import lua_has_drifted, write_lua
+
+        if args.check:
+            log = logging.getLogger("pipeline")
+            stale = False
+            if check_addon_data(args.build):
+                log.error("builds/%s/addon-data.json has drifted", args.build)
+                stale = True
+            if lua_has_drifted(args.build):
+                log.error("addon/ForeverSixty/Data.lua has drifted")
+                stale = True
+            if stale:
+                log.error("run `python -m pipeline addon-data --build %s`", args.build)
+                return 1
+            return 0
+        print(write_addon_data(args.build))
+        print(write_lua(args.build))
     return 0
 
 

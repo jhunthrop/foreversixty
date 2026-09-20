@@ -5,6 +5,7 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { expect, test, type Page } from '@playwright/test';
+import { simCopy } from '../../src/lib/sim/copy';
 
 test.use({ viewport: { width: 360, height: 780 } });
 
@@ -90,4 +91,102 @@ test('the run bar stays reachable on /sim/gear after a run', async ({ page }) =>
   await page.getByTestId('sim-run-bulk').click();
   await expect(page.getByTestId('sim-combos')).toBeVisible({ timeout: 25_000 });
   await expect(page.getByTestId('sim-run-bulk')).toBeVisible();
+});
+
+// Task 5 (newcomer MAJOR, review.md:360-363; MINOR, review.md:365-370): the same three tool
+// pages' help and run-bar controls, proven at the review's own 390x844 -- a second width
+// alongside this file's 360x780 above, not a replacement for it, so a control that only
+// just clears 44px at 360 is not quietly let off the hook at the size the review actually
+// measured.
+test.describe('touch help and hit targets at 390x844 (Task 5)', () => {
+  test.use({ viewport: { width: 390, height: 844 } });
+
+  for (const route of ['/sim/gear', '/sim/talents', '/sim/drops'] as const) {
+    test(`${route}: "more settings" relies on no hover-only title`, async ({ page }) => {
+      await load(page, route);
+      await page.getByTestId('sim-settings-more').locator('summary').click();
+      // Scoped to the tool island, not `document` page-globally (fix round, Minor 2): a
+      // `title=` added anywhere else on the page (header, tab strip, footer) by a sibling
+      // lane would fail this spec with a failure that reads as this lane's own bug. The two
+      // later cases in this file already scope to `sim-combos`, one level narrower still.
+      const titled = await page
+        .getByTestId('sim-tools-view')
+        .evaluate((root) =>
+          [...root.querySelectorAll('[title]')].map(
+            (element) => element.getAttribute('data-testid') ?? element.outerHTML.slice(0, 60),
+          ),
+        );
+      expect(titled, 'a control still relies on a hover-only title').toEqual([]);
+    });
+  }
+
+  test('/sim/gear: the variation and dummy notes are visible text, and their rows clear 44px', async ({
+    page,
+  }) => {
+    await load(page, '/sim/gear');
+    await page.getByTestId('sim-settings-more').locator('summary').click();
+
+    // SettingsSheet.svelte:61 and :142 carried `title={simCopy.variationNote}` and
+    // `title={simCopy.dummyNote}` -- never reachable on a phone. Both are plain paragraphs
+    // now, so the same words are on the page without a hover.
+    await expect(page.getByTestId('sim-variation-note')).toBeVisible();
+    await expect(page.getByTestId('sim-variation-note')).toHaveText(simCopy.variationNote);
+    await expect(page.getByTestId('sim-dummy-note')).toBeVisible();
+    await expect(page.getByTestId('sim-dummy-note')).toHaveText(simCopy.dummyNote);
+
+    // sim-execute/sim-dummy: the drawn mark stays 20x20 on purpose -- native `accent-gold`,
+    // never resized, per the brief's own "without changing the visual size of the tick" --
+    // but each sits inside a `flex min-h-11` label stretched across the full grid cell, the
+    // real hit target a tap actually reaches. Measuring the hidden input itself instead is
+    // the exact false positive sim-phone.spec.ts's own targetsAreBigEnough, and this file's
+    // own 44px sweep above, already carve out for every checkbox in this suite.
+    for (const id of ['sim-execute', 'sim-dummy'] as const) {
+      const box = await page.getByTestId(id).evaluate((element) => {
+        const rect = (element.closest('label') as HTMLElement).getBoundingClientRect();
+        return { width: rect.width, height: rect.height };
+      });
+      expect(box.width, `${id} label width`).toBeGreaterThanOrEqual(44);
+      expect(box.height, `${id} label height`).toBeGreaterThanOrEqual(44);
+    }
+
+    // BulkRunBar's precision label: `min-h-11` is explicit now (Task 5) instead of relying
+    // on the select child's own height to stretch a plain flex row tall enough by accident.
+    const precisionBox = await page.getByTestId('sim-precision').evaluate((element) => {
+      const rect = (element.closest('label') as HTMLElement).getBoundingClientRect();
+      return { width: rect.width, height: rect.height };
+    });
+    expect(precisionBox.width, 'precision label width').toBeGreaterThanOrEqual(44);
+    expect(precisionBox.height, 'precision label height').toBeGreaterThanOrEqual(44);
+  });
+
+  test('/sim/gear: after a run, the results carry no hover-only title', async ({ page }) => {
+    await load(page, '/sim/gear');
+    await page.getByTestId('sim-search-add-16963').click();
+    await page.getByTestId('sim-run-bulk').click();
+    await expect(page.getByTestId('sim-combos')).toBeVisible({ timeout: 25_000 });
+    const titled = await page
+      .getByTestId('sim-combos')
+      .evaluate((element) => element.querySelectorAll('[title]').length);
+    expect(titled, 'a control inside the results still relies on a hover-only title').toBe(0);
+  });
+
+  test('/sim/drops: after a run, a chip names its boss in visible text and the results carry no hover-only title', async ({
+    page,
+  }) => {
+    await load(page, '/sim/drops');
+    // Molten Core is gated ahead of today (phases.json), so "show unreleased content" is
+    // what makes it pickable at all -- the same setup sim-drops.spec.ts's own "picking a
+    // boss..." case uses.
+    await page.getByTestId('sim-upcoming').check();
+    await page.getByTestId('sim-source-raid:molten-core:11502').check();
+    await page.getByTestId('sim-run-bulk').click();
+    await expect(page.getByTestId('sim-drops-by-boss')).toBeVisible({ timeout: 25_000 });
+    const titled = await page
+      .getByTestId('sim-combos')
+      .evaluate((element) => element.querySelectorAll('[title]').length);
+    expect(titled, 'a control inside the results still relies on a hover-only title').toBe(0);
+    // SubstitutionChips.svelte:55 carried the boss name in a `title` alongside the item; it
+    // is now part of the chip's own visible text (substitutionChipLabel, combos.ts).
+    await expect(page.getByTestId('sim-combo-row').first()).toContainText('Ragnaros');
+  });
 });

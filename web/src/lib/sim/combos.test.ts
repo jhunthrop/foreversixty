@@ -5,19 +5,24 @@ import itemsJson from '../../fixtures/planner/items/warrior.json';
 import setsJson from '../../fixtures/planner/sets.json';
 import { addonStringFor } from './addon-export';
 import {
+  MINUS,
+  collapsedComboCount,
   comboRows,
   deltaLabel,
+  gainLabel,
   headlineFor,
   isEmptiedOffHand,
   keepsSetBonus,
   percentOf,
+  signedGainLabel,
   slotSummary,
   sourceNameOfCombo,
+  substitutionChipLabel,
   substitutionLabel,
   winningGear,
 } from './combos';
 import { bulkCopy } from './copy';
-import type { BulkResult } from './bulk-types';
+import type { BulkResult, Combo } from './bulk-types';
 import type { Item, ItemSet } from '../planner/types';
 
 const result = bulkResultJson as unknown as BulkResult;
@@ -41,10 +46,102 @@ describe('comboRows', () => {
   });
 });
 
+/**
+ * newcomer MAJOR (review.md:251-257): rings and trinkets are tried in both slots, so the
+ * engine can emit the same combination twice, differing only by which finger/trinket slot
+ * carries it. A row's identity is its substitution SET -- an `item` substitution keyed by
+ * `item_id`/`enchant`/`suffix` and NOT `slot` -- sorted so the engine's emission order
+ * cannot matter.
+ */
+describe('comboRows de-duplicates identical candidates at the source', () => {
+  const finger1Band: Combo = {
+    substitutions: [{ kind: 'item', slot: 'finger1', item_id: 19325, name: 'Band of Accuria' }],
+    dps: result.equipped,
+    delta: { mean: 10, stddev: 0, error: 1, min: 0, max: 0 },
+    group: 0,
+  };
+  const finger2Band: Combo = {
+    ...finger1Band,
+    substitutions: [{ kind: 'item', slot: 'finger2', item_id: 19325, name: 'Band of Accuria' }],
+  };
+
+  it('collapses two combos identical but for slot (finger1 vs finger2) into one row', () => {
+    const rows = comboRows({ ...result, combos: [finger1Band, finger2Band] });
+    expect(rows).toHaveLength(1);
+    expect(rows[0].combo).toBe(finger1Band);
+  });
+
+  it('keeps two combos with genuinely different item ids distinct', () => {
+    const otherRing: Combo = {
+      ...finger2Band,
+      substitutions: [{ kind: 'item', slot: 'finger2', item_id: 19326, name: 'Some Other Ring' }],
+    };
+    const rows = comboRows({ ...result, combos: [finger1Band, otherRing] });
+    expect(rows).toHaveLength(2);
+  });
+
+  it('collapses a two-substitution combo emitted in the two possible orders', () => {
+    const orderA: Combo = {
+      substitutions: [
+        { kind: 'item', slot: 'head', item_id: 1, name: 'A' },
+        { kind: 'item', slot: 'shoulder', item_id: 2, name: 'B' },
+      ],
+      dps: result.equipped,
+      delta: { mean: 8, stddev: 0, error: 1, min: 0, max: 0 },
+      group: 0,
+    };
+    const orderB: Combo = { ...orderA, substitutions: [orderA.substitutions[1], orderA.substitutions[0]] };
+    const rows = comboRows({ ...result, combos: [orderA, orderB] });
+    expect(rows).toHaveLength(1);
+    expect(rows[0].combo).toBe(orderA);
+  });
+
+  it('renumbers ranks 1, 2, 3 with no hole after a collapse', () => {
+    const nextGroup: Combo = {
+      substitutions: [{ kind: 'item', slot: 'trinket1', item_id: 3, name: 'C' }],
+      dps: result.equipped,
+      delta: { mean: 5, stddev: 0, error: 1, min: 0, max: 0 },
+      group: 1,
+    };
+    const lastGroup: Combo = {
+      substitutions: [{ kind: 'item', slot: 'trinket2', item_id: 4, name: 'D' }],
+      dps: result.equipped,
+      delta: { mean: 2, stddev: 0, error: 1, min: 0, max: 0 },
+      group: 2,
+    };
+    const rows = comboRows({ ...result, combos: [finger1Band, finger2Band, nextGroup, lastGroup] });
+    expect(rows.map((row) => row.rank)).toEqual([1, 2, 3]);
+  });
+
+  it('keeps the leader’s rank when a within-error group loses a duplicate member', () => {
+    const thirdMember: Combo = {
+      substitutions: [{ kind: 'item', slot: 'trinket1', item_id: 5, name: 'E' }],
+      dps: result.equipped,
+      delta: { mean: 9.5, stddev: 0, error: 1, min: 0, max: 0 },
+      group: 0,
+    };
+    const nextGroup: Combo = {
+      substitutions: [{ kind: 'item', slot: 'trinket2', item_id: 6, name: 'F' }],
+      dps: result.equipped,
+      delta: { mean: 4, stddev: 0, error: 1, min: 0, max: 0 },
+      group: 1,
+    };
+    const rows = comboRows({ ...result, combos: [finger1Band, finger2Band, thirdMember, nextGroup] });
+    expect(rows.map((row) => row.rank)).toEqual([1, 1, 3]);
+  });
+});
+
 describe('percentOf and deltaLabel', () => {
-  it('reads a gain with its error and a sign', () => {
+  it('reads a gain with its error and a sign, whole once the figure reaches 10', () => {
     expect(deltaLabel({ mean: 41.2, stddev: 0, error: 5.41, min: 0, max: 0 })).toBe('+41 ± 11');
-    expect(deltaLabel({ mean: -1.8, stddev: 0, error: 5.38, min: 0, max: 0 })).toBe('−2 ± 11');
+    // Below 10, the magnitude keeps its decimal (dps D38: two builds 0.44 DPS apart must not
+    // both read "+0"). 1.8 rounds to 1.8, which is still under 10, so it stays "1.8".
+    expect(deltaLabel({ mean: -1.8, stddev: 0, error: 5.38, min: 0, max: 0 })).toBe('−1.8 ± 11');
+  });
+
+  it('keeps a decimal under 10 DPS so two builds 0.44 DPS apart do not both read "+0" (dps D38)', () => {
+    expect(deltaLabel({ mean: 0.44, stddev: 0, error: 0, min: 0, max: 0 })).toBe('+0.4 ± 0');
+    expect(deltaLabel({ mean: -0.44, stddev: 0, error: 0, min: 0, max: 0 })).toBe('−0.4 ± 0');
   });
 
   it('never rounds a non-zero band away to "0" -- the Droptimizer repro (tank-sim review)', () => {
@@ -54,6 +151,95 @@ describe('percentOf and deltaLabel', () => {
 
   it('is zero percent against a zero baseline rather than infinite', () => {
     expect(percentOf(41.2, 0)).toBe(0);
+  });
+});
+
+describe('gainLabel', () => {
+  it('keeps one decimal under a magnitude of 10', () => {
+    expect(gainLabel(0.44)).toBe('0.4');
+  });
+
+  it('renders a true zero as whole, not "0.0" — a real zero should not imply precision', () => {
+    expect(gainLabel(0)).toBe('0');
+  });
+
+  it('rounds 9.95 past the 10 boundary first, then renders whole because the rounded value is not under 10', () => {
+    expect(gainLabel(9.95)).toBe('10');
+  });
+
+  it('keeps 10.0 whole', () => {
+    expect(gainLabel(10.0)).toBe('10');
+  });
+
+  it('drops the decimal and thousands-separates once the magnitude reaches 10', () => {
+    expect(gainLabel(41.2)).toBe('41');
+    expect(gainLabel(1234.2)).toBe('1,234');
+  });
+
+  /**
+   * Final whole-branch review, Important 1: `gainLabel` documented a non-negative
+   * precondition but never enforced it, and the BY SLOT column (ComboResults.svelte) called
+   * it with a signed `SlotSummaryRow.gain` -- `gainLabel(-1234.2)` used to render "-1234.2",
+   * a spurious decimal with the thousands separator lost, where the old code rendered
+   * "-1,234". `gainLabel` now takes its own magnitude defensively, so a negative input can
+   * never reintroduce that regression even if a future caller forgets `Math.abs` too.
+   */
+  it('takes the magnitude defensively -- a negative input formats the same as its absolute value', () => {
+    expect(gainLabel(-1234.2)).toBe(gainLabel(1234.2));
+    expect(gainLabel(-0.44)).toBe(gainLabel(0.44));
+    expect(gainLabel(-1234.2)).toBe('1,234');
+  });
+});
+
+/**
+ * Final whole-branch review, Important 1: the BY SLOT gain cell's own sign decision, pulled
+ * out of ComboResults.svelte's markup into a pure, tested function. `SlotSummaryRow.gain` is
+ * `combo.delta.mean`, unconstrained in sign (a persona reviewer saw a -2 drop), unlike
+ * `deltaLabel`'s `Estimate.mean`, which already went through `Math.abs` via `gainLabel`
+ * before this fix. `MINUS`, not a hyphen -- the design system's rule for a negative figure.
+ */
+describe('signedGainLabel', () => {
+  it('signs a negative gain at or above 10 with MINUS, whole and thousands-separated', () => {
+    expect(signedGainLabel(-1234.2)).toBe(`${MINUS}1,234`);
+  });
+
+  it('signs a negative gain under 10 with MINUS and keeps its decimal', () => {
+    expect(signedGainLabel(-1.8)).toBe(`${MINUS}1.8`);
+  });
+
+  it('signs a positive gain with a plus', () => {
+    expect(signedGainLabel(41.2)).toBe('+41');
+  });
+
+  it('reads an unknown gain as an em dash', () => {
+    expect(signedGainLabel(null)).toBe('—');
+  });
+});
+
+/**
+ * Final whole-branch review, Important 2: `store.combinations` is the engine's own
+ * `simCount`, before `comboRows`' de-dupe (design 3.2's rings-and-trinkets-in-both-slots
+ * rule) collapses duplicate placements into one row -- so the run bar's count can read
+ * higher than the table's own row count with nothing on the page explaining the gap.
+ * Controller ruling: explain the gap rather than recompute either number from the other.
+ */
+describe('collapsedComboCount', () => {
+  it('is zero when nothing was collapsed', () => {
+    expect(collapsedComboCount(result)).toBe(0);
+  });
+
+  it('counts exactly how many raw combos a finger1/finger2 duplicate collapsed into one row', () => {
+    const finger1Band: Combo = {
+      substitutions: [{ kind: 'item', slot: 'finger1', item_id: 19325, name: 'Band of Accuria' }],
+      dps: result.equipped,
+      delta: { mean: 10, stddev: 0, error: 1, min: 0, max: 0 },
+      group: 0,
+    };
+    const finger2Band: Combo = {
+      ...finger1Band,
+      substitutions: [{ kind: 'item', slot: 'finger2', item_id: 19325, name: 'Band of Accuria' }],
+    };
+    expect(collapsedComboCount({ ...result, combos: [finger1Band, finger2Band] })).toBe(1);
   });
 });
 
@@ -193,6 +379,16 @@ describe('headlineFor and substitutionLabel', () => {
     expect(headlineFor(result)).toBe('+41 DPS from Helm of Wrath');
   });
 
+  // headlineFor splits deltaLabel(...) on a space and takes [0]; a sub-10 gain's decimal
+  // must survive that split rather than being cut at the space inside "0.4".
+  it('keeps a small gain’s decimal when splitting deltaLabel’s "+0.4 ± 0" on the space', () => {
+    const smallGain: BulkResult = {
+      ...result,
+      combos: [{ ...result.combos[0], delta: { mean: 0.44, stddev: 0, error: 0, min: 0, max: 0 } }],
+    };
+    expect(headlineFor(smallGain)).toBe('+0.4 DPS from Helm of Wrath');
+  });
+
   it('labels an item, a loadout, a set and a consumable list (contract 10.8)', () => {
     expect(substitutionLabel({ kind: 'item', slot: 'head', item_id: 16963, name: 'Helm of Wrath' })).toBe(
       'Helm of Wrath',
@@ -219,5 +415,34 @@ describe('sourceNameOfCombo', () => {
         group: 0,
       }),
     ).toBe('Ragnaros');
+  });
+});
+
+describe('substitutionChipLabel', () => {
+  // Task 5 (newcomer MAJOR, review.md:360-363): SubstitutionChips.svelte used to carry this
+  // exact string only in a `title`, which a phone can never hover to read. Folding the
+  // source into the same string the chip already renders is what makes it tappable by
+  // construction; this is the pure decision behind that, kept out of the component per the
+  // lane's testable-decision rule.
+  it('appends the source name when the substitution carries one', () => {
+    expect(
+      substitutionChipLabel({
+        kind: 'item',
+        slot: 'head',
+        item_id: 16963,
+        name: 'Helm of Wrath',
+        source_name: 'Ragnaros',
+      }),
+    ).toBe('Helm of Wrath · Ragnaros');
+  });
+
+  it('is just the label when the substitution carries no source', () => {
+    expect(substitutionChipLabel({ kind: 'talents', name: 'Deep Fury' })).toBe('Deep Fury');
+  });
+
+  it('ignores an empty source name the same way the title it replaces did', () => {
+    expect(
+      substitutionChipLabel({ kind: 'item', slot: 'head', item_id: 1, name: 'X', source_name: '' }),
+    ).toBe('X');
   });
 });

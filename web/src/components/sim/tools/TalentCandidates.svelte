@@ -15,7 +15,7 @@
   import { createLazyComponent, type LazyLoadState } from '../../../lib/report/lazy-component.svelte';
   import { fetchMyBuilds } from '../../../lib/sim/api';
   import type { TalentLoadout } from '../../../lib/sim/bulk-types';
-  import { talentsString, type SimCharacter } from '../../../lib/sim/character';
+  import { plannerGearFor, talentsString, type SimCharacter } from '../../../lib/sim/character';
   import { bulkCopy, simCopy } from '../../../lib/sim/copy';
   import { dedupeByName } from '../../../lib/sim/dedupe';
 
@@ -212,10 +212,16 @@
   {#if plannerOpen}
     <div class="border-line rounded-panel border p-2" data-testid="sim-inline-planner">
       {#if plannerLazy.current}
+        <!-- dps D39: without a seeded `gear`, this inline card's live DPS estimate ran a
+             gearless sim while the comparison table below simmed the loaded character's real
+             gear, so the same build read two different DPS numbers on one screen. Passing
+             the loaded character's gear here (through plannerGearFor) is what keeps the
+             inline card and the ranking table honest with each other. -->
         <plannerLazy.current
           treeVersion={character.tree_version}
           classSlug={character.class_slug}
           raceSlug={character.race_slug}
+          gear={plannerGearFor(character)}
           oncode={(code: string) => (customCode = code)}
         />
         <button

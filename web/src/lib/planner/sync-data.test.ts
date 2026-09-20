@@ -222,6 +222,11 @@ describe('SYNC_ENTRIES', () => {
     const simitems = SYNC_ENTRIES.find((entry) => entry.name === 'simitems.json');
     expect(simitems).toEqual({ name: 'simitems.json', kind: 'file', required: false });
   });
+
+  it('publishes the build’s stat weights, and does not require them', () => {
+    const weights = SYNC_ENTRIES.find((entry) => entry.name === 'stat-weights.json');
+    expect(weights).toEqual({ name: 'stat-weights.json', kind: 'file', required: false });
+  });
 });
 
 describe('resolveDataSource', () => {

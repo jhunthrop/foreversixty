@@ -91,8 +91,18 @@ func TestSummarizeHeader(t *testing.T) {
 	if got.FightIndex != 1 {
 		t.Errorf("FightIndex = %d, want 1", got.FightIndex)
 	}
-	if got.DurationMS != 180000 {
-		t.Errorf("DurationMS = %d, want 180000 (avg_iteration_duration * 1000)", got.DurationMS)
+	// DurationMS is now DERIVED (task 3), not the measured
+	// avg_iteration_duration: it is the duration that makes total
+	// damage / duration equal DPS(res).Mean exactly. oneAction()'s
+	// actor totals 1000 (100000 damage over 100 iterations) and
+	// resultWith wires RaidMetrics.Dps.Avg to 1791.1, so the derived
+	// duration is round(1000/1791.1*1000) = 558, not the 180000 that
+	// avg_iteration_duration (180s) alone would give - this fixture's
+	// two numbers were never meant to agree; TestGoldenSummaries is
+	// where headline-equals-table is actually proved, against real
+	// engine output.
+	if got.DurationMS != 558 {
+		t.Errorf("DurationMS = %d, want 558 (derived: total damage / DPS.Mean)", got.DurationMS)
 	}
 }
 
@@ -124,8 +134,10 @@ func TestSummarizeDividesByIterations(t *testing.T) {
 	if a.Effective != a.Total {
 		t.Errorf("Effective = %d, want it equal to Total (%d)", a.Effective, a.Total)
 	}
-	if a.ActiveMS != 180000 {
-		t.Errorf("ActiveMS = %d, want the fight duration 180000", a.ActiveMS)
+	// See TestSummarizeHeader: the fight duration is now derived, not
+	// avg_iteration_duration, so ActiveMS follows the same 558.
+	if a.ActiveMS != 558 {
+		t.Errorf("ActiveMS = %d, want the derived fight duration 558", a.ActiveMS)
 	}
 	if len(a.Abilities) != 1 {
 		t.Fatalf("actor has %d abilities, want 1", len(a.Abilities))
@@ -276,6 +288,66 @@ func TestSummarizeReportsWastedResource(t *testing.T) {
 	}
 	if r.Wasted != 10 {
 		t.Errorf("Wasted = %d, want 10 ((gain - actual_gain) over 100 iterations)", r.Wasted)
+	}
+}
+
+// A rage-gain event travels through the same ActionMetrics channel a real
+// ability does, but it is the engine's own bookkeeping, not something the
+// player cast - the persona review that found this defect saw 98
+// "Rage gain" rows in the Casts tab. It must not appear as a cast, an
+// auto attack (a real cast) must survive alongside it, and the rage
+// figures the filter is not responsible for must still reach Resources.
+func TestCastsExcludeResourcePseudoActions(t *testing.T) {
+	u := &proto.UnitMetrics{
+		Name: "Fury",
+		Actions: []*proto.ActionMetrics{
+			{
+				Id:      &proto.ActionID{RawId: &proto.ActionID_OtherId{OtherId: proto.OtherAction_OtherActionRageGain}},
+				Targets: []*proto.TargetedActionMetrics{{UnitIndex: 1, Casts: 144}},
+			},
+			{
+				// Auto attack, tag 1: a real cast, and must survive the filter.
+				Id: &proto.ActionID{
+					RawId: &proto.ActionID_OtherId{OtherId: proto.OtherAction_OtherActionAttack},
+					Tag:   1,
+				},
+				Targets: []*proto.TargetedActionMetrics{{UnitIndex: 1, Casts: 200, Hits: 200, Damage: 10000}},
+			},
+		},
+		Resources: []*proto.ResourceMetrics{{
+			Id:         &proto.ActionID{RawId: &proto.ActionID_OtherId{OtherId: proto.OtherAction_OtherActionRageGain}},
+			Type:       proto.ResourceType_ResourceTypeRage,
+			Events:     144,
+			Gain:       1440,
+			ActualGain: 1440,
+		}},
+	}
+	got, err := Summarize(resultWith(u, 100), req())
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, c := range got.Casts {
+		if c.SpellName == "other:rage_gain" {
+			t.Errorf("Casts has a row named %q; rage gain is the engine's own bookkeeping, not a cast", c.SpellName)
+		}
+	}
+	var sawAttack bool
+	for _, c := range got.Casts {
+		if c.SpellName == "other:attack/1" {
+			sawAttack = true
+			if c.Succeeded != 2 { // 200 casts / 100 iterations
+				t.Errorf("other:attack/1 Succeeded = %d, want 2", c.Succeeded)
+			}
+		}
+	}
+	if !sawAttack {
+		t.Error("Casts is missing other:attack/1; a real auto-attack cast must survive the pseudo-action filter")
+	}
+	if len(got.Resources) != 1 {
+		t.Fatalf("Resources has %d entries, want 1; the filter must not touch Resources", len(got.Resources))
+	}
+	if r := got.Resources[0]; r.Gained != 14 { // 1440/100 rounded
+		t.Errorf("resource Gained = %d, want 14; the rage-gain event still belongs in Resources", r.Gained)
 	}
 }
 
@@ -711,17 +783,154 @@ func TestWeightsMapping(t *testing.T) {
 		t.Fatal(err)
 	}
 	want := []api.StatWeight{
-		{Stat: "agility", Weight: 1.1, Error: 0.02},
-		{Stat: "attack_power", Weight: 1.0, Error: 0.01},
-		{Stat: "crit", Weight: 12.0, Error: 0.30},
+		{Stat: "agility", Weight: 1.1, Error: 0.02, Insignificant: false},
+		{Stat: "attack_power", Weight: 1.0, Error: 0.01, Insignificant: false},
+		{Stat: "crit", Weight: 12.0, Error: 0.30, Insignificant: false},
 	}
 	if len(got) != len(want) {
 		t.Fatalf("got %d weights, want %d: %+v", len(got), len(want), got)
 	}
 	for i := range want {
-		if got[i].Stat != want[i].Stat || got[i].Weight != want[i].Weight || got[i].Error != want[i].Error {
+		if got[i] != want[i] {
 			t.Errorf("weight %d = %+v, want %+v", i, got[i], want[i])
 		}
+	}
+}
+
+// TestWeightsConvertsPopulationStdevToStandardError pins the
+// denominator sim/api.WeightsIterationsFactor's doc documents:
+// sim/core/statweight.go's WeightsStdev is a population standard
+// deviation, and Weights divides it by sqrt(req.Iterations *
+// api.WeightsIterationsFactor) - the multiplied count
+// sim/request.BuildWeights actually runs the engine's sweep at - the
+// same way adapter.DPS divides by sqrt(IterationsDone) for the
+// headline number.
+func TestWeightsConvertsPopulationStdevToStandardError(t *testing.T) {
+	req := api.SimRequest{
+		Iterations: 3000,
+		Weights: &api.WeightsSpec{
+			Stats:     []string{"attack_power", "crit"},
+			Reference: "attack_power",
+		},
+	}
+	stats := make([]float64, len(proto.Stat_name))
+	stdev := make([]float64, len(proto.Stat_name))
+	stats[proto.Stat_StatAttackPower] = 1.0
+	stats[proto.Stat_StatCrit] = 5.0
+	stdev[proto.Stat_StatAttackPower] = 13.0
+	stdev[proto.Stat_StatCrit] = 6.0
+
+	res := &proto.StatWeightsResult{Dps: &proto.StatWeightValues{
+		Weights:      &proto.UnitStats{Stats: stats},
+		WeightsStdev: &proto.UnitStats{Stats: stdev},
+	}}
+	got, err := Weights(res, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	n := math.Sqrt(float64(req.Iterations * api.WeightsIterationsFactor))
+	want := []float64{13.0 / n, 6.0 / n}
+	for i, w := range want {
+		if diff := got[i].Error - w; diff > 1e-9 || diff < -1e-9 {
+			t.Errorf("weight %d error = %v, want %v (raw stdev / sqrt(%d*%d))",
+				i, got[i].Error, w, req.Iterations, api.WeightsIterationsFactor)
+		}
+	}
+}
+
+// TestInsignificant is the table task 5(b2) pins: error compared to
+// the absolute value of the weight, error >= weight (not just >)
+// flags a row the boundary case included, and the reference stat's
+// own exactly-1 weight gets whatever the rule gives it like any
+// other row.
+func TestInsignificant(t *testing.T) {
+	cases := []struct {
+		name   string
+		weight float64
+		stdev  float64
+		want   bool
+	}{
+		{"error well under weight is significant", 6.9, 4.0, false},
+		{"error over weight is insignificant", 1.0, 13.0, true},
+		{"error exactly equal to a nonzero weight is insignificant", 5.0, 5.0, true},
+		{"hard-capped 0 +/- 0 is insignificant", 0.0, 0.0, true},
+		{"a real negative weight bigger than its error is significant", -6.0, 2.0, false},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			req := api.SimRequest{Weights: &api.WeightsSpec{
+				Stats:     []string{"attack_power", "crit"},
+				Reference: "attack_power",
+			}}
+			stats := make([]float64, len(proto.Stat_name))
+			stdev := make([]float64, len(proto.Stat_name))
+			stats[proto.Stat_StatAttackPower] = 1.0
+			stdev[proto.Stat_StatAttackPower] = 0.0
+			stats[proto.Stat_StatCrit] = c.weight
+			stdev[proto.Stat_StatCrit] = c.stdev
+
+			res := &proto.StatWeightsResult{Dps: &proto.StatWeightValues{
+				Weights:      &proto.UnitStats{Stats: stats},
+				WeightsStdev: &proto.UnitStats{Stats: stdev},
+			}}
+			got, err := Weights(res, req)
+			if err != nil {
+				t.Fatal(err)
+			}
+			// got[0] is attack_power, the reference: weight 1/1=1,
+			// error 0/1=0 - not insignificant since 0 < 1.
+			if got[0].Insignificant {
+				t.Errorf("reference stat came back insignificant: %+v", got[0])
+			}
+			if got[1].Insignificant != c.want {
+				t.Errorf("crit.Insignificant = %v, want %v (weight %v, error %v)",
+					got[1].Insignificant, c.want, got[1].Weight, got[1].Error)
+			}
+		})
+	}
+}
+
+// TestInsignificantOnTheReferenceStatItself pins the brief's other
+// named case: the reference stat's own weight is always exactly 1
+// (it is normalised against itself), and its Insignificant flag gets
+// whatever error>=1 gives it like any other row, not a hardcoded
+// false.
+func TestInsignificantOnTheReferenceStatItself(t *testing.T) {
+	for _, c := range []struct {
+		name              string
+		refStdev          float64
+		refRaw            float64
+		wantInsignificant bool
+	}{
+		{"reference error well under its own weight of 1", 2.0, 20.0, false},
+		{"reference error over its own weight of 1", 15.0, 10.0, true},
+	} {
+		t.Run(c.name, func(t *testing.T) {
+			req := api.SimRequest{Weights: &api.WeightsSpec{
+				Stats:     []string{"attack_power"},
+				Reference: "attack_power",
+			}}
+			stats := make([]float64, len(proto.Stat_name))
+			stdev := make([]float64, len(proto.Stat_name))
+			stats[proto.Stat_StatAttackPower] = c.refRaw
+			stdev[proto.Stat_StatAttackPower] = c.refStdev
+
+			res := &proto.StatWeightsResult{Dps: &proto.StatWeightValues{
+				Weights:      &proto.UnitStats{Stats: stats},
+				WeightsStdev: &proto.UnitStats{Stats: stdev},
+			}}
+			got, err := Weights(res, req)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got[0].Weight != 1.0 {
+				t.Fatalf("reference weight = %v, want exactly 1", got[0].Weight)
+			}
+			if got[0].Insignificant != c.wantInsignificant {
+				t.Errorf("reference Insignificant = %v, want %v (error %v)",
+					got[0].Insignificant, c.wantInsignificant, got[0].Error)
+			}
+		})
 	}
 }
 
@@ -807,6 +1016,28 @@ func TestSampleMapsTheEnginesCastLog(t *testing.T) {
 	}
 }
 
+// The sample table is a cast log too, so it must exclude the same
+// resource pseudo-actions summary.Casts does: a rage-gain event in the
+// sample timeline is exactly as much not a cast as it is in the Casts
+// tab.
+func TestSampleExcludesResourcePseudoActions(t *testing.T) {
+	res := &proto.RaidSimResult{SampleIteration: &proto.SampleIteration{
+		Casts: []*proto.SampleCast{
+			{AtMs: 0, ActionId: &proto.ActionID{RawId: &proto.ActionID_OtherId{OtherId: proto.OtherAction_OtherActionRageGain}}},
+			{AtMs: 100, ActionId: &proto.ActionID{
+				RawId: &proto.ActionID_OtherId{OtherId: proto.OtherAction_OtherActionAttack}, Tag: 1,
+			}},
+		},
+	}}
+	got := Sample(res)
+	if len(got) != 1 {
+		t.Fatalf("got %d sample casts, want 1 (the rage-gain event must be filtered)", len(got))
+	}
+	if got[0].Action != "other:attack/1" {
+		t.Errorf("surviving sample cast = %q, want %q", got[0].Action, "other:attack/1")
+	}
+}
+
 // A result with no sample is not an error: an aborted run, a bulk
 // stage and an older engine all produce one, and the page renders the
 // card only when there are rows.
@@ -842,5 +1073,84 @@ func TestSampleOfTheWarriorFixture(t *testing.T) {
 		if c.Action == "" {
 			t.Errorf("cast %d has no action key", i)
 		}
+	}
+}
+
+// combatLogSchool must map the engine's core school bitmask onto the
+// combat log's, bit by bit: the persona review that found this bug saw
+// every warrior ability, and only warrior abilities, render as school
+// "Holy" (engine 2, Physical, misread as log 2, Holy) because the two
+// masks assign the same schools to different bit positions.
+func TestCombatLogSchool(t *testing.T) {
+	tests := []struct {
+		name   string
+		engine int32
+		want   int64
+	}{
+		{"none maps to none, not to Physical's bit", 0, 0},
+		{"warrior physical ability: the bug this task fixes", 2, 1},
+		// Frost is the one school the two masks happen to place on the
+		// same bit. It is still listed explicitly in
+		// engineSchoolToLogBit and tested here so nobody later
+		// "simplifies" the table by dropping the identity entry.
+		{"frost mage frost ability: coincidentally identical on both masks", 16, 16},
+		{"holy", 32, 2},
+		{"arcane", 4, 64},
+		{"fire", 8, 4},
+		{"nature", 64, 8},
+		{"shadow", 128, 32},
+		{"combined mask ORs both translated bits: Frost|Shadow", 16 | 128, 16 | 32},
+		{"a bit the table does not know is dropped, not mapped to a wrong school", 1 << 20, 0},
+		{"an unmapped bit combined with a known one drops only the unknown bit", 2 | (1 << 20), 1},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			if got := combatLogSchool(tc.engine); got != tc.want {
+				t.Errorf("combatLogSchool(%d) = %d, want %d", tc.engine, got, tc.want)
+			}
+		})
+	}
+}
+
+// The mapping has to be wired into ability(), not just correct in
+// isolation: this pins Summarize's output for a warrior's physical
+// ability (the exact case the persona review flagged) and a frost
+// mage's frost ability (the coincidentally-identical case, which would
+// pass even if ability() still wrote am.SpellSchool straight through).
+func TestSummarizeTranslatesAbilitySchool(t *testing.T) {
+	const iters = 1
+	tests := []struct {
+		name       string
+		spellID    int32
+		engineMask int32
+		wantSchool int64
+	}{
+		{"warrior physical ability", 23894, 2, 1},
+		{"frost mage frost ability", 25304, 16, 16},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			u := &proto.UnitMetrics{
+				Name: "Sim",
+				Dps:  &proto.DistributionMetrics{Avg: 1, Stdev: 0, Max: 1, Min: 1},
+				Actions: []*proto.ActionMetrics{{
+					Id:          &proto.ActionID{RawId: &proto.ActionID_SpellId{SpellId: tc.spellID}},
+					SpellSchool: tc.engineMask,
+					Targets: []*proto.TargetedActionMetrics{{
+						UnitIndex: 1,
+						Hits:      1,
+						Damage:    100,
+					}},
+				}},
+			}
+			got, err := Summarize(resultWith(u, iters), req())
+			if err != nil {
+				t.Fatal(err)
+			}
+			ab := got.DamageDone[0].Abilities[0]
+			if ab.School != tc.wantSchool {
+				t.Errorf("School = %d, want %d", ab.School, tc.wantSchool)
+			}
+		})
 	}
 }

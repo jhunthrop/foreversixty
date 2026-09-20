@@ -1,7 +1,7 @@
 {
   "engine_version": "sim:golden",
   "fight_index": 1,
-  "duration_ms": 179856,
+  "duration_ms": 179879,
   "damage_done": [
     {
       "guid": "sim-player",
@@ -9,7 +9,7 @@
       "class": "mage",
       "total": 91709,
       "effective": 91709,
-      "active_ms": 179856,
+      "active_ms": 179879,
       "abilities": [
         {
           "spell_id": 25304,
@@ -118,13 +118,8 @@
       "targets": [
         {
           "guid": "sim-target-0",
-          "name": "Target 0",
-          "total": 91709
-        },
-        {
-          "guid": "sim-target-1",
           "name": "Target 1",
-          "total": 0
+          "total": 91709
         }
       ],
       "series": []
@@ -671,18 +666,6 @@
       "guid": "sim-player",
       "name": "Sim",
       "owner_guid": "sim-player",
-      "spell_id": 22000005,
-      "spell_name": "other:mana_gain",
-      "started": 32,
-      "succeeded": 32,
-      "failed": 0,
-      "cast_time_ms": 0,
-      "sequence": []
-    },
-    {
-      "guid": "sim-player",
-      "name": "Sim",
-      "owner_guid": "sim-player",
       "spell_id": 1000101,
       "spell_name": "spell:1000101",
       "started": 2,
@@ -792,7 +775,7 @@
       "class_source": "sim",
       "spec": "frost",
       "role": "dps",
-      "active_ms": 179856,
+      "active_ms": 179879,
       "activity_pct": 100,
       "deaths": 0,
       "damage_done": 91709,

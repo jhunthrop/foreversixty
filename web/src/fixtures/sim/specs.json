@@ -8,7 +8,7 @@
       { "spell_id": 25286, "name": "Heroic Strike", "sim_casts": 57, "actual_casts": 44 },
       { "spell_id": 1680, "name": "Whirlwind", "sim_casts": 22, "actual_casts": 19 }
     ],
-    "engine_version": "8b2169e61",
+    "engine_version": "7a45995ae",
     "reference_stat": "attack_power",
     "weight_stats": ["attack_power", "strength", "agility", "crit", "hit", "melee_haste"],
     "updated_at": "2026-09-14T04:12:00Z"
@@ -19,7 +19,7 @@
     "median_gap": 0.084,
     "parses": 31,
     "worst_actions": [{ "spell_id": 25304, "name": "Frostbolt", "sim_casts": 71, "actual_casts": 62 }],
-    "engine_version": "8b2169e61",
+    "engine_version": "7a45995ae",
     "reference_stat": "spell_power",
     "updated_at": "2026-09-14T04:12:00Z"
   },

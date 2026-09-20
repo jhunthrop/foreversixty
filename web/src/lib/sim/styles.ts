@@ -116,6 +116,37 @@ export function fightStyle(id: string): FightStyle | null {
 }
 
 /**
+ * What TARGETS should say about this encounter (tank MAJOR, review.md:325-327): a
+ * timeline style's `targets` field is only the ramp's opening count (the dungeon pull
+ * settles on 1, not the 5 it actually reaches), so a control reading that field alone
+ * understates the run. This file holds no words -- the caller turns these numbers into a
+ * sentence via copy.ts.
+ *
+ * `attached` (fix round 1, reviewer Important): `settings.ts`'s `detached()` never clears
+ * `targets_over_time` when a style-owned field like the dummy checkbox is toggled by hand
+ * -- clearing it would silently drop the ramp from the run the moment a player ticks a
+ * checkbox, which is exactly the kind of dishonesty this whole fix round exists to remove.
+ * So a ramp can outlive its style: `timeline` stays keyed on the ramp alone (the control
+ * must never show a number the run will not use), and `attached` is a second, independent
+ * flag the caller uses only to pick which sentence is still true, not to change whether
+ * the control is read-only.
+ */
+export function targetsSummary(
+  encounter: EncounterSpec,
+): { timeline: true; first: number; max: number; attached: boolean } | { timeline: false; count: number } {
+  const timeline = encounter.targets_over_time;
+  if (timeline !== undefined && timeline.length > 0) {
+    return {
+      timeline: true,
+      first: timeline[0].count,
+      max: Math.max(...timeline.map((step) => step.count)),
+      attached: (encounter.style ?? '') !== '',
+    };
+  }
+  return { timeline: false, count: encounter.targets };
+}
+
+/**
  * The style's fields written over an encounter. Every field a style owns is written on
  * every call, including the nulls and the false: switching from Heavy movement to
  * Patchwerk has to clear the movement block, and a partial write would leave the previous

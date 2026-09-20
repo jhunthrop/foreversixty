@@ -2,18 +2,31 @@
 <!-- The searchable list for one slot: filtered to the slot and the class, sorted by
      required level then name, coloured by rarity. -->
 <script lang="ts">
+  import { addonCopy } from '../../lib/addon/copy';
+  import { scoreItem, type SpecWeights } from '../../lib/addon/score';
   import { itemsForSlot, rarityClassFor, searchItems } from '../../lib/planner/items';
   import { dataUrl } from '../../lib/planner/load';
   import type { PlannerStore } from '../../lib/planner/store.svelte';
   import { SECONDARY_BUTTON } from '../../lib/planner/styles';
   import { SLOT_LABELS, type Slot } from '../../lib/planner/types';
 
-  let { store, slot, onclose }: { store: PlannerStore; slot: Slot; onclose: () => void } = $props();
+  let {
+    store,
+    slot,
+    weights,
+    onclose,
+  }: { store: PlannerStore; slot: Slot; weights?: SpecWeights; onclose: () => void } = $props();
 
   let query = $state('');
+  let sortByScore = $state(false);
 
   const all = $derived(itemsForSlot([...store.itemIndex.values()], slot));
-  const shown = $derived(searchItems(all, query));
+  const searched = $derived(searchItems(all, query));
+  const shown = $derived(
+    sortByScore && weights !== undefined
+      ? [...searched].sort((a, b) => scoreItem(b, weights) - scoreItem(a, weights))
+      : searched,
+  );
 </script>
 
 <div class="border-line bg-raised rounded-panel flex flex-col gap-3 border p-4" data-testid="item-picker">
@@ -33,6 +46,13 @@
     aria-label={`Filter ${SLOT_LABELS[slot]} items`}
     class="border-line-warm rounded-control bg-bg text-text placeholder:text-muted h-11 border px-3 text-[14px]"
   />
+
+  {#if weights !== undefined}
+    <label class="text-muted flex min-h-11 w-fit items-center gap-2 text-[12px]">
+      <input type="checkbox" class="h-5 w-5" data-testid="sort-by-score" bind:checked={sortByScore} />
+      {addonCopy.sortByScore}
+    </label>
+  {/if}
 
   {#if store.gear[slot] !== undefined}
     <button
@@ -77,6 +97,11 @@
             <span class={`flex-1 text-[14px] font-semibold ${rarityClassFor(item.quality)}`}>
               {item.name}
             </span>
+            {#if weights !== undefined}
+              <span class="tabular text-muted font-mono text-[12px]" data-testid="item-score">
+                {scoreItem(item, weights).toFixed(1)}
+              </span>
+            {/if}
             <span class="tabular text-muted font-mono text-[12px]">{item.required_level}</span>
           </button>
         </li>

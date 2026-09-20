@@ -57,6 +57,8 @@ export const messages = {
   wrongSlot: (itemName: string, slotLabel: string): string => `${itemName} cannot go in ${slotLabel}`,
   duplicateUnique: (itemName: string): string => `${itemName} is unique; equip it once`,
   illegalCombo: (raceName: string, className: string): string => `${raceName} cannot be a ${className}`,
+  twoHandOffHand: (mainHandName: string): string =>
+    `${mainHandName} is two-handed; there is no room for an off-hand item`,
 } as const;
 
 export function indexTalents(file: TalentFile): TalentIndex {
@@ -239,7 +241,29 @@ export function canEquip(items: Map<number, Item>, gear: Gear, slot: Slot, itemI
     );
     if (elsewhere) return refuse(messages.duplicateUnique(item.name));
   }
+  // The two-handed pair, in both directions: an off-hand going on beside a two-handed main
+  // hand, and a two-handed main hand going on beside an off-hand. Stated here rather than
+  // only over a whole gear map because this is the gate the planner actually runs --
+  // `store.equip` calls it on every click -- so the player is refused when they press the
+  // item, not when a save they may never make comes back. Inert until the [data] lane lands
+  // `two_hand`, which is optional and absent until then.
+  const twoHanded = twoHandedMainHand(items, gear, slot, item);
+  if (twoHanded) return refuse(messages.twoHandOffHand(twoHanded.name));
   return ALLOWED;
+}
+
+/**
+ * The two-handed main hand that leaves no room for the item going into `slot`, or
+ * undefined. Either the one already equipped (when an off-hand is going on) or the one
+ * going on (when an off-hand is already equipped).
+ */
+function twoHandedMainHand(items: Map<number, Item>, gear: Gear, slot: Slot, item: Item): Item | undefined {
+  if (slot === 'off_hand') {
+    const mainHand = gear.main_hand === undefined ? undefined : items.get(gear.main_hand);
+    return mainHand?.two_hand === true ? mainHand : undefined;
+  }
+  if (slot === 'main_hand' && item.two_hand === true && gear.off_hand !== undefined) return item;
+  return undefined;
 }
 
 /** Rule 6, for a whole gear map. */
@@ -252,5 +276,10 @@ export function validateGear(items: Map<number, Item>, gear: Gear): FieldError[]
     const decision = canEquip(items, rest, slot, itemId);
     if (!decision.ok) errors.push({ field: `gear.${slot}`, message: decision.reason });
   }
+
+  // Rule 6's two-handed pair is not restated here: the loop above calls `canEquip` once per
+  // equipped slot with the rest of the gear still in place, and `canEquip` now states the
+  // rule in both directions -- so a two-handed main hand beside an off-hand is already
+  // reported, against both slots. Repeating it would file the same defect twice.
   return errors;
 }

@@ -133,11 +133,19 @@
       type="button"
       class="{SECONDARY_BUTTON} border-line-warm text-nav px-5 disabled:opacity-50"
       disabled={!canSave}
-      title={!canSave ? simCopy.saveAbortedDisabled : undefined}
       onclick={openSaveForm}
       data-testid="sim-save-open"
     >
       {simCopy.saveThisSim}
     </button>
+    <!-- Task 5 (newcomer MAJOR, review.md:360-363): was a hover-only `title` on the disabled
+         button -- doubly unreachable on a phone, since a disabled control never fires the
+         tap that would have to reveal it anyway. Visible text beside the button instead,
+         shown only while it is actually true (the button is disabled). -->
+    {#if !canSave}
+      <span class="text-muted text-[12px]" data-testid="sim-save-disabled-note">
+        {simCopy.saveAbortedDisabled}
+      </span>
+    {/if}
   {/if}
 </div>

@@ -221,6 +221,19 @@ export function gearFromSlots(gear: readonly GearSlot[]): Gear {
 }
 
 /**
+ * The gear the inline planner (Planner.svelte's `gear` prop) should start from: `gear_slots`
+ * converted back to the planner's id map when the character has one, the id map itself
+ * otherwise. Mirrors `toCharacterSpec`'s own precedence above rather than inventing a second
+ * one -- the two must never disagree about which of a character's two gear fields is the
+ * truth. Always a fresh object; mutating the result never touches the character's own gear
+ * (dps D39/D40: without a seeded gear, the inline build card sims an empty character while
+ * the comparison table sims the real one).
+ */
+export function plannerGearFor(character: SimCharacter): Gear {
+  return character.gear_slots.length > 0 ? gearFromSlots(character.gear_slots) : { ...character.gear };
+}
+
+/**
  * A `CharacterSpec` (the engine's own JSON shape) as an FS1 version 2 code -- the one place
  * this conversion is written. "Run this yourself" (SimView.svelte, a saved result's own
  * request) and the request drawer's Apply (store-request.ts, a pasted/edited request) both
@@ -310,9 +323,33 @@ export function toCharacterSpec(
     : { ...spec, cooldowns: cooldowns.map((row) => ({ ...row, at_sec: [...row.at_sec] })) };
 }
 
-export function plannerHrefFor(character: SimCharacter): string {
-  const params = new URLSearchParams({ class: character.class_slug, race: character.race_slug });
-  return `/planner?${params.toString()}`;
+/**
+ * Where "Open in planner" goes. `index` is null while the character's talent file is still
+ * streaming in (or never resolves): the link must render from first paint rather than stay
+ * absent or disabled, so it starts here -- class and race only, exactly the URL this
+ * function has always emitted -- and upgrades in place once the file loads.
+ *
+ * With an index, the character's talents, gear and professions ride along as an FS1 v2
+ * code, through `codeForCharacterSpec` -- the same conversion `ComboResults.svelte`'s own
+ * "Open in planner" link already uses, so the two links can never disagree about what a
+ * code encodes (newcomer MAJOR, review.md:82-88: the link used to open a blank character).
+ *
+ * The spec itself is `toCharacterSpec`, not a second hand-built literal: a first version of
+ * this function rebuilt the same fields inline and, in doing so, dropped `professions` --
+ * `toCharacterSpec` omits that key only when the character truly has none (character.ts:319),
+ * and the hand-built literal had no such key at all, so a combat-log character with
+ * professions silently lost them from its own planner link (task-2 fix round 1's review,
+ * Important). `character.buffs`/`character.consumables` ride along because `toCharacterSpec`
+ * requires them, but `codeForCharacterSpec` never reads a spec's `buffs`/`consumes` fields
+ * (character.ts:296-309 above), so neither ends up in the encoded code either way.
+ */
+export function plannerHrefFor(character: SimCharacter, index: TalentIndex | null): string {
+  if (index === null) {
+    const params = new URLSearchParams({ class: character.class_slug, race: character.race_slug });
+    return `/planner?${params.toString()}`;
+  }
+  const spec = toCharacterSpec(character, index, character.buffs, character.consumables);
+  return `/planner?code=${encodeURIComponent(codeForCharacterSpec(spec, character.tree_version))}`;
 }
 
 export type CharacterResult = { ok: true; character: SimCharacter } | { ok: false; message: string };

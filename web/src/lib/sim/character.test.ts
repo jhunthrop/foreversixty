@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
+import { decodeFS1, orderFromRanks } from '../planner/fs1';
 import { createPlannerStore } from '../planner/store.svelte';
 import { indexTalents, validateOrder } from '../planner/rules';
 import type { ClassRow, Combo, RaceRow, TalentFile } from '../planner/types';
@@ -14,6 +15,8 @@ import {
   fromBuildDraft,
   gearFromSlots,
   gearSlots,
+  plannerGearFor,
+  plannerHrefFor,
   ranksFromTalentsString,
   specForSplit,
   specOf,
@@ -221,6 +224,69 @@ describe('gearFromSlots, the inverse of gearSlots', () => {
 
   it('is empty for no gear', () => {
     expect(gearFromSlots([])).toEqual({});
+  });
+});
+
+describe('plannerGearFor', () => {
+  // Minimal filler; each test below overrides only the fields it cares about.
+  const base: SimCharacter = {
+    name: 'Thrallgar',
+    spec: 'warrior-fury',
+    class_slug: 'warrior',
+    race_slug: 'orc',
+    talent_level: 22,
+    tree_version: BUILD,
+    point_order: [],
+    gear: {},
+    gear_slots: [],
+    buffs: [],
+    consumables: [],
+    source,
+    professions: [],
+    bags: [],
+    bank: [],
+    sets: [],
+    loadouts: [],
+  };
+
+  it('prefers gear_slots over the id map, mirroring toCharacterSpec’s own precedence (character.ts:281-309)', () => {
+    const character: SimCharacter = {
+      ...base,
+      gear: { head: 1 },
+      gear_slots: [
+        { slot: 'head', item_id: 12640 },
+        { slot: 'main_hand', item_id: 11726 },
+      ],
+    };
+    expect(plannerGearFor(character)).toEqual({ head: 12640, main_hand: 11726 });
+  });
+
+  it('falls back to the id map when gear_slots is empty', () => {
+    const character: SimCharacter = { ...base, gear: { head: 12640 }, gear_slots: [] };
+    expect(plannerGearFor(character)).toEqual({ head: 12640 });
+  });
+
+  it('is an empty object when both are empty', () => {
+    const character: SimCharacter = { ...base, gear: {}, gear_slots: [] };
+    expect(plannerGearFor(character)).toEqual({});
+  });
+
+  it('returns a fresh copy from the id map: mutating it does not touch the character', () => {
+    const character: SimCharacter = { ...base, gear: { head: 12640 }, gear_slots: [] };
+    const gear = plannerGearFor(character);
+    gear.head = 99999;
+    expect(character.gear.head).toBe(12640);
+  });
+
+  it('returns a fresh copy from gear_slots: mutating it does not touch the character', () => {
+    const character: SimCharacter = {
+      ...base,
+      gear: {},
+      gear_slots: [{ slot: 'head', item_id: 12640 }],
+    };
+    const gear = plannerGearFor(character);
+    gear.head = 99999;
+    expect(character.gear_slots).toEqual([{ slot: 'head', item_id: 12640 }]);
   });
 });
 
@@ -669,5 +735,115 @@ describe('characterFromPlanner', () => {
     expect(character?.class_slug).toBe('warrior');
     expect(character?.race_slug).toBe('orc');
     expect(character?.point_order).toEqual([1001]);
+  });
+});
+
+/**
+ * newcomer MAJOR (review.md:82-88): "Open in planner" used to emit class+race only, landing
+ * on an empty character. With a talent index it now carries the same FS1 v2 code
+ * ComboResults.svelte's own "Open in planner" link already builds (`codeForCharacterSpec`),
+ * so the two links can never disagree about what a code encodes.
+ */
+describe('plannerHrefFor', () => {
+  const base: SimCharacter = {
+    name: 'Thrallgar',
+    spec: 'warrior-fury',
+    class_slug: 'warrior',
+    race_slug: 'orc',
+    talent_level: 22,
+    tree_version: BUILD,
+    point_order: [],
+    gear: {},
+    gear_slots: [],
+    professions: [],
+    bags: [],
+    bank: [],
+    sets: [],
+    loadouts: [],
+    buffs: [],
+    consumables: [],
+    source,
+  };
+
+  it('is the class+race-only URL, verbatim, when the talent index has not loaded', () => {
+    const character: SimCharacter = { ...base, gear: { head: 12640 } };
+    expect(plannerHrefFor(character, null)).toBe('/planner?class=warrior&race=orc');
+  });
+
+  it('carries the build as an FS1 v2 code once the talent index is available', async () => {
+    const file = await warriorTalents();
+    const index = indexTalents(file);
+    const character: SimCharacter = {
+      ...base,
+      point_order: [2001, 2001, 2001, 2001, 2001, 2002, 2002, 2002, 2002, 2002, 2003, 2003, 2003],
+      gear: { head: 12640 },
+      gear_slots: [{ slot: 'head', item_id: 12640, enchant: 2504, suffix: 1820 }],
+    };
+
+    const href = plannerHrefFor(character, index);
+
+    expect(href.startsWith('/planner?code=')).toBe(true);
+    const code = decodeURIComponent(href.slice('/planner?code='.length));
+    const decoded = decodeFS1(code);
+    expect(decoded.ok).toBe(true);
+    if (!decoded.ok) return;
+    expect(decoded.build.classSlug).toBe('warrior');
+    expect(decoded.build.raceSlug).toBe('orc');
+    // The same talent ranks the character's own point order implies. `decoded.build.treeRanks`
+    // is FS1's own fixed-3-tree shape (encodeTrees pads to TREES regardless of how many trees
+    // this fixture's own class defines), so the comparison goes back through orderFromRanks
+    // and talentsString, the same round trip `characterFromFs1` itself takes.
+    const { order } = orderFromRanks(index, decoded.build.treeRanks);
+    expect(talentsString(index, order)).toBe(talentsString(index, character.point_order));
+    // The same gear item ids, enchant and suffix included.
+    expect(decoded.build.gearSlots).toEqual([{ slot: 'head', itemId: 12640, enchant: 2504, suffix: 1820 }]);
+  });
+
+  it('falls back to gearSlots(character.gear) when the character has no gear_slots, mirroring toCharacterSpec', async () => {
+    const file = await warriorTalents();
+    const index = indexTalents(file);
+    const character: SimCharacter = { ...base, gear: { head: 12640 }, gear_slots: [] };
+
+    const href = plannerHrefFor(character, index);
+    const code = decodeURIComponent(href.slice('/planner?code='.length));
+    const decoded = decodeFS1(code);
+    expect(decoded.ok).toBe(true);
+    if (!decoded.ok) return;
+    expect(decoded.build.gearSlots).toEqual([{ slot: 'head', itemId: 12640 }]);
+  });
+
+  // task-2 fix round 1's review, Important: a first version of plannerHrefFor hand-built its
+  // own CharacterSpec literal instead of calling toCharacterSpec, and in doing so left out
+  // `professions` entirely -- a combat-log character with real profession data would silently
+  // lose it from its own "Open in planner" link. Pinning both directions: professions present
+  // round-trip, and an empty list still gets no `professions=` section (toCharacterSpec omits
+  // the key rather than sending it empty, character.ts:317-319).
+  it('carries professions through the code when the character has them', async () => {
+    const file = await warriorTalents();
+    const index = indexTalents(file);
+    const character: SimCharacter = {
+      ...base,
+      gear: { head: 12640 },
+      gear_slots: [],
+      professions: ['engineering', 'alchemy'],
+    };
+
+    const href = plannerHrefFor(character, index);
+    const code = decodeURIComponent(href.slice('/planner?code='.length));
+    expect(code.includes('professions=')).toBe(true);
+    const decoded = decodeFS1(code);
+    expect(decoded.ok).toBe(true);
+    if (!decoded.ok) return;
+    expect(decoded.build.professions).toEqual(['engineering', 'alchemy']);
+  });
+
+  it('sends no professions= section when the character has none', async () => {
+    const file = await warriorTalents();
+    const index = indexTalents(file);
+    const character: SimCharacter = { ...base, gear: { head: 12640 }, gear_slots: [], professions: [] };
+
+    const href = plannerHrefFor(character, index);
+    const code = decodeURIComponent(href.slice('/planner?code='.length));
+    expect(code.includes('professions=')).toBe(false);
   });
 });

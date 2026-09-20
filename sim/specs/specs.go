@@ -14,37 +14,42 @@ type Spec struct {
 	Role          string `json:"role"`
 	TreeIndex     int    `json:"tree_index"`
 	ReferenceStat string `json:"reference_stat"`
+	// WeightStats are the stats that actually move this spec's damage or
+	// healing - the closed list /sim/weights offers, so a physical spec
+	// is never asked about spirit and a caster never sees unexplained
+	// zeros for expertise. ReferenceStat is always one of them.
+	WeightStats []string `json:"weight_stats"`
 }
 
 // All is every spec, ordered by class slug then talent tree position.
 var All = []Spec{
-	{Spec: "druid-balance", ClassSlug: "druid", SpecSlug: "balance", Name: "Balance", Role: "dps", TreeIndex: 0, ReferenceStat: "spell_power"},
-	{Spec: "druid-feral", ClassSlug: "druid", SpecSlug: "feral", Name: "Feral", Role: "dps", TreeIndex: 1, ReferenceStat: "attack_power"},
-	{Spec: "druid-restoration", ClassSlug: "druid", SpecSlug: "restoration", Name: "Restoration", Role: "healer", TreeIndex: 2, ReferenceStat: "spell_power"},
-	{Spec: "hunter-beast-mastery", ClassSlug: "hunter", SpecSlug: "beast-mastery", Name: "Beast Mastery", Role: "dps", TreeIndex: 0, ReferenceStat: "attack_power"},
-	{Spec: "hunter-marksmanship", ClassSlug: "hunter", SpecSlug: "marksmanship", Name: "Marksmanship", Role: "dps", TreeIndex: 1, ReferenceStat: "attack_power"},
-	{Spec: "hunter-survival", ClassSlug: "hunter", SpecSlug: "survival", Name: "Survival", Role: "dps", TreeIndex: 2, ReferenceStat: "attack_power"},
-	{Spec: "mage-arcane", ClassSlug: "mage", SpecSlug: "arcane", Name: "Arcane", Role: "dps", TreeIndex: 0, ReferenceStat: "spell_power"},
-	{Spec: "mage-fire", ClassSlug: "mage", SpecSlug: "fire", Name: "Fire", Role: "dps", TreeIndex: 1, ReferenceStat: "spell_power"},
-	{Spec: "mage-frost", ClassSlug: "mage", SpecSlug: "frost", Name: "Frost", Role: "dps", TreeIndex: 2, ReferenceStat: "spell_power"},
-	{Spec: "paladin-holy", ClassSlug: "paladin", SpecSlug: "holy", Name: "Holy", Role: "healer", TreeIndex: 0, ReferenceStat: "spell_power"},
-	{Spec: "paladin-protection", ClassSlug: "paladin", SpecSlug: "protection", Name: "Protection", Role: "tank", TreeIndex: 1, ReferenceStat: "attack_power"},
-	{Spec: "paladin-retribution", ClassSlug: "paladin", SpecSlug: "retribution", Name: "Retribution", Role: "dps", TreeIndex: 2, ReferenceStat: "attack_power"},
-	{Spec: "priest-discipline", ClassSlug: "priest", SpecSlug: "discipline", Name: "Discipline", Role: "healer", TreeIndex: 0, ReferenceStat: "spell_power"},
-	{Spec: "priest-holy", ClassSlug: "priest", SpecSlug: "holy", Name: "Holy", Role: "healer", TreeIndex: 1, ReferenceStat: "spell_power"},
-	{Spec: "priest-shadow", ClassSlug: "priest", SpecSlug: "shadow", Name: "Shadow", Role: "dps", TreeIndex: 2, ReferenceStat: "spell_power"},
-	{Spec: "rogue-assassination", ClassSlug: "rogue", SpecSlug: "assassination", Name: "Assassination", Role: "dps", TreeIndex: 0, ReferenceStat: "attack_power"},
-	{Spec: "rogue-combat", ClassSlug: "rogue", SpecSlug: "combat", Name: "Combat", Role: "dps", TreeIndex: 1, ReferenceStat: "attack_power"},
-	{Spec: "rogue-subtlety", ClassSlug: "rogue", SpecSlug: "subtlety", Name: "Subtlety", Role: "dps", TreeIndex: 2, ReferenceStat: "attack_power"},
-	{Spec: "shaman-elemental", ClassSlug: "shaman", SpecSlug: "elemental", Name: "Elemental", Role: "dps", TreeIndex: 0, ReferenceStat: "spell_power"},
-	{Spec: "shaman-enhancement", ClassSlug: "shaman", SpecSlug: "enhancement", Name: "Enhancement", Role: "dps", TreeIndex: 1, ReferenceStat: "attack_power"},
-	{Spec: "shaman-restoration", ClassSlug: "shaman", SpecSlug: "restoration", Name: "Restoration", Role: "healer", TreeIndex: 2, ReferenceStat: "spell_power"},
-	{Spec: "warlock-affliction", ClassSlug: "warlock", SpecSlug: "affliction", Name: "Affliction", Role: "dps", TreeIndex: 0, ReferenceStat: "spell_power"},
-	{Spec: "warlock-demonology", ClassSlug: "warlock", SpecSlug: "demonology", Name: "Demonology", Role: "dps", TreeIndex: 1, ReferenceStat: "spell_power"},
-	{Spec: "warlock-destruction", ClassSlug: "warlock", SpecSlug: "destruction", Name: "Destruction", Role: "dps", TreeIndex: 2, ReferenceStat: "spell_power"},
-	{Spec: "warrior-arms", ClassSlug: "warrior", SpecSlug: "arms", Name: "Arms", Role: "dps", TreeIndex: 0, ReferenceStat: "attack_power"},
-	{Spec: "warrior-fury", ClassSlug: "warrior", SpecSlug: "fury", Name: "Fury", Role: "dps", TreeIndex: 1, ReferenceStat: "attack_power"},
-	{Spec: "warrior-protection", ClassSlug: "warrior", SpecSlug: "protection", Name: "Protection", Role: "tank", TreeIndex: 2, ReferenceStat: "attack_power"},
+	{Spec: "druid-balance", ClassSlug: "druid", SpecSlug: "balance", Name: "Balance", Role: "dps", TreeIndex: 0, ReferenceStat: "spell_power", WeightStats: []string{"spell_power", "intellect", "crit", "hit", "spell_haste", "spell_penetration", "nature_power", "arcane_power"}},
+	{Spec: "druid-feral", ClassSlug: "druid", SpecSlug: "feral", Name: "Feral", Role: "dps", TreeIndex: 1, ReferenceStat: "attack_power", WeightStats: []string{"attack_power", "feral_attack_power", "strength", "agility", "crit", "hit", "melee_haste", "expertise", "armor_penetration"}},
+	{Spec: "druid-restoration", ClassSlug: "druid", SpecSlug: "restoration", Name: "Restoration", Role: "healer", TreeIndex: 2, ReferenceStat: "spell_power", WeightStats: []string{"healing_power", "spell_power", "spirit", "mp5", "intellect", "crit"}},
+	{Spec: "hunter-beast-mastery", ClassSlug: "hunter", SpecSlug: "beast-mastery", Name: "Beast Mastery", Role: "dps", TreeIndex: 0, ReferenceStat: "attack_power", WeightStats: []string{"attack_power", "ranged_attack_power", "agility", "crit", "hit", "melee_haste"}},
+	{Spec: "hunter-marksmanship", ClassSlug: "hunter", SpecSlug: "marksmanship", Name: "Marksmanship", Role: "dps", TreeIndex: 1, ReferenceStat: "attack_power", WeightStats: []string{"attack_power", "ranged_attack_power", "agility", "crit", "hit", "melee_haste"}},
+	{Spec: "hunter-survival", ClassSlug: "hunter", SpecSlug: "survival", Name: "Survival", Role: "dps", TreeIndex: 2, ReferenceStat: "attack_power", WeightStats: []string{"attack_power", "ranged_attack_power", "agility", "crit", "hit", "melee_haste"}},
+	{Spec: "mage-arcane", ClassSlug: "mage", SpecSlug: "arcane", Name: "Arcane", Role: "dps", TreeIndex: 0, ReferenceStat: "spell_power", WeightStats: []string{"spell_power", "intellect", "crit", "hit", "spell_haste", "spell_penetration", "arcane_power"}},
+	{Spec: "mage-fire", ClassSlug: "mage", SpecSlug: "fire", Name: "Fire", Role: "dps", TreeIndex: 1, ReferenceStat: "spell_power", WeightStats: []string{"spell_power", "intellect", "crit", "hit", "spell_haste", "spell_penetration", "fire_power"}},
+	{Spec: "mage-frost", ClassSlug: "mage", SpecSlug: "frost", Name: "Frost", Role: "dps", TreeIndex: 2, ReferenceStat: "spell_power", WeightStats: []string{"spell_power", "intellect", "crit", "hit", "spell_haste", "spell_penetration", "frost_power"}},
+	{Spec: "paladin-holy", ClassSlug: "paladin", SpecSlug: "holy", Name: "Holy", Role: "healer", TreeIndex: 0, ReferenceStat: "spell_power", WeightStats: []string{"healing_power", "spell_power", "spirit", "mp5", "intellect", "crit"}},
+	{Spec: "paladin-protection", ClassSlug: "paladin", SpecSlug: "protection", Name: "Protection", Role: "tank", TreeIndex: 1, ReferenceStat: "attack_power", WeightStats: []string{"attack_power", "strength", "agility", "crit", "hit", "melee_haste", "expertise", "armor_penetration"}},
+	{Spec: "paladin-retribution", ClassSlug: "paladin", SpecSlug: "retribution", Name: "Retribution", Role: "dps", TreeIndex: 2, ReferenceStat: "attack_power", WeightStats: []string{"attack_power", "strength", "agility", "crit", "hit", "melee_haste", "expertise", "armor_penetration"}},
+	{Spec: "priest-discipline", ClassSlug: "priest", SpecSlug: "discipline", Name: "Discipline", Role: "healer", TreeIndex: 0, ReferenceStat: "spell_power", WeightStats: []string{"healing_power", "spell_power", "spirit", "mp5", "intellect", "crit"}},
+	{Spec: "priest-holy", ClassSlug: "priest", SpecSlug: "holy", Name: "Holy", Role: "healer", TreeIndex: 1, ReferenceStat: "spell_power", WeightStats: []string{"healing_power", "spell_power", "spirit", "mp5", "intellect", "crit"}},
+	{Spec: "priest-shadow", ClassSlug: "priest", SpecSlug: "shadow", Name: "Shadow", Role: "dps", TreeIndex: 2, ReferenceStat: "spell_power", WeightStats: []string{"spell_power", "intellect", "crit", "hit", "spell_haste", "spell_penetration", "shadow_power"}},
+	{Spec: "rogue-assassination", ClassSlug: "rogue", SpecSlug: "assassination", Name: "Assassination", Role: "dps", TreeIndex: 0, ReferenceStat: "attack_power", WeightStats: []string{"attack_power", "agility", "crit", "hit", "melee_haste", "expertise", "armor_penetration"}},
+	{Spec: "rogue-combat", ClassSlug: "rogue", SpecSlug: "combat", Name: "Combat", Role: "dps", TreeIndex: 1, ReferenceStat: "attack_power", WeightStats: []string{"attack_power", "agility", "crit", "hit", "melee_haste", "expertise", "armor_penetration"}},
+	{Spec: "rogue-subtlety", ClassSlug: "rogue", SpecSlug: "subtlety", Name: "Subtlety", Role: "dps", TreeIndex: 2, ReferenceStat: "attack_power", WeightStats: []string{"attack_power", "agility", "crit", "hit", "melee_haste", "expertise", "armor_penetration"}},
+	{Spec: "shaman-elemental", ClassSlug: "shaman", SpecSlug: "elemental", Name: "Elemental", Role: "dps", TreeIndex: 0, ReferenceStat: "spell_power", WeightStats: []string{"spell_power", "intellect", "crit", "hit", "spell_haste", "spell_penetration", "nature_power"}},
+	{Spec: "shaman-enhancement", ClassSlug: "shaman", SpecSlug: "enhancement", Name: "Enhancement", Role: "dps", TreeIndex: 1, ReferenceStat: "attack_power", WeightStats: []string{"attack_power", "strength", "agility", "crit", "hit", "melee_haste", "expertise", "armor_penetration"}},
+	{Spec: "shaman-restoration", ClassSlug: "shaman", SpecSlug: "restoration", Name: "Restoration", Role: "healer", TreeIndex: 2, ReferenceStat: "spell_power", WeightStats: []string{"healing_power", "spell_power", "spirit", "mp5", "intellect", "crit"}},
+	{Spec: "warlock-affliction", ClassSlug: "warlock", SpecSlug: "affliction", Name: "Affliction", Role: "dps", TreeIndex: 0, ReferenceStat: "spell_power", WeightStats: []string{"spell_power", "intellect", "crit", "hit", "spell_haste", "spell_penetration", "shadow_power"}},
+	{Spec: "warlock-demonology", ClassSlug: "warlock", SpecSlug: "demonology", Name: "Demonology", Role: "dps", TreeIndex: 1, ReferenceStat: "spell_power", WeightStats: []string{"spell_power", "intellect", "crit", "hit", "spell_haste", "spell_penetration", "shadow_power", "fire_power"}},
+	{Spec: "warlock-destruction", ClassSlug: "warlock", SpecSlug: "destruction", Name: "Destruction", Role: "dps", TreeIndex: 2, ReferenceStat: "spell_power", WeightStats: []string{"spell_power", "intellect", "crit", "hit", "spell_haste", "spell_penetration", "shadow_power", "fire_power"}},
+	{Spec: "warrior-arms", ClassSlug: "warrior", SpecSlug: "arms", Name: "Arms", Role: "dps", TreeIndex: 0, ReferenceStat: "attack_power", WeightStats: []string{"attack_power", "strength", "agility", "crit", "hit", "melee_haste", "expertise", "armor_penetration"}},
+	{Spec: "warrior-fury", ClassSlug: "warrior", SpecSlug: "fury", Name: "Fury", Role: "dps", TreeIndex: 1, ReferenceStat: "attack_power", WeightStats: []string{"attack_power", "strength", "agility", "crit", "hit", "melee_haste", "expertise", "armor_penetration"}},
+	{Spec: "warrior-protection", ClassSlug: "warrior", SpecSlug: "protection", Name: "Protection", Role: "tank", TreeIndex: 2, ReferenceStat: "attack_power", WeightStats: []string{"attack_power", "strength", "agility", "crit", "hit", "melee_haste", "expertise", "armor_penetration"}},
 }
 
 // ByKey indexes All by its spec key.

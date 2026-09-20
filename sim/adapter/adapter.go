@@ -12,6 +12,24 @@
 // things a simulation cannot know, and all four are set explicitly empty
 // rather than left nil, because the report components render a list and a
 // nil slice marshals as null.
+//
+// Summary.DurationMS is a DERIVED clock, not a measured one. The engine
+// reports one iteration length, AvgIterationDuration, but that is the
+// MEAN of the per-iteration durations, while every damage figure in the
+// summary is the across-iterations TOTAL divided by IterationsDone - the
+// mean of the per-iteration damage. The headline DPS the page shows
+// beside the table (DPS(res).Mean, res.RaidMetrics.Dps.Avg) is a third
+// thing again: the mean of the per-iteration DPS VALUES. Because the
+// encounter's length varies (encounter.variation), the mean of a
+// quotient is not the quotient of the means, so "table damage / mean
+// iteration length" and "mean of per-iteration DPS" disagree by a
+// fraction of a percent - small, but visible as three different numbers
+// on one result card. deriveDurationMS instead picks the duration that
+// makes the two agree exactly (to the precision an integer millisecond
+// allows): it is therefore close to, but not exactly, the mean iteration
+// length, and it is computed from the summary's own already-rounded
+// actor totals so that this rounding does not reopen the disagreement it
+// exists to close.
 package adapter
 
 import (
@@ -129,7 +147,7 @@ func Summarize(res *proto.RaidSimResult, req api.SimRequest) (summary.Summary, e
 		return summary.Summary{}, err
 	}
 
-	durationMS := int64(math.Round(res.AvgIterationDuration * 1000))
+	avgIterationMS := int64(math.Round(res.AvgIterationDuration * 1000))
 	class, spec := splitSpecSlug(req.Spec)
 
 	// Start from the empty shape and fill in what this run measured, so
@@ -138,8 +156,18 @@ func Summarize(res *proto.RaidSimResult, req api.SimRequest) (summary.Summary, e
 	// the two shapes separately is how they came to disagree.
 	out := EmptySummary()
 	out.FightIndex = 1
+	out.DamageDone = actors(player, class, iters, targetNames(res))
+
+	// The clock is derived from the actors just built - the summary's
+	// own integer totals, player and pets together - not from the raw
+	// float totals, and not measured from the engine's iteration timer.
+	// See the package comment for why.
+	durationMS := deriveDurationMS(sumActorTotals(out.DamageDone), DPS(res).Mean, avgIterationMS)
 	out.DurationMS = durationMS
-	out.DamageDone = actors(player, class, iters, durationMS)
+	for i := range out.DamageDone {
+		out.DamageDone[i].ActiveMS = durationMS
+	}
+
 	out.Auras = auras(player)
 	out.Casts = casts(player, iters)
 	out.Resources = resources(player, iters)
@@ -209,28 +237,60 @@ func DPS(res *proto.RaidSimResult) api.Estimate {
 // Casts tab's owner grouping and the damage table agree.
 func petGUID(i int) string { return fmt.Sprintf("%s-pet-%d", playerGUID, i) }
 
-// actors builds the damage table: one row for the player, then one per pet.
-func actors(player *proto.UnitMetrics, class string, iters float64, durationMS int64) []summary.Actor {
-	out := []summary.Actor{actorFrom(player, playerGUID, class, iters, durationMS)}
-	for i, pet := range player.Pets {
-		// A pet has no class of its own in the roster's sense; the
-		// report colours it by its owner's.
-		out = append(out, actorFrom(pet, petGUID(i), class, iters, durationMS))
+// targetNames is the encounter's own targets, named by unit index.
+//
+// sim/core/environment.go:78 builds env.AllUnits as the encounter's
+// targets followed by the raid's units, and sim/core/spell.go:453 sizes
+// every spell's per-target metrics array by len(env.AllUnits) - so an
+// ActionMetrics' Targets slice carries one entry per RAID UNIT too, at
+// whatever index environment.construct assigned it, always with zero
+// damage (nothing casts a spell at its own raid). res.EncounterMetrics
+// is the authoritative boundary: Encounter.GetMetricsProto (target.go)
+// emits exactly one UnitMetrics per encounter.Targets, each stamped with
+// the same UnitIndex environment.construct gave it and the engine's own
+// Label ("Target 1", "Target 2", ... - Unit.Label in target.go, ONE-
+// indexed, which is also what the ONE ITERATION tab's sample rows
+// resolve their target name from). Building the map from THIS rather
+// than trusting the per-target count on the request keeps the row list
+// bounded to what the engine actually fought even if a future request
+// field disagreed with it.
+func targetNames(res *proto.RaidSimResult) map[int32]string {
+	out := map[int32]string{}
+	for _, t := range res.GetEncounterMetrics().GetTargets() {
+		out[t.UnitIndex] = t.Name
 	}
 	return out
 }
 
-func actorFrom(u *proto.UnitMetrics, guid, class string, iters float64, durationMS int64) summary.Actor {
+// actors builds the damage table: one row for the player, then one per pet.
+// ActiveMS is left zero here - the fight clock is not known until every
+// actor's total is, so Summarize fills it in once deriveDurationMS has run.
+func actors(player *proto.UnitMetrics, class string, iters float64, targets map[int32]string) []summary.Actor {
+	out := []summary.Actor{actorFrom(player, playerGUID, class, iters, targets)}
+	for i, pet := range player.Pets {
+		// A pet has no class of its own in the roster's sense; the
+		// report colours it by its owner's.
+		out = append(out, actorFrom(pet, petGUID(i), class, iters, targets))
+	}
+	return out
+}
+
+func actorFrom(u *proto.UnitMetrics, guid, class string, iters float64, targets map[int32]string) summary.Actor {
 	a := summary.Actor{
 		GUID:      guid,
 		Name:      u.Name,
 		Class:     class,
-		ActiveMS:  durationMS,
 		Abilities: []summary.Ability{},
 		Targets:   []summary.Pair{},
 		Series:    []int64{},
 	}
-	perTarget := map[int32]int64{}
+	// perTarget accumulates each target's UNROUNDED share of the
+	// damage - ability() adds the raw per-iteration float, not its own
+	// rounded total - so the apportion call below is the only rounding
+	// a target total goes through. Rounding it once per ability first,
+	// as this used to, and once more per target after, is exactly how
+	// the column stopped summing to the row.
+	perTarget := map[int32]float64{}
 	for _, am := range u.Actions {
 		ab := ability(am, iters, perTarget)
 		a.Abilities = append(a.Abilities, ab)
@@ -239,20 +299,121 @@ func actorFrom(u *proto.UnitMetrics, guid, class string, iters float64, duration
 	a.Abilities = foldAbilities(a.Abilities)
 	a.Effective = a.Total
 
+	// Bound the rows to the encounter's own targets: perTarget carries
+	// one entry per unit index a spell's metrics array happened to be
+	// sized for (every raid unit, not only the targets - see
+	// targetNames), and the row list must not say "target" about the
+	// player's or a raid member's own index.
 	idx := make([]int32, 0, len(perTarget))
 	for k := range perTarget {
-		idx = append(idx, k)
+		if _, ok := targets[k]; ok {
+			idx = append(idx, k)
+		}
 	}
 	sort.Slice(idx, func(i, j int) bool { return idx[i] < idx[j] })
-	for _, i := range idx {
+	shares := make([]float64, len(idx))
+	for i, k := range idx {
+		shares[i] = perTarget[k]
+	}
+	// One apportionment of the actor's already-rounded Total across the
+	// targets, so the column sums to exactly what the row says rather
+	// than to whatever independent per-target rounding happened to add
+	// up to. apportion works from PROPORTIONS, not from summing
+	// perTarget against a.Total, so a share dropped above for missing
+	// the encounter's target list - always zero in every case measured
+	// (a single-target fight, a five-target one, a dungeon pull) -
+	// costs the surviving shares nothing: whatever it would have
+	// carried is handed out over them instead, and the invariant below
+	// holds regardless of whether that dropped share was actually zero.
+	targetTotals := apportion(a.Total, shares)
+	for i, k := range idx {
 		a.Targets = append(a.Targets, summary.Pair{
-			GUID:  fmt.Sprintf("sim-target-%d", i),
-			Name:  fmt.Sprintf("Target %d", i),
-			Total: perTarget[i],
+			GUID:  fmt.Sprintf("sim-target-%d", k),
+			Name:  targets[k],
+			Total: targetTotals[i],
+		})
+	}
+	if len(idx) == 0 && a.Total != 0 {
+		// Nothing this actor recorded a share against matched the
+		// encounter's own target list, yet its Total is nonzero. In
+		// practice this means res.EncounterMetrics itself was missing
+		// or empty - a real completed sim always sets it
+		// (sim/core/sim.go:391 calls sim.Encounter.GetMetricsProto()
+		// unconditionally, so a genuine result always carries at least
+		// one target) - so the caller handed Summarize a malformed or
+		// pre-fix result. The one case that would ALSO reach here with
+		// EncounterMetrics present - every recorded index missing the
+		// list and at least one of them nonzero - has never been
+		// observed, but is handled the same way rather than assumed
+		// impossible.
+		//
+		// There is nowhere legitimate to attribute the total, so it
+		// gets exactly ONE row that says so plainly, instead of
+		// silently falling back to one row per raid-sized unit index -
+		// which would be indistinguishable from the phantom-row bug
+		// this task exists to remove. Task 3's invariant, sum(Targets)
+		// == Total, still holds: one row carrying the whole total sums
+		// to it trivially.
+		a.Targets = append(a.Targets, summary.Pair{
+			GUID:  "sim-target-unknown",
+			Name:  "Unknown Target",
+			Total: a.Total,
 		})
 	}
 	sort.SliceStable(a.Abilities, func(i, j int) bool { return a.Abilities[i].Total > a.Abilities[j].Total })
 	return a
+}
+
+// engineSchoolToLogBit maps one bit of the engine's own school mask
+// (core.SpellSchool, sim/core/spell_school.go in the wowsims-forever
+// fork: Physical 2, Arcane 4, Fire 8, Frost 16, Holy 32, Nature 64,
+// Shadow 128 - bit 1 is reserved for SpellSchoolNone and never set) onto
+// the matching bit of the combat log's school mask (Physical 1, Holy 2,
+// Fire 4, Nature 8, Frost 16, Shadow 32, Arcane 64 - web/src/lib/report/
+// format.ts's schoolName and schoolColour). The two masks assign the
+// same seven schools to different bit positions because the log's mask
+// has no placeholder for "no school" the way the engine's does, so
+// every school after Physical is shifted one slot from the other's.
+// Frost is the sole bit the two happen to share (16 in both); it is
+// listed here anyway, and again in the test, so a future reader does
+// not "simplify" it out on the strength of the coincidence.
+var engineSchoolToLogBit = map[int64]int64{
+	2:   1,  // Physical -> Physical
+	4:   64, // Arcane   -> Arcane
+	8:   4,  // Fire     -> Fire
+	16:  16, // Frost    -> Frost (coincidentally identical)
+	32:  2,  // Holy     -> Holy
+	64:  8,  // Nature   -> Nature
+	128: 32, // Shadow   -> Shadow
+}
+
+// combatLogSchool translates am.SpellSchool - the engine's core school
+// mask - into the combat log's school mask, which is what
+// summary.Ability.School carries and what the report page reads
+// (engineSchoolToLogBit above names both sides). A spell can carry more
+// than one school at once (the engine has combined-school spells), so
+// each set bit is looked up and OR'd back together rather than looking
+// the whole value up as one key - a whole-value lookup would silently
+// drop the second school off a combined mask, and schoolName joins
+// combined names with "/" expecting both bits to survive.
+//
+// 0 (SpellSchoolNone - a melee swing has no school of its own) maps to
+// 0: the report already treats a non-positive mask as Physical, so
+// mapping it to 1 here would be a second answer to a question the web
+// already answers. A bit engineSchoolToLogBit does not recognize -
+// something the engine grows later that this table has not been taught
+// - is dropped rather than folded into a real school: silently mapping
+// it to the wrong school would be worse than losing it, and a map read
+// on a missing key already returns 0, so dropping it costs nothing extra
+// here.
+func combatLogSchool(engineMask int32) int64 {
+	var out int64
+	for bit := int64(1); bit <= int64(engineMask); bit <<= 1 {
+		if int64(engineMask)&bit != 0 {
+			out |= engineSchoolToLogBit[bit]
+		}
+	}
+	return out
 }
 
 // ability folds one ActionMetrics, which is already summed over every
@@ -265,19 +426,23 @@ func actorFrom(u *proto.UnitMetrics, guid, class string, iters float64, duration
 // (metrics_aggregator.go) - so adding them would count a crit twice and
 // a partially resisted crit four times. The same holds for the outcome
 // counters: resisted_hits is the subset of hits that partly resisted.
-func ability(am *proto.ActionMetrics, iters float64, perTarget map[int32]int64) summary.Ability {
+func ability(am *proto.ActionMetrics, iters float64, perTarget map[int32]float64) summary.Ability {
 	spellID, name := ActionName(am.Id)
 	ab := summary.Ability{
 		SpellID: spellID,
 		Name:    name,
-		School:  int64(am.SpellSchool),
+		School:  combatLogSchool(am.SpellSchool),
 		Misses:  map[string]int64{},
 	}
 	for _, t := range am.Targets {
 		dmg := per(t.Damage, iters)
 		ab.Total += dmg
 		ab.Effective += dmg
-		perTarget[t.UnitIndex] += dmg
+		// The target's share is the raw per-iteration float, not dmg -
+		// dmg is already rounded, and summing rounded shares is the
+		// independent-rounding bug actorFrom's apportion call exists to
+		// undo.
+		perTarget[t.UnitIndex] += t.Damage / iters
 
 		// Resisted and Blocked stay zero. The summary means the damage a
 		// resist or a block took away, and the engine tracks neither:
@@ -390,6 +555,80 @@ func auras(u *proto.UnitMetrics) []summary.AuraTrack {
 	return out
 }
 
+// isPlayerCast reports whether an engine action is something a caster
+// actually DID, as opposed to the engine's own resource and bookkeeping
+// pseudo-actions, which travel through the same ActionMetrics/SampleCast
+// channel because that is where the engine's metrics live, not because a
+// combat log would ever show them as a cast. A tank-review persona found
+// 98 "Rage gain" rows in the Casts tab from exactly this: OtherActionRageGain
+// carries a non-zero Casts count the way a real ability does.
+//
+// It gates only summary.Casts and Sample (the two places a "cast" is
+// listed by name). summary.DamageDone keeps every ability row including
+// zero-damage ones - that shape is a separate, already-filed complaint -
+// and summary.Resources is populated straight from u.Resources, which is
+// exactly where a rage or mana gain belongs, so this predicate never
+// touches it.
+//
+// A plain spell or item ID is always something the player did; only
+// proto.OtherAction needs sorting, and it is sorted here as an explicit
+// switch - one named case per group, one reason per group - rather than
+// a numeric range, so a pseudo-action the engine adds later lands
+// wherever the fall-through comment below says and not wherever a range
+// boundary happened to put it.
+func isPlayerCast(id *proto.ActionID) bool {
+	other, ok := id.GetRawId().(*proto.ActionID_OtherId)
+	if !ok {
+		return true
+	}
+	switch other.OtherId {
+	// The engine's own accounting: resource regen/gain ticks, combo
+	// point bookkeeping, ability refunds, the rage-from-damage-taken
+	// model and the healing model. summary.Resources already reports
+	// the gain side of these; a cast row would say it twice.
+	case proto.OtherAction_OtherActionNone,
+		proto.OtherAction_OtherActionManaRegen,
+		proto.OtherAction_OtherActionEnergyRegen,
+		proto.OtherAction_OtherActionFocusRegen,
+		proto.OtherAction_OtherActionManaGain,
+		proto.OtherAction_OtherActionRageGain,
+		proto.OtherAction_OtherActionComboPoints,
+		proto.OtherAction_OtherActionRefund,
+		proto.OtherAction_OtherActionDamageTaken,
+		proto.OtherAction_OtherActionHealingModel:
+		return false
+	// Wait and Move are the engine idling or repositioning the actor,
+	// never something a combat log records as a cast - Move showing up
+	// in the Casts tab is the dps review's own complaint about the
+	// ability list, which is the judgement call this task leaves to the
+	// implementer: excluded, on that complaint's authority.
+	case proto.OtherAction_OtherActionWait, proto.OtherAction_OtherActionMove:
+		return false
+	// Pet is a grouping value the UI uses to bucket pet actions, not an
+	// action anything performs (the proto's own comment: "Only used by
+	// the UI"), so it is excluded the same way Wait and Move are.
+	case proto.OtherAction_OtherActionPet:
+		return false
+	// Real actions a caster (or its weapon/pet) performs and that a
+	// combat log would show: white swings, ranged shots, consumables
+	// and on-use trinkets.
+	case proto.OtherAction_OtherActionAttack,
+		proto.OtherAction_OtherActionShoot,
+		proto.OtherAction_OtherActionPotion,
+		proto.OtherAction_OtherActionExplosives,
+		proto.OtherAction_OtherActionOffensiveEquip,
+		proto.OtherAction_OtherActionDefensiveEquip:
+		return true
+	}
+	// An OtherAction this switch has not been taught about yet - the
+	// engine has grown this enum's pseudo-action side before. Default
+	// to hiding it: a real new action wrongly hidden here is a visible,
+	// low-cost gap until the switch is updated; a new pseudo-action
+	// wrongly shown would silently reopen the 98-Rage-gain defect this
+	// predicate exists to close.
+	return false
+}
+
 // casts builds one row per caster per spell. A pet's row stays the pet's -
 // the Casts tab prints "via <pet>" - but its OwnerGUID is the player's, so
 // the tab groups it under the player the way it does in a real fight.
@@ -408,6 +647,9 @@ func castsFor(u *proto.UnitMetrics, guid, owner string, iters float64, out []sum
 		out = make([]summary.CastRow, 0, len(u.Actions))
 	}
 	for _, am := range u.Actions {
+		if !isPlayerCast(am.Id) {
+			continue
+		}
 		var total int32
 		for _, t := range am.Targets {
 			total += t.Casts
@@ -539,6 +781,10 @@ func splitSpecSlug(slug string) (class, spec string) {
 // aborted run has none, and neither does a result from an engine
 // older than the field; the page renders the card only when there are
 // rows.
+//
+// isPlayerCast drops the engine's resource and bookkeeping pseudo-
+// actions the same way castsFor does for summary.Casts: a rage-gain
+// tick in this list is no more a cast than it is in the Casts tab.
 func Sample(res *proto.RaidSimResult) []api.SampleCast {
 	casts := res.GetSampleIteration().GetCasts()
 	if len(casts) == 0 {
@@ -546,6 +792,9 @@ func Sample(res *proto.RaidSimResult) []api.SampleCast {
 	}
 	out := make([]api.SampleCast, 0, len(casts))
 	for _, c := range casts {
+		if !isPlayerCast(c.GetActionId()) {
+			continue
+		}
 		_, action := ActionName(c.GetActionId())
 		row := api.SampleCast{
 			AtMS:   c.GetAtMs(),
@@ -604,6 +853,22 @@ func Weights(res *proto.StatWeightsResult, req api.SimRequest) ([]api.StatWeight
 		return from[s]
 	}
 
+	// sim/core/statweight.go's WeightsStdev is the population standard
+	// deviation of the per-iteration low/baseline and high/baseline
+	// deltas (sim/core/utils.go's aggregator), not a standard error -
+	// see api.WeightsIterationsFactor's doc. Converting it the same
+	// way DPS converts the headline number's stdev - dividing by the
+	// square root of the sample count behind it - is what makes "±"
+	// mean the same thing on this page as it does on /sim. N is the
+	// merged low+high sample count computed from this same request:
+	// sim/request.BuildWeights sets the engine's SimOptions.Iterations
+	// to req.Iterations*WeightsIterationsFactor before the engine
+	// halves it once for RNG parity, and computeStatWeights merges one
+	// pass's worth of samples from the low run with one pass's worth
+	// from the high run, so the two halved passes recombine to exactly
+	// that multiplied count.
+	sampleCount := float64(req.Iterations * api.WeightsIterationsFactor)
+
 	reference, ok := statid.Parse(req.Weights.Reference)
 	if !ok {
 		return nil, fmt.Errorf("%w: reference %q", ErrNoWeights, req.Weights.Reference)
@@ -619,10 +884,28 @@ func Weights(res *proto.StatWeightsResult, req api.SimRequest) ([]api.StatWeight
 		if !ok {
 			return nil, fmt.Errorf("%w: %q", ErrNoWeights, id)
 		}
+		weight := at(s, raw) / scale
+		errAmt := at(s, stdev) / scale
+		// sampleCount is 0 only for a SimRequest with no Iterations set
+		// - a hand-built fixture in a test, never a validated request
+		// (api.SimRequest.Validate refuses an Iterations outside
+		// ValidIterations). Leaving errAmt as the raw population stdev
+		// there, rather than dividing by zero, is deliberate: it is
+		// unreachable for anything this function is actually called
+		// with in product.
+		if sampleCount > 0 {
+			errAmt /= math.Sqrt(sampleCount)
+		}
 		out = append(out, api.StatWeight{
 			Stat:   id,
-			Weight: at(s, raw) / scale,
-			Error:  at(s, stdev) / scale,
+			Weight: weight,
+			Error:  errAmt,
+			// >= rather than >: a weight sitting exactly on its own
+			// error is not distinguishable from zero either, and a
+			// hard-capped stat the engine's sweep skipped reads back
+			// as 0 weight and 0 error, which must also flag (0 >= 0)
+			// rather than publish a confident-looking zero.
+			Insignificant: errAmt >= math.Abs(weight),
 		})
 	}
 	return out, nil

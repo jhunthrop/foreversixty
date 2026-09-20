@@ -178,6 +178,13 @@ export function createBulkStore(init: BulkStoreInit) {
   // so a raid card ("every boss") and one boss of it are two different picks the player can
   // hold at once.
   let pickedBosses = $state<string[]>([]);
+  /**
+   * `pickedBosses` frozen at the last `run()`/`runOnServer()`/`runRequest()` -- Droptimizer.
+   * svelte's `pickedWithNothingTried` argument, deliberately not the live `pickedBosses`:
+   * a source ticked AFTER a run must not read as "untried" for a result it was never part
+   * of (final whole-branch review, Important 3's deferred minor).
+   */
+  let submittedDropPicks = $state<string[]>([]);
   let showUpcoming = $state(false);
   let shownKinds = $state<string[]>([]);
 
@@ -214,6 +221,7 @@ export function createBulkStore(init: BulkStoreInit) {
     capNotice = null;
     serverCapNotice = null;
     combinations = null;
+    submittedDropPicks = [];
     await loadDataFor(outcome.character);
     rows = seedRows(outcome.character);
     // Design 3.4: talent compare is Top Gear with the gear locked. Locking every slot here
@@ -496,6 +504,9 @@ export function createBulkStore(init: BulkStoreInit) {
     get pickedBosses() {
       return pickedBosses;
     },
+    get submittedDropPicks() {
+      return submittedDropPicks;
+    },
     get stats() {
       return stats;
     },
@@ -698,6 +709,7 @@ export function createBulkStore(init: BulkStoreInit) {
         phase = 'idle';
         return;
       }
+      submittedDropPicks = pickedBosses;
       await runBulkAndSettle(runDeps, outcome.request);
     },
 
@@ -725,6 +737,8 @@ export function createBulkStore(init: BulkStoreInit) {
           return;
         }
       }
+      // Best-effort: Apply syncs the drawer to `pickedBosses` before this runs it.
+      submittedDropPicks = pickedBosses;
       await runBulkAndSettle(runDeps, parsed as BulkRequest | WeightsRequest);
     },
 
@@ -750,6 +764,7 @@ export function createBulkStore(init: BulkStoreInit) {
         message = outcome.error;
         return;
       }
+      submittedDropPicks = pickedBosses;
       const request = outcome.request;
       serverRunning = true;
       const generation = ++serverGeneration;

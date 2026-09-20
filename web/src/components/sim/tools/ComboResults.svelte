@@ -16,14 +16,16 @@
   import { codeForCharacterSpec } from '../../../lib/sim/character';
   import { confidenceBand, formatMargin } from '../../../lib/sim/estimate';
   import {
+    collapsedComboCount,
     comboRows,
     deltaLabel,
     headlineFor,
     keepsSetBonus,
+    signedGainLabel,
     slotSummary,
     winningGear,
   } from '../../../lib/sim/combos';
-  import { bulkCopy } from '../../../lib/sim/copy';
+  import { bulkCopy, toolFixCopy } from '../../../lib/sim/copy';
   import SaveSimForm from './SaveSimForm.svelte';
   import SubstitutionChips from './SubstitutionChips.svelte';
 
@@ -52,6 +54,15 @@
   const rows = $derived(
     comboRows(result).filter((row) => !keepSet || keepsSetBonus(row.combo, result, items, sets, FOUR_PIECE)),
   );
+  /**
+   * How many of `result.combos` `comboRows`' own de-dupe folded away -- computed off the
+   * result itself, not off `rows` above: `rows` also runs the "keep 4-piece" filter, an
+   * unrelated, player-chosen reduction that has nothing to do with the ring/trinket
+   * both-slots collapse this note explains (final whole-branch review, Important 2). Tying
+   * the note to that filter too would make it flicker (or misreport "0 collapsed") every
+   * time the player ticks the box, for a reason the note does not describe.
+   */
+  const collapsed = $derived(collapsedComboCount(result));
   const summary = $derived(slotSummary(result));
   const winner = $derived(winningGear(result));
 
@@ -178,6 +189,17 @@
     {#if rows.length > 1}
       <p class="text-muted text-[12px]">{bulkCopy.withinErrorNote}</p>
     {/if}
+    <!-- Final whole-branch review, Important 2: the run bar's own count (store.combinations)
+         is the engine's simCount over the submitted request, before comboRows' de-dupe
+         collapses a ring or trinket tried in both slots into one row -- so this table can
+         show fewer rows than that count said. A companion to the "tried in both slots" rule
+         bullet below (bulkCopy.rules), not a contradiction of it: that bullet says why the
+         engine tries both slots, this says why the table shows one row for it. -->
+    {#if collapsed > 0}
+      <p class="text-muted text-[12px]" data-testid="sim-combos-collapsed">
+        {toolFixCopy.combosCollapsedNote(collapsed)}
+      </p>
+    {/if}
   {/if}
 
   {#if summary.length > 0}
@@ -190,7 +212,7 @@
             <span class="text-muted w-24 text-[12px]">{SLOT_LABELS[row.slot as Slot] ?? row.slot}</span>
             <span class="text-text flex-1 text-[13px]">{row.name}</span>
             <span class="tabular text-gold font-mono text-[13px]">
-              {row.gain === null ? '—' : `+${Math.round(row.gain).toLocaleString('en-US')}`}
+              {signedGainLabel(row.gain)}
             </span>
           </li>
         {/each}

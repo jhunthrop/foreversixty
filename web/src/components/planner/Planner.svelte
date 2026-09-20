@@ -5,6 +5,8 @@
      under them; phone shows one panel at a time behind a tab switcher (Tasks 9 and 17). -->
 <script lang="ts">
   import { untrack } from 'svelte';
+  import type { WeightsFile } from '../../lib/addon/score';
+  import activeBuild from '../../data/active-build.json';
   import { DEFAULT_CLASS_SLUG } from '../../lib/planner/config';
   import { ranksByTalent } from '../../lib/planner/derive';
   import { decodeFS1, encodeFS1, orderFromRanks } from '../../lib/planner/fs1';
@@ -16,15 +18,17 @@
     loadReference,
     loadSets,
     loadTalents,
+    loadWeights,
   } from '../../lib/planner/load';
   import type { TalentIndex } from '../../lib/planner/rules';
   import { createPlannerStore } from '../../lib/planner/store.svelte';
   import { SECONDARY_BUTTON } from '../../lib/planner/styles';
   import { treeSourceNotice } from '../../lib/planner/tree-source';
-  import type { BuildRecord, TalentFile } from '../../lib/planner/types';
+  import type { BuildRecord, Gear, TalentFile } from '../../lib/planner/types';
   import { characterFromPlanner } from '../../lib/sim/character';
   import { defaultSimState, simSearch, withSimState } from '../../lib/sim/url';
   import GearPanel from './GearPanel.svelte';
+  import ImportBox from './ImportBox.svelte';
   import OrderStrip from './OrderStrip.svelte';
   import SharePanel from './SharePanel.svelte';
   import SummaryBar from './SummaryBar.svelte';
@@ -35,12 +39,20 @@
     classSlug = DEFAULT_CLASS_SLUG,
     raceSlug,
     record = null,
+    gear,
     oncode,
   }: {
     treeVersion: string;
     classSlug?: string;
     raceSlug?: string;
     record?: BuildRecord | null;
+    /**
+     * Seeds the store's gear when there is no `record` (dps D39/D40) -- Top Gear's inline
+     * "add a build" (TalentCandidates.svelte) passes the loaded character's gear so its live
+     * DPS card sims the same equipment the comparison table does. `record?.gear` always wins
+     * when a record is present: `/b/:id` and `/planner` must stay byte-identical to today.
+     */
+    gear?: Gear;
     /**
      * Called with the build's own FS1 code whenever it changes. Top Gear's "add a build"
      * (Task 14's TalentCandidates) mounts this component inline and reads the code back
@@ -127,7 +139,7 @@
           ? decoded.build.raceSlug
           : (fromQuery('race') ?? raceSlug ?? ''),
       order: record?.point_order,
-      gear: record?.gear,
+      gear: record?.gear ?? gear,
       title: record?.title,
       sourceId: record?.id ?? null,
       readOnly: record !== null,
@@ -206,6 +218,8 @@
 
   let status = $state<'loading' | 'ready' | 'failed'>('loading');
   let attempt = $state(0);
+  /** The build's stat weights (Task 19). Empty until loaded, or on a build with none. */
+  let weights = $state<WeightsFile>([]);
   // Reset asks in the toolbar rather than through window.confirm: a browser dialog cannot be
   // styled, cannot say what it is about to clear, and reads badly on phone.
   let confirmingReset = $state(false);
@@ -318,6 +332,11 @@
         if (stale()) return;
         store.setItems({ build: store.treeVersion, class_slug: slug, items: [] });
       }
+      // Weights are optional the same way sets and items are: a build the data lane has
+      // not regenerated ships none, and loadWeights already returns [] for a 404. Any
+      // other failure here is rethrown into the outer catch, the same line loadSets draws.
+      weights = await loadWeights(store.treeVersion);
+      if (stale()) return;
       status = 'ready';
     } catch {
       // A stale run's failure is not this class's failure: the run that replaced it owns the
@@ -408,27 +427,59 @@
        them and still moves the footer -- by the difference rather than by the whole planner.
        Re-derive them by loading /planner, setting this element's min-height to 0, and reading
        its `getBoundingClientRect().height` below and above the md breakpoint. They measure
-       793 at 360px and 1079 from md up (Task 21's "Include a simmed DPS on the card" checkbox
-       under the Share button, plus the row's own gap-3, added about 56px at 360px and 31.5px
-       from md up over the 737/1047.5 this measured before it -- most of that at 360px is the
-       fix-round bump from `min-h-6` to `min-h-11` so the checkbox clears the same 44px target
-       every other checkbox in the codebase does; the other figures below quoting 616, 646.5,
-       728, 962 and 1143 predate both that change and Task 11's tree header change before it
-       and were not re-measured, since none of them feeds this min-height and re-deriving them
-       needs gear- and read-only-mount scenarios outside what the checked-in fixture data
-       covers). Each value here is set a hair under what was measured, because under costs a
-       pixel of movement and over leaves dead space below the ready planner for good.
+       1039.5 at 360px and 1379 from md up (the addon lane's Task 16 added `<ImportBox>` --
+       a heading, a two-row textarea and a submit button -- inside this region on the
+       non-read-only mount, plus SharePanel's "Copy addon code" button next to Share and the
+       always-present hint paragraph under that row; together that grew the region by about
+       246.5px at 360px and 300px from md up over the 793/1079 this measured before it. The
+       gearless-desktop figure below quoting 616 is on the same non-read-only mount as this
+       min-height, so it too now understates the ready height by roughly that same growth
+       and was not re-measured (it stays far enough under either reserve for the conclusion
+       below to hold regardless). The read-only figures quoting 646.5 and 962 are unaffected
+       by this lane -- ImportBox and SharePanel's addon-code button are both `!readOnly`-only
+       -- and remain as measured; both predate the Task 21 checkbox change and Task 11's tree
+       header change before it, and were not re-measured, since neither feeds this min-height
+       and re-deriving them needs a gear-mount scenario outside what the checked-in fixture
+       data covers). Each value here is the measured natural rounded up to the whole pixel --
+       1039.5 becomes 1040, and 1379 is already whole. That is the convention the base reserve
+       followed too: its 792 and 1078 were that build's loaded naturals exactly, leaving zero
+       residual travel. Under costs movement; over costs only dead space, so where the
+       measurement is fractional, round up.
 
-       The phone figure fell from 1412.5 to 728 when gear became the third tab: the gear panel
-       used to stack under the trees there and now takes its turn in the same column. What is
-       reserved for is the tab the planner lands on, which is the first tree. Opening Gear
-       grows the region to 1143 and pushes the footer down by the difference, and that is
-       deliberate -- it is a tap rather than an unprompted shift, the same kind of movement
-       showing the order strip or opening an item picker already makes, and none of it is
-       what CLS measures. Reserving the gear height instead would buy that back at the price
-       of 415px of dead space under every build that never opens the tab. Desktop is untouched
-       by the tab strip (it is md:hidden, and the gear panel still sits under the order strip
-       there), so the md figure is unchanged.
+       Two things this comment used to have wrong, both settled by measurement. A reserve that
+       is *too large* does not haul the footer up in the failed-to-load state: the min-height
+       sits on the container wrapping all three branches, so a larger reserve binds identically
+       in every one of them -- it buys dead space, never movement. Failed-to-load's own natural
+       height is 171.5 at 360px and 144 from md up, far below any candidate reserve, so the
+       reserve is what that branch measures whatever the reserve is. The only constraint on
+       this number is `reserve >= the loaded natural`; overshooting costs blank space alone.
+       And the Playwright *project* is irrelevant to every height here: Pixel 7 and Desktop
+       Chrome return byte-identical heights at equal viewports, and
+       tests/e2e/planner-phone.spec.ts sets its own
+       `test.use({ viewport: { width: 360, height: 800 } })`, which overrides the mobile
+       project's 412px -- so `--project=mobile` measures 360px, not 412. Only viewport width
+       moves these numbers.
+
+       One standing caveat, as true of the base reserve as of this one: every figure in this
+       comment is measured against the *fixture* build (FOREVER_DATA=fixture, a two-tree
+       warrior), so the reserve has only ever been sized to the fixture's loaded height -- at
+       the base too, to the pixel. Real data has never been inside it, before this lane or
+       after. Restoring the equality restores the invariant this lane broke and opens no new
+       real-data gap; sizing for real data is a separate question from this fix.
+
+       The phone figure fell from 1412.5 to 728 (predating this lane) when gear became the
+       third tab: the gear panel used to stack under the trees there and now takes its turn
+       in the same column. What is reserved for is the tab the planner lands on, which is the
+       first tree, and that tab now measures 1039.5 with the import box and addon-code
+       controls counted in -- both sit above the tab content, so they add the same height
+       whichever tab is open. Opening Gear now measures 1516.5 (was 1143 before this lane) and
+       pushes the footer down by the difference, and that is deliberate -- it is a tap rather
+       than an unprompted shift, the same kind of movement showing the order strip or opening
+       an item picker already makes, and none of it is what CLS measures. Reserving the gear
+       height instead would buy that back at the price of 477.5px of dead space under every
+       build that never opens the tab. Desktop is untouched by the tab strip (it is md:hidden,
+       and the gear panel still sits under the order strip there), so the md figure carries
+       the same ImportBox/addon-code growth as the rest of the toolbar.
 
        This still earns its keep even though the ready planner is now tall enough that the
        footer is below the fold in both states, and the numbers are here so the question does
@@ -460,19 +511,20 @@
 
        A class the build ships no item file for loses the gear panel, and with it the Gear
        tab. On a phone that changes nothing: the tree tab is what is reserved for, and it
-       measures the same 728. On desktop the panel leaves the column and the ready planner
-       comes in at 616, some 421px under the md reserve, which is dead space rather than
-       movement and stays the safe direction to err.
+       measures the same 1039.5. On desktop the panel leaves the column and the ready planner
+       comes in at 616 (stale, see above -- still comfortably under the 1379 md reserve
+       either way), which is dead space rather than movement and stays the safe direction to
+       err.
 
        Fork replaces Reset and drops the SharePanel section, but only on the read-only mount --
        the editable toolbar this measures is untouched. The read-only mount is the shorter one,
-       646.5 and 962, so it sits about 80px under the reserve and leaves that much space above
+       646.5 and 962, so it sits well under the reserve and leaves that much space above
        the footer on the API's /b/:id. Reserving the taller figure in both is deliberate:
        Fork grows the toolbar back to the editable height, and a reserve that
        tracked `readOnly` would spend that growth shoving the footer down the moment it is
        pressed. /b/:id carries no CLS budget of its own -- it is server-rendered, so the
        island's whole planner arrives after first paint regardless of what this reserves. -->
-  <div class="flex min-h-[792px] flex-col gap-[22px] md:min-h-[1078px] md:gap-8">
+  <div class="flex min-h-[1040px] flex-col gap-[22px] md:min-h-[1379px] md:gap-8">
     {#if status === 'loading'}
       <!-- The planner's own panel chrome rather than a bare line on a blank reserve: a
            viewport of empty space reads as a broken page, and the frame reads as the planner
@@ -641,6 +693,17 @@
         {/if}
       </div>
 
+      {#if !store.readOnly}
+        <!-- A read-only build (opened from a share link) has nowhere for an imported build to
+             go until it is forked, so the box only mounts once the toolbar above already shows
+             Reset and Share rather than "Fork it to spend points of your own." -->
+        <ImportBox
+          talents={store.talentIndex}
+          activeBuild={activeBuild.build}
+          onimport={(build) => store.loadImported(build)}
+        />
+      {/if}
+
       <OrderStrip {store} />
 
       <!-- The gear tab's panel. Hidden by a class rather than the `hidden` attribute for the
@@ -653,7 +716,7 @@
           aria-labelledby="gear-tab"
           class="flex-col md:flex {activeTree === gearTabIndex ? 'flex' : 'hidden'}"
         >
-          <GearPanel {store} />
+          <GearPanel {store} {weights} />
         </div>
       {/if}
     {/if}

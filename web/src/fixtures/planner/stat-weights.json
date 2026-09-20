@@ -1,0 +1,22 @@
+[
+  {
+    "spec": "warrior-arms",
+    "weights": {
+      "strength": 2,
+      "agility": 1.1,
+      "stamina": 0,
+      "crit": 20,
+      "hit": 25,
+      "attack_power": 1,
+      "defense": 0,
+      "armor": 0.01
+    },
+    "sources": [
+      {
+        "label": "Placeholder — the [data] lane’s stat-weights.json is authoritative",
+        "url": "https://www.wowhead.com/classic/guide/classes/warrior/arms/dps-stat-priority",
+        "kind": "community"
+      }
+    ]
+  }
+]

@@ -5,7 +5,11 @@ import (
 	"slices"
 	"testing"
 
+	"github.com/jhunthrop/foreversixty/sim/adapter"
 	"github.com/jhunthrop/foreversixty/sim/api"
+	"github.com/jhunthrop/foreversixty/sim/internal/simdb"
+	engine "github.com/wowsims/classic/sim"
+	"github.com/wowsims/classic/sim/core"
 	"github.com/wowsims/classic/sim/core/proto"
 )
 
@@ -16,6 +20,191 @@ func weights() api.SimRequest {
 		Reference: "attack_power",
 	}
 	return req
+}
+
+// representativeWarriorWeights is the same 8-stat list
+// .superpowers/pr1-go/requests/simfury-weights.json weighs: the exact
+// request task 5's D44/D45 reviews found broken, including
+// melee_haste - the stat weights() above omits, which is why that
+// fixture's own tests never would have caught the bug this pins
+// against a regression.
+//
+// Its gear is not fury()'s: fury()'s head item (16963) is a vanilla id
+// with no row in Forever's re-itemised database (sim/internal/simdb's
+// doc explains why - most vanilla ids resolve to nothing here), which
+// only matters once something actually equips the character, as the
+// native run below does. Head 12640 and main-hand 21521 are real
+// Forever items, taken from sim/adapter/testdata's warrior-fury golden
+// fixture, which a live -out-proto run produced successfully.
+func representativeWarriorWeights() api.SimRequest {
+	req := fury()
+	req.Character.Gear = []api.GearSlot{
+		{Slot: "head", ItemID: 12640},
+		{Slot: "main_hand", ItemID: 21521, Enchant: 1900},
+	}
+	req.Weights = &api.WeightsSpec{
+		Stats: []string{
+			"attack_power", "strength", "agility", "crit",
+			"hit", "melee_haste", "expertise", "armor_penetration",
+		},
+		Reference: "attack_power",
+	}
+	return req
+}
+
+// TestRepresentativeWarriorWeightsResolveToDistinctEngineStats is task
+// 5(a)'s first pinned test: every id in a representative warrior
+// weights request resolves, through the same ParseStat BuildWeights
+// uses, to a distinct engine Stat. A typo or an id that silently
+// resolved to the wrong enum value - the exact shape of the D44 bug -
+// would either fail ParseStat or collide with another stat's value;
+// this fails on either.
+func TestRepresentativeWarriorWeightsResolveToDistinctEngineStats(t *testing.T) {
+	req := representativeWarriorWeights()
+	seen := make(map[proto.Stat]string, len(req.Weights.Stats))
+	for _, id := range req.Weights.Stats {
+		s, ok := ParseStat(id)
+		if !ok {
+			t.Fatalf("%q did not resolve to an engine stat", id)
+		}
+		if other, dup := seen[s]; dup {
+			t.Fatalf("%q and %q both resolved to engine stat %v", id, other, s)
+		}
+		seen[s] = id
+	}
+	if len(seen) != len(req.Weights.Stats) {
+		t.Fatalf("resolved %d distinct stats for %d requested ids", len(seen), len(req.Weights.Stats))
+	}
+}
+
+// TestANativeWeightsRunMovesMeleeHaste is task 5(a)'s second pinned
+// test: with a short native run, no stat the engine actually moved
+// comes back 0 +/- 0. It runs representativeWarriorWeights()
+// end-to-end - BuildWeights, the engine's own core.StatWeights,
+// adapter.Weights - the same path executeWeights (sim/cmd/forever-sim)
+// and the server both take.
+//
+// hit is deliberately excluded from the "not zero" assertion:
+// fury()'s character single-wields (no off_hand gear, exactly like
+// Simfury's D44 profile), so hit is genuinely capped and 0 +/- 0 is
+// the honest answer there too - see task-5-report.md's part (a) for
+// the numbers. melee_haste has no such exemption: it is a straight
+// multiplier on swing speed with no cap in this engine build, so a
+// nonzero weight (and a nonzero error, since the engine actually
+// computed one rather than skipping a hard-capped stat) is the
+// regression this test exists to catch if Unit.SwingSpeed() ever
+// drops the MeleeHaste term again.
+func TestANativeWeightsRunMovesMeleeHaste(t *testing.T) {
+	registerEngine.Do(engine.RegisterAll)
+
+	req := representativeWarriorWeights()
+	// Enough iterations that melee_haste's real effect (haste is not
+	// subtle: it is a direct swing-speed multiplier) clears any
+	// per-iteration noise, few enough that this test stays fast. Not
+	// one of api.ValidIterations, hence OpenIterations.
+	req.Iterations = 500
+	req.RandomSeed = 11
+
+	engineReq, err := BuildWeights(req, Options{OpenIterations: true})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := simdb.AttachWeights(engineReq); err != nil {
+		t.Fatal(err)
+	}
+
+	res := core.StatWeights(engineReq)
+	got, err := adapter.Weights(res, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	for _, w := range got {
+		if w.Stat != "melee_haste" {
+			continue
+		}
+		if w.Weight == 0 && w.Error == 0 {
+			t.Fatalf("melee_haste came back exactly 0 +/- 0: %+v", w)
+		}
+		return
+	}
+	t.Fatal("melee_haste is not in the result")
+}
+
+// TestANativeWeightsRunsTheIterationCountItsOwnFormulaPredicts pins
+// api.WeightsIterations' formula against what the engine's sweep
+// actually runs, not against a second copy of the same formula.
+//
+// adapter.Weights divides the engine's population standard deviation
+// by sqrt(N) to turn it into a standard error, where N =
+// req.Iterations * api.WeightsIterationsFactor. That denominator is
+// only correct because sim/core/statweight.go's
+// buildStatWeightRequests halves SimOptions.Iterations exactly ONCE
+// (sim/core/statweight.go:122 in the fork) and then runs a low pass
+// and a high pass of that halved size per stat, plus one halved
+// baseline pass - (X/2)+(X/2) == X. api's own
+// TestWeightsConvertsPopulationStdevToStandardError pins only the
+// FORM of that arithmetic: it computes N as Iterations*Factor on both
+// sides of its own assertion, so it would still pass if a future
+// engine pin stopped halving, halved twice, or dropped a pass. Every
+// error bar on /sim/weights would then be silently wrong by a
+// constant factor and no existing test would fail.
+//
+// This test runs the real sweep instead of re-deriving the formula:
+// core.StatWeightsAsync's own running total
+// (ProgressMetrics.CompletedIterations, read on the last progress
+// tick before FinalWeightResult - the same pattern sim/cmd/forever-
+// sim's executeWeights uses to report iterations_run) is the engine's
+// own count of iterations it actually ran, not a number this test
+// computes - and must equal what api.WeightsIterations(req) predicts.
+// The stat list and iteration count are kept small only for runtime;
+// the halve-once-then-merge invariant being pinned does not depend on
+// their size.
+func TestANativeWeightsRunsTheIterationCountItsOwnFormulaPredicts(t *testing.T) {
+	registerEngine.Do(engine.RegisterAll)
+
+	req := representativeWarriorWeights()
+	// A short stat list and few iterations: this test cares about how
+	// many iterations the engine ran, not about the weights it
+	// computed, so it does not need melee_haste's real gear-driven
+	// effect to clear noise the way TestANativeWeightsRunMovesMeleeHaste
+	// does.
+	req.Weights.Stats = []string{"attack_power", "crit"}
+	req.Iterations = 20
+	req.RandomSeed = 5
+
+	engineReq, err := BuildWeights(req, Options{OpenIterations: true})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := simdb.AttachWeights(engineReq); err != nil {
+		t.Fatal(err)
+	}
+
+	reporter := make(chan *proto.ProgressMetrics, 32)
+	core.StatWeightsAsync(engineReq, reporter, t.Name())
+
+	// core.StatWeightsAsync never closes reporter - it sends exactly
+	// one FinalWeightResult and returns (sim/cmd/forever-sim's
+	// executeWeights has the same note) - so this takes the first
+	// FinalWeightResult and stops, remembering the last
+	// CompletedIterations tick before it as the engine's own total.
+	var iterationsRun int32
+	for p := range reporter {
+		if p.FinalWeightResult != nil {
+			if p.FinalWeightResult.Error != nil && p.FinalWeightResult.Error.Message != "" {
+				t.Fatalf("weights run failed: %s", p.FinalWeightResult.Error.Message)
+			}
+			break
+		}
+		iterationsRun = p.CompletedIterations
+	}
+
+	if want := int32(api.WeightsIterations(req)); iterationsRun != want {
+		t.Fatalf("engine ran %d iterations, want %d from api.WeightsIterations - "+
+			"the halve-once-then-merge invariant adapter.Weights' sqrt(N) "+
+			"error-bar conversion depends on has changed", iterationsRun, want)
+	}
 }
 
 // The weights request is the SAME player, buffs, encounter and options
@@ -42,8 +231,14 @@ func TestBuildWeightsIsTheSameRunPlusStats(t *testing.T) {
 	if got.Encounter.GetDuration() != run.Encounter.GetDuration() {
 		t.Error("the weights request fights a different encounter")
 	}
-	if got.SimOptions.GetIterations() != int32(fury().Iterations) {
-		t.Errorf("iterations = %d", got.SimOptions.GetIterations())
+	// BuildWeights multiplies the request's own Iterations by
+	// api.WeightsIterationsFactor (see its doc): sim/core/statweight.go's
+	// WeightsStdev is a population standard deviation that iteration
+	// count alone cannot shrink, and adapter.Weights' sqrt(N)
+	// conversion needs the engine to actually run at that multiplied
+	// count.
+	if want := int32(fury().Iterations) * int32(api.WeightsIterationsFactor); got.SimOptions.GetIterations() != want {
+		t.Errorf("iterations = %d, want %d", got.SimOptions.GetIterations(), want)
 	}
 	if got.RaidBuffs == nil || got.PartyBuffs == nil || got.Debuffs == nil {
 		t.Error("the weights request lost the buffs")
@@ -79,6 +274,29 @@ func TestBuildWeightsNeverAsksForASample(t *testing.T) {
 	}
 	if got.SimOptions.GetSampleIteration() {
 		t.Error("a weights request asked for a sample iteration; no consumer reads a stat sweep's cast log")
+	}
+}
+
+// TestBuildWeightsIterationsMatchesTheCostEstimate pins the thing
+// that breaks quietly if BuildWeights and api.WeightsIterations ever
+// disagree about the multiplied count: the server would either
+// refuse a run it could afford or accept one it cannot. What
+// BuildWeights actually sets the engine's SimOptions.Iterations to,
+// halved back out for RNG parity and expanded by the baseline-plus-
+// two-passes-per-stat shape, must equal what WeightsIterations
+// costs the same request at.
+func TestBuildWeightsIterationsMatchesTheCostEstimate(t *testing.T) {
+	req := weights()
+	got, err := BuildWeights(req, Options{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	engineIterations := int(got.SimOptions.GetIterations())
+	distinctStats := len(req.Weights.Stats)
+	totalRun := (engineIterations / 2) * (1 + 2*distinctStats)
+	if want := api.WeightsIterations(req); totalRun != want {
+		t.Errorf("BuildWeights implies %d total iterations run, api.WeightsIterations costs %d",
+			totalRun, want)
 	}
 }
 

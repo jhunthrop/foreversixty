@@ -91,11 +91,13 @@ export const STAT_KEYS = [
   'spell_power',
   'healing',
   'attack_power',
+  'ranged_attack_power',
   'defense',
   'dodge',
   'parry',
   'block',
   'mp5',
+  'spell_penetration',
   'fire_res',
   'frost_res',
   'nature_res',
@@ -117,11 +119,13 @@ export const STAT_LABELS: Record<StatKey, string> = {
   spell_power: 'Spell power',
   healing: 'Healing',
   attack_power: 'Attack power',
+  ranged_attack_power: 'Ranged attack power',
   defense: 'Defense',
   dodge: 'Dodge',
   parry: 'Parry',
   block: 'Block',
   mp5: 'Mana per 5',
+  spell_penetration: 'Spell penetration',
   fire_res: 'Fire resistance',
   frost_res: 'Frost resistance',
   nature_res: 'Nature resistance',
@@ -169,6 +173,19 @@ export interface Item {
    * not regenerated, and on every item that rolls none.
    */
   suffixes?: number[];
+  /**
+   * Weapon fields ([data] Tasks 5 and 6): min and max weapon damage, speed in seconds, and
+   * the derived DPS. Optional the same way `suffixes` is above -- absent on a build the
+   * data lane has not regenerated, and on every item that is not a weapon.
+   */
+  damage_min?: number;
+  damage_max?: number;
+  speed?: number;
+  dps?: number;
+  /** True for a two-handed weapon; rule 6's client mirror refuses an off-hand beside one. */
+  two_hand?: boolean;
+  /** The weapon's on-hit or on-use effect text, when it has one. */
+  effect_text?: string;
 }
 
 export interface ItemFile {

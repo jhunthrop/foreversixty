@@ -445,6 +445,25 @@ describe('the droptimizer’s sources', () => {
     expect(s.visibleSources.map((source) => source.id)).toContain('world:azuregos');
     s.dispose();
   });
+
+  /**
+   * Final whole-branch review, Important 3's deferred minor: `submittedDropPicks` freezes
+   * at what was ticked the last time a run actually left, so Droptimizer.svelte's untried
+   * list never blames a source that was never part of the displayed result.
+   */
+  it('freezes submittedDropPicks at what was ticked when run() last ran, not what is ticked afterward', async () => {
+    const s = store('drops');
+    await s.loadAddon(FURY);
+    s.toggleSource('raid:molten-core', 'raid:molten-core:11502');
+    await s.run();
+    expect(s.submittedDropPicks).toEqual(['raid:molten-core|raid:molten-core:11502']);
+    s.toggleSource('dungeon:hall-of-thanes', 'dungeon:hall-of-thanes:90011');
+    expect(s.pickedBosses).toContain('dungeon:hall-of-thanes|dungeon:hall-of-thanes:90011');
+    // The newly ticked source must not retroactively join the snapshot the finished result
+    // was actually built from.
+    expect(s.submittedDropPicks).toEqual(['raid:molten-core|raid:molten-core:11502']);
+    s.dispose();
+  });
 });
 
 describe('addSearchItem', () => {

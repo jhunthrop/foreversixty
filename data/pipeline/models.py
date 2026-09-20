@@ -140,6 +140,24 @@ class GearItem(BaseModel):
     item_level: int
     armor: int
     stats: dict[str, int]
+    #: Weapon damage per swing and the swing itself, from ItemSparse's
+    #: ItemDamageMin_0/ItemDamageMax_0/ItemDelay. Zero for anything that is
+    #: not a weapon, and zero on a build whose client computes damage from
+    #: curves this pipeline does not resolve.
+    damage_min: int = 0
+    damage_max: int = 0
+    #: Seconds, ItemDelay / 1000.
+    speed: float = 0.0
+    #: Derived: the mid damage over the speed, 0.0 when either is unknown.
+    dps: float = 0.0
+    #: True for a two-handed main-hand weapon -- one that leaves no off-hand
+    #: free. Validation rule 6 refuses an off-hand item beside one. A bow, gun,
+    #: crossbow, thrown weapon or wand is False: it takes the ranged slot, not
+    #: the main hand (see `normalize.gear.TWO_HAND_INVENTORY_TYPES`).
+    two_hand: bool = False
+    #: The use or proc description, token-substituted the way talent text
+    #: is. Empty for an item whose value is entirely in its stats.
+    effect_text: str = ""
     set_id: int | None
     unique: bool
 
@@ -286,6 +304,64 @@ class SpecRecord(BaseModel):
     #: emitted key order is the generated files' only compatibility
     #: surface, so new fields go on the end and existing ones never move.
     reference_stat: str
+    #: The stats that actually move this spec's damage or healing - the
+    #: closed list `/sim/weights` offers, so a warrior is never asked
+    #: about spirit and a healer never sees unexplained zeros for
+    #: expertise. Follows reference_stat's own path: read here, checked
+    #: against the engine's vocabulary, emitted to sim/specs/specs.go's
+    #: generated Spec.WeightStats. specs.py's load_specs enforces the
+    #: two content rules a physical/caster split can check without a
+    #: per-spec table: reference_stat is always a member, and every id
+    #: is a known stat. The full physical-vs-caster forbidden-pair rule
+    #: is pinned by a Go test over specs.All (sim/specs/specs_test.go),
+    #: which is what actually documents which stats belong to which
+    #: kind of spec.
+    weight_stats: list[str]
+
+
+class StatWeights(BaseModel):
+    """One spec's curated stat weights, relative to its reference stat.
+
+    Weights are opinions. Every entry carries at least one source and the
+    site shows them beside the numbers; `pipeline/weights.py` refuses an
+    entry without one, the way `pipeline/curated.py` refuses an unsourced
+    Forever change.
+    """
+
+    spec: str
+    weights: dict[str, float]
+    sources: list[Source]
+
+
+class AddonTalent(BaseModel):
+    """One talent as the addon sees it: a cell and a ceiling, no ids.
+
+    tier and column are 1-based, matching `GetTalentInfo`'s own return
+    values, so the addon compares what the client hands it without
+    arithmetic in two places.
+    """
+
+    name: str
+    tier: int
+    column: int
+    max_rank: int
+
+
+class AddonTab(BaseModel):
+    name: str
+    #: In the site's own array order. The export string encodes ranks in
+    #: this order, so it is contract between Data.lua and Codec.lua.
+    talents: list[AddonTalent]
+
+
+class AddonClass(BaseModel):
+    tabs: list[AddonTab]
+
+
+class AddonData(BaseModel):
+    build: str
+    classes: dict[str, AddonClass]
+    weights: dict[str, dict[str, float]]
 
 
 class PhaseBoundary(BaseModel):
