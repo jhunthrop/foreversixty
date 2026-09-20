@@ -217,6 +217,23 @@ export async function recount(deps: RecountDeps): Promise<void> {
 
 export type RequestOutcome = { request: BulkRequest | WeightsRequest } | { error: string };
 
+/**
+ * The weights honest-refusal gate (sub-item 5, D45/healer-sim BLOCKER 2), factored out so
+ * it has exactly one copy for the page's two run paths: `buildRequest` below (the ticked-
+ * candidates path `run()`/`runOnServer()` use) and `bulk-store.svelte.ts`'s `runRequest`
+ * (design 8's Advanced-drawer escape hatch, which bypasses `buildRequest` entirely by
+ * design -- `bulk-store.test.ts`'s own "runRequest bypasses validateBulk" documents that).
+ * Fix round 1 found the drawer path ungated: `previewRequest` still built a full, valid-
+ * looking `WeightsRequest` for a healer spec, the drawer's own JSON validation
+ * (`simValidate`, wired through `store.validateRequest`) has no spec-role concept either
+ * (the same finding that ruled `simValidate` out as sub-item 5's gate in the first place),
+ * and touching Run reproduced the healer's 64-second silent hang verbatim. One function,
+ * called from both places, so a third entry point cannot quietly reopen this gap again.
+ */
+export function weightsSpecRefusal(spec: string): string | null {
+  return isDpsSpec(spec) ? null : weightsUnsupportedSpec(specLabel(spec));
+}
+
 /** `store.svelte.ts`'s own `buildRequest`, for a bulk or weights request. Refuses with a
  *  reason rather than throwing: `run()` shows the reason as `message`, never a stack trace. */
 export function buildRequest(deps: BulkRequestDeps): RequestOutcome {
@@ -228,9 +245,8 @@ export function buildRequest(deps: BulkRequestDeps): RequestOutcome {
     // call, with a sentence a player can act on -- never the engine's own words, which
     // name internal spec ids (final whole-branch review: a raw `combine: part 0 failed:
     // request: …` string shown verbatim).
-    if (!isDpsSpec(character.spec)) {
-      return { error: weightsUnsupportedSpec(specLabel(character.spec)) };
-    }
+    const refusal = weightsSpecRefusal(character.spec);
+    if (refusal !== null) return { error: refusal };
     // Contract 10.8: `WeightsSpec.Reference` is required. An empty `stats` list has
     // nothing to send as one.
     const stats = deps.getStats();

@@ -111,10 +111,13 @@ export const WEIGHTS_STATS_FROM_ENGINE = 'These are the stats the engine weighs 
  * which name internal spec ids the drawer's own `detail` row already shows verbatim for a
  * genuine engine refusal (final whole-branch review: a raw `combine: part 0 failed:
  * request: …` string is not something a player can act on). `specName` is the display name
- * (`specLabel`), never the wire's own spec key, for the same reason.
+ * (`specLabel`), never the wire's own spec key, for the same reason. "DPS" capitalised and
+ * a semicolon, not a bare `--`, to match this file's own voice for displayed prose (`dps`/
+ * `plannerDpsLabel`/`resultsDps` etc. above) -- `--` is this file's comment punctuation, not
+ * something a player reads (fix round 1, Important).
  */
 export const weightsUnsupportedSpec = (specName: string): string =>
-  `The engine doesn't simulate ${specName} -- stat weights need a dps spec.`;
+  `The engine doesn't simulate ${specName}; stat weights need a DPS spec.`;
 // --- Lane W1 (persona round 1: results, labels, weights) ---
 
 export const simCopy = {

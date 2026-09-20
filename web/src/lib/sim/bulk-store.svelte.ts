@@ -32,6 +32,7 @@ import {
   runBulkAndSettle,
   seededStats,
   validateRequestJson,
+  weightsSpecRefusal,
   type BulkRequestDeps,
   type BulkRunDeps,
   type RecountDeps,
@@ -705,12 +706,25 @@ export function createBulkStore(init: BulkStoreInit) {
      * hatch) -- bypasses the ticked-candidates reconstruction `run()` does entirely, the
      * same way `applyRequest` bypasses it for Apply. The drawer's own `checkRequest` has
      * already run the engine's own Validate by the time it calls this, so this does not
-     * re-validate.
+     * re-validate -- except for the one thing `simValidate` cannot see at all (no spec-role
+     * concept, on either the real engine or the fake): sub-item 5's honest refusal. Fix
+     * round 1 gated only `buildRequest`, the ticked-candidates path; this path reached the
+     * pool for an unsupported spec untouched, with `previewRequest` even seeding the
+     * drawer's textarea with a full, valid-looking request for it. `weightsSpecRefusal` is
+     * the one function both paths now call, so a third path cannot reopen this gap again.
      */
     async runRequest(request: unknown): Promise<void> {
       if (serverRunning) return;
       const parsed = request as Partial<BulkRequest & WeightsRequest>;
       if (parsed.bulk === undefined && parsed.weights === undefined) return;
+      if (parsed.weights !== undefined && parsed.spec !== undefined) {
+        const refusal = weightsSpecRefusal(parsed.spec);
+        if (refusal !== null) {
+          message = refusal;
+          phase = 'idle';
+          return;
+        }
+      }
       await runBulkAndSettle(runDeps, parsed as BulkRequest | WeightsRequest);
     },
 
