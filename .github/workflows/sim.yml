@@ -54,16 +54,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      # styles-check runs `go run ./internal/genstyles`: sim/request
-      # imports the engine and //go:embed resolves at compile time, so
-      # the pin and the active build's item database are both needed
-      # before the generator can even build, though styles.go itself
-      # imports sim/api only.
+      # styles-check runs `go run ./internal/genstyles`, which imports
+      # sim/request. styles.go itself imports sim/api only, but the
+      # PACKAGE also has buffs.go, cooldowns.go, request.go,
+      # vocabulary.go and weights.go, which import
+      # github.com/wowsims/classic/sim/core/proto directly - a whole
+      # package is compiled together, so the generator cannot build
+      # without resolving the engine. setup-go is needed because this
+      # job otherwise carries no Go toolchain at all; pin-engine is
+      # needed because sim/go.mod's committed replace points at a
+      # developer's local checkout path, which does not exist on a
+      # runner, and pin-engine is what rewrites it to the pinned sha
+      # resolved through the module proxy instead.
+      #
+      # NOT needed here: `make simdb`. Nothing genstyles reaches -
+      # sim/request, sim/api, sim/specs - imports sim/internal/simdb or
+      # go:embeds anything; only sim/bulk, sim/cmd/wasm and
+      # sim/cmd/forever-sim do. Verified by building
+      # ./internal/genstyles with both simdb.bin and enchants.json
+      # removed - it built and ran, byte-identical output.
       - uses: actions/setup-go@v5
         with: { go-version-file: sim/go.mod, cache-dependency-path: sim/go.sum }
       - uses: ./.github/actions/pin-engine
-      - name: the active build's item database
-        run: make simdb
       - name: the pinned engine sha
         id: pin
         run: |
