@@ -592,6 +592,22 @@ export const simCopy = {
   whatsInIt: "What's in it",
   /** Solo's own answer: no groups, so the panel says so rather than rendering empty. */
   whatsInItEmpty: 'Nothing. Solo applies no buffs and no consumables.',
+  /**
+   * Task 6 (newcomer BLOCKER, tank MAJOR): RotationCard's "what it does" trigger
+   * (`rotationLink`, unchanged) no longer navigates to /sim/specs#<spec>, which explains
+   * parse fidelity, not the rotation, and threw away the loaded character and the finished
+   * run on the way -- Back did not restore either. It opens an in-page drawer instead; this
+   * is the drawer's own opening sentence, naming the spec so the drawer (and /sim/specs' own
+   * copy of it) reads on its own.
+   */
+  rotationDrawerIntro: (name: string): string => `${name}'s default rotation, in the order it casts:`,
+  /** The drawer and /sim/specs' per-card panel alike, for a spec whose curated file has no
+   *  step notes yet (sync-rotations.mjs's own "not fatal" case) -- so the drawer never opens
+   *  on a blank list with no explanation. */
+  rotationDrawerEmpty: 'No step-by-step notes for this rotation yet.',
+  /** The drawer's own link to the fidelity detail the drawer does not repeat -- opens a new
+   *  tab so the character and the finished run stay on this one either way. */
+  rotationDrawerFidelityLink: 'fidelity detail on /sim/specs',
   // --- end Lane W2 ---
 } as const;
 
