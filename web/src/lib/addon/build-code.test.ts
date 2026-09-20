@@ -134,7 +134,10 @@ describe('addonCodeFor', () => {
       talents: indexTalents(talents),
       items: new Map([[3235, item(3235, { stamina: 4, spirit: -3 })]]),
     });
-    expect(code).toBe('FSB1:1.60.1.69893:warrior::finger1=3235:stamina=4;spirit=-3');
+    // `spirit` leads `stamina` because a gear entry's stats go on the wire in name order
+    // ("spi" < "sta"), not in contract 10.8's vocabulary order and not in the order the
+    // item's own stats table happens to list them.
+    expect(code).toBe('FSB1:1.60.1.69893:warrior::finger1=3235:spirit=-3;stamina=4');
     const result = decodeFSB1(code);
     expect(result.ok).toBe(true);
     if (!result.ok) return;

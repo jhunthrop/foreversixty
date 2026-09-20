@@ -5,15 +5,17 @@ import type * as Fsb1Module from '../../src/lib/addon/fsb1';
 import { ACTIVE_BUILD } from './support/active-build';
 import { openGear } from './support/planner';
 
-// Not a plain `import { decodeFSB1 } from '../../src/lib/addon/fsb1'`: fsb1.ts imports
-// PINNED_STATS from sim/stats.ts, which imports a generated `.json` file at module scope
-// (as do several other modules in this codebase -- planner/reference.ts, sim/buffs.ts,
-// sim/phase.ts). Every browser build and every Vitest run goes through Vite, which inlines
-// that JSON import; Playwright's plain Node ESM loader does not, and Node 22 refuses a raw
-// `.json` import without a `with { type: 'json' }` attribute the source doesn't carry --
-// changing a shared, multiply-imported source file to add one is outside this task. So
-// fsb1.ts is loaded the same way Vitest already loads it: through Vite's own module graph,
-// in SSR mode, which resolves the JSON import exactly as the shipped module does.
+// Not a plain `import { decodeFSB1 } from '../../src/lib/addon/fsb1'`. fsb1.ts used to
+// import PINNED_STATS from sim/stats.ts, which imports a generated `.json` file at module
+// scope (as do several other modules in this codebase -- planner/reference.ts,
+// sim/buffs.ts, sim/phase.ts). Every browser build and every Vitest run goes through Vite,
+// which inlines that JSON import; Playwright's plain Node ESM loader does not, and Node 22
+// refuses a raw `.json` import without a `with { type: 'json' }` attribute the source
+// doesn't carry. Dropping the stat-vocabulary sort took that particular chain away -- at
+// the time of writing fsb1.ts reaches no JSON at runtime -- but the Vite route is kept
+// deliberately rather than reverted to a plain import: it loads the module exactly as the
+// shipped build and Vitest do, so this spec cannot start disagreeing with them the next
+// time anything in the import graph grows a JSON or an alias.
 //
 // Also not `page.evaluate(() => import('/src/...'))`: the browser suite runs against
 // `astro preview`, a production build with no `/src/...` path served, so that 404s.

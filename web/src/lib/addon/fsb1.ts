@@ -21,7 +21,6 @@
 // vectors (web/src/fixtures/addon/codec-vectors.json), so neither side may drift.
 import { addonCopy } from './copy';
 import { SLOTS, type Slot } from '../planner/types';
-import { PINNED_STATS } from '../sim/stats';
 
 export const FSB1_PREFIX = 'FSB1';
 /** The same bound `fs1.ts` uses; checked before any splitting. */
@@ -29,11 +28,6 @@ export const MAX_CODE_LENGTH = 16_384;
 
 const DIGITS = '0123456789abcdefghijklmnopqrstuvwxyz';
 const SLOT_SET = new Set<string>(SLOTS);
-/** Contract 10.8's stat vocabulary order, verbatim (sim/stats.ts's `PINNED_STATS`, not the
- *  generated `SIM_STATS`, which is alphabetised for the weights page and not the wire
- *  order): `stamina` sorts before `spell_power` because the pinned enum does, and the
- *  shared fixture vectors -- and the addon's own encoder -- are generated in that order. */
-const STAT_ORDER = new Map(PINNED_STATS.map((name, index) => [name, index]));
 /** A stat value on the wire: an optional minus, then a decimal with no redundant zeros. */
 const CANONICAL_INTEGER = /^(?:0|-?[1-9]\d*)$/;
 
@@ -79,31 +73,27 @@ function fromBase36(char: string): number | undefined {
   return index === -1 ? undefined : index;
 }
 
-/** `PINNED_STATS`'s index for a known name; every unrecognised name shares this rank, so
- *  two of them fall through to the alphabetical tie-break below rather than comparing
- *  `Infinity - Infinity` (`NaN`, which is neither `< 0`, `> 0` nor `0` and leaves `sort`'s
- *  ordering for that pair undefined). */
-function statRank(name: string): number {
-  return STAT_ORDER.get(name) ?? Number.POSITIVE_INFINITY;
-}
-
 function encodeStats(stats: Record<string, number>): string {
-  // Sorted, so one build is one string: an object's key order is insertion order and two
-  // callers building the same set of stats in different orders would otherwise produce
-  // two codes for one set. Sorted by the pinned vocabulary's own order (STAT_ORDER), with
-  // an unrecognised name (outside contract 10.8) falling after every known one, tied
-  // alphabetically among themselves.
+  // Sorted, so one build is one string: an object's key order is insertion order, and two
+  // callers building the same set of stats in different orders would otherwise produce two
+  // codes for one set.
+  //
+  // Sorted by name, not by contract 10.8's `PINNED_STATS` vocabulary order. Both were
+  // defensible in isolation and this file used to do the latter; the addon lane owns the
+  // shared fixture and its Codec.lua `encodeStats` is a plain `table.sort(names)`, so name
+  // order is what the two sides actually have to agree on. It is also what the format's own
+  // spec snippet (`Object.keys(stats).sort()`) always said. A vocabulary order would need a
+  // table shared across a TypeScript bundle and a WoW addon zip and kept in step by hand;
+  // name order needs nothing shared at all, which is the whole argument for it.
+  //
+  // Byte order, never `localeCompare`. With name order this is the only comparator rather
+  // than a tie-break, so the difference is now load-bearing: collation folds case
+  // (`'B'.localeCompare('a')` is 1 where `'B' < 'a'` is true) and is locale- and
+  // environment-dependent, so two browsers could emit two codes for one build -- the exact
+  // invariant this sort exists to hold. Lua's `table.sort` on strings compares bytes, so
+  // byte order is also what the parallel Codec.lua encoder does.
   return Object.keys(stats)
-    .sort((a, b) => {
-      const [rankA, rankB] = [statRank(a), statRank(b)];
-      // Byte order, never `localeCompare`: collation folds case (`'B'.localeCompare('a')`
-      // is 1 where `'B' < 'a'` is true) and is environment-dependent, so two browsers
-      // could produce two codes for one build -- the exact invariant this sort exists to
-      // hold. Lua's `table.sort` on strings compares bytes, so this is also the branch the
-      // parallel Codec.lua encoder has to reproduce.
-      if (rankA !== rankB) return rankA - rankB;
-      return a < b ? -1 : a > b ? 1 : 0;
-    })
+    .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0))
     .map((name) => `${name}=${Math.round(stats[name])}`)
     .join(';');
 }
