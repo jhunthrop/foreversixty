@@ -40,13 +40,14 @@ test('the sentence names the two biggest damage sources, their share and the big
 }) => {
   await loadFuryAndRun(page);
 
-  // spell:25286 (64,767) and spell:23894 (33,210) of the actor's 186,849 total is 52%;
-  // spell:9910 is the first 100%-uptime buff in the fixture's own array order (the tiebreak
+  // other:attack/1 (10,816) and spell:1680 (3,399) of the actor's 18,219 total is 78%; the
+  // auto-attack row reads as prose regardless of the (here null) name table. spell:25289 is
+  // the first 100%-uptime buff in the fixture's own array order (the tiebreak
   // summarySentence uses -- see sentence.ts -- keeps a stable sort's original order, unlike
   // AuraTable's own name-tiebroken sort below).
   const sentence = page.getByTestId('sim-sentence');
   await expect(sentence).toHaveText(
-    'Spell 25286 and Spell 23894 are 52% of your damage; Spell 9910 is up 100% of the fight.',
+    'main-hand white hits and Spell 1680 are 78% of your damage; Spell 25289 is up 100% of the fight.',
   );
   await expect(sentence).not.toContainText(/\bspell:/);
 });
@@ -73,11 +74,13 @@ test('the Buffs tab shows the first aura row at 100% uptime, with no engine-inte
   await page.getByTestId('sim-tab-buffs').click();
   const table = page.getByTestId('aura-table');
   const first = table.locator('li').first();
-  await expect(first).toContainText('Spell 15366');
+  // spell:25289 and spell:2458 tie at the top on uptime share; AuraTable's own tiebreak is
+  // the resolved name, ascending ("Spell 2458" sorts before "Spell 25289").
+  await expect(first).toContainText('Spell 2458');
   await expect(first).not.toContainText(/\bspell:/);
-  await expect(page.getByTestId('aura-uptime').first()).toHaveText('100.0%');
+  await expect(page.getByTestId('aura-uptime').first()).toHaveText('100.1%');
   // Task 4: sanitizeAuraTracks drops the fixture's own inert rows (including other:move)
-  // and folds spell 20007's two tag rows into one, so no row is left disambiguated by a
+  // and folds a tag/rank duplicate into its base row, so no row is left disambiguated by a
   // trailing "#<spell id>" -- the newcomer-sim repro's "Blizzard#10" shape.
   await expect(table).not.toContainText(/#\d/);
 });
@@ -97,10 +100,10 @@ test('the Casts tab reads a cast row by its humanised label and count, never the
   await loadFuryAndRun(page);
 
   await page.getByTestId('sim-tab-casts').click();
-  const row = page.getByTestId('cast-sim-player-23894');
-  await expect(row).toContainText('Spell 23894');
+  const row = page.getByTestId('cast-sim-player-1680');
+  await expect(row).toContainText('Spell 1680');
   await expect(row).not.toContainText(/\bspell:/);
-  await expect(row).toContainText('27');
+  await expect(row).toContainText('13');
 });
 
 test('the Resources tab is empty: the fixture summary carries no non-zero resource series', async ({
@@ -123,7 +126,7 @@ test('the Timeline tab draws one lane, the player rostered from the sample itera
   // lane draws no ticks or bars; what it does prove is the one-lane-per-roster-row wiring,
   // which is what this asserts.
   await expect(page.getByTestId('lane-sim-player')).toBeVisible();
-  await expect(page.getByTestId('lane-sim-player')).toContainText('Sim');
+  await expect(page.getByTestId('lane-sim-player')).toContainText('Thrallgar');
 });
 
 test('the Distribution tab shows the mean and five rows, and stands in for the missing chart', async ({

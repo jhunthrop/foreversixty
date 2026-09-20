@@ -123,7 +123,7 @@ test.describe('a saved sim from the prerendered fixture', () => {
         status: 200,
         contentType: 'application/json',
         body: JSON.stringify({
-          spell: { '25286': 'Heroic Strike', '23894': 'Bloodthirst', '9910': 'Berserker Rage' },
+          spell: { '1680': 'Whirlwind', '25289': 'Battle Shout' },
           item: {},
         }),
       }),
@@ -131,11 +131,13 @@ test.describe('a saved sim from the prerendered fixture', () => {
 
     await page.goto('/sim/simfixtureab');
 
-    // Same two abilities and buff sim-results.spec.ts's live-run sentence test names, at
-    // the same 52%/100% figures -- both read off src/fixtures/sim/result.json's summary.
+    // Same second ability and buff sim-results.spec.ts's live-run sentence test names, at
+    // the same 78%/100% figures -- both read off src/fixtures/sim/result.json's summary.
+    // The top ability is the fixture's own auto-attack row, which reads as prose
+    // ("main-hand white hits") regardless of the name table.
     const sentence = page.getByTestId('sim-sentence');
     await expect(sentence).toHaveText(
-      'Heroic Strike and Bloodthirst are 52% of your damage; Berserker Rage is up 100% of the fight.',
+      'main-hand white hits and Whirlwind are 78% of your damage; Battle Shout is up 100% of the fight.',
     );
     await expect(sentence).not.toContainText(/\bspell:/);
   });
