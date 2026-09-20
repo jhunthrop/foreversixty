@@ -71,7 +71,51 @@ func refusal(t *testing.T, res *http.Response) (string, map[string]string) {
 	return env.Error.Code, env.Error.Fields
 }
 
+// assertCapExceededBody checks the one shape both cap-breach paths must
+// produce: 400 cap_exceeded with cap and combinations as decimal
+// strings (contract 10.6). Both TestABulkRunPastTheLanesCap tests below
+// call this with the same numbers, so the two paths cannot drift from
+// each other without one of them failing.
+func assertCapExceededBody(t *testing.T, res *http.Response, cap, combinations int) {
+	t.Helper()
+	if res.StatusCode != http.StatusBadRequest {
+		t.Fatalf("status %d, want 400", res.StatusCode)
+	}
+	code, fields := refusal(t, res)
+	if code != "cap_exceeded" {
+		t.Fatalf("code %q, want cap_exceeded", code)
+	}
+	if fields["combinations"] != strconv.Itoa(combinations) || fields["cap"] != strconv.Itoa(cap) {
+		t.Fatalf("fields %+v, want cap=%d combinations=%d", fields, cap, combinations)
+	}
+}
+
+// TestABulkRunPastTheLanesCapIsRefusedWithBothNumbers pins the
+// reachable shape: both runner.Native and runner.Fixture (with
+// CapBreach set) fail Plan's call itself with a typed
+// api.ErrCapExceeded rather than answering a successful over-cap
+// summary - the binary refuses the request outright, the same way
+// bulk.Count does. checkSize must recover that typed error with
+// errors.As and answer the same cap_exceeded body a successful
+// over-cap summary would.
 func TestABulkRunPastTheLanesCapIsRefusedWithBothNumbers(t *testing.T) {
+	h := newHarness(t)
+	h.premium.premium = true
+	h.planner.err = simapi.ErrCapExceeded{Cap: simapi.Caps[simapi.LaneServer], Combinations: 31200}
+
+	res := h.json(http.MethodPost, "/v1/sims/run", bulkBody(t))
+	assertCapExceededBody(t, res, simapi.Caps[simapi.LaneServer], 31200)
+	if ran := h.jobs.Ran(); len(ran) != 0 {
+		t.Fatalf("a refused run was dispatched anyway: %v", ran)
+	}
+}
+
+// TestABulkRunPastTheLanesCapViaAnOverCapSummaryIsAlsoRefused covers
+// the other shape a Planner can answer with: a plain, successful
+// PlanSummary whose Combinations already exceeds its Cap (what a
+// Fixture driven by PlanCombinations alone, with no CapBreach,
+// returns). checkSize must answer the identical body either way.
+func TestABulkRunPastTheLanesCapViaAnOverCapSummaryIsAlsoRefused(t *testing.T) {
 	h := newHarness(t)
 	h.premium.premium = true
 	h.planner.summary = simapi.PlanSummary{
@@ -80,21 +124,32 @@ func TestABulkRunPastTheLanesCapIsRefusedWithBothNumbers(t *testing.T) {
 	}
 
 	res := h.json(http.MethodPost, "/v1/sims/run", bulkBody(t))
-	if res.StatusCode != http.StatusBadRequest {
-		t.Fatalf("status %d, want 400", res.StatusCode)
-	}
-	code, fields := refusal(t, res)
-	if code != "cap_exceeded" {
-		t.Fatalf("code %q, want cap_exceeded", code)
-	}
-	// Decimal strings: httpx.ErrorBody.Fields is map[string]string
-	// (contract 10.6).
-	if fields["combinations"] != "31200" ||
-		fields["cap"] != strconv.Itoa(simapi.Caps[simapi.LaneServer]) {
-		t.Fatalf("fields %+v", fields)
-	}
+	assertCapExceededBody(t, res, simapi.Caps[simapi.LaneServer], 31200)
 	if ran := h.jobs.Ran(); len(ran) != 0 {
 		t.Fatalf("a refused run was dispatched anyway: %v", ran)
+	}
+}
+
+// TestAPlannerFailureThatIsNotACapBreachFailsTheSubmit is the third
+// case checkSize must tell apart from a cap breach: a genuine failure
+// to size the request (the binary crashed, timed out, or refused for
+// a reason other than the cap) must still fail the submit with a
+// generic 500 - it must never fall through and queue a run nobody
+// sized.
+func TestAPlannerFailureThatIsNotACapBreachFailsTheSubmit(t *testing.T) {
+	h := newHarness(t)
+	h.premium.premium = true
+	h.planner.err = errAnyway
+
+	res := h.json(http.MethodPost, "/v1/sims/run", bulkBody(t))
+	if res.StatusCode != http.StatusInternalServerError {
+		t.Fatalf("status %d, want 500", res.StatusCode)
+	}
+	if code := h.errorCode(res); code != "internal" {
+		t.Fatalf("code %q, want internal", code)
+	}
+	if ran := h.jobs.Ran(); len(ran) != 0 {
+		t.Fatalf("an unsized run was dispatched anyway: %v", ran)
 	}
 }
 

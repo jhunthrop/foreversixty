@@ -227,6 +227,14 @@ func (f fakePremium) Premium(context.Context, int64) (bool, error) { return f.pr
 // fakePlanner answers the plan-only count without a binary. The real one
 // invokes `forever-sim -plan` (contract 10.2); nothing about the
 // handler's decision needs a subprocess to be tested.
+//
+// It can model either shape a real Planner answers a cap breach with:
+// err set to a simapi.ErrCapExceeded reproduces Native's and a
+// CapBreach-driven Fixture's (the request is refused outright, the
+// call itself fails), while summary set to an over-cap PlanSummary
+// with err left nil reproduces a PlanCombinations-driven Fixture's
+// (the call succeeds with a summary the caller must still compare
+// against its own Cap).
 type fakePlanner struct {
 	summary simapi.PlanSummary
 	err     error
