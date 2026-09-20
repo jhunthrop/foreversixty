@@ -67,7 +67,7 @@
     </li>
   {/each}
   {#if allowed.length === 0}
-    <li class="text-muted px-2 py-2 text-[13px]">{bulkCopy.noEnchant}</li>
+    <li class="text-muted px-2 py-2 text-[13px]">{bulkCopy.noEnchantsAvailable}</li>
   {/if}
 </ul>
 <p class="text-muted px-2 text-[12px]">{bulkCopy.enchantCap(ENCHANTS_PER_SLOT_CAP)}</p>

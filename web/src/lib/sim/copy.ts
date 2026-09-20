@@ -550,6 +550,10 @@ export const bulkCopy = {
   bank: 'Bank',
   fromSearch: 'Search',
   pinned: 'Pinned',
+  /** A `set:<name>` origin candidate (Task 14's NamedSets). The name after the colon is the
+   *  wire's own value, not a display string, so the row shows this generic word instead --
+   *  the same treatment `pinned` already gives a `drop:<source-id>` origin. */
+  fromSet: 'Set',
   lockSlot: 'Lock to equipped',
   lockedSlot: 'Locked',
   copyAndModify: 'Copy and modify',
@@ -569,6 +573,10 @@ export const bulkCopy = {
       .map((id) => id.replaceAll('_', ' '))
       .join(', ')}`,
   noEnchant: 'None',
+  /** Distinct from `noEnchant` ("None", a real pickable row): this is the placeholder shown
+   *  instead of the enchant list when a slot allows none at all, so the two never render as
+   *  two adjacent, differently-meant "None" rows. */
+  noEnchantsAvailable: 'No enchants for this slot.',
   enchantCap: (cap: number): string => `At most ${cap} enchants per slot.`,
   noCandidates: 'Nothing ticked yet. Tick an item, a talent build or a set.',
   /** validateBulk's rule 1: something is ticked, just on a slot that is locked. */

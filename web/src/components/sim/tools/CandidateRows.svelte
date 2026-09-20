@@ -44,8 +44,18 @@
     search: bulkCopy.fromSearch,
   };
 
+  /**
+   * `drop:<source-id>` and `set:<name>` both carry a wire-only value after the colon, never
+   * a display string, so both fall back to a generic word instead of leaking it into the
+   * UI -- `set:` has no candidate rows yet (Task 14's NamedSets adds the first), but the
+   * `Origin` type already declares it, so this handles it before anything produces one.
+   */
   function originLabel(origin: string): string {
-    return ORIGIN_LABELS[origin] ?? (origin.startsWith('drop:') ? bulkCopy.pinned : origin);
+    const known = ORIGIN_LABELS[origin];
+    if (known !== undefined) return known;
+    if (origin.startsWith('drop:')) return bulkCopy.pinned;
+    if (origin.startsWith('set:')) return bulkCopy.fromSet;
+    return origin;
   }
 
   /**
@@ -90,13 +100,19 @@
       </label>
       <button
         type="button"
-        class="{SECONDARY_BUTTON} border-line-warm text-nav px-3"
+        class="{SECONDARY_BUTTON} border-line-warm text-nav px-3 disabled:opacity-50"
         aria-expanded={openKey === candidateKey(row)}
+        disabled={locked}
         onclick={() => (openKey = openKey === candidateKey(row) ? null : candidateKey(row))}
       >
         {bulkCopy.copyAndModify}
       </button>
-      {#if openKey === candidateKey(row)}
+      <!-- A locked slot's checkbox is disabled and `toCandidates` drops anything ticked on
+           it, so a copy made here would be checked-but-inert with nothing telling the
+           player. The trigger above is disabled for the same reason; this closes the panel
+           too, for the case where a slot is locked while it is already open. -->
+      {#if openKey === candidateKey(row) && !locked}
+        {@const itemSuffixes = suffixesForItem(suffixes, row.item)}
         <div class="flex w-full flex-col gap-2 pb-2 md:flex-row">
           <div class="flex-1">
             <p class="text-muted px-2 text-[12px]">{bulkCopy.withEnchant}</p>
@@ -111,11 +127,11 @@
               }}
             />
           </div>
-          {#if suffixesForItem(suffixes, row.item).length > 0}
+          {#if itemSuffixes.length > 0}
             <div class="flex-1">
               <p class="text-muted px-2 text-[12px]">{bulkCopy.withSuffix}</p>
               <ul class="border-line bg-raised rounded-panel flex flex-col border p-2">
-                {#each suffixesForItem(suffixes, row.item) as suffix (suffix.id)}
+                {#each itemSuffixes as suffix (suffix.id)}
                   <li>
                     <button
                       type="button"
@@ -135,7 +151,4 @@
       {/if}
     </li>
   {/each}
-  {#if rows.length === 0}
-    <li class="text-muted px-2 py-2 text-[13px]">{bulkCopy.noCandidates}</li>
-  {/if}
 </ul>

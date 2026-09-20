@@ -42,6 +42,13 @@
 </script>
 
 <section class="mx-[18px] flex flex-col gap-3 md:mx-0" data-testid="sim-slot-grid">
+  <!-- One message for a genuinely empty grid, rather than 15 empty per-slot sections: a
+       freshly-loaded character almost always has at least one equipped row, so this is the
+       true-void case (no gear, no bag/bank picks, nothing searched in yet), not the normal
+       "this slot has nothing" case -- which a section simply not existing already says. -->
+  {#if rows.length === 0}
+    <p class="text-muted px-2 text-[13px]" data-testid="sim-slot-grid-empty">{bulkCopy.noCandidates}</p>
+  {/if}
   {#each SHOWN as slot (slot)}
     {@const slotRows = bySlot.get(slot) ?? []}
     {#if slotRows.length > 0}

@@ -5,6 +5,7 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { expect, test, type Page } from '@playwright/test';
+import { bulkCopy } from '../../src/lib/sim/copy';
 
 const activeBuild = JSON.parse(
   readFileSync(path.join(import.meta.dirname, '..', '..', 'src', 'data', 'active-build.json'), 'utf8'),
@@ -29,12 +30,20 @@ test('the grid lists the equipped item in its slot and nothing is ticked on arri
   await expect(equipped.getByRole('checkbox')).not.toBeChecked();
 });
 
-test('locking a slot disables every candidate in it', async ({ page }) => {
+test('locking a slot disables every candidate in it, and its copy-and-modify trigger too', async ({
+  page,
+}) => {
   await loadGear(page);
+  const row = page.getByTestId('sim-candidate-head-12640');
   await page.getByTestId('sim-lock-head').check();
-  await expect(page.getByTestId('sim-candidate-head-12640').getByRole('checkbox')).toBeDisabled();
+  await expect(row.getByRole('checkbox')).toBeDisabled();
+  // A locked slot's checkbox drops any ticked candidate from the outgoing request
+  // (validateBulk rule 1), so a copy-and-modify made here would be checked-but-inert with
+  // nothing telling the player -- the trigger disables for the same reason the checkbox does.
+  await expect(row.getByRole('button', { name: /copy/i })).toBeDisabled();
   await page.getByTestId('sim-lock-head').uncheck();
-  await expect(page.getByTestId('sim-candidate-head-12640').getByRole('checkbox')).toBeEnabled();
+  await expect(row.getByRole('checkbox')).toBeEnabled();
+  await expect(row.getByRole('button', { name: /copy/i })).toBeEnabled();
 });
 
 test('copy and modify adds the same item again with an enchant, beside the original', async ({ page }) => {
@@ -49,9 +58,27 @@ test('copy and modify adds the same item again with an enchant, beside the origi
 
 test('the combination count moves as candidates are ticked', async ({ page }) => {
   await loadGear(page);
-  await expect(page.getByTestId('sim-combo-count')).toHaveText(/0 valid combinations|Counting/);
+  // Neither bulkCopy string here has a regex metacharacter, so the two are safe to
+  // alternate directly rather than through an escaping helper this file would be the only
+  // caller of.
+  await expect(page.getByTestId('sim-combo-count')).toHaveText(
+    new RegExp(`${bulkCopy.combinations(0)}|${bulkCopy.combinationsCounting}`),
+  );
   await page.getByTestId('sim-candidate-head-12640').getByRole('checkbox').check();
-  await expect(page.getByTestId('sim-combo-count')).toHaveText('1 valid combination');
+  await expect(page.getByTestId('sim-combo-count')).toHaveText(bulkCopy.combinations(1));
+});
+
+test('an empty grid says so, rather than rendering as an empty section', async ({ page }) => {
+  // No gear at all: the FS1 grammar's trailing colon with nothing after it is a valid,
+  // empty gear list (tests/e2e/sim-specs.spec.ts's ROGUE_FS1 uses the same shape). Kept on
+  // the warrior/orc talent build FURY already uses -- unlike rogue, its talent tree ships
+  // in this fixture data build, so this needs no API route stub either.
+  const NOTHING_EQUIPPED = `FS1:${activeBuild.build}:warrior:orc:0/5530515/0:`;
+  await page.goto('/sim/gear');
+  await page.getByTestId('sim-addon-input').fill(NOTHING_EQUIPPED);
+  await page.getByTestId('sim-addon-load').click();
+  await expect(page.getByTestId('sim-character')).toBeVisible();
+  await expect(page.getByTestId('sim-slot-grid-empty')).toHaveText(bulkCopy.noCandidates);
 });
 
 test('the item search adds a candidate and says how it was filtered', async ({ page }) => {
@@ -82,11 +109,11 @@ test('usable-only is on by default and can be turned off', async ({ page }) => {
 test('a ticked consumable multiplies the combination count (contract 10.1 A5)', async ({ page }) => {
   await loadGear(page);
   await page.getByTestId('sim-search-add-16963').click();
-  await expect(page.getByTestId('sim-combo-count')).toHaveText('1 valid combination');
+  await expect(page.getByTestId('sim-combo-count')).toHaveText(bulkCopy.combinations(1));
   await page.getByTestId('sim-consumable-flask_of_supreme_power').check();
   await page.getByTestId('sim-consumable-elixir_of_the_mongoose').check();
   // (1 head + 1) x 2 alternatives
-  await expect(page.getByTestId('sim-combo-count')).toHaveText('4 valid combinations');
+  await expect(page.getByTestId('sim-combo-count')).toHaveText(bulkCopy.combinations(4));
 });
 
 test('a consumable candidate is named, not spelled as an id', async ({ page }) => {
