@@ -99,6 +99,70 @@ describe('applyOrder', () => {
   });
 });
 
+describe('loadImported', () => {
+  it('replaces class, race, order and gear, and drops the source id, title and refusal', () => {
+    const store = loaded({
+      treeVersion: BUILD,
+      classSlug: 'warrior',
+      raceSlug: 'human',
+      order: [1001],
+      title: 'Original',
+      sourceId: 'k7x2qm4a',
+    });
+    store.addPoint(1003);
+    expect(store.refusal).not.toBeNull();
+
+    store.loadImported({ classSlug: 'shaman', raceSlug: 'orc', order: [1001, 1001], gear: { head: 12640 } });
+
+    expect(store.classSlug).toBe('shaman');
+    expect(store.raceSlug).toBe('orc');
+    expect(store.order).toEqual([1001, 1001]);
+    expect(store.gear).toEqual({ head: 12640 });
+    expect(store.title).toBe('');
+    expect(store.sourceId).toBeNull();
+    expect(store.refusal).toBeNull();
+  });
+
+  it('repairs a race the reference data does not have, so the build stays savable', () => {
+    // decodeFS1 never validates the race field, so "notarace" reaches the store verbatim.
+    // Left alone it makes `raceRow` null, which makes `toDraft()` throw -- and the share
+    // button, which calls it, would sit on "Saving" forever.
+    const store = loaded();
+    store.loadImported({ classSlug: 'warrior', raceSlug: 'notarace', order: [1001], gear: {} });
+    expect(store.raceSlug).toBe('human');
+    expect(store.raceRow).not.toBeNull();
+    expect(() => store.toDraft()).not.toThrow();
+  });
+
+  it('repairs a race that exists but cannot be the imported class', () => {
+    // A gnome shaman is a legal-looking string and an illegal combo: the race select would
+    // show a value missing from its own options, and the save would post a pair the API
+    // refuses. `selectClass` already repairs this; `loadImported` is the third writer of
+    // classSlug/raceSlug and has to repair it the same way.
+    const store = loaded();
+    store.loadImported({ classSlug: 'shaman', raceSlug: 'gnome', order: [], gear: {} });
+    expect(store.classSlug).toBe('shaman');
+    expect(store.raceSlug).toBe('orc');
+    expect(store.legalRaces.map((r) => r.slug)).toContain(store.raceSlug);
+  });
+
+  it('refuses while read-only, like every other edit', () => {
+    const store = loaded({
+      treeVersion: BUILD,
+      classSlug: 'warrior',
+      raceSlug: 'human',
+      order: [1001],
+      readOnly: true,
+      sourceId: 'k7x2qm4a',
+    });
+    store.loadImported({ classSlug: 'shaman', raceSlug: 'orc', order: [1002], gear: {} });
+    expect(store.classSlug).toBe('warrior');
+    expect(store.order).toEqual([1001]);
+    expect(store.sourceId).toBe('k7x2qm4a');
+    expect(store.refusal).toBe(READ_ONLY_REASON);
+  });
+});
+
 describe('class and race selection', () => {
   it('clears the build and the loaded trees when the class changes', () => {
     const store = loaded();

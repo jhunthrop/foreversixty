@@ -1,11 +1,13 @@
 ---
 // web/src/components/Footer.astro
 import communityLinks from '../data/links.json';
+import { addonCopy } from '../lib/addon/copy';
 
 const footerLinks = [
   ['About', '/about'],
   ['Sources', '/sources'],
   ['Changelog', '/changelog'],
+  [addonCopy.pageTitle, '/addon'],
   ['Contribute', `${communityLinks.githubRepo}/issues`],
 ] as const;
 ---

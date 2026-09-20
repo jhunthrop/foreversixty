@@ -15,6 +15,14 @@ export type SaveOutcome =
 /** Copied from the spec's error handling section. */
 export const RATE_LIMIT_MESSAGE = 'Too many saves from this connection; try again in an hour.';
 export const SAVE_FAILED_MESSAGE = 'The build could not be saved; try again.';
+/**
+ * Shown when the draft cannot even be composed: its class or race is not one the loaded
+ * reference data has, so there is no id to post. The store repairs both on every write it
+ * owns, so this is the panel's backstop against a future writer that forgets -- never a
+ * button left reading "Saving" with nothing said.
+ */
+export const UNSAVABLE_BUILD_MESSAGE =
+  'This build’s class and race are not ones the site knows, so it cannot be saved.';
 
 interface Envelope {
   ok: boolean;
