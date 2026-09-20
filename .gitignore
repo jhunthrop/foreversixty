@@ -69,3 +69,13 @@ go.work.sum
 # the engine fork, cloned at the pin by CI (sim.yml's rotations job and
 # data.yml's fetch job) and by anyone reproducing them locally
 .engine/
+
+# The BigWigs packager's own output. addon-release.yml never writes here --
+# it packages a throwaway checkout under $RUNNER_TEMP, entirely outside this
+# repository. This entry only guards a local run of release.sh pointed
+# directly at this directory after temporarily `git init`-ing it (release.sh
+# requires its `-t topdir` to itself be a VCS checkout root, so a plain
+# `-t addon/ForeverSixty` against this monorepo checkout fails first --
+# see addon/README.md's Releasing section for the throwaway-checkout shape
+# that actually works).
+addon/ForeverSixty/.release/

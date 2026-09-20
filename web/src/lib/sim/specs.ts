@@ -11,6 +11,8 @@ export interface Spec {
   role: SpecRole;
   tree_index: number;
   reference_stat: string;
+  /** The closed list of stats /sim/weights offers; reference_stat is always one of them. */
+  weight_stats: readonly string[];
 }
 
 /** Every spec, ordered by class slug then talent tree position. */
@@ -23,6 +25,16 @@ export const SPECS: readonly Spec[] = [
     role: 'dps',
     tree_index: 0,
     reference_stat: 'spell_power',
+    weight_stats: [
+      'spell_power',
+      'intellect',
+      'crit',
+      'hit',
+      'spell_haste',
+      'spell_penetration',
+      'nature_power',
+      'arcane_power',
+    ],
   },
   {
     spec: 'druid-feral',
@@ -32,6 +44,17 @@ export const SPECS: readonly Spec[] = [
     role: 'dps',
     tree_index: 1,
     reference_stat: 'attack_power',
+    weight_stats: [
+      'attack_power',
+      'feral_attack_power',
+      'strength',
+      'agility',
+      'crit',
+      'hit',
+      'melee_haste',
+      'expertise',
+      'armor_penetration',
+    ],
   },
   {
     spec: 'druid-restoration',
@@ -41,6 +64,7 @@ export const SPECS: readonly Spec[] = [
     role: 'healer',
     tree_index: 2,
     reference_stat: 'spell_power',
+    weight_stats: ['healing_power', 'spell_power', 'spirit', 'mp5', 'intellect', 'crit'],
   },
   {
     spec: 'hunter-beast-mastery',
@@ -50,6 +74,7 @@ export const SPECS: readonly Spec[] = [
     role: 'dps',
     tree_index: 0,
     reference_stat: 'attack_power',
+    weight_stats: ['attack_power', 'ranged_attack_power', 'agility', 'crit', 'hit', 'melee_haste'],
   },
   {
     spec: 'hunter-marksmanship',
@@ -59,6 +84,7 @@ export const SPECS: readonly Spec[] = [
     role: 'dps',
     tree_index: 1,
     reference_stat: 'attack_power',
+    weight_stats: ['attack_power', 'ranged_attack_power', 'agility', 'crit', 'hit', 'melee_haste'],
   },
   {
     spec: 'hunter-survival',
@@ -68,6 +94,7 @@ export const SPECS: readonly Spec[] = [
     role: 'dps',
     tree_index: 2,
     reference_stat: 'attack_power',
+    weight_stats: ['attack_power', 'ranged_attack_power', 'agility', 'crit', 'hit', 'melee_haste'],
   },
   {
     spec: 'mage-arcane',
@@ -77,6 +104,15 @@ export const SPECS: readonly Spec[] = [
     role: 'dps',
     tree_index: 0,
     reference_stat: 'spell_power',
+    weight_stats: [
+      'spell_power',
+      'intellect',
+      'crit',
+      'hit',
+      'spell_haste',
+      'spell_penetration',
+      'arcane_power',
+    ],
   },
   {
     spec: 'mage-fire',
@@ -86,6 +122,15 @@ export const SPECS: readonly Spec[] = [
     role: 'dps',
     tree_index: 1,
     reference_stat: 'spell_power',
+    weight_stats: [
+      'spell_power',
+      'intellect',
+      'crit',
+      'hit',
+      'spell_haste',
+      'spell_penetration',
+      'fire_power',
+    ],
   },
   {
     spec: 'mage-frost',
@@ -95,6 +140,15 @@ export const SPECS: readonly Spec[] = [
     role: 'dps',
     tree_index: 2,
     reference_stat: 'spell_power',
+    weight_stats: [
+      'spell_power',
+      'intellect',
+      'crit',
+      'hit',
+      'spell_haste',
+      'spell_penetration',
+      'frost_power',
+    ],
   },
   {
     spec: 'paladin-holy',
@@ -104,6 +158,7 @@ export const SPECS: readonly Spec[] = [
     role: 'healer',
     tree_index: 0,
     reference_stat: 'spell_power',
+    weight_stats: ['healing_power', 'spell_power', 'spirit', 'mp5', 'intellect', 'crit'],
   },
   {
     spec: 'paladin-protection',
@@ -113,6 +168,16 @@ export const SPECS: readonly Spec[] = [
     role: 'tank',
     tree_index: 1,
     reference_stat: 'attack_power',
+    weight_stats: [
+      'attack_power',
+      'strength',
+      'agility',
+      'crit',
+      'hit',
+      'melee_haste',
+      'expertise',
+      'armor_penetration',
+    ],
   },
   {
     spec: 'paladin-retribution',
@@ -122,6 +187,16 @@ export const SPECS: readonly Spec[] = [
     role: 'dps',
     tree_index: 2,
     reference_stat: 'attack_power',
+    weight_stats: [
+      'attack_power',
+      'strength',
+      'agility',
+      'crit',
+      'hit',
+      'melee_haste',
+      'expertise',
+      'armor_penetration',
+    ],
   },
   {
     spec: 'priest-discipline',
@@ -131,6 +206,7 @@ export const SPECS: readonly Spec[] = [
     role: 'healer',
     tree_index: 0,
     reference_stat: 'spell_power',
+    weight_stats: ['healing_power', 'spell_power', 'spirit', 'mp5', 'intellect', 'crit'],
   },
   {
     spec: 'priest-holy',
@@ -140,6 +216,7 @@ export const SPECS: readonly Spec[] = [
     role: 'healer',
     tree_index: 1,
     reference_stat: 'spell_power',
+    weight_stats: ['healing_power', 'spell_power', 'spirit', 'mp5', 'intellect', 'crit'],
   },
   {
     spec: 'priest-shadow',
@@ -149,6 +226,15 @@ export const SPECS: readonly Spec[] = [
     role: 'dps',
     tree_index: 2,
     reference_stat: 'spell_power',
+    weight_stats: [
+      'spell_power',
+      'intellect',
+      'crit',
+      'hit',
+      'spell_haste',
+      'spell_penetration',
+      'shadow_power',
+    ],
   },
   {
     spec: 'rogue-assassination',
@@ -158,6 +244,7 @@ export const SPECS: readonly Spec[] = [
     role: 'dps',
     tree_index: 0,
     reference_stat: 'attack_power',
+    weight_stats: ['attack_power', 'agility', 'crit', 'hit', 'melee_haste', 'expertise', 'armor_penetration'],
   },
   {
     spec: 'rogue-combat',
@@ -167,6 +254,7 @@ export const SPECS: readonly Spec[] = [
     role: 'dps',
     tree_index: 1,
     reference_stat: 'attack_power',
+    weight_stats: ['attack_power', 'agility', 'crit', 'hit', 'melee_haste', 'expertise', 'armor_penetration'],
   },
   {
     spec: 'rogue-subtlety',
@@ -176,6 +264,7 @@ export const SPECS: readonly Spec[] = [
     role: 'dps',
     tree_index: 2,
     reference_stat: 'attack_power',
+    weight_stats: ['attack_power', 'agility', 'crit', 'hit', 'melee_haste', 'expertise', 'armor_penetration'],
   },
   {
     spec: 'shaman-elemental',
@@ -185,6 +274,15 @@ export const SPECS: readonly Spec[] = [
     role: 'dps',
     tree_index: 0,
     reference_stat: 'spell_power',
+    weight_stats: [
+      'spell_power',
+      'intellect',
+      'crit',
+      'hit',
+      'spell_haste',
+      'spell_penetration',
+      'nature_power',
+    ],
   },
   {
     spec: 'shaman-enhancement',
@@ -194,6 +292,16 @@ export const SPECS: readonly Spec[] = [
     role: 'dps',
     tree_index: 1,
     reference_stat: 'attack_power',
+    weight_stats: [
+      'attack_power',
+      'strength',
+      'agility',
+      'crit',
+      'hit',
+      'melee_haste',
+      'expertise',
+      'armor_penetration',
+    ],
   },
   {
     spec: 'shaman-restoration',
@@ -203,6 +311,7 @@ export const SPECS: readonly Spec[] = [
     role: 'healer',
     tree_index: 2,
     reference_stat: 'spell_power',
+    weight_stats: ['healing_power', 'spell_power', 'spirit', 'mp5', 'intellect', 'crit'],
   },
   {
     spec: 'warlock-affliction',
@@ -212,6 +321,15 @@ export const SPECS: readonly Spec[] = [
     role: 'dps',
     tree_index: 0,
     reference_stat: 'spell_power',
+    weight_stats: [
+      'spell_power',
+      'intellect',
+      'crit',
+      'hit',
+      'spell_haste',
+      'spell_penetration',
+      'shadow_power',
+    ],
   },
   {
     spec: 'warlock-demonology',
@@ -221,6 +339,16 @@ export const SPECS: readonly Spec[] = [
     role: 'dps',
     tree_index: 1,
     reference_stat: 'spell_power',
+    weight_stats: [
+      'spell_power',
+      'intellect',
+      'crit',
+      'hit',
+      'spell_haste',
+      'spell_penetration',
+      'shadow_power',
+      'fire_power',
+    ],
   },
   {
     spec: 'warlock-destruction',
@@ -230,6 +358,16 @@ export const SPECS: readonly Spec[] = [
     role: 'dps',
     tree_index: 2,
     reference_stat: 'spell_power',
+    weight_stats: [
+      'spell_power',
+      'intellect',
+      'crit',
+      'hit',
+      'spell_haste',
+      'spell_penetration',
+      'shadow_power',
+      'fire_power',
+    ],
   },
   {
     spec: 'warrior-arms',
@@ -239,6 +377,16 @@ export const SPECS: readonly Spec[] = [
     role: 'dps',
     tree_index: 0,
     reference_stat: 'attack_power',
+    weight_stats: [
+      'attack_power',
+      'strength',
+      'agility',
+      'crit',
+      'hit',
+      'melee_haste',
+      'expertise',
+      'armor_penetration',
+    ],
   },
   {
     spec: 'warrior-fury',
@@ -248,6 +396,16 @@ export const SPECS: readonly Spec[] = [
     role: 'dps',
     tree_index: 1,
     reference_stat: 'attack_power',
+    weight_stats: [
+      'attack_power',
+      'strength',
+      'agility',
+      'crit',
+      'hit',
+      'melee_haste',
+      'expertise',
+      'armor_penetration',
+    ],
   },
   {
     spec: 'warrior-protection',
@@ -257,6 +415,16 @@ export const SPECS: readonly Spec[] = [
     role: 'tank',
     tree_index: 2,
     reference_stat: 'attack_power',
+    weight_stats: [
+      'attack_power',
+      'strength',
+      'agility',
+      'crit',
+      'hit',
+      'melee_haste',
+      'expertise',
+      'armor_penetration',
+    ],
   },
 ];
 

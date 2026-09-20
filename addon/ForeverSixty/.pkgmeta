@@ -1,0 +1,21 @@
+# addon/ForeverSixty/.pkgmeta
+# addon-release.yml points the packager at this directory's HEAD tree (via
+# a throwaway checkout it builds, since the packager requires its topdir to
+# itself be a VCS root -- see that workflow's "give the packager its own
+# checkout" step for why), so this directory is the topdir and the zip's
+# single top-level folder is ForeverSixty/. The addon's tests, .busted and
+# .luacheckrc live one level up, outside this directory, so they cannot be
+# packaged by accident.
+package-as: ForeverSixty
+
+# No libraries are embedded: this addon has no dependencies, and a nolib
+# variant of a zip with no libs in it is a second artefact saying the same
+# thing.
+enable-nolib-creation: no
+
+ignore:
+  - .pkgmeta
+
+manual-changelog:
+  filename: CHANGELOG.md
+  markup-type: markdown
