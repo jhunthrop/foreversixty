@@ -17,8 +17,12 @@ local L = ns.L or require("Locale")
 
 -- WoW runs Lua 5.1, where the unpacker is the global `unpack`; the specs
 -- run on 5.4, where it is `table.unpack` and the global is gone. Bind
--- whichever exists, once, so the refusal path works in both.
-local unpack = table.unpack or unpack
+-- whichever exists, once, so the refusal path works in both. `.luacheckrc`
+-- targets lua51 for this file, so `table.unpack` reads as an undefined
+-- field (W143) there; this line, and only this line, is exempt from that
+-- one check because the fallback `or unpack` is what actually runs on the
+-- client, never `table.unpack`.
+local unpack = table.unpack or unpack -- luacheck: ignore 143
 
 local Codec = {}
 

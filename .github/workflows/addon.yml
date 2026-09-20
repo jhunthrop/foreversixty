@@ -1,0 +1,65 @@
+# .github/workflows/addon.yml
+name: addon
+on:
+  push:
+    branches: [main]
+    paths:
+      - addon/**
+      - web/src/fixtures/addon/**
+      - tools/gen-codec-vectors.mjs
+      - .github/workflows/addon.yml
+  pull_request:
+    paths:
+      - addon/**
+      - web/src/fixtures/addon/**
+      - tools/gen-codec-vectors.mjs
+      - .github/workflows/addon.yml
+  workflow_dispatch:
+permissions: { contents: read }
+concurrency:
+  group: addon-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: addon } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: leafo/gh-actions-lua@v10
+        with: { luaVersion: '5.4' }
+      - uses: leafo/gh-actions-luarocks@v4
+      - run: luarocks install busted
+      - run: luarocks install luacheck
+      - run: luarocks install dkjson
+      # luacheck first: a syntax error reads better as a lint finding than
+      # thirty failing specs. .luacheckrc targets std = lua51 for the
+      # shipped ForeverSixty/ sources -- the client's own Lua, not this
+      # job's Lua 5.4 -- so a 5.4-only stdlib call (table.unpack, utf8.*,
+      # ...) is a lint finding here, not a crash on someone's client.
+      - run: luacheck ForeverSixty tests
+      - run: busted --output=TAP
+      # The fixture vectors exist twice, once per lane's tree. vectors_spec
+      # already compares them; this is the same check stated where a reviewer
+      # reading the workflow can see it.
+      - name: the two fixture copies agree
+        working-directory: .
+        run: diff addon/tests/fixtures/codec-vectors.json web/src/fixtures/addon/codec-vectors.json
+      # The addon ships a generated Data.lua. This is a cheap guard that it is
+      # present and parses; data.yml owns the drift gate.
+      - name: Data.lua parses
+        run: lua -e "assert(loadfile('ForeverSixty/Data.lua'))"
+  syntax-lua51:
+    # luacheck's own parser accepts 5.4-only syntax (goto, ::label::,
+    # integer division `//`, `<close>` attributes, bitwise operators) under
+    # any std -- the lint in `verify` only catches 5.4-only *library* calls,
+    # never syntax. Only a real Lua 5.1 parser can prove the shipped files
+    # parse on the client's own interpreter, so this job byte-compiles every
+    # shipped file (`luac -p`, parse-only, no output written) under Lua
+    # 5.1.5 and nothing else.
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: addon } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: leafo/gh-actions-lua@v10
+        with: { luaVersion: '5.1.5' }
+      - run: luac -p ForeverSixty/*.lua
