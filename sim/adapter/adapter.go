@@ -156,7 +156,7 @@ func Summarize(res *proto.RaidSimResult, req api.SimRequest) (summary.Summary, e
 	// the two shapes separately is how they came to disagree.
 	out := EmptySummary()
 	out.FightIndex = 1
-	out.DamageDone = actors(player, class, iters)
+	out.DamageDone = actors(player, class, iters, targetNames(res))
 
 	// The clock is derived from the actors just built - the summary's
 	// own integer totals, player and pets together - not from the raw
@@ -237,20 +237,45 @@ func DPS(res *proto.RaidSimResult) api.Estimate {
 // Casts tab's owner grouping and the damage table agree.
 func petGUID(i int) string { return fmt.Sprintf("%s-pet-%d", playerGUID, i) }
 
-// actors builds the damage table: one row for the player, then one per pet.
-// ActiveMS is left zero here - the fight clock is not known until every
-// actor's total is, so Summarize fills it in once deriveDurationMS has run.
-func actors(player *proto.UnitMetrics, class string, iters float64) []summary.Actor {
-	out := []summary.Actor{actorFrom(player, playerGUID, class, iters)}
-	for i, pet := range player.Pets {
-		// A pet has no class of its own in the roster's sense; the
-		// report colours it by its owner's.
-		out = append(out, actorFrom(pet, petGUID(i), class, iters))
+// targetNames is the encounter's own targets, named by unit index.
+//
+// sim/core/environment.go:78 builds env.AllUnits as the encounter's
+// targets followed by the raid's units, and sim/core/spell.go:453 sizes
+// every spell's per-target metrics array by len(env.AllUnits) - so an
+// ActionMetrics' Targets slice carries one entry per RAID UNIT too, at
+// whatever index environment.construct assigned it, always with zero
+// damage (nothing casts a spell at its own raid). res.EncounterMetrics
+// is the authoritative boundary: Encounter.GetMetricsProto (target.go)
+// emits exactly one UnitMetrics per encounter.Targets, each stamped with
+// the same UnitIndex environment.construct gave it and the engine's own
+// Label ("Target 1", "Target 2", ... - Unit.Label in target.go, ONE-
+// indexed, which is also what the ONE ITERATION tab's sample rows
+// resolve their target name from). Building the map from THIS rather
+// than trusting the per-target count on the request keeps the row list
+// bounded to what the engine actually fought even if a future request
+// field disagreed with it.
+func targetNames(res *proto.RaidSimResult) map[int32]string {
+	out := map[int32]string{}
+	for _, t := range res.GetEncounterMetrics().GetTargets() {
+		out[t.UnitIndex] = t.Name
 	}
 	return out
 }
 
-func actorFrom(u *proto.UnitMetrics, guid, class string, iters float64) summary.Actor {
+// actors builds the damage table: one row for the player, then one per pet.
+// ActiveMS is left zero here - the fight clock is not known until every
+// actor's total is, so Summarize fills it in once deriveDurationMS has run.
+func actors(player *proto.UnitMetrics, class string, iters float64, targets map[int32]string) []summary.Actor {
+	out := []summary.Actor{actorFrom(player, playerGUID, class, iters, targets)}
+	for i, pet := range player.Pets {
+		// A pet has no class of its own in the roster's sense; the
+		// report colours it by its owner's.
+		out = append(out, actorFrom(pet, petGUID(i), class, iters, targets))
+	}
+	return out
+}
+
+func actorFrom(u *proto.UnitMetrics, guid, class string, iters float64, targets map[int32]string) summary.Actor {
 	a := summary.Actor{
 		GUID:      guid,
 		Name:      u.Name,
@@ -274,9 +299,33 @@ func actorFrom(u *proto.UnitMetrics, guid, class string, iters float64) summary.
 	a.Abilities = foldAbilities(a.Abilities)
 	a.Effective = a.Total
 
+	// Bound the rows to the encounter's own targets: perTarget carries
+	// one entry per unit index a spell's metrics array happened to be
+	// sized for (every raid unit, not only the targets - see
+	// targetNames), and the row list must not say "target" about the
+	// player's or a raid member's own index.
 	idx := make([]int32, 0, len(perTarget))
 	for k := range perTarget {
-		idx = append(idx, k)
+		if _, ok := targets[k]; ok {
+			idx = append(idx, k)
+		}
+	}
+	if len(idx) == 0 {
+		// Every index this actor recorded a share against - including a
+		// share of exactly zero - missed the encounter's own target
+		// list. In every case measured (a single-target fight, a
+		// five-target one, a dungeon pull), the discarded indices carry
+		// no damage, and apportion works from PROPORTIONS rather than
+		// from summing perTarget, so dropping a zero share above already
+		// costs the total nothing: it is handed out over whatever
+		// shares remain. This branch only guards the case that has
+		// never been observed - every recorded index being non-target
+		// AND some of them nonzero - so the actor's Total is not
+		// silently dropped: Task 3's invariant, sum(Targets) == Total,
+		// holds either way.
+		for k := range perTarget {
+			idx = append(idx, k)
+		}
 	}
 	sort.Slice(idx, func(i, j int) bool { return idx[i] < idx[j] })
 	shares := make([]float64, len(idx))
@@ -289,9 +338,17 @@ func actorFrom(u *proto.UnitMetrics, guid, class string, iters float64) summary.
 	// up to.
 	targetTotals := apportion(a.Total, shares)
 	for i, k := range idx {
+		name, ok := targets[k]
+		if !ok {
+			// Only reachable through the fallback above - a unit index
+			// the encounter never named. "Target %d" is what every row
+			// used to say; kept here as the last-resort label so the
+			// row still identifies itself.
+			name = fmt.Sprintf("Target %d", k)
+		}
 		a.Targets = append(a.Targets, summary.Pair{
 			GUID:  fmt.Sprintf("sim-target-%d", k),
-			Name:  fmt.Sprintf("Target %d", k),
+			Name:  name,
 			Total: targetTotals[i],
 		})
 	}

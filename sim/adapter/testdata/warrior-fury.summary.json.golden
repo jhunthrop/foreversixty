@@ -190,13 +190,8 @@
       "targets": [
         {
           "guid": "sim-target-0",
-          "name": "Target 0",
-          "total": 186849
-        },
-        {
-          "guid": "sim-target-1",
           "name": "Target 1",
-          "total": 0
+          "total": 186849
         }
       ],
       "series": []
