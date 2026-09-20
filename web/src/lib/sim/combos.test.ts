@@ -144,6 +144,14 @@ describe('percentOf and deltaLabel', () => {
     expect(deltaLabel({ mean: -0.44, stddev: 0, error: 0, min: 0, max: 0 })).toBe('−0.4 ± 0');
   });
 
+  it('never rounds a non-zero band away to "0" -- the Droptimizer repro (tank-sim review)', () => {
+    // 1.96 * 2 = 3.92, one decimal (below 10) via the same formatMargin the headline uses.
+    // The mean goes through gainLabel too (dps D38), which keeps a decimal below 10 even
+    // for a whole number like -3 -- the same "-3.0" the adjacent "keeps a decimal" test
+    // documents, not a special case for this test's own round number.
+    expect(deltaLabel({ mean: -3, stddev: 0, error: 2, min: 0, max: 0 })).toBe('−3.0 ± 3.9');
+  });
+
   it('is zero percent against a zero baseline rather than infinite', () => {
     expect(percentOf(41.2, 0)).toBe(0);
   });

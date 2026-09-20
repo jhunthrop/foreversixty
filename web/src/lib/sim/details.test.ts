@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import fixture from '../../fixtures/sim/result.json';
 import { percentLabel, runDetails } from './details';
+import { confidenceBand, formatMargin } from './estimate';
 import type { SimResult } from './types';
 
 const base = fixture as unknown as SimResult;
@@ -12,9 +13,19 @@ function result(over: Partial<SimResult>): SimResult {
 describe('runDetails', () => {
   it('reports the 95% band in DPS and the relative standard error as a percent', () => {
     const details = runDetails(result({ dps: { mean: 1000, stddev: 100, error: 4, min: 0, max: 0 } }));
-    // 1.96 * 4 = 7.84, rounded.
-    expect(details.bandDps).toBe(8);
+    // 1.96 * 4 = 7.84, one decimal per formatMargin (below 10).
+    expect(details.bandDps).toBe('7.8');
     expect(details.errorPercent).toBeCloseTo(0.004);
+  });
+
+  it('never lets a non-zero band round away to "0", and formats through the same helper as the headline', () => {
+    const tiny = runDetails(result({ dps: { mean: 1000, stddev: 100, error: 0.02, min: 0, max: 0 } }));
+    expect(tiny.bandDps).toBe('< 0.1');
+
+    const large = runDetails(result({ dps: { mean: 1000, stddev: 100, error: 6, min: 0, max: 0 } }));
+    expect(large.bandDps).toBe(
+      formatMargin(confidenceBand({ mean: 1000, stddev: 100, error: 6, min: 0, max: 0 })),
+    );
   });
 
   it('carries the iterations, the wall clock, the engine and the lane straight through', () => {

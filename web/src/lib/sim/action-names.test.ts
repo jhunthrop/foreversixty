@@ -92,21 +92,47 @@ describe('resolveActionName', () => {
   it('marks a tagged or ranked action as the variant it is, not as a duplicate row', () => {
     // The engine splits one spell into several metric rows -- the three tags of a white
     // swing, a ranked cast -- and rows all reading "Heroic Strike" would look like a bug.
+    // "other:attack" is excluded here (its own test below): its tags name a hand, not a
+    // row number, so it does not go through this generic variant numbering.
     expect(resolveActionName('spell:25286/1', names)).toBe('Heroic Strike (2)');
-    expect(resolveActionName('other:attack/2', names)).toBe('Attack (3)');
+    expect(resolveActionName('other:rage_gain/2', names)).toBe('Rage gain (3)');
     expect(resolveActionName('spell:25286+r3', names)).toBe('Heroic Strike (Rank 3)');
     expect(resolveActionName('spell:25286/1+r3', names)).toBe('Heroic Strike (2, Rank 3)');
   });
 
-  it('falls back to the key itself when the build does not know the id', () => {
-    expect(resolveActionName('spell:999999', names)).toBe('spell:999999');
-    expect(resolveActionName('item:1', names)).toBe('item:1');
+  it('names the auto-attack tag by the hand it swung from, not by row number', () => {
+    // sim/core/attack.go: tagMainhand = 1, tagOffhand = 2, tagExtraAttack = 3. The old
+    // behaviour numbered tag 1 as "Attack (2)" -- the *second* row -- and copy.ts's
+    // sentence prose then read that as off-hand, so a two-handed weapon's only attack
+    // row was described as off-hand damage (dps-minmaxer review round 1, D2).
+    expect(resolveActionName('other:attack/1', names)).toBe('Main-hand attacks');
+    expect(resolveActionName('other:attack/2', names)).toBe('Off-hand attacks');
+    expect(resolveActionName('other:attack/3', names)).toBe('Extra attacks');
   });
 
-  it('falls back to the key when the names have not loaded yet, never to a blank', () => {
-    expect(resolveActionName('spell:25286', null)).toBe('spell:25286');
+  it('falls back to a humanised label for an attack tag this build has never seen', () => {
+    // No wowsims/classic tag reaches 9; this pins that an unrecognised tag still reads as
+    // English and never leaks the raw key.
+    expect(resolveActionName('other:attack/9', names)).toBe('Attack (10)');
+  });
+
+  it('falls back to a humanised label, never the raw key, when the build does not know the id', () => {
+    // dps-minmaxer review round 2, D48: a saved run rendered "spell:20662" as an ability
+    // name. An id the table never carries -- rather than one merely still loading, the
+    // next test -- reads the same way.
+    expect(resolveActionName('spell:999999', names)).toBe('Spell 999999');
+    expect(resolveActionName('item:1', names)).toBe('Item 1');
+  });
+
+  it('falls back to a humanised label, never the raw key, when the names have not loaded yet', () => {
+    expect(resolveActionName('spell:25286', null)).toBe('Spell 25286');
     // An other action needs no table, so it reads properly even before one loads.
     expect(resolveActionName('other:attack', null)).toBe('Attack');
+  });
+
+  it('keeps a tagged or ranked action’s variant suffix on the humanised fallback too', () => {
+    expect(resolveActionName('spell:999999/1', names)).toBe('Spell 999999 (2)');
+    expect(resolveActionName('spell:999999+r3', names)).toBe('Spell 999999 (Rank 3)');
   });
 
   it('passes a real display name straight through, so a logged fight renders unchanged', () => {

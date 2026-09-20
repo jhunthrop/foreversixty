@@ -84,8 +84,10 @@ describe('createSimStore', () => {
     expect(sim.iterationsTotal).toBe(3000);
     expect(sim.estimate.mean).toBeGreaterThan(0);
     // The fixture's own combat log actor, straight from src/fixtures/sim/result.json --
-    // not the character's own name, which the fake engine never reads.
-    expect(sim.result?.summary.damage_done[0].name).toBe('Sim');
+    // not the character's own name, which the fake engine never reads. FURY above is an
+    // FS1 addon code, which carries no name field at all, so "Thrallgar" here can only be
+    // the fixture's own actor.
+    expect(sim.result?.summary.damage_done[0].name).toBe('Thrallgar');
   });
 
   it('refuses to run with no character rather than building an empty request', async () => {

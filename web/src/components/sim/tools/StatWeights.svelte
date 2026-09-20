@@ -13,14 +13,29 @@
      directly (the store's own pre-send refusal, `bulkCopy.weightsNeedStats`) can.
 
      No statistic is computed here: a weight and its error come straight off
-     `store.weights`' own `StatWeight` rows, and `weightScale`/`pawnString` are Task 9's. -->
+     `store.weights`' own `StatWeight` rows, and `weightScale`/`pawnString` are Task 9's.
+
+     D45/D46: a row the engine flagged `insignificant` greys here and drops out of the Pawn
+     string below -- both read `isSignificant`, weights.ts's one predicate for "is this row
+     meaningful", so the table and the Pawn string cannot disagree about which rows those
+     are (weights.test.ts's own regression guard). The picker above them offers only
+     `store.weightStats` when the spec sent one (sub-item 4): a stat this 1.60 sim does not
+     model for this spec is never on screen to tick in the first place. -->
 <script lang="ts">
   import type { Me } from '../../../lib/account/api';
   import { SECONDARY_BUTTON } from '../../../lib/planner/styles';
   import type { BulkStore } from '../../../lib/sim/bulk-store.svelte';
-  import { bulkCopy } from '../../../lib/sim/copy';
+  import { bulkCopy, WEIGHT_INSIGNIFICANT_LABEL, WEIGHTS_STATS_FROM_ENGINE } from '../../../lib/sim/copy';
   import { specLabel } from '../../../lib/sim/spec-label';
-  import { pawnString, statLabel, weightScale, WEIGHT_STATS } from '../../../lib/sim/weights';
+  import {
+    formatWeightError,
+    hasWeightStats,
+    isSignificant,
+    pawnString,
+    pickableStatsFor,
+    statLabel,
+    weightScale,
+  } from '../../../lib/sim/weights';
   import BulkRunBar from './BulkRunBar.svelte';
   import SaveSimForm from './SaveSimForm.svelte';
 
@@ -32,6 +47,9 @@
   const pawn = $derived(
     store.weights.length === 0 ? '' : pawnString(store.character?.spec ?? '', store.weights),
   );
+  /** The picker's own list: `store.weightStats` when the spec sent one, the full pinned
+   *  vocabulary otherwise (sub-item 4; `weights.ts`'s own fallback rule). */
+  const pickable = $derived(pickableStatsFor(store.weightStats));
 
   /**
    * `store.save` (bulk-store.svelte.ts) has no fallback title of its own, the same as every
@@ -86,8 +104,11 @@
     <p class="text-muted text-[12px]" data-testid="sim-weights-reference">
       {bulkCopy.weightsReference}: {statLabel(store.referenceStat)}
     </p>
+    {#if hasWeightStats(store.weightStats)}
+      <p class="text-muted text-[12px]" data-testid="sim-weights-stats-note">{WEIGHTS_STATS_FROM_ENGINE}</p>
+    {/if}
     <ul class="flex flex-wrap gap-3">
-      {#each WEIGHT_STATS as stat (stat.id)}
+      {#each pickable as stat (stat.id)}
         <li>
           <label class="text-text flex min-h-11 items-center gap-2 text-[13px]">
             <input
@@ -109,11 +130,21 @@
 
   {#if store.weights.length > 0}
     <section class="mx-[18px] flex flex-col gap-3 md:mx-0" data-testid="sim-weights">
+      <!-- Task 8, sub-item 1: contract 10.9's error-is-a-lower-bound caveat, read right
+           before the numbers it caveats -- one thought together with the greying below
+           (D45's own WEIGHT_INSIGNIFICANT_LABEL, which the caveat's own first sentence
+           restates in prose), not a second warning box stacked above this one. -->
+      <p class="text-muted text-[12px]" data-testid="sim-weights-error-caveat">
+        {bulkCopy.weightsErrorCaveat}
+      </p>
       <ul class="flex flex-col">
         {#each store.weights as row (row.stat)}
           {@const geometry = bar(row.weight, row.error)}
+          {@const significant = isSignificant(row)}
           <li
-            class="border-line-soft grid min-h-11 grid-cols-[minmax(120px,1fr)_minmax(0,3fr)_88px] items-center gap-x-3 border-b px-2 py-2"
+            class="border-line-soft grid min-h-11 grid-cols-[minmax(120px,1fr)_minmax(0,3fr)_88px] items-center gap-x-3 border-b px-2 py-2 {significant
+              ? ''
+              : 'opacity-50'}"
             data-testid={`sim-weight-${row.stat}`}
           >
             <span class="text-text text-[13px]">{statLabel(row.stat)}</span>
@@ -128,7 +159,15 @@
             </span>
             <span class="tabular text-strong ml-auto font-mono text-[13px]">
               {row.weight.toFixed(2)}
-              <span class="text-muted">± {row.error.toFixed(2)}</span>
+              <span class="text-muted">± {formatWeightError(row.error)}</span>
+              {#if !significant}
+                <span
+                  class="text-muted block font-sans text-[11px]"
+                  data-testid={`sim-weight-note-${row.stat}`}
+                >
+                  {WEIGHT_INSIGNIFICANT_LABEL}
+                </span>
+              {/if}
             </span>
           </li>
         {/each}

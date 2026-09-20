@@ -8,12 +8,13 @@
      loot.json here. -->
 <script lang="ts">
   import { SECONDARY_BUTTON } from '../../../lib/planner/styles';
+  import { humaniseKey } from '../../../lib/sim/humanise';
   import type { Item } from '../../../lib/planner/types';
   import type { BulkResult, Combo } from '../../../lib/sim/bulk-types';
   import { comboRows, deltaLabel, sourceNameOfCombo, type ComboRow } from '../../../lib/sim/combos';
   import { bulkCopy, toolFixCopy } from '../../../lib/sim/copy';
   import type { UntriedPick } from '../../../lib/sim/drop-picks';
-  import { confidenceBand } from '../../../lib/sim/estimate';
+  import { confidenceBand, formatMargin } from '../../../lib/sim/estimate';
   import SubstitutionChips from './SubstitutionChips.svelte';
 
   let {
@@ -59,11 +60,16 @@
   /**
    * Contract 10.1 A6: the name rode in on `Candidate.SourceName` and came back on the
    * substitution, so this reads it rather than joining the origin id to loot.json a second
-   * time. The id (with its `drop:` prefix stripped) is the fallback for a result saved
-   * before the field existed.
+   * time. A result saved before the field existed carries no source name, and the id
+   * itself (with its `drop:` prefix stripped) is never shown raw for it -- D48, the
+   * newcomer review's own repro was exactly this, a raw `dungeon:blackrock-spire:175245`
+   * as a boss name -- so the fallback is humaniseKey's reading of that id instead.
    */
   function bossName(combo: Combo, origin: string): string {
-    return sourceNameOfCombo(combo) || origin.replace(/^drop:/, '');
+    const sourceName = sourceNameOfCombo(combo);
+    if (sourceName !== '') return sourceName;
+    const id = origin.replace(/^drop:/, '');
+    return id === '' ? origin : humaniseKey(id);
   }
 
   /**
@@ -109,7 +115,7 @@
 
   <p class="tabular text-strong font-mono text-[14px]" data-testid="sim-equipped-line">
     {bulkCopy.resultsEquipped}: {Math.round(result.equipped.mean).toLocaleString('en-US')}
-    ± {Math.round(confidenceBand(result.equipped)).toLocaleString('en-US')}
+    ± {formatMargin(confidenceBand(result.equipped))}
   </p>
 
   <section class="flex flex-col gap-3" data-testid="sim-drops-by-boss">

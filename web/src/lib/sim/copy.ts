@@ -21,6 +21,116 @@ export const KIND_TITLES = {
   weights: 'Stat weights',
 } as const;
 
+// --- Lane W1 (persona round 1: results, labels, weights) ---
+/**
+ * The auto-attack tag names the hand it swung from -- wowsims/classic's own AutoAttacks
+ * constants (sim/core/attack.go): tagMainhand = 1, tagOffhand = 2, tagExtraAttack = 3.
+ * action-names.ts's attackHand() is the only place either number is read; every table,
+ * cast list and timeline reads this name. This replaces the old "Attack (2)"/"Attack (3)"
+ * labels, which numbered a *row*, not a hand -- tag 1 (main hand) rendered as "Attack (2)"
+ * -- and which this file's own proseNames table below then matched against the wrong
+ * hand (dps-minmaxer review round 1, D2: a two-handed build's only attack row was
+ * described as off-hand damage). Declared here, above simCopy and exported by name --
+ * the same shape KIND_TITLES already uses in this file, and for the same reason: a plain
+ * module-level constant, not a simCopy property, is what a value needs to be when both
+ * simCopy's own actionAliases (the compare-mode table further down, built from these
+ * three strings instead of re-typing them) and other modules (action-names.ts,
+ * sentence.ts) must read it by name.
+ */
+export const attackHandName: Record<'main' | 'off' | 'extra', string> = {
+  main: 'Main-hand attacks',
+  off: 'Off-hand attacks',
+  extra: 'Extra attacks',
+};
+/**
+ * The same three hands, worded to flow inside summarySentence's prose ("main-hand white
+ * hits", not "Main-hand attacks"). Read directly off the tag by sentence.ts, the same way
+ * attackHandName above is -- never off attackHandName's own rendered text, which is the
+ * bug this block fixes: a display string is not a stable key, and copy.ts must not become
+ * a second, driftable mapping from the same tag.
+ */
+export const attackHandProse: Record<'main' | 'off' | 'extra', string> = {
+  main: 'main-hand white hits',
+  off: 'off-hand white hits',
+  extra: 'extra white hits',
+};
+/**
+ * What a non-zero margin of error reads as when it would otherwise round away to "0" at
+ * one decimal -- the tank-sim/healer-sim defect (review round 1, D3/Minor): "± 0 DPS" on
+ * every run, at every precision, reading as no error at all. The controller's ruling is
+ * one rule everywhere rather than a sliding decimal count, so it lives beside
+ * `attackHandName` above: a plain module-level constant, not a `simCopy` property, because
+ * `estimate.ts`'s `formatMargin` -- the one place every "±" figure on the page is
+ * rendered -- reads it by name, not through `simCopy`.
+ */
+export const MARGIN_BELOW_THRESHOLD = '< 0.1';
+/**
+ * `weights.ts`'s own `formatWeightError` -- the one place StatWeights.svelte and
+ * SavedWeights.svelte render a weight's own "±" figure -- reads this by name for the
+ * identical reason `formatMargin` reads `MARGIN_BELOW_THRESHOLD` above: a non-zero value
+ * that would otherwise round away to "0.00" at the weights table's two decimals reads this
+ * instead (final whole-branch review, Finding 4). A different threshold from
+ * `MARGIN_BELOW_THRESHOLD`'s own "< 0.1" because the weights table prints two decimals, not
+ * one -- "< 0.1" would itself misstate a genuinely tiny, real weight error as bigger than it
+ * is.
+ */
+export const WEIGHT_ERROR_BELOW_THRESHOLD = '< 0.01';
+/**
+ * The BUFFS/DEBUFFS tabs' empty state, one message per kind (Task 4, SimResults.svelte's
+ * two AuraTable calls). A sim reports the player's own buff uptime correctly, so an empty
+ * BUFFS tab is true: nothing was up. A sim result carries no debuff data at all -- sim/core
+ * reports aura metrics for the player only (sim/adapter/adapter.go's own auraTypeBuff
+ * comment: "'DEBUFF', has no source in an engine result") -- so the old, shared "No
+ * debuffs in this window" stated a fact about the fight the engine cannot know: a target
+ * dummy taking Rend 56 times, with this tab insisting there were none, is the exact defect
+ * this replaces. The Casts tab already carries the true application count for every
+ * debuff a spec casts (CastRow's own `succeeded`), so this points there instead of
+ * inventing uptime data the web does not have. A plain module-level constant, not a
+ * simCopy property, for the same reason as attackHandName above: AuraTable.svelte (a
+ * report component, outside the sim lane) takes the chosen message as a prop rather than
+ * importing simCopy itself, so ReportView.svelte's own AuraTable calls -- a real fight,
+ * where an empty DEBUFFS tab really can mean none were cast -- are untouched.
+ */
+export const AURA_EMPTY_MESSAGE: Record<'BUFF' | 'DEBUFF', string> = {
+  BUFF: 'No buffs in this window.',
+  DEBUFF:
+    "The simulator doesn't report debuff uptime yet; see Casts for how many times each one was applied.",
+};
+/**
+ * The weights table's greyed row, for a weight the engine flagged `insignificant` (D45: the
+ * dps-minmaxer defect -- every error bar bigger than its own weight, printed to two
+ * decimals with a Pawn export beneath it). A plain module-level constant, not a `bulkCopy`
+ * property, for the same reason as `AURA_EMPTY_MESSAGE` above: `weights.ts` does not read
+ * copy, and both `StatWeights.svelte` and `SavedWeights.svelte` need the identical sentence
+ * rather than each carrying their own -- one row-label string, read by name from the one
+ * place every string on this lane lives.
+ */
+export const WEIGHT_INSIGNIFICANT_LABEL = 'not distinguishable from zero';
+/**
+ * Sub-item 4's "and says so": shown under the weights picker only when the spec's own
+ * `weight_stats` came back non-empty, since that is the only time the claim is true. An
+ * absent list falls back to the full pinned vocabulary (`weights.ts`'s `WEIGHT_STATS`) with
+ * no explainer at all -- "the engine did not say" must not be dressed up as "the engine
+ * said these are the only ones that matter" (D45's retail-stat-list defect: Expertise,
+ * spell haste, armor penetration, MP5, feral attack power offered to a 1.60 spec).
+ */
+export const WEIGHTS_STATS_FROM_ENGINE = 'These are the stats the engine weighs for this spec.';
+/**
+ * The healer-sim defect (BLOCKER 2): a Restoration Druid string ran on `/sim/weights` for
+ * 64 seconds and then said nothing. `bulk-store-request.ts`'s `buildRequest` refuses before
+ * the request ever reaches the pool, with this sentence -- never the engine's own words,
+ * which name internal spec ids the drawer's own `detail` row already shows verbatim for a
+ * genuine engine refusal (final whole-branch review: a raw `combine: part 0 failed:
+ * request: …` string is not something a player can act on). `specName` is the display name
+ * (`specLabel`), never the wire's own spec key, for the same reason. "DPS" capitalised and
+ * a semicolon, not a bare `--`, to match this file's own voice for displayed prose (`dps`/
+ * `plannerDpsLabel`/`resultsDps` etc. above) -- `--` is this file's comment punctuation, not
+ * something a player reads (fix round 1, Important).
+ */
+export const weightsUnsupportedSpec = (specName: string): string =>
+  `The engine doesn't simulate ${specName}; stat weights need a DPS spec.`;
+// --- Lane W1 (persona round 1: results, labels, weights) ---
+
 export const simCopy = {
   /** Network and API failures. */
   saveFailed: 'The sim could not be saved; try again.',
@@ -217,15 +327,16 @@ export const simCopy = {
   /** No damage at all: a rotation that never fired, not a rendering failure. */
   noDamage: 'This run recorded no damage; the rotation did not fire.',
   /**
-   * Resolved names a sentence says differently from a table. The engine's own OtherAction
-   * names arrive as "Attack" and "Shoot" (sentence-cased by resolveActionName, Task 23),
-   * and a sentence about damage calls those white hits and auto shots. This is copy, not a
-   * mapping of engine ids -- there is no engine table in web/ and there must not be.
+   * Resolved names a sentence says differently from a table, for the "other" actions that
+   * are not the tagged auto-attack (that one is attackHandProse, exported near the top of
+   * this file, read straight off the tag). The engine's own OtherAction names arrive as
+   * "Attack" (only its untagged form -- a synthetic fixture's placeholder, since a real
+   * fight always tags the swing) and "Shoot", and a sentence about damage calls those
+   * white hits and auto shots. This is copy, not a mapping of engine ids -- there is no
+   * engine table in web/ and there must not be.
    */
   proseNames: {
     Attack: 'white hits',
-    'Attack (2)': 'off-hand white hits',
-    'Attack (3)': 'extra white hits',
     Shoot: 'auto shots',
   } as Record<string, string>,
 
@@ -294,9 +405,18 @@ export const simCopy = {
    * its OtherAction name into the key (`other:attack`), the log writes what the client
    * calls it (`Melee`), and compare mode joins those two rows -- so one of the two words
    * has to win, and it is the log's, because that is the one the player recognises from
-   * their own report. Used only by compare.ts's join, never by a table on its own.
+   * their own report. Used only by compare.ts's join, never by a table on its own. All
+   * three attackHandName forms alias to "Melee" too: a combat log records one melee row
+   * for both hands, so the sim's separate main-hand and off-hand rows must still fold onto
+   * it, the same way they did before those two had distinct names (Lane W1).
    */
-  actionAliases: { Attack: 'Melee', Shoot: 'Auto Shot' } as Record<string, string>,
+  actionAliases: {
+    Attack: 'Melee',
+    [attackHandName.main]: 'Melee',
+    [attackHandName.off]: 'Melee',
+    [attackHandName.extra]: 'Melee',
+    Shoot: 'Auto Shot',
+  } as Record<string, string>,
   compareAbility: 'Ability',
   compareBuff: 'Buff',
   compareActualCasts: 'Cast',
@@ -748,6 +868,32 @@ export const bulkCopy = {
   weightsCopyPawn: 'Copy for Pawn',
   weightsCopied: 'Copied',
   weightsPick: 'Stats to weigh',
+  /**
+   * Task 8, sub-item 1: contract 10.9 documents `StatWeight.Error` as a standard error that
+   * is a lower bound, not the true uncertainty -- an 8-seed check found the real run-to-run
+   * spread runs four to ten times wider for crit, expertise and melee haste, the three stats
+   * most entangled with the rotation's own rage/proc decisions. One sentence, not a second
+   * warning stacked on the greying above: it opens by naming what a greyed row already means
+   * (D45's own `WEIGHT_INSIGNIFICANT_LABEL`, restated in prose rather than assumed read) and
+   * then extends the same "how much to trust this" idea to every other row's own ± figure,
+   * so the two read as one thought about the table, not two. No mention of "contract 10.9"
+   * or "lower bound" -- a player reads this without the spec open.
+   */
+  weightsErrorCaveat:
+    'A greyed row cannot be told apart from zero. The ± on every other row is a floor, not the full picture: for crit, expertise and haste, the real run-to-run swing can run four to ten times wider.',
+  /**
+   * Task 8, sub-item 2: the precision control's own bare "Fast"/"Normal"/"High" no longer
+   * says a number for a weights run (BulkRunBar.svelte's `precisionLabelFor`) -- the wire's
+   * own `iterations` field was never the real cost to begin with (a weights sweep runs a
+   * baseline plus a low and a high pass per stat weighed, each at up to eight times that
+   * count: `weights.ts`'s `weightsEngineIterations`, contract 10.9), so a bare "Normal,
+   * 3,000 iterations" label was quietly wrong by 68x for an eight-stat spec. This note
+   * replaces that claim with the true total, recomputed for whichever precision and however
+   * many stats are ticked right now, so "Normal" costs something the reader chose knowingly
+   * rather than discovered a minute later.
+   */
+  weightsCostNote: (totalIterations: number): string =>
+    `${totalIterations.toLocaleString('en-US')} engine iterations in your browser: a baseline pass plus a low and a high pass for each stat weighed.`,
   /** bulk-store.svelte.ts's `baseRequest` refusal when `stats` is empty: `WeightsSpec.
    *  Reference` is required (contract 10.8), so an empty list has nothing to send. */
   weightsNeedStats: 'Pick at least one stat to weigh.',

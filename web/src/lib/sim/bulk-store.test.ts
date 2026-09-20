@@ -15,9 +15,10 @@ import {
 import { createBulkStore, MODE_OF_TOOL, TOOLS } from './bulk-store.svelte';
 import { SERVER_CAP } from './bulk-types';
 import { validateBulk } from './candidates';
-import { bulkCopy, simCopy } from './copy';
+import { bulkCopy, simCopy, weightsUnsupportedSpec } from './copy';
+import { specLabel } from './spec-label';
 import { createPool, type SimPool } from './worker';
-import type { BulkRequest, BulkResult } from './bulk-types';
+import type { BulkRequest, BulkResult, WeightsRequest } from './bulk-types';
 
 const FURY = `FS1:${FIXTURE_DATA_BUILD}:warrior:orc:0/5530515/0:head=12640,main_hand=12784`;
 const api = createSimApi();
@@ -345,6 +346,42 @@ describe('running', () => {
     expect(s.phase).toBe('done');
     expect(s.result).not.toBeNull();
     expect(s.message).toBeNull();
+    s.dispose();
+  });
+
+  // Fix round 1: `isDpsSpec` was gated inside `buildRequest`, the ticked-candidates path
+  // `run()`/`runOnServer()` use -- but `runRequest` (design 8's Advanced-drawer escape
+  // hatch) calls `runBulkAndSettle` directly, bypassing `buildRequest` entirely, the same
+  // way it already bypasses `validateBulk` above. A resto druid string on `/sim/weights`,
+  // Advanced open, Run pressed with nothing edited: `previewRequest` had already built a
+  // full, valid-looking `WeightsRequest` for it, and `simValidate` has no spec-role concept
+  // to catch it either. `weightsSpecRefusal` now gates both paths from one function.
+  it('runRequest refuses an unsupported spec too -- the healer-sim repro through the drawer', async () => {
+    const s = store('weights');
+    await s.loadAddon(FURY);
+    await s.loadSpecs();
+    const preview = s.requestPreview as WeightsRequest | null;
+    expect(preview).not.toBeNull();
+    // The drawer's own textarea, touched by nothing: exactly what a player who pastes a
+    // resto druid string, opens Advanced and presses Run without editing anything sends.
+    const healer: WeightsRequest = { ...preview!, spec: 'druid-restoration' };
+    await s.runRequest(healer);
+    expect(s.result).toBeNull();
+    expect(s.phase).toBe('idle');
+    expect(s.message).toBe(weightsUnsupportedSpec(specLabel('druid-restoration')));
+    s.dispose();
+  });
+
+  it('runRequest still runs a supported spec’s weights request -- the gate is not over-broad', async () => {
+    const s = store('weights');
+    await s.loadAddon(FURY);
+    await s.loadSpecs();
+    const preview = s.requestPreview as WeightsRequest | null;
+    expect(preview).not.toBeNull();
+    await s.runRequest(preview!);
+    expect(s.phase).toBe('done');
+    expect(s.message).toBeNull();
+    expect(s.weights.length).toBeGreaterThan(0);
     s.dispose();
   });
 });

@@ -14,7 +14,7 @@
   import { addonStringFor } from '../../../lib/sim/addon-export';
   import type { BulkResult } from '../../../lib/sim/bulk-types';
   import { codeForCharacterSpec } from '../../../lib/sim/character';
-  import { confidenceBand } from '../../../lib/sim/estimate';
+  import { confidenceBand, formatMargin } from '../../../lib/sim/estimate';
   import {
     collapsedComboCount,
     comboRows,
@@ -67,7 +67,7 @@
   const winner = $derived(winningGear(result));
 
   const equippedFigure = $derived(Math.round(result.equipped.mean).toLocaleString('en-US'));
-  const equippedBand = $derived(Math.round(confidenceBand(result.equipped)).toLocaleString('en-US'));
+  const equippedBand = $derived(formatMargin(confidenceBand(result.equipped)));
 
   /** The winning set into the planner, through the same ?code= bootstrap /sim already uses. */
   const plannerHref = $derived(

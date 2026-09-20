@@ -4,7 +4,7 @@
 // ordering is the planner's. This turns those into rows, labels and a winning gear list.
 import type { BulkResult, Combo, Substitution } from './bulk-types';
 import { bulkCopy } from './copy';
-import { confidenceBand } from './estimate';
+import { confidenceBand, formatMargin } from './estimate';
 import type { Estimate, GearSlot } from './types';
 import type { Item, ItemSet } from '../planner/types';
 
@@ -61,7 +61,11 @@ export function gainLabel(magnitude: number): string {
  */
 export function deltaLabel(delta: Estimate): string {
   const sign = delta.mean < 0 ? MINUS : '+';
-  return `${sign}${gainLabel(delta.mean)} ± ${gainLabel(confidenceBand(delta))}`;
+  // The gain goes through `gainLabel` (sub-10 keeps a decimal, dps D38), the margin through
+  // `formatMargin` -- the one function every other "±" figure on the page uses, and the only
+  // one that renders "< 0.1" for a non-zero band that would otherwise round away to "0"
+  // (tank-sim review D3). `gainLabel` alone would silently reintroduce that bug here.
+  return `${sign}${gainLabel(delta.mean)} ± ${formatMargin(confidenceBand(delta))}`;
 }
 
 /**

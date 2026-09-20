@@ -6,13 +6,14 @@
      aria-live is on the message and never on the figure: a live region on a number that
      changes that often makes a screen reader unusable. -->
 <script lang="ts">
-  import { confidenceBand } from '../../lib/sim/estimate';
+  import { confidenceBand, formatMargin } from '../../lib/sim/estimate';
   import { simCopy } from '../../lib/sim/copy';
   import { percentLabel } from '../../lib/sim/details';
   import { LANE_ITERATION_CEILING, PRECISIONS, type Lane, type PrecisionId } from '../../lib/sim/precision';
   import type { SimPhase } from '../../lib/sim/store.svelte';
   import type { Estimate } from '../../lib/sim/types';
   import { engineLabel } from '../../lib/sim/version';
+  import PrecisionSelect from './PrecisionSelect.svelte';
 
   let {
     phase,
@@ -81,11 +82,7 @@
   const hasFigure = $derived(estimate.mean > 0);
 
   const figure = $derived(hasFigure ? Math.round(estimate.mean).toLocaleString('en-US') : '—');
-  const band = $derived(
-    hasFigure && estimate.error > 0
-      ? `± ${Math.round(confidenceBand(estimate)).toLocaleString('en-US')}`
-      : '',
-  );
+  const band = $derived(hasFigure && estimate.error > 0 ? `± ${formatMargin(confidenceBand(estimate))}` : '');
   const percent = $derived(
     iterationsTotal > 0 ? Math.min(100, Math.round((iterationsDone / iterationsTotal) * 100)) : 0,
   );
@@ -165,17 +162,14 @@
   <div class="flex flex-wrap items-center gap-3">
     <label class="flex flex-col gap-1">
       <span class="label text-muted">{simCopy.precision}</span>
-      <select
+      <PrecisionSelect
         class="border-line-warm rounded-control bg-raised text-text min-h-11 min-w-0 border px-3 text-[14px] font-semibold md:min-h-9"
-        disabled={running || serverRunning}
         value={precisionId}
-        onchange={(event) => onprecision(event.currentTarget.value as PrecisionId)}
-        data-testid="sim-precision"
-      >
-        {#each PRECISIONS as id (id)}
-          <option value={id}>{simCopy.precisionLabel[id] ?? id}</option>
-        {/each}
-      </select>
+        options={PRECISIONS}
+        labelFor={(id) => simCopy.precisionLabel[id] ?? id}
+        disabled={running || serverRunning}
+        onchange={(value) => onprecision(value as PrecisionId)}
+      />
     </label>
     {#if premium}
       <button

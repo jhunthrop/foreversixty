@@ -69,14 +69,95 @@ describe('summarySentence', () => {
     expect(summarySentence(one, names)).toBe('Heroic Strike is 100% of your damage.');
   });
 
-  it('falls back to the action key rather than a blank when the build has no name', () => {
+  it('names the main hand, not off-hand, for a two-handed build’s only attack row', () => {
+    // dps-minmaxer review round 1, D2: a two-handed build's only auto-attack row is the
+    // main hand. The engine tags it other:attack/1 (sim/core/attack.go: tagMainhand = 1);
+    // this pins that the sentence reads it as the main hand and never as off-hand.
+    const base = twoAbilities();
+    const actor = base.damage_done[0];
+    const twoHander: Summary = {
+      ...withoutAuras(base),
+      damage_done: [
+        {
+          ...actor,
+          total: 610,
+          abilities: [
+            { ...actor.abilities[0], spell_id: 20022000007, name: 'other:attack/1', total: 400 },
+            { ...actor.abilities[0], spell_id: 25286, name: 'spell:25286', total: 210 },
+          ],
+        },
+      ],
+    };
+    expect(summarySentence(twoHander, names)).toBe(
+      'main-hand white hits and Heroic Strike are 100% of your damage.',
+    );
+  });
+
+  it('falls back to a humanised label rather than the raw key or a blank when the build has no name', () => {
     const base = twoAbilities();
     const actor = base.damage_done[0];
     const one: Summary = {
       ...withoutAuras(base),
       damage_done: [{ ...actor, total: 400, abilities: [actor.abilities[0]] }],
     };
-    expect(summarySentence(one, null)).toBe('spell:25286 is 100% of your damage.');
+    expect(summarySentence(one, null)).toBe('Spell 25286 is 100% of your damage.');
+  });
+
+  it('never emits a raw spell:/item:/dungeon: key in the sentence, resolved or not', () => {
+    // dps-minmaxer review round 2, D48: "off-hand white hits and spell:20662 are 78% of
+    // your damage" -- the exact defect this pins down, both resolved and unresolved.
+    const resolved = summarySentence(twoAbilities(), names);
+    expect(resolved).not.toMatch(/\b(spell|item|dungeon):/);
+
+    const unresolved = summarySentence(twoAbilities(), null);
+    expect(unresolved).not.toMatch(/\b(spell|item|dungeon):/);
+    expect(unresolved).toBe(
+      'Spell 25286 and white hits are 61% of your damage; Spell 12974 is up 78% of the fight.',
+    );
+  });
+
+  it('never names an aura the BUFFS tab’s own sanitizer would drop (final whole-branch review, Finding 1)', () => {
+    // Before Task 4, the sentence and the tabs read the same raw array; this regression
+    // reintroduced the split. other:move is the engine's own movement bookkeeping (never a
+    // player-facing aura) -- sanitizeAuraTracks drops it, and a sentence reading raw auras
+    // can still pick it as the biggest "buff" and say "Move is up N% of the fight".
+    const base = twoAbilities();
+    const actor = base.damage_done[0];
+    const withMove: Summary = {
+      ...base,
+      duration_ms: 10_000,
+      auras: [
+        { ...summary.auras[0], target_guid: actor.guid, type: 'BUFF', name: 'other:move', uptime_ms: 4_100 },
+      ],
+    };
+    expect(summarySentence(withMove, names)).toBe('Heroic Strike and white hits are 61% of your damage.');
+  });
+
+  it('names the sanitizer’s folded aura, not a raw tag-variant row, and reports the tab’s own summed uptime', () => {
+    // The same fold-by-identity BUFFS/DEBUFFS reads (aura-rows.ts): a spell metered under
+    // two tags is one aura, not two, and its uptime is the sum. A sentence reading raw auras
+    // can pick the bigger of the two rows alone -- naming a tag suffix ("Flurry (2)") the
+    // tab never shows, and understating the uptime the tab reports for the same aura.
+    const withFlurry: ActionNames = { spell: { ...names.spell, '12974': 'Flurry' }, item: {} };
+    const base = twoAbilities();
+    const actor = base.damage_done[0];
+    const tagged: Summary = {
+      ...base,
+      duration_ms: 10_000,
+      auras: [
+        { ...summary.auras[0], target_guid: actor.guid, type: 'BUFF', name: 'spell:12974', uptime_ms: 3_000 },
+        {
+          ...summary.auras[0],
+          target_guid: actor.guid,
+          type: 'BUFF',
+          name: 'spell:12974/1',
+          uptime_ms: 5_000,
+        },
+      ],
+    };
+    expect(summarySentence(tagged, withFlurry)).toBe(
+      'Heroic Strike and white hits are 61% of your damage; Flurry is up 80% of the fight.',
+    );
   });
 
   it('says so rather than dividing by zero when nothing landed', () => {
@@ -90,12 +171,39 @@ describe('summarySentence', () => {
 describe('namedSummary', () => {
   it('rewrites ability, aura and cast names and touches nothing else', () => {
     const named = namedSummary(summary, names);
-    expect(named.damage_done[0].abilities[0].name).toBe('Heroic Strike');
+    // abilities[0] is the fixture's own auto-attack row (a tagged "other:" key, resolved
+    // through attackHandName rather than `names`); spell 25286 -- the one id `names`
+    // carries a resolved name for -- is abilities[3] in this fixture.
+    expect(named.damage_done[0].abilities[3].name).toBe('Heroic Strike');
     expect(named.casts.every((row) => !row.spell_name.startsWith('other:'))).toBe(true);
     // The row identity is untouched: the report keys its {#each} blocks on it.
     expect(named.casts.map((row) => row.spell_id)).toEqual(summary.casts.map((row) => row.spell_id));
     expect(named.duration_ms).toBe(summary.duration_ms);
     expect(named.damage_done[0].total).toBe(summary.damage_done[0].total);
+  });
+
+  it('drops engine-internal aura rows and resolves names on what survives (Task 4)', () => {
+    // The fixture's own 13 raw aura rows: 5 are inert (never applied, never up -- 2457, 71,
+    // 18499, 25288 and spell 20569's lone tag row) and other:move is the engine's own
+    // movement bookkeeping, never a player-facing aura. 13 - 5 - 1 = 7. This fixture's own
+    // rows happen not to collide under fold-by-identity (no two rows share a normalized
+    // spell id); `aura-rows.test.ts`'s own "aggregates tag/rank variants" test covers that
+    // merge directly, with synthetic rows built to collide on purpose, so it does not need
+    // rediscovering here against whatever a fixture regeneration happens to produce.
+    const named = namedSummary(summary, names);
+    expect(named.auras).toHaveLength(7);
+    expect(named.auras.some((track) => track.spell_id === 2457)).toBe(false);
+    expect(named.auras.some((track) => track.name === 'other:move')).toBe(false);
+
+    // spell:25286's own tag row (/1) is renamed to its base id by normalizeSpellIdentity.
+    const renamed = named.auras.find((track) => track.spell_id === 25286);
+    expect(renamed?.applications).toBe(3);
+    expect(renamed?.uptime_ms).toBe(11_327);
+
+    // sim/adapter/adapter.go writes the player's own display name into every aura's
+    // appliers, not a GUID; every surviving row is normalized to the target's guid
+    // instead, so AuraTable renders a self-buff with no "from an unnamed source" line.
+    expect(named.auras.every((track) => !track.appliers.includes(track.target_name))).toBe(true);
   });
 
   it('leaves the original untouched, because the stored result keeps the engine keys', () => {

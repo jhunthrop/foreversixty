@@ -13,12 +13,13 @@
   import { loadItems } from '../../lib/planner/load';
   import type { Item } from '../../lib/planner/types';
   import { createLazyComponent, type LazyLoadState } from '../../lib/report/lazy-component.svelte';
+  import { loadActionNames, type ActionNames } from '../../lib/sim/action-names';
   import { fetchSpecs } from '../../lib/sim/api';
   import { requestKind, type BulkResult, type WeightsResult } from '../../lib/sim/bulk-types';
   import { SIM_LEVEL, type SimCharacter } from '../../lib/sim/character';
   import { bulkCopy, simCopy } from '../../lib/sim/copy';
   import { encounterLabel } from '../../lib/sim/encounter';
-  import { confidenceBand } from '../../lib/sim/estimate';
+  import { confidenceBand, formatMargin } from '../../lib/sim/estimate';
   import { specLabel } from '../../lib/sim/spec-label';
   import { mergeSpecRows } from '../../lib/sim/spec-state';
   import type { SimResult, SpecFidelity } from '../../lib/sim/types';
@@ -35,9 +36,7 @@
   const hasFigure = $derived(result.dps.mean > 0);
   const figure = $derived(hasFigure ? Math.round(result.dps.mean).toLocaleString('en-US') : '—');
   const band = $derived(
-    hasFigure && result.dps.error > 0
-      ? `± ${Math.round(confidenceBand(result.dps)).toLocaleString('en-US')}`
-      : '',
+    hasFigure && result.dps.error > 0 ? `± ${formatMargin(confidenceBand(result.dps))}` : '',
   );
   // The stored request carries no settings preset, only the raw encounter and buff list --
   // the same shape `og-meta.ts`'s unfurl reads, and the same derivation: a raid-buffed run
@@ -113,6 +112,23 @@
       // The strip renders slot names and "Empty" without the item file; a failed fetch
       // must not stop the rest of the page from rendering.
       items = new Map();
+    }
+  })();
+
+  // D48 (dps-minmaxer review round 2): a saved run reloaded cold used to hardcode
+  // `actionNames={null}` below, so every ability, aura and cast name on this page read as
+  // the engine's own raw key forever -- live and saved disagreed, which is the defect's
+  // own name. The build's name table is loaded exactly like the item file just above, the
+  // same loader `store.svelte.ts`'s own `ensureActionNames` calls for a live run
+  // (`loadActionNames`, action-names.ts) -- one loader, reused, not a second path.
+  let actionNames = $state<ActionNames | null>(null);
+  void (async () => {
+    try {
+      actionNames = await loadActionNames(character.tree_version, character.class_slug);
+    } catch {
+      // resolveActionName's own humanised fallback (action-names.ts) covers a null table:
+      // the page still reads as English, never as a raw key.
+      actionNames = null;
     }
   })();
 
@@ -233,7 +249,7 @@
     summary={result.summary}
     estimate={result.dps}
     iterationsRun={result.iterations_run}
-    actionNames={null}
+    {actionNames}
     sample={result.sample}
   />
 {:else}

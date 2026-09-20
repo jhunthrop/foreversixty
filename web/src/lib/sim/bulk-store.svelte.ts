@@ -32,6 +32,7 @@ import {
   runBulkAndSettle,
   seededStats,
   validateRequestJson,
+  weightsSpecRefusal,
   type BulkRequestDeps,
   type BulkRunDeps,
   type RecountDeps,
@@ -74,6 +75,7 @@ import {
   type SourceResult,
 } from './sources';
 import type { SimResult, SourceKind, SpecFidelity } from './types';
+import { weightStatsFor } from './weights';
 import { createPool, type SimPool } from './worker';
 
 export const TOOLS = ['gear', 'talents', 'drops', 'weights'] as const;
@@ -511,6 +513,15 @@ export function createBulkStore(init: BulkStoreInit) {
     get referenceStat() {
       return referenceStat();
     },
+    /**
+     * The current character's spec's own `weight_stats` from `GET /v1/specs`, or
+     * `undefined` when the list has no row, or no column, for it -- `weights.ts`'s
+     * `pickableStatsFor`/`WEIGHTS_STATS_FROM_ENGINE` both key off this same optionality, so
+     * the picker and its explainer can never disagree about whether the list is curated.
+     */
+    get weightStats() {
+      return weightStatsFor(character?.spec ?? '', specRows);
+    },
     /** The sources the picker draws: kind ticked on, and released unless asked otherwise. */
     get visibleSources() {
       return visibleSourcesOf(loot, shownKinds, phases, showUpcoming, clock());
@@ -707,12 +718,25 @@ export function createBulkStore(init: BulkStoreInit) {
      * hatch) -- bypasses the ticked-candidates reconstruction `run()` does entirely, the
      * same way `applyRequest` bypasses it for Apply. The drawer's own `checkRequest` has
      * already run the engine's own Validate by the time it calls this, so this does not
-     * re-validate.
+     * re-validate -- except for the one thing `simValidate` cannot see at all (no spec-role
+     * concept, on either the real engine or the fake): sub-item 5's honest refusal. Fix
+     * round 1 gated only `buildRequest`, the ticked-candidates path; this path reached the
+     * pool for an unsupported spec untouched, with `previewRequest` even seeding the
+     * drawer's textarea with a full, valid-looking request for it. `weightsSpecRefusal` is
+     * the one function both paths now call, so a third path cannot reopen this gap again.
      */
     async runRequest(request: unknown): Promise<void> {
       if (serverRunning) return;
       const parsed = request as Partial<BulkRequest & WeightsRequest>;
       if (parsed.bulk === undefined && parsed.weights === undefined) return;
+      if (parsed.weights !== undefined && parsed.spec !== undefined) {
+        const refusal = weightsSpecRefusal(parsed.spec);
+        if (refusal !== null) {
+          message = refusal;
+          phase = 'idle';
+          return;
+        }
+      }
       // Best-effort: Apply syncs the drawer to `pickedBosses` before this runs it.
       submittedDropPicks = pickedBosses;
       await runBulkAndSettle(runDeps, parsed as BulkRequest | WeightsRequest);
@@ -735,7 +759,9 @@ export function createBulkStore(init: BulkStoreInit) {
      */
     async runOnServer(): Promise<void> {
       if (serverRunning) return;
-      const outcome = buildRequest(requestDeps);
+      // Task 8, sub-item 2: the server lane keeps its own (unguarded) default -- only a
+      // weights request reads `lane` at all, and only to pick its iteration base.
+      const outcome = buildRequest(requestDeps, 'server');
       if ('error' in outcome) {
         message = outcome.error;
         return;

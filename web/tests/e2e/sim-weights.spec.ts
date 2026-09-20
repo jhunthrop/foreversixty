@@ -89,6 +89,109 @@ test('the stat picker defaults to the spec’s reference stat, first and ticked'
   await expect(page.getByTestId('sim-weights-reference')).toHaveText(/Attack power/);
 });
 
+// D45 (MAJOR, dps-minmaxer review round 1): the picker used to offer the full retail stat
+// list -- Expertise, spell haste, armor penetration, MP5, feral attack power -- to every
+// spec, including ones (all of them, in 1.60) none of those apply to. Once the spec's own
+// `weight_stats` names the stats the engine actually weighs, the picker offers only those,
+// by construction, and says so.
+test('the picker offers only the spec’s own weight_stats, and says so, when the engine sent one', async ({
+  page,
+}) => {
+  await page.route('**/v1/specs', (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        ok: true,
+        request_id: 'r',
+        error: null,
+        data: {
+          specs: [
+            {
+              spec: 'warrior-fury',
+              state: 'validated',
+              median_gap: 0.03,
+              parses: 50,
+              worst_actions: [],
+              engine_version: 'x',
+              updated_at: null,
+              reference_stat: 'attack_power',
+              weight_stats: ['attack_power', 'strength', 'crit'],
+            },
+          ],
+        },
+      }),
+    }),
+  );
+  await loadWeights(page);
+  await expect(page.getByTestId('sim-weights-stats-note')).toBeVisible();
+  await expect(page.getByTestId('sim-weight-pick-attack_power')).toBeVisible();
+  await expect(page.getByTestId('sim-weight-pick-strength')).toBeVisible();
+  await expect(page.getByTestId('sim-weight-pick-crit')).toBeVisible();
+  for (const excluded of [
+    'expertise',
+    'spell_haste',
+    'armor_penetration',
+    'mp5',
+    'feral_attack_power',
+    'hit',
+  ]) {
+    await expect(page.getByTestId(`sim-weight-pick-${excluded}`)).toHaveCount(0);
+  }
+});
+
+// Final whole-branch review, Finding 2: GET /v1/specs sends no weight_stats column at all in
+// production (api/internal/sims/specs.go's own SpecFidelity has no such field) -- this is
+// that real shape, not the earlier (fixture-only) hand-carried column. The picker still
+// offers only warrior-fury's own stats and still says so: weightStatsFor now falls back to
+// the client's own curated specs.ts (data/curated/specs.json) rather than treating an absent
+// API column as "nothing to offer but the full retail list".
+test('the picker falls back to the spec’s own curated weight_stats (specs.ts) when the API sends none', async ({
+  page,
+}) => {
+  await page.route('**/v1/specs', (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        ok: true,
+        request_id: 'r',
+        error: null,
+        data: {
+          specs: [
+            {
+              spec: 'warrior-fury',
+              state: 'validated',
+              median_gap: 0.03,
+              parses: 50,
+              worst_actions: [],
+              engine_version: 'x',
+              updated_at: null,
+              reference_stat: 'attack_power',
+            },
+          ],
+        },
+      }),
+    }),
+  );
+  await loadWeights(page);
+  await expect(page.getByTestId('sim-weights-stats-note')).toBeVisible();
+  await expect(page.getByTestId('sim-weight-pick-attack_power')).toBeVisible();
+  await expect(page.getByTestId('sim-weight-pick-strength')).toBeVisible();
+  await expect(page.getByTestId('sim-weight-pick-melee_haste')).toBeVisible();
+  // Retail-only entries never in warrior-fury's own curated list (D45).
+  for (const excluded of ['mp5', 'spell_haste', 'feral_attack_power']) {
+    await expect(page.getByTestId(`sim-weight-pick-${excluded}`)).toHaveCount(0);
+  }
+});
+
+// The genuinely uncurated case -- a spec neither the API nor the client's own generated
+// spec list has ever heard of -- still falls all the way back to the full pinned vocabulary
+// with no curated-list claim. `pickableStatsFor`'s own unit tests (weights.test.ts) cover
+// this directly; unreachable through the addon-load flow this spec above uses (an unknown
+// spec string fails to parse into a character at all), so it is not re-proven at the e2e
+// layer.
+
 test('a run renders a weight per stat with an error bar and a Pawn string', async ({ page, context }) => {
   await context.grantPermissions(['clipboard-read', 'clipboard-write']);
   await loadWeights(page);
@@ -99,16 +202,18 @@ test('a run renders a weight per stat with an error bar and a Pawn string', asyn
   // `sim-character` becomes visible as soon as `adopt()` sets `character` -- before the
   // store's own async `loadDataFor` finishes and seeds `stats` -- so the picker can still
   // be showing every box unchecked at that instant. Waiting for the default seed to land
-  // (stamina ticked) avoids unchecking a box that was never checked yet.
-  await expect(page.getByTestId('sim-weight-pick-stamina')).toBeChecked();
-  await page.getByTestId('sim-weight-pick-stamina').uncheck();
-  await expect(page.getByTestId('sim-weight-pick-stamina')).not.toBeChecked();
+  // (strength ticked -- one of warrior-fury's own curated weight_stats, Finding 2; stamina
+  // is not: this sim page scopes the picker to the stats a 1.60 warrior can actually weigh)
+  // avoids unchecking a box that was never checked yet.
+  await expect(page.getByTestId('sim-weight-pick-strength')).toBeChecked();
+  await page.getByTestId('sim-weight-pick-strength').uncheck();
+  await expect(page.getByTestId('sim-weight-pick-strength')).not.toBeChecked();
   await expect(page.getByTestId('sim-weight-pick-attack_power')).toBeDisabled();
   await page.getByTestId('sim-weight-pick-attack_power').click({ force: true });
   await expect(page.getByTestId('sim-weight-pick-attack_power')).toBeChecked();
   await page.getByTestId('sim-run-bulk').click();
   await expect(page.getByTestId('sim-weights')).toBeVisible({ timeout: 25_000 });
-  await expect(page.getByTestId('sim-weight-stamina')).toHaveCount(0);
+  await expect(page.getByTestId('sim-weight-strength')).toHaveCount(0);
   await expect(page.getByTestId('sim-weight-attack_power')).toContainText('1.00');
   // Contract 10.8: haste is split, hit and crit are not.
   await expect(page.getByTestId('sim-weight-melee_haste')).toBeVisible();
@@ -139,15 +244,30 @@ test('there is no slot grid, no source picker and no named sets', async ({ page 
   await expect(page.getByTestId('sim-named-sets')).toHaveCount(0);
 });
 
-test('the run bar shows no combination count and no precision control', async ({ page }) => {
+test('the run bar shows no combination count, but does show a working precision control', async ({
+  page,
+}) => {
   // Important 2, final whole-branch review: the weights tool sends no `bulk` block, so the
-  // count never resolves (it would read "Counting combinations…" forever) and `precision`
-  // is ignored by `buildRequest` entirely. Neither control belongs on this page. The run
-  // bar itself is still here -- it carries the run button the tests above press.
+  // count never resolves (it would read "Counting combinations…" forever) -- that control
+  // stays hidden. dps-minmaxer review round 1, D45 (BLOCKER): the page used to have no
+  // working precision control at all, so an error bar bigger than its own weight could
+  // never be tightened. `buildRequest` now reads `precision` for a weights run too (the
+  // same `PRECISION_ITERATIONS` map /sim's own plain run uses), so the control belongs
+  // here now, with the three fixed counts (no "until ±0.5%": a weights run is one wasm
+  // call with no adaptive loop to stop, bulk-run.ts's own `runWeightsRun`).
   await loadWeights(page);
   await expect(page.getByTestId('sim-run-bulk-bar')).toBeVisible();
   await expect(page.getByTestId('sim-combo-count')).toHaveCount(0);
-  await expect(page.getByTestId('sim-precision')).toHaveCount(0);
+  const precision = page.getByTestId('sim-precision');
+  await expect(precision).toBeVisible();
+  await expect(precision.locator('option')).toHaveCount(3);
+  // Task 8, sub-item 2: the option text itself is now the bulk tools' own bare
+  // "Fast"/"Normal"/"High" -- the wire's nominal iteration count was never the real cost of
+  // a weights sweep (up to 68x off for an eight-stat spec, contract 10.9's per-stat
+  // multiplier), so the label no longer claims a number it cannot back up. The real total
+  // is the cost note below the select instead.
+  await expect(precision.locator('option').first()).not.toHaveText(/iterations/);
+  await expect(page.getByTestId('sim-weights-cost-note')).toContainText('engine iterations in your browser');
 });
 
 // Contract 10.6: saved sims of every kind are public at /sim/<id>. Top Gear and talent

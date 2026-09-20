@@ -76,14 +76,17 @@ describe('runSim', () => {
     const pool = createPool({ hardwareConcurrency: 4, spawn: () => fakeWorker() });
     const result = await runSim(pool, input, () => {}).result;
     expect(result.summary.engine_version).toBe(`sim:${ENGINE_VERSION}`);
-    // The engine names nothing: these are its own action keys, straight out of the golden
-    // the fixture was derived from (Task 2 Step 5). Resolving them is Task 23's job, and
-    // no test in group A may assume a display name the adapter never writes.
-    expect(result.summary.damage_done[0].abilities[0].name).toBe('spell:25286');
-    expect(result.summary.auras[0].name).toBe('spell:9910');
+    // The engine names nothing: these are its own action keys, straight out of a real
+    // forever-sim run against the fixture request (Task 7). Resolving them is Task 23's
+    // job, and no test in group A may assume a display name the adapter never writes.
+    // abilities[0] is now the auto-attack row (a tagged "other:" key, dps-minmaxer review
+    // round 1, D2's own attackHand naming) since a bare 2H build's white damage outpaces
+    // its one named spell, so abilities[1] is the first plain spell instead.
+    expect(result.summary.damage_done[0].abilities[1].name).toBe('spell:1680');
+    expect(result.summary.auras[0].name).toBe('spell:25289');
     // And the row identity is the client spell id for those two, because both are plain
     // untagged spells; anything tagged sits at or above 2,000,000.
-    expect(result.summary.damage_done[0].abilities[0].spell_id).toBe(25286);
+    expect(result.summary.damage_done[0].abilities[1].spell_id).toBe(1680);
     pool.terminate();
   });
 

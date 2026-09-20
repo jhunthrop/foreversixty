@@ -13,6 +13,7 @@ import { requestKind, type BulkResult, type WeightsResult } from '../sim/bulk-ty
 import { headlineFor } from '../sim/combos';
 import { bulkCopy, KIND_TITLES } from '../sim/copy';
 import { encounterLabel } from '../sim/encounter';
+import { confidenceBand, formatMargin } from '../sim/estimate';
 import { specLabel } from '../sim/spec-label';
 import type { SimResult } from '../sim/types';
 import { statLabel } from '../sim/weights';
@@ -173,7 +174,7 @@ export function simShellMeta(result: SimResult): ShellMeta {
   }
 
   const dps = Math.round(result.dps.mean).toLocaleString('en-US');
-  const band = Math.round(1.96 * result.dps.error).toLocaleString('en-US');
+  const band = formatMargin(confidenceBand(result.dps));
   const iterations = result.request.iterations.toLocaleString('en-US');
   // Whether the player carried a raid buff, read from the stored fact rather than guessed:
   // a SimResult carries no buff preset, so this is true exactly when the summary records at

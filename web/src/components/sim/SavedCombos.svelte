@@ -14,7 +14,7 @@
   import type { BulkResult } from '../../lib/sim/bulk-types';
   import { comboRows, deltaLabel, slotSummary } from '../../lib/sim/combos';
   import { bulkCopy } from '../../lib/sim/copy';
-  import { confidenceBand } from '../../lib/sim/estimate';
+  import { confidenceBand, formatMargin } from '../../lib/sim/estimate';
   import SubstitutionChips from './tools/SubstitutionChips.svelte';
 
   let { result, treeVersion }: { result: BulkResult; treeVersion: string } = $props();
@@ -37,7 +37,7 @@
   const rows = $derived(comboRows(result));
   const summary = $derived(slotSummary(result));
   const equippedFigure = $derived(Math.round(result.equipped.mean).toLocaleString('en-US'));
-  const equippedBand = $derived(Math.round(confidenceBand(result.equipped)).toLocaleString('en-US'));
+  const equippedBand = $derived(formatMargin(confidenceBand(result.equipped)));
 </script>
 
 <section class="mx-[18px] flex flex-col gap-3 md:mx-0" data-testid="sim-combos">

@@ -14,6 +14,8 @@
   import type { BulkStore } from '../../../lib/sim/bulk-store.svelte';
   import { BULK_PRECISIONS, LOW_CORE_CAP, type Precision } from '../../../lib/sim/bulk-types';
   import { bulkCopy } from '../../../lib/sim/copy';
+  import { weightsEngineIterations, weightsIterationsFor } from '../../../lib/sim/weights';
+  import PrecisionSelect from '../PrecisionSelect.svelte';
   import RequestDrawer from '../RequestDrawer.svelte';
   import SettingsBar from '../SettingsBar.svelte';
 
@@ -22,11 +24,14 @@
   /**
    * The weights tool sends no `bulk` block at all (bulk-store.svelte.ts's `mode` is null
    * for it), so `recount` never runs and `combinations` never leaves null -- the count
-   * would read "Counting combinations…" for as long as the page is open. Precision is dead
-   * there too: `buildRequest` sends `PRECISION_ITERATIONS.normal` for a weights run and
-   * ignores `precision` entirely, so the select and its note would describe stages this
-   * page does not have (final whole-branch review, Important 2). The run button, the cap
-   * notice, the lane switch and the drawer are shared by all four tools and stay.
+   * would read "Counting combinations…" for as long as the page is open, so the count and
+   * its cap machinery stay behind this flag. Precision is NOT dead there any more
+   * (dps-minmaxer review round 1, D45: the weights page shipped with no working precision
+   * control at all): `buildRequest` now sends `deps.getPrecision()`'s own iteration count
+   * for a weights run, the same `store.precision` this bar already reads and writes for
+   * the other three tools -- see the select below, which renders for every tool and only
+   * swaps its label text and drops the staged note when `combinationTool` is false, since
+   * a weights run is one flat iteration count with no stage ladder to describe.
    */
   const combinationTool = $derived(store.tool !== 'weights');
   const running = $derived(store.phase === 'running' || store.serverRunning);
@@ -62,6 +67,26 @@
     normal: bulkCopy.precisionNormal,
     high: bulkCopy.precisionHigh,
   };
+  /**
+   * Bare "Fast"/"Normal"/"High" for every tool now, combination and weights alike --
+   * `precisionNote`/`weightsCostNote` below say what each actually costs. Task 8, sub-item
+   * 2: the weights tool used to borrow `/sim`'s own fixed-count labels ("Fast, 500
+   * iterations"), but that number was never the real cost of a weights sweep (contract
+   * 10.9's per-stat multiplier -- `weights.ts`'s own `weightsEngineIterations`), so the
+   * label was quietly wrong by up to 68x. `weightsCostNote` states the true total instead;
+   * the option text itself no longer claims a number it cannot back up.
+   */
+  const precisionLabelFor = (id: Precision): string => PRECISION_LABELS[id];
+  /**
+   * Task 8, sub-item 2: the real engine cost of the currently selected precision, for
+   * however many stats are ticked right now -- `store.stats` is generic on `BulkStore`
+   * (every tool has one), so this reads fine even before `combinationTool` gates the
+   * note below to weights only. Always the browser lane: `weightsIterationsFor`'s server
+   * number is `runOnServer()`'s own concern, not this free, default button's.
+   */
+  const weightsCost = $derived(
+    weightsEngineIterations(weightsIterationsFor(store.precision, 'browser'), store.stats.length),
+  );
 </script>
 
 <SettingsBar
@@ -80,26 +105,23 @@
       <span class="tabular text-strong font-mono text-[14px]" data-testid="sim-combo-count">
         {countLabel}
       </span>
-
-      <!-- Task 5: the select below is h-11 but nothing here pinned the label itself to that
-           height -- it happened to reach 44px only because a flex row without an explicit
-           height grows to its tallest child. Explicit now, the same floor every other
-           control's own label carries, rather than a hit target relying on a coincidence. -->
-      <label class="text-muted flex min-h-11 items-center gap-2 text-[12px]">
-        {bulkCopy.precisionLabel}
-        <select
-          data-testid="sim-precision"
-          class="border-line-warm rounded-control bg-bg text-text h-11 border px-2 text-[14px]"
-          disabled={running}
-          value={store.precision}
-          onchange={(event) => store.setPrecision(event.currentTarget.value as Precision)}
-        >
-          {#each BULK_PRECISIONS as precision (precision)}
-            <option value={precision}>{PRECISION_LABELS[precision]}</option>
-          {/each}
-        </select>
-      </label>
     {/if}
+
+    <!-- Task 5: the select is h-11 but nothing here pinned the label itself to that height --
+         it happened to reach 44px only because a flex row without an explicit height grows
+         to its tallest child. Explicit now, the same floor every other control's own label
+         carries, rather than a hit target relying on a coincidence. -->
+    <label class="text-muted flex min-h-11 items-center gap-2 text-[12px]">
+      {bulkCopy.precisionLabel}
+      <PrecisionSelect
+        class="border-line-warm rounded-control bg-bg text-text h-11 border px-2 text-[14px]"
+        value={store.precision}
+        options={BULK_PRECISIONS}
+        labelFor={precisionLabelFor}
+        disabled={running}
+        onchange={(value) => store.setPrecision(value as Precision)}
+      />
+    </label>
 
     <button
       type="button"
@@ -127,6 +149,13 @@
 
   {#if combinationTool}
     <p class="text-muted text-[12px]">{bulkCopy.precisionNote[store.precision]}</p>
+  {:else}
+    <!-- Task 8, sub-item 2: the weights tool's own cost disclosure, in place of the staged
+         note above -- a weights run has no stages, but it does have a real cost the bare
+         "Fast"/"Normal"/"High" label no longer states. -->
+    <p class="text-muted text-[12px]" data-testid="sim-weights-cost-note">
+      {bulkCopy.weightsCostNote(weightsCost)}
+    </p>
   {/if}
 
   {#if store.cap === LOW_CORE_CAP}

@@ -99,14 +99,15 @@ describe('shell unfurl values', () => {
 describe('simShellMeta', () => {
   const result = fixtureResult;
 
-  // The fixture's own numbers, not the plan draft's: dps.mean is 1038.660353207436, which
-  // rounds to 1,039, and dps.error is 2.4, so the 95% band is
-  // round(1.96 * 2.4) = round(4.704) = 5.
+  // The fixture's own numbers, not the plan draft's: dps.mean is 101.4257331012062, which
+  // rounds to 101, and dps.error is 0.13211098764310886, so the 95% band is
+  // 1.96 * 0.13211098764310886 = 0.2589..., which formatMargin renders as one decimal
+  // (below 10): "0.3".
   it('names the spec and the figure in the title, and the run in the description', () => {
     const meta = simShellMeta(result);
-    expect(meta.title).toBe('Fury Warrior, 1,039 DPS · Forever Sixty');
+    expect(meta.title).toBe('Fury Warrior, 101 DPS · Forever Sixty');
     expect(meta.description).toBe(
-      `Simulated on engine ${fixtureResult.engine_version}: 1,039 DPS ± 5 over 3,000 iterations, raid-buffed, 3:00, single target.`,
+      `Simulated on engine ${fixtureResult.engine_version}: 101 DPS ± 0.3 over 3,000 iterations, raid-buffed, 3:00, single target.`,
     );
     expect(meta.canonical).toBe('https://foreversixty.gg/sim/simfixtureab');
     expect(meta.image).toBe('https://foreversixty.gg/og/index.png');
@@ -114,7 +115,7 @@ describe('simShellMeta', () => {
 
   it('uses the spec slug itself when the spec list does not know it', () => {
     const meta = simShellMeta({ ...result, request: { ...result.request, spec: 'warrior-gladiator' } });
-    expect(meta.title).toBe('warrior-gladiator, 1,039 DPS · Forever Sixty');
+    expect(meta.title).toBe('warrior-gladiator, 101 DPS · Forever Sixty');
   });
 
   it('counts the iterations the run actually asked for', () => {

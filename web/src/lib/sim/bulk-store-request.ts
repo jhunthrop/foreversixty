@@ -38,13 +38,14 @@ import {
 } from './bulk-types';
 import { buildBulkSpec, validateBulk, type CandidateRow } from './candidates';
 import { toCharacterSpec, type SimCharacter } from './character';
-import { bulkCopy, simCopy } from './copy';
+import { bulkCopy, simCopy, weightsUnsupportedSpec } from './copy';
 import type { RequestValidation } from './engine';
-import { PRECISION_ITERATIONS } from './precision';
+import type { Lane } from './precision';
+import { specLabel } from './spec-label';
 import type { SimSettings } from './settings';
 import type { CharacterSpec, SimResult, SpecFidelity } from './types';
 import { ENGINE_VERSION } from './version';
-import { defaultStatsFor, referenceFor } from './weights';
+import { defaultStatsFor, isDpsSpec, referenceFor, weightStatsFor, weightsIterationsFor } from './weights';
 import type { SimPool } from './worker';
 
 /** Everything `envelope`/`currentSpec`/the four request methods read or write. */
@@ -216,16 +217,57 @@ export async function recount(deps: RecountDeps): Promise<void> {
 
 export type RequestOutcome = { request: BulkRequest | WeightsRequest } | { error: string };
 
-/** `store.svelte.ts`'s own `buildRequest`, for a bulk or weights request. Refuses with a
- *  reason rather than throwing: `run()` shows the reason as `message`, never a stack trace. */
-export function buildRequest(deps: BulkRequestDeps): RequestOutcome {
-  if (deps.getCharacter() === null) return { error: bulkCopy.needCharacter };
+/**
+ * The weights honest-refusal gate (sub-item 5, D45/healer-sim BLOCKER 2), factored out so
+ * it has exactly one copy for the page's two run paths: `buildRequest` below (the ticked-
+ * candidates path `run()`/`runOnServer()` use) and `bulk-store.svelte.ts`'s `runRequest`
+ * (design 8's Advanced-drawer escape hatch, which bypasses `buildRequest` entirely by
+ * design -- `bulk-store.test.ts`'s own "runRequest bypasses validateBulk" documents that).
+ * Fix round 1 found the drawer path ungated: `previewRequest` still built a full, valid-
+ * looking `WeightsRequest` for a healer spec, the drawer's own JSON validation
+ * (`simValidate`, wired through `store.validateRequest`) has no spec-role concept either
+ * (the same finding that ruled `simValidate` out as sub-item 5's gate in the first place),
+ * and touching Run reproduced the healer's 64-second silent hang verbatim. One function,
+ * called from both places, so a third entry point cannot quietly reopen this gap again.
+ */
+export function weightsSpecRefusal(spec: string): string | null {
+  return isDpsSpec(spec) ? null : weightsUnsupportedSpec(specLabel(spec));
+}
+
+/**
+ * `store.svelte.ts`'s own `buildRequest`, for a bulk or weights request. Refuses with a
+ * reason rather than throwing: `run()` shows the reason as `message`, never a stack trace.
+ *
+ * `lane` (Task 8, sub-item 2) defaults to `'browser'`, the lane every caller but
+ * `runOnServer()` means: `run()` (the free, default button), the drawer's own preview and
+ * `runRequest`. `runOnServer()` passes `'server'` explicitly. Only a weights request reads
+ * it -- `weightsIterationsFor` (weights.ts) is where the browser lane's guarded default
+ * actually lives; a bulk request's own `finalIterations` is unaffected, unguarded before
+ * this task and staying that way.
+ */
+export function buildRequest(deps: BulkRequestDeps, lane: Lane = 'browser'): RequestOutcome {
+  const character = deps.getCharacter();
+  if (character === null) return { error: bulkCopy.needCharacter };
   if (deps.tool === 'weights') {
+    // The healer-sim defect (BLOCKER 2): a spec the engine has no dps model for used to
+    // reach the pool and fail silently for 64 seconds. Refused here, before any engine
+    // call, with a sentence a player can act on -- never the engine's own words, which
+    // name internal spec ids (final whole-branch review: a raw `combine: part 0 failed:
+    // request: …` string shown verbatim).
+    const refusal = weightsSpecRefusal(character.spec);
+    if (refusal !== null) return { error: refusal };
     // Contract 10.8: `WeightsSpec.Reference` is required. An empty `stats` list has
     // nothing to send as one.
     const stats = deps.getStats();
     if (stats.length === 0) return { error: bulkCopy.weightsNeedStats };
-    const base = envelope(deps, PRECISION_ITERATIONS.normal);
+    // D45: a weights run used to ignore `precision` entirely and always send `normal`'s
+    // 3,000 -- the fixed count `PRECISION_ITERATIONS` already carries for a flat (non-
+    // staged) run, the same map `/sim`'s own plain run reads for `fast`/`normal`/`high`.
+    // Task 8, sub-item 2: for a weights request specifically, that count is now
+    // `weightsIterationsFor`'s, not `PRECISION_ITERATIONS` directly -- the browser lane's
+    // own `fast` is guarded to a real engine cost measured under a minute even at the full
+    // stat vocabulary (weights.ts's own doc comment); the server lane is untouched.
+    const base = envelope(deps, weightsIterationsFor(deps.getPrecision(), lane));
     if (base === null) return { error: simCopy.failed };
     // The store's own `referenceStat`, not a second read of `stats[0]`: the page renders
     // "Reference: …" from the former, and two derivations of the one value is how the line
@@ -242,13 +284,17 @@ export function buildRequest(deps: BulkRequestDeps): RequestOutcome {
   return { request: { ...base, bulk } };
 }
 
-/** Like `buildRequest` but silent, for part A's Advanced drawer (design 8): the drawer
- *  renders what would be sent, it never runs on its own, so an invalid or incomplete state
- *  is simply nothing to preview rather than a message to show. */
+/**
+ * Like `buildRequest` but silent, for part A's Advanced drawer (design 8): the drawer
+ * renders what would be sent, it never runs on its own, so an invalid or incomplete state
+ * is simply nothing to preview rather than a message to show. Always the browser lane: the
+ * drawer's own Run (`runRequest`, `bulk-store.svelte.ts`) has no server path at all, so
+ * previewing anything else would show a number the drawer's own Run could never send.
+ */
 export function previewRequest(deps: BulkRequestDeps): BulkRequest | WeightsRequest | null {
   if (deps.getCharacter() === null) return null;
   if (deps.tool === 'weights') {
-    const base = envelope(deps, PRECISION_ITERATIONS.normal);
+    const base = envelope(deps, weightsIterationsFor(deps.getPrecision(), 'browser'));
     const stats = deps.getStats();
     return base === null
       ? null
@@ -302,7 +348,11 @@ export function seededStats(
   currentStats: string[],
 ): string[] {
   if (tool !== 'weights' || currentStats.length > 0 || character === null) return currentStats;
-  return defaultStatsFor(character.spec, referenceFor(character.spec, specRows));
+  return defaultStatsFor(
+    character.spec,
+    referenceFor(character.spec, specRows),
+    weightStatsFor(character.spec, specRows),
+  );
 }
 
 /** Everything `runBulkAndSettle` needs from the store's own `$state`. */
