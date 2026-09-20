@@ -8,6 +8,8 @@
      no new field on BuildDraft or the card route. The panel's job is only to run that sim,
      after the build has an id, and to never let a failed sim take the save down with it. -->
 <script lang="ts">
+  import { addonCodeFor } from '../../lib/addon/build-code';
+  import { addonCopy } from '../../lib/addon/copy';
   import type { LiveDps } from '../../lib/planner/live-dps.svelte';
   import { cardUrlFor, saveBuild, type SaveOutcome, type SavedBuild } from '../../lib/planner/share';
   import { MAX_TITLE_LENGTH, type PlannerStore } from '../../lib/planner/store.svelte';
@@ -30,6 +32,34 @@
   let outcome = $state<SaveOutcome | null>(null);
   let copied = $state(false);
   let cardBroken = $state(false);
+  let addonCopied = $state(false);
+
+  // Derived, not computed on click: the button is disabled while there is nothing to
+  // copy, and a $derived keeps that in step with every talent and gear edit for free.
+  // talentIndex is null until the talent data has loaded (or has failed to); the addon
+  // code is the empty string then, rather than a cast that would crash on that failure.
+  const addonCode = $derived(
+    store.talentIndex === null
+      ? ''
+      : addonCodeFor({
+          dataBuild: store.treeVersion,
+          classSlug: store.classSlug,
+          order: store.order,
+          gear: store.gear,
+          talents: store.talentIndex,
+          items: store.itemIndex,
+        }),
+  );
+
+  async function copyAddonCode(): Promise<void> {
+    try {
+      await navigator.clipboard.writeText(addonCode);
+      addonCopied = true;
+      setTimeout(() => (addonCopied = false), 2000);
+    } catch {
+      addonCopied = false;
+    }
+  }
 
   /** Checked by default when the planner has an estimate for this build; see the panel. */
   let includeSim = $state(true);
@@ -180,7 +210,17 @@
     >
       {saving ? 'Saving' : 'Share'}
     </button>
+    <button
+      type="button"
+      class={NEUTRAL_BUTTON}
+      data-testid="copy-addon-code"
+      disabled={addonCode === ''}
+      onclick={copyAddonCode}
+    >
+      {addonCopied ? addonCopy.copiedAddonCode : addonCopy.copyAddonCode}
+    </button>
   </div>
+  <p class="text-muted text-[13px]">{addonCopy.addonCodeHint}</p>
 
   <label
     class="text-muted flex min-h-11 w-fit items-center gap-2 text-[13px] md:min-h-0"
