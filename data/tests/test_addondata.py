@@ -1,9 +1,12 @@
 import json
+import subprocess
+import sys
 from pathlib import Path
 
 import pytest
 
 from pipeline.addondata import AddonDataError, build_addon_data, write_addon_data
+from pipeline.addonlua import render_lua, write_lua
 
 BUILD = "1.60.1.69893"
 
@@ -63,3 +66,61 @@ def test_a_talent_file_from_another_build_is_refused(tmp_path):
 def test_write_addon_data_round_trips(tmp_path):
     path = write_addon_data(BUILD, out_root=tmp_path)
     assert json.loads(path.read_text(encoding="utf-8"))["build"] == BUILD
+
+
+def test_the_rendered_lua_parses_and_matches_the_golden_paladin_tab():
+    lua = render_lua(build_addon_data(BUILD))
+    golden = Path("tests/golden/Data.paladin.lua").read_text(encoding="utf-8")
+    start = lua.index('["paladin"] = {')
+    assert lua[start : start + len(golden)] == golden
+
+
+def test_the_rendered_lua_is_loadable_by_a_real_lua():
+    """A generated chunk that does not parse is worse than no chunk at all."""
+    lua = render_lua(build_addon_data(BUILD))
+    result = subprocess.run(
+        ["lua", "-e", f"local f, err = load([==[{lua}]==], 'Data.lua'); assert(f, err)"],
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 0, result.stderr
+
+
+def test_a_name_with_a_quote_is_escaped():
+    from pipeline.models import AddonClass, AddonData, AddonTab, AddonTalent
+
+    data = AddonData(
+        build="x",
+        classes={
+            "rogue": AddonClass(
+                tabs=[
+                    AddonTab(
+                        name='He said "hi"',
+                        talents=[AddonTalent(name="A\\B", tier=1, column=1, max_rank=1)],
+                    )
+                ]
+            )
+        },
+        weights={},
+    )
+    lua = render_lua(data)
+    assert '"He said \\"hi\\""' in lua
+    assert '"A\\\\B"' in lua
+
+
+def test_write_lua_and_check_agree(tmp_path):
+    from pipeline.addonlua import lua_has_drifted
+
+    path = write_lua(BUILD, lua_path=tmp_path / "Data.lua")
+    assert not lua_has_drifted(BUILD, lua_path=path)
+    path.write_text("-- edited by hand\n", encoding="utf-8")
+    assert lua_has_drifted(BUILD, lua_path=path)
+
+
+def test_the_cli_check_passes_on_the_committed_file():
+    result = subprocess.run(
+        [sys.executable, "-m", "pipeline", "addon-data", "--build", BUILD, "--check"],
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 0, result.stderr

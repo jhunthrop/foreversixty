@@ -3,9 +3,9 @@ name: data
 on:
   push:
     branches: [main]
-    paths: ['data/**', 'sim/specs/**', 'sim/enginever/version.go', 'sim/request/IDS.md', 'web/src/lib/sim/specs.ts', 'web/src/data/phases.json', '.github/workflows/data.yml']
+    paths: ['data/**', 'sim/specs/**', 'sim/enginever/version.go', 'sim/request/IDS.md', 'web/src/lib/sim/specs.ts', 'web/src/data/phases.json', 'addon/**', '.github/workflows/data.yml']
   pull_request:
-    paths: ['data/**', 'sim/specs/**', 'sim/enginever/version.go', 'sim/request/IDS.md', 'web/src/lib/sim/specs.ts', 'web/src/data/phases.json', '.github/workflows/data.yml']
+    paths: ['data/**', 'sim/specs/**', 'sim/enginever/version.go', 'sim/request/IDS.md', 'web/src/lib/sim/specs.ts', 'web/src/data/phases.json', 'addon/**', '.github/workflows/data.yml']
   workflow_dispatch:
     inputs:
       product: { description: 'wago.tools product key', required: true, default: 'wow_classic_era' }
@@ -31,6 +31,13 @@ jobs:
       # re-emitted after curated/phases.json moved -- and that nobody
       # edited the generated copy by hand.
       - run: uv run python -m pipeline phases --check
+      # addon-data.json and addon/ForeverSixty/Data.lua are generated from the
+      # build directory and curated/stat-weights.json and committed, so the
+      # addon is installable from a checkout with no build step. This is the
+      # gate that neither was hand-edited and that a curated weight change was
+      # re-emitted.
+      - run: uv run python -m pipeline weights --build 1.60.1.69893 --check
+      - run: uv run python -m pipeline addon-data --build 1.60.1.69893 --check
       - run: uv run pytest
   fetch:
     if: github.event_name == 'workflow_dispatch'

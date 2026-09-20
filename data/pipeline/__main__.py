@@ -96,6 +96,14 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="write nothing; exit non-zero if the emitted file has drifted",
     )
+
+    ad = sub.add_parser("addon-data", help="emit addon-data.json and the addon's Data.lua")
+    ad.add_argument("--build", required=True)
+    ad.add_argument(
+        "--check",
+        action="store_true",
+        help="write nothing; exit non-zero if either emitted file has drifted",
+    )
     return p
 
 
@@ -206,6 +214,34 @@ def main(argv: list[str] | None = None) -> int:
                 return 1
             return 0
         print(write_weights(args.build))
+    elif args.command == "addon-data":
+        import json as _json
+        import tempfile
+        from pathlib import Path
+
+        from pipeline.addondata import write_addon_data
+        from pipeline.addonlua import lua_has_drifted, write_lua
+
+        if args.check:
+            log = logging.getLogger("pipeline")
+            stale = False
+            with tempfile.TemporaryDirectory() as directory:
+                expected = write_addon_data(args.build, out_root=Path(directory))
+                committed = Path("builds") / args.build / "addon-data.json"
+                if not committed.exists() or _json.loads(
+                    committed.read_text(encoding="utf-8")
+                ) != _json.loads(expected.read_text(encoding="utf-8")):
+                    log.error("builds/%s/addon-data.json has drifted", args.build)
+                    stale = True
+            if lua_has_drifted(args.build):
+                log.error("addon/ForeverSixty/Data.lua has drifted")
+                stale = True
+            if stale:
+                log.error("run `python -m pipeline addon-data --build %s`", args.build)
+                return 1
+            return 0
+        print(write_addon_data(args.build))
+        print(write_lua(args.build))
     return 0
 
 
