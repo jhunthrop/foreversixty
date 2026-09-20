@@ -580,3 +580,20 @@ gains per-slot enchant and suffix.
   (`ItemSparse.AllowableRace` is unset on this build). `items.json` gains a
   `faction_restriction` column from one fork-derived pass and
   `pipeline/simdb` reads it; the loot step runs before the simdb step.
+
+### 10.9 Rulings from the module lane's final round
+
+- **A two-hander replacing a pair** emits a second substitution
+  `{ kind: "item", slot: "off_hand", item_id: 0, name: "<item removed>" }`
+  so the delta is credited honestly and the page shows the emptied slot.
+- **`too_large` is the server lane's binding guard.** `Caps[server]` stays
+  5,000 as the memory and UX bound; at `normal` and `high` precision the
+  full cap exceeds the job budget, and the estimate (from the exported
+  `LadderIterations`) refuses with the number rather than the cap.
+- **Unique-category erratum.** Section 3 promised a unique-category rule;
+  no `SimItem` field carries item limit categories at this pin. `Expand`
+  enforces `unique` only. A category rule needs a `SimItem` field first.
+- **`ExpandWorkBudget` is conservative.** Budget exhaustion is treated as
+  a breach, which can refuse a request under the cap when candidates repeat
+  heavily (documented in `sim/bulk/expand.go`). Candidate de-duplication is
+  the real fix and changes visible counts; it is a follow-up.
