@@ -6,6 +6,7 @@ from pipeline.csvio import read_csv
 from pipeline.icons import PLACEHOLDER_ICON, icon_names
 from pipeline.models import ItemSetBonus
 from pipeline.normalize import write_json, write_model
+from pipeline.normalize.effects import EffectIndex
 from pipeline.normalize.gear import (
     ItemDataError,
     build_class_items,
@@ -257,6 +258,42 @@ def test_an_unmapped_stat_id_is_an_error_not_a_guess():
             read_csv(HERE / "fixtures/ChrClasses.csv"),
             fixture_icons(),
             "1.0.0.1",
+        )
+
+
+def test_an_equip_percentage_never_meets_an_itemsparse_rating():
+    """A rating-family stat (hit here) ItemSparse's own columns already state
+    as a combat-rating point count must never be silently summed with an
+    on-equip spell's flat percentage for the same key -- they are different
+    units (see data/README.md, "Hit, crit, dodge, parry and block as
+    percentages", and pipeline/normalize/gear.py's `_merge_effect_stats`).
+    """
+    rows = read_csv(HERE / "fixtures/ItemSparse.csv")
+    rows[0]["StatModifier_bonusStat_0"] = "31"  # ITEM_MOD_HIT_RATING
+    rows[0]["StatModifier_bonusAmount_0"] = "20"
+    item_id = int(rows[0]["ID"])
+    effects = EffectIndex(
+        [{"ParentItemID": str(item_id), "SpellID": "900", "TriggerType": "1"}],
+        [],
+        [
+            {
+                "SpellID": "900",
+                "Effect": "6",
+                "EffectAura": "54",  # SPELL_AURA_MOD_ATTACKER_SPELL_AND_WEAPON_HIT_CHANCE
+                "EffectBasePointsF": "5",
+                "EffectMiscValue_0": "0",
+            }
+        ],
+        load_spell_text([], [], [], []),
+    )
+    with pytest.raises(ItemDataError, match="hit"):
+        build_class_items(
+            rows,
+            read_csv(HERE / "fixtures/Item.csv"),
+            read_csv(HERE / "fixtures/ChrClasses.csv"),
+            fixture_icons(),
+            "1.0.0.1",
+            effects=effects,
         )
 
 
