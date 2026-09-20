@@ -58,8 +58,10 @@ test('Custom opens the whole vocabulary, grouped, and every tick reaches the req
   const raid = page.getByTestId('sim-buff-group-raid-buffs');
   await raid.locator('summary').click();
   await expect(page.getByTestId('sim-buff-thorns')).toBeVisible();
-  await page.getByTestId('sim-buff-thorns').check();
-  await expect(page.getByTestId('sim-buff-thorns')).toBeChecked();
+  // Thorns is graded (the engine's TristateEffect), so its control is the three-way select,
+  // not a checkbox: pick the talented form and the request carries `thorns:improved`.
+  await page.getByTestId('sim-buff-thorns').selectOption('improved');
+  await expect(page.getByTestId('sim-buff-thorns')).toHaveValue('improved');
 
   // A world buff is in its own section, not among the blessings.
   const world = page.getByTestId('sim-buff-group-world-buffs');
@@ -93,7 +95,7 @@ test('Custom opens the whole vocabulary, grouped, and every tick reaches the req
         entry !== null &&
         'request' in entry &&
         typeof (entry as { request: unknown }).request === 'string' &&
-        (entry as { request: string }).request.includes('thorns'),
+        (entry as { request: string }).request.includes('thorns:improved'),
     );
   });
   expect(sawThorns).toBe(true);
