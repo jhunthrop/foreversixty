@@ -37,10 +37,6 @@ export const SYNC_ENTRIES = [
   { name: 'icons', kind: 'dir', required: false },
   { name: 'trees', kind: 'dir', required: false },
   { name: 'sets.json', kind: 'file', required: false },
-  // Contract 10.8: the gear panel's weighted score, one entry per spec. Optional like
-  // sets.json -- a build the data lane has not regenerated ([data] Task 2's output) ships
-  // none, and the gear panel shows why rather than a score (addonCopy.weightsMissing).
-  { name: 'stat-weights.json', kind: 'file', required: false },
   // Contract 6 and 10.4: the Droptimizer's source tables and Top Gear's enchant and suffix
   // lists. Optional the same way sets.json is -- a build the data lane has not regenerated
   // ships none, and the pages say so rather than failing to render. simbuffs.json (the
@@ -60,6 +56,10 @@ export const SYNC_ENTRIES = [
   { name: 'spells.json', kind: 'file', required: false },
   { name: 'simconsumes.json', kind: 'file', required: false },
   { name: 'simbuffs.json', kind: 'file', required: false },
+  // The build's copy of the curated stat weights (pipeline/weights.py), which the addon
+  // and the site's weight pickers both read. Optional: only builds the data lane has run
+  // `pipeline weights` for ship one -- 1.15.9.69722 and forever-prebeta do not.
+  { name: 'stat-weights.json', kind: 'file', required: false },
 ];
 
 /** The files src/pages/classes.astro imports statically. */
@@ -206,13 +206,15 @@ async function resolveSourceDir({ repoRoot, webRoot, build, source, allowFixture
  * fetch on /sim -- so this prunes it to what a sim of that class can actually reference:
  * every spell in the class's spellconst file (falling back to spells.json only for a name
  * spellconst omits, never for membership), plus the class's own items for the item:<id>
- * rows. items/<class>.json carries no spell, proc or on-use field -- its rows are only
- * `{ id, name, icon, slot, quality, required_level, item_level, armor, stats, set_id,
- * unique }` -- so a trinket's triggered spell is not pulled into `spell` from here; if that
- * spell is not itself one of the class's own spellconst entries, resolveActionName falls
- * back to the raw key for it, which is legible. A build without spellconst (an older one,
- * or one the data lane has not regenerated) publishes nothing, and resolveActionName falls
- * back to the key for everything.
+ * rows. items/<class>.json carries no spell *id* for a proc or on-use -- its rows are
+ * `{ id, name, icon, slot, quality, required_level, item_level, armor, stats, damage_min,
+ * damage_max, speed, dps, two_hand, effect_text, set_id, unique }`, and `effect_text`
+ * is the effect's prose ("Chance on hit: ..."), not the id of the spell behind it -- so a
+ * trinket's triggered spell still cannot be resolved into an `item:<id>`-adjacent `spell`
+ * row from here; if that spell is not itself one of the class's own spellconst entries,
+ * resolveActionName falls back to the raw key for it, which is legible. A build without
+ * spellconst (an older one, or one the data lane has not regenerated) publishes nothing,
+ * and resolveActionName falls back to the key for everything.
  * @param {string} buildDir source data/builds/<build>
  * @param {string} outDir   public/data/<build>
  * @returns {Promise<string[]>} the simnames/<class>.json paths written, relative to outDir

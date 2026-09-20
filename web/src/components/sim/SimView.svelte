@@ -538,6 +538,7 @@
           busy={store.phase === 'loading-character'}
           message={store.message}
           signedIn
+          hasCharacters={false}
           onaddon={(code) => void store.loadAddon(code)}
           onbuild={(id) => void store.loadBuild(id)}
           onfight={(ref) => void store.loadFight(ref)}

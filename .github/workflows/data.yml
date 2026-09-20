@@ -3,9 +3,9 @@ name: data
 on:
   push:
     branches: [main]
-    paths: ['data/**', 'sim/specs/**', 'sim/enginever/version.go', 'sim/request/IDS.md', 'web/src/lib/sim/specs.ts', 'web/src/data/phases.json', '.github/workflows/data.yml']
+    paths: ['data/**', 'sim/specs/**', 'sim/enginever/version.go', 'sim/request/IDS.md', 'web/src/lib/sim/specs.ts', 'web/src/data/phases.json', 'addon/**', '.github/workflows/data.yml']
   pull_request:
-    paths: ['data/**', 'sim/specs/**', 'sim/enginever/version.go', 'sim/request/IDS.md', 'web/src/lib/sim/specs.ts', 'web/src/data/phases.json', '.github/workflows/data.yml']
+    paths: ['data/**', 'sim/specs/**', 'sim/enginever/version.go', 'sim/request/IDS.md', 'web/src/lib/sim/specs.ts', 'web/src/data/phases.json', 'addon/**', '.github/workflows/data.yml']
   workflow_dispatch:
     inputs:
       product: { description: 'wago.tools product key', required: true, default: 'wow_classic_era' }
@@ -31,6 +31,19 @@ jobs:
       # re-emitted after curated/phases.json moved -- and that nobody
       # edited the generated copy by hand.
       - run: uv run python -m pipeline phases --check
+      # addon-data.json and addon/ForeverSixty/Data.lua are generated from the
+      # build directory and curated/stat-weights.json and committed, so the
+      # addon is installable from a checkout with no build step. This is the
+      # gate that neither was hand-edited and that a curated weight change was
+      # re-emitted.
+      - run: uv run python -m pipeline weights --build 1.60.1.69893 --check
+      - run: uv run python -m pipeline addon-data --build 1.60.1.69893 --check
+      # test_addondata.py gates the generated Data.lua on a real `load()`, so the
+      # suite needs an interpreter; ubuntu-latest ships none and the test skips
+      # itself without one. A plain apt install rather than a third-party action:
+      # one binary is not worth a new supply-chain dependency.
+      - name: Install Lua for the Data.lua load gate
+        run: sudo apt-get update && sudo apt-get install -y lua5.4
       - run: uv run pytest
   fetch:
     if: github.event_name == 'workflow_dispatch'
@@ -64,6 +77,23 @@ jobs:
       # Re-run the offline normalize so manifest.json also covers the icons and tree art
       # the steps above just wrote.
       - run: uv run python -m pipeline normalize --build "$BUILD"
+      # The fetched build's copy of the curated stat weights, and the addon's
+      # data. Without these a new build lands with neither file. They read only
+      # classes.json, talents/ and curated/, so they run straight after
+      # normalize; the later stages' manifest refreshes then list both files.
+      #
+      # `addon-data` also renders addon/ForeverSixty/Data.lua, and that render
+      # is DELIBERATELY NOT COMMITTED here (the commit step adds builds/ and
+      # diffs/ only). Data.lua is a single unversioned file that tracks the
+      # ACTIVE build, and pipeline/addonlua.py stamps whichever build the CLI
+      # was given into it -- but what activates a build is a human editing
+      # web/src/data/active-build.json, which this bot does not touch. Commit
+      # it here and the addon ships a build the site is not serving, and the
+      # `test` job's `addon-data --build 1.60.1.69893 --check` gate reports it
+      # as drift and fails on the bot's own push. Letting the runner discard
+      # the render is the correct outcome. Do not add `git add ../addon`.
+      - run: uv run python -m pipeline weights --build "$BUILD"
+      - run: uv run python -m pipeline addon-data --build "$BUILD"
       # loot.json, enchants.json and suffixes.json come out of the engine
       # fork's own item database, which is not in this repository: nothing
       # in a DB2 export says which boss drops an item. The fork is cloned
