@@ -196,6 +196,121 @@ func (n *Native) RunStaged(ctx context.Context, req api.SimRequest, onProgress S
 	return res, nil
 }
 
+// planBody is writePlan's JSON, minus its "stage" field: Plan only
+// ever wants the count. json.Decoder still has to scan past "stage"'s
+// bytes to find the object's end - that part of a request's payload
+// cannot be skipped when talking to a subprocess over a pipe, and at
+// the server cap it is roughly 22MB - but omitting the field here
+// means the decoder never allocates a Go value for any of it: no
+// bulk.StageRequests, no api.SimRequest per combination, the way
+// unmarshalling into the real type would. It also keeps sim/bulk's
+// types, and everything they pull in, out of this package's imports,
+// which the file doc above says nothing here may do.
+//
+// The same struct reads both of writePlan's shapes: a plan
+// ("combinations" and the now-ignored "stage") and a cap breach
+// ("error", "cap" and "combinations" again, this time the count that
+// breached).
+type planBody struct {
+	Error        string `json:"error"`
+	Cap          int    `json:"cap"`
+	Combinations int    `json:"combinations"`
+}
+
+// Plan shells "forever-sim -plan": it prints simCount's answer and
+// the first stage without running anything (contract 10.2), which is
+// how a caller here counts a bulk request the same way the API does,
+// without importing sim/internal.
+//
+// A cap breach comes back as api.ErrCapExceeded via errors.As, the
+// same type bulk.Count itself returns, so a caller cannot tell this
+// apart from having called bulk.Count directly. The binary exits 2
+// for both a cap breach and ordinary bad input - writePlan wraps
+// errBadInput either way - so the body is what tells them apart, not
+// the exit code: a cap breach writes {"error":"cap_exceeded",...} to
+// stdout, and ordinary bad input writes nothing there at all, the
+// message going to stderr instead.
+func (n *Native) Plan(ctx context.Context, req api.SimRequest) (api.PlanSummary, error) {
+	if req.Bulk == nil {
+		return api.PlanSummary{}, fmt.Errorf("%w: Plan takes a bulk request; this one has none", ErrBadInput)
+	}
+	body, err := json.Marshal(req)
+	if err != nil {
+		return api.PlanSummary{}, fmt.Errorf("runner: encode request: %w", err)
+	}
+	bin := n.Binary
+	if bin == "" {
+		bin = DefaultBinary
+	}
+	cmd := exec.CommandContext(ctx, bin, "-plan", "-in", "-", "-out", "-")
+	cmd.Stdin = bytes.NewReader(body)
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		return api.PlanSummary{}, fmt.Errorf("runner: stdout: %w", err)
+	}
+	stderr, err := cmd.StderrPipe()
+	if err != nil {
+		return api.PlanSummary{}, fmt.Errorf("runner: stderr: %w", err)
+	}
+	if err := cmd.Start(); err != nil {
+		return api.PlanSummary{}, fmt.Errorf("runner: start %s: %w", bin, err)
+	}
+
+	// stderr is read in its own goroutine, the same reason RunStaged's
+	// is: -plan writes little to it, but a full pipe buffer on either
+	// side would still deadlock the other side's write.
+	var (
+		wg   sync.WaitGroup
+		said strings.Builder
+	)
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		kept, _ := io.ReadAll(io.LimitReader(stderr, maxStderr))
+		said.Write(kept)
+		// Drain whatever maxStderr didn't keep, so a chattier-than-
+		// expected binary still exits instead of blocking on a full
+		// pipe nobody is reading.
+		io.Copy(io.Discard, stderr)
+	}()
+
+	var out planBody
+	decodeErr := json.NewDecoder(stdout).Decode(&out)
+	// writePlan makes exactly one Write call with nothing before or
+	// after it, so nothing should be left; draining anyway is the
+	// same defensive read RunStaged gives stdout.
+	io.Copy(io.Discard, stdout)
+	wg.Wait()
+	waitErr := cmd.Wait()
+
+	if waitErr != nil {
+		if ctxErr := ctx.Err(); ctxErr != nil {
+			return api.PlanSummary{}, fmt.Errorf("runner: %s: %w", bin, ctxErr)
+		}
+		var exit *exec.ExitError
+		if errors.As(waitErr, &exit) && exit.ExitCode() == exitBadInput {
+			if decodeErr == nil && out.Error == "cap_exceeded" {
+				return api.PlanSummary{}, api.ErrCapExceeded{Cap: out.Cap, Combinations: out.Combinations}
+			}
+			return api.PlanSummary{}, fmt.Errorf("%w: %s: %s", ErrBadInput, bin, strings.TrimSpace(said.String()))
+		}
+		return api.PlanSummary{}, fmt.Errorf("runner: %s: %w: %s", bin, waitErr, strings.TrimSpace(said.String()))
+	}
+	if decodeErr != nil {
+		return api.PlanSummary{}, fmt.Errorf("runner: %s wrote something -plan does not: %w", bin, decodeErr)
+	}
+	ladder, ok := api.Ladders[req.Bulk.Precision]
+	if !ok {
+		return api.PlanSummary{}, fmt.Errorf("runner: no ladder for precision %q", req.Bulk.Precision)
+	}
+	return api.PlanSummary{
+		Kind:            req.Kind(),
+		Combinations:    out.Combinations,
+		Cap:             req.Bulk.Cap,
+		IterationsTotal: api.LadderIterations(ladder, out.Combinations),
+	}, nil
+}
+
 // decodeResult unmarshals out as a SimResult and fills in the fields
 // every successful path sets the same way, so Run's normal-exit and
 // exit-130 branches share one implementation instead of two that can

@@ -241,6 +241,37 @@ func FinalIterations(precision string) (int, bool) {
 // question (A2).
 var Caps = map[string]int{LaneBrowser: 400, LaneServer: 5000}
 
+// PlanSummary is the parsed form of what "forever-sim -plan" prints
+// (contract 10.2): how many combinations a bulk request expands to,
+// without running anything. sim/runner's Planner returns it so the
+// API can count and price a bulk submission - contract 8's
+// cap_exceeded body and its too_large estimate both start from this -
+// without importing sim/internal, which is the same reason -plan
+// itself exists.
+//
+// A cap breach is not one of these: it comes back as ErrCapExceeded
+// instead, the same type bulk.Count returns, so a caller checks it
+// with errors.As rather than reading a zero-value summary.
+type PlanSummary struct {
+	// Kind is the request's own Kind() - gear, talents or drops - kept
+	// on the summary so a caller holding only this value, not the
+	// request, can still say what it counted.
+	Kind string `json:"kind"`
+	// Combinations is bulk.PlanWith's stage.Combos length: every
+	// substitution the request would run, not counting the equipped
+	// baseline every stage also runs alongside them.
+	Combinations int `json:"combinations"`
+	// Cap is the lane cap this request was checked against -
+	// bulk.Cap, echoed back so a caller can quote "31,200 against a
+	// cap of 5,000" from the summary alone.
+	Cap int `json:"cap"`
+	// IterationsTotal is LadderIterations for the request's precision
+	// over Combinations: the same arithmetic contract 8's too_large
+	// estimate and sim/measure's job-budget proof both quote, so this
+	// number can never disagree with either.
+	IterationsTotal int `json:"iterations_total"`
+}
+
 // ErrCapExceeded is returned when an expansion is larger than the lane
 // allows. It carries both numbers because the page and the API both say
 // them out loud - "31,200 combinations, and this lane plans 5,000" -

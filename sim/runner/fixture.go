@@ -35,6 +35,17 @@ type Fixture struct {
 	// against the real abort contract without invoking a binary.
 	// Err takes precedence when both are set.
 	Aborted bool
+	// PlanCombinations is the combination count Plan answers with on
+	// success, and what its IterationsTotal is computed from. Zero is
+	// a valid answer - an empty bulk expansion - not "unset": unlike
+	// Mean, a combination count has no obvious checked-in baseline to
+	// default to instead.
+	PlanCombinations int
+	// CapBreach, when set, makes Plan answer this error instead of a
+	// summary - the fixture's way of exercising the cap_exceeded path
+	// without a bulk request large enough to hit one for real. Err
+	// takes precedence over it, the same as Err does over Aborted.
+	CapBreach *api.ErrCapExceeded
 }
 
 // Run answers from the fixture, reporting progress once at the
@@ -97,6 +108,33 @@ func (f *Fixture) abortedResult(req api.SimRequest, onProgress StageProgress) ap
 		IterationsRun: done,
 		Aborted:       true,
 	}
+}
+
+// Plan answers Plan from configuration, never from a real bulk
+// expansion: Fixture imports neither sim/bulk nor sim/internal, so it
+// could not compute one even if it wanted to. PlanCombinations is
+// what a success answers with; CapBreach, when set, is returned
+// instead of a summary, and Err takes precedence over both - the same
+// order Err takes over Aborted in RunStaged.
+func (f *Fixture) Plan(_ context.Context, req api.SimRequest) (api.PlanSummary, error) {
+	f.mu.Lock()
+	f.Runs = append(f.Runs, req)
+	err, combos, breach := f.Err, f.PlanCombinations, f.CapBreach
+	f.mu.Unlock()
+	if err != nil {
+		return api.PlanSummary{}, err
+	}
+	if breach != nil {
+		return api.PlanSummary{}, *breach
+	}
+	out := api.PlanSummary{Kind: req.Kind(), Combinations: combos}
+	if req.Bulk != nil {
+		out.Cap = req.Bulk.Cap
+		if ladder, ok := api.Ladders[req.Bulk.Precision]; ok {
+			out.IterationsTotal = api.LadderIterations(ladder, combos)
+		}
+	}
+	return out, nil
 }
 
 // Asked reports the requests handed to the fixture so far.
