@@ -14,6 +14,17 @@
 // fail confusingly deep inside the plan/rank loop instead of skipping. Run it with
 // `npm run test:e2e:real-engine`, after `make simdb && make artifacts && make publish-wasm`
 // from the repository root.
+//
+// That script also sets FOREVER_DATA=real: playwright.config.ts's webServer otherwise
+// defaults every spec's build to the small, fixed fixture item file (which every other
+// spec in this directory wants, so its ids never move under it) -- and the fixture's own
+// items are exactly where this defect was first reproduced. The fixture's Helm of Wrath
+// (16963) has a row in items/warrior.json (a Classic Era build's ItemSparse) but no row in
+// the ACTIVE build's own ItemSparse, so `.nth(0)`/`.nth(1)` against the fixture's search
+// results could -- and did -- click it, and the real engine refused the whole request:
+// `bulk: the build has no such item: 16963`. Real data plus the new simitems.json filter
+// is what keeps that from happening again; twoKnownSearchCandidates() below reads both
+// from the real build directory, not the fixture, for the same reason.
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -97,6 +108,36 @@ const activeBuild = JSON.parse(readFileSync(path.join(WEB_ROOT, 'src/data/active
 // rather than echoing back whatever it was handed.
 const FURY = `FS1:${activeBuild.build}:warrior:orc:0/5530515/0:head=12640,main_hand=21521`;
 
+const DATA_ROOT = path.resolve(WEB_ROOT, '..', 'data', 'builds', activeBuild.build);
+
+/**
+ * Two warrior item ids the item search will actually offer AND the embedded engine
+ * database actually carries -- read from the same two files the fix this test covers reads
+ * from (`items/warrior.json`, the planner's per-class list; `simitems.json`, the engine's
+ * kept set), rather than trusting `.nth(0)`/`.nth(1)` to land on usable rows by luck. Sorted
+ * the same way `item-search.ts`'s `searchItems` sorts an untyped, unfiltered query (item
+ * level desc, then name), so these are the first two rows the page itself would show.
+ */
+function twoKnownSearchCandidates(): [number, number] {
+  const items = (
+    JSON.parse(readFileSync(path.join(DATA_ROOT, 'items', 'warrior.json'), 'utf8')) as {
+      items: { id: number; name: string; item_level: number; required_level: number }[];
+    }
+  ).items;
+  const known = new Set(
+    (JSON.parse(readFileSync(path.join(DATA_ROOT, 'simitems.json'), 'utf8')) as { items: number[] }).items,
+  );
+  const candidates = items
+    .filter((item) => item.required_level <= 60 && known.has(item.id))
+    .sort((a, b) => b.item_level - a.item_level || a.name.localeCompare(b.name));
+  if (candidates.length < 2) {
+    throw new Error(
+      `build ${activeBuild.build} offers fewer than two usable, engine-known warrior items to search for`,
+    );
+  }
+  return [candidates[0].id, candidates[1].id];
+}
+
 test('two candidates plan, run and rank against the equipped set', async ({ page, browser, baseURL }) => {
   test.slow();
 
@@ -115,11 +156,14 @@ test('two candidates plan, run and rank against the equipped set', async ({ page
   await expect(page.getByTestId('sim-slot-grid')).toBeVisible();
 
   // Two search candidates rather than two bag rows: this export carries no bags, and the
-  // search is the path that exercises the item database on both sides.
+  // search is the path that exercises the item database on both sides. Both ids are known
+  // to be usable AND known to the engine (twoKnownSearchCandidates), so clicking each by
+  // its own id proves the item search actually offered it, rather than clicking whatever
+  // happened to render first.
   await page.getByTestId('sim-item-search').getByRole('searchbox').fill('');
-  const adds = page.locator('[data-testid^="sim-search-add-"]');
-  await adds.nth(0).click();
-  await adds.nth(1).click();
+  const [firstId, secondId] = twoKnownSearchCandidates();
+  await page.getByTestId(`sim-search-add-${firstId}`).click();
+  await page.getByTestId(`sim-search-add-${secondId}`).click();
 
   await expect(page.getByTestId('sim-combo-count')).toHaveText(/[1-9]\d* valid combinations?/);
 
