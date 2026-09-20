@@ -671,18 +671,6 @@
       "guid": "sim-player",
       "name": "Sim",
       "owner_guid": "sim-player",
-      "spell_id": 22000005,
-      "spell_name": "other:mana_gain",
-      "started": 32,
-      "succeeded": 32,
-      "failed": 0,
-      "cast_time_ms": 0,
-      "sequence": []
-    },
-    {
-      "guid": "sim-player",
-      "name": "Sim",
-      "owner_guid": "sim-player",
       "spell_id": 1000101,
       "spell_name": "spell:1000101",
       "started": 2,

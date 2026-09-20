@@ -279,6 +279,66 @@ func TestSummarizeReportsWastedResource(t *testing.T) {
 	}
 }
 
+// A rage-gain event travels through the same ActionMetrics channel a real
+// ability does, but it is the engine's own bookkeeping, not something the
+// player cast - the persona review that found this defect saw 98
+// "Rage gain" rows in the Casts tab. It must not appear as a cast, an
+// auto attack (a real cast) must survive alongside it, and the rage
+// figures the filter is not responsible for must still reach Resources.
+func TestCastsExcludeResourcePseudoActions(t *testing.T) {
+	u := &proto.UnitMetrics{
+		Name: "Fury",
+		Actions: []*proto.ActionMetrics{
+			{
+				Id:      &proto.ActionID{RawId: &proto.ActionID_OtherId{OtherId: proto.OtherAction_OtherActionRageGain}},
+				Targets: []*proto.TargetedActionMetrics{{UnitIndex: 1, Casts: 144}},
+			},
+			{
+				// Auto attack, tag 1: a real cast, and must survive the filter.
+				Id: &proto.ActionID{
+					RawId: &proto.ActionID_OtherId{OtherId: proto.OtherAction_OtherActionAttack},
+					Tag:   1,
+				},
+				Targets: []*proto.TargetedActionMetrics{{UnitIndex: 1, Casts: 200, Hits: 200, Damage: 10000}},
+			},
+		},
+		Resources: []*proto.ResourceMetrics{{
+			Id:         &proto.ActionID{RawId: &proto.ActionID_OtherId{OtherId: proto.OtherAction_OtherActionRageGain}},
+			Type:       proto.ResourceType_ResourceTypeRage,
+			Events:     144,
+			Gain:       1440,
+			ActualGain: 1440,
+		}},
+	}
+	got, err := Summarize(resultWith(u, 100), req())
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, c := range got.Casts {
+		if c.SpellName == "other:rage_gain" {
+			t.Errorf("Casts has a row named %q; rage gain is the engine's own bookkeeping, not a cast", c.SpellName)
+		}
+	}
+	var sawAttack bool
+	for _, c := range got.Casts {
+		if c.SpellName == "other:attack/1" {
+			sawAttack = true
+			if c.Succeeded != 2 { // 200 casts / 100 iterations
+				t.Errorf("other:attack/1 Succeeded = %d, want 2", c.Succeeded)
+			}
+		}
+	}
+	if !sawAttack {
+		t.Error("Casts is missing other:attack/1; a real auto-attack cast must survive the pseudo-action filter")
+	}
+	if len(got.Resources) != 1 {
+		t.Fatalf("Resources has %d entries, want 1; the filter must not touch Resources", len(got.Resources))
+	}
+	if r := got.Resources[0]; r.Gained != 14 { // 1440/100 rounded
+		t.Errorf("resource Gained = %d, want 14; the rage-gain event still belongs in Resources", r.Gained)
+	}
+}
+
 func TestSummarizeRoster(t *testing.T) {
 	got, err := Summarize(resultWith(oneAction(), 100), req())
 	if err != nil {
@@ -804,6 +864,28 @@ func TestSampleMapsTheEnginesCastLog(t *testing.T) {
 		if c.Action == "" {
 			t.Errorf("cast %d has no action key", i)
 		}
+	}
+}
+
+// The sample table is a cast log too, so it must exclude the same
+// resource pseudo-actions summary.Casts does: a rage-gain event in the
+// sample timeline is exactly as much not a cast as it is in the Casts
+// tab.
+func TestSampleExcludesResourcePseudoActions(t *testing.T) {
+	res := &proto.RaidSimResult{SampleIteration: &proto.SampleIteration{
+		Casts: []*proto.SampleCast{
+			{AtMs: 0, ActionId: &proto.ActionID{RawId: &proto.ActionID_OtherId{OtherId: proto.OtherAction_OtherActionRageGain}}},
+			{AtMs: 100, ActionId: &proto.ActionID{
+				RawId: &proto.ActionID_OtherId{OtherId: proto.OtherAction_OtherActionAttack}, Tag: 1,
+			}},
+		},
+	}}
+	got := Sample(res)
+	if len(got) != 1 {
+		t.Fatalf("got %d sample casts, want 1 (the rage-gain event must be filtered)", len(got))
+	}
+	if got[0].Action != "other:attack/1" {
+		t.Errorf("surviving sample cast = %q, want %q", got[0].Action, "other:attack/1")
 	}
 }
 

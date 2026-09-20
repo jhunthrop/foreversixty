@@ -442,6 +442,80 @@ func auras(u *proto.UnitMetrics) []summary.AuraTrack {
 	return out
 }
 
+// isPlayerCast reports whether an engine action is something a caster
+// actually DID, as opposed to the engine's own resource and bookkeeping
+// pseudo-actions, which travel through the same ActionMetrics/SampleCast
+// channel because that is where the engine's metrics live, not because a
+// combat log would ever show them as a cast. A tank-review persona found
+// 98 "Rage gain" rows in the Casts tab from exactly this: OtherActionRageGain
+// carries a non-zero Casts count the way a real ability does.
+//
+// It gates only summary.Casts and Sample (the two places a "cast" is
+// listed by name). summary.DamageDone keeps every ability row including
+// zero-damage ones - that shape is a separate, already-filed complaint -
+// and summary.Resources is populated straight from u.Resources, which is
+// exactly where a rage or mana gain belongs, so this predicate never
+// touches it.
+//
+// A plain spell or item ID is always something the player did; only
+// proto.OtherAction needs sorting, and it is sorted here as an explicit
+// switch - one named case per group, one reason per group - rather than
+// a numeric range, so a pseudo-action the engine adds later lands
+// wherever the fall-through comment below says and not wherever a range
+// boundary happened to put it.
+func isPlayerCast(id *proto.ActionID) bool {
+	other, ok := id.GetRawId().(*proto.ActionID_OtherId)
+	if !ok {
+		return true
+	}
+	switch other.OtherId {
+	// The engine's own accounting: resource regen/gain ticks, combo
+	// point bookkeeping, ability refunds, the rage-from-damage-taken
+	// model and the healing model. summary.Resources already reports
+	// the gain side of these; a cast row would say it twice.
+	case proto.OtherAction_OtherActionNone,
+		proto.OtherAction_OtherActionManaRegen,
+		proto.OtherAction_OtherActionEnergyRegen,
+		proto.OtherAction_OtherActionFocusRegen,
+		proto.OtherAction_OtherActionManaGain,
+		proto.OtherAction_OtherActionRageGain,
+		proto.OtherAction_OtherActionComboPoints,
+		proto.OtherAction_OtherActionRefund,
+		proto.OtherAction_OtherActionDamageTaken,
+		proto.OtherAction_OtherActionHealingModel:
+		return false
+	// Wait and Move are the engine idling or repositioning the actor,
+	// never something a combat log records as a cast - Move showing up
+	// in the Casts tab is the dps review's own complaint about the
+	// ability list, which is the judgement call this task leaves to the
+	// implementer: excluded, on that complaint's authority.
+	case proto.OtherAction_OtherActionWait, proto.OtherAction_OtherActionMove:
+		return false
+	// Pet is a grouping value the UI uses to bucket pet actions, not an
+	// action anything performs (the proto's own comment: "Only used by
+	// the UI"), so it is excluded the same way Wait and Move are.
+	case proto.OtherAction_OtherActionPet:
+		return false
+	// Real actions a caster (or its weapon/pet) performs and that a
+	// combat log would show: white swings, ranged shots, consumables
+	// and on-use trinkets.
+	case proto.OtherAction_OtherActionAttack,
+		proto.OtherAction_OtherActionShoot,
+		proto.OtherAction_OtherActionPotion,
+		proto.OtherAction_OtherActionExplosives,
+		proto.OtherAction_OtherActionOffensiveEquip,
+		proto.OtherAction_OtherActionDefensiveEquip:
+		return true
+	}
+	// An OtherAction this switch has not been taught about yet - the
+	// engine has grown this enum's pseudo-action side before. Default
+	// to hiding it: a real new action wrongly hidden here is a visible,
+	// low-cost gap until the switch is updated; a new pseudo-action
+	// wrongly shown would silently reopen the 98-Rage-gain defect this
+	// predicate exists to close.
+	return false
+}
+
 // casts builds one row per caster per spell. A pet's row stays the pet's -
 // the Casts tab prints "via <pet>" - but its OwnerGUID is the player's, so
 // the tab groups it under the player the way it does in a real fight.
@@ -460,6 +534,9 @@ func castsFor(u *proto.UnitMetrics, guid, owner string, iters float64, out []sum
 		out = make([]summary.CastRow, 0, len(u.Actions))
 	}
 	for _, am := range u.Actions {
+		if !isPlayerCast(am.Id) {
+			continue
+		}
 		var total int32
 		for _, t := range am.Targets {
 			total += t.Casts
@@ -591,6 +668,10 @@ func splitSpecSlug(slug string) (class, spec string) {
 // aborted run has none, and neither does a result from an engine
 // older than the field; the page renders the card only when there are
 // rows.
+//
+// isPlayerCast drops the engine's resource and bookkeeping pseudo-
+// actions the same way castsFor does for summary.Casts: a rage-gain
+// tick in this list is no more a cast than it is in the Casts tab.
 func Sample(res *proto.RaidSimResult) []api.SampleCast {
 	casts := res.GetSampleIteration().GetCasts()
 	if len(casts) == 0 {
@@ -598,6 +679,9 @@ func Sample(res *proto.RaidSimResult) []api.SampleCast {
 	}
 	out := make([]api.SampleCast, 0, len(casts))
 	for _, c := range casts {
+		if !isPlayerCast(c.GetActionId()) {
+			continue
+		}
 		_, action := ActionName(c.GetActionId())
 		row := api.SampleCast{
 			AtMS:   c.GetAtMs(),
