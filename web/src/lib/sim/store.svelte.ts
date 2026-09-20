@@ -15,7 +15,7 @@
 import { loadItems, loadReference, loadTalents } from '../planner/load';
 import type { ClassRow, Item, RaceRow, TalentFile } from '../planner/types';
 import { indexTalents } from '../planner/rules';
-import { dispatchServerSim, fetchSim, fetchSimProgress, saveSim, SimApiError } from './api';
+import { dispatchServerSim, fetchSim, fetchSimProgress, saveSim } from './api';
 import { characterFromFs1, needsRace, toCharacterSpec, type SimCharacter } from './character';
 import { loadActionNames, type ActionNames } from './action-names';
 import { EMPTY_BUFF_NAMES, loadBuffNames, type BuffNames } from './buff-names';
@@ -23,6 +23,7 @@ import { simCopy } from './copy';
 import { EMPTY_ESTIMATE } from './estimate';
 import { precisionPlan, relativeError, type Lane, type PrecisionId } from './precision';
 import type { RequestValidation } from './engine';
+import { humaniseServerFailure } from './engine-error';
 import { buildSimRequest, type RunHandle, type RunInput } from './run';
 import { defaultSettings, settingsLabel, withSpecForPreset, type SimSettings } from './settings';
 import {
@@ -632,17 +633,15 @@ export function createSimStore(init: SimStoreInit) {
      * pool's own progress callback does, so RunControl renders both lanes identically.
      * `fetchSim` then fetches the finished result -- progress alone carries no summary.
      *
-     * Two guards, both against the same class of bug -- state written by a run nothing
-     * wants any more:
-     *   - `serverRunning` is set synchronously, before the first `await`, so a second call
-     *     that lands while one is already in flight is a no-op. Without this a fast double
-     *     click dispatches (and pays for) the same premium run twice.
+     * Two guards against the same class of bug -- state written by a run nothing wants any
+     * more:
+     *   - `serverRunning` is set synchronously, before the first `await`, so a fast double
+     *     click cannot dispatch (and pay for) the same premium run twice.
      *   - `generation` is this call's own snapshot of `serverRunGeneration`. `dispose()`
      *     and a new `adopt()` both bump the counter, and every state write below is guarded
-     *     by `stillCurrent()`, which compares the two. A poll that outlives the component
-     *     (a navigation away from /sim) or the character it was run for (a new source
-     *     pasted mid-poll) then stops touching `phase`/`estimate`/`result` on its next
-     *     check, rather than looping forever against a store nothing renders any more.
+     *     by `stillCurrent()`: a poll that outlives the component or the character it ran
+     *     for stops touching `phase`/`estimate`/`result` on its next check, rather than
+     *     looping forever against a store nothing renders any more.
      */
     async runOnServer(): Promise<void> {
       if (serverRunning) return;
@@ -685,7 +684,7 @@ export function createSimStore(init: SimStoreInit) {
         try {
           simId = await dispatchServerSim(request, init.apiBase);
         } catch (error) {
-          if (stillCurrent()) message = error instanceof SimApiError ? error.message : simCopy.failed;
+          if (stillCurrent()) message = humaniseServerFailure(error, simCopy.failed);
           return;
         }
         if (!stillCurrent()) return;
@@ -704,7 +703,7 @@ export function createSimStore(init: SimStoreInit) {
             progress = await fetchSimProgress(simId, init.apiBase);
           } catch (error) {
             if (stillCurrent()) {
-              message = error instanceof SimApiError ? error.message : simCopy.failed;
+              message = humaniseServerFailure(error, simCopy.failed);
               phase = result !== null ? 'done' : 'error';
             }
             return;
@@ -732,7 +731,7 @@ export function createSimStore(init: SimStoreInit) {
               }
             } catch (error) {
               if (stillCurrent()) {
-                message = error instanceof SimApiError ? error.message : simCopy.failed;
+                message = humaniseServerFailure(error, simCopy.failed);
                 phase = result !== null ? 'done' : 'error';
               }
             }

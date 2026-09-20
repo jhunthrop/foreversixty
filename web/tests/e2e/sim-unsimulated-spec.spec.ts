@@ -79,9 +79,24 @@ async function loadRestoDruid(page: Page, route: string): Promise<void> {
   await expect(page.getByTestId('sim-character')).toBeVisible();
 }
 
+/** Fix round 1: signs the visitor in as premium, the same shape sim-drops.spec.ts's own
+ *  `stubPremiumRun` uses, so `RunControl`'s "Run on servers" button renders at all --
+ *  `{#if premium}` -- and its own `!simulated` gate can be asserted rather than the button
+ *  simply being absent. */
+async function stubPremium(page: Page): Promise<void> {
+  await page.route('**/v1/me', (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ data: { user: { premium: true }, characters: [] }, error: null }),
+    }),
+  );
+}
+
 test('/sim: a Restoration Druid loads the strip, but the run control is disabled and honest', async ({
   page,
 }) => {
+  await stubPremium(page);
   await loadRestoDruid(page, '/sim');
 
   // The BLOCKER/MAJOR findings' first demand: the strip still loads and still shows the
@@ -99,8 +114,17 @@ test('/sim: a Restoration Druid loads the strip, but the run control is disabled
   await expect(note).toHaveJSProperty('tagName', 'P');
   await expect(button).not.toHaveAttribute('title', /.+/);
 
+  // Fix round 1: the premium "Run on servers" button is a second run path beside the
+  // primary one, and used to stay enabled for an unsimulated spec.
+  const serverButton = page.getByTestId('sim-server-run');
+  await expect(serverButton).toBeVisible();
+  await expect(serverButton).toBeDisabled();
+
   await button.click({ force: true });
   await expect(button).toBeDisabled();
+  await expect(page.getByTestId('sim-dps')).toHaveText('—');
+
+  await serverButton.click({ force: true });
   await expect(page.getByTestId('sim-dps')).toHaveText('—');
 
   await expect(page.locator('body')).not.toContainText('combine: part 0 failed');

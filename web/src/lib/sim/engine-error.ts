@@ -17,6 +17,7 @@
 // wrote it, because the id is the only thing that says what to change. An unsupported-spec
 // refusal is the one shape that is not: it names the engine's own spec id, not a player
 // fact, so this is the one translation this lane makes.
+import { SimApiError } from './api';
 import { simCopy } from './copy';
 import { specLabel } from './spec-label';
 
@@ -34,4 +35,17 @@ const UNSUPPORTED_SPEC = /unsupported spec: "([^"]*)"/;
 export function humaniseEngineError(detail: string): string {
   const match = UNSUPPORTED_SPEC.exec(detail);
   return match === null ? detail : simCopy.engineUnsupportedSpec(specLabel(match[1]));
+}
+
+/**
+ * Fix round 1: `store.svelte.ts`'s `runOnServer()` never went through `humaniseEngineError`
+ * -- it read `SimApiError.message` straight onto `message`, so the server lane was the one
+ * place the guarantee above did not hold. `SimApiError.message` is never the raw wasm text
+ * today (api.ts's `asSimError` only ever hands it fixed copy), but this closes the seam
+ * structurally rather than leaving it open for whenever the API starts proxying one
+ * through. Lives here, not in store.svelte.ts (already at its own 800-line ceiling before
+ * this fix), since it is one more caller of `humaniseEngineError`, not new logic.
+ */
+export function humaniseServerFailure(error: unknown, fallback: string): string {
+  return error instanceof SimApiError ? humaniseEngineError(error.message) : fallback;
 }

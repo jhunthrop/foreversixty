@@ -189,7 +189,7 @@
       <button
         type="button"
         class="border-line-warm rounded-control text-nav label min-h-11 border px-4 md:min-h-9"
-        disabled={running || serverRunning}
+        disabled={running || serverRunning || !simulated}
         onclick={onserver}
         data-testid="sim-server-run">{simCopy.runOnServers}</button
       >
