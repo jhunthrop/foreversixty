@@ -193,12 +193,9 @@ func dispatch(req api.SimRequest, opt bulk.Options, progress io.Writer) (api.Sim
 	case api.KindGear, api.KindTalents, api.KindDrops:
 		return executeBulk(req, opt, progress)
 	case api.KindWeights:
-		// Task 24 adds the weights run; until then the binary refuses
-		// rather than silently running a plain sim of a request that
-		// asked for something else.
-		return api.SimResult{}, fmt.Errorf("%w: weights requests are not yet supported by this binary", errBadInput)
+		return executeWeights(req, progress)
 	default:
-		return Execute(req, progress)
+		return ExecuteToTarget(req, progress)
 	}
 }
 
