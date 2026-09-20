@@ -51,20 +51,11 @@ end
 --- Later entries are not attempted, so the count on success is the number
 --- of entries that have a `code`, not a guarantee that each one decodes.
 function Options.readInbox()
-	local inbox = ForeverSixtyInbox
-	if inbox == nil or inbox.builds == nil then
-		return 0
-	end
-	local usable = {}
-	for _, build in ipairs(inbox.builds) do
-		if build.code ~= nil then
-			usable[#usable + 1] = build
-		end
-	end
+	local usable = Follow.inbox(ForeverSixtyInbox)
 	if #usable == 0 then
 		return 0
 	end
-	local build, message = Follow.load(usable[1].code, Options.data)
+	local build, message = Follow.load(usable[1].code, Options.data, usable[1].name)
 	if build == nil then
 		return 0, message
 	end

@@ -17,4 +17,5 @@ Export.lua
 Follow.lua
 Gear.lua
 views\ExportView.lua
+views\FollowView.lua
 Options.lua

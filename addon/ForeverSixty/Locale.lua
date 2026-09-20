@@ -82,6 +82,24 @@ local L = {
 	-- A talent this addon's data has no name for, named by its position
 	-- instead, so the player can still find the cell.
 	followUnknownCell = "%d:%d",
+	followPasteHint = "Paste a build code from foreversixty.gg",
+	followLoadButton = "Load",
+	followForget = "Forget build",
+	followShowTracker = "Show tracker",
+	followProgress = "%d of %d points",
+	-- Controller ruling 2: neither code format carries a build name, so a
+	-- pasted code is named after its class.
+	followBuildName = "%s build",
+	-- One row of the order: tier, then the talent's name.
+	followRow = "%d  %s",
+	-- The same row once the player has matched it. The mark is a plain
+	-- Unicode tick; a client font without the glyph draws a box, which is
+	-- a cosmetic loss on an already-dimmed row.
+	followRowDone = "%s  %d  %s",
+	followDoneMark = "✓",
+	followRank = "%d/%d",
+	followInbox = "A build arrived from the companion",
+	followInboxLoad = "Load it",
 
 	-- Gear
 	gearTitle = "Upgrades",

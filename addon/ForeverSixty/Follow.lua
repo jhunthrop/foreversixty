@@ -15,13 +15,55 @@ local Talents = ns.Talents or require("Talents")
 
 local Follow = {}
 
-function Follow.load(code, data)
+--- Load a build from a code. `name` is what to call it: neither code
+--- format carries one (controller ruling 2), so it comes from the
+--- companion's inbox entry, or from nowhere for a pasted code.
+function Follow.load(code, data, name)
 	local build, message = Codec.loadBuild(code, data)
 	if build == nil then
 		return nil, message
 	end
+	build.name = name
 	Follow.build = build
+	ForeverSixtyDB = ForeverSixtyDB or {}
+	ForeverSixtyDB.follow = { code = code, name = name }
 	return build
+end
+
+--- The build the player had loaded last session, if it still decodes.
+--- A code that no longer decodes (the addon's data moved on) is dropped
+--- rather than reported: nothing asked for it this session.
+function Follow.restore(data)
+	local saved = type(ForeverSixtyDB) == "table" and ForeverSixtyDB.follow or nil
+	if type(saved) ~= "table" or saved.code == nil then
+		return nil
+	end
+	return Follow.load(saved.code, data, saved.name)
+end
+
+function Follow.forget()
+	Follow.build = nil
+	if type(ForeverSixtyDB) == "table" then
+		ForeverSixtyDB.follow = nil
+	end
+	return nil
+end
+
+--- The companion's builds that have a code, in the order it wrote them.
+--- Pure: the inbox is the companion's file and this never writes it.
+--- An entry with no `code` is a truncated or hand-edited file, not
+--- something the companion produces, and is skipped rather than counted.
+function Follow.inbox(inbox)
+	local usable = {}
+	if type(inbox) ~= "table" or type(inbox.builds) ~= "table" then
+		return usable
+	end
+	for _, build in ipairs(inbox.builds) do
+		if build.code ~= nil then
+			usable[#usable + 1] = { id = build.id, name = build.name, code = build.code }
+		end
+	end
+	return usable
 end
 
 local function cellKey(point)
