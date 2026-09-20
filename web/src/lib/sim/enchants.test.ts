@@ -36,6 +36,7 @@ const ALL_ENCHANT_STAT_KEYS: Record<EnchantStatKey, true> = {
   parry: true,
   block: true,
   mp5: true,
+  spell_penetration: true,
   fire_res: true,
   frost_res: true,
   nature_res: true,
