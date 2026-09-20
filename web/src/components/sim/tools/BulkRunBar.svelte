@@ -91,7 +91,7 @@
       type="button"
       class="{SECONDARY_BUTTON} border-line-warm text-nav px-4"
       data-testid="sim-run-bulk"
-      disabled={store.capNotice !== null || store.character === null}
+      disabled={store.capNotice !== null || store.character === null || store.phase === 'loading-character'}
       onclick={() => (running ? store.stop() : void store.run())}
     >
       {#if running}{bulkCopy.stopBulk}{:else if store.result !== null}{bulkCopy.runBulkAgain}{:else}{bulkCopy.runBulk}{/if}
