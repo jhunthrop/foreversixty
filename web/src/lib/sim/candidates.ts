@@ -170,16 +170,18 @@ export interface BulkSpecInput {
   sets: readonly GearSet[];
   precision: Precision;
   cap: number;
+  /**
+   * Contract 10.1 A5: alternative consumable lists tried as candidates in `gear` mode.
+   * Task 13 adds the picker that lets a player tick one; the store's own state
+   * (`consumableIds`/`toggleConsumable`) is Task 10's, per the controller's ruling, and this
+   * is the one field and one line this doc comment originally asked a later task to add.
+   */
+  consumables?: string[][];
 }
 
 /**
  * The envelope's bulk block. `talents` mode sends no candidates at all, whatever is ticked:
  * the contract validates it and the page's own gear grid is hidden in that mode anyway.
- *
- * `consumables` (Task 1's `BulkSpec.consumables`) is deliberately not read from `input`
- * here: Task 13 adds the control and the plumbing for it. Leaving it unset costs nothing --
- * `BulkSpec.consumables` is optional -- and a later task adds one field to `BulkSpecInput`
- * and one line here rather than reshaping this function.
  */
 export function buildBulkSpec(input: BulkSpecInput): BulkSpec {
   return {
@@ -190,6 +192,9 @@ export function buildBulkSpec(input: BulkSpecInput): BulkSpec {
     locked: [...input.locked],
     precision: input.precision,
     cap: input.cap,
+    ...(input.consumables === undefined || input.consumables.length === 0
+      ? {}
+      : { consumables: input.consumables }),
   };
 }
 

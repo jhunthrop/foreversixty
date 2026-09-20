@@ -1,0 +1,275 @@
+// @vitest-environment jsdom
+// web/src/lib/sim/bulk-store.test.ts
+// jsdom: the store reaches `requestEnvelope` (via api.ts), which reads `document.cookie`.
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { createFakeEngine } from '../../fixtures/sim/engine-fake';
+import { createFakeWorker } from '../../test-support/fake-worker';
+import { createSimApi, FIXTURE_DATA_BUILD, fixtureResult, TEST_API } from '../../test-support/sim-api';
+import { createBulkStore, MODE_OF_TOOL, TOOLS } from './bulk-store.svelte';
+import { createPool } from './worker';
+import type { BulkResult } from './bulk-types';
+
+const FURY = `FS1:${FIXTURE_DATA_BUILD}:warrior:orc:0/5530515/0:head=12640,main_hand=12784`;
+const api = createSimApi();
+
+function store(tool: (typeof TOOLS)[number] = 'gear') {
+  const engine = createFakeEngine({ tickMs: 0, ticks: 1 });
+  return createBulkStore({
+    tool,
+    treeVersion: FIXTURE_DATA_BUILD,
+    apiBase: TEST_API,
+    hardwareConcurrency: 8,
+    serverPollMs: 1,
+    pool: createPool({ hardwareConcurrency: 4, spawn: () => createFakeWorker(engine) }),
+    now: () => new Date('2026-12-10T00:00:00Z'),
+  });
+}
+
+beforeEach(() => api.install());
+afterEach(() => api.reset());
+
+describe('TOOLS and MODE_OF_TOOL', () => {
+  it('maps each tool page to its bulk mode', () => {
+    expect([...TOOLS]).toEqual(['gear', 'talents', 'drops', 'weights']);
+    expect(MODE_OF_TOOL.gear).toBe('gear');
+    expect(MODE_OF_TOOL.talents).toBe('talents');
+    expect(MODE_OF_TOOL.drops).toBe('drops');
+  });
+});
+
+describe('loading a character', () => {
+  it('adopts the addon export, its items, its loot index and its enchants', async () => {
+    const s = store();
+    await s.loadAddon(FURY);
+    expect(s.character?.class_slug).toBe('warrior');
+    expect(s.items.size).toBeGreaterThan(0);
+    expect(s.enchants.length).toBeGreaterThan(0);
+    expect(s.suffixes.length).toBeGreaterThan(0);
+    expect(s.loot.sources.length).toBeGreaterThan(0);
+    // Lucifron (raid:molten-core) is the fixture's only source dropping the Helm of Wrath.
+    expect(s.sourceIndex.get(16963)).toEqual(['raid:molten-core']);
+    s.dispose();
+  });
+
+  it('seeds a row per equipped item, ticked off, so the grid opens with what you wear', async () => {
+    const s = store();
+    await s.loadAddon(FURY);
+    expect(
+      s.rows
+        .filter((row) => row.origin === 'equipped')
+        .map((row) => row.item.id)
+        .sort(),
+    ).toEqual([12640, 12784]);
+    expect(s.rows.every((row) => !row.checked)).toBe(true);
+    s.dispose();
+  });
+
+  it('keeps the character already on screen when a later load fails', async () => {
+    const s = store();
+    await s.loadAddon(FURY);
+    await s.loadAddon('FS2:nope');
+    expect(s.character).not.toBeNull();
+    expect(s.message).not.toBeNull();
+    s.dispose();
+  });
+});
+
+describe('the cap', () => {
+  it('is 400 on eight cores', () => {
+    const wide = store();
+    expect(wide.cap).toBe(400);
+    wide.dispose();
+  });
+});
+
+describe('the live combination count', () => {
+  it('counts what is ticked and clears the cap notice when it comes back under', async () => {
+    const s = store();
+    await s.loadAddon(FURY);
+    s.addSearchItem(16963);
+    s.addSearchItem(16966);
+    await s.recount();
+    // Two different-slot candidates: the gear product is (keep|sub-head) x (keep|sub-
+    // shoulder) = 4, minus the fully-untouched baseline (contract 10.1 A4) = 3.
+    expect(s.combinations).toBe(3);
+    expect(s.capNotice).toBeNull();
+    s.dispose();
+  });
+
+  it('shows the cap notice with both numbers rather than trimming', async () => {
+    const s = store();
+    await s.loadAddon(FURY);
+    s.addSearchItem(16963);
+    s.addSearchItem(16966);
+    s.setCap(2);
+    await s.recount();
+    expect(s.capNotice).toEqual({ cap: 2, combinations: 3 });
+    s.dispose();
+  });
+
+  it('counts the consumable alternatives too (contract 10.1 A5)', async () => {
+    const s = store();
+    await s.loadAddon(FURY);
+    s.addSearchItem(16963);
+    s.toggleConsumable('flask_of_supreme_power');
+    s.toggleConsumable('elixir_of_the_mongoose');
+    await s.recount();
+    // The fake engine crosses each consumable list onto the WHOLE gear product, INCLUDING
+    // the untouched entry (contract 10.1 A5's own words: "a gear-untouched, consumes-changed
+    // run is a real, distinct combination"), so nothing is subtracted for "no consumable
+    // change" the way the two-candidate case above subtracts the fully-untouched baseline.
+    // One slot's product before consumables is 2 (keep head, substitute head); crossed by
+    // 2 lists is 4. Task 3's report pins the identical shape for two candidates at 8, not
+    // the naive 7 a simpler cross-and-subtract reading would give.
+    expect(s.combinations).toBe(4);
+    s.dispose();
+  });
+});
+
+describe('running', () => {
+  it('runs a gear request to a ranked result and reports stage progress', async () => {
+    const s = store();
+    await s.loadAddon(FURY);
+    s.addSearchItem(16963);
+    await s.run();
+    const result = s.result as BulkResult | null;
+    expect(result?.combos.length).toBeGreaterThan(0);
+    expect(s.phase).toBe('done');
+    expect(s.progressLine).toBe('');
+    s.dispose();
+  });
+
+  it('refuses to run with nothing ticked, and says which sentence', async () => {
+    const s = store();
+    await s.loadAddon(FURY);
+    await s.run();
+    expect(s.result).toBeNull();
+    expect(s.message).not.toBeNull();
+    s.dispose();
+  });
+
+  it('runs a talents request from loadouts alone, with no candidates', async () => {
+    const s = store('talents');
+    await s.loadAddon(FURY);
+    s.addLoadout({ name: 'Deep Fury', talents: '0-5530515-' });
+    await s.run();
+    expect((s.result as BulkResult).request.bulk?.candidates).toEqual([]);
+    s.dispose();
+  });
+
+  it('runs a weights request and keeps the reference stat at 1', async () => {
+    const s = store('weights');
+    await s.loadAddon(FURY);
+    await s.loadSpecs();
+    expect(s.referenceStat).toBe('attack_power');
+    await s.run();
+    expect(s.weights.find((row) => row.stat === 'attack_power')?.weight).toBe(1);
+    s.dispose();
+  });
+});
+
+describe('the droptimizer’s sources', () => {
+  it('opens with every kind but quests, and gates an unreleased raid until show-upcoming', async () => {
+    const s = store('drops');
+    await s.loadAddon(FURY);
+    expect(s.visibleSources.map((source) => source.id)).not.toContain('quest');
+    // the fixture's clock is after raids-1 opens, so Molten Core is visible
+    expect(s.visibleSources.map((source) => source.id)).toContain('raid:molten-core');
+    s.dispose();
+  });
+
+  it('turns a picked boss into drop-origin candidates carrying its name', async () => {
+    const s = store('drops');
+    await s.loadAddon(FURY);
+    s.toggleSource('raid:molten-core', 'raid:molten-core:11502');
+    const picked = s.rows.filter((row) => row.checked);
+    expect(picked.map((row) => row.origin)).toEqual([
+      'drop:raid:molten-core:11502',
+      'drop:raid:molten-core:11502',
+    ]);
+    // Contract 10.1 A6: the name travels on the candidate, not on a later join.
+    expect(new Set(picked.map((row) => row.sourceName))).toEqual(new Set(['Ragnaros']));
+    s.dispose();
+  });
+
+  it('hides a source whose date is unknown until show-upcoming (contract 10.4)', async () => {
+    const s = store('drops');
+    await s.loadAddon(FURY);
+    expect(s.visibleSources.map((source) => source.id)).not.toContain('world:azuregos');
+    s.setShowUpcoming(true);
+    expect(s.visibleSources.map((source) => source.id)).toContain('world:azuregos');
+    s.dispose();
+  });
+});
+
+describe('the request’s iteration count', () => {
+  it('is the precision’s final stage, not always 3,000 (contract 10.1 A3)', async () => {
+    const s = store();
+    await s.loadAddon(FURY);
+    s.addSearchItem(16963);
+    s.setPrecision('high');
+    await s.run();
+    expect((s.result as BulkResult).request.iterations).toBe(10_000);
+    s.dispose();
+  });
+});
+
+describe('the server lane’s own cap', () => {
+  it('will not offer a premium run past 5,000 combinations (contract 10.1 A2)', async () => {
+    const s = store();
+    await s.loadAddon(FURY);
+    s.setPremium(true);
+    s.addSearchItem(16963);
+    s.addSearchItem(16966);
+    await s.recount();
+    expect(s.serverCapNotice).toBeNull();
+    // A count the browser cap would refuse but the server cap allows still offers premium.
+    s.setCap(1);
+    await s.recount();
+    expect(s.capNotice).not.toBeNull();
+    expect(s.serverCapNotice).toBeNull();
+    s.dispose();
+  });
+});
+
+describe('the premium lane', () => {
+  it('dispatches the envelope, polls progress and adopts the finished server result', async () => {
+    const s = store();
+    await s.loadAddon(FURY);
+    s.addSearchItem(16963);
+    let polls = 0;
+    api.route({
+      method: 'GET',
+      pattern: /\/v1\/sims\/simnew234567\/progress$/,
+      respond: () => {
+        polls += 1;
+        return new Response(
+          JSON.stringify({
+            ok: true,
+            data:
+              polls < 2
+                ? { state: 'running', iterations_done: 100, stage: 1, combos_done: 0, combos_total: 1 }
+                : { state: 'done', iterations_done: 3000 },
+            error: null,
+            request_id: 'req-test',
+          }),
+          { status: 200, headers: { 'content-type': 'application/json' } },
+        );
+      },
+    });
+    api.route({
+      method: 'GET',
+      pattern: /\/v1\/sims\/simnew234567$/,
+      respond: () =>
+        new Response(JSON.stringify({ ok: true, data: fixtureResult, error: null, request_id: 'req-test' }), {
+          status: 200,
+          headers: { 'content-type': 'application/json' },
+        }),
+    });
+    await s.runOnServer();
+    expect(s.serverRunning).toBe(false);
+    expect(s.phase).toBe('done');
+    expect(s.result).not.toBeNull();
+    s.dispose();
+  });
+});
