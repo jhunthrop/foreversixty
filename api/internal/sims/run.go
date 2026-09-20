@@ -139,6 +139,21 @@ func (s *Service) checkSize(w http.ResponseWriter, r *http.Request, req simapi.S
 		s.writeCapExceeded(w, r, plan.Cap, plan.Combinations)
 		return true
 	}
+	budget := int(BulkBudget.Seconds())
+	if est := estimateSec(plan.IterationsTotal); est > budget {
+		// Refused at submit rather than started and killed: a job the
+		// platform stops leaves a row that never reaches a terminal
+		// state, and the member has waited a quarter of an hour to find
+		// out. The estimate is what they trim against.
+		httpx.WriteError(w, r, http.StatusBadRequest, "too_large",
+			fmt.Sprintf("that run is about %d seconds of engine time; a run on our servers stops at %d",
+				est, budget),
+			map[string]string{
+				"estimate_sec": strconv.Itoa(est),
+				"budget_sec":   strconv.Itoa(budget),
+			})
+		return true
+	}
 	return false
 }
 

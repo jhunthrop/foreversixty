@@ -314,6 +314,87 @@ func TestARunNobodyCanStartIsRecordedAsFailedEvenWhenTheRequestContextIsDone(t *
 	}
 }
 
+func TestABulkRunPastTheBudgetIsRefusedWithItsEstimate(t *testing.T) {
+	h := newHarness(t)
+	h.premium.premium = true
+	// Exactly four thousand seconds of engine time, whatever the
+	// benchmark's current figure is.
+	h.planner.summary = simapi.PlanSummary{
+		Kind: simapi.KindGear, Combinations: 4000,
+		Cap: simapi.Caps[simapi.LaneServer], IterationsTotal: nativeRate * 4000,
+	}
+
+	res := h.json(http.MethodPost, "/v1/sims/run", bulkBody(t))
+	if res.StatusCode != http.StatusBadRequest {
+		t.Fatalf("status %d, want 400", res.StatusCode)
+	}
+	code, fields := refusal(t, res)
+	if code != "too_large" {
+		t.Fatalf("code %q, want too_large", code)
+	}
+	if fields["estimate_sec"] != "4000" ||
+		fields["budget_sec"] != strconv.Itoa(int(BulkBudget.Seconds())) {
+		t.Fatalf("fields %+v", fields)
+	}
+	if ran := h.jobs.Ran(); len(ran) != 0 {
+		t.Fatalf("a refused run was dispatched anyway: %v", ran)
+	}
+}
+
+// TestAWeightsRunIsAcceptedUnsizedAndBoundOnlyByTheJobTimeout pins the
+// honest current behaviour, not the brief's original assertion that a
+// weights request is planned: runner.Native.Plan and runner.Fixture.Plan
+// both refuse req.Bulk == nil with ErrBadInput (sim/runner/native.go,
+// sim/runner/fixture.go), and a weights request carries req.Weights
+// instead of req.Bulk. checkSize's req.Bulk != nil guard (Task 5) is
+// therefore load-bearing, not incidental: without it, every weights
+// submit would 500 rather than skip a check it has no combinations to
+// answer.
+//
+// That means a weights run today has no submit-time size estimate at
+// all - it is bounded only by timeoutFor's BulkBudget once it is
+// running, the same as an unusually large bulk run that slipped under
+// its cap. sim/api exports WeightsSpec, StatWeight and an unexported
+// validate, and nothing that costs a weights run in iterations; adding
+// one would mean guessing whether the engine runs one sim per stat or
+// two (plus/minus delta), and that guess would become a number shown
+// to a user in a refusal. For a weights run to get an estimate, the
+// module needs to publish its own iteration-cost function the way
+// sim/api.LadderIterations does for bulk, and this package would then
+// call it here exactly as checkSize already calls the planner for bulk.
+func TestAWeightsRunIsAcceptedUnsizedAndBoundOnlyByTheJobTimeout(t *testing.T) {
+	h := newHarness(t)
+	h.premium.premium = true
+	// Cap 0: weights expand to no combinations, so the cap test must not
+	// fire on a zero and refuse every one of them.
+	h.planner.summary = simapi.PlanSummary{
+		Kind: simapi.KindWeights, Combinations: 0, Cap: 0, IterationsTotal: 60_000,
+	}
+	b, err := json.Marshal(simapi.SimRequest{
+		EngineVersion: testEngine, Spec: "warrior-fury", Iterations: defaultIterations,
+		Source:    simapi.CharacterSource{Kind: simapi.SourceAddon, Ref: "us/normal/baelgrim"},
+		Character: aCharacter("warrior", "orc"),
+		Weights: &simapi.WeightsSpec{
+			Stats: []string{"strength", "melee_crit"}, Reference: "melee_crit",
+		},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if res := h.json(http.MethodPost, "/v1/sims/run", string(b)); res.StatusCode != http.StatusAccepted {
+		t.Fatalf("status %d, want 202", res.StatusCode)
+	}
+	// Not planned: a weights request has no Bulk block, so checkSize's
+	// req.Bulk != nil guard skips the planner call entirely.
+	if len(h.planner.asked) != 0 {
+		t.Fatalf("a weights request has nothing for the planner to size, but it was asked: %d plans",
+			len(h.planner.asked))
+	}
+	if ran := h.jobs.Ran(); len(ran) != 1 {
+		t.Fatalf("%d jobs dispatched, want 1: an accepted weights run must still be queued", len(ran))
+	}
+}
+
 func TestTheRunRouteNeedsASession(t *testing.T) {
 	h := newHarness(t)
 	h.premium.premium = true
