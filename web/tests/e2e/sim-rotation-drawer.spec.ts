@@ -2,9 +2,10 @@
 // Task 6 (newcomer BLOCKER, tank MAJOR): "what it does" beside ROTATION used to link to
 // /sim/specs#<spec>, which explains parse fidelity rather than the rotation, and threw away
 // the loaded character and the finished run on the way -- browser Back did not restore
-// either. This proves the fix from the browser, on the reviewers' own repro (newcomer
-// review, load a Frost Mage, run a sim, click "what it does"): the trigger opens an
-// in-page drawer, the character and the result stay on screen, and the URL never changes.
+// either. This proves the fix from the browser, on both reviewers' own repros (newcomer:
+// load a Frost Mage; tank: load an Arms Warrior; run a sim, click "what it does"): the
+// trigger opens an in-page drawer, the character and the result stay on screen, and the
+// URL never changes.
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { expect, test, type Page } from '@playwright/test';
@@ -63,6 +64,24 @@ async function loadFrostMage(page: Page): Promise<void> {
   await expect(page.getByTestId('sim-character')).toBeVisible();
 }
 
+// The tank review's own repro: an Arms Warrior. No talent stub needed -- the fixture data
+// build ships the warrior tree directly (src/fixtures/planner/talents/warrior.json),
+// exactly the one sim-run.spec.ts's own FURY_FS1 already loads with no route at all.
+// `3/0/0` spends 3 points on Improved Heroic Strike (id 1001, tier 0, column 0, no
+// prereq, max_rank 3) -- the fixture's own first Arms talent, so `specForSplit` resolves
+// warrior-arms the same way FURY_FS1's `0/5530515/0` resolves warrior-fury. The trailing
+// `/0` third segment is never read: `orderFromRanks` (fs1.ts) walks only `index.trees`,
+// and this fixture's warrior.json carries two trees (Arms, Fury), not three -- the same
+// reason FURY_FS1's own all-zero third segment needs no Protection tree to exist either.
+const ARMS_FS1 = `FS1:${activeBuild.build}:warrior:orc:3/0/0:head=12640,main_hand=11726`;
+
+async function loadArmsWarrior(page: Page): Promise<void> {
+  await page.goto('/sim');
+  await page.getByTestId('sim-addon-input').fill(ARMS_FS1);
+  await page.getByTestId('sim-addon-load').click();
+  await expect(page.getByTestId('sim-character')).toBeVisible();
+}
+
 test('"what it does" opens the rotation in a drawer, without losing the character or the run', async ({
   page,
 }) => {
@@ -91,6 +110,39 @@ test('"what it does" opens the rotation in a drawer, without losing the characte
   // away.
   const fidelityLink = panel.getByTestId('sim-rotation-drawer-fidelity-link');
   await expect(fidelityLink).toHaveAttribute('href', '/sim/specs#mage-frost');
+  await expect(fidelityLink).toHaveAttribute('target', '_blank');
+});
+
+// The tank's own repro (tank review, MAJOR): /sim -> load an Arms Warrior -> click "what
+// it does" -> used to land on /sim/specs#warrior-arms with the character gone, and Back
+// did not restore it. Same assertions as the Frost Mage flow above, on the other spec the
+// two named reviewer repros actually reproduced against.
+test('the tank’s repro: an Arms Warrior’s "what it does" opens in place, character and result stay on screen', async ({
+  page,
+}) => {
+  await loadArmsWarrior(page);
+
+  await page.getByTestId('sim-run-button').click();
+  await expect(page.getByTestId('sim-run-button')).toHaveText('Run again', { timeout: 5000 });
+  const finishedFigure = await page.getByTestId('sim-dps').textContent();
+  const url = page.url();
+
+  const card = page.getByTestId('sim-rotation-card');
+  await card.getByTestId('sim-rotation-card-link').click();
+
+  const panel = card.getByTestId('sim-rotation-drawer-panel');
+  await expect(panel).toBeVisible();
+  await expect(panel.getByTestId('sim-rotation-drawer-steps')).toContainText(
+    'Bloodrage on cooldown: rage is the limiting resource, same as Fury.',
+  );
+
+  // The point of the fix: no navigation happened at all, so nothing was there to lose.
+  expect(page.url()).toBe(url);
+  await expect(page.getByTestId('sim-character')).toBeVisible();
+  await expect(page.getByTestId('sim-dps')).toHaveText(finishedFigure ?? '');
+
+  const fidelityLink = panel.getByTestId('sim-rotation-drawer-fidelity-link');
+  await expect(fidelityLink).toHaveAttribute('href', '/sim/specs#warrior-arms');
   await expect(fidelityLink).toHaveAttribute('target', '_blank');
 });
 
