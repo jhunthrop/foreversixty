@@ -212,3 +212,75 @@ func TestCapExceededCarriesBothNumbers(t *testing.T) {
 		}
 	}
 }
+
+// LadderIterations is the arithmetic two lanes read: sim/measure
+// proves the server cap against the native job's budget with it, and
+// the api lane's submit-time "too_large" estimate (contract 8) quotes
+// the same sum. It used to be an unexported helper inside
+// sim/measure's own _test.go, where the api module could not call it
+// and would have had to write a second copy.
+//
+// The branches are checked directly because the shipped ladders
+// exercise only two of the three: PrecisionFast's first cut is a
+// Fraction and every other cut is a Top, so a Cut with neither - which
+// keeps everyone - has no ladder to reach it.
+func TestLadderIterationsSumsEveryStage(t *testing.T) {
+	cases := []struct {
+		name         string
+		ladder       Ladder
+		combinations int
+		want         int
+	}{
+		{
+			name: "a fraction cut rounds up", // 101x10, then ceil(0.25x100)=25 +1 x100
+			ladder: Ladder{
+				Iterations: []int{10, 100},
+				Cuts:       []Cut{{Fraction: 0.25, SlackSE: 2}},
+			},
+			combinations: 100,
+			want:         101*10 + 26*100,
+		},
+		{
+			name: "a top cut, and it cannot keep more than there are",
+			ladder: Ladder{
+				Iterations: []int{10, 100},
+				Cuts:       []Cut{{Top: 50, SlackSE: 2}},
+			},
+			combinations: 3,
+			want:         4*10 + 4*100,
+		},
+		{
+			name: "a cut that is neither keeps everyone",
+			ladder: Ladder{
+				Iterations: []int{10, 100},
+				Cuts:       []Cut{{SlackSE: 2}},
+			},
+			combinations: 3,
+			want:         4*10 + 4*100,
+		},
+		{
+			name:         "one stage has no cut to apply",
+			ladder:       Ladder{Iterations: []int{3000}},
+			combinations: 7,
+			want:         8 * 3000,
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			if got := LadderIterations(c.ladder, c.combinations); got != c.want {
+				t.Errorf("LadderIterations = %d, want %d", got, c.want)
+			}
+		})
+	}
+}
+
+// The equipped set runs in every stage - that is what pairs a delta
+// with something - so a stage of n survivors is n+1 runs, never n.
+func TestLadderIterationsCountsTheEquippedSetInEveryStage(t *testing.T) {
+	for _, precision := range Precisions {
+		ladder := Ladders[precision]
+		if got, bare := LadderIterations(ladder, 0), 0; got <= bare {
+			t.Errorf("%s with no combinations at all sums to %d; the equipped baseline still runs every stage", precision, got)
+		}
+	}
+}

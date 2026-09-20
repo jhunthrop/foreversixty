@@ -2,6 +2,7 @@ package bulk
 
 import (
 	"errors"
+	"fmt"
 	"math"
 	"slices"
 	"testing"
@@ -460,13 +461,106 @@ func TestEquippedBeingTheBestResultStillRanksAndCuts(t *testing.T) {
 // exactly what ErrStageMismatch's own doc comment says never happens.
 // Stage requests run through a worker pool with no ordering guarantee
 // of their own (spec 10.2), so this is the only defence.
+// The order guard has to cover every dimension a substitution can
+// move, not just gear.
+//
+// Gear alone left it inert for a whole mode: in talents mode apply
+// never touches gear, so every combination AND the equipped baseline
+// carry byte-identical gear lists, and the [0,3,2,1] row below was
+// accepted and ranked the three loadouts exactly backwards. The
+// consumables row is the same hole inside gear mode - two
+// combinations that differ only in which consumable list they drink.
 func TestRankRefusesResultsOutOfOrder(t *testing.T) {
-	req, stage := planOf(t, api.PrecisionNormal, 4)
-	results := resultsFor(stage, []float64{1000, 1010, 1020, 1030, 1040}, 5)
-	results[1], results[2] = results[2], results[1]
-	if _, _, err := Rank(req, stage, results); !errors.Is(err, ErrStageMismatch) {
-		t.Errorf("Rank = %v, want ErrStageMismatch for misordered results", err)
+	cases := []struct {
+		name  string
+		plan  func(*testing.T) (api.SimRequest, StageRequests)
+		means []float64
+		// swap is the pair of result indices to exchange. Index 0 is
+		// the equipped baseline and is never moved.
+		swap [2]int
+	}{
+		{
+			name:  "gear",
+			plan:  func(t *testing.T) (api.SimRequest, StageRequests) { return planOf(t, api.PrecisionNormal, 4) },
+			means: []float64{1000, 1010, 1020, 1030, 1040},
+			swap:  [2]int{1, 2},
+		},
+		{
+			name:  "talents",
+			plan:  talentsPlanOf,
+			means: []float64{1000, 1300, 1200, 1100},
+			swap:  [2]int{1, 3},
+		},
+		{
+			name:  "consumables",
+			plan:  consumablesPlanOf,
+			means: []float64{1000, 1300, 1100},
+			swap:  [2]int{1, 2},
+		},
 	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			req, stage := c.plan(t)
+			results := resultsFor(stage, c.means, 5)
+			results[c.swap[0]], results[c.swap[1]] = results[c.swap[1]], results[c.swap[0]]
+			if _, _, err := Rank(req, stage, results); !errors.Is(err, ErrStageMismatch) {
+				t.Errorf("Rank = %v, want ErrStageMismatch for misordered results", err)
+			}
+		})
+	}
+}
+
+// talentsPlanOf is a three-loadout talents-mode stage. Every request
+// in it - the equipped baseline included - carries the same gear, so
+// it is the shape the gear-only order guard could not see at all.
+func talentsPlanOf(t *testing.T) (api.SimRequest, StageRequests) {
+	t.Helper()
+	req := base()
+	final, _ := api.FinalIterations(api.PrecisionNormal)
+	req.Iterations = final
+	req.Bulk = &api.BulkSpec{Mode: api.KindTalents, Precision: api.PrecisionNormal, Cap: api.Caps[api.LaneServer]}
+	// Three real, DIFFERENT talent strings: two loadouts with the same
+	// string would be genuinely interchangeable and the guard would be
+	// right to accept them swapped.
+	for i, talents := range []string{
+		"30305001302-05050005525010051",
+		"20305001302-05050005525010051",
+		"10305001302-05050005525010051",
+	} {
+		req.Bulk.Talents = append(req.Bulk.Talents, api.TalentLoadout{
+			Name: fmt.Sprintf("loadout-%d", i), Talents: talents,
+		})
+	}
+	stage, err := Plan(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(stage.Combos) != 3 {
+		t.Fatalf("planned %d combinations, want 3", len(stage.Combos))
+	}
+	return req, stage
+}
+
+// consumablesPlanOf is gear mode with nothing but two alternative
+// consumable lists, so the two combinations differ from each other
+// and from the baseline in Character.Consumes alone.
+func consumablesPlanOf(t *testing.T) (api.SimRequest, StageRequests) {
+	t.Helper()
+	req := base()
+	final, _ := api.FinalIterations(api.PrecisionNormal)
+	req.Iterations = final
+	req.Bulk = &api.BulkSpec{
+		Mode: api.KindGear, Precision: api.PrecisionNormal, Cap: api.Caps[api.LaneServer],
+		Consumables: [][]string{{"elixir-of-the-mongoose"}, {"flask-of-the-titans"}},
+	}
+	stage, err := Plan(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(stage.Combos) != 2 {
+		t.Fatalf("planned %d combinations, want 2", len(stage.Combos))
+	}
+	return req, stage
 }
 
 // A non-finite DPS is refused rather than silently degrading the rest
@@ -572,6 +666,54 @@ func TestTheLastRungProducesTheResult(t *testing.T) {
 	}
 	if final.Summary.FightIndex != 0 {
 		t.Errorf("Summary.FightIndex = %d, want 0 (the equipped set's, not a candidate's)", final.Summary.FightIndex)
+	}
+}
+
+// The equipped run's Sample and DurationMS are DROPPED, not inherited
+// along with its summary.
+//
+// finalResult starts from results[0] - the last stage's equipped sim -
+// and both of those fields describe that one sim rather than the
+// ladder. A 3,000-iteration median cast log copied into every Top
+// Gear result is a sample of one combination presented as the run's,
+// and the equipped sim's wall time is a fraction of the ladder's
+// presented as the whole. Stage requests set NoSample so the engine
+// normally builds no sample at all (plan.go's stamp), but that is the
+// planner asking nicely; this is the half that does not depend on
+// anyone else's cooperation, so the fixture below fills both fields
+// deliberately.
+func TestTheFinalResultDropsTheEquippedRunsSampleAndDuration(t *testing.T) {
+	req, first := planOf(t, api.PrecisionNormal, 4)
+	means := []float64{1000, 1100, 1050, 1020, 990}
+	next, _, err := Rank(req, first, resultsFor(first, means, 2))
+	if err != nil {
+		t.Fatal(err)
+	}
+	last := *next
+	results := resultsFor(last, means[:len(last.Requests)], 2)
+	for i := range results {
+		results[i].Sample = []api.SampleCast{{AtMS: 1500, Action: "spell:23881"}}
+		results[i].DurationMS = 2470
+	}
+
+	_, final, err := Rank(req, last, results)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if final == nil {
+		t.Fatal("the last rung did not finish the run")
+	}
+	if final.Sample != nil {
+		t.Errorf("the bulk result carries a %d-cast sample from the equipped run; a bulk result has no cast log", len(final.Sample))
+	}
+	if final.DurationMS != 0 {
+		t.Errorf("DurationMS = %d, want 0: Rank sees one stage at a time and cannot measure the ladder, so the lane that drove it stamps the wall time", final.DurationMS)
+	}
+	// The summary IS still inherited - that is the equipped
+	// character's breakdown, which the report renders - so this is a
+	// drop of two named fields, not of the whole base result.
+	if final.Summary.EngineVersion == "" {
+		t.Error("the equipped run's summary was dropped along with its sample")
 	}
 }
 

@@ -68,6 +68,13 @@ func executeBulk(req api.SimRequest, opt bulk.Options, progress io.Writer) (api.
 			return api.SimResult{}, err
 		}
 		if final != nil {
+			// bulk.Rank fills in everything it can know and nothing it
+			// cannot: the engine pin, the lane and the ladder's wall
+			// time are all the caller's to stamp, and Rank leaves
+			// DurationMS at zero rather than inheriting the equipped
+			// sim's (see rank.go's finalResult). This is the whole
+			// ladder's wall time, which is what a bulk run's duration
+			// means.
 			final.EngineVersion = enginever.Version
 			final.Lane = api.LaneServer
 			final.DurationMS = time.Since(start).Milliseconds()
@@ -110,12 +117,22 @@ func writeStageTick(progress io.Writer, stage bulk.StageRequests, done int) {
 // silently drop every earlier one: an abort mid-stage-2 would then
 // claim the run only ever reached stage 2's own iteration count, one
 // stage total, when stage 1 actually finished first at its own count.
+//
+// IterationsRun is the stage's own count, the way every other abort
+// path in this binary reports one: a partial result whose
+// IterationsRun is zero reads as "nothing ran at all", which is
+// exactly what the Stages list above contradicts. It is the rung the
+// run reached, not a sum of the sims that finished on it - a stopped
+// stage has some requests done and some not, and SimResult has one
+// IterationsRun, which everywhere else in the envelope means "the
+// iteration count this result is at".
 func abortedBulk(req api.SimRequest, stage bulk.StageRequests, start time.Time) api.SimResult {
 	return api.SimResult{
 		EngineVersion: enginever.Version,
 		Request:       req,
 		Lane:          api.LaneServer,
 		Aborted:       true,
+		IterationsRun: stage.Iterations,
 		DurationMS:    time.Since(start).Milliseconds(),
 		Summary:       adapter.EmptySummary(),
 		Stages:        append(slices.Clone(stage.Ran), api.Stage{Iterations: stage.Iterations, Combos: len(stage.Combos)}),

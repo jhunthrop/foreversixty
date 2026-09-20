@@ -105,8 +105,8 @@ func score(stage StageRequests, results []api.SimResult) ([]scored, api.Estimate
 		if res.IterationsRun != stage.Iterations {
 			return nil, api.Estimate{}, fmt.Errorf("%w: result %d ran %d iterations, stage %d runs %d", ErrStageMismatch, i, res.IterationsRun, stage.Stage, stage.Iterations)
 		}
-		if !slices.Equal(res.Request.Character.Gear, stage.Requests[i].Character.Gear) {
-			return nil, api.Estimate{}, fmt.Errorf("%w: result %d does not carry stage request %d's gear; results must stay in request order", ErrStageMismatch, i, i)
+		if err := sameSubstitutedFields(res.Request, stage.Requests[i]); err != nil {
+			return nil, api.Estimate{}, fmt.Errorf("%w: result %d does not carry stage request %d's %v; results must stay in request order", ErrStageMismatch, i, i, err)
 		}
 		if math.IsNaN(res.DPS.Mean) || math.IsInf(res.DPS.Mean, 0) || math.IsNaN(res.DPS.Error) || math.IsInf(res.DPS.Error, 0) {
 			return nil, api.Estimate{}, fmt.Errorf("bulk: run %d of stage %d reported a non-finite DPS (mean %v, error %v); a NaN mean would sort as tied with everything and a NaN bar would make the cut keep everyone silently", i, stage.Stage, res.DPS.Mean, res.DPS.Error)
@@ -159,6 +159,38 @@ func score(stage StageRequests, results []api.SimResult) ([]scored, api.Estimate
 		out[i] = r.scored
 	}
 	return out, equipped, nil
+}
+
+// sameSubstitutedFields reports which field of a result's own request
+// disagrees with the stage request it claims to answer, or nil if none
+// does. It is score's order guard, and it must cover EVERY field
+// bulk's apply can change, not just gear.
+//
+// Gear alone leaves the guard inert for a whole mode: in talents mode
+// apply never touches gear, so every combination AND the equipped
+// baseline carry byte-identical gear lists and any permutation of the
+// results passes. A three-loadout talents plan fed results permuted
+// [0,3,2,1] was accepted and ranked exactly backwards. The same hole
+// swallows any two gear-mode combinations that differ only in their
+// talent loadout or their consumable list - the other two dimensions
+// of the product - which is every request with a Consumables or
+// Talents dimension and no gear candidates in play.
+//
+// The fields are exactly apply's writes: Character.Gear,
+// Character.Talents (a talent loadout) and Character.Consumes (an
+// alternative consumable list). A substitution that changed anything
+// else would need a line here too, or this guard goes quiet for it in
+// the same way.
+func sameSubstitutedFields(got, want api.SimRequest) error {
+	switch {
+	case !slices.Equal(got.Character.Gear, want.Character.Gear):
+		return errors.New("gear")
+	case got.Character.Talents != want.Character.Talents:
+		return errors.New("talents")
+	case !slices.Equal(got.Character.Consumes, want.Character.Consumes):
+		return errors.New("consumables")
+	}
+	return nil
 }
 
 // chipKey is a stable ordering for two combinations of equal DPS.
@@ -218,12 +250,47 @@ func applyCut(ranked []scored, cut api.Cut) []scored {
 // report shows the character the player has, with the ranking beside
 // it, and a headline taken from the winner would tell them they
 // already do 1,100 DPS.
+//
+// Two fields of that equipped run are dropped rather than inherited,
+// because they describe the ONE SIM it was and not the ladder this
+// result is about. See the assignments below.
 func finalResult(req api.SimRequest, stage StageRequests, ranked []scored, equipped api.Estimate, base api.SimResult) api.SimResult {
 	out := base
 	out.Request = req
 	out.DPS = equipped
 	out.Equipped = &equipped
 	out.IterationsRun = stage.Iterations
+	// A bulk result carries no cast log. Every stage request sets
+	// NoSample (plan.go's stamp) precisely so the engine never builds
+	// one, but that is the planner asking nicely: a caller that
+	// assembled its own stage requests, or an engine that filled the
+	// sample anyway, would have a 3,000-iteration median cast log
+	// copied out of the equipped run into every Top Gear result - a
+	// sample of one combination presented as the run's. Contract 10.3
+	// says a stage sim's cast log is never read; this is the half of
+	// that which does not depend on anyone else's cooperation.
+	out.Sample = nil
+	// The equipped run's own wall time is not the ladder's. base is
+	// the LAST stage's equipped sim - one of dozens - so inheriting
+	// its DurationMS reports a fraction of the run as the whole of it.
+	//
+	// Rank cannot measure the right number either: it is called once
+	// per stage, holds no state between calls, and on the browser side
+	// each call is a separate trip across the wasm boundary with the
+	// page driving the loop. So it reports nothing, and the lane that
+	// drove the ladder stamps the wall time it measured - the same way
+	// each lane stamps Lane and EngineVersion, which Rank equally
+	// cannot know (sim/cmd/forever-sim's executeBulk does exactly
+	// this). Zero here means "not measured", and both lanes now get
+	// zero from the shared code instead of one of them getting a
+	// misleading number.
+	//
+	// The alternative considered and rejected: carry a duration on
+	// api.Stage and sum the ladder's stages here. That would give both
+	// lanes one identical, lane-independent number, but api.Stage's
+	// shape is contract 10 JSON crossing the wasm boundary, and
+	// widening it is an envelope change rather than a fix.
+	out.DurationMS = 0
 	out.Combos = make([]api.Combo, 0, len(ranked))
 	for _, s := range ranked {
 		out.Combos = append(out.Combos, api.Combo{

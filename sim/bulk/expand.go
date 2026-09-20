@@ -24,6 +24,7 @@ package bulk
 import (
 	"errors"
 	"fmt"
+	"math"
 	"slices"
 	"strings"
 
@@ -114,7 +115,17 @@ func baseGear(req api.SimRequest) map[string]api.GearSlot {
 
 // placements turns every candidate into the (slot, gear) pairs it can
 // produce. A candidate that fits nowhere contributes none.
+//
+// It asks simdb.Ready first, once, because every lookup below - and
+// every lookup valid() does later - reads a table that failed to load
+// as a table of misses. Without this, a corrupt embed would refuse
+// the first candidate as ErrUnknownItem ("the build has no such
+// item"), which is a true statement about the wrong thing and sends
+// whoever reads it looking for a bad item id.
 func placements(req api.SimRequest, opt Options) ([]placement, error) {
+	if err := simdb.Ready(); err != nil {
+		return nil, fmt.Errorf("bulk: the build's item table is unusable, so no candidate can be checked: %w", err)
+	}
 	equipped := baseGear(req)
 	locked := req.Bulk.Locked
 	var out []placement
@@ -229,9 +240,45 @@ func enchantFor(c api.Candidate, slot string, item simdb.Item, class string, equ
 	return inherited, nil
 }
 
+// ExpandWorkBudget is how many combinations Expand and Count will
+// ENUMERATE before they stop and refuse the request outright.
+//
+// Retention is bounded by the cap (see combinations, below), but
+// retention was never the whole cost: apply builds a complete
+// api.SimRequest for every member of the cross product before the
+// retention decision is taken, so the WORK is proportional to the
+// product no matter how little of it is kept. Nine armour slots with
+// five real bag candidates apiece is 6^9 = 10,077,696 gear shapes and
+// took 23 seconds on the machine this was measured on; ten apiece is
+// 11^9 = 2.4 billion, which is hours. Those are ordinary Top Gear
+// inputs - a player's bags and bank - and contract 10.2 has the page
+// calling simCount on every candidate tick, single-threaded, on the
+// browser's wasm heap. An unbounded count there is a frozen tab.
+//
+// 250,000 is chosen to sit far above any lane cap (the largest is
+// api.Caps[api.LaneServer] = 5,000, fifty times smaller) and far below
+// anything that takes a perceptible time to enumerate: it is roughly
+// half a second of the measurement above. Reaching it therefore
+// already proves the cap is breached, so the REFUSAL is exact even
+// though the number quoted with it becomes an arithmetic upper bound
+// (upperBound, below) rather than the enumerated count. A request that
+// finishes enumerating under the budget still reports the precise
+// count it always did.
+//
+// The one shape that trade gets wrong is a request whose validity
+// filter rejects nearly everything - twenty-five identically named
+// rings offered to both finger slots, twenty-five identically named
+// trinkets to both trinket slots, which enumerates 457,000 shapes of
+// which only 2,601 are valid. That is refused here and would have
+// fitted. It is not a shape any of the three tools builds, and the
+// alternative - enumerating without a bound so that case can be
+// answered - is the freeze this constant exists to prevent.
+const ExpandWorkBudget = 250_000
+
 // combinations builds every combination the mode allows, retaining at
 // most Cap+1 of them - enough to prove a cap breach without holding
-// the whole product in memory at once.
+// the whole product in memory at once - and enumerating at most
+// ExpandWorkBudget of them, which is what bounds the TIME as well.
 //
 // Gear mode is a product: each slot offers "keep what is equipped" or
 // one of its candidates, and the talent dimension offers "the
@@ -256,45 +303,125 @@ func enchantFor(c api.Candidate, slot string, item simdb.Item, class string, equ
 // lazily rather than building it). Contract 10.2 has the page calling
 // Count on every candidate tick, in the browser, on a 32-bit wasm heap.
 // keep runs valid() and counts every one of them - the reported
-// Combinations is exact, and Expand/Count can never disagree with each
-// other - but stops retaining once it already has enough to answer the
-// cap. Retained memory is O(Cap); nothing proportional to any
-// dimension's full product - gear, talents or consumables - is ever
-// resident at once.
+// Combinations is exact for any request that enumerates within the
+// budget, and Expand/Count can never disagree with each other - but
+// stops retaining once it already has enough to answer the cap, and
+// stops enumerating altogether once the budget is spent. Retained
+// memory is O(Cap); nothing proportional to any dimension's full
+// product - gear, talents or consumables - is ever resident at once,
+// and no enumeration outlives the budget.
+//
+// keep returns whether enumeration should continue, and every walker
+// below threads that answer back out, so the budget is a real early
+// exit rather than a count checked after the fact.
 func combinations(req api.SimRequest, places []placement) ([]Combination, error) {
 	// Non-nil from the start: an expansion with no valid combinations is
 	// a real, empty result, not the absence of one, and should marshal
 	// as [] rather than null once a caller across the wasm boundary is
 	// reading this JSON.
 	out := []Combination{}
-	var total int
-	keep := func(c Combination) {
-		if !valid(c.Request.Character.Gear) {
-			return
+	// total counts the VALID combinations, which is the number the cap
+	// is about; seen counts every one enumerated, valid or not, which
+	// is what the budget is about - an invalid combination costs a
+	// whole apply() to discover.
+	var total, seen int
+	keep := func(c Combination) bool {
+		seen++
+		if valid(c.Request.Character.Gear) {
+			total++
+			if len(out) <= req.Bulk.Cap {
+				out = append(out, c)
+			}
+			// retentionProbe exists only so a test can observe len(out)
+			// DURING enumeration, not after: on a cap breach out is
+			// discarded below in favor of the error, so a test that only
+			// inspects the return value can never tell retained-to-the-cap
+			// apart from retained-everything-then-thrown-away - both return
+			// (nil, ErrCapExceeded{...}) either way.
+			if retentionProbe != nil {
+				retentionProbe(len(out))
+			}
 		}
-		total++
-		if len(out) <= req.Bulk.Cap {
-			out = append(out, c)
-		}
-		// retentionProbe exists only so a test can observe len(out)
-		// DURING enumeration, not after: on a cap breach out is
-		// discarded below in favor of the error, so a test that only
-		// inspects the return value can never tell retained-to-the-cap
-		// apart from retained-everything-then-thrown-away - both return
-		// (nil, ErrCapExceeded{...}) either way.
-		if retentionProbe != nil {
-			retentionProbe(len(out))
-		}
+		return seen < ExpandWorkBudget
 	}
+	var finished bool
 	if req.Bulk.Mode == api.KindGear {
-		gearCombinations(req, places, keep)
+		finished = gearCombinations(req, places, keep)
 	} else {
-		singleCombinations(req, places, keep)
+		finished = singleCombinations(req, places, keep)
+	}
+	if !finished {
+		// The budget stopped the walk, so total is a partial count and
+		// quoting it would understate the plan. upperBound is the
+		// arithmetic size of the product, which is what the page shows
+		// beside the cap.
+		return nil, api.ErrCapExceeded{Cap: req.Bulk.Cap, Combinations: upperBound(req, places)}
 	}
 	if total > req.Bulk.Cap {
 		return nil, api.ErrCapExceeded{Cap: req.Bulk.Cap, Combinations: total}
 	}
 	return out, nil
+}
+
+// upperBound is how large the expansion could be, by arithmetic
+// instead of by enumeration: the product of each slot's candidates
+// plus one ("keep what is equipped"), times the talent and consumable
+// dimensions, plus the sets arm. It is O(number of slots) to compute
+// and is only ever read when the work budget stopped the walk.
+//
+// It is an UPPER bound, never the answer: the validity rules - a
+// two-hander beside an off-hand, one physical one-hander in both
+// hands, a unique-equipped item worn twice - can only be answered by
+// looking at a finished gear list, and every one of them can only
+// remove combinations from this figure. Erring high is the right way
+// round for a refusal that is already certain.
+//
+// The multiplications saturate rather than wrap: seventeen slots with
+// twenty candidates apiece is 21^17, which is far past what an int
+// holds, and a wrapped product could come back small enough to look
+// like it fits.
+func upperBound(req api.SimRequest, places []placement) int {
+	if req.Bulk.Mode != api.KindGear {
+		// One substitution at a time, so the arithmetic is exact: every
+		// placement on its own, then every loadout on its own. This is
+		// singleCombinations' own shape, written out.
+		return len(places) + len(req.Bulk.Talents)
+	}
+	// The talent and consumables dimensions each offer "the character's
+	// own" plus their alternatives, the way gearCombinations builds
+	// them.
+	dims := satMul(len(req.Bulk.Talents)+1, len(req.Bulk.Consumables)+1)
+	perSlot := map[string]int{}
+	for _, p := range places {
+		perSlot[p.Slot]++
+	}
+	product := 1
+	for _, n := range perSlot {
+		product = satMul(product, n+1)
+	}
+	// A named set is its own arm, crossed with the other two dimensions
+	// only - not a member of the gear product.
+	return satAdd(satMul(product, dims), satMul(len(req.Bulk.Sets), dims))
+}
+
+// satMul multiplies without wrapping: an overflow saturates at
+// math.MaxInt.
+func satMul(a, b int) int {
+	if a == 0 || b == 0 {
+		return 0
+	}
+	if a > math.MaxInt/b {
+		return math.MaxInt
+	}
+	return a * b
+}
+
+// satAdd adds without wrapping, for the same reason.
+func satAdd(a, b int) int {
+	if a > math.MaxInt-b {
+		return math.MaxInt
+	}
+	return a + b
 }
 
 // retentionProbe is nil in production. A test sets it (and restores it
@@ -307,18 +434,26 @@ func combinations(req api.SimRequest, places []placement) ([]Combination, error)
 var retentionProbe func(retained int)
 
 // singleCombinations is one substitution at a time: every placement on
-// its own, then every talent loadout on its own.
-func singleCombinations(req api.SimRequest, places []placement, keep func(Combination)) {
+// its own, then every talent loadout on its own. It reports whether it
+// got all the way through, or stopped because keep said the work
+// budget was spent.
+func singleCombinations(req api.SimRequest, places []placement, keep func(Combination) bool) bool {
 	for _, p := range places {
-		keep(apply(req, []placement{p}, nil, nil, nil))
+		if !keep(apply(req, []placement{p}, nil, nil, nil)) {
+			return false
+		}
 	}
 	for i := range req.Bulk.Talents {
-		keep(apply(req, nil, &req.Bulk.Talents[i], nil, nil))
+		if !keep(apply(req, nil, &req.Bulk.Talents[i], nil, nil)) {
+			return false
+		}
 	}
+	return true
 }
 
-// gearCombinations is the product.
-func gearCombinations(req api.SimRequest, places []placement, keep func(Combination)) {
+// gearCombinations is the product. Like singleCombinations it reports
+// whether it finished rather than stopping on the work budget.
+func gearCombinations(req api.SimRequest, places []placement, keep func(Combination) bool) bool {
 	// One bucket per slot, in the envelope's slot order so the product
 	// is enumerated the same way every time and two runs of the same
 	// request produce the same combination order.
@@ -352,7 +487,7 @@ func gearCombinations(req api.SimRequest, places []placement, keep func(Combinat
 	// walked lazily (see walkGearChoices) rather than built as a slice,
 	// crossed with the talent and consumables dimensions as each one is
 	// produced.
-	walkGearChoices(slots, bySlot, func(chosen []placement) {
+	if !walkGearChoices(slots, bySlot, func(chosen []placement) bool {
 		for _, loadout := range loadouts {
 			for _, drink := range drinks {
 				if len(chosen) == 0 && loadout == nil && drink == nil {
@@ -362,19 +497,27 @@ func gearCombinations(req api.SimRequest, places []placement, keep func(Combinat
 					// against itself.
 					continue
 				}
-				keep(apply(req, chosen, loadout, nil, drink))
+				if !keep(apply(req, chosen, loadout, nil, drink)) {
+					return false
+				}
 			}
 		}
-	})
+		return true
+	}) {
+		return false
+	}
 	// A named set is a whole-gear alternative, so it is its own arm
 	// rather than a member of the product above.
 	for i := range req.Bulk.Sets {
 		for _, loadout := range loadouts {
 			for _, drink := range drinks {
-				keep(apply(req, nil, loadout, &req.Bulk.Sets[i], drink))
+				if !keep(apply(req, nil, loadout, &req.Bulk.Sets[i], drink)) {
+					return false
+				}
 			}
 		}
 	}
+	return true
 }
 
 // walkGearChoices calls yield once for every choice of at most one
@@ -401,23 +544,37 @@ func gearCombinations(req api.SimRequest, places []placement, keep func(Combinat
 // BOTH would wield one physical item in two slots at once, so
 // sameWeaponTwice filters at the leaf - the same place the eager
 // version filtered the fully-built product, and the only place a
-// chosen combination is complete enough to check.
-func walkGearChoices(slots []string, bySlot map[string][]placement, yield func([]placement)) {
-	var walk func(i int, chosen []placement)
-	walk = func(i int, chosen []placement) {
+// chosen combination is complete enough to check. A leaf filtered
+// there costs no apply() and so spends no work budget; it cannot run
+// away with the walk either, because a filtered leaf needs the same
+// item chosen in BOTH hands and those are at most a quarter of any
+// product that has them at all.
+//
+// yield reports whether to carry on. Returning false unwinds the whole
+// recursion immediately, which is what lets ExpandWorkBudget bound the
+// TIME of an enumeration and not merely its memory; walkGearChoices
+// passes that answer back to its own caller.
+func walkGearChoices(slots []string, bySlot map[string][]placement, yield func([]placement) bool) bool {
+	var walk func(i int, chosen []placement) bool
+	walk = func(i int, chosen []placement) bool {
 		if i == len(slots) {
-			if !sameWeaponTwice(chosen) {
-				yield(chosen)
+			if sameWeaponTwice(chosen) {
+				return true
 			}
-			return
+			return yield(chosen)
 		}
 		slot := slots[i]
-		walk(i+1, chosen)
-		for _, p := range bySlot[slot] {
-			walk(i+1, append(append([]placement(nil), chosen...), p))
+		if !walk(i+1, chosen) {
+			return false
 		}
+		for _, p := range bySlot[slot] {
+			if !walk(i+1, append(append([]placement(nil), chosen...), p)) {
+				return false
+			}
+		}
+		return true
 	}
-	walk(0, nil)
+	return walk(0, nil)
 }
 
 // sameWeaponTwice reports whether chosen substitutes the identical
@@ -609,14 +766,18 @@ func apply(req api.SimRequest, places []placement, loadout *api.TalentLoadout, s
 // at the gear, so a closed-form count would be a different number
 // from the one Plan runs, which is the one thing a count must never
 // be. combinations enumerates the product one combination at a time
-// and keeps at most Cap+1 of them (see its doc comment), so Count's
-// memory cost tops out at the size of a request the cap would refuse
-// anyway, not the size of the request the candidates describe - which
-// is what makes it safe to call on every candidate tick (contract
-// 10.2), including from the browser's wasm heap.
+// and keeps at most Cap+1 of them, and it stops enumerating at
+// ExpandWorkBudget (see both doc comments), so Count costs at most
+// the budget's worth of work and the cap's worth of memory whatever
+// the candidates describe. That - not "it allocates nothing", which
+// was never true, since every combination is a built api.SimRequest
+// by the time validity can be asked about it - is what makes it safe
+// to call on every candidate tick (contract 10.2), including from
+// the browser's wasm heap.
 //
 // It answers the cap the same way Expand does, so "1,280 against a
-// cap of 400" is one message from one place.
+// cap of 400" is one message from one place. Past the budget both
+// still refuse, and both quote the same arithmetic upper bound.
 func Count(req api.SimRequest) (int, error) { return CountWith(req, Options{}) }
 
 // CountWith is Count with the planner's options.

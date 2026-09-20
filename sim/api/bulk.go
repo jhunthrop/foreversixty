@@ -12,6 +12,7 @@ package api
 import (
 	"errors"
 	"fmt"
+	"math"
 	"slices"
 	"strings"
 )
@@ -159,6 +160,53 @@ var Ladders = map[string]Ladder{
 	},
 }
 
+// LadderIterations is what a whole bulk expansion costs: every stage
+// of this ladder, summed.
+//
+// The equipped set runs in every stage - that is what pairs a delta
+// with something - so a stage of n surviving candidates is n+1 runs.
+// Between stages a cut keeps a fraction of the survivors or a fixed
+// top few.
+//
+// It is a floor, not the exact figure: Cut.SlackSE keeps anything
+// whose interval still overlaps the last survivor's, so a real stage
+// runs at least this many and usually a few more. That makes "over
+// budget" a certainty and "under budget" the optimistic reading,
+// which is the right way round for a cap.
+//
+// It lives here, beside Ladders and Caps, because two lanes read it
+// and they must read the same one: sim/measure proves
+// Caps[LaneServer] against the native job's iteration budget with it,
+// and the api lane's submit-time "too_large" estimate (contract 8)
+// quotes the same arithmetic. It was an unexported helper in
+// sim/measure's own _test.go, where the api module could not reach
+// it and would have had to reimplement it - which is the divergence
+// sim/bulk and this package exist to prevent.
+func LadderIterations(l Ladder, combinations int) int {
+	total := 0
+	survivors := combinations
+	for i, iterations := range l.Iterations {
+		total += (survivors + 1) * iterations
+		if i < len(l.Cuts) {
+			survivors = l.Cuts[i].survivors(survivors)
+		}
+	}
+	return total
+}
+
+// survivors is how many candidates this cut keeps of n, ignoring
+// SlackSE for the reason LadderIterations gives.
+func (c Cut) survivors(n int) int {
+	switch {
+	case c.Fraction > 0:
+		return int(math.Ceil(c.Fraction * float64(n)))
+	case c.Top > 0:
+		return min(c.Top, n)
+	default:
+		return n
+	}
+}
+
 // FinalIterations is the iteration count a precision's last stage runs
 // at, which is what a bulk request's Iterations field must say.
 func FinalIterations(precision string) (int, bool) {
@@ -180,8 +228,17 @@ func FinalIterations(precision string) (int, bool) {
 // a 20,000-combination fast run does not finish inside the Cloud Run
 // job's 15-minute timeout at that rate. The timeout stays; the cap
 // moved. The api lane's "too_large" estimate is built from the same
-// constant - NativeIterationsPerCPUSecond x 4 CPUs x 840 seconds - so
-// the cap and the estimate cannot disagree.
+// constant - NativeIterationsPerCPUSecond x 4 CPUs x 840 seconds -
+// and from LadderIterations above, so the cap and the estimate cannot
+// disagree.
+//
+// The argument behind 5,000 is written entirely about a FAST run.
+// Normal and high are both a single 1,000-iteration first stage over
+// every combination - ten times the fast ladder's first rung - and
+// neither fits the job budget at this cap; sim/measure's
+// TestTheServerCapFitsTheJobBudget asserts that overrun rather than
+// hiding it. Whether the cap is per-precision is an open contract
+// question (A2).
 var Caps = map[string]int{LaneBrowser: 400, LaneServer: 5000}
 
 // ErrCapExceeded is returned when an expansion is larger than the lane

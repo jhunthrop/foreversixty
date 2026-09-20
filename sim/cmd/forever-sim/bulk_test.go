@@ -179,11 +179,28 @@ func TestExecuteBulkAbortedMidStageKeepsEarlierStages(t *testing.T) {
 	if res.Stages[0].Iterations != stage1.Iterations || res.Stages[0].Combos != len(stage1.Combos) {
 		t.Errorf("Stages[0] = %+v, want the completed stage 1 (%d iterations, %d combos)", res.Stages[0], stage1.Iterations, len(stage1.Combos))
 	}
+	// A partial result whose IterationsRun is zero reads as "nothing
+	// ran at all", which the Stages list above flatly contradicts.
+	// Every other abort path in this binary reports the count it
+	// reached; this one used to leave it at zero.
+	if res.IterationsRun != res.Stages[len(res.Stages)-1].Iterations {
+		t.Errorf("IterationsRun = %d, want the stage it was stopped in (%d); every other abort path reports one",
+			res.IterationsRun, res.Stages[len(res.Stages)-1].Iterations)
+	}
+	// The ladder's own wall time, stamped by the lane: bulk.Rank
+	// leaves DurationMS at zero because it cannot measure it, and an
+	// aborted run is no different.
+	if res.DurationMS <= 0 {
+		t.Errorf("DurationMS = %d, want the wall time the run reached", res.DurationMS)
+	}
 }
 
 // -plan is how the API counts a bulk request without importing
-// sim/internal. It runs nothing, so it is fast enough for a submit
-// handler.
+// sim/internal. It runs no SIMS - the engine is never started - and
+// its planning cost is bounded by bulk.ExpandWorkBudget however large
+// the candidate list is, which is what makes it safe in a submit
+// handler. It is not free: planning builds a request per combination,
+// and this case exercises two candidates, not a bag full.
 func TestPlanOnlyRunsNothing(t *testing.T) {
 	dir := t.TempDir()
 	in := filepath.Join(dir, "request.json")

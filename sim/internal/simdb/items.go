@@ -177,6 +177,14 @@ var items = sync.OnceValues(func() (map[int]Item, error) {
 
 // Lookup is one item of the active build. A miss is an item the build
 // does not carry, which sim/bulk refuses rather than sims.
+//
+// A table that could not be LOADED at all misses every id, and the two
+// are not the same thing: a corrupt embed would otherwise present as
+// "the build has no such item" for every candidate, and expand.go's
+// valid() - which treats a miss as "nothing to check" and carries on -
+// would silently bless every gear list in the product. Ready, below,
+// is the check that keeps those apart, and every caller asks it once
+// before it starts asking about ids (sim/bulk's ExpandWith does).
 func Lookup(id int) (Item, bool) {
 	table, err := items()
 	if err != nil {
@@ -184,6 +192,15 @@ func Lookup(id int) (Item, bool) {
 	}
 	it, ok := table[id]
 	return it, ok
+}
+
+// Ready reports whether the build's item table loaded, so that a
+// caller about to ask about many ids finds out ONCE, with the load
+// error itself, rather than reading a load failure as a table full of
+// misses. It is the boundary check Lookup's doc refers to.
+func Ready() error {
+	_, err := items()
+	return err
 }
 
 // Len is how many items the build carries. It is what a caller uses to

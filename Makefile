@@ -154,7 +154,13 @@ sim-styles: $(SIM_STYLES)
 	@cp "$(SIM_STYLES)" "$(WEB_SIM_DATA)"
 	@echo "copied $(SIM_STYLES) to $(WEB_SIM_DATA)"
 
-$(SIM_STYLES): sim/request/styles.go
+# The generator and the api types it renders are prerequisites too,
+# not just the table it reads: styles.go holds the map, but
+# genstyles/main.go decides the JSON shape and sim/api holds the
+# encounter fields a style expands into, so a change to either of
+# those with styles.go untouched used to leave a stale styles.json
+# behind locally and fail only in CI's styles-check.
+$(SIM_STYLES): sim/request/styles.go sim/internal/genstyles/main.go $(filter-out %_test.go,$(wildcard sim/api/*.go))
 	@(cd sim && go run ./internal/genstyles)
 
 .PHONY: styles-check
@@ -162,13 +168,21 @@ $(SIM_STYLES): sim/request/styles.go
 # apl-check proves the rotations. A retuned preset that never reached
 # the page is a failing pipeline rather than two products quietly
 # disagreeing about what "Heavy movement" means.
+#
+# The rendered copy goes to a mktemp file removed by a trap, not to a
+# fixed /tmp path: a predictable name is a file another user on a
+# shared machine can own, and then this target fails on every run with
+# a permission error nobody can clear.
 styles-check:
-	@(cd sim && go run ./internal/genstyles /tmp/styles.check.json)
-	@diff -u "$(SIM_STYLES)" /tmp/styles.check.json || { \
-	  echo "$(SIM_STYLES) is stale; run \`cd sim && go run ./internal/genstyles\`"; exit 1; }
-	@diff -u "$(SIM_STYLES)" "$(WEB_SIM_DATA)" || { \
-	  echo "$(WEB_SIM_DATA) is stale; run \`make sim-styles\`"; exit 1; }
-	@echo "the fight-style table matches in all three places"
+	@set -e; \
+	  tmp=$$(mktemp); \
+	  trap 'rm -f "$$tmp"' EXIT INT TERM; \
+	  (cd sim && go run ./internal/genstyles "$$tmp"); \
+	  diff -u "$(SIM_STYLES)" "$$tmp" || { \
+	    echo "$(SIM_STYLES) is stale; run \`cd sim && go run ./internal/genstyles\`"; exit 1; }; \
+	  diff -u "$(SIM_STYLES)" "$(WEB_SIM_DATA)" || { \
+	    echo "$(WEB_SIM_DATA) is stale; run \`make sim-styles\`"; exit 1; }; \
+	  echo "the fight-style table matches in all three places"
 
 .PHONY: artifacts
 # artifacts builds the two things one pinned engine sha produces, both

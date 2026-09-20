@@ -227,10 +227,27 @@ jobs:
             // planner compiled into the wasm and that the three new
             // exports agree about their JSON.
             const gear = JSON.parse(gearJSON);
+            // Whitesoul Helm: a real plate head of the active build,
+            // and NOT the fixture's equipped one. At least one
+            // candidate has to be an item the character is not
+            // already wearing, or every combination's gear list is
+            // byte-identical to the equipped set's and a regression
+            // where apply() never installed the substitution would
+            // rank four no-op combinations and pass this smoke
+            // unchanged. sim/bulk's own tests carry the same id as
+            // itemHelm2, so it is proved to resolve in this build.
+            const substitutedHead = 12633;
+            if (gear.find(g => g.slot === 'head').item_id === substitutedHead) {
+              console.error('the fixture now equips', substitutedHead,
+                            '- pick another real head so this stays a substitution'); process.exit(1);
+            }
             const bulkReq = { ...geared, iterations: 3000, random_seed: 3,
               bulk: { mode: 'gear', precision: 'normal', cap: 400,
                 candidates: [
-                  { slot: 'head',   item_id: gear.find(g => g.slot === 'head').item_id,   origin: 'bag' },
+                  // The three below ARE the equipped items, which is a
+                  // real case (a bag copy of what you are wearing) and
+                  // keeps the combination count at 15.
+                  { slot: 'head',   item_id: substitutedHead,                             origin: 'bag' },
                   { slot: 'neck',   item_id: gear.find(g => g.slot === 'neck').item_id,   origin: 'bag' },
                   { slot: 'wrist',  item_id: gear.find(g => g.slot === 'wrist').item_id,  origin: 'bag' },
                   { slot: 'hands',  item_id: gear.find(g => g.slot === 'hands').item_id,  origin: 'bag' },
@@ -267,6 +284,20 @@ jobs:
             }
             if (stage.requests.length !== stage.combos.length + 1) {
               console.error('simPlan requests', stage.requests.length); process.exit(1);
+            }
+            // The substitution is actually INSTALLED in the request
+            // that will run, not merely named in a chip. Eight of the
+            // fifteen combinations include the new head; requests[0]
+            // is the equipped baseline and must not.
+            const withNewHead = stage.requests.filter(
+              r => r.character.gear.some(g => g.slot === 'head' && g.item_id === substitutedHead));
+            if (withNewHead.length !== 8) {
+              console.error('stage requests carrying head', substitutedHead, ':',
+                            withNewHead.length, 'want 8'); process.exit(1);
+            }
+            if (stage.requests[0].character.gear.some(
+                  g => g.slot === 'head' && g.item_id === substitutedHead)) {
+              console.error('the equipped baseline carries the substituted head'); process.exit(1);
             }
             let stagesRun = 0, topGear = null;
             while (topGear === null) {

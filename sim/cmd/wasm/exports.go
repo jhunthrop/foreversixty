@@ -105,9 +105,18 @@ func rankJSON(requestJSON, stageJSON, resultsJSON string) string {
 }
 
 // countJSON is simCount's body: how many combinations this request
-// would plan, without allocating a single request. The page asks on
-// every candidate tick, which is why it is not "call simPlan and
-// count the answer".
+// would plan, without RETAINING more than the cap's worth of them and
+// without enumerating more than bulk.ExpandWorkBudget of them. The
+// page asks on every candidate tick, which is why it is not "call
+// simPlan and count the answer": simPlan retains every combination it
+// plans, and this does not.
+//
+// It does build a request per combination as it counts - validity can
+// only be asked of a finished gear list - so the honest guarantee is
+// the budget, not "allocates nothing". Past the budget the answer is
+// a cap refusal quoting an arithmetic upper bound rather than an
+// enumerated count; below it, the count is exact and agrees with
+// simPlan exactly.
 func countJSON(requestJSON string) string {
 	req, err := decodeRequest(requestJSON)
 	if err != nil {

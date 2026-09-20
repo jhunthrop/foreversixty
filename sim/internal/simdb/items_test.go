@@ -113,3 +113,24 @@ func TestLookupMissesCleanly(t *testing.T) {
 		t.Error("a negative id resolved")
 	}
 }
+
+// Ready is the boundary check that keeps "the table did not load"
+// apart from "the table has no such id". Without it a corrupt embed
+// presents as a miss on every id, and sim/bulk's valid() - which
+// treats a miss as "nothing to check" - blesses every gear list in
+// the product instead of refusing the run.
+func TestReadyAnswersForTheWholeTable(t *testing.T) {
+	if err := Ready(); err != nil {
+		t.Fatalf("Ready = %v, and Lookup answers, so the table did load", err)
+	}
+	// Ready and Len read the same once-loaded table, so they agree
+	// about whether it is usable; a Ready that answered from anything
+	// else could say yes to an empty one.
+	n, err := Len()
+	if err != nil {
+		t.Fatalf("Len = %v after Ready said the table loaded", err)
+	}
+	if n == 0 {
+		t.Fatal("Ready says the table loaded and it is empty")
+	}
+}

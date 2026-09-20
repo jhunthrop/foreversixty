@@ -3,10 +3,12 @@ package bulk
 import (
 	"errors"
 	"fmt"
+	"math"
 	"runtime"
 	"slices"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/jhunthrop/foreversixty/sim/enginever"
@@ -910,6 +912,200 @@ func TestCombinationsRetentionStaysAtTheCap(t *testing.T) {
 	}
 }
 
+// budgetSlots is nine real armour slots of the active build with five
+// real, individually unremarkable candidates apiece - a player's bags,
+// in other words. Every id is a row this build carries, usable by
+// base()'s orc warrior: unrestricted by class, faction-open, at or
+// under the level cap, and in exactly one slot.
+// TestBudgetSlotsAreRealAndSingleSlotted keeps them honest.
+var budgetSlots = map[string][]int{
+	"head":     {7922, 7934, 7937, 12185, 12410},
+	"neck":     {4614, 4743, 5029, 7427, 7467},
+	"shoulder": {7918, 7928, 11605, 12428, 12610},
+	"back":     {134111, 271724, 271735, 271748, 271758},
+	"chest":    {7930, 7935, 7939, 10384, 11195},
+	"wrist":    {12408, 12425, 17014, 19578, 19580},
+	"hands":    {7919, 7927, 7938, 12631, 12639},
+	"waist":    {12406, 12424, 14864, 15709, 19051},
+	"legs":     {7921, 7926, 11910, 12414, 12429},
+}
+
+// budgetSlotOrder is budgetSlots' keys, fixed, so a request built from
+// it is the same request every run.
+var budgetSlotOrder = []string{"head", "neck", "shoulder", "back", "chest", "wrist", "hands", "waist", "legs"}
+
+func TestBudgetSlotsAreRealAndSingleSlotted(t *testing.T) {
+	ch := base().Character
+	for _, slot := range budgetSlotOrder {
+		for _, id := range budgetSlots[slot] {
+			item, ok := simdb.Lookup(id)
+			if !ok {
+				t.Errorf("item %d is no longer in this build", id)
+				continue
+			}
+			if !slices.Equal(item.Slots, []string{slot}) {
+				t.Errorf("item %d (%s) goes in %v, not %q alone", id, item.Name, item.Slots, slot)
+			}
+			if !usable(item, ch) {
+				t.Errorf("item %d (%s) is not usable by the fixture character", id, item.Name)
+			}
+		}
+	}
+}
+
+// bagsRequest is a gear request with the first n of each budget slot's
+// candidates: (n+1)^9 gear shapes, before validity.
+func bagsRequest(t *testing.T, n int) api.SimRequest {
+	t.Helper()
+	req := base()
+	var candidates []api.Candidate
+	for _, slot := range budgetSlotOrder {
+		for _, id := range budgetSlots[slot][:n] {
+			candidates = append(candidates, candidate(slot, id))
+		}
+	}
+	req.Bulk = &api.BulkSpec{
+		Mode: api.KindGear, Precision: api.PrecisionNormal,
+		Cap: api.Caps[api.LaneBrowser], Candidates: candidates,
+	}
+	// The whole point is that this is an ORDINARY request, not a
+	// malformed one the envelope would have refused first.
+	if err := req.Validate(); err != nil {
+		t.Fatalf("the bags request does not validate: %v", err)
+	}
+	return req
+}
+
+// Count is bounded in TIME, not only in memory.
+//
+// Three earlier rounds bounded what combinations RETAINS to O(Cap).
+// Nothing bounded the work: apply built a complete api.SimRequest for
+// every member of the cross product before the retention decision,
+// and the cap was only checked after the whole enumeration finished.
+// This exact request - nine armour slots, five real bag candidates
+// apiece, 6^9 = 10,077,696 shapes - measured 23.1 seconds before
+// ExpandWorkBudget and 0.48 after. Contract 10.2 has the page calling
+// simCount on every candidate tick, single-threaded, in wasm.
+//
+// The bound is deliberately loose: seven times the measured
+// -race figure on the machine this was written on, so a loaded CI
+// runner does not make it flaky, and still far under the 15-plus
+// seconds the unbudgeted version took.
+func TestCountIsBoundedInTimeAndNotJustInMemory(t *testing.T) {
+	const limit = 10 * time.Second
+	req := bagsRequest(t, 5)
+
+	start := time.Now()
+	_, err := Count(req)
+	elapsed := time.Since(start)
+
+	var capped api.ErrCapExceeded
+	if !errors.As(err, &capped) {
+		t.Fatalf("Count = %v, want ErrCapExceeded", err)
+	}
+	if elapsed > limit {
+		t.Errorf("Count of a %d-shape request took %s, want under %s; the work budget is not bounding the enumeration",
+			capped.Combinations, elapsed.Round(time.Millisecond), limit)
+	}
+}
+
+// Past the budget the refusal still names a number, and it is the
+// product's arithmetic size rather than a partial count: a page that
+// said "250,001 combinations" for a ten-million-shape request would
+// be quoting the budget back at the player.
+func TestPastTheBudgetTheCountIsAnUpperBound(t *testing.T) {
+	req := bagsRequest(t, 5)
+	// Nine slots, each offering "keep what is equipped" plus five
+	// candidates.
+	want := 1
+	for range budgetSlotOrder {
+		want *= 6
+	}
+	_, err := Count(req)
+	var capped api.ErrCapExceeded
+	if !errors.As(err, &capped) {
+		t.Fatalf("Count = %v, want ErrCapExceeded", err)
+	}
+	if capped.Combinations != want {
+		t.Errorf("ErrCapExceeded.Combinations = %d, want the arithmetic upper bound %d", capped.Combinations, want)
+	}
+	if capped.Combinations <= ExpandWorkBudget {
+		t.Errorf("the quoted %d is not above the budget %d; it is a partial count, not a bound", capped.Combinations, ExpandWorkBudget)
+	}
+}
+
+// Below the budget nothing changed: the count is the exact number of
+// VALID combinations Expand would return, which is one less than the
+// arithmetic bound here (the empty choice is the equipped baseline,
+// and Plan runs that separately). A bound quoted where an exact
+// count was available would make the page's cap notice vaguer than
+// it has to be.
+func TestUnderTheBudgetTheCountIsStillExact(t *testing.T) {
+	req := bagsRequest(t, 2)
+	// 3^9 = 19,683 gear shapes, all valid - nine armour slots, so no
+	// weapon, ring or trinket rule can reject any of them - less the
+	// equipped set.
+	const shapes = 19683
+	if shapes >= ExpandWorkBudget {
+		t.Fatalf("this case is meant to finish inside the %d-combination budget, and it is %d", ExpandWorkBudget, shapes)
+	}
+	_, err := Count(req)
+	var capped api.ErrCapExceeded
+	if !errors.As(err, &capped) {
+		t.Fatalf("Count = %v, want ErrCapExceeded", err)
+	}
+	if capped.Combinations != shapes-1 {
+		t.Errorf("ErrCapExceeded.Combinations = %d, want the exact %d", capped.Combinations, shapes-1)
+	}
+}
+
+// upperBound never wraps. Seventeen slots of twenty candidates is
+// 21^17, far past what an int holds, and a wrapped product can come
+// back small - even negative - which would turn a refusal into an
+// expansion nothing could finish.
+func TestUpperBoundSaturatesRatherThanWrapping(t *testing.T) {
+	if got := satMul(math.MaxInt/2, 4); got != math.MaxInt {
+		t.Errorf("satMul overflow = %d, want math.MaxInt", got)
+	}
+	if got := satAdd(math.MaxInt-1, 5); got != math.MaxInt {
+		t.Errorf("satAdd overflow = %d, want math.MaxInt", got)
+	}
+	if got := satMul(0, math.MaxInt); got != 0 {
+		t.Errorf("satMul(0, MaxInt) = %d, want 0", got)
+	}
+	if got := satMul(6, 7); got != 42 {
+		t.Errorf("satMul(6, 7) = %d", got)
+	}
+
+	req := base()
+	req.Bulk = &api.BulkSpec{Mode: api.KindGear, Precision: api.PrecisionNormal, Cap: 400}
+	places := make([]placement, 0, len(api.GearSlots)*20)
+	for _, slot := range api.GearSlots {
+		for i := 0; i < 20; i++ {
+			places = append(places, placement{Slot: slot})
+		}
+	}
+	if got := upperBound(req, places); got != math.MaxInt {
+		t.Errorf("upperBound of 21^%d = %d, want it saturated at math.MaxInt", len(api.GearSlots), got)
+	}
+}
+
+// In drops and talents mode the "upper" bound is the exact count -
+// one substitution at a time is a sum, not a product - so a request
+// large enough to spend the budget there still reports the truth.
+func TestTheUpperBoundIsExactForOneSubstitutionAtATime(t *testing.T) {
+	req := withBulk(api.KindTalents)
+	req.Bulk.Candidates = nil
+	for i := 0; i < 3; i++ {
+		req.Bulk.Talents = append(req.Bulk.Talents, api.TalentLoadout{
+			Name: fmt.Sprintf("loadout-%d", i), Talents: "30305001302-05050005525010051",
+		})
+	}
+	if got := upperBound(req, nil); got != 3 {
+		t.Errorf("upperBound = %d, want the 3 loadouts", got)
+	}
+}
+
 // A regression test for walkGearChoices' laziness specifically: nine
 // slots with three candidates apiece is the exact shape that used to
 // materialise the whole [][]placement product - hundreds of megabytes
@@ -943,7 +1139,9 @@ func TestWalkGearChoicesDoesNotMaterialiseTheProduct(t *testing.T) {
 	runtime.ReadMemStats(&before)
 
 	var got int
-	walkGearChoices(slots, bySlot, func(chosen []placement) { got++ })
+	if !walkGearChoices(slots, bySlot, func(chosen []placement) bool { got++; return true }) {
+		t.Fatal("walkGearChoices stopped early for a yield that never asked it to")
+	}
 
 	var after runtime.MemStats
 	runtime.ReadMemStats(&after)
