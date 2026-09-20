@@ -82,11 +82,19 @@ function Export.containerSize(bag)
 end
 
 --- An item link's id, or nil for a link this client will not parse.
+--- GetItemInfoInstant is required here, not guarded: it has shipped on
+--- every WoW client since well before this addon's Classic Era target
+--- build (spike check 2 catches it if that is ever wrong), and both
+--- isEquippable below and Gear.upgrades already call it unguarded. A guard
+--- only here, that let a missing API slip past as a successfully parsed
+--- id, would not avoid that crash -- it would only move it from this
+--- function to one of those, inside the PLAYER_LOGOUT handler that is the
+--- only path that ever writes ForeverSixtyDB.
 local function itemIdOf(link)
 	if link == nil then
 		return nil
 	end
-	local id = GetItemInfoInstant and GetItemInfoInstant(link)
+	local id = GetItemInfoInstant(link)
 	if id ~= nil then
 		return tonumber(id)
 	end

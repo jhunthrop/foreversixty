@@ -26,13 +26,13 @@ change the named constant if it differs from the default.
 | 3 | Build string | `/dump GetBuildInfo()` | `ns.Data.build` must match; the addon warns when it does not |
 | 4 | Talent tab count | `/dump GetNumTalentTabs()` | `Talents.TAB_COUNT` (default `3`) |
 | 5 | Talent count per tab | `/dump GetNumTalents(1)` | — |
-| 6 | Talent info shape and 1-basing | `/dump GetTalentInfo(1, 1)` — expect `name, icon, tier, column, rank, maxRank, …` with `tier` and `column` starting at 1 | `Talents.ONE_BASED` (default `true`) |
+| 6 | Talent info shape and 1-basing | `/dump GetTalentInfo(1, 1)` — expect `name, icon, tier, column, rank, maxRank, …` with `tier` and `column` starting at 1 | none — `Talents.lua` reads `tier`/`column` straight from `GetTalentInfo` and treats them as 1-based throughout; if the client turns out 0-based, fix that reading, not a flag |
 | 7 | Tab order matches the site's tree `position` | `/dump GetTalentTabInfo(1)` — its name must be `talents/<class>.json`'s `trees[0].name` | `addondata.TAB_BASE` (default `1`, i.e. `position + 1`) |
 | 8 | Equipped item link | `/dump GetInventoryItemLink("player", 1)` | — |
-| 9 | Container API | `/dump C_Container and C_Container.GetContainerItemLink(0, 1)`; if nil, `/dump GetContainerItemLink(0, 1)` | `Export.CONTAINER_LINK` picks whichever exists |
+| 9 | Container API | `/dump C_Container and C_Container.GetContainerItemLink(0, 1)`; if nil, `/dump GetContainerItemLink(0, 1)` | `Export.containerLink(bag, slot)` picks whichever exists |
 | 10 | Bank bag ids | `/dump NUM_BANKBAGSLOTS` | `Export.BANK_BAGS` (default `-1, 5, 6, 7, 8, 9, 10, 11`) |
 | 11 | Item stat keys | `/dump GetItemStats(GetInventoryItemLink("player", 5))` | `Gear.STAT_KEYS` in `Gear.lua` |
-| 12 | Ruleset name | `/dump GetRealmName()` and `/dump C_GameRules and C_GameRules.GetGameRuleAsInt` | `Export.RULESET` source |
+| 12 | Ruleset name | `/dump GetRealmName()` and `/dump C_GameRules and C_GameRules.GetGameRuleAsInt` | none — `Export.save` writes `ruleset = realm` inline; if ruleset is not the realm name, change that assignment |
 | 13 | Region | `/dump GetCurrentRegion()` | `Export.REGION_NAMES` |
 | 14 | Professions | `/dump GetProfessions()` then `/dump GetProfessionInfo(1)` | `Export.professions()` |
 | 15 | Talent frame name for the highlight | `/dump TalentFrame ~= nil`, `/dump PlayerTalentFrame ~= nil` | `Follow.TALENT_FRAME` |
@@ -50,7 +50,7 @@ change the named constant if it differs from the default.
 
 Run on one character per role and tick here:
 
-- [ ] `/fs` opens the options panel and shows the data build id.
+- [ ] `/fs` and `/fs options` both print the data build id and the slash hint (there is no options panel).
 - [ ] `/fs export` shows a string that pastes into the planner's Import from addon box.
 - [ ] A code pasted into `/fs follow` shows the next point, and the talent window
       highlights it.

@@ -198,6 +198,32 @@ end
 
 -- ---------------------------------------------------------------- decode --
 
+--- Every refusal below is built through this instead of a bare
+--- string.format. WoW's chat frame renders `|c`, `|r` and `|H…|h` as colour
+--- and hyperlink markup, and a refusal echoes fragments straight out of the
+--- pasted code -- the one genuinely untrusted input in this addon -- so a
+--- crafted code could otherwise make the reader's own chat frame render
+--- fake markup when the refusal is printed (Options.run) or repasted
+--- elsewhere. Doubling `|` is the client's own escape for a literal pipe.
+---
+--- This is the single choke point: it escapes each argument *before* it is
+--- interpolated, never the finished message afterward, so nothing
+--- downstream can double the pipes and turn `||` back into a literal `|`
+--- for the player. A trusted argument (a locale constant, our own data
+--- build) never contains `|`, so escaping it too is a harmless no-op --
+--- there is no need to sort untrusted fragments from trusted ones here.
+-- Returns the formatted message alone (not `nil, message`): every call site
+-- already writes `return nil, refuse(...)`, and a function that itself
+-- returns two values there would hand the `return` three, shifting `message`
+-- into a value nobody reads.
+local function refuse(template, ...)
+	local escaped = {}
+	for index = 1, select("#", ...) do
+		escaped[index] = (tostring(select(index, ...)):gsub("|", "||"))
+	end
+	return string.format(template, table.unpack(escaped))
+end
+
 local function parseTrees(field)
 	local treeStrings = split(field, "/")
 	if #treeStrings ~= TREES then
@@ -223,11 +249,11 @@ end
 local function parseItemParts(value, message, entry)
 	local parts = split(value, ":")
 	if #parts > 3 then
-		return nil, string.format(message, entry)
+		return nil, refuse(message, entry)
 	end
 	for _, part in ipairs(parts) do
 		if not isDigits(part) then
-			return nil, string.format(message, entry)
+			return nil, refuse(message, entry)
 		end
 	end
 	return {
@@ -245,11 +271,11 @@ local function parseGearList(field)
 	for _, entry in ipairs(split(field, ",")) do
 		local pieces = split(entry, "=")
 		if #pieces ~= 2 then
-			return nil, string.format(L.codecGearEntry, entry)
+			return nil, refuse(L.codecGearEntry, entry)
 		end
 		local slot, value = pieces[1], pieces[2]
 		if not SLOT_SET[slot] then
-			return nil, string.format(L.codecSlot, slot)
+			return nil, refuse(L.codecSlot, slot)
 		end
 		local item, message = parseItemParts(value, L.codecGearEntry, entry)
 		if item == nil then
@@ -307,7 +333,7 @@ function Codec.decodeFS1(code)
 	local parts = split(head, ":")
 	if parts[1] ~= Codec.FS1_PREFIX then
 		local named = (parts[1] == nil or parts[1] == "") and L.codecUnlabelled or parts[1]
-		return nil, string.format(L.codecWrongPrefix, named, Codec.FS1_PREFIX)
+		return nil, refuse(L.codecWrongPrefix, named, Codec.FS1_PREFIX)
 	end
 	if #parts < 6 then
 		return nil, L.codecShort
@@ -462,7 +488,7 @@ local function parseOrder(field)
 		-- different convention, and decoding it would put points on the
 		-- wrong tree without a word.
 		if tab == nil or tier == nil or column == nil or tab < 1 or tier < 1 or column < 1 then
-			return nil, string.format(L.codecOrderCell, triple)
+			return nil, refuse(L.codecOrderCell, triple)
 		end
 		order[#order + 1] = { tab = tab, tier = tier, column = column }
 	end
@@ -477,11 +503,11 @@ local function parseStats(field)
 	for _, pair in ipairs(split(field, ";")) do
 		local at = pair:find("=", 1, true)
 		if at == nil then
-			return nil, string.format(L.codecStatPair, pair)
+			return nil, refuse(L.codecStatPair, pair)
 		end
 		local name, value = pair:sub(1, at - 1), pair:sub(at + 1)
 		if name == "" or not isDigits(value) then
-			return nil, string.format(L.codecStatPair, pair)
+			return nil, refuse(L.codecStatPair, pair)
 		end
 		stats[name] = tonumber(value)
 	end
@@ -496,15 +522,15 @@ local function parseFSB1Gear(field)
 	for _, entry in ipairs(split(field, ",")) do
 		local at = entry:find("=", 1, true)
 		if at == nil then
-			return nil, string.format(L.codecGearEntry, entry)
+			return nil, refuse(L.codecGearEntry, entry)
 		end
 		local slot = entry:sub(1, at - 1)
 		if not SLOT_SET[slot] then
-			return nil, string.format(L.codecSlot, slot)
+			return nil, refuse(L.codecSlot, slot)
 		end
 		local rest = split(entry:sub(at + 1), ":")
 		if not isDigits(rest[1]) then
-			return nil, string.format(L.codecGearEntry, entry)
+			return nil, refuse(L.codecGearEntry, entry)
 		end
 		local stats, message = parseStats(table.concat(rest, ":", 2))
 		if stats == nil then
@@ -522,7 +548,7 @@ function Codec.decodeFSB1(code)
 	local parts = split(code:match("^%s*(.-)%s*$"), ":")
 	if parts[1] ~= Codec.FSB1_PREFIX then
 		local named = (parts[1] == nil or parts[1] == "") and L.codecUnlabelled or parts[1]
-		return nil, string.format(L.codecWrongPrefix, named, Codec.FSB1_PREFIX)
+		return nil, refuse(L.codecWrongPrefix, named, Codec.FSB1_PREFIX)
 	end
 	if #parts < 5 then
 		return nil, L.codecShort
@@ -602,6 +628,14 @@ end
 --- approximated and `statsUnknown` is set, which is what stops Gear from
 --- scoring a planned item at zero and calling that a downgrade.
 function Codec.loadBuild(code, data)
+	-- Length-checked first, before any trimming or splitting: `code` is
+	-- the one genuinely untrusted input in the system (Follow.load is
+	-- called from Options.readInbox on a saved-variables file the addon
+	-- does not own), so a hostile string must be refused before it is
+	-- touched at all, not merely before decodeFS1/decodeFSB1 parse it.
+	if #code > Codec.MAX_CODE_LENGTH then
+		return nil, L.codecTooLong
+	end
 	-- Trimmed once, here, before the prefix is sniffed: a pasted code
 	-- commonly carries leading or trailing whitespace from the chat edit
 	-- box it was copied out of, and reading the prefix off the untrimmed
@@ -609,7 +643,9 @@ function Codec.loadBuild(code, data)
 	-- decodeFSB1 and decodeFS1 both trim again internally, but trimming an
 	-- already-trimmed string is a no-op, not a second trim.
 	code = code:match("^%s*(.-)%s*$")
-	local prefix = split(code, ":")[1]
+	-- A plain pattern match reads element one without allocating the
+	-- table `split` would build for it.
+	local prefix = code:match("^([^:]*)")
 	local build, message
 	if prefix == Codec.FSB1_PREFIX then
 		build, message = Codec.decodeFSB1(code)
@@ -626,7 +662,7 @@ function Codec.loadBuild(code, data)
 		end
 		local class = data.classes[exported.classSlug]
 		if class == nil then
-			return nil, string.format(L.codecUnknownClass, exported.classSlug)
+			return nil, refuse(L.codecUnknownClass, exported.classSlug)
 		end
 		local gear = {}
 		for index, entry in ipairs(exported.gearSlots) do
@@ -643,10 +679,10 @@ function Codec.loadBuild(code, data)
 	end
 
 	if data.classes[build.classSlug] == nil then
-		return nil, string.format(L.codecUnknownClass, build.classSlug)
+		return nil, refuse(L.codecUnknownClass, build.classSlug)
 	end
 	if compareBuilds(build.dataBuild, data.build) > 0 then
-		return nil, string.format(L.codecNewerBuild, build.dataBuild, data.build)
+		return nil, refuse(L.codecNewerBuild, build.dataBuild, data.build)
 	end
 	return build
 end

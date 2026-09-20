@@ -166,6 +166,10 @@ function Gear.upgrades(data, build)
 	local planned = plannedBySlot(build)
 	local found = {}
 	for _, link in ipairs(Gear.candidates()) do
+		-- Called bare, matching Export.lua's itemIdOf and isEquippable:
+		-- GetItemInfoInstant is a required client API for this addon, not a
+		-- guarded one, so every call site fails the same way if it is ever
+		-- missing instead of one throwing while another silently mis-scores.
 		local id, _, _, equipLocation = GetItemInfoInstant(link)
 		for _, target in ipairs(Gear.SLOTS_BY_EQUIP_LOCATION[equipLocation] or {}) do
 			local against = planned[target]

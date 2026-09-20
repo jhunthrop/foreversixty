@@ -87,6 +87,22 @@ describe("Codec FSB1", function()
 		end
 	end)
 
+	it("doubles a pipe in a refused fragment so WoW's chat frame cannot render it as markup", function()
+		-- FSB1's grammar only reserves `:`, `,`, `;` and `=`; `|` passes
+		-- through untouched, unlike FS1 where the format's own `|` section
+		-- separator is stripped before any field is echoed back. A crafted
+		-- code can put `|cFF00FF00` -- WoW's colour-start markup -- straight
+		-- into a field this refusal echoes; the doubled `|` is what stops
+		-- the reader's own chat frame from rendering it when the refusal is
+		-- printed (or repasted into guild chat or Discord).
+		local fragment = "FS|cFF00FF00EVIL|r2"
+		local _, message = Codec.decodeFSB1(fragment .. ":1.60.1.69893:paladin:111:")
+		assert.are.equal(
+			string.format(L.codecWrongPrefix, "FS||cFF00FF00EVIL||r2", Codec.FSB1_PREFIX),
+			message
+		)
+	end)
+
 	describe("loadBuild", function()
 		local data = {
 			build = "1.60.1.69893",
@@ -153,6 +169,16 @@ describe("Codec FSB1", function()
 		it("refuses a code for a class this data does not carry", function()
 			local _, message = Codec.loadBuild("FSB1:1.60.1.69893:shaman:111:", data)
 			assert.are.equal(string.format(L.codecUnknownClass, "shaman"), message)
+		end)
+
+		it("refuses an over-long code before it is trimmed or split", function()
+			-- loadBuild must reject this before doing any work on the
+			-- string: the length check has to run ahead of the trim and
+			-- the prefix sniff, not merely ahead of decodeFS1/decodeFSB1.
+			local oversized = ("FSB1:"):rep(Codec.MAX_CODE_LENGTH)
+			local build, message = Codec.loadBuild(oversized, data)
+			assert.is_nil(build)
+			assert.are.equal(L.codecTooLong, message)
 		end)
 
 		it("loads a pasted code with stray whitespace still", function()

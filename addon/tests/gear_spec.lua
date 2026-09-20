@@ -164,6 +164,41 @@ describe("Gear", function()
 		assert.are.same({ require("Locale").gearNone }, Gear.lines(DATA, build))
 	end)
 
+	it("formats upgrade lines through L.gearUpgrade with the larger delta first", function()
+		-- Every other Gear.lines example in this file is a refusal path
+		-- (gearNoBuild, gearNoWeights, gearNone); none of them exercises the
+		-- L.gearUpgrade format path or its argument order, so a swapped
+		-- %s/%+.1f/%s or a dropped table.sort in Gear.upgrades would still
+		-- pass the whole file. Gear.candidates() walks equipped slots
+		-- before bags, so the equipped upgrade below (head, the smaller
+		-- delta) is *found* before the bagged one (legs, the larger delta)
+		-- -- only the sort in Gear.upgrades puts legs first, so this line
+		-- order would not hold if that sort were removed.
+		mock.install({
+			class = { name = "Paladin", token = "PALADIN" },
+			talents = {
+				{ name = "Holy", talents = { { name = "A", tier = 1, column = 1, rank = 5, maxRank = 5 } } },
+				{ name = "Protection", talents = {} },
+				{ name = "Retribution", talents = {} },
+			},
+			equipped = { [1] = "wornHead" },
+			bags = { [0] = { "bagLegs" } },
+			itemStats = {
+				wornHead = { ITEM_MOD_SPELL_POWER_SHORT = 25, __itemId = 101, __slot = "INVTYPE_HEAD" },
+				bagLegs = { ITEM_MOD_SPELL_POWER_SHORT = 50, __itemId = 202, __slot = "INVTYPE_LEGS" },
+			},
+		})
+		local build = { classSlug = "paladin", statsUnknown = false, gear = {
+			{ slot = "head", itemId = 1, stats = { spell_power = 20 } },
+			{ slot = "legs", itemId = 2, stats = { spell_power = 20 } },
+		} }
+		local L = require("Locale")
+		assert.are.same({
+			string.format(L.gearUpgrade, "legs", 30, 2),
+			string.format(L.gearUpgrade, "head", 5, 1),
+		}, Gear.lines(DATA, build))
+	end)
+
 	it("says so rather than scoring when the spec has no weights", function()
 		mock.install({
 			class = { name = "Rogue", token = "ROGUE" },

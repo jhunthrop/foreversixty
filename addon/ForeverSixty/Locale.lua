@@ -20,6 +20,12 @@ local L = {
 	exportNoTalents = "Spend a talent point first; there is nothing to export yet.",
 
 	-- Codec refusals. Each names what is wrong, never a generic failure.
+	-- Note: the `|` -> `||` doubling that escapes a refused fragment against
+	-- WoW's chat markup (Codec.lua's `refuse`) is not a string a player
+	-- reads -- it is the client's own escape mechanic, applied to untrusted
+	-- text before it lands in one of the `%s` slots below -- so it does not
+	-- belong here even though every other player-visible piece of text
+	-- does.
 	codecWrongPrefix = "That code is %s; this addon reads %s.",
 	-- What a code with no prefix at all is called, for codecWrongPrefix.
 	codecUnlabelled = "unlabelled",

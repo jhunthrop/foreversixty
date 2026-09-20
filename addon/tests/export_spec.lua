@@ -93,6 +93,23 @@ describe("Export", function()
 		assert.is_truthy(code:find("|bank=19865", 1, true))
 	end)
 
+	it("falls back to the link's own item id when GetItemInfoInstant returns none for it", function()
+		-- GetItemInfoInstant is required, not guarded (itemIdOf in
+		-- Export.lua): every call site treats a missing API the same way,
+		-- by throwing, rather than this one function alone masking it with
+		-- an `and` guard. What itemIdOf still falls back for is a
+		-- different case -- the API present but returning nothing for this
+		-- particular link, e.g. an item not yet cached client-side -- and
+		-- that fallback must keep working now that the existence guard is
+		-- gone.
+		character({
+			bags = { [0] = { "|Hitem:55201|h" } },
+			itemStats = { ["|Hitem:55201|h"] = { __slot = "INVTYPE_CHEST" } },
+		})
+		local code = assert(Export.string(DATA))
+		assert.is_truthy(code:find("bags=55201", 1, true))
+	end)
+
 	it("leaves an unequippable bag item out entirely", function()
 		character({
 			bags = { [0] = { "|Hitem:2589|h" } },
