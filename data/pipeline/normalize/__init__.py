@@ -75,6 +75,7 @@ def normalize_build(
     from pipeline.manifest import write_manifest
     from pipeline.normalize.classes import normalize_classes, normalize_races
     from pipeline.normalize.dungeons import normalize_dungeons
+    from pipeline.normalize.effects import EffectIndex
     from pipeline.normalize.gear import ItemDataError, build_class_items, build_item_sets
     from pipeline.normalize.item_curves import load_item_curves
     from pipeline.normalize.items import normalize_items
@@ -113,7 +114,8 @@ def normalize_build(
 
     # Phase 1 planner data. Both directories are rebuilt from scratch so a class
     # that disappears between builds does not leave a stale file behind.
-    spell_text = load_spell_text(t("Spell"), t("SpellMisc"), t("SpellEffect"), t("SpellDuration"))
+    spell_effect_rows = t("SpellEffect")
+    spell_text = load_spell_text(t("Spell"), t("SpellMisc"), spell_effect_rows, t("SpellDuration"))
     icons = icon_names(t("ManifestInterfaceData"))
     spell_names = {int(r["ID"]): r["Name_lang"] for r in t("SpellName")}
 
@@ -179,9 +181,15 @@ def normalize_build(
         t("ArmorLocation"),
         t("RandPropPoints"),
     )
+    effects = EffectIndex(
+        t("ItemEffect"),
+        optional("ItemXItemEffect"),
+        spell_effect_rows,
+        spell_text,
+    )
     try:
         class_items = build_class_items(
-            t("ItemSparse"), t("Item"), class_rows, icons, build, curves
+            t("ItemSparse"), t("Item"), class_rows, icons, build, curves, effects=effects
         )
     except ItemDataError as error:
         logger.warning("items not emitted for build %s: %s", build, error)

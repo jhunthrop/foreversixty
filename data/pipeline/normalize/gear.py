@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 import re
+from typing import TYPE_CHECKING, NamedTuple
 
 from pipeline.icons import resolve_icon
 from pipeline.models import ClassItems, GearItem, ItemSetBonus, ItemSetRecord
@@ -11,6 +12,15 @@ from pipeline.normalize.classes import slugify
 from pipeline.normalize.item_curves import ItemCurves, resolve_armor, stat_budget
 from pipeline.proficiency import ARMOR, WEAPON, can_equip
 from pipeline.spelltext import SpellText
+
+if TYPE_CHECKING:
+    # Importing pipeline.normalize.effects at module level would execute
+    # pipeline/simdb/__init__.py (it imports pipeline.simdb.equip), whose own
+    # line 45 imports names from this module -- a module-level import here
+    # would re-enter gear.py while it is still initialising. This module
+    # already has `from __future__ import annotations`, so the annotation
+    # below stays a string and needs no runtime import.
+    from pipeline.normalize.effects import EffectIndex
 
 logger = logging.getLogger(__name__)
 
@@ -178,6 +188,32 @@ RESISTANCE_KEYS: dict[int, str] = {
     6: "arcane_res",
 }
 
+#: InventoryType values whose item takes the MAIN HAND and, in doing so,
+#: leaves no off-hand free. That is two-handed melee (17) and nothing else.
+#:
+#: The ranged inventory types are deliberately absent. Rule 6 asks whether an
+#: off-hand item may sit beside this one, and a bow (15), a thrown weapon (25)
+#: or a Ranged Right item (26) occupies the ranged slot, not the main hand, so
+#: it never refuses one -- a hunter carries a bow, a sword and a shield at
+#: once. 26 is the trap: in Classic it is wands as much as guns and crossbows,
+#: so including it flagged 169 items, 37 of them wands, as occupying both
+#: hands.
+#:
+#: `pipeline.simdb.weapons.TWO_HAND_INVENTORY_TYPE` is 17 for its own reason --
+#: it picks which melee damage curve a weapon scores on, and a ranged weapon is
+#: resolved by SubclassID before that branch is reached. The two constants
+#: answer different questions and now happen to agree on the answer.
+TWO_HAND_INVENTORY_TYPES = frozenset({17})
+
+#: Stat keys that are a combat-rating point count when ItemSparse states
+#: them (`STAT_BY_MODIFIER_ID`'s 12/13/14/15/31/32/48) but a flat literal
+#: percentage when an on-equip spell states them instead
+#: (`pipeline.simdb.equip.STAT_AURAS`'s 47/49/51/52/54, plus the
+#: MOD_SKILL/defense branch) -- see data/README.md, "Hit, crit, dodge, parry
+#: and block as percentages". The two units cannot be summed into one
+#: `stats` entry; `_merge_effect_stats` raises rather than do it.
+RATING_FAMILY_STAT_KEYS = frozenset({"hit", "crit", "dodge", "parry", "block", "defense"})
+
 
 class ItemDataError(ValueError):
     """The item tables hold something this normalizer will not guess at."""
@@ -271,6 +307,47 @@ def _stats(row: dict[str, str]) -> dict[str, int]:
         if amount:
             stats[key] = stats.get(key, 0) + amount
     return stats
+
+
+class WeaponFields(NamedTuple):
+    """The gear tail's weapon numbers, computed once per row."""
+
+    damage_min: int
+    damage_max: int
+    speed: float
+    dps: float
+    two_hand: bool
+
+
+def weapon_fields(row: dict[str, str]) -> WeaponFields:
+    """Weapon damage, speed and the two-handed flag for one ItemSparse row.
+
+    Every number is optional: the 1.60 client computes weapon damage from
+    curve tables this pipeline does not resolve, so a missing column is an
+    honest zero rather than a malformed row. A present but non-numeric
+    column is still an ItemDataError, through int_column.
+
+    `pipeline/simdb/weapons.py` resolves the simulator's own weapon damage
+    and speed off the client's ItemDamage* curve tables -- the same numbers
+    this function leaves at zero when ItemSparse states no literal damage
+    column. The two are deliberate siblings, not an oversight: wiring the
+    curve resolver in here is not available, since `simdb/weapons.py`
+    already imports `pipeline.normalize.gear` (this module), so importing it
+    back would be a circular import, and its `WeaponCurves` are a simdb-stage
+    input this normalize stage does not build. On build 1.60.1.69893 every
+    weapon here therefore has damage_min = damage_max = dps = 0 and only
+    speed and two_hand real -- that is the intended, documented behaviour,
+    not a bug.
+    """
+    delay = _optional_int(row, "ItemDelay") or 0
+    damage_min = _optional_int(row, "ItemDamageMin_0") or 0
+    damage_max = _optional_int(row, "ItemDamageMax_0") or 0
+    speed = round(delay / 1000, 2)
+    # Never divide by a zero speed: an item with damage and no delay is a
+    # thrown weapon or a malformed row, and either way it has no dps.
+    dps = round((damage_min + damage_max) / 2 / speed, 2) if speed > 0 else 0.0
+    two_hand = int_column(row, "InventoryType") in TWO_HAND_INVENTORY_TYPES
+    return WeaponFields(damage_min, damage_max, speed, dps, two_hand)
 
 
 def _curve_stats(
@@ -407,6 +484,37 @@ def resolve_item_values(
     return 0, {}
 
 
+def _merge_effect_stats(
+    stats: dict[str, int], item_id: int, display_name: str, effects: EffectIndex
+) -> None:
+    """Fold an item's on-equip spell stats into its ItemSparse-sourced ones.
+
+    Almost always safe to just add: the two sources agree on units for
+    every stat except the rating family (hit, crit, dodge, parry, block,
+    defense). There, ItemSparse's own `StatModifier_bonusStat` columns state
+    a combat-rating point count -- `pipeline/simdb/ratings.py` converts it
+    for the simulator, but `items/<class-slug>.json` itself keeps the raw
+    rating, matching what the client's own tooltip shows -- while an
+    on-equip spell's flat stat (`pipeline.simdb.equip.STAT_AURAS`) already
+    states a literal percentage, the older Classic itemisation convention
+    (see data/README.md, "Hit, crit, dodge, parry and block as
+    percentages"). Summing a rating into a percentage would silently
+    produce a number that is neither. No item on build 1.60.1.69893 mixes
+    the two -- see test_an_equip_percentage_never_meets_an_itemsparse_rating
+    -- so this raises rather than guess which side is right the first time
+    one does.
+    """
+    for key, amount in effects.stats(item_id).items():
+        if key in RATING_FAMILY_STAT_KEYS and stats.get(key):
+            raise ItemDataError(
+                f"item {item_id} ({display_name}) has {stats[key]} {key} from ItemSparse's "
+                f"own rating columns and {amount} more {key} from an on-equip spell; these "
+                f"are different units (data/README.md, 'Hit, crit, dodge, parry and block "
+                f"as percentages') and pipeline/normalize/gear.py will not sum them blindly"
+            )
+        stats[key] = stats.get(key, 0) + amount
+
+
 def build_class_items(
     sparse_rows: list[dict[str, str]],
     item_rows: list[dict[str, str]],
@@ -414,6 +522,7 @@ def build_class_items(
     icons: dict[int, str],
     build: str,
     curves: ItemCurves | None = None,
+    effects: EffectIndex | None = None,
 ) -> list[ClassItems]:
     """One equippable item list per class. Raises ItemDataError if a row is unreadable.
 
@@ -421,6 +530,12 @@ def build_class_items(
     literal amounts (the 1.60 client / Forever beta); pass None (the default)
     or an `ItemCurves` whose own tables are incomplete and such a row simply
     gets no armour and no stats, exactly as before curve support existed.
+
+    `effects` folds an item's on-equip spell stats (`pipeline.normalize.
+    effects.EffectIndex`) into the same `stats` dict ItemSparse's own columns
+    populate, and sets `effect_text` from its use/proc spells. Pass None (the
+    default) for a caller that has not built one and every item gets no
+    extra stats and an empty `effect_text`, exactly as before this existed.
     """
     by_id = {int_column(row, "ID"): row for row in item_rows}
     candidates: list[tuple[GearItem, int, int, int]] = []
@@ -447,9 +562,12 @@ def build_class_items(
         subclass_id = int_column(item_row, "SubclassID")
         item_level = int_column(row, "ItemLevel")
         armor, stats = resolve_item_values(row, item_row, curves)
+        if effects is not None:
+            _merge_effect_stats(stats, item_id, display_name, effects)
         _check_level_60_sanity(item_id, display_name, item_level, armor, stats)
         if not _has_gear_value(armor, stats, item_class_id):
             continue
+        weapon = weapon_fields(row)
         item = GearItem(
             id=item_id,
             name=display_name,
@@ -460,6 +578,12 @@ def build_class_items(
             item_level=item_level,
             armor=armor,
             stats=stats,
+            damage_min=weapon.damage_min,
+            damage_max=weapon.damage_max,
+            speed=weapon.speed,
+            dps=weapon.dps,
+            two_hand=weapon.two_hand,
+            effect_text="" if effects is None else effects.text(item_id),
             set_id=int_column(row, "ItemSet") or None,
             unique=int_column(row, "MaxCount") == 1,
         )
