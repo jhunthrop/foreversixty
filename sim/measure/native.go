@@ -17,6 +17,19 @@ package measure
 // `go test ./sim/measure/... -bench BenchmarkNativeIteration` after
 // an engine bump and update BOTH this number and the comment's date.
 // Measured 2026-09-19 on the warrior-fury fixture.
+//
+// That measurement predates Task 8, which was the first code to put
+// non-zero armor on the simulated target (contract A8's
+// TargetArmorByLevel); every run before it faced a target with zero
+// armor, so this figure may be off by roughly the 40% of physical
+// damage armor mitigates - almost certainly on the high side, since a
+// mitigated hit resolves in less engine work than an unmitigated one.
+// Task 25 (the Makefile/CI task) looked for `BenchmarkNativeIteration`
+// to re-measure this and found no such benchmark in this package -
+// only the correctness tests above - so re-measuring would mean
+// building a benchmarking harness from nothing, which is out of scope
+// for a Makefile/CI change. Left as-is; building that harness and
+// re-measuring against an armored target is follow-up work.
 const NativeIterationsPerCPUSecond = 1218
 
 // NativeJobCPUs and NativeJobSeconds are the premium job's shape, as

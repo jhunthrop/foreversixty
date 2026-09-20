@@ -33,11 +33,13 @@ import (
 //     api.Progress because it is a contract with the web rather than a
 //     detail of this file;
 //   - the CI smoke test in .github/workflows/sim.yml instantiates the
-//     built wasm under node and asserts simRun, simSplit, simCombine
-//     and simAbort exist, that simRun returns a SimResult with a
-//     summary, and that the progress callback was called with that
-//     payload. It does not yet check the five bulk exports this file
-//     tests; that is Task 25's file to extend.
+//     built wasm under node and asserts all ten exports exist
+//     (simRun, simSplit, simCombine, simAbort, simPlan, simRank,
+//     simCount, simNeedsMore, simValidate, simWeights), that simRun
+//     returns a SimResult with a summary, that the progress callback
+//     was called with that payload, and runs a four-candidate Top
+//     Gear request through simCount, simPlan, simRank and simValidate
+//     end to end (Task 25).
 func TestWasmIsCoveredElsewhere(t *testing.T) {
 	t.Log("see the comment above: combine, forever-sim, and the CI smoke test")
 }

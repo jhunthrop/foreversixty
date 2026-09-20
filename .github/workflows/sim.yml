@@ -2,9 +2,9 @@ name: sim
 on:
   push:
     branches: [main]
-    paths: ['sim/**', 'logs/**', 'Makefile', 'tools/apl_*.py', 'web/src/data/active-build.json', 'data/builds/*/simdb.bin', 'data/builds/*/races.json', 'data/builds/*/classes.json', 'data/builds/*/combos.json', 'data/curated/apl/**', 'data/curated/specs.json', '.github/workflows/sim.yml', '.github/actions/pin-engine/**']
+    paths: ['sim/**', 'logs/**', 'Makefile', 'tools/apl_*.py', 'web/src/data/active-build.json', 'data/builds/*/simdb.bin', 'data/builds/*/enchants.json', 'data/builds/*/races.json', 'data/builds/*/classes.json', 'data/builds/*/combos.json', 'data/curated/apl/**', 'data/curated/specs.json', 'web/src/data/sim-styles.json', '.github/workflows/sim.yml', '.github/actions/pin-engine/**']
   pull_request:
-    paths: ['sim/**', 'logs/**', 'Makefile', 'tools/apl_*.py', 'web/src/data/active-build.json', 'data/builds/*/simdb.bin', 'data/builds/*/races.json', 'data/builds/*/classes.json', 'data/builds/*/combos.json', 'data/curated/apl/**', 'data/curated/specs.json', '.github/workflows/sim.yml', '.github/actions/pin-engine/**']
+    paths: ['sim/**', 'logs/**', 'Makefile', 'tools/apl_*.py', 'web/src/data/active-build.json', 'data/builds/*/simdb.bin', 'data/builds/*/enchants.json', 'data/builds/*/races.json', 'data/builds/*/classes.json', 'data/builds/*/combos.json', 'data/curated/apl/**', 'data/curated/specs.json', 'web/src/data/sim-styles.json', '.github/workflows/sim.yml', '.github/actions/pin-engine/**']
   workflow_dispatch:
 permissions: { contents: read }
 concurrency:
@@ -46,12 +46,24 @@ jobs:
 
   # "A rotation is edited only in data/curated/apl" was an invariant kept
   # by hand across three copies per spec, and two of four had already
-  # drifted. `make apl-sync` writes the copies now and this is the gate
-  # that they were written; see tools/apl_check.py.
+  # drifted. `make apl-sync` writes the copies now and this job proves
+  # both derived tables: the rotation copies against tools/apl_check.py,
+  # and the fight-style table (`sim/request/styles.json` and its web
+  # copy) against `make styles-check`.
   rotations:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      # styles-check runs `go run ./internal/genstyles`: sim/request
+      # imports the engine and //go:embed resolves at compile time, so
+      # the pin and the active build's item database are both needed
+      # before the generator can even build, though styles.go itself
+      # imports sim/api only.
+      - uses: actions/setup-go@v5
+        with: { go-version-file: sim/go.mod, cache-dependency-path: sim/go.sum }
+      - uses: ./.github/actions/pin-engine
+      - name: the active build's item database
+        run: make simdb
       - name: the pinned engine sha
         id: pin
         run: |
@@ -66,6 +78,7 @@ jobs:
           git clone --quiet --filter=blob:none https://github.com/jhunthrop/wowsims-forever .engine
           git -C .engine checkout --quiet "${{ steps.pin.outputs.sha }}"
       - run: make apl-check ENGINE_DIR=.engine
+      - run: make styles-check
 
   artifacts:
     needs: test
@@ -158,7 +171,8 @@ jobs:
             progressSeen++;
           };
           globalThis.wasmready = () => {
-            const missing = ['simRun', 'simSplit', 'simCombine', 'simAbort']
+            const missing = ['simRun', 'simSplit', 'simCombine', 'simAbort', 'simPlan', 'simRank',
+                             'simCount', 'simNeedsMore', 'simValidate', 'simWeights']
               .filter(n => typeof globalThis[n] !== 'function');
             if (missing.length) { console.error('missing exports:', missing); process.exit(1); }
             if (typeof globalThis.simEngineVersion !== 'string' || !globalThis.simEngineVersion) {
@@ -194,9 +208,98 @@ jobs:
             if (!(g.dps.mean > one.dps.mean)) {
               console.error('geared dps', g.dps.mean, 'is not above naked', one.dps.mean); process.exit(1);
             }
-            console.log('four exports, dps', one.dps.mean.toFixed(1), 'with',
+            // Top Gear, end to end, at the normal-precision ladder's
+            // own iteration counts (1,000 then 3,000): simPlan, then
+            // each stage request WHOLE, then simRank until it hands
+            // back a result. This is the only gate that proves the
+            // planner compiled into the wasm and that the three new
+            // exports agree about their JSON.
+            const gear = JSON.parse(gearJSON);
+            const bulkReq = { ...geared, iterations: 3000, random_seed: 3,
+              bulk: { mode: 'gear', precision: 'normal', cap: 400,
+                candidates: [
+                  { slot: 'head',   item_id: gear.find(g => g.slot === 'head').item_id,   origin: 'bag' },
+                  { slot: 'neck',   item_id: gear.find(g => g.slot === 'neck').item_id,   origin: 'bag' },
+                  { slot: 'wrist',  item_id: gear.find(g => g.slot === 'wrist').item_id,  origin: 'bag' },
+                  { slot: 'hands',  item_id: gear.find(g => g.slot === 'hands').item_id,  origin: 'bag' },
+                ] } };
+            // simCount answers before anything is allocated, and it
+            // must agree with simPlan or the page's cap notice is
+            // about a different run from the one it would start.
+            const counted = JSON.parse(globalThis.simCount(JSON.stringify(bulkReq)));
+            if (counted.error) { console.error('simCount:', counted.error); process.exit(1); }
+            let stage = JSON.parse(globalThis.simPlan(JSON.stringify(bulkReq)));
+            if (stage.error) { console.error('simPlan:', stage.error); process.exit(1); }
+            if (counted.combinations !== stage.combos.length) {
+              console.error('simCount', counted.combinations, 'simPlan', stage.combos.length); process.exit(1);
+            }
+            // A cap breach is structured, so the page draws a notice
+            // with both numbers rather than parsing a sentence.
+            const capped = JSON.parse(globalThis.simCount(
+              JSON.stringify({ ...bulkReq, bulk: { ...bulkReq.bulk, cap: 1 } })));
+            if (capped.error !== 'cap_exceeded' || capped.cap !== 1 || !(capped.combinations > 1)) {
+              console.error('cap breach:', capped); process.exit(1);
+            }
+            // simValidate is the request drawer's gate, and it is the
+            // same Validate the run applies.
+            const bad = JSON.parse(globalThis.simValidate(
+              JSON.stringify({ ...req, iterations: 7 })));
+            if (bad.ok || !bad.errors.some(e => e.field === 'iterations')) {
+              console.error('simValidate:', bad); process.exit(1);
+            }
+            // Four candidates in four distinct slots: every subset but
+            // the empty one, which is the equipped set and is
+            // requests[0].
+            if (stage.combos.length !== 15) {
+              console.error('simPlan planned', stage.combos.length, 'combinations, want 15'); process.exit(1);
+            }
+            if (stage.requests.length !== stage.combos.length + 1) {
+              console.error('simPlan requests', stage.requests.length); process.exit(1);
+            }
+            let stagesRun = 0, topGear = null;
+            while (topGear === null) {
+              stagesRun++;
+              if (stagesRun > 4) { console.error('the ladder did not finish'); process.exit(1); }
+              // Each request already carries the stage's own iteration
+              // count: bulk.Rank rejects a result whose iterations_run
+              // does not match stage.iterations exactly (the ordering
+              // check contract 10.2 describes), so this runs
+              // stage.requests AS PLANNED rather than a cheapened copy.
+              //
+              // Each stage request runs WHOLE - no simSplit, no
+              // simCombine (contract 10.2). A stage is already many
+              // independent sims; the pool runs them in chunks of its
+              // width, and sharding each of them would multiply the
+              // scheduling for nothing.
+              const results = stage.requests.map((r, i) => {
+                const one = JSON.parse(globalThis.simRun(JSON.stringify(r), `tg${i}`));
+                if (one.error) { console.error('simRun:', one.error); process.exit(1); }
+                return one;
+              });
+              const ranked = JSON.parse(globalThis.simRank(
+                JSON.stringify(bulkReq), JSON.stringify(stage), JSON.stringify(results)));
+              if (ranked.error) { console.error('simRank:', ranked.error); process.exit(1); }
+              if (ranked.result) { topGear = ranked.result; } else { stage = ranked.next; }
+            }
+            if (!topGear.equipped || !(topGear.equipped.mean > 0)) {
+              console.error('no equipped baseline:', topGear.equipped); process.exit(1);
+            }
+            if (!topGear.combos || topGear.combos.length === 0) {
+              console.error('no ranked combinations'); process.exit(1);
+            }
+            for (const combo of topGear.combos) {
+              if (typeof combo.delta.mean !== 'number' || typeof combo.group !== 'number') {
+                console.error('a combo is missing its delta or group:', combo); process.exit(1);
+              }
+            }
+            if (topGear.stages.length !== 2) {
+              console.error('stages:', topGear.stages); process.exit(1);
+            }
+            console.log('ten exports, dps', one.dps.mean.toFixed(1), 'with',
                         one.summary.damage_done[0].abilities.length, 'abilities in the summary,',
-                        progressSeen, 'progress calls, geared dps', g.dps.mean.toFixed(1));
+                        progressSeen, 'progress calls, geared dps', g.dps.mean.toFixed(1),
+                        '| top gear:', topGear.combos.length, 'ranked over', stagesRun, 'stages,',
+                        'best delta', topGear.combos[0].delta.mean.toFixed(1));
             process.exit(0);
           };
           const go = new globalThis.Go();

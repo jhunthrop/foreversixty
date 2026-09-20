@@ -14,6 +14,12 @@ coverage/
 # a deploy; whether that directory is committed or produced by the
 # deploy is the web lane's call, and nothing is committed there today.
 artifacts/
+# a manual `GOOS=js GOARCH=wasm go build ./cmd/wasm` from sim/, with no
+# -o, names its output after the package directory rather than failing
+# - a 20+ MB binary landing here, untracked, one `git add -A` away from
+# being committed. `make artifacts` always passes -o and never produces
+# this; the target stays ignored so the mistake is silent, not a commit.
+sim/wasm
 # the coverage profile the sim workflow's floor check writes; the
 # figure is CI's, not an artefact
 sim/cover.out

@@ -134,6 +134,42 @@ $(ENCHANTS_EMBED): $(ENCHANTS_SRC) $(ACTIVE_BUILD_JSON)
 	@cp "$(ENCHANTS_SRC)" $(ENCHANTS_EMBED)
 	@echo "embedded $(ENCHANTS_SRC) ($$(wc -c < $(ENCHANTS_EMBED) | tr -d ' ') bytes)"
 
+WEB_SIM_DATA  = web/src/data/sim-styles.json
+SIM_STYLES    = sim/request/styles.json
+
+.PHONY: sim-styles
+# sim-styles copies the fight-style table where the web reads it.
+#
+# The table is Go - a style expands to encounter fields, and the page
+# applies the same expansion, so a second hand-kept copy in TypeScript
+# would drift the first time a preset was retuned. `go run
+# ./internal/genstyles` renders the Go map to sim/request/styles.json,
+# this copies it to web/src/data/, and the web lane's own test
+# compares its table against that file.
+#
+# Unlike simdb.bin, BOTH files are committed: the web build reads the
+# copy, and a generated file the build depends on cannot be
+# git-ignored on a runner that never runs make.
+sim-styles: $(SIM_STYLES)
+	@cp "$(SIM_STYLES)" "$(WEB_SIM_DATA)"
+	@echo "copied $(SIM_STYLES) to $(WEB_SIM_DATA)"
+
+$(SIM_STYLES): sim/request/styles.go
+	@(cd sim && go run ./internal/genstyles)
+
+.PHONY: styles-check
+# styles-check proves both derived copies against the Go table, the way
+# apl-check proves the rotations. A retuned preset that never reached
+# the page is a failing pipeline rather than two products quietly
+# disagreeing about what "Heavy movement" means.
+styles-check:
+	@(cd sim && go run ./internal/genstyles /tmp/styles.check.json)
+	@diff -u "$(SIM_STYLES)" /tmp/styles.check.json || { \
+	  echo "$(SIM_STYLES) is stale; run \`cd sim && go run ./internal/genstyles\`"; exit 1; }
+	@diff -u "$(SIM_STYLES)" "$(WEB_SIM_DATA)" || { \
+	  echo "$(WEB_SIM_DATA) is stale; run \`make sim-styles\`"; exit 1; }
+	@echo "the fight-style table matches in all three places"
+
 .PHONY: artifacts
 # artifacts builds the two things one pinned engine sha produces, both
 # from the sim/ module: sim.wasm + sim.js for the browser, and
