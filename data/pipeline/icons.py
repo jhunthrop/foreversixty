@@ -168,14 +168,29 @@ def download_icons(
     return written
 
 
+def class_icon_names(build_dir: Path) -> set[str]:
+    """classicon_<slug> for every class build_dir/classes.json lists.
+
+    The report view shows one of these beside every character's name, but no
+    talent or item ever references one, so _referenced_names cannot derive
+    them the way it derives everything else: they have to come straight from
+    the class list. This is the one source for that list; forever.py's
+    pre-beta path uses it too rather than keeping its own copy of the class
+    slugs, which would otherwise be free to drift from classes.json.
+    """
+    payload = json.loads((build_dir / "classes.json").read_text(encoding="utf-8"))
+    return {f"classicon_{klass['slug']}" for klass in payload}
+
+
 def _referenced_names(build_dir: Path) -> set[str]:
     """Every icon name the already-emitted JSON under build_dir refers to.
 
     The normalizers already resolved each talent's and each item's icon (and
     already substituted PLACEHOLDER_ICON where the client had nothing), so the
-    emitted `icon` is the single source of truth for what has to be downloaded.
-    Re-deriving it from the client tables here would be a second copy of that
-    rule, free to drift from the one the site actually reads.
+    emitted `icon` is the single source of truth for what has to be
+    downloaded there. Class icons are the exception: nothing in talents or
+    items references them, so they are added separately from classes.json
+    (see class_icon_names).
     """
     names: set[str] = set()
     for path in sorted((build_dir / "talents").glob("*.json")):
@@ -187,6 +202,7 @@ def _referenced_names(build_dir: Path) -> set[str]:
         payload = json.loads(path.read_text(encoding="utf-8"))
         for item in payload["items"]:
             names.add(item["icon"])
+    names |= class_icon_names(build_dir)
     return names
 
 

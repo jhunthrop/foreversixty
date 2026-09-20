@@ -19,7 +19,7 @@ from pathlib import Path
 
 import httpx
 
-from pipeline.icons import CACHE_DIR, PLACEHOLDER_ICON, download_icons, icon_names
+from pipeline.icons import CACHE_DIR, PLACEHOLDER_ICON, class_icon_names, download_icons, icon_names
 from pipeline.normalize.forever_talents import normalize_forever_talents
 from pipeline.wago import BASE_URL, USER_AGENT
 
@@ -211,19 +211,6 @@ def _manifest(build: str, client: httpx.Client) -> list[dict[str, str]]:
     return list(csv.DictReader(io.StringIO(response.text)))
 
 
-CLASS_ICONS = (
-    "warrior",
-    "paladin",
-    "hunter",
-    "rogue",
-    "priest",
-    "shaman",
-    "mage",
-    "warlock",
-    "druid",
-)
-
-
 def fetch_missing_icons(
     build: str,
     fallback_build: str = ICON_FALLBACK_BUILD,
@@ -248,8 +235,7 @@ def fetch_missing_icons(
                     referenced.add(talent["icon"].lower())
     # The class icons the report view puts beside every player's name, which no talent
     # references and the source build only partly carried.
-    for klass in CLASS_ICONS:
-        referenced.add(f"classicon_{klass}")
+    referenced |= class_icon_names(build_dir)
     have = {path.stem.lower() for path in icons_dir.glob("*.webp")}
     missing = referenced - have
     if not missing:

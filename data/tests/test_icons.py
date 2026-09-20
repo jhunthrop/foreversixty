@@ -9,6 +9,7 @@ from pipeline.csvio import read_csv
 from pipeline.icons import (
     PLACEHOLDER_ICON,
     blp_to_webp,
+    class_icon_names,
     download_icons,
     icon_names,
     icons_for_build,
@@ -16,6 +17,29 @@ from pipeline.icons import (
 )
 
 HERE = Path(__file__).parent
+
+#: The classes a real build's classes.json lists (id is irrelevant here; only slug
+#: feeds class_icon_names). Mirrors builds/1.60.1.69893/classes.json's slug list.
+ALL_CLASS_SLUGS = (
+    "warrior",
+    "paladin",
+    "hunter",
+    "rogue",
+    "priest",
+    "shaman",
+    "mage",
+    "warlock",
+    "druid",
+)
+
+
+def write_classes(tmp_path: Path, slugs: tuple[str, ...] = ("warrior",)) -> None:
+    """A minimal classes.json: every wanted_icons/_referenced_names fixture build
+    dir needs one now that class icons come from it, same as a real build's does
+    (pipeline/normalize writes classes.json before `icons` ever runs)."""
+    (tmp_path / "classes.json").write_text(
+        json.dumps([{"id": n, "name": slug.title(), "slug": slug} for n, slug in enumerate(slugs)])
+    )
 
 
 def make_blp2(
@@ -134,6 +158,7 @@ def test_download_icons_skips_a_missing_file_id(tmp_path: Path):
 
 
 def test_wanted_icons_reads_the_emitted_json(tmp_path: Path):
+    write_classes(tmp_path)
     (tmp_path / "talents").mkdir(parents=True)
     (tmp_path / "talents" / "warrior.json").write_text(
         json.dumps(
@@ -179,12 +204,34 @@ def test_wanted_icons_reads_the_emitted_json(tmp_path: Path):
     assert wanted == {132154: "ability_golemthunderclap", 135274: "inv_sword_04"}
 
 
+def test_class_icon_names_reads_every_class_slug(tmp_path: Path):
+    """No talent or item ever references a class icon, so class_icon_names has to
+    read classes.json directly rather than wait for one of those to name it."""
+    write_classes(tmp_path, ALL_CLASS_SLUGS)
+    assert class_icon_names(tmp_path) == {f"classicon_{slug}" for slug in ALL_CLASS_SLUGS}
+
+
+def test_wanted_icons_asks_for_a_classicon_per_class(tmp_path: Path):
+    """A real build's classes.json lists every playable class; wanted_icons must ask
+    CASC for that class's icon regardless of what the talent and item JSON reference,
+    or a real build ships with some classes missing their icon (the bug this pins)."""
+    write_classes(tmp_path, ALL_CLASS_SLUGS)
+    (tmp_path / "talents").mkdir()
+    (tmp_path / "items").mkdir()
+    class_icon_file_ids = {
+        10_000 + n: f"classicon_{slug}" for n, slug in enumerate(ALL_CLASS_SLUGS)
+    }
+    wanted = wanted_icons(tmp_path, class_icon_file_ids)
+    assert set(wanted.values()) == {f"classicon_{slug}" for slug in ALL_CLASS_SLUGS}
+
+
 def test_icons_for_build_downloads_what_the_build_refers_to(tmp_path: Path, monkeypatch):
     build_dir = tmp_path / "builds" / "1.0.0.1"
     raw = build_dir / "raw"
     raw.mkdir(parents=True)
     manifest = HERE / "fixtures" / "ManifestInterfaceData.csv"
     (raw / manifest.name).write_text(manifest.read_text())
+    write_classes(build_dir)
     (build_dir / "talents").mkdir()
     (build_dir / "talents" / "warrior.json").write_text(
         json.dumps(
@@ -267,6 +314,7 @@ def test_download_icons_creates_and_closes_its_own_client(tmp_path: Path, monkey
 
 
 def test_wanted_icons_skips_an_icon_name_absent_from_the_manifest(tmp_path: Path, caplog):
+    write_classes(tmp_path)
     (tmp_path / "talents").mkdir(parents=True)
     (tmp_path / "talents" / "warrior.json").write_text(
         json.dumps(
@@ -309,6 +357,7 @@ def test_wanted_icons_skips_an_icon_name_absent_from_the_manifest(tmp_path: Path
 
 
 def write_items(tmp_path: Path, icons: list[str]) -> None:
+    write_classes(tmp_path)
     (tmp_path / "items").mkdir(parents=True, exist_ok=True)
     (tmp_path / "items" / "warrior.json").write_text(
         json.dumps(
