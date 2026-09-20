@@ -3,17 +3,23 @@
 // task's tests read these files, and a fixture that quietly stops matching the contract
 // turns a real failure into a green run.
 //
-// Two assertions below deliberately diverge from the task brief's draft, because checking
+// One assertion below deliberately diverges from the task brief's draft, because checking
 // the real files settled the question the draft got wrong:
 //   - phases[0].start: api/internal/phase.go's zero Boundary marshals through Go's
 //     encoding/json as "0001-01-01T00:00:00Z", not "" -- and the phases.json already
 //     checked in on this branch (part A) already carries that value. "" would have been
 //     wrong the moment a real GET /v1/phases response was compared against it.
-//   - weights: the reference stat's weight is pinned to exactly 1 by definition, with zero
-//     uncertainty -- it is not a ratio of two noisy estimates the way every other row is.
-//     Both fixture files agree on this (weights-result.json's attack_power row already
-//     carries error: 0); only the brief's own test snippet asked for every row's error to
-//     be positive, which its own fixture could never pass.
+//
+// Task 7 (fixture regeneration from the real engine) corrected a second assumption this
+// file used to encode: the reference stat's WEIGHT is exactly 1 by definition (weight/its
+// own scale, a ratio with no uncertainty), but its ERROR is not -- sim/adapter/adapter.go's
+// computeStatWeights divides the reference stat's own measured stdev by the same scale and
+// sample count every other row's error goes through, so it is just as noisy a measurement
+// as any other row's. The old hand-authored weights-result.json fixture happened to carry
+// `error: 0` on its reference row -- an artifact of being hand-written, not something the
+// real engine ever produces -- and this file's own tests were written to match that
+// artifact rather than the engine's actual behaviour. A real `forever-sim` run's reference
+// row (weights-result.json's attack_power) carries a positive error like every other stat.
 import { describe, expect, it } from 'vitest';
 import bulkJson from './bulk-result.json';
 import weightsJson from './weights-result.json';
@@ -81,17 +87,14 @@ describe('the bulk result fixture', () => {
 });
 
 describe('the weights result fixture', () => {
-  it('normalises the reference stat to exactly 1, with zero error', () => {
+  it('normalises the reference stat to exactly 1, a ratio with no uncertainty of its own', () => {
     const reference = weights.request.weights?.reference ?? '';
     const row = weights.weights.find((entry) => entry.stat === reference);
     expect(row?.weight).toBe(1);
-    expect(row?.error).toBe(0);
   });
 
-  it('gives every non-reference stat a measured, positive error', () => {
-    const reference = weights.request.weights?.reference ?? '';
+  it('gives every stat a measured, positive error -- the reference stat’s own delta run is just as noisy as any other row’s', () => {
     for (const row of weights.weights) {
-      if (row.stat === reference) continue;
       expect(row.error).toBeGreaterThan(0);
     }
   });

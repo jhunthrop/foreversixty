@@ -47,11 +47,11 @@ describe('SavedWeights: the greyed row and its label (D45)', () => {
     expect(body).not.toContain('Agility=');
     // Every other row's own Pawn key IS in the string: the table's included rows and the
     // Pawn string's are the same set.
+    expect(body).toContain('Strength=1.50');
     expect(body).toContain('AttackPower=1.00');
-    expect(body).toContain('Strength=2.14');
-    expect(body).toContain('CritRating=21.70');
-    expect(body).toContain('HitRating=27.30');
-    expect(body).toContain('HasteRating=18.40');
+    expect(body).toContain('CritRating=7.03');
+    expect(body).toContain('HitRating=6.87');
+    expect(body).toContain('HasteRating=5.85');
   });
 
   it('a result with no insignificant rows greys nothing', () => {
@@ -62,6 +62,6 @@ describe('SavedWeights: the greyed row and its label (D45)', () => {
     const body = renderWeights(allSignificant);
     expect(body).not.toContain('opacity-50');
     expect(body).not.toContain(WEIGHT_INSIGNIFICANT_LABEL);
-    expect(body).toContain('Agility=1.32');
+    expect(body).toContain('Agility=0.16');
   });
 });

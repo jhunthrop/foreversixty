@@ -62,18 +62,22 @@ describe('statLabel', () => {
 
 describe('weightScale', () => {
   it('is the largest weight plus its error, so no bar overflows its track', () => {
-    expect(weightScale(result.weights)).toBeCloseTo(27.3 + 1.2, 6);
+    // The widest row computed from the fixture itself, not a copied literal: a regenerated
+    // fixture's own numbers change every time the engine reruns it, and a hand-copied
+    // number here would silently drift from what the fixture actually carries.
+    const widest = Math.max(...result.weights.map((row) => row.weight + row.error));
+    expect(weightScale(result.weights)).toBeCloseTo(widest, 6);
     expect(weightScale([])).toBe(1);
   });
 });
 
 describe('pawnString', () => {
   it('is a Pawn v1 line with the class, the spec and two decimals a piece', () => {
-    // The fixture's own "agility" row is insignificant (weight 1.32, error 1.45) -- left
-    // out here the same way a stat Pawn has no key for is, below.
+    // The fixture's own "agility" row is insignificant -- left out here the same way a
+    // stat Pawn has no key for is, below.
     expect(pawnString('warrior-fury', result.weights)).toBe(
-      '( Pawn: v1: "Fury Warrior": Class=Warrior, Spec=Fury, AttackPower=1.00, Strength=2.14, ' +
-        'CritRating=21.70, HitRating=27.30, HasteRating=18.40 )',
+      '( Pawn: v1: "Fury Warrior": Class=Warrior, Spec=Fury, Strength=1.50, AttackPower=1.00, ' +
+        'CritRating=7.03, HitRating=6.87, HasteRating=5.85 )',
     );
   });
 
@@ -153,6 +157,8 @@ describe('weightStatsFor', () => {
       'crit',
       'hit',
       'melee_haste',
+      'expertise',
+      'armor_penetration',
     ]);
   });
 

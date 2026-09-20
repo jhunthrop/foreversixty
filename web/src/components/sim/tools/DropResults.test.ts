@@ -38,7 +38,7 @@ function resultWith(combo: Combo): BulkResult {
 function renderDrops(result: BulkResult): string {
   const items: ReadonlyMap<number, Item> = new Map();
   const { body } = render(DropResults, {
-    props: { result, items, treeVersion: 'test', onpin: () => {} },
+    props: { result, items, treeVersion: 'test', untried: [], onpin: () => {} },
   });
   return body;
 }
