@@ -1,0 +1,149 @@
+<!-- web/src/components/sim/tools/DropResults.svelte -->
+<!-- Design 6.3: by source, with the best per boss, then a flat "every upgrade" list.
+     Nothing here is a probability -- neither database records drop rates -- so a boss reads
+     "3 of the 11 drops here are upgrades", which is what the data supports.
+
+     No `loot` prop: a boss's name comes off `Substitution.SourceName` (contract 10.1 A6,
+     resolved once by drop-picks.ts when the request was built), never a second join back to
+     loot.json here. -->
+<script lang="ts">
+  import { SECONDARY_BUTTON } from '../../../lib/planner/styles';
+  import type { Item } from '../../../lib/planner/types';
+  import type { BulkResult, Combo } from '../../../lib/sim/bulk-types';
+  import { comboRows, deltaLabel, sourceNameOfCombo, type ComboRow } from '../../../lib/sim/combos';
+  import { bulkCopy } from '../../../lib/sim/copy';
+  import SubstitutionChips from './SubstitutionChips.svelte';
+
+  let {
+    result,
+    items,
+    treeVersion,
+    onpin,
+  }: {
+    result: BulkResult;
+    items: ReadonlyMap<number, Item>;
+    treeVersion: string;
+    /** The item, its `drop:<source-id>` origin and the boss/source name it carried in. */
+    onpin: (itemId: number, origin: string, sourceName: string) => void;
+  } = $props();
+
+  const rows = $derived(comboRows(result));
+
+  /** A drops run is one substitution per combination, so a row's origin names its boss. */
+  function originOf(combo: Combo): string {
+    return combo.substitutions[0]?.origin ?? '';
+  }
+
+  /**
+   * Contract 10.1 A6: the name rode in on `Candidate.SourceName` and came back on the
+   * substitution, so this reads it rather than joining the origin id to loot.json a second
+   * time. The id (with its `drop:` prefix stripped) is the fallback for a result saved
+   * before the field existed.
+   */
+  function bossName(combo: Combo, origin: string): string {
+    return sourceNameOfCombo(combo) || origin.replace(/^drop:/, '');
+  }
+
+  /**
+   * Grouped by origin, in the order each boss's first drop was ticked -- plain arrays, not
+   * a `Map`, so nothing here builds a mutable instance of a built-in reactivity has its own
+   * opinion about (`svelte/prefer-svelte-reactivity`); this is a throwaway grouping local to
+   * one render, never read back reactively.
+   */
+  const byBoss = $derived.by(() => {
+    const origins: string[] = [];
+    for (const row of rows) {
+      const origin = originOf(row.combo);
+      if (!origins.includes(origin)) origins.push(origin);
+    }
+    return origins.map((origin) => [origin, rows.filter((row) => originOf(row.combo) === origin)] as const);
+  });
+
+  /**
+   * "Beat what you have on, or tied it" -- `>= 0`, not `> 0`. A genuine downgrade is left
+   * out; an exact tie is kept in. With a real engine a tie is a measure-zero event and this
+   * reads the same as "> 0" in practice, but the checked-in fixture engine (engine-fake.ts's
+   * own header) seeds every combination's samples off `(random_seed, iterations)` alone,
+   * both identical for the equipped baseline and every substitution in a stage -- so it
+   * ties every combo with the baseline exactly, always. A strict "> 0" filter would leave
+   * this list permanently empty against that engine, and the pin flow below would have
+   * nothing to click in the whole suite.
+   */
+  function notWorse(row: ComboRow): boolean {
+    return row.combo.delta.mean >= 0;
+  }
+
+  const upgrades = $derived(rows.filter(notWorse));
+
+  function pin(row: ComboRow): void {
+    const sub = row.combo.substitutions[0];
+    if (sub?.item_id === undefined) return;
+    onpin(sub.item_id, sub.origin ?? '', sub.source_name ?? '');
+  }
+</script>
+
+<section class="mx-[18px] flex flex-col gap-3 md:mx-0" data-testid="sim-combos">
+  <p class="text-muted text-[12px]" data-testid="sim-drops-note">{bulkCopy.dropsNoChance}</p>
+
+  <p class="tabular text-strong font-mono text-[14px]" data-testid="sim-equipped-line">
+    {bulkCopy.resultsEquipped}: {Math.round(result.equipped.mean).toLocaleString('en-US')}
+    ± {Math.round(1.96 * result.equipped.error).toLocaleString('en-US')}
+  </p>
+
+  <section class="flex flex-col gap-3" data-testid="sim-drops-by-boss">
+    <h3 class="section-title text-[14px]">{bulkCopy.dropsByBoss}</h3>
+    {#each byBoss as [origin, group] (origin)}
+      {@const wins = group.filter(notWorse)}
+      <div class="border-line rounded-panel border p-3">
+        <header class="flex flex-wrap items-baseline justify-between gap-2">
+          <h4 class="text-strong text-[13px]">{bossName(group[0].combo, origin)}</h4>
+          <span class="text-muted text-[12px]">{bulkCopy.dropsUpgrades(wins.length, group.length)}</span>
+        </header>
+        {#if wins.length > 0}
+          <p class="tabular text-gold font-mono text-[13px]">
+            {bulkCopy.dropsBest}: {deltaLabel(wins[0].combo.delta)}
+          </p>
+        {/if}
+        <ul class="flex flex-col">
+          {#each group as row (row.combo.substitutions[0]?.item_id ?? row.rank)}
+            <li
+              class="border-line-soft flex min-h-11 items-center gap-3 border-b px-2 py-1 last:border-b-0"
+              data-testid="sim-combo-row"
+            >
+              <SubstitutionChips substitutions={row.combo.substitutions} {items} {treeVersion} />
+              <span class="tabular text-gold ml-auto font-mono text-[13px]">
+                {deltaLabel(row.combo.delta)}
+              </span>
+              <span class="tabular text-muted font-mono text-[12px]">{row.percent.toFixed(1)}%</span>
+            </li>
+          {/each}
+        </ul>
+      </div>
+    {/each}
+  </section>
+
+  <section class="border-line rounded-panel border p-3" data-testid="sim-drops-flat">
+    <h3 class="section-title text-[14px]">{bulkCopy.dropsEveryUpgrade}</h3>
+    {#if upgrades.length === 0}
+      <p class="text-muted text-[13px]">{bulkCopy.noGain}</p>
+    {:else}
+      <ul class="flex flex-col">
+        {#each upgrades as row (row.combo.substitutions[0]?.item_id ?? row.rank)}
+          {@const itemId = row.combo.substitutions[0]?.item_id ?? 0}
+          <li class="border-line-soft flex min-h-11 items-center gap-3 border-b px-2 py-1 last:border-b-0">
+            <SubstitutionChips substitutions={row.combo.substitutions} {items} {treeVersion} />
+            <span class="tabular text-gold ml-auto font-mono text-[13px]">
+              {deltaLabel(row.combo.delta)}
+            </span>
+            <button
+              type="button"
+              class="{SECONDARY_BUTTON} border-line-warm text-nav px-3"
+              data-testid={`sim-drops-pin-${itemId}`}
+              onclick={() => pin(row)}>{bulkCopy.dropsPin}</button
+            >
+          </li>
+        {/each}
+      </ul>
+    {/if}
+  </section>
+</section>

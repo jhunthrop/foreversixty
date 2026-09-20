@@ -587,12 +587,17 @@ export function createBulkStore(init: BulkStoreInit) {
       rows = copyAndModify(rows, key, patch);
       scheduleCount();
     },
-    /** From the item search and from a Droptimizer pin: added, ticked, and counted. */
-    addSearchItem(itemId: number, origin: Origin = 'search'): void {
+    /**
+     * From the item search and from a Droptimizer pin: added, ticked, and counted.
+     * `sourceName` carries a pin's boss/source name through to the row (contract 10.1 A6),
+     * so `addRow`'s own provenance merge can prefer it over a bare, unnamed origin already
+     * ticked from bags or equipped.
+     */
+    addSearchItem(itemId: number, origin: Origin = 'search', sourceName = ''): void {
       const item = items.get(itemId);
       if (item === undefined) return;
       for (const slot of uiSlotsOf(item)) {
-        rows = addRow(rows, { ...rowFor(item, slot, origin), checked: true });
+        rows = addRow(rows, { ...rowFor(item, slot, origin, sourceName), checked: true });
       }
       scheduleCount();
     },

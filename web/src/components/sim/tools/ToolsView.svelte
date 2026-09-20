@@ -13,6 +13,7 @@
   import { createLazyComponent, type LazyLoadState } from '../../../lib/report/lazy-component.svelte';
   import { TOOL_SKELETONS } from '../../../lib/sim/bulk-skeleton';
   import { createBulkStore, type SimTool } from '../../../lib/sim/bulk-store.svelte';
+  import type { Origin } from '../../../lib/sim/candidates';
   import { simCopy } from '../../../lib/sim/copy';
   import { bulkCopy } from '../../../lib/sim/copy';
   import { parseSimState } from '../../../lib/sim/url';
@@ -23,8 +24,19 @@
 
   const bootstrap = untrack(() => {
     const { source, ref } = parseSimState(window.location.search);
+    const params = new URLSearchParams(window.location.search);
     const mount = document.getElementById('sim-tools');
-    return { source, ref, treeVersion: mount?.dataset.treeVersion ?? activeBuild.build };
+    return {
+      source,
+      ref,
+      treeVersion: mount?.dataset.treeVersion ?? activeBuild.build,
+      // A Droptimizer pin (Task 18): the item, and the `drop:<source-id>` origin and boss
+      // name it carried in, so the row lands on Top Gear with its real provenance rather
+      // than a plain search hit.
+      pin: params.get('pin') ?? '',
+      pinOrigin: params.get('pinOrigin') ?? '',
+      pinName: params.get('pinName') ?? '',
+    };
   });
 
   const store = untrack(() =>
@@ -39,9 +51,31 @@
 
   let me = $state<Me | null>(null);
   let switcherOpen = $state(false);
+  let pinApplied = false;
 
   $effect(() => {
     if (store.character !== null) switcherOpen = false;
+  });
+
+  /**
+   * A Droptimizer pin (Task 18), applied the first time a character is on screen -- whether
+   * it arrived with this navigation (`?source=&ref=` alongside `?pin=`) or the player picked
+   * one afterwards through the switcher. `addSearchItem` needs the item map, which only
+   * exists once `store.character !== null` (the same reason `seedRows` runs inside
+   * `adopt()`), so this cannot fire from `onMount` directly. `pinOrigin` is trusted only as
+   * a `drop:` origin -- anything else falls back to a plain search hit, the same one a pin
+   * with no origin at all produces.
+   */
+  $effect(() => {
+    if (pinApplied || store.character === null) return;
+    pinApplied = true;
+    if (bootstrap.pin === '') return;
+    const itemId = Number.parseInt(bootstrap.pin, 10);
+    if (!Number.isInteger(itemId) || itemId <= 0) return;
+    const origin: Origin = bootstrap.pinOrigin.startsWith('drop:')
+      ? (bootstrap.pinOrigin as Origin)
+      : 'search';
+    store.addSearchItem(itemId, origin, bootstrap.pinName);
   });
 
   onMount(() => {
@@ -52,8 +86,8 @@
       })
       .catch(() => {});
     void store.loadSpecs();
-    // The URL's own bootstrap, once, here rather than in an effect: a "pin into Top Gear"
-    // link and a "sim this build" link both arrive as ?source=&ref=.
+    // The URL's own bootstrap, once, here rather than in an effect: a "sim this build" link
+    // arrives as ?source=&ref=.
     if (bootstrap.source !== '' && bootstrap.ref !== '') {
       if (bootstrap.source === 'addon') void store.loadAddon(bootstrap.ref);
       else if (bootstrap.source === 'build') void store.loadBuild(bootstrap.ref);
