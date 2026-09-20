@@ -14,6 +14,7 @@ import {
   percentOf,
   slotSummary,
   sourceNameOfCombo,
+  substitutionChipLabel,
   substitutionLabel,
   winningGear,
 } from './combos';
@@ -340,5 +341,34 @@ describe('sourceNameOfCombo', () => {
         group: 0,
       }),
     ).toBe('Ragnaros');
+  });
+});
+
+describe('substitutionChipLabel', () => {
+  // Task 5 (newcomer MAJOR, review.md:360-363): SubstitutionChips.svelte used to carry this
+  // exact string only in a `title`, which a phone can never hover to read. Folding the
+  // source into the same string the chip already renders is what makes it tappable by
+  // construction; this is the pure decision behind that, kept out of the component per the
+  // lane's testable-decision rule.
+  it('appends the source name when the substitution carries one', () => {
+    expect(
+      substitutionChipLabel({
+        kind: 'item',
+        slot: 'head',
+        item_id: 16963,
+        name: 'Helm of Wrath',
+        source_name: 'Ragnaros',
+      }),
+    ).toBe('Helm of Wrath · Ragnaros');
+  });
+
+  it('is just the label when the substitution carries no source', () => {
+    expect(substitutionChipLabel({ kind: 'talents', name: 'Deep Fury' })).toBe('Deep Fury');
+  });
+
+  it('ignores an empty source name the same way the title it replaces did', () => {
+    expect(
+      substitutionChipLabel({ kind: 'item', slot: 'head', item_id: 1, name: 'X', source_name: '' }),
+    ).toBe('X');
   });
 });

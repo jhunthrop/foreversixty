@@ -58,7 +58,6 @@
       <select
         class={control}
         {disabled}
-        title={simCopy.variationNote}
         value={String(settings.encounter.variation)}
         onchange={(event) => onchange(withVariation(settings, Number(event.currentTarget.value)))}
         data-testid="sim-variation"
@@ -67,6 +66,10 @@
           <option value={String(value)}>{percent(value)}</option>
         {/each}
       </select>
+      <!-- Task 5 (newcomer MAJOR, review.md:360-363): was a hover-only `title`, invisible on
+           a phone. Visible text instead, the same treatment Task 4 already gave the
+           target-armor field in this same grid -- one more field, the same house pattern. -->
+      <p class="text-muted text-[12px]" data-testid="sim-variation-note">{simCopy.variationNote}</p>
     </label>
 
     <label class="flex min-w-0 flex-col gap-1">
@@ -134,17 +137,22 @@
       <span class="text-muted">{simCopy.executePhase}</span>
     </label>
 
-    <label class="flex min-h-11 items-center gap-2 text-[13px]">
-      <input
-        type="checkbox"
-        class="accent-gold h-5 w-5"
-        {disabled}
-        title={simCopy.dummyNote}
-        checked={settings.encounter.dummy === true}
-        onchange={(event) => onchange(withDummy(settings, event.currentTarget.checked))}
-        data-testid="sim-dummy"
-      />
-      <span class="text-muted">{simCopy.dummyTarget}</span>
-    </label>
+    <div class="flex min-w-0 flex-col gap-1">
+      <label class="flex min-h-11 items-center gap-2 text-[13px]">
+        <input
+          type="checkbox"
+          class="accent-gold h-5 w-5"
+          {disabled}
+          checked={settings.encounter.dummy === true}
+          onchange={(event) => onchange(withDummy(settings, event.currentTarget.checked))}
+          data-testid="sim-dummy"
+        />
+        <span class="text-muted">{simCopy.dummyTarget}</span>
+      </label>
+      <!-- Task 5 (newcomer MAJOR, review.md:360-363): was a hover-only `title`, invisible on
+           a phone. Visible text instead, the same treatment Task 4 already gave the
+           target-armor field above. -->
+      <p class="text-muted text-[12px]" data-testid="sim-dummy-note">{simCopy.dummyNote}</p>
+    </div>
   </div>
 </details>

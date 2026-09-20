@@ -266,6 +266,17 @@ export function sourceNameOfCombo(combo: Combo): string {
 }
 
 /**
+ * `substitutionLabel`, with the substitution's own source (a boss or vendor name) folded
+ * in when it carries one. Task 5 (newcomer MAJOR, review.md:360-363): SubstitutionChips.svelte
+ * used to put this exact string in a `title`, which a phone can never hover to read. This is
+ * the same "name · source" phrase that title carried, now the chip's own visible text.
+ */
+export function substitutionChipLabel(sub: Substitution): string {
+  const label = substitutionLabel(sub);
+  return sub.source_name !== undefined && sub.source_name !== '' ? `${label} · ${sub.source_name}` : label;
+}
+
+/**
  * "+41 DPS from Helm of Wrath", for the page's own display. The leader's first substitution
  * is the one named -- the planner orders a combination's substitutions by the slot's own
  * contribution, so the first is the one that carried it.

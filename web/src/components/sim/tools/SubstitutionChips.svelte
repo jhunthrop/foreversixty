@@ -19,13 +19,20 @@
 
      Store-free by design: DropResults (Task 18) and SavedCombos (Task 20) reuse this
      component, and neither owns a BulkStore in the shape this one would need. Both inherit
-     this fix along with everything else here, since neither has its own chip renderer. -->
+     this fix along with everything else here, since neither has its own chip renderer.
+
+     Task 5 (newcomer MAJOR, review.md:360-363): a chip's source (the boss or vendor it came
+     from) used to live only in `title`, invisible on a phone. A `<details>` per chip -- this
+     codebase's own house disclosure -- would be absurd at this size, so the source is folded
+     straight into the chip's own visible text instead (`substitutionChipLabel`, combos.ts):
+     source names here are short (a boss or vendor name), the row already wraps
+     (`flex-wrap`), and a reader gets the full answer without a second element to manage. -->
 <script lang="ts">
   import { rarityClassFor } from '../../../lib/planner/items';
   import { dataUrl } from '../../../lib/planner/load';
   import type { Item } from '../../../lib/planner/types';
   import type { Substitution } from '../../../lib/sim/bulk-types';
-  import { isEmptiedOffHand, substitutionLabel } from '../../../lib/sim/combos';
+  import { isEmptiedOffHand, substitutionChipLabel } from '../../../lib/sim/combos';
   import { bulkCopy } from '../../../lib/sim/copy';
 
   let {
@@ -44,18 +51,12 @@
     {#if isEmptiedOffHand(sub)}
       <span
         class="border-line-soft text-muted rounded-pill inline-flex items-center gap-1 border border-dashed px-2 py-[2px] text-[12px]"
-        title={bulkCopy.offHandEmptied}
       >
         {bulkCopy.offHandEmptied}
       </span>
     {:else}
       {@const item = sub.item_id === undefined ? undefined : items.get(sub.item_id)}
-      <span
-        class="border-line rounded-pill inline-flex items-center gap-1 border px-2 py-[2px] text-[12px]"
-        title={sub.source_name !== undefined && sub.source_name !== ''
-          ? `${substitutionLabel(sub)} · ${sub.source_name}`
-          : substitutionLabel(sub)}
-      >
+      <span class="border-line rounded-pill inline-flex items-center gap-1 border px-2 py-[2px] text-[12px]">
         {#if item !== undefined}
           <img
             src={dataUrl(treeVersion, `icons/${item.icon}.webp`)}
@@ -68,7 +69,7 @@
           />
         {/if}
         <span class={item === undefined ? 'text-text' : rarityClassFor(item.quality)}>
-          {substitutionLabel(sub)}
+          {substitutionChipLabel(sub)}
         </span>
       </span>
     {/if}
