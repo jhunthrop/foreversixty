@@ -610,12 +610,15 @@ gains per-slot enchant and suffix.
   /v1/sims` stored the identical shape as `done`, with a headline
   reading its zero fields as a confident "0 DPS".
 - **`sim/api.WeightsIterations` costs a weights request the way
-  `LadderIterations` costs a bulk one.** It is `(Iterations / 2) *
-  (1 + 2*len(Stats))` - the engine's own
-  `buildStatWeightRequests`/`runStatWeights` (`sim/core/statweight.go`
-  in the wowsims fork) halve `Iterations` once for RNG parity, then
-  run the baseline plus one low and one high pass per distinct stat,
-  every pass at that halved count. `WeightsSpec.validate` now also
+  `LadderIterations` costs a bulk one.** It is `(Iterations *
+  WeightsIterationsFactor / 2) * (1 + 2*len(Stats))` - the request's
+  own `Iterations` multiplied by the exported `WeightsIterationsFactor`
+  (8; see its own doc and the two bullets below for why the factor
+  exists and how its value is chosen), then halved once for RNG parity
+  the way the engine's own `buildStatWeightRequests`/`runStatWeights`
+  (`sim/core/statweight.go` in the wowsims fork) halve it, before
+  running the baseline plus one low and one high pass per distinct
+  stat, every pass at that halved count. `WeightsSpec.validate` now also
   bounds `Stats` to the pinned vocabulary (`sim/api.KnownStats`, a
   copy of `sim/request/IDS.md`'s Stats section kept in sync by
   `sim/request`'s `TestAPIKnownStatsMatchTheGeneratedVocabulary`) and

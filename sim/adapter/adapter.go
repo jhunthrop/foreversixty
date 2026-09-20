@@ -886,6 +886,13 @@ func Weights(res *proto.StatWeightsResult, req api.SimRequest) ([]api.StatWeight
 		}
 		weight := at(s, raw) / scale
 		errAmt := at(s, stdev) / scale
+		// sampleCount is 0 only for a SimRequest with no Iterations set
+		// - a hand-built fixture in a test, never a validated request
+		// (api.SimRequest.Validate refuses an Iterations outside
+		// ValidIterations). Leaving errAmt as the raw population stdev
+		// there, rather than dividing by zero, is deliberate: it is
+		// unreachable for anything this function is actually called
+		// with in product.
 		if sampleCount > 0 {
 			errAmt /= math.Sqrt(sampleCount)
 		}
