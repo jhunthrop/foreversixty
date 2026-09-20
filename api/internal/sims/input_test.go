@@ -134,10 +134,10 @@ func TestAnExportOnlyCharacterHasGearAndNoTalents(t *testing.T) {
 	h.service.Summaries = dirGetter{root: h.dir}
 	// A character who has never parsed: the export is all there is,
 	// and this repository cannot read talents out of it.
-	seedExport(h, "us/normal/newbie", "us", "normal", "Newbie", `{"slots":[7]}`, time.Now().UTC())
+	seedExport(h, "us/normal/newbie", "us", "normal", "Newbie", "FS1:1.60.1.69893:rogue:human:0/0/0:head=7", time.Now().UTC())
 	var in Input
 	h.data(h.do(http.MethodGet, "/v1/characters/us/normal/newbie/sim-input", "", nil), &in)
-	if in.Source != "addon" || string(in.Gear) != `{"slots":[7]}` {
+	if in.Source != "addon" || string(in.Gear) != `"FS1:1.60.1.69893:rogue:human:0/0/0:head=7"` {
 		t.Fatalf("export only: %+v", in)
 	}
 	if in.Talents != "" || in.Spec != "" {
