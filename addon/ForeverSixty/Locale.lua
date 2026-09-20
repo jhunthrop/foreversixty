@@ -3,7 +3,7 @@
 -- player-visible literal, and no spec asserts against one: they assert
 -- against these keys, so a wording change is one diff in one file.
 local _, ns = ...
-ns = ns or {}
+ns = type(ns) == "table" and ns or {}
 
 local L = {
 	-- Chrome
