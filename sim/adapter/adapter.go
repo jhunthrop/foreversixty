@@ -853,6 +853,22 @@ func Weights(res *proto.StatWeightsResult, req api.SimRequest) ([]api.StatWeight
 		return from[s]
 	}
 
+	// sim/core/statweight.go's WeightsStdev is the population standard
+	// deviation of the per-iteration low/baseline and high/baseline
+	// deltas (sim/core/utils.go's aggregator), not a standard error -
+	// see api.WeightsIterationsFactor's doc. Converting it the same
+	// way DPS converts the headline number's stdev - dividing by the
+	// square root of the sample count behind it - is what makes "±"
+	// mean the same thing on this page as it does on /sim. N is the
+	// merged low+high sample count computed from this same request:
+	// sim/request.BuildWeights sets the engine's SimOptions.Iterations
+	// to req.Iterations*WeightsIterationsFactor before the engine
+	// halves it once for RNG parity, and computeStatWeights merges one
+	// pass's worth of samples from the low run with one pass's worth
+	// from the high run, so the two halved passes recombine to exactly
+	// that multiplied count.
+	sampleCount := float64(req.Iterations * api.WeightsIterationsFactor)
+
 	reference, ok := statid.Parse(req.Weights.Reference)
 	if !ok {
 		return nil, fmt.Errorf("%w: reference %q", ErrNoWeights, req.Weights.Reference)
@@ -868,10 +884,21 @@ func Weights(res *proto.StatWeightsResult, req api.SimRequest) ([]api.StatWeight
 		if !ok {
 			return nil, fmt.Errorf("%w: %q", ErrNoWeights, id)
 		}
+		weight := at(s, raw) / scale
+		errAmt := at(s, stdev) / scale
+		if sampleCount > 0 {
+			errAmt /= math.Sqrt(sampleCount)
+		}
 		out = append(out, api.StatWeight{
 			Stat:   id,
-			Weight: at(s, raw) / scale,
-			Error:  at(s, stdev) / scale,
+			Weight: weight,
+			Error:  errAmt,
+			// >= rather than >: a weight sitting exactly on its own
+			// error is not distinguishable from zero either, and a
+			// hard-capped stat the engine's sweep skipped reads back
+			// as 0 weight and 0 error, which must also flag (0 >= 0)
+			// rather than publish a confident-looking zero.
+			Insignificant: errAmt >= math.Abs(weight),
 		})
 	}
 	return out, nil

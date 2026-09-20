@@ -42,8 +42,14 @@ func TestBuildWeightsIsTheSameRunPlusStats(t *testing.T) {
 	if got.Encounter.GetDuration() != run.Encounter.GetDuration() {
 		t.Error("the weights request fights a different encounter")
 	}
-	if got.SimOptions.GetIterations() != int32(fury().Iterations) {
-		t.Errorf("iterations = %d", got.SimOptions.GetIterations())
+	// BuildWeights multiplies the request's own Iterations by
+	// api.WeightsIterationsFactor (see its doc): sim/core/statweight.go's
+	// WeightsStdev is a population standard deviation that iteration
+	// count alone cannot shrink, and adapter.Weights' sqrt(N)
+	// conversion needs the engine to actually run at that multiplied
+	// count.
+	if want := int32(fury().Iterations) * int32(api.WeightsIterationsFactor); got.SimOptions.GetIterations() != want {
+		t.Errorf("iterations = %d, want %d", got.SimOptions.GetIterations(), want)
 	}
 	if got.RaidBuffs == nil || got.PartyBuffs == nil || got.Debuffs == nil {
 		t.Error("the weights request lost the buffs")
@@ -79,6 +85,29 @@ func TestBuildWeightsNeverAsksForASample(t *testing.T) {
 	}
 	if got.SimOptions.GetSampleIteration() {
 		t.Error("a weights request asked for a sample iteration; no consumer reads a stat sweep's cast log")
+	}
+}
+
+// TestBuildWeightsIterationsMatchesTheCostEstimate pins the thing
+// that breaks quietly if BuildWeights and api.WeightsIterations ever
+// disagree about the multiplied count: the server would either
+// refuse a run it could afford or accept one it cannot. What
+// BuildWeights actually sets the engine's SimOptions.Iterations to,
+// halved back out for RNG parity and expanded by the baseline-plus-
+// two-passes-per-stat shape, must equal what WeightsIterations
+// costs the same request at.
+func TestBuildWeightsIterationsMatchesTheCostEstimate(t *testing.T) {
+	req := weights()
+	got, err := BuildWeights(req, Options{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	engineIterations := int(got.SimOptions.GetIterations())
+	distinctStats := len(req.Weights.Stats)
+	totalRun := (engineIterations / 2) * (1 + 2*distinctStats)
+	if want := api.WeightsIterations(req); totalRun != want {
+		t.Errorf("BuildWeights implies %d total iterations run, api.WeightsIterations costs %d",
+			totalRun, want)
 	}
 }
 

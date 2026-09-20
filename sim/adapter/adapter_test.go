@@ -783,17 +783,154 @@ func TestWeightsMapping(t *testing.T) {
 		t.Fatal(err)
 	}
 	want := []api.StatWeight{
-		{Stat: "agility", Weight: 1.1, Error: 0.02},
-		{Stat: "attack_power", Weight: 1.0, Error: 0.01},
-		{Stat: "crit", Weight: 12.0, Error: 0.30},
+		{Stat: "agility", Weight: 1.1, Error: 0.02, Insignificant: false},
+		{Stat: "attack_power", Weight: 1.0, Error: 0.01, Insignificant: false},
+		{Stat: "crit", Weight: 12.0, Error: 0.30, Insignificant: false},
 	}
 	if len(got) != len(want) {
 		t.Fatalf("got %d weights, want %d: %+v", len(got), len(want), got)
 	}
 	for i := range want {
-		if got[i].Stat != want[i].Stat || got[i].Weight != want[i].Weight || got[i].Error != want[i].Error {
+		if got[i] != want[i] {
 			t.Errorf("weight %d = %+v, want %+v", i, got[i], want[i])
 		}
+	}
+}
+
+// TestWeightsConvertsPopulationStdevToStandardError pins the
+// denominator sim/api.WeightsIterationsFactor's doc documents:
+// sim/core/statweight.go's WeightsStdev is a population standard
+// deviation, and Weights divides it by sqrt(req.Iterations *
+// api.WeightsIterationsFactor) - the multiplied count
+// sim/request.BuildWeights actually runs the engine's sweep at - the
+// same way adapter.DPS divides by sqrt(IterationsDone) for the
+// headline number.
+func TestWeightsConvertsPopulationStdevToStandardError(t *testing.T) {
+	req := api.SimRequest{
+		Iterations: 3000,
+		Weights: &api.WeightsSpec{
+			Stats:     []string{"attack_power", "crit"},
+			Reference: "attack_power",
+		},
+	}
+	stats := make([]float64, len(proto.Stat_name))
+	stdev := make([]float64, len(proto.Stat_name))
+	stats[proto.Stat_StatAttackPower] = 1.0
+	stats[proto.Stat_StatCrit] = 5.0
+	stdev[proto.Stat_StatAttackPower] = 13.0
+	stdev[proto.Stat_StatCrit] = 6.0
+
+	res := &proto.StatWeightsResult{Dps: &proto.StatWeightValues{
+		Weights:      &proto.UnitStats{Stats: stats},
+		WeightsStdev: &proto.UnitStats{Stats: stdev},
+	}}
+	got, err := Weights(res, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	n := math.Sqrt(float64(req.Iterations * api.WeightsIterationsFactor))
+	want := []float64{13.0 / n, 6.0 / n}
+	for i, w := range want {
+		if diff := got[i].Error - w; diff > 1e-9 || diff < -1e-9 {
+			t.Errorf("weight %d error = %v, want %v (raw stdev / sqrt(%d*%d))",
+				i, got[i].Error, w, req.Iterations, api.WeightsIterationsFactor)
+		}
+	}
+}
+
+// TestInsignificant is the table task 5(b2) pins: error compared to
+// the absolute value of the weight, error >= weight (not just >)
+// flags a row the boundary case included, and the reference stat's
+// own exactly-1 weight gets whatever the rule gives it like any
+// other row.
+func TestInsignificant(t *testing.T) {
+	cases := []struct {
+		name   string
+		weight float64
+		stdev  float64
+		want   bool
+	}{
+		{"error well under weight is significant", 6.9, 4.0, false},
+		{"error over weight is insignificant", 1.0, 13.0, true},
+		{"error exactly equal to a nonzero weight is insignificant", 5.0, 5.0, true},
+		{"hard-capped 0 +/- 0 is insignificant", 0.0, 0.0, true},
+		{"a real negative weight bigger than its error is significant", -6.0, 2.0, false},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			req := api.SimRequest{Weights: &api.WeightsSpec{
+				Stats:     []string{"attack_power", "crit"},
+				Reference: "attack_power",
+			}}
+			stats := make([]float64, len(proto.Stat_name))
+			stdev := make([]float64, len(proto.Stat_name))
+			stats[proto.Stat_StatAttackPower] = 1.0
+			stdev[proto.Stat_StatAttackPower] = 0.0
+			stats[proto.Stat_StatCrit] = c.weight
+			stdev[proto.Stat_StatCrit] = c.stdev
+
+			res := &proto.StatWeightsResult{Dps: &proto.StatWeightValues{
+				Weights:      &proto.UnitStats{Stats: stats},
+				WeightsStdev: &proto.UnitStats{Stats: stdev},
+			}}
+			got, err := Weights(res, req)
+			if err != nil {
+				t.Fatal(err)
+			}
+			// got[0] is attack_power, the reference: weight 1/1=1,
+			// error 0/1=0 - not insignificant since 0 < 1.
+			if got[0].Insignificant {
+				t.Errorf("reference stat came back insignificant: %+v", got[0])
+			}
+			if got[1].Insignificant != c.want {
+				t.Errorf("crit.Insignificant = %v, want %v (weight %v, error %v)",
+					got[1].Insignificant, c.want, got[1].Weight, got[1].Error)
+			}
+		})
+	}
+}
+
+// TestInsignificantOnTheReferenceStatItself pins the brief's other
+// named case: the reference stat's own weight is always exactly 1
+// (it is normalised against itself), and its Insignificant flag gets
+// whatever error>=1 gives it like any other row, not a hardcoded
+// false.
+func TestInsignificantOnTheReferenceStatItself(t *testing.T) {
+	for _, c := range []struct {
+		name              string
+		refStdev          float64
+		refRaw            float64
+		wantInsignificant bool
+	}{
+		{"reference error well under its own weight of 1", 2.0, 20.0, false},
+		{"reference error over its own weight of 1", 15.0, 10.0, true},
+	} {
+		t.Run(c.name, func(t *testing.T) {
+			req := api.SimRequest{Weights: &api.WeightsSpec{
+				Stats:     []string{"attack_power"},
+				Reference: "attack_power",
+			}}
+			stats := make([]float64, len(proto.Stat_name))
+			stdev := make([]float64, len(proto.Stat_name))
+			stats[proto.Stat_StatAttackPower] = c.refRaw
+			stdev[proto.Stat_StatAttackPower] = c.refStdev
+
+			res := &proto.StatWeightsResult{Dps: &proto.StatWeightValues{
+				Weights:      &proto.UnitStats{Stats: stats},
+				WeightsStdev: &proto.UnitStats{Stats: stdev},
+			}}
+			got, err := Weights(res, req)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got[0].Weight != 1.0 {
+				t.Fatalf("reference weight = %v, want exactly 1", got[0].Weight)
+			}
+			if got[0].Insignificant != c.wantInsignificant {
+				t.Errorf("reference Insignificant = %v, want %v (error %v)",
+					got[0].Insignificant, c.wantInsignificant, got[0].Error)
+			}
+		})
 	}
 }
 

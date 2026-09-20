@@ -199,9 +199,10 @@ type Stage struct {
 }
 
 type StatWeight struct {
-    Stat   string  `json:"stat"`
-    Weight float64 `json:"weight"` // Reference stat is exactly 1
-    Error  float64 `json:"error"`
+    Stat          string  `json:"stat"`
+    Weight        float64 `json:"weight"` // Reference stat is exactly 1
+    Error         float64 `json:"error"`
+    Insignificant bool    `json:"insignificant"` // no omitempty; false must be on the wire. See 10.9.
 }
 
 type SampleCast struct {
@@ -625,3 +626,53 @@ gains per-slot enchant and suffix.
   weights request reaches it - `TestTheMaxWeightsRequestFitsTheBudget`
   pins that - so the guard is what protects the budget the day
   `MaxIterations` or the vocabulary grows.
+- **`StatWeight.Insignificant` is `Error >= abs(Weight)`, not `>`.** A
+  weight sitting exactly on its own error is no more distinguishable
+  from zero than one that exceeds it, and a hard-capped stat - one the
+  engine's own sweep skips because the low and high runs came back
+  identical to baseline - reads back as `0 ± 0` from the result
+  array's zero value; under a strict `>` that row would compare `0 >
+  0`, come back `false`, and publish a confident-looking zero weight
+  the page would copy into the Pawn string as `<Stat>Rating=0.00`.
+  `sim/adapter.Weights` sets the flag where the weight and the error
+  are both already in hand, so both the browser and native lanes get
+  it from the same place. The page greys an insignificant row instead
+  of presenting it as measured; the Pawn string omits it rather than
+  exporting the zero. The comparison is on the absolute value, so a
+  real negative weight (a stat that costs DPS) whose magnitude clears
+  its error is not flagged.
+- **`StatWeight.Error` is a standard error, and a lower bound.**
+  `sim/core/statweight.go`'s `WeightsStdev` is a *population* standard
+  deviation of per-iteration low/baseline and high/baseline deltas
+  (`sim/core/utils.go`'s `aggregator`, no `/sqrt(n)`); it does not
+  shrink with more iterations, which is why every weight's error used
+  to exceed its own weight (dps review D45) regardless of precision.
+  `sim/adapter.Weights` converts it to a standard error by dividing by
+  `sqrt(N)` - the same conversion `adapter.DPS` already makes for the
+  headline number - where `N` is `req.Iterations *
+  api.WeightsIterationsFactor`, the multiplied count
+  `sim/request.BuildWeights` actually runs the sweep at. This is
+  provably the right *form* (an 8-seed check found every weighed stat
+  obeys the `1/sqrt(N)` law exactly), but an empirical cross-seed
+  check of the warrior-fury sample request found it understates the
+  true run-to-run spread of the weight: about 1.2x for strength, 0.7x
+  for armor penetration, but 2.4x for agility and up to 4.4x-9.6x for
+  melee_haste, expertise and crit - the three stats most entangled
+  with the rotation's own rage/proc decisions. `StatWeight.Error` is
+  therefore documented as a lower bound rather than corrected further
+  in this round: the honest fix is a replication estimator (several
+  independent sub-sweeps at different seeds, averaged), which
+  restructures the weights execution path in both lanes and is
+  deliberately deferred, not a bigger `WeightsIterationsFactor` or a
+  fudge on the number.
+- **`WeightsIterationsFactor` is chosen by the job budget, not by a
+  target error.** The factor multiplies a weights request's own
+  `Iterations` before the sweep runs (`sim/request.BuildWeights`), and
+  `WeightsIterations` costs it the same way, so the estimate and the
+  real run never disagree about how many iterations a weight is built
+  from. Since the printed error is a lower bound (previous bullet),
+  the factor cannot be justified by hitting a percentage target; it is
+  the largest power of two for which the largest legal weights request
+  (`MaxIterations`, every id in `KnownStats`) still fits
+  `api/internal/sims`' `BulkBudget` -
+  `TestTheMaxWeightsRequestFitsTheBudget` pins that at 8; 16 does not.
