@@ -21,6 +21,39 @@ export const KIND_TITLES = {
   weights: 'Stat weights',
 } as const;
 
+// --- Lane W1 (persona round 1: results, labels, weights) ---
+/**
+ * The auto-attack tag names the hand it swung from -- wowsims/classic's own AutoAttacks
+ * constants (sim/core/attack.go): tagMainhand = 1, tagOffhand = 2, tagExtraAttack = 3.
+ * action-names.ts's attackHand() is the only place either number is read; every table,
+ * cast list and timeline reads this name. This replaces the old "Attack (2)"/"Attack (3)"
+ * labels, which numbered a *row*, not a hand -- tag 1 (main hand) rendered as "Attack (2)"
+ * -- and which this file's own proseNames table below then matched against the wrong
+ * hand (dps-minmaxer review round 1, D2: a two-handed build's only attack row was
+ * described as off-hand damage). Declared here, above simCopy -- the same place
+ * KIND_TITLES sits, and for the same reason -- so simCopy's own actionAliases (the
+ * compare-mode table further down) can build its "Melee" entries from these three
+ * strings instead of re-typing them: one source of truth for the text, not two.
+ */
+const attackHandName: Record<'main' | 'off' | 'extra', string> = {
+  main: 'Main-hand attacks',
+  off: 'Off-hand attacks',
+  extra: 'Extra attacks',
+};
+/**
+ * The same three hands, worded to flow inside summarySentence's prose ("main-hand white
+ * hits", not "Main-hand attacks"). Read directly off the tag by sentence.ts, the same way
+ * attackHandName above is -- never off attackHandName's own rendered text, which is the
+ * bug this block fixes: a display string is not a stable key, and copy.ts must not become
+ * a second, driftable mapping from the same tag.
+ */
+const attackHandProse: Record<'main' | 'off' | 'extra', string> = {
+  main: 'main-hand white hits',
+  off: 'off-hand white hits',
+  extra: 'extra white hits',
+};
+// --- Lane W1 (persona round 1: results, labels, weights) ---
+
 export const simCopy = {
   /** Network and API failures. */
   saveFailed: 'The sim could not be saved; try again.',
@@ -107,33 +140,11 @@ export const simCopy = {
   },
 
   // --- Lane W1 (persona round 1: results, labels, weights) ---
-  /**
-   * The auto-attack tag names the hand it swung from -- wowsims/classic's own AutoAttacks
-   * constants (sim/core/attack.go): tagMainhand = 1, tagOffhand = 2, tagExtraAttack = 3.
-   * action-names.ts's attackHand() is the only place either number is read; every table,
-   * cast list and timeline reads this name. This replaces the old "Attack (2)"/"Attack (3)"
-   * labels, which numbered a *row*, not a hand -- tag 1 (main hand) rendered as "Attack (2)"
-   * -- and which this file's own proseNames table below then matched against the wrong
-   * hand (dps-minmaxer review round 1, D2: a two-handed build's only attack row was
-   * described as off-hand damage).
-   */
-  attackHandName: {
-    main: 'Main-hand attacks',
-    off: 'Off-hand attacks',
-    extra: 'Extra attacks',
-  } as Record<'main' | 'off' | 'extra', string>,
-  /**
-   * The same three hands, worded to flow inside summarySentence's prose ("main-hand white
-   * hits", not "Main-hand attacks"). Read directly off the tag by sentence.ts, the same way
-   * attackHandName above is -- never off attackHandName's own rendered text, which is the
-   * bug this block fixes: a display string is not a stable key, and copy.ts must not become
-   * a second, driftable mapping from the same tag.
-   */
-  attackHandProse: {
-    main: 'main-hand white hits',
-    off: 'off-hand white hits',
-    extra: 'extra white hits',
-  } as Record<'main' | 'off' | 'extra', string>,
+  // attackHandName and attackHandProse are declared above, beside KIND_TITLES: this
+  // object's own actionAliases (further down) reads them too, and a property here cannot
+  // reference a sibling property while this literal is still being built.
+  attackHandName,
+  attackHandProse,
   // --- Lane W1 (persona round 1: results, labels, weights) ---
 
   // --- Task 11: the island store's own failures, and the character strip and source
@@ -332,9 +343,9 @@ export const simCopy = {
    */
   actionAliases: {
     Attack: 'Melee',
-    'Main-hand attacks': 'Melee',
-    'Off-hand attacks': 'Melee',
-    'Extra attacks': 'Melee',
+    [attackHandName.main]: 'Melee',
+    [attackHandName.off]: 'Melee',
+    [attackHandName.extra]: 'Melee',
     Shoot: 'Auto Shot',
   } as Record<string, string>,
   compareAbility: 'Ability',
