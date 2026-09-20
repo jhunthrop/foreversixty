@@ -161,14 +161,10 @@ func (h *harness) errorCode(res *http.Response) string {
 	return h.errorBody(res).Code
 }
 
-// errorMessage reads the message of a failing envelope.
-func (h *harness) errorMessage(res *http.Response) string {
-	h.t.Helper()
-	return h.errorBody(res).Message
-}
-
-// errorBody decodes a failing envelope's error object. errorCode and
-// errorMessage both read it, so the decode lives in one place.
+// errorBody decodes a failing envelope's error object, code and
+// message together. errorCode is the common case; a test that also
+// needs the message reads it straight from here rather than through
+// a second single-field accessor.
 func (h *harness) errorBody(res *http.Response) struct {
 	Code    string `json:"code"`
 	Message string `json:"message"`

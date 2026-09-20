@@ -136,11 +136,12 @@ func TestASaveRefusesAResultCarryingAnError(t *testing.T) {
 	if got.StatusCode != http.StatusBadRequest {
 		t.Fatalf("status %d, want 400", got.StatusCode)
 	}
-	if code := h.errorCode(got); code != "invalid" {
-		t.Fatalf("code %q", code)
+	failure := h.errorBody(got)
+	if failure.Code != "invalid" {
+		t.Fatalf("code %q", failure.Code)
 	}
-	if msg := h.errorMessage(got); !strings.Contains(msg, "error") {
-		t.Fatalf("message %q did not say why", msg)
+	if !strings.Contains(failure.Message, "error") {
+		t.Fatalf("message %q did not say why", failure.Message)
 	}
 }
 
