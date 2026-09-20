@@ -66,6 +66,7 @@ type harness struct {
 	owner   int64
 	jobs    *jobs.Fake
 	premium *fakePremium
+	planner *fakePlanner
 }
 
 func newHarness(t *testing.T) *harness {
@@ -84,8 +85,14 @@ func newHarness(t *testing.T) *harness {
 	h.files = store.NewDir(h.dir)
 	h.actor = auth.Actor{UserID: owner.ID, Role: "user", Method: "session"}
 	h.jobs, h.premium = &jobs.Fake{}, &fakePremium{}
+	// A plan that fits: one combination, well inside both bounds. A test
+	// that cares sets its own.
+	h.planner = &fakePlanner{summary: simapi.PlanSummary{
+		Kind: simapi.KindGear, Combinations: 1,
+		Cap: simapi.Caps[simapi.LaneServer], IterationsTotal: 4000,
+	}}
 	h.service = &Service{
-		Store: h.store, Accounts: h.premium, Jobs: h.jobs,
+		Store: h.store, Accounts: h.premium, Jobs: h.jobs, Planner: h.planner,
 		EngineVersion: testEngine, Log: quiet,
 	}
 
@@ -216,3 +223,20 @@ type fakePremium struct {
 }
 
 func (f fakePremium) Premium(context.Context, int64) (bool, error) { return f.premium, f.err }
+
+// fakePlanner answers the plan-only count without a binary. The real one
+// invokes `forever-sim -plan` (contract 10.2); nothing about the
+// handler's decision needs a subprocess to be tested.
+type fakePlanner struct {
+	summary simapi.PlanSummary
+	err     error
+	asked   []simapi.SimRequest
+}
+
+func (f *fakePlanner) Plan(_ context.Context, req simapi.SimRequest) (simapi.PlanSummary, error) {
+	f.asked = append(f.asked, req)
+	if f.err != nil {
+		return simapi.PlanSummary{}, f.err
+	}
+	return f.summary, nil
+}

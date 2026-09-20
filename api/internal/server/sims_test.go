@@ -9,6 +9,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/reports"
 	"github.com/jhunthrop/foreversixty/api/internal/sims"
+	simapi "github.com/jhunthrop/foreversixty/sim/api"
 )
 
 // TestTheSimulatorRoutesAreMountedWhenTheServiceIs checks the router
@@ -40,6 +41,14 @@ func (fakeJobRunner) Run(context.Context, ...string) error { return nil }
 type fakePremiumer struct{}
 
 func (fakePremiumer) Premium(context.Context, int64) (bool, error) { return false, nil }
+
+// planNothing satisfies sims.Planner for the mount check, which never
+// plans anything.
+type planNothing struct{}
+
+func (planNothing) Plan(context.Context, simapi.SimRequest) (simapi.PlanSummary, error) {
+	return simapi.PlanSummary{}, nil
+}
 
 // TestTheSaveMineAndRunRoutesAreMounted rounds out the mount check
 // above: POST /v1/sims and GET /v1/sims are always there, and POST
@@ -73,7 +82,7 @@ func TestTheSaveMineAndRunRoutesAreMounted(t *testing.T) {
 	}
 
 	withRun := NewRouter(Deps{Version: "test", Sims: &sims.Service{
-		Jobs: fakeJobRunner{}, Accounts: fakePremiumer{},
+		Jobs: fakeJobRunner{}, Accounts: fakePremiumer{}, Planner: planNothing{},
 	}})
 	w = httptest.NewRecorder()
 	withRun.ServeHTTP(w, httptest.NewRequest(http.MethodPost, "/v1/sims/run", strings.NewReader("{}")))

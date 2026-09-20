@@ -8,6 +8,7 @@ import (
 	"testing"
 	"unicode/utf8"
 
+	"github.com/jhunthrop/foreversixty/api/internal/jobs"
 	simapi "github.com/jhunthrop/foreversixty/sim/api"
 )
 
@@ -365,6 +366,25 @@ func TestTheRunRouteIsNotMountedWithoutJobsAndAccounts(t *testing.T) {
 	mux.ServeHTTP(rec, req)
 	if rec.Code != http.StatusMethodNotAllowed {
 		t.Fatalf("status %d, want 405", rec.Code)
+	}
+}
+
+// TestTheRunRouteNeedsAPlannerToo mirrors
+// TestTheRunRouteIsNotMountedWithoutJobsAndAccounts above: on a bare
+// mux with no catch-all "/", a POST to /v1/sims/run still matches GET
+// /v1/sims/{id}'s path pattern (id "run"), so the mux answers 405
+// rather than 404 - that pattern is registered, just not for POST -
+// which is still proof the run route was never mounted without a
+// planner. (The real router in api/internal/server does register a
+// catch-all "/", so there the same gap answers a plain 404 -
+// TestTheSaveMineAndRunRoutesAreMounted covers that.)
+func TestTheRunRouteNeedsAPlannerToo(t *testing.T) {
+	mux := http.NewServeMux()
+	Mount(mux, &Service{Jobs: &jobs.Fake{}, Accounts: &fakePremium{}})
+	w := httptest.NewRecorder()
+	mux.ServeHTTP(w, httptest.NewRequest(http.MethodPost, "/v1/sims/run", strings.NewReader("{}")))
+	if w.Code != http.StatusMethodNotAllowed {
+		t.Errorf("status %d, want 405: a lane that cannot size a bulk request does not offer one", w.Code)
 	}
 }
 

@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"reflect"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -27,6 +28,100 @@ func runBody(t *testing.T) string {
 		t.Fatal(err)
 	}
 	return string(b)
+}
+
+// bulkBody is a well-formed Top Gear submit: the same envelope with a
+// bulk block on it. Iterations is the precision's final-stage count,
+// which is what Validate expects of a bulk request (contract A3).
+func bulkBody(t *testing.T) string {
+	t.Helper()
+	b, err := json.Marshal(simapi.SimRequest{
+		EngineVersion: "an old one the page was holding", Spec: "warrior-fury",
+		Iterations: defaultIterations,
+		Source:     simapi.CharacterSource{Kind: simapi.SourceAddon, Ref: "us/normal/baelgrim"},
+		Character:  aCharacter("warrior", "orc"),
+		Bulk: &simapi.BulkSpec{
+			Mode: simapi.KindGear, Precision: simapi.PrecisionNormal,
+			// A client-chosen cap the server must overwrite.
+			Cap: 1_000_000,
+			Candidates: []simapi.Candidate{
+				{Slot: "main_hand", ItemID: 19019, Origin: "bag"},
+			},
+		},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	return string(b)
+}
+
+// refusal reads a failing envelope's code and fields together.
+func refusal(t *testing.T, res *http.Response) (string, map[string]string) {
+	t.Helper()
+	defer res.Body.Close()
+	var env struct {
+		Error struct {
+			Code   string            `json:"code"`
+			Fields map[string]string `json:"fields"`
+		} `json:"error"`
+	}
+	if err := json.NewDecoder(res.Body).Decode(&env); err != nil {
+		t.Fatal(err)
+	}
+	return env.Error.Code, env.Error.Fields
+}
+
+func TestABulkRunPastTheLanesCapIsRefusedWithBothNumbers(t *testing.T) {
+	h := newHarness(t)
+	h.premium.premium = true
+	h.planner.summary = simapi.PlanSummary{
+		Kind: simapi.KindGear, Combinations: 31200,
+		Cap: simapi.Caps[simapi.LaneServer], IterationsTotal: 100,
+	}
+
+	res := h.json(http.MethodPost, "/v1/sims/run", bulkBody(t))
+	if res.StatusCode != http.StatusBadRequest {
+		t.Fatalf("status %d, want 400", res.StatusCode)
+	}
+	code, fields := refusal(t, res)
+	if code != "cap_exceeded" {
+		t.Fatalf("code %q, want cap_exceeded", code)
+	}
+	// Decimal strings: httpx.ErrorBody.Fields is map[string]string
+	// (contract 10.6).
+	if fields["combinations"] != "31200" ||
+		fields["cap"] != strconv.Itoa(simapi.Caps[simapi.LaneServer]) {
+		t.Fatalf("fields %+v", fields)
+	}
+	if ran := h.jobs.Ran(); len(ran) != 0 {
+		t.Fatalf("a refused run was dispatched anyway: %v", ran)
+	}
+}
+
+func TestTheServerSetsTheCapItself(t *testing.T) {
+	h := newHarness(t)
+	h.premium.premium = true
+	if res := h.json(http.MethodPost, "/v1/sims/run", bulkBody(t)); res.StatusCode != http.StatusAccepted {
+		t.Fatalf("status %d, want 202", res.StatusCode)
+	}
+	if len(h.planner.asked) != 1 {
+		t.Fatalf("%d plans", len(h.planner.asked))
+	}
+	if got := h.planner.asked[0].Bulk.Cap; got != simapi.Caps[simapi.LaneServer] {
+		t.Errorf("cap %d, want the server lane's %d; a client may not raise its own bound",
+			got, simapi.Caps[simapi.LaneServer])
+	}
+}
+
+func TestAPlainRunIsNeverPlanned(t *testing.T) {
+	h := newHarness(t)
+	h.premium.premium = true
+	if res := h.json(http.MethodPost, "/v1/sims/run", runBody(t)); res.StatusCode != http.StatusAccepted {
+		t.Fatalf("status %d, want 202", res.StatusCode)
+	}
+	if len(h.planner.asked) != 0 {
+		t.Errorf("a plain run has nothing to expand, but the planner was asked: %+v", h.planner.asked)
+	}
 }
 
 func TestAnAccountWithoutPremiumIsAnswered402(t *testing.T) {

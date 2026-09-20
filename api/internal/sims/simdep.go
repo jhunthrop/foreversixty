@@ -15,6 +15,7 @@ import (
 	"slices"
 
 	simapi "github.com/jhunthrop/foreversixty/sim/api"
+	"github.com/jhunthrop/foreversixty/sim/runner"
 	"github.com/jhunthrop/foreversixty/sim/specs"
 )
 
@@ -32,6 +33,22 @@ const (
 // healers are research problems and stay out of the first cut
 // (design, "Scope at launch").
 const roleDPS = "dps"
+
+// Engine is a StageRunner that can also plan: what cmd/api hands the
+// service and the jobs alike, so one binary-presence check serves
+// both. sim/runner already publishes Planner — counting a bulk or
+// weights request without running it, by invoking `forever-sim -plan`
+// (contract 10.2) — so it is used directly here rather than
+// redeclared; sim/bulk cannot be imported by this package (it reads
+// sim/internal/simdb, which imports the engine), so the count crosses
+// the boundary as a subprocess's JSON, exactly the way a run does.
+// Engine embeds StageRunner rather than Runner because the job
+// already needs stage progress for a bulk run; a Runner-only Engine
+// would silently drop it.
+type Engine interface {
+	runner.StageRunner
+	runner.Planner
+}
 
 // withEncounterDefaults fills a partially specified encounter from the
 // envelope's own defaults. Zero is not a legal value for any of these

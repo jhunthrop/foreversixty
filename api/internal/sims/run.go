@@ -3,7 +3,9 @@ package sims
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
@@ -49,8 +51,24 @@ func (s *Service) run(w http.ResponseWriter, r *http.Request) {
 	// must not pick which engine our servers run.
 	req.EngineVersion = s.EngineVersion
 	req.Encounter = withEncounterDefaults(req.Encounter)
-	if err := req.Validate(); err != nil {
+	if req.Bulk != nil {
+		// The lane's cap is the server's to set. A request echoes the
+		// cap that bounded it (contract 1.3) so a saved request says
+		// what it ran under; it is not a control the client holds.
+		req.Bulk.Cap = simapi.Caps[simapi.LaneServer]
+	}
+	// ValidateLane, not Validate: the envelope's plain Validate checks
+	// the largest lane's cap, and this is the server lane (contract A1).
+	if err := req.ValidateLane(simapi.LaneServer); err != nil {
 		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", err.Error(), nil)
+		return
+	}
+	// Bulk only, not req.Kind() != KindRun: runner.Planner's own
+	// contract refuses a request with no Bulk block (ErrBadInput), and
+	// a weights request carries req.Weights instead - sending one
+	// through the planner would turn every stat-weights submit into a
+	// 500 rather than skip a check it has no combinations to answer.
+	if req.Bulk != nil && s.checkSize(w, r, req) {
 		return
 	}
 
@@ -83,4 +101,36 @@ func (s *Service) run(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	httpx.WriteOK(w, r, http.StatusAccepted, map[string]string{"sim_id": id})
+}
+
+// planTimeout bounds the plan-only subprocess. Expansion loads the item
+// database and walks the candidates; it runs no iterations, so thirty
+// seconds bounds something pathological rather than budgeting the work.
+const planTimeout = 30 * time.Second
+
+// checkSize counts what the request would expand to, without running any
+// of it, and refuses the two ways it can be too big. It reports whether
+// it has already written a response.
+func (s *Service) checkSize(w http.ResponseWriter, r *http.Request, req simapi.SimRequest) bool {
+	ctx, cancel := context.WithTimeout(r.Context(), planTimeout)
+	defer cancel()
+	plan, err := s.Planner.Plan(ctx, req)
+	if err != nil {
+		s.fail(w, r, "plan", err, "could not size that run just now")
+		return true
+	}
+	if plan.Cap > 0 && plan.Combinations > plan.Cap {
+		// Both numbers, because the page says how far over it is and by
+		// how much to trim. error.Fields is map[string]string, so they
+		// go over as decimal strings (contract 10.6).
+		httpx.WriteError(w, r, http.StatusBadRequest, "cap_exceeded",
+			fmt.Sprintf("that is %s combinations; a run on our servers is at most %s",
+				withThousands(int64(plan.Combinations)), withThousands(int64(plan.Cap))),
+			map[string]string{
+				"cap":          strconv.Itoa(plan.Cap),
+				"combinations": strconv.Itoa(plan.Combinations),
+			})
+		return true
+	}
+	return false
 }
