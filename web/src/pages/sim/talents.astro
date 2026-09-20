@@ -35,10 +35,7 @@ import { TOOL_SKELETONS } from '../../lib/sim/bulk-skeleton';
     <div id="sim-tools" data-sim-tool="talents" class="min-h-[760px] md:min-h-[520px]">
       <Fragment set:html={TOOL_SKELETONS.talents} />
       <noscript>
-        <p class="text-muted px-[18px] text-[14px] md:px-0">
-          Talent compare needs JavaScript: it runs the engine in your browser rather than on our servers. The{' '}
-          <a href="/sim">simulator</a> says the same.
-        </p>
+        <p class="text-muted px-[18px] text-[14px] md:px-0" set:html={bulkCopy.needsJs('Talent compare')} />
       </noscript>
     </div>
     <script type="module" src="/sim-tools-island.js" is:inline></script>

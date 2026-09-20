@@ -7,6 +7,11 @@
 // Static markup with no data in it, so it is safe to {@html} and identical every render.
 import type { SimTool } from './bulk-store.svelte';
 
+// A third verbatim copy of this one-liner (already duplicated between report/skeleton.ts and
+// sim/skeleton.ts). Left unshared deliberately: extracting it would mean adding an import
+// edge from this lane's file into one of those two part-A modules (or a new shared module
+// neither currently has), for one line of string-building neither test suite is at risk of
+// drifting on -- not worth the cross-lane coupling for this task.
 const block = (classes: string): string => `<span class="skeleton-block ${classes}"></span>`;
 
 /** One slot row of the candidate grid: an icon square, a name bar, two small bars. */

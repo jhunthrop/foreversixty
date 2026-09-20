@@ -35,10 +35,7 @@ import { TOOL_SKELETONS } from '../../lib/sim/bulk-skeleton';
     <div id="sim-tools" data-sim-tool="gear" class="min-h-[1180px] md:min-h-[820px]">
       <Fragment set:html={TOOL_SKELETONS.gear} />
       <noscript>
-        <p class="text-muted px-[18px] text-[14px] md:px-0">
-          Top Gear needs JavaScript: it runs the engine in your browser rather than on our servers. The{' '}
-          <a href="/sim">simulator</a> says the same.
-        </p>
+        <p class="text-muted px-[18px] text-[14px] md:px-0" set:html={bulkCopy.needsJs('Top Gear')} />
       </noscript>
     </div>
     <script type="module" src="/sim-tools-island.js" is:inline></script>

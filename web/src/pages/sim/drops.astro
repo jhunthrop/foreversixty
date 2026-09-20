@@ -35,10 +35,7 @@ import { TOOL_SKELETONS } from '../../lib/sim/bulk-skeleton';
     <div id="sim-tools" data-sim-tool="drops" class="min-h-[1080px] md:min-h-[760px]">
       <Fragment set:html={TOOL_SKELETONS.drops} />
       <noscript>
-        <p class="text-muted px-[18px] text-[14px] md:px-0">
-          The Droptimizer needs JavaScript: it runs the engine in your browser rather than on our servers. The{' '}
-          <a href="/sim">simulator</a> says the same.
-        </p>
+        <p class="text-muted px-[18px] text-[14px] md:px-0" set:html={bulkCopy.needsJs('The Droptimizer')} />
       </noscript>
     </div>
     <script type="module" src="/sim-tools-island.js" is:inline></script>

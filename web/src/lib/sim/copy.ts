@@ -532,6 +532,17 @@ export const bulkCopy = {
   weightsWarning:
     'A stat weight is a straight-line guess at something that is not a straight line: it holds near the gear you have now and stops holding as soon as a set bonus, a proc or a hit cap changes. Sim the actual items in Top Gear instead. These are here because addons want them.',
   weightsWarningLink: 'Open Top Gear',
+  /**
+   * Each tool page's `<noscript>` fallback. A single parameterised entry rather than four
+   * keyed strings (`gearNeedsJs`/`talentsNeedsJs`/...): the four sentences differ only in
+   * the tool's own label, and the tail -- "it runs the engine in your browser rather than
+   * on our servers" -- is otherwise copy-pasted verbatim four times, which is exactly the
+   * duplication `bulkCopy` exists to avoid. Rendered with `set:html` (the string's own
+   * anchor markup is authored here, never user data), the same way `TOOL_SKELETONS` and
+   * `Base.astro`'s own JSON-LD script already render trusted static HTML.
+   */
+  needsJs: (tool: string): string =>
+    `${tool} needs JavaScript: it runs the engine in your browser rather than on our servers. The <a href="/sim">simulator</a> says the same.`,
 
   // --- candidates ---
   equipped: 'Equipped',
