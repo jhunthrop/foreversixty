@@ -392,7 +392,7 @@ def test_both_generated_files_carry_the_weight_stats():
     go, ts = render_go(records), render_ts(records)
     assert 'WeightStats []string `json:"weight_stats"`' in go
     assert 'WeightStats: []string{"attack_power"' in go
-    # web/ is out of scope for this lane: the TS renderer is deliberately
-    # left carrying only the fields it already had, so regenerating it
-    # writes back the same bytes (see git status after `pipeline specs`).
-    assert "weight_stats" not in ts
+    # The TypeScript list carries the same field, so the web's own test that
+    # SPECS equals data/curated/specs.json keeps the data lane the only author.
+    assert "weight_stats: readonly string[];" in ts
+    assert "weight_stats: [\n      'attack_power',\n" in ts
