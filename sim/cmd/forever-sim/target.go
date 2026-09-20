@@ -55,10 +55,23 @@ func ExecuteToTarget(req api.SimRequest, progress io.Writer) (api.SimResult, err
 		part.Iterations = step
 		part.RandomSeed = seed
 		seed += int64(step)
+		// Every step but the first skips the sample, mirroring
+		// combine.Split's own part.NoSample = req.NoSample || i != 0:
+		// combine.Results keeps only part zero's Sample, so a later
+		// step computing one is a full extra iteration paid for and
+		// then thrown away, the exact waste Split was written to
+		// avoid at the shard level.
+		part.NoSample = req.NoSample || len(parts) != 0
 
 		res, err := Execute(part, progress)
 		if err != nil {
-			if errors.Is(err, adapter.ErrAborted) && len(parts) > 0 {
+			if errors.Is(err, adapter.ErrAborted) {
+				if len(parts) == 0 {
+					// Nothing pooled yet, so the step's own partial
+					// result - not a zeroed one - is what "how far it
+					// got" means here.
+					return res, err
+				}
 				// What completed is still an answer, and the caller
 				// asked for the stop.
 				break
@@ -157,6 +170,11 @@ func executeWeights(req api.SimRequest, progress io.Writer) (api.SimResult, erro
 	// check for a plain run; StatWeightsResult has no ResultError of its
 	// own to call. See sim/cmd/wasm's weightsResult, which this follows.
 	if engineRes.GetError().GetType() == proto.ErrorOutcomeType_ErrorOutcomeAborted {
+		// adapter.ErrAborted, not nil: main's switch on
+		// errors.Is(err, adapter.ErrAborted) is what turns a stopped
+		// run into exit 130 rather than 0, and every sibling arm
+		// (Execute, executeBulk) returns the error alongside the
+		// partial result for exactly that reason.
 		return api.SimResult{
 			EngineVersion: enginever.Version,
 			Request:       req,
@@ -165,7 +183,7 @@ func executeWeights(req api.SimRequest, progress io.Writer) (api.SimResult, erro
 			IterationsRun: iterationsRun,
 			DurationMS:    time.Since(start).Milliseconds(),
 			Summary:       adapter.EmptySummary(),
-		}, nil
+		}, adapter.ErrAborted
 	}
 
 	weights, err := adapter.Weights(engineRes, req)
