@@ -54,6 +54,22 @@ def load_specs(curated_dir: Path = Path("curated")) -> list[SpecRecord]:
                 f"contract 10.1 A7's vocabulary is the engine's Stat enum in snake "
                 f"case -- use one of {sorted(STAT_IDS)}"
             )
+        if not record.weight_stats:
+            raise SpecError(f"spec {record.spec} has an empty weight_stats")
+        unknown = [s for s in record.weight_stats if s not in STAT_IDS]
+        if unknown:
+            raise SpecError(
+                f"spec {record.spec} has weight_stats {unknown!r}, not in the "
+                f"engine's Stat enum -- use ids from {sorted(STAT_IDS)}"
+            )
+        if len(set(record.weight_stats)) != len(record.weight_stats):
+            raise SpecError(f"spec {record.spec} lists a weight_stats entry twice")
+        if record.reference_stat not in record.weight_stats:
+            raise SpecError(
+                f"spec {record.spec} has reference_stat {record.reference_stat!r}, "
+                f"which is not in its own weight_stats {record.weight_stats!r}; "
+                f"WeightsSpec.validate refuses a default request built this way"
+            )
         if record.spec in seen:
             raise SpecError(f"specs.json names {record.spec} twice")
         seen.add(record.spec)
@@ -62,10 +78,15 @@ def load_specs(curated_dir: Path = Path("curated")) -> list[SpecRecord]:
 
 
 def render_go(specs: list[SpecRecord]) -> str:
+    def weight_stats_literal(stats: list[str]) -> str:
+        quoted = ", ".join(f'"{stat}"' for stat in stats)
+        return f"[]string{{{quoted}}}"
+
     rows = "\n".join(
         f'\t{{Spec: "{s.spec}", ClassSlug: "{s.class_slug}", SpecSlug: "{s.spec_slug}", '
         f'Name: "{s.name}", Role: "{s.role}", TreeIndex: {s.tree_index}, '
-        f'ReferenceStat: "{s.reference_stat}"}},'
+        f'ReferenceStat: "{s.reference_stat}", '
+        f'WeightStats: {weight_stats_literal(s.weight_stats)}}},'
         for s in specs
     )
     return f"""{GENERATED}
@@ -84,6 +105,11 @@ type Spec struct {{
 \tRole          string `json:"role"`
 \tTreeIndex     int    `json:"tree_index"`
 \tReferenceStat string `json:"reference_stat"`
+\t// WeightStats are the stats that actually move this spec's damage or
+\t// healing - the closed list /sim/weights offers, so a physical spec
+\t// is never asked about spirit and a caster never sees unexplained
+\t// zeros for expertise. ReferenceStat is always one of them.
+\tWeightStats []string `json:"weight_stats"`
 }}
 
 // All is every spec, ordered by class slug then talent tree position.

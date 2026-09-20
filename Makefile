@@ -21,9 +21,9 @@ ENGINE_DIR ?= /Users/jh/code/wowsims-forever
 # engine-pin writes sim/enginever/version.go from the engine checkout's HEAD,
 # and mirrors the same sha into web/src/lib/sim/version.ts's ENGINE_VERSION
 # const and into the non-empty "engine_version" values in
-# web/src/fixtures/sim/*.json - every place in the tree that names the
-# pinned engine build. It does not copy rotations, presets or anything else
-# into or out of the fork; `apl-sync` below is what carries rotations.
+# web/src/fixtures/sim/*.json - the Go pin and its two web mirrors. It does
+# not copy rotations, presets or anything else into or out of the fork;
+# `apl-sync` below is what carries rotations.
 # This is the only way any of those values is ever written by hand - a human
 # editing one of them is exactly how they would drift, which is what
 # web/src/lib/sim/version.test.ts's pin assertion (and the fixtures test
@@ -33,6 +33,20 @@ ENGINE_DIR ?= /Users/jh/code/wowsims-forever
 # future reformat of either line needs a matching update here, which is why
 # each rewrite ends in a grep that fails loudly rather than silently leaving
 # the old sha in place.
+#
+# That is still not every place in the tree that names the pinned engine
+# build: data/proto/ENGINE_SHA is a second, independent pin of the same
+# engine sha - it names the checkout the data lane vendored its proto
+# sources from - and this target does NOT write it. Moving the Go pin
+# without moving the proto pin leaves the data lane generating against a
+# proto the pinned engine build does not have. Move it as a second step,
+# right after this target, from data/:
+#   python -m pipeline simproto --engine <engine checkout>
+# Forgetting that step is not silent, but only if the test actually runs:
+# data/tests/test_genproto.py's
+# test_the_vendored_pin_matches_the_engine_the_artifacts_are_built_from
+# reads both pins and fails the moment they disagree. Treat that command as
+# this target's other half, not an optional follow-up.
 #
 # A MISSING file is an error, not a configuration: all three are tracked, so
 # the only way one is absent is a rename or a deletion nobody told this

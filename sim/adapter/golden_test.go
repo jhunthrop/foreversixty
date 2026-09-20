@@ -2,6 +2,7 @@ package adapter
 
 import (
 	"encoding/json"
+	"math"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -226,4 +227,94 @@ func TestGoldenRowKeysAreUnique(t *testing.T) {
 
 func key(id int64, scope, via string) string {
 	return scope + "|" + via + "|" + strconv.FormatInt(id, 10)
+}
+
+// durationTolerance is how far "table damage / table duration" may sit
+// from the headline DPS(res).Mean. It is not zero because DurationMS is
+// an integer number of milliseconds and the division that recovers a
+// rate from it re-introduces sub-millisecond rounding, but it must stay
+// tiny - well under the 0.1 DPS a reader could ever notice on a card -
+// or the derivation in duration.go is not doing its job. 0.01 DPS is
+// three orders of magnitude below the smallest gap TestGoldenSummaries'
+// fixtures show before this task's fix (0.01-0.7% of a few hundred
+// DPS), and two orders of magnitude below what the tightest pre-fix
+// fixture (simarms-3t, 0.003%) already achieved by coincidence.
+const durationTolerance = 0.01
+
+// This is the test the persona reviews are asking for: one card, one
+// number. The headline is DPS(res).Mean; the table's implied rate is
+// the summary's own total damage - every actor in DamageDone, player
+// and pets - divided by its own duration. Task 3 exists because those
+// two used to disagree by up to ~1%; this proves they no longer do, for
+// every checked-in fixture, to a tolerance so tight only the
+// integer-millisecond field itself could produce it.
+func TestHeadlineEqualsTable(t *testing.T) {
+	for _, tc := range goldenSpecs {
+		t.Run(tc.spec, func(t *testing.T) {
+			res, err := Fixture(tc.spec)
+			if err != nil {
+				t.Fatal(err)
+			}
+			req := api.SimRequest{
+				EngineVersion: goldenEngineVersion,
+				Spec:          tc.spec,
+				Character:     api.CharacterSpec{Name: "Sim", Race: tc.race, Class: tc.class, Level: 60},
+				Encounter:     api.DefaultEncounter(),
+				Iterations:    3000,
+			}
+			got, err := Summarize(res, req)
+			if err != nil {
+				t.Fatal(err)
+			}
+			meanDPS := DPS(res).Mean
+
+			var tableTotal int64
+			for _, a := range got.DamageDone {
+				tableTotal += a.Total
+			}
+			if got.DurationMS <= 0 {
+				t.Fatalf("DurationMS = %d, want a positive duration", got.DurationMS)
+			}
+			tablePerSec := float64(tableTotal) / (float64(got.DurationMS) / 1000)
+
+			if diff := math.Abs(tablePerSec - meanDPS); diff > durationTolerance {
+				t.Errorf("table damage/sec = %v, headline DPS(res).Mean = %v, disagree by %v (want <= %v)",
+					tablePerSec, meanDPS, diff, durationTolerance)
+			}
+		})
+	}
+}
+
+// D4: the per-target sub-table must sum to exactly the row it belongs
+// to, for every actor of every fixture - the tank review's other
+// complaint ("30,147 the table total ... 30,144 the sub-table sums to").
+func TestPerTargetTotalsSumToTheActorTotal(t *testing.T) {
+	for _, tc := range goldenSpecs {
+		t.Run(tc.spec, func(t *testing.T) {
+			res, err := Fixture(tc.spec)
+			if err != nil {
+				t.Fatal(err)
+			}
+			req := api.SimRequest{
+				EngineVersion: goldenEngineVersion,
+				Spec:          tc.spec,
+				Character:     api.CharacterSpec{Name: "Sim", Race: tc.race, Class: tc.class, Level: 60},
+				Encounter:     api.DefaultEncounter(),
+				Iterations:    3000,
+			}
+			got, err := Summarize(res, req)
+			if err != nil {
+				t.Fatal(err)
+			}
+			for _, a := range got.DamageDone {
+				var sum int64
+				for _, target := range a.Targets {
+					sum += target.Total
+				}
+				if sum != a.Total {
+					t.Errorf("actor %q: sum(Targets[].Total) = %d, want Total = %d", a.Name, sum, a.Total)
+				}
+			}
+		})
+	}
 }

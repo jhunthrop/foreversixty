@@ -45,6 +45,13 @@ func BuildWeights(req api.SimRequest, opt Options) (*proto.StatWeightsRequest, e
 	if err != nil {
 		return nil, err
 	}
+	// See api.WeightsIterationsFactor: the engine's own stat-weights
+	// stdev is a population standard deviation that iteration count
+	// cannot shrink by itself, only the sample size it is later
+	// divided by can - sim/adapter.Weights does that division using
+	// this same factor, so the two must never disagree about how many
+	// iterations a weight was actually built from.
+	run.SimOptions.Iterations *= int32(api.WeightsIterationsFactor)
 	stats := make([]proto.Stat, 0, len(req.Weights.Stats))
 	for _, id := range req.Weights.Stats {
 		s, ok := ParseStat(id)

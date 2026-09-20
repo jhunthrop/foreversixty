@@ -97,25 +97,27 @@ func TestKnownStatsIsSortedAndUnique(t *testing.T) {
 }
 
 // TestWeightsIterationsMatchesTheEnginesArithmetic pins
-// WeightsIterations against a hand-worked case: the engine's
-// buildStatWeightRequests (sim/core/statweight.go) halves Iterations
-// once for RNG parity, then runs the baseline at that halved count
-// plus one low and one high pass per distinct stat, each also at the
-// halved count.
+// WeightsIterations against a hand-worked case: the request's own
+// Iterations is multiplied by WeightsIterationsFactor (8), then the
+// engine's buildStatWeightRequests (sim/core/statweight.go) halves
+// that once for RNG parity, then runs the baseline at the halved
+// count plus one low and one high pass per distinct stat, each also
+// at the halved count.
 //
 // 10,000 iterations, weighing 2 stats (crit is both a stat and the
 // reference, so it costs one pass pair, not two):
 //
-//	half        = 10,000 / 2 = 5,000
-//	baseline    = 1 pass  x 5,000 = 5,000
-//	crit        = 2 passes x 5,000 = 10,000
-//	strength    = 2 passes x 5,000 = 10,000
-//	total       = 5,000 + 10,000 + 10,000 = 25,000
+//	multiplied  = 10,000 x 8 = 80,000
+//	half        = 80,000 / 2 = 40,000
+//	baseline    = 1 pass  x 40,000 = 40,000
+//	crit        = 2 passes x 40,000 = 80,000
+//	strength    = 2 passes x 40,000 = 80,000
+//	total       = 40,000 + 80,000 + 80,000 = 200,000
 func TestWeightsIterationsMatchesTheEnginesArithmetic(t *testing.T) {
 	req := runReq()
 	req.Iterations = 10000
 	req.Weights = &WeightsSpec{Stats: []string{"strength", "crit"}, Reference: "crit"}
-	if got, want := WeightsIterations(req), 25000; got != want {
+	if got, want := WeightsIterations(req), 200000; got != want {
 		t.Fatalf("WeightsIterations = %d, want %d", got, want)
 	}
 }
@@ -127,9 +129,10 @@ func TestWeightsIterationsScalesWithIterationsAndStatCount(t *testing.T) {
 		stats      []string
 		want       int
 	}{
-		{"one stat (the reference alone)", 3000, []string{"crit"}, 1500 * 3},
-		{"four stats", 3000, []string{"strength", "agility", "crit", "hit"}, 1500 * 9},
-		{"the smallest offered iteration count", 500, []string{"strength", "crit"}, 250 * 5},
+		// half = (iterations * WeightsIterationsFactor) / 2; want = half * (1 + 2*len(stats)).
+		{"one stat (the reference alone)", 3000, []string{"crit"}, 12000 * 3},
+		{"four stats", 3000, []string{"strength", "agility", "crit", "hit"}, 12000 * 9},
+		{"the smallest offered iteration count", 500, []string{"strength", "crit"}, 2000 * 5},
 		{"no weights block", 10000, nil, 0},
 	} {
 		t.Run(c.name, func(t *testing.T) {

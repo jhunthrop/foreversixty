@@ -90,6 +90,7 @@ def test_a_duplicate_spec_key_is_rejected(tmp_path: Path):
         "role": "dps",
         "tree_index": 1,
         "reference_stat": "attack_power",
+        "weight_stats": ["attack_power"],
     }
     (tmp_path / "specs.json").write_text(json.dumps([entry, entry]))
     with pytest.raises(SpecError, match="warrior-fury"):
@@ -108,6 +109,7 @@ def test_a_key_that_is_not_its_two_slugs_is_rejected(tmp_path: Path):
                     "role": "dps",
                     "tree_index": 1,
                     "reference_stat": "attack_power",
+                    "weight_stats": ["attack_power"],
                 }
             ]
         )
@@ -128,6 +130,7 @@ def test_an_unknown_role_is_rejected(tmp_path: Path):
                     "role": "dancer",
                     "tree_index": 1,
                     "reference_stat": "attack_power",
+                    "weight_stats": ["attack_power"],
                 }
             ]
         )
@@ -240,6 +243,7 @@ def test_a_reference_stat_the_engine_has_no_stat_for_is_refused(tmp_path):
             "role": "dps",
             "tree_index": 0,
             "reference_stat": "swagger",
+            "weight_stats": ["swagger"],
         }
     ]
     (tmp_path / "specs.json").write_text(json.dumps(rows), encoding="utf-8")
@@ -254,3 +258,141 @@ def test_both_generated_files_carry_the_reference_stat():
     assert 'ReferenceStat: "attack_power"' in go
     assert "reference_stat: string;" in ts
     assert "reference_stat: 'spell_power'," in ts
+
+
+#: Task 5(c): specs gain weight_stats, the closed list /sim/weights offers
+#: for a spec. A physical spec (reference_stat attack_power) is never asked
+#: about a caster stat; a caster spec (reference_stat spell_power) is never
+#: asked about a melee-only stat. Named as a table so the test states the
+#: rule rather than re-deriving it.
+PHYSICAL_FORBIDDEN = {
+    "spirit",
+    "mp5",
+    "intellect",
+    "spell_power",
+    "spell_haste",
+    "spell_penetration",
+    "arcane_power",
+    "fire_power",
+    "frost_power",
+    "holy_power",
+    "nature_power",
+    "shadow_power",
+}
+CASTER_FORBIDDEN = {"strength", "expertise", "armor_penetration", "feral_attack_power"}
+
+
+def test_every_spec_has_a_nonempty_weight_stats():
+    for record in specs():
+        assert record.weight_stats, record.spec
+
+
+def test_every_weight_stat_is_a_known_engine_stat():
+    for record in specs():
+        for stat in record.weight_stats:
+            assert stat in STAT_IDS, f"{record.spec}: {stat}"
+
+
+def test_the_reference_stat_is_always_in_its_own_weight_stats():
+    """WeightsSpec.validate refuses a reference that is not among the
+    stats being weighed, so a curated list that violated this would make
+    the spec's own default weights request illegal."""
+    for record in specs():
+        assert record.reference_stat in record.weight_stats, record.spec
+
+
+def test_no_physical_spec_carries_a_caster_stat_and_no_caster_spec_carries_a_melee_stat():
+    for record in specs():
+        forbidden = (
+            PHYSICAL_FORBIDDEN if record.reference_stat == "attack_power" else CASTER_FORBIDDEN
+        )
+        carried = forbidden & set(record.weight_stats)
+        assert not carried, f"{record.spec} carries {carried}"
+
+
+def test_feral_attack_power_belongs_to_druid_feral_and_nowhere_else():
+    carriers = {record.spec for record in specs() if "feral_attack_power" in record.weight_stats}
+    assert carriers == {"druid-feral"}
+
+
+def test_an_empty_weight_stats_is_rejected(tmp_path: Path):
+    rows = [
+        {
+            "spec": "warrior-arms",
+            "class_slug": "warrior",
+            "spec_slug": "arms",
+            "name": "Arms",
+            "role": "dps",
+            "tree_index": 0,
+            "reference_stat": "attack_power",
+            "weight_stats": [],
+        }
+    ]
+    (tmp_path / "specs.json").write_text(json.dumps(rows), encoding="utf-8")
+    with pytest.raises(SpecError, match="weight_stats"):
+        load_specs(tmp_path)
+
+
+def test_an_unknown_weight_stat_is_rejected(tmp_path: Path):
+    rows = [
+        {
+            "spec": "warrior-arms",
+            "class_slug": "warrior",
+            "spec_slug": "arms",
+            "name": "Arms",
+            "role": "dps",
+            "tree_index": 0,
+            "reference_stat": "attack_power",
+            "weight_stats": ["attack_power", "swagger"],
+        }
+    ]
+    (tmp_path / "specs.json").write_text(json.dumps(rows), encoding="utf-8")
+    with pytest.raises(SpecError, match="weight_stats"):
+        load_specs(tmp_path)
+
+
+def test_a_duplicate_weight_stat_is_rejected(tmp_path: Path):
+    rows = [
+        {
+            "spec": "warrior-arms",
+            "class_slug": "warrior",
+            "spec_slug": "arms",
+            "name": "Arms",
+            "role": "dps",
+            "tree_index": 0,
+            "reference_stat": "attack_power",
+            "weight_stats": ["attack_power", "attack_power"],
+        }
+    ]
+    (tmp_path / "specs.json").write_text(json.dumps(rows), encoding="utf-8")
+    with pytest.raises(SpecError, match="twice"):
+        load_specs(tmp_path)
+
+
+def test_a_reference_stat_missing_from_weight_stats_is_rejected(tmp_path: Path):
+    rows = [
+        {
+            "spec": "warrior-arms",
+            "class_slug": "warrior",
+            "spec_slug": "arms",
+            "name": "Arms",
+            "role": "dps",
+            "tree_index": 0,
+            "reference_stat": "attack_power",
+            "weight_stats": ["strength", "agility"],
+        }
+    ]
+    (tmp_path / "specs.json").write_text(json.dumps(rows), encoding="utf-8")
+    with pytest.raises(SpecError, match="weight_stats"):
+        load_specs(tmp_path)
+
+
+def test_both_generated_files_carry_the_weight_stats():
+    records = specs()
+    go, ts = render_go(records), render_ts(records)
+    assert 'WeightStats []string `json:"weight_stats"`' in go
+    assert 'WeightStats: []string{"attack_power"' in go
+    # web/ is out of scope for this lane: the TS renderer is deliberately
+    # left carrying only the fields it already had, so regenerating it
+    # writes back the same bytes (see git status after `pipeline specs`).
+    assert "weight_stats" not in ts
