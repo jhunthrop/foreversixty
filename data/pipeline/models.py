@@ -302,6 +302,37 @@ class StatWeights(BaseModel):
     sources: list[Source]
 
 
+class AddonTalent(BaseModel):
+    """One talent as the addon sees it: a cell and a ceiling, no ids.
+
+    tier and column are 1-based, matching `GetTalentInfo`'s own return
+    values, so the addon compares what the client hands it without
+    arithmetic in two places.
+    """
+
+    name: str
+    tier: int
+    column: int
+    max_rank: int
+
+
+class AddonTab(BaseModel):
+    name: str
+    #: In the site's own array order. The export string encodes ranks in
+    #: this order, so it is contract between Data.lua and Codec.lua.
+    talents: list[AddonTalent]
+
+
+class AddonClass(BaseModel):
+    tabs: list[AddonTab]
+
+
+class AddonData(BaseModel):
+    build: str
+    classes: dict[str, AddonClass]
+    weights: dict[str, dict[str, float]]
+
+
 class PhaseBoundary(BaseModel):
     """One content phase and the instant it opens (parity contract 10.4)."""
 

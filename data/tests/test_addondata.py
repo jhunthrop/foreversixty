@@ -1,0 +1,65 @@
+import json
+from pathlib import Path
+
+import pytest
+
+from pipeline.addondata import AddonDataError, build_addon_data, write_addon_data
+
+BUILD = "1.60.1.69893"
+
+
+def test_every_class_has_three_tabs_in_position_order():
+    data = build_addon_data(BUILD)
+    paladin = data.classes["paladin"]
+    assert [tab.name for tab in paladin.tabs] == ["Holy", "Protection", "Retribution"]
+
+
+def test_talents_keep_the_site_array_order_and_are_one_based():
+    """The export encodes ranks in this order, so it is the contract, not a detail."""
+    source = json.loads(
+        Path(f"builds/{BUILD}/talents/paladin.json").read_text(encoding="utf-8")
+    )
+    holy = next(tree for tree in source["trees"] if tree["position"] == 0)
+    tab = build_addon_data(BUILD).classes["paladin"].tabs[0]
+    assert [talent.name for talent in tab.talents] == [t["name"] for t in holy["talents"]]
+    assert tab.talents[0].tier == holy["talents"][0]["tier"] + 1
+    assert tab.talents[0].column == holy["talents"][0]["column"] + 1
+    assert tab.talents[0].max_rank == holy["talents"][0]["max_rank"]
+
+
+def test_no_two_talents_in_a_tab_share_a_tier_and_column():
+    """The addon keys the client's talents by tier:column; a collision would alias them."""
+    data = build_addon_data(BUILD)
+    for class_slug, entry in data.classes.items():
+        for tab in entry.tabs:
+            cells = [(talent.tier, talent.column) for talent in tab.talents]
+            assert len(cells) == len(set(cells)), f"{class_slug} {tab.name}"
+
+
+def test_the_weights_travel_with_the_layout():
+    data = build_addon_data(BUILD)
+    assert data.weights["paladin-holy"]["spell_power"] == 1.0
+    assert len(data.weights) == 27
+
+
+def test_the_build_id_is_the_directory():
+    assert build_addon_data(BUILD).build == BUILD
+
+
+def test_a_talent_file_from_another_build_is_refused(tmp_path):
+    (tmp_path / BUILD / "talents").mkdir(parents=True)
+    (tmp_path / BUILD / "talents" / "paladin.json").write_text(
+        json.dumps({"build": "1.15.9.69722", "class_id": 2, "class_slug": "paladin", "trees": []}),
+        encoding="utf-8",
+    )
+    (tmp_path / BUILD / "classes.json").write_text(
+        json.dumps([{"id": 2, "name": "Paladin", "slug": "paladin", "color": "#f58cba"}]),
+        encoding="utf-8",
+    )
+    with pytest.raises(AddonDataError, match="1.15.9.69722"):
+        build_addon_data(BUILD, root=tmp_path)
+
+
+def test_write_addon_data_round_trips(tmp_path):
+    path = write_addon_data(BUILD, out_root=tmp_path)
+    assert json.loads(path.read_text(encoding="utf-8"))["build"] == BUILD
