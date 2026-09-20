@@ -72,6 +72,11 @@ describe('formatMargin', () => {
     [0.4, '0.4'],
     [4.24, '4.2'],
     [9.95, '9.9'],
+    // Float precision rounds 9.95 down (9.9) but 9.96/9.99 up to "10.0" at one decimal --
+    // the branch must decide below/at-10 from the *rounded* value, or these two would
+    // print "10.0" instead of joining the integer branch like an actual 10 does.
+    [9.96, '10'],
+    [9.99, '10'],
     [10, '10'],
     [147.6, '148'],
   ])('formats %p as %p', (value, expected) => {

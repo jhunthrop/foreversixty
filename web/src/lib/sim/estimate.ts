@@ -66,9 +66,10 @@ export function confidenceBand(estimate: Estimate): number {
  */
 export function formatMargin(value: number): string {
   if (value === 0) return '0';
-  if (value < 10) {
-    const oneDecimal = value.toFixed(1);
-    return oneDecimal === '0.0' ? MARGIN_BELOW_THRESHOLD : oneDecimal;
-  }
-  return Math.round(value).toLocaleString('en-US');
+  const oneDecimal = value.toFixed(1);
+  if (oneDecimal === '0.0') return MARGIN_BELOW_THRESHOLD;
+  // Decided off the *rounded* value, not the raw one: 9.96 and 9.99 both round to "10.0"
+  // at one decimal, and must join the integer branch the same way an actual 10 does,
+  // rather than printing a "10.0" no value ever should.
+  return parseFloat(oneDecimal) >= 10 ? Math.round(value).toLocaleString('en-US') : oneDecimal;
 }
