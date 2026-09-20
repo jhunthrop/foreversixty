@@ -17,12 +17,17 @@
 //     `spell_id`: "spell:25286/1" has row id 10002025286, and 25286 is what the build's
 //     table knows.
 //
-// A key the resolver does not recognise is returned unchanged. That matters twice: while
-// the names file is still loading, and in compare mode, where a logged fight's rows carry
-// real display names from the combat log and must pass through untouched.
+// A key the resolver's own grammar does not recognise -- a real display name from a
+// logged fight, `parseActionKey` returning null -- is returned unchanged; that is compare
+// mode's own contract, where a logged fight's rows carry real names and must pass through
+// untouched. A key the grammar DOES recognise but whose id the build's table does not
+// carry -- the names file is still loading, or a build that never published this id --
+// is never returned raw either (dps-minmaxer review round 2, D48: a saved run rendered
+// "spell:20662" as an ability name): it falls back to humaniseKey (humanise.ts), so the
+// screen always reads English, never a wire key.
 import { dataUrl, fetchJson } from '../planner/load';
 import { attackHandName, simCopy } from './copy';
-import { humanise } from './humanise';
+import { humanise, humaniseKey } from './humanise';
 
 /**
  * The first row id sim/adapter allocates for itself (its `syntheticBase`). Every client
@@ -114,8 +119,7 @@ export function resolveActionName(key: string, names: ActionNames | null): strin
     return humanise(parsed.label) + simCopy.actionVariant(parsed.tag, parsed.rank);
   }
   const table = parsed.kind === 'spell' ? names?.spell : names?.item;
-  const name = table?.[parsed.label];
-  if (name === undefined) return key;
+  const name = table?.[parsed.label] ?? humaniseKey(`${parsed.kind}:${parsed.label}`);
   return name + simCopy.actionVariant(parsed.tag, parsed.rank);
 }
 

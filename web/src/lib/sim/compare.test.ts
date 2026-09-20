@@ -196,9 +196,9 @@ describe('compareSummaries', () => {
     expect(comparison.lines).toContain('Death Wish uptime 40% against 60%.');
   });
 
-  it('falls back to the action key rather than a blank when the build has no name table', () => {
+  it('falls back to a humanised label rather than the raw key when the build has no name table', () => {
     const comparison = compareSummaries(simSummary(), actualSummary(), 'Thrallgar', null);
-    expect(comparison.abilities.map((row) => row.name)).toContain('spell:25286');
+    expect(comparison.abilities.map((row) => row.name)).toContain('Spell 25286');
   });
 
   it('clamps the score to the range the contract stores', () => {

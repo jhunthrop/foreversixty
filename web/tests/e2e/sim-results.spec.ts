@@ -29,8 +29,11 @@ async function loadFuryAndRun(page: Page): Promise<void> {
 // verbatim, whatever DPS numbers the fake's seeded normal distribution invents for `dps`.
 // public/data/<build>/simnames/warrior.json does not exist under FOREVER_DATA=fixture (the
 // fixture planner tree has no spellconst directory, so scripts/sync-data.mjs's own
-// writeSimNames writes nothing), so `store.actionNames` stays null and every ability, aura
-// and cast name on this page is the engine's own raw action key -- not a display name.
+// writeSimNames writes nothing), so `store.actionNames` stays null. D48 (dps-minmaxer
+// review round 2): that used to mean every ability, aura and cast name on this page was
+// the engine's own raw action key -- "spell:20662" on screen. resolveActionName's own
+// humanised fallback (action-names.ts) means a null table now reads "Spell 20662" instead
+// -- English, never a raw key, even before the build's own table has loaded.
 
 test('the sentence names the two biggest damage sources, their share and the biggest buff', async ({
   page,
@@ -41,19 +44,25 @@ test('the sentence names the two biggest damage sources, their share and the big
   // spell:9910 is the first 100%-uptime buff in the fixture's own array order (the tiebreak
   // summarySentence uses -- see sentence.ts -- keeps a stable sort's original order, unlike
   // AuraTable's own name-tiebroken sort below).
-  await expect(page.getByTestId('sim-sentence')).toHaveText(
-    'spell:25286 and spell:23894 are 52% of your damage; spell:9910 is up 100% of the fight.',
+  const sentence = page.getByTestId('sim-sentence');
+  await expect(sentence).toHaveText(
+    'Spell 25286 and Spell 23894 are 52% of your damage; Spell 9910 is up 100% of the fight.',
   );
+  await expect(sentence).not.toContainText(/\bspell:/);
 });
 
-test('the Damage tab is selected first and the actor table reads the engine action key', async ({ page }) => {
+test('the Damage tab is selected first and the actor table reads a humanised label, never the raw key', async ({
+  page,
+}) => {
   await loadFuryAndRun(page);
 
   const damageTab = page.getByTestId('sim-tab-damage');
   await expect(damageTab).toHaveAttribute('aria-selected', 'true');
 
   await page.getByTestId('actor-sim-player').click();
-  await expect(page.getByTestId('row-abilities')).toContainText('spell:25286');
+  const row = page.getByTestId('row-abilities');
+  await expect(row).toContainText('Spell 25286');
+  await expect(row).not.toContainText(/\bspell:/);
 });
 
 test('the Buffs tab shows the first aura row at 100% uptime', async ({ page }) => {
@@ -61,7 +70,8 @@ test('the Buffs tab shows the first aura row at 100% uptime', async ({ page }) =
 
   await page.getByTestId('sim-tab-buffs').click();
   const first = page.getByTestId('aura-table').locator('li').first();
-  await expect(first).toContainText('spell:15366');
+  await expect(first).toContainText('Spell 15366');
+  await expect(first).not.toContainText(/\bspell:/);
   await expect(page.getByTestId('aura-uptime').first()).toHaveText('100.0%');
 });
 
@@ -72,12 +82,15 @@ test('the Debuffs tab is empty: the fixture summary has no debuff-type aura', as
   await expect(page.getByTestId('table-empty')).toHaveText('No debuffs in this window.');
 });
 
-test('the Casts tab reads a cast row by its raw action key and count', async ({ page }) => {
+test('the Casts tab reads a cast row by its humanised label and count, never the raw key', async ({
+  page,
+}) => {
   await loadFuryAndRun(page);
 
   await page.getByTestId('sim-tab-casts').click();
   const row = page.getByTestId('cast-sim-player-23894');
-  await expect(row).toContainText('spell:23894');
+  await expect(row).toContainText('Spell 23894');
+  await expect(row).not.toContainText(/\bspell:/);
   await expect(row).toContainText('27');
 });
 
@@ -151,10 +164,11 @@ test('the buffs tab counts applications and the sample tab shows one iteration',
   await expect(log.getByText(simCopy.samplePrePull).first()).toBeVisible();
   // public/data/<build>/simnames/warrior.json does not exist under FOREVER_DATA=fixture
   // (see the note above loadFuryAndRun), so the sample log resolves nothing and renders
-  // the engine's own action keys -- the same thing the cast table renders in this
-  // environment. The resolved-name path is covered instead, with names injected, by
+  // resolveActionName's humanised fallback -- the same thing the cast table renders in
+  // this environment. The resolved-name path is covered instead, with names injected, by
   // src/lib/sim/sample-log.test.ts.
-  await expect(log).toContainText('spell:25286');
+  await expect(log).toContainText('Spell 25286');
+  await expect(log).not.toContainText(/\bspell:/);
   // Resources after each cast: the fixture's only pool is rage.
   await expect(log.locator('th', { hasText: simCopy.resourceLabel.rage })).toHaveCount(1);
 });

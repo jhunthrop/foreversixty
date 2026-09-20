@@ -93,14 +93,27 @@ describe('summarySentence', () => {
     );
   });
 
-  it('falls back to the action key rather than a blank when the build has no name', () => {
+  it('falls back to a humanised label rather than the raw key or a blank when the build has no name', () => {
     const base = twoAbilities();
     const actor = base.damage_done[0];
     const one: Summary = {
       ...withoutAuras(base),
       damage_done: [{ ...actor, total: 400, abilities: [actor.abilities[0]] }],
     };
-    expect(summarySentence(one, null)).toBe('spell:25286 is 100% of your damage.');
+    expect(summarySentence(one, null)).toBe('Spell 25286 is 100% of your damage.');
+  });
+
+  it('never emits a raw spell:/item:/dungeon: key in the sentence, resolved or not', () => {
+    // dps-minmaxer review round 2, D48: "off-hand white hits and spell:20662 are 78% of
+    // your damage" -- the exact defect this pins down, both resolved and unresolved.
+    const resolved = summarySentence(twoAbilities(), names);
+    expect(resolved).not.toMatch(/\b(spell|item|dungeon):/);
+
+    const unresolved = summarySentence(twoAbilities(), null);
+    expect(unresolved).not.toMatch(/\b(spell|item|dungeon):/);
+    expect(unresolved).toBe(
+      'Spell 25286 and white hits are 61% of your damage; Spell 12974 is up 78% of the fight.',
+    );
   });
 
   it('says so rather than dividing by zero when nothing landed', () => {
