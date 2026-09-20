@@ -88,8 +88,13 @@ function mock.install(state)
 		return state.region
 	end
 
+	-- The real API returns five positions -- primary1, primary2, fishing,
+	-- cooking, firstAid -- and any of them may be nil. All five are
+	-- returned here, not just the first two, so a spec can express a gap
+	-- (an unlearned primary ahead of a learned secondary).
 	_G.GetProfessions = function()
-		return state.professions[1], state.professions[2]
+		return state.professions[1], state.professions[2], state.professions[3],
+			state.professions[4], state.professions[5]
 	end
 
 	_G.GetProfessionInfo = function(index)

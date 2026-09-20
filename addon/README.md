@@ -36,6 +36,7 @@ change the named constant if it differs from the default.
 | 13 | Region | `/dump GetCurrentRegion()` | `Export.REGION_NAMES` |
 | 14 | Professions | `/dump GetProfessions()` then `/dump GetProfessionInfo(1)` | `Export.professions()` |
 | 15 | Talent frame name for the highlight | `/dump TalentFrame ~= nil`, `/dump PlayerTalentFrame ~= nil` | `Follow.TALENT_FRAME` |
+| 16 | Race token for Forever's two new races | `/dump select(2, UnitRace("player"))` on a High Order Skyborne and a Windshaper Skyborne character | `Export.RACE_SLUGS` |
 
 ## Findings
 

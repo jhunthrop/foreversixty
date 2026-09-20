@@ -60,6 +60,26 @@ describe("Export", function()
 		assert.are.equal("FS1:1.60.1.69893:paladin:human:2/0/0:head=12640", code)
 	end)
 
+	it("builds the class slug from the client token, not the localized name", function()
+		-- A German or French client localizes UnitClass's first return; the
+		-- second return, the token, does not change with locale.
+		character({ class = { name = "Paladín", token = "PALADIN" } })
+		local code = assert(Export.string(DATA))
+		assert.is_truthy(code:find(":paladin:human:", 1, true))
+	end)
+
+	it("hyphenates a multi-word race token", function()
+		character({ race = { name = "Night Elf", token = "NightElf" } })
+		local code = assert(Export.string(DATA))
+		assert.is_truthy(code:find(":paladin:night-elf:", 1, true))
+	end)
+
+	it("maps the Scourge token to the site's undead slug", function()
+		character({ race = { name = "Undead", token = "Scourge" } })
+		local code = assert(Export.string(DATA))
+		assert.is_truthy(code:find(":paladin:undead:", 1, true))
+	end)
+
 	it("puts bag items in a bags section and bank items in a bank one", function()
 		character({
 			bags = { [0] = { "|Hitem:11726|h" }, [-1] = { "|Hitem:19865|h" } },
@@ -81,9 +101,25 @@ describe("Export", function()
 		assert.is_nil(assert(Export.string(DATA)):find("bags=", 1, true))
 	end)
 
+	it("leaves a bagged bag out entirely, not just unequippable gear", function()
+		character({
+			bags = { [0] = { "|Hitem:4498|h" } },
+			itemStats = { ["|Hitem:4498|h"] = { __itemId = 4498, __slot = "INVTYPE_BAG" } },
+		})
+		assert.is_nil(assert(Export.string(DATA)):find("bags=", 1, true))
+	end)
+
 	it("writes professions as slugs", function()
 		character({ professions = { 1, 2 }, professionNames = { "Enchanting", "Tailoring" } })
 		assert.is_truthy(assert(Export.string(DATA)):find("|professions=enchanting,tailoring", 1, true))
+	end)
+
+	it("does not drop a profession sitting behind an unlearned earlier slot", function()
+		-- primary1, primary2 and fishing are unlearned (nil); cooking, the
+		-- fourth GetProfessions position, is learned. ipairs on the raw
+		-- return values would stop at the first nil and lose it.
+		character({ professions = { [4] = 3 }, professionNames = { [3] = "Cooking" } })
+		assert.is_truthy(assert(Export.string(DATA)):find("|professions=cooking", 1, true))
 	end)
 
 	it("refuses to export a character with no points spent", function()
