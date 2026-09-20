@@ -407,16 +407,22 @@ func TestMigrateCreatesTheSimulatorTables(t *testing.T) {
 	}
 }
 
-// TestMigration0014BackfillsOlderSimHeadlines pins the backfill in
-// 0014 against the Go function it has to agree with. Every row saved
-// before that migration is necessarily a plain run, so its headline is
-// exactly what sims.Headline composes for that branch — the rounding
-// rule (halves away from zero) and the thousands grouping included.
+// TestMigration0016BackfillsOlderSimHeadlines pins the backfill in 0016
+// against the Go function it has to agree with. Every row saved before
+// 0014 introduced kind/headline is necessarily a plain run, so its
+// headline is exactly what sims.Headline composes for that branch — the
+// rounding rule (halves away from zero) and the thousands grouping
+// included.
 //
-// The rows are inserted while the schema is at 0013, so they are
-// genuinely in the pre-0014 shape rather than post-0014 rows with the
-// column blanked.
-func TestMigration0014BackfillsOlderSimHeadlines(t *testing.T) {
+// The backfill lives in 0016 rather than in 0014 itself because 0014
+// already shipped and ran against production; golang-migrate never
+// re-runs an applied migration, so the fix had to be a follow-up
+// migration instead of an edit to one already applied.
+//
+// The rows are inserted while the schema is at 0014/0015 (kind and
+// headline exist, defaulted), so they are genuinely in the pre-0016
+// shape rather than post-0016 rows with the column blanked.
+func TestMigration0016BackfillsOlderSimHeadlines(t *testing.T) {
 	url := testURL(t)
 	if err := Migrate(url); err != nil {
 		t.Fatal(err)
@@ -434,17 +440,21 @@ func TestMigration0014BackfillsOlderSimHeadlines(t *testing.T) {
 	defer pool.Close()
 
 	cases := []struct {
-		id    string
-		mean  float64
-		state string
+		id     string
+		mean   float64
+		state  string
+		preset string // non-"": headline is already set to this before the backfill runs, and must survive untouched
 	}{
-		{"mig14-zero", 0, "done"},             // a zero is "0 DPS", not ""
-		{"mig14-sub1k", 942.4, "done"},        // under a thousand: no comma
-		{"mig14-halfdown", 1000.5, "done"},    // halves go away from zero,
-		{"mig14-halfup", 1001.5, "done"},      // ... never to even
-		{"mig14-grouped", 1234567.89, "done"}, // three-digit groups
-		{"mig14-queued", 1500, "queued"},      // no result yet: no headline
-		{"mig14-errored", 1500, "error"},      // no result at all: no headline
+		{id: "mig16-zero", mean: 0, state: "done"},             // a zero is "0 DPS", not ""
+		{id: "mig16-sub1k", mean: 942.4, state: "done"},        // under a thousand: no comma
+		{id: "mig16-halfdown", mean: 1000.5, state: "done"},    // halves go away from zero,
+		{id: "mig16-halfup", mean: 1001.5, state: "done"},      // ... never to even
+		{id: "mig16-grouped", mean: 1234567.89, state: "done"}, // three-digit groups
+		{id: "mig16-queued", mean: 1500, state: "queued"},      // no result yet: no headline
+		{id: "mig16-errored", mean: 1500, state: "error"},      // no result at all: no headline
+		// Idempotence: a done row that already carries a headline must not
+		// be overwritten, whether the backfill runs once or is re-run.
+		{id: "mig16-preset", mean: 1500, state: "done", preset: "999 DPS (preset, do not overwrite)"},
 	}
 	results := map[string]simapi.SimResult{}
 	for _, c := range cases {
@@ -468,7 +478,7 @@ func TestMigration0014BackfillsOlderSimHeadlines(t *testing.T) {
 		}
 	})
 
-	migrateTo(t, url, 13)
+	migrateTo(t, url, 15)
 	for _, c := range cases {
 		body, err := json.Marshal(results[c.id])
 		if err != nil {
@@ -476,9 +486,9 @@ func TestMigration0014BackfillsOlderSimHeadlines(t *testing.T) {
 		}
 		if _, err := pool.Exec(context.Background(),
 			`insert into sims (id, spec, engine_version, lane, dps_mean, dps_error,
-			   iterations, result, state)
-			 values ($1, 'warrior-fury', '0.0.0-test', 'browser', $2, 0, 1000, $3, $4)`,
-			c.id, c.mean, body, c.state); err != nil {
+			   iterations, result, state, headline)
+			 values ($1, 'warrior-fury', '0.0.0-test', 'browser', $2, 0, 1000, $3, $4, $5)`,
+			c.id, c.mean, body, c.state, c.preset); err != nil {
 			t.Fatal(err)
 		}
 	}
@@ -495,8 +505,8 @@ func TestMigration0014BackfillsOlderSimHeadlines(t *testing.T) {
 		if kind != simapi.KindRun {
 			t.Errorf("%s: kind = %q, want %q", c.id, kind, simapi.KindRun)
 		}
-		want := ""
-		if c.state == "done" {
+		want := c.preset
+		if want == "" && c.state == "done" {
 			want = sims.Headline(results[c.id])
 		}
 		if headline != want {

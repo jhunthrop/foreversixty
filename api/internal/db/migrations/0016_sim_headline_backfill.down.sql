@@ -1,0 +1,4 @@
+-- A data backfill cannot be cleanly reversed: it has no record of which
+-- headlines it wrote versus which were already there, so undoing it
+-- would blank real headlines along with the ones it just filled in.
+-- Deliberately a no-op rather than destroying good data.
