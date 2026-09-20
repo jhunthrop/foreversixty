@@ -13,7 +13,8 @@
   import { SECONDARY_BUTTON } from '../../../lib/planner/styles';
   import type { BulkStore } from '../../../lib/sim/bulk-store.svelte';
   import { BULK_PRECISIONS, LOW_CORE_CAP, type Precision } from '../../../lib/sim/bulk-types';
-  import { bulkCopy } from '../../../lib/sim/copy';
+  import { bulkCopy, simCopy } from '../../../lib/sim/copy';
+  import { isSimulatedSpec, specDisplayName } from '../../../lib/sim/spec-label';
   import RequestDrawer from '../RequestDrawer.svelte';
   import SettingsBar from '../SettingsBar.svelte';
 
@@ -30,6 +31,16 @@
    */
   const combinationTool = $derived(store.tool !== 'weights');
   const running = $derived(store.phase === 'running' || store.serverRunning);
+  /**
+   * Task 3 (healer review BLOCKER, `/sim/weights` "fails silently" for 64s; MAJOR on the
+   * other three tools, a raw Go error after "setting up a run"): every tool page mounts
+   * this bar, so gating the one run button here covers `/sim/gear`, `/sim/drops`,
+   * `/sim/talents` and `/sim/weights` at once, the same way `isSimulatedSpec` gates
+   * RunControl.svelte on `/sim` itself. `true` while no character is loaded -- the existing
+   * `store.character === null` guard on the button already covers that case, and this must
+   * not additionally disable the empty-character state with a spec name it does not have.
+   */
+  const notSimulated = $derived(store.character !== null && !isSimulatedSpec(store.character.spec));
   /**
    * `store.combinations` stays `null` both while a count is in flight and after one has
    * failed (bulk-store-request.ts's `recount`, generic branch) -- the two used to look
@@ -104,7 +115,8 @@
       disabled={store.capNotice !== null ||
         store.character === null ||
         store.phase === 'loading-character' ||
-        (nothingToRun && !running)}
+        (nothingToRun && !running) ||
+        (notSimulated && !running)}
       onclick={() => (running ? store.stop() : void store.run())}
     >
       {#if running}{bulkCopy.stopBulk}{:else if store.result !== null}{bulkCopy.runBulkAgain}{:else}{bulkCopy.runBulk}{/if}
@@ -115,11 +127,17 @@
         type="button"
         class="{SECONDARY_BUTTON} border-line-warm text-nav px-4"
         data-testid="sim-server-run"
-        disabled={running || store.serverCapNotice !== null}
+        disabled={running || store.serverCapNotice !== null || notSimulated}
         onclick={() => void store.runOnServer()}>{bulkCopy.capPremium}</button
       >
     {/if}
   </div>
+
+  {#if notSimulated}
+    <p class="text-strong text-[13px]" data-testid="sim-run-not-simulated">
+      {simCopy.runNotSimulated(specDisplayName(store.character?.spec ?? ''))}
+    </p>
+  {/if}
 
   {#if combinationTool}
     <p class="text-muted text-[12px]">{bulkCopy.precisionNote[store.precision]}</p>
