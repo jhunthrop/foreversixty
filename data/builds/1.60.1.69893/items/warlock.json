@@ -1262,7 +1262,7 @@
       "damage_max": 0,
       "speed": 1.6,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -1587,7 +1587,7 @@
       "damage_max": 0,
       "speed": 1.3,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -1609,7 +1609,7 @@
       "damage_max": 0,
       "speed": 1.8,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -1632,7 +1632,7 @@
       "damage_max": 0,
       "speed": 1.5,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -1919,7 +1919,7 @@
       "damage_max": 0,
       "speed": 1.5,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -1941,7 +1941,7 @@
       "damage_max": 0,
       "speed": 1.8,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -2007,7 +2007,7 @@
       "damage_max": 0,
       "speed": 1.4,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -2095,7 +2095,7 @@
       "damage_max": 0,
       "speed": 1.4,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -2490,7 +2490,7 @@
       "damage_max": 0,
       "speed": 1.2,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -3484,7 +3484,7 @@
       "damage_max": 0,
       "speed": 1.8,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -3703,7 +3703,7 @@
       "damage_max": 0,
       "speed": 1.6,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -4184,7 +4184,7 @@
       "damage_max": 0,
       "speed": 1.9,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -4273,7 +4273,7 @@
       "damage_max": 0,
       "speed": 1.7,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -4404,7 +4404,7 @@
       "damage_max": 0,
       "speed": 2.4,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -4619,7 +4619,7 @@
       "damage_max": 0,
       "speed": 1.5,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -4662,7 +4662,7 @@
       "damage_max": 0,
       "speed": 1.9,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -4684,7 +4684,7 @@
       "damage_max": 0,
       "speed": 1.3,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -5401,7 +5401,7 @@
       "damage_max": 0,
       "speed": 1.3,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -5444,7 +5444,7 @@
       "damage_max": 0,
       "speed": 2.0,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -6819,7 +6819,7 @@
       "damage_max": 0,
       "speed": 1.9,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -7370,7 +7370,7 @@
       "damage_max": 0,
       "speed": 1.5,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -7653,7 +7653,7 @@
       "damage_max": 0,
       "speed": 1.8,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -7696,7 +7696,7 @@
       "damage_max": 0,
       "speed": 1.8,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -7805,7 +7805,7 @@
       "damage_max": 0,
       "speed": 1.4,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -7890,7 +7890,7 @@
       "damage_max": 0,
       "speed": 2.0,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -9379,7 +9379,7 @@
       "damage_max": 0,
       "speed": 1.9,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -10479,7 +10479,7 @@
       "damage_max": 0,
       "speed": 1.9,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -10822,7 +10822,7 @@
       "damage_max": 0,
       "speed": 1.8,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -10865,7 +10865,7 @@
       "damage_max": 0,
       "speed": 1.7,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -11237,7 +11237,7 @@
       "damage_max": 0,
       "speed": 1.8,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -11389,7 +11389,7 @@
       "damage_max": 0,
       "speed": 1.3,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -12157,7 +12157,7 @@
       "damage_max": 0,
       "speed": 1.3,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -12684,7 +12684,7 @@
       "damage_max": 0,
       "speed": 1.5,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -12705,7 +12705,7 @@
       "damage_max": 0,
       "speed": 1.5,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -12941,7 +12941,7 @@
       "damage_max": 0,
       "speed": 1.7,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -13027,7 +13027,7 @@
       "damage_max": 0,
       "speed": 1.6,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -14227,7 +14227,7 @@
       "damage_max": 0,
       "speed": 1.7,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -14723,7 +14723,7 @@
       "damage_max": 0,
       "speed": 1.5,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -15692,7 +15692,7 @@
       "damage_max": 0,
       "speed": 1.8,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -18850,7 +18850,7 @@
       "damage_max": 0,
       "speed": 1.3,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -20101,7 +20101,7 @@
       "damage_max": 0,
       "speed": 2.0,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -21471,7 +21471,7 @@
       "damage_max": 0,
       "speed": 1.5,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -22429,7 +22429,7 @@
       "damage_max": 0,
       "speed": 1.5,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -23368,7 +23368,7 @@
       "damage_max": 0,
       "speed": 1.8,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -25299,7 +25299,7 @@
       "damage_max": 0,
       "speed": 2.0,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -26960,7 +26960,7 @@
       "damage_max": 0,
       "speed": 1.2,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -27184,7 +27184,7 @@
       "damage_max": 0,
       "speed": 1.5,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -28936,7 +28936,7 @@
       "damage_max": 0,
       "speed": 1.3,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -30612,7 +30612,7 @@
       "damage_max": 0,
       "speed": 1.3,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -31021,7 +31021,7 @@
       "damage_max": 0,
       "speed": 1.3,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -38128,7 +38128,7 @@
       "damage_max": 0,
       "speed": 1.7,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false

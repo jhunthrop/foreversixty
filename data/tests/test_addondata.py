@@ -1,4 +1,5 @@
 import json
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -76,10 +77,19 @@ def test_the_rendered_lua_parses_and_matches_the_golden_paladin_tab():
 
 
 def test_the_rendered_lua_is_loadable_by_a_real_lua():
-    """A generated chunk that does not parse is worse than no chunk at all."""
+    """A generated chunk that does not parse is worse than no chunk at all.
+
+    Skipped when no interpreter is installed, the way test_simdb_build.py skips
+    its Go round-trip -- a developer without Lua still gets a green suite. CI is
+    not allowed that excuse: .github/workflows/data.yml's `test` job installs
+    lua5.4 before pytest precisely so this gate runs there.
+    """
+    lua_bin = shutil.which("lua") or shutil.which("lua5.4")
+    if not lua_bin:
+        pytest.skip("no lua interpreter is available")
     lua = render_lua(build_addon_data(BUILD))
     result = subprocess.run(
-        ["lua", "-e", f"local f, err = load([==[{lua}]==], 'Data.lua'); assert(f, err)"],
+        [lua_bin, "-e", f"local f, err = load([==[{lua}]==], 'Data.lua'); assert(f, err)"],
         capture_output=True,
         text=True,
     )

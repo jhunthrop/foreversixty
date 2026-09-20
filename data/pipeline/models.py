@@ -150,8 +150,10 @@ class GearItem(BaseModel):
     speed: float = 0.0
     #: Derived: the mid damage over the speed, 0.0 when either is unknown.
     dps: float = 0.0
-    #: True for anything occupying both hands. Validation rule 6 refuses an
-    #: off-hand item beside one.
+    #: True for a two-handed main-hand weapon -- one that leaves no off-hand
+    #: free. Validation rule 6 refuses an off-hand item beside one. A bow, gun,
+    #: crossbow, thrown weapon or wand is False: it takes the ranged slot, not
+    #: the main hand (see `normalize.gear.TWO_HAND_INVENTORY_TYPES`).
     two_hand: bool = False
     #: The use or proc description, token-substituted the way talent text
     #: is. Empty for an item whose value is entirely in its stats.

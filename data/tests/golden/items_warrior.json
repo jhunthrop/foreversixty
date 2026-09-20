@@ -37,7 +37,7 @@
       "damage_max": 0,
       "speed": 2.9,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false

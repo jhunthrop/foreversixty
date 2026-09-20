@@ -85,7 +85,7 @@
       "damage_max": 0,
       "speed": 2.7,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -1239,7 +1239,7 @@
       "damage_max": 0,
       "speed": 3.0,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -1519,7 +1519,7 @@
       "damage_max": 0,
       "speed": 2.8,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -1677,7 +1677,7 @@
       "damage_max": 0,
       "speed": 3.3,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -1721,7 +1721,7 @@
       "damage_max": 0,
       "speed": 2.7,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -1740,7 +1740,7 @@
       "damage_max": 0,
       "speed": 2.8,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "Blunderflame the target for 56 Fire damage.",
       "set_id": null,
       "unique": false
@@ -2000,7 +2000,7 @@
       "damage_max": 0,
       "speed": 2.3,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -2022,7 +2022,7 @@
       "damage_max": 0,
       "speed": 2.6,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -2552,7 +2552,7 @@
       "damage_max": 0,
       "speed": 2.3,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -3153,7 +3153,7 @@
       "damage_max": 0,
       "speed": 2.3,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -3500,7 +3500,7 @@
       "damage_max": 0,
       "speed": 2.8,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "Cremate the target for 56 Fire damage.",
       "set_id": null,
       "unique": false
@@ -4034,7 +4034,7 @@
       "damage_max": 0,
       "speed": 2.3,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -4055,7 +4055,7 @@
       "damage_max": 0,
       "speed": 2.5,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -4098,7 +4098,7 @@
       "damage_max": 0,
       "speed": 3.0,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -4970,7 +4970,7 @@
       "damage_max": 0,
       "speed": 1.8,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -5101,7 +5101,7 @@
       "damage_max": 0,
       "speed": 1.9,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -5979,7 +5979,7 @@
       "damage_max": 0,
       "speed": 3.2,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -6022,7 +6022,7 @@
       "damage_max": 0,
       "speed": 1.9,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -6558,7 +6558,7 @@
       "damage_max": 0,
       "speed": 1.8,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -7187,7 +7187,7 @@
       "damage_max": 0,
       "speed": 2.8,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -7794,7 +7794,7 @@
       "damage_max": 0,
       "speed": 2.5,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -8375,7 +8375,7 @@
       "damage_max": 0,
       "speed": 2.4,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -8641,7 +8641,7 @@
       "damage_max": 0,
       "speed": 2.5,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -9008,7 +9008,7 @@
       "damage_max": 0,
       "speed": 2.0,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -10024,7 +10024,7 @@
       "damage_max": 0,
       "speed": 2.7,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -10284,7 +10284,7 @@
       "damage_max": 0,
       "speed": 2.4,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -10305,7 +10305,7 @@
       "damage_max": 0,
       "speed": 2.4,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -10324,7 +10324,7 @@
       "damage_max": 0,
       "speed": 2.6,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -10346,7 +10346,7 @@
       "damage_max": 0,
       "speed": 2.6,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -10500,7 +10500,7 @@
       "damage_max": 0,
       "speed": 2.1,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -10672,7 +10672,7 @@
       "damage_max": 0,
       "speed": 2.8,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -11268,7 +11268,7 @@
       "damage_max": 0,
       "speed": 1.9,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -11357,7 +11357,7 @@
       "damage_max": 0,
       "speed": 2.6,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -11860,7 +11860,7 @@
       "damage_max": 0,
       "speed": 2.3,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -11879,7 +11879,7 @@
       "damage_max": 0,
       "speed": 1.9,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "Gain the Quick Draw ability:\r\n\r\n$@spellicon398196\r\n$@spelldesc398196",
       "set_id": null,
       "unique": false
@@ -12229,7 +12229,7 @@
       "damage_max": 0,
       "speed": 2.9,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -13484,7 +13484,7 @@
       "damage_max": 0,
       "speed": 2.3,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -14279,7 +14279,7 @@
       "damage_max": 0,
       "speed": 1.9,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -14346,7 +14346,7 @@
       "damage_max": 0,
       "speed": 2.9,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -14433,7 +14433,7 @@
       "damage_max": 0,
       "speed": 2.3,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -14541,7 +14541,7 @@
       "damage_max": 0,
       "speed": 1.9,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -14798,7 +14798,7 @@
       "damage_max": 0,
       "speed": 2.7,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -16236,7 +16236,7 @@
       "damage_max": 0,
       "speed": 3.0,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -16344,7 +16344,7 @@
       "damage_max": 0,
       "speed": 2.8,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -16977,7 +16977,7 @@
       "damage_max": 0,
       "speed": 2.8,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -17243,7 +17243,7 @@
       "damage_max": 0,
       "speed": 1.8,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -17506,7 +17506,7 @@
       "damage_max": 0,
       "speed": 2.2,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -19272,7 +19272,7 @@
       "damage_max": 0,
       "speed": 2.6,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -19962,7 +19962,7 @@
       "damage_max": 0,
       "speed": 2.8,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -20002,7 +20002,7 @@
       "damage_max": 0,
       "speed": 2.7,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -20443,7 +20443,7 @@
       "damage_max": 0,
       "speed": 2.3,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -21768,7 +21768,7 @@
       "damage_max": 0,
       "speed": 1.7,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -22324,7 +22324,7 @@
       "damage_max": 0,
       "speed": 2.0,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "Thrown attacks explode on impact, causing 6 Fire damage to nearby enemies.",
       "set_id": null,
       "unique": true
@@ -22411,7 +22411,7 @@
       "damage_max": 0,
       "speed": 2.7,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -23417,7 +23417,7 @@
       "damage_max": 0,
       "speed": 2.6,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -23592,7 +23592,7 @@
       "damage_max": 0,
       "speed": 2.2,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -24219,7 +24219,7 @@
       "damage_max": 0,
       "speed": 2.4,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -24241,7 +24241,7 @@
       "damage_max": 0,
       "speed": 2.4,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -24459,7 +24459,7 @@
       "damage_max": 0,
       "speed": 1.8,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -25820,7 +25820,7 @@
       "damage_max": 0,
       "speed": 2.7,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -26424,7 +26424,7 @@
       "damage_max": 0,
       "speed": 1.7,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -26466,7 +26466,7 @@
       "damage_max": 0,
       "speed": 2.6,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -26702,7 +26702,7 @@
       "damage_max": 0,
       "speed": 1.7,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -27618,7 +27618,7 @@
       "damage_max": 0,
       "speed": 2.8,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -27856,7 +27856,7 @@
       "damage_max": 0,
       "speed": 2.2,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -28679,7 +28679,7 @@
       "damage_max": 0,
       "speed": 2.4,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -28701,7 +28701,7 @@
       "damage_max": 0,
       "speed": 2.4,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -28836,7 +28836,7 @@
       "damage_max": 0,
       "speed": 2.0,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "Thrown attacks explode on impact, causing 11 Fire damage to nearby enemies.",
       "set_id": null,
       "unique": true
@@ -29433,7 +29433,7 @@
       "damage_max": 0,
       "speed": 2.8,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "Take steady aim and fire a round to knock your target away.",
       "set_id": null,
       "unique": false
@@ -29629,7 +29629,7 @@
       "damage_max": 0,
       "speed": 1.9,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -31040,7 +31040,7 @@
       "damage_max": 0,
       "speed": 2.1,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "Thrown hammers have a chance to concuss the target, slowing movement speed by 20% for 6 sec.",
       "set_id": null,
       "unique": false
@@ -31814,7 +31814,7 @@
       "damage_max": 0,
       "speed": 2.9,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -32552,7 +32552,7 @@
       "damage_max": 0,
       "speed": 2.4,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -32574,7 +32574,7 @@
       "damage_max": 0,
       "speed": 2.4,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -32899,7 +32899,7 @@
       "damage_max": 0,
       "speed": 2.9,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -34253,7 +34253,7 @@
       "damage_max": 0,
       "speed": 2.0,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "Thrown attacks explode on impact, causing 17 Fire damage to nearby enemies.",
       "set_id": null,
       "unique": true
@@ -34296,7 +34296,7 @@
       "damage_max": 0,
       "speed": 2.8,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -35004,7 +35004,7 @@
       "damage_max": 0,
       "speed": 2.0,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -36261,7 +36261,7 @@
       "damage_max": 0,
       "speed": 2.5,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -37012,7 +37012,7 @@
       "damage_max": 0,
       "speed": 2.4,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -37034,7 +37034,7 @@
       "damage_max": 0,
       "speed": 2.4,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -37392,7 +37392,7 @@
       "damage_max": 0,
       "speed": 2.2,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "Thrown hammers have a low chance to stun the target for 1 sec.",
       "set_id": null,
       "unique": false
@@ -37810,7 +37810,7 @@
       "damage_max": 0,
       "speed": 2.7,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "Fires a Shadow Shot at the target for 26 Shadow damage.",
       "set_id": null,
       "unique": false
@@ -38943,7 +38943,7 @@
       "damage_max": 0,
       "speed": 2.5,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -39345,7 +39345,7 @@
       "damage_max": 0,
       "speed": 2.0,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "Thrown attacks explode on impact, causing 21 Fire damage to nearby enemies.",
       "set_id": null,
       "unique": false
@@ -41979,7 +41979,7 @@
       "damage_max": 0,
       "speed": 3.0,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -43107,7 +43107,7 @@
       "damage_max": 0,
       "speed": 2.5,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -43371,7 +43371,7 @@
       "damage_max": 0,
       "speed": 2.5,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -43459,7 +43459,7 @@
       "damage_max": 0,
       "speed": 3.0,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -44392,7 +44392,7 @@
       "damage_max": 0,
       "speed": 2.4,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -44414,7 +44414,7 @@
       "damage_max": 0,
       "speed": 2.4,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -45221,7 +45221,7 @@
       "damage_max": 0,
       "speed": 2.5,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -45533,7 +45533,7 @@
       "damage_max": 0,
       "speed": 2.5,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -45830,7 +45830,7 @@
       "damage_max": 0,
       "speed": 2.5,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -46094,7 +46094,7 @@
       "damage_max": 0,
       "speed": 2.5,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -46749,7 +46749,7 @@
       "damage_max": 0,
       "speed": 1.5,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -46818,7 +46818,7 @@
       "damage_max": 0,
       "speed": 2.6,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": true
@@ -47868,7 +47868,7 @@
       "damage_max": 0,
       "speed": 2.5,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -49949,7 +49949,7 @@
       "damage_max": 0,
       "speed": 1.8,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -49993,7 +49993,7 @@
       "damage_max": 0,
       "speed": 2.9,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -50106,7 +50106,7 @@
       "damage_max": 0,
       "speed": 2.9,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -50450,7 +50450,7 @@
       "damage_max": 0,
       "speed": 2.9,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -50540,7 +50540,7 @@
       "damage_max": 0,
       "speed": 1.8,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -50607,7 +50607,7 @@
       "damage_max": 0,
       "speed": 2.9,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -50769,7 +50769,7 @@
       "damage_max": 0,
       "speed": 2.7,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -50791,7 +50791,7 @@
       "damage_max": 0,
       "speed": 2.5,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -50951,7 +50951,7 @@
       "damage_max": 0,
       "speed": 3.0,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -52280,7 +52280,7 @@
       "damage_max": 0,
       "speed": 1.8,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -52325,7 +52325,7 @@
       "damage_max": 0,
       "speed": 2.9,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -52439,7 +52439,7 @@
       "damage_max": 0,
       "speed": 2.9,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -52647,7 +52647,7 @@
       "damage_max": 0,
       "speed": 2.9,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -52738,7 +52738,7 @@
       "damage_max": 0,
       "speed": 1.8,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false
@@ -52806,7 +52806,7 @@
       "damage_max": 0,
       "speed": 2.9,
       "dps": 0.0,
-      "two_hand": true,
+      "two_hand": false,
       "effect_text": "",
       "set_id": null,
       "unique": false

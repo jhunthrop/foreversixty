@@ -29,9 +29,17 @@ def test_a_two_hander_is_flagged():
     assert 17 in TWO_HAND_INVENTORY_TYPES
 
 
-def test_a_ranged_two_hander_is_flagged():
-    """A bow occupies the ranged slot and both hands; rule 6 has to know."""
-    assert weapon_fields(row(InventoryType=15)).two_hand is True
+def test_a_ranged_weapon_is_not_flagged():
+    """R10: rule 6 asks whether an off-hand item may sit beside this one.
+
+    A bow (InventoryType 15) takes the ranged slot, not the main hand, so it
+    never refuses one. 26 is the trap the old set fell into -- in Classic it is
+    Ranged Right, which is wands as much as guns and crossbows, so flagging it
+    called 37 wands two-handed.
+    """
+    assert weapon_fields(row(InventoryType=15)).two_hand is False
+    assert weapon_fields(row(InventoryType=26)).two_hand is False
+    assert TWO_HAND_INVENTORY_TYPES.isdisjoint({15, 25, 26})
 
 
 def test_a_non_weapon_reports_zeroes_and_no_flag():

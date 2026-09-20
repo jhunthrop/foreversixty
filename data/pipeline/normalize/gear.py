@@ -188,25 +188,27 @@ RESISTANCE_KEYS: dict[int, str] = {
     6: "arcane_res",
 }
 
-#: InventoryType values that occupy both hands: two-handed melee (17),
-#: bows (15), guns (26) and crossbows (26 shares the ranged type), plus
-#: fishing poles (23 is off-hand-only so it is not here). A ranged weapon
-#: counts because rule 6's question is "may an off-hand item sit beside
-#: this", and in Classic itemisation a bow and a shield do coexist -- but
-#: the engine models a two-handed ranged weapon as occupying the ranged
-#: slot alone, and the planner mirrors the engine.
+#: InventoryType values whose item takes the MAIN HAND and, in doing so,
+#: leaves no off-hand free. That is two-handed melee (17) and nothing else.
 #:
-#: Not the same question as `pipeline.simdb.weapons.TWO_HAND_INVENTORY_TYPE`
-#: (17 only): that constant picks which melee damage curve a weapon scores
-#: on, and a ranged weapon is never on that path -- it is resolved by
-#: SubclassID instead. This set answers validation rule 6 -- does this item
-#: occupy both hands -- which a bow does answer yes to.
-TWO_HAND_INVENTORY_TYPES = frozenset({15, 17, 25, 26})
+#: The ranged inventory types are deliberately absent. Rule 6 asks whether an
+#: off-hand item may sit beside this one, and a bow (15), a thrown weapon (25)
+#: or a Ranged Right item (26) occupies the ranged slot, not the main hand, so
+#: it never refuses one -- a hunter carries a bow, a sword and a shield at
+#: once. 26 is the trap: in Classic it is wands as much as guns and crossbows,
+#: so including it flagged 169 items, 37 of them wands, as occupying both
+#: hands.
+#:
+#: `pipeline.simdb.weapons.TWO_HAND_INVENTORY_TYPE` is 17 for its own reason --
+#: it picks which melee damage curve a weapon scores on, and a ranged weapon is
+#: resolved by SubclassID before that branch is reached. The two constants
+#: answer different questions and now happen to agree on the answer.
+TWO_HAND_INVENTORY_TYPES = frozenset({17})
 
 #: Stat keys that are a combat-rating point count when ItemSparse states
 #: them (`STAT_BY_MODIFIER_ID`'s 12/13/14/15/31/32/48) but a flat literal
 #: percentage when an on-equip spell states them instead
-#: (`pipeline.simdb.equip.STAT_AURAS`'s 47/49/51/52/54/55/138/552, plus the
+#: (`pipeline.simdb.equip.STAT_AURAS`'s 47/49/51/52/54, plus the
 #: MOD_SKILL/defense branch) -- see data/README.md, "Hit, crit, dodge, parry
 #: and block as percentages". The two units cannot be summed into one
 #: `stats` entry; `_merge_effect_stats` raises rather than do it.
