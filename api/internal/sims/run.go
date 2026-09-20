@@ -105,9 +105,20 @@ func (s *Service) run(w http.ResponseWriter, r *http.Request) {
 }
 
 // planTimeout bounds the plan-only subprocess. Expansion loads the item
-// database and walks the candidates; it runs no iterations, so thirty
-// seconds bounds something pathological rather than budgeting the work.
-const planTimeout = 30 * time.Second
+// database and walks the candidates; it runs no iterations, so this
+// bounds something pathological rather than budgeting the work.
+//
+// api/README.md deploys the service with --timeout 30, and this check
+// starts only after the premium lookup, the body decode and validation
+// have each had their share of that budget - so a bound of thirty
+// seconds is the request timeout, not a bound under it, and a plan
+// that ran to its own deadline would be killed by Cloud Run first.
+// The member would get the platform's bare 504 instead of the
+// cap_exceeded or too_large envelope this check exists to write. Ten
+// seconds of margin is what buys us the chance to answer: the refusal
+// is ours to word, not the platform's. BulkBudget stops short of the
+// job's task timeout for the same reason one level down.
+const planTimeout = 20 * time.Second
 
 // checkSize counts what the request would expand to, without running any
 // of it, and refuses the two ways it can be too big. It reports whether

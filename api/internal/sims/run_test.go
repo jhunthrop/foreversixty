@@ -375,7 +375,7 @@ func TestAWeightsRunIsAcceptedUnsizedAndBoundOnlyByTheJobTimeout(t *testing.T) {
 		Source:    simapi.CharacterSource{Kind: simapi.SourceAddon, Ref: "us/normal/baelgrim"},
 		Character: aCharacter("warrior", "orc"),
 		Weights: &simapi.WeightsSpec{
-			Stats: []string{"strength", "melee_crit"}, Reference: "melee_crit",
+			Stats: []string{"strength", "crit"}, Reference: "crit",
 		},
 	})
 	if err != nil {

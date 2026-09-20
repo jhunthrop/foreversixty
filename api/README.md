@@ -402,9 +402,18 @@ gcloud run deploy api \
   --service-account api-runtime@foreversixty.iam.gserviceaccount.com \
   --set-env-vars PUBLIC_BASE_URL=https://foreversixty.gg,API_BASE_URL=https://api.foreversixty.gg \
   --set-secrets DATABASE_URL=DATABASE_URL:latest,MIGRATE_DATABASE_URL=MIGRATE_DATABASE_URL:latest,RESEND_API_KEY=RESEND_API_KEY:latest \
-  --min-instances 0 --max-instances 3 --cpu 1 --memory 256Mi --concurrency 80 --timeout 30
+  --min-instances 0 --max-instances 3 --cpu 1 --memory 512Mi --concurrency 80 --timeout 30
 gcloud run domain-mappings create --service api --domain api.foreversixty.gg --region us-east1
 ```
+
+`--memory 512Mi`, not the 256Mi the service ran on before the simulator arrived: the same image
+carries `/engine/forever-sim` (see `api/Dockerfile`), and `POST /v1/sims/run` shells it with
+`-plan` to size a bulk request before queueing it. `sim/runner`'s own note puts that subprocess's
+JSON at roughly 22 MB at the server lane's cap, and it is built in this container, on one shared
+CPU, at `--concurrency 80`. 512Mi is a conservative bound chosen from that 22 MB figure — it is
+not a measurement, and nobody has watched the service's RSS under a full-cap plan. Replace it
+with a measured full-cap `-plan` footprint when there is one; a real measurement may well argue
+for more, or for taking the plan off the request path entirely.
 
 `MAIL_FROM` and `TRUSTED_PROXY_HOPS` are deliberately left out of `--set-env-vars` above: both
 take their documented defaults (`Forever Sixty <hello@foreversixty.gg>` and `1`, matching a
