@@ -593,6 +593,13 @@ end
 --- approximated and `statsUnknown` is set, which is what stops Gear from
 --- scoring a planned item at zero and calling that a downgrade.
 function Codec.loadBuild(code, data)
+	-- Trimmed once, here, before the prefix is sniffed: a pasted code
+	-- commonly carries leading or trailing whitespace from the chat edit
+	-- box it was copied out of, and reading the prefix off the untrimmed
+	-- string would route a perfectly valid FSB1 code into the FS1 branch.
+	-- decodeFSB1 and decodeFS1 both trim again internally, but trimming an
+	-- already-trimmed string is a no-op, not a second trim.
+	code = code:match("^%s*(.-)%s*$")
 	local prefix = split(code, ":")[1]
 	local build, message
 	if prefix == Codec.FSB1_PREFIX then

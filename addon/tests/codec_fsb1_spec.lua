@@ -99,6 +99,7 @@ describe("Codec FSB1", function()
 								{ name = "Improved Holy Strike", tier = 1, column = 1, maxRank = 2 },
 								{ name = "Divine Strength", tier = 1, column = 2, maxRank = 5 },
 								{ name = "Healing Light", tier = 2, column = 1, maxRank = 3 },
+								{ name = "Divine Favor", tier = 2, column = 2, maxRank = 5 },
 							},
 						},
 						{ name = "Protection", talents = {} },
@@ -115,15 +116,21 @@ describe("Codec FSB1", function()
 			assert.are.equal(2, #build.order)
 		end)
 
-		it("takes an FS1 code and approximates the order, lowest tier first", function()
+		it("takes an FS1 code and approximates the order, lowest tier first and left to right", function()
 			-- Ranks in tab order: Improved Holy Strike 1, Divine Strength 0,
-			-- Healing Light 2 -> the tier-1 point first, then both tier-2 points.
-			local build = assert(Codec.loadBuild("FS1:1.60.1.69893:paladin:human:102/0/0:", data))
+			-- Healing Light 2, Divine Favor 1 -> the tier-1 point first, then
+			-- both tiers of tier-2 talents with the lower column (Healing
+			-- Light) before the higher one (Divine Favor), which is the
+			-- "left to right" half of the site's orderFromRanks rule: a
+			-- fixture with only one spent talent per tier would never
+			-- exercise that tie-break.
+			local build = assert(Codec.loadBuild("FS1:1.60.1.69893:paladin:human:1021/0/0:", data))
 			assert.are.equal("FS1", build.format)
 			assert.are.same({
 				{ tab = 1, tier = 1, column = 1 },
 				{ tab = 1, tier = 2, column = 1 },
 				{ tab = 1, tier = 2, column = 1 },
+				{ tab = 1, tier = 2, column = 2 },
 			}, build.order)
 		end)
 
@@ -145,7 +152,19 @@ describe("Codec FSB1", function()
 
 		it("refuses a code for a class this data does not carry", function()
 			local _, message = Codec.loadBuild("FSB1:1.60.1.69893:shaman:111:", data)
-			assert.is_string(message)
+			assert.are.equal(string.format(L.codecUnknownClass, "shaman"), message)
+		end)
+
+		it("loads a pasted code with stray whitespace still", function()
+			-- The ordinary shape of a code copied out of a chat edit box:
+			-- loadBuild reads the prefix before either decoder gets a
+			-- chance to trim, so it must trim first itself or a perfectly
+			-- valid FSB1 code falls through to the FS1 branch and is
+			-- refused for the wrong reason.
+			local code = vectors.fsb1[1].code
+			local unpadded = assert(Codec.loadBuild(code, data))
+			local padded = assert(Codec.loadBuild("  " .. code .. "  ", data))
+			assert.are.same(unpadded, padded)
 		end)
 	end)
 end)
