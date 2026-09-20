@@ -18,6 +18,7 @@
   import {
     comboRows,
     deltaLabel,
+    gainLabel,
     headlineFor,
     keepsSetBonus,
     slotSummary,
@@ -190,7 +191,7 @@
             <span class="text-muted w-24 text-[12px]">{SLOT_LABELS[row.slot as Slot] ?? row.slot}</span>
             <span class="text-text flex-1 text-[13px]">{row.name}</span>
             <span class="tabular text-gold font-mono text-[13px]">
-              {row.gain === null ? '—' : `+${Math.round(row.gain).toLocaleString('en-US')}`}
+              {row.gain === null ? '—' : `+${gainLabel(row.gain)}`}
             </span>
           </li>
         {/each}

@@ -24,14 +24,30 @@ export function percentOf(delta: number, equippedMean: number): number {
 const MINUS = '−';
 
 /**
- * "+41 ± 11": the gain, rounded, and its 95% band. A minus sign, not a hyphen -- the
- * design system's rule for a negative figure in a table.
+ * A non-negative gain magnitude, formatted for a GAIN column or a headline: one decimal
+ * place below 10, whole (thousands-separated) at 10 and above. Rounds to one decimal FIRST,
+ * then decides whole-vs-decimal off the ROUNDED value -- 9.95 rounds to 10.0, which is
+ * already >= 10, so it renders "10" rather than truncating to "9.9" or keeping a false
+ * "10.0". A true zero renders "0", not "0.0": a delta that really is zero should not imply
+ * precision.
+ *
+ * Whole-DPS rounding was hiding real differences (dps D38): two 51-point builds 0.44 DPS
+ * apart both read "+0" under the old always-round-to-a-whole-number rule, with nothing on
+ * the page to say which was better.
+ */
+export function gainLabel(magnitude: number): string {
+  const rounded = Math.round(magnitude * 10) / 10;
+  if (rounded === 0 || rounded >= 10) return Math.round(rounded).toLocaleString('en-US');
+  return rounded.toFixed(1);
+}
+
+/**
+ * "+41 ± 11": the gain and its 95% band, each through `gainLabel`. A minus sign, not a
+ * hyphen -- the design system's rule for a negative figure in a table.
  */
 export function deltaLabel(delta: Estimate): string {
-  const mean = Math.round(delta.mean);
-  const band = Math.round(confidenceBand(delta));
-  const sign = mean < 0 ? MINUS : '+';
-  return `${sign}${Math.abs(mean).toLocaleString('en-US')} ± ${band.toLocaleString('en-US')}`;
+  const sign = delta.mean < 0 ? MINUS : '+';
+  return `${sign}${gainLabel(Math.abs(delta.mean))} ± ${gainLabel(confidenceBand(delta))}`;
 }
 
 /**

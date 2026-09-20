@@ -221,6 +221,19 @@ export function gearFromSlots(gear: readonly GearSlot[]): Gear {
 }
 
 /**
+ * The gear the inline planner (Planner.svelte's `gear` prop) should start from: `gear_slots`
+ * converted back to the planner's id map when the character has one, the id map itself
+ * otherwise. Mirrors `toCharacterSpec`'s own precedence above rather than inventing a second
+ * one -- the two must never disagree about which of a character's two gear fields is the
+ * truth. Always a fresh object; mutating the result never touches the character's own gear
+ * (dps D39/D40: without a seeded gear, the inline build card sims an empty character while
+ * the comparison table sims the real one).
+ */
+export function plannerGearFor(character: SimCharacter): Gear {
+  return character.gear_slots.length > 0 ? gearFromSlots(character.gear_slots) : { ...character.gear };
+}
+
+/**
  * A `CharacterSpec` (the engine's own JSON shape) as an FS1 version 2 code -- the one place
  * this conversion is written. "Run this yourself" (SimView.svelte, a saved result's own
  * request) and the request drawer's Apply (store-request.ts, a pasted/edited request) both

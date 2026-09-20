@@ -7,6 +7,7 @@ import { addonStringFor } from './addon-export';
 import {
   comboRows,
   deltaLabel,
+  gainLabel,
   headlineFor,
   isEmptiedOffHand,
   keepsSetBonus,
@@ -42,13 +43,43 @@ describe('comboRows', () => {
 });
 
 describe('percentOf and deltaLabel', () => {
-  it('reads a gain with its error and a sign', () => {
+  it('reads a gain with its error and a sign, whole once the figure reaches 10', () => {
     expect(deltaLabel({ mean: 41.2, stddev: 0, error: 5.41, min: 0, max: 0 })).toBe('+41 ± 11');
-    expect(deltaLabel({ mean: -1.8, stddev: 0, error: 5.38, min: 0, max: 0 })).toBe('−2 ± 11');
+    // Below 10, the magnitude keeps its decimal (dps D38: two builds 0.44 DPS apart must not
+    // both read "+0"). 1.8 rounds to 1.8, which is still under 10, so it stays "1.8".
+    expect(deltaLabel({ mean: -1.8, stddev: 0, error: 5.38, min: 0, max: 0 })).toBe('−1.8 ± 11');
+  });
+
+  it('keeps a decimal under 10 DPS so two builds 0.44 DPS apart do not both read "+0" (dps D38)', () => {
+    expect(deltaLabel({ mean: 0.44, stddev: 0, error: 0, min: 0, max: 0 })).toBe('+0.4 ± 0');
+    expect(deltaLabel({ mean: -0.44, stddev: 0, error: 0, min: 0, max: 0 })).toBe('−0.4 ± 0');
   });
 
   it('is zero percent against a zero baseline rather than infinite', () => {
     expect(percentOf(41.2, 0)).toBe(0);
+  });
+});
+
+describe('gainLabel', () => {
+  it('keeps one decimal under a magnitude of 10', () => {
+    expect(gainLabel(0.44)).toBe('0.4');
+  });
+
+  it('renders a true zero as whole, not "0.0" — a real zero should not imply precision', () => {
+    expect(gainLabel(0)).toBe('0');
+  });
+
+  it('rounds 9.95 past the 10 boundary first, then renders whole because the rounded value is not under 10', () => {
+    expect(gainLabel(9.95)).toBe('10');
+  });
+
+  it('keeps 10.0 whole', () => {
+    expect(gainLabel(10.0)).toBe('10');
+  });
+
+  it('drops the decimal and thousands-separates once the magnitude reaches 10', () => {
+    expect(gainLabel(41.2)).toBe('41');
+    expect(gainLabel(1234.2)).toBe('1,234');
   });
 });
 
@@ -186,6 +217,16 @@ describe('keepsSetBonus', () => {
 describe('headlineFor and substitutionLabel', () => {
   it('names the leader’s biggest change from the result’s own name field', () => {
     expect(headlineFor(result)).toBe('+41 DPS from Helm of Wrath');
+  });
+
+  // headlineFor splits deltaLabel(...) on a space and takes [0]; a sub-10 gain's decimal
+  // must survive that split rather than being cut at the space inside "0.4".
+  it('keeps a small gain’s decimal when splitting deltaLabel’s "+0.4 ± 0" on the space', () => {
+    const smallGain: BulkResult = {
+      ...result,
+      combos: [{ ...result.combos[0], delta: { mean: 0.44, stddev: 0, error: 0, min: 0, max: 0 } }],
+    };
+    expect(headlineFor(smallGain)).toBe('+0.4 DPS from Helm of Wrath');
   });
 
   it('labels an item, a loadout, a set and a consumable list (contract 10.8)', () => {

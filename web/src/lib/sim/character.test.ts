@@ -14,6 +14,7 @@ import {
   fromBuildDraft,
   gearFromSlots,
   gearSlots,
+  plannerGearFor,
   ranksFromTalentsString,
   specForSplit,
   specOf,
@@ -221,6 +222,69 @@ describe('gearFromSlots, the inverse of gearSlots', () => {
 
   it('is empty for no gear', () => {
     expect(gearFromSlots([])).toEqual({});
+  });
+});
+
+describe('plannerGearFor', () => {
+  // Minimal filler; each test below overrides only the fields it cares about.
+  const base: SimCharacter = {
+    name: 'Thrallgar',
+    spec: 'warrior-fury',
+    class_slug: 'warrior',
+    race_slug: 'orc',
+    talent_level: 22,
+    tree_version: BUILD,
+    point_order: [],
+    gear: {},
+    gear_slots: [],
+    buffs: [],
+    consumables: [],
+    source,
+    professions: [],
+    bags: [],
+    bank: [],
+    sets: [],
+    loadouts: [],
+  };
+
+  it('prefers gear_slots over the id map, mirroring toCharacterSpec’s own precedence (character.ts:281-309)', () => {
+    const character: SimCharacter = {
+      ...base,
+      gear: { head: 1 },
+      gear_slots: [
+        { slot: 'head', item_id: 12640 },
+        { slot: 'main_hand', item_id: 11726 },
+      ],
+    };
+    expect(plannerGearFor(character)).toEqual({ head: 12640, main_hand: 11726 });
+  });
+
+  it('falls back to the id map when gear_slots is empty', () => {
+    const character: SimCharacter = { ...base, gear: { head: 12640 }, gear_slots: [] };
+    expect(plannerGearFor(character)).toEqual({ head: 12640 });
+  });
+
+  it('is an empty object when both are empty', () => {
+    const character: SimCharacter = { ...base, gear: {}, gear_slots: [] };
+    expect(plannerGearFor(character)).toEqual({});
+  });
+
+  it('returns a fresh copy from the id map: mutating it does not touch the character', () => {
+    const character: SimCharacter = { ...base, gear: { head: 12640 }, gear_slots: [] };
+    const gear = plannerGearFor(character);
+    gear.head = 99999;
+    expect(character.gear.head).toBe(12640);
+  });
+
+  it('returns a fresh copy from gear_slots: mutating it does not touch the character', () => {
+    const character: SimCharacter = {
+      ...base,
+      gear: {},
+      gear_slots: [{ slot: 'head', item_id: 12640 }],
+    };
+    const gear = plannerGearFor(character);
+    gear.head = 99999;
+    expect(character.gear_slots).toEqual([{ slot: 'head', item_id: 12640 }]);
   });
 });
 
