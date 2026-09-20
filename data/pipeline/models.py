@@ -153,6 +153,9 @@ class GearItem(BaseModel):
     #: True for anything occupying both hands. Validation rule 6 refuses an
     #: off-hand item beside one.
     two_hand: bool = False
+    #: The use or proc description, token-substituted the way talent text
+    #: is. Empty for an item whose value is entirely in its stats.
+    effect_text: str = ""
     set_id: int | None
     unique: bool
 

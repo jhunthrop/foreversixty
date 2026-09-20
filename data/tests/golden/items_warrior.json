@@ -19,6 +19,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
+      "effect_text": "",
       "set_id": null,
       "unique": false
     },
@@ -37,6 +38,7 @@
       "speed": 2.9,
       "dps": 0.0,
       "two_hand": true,
+      "effect_text": "",
       "set_id": null,
       "unique": false
     },
@@ -55,6 +57,7 @@
       "speed": 2.4,
       "dps": 0.0,
       "two_hand": false,
+      "effect_text": "",
       "set_id": null,
       "unique": false
     },
@@ -75,6 +78,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
+      "effect_text": "",
       "set_id": null,
       "unique": true
     },
@@ -95,6 +99,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
+      "effect_text": "",
       "set_id": null,
       "unique": false
     },
@@ -117,6 +122,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
+      "effect_text": "",
       "set_id": 209,
       "unique": false
     },
@@ -137,6 +143,7 @@
       "speed": 1.9,
       "dps": 0.0,
       "two_hand": false,
+      "effect_text": "",
       "set_id": null,
       "unique": true
     }

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 import re
-from typing import NamedTuple
+from typing import TYPE_CHECKING, NamedTuple
 
 from pipeline.icons import resolve_icon
 from pipeline.models import ClassItems, GearItem, ItemSetBonus, ItemSetRecord
@@ -12,6 +12,15 @@ from pipeline.normalize.classes import slugify
 from pipeline.normalize.item_curves import ItemCurves, resolve_armor, stat_budget
 from pipeline.proficiency import ARMOR, WEAPON, can_equip
 from pipeline.spelltext import SpellText
+
+if TYPE_CHECKING:
+    # Importing pipeline.normalize.effects at module level would execute
+    # pipeline/simdb/__init__.py (it imports pipeline.simdb.equip), whose own
+    # line 45 imports names from this module -- a module-level import here
+    # would re-enter gear.py while it is still initialising. This module
+    # already has `from __future__ import annotations`, so the annotation
+    # below stays a string and needs no runtime import.
+    from pipeline.normalize.effects import EffectIndex
 
 logger = logging.getLogger(__name__)
 
@@ -471,6 +480,7 @@ def build_class_items(
     icons: dict[int, str],
     build: str,
     curves: ItemCurves | None = None,
+    effects: EffectIndex | None = None,
 ) -> list[ClassItems]:
     """One equippable item list per class. Raises ItemDataError if a row is unreadable.
 
@@ -478,6 +488,12 @@ def build_class_items(
     literal amounts (the 1.60 client / Forever beta); pass None (the default)
     or an `ItemCurves` whose own tables are incomplete and such a row simply
     gets no armour and no stats, exactly as before curve support existed.
+
+    `effects` folds an item's on-equip spell stats (`pipeline.normalize.
+    effects.EffectIndex`) into the same `stats` dict ItemSparse's own columns
+    populate, and sets `effect_text` from its use/proc spells. Pass None (the
+    default) for a caller that has not built one and every item gets no
+    extra stats and an empty `effect_text`, exactly as before this existed.
     """
     by_id = {int_column(row, "ID"): row for row in item_rows}
     candidates: list[tuple[GearItem, int, int, int]] = []
@@ -504,6 +520,9 @@ def build_class_items(
         subclass_id = int_column(item_row, "SubclassID")
         item_level = int_column(row, "ItemLevel")
         armor, stats = resolve_item_values(row, item_row, curves)
+        if effects is not None:
+            for key, amount in effects.stats(item_id).items():
+                stats[key] = stats.get(key, 0) + amount
         _check_level_60_sanity(item_id, display_name, item_level, armor, stats)
         if not _has_gear_value(armor, stats, item_class_id):
             continue
@@ -523,6 +542,7 @@ def build_class_items(
             speed=weapon.speed,
             dps=weapon.dps,
             two_hand=weapon.two_hand,
+            effect_text="" if effects is None else effects.text(item_id),
             set_id=int_column(row, "ItemSet") or None,
             unique=int_column(row, "MaxCount") == 1,
         )
