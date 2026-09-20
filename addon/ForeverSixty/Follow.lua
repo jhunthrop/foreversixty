@@ -58,7 +58,7 @@ function Follow.line(data, build, ranks)
 	local tab = Talents.tabName(data, build.classSlug, point.tab) or ""
 	-- A cell Data.lua has no talent for is a code from a build whose trees
 	-- moved. Naming the cell is more use than naming nothing.
-	local name = talent and talent.name or (point.tier .. ":" .. point.column)
+	local name = talent and talent.name or string.format(L.followUnknownCell, point.tier, point.column)
 	return string.format(L.followNext, name, tab, point.tier)
 end
 

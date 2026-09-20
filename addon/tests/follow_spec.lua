@@ -92,4 +92,56 @@ describe("Follow", function()
 		assert.are.equal("FS1", build.format)
 		assert.are.same({ tab = 1, tier = 1, column = 1, index = 1 }, Follow.nextPoint(build, { [1] = {} }))
 	end)
+
+	it("names an unknown cell from the locale when Data.lua has no talent for it", function()
+		-- tab 1, tier 9, column 1: a cell no talent in DATA's Holy tab has.
+		local build = assert(Follow.load("FSB1:1.60.1.69893:paladin:191:", DATA))
+		local Locale = require("Locale")
+		local line = Follow.line(DATA, build, { [1] = {} })
+		local unknownName = string.format(Locale.followUnknownCell, 9, 1)
+		assert.are.equal(string.format(Locale.followNext, unknownName, "Holy", 9), line)
+	end)
+
+	it("refresh builds one frame and keeps using it", function()
+		assert(Follow.load(CODE, DATA))
+		local state = mock.install({
+			talents = {
+				{ name = "Holy", talents = {} },
+				{ name = "Protection", talents = {} },
+				{ name = "Retribution", talents = {} },
+			},
+		})
+
+		local text = Follow.refresh(DATA)
+		assert.are.equal(1, #state.frames)
+		assert.is_truthy(text:find("Improved Holy Strike", 1, true))
+		assert.is_true(state.frames[1].shown)
+
+		-- A second call must not build a second frame.
+		local text2 = Follow.refresh(DATA)
+		assert.are.equal(1, #state.frames)
+		assert.are.equal(text, text2)
+	end)
+
+	it("highlight acts on the open talent frame", function()
+		assert(Follow.load(CODE, DATA))
+		mock.install({})
+		_G.PlayerTalentFrame = { kind = "stub" }
+
+		local result = Follow.highlight(DATA, { [1] = {} })
+
+		_G.PlayerTalentFrame = nil
+		assert.are.same({ frame = "PlayerTalentFrame", point = { tab = 1, tier = 1, column = 1, index = 1 } }, result)
+	end)
+
+	it("highlight does nothing, and does not error, when no talent frame is open", function()
+		assert(Follow.load(CODE, DATA))
+		mock.install({})
+		_G.PlayerTalentFrame = nil
+		_G.TalentFrame = nil
+
+		assert.has_no.errors(function()
+			assert.is_nil(Follow.highlight(DATA, { [1] = {} }))
+		end)
+	end)
 end)

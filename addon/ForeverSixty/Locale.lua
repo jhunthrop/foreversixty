@@ -40,6 +40,9 @@ local L = {
 	followDone = "This build is finished; every point is spent.",
 	followNext = "%s (%s, tier %d)",
 	followLoaded = "Loaded %s: %d points.",
+	-- A talent this addon's data has no name for, named by its position
+	-- instead, so the player can still find the cell.
+	followUnknownCell = "%d:%d",
 
 	-- Gear
 	gearTitle = "Upgrades",
