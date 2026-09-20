@@ -383,5 +383,285 @@ Codec._fromBase36 = fromBase36
 Codec._toBase36 = toBase36
 Codec._SLOT_SET = SLOT_SET
 
+-- ------------------------------------------------------------------ FSB1 --
+--
+-- FSB1:<data-build>:<class-slug>:<order>:<gear>
+--
+--   <order>  one triple per point spent -- tab, tier, column -- each a single
+--            base-36 character, all 1-based, concatenated with no separator.
+--            A 1-based tab means a leading "0" is a malformed code rather
+--            than a silently wrong tree.
+--   <gear>   entries joined by "," ; each entry is
+--            <slot>=<item_id>[:<stat>=<value>[;<stat>=<value>]…]
+--            The stat names are the engine's own vocabulary (parity contract
+--            10.8), the same names Data.lua's weights table is keyed by, so a
+--            planned item and a weight meet without a translation table.
+
+--- Parity contract 10.8's stat vocabulary, in the order the site's weights
+--- panel groups it (web/src/lib/sim/stats.ts's PINNED_STATS). A gear entry's
+--- stats encode in this order rather than alphabetically, so one build still
+--- has one string regardless of which subset of the fifty names it carries.
+local STAT_ORDER = {
+	"strength", "agility", "stamina", "intellect", "spirit", "spell_power",
+	"arcane_power", "fire_power", "frost_power", "holy_power", "nature_power",
+	"shadow_power", "mp5", "hit", "crit", "spell_haste", "spell_penetration",
+	"attack_power", "melee_haste", "armor_penetration", "expertise", "mana",
+	"energy", "rage", "armor", "ranged_attack_power", "defense", "block",
+	"block_value", "dodge", "parry", "health", "arcane_resistance",
+	"fire_resistance", "frost_resistance", "nature_resistance",
+	"shadow_resistance", "bonus_armor", "healing_power", "spell_damage",
+	"feral_attack_power",
+}
+local STAT_RANK = {}
+for index, name in ipairs(STAT_ORDER) do
+	STAT_RANK[name] = index
+end
+
+local function encodeStats(stats)
+	local names = {}
+	for name in pairs(stats or {}) do
+		names[#names + 1] = name
+	end
+	table.sort(names, function(left, right)
+		local leftRank, rightRank = STAT_RANK[left], STAT_RANK[right]
+		if leftRank and rightRank then
+			return leftRank < rightRank
+		end
+		if leftRank or rightRank then
+			-- A name outside the pinned vocabulary sorts after every name
+			-- inside it, alphabetically among its own kind: still one order
+			-- for one build, even for a name this list does not carry yet.
+			return leftRank ~= nil
+		end
+		return left < right
+	end)
+	local parts = {}
+	for index, name in ipairs(names) do
+		parts[index] = string.format("%s=%d", name, math.floor(stats[name] + 0.5))
+	end
+	return table.concat(parts, ";")
+end
+
+function Codec.encodeFSB1(build)
+	local order = {}
+	for index, point in ipairs(build.order or {}) do
+		order[index] = toBase36(point.tab) .. toBase36(point.tier) .. toBase36(point.column)
+	end
+	local gear = {}
+	for index, entry in ipairs(build.gear or {}) do
+		local stats = encodeStats(entry.stats)
+		gear[index] = entry.slot .. "=" .. tostring(entry.itemId)
+		if stats ~= "" then
+			gear[index] = gear[index] .. ":" .. stats
+		end
+	end
+	return table.concat({
+		Codec.FSB1_PREFIX,
+		build.dataBuild,
+		build.classSlug,
+		table.concat(order),
+		table.concat(gear, ","),
+	}, ":")
+end
+
+local function parseOrder(field)
+	local order = {}
+	if field == "" then
+		return order
+	end
+	if #field % 3 ~= 0 then
+		return nil, L.codecOrderLength
+	end
+	for position = 1, #field, 3 do
+		local triple = field:sub(position, position + 2)
+		local tab = fromBase36(triple:sub(1, 1))
+		local tier = fromBase36(triple:sub(2, 2))
+		local column = fromBase36(triple:sub(3, 3))
+		-- 1-based everywhere: a zero here is a code written against a
+		-- different convention, and decoding it would put points on the
+		-- wrong tree without a word.
+		if tab == nil or tier == nil or column == nil or tab < 1 or tier < 1 or column < 1 then
+			return nil, string.format(L.codecOrderCell, triple)
+		end
+		order[#order + 1] = { tab = tab, tier = tier, column = column }
+	end
+	return order
+end
+
+local function parseStats(field)
+	local stats = {}
+	if field == "" then
+		return stats
+	end
+	for _, pair in ipairs(split(field, ";")) do
+		local at = pair:find("=", 1, true)
+		if at == nil then
+			return nil, string.format(L.codecStatPair, pair)
+		end
+		local name, value = pair:sub(1, at - 1), pair:sub(at + 1)
+		if name == "" or not isDigits(value) then
+			return nil, string.format(L.codecStatPair, pair)
+		end
+		stats[name] = tonumber(value)
+	end
+	return stats
+end
+
+local function parseFSB1Gear(field)
+	local gear = {}
+	if field == "" then
+		return gear
+	end
+	for _, entry in ipairs(split(field, ",")) do
+		local at = entry:find("=", 1, true)
+		if at == nil then
+			return nil, string.format(L.codecGearEntry, entry)
+		end
+		local slot = entry:sub(1, at - 1)
+		if not SLOT_SET[slot] then
+			return nil, string.format(L.codecSlot, slot)
+		end
+		local rest = split(entry:sub(at + 1), ":")
+		if not isDigits(rest[1]) then
+			return nil, string.format(L.codecGearEntry, entry)
+		end
+		local stats, message = parseStats(table.concat(rest, ":", 2))
+		if stats == nil then
+			return nil, message
+		end
+		gear[#gear + 1] = { slot = slot, itemId = tonumber(rest[1]), stats = stats }
+	end
+	return gear
+end
+
+function Codec.decodeFSB1(code)
+	if #code > Codec.MAX_CODE_LENGTH then
+		return nil, L.codecTooLong
+	end
+	local parts = split(code:match("^%s*(.-)%s*$"), ":")
+	if parts[1] ~= Codec.FSB1_PREFIX then
+		local named = (parts[1] == nil or parts[1] == "") and L.codecUnlabelled or parts[1]
+		return nil, string.format(L.codecWrongPrefix, named, Codec.FSB1_PREFIX)
+	end
+	if #parts < 5 then
+		return nil, L.codecShort
+	end
+	local order, message = parseOrder(parts[4])
+	if order == nil then
+		return nil, message
+	end
+	local gear
+	gear, message = parseFSB1Gear(table.concat(parts, ":", 5))
+	if gear == nil then
+		return nil, message
+	end
+	return {
+		dataBuild = parts[2],
+		classSlug = parts[3],
+		order = order,
+		gear = gear,
+	}
+end
+
+--- Compare two dotted build strings numerically, field by field.
+--- Returns -1, 0 or 1. A non-numeric field compares as 0, so a build string
+--- from a client that changes its shape never makes the addon refuse a code
+--- it could read.
+local function compareBuilds(left, right)
+	local a, b = split(left, "."), split(right, ".")
+	for index = 1, math.max(#a, #b) do
+		local x = tonumber(a[index]) or 0
+		local y = tonumber(b[index]) or 0
+		if x ~= y then
+			return x < y and -1 or 1
+		end
+	end
+	return 0
+end
+
+--- An order reconstructed from a final tree, lowest tier first, left to
+--- right. The same rule the site's `orderFromRanks` uses, and the reason the
+--- site's import box says the order is approximated: nothing in the game
+--- records the order a build was actually spent in.
+local function approximateOrder(tabs, treeRanks)
+	local order = {}
+	for tabIndex, tab in ipairs(tabs) do
+		local wanted = {}
+		local ranks = treeRanks[tabIndex] or {}
+		for position, talent in ipairs(tab.talents) do
+			local rank = math.min(ranks[position] or 0, talent.maxRank)
+			if rank > 0 then
+				wanted[#wanted + 1] = { talent = talent, rank = rank }
+			end
+		end
+		table.sort(wanted, function(left, right)
+			if left.talent.tier ~= right.talent.tier then
+				return left.talent.tier < right.talent.tier
+			end
+			return left.talent.column < right.talent.column
+		end)
+		for _, entry in ipairs(wanted) do
+			for _ = 1, entry.rank do
+				order[#order + 1] = {
+					tab = tabIndex,
+					tier = entry.talent.tier,
+					column = entry.talent.column,
+				}
+			end
+		end
+	end
+	return order
+end
+
+--- Load a build from either format.
+---
+--- FSB1 is the site's own addon code and is taken as it stands. FS1 is the
+--- character export, which the site's Top Gear also hands out as "Copy to
+--- addon": it carries a final tree and no stats, so the order is
+--- approximated and `statsUnknown` is set, which is what stops Gear from
+--- scoring a planned item at zero and calling that a downgrade.
+function Codec.loadBuild(code, data)
+	local prefix = split(code, ":")[1]
+	local build, message
+	if prefix == Codec.FSB1_PREFIX then
+		build, message = Codec.decodeFSB1(code)
+		if build == nil then
+			return nil, message
+		end
+		build.format = Codec.FSB1_PREFIX
+		build.statsUnknown = false
+	else
+		local exported
+		exported, message = Codec.decodeFS1(code)
+		if exported == nil then
+			return nil, message
+		end
+		local class = data.classes[exported.classSlug]
+		if class == nil then
+			return nil, string.format(L.codecUnknownClass, exported.classSlug)
+		end
+		local gear = {}
+		for index, entry in ipairs(exported.gearSlots) do
+			gear[index] = { slot = entry.slot, itemId = entry.itemId, stats = {} }
+		end
+		build = {
+			dataBuild = exported.dataBuild,
+			classSlug = exported.classSlug,
+			order = approximateOrder(class.tabs, exported.treeRanks),
+			gear = gear,
+			format = Codec.FS1_PREFIX,
+			statsUnknown = true,
+		}
+	end
+
+	if data.classes[build.classSlug] == nil then
+		return nil, string.format(L.codecUnknownClass, build.classSlug)
+	end
+	if compareBuilds(build.dataBuild, data.build) > 0 then
+		return nil, string.format(L.codecNewerBuild, build.dataBuild, data.build)
+	end
+	return build
+end
+
 ns.Codec = Codec
 return Codec

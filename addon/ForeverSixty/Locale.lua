@@ -32,6 +32,7 @@ local L = {
 	codecStatPair = "That code has an unreadable stat: %s.",
 	codecTooLong = "That code is too long to read.",
 	codecNewerBuild = "That code is for data build %s; this addon carries %s. Update the addon.",
+	codecUnknownClass = "That code is for a %s; this addon carries no tree for that class.",
 
 	-- Follow
 	followTitle = "Next point",
