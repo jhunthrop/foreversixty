@@ -140,7 +140,13 @@ test('the picker offers only the spec’s own weight_stats, and says so, when th
   }
 });
 
-test('the picker falls back to the full list, with no curated-list claim, when weight_stats is absent', async ({
+// Final whole-branch review, Finding 2: GET /v1/specs sends no weight_stats column at all in
+// production (api/internal/sims/specs.go's own SpecFidelity has no such field) -- this is
+// that real shape, not the earlier (fixture-only) hand-carried column. The picker still
+// offers only warrior-fury's own stats and still says so: weightStatsFor now falls back to
+// the client's own curated specs.ts (data/curated/specs.json) rather than treating an absent
+// API column as "nothing to offer but the full retail list".
+test('the picker falls back to the spec’s own curated weight_stats (specs.ts) when the API sends none', async ({
   page,
 }) => {
   await page.route('**/v1/specs', (route) =>
@@ -169,9 +175,22 @@ test('the picker falls back to the full list, with no curated-list claim, when w
     }),
   );
   await loadWeights(page);
-  await expect(page.getByTestId('sim-weights-stats-note')).toHaveCount(0);
-  await expect(page.getByTestId('sim-weight-pick-expertise')).toBeVisible();
+  await expect(page.getByTestId('sim-weights-stats-note')).toBeVisible();
+  await expect(page.getByTestId('sim-weight-pick-attack_power')).toBeVisible();
+  await expect(page.getByTestId('sim-weight-pick-strength')).toBeVisible();
+  await expect(page.getByTestId('sim-weight-pick-melee_haste')).toBeVisible();
+  // Retail-only entries never in warrior-fury's own curated list (D45).
+  for (const excluded of ['mp5', 'spell_haste', 'feral_attack_power']) {
+    await expect(page.getByTestId(`sim-weight-pick-${excluded}`)).toHaveCount(0);
+  }
 });
+
+// The genuinely uncurated case -- a spec neither the API nor the client's own generated
+// spec list has ever heard of -- still falls all the way back to the full pinned vocabulary
+// with no curated-list claim. `pickableStatsFor`'s own unit tests (weights.test.ts) cover
+// this directly; unreachable through the addon-load flow this spec above uses (an unknown
+// spec string fails to parse into a character at all), so it is not re-proven at the e2e
+// layer.
 
 test('a run renders a weight per stat with an error bar and a Pawn string', async ({ page, context }) => {
   await context.grantPermissions(['clipboard-read', 'clipboard-write']);
@@ -183,16 +202,18 @@ test('a run renders a weight per stat with an error bar and a Pawn string', asyn
   // `sim-character` becomes visible as soon as `adopt()` sets `character` -- before the
   // store's own async `loadDataFor` finishes and seeds `stats` -- so the picker can still
   // be showing every box unchecked at that instant. Waiting for the default seed to land
-  // (stamina ticked) avoids unchecking a box that was never checked yet.
-  await expect(page.getByTestId('sim-weight-pick-stamina')).toBeChecked();
-  await page.getByTestId('sim-weight-pick-stamina').uncheck();
-  await expect(page.getByTestId('sim-weight-pick-stamina')).not.toBeChecked();
+  // (strength ticked -- one of warrior-fury's own curated weight_stats, Finding 2; stamina
+  // is not: this sim page scopes the picker to the stats a 1.60 warrior can actually weigh)
+  // avoids unchecking a box that was never checked yet.
+  await expect(page.getByTestId('sim-weight-pick-strength')).toBeChecked();
+  await page.getByTestId('sim-weight-pick-strength').uncheck();
+  await expect(page.getByTestId('sim-weight-pick-strength')).not.toBeChecked();
   await expect(page.getByTestId('sim-weight-pick-attack_power')).toBeDisabled();
   await page.getByTestId('sim-weight-pick-attack_power').click({ force: true });
   await expect(page.getByTestId('sim-weight-pick-attack_power')).toBeChecked();
   await page.getByTestId('sim-run-bulk').click();
   await expect(page.getByTestId('sim-weights')).toBeVisible({ timeout: 25_000 });
-  await expect(page.getByTestId('sim-weight-stamina')).toHaveCount(0);
+  await expect(page.getByTestId('sim-weight-strength')).toHaveCount(0);
   await expect(page.getByTestId('sim-weight-attack_power')).toContainText('1.00');
   // Contract 10.8: haste is split, hit and crit are not.
   await expect(page.getByTestId('sim-weight-melee_haste')).toBeVisible();

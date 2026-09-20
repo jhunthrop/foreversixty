@@ -116,6 +116,50 @@ describe('summarySentence', () => {
     );
   });
 
+  it('never names an aura the BUFFS tab’s own sanitizer would drop (final whole-branch review, Finding 1)', () => {
+    // Before Task 4, the sentence and the tabs read the same raw array; this regression
+    // reintroduced the split. other:move is the engine's own movement bookkeeping (never a
+    // player-facing aura) -- sanitizeAuraTracks drops it, and a sentence reading raw auras
+    // can still pick it as the biggest "buff" and say "Move is up N% of the fight".
+    const base = twoAbilities();
+    const actor = base.damage_done[0];
+    const withMove: Summary = {
+      ...base,
+      duration_ms: 10_000,
+      auras: [
+        { ...summary.auras[0], target_guid: actor.guid, type: 'BUFF', name: 'other:move', uptime_ms: 4_100 },
+      ],
+    };
+    expect(summarySentence(withMove, names)).toBe('Heroic Strike and white hits are 61% of your damage.');
+  });
+
+  it('names the sanitizer’s folded aura, not a raw tag-variant row, and reports the tab’s own summed uptime', () => {
+    // The same fold-by-identity BUFFS/DEBUFFS reads (aura-rows.ts): a spell metered under
+    // two tags is one aura, not two, and its uptime is the sum. A sentence reading raw auras
+    // can pick the bigger of the two rows alone -- naming a tag suffix ("Flurry (2)") the
+    // tab never shows, and understating the uptime the tab reports for the same aura.
+    const withFlurry: ActionNames = { spell: { ...names.spell, '12974': 'Flurry' }, item: {} };
+    const base = twoAbilities();
+    const actor = base.damage_done[0];
+    const tagged: Summary = {
+      ...base,
+      duration_ms: 10_000,
+      auras: [
+        { ...summary.auras[0], target_guid: actor.guid, type: 'BUFF', name: 'spell:12974', uptime_ms: 3_000 },
+        {
+          ...summary.auras[0],
+          target_guid: actor.guid,
+          type: 'BUFF',
+          name: 'spell:12974/1',
+          uptime_ms: 5_000,
+        },
+      ],
+    };
+    expect(summarySentence(tagged, withFlurry)).toBe(
+      'Heroic Strike and white hits are 61% of your damage; Flurry is up 80% of the fight.',
+    );
+  });
+
   it('says so rather than dividing by zero when nothing landed', () => {
     expect(summarySentence({ ...summary, damage_done: [] }, names)).toBe(simCopy.noDamage);
     expect(

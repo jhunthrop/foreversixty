@@ -28,6 +28,8 @@
   import { bulkCopy, WEIGHT_INSIGNIFICANT_LABEL, WEIGHTS_STATS_FROM_ENGINE } from '../../../lib/sim/copy';
   import { specLabel } from '../../../lib/sim/spec-label';
   import {
+    formatWeightError,
+    hasWeightStats,
     isSignificant,
     pawnString,
     pickableStatsFor,
@@ -102,7 +104,7 @@
     <p class="text-muted text-[12px]" data-testid="sim-weights-reference">
       {bulkCopy.weightsReference}: {statLabel(store.referenceStat)}
     </p>
-    {#if store.weightStats !== undefined}
+    {#if hasWeightStats(store.weightStats)}
       <p class="text-muted text-[12px]" data-testid="sim-weights-stats-note">{WEIGHTS_STATS_FROM_ENGINE}</p>
     {/if}
     <ul class="flex flex-wrap gap-3">
@@ -157,7 +159,7 @@
             </span>
             <span class="tabular text-strong ml-auto font-mono text-[13px]">
               {row.weight.toFixed(2)}
-              <span class="text-muted">± {row.error.toFixed(2)}</span>
+              <span class="text-muted">± {formatWeightError(row.error)}</span>
               {#if !significant}
                 <span
                   class="text-muted block font-sans text-[11px]"

@@ -10,16 +10,6 @@
     ],
     "engine_version": "7a45995ae",
     "reference_stat": "attack_power",
-    "weight_stats": [
-      "attack_power",
-      "strength",
-      "agility",
-      "crit",
-      "hit",
-      "melee_haste",
-      "expertise",
-      "armor_penetration"
-    ],
     "updated_at": "2026-09-14T04:12:00Z"
   },
   {

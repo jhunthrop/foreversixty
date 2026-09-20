@@ -23,7 +23,7 @@
 // is why it is a column. An empty `pawn` is a stat Pawn has no key for; it is left out of
 // the string rather than guessed at.
 import { classRows } from '../planner/reference';
-import { simCopy } from './copy';
+import { simCopy, WEIGHT_ERROR_BELOW_THRESHOLD } from './copy';
 import { PRECISION_ITERATIONS, type Lane } from './precision';
 import { specLabel, specRow } from './spec-label';
 import type { Precision, StatWeight } from './bulk-types';
@@ -105,27 +105,46 @@ export function referenceFor(spec: string, rows: readonly SpecFidelity[]): strin
 }
 
 /**
- * The spec's own `weight_stats` column from `GET /v1/specs`, or `undefined` when the list
- * has no row for this spec, or the row predates the column -- "the engine did not say",
- * which `pickableStatsFor` below treats as the full pinned vocabulary rather than an empty
- * picker.
+ * The spec's own `weight_stats` list: the `GET /v1/specs` row's own column when the API
+ * sent one, the client's own curated `specs.ts` (generated from data/curated/specs.json)
+ * otherwise. `GET /v1/specs` carries no such column today -- `SpecFidelity` in
+ * api/internal/sims/specs.go has no `weight_stats` field, and `Store.Specs` never sets one
+ * -- so the API branch is a forward-compatible preference, not the primary source: every
+ * real spec goes through `specRow`, the identical generated table `isDpsSpec` already reads,
+ * so this cannot name a stat that table disagrees with (final whole-branch review, Finding
+ * 2 -- a test fixture hand-carrying this column was the only thing that made the spec-
+ * scoping below look wired up; it shipped inert). `undefined` only when neither side has a
+ * row for this spec at all -- "nobody has heard of it", which `pickableStatsFor` below
+ * treats as the full pinned vocabulary rather than an empty picker.
  */
 export function weightStatsFor(spec: string, rows: readonly SpecFidelity[]): readonly string[] | undefined {
-  return rows.find((entry) => entry.spec === spec)?.weight_stats;
+  const apiStats = rows.find((entry) => entry.spec === spec)?.weight_stats;
+  return apiStats ?? specRow(spec)?.weight_stats;
 }
 
 /**
- * The stats the picker actually offers: `weightStats`, in the engine's own order, when the
- * spec's `GET /v1/specs` row sent one (contract 8 (+)). Absent or empty falls back to the
+ * Whether `weightStats` names a real, curated list rather than "the engine did not say" --
+ * the one predicate `pickableStatsFor` and the picker's own explainer note both read, so
+ * the two can never disagree about whether the list on screen is curated (final whole-branch
+ * review, Finding 3: a bare `!== undefined` check let an explicit empty list dress up the
+ * full fallback vocabulary as a curated one).
+ */
+export function hasWeightStats(weightStats: readonly string[] | undefined): weightStats is readonly string[] {
+  return weightStats !== undefined && weightStats.length > 0;
+}
+
+/**
+ * The stats the picker actually offers: `weightStats`, in the engine's own order, when
+ * `hasWeightStats` says there is one (contract 8 (+)). Absent or empty falls back to the
  * full pinned vocabulary (`WEIGHT_STATS`) unchanged -- "the engine did not say" is not "the
  * engine said everything", so the fallback must not be dressed up as a curated list (dps-
  * minmaxer review round 1, D45's "only the spec's stats" requirement, contract 10.8: this
  * removes the retail-only entries -- Expertise, spell haste, armor penetration, MP5, feral
- * attack power -- from a 1.60 spec by construction, once the engine stops naming them,
- * rather than by a second, hand-maintained deny-list here).
+ * attack power -- from a 1.60 spec by construction, once the spec's own list stops naming
+ * them, rather than by a second, hand-maintained deny-list here).
  */
 export function pickableStatsFor(weightStats: readonly string[] | undefined): readonly WeightStat[] {
-  if (weightStats === undefined || weightStats.length === 0) return WEIGHT_STATS;
+  if (!hasWeightStats(weightStats)) return WEIGHT_STATS;
   return weightStats.map((id) => BY_ID.get(id) ?? { id, label: statLabel(id), pawn: '' });
 }
 
@@ -161,6 +180,22 @@ export function weightScale(weights: readonly StatWeight[]): number {
  */
 export function isSignificant(weight: Pick<StatWeight, 'insignificant'>): boolean {
   return weight.insignificant !== true;
+}
+
+/**
+ * The one place `StatWeights.svelte` and `SavedWeights.svelte` both render a weight's own
+ * "±" figure -- final whole-branch review, Finding 4: the ruling that let this page keep two
+ * decimals (rather than `estimate.ts`'s `formatMargin`, whose `< 0.1` floor and integer-
+ * above-10 rule are calibrated for DPS figures and would erase real information at weight
+ * scale) carried its own rider that a non-zero error must never print as zero. `toFixed(2)`
+ * alone can still do exactly that for a small non-zero error (0.003 -> "0.00"), the same
+ * class of defect as the "± 0" this branch fixed everywhere else -- practically unreachable
+ * at the iteration counts this page runs, but asked for and not done. Two decimals otherwise,
+ * unchanged; a genuine zero still reads "0.00", the same width as every other row.
+ */
+export function formatWeightError(error: number): string {
+  const twoDecimals = error.toFixed(2);
+  return error !== 0 && twoDecimals === '0.00' ? WEIGHT_ERROR_BELOW_THRESHOLD : twoDecimals;
 }
 
 /**

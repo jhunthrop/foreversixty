@@ -65,6 +65,17 @@ export const attackHandProse: Record<'main' | 'off' | 'extra', string> = {
  */
 export const MARGIN_BELOW_THRESHOLD = '< 0.1';
 /**
+ * `weights.ts`'s own `formatWeightError` -- the one place StatWeights.svelte and
+ * SavedWeights.svelte render a weight's own "±" figure -- reads this by name for the
+ * identical reason `formatMargin` reads `MARGIN_BELOW_THRESHOLD` above: a non-zero value
+ * that would otherwise round away to "0.00" at the weights table's two decimals reads this
+ * instead (final whole-branch review, Finding 4). A different threshold from
+ * `MARGIN_BELOW_THRESHOLD`'s own "< 0.1" because the weights table prints two decimals, not
+ * one -- "< 0.1" would itself misstate a genuinely tiny, real weight error as bigger than it
+ * is.
+ */
+export const WEIGHT_ERROR_BELOW_THRESHOLD = '< 0.01';
+/**
  * The BUFFS/DEBUFFS tabs' empty state, one message per kind (Task 4, SimResults.svelte's
  * two AuraTable calls). A sim reports the player's own buff uptime correctly, so an empty
  * BUFFS tab is true: nothing was up. A sim result carries no debuff data at all -- sim/core

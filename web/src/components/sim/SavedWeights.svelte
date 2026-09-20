@@ -20,7 +20,13 @@
   import { SECONDARY_BUTTON } from '../../lib/planner/styles';
   import type { WeightsResult } from '../../lib/sim/bulk-types';
   import { bulkCopy, WEIGHT_INSIGNIFICANT_LABEL } from '../../lib/sim/copy';
-  import { isSignificant, pawnString, statLabel, weightScale } from '../../lib/sim/weights';
+  import {
+    formatWeightError,
+    isSignificant,
+    pawnString,
+    statLabel,
+    weightScale,
+  } from '../../lib/sim/weights';
 
   let { result }: { result: WeightsResult } = $props();
 
@@ -82,7 +88,7 @@
         </span>
         <span class="tabular text-strong ml-auto font-mono text-[13px]">
           {row.weight.toFixed(2)}
-          <span class="text-muted">± {row.error.toFixed(2)}</span>
+          <span class="text-muted">± {formatWeightError(row.error)}</span>
           {#if !significant}
             <span class="text-muted block font-sans text-[11px]" data-testid={`sim-weight-note-${row.stat}`}>
               {WEIGHT_INSIGNIFICANT_LABEL}

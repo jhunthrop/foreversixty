@@ -7,6 +7,8 @@ import {
   DEFAULT_REFERENCE,
   defaultStatsFor,
   fallbackReferenceFor,
+  formatWeightError,
+  hasWeightStats,
   isDpsSpec,
   isSignificant,
   pawnString,
@@ -22,6 +24,8 @@ import {
   WEIGHT_STATS,
 } from './weights';
 import { PRECISION_ITERATIONS } from './precision';
+import { specRow } from './spec-label';
+import { WEIGHT_ERROR_BELOW_THRESHOLD } from './copy';
 import type { StatWeight, WeightsResult } from './bulk-types';
 import type { SpecFidelity } from './types';
 
@@ -153,23 +157,60 @@ describe('pickableStatsFor (sub-item 4: only the spec’s own stats)', () => {
   });
 });
 
-describe('weightStatsFor', () => {
-  it('reads the spec’s own weight_stats column from GET /v1/specs', () => {
-    expect(weightStatsFor('warrior-fury', specs)).toEqual([
-      'attack_power',
-      'strength',
-      'agility',
-      'crit',
-      'hit',
-      'melee_haste',
-      'expertise',
-      'armor_penetration',
-    ]);
+describe('hasWeightStats (final whole-branch review, Finding 3: the note must not disagree with the picker)', () => {
+  it('is false for undefined and for an empty list -- the exact two shapes pickableStatsFor falls back on', () => {
+    expect(hasWeightStats(undefined)).toBe(false);
+    expect(hasWeightStats([])).toBe(false);
   });
 
-  it('is undefined for a spec with no row, or a row predating the column', () => {
-    expect(weightStatsFor('mage-frost', specs)).toBeUndefined();
+  it('is true for any non-empty list', () => {
+    expect(hasWeightStats(['attack_power'])).toBe(true);
+  });
+});
+
+describe('weightStatsFor', () => {
+  // Final whole-branch review, Finding 2: `GET /v1/specs` carries no `weight_stats` column
+  // today (api/internal/sims/specs.go's own SpecFidelity has no such field) -- only the test
+  // fixture used to hand-carry it, which hid the fact that the picker's spec-scoping shipped
+  // inert. The real source of the list is the client's own generated `specs.ts`
+  // (data/curated/specs.json), the same table `specRow`/`isDpsSpec` already read.
+  it('falls back to the spec’s own curated weight_stats (specs.ts) when the API row carries no column -- the shape GET /v1/specs sends today', () => {
+    expect(weightStatsFor('warrior-fury', specs)).toEqual(specRow('warrior-fury')?.weight_stats);
+    expect(weightStatsFor('mage-frost', specs)).toEqual(specRow('mage-frost')?.weight_stats);
+    // Neither is empty -- otherwise this test would not distinguish the curated fallback
+    // from the "nobody has heard of this spec" case below.
+    expect(specRow('warrior-fury')?.weight_stats.length).toBeGreaterThan(0);
+    expect(specRow('mage-frost')?.weight_stats.length).toBeGreaterThan(0);
+  });
+
+  it('prefers an API-supplied weight_stats over the curated list, if the API ever sends one', () => {
+    const apiRow: SpecFidelity = {
+      ...specs[0],
+      spec: 'warrior-fury',
+      weight_stats: ['attack_power', 'strength'],
+    };
+    expect(weightStatsFor('warrior-fury', [apiRow])).toEqual(['attack_power', 'strength']);
+  });
+
+  it('is undefined for a spec neither the API nor the curated list has a row for', () => {
     expect(weightStatsFor('nonesuch-spec', specs)).toBeUndefined();
+    expect(specRow('nonesuch-spec')).toBeNull();
+  });
+});
+
+describe('formatWeightError (final whole-branch review, Finding 4: a non-zero error must never print as zero)', () => {
+  it('keeps two decimals for a value that already reads clearly at that precision', () => {
+    expect(formatWeightError(0.06)).toBe('0.06');
+    expect(formatWeightError(22.55)).toBe('22.55');
+  });
+
+  it('reads a genuine zero as "0.00", the same width as every other row', () => {
+    expect(formatWeightError(0)).toBe('0.00');
+  });
+
+  it('never rounds a non-zero error away to "0.00"', () => {
+    expect(formatWeightError(0.001)).toBe(WEIGHT_ERROR_BELOW_THRESHOLD);
+    expect(formatWeightError(0.001)).not.toBe('0.00');
   });
 });
 

@@ -77,7 +77,12 @@ export function summarySentence(summary: Summary, names: ActionNames | null): st
       ? `${phrase(top[0])} and ${phrase(top[1])} are ${share}% of your damage`
       : `${phrase(top[0])} is ${share}% of your damage`;
 
-  const aura = [...summary.auras]
+  // sanitizeAuraTracks, not the raw array: the BUFFS tab reads auras through it (namedSummary
+  // above), and the sentence must pick the same row it does -- an engine-internal row
+  // (other:move) it would drop, or a tag-variant row it would fold into a bigger one with a
+  // summed uptime, is exactly the aura this line then names (final whole-branch review,
+  // Finding 1 -- a regression from before the BUFFS/DEBUFFS work, when both read one array).
+  const aura = sanitizeAuraTracks(summary.auras)
     .filter((track) => track.target_guid === actor.guid && track.type === 'BUFF')
     .sort((a, b) => b.uptime_ms - a.uptime_ms)[0];
   if (aura === undefined || summary.duration_ms <= 0) return `${damage}.`;
