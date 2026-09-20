@@ -49,7 +49,10 @@
   const armorHelp = $derived(
     armorEmpty
       ? simCopy.targetArmorEmptyHelp(armorPreset)
-      : simCopy.targetArmorSetHelp(settings.encounter.target_armor.toLocaleString('en-US'), armorPreset),
+      : simCopy.targetArmorSetHelp(
+          (settings.encounter.target_armor ?? 0).toLocaleString('en-US'),
+          armorPreset,
+        ),
   );
   // Task 7 (newcomer MINOR 204-207): "Execute phase" said nothing about whether the current
   // fight style actually carries one. `styleIdOf` reads the same style the settings bar's
