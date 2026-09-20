@@ -48,6 +48,12 @@
   // opening count, so TARGETS reads the ramp itself under one of those styles rather than
   // a number the run does not describe.
   const targetsInfo = $derived(targetsSummary(settings.encounter));
+  // Fix round 1: which of the two TARGETS notes is true depends only on `targetsInfo`'s
+  // `attached` flag; `targetsTimelineNoteFor` makes that choice, not an `{#if}`/`{:else}`
+  // here.
+  const targetsNote = $derived(
+    targetsInfo.timeline ? toolFixCopy.targetsTimelineNoteFor(targetsInfo.attached) : '',
+  );
 
   // The <select>'s value is a plain string; FightStyleId is a literal union, so a raw cast
   // would let an id outside the contract's nine reach withStyle/applyFightStyle, which
@@ -103,17 +109,24 @@
       </select>
     </label>
 
-    <label class="flex flex-col gap-1">
-      <span class="label text-muted">{simCopy.targets}</span>
-      {#if targetsInfo.timeline}
-        <!-- Read-only: the fight style owns the target count under a timeline style, and
-             editing a ramp with a single-number select would be a lie either way. Carries
-             the same data-testid the <select> below carries so existing tests and e2e still
-             find the control regardless of which branch renders. -->
+    {#if targetsInfo.timeline}
+      <!-- Read-only: the fight style (or, once detached, the ramp it left behind) owns the
+           target count here, and editing a ramp with a single-number select would be a lie
+           either way. A <div>, not a <label> (fix round 1 Minor 2): a <label> forms no
+           accessible-name association with a non-form element, and the rotation block just
+           below has the right pattern for exactly this -- a visible label span stacked over
+           a value span, no form control involved. Carries the same data-testid the <select>
+           below carries so existing tests and e2e still find the control regardless of
+           which branch renders. -->
+      <div class="flex flex-col gap-1">
+        <span class="label text-muted">{simCopy.targets}</span>
         <span class={`${control} flex items-center`} data-testid="sim-targets">
           {toolFixCopy.targetsTimeline(targetsInfo.first, targetsInfo.max)}
         </span>
-      {:else}
+      </div>
+    {:else}
+      <label class="flex flex-col gap-1">
+        <span class="label text-muted">{simCopy.targets}</span>
         <select
           class={control}
           {disabled}
@@ -125,8 +138,8 @@
             <option value={String(count)}>{count}</option>
           {/each}
         </select>
-      {/if}
-    </label>
+      </label>
+    {/if}
 
     <label class="flex flex-col gap-1">
       <span class="label text-muted">{simCopy.buffs}</span>
@@ -168,8 +181,8 @@
     <p class="text-muted text-[12px]" data-testid="sim-style-note">{styleNote}</p>
   {/if}
 
-  {#if targetsInfo.timeline}
-    <p class="text-muted text-[12px]" data-testid="sim-targets-note">{toolFixCopy.targetsTimelineNote}</p>
+  {#if targetsNote !== ''}
+    <p class="text-muted text-[12px]" data-testid="sim-targets-note">{targetsNote}</p>
   {/if}
 
   <SettingsSheet {settings} {disabled} {onchange} />

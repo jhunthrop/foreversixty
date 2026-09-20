@@ -846,6 +846,24 @@ export const toolFixCopy = {
    */
   targetsTimelineNote: 'The fight style sets the target count here.',
   /**
+   * Fix round 1 (reviewer Important): once a style-owned field (the dummy checkbox, execute
+   * phase) detaches the encounter from its fight style by hand while a timeline ramp is
+   * still in effect (`settings.ts`'s `detached()` never clears `targets_over_time` -- doing
+   * so would silently drop the ramp from the run), `targetsTimelineNote` above would be
+   * lying: there is no fight style left to be "setting" anything. This is the true sentence
+   * for that case instead. Beside `targetsTimelineNote`, not a reword of it.
+   */
+  targetsTimelineDetachedNote:
+    'This fight’s own target timeline sets the count here; choosing a fight style replaces it.',
+  /**
+   * The one function SettingsBar.svelte calls for the TARGETS note: which of the two
+   * sentences above is true depends only on `targetsSummary`'s `attached` flag (styles.ts,
+   * wordless), so the choice is made here rather than as an `{#if}`/`{:else}` in the
+   * component's markup.
+   */
+  targetsTimelineNoteFor: (attached: boolean): string =>
+    attached ? toolFixCopy.targetsTimelineNote : toolFixCopy.targetsTimelineDetachedNote,
+  /**
    * SettingsSheet.svelte, task 4b (tank MAJOR, review.md:227-229): the visible sentence
    * under the target-armor field replacing its old `title` hover (newcomer MINOR 213, "the
    * placeholder doubles as its only help"), saying in words what a blank field or a typed 0

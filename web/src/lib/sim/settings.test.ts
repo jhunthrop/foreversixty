@@ -253,6 +253,18 @@ describe('the style and the controls beside it', () => {
   it('names the detached state', () => {
     expect(simCopy.styleCustom).toBeTruthy();
   });
+
+  // Fix round 1 (reviewer Important): the read-only TARGETS control keys off a non-empty
+  // `targets_over_time`, not off `style`, precisely because `detached()` must NOT clear the
+  // ramp when a style-owned checkbox is toggled -- doing so would silently drop the
+  // dungeon pull's 1->5 ramp from the run the moment a player ticks "dummy" or flips
+  // execute phase. This pins that: the ramp survives detachment.
+  it('leaves the dungeon pull’s target-count timeline intact when a style-owned field detaches the encounter by hand', () => {
+    const dungeon = withStyle(defaultSettings(), 'dungeon');
+    const detached = withDummy(dungeon, true);
+    expect(styleIdOf(detached)).toBe('');
+    expect(detached.encounter.targets_over_time).toEqual(dungeon.encounter.targets_over_time);
+  });
 });
 
 describe('settingsLabel', () => {

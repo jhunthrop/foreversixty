@@ -12,7 +12,6 @@
   import {
     DEFAULT_TARGET_LEVEL,
     MAX_TARGET_ARMOR,
-    TARGET_ARMOR_BY_LEVEL,
     TARGET_LEVELS,
     TARGET_TYPES,
     VARIATIONS,
@@ -36,17 +35,16 @@
   const control =
     'border-line-warm rounded-control bg-raised text-text min-h-11 min-w-0 border px-3 text-[14px] font-semibold md:min-h-9';
   const percent = (value: number): string => `${Math.round(value * 100)}%`;
-  // Contract A8's figure for whichever level is chosen, so an empty armor field says what
-  // the engine will use instead of nothing at all.
-  const armorPreset = $derived(
-    simCopy.targetArmorPreset(
-      (TARGET_ARMOR_BY_LEVEL[settings.encounter.target_level ?? 63] ?? 0).toLocaleString('en-US'),
-    ),
-  );
   // tank MAJOR, review.md:227-229: armor 0 means the level's preset, not an empty field --
   // `targetArmorField` decides what the input DISPLAYS; the wire value settings.ts sends
   // stays 0 until the player types something else.
   const armorField = $derived(targetArmorField(settings.encounter));
+  // Contract A8's figure for whichever level is chosen, so an empty armor field says what
+  // the engine will use instead of nothing at all. Fix round 1 Minor 1: derived from
+  // `armorField.preset` -- settings.ts's own single source of truth for this number --
+  // rather than a second, independent `TARGET_ARMOR_BY_LEVEL` lookup that only agreed with
+  // it by coincidence (it used a different fallback, `?? 63` vs. `DEFAULT_TARGET_LEVEL`).
+  const armorPreset = $derived(simCopy.targetArmorPreset(armorField.preset.toLocaleString('en-US')));
 </script>
 
 <details class="border-line-soft rounded-panel border" data-testid="sim-settings-more">

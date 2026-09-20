@@ -131,7 +131,7 @@ describe('applyFightStyle', () => {
 describe('targetsSummary', () => {
   it('reads the dungeon pull as its ramp’s first and maximum counts, not its settled targets field', () => {
     const dungeon = applyFightStyle(DEFAULT_ENCOUNTER, 'dungeon');
-    expect(targetsSummary(dungeon)).toEqual({ timeline: true, first: 1, max: 5 });
+    expect(targetsSummary(dungeon)).toEqual({ timeline: true, first: 1, max: 5, attached: true });
   });
 
   it('reads a style with no timeline as its own target count', () => {
@@ -148,5 +148,17 @@ describe('targetsSummary', () => {
   it('reads an encounter detached from its style by its own targets field', () => {
     const detached = { ...DEFAULT_ENCOUNTER, style: '', targets: 4, targets_over_time: undefined };
     expect(targetsSummary(detached)).toEqual({ timeline: false, count: 4 });
+  });
+
+  // Fix round 1 (reviewer Important): `detached()` (settings.ts) must NOT clear
+  // `targets_over_time` when a style-owned field like the dummy checkbox is toggled --
+  // clearing it would silently drop the ramp from the run. So a ramp can still be present
+  // on an encounter whose `style` is now "": still a timeline (the control must never show
+  // a number the run will not use), but distinguishable from one still attached to its
+  // style, because the note beside it has to stop crediting a style that is no longer set.
+  it('still reads a ramp as a timeline once detached from its style, but marks it unattached', () => {
+    const dungeon = applyFightStyle(DEFAULT_ENCOUNTER, 'dungeon');
+    const detachedWithRamp = { ...dungeon, style: '' };
+    expect(targetsSummary(detachedWithRamp)).toEqual({ timeline: true, first: 1, max: 5, attached: false });
   });
 });
