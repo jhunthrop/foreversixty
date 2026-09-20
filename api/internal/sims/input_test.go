@@ -110,12 +110,15 @@ func TestSimInputPrefersTheNewerSource(t *testing.T) {
 	// A newer export does — and keeps the talents, the spec and the
 	// buffs the fight recorded, because the export carries none this
 	// repository can read.
-	seedExport(h, key, "us", "normal", "Baelgrim", `{"slots":[1,2,3]}`, time.Now().UTC())
+	seedExport(h, key, "us", "normal", "Baelgrim", "FS1:1.60.1.69893:warrior:orc:0/5530515/0:head=12640,main_hand=21521", time.Now().UTC())
 	h.data(h.do(http.MethodGet, "/v1/characters/us/normal/baelgrim/sim-input", "", nil), &in)
 	if in.Source != "addon" {
 		t.Fatalf("a newer export lost: %+v", in)
 	}
-	if string(in.Gear) != `{"slots":[1,2,3]}` {
+	// The export is the addon's opaque FS1 string; it travels as a JSON string, never as
+	// raw JSON (an FS1 code is not JSON, and RawMessage of one broke the encoder after
+	// the headers were out).
+	if string(in.Gear) != `"FS1:1.60.1.69893:warrior:orc:0/5530515/0:head=12640,main_hand=21521"` {
 		t.Fatalf("gear: %s", in.Gear)
 	}
 	if in.Spec != "warrior-fury" || in.Talents != "31/0/20" {

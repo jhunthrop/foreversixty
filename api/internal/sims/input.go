@@ -127,7 +127,15 @@ func (s *Store) SimInput(ctx context.Context, key string) (Input, FightRef, bool
 		// The addon export is the richer source of gear: it carries
 		// what the character logged out in, slot by slot.
 		out.Source, out.CapturedAt = "addon", *exportAt
-		out.Gear = json.RawMessage(*export)
+		// The export is the addon's opaque string (an FS1 code), not JSON: it
+		// travels as a JSON string. Handing it to RawMessage as-is made the
+		// encoder fail after the headers were out, and every addon-sourced
+		// read answered an empty 200.
+		quoted, err := json.Marshal(*export)
+		if err != nil {
+			return Input{}, FightRef{}, false, fmt.Errorf("sims: encode export %s: %w", key, err)
+		}
+		out.Gear = quoted
 	case fightAt != nil:
 		// The fallback, available to anyone who has ever parsed. A
 		// ranked row keeps the trinkets, not the whole gear list, so
