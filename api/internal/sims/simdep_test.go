@@ -157,3 +157,29 @@ func TestTheServerCapAndTheBudgetAgree(t *testing.T) {
 		}
 	}
 }
+
+// TestTheMaxWeightsRequestFitsTheBudget is checkWeightsSize's
+// counterpart to TestTheServerCapAndTheBudgetAgree above: the largest
+// weights request WeightsSpec.validate can legally accept - the
+// precision iteration ceiling, and every id in the pinned vocabulary
+// - still comfortably fits the job budget. It documents why
+// TestAWeightsRunPastTheBudgetIsRefusedWithItsEstimate has to
+// fabricate an oversized Stats slice directly rather than reach the
+// refusal through a real, legal submit: at today's constants, no
+// legal weights request ever hits it. checkWeightsSize is still
+// wired in - contract 10.9 - so the refusal is what protects the
+// budget the day MaxIterations or the stat vocabulary grows enough to
+// change that.
+func TestTheMaxWeightsRequestFitsTheBudget(t *testing.T) {
+	budget := int(BulkBudget.Seconds())
+	req := simapi.SimRequest{
+		Iterations: simapi.MaxIterations,
+		Weights:    &simapi.WeightsSpec{Stats: simapi.KnownStats},
+	}
+	est := estimateSec(simapi.WeightsIterations(req))
+	if est > budget {
+		t.Fatalf("the largest legal weights request estimates %ds against a %ds budget: "+
+			"the vocabulary or MaxIterations grew enough that checkWeightsSize can now fire "+
+			"for a real request - update the too_large test to match", est, budget)
+	}
+}
