@@ -164,6 +164,13 @@ local function raceSlugOf()
 	return Export.RACE_SLUGS[raceToken] or pascalCaseSlugify(raceToken)
 end
 
+--- `table.pack` does not exist on the client's Lua 5.1; this is its shape
+--- (positional values plus `n`, the true count including trailing nils)
+--- from a single call to `...`.
+local function packn(...)
+	return { n = select("#", ...), ... }
+end
+
 --- Every profession slot the client reports, primaries and secondaries
 --- alike. `GetProfessions()` returns five positions and any of them may be
 --- nil -- an unlearned primary, most commonly -- so this reads all five by
@@ -175,7 +182,7 @@ local function professions()
 		return {}
 	end
 	local slugs = {}
-	local slots = table.pack(GetProfessions())
+	local slots = packn(GetProfessions())
 	for position = 1, slots.n do
 		local index = slots[position]
 		if index ~= nil then

@@ -1,0 +1,238 @@
+# .github/workflows/addon-release.yml
+# Tag `addon-v1.2.3` and this builds the zip and attaches it to a GitHub
+# release. Publishing to CurseForge and Wago Addons needs user-owned API
+# tokens; when they are not set the job still runs to completion and says so,
+# so the lane can be proved end to end before the accounts exist.
+name: addon-release
+on:
+  push:
+    tags: ['addon-v*']
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Build the zip and publish nothing'
+        type: boolean
+        default: true
+permissions:
+  contents: read
+concurrency:
+  group: addon-release-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: addon } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: leafo/gh-actions-lua@v10
+        with: { luaVersion: '5.4' }
+      - uses: leafo/gh-actions-luarocks@v4
+      - run: luarocks install busted && luarocks install luacheck && luarocks install dkjson
+      - run: luacheck ForeverSixty tests
+      - run: busted --output=TAP
+
+  data-check:
+    # data.yml's own drift gate (`pipeline weights --check` and `pipeline
+    # addon-data --check`) only runs on push-to-main and PRs; a tag is not
+    # restricted to a commit that went through it, so a tag cut on a side
+    # branch could ship a Data.lua the pipeline would not generate. Mirror
+    # the same two checks here rather than trust git topology (asserting
+    # the tagged commit is an ancestor of origin/main would need a full,
+    # unshallowed fetch of a monorepo's history, and would only prove the
+    # commit is reachable from main -- not that Data.lua is actually
+    # correct, since branch protection can be bypassed by an admin push or
+    # a tag cut before a PR merges). This checks the real invariant
+    # directly and needs nothing deeper than the default checkout.
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: data } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+      - run: uv sync
+      - run: uv run python -m pipeline weights --build 1.60.1.69893 --check
+      - run: uv run python -m pipeline addon-data --build 1.60.1.69893 --check
+
+  syntax-lua51:
+    # luacheck's own parser accepts 5.4-only syntax (goto, ::label::,
+    # integer division `//`, `<close>` attributes, bitwise operators) under
+    # any std -- the lint in `verify` only catches 5.4-only *library* calls,
+    # never syntax. Only a real Lua 5.1 parser can prove the shipped files
+    # parse on the client's own interpreter. Mirrors addon.yml's job of the
+    # same name so a red 5.1 parse blocks a release exactly as it blocks a
+    # merge to main.
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: addon } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: leafo/gh-actions-lua@v10
+        with: { luaVersion: '5.1.5' }
+      - run: luac -p ForeverSixty/*.lua
+
+  release:
+    # Nothing ships from a red suite. The design's own words: "Packager
+    # failures fail the release workflow; nothing is published partially."
+    # That now includes the Lua 5.1 syntax gate: a file that does not
+    # compile on the client's own interpreter must never reach a release.
+    needs: [verify, syntax-lua51, data-check]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      # manual-changelog copies this file into the zip verbatim. A real tag
+      # push must never ship a changelog still headed "Unreleased" -- write
+      # the version heading by hand before tagging (this deliberately does
+      # not invent one). Gated on the push event, not just the tag-shaped
+      # ref, so a workflow_dispatch test run against a tag (which never
+      # publishes -- see the two `if:` conditions below) is never blocked
+      # by an unfinished changelog.
+      - name: the changelog names a real version
+        if: github.event_name == 'push'
+        run: |
+          set -eu -o pipefail
+          top=$(grep -m1 '^## ' addon/ForeverSixty/CHANGELOG.md || true)
+          if [ "$top" = "## Unreleased" ]; then
+            echo "addon/ForeverSixty/CHANGELOG.md's top heading is still '## Unreleased';" >&2
+            echo "write the version heading (e.g. '## 1.0.0') before tagging a release." >&2
+            exit 1
+          fi
+
+      # release.sh (BigWigsMods/packager's own script) requires its topdir
+      # to itself be a VCS checkout root: it tests `-d "$topdir/.git"`
+      # verbatim, with no fallback, and exits "No Git, SVN, or Hg checkout
+      # found" otherwise (confirmed by running release.sh directly against
+      # a plain clone of this repo with `-t addon/ForeverSixty`). Since this
+      # is a monorepo, addon/ForeverSixty/.git does not exist and never can
+      # while ForeverSixty stays a plain subdirectory here -- so topdir
+      # cannot be addon/ForeverSixty as checked out. To keep the source
+      # layout Task 21 requires (.pkgmeta inside addon/ForeverSixty/,
+      # nothing packaged from outside it) while giving the packager a real
+      # checkout root, this extracts that subdirectory's HEAD tree into its
+      # own throwaway git repo and points the packager at that instead.
+      - name: give the packager its own checkout of addon/ForeverSixty
+        id: pkgroot
+        run: |
+          set -eu -o pipefail
+          pkgroot="$RUNNER_TEMP/ForeverSixty-pkgroot"
+          rm -rf "$pkgroot"
+          mkdir -p "$pkgroot"
+          git archive HEAD -- addon/ForeverSixty | tar -x -C "$pkgroot" --strip-components=2
+          git -C "$pkgroot" init -q
+          origin=$(git remote get-url origin)
+          git -C "$pkgroot" remote add origin "$origin"
+          git -C "$pkgroot" -c user.name=github-actions[bot] \
+            -c user.email=41898282+github-actions[bot]@users.noreply.github.com \
+            add -A
+          git -C "$pkgroot" -c user.name=github-actions[bot] \
+            -c user.email=41898282+github-actions[bot]@users.noreply.github.com \
+            commit -q -m "addon-release packaging snapshot ($GITHUB_SHA)"
+          # Carry the real tag over so @project-version@ resolves to it
+          # instead of this synthetic commit's hash. Strip the "addon-"
+          # prefix: the ref is addon-v1.0.0 (so it cannot collide with a
+          # tag from another lane in this monorepo), but @project-version@
+          # should read v1.0.0 in the client's AddOns list and in the zip's
+          # filename, not addon-v1.0.0.
+          if [[ "$GITHUB_REF" == refs/tags/addon-v* ]]; then
+            git -C "$pkgroot" tag "${GITHUB_REF_NAME#addon-}"
+          fi
+          echo "dir=$pkgroot" >> "$GITHUB_OUTPUT"
+
+      - name: which publish targets are configured
+        id: targets
+        env:
+          CF_API_KEY: ${{ secrets.CF_API_KEY }}
+          WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          if [ "$DRY_RUN" = "true" ]; then
+            echo "publish=no" >> "$GITHUB_OUTPUT"
+            echo "::notice::Dry run requested; the zip is built and nothing is published."
+          elif [ "$CF_API_KEY" != "" ] || [ "$WAGO_API_TOKEN" != "" ]; then
+            echo "publish=yes" >> "$GITHUB_OUTPUT"
+          else
+            echo "publish=no" >> "$GITHUB_OUTPUT"
+            echo "::notice::Neither CF_API_KEY nor WAGO_API_TOKEN is set; the zip is built and nothing is published. Add the secrets to publish to CurseForge and Wago Addons."
+          fi
+
+          # release.sh's upload_curseforge/upload_wago each `return 0` with
+          # no output when the matching TOC id is blank -- a token set with
+          # no id is a green, silent no-op. ForeverSixty.toc deliberately
+          # ships neither line yet, so warn loudly the first time a token
+          # shows up without its id, rather than fail: failing here would
+          # also block the GitHub release attach below, which needs neither
+          # upload to succeed.
+          toc=addon/ForeverSixty/ForeverSixty.toc
+          if [ "$CF_API_KEY" != "" ] && ! grep -q '^## X-Curse-Project-ID:[[:space:]]*[^[:space:]]' "$toc"; then
+            echo "::warning::CF_API_KEY is set but $toc has no ## X-Curse-Project-ID: line; the CurseForge upload will run and silently do nothing. Add the numeric project id once the project exists."
+          fi
+          if [ "$WAGO_API_TOKEN" != "" ] && ! grep -q '^## X-Wago-ID:[[:space:]]*[^[:space:]]' "$toc"; then
+            echo "::warning::WAGO_API_TOKEN is set but $toc has no ## X-Wago-ID: line; the Wago upload will run and silently do nothing. Add the numeric addon id once the project exists."
+          fi
+
+      # -d: upload nowhere (uploading is handled by the steps below, gated
+      # on their own conditions). There is no -z here: release.sh's usage
+      # text is "-z  Skip zip file creation" -- passing it would mean no zip
+      # is ever produced, and the assertion step below would always fail.
+      # The packager keeps .release/ForeverSixty/ (the unzipped package
+      # directory) regardless of -z; it zips from that directory rather than
+      # instead of it.
+      - name: build the zip
+        uses: BigWigsMods/packager@v2
+        with:
+          args: -d -t ${{ steps.pkgroot.outputs.dir }}
+
+      - name: what the zip contains
+        run: |
+          set -eu -o pipefail
+          mapfile -t zips < <(find "${{ steps.pkgroot.outputs.dir }}/.release" -name '*.zip')
+          if [ "${#zips[@]}" -ne 1 ]; then
+            echo "expected exactly one zip in .release, found ${#zips[@]}:"
+            printf '%s\n' "${zips[@]}"
+            exit 1
+          fi
+          zip="${zips[0]}"
+          unzip -l "$zip"
+          # The zip's single top-level folder must be ForeverSixty/, or the
+          # client installs it to the wrong path and no player sees the addon.
+          top=$(unzip -Z1 "$zip" | cut -d/ -f1 | sort -u)
+          if [ "$top" != "ForeverSixty" ]; then echo "top-level folder is '$top'"; exit 1; fi
+          unzip -Z1 "$zip" | grep -q 'ForeverSixty/Data.lua' || { echo "Data.lua is missing"; exit 1; }
+          if unzip -Z1 "$zip" | grep -q 'tests/'; then echo "the specs were packaged"; exit 1; fi
+          if unzip -Z1 "$zip" | grep -q '\.superpowers'; then echo "the planning docs were packaged"; exit 1; fi
+          if unzip -Z1 "$zip" | grep -q '\.pkgmeta'; then echo "the packager config was packaged"; exit 1; fi
+          echo "zip=$zip" >> "$GITHUB_ENV"
+
+      - name: attach it to the release
+        # github.event_name == 'push', not just the tag-shaped ref: the
+        # workflow_dispatch ref picker lists tags too, and "Build the zip
+        # and publish nothing" must hold even when someone dispatches
+        # against a tag ref. Only a real tag push may publish.
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/addon-v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ env.zip }}
+          generate_release_notes: true
+
+      - name: publish to CurseForge and Wago Addons
+        # No GITHUB_OAUTH here: the packager's own GitHub-release path
+        # (release.sh's upload_github, triggered whenever a github_token is
+        # present) would otherwise race the "attach it to the release" step
+        # above on every tagged run that also has a CF/Wago token -- both
+        # would create-or-update the same tag's release and its zip asset.
+        # Leaving github_token unset makes upload_github a no-op (it exits
+        # early when github_token is empty), so softprops/action-gh-release
+        # is the single, unconditional owner of the GitHub release; this
+        # step only talks to CurseForge and Wago, which need no GitHub
+        # token at all.
+        # Same event_name guard as "attach it to the release" above, for the
+        # same reason: a workflow_dispatch run must never publish, even if
+        # dispatched against a tag ref with a CF/Wago token set and dry_run
+        # unchecked.
+        if: steps.targets.outputs.publish == 'yes' && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/addon-v')
+        uses: BigWigsMods/packager@v2
+        env:
+          CF_API_KEY: ${{ secrets.CF_API_KEY }}
+          WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}
+        with:
+          args: -t ${{ steps.pkgroot.outputs.dir }}

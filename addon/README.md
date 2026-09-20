@@ -56,3 +56,49 @@ Run on one character per role and tick here:
       highlights it.
 - [ ] `/fs gear` lists at least one bagged item scored against the planned set.
 - [ ] Logging out writes `ForeverSixtyDB.characters`; the companion picks it up.
+
+## Releasing
+
+Before tagging, replace the `## Unreleased` heading at the top of
+`ForeverSixty/CHANGELOG.md` with the version you are shipping (e.g. `## 1.0.0`)
+-- `manual-changelog` copies the file into the zip verbatim, and the release
+workflow fails a tagged push if the top heading is still `Unreleased`. Do not
+let the workflow invent a version number; write it by hand.
+
+```bash
+git tag addon-v1.0.0
+git push origin addon-v1.0.0
+```
+
+`addon-release.yml` runs luacheck, busted, the Lua 5.1 syntax check, and the
+`Data.lua`-matches-the-pipeline check, builds the zip with the BigWigs packager,
+checks that its single top-level folder is `ForeverSixty/` and that the specs,
+`.pkgmeta` and `.superpowers` are not inside it, and attaches it to a GitHub
+release. Publishing to GitHub, CurseForge and Wago only ever happens on a real
+tag push: running the workflow by hand from the Actions tab (`Run workflow`)
+always builds and validates the zip but never publishes anything, regardless of
+the `dry_run` input or which ref you pick -- use it to prove the build without
+shipping.
+
+Publishing to CurseForge and Wago Addons needs two repository secrets, both
+user-owned: `CF_API_KEY` and `WAGO_API_TOKEN`. When neither is set the workflow
+still finishes green and posts a notice saying nothing was published, so the lane
+can be proved before the accounts exist. Add `## X-Curse-Project-ID` and
+`## X-Wago-ID` to `ForeverSixty.toc` once the projects do exist, using the
+literal numeric IDs CurseForge and Wago assign -- neither is a packager
+substitution keyword, so a placeholder token must never sit in that file. If a
+token is set without its matching TOC line, the run posts a `::warning::` naming
+what is missing and still finishes green, uploading nothing for that target.
+
+To reproduce a release build locally, `release.sh` (from
+[BigWigsMods/packager](https://github.com/BigWigsMods/packager)) refuses to run
+directly against `addon/ForeverSixty`: its `-t topdir` must itself be a Git, SVN
+or Hg checkout root, and this is a subdirectory of the monorepo, not one. Give
+it a throwaway checkout the same way the workflow does:
+
+```bash
+scratch=$(mktemp -d)
+git archive HEAD -- addon/ForeverSixty | tar -x -C "$scratch" --strip-components=2
+git -C "$scratch" init -q && git -C "$scratch" add -A && git -C "$scratch" commit -q -m snapshot
+bash /path/to/packager/release.sh -d -t "$scratch"
+```
