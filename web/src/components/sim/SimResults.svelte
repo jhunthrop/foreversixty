@@ -16,7 +16,7 @@
   import { rowLink } from '../../lib/report/format';
   import { fullWindow } from '../../lib/report/window';
   import type { ActionNames } from '../../lib/sim/action-names';
-  import { simCopy } from '../../lib/sim/copy';
+  import { AURA_EMPTY_MESSAGE, simCopy } from '../../lib/sim/copy';
   import { namedSummary, summarySentence } from '../../lib/sim/sentence';
   import type { Estimate, SampleCast } from '../../lib/sim/types';
   import type { Summary } from '../../lib/report/types';
@@ -63,6 +63,12 @@
   const sentence = $derived(summarySentence(summary, actionNames));
   const buffs = $derived(named.auras.filter((track) => track.type === 'BUFF'));
   const debuffs = $derived(named.auras.filter((track) => track.type === 'DEBUFF'));
+  // GUID to display name, for AuraTable's "from X" line. A sim has one target (the
+  // player), so this is exactly that one pair; it exists so a self-applied buff (already
+  // normalized to target_guid by sanitizeAuraTracks, aura-rows.ts) or a future
+  // non-self-applied debuff both resolve to a real name instead of falling to "an
+  // unnamed source".
+  const auraNames = $derived(new Map(named.auras.map((track) => [track.target_guid, track.target_name])));
 
   const pill = `${rowLink} shrink-0 px-3 text-[12px] font-bold tracking-[0.06em] uppercase md:min-h-9`;
 </script>
@@ -107,9 +113,21 @@
     {#if tab === 'damage'}
       <ActorTable actors={named.damage_done} durationMs={named.duration_ms} metricLabel="DPS" />
     {:else if tab === 'buffs'}
-      <AuraTable tracks={buffs} durationMs={named.duration_ms} kind="BUFF" />
+      <AuraTable
+        tracks={buffs}
+        durationMs={named.duration_ms}
+        kind="BUFF"
+        names={auraNames}
+        emptyMessage={AURA_EMPTY_MESSAGE.BUFF}
+      />
     {:else if tab === 'debuffs'}
-      <AuraTable tracks={debuffs} durationMs={named.duration_ms} kind="DEBUFF" />
+      <AuraTable
+        tracks={debuffs}
+        durationMs={named.duration_ms}
+        kind="DEBUFF"
+        names={auraNames}
+        emptyMessage={AURA_EMPTY_MESSAGE.DEBUFF}
+      />
     {:else if tab === 'casts'}
       <CastTable rows={named.casts} durationMs={named.duration_ms} />
     {:else if tab === 'resources'}

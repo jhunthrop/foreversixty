@@ -64,6 +64,27 @@ export const attackHandProse: Record<'main' | 'off' | 'extra', string> = {
  * rendered -- reads it by name, not through `simCopy`.
  */
 export const MARGIN_BELOW_THRESHOLD = '< 0.1';
+/**
+ * The BUFFS/DEBUFFS tabs' empty state, one message per kind (Task 4, SimResults.svelte's
+ * two AuraTable calls). A sim reports the player's own buff uptime correctly, so an empty
+ * BUFFS tab is true: nothing was up. A sim result carries no debuff data at all -- sim/core
+ * reports aura metrics for the player only (sim/adapter/adapter.go's own auraTypeBuff
+ * comment: "'DEBUFF', has no source in an engine result") -- so the old, shared "No
+ * debuffs in this window" stated a fact about the fight the engine cannot know: a target
+ * dummy taking Rend 56 times, with this tab insisting there were none, is the exact defect
+ * this replaces. The Casts tab already carries the true application count for every
+ * debuff a spec casts (CastRow's own `succeeded`), so this points there instead of
+ * inventing uptime data the web does not have. A plain module-level constant, not a
+ * simCopy property, for the same reason as attackHandName above: AuraTable.svelte (a
+ * report component, outside the sim lane) takes the chosen message as a prop rather than
+ * importing simCopy itself, so ReportView.svelte's own AuraTable calls -- a real fight,
+ * where an empty DEBUFFS tab really can mean none were cast -- are untouched.
+ */
+export const AURA_EMPTY_MESSAGE: Record<'BUFF' | 'DEBUFF', string> = {
+  BUFF: 'No buffs in this window.',
+  DEBUFF:
+    "The simulator doesn't report debuff uptime yet; see Casts for how many times each one was applied.",
+};
 // --- Lane W1 (persona round 1: results, labels, weights) ---
 
 export const simCopy = {

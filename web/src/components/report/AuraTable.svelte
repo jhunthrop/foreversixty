@@ -22,6 +22,7 @@
     kind,
     bossNames = new Set<string>(),
     names = new Map<string, string>(),
+    emptyMessage,
   }: {
     tracks: AuraTrack[];
     durationMs: number;
@@ -32,6 +33,14 @@
     names?: ReadonlyMap<string, string>;
     /** The encounter bosses' unit names, for the per-spell line across the night. */
     bossNames?: ReadonlySet<string>;
+    /**
+     * Overrides the generic "No buffs/debuffs in this window" text. A real fight's empty
+     * DEBUFFS tab genuinely means none were cast, so ReportView.svelte's calls leave this
+     * unset; a sim's DEBUFFS tab is always empty for a different reason -- the engine
+     * reports no debuff data at all -- so SimResults.svelte passes its own honest message
+     * (copy.ts's AURA_EMPTY_MESSAGE, Task 4).
+     */
+    emptyMessage?: string;
   } = $props();
 
   /**
@@ -101,7 +110,7 @@
 
 {#if rows.length === 0}
   <p class="text-muted text-[14px]" data-testid="table-empty">
-    No {kind === 'BUFF' ? 'buffs' : 'debuffs'} in this window.
+    {emptyMessage ?? `No ${kind === 'BUFF' ? 'buffs' : 'debuffs'} in this window.`}
   </p>
 {:else}
   {#if bySpell.length > 0}

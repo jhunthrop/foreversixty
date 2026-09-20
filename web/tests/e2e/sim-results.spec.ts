@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { expect, test, type Page } from '@playwright/test';
-import { simCopy } from '../../src/lib/sim/copy';
+import { AURA_EMPTY_MESSAGE, simCopy } from '../../src/lib/sim/copy';
 
 // Same fixture as sim-run.spec.ts, sim-settings.spec.ts and sim-sources.spec.ts: an addon
 // export needs no API stub, so this reads the site's own active build id rather than
@@ -65,21 +65,30 @@ test('the Damage tab is selected first and the actor table reads a humanised lab
   await expect(row).not.toContainText(/\bspell:/);
 });
 
-test('the Buffs tab shows the first aura row at 100% uptime', async ({ page }) => {
+test('the Buffs tab shows the first aura row at 100% uptime, with no engine-internal rows', async ({
+  page,
+}) => {
   await loadFuryAndRun(page);
 
   await page.getByTestId('sim-tab-buffs').click();
-  const first = page.getByTestId('aura-table').locator('li').first();
+  const table = page.getByTestId('aura-table');
+  const first = table.locator('li').first();
   await expect(first).toContainText('Spell 15366');
   await expect(first).not.toContainText(/\bspell:/);
   await expect(page.getByTestId('aura-uptime').first()).toHaveText('100.0%');
+  // Task 4: sanitizeAuraTracks drops the fixture's own inert rows (including other:move)
+  // and folds spell 20007's two tag rows into one, so no row is left disambiguated by a
+  // trailing "#<spell id>" -- the newcomer-sim repro's "Blizzard#10" shape.
+  await expect(table).not.toContainText(/#\d/);
 });
 
-test('the Debuffs tab is empty: the fixture summary has no debuff-type aura', async ({ page }) => {
+test('the Debuffs tab says the engine does not report debuffs, not that the fight had none', async ({
+  page,
+}) => {
   await loadFuryAndRun(page);
 
   await page.getByTestId('sim-tab-debuffs').click();
-  await expect(page.getByTestId('table-empty')).toHaveText('No debuffs in this window.');
+  await expect(page.getByTestId('table-empty')).toHaveText(AURA_EMPTY_MESSAGE.DEBUFF);
 });
 
 test('the Casts tab reads a cast row by its humanised label and count, never the raw key', async ({

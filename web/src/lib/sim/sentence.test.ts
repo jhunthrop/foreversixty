@@ -135,6 +135,25 @@ describe('namedSummary', () => {
     expect(named.damage_done[0].total).toBe(summary.damage_done[0].total);
   });
 
+  it('drops engine-internal aura rows and folds rank/tag duplicates before resolving names (Task 4)', () => {
+    // The fixture's own 30 raw aura rows: 7 are inert (never applied, never up, including
+    // other:move), and spell 20007's two tag rows (applications 5+3, uptime 63636+43712)
+    // are the same spell metered twice, so they fold into one. 30 - 7 - 1 = 22.
+    const named = namedSummary(summary, names);
+    expect(named.auras).toHaveLength(22);
+    expect(named.auras.some((track) => track.spell_id === 12317)).toBe(false);
+    expect(named.auras.some((track) => track.name === 'other:move')).toBe(false);
+
+    const merged = named.auras.find((track) => track.spell_id === 20007);
+    expect(merged?.applications).toBe(8);
+    expect(merged?.uptime_ms).toBe(107_348);
+
+    // sim/adapter/adapter.go writes the player's own display name ("Sim") into every
+    // aura's appliers, not a GUID; every surviving row is normalized to the target's guid
+    // instead, so AuraTable renders a self-buff with no "from an unnamed source" line.
+    expect(named.auras.every((track) => !track.appliers.includes('Sim'))).toBe(true);
+  });
+
   it('leaves the original untouched, because the stored result keeps the engine keys', () => {
     const before = summary.damage_done[0].abilities[0].name;
     namedSummary(summary, names);

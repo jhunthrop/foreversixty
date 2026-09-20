@@ -7,6 +7,7 @@
 // SimResult keeps the engine's keys, because that is what POST /v1/sims saves and what a
 // compare against a later engine version matches on.
 import { attackHand, parseActionKey, resolveActionName, type ActionNames } from './action-names';
+import { sanitizeAuraTracks } from './aura-rows';
 import { attackHandProse, simCopy } from './copy';
 import type { Actor, Summary } from '../report/types';
 
@@ -29,7 +30,11 @@ function prose(key: string, resolvedName: string): string {
 
 /**
  * The same summary with every ability, aura and cast name resolved. Nothing else changes,
- * and the input is never mutated.
+ * and the input is never mutated. Auras additionally pass through sanitizeAuraTracks
+ * (aura-rows.ts, Task 4) first: the engine seeds a row for every rank or metric variant a
+ * spec could register, whether it ever fired or not, and this is the one place every
+ * report component under SimResults.svelte reads auras from, so the cleanup happens once
+ * rather than per-tab.
  */
 export function namedSummary(summary: Summary, names: ActionNames | null): Summary {
   const name = (key: string): string => resolveActionName(key, names);
@@ -39,7 +44,7 @@ export function namedSummary(summary: Summary, names: ActionNames | null): Summa
       ...actor,
       abilities: actor.abilities.map((ability) => ({ ...ability, name: name(ability.name) })),
     })),
-    auras: summary.auras.map((track) => ({ ...track, name: name(track.name) })),
+    auras: sanitizeAuraTracks(summary.auras).map((track) => ({ ...track, name: name(track.name) })),
     casts: summary.casts.map((row) => ({ ...row, spell_name: name(row.spell_name) })),
   };
 }
