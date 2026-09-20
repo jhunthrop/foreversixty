@@ -116,6 +116,34 @@ func TestASaveRefusesAnAbortedResult(t *testing.T) {
 	}
 }
 
+// TestASaveRefusesAResultCarryingAnError pins the amendment to
+// ValidateSaved: a result whose Error is non-empty is the same shape
+// Store.Finish already tells apart from a done one, and saving it
+// unchecked would read back as a confident, wrong "0 DPS" rather than
+// the failure it is.
+func TestASaveRefusesAResultCarryingAnError(t *testing.T) {
+	h := newHarness(t)
+	res := browserResult("warrior-fury", 1000)
+	res.Error = "engine panicked"
+	body, err := json.Marshal(struct {
+		simapi.SimResult
+		Title string `json:"title"`
+	}{res, ""})
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := h.json(http.MethodPost, "/v1/sims", string(body))
+	if got.StatusCode != http.StatusBadRequest {
+		t.Fatalf("status %d, want 400", got.StatusCode)
+	}
+	if code := h.errorCode(got); code != "invalid" {
+		t.Fatalf("code %q", code)
+	}
+	if msg := h.errorMessage(got); !strings.Contains(msg, "error") {
+		t.Fatalf("message %q did not say why", msg)
+	}
+}
+
 func TestAnUnknownSimIs404(t *testing.T) {
 	h := newHarness(t)
 	res := h.do(http.MethodGet, "/v1/sims/zzzzzzzzzzzz", "", nil)

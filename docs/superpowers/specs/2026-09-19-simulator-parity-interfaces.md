@@ -603,3 +603,8 @@ gains per-slot enchant and suffix.
   mage-frost about 25,000. The constant sizes the Cloud Run job, whose vCPU
   is slower than the laptop, so the old figure is kept as a conservative
   bound until it is measured on the job itself.
+- **`ValidateSaved` refuses a result carrying `Error`.** A non-empty
+  `Error` is the same failure `Store.Finish` already stores under
+  `StateError` rather than `StateDone`; without this check, `POST
+  /v1/sims` stored the identical shape as `done`, with a headline
+  reading its zero fields as a confident "0 DPS".

@@ -635,13 +635,19 @@ func (r SimResult) Stale(current string) bool {
 // read it back stale (Stale), never to refuse it - a member who ran a
 // sim on a cached bundle from before the last deploy must not lose it
 // to a 400. So this checks the request's shape the way Validate does,
-// except which engine produced it, and refuses the one thing a saved
-// row cannot be: a partial run. The browser only ever posts a result
-// that finished; an aborted one belongs to the page's own history, not
-// the server's.
+// except which engine produced it, and refuses the two things a saved
+// row cannot be: a partial run, or a failed one wearing a done result's
+// shape. The browser only ever posts a result that finished; an
+// aborted one belongs to the page's own history, not the server's, and
+// a result carrying an Error is the same story the job's own Finish
+// already tells apart - stored as-is it would read back as a confident
+// "0 DPS" rather than the failure it is.
 func (r SimResult) ValidateSaved() error {
 	if r.Aborted {
 		return errors.New("an aborted result cannot be saved")
+	}
+	if r.Error != "" {
+		return errors.New("a result carrying an error cannot be saved")
 	}
 	return r.Request.validate(true, false)
 }
