@@ -14,9 +14,10 @@ import {
 } from '../../test-support/sim-api';
 import { createBulkStore, MODE_OF_TOOL, TOOLS } from './bulk-store.svelte';
 import { SERVER_CAP } from './bulk-types';
+import { validateBulk } from './candidates';
 import { bulkCopy, simCopy } from './copy';
 import { createPool } from './worker';
-import type { BulkResult } from './bulk-types';
+import type { BulkRequest, BulkResult } from './bulk-types';
 
 const FURY = `FS1:${FIXTURE_DATA_BUILD}:warrior:orc:0/5530515/0:head=12640,main_hand=12784`;
 const api = createSimApi();
@@ -228,6 +229,31 @@ describe('running', () => {
     expect(s.phase).toBe('error');
     expect(s.message).toBe(bulkCopy.bulkFailed);
     expect(s.detail).toBe('boom');
+    s.dispose();
+  });
+
+  it('runRequest bypasses validateBulk -- the one check run() itself applies', async () => {
+    const s = store();
+    await s.loadAddon(FURY);
+    s.addSearchItem(16963);
+    const preview = s.requestPreview as BulkRequest | null;
+    expect(preview).not.toBeNull();
+    const bulk = preview!.bulk;
+    // A hand-edited request naming a locked slot that still carries a candidate on it --
+    // `toCandidates` (candidates.ts) already drops exactly this shape whenever the store
+    // builds a spec from its own ticked rows (Task 12's fix round), so `run()` never reaches
+    // this refusal through the UI. A raw JSON edit in the drawer is not filtered the same
+    // way, which is the scenario `runRequest`'s skip is actually for.
+    const edited: BulkRequest = { ...preview!, bulk: { ...bulk, locked: [bulk.candidates[0].slot] } };
+    expect(validateBulk(edited.bulk)).toBe(bulkCopy.lockedHasCandidate);
+    await s.runRequest(edited);
+    // Ran to completion rather than being refused with `bulkCopy.lockedHasCandidate` the
+    // way `run()` would have been: the locked slot leaves the engine nothing to substitute
+    // there, so `combos` itself is empty, but `phase`/`result`/`message` all say this was a
+    // real, finished run, not a pre-send refusal.
+    expect(s.phase).toBe('done');
+    expect(s.result).not.toBeNull();
+    expect(s.message).toBeNull();
     s.dispose();
   });
 });

@@ -658,11 +658,11 @@ export function createBulkStore(init: BulkStoreInit) {
      * already run the engine's own Validate by the time it calls this, so this does not
      * re-validate.
      */
-    runRequest(request: unknown): void {
+    async runRequest(request: unknown): Promise<void> {
       if (serverRunning) return;
       const parsed = request as Partial<BulkRequest & WeightsRequest>;
       if (parsed.bulk === undefined && parsed.weights === undefined) return;
-      void runBulkAndSettle(runDeps, parsed as BulkRequest | WeightsRequest);
+      await runBulkAndSettle(runDeps, parsed as BulkRequest | WeightsRequest);
     },
 
     stop(): void {

@@ -28,15 +28,6 @@
     normal: bulkCopy.precisionNormal,
     high: bulkCopy.precisionHigh,
   };
-
-  function shareUnavailable(): null {
-    // No tool page reads `?req=` yet (only /sim does) -- sharing a bulk/weights request by
-    // URL is not part of this task's scope. Returning null renders the drawer's own
-    // "too long" message, which is not quite the right words for "not supported here" but
-    // is the only failure state the component already has words for; a dedicated message
-    // is a request-drawer change, out of this task's file list.
-    return null;
-  }
 </script>
 
 <SettingsBar
@@ -132,13 +123,15 @@
 <!-- Design 8: the exact JSON the run will send, editable and validated by the engine's own
      Validate through the wasm's simValidate (contract 10.2). Part A owns the component;
      mounting it here is what gives every tool page the same escape hatch. Apply and Run
-     both go through the store's own request methods (bulk-store-request.ts); Share is not
-     wired to a URL here (see `shareUnavailable` above). -->
+     both go through the store's own request methods (bulk-store-request.ts). `canShare` is
+     false: no tool page reads `?req=` back (only /sim does), so the Share affordance is
+     hidden entirely rather than the drawer inventing a message for a feature this page does
+     not have. -->
 <RequestDrawer
   request={store.requestPreview}
   disabled={running}
   onvalidate={(json) => store.validateRequest(json)}
   onapply={(next) => store.applyRequest(next)}
-  onrun={(next) => store.runRequest(next)}
-  onshare={shareUnavailable}
+  onrun={(next) => void store.runRequest(next)}
+  canShare={false}
 />
