@@ -437,6 +437,20 @@ function mock.firstCall(frame, method)
 	return nil
 end
 
+--- The arguments of the LAST `method` call recorded on `frame`, or nil. A
+--- widget that recolours -- a tab going active, a row going dim -- has
+--- already coloured itself once at build time, so its first call is the
+--- starting look and only the last one is the answer.
+function mock.lastCall(frame, method)
+	local found
+	for _, call in ipairs(frame.calls) do
+		if call.method == method then
+			found = call
+		end
+	end
+	return found
+end
+
 function mock.countCalls(frame, method)
 	local total = 0
 	for _, call in ipairs(frame.calls) do

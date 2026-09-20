@@ -3,19 +3,6 @@ local mock = require("wow_mock")
 
 local ALL_TEMPLATES = { "PanelTabButtonTemplate", "UIPanelButtonTemplate", "InputBoxTemplate" }
 
---- The arguments of the LAST `method` call recorded on `frame`. A widget
---- that recolours -- a tab -- has already coloured itself once at build
---- time, so the first call is the starting look, not the answer.
-local function lastCall(frame, method)
-	local found
-	for _, call in ipairs(frame.calls) do
-		if call.method == method then
-			found = call
-		end
-	end
-	return found
-end
-
 describe("Widgets", function()
 	local Theme, Widgets, state
 
@@ -115,9 +102,9 @@ describe("Widgets", function()
 		start({ templates = {} })
 		local button = Widgets.button(_G.UIParent, "Equip", function() end)
 		Widgets.setEnabled(button, false)
-		assert.are.equal(Theme.ALPHA.disabled, lastCall(button, "SetAlpha")[1])
+		assert.are.equal(Theme.ALPHA.disabled, mock.lastCall(button, "SetAlpha")[1])
 		Widgets.setEnabled(button, true)
-		assert.are.equal(1, lastCall(button, "SetAlpha")[1])
+		assert.are.equal(1, mock.lastCall(button, "SetAlpha")[1])
 		assert.is_true(button:IsEnabled())
 	end)
 
@@ -125,11 +112,11 @@ describe("Widgets", function()
 		start({ templates = {} })
 		local tab = Widgets.tab(_G.UIParent, "Follow", function() end)
 		Widgets.setTabActive(tab, true)
-		local gold = lastCall(tab.foreverSixtyLabel, "SetTextColor")
+		local gold = mock.lastCall(tab.foreverSixtyLabel, "SetTextColor")
 		assert.are.same({ Theme.rgb(Theme.HEX.gold) }, { gold[1], gold[2], gold[3], gold[4] })
 		assert.is_true(tab.foreverSixtyActive)
 		Widgets.setTabActive(tab, false)
-		local muted = lastCall(tab.foreverSixtyLabel, "SetTextColor")
+		local muted = mock.lastCall(tab.foreverSixtyLabel, "SetTextColor")
 		assert.are.same({ Theme.rgb(Theme.HEX.muted) }, { muted[1], muted[2], muted[3], muted[4] })
 		assert.is_false(tab.foreverSixtyActive)
 	end)

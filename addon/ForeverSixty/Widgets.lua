@@ -32,7 +32,6 @@ function Widgets.panel(parent, width, height, name)
 	frame:SetSize(width, height)
 	local background = Theme.texture(frame, "BACKGROUND", "background", Theme.ALPHA.window)
 	background:SetAllPoints(frame)
-	frame.foreverSixtyBackground = background
 	frame.foreverSixtyBorder = Theme.outline(frame, Theme.SIZES.border, "border")
 	return frame
 end
@@ -91,7 +90,6 @@ function Widgets.tab(parent, text, onClick)
 	if not templated then
 		local background = Theme.texture(tab, "BACKGROUND", "titleTop")
 		background:SetAllPoints(tab)
-		tab.foreverSixtyBackground = background
 	end
 	local label = Widgets.label(tab, text, "muted", "small")
 	label:SetPoint("CENTER", tab, "CENTER", 0, 0)
