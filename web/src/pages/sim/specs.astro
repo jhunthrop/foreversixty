@@ -10,6 +10,7 @@ import {
   specSkeletonSlots,
   unsimulatedSpecSkeletonSlots,
 } from '../../lib/sim/spec-skeleton';
+import ScopeNote from '../../components/sim/ScopeNote.astro';
 import SimTabs from '../../components/sim/SimTabs.astro';
 ---
 
@@ -26,11 +27,7 @@ import SimTabs from '../../components/sim/SimTabs.astro';
   >
     <SimTabs currentPath="/sim/specs" />
     <h1 class="section-title px-[18px] text-[18px] md:px-0">Spec support</h1>
-    <!-- task-2-brief.md: the site never said the simulator is DPS-only. Static, in the
-         shell, above the fold at 390x844 -- not inside the island. -->
-    <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="sim-scope-note">
-      {simCopy.scopeNote}
-    </p>
+    <ScopeNote />
     <!-- Round 2 (Lighthouse): static, ahead of the island, and never replaced --
          specs-intro was the measured LCP element (its render was gated on hydration);
          SimView.svelte's specs branch no longer renders its own copy of this text. -->

@@ -543,6 +543,21 @@ export const simCopy = {
   /** Exact body text task-2-brief.md specifies, verbatim, for every card in that second
    *  group -- no fidelity pill, no engine stamp, no "Not yet" badge link. */
   specsUnsimulatedBody: 'Not simulated yet — damage specs first; healers and tanks come later',
+  /**
+   * Fix round 1, Finding B: the `<Base description="...">` strings are what a healer or
+   * tank reads in a search result or a link preview -- the first place the DPS-only claim
+   * reaches them, and the four tool pages' descriptions still carried the same unconditional
+   * promise the visible intros (bulkCopy.gearIntro etc.) were already scoped for. Scoped the
+   * same way, moved here since a description is a user-visible string like any other.
+   */
+  gearDescription:
+    'Simulate every combination of the gear, enchants, talents and sets you have for your damage spec, and see which one is actually best.',
+  dropsDescription:
+    'Simulate every item a boss drops against your damage spec’s current set, and see which drops are upgrades.',
+  talentsDescription:
+    'Simulate your damage spec’s talent builds against each other on the gear you are wearing, and see which tree actually wins.',
+  weightsDescription:
+    'What one point of each stat is worth for your damage spec, with the caveat that comes with it.',
   // --- end Lane W2 ---
 } as const;
 

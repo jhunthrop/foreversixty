@@ -1,0 +1,12 @@
+---
+// web/src/components/sim/ScopeNote.astro
+// task-2-brief.md: the site never said the simulator is DPS-only. One partial, used by all
+// seven simulator page shells, so the sentence -- and the placement rule that matters (static,
+// above the fold at 390x844, outside the page's own min-h CLS reservation) -- lives in one
+// place rather than being copy-pasted seven times (fix round 1, Finding C).
+import { simCopy } from '../../lib/sim/copy';
+---
+
+<p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="sim-scope-note">
+  {simCopy.scopeNote}
+</p>

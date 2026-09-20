@@ -14,15 +14,11 @@
 import Base from '../../layouts/Base.astro';
 import { bulkCopy, simCopy } from '../../lib/sim/copy';
 import { TOOL_SKELETONS } from '../../lib/sim/bulk-skeleton';
+import ScopeNote from '../../components/sim/ScopeNote.astro';
 import SimTabs from '../../components/sim/SimTabs.astro';
 ---
 
-<Base
-  title={bulkCopy.talentsTitle}
-  description="Simulate your talent builds against each other on the gear you are wearing, and see which tree actually wins."
-  path="/sim/talents"
-  session
->
+<Base title={bulkCopy.talentsTitle} description={simCopy.talentsDescription} path="/sim/talents" session>
   <link rel="stylesheet" href="/sim-tools-island.css" slot="head" />
   <main
     id="main"
@@ -31,11 +27,7 @@ import SimTabs from '../../components/sim/SimTabs.astro';
   >
     <SimTabs currentPath="/sim/talents" />
     <h1 class="section-title px-[18px] text-[18px] md:px-0">{bulkCopy.talentsTitle}</h1>
-    <!-- task-2-brief.md: the site never said the simulator is DPS-only. Static, in the
-         shell, above the fold at 390x844 -- not inside the island. -->
-    <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="sim-scope-note">
-      {simCopy.scopeNote}
-    </p>
+    <ScopeNote />
     <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="sim-tool-intro">
       {bulkCopy.talentsIntro}
     </p>

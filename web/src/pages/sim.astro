@@ -4,6 +4,7 @@
 // prerendered and has no request to read.
 import Base from '../layouts/Base.astro';
 import { simCopy } from '../lib/sim/copy';
+import ScopeNote from '../components/sim/ScopeNote.astro';
 import SimTabs from '../components/sim/SimTabs.astro';
 ---
 
@@ -21,11 +22,7 @@ import SimTabs from '../components/sim/SimTabs.astro';
   >
     <SimTabs currentPath="/sim" />
     <h1 class="section-title px-[18px] text-[18px] md:px-0">Simulator</h1>
-    <!-- task-2-brief.md: the site never said the simulator is DPS-only. Static, in the
-         shell, above the fold at 390x844 -- not inside the island. -->
-    <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="sim-scope-note">
-      {simCopy.scopeNote}
-    </p>
+    <ScopeNote />
     <!-- Round 2 (Lighthouse): the signed-out default view's own largest paragraph
          (SourceSwitcher's addon-card body, simCopy.sourceAddonBody) painted from the
          island only, so it was the measured LCP element and its 1600ms budget was gated on
