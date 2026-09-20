@@ -26,6 +26,9 @@ read_globals = {
 	-- companion and only ever read here; ForeverSixtyDB is the addon's own
 	-- and Export.save writes it, so it is a global, not a read_global.
 	"ForeverSixtyInbox",
+	-- WoW runs Lua 5.1, where `unpack` is a global (5.4, which this std
+	-- targets, only has `table.unpack`); Codec.lua binds whichever exists.
+	"unpack",
 }
 
 -- SlashCmdList is a table the client owns; Options.register sets a field on

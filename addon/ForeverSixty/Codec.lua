@@ -15,6 +15,11 @@ local _, ns = ...
 ns = type(ns) == "table" and ns or {}
 local L = ns.L or require("Locale")
 
+-- WoW runs Lua 5.1, where the unpacker is the global `unpack`; the specs
+-- run on 5.4, where it is `table.unpack` and the global is gone. Bind
+-- whichever exists, once, so the refusal path works in both.
+local unpack = table.unpack or unpack
+
 local Codec = {}
 
 --- The site's SLOTS order (web/src/lib/planner/types.ts). Gear encodes in
@@ -221,7 +226,7 @@ local function refuse(template, ...)
 	for index = 1, select("#", ...) do
 		escaped[index] = (tostring(select(index, ...)):gsub("|", "||"))
 	end
-	return string.format(template, table.unpack(escaped))
+	return string.format(template, unpack(escaped))
 end
 
 local function parseTrees(field)
@@ -236,7 +241,7 @@ local function parseTrees(field)
 			local digit = tree:sub(position, position)
 			local rank = fromBase36(digit)
 			if rank == nil then
-				return nil, string.format(L.codecRank, digit)
+				return nil, refuse(L.codecRank, digit)
 			end
 			ranks[position] = rank
 		end
