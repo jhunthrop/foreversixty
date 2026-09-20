@@ -7,7 +7,10 @@ checkout and so a release zip needs no build step. CI's drift gate
 The chunk sets `ns.Data` and returns it, which is the pattern every
 module in `addon/ForeverSixty/` uses: in the game `...` is
 `addonName, addonTable` so `ns` is the addon table; under busted's
-`require` the second value is nil, `ns = ns or {}` supplies one, and the
+`require`, the second value is the chunk's filepath (a string, not
+nil), so `ns = ns or {}` would never allocate a table there. Instead
+`ns = type(ns) == "table" and ns or {}` only keeps `ns` when it is
+already a table and falls back to a fresh one otherwise, and the
 return value is what the spec receives.
 """
 
@@ -54,7 +57,7 @@ def render_lua(data: AddonData) -> str:
         GENERATED,
         "-- Source: data/builds/<build>/addon-data.json",
         "local _, ns = ...",
-        "ns = ns or {}",
+        "ns = type(ns) == \"table\" and ns or {}",
         "",
         "ns.Data = {",
         f"\tbuild = {_quote(data.build)},",

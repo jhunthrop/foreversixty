@@ -1,0 +1,17 @@
+## Interface: 16001
+## Title: Forever Sixty
+## Notes: Your build, in game. Import your character into the planner and follow a build you chose on the site.
+## Author: foreversixty.gg
+## Version: @project-version@
+## X-Website: https://foreversixty.gg/addon
+## X-Curse-Project-ID: @project-id@
+## SavedVariables: ForeverSixtyDB, ForeverSixtyInbox
+
+Locale.lua
+Data.lua
+Codec.lua
+Talents.lua
+Export.lua
+Follow.lua
+Gear.lua
+Options.lua
