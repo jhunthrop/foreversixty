@@ -15,6 +15,9 @@ import { ENGINE_VERSION } from './version';
 // The engine lane's wasm entrypoint. Same existsSync/skipIf pattern as version.test.ts's
 // ENGINEVER_GO pin: a skip that names its own condition, not a quiet pass on a missing file.
 const MAIN_GO = path.resolve(import.meta.dirname, '../../../../sim/cmd/wasm/main.go');
+// The shared JSON helpers moved to exports.go when the bulk exports landed; the assertions
+// below read both files as one source.
+const EXPORTS_GO = path.resolve(import.meta.dirname, '../../../../sim/cmd/wasm/exports.go');
 const mainGoPinned = existsSync(MAIN_GO);
 
 const request: SimRequest = {
@@ -40,7 +43,7 @@ describe('sim/cmd/wasm/main.go, as shipped', () => {
   it.skipIf(!mainGoPinned)(
     'simSplit/simCombine cross the boundary as one JSON string, never a JS array',
     () => {
-      const src = readFileSync(MAIN_GO, 'utf8');
+      const src = readFileSync(MAIN_GO, 'utf8') + readFileSync(EXPORTS_GO, 'utf8');
       // simSplit: combine.Split returns []api.SimRequest, and the whole slice is marshalled
       // as one value -- not marshalled per-element into a []string.
       expect(src).toMatch(/func simSplit\([^)]*\)[\s\S]*?json\.Marshal\(parts\)/);

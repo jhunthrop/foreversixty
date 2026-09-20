@@ -80,6 +80,7 @@ COPY data/builds/ ./data/builds/
 FROM engine-base AS engine-source-active
 ARG ACTIVE_BUILD=*
 COPY data/builds/${ACTIVE_BUILD}/simdb.bin ./data/builds/${ACTIVE_BUILD}/simdb.bin
+COPY data/builds/${ACTIVE_BUILD}/enchants.json ./data/builds/${ACTIVE_BUILD}/enchants.json
 
 FROM ${ENGINE_SIMDB_SOURCE} AS engine
 WORKDIR /src/sim
@@ -87,6 +88,7 @@ ARG ENGINE_MODULE=github.com/jhunthrop/wowsims-forever
 RUN active=$(sed -n 's/.*"build"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' ../web/src/data/active-build.json) && \
     test -n "$active" && \
     cp "../data/builds/${active}/simdb.bin" internal/simdb/simdb.bin && \
+    cp "../data/builds/${active}/enchants.json" internal/simdb/enchants.json && \
     sha=$(grep 'const Version' enginever/version.go | cut -d'"' -f2) && \
     test -n "$sha" && \
     go mod edit -replace github.com/wowsims/classic=${ENGINE_MODULE}@${sha} && \
