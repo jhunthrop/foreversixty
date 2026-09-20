@@ -103,6 +103,21 @@ def test_the_manifest_covers_the_new_files(build_dir: Path):
     files = json.loads((build_dir / "manifest.json").read_text())["files"]
     assert "simdb.bin" in files
     assert "simconsumes.json" in files
+    assert "simitems.json" in files
+
+
+def test_simitems_json_is_the_kept_items_sorted_ids(build_dir: Path):
+    """The web lane's own copy of simdb.bin's item universe (contract 10.1 A6's candidate
+    filtering) -- every bulk candidate source there filters against it, so it has to name
+    exactly the ids `simdb_item_rows` kept, not the planner's wider items/<class>.json set.
+    """
+    path = write_sim_database("9.9.9.9", root=build_dir.parent)
+    database = parsed(path)
+    simitems = json.loads((build_dir / "simitems.json").read_text(encoding="utf-8"))
+    assert simitems == {
+        "build": "9.9.9.9",
+        "items": sorted(item.id for item in database.items),
+    }
 
 
 def test_consumables_are_the_sidecar_the_engine_lane_needs(build_dir: Path):

@@ -40,6 +40,19 @@ builds/<build>/trees/<background>.webp     320x384 background for every talent t
 builds/<build>/manifest.json    build, product, fetched_at, sha256 per emitted file
 builds/<build>/simdb.bin        the engine's SimDatabase protobuf (items, enchants)
 builds/<build>/simconsumes.json consumable items and the spells they cast
+builds/<build>/simitems.json    the item ids simdb.bin actually carries, for the web's
+                                candidate filters. items/<class-slug>.json's own ids are a
+                                superset of this file's for a build normalize and simdb both
+                                read from the same raw tables (simdb_item_rows's filter is
+                                the planner's minus its "has gear value" clause -- see
+                                pipeline/simdb/items.py's module docstring) -- but that is
+                                not a promise every build keeps: forever.py's items/
+                                directory for forever-prebeta is copied wholesale from a
+                                DIFFERENT source build's own tables (1.15.9.69722, Classic
+                                Era), so it can and does name ids (e.g. 16963) absent from
+                                1.60.1.69893's own ItemSparse and therefore from that
+                                build's simitems.json -- a real gap, tracked separately,
+                                not one this file's filter can paper over on its own
 builds/<build>/loot.json        every source the fork database and the client state, by kind
 builds/<build>/enchants.json    the enchants Top Gear's picker offers, with slots and classes
                                 (stats keyed by the planner's own vocabulary --
