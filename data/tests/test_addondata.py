@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from pipeline.addondata import AddonDataError, build_addon_data, write_addon_data
+from pipeline.addondata import AddonDataError, build_addon_data, check_addon_data, write_addon_data
 from pipeline.addonlua import render_lua, write_lua
 
 BUILD = "1.60.1.69893"
@@ -115,6 +115,24 @@ def test_write_lua_and_check_agree(tmp_path):
     assert not lua_has_drifted(BUILD, lua_path=path)
     path.write_text("-- edited by hand\n", encoding="utf-8")
     assert lua_has_drifted(BUILD, lua_path=path)
+
+
+def test_check_addon_data_agrees_with_a_deliberately_drifted_copy(tmp_path):
+    """The Lua half has both directions covered by test_write_lua_and_check_agree;
+    this is the same shape for the JSON half."""
+    (tmp_path / BUILD / "talents").mkdir(parents=True)
+    (tmp_path / BUILD / "talents" / "paladin.json").write_text(
+        json.dumps({"build": BUILD, "class_id": 2, "class_slug": "paladin", "trees": []}),
+        encoding="utf-8",
+    )
+    (tmp_path / BUILD / "classes.json").write_text(
+        json.dumps([{"id": 2, "name": "Paladin", "slug": "paladin", "color": "#f58cba"}]),
+        encoding="utf-8",
+    )
+    write_addon_data(BUILD, root=tmp_path)
+    assert not check_addon_data(BUILD, root=tmp_path)
+    (tmp_path / BUILD / "addon-data.json").write_text('{"build": "drifted"}', encoding="utf-8")
+    assert check_addon_data(BUILD, root=tmp_path)
 
 
 def test_the_cli_check_passes_on_the_committed_file():

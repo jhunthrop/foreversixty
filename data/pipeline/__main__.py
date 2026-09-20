@@ -215,24 +215,15 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         print(write_weights(args.build))
     elif args.command == "addon-data":
-        import json as _json
-        import tempfile
-        from pathlib import Path
-
-        from pipeline.addondata import write_addon_data
+        from pipeline.addondata import check_addon_data, write_addon_data
         from pipeline.addonlua import lua_has_drifted, write_lua
 
         if args.check:
             log = logging.getLogger("pipeline")
             stale = False
-            with tempfile.TemporaryDirectory() as directory:
-                expected = write_addon_data(args.build, out_root=Path(directory))
-                committed = Path("builds") / args.build / "addon-data.json"
-                if not committed.exists() or _json.loads(
-                    committed.read_text(encoding="utf-8")
-                ) != _json.loads(expected.read_text(encoding="utf-8")):
-                    log.error("builds/%s/addon-data.json has drifted", args.build)
-                    stale = True
+            if check_addon_data(args.build):
+                log.error("builds/%s/addon-data.json has drifted", args.build)
+                stale = True
             if lua_has_drifted(args.build):
                 log.error("addon/ForeverSixty/Data.lua has drifted")
                 stale = True

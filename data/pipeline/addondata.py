@@ -96,3 +96,24 @@ def write_addon_data(
     path.parent.mkdir(parents=True, exist_ok=True)
     write_model(build_addon_data(build, root=root, curated_dir=curated_dir), path)
     return path
+
+
+def check_addon_data(
+    build: str,
+    root: Path = Path("builds"),
+    curated_dir: Path = Path("curated"),
+) -> bool:
+    """True when the committed copy has drifted from build_addon_data's output.
+
+    Compares parsed JSON rather than raw text so formatting-only drift (key
+    order, whitespace) is not mistaken for content drift.
+    """
+    import tempfile
+
+    with tempfile.TemporaryDirectory() as directory:
+        expected = write_addon_data(
+            build, root=root, out_root=Path(directory), curated_dir=curated_dir
+        )
+        wanted = json.loads(expected.read_text(encoding="utf-8"))
+    path = root / build / "addon-data.json"
+    return not path.exists() or json.loads(path.read_text(encoding="utf-8")) != wanted
