@@ -74,15 +74,26 @@
   <p class="text-muted text-[13px]">{specStateNote(row.state)}</p>
 
   {#if !compact && rotationSteps.length > 0}
+    <!-- Final whole-branch review, I2: these three testids were bare -- "spec-rotation-trigger"
+         and friends, not "spec-rotation-trigger-<spec>" -- so all 20 damage-spec cards on this
+         page carried the identical testid and the identical accessible name at once. Today's
+         tests scope through `spec-<slug>` (the card's own testid) so nothing failed, but any
+         unscoped locator is an instant Playwright strict-mode violation, and a screen reader
+         user tabbing the page hears 20 indistinguishable "what it does" buttons with no
+         difference between them. Suffixed with `row.spec`, matching the `id` the <article>
+         above already sets. -->
     <Disclosure
       label={simCopy.rotationLink}
       id={`spec-rotation-${row.spec}`}
       triggerClass="label text-nav text-[12px] underline decoration-dotted underline-offset-2"
       panelClass="border-line-soft rounded-panel flex flex-col gap-2 border p-3"
-      triggerTestId="spec-rotation-trigger"
-      panelTestId="spec-rotation-panel"
+      triggerTestId={`spec-rotation-trigger-${row.spec}`}
+      panelTestId={`spec-rotation-panel-${row.spec}`}
     >
-      <ol class="flex list-decimal flex-col gap-1 pl-5 text-[13px]" data-testid="spec-rotation-steps">
+      <ol
+        class="flex list-decimal flex-col gap-1 pl-5 text-[13px]"
+        data-testid={`spec-rotation-steps-${row.spec}`}
+      >
         {#each rotationSteps as step, index (index)}
           <li>{step}</li>
         {/each}
