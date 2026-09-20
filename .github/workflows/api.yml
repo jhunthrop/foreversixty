@@ -38,6 +38,9 @@ jobs:
         # points at a local clone) out of it - verified: with GOWORK=off
         # an engine-free package of the module builds, vets and tests
         # with no engine checkout at all.
+      - name: Embed the active build's item and enchant tables
+        working-directory: .
+        run: make simdb
       - name: Test the sim module's engine-free packages
         working-directory: sim
         env: { GOWORK: off }
