@@ -10,6 +10,7 @@ Locale.lua
 Data.lua
 Codec.lua
 Talents.lua
+Prefs.lua
 Export.lua
 Follow.lua
 Gear.lua
