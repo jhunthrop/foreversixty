@@ -832,4 +832,26 @@ export const toolFixCopy = {
    * the group silently vanishing.
    */
   sourcesAllGated: 'Nothing here has opened yet. Here is when each one does:',
+  /**
+   * SettingsBar.svelte, task 4a (tank MAJOR, review.md:325-327): under a timeline style
+   * (currently only Dungeon pull) the TARGETS control shows this instead of a `<select>`,
+   * because `encounter.targets` alone (the ramp's opening count) would understate the run.
+   * A function of `styles.ts`'s `targetsSummary`'s `first`/`max`, never a sentence composed
+   * in that file. "1 → 5 over the pull" is the lane brief's own example.
+   */
+  targetsTimeline: (first: number, max: number): string => `${first} → ${max} over the pull`,
+  /**
+   * The one-line note beside `targetsTimeline`, saying why TARGETS is read-only here
+   * rather than leaving the player to wonder why the select disappeared.
+   */
+  targetsTimelineNote: 'The fight style sets the target count here.',
+  /**
+   * SettingsSheet.svelte, task 4b (tank MAJOR, review.md:227-229): the visible sentence
+   * under the target-armor field replacing its old `title` hover (newcomer MINOR 213, "the
+   * placeholder doubles as its only help"), saying in words what a blank field or a typed 0
+   * already means on the wire -- the level's own preset, named for the level currently
+   * selected. A function of the level and `settings.ts`'s `targetArmorField`'s `preset`.
+   */
+  targetArmorNote: (level: number, preset: number): string =>
+    `Blank or 0 uses the level ${level} preset: ${preset.toLocaleString('en-US')} armor.`,
 } as const;

@@ -8,14 +8,16 @@
      style's name. Execute phase and the dummy are the style's, so setting either detaches
      the encounter from its style -- settings.ts's `detached`, not this component's. -->
 <script lang="ts">
-  import { simCopy } from '../../lib/sim/copy';
+  import { simCopy, toolFixCopy } from '../../lib/sim/copy';
   import {
+    DEFAULT_TARGET_LEVEL,
     MAX_TARGET_ARMOR,
     TARGET_ARMOR_BY_LEVEL,
     TARGET_LEVELS,
     TARGET_TYPES,
     VARIATIONS,
     executePhaseOn,
+    targetArmorField,
     withDummy,
     withExecutePhase,
     withTargetArmor,
@@ -41,6 +43,10 @@
       (TARGET_ARMOR_BY_LEVEL[settings.encounter.target_level ?? 63] ?? 0).toLocaleString('en-US'),
     ),
   );
+  // tank MAJOR, review.md:227-229: armor 0 means the level's preset, not an empty field --
+  // `targetArmorField` decides what the input DISPLAYS; the wire value settings.ts sends
+  // stays 0 until the player types something else.
+  const armorField = $derived(targetArmorField(settings.encounter));
 </script>
 
 <details class="border-line-soft rounded-panel border" data-testid="sim-settings-more">
@@ -90,11 +96,16 @@
         class={control}
         {disabled}
         placeholder={armorPreset}
-        title={armorPreset}
-        value={settings.encounter.target_armor === 0 ? '' : String(settings.encounter.target_armor)}
+        value={armorField.value}
         onchange={(event) => onchange(withTargetArmor(settings, Number(event.currentTarget.value)))}
         data-testid="sim-target-armor"
       />
+      <p class="text-muted text-[12px]" data-testid="sim-target-armor-note">
+        {toolFixCopy.targetArmorNote(
+          settings.encounter.target_level ?? DEFAULT_TARGET_LEVEL,
+          armorField.preset,
+        )}
+      </p>
     </label>
 
     <label class="flex min-w-0 flex-col gap-1">

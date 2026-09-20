@@ -17,6 +17,7 @@ import {
   executePhaseOn,
   settingsLabel,
   styleIdOf,
+  targetArmorField,
   withDummy,
   withDuration,
   withExecutePhase,
@@ -28,6 +29,7 @@ import {
   withTargets,
   withVariation,
 } from './settings';
+import { DEFAULT_ENCOUNTER } from './types';
 
 describe('defaultSettings', () => {
   it("is the contract's EncounterSpec defaults, raid-buffed, on Patchwerk", () => {
@@ -111,6 +113,41 @@ describe('the setters never mutate and always clamp', () => {
   it('publishes contract A8’s armor preset for each level, so the control can name the figure', () => {
     expect(TARGET_ARMOR_BY_LEVEL).toEqual({ 60: 3300, 61: 3444, 62: 3588, 63: 3731 });
     expect(TARGET_LEVELS.every((level) => TARGET_ARMOR_BY_LEVEL[level] > 0)).toBe(true);
+  });
+
+  // tank MAJOR, review.md:227-229: armor 0 has to DISPLAY as the preset it silently means,
+  // not as a blank field indistinguishable from a typed 0. `targetArmorField` is the pure
+  // decision SettingsSheet.svelte renders its input value off of; the wire value (0) is
+  // untouched -- only what the field shows changes.
+  describe('targetArmorField', () => {
+    it('shows the level 63 preset when armor is 0', () => {
+      expect(targetArmorField({ ...DEFAULT_ENCOUNTER, target_level: 63, target_armor: 0 })).toEqual({
+        value: '3731',
+        preset: 3731,
+      });
+    });
+
+    it('shows the level 60 preset when armor is 0', () => {
+      expect(targetArmorField({ ...DEFAULT_ENCOUNTER, target_level: 60, target_armor: 0 })).toEqual({
+        value: '3300',
+        preset: 3300,
+      });
+    });
+
+    it('shows an overridden armor value as itself, alongside the level’s own preset', () => {
+      expect(targetArmorField({ ...DEFAULT_ENCOUNTER, target_level: 63, target_armor: 5000 })).toEqual({
+        value: '5000',
+        preset: 3731,
+      });
+    });
+
+    it('falls back to level 63 when target_level is absent', () => {
+      const { target_level: _targetLevel, ...withoutLevel } = {
+        ...DEFAULT_ENCOUNTER,
+        target_armor: 0,
+      };
+      expect(targetArmorField(withoutLevel)).toEqual({ value: '3731', preset: 3731 });
+    });
   });
 
   it('accepts only the contract’s target types, and the empty string for “any”', () => {

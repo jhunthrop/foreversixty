@@ -186,6 +186,21 @@ export function withTargetArmor(settings: SimSettings, armor: number): SimSettin
   return { ...settings, encounter: { ...settings.encounter, target_armor: clamped } };
 }
 
+/**
+ * What the target-armor field should DISPLAY (tank MAJOR, review.md:227-229): `0` is the
+ * contract's "use the level's preset", not an empty override, so the field shows the
+ * preset number itself rather than going blank -- and follows the target-level select when
+ * that changes. The wire value is untouched: `target_armor` stays 0 in settings state until
+ * the player types something else (settings.ts:40-51 above); this only decides what the
+ * input reads.
+ */
+export function targetArmorField(encounter: EncounterSpec): { value: string; preset: number } {
+  const level = encounter.target_level ?? DEFAULT_TARGET_LEVEL;
+  const preset = TARGET_ARMOR_BY_LEVEL[level] ?? TARGET_ARMOR_BY_LEVEL[DEFAULT_TARGET_LEVEL];
+  const armor = encounter.target_armor ?? 0;
+  return { value: String(armor === 0 ? preset : armor), preset };
+}
+
 /** An id outside the contract's vocabulary reads as "any", never as itself. */
 export function withTargetType(settings: SimSettings, type: string): SimSettings {
   const known = TARGET_TYPES.includes(type) ? (type as EncounterSpec['target_type']) : '';

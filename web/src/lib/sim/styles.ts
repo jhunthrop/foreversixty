@@ -116,6 +116,27 @@ export function fightStyle(id: string): FightStyle | null {
 }
 
 /**
+ * What TARGETS should say about this encounter (tank MAJOR, review.md:325-327): a
+ * timeline style's `targets` field is only the ramp's opening count (the dungeon pull
+ * settles on 1, not the 5 it actually reaches), so a control reading that field alone
+ * understates the run. This file holds no words -- the caller turns these numbers into a
+ * sentence via copy.ts.
+ */
+export function targetsSummary(
+  encounter: EncounterSpec,
+): { timeline: true; first: number; max: number } | { timeline: false; count: number } {
+  const timeline = encounter.targets_over_time;
+  if (timeline !== undefined && timeline.length > 0) {
+    return {
+      timeline: true,
+      first: timeline[0].count,
+      max: Math.max(...timeline.map((step) => step.count)),
+    };
+  }
+  return { timeline: false, count: encounter.targets };
+}
+
+/**
  * The style's fields written over an encounter. Every field a style owns is written on
  * every call, including the nulls and the false: switching from Heavy movement to
  * Patchwerk has to clear the movement block, and a partial write would leave the previous

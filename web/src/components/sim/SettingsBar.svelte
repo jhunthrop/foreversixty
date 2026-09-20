@@ -6,7 +6,7 @@
      not a disabled select, because the APL builder is deferred and a greyed-out control
      would promise it. -->
 <script lang="ts">
-  import { simCopy } from '../../lib/sim/copy';
+  import { simCopy, toolFixCopy } from '../../lib/sim/copy';
   import {
     BUFF_PRESETS,
     DURATIONS,
@@ -20,7 +20,7 @@
     type BuffPresetId,
     type SimSettings,
   } from '../../lib/sim/settings';
-  import { FIGHT_STYLES, fightStyle } from '../../lib/sim/styles';
+  import { FIGHT_STYLES, fightStyle, targetsSummary } from '../../lib/sim/styles';
   import { specDisplayName } from '../../lib/sim/spec-label';
   import SettingsSheet from './SettingsSheet.svelte';
 
@@ -44,6 +44,10 @@
   // Only the two movement styles carry a note (copy.ts's styleNote). Everything else
   // renders nothing at all rather than an empty paragraph that would reserve a line.
   const styleNote = $derived(simCopy.styleNote[styleId] ?? '');
+  // tank MAJOR, review.md:325-327: a timeline style's `targets` field is only the ramp's
+  // opening count, so TARGETS reads the ramp itself under one of those styles rather than
+  // a number the run does not describe.
+  const targetsInfo = $derived(targetsSummary(settings.encounter));
 
   // The <select>'s value is a plain string; FightStyleId is a literal union, so a raw cast
   // would let an id outside the contract's nine reach withStyle/applyFightStyle, which
@@ -101,17 +105,27 @@
 
     <label class="flex flex-col gap-1">
       <span class="label text-muted">{simCopy.targets}</span>
-      <select
-        class={control}
-        {disabled}
-        value={String(settings.encounter.targets)}
-        onchange={(event) => onchange(withTargets(settings, Number(event.currentTarget.value)))}
-        data-testid="sim-targets"
-      >
-        {#each targets as count (count)}
-          <option value={String(count)}>{count}</option>
-        {/each}
-      </select>
+      {#if targetsInfo.timeline}
+        <!-- Read-only: the fight style owns the target count under a timeline style, and
+             editing a ramp with a single-number select would be a lie either way. Carries
+             the same data-testid the <select> below carries so existing tests and e2e still
+             find the control regardless of which branch renders. -->
+        <span class={`${control} flex items-center`} data-testid="sim-targets">
+          {toolFixCopy.targetsTimeline(targetsInfo.first, targetsInfo.max)}
+        </span>
+      {:else}
+        <select
+          class={control}
+          {disabled}
+          value={String(settings.encounter.targets)}
+          onchange={(event) => onchange(withTargets(settings, Number(event.currentTarget.value)))}
+          data-testid="sim-targets"
+        >
+          {#each targets as count (count)}
+            <option value={String(count)}>{count}</option>
+          {/each}
+        </select>
+      {/if}
     </label>
 
     <label class="flex flex-col gap-1">
@@ -152,6 +166,10 @@
 
   {#if styleNote !== ''}
     <p class="text-muted text-[12px]" data-testid="sim-style-note">{styleNote}</p>
+  {/if}
+
+  {#if targetsInfo.timeline}
+    <p class="text-muted text-[12px]" data-testid="sim-targets-note">{toolFixCopy.targetsTimelineNote}</p>
   {/if}
 
   <SettingsSheet {settings} {disabled} {onchange} />
