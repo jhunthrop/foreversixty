@@ -1,18 +1,49 @@
 <!-- web/src/components/sim/tools/TopGear.svelte -->
-<!-- Placeholder. Task 12 replaces this file with the real slot grid, candidates, locks and
-     enchants (and Tasks 13-17 add sections to it); this task only needs the module to exist
-     and resolve so ToolsView.svelte's per-tool lazy chunk builds. The prop shape below is
-     pinned to Task 12's own brief ({ store: BulkStore; me: Me | null }) so the real
-     component drops in without ToolsView changing. -->
+<!-- /sim/gear and /sim/talents are the same island: Top Gear with its gear locked and only
+     the loadouts as candidates (design 3.4). `store.tool` is the whole difference, and it
+     is read once here rather than branched on in every child.
+
+     This is the composition every later Top Gear task adds a section to:
+       - Task 13 inserts ItemSearch and the consumables picker here, between the slot grid
+         and the combination count.
+       - Task 14 inserts TalentCandidates and NamedSets here, in the same place.
+       - Task 15 inserts BulkRunBar (which itself mounts SettingsPanel and RequestDrawer)
+         here, after the candidate sections and before the combination count.
+       - Task 16 inserts ComboResults here, after the run bar.
+     Each later task's section is its own child component; this file stays a thin
+     composition that delegates, never growing past what a single screen's layout needs. -->
 <script lang="ts">
   import type { Me } from '../../../lib/account/api';
+  import type { Slot } from '../../../lib/planner/types';
   import type { BulkStore } from '../../../lib/sim/bulk-store.svelte';
   import { bulkCopy } from '../../../lib/sim/copy';
+  import SlotGrid from './SlotGrid.svelte';
 
-  let { store, me }: { store: BulkStore; me: Me | null } = $props();
+  // `me` is part of the pinned prop shape ToolsView.svelte passes to every tool view, but
+  // the slot grid itself has no use for it -- Task 15's BulkRunBar is where a signed-out
+  // premium prompt would read it. Destructuring only `store` keeps the type annotation
+  // (and therefore the contract) intact without an unused local.
+  let { store }: { store: BulkStore; me: Me | null } = $props();
+
+  const gearMode = $derived(store.tool === 'gear');
 </script>
 
-<p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="sim-tool-placeholder">
-  {store.tool === 'talents' ? bulkCopy.talentsTitle : bulkCopy.gearTitle}
-  {#if me !== null}({me.user.email}){/if}
-</p>
+<div class="flex flex-col gap-[22px] md:gap-8" data-testid="sim-top-gear">
+  {#if gearMode}
+    <SlotGrid
+      rows={store.rows}
+      locked={store.locked}
+      enchants={store.enchants}
+      suffixes={store.suffixes}
+      classSlug={store.character?.class_slug ?? ''}
+      treeVersion={store.character?.tree_version ?? ''}
+      ontoggle={(key) => store.toggleRow(key)}
+      oncopy={(key, patch) => store.copyAndModify(key, patch)}
+      onlock={(slot: Slot) => store.toggleLock(slot)}
+    />
+  {/if}
+
+  <p class="text-muted px-[18px] text-[13px] md:px-0" data-testid="sim-combo-count">
+    {store.combinations === null ? bulkCopy.combinationsCounting : bulkCopy.combinations(store.combinations)}
+  </p>
+</div>
