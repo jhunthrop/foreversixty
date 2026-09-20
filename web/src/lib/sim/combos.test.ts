@@ -3,10 +3,12 @@ import { describe, expect, it } from 'vitest';
 import bulkResultJson from '../../fixtures/sim/bulk-result.json';
 import itemsJson from '../../fixtures/planner/items/warrior.json';
 import setsJson from '../../fixtures/planner/sets.json';
+import { addonStringFor } from './addon-export';
 import {
   comboRows,
   deltaLabel,
   headlineFor,
+  isEmptiedOffHand,
   keepsSetBonus,
   percentOf,
   slotSummary,
@@ -50,6 +52,33 @@ describe('percentOf and deltaLabel', () => {
   });
 });
 
+/**
+ * Engine-lane rule 5's two-hander: the winner replaces main-hand and off-hand with one
+ * weapon, which the engine reports as the new main hand PLUS
+ * `{kind:"item", slot:"off_hand", item_id:0}`. The shared fixture has no off-hand, so the
+ * case is built here from it rather than changed in a file eight other tests read.
+ */
+const twoHanded: BulkResult = {
+  ...result,
+  request: {
+    ...result.request,
+    character: {
+      ...result.request.character,
+      gear: [...result.request.character.gear, { slot: 'off_hand', item_id: 11684 }],
+    },
+  },
+  combos: [
+    {
+      ...result.combos[0],
+      substitutions: [
+        { kind: 'item', slot: 'main_hand', item_id: 17182, name: 'Sulfuras' },
+        { kind: 'item', slot: 'off_hand', item_id: 0, name: '<item removed>' },
+      ],
+    },
+    ...result.combos.slice(1),
+  ],
+};
+
 describe('winningGear', () => {
   it('writes the leader’s substitutions over the base character’s gear', () => {
     const gear = winningGear(result);
@@ -57,6 +86,41 @@ describe('winningGear', () => {
     expect(gear.find((slot) => slot.slot === 'shoulder')?.item_id).toBe(16966);
     // untouched by the winner
     expect(gear.find((slot) => slot.slot === 'main_hand')?.item_id).toBe(12784);
+  });
+
+  it('leaves the base character’s own gear untouched', () => {
+    const before = JSON.stringify(result.request.character.gear);
+    winningGear(result);
+    expect(JSON.stringify(result.request.character.gear)).toBe(before);
+  });
+
+  it('drops the slot a two-hander emptied rather than writing item 0 over it', () => {
+    const gear = winningGear(twoHanded);
+    expect(gear.find((slot) => slot.slot === 'main_hand')?.item_id).toBe(17182);
+    // Not `{item_id: 0}`: nothing downstream defines 0 as "empty", so the slot is gone.
+    expect(gear.some((slot) => slot.slot === 'off_hand')).toBe(false);
+  });
+
+  it('exports an addon string with no off-hand entry at all', () => {
+    const addon = addonStringFor({
+      dataBuild: '1.60.1',
+      classSlug: 'warrior',
+      raceSlug: 'orc',
+      talents: '0-5530515-0',
+      gear: winningGear(twoHanded),
+    });
+    expect(addon).toContain('main_hand=17182');
+    expect(addon).not.toContain('off_hand');
+    expect(addon).not.toContain('=0');
+  });
+});
+
+describe('isEmptiedOffHand', () => {
+  it('is the rule-5 sentinel and nothing else', () => {
+    expect(isEmptiedOffHand({ kind: 'item', slot: 'off_hand', item_id: 0 })).toBe(true);
+    expect(isEmptiedOffHand({ kind: 'item', slot: 'off_hand', item_id: 11684 })).toBe(false);
+    expect(isEmptiedOffHand({ kind: 'item', slot: 'main_hand', item_id: 0 })).toBe(false);
+    expect(isEmptiedOffHand({ kind: 'talents', name: 'Deep Fury' })).toBe(false);
   });
 });
 

@@ -4,6 +4,7 @@
 // ordering is the planner's. This turns those into rows, labels and a winning gear list.
 import type { BulkResult, Combo, Substitution } from './bulk-types';
 import { bulkCopy } from './copy';
+import { confidenceBand } from './estimate';
 import type { Estimate, GearSlot } from './types';
 import type { Item, ItemSet } from '../planner/types';
 
@@ -28,7 +29,7 @@ const MINUS = '−';
  */
 export function deltaLabel(delta: Estimate): string {
   const mean = Math.round(delta.mean);
-  const band = Math.round(1.96 * delta.error);
+  const band = Math.round(confidenceBand(delta));
   const sign = mean < 0 ? MINUS : '+';
   return `${sign}${Math.abs(mean).toLocaleString('en-US')} ± ${band.toLocaleString('en-US')}`;
 }
@@ -51,17 +52,45 @@ export function comboRows(result: BulkResult): ComboRow[] {
   });
 }
 
-/** The leader's substitutions written over the base character's gear. */
+/**
+ * Engine-lane rule 5's sentinel: a two-hander replacing a main-plus-off-hand pair emits a
+ * second substitution `{kind:"item", slot:"off_hand", item_id:0, name:"<item removed>"}`.
+ * `item_id: 0` is never a real item (simdb has no id 0).
+ *
+ * Exported because rule 5 says the emptied slot must read as emptied *everywhere* a player
+ * can see it -- the chips, the "By slot" panel, the addon string and the planner link --
+ * and a second, inline copy of this predicate in a component is how the exported paths came
+ * to miss it (final whole-branch review, Important 3).
+ */
+export function isEmptiedOffHand(sub: Substitution): boolean {
+  return sub.kind === 'item' && sub.slot === 'off_hand' && sub.item_id === 0;
+}
+
+/**
+ * The leader's substitutions written over the base character's gear.
+ *
+ * The rule-5 sentinel REMOVES its slot rather than writing `item_id: 0` over it: this list
+ * is what `addon-export.ts` turns into a paste-into-the-game string and what
+ * `codeForCharacterSpec` encodes into the planner link, and neither the addon grammar nor
+ * FS1 defines 0 as "empty" -- a decoder reads `off_hand=0` as an item that does not exist
+ * (final whole-branch review, Important 1).
+ *
+ * Every step returns a new list: the input's slots are copied once at the top and never
+ * written through.
+ */
 export function winningGear(result: BulkResult): GearSlot[] {
-  const gear = result.request.character.gear.map((slot) => ({ ...slot }));
+  let gear: GearSlot[] = result.request.character.gear.map((slot) => ({ ...slot }));
   for (const sub of result.combos[0]?.substitutions ?? []) {
     if (sub.kind !== 'item' || sub.slot === undefined || sub.item_id === undefined) continue;
+    if (isEmptiedOffHand(sub)) {
+      gear = gear.filter((slot) => slot.slot !== sub.slot);
+      continue;
+    }
     const next: GearSlot = { slot: sub.slot, item_id: sub.item_id };
     if (sub.enchant !== undefined && sub.enchant > 0) next.enchant = sub.enchant;
     if (sub.suffix !== undefined && sub.suffix > 0) next.suffix = sub.suffix;
     const at = gear.findIndex((slot) => slot.slot === sub.slot);
-    if (at >= 0) gear[at] = next;
-    else gear.push(next);
+    gear = at >= 0 ? gear.map((slot, index) => (index === at ? next : slot)) : [...gear, next];
   }
   return gear;
 }
@@ -78,16 +107,6 @@ export interface SlotSummaryRow {
    * a run where it was not is honest about not knowing rather than apportioning the total.
    */
   gain: number | null;
-}
-
-/**
- * Engine-lane rule 5's sentinel: a two-hander replacing a main-plus-off-hand pair emits a
- * second substitution `{kind:"item", slot:"off_hand", item_id:0, name:"<item removed>"}`.
- * `item_id: 0` is never a real item (simdb has no id 0) -- the same check
- * `SubstitutionChips.svelte` makes before its own generic chip branch would look it up.
- */
-function isEmptiedOffHand(sub: Substitution): boolean {
-  return sub.kind === 'item' && sub.slot === 'off_hand' && sub.item_id === 0;
 }
 
 /** Design 3.3's per-slot summary: what the winner uses, and what that slot was worth. */
@@ -110,9 +129,8 @@ export function slotSummary(result: BulkResult): SlotSummaryRow[] {
       slot: sub.slot,
       item_id: sub.item_id,
       // Engine-lane rule 5: the emptied off-hand is not an item, and "<item removed>" is
-      // not a name a player should ever read verbatim -- the same fix SubstitutionChips
-      // already applies, so every consumer of slotSummary (this "By slot" panel included)
-      // inherits it from the one place the sentinel is read.
+      // not a name a player should ever read verbatim. `SubstitutionChips` reads the same
+      // exported predicate, so the chips and this "By slot" panel cannot disagree.
       name: isEmptiedOffHand(sub) ? bulkCopy.offHandEmptied : substitutionLabel(sub),
       gain: alone.get(`${sub.slot}:${sub.item_id}`) ?? null,
     }));

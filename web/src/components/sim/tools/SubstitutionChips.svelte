@@ -7,11 +7,15 @@
 
      Engine-lane rule 5: a two-hander replacing a main-plus-off-hand pair emits a SECOND
      substitution, `{kind: "item", slot: "off_hand", item_id: 0, name: "<item removed>"}`.
-     `item_id: 0` is never a real item (simdb has no id 0), so `isEmptiedOffHand` below
-     catches it before the generic branch would look it up (a miss, since nothing is at
-     id 0), fall back to `text-text`, and print "<item removed>" verbatim -- a sentence, not
-     a name, that a player should never read as if the engine named an item that. It renders
-     as a plainly emptied slot instead, through `bulkCopy.offHandEmptied`.
+     `item_id: 0` is never a real item (simdb has no id 0), so `isEmptiedOffHand` catches it
+     before the generic branch would look it up (a miss, since nothing is at id 0), fall
+     back to `text-text`, and print "<item removed>" verbatim -- a sentence, not a name,
+     that a player should never read as if the engine named an item that. It renders as a
+     plainly emptied slot instead, through `bulkCopy.offHandEmptied`.
+
+     The predicate is imported from combos.ts, not written again here: rule 5 binds every
+     rendered AND exported path, and two copies of it is exactly how the addon string and
+     the planner link came to keep the sentinel (final whole-branch review, Important 3).
 
      Store-free by design: DropResults (Task 18) and SavedCombos (Task 20) reuse this
      component, and neither owns a BulkStore in the shape this one would need. Both inherit
@@ -21,7 +25,7 @@
   import { dataUrl } from '../../../lib/planner/load';
   import type { Item } from '../../../lib/planner/types';
   import type { Substitution } from '../../../lib/sim/bulk-types';
-  import { substitutionLabel } from '../../../lib/sim/combos';
+  import { isEmptiedOffHand, substitutionLabel } from '../../../lib/sim/combos';
   import { bulkCopy } from '../../../lib/sim/copy';
 
   let {
@@ -33,10 +37,6 @@
     items: ReadonlyMap<number, Item>;
     treeVersion: string;
   } = $props();
-
-  function isEmptiedOffHand(sub: Substitution): boolean {
-    return sub.kind === 'item' && sub.slot === 'off_hand' && sub.item_id === 0;
-  }
 </script>
 
 <span class="flex flex-wrap items-center gap-1">
