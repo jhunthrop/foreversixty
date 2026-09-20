@@ -15,18 +15,20 @@ read_globals = {
 	"GetItemStats", "GetItemInfo", "GetItemInfoInstant",
 	"C_Container",
 	-- Character
-	"UnitClass", "UnitRace", "UnitLevel", "GetRealmName", "GetCurrentRegion",
+	"UnitClass", "UnitRace", "UnitLevel", "UnitName", "GetRealmName", "GetCurrentRegion",
 	"GetProfessions", "GetProfessionInfo", "GetBuildInfo",
 	-- UI
 	"CreateFrame", "UIParent", "GameTooltip", "SlashCmdList", "StaticPopupDialogs",
 	"InterfaceOptions_AddCategory", "Settings",
 	"NUM_BANKGENERIC_SLOTS", "NUM_BANKBAGSLOTS", "BANK_CONTAINER",
 	"TalentFrame", "PlayerTalentFrame",
-	-- Saved variables the TOC declares
-	"ForeverSixtyDB", "ForeverSixtyInbox",
+	-- Saved variables the TOC declares. ForeverSixtyInbox is written by the
+	-- companion and only ever read here; ForeverSixtyDB is the addon's own
+	-- and Export.save writes it, so it is a global, not a read_global.
+	"ForeverSixtyInbox",
 }
 
-globals = { "SLASH_FOREVERSIXTY1", "SLASH_FOREVERSIXTY2" }
+globals = { "SLASH_FOREVERSIXTY1", "SLASH_FOREVERSIXTY2", "ForeverSixtyDB" }
 
 files["tests/"] = {
 	std = "+busted",
@@ -38,7 +40,7 @@ files["tests/"] = {
 		"GetNumTalentTabs", "GetNumTalents", "GetTalentInfo", "GetTalentTabInfo",
 		"GetInventoryItemLink", "GetContainerItemLink", "GetContainerNumSlots",
 		"GetItemStats", "GetItemInfo", "GetItemInfoInstant", "C_Container",
-		"UnitClass", "UnitRace", "UnitLevel", "GetRealmName", "GetCurrentRegion",
+		"UnitClass", "UnitRace", "UnitLevel", "UnitName", "GetRealmName", "GetCurrentRegion",
 		"GetProfessions", "GetProfessionInfo", "GetBuildInfo",
 		"CreateFrame", "UIParent", "SlashCmdList",
 		"ForeverSixtyDB", "ForeverSixtyInbox",
