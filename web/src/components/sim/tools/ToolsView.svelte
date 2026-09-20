@@ -160,7 +160,11 @@
     />
   {/if}
 
-  {#if store.character !== null}
+  {#if store.character !== null || tool === 'weights'}
+    <!-- Design 7: /sim/weights opens with the caution before any character is loaded --
+         the whole reason the page exists is a warning, so it cannot wait behind a load.
+         The other three tools are unaffected: they still need a character before their
+         view (a slot grid, a boss picker) means anything. -->
     {#if viewLazy.current}
       <viewLazy.current {store} {me} />
     {:else}
