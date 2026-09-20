@@ -34,6 +34,8 @@ export const addonCopy = {
     `Imported, but these could not be placed under the planner’s own rules: ${names}.`,
   importOlderBuild: (exported: string, active: string): string =>
     `That export is from data build ${exported}; this site is on ${active}. Update the addon.`,
+  importWrongClass: (exported: string, current: string): string =>
+    `That export is for ${exported}; this planner is on ${current}. Switch to ${exported} and import again.`,
 
   // --- /addon page ---
   pageTitle: 'The addon',

@@ -5,6 +5,7 @@
      under them; phone shows one panel at a time behind a tab switcher (Tasks 9 and 17). -->
 <script lang="ts">
   import { untrack } from 'svelte';
+  import activeBuild from '../../data/active-build.json';
   import { DEFAULT_CLASS_SLUG } from '../../lib/planner/config';
   import { ranksByTalent } from '../../lib/planner/derive';
   import { decodeFS1, encodeFS1, orderFromRanks } from '../../lib/planner/fs1';
@@ -25,6 +26,7 @@
   import { characterFromPlanner } from '../../lib/sim/character';
   import { defaultSimState, simSearch, withSimState } from '../../lib/sim/url';
   import GearPanel from './GearPanel.svelte';
+  import ImportBox from './ImportBox.svelte';
   import OrderStrip from './OrderStrip.svelte';
   import SharePanel from './SharePanel.svelte';
   import SummaryBar from './SummaryBar.svelte';
@@ -640,6 +642,17 @@
           <SharePanel {store} {live} />
         {/if}
       </div>
+
+      {#if !store.readOnly}
+        <!-- A read-only build (opened from a share link) has nowhere for an imported build to
+             go until it is forked, so the box only mounts once the toolbar above already shows
+             Reset and Share rather than "Fork it to spend points of your own." -->
+        <ImportBox
+          talents={store.talentIndex}
+          activeBuild={activeBuild.build}
+          onimport={(build) => store.loadImported(build)}
+        />
+      {/if}
 
       <OrderStrip {store} />
 

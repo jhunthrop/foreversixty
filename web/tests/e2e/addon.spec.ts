@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 import { createServer } from 'vite';
 import { addonCopy } from '../../src/lib/addon/copy';
 import type * as Fsb1Module from '../../src/lib/addon/fsb1';
+import { ACTIVE_BUILD } from './support/active-build';
 
 // Not a plain `import { decodeFSB1 } from '../../src/lib/addon/fsb1'`: fsb1.ts imports
 // PINNED_STATS from sim/stats.ts, which imports a generated `.json` file at module scope
@@ -54,5 +55,45 @@ test.describe('the addon flows', () => {
     if (!decoded.ok) return;
     expect(decoded.build.order.length).toBe(1);
     expect(decoded.build.gear.length).toBe(1);
+  });
+
+  test('pasting an export string shows the tree and the approximated-order note', async ({ page }) => {
+    // The fixture (FOREVER_DATA=fixture) ships a two-tree warrior, talent ids 1001-1007
+    // (Arms) and 2001-2007 (Fury), and no paladin at all -- so this is built from the
+    // fixture's own Arms tree rather than the paladin string a generic brief would use.
+    // Tree field "3502" is base-36 per-talent ranks in tab order: 1001 (Improved Heroic
+    // Strike, tier 0) gets 3, 1002 (Deflection, tier 0) gets 5 -- eight points, enough to
+    // open tier 1 -- and 1004 (Tactical Mastery, tier 1, needs Deflection rank 2) gets 2,
+    // for 3 + 5 + 2 = 10 legally reachable points with nothing dropped. The Fury and third
+    // fields are both "0" -- decodeFS1 still requires three slash-separated tree fields
+    // even though this class has two trees; orderFromRanks ignores the field it has no
+    // tree for.
+    await page.goto('/planner');
+    await page.getByTestId('import-code').fill(`FS1:${ACTIVE_BUILD}:warrior:human:3502/0/0:head=12640`);
+    await page.getByTestId('import-submit').click();
+
+    await expect(page.getByTestId('planner-spent')).toHaveText('10/51');
+    await expect(page.getByTestId('import-note').first()).toHaveText(addonCopy.importOrderApproximated);
+    await expect(page.getByTestId('import-error')).toHaveCount(0);
+  });
+
+  test('a code from another format is refused by name', async ({ page }) => {
+    await page.goto('/planner');
+    await page.getByTestId('import-code').fill('FS2:nope');
+    await page.getByTestId('import-submit').click();
+    await expect(page.getByTestId('import-error')).toHaveText(addonCopy.wrongPrefix('FS2', 'FS1'));
+  });
+
+  test('an export for another class is refused by name rather than reconstructed', async ({ page }) => {
+    // The fixture has no paladin data at all, which is exactly the point: decodeFS1 only
+    // parses the string, so this well-formed paladin export decodes fine, and the class
+    // check has to refuse it before anything tries to reconstruct an order against the
+    // warrior tree the planner actually has loaded.
+    await page.goto('/planner');
+    await page.getByTestId('import-code').fill(`FS1:${ACTIVE_BUILD}:paladin:human:0/0/0:`);
+    await page.getByTestId('import-submit').click();
+    await expect(page.getByTestId('import-error')).toHaveText(
+      addonCopy.importWrongClass('paladin', 'warrior'),
+    );
   });
 });

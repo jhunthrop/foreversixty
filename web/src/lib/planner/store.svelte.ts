@@ -223,6 +223,28 @@ export function createPlannerStore(init: PlannerInit) {
       refusal = null;
     },
 
+    /**
+     * Replace the whole draft with one reconstructed from an addon export. Not `equip` in a
+     * loop plus `addPoint` in a loop: the import is one edit from the player's point of view,
+     * and a partial application -- a class change that empties the gear halfway through --
+     * would leave the planner in a state the player never asked for.
+     *
+     * Resets `sourceId` and `refusal` for the same reason `fork` does: the draft on screen no
+     * longer corresponds to whatever was previously saved or refused. `title`, too -- a title
+     * typed for the build this replaces would otherwise sit on top of an unrelated import,
+     * the same stale-identity problem `fork` clears it for.
+     */
+    loadImported(build: { classSlug: string; raceSlug: string; order: number[]; gear: Gear }): void {
+      if (!editable()) return;
+      classSlug = build.classSlug;
+      raceSlug = build.raceSlug;
+      order = [...build.order];
+      gear = { ...build.gear };
+      title = '';
+      sourceId = null;
+      refusal = null;
+    },
+
     setItems(file: ItemFile): void {
       itemFile = file;
     },

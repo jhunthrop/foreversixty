@@ -99,6 +99,47 @@ describe('applyOrder', () => {
   });
 });
 
+describe('loadImported', () => {
+  it('replaces class, race, order and gear, and drops the source id, title and refusal', () => {
+    const store = loaded({
+      treeVersion: BUILD,
+      classSlug: 'warrior',
+      raceSlug: 'human',
+      order: [1001],
+      title: 'Original',
+      sourceId: 'k7x2qm4a',
+    });
+    store.addPoint(1003);
+    expect(store.refusal).not.toBeNull();
+
+    store.loadImported({ classSlug: 'shaman', raceSlug: 'orc', order: [1001, 1001], gear: { head: 12640 } });
+
+    expect(store.classSlug).toBe('shaman');
+    expect(store.raceSlug).toBe('orc');
+    expect(store.order).toEqual([1001, 1001]);
+    expect(store.gear).toEqual({ head: 12640 });
+    expect(store.title).toBe('');
+    expect(store.sourceId).toBeNull();
+    expect(store.refusal).toBeNull();
+  });
+
+  it('refuses while read-only, like every other edit', () => {
+    const store = loaded({
+      treeVersion: BUILD,
+      classSlug: 'warrior',
+      raceSlug: 'human',
+      order: [1001],
+      readOnly: true,
+      sourceId: 'k7x2qm4a',
+    });
+    store.loadImported({ classSlug: 'shaman', raceSlug: 'orc', order: [1002], gear: {} });
+    expect(store.classSlug).toBe('warrior');
+    expect(store.order).toEqual([1001]);
+    expect(store.sourceId).toBe('k7x2qm4a');
+    expect(store.refusal).toBe(READ_ONLY_REASON);
+  });
+});
+
 describe('class and race selection', () => {
   it('clears the build and the loaded trees when the class changes', () => {
     const store = loaded();
