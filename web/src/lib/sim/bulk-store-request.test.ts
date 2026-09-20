@@ -13,6 +13,7 @@ import { bulkCopy, weightsUnsupportedSpec } from './copy';
 import { PRECISION_ITERATIONS } from './precision';
 import { defaultSettings } from './settings';
 import { specLabel } from './spec-label';
+import { WEIGHTS_BROWSER_DEFAULT_ITERATIONS } from './weights';
 import type { SimCharacter } from './character';
 import type { SimPool } from './worker';
 
@@ -110,11 +111,16 @@ describe('buildRequest: precision drives the weights iteration count (sub-item 1
       getSettings: () => defaultSettings(),
     });
 
+  // Task 8, sub-item 2: `buildRequest` defaults to the browser lane (the same lane `run()`
+  // calls it from), and the browser lane's own `fast` is now guarded
+  // (`WEIGHTS_BROWSER_DEFAULT_ITERATIONS`, not `PRECISION_ITERATIONS.fast`) -- `normal` and
+  // `high` are untouched on the browser lane, so this table now names each tier's own real
+  // default rather than reading `PRECISION_ITERATIONS` uniformly for all three.
   it.each([
-    ['fast', PRECISION_ITERATIONS.fast],
+    ['fast', WEIGHTS_BROWSER_DEFAULT_ITERATIONS],
     ['normal', PRECISION_ITERATIONS.normal],
     ['high', PRECISION_ITERATIONS.high],
-  ] as const)('sends %s’s own fixed count, not always normal', (id, iterations) => {
+  ] as const)('sends %s’s own count on the (default) browser lane, not always normal', (id, iterations) => {
     const outcome = buildRequest(withPrecision(id));
     expect('request' in outcome).toBe(true);
     expect((outcome as { request: WeightsRequest }).request.iterations).toBe(iterations);
@@ -124,5 +130,27 @@ describe('buildRequest: precision drives the weights iteration count (sub-item 1
     const fast = buildRequest(withPrecision('fast')) as { request: WeightsRequest };
     const high = buildRequest(withPrecision('high')) as { request: WeightsRequest };
     expect(high.request.iterations).toBeGreaterThan(fast.request.iterations);
+  });
+});
+
+describe('buildRequest: the browser lane is guarded, the server lane is not (Task 8, sub-item 2)', () => {
+  const withLane = () =>
+    deps({
+      getPrecision: () => 'fast',
+      getTalentFile: () => warriorTalents,
+      getSettings: () => defaultSettings(),
+    });
+
+  it('sends the guarded count when called with no lane at all (run()’s own call), the same as an explicit browser lane', () => {
+    const implicit = buildRequest(withLane()) as { request: WeightsRequest };
+    const explicit = buildRequest(withLane(), 'browser') as { request: WeightsRequest };
+    expect(implicit.request.iterations).toBe(WEIGHTS_BROWSER_DEFAULT_ITERATIONS);
+    expect(explicit.request.iterations).toBe(WEIGHTS_BROWSER_DEFAULT_ITERATIONS);
+  });
+
+  it('sends the full, unguarded PRECISION_ITERATIONS count on the server lane (runOnServer()’s own call)', () => {
+    const server = buildRequest(withLane(), 'server') as { request: WeightsRequest };
+    expect(server.request.iterations).toBe(PRECISION_ITERATIONS.fast);
+    expect(server.request.iterations).toBeGreaterThan(WEIGHTS_BROWSER_DEFAULT_ITERATIONS);
   });
 });

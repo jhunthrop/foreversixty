@@ -40,12 +40,12 @@ import { buildBulkSpec, validateBulk, type CandidateRow } from './candidates';
 import { toCharacterSpec, type SimCharacter } from './character';
 import { bulkCopy, simCopy, weightsUnsupportedSpec } from './copy';
 import type { RequestValidation } from './engine';
-import { PRECISION_ITERATIONS } from './precision';
+import type { Lane } from './precision';
 import { specLabel } from './spec-label';
 import type { SimSettings } from './settings';
 import type { CharacterSpec, SimResult, SpecFidelity } from './types';
 import { ENGINE_VERSION } from './version';
-import { defaultStatsFor, isDpsSpec, referenceFor, weightStatsFor } from './weights';
+import { defaultStatsFor, isDpsSpec, referenceFor, weightStatsFor, weightsIterationsFor } from './weights';
 import type { SimPool } from './worker';
 
 /** Everything `envelope`/`currentSpec`/the four request methods read or write. */
@@ -234,9 +234,18 @@ export function weightsSpecRefusal(spec: string): string | null {
   return isDpsSpec(spec) ? null : weightsUnsupportedSpec(specLabel(spec));
 }
 
-/** `store.svelte.ts`'s own `buildRequest`, for a bulk or weights request. Refuses with a
- *  reason rather than throwing: `run()` shows the reason as `message`, never a stack trace. */
-export function buildRequest(deps: BulkRequestDeps): RequestOutcome {
+/**
+ * `store.svelte.ts`'s own `buildRequest`, for a bulk or weights request. Refuses with a
+ * reason rather than throwing: `run()` shows the reason as `message`, never a stack trace.
+ *
+ * `lane` (Task 8, sub-item 2) defaults to `'browser'`, the lane every caller but
+ * `runOnServer()` means: `run()` (the free, default button), the drawer's own preview and
+ * `runRequest`. `runOnServer()` passes `'server'` explicitly. Only a weights request reads
+ * it -- `weightsIterationsFor` (weights.ts) is where the browser lane's guarded default
+ * actually lives; a bulk request's own `finalIterations` is unaffected, unguarded before
+ * this task and staying that way.
+ */
+export function buildRequest(deps: BulkRequestDeps, lane: Lane = 'browser'): RequestOutcome {
   const character = deps.getCharacter();
   if (character === null) return { error: bulkCopy.needCharacter };
   if (deps.tool === 'weights') {
@@ -254,7 +263,11 @@ export function buildRequest(deps: BulkRequestDeps): RequestOutcome {
     // D45: a weights run used to ignore `precision` entirely and always send `normal`'s
     // 3,000 -- the fixed count `PRECISION_ITERATIONS` already carries for a flat (non-
     // staged) run, the same map `/sim`'s own plain run reads for `fast`/`normal`/`high`.
-    const base = envelope(deps, PRECISION_ITERATIONS[deps.getPrecision()]);
+    // Task 8, sub-item 2: for a weights request specifically, that count is now
+    // `weightsIterationsFor`'s, not `PRECISION_ITERATIONS` directly -- the browser lane's
+    // own `fast` is guarded to a real engine cost measured under a minute even at the full
+    // stat vocabulary (weights.ts's own doc comment); the server lane is untouched.
+    const base = envelope(deps, weightsIterationsFor(deps.getPrecision(), lane));
     if (base === null) return { error: simCopy.failed };
     // The store's own `referenceStat`, not a second read of `stats[0]`: the page renders
     // "Reference: …" from the former, and two derivations of the one value is how the line
@@ -271,13 +284,17 @@ export function buildRequest(deps: BulkRequestDeps): RequestOutcome {
   return { request: { ...base, bulk } };
 }
 
-/** Like `buildRequest` but silent, for part A's Advanced drawer (design 8): the drawer
- *  renders what would be sent, it never runs on its own, so an invalid or incomplete state
- *  is simply nothing to preview rather than a message to show. */
+/**
+ * Like `buildRequest` but silent, for part A's Advanced drawer (design 8): the drawer
+ * renders what would be sent, it never runs on its own, so an invalid or incomplete state
+ * is simply nothing to preview rather than a message to show. Always the browser lane: the
+ * drawer's own Run (`runRequest`, `bulk-store.svelte.ts`) has no server path at all, so
+ * previewing anything else would show a number the drawer's own Run could never send.
+ */
 export function previewRequest(deps: BulkRequestDeps): BulkRequest | WeightsRequest | null {
   if (deps.getCharacter() === null) return null;
   if (deps.tool === 'weights') {
-    const base = envelope(deps, PRECISION_ITERATIONS[deps.getPrecision()]);
+    const base = envelope(deps, weightsIterationsFor(deps.getPrecision(), 'browser'));
     const stats = deps.getStats();
     return base === null
       ? null

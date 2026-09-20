@@ -759,7 +759,9 @@ export function createBulkStore(init: BulkStoreInit) {
      */
     async runOnServer(): Promise<void> {
       if (serverRunning) return;
-      const outcome = buildRequest(requestDeps);
+      // Task 8, sub-item 2: the server lane keeps its own (unguarded) default -- only a
+      // weights request reads `lane` at all, and only to pick its iteration base.
+      const outcome = buildRequest(requestDeps, 'server');
       if ('error' in outcome) {
         message = outcome.error;
         return;

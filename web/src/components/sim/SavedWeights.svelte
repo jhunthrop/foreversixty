@@ -56,6 +56,11 @@
 </section>
 
 <section class="mx-[18px] flex flex-col gap-3 md:mx-0" data-testid="sim-weights">
+  <!-- Task 8, sub-item 1: the same caveat as the live page (StatWeights.svelte), in the
+       same words, right before the numbers it caveats -- see that file's own comment. -->
+  <p class="text-muted text-[12px]" data-testid="sim-weights-error-caveat">
+    {bulkCopy.weightsErrorCaveat}
+  </p>
   <ul class="flex flex-col">
     {#each result.weights as row (row.stat)}
       {@const geometry = bar(row.weight, row.error)}

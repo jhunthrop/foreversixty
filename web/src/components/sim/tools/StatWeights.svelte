@@ -128,6 +128,13 @@
 
   {#if store.weights.length > 0}
     <section class="mx-[18px] flex flex-col gap-3 md:mx-0" data-testid="sim-weights">
+      <!-- Task 8, sub-item 1: contract 10.9's error-is-a-lower-bound caveat, read right
+           before the numbers it caveats -- one thought together with the greying below
+           (D45's own WEIGHT_INSIGNIFICANT_LABEL, which the caveat's own first sentence
+           restates in prose), not a second warning box stacked above this one. -->
+      <p class="text-muted text-[12px]" data-testid="sim-weights-error-caveat">
+        {bulkCopy.weightsErrorCaveat}
+      </p>
       <ul class="flex flex-col">
         {#each store.weights as row (row.stat)}
           {@const geometry = bar(row.weight, row.error)}

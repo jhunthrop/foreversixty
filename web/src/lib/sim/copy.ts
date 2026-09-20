@@ -857,6 +857,32 @@ export const bulkCopy = {
   weightsCopyPawn: 'Copy for Pawn',
   weightsCopied: 'Copied',
   weightsPick: 'Stats to weigh',
+  /**
+   * Task 8, sub-item 1: contract 10.9 documents `StatWeight.Error` as a standard error that
+   * is a lower bound, not the true uncertainty -- an 8-seed check found the real run-to-run
+   * spread runs four to ten times wider for crit, expertise and melee haste, the three stats
+   * most entangled with the rotation's own rage/proc decisions. One sentence, not a second
+   * warning stacked on the greying above: it opens by naming what a greyed row already means
+   * (D45's own `WEIGHT_INSIGNIFICANT_LABEL`, restated in prose rather than assumed read) and
+   * then extends the same "how much to trust this" idea to every other row's own ± figure,
+   * so the two read as one thought about the table, not two. No mention of "contract 10.9"
+   * or "lower bound" -- a player reads this without the spec open.
+   */
+  weightsErrorCaveat:
+    'A greyed row cannot be told apart from zero. The ± on every other row is a floor, not the full picture: for crit, expertise and haste, the real run-to-run swing can run four to ten times wider.',
+  /**
+   * Task 8, sub-item 2: the precision control's own bare "Fast"/"Normal"/"High" no longer
+   * says a number for a weights run (BulkRunBar.svelte's `precisionLabelFor`) -- the wire's
+   * own `iterations` field was never the real cost to begin with (a weights sweep runs a
+   * baseline plus a low and a high pass per stat weighed, each at up to eight times that
+   * count: `weights.ts`'s `weightsEngineIterations`, contract 10.9), so a bare "Normal,
+   * 3,000 iterations" label was quietly wrong by 68x for an eight-stat spec. This note
+   * replaces that claim with the true total, recomputed for whichever precision and however
+   * many stats are ticked right now, so "Normal" costs something the reader chose knowingly
+   * rather than discovered a minute later.
+   */
+  weightsCostNote: (totalIterations: number): string =>
+    `${totalIterations.toLocaleString('en-US')} engine iterations in your browser: a baseline pass plus a low and a high pass for each stat weighed.`,
   /** bulk-store.svelte.ts's `baseRequest` refusal when `stats` is empty: `WeightsSpec.
    *  Reference` is required (contract 10.8), so an empty list has nothing to send. */
   weightsNeedStats: 'Pick at least one stat to weigh.',

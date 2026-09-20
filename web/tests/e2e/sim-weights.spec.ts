@@ -240,10 +240,13 @@ test('the run bar shows no combination count, but does show a working precision 
   const precision = page.getByTestId('sim-precision');
   await expect(precision).toBeVisible();
   await expect(precision.locator('option')).toHaveCount(3);
-  // Playwright never reports a closed <select>'s own <option>s as visible; their text
-  // content is what proves this select carries /sim's own "N iterations" labels rather
-  // than the bulk tools' bare "Fast"/"Normal"/"High".
-  await expect(precision.locator('option').first()).toHaveText(/iterations/);
+  // Task 8, sub-item 2: the option text itself is now the bulk tools' own bare
+  // "Fast"/"Normal"/"High" -- the wire's nominal iteration count was never the real cost of
+  // a weights sweep (up to 68x off for an eight-stat spec, contract 10.9's per-stat
+  // multiplier), so the label no longer claims a number it cannot back up. The real total
+  // is the cost note below the select instead.
+  await expect(precision.locator('option').first()).not.toHaveText(/iterations/);
+  await expect(page.getByTestId('sim-weights-cost-note')).toContainText('engine iterations in your browser');
 });
 
 // Contract 10.6: saved sims of every kind are public at /sim/<id>. Top Gear and talent

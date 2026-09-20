@@ -24,8 +24,9 @@
 // the string rather than guessed at.
 import { classRows } from '../planner/reference';
 import { simCopy } from './copy';
+import { PRECISION_ITERATIONS, type Lane } from './precision';
 import { specLabel, specRow } from './spec-label';
-import type { StatWeight } from './bulk-types';
+import type { Precision, StatWeight } from './bulk-types';
 import type { SpecFidelity } from './types';
 
 export interface WeightStat {
@@ -197,4 +198,48 @@ export function pawnString(spec: string, weights: readonly StatWeight[]): string
  */
 export function isDpsSpec(spec: string): boolean {
   return specRow(spec)?.role === 'dps';
+}
+
+/**
+ * The real engine cost of a weights sweep -- contract 10.9's own `sim/api.WeightsIterations`
+ * formula, mirrored here (never imported: the web build carries no Go) so the page can
+ * disclose the true number before a run ever reaches the pool, the way this file already
+ * mirrors the pinned stat vocabulary rather than trusting the wire alone. One baseline pass
+ * plus a low and a high pass per stat weighed, each pass at `iterations *
+ * WEIGHTS_ITERATIONS_FACTOR / 2` -- integer division throughout, matching Go's own `int`
+ * math on `Iterations * WeightsIterationsFactor / 2`. The request's own `iterations` field
+ * (what `PrecisionSelect`'s option text names) is only the *base* of this number, not the
+ * count the engine actually runs -- a "Normal, 3,000 iterations" weights request for an
+ * eight-stat spec costs 204,000 real engine iterations, not 3,000 (Task 8, sub-item 2).
+ */
+export const WEIGHTS_ITERATIONS_FACTOR = 8;
+
+export function weightsEngineIterations(iterations: number, statCount: number): number {
+  return Math.floor((iterations * WEIGHTS_ITERATIONS_FACTOR) / 2) * (1 + 2 * statCount);
+}
+
+/**
+ * The browser lane's own guarded default (Task 8, sub-item 2). Measured, not guessed
+ * (task-8-report.md): a real wasm weights run at `PRECISION_ITERATIONS.fast` (500) for an
+ * eight-stat spec -- the real 34,000-iteration sweep `weightsEngineIterations` computes for
+ * it -- took 76.7 s end to end in an actual browser (Apple M4 Pro, one wasm worker, Chrome),
+ * already past this control's own one-minute budget on capable hardware, and every stat a
+ * player ticks makes it worse. That run measured about 443 real engine iterations per
+ * second. `WEIGHTS_BROWSER_DEFAULT_ITERATIONS` (60) replaces `PRECISION_ITERATIONS.fast` for
+ * a browser weights request only: even the worst case a fallback spec can reach -- the full
+ * `WEIGHT_STATS` vocabulary (17 stats), not just the narrowed eight -- costs
+ * `weightsEngineIterations(60, 17)` = 8,400 real iterations, about 19 s at the measured rate,
+ * leaving roughly 3x headroom for slower-than-this-laptop hardware before crossing a minute.
+ * `normal`/`high` are untouched on both lanes: they cost more only when the player
+ * deliberately chooses them, which `weightsCostNote` (copy.ts) discloses before they do -- an
+ * informed choice, not a quiet one, which is sub-item 2's actual complaint. The server lane
+ * never reads this: `weightsIterationsFor` returns `PRECISION_ITERATIONS` unchanged there,
+ * since a Cloud Run job has its own budget (contract 10.9's
+ * `TestTheMaxWeightsRequestFitsTheBudget`) and no browser wall clock to respect.
+ */
+export const WEIGHTS_BROWSER_DEFAULT_ITERATIONS = 60;
+
+export function weightsIterationsFor(precision: Precision, lane: Lane): number {
+  if (lane === 'browser' && precision === 'fast') return WEIGHTS_BROWSER_DEFAULT_ITERATIONS;
+  return PRECISION_ITERATIONS[precision];
 }

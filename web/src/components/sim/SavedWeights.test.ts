@@ -9,7 +9,7 @@
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import fixture from '../../fixtures/sim/weights-result.json';
-import { WEIGHT_INSIGNIFICANT_LABEL } from '../../lib/sim/copy';
+import { bulkCopy, WEIGHT_INSIGNIFICANT_LABEL } from '../../lib/sim/copy';
 import type { WeightsResult } from '../../lib/sim/bulk-types';
 import SavedWeights from './SavedWeights.svelte';
 
@@ -63,5 +63,15 @@ describe('SavedWeights: the greyed row and its label (D45)', () => {
     expect(body).not.toContain('opacity-50');
     expect(body).not.toContain(WEIGHT_INSIGNIFICANT_LABEL);
     expect(body).toContain('Agility=0.16');
+  });
+});
+
+// Task 8, sub-item 1: the same caveat travels with a saved result -- a shared link is
+// exactly where someone meets these weights without having read the live page (this file's
+// own header comment), so the caution has to be here too, in the same words.
+describe('SavedWeights: the error-is-a-lower-bound caveat (Task 8, sub-item 1)', () => {
+  it('renders once, in the same words as the live page', () => {
+    const body = renderWeights(result);
+    expect(body).toContain(bulkCopy.weightsErrorCaveat);
   });
 });

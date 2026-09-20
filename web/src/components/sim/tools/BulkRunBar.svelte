@@ -13,7 +13,8 @@
   import { SECONDARY_BUTTON } from '../../../lib/planner/styles';
   import type { BulkStore } from '../../../lib/sim/bulk-store.svelte';
   import { BULK_PRECISIONS, LOW_CORE_CAP, type Precision } from '../../../lib/sim/bulk-types';
-  import { bulkCopy, simCopy } from '../../../lib/sim/copy';
+  import { bulkCopy } from '../../../lib/sim/copy';
+  import { weightsEngineIterations, weightsIterationsFor } from '../../../lib/sim/weights';
   import PrecisionSelect from '../PrecisionSelect.svelte';
   import RequestDrawer from '../RequestDrawer.svelte';
   import SettingsBar from '../SettingsBar.svelte';
@@ -67,14 +68,25 @@
     high: bulkCopy.precisionHigh,
   };
   /**
-   * A combination tool's word is a bare "Fast"/"Normal"/"High" -- `precisionNote` below
-   * says what it means. The weights tool has no stage note to say it for, so it takes
-   * `/sim`'s own three fixed-count labels instead ("Fast, 500 iterations", ...) -- the
-   * identical `simCopy.precisionLabel` map `RunControl.svelte` reads from, unmodified,
-   * rather than a second sentence saying the same thing a different way.
+   * Bare "Fast"/"Normal"/"High" for every tool now, combination and weights alike --
+   * `precisionNote`/`weightsCostNote` below say what each actually costs. Task 8, sub-item
+   * 2: the weights tool used to borrow `/sim`'s own fixed-count labels ("Fast, 500
+   * iterations"), but that number was never the real cost of a weights sweep (contract
+   * 10.9's per-stat multiplier -- `weights.ts`'s own `weightsEngineIterations`), so the
+   * label was quietly wrong by up to 68x. `weightsCostNote` states the true total instead;
+   * the option text itself no longer claims a number it cannot back up.
    */
-  const precisionLabelFor = (id: Precision): string =>
-    combinationTool ? PRECISION_LABELS[id] : (simCopy.precisionLabel[id] ?? id);
+  const precisionLabelFor = (id: Precision): string => PRECISION_LABELS[id];
+  /**
+   * Task 8, sub-item 2: the real engine cost of the currently selected precision, for
+   * however many stats are ticked right now -- `store.stats` is generic on `BulkStore`
+   * (every tool has one), so this reads fine even before `combinationTool` gates the
+   * note below to weights only. Always the browser lane: `weightsIterationsFor`'s server
+   * number is `runOnServer()`'s own concern, not this free, default button's.
+   */
+  const weightsCost = $derived(
+    weightsEngineIterations(weightsIterationsFor(store.precision, 'browser'), store.stats.length),
+  );
 </script>
 
 <SettingsBar
@@ -137,6 +149,13 @@
 
   {#if combinationTool}
     <p class="text-muted text-[12px]">{bulkCopy.precisionNote[store.precision]}</p>
+  {:else}
+    <!-- Task 8, sub-item 2: the weights tool's own cost disclosure, in place of the staged
+         note above -- a weights run has no stages, but it does have a real cost the bare
+         "Fast"/"Normal"/"High" label no longer states. -->
+    <p class="text-muted text-[12px]" data-testid="sim-weights-cost-note">
+      {bulkCopy.weightsCostNote(weightsCost)}
+    </p>
   {/if}
 
   {#if store.cap === LOW_CORE_CAP}

@@ -15,8 +15,13 @@ import {
   statLabel,
   weightScale,
   weightStatsFor,
+  weightsEngineIterations,
+  weightsIterationsFor,
+  WEIGHTS_BROWSER_DEFAULT_ITERATIONS,
+  WEIGHTS_ITERATIONS_FACTOR,
   WEIGHT_STATS,
 } from './weights';
+import { PRECISION_ITERATIONS } from './precision';
 import type { StatWeight, WeightsResult } from './bulk-types';
 import type { SpecFidelity } from './types';
 
@@ -242,5 +247,50 @@ describe('the stat vocabulary (contract 10.8, pinned)', () => {
       'feral_attack_power',
     ]);
     for (const stat of WEIGHT_STATS) expect(pinned.has(stat.id), stat.id).toBe(true);
+  });
+});
+
+describe('weightsEngineIterations (Task 8, sub-item 2): the real engine cost, not the wire’s nominal count', () => {
+  it('matches contract 10.9’s own formula: a baseline pass plus a low and a high pass per stat, each at Iterations * factor / 2', () => {
+    expect(WEIGHTS_ITERATIONS_FACTOR).toBe(8);
+    // The exact figure this task's own brief named for an eight-stat spec at "normal":
+    // (3000 * 8 / 2) * (1 + 2*8) = 12,000 * 17 = 204,000 -- 68x the wire's own "3,000".
+    expect(weightsEngineIterations(PRECISION_ITERATIONS.normal, 8)).toBe(204_000);
+    expect(weightsEngineIterations(PRECISION_ITERATIONS.fast, 8)).toBe(34_000);
+  });
+
+  it('grows with both the iteration base and the stat count', () => {
+    expect(weightsEngineIterations(500, 1)).toBeLessThan(weightsEngineIterations(500, 8));
+    expect(weightsEngineIterations(500, 8)).toBeLessThan(weightsEngineIterations(3000, 8));
+  });
+});
+
+describe('weightsIterationsFor (Task 8, sub-item 2): the browser lane is guarded, the server lane is not', () => {
+  it('sends a smaller default on the browser lane than the plain-run PRECISION_ITERATIONS.fast', () => {
+    expect(WEIGHTS_BROWSER_DEFAULT_ITERATIONS).toBeLessThan(PRECISION_ITERATIONS.fast);
+    expect(weightsIterationsFor('fast', 'browser')).toBe(WEIGHTS_BROWSER_DEFAULT_ITERATIONS);
+  });
+
+  it('leaves the server lane at PRECISION_ITERATIONS, unchanged, at every precision', () => {
+    for (const id of ['fast', 'normal', 'high'] as const) {
+      expect(weightsIterationsFor(id, 'server')).toBe(PRECISION_ITERATIONS[id]);
+    }
+  });
+
+  it('leaves normal and high unchanged on the browser lane too -- only the default is guarded, the rest is disclosed', () => {
+    expect(weightsIterationsFor('normal', 'browser')).toBe(PRECISION_ITERATIONS.normal);
+    expect(weightsIterationsFor('high', 'browser')).toBe(PRECISION_ITERATIONS.high);
+  });
+
+  // Measured, not guessed (task-8-report.md): a real wasm weights run for an eight-stat
+  // spec at PRECISION_ITERATIONS.fast (34,000 real engine iterations) took 76.7 s in an
+  // actual browser (Apple M4 Pro, one wasm worker) -- about 443 real iterations per second.
+  // The guarded browser default must stay well inside a minute even at the worst case a
+  // fallback spec can reach: the full pinned vocabulary, not just a narrowed eight stats.
+  it('the guarded browser default finishes with real headroom under a minute, even at the full stat vocabulary', () => {
+    const measuredIterationsPerSecond = 443;
+    const worstCaseStatCount = WEIGHT_STATS.length;
+    const cost = weightsEngineIterations(WEIGHTS_BROWSER_DEFAULT_ITERATIONS, worstCaseStatCount);
+    expect(cost / measuredIterationsPerSecond).toBeLessThan(30);
   });
 });
