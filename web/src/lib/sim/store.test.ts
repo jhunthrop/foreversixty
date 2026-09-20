@@ -517,3 +517,19 @@ describe('createSimStore', () => {
     });
   });
 });
+
+describe('a Run pressed while the character is still loading', () => {
+  it('waits for the talent file instead of refusing with the generic failure', async () => {
+    // The strip renders the moment `character` is set; the talent file arrives after. A
+    // click in that window used to reach run() with `talents` null and fail as "could not
+    // run this character" -- every generated level-60 profile hit it on the live site.
+    const s = store();
+    const loading = s.loadAddon(FURY);
+    await vi.waitFor(() => expect(s.character).not.toBeNull());
+    await s.run();
+    await loading;
+    expect(s.message).toBeNull();
+    expect(s.result).not.toBeNull();
+    s.dispose();
+  });
+});

@@ -176,6 +176,14 @@ export function createSimStore(init: SimStoreInit) {
    */
   let races = $state<RaceRow[]>([]);
   let talents = $state<TalentFile | null>(null);
+  /**
+   * The adopt in flight, if any. `character` is set before the talent file and the item
+   * table have arrived, so the strip renders at once -- and a Run pressed in that window
+   * used to be refused with the generic failure because `talents` was still null. run()
+   * and runOnServer() wait on this instead.
+   */
+  let adopting: Promise<void> = Promise.resolve();
+  let adoptPending = false;
   let actionNames = $state<ActionNames | null>(null);
   let loadedNamesFor = '';
   let buffNames = $state<BuffNames | null>(null);
@@ -240,6 +248,14 @@ export function createSimStore(init: SimStoreInit) {
 
   /** Every source funnels through here, so the failure rule lives in one place. */
   async function adopt(load: Promise<SourceResult>): Promise<void> {
+    adoptPending = true;
+    adopting = adoptInner(load).finally(() => {
+      adoptPending = false;
+    });
+    await adopting;
+  }
+
+  async function adoptInner(load: Promise<SourceResult>): Promise<void> {
     // A new character invalidates any server-lane poll still in flight for the old one --
     // see runOnServer()'s own generation check.
     serverRunGeneration += 1;
@@ -560,6 +576,7 @@ export function createSimStore(init: SimStoreInit) {
         message = simCopy.noCharacter;
         return;
       }
+      if (adoptPending) await adopting;
       message = null;
       detail = '';
       stopRequested = false;
@@ -632,6 +649,7 @@ export function createSimStore(init: SimStoreInit) {
         message = simCopy.noCharacter;
         return;
       }
+      if (adoptPending) await adopting;
       const index = talents === null ? null : indexTalents(talents);
       if (index === null) {
         message = simCopy.failed;

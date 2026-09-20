@@ -208,3 +208,37 @@ describe('sourcePill', () => {
     );
   });
 });
+
+describe('fromStoredCharacter, addon-sourced', () => {
+  const path: CharacterPath = { region: 'us', ruleset: 'normal', slug: 'simfury' };
+  it('decodes the stored export the way the paste box does, race and gear included', async () => {
+    // input.go hands an addon-sourced read the addon's own export string as `gear`, and
+    // records no race of its own: the FS1 code carries it. Before this path existed the
+    // read was refused for "no race recorded" and the gear started empty.
+    api.route({
+      method: 'GET',
+      pattern: /\/v1\/characters\/[^/]+\/[^/]+\/[^/]+\/sim-input$/,
+      respond: () =>
+        envelope({
+          spec: 'warrior-fury',
+          gear: FURY,
+          talents: '',
+          buffs: [],
+          captured_at: '2026-09-20T09:00:00Z',
+          source: 'addon',
+        }),
+    });
+    const result = await fromStoredCharacter(path, ctx);
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.character.name).toBe('simfury');
+    expect(result.character.race_slug).toBe('orc');
+    expect(result.character.spec).toBe('warrior-fury');
+    expect(result.character.gear.head).toBe(12640);
+    expect(result.character.source).toEqual({
+      kind: 'addon',
+      ref: 'us/normal/simfury',
+      captured_at: '2026-09-20T09:00:00Z',
+    });
+  });
+});

@@ -16,6 +16,7 @@
 // Each returns a result rather than throwing: every one of these is something a player
 // typed or pasted, and the page shows the reason inline beside the field.
 import { API_BASE_URL } from '../planner/config';
+import { FS1_PREFIX, decodeFS1 } from '../planner/fs1';
 import { loadReference, loadTalents } from '../planner/load';
 import type { BuildRecord } from '../planner/types';
 import { fetchReportMeta, fetchSummary } from '../report/load';
@@ -100,6 +101,36 @@ export async function fromStoredCharacter(path: CharacterPath, ctx: LoadContext)
     return { ok: false, message: error instanceof Error ? error.message : simCopy.characterFailed };
   }
   const characterKey = `${path.region}/${path.ruleset}/${path.slug}`;
+
+  // An addon-sourced read carries the addon's own export string as `gear` (input.go:
+  // "the source's own shape"), and that string carries everything the paste path decodes
+  // -- class, race, talents and gear -- so it takes exactly the paste path, with the
+  // stored name and capture time. Nothing here is guessed: the code refuses the same
+  // way the paste box does.
+  if (input.source === 'addon' && typeof input.gear === 'string' && input.gear.startsWith(`${FS1_PREFIX}:`)) {
+    const code = input.gear;
+    const decoded = decodeFS1(code);
+    if (!decoded.ok) return { ok: false, message: decoded.message };
+    let talents;
+    let classes;
+    let races;
+    try {
+      [talents, { classes, races }] = await Promise.all([
+        loadTalents(ctx.treeVersion, decoded.build.classSlug),
+        reference(ctx),
+      ]);
+    } catch {
+      return { ok: false, message: simCopy.characterFailed };
+    }
+    return characterFromFs1(
+      code,
+      talents,
+      classes,
+      races,
+      { kind: 'addon', ref: characterKey, captured_at: input.captured_at },
+      path.slug,
+    );
+  }
 
   const classSlug = input.spec.split('-')[0];
   try {
