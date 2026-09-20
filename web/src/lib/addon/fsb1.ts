@@ -66,6 +66,14 @@ function fromBase36(char: string): number | undefined {
   return index === -1 ? undefined : index;
 }
 
+/** `PINNED_STATS`'s index for a known name; every unrecognised name shares this rank, so
+ *  two of them fall through to the alphabetical tie-break below rather than comparing
+ *  `Infinity - Infinity` (`NaN`, which is neither `< 0`, `> 0` nor `0` and leaves `sort`'s
+ *  ordering for that pair undefined). */
+function statRank(name: string): number {
+  return STAT_ORDER.get(name) ?? Number.POSITIVE_INFINITY;
+}
+
 function encodeStats(stats: Record<string, number>): string {
   // Sorted, so one build is one string: an object's key order is insertion order and two
   // callers building the same set of stats in different orders would otherwise produce
@@ -74,9 +82,8 @@ function encodeStats(stats: Record<string, number>): string {
   // alphabetically among themselves.
   return Object.keys(stats)
     .sort((a, b) => {
-      const order =
-        (STAT_ORDER.get(a) ?? Number.POSITIVE_INFINITY) - (STAT_ORDER.get(b) ?? Number.POSITIVE_INFINITY);
-      return order !== 0 ? order : a.localeCompare(b);
+      const [rankA, rankB] = [statRank(a), statRank(b)];
+      return rankA !== rankB ? rankA - rankB : a.localeCompare(b);
     })
     .map((name) => `${name}=${Math.round(stats[name])}`)
     .join(';');
@@ -160,7 +167,7 @@ export function decodeFSB1(code: string): FSB1Result {
   if (code.length > MAX_CODE_LENGTH) return { ok: false, message: addonCopy.tooLong };
   const parts = code.trim().split(':');
   if (parts[0] !== FSB1_PREFIX) {
-    const named = parts[0] === undefined || parts[0] === '' ? 'unlabelled' : parts[0];
+    const named = parts[0] === undefined || parts[0] === '' ? addonCopy.unlabelledCode : parts[0];
     return { ok: false, message: addonCopy.wrongPrefix(named, FSB1_PREFIX) };
   }
   if (parts.length < 5) return { ok: false, message: addonCopy.shortCode };

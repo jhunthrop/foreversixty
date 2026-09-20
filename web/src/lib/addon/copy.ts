@@ -9,6 +9,8 @@
 export const addonCopy = {
   // --- codec refusals. Each names what is wrong; never a generic failure. ---
   wrongPrefix: (found: string, wanted: string): string => `That code is ${found}; this site reads ${wanted}.`,
+  /** Stands in for `found` in `wrongPrefix` when the code has no prefix segment to name. */
+  unlabelledCode: 'unlabelled',
   tooLong: 'That code is too long to read.',
   shortCode: 'That code is missing its talent and gear fields.',
   orderLength: 'That code’s talent order is not a whole number of points.',

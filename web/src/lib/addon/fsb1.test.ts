@@ -3,7 +3,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import vectors from '../../fixtures/addon/codec-vectors.json';
-import { decodeFSB1, encodeFSB1, MAX_CODE_LENGTH, type FSB1Build } from './fsb1';
+import { addonCopy } from './copy';
+import { decodeFSB1, encodeFSB1, FSB1_PREFIX, MAX_CODE_LENGTH, type FSB1Build } from './fsb1';
 
 describe('decodeFSB1', () => {
   it.each(vectors.fsb1)('reads the shared vector: $name', ({ code, build }) => {
@@ -32,6 +33,13 @@ describe('decodeFSB1', () => {
     const result = decodeFSB1('x'.repeat(MAX_CODE_LENGTH + 1));
     expect(result).toEqual({ ok: false, message: 'That code is too long to read.' });
   });
+
+  it('names an unlabelled code from the copy file, not an inline literal, when there is no prefix to read', () => {
+    const result = decodeFSB1('');
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.message).toBe(addonCopy.wrongPrefix(addonCopy.unlabelledCode, FSB1_PREFIX));
+  });
 });
 
 describe('encodeFSB1', () => {
@@ -57,6 +65,20 @@ describe('encodeFSB1', () => {
       gear: [],
     };
     expect(encodeFSB1(build)).toBe('FSB1:1:paladin:1a2:');
+  });
+
+  it('sorts a stat outside contract 10.8’s vocabulary after every known one, alphabetically among themselves', () => {
+    // stamina is pinned (contract 10.8), so it always sorts first here; zzz_unknown and
+    // aaa_unknown are both outside the pinned vocabulary, so this also proves two unknown
+    // names get a stable, defined order between them rather than an arbitrary one -- the
+    // exact property the parallel Lua codec has to match.
+    const build: FSB1Build = {
+      dataBuild: '1',
+      classSlug: 'paladin',
+      order: [],
+      gear: [{ slot: 'head', itemId: 1, stats: { zzz_unknown: 9, stamina: 5, aaa_unknown: 3 } }],
+    };
+    expect(encodeFSB1(build)).toBe('FSB1:1:paladin::head=1:stamina=5;aaa_unknown=3;zzz_unknown=9');
   });
 });
 
