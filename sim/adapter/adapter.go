@@ -310,23 +310,6 @@ func actorFrom(u *proto.UnitMetrics, guid, class string, iters float64, targets 
 			idx = append(idx, k)
 		}
 	}
-	if len(idx) == 0 {
-		// Every index this actor recorded a share against - including a
-		// share of exactly zero - missed the encounter's own target
-		// list. In every case measured (a single-target fight, a
-		// five-target one, a dungeon pull), the discarded indices carry
-		// no damage, and apportion works from PROPORTIONS rather than
-		// from summing perTarget, so dropping a zero share above already
-		// costs the total nothing: it is handed out over whatever
-		// shares remain. This branch only guards the case that has
-		// never been observed - every recorded index being non-target
-		// AND some of them nonzero - so the actor's Total is not
-		// silently dropped: Task 3's invariant, sum(Targets) == Total,
-		// holds either way.
-		for k := range perTarget {
-			idx = append(idx, k)
-		}
-	}
 	sort.Slice(idx, func(i, j int) bool { return idx[i] < idx[j] })
 	shares := make([]float64, len(idx))
 	for i, k := range idx {
@@ -335,21 +318,46 @@ func actorFrom(u *proto.UnitMetrics, guid, class string, iters float64, targets 
 	// One apportionment of the actor's already-rounded Total across the
 	// targets, so the column sums to exactly what the row says rather
 	// than to whatever independent per-target rounding happened to add
-	// up to.
+	// up to. apportion works from PROPORTIONS, not from summing
+	// perTarget against a.Total, so a share dropped above for missing
+	// the encounter's target list - always zero in every case measured
+	// (a single-target fight, a five-target one, a dungeon pull) -
+	// costs the surviving shares nothing: whatever it would have
+	// carried is handed out over them instead, and the invariant below
+	// holds regardless of whether that dropped share was actually zero.
 	targetTotals := apportion(a.Total, shares)
 	for i, k := range idx {
-		name, ok := targets[k]
-		if !ok {
-			// Only reachable through the fallback above - a unit index
-			// the encounter never named. "Target %d" is what every row
-			// used to say; kept here as the last-resort label so the
-			// row still identifies itself.
-			name = fmt.Sprintf("Target %d", k)
-		}
 		a.Targets = append(a.Targets, summary.Pair{
 			GUID:  fmt.Sprintf("sim-target-%d", k),
-			Name:  name,
+			Name:  targets[k],
 			Total: targetTotals[i],
+		})
+	}
+	if len(idx) == 0 && a.Total != 0 {
+		// Nothing this actor recorded a share against matched the
+		// encounter's own target list, yet its Total is nonzero. In
+		// practice this means res.EncounterMetrics itself was missing
+		// or empty - a real completed sim always sets it
+		// (sim/core/sim.go:391 calls sim.Encounter.GetMetricsProto()
+		// unconditionally, so a genuine result always carries at least
+		// one target) - so the caller handed Summarize a malformed or
+		// pre-fix result. The one case that would ALSO reach here with
+		// EncounterMetrics present - every recorded index missing the
+		// list and at least one of them nonzero - has never been
+		// observed, but is handled the same way rather than assumed
+		// impossible.
+		//
+		// There is nowhere legitimate to attribute the total, so it
+		// gets exactly ONE row that says so plainly, instead of
+		// silently falling back to one row per raid-sized unit index -
+		// which would be indistinguishable from the phantom-row bug
+		// this task exists to remove. Task 3's invariant, sum(Targets)
+		// == Total, still holds: one row carrying the whole total sums
+		// to it trivially.
+		a.Targets = append(a.Targets, summary.Pair{
+			GUID:  "sim-target-unknown",
+			Name:  "Unknown Target",
+			Total: a.Total,
 		})
 	}
 	sort.SliceStable(a.Abilities, func(i, j int) bool { return a.Abilities[i].Total > a.Abilities[j].Total })

@@ -24,11 +24,13 @@ func engineTargets(n int) []*proto.UnitMetrics {
 // spans every unit index 0..n (inclusive): 0..n-1 are the encounter's
 // own targets, each dealt 1000*(i+1) damage, and index n is the
 // player's OWN unit index - the shape sim/core/spell.go:453 actually
-// produces, sized by len(env.AllUnits) (targets ++ raid units), always
-// zero for a unit that never damages itself. This is the exact fixture
-// the dps and tank reviews' phantom rows came from: one row too many,
-// always at zero.
-func actionAcrossAllUnits(spellID int32, targetCount int) *proto.ActionMetrics {
+// produces, sized by len(env.AllUnits) (targets ++ raid units). In every
+// case actually measured (baseline.md's D4 table, and the AFTER numbers
+// in task-4-report.md) that phantom entry's damage is exactly zero;
+// phantomDamage lets a test override that to exercise the reconciliation
+// path for the case that has never been observed (see
+// TestPerTargetReconcilesNonzeroDamageOnANonTargetIndex).
+func actionAcrossAllUnits(spellID int32, targetCount int, phantomDamage float64) *proto.ActionMetrics {
 	targets := make([]*proto.TargetedActionMetrics, 0, targetCount+1)
 	for i := 0; i < targetCount; i++ {
 		targets = append(targets, &proto.TargetedActionMetrics{
@@ -39,12 +41,12 @@ func actionAcrossAllUnits(spellID int32, targetCount int) *proto.ActionMetrics {
 		})
 	}
 	// The phantom entry: the player's own unit index, one past the
-	// last real target, always zero.
+	// last real target.
 	targets = append(targets, &proto.TargetedActionMetrics{
 		UnitIndex: int32(targetCount),
 		Casts:     0,
 		Hits:      0,
-		Damage:    0,
+		Damage:    phantomDamage,
 	})
 	return &proto.ActionMetrics{
 		Id:      &proto.ActionID{RawId: &proto.ActionID_SpellId{SpellId: spellID}},
@@ -71,7 +73,7 @@ func TestPerTargetRowsAreBoundedToEncounterTargets(t *testing.T) {
 				Name:      "Sim",
 				UnitIndex: int32(tc.targetCount), // one past the last real target
 				Dps:       &proto.DistributionMetrics{Avg: 500, Stdev: 10, Max: 600, Min: 400},
-				Actions:   []*proto.ActionMetrics{actionAcrossAllUnits(11584, tc.targetCount)},
+				Actions:   []*proto.ActionMetrics{actionAcrossAllUnits(11584, tc.targetCount, 0)},
 			}
 			res := resultWith(u, 100)
 			res.EncounterMetrics = &proto.EncounterMetrics{Targets: engineTargets(tc.targetCount)}
@@ -109,7 +111,7 @@ func TestPerTargetTotalsSumToActorTotalAfterFiltering(t *testing.T) {
 				Name:      "Sim",
 				UnitIndex: int32(targetCount),
 				Dps:       &proto.DistributionMetrics{Avg: 500, Stdev: 10, Max: 600, Min: 400},
-				Actions:   []*proto.ActionMetrics{actionAcrossAllUnits(11584, targetCount)},
+				Actions:   []*proto.ActionMetrics{actionAcrossAllUnits(11584, targetCount, 0)},
 			}
 			res := resultWith(u, 100)
 			res.EncounterMetrics = &proto.EncounterMetrics{Targets: engineTargets(targetCount)}
@@ -127,5 +129,97 @@ func TestPerTargetTotalsSumToActorTotalAfterFiltering(t *testing.T) {
 				t.Errorf("sum(Targets[].Total) = %d, want Total = %d", sum, a.Total)
 			}
 		})
+	}
+}
+
+// TestPerTargetFallsBackToOneUnknownRowWhenEncounterMetricsIsMissing
+// pins the fallback's own shape: a result carrying no EncounterMetrics
+// (an old or malformed result - a real completed sim always sets it,
+// sim/core/sim.go:391 calls sim.Encounter.GetMetricsProto()
+// unconditionally) must NOT silently reproduce the phantom-row bug this
+// task removes. resultWith and oneAction() build exactly such a result:
+// one action dealing 1000 damage to UnitIndex 1 with no EncounterMetrics
+// at all, so nothing here can tell that index apart from a raid
+// member's. Rather than falling back to a row per recorded index - the
+// pre-fix shape - the actor's whole Total collapses into one row that
+// says the breakdown is unknown, which is unambiguously distinguishable
+// from a real target row.
+func TestPerTargetFallsBackToOneUnknownRowWhenEncounterMetricsIsMissing(t *testing.T) {
+	u := oneAction()
+	res := resultWith(u, 100)
+	if res.EncounterMetrics != nil {
+		t.Fatal("test fixture assumption broken: resultWith now sets EncounterMetrics")
+	}
+
+	got, err := Summarize(res, req())
+	if err != nil {
+		t.Fatal(err)
+	}
+	a := got.DamageDone[0]
+	if len(a.Targets) != 1 {
+		t.Fatalf("Targets = %+v, want exactly one fallback row, not one per recorded index", a.Targets)
+	}
+	row := a.Targets[0]
+	if row.GUID != "sim-target-unknown" || row.Name != "Unknown Target" {
+		t.Errorf(`fallback row = %+v, want GUID "sim-target-unknown", Name "Unknown Target"`, row)
+	}
+	if row.Total != a.Total {
+		t.Errorf("fallback row Total = %d, want the actor's whole Total %d", row.Total, a.Total)
+	}
+}
+
+// TestPerTargetNoFallbackRowWhenActorDealtNoDamage is the fallback's
+// other edge, alongside the row-per-index case above: an actor with
+// nothing to attribute (Total == 0) gets no row at all, fallback or
+// otherwise. Task 3's invariant, sum(Targets) == Total, holds trivially
+// at 0 == 0 - an "Unknown Target" row carrying zero would be exactly the
+// kind of always-zero phantom row this task removes.
+func TestPerTargetNoFallbackRowWhenActorDealtNoDamage(t *testing.T) {
+	u := &proto.UnitMetrics{Name: "Idle", UnitIndex: 0, Dps: &proto.DistributionMetrics{}}
+	got, err := Summarize(resultWith(u, 100), req())
+	if err != nil {
+		t.Fatal(err)
+	}
+	a := got.DamageDone[0]
+	if len(a.Targets) != 0 {
+		t.Errorf("Targets = %+v, want none for an actor with zero Total", a.Targets)
+	}
+}
+
+// TestPerTargetReconcilesNonzeroDamageOnANonTargetIndex pins the
+// proportional-redistribution case apportion's own comment describes
+// but no other fixture exercises: three real targets plus one
+// non-target index that - contrary to every case actually measured -
+// carries NONZERO recorded damage. The row list still bounds to the
+// three real targets (the non-target index gets no row of its own, and
+// Total is nonzero so the single-row fallback above does not apply
+// either - idx is non-empty here), and the actor's whole Total,
+// phantom damage included, is apportioned across the real rows by
+// their own proportions rather than lost.
+func TestPerTargetReconcilesNonzeroDamageOnANonTargetIndex(t *testing.T) {
+	const targetCount = 3
+	u := &proto.UnitMetrics{
+		Name:      "Sim",
+		UnitIndex: int32(targetCount),
+		Dps:       &proto.DistributionMetrics{Avg: 500, Stdev: 10, Max: 600, Min: 400},
+		Actions:   []*proto.ActionMetrics{actionAcrossAllUnits(11584, targetCount, 500)},
+	}
+	res := resultWith(u, 100)
+	res.EncounterMetrics = &proto.EncounterMetrics{Targets: engineTargets(targetCount)}
+
+	got, err := Summarize(res, req())
+	if err != nil {
+		t.Fatal(err)
+	}
+	a := got.DamageDone[0]
+	if len(a.Targets) != targetCount {
+		t.Fatalf("row count = %d, want %d; the non-target index must not get its own row", len(a.Targets), targetCount)
+	}
+	var sum int64
+	for _, row := range a.Targets {
+		sum += row.Total
+	}
+	if sum != a.Total {
+		t.Errorf("sum(Targets[].Total) = %d, want Total = %d; the non-target index's damage must be redistributed, not lost", sum, a.Total)
 	}
 }
