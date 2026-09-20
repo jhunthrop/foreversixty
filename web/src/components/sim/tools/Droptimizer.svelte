@@ -12,6 +12,7 @@
   import type { BulkStore } from '../../../lib/sim/bulk-store.svelte';
   import type { BulkResult } from '../../../lib/sim/bulk-types';
   import { bulkCopy } from '../../../lib/sim/copy';
+  import { pickedWithNothingTried } from '../../../lib/sim/drop-picks';
   import BulkRunBar from './BulkRunBar.svelte';
   import DropResults from './DropResults.svelte';
   import SourcePicker from './SourcePicker.svelte';
@@ -36,6 +37,15 @@
     else params.delete('pinName');
     window.location.href = `/sim/gear?${params.toString()}`;
   }
+
+  /**
+   * Ticked picks that contributed zero tried items (task 3b) -- computed here, where
+   * `store.loot` lives, and passed down as plain `{ key, name }` rows so `DropResults`
+   * keeps its own no-`loot`-prop rule intact.
+   */
+  const untried = $derived(
+    pickedWithNothingTried(store.pickedBosses, store.loot, store.items, store.knownItems),
+  );
 </script>
 
 <div class="flex flex-col gap-[22px] md:gap-8" data-testid="sim-droptimizer">
@@ -47,6 +57,8 @@
       showUpcoming={store.showUpcoming}
       picked={store.pickedBosses}
       professions={store.character.professions}
+      items={store.items}
+      known={store.knownItems}
       now={new Date()}
       ontogglekind={(kind) => store.toggleKind(kind)}
       ontoggleupcoming={(value) => store.setShowUpcoming(value)}
@@ -61,6 +73,7 @@
       result={store.result as BulkResult}
       items={store.items}
       treeVersion={store.character?.tree_version ?? ''}
+      {untried}
       onpin={pin}
     />
   {:else if store.pickedBosses.length === 0}

@@ -805,3 +805,31 @@ export const bulkCopy = {
    */
   itemNotAdded: (itemId: number): string => `Item ${itemId} could not be added to this character.`,
 } as const;
+
+// --- Lane W3 (tool pages): persona round 1 ---
+/**
+ * Copy for fix lane W3 (tool pages: /sim/gear, /sim/drops, /sim/talents), appended here
+ * rather than folded into simCopy/bulkCopy above so later tasks in this lane can keep
+ * adding keys to one place without touching either of those objects (the plan's copy.ts
+ * rule). Do not insert keys into simCopy/bulkCopy for this lane's work, and do not reorder
+ * or reformat anything above this line.
+ */
+export const toolFixCopy = {
+  /**
+   * DropResults.svelte, task 3b (newcomer MAJOR, review.md:291-298; dps D34, review.md:344-
+   * 349): a ticked source or boss that contributed zero tried items still gets a row here,
+   * naming it rather than vanishing with no trace it was ever picked. Says only what
+   * drop-picks.ts's `pickedWithNothingTried` can prove -- nothing from this pick was tried
+   * -- and not why: an id can miss for two different reasons this data cannot tell apart
+   * (absent from this class's item file, or absent from the engine's `simitems.json`).
+   */
+  dropsNothingTried: (name: string): string => `None of ${name}'s drops could be tried.`,
+  /**
+   * SourcePicker.svelte, task 3c (dps D33, BLOCKER, review.md:334-342; newcomer MAJOR,
+   * review.md:299-304, "ticking Raids produces an empty void"): a ticked kind whose every
+   * source is gated behind an unopened phase used to render nothing at all. This introduces
+   * the list of gated sources and the date each opens (`gateLabel`, unchanged) instead of
+   * the group silently vanishing.
+   */
+  sourcesAllGated: 'Nothing here has opened yet. Here is when each one does:',
+} as const;

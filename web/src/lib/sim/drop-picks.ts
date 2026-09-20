@@ -88,3 +88,84 @@ export function rowsFromPicks(
   }
   return rows;
 }
+
+/**
+ * How many of these ids will actually be tried -- present in this class's item map AND
+ * known to the engine (sim-items.ts's `isKnownItem`), the same two gates `rowsFromPicks`
+ * above already applies per item. `SourcePicker.svelte`'s badge used to print loot.json's
+ * raw item count instead, which is why a source advertising "2" could contribute 0
+ * simulated items (newcomer MAJOR, review.md:291-298; dps D34).
+ */
+export function triedCount(
+  itemIds: readonly number[],
+  items: ReadonlyMap<number, Item>,
+  known: ReadonlySet<number> | null,
+): number {
+  return itemIds.filter((id) => items.has(id) && isKnownItem(id, known)).length;
+}
+
+export interface UntriedPick {
+  /** The `<source id>|<boss id or "">` key, the same shape a `picked` entry carries. */
+  key: string;
+  /** The source or boss name, resolved the same way `rowsFromPicks` resolves it. */
+  name: string;
+}
+
+/**
+ * Which ticked picks contributed zero tried items -- a ticked source or boss `rowsFromPicks`
+ * produced no rows for at all, and so vanishes from a by-boss grouping of the result with
+ * no trace it was ever asked for (newcomer MAJOR, review.md:291-298; dps D34).
+ *
+ * Says only what `triedCount` can prove: nothing from this pick was tried. It does not
+ * guess why -- an id can fail one of `triedCount`'s two gates for two different reasons
+ * this data cannot tell apart (absent from this class's item file, or absent from the
+ * engine's `simitems.json`), and asserting either one specifically would be a claim the
+ * data does not support.
+ */
+export function pickedWithNothingTried(
+  picked: readonly string[],
+  loot: LootFile,
+  items: ReadonlyMap<number, Item>,
+  known: ReadonlySet<number> | null,
+): UntriedPick[] {
+  const untried: UntriedPick[] = [];
+  for (const pick of picked) {
+    const [sourceId, bossId] = pick.split('|');
+    const source = loot.sources.find((entry) => entry.id === sourceId);
+    if (source === undefined) continue;
+    const itemIds = bossId === '' ? itemsOfSource(source) : itemsOfBoss(source, bossId);
+    if (triedCount(itemIds, items, known) > 0) continue;
+    const pickedId = bossId === '' ? sourceId : bossId;
+    untried.push({ key: pick, name: sourceNameOf(loot, pickedId) });
+  }
+  return untried;
+}
+
+export interface SourceGroupVisibility {
+  /** Whether the player has this kind ticked in the top filter row. */
+  ticked: boolean;
+  /** The sources of this kind that pass today's show-upcoming rule. */
+  shown: LootSource[];
+  /** Ticked, has at least one source of this kind, and every one of them is gated shut. */
+  allGated: boolean;
+}
+
+/**
+ * Whether a ticked kind's picker group renders nothing not because it has no sources, but
+ * because every one of them is gated behind a phase that has not opened -- the state that
+ * used to fall straight out of `SourcePicker.svelte`'s `{#if shown.length > 0}` guard with
+ * no heading and no explanation (dps D33, BLOCKER, review.md:334-342; newcomer MAJOR,
+ * review.md:299-304, "ticking Raids produces an empty void").
+ */
+export function sourceGroupVisibility(
+  kind: string,
+  sources: readonly LootSource[],
+  shownKinds: readonly string[],
+  phases: readonly PhaseRow[],
+  showUpcoming: boolean,
+  at: Date,
+): SourceGroupVisibility {
+  const ticked = shownKinds.includes(kind);
+  const shown = ticked ? sources.filter((source) => showUpcoming || isOpen(phases, source, at)) : [];
+  return { ticked, shown, allGated: ticked && sources.length > 0 && shown.length === 0 };
+}

@@ -11,7 +11,8 @@
   import type { Item } from '../../../lib/planner/types';
   import type { BulkResult, Combo } from '../../../lib/sim/bulk-types';
   import { comboRows, deltaLabel, sourceNameOfCombo, type ComboRow } from '../../../lib/sim/combos';
-  import { bulkCopy } from '../../../lib/sim/copy';
+  import { bulkCopy, toolFixCopy } from '../../../lib/sim/copy';
+  import type { UntriedPick } from '../../../lib/sim/drop-picks';
   import { confidenceBand } from '../../../lib/sim/estimate';
   import SubstitutionChips from './SubstitutionChips.svelte';
 
@@ -19,11 +20,18 @@
     result,
     items,
     treeVersion,
+    untried,
     onpin,
   }: {
     result: BulkResult;
     items: ReadonlyMap<number, Item>;
     treeVersion: string;
+    /**
+     * Ticked picks that contributed zero tried items (drop-picks.ts's
+     * `pickedWithNothingTried`) -- named here rather than left unmentioned (newcomer MAJOR,
+     * review.md:291-298; dps D34).
+     */
+    untried: readonly UntriedPick[];
     /** The item, its `drop:<source-id>` origin and the boss/source name it carried in. */
     onpin: (itemId: number, origin: string, sourceName: string) => void;
   } = $props();
@@ -132,6 +140,12 @@
             </li>
           {/each}
         </ul>
+      </div>
+    {/each}
+    {#each untried as pick (pick.key)}
+      <div class="border-line rounded-panel border p-3" data-testid="sim-drops-untried">
+        <h4 class="text-strong text-[13px]">{pick.name}</h4>
+        <p class="text-muted text-[13px]">{toolFixCopy.dropsNothingTried(pick.name)}</p>
       </div>
     {/each}
   </section>
