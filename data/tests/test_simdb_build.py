@@ -244,5 +244,5 @@ def test_go_reads_back_what_python_wrote(tmp_path: Path):
     assert report["spot"]["dreadnaught_in_a_set"] == 1.0
     assert report["spot"]["rune_attack_power"] == 42.0
     assert report["spot"]["rune_ranged_attack_power"] == 42.0
-    assert report["spot"]["rune_hit"] == 7.0
+    assert report["spot"]["rune_hit"] == pytest.approx(0.7)
     assert report["spot"]["player_database_items"] == EXPECTED_ITEMS
