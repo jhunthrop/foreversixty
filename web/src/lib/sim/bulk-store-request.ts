@@ -17,6 +17,8 @@ import type { TalentFile } from '../planner/types';
 import {
   BulkCapError,
   BulkRunError,
+  BulkValidationError,
+  countCombinations,
   runBulk,
   runWeightsRun,
   type BulkProgress,
@@ -24,6 +26,7 @@ import {
 } from './bulk-run';
 import type { BulkPhase, SimTool } from './bulk-store.svelte';
 import {
+  SERVER_CAP,
   finalIterations,
   type BulkMode,
   type BulkRequest,
@@ -113,6 +116,95 @@ export function currentSpec(deps: BulkRequestDeps): BulkRequest['bulk'] | null {
     // of them (contract 10.1 A5).
     consumables: deps.getConsumableIds().map((id) => [id]),
   });
+}
+
+/**
+ * Everything `recount` needs beyond `BulkRequestDeps`: the phase gate (read, for the
+ * finally-block's "was I the one who started counting" check, and written) and the four
+ * fields a count can change -- `combinations`, both cap notices, and `message`/`detail` for
+ * a malformed request.
+ */
+export interface RecountDeps extends BulkRequestDeps {
+  getPhase(): BulkPhase;
+  setPhase(value: BulkPhase): void;
+  setMessage(value: string | null): void;
+  setDetail(value: string): void;
+  setCombinations(value: number | null): void;
+  setCapNotice(value: { cap: number; combinations: number } | null): void;
+  setServerCapNotice(value: { cap: number; combinations: number } | null): void;
+}
+
+/**
+ * The live combination count, debounced by the caller (`bulk-store.svelte.ts`'s own
+ * `scheduleCount`, still there -- this function only counts, once). Moved out of
+ * `bulk-store.svelte.ts` in fix round 2 (that file was at the 800-line cap, its third split
+ * point exhausted): a behaviour-preserving move, not a rewrite -- every branch below is
+ * byte-for-byte the same decision its prior home made, with closure variables replaced by
+ * `deps` getters/setters, the identical seam `buildRequest`/`envelope` already use.
+ */
+export async function recount(deps: RecountDeps): Promise<void> {
+  // One place owns clearing, at the top, before any exit -- `runBulkAndSettle`'s own rule.
+  // Otherwise `BulkValidationError`'s message/detail outlive the next recount once the
+  // player fixes what was wrong (fix round 3).
+  deps.setMessage(null);
+  deps.setDetail('');
+  if (deps.mode === null || deps.getCharacter() === null) return;
+  const bulk = currentSpec(deps);
+  if (bulk === null || validateBulk(bulk) !== null) {
+    deps.setCombinations(null);
+    deps.setCapNotice(null);
+    // The invalid-spec exit used to leave a stale server-cap notice on screen after the
+    // player unticked everything past 5,000 (fix round 1, Important 3) -- every exit now
+    // clears all three of the same fields.
+    deps.setServerCapNotice(null);
+    return;
+  }
+  const base = envelope(deps, finalIterations(deps.getPrecision()));
+  if (base === null) return;
+  const request: BulkRequest = { ...base, bulk };
+  deps.setPhase('counting');
+  try {
+    const combinations = await countCombinations(deps.poolOnce(), request);
+    deps.setCombinations(combinations);
+    deps.setCapNotice(null);
+    // Derived directly from the count on the success path too, not only through a
+    // `BulkCapError` (fix round 1, Minor): `setCap()` is public, so a browser cap raised
+    // past 5,000 must not let a 6,000-combination count succeed without this notice.
+    deps.setServerCapNotice(combinations > SERVER_CAP ? { cap: SERVER_CAP, combinations } : null);
+  } catch (error) {
+    if (error instanceof BulkCapError) {
+      deps.setCombinations(error.combinations);
+      deps.setCapNotice({ cap: error.cap, combinations: error.combinations });
+      // Past the premium lane's own 5,000 too (contract 10.1 A2), so the page does not
+      // offer a server run the API would refuse at submit with `cap_exceeded`.
+      deps.setServerCapNotice(
+        error.combinations > SERVER_CAP ? { cap: SERVER_CAP, combinations: error.combinations } : null,
+      );
+    } else if (error instanceof BulkValidationError) {
+      // Engine-lane rule 2: `countCombinations` now validates before it counts, so a
+      // malformed request lands here instead of a meaningless cap or count answer. Unlike
+      // the generic branch below, this is always actionable by the player (something on
+      // the request itself is wrong), so it surfaces through `message`/`detail` the same
+      // way a run failure does -- `sim-message` is gated on `message !== null`, so leaving
+      // it unset (as the generic branch does) would make `detail` invisible.
+      deps.setCombinations(null);
+      deps.setCapNotice(null);
+      deps.setServerCapNotice(null);
+      deps.setMessage(error.message);
+      deps.setDetail(error.detail);
+    } else {
+      // Not a cap or validation refusal: a genuine engine error while merely counting. The
+      // count blanks rather than showing a stale number; `detail` carries the reason for a
+      // component that wants it -- `run()` raises the same failure, with `message` set,
+      // the moment the player actually presses Run.
+      deps.setCombinations(null);
+      deps.setCapNotice(null);
+      deps.setServerCapNotice(null);
+      deps.setDetail(error instanceof Error ? error.message : '');
+    }
+  } finally {
+    if (deps.getPhase() === 'counting') deps.setPhase('idle');
+  }
 }
 
 export type RequestOutcome = { request: BulkRequest | WeightsRequest } | { error: string };

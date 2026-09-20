@@ -12,18 +12,9 @@
 //   * the pool is created on the first run, never on mount -- the wasm is 4 MB and these
 //     pages have the site's Lighthouse budget.
 import { fetchSpecs, saveSim } from './api';
+import { stageProgressLine, type BulkProgress, type BulkRunHandle } from './bulk-run';
 import {
-  BulkCapError,
-  BulkValidationError,
-  countCombinations,
-  stageProgressLine,
-  type BulkProgress,
-  type BulkRunHandle,
-} from './bulk-run';
-import {
-  SERVER_CAP,
   browserCap,
-  finalIterations,
   type BulkMode,
   type BulkRequest,
   type GearSet,
@@ -36,14 +27,14 @@ import { MAX_SERVER_POLLS, runServerJob } from './bulk-server-run';
 import {
   applyRequestFields,
   buildRequest,
-  currentSpec,
-  envelope,
   previewRequest,
+  recount as recountCombinations,
   runBulkAndSettle,
   seededStats,
   validateRequestJson,
   type BulkRequestDeps,
   type BulkRunDeps,
+  type RecountDeps,
 } from './bulk-store-request';
 import {
   addRow,
@@ -52,7 +43,6 @@ import {
   rowFor,
   toggleRow,
   uiSlotsOf,
-  validateBulk,
   type CandidateRow,
   type Origin,
 } from './candidates';
@@ -346,67 +336,27 @@ export function createBulkStore(init: BulkStoreInit) {
     bumpServerGeneration: () => (serverGeneration += 1),
   };
 
-  async function recount(): Promise<void> {
-    // One place owns clearing, at the top, before any exit -- `runBulkAndSettle`'s own
-    // rule. Otherwise `BulkValidationError`'s message/detail outlive the next recount once
-    // the player fixes what was wrong (fix round 3).
-    message = null;
-    detail = '';
-    if (mode === null || character === null) return;
-    const bulk = currentSpec(requestDeps);
-    if (bulk === null || validateBulk(bulk) !== null) {
-      combinations = null;
-      capNotice = null;
-      // The invalid-spec exit used to leave a stale server-cap notice on screen after the
-      // player unticked everything past 5,000 (fix round 1, Important 3) -- every exit now
-      // clears all three of the same fields.
-      serverCapNotice = null;
-      return;
-    }
-    const base = envelope(requestDeps, finalIterations(precision));
-    if (base === null) return;
-    const request: BulkRequest = { ...base, bulk };
-    phase = 'counting';
-    try {
-      combinations = await countCombinations(poolOnce(), request);
-      capNotice = null;
-      // Derived directly from the count on the success path too, not only through a
-      // `BulkCapError` (fix round 1, Minor): `setCap()` is public, so a browser cap raised
-      // past 5,000 must not let a 6,000-combination count succeed without this notice.
-      serverCapNotice = combinations > SERVER_CAP ? { cap: SERVER_CAP, combinations } : null;
-    } catch (error) {
-      if (error instanceof BulkCapError) {
-        combinations = error.combinations;
-        capNotice = { cap: error.cap, combinations: error.combinations };
-        // Past the premium lane's own 5,000 too (contract 10.1 A2), so the page does not
-        // offer a server run the API would refuse at submit with `cap_exceeded`.
-        serverCapNotice =
-          error.combinations > SERVER_CAP ? { cap: SERVER_CAP, combinations: error.combinations } : null;
-      } else if (error instanceof BulkValidationError) {
-        // Engine-lane rule 2: `countCombinations` now validates before it counts, so a
-        // malformed request lands here instead of a meaningless cap or count answer. Unlike
-        // the generic branch below, this is always actionable by the player (something on
-        // the request itself is wrong), so it surfaces through `message`/`detail` the same
-        // way a run failure does -- `sim-message` is gated on `message !== null`, so leaving
-        // it unset (as the generic branch does) would make `detail` invisible.
-        combinations = null;
-        capNotice = null;
-        serverCapNotice = null;
-        message = error.message;
-        detail = error.detail;
-      } else {
-        // Not a cap or validation refusal: a genuine engine error while merely counting. The
-        // count blanks rather than showing a stale number; `detail` carries the reason for a
-        // component that wants it -- `run()` raises the same failure, with `message` set,
-        // the moment the player actually presses Run.
-        combinations = null;
-        capNotice = null;
-        serverCapNotice = null;
-        detail = error instanceof Error ? error.message : '';
-      }
-    } finally {
-      if (phase === 'counting') phase = 'idle';
-    }
+  /**
+   * Everything `recount` (bulk-store-request.ts) needs beyond `requestDeps` -- the phase
+   * gate and the fields a count can change. Built once, the same seam as `requestDeps`/
+   * `runDeps` above (fix round 2: `recount`'s own body moved out to keep this file under
+   * the 800-line cap; this object is the only thing that replaced it here).
+   */
+  const recountDeps: RecountDeps = {
+    ...requestDeps,
+    getPhase: () => phase,
+    setPhase: (value) => (phase = value),
+    setMessage: (value) => (message = value),
+    setDetail: (value) => (detail = value),
+    setCombinations: (value) => (combinations = value),
+    setCapNotice: (value) => (capNotice = value),
+    setServerCapNotice: (value) => (serverCapNotice = value),
+  };
+
+  /** The live combination count. Thin wiring only -- see `bulk-store-request.ts`'s own
+   *  `recount` for the actual decision, moved there in fix round 2. */
+  function recount(): Promise<void> {
+    return recountCombinations(recountDeps);
   }
 
   return {
