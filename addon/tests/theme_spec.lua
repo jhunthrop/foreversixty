@@ -105,6 +105,27 @@ describe("Theme", function()
 			Theme.diagnostics())
 	end)
 
+	it("keeps the client's own font on a region that already exists", function()
+		start({ fonts = { "GameFontNormalSmall" } })
+		local box = _G.CreateFrame("EditBox")
+		Theme.applyFont(box, "small")
+		assert.are.equal("GameFontNormalSmall", box:GetFont())
+		assert.is_nil(mock.firstCall(box, "SetFont"))
+	end)
+
+	it("falls back to the shipped font when the region's font object is missing", function()
+		start()
+		local box = _G.CreateFrame("EditBox")
+		Theme.applyFont(box, "small")
+		local call = mock.firstCall(box, "SetFont")
+		assert.is_not_nil(call)
+		assert.are.equal(Theme.FALLBACK_FONT.path, call[1])
+		assert.are.equal(Theme.FALLBACK_FONT.size, call[2])
+		assert.are.same(
+			{ string.format(L.diagNoTemplate, "GameFontNormalSmall") },
+			Theme.diagnostics())
+	end)
+
 	it("takes the class's own colour for the header", function()
 		start({ globals = { RAID_CLASS_COLORS = { WARRIOR = { r = 0.78, g = 0.61, b = 0.43 } } } })
 		local r, g, b = Theme.classColor("WARRIOR")

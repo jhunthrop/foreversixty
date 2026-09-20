@@ -41,6 +41,7 @@ Theme.SIZES = {
 	tabWidth = 96,
 	border = 1,
 	padding = 12,
+	gap = 4,
 	rowHeight = 18,
 	listRows = 12,
 	buttonHeight = 22,
@@ -167,6 +168,20 @@ function Theme.fontString(parent, layer, fontKey)
 	end
 	Theme.note(string.format(L.diagNoTemplate, font))
 	region = (ok and region ~= nil) and region or parent:CreateFontString(nil, layer)
+	region:SetFont(Theme.FALLBACK_FONT.path, Theme.FALLBACK_FONT.size)
+	return region
+end
+
+--- The same two questions as fontString, for a region that already exists
+--- and so could not be created with a font inherited -- the edit box is the
+--- only one. SetFontObject can raise, or it can succeed while the region
+--- still reports no font, because the font object it names does not exist.
+function Theme.applyFont(region, fontKey)
+	local font = Theme.FONTS[fontKey] or Theme.FONTS.normal
+	if pcall(region.SetFontObject, region, font) and region:GetFont() ~= nil then
+		return region
+	end
+	Theme.note(string.format(L.diagNoTemplate, font))
 	region:SetFont(Theme.FALLBACK_FONT.path, Theme.FALLBACK_FONT.size)
 	return region
 end

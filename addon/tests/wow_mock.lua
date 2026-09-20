@@ -224,13 +224,20 @@ function mock.install(state)
 			return self.text
 		end
 		--- SetFontObject/GetFont are real methods (not the fabricated
-		--- recorder) so CreateFontString below can make a region that
-		--- genuinely reports a font, for Theme.fontString's success case;
-		--- the fabricated recorder's nil return is what stands in for a
-		--- client that inherited nothing, for its fallback case.
+		--- recorder) so a region can genuinely report a font, for the
+		--- success case of Theme.fontString and Theme.applyFont; a region
+		--- still reporting none is what stands in for a client that has no
+		--- font object by that name, for their fallback case.
+		--- The name must be in `state.fonts`, the same set CreateFontString
+		--- consults below: the real client takes the call without raising
+		--- and silently leaves the region unstyled when the font object
+		--- does not exist, so a mock that always took it would make the
+		--- fallback unreachable.
 		function frame:SetFontObject(fontObject)
 			record(self, "SetFontObject", fontObject)
-			self.font = fontObject
+			if state.fonts[fontObject] then
+				self.font = fontObject
+			end
 		end
 		function frame:GetFont()
 			return self.font

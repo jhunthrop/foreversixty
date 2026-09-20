@@ -12,6 +12,7 @@ Codec.lua
 Talents.lua
 Prefs.lua
 Theme.lua
+Widgets.lua
 Export.lua
 Follow.lua
 Gear.lua
