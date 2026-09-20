@@ -34,7 +34,14 @@ const nav = [
     {nav.map(([label, href]) => (
       <a
         href={href}
-        class="inline-flex shrink-0 items-center min-h-11 md:min-h-0 whitespace-nowrap text-nav hover:text-strong"
+        class:list={[
+          'inline-flex shrink-0 items-center min-h-11 md:min-h-0 whitespace-nowrap text-nav hover:text-strong',
+          // "Logs" is the one label here short enough (37px) to miss the 44px hit-target
+          // floor on its width alone -- the others all clear it on text length. A little
+          // horizontal padding, only on this one link, closes the gap without widening
+          // every other nav entry to match.
+          label === 'Logs' && 'px-2',
+        ]}
       >
         {label}
       </a>

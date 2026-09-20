@@ -135,7 +135,15 @@
       <span class="label text-muted">{simCopy.rotation}</span>
       <span class="flex min-h-11 items-center gap-2 text-[14px] md:min-h-9">
         <span class="text-strong font-semibold" data-testid="sim-rotation">{rotationLabel}</span>
-        <a href={`/sim/specs#${spec}`} class="text-[13px]" data-testid="sim-rotation-link">
+        <!-- 68px wide already clears the 44px hit-target floor, but its own line-height
+             does not; the row around it already reserves min-h-11 (44px) on mobile, so
+             giving the link itself the same min-height fills that already-reserved space
+             rather than growing the row further. -->
+        <a
+          href={`/sim/specs#${spec}`}
+          class="inline-flex min-h-11 items-center text-[13px] md:min-h-0"
+          data-testid="sim-rotation-link"
+        >
           {simCopy.rotationLink}
         </a>
       </span>
