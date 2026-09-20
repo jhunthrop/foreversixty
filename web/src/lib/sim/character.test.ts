@@ -811,4 +811,39 @@ describe('plannerHrefFor', () => {
     if (!decoded.ok) return;
     expect(decoded.build.gearSlots).toEqual([{ slot: 'head', itemId: 12640 }]);
   });
+
+  // task-2 fix round 1's review, Important: a first version of plannerHrefFor hand-built its
+  // own CharacterSpec literal instead of calling toCharacterSpec, and in doing so left out
+  // `professions` entirely -- a combat-log character with real profession data would silently
+  // lose it from its own "Open in planner" link. Pinning both directions: professions present
+  // round-trip, and an empty list still gets no `professions=` section (toCharacterSpec omits
+  // the key rather than sending it empty, character.ts:317-319).
+  it('carries professions through the code when the character has them', async () => {
+    const file = await warriorTalents();
+    const index = indexTalents(file);
+    const character: SimCharacter = {
+      ...base,
+      gear: { head: 12640 },
+      gear_slots: [],
+      professions: ['engineering', 'alchemy'],
+    };
+
+    const href = plannerHrefFor(character, index);
+    const code = decodeURIComponent(href.slice('/planner?code='.length));
+    expect(code.includes('professions=')).toBe(true);
+    const decoded = decodeFS1(code);
+    expect(decoded.ok).toBe(true);
+    if (!decoded.ok) return;
+    expect(decoded.build.professions).toEqual(['engineering', 'alchemy']);
+  });
+
+  it('sends no professions= section when the character has none', async () => {
+    const file = await warriorTalents();
+    const index = indexTalents(file);
+    const character: SimCharacter = { ...base, gear: { head: 12640 }, gear_slots: [], professions: [] };
+
+    const href = plannerHrefFor(character, index);
+    const code = decodeURIComponent(href.slice('/planner?code='.length));
+    expect(code.includes('professions=')).toBe(false);
+  });
 });
