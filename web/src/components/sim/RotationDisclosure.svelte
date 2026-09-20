@@ -10,15 +10,22 @@
      same never-navigates control (Disclosure.svelte, Ruling 3's one show/hide primitive)
      instead of one safe copy and one unsafe one.
 
-     Both callers keep the drawer content, the panel/steps/fidelity-link testids and the
-     trigger's own accessible name ("what it does") identical: the drawer answers "what
-     does this rotation do" the same way whether or not a run has finished, and every
-     existing test that scopes through its own container (`sim-rotation-card` or the
-     settings bar's own section) keeps working unscoped by this split. `idPrefix` is the one
-     thing that must differ between callers: once a run finishes, both copies are on screen
-     at once, and the DOM `id` Disclosure derives (for `aria-controls`) would otherwise
-     collide between them -- two panels sharing one id, and a trigger's `aria-controls`
-     pointing at whichever happened to render first. -->
+     Both callers keep the drawer content and the trigger's own accessible name ("what it
+     does") identical: the drawer answers "what does this rotation do" the same way whether
+     or not a run has finished. `idPrefix` is the one thing that must differ between
+     callers: once a run finishes, both copies are on screen at once, and the DOM `id`
+     Disclosure derives (for `aria-controls`) would otherwise collide between them -- two
+     panels sharing one id, and a trigger's `aria-controls` pointing at whichever happened
+     to render first.
+
+     Residual regressions fix, Finding 2: the panel and steps testids are threaded through
+     `idPrefix` the same way -- `sim-rotation-drawer-panel`/`-steps` for the settings bar,
+     `sim-rotation-card-drawer-panel`/`-steps` for RotationCard -- because both copies are on
+     screen at once post-run, and an unscoped `getByTestId` on the old shared literal was a
+     strict-mode violation waiting to happen, the exact defect this same wave fixed for
+     SpecCard.svelte's per-spec testids. Every existing test that scopes through its own
+     container (`sim-rotation-card` or the settings bar's own section) before reaching for
+     these testids keeps working unchanged. -->
 <script lang="ts">
   import { simCopy } from '../../lib/sim/copy';
   import { rotationDrawerContent } from '../../lib/sim/rotations';
@@ -50,11 +57,11 @@
   {triggerClass}
   panelClass="border-line-soft rounded-panel flex flex-col gap-2 border p-3"
   {triggerTestId}
-  panelTestId="sim-rotation-drawer-panel"
+  panelTestId={`${idPrefix}-drawer-panel`}
 >
   <p class="text-[13px]">{drawer.intro}</p>
   {#if drawer.steps.length > 0}
-    <ol class="flex list-decimal flex-col gap-1 pl-5 text-[13px]" data-testid="sim-rotation-drawer-steps">
+    <ol class="flex list-decimal flex-col gap-1 pl-5 text-[13px]" data-testid={`${idPrefix}-drawer-steps`}>
       {#each drawer.steps as step, index (index)}
         <li>{step}</li>
       {/each}

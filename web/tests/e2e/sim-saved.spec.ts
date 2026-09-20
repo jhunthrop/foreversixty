@@ -163,7 +163,7 @@ test('a saved sim names the rotation it used, opens its drawer, and carries its 
 
   // The trigger opens the drawer in place -- no navigation.
   await card.getByTestId('sim-rotation-card-link').click();
-  const panel = card.getByTestId('sim-rotation-drawer-panel');
+  const panel = card.getByTestId('sim-rotation-card-drawer-panel');
   await expect(panel).toBeVisible();
   expect(page.url()).toBe(url);
 
@@ -204,7 +204,7 @@ test('a saved sim for a validated spec carries the rotation card with no fidelit
   await expect(card).toBeVisible();
   await card.getByTestId('sim-rotation-card-link').click();
   await expect(
-    card.getByTestId('sim-rotation-drawer-panel').getByTestId('sim-rotation-drawer-fidelity-link'),
+    card.getByTestId('sim-rotation-card-drawer-panel').getByTestId('sim-rotation-drawer-fidelity-link'),
   ).toHaveAttribute('href', '/sim/specs#warrior-fury');
   await expect(card.getByTestId('sim-rotation-card-note')).toHaveCount(0);
 });

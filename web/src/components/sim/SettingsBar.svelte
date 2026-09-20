@@ -234,13 +234,19 @@
             triggerTestId="sim-rotation-link"
           />
         </span>
-      {:else}
+      {:else if spec !== ''}
         <span class="flex min-h-11 items-center text-[14px] md:min-h-9">
           <span class="text-strong font-semibold" data-testid="sim-rotation">
             {simCopy.rotationNotSimulated(specName)}
           </span>
         </span>
       {/if}
+      <!-- Residual regressions fix, Finding 1: `spec === ''` is no character loaded at all,
+           not an unsimulated spec -- `specDisplayName('')` returns `''`, and
+           `rotationNotSimulated('')` reads "No rotation yet —  is not simulated.", a
+           sentence with a missing subject. There is nothing to claim about a rotation with
+           no character on screen, so this row renders no value at all rather than naming a
+           spec that does not exist. -->
     </div>
   </div>
 

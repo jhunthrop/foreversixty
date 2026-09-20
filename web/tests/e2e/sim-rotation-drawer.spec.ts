@@ -162,10 +162,10 @@ test('Escape closes the rotation drawer and returns focus to the trigger', async
   const card = page.getByTestId('sim-rotation-card');
   const trigger = card.getByTestId('sim-rotation-card-link');
   await trigger.click();
-  await expect(card.getByTestId('sim-rotation-drawer-panel')).toBeVisible();
+  await expect(card.getByTestId('sim-rotation-card-drawer-panel')).toBeVisible();
 
   await page.keyboard.press('Escape');
-  await expect(card.getByTestId('sim-rotation-drawer-panel')).toHaveCount(0);
+  await expect(card.getByTestId('sim-rotation-card-drawer-panel')).toHaveCount(0);
   await expect(trigger).toBeFocused();
 });
 
