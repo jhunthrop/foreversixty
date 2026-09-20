@@ -91,6 +91,23 @@ local function isDigits(text)
 	return text ~= "" and text:match("^%d+$") ~= nil
 end
 
+--- The canonical integer grammar, `^(?:0|-?[1-9]\d*)$`: zero or a sign-optional
+--- run of digits with no leading zero, so "0" and "-15" are readable but
+--- "-0", "+3", "007" and "--3" are refused. This is for FSB1 stat values
+--- only -- a stat value can be negative once itemization enters it (43
+--- items in data/builds carry a negative stat, e.g. parry: -15), so a
+--- digits-only check makes those items unencodable. FS1 gear entries keep
+--- isDigits: the shipped site decoder (fs1.ts:186) uses /^\d+$/ there, which
+--- accepts "007" and refuses "-15", and an item id is never negative, so
+--- FS1 must not switch to this grammar even though it is the more correct
+--- one in the abstract.
+local function isCanonicalInteger(text)
+	if text == "0" then
+		return true
+	end
+	return text:match("^%-?[1-9]%d*$") ~= nil
+end
+
 local function urlEncode(text)
 	return (text:gsub("[^%w%-%._~]", function(char)
 		return string.format("%%%02X", char:byte())
@@ -419,6 +436,7 @@ end
 -- Shared with the FSB1 half of this module, added in its own task.
 Codec._split = split
 Codec._isDigits = isDigits
+Codec._isCanonicalInteger = isCanonicalInteger
 Codec._fromBase36 = fromBase36
 Codec._toBase36 = toBase36
 Codec._SLOT_SET = SLOT_SET
@@ -511,7 +529,10 @@ local function parseStats(field)
 			return nil, refuse(L.codecStatPair, pair)
 		end
 		local name, value = pair:sub(1, at - 1), pair:sub(at + 1)
-		if name == "" or not isDigits(value) then
+		-- Canonical integer, not isDigits: a stat value is real data that
+		-- can be negative (parry: -15 on Fletcher's Gloves), so digits-only
+		-- would make every negative-stat item unencodable.
+		if name == "" or not isCanonicalInteger(value) then
 			return nil, refuse(L.codecStatPair, pair)
 		end
 		stats[name] = tonumber(value)
@@ -557,6 +578,19 @@ function Codec.decodeFSB1(code)
 	end
 	if #parts < 5 then
 		return nil, L.codecShort
+	end
+	-- Positional fields, each refused by name: an empty data build or class
+	-- would otherwise carry through as an FSB1 build that loadBuild and
+	-- decodeFSB1's own callers cannot use (compareBuilds against "" is not
+	-- meaningful, and data.classes[""] is never a real class), failing far
+	-- from the field that was actually wrong. FS1 accepts an empty field in
+	-- either position (the shipped site decoder does too, so this is
+	-- parity, not a gap) -- this check is FSB1-only.
+	if parts[2] == "" then
+		return nil, refuse(L.codecEmptyField, L.codecFieldDataBuild)
+	end
+	if parts[3] == "" then
+		return nil, refuse(L.codecEmptyField, L.codecFieldClass)
 	end
 	local order, message = parseOrder(parts[4])
 	if order == nil then

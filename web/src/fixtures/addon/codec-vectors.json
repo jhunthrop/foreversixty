@@ -407,6 +407,31 @@
           }
         ]
       }
+    },
+    {
+      "name": "a negative stat value (Fletcher's Gloves parry)",
+      "code": "FSB1:1.60.1.69893:hunter:111:hands=7348:crit=14;parry=-15",
+      "build": {
+        "dataBuild": "1.60.1.69893",
+        "classSlug": "hunter",
+        "order": [
+          {
+            "tab": 1,
+            "tier": 1,
+            "column": 1
+          }
+        ],
+        "gear": [
+          {
+            "slot": "hands",
+            "itemId": 7348,
+            "stats": {
+              "crit": 14,
+              "parry": -15
+            }
+          }
+        ]
+      }
     }
   ],
   "fsb1Invalid": [
@@ -433,6 +458,30 @@
     {
       "name": "a non-numeric stat value",
       "code": "FSB1:1.60.1.69893:paladin::head=12640:stamina=lots"
+    },
+    {
+      "name": "a stat value of negative zero",
+      "code": "FSB1:1.60.1.69893:hunter::hands=7348:parry=-0"
+    },
+    {
+      "name": "a stat value with a leading plus sign",
+      "code": "FSB1:1.60.1.69893:hunter::hands=7348:parry=+3"
+    },
+    {
+      "name": "a stat value with a leading zero",
+      "code": "FSB1:1.60.1.69893:hunter::hands=7348:parry=007"
+    },
+    {
+      "name": "a stat value with a doubled sign",
+      "code": "FSB1:1.60.1.69893:hunter::hands=7348:parry=--3"
+    },
+    {
+      "name": "an empty data build field",
+      "code": "FSB1::paladin:111:"
+    },
+    {
+      "name": "an empty class field",
+      "code": "FSB1:1.60.1.69893::111:"
     }
   ]
 }

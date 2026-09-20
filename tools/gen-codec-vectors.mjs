@@ -36,6 +36,11 @@ const INVALID = [
 //   <order> = one triple per point spent, tab/tier/column, each one base-36 character,
 //             all 1-based, concatenated with no separator.
 //   <gear>  = entries joined by ",", each <slot>=<item_id>[:<stat>=<value>[;<stat>=<value>]…]
+//   A gear entry's stats encode in byte order by name (plain codepoint comparison, e.g. Lua's
+//   table.sort on strings), never by any locale-aware or case-insensitive comparator -- an
+//   implementation backed by String.prototype.localeCompare will diverge from one backed by
+//   this, since a name outside contract 10.8's lowercase vocabulary can sort differently under
+//   the two rules (an uppercase letter is a lower byte than every lowercase one).
 const FSB1 = [
   {
     name: 'three points, one item with two stats',
@@ -74,6 +79,19 @@ const FSB1 = [
       ],
     },
   },
+  {
+    // Negative stat values are real data: data/builds/1.60.1.69893/items has 43 of them,
+    // Fletcher's Gloves (item 7348, hunter.json) among them -- crit 14, parry -15. A
+    // digits-only stat-value check would make this item unencodable.
+    name: "a negative stat value (Fletcher's Gloves parry)",
+    code: 'FSB1:1.60.1.69893:hunter:111:hands=7348:crit=14;parry=-15',
+    build: {
+      dataBuild: '1.60.1.69893',
+      classSlug: 'hunter',
+      order: [{ tab: 1, tier: 1, column: 1 }],
+      gear: [{ slot: 'hands', itemId: 7348, stats: { crit: 14, parry: -15 } }],
+    },
+  },
 ];
 
 const FSB1_INVALID = [
@@ -83,6 +101,16 @@ const FSB1_INVALID = [
   ['a slot this planner does not have', 'FSB1:1.60.1.69893:paladin::tabard=12640'],
   ['a stat with no value', 'FSB1:1.60.1.69893:paladin::head=12640:stamina'],
   ['a non-numeric stat value', 'FSB1:1.60.1.69893:paladin::head=12640:stamina=lots'],
+  // The canonical integer grammar (^(?:0|-?[1-9]\d*)$): "0" and "-15" read, but a sign or
+  // padding the grammar does not name is refused.
+  ['a stat value of negative zero', 'FSB1:1.60.1.69893:hunter::hands=7348:parry=-0'],
+  ['a stat value with a leading plus sign', 'FSB1:1.60.1.69893:hunter::hands=7348:parry=+3'],
+  ['a stat value with a leading zero', 'FSB1:1.60.1.69893:hunter::hands=7348:parry=007'],
+  ['a stat value with a doubled sign', 'FSB1:1.60.1.69893:hunter::hands=7348:parry=--3'],
+  // FSB1 only (see fs1.ts:186's /^\d+$/, which accepts an empty field): each names which
+  // positional field was empty.
+  ['an empty data build field', 'FSB1::paladin:111:'],
+  ['an empty class field', 'FSB1:1.60.1.69893::111:'],
 ];
 
 // A throw anywhere below (a vector the site's own decoder refuses or
