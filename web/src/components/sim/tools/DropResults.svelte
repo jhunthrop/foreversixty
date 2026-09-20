@@ -144,8 +144,11 @@
     {/each}
     {#each untried as pick (pick.key)}
       <div class="border-line rounded-panel border p-3" data-testid="sim-drops-untried">
+        <!-- Fix round, Minor 4: the by-boss cards beside this one use the <h4> for the name
+             and the line under it for the count, never repeating the name in the sentence
+             below -- this card used to name it twice. -->
         <h4 class="text-strong text-[13px]">{pick.name}</h4>
-        <p class="text-muted text-[13px]">{toolFixCopy.dropsNothingTried(pick.name)}</p>
+        <p class="text-muted text-[13px]">{toolFixCopy.dropsNothingTried}</p>
       </div>
     {/each}
   </section>

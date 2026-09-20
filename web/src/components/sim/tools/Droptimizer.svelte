@@ -39,12 +39,18 @@
   }
 
   /**
-   * Ticked picks that contributed zero tried items (task 3b) -- computed here, where
-   * `store.loot` lives, and passed down as plain `{ key, name }` rows so `DropResults`
-   * keeps its own no-`loot`-prop rule intact.
+   * Picks with no trace in the displayed result (task 3b; final whole-branch review,
+   * Important 3) -- computed here, where `store.loot` lives, and passed down as plain
+   * `{ key, name }` rows so `DropResults` keeps its own no-`loot`-prop rule intact.
+   *
+   * `store.submittedDropPicks`, not the live `store.pickedBosses`: this must be the pick set
+   * that produced `store.result`, or a source ticked after the run would read as "untried"
+   * for a result it was never part of.
    */
   const untried = $derived(
-    pickedWithNothingTried(store.pickedBosses, store.loot, store.items, store.knownItems),
+    store.result === null
+      ? []
+      : pickedWithNothingTried(store.submittedDropPicks, store.loot, (store.result as BulkResult).combos),
   );
 </script>
 

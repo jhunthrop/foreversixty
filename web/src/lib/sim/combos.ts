@@ -21,22 +21,36 @@ export function percentOf(delta: number, equippedMean: number): number {
   return equippedMean === 0 ? 0 : (delta / equippedMean) * 100;
 }
 
-const MINUS = '−';
+/**
+ * The design system's rule for a negative figure in a table: a minus sign, not a hyphen.
+ * Exported so every caller that has to sign its own gain (`deltaLabel` below,
+ * `signedGainLabel`'s BY SLOT cell) uses the identical character rather than each typing
+ * `'-'` and drifting from the other two (final whole-branch review, Important 1).
+ */
+export const MINUS = '−';
 
 /**
- * A non-negative gain magnitude, formatted for a GAIN column or a headline: one decimal
- * place below 10, whole (thousands-separated) at 10 and above. Rounds to one decimal FIRST,
- * then decides whole-vs-decimal off the ROUNDED value -- 9.95 rounds to 10.0, which is
- * already >= 10, so it renders "10" rather than truncating to "9.9" or keeping a false
- * "10.0". A true zero renders "0", not "0.0": a delta that really is zero should not imply
- * precision.
+ * A gain magnitude, formatted for a GAIN column or a headline: one decimal place below 10,
+ * whole (thousands-separated) at 10 and above. Rounds to one decimal FIRST, then decides
+ * whole-vs-decimal off the ROUNDED value -- 9.95 rounds to 10.0, which is already >= 10, so
+ * it renders "10" rather than truncating to "9.9" or keeping a false "10.0". A true zero
+ * renders "0", not "0.0": a delta that really is zero should not imply precision.
  *
  * Whole-DPS rounding was hiding real differences (dps D38): two 51-point builds 0.44 DPS
  * apart both read "+0" under the old always-round-to-a-whole-number rule, with nothing on
  * the page to say which was better.
+ *
+ * Takes `Math.abs` of its own input: this used to only DOCUMENT a non-negative precondition
+ * and trust every caller to hold it, and one call site did not -- the BY SLOT column
+ * (ComboResults.svelte) passed `SlotSummaryRow.gain` (`combo.delta.mean`, unconstrained in
+ * sign) straight through, so `gainLabel(-1234.2)` rendered "-1234.2": a spurious decimal
+ * with the thousands separator lost, where the pre-branch code rendered "-1,234" (final
+ * whole-branch review, Important 1). Taking the magnitude here, not just at that one call
+ * site, means a future caller cannot reintroduce the same bug by forgetting `Math.abs`.
  */
 export function gainLabel(magnitude: number): string {
-  const rounded = Math.round(magnitude * 10) / 10;
+  const abs = Math.abs(magnitude);
+  const rounded = Math.round(abs * 10) / 10;
   if (rounded === 0 || rounded >= 10) return Math.round(rounded).toLocaleString('en-US');
   return rounded.toFixed(1);
 }
@@ -47,7 +61,21 @@ export function gainLabel(magnitude: number): string {
  */
 export function deltaLabel(delta: Estimate): string {
   const sign = delta.mean < 0 ? MINUS : '+';
-  return `${sign}${gainLabel(Math.abs(delta.mean))} ± ${gainLabel(confidenceBand(delta))}`;
+  return `${sign}${gainLabel(delta.mean)} ± ${gainLabel(confidenceBand(delta))}`;
+}
+
+/**
+ * The BY SLOT column's own GAIN cell (`SlotSummaryRow.gain`): an em dash for "we don't
+ * know" (no single-slot combination measured it alone), otherwise a signed, formatted
+ * magnitude -- MINUS for a slot the winning set would be better off without (a persona
+ * reviewer saw a -2 drop) and never mistake for the hyphen `deltaLabel` also avoids. Pulled
+ * out of ComboResults.svelte's markup rather than left as an inline expression, per this
+ * lane's own rule: the testable decision belongs in a pure function (final whole-branch
+ * review, Important 1).
+ */
+export function signedGainLabel(gain: number | null): string {
+  if (gain === null) return '—';
+  return `${gain < 0 ? MINUS : '+'}${gainLabel(gain)}`;
 }
 
 const SUBSTITUTION_KEY_SEPARATOR = ':';
@@ -83,6 +111,13 @@ function comboIdentity(combo: Combo): string {
  * (design 3.2's rings-and-trinkets-in-both-slots rule can otherwise emit the same
  * combination twice, at two different slots). The result is already ranked, so the first
  * occurrence of an identity is the best-ranked and every later one is dropped.
+ *
+ * Keeping the first occurrence is only correct while duplicate placements (the same item at
+ * the same enchant/suffix, tried in finger1 vs finger2) carry identical deltas -- the engine
+ * treats both fingers as interchangeable today, so it does. If it ever stops (a set bonus or
+ * a slot-specific proc that made one finger genuinely better than the other), the surviving
+ * row would silently claim whichever number happened to come first, with nothing on the page
+ * naming which slot it actually measured (final whole-branch review, Minor 5).
  */
 function dedupedCombos(combos: readonly Combo[]): Combo[] {
   const seen = new Set<string>();
@@ -118,6 +153,23 @@ export function comboRows(result: BulkResult): ComboRow[] {
       percent: percentOf(combo.delta.mean, result.equipped.mean),
     };
   });
+}
+
+/**
+ * How many of `result.combos` the de-dupe above folded away -- `result.combos.length` minus
+ * `comboRows(result).length`.
+ *
+ * `store.combinations` (BulkRunBar's own count) is the engine's `simCount` over the
+ * SUBMITTED request, before this de-dupe ever runs, so a run with any ring, trinket or
+ * weapon ticked can read "N valid combinations" above a table of fewer than N rows -- the
+ * same complaint class the picker's own counts already drew (dps D34, "the counts in the
+ * picker do not match what gets simulated"). Controller ruling (final whole-branch review,
+ * Important 2): explain the gap on the results page rather than recompute either number
+ * from the other -- `store.combinations` stays the engine's own count, and the results
+ * header stays this file's own row count, so neither can drift from what it actually is.
+ */
+export function collapsedComboCount(result: BulkResult): number {
+  return result.combos.length - comboRows(result).length;
 }
 
 /**

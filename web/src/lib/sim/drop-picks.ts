@@ -10,6 +10,7 @@ import { DEFAULT_OFF_KINDS, isOpen, itemsOfBoss, itemsOfSource, sourceNameOf } f
 import type { LootFile, LootSource } from './loot';
 import type { PhaseRow } from './phase';
 import { isKnownItem } from './sim-items';
+import type { Combo } from './types';
 import type { Item } from '../planner/types';
 
 /** The kinds a freshly loaded build's sources open with: every kind but the off-by-default ones. */
@@ -112,30 +113,44 @@ export interface UntriedPick {
 }
 
 /**
- * Which ticked picks contributed zero tried items -- a ticked source or boss `rowsFromPicks`
- * produced no rows for at all, and so vanishes from a by-boss grouping of the result with
- * no trace it was ever asked for (newcomer MAJOR, review.md:291-298; dps D34).
+ * Which ticked picks have no trace in the result -- no combo carries a substitution whose
+ * own `origin` is this pick's `drop:<id>` -- and so vanish from a by-boss grouping of the
+ * result with no trace they were ever asked for (newcomer MAJOR, review.md:291-298; dps
+ * D34).
  *
- * Says only what `triedCount` can prove: nothing from this pick was tried. It does not
- * guess why -- an id can fail one of `triedCount`'s two gates for two different reasons
- * this data cannot tell apart (absent from this class's item file, or absent from the
- * engine's `simitems.json`), and asserting either one specifically would be a claim the
- * data does not support.
+ * Final whole-branch review, Important 3: this used to prove "nothing tried" off the loot
+ * file (`triedCount`, structural and independent of any run), which missed a second failure
+ * mode entirely -- `rowsFromPicks`' cross-source merge (`addRow`) keeps only the FIRST
+ * pick's `drop:` origin when two ticked picks share an item, so the second pick's own items
+ * never become a row, never become a candidate, and never become a combo, even though
+ * `triedCount` (reading the loot file alone, which still lists the item under both) reports
+ * it has items. Proving this off the RESULT's own combos catches both causes uniformly: a
+ * pick's items were never known to the engine, or they were claimed by an earlier pick --
+ * either way, nothing in the result is credited to this one.
+ *
+ * Reading origins off the result (not off the live, ticked-since-the-run `picked` a caller
+ * might otherwise pass) also closes a previously-deferred minor for free: a source ticked
+ * AFTER a run was rendering as "untried" even though it was never part of the displayed
+ * result at all. `picked` here must be the pick set that produced `combos`, not whatever is
+ * currently ticked -- the caller's job (Droptimizer.svelte passes `store.submittedDropPicks`,
+ * frozen when `run()`/`runOnServer()`/`runRequest()` last actually ran, not `store.
+ * pickedBosses`).
  */
 export function pickedWithNothingTried(
   picked: readonly string[],
   loot: LootFile,
-  items: ReadonlyMap<number, Item>,
-  known: ReadonlySet<number> | null,
+  combos: readonly Combo[],
 ): UntriedPick[] {
+  const triedOrigins = new Set(
+    combos
+      .flatMap((combo) => combo.substitutions.map((sub) => sub.origin))
+      .filter((origin): origin is string => origin !== undefined),
+  );
   const untried: UntriedPick[] = [];
   for (const pick of picked) {
     const [sourceId, bossId] = pick.split('|');
-    const source = loot.sources.find((entry) => entry.id === sourceId);
-    if (source === undefined) continue;
-    const itemIds = bossId === '' ? itemsOfSource(source) : itemsOfBoss(source, bossId);
-    if (triedCount(itemIds, items, known) > 0) continue;
     const pickedId = bossId === '' ? sourceId : bossId;
+    if (triedOrigins.has(`drop:${pickedId}`)) continue;
     untried.push({ key: pick, name: sourceNameOf(loot, pickedId) });
   }
   return untried;

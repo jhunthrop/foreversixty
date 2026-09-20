@@ -194,11 +194,16 @@ export function withTargetArmor(settings: SimSettings, armor: number): SimSettin
  * the player types something else (settings.ts:40-51 above); this only decides what the
  * input reads.
  */
-export function targetArmorField(encounter: EncounterSpec): { value: string; preset: number } {
+export function targetArmorField(encounter: EncounterSpec): { value: string; preset: number; level: number } {
   const level = encounter.target_level ?? DEFAULT_TARGET_LEVEL;
   const preset = TARGET_ARMOR_BY_LEVEL[level] ?? TARGET_ARMOR_BY_LEVEL[DEFAULT_TARGET_LEVEL];
   const armor = encounter.target_armor ?? 0;
-  return { value: String(armor === 0 ? preset : armor), preset };
+  // `level` rides on the return value so a caller (SettingsSheet.svelte's `targetArmorNote`)
+  // reads the SAME level `preset` was computed from, rather than a second, independent
+  // `encounter.target_level ?? DEFAULT_TARGET_LEVEL` lookup that only agrees with it by
+  // coincidence -- fix round, Minor 1, the same shape an earlier round already removed for
+  // `preset` itself.
+  return { value: String(armor === 0 ? preset : armor), preset, level };
 }
 
 /** An id outside the contract's vocabulary reads as "any", never as itself. */

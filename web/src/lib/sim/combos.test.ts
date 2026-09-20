@@ -5,6 +5,8 @@ import itemsJson from '../../fixtures/planner/items/warrior.json';
 import setsJson from '../../fixtures/planner/sets.json';
 import { addonStringFor } from './addon-export';
 import {
+  MINUS,
+  collapsedComboCount,
   comboRows,
   deltaLabel,
   gainLabel,
@@ -12,6 +14,7 @@ import {
   isEmptiedOffHand,
   keepsSetBonus,
   percentOf,
+  signedGainLabel,
   slotSummary,
   sourceNameOfCombo,
   substitutionChipLabel,
@@ -166,6 +169,72 @@ describe('gainLabel', () => {
   it('drops the decimal and thousands-separates once the magnitude reaches 10', () => {
     expect(gainLabel(41.2)).toBe('41');
     expect(gainLabel(1234.2)).toBe('1,234');
+  });
+
+  /**
+   * Final whole-branch review, Important 1: `gainLabel` documented a non-negative
+   * precondition but never enforced it, and the BY SLOT column (ComboResults.svelte) called
+   * it with a signed `SlotSummaryRow.gain` -- `gainLabel(-1234.2)` used to render "-1234.2",
+   * a spurious decimal with the thousands separator lost, where the old code rendered
+   * "-1,234". `gainLabel` now takes its own magnitude defensively, so a negative input can
+   * never reintroduce that regression even if a future caller forgets `Math.abs` too.
+   */
+  it('takes the magnitude defensively -- a negative input formats the same as its absolute value', () => {
+    expect(gainLabel(-1234.2)).toBe(gainLabel(1234.2));
+    expect(gainLabel(-0.44)).toBe(gainLabel(0.44));
+    expect(gainLabel(-1234.2)).toBe('1,234');
+  });
+});
+
+/**
+ * Final whole-branch review, Important 1: the BY SLOT gain cell's own sign decision, pulled
+ * out of ComboResults.svelte's markup into a pure, tested function. `SlotSummaryRow.gain` is
+ * `combo.delta.mean`, unconstrained in sign (a persona reviewer saw a -2 drop), unlike
+ * `deltaLabel`'s `Estimate.mean`, which already went through `Math.abs` via `gainLabel`
+ * before this fix. `MINUS`, not a hyphen -- the design system's rule for a negative figure.
+ */
+describe('signedGainLabel', () => {
+  it('signs a negative gain at or above 10 with MINUS, whole and thousands-separated', () => {
+    expect(signedGainLabel(-1234.2)).toBe(`${MINUS}1,234`);
+  });
+
+  it('signs a negative gain under 10 with MINUS and keeps its decimal', () => {
+    expect(signedGainLabel(-1.8)).toBe(`${MINUS}1.8`);
+  });
+
+  it('signs a positive gain with a plus', () => {
+    expect(signedGainLabel(41.2)).toBe('+41');
+  });
+
+  it('reads an unknown gain as an em dash', () => {
+    expect(signedGainLabel(null)).toBe('—');
+  });
+});
+
+/**
+ * Final whole-branch review, Important 2: `store.combinations` is the engine's own
+ * `simCount`, before `comboRows`' de-dupe (design 3.2's rings-and-trinkets-in-both-slots
+ * rule) collapses duplicate placements into one row -- so the run bar's count can read
+ * higher than the table's own row count with nothing on the page explaining the gap.
+ * Controller ruling: explain the gap rather than recompute either number from the other.
+ */
+describe('collapsedComboCount', () => {
+  it('is zero when nothing was collapsed', () => {
+    expect(collapsedComboCount(result)).toBe(0);
+  });
+
+  it('counts exactly how many raw combos a finger1/finger2 duplicate collapsed into one row', () => {
+    const finger1Band: Combo = {
+      substitutions: [{ kind: 'item', slot: 'finger1', item_id: 19325, name: 'Band of Accuria' }],
+      dps: result.equipped,
+      delta: { mean: 10, stddev: 0, error: 1, min: 0, max: 0 },
+      group: 0,
+    };
+    const finger2Band: Combo = {
+      ...finger1Band,
+      substitutions: [{ kind: 'item', slot: 'finger2', item_id: 19325, name: 'Band of Accuria' }],
+    };
+    expect(collapsedComboCount({ ...result, combos: [finger1Band, finger2Band] })).toBe(1);
   });
 });
 

@@ -10,7 +10,6 @@
 <script lang="ts">
   import { simCopy, toolFixCopy } from '../../lib/sim/copy';
   import {
-    DEFAULT_TARGET_LEVEL,
     MAX_TARGET_ARMOR,
     TARGET_LEVELS,
     TARGET_TYPES,
@@ -101,11 +100,12 @@
         onchange={(event) => onchange(withTargetArmor(settings, Number(event.currentTarget.value)))}
         data-testid="sim-target-armor"
       />
+      <!-- Fix round, Minor 1: `armorField.level`, not a second `settings.encounter.
+           target_level ?? DEFAULT_TARGET_LEVEL` lookup -- `targetArmorField` already
+           computed the level `preset` came from, so this reads that same value instead of
+           re-deriving one that only agreed with it by coincidence. -->
       <p class="text-muted text-[12px]" data-testid="sim-target-armor-note">
-        {toolFixCopy.targetArmorNote(
-          settings.encounter.target_level ?? DEFAULT_TARGET_LEVEL,
-          armorField.preset,
-        )}
+        {toolFixCopy.targetArmorNote(armorField.level, armorField.preset)}
       </p>
     </label>
 

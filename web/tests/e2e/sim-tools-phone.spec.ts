@@ -105,11 +105,17 @@ test.describe('touch help and hit targets at 390x844 (Task 5)', () => {
     test(`${route}: "more settings" relies on no hover-only title`, async ({ page }) => {
       await load(page, route);
       await page.getByTestId('sim-settings-more').locator('summary').click();
-      const titled = await page.evaluate(() =>
-        [...document.querySelectorAll('[title]')].map(
-          (element) => element.getAttribute('data-testid') ?? element.outerHTML.slice(0, 60),
-        ),
-      );
+      // Scoped to the tool island, not `document` page-globally (fix round, Minor 2): a
+      // `title=` added anywhere else on the page (header, tab strip, footer) by a sibling
+      // lane would fail this spec with a failure that reads as this lane's own bug. The two
+      // later cases in this file already scope to `sim-combos`, one level narrower still.
+      const titled = await page
+        .getByTestId('sim-tools-view')
+        .evaluate((root) =>
+          [...root.querySelectorAll('[title]')].map(
+            (element) => element.getAttribute('data-testid') ?? element.outerHTML.slice(0, 60),
+          ),
+        );
       expect(titled, 'a control still relies on a hover-only title').toEqual([]);
     });
   }

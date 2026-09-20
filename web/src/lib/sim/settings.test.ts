@@ -124,6 +124,7 @@ describe('the setters never mutate and always clamp', () => {
       expect(targetArmorField({ ...DEFAULT_ENCOUNTER, target_level: 63, target_armor: 0 })).toEqual({
         value: '3731',
         preset: 3731,
+        level: 63,
       });
     });
 
@@ -131,6 +132,7 @@ describe('the setters never mutate and always clamp', () => {
       expect(targetArmorField({ ...DEFAULT_ENCOUNTER, target_level: 60, target_armor: 0 })).toEqual({
         value: '3300',
         preset: 3300,
+        level: 60,
       });
     });
 
@@ -138,6 +140,7 @@ describe('the setters never mutate and always clamp', () => {
       expect(targetArmorField({ ...DEFAULT_ENCOUNTER, target_level: 63, target_armor: 5000 })).toEqual({
         value: '5000',
         preset: 3731,
+        level: 63,
       });
     });
 
@@ -146,7 +149,18 @@ describe('the setters never mutate and always clamp', () => {
         ...DEFAULT_ENCOUNTER,
         target_armor: 0,
       };
-      expect(targetArmorField(withoutLevel)).toEqual({ value: '3731', preset: 3731 });
+      expect(targetArmorField(withoutLevel)).toEqual({ value: '3731', preset: 3731, level: 63 });
+    });
+
+    /**
+     * Fix round, Minor 1: `level` rides on `targetArmorField`'s own return value now,
+     * so SettingsSheet.svelte reads the SAME level `preset` was computed from, rather than
+     * a second `settings.encounter.target_level ?? DEFAULT_TARGET_LEVEL` lookup that only
+     * agreed with it by coincidence -- the same "two lookups agreeing by accident" shape an
+     * earlier fix round already removed for `preset` itself.
+     */
+    it('returns the level preset was computed from, not a second independent lookup', () => {
+      expect(targetArmorField({ ...DEFAULT_ENCOUNTER, target_level: 60, target_armor: 0 }).level).toBe(60);
     });
   });
 

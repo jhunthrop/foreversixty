@@ -3,7 +3,14 @@ import { describe, expect, it } from 'vitest';
 import { pickedWithNothingTried, rowsFromPicks, sourceGroupVisibility, triedCount } from './drop-picks';
 import type { LootFile, LootSource } from './loot';
 import type { PhaseRow } from './phase';
+import type { Combo, Substitution } from './types';
 import type { Item } from '../planner/types';
+
+/** A minimal Combo, for `pickedWithNothingTried` -- only `substitutions` matters to it. */
+function combo(substitutions: Substitution[]): Combo {
+  const zero = { mean: 0, stddev: 0, error: 0, min: 0, max: 0 };
+  return { substitutions, dps: zero, delta: zero, group: 0 };
+}
 
 function item(id: number, slot: string, name = `Item ${id}`): Item {
   return {
@@ -133,6 +140,15 @@ describe('triedCount', () => {
  * newcomer MAJOR (review.md:291-298) and dps D34: two ticked dungeons, one of which
  * contributes nothing tried, used to leave that dungeon unmentioned anywhere in the
  * result. This is the decision DropResults.svelte renders a row from.
+ *
+ * Final whole-branch review, Important 3: this used to prove "nothing tried" off the loot
+ * file (`triedCount`), independent of what the result actually contains. It now proves it
+ * off the RESULT's own combos -- does any of them carry this pick's own `drop:<id>` origin
+ * -- which is both simpler (no `items`/`known` gates to re-apply, the result already
+ * reflects them) and catches a second, distinct failure mode `triedCount` could never see: a
+ * pick whose only item was claimed by an earlier, `candidateKey`-identical pick
+ * (`rowsFromPicks`' cross-source merge, `addRow`), so nothing in the result is ever credited
+ * to it even though the loot file says it has items.
  */
 describe('pickedWithNothingTried', () => {
   const MISSING_ID = 999999;
@@ -154,20 +170,83 @@ describe('pickedWithNothingTried', () => {
     ],
   };
   const picks = ['raid:molten-core|raid:molten-core:11502', 'raid:onyxias-lair|raid:onyxias-lair:10184'];
+  // Only Molten Core's pick made it into a combo -- Onyxia's own item never simulated at all
+  // (stands in for either reason `triedCount` used to collapse: unknown to the engine, or
+  // absent from this class's item file).
+  const combos = [
+    combo([{ kind: 'item', slot: 'main_hand', item_id: KNOWN_ID, origin: 'drop:raid:molten-core:11502' }]),
+  ];
 
-  it('names a ticked boss pick that contributed nothing, and leaves out one that contributed something', () => {
-    const untried = pickedWithNothingTried(picks, bothSourcesLoot, items, null);
+  it('names a ticked boss pick whose origin never appears in a combo, and leaves out one that does', () => {
+    const untried = pickedWithNothingTried(picks, bothSourcesLoot, combos);
     expect(untried).toEqual([{ key: 'raid:onyxias-lair|raid:onyxias-lair:10184', name: 'Onyxia' }]);
   });
 
   it('names a whole-source pick (no boss id) the same way', () => {
-    const untried = pickedWithNothingTried(['raid:onyxias-lair|'], bothSourcesLoot, items, null);
+    const untried = pickedWithNothingTried(['raid:onyxias-lair|'], bothSourcesLoot, combos);
     expect(untried).toEqual([{ key: 'raid:onyxias-lair|', name: "Onyxia's Lair" }]);
   });
 
-  it('returns nothing when every ticked pick contributed at least one tried item', () => {
-    const untried = pickedWithNothingTried([picks[0]], bothSourcesLoot, items, null);
+  it('returns nothing when every ticked pick has a combo carrying its own origin', () => {
+    const untried = pickedWithNothingTried([picks[0]], bothSourcesLoot, combos);
     expect(untried).toEqual([]);
+  });
+
+  it('collects origins from every substitution in a combo, not just the first', () => {
+    const twoSubCombo = combo([
+      { kind: 'item', slot: 'head', item_id: 1, origin: 'equipped' },
+      { kind: 'item', slot: 'shoulder', item_id: MISSING_ID, origin: 'drop:raid:onyxias-lair:10184' },
+    ]);
+    // Onyxia's own item rides as the SECOND substitution here, not the first -- if this
+    // only looked at `combo.substitutions[0]`, Onyxia would still read as untried.
+    const untried = pickedWithNothingTried([picks[1]], bothSourcesLoot, [twoSubCombo]);
+    expect(untried).toEqual([]);
+  });
+
+  /**
+   * The real reproduction (final whole-branch review, Important 3): item 16966 belongs to
+   * both `dungeon:hall-of-thanes`'s boss and `pvp:rank-10` in the shipped loot.json. Ticking
+   * both, hall-of-thanes first, makes `rowsFromPicks`' `addRow` keep hall-of-thanes' own
+   * `drop:` origin on the one merged row -- pvp:rank-10's own origin never becomes a row, so
+   * it never becomes a combo either. Only the RESULT (this test builds the combo the way the
+   * merge actually would) can tell the two picks apart; the loot file alone cannot, since it
+   * still lists an item under both.
+   */
+  it('flags the second of two picks that share an item after the cross-source merge keeps only the first', () => {
+    const sharedItemId = 16966;
+    const sharedLoot: LootFile = {
+      sources: [
+        {
+          id: 'dungeon:hall-of-thanes',
+          kind: 'dungeon',
+          name: 'Hall of Thanes',
+          bosses: [
+            {
+              id: 'dungeon:hall-of-thanes:90011',
+              name: 'Thane Korgal',
+              npc_id: 90011,
+              items: [sharedItemId],
+            },
+          ],
+        },
+        { id: 'pvp:rank-10', kind: 'pvp', name: 'Rank 10', items: [sharedItemId] },
+      ],
+    };
+    const sharedItem = item(sharedItemId, 'trinket', 'Shared Trinket');
+    const sharedItems = new Map([[sharedItemId, sharedItem]]);
+    const bothTicked = ['dungeon:hall-of-thanes|dungeon:hall-of-thanes:90011', 'pvp:rank-10|'];
+
+    // Reproduces the merge `rowsFromPicks` performs, in ticked order.
+    const rows = rowsFromPicks(bothTicked, sharedLoot, sharedItems);
+    expect(rows).toHaveLength(1);
+    expect(rows[0].origin).toBe('drop:dungeon:hall-of-thanes:90011');
+
+    // The engine ran that one merged candidate, so the result carries only its origin.
+    const mergedCombo = combo([
+      { kind: 'item', slot: rows[0].slot, item_id: sharedItemId, origin: rows[0].origin },
+    ]);
+    const untried = pickedWithNothingTried(bothTicked, sharedLoot, [mergedCombo]);
+    expect(untried).toEqual([{ key: 'pvp:rank-10|', name: 'Rank 10' }]);
   });
 });
 
