@@ -5,6 +5,13 @@
 -- is what confirms the beta client agrees.
 local mock = {}
 
+-- The real Lua print, captured once at module load, before install() ever
+-- overwrites _G.print. uninstall() restores this specific function rather
+-- than nil-ing the global out, unlike every other entry here: print is a
+-- real standard-library global, not a WoW API stub, and other specs (and
+-- busted itself) need it to keep existing after this spec's uninstall runs.
+local realPrint = _G.print
+
 --- Install a fresh mock into _G and return its state table.
 -- @param state table with any of: talents, equipped, bags, itemStats,
 --   class, race, realm, region, professions, build
@@ -16,6 +23,17 @@ function mock.install(state)
 	state.itemStats = state.itemStats or {}
 	state.professions = state.professions or {}
 	state.frames = {}
+	-- Every string the addon actually printed, in order, so a spec can
+	-- assert on Options.run's output without a chat frame.
+	state.printed = {}
+
+	_G.print = function(...)
+		local parts = {}
+		for index = 1, select("#", ...) do
+			parts[index] = tostring(select(index, ...))
+		end
+		table.insert(state.printed, table.concat(parts, " "))
+	end
 
 	_G.GetNumTalentTabs = function()
 		return #state.talents
@@ -157,6 +175,7 @@ function mock.uninstall()
 	}) do
 		_G[name] = nil
 	end
+	_G.print = realPrint
 end
 
 return mock

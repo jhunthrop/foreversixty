@@ -27,6 +27,12 @@ describe("Options", function()
 				{ name = "Retribution", talents = {} },
 			},
 		})
+		-- Follow must be reloaded fresh before Options: Options captures its
+		-- Follow dependency at load time through the `ns.Follow or
+		-- require("Follow")` bridge, and Follow.build is module-level state
+		-- that would otherwise leak an earlier example's loaded build into
+		-- this one.
+		helper.load("Follow")
 		Options = helper.load("Options")
 		Options.data = DATA
 	end)
@@ -110,7 +116,23 @@ describe("Options", function()
 		assert.are.same({ string.format(require("Locale").inboxCount, 1) }, Options.handle("inbox"))
 	end)
 
+	it("surfaces a decode refusal from the inbox rather than a false count", function()
+		-- A code that is present but will not decode: the count must not
+		-- claim a build is waiting when nothing actually loaded.
+		_G.ForeverSixtyInbox = {
+			generated_at = "2026-09-20T00:00:00Z",
+			builds = { { id = "a", name = "Bad Code", code = "FS9:nope" } },
+		}
+		local lines = Options.handle("inbox")
+		assert.is_truthy(lines[1]:find("FS9", 1, true))
+	end)
+
 	it("loads the first inbox build at login and never writes the inbox", function()
+		-- Nothing loaded yet: the before_each above reloads Follow fresh for
+		-- every example, so this proves the assertion below is not merely
+		-- true because an earlier example left a build behind.
+		assert.is_nil(require("Follow").build)
+
 		_G.ForeverSixtyInbox = {
 			generated_at = "2026-09-20T00:00:00Z",
 			builds = { { id = "a", name = "Deep Holy", code = "FSB1:1.60.1.69893:paladin:111:" } },
@@ -118,6 +140,29 @@ describe("Options", function()
 		local before = _G.ForeverSixtyInbox
 		Options.readInbox()
 		assert.are.equal(before, _G.ForeverSixtyInbox)
-		assert.is_truthy(require("Follow").build)
+
+		-- Identity, not just truthiness: the loaded build must be the one
+		-- the inbox code decodes to, not any build.
+		local build = require("Follow").build
+		assert.are.equal("paladin", build.classSlug)
+		assert.are.equal(1, #build.order)
+	end)
+
+	it("register installs the slash commands", function()
+		Options.register()
+		assert.are.equal("/fs", SLASH_FOREVERSIXTY1)
+		assert.are.equal("/foreversixty", SLASH_FOREVERSIXTY2)
+		assert.are.equal(Options.run, SlashCmdList["FOREVERSIXTY"])
+	end)
+
+	it("the registered handler routes to handle and prints each line through the chat prefix", function()
+		Options.register()
+		SlashCmdList["FOREVERSIXTY"]("")
+
+		local Locale = require("Locale")
+		assert.are.same({
+			string.format(Locale.chatLine, Locale.addonName, string.format(Locale.dataBuild, DATA.build)),
+			string.format(Locale.chatLine, Locale.addonName, Locale.slashHint),
+		}, state.printed)
 	end)
 end)

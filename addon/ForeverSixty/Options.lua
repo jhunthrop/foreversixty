@@ -41,8 +41,11 @@ end
 --- The companion always writes `code` for every build; a build with none is
 --- a truncated or hand-edited file, not something the companion produces.
 --- The addon does not own this file, so it reads it defensively anyway:
---- an entry with no `code` is skipped rather than counted, so the count a
---- player sees is always the count of builds they could actually load.
+--- an entry with no `code` is skipped rather than counted, and an entry
+--- whose `code` does not decode is not counted either -- its refusal is
+--- returned as a second value instead, so the count a player sees is
+--- always the count of builds they could actually load, and a build that
+--- looked loadable but was not never fails silently.
 function Options.readInbox()
 	local inbox = ForeverSixtyInbox
 	if inbox == nil or inbox.builds == nil then
@@ -57,7 +60,10 @@ function Options.readInbox()
 	if #usable == 0 then
 		return 0
 	end
-	Follow.load(usable[1].code, Options.data)
+	local build, message = Follow.load(usable[1].code, Options.data)
+	if build == nil then
+		return 0, message
+	end
 	return #usable
 end
 
@@ -75,13 +81,17 @@ function Options.handle(input)
 			end
 			return { string.format(L.followLoaded, build.classSlug, #build.order) }
 		end
+		-- No nil guard on Follow.build here: Follow.line is total -- it
+		-- returns L.followNone for a nil build and cannot return nil on any
+		-- path -- so this asymmetry with the export/gear guards above is
+		-- deliberate, not a gap.
 		return { Follow.line(data, Follow.build, Talents.readRanks()) }
 	elseif command == "gear" then
 		return Gear.lines(data, Follow.build)
 	elseif command == "inbox" then
-		local count = Options.readInbox()
+		local count, message = Options.readInbox()
 		if count == 0 then
-			return { L.inboxEmpty }
+			return { message or L.inboxEmpty }
 		end
 		return { string.format(L.inboxCount, count) }
 	elseif command == "options" then
@@ -95,7 +105,7 @@ end
 
 function Options.run(input)
 	for _, line in ipairs(Options.handle(input)) do
-		print(L.addonName .. ": " .. line)
+		print(string.format(L.chatLine, L.addonName, line))
 	end
 end
 

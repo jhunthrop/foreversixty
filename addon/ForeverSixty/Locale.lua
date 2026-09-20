@@ -8,9 +8,11 @@ ns = type(ns) == "table" and ns or {}
 local L = {
 	-- Chrome
 	addonName = "Forever Sixty",
-	slashHint = "/fs export, /fs follow, /fs gear, /fs options",
+	slashHint = "/fs export, /fs follow, /fs gear, /fs inbox, /fs options",
 	dataBuild = "Data build: %s",
 	buildMismatch = "This addon carries data for build %s; you are playing %s. Numbers may be out of date.",
+	-- How a printed line is prefixed with the addon's name.
+	chatLine = "%s: %s",
 
 	-- Export
 	exportTitle = "Your character, for the planner",
