@@ -397,44 +397,16 @@ Codec._SLOT_SET = SLOT_SET
 --            10.8), the same names Data.lua's weights table is keyed by, so a
 --            planned item and a weight meet without a translation table.
 
---- Parity contract 10.8's stat vocabulary, in the order the site's weights
---- panel groups it (web/src/lib/sim/stats.ts's PINNED_STATS). A gear entry's
---- stats encode in this order rather than alphabetically, so one build still
---- has one string regardless of which subset of the fifty names it carries.
-local STAT_ORDER = {
-	"strength", "agility", "stamina", "intellect", "spirit", "spell_power",
-	"arcane_power", "fire_power", "frost_power", "holy_power", "nature_power",
-	"shadow_power", "mp5", "hit", "crit", "spell_haste", "spell_penetration",
-	"attack_power", "melee_haste", "armor_penetration", "expertise", "mana",
-	"energy", "rage", "armor", "ranged_attack_power", "defense", "block",
-	"block_value", "dodge", "parry", "health", "arcane_resistance",
-	"fire_resistance", "frost_resistance", "nature_resistance",
-	"shadow_resistance", "bonus_armor", "healing_power", "spell_damage",
-	"feral_attack_power",
-}
-local STAT_RANK = {}
-for index, name in ipairs(STAT_ORDER) do
-	STAT_RANK[name] = index
-end
-
 local function encodeStats(stats)
 	local names = {}
 	for name in pairs(stats or {}) do
 		names[#names + 1] = name
 	end
-	table.sort(names, function(left, right)
-		local leftRank, rightRank = STAT_RANK[left], STAT_RANK[right]
-		if leftRank and rightRank then
-			return leftRank < rightRank
-		end
-		if leftRank or rightRank then
-			-- A name outside the pinned vocabulary sorts after every name
-			-- inside it, alphabetically among its own kind: still one order
-			-- for one build, even for a name this list does not carry yet.
-			return leftRank ~= nil
-		end
-		return left < right
-	end)
+	-- By name, not by some vocabulary's display order: "sort by name" is a
+	-- rule both this file and [web]'s TypeScript decoder can implement
+	-- identically with no table shared between them, and decode never reads
+	-- the order back out -- only encode needs one build to make one string.
+	table.sort(names)
 	local parts = {}
 	for index, name in ipairs(names) do
 		parts[index] = string.format("%s=%d", name, math.floor(stats[name] + 0.5))

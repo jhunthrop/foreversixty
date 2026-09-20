@@ -36,11 +36,45 @@ describe("Codec FSB1", function()
 		end
 	end)
 
-	it("round-trips every shared vector byte for byte", function()
+	it("re-encodes every shared vector to a canonical fixed point", function()
+		-- A vector's `code` is a hand-written input, not necessarily the
+		-- canonical encoding: encodeFSB1 sorts a gear entry's stats by name,
+		-- and a hand-written vector need not already agree with that. So "a
+		-- code equals its own re-encoding" is not a property this format
+		-- has (see Ruling R10). What the format does guarantee: nothing is
+		-- lost going from decoded build to string, and the string that comes
+		-- back out is a fixed point under another decode/encode pass.
 		for _, vector in ipairs(vectors.fsb1) do
-			local build = assert(Codec.decodeFSB1(vector.code))
-			assert.are.equal(vector.code, Codec.encodeFSB1(build), vector.name)
+			local decoded = assert(Codec.decodeFSB1(vector.code))
+			local encoded = Codec.encodeFSB1(decoded)
+
+			local redecoded, message = Codec.decodeFSB1(encoded)
+			assert.is_nil(message, vector.name .. ": " .. tostring(message))
+			assert.are.same(decoded.dataBuild, redecoded.dataBuild, vector.name)
+			assert.are.same(decoded.classSlug, redecoded.classSlug, vector.name)
+			assert.are.same(decoded.order, redecoded.order, vector.name)
+			assert.are.same(decoded.gear, redecoded.gear, vector.name)
+
+			assert.are.equal(encoded, Codec.encodeFSB1(redecoded), vector.name)
 		end
+	end)
+
+	it("encodes a gear entry's stats in name order, not the order they were spent", function()
+		-- Pinned by value, not just by round trip: decode never cares about
+		-- stat order (a map compares equal regardless), but encodeFSB1 must
+		-- pick one deterministic order to write, and "by name" is the rule
+		-- both this file and [web]'s TypeScript decoder can implement
+		-- identically with no table shared between them (Ruling R10). The
+		-- fixture vector this build comes from happens to spell its stats
+		-- `stamina=17;spell_power=23` -- that is a hand-written input, not a
+		-- canonical encoding, so do not "fix" this assertion back toward it.
+		local build = assert(Codec.decodeFSB1(
+			"FSB1:1.60.1.69893:paladin:111112121:head=12640:stamina=17;spell_power=23"
+		))
+		assert.are.equal(
+			"FSB1:1.60.1.69893:paladin:111112121:head=12640:spell_power=23;stamina=17",
+			Codec.encodeFSB1(build)
+		)
 	end)
 
 	it("refuses every invalid vector with a reason", function()
