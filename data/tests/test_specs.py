@@ -395,4 +395,4 @@ def test_both_generated_files_carry_the_weight_stats():
     # The TypeScript list carries the same field, so the web's own test that
     # SPECS equals data/curated/specs.json keeps the data lane the only author.
     assert "weight_stats: readonly string[];" in ts
-    assert "weight_stats: [\n      'attack_power',\n" in ts
+    assert "weight_stats: ['attack_power'" in ts
