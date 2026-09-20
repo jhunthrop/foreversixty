@@ -6,7 +6,7 @@
      aria-live is on the message and never on the figure: a live region on a number that
      changes that often makes a screen reader unusable. -->
 <script lang="ts">
-  import { confidenceBand } from '../../lib/sim/estimate';
+  import { confidenceBand, formatMargin } from '../../lib/sim/estimate';
   import { simCopy } from '../../lib/sim/copy';
   import { percentLabel } from '../../lib/sim/details';
   import { LANE_ITERATION_CEILING, PRECISIONS, type Lane, type PrecisionId } from '../../lib/sim/precision';
@@ -81,11 +81,7 @@
   const hasFigure = $derived(estimate.mean > 0);
 
   const figure = $derived(hasFigure ? Math.round(estimate.mean).toLocaleString('en-US') : '—');
-  const band = $derived(
-    hasFigure && estimate.error > 0
-      ? `± ${Math.round(confidenceBand(estimate)).toLocaleString('en-US')}`
-      : '',
-  );
+  const band = $derived(hasFigure && estimate.error > 0 ? `± ${formatMargin(confidenceBand(estimate))}` : '');
   const percent = $derived(
     iterationsTotal > 0 ? Math.min(100, Math.round((iterationsDone / iterationsTotal) * 100)) : 0,
   );

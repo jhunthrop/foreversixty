@@ -100,13 +100,13 @@ describe('simShellMeta', () => {
   const result = fixtureResult;
 
   // The fixture's own numbers, not the plan draft's: dps.mean is 1038.660353207436, which
-  // rounds to 1,039, and dps.error is 2.4, so the 95% band is
-  // round(1.96 * 2.4) = round(4.704) = 5.
+  // rounds to 1,039, and dps.error is 2.4, so the 95% band is 1.96 * 2.4 = 4.704, which
+  // formatMargin renders as one decimal (below 10): "4.7".
   it('names the spec and the figure in the title, and the run in the description', () => {
     const meta = simShellMeta(result);
     expect(meta.title).toBe('Fury Warrior, 1,039 DPS · Forever Sixty');
     expect(meta.description).toBe(
-      `Simulated on engine ${fixtureResult.engine_version}: 1,039 DPS ± 5 over 3,000 iterations, raid-buffed, 3:00, single target.`,
+      `Simulated on engine ${fixtureResult.engine_version}: 1,039 DPS ± 4.7 over 3,000 iterations, raid-buffed, 3:00, single target.`,
     );
     expect(meta.canonical).toBe('https://foreversixty.gg/sim/simfixtureab');
     expect(meta.image).toBe('https://foreversixty.gg/og/index.png');

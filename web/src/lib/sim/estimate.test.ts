@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { EMPTY_ESTIMATE, combineEstimate, confidenceBand, type ShardProgress } from './estimate';
+import {
+  EMPTY_ESTIMATE,
+  combineEstimate,
+  confidenceBand,
+  formatMargin,
+  type ShardProgress,
+} from './estimate';
 
 /** Turns raw samples into the shape a shard reports, so the test can check against truth. */
 function shardsFromSamples(groups: number[][]): ShardProgress[] {
@@ -53,5 +59,22 @@ describe('combineEstimate', () => {
 describe('confidenceBand', () => {
   it('is the 95% band, which is what the page shows beside the figure', () => {
     expect(confidenceBand({ mean: 1400, stddev: 140, error: 2.5, min: 0, max: 0 })).toBeCloseTo(4.9, 9);
+  });
+});
+
+describe('formatMargin', () => {
+  // The controller's ruling: below 10, one decimal; 10 or more, an integer; a non-zero
+  // margin that would round to 0.0 at one decimal reads "< 0.1" rather than "0" -- the
+  // tank-sim/healer-sim defect this fixes. A genuinely zero margin still reads "0".
+  it.each([
+    [0, '0'],
+    [0.04, '< 0.1'],
+    [0.4, '0.4'],
+    [4.24, '4.2'],
+    [9.95, '9.9'],
+    [10, '10'],
+    [147.6, '148'],
+  ])('formats %p as %p', (value, expected) => {
+    expect(formatMargin(value)).toBe(expected);
   });
 });

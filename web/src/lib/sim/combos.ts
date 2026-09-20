@@ -4,7 +4,7 @@
 // ordering is the planner's. This turns those into rows, labels and a winning gear list.
 import type { BulkResult, Combo, Substitution } from './bulk-types';
 import { bulkCopy } from './copy';
-import { confidenceBand } from './estimate';
+import { confidenceBand, formatMargin } from './estimate';
 import type { Estimate, GearSlot } from './types';
 import type { Item, ItemSet } from '../planner/types';
 
@@ -29,9 +29,9 @@ const MINUS = '−';
  */
 export function deltaLabel(delta: Estimate): string {
   const mean = Math.round(delta.mean);
-  const band = Math.round(confidenceBand(delta));
+  const band = formatMargin(confidenceBand(delta));
   const sign = mean < 0 ? MINUS : '+';
-  return `${sign}${Math.abs(mean).toLocaleString('en-US')} ± ${band.toLocaleString('en-US')}`;
+  return `${sign}${Math.abs(mean).toLocaleString('en-US')} ± ${band}`;
 }
 
 /**

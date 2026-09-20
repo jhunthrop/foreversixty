@@ -5,7 +5,7 @@
      It dims rather than blanks while a new estimate runs: a number that disappears on every
      click is worse than one that is briefly a click behind. -->
 <script lang="ts">
-  import { confidenceBand } from '../../lib/sim/estimate';
+  import { confidenceBand, formatMargin } from '../../lib/sim/estimate';
   import { simCopy } from '../../lib/sim/copy';
   import type { LiveDps } from '../../lib/planner/live-dps.svelte';
 
@@ -23,7 +23,7 @@
   );
   const band = $derived(
     live.state === 'ready' && live.estimate.error > 0
-      ? `± ${Math.round(confidenceBand(live.estimate)).toLocaleString('en-US')}`
+      ? `± ${formatMargin(confidenceBand(live.estimate))}`
       : '',
   );
 </script>

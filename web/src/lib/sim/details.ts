@@ -7,13 +7,13 @@
 // standard error, which is the quantity `simNeedsMore` compares against `target_error`.
 // The "until +/-0.5%" control is named after the second, so the second is what any percent
 // on this lane means.
-import { confidenceBand } from './estimate';
+import { confidenceBand, formatMargin } from './estimate';
 import { relativeError } from './precision';
 import type { SimResult } from './types';
 
 export interface RunDetails {
-  /** The 95% confidence band, in DPS, rounded. */
-  bandDps: number;
+  /** The 95% confidence band, in DPS, already formatted through estimate.ts's formatMargin. */
+  bandDps: string;
   /** `error / mean`, as a fraction. */
   errorPercent: number;
   iterations: number;
@@ -30,7 +30,7 @@ export interface RunDetails {
 export function runDetails(result: SimResult): RunDetails {
   const target = result.request.target_error ?? 0;
   return {
-    bandDps: Math.round(confidenceBand(result.dps)),
+    bandDps: formatMargin(confidenceBand(result.dps)),
     errorPercent: relativeError(result.dps),
     iterations: result.iterations_run,
     processingMs: result.duration_ms,

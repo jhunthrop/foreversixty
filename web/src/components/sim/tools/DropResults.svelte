@@ -13,7 +13,7 @@
   import type { BulkResult, Combo } from '../../../lib/sim/bulk-types';
   import { comboRows, deltaLabel, sourceNameOfCombo, type ComboRow } from '../../../lib/sim/combos';
   import { bulkCopy } from '../../../lib/sim/copy';
-  import { confidenceBand } from '../../../lib/sim/estimate';
+  import { confidenceBand, formatMargin } from '../../../lib/sim/estimate';
   import SubstitutionChips from './SubstitutionChips.svelte';
 
   let {
@@ -107,7 +107,7 @@
 
   <p class="tabular text-strong font-mono text-[14px]" data-testid="sim-equipped-line">
     {bulkCopy.resultsEquipped}: {Math.round(result.equipped.mean).toLocaleString('en-US')}
-    ± {Math.round(confidenceBand(result.equipped)).toLocaleString('en-US')}
+    ± {formatMargin(confidenceBand(result.equipped))}
   </p>
 
   <section class="flex flex-col gap-3" data-testid="sim-drops-by-boss">

@@ -19,7 +19,7 @@
   import { SIM_LEVEL, type SimCharacter } from '../../lib/sim/character';
   import { bulkCopy, simCopy } from '../../lib/sim/copy';
   import { encounterLabel } from '../../lib/sim/encounter';
-  import { confidenceBand } from '../../lib/sim/estimate';
+  import { confidenceBand, formatMargin } from '../../lib/sim/estimate';
   import { specLabel } from '../../lib/sim/spec-label';
   import { mergeSpecRows } from '../../lib/sim/spec-state';
   import type { SimResult, SpecFidelity } from '../../lib/sim/types';
@@ -36,9 +36,7 @@
   const hasFigure = $derived(result.dps.mean > 0);
   const figure = $derived(hasFigure ? Math.round(result.dps.mean).toLocaleString('en-US') : '—');
   const band = $derived(
-    hasFigure && result.dps.error > 0
-      ? `± ${Math.round(confidenceBand(result.dps)).toLocaleString('en-US')}`
-      : '',
+    hasFigure && result.dps.error > 0 ? `± ${formatMargin(confidenceBand(result.dps))}` : '',
   );
   // The stored request carries no settings preset, only the raw encounter and buff list --
   // the same shape `og-meta.ts`'s unfurl reads, and the same derivation: a raid-buffed run

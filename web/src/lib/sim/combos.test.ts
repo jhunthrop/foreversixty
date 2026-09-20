@@ -47,6 +47,11 @@ describe('percentOf and deltaLabel', () => {
     expect(deltaLabel({ mean: -1.8, stddev: 0, error: 5.38, min: 0, max: 0 })).toBe('−2 ± 11');
   });
 
+  it('never rounds a non-zero band away to "0" -- the Droptimizer repro (tank-sim review)', () => {
+    // 1.96 * 2 = 3.92, one decimal (below 10) via the same formatMargin the headline uses.
+    expect(deltaLabel({ mean: -3, stddev: 0, error: 2, min: 0, max: 0 })).toBe('−3 ± 3.9');
+  });
+
   it('is zero percent against a zero baseline rather than infinite', () => {
     expect(percentOf(41.2, 0)).toBe(0);
   });

@@ -54,6 +54,16 @@ export const attackHandProse: Record<'main' | 'off' | 'extra', string> = {
   off: 'off-hand white hits',
   extra: 'extra white hits',
 };
+/**
+ * What a non-zero margin of error reads as when it would otherwise round away to "0" at
+ * one decimal -- the tank-sim/healer-sim defect (review round 1, D3/Minor): "± 0 DPS" on
+ * every run, at every precision, reading as no error at all. The controller's ruling is
+ * one rule everywhere rather than a sliding decimal count, so it lives beside
+ * `attackHandName` above: a plain module-level constant, not a `simCopy` property, because
+ * `estimate.ts`'s `formatMargin` -- the one place every "±" figure on the page is
+ * rendered -- reads it by name, not through `simCopy`.
+ */
+export const MARGIN_BELOW_THRESHOLD = '< 0.1';
 // --- Lane W1 (persona round 1: results, labels, weights) ---
 
 export const simCopy = {

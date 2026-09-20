@@ -16,10 +16,7 @@
     {
       id: 'margin',
       label: simCopy.detailsMargin,
-      value: simCopy.detailsMarginValue(
-        details.bandDps.toLocaleString('en-US'),
-        percentLabel(details.errorPercent),
-      ),
+      value: simCopy.detailsMarginValue(details.bandDps, percentLabel(details.errorPercent)),
     },
     {
       id: 'iterations',
