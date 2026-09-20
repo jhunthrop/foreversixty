@@ -597,3 +597,9 @@ gains per-slot enchant and suffix.
   a breach, which can refuse a request under the cap when candidates repeat
   heavily (documented in `sim/bulk/expand.go`). Candidate de-duplication is
   the real fix and changes visible counts; it is a follow-up.
+- **`NativeIterationsPerCPUSecond` stays 1,218 as a floor.** Re-measured
+  after targets gained armor, single-threaded on the development laptop at
+  10,000 iterations: warrior-fury about 3,000 iterations per CPU-second,
+  mage-frost about 25,000. The constant sizes the Cloud Run job, whose vCPU
+  is slower than the laptop, so the old figure is kept as a conservative
+  bound until it is measured on the job itself.
