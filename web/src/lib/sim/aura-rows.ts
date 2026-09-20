@@ -4,10 +4,11 @@
 // BUFFS/DEBUFFS tabs render (Task 4).
 //
 // Every check here reads a row's own structure -- its type, its raw unresolved key, its
-// uptime -- and never its resolved display name. That is a controller ruling from this
-// same task: Task 1 changed those strings once already, and a filter keyed to a label
-// would break silently the next time a name does. sanitizeAuraTracks runs BEFORE
-// resolveActionName touches `name`, in sentence.ts's namedSummary.
+// uptime and application count -- and never its resolved display name. That is a
+// controller ruling from this same task: Task 1 changed those strings once already, and
+// a filter keyed to a label would break silently the next time a name does.
+// sanitizeAuraTracks runs BEFORE resolveActionName touches `name`, in sentence.ts's
+// namedSummary.
 import { parseActionKey } from './action-names';
 import type { AuraTrack } from '../report/types';
 
@@ -35,13 +36,20 @@ function isMovementPseudoAura(track: AuraTrack): boolean {
 }
 
 /**
- * A row with no uptime carried no player-facing signal: it never applied and was never
- * up. This is the structural shape of both defects the brief names -- a rank of a spell
- * that never got cast, and a melee ability the engine mistakenly registered as an aura
- * (it has no duration to be "up" for) -- without reading either row's name.
+ * A row with no uptime AND no applications carried no player-facing signal: it never
+ * applied and was never up. This is the structural shape of both defects the brief names
+ * -- a rank of a spell that never got cast, and a melee ability the engine mistakenly
+ * registered as an aura (it has no duration to be "up" for) -- without reading either
+ * row's name. `uptime_ms` alone is not enough to guard on: sim/adapter/adapter.go's
+ * UptimeMS and Applications are two independently-rounded averages
+ * (UptimeSecondsAvg/ProcsAvg), so a real proc that fires but is consumed almost
+ * instantly, or that only procs in a small fraction of iterations, can round to 0ms of
+ * uptime while `applications` stays positive -- a genuine "this proc'd N times" signal
+ * with no recovery path elsewhere (the Casts tab tracks spell casts, not passive procs).
+ * Requiring both fields to be zero keeps that row.
  */
 function isInert(track: AuraTrack): boolean {
-  return track.uptime_ms === 0;
+  return track.uptime_ms === 0 && track.applications === 0;
 }
 
 /**

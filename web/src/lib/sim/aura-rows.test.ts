@@ -33,6 +33,19 @@ describe('sanitizeAuraTracks', () => {
     expect(sanitizeAuraTracks(rows)).toEqual([]);
   });
 
+  it('keeps a proc that fired but rounds to 0ms of uptime -- applications alone is a real signal', () => {
+    // sim/adapter/adapter.go's UptimeMS and Applications are two independently-rounded
+    // averages (UptimeSecondsAvg/ProcsAvg): a proc consumed almost instantly, or one that
+    // only fires in a small fraction of iterations, can have applications > 0 while its
+    // average duration rounds to 0ms. isInert must require BOTH fields to be zero, not
+    // just uptime_ms, or this row -- the only place its "fired N times" signal lives --
+    // disappears with no recovery path (the Casts tab tracks casts, not passive procs).
+    const shortProc = track({ spell_id: 42, name: 'spell:42', applications: 7, uptime_ms: 0 });
+    const [surviving] = sanitizeAuraTracks([shortProc]);
+    expect(surviving.applications).toBe(7);
+    expect(surviving.uptime_ms).toBe(0);
+  });
+
   it('keeps a real buff untouched, apart from its already-self-applied source', () => {
     const buff = track({
       spell_id: 9910,
