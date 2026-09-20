@@ -63,7 +63,9 @@
     data-testid="sim-weights-warning"
   >
     <p class="text-strong text-[14px]">{bulkCopy.weightsWarning}</p>
-    <a class="text-nav underline" href="/sim/gear">{bulkCopy.weightsWarningLink}</a>
+    <a class="{SECONDARY_BUTTON} border-line-warm text-nav mt-2 px-4" href="/sim/gear">
+      {bulkCopy.weightsWarningLink}
+    </a>
   </section>
 
   <section class="border-line rounded-panel mx-[18px] flex flex-col gap-2 border p-3 md:mx-0">
