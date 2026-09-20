@@ -41,11 +41,11 @@ end
 --- The companion always writes `code` for every build; a build with none is
 --- a truncated or hand-edited file, not something the companion produces.
 --- The addon does not own this file, so it reads it defensively anyway:
---- an entry with no `code` is skipped rather than counted, and an entry
---- whose `code` does not decode is not counted either -- its refusal is
---- returned as a second value instead, so the count a player sees is
---- always the count of builds they could actually load, and a build that
---- looked loadable but was not never fails silently.
+--- an entry with no `code` is skipped rather than counted. Only the first
+--- usable entry is ever decoded (this only ever loads usable[1]); if it
+--- fails, its refusal is returned as a second value and the count is 0.
+--- Later entries are not attempted, so the count on success is the number
+--- of entries that have a `code`, not a guarantee that each one decodes.
 function Options.readInbox()
 	local inbox = ForeverSixtyInbox
 	if inbox == nil or inbox.builds == nil then

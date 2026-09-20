@@ -60,9 +60,16 @@ local function fromBase36(char)
 end
 
 --- Split on one literal separator, keeping empty fields. Lua has no split.
+--- Bounded at MAX_CODE_LENGTH iterations: a string cannot contain more parts
+--- than it has characters, so this can never fire for input a caller has
+--- already checked against MAX_CODE_LENGTH (decodeFS1 and decodeFSB1 both
+--- do). It exists because split is a public `_`-prefixed helper that other
+--- callers may consume directly with unchecked, player-supplied text; if the
+--- cap is ever hit, returning what was parsed so far is fine since the
+--- grammar checks downstream will refuse the result.
 local function split(text, separator)
 	local parts, position = {}, 1
-	while true do
+	for _ = 1, Codec.MAX_CODE_LENGTH do
 		local start, stop = text:find(separator, position, true)
 		if start == nil then
 			parts[#parts + 1] = text:sub(position)
@@ -71,6 +78,8 @@ local function split(text, separator)
 		parts[#parts + 1] = text:sub(position, start - 1)
 		position = stop + 1
 	end
+	parts[#parts + 1] = text:sub(position)
+	return parts
 end
 
 local function isDigits(text)

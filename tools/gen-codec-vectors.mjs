@@ -85,6 +85,9 @@ const FSB1_INVALID = [
   ['a non-numeric stat value', 'FSB1:1.60.1.69893:paladin::head=12640:stamina=lots'],
 ];
 
+// A throw anywhere below (a vector the site's own decoder refuses or
+// wrongly accepts) happens before writeFileSync runs, so it leaves both
+// fixture copies untouched rather than one stale and one updated.
 const fs1 = FS1_CODES.map(([name, code]) => {
   const result = decodeFS1(code);
   if (!result.ok) throw new Error(`${name}: the site's own decoder refused it: ${result.message}`);

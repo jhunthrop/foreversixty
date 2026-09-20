@@ -79,6 +79,9 @@ end
 --- present the line above is the whole feature and nothing errors.
 Follow.TALENT_FRAME = { "PlayerTalentFrame", "TalentFrame" }
 
+--- The returned table describing what was highlighted (or nil) is not used
+--- by any caller here -- it exists so the spec can assert on the outcome
+--- without a display server. Keep returning it.
 function Follow.highlight(_data, ranks)
 	local point = Follow.nextPoint(Follow.build, ranks or Talents.readRanks())
 	if point == nil then

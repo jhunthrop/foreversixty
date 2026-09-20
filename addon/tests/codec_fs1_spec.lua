@@ -87,6 +87,23 @@ describe("Codec FS1", function()
 		end)
 	end)
 
+	-- _split is exposed as a public `_`-prefixed helper (Codec's own FSB1
+	-- half calls it directly) rather than being purely internal to decodeFS1
+	-- and decodeFSB1, which both bound input length before calling it. These
+	-- exercise the helper's own bound directly, independent of those callers.
+	describe("_split", function()
+		it("splits normal input the same as always", function()
+			assert.are.same({ "a", "b", "c" }, Codec._split("a,b,c", ","))
+			assert.are.same({ "", "a", "" }, Codec._split(",a,", ","))
+		end)
+
+		it("returns rather than looping forever on more separators than the cap", function()
+			local text = string.rep(",", Codec.MAX_CODE_LENGTH + 10)
+			local parts = Codec._split(text, ",")
+			assert.is_true(#parts > 0)
+		end)
+	end)
+
 	describe("encode", function()
 		it("re-encodes every shared vector to a canonical fixed point", function()
 			-- A vector's `code` is a hand-written input, not necessarily the

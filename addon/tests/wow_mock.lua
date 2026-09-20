@@ -172,6 +172,7 @@ function mock.uninstall()
 		"GetRealmName", "GetCurrentRegion", "GetProfessions", "GetProfessionInfo",
 		"GetBuildInfo", "SlashCmdList", "UIParent", "CreateFrame",
 		"ForeverSixtyDB", "ForeverSixtyInbox",
+		"SLASH_FOREVERSIXTY1", "SLASH_FOREVERSIXTY2",
 	}) do
 		_G[name] = nil
 	end
