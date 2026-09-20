@@ -20,9 +20,11 @@
 <script lang="ts">
   import type { Me } from '../../../lib/account/api';
   import type { Slot } from '../../../lib/planner/types';
+  import type { BulkResult } from '../../../lib/sim/bulk-types';
   import type { BulkStore } from '../../../lib/sim/bulk-store.svelte';
   import { SIM_LEVEL } from '../../../lib/sim/character';
   import BulkRunBar from './BulkRunBar.svelte';
+  import ComboResults from './ComboResults.svelte';
   import ConsumableCandidates from './ConsumableCandidates.svelte';
   import ItemSearch from './ItemSearch.svelte';
   import NamedSets from './NamedSets.svelte';
@@ -83,4 +85,15 @@
   {/if}
 
   <BulkRunBar {store} />
+
+  {#if store.result !== null}
+    <ComboResults
+      result={store.result as BulkResult}
+      items={store.items}
+      sets={store.sets}
+      treeVersion={store.character?.tree_version ?? ''}
+      partial={store.result.aborted === true}
+      onsave={(title) => store.save(title)}
+    />
+  {/if}
 </div>

@@ -238,9 +238,7 @@ test('a run reports its stage line and ends with a ranked table', async ({ page 
   await page.getByTestId('sim-search-add-16963').click();
   await page.getByTestId('sim-run-bulk').click();
   await expect(page.getByTestId('sim-stage-progress')).toHaveText(/stage \d of 3 · \d+ of \d+ combinations/);
-  // Task 16 (not yet landed) renders the ranked table at this test id; until then, the run
-  // finishing (the stage line disappearing) is this task's own thing to assert.
-  // await expect(page.getByTestId('sim-combos')).toBeVisible({ timeout: 20_000 });
+  await expect(page.getByTestId('sim-combos')).toBeVisible({ timeout: 20_000 });
   await expect(page.getByTestId('sim-stage-progress')).toHaveCount(0, { timeout: 20_000 });
 });
 
@@ -255,4 +253,76 @@ test('precision is three choices and normal runs two stages', async ({ page }) =
 test('the server lane is not offered to a signed-out visitor', async ({ page }) => {
   await loadGear(page);
   await expect(page.getByTestId('sim-server-run')).toHaveCount(0);
+});
+
+test('the results show the equipped baseline, a ranked table and a per-slot summary', async ({ page }) => {
+  await loadGear(page);
+  await page.getByTestId('sim-search-add-16963').click();
+  await page.getByTestId('sim-search-add-16966').click();
+  // Two candidates in two different slots (head, shoulder) is 3 combinations (contract
+  // 10.1 A4's product of one group per slot, each led by "keep", minus the all-kept
+  // baseline). Fast precision's 3-stage ladder halves survivors twice -- 3 -> 2 -> 1 -- so
+  // the default precision would leave exactly one finalist, not a ranked table of more
+  // than one row. Normal's 2-stage ladder halves once -- 3 -> 2 -- which is what this test
+  // is actually asserting on.
+  await page.getByTestId('sim-precision').selectOption('normal');
+  await page.getByTestId('sim-run-bulk').click();
+
+  const equipped = page.getByTestId('sim-equipped-line');
+  await expect(equipped).toBeVisible({ timeout: 20_000 });
+  await expect(equipped).toHaveText(/\d/);
+
+  const rows = page.getByTestId('sim-combo-row');
+  await expect(rows.first()).toBeVisible();
+  expect(await rows.count()).toBeGreaterThan(1);
+  await expect(rows.first()).toContainText(/[+−]\d+ ± \d+/);
+
+  await expect(page.getByTestId('sim-slot-summary')).toBeVisible();
+});
+
+test('the winner opens in the planner and copies to the addon', async ({ page, context }) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  await loadGear(page);
+  await page.getByTestId('sim-search-add-16963').click();
+  await page.getByTestId('sim-run-bulk').click();
+  await expect(page.getByTestId('sim-combos')).toBeVisible({ timeout: 20_000 });
+
+  await expect(page.getByTestId('sim-open-in-planner')).toHaveAttribute('href', /\/planner\?/);
+
+  await page.getByTestId('sim-copy-addon').click();
+  await expect(page.getByTestId('sim-copy-addon')).toHaveText('Copied');
+  const copied = await page.evaluate(() => navigator.clipboard.readText());
+  expect(copied.startsWith('FS1:')).toBe(true);
+});
+
+test('the four-piece filter hides combinations that break the set', async ({ page }) => {
+  await loadGear(page);
+  await page.getByTestId('sim-search-add-16963').click();
+  await page.getByTestId('sim-run-bulk').click();
+  await expect(page.getByTestId('sim-combos')).toBeVisible({ timeout: 20_000 });
+  const before = await page.getByTestId('sim-combo-row').count();
+  await page.getByTestId('sim-keep-set').check();
+  expect(await page.getByTestId('sim-combo-row').count()).toBeLessThanOrEqual(before);
+});
+
+test('the winner can be saved, with a title composed from the result rather than typed', async ({ page }) => {
+  await loadGear(page);
+  await page.getByTestId('sim-search-add-16963').click();
+  await page.getByTestId('sim-run-bulk').click();
+  await expect(page.getByTestId('sim-combos')).toBeVisible({ timeout: 20_000 });
+
+  await page.getByTestId('sim-save-open').click();
+  await expect(page.getByTestId('sim-save-title')).not.toHaveValue('');
+
+  await page.route('**/v1/sims', (route) =>
+    route.fulfill({
+      status: 201,
+      contentType: 'application/json',
+      body: JSON.stringify({ ok: true, data: { sim_id: 'simnew234567' }, error: null, request_id: 'r' }),
+    }),
+  );
+  await page.getByTestId('sim-save-confirm').click();
+
+  await expect(page.getByTestId('sim-save-link')).toBeVisible();
+  await expect(page.getByTestId('sim-save-link')).toHaveValue(/\/sim\/simnew234567$/);
 });
