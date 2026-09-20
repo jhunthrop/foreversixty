@@ -200,7 +200,11 @@ test('a named set from the addon export carries its enchant and suffix into the 
   await expect(page.getByTestId('sim-set-Alt Set')).toBeVisible();
   await page.getByTestId('sim-set-Alt Set').getByRole('button', { name: bulkCopy.setsAdd }).click();
   await page.getByTestId('sim-request-drawer').locator('summary').click();
-  const request = JSON.parse(await page.getByTestId('sim-request-json').inputValue());
+  // The drawer rebuilds its JSON after the set lands in the store; read it once the set is
+  // in it, or a phone-speed run parses an empty textarea.
+  const editor = page.getByTestId('sim-request-json');
+  await expect(editor).toHaveValue(/Alt Set/);
+  const request = JSON.parse(await editor.inputValue());
   expect(request.bulk.sets).toEqual([
     { name: 'Alt Set', gear: [{ slot: 'head', item_id: 12640, enchant: 2543, suffix: 1 }] },
   ]);
