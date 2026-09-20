@@ -14,8 +14,9 @@
   import type { Item } from '../../lib/planner/types';
   import { createLazyComponent, type LazyLoadState } from '../../lib/report/lazy-component.svelte';
   import { fetchSpecs } from '../../lib/sim/api';
+  import { requestKind, type BulkResult, type WeightsResult } from '../../lib/sim/bulk-types';
   import { SIM_LEVEL, type SimCharacter } from '../../lib/sim/character';
-  import { simCopy } from '../../lib/sim/copy';
+  import { bulkCopy, simCopy } from '../../lib/sim/copy';
   import { encounterLabel } from '../../lib/sim/encounter';
   import { confidenceBand } from '../../lib/sim/estimate';
   import { specLabel } from '../../lib/sim/spec-label';
@@ -47,10 +48,28 @@
   // (an empty string) is not turned into a fabricated date.
   const savedDate = $derived(result.request.source.captured_at.slice(0, 10));
 
+  // Kind is derived from the stored request, never sent and never stored twice (contract
+  // 1.1) -- this is what lets a saved page pick its own results view without a second field
+  // a client could set to anything.
+  const kind = $derived(requestKind(result.request));
+
+  const KIND_TITLES: Record<'gear' | 'talents' | 'drops' | 'weights', string> = {
+    gear: bulkCopy.gearTitle,
+    talents: bulkCopy.talentsTitle,
+    drops: bulkCopy.dropsTitle,
+    weights: bulkCopy.weightsTitle,
+  };
+
   // No title travels with a fetched SimResult -- the contract's `sims.title` column has no
   // mirror on the Go `SimResult` struct, only on the `GET /v1/sims?mine=1` row -- so the
   // heading always falls back to the spec, the one branch this shape can ever reach today.
-  const heading = $derived(specLabel(result.request.spec));
+  // A bulk or weights kind leads with its own name beside the spec, the same way /sim/gear,
+  // /sim/talents, /sim/drops and /sim/weights title themselves.
+  const heading = $derived(
+    kind === 'run'
+      ? specLabel(result.request.spec)
+      : `${KIND_TITLES[kind]} · ${specLabel(result.request.spec)}`,
+  );
 
   const gearKnown = $derived(result.request.character.gear.length > 0);
 
@@ -123,8 +142,18 @@
   // paint (it is the page's own content), but it still ships as its own chunk rather than
   // an eager import -- the same split /sim's own results use -- so the load starts the
   // moment this component mounts instead of adding its weight to the shared island bundle.
+  //
+  // Three separate chunks, one per kind's own results view, so a saved weights page
+  // downloads neither the damage tables (SimResults) nor the combination table
+  // (SavedCombos), and a saved bulk page downloads neither the damage tables nor the
+  // weights table -- only the one this particular result's kind actually needs.
   const simResultsLazy = createLazyComponent(() => import('./SimResults.svelte'));
-  simResultsLazy.load();
+  const savedCombosLazy = createLazyComponent(() => import('./SavedCombos.svelte'));
+  const savedWeightsLazy = createLazyComponent(() => import('./SavedWeights.svelte'));
+
+  if (kind === 'weights') savedWeightsLazy.load();
+  else if (kind !== 'run') savedCombosLazy.load();
+  else simResultsLazy.load();
 </script>
 
 {#snippet lazyFallback(lazy: LazyLoadState)}
@@ -176,9 +205,30 @@
   </p>
 {/if}
 
-<CharacterStrip {character} {items} {gearKnown} readonly onchange={() => {}} />
+<!-- A weights result has no gear story (design 7): nothing was tried in any slot, so the
+     strip shows no grid rather than the equipped set a weights run never touched for its
+     own sake. -->
+<CharacterStrip
+  {character}
+  {items}
+  gearKnown={kind !== 'weights' && gearKnown}
+  readonly
+  onchange={() => {}}
+/>
 
-{#if simResultsLazy.current}
+{#if kind === 'weights'}
+  {#if savedWeightsLazy.current}
+    <savedWeightsLazy.current result={result as WeightsResult} />
+  {:else}
+    {@render lazyFallback(savedWeightsLazy)}
+  {/if}
+{:else if kind !== 'run'}
+  {#if savedCombosLazy.current}
+    <savedCombosLazy.current result={result as BulkResult} treeVersion={character.tree_version} />
+  {:else}
+    {@render lazyFallback(savedCombosLazy)}
+  {/if}
+{:else if simResultsLazy.current}
   <simResultsLazy.current
     summary={result.summary}
     estimate={result.dps}

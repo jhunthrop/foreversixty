@@ -14,6 +14,7 @@ import {
   substitutionLabel,
   winningGear,
 } from './combos';
+import { bulkCopy } from './copy';
 import type { BulkResult } from './bulk-types';
 import type { Item, ItemSet } from '../planner/types';
 
@@ -76,6 +77,35 @@ describe('slotSummary', () => {
     const rows = slotSummary(trimmed);
     expect(rows.map((row) => row.slot).sort()).toEqual(['head', 'shoulder']);
     expect(rows.every((row) => row.gain === null || typeof row.gain === 'number')).toBe(true);
+  });
+
+  // Engine-lane rule 5, the second leak (Task 16's re-review, routed to this task): a
+  // two-hander replacing a main-plus-off-hand pair emits a second substitution
+  // `{kind:"item", slot:"off_hand", item_id:0, name:"<item removed>"}`. SubstitutionChips
+  // already renders this as an emptied slot; slotSummary fed the same substitution's raw
+  // `name` straight through substitutionLabel, which prints "<item removed>" verbatim since
+  // the field is non-empty. This is the "By slot" panel's own path onto the same sentinel.
+  it('renders the emptied off-hand from a two-hander swap as an emptied slot, never the literal engine text', () => {
+    const twoHander: BulkResult = {
+      ...result,
+      combos: [
+        {
+          substitutions: [
+            { kind: 'item', slot: 'main_hand', item_id: 19351, name: 'Sulfuras, Hand of Ragnaros' },
+            { kind: 'item', slot: 'off_hand', item_id: 0, name: '<item removed>' },
+          ],
+          dps: result.equipped,
+          delta: result.equipped,
+          group: 0,
+        },
+      ],
+    };
+    const rows = slotSummary(twoHander);
+    const offHand = rows.find((row) => row.slot === 'off_hand')!;
+    expect(offHand.name).toBe(bulkCopy.offHandEmptied);
+    expect(offHand.name).not.toBe('<item removed>');
+    const mainHand = rows.find((row) => row.slot === 'main_hand')!;
+    expect(mainHand.name).toBe('Sulfuras, Hand of Ragnaros');
   });
 });
 

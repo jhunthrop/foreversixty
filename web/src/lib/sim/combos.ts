@@ -80,6 +80,16 @@ export interface SlotSummaryRow {
   gain: number | null;
 }
 
+/**
+ * Engine-lane rule 5's sentinel: a two-hander replacing a main-plus-off-hand pair emits a
+ * second substitution `{kind:"item", slot:"off_hand", item_id:0, name:"<item removed>"}`.
+ * `item_id: 0` is never a real item (simdb has no id 0) -- the same check
+ * `SubstitutionChips.svelte` makes before its own generic chip branch would look it up.
+ */
+function isEmptiedOffHand(sub: Substitution): boolean {
+  return sub.kind === 'item' && sub.slot === 'off_hand' && sub.item_id === 0;
+}
+
 /** Design 3.3's per-slot summary: what the winner uses, and what that slot was worth. */
 export function slotSummary(result: BulkResult): SlotSummaryRow[] {
   const winner = result.combos[0];
@@ -99,7 +109,11 @@ export function slotSummary(result: BulkResult): SlotSummaryRow[] {
     .map((sub) => ({
       slot: sub.slot,
       item_id: sub.item_id,
-      name: substitutionLabel(sub),
+      // Engine-lane rule 5: the emptied off-hand is not an item, and "<item removed>" is
+      // not a name a player should ever read verbatim -- the same fix SubstitutionChips
+      // already applies, so every consumer of slotSummary (this "By slot" panel included)
+      // inherits it from the one place the sentinel is read.
+      name: isEmptiedOffHand(sub) ? bulkCopy.offHandEmptied : substitutionLabel(sub),
       gain: alone.get(`${sub.slot}:${sub.item_id}`) ?? null,
     }));
 }
