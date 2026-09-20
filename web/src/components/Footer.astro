@@ -18,7 +18,17 @@ const footerLinks = [
   </p>
   <nav aria-label="Footer" class="flex flex-wrap gap-x-[18px]">
     {footerLinks.map(([label, href]) => (
-      <a href={href} class="inline-flex items-center min-h-11 md:min-h-0 text-nav hover:text-strong">
+      <a
+        href={href}
+        class:list={[
+          'inline-flex items-center min-h-11 md:min-h-0 text-nav hover:text-strong',
+          // "About" is the one label here short enough (34px) to miss the 44px hit-target
+          // floor on its width alone -- the others all clear it on text length. A little
+          // horizontal padding, only on this one link, closes the gap without widening
+          // every other footer entry to match.
+          label === 'About' && 'px-2',
+        ]}
+      >
         {label}
       </a>
     ))}

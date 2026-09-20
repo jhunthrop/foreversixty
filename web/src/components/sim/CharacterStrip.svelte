@@ -153,7 +153,17 @@
     {#if split > 0}
       <span class="tabular text-strong font-mono" data-testid="sim-talent-count">{split} points</span>
     {/if}
-    <a class="ml-auto" href={plannerHrefFor(character)} data-testid="sim-open-planner">
+    <!-- 87px wide already clears the 44px hit-target floor, but its own line-height (~20px)
+         does not. `h-11` gives the link itself a real 44px box (what the touch-target check
+         measures); the matching negative `-my-3` cancels that growth back out of this row's
+         own layout contribution, so the fix stays local to the link's hit area rather than
+         growing the strip and shifting the /sim skeleton's CLS-tuned reserved height
+         ([id].astro's own comment) or anything mounted below it. -->
+    <a
+      class="-my-3 ml-auto inline-flex h-11 items-center md:my-0 md:h-auto"
+      href={plannerHrefFor(character)}
+      data-testid="sim-open-planner"
+    >
       {simCopy.openInPlanner}
     </a>
   </div>

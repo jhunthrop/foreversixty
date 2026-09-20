@@ -117,13 +117,22 @@
         two lines and un-wraps on hydration: a 16px header growth that moves the whole page
         and was the entirety of /logs' layout shift.
       -->
-      <span class="invisible inline-flex min-h-11 items-center md:min-h-0" aria-hidden="true"> Sign in </span>
+      <span class="invisible inline-flex min-h-11 items-center px-2 md:min-h-0 md:px-0" aria-hidden="true">
+        Sign in
+      </span>
     {:else if signedIn}
       <a href="/account" class="text-nav hover:text-strong inline-flex min-h-11 items-center md:min-h-0">
         {displayName}
       </a>
     {:else}
-      <a href="/login" class="text-nav hover:text-strong inline-flex min-h-11 items-center md:min-h-0">
+      <!-- "Sign in" is short enough (38px) to miss the 44px hit-target floor on its width
+           alone; the padding here has to match the invisible placeholder above exactly (its
+           own comment explains why) so the swap from placeholder to real link never shifts
+           the header. -->
+      <a
+        href="/login"
+        class="text-nav hover:text-strong inline-flex min-h-11 items-center px-2 md:min-h-0 md:px-0"
+      >
         Sign in
       </a>
     {/if}
