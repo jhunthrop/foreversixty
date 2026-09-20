@@ -6,7 +6,8 @@
      and a level range, and nothing image-shaped (contract 10.7) -- this picker labels by
      kind and name and draws none. -->
 <script lang="ts">
-  import { bulkCopy } from '../../../lib/sim/copy';
+  import { bulkCopy, toolFixCopy } from '../../../lib/sim/copy';
+  import { sourceGroupVisibility, triedCount } from '../../../lib/sim/drop-picks';
   import {
     groupSources,
     isOpen,
@@ -17,6 +18,8 @@
     type LootSource,
   } from '../../../lib/sim/loot';
   import { PHASE_LATER, openDateLabel, phaseLabel, type PhaseRow } from '../../../lib/sim/phase';
+  import { SECONDARY_BUTTON } from '../../../lib/planner/styles';
+  import type { Item } from '../../../lib/planner/types';
 
   let {
     loot,
@@ -25,6 +28,8 @@
     showUpcoming,
     picked,
     professions,
+    items,
+    known,
     now,
     ontogglekind,
     ontoggleupcoming,
@@ -36,6 +41,10 @@
     showUpcoming: boolean;
     picked: readonly string[];
     professions: readonly string[];
+    /** This class's item database, for `triedCount` -- the picker's badges. */
+    items: ReadonlyMap<number, Item>;
+    /** The engine's `simitems.json` ids, `null` when the build ships none. */
+    known: ReadonlySet<number> | null;
     now: Date;
     ontogglekind: (kind: string) => void;
     ontoggleupcoming: (value: boolean) => void;
@@ -43,10 +52,6 @@
   } = $props();
 
   const groups = $derived(groupSources(loot));
-
-  function visible(source: LootSource): boolean {
-    return shownKinds.includes(source.kind) && (showUpcoming || isOpen(phases, source, now));
-  }
 
   function isPicked(sourceId: string, bossId = ''): boolean {
     return picked.includes(`${sourceId}|${bossId}`);
@@ -94,62 +99,95 @@
   </div>
 
   {#each groups as group (group.kind)}
-    {@const shown = group.sources.filter(visible)}
-    {#if shown.length > 0}
+    {@const visibility = sourceGroupVisibility(
+      group.kind,
+      group.sources,
+      shownKinds,
+      phases,
+      showUpcoming,
+      now,
+    )}
+    {@const shown = visibility.shown}
+    {#if visibility.ticked && group.sources.length > 0}
       <div class="flex flex-col gap-1">
         <h3 class="section-title text-[13px]">{SOURCE_KIND_LABELS[group.kind]}</h3>
-        {#if group.kind === 'crafted'}
-          {@const split = professionSplit(shown, professions)}
-          {#if split.mine.length > 0}
-            <p class="text-muted text-[12px]">{bulkCopy.sourcesMyProfessions}</p>
-          {:else}
-            <p class="text-muted text-[12px]">{bulkCopy.sourcesProfessionsUnknown}</p>
-          {/if}
-        {/if}
-        {#if group.kind === 'quest'}
-          <p class="text-muted text-[12px]">{bulkCopy.sourcesQuestNote}</p>
-        {/if}
-        {#each shown as source (source.id)}
-          <div class="border-line-soft flex flex-col gap-1 border-b py-2 last:border-b-0">
-            <label class="text-text flex min-h-11 items-center gap-2 text-[13px]">
-              <input
-                type="checkbox"
-                class="h-5 w-5"
-                data-testid={`sim-source-${source.id}`}
-                checked={isPicked(source.id)}
-                onchange={() => ontoggle(source.id)}
-              />
-              <span class="flex-1">{source.name}</span>
-              {#if (source.bosses ?? []).length > 0}
-                <span class="text-muted text-[12px]">{bulkCopy.sourcesWholeRaid}</span>
-              {/if}
-              <span class="tabular text-muted font-mono text-[12px]">
-                {itemsOfSource(source).length}
-              </span>
-            </label>
-            {#if gateLabel(source) !== ''}
-              <p class="text-muted pl-7 text-[12px]">{gateLabel(source)}</p>
+        {#if visibility.allGated}
+          <!-- dps D33 (BLOCKER) / newcomer MAJOR "ticking Raids produces an empty void":
+               a ticked kind whose every source is gated used to render nothing here at
+               all. Name the gate instead of vanishing. -->
+          <p class="text-muted text-[12px]" data-testid={`sim-kind-${group.kind}-gated`}>
+            {toolFixCopy.sourcesAllGated}
+          </p>
+          <ul class="flex flex-col gap-1 pl-3">
+            {#each group.sources as source (source.id)}
+              <li class="text-muted text-[12px]">{source.name} — {gateLabel(source)}</li>
+            {/each}
+          </ul>
+          <button
+            type="button"
+            class="{SECONDARY_BUTTON} border-line-warm text-nav w-fit px-3"
+            data-testid={`sim-kind-${group.kind}-show-upcoming`}
+            onclick={() => ontoggleupcoming(true)}
+          >
+            {bulkCopy.showUpcoming}
+          </button>
+        {:else}
+          {#if group.kind === 'crafted'}
+            {@const split = professionSplit(shown, professions)}
+            {#if split.mine.length > 0}
+              <p class="text-muted text-[12px]">{bulkCopy.sourcesMyProfessions}</p>
+            {:else}
+              <p class="text-muted text-[12px]">{bulkCopy.sourcesProfessionsUnknown}</p>
             {/if}
-            {#each source.bosses ?? [] as boss (boss.id)}
-              <label class="text-text flex min-h-11 items-center gap-2 pl-7 text-[13px]">
+          {/if}
+          {#if group.kind === 'quest'}
+            <p class="text-muted text-[12px]">{bulkCopy.sourcesQuestNote}</p>
+          {/if}
+          {#each shown as source (source.id)}
+            <div class="border-line-soft flex flex-col gap-1 border-b py-2 last:border-b-0">
+              <label class="text-text flex min-h-11 items-center gap-2 text-[13px]">
                 <input
                   type="checkbox"
                   class="h-5 w-5"
-                  data-testid={`sim-source-${boss.id}`}
-                  checked={isPicked(source.id, boss.id)}
-                  onchange={() => ontoggle(source.id, boss.id)}
+                  data-testid={`sim-source-${source.id}`}
+                  checked={isPicked(source.id)}
+                  onchange={() => ontoggle(source.id)}
                 />
-                <!-- Contract 10.4: "a boss with no name in either database is emitted with
-                     an empty name". The id is the honest stand-in; inventing one is not. -->
-                <span class="flex-1">{boss.name === '' ? boss.id : boss.name}</span>
-                <span class="tabular text-muted font-mono text-[12px]">{boss.items.length}</span>
+                <span class="flex-1">{source.name}</span>
+                {#if (source.bosses ?? []).length > 0}
+                  <span class="text-muted text-[12px]">{bulkCopy.sourcesWholeRaid}</span>
+                {/if}
+                <span class="tabular text-muted font-mono text-[12px]">
+                  {triedCount(itemsOfSource(source), items, known)}
+                </span>
               </label>
-            {/each}
-            {#if (source.trash ?? []).length > 0}
-              <p class="text-muted pl-7 text-[12px]">{bulkCopy.sourcesTrash}</p>
-            {/if}
-          </div>
-        {/each}
+              {#if gateLabel(source) !== ''}
+                <p class="text-muted pl-7 text-[12px]">{gateLabel(source)}</p>
+              {/if}
+              {#each source.bosses ?? [] as boss (boss.id)}
+                <label class="text-text flex min-h-11 items-center gap-2 pl-7 text-[13px]">
+                  <input
+                    type="checkbox"
+                    class="h-5 w-5"
+                    data-testid={`sim-source-${boss.id}`}
+                    checked={isPicked(source.id, boss.id)}
+                    onchange={() => ontoggle(source.id, boss.id)}
+                  />
+                  <!-- Contract 10.4: "a boss with no name in either database is emitted
+                       with an empty name". The id is the honest stand-in; inventing one is
+                       not. -->
+                  <span class="flex-1">{boss.name === '' ? boss.id : boss.name}</span>
+                  <span class="tabular text-muted font-mono text-[12px]">
+                    {triedCount(boss.items, items, known)}
+                  </span>
+                </label>
+              {/each}
+              {#if (source.trash ?? []).length > 0}
+                <p class="text-muted pl-7 text-[12px]">{bulkCopy.sourcesTrash}</p>
+              {/if}
+            </div>
+          {/each}
+        {/if}
       </div>
     {/if}
   {/each}

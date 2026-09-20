@@ -81,7 +81,11 @@
         {countLabel}
       </span>
 
-      <label class="text-muted flex items-center gap-2 text-[12px]">
+      <!-- Task 5: the select below is h-11 but nothing here pinned the label itself to that
+           height -- it happened to reach 44px only because a flex row without an explicit
+           height grows to its tallest child. Explicit now, the same floor every other
+           control's own label carries, rather than a hit target relying on a coincidence. -->
+      <label class="text-muted flex min-h-11 items-center gap-2 text-[12px]">
         {bulkCopy.precisionLabel}
         <select
           data-testid="sim-precision"

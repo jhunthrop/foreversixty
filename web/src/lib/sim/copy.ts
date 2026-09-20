@@ -805,3 +805,101 @@ export const bulkCopy = {
    */
   itemNotAdded: (itemId: number): string => `Item ${itemId} could not be added to this character.`,
 } as const;
+
+// --- Lane W3 (tool pages): persona round 1 ---
+/**
+ * Copy for fix lane W3 (tool pages: /sim/gear, /sim/drops, /sim/talents), appended here
+ * rather than folded into simCopy/bulkCopy above so later tasks in this lane can keep
+ * adding keys to one place without touching either of those objects (the plan's copy.ts
+ * rule). Do not insert keys into simCopy/bulkCopy for this lane's work, and do not reorder
+ * or reformat anything above this line.
+ */
+export const toolFixCopy = {
+  /**
+   * DropResults.svelte, task 3b (newcomer MAJOR, review.md:291-298; dps D34, review.md:344-
+   * 349): a ticked source or boss that contributed zero tried items still gets a row here,
+   * naming it rather than vanishing with no trace it was ever picked. Says only what
+   * drop-picks.ts's `pickedWithNothingTried` can prove -- nothing from this pick was tried
+   * -- and not why.
+   *
+   * Final whole-branch review, Important 3: `pickedWithNothingTried` used to prove that off
+   * the loot file (`triedCount`), which could only fail for one reason (nothing this pick
+   * drops is known to the engine). It now proves it off the RESULT itself (does any combo
+   * carry this pick's own `drop:<id>` origin), which also catches a pick whose only item was
+   * claimed by an earlier, `candidateKey`-identical pick (`rowsFromPicks`' cross-source
+   * merge) -- a second, distinct reason nothing of this pick's own shows up. "Could not be
+   * tried" was true for the first reason and false for the second (the item WAS tried, just
+   * credited to the other source), so the sentence changed to one that is true for both: it
+   * says only that nothing here is credited to this pick, not that this pick was incapable.
+   *
+   * No longer takes the pick's own name: DropResults.svelte's untried card already carries
+   * it in an `<h4>` right above this line (fix round, Minor 4), so repeating it here was the
+   * "By boss" cards' own name-then-count shape, mismatched.
+   */
+  dropsNothingTried: 'None of these drops appear in the results.',
+  /**
+   * SourcePicker.svelte, task 3c (dps D33, BLOCKER, review.md:334-342; newcomer MAJOR,
+   * review.md:299-304, "ticking Raids produces an empty void"): a ticked kind whose every
+   * source is gated behind an unopened phase used to render nothing at all. This introduces
+   * the list of gated sources and the date each opens (`gateLabel`, unchanged) instead of
+   * the group silently vanishing.
+   *
+   * Fix round, Minor 3: the original "Here is when each one does" promised a date for every
+   * line under it, but `gateLabel` can also answer `opensLater` ("Not open yet; no date
+   * announced.") for a `later`-phase source -- a date-shaped promise the line does not keep.
+   * Reworded to a claim true of both: the list says what is known, which for a `later`
+   * source is "no date yet" rather than a date.
+   */
+  sourcesAllGated: 'Nothing here has opened yet. Here is what is known about each:',
+  /**
+   * SettingsBar.svelte, task 4a (tank MAJOR, review.md:325-327): under a timeline style
+   * (currently only Dungeon pull) the TARGETS control shows this instead of a `<select>`,
+   * because `encounter.targets` alone (the ramp's opening count) would understate the run.
+   * A function of `styles.ts`'s `targetsSummary`'s `first`/`max`, never a sentence composed
+   * in that file. "1 → 5 over the pull" is the lane brief's own example.
+   */
+  targetsTimeline: (first: number, max: number): string => `${first} → ${max} over the pull`,
+  /**
+   * The one-line note beside `targetsTimeline`, saying why TARGETS is read-only here
+   * rather than leaving the player to wonder why the select disappeared.
+   */
+  targetsTimelineNote: 'The fight style sets the target count here.',
+  /**
+   * Fix round 1 (reviewer Important): once a style-owned field (the dummy checkbox, execute
+   * phase) detaches the encounter from its fight style by hand while a timeline ramp is
+   * still in effect (`settings.ts`'s `detached()` never clears `targets_over_time` -- doing
+   * so would silently drop the ramp from the run), `targetsTimelineNote` above would be
+   * lying: there is no fight style left to be "setting" anything. This is the true sentence
+   * for that case instead. Beside `targetsTimelineNote`, not a reword of it.
+   */
+  targetsTimelineDetachedNote:
+    'This fight’s own target timeline sets the count here; choosing a fight style replaces it.',
+  /**
+   * The one function SettingsBar.svelte calls for the TARGETS note: which of the two
+   * sentences above is true depends only on `targetsSummary`'s `attached` flag (styles.ts,
+   * wordless), so the choice is made here rather than as an `{#if}`/`{:else}` in the
+   * component's markup.
+   */
+  targetsTimelineNoteFor: (attached: boolean): string =>
+    attached ? toolFixCopy.targetsTimelineNote : toolFixCopy.targetsTimelineDetachedNote,
+  /**
+   * SettingsSheet.svelte, task 4b (tank MAJOR, review.md:227-229): the visible sentence
+   * under the target-armor field replacing its old `title` hover (newcomer MINOR 213, "the
+   * placeholder doubles as its only help"), saying in words what a blank field or a typed 0
+   * already means on the wire -- the level's own preset, named for the level currently
+   * selected. A function of the level and `settings.ts`'s `targetArmorField`'s `preset`.
+   */
+  targetArmorNote: (level: number, preset: number): string =>
+    `Blank or 0 uses the level ${level} preset: ${preset.toLocaleString('en-US')} armor.`,
+  /**
+   * ComboResults.svelte, final whole-branch review, Important 2: `combos.ts`'s
+   * `collapsedComboCount`, in words -- shown only when it is greater than zero, near the
+   * ranking table. A companion to `bulkCopy.rules`' own "Rings and trinkets are tried in
+   * both slots." bullet, not a contradiction of it: that bullet says why the engine tries a
+   * ring or trinket in both slots, this says why the table shows one row for it instead of
+   * two, so the run bar's own count (the engine's `simCount`, before this collapse) can read
+   * higher than the number of rows below it.
+   */
+  combosCollapsedNote: (collapsed: number): string =>
+    `${collapsed} ${collapsed === 1 ? 'combination' : 'combinations'} tried a ring, trinket or weapon in both slots and ${collapsed === 1 ? 'collapses' : 'collapse'} into one row above.`,
+} as const;

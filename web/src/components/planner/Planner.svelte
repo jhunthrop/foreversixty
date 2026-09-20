@@ -24,7 +24,7 @@
   import { createPlannerStore } from '../../lib/planner/store.svelte';
   import { SECONDARY_BUTTON } from '../../lib/planner/styles';
   import { treeSourceNotice } from '../../lib/planner/tree-source';
-  import type { BuildRecord, TalentFile } from '../../lib/planner/types';
+  import type { BuildRecord, Gear, TalentFile } from '../../lib/planner/types';
   import { characterFromPlanner } from '../../lib/sim/character';
   import { defaultSimState, simSearch, withSimState } from '../../lib/sim/url';
   import GearPanel from './GearPanel.svelte';
@@ -39,12 +39,20 @@
     classSlug = DEFAULT_CLASS_SLUG,
     raceSlug,
     record = null,
+    gear,
     oncode,
   }: {
     treeVersion: string;
     classSlug?: string;
     raceSlug?: string;
     record?: BuildRecord | null;
+    /**
+     * Seeds the store's gear when there is no `record` (dps D39/D40) -- Top Gear's inline
+     * "add a build" (TalentCandidates.svelte) passes the loaded character's gear so its live
+     * DPS card sims the same equipment the comparison table does. `record?.gear` always wins
+     * when a record is present: `/b/:id` and `/planner` must stay byte-identical to today.
+     */
+    gear?: Gear;
     /**
      * Called with the build's own FS1 code whenever it changes. Top Gear's "add a build"
      * (Task 14's TalentCandidates) mounts this component inline and reads the code back
@@ -131,7 +139,7 @@
           ? decoded.build.raceSlug
           : (fromQuery('race') ?? raceSlug ?? ''),
       order: record?.point_order,
-      gear: record?.gear,
+      gear: record?.gear ?? gear,
       title: record?.title,
       sourceId: record?.id ?? null,
       readOnly: record !== null,
