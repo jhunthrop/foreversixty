@@ -11,8 +11,9 @@
        - Task 14's TalentCandidates sits outside the gearMode guard (talent compare is
          loadouts only, contract 10.1's talents mode has no gear candidates) and its
          NamedSets sits inside it, beside ItemSearch and ConsumableCandidates.
-       - Task 15 inserts BulkRunBar (which itself mounts SettingsPanel and RequestDrawer)
-         here, after the candidate sections and before the combination count.
+       - Task 15's BulkRunBar mounts here (it mounts SettingsBar and RequestDrawer itself,
+         so this file needs no import of either), after the candidate sections, owning the
+         combination count.
        - Task 16 inserts ComboResults here, after the run bar.
      Each later task's section is its own child component; this file stays a thin
      composition that delegates, never growing past what a single screen's layout needs. -->
@@ -21,7 +22,7 @@
   import type { Slot } from '../../../lib/planner/types';
   import type { BulkStore } from '../../../lib/sim/bulk-store.svelte';
   import { SIM_LEVEL } from '../../../lib/sim/character';
-  import { bulkCopy } from '../../../lib/sim/copy';
+  import BulkRunBar from './BulkRunBar.svelte';
   import ConsumableCandidates from './ConsumableCandidates.svelte';
   import ItemSearch from './ItemSearch.svelte';
   import NamedSets from './NamedSets.svelte';
@@ -81,7 +82,5 @@
     />
   {/if}
 
-  <p class="text-muted px-[18px] text-[13px] md:px-0" data-testid="sim-combo-count">
-    {store.combinations === null ? bulkCopy.combinationsCounting : bulkCopy.combinations(store.combinations)}
-  </p>
+  <BulkRunBar {store} />
 </div>

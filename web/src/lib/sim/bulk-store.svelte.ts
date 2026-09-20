@@ -14,10 +14,7 @@
 import { fetchSpecs, saveSim } from './api';
 import {
   BulkCapError,
-  BulkRunError,
   countCombinations,
-  runBulk,
-  runWeightsRun,
   stageProgressLine,
   type BulkProgress,
   type BulkRunHandle,
@@ -36,8 +33,19 @@ import {
 } from './bulk-types';
 import { MAX_SERVER_POLLS, runServerJob } from './bulk-server-run';
 import {
+  applyRequestFields,
+  buildRequest,
+  currentSpec,
+  envelope,
+  previewRequest,
+  runBulkAndSettle,
+  seededStats,
+  validateRequestJson,
+  type BulkRequestDeps,
+  type BulkRunDeps,
+} from './bulk-store-request';
+import {
   addRow,
-  buildBulkSpec,
   copyAndModify,
   removeRow,
   rowFor,
@@ -47,9 +55,9 @@ import {
   type CandidateRow,
   type Origin,
 } from './candidates';
-import { needsRace, toCharacterSpec, type SimCharacter } from './character';
+import { needsRace, type SimCharacter } from './character';
 import type { CharacterPath } from '../characters';
-import { bulkCopy, simCopy } from './copy';
+import type { RequestValidation } from './engine';
 import { loadEnchants, loadSuffixes, type EnchantRow, type SuffixRow } from './enchants';
 import {
   initialShownKinds,
@@ -61,8 +69,6 @@ import {
 import { loadLoot, sourcesByItem, type LootFile } from './loot';
 import { BUILT_IN_PHASES, fetchPhases, type PhaseRow } from './phase';
 import { loadItems, loadSets, loadTalents } from '../planner/load';
-import { PRECISION_ITERATIONS } from './precision';
-import { indexTalents } from '../planner/rules';
 import type { Item, ItemSet, Slot, TalentFile } from '../planner/types';
 import { defaultSettings, type SimSettings } from './settings';
 import { loadSimBuffs, type SimBuffFile } from './sim-buffs';
@@ -74,9 +80,7 @@ import {
   type LoadContext,
   type SourceResult,
 } from './sources';
-import type { CharacterSpec, SimResult, SourceKind, SpecFidelity } from './types';
-import { ENGINE_VERSION } from './version';
-import { defaultStatsFor, referenceFor } from './weights';
+import type { SimResult, SourceKind, SpecFidelity } from './types';
 import { createPool, type SimPool } from './worker';
 
 export const TOOLS = ['gear', 'talents', 'drops', 'weights'] as const;
@@ -217,7 +221,7 @@ export function createBulkStore(init: BulkStoreInit) {
     // fresh load has no picks yet, so this replaces the seeded equipped/bag/bank rows with
     // the empty list rather than leaving them there for a mode that must refuse them.
     if (init.tool === 'drops') rows = rowsFromPicks(pickedBosses, loot, items);
-    seedStatsIfNeeded();
+    stats = seededStats(init.tool, character, specRows, stats);
     // Set only now, not before `loadDataFor`/`seedRows` above: setting it earlier left a
     // window where the page looked settled (`phase === 'idle'`) while `items` was still
     // empty and `talentFile` still null (fix round 1, Minor).
@@ -281,104 +285,64 @@ export function createBulkStore(init: BulkStoreInit) {
     return seeded;
   }
 
-  /** The character as the engine wants it, or null while a character or its talents are missing. */
-  function characterSpecOrNull(): CharacterSpec | null {
-    if (character === null || talentFile === null) return null;
-    return toCharacterSpec(character, indexTalents(talentFile), settings.buffs, settings.consumables);
-  }
-
-  function currentSpec(): BulkRequest['bulk'] | null {
-    if (mode === null) return null;
-    return buildBulkSpec({
-      mode,
-      rows,
-      locked,
-      loadouts,
-      sets: namedSets,
-      precision,
-      cap,
-      // "Try each of these" is one alternative list per ticked consumable, not every
-      // subset of them (contract 10.1 A5).
-      consumables: consumableIds.map((id) => [id]),
-    });
-  }
-
-  /**
-   * The fields a bulk and a weights request share, or null while a character or its talent
-   * file is missing. One function so `run()`'s envelope and `recount()`'s can never drift
-   * apart (fix round 1, Important 4) -- only `iterations` and the trailing block differ.
-   */
-  function envelope(iterations: number): Omit<BulkRequest, 'bulk'> | null {
-    const spec = characterSpecOrNull();
-    if (spec === null || character === null) return null;
-    return {
-      engine_version: ENGINE_VERSION,
-      spec: character.spec,
-      source: character.source,
-      character: spec,
-      encounter: settings.encounter,
-      iterations,
-      random_seed: 0,
-    };
-  }
-
-  /**
-   * The weights picker's seed, run whenever a character or the spec list newly become
-   * available -- `loadSpecs()` may resolve before or after `loadAddon()` (Task 11's own
-   * `onMount` order), and `stats` must not stay empty forever either way (fix round 1,
-   * Important 2). Guarded on `stats.length === 0`, so a player's own edits are never lost.
-   */
-  function seedStatsIfNeeded(): void {
-    if (init.tool !== 'weights' || stats.length > 0 || character === null) return;
-    stats = defaultStatsFor(character.spec, referenceFor(character.spec, specRows));
-  }
-
-  function baseRequest(): BulkRequest | WeightsRequest | null {
-    if (character === null) {
-      message = bulkCopy.needCharacter;
-      return null;
-    }
-    if (init.tool === 'weights') {
-      // Contract 10.8: `WeightsSpec.Reference` is required. An empty `stats` list has
-      // nothing to send as one, and running would otherwise fail only after the engine
-      // rejects the request (fix round 1, Important 2).
-      if (stats.length === 0) {
-        message = bulkCopy.weightsNeedStats;
-        return null;
-      }
-      const base = envelope(PRECISION_ITERATIONS.normal);
-      if (base === null) {
-        message = simCopy.failed;
-        return null;
-      }
-      return { ...base, weights: { stats: [...stats], reference: stats[0] } };
-    }
-    // Contract 10.1 A3: a bulk request's iterations ARE its precision's final stage, and
-    // `Validate` refuses anything else.
-    const base = envelope(finalIterations(precision));
-    if (base === null) {
-      message = simCopy.failed;
-      return null;
-    }
-    const bulk = currentSpec();
-    if (bulk === null) return null;
-    const refusal = validateBulk(bulk);
-    if (refusal !== null) {
-      message = refusal;
-      return null;
-    }
-    return { ...base, bulk };
-  }
-
   /** The live count, debounced: it fires on every checkbox tick. */
   function scheduleCount(): void {
     if (countTimer !== null) clearTimeout(countTimer);
     countTimer = setTimeout(() => void recount(), COUNT_DEBOUNCE_MS);
   }
 
+  /**
+   * Everything `bulk-store-request.ts`'s functions need from this closure, built once:
+   * `$state` cannot cross a module boundary, so every field is a getter or a setter here
+   * rather than the module reading/writing `$state` itself (Task 15 -- this store's own
+   * request-building surface outgrew the 800-line cap once the drawer's four methods were
+   * added, the same seam `store.svelte.ts`/`store-request.ts` already use).
+   */
+  const requestDeps: BulkRequestDeps = {
+    tool: init.tool,
+    mode,
+    getCharacter: () => character,
+    getTalentFile: () => talentFile,
+    getSettings: () => settings,
+    getRows: () => rows,
+    getLocked: () => locked,
+    getLoadouts: () => loadouts,
+    getNamedSets: () => namedSets,
+    getPrecision: () => precision,
+    getCap: () => cap,
+    getConsumableIds: () => consumableIds,
+    getStats: () => stats,
+    setPrecision: (value) => (precision = value),
+    setCap: (value) => (cap = value),
+    setLocked: (value) => (locked = value),
+    setLoadouts: (value) => (loadouts = value),
+    setNamedSets: (value) => (namedSets = value),
+    setStats: (value) => (stats = value),
+    scheduleCount,
+    poolOnce,
+  };
+
+  /** Everything `runBulkAndSettle` needs from this closure -- same reasoning as `requestDeps`. */
+  const runDeps: BulkRunDeps = {
+    tool: init.tool,
+    poolOnce,
+    getStopRequested: () => stopRequested,
+    setStopRequested: (value) => (stopRequested = value),
+    setPhase: (value) => (phase = value),
+    setProgress: (value) => (progress = value),
+    setMessage: (value) => (message = value),
+    setDetail: (value) => (detail = value),
+    getResult: () => result,
+    setResult: (value) => (result = value),
+    setHandle: (value) => (handle = value),
+    setCapNotice: (value) => (capNotice = value),
+    setCombinations: (value) => (combinations = value),
+    bumpServerGeneration: () => (serverGeneration += 1),
+  };
+
   async function recount(): Promise<void> {
     if (mode === null || character === null) return;
-    const bulk = currentSpec();
+    const bulk = currentSpec(requestDeps);
     if (bulk === null || validateBulk(bulk) !== null) {
       combinations = null;
       capNotice = null;
@@ -388,7 +352,7 @@ export function createBulkStore(init: BulkStoreInit) {
       serverCapNotice = null;
       return;
     }
-    const base = envelope(finalIterations(precision));
+    const base = envelope(requestDeps, finalIterations(precision));
     if (base === null) return;
     const request: BulkRequest = { ...base, bulk };
     phase = 'counting';
@@ -557,7 +521,24 @@ export function createBulkStore(init: BulkStoreInit) {
       } catch {
         specRows = [];
       }
-      seedStatsIfNeeded();
+      stats = seededStats(init.tool, character, specRows, stats);
+    },
+
+    /** Exactly what a run would send, for part A's Advanced drawer (design 8). */
+    get requestPreview() {
+      return previewRequest(requestDeps);
+    },
+    /**
+     * A request edited in the drawer, adopted whole. Only the two blocks this store owns
+     * are read back -- the encounter and the buffs belong to `settings`, which part A's own
+     * panel owns, and writing them from here would fight it.
+     */
+    applyRequest(next: unknown): void {
+      applyRequestFields(requestDeps, next);
+    },
+    /** `api.SimRequest.Validate`, inside the wasm -- the drawer's own inline JSON check. */
+    validateRequest(json: string): Promise<RequestValidation> {
+      return validateRequestJson(requestDeps, json);
     },
 
     setPremium(value: boolean): void {
@@ -661,49 +642,27 @@ export function createBulkStore(init: BulkStoreInit) {
       // A premium poll owns `result`/`phase` while it runs; refuse rather than race it,
       // the same guard `runOnServer()` puts on itself (fix round 1, Minor).
       if (serverRunning) return;
-      const request = baseRequest();
-      if (request === null) {
+      const outcome = buildRequest(requestDeps);
+      if ('error' in outcome) {
+        message = outcome.error;
         phase = 'idle';
         return;
       }
-      // Invalidates a premium poll that might still be resolving from an earlier
-      // generation (fix round 1, Minor).
-      serverGeneration += 1;
-      message = null;
-      detail = '';
-      stopRequested = false;
-      phase = 'running';
-      progress = null;
+      await runBulkAndSettle(runDeps, outcome.request);
+    },
 
-      handle =
-        init.tool === 'weights'
-          ? runWeightsRun(poolOnce(), request as WeightsRequest, () => {})
-          : runBulk(poolOnce(), request as BulkRequest, (next) => {
-              if (stopRequested) return;
-              progress = next;
-            });
-
-      try {
-        const finished = await handle.result;
-        result = finished;
-        if (finished.aborted === true) message = bulkCopy.partial;
-        phase = 'done';
-      } catch (error) {
-        if (error instanceof BulkCapError) {
-          capNotice = { cap: error.cap, combinations: error.combinations };
-          combinations = error.combinations;
-          message = error.message;
-          phase = 'idle';
-          return;
-        }
-        const failure = error instanceof BulkRunError ? error : null;
-        message = failure?.cancelled === true ? simCopy.stopped : (failure?.message ?? bulkCopy.bulkFailed);
-        detail = failure?.detail ?? '';
-        phase = failure?.cancelled === true && result !== null ? 'done' : 'error';
-      } finally {
-        handle = null;
-        progress = null;
-      }
+    /**
+     * The edited request from part A's drawer, run exactly as written (design 8's escape
+     * hatch) -- bypasses the ticked-candidates reconstruction `run()` does entirely, the
+     * same way `applyRequest` bypasses it for Apply. The drawer's own `checkRequest` has
+     * already run the engine's own Validate by the time it calls this, so this does not
+     * re-validate.
+     */
+    runRequest(request: unknown): void {
+      if (serverRunning) return;
+      const parsed = request as Partial<BulkRequest & WeightsRequest>;
+      if (parsed.bulk === undefined && parsed.weights === undefined) return;
+      void runBulkAndSettle(runDeps, parsed as BulkRequest | WeightsRequest);
     },
 
     stop(): void {
@@ -723,8 +682,12 @@ export function createBulkStore(init: BulkStoreInit) {
      */
     async runOnServer(): Promise<void> {
       if (serverRunning) return;
-      const request = baseRequest();
-      if (request === null) return;
+      const outcome = buildRequest(requestDeps);
+      if ('error' in outcome) {
+        message = outcome.error;
+        return;
+      }
+      const request = outcome.request;
       serverRunning = true;
       const generation = ++serverGeneration;
       const current = (): boolean => generation === serverGeneration;

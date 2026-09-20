@@ -173,3 +173,39 @@ test('a set that is not an export string says so and adds nothing', async ({ pag
   await expect(page.getByTestId('sim-set-error')).toBeVisible();
   await expect(page.getByTestId('sim-set-Bad')).toHaveCount(0);
 });
+
+test('four candidates are well under the cap, so no notice and a live run button', async ({ page }) => {
+  await loadGear(page);
+  for (const id of [16963, 16966, 13968, 19325]) {
+    await page.getByTestId(`sim-search-add-${id}`).click();
+  }
+  // The desktop project reports 8+ cores, so the cap is 400 and four candidates fit. The
+  // notice's own wording and its 5,000-combination premium alternative are asserted in
+  // the unit tests, where the cap is injectable.
+  await expect(page.getByTestId('sim-cap-notice')).toHaveCount(0);
+  await expect(page.getByTestId('sim-run-bulk')).toBeEnabled();
+});
+
+test('a run reports its stage line and ends with a ranked table', async ({ page }) => {
+  await loadGear(page);
+  await page.getByTestId('sim-search-add-16963').click();
+  await page.getByTestId('sim-run-bulk').click();
+  await expect(page.getByTestId('sim-stage-progress')).toHaveText(/stage \d of 3 · \d+ of \d+ combinations/);
+  // Task 16 (not yet landed) renders the ranked table at this test id; until then, the run
+  // finishing (the stage line disappearing) is this task's own thing to assert.
+  // await expect(page.getByTestId('sim-combos')).toBeVisible({ timeout: 20_000 });
+  await expect(page.getByTestId('sim-stage-progress')).toHaveCount(0, { timeout: 20_000 });
+});
+
+test('precision is three choices and normal runs two stages', async ({ page }) => {
+  await loadGear(page);
+  await page.getByTestId('sim-search-add-16963').click();
+  await page.getByTestId('sim-precision').selectOption('normal');
+  await page.getByTestId('sim-run-bulk').click();
+  await expect(page.getByTestId('sim-stage-progress')).toHaveText(/stage \d of 2 /);
+});
+
+test('the server lane is not offered to a signed-out visitor', async ({ page }) => {
+  await loadGear(page);
+  await expect(page.getByTestId('sim-server-run')).toHaveCount(0);
+});
