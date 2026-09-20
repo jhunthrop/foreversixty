@@ -89,7 +89,7 @@ function Options.handle(input)
 		-- returns L.followNone for a nil build and cannot return nil on any
 		-- path -- so this asymmetry with the export/gear guards above is
 		-- deliberate, not a gap.
-		return { Follow.line(data, Follow.build, Talents.readRanks()) }
+		return { Follow.line(data, Follow.build, Talents.readRanks(data)) }
 	elseif command == "gear" then
 		return Gear.lines(data, Follow.build)
 	elseif command == "inbox" then

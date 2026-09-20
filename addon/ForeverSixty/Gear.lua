@@ -157,7 +157,7 @@ end
 --- Everything the player is carrying or wearing that beats the planned item in
 --- a slot it fits.
 function Gear.upgrades(data, build)
-	local ranks = Talents.readRanks()
+	local ranks = Talents.readRanks(data)
 	local spec = Gear.specOf(data, build.classSlug, ranks)
 	local weights = spec and data.weights[spec] or nil
 	if weights == nil then
@@ -205,7 +205,7 @@ function Gear.lines(data, build)
 	if build == nil then
 		return { L.gearNoBuild }
 	end
-	local spec = Gear.specOf(data, build.classSlug, Talents.readRanks())
+	local spec = Gear.specOf(data, build.classSlug, Talents.readRanks(data))
 	if spec == nil or data.weights[spec] == nil then
 		return { L.gearNoWeights }
 	end

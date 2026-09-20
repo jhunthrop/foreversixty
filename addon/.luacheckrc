@@ -14,8 +14,9 @@ max_line_length = 120
 exclude_files = { "ForeverSixty/Data.lua" } -- generated
 
 read_globals = {
-	-- Talents
+	-- Talents: the classic window, and the 1.60 client's trait system
 	"GetNumTalentTabs", "GetNumTalents", "GetTalentInfo", "GetTalentTabInfo",
+	"C_Traits", "C_ClassTalents",
 	-- Items
 	"GetInventoryItemLink", "GetContainerItemLink", "GetContainerNumSlots",
 	"GetItemStats", "GetItemInfo", "GetItemInfoInstant",
@@ -54,6 +55,7 @@ files["tests/"] = {
 	globals = {
 		"_G",
 		"GetNumTalentTabs", "GetNumTalents", "GetTalentInfo", "GetTalentTabInfo",
+		"C_Traits", "C_ClassTalents",
 		"GetInventoryItemLink", "GetContainerItemLink", "GetContainerNumSlots",
 		"GetItemStats", "GetItemInfo", "GetItemInfoInstant", "C_Container",
 		"UnitClass", "UnitRace", "UnitLevel", "UnitName", "GetRealmName", "GetCurrentRegion",

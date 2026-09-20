@@ -16,6 +16,10 @@ Two decisions are load-bearing:
 * tier and column are **1-based**, because `GetTalentInfo` returns them
   that way. The talent files are 0-based; the conversion happens once,
   here.
+* Every talent carries its **TraitNode id** (`node`). The 1.60 client has
+  no `GetTalentInfo`; its trees live in the modern trait system and the
+  addon reads each rank with `C_Traits.GetNodeInfo(configID, node)`. The
+  tier/column cell stays the key between the addon's own modules.
 """
 
 from __future__ import annotations
@@ -61,6 +65,7 @@ def _tabs(root: Path, build: str, class_slug: str) -> list[AddonTab]:
                 tier=talent["tier"] + TAB_BASE,
                 column=talent["column"] + TAB_BASE,
                 max_rank=talent["max_rank"],
+                node=talent["id"],
             )
             for talent in tree["talents"]
         ]

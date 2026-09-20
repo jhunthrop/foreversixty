@@ -65,7 +65,7 @@ end
 --- The frame. Created on first use, never on load: an addon that builds
 --- frames at login costs every player that time whether they use it or not.
 function Follow.refresh(data)
-	local ranks = Talents.readRanks()
+	local ranks = Talents.readRanks(data)
 	Follow.frame = Follow.frame or CreateFrame("Frame", "ForeverSixtyFollowFrame", UIParent)
 	Follow.text = Follow.text or Follow.frame:CreateFontString()
 	Follow.text:SetText(Follow.line(data, Follow.build, ranks))
@@ -82,8 +82,8 @@ Follow.TALENT_FRAME = { "PlayerTalentFrame", "TalentFrame" }
 --- The returned table describing what was highlighted (or nil) is not used
 --- by any caller here -- it exists so the spec can assert on the outcome
 --- without a display server. Keep returning it.
-function Follow.highlight(_data, ranks)
-	local point = Follow.nextPoint(Follow.build, ranks or Talents.readRanks())
+function Follow.highlight(data, ranks)
+	local point = Follow.nextPoint(Follow.build, ranks or Talents.readRanks(data))
 	if point == nil then
 		return nil
 	end

@@ -334,17 +334,20 @@ class StatWeights(BaseModel):
 
 
 class AddonTalent(BaseModel):
-    """One talent as the addon sees it: a cell and a ceiling, no ids.
+    """One talent as the addon sees it: a cell, a ceiling and its trait node.
 
     tier and column are 1-based, matching `GetTalentInfo`'s own return
     values, so the addon compares what the client hands it without
-    arithmetic in two places.
+    arithmetic in two places. node is the client's TraitNode id, the key
+    `C_Traits.GetNodeInfo` takes: the 1.60 client keeps the Forever trees
+    in the modern trait system and has no `GetTalentInfo` at all.
     """
 
     name: str
     tier: int
     column: int
     max_rank: int
+    node: int
 
 
 class AddonTab(BaseModel):

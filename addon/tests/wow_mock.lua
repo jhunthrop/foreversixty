@@ -13,8 +13,13 @@ local mock = {}
 local realPrint = _G.print
 
 --- Install a fresh mock into _G and return its state table.
--- @param state table with any of: talents, equipped, bags, itemStats,
+-- @param state table with any of: talents, traits, equipped, bags, itemStats,
 --   class, race, realm, region, professions, build
+--
+-- `talents` installs the classic GetTalentInfo window. `traits` installs
+-- the 1.60 client's trait system instead -- { configID = <id or nil>,
+-- ranks = { [node] = rank } } -- and, like that client, leaves the classic
+-- functions undefined.
 function mock.install(state)
 	state = state or {}
 	state.talents = state.talents or {}
@@ -35,22 +40,41 @@ function mock.install(state)
 		table.insert(state.printed, table.concat(parts, " "))
 	end
 
-	_G.GetNumTalentTabs = function()
-		return #state.talents
+	if state.traits then
+		_G.C_ClassTalents = {
+			GetActiveConfigID = function()
+				return state.traits.configID
+			end,
+		}
+		_G.C_Traits = {
+			GetNodeInfo = function(configID, node)
+				if configID ~= state.traits.configID then
+					return nil
+				end
+				local rank = state.traits.ranks[node]
+				return rank and { activeRank = rank, ranksPurchased = rank } or nil
+			end,
+		}
 	end
 
-	_G.GetTalentTabInfo = function(tab)
+	-- The classic window, only when the spec did not ask for the trait
+	-- system: the 1.60 client defines neither of these four functions.
+	_G.GetNumTalentTabs = not state.traits and function()
+		return #state.talents
+	end or nil
+
+	_G.GetTalentTabInfo = not state.traits and function(tab)
 		local entry = state.talents[tab]
 		return entry and entry.name or nil
-	end
+	end or nil
 
-	_G.GetNumTalents = function(tab)
+	_G.GetNumTalents = not state.traits and function(tab)
 		local entry = state.talents[tab]
 		return entry and #entry.talents or 0
-	end
+	end or nil
 
 	-- name, iconTexture, tier, column, rank, maxRank
-	_G.GetTalentInfo = function(tab, index)
+	_G.GetTalentInfo = not state.traits and function(tab, index)
 		local entry = state.talents[tab]
 		if not entry then
 			return nil
@@ -60,7 +84,7 @@ function mock.install(state)
 			return nil
 		end
 		return talent.name, "icon", talent.tier, talent.column, talent.rank, talent.maxRank
-	end
+	end or nil
 
 	_G.GetInventoryItemLink = function(_, slot)
 		return state.equipped[slot]
@@ -167,7 +191,7 @@ end
 function mock.uninstall()
 	for _, name in ipairs({
 		"GetNumTalentTabs", "GetTalentTabInfo", "GetNumTalents", "GetTalentInfo",
-		"GetInventoryItemLink", "GetContainerNumSlots", "GetContainerItemLink",
+		"C_Traits", "C_ClassTalents", "GetInventoryItemLink", "GetContainerNumSlots", "GetContainerItemLink",
 		"C_Container", "GetItemStats", "GetItemInfoInstant", "UnitClass", "UnitRace",
 		"GetRealmName", "GetCurrentRegion", "GetProfessions", "GetProfessionInfo",
 		"GetBuildInfo", "SlashCmdList", "UIParent", "CreateFrame",

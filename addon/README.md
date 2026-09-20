@@ -24,7 +24,10 @@ change the named constant if it differs from the default.
 | 1 | The beta client loads out-of-date addons at all | tick "Load out of date AddOns", `/dump IsAddOnLoaded("ForeverSixty")` | — |
 | 2 | Interface number | `/dump select(4, GetBuildInfo())` | `## Interface:` in `ForeverSixty.toc` (default `16001`) |
 | 3 | Build string | `/dump GetBuildInfo()` | `ns.Data.build` must match; the addon warns when it does not |
-| 4 | Talent tab count | `/dump GetNumTalentTabs()` | `Talents.TAB_COUNT` (default `3`) |
+| 4 | Talent tab count | `/dump GetNumTalentTabs()` — on 1.60 this is nil: the trees are trait nodes, see 4a–4c | `Talents.TAB_COUNT` (default `3`) |
+| 4a | Trait API present | `/dump C_ClassTalents.GetActiveConfigID()` — a number once the character can spend a point, nil below that level | `Talents.readRanks` picks the trait path when `C_Traits` and `C_ClassTalents` exist |
+| 4b | Node info shape | `/dump C_Traits.GetNodeInfo(C_ClassTalents.GetActiveConfigID(), 105328)` (Improved Holy Strike's node) — expect a table with `activeRank` and `ranksPurchased` | `traitRank` in `Talents.lua` reads `activeRank`, then `ranksPurchased` |
+| 4c | Node ids match the data | spend one point, `/fs export`, import it on the site and check the right talent shows the rank | `node` in `Data.lua`, from `data/builds/<build>/talents/<class>.json`'s `id` |
 | 5 | Talent count per tab | `/dump GetNumTalents(1)` | — |
 | 6 | Talent info shape and 1-basing | `/dump GetTalentInfo(1, 1)` — expect `name, icon, tier, column, rank, maxRank, …` with `tier` and `column` starting at 1 | none — `Talents.lua` reads `tier`/`column` straight from `GetTalentInfo` and treats them as 1-based throughout; if the client turns out 0-based, fix that reading, not a flag |
 | 7 | Tab order matches the site's tree `position` | `/dump GetTalentTabInfo(1)` — its name must be `talents/<class>.json`'s `trees[0].name` | `addondata.TAB_BASE` (default `1`, i.e. `position + 1`) |

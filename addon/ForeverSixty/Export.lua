@@ -209,12 +209,11 @@ end
 
 --- The export string, or nil and the reason.
 function Export.string(data)
-	-- The class token (UnitClass's second return) is client-locale-neutral;
-	-- the first return is the localized display name, and slugifying that
-	-- on a non-English client would produce a slug data.classes does not
-	-- carry. Race gets the same treatment via raceSlugOf.
-	local classToken = select(2, UnitClass("player"))
-	local classSlug = classToken and classToken:lower() or nil
+	-- The class slug comes from the locale-neutral class token (see
+	-- Talents.playerClassSlug); slugifying the display name on a non-English
+	-- client would produce a slug data.classes does not carry. Race gets the
+	-- same treatment via raceSlugOf.
+	local classSlug = Talents.playerClassSlug()
 	local treeRanks = Talents.treeRanks(data, classSlug)
 	if treeRanks == nil then
 		return nil, string.format(L.codecUnknownClass, tostring(classSlug))

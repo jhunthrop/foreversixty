@@ -44,7 +44,7 @@ def _class_lua(slug: str, tabs: list) -> str:
         for talent in tab.talents:
             lines.append(
                 f"\t\t\t\t\t{{ name = {_quote(talent.name)}, tier = {talent.tier}, "
-                f"column = {talent.column}, maxRank = {talent.max_rank} }},"
+                f"column = {talent.column}, maxRank = {talent.max_rank}, node = {talent.node} }},"
             )
         lines.append("\t\t\t\t} },")
     lines.append("\t\t\t},")

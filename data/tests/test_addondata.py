@@ -29,6 +29,8 @@ def test_talents_keep_the_site_array_order_and_are_one_based():
     assert tab.talents[0].tier == holy["talents"][0]["tier"] + 1
     assert tab.talents[0].column == holy["talents"][0]["column"] + 1
     assert tab.talents[0].max_rank == holy["talents"][0]["max_rank"]
+    # The trait node id is what C_Traits.GetNodeInfo keys on in the 1.60 client.
+    assert tab.talents[0].node == holy["talents"][0]["id"]
 
 
 def test_no_two_talents_in_a_tab_share_a_tier_and_column():
@@ -106,7 +108,7 @@ def test_a_name_with_a_quote_is_escaped():
                 tabs=[
                     AddonTab(
                         name='He said "hi"',
-                        talents=[AddonTalent(name="A\\B", tier=1, column=1, max_rank=1)],
+                        talents=[AddonTalent(name="A\\B", tier=1, column=1, max_rank=1, node=7)],
                     )
                 ]
             )
