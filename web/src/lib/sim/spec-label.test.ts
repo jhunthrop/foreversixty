@@ -2,7 +2,15 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { SPECS } from './specs';
-import { classOfSpec, dpsSpecs, nonDpsSpecs, specDisplayName, specLabel, specRow } from './spec-label';
+import {
+  classOfSpec,
+  dpsSpecs,
+  isSimulatedSpec,
+  nonDpsSpecs,
+  specDisplayName,
+  specLabel,
+  specRow,
+} from './spec-label';
 
 const CURATED = path.resolve(import.meta.dirname, '../../../../data/curated/specs.json');
 
@@ -81,5 +89,20 @@ describe('nonDpsSpecs', () => {
   it('is the exact complement of dpsSpecs(): together they are every spec, exactly once', () => {
     const combined = [...dpsSpecs(), ...nonDpsSpecs()].map((row) => row.spec).sort();
     expect(combined).toEqual([...SPECS].map((row) => row.spec).sort());
+  });
+});
+
+describe('isSimulatedSpec', () => {
+  // Task 3: every rotation claim, run gate and engine-error translation reads this one
+  // predicate. Checked against all 27 canonical specs, not a handful, so a future data
+  // change that moves a spec's role cannot silently disagree with dpsSpecs()/nonDpsSpecs().
+  it('is true for every dps spec and false for every healer or tank spec', () => {
+    for (const row of dpsSpecs()) expect(isSimulatedSpec(row.spec)).toBe(true);
+    for (const row of nonDpsSpecs()) expect(isSimulatedSpec(row.spec)).toBe(false);
+  });
+
+  it('fails closed for a spec string the canonical list does not carry', () => {
+    expect(isSimulatedSpec('warrior-gladiator')).toBe(false);
+    expect(isSimulatedSpec('')).toBe(false);
   });
 });
