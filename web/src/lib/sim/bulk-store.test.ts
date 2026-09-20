@@ -150,23 +150,29 @@ describe('the live combination count', () => {
     s.dispose();
   });
 
-  it('derives the server cap notice directly from the count, not only through a browser cap refusal', async () => {
-    const s = store();
-    await s.loadAddon(FURY);
-    s.addSearchItem(16963);
-    // A cap generous enough that the browser lane never refuses, so the success branch of
-    // recount() is the one that must derive serverCapNotice (fix round 1, Minor). Ticking
-    // 2,501 distinct consumable "lists" pushes the count past 5,000 without needing more
-    // items than the fixture has: one slot's product before consumables is 2 (keep,
-    // substitute); crossed by 2,501 lists is 5,002.
-    s.setCap(10_000);
-    for (let i = 0; i < 2501; i += 1) s.toggleConsumable(`fake_consumable_${i}`);
-    await s.recount();
-    expect(s.combinations).toBe(5002);
-    expect(s.capNotice).toBeNull();
-    expect(s.serverCapNotice).toEqual({ cap: SERVER_CAP, combinations: 5002 });
-    s.dispose();
-  });
+  it(
+    'derives the server cap notice directly from the count, not only through a browser cap refusal',
+    // The fake's simCount expands all 5,002 combinations to count them (its agreement
+    // invariant with simPlan); that takes about 3 s on a laptop and past 5 s on CI.
+    { timeout: 30_000 },
+    async () => {
+      const s = store();
+      await s.loadAddon(FURY);
+      s.addSearchItem(16963);
+      // A cap generous enough that the browser lane never refuses, so the success branch of
+      // recount() is the one that must derive serverCapNotice (fix round 1, Minor). Ticking
+      // 2,501 distinct consumable "lists" pushes the count past 5,000 without needing more
+      // items than the fixture has: one slot's product before consumables is 2 (keep,
+      // substitute); crossed by 2,501 lists is 5,002.
+      s.setCap(10_000);
+      for (let i = 0; i < 2501; i += 1) s.toggleConsumable(`fake_consumable_${i}`);
+      await s.recount();
+      expect(s.combinations).toBe(5002);
+      expect(s.capNotice).toBeNull();
+      expect(s.serverCapNotice).toEqual({ cap: SERVER_CAP, combinations: 5002 });
+      s.dispose();
+    },
+  );
 
   it('validates before counting: a malformed request shows its own errors, not a stale count (engine-lane rule 2)', async () => {
     const s = store();
