@@ -288,6 +288,20 @@ class SpecRecord(BaseModel):
     reference_stat: str
 
 
+class StatWeights(BaseModel):
+    """One spec's curated stat weights, relative to its reference stat.
+
+    Weights are opinions. Every entry carries at least one source and the
+    site shows them beside the numbers; `pipeline/weights.py` refuses an
+    entry without one, the way `pipeline/curated.py` refuses an unsourced
+    Forever change.
+    """
+
+    spec: str
+    weights: dict[str, float]
+    sources: list[Source]
+
+
 class PhaseBoundary(BaseModel):
     """One content phase and the instant it opens (parity contract 10.4)."""
 

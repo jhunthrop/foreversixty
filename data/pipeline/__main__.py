@@ -88,6 +88,14 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="write nothing; exit non-zero if the emitted file has drifted",
     )
+
+    w = sub.add_parser("weights", help="emit a build's copy of the curated stat weights")
+    w.add_argument("--build", required=True)
+    w.add_argument(
+        "--check",
+        action="store_true",
+        help="write nothing; exit non-zero if the emitted file has drifted",
+    )
     return p
 
 
@@ -184,6 +192,20 @@ def main(argv: list[str] | None = None) -> int:
                 return 1
             return 0
         print(write_phases(Path("curated"), Path(args.web)))
+    elif args.command == "weights":
+        from pipeline.weights import check_weights, write_weights
+
+        if args.check:
+            if check_weights(args.build):
+                logging.getLogger("pipeline").error(
+                    "builds/%s/stat-weights.json does not match curated/stat-weights.json; "
+                    "run `python -m pipeline weights --build %s`",
+                    args.build,
+                    args.build,
+                )
+                return 1
+            return 0
+        print(write_weights(args.build))
     return 0
 
 
