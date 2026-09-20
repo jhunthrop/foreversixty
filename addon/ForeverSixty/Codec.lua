@@ -94,7 +94,7 @@ end
 --- The canonical integer grammar, `^(?:0|-?[1-9]\d*)$`: zero or a sign-optional
 --- run of digits with no leading zero, so "0" and "-15" are readable but
 --- "-0", "+3", "007" and "--3" are refused. This is for FSB1 stat values
---- only -- a talent point can be negative once itemization enters it (43
+--- only -- a stat value can be negative once itemization enters it (43
 --- items in data/builds carry a negative stat, e.g. parry: -15), so a
 --- digits-only check makes those items unencodable. FS1 gear entries keep
 --- isDigits: the shipped site decoder (fs1.ts:186) uses /^\d+$/ there, which
@@ -587,10 +587,10 @@ function Codec.decodeFSB1(code)
 	-- either position (the shipped site decoder does too, so this is
 	-- parity, not a gap) -- this check is FSB1-only.
 	if parts[2] == "" then
-		return nil, refuse(L.codecEmptyField, "data build")
+		return nil, refuse(L.codecEmptyField, L.codecFieldDataBuild)
 	end
 	if parts[3] == "" then
-		return nil, refuse(L.codecEmptyField, "class")
+		return nil, refuse(L.codecEmptyField, L.codecFieldClass)
 	end
 	local order, message = parseOrder(parts[4])
 	if order == nil then

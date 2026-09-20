@@ -41,6 +41,11 @@ local L = {
 	-- FSB1 only: an empty data build or class field. FS1 accepts an empty
 	-- field in either position (parity with the shipped site decoder).
 	codecEmptyField = "That code's %s field is empty.",
+	-- The two field names codecEmptyField names, each its own key like
+	-- codecUnlabelled above: player-visible words passed as a refuse()
+	-- argument, not fragments of untrusted input.
+	codecFieldDataBuild = "data build",
+	codecFieldClass = "class",
 	codecTooLong = "That code is too long to read.",
 	codecNewerBuild = "That code is for data build %s; this addon carries %s. Update the addon.",
 	codecUnknownClass = "That code is for a %s; this addon carries no tree for that class.",

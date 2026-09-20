@@ -36,6 +36,11 @@ const INVALID = [
 //   <order> = one triple per point spent, tab/tier/column, each one base-36 character,
 //             all 1-based, concatenated with no separator.
 //   <gear>  = entries joined by ",", each <slot>=<item_id>[:<stat>=<value>[;<stat>=<value>]…]
+//   A gear entry's stats encode in byte order by name (plain codepoint comparison, e.g. Lua's
+//   table.sort on strings), never by any locale-aware or case-insensitive comparator -- an
+//   implementation backed by String.prototype.localeCompare will diverge from one backed by
+//   this, since a name outside contract 10.8's lowercase vocabulary can sort differently under
+//   the two rules (an uppercase letter is a lower byte than every lowercase one).
 const FSB1 = [
   {
     name: 'three points, one item with two stats',

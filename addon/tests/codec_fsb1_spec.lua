@@ -16,8 +16,8 @@ local REFUSALS = {
 	["a stat value with a leading plus sign"] = string.format(L.codecStatPair, "parry=+3"),
 	["a stat value with a leading zero"] = string.format(L.codecStatPair, "parry=007"),
 	["a stat value with a doubled sign"] = string.format(L.codecStatPair, "parry=--3"),
-	["an empty data build field"] = string.format(L.codecEmptyField, "data build"),
-	["an empty class field"] = string.format(L.codecEmptyField, "class"),
+	["an empty data build field"] = string.format(L.codecEmptyField, L.codecFieldDataBuild),
+	["an empty class field"] = string.format(L.codecEmptyField, L.codecFieldClass),
 }
 
 describe("Codec FSB1", function()
