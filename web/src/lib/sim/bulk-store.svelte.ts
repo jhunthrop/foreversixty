@@ -347,6 +347,11 @@ export function createBulkStore(init: BulkStoreInit) {
   };
 
   async function recount(): Promise<void> {
+    // One place owns clearing, at the top, before any exit -- `runBulkAndSettle`'s own
+    // rule. Otherwise `BulkValidationError`'s message/detail outlive the next recount once
+    // the player fixes what was wrong (fix round 3).
+    message = null;
+    detail = '';
     if (mode === null || character === null) return;
     const bulk = currentSpec(requestDeps);
     if (bulk === null || validateBulk(bulk) !== null) {
@@ -679,6 +684,12 @@ export function createBulkStore(init: BulkStoreInit) {
       // A premium poll owns `result`/`phase` while it runs; refuse rather than race it,
       // the same guard `runOnServer()` puts on itself (fix round 1, Minor).
       if (serverRunning) return;
+      // Unenforced invariant (fix round 3): `runBulk` never calls `pool.validate` itself.
+      // `buildRequest` only runs `validateBulk`'s rules, not `encounter` bounds like
+      // `targets` (1-10) -- those stay in range only because `SettingsBar`'s `withTargets`
+      // clamps every write; `setSettings()` validates nothing. A control that skips that
+      // clamp reaches here unvalidated and fails as a generic `bulkFailed`, not
+      // `countCombinations`'s earlier `BulkValidationError`.
       const outcome = buildRequest(requestDeps);
       if ('error' in outcome) {
         message = outcome.error;

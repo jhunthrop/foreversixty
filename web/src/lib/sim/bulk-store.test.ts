@@ -182,6 +182,26 @@ describe('the live combination count', () => {
     expect(s.detail).toContain('targets must be between 1 and 10');
     s.dispose();
   });
+
+  it('clears the validation banner once the player fixes it, rather than leaving it stuck (fix round 3)', async () => {
+    const s = store();
+    await s.loadAddon(FURY);
+    s.addSearchItem(16963);
+    s.addSearchItem(16966);
+    s.setSettings({ ...s.settings, encounter: { ...s.settings.encounter, targets: 15 } });
+    await s.recount();
+    expect(s.message).toBe(bulkCopy.requestInvalid);
+
+    // The fix: back in range, the very next recount must not leave the old banner up
+    // alongside an already-correct count.
+    s.setSettings({ ...s.settings, encounter: { ...s.settings.encounter, targets: 1 } });
+    await s.recount();
+    expect(s.message).toBeNull();
+    expect(s.detail).toBe('');
+    expect(s.combinations).toBe(3);
+    expect(s.capNotice).toBeNull();
+    s.dispose();
+  });
 });
 
 describe('running', () => {
