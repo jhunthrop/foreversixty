@@ -67,3 +67,38 @@ describe('rowsFromPicks', () => {
     expect(rows).toHaveLength(2);
   });
 });
+
+/**
+ * newcomer MAJOR (review.md:251-257): rowsFromPicks pushed straight into a plain array with
+ * no candidateKey dedupe, so two ticked sources sharing an item produced two identical
+ * candidate rows. Routed through candidates.ts's own `addRow`, which merges by
+ * `candidateKey` and keeps the richer provenance (a `drop:` origin, a non-empty sourceName).
+ */
+describe('rowsFromPicks de-duplicates shared items across ticked sources', () => {
+  const sharedLoot: LootFile = {
+    sources: [
+      {
+        id: 'raid:molten-core',
+        kind: 'raid',
+        name: 'Molten Core',
+        bosses: [{ id: 'raid:molten-core:11502', name: 'Ragnaros', npc_id: 11502, items: [KNOWN_ID] }],
+      },
+      {
+        id: 'raid:onyxias-lair',
+        kind: 'raid',
+        name: "Onyxia's Lair",
+        bosses: [{ id: 'raid:onyxias-lair:10184', name: 'Onyxia', npc_id: 10184, items: [KNOWN_ID] }],
+      },
+    ],
+  };
+  const bothPicked = ['raid:molten-core|raid:molten-core:11502', 'raid:onyxias-lair|raid:onyxias-lair:10184'];
+
+  it('merges two ticked sources that share one item into a single row', () => {
+    const rows = rowsFromPicks(bothPicked, sharedLoot, items);
+    expect(rows).toHaveLength(1);
+    const [row] = rows;
+    expect(row.item.id).toBe(KNOWN_ID);
+    expect(row.origin.startsWith('drop:')).toBe(true);
+    expect(row.sourceName).not.toBe('');
+  });
+});

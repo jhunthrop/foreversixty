@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
+import { decodeFS1, orderFromRanks } from '../planner/fs1';
 import { createPlannerStore } from '../planner/store.svelte';
 import { indexTalents, validateOrder } from '../planner/rules';
 import type { ClassRow, Combo, RaceRow, TalentFile } from '../planner/types';
@@ -15,6 +16,7 @@ import {
   gearFromSlots,
   gearSlots,
   plannerGearFor,
+  plannerHrefFor,
   ranksFromTalentsString,
   specForSplit,
   specOf,
@@ -733,5 +735,80 @@ describe('characterFromPlanner', () => {
     expect(character?.class_slug).toBe('warrior');
     expect(character?.race_slug).toBe('orc');
     expect(character?.point_order).toEqual([1001]);
+  });
+});
+
+/**
+ * newcomer MAJOR (review.md:82-88): "Open in planner" used to emit class+race only, landing
+ * on an empty character. With a talent index it now carries the same FS1 v2 code
+ * ComboResults.svelte's own "Open in planner" link already builds (`codeForCharacterSpec`),
+ * so the two links can never disagree about what a code encodes.
+ */
+describe('plannerHrefFor', () => {
+  const base: SimCharacter = {
+    name: 'Thrallgar',
+    spec: 'warrior-fury',
+    class_slug: 'warrior',
+    race_slug: 'orc',
+    talent_level: 22,
+    tree_version: BUILD,
+    point_order: [],
+    gear: {},
+    gear_slots: [],
+    professions: [],
+    bags: [],
+    bank: [],
+    sets: [],
+    loadouts: [],
+    buffs: [],
+    consumables: [],
+    source,
+  };
+
+  it('is the class+race-only URL, verbatim, when the talent index has not loaded', () => {
+    const character: SimCharacter = { ...base, gear: { head: 12640 } };
+    expect(plannerHrefFor(character, null)).toBe('/planner?class=warrior&race=orc');
+  });
+
+  it('carries the build as an FS1 v2 code once the talent index is available', async () => {
+    const file = await warriorTalents();
+    const index = indexTalents(file);
+    const character: SimCharacter = {
+      ...base,
+      point_order: [2001, 2001, 2001, 2001, 2001, 2002, 2002, 2002, 2002, 2002, 2003, 2003, 2003],
+      gear: { head: 12640 },
+      gear_slots: [{ slot: 'head', item_id: 12640, enchant: 2504, suffix: 1820 }],
+    };
+
+    const href = plannerHrefFor(character, index);
+
+    expect(href.startsWith('/planner?code=')).toBe(true);
+    const code = decodeURIComponent(href.slice('/planner?code='.length));
+    const decoded = decodeFS1(code);
+    expect(decoded.ok).toBe(true);
+    if (!decoded.ok) return;
+    expect(decoded.build.classSlug).toBe('warrior');
+    expect(decoded.build.raceSlug).toBe('orc');
+    // The same talent ranks the character's own point order implies. `decoded.build.treeRanks`
+    // is FS1's own fixed-3-tree shape (encodeTrees pads to TREES regardless of how many trees
+    // this fixture's own class defines), so the comparison goes back through orderFromRanks
+    // and talentsString, the same round trip `characterFromFs1` itself takes.
+    const { order } = orderFromRanks(index, decoded.build.treeRanks);
+    expect(talentsString(index, order)).toBe(talentsString(index, character.point_order));
+    // The same gear item ids, enchant and suffix included.
+    expect(decoded.build.gearSlots).toEqual([{ slot: 'head', itemId: 12640, enchant: 2504, suffix: 1820 }]);
+  });
+
+  it('falls back to gearSlots(character.gear) when the character has no gear_slots, mirroring toCharacterSpec', async () => {
+    const file = await warriorTalents();
+    const index = indexTalents(file);
+    const character: SimCharacter = { ...base, gear: { head: 12640 }, gear_slots: [] };
+
+    const href = plannerHrefFor(character, index);
+    const code = decodeURIComponent(href.slice('/planner?code='.length));
+    const decoded = decodeFS1(code);
+    expect(decoded.ok).toBe(true);
+    if (!decoded.ok) return;
+    expect(decoded.build.gearSlots).toEqual([{ slot: 'head', itemId: 12640 }]);
   });
 });

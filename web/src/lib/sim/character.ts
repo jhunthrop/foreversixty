@@ -323,9 +323,38 @@ export function toCharacterSpec(
     : { ...spec, cooldowns: cooldowns.map((row) => ({ ...row, at_sec: [...row.at_sec] })) };
 }
 
-export function plannerHrefFor(character: SimCharacter): string {
-  const params = new URLSearchParams({ class: character.class_slug, race: character.race_slug });
-  return `/planner?${params.toString()}`;
+/**
+ * Where "Open in planner" goes. `index` is null while the character's talent file is still
+ * streaming in (or never resolves): the link must render from first paint rather than stay
+ * absent or disabled, so it starts here -- class and race only, exactly the URL this
+ * function has always emitted -- and upgrades in place once the file loads.
+ *
+ * With an index, the character's talents and gear ride along as an FS1 v2 code, through
+ * `codeForCharacterSpec` -- the same conversion `ComboResults.svelte`'s own "Open in
+ * planner" link already uses, so the two links can never disagree about what a code
+ * encodes (newcomer MAJOR, review.md:82-88: the link used to open a blank character).
+ */
+export function plannerHrefFor(character: SimCharacter, index: TalentIndex | null): string {
+  if (index === null) {
+    const params = new URLSearchParams({ class: character.class_slug, race: character.race_slug });
+    return `/planner?${params.toString()}`;
+  }
+  const spec: CharacterSpec = {
+    name: character.name,
+    race: character.race_slug,
+    class: character.class_slug,
+    level: SIM_LEVEL,
+    talents: talentsString(index, character.point_order),
+    // Mirrors toCharacterSpec's own precedence: the slot list when the source gave one,
+    // the id map otherwise -- never both, and never a merge.
+    gear:
+      character.gear_slots.length > 0
+        ? character.gear_slots.map((slot) => ({ ...slot }))
+        : gearSlots(character.gear),
+    buffs: [...character.buffs],
+    consumes: [...character.consumables],
+  };
+  return `/planner?code=${encodeURIComponent(codeForCharacterSpec(spec, character.tree_version))}`;
 }
 
 export type CharacterResult = { ok: true; character: SimCharacter } | { ok: false; message: string };

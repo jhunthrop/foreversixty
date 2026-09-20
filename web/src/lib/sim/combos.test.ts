@@ -18,7 +18,7 @@ import {
   winningGear,
 } from './combos';
 import { bulkCopy } from './copy';
-import type { BulkResult } from './bulk-types';
+import type { BulkResult, Combo } from './bulk-types';
 import type { Item, ItemSet } from '../planner/types';
 
 const result = bulkResultJson as unknown as BulkResult;
@@ -39,6 +39,91 @@ describe('comboRows', () => {
   it('carries the percent against the equipped set', () => {
     const rows = comboRows(result);
     expect(rows[0].percent).toBeCloseTo((41.2 / 1461.2) * 100, 6);
+  });
+});
+
+/**
+ * newcomer MAJOR (review.md:251-257): rings and trinkets are tried in both slots, so the
+ * engine can emit the same combination twice, differing only by which finger/trinket slot
+ * carries it. A row's identity is its substitution SET -- an `item` substitution keyed by
+ * `item_id`/`enchant`/`suffix` and NOT `slot` -- sorted so the engine's emission order
+ * cannot matter.
+ */
+describe('comboRows de-duplicates identical candidates at the source', () => {
+  const finger1Band: Combo = {
+    substitutions: [{ kind: 'item', slot: 'finger1', item_id: 19325, name: 'Band of Accuria' }],
+    dps: result.equipped,
+    delta: { mean: 10, stddev: 0, error: 1, min: 0, max: 0 },
+    group: 0,
+  };
+  const finger2Band: Combo = {
+    ...finger1Band,
+    substitutions: [{ kind: 'item', slot: 'finger2', item_id: 19325, name: 'Band of Accuria' }],
+  };
+
+  it('collapses two combos identical but for slot (finger1 vs finger2) into one row', () => {
+    const rows = comboRows({ ...result, combos: [finger1Band, finger2Band] });
+    expect(rows).toHaveLength(1);
+    expect(rows[0].combo).toBe(finger1Band);
+  });
+
+  it('keeps two combos with genuinely different item ids distinct', () => {
+    const otherRing: Combo = {
+      ...finger2Band,
+      substitutions: [{ kind: 'item', slot: 'finger2', item_id: 19326, name: 'Some Other Ring' }],
+    };
+    const rows = comboRows({ ...result, combos: [finger1Band, otherRing] });
+    expect(rows).toHaveLength(2);
+  });
+
+  it('collapses a two-substitution combo emitted in the two possible orders', () => {
+    const orderA: Combo = {
+      substitutions: [
+        { kind: 'item', slot: 'head', item_id: 1, name: 'A' },
+        { kind: 'item', slot: 'shoulder', item_id: 2, name: 'B' },
+      ],
+      dps: result.equipped,
+      delta: { mean: 8, stddev: 0, error: 1, min: 0, max: 0 },
+      group: 0,
+    };
+    const orderB: Combo = { ...orderA, substitutions: [orderA.substitutions[1], orderA.substitutions[0]] };
+    const rows = comboRows({ ...result, combos: [orderA, orderB] });
+    expect(rows).toHaveLength(1);
+    expect(rows[0].combo).toBe(orderA);
+  });
+
+  it('renumbers ranks 1, 2, 3 with no hole after a collapse', () => {
+    const nextGroup: Combo = {
+      substitutions: [{ kind: 'item', slot: 'trinket1', item_id: 3, name: 'C' }],
+      dps: result.equipped,
+      delta: { mean: 5, stddev: 0, error: 1, min: 0, max: 0 },
+      group: 1,
+    };
+    const lastGroup: Combo = {
+      substitutions: [{ kind: 'item', slot: 'trinket2', item_id: 4, name: 'D' }],
+      dps: result.equipped,
+      delta: { mean: 2, stddev: 0, error: 1, min: 0, max: 0 },
+      group: 2,
+    };
+    const rows = comboRows({ ...result, combos: [finger1Band, finger2Band, nextGroup, lastGroup] });
+    expect(rows.map((row) => row.rank)).toEqual([1, 2, 3]);
+  });
+
+  it('keeps the leader’s rank when a within-error group loses a duplicate member', () => {
+    const thirdMember: Combo = {
+      substitutions: [{ kind: 'item', slot: 'trinket1', item_id: 5, name: 'E' }],
+      dps: result.equipped,
+      delta: { mean: 9.5, stddev: 0, error: 1, min: 0, max: 0 },
+      group: 0,
+    };
+    const nextGroup: Combo = {
+      substitutions: [{ kind: 'item', slot: 'trinket2', item_id: 6, name: 'F' }],
+      dps: result.equipped,
+      delta: { mean: 4, stddev: 0, error: 1, min: 0, max: 0 },
+      group: 1,
+    };
+    const rows = comboRows({ ...result, combos: [finger1Band, finger2Band, thirdMember, nextGroup] });
+    expect(rows.map((row) => row.rank)).toEqual([1, 1, 3]);
   });
 });
 

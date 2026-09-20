@@ -7,10 +7,19 @@
      picker, and none of that belongs on this page. The shared parts -- SLOTS, SLOT_LABELS,
      rarityClassFor, dataUrl -- are imported, so only the layout is duplicated. -->
 <script lang="ts">
+  import { onMount } from 'svelte';
   import { classColorVar } from '../../lib/report/format';
   import { rarityClassFor } from '../../lib/planner/items';
-  import { dataUrl } from '../../lib/planner/load';
-  import { SLOTS, SLOT_LABELS, type Item, type RaceRow, type Slot } from '../../lib/planner/types';
+  import { dataUrl, loadTalents } from '../../lib/planner/load';
+  import { indexTalents, type TalentIndex } from '../../lib/planner/rules';
+  import {
+    SLOTS,
+    SLOT_LABELS,
+    type Item,
+    type RaceRow,
+    type Slot,
+    type TalentFile,
+  } from '../../lib/planner/types';
   import type { SimCharacter } from '../../lib/sim/character';
   import { SIM_LEVEL, needsRace, plannerHrefFor } from '../../lib/sim/character';
   import { simCopy } from '../../lib/sim/copy';
@@ -40,6 +49,18 @@
     /** The player answering the race question; the store replaces the character. */
     onrace?: (slug: string) => void;
   } = $props();
+
+  // "Open in planner" (below) needs the talent tree layout to encode the character's
+  // points into an FS1 code -- the same file TalentCandidates.svelte:41-44 loads for its
+  // own build list. Starts null so the link renders from first paint with the class+race
+  // fallback `plannerHrefFor` gives a null index, and upgrades in place once this resolves.
+  let talents = $state<TalentFile | null>(null);
+  onMount(() => {
+    void loadTalents(character.tree_version, character.class_slug)
+      .then((file) => (talents = file))
+      .catch(() => (talents = null));
+  });
+  const talentIndex = $derived<TalentIndex | null>(talents === null ? null : indexTalents(talents));
 
   const colour = $derived(classColorVar(character.class_slug));
   // A combat log records no race, so a character from one arrives with PENDING_RACE and
@@ -161,7 +182,7 @@
          ([id].astro's own comment) or anything mounted below it. -->
     <a
       class="-my-3 ml-auto inline-flex h-11 items-center md:my-0 md:h-auto"
-      href={plannerHrefFor(character)}
+      href={plannerHrefFor(character, talentIndex)}
       data-testid="sim-open-planner"
     >
       {simCopy.openInPlanner}

@@ -5,7 +5,7 @@
 // run-envelope logic above them in the store. Every function here is pure -- the store still
 // owns the state (`pickedBosses`, `showUpcoming`, `shownKinds`), these just compute the next
 // value from it.
-import { rowFor, uiSlotsOf, type CandidateRow, type Origin } from './candidates';
+import { addRow, rowFor, uiSlotsOf, type CandidateRow, type Origin } from './candidates';
 import { DEFAULT_OFF_KINDS, isOpen, itemsOfBoss, itemsOfSource, sourceNameOf } from './loot';
 import type { LootFile, LootSource } from './loot';
 import type { PhaseRow } from './phase';
@@ -46,6 +46,13 @@ export function visibleSources(
  * The Droptimizer's picks, as ticked rows with a `drop:` origin and nothing else -- gear
  * candidates from bags, bank or search never belong in `drops` mode (contract's validation
  * rule 3, `validateBulk`), so this is the whole of that tool's row list, not an addition to it.
+ *
+ * Every row is added through `addRow` (candidates.ts), not pushed straight into the array:
+ * two ticked sources that share an item (the same boss picked twice under different names,
+ * or two bosses dropping the same drop) would otherwise land as two character-for-character
+ * identical rows, with no `candidateKey` dedupe to catch it (newcomer MAJOR, review.md:251-
+ * 257). `addRow` merges same-key rows and keeps the richer provenance -- a `drop:` origin
+ * and a non-empty `sourceName` both win.
  */
 export function rowsFromPicks(
   picked: readonly string[],
@@ -61,7 +68,7 @@ export function rowsFromPicks(
    */
   known: ReadonlySet<number> | null = null,
 ): CandidateRow[] {
-  const rows: CandidateRow[] = [];
+  let rows: CandidateRow[] = [];
   for (const pick of picked) {
     const [sourceId, bossId] = pick.split('|');
     const source = loot.sources.find((entry) => entry.id === sourceId);
@@ -75,7 +82,7 @@ export function rowsFromPicks(
       if (item === undefined) continue;
       const itemKnown = isKnownItem(itemId, known);
       for (const slot of uiSlotsOf(item)) {
-        rows.push({ ...rowFor(item, slot, origin, sourceName, itemKnown), checked: itemKnown });
+        rows = addRow(rows, { ...rowFor(item, slot, origin, sourceName, itemKnown), checked: itemKnown });
       }
     }
   }
