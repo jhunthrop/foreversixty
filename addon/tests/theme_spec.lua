@@ -1,0 +1,226 @@
+local helper = require("spec_helper")
+local mock = require("wow_mock")
+local L = require("Locale")
+
+local ALL_TEMPLATES = { "PanelTabButtonTemplate", "UIPanelButtonTemplate", "InputBoxTemplate" }
+
+describe("Theme", function()
+	local Theme
+
+	local state
+
+	--- Returns the mock state, which several examples below assert on.
+	local function start(install)
+		state = mock.install(install or {})
+		Theme = helper.load("Theme")
+		Theme.reset()
+		return state
+	end
+
+	after_each(function()
+		mock.uninstall()
+	end)
+
+	it("reads a hex colour as the client's 0-to-1 floats", function()
+		start()
+		local r, g, b, a = Theme.rgb("e5b955")
+		assert.is_true(math.abs(r - 229 / 255) < 1e-9)
+		assert.is_true(math.abs(g - 185 / 255) < 1e-9)
+		assert.is_true(math.abs(b - 85 / 255) < 1e-9)
+		assert.are.equal(1, a)
+	end)
+
+	it("carries an alpha through and defaults it to opaque", function()
+		start()
+		assert.are.equal(1, select(4, Theme.rgb("0d111a")))
+		assert.are.equal(0.96, select(4, Theme.rgb("0d111a", 0.96)))
+	end)
+
+	it("carries a six-digit hex for every palette entry", function()
+		start()
+		for name, hex in pairs(Theme.HEX) do
+			assert.are.equal(6, #hex, name .. " is not six hex digits")
+			assert.is_not_nil(tonumber(hex, 16), name .. " is not hexadecimal")
+		end
+	end)
+
+	it("says a template this client has is present", function()
+		start({ templates = ALL_TEMPLATES })
+		assert.is_true(Theme.hasTemplate("UIPanelButtonTemplate"))
+	end)
+
+	it("says a template this client lacks is absent rather than erroring", function()
+		start({ templates = {} })
+		assert.is_false(Theme.hasTemplate("UIPanelButtonTemplate"))
+	end)
+
+	it("records the missing template where /fs diag can read it", function()
+		start({ templates = {} })
+		Theme.hasTemplate("UIPanelButtonTemplate")
+		assert.are.same(
+			{ string.format(L.diagNoTemplate, "UIPanelButtonTemplate") },
+			Theme.diagnostics())
+	end)
+
+	it("asks the client about a template only once", function()
+		start({ templates = ALL_TEMPLATES })
+		Theme.hasTemplate("UIPanelButtonTemplate")
+		local after = #state.frames
+		Theme.hasTemplate("UIPanelButtonTemplate")
+		assert.are.equal(after, #state.frames)
+	end)
+
+	it("builds with the template when the client has it", function()
+		start({ templates = ALL_TEMPLATES })
+		local frame, used = Theme.createFrame("Button", nil, _G.UIParent, "button")
+		assert.is_true(used)
+		assert.are.equal("UIPanelButtonTemplate", frame.template)
+	end)
+
+	it("builds a bare frame when the client does not", function()
+		start({ templates = {} })
+		local frame, used = Theme.createFrame("Button", nil, _G.UIParent, "button")
+		assert.is_false(used)
+		assert.is_nil(frame.template)
+	end)
+
+	it("takes the class's own colour for the header", function()
+		start({ globals = { RAID_CLASS_COLORS = { WARRIOR = { r = 0.78, g = 0.61, b = 0.43 } } } })
+		local r, g, b = Theme.classColor("WARRIOR")
+		assert.are.equal(0.78, r)
+		assert.are.equal(0.61, g)
+		assert.are.equal(0.43, b)
+	end)
+
+	it("falls back to gold when the client has no class colour table", function()
+		start()
+		assert.are.same({ Theme.rgb(Theme.HEX.gold) }, { Theme.classColor("WARRIOR") })
+	end)
+
+	it("falls back to gold for a class token the table does not carry", function()
+		start({ globals = { RAID_CLASS_COLORS = { WARRIOR = { r = 1, g = 1, b = 1 } } } })
+		assert.are.same({ Theme.rgb(Theme.HEX.gold) }, { Theme.classColor("SKYBORNE") })
+	end)
+
+	it("sees the modern Settings API when both halves are there", function()
+		start({ globals = { Settings = {
+			RegisterCanvasLayoutCategory = function() end,
+			RegisterAddOnCategory = function() end,
+		} } })
+		assert.is_true(Theme.hasSettingsApi())
+	end)
+
+	it("does not claim the Settings API on a half-present table", function()
+		start({ globals = { Settings = { RegisterCanvasLayoutCategory = function() end } } })
+		assert.is_false(Theme.hasSettingsApi())
+	end)
+
+	it("registers an event the client knows", function()
+		start()
+		local frame = _G.CreateFrame("Frame")
+		assert.is_true(Theme.registerEvent(frame, "PLAYER_LOGIN"))
+		assert.is_true(frame.events.PLAYER_LOGIN)
+	end)
+
+	it("records and skips an event the client refuses", function()
+		start({ refusedEvents = { TRAIT_CONFIG_UPDATED = true } })
+		local frame = _G.CreateFrame("Frame")
+		assert.is_false(Theme.registerEvent(frame, "TRAIT_CONFIG_UPDATED"))
+		assert.are.same(
+			{ string.format(L.diagNoEvent, "TRAIT_CONFIG_UPDATED") },
+			Theme.diagnostics())
+	end)
+
+	it("is out of combat on a client with no InCombatLockdown", function()
+		start()
+		assert.is_false(Theme.inCombat())
+	end)
+
+	it("asks the client when it has InCombatLockdown", function()
+		start({ globals = { InCombatLockdown = function() return true end } })
+		assert.is_true(Theme.inCombat())
+	end)
+
+	it("equips through C_Item when the client has it", function()
+		local equipped = {}
+		start({ globals = { C_Item = { EquipItemByName = function(link)
+			equipped[#equipped + 1] = link
+		end } } })
+		assert.is_true(Theme.equip("|Hitem:1234|h"))
+		assert.are.same({ "|Hitem:1234|h" }, equipped)
+	end)
+
+	it("equips through the flat function when that is the one present", function()
+		local equipped = {}
+		start({ globals = { EquipItemByName = function(link)
+			equipped[#equipped + 1] = link
+		end } })
+		assert.is_true(Theme.equip("|Hitem:1234|h"))
+		assert.are.same({ "|Hitem:1234|h" }, equipped)
+	end)
+
+	it("records and refuses to equip when the client has neither", function()
+		start()
+		assert.is_false(Theme.equip("|Hitem:1234|h"))
+		assert.are.same({ L.diagNoEquipApi }, Theme.diagnostics())
+	end)
+
+	it("delays through C_Timer.After", function()
+		start()
+		local ran = false
+		assert.is_true(Theme.after(2, function() ran = true end))
+		assert.is_false(ran)
+		assert.are.equal(1, mock.runTimers(state))
+		assert.is_true(ran)
+	end)
+
+	it("says so rather than running now when the client has no C_Timer", function()
+		start()
+		_G.C_Timer = nil
+		local ran = false
+		assert.is_false(Theme.after(2, function() ran = true end))
+		assert.is_false(ran)
+	end)
+
+	it("glows through the client's overlay when it has one", function()
+		local glowed = {}
+		start({ globals = { ActionButton_ShowOverlayGlow = function(button)
+			glowed[#glowed + 1] = button
+		end } })
+		local button = _G.CreateFrame("Button")
+		assert.are.equal("overlay", Theme.showGlow(button))
+		assert.are.same({ button }, glowed)
+	end)
+
+	it("draws its own gold outline when the client has no overlay glow", function()
+		start()
+		local button = _G.CreateFrame("Button")
+		assert.are.equal("texture", Theme.showGlow(button))
+		assert.are.equal(#Theme.EDGES, #button.foreverSixtyGlow)
+		for _, edge in ipairs(button.foreverSixtyGlow) do
+			assert.is_true(edge.shown)
+		end
+		assert.are.equal("texture", Theme.hideGlow(button))
+		for _, edge in ipairs(button.foreverSixtyGlow) do
+			assert.is_false(edge.shown)
+		end
+	end)
+
+	it("paints through SetTexture on a client with no SetColorTexture", function()
+		start({ missingMethods = { SetColorTexture = true } })
+		local frame = _G.CreateFrame("Frame")
+		local texture = frame:CreateTexture()
+		Theme.paint(texture, "gold")
+		assert.is_nil(mock.firstCall(texture, "SetColorTexture"))
+		assert.is_not_nil(mock.firstCall(texture, "SetTexture"))
+	end)
+
+	it("forgets what it learned about the client on reset", function()
+		start({ templates = {} })
+		Theme.hasTemplate("UIPanelButtonTemplate")
+		assert.are.equal(1, #Theme.diagnostics())
+		Theme.reset()
+		assert.are.same({}, Theme.diagnostics())
+		assert.are.same({}, Theme.templates)
+	end)
+end)

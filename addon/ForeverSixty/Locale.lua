@@ -14,6 +14,14 @@ local L = {
 	-- How a printed line is prefixed with the addon's name.
 	chatLine = "%s: %s",
 
+	-- Diagnostics: what /fs diag prints. These are the only record of a
+	-- capability this client turned out not to have, and the human tester
+	-- reads them off the screen for README spike rows 17-22.
+	diagNoTemplate = "This client has no %s; the addon drew its own instead.",
+	diagNoEvent = "This client refused the event %s.",
+	diagNoEquipApi = "This client has no equip function; the Equip buttons are off.",
+	diagNone = "Nothing to report.",
+
 	-- Export
 	exportTitle = "Your character, for the planner",
 	exportHint = "Copy this and paste it into the Import from addon box at foreversixty.gg/planner.",

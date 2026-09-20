@@ -1,0 +1,304 @@
+-- addon/ForeverSixty/Theme.lua
+-- The look, the measurements, and the single place that asks the 1.60
+-- client what it has.
+--
+-- Nothing else in this addon names a frame template, a font object, a
+-- client UI global or a client capability. That rule is what makes the
+-- unknowns knowable: the spike table in README.md has one row per question
+-- asked here, every question has a plain-texture or plain-function answer
+-- for "no", and a client that answers "no" to all of them still gets a
+-- working addon that merely looks plainer.
+local _, ns = ...
+ns = type(ns) == "table" and ns or {}
+local L = ns.L or require("Locale")
+
+local Theme = {}
+
+--- The site's palette, web/src/styles/tokens.css, as six hex digits.
+Theme.HEX = {
+	background = "0d111a",
+	border = "262e40",
+	titleTop = "131824",
+	titleBottom = "0d111a",
+	gold = "e5b955",
+	muted = "9a9484",
+	body = "e9e4d8",
+	warning = "ff6b5c",
+}
+
+Theme.ALPHA = {
+	window = 0.96,
+	--- A row the player has already matched, and a disabled button.
+	dim = 0.55,
+	disabled = 0.4,
+}
+
+Theme.SIZES = {
+	windowWidth = 560,
+	windowHeight = 420,
+	titleBarHeight = 28,
+	tabHeight = 24,
+	tabWidth = 96,
+	border = 1,
+	padding = 12,
+	rowHeight = 18,
+	listRows = 12,
+	buttonHeight = 22,
+	buttonWidth = 150,
+	editBoxHeight = 48,
+	iconSize = 16,
+	trackerWidth = 240,
+	trackerHeight = 48,
+	minimapButton = 32,
+	minimapIcon = 20,
+	minimapRadius = 80,
+	glowThickness = 2,
+	--- How long "Selected -- press Ctrl+C" stays, and how long "Build
+	--- complete" stays on the tracker before it hides.
+	copiedSeconds = 2,
+	completeSeconds = 5,
+}
+
+--- The client's own font objects, and what to use when one is missing.
+Theme.FONTS = {
+	normal = "GameFontNormal",
+	small = "GameFontNormalSmall",
+	highlight = "GameFontHighlight",
+}
+Theme.FALLBACK_FONT = { path = "Fonts\\FRIZQT__.TTF", size = 12 }
+
+--- Every template this addon will ever ask for, by the key callers use.
+Theme.TEMPLATES = {
+	tab = "PanelTabButtonTemplate",
+	button = "UIPanelButtonTemplate",
+	editBox = "InputBoxTemplate",
+}
+
+Theme.MEDIA = { minimapIcon = "Interface\\AddOns\\ForeverSixty\\media\\minimap" }
+
+--- The four edges of a rectangle, for outline().
+Theme.EDGES = {
+	{ from = "TOPLEFT", to = "TOPRIGHT", horizontal = true },
+	{ from = "BOTTOMLEFT", to = "BOTTOMRIGHT", horizontal = true },
+	{ from = "TOPLEFT", to = "BOTTOMLEFT", horizontal = false },
+	{ from = "TOPRIGHT", to = "BOTTOMRIGHT", horizontal = false },
+}
+
+--- What this client turned out not to have. Read by /fs diag.
+ns.Diagnostics = ns.Diagnostics or {}
+Theme.templates = {}
+
+function Theme.diagnostics()
+	return ns.Diagnostics
+end
+
+function Theme.note(message)
+	ns.Diagnostics[#ns.Diagnostics + 1] = message
+	return ns.Diagnostics
+end
+
+--- Forget what was learned about the client. Specs only; the game never
+--- changes its capabilities inside a session.
+function Theme.reset()
+	Theme.templates = {}
+	for index = #ns.Diagnostics, 1, -1 do
+		ns.Diagnostics[index] = nil
+	end
+end
+
+function Theme.rgb(hex, alpha)
+	return tonumber(hex:sub(1, 2), 16) / 255,
+		tonumber(hex:sub(3, 4), 16) / 255,
+		tonumber(hex:sub(5, 6), 16) / 255,
+		alpha or 1
+end
+
+--- Ask the client once whether it has a template, by trying to use it.
+--- There is no API that answers this; building one throwaway frame is the
+--- question. The frame is never shown and never reused -- WoW cannot
+--- destroy a frame, so this deliberately costs at most one per template.
+function Theme.hasTemplate(name)
+	local known = Theme.templates[name]
+	if known ~= nil then
+		return known
+	end
+	local present = pcall(CreateFrame, "Frame", nil, UIParent, name)
+	Theme.templates[name] = present
+	if not present then
+		Theme.note(string.format(L.diagNoTemplate, name))
+	end
+	return present
+end
+
+--- A frame with the template if the client has it, bare if it does not.
+--- The second return says which, so a caller can draw its own chrome.
+function Theme.createFrame(kind, name, parent, templateKey)
+	local template = templateKey ~= nil and Theme.TEMPLATES[templateKey] or nil
+	if template ~= nil and Theme.hasTemplate(template) then
+		return CreateFrame(kind, name, parent, template), true
+	end
+	return CreateFrame(kind, name, parent), false
+end
+
+--- A font string on the client's own font, or on the shipped TTF when the
+--- font object is missing -- a font string with neither draws nothing.
+function Theme.fontString(parent, layer, fontKey)
+	local font = Theme.FONTS[fontKey] or Theme.FONTS.normal
+	local ok, region = pcall(parent.CreateFontString, parent, nil, layer, font)
+	if ok and region ~= nil then
+		return region
+	end
+	Theme.note(string.format(L.diagNoTemplate, font))
+	region = parent:CreateFontString(nil, layer)
+	region:SetFont(Theme.FALLBACK_FONT.path, Theme.FALLBACK_FONT.size)
+	return region
+end
+
+--- Colour a texture. SetColorTexture is the modern name; a client without
+--- it takes the colour through SetTexture's four-argument form.
+function Theme.paint(texture, hexKey, alpha)
+	local r, g, b, a = Theme.rgb(Theme.HEX[hexKey], alpha)
+	if type(texture.SetColorTexture) == "function" then
+		texture:SetColorTexture(r, g, b, a)
+	else
+		texture:SetTexture(r, g, b, a)
+	end
+	return texture
+end
+
+function Theme.texture(parent, layer, hexKey, alpha)
+	return Theme.paint(parent:CreateTexture(nil, layer), hexKey, alpha)
+end
+
+--- A one-colour border drawn from four textures, which needs no template.
+function Theme.outline(parent, thickness, hexKey)
+	local edges = {}
+	for index, edge in ipairs(Theme.EDGES) do
+		local texture = Theme.texture(parent, "OVERLAY", hexKey)
+		texture:SetPoint(edge.from, parent, edge.from, 0, 0)
+		texture:SetPoint(edge.to, parent, edge.to, 0, 0)
+		if edge.horizontal then
+			texture:SetHeight(thickness)
+		else
+			texture:SetWidth(thickness)
+		end
+		edges[index] = texture
+	end
+	return edges
+end
+
+function Theme.setShown(edges, shown)
+	for _, edge in ipairs(edges) do
+		if shown then
+			edge:Show()
+		else
+			edge:Hide()
+		end
+	end
+	return edges
+end
+
+--- The class's own colour for the header name, gold when the client has no
+--- table for it or does not know the token (Forever's new combinations).
+function Theme.classColor(token)
+	local colors = RAID_CLASS_COLORS
+	local entry = type(colors) == "table" and token ~= nil and colors[token] or nil
+	if entry == nil then
+		return Theme.rgb(Theme.HEX.gold)
+	end
+	return entry.r, entry.g, entry.b, 1
+end
+
+function Theme.hasSettingsApi()
+	return type(Settings) == "table"
+		and type(Settings.RegisterCanvasLayoutCategory) == "function"
+		and type(Settings.RegisterAddOnCategory) == "function"
+end
+
+--- Register one event, recording rather than raising when the client has
+--- never heard of it. This is the only RegisterEvent call in the addon.
+function Theme.registerEvent(frame, event)
+	local ok = pcall(frame.RegisterEvent, frame, event)
+	if not ok then
+		Theme.note(string.format(L.diagNoEvent, event))
+	end
+	return ok
+end
+
+--- Run `action` later. A client with no C_Timer says so rather than
+--- running it now: a caller that cannot wait must show the settled state
+--- immediately instead of flashing the temporary one.
+function Theme.after(seconds, action)
+	if type(C_Timer) == "table" and type(C_Timer.After) == "function" then
+		C_Timer.After(seconds, action)
+		return true
+	end
+	return false
+end
+
+function Theme.inCombat()
+	return type(InCombatLockdown) == "function" and InCombatLockdown() == true
+end
+
+function Theme.equip(link)
+	if type(C_Item) == "table" and type(C_Item.EquipItemByName) == "function" then
+		C_Item.EquipItemByName(link)
+		return true
+	end
+	if type(EquipItemByName) == "function" then
+		EquipItemByName(link)
+		return true
+	end
+	Theme.note(L.diagNoEquipApi)
+	return false
+end
+
+function Theme.showGlow(button)
+	if type(ActionButton_ShowOverlayGlow) == "function" then
+		ActionButton_ShowOverlayGlow(button)
+		return "overlay"
+	end
+	button.foreverSixtyGlow = button.foreverSixtyGlow
+		or Theme.outline(button, Theme.SIZES.glowThickness, "gold")
+	Theme.setShown(button.foreverSixtyGlow, true)
+	return "texture"
+end
+
+function Theme.hideGlow(button)
+	if type(ActionButton_HideOverlayGlow) == "function" then
+		ActionButton_HideOverlayGlow(button)
+		return "overlay"
+	end
+	if button.foreverSixtyGlow ~= nil then
+		Theme.setShown(button.foreverSixtyGlow, false)
+	end
+	return "texture"
+end
+
+--- The game's own item tooltip. SetHyperlink when there is a link (it
+--- carries enchants and suffixes); SetItemByID for a planned item the
+--- player has never seen, which has no link yet.
+function Theme.showItemTooltip(owner, itemId, link)
+	if type(GameTooltip) ~= "table" then
+		return false
+	end
+	GameTooltip:SetOwner(owner, "ANCHOR_RIGHT")
+	if link ~= nil then
+		GameTooltip:SetHyperlink(link)
+	elseif itemId ~= nil then
+		GameTooltip:SetItemByID(itemId)
+	end
+	GameTooltip:Show()
+	return true
+end
+
+function Theme.hideTooltip()
+	if type(GameTooltip) ~= "table" then
+		return false
+	end
+	GameTooltip:Hide()
+	return true
+end
+
+ns.Theme = Theme
+return Theme
