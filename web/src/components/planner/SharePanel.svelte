@@ -17,6 +17,7 @@
   import { simCopy } from '../../lib/sim/copy';
   import { runSim } from '../../lib/sim/run';
   import { defaultSettings } from '../../lib/sim/settings';
+  import { referenceStatOf } from '../../lib/sim/spec-label';
   import { ITERATIONS } from '../../lib/sim/types';
   import { createPool, type SimPool } from '../../lib/sim/worker';
 
@@ -57,11 +58,6 @@
   const canIncludeSim = $derived(live.state === 'ready');
   const includeSimChecked = $derived(canIncludeSim && includeSim);
 
-  // The card sim runs at the settings the sim page opens on -- raid-buffed, three minutes,
-  // single target. The planner has no settings bar of its own, and inventing one here
-  // would put two vocabularies on one page; `/sim` is where settings are chosen.
-  const settings = defaultSettings();
-
   /**
    * One pool for the life of the panel, created on the first save and not before: the
    * planner's own Lighthouse budget is the reason the engine is never touched on mount.
@@ -95,6 +91,11 @@
     const character = characterFromPlanner(store);
     if (!includeSim || character === null || store.talentIndex === null) return;
     cardState = 'running';
+    // The card sim runs at the settings the sim page opens on -- raid-buffed, three
+    // minutes, single target, split physical or caster by this build's own spec. The
+    // planner has no settings bar of its own, and inventing one here would put two
+    // vocabularies on one page; `/sim` is where settings are chosen.
+    const settings = defaultSettings(referenceStatOf(character.spec));
     try {
       const result = await runSim(
         poolOnce(),

@@ -584,6 +584,14 @@ export const simCopy = {
    * the class (Restoration alone is two different specs, on two different classes).
    */
   engineUnsupportedSpec: (name: string): string => `The engine does not simulate ${name} yet.`,
+  /**
+   * Task 4 (dps-minmaxer BLOCKER, tank/newcomer/raid-leader MAJOR): the disclosure beside
+   * the Buffs control (Disclosure.svelte, Ruling 3) that lists what a static preset
+   * actually applies, so a player never has to switch to Custom just to see it.
+   */
+  whatsInIt: "What's in it",
+  /** Solo's own answer: no groups, so the panel says so rather than rendering empty. */
+  whatsInItEmpty: 'Nothing. Solo applies no buffs and no consumables.',
   // --- end Lane W2 ---
 } as const;
 

@@ -24,7 +24,7 @@ import { EMPTY_ESTIMATE } from './estimate';
 import { precisionPlan, relativeError, type Lane, type PrecisionId } from './precision';
 import type { RequestValidation } from './engine';
 import { buildSimRequest, type RunHandle, type RunInput } from './run';
-import { defaultSettings, settingsLabel, type SimSettings } from './settings';
+import { defaultSettings, settingsLabel, withSpecForPreset, type SimSettings } from './settings';
 import {
   fromAddonExport,
   fromLoggedFight,
@@ -149,7 +149,7 @@ export function createSimStore(init: SimStoreInit) {
 
   let phase = $state<SimPhase>('idle');
   let character = $state<SimCharacter | null>(null);
-  let settings = $state<SimSettings>(defaultSettings());
+  let settings = $state<SimSettings>(defaultSettings('attack_power'));
   let precisionId = $state<PrecisionId>('normal');
   // Empty means "the settings clause", which moves with the settings; anything the player
   // types wins until they clear it again. Blank-but-not-empty counts as empty: a title of
@@ -272,6 +272,7 @@ export function createSimStore(init: SimStoreInit) {
       return;
     }
     character = outcome.character;
+    settings = withSpecForPreset(settings, outcome.character.spec);
     result = null;
     estimate = EMPTY_ESTIMATE;
     iterationsDone = 0;

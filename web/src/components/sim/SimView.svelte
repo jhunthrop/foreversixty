@@ -601,6 +601,7 @@
           spec={store.character.spec}
           disabled={store.phase === 'running' || store.serverRunning}
           onchange={(next) => store.setSettings(next)}
+          names={store.buffNames}
         />
         {#if store.settings.preset === 'custom'}
           <BuffPanel

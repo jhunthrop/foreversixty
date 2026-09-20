@@ -64,6 +64,7 @@
       picked={store.consumableIds}
       buffs={store.simBuffs}
       treeVersion={store.character?.tree_version ?? ''}
+      spec={store.character?.spec ?? ''}
       ontoggle={(id) => store.toggleConsumable(id)}
     />
     {#if store.character !== null}

@@ -78,3 +78,16 @@ export function nonDpsSpecs(): readonly Spec[] {
 export function isSimulatedSpec(spec: string): boolean {
   return specRow(spec)?.role === 'dps';
 }
+
+/**
+ * Task 4 (dps-minmaxer BLOCKER): the stat that splits the Raid-buffed preset's consumable
+ * half in two, physical from caster (settings.ts's `presetConsumables`). Ruling 2 keys the
+ * split off `Spec.reference_stat`, never off class names, so a spec's own generated row is
+ * the only source this reads. An unknown spec -- one `specRow` cannot resolve, or a spec
+ * the canonical list carries with no `reference_stat` at all -- returns `'attack_power'`:
+ * the physical set is the deliberate fallback (settings.ts explains why at its own call
+ * site), never an empty preset that still claims "Raid-buffed".
+ */
+export function referenceStatOf(spec: string): string {
+  return specRow(spec)?.reference_stat ?? 'attack_power';
+}

@@ -6,7 +6,9 @@
      not a disabled select, because the APL builder is deferred and a greyed-out control
      would promise it. -->
 <script lang="ts">
+  import type { BuffNames } from '../../lib/sim/buff-names';
   import { simCopy } from '../../lib/sim/copy';
+  import { presetSummary } from '../../lib/sim/preset-summary';
   import {
     BUFF_PRESETS,
     DURATIONS,
@@ -21,7 +23,8 @@
     type SimSettings,
   } from '../../lib/sim/settings';
   import { FIGHT_STYLES, fightStyle } from '../../lib/sim/styles';
-  import { specDisplayName } from '../../lib/sim/spec-label';
+  import { referenceStatOf, specDisplayName } from '../../lib/sim/spec-label';
+  import Disclosure from './Disclosure.svelte';
   import SettingsSheet from './SettingsSheet.svelte';
 
   let {
@@ -29,8 +32,24 @@
     spec,
     disabled,
     onchange,
-  }: { settings: SimSettings; spec: string; disabled: boolean; onchange: (next: SimSettings) => void } =
-    $props();
+    /** Task 4: named rows for "what's in it". Null before the build's table has loaded --
+     *  buffLabel's own humanised fallback still names every row, so the disclosure is never
+     *  wrong to open early. */
+    names = null,
+  }: {
+    settings: SimSettings;
+    spec: string;
+    disabled: boolean;
+    onchange: (next: SimSettings) => void;
+    names?: BuffNames | null;
+  } = $props();
+
+  const referenceStat = $derived(referenceStatOf(spec));
+  // Custom has its own always-visible panel (BuffPanel.svelte) for exactly this, so the
+  // disclosure only exists for the two static presets it actually summarises.
+  const presetGroups = $derived(
+    settings.preset === 'custom' ? [] : presetSummary(settings.preset, referenceStat, names),
+  );
 
   // min-w-0 on phone, not min-w-[7rem]: at 412px, five selects each demanding 112px force
   // the row into an uneven two-column wrap with the gutter closed to 4px. Restored at md
@@ -114,22 +133,50 @@
       </select>
     </label>
 
-    <label class="flex flex-col gap-1">
-      <span class="label text-muted">{simCopy.buffs}</span>
-      <select
-        class={control}
-        {disabled}
-        value={settings.preset}
-        onchange={(event) => onchange(withPreset(settings, event.currentTarget.value as BuffPresetId))}
-        data-testid="sim-preset"
-      >
-        {#each BUFF_PRESETS as preset (preset.id)}
-          <option value={preset.id}>
-            {preset.label}
-          </option>
-        {/each}
-      </select>
-    </label>
+    <div class="flex flex-col gap-1">
+      <label class="flex flex-col gap-1">
+        <span class="label text-muted">{simCopy.buffs}</span>
+        <select
+          class={control}
+          {disabled}
+          value={settings.preset}
+          onchange={(event) =>
+            onchange(withPreset(settings, event.currentTarget.value as BuffPresetId, referenceStat))}
+          data-testid="sim-preset"
+        >
+          {#each BUFF_PRESETS as preset (preset.id)}
+            <option value={preset.id}>
+              {preset.label}
+            </option>
+          {/each}
+        </select>
+      </label>
+      {#if settings.preset !== 'custom'}
+        <Disclosure
+          label={simCopy.whatsInIt}
+          id="sim-preset-summary"
+          {disabled}
+          triggerClass="label text-nav text-[12px] underline decoration-dotted underline-offset-2"
+          panelClass="border-line-soft rounded-panel flex flex-col gap-2 border p-3"
+          triggerTestId="sim-preset-summary-trigger"
+          panelTestId="sim-preset-summary-panel"
+        >
+          {#if presetGroups.length === 0}
+            <p class="text-muted text-[12px]">{simCopy.whatsInItEmpty}</p>
+          {/if}
+          {#each presetGroups as group (group.group)}
+            <div>
+              <p class="label text-muted text-[11px]">{simCopy.buffGroupLabel[group.group] ?? group.group}</p>
+              <ul class="text-text flex flex-wrap gap-x-3 gap-y-1 text-[12px]">
+                {#each group.rows as row (row.id)}
+                  <li data-testid={`sim-preset-summary-${row.id}`}>{row.label}</li>
+                {/each}
+              </ul>
+            </div>
+          {/each}
+        </Disclosure>
+      {/if}
+    </div>
 
     <div class="flex flex-col gap-1">
       <span class="label text-muted">{simCopy.rotation}</span>

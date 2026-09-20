@@ -80,6 +80,7 @@
   spec={store.character?.spec ?? ''}
   disabled={running}
   onchange={(next) => store.setSettings(next)}
+  names={store.simBuffs}
 />
 
 <section
