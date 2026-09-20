@@ -18,7 +18,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { expect, test, type Browser } from '@playwright/test';
-import { ENGINE_VERSION } from '../../src/lib/sim/version';
+import { engineAssetUrl, ENGINE_VERSION } from '../../src/lib/sim/version';
 
 const WEB_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const artifactPublished = existsSync(path.join(WEB_ROOT, 'public/_sim', ENGINE_VERSION, 'sim.wasm'));
@@ -38,8 +38,14 @@ async function hasNewBulkExports(browser: Browser, baseURL: string, version: str
   const page = await browser.newPage();
   try {
     await page.goto(baseURL);
-    await page.addScriptTag({ url: `/_sim/${version}/sim.js` });
-    return await page.evaluate(async (v) => {
+    // engineAssetUrl (version.ts) is the one place that knows the `/_sim/<version>/<file>`
+    // path shape -- computed here, on the Node side, rather than rebuilt as a template
+    // literal inside the evaluated closure, so this probe cannot silently drift from
+    // `engine.ts`'s own `loadWasmEngine`, which builds the same two URLs the same way.
+    const glueUrl = engineAssetUrl('sim.js', version);
+    const wasmUrl = engineAssetUrl('sim.wasm', version);
+    await page.addScriptTag({ url: glueUrl });
+    return await page.evaluate(async (wasm) => {
       type GoGlue = new () => {
         importObject: WebAssembly.Imports;
         run(instance: WebAssembly.Instance): Promise<void>;
@@ -55,10 +61,7 @@ async function hasNewBulkExports(browser: Browser, baseURL: string, version: str
       try {
         if (typeof w.Go !== 'function') return false;
         const go = new w.Go();
-        const { instance } = await WebAssembly.instantiateStreaming(
-          fetch(`/_sim/${v}/sim.wasm`),
-          go.importObject,
-        );
+        const { instance } = await WebAssembly.instantiateStreaming(fetch(wasm), go.importObject);
         const ready = new Promise<'ready'>((resolve) => {
           w.wasmready = () => resolve('ready');
         });
@@ -77,7 +80,7 @@ async function hasNewBulkExports(browser: Browser, baseURL: string, version: str
       } catch {
         return false;
       }
-    }, version);
+    }, wasmUrl);
   } catch {
     return false;
   } finally {

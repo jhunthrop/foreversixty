@@ -34,18 +34,20 @@ for (const route of ROUTES) {
 
   test(`${route} gives every control a 44px hit target`, async ({ page }) => {
     await load(page, route);
-    // Measured the same way sim-phone.spec.ts's own targetsAreBigEnough already measures the
-    // exact same shared chrome these tool pages mount (Base.astro's skip link, CharacterStrip,
-    // SettingsBar, RequestDrawer) -- a naive per-element box check flags two things that are
-    // not bugs: the skip link, 1px until it takes focus (excluded there via computed
-    // `clip-path`, Tailwind's sr-only technique), and a checkbox whose 20px mark sits inside a
-    // `min-h-11` label that is the real hit target (measured there via the wrapping `<label>`).
-    // Both exceptions are reused verbatim rather than reintroduced with different rules, so a
-    // control this lane's own pages share with the rest of the simulator is judged by the one
-    // standard already reviewed for it. Duplicated rather than imported from sim-phone.spec.ts
-    // because extracting it would add a coupling edge into a file outside this task's list for
-    // one small helper -- the same call Task 11's report made for its own three-line `block()`
-    // duplicate.
+    // Two exceptions are borrowed from sim-phone.spec.ts's own targetsAreBigEnough, which
+    // already audits this exact shared chrome (Base.astro's skip link, CharacterStrip,
+    // SettingsBar, RequestDrawer) mounted on /sim: a naive per-element box check flags two
+    // things that are not bugs -- the skip link, 1px until it takes focus (excluded here via
+    // computed `clip-path`, Tailwind's sr-only technique, same as there), and a checkbox
+    // whose 20px mark sits inside a `min-h-11` label that is the real hit target (measured
+    // here via the wrapping `<label>`, same as there).
+    //
+    // Deliberate divergence from sim-phone.spec.ts (controller ruling, Task 21 fix round 1):
+    // that file reads `Math.max(height, width) < target`, which passes a control that is
+    // wide but short -- a 44x20 row clears it. This file requires BOTH dimensions to reach
+    // 44px, on the substituted label where the checkbox substitution applies, never on the
+    // hidden input itself. A future reader should not "fix" this file to match that one; the
+    // two measure different things on purpose, and this is the stricter of the two.
     const short = await page.evaluate(() => {
       const bad: string[] = [];
       for (const element of document.querySelectorAll('button, a[href], select, input, label')) {
@@ -59,7 +61,7 @@ for (const route of ROUTES) {
             ? (element.closest('label') as HTMLElement)
             : element;
         const target = hitTarget.getBoundingClientRect();
-        if (Math.max(target.height, target.width) < 44) bad.push(element.outerHTML.slice(0, 80));
+        if (target.height < 44 || target.width < 44) bad.push(element.outerHTML.slice(0, 80));
       }
       return bad;
     });
