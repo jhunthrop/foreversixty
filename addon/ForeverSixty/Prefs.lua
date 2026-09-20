@@ -58,24 +58,38 @@ function Prefs.withDefaults(saved)
 	return merged(Prefs.DEFAULTS, saved)
 end
 
+--- Bring `target` to the shape of `defaults` in place: keep every value
+--- that is present and of the right type, fill the rest from `defaults`,
+--- and drop keys `defaults` does not carry. In place, so every table a
+--- caller already holds a reference to stays the same table.
+local function normalise(target, defaults)
+	for key, value in pairs(defaults) do
+		local given = target[key]
+		if type(value) == "table" then
+			if type(given) ~= "table" then
+				target[key] = {}
+			end
+			normalise(target[key], value)
+		elseif given == nil or type(given) ~= type(value) then
+			target[key] = value
+		end
+	end
+	for key in pairs(target) do
+		if defaults[key] == nil then
+			target[key] = nil
+		end
+	end
+	return target
+end
+
 --- The live table. Normalised on every call, so a caller that took a
 --- reference before a reload still reads through this one.
 function Prefs.current()
 	ForeverSixtyDB = ForeverSixtyDB or {}
-	if ForeverSixtyDB.ui == nil then
-		ForeverSixtyDB.ui = Prefs.withDefaults(nil)
-	else
-		local fresh = Prefs.withDefaults(ForeverSixtyDB.ui)
-		for k in pairs(ForeverSixtyDB.ui) do
-			if fresh[k] == nil then
-				ForeverSixtyDB.ui[k] = nil
-			end
-		end
-		for k, v in pairs(fresh) do
-			ForeverSixtyDB.ui[k] = v
-		end
+	if type(ForeverSixtyDB.ui) ~= "table" then
+		ForeverSixtyDB.ui = {}
 	end
-	return ForeverSixtyDB.ui
+	return normalise(ForeverSixtyDB.ui, Prefs.DEFAULTS)
 end
 
 function Prefs.get(section, key)

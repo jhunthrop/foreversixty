@@ -102,4 +102,35 @@ describe("Prefs", function()
 		assert.is_true(Prefs.get("tracker", "locked"))
 		assert.is_false(Prefs.get("minimap", "shown"))
 	end)
+
+	it("preserves nested table identity across an unrelated accessor call", function()
+		-- A caller holding a reference to a nested section (e.g., a drag
+		-- handler holding `local window = Prefs.get("window")`) must still
+		-- write into the live table after any other accessor call.
+		local window = Prefs.get("window")
+		Prefs.setFlag("chat", true)
+		assert.are.equal(window, Prefs.get("window"))
+		window.x = 42
+		assert.are.equal(42, Prefs.get("window", "x"))
+	end)
+
+	it("normalises a saved table with junk and wrong types in place", function()
+		-- A reload that finds stale data (old keys, wrongly-typed sections)
+		-- must normalise in place: the table object the code holds is still
+		-- the same table, and now has the right shape.
+		_G.ForeverSixtyDB = {
+			ui = {
+				window = { x = 100, y = 50 },
+				tracker = 7,
+				oldkey = "junk",
+			}
+		}
+		local ui = Prefs.current()
+		assert.are.equal(100, ui.window.x)
+		assert.are.equal(Prefs.DEFAULTS.window.tab, ui.window.tab)
+		assert.are.equal("table", type(ui.tracker))
+		assert.is_nil(ui.oldkey)
+		-- The same table object, not a new one.
+		assert.are.equal(ui, _G.ForeverSixtyDB.ui)
+	end)
 end)
