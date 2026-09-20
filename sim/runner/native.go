@@ -299,6 +299,13 @@ func (n *Native) Plan(ctx context.Context, req api.SimRequest) (api.PlanSummary,
 	if decodeErr != nil {
 		return api.PlanSummary{}, fmt.Errorf("runner: %s wrote something -plan does not: %w", bin, decodeErr)
 	}
+	// Defensively dead rather than reachable: bulk.PlanWith validates
+	// req.Bulk.Precision inside the subprocess before any success body
+	// exists, so waitErr is already non-nil by the time this function
+	// would otherwise see an unknown precision. Kept anyway - relying
+	// on that from the outside is relying on writePlan's internals
+	// never changing, and this line is what fails loudly instead of
+	// computing a silent IterationsTotal of 0 if they ever do.
 	ladder, ok := api.Ladders[req.Bulk.Precision]
 	if !ok {
 		return api.PlanSummary{}, fmt.Errorf("runner: no ladder for precision %q", req.Bulk.Precision)

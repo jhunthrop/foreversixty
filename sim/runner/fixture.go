@@ -116,7 +116,18 @@ func (f *Fixture) abortedResult(req api.SimRequest, onProgress StageProgress) ap
 // what a success answers with; CapBreach, when set, is returned
 // instead of a summary, and Err takes precedence over both - the same
 // order Err takes over Aborted in RunStaged.
+//
+// It refuses a request with no Bulk block and one whose precision has
+// no ladder, the same two things Native.Plan refuses, and the same
+// way: ErrBadInput. Fixture exists to stand in for Native behind the
+// Planner interface in another lane's tests, so a caller that never
+// runs against the real binary must still see the real binary's
+// refusals - the alternative is a bug that only ever ships behind the
+// fixture.
 func (f *Fixture) Plan(_ context.Context, req api.SimRequest) (api.PlanSummary, error) {
+	if req.Bulk == nil {
+		return api.PlanSummary{}, fmt.Errorf("%w: Plan takes a bulk request; this one has none", ErrBadInput)
+	}
 	f.mu.Lock()
 	f.Runs = append(f.Runs, req)
 	err, combos, breach := f.Err, f.PlanCombinations, f.CapBreach
@@ -127,14 +138,16 @@ func (f *Fixture) Plan(_ context.Context, req api.SimRequest) (api.PlanSummary, 
 	if breach != nil {
 		return api.PlanSummary{}, *breach
 	}
-	out := api.PlanSummary{Kind: req.Kind(), Combinations: combos}
-	if req.Bulk != nil {
-		out.Cap = req.Bulk.Cap
-		if ladder, ok := api.Ladders[req.Bulk.Precision]; ok {
-			out.IterationsTotal = api.LadderIterations(ladder, combos)
-		}
+	ladder, ok := api.Ladders[req.Bulk.Precision]
+	if !ok {
+		return api.PlanSummary{}, fmt.Errorf("%w: no ladder for precision %q", ErrBadInput, req.Bulk.Precision)
 	}
-	return out, nil
+	return api.PlanSummary{
+		Kind:            req.Kind(),
+		Combinations:    combos,
+		Cap:             req.Bulk.Cap,
+		IterationsTotal: api.LadderIterations(ladder, combos),
+	}, nil
 }
 
 // Asked reports the requests handed to the fixture so far.

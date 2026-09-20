@@ -152,3 +152,21 @@ func TestFixturePlanErrTakesPrecedenceOverCapBreach(t *testing.T) {
 		t.Fatalf("err = %v, want context.DeadlineExceeded", err)
 	}
 }
+
+// Fixture exists to stand in for Native behind the Planner interface
+// in another lane's tests. If Fixture answered a request with no Bulk
+// block differently from the real binary, a test written against the
+// fixture could pass on exactly the input the real binary refuses -
+// the divergence a fixture is supposed to prevent, not introduce. Both
+// must refuse with ErrBadInput.
+func TestBothPlannersRefuseARequestWithNoBulk(t *testing.T) {
+	bin := planBinary(t)
+	req := aRequest() // no Bulk block
+
+	if _, err := (&Native{Binary: bin}).Plan(context.Background(), req); !errorsIsBadInput(err) {
+		t.Errorf("Native.Plan = %v, want ErrBadInput", err)
+	}
+	if _, err := (&Fixture{}).Plan(context.Background(), req); !errorsIsBadInput(err) {
+		t.Errorf("Fixture.Plan = %v, want ErrBadInput", err)
+	}
+}
