@@ -8,6 +8,7 @@
   import type { GearSet } from '../../../lib/sim/bulk-types';
   import type { SimCharacter } from '../../../lib/sim/character';
   import { bulkCopy } from '../../../lib/sim/copy';
+  import { dedupeByName } from '../../../lib/sim/dedupe';
 
   let {
     character,
@@ -44,17 +45,22 @@
     return { name: set.name, gear: set.gear.map(toGearSlot) };
   }
 
-  /** The export's own named sets (part A's FS1 v2 decoder), offered as one-click adds. */
-  const exported = $derived<GearSet[]>(character.sets.map(toGearSet));
+  /** The export's own named sets (part A's FS1 v2 decoder), offered as one-click adds.
+   *  Deduplicated on its own: nothing stops an addon export from naming two sets alike,
+   *  and two rows sharing one `sim-set-<name>` test id is a Playwright strict-mode failure
+   *  waiting to happen the moment a test looks for it, not just a confusing screen. */
+  const exported = $derived<GearSet[]>(dedupeByName(new Set<string>(), character.sets.map(toGearSet)));
 
-  /** Every row to show: the export's own sets first, then any ticked set the export did not
-   *  already name -- a set the player pasted in here themselves. A set present in both is
-   *  shown once, from `exported`: `add()` below hands `onadd` the identical conversion, so
-   *  the two never disagree about what that name means. */
-  const rows = $derived<GearSet[]>([
-    ...exported,
-    ...sets.filter((set) => !exported.some((entry) => entry.name === set.name)),
-  ]);
+  /**
+   * Every row to show: whatever `sets` actually holds -- the truth of what `BulkSpec.sets`
+   * will carry -- claims a name first, then any export-offered set not already added. `sets`
+   * has to win a name collision, not `exported`: a player who pastes an edited set under a
+   * name the export already offered means the edit, and `exported`'s own row for that name
+   * is nothing but a now-stale suggestion -- keeping both under the identical test id would
+   * be the same strict-mode failure `exported`'s own dedup above guards against, and keeping
+   * the wrong one would show a suggestion the outgoing request has already moved past.
+   */
+  const rows = $derived<GearSet[]>(dedupeByName(new Set<string>(), [...sets, ...exported]));
 
   function isAdded(setName: string): boolean {
     return sets.some((entry) => entry.name === setName);

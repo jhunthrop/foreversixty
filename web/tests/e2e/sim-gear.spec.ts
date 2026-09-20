@@ -15,9 +15,22 @@ const activeBuild = JSON.parse(
 // to lock and a bag row to tick.
 const FURY = `FS1:${activeBuild.build}:warrior:orc:0/5530515/0:head=12640,main_hand=12784`;
 
-export async function loadGear(page: Page, at = '/sim/gear'): Promise<void> {
+// FURY plus contract 7's version 2 sections: one in-game loadout and one named set, the
+// set's own gear entry carrying BOTH an enchant and a suffix (contract 10.5's richer
+// per-slot shape) -- the one path Task 14's own conversions (TalentCandidates.svelte's
+// rank-to-order-to-talents-string pipeline; NamedSets.svelte's itemId -> item_id,
+// enchant-and-suffix-preserving `toGearSlot`) need proved end-to-end, against a real decode,
+// rather than only on inspection. `character.test.ts`'s own `characterFromFs1` tests already
+// prove this exact grammar decodes (bank=…:2505:1820 there; here the enchant/suffix pair
+// rides a `sets=` entry instead, which is what this task's own components read). The
+// loadout is deliberately named "Deep Fury" -- the same title the mocked
+// `/v1/builds?mine=1` row below uses -- so the same fixture also exercises the
+// saved-vs-exported name collision fix.
+const FURY_V2 = `${FURY}|loadouts=Deep Fury=5530515/0/0|sets=Alt Set=head=12640:2543:1`;
+
+export async function loadGear(page: Page, at = '/sim/gear', code = FURY): Promise<void> {
   await page.goto(at);
-  await page.getByTestId('sim-addon-input').fill(FURY);
+  await page.getByTestId('sim-addon-input').fill(code);
   await page.getByTestId('sim-addon-load').click();
   await expect(page.getByTestId('sim-character')).toBeVisible();
   await expect(page.getByTestId('sim-slot-grid')).toBeVisible();
@@ -121,7 +134,8 @@ test('a consumable candidate is named, not spelled as an id', async ({ page }) =
   await expect(page.getByTestId('sim-consumables')).toContainText('Flask of Supreme Power');
 });
 
-test('the talent list offers the character’s own build and a saved one', async ({ page }) => {
+/** One `/v1/builds?mine=1` row, titled `title`, on the character's own class/tree/build. */
+async function mockMyBuilds(page: Page, title = 'Deep Fury'): Promise<void> {
   await page.route('**/v1/builds?mine=1*', (route) =>
     route.fulfill({
       status: 200,
@@ -139,7 +153,7 @@ test('the talent list offers the character’s own build and a saved one', async
               tree_version: activeBuild.build,
               point_order: [2001, 2001, 2001, 2001, 2001],
               gear: {},
-              title: 'Deep Fury',
+              title,
               created_at: '2026-09-18T12:00:00Z',
               views: 2,
             },
@@ -151,10 +165,43 @@ test('the talent list offers the character’s own build and a saved one', async
       }),
     }),
   );
+}
+
+test('the talent list offers the character’s own build and a saved one', async ({ page }) => {
+  await mockMyBuilds(page);
   await loadGear(page);
   await expect(page.getByTestId('sim-loadout-current')).toBeVisible();
   await page.getByTestId('sim-loadout-Deep Fury').check();
   await expect(page.getByTestId('sim-loadout-Deep Fury')).toBeChecked();
+});
+
+test('an in-game loadout that shares a saved build’s name renders once, not twice', async ({ page }) => {
+  // The mocked saved build and FURY_V2's own `loadouts=Deep Fury=...` section both name
+  // "Deep Fury" -- without TalentCandidates.svelte's own dedupe, that is two checkboxes
+  // under the identical `sim-loadout-Deep Fury` test id, which Playwright's strict mode
+  // (`toHaveCount(1)` below, and any single-element locator after it) refuses to resolve.
+  await mockMyBuilds(page);
+  await loadGear(page, '/sim/gear', FURY_V2);
+  await expect(page.getByTestId('sim-loadout-Deep Fury')).toHaveCount(1);
+  await page.getByTestId('sim-loadout-Deep Fury').check();
+  await expect(page.getByTestId('sim-loadout-Deep Fury')).toBeChecked();
+});
+
+test('a named set from the addon export carries its enchant and suffix into the outgoing request', async ({
+  page,
+}) => {
+  // FURY_V2's `sets=Alt Set=head=12640:2543:1` is the one path proving NamedSets.svelte's
+  // toGearSlot conversion end to end: an addon-exported enchant AND suffix together,
+  // through itemId -> item_id, surviving into the request the page would actually send --
+  // not just a rendered row, which alone would prove nothing about the numbers behind it.
+  await loadGear(page, '/sim/gear', FURY_V2);
+  await expect(page.getByTestId('sim-set-Alt Set')).toBeVisible();
+  await page.getByTestId('sim-set-Alt Set').getByRole('button', { name: bulkCopy.setsAdd }).click();
+  await page.getByTestId('sim-request-drawer').locator('summary').click();
+  const request = JSON.parse(await page.getByTestId('sim-request-json').inputValue());
+  expect(request.bulk.sets).toEqual([
+    { name: 'Alt Set', gear: [{ slot: 'head', item_id: 12640, enchant: 2543, suffix: 1 }] },
+  ]);
 });
 
 test('a pasted second export string becomes a named set', async ({ page }) => {

@@ -17,6 +17,7 @@
   import type { TalentLoadout } from '../../../lib/sim/bulk-types';
   import { talentsString, type SimCharacter } from '../../../lib/sim/character';
   import { bulkCopy, simCopy } from '../../../lib/sim/copy';
+  import { dedupeByName } from '../../../lib/sim/dedupe';
 
   let {
     character,
@@ -71,27 +72,50 @@
     };
   }
 
+  /**
+   * Deduplicated by name: a saved planner build titled the same as an in-game loadout the
+   * addon export carries would otherwise render two checkboxes under the identical
+   * `sim-loadout-<name>` test id -- not just confusing, a Playwright strict-mode failure the
+   * moment a test looks for that id. Saved builds are listed first on screen, so they claim
+   * a name first; an in-game loadout sharing one is the entry dropped, below.
+   */
   const savedLoadouts = $derived(
-    (saved ?? []).map(loadoutFor).filter((entry): entry is TalentLoadout => entry !== null),
+    dedupeByName(
+      new Set<string>(),
+      (saved ?? []).map(loadoutFor).filter((entry): entry is TalentLoadout => entry !== null),
+    ),
   );
 
   /**
    * The addon export's in-game loadouts (part A's FS1 v2 decoder). `SimCharacter.loadouts`
    * carries the decoder's own shape -- one rank array per tree -- not the engine's talents
    * string, so each one goes through the same rank-to-order-to-string pipeline
-   * `characterFromFs1` already uses for the character itself.
+   * `characterFromFs1` already uses for the character itself. Named entries already claimed
+   * by `savedLoadouts` (above) are dropped rather than rendered a second time.
    */
   const exported = $derived<TalentLoadout[]>(
-    index === null
-      ? []
-      : character.loadouts.map((loadout) => {
-          const { order } = orderFromRanks(index, loadout.treeRanks);
-          return { name: loadout.name, talents: talentsString(index, order) };
-        }),
+    dedupeByName(
+      new Set(savedLoadouts.map((entry) => entry.name)),
+      index === null
+        ? []
+        : character.loadouts.map((loadout) => {
+            const { order } = orderFromRanks(index, loadout.treeRanks);
+            return { name: loadout.name, talents: talentsString(index, order) };
+          }),
+    ),
   );
 
   function isPicked(loadout: TalentLoadout): boolean {
     return picked.some((entry) => entry.name === loadout.name);
+  }
+
+  /** The next "Build N" name not already in `picked` -- `store.addLoadout` itself dedupes
+   *  by name and silently no-ops on a repeat, so a name this component hands it is always
+   *  one that will actually be added. */
+  function nextCustomName(): string {
+    let n = picked.length + 1;
+    while (picked.some((entry) => entry.name === `Build ${n}`)) n += 1;
+    return `Build ${n}`;
   }
 
   /** The inline planner's code, turned into a loadout the moment the player accepts it. */
@@ -100,7 +124,7 @@
     const decoded = decodeFS1(customCode);
     if (!decoded.ok) return;
     const { order } = orderFromRanks(index, decoded.build.treeRanks);
-    ontoggle({ name: `Build ${picked.length + 1}`, talents: talentsString(index, order) }, true);
+    ontoggle({ name: nextCustomName(), talents: talentsString(index, order) }, true);
     plannerOpen = false;
     customCode = '';
   }
@@ -196,8 +220,9 @@
         />
         <button
           type="button"
-          class="{SECONDARY_BUTTON} border-line-warm text-nav mt-2 w-fit px-3"
+          class="{SECONDARY_BUTTON} border-line-warm text-nav mt-2 w-fit px-3 disabled:opacity-50"
           data-testid="sim-loadout-accept"
+          disabled={customCode === ''}
           onclick={addCustom}>{bulkCopy.talentsAddCustom}</button
         >
       {:else}
