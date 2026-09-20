@@ -249,7 +249,7 @@ export const simCopy = {
   specCast: 'cast',
   specSimmed: 'simmed',
   specsIntro:
-    'The simulator is only worth as much as its numbers. A nightly job sims the top 50 parses for each spec and publishes the gap here, whatever it is.',
+    'The simulator is only worth as much as its numbers. A nightly job sims the top 50 parses for each of the 20 damage specs it covers and publishes the gap here, whatever it is. The other 7 specs, healers and tanks, are not simulated yet.',
   tryAgain: 'Try again',
 
   distMean: 'Mean DPS',
@@ -528,6 +528,21 @@ export const simCopy = {
   /** The strip's short label for `KIND_TITLES.weights` ("Stat weights"). */
   tabWeights: 'Weights',
   tabSpecs: 'Spec support',
+  /**
+   * Task 2: the site never said the simulator is DPS-only (healer/tank persona review
+   * BLOCKERs). One sentence, one key, rendered in every simulator page's static Astro
+   * shell -- near the `<h1>`, above the fold at 390x844 -- plus LandingState.svelte and
+   * SourceSwitcher.svelte, since those are what a signed-out visitor reads first.
+   */
+  scopeNote: 'The simulator runs damage specs only. Healing and tanking specs are not simulated yet.',
+  /** `/sim/specs`: heading over the 20 dps cards the grid has always shown. */
+  specsSimulatedHeading: 'Damage specs',
+  /** `/sim/specs`: heading over the 7 healer/tank cards, grouped below rather than
+   *  interleaved, so the page reads as "these 20 work, these 7 do not". */
+  specsUnsimulatedHeading: 'Healers and tanks',
+  /** Exact body text task-2-brief.md specifies, verbatim, for every card in that second
+   *  group -- no fidelity pill, no engine stamp, no "Not yet" badge link. */
+  specsUnsimulatedBody: 'Not simulated yet — damage specs first; healers and tanks come later',
   // --- end Lane W2 ---
 } as const;
 
@@ -542,15 +557,16 @@ export const bulkCopy = {
   // --- page titles and the one-line standfirst under each ---
   gearTitle: KIND_TITLES.gear,
   gearIntro:
-    'Tick the items, enchants, talents and sets you want tried. Every valid combination is simulated and ranked against what you have on.',
+    'Tick the items, enchants, talents and sets you want tried for your damage spec. Every valid combination is simulated and ranked against what you have on.',
   talentsTitle: KIND_TITLES.talents,
   talentsIntro:
-    'Your build against every other build you have, ranked. Gear is locked to what you are wearing, so the only thing that changes is the tree.',
+    'Your damage spec’s build against every other build you have, ranked. Gear is locked to what you are wearing, so the only thing that changes is the tree.',
   dropsTitle: KIND_TITLES.drops,
   dropsIntro:
-    'Pick where you are going. Every item those bosses drop is simulated one at a time against your current set, and the upgrades are listed by boss.',
+    'Pick where you are going. Every item those bosses drop is simulated one at a time against your damage spec’s current set, and the upgrades are listed by boss.',
   weightsTitle: KIND_TITLES.weights,
-  weightsIntro: 'What one point of each stat is worth, for the addons that ask for a number.',
+  weightsIntro:
+    'What one point of each stat is worth for your damage spec, for the addons that ask for a number.',
   weightsWarning:
     'A stat weight is a straight-line guess at something that is not a straight line: it holds near the gear you have now and stops holding as soon as a set bonus, a proc or a hit cap changes. Sim the actual items in Top Gear instead. These are here because addons want them.',
   weightsWarningLink: 'Open Top Gear',

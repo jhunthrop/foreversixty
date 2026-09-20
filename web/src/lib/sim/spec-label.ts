@@ -51,3 +51,13 @@ export function classOfSpec(spec: string): string {
 export function dpsSpecs(): readonly Spec[] {
   return SPECS.filter((row) => row.role === 'dps');
 }
+
+/**
+ * The complement of dpsSpecs(): the 7 healer and tank specs the launch scope excludes
+ * (task-2-brief.md). Filtered the same way, from the same canonical list, so the two can
+ * never drift into double-counting or dropping a spec -- `/sim/specs`' "these 20 work,
+ * these 7 do not" split reads both.
+ */
+export function nonDpsSpecs(): readonly Spec[] {
+  return SPECS.filter((row) => row.role !== 'dps');
+}

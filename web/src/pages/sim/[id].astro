@@ -6,6 +6,7 @@
 import Base from '../../layouts/Base.astro';
 import { FIXTURE_SIM_ID, fixtureSimPaths } from '../../lib/report/shell-paths';
 import fixtureResult from '../../fixtures/sim/result.json';
+import { simCopy } from '../../lib/sim/copy';
 import { SIM_SAVED_SKELETON_HTML } from '../../lib/sim/skeleton';
 import SimTabs from '../../components/sim/SimTabs.astro';
 
@@ -29,6 +30,13 @@ const inline = id === FIXTURE_SIM_ID ? JSON.stringify(fixtureResult) : undefined
     class="mx-auto flex w-full max-w-[1344px] flex-col gap-[22px] pt-4 pb-10 md:gap-8 md:px-12 md:pt-7"
   >
     <SimTabs currentPath="/sim" />
+    <!-- task-2-brief.md: the site never said the simulator is DPS-only. Static, in the
+         shell, above the fold at 390x844 -- not inside the island. This page has no `<h1>`
+         of its own (the saved sim's own title comes from the island once it mounts), so
+         this sits directly below the tab strip instead, the nearest equivalent position. -->
+    <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="sim-scope-note">
+      {simCopy.scopeNote}
+    </p>
     <!--
       Round 3 (Lighthouse): reserves the saved sim's space before the island mounts, the
       same reason and the same pattern reports/[id].astro uses -- without it the shell is

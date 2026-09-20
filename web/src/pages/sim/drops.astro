@@ -12,7 +12,7 @@
 // and 1280px, sim-tools's own rendered height rounded up -- so the mount swap moves nothing
 // and the page holds its CLS budget, exactly as sim/[id].astro's own comment describes.
 import Base from '../../layouts/Base.astro';
-import { bulkCopy } from '../../lib/sim/copy';
+import { bulkCopy, simCopy } from '../../lib/sim/copy';
 import { TOOL_SKELETONS } from '../../lib/sim/bulk-skeleton';
 import SimTabs from '../../components/sim/SimTabs.astro';
 ---
@@ -31,6 +31,11 @@ import SimTabs from '../../components/sim/SimTabs.astro';
   >
     <SimTabs currentPath="/sim/drops" />
     <h1 class="section-title px-[18px] text-[18px] md:px-0">{bulkCopy.dropsTitle}</h1>
+    <!-- task-2-brief.md: the site never said the simulator is DPS-only. Static, in the
+         shell, above the fold at 390x844 -- not inside the island. -->
+    <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="sim-scope-note">
+      {simCopy.scopeNote}
+    </p>
     <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="sim-tool-intro">
       {bulkCopy.dropsIntro}
     </p>

@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { SPECS } from './specs';
-import { classOfSpec, dpsSpecs, specDisplayName, specLabel, specRow } from './spec-label';
+import { classOfSpec, dpsSpecs, nonDpsSpecs, specDisplayName, specLabel, specRow } from './spec-label';
 
 const CURATED = path.resolve(import.meta.dirname, '../../../../data/curated/specs.json');
 
@@ -65,5 +65,21 @@ describe('dpsSpecs', () => {
   it('is a subset of the generated list and never a second copy of it', () => {
     expect(dpsSpecs().length).toBeLessThan(SPECS.length);
     for (const row of dpsSpecs()) expect(SPECS).toContain(row);
+  });
+});
+
+describe('nonDpsSpecs', () => {
+  it('is every healer and tank spec, the seven launch scope excludes', () => {
+    const rows = nonDpsSpecs();
+    expect(rows).toHaveLength(7);
+    expect(rows.every((row) => row.role !== 'dps')).toBe(true);
+    expect(rows.map((row) => row.spec)).toContain('warrior-protection');
+    expect(rows.map((row) => row.spec)).toContain('druid-restoration');
+    expect(rows.map((row) => row.spec)).not.toContain('warrior-fury');
+  });
+
+  it('is the exact complement of dpsSpecs(): together they are every spec, exactly once', () => {
+    const combined = [...dpsSpecs(), ...nonDpsSpecs()].map((row) => row.spec).sort();
+    expect(combined).toEqual([...SPECS].map((row) => row.spec).sort());
   });
 });

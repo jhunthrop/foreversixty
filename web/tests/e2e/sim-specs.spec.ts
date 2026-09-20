@@ -48,11 +48,16 @@ test.describe('/sim/specs', () => {
     await stubSpecs(page);
     await page.goto('/sim/specs');
 
-    const cards = page.locator('[data-testid^="spec-"][id]');
+    // Scoped to the simulated grid (task-2-brief.md's second group, the 7 healer/tank
+    // "not simulated yet" cards, lives in its own `specs-grid-unsimulated` container below
+    // and is asserted separately) -- otherwise this locator's own `^="spec-"` prefix would
+    // also match `spec-unsimulated-<slug>`.
+    const cards = page.getByTestId('specs-grid').locator('[data-testid^="spec-"][id]');
     await expect(cards).toHaveCount(dpsSpecCount);
 
-    // Tanks and healers are not on this page at all -- the design's launch scope is Quick
-    // Sim for damage specs, so a card for one of them would promise something deferred.
+    // Tanks and healers get no simulated-shaped card at all -- the design's launch scope is
+    // Quick Sim for damage specs, so a card claiming to be one for them would promise
+    // something deferred.
     await expect(page.getByTestId('spec-warrior-protection')).toHaveCount(0);
     await expect(page.getByTestId('spec-druid-restoration')).toHaveCount(0);
 
@@ -78,6 +83,37 @@ test.describe('/sim/specs', () => {
     const rogue = page.getByTestId('spec-rogue-combat');
     await expect(rogue.getByTestId('spec-state')).toHaveText('Not yet');
     await expect(rogue.getByTestId('spec-footer')).toHaveCount(0);
+  });
+
+  // task-2-brief.md: the 7 healer/tank specs, grouped under their own heading below the 20
+  // simulated ones -- never missing (the reviewers' own complaint), never interleaved, and
+  // visibly a different kind of card.
+  test('groups the 7 healer/tank specs under their own heading, with no fidelity pill, engine stamp or link', async ({
+    page,
+  }) => {
+    await stubSpecs(page);
+    await page.goto('/sim/specs');
+
+    await expect(page.getByRole('heading', { name: simCopy.specsSimulatedHeading })).toBeVisible();
+    await expect(page.getByRole('heading', { name: simCopy.specsUnsimulatedHeading })).toBeVisible();
+
+    const unsimulated = page.getByTestId('specs-grid-unsimulated');
+    const cards = unsimulated.locator('[data-testid^="spec-unsimulated-"]');
+    await expect(cards).toHaveCount(7);
+
+    const protectionWarrior = page.getByTestId('spec-unsimulated-warrior-protection');
+    await expect(protectionWarrior).toContainText('Protection Warrior');
+    await expect(protectionWarrior).toContainText(simCopy.specsUnsimulatedBody);
+
+    const restorationDruid = page.getByTestId('spec-unsimulated-druid-restoration');
+    await expect(restorationDruid).toContainText('Restoration Druid');
+    await expect(restorationDruid).toContainText(simCopy.specsUnsimulatedBody);
+
+    // No fidelity pill, no engine stamp, no "Not yet" badge link -- SpecCard's own testids
+    // never appear inside this group.
+    await expect(unsimulated.getByTestId('spec-state')).toHaveCount(0);
+    await expect(unsimulated.getByTestId('spec-footer')).toHaveCount(0);
+    await expect(unsimulated.locator('a')).toHaveCount(0);
   });
 
   test('a hash link scrolls straight to that spec’s card', async ({ page }) => {
