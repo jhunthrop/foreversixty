@@ -59,8 +59,23 @@ test('the stat picker defaults to the spec’s reference stat, first and ticked'
 test('a run renders a weight per stat with an error bar and a Pawn string', async ({ page, context }) => {
   await context.grantPermissions(['clipboard-read', 'clipboard-write']);
   await loadWeights(page);
+  // Deselecting an optional stat drops it from the run; the reference stat cannot be
+  // deselected at all -- its checkbox is disabled, so WeightsSpec.Reference (required)
+  // can never go empty through this control.
+  //
+  // `sim-character` becomes visible as soon as `adopt()` sets `character` -- before the
+  // store's own async `loadDataFor` finishes and seeds `stats` -- so the picker can still
+  // be showing every box unchecked at that instant. Waiting for the default seed to land
+  // (stamina ticked) avoids unchecking a box that was never checked yet.
+  await expect(page.getByTestId('sim-weight-pick-stamina')).toBeChecked();
+  await page.getByTestId('sim-weight-pick-stamina').uncheck();
+  await expect(page.getByTestId('sim-weight-pick-stamina')).not.toBeChecked();
+  await expect(page.getByTestId('sim-weight-pick-attack_power')).toBeDisabled();
+  await page.getByTestId('sim-weight-pick-attack_power').click({ force: true });
+  await expect(page.getByTestId('sim-weight-pick-attack_power')).toBeChecked();
   await page.getByTestId('sim-run-bulk').click();
   await expect(page.getByTestId('sim-weights')).toBeVisible({ timeout: 25_000 });
+  await expect(page.getByTestId('sim-weight-stamina')).toHaveCount(0);
   await expect(page.getByTestId('sim-weight-attack_power')).toContainText('1.00');
   // Contract 10.8: haste is split, hit and crit are not.
   await expect(page.getByTestId('sim-weight-melee_haste')).toBeVisible();

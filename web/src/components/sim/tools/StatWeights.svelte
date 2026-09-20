@@ -16,6 +16,7 @@
      `store.weights`' own `StatWeight` rows, and `weightScale`/`pawnString` are Task 9's. -->
 <script lang="ts">
   import type { Me } from '../../../lib/account/api';
+  import { SECONDARY_BUTTON } from '../../../lib/planner/styles';
   import type { BulkStore } from '../../../lib/sim/bulk-store.svelte';
   import { bulkCopy } from '../../../lib/sim/copy';
   import { pawnString, statLabel, weightScale, WEIGHT_STATS } from '../../../lib/sim/weights';
@@ -122,7 +123,7 @@
         <code class="text-muted flex-1 font-mono text-[12px] break-all" data-testid="sim-pawn">{pawn}</code>
         <button
           type="button"
-          class="border-line-warm rounded-control text-nav label min-h-11 border px-4"
+          class="{SECONDARY_BUTTON} border-line-warm text-nav px-4"
           data-testid="sim-pawn-copy"
           onclick={() => void copyPawn()}
         >
