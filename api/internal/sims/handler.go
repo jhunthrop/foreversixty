@@ -166,23 +166,12 @@ func (s *Service) get(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Service) mine(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Query().Get("mine") != "1" {
-		// There is no "everyone's sims" list, and inventing one by
-		// omission would be a surprise. The parameter is required so
-		// the route's meaning is on the URL.
-		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "this list is mine=1 only",
-			map[string]string{"mine": "1"})
+	if !httpx.RequireMine(w, r) {
 		return
 	}
-	page := 1
-	if v := r.URL.Query().Get("page"); v != "" {
-		n, err := strconv.Atoi(v)
-		if err != nil || n < 1 {
-			httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "page must be 1 or more",
-				map[string]string{"page": "a page number from 1"})
-			return
-		}
-		page = n
+	page, ok := httpx.ParsePage(w, r)
+	if !ok {
+		return
 	}
 	// An unknown kind is refused rather than answered with an empty
 	// list: "you have no topgear sims" is a true sentence about a word
@@ -200,8 +189,7 @@ func (s *Service) mine(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "mine", err, "could not read your sims just now")
 		return
 	}
-	// Per-account: never cached at a shared edge.
-	w.Header().Set("Cache-Control", "private, no-store")
+	httpx.SetPrivateListCache(w)
 	httpx.WriteOK(w, r, http.StatusOK, out)
 }
 

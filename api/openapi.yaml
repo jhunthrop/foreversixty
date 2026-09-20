@@ -239,7 +239,16 @@ components:
       properties:
         sim_id: { type: string }
         spec: { type: string }
+        kind: { type: string, enum: [run, gear, talents, drops, weights] }
         dps: { type: number }
+        headline:
+          type: string
+          maxLength: 120
+          description: >-
+            The one line the history list shows, composed when the result
+            was written: "1,204 DPS", "+41 DPS from Vis'kag the
+            Bloodletter", "3 upgrades on Ragnaros", "+18 DPS with 'Deep
+            Fury'", "Melee Crit 1.00 · Agility 0.87".
         engine_version: { type: string }
         created_at: { type: string, format: date-time }
         title: { type: string }
@@ -247,6 +256,11 @@ components:
       type: object
       properties:
         spec: { type: string }
+        reference_stat:
+          type: string
+          description: >-
+            The stat the weights tool normalises to 1.0 for this spec, in
+            the engine's own vocabulary (melee_crit, attack_power, …).
         state: { type: string, enum: [validated, in_progress, unsupported] }
         median_gap: { type: number, nullable: true }
         parses: { type: integer }
@@ -407,6 +421,33 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Envelope' }
+    get:
+      summary: The caller's own saved builds
+      operationId: listMyBuilds
+      parameters:
+        - { name: mine, in: query, required: true, schema: { type: string, enum: ['1'] } }
+        - { name: page, in: query, schema: { type: integer, minimum: 1 } }
+      responses:
+        '200':
+          description: One page of the caller's builds, newest first
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          rows:
+                            type: array
+                            items: { $ref: '#/components/schemas/Build' }
+                          total: { type: integer }
+                          page: { type: integer }
+                          per_page: { type: integer, example: 100 }
+        '400': { description: This list is mine=1 only }
+        '401': { description: Sign in first }
   /v1/builds/{id}:
     get:
       summary: Fetch a build record
@@ -917,6 +958,10 @@ paths:
       parameters:
         - { name: mine, in: query, required: true, schema: { type: string, enum: ['1'] } }
         - { name: page, in: query, schema: { type: integer, minimum: 1 } }
+        - name: kind
+          in: query
+          schema: { type: string, enum: [run, gear, talents, drops, weights] }
+          description: Narrows the list to one tool. Omitted or empty is every kind; an unknown value is 400.
       responses:
         '200':
           description: One page of the caller's sims
@@ -960,7 +1005,14 @@ paths:
                         type: object
                         properties:
                           sim_id: { type: string }
-        '400': { description: The request cannot be run }
+        '400':
+          description: >-
+            The request cannot be run. error.code is "invalid" for a
+            malformed envelope, "cap_exceeded" when the expansion is past
+            the server lane's cap (error.fields carries cap and
+            combinations as decimal strings), or "too_large" when the
+            planner estimates the run past the job's budget (error.fields
+            carries estimate_sec and budget_sec, also as decimal strings).
         '401': { description: Sign in first }
         '402': { description: 'premium_required: running on our servers is a premium feature' }
         '502': { description: The run was recorded but could not be started }
@@ -1004,6 +1056,9 @@ paths:
                           state: { type: string, enum: [queued, running, done, error] }
                           iterations_done: { type: integer }
                           dps: { type: number, nullable: true }
+                          stage: { type: integer, description: Which stage of a bulk run is going; 0 for a plain run. }
+                          combos_done: { type: integer }
+                          combos_total: { type: integer }
         '404': { description: No such sim }
   /v1/specs:
     get:
@@ -1056,6 +1111,34 @@ paths:
                           captured_at: { type: string, format: date-time }
                           source: { type: string, enum: [addon, fight] }
         '404': { description: No such character }
+  /v1/phases:
+    get:
+      summary: The content phase boundaries
+      operationId: getPhases
+      description: >-
+        The same four instants the rankings bucket by, from
+        data/curated/phases.json. Cached an hour: they change only with a
+        deploy.
+      responses:
+        '200':
+          description: The phases, in order
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          phases:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                name: { type: string, example: raids-1 }
+                                start: { type: string, format: date-time }
   /v1/characters/{region}/{ruleset}/{name}:
     get:
       summary: A character's bests, history, and the builds they have been seen in
