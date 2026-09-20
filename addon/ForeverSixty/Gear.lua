@@ -69,13 +69,6 @@ function Gear.score(stats, weights)
 	return total
 end
 
-local function slugify(name)
-	if name == nil or name == "" then
-		return nil
-	end
-	return (name:lower():gsub("[^%w]+", "-"):gsub("^%-+", ""):gsub("%-+$", ""))
-end
-
 --- The spec key: the tree with the most points, ties to the first tree.
 --- Design "Stat weights" states exactly this rule; the site's own spec
 --- derivation uses it too, so a build reads the same in both places.
@@ -96,7 +89,7 @@ function Gear.specOf(data, classSlug, ranks)
 	end
 	-- The spec slug is the tab name lowercased, which is how
 	-- curated/specs.json's spec_slug is built from the tree name.
-	return classSlug .. "-" .. slugify(class.tabs[bestTab].name)
+	return classSlug .. "-" .. Export.slugify(class.tabs[bestTab].name)
 end
 
 --- The client's INVTYPE_* -> the site's slot names an item may occupy.
@@ -179,8 +172,8 @@ function Gear.upgrades(data, build)
 			-- A planned item with no stats is an FS1 code, which carries none.
 			-- Scoring it at zero would call every item an upgrade; saying
 			-- nothing about that slot is honest. An item that IS the planned
-			-- item scores a delta of exactly zero and is dropped by the test
-			-- below, so a correctly geared slot never lists itself.
+			-- item scores a delta of exactly zero, which the `delta > 0` check
+			-- below excludes, so a correctly geared slot never lists itself.
 			if against ~= nil and hasAnyStat(against.stats) then
 				local delta = Gear.score(Gear.statsOf(link), weights)
 					- Gear.score(against.stats, weights)

@@ -127,7 +127,9 @@ local function equippedSlots()
 	return slots
 end
 
-local function slugify(name)
+--- Shared with Gear.lua, which requires Export for the container helpers
+--- already and has no other slug vocabulary of its own to keep in.
+function Export.slugify(name)
 	if name == nil or name == "" then
 		return nil
 	end
@@ -170,7 +172,7 @@ local function professions()
 		local index = slots[position]
 		if index ~= nil then
 			local name = GetProfessionInfo and GetProfessionInfo(index)
-			local slug = slugify(name)
+			local slug = Export.slugify(name)
 			if slug ~= nil then
 				slugs[#slugs + 1] = slug
 			end

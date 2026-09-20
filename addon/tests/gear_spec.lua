@@ -50,6 +50,11 @@ describe("Gear", function()
 		assert.are.same({}, Gear.statsOf("link"))
 	end)
 
+	it("scores an item GetItemStats knows nothing about as no stats at all", function()
+		mock.install({ itemStats = {} })
+		assert.are.same({}, Gear.statsOf("missing"))
+	end)
+
 	it("scores by the sum of weight times stat", function()
 		assert.are.equal(23 * 1.0 + 10 * 0.45, Gear.score({ spell_power = 23, intellect = 10 }, DATA.weights["paladin-holy"]))
 	end)
@@ -133,6 +138,30 @@ describe("Gear", function()
 			{ slot = "head", itemId = 1, stats = {} },
 		} }
 		assert.are.same({}, Gear.upgrades(DATA, build))
+	end)
+
+	it("finds nothing when everything carried scores no better than what is worn", function()
+		-- A different path from the empty-stats case above: here the planned
+		-- item has real stats and is simply not beaten, so every candidate's
+		-- delta is zero or negative and the `delta > 0` guard drops it. This
+		-- is the case gearNone exists for.
+		mock.install({
+			class = { name = "Paladin", token = "PALADIN" },
+			talents = {
+				{ name = "Holy", talents = { { name = "A", tier = 1, column = 1, rank = 5, maxRank = 5 } } },
+				{ name = "Protection", talents = {} },
+				{ name = "Retribution", talents = {} },
+			},
+			equipped = { [1] = "worse" },
+			itemStats = {
+				worse = { ITEM_MOD_SPELL_POWER_SHORT = 5, __itemId = 9, __slot = "INVTYPE_HEAD" },
+			},
+		})
+		local build = { classSlug = "paladin", statsUnknown = false, gear = {
+			{ slot = "head", itemId = 1, stats = { spell_power = 20 } },
+		} }
+		assert.are.same({}, Gear.upgrades(DATA, build))
+		assert.are.same({ require("Locale").gearNone }, Gear.lines(DATA, build))
 	end)
 
 	it("says so rather than scoring when the spec has no weights", function()
