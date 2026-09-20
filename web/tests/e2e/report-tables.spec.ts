@@ -1,6 +1,19 @@
 // web/tests/e2e/report-tables.spec.ts
-import { expect, test } from '@playwright/test';
+import { expect, test, type Locator } from '@playwright/test';
 import { serveDuckdbRuntime } from './support/duckdb-runtime';
+
+/**
+ * Clicks an ability's chart control until its label flips. The forced click (see the note
+ * in the first test below) skips the actionability wait, so on a phone it can land while the
+ * scroll-snapped table is still settling and miss the button entirely; the label is plain
+ * component state, so it flips at once when the click does land, and a miss is retried.
+ */
+async function toggleChart(control: Locator, expected: 'On the chart' | 'Off the chart') {
+  await expect(async () => {
+    await control.click({ force: true });
+    await expect(control).toHaveText(expected, { timeout: 2_000 });
+  }).toPass({ timeout: 30_000 });
+}
 
 const FIGHT = '/reports/fixture2abcd?fight=3';
 
@@ -55,11 +68,10 @@ test('an ability goes on the main chart in its school colour and comes off again
   // at once, and Chromium's scroll-snap settle races Playwright's actionability check on
   // that combination, so the click never reports stable. force skips that wait; the click
   // itself still lands on the same button and fires the same handler either way.
-  await control.click({ force: true });
+  await toggleChart(control, 'Off the chart');
   // The legend names the actor and the ability once the measure lands.
   await expect(page.getByTestId('time-chart')).toContainText('Baelgrim · Slam', { timeout: 60_000 });
-  await expect(control).toHaveText('Off the chart');
-  await control.click({ force: true });
+  await toggleChart(control, 'On the chart');
   await expect(page.getByTestId('time-chart')).not.toContainText('Baelgrim · Slam');
 });
 
@@ -73,7 +85,7 @@ test('a window change keeps the ability on the chart', async ({ page }) => {
     .getByRole('row', { name: /Slam/ })
     .getByTestId('ability-chart');
   // force: true -- see the note on the test above.
-  await control.click({ force: true });
+  await toggleChart(control, 'Off the chart');
   await expect(page.getByTestId('time-chart')).toContainText('Baelgrim · Slam', { timeout: 60_000 });
   // A window is a stretch to read the line against, not a different question: the pick
   // and its measured whole-fight series survive it, and the brush only slices the line.
@@ -94,11 +106,10 @@ test('picking a second ability replaces the first: one line at a time', async ({
   const controls = page.getByTestId('row-abilities').getByTestId('ability-chart');
   // force: true -- see the note on the previous test: the same last-column-of-a-
   // scroll-snapped-table interaction.
-  await controls.first().click({ force: true });
+  await toggleChart(controls.first(), 'Off the chart');
   await expect(page.getByTestId('time-chart')).toContainText('Sunwick · ', { timeout: 60_000 });
-  await controls.nth(1).click({ force: true });
+  await toggleChart(controls.nth(1), 'Off the chart');
   await expect(controls.first()).toHaveText('On the chart');
-  await expect(controls.nth(1)).toHaveText('Off the chart');
 });
 
 test('the night offers no ability line, because it has no chart of this kind', async ({ page }) => {
