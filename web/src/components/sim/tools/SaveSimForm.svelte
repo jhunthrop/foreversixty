@@ -133,11 +133,15 @@
       type="button"
       class="{SECONDARY_BUTTON} border-line-warm text-nav px-5 disabled:opacity-50"
       disabled={!canSave}
-      title={!canSave ? simCopy.saveAbortedDisabled : undefined}
       onclick={openSaveForm}
       data-testid="sim-save-open"
     >
       {simCopy.saveThisSim}
     </button>
+    <!-- Task 7: the disabled reason, said plainly rather than in a title= that never fires
+         on touch -- the same pattern Task 3 used for a disabled Run. -->
+    {#if !canSave}
+      <p class="text-muted text-[12px]" data-testid="sim-save-disabled-note">{simCopy.saveAbortedDisabled}</p>
+    {/if}
   {/if}
 </div>

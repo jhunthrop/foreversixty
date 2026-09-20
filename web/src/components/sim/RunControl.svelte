@@ -14,6 +14,7 @@
   import type { SimPhase } from '../../lib/sim/store.svelte';
   import type { Estimate } from '../../lib/sim/types';
   import { engineLabel } from '../../lib/sim/version';
+  import HelpNote from './HelpNote.svelte';
 
   let {
     spec,
@@ -128,7 +129,6 @@
       (racePending && !running) ||
       (serverRunning && !running) ||
       (!simulated && !running)}
-    title={racePending && !running ? simCopy.pickRace : undefined}
     onclick={() => (running ? onstop() : onrun())}
     data-testid="sim-run-button"
   >
@@ -170,21 +170,26 @@
     {/if}
   </div>
 
-  <div class="flex flex-wrap items-center gap-3">
-    <label class="flex flex-col gap-1">
-      <span class="label text-muted">{simCopy.precision}</span>
-      <select
-        class="border-line-warm rounded-control bg-raised text-text min-h-11 min-w-0 border px-3 text-[14px] font-semibold md:min-h-9"
-        disabled={running || serverRunning}
-        value={precisionId}
-        onchange={(event) => onprecision(event.currentTarget.value as PrecisionId)}
-        data-testid="sim-precision"
-      >
-        {#each PRECISIONS as id (id)}
-          <option value={id}>{simCopy.precisionLabel[id] ?? id}</option>
-        {/each}
-      </select>
-    </label>
+  <div class="flex flex-wrap items-end gap-3">
+    <div class="flex flex-col gap-1">
+      <label class="flex flex-col gap-1">
+        <span class="label text-muted">{simCopy.precision}</span>
+        <select
+          class="border-line-warm rounded-control bg-raised text-text min-h-11 min-w-0 border px-3 text-[14px] font-semibold md:min-h-9"
+          disabled={running || serverRunning}
+          value={precisionId}
+          onchange={(event) => onprecision(event.currentTarget.value as PrecisionId)}
+          data-testid="sim-precision"
+        >
+          {#each PRECISIONS as id (id)}
+            <option value={id}>{simCopy.precisionLabel[id] ?? id}</option>
+          {/each}
+        </select>
+      </label>
+      <HelpNote label={simCopy.precision} id="sim-precision" disabled={running || serverRunning}>
+        <p>{simCopy.precisionHelp}</p>
+      </HelpNote>
+    </div>
     {#if premium}
       <button
         type="button"

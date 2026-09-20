@@ -608,6 +608,84 @@ export const simCopy = {
   /** The drawer's own link to the fidelity detail the drawer does not repeat -- opens a new
    *  tab so the character and the finished run stay on this one either way. */
   rotationDrawerFidelityLink: 'fidelity detail on /sim/specs',
+
+  // --- Task 7 (newcomer BLOCKER: `[data-tooltip],[role=tooltip],abbr,.tooltip` was 0 on a
+  // phone; the two explanations on /sim were `title=`, which never fires on touch, and
+  // most controls had none at all). HelpNote.svelte's own copy: the trigger's accessible
+  // name and every control's note body. ---
+  /** HelpNote's trigger text and accessible name alike -- "What Fight style means". */
+  helpTrigger: (label: string): string => `What ${label} means`,
+  /**
+   * Fight style's own note, before the nine-style breakdown: what the control writes and
+   * the same detach rule `targets`, `execute phase` and `dummy` already carry a caution
+   * for (settings.ts's `detached`).
+   */
+  fightStyleHelp:
+    'Sets the target count, movement and execute threshold together. Changing any of those by hand below detaches the encounter from its style, and the select reads "Custom".',
+  /**
+   * The nine styles' real behaviour, one clause each, read from styles.ts's own table
+   * (FIGHT_STYLES) and applyFightStyle rather than guessed from the name -- "Cleave" does
+   * not say its targets share Patchwerk's execute threshold, and "Dungeon pull" does not
+   * say its schedule is fixed at 160 seconds regardless of Fight length. One key, rendered
+   * as a `<dl>` (SettingsBar.svelte), not nine.
+   */
+  fightStyleOptions: {
+    patchwerk: 'One target, standing still for the whole fight, with an execute phase below 25% health.',
+    execute: 'One target, standing still, with a wider execute phase: below 35% health instead of 25%.',
+    'light-movement':
+      'One target, forced out of melee range for 5 seconds every 45 seconds; no parse has measured the cost of that yet.',
+    'heavy-movement':
+      'One target, forced out of melee range for 5 seconds every 20 seconds; no parse has measured the cost of that yet.',
+    'cleave-2':
+      'Two targets, both present and taking damage for the whole fight, sharing the same 25% execute threshold as Patchwerk.',
+    'cleave-3':
+      'Three targets, all present and taking damage for the whole fight, sharing the same 25% execute threshold as Patchwerk.',
+    'cleave-5':
+      'Five targets, all present and taking damage for the whole fight, sharing the same 25% execute threshold as Patchwerk.',
+    dungeon:
+      'One target that becomes three at 40 seconds, five at 80, back to three at 130 and one at 160 — a fixed schedule, not a repeating pull. No execute phase at any point, and the count stays at one for the rest of the fight if Fight length runs past 160 seconds.',
+    dummy:
+      'One target that takes no debuffs, no execute phase and no armor reduction — a plain damage check, not a boss fight.',
+  } as Record<string, string>,
+  fightLengthHelp:
+    'How long each iteration runs, in seconds. Every iteration is exactly this length unless "Length varies by" adds a random band around it.',
+  targetsHelp:
+    'How many targets the rotation is simulated against, all present and taking damage for the whole fight. A fight style above can set this for you; changing it by hand detaches the encounter from that style.',
+  /**
+   * Buffs already has Task 4's "what's in it" disclosure beside it, naming exactly what
+   * the selected preset applies -- this note answers the different question that
+   * disclosure does not, "what does this control do", and says so rather than repeating
+   * the list.
+   */
+  buffsHelp:
+    'Which buffs and consumables the run applies. Raid-buffed applies the standard set a 40-player raid provides; Solo applies none; Custom lets you build your own list. "What\'s in it" shows exactly what the selected preset applies.',
+  targetLevelHelp: 'The boss level the run’s numbers — armor, resistances — are drawn from.',
+  /**
+   * Newcomer MINOR (213-216): the field showed 3,731 as placeholder text with a `title=`
+   * of the same string, so a player could not tell whether that figure was in effect or
+   * the field was empty. These two say the current state plainly instead of repeating the
+   * placeholder. `preset` is SettingsSheet's own `armorPreset` string (already "3,731, the
+   * preset for this level"), passed in rather than rebuilt here.
+   */
+  targetArmorEmptyHelp: (preset: string): string => `Empty; the engine uses ${preset} instead.`,
+  targetArmorSetHelp: (value: string, preset: string): string => `Set to ${value}, overriding ${preset}.`,
+  targetTypeHelp:
+    'Restricts the run to abilities and talents that only affect this creature type. "Any" applies no restriction.',
+  /**
+   * Newcomer MINOR (204-207): "Execute phase" was ticked by default under Patchwerk with
+   * no way to tell whether the run actually had one. This says the current state, not just
+   * the concept -- `on` is settings.ts's own `executePhaseOn`, `percent` the encounter's
+   * real `execute_ratio` as a whole number, and `styleLabel` the fight style currently
+   * governing it (or "Custom" once detached).
+   */
+  executePhaseHelp: (on: boolean, percent: string, styleLabel: string): string =>
+    on
+      ? `On: this run currently simulates an execute phase below ${percent}% target health, under ${styleLabel}.`
+      : `Off: ${styleLabel} has no execute phase, so this run has none.`,
+  precisionHelp:
+    'How many iterations this run computes before stopping. More iterations narrow the confidence band beside the DPS figure. "Until ±0.5%" keeps running until the error is that tight or the lane’s own iteration ceiling, whichever comes first.',
+  notifyHelp:
+    'Asks the browser for permission to show a notification when a run started on our servers finishes, so you do not have to keep this tab in front to see it.',
   // --- end Lane W2 ---
 } as const;
 

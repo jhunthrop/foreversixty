@@ -40,4 +40,27 @@ describe('SubstitutionChips', () => {
     const body = renderChips([{ kind: 'item', slot: 'head', item_id: 16963, name: 'Helm of Wrath' }]);
     expect(body).toContain('Helm of Wrath');
   });
+
+  // Task 7: source_name used to be readable only in a title=, which never fires on touch.
+  // It is a visible span now, and no title= remains anywhere in this component.
+  it('shows the substitution’s source name on the page, not only in a title=', () => {
+    const body = renderChips([
+      { kind: 'item', slot: 'head', item_id: 16963, name: 'Helm of Wrath', source_name: 'Onyxia' },
+    ]);
+    expect(body).toContain('Onyxia');
+    expect(body).not.toContain('title=');
+  });
+
+  it('renders no source span at all when the substitution carries no source_name', () => {
+    const body = renderChips([{ kind: 'item', slot: 'head', item_id: 16963, name: 'Helm of Wrath' }]);
+    expect(body).not.toContain('sim-substitution-source');
+  });
+
+  it('carries no title= anywhere, including the emptied off-hand chip', () => {
+    const body = renderChips([
+      { kind: 'item', slot: 'main_hand', item_id: 19351, name: 'Sulfuras, Hand of Ragnaros' },
+      { kind: 'item', slot: 'off_hand', item_id: 0, name: '<item removed>' },
+    ]);
+    expect(body).not.toContain('title=');
+  });
 });

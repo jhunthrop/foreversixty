@@ -44,18 +44,12 @@
     {#if isEmptiedOffHand(sub)}
       <span
         class="border-line-soft text-muted rounded-pill inline-flex items-center gap-1 border border-dashed px-2 py-[2px] text-[12px]"
-        title={bulkCopy.offHandEmptied}
       >
         {bulkCopy.offHandEmptied}
       </span>
     {:else}
       {@const item = sub.item_id === undefined ? undefined : items.get(sub.item_id)}
-      <span
-        class="border-line rounded-pill inline-flex items-center gap-1 border px-2 py-[2px] text-[12px]"
-        title={sub.source_name !== undefined && sub.source_name !== ''
-          ? `${substitutionLabel(sub)} · ${sub.source_name}`
-          : substitutionLabel(sub)}
-      >
+      <span class="border-line rounded-pill inline-flex items-center gap-1 border px-2 py-[2px] text-[12px]">
         {#if item !== undefined}
           <img
             src={dataUrl(treeVersion, `icons/${item.icon}.webp`)}
@@ -70,6 +64,11 @@
         <span class={item === undefined ? 'text-text' : rarityClassFor(item.quality)}>
           {substitutionLabel(sub)}
         </span>
+        <!-- Task 7: the source name used to be hidden in a title= (never fires on touch).
+             Shown inline, muted, only when the substitution actually carries one. -->
+        {#if sub.source_name !== undefined && sub.source_name !== ''}
+          <span class="text-muted" data-testid="sim-substitution-source">· {sub.source_name}</span>
+        {/if}
       </span>
     {/if}
   {/each}

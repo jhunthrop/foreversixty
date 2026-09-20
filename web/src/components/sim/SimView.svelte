@@ -774,12 +774,17 @@
               type="button"
               class="border-line-warm-strong rounded-control bg-card-top text-strong label min-h-11 border px-5 disabled:opacity-50"
               disabled={!canSave}
-              title={store.result !== null && !canSave ? simCopy.saveAbortedDisabled : undefined}
               onclick={openSaveForm}
               data-testid="sim-save-open"
             >
               {simCopy.saveThisSim}
             </button>
+            <!-- Task 7: the disabled reason, said plainly (Task 3's pattern), never a title=. -->
+            {#if store.result !== null && !canSave}
+              <p class="text-muted text-[12px]" data-testid="sim-save-disabled-note">
+                {simCopy.saveAbortedDisabled}
+              </p>
+            {/if}
           {/if}
         </div>
       {:else}

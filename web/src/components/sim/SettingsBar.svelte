@@ -25,6 +25,7 @@
   import { FIGHT_STYLES, fightStyle } from '../../lib/sim/styles';
   import { referenceStatOf, specDisplayName } from '../../lib/sim/spec-label';
   import Disclosure from './Disclosure.svelte';
+  import HelpNote from './HelpNote.svelte';
   import SettingsSheet from './SettingsSheet.svelte';
 
   let {
@@ -82,56 +83,79 @@
   data-testid="sim-settings"
 >
   <div class="flex flex-wrap items-end gap-4 md:gap-5">
-    <label class="flex flex-col gap-1">
-      <span class="label text-muted">{simCopy.fightStyle}</span>
-      <select
-        class={control}
-        {disabled}
-        value={styleId}
-        onchange={(event) => selectStyle(event.currentTarget.value)}
-        data-testid="sim-style"
-      >
-        <!-- The empty option exists only while the encounter has been detached from a
-             style by hand (settings.ts's `detached`); it is never a thing to choose, so it
-             is hidden the rest of the time rather than offered as a tenth style. -->
-        {#if styleId === ''}
-          <option value="">{simCopy.styleCustom}</option>
-        {/if}
-        {#each FIGHT_STYLES as style (style.id)}
-          <option value={style.id}>{simCopy.styleLabel[style.id] ?? style.id}</option>
-        {/each}
-      </select>
-    </label>
+    <div class="flex flex-col gap-1">
+      <label class="flex flex-col gap-1">
+        <span class="label text-muted">{simCopy.fightStyle}</span>
+        <select
+          class={control}
+          {disabled}
+          value={styleId}
+          onchange={(event) => selectStyle(event.currentTarget.value)}
+          data-testid="sim-style"
+        >
+          <!-- The empty option exists only while the encounter has been detached from a
+               style by hand (settings.ts's `detached`); it is never a thing to choose, so
+               it is hidden the rest of the time rather than offered as a tenth style. -->
+          {#if styleId === ''}
+            <option value="">{simCopy.styleCustom}</option>
+          {/if}
+          {#each FIGHT_STYLES as style (style.id)}
+            <option value={style.id}>{simCopy.styleLabel[style.id] ?? style.id}</option>
+          {/each}
+        </select>
+      </label>
+      <HelpNote label={simCopy.fightStyle} id="sim-style" {disabled}>
+        <p>{simCopy.fightStyleHelp}</p>
+        <dl class="flex flex-col gap-1" data-testid="sim-style-help-options">
+          {#each FIGHT_STYLES as style (style.id)}
+            <div>
+              <dt class="text-text font-semibold">{simCopy.styleLabel[style.id] ?? style.id}</dt>
+              <dd>{simCopy.fightStyleOptions[style.id] ?? ''}</dd>
+            </div>
+          {/each}
+        </dl>
+      </HelpNote>
+    </div>
 
-    <label class="flex flex-col gap-1">
-      <span class="label text-muted">{simCopy.fightLength}</span>
-      <select
-        class={control}
-        {disabled}
-        value={String(settings.encounter.duration_sec)}
-        onchange={(event) => onchange(withDuration(settings, Number(event.currentTarget.value)))}
-        data-testid="sim-duration"
-      >
-        {#each DURATIONS as seconds (seconds)}
-          <option value={String(seconds)}>{durationLabel(seconds)}</option>
-        {/each}
-      </select>
-    </label>
+    <div class="flex flex-col gap-1">
+      <label class="flex flex-col gap-1">
+        <span class="label text-muted">{simCopy.fightLength}</span>
+        <select
+          class={control}
+          {disabled}
+          value={String(settings.encounter.duration_sec)}
+          onchange={(event) => onchange(withDuration(settings, Number(event.currentTarget.value)))}
+          data-testid="sim-duration"
+        >
+          {#each DURATIONS as seconds (seconds)}
+            <option value={String(seconds)}>{durationLabel(seconds)}</option>
+          {/each}
+        </select>
+      </label>
+      <HelpNote label={simCopy.fightLength} id="sim-duration" {disabled}>
+        <p>{simCopy.fightLengthHelp}</p>
+      </HelpNote>
+    </div>
 
-    <label class="flex flex-col gap-1">
-      <span class="label text-muted">{simCopy.targets}</span>
-      <select
-        class={control}
-        {disabled}
-        value={String(settings.encounter.targets)}
-        onchange={(event) => onchange(withTargets(settings, Number(event.currentTarget.value)))}
-        data-testid="sim-targets"
-      >
-        {#each targets as count (count)}
-          <option value={String(count)}>{count}</option>
-        {/each}
-      </select>
-    </label>
+    <div class="flex flex-col gap-1">
+      <label class="flex flex-col gap-1">
+        <span class="label text-muted">{simCopy.targets}</span>
+        <select
+          class={control}
+          {disabled}
+          value={String(settings.encounter.targets)}
+          onchange={(event) => onchange(withTargets(settings, Number(event.currentTarget.value)))}
+          data-testid="sim-targets"
+        >
+          {#each targets as count (count)}
+            <option value={String(count)}>{count}</option>
+          {/each}
+        </select>
+      </label>
+      <HelpNote label={simCopy.targets} id="sim-targets" {disabled}>
+        <p>{simCopy.targetsHelp}</p>
+      </HelpNote>
+    </div>
 
     <div class="flex flex-col gap-1">
       <label class="flex flex-col gap-1">
@@ -151,31 +175,38 @@
           {/each}
         </select>
       </label>
-      {#if settings.preset !== 'custom'}
-        <Disclosure
-          label={simCopy.whatsInIt}
-          id="sim-preset-summary"
-          {disabled}
-          triggerClass="label text-nav text-[12px] underline decoration-dotted underline-offset-2"
-          panelClass="border-line-soft rounded-panel flex flex-col gap-2 border p-3"
-          triggerTestId="sim-preset-summary-trigger"
-          panelTestId="sim-preset-summary-panel"
-        >
-          {#if presetGroups.length === 0}
-            <p class="text-muted text-[12px]">{simCopy.whatsInItEmpty}</p>
-          {/if}
-          {#each presetGroups as group (group.group)}
-            <div>
-              <p class="label text-muted text-[11px]">{simCopy.buffGroupLabel[group.group] ?? group.group}</p>
-              <ul class="text-text flex flex-wrap gap-x-3 gap-y-1 text-[12px]">
-                {#each group.rows as row (row.id)}
-                  <li data-testid={`sim-preset-summary-${row.id}`}>{row.label}</li>
-                {/each}
-              </ul>
-            </div>
-          {/each}
-        </Disclosure>
-      {/if}
+      <div class="flex flex-wrap items-center gap-3">
+        <HelpNote label={simCopy.buffs} id="sim-preset" {disabled}>
+          <p>{simCopy.buffsHelp}</p>
+        </HelpNote>
+        {#if settings.preset !== 'custom'}
+          <Disclosure
+            label={simCopy.whatsInIt}
+            id="sim-preset-summary"
+            {disabled}
+            triggerClass="label text-nav text-[12px] underline decoration-dotted underline-offset-2"
+            panelClass="border-line-soft rounded-panel flex flex-col gap-2 border p-3"
+            triggerTestId="sim-preset-summary-trigger"
+            panelTestId="sim-preset-summary-panel"
+          >
+            {#if presetGroups.length === 0}
+              <p class="text-muted text-[12px]">{simCopy.whatsInItEmpty}</p>
+            {/if}
+            {#each presetGroups as group (group.group)}
+              <div>
+                <p class="label text-muted text-[11px]">
+                  {simCopy.buffGroupLabel[group.group] ?? group.group}
+                </p>
+                <ul class="text-text flex flex-wrap gap-x-3 gap-y-1 text-[12px]">
+                  {#each group.rows as row (row.id)}
+                    <li data-testid={`sim-preset-summary-${row.id}`}>{row.label}</li>
+                  {/each}
+                </ul>
+              </div>
+            {/each}
+          </Disclosure>
+        {/if}
+      </div>
     </div>
 
     <div class="flex flex-col gap-1">
