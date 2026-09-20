@@ -1,0 +1,54 @@
+---
+// web/src/components/sim/SimTabs.astro
+// The one tab strip every simulator page carries (task-1-brief.md): Quick Sim, Top Gear,
+// Droptimizer, Talents, Weights and Spec support, so the other three tools are reachable
+// from anywhere in the lane instead of "from nowhere" (the newcomer and raid-leader
+// persona reviews). Server-rendered -- SIM_TABS (lib/sim/tabs.ts) is the one source of the
+// six entries -- so it costs no JS of its own and needs no min-h reservation: every page
+// puts it above the `<h1>` and above the island's own measured mount, where it cannot
+// shift anything the CLS budget already accounts for.
+//
+// A client script still rewrites these hrefs once a character is loaded (lib/sim/tabs.ts's
+// `syncTabHrefs`, called from both islands): this component only ever renders the bare
+// path, exactly as a signed-out visitor with nothing loaded sees it.
+import { rowLink } from '../../lib/report/format';
+import { SIM_TABS, SIM_TAB_ATTR } from '../../lib/sim/tabs';
+import { simCopy } from '../../lib/sim/copy';
+
+interface Props {
+  /**
+   * The current page's own path, e.g. `/sim/gear` -- never `Astro.url.pathname` read
+   * inside this component: `/sim/[id].astro` (a saved-sim permalink) passes `/sim` here to
+   * mark Quick Sim current without this component special-casing that route, and a caller
+   * that does pass `Astro.url.pathname` may carry a trailing slash this component strips
+   * before comparing, so neither caller has to normalize it first.
+   */
+  currentPath: string;
+}
+
+const { currentPath } = Astro.props;
+const normalizedPath = currentPath.length > 1 ? currentPath.replace(/\/+$/, '') : currentPath;
+
+const pill = `${rowLink} shrink-0 px-3 text-[12px] font-bold tracking-[0.06em] uppercase md:min-h-9`;
+---
+
+<nav
+  aria-label={simCopy.simTabsLabel}
+  data-testid="sim-nav-tabs"
+  class="flex flex-nowrap gap-x-1 overflow-x-auto px-[18px] md:flex-wrap md:px-0"
+>
+  {SIM_TABS.map((tab) => {
+    const current = tab.href === normalizedPath;
+    return (
+      <a
+        href={tab.href}
+        {...{ [SIM_TAB_ATTR]: tab.id }}
+        data-testid={`sim-nav-tab-${tab.id}`}
+        aria-current={current ? 'page' : undefined}
+        class:list={[pill, current ? 'text-gold' : 'text-nav hover:text-strong']}
+      >
+        {tab.label}
+      </a>
+    );
+  })}
+</nav>

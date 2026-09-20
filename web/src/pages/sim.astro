@@ -4,6 +4,7 @@
 // prerendered and has no request to read.
 import Base from '../layouts/Base.astro';
 import { simCopy } from '../lib/sim/copy';
+import SimTabs from '../components/sim/SimTabs.astro';
 ---
 
 <Base
@@ -18,6 +19,7 @@ import { simCopy } from '../lib/sim/copy';
     tabindex="-1"
     class="mx-auto flex w-full max-w-[1344px] flex-col gap-[22px] pt-4 pb-10 md:gap-8 md:px-12 md:pt-7"
   >
+    <SimTabs currentPath="/sim" />
     <h1 class="section-title px-[18px] text-[18px] md:px-0">Simulator</h1>
     <!-- Round 2 (Lighthouse): the signed-out default view's own largest paragraph
          (SourceSwitcher's addon-card body, simCopy.sourceAddonBody) painted from the

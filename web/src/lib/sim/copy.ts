@@ -519,6 +519,16 @@ export const simCopy = {
     spell_damage: 'Spell damage',
     feral_attack_power: 'Feral attack power',
   } as Record<string, string>,
+
+  // --- Lane W2 (navigation, honesty, presets) — persona round 1. ---
+  /** SimTabs.astro's accessible name for the strip; source: lib/sim/tabs.ts. */
+  simTabsLabel: 'Simulator pages',
+  tabQuickSim: 'Quick Sim',
+  tabTalents: 'Talents',
+  /** The strip's short label for `KIND_TITLES.weights` ("Stat weights"). */
+  tabWeights: 'Weights',
+  tabSpecs: 'Spec support',
+  // --- end Lane W2 ---
 } as const;
 
 /**

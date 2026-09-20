@@ -9,6 +9,7 @@ import {
   SPEC_GRID_CLASSES,
   specSkeletonSlots,
 } from '../../lib/sim/spec-skeleton';
+import SimTabs from '../../components/sim/SimTabs.astro';
 ---
 
 <Base
@@ -22,6 +23,7 @@ import {
     tabindex="-1"
     class="mx-auto flex w-full max-w-[1344px] flex-col gap-[22px] pt-4 pb-10 md:gap-8 md:px-12 md:pt-7"
   >
+    <SimTabs currentPath="/sim/specs" />
     <h1 class="section-title px-[18px] text-[18px] md:px-0">Spec support</h1>
     <!-- Round 2 (Lighthouse): static, ahead of the island, and never replaced --
          specs-intro was the measured LCP element (its render was gated on hydration);

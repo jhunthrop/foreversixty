@@ -7,6 +7,7 @@ import Base from '../../layouts/Base.astro';
 import { FIXTURE_SIM_ID, fixtureSimPaths } from '../../lib/report/shell-paths';
 import fixtureResult from '../../fixtures/sim/result.json';
 import { SIM_SAVED_SKELETON_HTML } from '../../lib/sim/skeleton';
+import SimTabs from '../../components/sim/SimTabs.astro';
 
 export function getStaticPaths() {
   return fixtureSimPaths();
@@ -27,6 +28,7 @@ const inline = id === FIXTURE_SIM_ID ? JSON.stringify(fixtureResult) : undefined
     tabindex="-1"
     class="mx-auto flex w-full max-w-[1344px] flex-col gap-[22px] pt-4 pb-10 md:gap-8 md:px-12 md:pt-7"
   >
+    <SimTabs currentPath="/sim" />
     <!--
       Round 3 (Lighthouse): reserves the saved sim's space before the island mounts, the
       same reason and the same pattern reports/[id].astro uses -- without it the shell is

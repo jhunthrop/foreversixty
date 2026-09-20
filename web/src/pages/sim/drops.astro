@@ -14,6 +14,7 @@
 import Base from '../../layouts/Base.astro';
 import { bulkCopy } from '../../lib/sim/copy';
 import { TOOL_SKELETONS } from '../../lib/sim/bulk-skeleton';
+import SimTabs from '../../components/sim/SimTabs.astro';
 ---
 
 <Base
@@ -28,6 +29,7 @@ import { TOOL_SKELETONS } from '../../lib/sim/bulk-skeleton';
     tabindex="-1"
     class="mx-auto flex w-full max-w-[1344px] flex-col gap-[22px] pt-4 pb-10 md:gap-8 md:px-12 md:pt-7"
   >
+    <SimTabs currentPath="/sim/drops" />
     <h1 class="section-title px-[18px] text-[18px] md:px-0">{bulkCopy.dropsTitle}</h1>
     <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="sim-tool-intro">
       {bulkCopy.dropsIntro}

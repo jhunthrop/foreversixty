@@ -15,6 +15,7 @@
   import { createBulkStore, type SimTool } from '../../../lib/sim/bulk-store.svelte';
   import type { Origin } from '../../../lib/sim/candidates';
   import { bulkCopy, simCopy } from '../../../lib/sim/copy';
+  import { syncTabHrefs, tabStateFor } from '../../../lib/sim/tabs';
   import { parseSimState } from '../../../lib/sim/url';
   import CharacterStrip from '../CharacterStrip.svelte';
   import SourceSwitcher from '../SourceSwitcher.svelte';
@@ -54,6 +55,14 @@
 
   $effect(() => {
     if (store.character !== null) switcherOpen = false;
+  });
+
+  // Keeps the loaded character on every tab in SimTabs.astro's strip (task-1-brief.md),
+  // the same rewrite SimView.svelte's own effect performs for /sim, /sim/[id] and
+  // /sim/specs: whenever this island's own character changes, every tab's href is
+  // rewritten to carry the same `?source=&ref=` query the page itself bootstraps from.
+  $effect(() => {
+    syncTabHrefs(tabStateFor(store.character === null ? null : store.character.source));
   });
 
   /**
