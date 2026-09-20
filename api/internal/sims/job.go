@@ -10,6 +10,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/logs/engine/store"
 	simapi "github.com/jhunthrop/foreversixty/sim/api"
+	"github.com/jhunthrop/foreversixty/sim/measure"
 	"github.com/jhunthrop/foreversixty/sim/runner"
 )
 
@@ -17,6 +18,27 @@ import (
 // eight CPU-seconds natively; ten minutes is room for the staged Top
 // Gear runs that come later and still a bound.
 const RunTimeout = 10 * time.Minute
+
+// BulkBudget bounds one bulk or weights run: every stage of the ladder,
+// not one sim. measure.NativeJobSeconds fixes it at 840 seconds
+// (contract A2). api/README.md creates the sim-run job with
+// --task-timeout 15m, and a job killed by the platform dies between
+// the bucket write and the row write, leaving the page polling
+// "running" forever - so the in-process bound stops a minute short of
+// it and fails the row on its way out. It is also the budget the
+// submit-time estimate is refused against, so a run that is accepted
+// is a run that can finish.
+const BulkBudget = measure.NativeJobSeconds * time.Second
+
+// timeoutFor is the bound one request's run gets. A plain run keeps the
+// tighter one: ten minutes for a single sim is already an outlier worth
+// failing.
+func timeoutFor(req simapi.SimRequest) time.Duration {
+	if req.Kind() == simapi.KindRun {
+		return RunTimeout
+	}
+	return BulkBudget
+}
 
 // JobDeps is everything `api sim-run <sim_id>` needs. There is no
 // Getter here: the request is in the row, and the only object this job
@@ -52,7 +74,7 @@ func Run(ctx context.Context, d JobDeps, simID string) error {
 	}
 	req := stored.Request
 
-	runCtx, cancel := context.WithTimeout(ctx, RunTimeout)
+	runCtx, cancel := context.WithTimeout(ctx, timeoutFor(req))
 	defer cancel()
 	started := time.Now()
 	res, err := d.Engine.RunStaged(runCtx, req, func(p simapi.Progress) {

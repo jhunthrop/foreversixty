@@ -164,6 +164,152 @@ components:
         fight_index: { type: integer }
         state: { type: string, enum: [ok, at_risk, removed] }
         execution_score: { type: number, nullable: true }
+    GearSlotName:
+      type: string
+      enum: [head, neck, shoulder, back, chest, wrist, hands, waist, legs, feet,
+             finger1, finger2, trinket1, trinket2, main_hand, off_hand, ranged]
+      description: >-
+        The planner's slot vocabulary, in the order the engine's positional
+        equipment array is built.
+    GearSlot:
+      type: object
+      description: One equipped item.
+      required: [slot, item_id]
+      properties:
+        slot: { $ref: '#/components/schemas/GearSlotName' }
+        item_id: { type: integer }
+        enchant: { type: integer }
+        suffix: { type: integer }
+    Candidate:
+      type: object
+      description: One item the planner may substitute in.
+      required: [item_id, origin]
+      properties:
+        slot:
+          description: >-
+            The planner slot, or "" for "wherever it fits", which is how a
+            ring, a trinket or a one-hander is offered. A slot named in
+            bulk.locked cannot also carry a candidate.
+          oneOf:
+            - { type: string, const: "" }
+            - $ref: '#/components/schemas/GearSlotName'
+        item_id: { type: integer }
+        enchant:
+          type: integer
+          description: >-
+            0 inherits the equipped item's enchant for the slot it lands in,
+            where that enchant fits; it does not mean "none".
+        suffix: { type: integer }
+        origin:
+          type: string
+          description: >-
+            Where the candidate came from: equipped, bag, bank, search,
+            "drop:<source id>" or "set:<name>". A prefixed origin must name
+            something after the colon, and every candidate of a drops request
+            must carry a "drop:" origin.
+          examples: [equipped, "drop:lucifron"]
+        source_name:
+          type: string
+          description: >-
+            The human name of the place the candidate came from - "Lucifron",
+            "my AQ set". It travels into the result's substitution and into
+            the row's headline, so nothing downstream has to join an origin id
+            back to a name.
+    TalentLoadout:
+      type: object
+      description: One named build to try.
+      required: [name, talents]
+      properties:
+        name: { type: string }
+        talents: { type: string, description: The engine's own positional talent string. }
+    GearSet:
+      type: object
+      description: >-
+        A whole-gear alternative: one candidate that replaces every slot at
+        once.
+      required: [name, gear]
+      properties:
+        name: { type: string }
+        gear: { type: array, items: { $ref: '#/components/schemas/GearSlot' } }
+    BulkSpec:
+      type: object
+      description: >-
+        What turns one character into many sims. Top Gear, talent compare and
+        Droptimizer ask the same question - a base character, a set of
+        substitutions, a ranked answer - so they are one request shape with one
+        planner behind it; mode says which of the three asked, and it is also
+        the request's kind.
+      required: [mode, precision]
+      properties:
+        mode: { type: string, enum: [gear, talents, drops] }
+        candidates:
+          type: array
+          items: { $ref: '#/components/schemas/Candidate' }
+          description: >-
+            A drops request needs at least one and a talents request carries
+            none; a gear request needs at least one candidate, talent loadout,
+            set or consumable list between them.
+        talents:
+          type: array
+          items: { $ref: '#/components/schemas/TalentLoadout' }
+          description: >-
+            A talents request needs at least one, and carries no candidates and
+            no consumable lists: everything but the talents is locked.
+        sets:
+          type: array
+          items: { $ref: '#/components/schemas/GearSet' }
+          description: Gear mode only; a set on any other mode is refused.
+        consumables:
+          type: array
+          items: { type: array, items: { type: string } }
+          description: >-
+            Alternative consumable lists tried as candidates in gear mode: each
+            inner list REPLACES character.consumes for that combination, so
+            "flask or elixirs" is a dimension of the product rather than a
+            thing the player has to run twice. An empty inner list is legal and
+            means "no consumables". Gear mode only.
+        locked:
+          type: array
+          items: { $ref: '#/components/schemas/GearSlotName' }
+          description: >-
+            Slots that are never substituted, whatever the candidate list says.
+            It is the page's "keep what I have here".
+        precision:
+          type: string
+          enum: [fast, normal, high]
+          description: >-
+            How many stages the planner runs and how many iterations the last
+            one gets. iterations must be that last stage's count: 3000 for fast
+            and for normal, 10000 for high.
+        cap:
+          type: integer
+          description: >-
+            The lane's combination cap, echoed into the request so a saved row
+            says what bounded it. POST /v1/sims/run sets it itself - it is the
+            server's to set, not a control the client holds - and refuses an
+            expansion above it with cap_exceeded rather than silently trimming.
+            A result saved through POST /v1/sims must carry the cap its own
+            lane ran under.
+    WeightsSpec:
+      type: object
+      description: Asks for stat weights instead of a DPS number.
+      required: [stats, reference]
+      properties:
+        stats:
+          type: array
+          items: { type: string }
+          description: >-
+            Engine stat ids: the Stat enum names in lower snake case -
+            attack_power, crit, spell_haste. There is no melee_crit or
+            spell_crit; the engine carries one hit and one crit. A stat the
+            engine does not have is refused rather than weighed as nothing.
+        reference:
+          type: string
+          description: >-
+            The stat normalised to exactly 1.0. It is required and must be one
+            of stats: a reference that is not among the stats being weighed
+            would normalise against a number nobody computed. The per-spec
+            default is reference_stat on GET /v1/specs.
     SimRequest:
       type: object
       required: [engine_version, spec, source, character, encounter, iterations]
@@ -191,13 +337,7 @@ components:
               description: The engine's own positional talent string.
             gear:
               type: array
-              items:
-                type: object
-                properties:
-                  slot: { type: string }
-                  item_id: { type: integer }
-                  enchant: { type: integer }
-                  suffix: { type: integer }
+              items: { $ref: '#/components/schemas/GearSlot' }
             buffs: { type: array, items: { type: string } }
             consumes: { type: array, items: { type: string } }
             professions: { type: array, items: { type: string } }
@@ -211,6 +351,16 @@ components:
             profile: { type: string }
         iterations: { type: integer, enum: [500, 3000, 10000] }
         random_seed: { type: integer, format: int64 }
+        bulk:
+          $ref: '#/components/schemas/BulkSpec'
+          description: >-
+            Turns one character into many sims. A request carrying it is a
+            gear, talents or drops request, by bulk.mode; one carrying weights
+            instead is a weights request; one carrying neither is a plain run.
+            A request never names its own kind, and never carries both blocks.
+        weights:
+          $ref: '#/components/schemas/WeightsSpec'
+          description: Asks for stat weights instead of a DPS number.
     SimResult:
       type: object
       required: [engine_version, lane, dps, iterations_run]
@@ -219,14 +369,7 @@ components:
         engine_version: { type: string }
         request: { $ref: '#/components/schemas/SimRequest' }
         lane: { type: string, enum: [browser, server] }
-        dps:
-          type: object
-          properties:
-            mean: { type: number }
-            stddev: { type: number }
-            error: { type: number }
-            min: { type: number }
-            max: { type: number }
+        dps: { $ref: '#/components/schemas/Estimate' }
         iterations_run: { type: integer }
         duration_ms: { type: integer, format: int64 }
         summary:
@@ -234,12 +377,151 @@ components:
           description: The logs engine's per-fight summary, so the report components render a sim.
         error: { type: string }
         aborted: { type: boolean, description: "The run was stopped on request rather than failing; iterations_run is whatever completed. Never true on a saved result - POST /v1/sims refuses one." }
+        combos:
+          type: array
+          items: { $ref: '#/components/schemas/Combo' }
+          description: The ranked answer to a bulk request, best first.
+        equipped:
+          $ref: '#/components/schemas/Estimate'
+          description: >-
+            The base character at the FINAL stage, which is what every combo's
+            delta is measured against. Absent, rather than zero, when there is
+            no baseline.
+        stages:
+          type: array
+          items: { $ref: '#/components/schemas/Stage' }
+          description: >-
+            What the planner actually ran, so the page can say "3 stages, 38
+            combinations" without recomputing the ladder.
+        weights:
+          type: array
+          items: { $ref: '#/components/schemas/StatWeight' }
+          description: The answer to a weights request.
+        sample:
+          type: array
+          items: { $ref: '#/components/schemas/SampleCast' }
+          description: >-
+            One iteration's casts in order - the median-DPS one. It is a table
+            view of the cast log, not a guide.
+    Estimate:
+      type: object
+      description: A measured number and its spread.
+      properties:
+        mean: { type: number }
+        stddev: { type: number }
+        error: { type: number }
+        min: { type: number }
+        max: { type: number }
+    Substitution:
+      type: object
+      description: One change from the base character.
+      required: [kind]
+      properties:
+        kind: { type: string, enum: [item, talents, set, consumes] }
+        slot:
+          $ref: '#/components/schemas/GearSlotName'
+          description: >-
+            Where an item landed. A ring or a trinket says which of the two
+            slots it took, because that is the answer the player acts on.
+        item_id: { type: integer }
+        enchant: { type: integer }
+        suffix: { type: integer }
+        name:
+          type: string
+          description: >-
+            The item's, the loadout's or the set's name. An item's name is
+            filled in from the engine's own item database, so a row read back
+            years later still says what it was about. For a consumes
+            substitution it is the consumable ids joined by ", ", or "no
+            consumables" when the alternative list is empty.
+        talents: { type: string }
+        origin: { type: string, description: Copied from the candidate. }
+        source_name:
+          type: string
+          description: Copied from the candidate; a Droptimizer headline reads it.
+        consumes:
+          type: array
+          items: { type: string }
+          description: The alternative consumable list this combination ran.
+    Combo:
+      type: object
+      description: One substitution set's result.
+      required: [substitutions, dps, delta, group]
+      properties:
+        substitutions: { type: array, items: { $ref: '#/components/schemas/Substitution' } }
+        dps: { $ref: '#/components/schemas/Estimate' }
+        delta:
+          $ref: '#/components/schemas/Estimate'
+          description: >-
+            Against equipped, paired at the same stage, WITH ITS OWN ERROR -
+            which is what lets the page say "within error" honestly instead of
+            ranking noise.
+        group:
+          type: integer
+          description: >-
+            0 for the leader's within-error group, then 1, 2, and so on. Rows
+            in one group are the same answer and are ranked the same.
+    Stage:
+      type: object
+      description: One rung of the ladder, as run.
+      required: [iterations, combos]
+      properties:
+        iterations: { type: integer }
+        combos: { type: integer }
+    StatWeight:
+      type: object
+      description: One stat's answer. The reference stat's weight is exactly 1.
+      required: [stat, weight, error]
+      properties:
+        stat: { type: string }
+        weight: { type: number }
+        error: { type: number }
+    SampleCast:
+      type: object
+      description: One cast of the sample iteration.
+      required: [at_ms, action]
+      properties:
+        at_ms:
+          type: integer
+          format: int64
+          description: >-
+            Negative during the pre-pull, which the page renders as its own
+            section.
+        action:
+          type: string
+          description: >-
+            The summary's action key - "spell:23881", "item:13503",
+            "other:attack" - and not a display name; it is resolved to a name
+            the same way a cast row is.
+        target: { type: string }
+        resources:
+          type: object
+          additionalProperties: { type: integer }
+          description: >-
+            What the player held AFTER the cast: rage, energy, mana,
+            combo_points.
     SimRow:
       type: object
       properties:
         sim_id: { type: string }
         spec: { type: string }
+        kind: { type: string, enum: [run, gear, talents, drops, weights] }
         dps: { type: number }
+        headline:
+          type: string
+          maxLength: 120
+          description: >-
+            The one line the history list shows, composed when the result
+            was written: "1,204 DPS", "+41 DPS from Vis'kag the
+            Bloodletter", "3 upgrades on Ragnaros", "+18 DPS with 'Deep
+            Fury'", "Crit 1.00 · Agility 0.87".
+        state:
+          type: string
+          enum: [queued, running, done, error]
+          description: >-
+            The row's own state. A failed run has no headline to show, and
+            without this the page could not tell that from a row whose headline
+            is simply missing.
         engine_version: { type: string }
         created_at: { type: string, format: date-time }
         title: { type: string }
@@ -247,6 +529,13 @@ components:
       type: object
       properties:
         spec: { type: string }
+        reference_stat:
+          type: string
+          description: >-
+            The stat the weights tool normalises to 1.0 for this spec, in
+            the engine's own vocabulary (crit, attack_power, …). There is no
+            melee_crit or spell_crit: the engine carries one hit and one
+            crit.
         state: { type: string, enum: [validated, in_progress, unsupported] }
         median_gap: { type: number, nullable: true }
         parses: { type: integer }
@@ -407,6 +696,33 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Envelope' }
+    get:
+      summary: The caller's own saved builds
+      operationId: listMyBuilds
+      parameters:
+        - { name: mine, in: query, required: true, schema: { type: string, enum: ['1'] } }
+        - { name: page, in: query, schema: { type: integer, minimum: 1 } }
+      responses:
+        '200':
+          description: One page of the caller's builds, newest first
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          rows:
+                            type: array
+                            items: { $ref: '#/components/schemas/Build' }
+                          total: { type: integer }
+                          page: { type: integer }
+                          per_page: { type: integer, example: 100 }
+        '400': { description: This list is mine=1 only }
+        '401': { description: Sign in first }
   /v1/builds/{id}:
     get:
       summary: Fetch a build record
@@ -917,6 +1233,10 @@ paths:
       parameters:
         - { name: mine, in: query, required: true, schema: { type: string, enum: ['1'] } }
         - { name: page, in: query, schema: { type: integer, minimum: 1 } }
+        - name: kind
+          in: query
+          schema: { type: string, enum: [run, gear, talents, drops, weights] }
+          description: Narrows the list to one tool. Omitted or empty is every kind; an unknown value is 400.
       responses:
         '200':
           description: One page of the caller's sims
@@ -960,7 +1280,14 @@ paths:
                         type: object
                         properties:
                           sim_id: { type: string }
-        '400': { description: The request cannot be run }
+        '400':
+          description: >-
+            The request cannot be run. error.code is "invalid" for a
+            malformed envelope, "cap_exceeded" when the expansion is past
+            the server lane's cap (error.fields carries cap and
+            combinations as decimal strings), or "too_large" when the
+            planner estimates the run past the job's budget (error.fields
+            carries estimate_sec and budget_sec, also as decimal strings).
         '401': { description: Sign in first }
         '402': { description: 'premium_required: running on our servers is a premium feature' }
         '502': { description: The run was recorded but could not be started }
@@ -1004,6 +1331,9 @@ paths:
                           state: { type: string, enum: [queued, running, done, error] }
                           iterations_done: { type: integer }
                           dps: { type: number, nullable: true }
+                          stage: { type: integer, description: Which stage of a bulk run is going; 0 for a plain run. }
+                          combos_done: { type: integer }
+                          combos_total: { type: integer }
         '404': { description: No such sim }
   /v1/specs:
     get:
@@ -1056,6 +1386,34 @@ paths:
                           captured_at: { type: string, format: date-time }
                           source: { type: string, enum: [addon, fight] }
         '404': { description: No such character }
+  /v1/phases:
+    get:
+      summary: The content phase boundaries
+      operationId: getPhases
+      description: >-
+        The same four instants the rankings bucket by, from
+        data/curated/phases.json. Cached an hour: they change only with a
+        deploy.
+      responses:
+        '200':
+          description: The phases, in order
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          phases:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                name: { type: string, example: raids-1 }
+                                start: { type: string, format: date-time }
   /v1/characters/{region}/{ruleset}/{name}:
     get:
       summary: A character's bests, history, and the builds they have been seen in

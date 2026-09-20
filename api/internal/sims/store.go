@@ -10,6 +10,7 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 
+	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	simapi "github.com/jhunthrop/foreversixty/sim/api"
 )
 
@@ -79,12 +80,7 @@ type Row struct {
 }
 
 // Page is a page of that history.
-type Page struct {
-	Rows    []Row `json:"rows"`
-	Total   int   `json:"total"`
-	Page    int   `json:"page"`
-	PerPage int   `json:"per_page"`
-}
+type Page = httpx.Page[Row]
 
 // Progress is what a page following a server run is shown. The three
 // stage fields are zero for a plain run, which has no stages (contract

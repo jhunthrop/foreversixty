@@ -192,11 +192,13 @@ func runValidate(ctx context.Context, log *slog.Logger) error {
 	}, specs, at, enginever.Version)
 }
 
-// simEngine is the runner every simulator job uses: the real binary
-// when the image carries one, and the checked-in fixture when it does
-// not, so a deployment without the artifact still answers instead of
-// failing. Task 15 is what puts the binary there.
-func simEngine(log *slog.Logger) runner.StageRunner {
+// simEngine is what every simulator job and the submit handler use: the
+// real binary when the image carries one, and the checked-in fixture
+// when it does not, so a deployment without the artifact still answers
+// instead of failing. It runs sims and it counts bulk requests without
+// running them (`forever-sim -plan`), which is why one value serves both
+// the jobs and the service.
+func simEngine(log *slog.Logger) sims.Engine {
 	if _, err := os.Stat(runner.DefaultBinary); err == nil {
 		return &runner.Native{}
 	}
@@ -324,7 +326,8 @@ func serve(log *slog.Logger) error {
 	}
 
 	deps.Sims = &sims.Service{
-		Store: simStore, Accounts: authStore, EngineVersion: enginever.Version, Log: log,
+		Store: simStore, Accounts: authStore, Planner: simEngine(log),
+		EngineVersion: enginever.Version, Log: log,
 	}
 
 	var sampler *parse.Worker

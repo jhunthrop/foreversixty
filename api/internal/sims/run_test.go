@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"reflect"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -27,6 +28,155 @@ func runBody(t *testing.T) string {
 		t.Fatal(err)
 	}
 	return string(b)
+}
+
+// bulkBody is a well-formed Top Gear submit: the same envelope with a
+// bulk block on it. Iterations is the precision's final-stage count,
+// which is what Validate expects of a bulk request (contract A3).
+func bulkBody(t *testing.T) string {
+	t.Helper()
+	b, err := json.Marshal(simapi.SimRequest{
+		EngineVersion: "an old one the page was holding", Spec: "warrior-fury",
+		Iterations: defaultIterations,
+		Source:     simapi.CharacterSource{Kind: simapi.SourceAddon, Ref: "us/normal/baelgrim"},
+		Character:  aCharacter("warrior", "orc"),
+		Bulk: &simapi.BulkSpec{
+			Mode: simapi.KindGear, Precision: simapi.PrecisionNormal,
+			// A client-chosen cap the server must overwrite.
+			Cap: 1_000_000,
+			Candidates: []simapi.Candidate{
+				{Slot: "main_hand", ItemID: 19019, Origin: "bag"},
+			},
+		},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	return string(b)
+}
+
+// refusal reads a failing envelope's code and fields together.
+func refusal(t *testing.T, res *http.Response) (string, map[string]string) {
+	t.Helper()
+	defer res.Body.Close()
+	var env struct {
+		Error struct {
+			Code   string            `json:"code"`
+			Fields map[string]string `json:"fields"`
+		} `json:"error"`
+	}
+	if err := json.NewDecoder(res.Body).Decode(&env); err != nil {
+		t.Fatal(err)
+	}
+	return env.Error.Code, env.Error.Fields
+}
+
+// assertCapExceededBody checks the one shape both cap-breach paths must
+// produce: 400 cap_exceeded with cap and combinations as decimal
+// strings (contract 10.6). Both TestABulkRunPastTheLanesCap tests below
+// call this with the same numbers, so the two paths cannot drift from
+// each other without one of them failing.
+func assertCapExceededBody(t *testing.T, res *http.Response, cap, combinations int) {
+	t.Helper()
+	if res.StatusCode != http.StatusBadRequest {
+		t.Fatalf("status %d, want 400", res.StatusCode)
+	}
+	code, fields := refusal(t, res)
+	if code != "cap_exceeded" {
+		t.Fatalf("code %q, want cap_exceeded", code)
+	}
+	if fields["combinations"] != strconv.Itoa(combinations) || fields["cap"] != strconv.Itoa(cap) {
+		t.Fatalf("fields %+v, want cap=%d combinations=%d", fields, cap, combinations)
+	}
+}
+
+// TestABulkRunPastTheLanesCapIsRefusedWithBothNumbers pins the
+// reachable shape: both runner.Native and runner.Fixture (with
+// CapBreach set) fail Plan's call itself with a typed
+// api.ErrCapExceeded rather than answering a successful over-cap
+// summary - the binary refuses the request outright, the same way
+// bulk.Count does. checkSize must recover that typed error with
+// errors.As and answer the same cap_exceeded body a successful
+// over-cap summary would.
+func TestABulkRunPastTheLanesCapIsRefusedWithBothNumbers(t *testing.T) {
+	h := newHarness(t)
+	h.premium.premium = true
+	h.planner.err = simapi.ErrCapExceeded{Cap: simapi.Caps[simapi.LaneServer], Combinations: 31200}
+
+	res := h.json(http.MethodPost, "/v1/sims/run", bulkBody(t))
+	assertCapExceededBody(t, res, simapi.Caps[simapi.LaneServer], 31200)
+	if ran := h.jobs.Ran(); len(ran) != 0 {
+		t.Fatalf("a refused run was dispatched anyway: %v", ran)
+	}
+}
+
+// TestABulkRunPastTheLanesCapViaAnOverCapSummaryIsAlsoRefused covers
+// the other shape a Planner can answer with: a plain, successful
+// PlanSummary whose Combinations already exceeds its Cap (what a
+// Fixture driven by PlanCombinations alone, with no CapBreach,
+// returns). checkSize must answer the identical body either way.
+func TestABulkRunPastTheLanesCapViaAnOverCapSummaryIsAlsoRefused(t *testing.T) {
+	h := newHarness(t)
+	h.premium.premium = true
+	h.planner.summary = simapi.PlanSummary{
+		Kind: simapi.KindGear, Combinations: 31200,
+		Cap: simapi.Caps[simapi.LaneServer], IterationsTotal: 100,
+	}
+
+	res := h.json(http.MethodPost, "/v1/sims/run", bulkBody(t))
+	assertCapExceededBody(t, res, simapi.Caps[simapi.LaneServer], 31200)
+	if ran := h.jobs.Ran(); len(ran) != 0 {
+		t.Fatalf("a refused run was dispatched anyway: %v", ran)
+	}
+}
+
+// TestAPlannerFailureThatIsNotACapBreachFailsTheSubmit is the third
+// case checkSize must tell apart from a cap breach: a genuine failure
+// to size the request (the binary crashed, timed out, or refused for
+// a reason other than the cap) must still fail the submit with a
+// generic 500 - it must never fall through and queue a run nobody
+// sized.
+func TestAPlannerFailureThatIsNotACapBreachFailsTheSubmit(t *testing.T) {
+	h := newHarness(t)
+	h.premium.premium = true
+	h.planner.err = errAnyway
+
+	res := h.json(http.MethodPost, "/v1/sims/run", bulkBody(t))
+	if res.StatusCode != http.StatusInternalServerError {
+		t.Fatalf("status %d, want 500", res.StatusCode)
+	}
+	if code := h.errorCode(res); code != "internal" {
+		t.Fatalf("code %q, want internal", code)
+	}
+	if ran := h.jobs.Ran(); len(ran) != 0 {
+		t.Fatalf("an unsized run was dispatched anyway: %v", ran)
+	}
+}
+
+func TestTheServerSetsTheCapItself(t *testing.T) {
+	h := newHarness(t)
+	h.premium.premium = true
+	if res := h.json(http.MethodPost, "/v1/sims/run", bulkBody(t)); res.StatusCode != http.StatusAccepted {
+		t.Fatalf("status %d, want 202", res.StatusCode)
+	}
+	if len(h.planner.asked) != 1 {
+		t.Fatalf("%d plans", len(h.planner.asked))
+	}
+	if got := h.planner.asked[0].Bulk.Cap; got != simapi.Caps[simapi.LaneServer] {
+		t.Errorf("cap %d, want the server lane's %d; a client may not raise its own bound",
+			got, simapi.Caps[simapi.LaneServer])
+	}
+}
+
+func TestAPlainRunIsNeverPlanned(t *testing.T) {
+	h := newHarness(t)
+	h.premium.premium = true
+	if res := h.json(http.MethodPost, "/v1/sims/run", runBody(t)); res.StatusCode != http.StatusAccepted {
+		t.Fatalf("status %d, want 202", res.StatusCode)
+	}
+	if len(h.planner.asked) != 0 {
+		t.Errorf("a plain run has nothing to expand, but the planner was asked: %+v", h.planner.asked)
+	}
 }
 
 func TestAnAccountWithoutPremiumIsAnswered402(t *testing.T) {
@@ -161,6 +311,87 @@ func TestARunNobodyCanStartIsRecordedAsFailedEvenWhenTheRequestContextIsDone(t *
 	}
 	if n != 1 {
 		t.Fatalf("%d failed rows, want 1: the compensating write must not ride the now-cancelled request context", n)
+	}
+}
+
+func TestABulkRunPastTheBudgetIsRefusedWithItsEstimate(t *testing.T) {
+	h := newHarness(t)
+	h.premium.premium = true
+	// Exactly four thousand seconds of engine time, whatever the
+	// benchmark's current figure is.
+	h.planner.summary = simapi.PlanSummary{
+		Kind: simapi.KindGear, Combinations: 4000,
+		Cap: simapi.Caps[simapi.LaneServer], IterationsTotal: nativeRate * 4000,
+	}
+
+	res := h.json(http.MethodPost, "/v1/sims/run", bulkBody(t))
+	if res.StatusCode != http.StatusBadRequest {
+		t.Fatalf("status %d, want 400", res.StatusCode)
+	}
+	code, fields := refusal(t, res)
+	if code != "too_large" {
+		t.Fatalf("code %q, want too_large", code)
+	}
+	if fields["estimate_sec"] != "4000" ||
+		fields["budget_sec"] != strconv.Itoa(int(BulkBudget.Seconds())) {
+		t.Fatalf("fields %+v", fields)
+	}
+	if ran := h.jobs.Ran(); len(ran) != 0 {
+		t.Fatalf("a refused run was dispatched anyway: %v", ran)
+	}
+}
+
+// TestAWeightsRunIsAcceptedUnsizedAndBoundOnlyByTheJobTimeout pins the
+// honest current behaviour, not the brief's original assertion that a
+// weights request is planned: runner.Native.Plan and runner.Fixture.Plan
+// both refuse req.Bulk == nil with ErrBadInput (sim/runner/native.go,
+// sim/runner/fixture.go), and a weights request carries req.Weights
+// instead of req.Bulk. checkSize's req.Bulk != nil guard (Task 5) is
+// therefore load-bearing, not incidental: without it, every weights
+// submit would 500 rather than skip a check it has no combinations to
+// answer.
+//
+// That means a weights run today has no submit-time size estimate at
+// all - it is bounded only by timeoutFor's BulkBudget once it is
+// running, the same as an unusually large bulk run that slipped under
+// its cap. sim/api exports WeightsSpec, StatWeight and an unexported
+// validate, and nothing that costs a weights run in iterations; adding
+// one would mean guessing whether the engine runs one sim per stat or
+// two (plus/minus delta), and that guess would become a number shown
+// to a user in a refusal. For a weights run to get an estimate, the
+// module needs to publish its own iteration-cost function the way
+// sim/api.LadderIterations does for bulk, and this package would then
+// call it here exactly as checkSize already calls the planner for bulk.
+func TestAWeightsRunIsAcceptedUnsizedAndBoundOnlyByTheJobTimeout(t *testing.T) {
+	h := newHarness(t)
+	h.premium.premium = true
+	// Cap 0: weights expand to no combinations, so the cap test must not
+	// fire on a zero and refuse every one of them.
+	h.planner.summary = simapi.PlanSummary{
+		Kind: simapi.KindWeights, Combinations: 0, Cap: 0, IterationsTotal: 60_000,
+	}
+	b, err := json.Marshal(simapi.SimRequest{
+		EngineVersion: testEngine, Spec: "warrior-fury", Iterations: defaultIterations,
+		Source:    simapi.CharacterSource{Kind: simapi.SourceAddon, Ref: "us/normal/baelgrim"},
+		Character: aCharacter("warrior", "orc"),
+		Weights: &simapi.WeightsSpec{
+			Stats: []string{"strength", "crit"}, Reference: "crit",
+		},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if res := h.json(http.MethodPost, "/v1/sims/run", string(b)); res.StatusCode != http.StatusAccepted {
+		t.Fatalf("status %d, want 202", res.StatusCode)
+	}
+	// Not planned: a weights request has no Bulk block, so checkSize's
+	// req.Bulk != nil guard skips the planner call entirely.
+	if len(h.planner.asked) != 0 {
+		t.Fatalf("a weights request has nothing for the planner to size, but it was asked: %d plans",
+			len(h.planner.asked))
+	}
+	if ran := h.jobs.Ran(); len(ran) != 1 {
+		t.Fatalf("%d jobs dispatched, want 1: an accepted weights run must still be queued", len(ran))
 	}
 }
 

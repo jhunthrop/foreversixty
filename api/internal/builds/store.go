@@ -11,6 +11,8 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+
+	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 )
 
 // ErrNotFound is returned by Get for an id that has never been saved.
@@ -226,12 +228,7 @@ func clampPage(page int) int {
 }
 
 // Page is one page of a player's own builds.
-type Page struct {
-	Rows    []Build `json:"rows"`
-	Total   int     `json:"total"`
-	Page    int     `json:"page"`
-	PerPage int     `json:"per_page"`
-}
+type Page = httpx.Page[Build]
 
 // Mine answers one page of a player's own builds, newest first.
 func (s *Store) Mine(ctx context.Context, userID int64, page int) (Page, error) {

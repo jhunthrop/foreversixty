@@ -86,6 +86,7 @@ go test -race -cover -p 1 ./...
 |---|---|
 | `POST /v1/builds` | Saves a build. 201 with `{id, url}`, or 200 with the same body when that id already exists (ids are content hashes). Body max 8 KB, 20 saves per IP per hour. 400 carries `error.fields` keyed `class_id`, `race_id`, `tree_version`, `title`, `point_order`, `point_order[i]`, `gear.<slot>`. |
 | `GET /v1/builds/{id}` | The record, cached a day. 404 in the envelope. |
+| `GET /v1/builds?mine=1` | The signed-in player's own saved builds, newest first. A build saved anonymously has no owner; a later signed-in save of the same build (ids are content hashes) claims it if nobody owns it yet. |
 | `GET /b/{id}` | The server-rendered build page, with the site's chrome, Open Graph tags, and the record inlined for the planner island. A missing or unloadable build gets an HTML message page (404 or 500) linking to the planner instead. |
 | `GET /b/{id}/card.png` | 1200×630 preview PNG, cached a week. A build whose own card cannot be drawn falls back to the static card, cached five minutes. |
 
@@ -96,6 +97,18 @@ bucket, and they are read-only and cached.
 Builds are validated against the tree data for their `tree_version` before they are stored; the rules
 are in `internal/builds/validate.go` and come from the Phase 1 interface contract, which has the web
 planner mirror them in `web/src/lib/planner/rules.ts`.
+
+## Simulator and phase endpoints
+
+The simulator's full surface (`POST /v1/sims`, `POST /v1/sims/run`, `GET /v1/sims/{id}`,
+`GET /v1/sims/{id}/progress`, `GET /v1/specs`, and the sim-input route) is documented in
+`openapi.yaml`, not restated here. The two rows below are the ones the router mounts
+unconditionally that do not belong to any other table in this file:
+
+| Route | Notes |
+|---|---|
+| `GET /v1/sims?mine=1&kind=` | The caller's own sims, newest first, optionally narrowed to one tool (`run`, `gear`, `talents`, `drops`, `weights`). Each row carries its kind and a composed one-line headline. An unknown kind is 400. |
+| `GET /v1/phases` | The content phase boundaries, cached an hour. The table is compiled in; `api/internal/phase/boundaries_test.go` holds it to `data/curated/phases.json`. |
 
 ## Keeping the page chrome in step with the site
 
@@ -196,6 +209,23 @@ id as a second argument; `sim-validate` is scheduled nightly by Cloud
 Scheduler and takes none. Both need `/engine/forever-sim` in the image
 to do real work — see "The engine binary" below — and fall back to the
 checked-in fixture result when it is absent.
+
+The `--cpu 4 --task-timeout 15m` on `sim-run` is load-bearing, not just a
+ceiling. A Top Gear, Droptimizer or talent-compare submit — any request
+that carries a bulk block — is sized before it is queued: the API asks
+the binary to expand the request without running it (`forever-sim
+-plan`), divides the precision ladder's total iterations by the
+engine's measured rate times those four CPUs, and refuses anything past
+`sims.BulkBudget` (840 seconds, one minute inside the task timeout)
+with `400 too_large` and the estimate. A stat-weights submit is not
+sized this way: the module's planner is bulk-only today (it refuses a
+request with no bulk block), and a weights request carries
+`req.Weights` instead, so it is accepted and queued unchecked. Changing
+the job's CPU count means changing `simJobCPUs` in
+`api/internal/sims/simdep.go` in the same commit, or every estimate is
+wrong. The rate itself is `measure.NativeIterationsPerCPUSecond`, which
+`sim/measure` publishes from its own benchmark — never restate it here.
+Jobs are created by hand, so nothing enforces this but this paragraph.
 
 ### The engine binary
 
@@ -372,9 +402,18 @@ gcloud run deploy api \
   --service-account api-runtime@foreversixty.iam.gserviceaccount.com \
   --set-env-vars PUBLIC_BASE_URL=https://foreversixty.gg,API_BASE_URL=https://api.foreversixty.gg \
   --set-secrets DATABASE_URL=DATABASE_URL:latest,MIGRATE_DATABASE_URL=MIGRATE_DATABASE_URL:latest,RESEND_API_KEY=RESEND_API_KEY:latest \
-  --min-instances 0 --max-instances 3 --cpu 1 --memory 256Mi --concurrency 80 --timeout 30
+  --min-instances 0 --max-instances 3 --cpu 1 --memory 512Mi --concurrency 80 --timeout 30
 gcloud run domain-mappings create --service api --domain api.foreversixty.gg --region us-east1
 ```
+
+`--memory 512Mi`, not the 256Mi the service ran on before the simulator arrived: the same image
+carries `/engine/forever-sim` (see `api/Dockerfile`), and `POST /v1/sims/run` shells it with
+`-plan` to size a bulk request before queueing it. `sim/runner`'s own note puts that subprocess's
+JSON at roughly 22 MB at the server lane's cap, and it is built in this container, on one shared
+CPU, at `--concurrency 80`. 512Mi is a conservative bound chosen from that 22 MB figure — it is
+not a measurement, and nobody has watched the service's RSS under a full-cap plan. Replace it
+with a measured full-cap `-plan` footprint when there is one; a real measurement may well argue
+for more, or for taking the plan off the request path entirely.
 
 `MAIL_FROM` and `TRUSTED_PROXY_HOPS` are deliberately left out of `--set-env-vars` above: both
 take their documented defaults (`Forever Sixty <hello@foreversixty.gg>` and `1`, matching a

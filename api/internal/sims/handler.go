@@ -13,6 +13,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/api/internal/jobs"
 	simapi "github.com/jhunthrop/foreversixty/sim/api"
+	"github.com/jhunthrop/foreversixty/sim/runner"
 )
 
 // filterKinds is the five kinds a history filter accepts, in the
@@ -53,6 +54,11 @@ type Service struct {
 	// Jobs starts the premium lane's Cloud Run job. Nil means the
 	// deployment cannot reach it, and the premium lane is not offered.
 	Jobs jobs.Runner
+	// Planner counts a bulk or weights request before it is queued. Nil
+	// means the premium lane cannot size one, and the run route is not
+	// mounted: accepting a request we cannot bound would be worse than
+	// not offering the route.
+	Planner runner.Planner
 	// Summaries reads stored fight summaries, for the buffs a
 	// character's last fight recorded. Nil means no bucket, and
 	// sim-input answers without them.
@@ -64,8 +70,8 @@ type Service struct {
 
 // Mount registers every simulator route. POST /v1/sims/run is mounted
 // only when this deployment can actually dispatch it; without the job
-// runner or the accounts store there is nothing behind it, and a 404
-// is a truer answer than a 500.
+// runner, the accounts store or the planner there is nothing behind
+// it, and a 404 is a truer answer than a 500.
 func Mount(mux *http.ServeMux, s *Service) {
 	mux.HandleFunc("POST /v1/sims", s.save)
 	mux.HandleFunc("GET /v1/sims", auth.RequireSession(s.mine))
@@ -73,7 +79,7 @@ func Mount(mux *http.ServeMux, s *Service) {
 	mux.HandleFunc("GET /v1/sims/{id}/progress", s.progress)
 	mux.HandleFunc("GET /v1/specs", s.specs)
 	mux.HandleFunc("GET /v1/characters/{region}/{ruleset}/{name}/sim-input", s.simInput)
-	if s.Jobs != nil && s.Accounts != nil {
+	if s.Jobs != nil && s.Accounts != nil && s.Planner != nil {
 		mux.HandleFunc("POST /v1/sims/run", auth.RequireSession(s.run))
 	}
 }
@@ -160,23 +166,12 @@ func (s *Service) get(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Service) mine(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Query().Get("mine") != "1" {
-		// There is no "everyone's sims" list, and inventing one by
-		// omission would be a surprise. The parameter is required so
-		// the route's meaning is on the URL.
-		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "this list is mine=1 only",
-			map[string]string{"mine": "1"})
+	if !httpx.RequireMine(w, r) {
 		return
 	}
-	page := 1
-	if v := r.URL.Query().Get("page"); v != "" {
-		n, err := strconv.Atoi(v)
-		if err != nil || n < 1 {
-			httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "page must be 1 or more",
-				map[string]string{"page": "a page number from 1"})
-			return
-		}
-		page = n
+	page, ok := httpx.ParsePage(w, r)
+	if !ok {
+		return
 	}
 	// An unknown kind is refused rather than answered with an empty
 	// list: "you have no topgear sims" is a true sentence about a word
@@ -194,8 +189,7 @@ func (s *Service) mine(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "mine", err, "could not read your sims just now")
 		return
 	}
-	// Per-account: never cached at a shared edge.
-	w.Header().Set("Cache-Control", "private, no-store")
+	httpx.SetPrivateListCache(w)
 	httpx.WriteOK(w, r, http.StatusOK, out)
 }
 
