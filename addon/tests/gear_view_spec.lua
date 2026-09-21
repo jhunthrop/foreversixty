@@ -225,7 +225,11 @@ describe("GearView", function()
 		local view = GearView.mount(_G.CreateFrame("Frame"), ctxFor())
 		local row = view.upgrades.rows[1]
 		local anchor = mock.lastCall(row.right, "SetPoint")
+		assert.are.equal("RIGHT", anchor[1])
 		assert.are.equal(row.equip, anchor[2])
+		assert.are.equal("LEFT", anchor[3])
+		assert.are.equal(-Theme.SIZES.gap, anchor[4])
+		assert.are.equal(0, anchor[5])
 	end)
 
 	it("names the slot on an upgrade row, so two rings are not indistinguishable", function()

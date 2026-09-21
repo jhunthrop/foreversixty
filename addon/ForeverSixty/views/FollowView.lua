@@ -14,6 +14,7 @@ local Theme = ns.Theme or require("Theme")
 local Widgets = ns.Widgets or require("Widgets")
 local Follow = ns.Follow or require("Follow")
 local Talents = ns.Talents or require("Talents")
+local Prefs = ns.Prefs or require("Prefs")
 
 local FollowView = {}
 
@@ -186,11 +187,13 @@ function FollowView.mount(parent, ctx)
 		view.refresh()
 	end)
 	view.forget:SetPoint("LEFT", view.load, "RIGHT", Theme.SIZES.gap, 0)
-	view.tracker = Widgets.toggle(parent, L.followShowTracker, true, function(shown)
-		ctx.setTracker(shown)
-	end)
+	view.tracker = Widgets.toggle(parent, L.followShowTracker, Prefs.get("tracker", "shown"),
+		function(shown)
+			ctx.setTracker(shown)
+		end)
 	view.tracker.frame:SetPoint("TOPLEFT", view.load, "BOTTOMLEFT", 0, -Theme.SIZES.gap)
 	function view.refresh()
+		view.tracker:SetChecked(Prefs.get("tracker", "shown"))
 		return FollowView.apply(view,
 			FollowView.rows(ctx.data, Follow.build, Talents.readRanks(ctx.data)))
 	end

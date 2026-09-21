@@ -31,13 +31,14 @@ local function ctxFor()
 end
 
 describe("FollowView", function()
-	local Theme, Follow, FollowView
+	local Theme, Prefs, Follow, FollowView
 
 	local function start(state)
 		mock.install(state or {})
 		Theme = helper.load("Theme")
 		Theme.reset()
 		helper.load("Widgets")
+		Prefs = helper.load("Prefs")
 		Follow = helper.load("Follow")
 		FollowView = helper.load("FollowView")
 		return Follow, FollowView
@@ -236,5 +237,18 @@ describe("FollowView", function()
 		local view = FollowView.mount(_G.CreateFrame("Frame"), ctx)
 		view.tracker.frame:GetScript("OnClick")(view.tracker.frame)
 		assert.is_not_nil(asked)
+	end)
+
+	it("shows the tracker toggle as the player left it, not hardcoded on", function()
+		start()
+		Prefs.set("tracker", "shown", false)
+		local view = FollowView.mount(_G.CreateFrame("Frame"), ctxFor())
+		assert.is_false(view.tracker.checked)
+		Prefs.set("tracker", "shown", true)
+		view.refresh()
+		assert.is_true(view.tracker.checked)
+		Prefs.set("tracker", "shown", false)
+		view.refresh()
+		assert.is_false(view.tracker.checked)
 	end)
 end)
