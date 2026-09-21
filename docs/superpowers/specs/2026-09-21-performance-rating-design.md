@@ -391,22 +391,31 @@ tank damage) plus two avoidable hits earlier (stood in a cleave meant for the ot
 | Component | Raw / percentile | Score |
 |---|---|---:|
 | Output | tank's own `metric_dps`, 55th pct (small weight regardless) | 55 |
-| Survival | 1 death: `penalty = 70*0.15*(1-175000/180000) = 70*0.15*0.028 = 0.29` → DeathScore 99.7; AvoidableHitScore (two hits from a cleave assigned to the *other* tank — Role: "tank" but not *this* tank's assignment, so fully counted) 35th pct → 35 | `0.65*99.7 + 0.35*35 = 76.06` |
+| Survival | 1 death: `penalty = 70*0.15*(1-175000/180000) = 70*0.15*0.028 = 0.29` → DeathScore 99.7; AvoidableHitScore (two hits from a cleave assigned to the *other* tank — Role: "tank" but not *this* tank's assignment, so fully counted) 35th pct → 35 | `0.65*99.7 + 0.35*35 = 77.06` |
 | Mechanics | Taunted off the add duty correctly (logged, not scored — see §1.3 Utility taunt note) | excluded from the ⅓ split with the remaining two parts reweighted |
 | Utility | Sunder Armor 97% uptime, Demoralizing Shout n/a for Protection kit here | 91 |
 | Preparation | Flask + food + weapon stone present | 100 |
 | Activity | 85% active share | 70th pct → 70 |
 
-`overall = .10*55 + .35*76.06 + .20*(Mechanics excluded → reweighted onto Utility/
-Preparation/Activity's shares proportionally, per §1.1) ...`
+`overall = .10*55 + .35*77.06 + .20*(Mechanics excluded → reweighted onto Output/Survival/
+Utility/Preparation/Activity's shares proportionally, per §1.1) ...`
 
 showing the renormalisation explicitly: Mechanics' 20 points redistribute across the other
-five in proportion to their own weights (`10, 35, 15, 10, 5` sum to 75; each gets
-`+20 * (own/75)`): Output `+2.67→12.67`, Survival `+9.33→44.33`, Utility `+4→19`,
-Preparation `+2.67→12.67`, Activity `+1.33→6.33` (all divided by 100 as usual):
+five in proportion to their own §1.4 tank weights (`10, 35, 20, 10, 5` sum to 80; each gets
+`+20 * (own/80)`): Output `+2.5→12.5`, Survival `+8.75→43.75`, Utility `+5→25`,
+Preparation `+2.5→12.5`, Activity `+1.25→6.25` (all divided by 100 as usual, new total 100):
 
-`overall = .1267*55 + .4433*76.06 + .19*91 + .1267*100 + .0633*70`
-`= 6.97 + 33.72 + 17.29 + 12.67 + 4.43 = 75.1` → **75**
+`overall = .125*55 + .4375*77.06 + .25*91 + .125*100 + .0625*70`
+`= 6.875 + 33.71 + 22.75 + 12.5 + 4.375 = 80.21` → **80**
+
+**CORRECTION (implementation pass, 2026-09-21):** this worked example originally read
+Survival's combined score as `76.06` (an arithmetic slip — `0.65*99.7 + 0.35*35` is `77.06`,
+not `76.06`) and the tank weight table's own Utility figure as `15` in the redistribution
+step (transcribed wrong — §1.4's tank row gives Utility `20`, and the five non-Mechanics
+weights `10+35+20+10+5` sum to `80`, not `75`). Both are fixed above; the corrected final
+score is **80**, not 75. Verified against `logs/engine/rating`'s own test suite
+(`TestCombineRenormalisesWeightsAcrossExcludedComponents` and the tank worked-example test in
+`rating_test.go`), which reproduce this exact arithmetic.
 
 ---
 
