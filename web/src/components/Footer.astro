@@ -14,9 +14,11 @@ const footerLinks = [
 ] as const;
 
 // The short-label set that misses the 44px hit-target floor on text width alone and needs
-// horizontal padding to clear it -- "About" needed this already; "Terms" is exactly as
-// short, so it joins the set rather than growing a chain of per-label equality checks.
-const NEEDS_HIT_TARGET_PADDING = new Set(['About', 'Terms']);
+// horizontal padding to clear it -- "About" needed this already; "Terms" and "Privacy" are
+// narrow enough to miss it too (confirmed by tests/e2e/sim-tools-phone.spec.ts's 44px audit
+// at 360px width, which caught "Privacy" falling short), so both join the set rather than
+// growing a chain of per-label equality checks.
+const NEEDS_HIT_TARGET_PADDING = new Set(['About', 'Terms', 'Privacy']);
 // Phone: links above the disclaimer (design/Mobile.dc.html); desktop keeps them side by side.
 // A frontmatter comment, not an HTML one: an HTML comment ships in every page.
 ---
