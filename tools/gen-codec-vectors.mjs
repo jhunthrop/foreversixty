@@ -18,6 +18,7 @@ const FS1_CODES = [
   ['version 2, bags and bank', 'FS1:1.60.1.69893:warrior:tauren:5/0/0:head=12640|bags=11726,19865:2564|bank=12640,11726'],
   ['version 2, a named set and a named loadout', 'FS1:1.60.1.69893:druid:night-elf:5/0/0:head=12640|sets=Tank%3Bmain=head=12640|loadouts=Deep%20Feral=0/553/0'],
   ['version 2, professions', 'FS1:1.60.1.69893:priest:human:0/0/5:|professions=enchanting,tailoring'],
+  ['version 2, guild', 'FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=Iron%20Vanguard:2'],
   ['version 2, an unknown section is ignored and named', 'FS1:1.60.1.69893:priest:human:0/0/5:|pets=1,2'],
 ];
 
@@ -29,6 +30,7 @@ const INVALID = [
   ['a gear entry with two equals signs', 'FS1:1.60.1.69893:paladin:human:0/0/0:head=12640=99'],
   ['a non-numeric item id', 'FS1:1.60.1.69893:paladin:human:0/0/0:head=12640abc'],
   ['too few fields', 'FS1:1.60.1.69893:paladin'],
+  ['a non-numeric guild rank', 'FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=Iron%20Vanguard:officer'],
 ];
 
 // The FSB1 grammar (design "Formats"), the only statement of it that both lanes read:
