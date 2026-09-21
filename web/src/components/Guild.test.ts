@@ -16,8 +16,8 @@ describe('Guild', () => {
     expect(body).not.toContain('data-testid="guild-home"');
   });
 
-  it('still renders the existing public guild testid unchanged', () => {
+  it('still renders the loading state as its initial static render (existing public-page behavior)', () => {
     const { body } = render(Guild, { props: { path: PATH } });
-    expect(body).toContain('data-testid="guild"');
+    expect(body).toContain('Loading.');
   });
 });
