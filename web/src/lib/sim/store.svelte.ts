@@ -520,8 +520,13 @@ export function createSimStore(init: SimStoreInit) {
       message = null;
       phase = 'idle';
     },
-    /** One line, so compare mode reports its failures through the same alert every source uses. */
-    setMessage(text: string): void {
+    /** One line, so compare mode reports its failures through the same alert every source
+     *  uses -- and `null` to clear it, the same shape `bulk-store.svelte.ts`'s own
+     *  `setMessage` already takes, for `character-bootstrap.ts`'s `settleRestore` (Task 5):
+     *  a stored-pointer restore that settled with no character clears whatever refusal
+     *  message that dead load left behind, rather than showing it on a page the player
+     *  never asked to load. */
+    setMessage(text: string | null): void {
       message = text;
     },
     setSettings(next: SimSettings): void {
@@ -538,6 +543,12 @@ export function createSimStore(init: SimStoreInit) {
     loadBuild: (id: string) => adopt(fromPlannerBuild(id, ctx)),
     loadFight: (ref: string) => adopt(fromLoggedFight(ref, ctx)),
     loadStored: (path: CharacterPath) => adopt(fromStoredCharacter(path, ctx)),
+    /** A bare `?code=` load, the same `fromManualCode` conversion `init.code` above already
+     *  runs -- exposed as a public method (Task 5) so a bare-load restore of a `'code'`- or
+     *  `'addon'`-sourced stored pointer (`character-bootstrap.ts`'s own `fromStoredPointer`)
+     *  can run it from `SimView.svelte`'s `onMount`, after the store already exists, rather
+     *  than only at construction time through `init`. */
+    loadCode: (code: string) => adopt(fromManualCode(code, ctx)),
 
     /** Adopts a result the page was handed rather than ran: a saved sim, or a server run. */
     adoptResult(next: SimResult): void {

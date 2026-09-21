@@ -3,6 +3,7 @@
 // Which specs the simulator is trusted for, and by how much. Static; the island fetches
 // GET /v1/specs.
 import Base from '../../layouts/Base.astro';
+import { CHIP_HEIGHT } from '../../lib/current-character-layout';
 import { simCopy } from '../../lib/sim/copy';
 import {
   SPEC_CARD_SKELETON_CLASSES,
@@ -44,8 +45,15 @@ import SimTabs from '../../components/sim/SimTabs.astro';
          the way the missing reservation itself was allowed to -- means the mount swap
          moves nothing. Task 2 adds the second (unsimulated) group below, under its own
          heading, at the same skeleton-card technique so its own reservation never drifts
-         from SpecGrid.svelte's real render either. -->
+         from SpecGrid.svelte's real render either.
+
+         Task 5: the current-character chip's own reserved slot goes first, above the
+         grids, the same position SimView.svelte's own render puts it in. No extra min-h
+         is added for it here (unlike sim.astro's and [id].astro's own +110px/+76px): this
+         shell reserves no height of its own at all -- both moments render the identical
+         chip slot, so adding it to both sides introduces no new mismatch. -->
     <div id="sim" data-sim-mount data-sim-view="specs">
+      <div class={CHIP_HEIGHT} data-testid="sim-chip-slot"></div>
       <div class="flex flex-col gap-6">
         <div class="flex flex-col gap-3">
           <h2 class="section-title px-[18px] text-[15px] md:px-0">{simCopy.specsSimulatedHeading}</h2>

@@ -77,6 +77,25 @@ describe('createSimStore', () => {
     expect(sim.character?.source.kind).toBe('build');
   });
 
+  // Task 5: exposed publicly so a bare-load restore of a stored 'code'- or 'addon'-sourced
+  // pointer (character-bootstrap.ts's own fromStoredPointer) can run it from SimView.svelte's
+  // onMount, after the store already exists -- the same fromManualCode conversion `init.code`
+  // already runs at construction time.
+  it('loads a manual FS1 code through loadCode, the same as a "Sim this build" link', async () => {
+    const sim = store();
+    await sim.loadCode(FURY);
+    expect(sim.character?.spec).toBe('warrior-fury');
+    expect(sim.character?.source.kind).toBe('manual');
+  });
+
+  it('setMessage accepts null to clear a refusal, the same shape bulk-store.svelte.ts already takes', async () => {
+    const sim = store();
+    await sim.loadBuild('zzzzzzzzzzzz');
+    expect(sim.message).toBe(simCopy.buildNotFound);
+    sim.setMessage(null);
+    expect(sim.message).toBeNull();
+  });
+
   it('runs, publishes a rising estimate, and finishes with a result', async () => {
     const sim = store();
     await sim.loadAddon(FURY);

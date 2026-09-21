@@ -18,12 +18,7 @@
   import type { Origin } from '../../../lib/sim/candidates';
   import { bulkCopy, simCopy } from '../../../lib/sim/copy';
   import { syncTabHrefs } from '../../../lib/sim/tabs';
-  import {
-    decideToolsBootstrap,
-    settleToolsRestore,
-    sourceIdForInstance,
-    type ToolsBootstrapDecision,
-  } from '../../../lib/sim/tools-bootstrap';
+  import { runBootstrapRestore, sourceIdForInstance } from '../../../lib/sim/character-bootstrap';
   import { parseSimState } from '../../../lib/sim/url';
   import CurrentCharacterChip from '../../CurrentCharacterChip.svelte';
   import CharacterStrip from '../CharacterStrip.svelte';
@@ -146,41 +141,22 @@
     if (matchId !== null) store.toggleSource(matchId);
   });
 
-  /** `decision.kind`'s own loader, or null for `'none'` -- the one place that maps a
-   *  bootstrap decision onto the store's loaders, so `bootstrapCharacter` below reads as
-   *  "decide, load, settle" rather than a second copy of this switch. */
-  function startLoad(decision: ToolsBootstrapDecision): Promise<void> | null {
-    if (decision.kind === 'code') return store.loadCode(decision.code);
-    if (decision.kind === 'addon') return store.loadAddon(decision.code);
-    if (decision.kind === 'build') return store.loadBuild(decision.id);
-    if (decision.kind === 'fight') return store.loadFight(decision.ref);
-    if (decision.kind === 'stored') return store.loadStored(decision.path);
-    return null;
-  }
-
   /**
    * The URL's own bootstrap wins over the stored current-character pointer, which wins
-   * over nothing (Task 4, current-character spec section 1) -- `decideToolsBootstrap` is
-   * the one place that precedence lives, so it is testable without mounting this island.
-   *
-   * Fix round 1, Task 4's review (Important): the load this kicks off is awaited, not
-   * `void`-ed, so `restored` is only ever set once it has actually settled --
-   * `settleToolsRestore` (tools-bootstrap.ts) decides what "settled" means: a restore that
-   * produced no character forgets the pointer and clears the store's own refusal message,
-   * rather than showing "Restored your last character" beside an error for a load the
-   * player never asked for. A URL-driven load keeps today's behaviour on failure.
+   * over nothing (Task 4, current-character spec section 1) -- `runBootstrapRestore`
+   * (character-bootstrap.ts, generalised in Task 5 for SimView.svelte's own `?req=` case
+   * too) is the one place that precedence, the load and the settle rule (fix round 1, Task
+   * 4's review: a dead pointer forgets itself and clears the store's own refusal message,
+   * rather than showing "Restored your last character" beside an error) all live, so it is
+   * testable without mounting this island.
    */
   async function bootstrapCharacter(): Promise<void> {
-    const decision = decideToolsBootstrap(
+    restored = await runBootstrapRestore(
+      store,
       { code: bootstrap.code, source: bootstrap.source, ref: bootstrap.ref },
       readCurrent(),
+      () => store.character !== null,
     );
-    const load = startLoad(decision);
-    if (load !== null) await load;
-    const outcome = settleToolsRestore(decision.restored, store.character !== null);
-    restored = outcome.restored;
-    if (outcome.clearPointer) clearCurrent();
-    if (outcome.clearMessage) store.setMessage(null);
   }
 
   onMount(() => {

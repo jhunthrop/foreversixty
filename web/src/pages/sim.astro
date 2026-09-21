@@ -3,6 +3,7 @@
 // Static. The island reads ?source= and ?ref= in the browser, because the page is
 // prerendered and has no request to read.
 import Base from '../layouts/Base.astro';
+import { CHIP_HEIGHT } from '../lib/current-character-layout';
 import { simCopy } from '../lib/sim/copy';
 import ScopeNote from '../components/sim/ScopeNote.astro';
 import SimTabs from '../components/sim/SimTabs.astro';
@@ -38,8 +39,16 @@ import SimTabs from '../components/sim/SimTabs.astro';
          still swaps this whole div's content for the real, interactive switcher, so the
          min-h reservation below (measured against the real switcher's rendered height,
          mobile/desktop) keeps that swap from moving the footer -- the same reserved-height
-         technique SpecGrid.svelte's skeleton already uses for the same reason. -->
-    <div id="sim" data-sim-mount class="min-h-[1044px] md:min-h-[531px]">
+         technique SpecGrid.svelte's skeleton already uses for the same reason.
+
+         Raised by the current-character chip's own reserved band (Task 5, the same
+         gear.astro pattern): CHIP_HEIGHT (`h-[88px] md:h-11`) plus the view's own gap
+         before the next block (`gap-[22px]` phone, `md:gap-8` desktop) -- +110px phone,
+         +76px desktop, on top of the Round 2 figures above. The chip slot sits first,
+         above the LCP card, identically in both this shell and SimView.svelte's own
+         render, so the card's own box stays pixel-identical before and after hydration. -->
+    <div id="sim" data-sim-mount class="min-h-[1154px] md:min-h-[607px]">
+      <div class={CHIP_HEIGHT} data-testid="sim-chip-slot"></div>
       <section class="mx-[18px] flex flex-col gap-3 md:mx-0">
         <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
           <div class="border-line bg-card-top rounded-panel flex flex-col gap-3 border p-4">
