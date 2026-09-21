@@ -28,8 +28,8 @@ func TestParseAcceptsTheSpecFormatAndRejectsAnUnknownKind(t *testing.T) {
 
 func TestParseRejectsMissingSpecSpellIDVerificationOrADuplicate(t *testing.T) {
 	cases := map[string]string{
-		"no spec": `{"owned": [{"spell_id": 1, "name": "X", "kind": "buff", "verified": "1#1"}]}`,
-		"zero spell id": `{"spec": "x", "owned": [{"spell_id": 0, "name": "X", "kind": "buff", "verified": "1#1"}]}`,
+		"no spec":                `{"owned": [{"spell_id": 1, "name": "X", "kind": "buff", "verified": "1#1"}]}`,
+		"zero spell id":          `{"spec": "x", "owned": [{"spell_id": 0, "name": "X", "kind": "buff", "verified": "1#1"}]}`,
 		"no verified provenance": `{"spec": "x", "owned": [{"spell_id": 1, "name": "X", "kind": "buff"}]}`,
 		"a duplicate spell id": `{"spec": "x", "owned": [
 			{"spell_id": 1, "name": "X", "kind": "buff", "verified": "1#1"},
