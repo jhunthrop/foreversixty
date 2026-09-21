@@ -17,6 +17,7 @@ Widgets.lua
 Export.lua
 Follow.lua
 Gear.lua
+Tooltip.lua
 TalentGlow.lua
 views\ExportView.lua
 views\FollowView.lua

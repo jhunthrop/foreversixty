@@ -8,6 +8,7 @@ describe("the TOC", function()
 	local EXPECTED = {
 		"Locale.lua", "Data.lua", "Compat.lua", "Codec.lua", "Talents.lua", "Prefs.lua",
 		"Theme.lua", "Widgets.lua", "Export.lua", "Follow.lua", "Gear.lua",
+		"Tooltip.lua",
 		"TalentGlow.lua",
 		"views/ExportView.lua", "views/FollowView.lua",
 		"views/GearView.lua", "views/SettingsView.lua",
