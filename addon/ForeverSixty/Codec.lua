@@ -215,6 +215,9 @@ function Codec.encodeFS1(build)
 	if build.professions and #build.professions > 0 then
 		sections[#sections + 1] = "professions=" .. table.concat(build.professions, ",")
 	end
+	if build.guild and build.guild.name then
+		sections[#sections + 1] = "guild=" .. urlEncode(build.guild.name) .. ":" .. tostring(build.guild.rankIndex)
+	end
 
 	if #sections == 0 then
 		return head
@@ -427,6 +430,14 @@ function Codec.decodeFS1(code)
 					build.professions[#build.professions + 1] = slug
 				end
 			end
+		elseif name == "guild" then
+			local colonAt = field:find(":", 1, true)
+			local namePart = colonAt and field:sub(1, colonAt - 1) or field
+			local rankText = colonAt and field:sub(colonAt + 1) or ""
+			if not isDigits(rankText) then
+				return nil, refuse(L.codecGuildRank, rankText)
+			end
+			build.guild = { name = urlDecode(namePart), rankIndex = tonumber(rankText) }
 		elseif name ~= "" then
 			-- A site a version ahead of the addon is a thing that will happen;
 			-- refusing its whole string would make the addon useless that day.

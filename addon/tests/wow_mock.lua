@@ -14,7 +14,7 @@ local realPrint = _G.print
 
 --- Install a fresh mock into _G and return its state table.
 -- @param state table with any of: talents, traits, equipped, bags, itemStats,
---   class, race, realm, region, professions, build
+--   class, race, realm, region, professions, build, guild
 --
 -- `talents` installs the classic GetTalentInfo window. `traits` installs
 -- the 1.60 client's trait system instead -- { configID = <id or nil>,
@@ -164,6 +164,18 @@ function mock.install(state)
 
 	_G.GetProfessionInfo = function(index)
 		return state.professionNames and state.professionNames[index] or nil
+	end
+
+	-- Returns guildName, guildRankName, guildRankIndex, guildRealm; nil when the unit is
+	-- not in a guild (the addon's own default: no spec here sets state.guild). Rank
+	-- index is 0-based; 0 is always the guild master -- server-authoritative, the client
+	-- never lets a non-GM report 0. Unverified against the 1.60.1 beta client; see
+	-- addon/README.md's spike checklist rows 23/23a.
+	_G.GetGuildInfo = function()
+		if state.guild == nil then
+			return nil
+		end
+		return state.guild.name, state.guild.rankName, state.guild.rankIndex, state.guild.realm
 	end
 
 	_G.GetBuildInfo = function()
@@ -415,7 +427,7 @@ function mock.uninstall()
 		"C_Traits", "C_ClassTalents", "GetInventoryItemLink", "GetContainerNumSlots",
 		"GetContainerItemLink", "C_Container", "GetItemStats", "GetItemInfoInstant",
 		"GetItemInfo", "GetItemIcon", "UnitClass", "UnitRace", "UnitLevel", "UnitName",
-		"GetRealmName", "GetCurrentRegion", "GetProfessions", "GetProfessionInfo",
+		"GetRealmName", "GetCurrentRegion", "GetProfessions", "GetProfessionInfo", "GetGuildInfo",
 		"GetBuildInfo", "SlashCmdList", "UIParent", "CreateFrame", "Minimap",
 		"GameTooltip", "UISpecialFrames", "C_Timer", "date",
 		-- Globals an example may set on _G directly rather than through

@@ -46,6 +46,9 @@ change the named constant if it differs from the default.
 | 20 | Equip API | `/dump C_Item and C_Item.EquipItemByName ~= nil`, `/dump EquipItemByName ~= nil` | `Theme.equip` prefers `C_Item`; with neither, the Equip buttons are off and `/fs diag` says so |
 | 21 | Talent events | log in, then run `/fs diag` and list any event it names | `Options.EVENTS`; each is registered through `Theme.registerEvent`, which records a refusal rather than erroring |
 | 22 | Talent button mapping | open the talent window with a build loaded and see whether the next talent glows; then run `/fs diag` — a line about no talent button means neither mapping matched | `TalentGlow.CLASSIC_BUTTON` (the `TalentFrameTalent<n>` naming) and `TalentGlow.traitButton` (the `nodeID` walk). Record which one this client took |
+| 23 | Guild info shape while in a guild | `/dump GetGuildInfo("player")` — expect `name, rankName, rankIndex[, realm]`; confirm `rankIndex` is `0` for the guild master | `Export.guildInfo()` reads positions 1 and 3; if the shape differs, fix there, not a flag |
+| 23a | Guild info while unguilded | `/dump GetGuildInfo("player")` on a character with no guild — expect `nil` | Confirms `Export.guildInfo()` returns `nil` and `Export.string` writes no `guild=` section |
+| 23b | Round trip | `/fs export` while in a guild, paste the code into the planner's import box on the site, confirm the guild name and rank index shown there match what `/dump GetGuildInfo("player")` reported | End-to-end check that `Codec.encodeFS1` and `fs1.ts`'s `decodeFS1` agree, beyond the fixture vectors |
 
 ## Findings
 
@@ -76,6 +79,8 @@ Run on one character per role and tick here:
       toggles as the window's Settings tab.
 - [ ] Logging out writes `ForeverSixtyDB.characters` and `savedAt`; the companion
       picks it up. Turning auto-save off stops it.
+- [ ] The Export tab's export includes a `|guild=` section for a guilded character and
+      none for an unguilded one (`/fs diag` or `/dump` the saved string).
 - [ ] `/fs diag` lists nothing unexpected.
 
 Two screenshots close this lane: the window on Follow with a build loaded, and
