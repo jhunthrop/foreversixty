@@ -1681,7 +1681,7 @@
             {treeSizesFor}
             onWindow={setWindow}
             {reportId}
-            fightIndex={state.fight}
+            fightIndex={nightMode ? undefined : state.fight}
           />
         {/if}
       {/if}
