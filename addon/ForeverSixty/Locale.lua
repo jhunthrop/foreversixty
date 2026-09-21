@@ -160,7 +160,14 @@ local L = {
 	minimapNoBuild = "No build loaded",
 
 	-- Settings
-	settingsTitle = "Forever Sixty options",
+	settingsTitle = "Settings",
+	settingsGroupScreen = "ON SCREEN",
+	settingsGroupData = "YOUR DATA",
+	settingsMinimapHint = "Left click opens this window.",
+	settingsTrackerHint = "A small bar with the next talent to take from your loaded build.",
+	settingsTrackerLockedHint = "Unlock it to drag it somewhere else.",
+	settingsAutoSaveHint = "The companion app reads this to keep your character on the site current.",
+	settingsChatHint = "Off by default: the window already shows it.",
 	settingsMinimap = "Show the minimap button",
 	settingsTracker = "Show the tracker",
 	settingsTrackerLocked = "Lock the tracker in place",

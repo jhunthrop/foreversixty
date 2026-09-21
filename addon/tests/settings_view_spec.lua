@@ -158,4 +158,15 @@ describe("SettingsView", function()
 		assert.are.equal(#SettingsView.panelView.toggles, #tab.toggles)
 		assert.are_not.equal(SettingsView.panelView, tab)
 	end)
+	it("heads each group once and explains every setting", function()
+		start()
+		local groups = 0
+		for _, row in ipairs(SettingsView.toggles()) do
+			assert.is_truthy(row.hint, row.label .. " has no explanation")
+			if row.group ~= nil then
+				groups = groups + 1
+			end
+		end
+		assert.are.equal(2, groups)
+	end)
 end)

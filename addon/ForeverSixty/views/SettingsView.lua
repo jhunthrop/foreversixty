@@ -20,12 +20,16 @@ SettingsView.PANEL_NAME = "ForeverSixtySettingsPanel"
 
 --- Each entry names either a field inside a Prefs section or a top-level
 --- flag, plus the Locale key for its label. Order is the order drawn.
+--- `group` starts a new headed section at that entry; `hint` is the line
+--- under the label that says what the setting is for.
 SettingsView.TOGGLES = {
-	{ section = "minimap", key = "shown", label = "settingsMinimap" },
-	{ section = "tracker", key = "shown", label = "settingsTracker" },
-	{ section = "tracker", key = "locked", label = "settingsTrackerLocked" },
-	{ flag = "autoSave", label = "settingsAutoSave" },
-	{ flag = "chat", label = "settingsChat" },
+	{ section = "minimap", key = "shown", label = "settingsMinimap", hint = "settingsMinimapHint",
+		group = "settingsGroupScreen" },
+	{ section = "tracker", key = "shown", label = "settingsTracker", hint = "settingsTrackerHint" },
+	{ section = "tracker", key = "locked", label = "settingsTrackerLocked", hint = "settingsTrackerLockedHint" },
+	{ flag = "autoSave", label = "settingsAutoSave", hint = "settingsAutoSaveHint",
+		group = "settingsGroupData" },
+	{ flag = "chat", label = "settingsChat", hint = "settingsChatHint" },
 }
 
 --- A toggle's value can legitimately be false. An explicit if, not an
@@ -43,6 +47,8 @@ function SettingsView.toggles()
 	for index, entry in ipairs(SettingsView.TOGGLES) do
 		rows[index] = {
 			label = L[entry.label],
+			hint = entry.hint ~= nil and L[entry.hint] or nil,
+			group = entry.group ~= nil and L[entry.group] or nil,
 			checked = valueOf(entry),
 			flag = entry.flag,
 			section = entry.section,
@@ -70,12 +76,23 @@ function SettingsView.build(parent, ctx)
 	view.title:SetPoint("TOPLEFT", parent, "TOPLEFT", padding, -padding)
 	local above = view.title
 	for index, entry in ipairs(SettingsView.toggles()) do
+		if entry.group ~= nil then
+			local heading = Widgets.label(parent, entry.group, "muted", "small")
+			heading:SetPoint("TOPLEFT", above, "BOTTOMLEFT", 0, -padding)
+			above = heading
+		end
 		local toggle = Widgets.toggle(parent, entry.label, entry.checked, function(value)
 			SettingsView.write(entry, value, ctx)
 		end)
-		toggle.frame:SetPoint("TOPLEFT", above, "BOTTOMLEFT", 0, -gap)
+		toggle.frame:SetPoint("TOPLEFT", above, "BOTTOMLEFT", 0, -gap * 2)
 		view.toggles[index] = toggle
 		above = toggle.frame
+		if entry.hint ~= nil then
+			-- Indented to sit under the label, not under the tick box.
+			local hint = Widgets.label(parent, entry.hint, "muted", "small")
+			hint:SetPoint("TOPLEFT", toggle.frame, "BOTTOMLEFT", Theme.SIZES.iconSize + gap, 0)
+			above = hint
+		end
 	end
 	view.reset = Widgets.button(parent, L.settingsReset, function()
 		Prefs.resetPositions()
