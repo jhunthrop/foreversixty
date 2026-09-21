@@ -348,6 +348,12 @@ function mock.install(state)
 		end
 		if name ~= nil then
 			state.widgets[name] = frame
+			-- The real client publishes a named frame as a global of that
+			-- name, which is the whole of TalentGlow's classic mapping:
+			-- _G["TalentFrameTalent<n>"]. Recorded so uninstall takes it
+			-- back out again and one spec's frames cannot reach the next.
+			_G[name] = frame
+			state.extraGlobals[#state.extraGlobals + 1] = name
 		end
 		if type(parent) == "table" and type(parent.children) == "table" then
 			parent.children[#parent.children + 1] = frame

@@ -16,6 +16,7 @@ Widgets.lua
 Export.lua
 Follow.lua
 Gear.lua
+TalentGlow.lua
 views\ExportView.lua
 views\FollowView.lua
 Tracker.lua

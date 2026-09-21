@@ -1,5 +1,5 @@
 -- addon/ForeverSixty/Follow.lua
--- The next point in a build the player loaded, and the highlight on it.
+-- The next point in a build the player loaded.
 --
 -- The build carries an order -- one cell per point, in the order the build
 -- spends them. The next point is the first entry in that order whose running
@@ -103,29 +103,6 @@ function Follow.line(data, build, ranks)
 	-- moved. Naming the cell is more use than naming nothing.
 	local name = talent and talent.name or string.format(L.followUnknownCell, point.tier, point.column)
 	return string.format(L.followNext, name, tab, point.tier)
-end
-
---- Highlight the next point's button in the talent window, when it is open.
---- The frame name differs between clients (spike check 15); when neither is
---- present the line above is the whole feature and nothing errors.
-Follow.TALENT_FRAME = { "PlayerTalentFrame", "TalentFrame" }
-
---- The returned table describing what was highlighted (or nil) is not used
---- by any caller here -- it exists so the spec can assert on the outcome
---- without a display server. Keep returning it.
-function Follow.highlight(data, ranks)
-	local point = Follow.nextPoint(Follow.build, ranks or Talents.readRanks(data))
-	if point == nil then
-		return nil
-	end
-	for _, name in ipairs(Follow.TALENT_FRAME) do
-		local frame = _G[name]
-		if frame ~= nil then
-			Follow.highlighted = { frame = name, point = point }
-			return Follow.highlighted
-		end
-	end
-	return nil
 end
 
 ns.Follow = Follow

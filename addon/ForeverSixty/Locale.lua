@@ -21,6 +21,7 @@ local L = {
 	diagNoEvent = "This client refused the event %s.",
 	diagNoEquipApi = "This client has no equip function; the Equip buttons are off.",
 	diagNoTooltipApi = "This client has no %s; the item tooltip could not be shown.",
+	diagNoTalentButton = "No talent button matched the next point; the tracker still works.",
 	diagNone = "Nothing to report.",
 
 	-- Export

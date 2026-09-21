@@ -101,26 +101,4 @@ describe("Follow", function()
 		local unknownName = string.format(Locale.followUnknownCell, 9, 1)
 		assert.are.equal(string.format(Locale.followNext, unknownName, "Holy", 9), line)
 	end)
-
-	it("highlight acts on the open talent frame", function()
-		assert(Follow.load(CODE, DATA))
-		mock.install({})
-		_G.PlayerTalentFrame = { kind = "stub" }
-
-		local result = Follow.highlight(DATA, { [1] = {} })
-
-		_G.PlayerTalentFrame = nil
-		assert.are.same({ frame = "PlayerTalentFrame", point = { tab = 1, tier = 1, column = 1, index = 1 } }, result)
-	end)
-
-	it("highlight does nothing, and does not error, when no talent frame is open", function()
-		assert(Follow.load(CODE, DATA))
-		mock.install({})
-		_G.PlayerTalentFrame = nil
-		_G.TalentFrame = nil
-
-		assert.has_no.errors(function()
-			assert.is_nil(Follow.highlight(DATA, { [1] = {} }))
-		end)
-	end)
 end)
