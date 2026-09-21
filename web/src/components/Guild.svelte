@@ -197,6 +197,12 @@
    * `frozen: false`, in which case officer controls stay live. The contest response
    * itself carries no `frozen` bit, so a successful contest re-fetches home rather than
    * guessing the freeze outcome client-side.
+   *
+   * The re-fetch is wrapped separately from `contestClaim` itself: once `contestClaim`
+   * resolves, the contest is recorded server-side no matter what happens next, so a
+   * failure of the follow-up `fetchGuildHome` must never be reported with the generic
+   * "that did not work" message -- that would tell the viewer their contest failed when
+   * it actually succeeded, inviting a retry that only hits a 409.
    */
   async function onContest(): Promise<void> {
     if (home === null) return;
@@ -205,9 +211,15 @@
     try {
       await contestClaim(home.guild.id);
       showContestConfirm = false;
-      home = await fetchGuildHome(home.guild.id);
     } catch (thrown) {
       contestError = thrown instanceof Error ? thrown.message : 'That did not work; try again';
+      contestBusy = false;
+      return;
+    }
+    try {
+      home = await fetchGuildHome(home.guild.id);
+    } catch {
+      contestError = guildHomeCopy.contestRecordedRefreshFailed;
     } finally {
       contestBusy = false;
     }
@@ -300,7 +312,7 @@
           <p class="text-[13px]" role="alert" data-testid="guild-home-frozen">{guildHomeCopy.frozenNotice}</p>
         {/if}
 
-        {#if home.claim.state !== 'unclaimed' || canContest}
+        {#if home.claim.state === 'contested' || (canContest && home.claim.state !== 'unclaimed')}
           <div class="flex flex-wrap items-center gap-3">
             {#if home.claim.state === 'contested'}
               <span class="text-muted text-[13px]" data-testid="guild-home-claim-state">
@@ -311,6 +323,7 @@
               <button
                 class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3"
                 onclick={() => (showContestConfirm = true)}
+                disabled={contestBusy}
                 data-testid="guild-home-contest-button"
               >
                 {guildHomeCopy.contestButton}
@@ -339,7 +352,7 @@
                 onclick={() => (showContestConfirm = false)}
                 disabled={contestBusy}
               >
-                Cancel
+                {guildHomeCopy.cancel}
               </button>
             </div>
             {#if contestError !== ''}<p class="text-[13px]" role="alert">{contestError}</p>{/if}

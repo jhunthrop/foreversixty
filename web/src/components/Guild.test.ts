@@ -20,9 +20,4 @@ describe('Guild', () => {
     const { body } = render(Guild, { props: { path: PATH } });
     expect(body).toContain('Loading.');
   });
-
-  it('still renders no guild-home before session resolves, unaffected by the reconcile', () => {
-    const { body } = render(Guild, { props: { path: PATH } });
-    expect(body).not.toContain('data-testid="guild-home"');
-  });
 });

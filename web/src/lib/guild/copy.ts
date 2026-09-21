@@ -29,8 +29,14 @@ export const guildHomeCopy = {
   contestConfirmLine:
     'Contesting freezes this guild’s officer tools until a moderator reviews it. Use this only when the account that claimed this guild is not its guild master.',
   contestConfirmButton: 'Yes, contest this claim',
+  cancel: 'Cancel',
   contested: 'This claim is with a moderator.',
   frozenNotice: 'This guild’s claim is contested. Officer actions are frozen until a moderator resolves it.',
+  // The contest call itself succeeded but the page's own follow-up refresh failed -- a
+  // distinct case from the contest failing outright, so it gets its own honest sentence
+  // rather than the generic action-failed message that would wrongly imply the contest
+  // itself did not go through.
+  contestRecordedRefreshFailed: 'This claim is now contested. Reload the page to see the latest state.',
   reportsUnverifiedNote: 'You are not verified yet, so only public reports show here.',
 } as const;
 
