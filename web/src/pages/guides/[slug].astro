@@ -2,6 +2,7 @@
 // web/src/pages/guides/[slug].astro
 import { getCollection, render } from 'astro:content';
 import Content from '../../layouts/Content.astro';
+import { plannerHref } from '../../lib/planner/reference';
 export async function getStaticPaths() {
   return (await getCollection('guides')).map((g) => ({ params: { slug: g.id }, props: { entry: g } }));
 }
@@ -17,5 +18,8 @@ const { Content: Body } = await render(entry);
   confidence={entry.data.confidence}
   sources={entry.data.sources}
 >
+  <p>
+    <a href={plannerHref(entry.data.classSlug)}>Open the planner for this class</a>
+  </p>
   <Body />
 </Content>

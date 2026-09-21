@@ -9,8 +9,15 @@
 // off the rendered output. The three install links and the current data build are asserted
 // that way; the copy-file rule (every visible string comes from addonCopy, never a
 // literal) genuinely is a property of the source text, so that stays a source-text check.
+//
+// The Svelte renderer has to be handed to the container explicitly since addon.astro now
+// mounts AddonPasteBox.svelte -- Astro's integrations are not loaded in a unit test,
+// without this the island renders as an empty shell (see _planner.test.ts for the same
+// pattern).
 import { readFileSync } from 'node:fs';
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
+import { getContainerRenderer } from '@astrojs/svelte/container-renderer';
+import { loadRenderers } from 'astro:container';
 import { describe, expect, it, beforeAll } from 'vitest';
 import { addonCopy } from '../lib/addon/copy';
 import activeBuild from '../data/active-build.json';
@@ -37,7 +44,8 @@ const STRING_COPY_KEYS = [
 let html: string;
 
 beforeAll(async () => {
-  const container = await AstroContainer.create();
+  const renderers = await loadRenderers([getContainerRenderer()]);
+  const container = await AstroContainer.create({ renderers });
   html = await container.renderToString(AddonPage);
 });
 

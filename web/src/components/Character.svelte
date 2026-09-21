@@ -8,6 +8,7 @@
   import { encounterSlug, fetchCharacter, type CharacterPage } from '../lib/rankings/api';
   import { RANKING_METRICS } from '../lib/rankings/url';
   import { executionHref, executionLabel, executionTitle } from '../lib/sim/execution';
+  import CharacterHandoffLinks from './CharacterHandoffLinks.svelte';
 
   let { path = null }: { path?: CharacterPath | null } = $props();
 
@@ -88,6 +89,7 @@
         {#if data.character.class}· {data.character.class}{/if}
         · <span class="tabular font-mono">{data.history.length}</span> ranked fights
       </p>
+      <CharacterHandoffLinks path={resolved} />
     </header>
 
     <section class="flex flex-col gap-2">

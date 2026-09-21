@@ -15,6 +15,7 @@
   } from '../../lib/report/format';
   import { believableHealth, healthPct } from '../../lib/report/death-health';
   import { plannerLinkFor } from '../../lib/report/planner-link';
+  import { simLinkFor } from '../../lib/report/sim-link';
   import CopyCsv from './CopyCsv.svelte';
   import type { CastRow, CombatantRow, DamageRef, Death, HealRef, PullMark } from '../../lib/report/types';
   import { deathWindow, type TimeWindow } from '../../lib/report/window';
@@ -32,6 +33,8 @@
     dataBuild,
     treeSizesFor,
     onWindow,
+    reportId = undefined,
+    fightIndex = undefined,
   }: {
     /** The night's pulls, so a death over the night can say when in its pull it came. */
     pulls?: PullMark[];
@@ -49,6 +52,8 @@
     /** Talents per tree for a class, or [] when the planner has no data for it. */
     treeSizesFor: (className: string | undefined) => number[];
     onWindow: (window: TimeWindow) => void;
+    reportId?: string;
+    fightIndex?: number;
   } = $props();
 
   const ordered = $derived([...deaths].sort((a, b) => a.at_ms - b.at_ms));
@@ -278,6 +283,10 @@
          key threw on the duplicate and blanked the whole tab. -->
     {#each ordered as death (`${death.guid}-${death.at_ms}`)}
       {@const link = linkFor(death)}
+      {@const simLink =
+        reportId !== undefined && fightIndex !== undefined
+          ? simLinkFor(reportId, fightIndex, death.guid)
+          : null}
       {@const alreadyDead = deadAt(death)}
       {@const card = cardHealth(death)}
       <li
@@ -562,6 +571,15 @@
                 data-testid="death-build-link"
               >
                 {link.label}
+              </a>
+            {/if}
+            {#if simLink}
+              <a
+                class="border-line-warm-strong rounded-control text-strong inline-flex h-11 items-center border px-3 text-[12px] font-bold tracking-[0.06em] uppercase md:h-9"
+                href={simLink.href}
+                data-testid="death-sim-link"
+              >
+                {simLink.label}
               </a>
             {/if}
           </div>

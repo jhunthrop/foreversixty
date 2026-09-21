@@ -1482,6 +1482,8 @@
             onSelectPlayer={(guid) => patch({ source: guid })}
             players={playerSet}
             onTab={(tab) => patch({ tab })}
+            {reportId}
+            fightIndex={state.fight}
           />
         {:else if state.tab === 'damage-done' || state.tab === 'damage-taken' || state.tab === 'healing'}
           <FilterBar
@@ -1678,6 +1680,8 @@
             dataBuild={activeBuild.build}
             {treeSizesFor}
             onWindow={setWindow}
+            {reportId}
+            fightIndex={nightMode ? undefined : state.fight}
           />
         {/if}
       {/if}

@@ -22,8 +22,9 @@
     type Me,
     type PairingCode,
   } from '../lib/account/api';
-  import { characterHref, rulesetLabel } from '../lib/characters';
+  import { characterHref, parseCharacterPath, rulesetLabel } from '../lib/characters';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
+  import CharacterHandoffLinks from './CharacterHandoffLinks.svelte';
   import MyReports from './MyReports.svelte';
   import SignInPrompt from './SignInPrompt.svelte';
 
@@ -294,7 +295,10 @@
         {:else}
           <ul class="flex flex-col">
             {#each me!.characters as character (character.key)}
-              <li class="border-line-soft flex min-h-11 items-center gap-3 border-b py-2 text-[14px]">
+              {@const path = parseCharacterPath(`/character/${character.key}`)}
+              <li
+                class="border-line-soft flex min-h-11 flex-wrap items-center gap-3 border-b py-2 text-[14px]"
+              >
                 <a href={characterHref(character.region, character.ruleset, character.name)}
                   >{character.name}</a
                 >
@@ -302,6 +306,9 @@
                   {rulesetLabel(character.ruleset)}
                   {character.region.toUpperCase()}
                 </span>
+                {#if path !== null}
+                  <CharacterHandoffLinks {path} />
+                {/if}
               </li>
             {/each}
           </ul>

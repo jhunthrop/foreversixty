@@ -4,6 +4,7 @@
 // state the thing and stop.
 import Base from '../layouts/Base.astro';
 import Panel from '../components/Panel.astro';
+import AddonPasteBox from '../components/AddonPasteBox.svelte';
 import { addonCopy } from '../lib/addon/copy';
 import activeBuild from '../data/active-build.json';
 import communityLinks from '../data/links.json';
@@ -29,6 +30,7 @@ const links = [
 const flows = [
   { title: addonCopy.flowOutTitle, body: addonCopy.flowOutBody },
   { title: addonCopy.flowInTitle, body: addonCopy.flowInBody },
+  { title: addonCopy.inGameTitle, body: addonCopy.inGameBody },
 ];
 ---
 
@@ -60,6 +62,8 @@ const flows = [
         ))}
       </ul>
     </Panel>
+
+    <AddonPasteBox client:load />
 
     <div class="grid gap-4 md:grid-cols-2">
       {flows.map((flow) => (

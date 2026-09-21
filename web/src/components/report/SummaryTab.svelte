@@ -25,6 +25,7 @@
     formatAmountLike,
   } from '../../lib/report/format';
   import { plannerLinkFor } from '../../lib/report/planner-link';
+  import { simLinkFor } from '../../lib/report/sim-link';
   import GearList from './GearList.svelte';
   import SummaryPanels from './SummaryPanels.svelte';
   import ClassIcon from './ClassIcon.svelte';
@@ -44,6 +45,8 @@
     onSelectPlayer = undefined,
     players = new Set<string>(),
     onTab = undefined,
+    reportId = undefined,
+    fightIndex = undefined,
   }: {
     summary: Summary;
     /** The same window before the source scope, so a scoped row still shares against everyone. */
@@ -62,6 +65,8 @@
     players?: ReadonlySet<string>;
     /** Opens one of the deeper tabs from a panel's heading. */
     onTab?: (tab: 'damage-done' | 'healing' | 'damage-taken' | 'deaths') => void;
+    reportId?: string;
+    fightIndex?: number;
   } = $props();
 
   const roster = $derived([...summary.roster].sort((a, b) => b.damage_done - a.damage_done));
@@ -267,6 +272,10 @@
             treeSizes: treeSizesFor(classOf.get(combatant.guid)),
             combatant,
           })}
+          {@const simLink =
+            reportId !== undefined && fightIndex !== undefined
+              ? simLinkFor(reportId, fightIndex, combatant.guid)
+              : null}
           <li
             class="border-line-soft flex min-h-11 flex-wrap items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px]"
           >
@@ -297,6 +306,15 @@
                 data-testid="combatant-build-link"
               >
                 {link.label}
+              </a>
+            {/if}
+            {#if simLink}
+              <a
+                class="text-gold inline-flex min-h-11 items-center text-[13px] md:min-h-0"
+                href={simLink.href}
+                data-testid="combatant-sim-link"
+              >
+                {simLink.label}
               </a>
             {/if}
             {#if gearOpen === combatant.guid}

@@ -41,6 +41,13 @@ export const addonCopy = {
   importWrongClass: (exported: string, current: string): string =>
     `That export is for ${exported}; this planner is on ${current}. Switch to ${exported} and import again.`,
 
+  // --- /addon page's own paste box ---
+  pasteTitle: 'Try an export',
+  pastePlaceholder: 'FS1:…',
+  pasteAction: 'Load',
+  pasteOpenPlanner: 'Open in planner',
+  pasteOpenSim: 'Open in simulator',
+
   // --- /addon page ---
   pageTitle: 'The addon',
   pageDescription:
@@ -55,6 +62,9 @@ export const addonCopy = {
   flowOutBody: 'Type /fs export in game, copy the string, paste it into the planner’s Import from addon box.',
   flowInTitle: 'Into the game',
   flowInBody: 'Save a build here, press Copy addon code, then type /fs follow and paste it.',
+  inGameTitle: 'The in-game window',
+  inGameBody:
+    'The addon window, tracker, talent glow, gear tab and minimap button are in beta testing in game. There is no screenshot here because we have not captured one yet.',
 
   // --- gear panel weights ---
   scoreColumn: 'Score',
