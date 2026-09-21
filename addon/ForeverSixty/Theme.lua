@@ -259,6 +259,37 @@ function Theme.hasSettingsApi()
 		and type(Settings.RegisterAddOnCategory) == "function"
 end
 
+--- Put a panel in the game's own options, however this client does that.
+--- Returns which way it went, and the handle to open it with later.
+function Theme.registerSettingsPanel(panel, name)
+	if Theme.hasSettingsApi() then
+		local category = Settings.RegisterCanvasLayoutCategory(panel, name)
+		Settings.RegisterAddOnCategory(category)
+		return "settings", category
+	end
+	if type(InterfaceOptions_AddCategory) == "function" then
+		InterfaceOptions_AddCategory(panel)
+		return "interface", panel
+	end
+	Theme.note(L.diagNoSettingsPanel)
+	return nil, nil
+end
+
+function Theme.openSettingsPanel(category)
+	if category == nil then
+		return false
+	end
+	if type(Settings) == "table" and type(Settings.OpenToCategory) == "function" then
+		Settings.OpenToCategory(category)
+		return true
+	end
+	if type(InterfaceOptionsFrame_OpenToCategory) == "function" then
+		InterfaceOptionsFrame_OpenToCategory(category)
+		return true
+	end
+	return false
+end
+
 --- Register one event, recording rather than raising when the client has
 --- never heard of it. This is the only RegisterEvent call in the addon.
 function Theme.registerEvent(frame, event)

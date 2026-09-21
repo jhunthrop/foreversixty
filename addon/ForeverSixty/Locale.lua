@@ -24,6 +24,7 @@ local L = {
 	diagNoTalentButton = "No talent button matched the next point; the tracker still works.",
 	diagTalentTabUnknown = "This client does not say which talent tab is open; "
 		.. "the glow may be on the wrong tree.",
+	diagNoSettingsPanel = "This client has no options panel API; use /fs settings.",
 	diagNone = "Nothing to report.",
 
 	-- Export
@@ -134,6 +135,15 @@ local L = {
 	-- Inbox
 	inboxEmpty = "No builds waiting. Send one from foreversixty.gg.",
 	inboxCount = "%d build(s) waiting from the site.",
+
+	-- Settings
+	settingsTitle = "Forever Sixty options",
+	settingsMinimap = "Show the minimap button",
+	settingsTracker = "Show the tracker",
+	settingsTrackerLocked = "Lock the tracker in place",
+	settingsAutoSave = "Save my export when I log out",
+	settingsChat = "Print /fs answers in chat too",
+	settingsReset = "Reset positions",
 }
 
 ns.L = L

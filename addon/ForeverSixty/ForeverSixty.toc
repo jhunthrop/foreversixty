@@ -20,5 +20,6 @@ TalentGlow.lua
 views\ExportView.lua
 views\FollowView.lua
 views\GearView.lua
+views\SettingsView.lua
 Tracker.lua
 Options.lua
