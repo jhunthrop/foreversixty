@@ -4,6 +4,7 @@ package rating
 import (
 	"context"
 	"fmt"
+	"log/slog"
 
 	"github.com/jackc/pgx/v5"
 
@@ -43,13 +44,26 @@ func foldEligible(b ratingengine.Bracket) bool {
 // fight's first, genuine write; false on a rewrite (a re-verified fight) or a backfill
 // recompute, so a value already folded once is never folded twice (spec's idempotency
 // requirement). KillTimeBand never folds regardless of Fold - see foldKillDuration, called
-// once per fight rather than once per roster player.
+// once per fight rather than once per roster player. Log is optional, following this
+// codebase's Service.Log/logger() convention (api/internal/rankings/handler.go,
+// api/internal/reports/ingest.go): nil is fine and falls back to slog.Default() via
+// logger() below, so every construction of this type before Task 5 wires a real logger
+// through keeps working unchanged.
 type percentileAdapter struct {
 	Tx   pgx.Tx
 	Fold bool
+	Log  *slog.Logger
 }
 
 var _ ratingengine.PercentileSource = (*percentileAdapter)(nil)
+
+// logger returns a.Log, or slog.Default() when a.Log is unset.
+func (a *percentileAdapter) logger() *slog.Logger {
+	if a.Log != nil {
+		return a.Log
+	}
+	return slog.Default()
+}
 
 // Placement reads bracket b's digest, answers this value's percentile within it (before
 // this value is added - the same "read, then decide, then maybe fold" order
@@ -75,6 +89,15 @@ func (a *percentileAdapter) Placement(b ratingengine.Bracket, value float64) (pc
 	}
 	d, derr := digest.Unmarshal(raw)
 	if derr != nil {
+		// A corrupted digest row falls back to a fresh, empty digest so this bracket can
+		// keep accumulating - but that fallback must never be silent: if this call is also
+		// fold-eligible, the fresh digest is about to be persisted over the corrupted row,
+		// permanently discarding whatever history it held. Logged with the full bracket key
+		// so the affected row can be found and, if the corruption's cause turns out to be
+		// fixable, investigated before more folds compound the loss.
+		a.logger().Error("rating", "op", "placement", "encounter_id", b.EncounterID,
+			"difficulty", b.Difficulty, "spec", b.Spec, "role", b.Role,
+			"kill_time_band", b.KillTimeBand, "kill", b.Kill, "component", b.Component, "err", derr)
 		d = digest.New()
 	}
 	// digest.Digest.Placement already returns the share of the bracket's other values
