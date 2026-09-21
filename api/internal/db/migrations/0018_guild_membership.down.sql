@@ -1,6 +1,7 @@
 -- api/internal/db/migrations/0018_guild_membership.down.sql
 -- Security hardening additions (2026-09-21), reversed first, in exact
 -- reverse order of the up migration's appended block.
+drop index if exists guilds_claimed_by_idx;
 drop index if exists guilds_region_ruleset_lower_name_idx;
 drop table if exists guild_claim_attempts;
 alter table guilds drop column if exists claim_contested_by;

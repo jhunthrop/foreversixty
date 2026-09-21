@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 )
 
 var (
@@ -123,6 +124,10 @@ func (s *Store) Claim(ctx context.Context, guildID, userID int64, hasBattleNetId
 
 	if rank == "leader" {
 		if _, err := tx.Exec(ctx, `update guilds set claimed_by = $2 where id = $1`, guildID, userID); err != nil {
+			var pgErr *pgconn.PgError
+			if errors.As(err, &pgErr) && pgErr.Code == "23505" {
+				return ClaimResult{}, ErrAlreadyClaimsAnotherGuild
+			}
 			return ClaimResult{}, fmt.Errorf("guilds: claim: %w", err)
 		}
 		if err := setVerifiedForAccount(ctx, tx, guildID, userID, "claim"); err != nil {

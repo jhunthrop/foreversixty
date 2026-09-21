@@ -70,3 +70,11 @@ create index if not exists guild_claim_attempts_user_idx on guild_claim_attempts
 -- stricter and subsumes it, so both coexist harmlessly.
 create unique index if not exists guilds_region_ruleset_lower_name_idx
   on guilds (region, ruleset, lower(name));
+
+-- At most one currently-claimed guild per account: converts the
+-- application-level claim-rate-limit's TOCTOU race (two concurrent
+-- Claim() calls from the same account on two different unclaimed
+-- guilds could otherwise both succeed before either's pre-transaction
+-- check sees the other) into a safe commit-time unique-violation for
+-- the loser (2026-09-21 whole-round review, round 2).
+create unique index if not exists guilds_claimed_by_idx on guilds (claimed_by) where claimed_by is not null;

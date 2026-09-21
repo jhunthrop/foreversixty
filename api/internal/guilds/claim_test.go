@@ -4,6 +4,7 @@ package guilds
 import (
 	"context"
 	"errors"
+	"sync"
 	"testing"
 )
 
@@ -277,5 +278,57 @@ func TestAutoConfirmClaimIfPendingRefusesTheSameAccountsSecondForgedCharacter(t 
 	pool.QueryRow(ctx, `select claimed_by from guilds where id = $1`, gid).Scan(&claimedBy)
 	if claimedBy == nil || *claimedBy != attacker {
 		t.Fatalf("claimed_by = %v, want the originally pending %d, confirmed by a genuinely distinct account", claimedBy, attacker)
+	}
+}
+
+func TestClaimEnforcesOneClaimedGuildPerAccountUnderConcurrency(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	ctx := context.Background()
+	uid := seedUser(t, pool, "concurrent-claimant@example.com")
+	g1 := seedGuild(t, pool, "ConcurrentFirst")
+	g2 := seedGuild(t, pool, "ConcurrentSecond")
+	seedCharacter(t, pool, g1, uid, "us/hardcore/concurrentfirst", "leader", false)
+	seedCharacter(t, pool, g2, uid, "us/hardcore/concurrentsecond", "leader", false)
+
+	var wg sync.WaitGroup
+	results := make(chan error, 2)
+	wg.Add(2)
+	go func() {
+		defer wg.Done()
+		_, err := s.Claim(ctx, g1, uid, true)
+		results <- err
+	}()
+	go func() {
+		defer wg.Done()
+		_, err := s.Claim(ctx, g2, uid, true)
+		results <- err
+	}()
+	wg.Wait()
+	close(results)
+
+	var succeeded, rejected int
+	for err := range results {
+		switch {
+		case err == nil:
+			succeeded++
+		case errors.Is(err, ErrAlreadyClaimsAnotherGuild), errors.Is(err, ErrClaimRateLimited):
+			rejected++
+		default:
+			t.Fatalf("unexpected error from a concurrent claim: %v", err)
+		}
+	}
+	if succeeded != 1 {
+		t.Fatalf("succeeded = %d, want exactly 1 (the unique index must stop a second concurrent claim from the same account)", succeeded)
+	}
+	if rejected != 1 {
+		t.Fatalf("rejected = %d, want exactly 1", rejected)
+	}
+	var claimedCount int
+	if err := pool.QueryRow(ctx, `select count(*) from guilds where claimed_by = $1`, uid).Scan(&claimedCount); err != nil {
+		t.Fatal(err)
+	}
+	if claimedCount != 1 {
+		t.Fatalf("guilds claimed by the account = %d, want exactly 1", claimedCount)
 	}
 }
