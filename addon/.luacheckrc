@@ -25,7 +25,7 @@ read_globals = {
 	"UnitClass", "UnitRace", "UnitLevel", "UnitName", "GetRealmName", "GetCurrentRegion",
 	"GetProfessions", "GetProfessionInfo", "GetBuildInfo",
 	-- UI
-	"CreateFrame", "UIParent", "GameTooltip", "StaticPopupDialogs",
+	"CreateFrame", "UIParent", "GameTooltip", "StaticPopupDialogs", "ITEM_QUALITY_COLORS",
 	"InterfaceOptions_AddCategory", "Settings",
 	"NUM_BANKGENERIC_SLOTS", "NUM_BANKBAGSLOTS", "BANK_CONTAINER",
 	"TalentFrame", "PlayerTalentFrame",
@@ -67,6 +67,7 @@ files["tests/"] = {
 		"CreateFrame", "UIParent", "SlashCmdList",
 		"ForeverSixtyDB", "ForeverSixtyInbox",
 		"RAID_CLASS_COLORS", "InCombatLockdown", "EquipItemByName", "C_Item", "C_Timer",
+		"ITEM_QUALITY_COLORS",
 		"UISpecialFrames", "Minimap", "GameTooltip", "GetItemIcon", "date",
 		"ActionButton_ShowOverlayGlow", "ActionButton_HideOverlayGlow",
 		"GetCursorPosition", "Settings", "InterfaceOptions_AddCategory",

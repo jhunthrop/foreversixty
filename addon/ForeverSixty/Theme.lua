@@ -242,6 +242,17 @@ function Theme.classColor(token)
 	return entry.r, entry.g, entry.b, 1
 end
 
+--- An item name in its rarity colour. The client's own table when it has
+--- one; body text when it does not, which is legible rather than wrong.
+function Theme.qualityColor(quality)
+	local colors = ITEM_QUALITY_COLORS
+	local entry = type(colors) == "table" and quality ~= nil and colors[quality] or nil
+	if entry == nil then
+		return Theme.rgb(Theme.HEX.body)
+	end
+	return entry.r, entry.g, entry.b, 1
+end
+
 function Theme.hasSettingsApi()
 	return type(Settings) == "table"
 		and type(Settings.RegisterCanvasLayoutCategory) == "function"

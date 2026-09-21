@@ -116,6 +116,21 @@ local L = {
 	gearNoBuild = "No build loaded, so there is nothing to compare against.",
 	gearUpgrade = "%s: %+.1f over %s",
 	gearNone = "Nothing in your bags beats what you are wearing.",
+	gearPlanned = "Planned",
+	gearEquipped = "Equipped",
+	gearEmptySlot = "Empty",
+	gearYoursBetter = "Yours is better (%+.0f)",
+	gearDiffers = "Different from the plan",
+	gearBagUpgrades = "Upgrades in your bags",
+	gearEquipButton = "Equip",
+	gearInCombat = "In combat",
+	gearNotCached = "Item not cached yet, hover it once",
+	gearLoadABuild = "Load a build on the Follow tab to compare gear",
+	gearOpenFollow = "Open the Follow tab",
+	-- "<slot>  <name>" for a slot row, and "<name>  +12" for an upgrade.
+	gearSlotRow = "%s  %s",
+	gearUpgradeRow = "%+.0f",
+	gearItemUnknown = "Item %d",
 
 	-- Inbox
 	inboxEmpty = "No builds waiting. Send one from foreversixty.gg.",

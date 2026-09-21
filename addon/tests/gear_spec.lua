@@ -211,4 +211,25 @@ describe("Gear", function()
 	it("says so when nothing is loaded", function()
 		assert.are.same({ require("Locale").gearNoBuild }, Gear.lines(DATA, nil))
 	end)
+
+	it("carries the item link so the Equip button has something to equip", function()
+		mock.install({
+			class = { name = "Paladin", token = "PALADIN" },
+			talents = {
+				{ name = "Holy", talents = { { name = "A", tier = 1, column = 1, rank = 5, maxRank = 5 } } },
+				{ name = "Protection", talents = {} },
+				{ name = "Retribution", talents = {} },
+			},
+			bags = { [0] = { "better" } },
+			itemStats = {
+				better = { ITEM_MOD_SPELL_POWER_SHORT = 40, __itemId = 2, __slot = "INVTYPE_HEAD" },
+			},
+		})
+		local build = { classSlug = "paladin", statsUnknown = false, gear = {
+			{ slot = "head", itemId = 1, stats = { spell_power = 20 } },
+		} }
+		-- The link, not just the id: EquipItemByName needs something it can
+		-- name, and an id is not that.
+		assert.are.equal("better", Gear.upgrades(DATA, build)[1].link)
+	end)
 end)
