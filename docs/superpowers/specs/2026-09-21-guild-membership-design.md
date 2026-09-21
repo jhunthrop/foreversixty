@@ -381,6 +381,67 @@ corroboration mechanism, so it does not require `verified_at` beforehand.
 - **Dispute/release**: the current `claimed_by` account, or a moderator, may release the
   claim (`claimed_by = null`); also released automatically per §2.2 step 5.
 
+#### Amendment, 2026-09-21 (security review response)
+
+An independent security review of the `guild-api` branch found the guild-master-immediate
+branch above exploitable as written: nothing distinguished a genuine `GetGuildInfo`
+`rankIndex == 0` from a hand-typed one in a forged `POST /v1/addon/exports` body, so a
+single self-posted string let an attacker instantly become a verified leader of any
+**unclaimed** guild — which, at ship time, is every real guild, since `claimed_by` starts
+empty for all of them. This defeated §3.3's "raised corroboration bar" entirely for the one
+path that bootstraps a guild's whole claim/officer structure. The review also found
+`AutoConfirmClaimIfPending` (below) never checked the confirming signal was a distinct
+account from the pending claimant, letting a single account self-confirm its own pending
+claim with a second forged character.
+
+The coordinator's ruling: **the guild-master-immediate branch stays the bootstrap** — an
+unclaimed guild has no verified member who could vouch for a second signal, so requiring
+one here would make an unclaimed real guild unclaimable by its real leader. Instead the
+branch is hardened, and — new — made recoverable if it is still abused:
+
+- **Battle.net identity required.** The claiming account must have a linked Battle.net
+  identity (`users.bnet_sub` is not empty) before the guild-master branch will act on it.
+  Forever supports both Battle.net and email magic-link sign-in (`api/internal/auth/handler.go`
+  mounts both unconditionally), so this is a real, enforced check — not a fact already true
+  of every account — and it raises the floor from "any signed-in account with one paired
+  device" to "an account that has actually authenticated through Battle.net," which is a
+  real person's game account, not a disposable email address.
+- **Rate-limited to one claim (successful or pending) per account per rolling 30 days**,
+  tracked in a new `guild_claim_attempts` table, and **at most one currently-claimed guild
+  per account at a time** (checked against `guilds.claimed_by` directly). A successful
+  attack no longer scales past one guild per attacker per month.
+- **Claims are contestable.** `POST /v1/guilds/{id}/claim/contest` (§2.6): a caller with a
+  raw `guild_characters` row in that guild at `rankIndex == 0` or officer rank, on a
+  *different* account from the current claimant/pending claimant, flags the claim as
+  disputed (`guilds.claim_contested_at`/`claim_contested_by`) and **freezes** the
+  claimant's officer powers for that guild — approve, remove, settings, invite rotate, and
+  (via the unchanged `auth.Store.GuildRank`/`mayEdit` path) attaching a report — until a
+  moderator resolves it with `POST /v1/guilds/{id}/claim/resolve`, outcome `uphold`
+  (dismiss the contest), `release` (clear the claim and un-verify every character whose
+  *only* verification source was the claim), or `transfer` (move the claim, and the same
+  claim-sourced verification, to the contesting account). A genuine guild master who is
+  attacked no longer has no way back in — they contest, and a moderator settles it.
+- **`verified_at` now records its source** (`guild_characters.verified_by`, one of
+  `claim`/`officer`/`invite`/`logs`), so a claim `release` can un-verify precisely the rows
+  the claim itself vouched for and nothing else — a character an officer separately
+  approved, or that corroborated by logs, keeps its verification even if the claim that
+  first brought its account into the guild is later released.
+- `GET /v1/guilds/{id}/settings` and `GET /v1/guilds/{id}/home` now expose `claim: {
+  state: "unclaimed"|"pending"|"claimed"|"contested", since }` so the web can show it (the
+  review separately found `SettingsView.ClaimedBy`/`ClaimPending` declared but never
+  populated in the shipped code — fixed alongside this change, not a spec gap).
+- `AutoConfirmClaimIfPending` now requires the triggering `guild_characters` row's account
+  to differ from `claim_pending_by`, mirroring `ConfirmClaim`'s existing `ErrSameAccount`
+  check for the explicit confirm endpoint.
+
+**Residual risk, restated:** a Battle.net-linked account can still, once every 30 days,
+instantly claim one currently-unclaimed real guild by forging a single `rankIndex == 0`
+export naming it. This is deliberately not closed outright (closing it would make a
+genuinely unclaimed guild unclaimable by its real leader without a second signal that does
+not exist yet); it is made rare (30-day, one-guild-at-a-time), attributable (a real
+Battle.net identity, not a disposable one), and reversible (contest + moderator resolve)
+instead.
+
 ### 2.5 The invite link
 
 Unchanged mechanics from the first draft (a random 32-byte token, shown once, stored only
@@ -413,15 +474,17 @@ per the existing store style throughout this codebase.
 | `POST /v1/guilds/{id}/claim` | session | — | `{status: "confirmed"\|"pending", expires_at?}` | 403 `forbidden` (no character at rank officer/leader in this guild); 404 `not_found`; 409 `conflict` (already claimed, or already pending) |
 | `POST /v1/guilds/{id}/claim/confirm` | session | — | `{status: "confirmed", claimed_by: {battletag}}` | 403 `forbidden` (no officer/leader character, or same account as the pending claimant); 404 `not_found` (no pending claim, or expired) |
 | `POST /v1/guilds/{id}/claim/release` | session | — | `{status: "released"}` | 403 `forbidden` (not `claimed_by`, not moderator) |
-| `GET /v1/guilds/{id}/settings` | session, verified officer/leader or moderator | — | `{default_visibility, officer_max_rank_index, claimed_by, claim_pending, invite: {rotated_at}}` | 403 `forbidden` |
-| `PATCH /v1/guilds/{id}/settings` | session, verified officer/leader or moderator | `{default_visibility?, officer_max_rank_index?}` | updated settings | 400 `invalid` (`default_visibility` must be `public`, `unlisted` or `guild` — never `private` for a guild default); 403 `forbidden` |
-| `POST /v1/guilds/{id}/invite/rotate` | session, verified officer/leader | — | `{token, url, rotated_at}` (token shown once) | 403 `forbidden`; rate-limited |
+| `POST /v1/guilds/{id}/claim/contest` (2026-09-21 amendment) | session, rate-limited like claim | — | `{status: "contested"}` | 403 `forbidden` (no officer/leader-or-rank-0 character, or same account as the claimant); 404 `not_found`; 409 `conflict` (no active claim to contest, or already contested) |
+| `POST /v1/guilds/{id}/claim/resolve` (2026-09-21 amendment) | session, moderator only | `{outcome: "uphold"\|"release"\|"transfer"}` | `{status: "resolved", outcome}` | 400 `invalid`; 403 `forbidden` (not a moderator); 404 `not_found`; 409 `conflict` (no contested claim) |
+| `GET /v1/guilds/{id}/settings` | session, verified officer/leader or moderator | — | `{default_visibility, officer_max_rank_index, claimed_by, claim_pending, claim: {state, since?} (2026-09-21 amendment), invite: {rotated_at}}` | 403 `forbidden` |
+| `PATCH /v1/guilds/{id}/settings` | session, verified officer/leader or moderator | `{default_visibility?, officer_max_rank_index?}` | updated settings | 400 `invalid` (`default_visibility` must be `public`, `unlisted` or `guild` — never `private` for a guild default); 403 `forbidden`; 409 `claim_contested` (2026-09-21 amendment) |
+| `POST /v1/guilds/{id}/invite/rotate` | session, verified officer/leader | — | `{token, url, rotated_at}` (token shown once) | 403 `forbidden`; rate-limited; 409 `claim_contested` (2026-09-21 amendment) |
 | `POST /v1/guilds/invite/{token}/accept` | session | — | `{guild: {...}, rank: "member"}` | 404 `not_found` (unknown or revoked token — never distinguished); rate-limited 20/hour/IP |
-| `POST /v1/guilds/{id}/characters/{character_key}/approve` | session, verified officer/leader | — | updated character row (`verified_at` set) | 403 `forbidden`; 404 `not_found` (no such character row) |
-| `DELETE /v1/guilds/{id}/characters/{character_key}` | session, the character's own account **or** a verified officer/leader | — | `{status: "removed"}` | 403 `forbidden`; 404 `not_found` |
+| `POST /v1/guilds/{id}/characters/{character_key}/approve` | session, verified officer/leader | — | updated character row (`verified_at`/`verified_by='officer'` set) | 403 `forbidden`; 404 `not_found` (no such character row); 409 `claim_contested` (2026-09-21 amendment, while the guild's claim is disputed) |
+| `DELETE /v1/guilds/{id}/characters/{character_key}` | session, the character's own account **or** a verified officer/leader — **rank protects rank (2026-09-21 amendment)**: an `officer`-rank row also requires the account currently holding the claim; a `leader`-rank row only its own account or a moderator | — | `{status: "removed"}` | 403 `forbidden`; 404 `not_found`; 409 `claim_contested` (while contested, unless the caller is removing their own row or is a moderator) |
 | `PATCH /v1/guilds/{id}/members/me` | session | `{consent: "roster"\|"gear"\|"gear_bags"}` | updated member row | 400 `invalid`; 404 `not_found` (no membership) |
 | `DELETE /v1/guilds/{id}/members/me` | session | — | `{status: "left"}` (removes every one of the caller's own `guild_characters` rows in this guild) | 404 `not_found` |
-| `GET /v1/guilds/{id}/home` | session, any member (verified or not — §3.2) | — | this week's reports, character roster, who-logged (§4.1) | 403 `forbidden` (not a member); 404 `not_found` |
+| `GET /v1/guilds/{id}/home` | session, any member (verified or not — §3.2) | — | this week's **verified-or-public-or-own** reports (2026-09-21 amendment), character roster, who-logged (§4.1), `claim: {state, since?}` (2026-09-21 amendment) | 403 `forbidden` (not a member); 404 `not_found` |
 
 Both new mutating endpoints (`approve`, the officer branch of `DELETE .../characters/...`)
 call `recomputeMembership` for the affected account afterward, same as every other write in
@@ -592,6 +655,59 @@ clears `claimed_by` too when the leaving account held it (§2.2 step 5). This ma
 closing sentence exactly: "Leaving the guild, or an export that names a different guild,
 removes access at once" — now true per character, which is the more precise reading of
 "an export" than the first draft's single account-wide anchor gave it.
+
+#### Amendment, 2026-09-21 (security review response)
+
+Beyond the claim-flow hardening recorded in §2.4's amendment, the same review found four
+more gaps, all fixed as part of the same response:
+
+- **Rank protects rank.** `DELETE .../characters/{character_key}` (§2.6) let *any* verified
+  officer remove *any* character on the roster, including the guild master's own —
+  combined with §2.2 step 5's automatic claim release, an officer could strip the real
+  guild master of membership and immediately claim the now-unclaimed guild themselves.
+  Fixed: a `member`-rank row is removable by its own account, a verified officer/leader, or
+  a moderator (unchanged); an `officer`-rank row adds only the account currently holding
+  the guild's claim (not "any officer") to that list; a `leader`-rank row is removable only
+  by its own account or a moderator — never by another officer, and never by the account
+  holding the claim either, since a second `leader`-rank row belongs to a different real
+  character than the claimant's own.
+- **The guild home's report list now respects visibility.** `HomeReports` (§4.1) is
+  reachable by any member with even a single, unverified, freshly-forged `guild_characters`
+  row (`IsMember`, deliberately not `GuildRank` — that carve-out for the free home shell is
+  unchanged), and previously returned every report with the guild's `guild_id` regardless
+  of `visibility`, leaking a `private` or `unlisted` report's title, creation time, and
+  fight/kill counts to anyone who could forge membership at all. Fixed: the list now shows
+  a report the caller owns (any visibility), every `public` report, and a `guild`-visible
+  report only once the caller is **verified** (`GuildRank`-equivalent, checked once per
+  request and passed down) — never a `private` or `unlisted` row that is not the caller's
+  own, even to a verified member; an unverified member's home shows public and their own
+  reports only.
+- **Guild identity is case-insensitive.** `resolveGuild` matched guild names on exact text
+  while the pre-existing public guild page (`rankings/guilds.go`, untouched by this
+  amendment) already matched case-insensitively, so two exports differing only in casing
+  (`Iron Vanguard` vs. `IRON VANGUARD`) could mint two distinct `guilds` rows for what the
+  public page treats as one guild — a cheap way to spawn a same-named decoy guild to claim.
+  Fixed: one guild per `(region, ruleset, lower(name))` (a new unique index; the
+  pre-existing exact-text constraint from migration 0005 stays and is subsumed by it),
+  `resolveGuild` looks up and inserts through the case-insensitive index, and the first
+  writer's casing is kept as the guild's display name. Guild names are also now normalised
+  to Unicode NFC and trimmed, and rejected (making that one character's guild sync a silent,
+  logged no-op — never a 500, never aborting the rest of the export batch) if they exceed
+  the game's own 24-character guild name limit or contain a control character.
+- **Rank index and guild name are validated at the boundary.** A hand-crafted
+  `rankIndex` outside `0-9` (WoW's real range) previously reached
+  `guild_characters.rank_index smallint` unbounded, and an invalid-UTF-8 decoded name
+  previously reached `guilds.name text` unvalidated; either overflow/encoding failure
+  surfaced as an unhandled database error that aborted the *rest* of that `PutExports`
+  batch and answered a generic 500. Fixed: both are validated before any database write,
+  and a single character's malformed `guild=` section is now a synced-as-unguilded no-op
+  for that character alone, with a logged reason, never a batch-wide failure.
+- **`RecomputeMembership` now takes a transaction-scoped advisory lock** keyed on the
+  guild, serialising every concurrent caller (`PutExports`, `ApproveCharacter`,
+  `RemoveCharacter`, `Claim`, `UpdateSettings`, and the ageing/corroboration sweep jobs)
+  against each other for that guild, closing the theoretical stale-snapshot race the
+  original design left untested (§5's own "concurrent PutExports-plus-approve" case, now
+  covered by a real concurrency test).
 
 ## 4. The web side
 
