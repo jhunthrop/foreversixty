@@ -65,6 +65,7 @@ run the addon.
 
 Each is a workflow the officer review asked for and does by hand today:
 
+0. **The performance analyzer** (3.4): the flagship.
 1. **Raid readiness board.** For the next raid: every signed-up raider, whether their export
    is fresh, missing enchants, empty slots, unspent talents, consumable stock from their
    bags (the export already carries bags), and hit/defence caps for their role. One screen,
@@ -84,7 +85,61 @@ Each is a workflow the officer review asked for and does by hand today:
    (The in-game half is a later addon feature; the web sheet stands alone first.)
 6. **Private guild logs with long retention** (see 4).
 
-### 3.4 Consent
+### 3.4 The performance analyzer (the flagship; owner's direction, 2026-09-21)
+
+**The problem.** Officers judge raiders by who parses highest. A parse rewards padding,
+ignores everything that is not throughput, punishes the mage who was told to decurse and the
+warrior who swapped to the add, and says nothing about the player who died to the fire at
+20% and cost the kill. A rating has to cover the whole performance.
+
+**The rating.** One score per player per fight, 0 to 100, always shown with the parts that
+made it. Never a bare number: the breakdown is the product, the total is the headline.
+Components are weighted by role (a tank's Output is small and Survival is large; a healer's
+Output is healing, measured as effective healing and not overheal):
+
+| Component | What it measures | Where it comes from (already in the engine unless noted) |
+|---|---|---|
+| **Output** | Damage or healing against what this character could do, not against other people's gear | The execution score: actual over the simulator's figure for their own gear, talents, buffs and this fight's length and targets. Falls back to the spec percentile where the simulator does not model the spec yet. |
+| **Survival** | Avoidable damage taken; deaths, weighted by when (a death at 95% costs more than one at 3%) and by cause (avoidable or not) | `mechanics` tables (avoidable / unavoidable per boss), death recap, fight timeline |
+| **Mechanics** | Interrupts made of those that needed making; dispels made and how fast; debuffs carried that should have been removed | `mechanics` interrupt and dispel tables, `interrupts`, `dispels`, aura uptimes |
+| **Utility** | The jobs that do not show on a meter: raid buffs and debuffs kept up (curses, Sunder stacks, Faerie Fire, Demo Shout, judgements), battle resses, innervates and power infusions given, taunts that landed when they had to, threat kept under the tank | `auras` (uptime by applier), `casts`, `taunts`, `threat`; **new:** a per-spec table of which utilities a spec owns |
+| **Preparation** | Flask, elixirs, food, weapon stone or oil, potions actually used in the fight, world buffs at pull | `auras` at pull and `casts` of consumables; **new:** consumable catalogue by role |
+| **Activity** | Time spent casting or swinging against time alive, excluding forced downtime (the boss's own movement and immunity phases) | `casts`, `phases`; **new:** per-boss downtime windows in the mechanics tables |
+
+**Fairness rules, which are the hard part and the reason this is worth paying for:**
+1. **Assigned jobs are credited, not punished.** An officer marks assignments (decurse,
+   interrupt rotation, add duty, kiting) and the player's Output is then judged only on the
+   time they were free, while the job itself scores under Mechanics or Utility.
+2. **Compared with people like you.** Every component is a percentile within the same
+   spec, boss and kill-time bracket once enough logs exist, and an absolute standard from
+   the mechanics tables before then. The page says which one it is using.
+3. **Small samples are said out loud.** One pull is an anecdote: the rating shows a
+   confidence band and the trend over the raid night and over weeks, which is what an
+   officer should be reading.
+4. **Wipes count, differently.** Survival and Mechanics are scored on wipes (that is where
+   they matter most); Output is not.
+5. **No hidden weights.** The weights per role are on the page and the guild can change
+   them; a guild that does not care about consumables turns Preparation off.
+6. **Private by default.** A player always sees their own full rating, free. Officers of a
+   claimed guild see their raiders'. Nothing about an individual's rating is public or
+   ranked; only the guild's aggregate can be shown on the guild page if the guild chooses.
+   This is a coaching tool, and a public shame board would poison it.
+
+**What the officer gets:** a raid-night sheet (every raider, overall and the six parts,
+sorted by what cost the most), a per-player page (trend over weeks, best and worst
+component, the three specific things to fix next with links to the moment in the log), and
+a wipe analysis ("this pull ended because of these three avoidable deaths") in one screen.
+**What the player gets, free:** their own report card on every fight they are in.
+
+**What has to be built:** the scoring model and its per-role weights; the per-spec utility
+table and the consumable catalogue (curated data, like the mechanics tables); downtime
+windows per boss; assignments; percentiles per component in the API (the digests already
+hold per-spec metric distributions for parses); and the three pages. The mechanics tables
+cover a handful of encounters today and need one per raid boss before December 9: that
+curation is the long pole, and the drafting tool that proposes a table from a log already
+exists.
+
+### 3.5 Consent
 
 A raider's gear and bags are theirs. A member chooses what officers can see: **roster only**
 (name, class, spec), **gear** (default), or **gear and bags** (needed for consumable
@@ -141,7 +196,7 @@ a premium perk only if ads exist).
 
 ### 4.3 Sequence
 
-1. **Guild membership and the free guild home** (3.1, 3.2, 3.4). No payments needed; makes
+1. **Guild membership and the free guild home** (3.1, 3.2, 3.5). No payments needed; makes
    `guild` visibility real; gives every later piece its audience. About one lane.
 2. **Entitlements + payments + the premium page** with the player plan, gating what is
    already built (server sims) plus retention. About one lane, API-heavy, security review
@@ -162,8 +217,8 @@ plan in November; the first two officer tools by December 9.
 1. Prices (4.1).
 2. Stripe or Patreon first (4.2).
 3. Ads on reference pages: ever? (4.1)
-4. Is the loot council helper the right flagship for the guild plan, or is there an officer
-   pain you feel more (you run or raid with a guild: what do your officers do by hand)?
+4. ANSWERED 2026-09-21: the flagship is the performance analyzer (3.4); the loot council
+   helper is second.
 5. Launch timing (4.3).
 6. A legal entity and a payments account: the processor needs a business or sole-prop
    identity, a bank account and a support email. That is yours to set up; nothing here
