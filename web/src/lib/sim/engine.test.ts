@@ -104,4 +104,38 @@ describe('unwrapOrThrow', () => {
   it('does not mistake a SimResult carrying no .error for a failure', () => {
     expect(() => unwrapOrThrow(JSON.stringify({ iterations_run: 400 }))).not.toThrow();
   });
+
+  // Defect A: weightsJSON (sim/cmd/wasm/exports.go) fails a weights run the same way
+  // simRun fails a shard -- a full SimResult JSON with `.error` set (failJSON), not a bare
+  // `{"error": "..."}` -- and this generic check already throws on either shape, since it
+  // only ever looks at the top-level `.error` field. The bug was never here: it was that
+  // nothing called this function on simWeights' answer at all (see the test below).
+  it("throws on a full SimResult carrying .error, the shape weightsJSON's failJSON sends", () => {
+    const failedWeightsResult = JSON.stringify({
+      request: { spec: 'warrior-fury' },
+      error: 'iterations must be one of [500 3000 10000], got 60',
+      summary: {},
+    });
+    expect(() => unwrapOrThrow(failedWeightsResult)).toThrow(
+      'iterations must be one of [500 3000 10000], got 60',
+    );
+  });
+});
+
+describe("loadWasmEngine's simWeights binding (source pin)", () => {
+  // Real wasm loading needs WebAssembly.instantiateStreaming and a live worker, which this
+  // suite cannot run -- the same reason main.go/exports.go above are pinned by source rather
+  // than exercised. Defect A: simWeights' promise resolves with a full SimResult carrying
+  // `.error` on a refused or failed run (weightsJSON's own failJSON, sim/cmd/wasm/exports.go)
+  // rather than rejecting -- unlike simValidate/simRank/simNeedsMore, its binding here used
+  // to return that answer straight through, so a refused browser-lane weights run (a
+  // "fast"-precision request outside the settings bar's closed iteration set, before that
+  // was fixed in sim/api/envelope.go) resolved as an ordinary, empty result and the page
+  // never learned the run had failed. Pinned so a future edit cannot quietly drop the unwrap.
+  const ENGINE_TS = path.resolve(import.meta.dirname, 'engine.ts');
+
+  it("runs simWeights' answer through unwrapOrThrow, the same as simValidate and simRank", () => {
+    const src = readFileSync(ENGINE_TS, 'utf8');
+    expect(src).toMatch(/simWeights:\s*async[\s\S]{0,120}unwrapOrThrow\(await globals\.simWeights!/);
+  });
 });

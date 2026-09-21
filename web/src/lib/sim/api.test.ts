@@ -71,6 +71,22 @@ describe('saveSim', () => {
     await saveSim({ ...fixtureResult, sim_id: undefined }, TEST_API);
     expect('title' in (api.lastBody() as object)).toBe(false);
   });
+
+  // Defect C's own belt-and-braces guard: `SimResult.title` (types.ts) exists so a saved
+  // sim's own GET can carry the name back -- `fetchSim` fills it in. A re-run of one of
+  // those, saved again with no new name typed, must not silently republish the old sim's
+  // title onto a result the player never named this time.
+  it('never carries a re-run’s own inherited title through when none is typed for this save', async () => {
+    const rerun = { ...fixtureResult, sim_id: undefined, title: 'Last week’s name' };
+    await saveSim(rerun, TEST_API);
+    expect('title' in (api.lastBody() as object)).toBe(false);
+  });
+
+  it('still lets a newly typed title override a re-run’s inherited one', async () => {
+    const rerun = { ...fixtureResult, sim_id: undefined, title: 'Last week’s name' };
+    await saveSim(rerun, TEST_API, 'This week’s name');
+    expect((api.lastBody() as { title?: string }).title).toBe('This week’s name');
+  });
 });
 
 describe('listMySims', () => {

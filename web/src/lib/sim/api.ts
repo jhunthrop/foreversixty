@@ -65,9 +65,16 @@ async function call<T>(
  * existing caller -- `SharePanel.svelte`, `store.svelte.ts`, `api.test.ts` -- already calls
  * this with `apiBase` as the second positional argument, and inserting a parameter ahead of
  * it would silently turn every one of those into a call that sends a build's own API origin
- * as the sim's title. The contract's `title` column has no field on `SimResult` itself
- * (only the `sims` table does), so it travels as a sibling key on the JSON body rather than
- * an addition to the `SimResult` shape every reader of that type would then have to ignore.
+ * as the sim's title.
+ *
+ * `body.title` is always decided by this function's own `title` parameter, never by
+ * whatever `result.title` already carries: `result` is ordinarily a fresh run's own
+ * `SimResult`, with no title of its own to have an opinion about, but `SimResult.title`
+ * (defect fix, `types.ts`) is exactly the field `fetchSim` fills in from a saved sim's own
+ * `GET` -- and a re-run of one of those, saved again with no new name typed, must not
+ * silently carry the old sim's title onto a result the player never named. `delete
+ * body.title` clears whatever `{ ...result }` copied over before the `title !== ''` check
+ * decides whether to put one back.
  */
 export async function saveSim(
   result: SimResult,
@@ -76,6 +83,7 @@ export async function saveSim(
 ): Promise<string> {
   const body: SimResult & { title?: string } = { ...result, lane: 'browser' };
   delete body.sim_id;
+  delete body.title;
   if (title !== '') body.title = title;
   const data = await call<{ sim_id: string }>('/v1/sims', apiBase, simCopy.saveFailed, {
     method: 'POST',

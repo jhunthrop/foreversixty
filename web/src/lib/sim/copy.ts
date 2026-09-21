@@ -1093,6 +1093,15 @@ export const bulkCopy = {
   /** bulk-store.svelte.ts's `baseRequest` refusal when `stats` is empty: `WeightsSpec.
    *  Reference` is required (contract 10.8), so an empty list has nothing to send. */
   weightsNeedStats: 'Pick at least one stat to weigh.',
+  /**
+   * Defect A's belt-and-braces guard (`bulk-store-request.ts`'s `runBulkAndSettle`): a
+   * weights run that finished -- not stopped, not thrown -- but came back with no weight
+   * rows at all. `sim/adapter.Weights` never returns an empty slice on a genuine success (one
+   * row per stat asked for, or an error), so this should be unreachable in product; it exists
+   * so a future change on either side of the wire cannot reopen defect A's silent "done" by a
+   * different path. The one sentence this page never had for that case before the fix.
+   */
+  weightsEmpty: 'The run finished, but the engine returned no stat weights.',
 
   // --- the request drawer's own one-liner, so Advanced is findable on every tool ---
   advancedTitle: 'Request',

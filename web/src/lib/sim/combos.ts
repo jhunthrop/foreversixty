@@ -3,7 +3,7 @@
 // runs are within error of the leader, `delta` already carries its own error, and the
 // ordering is the planner's. This turns those into rows, labels and a winning gear list.
 import type { BulkResult, Combo, Substitution } from './bulk-types';
-import { codeForCharacterSpec } from './character';
+import { plannerHrefForSpec } from './character';
 import { bulkCopy } from './copy';
 import { confidenceBand, formatMargin } from './estimate';
 import type { CharacterSpec, Estimate, GearSlot } from './types';
@@ -320,11 +320,11 @@ export function canPlanCombo(combo: Combo): boolean {
 
 /**
  * "Plan it" (design 1): the base character with this one row's own change opened in the
- * planner, through the same `codeForCharacterSpec` conversion the page's own "Open in
- * planner" link already uses (`character.ts`) -- one encoder, so the two links can never
- * disagree about what a code encodes. Null when `canPlanCombo` says the row has nothing a
- * planner link can honestly open (see its own doc comment); the caller draws no link rather
- * than one that opens gear or a loadout this row never actually tried.
+ * planner, through the same `plannerHrefForSpec`/`codeForCharacterSpec` conversion every
+ * other "Open in planner" link uses (`character.ts`) -- one encoder, so no two links can
+ * ever disagree about what a code encodes. Null when `canPlanCombo` says the row has
+ * nothing a planner link can honestly open (see its own doc comment); the caller draws no
+ * link rather than one that opens gear or a loadout this row never actually tried.
  */
 export function planItHref(result: BulkResult, combo: Combo, treeVersion: string): string | null {
   if (!canPlanCombo(combo)) return null;
@@ -334,7 +334,7 @@ export function planItHref(result: BulkResult, combo: Combo, treeVersion: string
     gear: gearForCombo(result.request.character.gear, combo),
     ...(talents === undefined ? {} : { talents }),
   };
-  return `/planner?code=${encodeURIComponent(codeForCharacterSpec(spec, treeVersion))}`;
+  return plannerHrefForSpec(spec, treeVersion);
 }
 
 export interface SlotSummaryRow {

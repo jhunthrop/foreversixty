@@ -311,6 +311,14 @@ export interface SampleCast {
 
 export interface SimResult {
   sim_id?: string;
+  /**
+   * The name a member gave this sim, from "Name this sim" (SaveSimForm.svelte), present
+   * only on GET /v1/sims/{id}'s own read (`api/internal/sims/handler.go`'s `GetOutput`) --
+   * a sibling of the stored result, never a field the wasm/premium-job engine itself
+   * produces, the same reason POST /v1/sims sends it as a sibling `title` key rather than
+   * a field on the posted `SimResult`. Absent, not `''`, when the member named nothing.
+   */
+  title?: string;
   engine_version: string;
   request: SimRequest;
   lane: 'browser' | 'server';

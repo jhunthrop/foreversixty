@@ -50,3 +50,39 @@ describe('CharacterStrip’s honest "simmed at 60" note', () => {
     expect(body).not.toContain(handoffCopy.simmedAtSixty);
   });
 });
+
+/** Pulls the `href` of the one `data-testid="sim-open-planner"` anchor out of a render's HTML. */
+function plannerLinkHref(body: string): string | null {
+  const match =
+    /data-testid="sim-open-planner"[^>]*href="([^"]*)"/.exec(body) ??
+    /href="([^"]*)"[^>]*data-testid="sim-open-planner"/.exec(body);
+  return match?.[1] ?? null;
+}
+
+// Defect fix: SavedSim.svelte's own character carries no `point_order` at all (genuinely
+// unreconstructible for a saved sim), so this component's default derivation -- built for
+// the live /sim page, where `point_order` is the truth -- can only ever encode zeroed
+// talents from it. `plannerHref` is the caller's own escape hatch: when given, it wins
+// outright, `character.point_order` and the talent-file fetch this component would
+// otherwise need are never consulted for the link at all.
+describe('CharacterStrip’s plannerHref override', () => {
+  it('uses the precomputed plannerHref verbatim, ignoring point_order entirely', () => {
+    const { body } = render(CharacterStrip, {
+      props: {
+        character: base, // point_order: [] -- would zero every talent through the default path
+        ...requiredProps,
+        plannerHref: '/planner?code=fs1v2:1.60.1.69893:warrior:orc:0/5530515/0:head=12640',
+      },
+    });
+    expect(plannerLinkHref(body)).toBe('/planner?code=fs1v2:1.60.1.69893:warrior:orc:0/5530515/0:head=12640');
+  });
+
+  it('falls back to its own class+race-only link when no plannerHref is given (unchanged default)', () => {
+    const { body } = render(CharacterStrip, { props: { character: base, ...requiredProps } });
+    // No TalentIndex resolves during an SSR render (onMount never fires), so the default
+    // path's own null-index fallback is what a fresh render always shows first -- exactly
+    // the live page's own first paint, `CharacterStrip`'s file header already documents.
+    // SSR-escaped: `&` renders as `&amp;` in the raw HTML this test reads.
+    expect(plannerLinkHref(body)).toBe('/planner?class=warrior&amp;race=orc');
+  });
+});
