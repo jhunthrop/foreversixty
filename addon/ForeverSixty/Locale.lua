@@ -176,6 +176,9 @@ local L = {
 	bindingToggle = "Toggle Forever Sixty",
 	settingsTooltip = "Show gear tips on item tooltips",
 	settingsToast = "Show the level-up toast",
+	diagNoTooltipHook = "This client has no tooltip hook API; item tooltips will not show Forever Sixty's lines.",
+	diagCompartmentFailed = "This client's addon compartment did not accept Forever Sixty; "
+		.. "the minimap button is used instead.",
 }
 
 ns.L = L

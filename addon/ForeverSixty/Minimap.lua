@@ -190,7 +190,7 @@ function MinimapButton.registerCompartment()
 	})
 	MinimapButton.compartmentRegistered = ok
 	if not ok then
-		Theme.note(string.format(L.diagNoTemplate, "AddonCompartmentFrame"))
+		Theme.note(L.diagCompartmentFailed)
 	end
 	return ok
 end

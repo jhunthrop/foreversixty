@@ -210,7 +210,7 @@ function Tooltip.register()
 		Tooltip.how = "legacy"
 		return Tooltip.how
 	end
-	Theme.note(string.format(L.diagTooltipHookFailed, "no tooltip hook API"))
+	Theme.note(L.diagNoTooltipHook)
 	Tooltip.how = nil
 	return nil
 end
