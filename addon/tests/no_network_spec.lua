@@ -28,7 +28,10 @@ describe("the addon", function()
 
 	it("names no network or shell API", function()
 		local paths = {}
-		local listing = assert(io.popen("ls ForeverSixty/*.lua"))
+		-- A recursive walk, not `ls ForeverSixty/*.lua`: the views live one
+		-- directory down and a glob that does not reach them would leave
+		-- four source files unscanned by the addon's only network gate.
+		local listing = assert(io.popen("find ForeverSixty -name '*.lua'"))
 		for line in listing:lines() do
 			paths[#paths + 1] = line
 		end
