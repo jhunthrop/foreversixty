@@ -11,6 +11,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"strings"
+	"sync"
 	"testing"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -630,7 +631,7 @@ func TestPutExportsAutoConfirmsAPendingClaimWhenTheGuildMastersExportArrives(t *
 	}
 	var guildID int64
 	h.pool.QueryRow(ctx, `select id from guilds where name = 'Forever'`).Scan(&guildID)
-	if _, err := (&guilds.Store{Pool: h.pool}).Claim(ctx, guildID, h.owner); err != nil {
+	if _, err := (&guilds.Store{Pool: h.pool}).Claim(ctx, guildID, h.owner, true); err != nil {
 		t.Fatal(err)
 	}
 	var pendingBy *int64
@@ -654,5 +655,144 @@ func TestPutExportsAutoConfirmsAPendingClaimWhenTheGuildMastersExportArrives(t *
 	h.pool.QueryRow(ctx, `select claimed_by from guilds where id = $1`, guildID).Scan(&claimedBy)
 	if claimedBy == nil || *claimedBy != h.owner {
 		t.Fatalf("claimed_by = %v, want the originally pending officer %d, auto-confirmed by the GM's export", claimedBy, h.owner)
+	}
+}
+
+func TestPutExportsResolvesGuildsCaseInsensitively(t *testing.T) {
+	h := newHarness(t)
+	ctx := context.Background()
+	if err := h.store.PutExports(ctx, h.owner, []Export{
+		{Name: "Baelgrim", Region: "us", Ruleset: "hardcore",
+			Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=Iron%20Vanguard:0"},
+	}); err != nil {
+		t.Fatal(err)
+	}
+	alt := h.owner + 1
+	if _, err := h.pool.Exec(ctx,
+		`insert into users (id, email) values ($1, 'alt-case@example.com') on conflict (id) do nothing`, alt); err != nil {
+		t.Fatal(err)
+	}
+	if err := h.store.PutExports(ctx, alt, []Export{
+		{Name: "Caseshifter", Region: "us", Ruleset: "hardcore",
+			Export: "FS1:1.60.1.69893:mage:gnome:0/0/0:|guild=IRON%20VANGUARD:5"},
+	}); err != nil {
+		t.Fatal(err)
+	}
+	var n int
+	if err := h.pool.QueryRow(ctx, `select count(*) from guilds where region = 'us' and ruleset = 'hardcore'`).Scan(&n); err != nil {
+		t.Fatal(err)
+	}
+	if n != 1 {
+		t.Fatalf("guilds rows = %d, want 1 (case-insensitive match, not a second decoy guild)", n)
+	}
+	var name string
+	if err := h.pool.QueryRow(ctx, `select name from guilds where region = 'us' and ruleset = 'hardcore'`).Scan(&name); err != nil {
+		t.Fatal(err)
+	}
+	if name != "Iron Vanguard" {
+		t.Fatalf("name = %q, want the first writer's casing, Iron Vanguard", name)
+	}
+}
+
+func TestPutExportsRejectsAnOutOfRangeRankIndexAsANoOpNotAnAbort(t *testing.T) {
+	h := newHarness(t)
+	ctx := context.Background()
+	err := h.store.PutExports(ctx, h.owner, []Export{
+		{Name: "Baelgrim", Region: "us", Ruleset: "hardcore",
+			Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=Overflow:99999"},
+	})
+	if err != nil {
+		t.Fatalf("an out-of-range rank index must be a silent no-op, not a batch-aborting error: %v", err)
+	}
+	var n int
+	if err := h.pool.QueryRow(ctx, `select count(*) from guild_characters where character_key = 'us/hardcore/baelgrim'`).Scan(&n); err != nil {
+		t.Fatal(err)
+	}
+	if n != 0 {
+		t.Fatal("no guild_characters row should have been created for the out-of-range rank")
+	}
+	if err := h.pool.QueryRow(ctx, `select count(*) from guilds where name = 'Overflow'`).Scan(&n); err != nil {
+		t.Fatal(err)
+	}
+	if n != 0 {
+		t.Fatal("the guild itself should never have been created from invalid data")
+	}
+}
+
+func TestPutExportsContinuesTheBatchPastOneBadCharacter(t *testing.T) {
+	h := newHarness(t)
+	ctx := context.Background()
+	if err := h.store.PutExports(ctx, h.owner, []Export{
+		{Name: "BadOne", Region: "us", Ruleset: "hardcore",
+			Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=Overflow:99999"},
+		{Name: "GoodTwo", Region: "us", Ruleset: "hardcore",
+			Export: "FS1:1.60.1.69893:mage:gnome:0/0/0:|guild=RealGuild:0"},
+	}); err != nil {
+		t.Fatal(err)
+	}
+	var n int
+	if err := h.pool.QueryRow(ctx, `select count(*) from guild_characters where character_key = 'us/hardcore/goodtwo'`).Scan(&n); err != nil {
+		t.Fatal(err)
+	}
+	if n != 1 {
+		t.Fatal("the second, valid character in the same batch must still sync, even though the first was invalid")
+	}
+}
+
+func TestConcurrentPutExportsAndApproveDoNotLoseAWrite(t *testing.T) {
+	h := newHarness(t)
+	ctx := context.Background()
+	if err := h.store.PutExports(ctx, h.owner, []Export{
+		{Name: "RaceMain", Region: "us", Ruleset: "hardcore",
+			Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=RaceGuild:5"},
+	}); err != nil {
+		t.Fatal(err)
+	}
+	var gid int64
+	if err := h.pool.QueryRow(ctx, `select id from guilds where name = 'RaceGuild'`).Scan(&gid); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := h.pool.Exec(ctx,
+		`insert into guild_characters (guild_id, character_key, user_id, rank) values ($1, 'us/hardcore/racealt', $2, 'member')`,
+		gid, h.owner); err != nil {
+		t.Fatal(err)
+	}
+	guildStore := &guilds.Store{Pool: h.pool}
+
+	var wg sync.WaitGroup
+	var err1, err2 error
+	wg.Add(2)
+	go func() {
+		defer wg.Done()
+		err1 = h.store.PutExports(ctx, h.owner, []Export{
+			{Name: "RaceMain", Region: "us", Ruleset: "hardcore",
+				Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=RaceGuild:5"},
+		})
+	}()
+	go func() {
+		defer wg.Done()
+		err2 = guildStore.ApproveCharacter(ctx, gid, "us/hardcore/racealt")
+	}()
+	wg.Wait()
+	if err1 != nil {
+		t.Fatalf("concurrent PutExports: %v", err1)
+	}
+	if err2 != nil {
+		t.Fatalf("concurrent ApproveCharacter: %v", err2)
+	}
+
+	// The advisory lock in RecomputeMembership serialises the two racing
+	// recomputes; the final guild_members row must reflect BOTH
+	// guild_characters rows correctly, not a lost update from one racing
+	// past the other's stale snapshot.
+	var rank string
+	var verified bool
+	if err := h.pool.QueryRow(ctx,
+		`select rank, verified_at is not null from guild_members where guild_id = $1 and user_id = $2`,
+		gid, h.owner).Scan(&rank, &verified); err != nil {
+		t.Fatal(err)
+	}
+	if !verified {
+		t.Fatal("the approved character's verification must not have been lost to the race")
 	}
 }

@@ -42,6 +42,8 @@ const (
 	// store also prunes to this many rows per user on every write, so
 	// the table itself never grows past what a read can ever return.
 	InboxLimit = 50
+	// maxRankIndex is a WoW guild's highest real rank index (10 ranks, 0-9).
+	maxRankIndex = 9
 )
 
 // Export is one character's addon export.
@@ -69,7 +71,20 @@ type queued struct {
 }
 
 // Store is the addon's two tables.
-type Store struct{ Pool *pgxpool.Pool }
+type Store struct {
+	Pool *pgxpool.Pool
+	// Log is used only for warning about a malformed guild= section
+	// during a sync (validateGuildName/rank-bound failures) - never for
+	// routine operation. Defaults to slog.Default() when nil.
+	Log *slog.Logger
+}
+
+func (s *Store) logger() *slog.Logger {
+	if s.Log != nil {
+		return s.Log
+	}
+	return slog.Default()
+}
 
 // PutExports replaces a user's exports for the characters named, and syncs
 // each character's guild membership (guild_characters, then the derived
@@ -150,6 +165,15 @@ func (s *Store) syncGuild(ctx context.Context, tx pgx.Tx, userID int64, key, reg
 	}
 
 	name, rankIndex, ok := ParseFS1Guild(export)
+	if ok {
+		var validName bool
+		name, validName = validateGuildName(name)
+		if !validName || rankIndex < 0 || rankIndex > maxRankIndex {
+			s.logger().Warn("addon", "op", "guild_sync", "character_key", key,
+				"reason", "invalid guild= section: bad name or rank index outside 0-9")
+			ok = false
+		}
+	}
 	if !ok {
 		if prevGuildID == nil {
 			return nil
@@ -187,7 +211,7 @@ func (s *Store) syncGuild(ctx context.Context, tx pgx.Tx, userID int64, key, reg
 	}
 
 	if rank == "leader" {
-		if err := guilds.AutoConfirmClaimIfPending(ctx, tx, guildID); err != nil {
+		if err := guilds.AutoConfirmClaimIfPending(ctx, tx, guildID, userID); err != nil {
 			return err
 		}
 	}
@@ -200,19 +224,38 @@ func (s *Store) syncGuild(ctx context.Context, tx pgx.Tx, userID int64, key, reg
 	return nil
 }
 
-// resolveGuild finds or creates the guild an export names, returning its
-// id and its current officer-rank threshold.
+// resolveGuild finds or creates the guild an export names, matching
+// case-insensitively on (region, ruleset, lower(name)) - two exports
+// differing only in casing must resolve to the same guilds row, the
+// same way the pre-existing public guild page already matches (2026-
+// 09-21 security review response, spec §3.3's amendment). The first
+// writer's casing is kept as the display name; a concurrent insert
+// racing on the same case-insensitive name is tolerated by falling back
+// to the row the winner created.
 func resolveGuild(ctx context.Context, tx pgx.Tx, region, ruleset, name string) (id int64, officerMax int, err error) {
-	if _, err := tx.Exec(ctx,
-		`insert into guilds (region, ruleset, name) values ($1, $2, $3) on conflict (region, ruleset, name) do nothing`,
-		region, ruleset, name); err != nil {
-		return 0, 0, fmt.Errorf("addon: create guild %s: %w", name, err)
+	err = tx.QueryRow(ctx,
+		`select id, officer_max_rank_index from guilds where region = $1 and ruleset = $2 and lower(name) = lower($3)`,
+		region, ruleset, name).Scan(&id, &officerMax)
+	if err == nil {
+		return id, officerMax, nil
+	}
+	if !errors.Is(err, pgx.ErrNoRows) {
+		return 0, 0, fmt.Errorf("addon: read guild %s: %w", name, err)
 	}
 	err = tx.QueryRow(ctx,
-		`select id, officer_max_rank_index from guilds where region = $1 and ruleset = $2 and name = $3`,
+		`insert into guilds (region, ruleset, name) values ($1, $2, $3)
+		 on conflict (region, ruleset, (lower(name))) do nothing
+		 returning id, officer_max_rank_index`,
 		region, ruleset, name).Scan(&id, &officerMax)
+	if errors.Is(err, pgx.ErrNoRows) {
+		// A concurrent insert of a case-variant name won the race; read
+		// the row it created.
+		err = tx.QueryRow(ctx,
+			`select id, officer_max_rank_index from guilds where region = $1 and ruleset = $2 and lower(name) = lower($3)`,
+			region, ruleset, name).Scan(&id, &officerMax)
+	}
 	if err != nil {
-		return 0, 0, fmt.Errorf("addon: read guild %s: %w", name, err)
+		return 0, 0, fmt.Errorf("addon: create/read guild %s: %w", name, err)
 	}
 	return id, officerMax, nil
 }

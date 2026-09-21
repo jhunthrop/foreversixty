@@ -326,7 +326,7 @@ func serve(log *slog.Logger) error {
 		},
 		Rankings: &rankings.Service{Store: rankStore, Log: log},
 		Addon: &addon.Service{
-			Store: &addon.Store{Pool: pool}, Builds: buildStore, Data: treeData, Log: log,
+			Store: &addon.Store{Pool: pool, Log: log}, Builds: buildStore, Data: treeData, Log: log,
 		},
 		Guilds:           &guilds.Service{Store: guildStore, Accounts: authStore, Log: log},
 		TrustedProxyHops: cfg.TrustedProxyHops,
