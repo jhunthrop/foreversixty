@@ -1362,7 +1362,11 @@ var _ ratingengine.PercentileSource = (*percentileAdapter)(nil)
 // Placement reads bracket b's digest, answers this value's percentile within it (before
 // this value is added - the same "read, then decide, then maybe fold" order
 // rankings.Store.updateDigest already uses), and, when a.Fold and foldEligible(b), adds
-// value and persists the row, all under the caller's transaction.
+// value and persists the row afterward, all under the caller's transaction. The returned
+// pct/n are captured from the digest's state BEFORE the fold mutates it (Go passes them
+// back by value, so foldValue's later mutation of the same *digest.Digest cannot change
+// what was already returned) - a fight is never compared against its own not-yet-folded
+// value.
 func (a *percentileAdapter) Placement(b ratingengine.Bracket, value float64) (pct float64, n int64, ok bool) {
 	var raw []byte
 	err := a.Tx.QueryRow(context.Background(),
@@ -1377,21 +1381,26 @@ func (a *percentileAdapter) Placement(b ratingengine.Bracket, value float64) (pc
 	if err != nil {
 		return 0, 0, false
 	}
-	d, err := digest.Unmarshal(raw)
-	if err != nil || d.Count() == 0 {
-		if a.Fold && foldEligible(b) {
-			a.persistDigest(b, addAndEncode(digest.New(), value))
-		}
-		return 0, 0, false
+	d, derr := digest.Unmarshal(raw)
+	if derr != nil {
+		d = digest.New()
 	}
-	pct, n = d.Placement(value)*100, d.Count()
+	// digest.Digest.Placement already returns the share of the bracket's other values
+	// this value beats in 0..1 (api/internal/digest/digest.go:203-212's own doc comment),
+	// exactly the range ratingengine.PercentileSource.Placement documents - no further
+	// scaling belongs here.
+	if d.Count() > 0 {
+		pct, n, ok = d.Placement(value), d.Count(), true
+	}
 	if a.Fold && foldEligible(b) {
-		a.persistDigest(b, addAndEncode(d, value))
+		a.foldValue(b, d, value)
 	}
-	return pct / 100, n, true
+	return pct, n, ok
 }
 
-func addAndEncode(d *digest.Digest, value float64) (*digest.Digest, []byte) {
+// foldValue adds value to d and persists the encoded digest under bracket b. Called only
+// after Placement has already captured its return values from d's pre-fold state.
+func (a *percentileAdapter) foldValue(b ratingengine.Bracket, d *digest.Digest, value float64) {
 	d.Add(value)
 	encoded, err := d.MarshalBinary()
 	if err != nil {
@@ -1401,10 +1410,6 @@ func addAndEncode(d *digest.Digest, value float64) (*digest.Digest, []byte) {
 		// the error.
 		panic("rating: digest must always marshal: " + err.Error())
 	}
-	return d, encoded
-}
-
-func (a *percentileAdapter) persistDigest(b ratingengine.Bracket, d *digest.Digest, encoded []byte) {
 	_, _ = a.Tx.Exec(context.Background(),
 		`update rating_percentile_digests set digest = $8, n = $9, updated_at = now()
 		 where encounter_id = $1 and difficulty = $2 and spec = $3 and role = $4
@@ -1651,7 +1656,6 @@ package rating
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"log/slog"
 	"time"
@@ -1785,10 +1789,12 @@ func insertCardRow(ctx context.Context, tx pgx.Tx, cr CardRow) error {
 	}
 	return nil
 }
-
-// errNotFound mirrors reports.ErrNotFound's role for this package's own reads (Task 6).
-var errNotFound = errors.New("rating: not found")
 ```
+
+Do not declare an `errNotFound` var here: Task 6's read methods report "not found" via a
+plain `ok bool` return instead (see Task 6), so an unused package-level error var would be
+dead code the moment this task lands. If a later task genuinely needs a sentinel error, it
+declares it where it is first used.
 
 - [ ] **Step 4: Run the tests**
 
@@ -2149,8 +2155,8 @@ func (s *Store) ReadCharacterRating(ctx context.Context, playerKey string, limit
 }
 ```
 
-Add `"github.com/jackc/pgx/v5"` and keep `"errors"` in `store.go`'s imports (already present
-from Task 5's `errNotFound`).
+Add `"errors"` to `store.go`'s imports for `errors.Is(err, pgx.ErrNoRows)` above
+(`"github.com/jackc/pgx/v5"` is already imported from Task 5's `insertCardRow`).
 
 - [ ] **Step 7: Run the tests**
 
@@ -2976,6 +2982,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"io"
 	"testing"
 	"time"
@@ -2985,24 +2992,29 @@ import (
 	ratingengine "github.com/jhunthrop/foreversixty/logs/engine/rating"
 )
 
+var errFakeGetterMiss = errors.New("fake getter: no such object")
+
 type fakeGetter struct{ objects map[string][]byte }
 
 func (g fakeGetter) Get(ctx context.Context, key string) (io.ReadCloser, error) {
 	b, ok := g.objects[key]
 	if !ok {
-		return nil, errNotFound
+		return nil, errFakeGetterMiss
 	}
 	return io.NopCloser(bytes.NewReader(b)), nil
 }
 
 func TestBackfillRecomputesStaleRowsAndAdvancesModelVersion(t *testing.T) {
 	pool := testPool(t)
-	store := &Store{Pool: pool}
+	// Named ratingStore, not store: this file also imports logs/engine/store for
+	// store.Keys below, and a local variable named store would shadow that package
+	// identifier for the rest of the function.
+	ratingStore := &Store{Pool: pool}
 	ctx := context.Background()
 	f := fightFixture("backfill-test-1", true,
 		summary.RosterRow{GUID: "g1", Name: "Stale", Class: "Shaman", Spec: "Enhancement", Role: "dps"},
 	)
-	if err := store.RateFight(ctx, f); err != nil {
+	if err := ratingStore.RateFight(ctx, f); err != nil {
 		t.Fatal(err)
 	}
 	t.Cleanup(func() { pool.Exec(ctx, `delete from rating_scores where report_id = $1`, f.ReportID) })
@@ -3017,7 +3029,7 @@ func TestBackfillRecomputesStaleRowsAndAdvancesModelVersion(t *testing.T) {
 	getter := fakeGetter{objects: map[string][]byte{
 		store.Keys{ReportID: f.ReportID}.FightSummary(f.FightIndex): body,
 	}}
-	n, err := Backfill(ctx, BackfillDeps{Store: store, Summaries: getter}, 10)
+	n, err := Backfill(ctx, BackfillDeps{Store: ratingStore, Summaries: getter}, 10)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -3033,12 +3045,12 @@ func TestBackfillRecomputesStaleRowsAndAdvancesModelVersion(t *testing.T) {
 
 func TestBackfillIsBoundedPerRun(t *testing.T) {
 	pool := testPool(t)
-	store := &Store{Pool: pool}
+	ratingStore := &Store{Pool: pool} // see the naming note in the test above
 	ctx := context.Background()
 	for i := 0; i < 3; i++ {
 		f := fightFixture(fightIDFor(i), true,
 			summary.RosterRow{GUID: "g1", Name: "Bounded", Class: "Shaman", Spec: "Elemental", Role: "dps"})
-		if err := store.RateFight(ctx, f); err != nil {
+		if err := ratingStore.RateFight(ctx, f); err != nil {
 			t.Fatal(err)
 		}
 		pool.Exec(ctx, `update rating_scores set model_version = 'rating-2020-01-01' where report_id = $1`, f.ReportID)
@@ -3049,7 +3061,7 @@ func TestBackfillIsBoundedPerRun(t *testing.T) {
 		}
 	})
 	getter := fakeGetter{objects: map[string][]byte{}} // every read fails: this test only checks the batch bound, not success
-	n, err := Backfill(ctx, BackfillDeps{Store: store, Summaries: getter}, 2)
+	n, err := Backfill(ctx, BackfillDeps{Store: ratingStore, Summaries: getter}, 2)
 	if err != nil {
 		t.Fatal(err)
 	}
