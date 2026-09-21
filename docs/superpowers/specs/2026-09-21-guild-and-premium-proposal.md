@@ -120,16 +120,28 @@ Output is healing, measured as effective healing and not overheal):
    they matter most); Output is not.
 5. **No hidden weights.** The weights per role are on the page and the guild can change
    them; a guild that does not care about consumables turns Preparation off.
-6. **Private by default.** A player always sees their own full rating, free. Officers of a
-   claimed guild see their raiders'. Nothing about an individual's rating is public or
-   ranked; only the guild's aggregate can be shown on the guild page if the guild chooses.
-   This is a coaching tool, and a public shame board would poison it.
+6. **The player owns their rating** (decided 2026-09-21). A player always sees their own
+   full rating, free. Officers of a claimed guild see their raiders'. Beyond that, a rating
+   is visible only if its owner turns it on: a **raider card** (overall score, the six
+   parts, trend, bosses killed, attendance) that the player can share as a link or mark
+   "visible to raid leaders". Nothing about a player who has not opted in is shown to
+   anyone, paying or not: selling a judgement about a person without their consent would
+   make players stop uploading public logs, which is the data everything here stands on.
+   Premium sits on the *viewer's* side of consenting players only: a pug leader on the guild
+   or player plan can paste a raid roster and get every opted-in raider's card on one
+   screen, with the ones who have not opted in shown as "not shared". Free viewers can open
+   a raider card one at a time from a link they were given.
+7. **One number first, then the parts** (decided 2026-09-21). Every surface leads with the
+   overall score and opens into the six parts, then into the moments in the log behind each
+   part. The number never appears anywhere the parts cannot be reached in one click.
 
 **What the officer gets:** a raid-night sheet (every raider, overall and the six parts,
 sorted by what cost the most), a per-player page (trend over weeks, best and worst
 component, the three specific things to fix next with links to the moment in the log), and
 a wipe analysis ("this pull ended because of these three avoidable deaths") in one screen.
-**What the player gets, free:** their own report card on every fight they are in.
+**What the player gets, free:** their own report card on every fight they are in, and the
+choice to share it (decided 2026-09-21: the player's own card is free, officer and roster
+views are paid).
 
 **What has to be built:** the scoring model and its per-role weights; the per-spec utility
 table and the consumable catalogue (curated data, like the mechanics tables); downtime
