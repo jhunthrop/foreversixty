@@ -112,10 +112,10 @@ func TestExpandStyleKeepsWhatTheStyleDoesNotSet(t *testing.T) {
 	base.DurationSec = 300
 	base.Variation = 0.1
 	base.TargetLevel = 61
-	base.TargetArmor = 2500
+	base.TargetArmor = ptr(2500)
 	base.TargetType = "undead"
 	got, _ := ExpandStyle("cleave-3", base)
-	if got.DurationSec != 300 || got.Variation != 0.1 || got.TargetLevel != 61 || got.TargetArmor != 2500 || got.TargetType != "undead" {
+	if got.DurationSec != 300 || got.Variation != 0.1 || got.TargetLevel != 61 || got.TargetArmor == nil || *got.TargetArmor != 2500 || got.TargetType != "undead" {
 		t.Errorf("the style overwrote what it does not own: %+v", got)
 	}
 }

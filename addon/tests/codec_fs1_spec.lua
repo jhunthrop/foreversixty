@@ -33,6 +33,7 @@ local REFUSALS = {
 	["a gear entry with two equals signs"] = string.format(L.codecGearEntry, "head=12640=99"),
 	["a non-numeric item id"] = string.format(L.codecGearEntry, "head=12640abc"),
 	["too few fields"] = L.codecShort,
+	["a non-numeric guild rank"] = string.format(L.codecGuildRank, "officer"),
 }
 
 describe("Codec FS1", function()
@@ -61,6 +62,7 @@ describe("Codec FS1", function()
 				assert.are.same(vector.build.sets, build.sets, vector.name)
 				assert.are.same(vector.build.loadouts, build.loadouts, vector.name)
 				assert.are.same(vector.build.professions, build.professions, vector.name)
+				assert.are.same(vector.build.guild, build.guild, vector.name)
 				assert.are.same(vector.build.ignored, build.ignored, vector.name)
 			end
 		end)
@@ -84,6 +86,19 @@ describe("Codec FS1", function()
 		it("refuses a code past the length bound before parsing it", function()
 			local _, message = Codec.decodeFS1(string.rep("x", Codec.MAX_CODE_LENGTH + 1))
 			assert.are.equal(require("Locale").codecTooLong, message)
+		end)
+
+		it("refuses a malformed guild rank with the new message, distinct from an ignored unknown section", function()
+			local build, message = Codec.decodeFS1(
+				"FS1:1:paladin:human:0/0/0:|guild=Iron%20Vanguard:officer"
+			)
+			assert.is_nil(build)
+			assert.are.equal(string.format(L.codecGuildRank, "officer"), message)
+		end)
+
+		it("leaves guild nil, not an empty table, when no guild section is present", function()
+			local build = assert(Codec.decodeFS1("FS1:1:paladin:human:0/0/0:"))
+			assert.is_nil(build.guild)
 		end)
 	end)
 
@@ -130,6 +145,7 @@ describe("Codec FS1", function()
 				assert.are.same(decoded.sets, redecoded.sets, vector.name)
 				assert.are.same(decoded.loadouts, redecoded.loadouts, vector.name)
 				assert.are.same(decoded.professions, redecoded.professions, vector.name)
+				assert.are.same(decoded.guild, redecoded.guild, vector.name)
 				-- An unknown section is named on decode and never written back:
 				-- encodeFS1 emits only the sections it understands. So a re-encoded
 				-- code has nothing left to ignore. Dropping it is the point -- the
@@ -199,6 +215,32 @@ describe("Codec FS1", function()
 				sets = { { name = "a;b=c|d", gear = { { slot = "head", itemId = 1 } } } },
 			})
 			assert.are.equal("FS1:1:paladin:human:0/0/0:|sets=a%3Bb%3Dc%7Cd=head=1", code)
+		end)
+
+		it("appends a guild section after professions and round-trips it", function()
+			local code = Codec.encodeFS1({
+				dataBuild = "1",
+				classSlug = "paladin",
+				raceSlug = "human",
+				treeRanks = { {}, {}, {} },
+				gearSlots = {},
+				professions = { "enchanting" },
+				guild = { name = "Iron Vanguard", rankIndex = 2 },
+			})
+			assert.are.equal("FS1:1:paladin:human:0/0/0:|professions=enchanting|guild=Iron%20Vanguard:2", code)
+			local build = assert(Codec.decodeFS1(code))
+			assert.are.same({ name = "Iron Vanguard", rankIndex = 2 }, build.guild)
+		end)
+
+		it("writes no guild section when build.guild is nil", function()
+			local code = Codec.encodeFS1({
+				dataBuild = "1",
+				classSlug = "paladin",
+				raceSlug = "human",
+				treeRanks = { {}, {}, {} },
+				gearSlots = {},
+			})
+			assert.is_nil(code:find("guild=", 1, true))
 		end)
 	end)
 end)

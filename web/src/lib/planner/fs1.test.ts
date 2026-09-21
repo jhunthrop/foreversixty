@@ -167,6 +167,37 @@ describe('version 2 sections', () => {
     expect(decoded.build.professions).toEqual(['engineering', 'blacksmithing']);
   });
 
+  it('reads the guild section', () => {
+    const decoded = decodeFS1(`${V1}|guild=Iron%20Vanguard:2`);
+    expect(decoded.ok).toBe(true);
+    if (!decoded.ok) return;
+    expect(decoded.build.guild).toEqual({ name: 'Iron Vanguard', rankIndex: 2 });
+  });
+
+  it('leaves guild undefined, never an empty object, when the code carries no guild section', () => {
+    const decoded = decodeFS1(V1);
+    expect(decoded.ok).toBe(true);
+    if (!decoded.ok) return;
+    expect(decoded.build.guild).toBeUndefined();
+  });
+
+  it('refuses a non-numeric guild rank rather than silently dropping the section', () => {
+    const decoded = decodeFS1(`${V1}|guild=Iron%20Vanguard:officer`);
+    expect(decoded.ok).toBe(false);
+    if (decoded.ok) return;
+    expect(decoded.message).toBe('That code has an unreadable guild rank: officer.');
+  });
+
+  it('splits the guild payload on the first colon, so a name containing one still reads (pre-escaped)', () => {
+    // A literal colon in a guild name is always percent-encoded by encodeURIComponent
+    // before it reaches this format (RFC 3986's unreserved set excludes ':'), so this
+    // is exercising the decoder's own split rule, not a real un-escaped name.
+    const decoded = decodeFS1(`${V1}|guild=A%3AB:3`);
+    expect(decoded.ok).toBe(true);
+    if (!decoded.ok) return;
+    expect(decoded.build.guild).toEqual({ name: 'A:B', rankIndex: 3 });
+  });
+
   it('reads bags and bank, with the optional enchant and suffix', () => {
     const decoded = decodeFS1(`${V1}|bags=16963,17076:2504,19360:2505:1820|bank=12640`);
     expect(decoded.ok).toBe(true);
@@ -372,6 +403,47 @@ describe('encodeFS1V2', () => {
     expect(decoded.build.sets).toEqual(build.sets);
     expect(decoded.build.loadouts[0].name).toBe('Deep Fury');
     expect(decoded.build.professions).toEqual(['engineering', 'blacksmithing']);
+  });
+
+  it('writes the guild section after professions and round-trips it', () => {
+    const build = {
+      dataBuild: '1.15.9',
+      classSlug: 'warrior',
+      raceSlug: 'orc',
+      treeRanks: [[], [], []],
+      gear: {},
+      bags: [],
+      bank: [],
+      sets: [],
+      loadouts: [],
+      professions: ['engineering'],
+      guild: { name: 'Iron Vanguard', rankIndex: 2 },
+      ignored: [],
+    };
+    const code = encodeFS1V2(build);
+    expect(code.indexOf('|professions=')).toBeLessThan(code.indexOf('|guild='));
+    expect(code).toContain('|guild=Iron%20Vanguard:2');
+
+    const decoded = decodeFS1(code);
+    expect(decoded.ok).toBe(true);
+    if (decoded.ok) expect(decoded.build.guild).toEqual({ name: 'Iron Vanguard', rankIndex: 2 });
+  });
+
+  it('omits the guild section entirely when build.guild is absent', () => {
+    const code = encodeFS1V2({
+      dataBuild: '1.15.9',
+      classSlug: 'warrior',
+      raceSlug: 'orc',
+      treeRanks: [[], [], []],
+      gear: {},
+      bags: [],
+      bank: [],
+      sets: [],
+      loadouts: [],
+      professions: [],
+      ignored: [],
+    });
+    expect(code).not.toContain('guild=');
   });
 
   it('escapes a name carrying the separators it would otherwise break on', () => {

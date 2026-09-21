@@ -3,7 +3,7 @@
 // runs are within error of the leader, `delta` already carries its own error, and the
 // ordering is the planner's. This turns those into rows, labels and a winning gear list.
 import type { BulkResult, Combo, Substitution } from './bulk-types';
-import { codeForCharacterSpec } from './character';
+import { plannerHrefForSpec } from './character';
 import { bulkCopy } from './copy';
 import { confidenceBand, formatMargin } from './estimate';
 import type { CharacterSpec, Estimate, GearSlot } from './types';
@@ -320,11 +320,11 @@ export function canPlanCombo(combo: Combo): boolean {
 
 /**
  * "Plan it" (design 1): the base character with this one row's own change opened in the
- * planner, through the same `codeForCharacterSpec` conversion the page's own "Open in
- * planner" link already uses (`character.ts`) -- one encoder, so the two links can never
- * disagree about what a code encodes. Null when `canPlanCombo` says the row has nothing a
- * planner link can honestly open (see its own doc comment); the caller draws no link rather
- * than one that opens gear or a loadout this row never actually tried.
+ * planner, through the same `plannerHrefForSpec`/`codeForCharacterSpec` conversion every
+ * other "Open in planner" link uses (`character.ts`) -- one encoder, so no two links can
+ * ever disagree about what a code encodes. Null when `canPlanCombo` says the row has
+ * nothing a planner link can honestly open (see its own doc comment); the caller draws no
+ * link rather than one that opens gear or a loadout this row never actually tried.
  */
 export function planItHref(result: BulkResult, combo: Combo, treeVersion: string): string | null {
   if (!canPlanCombo(combo)) return null;
@@ -334,7 +334,7 @@ export function planItHref(result: BulkResult, combo: Combo, treeVersion: string
     gear: gearForCombo(result.request.character.gear, combo),
     ...(talents === undefined ? {} : { talents }),
   };
-  return `/planner?code=${encodeURIComponent(codeForCharacterSpec(spec, treeVersion))}`;
+  return plannerHrefForSpec(spec, treeVersion);
 }
 
 export interface SlotSummaryRow {
@@ -412,6 +412,45 @@ export function keepsSetBonus(
     counts.set(setId, (counts.get(setId) ?? 0) + 1);
   }
   return sets.some((set) => (counts.get(set.id) ?? 0) >= pieces);
+}
+
+/**
+ * Whether `keepsSetBonus` would ever be true for this result at all -- dps D24:
+ * ComboResults.svelte used to print "Only combinations keeping a 4-piece set bonus" and
+ * its checkbox over every result, including a character with no 4-piece set anywhere in
+ * play, where ticking it can only ever empty the table. The checkbox means nothing to a
+ * player it can never apply to, so the page shows it only when at least one combo in the
+ * result reaches the piece count.
+ */
+export function anyKeepsSetBonus(
+  result: BulkResult,
+  items: ReadonlyMap<number, Item>,
+  sets: readonly ItemSet[],
+  pieces: number,
+): boolean {
+  return result.combos.some((combo) => keepsSetBonus(combo, result, items, sets, pieces));
+}
+
+/**
+ * Rows whose delta is bit-identical to at least one other row here -- not `combo.group`'s
+ * own "within error" test (a statistical closeness the page already draws a rule under),
+ * but the same mean AND the same error to the decimal, which only happens when two
+ * candidates leave the simulated character in an identical state: neither's stats touch
+ * anything this spec's damage depends on (dps D36: three different necks, none of them
+ * carrying a melee stat, all landing on the same `-19 ± 2.3`). `dedupedCombos` above only
+ * ever drops an exact repeat of the same item id, so distinct items always keep distinct
+ * rows here -- these are real ties, grouped so the page can say why once per group instead
+ * of leaving unexplained duplicate numbers on screen.
+ */
+export function exactTieGroups(rows: readonly ComboRow[]): ComboRow[][] {
+  const byDelta = new Map<string, ComboRow[]>();
+  for (const row of rows) {
+    const key = `${row.combo.delta.mean}:${row.combo.delta.error}`;
+    const group = byDelta.get(key);
+    if (group === undefined) byDelta.set(key, [row]);
+    else group.push(row);
+  }
+  return [...byDelta.values()].filter((group) => group.length > 1);
 }
 
 /**

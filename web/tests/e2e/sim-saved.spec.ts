@@ -8,7 +8,9 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { expect, test } from '@playwright/test';
+import { plannerHrefForSpec } from '../../src/lib/sim/character';
 import { simCopy } from '../../src/lib/sim/copy';
+import type { CharacterSpec } from '../../src/lib/sim/types';
 
 const ROOT = path.join(import.meta.dirname, '..', '..');
 const activeBuild = JSON.parse(readFileSync(path.join(ROOT, 'src', 'data', 'active-build.json'), 'utf8')) as {
@@ -22,7 +24,7 @@ const fixtureResult = JSON.parse(
   iterations_run: number;
   duration_ms: number;
   lane: 'browser' | 'server';
-  request: { character: { gear: unknown[] } };
+  request: { spec: string; character: CharacterSpec };
 };
 
 // Task 20: a saved Top Gear/talents/drops result and a saved weights result, at /sim/<id>.
@@ -109,6 +111,26 @@ test.describe('a saved sim from the prerendered fixture', () => {
     await expect(page.getByTestId('sim-change-source')).toHaveCount(0);
   });
 
+  // Defect fix: SavedSim.svelte used to hand CharacterStrip a `character` with
+  // `point_order: []`, which fell through to the strip's own `plannerHrefFor` -- built for
+  // the live /sim page, where `point_order` is the truth -- and that function can only
+  // encode zeroed talents from an empty order (`toCharacterSpec`'s own
+  // `talentsString(index, [])`). A saved sim's own stored request already carries the true,
+  // final talents string (result.json's fixture: `-5530515-`, a real Fury Warrior build,
+  // not `----`), so the fix reaches it directly through `plannerHrefForSpec` instead of
+  // reconstructing anything through a point order the page never had.
+  test('"Open in planner" carries the saved sim’s own talents, not zeroed', async ({ page }) => {
+    await page.goto('/sim/simfixtureab');
+    await expect(page.getByTestId('sim-character')).toBeVisible();
+
+    const expectedHref = plannerHrefForSpec(fixtureResult.request.character, activeBuild.build);
+    // The fixture's own talents string is non-empty, so a correct link's code cannot be the
+    // all-zero shape defect B produced (":0/0/0:").
+    expect(fixtureResult.request.character.talents.replace(/-/g, '')).not.toBe('');
+    expect(expectedHref).not.toContain(':0/0/0:');
+    await expect(page.getByTestId('sim-open-planner')).toHaveAttribute('href', expectedHref);
+  });
+
   // D48 (dps-minmaxer review round 2, BLOCKER): a saved run loaded cold used to hardcode
   // `actionNames={null}` (SavedSim.svelte), so the build's own name table was never
   // fetched and the headline sentence read "spell:20662", live and saved disagreeing --
@@ -168,6 +190,23 @@ test.describe('a saved sim from the prerendered fixture', () => {
 // Task 6: "what it does" no longer links straight to /sim/specs#<spec> -- it opens the
 // rotation drawer in place, and the fidelity link moves inside that drawer. Clicking it
 // open is this test's own proof the trigger is a Disclosure now, not a navigating anchor.
+// A saved sim is somebody else's result opened cold: no character is "loaded" here, and the
+// chip's empty line ("No character loaded...") sat directly above a full result. The casts
+// tab also carried the log viewer's note about other players' rows, which a one-player
+// simulated fight does not have.
+test('a saved sim opened cold says nothing about a missing character or other players', async ({ page }) => {
+  await page.goto('/sim/simfixtureab');
+  await expect(page.getByTestId('sim-dps')).toBeVisible();
+
+  await expect(page.getByTestId('sim-chip-slot')).toBeAttached();
+  await expect(page.getByTestId('current-character-chip')).toHaveCount(0);
+
+  await page.getByTestId('sim-tab-casts').click();
+  const note = page.getByTestId('cast-time-note');
+  await expect(note).toBeVisible();
+  await expect(note).not.toContainText('other players');
+});
+
 test('a saved sim names the rotation it used, opens its drawer, and carries its fidelity', async ({
   page,
 }) => {
@@ -258,6 +297,26 @@ test('a saved sim whose stored request has no gear shows the line, not the grid'
 
   await expect(page.getByTestId('sim-no-gear')).toBeVisible();
   await expect(page.getByTestId('sim-slot-head')).toHaveCount(0);
+});
+
+// Defect fix: the name typed into "Name this sim" (SaveSimForm.svelte) used to be discarded
+// well before the page -- GET /v1/sims/{id} dropped it entirely, so `result.title` was
+// always undefined here and the heading fell back to the composed spec line unconditionally.
+// This pins the page's own half of the fix: given a `title` on the fetched result (what a
+// fixed GET now sends), the heading shows it, not the fallback. The field report's own
+// string, exercised end to end.
+test('a saved sim heads with the name a member gave it, not the composed spec line', async ({ page }) => {
+  const id = 'simtitledabc';
+  const named = 'Thoradin - Fury Warrior, raid-buffed BWL night';
+  const titledResult = { ...fixtureResult, sim_id: id, title: named };
+  await page.route(`**/sim/${id}`, (route) =>
+    route.fulfill({ status: 200, contentType: 'text/html', body: SHELL_HTML }),
+  );
+  await page.route(`**/v1/sims/${id}`, (route) => route.fulfill(envelope(titledResult)));
+
+  await page.goto(`/sim/${id}`);
+
+  await expect(page.getByTestId('sim-saved-title')).toHaveText(named);
 });
 
 test.describe('a saved sim renders the results view its own kind calls for', () => {

@@ -93,26 +93,30 @@ describe('summarySentence', () => {
     );
   });
 
-  it('falls back to a humanised label rather than the raw key or a blank when the build has no name', () => {
+  it('falls back to prose rather than the raw key or the id itself when the build has no name', () => {
     const base = twoAbilities();
     const actor = base.damage_done[0];
     const one: Summary = {
       ...withoutAuras(base),
       damage_done: [{ ...actor, total: 400, abilities: [actor.abilities[0]] }],
     };
-    expect(summarySentence(one, null)).toBe('Spell 25286 is 100% of your damage.');
+    expect(summarySentence(one, null)).toBe('An unnamed spell is 100% of your damage.');
   });
 
-  it('never emits a raw spell:/item:/dungeon: key in the sentence, resolved or not', () => {
+  it('never emits a raw spell:/item:/dungeon: key in the sentence, resolved or not, and never the bare id either', () => {
     // dps-minmaxer review round 2, D48: "off-hand white hits and spell:20662 are 78% of
     // your damage" -- the exact defect this pins down, both resolved and unresolved.
+    // 2026-09-21 result-page review round 2: D48's own fix, "Spell 20662", turned out to
+    // still be an id reaching a player -- this also pins that the unresolved fallback
+    // never contains a bare number where a name belongs.
     const resolved = summarySentence(twoAbilities(), names);
     expect(resolved).not.toMatch(/\b(spell|item|dungeon):/);
 
     const unresolved = summarySentence(twoAbilities(), null);
     expect(unresolved).not.toMatch(/\b(spell|item|dungeon):/);
+    expect(unresolved).not.toMatch(/\bSpell \d+\b/);
     expect(unresolved).toBe(
-      'Spell 25286 and white hits are 61% of your damage; Spell 12974 is up 78% of the fight.',
+      'An unnamed spell and white hits are 61% of your damage; An unnamed spell is up 78% of the fight.',
     );
   });
 
@@ -165,6 +169,57 @@ describe('summarySentence', () => {
     expect(
       summarySentence({ ...summary, damage_done: [{ ...summary.damage_done[0], total: 0 }] }, names),
     ).toBe(simCopy.noDamage);
+  });
+
+  // 2026-09-21 result-page review, Defect 2: "Frostbolt and Cold Snap are 100% of your
+  // damage; Spell 9910 is up 100% of the fight" on a raid-buffed Frost Mage -- 9910 is
+  // Thorns, a raid buff nothing in the mage's own kit ever casts. It won the uptime sort
+  // because a raid buff applied once at pull outlasts almost anything the player's own spec
+  // does. These two tests are the fix: prefer an own-spec aura, and say nothing about
+  // uptime -- never name the raid buff -- when there is not one.
+  it('prefers the player’s own aura over a higher-uptime external raid buff', () => {
+    const withThorns: ActionNames = {
+      spell: { ...names.spell, '12974': 'Flurry', '9910': 'Thorns' },
+      item: {},
+      // Flurry (12974) is the player's own; Thorns (9910) is not -- the shape
+      // loadActionNames produces for a raid-buffed sim (action-names.ts).
+      ownSpell: new Set(['25286', '12974']),
+    };
+    const base = twoAbilities();
+    const actor = base.damage_done[0];
+    const withRaidBuff: Summary = {
+      ...base,
+      duration_ms: 10_000,
+      auras: [
+        { ...summary.auras[0], target_guid: actor.guid, type: 'BUFF', name: 'spell:12974', uptime_ms: 3_000 },
+        // Up the whole fight -- the highest uptime in this list by far, and exactly the
+        // aura the old "highest uptime wins" sort would have named instead.
+        { ...summary.auras[0], target_guid: actor.guid, type: 'BUFF', name: 'spell:9910', uptime_ms: 10_000 },
+      ],
+    };
+    expect(summarySentence(withRaidBuff, withThorns)).toBe(
+      'Heroic Strike and white hits are 61% of your damage; Flurry is up 30% of the fight.',
+    );
+  });
+
+  it('says nothing about uptime, rather than naming a raid buff, when no own-spec aura is up', () => {
+    const withThorns: ActionNames = {
+      spell: { ...names.spell, '9910': 'Thorns' },
+      item: {},
+      ownSpell: new Set(['25286']),
+    };
+    const base = twoAbilities();
+    const actor = base.damage_done[0];
+    const onlyRaidBuff: Summary = {
+      ...base,
+      duration_ms: 10_000,
+      auras: [
+        { ...summary.auras[0], target_guid: actor.guid, type: 'BUFF', name: 'spell:9910', uptime_ms: 10_000 },
+      ],
+    };
+    expect(summarySentence(onlyRaidBuff, withThorns)).toBe(
+      'Heroic Strike and white hits are 61% of your damage.',
+    );
   });
 });
 

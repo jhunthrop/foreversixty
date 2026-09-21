@@ -104,7 +104,14 @@ export interface EncounterSpec {
   targets_over_time?: TargetCount[];
   /** 60..63; 63 is the default the engine assumes when this is absent. */
   target_level?: number;
-  /** 0 means the level's preset, resolved inside the engine. */
+  /**
+   * The field ABSENT (undefined) means the level's preset, resolved inside the engine.
+   * Present -- including `0` -- is an explicit override; `0` is a real request (an
+   * unarmoured target), not a second way to spell "unset" (2026-09-21 result-page review,
+   * Defect 3: a plain `0` used to mean both, so a blank settings field and a typed 0 sent
+   * the identical request and ran identically). The Go side mirrors this: `TargetArmor` is
+   * a `*int` (sim/api/envelope.go), nil for absent.
+   */
   target_armor?: number;
   target_type?: TargetType | '';
   /** No debuffs, no execute, no armor reduction. */
@@ -130,7 +137,9 @@ export const DEFAULT_ENCOUNTER: EncounterSpec = {
   // drawer's diff (Task 15) noisy for no reason.
   style: 'patchwerk',
   target_level: 63,
-  target_armor: 0,
+  // Absent, not 0: the default fight uses the level's preset, and target_armor is not a
+  // style-owned field (styles.ts's applyFightStyle never sets it), so leaving it out here
+  // does not make the request drawer's style diff noisy the way a style-owned field would.
   target_type: '',
   dummy: false,
 };
@@ -302,6 +311,14 @@ export interface SampleCast {
 
 export interface SimResult {
   sim_id?: string;
+  /**
+   * The name a member gave this sim, from "Name this sim" (SaveSimForm.svelte), present
+   * only on GET /v1/sims/{id}'s own read (`api/internal/sims/handler.go`'s `GetOutput`) --
+   * a sibling of the stored result, never a field the wasm/premium-job engine itself
+   * produces, the same reason POST /v1/sims sends it as a sibling `title` key rather than
+   * a field on the posted `SimResult`. Absent, not `''`, when the member named nothing.
+   */
+  title?: string;
   engine_version: string;
   request: SimRequest;
   lane: 'browser' | 'server';

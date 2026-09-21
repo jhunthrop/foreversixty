@@ -305,14 +305,19 @@ test('the winner opens in the planner and copies to the addon', async ({ page, c
   expect(copied.startsWith('FS1:')).toBe(true);
 });
 
-test('the four-piece filter hides combinations that break the set', async ({ page }) => {
+// dps D24: "Only combinations keeping a 4-piece set bonus" and its checkbox used to print
+// over every result, including this fixture warrior, who has no way to reach a four-piece
+// set bonus at all -- the fixture's own Battlegear of Wrath (sets.json) defines a bonus at
+// two pieces, not four, and this run only ever offers one of its two items as a candidate.
+// Ticking the old, always-shown checkbox could only ever empty the table, which is the bug:
+// the filter is now shown only when it can do something.
+test('the four-piece filter is absent when no four-piece set is reachable', async ({ page }) => {
   await loadGear(page);
   await page.getByTestId('sim-search-add-16963').click();
   await page.getByTestId('sim-run-bulk').click();
   await expect(page.getByTestId('sim-combos')).toBeVisible({ timeout: 20_000 });
-  const before = await page.getByTestId('sim-combo-row').count();
-  await page.getByTestId('sim-keep-set').check();
-  expect(await page.getByTestId('sim-combo-row').count()).toBeLessThanOrEqual(before);
+  await expect(page.getByTestId('sim-keep-set')).toHaveCount(0);
+  await expect(page.getByText(bulkCopy.keepFourPiece)).toHaveCount(0);
 });
 
 test('the winner can be saved, with a title composed from the result rather than typed', async ({ page }) => {

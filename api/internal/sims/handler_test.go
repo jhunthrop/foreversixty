@@ -48,13 +48,35 @@ func TestABrowserResultIsSavedAndReadBack(t *testing.T) {
 	if cc := res.Header.Get("Cache-Control"); !strings.Contains(cc, "public") {
 		t.Errorf("Cache-Control %q: a saved sim never changes", cc)
 	}
-	var got simapi.SimResult
+	var got GetOutput
 	h.data(res, &got)
 	if got.SimID != id || got.DPS.Mean != 1042.5 || got.Lane != simapi.LaneBrowser {
 		t.Fatalf("read back: %+v", got)
 	}
 	if got.Request.Character.Class != "warrior" {
 		t.Errorf("the character did not survive: %+v", got.Request.Character)
+	}
+	// Defect fix: the name a member gave this sim ("Tuesday", saved above)
+	// used to be dropped by GET /v1/sims/{id} -- it lived in the sims.title
+	// column, saved fine, but the row's own read never selected it, so the
+	// saved page, its <title> and its og tags all had nothing to show.
+	if got.Title != "Tuesday" {
+		t.Errorf("title = %q, want %q", got.Title, "Tuesday")
+	}
+}
+
+// A sim saved with no title reads back with no `title` key at all
+// (GetOutput's own `omitempty`), not an empty string a client would
+// have to tell apart from "the member typed nothing".
+func TestASimSavedWithNoTitleReadsBackWithNoTitleKey(t *testing.T) {
+	h := newHarness(t)
+	id := saveBrowserResult(h, "warrior-fury", 1042.5, "")
+	h.anonymous()
+	res := h.do(http.MethodGet, "/v1/sims/"+id, "", nil)
+	var raw map[string]json.RawMessage
+	h.data(res, &raw)
+	if _, ok := raw["title"]; ok {
+		t.Errorf("a title-less sim's response carries a \"title\" key: %v", raw)
 	}
 }
 

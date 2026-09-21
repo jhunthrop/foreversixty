@@ -35,21 +35,23 @@ function itemClass(label: string, current: boolean): (string | false)[] {
     current && 'text-gold hover:text-gold',
   ];
 }
+
+// Not an HTML comment: that would ship in every page and in the API's chrome snapshot.
+// Phone: an explicit two-row grid -- wordmark and Discord on the first row, the nav on the
+// second. No hamburger, so no client JS on a content page. The nav is one non-wrapping,
+// horizontally scrollable row rather than a wrapping one: the labels already run past a
+// 360px viewport, so a wrapping nav changes height when Barlow swaps in for its fallback
+// and shifts the whole page down (a CLS the Lighthouse budget rejects). The Reference
+// disclosure's panel sits inside this scrolling row, and a horizontally-scrolling ancestor
+// clips its positioned descendants on the other axis too (the CSS spec folds
+// `overflow-y: visible` into `auto` whenever `overflow-x` is not `visible`). The way out
+// is the containing block, not `position: fixed`: on a phone neither the row nor the
+// <details> is positioned, so the panel's containing block is this <header> -- an
+// ANCESTOR of the scrolling row, which therefore does not clip it -- and `top-full` puts
+// it directly under the header at whatever height the header is, scrolling away with it.
+// A fixed panel at a measured pixel offset floated over the page once it was scrolled.
 ---
 
-<!-- Phone: an explicit two-row grid -- wordmark and Discord on the first row, the nav on the
-     second. No hamburger, so no client JS on a content page. The nav is one non-wrapping,
-     horizontally scrollable row rather than a wrapping one: the labels already run past a
-     360px viewport, so a wrapping nav changes height when Barlow swaps in for its fallback
-     and shifts the whole page down (a CLS the Lighthouse budget rejects). The Reference
-     disclosure's panel sits inside this scrolling row, and a horizontally-scrolling ancestor
-     clips its positioned descendants on the other axis too (the CSS spec folds
-     `overflow-y: visible` into `auto` whenever `overflow-x` is not `visible`). The way out
-     is the containing block, not `position: fixed`: on a phone neither the row nor the
-     <details> is positioned, so the panel's containing block is this <header> -- an
-     ANCESTOR of the scrolling row, which therefore does not clip it -- and `top-full` puts
-     it directly under the header at whatever height the header is, scrolling away with it.
-     A fixed panel at a measured pixel offset floated over the page once it was scrolled. -->
 <header class="relative grid grid-cols-[1fr_auto] items-center gap-x-4 gap-y-2 px-[18px] md:flex md:justify-between md:px-12 py-3 md:py-[18px] border-b border-line/60">
   <a
     href="/"

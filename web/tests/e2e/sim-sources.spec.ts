@@ -70,3 +70,16 @@ test('opening /sim?code=<fs1> adopts the character on load, as a manual source',
   await expect(page.getByTestId('sim-slot-head')).toContainText('Lionheart Helm');
   await expect(page.getByTestId('sim-sources')).toBeHidden();
 });
+
+// "From a build" says it takes a planner link. An unsaved planner link carries the build in
+// ?code=, and the box used to read its last path segment ("planner") as a saved build id.
+test('an unsaved planner link pasted into From a build loads its character', async ({ page }) => {
+  await page.goto('/sim');
+  await page
+    .getByTestId('sim-build-input')
+    .fill(`https://foreversixty.gg/planner?code=${encodeURIComponent(FURY)}`);
+  await page.getByTestId('sim-build-load').click();
+
+  await expect(page.getByTestId('sim-character-descriptor')).toContainText('Fury Warrior');
+  await expect(page.getByTestId('sim-slot-head')).toContainText('Lionheart Helm');
+});

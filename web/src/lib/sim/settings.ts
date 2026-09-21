@@ -39,10 +39,12 @@ export const DEFAULT_TARGET_LEVEL = 63;
 
 /**
  * Contract A8: the engine's own 3,731 at level 63 and a linear fall to the level-60
- * figure. `target_armor: 0` still means "the level's preset" and is what the request
- * carries by default -- these numbers exist so the override control can say what it is
- * overriding rather than showing an empty field. A better source replaces the three
- * interior numbers on the Go side and here together.
+ * figure. `target_armor` ABSENT is what the request carries by default and means "the
+ * level's preset" (2026-09-21 result-page review, Defect 3 -- `0` used to mean the same
+ * thing, which made a typed 0 and a cleared field the same request) -- these numbers exist
+ * so the override control can say what it is overriding rather than showing an empty
+ * field. A better source replaces the three interior numbers on the Go side and here
+ * together.
  */
 export const TARGET_ARMOR_BY_LEVEL: Record<number, number> = {
   60: 3300,
@@ -300,29 +302,44 @@ export function withTargetLevel(settings: SimSettings, level: number): SimSettin
   return { ...settings, encounter: { ...settings.encounter, target_level: clamped } };
 }
 
-export function withTargetArmor(settings: SimSettings, armor: number): SimSettings {
+/**
+ * `armor === null` clears the override: the request omits `target_armor` entirely and the
+ * engine uses the level's preset. Any number, INCLUDING 0, is an explicit override -- 0 is
+ * a real request (an unarmoured target), not a second way to spell "no override"
+ * (2026-09-21 result-page review, Defect 3: a bare `number` here could not represent
+ * "cleared" at all, so the settings bar had nothing to call `withTargetArmor` with that
+ * meant anything other than some number, and a cleared field and a typed 0 collapsed into
+ * the same request). Out-of-range or non-finite input clamps against whatever override is
+ * already set, falling back to 0 when there is none yet -- the same defensive shape every
+ * other numeric control on this bar already has.
+ */
+export function withTargetArmor(settings: SimSettings, armor: number | null): SimSettings {
+  if (armor === null) {
+    return { ...settings, encounter: { ...settings.encounter, target_armor: undefined } };
+  }
   const clamped = clamp(Math.round(armor), 0, MAX_TARGET_ARMOR, settings.encounter.target_armor ?? 0);
   return { ...settings, encounter: { ...settings.encounter, target_armor: clamped } };
 }
 
 /**
- * What the target-armor field should DISPLAY (tank MAJOR, review.md:227-229): `0` is the
- * contract's "use the level's preset", not an empty override, so the field shows the
- * preset number itself rather than going blank -- and follows the target-level select when
- * that changes. The wire value is untouched: `target_armor` stays 0 in settings state until
- * the player types something else (settings.ts:40-51 above); this only decides what the
- * input reads.
+ * What the target-armor field should DISPLAY. `target_armor` ABSENT (`undefined`) is "no
+ * override": the field reads blank, and its `placeholder` -- SettingsSheet.svelte's own
+ * concern, not this function's -- shows the preset as a hint rather than as real content
+ * (2026-09-21 result-page review, Defect 3; tank MAJOR, review.md:227-229 wanted the
+ * preset visible some way, which the placeholder still gives it, without making 0
+ * unreachable as a real value). Present, including `0`, DISPLAYS as exactly what it is:
+ * the player's own override, never silently swapped for the preset. `preset` and `level`
+ * ride along either way, for the help text and the placeholder.
  */
 export function targetArmorField(encounter: EncounterSpec): { value: string; preset: number; level: number } {
   const level = encounter.target_level ?? DEFAULT_TARGET_LEVEL;
   const preset = TARGET_ARMOR_BY_LEVEL[level] ?? TARGET_ARMOR_BY_LEVEL[DEFAULT_TARGET_LEVEL];
-  const armor = encounter.target_armor ?? 0;
   // `level` rides on the return value so a caller (SettingsSheet.svelte's `targetArmorNote`)
   // reads the SAME level `preset` was computed from, rather than a second, independent
   // `encounter.target_level ?? DEFAULT_TARGET_LEVEL` lookup that only agrees with it by
   // coincidence -- fix round, Minor 1, the same shape an earlier round already removed for
   // `preset` itself.
-  return { value: String(armor === 0 ? preset : armor), preset, level };
+  return { value: encounter.target_armor === undefined ? '' : String(encounter.target_armor), preset, level };
 }
 
 /** An id outside the contract's vocabulary reads as "any", never as itself. */

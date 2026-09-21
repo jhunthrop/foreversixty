@@ -213,6 +213,12 @@ export const simCopy = {
   /** The link that opens the full results for the build on the page. */
   simThisBuild: 'Sim this build',
 
+  // 2026-09-21 result-page review round 2, Defect 2 continued: resolveActionName's own
+  // fallback for a spell or item id the shared table has no row for at all -- real prose,
+  // never the raw number (action-names.ts's own unresolvedActionName).
+  unnamedSpell: 'An unnamed spell',
+  unnamedItem: 'An unnamed item',
+
   // --- Task 23: the parenthetical resolveActionName appends to a tagged or ranked
   // action's name, so "Heroic Strike (2)" and "Heroic Strike (Rank 3)" read as the
   // variant they are rather than as a duplicate row. tag and rank are ActionKey's own
@@ -238,7 +244,7 @@ export const simCopy = {
   sourceAddonTitle: 'From the addon',
   sourceAddonBody: 'Paste the export string from the Forever Sixty addon, or let the companion push it.',
   sourceBuildTitle: 'From a build',
-  sourceBuildBody: 'Paste a planner link or its id.',
+  sourceBuildBody: 'Paste a planner link, saved or not, or a saved build id.',
   sourceFightTitle: 'From a logged fight',
   sourceFightBody: 'Paste a report link, or open a fight from a report and choose Sim this fight.',
   sourceAccountTitle: 'Your characters',
@@ -1067,16 +1073,19 @@ export const bulkCopy = {
   /**
    * Task 8, sub-item 1: contract 10.9 documents `StatWeight.Error` as a standard error that
    * is a lower bound, not the true uncertainty -- an 8-seed check found the real run-to-run
-   * spread runs four to ten times wider for crit, expertise and melee haste, the three stats
-   * most entangled with the rotation's own rage/proc decisions. One sentence, not a second
-   * warning stacked on the greying above: it opens by naming what a greyed row already means
-   * (D45's own `WEIGHT_INSIGNIFICANT_LABEL`, restated in prose rather than assumed read) and
-   * then extends the same "how much to trust this" idea to every other row's own ± figure,
-   * so the two read as one thought about the table, not two. No mention of "contract 10.9"
-   * or "lower bound" -- a player reads this without the spec open.
+   * spread runs four to ten times wider for crit and melee haste, the two stats most
+   * entangled with the rotation's own rage/proc decisions. (Expertise would be the third of
+   * that classic-plus-TBC trio, but the 1.60 client has no expertise stat at all -- D45's own
+   * `pickableStatsFor` never offers it, deny-listed as retail-only -- so it is not named
+   * here either.) One sentence, not a second warning stacked on the greying above: it opens
+   * by naming what a greyed row already means (D45's own `WEIGHT_INSIGNIFICANT_LABEL`,
+   * restated in prose rather than assumed read) and then extends the same "how much to
+   * trust this" idea to every other row's own ± figure, so the two read as one thought about
+   * the table, not two. No mention of "contract 10.9" or "lower bound" -- a player reads
+   * this without the spec open.
    */
   weightsErrorCaveat:
-    'A greyed row cannot be told apart from zero. The ± on every other row is a floor, not the full picture: for crit, expertise and haste, the real run-to-run swing can run four to ten times wider.',
+    'A greyed row cannot be told apart from zero. The ± on every other row is a floor, not the full picture: for crit and melee haste, the real run-to-run swing can run four to ten times wider.',
   /**
    * Task 8, sub-item 2: the precision control's own bare "Fast"/"Normal"/"High" no longer
    * says a number for a weights run (BulkRunBar.svelte's `precisionLabelFor`) -- the wire's
@@ -1093,6 +1102,15 @@ export const bulkCopy = {
   /** bulk-store.svelte.ts's `baseRequest` refusal when `stats` is empty: `WeightsSpec.
    *  Reference` is required (contract 10.8), so an empty list has nothing to send. */
   weightsNeedStats: 'Pick at least one stat to weigh.',
+  /**
+   * Defect A's belt-and-braces guard (`bulk-store-request.ts`'s `runBulkAndSettle`): a
+   * weights run that finished -- not stopped, not thrown -- but came back with no weight
+   * rows at all. `sim/adapter.Weights` never returns an empty slice on a genuine success (one
+   * row per stat asked for, or an error), so this should be unreachable in product; it exists
+   * so a future change on either side of the wire cannot reopen defect A's silent "done" by a
+   * different path. The one sentence this page never had for that case before the fix.
+   */
+  weightsEmpty: 'The run finished, but the engine returned no stat weights.',
 
   // --- the request drawer's own one-liner, so Advanced is findable on every tool ---
   advancedTitle: 'Request',

@@ -33,6 +33,7 @@
     races = [],
     gearKnown = true,
     readonly = false,
+    plannerHref,
     onchange,
     onrace = () => {},
   }: {
@@ -46,6 +47,20 @@
      *  change on a read-only result -- the button was rendering live and focusable but
      *  wired to a no-op (Task 17's review, MEDIUM). */
     readonly?: boolean;
+    /**
+     * The "Open in planner" link, precomputed by the caller -- SavedSim.svelte's own fix:
+     * a saved sim's `character` carries no `point_order` (genuinely unknowable, the same
+     * honest-empty rule `sources.ts` already follows for a combat log) and never will, so
+     * this component's own `plannerHrefFor(character, talentIndex)` below -- which needs
+     * one to reconstruct a talents string through `toCharacterSpec` -- can only ever encode
+     * zeroed talents for it. A saved sim's stored request already carries the true, final
+     * talents string with nothing to reconstruct (`plannerHrefForSpec`, character.ts), so
+     * SavedSim builds the href itself and hands it straight through here rather than this
+     * component trying to re-derive from a `point_order` its caller never had. Absent (the
+     * live /sim page, SimView.svelte): unchanged, this component still computes its own
+     * from `character`/`talentIndex` below.
+     */
+    plannerHref?: string;
     onchange: () => void;
     /** The player answering the race question; the store replaces the character. */
     onrace?: (slug: string) => void;
@@ -55,8 +70,12 @@
   // points into an FS1 code -- the same file TalentCandidates.svelte:41-44 loads for its
   // own build list. Starts null so the link renders from first paint with the class+race
   // fallback `plannerHrefFor` gives a null index, and upgrades in place once this resolves.
+  // Skipped entirely when the caller already precomputed `plannerHref` (a saved sim, whose
+  // stored talents this component never needs to re-derive at all): nothing else here reads
+  // `talentIndex`, so fetching this file for it would be a request this page has no use for.
   let talents = $state<TalentFile | null>(null);
   onMount(() => {
+    if (plannerHref !== undefined) return;
     void loadTalents(character.tree_version, character.class_slug)
       .then((file) => (talents = file))
       .catch(() => (talents = null));
@@ -186,7 +205,7 @@
          ([id].astro's own comment) or anything mounted below it. -->
     <a
       class="-my-3 ml-auto inline-flex h-11 items-center md:my-0 md:h-auto"
-      href={plannerHrefFor(character, talentIndex)}
+      href={plannerHref ?? plannerHrefFor(character, talentIndex)}
       data-testid="sim-open-planner"
     >
       {simCopy.openInPlanner}

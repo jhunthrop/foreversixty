@@ -124,11 +124,22 @@ type WasmGlobals = {
  * simSplit, simCombine, simAbort, simNeedsMore, simValidate and simRank all fail the same
  * way: `{"error": "..."}` JSON instead of their success shape (main.go's errorJSON). simRun's
  * failures are a full SimResult JSON with `.error` set instead (main.go's fail()), which the
- * caller already reads as a normal result, so this check does not apply there. simCount and
- * simPlan are also excluded: their one error shape, `cap_exceeded`, is an answer carrying two
- * numbers, not a failure, so it is never passed through this function. simWeights answers
- * through the same `simProgress` callback and promise simRun uses, and is not unwrapped here
- * either -- its own rejection is the failure signal.
+ * caller already reads as a normal result, so this check does not apply there -- a failed
+ * shard's `.error` reaches `simCombine`, and combine re-raises it through the bare
+ * `{"error": "..."}` shape this function DOES unwrap, so a plain run's failure is still
+ * caught, just one call later. simCount and simPlan are also excluded: their one error shape,
+ * `cap_exceeded`, is an answer carrying two numbers, not a failure, so it is never passed
+ * through this function.
+ *
+ * simWeights answers the same full-SimResult-with-`.error`-set shape simRun does
+ * (weightsJSON's own `failJSON`, sim/cmd/wasm/exports.go) -- but unlike simRun it has no
+ * downstream simCombine to re-raise a swallowed `.error` for it, one call is the whole run.
+ * Defect A (bug-fix round, 2026-09): a refused, empty or failed weights run used to resolve
+ * here exactly like a real result -- `runWeightsRun` (bulk-run.ts) would `JSON.parse` it,
+ * set `phase` to `'done'` and `result` to a `SimResult` whose `.error` nothing on the weights
+ * page ever reads, leaving the button saying "Run again" with no table and no message. This
+ * function's own generic check (any top-level `.error` string) already throws on that shape
+ * correctly, so simWeights is unwrapped here too, the same as simValidate and simRank.
  */
 export function unwrapOrThrow(json: string): string {
   const parsed: unknown = JSON.parse(json);
@@ -181,7 +192,8 @@ async function loadWasmEngine(version: string): Promise<EngineModule> {
     simPlan: (requestJSON) => globals.simPlan!(requestJSON),
     simRank: (requestJSON, stageJSON, resultsJSON) =>
       unwrapOrThrow(globals.simRank!(requestJSON, stageJSON, resultsJSON)),
-    simWeights: (requestJSON, callbackId) => globals.simWeights!(requestJSON, callbackId),
+    simWeights: async (requestJSON, callbackId) =>
+      unwrapOrThrow(await globals.simWeights!(requestJSON, callbackId)),
     simNeedsMore: (resultJSON, requestJSON) => unwrapOrThrow(globals.simNeedsMore!(resultJSON, requestJSON)),
     simValidate: (requestJSON) => unwrapOrThrow(globals.simValidate!(requestJSON)),
     // No unwrapOrThrow: `cap_exceeded` carries two numbers the page renders.

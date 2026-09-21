@@ -267,6 +267,37 @@
       }
     },
     {
+      "name": "version 2, guild",
+      "code": "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=Iron%20Vanguard:2",
+      "build": {
+        "dataBuild": "1.60.1.69893",
+        "classSlug": "warrior",
+        "raceSlug": "tauren",
+        "treeRanks": [
+          [
+            0
+          ],
+          [
+            0
+          ],
+          [
+            0
+          ]
+        ],
+        "gearSlots": [],
+        "bags": [],
+        "bank": [],
+        "sets": [],
+        "loadouts": [],
+        "professions": [],
+        "guild": {
+          "name": "Iron Vanguard",
+          "rankIndex": 2
+        },
+        "ignored": []
+      }
+    },
+    {
       "name": "version 2, an unknown section is ignored and named",
       "code": "FS1:1.60.1.69893:priest:human:0/0/5:|pets=1,2",
       "build": {
@@ -331,6 +362,11 @@
       "name": "too few fields",
       "code": "FS1:1.60.1.69893:paladin",
       "message": "That code is missing its talent and gear fields."
+    },
+    {
+      "name": "a non-numeric guild rank",
+      "code": "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=Iron%20Vanguard:officer",
+      "message": "That code has an unreadable guild rank: officer."
     }
   ],
   "fsb1": [
