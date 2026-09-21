@@ -55,13 +55,17 @@
   {#if loaded !== null}
     <div class="flex flex-wrap gap-3">
       <a
-        class="text-gold text-[13px] font-semibold"
+        class="text-gold inline-flex min-h-11 items-center text-[13px] font-semibold md:min-h-0"
         href={plannerCodeHref(loaded)}
         data-testid="addon-paste-planner"
       >
         {addonCopy.pasteOpenPlanner}
       </a>
-      <a class="text-gold text-[13px] font-semibold" href={simCodeHref(loaded)} data-testid="addon-paste-sim">
+      <a
+        class="text-gold inline-flex min-h-11 items-center text-[13px] font-semibold md:min-h-0"
+        href={simCodeHref(loaded)}
+        data-testid="addon-paste-sim"
+      >
         {addonCopy.pasteOpenSim}
       </a>
     </div>

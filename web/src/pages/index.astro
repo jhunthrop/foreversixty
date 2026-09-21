@@ -4,6 +4,7 @@ import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import SkyBand from '../components/SkyBand.astro';
 import StatePanel from '../components/StatePanel.astro';
+import RecentReports from '../components/RecentReports.svelte';
 import ToolCard from '../components/ToolCard.astro';
 import Panel from '../components/Panel.astro';
 import FeedRow from '../components/FeedRow.astro';
@@ -130,6 +131,18 @@ const popular = [
           ))}
         </Panel>
         <div class="col-span-12 lg:col-span-4 flex flex-col gap-[22px] md:gap-8">
+          <!-- The logs lane's public feed, compact: the newest few public reports, so a
+               visitor can open a real report without an account or a link from a friend.
+               Below the fold on a phone and hydrated only when seen; the floor holds the
+               panel's height while it loads so nothing under it moves. -->
+          <Panel title="Recent public reports">
+            <a slot="aside" href="/logs" class="text-[13px] font-semibold">
+              Logs
+            </a>
+            <div class="min-h-[120px] p-4">
+              <RecentReports client:visible compact heading={false} />
+            </div>
+          </Panel>
           <Panel title="Still unknown">
             {unknowns.map((u, i) => (
               <div

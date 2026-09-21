@@ -25,18 +25,17 @@
       status = 'ready';
     });
   });
+
+  /** A text link that still clears the 44px hit target on a phone. */
+  const LINK = 'inline-flex min-h-11 items-center text-[13px] font-semibold md:min-h-0';
 </script>
 
 <div class="flex min-h-11 flex-wrap items-center gap-3 md:min-h-0" data-testid="character-handoff">
   {#if status === 'loading'}
     <span class="invisible text-[13px]" aria-hidden="true">Open in simulator</span>
   {:else if code !== null}
-    <a class="text-[13px] font-semibold" href={simCodeHref(code)} data-testid="character-open-sim">
-      Open in simulator
-    </a>
-    <a class="text-[13px] font-semibold" href={plannerCodeHref(code)} data-testid="character-open-planner">
-      Open in planner
-    </a>
+    <a class={LINK} href={simCodeHref(code)} data-testid="character-open-sim"> Open in simulator </a>
+    <a class={LINK} href={plannerCodeHref(code)} data-testid="character-open-planner"> Open in planner </a>
   {:else}
     <span class="text-muted text-[13px]" data-testid="character-needs-addon">
       Log in with the addon once to make this character simmable.
