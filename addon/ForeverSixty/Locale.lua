@@ -36,13 +36,19 @@ local L = {
 	diagNone = "Nothing to report.",
 
 	-- Export
-	exportTitle = "Your character, for the planner",
-	exportHint = "Copy this and paste it into the Import from addon box at foreversixty.gg/planner.",
+	exportTitle = "Send your character to the site",
+	exportHint = "The planner and the simulator read this code: talents, gear, bags and professions.",
+	exportSteps = {
+		"Press Copy code, then Ctrl+C.",
+		"Open foreversixty.gg/planner or foreversixty.gg/sim.",
+		"Paste it into the box marked Import from addon.",
+	},
+	exportContents = "WHAT IS IN IT",
 	-- exportNoTalents is deleted with the refusal it belonged to
 	-- (controller ruling 5); this is the summary's line, not an error.
 	exportNoPoints = "No talent points yet",
-	exportCopy = "Copy for the site",
-	exportCopied = "Selected -- press Ctrl+C",
+	exportCopy = "Copy code",
+	exportCopied = "Selected. Press Ctrl+C",
 	-- "<tree> <points>", joined by exportTreeSeparator: "Arms 0 · Fury 0 · Protection 0".
 	exportTree = "%s %d",
 	exportTreeSeparator = " · ",
@@ -97,7 +103,8 @@ local L = {
 	-- instead, so the player can still find the cell.
 	followUnknownCell = "%d:%d",
 	followPasteHint = "Paste a build code from foreversixty.gg",
-	followLoadButton = "Load",
+	followLoadButton = "Load build",
+	followLoadTitle = "LOAD A BUILD",
 	followForget = "Forget build",
 	followShowTracker = "Show tracker",
 	followProgress = "%d of %d points",
@@ -127,15 +134,16 @@ local L = {
 	gearNoBuild = "No build loaded, so there is nothing to compare against.",
 	gearUpgrade = "%s: %+.1f over %s",
 	gearNone = "Nothing in your bags beats what you are wearing.",
-	gearPlanned = "Planned",
-	gearEquipped = "Equipped",
+	gearPlanned = "PLANNED",
+	gearEquipped = "EQUIPPED",
+	gearMatches = "As planned",
 	gearEmptySlot = "Empty",
 	gearYoursBetter = "Yours is better (%+.0f)",
 	gearDiffers = "Different from the plan",
-	gearBagUpgrades = "Upgrades in your bags",
+	gearBagUpgrades = "UPGRADES IN YOUR BAGS",
 	gearEquipButton = "Equip",
 	gearInCombat = "In combat",
-	gearLoadABuild = "Load a build on the Follow tab to compare gear",
+	gearLoadABuild = "Load a build on the Talents page to compare your gear with the plan.",
 	gearOpenFollow = "Open the Follow tab",
 	-- "<slot>  <name>" for an upgrade row.
 	gearSlotRow = "%s  %s",

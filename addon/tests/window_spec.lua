@@ -225,6 +225,14 @@ describe("Window", function()
 	-- Found in game: tabs anchored to the bottom edge hung half outside the
 	-- frame and covered a page's own buttons, and there was no way to close
 	-- the window but Escape.
+	it("shows a spec by its name, not by the site's key for it", function()
+		start()
+		assert.are.equal("Arms", Window.specLabel("warrior-arms"))
+		assert.are.equal("Beast Mastery", Window.specLabel("hunter-beast-mastery"))
+		assert.are.equal(L.headerNoSpec, Window.specLabel(nil))
+		assert.are.equal("Holy", Window.headerModel(DATA).specLabel)
+	end)
+
 	describe("layout", function()
 		it("keeps the sidebar, the header and the page inside the window", function()
 			start()
@@ -267,16 +275,22 @@ describe("Window", function()
 			assert.is_true(S.padding * 2 + S.cardHeight * 2 + S.cardGap <= Window.pageHeight())
 		end)
 
-		it("gives each page lists that fit under the tab strip", function()
+		it("gives each page lists that fit the page", function()
 			start()
 			local S = Theme.SIZES
-			local room = Window.pageHeight() - S.padding * 2
-			-- Gear: two header lines, two lists, the gap between them.
-			local gear = (S.gearSlotRows + S.gearUpgradeRows) * S.rowHeight + S.rowHeight * 3 + S.padding
+			local room = Window.pageHeight()
+			-- Gear: a reason line, a header line, the slot list, a title line
+			-- and the upgrade list, with the page's padding top and bottom.
+			local gear = S.padding * 3 + S.rowHeight * 3 + S.gap * 3
+				+ (S.gearSlotRows + S.gearUpgradeRows) * S.rowHeight
 			assert.is_true(gear <= room, "the Gear page is taller than the window")
-			-- Follow: the paste field, five text lines, the list, a button row and a toggle row.
-			local follow = S.buttonHeight * 3 + S.rowHeight * 5 + S.followRows * S.rowHeight + S.padding
-			assert.is_true(follow <= room, "the Follow page is taller than the window")
+			-- Talents: name, bar, list, then the load section (title, field,
+			-- hint, tracker toggle).
+			local talents = S.padding * 3 + S.rowHeight + S.gap * 2 + S.progressHeight + S.gap * 2
+				+ S.followRows * S.rowHeight
+				+ S.rowHeight + S.gap * 2 + (S.buttonHeight + S.gap) + S.gap + S.rowHeight
+				+ S.gap * 2 + S.rowHeight
+			assert.is_true(talents <= room, "the Talents page is taller than the window")
 		end)
 
 		it("closes from the title bar", function()

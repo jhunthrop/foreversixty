@@ -73,7 +73,22 @@ function GearView.noteFor(row)
 	if row.differs then
 		return L.gearDiffers
 	end
+	if row.plannedItemId ~= nil and row.plannedItemId == row.equippedItemId then
+		return L.gearMatches
+	end
 	return ""
+end
+
+--- The note's colour says the same thing as its words: the plan is met,
+--- the player has done better than it, or there is something to change.
+function GearView.noteColor(row)
+	if row.better then
+		return "gold"
+	end
+	if row.differs then
+		return "muted"
+	end
+	return "success"
 end
 
 --- `equipped` and `upgrades` are both taken as arguments, never read: the
@@ -152,6 +167,7 @@ local function renderSlot(row, item)
 	fillItemColumn(row.planned, item.plannedItemId, item.plannedLink)
 	fillItemColumn(row.equipped, item.equippedItemId, item.equippedLink)
 	row.equipped.right:SetText(GearView.noteFor(item))
+	row.equipped.right:SetTextColor(Theme.rgb(Theme.HEX[GearView.noteColor(item)]))
 end
 
 function GearView.upgradeRow(parent, width)
@@ -165,7 +181,7 @@ function GearView.upgradeRow(parent, width)
 			Theme.equip(row.link)
 		end
 	end)
-	row.equip:SetSize(Theme.SIZES.buttonWidth, Theme.SIZES.rowHeight)
+	row.equip:SetSize(Theme.SIZES.equipButtonWidth, Theme.SIZES.rowHeight - Theme.SIZES.border * 2)
 	row.equip:SetPoint("RIGHT", row.frame, "RIGHT", 0, 0)
 	-- Widgets.itemRow anchors `right` to the frame's own RIGHT edge, which
 	-- is exactly where the button now sits. Re-anchor it to the button's
@@ -182,6 +198,7 @@ local function renderUpgrade(row, item)
 	row.text:SetText(string.format(L.gearSlotRow, item.slot, info.name))
 	paintQuality(row.text, info.quality)
 	row.right:SetText(string.format(L.gearUpgradeRow, item.delta))
+	row.right:SetTextColor(Theme.rgb(Theme.HEX.success))
 	Widgets.setEnabled(row.equip, not Theme.inCombat())
 end
 
@@ -198,7 +215,7 @@ local function layout(parent, ctx)
 	view.slots = Widgets.list(parent, ctx.contentWidth, Theme.SIZES.gearSlotRows, GearView.slotColumns)
 	view.slots.frame:SetPoint("TOPLEFT", view.plannedHeader, "BOTTOMLEFT", 0, -gap)
 	view.slots:SetRenderer(renderSlot)
-	view.bagsTitle = Widgets.label(parent, L.gearBagUpgrades, "gold", "small")
+	view.bagsTitle = Widgets.label(parent, L.gearBagUpgrades, "muted", "small")
 	view.bagsTitle:SetPoint("TOPLEFT", view.slots.frame, "BOTTOMLEFT", 0, -padding)
 	view.combat = Widgets.label(parent, "", "warning", "small")
 	view.combat:SetPoint("LEFT", view.bagsTitle, "RIGHT", gap, 0)

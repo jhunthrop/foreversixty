@@ -100,19 +100,36 @@ local function under(region, above, parent, gap)
 	return region
 end
 
+--- One numbered step: the number in gold, the instruction beside it.
+local function step(parent, above, number, text, gap)
+	local mark = under(Widgets.label(parent, tostring(number), "gold", "small"), above, parent, gap)
+	local label = Widgets.label(parent, text, "body", "small")
+	label:SetPoint("LEFT", mark, "LEFT", Theme.SIZES.padding, 0)
+	return mark
+end
+
 local function layout(parent, width)
 	local view = { frame = parent }
 	local gap, padding = Theme.SIZES.gap, Theme.SIZES.padding
 	view.title = under(Widgets.label(parent, L.exportTitle, "gold"), nil, parent)
 	view.hint = under(Widgets.label(parent, L.exportHint, "muted", "small"), view.title, parent, gap)
-	view.talents = under(Widgets.label(parent, "", "body", "small"), view.hint, parent, padding)
+	local last = view.hint
+	for number, text in ipairs(L.exportSteps) do
+		last = step(parent, last, number, text, number == 1 and padding or gap * 2)
+	end
+	-- The code and its button come straight after the steps that use them.
+	view.box = Widgets.editBox(parent, width - (Theme.SIZES.buttonWidth + gap * 2),
+		Theme.SIZES.buttonHeight + gap, true, true)
+	Widgets.field(view.box):SetPoint("TOPLEFT", last, "BOTTOMLEFT", 0, -padding)
+	view.reason = Widgets.label(parent, "", "warning", "small")
+	view.reason:SetPoint("TOPLEFT", last, "BOTTOMLEFT", 0, -padding)
+	view.contents = Widgets.label(parent, L.exportContents, "muted", "small")
+	view.contents:SetPoint("TOPLEFT", Widgets.field(view.box), "BOTTOMLEFT", 0, -padding * 2)
+	view.talents = under(Widgets.label(parent, "", "body", "small"), view.contents, parent, gap * 2)
 	view.slots = under(Widgets.label(parent, "", "body", "small"), view.talents, parent, gap)
 	view.bags = under(Widgets.label(parent, "", "body", "small"), view.slots, parent, gap)
 	view.professions = under(Widgets.label(parent, "", "body", "small"), view.bags, parent, gap)
-	view.saved = under(Widgets.label(parent, "", "muted", "small"), view.professions, parent, gap)
-	view.reason = under(Widgets.label(parent, "", "warning", "small"), view.saved, parent, padding)
-	view.box = Widgets.editBox(parent, width, Theme.SIZES.editBoxHeight, true)
-	Widgets.field(view.box):SetPoint("TOPLEFT", view.saved, "BOTTOMLEFT", 0, -padding)
+	view.saved = under(Widgets.label(parent, "", "muted", "small"), view.professions, parent, padding)
 	return view
 end
 
@@ -160,7 +177,7 @@ function ExportView.mount(parent, ctx)
 	view.copy = Cards.primaryButton(parent, L.exportCopy, function(button)
 		onCopy(view, button)
 	end)
-	view.copy:SetPoint("TOPLEFT", Widgets.field(view.box), "BOTTOMLEFT", 0, -Theme.SIZES.padding)
+	view.copy:SetPoint("LEFT", Widgets.field(view.box), "RIGHT", Theme.SIZES.gap * 2, 0)
 	function view.refresh()
 		return ExportView.apply(view, ExportView.summary(ctx.data))
 	end

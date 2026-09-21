@@ -76,13 +76,14 @@ Theme.SIZES = {
 	border = 1,
 	padding = 16,
 	gap = 4,
-	rowHeight = 18,
+	rowHeight = 20,
 	--- Rows per list, chosen so each page fits the window under the tab
 	--- strip: the Follow list sits between the paste field and its buttons,
 	--- and the Gear page stacks two lists. The lists scroll with the wheel.
-	followRows = 9,
+	followRows = 11,
 	gearSlotRows = 9,
-	gearUpgradeRows = 6,
+	gearUpgradeRows = 5,
+	equipButtonWidth = 72,
 	buttonHeight = 22,
 	buttonWidth = 150,
 	editBoxHeight = 72,

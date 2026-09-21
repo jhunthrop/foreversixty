@@ -1,5 +1,6 @@
 -- addon/ForeverSixty/views/FollowView.lua
--- The Follow tab: paste a code, then read the order one row at a time.
+-- The Talents page: the build's order one row at a time, with the next
+-- point to spend marked, and a section at the foot for loading a build.
 --
 -- rows() is the tab as data. It answers three questions the view must not
 -- answer for itself: which cells the build wants and how many points in
@@ -12,6 +13,7 @@ ns = type(ns) == "table" and ns or {}
 local L = ns.L or require("Locale")
 local Theme = ns.Theme or require("Theme")
 local Widgets = ns.Widgets or require("Widgets")
+local Cards = ns.Cards or require("Cards")
 local Follow = ns.Follow or require("Follow")
 local Talents = ns.Talents or require("Talents")
 local Prefs = ns.Prefs or require("Prefs")
@@ -84,6 +86,7 @@ function FollowView.rows(data, build, ranks)
 			column = cell.column,
 			name = talent and talent.name
 				or string.format(L.followUnknownCell, cell.tier, cell.column),
+			icon = Talents.iconFor(talent),
 			have = have,
 			want = cell.want,
 			state = stateOf(cell, have, nextPoint),
@@ -103,41 +106,83 @@ end
 
 local ROW_COLOR = { next = "gold", later = "body", done = "muted" }
 
+--- One row of the order: a gold edge and a raised ground when it is the
+--- next point to spend, the talent's icon, its name, and its rank.
+function FollowView.talentRow(parent, width)
+	local S = Theme.SIZES
+	local frame = CreateFrame("Frame", nil, parent)
+	frame:SetSize(width, S.rowHeight)
+	local ground = Theme.texture(frame, "BACKGROUND", "raised")
+	ground:SetAllPoints(frame)
+	local edge = Theme.texture(frame, "ARTWORK", "gold")
+	edge:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 0)
+	edge:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 0, 0)
+	edge:SetWidth(S.navBar)
+	local icon = Cards.iconTile(frame, S.iconSize)
+	icon:SetPoint("LEFT", frame, "LEFT", S.gap * 2, 0)
+	local text = Widgets.label(frame, "", "body", "small")
+	text:SetPoint("LEFT", icon, "RIGHT", S.gap * 2, 0)
+	local heading = Widgets.label(frame, "", "muted", "small")
+	heading:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 0, S.gap)
+	local right = Widgets.label(frame, "", "muted", "small")
+	right:SetJustifyH("RIGHT")
+	right:SetPoint("RIGHT", frame, "RIGHT", -S.gap * 2, 0)
+	return { frame = frame, ground = ground, edge = edge, icon = icon, text = text, heading = heading, right = right }
+end
+
+local function showAs(region, shown)
+	if shown then
+		region:Show()
+	else
+		region:Hide()
+	end
+end
+
 local function renderRow(row, item)
-	row.right:SetText("")
+	local isNext = not item.heading and item.state == "next"
+	showAs(row.ground, isNext)
+	showAs(row.edge, isNext)
+	showAs(row.icon, not item.heading)
+	row.heading:SetText(item.heading and item.name:upper() or "")
 	if item.heading then
-		row.text:SetText(item.name)
-		row.text:SetTextColor(Theme.rgb(Theme.HEX.gold))
+		row.text:SetText("")
+		row.right:SetText("")
 		return
 	end
-	if item.state == "done" then
-		row.text:SetText(string.format(L.followRowDone, L.followDoneMark, item.tier, item.name))
-	else
-		row.text:SetText(string.format(L.followRow, item.tier, item.name))
-	end
-	row.text:SetTextColor(Theme.rgb(Theme.HEX[ROW_COLOR[item.state]],
-		item.state == "done" and Theme.ALPHA.dim or 1))
+	local done = item.state == "done"
+	row.icon:SetIcon(item.icon)
+	row.icon:SetAlpha(done and Theme.ALPHA.dim or 1)
+	row.text:SetText(item.name)
+	row.text:SetTextColor(Theme.rgb(Theme.HEX[ROW_COLOR[item.state]], done and Theme.ALPHA.dim or 1))
 	row.right:SetText(string.format(L.followRank, item.have, item.want))
+	row.right:SetTextColor(Theme.rgb(Theme.HEX[done and "success" or (isNext and "gold" or "muted")]))
 end
 
 local function layout(parent, ctx)
-	local gap, padding = Theme.SIZES.gap, Theme.SIZES.padding
+	local S = Theme.SIZES
+	local gap, padding = S.gap, S.padding
 	local view = { frame = parent, ctx = ctx }
-	view.code = Widgets.editBox(parent, ctx.contentWidth, Theme.SIZES.buttonHeight, false, true)
-	Widgets.field(view.code):SetPoint("TOPLEFT", parent, "TOPLEFT", padding, -padding)
+	view.name = Widgets.label(parent, L.followNone, "gold")
+	view.name:SetPoint("TOPLEFT", parent, "TOPLEFT", padding, -padding)
+	view.progress = Widgets.label(parent, "", "muted", "small")
+	view.progress:SetPoint("TOPRIGHT", parent, "TOPRIGHT", -padding, -padding)
+	view.bar = Cards.progressBar(parent, ctx.contentWidth)
+	view.bar:SetPoint("TOPLEFT", view.name, "BOTTOMLEFT", 0, -gap * 2)
+	view.list = Widgets.list(parent, ctx.contentWidth, S.followRows, FollowView.talentRow)
+	view.list.frame:SetPoint("TOPLEFT", view.bar, "BOTTOMLEFT", 0, -gap * 2)
+	view.list:SetRenderer(renderRow)
+	-- Loading a build: a section at the foot, under a hairline.
+	view.loadTitle = Widgets.label(parent, L.followLoadTitle, "muted", "small")
+	view.loadTitle:SetPoint("TOPLEFT", view.list.frame, "BOTTOMLEFT", 0, -padding)
+	view.inbox = Widgets.label(parent, L.followInbox, "gold", "small")
+	view.inbox:SetPoint("LEFT", view.loadTitle, "RIGHT", padding, 0)
+	local fieldWidth = ctx.contentWidth - (S.buttonWidth + gap * 2)
+	view.code = Widgets.editBox(parent, fieldWidth, S.buttonHeight + gap, false, true)
+	Widgets.field(view.code):SetPoint("TOPLEFT", view.loadTitle, "BOTTOMLEFT", 0, -gap * 2)
+	view.error = Widgets.label(parent, "", "warning", "small")
+	view.error:SetPoint("TOPLEFT", Widgets.field(view.code), "BOTTOMLEFT", 0, -gap)
 	view.hint = Widgets.label(parent, L.followPasteHint, "muted", "small")
 	view.hint:SetPoint("TOPLEFT", Widgets.field(view.code), "BOTTOMLEFT", 0, -gap)
-	view.error = Widgets.label(parent, "", "warning", "small")
-	view.error:SetPoint("TOPLEFT", view.hint, "BOTTOMLEFT", 0, -gap)
-	view.inbox = Widgets.label(parent, L.followInbox, "gold", "small")
-	view.inbox:SetPoint("TOPLEFT", view.error, "BOTTOMLEFT", 0, -gap)
-	view.name = Widgets.label(parent, L.followNone, "gold")
-	view.name:SetPoint("TOPLEFT", view.inbox, "BOTTOMLEFT", 0, -padding)
-	view.progress = Widgets.label(parent, "", "muted", "small")
-	view.progress:SetPoint("TOPLEFT", view.name, "BOTTOMLEFT", 0, -gap)
-	view.list = Widgets.list(parent, ctx.contentWidth, Theme.SIZES.followRows)
-	view.list.frame:SetPoint("TOPLEFT", view.progress, "BOTTOMLEFT", 0, -gap)
-	view.list:SetRenderer(renderRow)
 	return view
 end
 
@@ -146,6 +191,7 @@ function FollowView.apply(view, model)
 	view.name:SetText(model.empty and L.followNone or model.name)
 	view.progress:SetText(model.empty and ""
 		or string.format(L.followProgress, model.spent, model.total))
+	view.bar:SetValue(model.total > 0 and model.spent / model.total or 0)
 	view.list:SetItems(model.list)
 	local waiting = Follow.inbox(ForeverSixtyInbox)
 	view.waiting = waiting[1]
@@ -167,13 +213,20 @@ local function isBlank(code)
 	return code == nil or code:match("^%s*$") ~= nil
 end
 
+--- The error takes the hint's place rather than stacking under it.
+function FollowView.setError(view, message)
+	view.error:SetText(message or "")
+	showAs(view.hint, message == nil or message == "")
+	return message
+end
+
 local function loadCode(view, code, name)
 	if isBlank(code) then
-		view.error:SetText(L.followPasteFirst)
+		FollowView.setError(view, L.followPasteFirst)
 		return nil
 	end
 	local build, message = Follow.load(code, view.ctx.data, name)
-	view.error:SetText(build == nil and message or "")
+	FollowView.setError(view, build == nil and message or "")
 	-- A refusal must not clear a build already loaded: the player still
 	-- wants the one that worked while they fix the code that did not.
 	view.refresh()
@@ -182,27 +235,27 @@ end
 
 function FollowView.mount(parent, ctx)
 	local view = layout(parent, ctx)
-	view.load = Widgets.button(parent, L.followLoadButton, function()
+	view.load = Cards.primaryButton(parent, L.followLoadButton, function()
 		loadCode(view, view.code:GetText())
 	end)
-	view.load:SetPoint("TOPLEFT", view.list.frame, "BOTTOMLEFT", 0, -Theme.SIZES.gap)
+	view.load:SetPoint("LEFT", Widgets.field(view.code), "RIGHT", Theme.SIZES.gap * 2, 0)
 	view.inboxLoad = Widgets.button(parent, L.followInboxLoad, function()
 		if view.waiting ~= nil then
 			loadCode(view, view.waiting.code, view.waiting.name)
 		end
 	end)
-	view.inboxLoad:SetPoint("LEFT", view.inbox, "RIGHT", Theme.SIZES.gap, 0)
-	view.forget = Widgets.button(parent, L.followForget, function()
-		Follow.forget()
-		view.error:SetText("")
-		view.refresh()
-	end)
-	view.forget:SetPoint("LEFT", view.load, "RIGHT", Theme.SIZES.gap, 0)
+	view.inboxLoad:SetPoint("LEFT", view.inbox, "RIGHT", Theme.SIZES.gap * 2, 0)
 	view.tracker = Widgets.toggle(parent, L.followShowTracker, Prefs.get("tracker", "shown"),
 		function(shown)
 			ctx.setTracker(shown)
 		end)
-	view.tracker.frame:SetPoint("TOPLEFT", view.load, "BOTTOMLEFT", 0, -Theme.SIZES.gap)
+	view.tracker.frame:SetPoint("TOPLEFT", view.hint, "BOTTOMLEFT", 0, -Theme.SIZES.gap * 2)
+	view.forget = Widgets.button(parent, L.followForget, function()
+		Follow.forget()
+		FollowView.setError(view, "")
+		view.refresh()
+	end)
+	view.forget:SetPoint("TOPRIGHT", view.load, "BOTTOMRIGHT", 0, -Theme.SIZES.gap * 2)
 	function view.refresh()
 		view.tracker:SetChecked(Prefs.get("tracker", "shown"))
 		return FollowView.apply(view,

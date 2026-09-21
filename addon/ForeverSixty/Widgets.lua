@@ -273,8 +273,10 @@ function Widgets.itemRow(parent, width)
 	local frame = CreateFrame("Frame", nil, parent)
 	frame:SetSize(width, Theme.SIZES.rowHeight)
 	frame:EnableMouse(true)
-	local icon = frame:CreateTexture(nil, "ARTWORK")
-	icon:SetSize(Theme.SIZES.iconSize, Theme.SIZES.iconSize)
+	-- Through Theme.icon so the client's baked-in bevel is cropped, the
+	-- same as every other icon in the window.
+	local icon = Theme.icon(frame, "ARTWORK", nil, Theme.SIZES.iconSize)
+	icon:SetTexture(nil)
 	icon:SetPoint("LEFT", frame, "LEFT", 0, 0)
 	local text = Widgets.label(frame, "", "body", "small")
 	text:SetPoint("LEFT", icon, "RIGHT", Theme.SIZES.gap, 0)

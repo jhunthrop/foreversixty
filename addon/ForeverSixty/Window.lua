@@ -99,6 +99,20 @@ local function levelLine()
 	return string.format(L.headerLevelLine, UnitLevel("player") or 0, raceName or "", className or "")
 end
 
+--- "warrior-arms" reads as "Arms", "hunter-beast-mastery" as "Beast
+--- Mastery": the slug is the site's key, not something to show a player.
+function Window.specLabel(slug)
+	if slug == nil then
+		return L.headerNoSpec
+	end
+	local name = slug:match("^[^-]+-(.+)$") or slug
+	local words = {}
+	for word in name:gmatch("[^-]+") do
+		words[#words + 1] = word:sub(1, 1):upper() .. word:sub(2)
+	end
+	return table.concat(words, " ")
+end
+
 function Window.headerModel(data)
 	local classSlug = Talents.playerClassSlug()
 	local spec = classSlug ~= nil
@@ -113,6 +127,7 @@ function Window.headerModel(data)
 		realmLine = string.format(L.headerRealmLevel,
 			GetRealmName() or "", UnitLevel("player") or 0),
 		specLine = spec or L.headerNoSpec,
+		specLabel = Window.specLabel(spec),
 		buildLine = Window.dataBuildLine(data),
 		warning = Window.mismatchLine(data),
 	}
@@ -307,7 +322,7 @@ local function applyHeader(data)
 	Window.characterName:SetText(header.name)
 	Window.characterName:SetTextColor(Theme.classColor(header.classToken))
 	Window.levelLine:SetText(header.levelLine)
-	Window.spec:SetText(L.headerSpecSeparator .. header.specLine)
+	Window.spec:SetText(L.headerSpecSeparator .. header.specLabel)
 	Window.status:SetText(header.status, header.statusColor)
 	Window.warning:SetText(header.warning or "")
 	return header

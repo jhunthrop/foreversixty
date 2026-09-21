@@ -188,7 +188,14 @@ describe("FollowView", function()
 		view.load:GetScript("OnClick")(view.load)
 		assert.are.equal(string.format(L.followProgress, 0, 4), view.progress:GetText())
 		assert.are.equal(string.format(L.followBuildName, "paladin"), view.name:GetText())
-		assert.are.equal("Holy", view.list.rows[1].text:GetText())
+		-- A tree heading is an eyebrow over its rows, not a row of its own kind.
+		assert.are.equal("HOLY", view.list.rows[1].heading:GetText())
+		assert.are.equal("", view.list.rows[1].text:GetText())
+		assert.is_false(view.list.rows[1].icon:IsShown())
+		-- The first talent is the next point to spend: gold edge, raised ground.
+		assert.is_true(view.list.rows[2].edge:IsShown())
+		assert.is_true(view.list.rows[2].icon:IsShown())
+		assert.is_true(view.bar.foreverSixtyValue == 0)
 	end)
 
 	it("shows the codec's own refusal and keeps the build already loaded", function()
