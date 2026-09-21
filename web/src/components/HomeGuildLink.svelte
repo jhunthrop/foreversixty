@@ -24,9 +24,22 @@
   const guild = $derived(me !== null && me.guilds.length > 0 ? me.guilds[0] : null);
 </script>
 
+<!-- `client:visible` (astro/dist/runtime/client/visible.js) observes this island's own
+     `el.children` -- real Elements only, never Svelte's comment-node placeholders -- so
+     when `guild` starts null (every load, until the fetch resolves) the block below alone
+     renders nothing and the IntersectionObserver has no target to watch, which means the
+     island never hydrates at all: not on this render, not once a guild loads. This anchor
+     is the fix -- an always-present, zero-size, aria-hidden span with no visual footprint
+     (confirmed empirically: a 0x0 empty span still reports `isIntersecting` correctly),
+     so the observer always has a real element the moment this island mounts. -->
+<span aria-hidden="true"></span>
 {#if guild !== null}
-  <span class="text-[13px]" data-testid="home-my-guild">
+  <span class="text-[13px]">
     <span class="text-muted">·</span>
-    <a href={guildHref(guild.region, guild.ruleset, guild.name)}>My guild</a>
+    <!-- Testid on the `<a>` itself, not a wrapping span -- the same convention
+         SessionNav.svelte's own `session-my-guild` link already uses, so either one is a
+         real `href` a caller can assert against directly rather than needing a nested
+         locator. -->
+    <a href={guildHref(guild.region, guild.ruleset, guild.name)} data-testid="home-my-guild">My guild</a>
   </span>
 {/if}
