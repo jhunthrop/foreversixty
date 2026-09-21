@@ -261,7 +261,7 @@ function fakeStorage(): Storage {
 }
 
 describe('runBootstrapRestore', () => {
-  it('does nothing and returns false when the URL already won (no double load)', async () => {
+  it('does nothing and returns false when the URL already won (no double load) — storeHandlesUrl default', async () => {
     const loaders = fakeLoaders();
     const storage = fakeStorage();
     const restored = await runBootstrapRestore(
@@ -269,7 +269,7 @@ describe('runBootstrapRestore', () => {
       { code: 'FS1:1:warrior:orc:0/0/0:', source: '', ref: '' },
       stored('build', 'b1'),
       () => false,
-      storage,
+      { storage },
     );
     expect(restored).toBe(false);
     for (const loader of Object.values(loaders)) expect(loader).not.toHaveBeenCalled();
@@ -283,7 +283,7 @@ describe('runBootstrapRestore', () => {
       { code: '', source: '', ref: '' },
       stored('build', 'b1'),
       () => true,
-      storage,
+      { storage },
     );
     expect(restored).toBe(true);
     expect(loaders.loadBuild).toHaveBeenCalledWith('b1');
@@ -299,11 +299,73 @@ describe('runBootstrapRestore', () => {
       { code: '', source: '', ref: '' },
       stored('build', 'b1'),
       () => false,
-      storage,
+      { storage },
     );
     expect(restored).toBe(false);
     expect(loaders.setMessage).toHaveBeenCalledWith(null);
     expect(storage.getItem('fs.currentCharacter')).toBeNull();
+  });
+
+  /**
+   * `storeHandlesUrl: false` (fix round: ToolsView.svelte's own regression -- unlike
+   * SimView.svelte's `store.svelte.ts`, `bulk-store.svelte.ts` has no init-time bootstrap of
+   * its own, so a direct `?source=&ref=`/`?code=` URL was silently loading nothing at all on
+   * the tools island).
+   */
+  it('storeHandlesUrl false: still runs a URL-driven decision through its loader', async () => {
+    const loaders = fakeLoaders();
+    const restored = await runBootstrapRestore(
+      loaders,
+      { code: '', source: 'fight', ref: 'fixture2abcd:3' },
+      null,
+      () => true,
+      { storeHandlesUrl: false },
+    );
+    // A URL-driven load never claims "restored" -- that word is reserved for the stored
+    // pointer (settleRestore's own rule): the chip's "Restored your last character" line
+    // would otherwise show for a link the player just followed themselves.
+    expect(restored).toBe(false);
+    expect(loaders.loadFight).toHaveBeenCalledWith('fixture2abcd:3');
+  });
+
+  it('storeHandlesUrl false: a URL-driven `?code=` still loads too', async () => {
+    const loaders = fakeLoaders();
+    await runBootstrapRestore(
+      loaders,
+      { code: 'FS1:1:warrior:orc:0/0/0:', source: '', ref: '' },
+      null,
+      () => true,
+      { storeHandlesUrl: false },
+    );
+    expect(loaders.loadCode).toHaveBeenCalledWith('FS1:1:warrior:orc:0/0/0:');
+  });
+
+  it('storeHandlesUrl false: still prefers the stored pointer and reports restored when the URL is bare', async () => {
+    const loaders = fakeLoaders();
+    const restored = await runBootstrapRestore(
+      loaders,
+      { code: '', source: '', ref: '' },
+      stored('build', 'b1'),
+      () => true,
+      { storeHandlesUrl: false },
+    );
+    expect(restored).toBe(true);
+    expect(loaders.loadBuild).toHaveBeenCalledWith('b1');
+  });
+
+  it('does nothing for a bare URL and no stored pointer, whatever storeHandlesUrl is', async () => {
+    const loaders = fakeLoaders();
+    const restored = await runBootstrapRestore(
+      loaders,
+      { code: '', source: '', ref: '' },
+      null,
+      () => false,
+      {
+        storeHandlesUrl: false,
+      },
+    );
+    expect(restored).toBe(false);
+    for (const loader of Object.values(loaders)) expect(loader).not.toHaveBeenCalled();
   });
 });
 
