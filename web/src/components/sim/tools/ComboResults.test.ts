@@ -22,6 +22,8 @@ import type { BulkResult } from '../../../lib/sim/bulk-types';
 import { ranksFromTalentsString } from '../../../lib/sim/character';
 import { canPlanCombo, comboRows } from '../../../lib/sim/combos';
 import { handoffCopy } from '../../../lib/sim/handoff-copy';
+import { poolQualityCopy } from '../../../lib/sim/pool-quality-copy';
+import type { Combo } from '../../../lib/sim/bulk-types';
 import ComboResults from './ComboResults.svelte';
 
 const result = bulkResultJson as unknown as BulkResult;
@@ -30,10 +32,10 @@ const items: ReadonlyMap<number, Item> = new Map(
 );
 const sets = setsJson as unknown as ItemSet[];
 
-function renderCombos(): string {
+function renderCombos(overrides: Partial<BulkResult> = {}): string {
   const { body } = render(ComboResults, {
     props: {
-      result,
+      result: { ...result, ...overrides },
       items,
       sets,
       treeVersion: 'test-build',
@@ -161,5 +163,62 @@ describe('ComboResults: "Plan it" per row (task 7)', () => {
     const ids = [...body.matchAll(/data-testid="(sim-combo-plan-it-[^"]+)"/g)].map((match) => match[1]);
     expect(ids).toHaveLength(plannableCount);
     expect(new Set(ids).size).toBe(ids.length);
+  });
+});
+
+/**
+ * newcomer round 4 (review.md:83-110) / dps D25-pattern: "too close to separate" used to
+ * print under every result with more than one row, whatever the actual gap. Two synthetic
+ * results -- a clear gap and an overlapping pair -- prove the note is now conditioned on
+ * `closestOverlappingPair`, not just row count. Fixed at the component boundary, which is
+ * also what SavedCombos.svelte (the saved read-only view) shares.
+ */
+describe('ComboResults: "too close to separate" only when it is true (newcomer r4)', () => {
+  function combo(itemId: number, slot: string, name: string, mean: number, error: number): Combo {
+    const estimate = { mean, stddev: error * 10, error, min: mean - error, max: mean + error };
+    return {
+      substitutions: [{ kind: 'item', slot, item_id: itemId, name }],
+      dps: estimate,
+      delta: estimate,
+      group: 0,
+    };
+  }
+
+  it('shows no note over a clear gap, matching the round-4 repro numbers', () => {
+    const combos = [
+      combo(16963, 'head', 'Your current build', 0, 1.6),
+      combo(16966, 'shoulder', 'Build 1', -239, 1.5),
+    ];
+    const body = renderCombos({ combos });
+    expect(body).not.toContain('sim-within-error-note');
+  });
+
+  it('shows the note, naming both rows, when an adjacent pair overlaps', () => {
+    const combos = [
+      combo(16963, 'head', 'Your current build', 100, 5),
+      combo(16966, 'shoulder', 'Build 1', 98, 5),
+    ];
+    const body = renderCombos({ combos });
+    expect(body).toContain('data-testid="sim-within-error-note"');
+    expect(body).toContain(poolQualityCopy.withinErrorNoteNaming('Your current build', 'Build 1'));
+  });
+});
+
+/**
+ * newcomer round 4: the same pasted build read 681 ± 6.9 in the editor's own preview and
+ * 400 in this table -- both correct (gear differs by design in talents mode), never
+ * explained. The note fires only for a talents-mode result.
+ */
+describe('ComboResults: talents-mode gear-locked note (newcomer r4)', () => {
+  it('shows the note when the request is talents mode', () => {
+    const body = renderCombos({
+      request: { ...result.request, bulk: { ...result.request.bulk!, mode: 'talents' } },
+    });
+    expect(body).toContain(poolQualityCopy.talentsGearLockedNote);
+  });
+
+  it('does not show the note for gear mode (the fixture’s own default)', () => {
+    const body = renderCombos();
+    expect(body).not.toContain(poolQualityCopy.talentsGearLockedNote);
   });
 });

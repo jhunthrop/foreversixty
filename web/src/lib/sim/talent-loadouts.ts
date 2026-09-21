@@ -2,6 +2,8 @@
 // TalentCandidates.svelte's own pure decisions, pulled out the same reason drop-picks.ts
 // was: the component owns `picked`/`saved`/`exported` state, these just compute the next
 // value from it.
+import { decodeFS1 } from '../planner/fs1';
+import type { TalentIndex } from '../planner/rules';
 import { bulkCopy } from './copy';
 import { poolQualityCopy } from './pool-quality-copy';
 import type { TalentLoadout } from './types';
@@ -30,6 +32,21 @@ export function customLoadouts(
   const claimed = new Set(named.flat().map((entry) => entry.name));
   if (own !== null) claimed.add(own.name);
   return picked.filter((entry) => !claimed.has(entry.name));
+}
+
+/**
+ * TalentCandidates.svelte, newcomer round 4 (review.md:83-110): the inline editor's own
+ * ADD A BUILD flow is a two-step trap -- IMPORT FROM ADDON decodes into `customCode`, but
+ * nothing joins the comparison until `sim-loadout-accept` (labelled identically to the
+ * outer toggle that opens the editor) is clicked. A player who pastes and goes straight to
+ * RUN gets a silent one-row table. This is the trap's own precondition: a build sitting in
+ * the editor that `addCustom` could accept right now but has not. Mirrors `addCustom`'s own
+ * guard exactly (`index === null || customCode === ''`, then `decodeFS1(customCode).ok`),
+ * so "pending" here and "addCustom would actually add it" never disagree.
+ */
+export function hasUnaddedBuild(customCode: string, index: TalentIndex | null): boolean {
+  if (customCode === '' || index === null) return false;
+  return decodeFS1(customCode).ok;
 }
 
 /**

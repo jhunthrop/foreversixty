@@ -12,9 +12,10 @@
   import { loadItems } from '../../lib/planner/load';
   import { SLOT_LABELS, type Item, type Slot } from '../../lib/planner/types';
   import type { BulkResult } from '../../lib/sim/bulk-types';
-  import { comboRows, deltaLabel, slotSummary } from '../../lib/sim/combos';
+  import { closestOverlappingPair, comboRows, deltaLabel, rowName, slotSummary } from '../../lib/sim/combos';
   import { bulkCopy } from '../../lib/sim/copy';
   import { confidenceBand, formatMargin } from '../../lib/sim/estimate';
+  import { poolQualityCopy } from '../../lib/sim/pool-quality-copy';
   import SubstitutionChips from './tools/SubstitutionChips.svelte';
 
   let { result, treeVersion }: { result: BulkResult; treeVersion: string } = $props();
@@ -36,6 +37,10 @@
 
   const rows = $derived(comboRows(result));
   const summary = $derived(slotSummary(result));
+  /** newcomer round 4 / dps D25-pattern: the same overbroad warning this saved read-only
+   *  view shared with the live ComboResults.svelte (combos.ts's `closestOverlappingPair`). */
+  const overlap = $derived(closestOverlappingPair(rows));
+  const isTalentsMode = $derived(result.request.bulk?.mode === 'talents');
   const equippedFigure = $derived(Math.round(result.equipped.mean).toLocaleString('en-US'));
   const equippedBand = $derived(formatMargin(confidenceBand(result.equipped)));
 </script>
@@ -45,6 +50,12 @@
     {bulkCopy.resultsEquipped}: {equippedFigure} ± {equippedBand}
     <span class="text-muted">{bulkCopy.ranAtStages(result.stages)}</span>
   </p>
+
+  {#if isTalentsMode}
+    <p class="text-muted text-[12px]" data-testid="sim-talents-gear-locked">
+      {poolQualityCopy.talentsGearLockedNote}
+    </p>
+  {/if}
 
   {#if rows.length === 0}
     <p class="text-muted text-[13px]">{bulkCopy.noGain}</p>
@@ -106,8 +117,10 @@
         </div>
       {/each}
     </div>
-    {#if rows.length > 1}
-      <p class="text-muted text-[12px]">{bulkCopy.withinErrorNote}</p>
+    {#if overlap !== null}
+      <p class="text-muted text-[12px]" data-testid="sim-within-error-note">
+        {poolQualityCopy.withinErrorNoteNaming(rowName(overlap.a), rowName(overlap.b))}
+      </p>
     {/if}
   {/if}
 

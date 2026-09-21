@@ -14,9 +14,24 @@
     live,
     simHref,
     gate,
+    standalone,
     onshowdps,
-  }: { store: PlannerStore; live: LiveDps; simHref: string; gate: LiveGate; onshowdps: () => void } =
-    $props();
+  }: {
+    store: PlannerStore;
+    live: LiveDps;
+    simHref: string;
+    gate: LiveGate;
+    /**
+     * newcomer round 4 (review.md:83-110): the one embedder that mounts this NOT standalone
+     * -- TalentCandidates.svelte's inline ADD A BUILD editor -- can hold a pasted build
+     * whose gear differs from the player's own current character, which the ranked
+     * comparison beside it locks to. `PlannerDps` needs this to say so beside its own
+     * figure; the real /planner page always shows the player's own gear, where the caveat
+     * would be noise.
+     */
+    standalone: boolean;
+    onshowdps: () => void;
+  } = $props();
 
   // The bar's one refusal line already carries the planner's own refusals (an illegal move,
   // a read-only build); a failed live estimate is the same kind of fact -- something the
@@ -88,7 +103,14 @@
     </span>
   </div>
 
-  <PlannerDps {live} href={simHref} {gate} pointsLeft={MAX_POINTS - store.spent} onshow={onshowdps} />
+  <PlannerDps
+    {live}
+    href={simHref}
+    {gate}
+    pointsLeft={MAX_POINTS - store.spent}
+    onshow={onshowdps}
+    ownGearCaveat={!standalone}
+  />
 
   <p
     role="status"

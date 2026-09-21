@@ -22,6 +22,7 @@ import {
   specForSplit,
   specOf,
   talentLevel,
+  talentPointsFromString,
   talentsString,
   toBuildDraft,
   toCharacterSpec,
@@ -65,6 +66,36 @@ describe('specForSplit', () => {
   it('degrades to class-and-index when the spec list has no row for that tree', () => {
     // The fixture warrior file has two trees, but a class the list does not know has none.
     expect(specForSplit('demonhunter', [31, 0, 0])).toBe('demonhunter-0');
+  });
+});
+
+describe('talentPointsFromString', () => {
+  // 2026-09-21 result-page review round 3, newcomer's own finding: a saved sim's stored
+  // request carries only the engine's final talents string, never point_order, and
+  // CharacterStrip.svelte's own count read 0 (hidden) for it -- this is the fix, straight
+  // from the string, no order needed.
+  it('sums every rank across every tree', () => {
+    // 5+0+0+0+0+5+0+2+3+0+1+0+3+1+0 = 20 (tree one) ... exact digit sum, not the digit
+    // count or the string length, is what matters here.
+    expect(talentPointsFromString('050005023010310000-00000000000000000-0505000311020321251')).toBe(
+      20 + 0 + 31,
+    );
+  });
+
+  it('is 0 for an all-zero or empty talents string', () => {
+    expect(talentPointsFromString('0-0-0')).toBe(0);
+    expect(talentPointsFromString('')).toBe(0);
+  });
+
+  it('handles a single-tree string with no dashes at all', () => {
+    expect(talentPointsFromString('12345')).toBe(1 + 2 + 3 + 4 + 5);
+  });
+
+  it('never returns a rank above 9, the same cap talentsString’s own encoder applies', () => {
+    // ranksFromTalentsString parses one character per rank, so a value this function could
+    // ever see is already single-digit -- pinned here as a sanity bound on the sum, not a
+    // real ability that reaches rank 9.
+    expect(talentPointsFromString('9-0-0')).toBe(9);
   });
 });
 
