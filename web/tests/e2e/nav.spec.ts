@@ -124,3 +124,34 @@ test.describe('"/" shortcut', () => {
     await expect(box).toHaveValue('a/b');
   });
 });
+
+// The panel was `position: fixed` at a measured 137px. It looked right at the top of a page
+// and floated over the content, detached from the header, as soon as the page scrolled.
+test('the Reference panel sits under the header and stays attached to it when the page scrolls', async ({
+  page,
+}) => {
+  await page.goto('/classes');
+  const summary = page.getByTestId('primary-nav').locator('summary');
+  await summary.scrollIntoViewIfNeeded();
+  await summary.click();
+  const panel = page.locator('.reference-panel');
+  await expect(panel).toBeVisible();
+
+  const gap = (): Promise<number> =>
+    page.evaluate(() => {
+      const header = document.querySelector('header')!.getBoundingClientRect();
+      const box = document.querySelector('.reference-panel')!.getBoundingClientRect();
+      return Math.round(box.top - header.bottom);
+    });
+  const before = await gap();
+  // Under the header (a few pixels of margin on desktop), never over it and never far below.
+  expect(before).toBeGreaterThanOrEqual(-60);
+  expect(before).toBeLessThanOrEqual(12);
+
+  await page.evaluate(() => window.scrollTo(0, 80));
+  expect(await gap()).toBe(before);
+  // All four links are reachable, not clipped by the scrolling nav row.
+  for (const name of ['Classes', 'Guides', 'Zones', 'Dungeons']) {
+    await expect(panel.getByRole('link', { name })).toBeVisible();
+  }
+});
