@@ -10,6 +10,16 @@
     "icon": "talents"
   },
   {
+    "title": "Simulator",
+    "description": "Estimate your DPS, find upgrades with the Droptimizer and Top Gear, and check stat weights.",
+    "href": "/sim",
+    "status": {
+      "label": "Live",
+      "kind": "site"
+    },
+    "icon": "simulator"
+  },
+  {
     "title": "Combat logs",
     "description": "Upload a log or log live with the companion. Every fight, every view, and your parse against everyone else's.",
     "href": "/logs",
@@ -28,6 +38,16 @@
       "kind": "site"
     },
     "icon": "rankings"
+  },
+  {
+    "title": "The addon",
+    "description": "Paste an export to load your character into the planner or the simulator, then copy a build back into the game.",
+    "href": "/addon",
+    "status": {
+      "label": "Live",
+      "kind": "site"
+    },
+    "icon": "addon"
   },
   {
     "title": "Dungeons",
