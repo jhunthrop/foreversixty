@@ -62,3 +62,26 @@ test('"Sim this build" carries the build to the full results', async ({ page }) 
   // has already learned to decode it.
   await expect(page.getByTestId('sim-view')).toBeVisible();
 });
+
+// The error band only exists once a run is ready. It used to be removed from the page while
+// the next run was pending, so every talent click made the summary bar one line shorter and
+// then one line taller again, and the trees under it jumped up and back.
+test('a talent click never moves the trees: the summary bar keeps its height through a run', async ({
+  page,
+}) => {
+  await page.goto('/planner');
+  const cell = page.getByTestId('talent-1001');
+  await expect(cell).toBeVisible();
+  const before = (await cell.boundingBox())?.y;
+
+  await cell.click();
+  await expect(page.getByTestId('planner-dps-error')).toHaveText(/^± \d/, { timeout: 3000 });
+  expect((await cell.boundingBox())?.y).toBe(before);
+
+  // The second click is the one that used to jump: a band is on screen and the run that
+  // replaces it is pending.
+  await page.getByTestId('talent-1002').click();
+  expect((await cell.boundingBox())?.y).toBe(before);
+  await expect(page.getByTestId('planner-dps-error')).toHaveText(/^± \d/, { timeout: 3000 });
+  expect((await cell.boundingBox())?.y).toBe(before);
+});

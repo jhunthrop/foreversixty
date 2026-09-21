@@ -38,9 +38,13 @@
   >
     {figure}
   </span>
-  {#if band !== ''}
-    <span class="tabular text-muted font-mono text-[12px]" data-testid="planner-dps-error">{band}</span>
-  {/if}
+  <!-- Always on the page, at a fixed height, even with nothing to say: the band only exists
+       once a run is ready, and removing the line while the next run was pending made the
+       whole summary bar one line shorter on every talent click, which moved the trees. -->
+  <span
+    class="tabular text-muted block h-[18px] font-mono text-[12px] leading-[18px]"
+    data-testid="planner-dps-error">{band}</span
+  >
 </div>
 
 <!-- min-h-11 at every width, the same as GearPanel.svelte's slot buttons: no other control
