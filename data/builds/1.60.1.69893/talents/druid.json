@@ -337,15 +337,15 @@
           "ranks": [
             {
               "spell_id": 408248,
-              "description": "Your Wrath spell reduces the cast time of your next 2 Starfire spells by 0.17 sec. Stores up to $408255u charges. Lasts 15 sec."
+              "description": "Your Wrath spell reduces the cast time of your next 2 Starfire spells by 0.17 sec. Stores up to 4 charges. Lasts 15 sec."
             },
             {
               "spell_id": 408248,
-              "description": "Your Wrath spell reduces the cast time of your next 2 Starfire spells by 0.33 sec. Stores up to $408255u charges. Lasts 15 sec."
+              "description": "Your Wrath spell reduces the cast time of your next 2 Starfire spells by 0.33 sec. Stores up to 4 charges. Lasts 15 sec."
             },
             {
               "spell_id": 408248,
-              "description": "Your Wrath spell reduces the cast time of your next 2 Starfire spells by 0.5 sec. Stores up to $408255u charges. Lasts 15 sec."
+              "description": "Your Wrath spell reduces the cast time of your next 2 Starfire spells by 0.5 sec. Stores up to 4 charges. Lasts 15 sec."
             }
           ],
           "spell_id": 408248
@@ -395,7 +395,7 @@
           "ranks": [
             {
               "spell_id": 24858,
-              "description": "Transforms the Druid into Moonkin Form. While in this form, the armor contribution from items is increased by 360%, Omen of Clarity gains 100% increased chance to trigger, and all party members within $24907a1 yards have their critical strike chance increased by 3%, exclusive with Leader of the Pack. The Moonkin cannot cast healing spells while shapeshifted.\r\n\r\nThe act of shapeshifting frees the caster of Polymorph and Movement Impairing effects."
+              "description": "Transforms the Druid into Moonkin Form. While in this form, the armor contribution from items is increased by 360%, Omen of Clarity gains 100% increased chance to trigger, and all party members within 45 yards have their critical strike chance increased by 3%, exclusive with Leader of the Pack. The Moonkin cannot cast healing spells while shapeshifted.\r\n\r\nThe act of shapeshifting frees the caster of Polymorph and Movement Impairing effects."
             }
           ],
           "spell_id": 24858
@@ -746,7 +746,7 @@
           "ranks": [
             {
               "spell_id": 17007,
-              "description": "While in Cat Form, Bear Form, or Dire Bear Form, the Leader of the Pack increases the critical strike chance of all party members within $24932a1 yards by 3%, exclusive with Moonkin Aura."
+              "description": "While in Cat Form, Bear Form, or Dire Bear Form, the Leader of the Pack increases the critical strike chance of all party members within 45 yards by 3%, exclusive with Moonkin Aura."
             }
           ],
           "spell_id": 17007

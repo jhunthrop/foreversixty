@@ -86,7 +86,7 @@ def normalize_build(
     from pipeline.normalize.trait_trees import build_trait_talent_trees
     from pipeline.normalize.traits import TraitDataError, TraitRows, has_trait_trees
     from pipeline.normalize.zones import normalize_zones
-    from pipeline.spelltext import load_spell_text
+    from pipeline.spelltext import ExtraRows, load_spell_text
 
     build_dir = root / build
     raw = build_dir / "raw"
@@ -115,7 +115,17 @@ def normalize_build(
     # Phase 1 planner data. Both directories are rebuilt from scratch so a class
     # that disappears between builds does not leave a stale file behind.
     spell_effect_rows = t("SpellEffect")
-    spell_text = load_spell_text(t("Spell"), t("SpellMisc"), spell_effect_rows, t("SpellDuration"))
+    spell_text = load_spell_text(
+        t("Spell"),
+        t("SpellMisc"),
+        spell_effect_rows,
+        t("SpellDuration"),
+        ExtraRows(
+            aura_options=optional("SpellAuraOptions"),
+            radius=optional("SpellRadius"),
+            range=optional("SpellRange"),
+        ),
+    )
     icons = icon_names(t("ManifestInterfaceData"))
     spell_names = {int(r["ID"]): r["Name_lang"] for r in t("SpellName")}
 

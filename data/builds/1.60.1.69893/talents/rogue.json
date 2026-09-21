@@ -1264,7 +1264,7 @@
           "ranks": [
             {
               "spell_id": 1310721,
-              "description": "When your Rupture ability deals periodic damage, the Energy cost of your next Hemorrhage or Backstab ability within 10 sec is reduced by 3, stacking up to $1310723u times."
+              "description": "When your Rupture ability deals periodic damage, the Energy cost of your next Hemorrhage or Backstab ability within 10 sec is reduced by 3, stacking up to 5 times."
             }
           ],
           "spell_id": 1310721

@@ -194,7 +194,7 @@
           "ranks": [
             {
               "spell_id": 16164,
-              "description": "Gives you a $h% chance to enter a Clearcasting state after casting any Fire, Frost, or Nature damage spell.  The Clearcasting state reduces the mana cost of your next damage spell by 100%."
+              "description": "Gives you a 10% chance to enter a Clearcasting state after casting any Fire, Frost, or Nature damage spell.  The Clearcasting state reduces the mana cost of your next damage spell by 100%."
             }
           ],
           "spell_id": 16164
@@ -699,23 +699,23 @@
           "ranks": [
             {
               "spell_id": 16256,
-              "description": "Increases your attack speed by 5% for your next $16257n swings after dealing a melee critical strike."
+              "description": "Increases your attack speed by 5% for your next 3 swings after dealing a melee critical strike."
             },
             {
               "spell_id": 16256,
-              "description": "Increases your attack speed by 10% for your next $16257n swings after dealing a melee critical strike."
+              "description": "Increases your attack speed by 10% for your next 3 swings after dealing a melee critical strike."
             },
             {
               "spell_id": 16256,
-              "description": "Increases your attack speed by 15% for your next $16257n swings after dealing a melee critical strike."
+              "description": "Increases your attack speed by 15% for your next 3 swings after dealing a melee critical strike."
             },
             {
               "spell_id": 16256,
-              "description": "Increases your attack speed by 20% for your next $16257n swings after dealing a melee critical strike."
+              "description": "Increases your attack speed by 20% for your next 3 swings after dealing a melee critical strike."
             },
             {
               "spell_id": 16256,
-              "description": "Increases your attack speed by 25% for your next $16257n swings after dealing a melee critical strike."
+              "description": "Increases your attack speed by 25% for your next 3 swings after dealing a melee critical strike."
             }
           ],
           "spell_id": 16256
@@ -1086,7 +1086,7 @@
           "ranks": [
             {
               "spell_id": 408510,
-              "description": "The caster is surrounded by $n globes of water. When a spell, melee, or ranged attack hits the caster or when one of the caster's healing spells gets a critical result, 2% of maximum mana is restored to the caster, expending one water globe. Only one globe will activate every few seconds.  Lasts 10 min.\r\n\r\nOnly one Elemental Shield can be active on the Shaman at any one time."
+              "description": "The caster is surrounded by 3 globes of water. When a spell, melee, or ranged attack hits the caster or when one of the caster's healing spells gets a critical result, 2% of maximum mana is restored to the caster, expending one water globe. Only one globe will activate every few seconds.  Lasts 10 min.\r\n\r\nOnly one Elemental Shield can be active on the Shaman at any one time."
             }
           ],
           "spell_id": 408510
@@ -1169,7 +1169,7 @@
           "ranks": [
             {
               "spell_id": 16190,
-              "description": "Summons a Mana Tide Totem with 5 health at the feet of the caster for ${13 sec-1} sec that restores 88 mana every 3 seconds to group members within $16191a1 yards."
+              "description": "Summons a Mana Tide Totem with 5 health at the feet of the caster for ${13 sec-1} sec that restores 88 mana every 3 seconds to group members within 30 yards."
             }
           ],
           "spell_id": 16190

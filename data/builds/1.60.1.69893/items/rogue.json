@@ -3064,7 +3064,7 @@
       "speed": 1.6,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Your healing spells have a $h% chance to remove 1 Poison effect from the target.",
+      "effect_text": "Your healing spells have a 5% chance to remove 1 Poison effect from the target.",
       "set_id": null,
       "unique": false
     },
@@ -16174,7 +16174,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Fear all Demons within $r yards for 6 sec.",
+      "effect_text": "Fear all Demons within 15 yards for 6 sec.",
       "set_id": null,
       "unique": false
     },
@@ -34702,7 +34702,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Gives 10 additional stamina to party members within $a1 yards.",
+      "effect_text": "Gives 10 additional stamina to party members within 30 yards.",
       "set_id": null,
       "unique": false
     },
@@ -55018,7 +55018,7 @@
       "speed": 1.9,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Blasts your enemy with lightning, dealing 300 Nature damage and then jumping to additional nearby enemies.  Each jump reduces that victim's Nature resistance by 25. Affects $x1 targets. Your primary target is also consumed by a cyclone, slowing its attack speed by 20% for 12 sec.",
+      "effect_text": "Blasts your enemy with lightning, dealing 300 Nature damage and then jumping to additional nearby enemies.  Each jump reduces that victim's Nature resistance by 25. Affects 5 targets. Your primary target is also consumed by a cyclone, slowing its attack speed by 20% for 12 sec.",
       "set_id": null,
       "unique": true
     },

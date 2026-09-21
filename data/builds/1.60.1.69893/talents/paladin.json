@@ -487,23 +487,23 @@
           "ranks": [
             {
               "spell_id": 20127,
-              "description": "Damaging melee attacks against you have a $h% chance to increase your chance to block by 6%.  Lasts 10 sec or $20128n blocks."
+              "description": "Damaging melee attacks against you have a 10% chance to increase your chance to block by 6%.  Lasts 10 sec or 5 blocks."
             },
             {
               "spell_id": 20127,
-              "description": "Damaging melee attacks against you have a $h% chance to increase your chance to block by 12%.  Lasts 10 sec or $20128n blocks."
+              "description": "Damaging melee attacks against you have a 10% chance to increase your chance to block by 12%.  Lasts 10 sec or 5 blocks."
             },
             {
               "spell_id": 20127,
-              "description": "Damaging melee attacks against you have a $h% chance to increase your chance to block by 18%.  Lasts 10 sec or $20128n blocks."
+              "description": "Damaging melee attacks against you have a 10% chance to increase your chance to block by 18%.  Lasts 10 sec or 5 blocks."
             },
             {
               "spell_id": 20127,
-              "description": "Damaging melee attacks against you have a $h% chance to increase your chance to block by 24%.  Lasts 10 sec or $20128n blocks."
+              "description": "Damaging melee attacks against you have a 10% chance to increase your chance to block by 24%.  Lasts 10 sec or 5 blocks."
             },
             {
               "spell_id": 20127,
-              "description": "Damaging melee attacks against you have a $h% chance to increase your chance to block by 30%.  Lasts 10 sec or $20128n blocks."
+              "description": "Damaging melee attacks against you have a 10% chance to increase your chance to block by 30%.  Lasts 10 sec or 5 blocks."
             }
           ],
           "spell_id": 20127
@@ -641,15 +641,15 @@
           "ranks": [
             {
               "spell_id": 20150,
-              "description": "Increases the amount of damage absorbed by your shield by 10%, and gives your blocks a 33% chance to restore 6% of your maximum Mana.  May only occur once every $proccooldown sec."
+              "description": "Increases the amount of damage absorbed by your shield by 10%, and gives your blocks a 33% chance to restore 6% of your maximum Mana.  May only occur once every 3 sec."
             },
             {
               "spell_id": 20150,
-              "description": "Increases the amount of damage absorbed by your shield by 20%, and gives your blocks a 66% chance to restore 6% of your maximum Mana.  May only occur once every $proccooldown sec."
+              "description": "Increases the amount of damage absorbed by your shield by 20%, and gives your blocks a 66% chance to restore 6% of your maximum Mana.  May only occur once every 3 sec."
             },
             {
               "spell_id": 20150,
-              "description": "Increases the amount of damage absorbed by your shield by 30%, and gives your blocks a 100% chance to restore 6% of your maximum Mana.  May only occur once every $proccooldown sec."
+              "description": "Increases the amount of damage absorbed by your shield by 30%, and gives your blocks a 100% chance to restore 6% of your maximum Mana.  May only occur once every 3 sec."
             }
           ],
           "spell_id": 20150
@@ -837,7 +837,7 @@
           "ranks": [
             {
               "spell_id": 20925,
-              "description": "Increases chance to block by 20% for 10 sec, and deals 110 Holy damage for each attack blocked while active.  Damage caused by Holy Shield causes 20% additional threat. Each block expends a charge. $n charges."
+              "description": "Increases chance to block by 20% for 10 sec, and deals 110 Holy damage for each attack blocked while active.  Damage caused by Holy Shield causes 20% additional threat. Each block expends a charge. 4 charges."
             }
           ],
           "spell_id": 20925
@@ -1175,15 +1175,15 @@
           "ranks": [
             {
               "spell_id": 20049,
-              "description": "Increases your Physical and Holy damage dealt by 1% for 30 sec after landing a critical strike.  Stacks up to $20050u times."
+              "description": "Increases your Physical and Holy damage dealt by 1% for 30 sec after landing a critical strike.  Stacks up to 5 times."
             },
             {
               "spell_id": 20049,
-              "description": "Increases your Physical and Holy damage dealt by 2% for 30 sec after landing a critical strike.  Stacks up to $20050u times."
+              "description": "Increases your Physical and Holy damage dealt by 2% for 30 sec after landing a critical strike.  Stacks up to 5 times."
             },
             {
               "spell_id": 20049,
-              "description": "Increases your Physical and Holy damage dealt by 3% for 30 sec after landing a critical strike.  Stacks up to $20050u times."
+              "description": "Increases your Physical and Holy damage dealt by 3% for 30 sec after landing a critical strike.  Stacks up to 5 times."
             }
           ],
           "spell_id": 20049

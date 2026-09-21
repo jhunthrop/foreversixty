@@ -615,7 +615,7 @@
           "ranks": [
             {
               "spell_id": 15237,
-              "description": "Causes an explosion of holy light around the caster, causing 27 Holy damage to all enemy targets within $a1 yards and healing all party members within $23455a1 yards for 51. These effects cause no threat."
+              "description": "Causes an explosion of holy light around the caster, causing 27 Holy damage to all enemy targets within $a1 yards and healing all party members within 10 yards for 51. These effects cause no threat."
             }
           ],
           "spell_id": 15237
@@ -862,7 +862,7 @@
           "ranks": [
             {
               "spell_id": 401859,
-              "description": "Places a spell on the target that heals them for ${(172+($bh*$bc))*$<mult>} the next time they take damage or receive non-periodic healing. When the heal occurs, Prayer of Mending jumps to a party or raid member within $401880a1 yards. Jumps up to 5 times and lasts 30 sec after each jump. This spell can only be placed on one target at a time per caster."
+              "description": "Places a spell on the target that heals them for ${(172+($bh*$bc))*$<mult>} the next time they take damage or receive non-periodic healing. When the heal occurs, Prayer of Mending jumps to a party or raid member within 20 yards. Jumps up to 5 times and lasts 30 sec after each jump. This spell can only be placed on one target at a time per caster."
             }
           ],
           "spell_id": 401859
@@ -1183,15 +1183,15 @@
           "ranks": [
             {
               "spell_id": 15257,
-              "description": "Your Shadow damage spells have a 33% chance to increase the Shadow damage you deal by 2% for 15 sec, stacking up to $15258u times."
+              "description": "Your Shadow damage spells have a 33% chance to increase the Shadow damage you deal by 2% for 15 sec, stacking up to 5 times."
             },
             {
               "spell_id": 15257,
-              "description": "Your Shadow damage spells have a 67% chance to increase the Shadow damage you deal by 2% for 15 sec, stacking up to $15258u times."
+              "description": "Your Shadow damage spells have a 67% chance to increase the Shadow damage you deal by 2% for 15 sec, stacking up to 5 times."
             },
             {
               "spell_id": 15257,
-              "description": "Your Shadow damage spells have a 100% chance to increase the Shadow damage you deal by 2% for 15 sec, stacking up to $15258u times."
+              "description": "Your Shadow damage spells have a 100% chance to increase the Shadow damage you deal by 2% for 15 sec, stacking up to 5 times."
             }
           ],
           "spell_id": 15257

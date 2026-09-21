@@ -78,7 +78,7 @@
       },
       {
         "pieces": 4,
-        "description": "Falling below 25% health grants Return to Sender, reflecting the next spell cast on you within 6 sec.  Can only occur once every ${$proccooldown/60} min."
+        "description": "Falling below 25% health grants Return to Sender, reflecting the next spell cast on you within 6 sec.  Can only occur once every 3 min."
       },
       {
         "pieces": 5,
@@ -290,7 +290,7 @@
       },
       {
         "pieces": 4,
-        "description": "Grants your melee attacks a $h% chance when striking from behind to hit a vital point, causing the target to Bleed for 75 Physical damage over 5 sec."
+        "description": "Grants your melee attacks a 5% chance when striking from behind to hit a vital point, causing the target to Bleed for 75 Physical damage over 5 sec."
       },
       {
         "pieces": 5,
@@ -319,7 +319,7 @@
       },
       {
         "pieces": 4,
-        "description": "Taking damage while at or below 25% health causes you to restore 100 health and mana over 5 sec.  This effect can only trigger once every ${$proccooldown/60} min."
+        "description": "Taking damage while at or below 25% health causes you to restore 100 health and mana over 5 sec.  This effect can only trigger once every 5 min."
       },
       {
         "pieces": 5,
@@ -349,7 +349,7 @@
       },
       {
         "pieces": 4,
-        "description": "Taking damage has a $h% chance to grant Enraging Light for 10 sec, causing your melee attacks to deal 20 Holy damage. Deals 3 times as much damage to Undead."
+        "description": "Taking damage has a 15% chance to grant Enraging Light for 10 sec, causing your melee attacks to deal 20 Holy damage. Deals 3 times as much damage to Undead."
       },
       {
         "pieces": 5,
@@ -357,7 +357,7 @@
       },
       {
         "pieces": 6,
-        "description": "Taking damage while at or below 20% health grants you a shield, absorbing $1293733s2 damage for 10 sec.  This effect can only trigger once every ${$proccooldown/60} min."
+        "description": "Taking damage while at or below 20% health grants you a shield, absorbing $1293733s2 damage for 10 sec.  This effect can only trigger once every 4 min."
       }
     ]
   },
@@ -385,11 +385,11 @@
       },
       {
         "pieces": 4,
-        "description": "When struck in combat has a $h% chance of freezing the attacker in place for 3 sec. Can only occur once every $proccooldown sec."
+        "description": "When struck in combat has a 2% chance of freezing the attacker in place for 3 sec. Can only occur once every 60 sec."
       },
       {
         "pieces": 5,
-        "description": "Your spellcasts have a $h% chance to energize you for 200 mana."
+        "description": "Your spellcasts have a 5% chance to energize you for 200 mana."
       },
       {
         "pieces": 6,
@@ -421,11 +421,11 @@
       },
       {
         "pieces": 4,
-        "description": "When struck in combat has a $h% chance of shielding the wearer in a protective shield which will absorb 488 damage. Can only occur once every $proccooldown sec."
+        "description": "When struck in combat has a 2% chance of shielding the wearer in a protective shield which will absorb 488 damage. Can only occur once every 60 sec."
       },
       {
         "pieces": 5,
-        "description": "Your spellcasts have a $h% chance to energize you for 200 mana."
+        "description": "Your spellcasts have a 5% chance to energize you for 200 mana."
       },
       {
         "pieces": 6,
@@ -457,11 +457,11 @@
       },
       {
         "pieces": 4,
-        "description": "When struck in combat has a $h% chance of causing the attacker to flee in terror for 2 sec. Can only occur once every $proccooldown sec."
+        "description": "When struck in combat has a 2% chance of causing the attacker to flee in terror for 2 sec. Can only occur once every 60 sec."
       },
       {
         "pieces": 5,
-        "description": "Your spellcasts have a $h% chance to heal you for 300."
+        "description": "Your spellcasts have a 5% chance to heal you for 300."
       },
       {
         "pieces": 6,
@@ -493,7 +493,7 @@
       },
       {
         "pieces": 4,
-        "description": "When struck in combat has a $h% chance to remove a Snare effect from yourself. Can only occur once every $proccooldown sec."
+        "description": "When struck in combat has a 5% chance to remove a Snare effect from yourself. Can only occur once every 60 sec."
       },
       {
         "pieces": 5,
@@ -533,7 +533,7 @@
       },
       {
         "pieces": 4,
-        "description": "When struck in combat has a $h% chance to increase your movement speed by 10% for 8 sec. Can only occur once every $proccooldown sec."
+        "description": "When struck in combat has a 5% chance to increase your movement speed by 10% for 8 sec. Can only occur once every 60 sec."
       },
       {
         "pieces": 5,
@@ -569,11 +569,11 @@
       },
       {
         "pieces": 4,
-        "description": "When struck in combat has a $h% chance to remove a Root effect from yourself. Can only occur once every $proccooldown sec."
+        "description": "When struck in combat has a 8% chance to remove a Root effect from yourself. Can only occur once every 60 sec."
       },
       {
         "pieces": 5,
-        "description": "Your melee and ranged autoattacks have a $h% chance to energize you for 200 mana."
+        "description": "Your melee and ranged autoattacks have a 5% chance to energize you for 200 mana."
       },
       {
         "pieces": 6,
@@ -605,7 +605,7 @@
       },
       {
         "pieces": 4,
-        "description": "When struck in melee combat has a $h% chance of Disarming the attacker for 4 sec. Can only occur once every $proccooldown sec."
+        "description": "When struck in melee combat has a 5% chance of Disarming the attacker for 4 sec. Can only occur once every 60 sec."
       },
       {
         "pieces": 5,
@@ -641,7 +641,7 @@
       },
       {
         "pieces": 4,
-        "description": "When struck by a harmful spell has a $h% chance of Silencing the caster for 3 sec. Can only occur once every $proccooldown sec."
+        "description": "When struck by a harmful spell has a 7% chance of Silencing the caster for 3 sec. Can only occur once every 60 sec."
       },
       {
         "pieces": 5,
@@ -677,7 +677,7 @@
       },
       {
         "pieces": 4,
-        "description": "When struck in combat has a $h% chance to remove a Disarm effect from yourself. Can only occur once every $proccooldown sec."
+        "description": "When struck in combat has a 10% chance to remove a Disarm effect from yourself. Can only occur once every 60 sec."
       },
       {
         "pieces": 5,
@@ -937,7 +937,7 @@
       },
       {
         "pieces": 5,
-        "description": "Gives you a $h% chance to generate an additional Rage point whenever damage is dealt to you."
+        "description": "Gives you a 20% chance to generate an additional Rage point whenever damage is dealt to you."
       },
       {
         "pieces": 8,
@@ -993,7 +993,7 @@
       },
       {
         "pieces": 5,
-        "description": "When struck in melee there is a $h% chance you will Fade for 4 sec."
+        "description": "When struck in melee there is a 50% chance you will Fade for 4 sec."
       },
       {
         "pieces": 8,
@@ -1189,11 +1189,11 @@
       },
       {
         "pieces": 5,
-        "description": "$h% chance after using an offensive ability requiring rage that your next offensive ability requires 5 less rage to use."
+        "description": "20% chance after using an offensive ability requiring rage that your next offensive ability requires 5 less rage to use."
       },
       {
         "pieces": 8,
-        "description": "$h% chance to parry the next attack after a block."
+        "description": "4% chance to parry the next attack after a block."
       }
     ]
   },
@@ -1253,7 +1253,7 @@
       },
       {
         "pieces": 4,
-        "description": "$h% chance on a melee hit to call forth the spirit of Eskhandar to protect you in battle for 2 min."
+        "description": "1% chance on a melee hit to call forth the spirit of Eskhandar to protect you in battle for 2 min."
       }
     ]
   },
@@ -3288,7 +3288,7 @@
       },
       {
         "pieces": 4,
-        "description": "When struck in combat has a $h% chance of shielding the wearer in a protective shield which will absorb 488 damage. Can only occur once every $proccooldown sec."
+        "description": "When struck in combat has a 2% chance of shielding the wearer in a protective shield which will absorb 488 damage. Can only occur once every 60 sec."
       },
       {
         "pieces": 6,
@@ -3384,7 +3384,7 @@
       },
       {
         "pieces": 4,
-        "description": "When struck in combat has a $h% chance of freezing the attacker in place for 3 sec. Can only occur once every $proccooldown sec."
+        "description": "When struck in combat has a 2% chance of freezing the attacker in place for 3 sec. Can only occur once every 60 sec."
       },
       {
         "pieces": 6,
@@ -3416,7 +3416,7 @@
       },
       {
         "pieces": 4,
-        "description": "When struck in combat has a $h% chance of causing the attacker to flee in terror for 2 sec. Can only occur once every $proccooldown sec."
+        "description": "When struck in combat has a 2% chance of causing the attacker to flee in terror for 2 sec. Can only occur once every 60 sec."
       },
       {
         "pieces": 6,
@@ -5104,7 +5104,7 @@
       },
       {
         "pieces": 3,
-        "description": "Backstab and Sinister Strike cause the target to take 7 more damage from all sources for $449927n charges or 15 sec."
+        "description": "Backstab and Sinister Strike cause the target to take 7 more damage from all sources for 30 charges or 15 sec."
       }
     ]
   },
@@ -5142,7 +5142,7 @@
       },
       {
         "pieces": 3,
-        "description": "Your direct healing spell critical strikes now have a $h% chance to activate Dreamstate. You must have the rune engraved."
+        "description": "Your direct healing spell critical strikes now have a 50% chance to activate Dreamstate. You must have the rune engraved."
       }
     ]
   },
@@ -5180,7 +5180,7 @@
       },
       {
         "pieces": 3,
-        "description": "Dealing Fire damage causes you to gain 5 attack power, stacking up to $449932u times. Lasts 12 sec."
+        "description": "Dealing Fire damage causes you to gain 5 attack power, stacking up to 10 times. Lasts 12 sec."
       }
     ]
   },
@@ -5264,7 +5264,7 @@
       },
       {
         "pieces": 3,
-        "description": "Gives you a $h% chance to get an extra attack on the same target after dealing damage with your weapon."
+        "description": "Gives you a 3% chance to get an extra attack on the same target after dealing damage with your weapon."
       }
     ]
   },
@@ -5662,7 +5662,7 @@
       },
       {
         "pieces": 5,
-        "description": "When struck in combat has a $h% chance to increase your movement speed by 10% for 8 sec. Can only occur once every $proccooldown sec."
+        "description": "When struck in combat has a 5% chance to increase your movement speed by 10% for 8 sec. Can only occur once every 60 sec."
       },
       {
         "pieces": 6,
@@ -5698,7 +5698,7 @@
       },
       {
         "pieces": 6,
-        "description": "Your melee and ranged autoattacks have a $h% chance to energize you for 200 mana."
+        "description": "Your melee and ranged autoattacks have a 5% chance to energize you for 200 mana."
       },
       {
         "pieces": 8,
@@ -5730,11 +5730,11 @@
       },
       {
         "pieces": 4,
-        "description": "Your melee and ranged autoattacks have a $h% chance to energize you for 200 mana."
+        "description": "Your melee and ranged autoattacks have a 5% chance to energize you for 200 mana."
       },
       {
         "pieces": 5,
-        "description": "When struck in combat has a $h% chance to remove a Root effect from yourself. Can only occur once every $proccooldown sec."
+        "description": "When struck in combat has a 8% chance to remove a Root effect from yourself. Can only occur once every 60 sec."
       },
       {
         "pieces": 6,
@@ -5766,7 +5766,7 @@
       },
       {
         "pieces": 6,
-        "description": "Your spellcasts have a $h% chance to energize you for 200 mana."
+        "description": "Your spellcasts have a 5% chance to energize you for 200 mana."
       },
       {
         "pieces": 8,
@@ -5798,11 +5798,11 @@
       },
       {
         "pieces": 4,
-        "description": "Your spellcasts have a $h% chance to energize you for 200 mana."
+        "description": "Your spellcasts have a 5% chance to energize you for 200 mana."
       },
       {
         "pieces": 5,
-        "description": "When struck in combat has a $h% chance of freezing the attacker in place for 3 sec. Can only occur once every $proccooldown sec."
+        "description": "When struck in combat has a 2% chance of freezing the attacker in place for 3 sec. Can only occur once every 60 sec."
       },
       {
         "pieces": 6,
@@ -5870,7 +5870,7 @@
       },
       {
         "pieces": 5,
-        "description": "When struck by a harmful spell has a $h% chance of Silencing the caster for 3 sec. Can only occur once every $proccooldown sec."
+        "description": "When struck by a harmful spell has a 7% chance of Silencing the caster for 3 sec. Can only occur once every 60 sec."
       },
       {
         "pieces": 6,
@@ -5902,7 +5902,7 @@
       },
       {
         "pieces": 6,
-        "description": "Your spellcasts have a $h% chance to energize you for 200 mana."
+        "description": "Your spellcasts have a 5% chance to energize you for 200 mana."
       },
       {
         "pieces": 8,
@@ -5934,11 +5934,11 @@
       },
       {
         "pieces": 4,
-        "description": "Your spellcasts have a $h% chance to energize you for 200 mana."
+        "description": "Your spellcasts have a 5% chance to energize you for 200 mana."
       },
       {
         "pieces": 5,
-        "description": "When struck in combat has a $h% chance of shielding the wearer in a protective shield which will absorb 488 damage. Can only occur once every $proccooldown sec."
+        "description": "When struck in combat has a 2% chance of shielding the wearer in a protective shield which will absorb 488 damage. Can only occur once every 60 sec."
       },
       {
         "pieces": 6,
@@ -5974,7 +5974,7 @@
       },
       {
         "pieces": 5,
-        "description": "When struck in combat has a $h% chance to remove a Snare effect from yourself. Can only occur once every $proccooldown sec."
+        "description": "When struck in combat has a 5% chance to remove a Snare effect from yourself. Can only occur once every 60 sec."
       },
       {
         "pieces": 6,
@@ -6074,7 +6074,7 @@
       },
       {
         "pieces": 5,
-        "description": "When struck in melee combat has a $h% chance of Disarming the attacker for 4 sec. Can only occur once every $proccooldown sec."
+        "description": "When struck in melee combat has a 5% chance of Disarming the attacker for 4 sec. Can only occur once every 60 sec."
       },
       {
         "pieces": 6,
@@ -6106,7 +6106,7 @@
       },
       {
         "pieces": 6,
-        "description": "Your spellcasts have a $h% chance to heal you for 300."
+        "description": "Your spellcasts have a 5% chance to heal you for 300."
       },
       {
         "pieces": 8,
@@ -6138,11 +6138,11 @@
       },
       {
         "pieces": 4,
-        "description": "Your spellcasts have a $h% chance to heal you for 300."
+        "description": "Your spellcasts have a 5% chance to heal you for 300."
       },
       {
         "pieces": 5,
-        "description": "When struck in combat has a $h% chance of causing the attacker to flee in terror for 2 sec. Can only occur once every $proccooldown sec."
+        "description": "When struck in combat has a 2% chance of causing the attacker to flee in terror for 2 sec. Can only occur once every 60 sec."
       },
       {
         "pieces": 6,
@@ -6258,7 +6258,7 @@
       },
       {
         "pieces": 4,
-        "description": "Casting your Healing Touch or Nourish spells gives you a $h% chance to gain Mana equal to 35% of the base cost of the spell."
+        "description": "Casting your Healing Touch or Nourish spells gives you a 25% chance to gain Mana equal to 35% of the base cost of the spell."
       },
       {
         "pieces": 6,
@@ -6622,7 +6622,7 @@
       },
       {
         "pieces": 4,
-        "description": "After casting your Healing Wave, Lesser Healing Wave, or Riptide spell, gives you a $h% chance to gain Mana equal to 35% of the base cost of the spell."
+        "description": "After casting your Healing Wave, Lesser Healing Wave, or Riptide spell, gives you a 25% chance to gain Mana equal to 35% of the base cost of the spell."
       },
       {
         "pieces": 6,
@@ -6650,7 +6650,7 @@
       },
       {
         "pieces": 4,
-        "description": "Your Lightning Bolt critical strikes have a $h% chance to reset the cooldown on Lava Burst and Chain Lightning and make the next Lava Burst or Chain Lightning within 10 sec instant.\r\n"
+        "description": "Your Lightning Bolt critical strikes have a 35% chance to reset the cooldown on Lava Burst and Chain Lightning and make the next Lava Burst or Chain Lightning within 10 sec instant.\r\n"
       },
       {
         "pieces": 6,
@@ -6738,7 +6738,7 @@
       },
       {
         "pieces": 6,
-        "description": "Your Nightfall talent has a 4% increased chance to trigger. Your Incinerate has a $h% chance to trigger your Decimation regardless of the target's health."
+        "description": "Your Nightfall talent has a 4% increased chance to trigger. Your Incinerate has a 4% chance to trigger your Decimation regardless of the target's health."
       }
     ]
   },
@@ -6766,7 +6766,7 @@
       },
       {
         "pieces": 6,
-        "description": "Your Shadow Cleave hits have a $h% chance to grant you a Soul Shard, reset the cooldown on Soul Fire, and make your next Soul Fire within 10 sec instant."
+        "description": "Your Shadow Cleave hits have a 20% chance to grant you a Soul Shard, reset the cooldown on Soul Fire, and make your next Soul Fire within 10 sec instant."
       }
     ]
   },
@@ -8258,7 +8258,7 @@
       },
       {
         "pieces": 5,
-        "description": "When struck in combat has a $h% chance to remove a Disarm effect from yourself. Can only occur once every $proccooldown sec."
+        "description": "When struck in combat has a 10% chance to remove a Disarm effect from yourself. Can only occur once every 60 sec."
       },
       {
         "pieces": 6,
@@ -8726,11 +8726,11 @@
       },
       {
         "pieces": 4,
-        "description": "Your Wrath casts have a $h% chance to summon a stand of 3 Treants to attack your target for 15 sec."
+        "description": "Your Wrath casts have a 10% chance to summon a stand of 3 Treants to attack your target for 15 sec."
       },
       {
         "pieces": 6,
-        "description": "Your Wrath critical strikes have a $h% chance to make your next Starfire deal 10% increased damage, stacking up to $467088u times."
+        "description": "Your Wrath critical strikes have a 50% chance to make your next Starfire deal 10% increased damage, stacking up to 3 times."
       }
     ]
   },
@@ -8870,7 +8870,7 @@
       },
       {
         "pieces": 6,
-        "description": "Your periodic damage has a $h% chance to reset the cooldown on one of your Strike abilities. The Strike with the longest remaining cooldown is always chosen."
+        "description": "Your periodic damage has a 5% chance to reset the cooldown on one of your Strike abilities. The Strike with the longest remaining cooldown is always chosen."
       }
     ]
   },
@@ -8982,7 +8982,7 @@
       },
       {
         "pieces": 6,
-        "description": "Your Judgement grants 1% increased Holy damage for 8 sec, stacking up to $467530u times."
+        "description": "Your Judgement grants 1% increased Holy damage for 8 sec, stacking up to 5 times."
       }
     ]
   },
@@ -9034,7 +9034,7 @@
       },
       {
         "pieces": 4,
-        "description": "Your periodic healing has a $h% chance to make your next spell with a casting time less than 10 seconds an instant cast spell."
+        "description": "Your periodic healing has a 2% chance to make your next spell with a casting time less than 10 seconds an instant cast spell."
       },
       {
         "pieces": 6,
@@ -9086,7 +9086,7 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "Your opening moves have a $h% chance to make your next ability cost no energy."
+        "description": "Your opening moves have a 100% chance to make your next ability cost no energy."
       },
       {
         "pieces": 4,
@@ -9142,7 +9142,7 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "Your non-periodic damaging and healing critical strikes now have a $h% chance to trigger your Water Shield, but do not consume a charge or trigger its cooldown."
+        "description": "Your non-periodic damaging and healing critical strikes now have a 100% chance to trigger your Water Shield, but do not consume a charge or trigger its cooldown."
       },
       {
         "pieces": 4,
@@ -9170,7 +9170,7 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "Your spell critical strikes now have a $h% chance trigger your Elemental Focus talent."
+        "description": "Your spell critical strikes now have a 100% chance trigger your Elemental Focus talent."
       },
       {
         "pieces": 4,
@@ -9230,11 +9230,11 @@
       },
       {
         "pieces": 4,
-        "description": "Each time you Block, your Block amount is increased by 10% of your Spell Damage for 6 sec, stacking up to $467910u times."
+        "description": "Each time you Block, your Block amount is increased by 10% of your Spell Damage for 6 sec, stacking up to 3 times."
       },
       {
         "pieces": 6,
-        "description": "Each time you Block an attack, you have a $h% chance to trigger your Maelstrom Weapon rune."
+        "description": "Each time you Block an attack, you have a 50% chance to trigger your Maelstrom Weapon rune."
       }
     ]
   },
@@ -9258,7 +9258,7 @@
       },
       {
         "pieces": 4,
-        "description": "Periodic damage from your Shadowflame, Unstable Affliction, and Curse of Agony spells and damage done by your Felguard have a $h% chance to grant the Shadow Trance effect."
+        "description": "Periodic damage from your Shadowflame, Unstable Affliction, and Curse of Agony spells and damage done by your Felguard have a 4% chance to grant the Shadow Trance effect."
       },
       {
         "pieces": 6,
@@ -9282,7 +9282,7 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "While you are targeting an enemy within $468029r yards, Life Tap grants you mana at the expense of your target's health but deals 50% reduced damage to them. Mana gained remains unchanged."
+        "description": "While you are targeting an enemy within 30 yards, Life Tap grants you mana at the expense of your target's health but deals 50% reduced damage to them. Mana gained remains unchanged."
       },
       {
         "pieces": 4,
@@ -9630,7 +9630,7 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "Each time you Dodge while in Dire Bear Form, you gain 10% increased damage on your next Mangle or Swipe, stacking up to $1213190u times."
+        "description": "Each time you Dodge while in Dire Bear Form, you gain 10% increased damage on your next Mangle or Swipe, stacking up to 5 times."
       },
       {
         "pieces": 4,
@@ -9991,7 +9991,7 @@
       },
       {
         "pieces": 4,
-        "description": "Each time you hit a target with Conflagrate, you gain 5% increased Fire damage for 20 sec, stacking up to $1214088u times."
+        "description": "Each time you hit a target with Conflagrate, you gain 5% increased Fire damage for 20 sec, stacking up to 2 times."
       }
     ]
   },
@@ -10261,7 +10261,7 @@
       },
       {
         "pieces": 6,
-        "description": "Your melee critical strikes against Undead enemies grant you 2% increased damage and critical damage done to Undead for 30 sec, stacking up to $1219485u times."
+        "description": "Your melee critical strikes against Undead enemies grant you 2% increased damage and critical damage done to Undead for 30 sec, stacking up to 9 times."
       }
     ]
   },
@@ -10373,7 +10373,7 @@
       },
       {
         "pieces": 4,
-        "description": "Your Healing Wave Rank 9 and Rank 10 and Lesser Healing Wave Rank 6 spells have a $h% chance to imbue your target with Totemic Power."
+        "description": "Your Healing Wave Rank 9 and Rank 10 and Lesser Healing Wave Rank 6 spells have a 10% chance to imbue your target with Totemic Power."
       },
       {
         "pieces": 6,
@@ -10406,7 +10406,7 @@
       },
       {
         "pieces": 6,
-        "description": "You gain 3% increased damage and critical damage done to Undead for 30 sec for each charge of Maelstrom Weapon you earn, stacking up to $1219375u times."
+        "description": "You gain 3% increased damage and critical damage done to Undead for 30 sec for each charge of Maelstrom Weapon you earn, stacking up to 7 times."
       }
     ]
   },
@@ -10435,7 +10435,7 @@
       },
       {
         "pieces": 6,
-        "description": "You gain 3% increased damage and critical damage done to Undead for 30 sec for each time your Overload triggers from an offensive spell cast, stacking up to $1219370u times."
+        "description": "You gain 3% increased damage and critical damage done to Undead for 30 sec for each time your Overload triggers from an offensive spell cast, stacking up to 6 times."
       }
     ]
   },
@@ -10489,11 +10489,11 @@
       },
       {
         "pieces": 4,
-        "description": "You have a $h% chance to gain 1 Energy each time you deal periodic Nature or Bleed damage."
+        "description": "You have a 100% chance to gain 1 Energy each time you deal periodic Nature or Bleed damage."
       },
       {
         "pieces": 6,
-        "description": "You gain 3% increased damage and critical damage done to Undead for 30 sec per Combo Point you spend, stacking up to $1219291u times."
+        "description": "You gain 3% increased damage and critical damage done to Undead for 30 sec per Combo Point you spend, stacking up to 6 times."
       }
     ]
   },
@@ -10518,7 +10518,7 @@
       },
       {
         "pieces": 4,
-        "description": "Your Penance, Flash Heal Rank 7, Binding Heal, and Greater Heal Rank 4 and Rank 5 have a $h% chance to grant the target 10% increased critical strike chance for 15 sec."
+        "description": "Your Penance, Flash Heal Rank 7, Binding Heal, and Greater Heal Rank 4 and Rank 5 have a 9% chance to grant the target 10% increased critical strike chance for 15 sec."
       },
       {
         "pieces": 6,
@@ -10605,7 +10605,7 @@
       },
       {
         "pieces": 4,
-        "description": "Your Flash of Light Rank 6 and Holy Light Rank 8 and Rank 9 spells have a $h% chance to imbue your target with Holy Power."
+        "description": "Your Flash of Light Rank 6 and Holy Light Rank 8 and Rank 9 spells have a 10% chance to imbue your target with Holy Power."
       },
       {
         "pieces": 6,
@@ -10659,7 +10659,7 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "Allies with your Temporal Beacon heal for ${67PA*67/1000+$<healpower>*8/100} health every 1 sec."
+        "description": "Allies with your Temporal Beacon heal for ${$SPA*67/1000+$<healpower>*8/100} health every 1 sec."
       },
       {
         "pieces": 4,
@@ -10725,7 +10725,7 @@
       },
       {
         "pieces": 6,
-        "description": "You gain 2% increased damage and critical damage done to Undead for 30 sec each time you hit an Undead enemy with a ranged attack, stacking up to $1226739u times."
+        "description": "You gain 2% increased damage and critical damage done to Undead for 30 sec each time you hit an Undead enemy with a ranged attack, stacking up to 7 times."
       }
     ]
   },
@@ -10754,7 +10754,7 @@
       },
       {
         "pieces": 6,
-        "description": "You gain 2% increased damage and critical damage done to Undead for 30 sec each time you hit an Undead enemy with a melee attack, stacking up to $1218587u times. Stacks are lost upon performing a ranged attack."
+        "description": "You gain 2% increased damage and critical damage done to Undead for 30 sec each time you hit an Undead enemy with a melee attack, stacking up to 12 times. Stacks are lost upon performing a ranged attack."
       }
     ]
   },
@@ -10841,7 +10841,7 @@
       },
       {
         "pieces": 6,
-        "description": "Each time you deal Bleed damage to an Undead target, you gain 1% increased damage and critical damage done to Undead for 30 sec, stacking up to $1218479u times."
+        "description": "Each time you deal Bleed damage to an Undead target, you gain 1% increased damage and critical damage done to Undead for 30 sec, stacking up to 12 times."
       }
     ]
   },
@@ -11104,7 +11104,7 @@
       },
       {
         "pieces": 4,
-        "description": "Each time you hit a target with Whirlwind, Heroic Strike, Quick Strike, or Cleave, the damage of your next Slam is increased by 20%, stacking up to $1234005u times."
+        "description": "Each time you hit a target with Whirlwind, Heroic Strike, Quick Strike, or Cleave, the damage of your next Slam is increased by 20%, stacking up to 5 times."
       },
       {
         "pieces": 6,
@@ -11136,7 +11136,7 @@
       },
       {
         "pieces": 6,
-        "description": "Your abilities no longer have stance requirements. In addition, hits from Revenge, Devastate, or Shield Slam increase the damage done by your next Whirlwind or Execute by $1234067s3%, stacking up to $1234067u times."
+        "description": "Your abilities no longer have stance requirements. In addition, hits from Revenge, Devastate, or Shield Slam increase the damage done by your next Whirlwind or Execute by $1234067s3%, stacking up to 5 times."
       }
     ]
   },
@@ -11160,7 +11160,7 @@
       },
       {
         "pieces": 4,
-        "description": "Your Poison and autoattack critical strikes have a $h% chance to grant you a combo point."
+        "description": "Your Poison and autoattack critical strikes have a 10% chance to grant you a combo point."
       },
       {
         "pieces": 6,
@@ -11248,7 +11248,7 @@
       },
       {
         "pieces": 6,
-        "description": "Your Multi-Shot hits 2 additional targets, and your Kill Shot and Chimera Shot hits increase the damage done by your next Multi-Shot cast within 12 sec by 75%, stacking up to $1233451u times."
+        "description": "Your Multi-Shot hits 2 additional targets, and your Kill Shot and Chimera Shot hits increase the damage done by your next Multi-Shot cast within 12 sec by 75%, stacking up to 4 times."
       }
     ]
   },
@@ -11324,7 +11324,7 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "While you have a two-handed weapon equipped, Crusader Strike and Exorcism grant you Holy Power, increasing all Holy damage you deal by 20%, stacking up to $1226461u times."
+        "description": "While you have a two-handed weapon equipped, Crusader Strike and Exorcism grant you Holy Power, increasing all Holy damage you deal by 20%, stacking up to 3 times."
       },
       {
         "pieces": 4,
@@ -11352,7 +11352,7 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "Lay on Hands grants you 20% Spell Haste for 30 sec and reduces the Global Cooldown of your next $1226451n Divine Light, Holy Light, Flash of Light, or Holy Shock spells by 0.5 seconds."
+        "description": "Lay on Hands grants you 20% Spell Haste for 30 sec and reduces the Global Cooldown of your next 5 Divine Light, Holy Light, Flash of Light, or Holy Shock spells by 0.5 seconds."
       },
       {
         "pieces": 4,
@@ -11500,7 +11500,7 @@
       },
       {
         "pieces": 6,
-        "description": "Each time your Sunfire deals periodic damage, you gain 10% increased damage to your next Wrath, stacking up to $1226105u times. Each time your Moonfire deals periodic damage, you gain 10% increased damage to your next Starfire, stacking up to $1226106u times. These bonuses do not apply to Starsurge."
+        "description": "Each time your Sunfire deals periodic damage, you gain 10% increased damage to your next Wrath, stacking up to 5 times. Each time your Moonfire deals periodic damage, you gain 10% increased damage to your next Starfire, stacking up to 5 times. These bonuses do not apply to Starsurge."
       }
     ]
   },
@@ -11520,7 +11520,7 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "Each time your Lifebloom heals a target, it has a $h% chance to make your next Healing Touch, Nourish, or Regrowth within 15 sec instant cast."
+        "description": "Each time your Lifebloom heals a target, it has a 5% chance to make your next Healing Touch, Nourish, or Regrowth within 15 sec instant cast."
       },
       {
         "pieces": 4,
@@ -11528,7 +11528,7 @@
       },
       {
         "pieces": 6,
-        "description": "Your non-periodic heals from Regrowth Rank 8 or Rank 9 have a $h% chance to spread your Rejuvenation on that target to all members of the target's party within $1226046a1 yards not already affected by your Rejuvenation."
+        "description": "Your non-periodic heals from Regrowth Rank 8 or Rank 9 have a 100% chance to spread your Rejuvenation on that target to all members of the target's party within $1226046a1 yards not already affected by your Rejuvenation."
       }
     ]
   },
@@ -11548,7 +11548,7 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "Your melee critical strikes in Bear Form or Dire Bear Form grant you a shield lasting 10 sec that absorbs Physical damage equal to 25% of your Attack Power the next time you take Physical damage. Stacks up to $410144u times."
+        "description": "Your melee critical strikes in Bear Form or Dire Bear Form grant you a shield lasting 10 sec that absorbs Physical damage equal to 25% of your Attack Power the next time you take Physical damage. Stacks up to 3 times."
       },
       {
         "pieces": 4,
@@ -11632,7 +11632,7 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "While Static Shock is active, Lava Lash, Lava Burst, and Stormstrike have a $h% chance to add a charge to your Lightning Shield. If charges exceed 9, Lightning Shield will immediately deal damage to your target instead of adding charges."
+        "description": "While Static Shock is active, Lava Lash, Lava Burst, and Stormstrike have a 100% chance to add a charge to your Lightning Shield. If charges exceed 9, Lightning Shield will immediately deal damage to your target instead of adding charges."
       },
       {
         "pieces": 4,
@@ -11664,7 +11664,7 @@
       },
       {
         "pieces": 4,
-        "description": "Chance to trigger Overload increased by an additional 10% and Lava Bursts damage is increased by a percentage equal to your spell critical strike chance. When Lightning Bolt or Chain Lightning deal damage, increase the damage dealt by your next Lava Burst cast within 15 sec by 10%, stacking up to $1233835u times."
+        "description": "Chance to trigger Overload increased by an additional 10% and Lava Bursts damage is increased by a percentage equal to your spell critical strike chance. When Lightning Bolt or Chain Lightning deal damage, increase the damage dealt by your next Lava Burst cast within 15 sec by 10%, stacking up to 5 times."
       },
       {
         "pieces": 6,
@@ -11786,7 +11786,7 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "While Shock and Awe is active, Crusader Strike and Exorcism grant you Holy Power, increasing all Holy damage you deal by 20%, stacking up to $1226461u times."
+        "description": "While Shock and Awe is active, Crusader Strike and Exorcism grant you Holy Power, increasing all Holy damage you deal by 20%, stacking up to 3 times."
       },
       {
         "pieces": 4,
@@ -11822,7 +11822,7 @@
       },
       {
         "pieces": 4,
-        "description": "All party members within $a1 yards are blessed, restoring 20 health every 5 sec."
+        "description": "All party members within 30 yards are blessed, restoring 20 health every 5 sec."
       },
       {
         "pieces": 5,

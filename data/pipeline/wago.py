@@ -21,6 +21,10 @@ TABLES = [
     "Spell",
     "SpellEffect",
     "SpellDuration",
+    # The proc, radius and range tokens in a description ($h, $n, $u, $a1, $r).
+    "SpellAuraOptions",
+    "SpellRadius",
+    "SpellRange",
     "SpellMisc",
     "SpellCooldowns",
     "SpellCastTimes",

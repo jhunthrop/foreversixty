@@ -261,3 +261,66 @@ def test_plural_tokens_follow_the_number_before_them():
 
 def test_a_plural_token_with_no_number_before_it_is_left_alone():
     assert _one("Your $lspell:spells; hit harder.") == "Your $lspell:spells; hit harder."
+
+
+def _proc_text(description: str, **fields) -> str:
+    """One spell with the proc, range and effect extras set; see `SpellRow` and `Effect`."""
+    from pipeline.spelltext import Effect, SpellRow, SpellText
+
+    effect = Effect(
+        base_points=10,
+        die_sides=0,
+        period_ms=0,
+        radius=fields.pop("radius", None),
+        chain_targets=fields.pop("chain_targets", 0),
+    )
+    row = SpellRow(
+        description=description, duration_ms=None, icon_file_id=0, effects={0: effect}, **fields
+    )
+    other = SpellRow(
+        description="", duration_ms=None, icon_file_id=0, effects={}, max_stacks=3, proc_charges=2
+    )
+    return SpellText({1: row, 20128: other}).describe(1)
+
+
+def test_proc_chance_charges_stacks_and_cooldown_come_from_the_aura_options():
+    # Enrage on the 1.60 client.
+    assert _proc_text("Gives you a $h% chance to deal $s1% more.", proc_chance=30) == (
+        "Gives you a 30% chance to deal 10% more."
+    )
+    assert _proc_text("up to $n times, stacking $u times.", proc_charges=4, max_stacks=5) == (
+        "up to 4 times, stacking 5 times."
+    )
+    # The cooldown is milliseconds in the table and seconds in a sentence, and the client
+    # does its own arithmetic on it.
+    assert _proc_text("once every $proccooldown sec.", proc_cooldown_ms=30_000) == (
+        "once every 30 sec."
+    )
+    assert _proc_text("once every ${$proccooldown/60} min.", proc_cooldown_ms=120_000) == (
+        "once every 2 min."
+    )
+
+
+def test_a_proc_chance_over_one_hundred_is_the_clients_always():
+    assert _proc_text("a $h% chance", proc_chance=101) == "a 100% chance"
+
+
+def test_radius_range_and_chain_targets():
+    assert _proc_text("all enemies within $a1 yards.", radius=8.0) == "all enemies within 8 yards."
+    assert _proc_text("an enemy within $r yards.", range_max=30.0) == "an enemy within 30 yards."
+    assert _proc_text("jumps to $x1 targets.", chain_targets=3) == "jumps to 3 targets."
+
+
+def test_the_same_tokens_read_off_another_spell():
+    assert _proc_text("stacks $20128u times, $20128n charges") == "stacks 3 times, 2 charges"
+
+
+def test_a_value_the_tables_do_not_carry_leaves_its_token_alone():
+    raw = "a $h% chance, $n charges, $u stacks, within $a1 yards of $r, $x1 jumps, $proccooldown"
+    assert _proc_text(raw) == raw
+
+
+def test_a_longer_token_is_never_read_as_a_shorter_one():
+    # "$rap" is ranged attack power, not "$r" followed by "ap".
+    assert _proc_text("${32+($rap*(5/100))}", range_max=30.0) == "${32+($rap*(5/100))}"
+    assert _proc_text("$hp $HP", proc_chance=30) == "$hp $HP"

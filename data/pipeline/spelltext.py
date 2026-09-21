@@ -8,6 +8,12 @@ runtime. We resolve only the tokens whose value is in the tables we fetch:
   $t<n> / $T<n>        effect <n>'s tick period, in seconds
   $d   / $D            the spell's duration
   $m<n> / $M<n>        the minimum of effect <n>'s displayed value
+  $a<n>                effect <n>'s radius, in yards
+  $x<n>                how many targets effect <n> chains to
+  $r                   the spell's maximum range, in yards
+  $h                   the chance to proc, as a percentage
+  $n / $u              the proc's charges / how high the aura stacks
+  $proccooldown        the proc's internal cooldown, in seconds
   $/<divisor>;s<n>     any of the above, divided first
   $<spell id><token>   the same token read off a different spell
   ${<arithmetic>}      worked out, once every token inside it is a number;
@@ -15,9 +21,10 @@ runtime. We resolve only the tokens whose value is in the tables we fetch:
   $l<one>:<many>;      the word that agrees with the number before it
 
 Everything else stays in the string exactly as the client stored it:
-`$h` (proc chance), `$a<n>` (radius), `$?x[..][..]` (conditionals), and any
-`${..}` that still holds a token with no value here (`$rap`, `$<mult>`). The
-planner shows the raw token rather than a number nobody can source.
+`$?x[..][..]` (conditionals), a token whose table has no row or a zero for
+this spell, and any `${..}` that still holds a token with no value here
+(`$rap`, `$<mult>`). The planner shows the raw token rather than a number
+nobody can source.
 """
 
 from __future__ import annotations
@@ -39,9 +46,15 @@ TOKEN = re.compile(
     r"\$"
     r"(?:/(?P<divisor>\d+);)?"
     r"(?P<ref>\d+)?"
-    r"(?P<kind>[sSoOtTdDmM])"
+    r"(?P<kind>proccooldown|[sSoOtTdDmMaAxXrRhHnNuU])"
     r"(?P<index>[1-9])?"
+    # "$rap" is ranged attack power and "$hp" is health: a longer word is never a short
+    # token with letters after it.
+    r"(?![A-Za-z])"
 )
+
+#: The client writes "always" as a chance over one hundred.
+_CERTAIN = 100
 
 #: `${300/10}`, `${500/-1000}.1`: the braces, then the client's optional decimals suffix. The
 #: suffix is a dot and ONE digit not followed by another, so "by ${30/-10}." keeps its full
@@ -70,6 +83,10 @@ class Effect:
     base_points: int
     die_sides: int
     period_ms: int
+    #: Yards, from SpellRadius through EffectRadiusIndex_0. None: the effect has no radius.
+    radius: float | None = None
+    #: EffectChainTargets. Zero: the effect does not chain.
+    chain_targets: int = 0
 
 
 @dataclass(frozen=True)
@@ -78,6 +95,14 @@ class SpellRow:
     duration_ms: int | None
     icon_file_id: int
     effects: dict[int, Effect] = field(default_factory=dict)
+    #: SpellAuraOptions, all zero or None where the spell has no row: the chance to proc (a
+    #: percentage), its charges, how high the aura stacks, and its internal cooldown.
+    proc_chance: int | None = None
+    proc_charges: int = 0
+    max_stacks: int = 0
+    proc_cooldown_ms: int = 0
+    #: Yards, from SpellRange through SpellMisc.RangeIndex.
+    range_max: float | None = None
 
 
 def _format_number(value: float) -> str:
@@ -151,9 +176,24 @@ def _overridden(effects: dict[int, Effect], overrides: Mapping[int, int]) -> dic
     """
     out: dict[int, Effect] = {}
     for index, value in overrides.items():
-        period = effects[index].period_ms if index in effects else 0
-        out[index] = Effect(base_points=value, die_sides=0, period_ms=period)
+        known = effects.get(index, Effect(base_points=0, die_sides=0, period_ms=0))
+        out[index] = replace(known, base_points=value, die_sides=0)
     return out
+
+
+#: Tokens that are one fact about the spell, or about one of its effects. A missing or zero
+#: fact returns a falsy value, and the token is then left exactly as the client stored it.
+_SPELL_FACTS: dict[str, Callable[[SpellRow], float | None]] = {
+    "h": lambda row: None if row.proc_chance is None else min(row.proc_chance, _CERTAIN),
+    "n": lambda row: row.proc_charges,
+    "u": lambda row: row.max_stacks,
+    "r": lambda row: row.range_max,
+    "proccooldown": lambda row: row.proc_cooldown_ms / _MS_PER_SECOND,
+}
+_EFFECT_FACTS: dict[str, Callable[[Effect], float | None]] = {
+    "a": lambda effect: effect.radius,
+    "x": lambda effect: effect.chain_targets,
+}
 
 
 class SpellText:
@@ -191,6 +231,9 @@ class SpellText:
             target = referenced
         divisor = int(match["divisor"]) if match["divisor"] else 1
         kind = match["kind"].lower()
+        if kind in _SPELL_FACTS:
+            value = _SPELL_FACTS[kind](target)
+            return match[0] if not value else _render(value, value, divisor)
         if kind == "d":
             if target.duration_ms is None:
                 return match[0]
@@ -200,6 +243,9 @@ class SpellText:
         effect = target.effects.get(int(match["index"] or 1) - 1)
         if effect is None:
             return match[0]
+        if kind in _EFFECT_FACTS:
+            value = _EFFECT_FACTS[kind](effect)
+            return match[0] if not value else _render(value, value, divisor)
         if kind == "t":
             if effect.period_ms <= 0:
                 return match[0]
@@ -277,12 +323,46 @@ def effect_amount(row: dict[str, str]) -> int:
     return _base_points(row) + int(row.get("EffectDieSides") or 0)
 
 
+@dataclass(frozen=True)
+class ExtraRows:
+    """The tables behind the proc, radius and range tokens.
+
+    Optional as a group: a build fetched before they were on the list normalizes exactly as
+    it did, with those tokens left raw.
+    """
+
+    aura_options: list[dict[str, str]] = field(default_factory=list)
+    radius: list[dict[str, str]] = field(default_factory=list)
+    range: list[dict[str, str]] = field(default_factory=list)
+
+
+def _base_difficulty(rows: list[dict[str, str]]) -> list[dict[str, str]]:
+    return [row for row in rows if row.get("DifficultyID", "0") == "0"]
+
+
+def _aura_options(rows: list[dict[str, str]]) -> dict[int, dict[str, int]]:
+    return {
+        int(row["SpellID"]): {
+            "proc_chance": int(row["ProcChance"]),
+            "proc_charges": int(row["ProcCharges"]),
+            "max_stacks": int(row["CumulativeAura"]),
+            "proc_cooldown_ms": int(row["ProcCategoryRecovery"]),
+        }
+        for row in _base_difficulty(rows)
+    }
+
+
 def load_spell_text(
     spell_rows: list[dict[str, str]],
     misc_rows: list[dict[str, str]],
     effect_rows: list[dict[str, str]],
     duration_rows: list[dict[str, str]],
+    extra: ExtraRows | None = None,
 ) -> SpellText:
+    extra = extra or ExtraRows()
+    radii = {int(r["ID"]): float(r["Radius"]) for r in extra.radius}
+    ranges = {int(r["ID"]): float(r["RangeMax_0"]) for r in extra.range}
+    aura_options = _aura_options(extra.aura_options)
     durations = {int(r["ID"]): int(r["Duration"]) for r in duration_rows}
     effects: dict[int, dict[int, Effect]] = {}
     for row in effect_rows:
@@ -292,23 +372,31 @@ def load_spell_text(
             base_points=_base_points(row),
             die_sides=int(row.get("EffectDieSides") or 0),
             period_ms=int(row["EffectAuraPeriod"]),
+            radius=radii.get(int(row.get("EffectRadiusIndex_0") or 0)),
+            chain_targets=int(row.get("EffectChainTargets") or 0),
         )
-    misc: dict[int, tuple[int | None, int]] = {}
+    misc: dict[int, tuple[int | None, int, float | None]] = {}
     for row in misc_rows:
         if row.get("DifficultyID", "0") != "0":
             continue
         duration = durations.get(int(row["DurationIndex"]))
         if duration is not None and duration < 0:
             duration = None
-        misc[int(row["SpellID"])] = (duration, int(row["SpellIconFileDataID"]))
+        misc[int(row["SpellID"])] = (
+            duration,
+            int(row["SpellIconFileDataID"]),
+            ranges.get(int(row.get("RangeIndex") or 0)),
+        )
     spells: dict[int, SpellRow] = {}
     for row in spell_rows:
         spell_id = int(row["ID"])
-        duration, icon_file_id = misc.get(spell_id, (None, 0))
+        duration, icon_file_id, range_max = misc.get(spell_id, (None, 0, None))
         spells[spell_id] = SpellRow(
             description=row["Description_lang"],
             duration_ms=duration,
             icon_file_id=icon_file_id,
             effects=effects.get(spell_id, {}),
+            range_max=range_max,
+            **aura_options.get(spell_id, {}),
         )
     return SpellText(spells)

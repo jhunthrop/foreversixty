@@ -2180,7 +2180,7 @@
       "speed": 1.6,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Your healing spells have a $h% chance to remove 1 Poison effect from the target.",
+      "effect_text": "Your healing spells have a 5% chance to remove 1 Poison effect from the target.",
       "set_id": null,
       "unique": false
     },
@@ -11745,7 +11745,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Fear all Demons within $r yards for 6 sec.",
+      "effect_text": "Fear all Demons within 15 yards for 6 sec.",
       "set_id": null,
       "unique": false
     },
@@ -23263,7 +23263,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Gives 10 additional stamina to party members within $a1 yards.",
+      "effect_text": "Gives 10 additional stamina to party members within 30 yards.",
       "set_id": null,
       "unique": false
     },
@@ -31700,7 +31700,7 @@
       "speed": 2.9,
       "dps": 0.0,
       "two_hand": true,
-      "effect_text": "Increases the spell critical chance of all party members within $a1 yards by 2%. Creates a portal, teleporting group members that use it to Karazhan.",
+      "effect_text": "Increases the spell critical chance of all party members within 30 yards by 2%. Creates a portal, teleporting group members that use it to Karazhan.",
       "set_id": null,
       "unique": false
     },
@@ -31724,7 +31724,7 @@
       "speed": 2.9,
       "dps": 0.0,
       "two_hand": true,
-      "effect_text": "Increases damage and healing done by magical spells and effects of all party members within $a1 yards by up to 33.  Creates a portal, teleporting group members that use it to Karazhan.",
+      "effect_text": "Increases damage and healing done by magical spells and effects of all party members within 30 yards by up to 33.  Creates a portal, teleporting group members that use it to Karazhan.",
       "set_id": null,
       "unique": false
     },
@@ -31749,7 +31749,7 @@
       "speed": 2.9,
       "dps": 0.0,
       "two_hand": true,
-      "effect_text": "Increases healing done by magical spells and effects of all party members within $a1 yards by up to 62.  Creates a portal, teleporting group members that use it to Karazhan.",
+      "effect_text": "Increases healing done by magical spells and effects of all party members within 30 yards by up to 62.  Creates a portal, teleporting group members that use it to Karazhan.",
       "set_id": null,
       "unique": false
     },
@@ -31774,7 +31774,7 @@
       "speed": 2.9,
       "dps": 0.0,
       "two_hand": true,
-      "effect_text": "Restores 11 mana per 5 seconds to all party members within $a1 yards. Creates a portal, teleporting group members that use it to Karazhan.",
+      "effect_text": "Restores 11 mana per 5 seconds to all party members within 30 yards. Creates a portal, teleporting group members that use it to Karazhan.",
       "set_id": null,
       "unique": false
     },

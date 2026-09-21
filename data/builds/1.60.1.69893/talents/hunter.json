@@ -665,7 +665,7 @@
           "ranks": [
             {
               "spell_id": 1299346,
-              "description": "Increases the Ranged Attack Power of party members within $a1 yards by 30. Lasts 30 min."
+              "description": "Increases the Ranged Attack Power of party members within 45 yards by 30. Lasts 30 min."
             }
           ],
           "spell_id": 1299346
