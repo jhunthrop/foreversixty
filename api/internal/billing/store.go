@@ -77,6 +77,33 @@ func (s *Store) MarkEventProcessed(ctx context.Context, id string) error {
 	return nil
 }
 
+// WithEventLock takes a session-level Postgres advisory lock scoped to
+// event id for the duration of fn, so at most one webhook delivery for
+// that event id is ever inside fn at a time. This is what makes
+// RecordEventOnce's existing-row check race-free against a second,
+// overlapping delivery of the same event id (Stripe's own retry can
+// outrun a slow first attempt that has not yet responded): the second
+// caller blocks here until the first's fn has returned (success or
+// failure) and the lock is released, then sees the now-correct
+// processed_at state. Uses a dedicated connection acquired from the
+// pool for the lock/unlock pair, not tied to any of fn's own
+// transactions (handleEvent's writes go through entitlements.Store,
+// which manages its own transactions independently).
+func (s *Store) WithEventLock(ctx context.Context, id string, fn func(context.Context) error) error {
+	conn, err := s.Pool.Acquire(ctx)
+	if err != nil {
+		return fmt.Errorf("billing: lock event %s: acquire: %w", id, err)
+	}
+	defer conn.Release()
+	if _, err := conn.Exec(ctx, `select pg_advisory_lock(hashtext($1))`, id); err != nil {
+		return fmt.Errorf("billing: lock event %s: lock: %w", id, err)
+	}
+	defer func() {
+		_, _ = conn.Exec(context.WithoutCancel(ctx), `select pg_advisory_unlock(hashtext($1))`, id)
+	}()
+	return fn(ctx)
+}
+
 // GuildClaimed reports whether guildID has been claimed (spec §2.3
 // precondition 1: an unclaimed guild has no accountable officer and
 // cannot be sold the plan). Read directly against the guilds table —

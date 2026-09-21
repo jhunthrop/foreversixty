@@ -38,23 +38,27 @@ func (s *Service) webhook(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "the webhook signature could not be verified", nil)
 		return
 	}
-	proceed, err := s.Store.RecordEventOnce(r.Context(), event.ID, string(event.Type), payload)
+	// Serialized per event id: Stripe's own retry can outrun a slow
+	// first attempt that has not yet responded, and without this lock
+	// both deliveries could observe RecordEventOnce's processed_at as
+	// still null and both call handleEvent concurrently.
+	err = s.Store.WithEventLock(r.Context(), event.ID, func(ctx context.Context) error {
+		proceed, err := s.Store.RecordEventOnce(ctx, event.ID, string(event.Type), payload)
+		if err != nil {
+			return err
+		}
+		if !proceed {
+			// Already fully processed (a genuine redelivery of a
+			// completed event, or Stripe's own retry after a
+			// slow-but-eventually-200 first attempt): no reprocessing.
+			return nil
+		}
+		if err := s.handleEvent(ctx, event); err != nil {
+			return err
+		}
+		return s.Store.MarkEventProcessed(ctx, event.ID)
+	})
 	if err != nil {
-		s.fail(w, r, "webhook", err, "could not record that event just now")
-		return
-	}
-	if !proceed {
-		// Already fully processed (a genuine redelivery of a completed
-		// event, or Stripe's own retry after a slow-but-eventually-200
-		// first attempt): 200, no reprocessing.
-		httpx.WriteOK(w, r, http.StatusOK, nil)
-		return
-	}
-	if err := s.handleEvent(r.Context(), event); err != nil {
-		s.fail(w, r, "webhook", err, "could not process that event just now")
-		return
-	}
-	if err := s.Store.MarkEventProcessed(r.Context(), event.ID); err != nil {
 		s.fail(w, r, "webhook", err, "could not process that event just now")
 		return
 	}
