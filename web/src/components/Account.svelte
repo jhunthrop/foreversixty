@@ -22,7 +22,9 @@
     type Me,
     type PairingCode,
   } from '../lib/account/api';
-  import { characterHref, parseCharacterPath, rulesetLabel } from '../lib/characters';
+  import { characterHref, guildHref, parseCharacterPath, rulesetLabel } from '../lib/characters';
+  import { leaveGuild, updateConsent, type GuildConsent } from '../lib/guild/api';
+  import { guildConsentCopy } from '../lib/guild/copy';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
   import CharacterHandoffLinks from './CharacterHandoffLinks.svelte';
   import CurrentCharacterBar from './CurrentCharacterBar.svelte';
@@ -40,6 +42,7 @@
   let devices = $state<Device[]>([]);
   let pairing = $state<PairingCode | null>(null);
   let busy = $state(false);
+  let guildBusy = $state<number | null>(null);
 
   const signedIn = $derived(me !== null);
   const displayName = $derived(me?.user.battletag ?? me?.user.email ?? 'Your account');
@@ -106,6 +109,30 @@
     void run(async () => {
       await setAnonymize(wanted);
       if (me !== null) me = { ...me, user: { ...me.user, anonymize: wanted } };
+    });
+  };
+
+  const onConsentChange = (guildId: number, event: Event): void => {
+    const value = (event.currentTarget as HTMLSelectElement).value as GuildConsent;
+    guildBusy = guildId;
+    void run(async () => {
+      await updateConsent(guildId, value);
+      if (me !== null) {
+        me = {
+          ...me,
+          guilds: me.guilds.map((g) => (g.id === guildId ? { ...g, consent: value } : g)),
+        };
+      }
+      guildBusy = null;
+    });
+  };
+
+  const onLeaveGuild = (guildId: number): void => {
+    guildBusy = guildId;
+    void run(async () => {
+      await leaveGuild(guildId);
+      if (me !== null) me = { ...me, guilds: me.guilds.filter((g) => g.id !== guildId) };
+      guildBusy = null;
     });
   };
 </script>
@@ -334,6 +361,40 @@
           never deleted or rewritten.
         </p>
       </section>
+
+      {#if me!.guilds.length > 0}
+        <section class="flex flex-col gap-3" data-testid="account-guilds">
+          <h2 class="section-title text-[18px]">{guildConsentCopy.heading}</h2>
+          <ul class="flex flex-col">
+            {#each me!.guilds as guild (guild.id)}
+              <li
+                class="border-line-soft flex min-h-11 flex-wrap items-center gap-3 border-b py-2 text-[14px]"
+              >
+                <a href={guildHref(guild.region, guild.ruleset, guild.name)}>{guild.name}</a>
+                <select
+                  class="border-line-warm bg-raised rounded-control text-text h-11 px-3 text-[13px] md:h-9"
+                  value={guild.consent ?? 'gear'}
+                  onchange={(event) => onConsentChange(guild.id, event)}
+                  disabled={busy || guildBusy === guild.id}
+                  data-testid="account-guild-consent"
+                >
+                  <option value="roster">{guildConsentCopy.roster}</option>
+                  <option value="gear">{guildConsentCopy.gear}</option>
+                  <option value="gear_bags">{guildConsentCopy.gearBags}</option>
+                </select>
+                <button
+                  class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3"
+                  onclick={() => onLeaveGuild(guild.id)}
+                  disabled={busy || guildBusy === guild.id}
+                  data-testid="account-guild-leave"
+                >
+                  {guildConsentCopy.leave}
+                </button>
+              </li>
+            {/each}
+          </ul>
+        </section>
+      {/if}
 
       <MyReports {signedIn} />
     {/if}
