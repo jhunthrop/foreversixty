@@ -24,6 +24,14 @@ export const guildHomeCopy = {
   claimLink: 'Claim this guild',
   openSim: 'Open in simulator',
   openPlanner: 'Open in planner',
+  untitledReport: 'Untitled report',
+  contestButton: 'Contest this claim',
+  contestConfirmLine:
+    'Contesting freezes this guild’s officer tools until a moderator reviews it. Use this only when the account that claimed this guild is not its guild master.',
+  contestConfirmButton: 'Yes, contest this claim',
+  contested: 'This claim is with a moderator.',
+  frozenNotice: 'This guild’s claim is contested. Officer actions are frozen until a moderator resolves it.',
+  reportsUnverifiedNote: 'You are not verified yet, so only public reports show here.',
 } as const;
 
 export const guildClaimCopy = {
@@ -47,6 +55,14 @@ export const guildClaimCopy = {
   releaseButton: 'Release claim',
   notEligible: 'Only an officer or the guild master of this guild can claim it.',
   signInLine: 'Sign in to claim this guild.',
+  rulesHeading: 'How claiming works',
+  rules: [
+    'Claiming needs a Battle.net-linked account.',
+    'You may attempt one claim every 30 days.',
+    'You may hold only one claimed guild at a time.',
+    'A claim can be contested.',
+  ] as readonly string[],
+  contested: 'This guild’s claim is contested and under review by a moderator.',
 } as const;
 
 export const guildSettingsCopy = {
@@ -65,6 +81,7 @@ export const guildSettingsCopy = {
   saved: 'Saved.',
   // Shown when a save or rotate action itself fails (as opposed to the initial load).
   actionFailed: 'That did not save; try again.',
+  frozenNotice: 'This guild’s claim is contested. Officer actions are frozen until a moderator resolves it.',
 } as const;
 
 export const guildJoinCopy = {

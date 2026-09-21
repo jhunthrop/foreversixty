@@ -38,7 +38,7 @@ export interface MeGuild {
   rank?: string;
   /** Spec section 2.6: GET /v1/me gains Consent and Verified per Guild entry. */
   consent?: 'roster' | 'gear' | 'gear_bags';
-  verified?: boolean;
+  verified: boolean;
 }
 
 export interface Me {

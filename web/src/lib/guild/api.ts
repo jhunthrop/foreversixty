@@ -1,11 +1,9 @@
 // web/src/lib/guild/api.ts
-// Every call the browser makes to the guild half of the API (spec section 2.6). Built
-// against the spec's request/response shapes exactly, except GET /v1/guilds/{id}/home,
-// whose shape the spec leaves unstated — this module's GuildHome/GuildHomeReport/
-// GuildRosterRow is this lane's ruling on it (plan's "Rulings" section, item 1). Follows
-// rankings/api.ts's pattern: the shared transport (account/api.ts's requestEnvelope), a
-// module-local error class, and typed reads/writes with no bespoke fetch() call anywhere
-// else in this lane's own code.
+// Every call the browser makes to the guild half of the API (spec section 2.6), reconciled
+// field-exact against the real, landed api/internal/guilds handlers (2026-09-21 plan's
+// reconciliation record). Follows rankings/api.ts's pattern: the shared transport
+// (account/api.ts's requestEnvelope), a module-local error class, and typed reads/writes
+// with no bespoke fetch() call anywhere else in this lane's own code.
 import { AccountError, requestEnvelope, type EnvelopeResult } from '../account/api';
 import { API_BASE_URL } from '../planner/config';
 
@@ -32,33 +30,37 @@ export interface GuildSummary {
   name: string;
 }
 
-/** One row of "this week's reports" — kill/wipe counts per spec section 4.1. */
+export type ClaimState = 'unclaimed' | 'pending' | 'claimed' | 'contested';
+
+/** GET .../home and GET .../settings both expose this (2026-09-21 security amendment). */
+export interface ClaimStateView {
+  state: ClaimState;
+  since?: string;
+}
+
+export interface MemberRef {
+  battletag: string;
+}
+
+export interface ClaimPendingView {
+  by: MemberRef;
+  expires_at: string;
+}
+
+/** One report row. No `zone`: HomeReport carries none (plan's reconciliation record,
+ *  item 2) — an empty title falls back to guildHomeCopy.untitledReport, not a zone. */
 export interface GuildHomeReport {
   id: string;
   title: string;
-  zone: string;
   created_at: string;
+  fight_count: number;
   kill_count: number;
-  wipe_count: number;
-}
-
-/** Keyset-paginated the same way GET /v1/reports/recent is (spec section 4.1). */
-export interface GuildHomeReportsPage {
-  rows: GuildHomeReport[];
-  next_cursor?: string;
 }
 
 /**
- * One roster row. Synthetic `account:`-prefixed characters (invite joins with no real
- * character, spec section 2.5) are never listed here — the API omits them entirely, so
- * this type carries no synthetic-row flag to check.
- *
- * `user_id` extends this lane's own Ruling 1 shape (the real API for this endpoint hasn't
- * landed, so this is cheap to add now): a roster row otherwise carries no account/owner
- * identifier, and without one there is no way to tell "one account with two verified
- * characters" from "two accounts with one character each" -- the distinction the
- * empty-roster heuristic in Guild.svelte needs. A numeric id is consistent with this
- * codebase's other numeric id fields (see `GuildSummary.id`, `MeGuild.id`).
+ * One roster row. No `user_id`: the real API's RosterRow never sends one (plan's
+ * reconciliation record, item 3) — "is this my own row" is derived from
+ * `Me.characters[].key` instead, which already exact-matches `character_key`.
  */
 export interface GuildRosterRow {
   character_key: string;
@@ -71,27 +73,35 @@ export interface GuildRosterRow {
   verified: boolean;
   /** addon_exports.updated_at within the last 24h (spec section 4.1, RULING 9). */
   logged_recently: boolean;
-  updated_at?: string;
   /** Present only at gear/gear_bags consent (spec section 3.2's fail-closed query rule). */
   item_level?: number;
   consent: GuildConsent;
-  /** The owning account's id -- this lane's own ruling, see the type doc comment above. */
-  user_id: number;
 }
 
 export interface GuildHome {
   guild: GuildSummary;
-  viewer: { rank: GuildRank; verified: boolean; can_manage: boolean };
-  reports: GuildHomeReportsPage;
+  claim: ClaimStateView;
+  reports: GuildHomeReport[];
+  next_cursor?: string;
   roster: GuildRosterRow[];
 }
 
 export interface GuildSettingsData {
   default_visibility: GuildVisibility;
   officer_max_rank_index: number;
-  claimed_by: { battletag: string } | null;
-  claim_pending: boolean;
+  claimed_by: MemberRef | null;
+  claim_pending: ClaimPendingView | null;
+  claim: ClaimStateView;
   invite: { rotated_at: string | null };
+}
+
+export interface ContestResult {
+  status: 'contested';
+}
+
+export interface ApproveResult {
+  character_key: string;
+  status: 'approved';
 }
 
 export interface ClaimResult {
@@ -145,8 +155,13 @@ async function call<T>(
   return result.data;
 }
 
-export function fetchGuildHome(guildId: number, apiBase: string = API_BASE_URL): Promise<GuildHome> {
-  return call<GuildHome>(`/v1/guilds/${guildId}/home`, apiBase);
+export function fetchGuildHome(
+  guildId: number,
+  cursor?: string,
+  apiBase: string = API_BASE_URL,
+): Promise<GuildHome> {
+  const query = cursor === undefined ? '' : `?cursor=${encodeURIComponent(cursor)}`;
+  return call<GuildHome>(`/v1/guilds/${guildId}/home${query}`, apiBase);
 }
 
 export function fetchGuildSettings(
@@ -176,6 +191,10 @@ export function releaseClaim(guildId: number, apiBase: string = API_BASE_URL): P
   return call<ClaimReleaseResult>(`/v1/guilds/${guildId}/claim/release`, apiBase, { method: 'POST' });
 }
 
+export function contestClaim(guildId: number, apiBase: string = API_BASE_URL): Promise<ContestResult> {
+  return call<ContestResult>(`/v1/guilds/${guildId}/claim/contest`, apiBase, { method: 'POST' });
+}
+
 export function rotateInvite(guildId: number, apiBase: string = API_BASE_URL): Promise<InviteRotateResult> {
   return call<InviteRotateResult>(`/v1/guilds/${guildId}/invite/rotate`, apiBase, { method: 'POST' });
 }
@@ -185,18 +204,22 @@ export function acceptInvite(token: string, apiBase: string = API_BASE_URL): Pro
 }
 
 /**
- * A character_key is `<region>/<ruleset>/<name-slug>` (spec section 0) — its own literal
- * slashes — so it is percent-encoded whole before being interpolated into this one path
- * segment (plan ruling 3: the API's router must decode a literal %2F here for this call to
- * reach the right route).
+ * The real router takes three literal path segments, never a combined, encoded
+ * `character_key` (plan's reconciliation record, item 4). `region`/`ruleset` are always
+ * one of a small fixed vocabulary already validated by `isRegion`/`isRuleset` upstream of
+ * every caller — only `slug` needs encoding, matching how `fetchCharacter` in
+ * `rankings/api.ts` already builds the sibling `/v1/characters/{region}/{ruleset}/{slug}`
+ * path.
  */
 export function approveCharacter(
   guildId: number,
-  characterKey: string,
+  region: string,
+  ruleset: string,
+  slug: string,
   apiBase: string = API_BASE_URL,
-): Promise<GuildRosterRow> {
-  return call<GuildRosterRow>(
-    `/v1/guilds/${guildId}/characters/${encodeURIComponent(characterKey)}/approve`,
+): Promise<ApproveResult> {
+  return call<ApproveResult>(
+    `/v1/guilds/${guildId}/characters/${region}/${ruleset}/${encodeURIComponent(slug)}/approve`,
     apiBase,
     { method: 'POST' },
   );
@@ -204,11 +227,13 @@ export function approveCharacter(
 
 export function removeCharacter(
   guildId: number,
-  characterKey: string,
+  region: string,
+  ruleset: string,
+  slug: string,
   apiBase: string = API_BASE_URL,
 ): Promise<RemovedResult> {
   return call<RemovedResult>(
-    `/v1/guilds/${guildId}/characters/${encodeURIComponent(characterKey)}`,
+    `/v1/guilds/${guildId}/characters/${region}/${ruleset}/${encodeURIComponent(slug)}`,
     apiBase,
     { method: 'DELETE' },
   );
