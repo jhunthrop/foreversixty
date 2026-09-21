@@ -8,16 +8,50 @@ ns = type(ns) == "table" and ns or {}
 local L = {
 	-- Chrome
 	addonName = "Forever Sixty",
-	slashHint = "/fs export, /fs follow, /fs gear, /fs inbox, /fs options",
+	slashHint = "/fs, /fs export, /fs follow <code>, /fs gear, /fs settings, /fs inbox, /fs diag",
 	dataBuild = "Data build: %s",
 	buildMismatch = "This addon carries data for build %s; you are playing %s. Numbers may be out of date.",
 	-- How a printed line is prefixed with the addon's name.
 	chatLine = "%s: %s",
+	tabExport = "Export",
+	tabFollow = "Follow",
+	tabGear = "Gear",
+	tabSettings = "Settings",
+	headerRealmLevel = "%s · level %d",
+	headerNoSpec = "No spec yet",
+	diagHeader = "What this client turned out not to have:",
+
+	-- Diagnostics: what /fs diag prints. These are the only record of a
+	-- capability this client turned out not to have, and the human tester
+	-- reads them off the screen for README spike rows 17-22.
+	diagNoTemplate = "This client has no %s; the addon drew its own instead.",
+	diagNoEvent = "This client refused the event %s.",
+	diagNoEquipApi = "This client has no equip function; the Equip buttons are off.",
+	diagNoTooltipApi = "This client has no %s; the item tooltip could not be shown.",
+	diagNoTalentButton = "No talent button matched the next point; the tracker still works.",
+	diagTalentTabUnknown = "This client does not say which talent tab is open; "
+		.. "the glow may be on the wrong tree.",
+	diagNoSettingsPanel = "This client has no options panel API; use /fs settings.",
+	diagNone = "Nothing to report.",
 
 	-- Export
 	exportTitle = "Your character, for the planner",
 	exportHint = "Copy this and paste it into the Import from addon box at foreversixty.gg/planner.",
-	exportNoTalents = "Spend a talent point first; there is nothing to export yet.",
+	-- exportNoTalents is deleted with the refusal it belonged to
+	-- (controller ruling 5); this is the summary's line, not an error.
+	exportNoPoints = "No talent points yet",
+	exportCopy = "Copy for the site",
+	exportCopied = "Selected -- press Ctrl+C",
+	-- "<tree> <points>", joined by exportTreeSeparator: "Arms 0 · Fury 0 · Protection 0".
+	exportTree = "%s %d",
+	exportTreeSeparator = " · ",
+	exportSlots = "%d of %d slots",
+	exportBags = "%d in your bags, %d in the bank",
+	exportProfessions = "Professions: %s",
+	exportProfessionSeparator = ", ",
+	exportNoProfessions = "No professions yet",
+	exportSavedAt = "Last saved on logout: %s",
+	exportNotYet = "Not yet",
 
 	-- Codec refusals. Each names what is wrong, never a generic failure.
 	-- Note: the `|` -> `||` doubling that escapes a refused fragment against
@@ -59,6 +93,30 @@ local L = {
 	-- A talent this addon's data has no name for, named by its position
 	-- instead, so the player can still find the cell.
 	followUnknownCell = "%d:%d",
+	followPasteHint = "Paste a build code from foreversixty.gg",
+	followLoadButton = "Load",
+	followForget = "Forget build",
+	followShowTracker = "Show tracker",
+	followProgress = "%d of %d points",
+	-- Controller ruling 2: neither code format carries a build name, so a
+	-- pasted code is named after its class.
+	followBuildName = "%s build",
+	-- One row of the order: tier, then the talent's name.
+	followRow = "%d  %s",
+	-- The same row once the player has matched it. The mark is a plain
+	-- Unicode tick; a client font without the glyph draws a box, which is
+	-- a cosmetic loss on an already-dimmed row.
+	followRowDone = "%s  %d  %s",
+	followDoneMark = "✓",
+	followRank = "%d/%d",
+	followInbox = "A build arrived from the companion",
+	followInboxLoad = "Load it",
+
+	-- The tracker. followNext supplies the "<talent> (<tree>, tier n)"
+	-- half, so the two surfaces cannot drift apart.
+	trackerNext = "Next: %s",
+	trackerProgress = "%d of %d",
+	trackerComplete = "Build complete",
 
 	-- Gear
 	gearTitle = "Upgrades",
@@ -66,10 +124,38 @@ local L = {
 	gearNoBuild = "No build loaded, so there is nothing to compare against.",
 	gearUpgrade = "%s: %+.1f over %s",
 	gearNone = "Nothing in your bags beats what you are wearing.",
+	gearPlanned = "Planned",
+	gearEquipped = "Equipped",
+	gearEmptySlot = "Empty",
+	gearYoursBetter = "Yours is better (%+.0f)",
+	gearDiffers = "Different from the plan",
+	gearBagUpgrades = "Upgrades in your bags",
+	gearEquipButton = "Equip",
+	gearInCombat = "In combat",
+	gearLoadABuild = "Load a build on the Follow tab to compare gear",
+	gearOpenFollow = "Open the Follow tab",
+	-- "<slot>  <name>" for an upgrade row.
+	gearSlotRow = "%s  %s",
+	gearUpgradeRow = "%+.0f",
+	gearItemUnknown = "Item %d",
 
 	-- Inbox
 	inboxEmpty = "No builds waiting. Send one from foreversixty.gg.",
 	inboxCount = "%d build(s) waiting from the site.",
+
+	-- Minimap
+	minimapLeftClick = "Left-click: open Forever Sixty",
+	minimapRightClick = "Right-click: settings",
+	minimapNoBuild = "No build loaded",
+
+	-- Settings
+	settingsTitle = "Forever Sixty options",
+	settingsMinimap = "Show the minimap button",
+	settingsTracker = "Show the tracker",
+	settingsTrackerLocked = "Lock the tracker in place",
+	settingsAutoSave = "Save my export when I log out",
+	settingsChat = "Print /fs answers in chat too",
+	settingsReset = "Reset positions",
 }
 
 ns.L = L

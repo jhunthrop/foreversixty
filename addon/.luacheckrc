@@ -25,10 +25,14 @@ read_globals = {
 	"UnitClass", "UnitRace", "UnitLevel", "UnitName", "GetRealmName", "GetCurrentRegion",
 	"GetProfessions", "GetProfessionInfo", "GetBuildInfo",
 	-- UI
-	"CreateFrame", "UIParent", "GameTooltip", "StaticPopupDialogs",
+	"CreateFrame", "UIParent", "GameTooltip", "StaticPopupDialogs", "ITEM_QUALITY_COLORS",
 	"InterfaceOptions_AddCategory", "Settings",
 	"NUM_BANKGENERIC_SLOTS", "NUM_BANKBAGSLOTS", "BANK_CONTAINER",
 	"TalentFrame", "PlayerTalentFrame",
+	"RAID_CLASS_COLORS", "InCombatLockdown", "EquipItemByName", "C_Item", "C_Timer",
+	"UISpecialFrames", "Minimap", "GetItemIcon", "date",
+	"ActionButton_ShowOverlayGlow", "ActionButton_HideOverlayGlow",
+	"GetCursorPosition", "InterfaceOptionsFrame_OpenToCategory",
 	-- Saved variables the TOC declares. ForeverSixtyInbox is written by the
 	-- companion and only ever read here; ForeverSixtyDB is the addon's own
 	-- and Export.save writes it, so it is a global, not a read_global.
@@ -62,5 +66,11 @@ files["tests/"] = {
 		"GetProfessions", "GetProfessionInfo", "GetBuildInfo",
 		"CreateFrame", "UIParent", "SlashCmdList",
 		"ForeverSixtyDB", "ForeverSixtyInbox",
+		"RAID_CLASS_COLORS", "InCombatLockdown", "EquipItemByName", "C_Item", "C_Timer",
+		"ITEM_QUALITY_COLORS",
+		"UISpecialFrames", "Minimap", "GameTooltip", "GetItemIcon", "date",
+		"ActionButton_ShowOverlayGlow", "ActionButton_HideOverlayGlow",
+		"GetCursorPosition", "Settings", "InterfaceOptions_AddCategory",
+		"InterfaceOptionsFrame_OpenToCategory", "PlayerTalentFrame", "TalentFrame",
 	},
 }

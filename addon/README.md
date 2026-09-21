@@ -38,8 +38,14 @@ change the named constant if it differs from the default.
 | 12 | Ruleset name | `/dump GetRealmName()` and `/dump C_GameRules and C_GameRules.GetGameRuleAsInt` | none — `Export.save` writes `ruleset = realm` inline; if ruleset is not the realm name, change that assignment |
 | 13 | Region | `/dump GetCurrentRegion()` | `Export.REGION_NAMES` |
 | 14 | Professions | `/dump GetProfessions()` then `/dump GetProfessionInfo(1)` | `Export.professions()` |
-| 15 | Talent frame name for the highlight | `/dump TalentFrame ~= nil`, `/dump PlayerTalentFrame ~= nil` | `Follow.TALENT_FRAME` |
+| 15 | Talent frame name for the highlight | `/dump TalentFrame ~= nil`, `/dump PlayerTalentFrame ~= nil` | `TalentGlow.TALENT_FRAMES` |
 | 16 | Race token for Forever's two new races | `/dump select(2, UnitRace("player"))` on a High Order Skyborne and a Windshaper Skyborne character | `Export.RACE_SLUGS` |
+| 17 | Modern templates | `/dump CreateFrame("Frame", nil, UIParent, "BackdropTemplate") ~= nil`, same for `"PanelTabButtonTemplate"`, `"UIPanelButtonTemplate"`, `"InputBoxTemplate"`, `"UIPanelScrollFrameTemplate"` | `Theme.TEMPLATES`; a missing one is only a plainer look, and `/fs diag` names it. The scroll template is recorded for information only — `Widgets.list` deliberately uses none |
+| 18 | Settings API | `/dump Settings and Settings.RegisterCanvasLayoutCategory ~= nil` | `Theme.registerSettingsPanel` takes the modern category first, then `InterfaceOptions_AddCategory` |
+| 19 | Class colours | `/dump RAID_CLASS_COLORS.WARRIOR` | `Theme.classColor`, which falls back to gold |
+| 20 | Equip API | `/dump C_Item and C_Item.EquipItemByName ~= nil`, `/dump EquipItemByName ~= nil` | `Theme.equip` prefers `C_Item`; with neither, the Equip buttons are off and `/fs diag` says so |
+| 21 | Talent events | log in, then run `/fs diag` and list any event it names | `Options.EVENTS`; each is registered through `Theme.registerEvent`, which records a refusal rather than erroring |
+| 22 | Talent button mapping | open the talent window with a build loaded and see whether the next talent glows; then run `/fs diag` — a line about no talent button means neither mapping matched | `TalentGlow.CLASSIC_BUTTON` (the `TalentFrameTalent<n>` naming) and `TalentGlow.traitButton` (the `nodeID` walk). Record which one this client took |
 
 ## Findings
 
@@ -53,12 +59,27 @@ change the named constant if it differs from the default.
 
 Run on one character per role and tick here:
 
-- [ ] `/fs` and `/fs options` both print the data build id and the slash hint (there is no options panel).
-- [ ] `/fs export` shows a string that pastes into the planner's Import from addon box.
-- [ ] A code pasted into `/fs follow` shows the next point, and the talent window
-      highlights it.
-- [ ] `/fs gear` lists at least one bagged item scored against the planned set.
-- [ ] Logging out writes `ForeverSixtyDB.characters`; the companion picks it up.
+- [ ] `/fs` opens the window; Escape closes it; it reopens on the tab it was left on.
+- [ ] `/fs export`, `/fs follow`, `/fs gear` and `/fs settings` each open that tab.
+- [ ] The Export tab's "Copy for the site" button selects the string, the label
+      changes for two seconds, and the string pastes into the planner's
+      Import from addon box.
+- [ ] A code pasted on the Follow tab loads, the rows show tier, name and rank
+      grouped by tree, and the check mark renders as a tick rather than a box.
+- [ ] The tracker appears, drags, locks, and says "Build complete" at the end.
+- [ ] The talent window glows the next talent (record which mapping in row 22).
+- [ ] The Gear tab lists the planned set against what is worn, and at least one
+      bagged item with a working Equip button that is disabled in combat.
+- [ ] The minimap button shows the gold "60", drags around the ring, opens the
+      window on left-click and the settings on right-click.
+- [ ] Forever Sixty appears in the game's own Settings panel, with the same
+      toggles as the window's Settings tab.
+- [ ] Logging out writes `ForeverSixtyDB.characters` and `savedAt`; the companion
+      picks it up. Turning auto-save off stops it.
+- [ ] `/fs diag` lists nothing unexpected.
+
+Two screenshots close this lane: the window on Follow with a build loaded, and
+the tracker plus the talent glow with the talent window open.
 
 ## Releasing
 

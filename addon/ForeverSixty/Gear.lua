@@ -185,6 +185,7 @@ function Gear.upgrades(data, build)
 					found[#found + 1] = {
 						slot = target,
 						itemId = tonumber(id),
+						link = link,
 						delta = delta,
 						againstItemId = against.itemId,
 					}
