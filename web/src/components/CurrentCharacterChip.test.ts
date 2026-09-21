@@ -81,4 +81,24 @@ describe('CurrentCharacterChip', () => {
     const { body } = render(CurrentCharacterChip, { props: { current, onforget: () => {} } });
     expect(body).not.toContain('flex-wrap');
   });
+
+  // Fix round 2: the `HIT_TARGET` -> `rowLink` swap in fix round 1 dropped `text-nav` from
+  // the planner link, the simulator link and the copy-addon button (`rowLink` itself
+  // carries no colour) -- only Forget kept a colour class. Scoped to each element's own
+  // opening tag, not the whole body, so a `text-nav` that only Forget or the wrapper
+  // happened to carry would not make this pass by accident.
+  it('keeps the nav link colour on the planner link, the simulator link and the copy-addon button', () => {
+    const { body } = render(CurrentCharacterChip, {
+      props: { current, onforget: () => {}, addonCode: 'FS1:1:warrior:orc:0/0/0:' },
+    });
+    for (const testid of [
+      'current-character-planner',
+      'current-character-sim',
+      'current-character-copy-addon',
+    ]) {
+      const match = new RegExp(`<[a-z]+[^>]*data-testid="${testid}"[^>]*>`, 's').exec(body);
+      if (match === null) throw new Error(`no element rendered for testid "${testid}"`);
+      expect(match[0]).toContain('text-nav');
+    }
+  });
 });

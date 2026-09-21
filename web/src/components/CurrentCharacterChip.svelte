@@ -51,6 +51,14 @@
   /** Two 44px rows on phone, one on desktop -- the one fixed height both rendered states
    *  share, so resolving between them never moves anything below the chip. */
   const CHIP_HEIGHT = 'h-[88px] md:h-11';
+
+  /** The 44px hit target (`rowLink`) plus the nav link colour, shared by the three
+   *  colour-bearing actions -- planner, simulator, copy addon code -- so the two classes
+   *  stay paired in one place instead of three call sites that could drift apart (fix
+   *  round 2: `rowLink` alone carries no colour, and the planner/sim links and the copy
+   *  button lost `text-nav` in the round-1 swap). Forget is deliberately not one of these:
+   *  it keeps its own `text-muted`, unchanged. */
+  const ACTION = `${rowLink} text-nav`;
 </script>
 
 {#if current !== null}
@@ -69,16 +77,16 @@
       <div
         class="flex h-11 flex-nowrap items-center gap-3 overflow-x-auto whitespace-nowrap md:h-auto md:flex-1"
       >
-        <a class={rowLink} href={plannerHrefFor(current)} data-testid="current-character-planner">
+        <a class={ACTION} href={plannerHrefFor(current)} data-testid="current-character-planner">
           {currentCharacterCopy.openInPlanner}
         </a>
-        <a class={rowLink} href={simHrefFor(current)} data-testid="current-character-sim">
+        <a class={ACTION} href={simHrefFor(current)} data-testid="current-character-sim">
           {currentCharacterCopy.openInSimulator}
         </a>
         {#if addonCode !== ''}
           <button
             type="button"
-            class={rowLink}
+            class={ACTION}
             onclick={copyAddonCode}
             data-testid="current-character-copy-addon"
           >
