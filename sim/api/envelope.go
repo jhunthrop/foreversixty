@@ -374,6 +374,23 @@ func (r SimRequest) validate(closedSet, requireCurrentEngine bool) error {
 	case r.Bulk != nil:
 		// A bulk request's count is the precision's, checked by
 		// BulkSpec.validate against the ladder.
+	case r.Weights != nil:
+		// A weights sweep's own Iterations is the engine's per-direction
+		// base count (sim/request.BuildWeights multiplies it by
+		// WeightsIterationsFactor before the engine ever sees it), not a
+		// plain run's choice from the settings bar - so the closed set
+		// below does not apply to it, the same way it does not apply to
+		// a bulk request's count. The browser lane guards its own "fast"
+		// default well under any of the three closed-set numbers
+		// (weights.ts's WEIGHTS_BROWSER_DEFAULT_ITERATIONS, 60) to keep a
+		// weights run's wall clock bounded; refusing that request here
+		// bounced it back as a request-shaped SimResult with .Error set,
+		// which the page used to swallow as a silent "done" (defect A).
+		// Bounded the same way a split part's count already is: positive,
+		// and no larger than the largest run the UI can ever ask for.
+		if r.Iterations <= 0 || r.Iterations > MaxIterations {
+			errs = append(errs, fmt.Errorf("weights.iterations must be between 1 and %d, got %d", MaxIterations, r.Iterations))
+		}
 	case !closedSet:
 		// A split part comes first, ahead of the target-error case,
 		// because a part of a target-error run is both: combine.Split

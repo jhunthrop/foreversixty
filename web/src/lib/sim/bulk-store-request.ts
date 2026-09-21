@@ -420,7 +420,15 @@ export async function runBulkAndSettle(
   try {
     const finished = await handle.result;
     deps.setResult(finished);
-    if (finished.aborted === true) deps.setMessage(bulkCopy.partial);
+    if (finished.aborted === true) {
+      deps.setMessage(bulkCopy.partial);
+    } else if (deps.tool === 'weights' && (finished.weights ?? []).length === 0) {
+      // Defect A: a finished, non-aborted, non-thrown weights run that still carries no
+      // weight rows -- unreachable from a genuinely successful `sim/adapter.Weights` call
+      // (see `bulkCopy.weightsEmpty`'s own doc comment), but the page must never read this
+      // silently as "done" with nothing to show, whatever produced it.
+      deps.setMessage(bulkCopy.weightsEmpty);
+    }
     deps.setPhase('done');
   } catch (error) {
     if (error instanceof BulkCapError) {

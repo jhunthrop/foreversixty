@@ -269,6 +269,25 @@ export function codeForCharacterSpec(spec: CharacterSpec, dataBuild: string): st
 }
 
 /**
+ * `/planner?code=...` for a `CharacterSpec`, through `codeForCharacterSpec` -- the one URL
+ * template every "Open in planner"/"Plan it" link builds. `plannerHrefFor` below reaches it
+ * once it has turned a live character's `point_order` into a `CharacterSpec` via
+ * `toCharacterSpec`; `combos.ts`'s `planItHref` reaches it straight from a bulk result's own
+ * stored `CharacterSpec`, substitutions applied; a saved sim's "Open in planner" link
+ * (SavedSim.svelte) reaches it the same way `planItHref` does -- the stored request's own
+ * `CharacterSpec.talents` is already the ground truth there, with no `TalentIndex` or
+ * `point_order` to reconstruct one through at all (defect fixed here: SavedSim.svelte used
+ * to build its strip's `character` with `point_order: []` and hand it to `plannerHrefFor`,
+ * which zeroed every talent through `toCharacterSpec`'s `talentsString(index, [])` -- a
+ * saved sim's own point-order is genuinely unknowable, the honest-empty rule `sources.ts`
+ * already follows for a combat log, but its final talent RANKS are not: they are sitting
+ * in the stored request's own `character.talents` string, untouched).
+ */
+export function plannerHrefForSpec(spec: CharacterSpec, dataBuild: string): string {
+  return `/planner?code=${encodeURIComponent(codeForCharacterSpec(spec, dataBuild))}`;
+}
+
+/**
  * The inverse of talentsString: one decimal digit per talent in tab order, per tree,
  * dash-joined ("01102123133-12312312-"). Every rank talentsString ever wrote is a single
  * digit, so this is exact, unlike an FS1 code's own base-36 tree field, which loses
@@ -367,7 +386,7 @@ export function plannerHrefFor(character: SimCharacter, index: TalentIndex | nul
     return `/planner?${params.toString()}`;
   }
   const spec = toCharacterSpec(character, index, character.buffs, character.consumables);
-  return `/planner?code=${encodeURIComponent(codeForCharacterSpec(spec, character.tree_version))}`;
+  return plannerHrefForSpec(spec, character.tree_version);
 }
 
 export type CharacterResult = { ok: true; character: SimCharacter } | { ok: false; message: string };

@@ -17,6 +17,7 @@ import {
   gearSlots,
   plannerGearFor,
   plannerHrefFor,
+  plannerHrefForSpec,
   ranksFromTalentsString,
   specForSplit,
   specOf,
@@ -26,7 +27,7 @@ import {
   toCharacterSpec,
   type SimCharacter,
 } from './character';
-import type { CharacterSource } from './types';
+import type { CharacterSource, CharacterSpec } from './types';
 
 const WEB_ROOT = path.resolve(import.meta.dirname, '../../..');
 const BUILD = '1.15.9.69722';
@@ -845,6 +846,52 @@ describe('plannerHrefFor', () => {
     const href = plannerHrefFor(character, index);
     const code = decodeURIComponent(href.slice('/planner?code='.length));
     expect(code.includes('professions=')).toBe(false);
+  });
+});
+
+/**
+ * Defect fix: SavedSim.svelte's own "Open in planner" link used to go through
+ * `plannerHrefFor`, fed a `character` with `point_order: []` -- genuinely unreconstructible
+ * for a saved sim, the same honest-empty case `sources.ts` already carries for a combat log
+ * -- so `toCharacterSpec`'s `talentsString(index, [])` always zeroed the talents out
+ * (`/planner?code=...warrior:orc:0/0/0:...`), even though the stored request's own
+ * `CharacterSpec.talents` had the true, final string the whole time. `plannerHrefForSpec`
+ * is the fix: it reaches `codeForCharacterSpec` straight from a `CharacterSpec`, with no
+ * `TalentIndex`/`point_order` in the way at all -- the same shortcut `combos.ts`'s
+ * `planItHref` already took for a bulk row's own "Plan it" link, now named and shared.
+ */
+describe('plannerHrefForSpec', () => {
+  const spec: CharacterSpec = {
+    name: 'Thrallgar',
+    race: 'orc',
+    class: 'warrior',
+    level: 60,
+    talents: '-5530515-',
+    gear: [{ slot: 'head', item_id: 12640 }],
+    buffs: [],
+    consumes: [],
+  };
+
+  it('encodes the CharacterSpec’s own talents string directly, matching codeForCharacterSpec', () => {
+    const href = plannerHrefForSpec(spec, BUILD);
+    expect(href).toBe(`/planner?code=${encodeURIComponent(codeForCharacterSpec(spec, BUILD))}`);
+  });
+
+  // The defect's own repro shape: a real (non-empty) talents string must never encode as
+  // the all-zero code a `point_order`-less path used to produce.
+  it('never zeroes a non-empty talents string, unlike the point_order path it replaces', () => {
+    const href = plannerHrefForSpec(spec, BUILD);
+    expect(href).not.toContain(':0/0/0:');
+    const code = decodeURIComponent(href.slice('/planner?code='.length));
+    const decoded = decodeFS1(code);
+    expect(decoded.ok).toBe(true);
+    if (!decoded.ok) return;
+    // Trailing-zero-trimmed, the same way `talentsString` itself trims (character.ts:203):
+    // an empty tree's own padding (decodeFS1's `[0]`) trims to the same `''` a genuinely
+    // empty `ranksFromTalentsString` segment already is, so this is an exact round trip of
+    // the meaningful digits, not just "not all zero".
+    const trimmed = decoded.build.treeRanks.map((tree) => tree.join('').replace(/0+$/, ''));
+    expect(trimmed).toEqual(spec.talents.split('-'));
   });
 });
 

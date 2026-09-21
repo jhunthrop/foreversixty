@@ -220,7 +220,7 @@ func TestAPremiumRunIsQueuedDispatchedAndPollable(t *testing.T) {
 		t.Fatalf("state %q, want %q", p.State, StateQueued)
 	}
 
-	stored, err := h.store.Get(t.Context(), out.SimID)
+	stored, _, err := h.store.Get(t.Context(), out.SimID)
 	if err != nil {
 		t.Fatal(err)
 	}
