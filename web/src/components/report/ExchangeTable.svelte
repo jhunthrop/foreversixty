@@ -224,6 +224,7 @@
       {#each ordered as row (`${row.source_guid}-${row.target_guid}-${row.spell_id}-${row.extra_spell_id}`)}
         <li
           class="border-line-soft grid min-h-11 grid-cols-1 items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px] md:grid-cols-[minmax(120px,1fr)_minmax(120px,1fr)_minmax(120px,1fr)_minmax(120px,1fr)_64px]"
+          id={`exchange-${row.source_guid}-${row.spell_id}`}
         >
           <span class="truncate font-semibold">{splitUnitName(row.source_name).name}</span>
           <span class="truncate">{row.spell_name}</span>

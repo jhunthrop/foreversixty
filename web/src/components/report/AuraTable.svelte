@@ -172,6 +172,7 @@
         <li
           class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px] md:grid-cols-[minmax(160px,1.4fr)_minmax(160px,1.4fr)_minmax(0,2fr)_80px_64px]"
           data-testid={`aura-${track.spell_id}-${track.target_guid}`}
+          id={`aura-${track.target_guid}-${track.spell_id}`}
         >
           <span class="flex min-w-0 items-center gap-1">
             <span class="truncate font-semibold" title={track.name}
