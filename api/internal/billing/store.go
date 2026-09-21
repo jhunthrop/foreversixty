@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -41,9 +42,14 @@ func (s *Store) SaveCustomerID(ctx context.Context, userID int64, customerID str
 	return nil
 }
 
-// RecordEventOnce is the webhook's idempotency gate (spec §2.6):
-// inserted=false, no error, means this event id was already recorded —
-// the caller must not reprocess it.
+// RecordEventOnce is the webhook's idempotency gate (spec §2.6). It
+// returns proceed=true when handleEvent must (re)run: either this is
+// the first time event id has ever been seen, or a prior attempt
+// recorded the row but failed before MarkEventProcessed ever ran (a
+// transient failure mid-processing — Stripe's own retry then correctly
+// causes a real second attempt, not a silent drop). proceed=false means
+// this event id was already fully processed — a genuine redelivery,
+// correctly a no-op.
 func (s *Store) RecordEventOnce(ctx context.Context, id, eventType string, payload []byte) (bool, error) {
 	tag, err := s.Pool.Exec(ctx,
 		`insert into stripe_events (id, type, payload) values ($1, $2, $3) on conflict (id) do nothing`,
@@ -51,7 +57,15 @@ func (s *Store) RecordEventOnce(ctx context.Context, id, eventType string, paylo
 	if err != nil {
 		return false, fmt.Errorf("billing: record event %s: %w", id, err)
 	}
-	return tag.RowsAffected() == 1, nil
+	if tag.RowsAffected() == 1 {
+		return true, nil
+	}
+	var processedAt *time.Time
+	if err := s.Pool.QueryRow(ctx,
+		`select processed_at from stripe_events where id = $1`, id).Scan(&processedAt); err != nil {
+		return false, fmt.Errorf("billing: record event %s: check processed: %w", id, err)
+	}
+	return processedAt == nil, nil
 }
 
 // MarkEventProcessed stamps processed_at once the event's entitlement

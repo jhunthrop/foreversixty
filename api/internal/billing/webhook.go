@@ -38,14 +38,15 @@ func (s *Service) webhook(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "the webhook signature could not be verified", nil)
 		return
 	}
-	inserted, err := s.Store.RecordEventOnce(r.Context(), event.ID, string(event.Type), payload)
+	proceed, err := s.Store.RecordEventOnce(r.Context(), event.ID, string(event.Type), payload)
 	if err != nil {
 		s.fail(w, r, "webhook", err, "could not record that event just now")
 		return
 	}
-	if !inserted {
-		// Already processed (a redelivery or Stripe's own retry after a
-		// slow-but-eventually-200 first attempt): 200, no reprocessing.
+	if !proceed {
+		// Already fully processed (a genuine redelivery of a completed
+		// event, or Stripe's own retry after a slow-but-eventually-200
+		// first attempt): 200, no reprocessing.
 		httpx.WriteOK(w, r, http.StatusOK, nil)
 		return
 	}

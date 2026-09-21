@@ -219,3 +219,43 @@ func TestWebhookSubscriptionDeletedSetsCanceledAndGrace(t *testing.T) {
 		t.Fatalf("grace_until = %v, want %v", grace, end.Add(retentionGraceDays))
 	}
 }
+
+func TestWebhookRetriesProcessingWhenAPriorAttemptFailedBeforeCompleting(t *testing.T) {
+	h := newHarness(t)
+	uid := h.seedUser(t, "webhook-retry@example.com")
+	end := time.Now().Add(time.Hour).UTC().Truncate(time.Second)
+	sub := fixtureSubscription("sub_webhook_retry", "premium", uid, 0, stripe.SubscriptionStatusActive, end)
+	h.gateway.Subscriptions = map[string]*stripe.Subscription{sub.ID: sub}
+
+	// Simulate a prior attempt that recorded the event row but crashed
+	// before processing completed.
+	if _, err := h.pool.Exec(t.Context(),
+		`insert into stripe_events (id, type, payload) values ($1, $2, $3)`,
+		"evt_retry_test", "customer.subscription.created", []byte(`{}`)); err != nil {
+		t.Fatal(err)
+	}
+
+	body, err := json.Marshal(map[string]any{
+		"id": "evt_retry_test", "type": "customer.subscription.created", "api_version": stripe.APIVersion,
+		"data": map[string]any{"object": map[string]any{"id": sub.ID}},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	signed := webhook.GenerateTestSignedPayload(&webhook.UnsignedPayload{Payload: body, Secret: testWebhookSecret})
+	r := httptest.NewRequest(http.MethodPost, "/v1/billing/webhook", bytes.NewReader(signed.Payload))
+	r.Header.Set("Stripe-Signature", signed.Header)
+	w := h.do(t, r)
+	if w.Code != http.StatusOK {
+		t.Fatalf("status = %d, body = %s", w.Code, w.Body.String())
+	}
+
+	var status string
+	if err := h.pool.QueryRow(t.Context(),
+		`select status from entitlements where user_id = $1 and plan = 'premium'`, uid).Scan(&status); err != nil {
+		t.Fatal(err)
+	}
+	if status != "active" {
+		t.Fatalf("status = %q, want active — the retry must have actually processed the event", status)
+	}
+}

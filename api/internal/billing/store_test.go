@@ -68,16 +68,16 @@ func TestCustomerIDSavesAndReads(t *testing.T) {
 func TestRecordEventOnceIsIdempotent(t *testing.T) {
 	pool := testPool(t)
 	s := &Store{Pool: pool}
-	inserted, err := s.RecordEventOnce(context.Background(), "evt_1", "checkout.session.completed", []byte(`{}`))
-	if err != nil || !inserted {
-		t.Fatalf("first insert: %v, %v", inserted, err)
-	}
-	inserted, err = s.RecordEventOnce(context.Background(), "evt_1", "checkout.session.completed", []byte(`{}`))
-	if err != nil || inserted {
-		t.Fatalf("redelivery: %v, %v, want inserted=false", inserted, err)
+	proceed, err := s.RecordEventOnce(context.Background(), "evt_1", "checkout.session.completed", []byte(`{}`))
+	if err != nil || !proceed {
+		t.Fatalf("first insert: %v, %v", proceed, err)
 	}
 	if err := s.MarkEventProcessed(context.Background(), "evt_1"); err != nil {
 		t.Fatal(err)
+	}
+	proceed, err = s.RecordEventOnce(context.Background(), "evt_1", "checkout.session.completed", []byte(`{}`))
+	if err != nil || proceed {
+		t.Fatalf("redelivery of a processed event: %v, %v, want proceed=false", proceed, err)
 	}
 	var processedAt *string
 	if err := pool.QueryRow(context.Background(),
@@ -86,5 +86,20 @@ func TestRecordEventOnceIsIdempotent(t *testing.T) {
 	}
 	if processedAt == nil {
 		t.Fatal("processed_at should be set after MarkEventProcessed")
+	}
+}
+
+func TestRecordEventOnceRetriesAnEventRecordedButNeverProcessed(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	proceed, err := s.RecordEventOnce(context.Background(), "evt_stuck", "checkout.session.completed", []byte(`{}`))
+	if err != nil || !proceed {
+		t.Fatalf("first insert: %v, %v", proceed, err)
+	}
+	// Simulate a prior attempt that recorded the event but crashed
+	// before calling MarkEventProcessed — processed_at stays null.
+	proceed, err = s.RecordEventOnce(context.Background(), "evt_stuck", "checkout.session.completed", []byte(`{}`))
+	if err != nil || !proceed {
+		t.Fatalf("retry of a never-processed event: %v, %v, want proceed=true", proceed, err)
 	}
 }
