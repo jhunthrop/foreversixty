@@ -120,17 +120,22 @@ Output is healing, measured as effective healing and not overheal):
    they matter most); Output is not.
 5. **No hidden weights.** The weights per role are on the page and the guild can change
    them; a guild that does not care about consumables turns Preparation off.
-6. **The player owns their rating** (decided 2026-09-21). A player always sees their own
-   full rating, free. Officers of a claimed guild see their raiders'. Beyond that, a rating
-   is visible only if its owner turns it on: a **raider card** (overall score, the six
-   parts, trend, bosses killed, attendance) that the player can share as a link or mark
-   "visible to raid leaders". Nothing about a player who has not opted in is shown to
-   anyone, paying or not: selling a judgement about a person without their consent would
-   make players stop uploading public logs, which is the data everything here stands on.
-   Premium sits on the *viewer's* side of consenting players only: a pug leader on the guild
-   or player plan can paste a raid roster and get every opted-in raider's card on one
-   screen, with the ones who have not opted in shown as "not shared". Free viewers can open
-   a raider card one at a time from a link they were given.
+6. **Public the way parses are public** (decided 2026-09-21, revised the same day on the
+   owner's correction). The community norm, and this site's own rule for parses already,
+   is that a public log makes your performance visible: pug leaders check applicants that
+   way every day, and it is a main reason people use a logs site. So a rating computed from
+   a public report shows on the player's character page, overall score first and the six
+   parts behind it, free for anyone to look up. Ratings from private, unlisted or guild-only
+   reports are visible only to whoever can already see those reports. A player who has set
+   `anonymize` is hidden from it exactly as they are from rankings. The player's own full
+   report card is always free.
+   **Premium is scale and depth, not the lookup itself:** paste a raid roster or a list of
+   applicants and see everyone's rating on one sortable screen; another player's trend over
+   weeks, not only their latest night; side-by-side comparison of applicants; and the
+   officer views for your own guild (raid-night sheet, wipe analysis, assignments).
+   **One guard:** no public leaderboard of ratings, and never a "worst players" list. A
+   lookup is a raid leader doing their job; a ranked list of the lowest-rated players is a
+   shame board, and it is the version of this feature that gets a site a bad name.
 7. **One number first, then the parts** (decided 2026-09-21). Every surface leads with the
    overall score and opens into the six parts, then into the moments in the log behind each
    part. The number never appears anywhere the parts cannot be reached in one click.
@@ -139,9 +144,9 @@ Output is healing, measured as effective healing and not overheal):
 sorted by what cost the most), a per-player page (trend over weeks, best and worst
 component, the three specific things to fix next with links to the moment in the log), and
 a wipe analysis ("this pull ended because of these three avoidable deaths") in one screen.
-**What the player gets, free:** their own report card on every fight they are in, and the
-choice to share it (decided 2026-09-21: the player's own card is free, officer and roster
-views are paid).
+**What everyone gets, free:** their own report card on every fight they are in, and a
+one-player lookup of anyone's rating from public logs (decided 2026-09-21: single lookups
+free, roster checks, trends, comparison and officer views paid).
 
 **What has to be built:** the scoring model and its per-role weights; the per-spec utility
 table and the consumable catalogue (curated data, like the mechanics tables); downtime
