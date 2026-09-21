@@ -12,7 +12,9 @@ import (
 	"net/url"
 	"strings"
 	"testing"
+	"time"
 
+	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 	"github.com/jhunthrop/foreversixty/api/internal/mail"
 	"golang.org/x/oauth2"
 )
@@ -35,6 +37,7 @@ func newHarness(t *testing.T) *harness {
 	a := &Authenticator{Store: store, Log: quiet}
 	svc := &Service{
 		Store: store, Auth: a, Mailer: mailer, Log: quiet,
+		Entitlements:  &entitlements.Store{Pool: store.Pool},
 		PublicBaseURL: "https://foreversixty.gg", APIBaseURL: "https://api.foreversixty.gg",
 	}
 	mux := http.NewServeMux()
@@ -53,6 +56,63 @@ func newHarness(t *testing.T) *harness {
 		},
 	}
 	return &harness{svc: svc, server: srv, client: client, mailer: mailer}
+}
+
+// seedUser creates an account directly through the store, skipping the
+// email magic-link flow, for tests that only care what a signed-in
+// account sees.
+func (h *harness) seedUser(t *testing.T, email string) int64 {
+	t.Helper()
+	u, err := h.svc.Store.UpsertEmailUser(t.Context(), email)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return u.ID
+}
+
+// seedGuild inserts a bare guild row and returns its id.
+func (h *harness) seedGuild(t *testing.T, name string) int64 {
+	t.Helper()
+	var id int64
+	if err := h.svc.Store.Pool.QueryRow(t.Context(),
+		`insert into guilds (region, ruleset, name) values ('us', 'hardcore', $1) returning id`, name).Scan(&id); err != nil {
+		t.Fatal(err)
+	}
+	return id
+}
+
+// seedGuildMember links userID into guildID at rank, verified or not.
+func (h *harness) seedGuildMember(t *testing.T, guildID, userID int64, rank string, verified bool) {
+	t.Helper()
+	var verifiedAt any
+	if verified {
+		verifiedAt = time.Now()
+	}
+	if _, err := h.svc.Store.Pool.Exec(t.Context(),
+		`insert into guild_members (guild_id, user_id, rank, verified_at, refreshed_at) values ($1, $2, $3, $4, now())`,
+		guildID, userID, rank, verifiedAt); err != nil {
+		t.Fatal(err)
+	}
+}
+
+// sessionRequest signs in as uid directly through the store, skipping
+// the email flow, and sends method/path with that session's cookie.
+func (h *harness) sessionRequest(t *testing.T, method, path string, uid int64) *http.Response {
+	t.Helper()
+	sess, err := h.svc.Store.CreateSession(t.Context(), uid, "email", SessionTTL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	r, err := http.NewRequest(method, h.server.URL+path, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	r.AddCookie(&http.Cookie{Name: SessionCookie, Value: sess.ID})
+	res, err := h.client.Do(r)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return res
 }
 
 // do sends a request with the CSRF header filled in from the cookie jar,
@@ -732,5 +792,94 @@ func TestAMailerFailureIs500AndTheLinkIsNotClaimedSent(t *testing.T) {
 	w := emailPost(s, `{"email":"raider@example.com"}`)
 	if w.Code != http.StatusInternalServerError {
 		t.Fatalf("status = %d, want 500", w.Code)
+	}
+}
+
+func TestMeIncludesEntitlementsAndDefaultsToAllFalseWithNoRows(t *testing.T) {
+	h := newHarness(t)
+	uid := h.seedUser(t, "me-entitlements@example.com")
+	res := h.sessionRequest(t, http.MethodGet, "/v1/me", uid)
+	if res.StatusCode != http.StatusOK {
+		res.Body.Close()
+		t.Fatalf("status = %d", res.StatusCode)
+	}
+	var body struct {
+		Entitlements struct {
+			ServerSims    bool `json:"server_sims"`
+			SupporterMark bool `json:"supporter_mark"`
+			Billing       *struct {
+				Status string `json:"status"`
+			} `json:"billing"`
+		} `json:"entitlements"`
+	}
+	h.decode(t, res, &body)
+	if body.Entitlements.ServerSims || body.Entitlements.SupporterMark {
+		t.Fatalf("a fresh account must show every feature false: %+v", body.Entitlements)
+	}
+	if body.Entitlements.Billing != nil {
+		t.Fatalf("billing should be nil with no entitlement row, got %+v", body.Entitlements.Billing)
+	}
+}
+
+func TestMeReflectsAnActivePersonalPremiumEntitlement(t *testing.T) {
+	h := newHarness(t)
+	uid := h.seedUser(t, "me-active-premium@example.com")
+	if _, err := h.svc.Store.Pool.Exec(t.Context(),
+		`insert into entitlements (user_id, plan, source, status) values ($1, 'premium', 'grant', 'active')`,
+		uid); err != nil {
+		t.Fatal(err)
+	}
+	res := h.sessionRequest(t, http.MethodGet, "/v1/me", uid)
+	var body struct {
+		Entitlements struct {
+			ServerSims bool `json:"server_sims"`
+			Billing    *struct {
+				Status string `json:"status"`
+			} `json:"billing"`
+		} `json:"entitlements"`
+	}
+	h.decode(t, res, &body)
+	if !body.Entitlements.ServerSims {
+		t.Fatal("server_sims should be true")
+	}
+	if body.Entitlements.Billing == nil || body.Entitlements.Billing.Status != "active" {
+		t.Fatalf("billing = %+v", body.Entitlements.Billing)
+	}
+}
+
+func TestMeShowsGuildPlanOnlyToAVerifiedOfficer(t *testing.T) {
+	h := newHarness(t)
+	gid := h.seedGuild(t, "me-guild-plan")
+	if _, err := h.svc.Store.Pool.Exec(t.Context(),
+		`insert into entitlements (guild_id, plan, source, status) values ($1, 'guild', 'grant', 'active')`,
+		gid); err != nil {
+		t.Fatal(err)
+	}
+	officer := h.seedUser(t, "me-guild-officer@example.com")
+	h.seedGuildMember(t, gid, officer, "officer", true)
+	member := h.seedUser(t, "me-guild-member@example.com")
+	h.seedGuildMember(t, gid, member, "member", true)
+
+	type meBody struct {
+		Guilds []struct {
+			ID   int64 `json:"id"`
+			Plan *struct {
+				Status string `json:"status"`
+			} `json:"plan,omitempty"`
+		} `json:"guilds"`
+	}
+	decode := func(uid int64) meBody {
+		res := h.sessionRequest(t, http.MethodGet, "/v1/me", uid)
+		var b meBody
+		h.decode(t, res, &b)
+		return b
+	}
+	oBody := decode(officer)
+	if len(oBody.Guilds) != 1 || oBody.Guilds[0].Plan == nil || oBody.Guilds[0].Plan.Status != "active" {
+		t.Fatalf("officer's guilds = %+v", oBody.Guilds)
+	}
+	mBody := decode(member)
+	if len(mBody.Guilds) != 1 || mBody.Guilds[0].Plan != nil {
+		t.Fatalf("non-officer must not see Plan: %+v", mBody.Guilds)
 	}
 }
