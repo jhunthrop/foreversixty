@@ -466,3 +466,154 @@ func TestEveryRouteAnswers500WhenTheDatabaseIsGone(t *testing.T) {
 		t.Errorf("queue = %d, want 500", res.StatusCode)
 	}
 }
+
+func TestPutExportsSyncsGuildMembershipFromTheGuildSection(t *testing.T) {
+	h := newHarness(t)
+	ctx := context.Background()
+	export := "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=Iron%20Vanguard:1"
+	if err := h.store.PutExports(ctx, h.owner, []Export{
+		{Name: "Baelgrim", Region: "us", Ruleset: "hardcore", Export: export},
+	}); err != nil {
+		t.Fatal(err)
+	}
+	var guildID int64
+	var rank string
+	var rankIndex int
+	if err := h.pool.QueryRow(ctx,
+		`select gc.guild_id, gc.rank, gc.rank_index from guild_characters gc
+		 join guilds g on g.id = gc.guild_id where g.name = 'Iron Vanguard'`).
+		Scan(&guildID, &rank, &rankIndex); err != nil {
+		t.Fatal(err)
+	}
+	if rank != "officer" || rankIndex != 1 {
+		t.Fatalf("rank = %q rankIndex = %d, want officer/1 (default officer_max_rank_index is 1)", rank, rankIndex)
+	}
+	var memberRank string
+	var verified bool
+	if err := h.pool.QueryRow(ctx,
+		`select rank, verified_at is not null from guild_members where guild_id = $1 and user_id = $2`, guildID, h.owner).
+		Scan(&memberRank, &verified); err != nil {
+		t.Fatal(err)
+	}
+	if memberRank != "member" || verified {
+		t.Fatalf("guild_members.rank = %q verified = %v, want member/false (an unverified export never grants derived officer rank)", memberRank, verified)
+	}
+}
+
+func TestPutExportsTwoCharactersOfOneAccountInOneGuildBothAppear(t *testing.T) {
+	h := newHarness(t)
+	ctx := context.Background()
+	if err := h.store.PutExports(ctx, h.owner, []Export{
+		{Name: "Baelgrim", Region: "us", Ruleset: "hardcore",
+			Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=Forever:0"},
+		{Name: "Baelalt", Region: "us", Ruleset: "hardcore",
+			Export: "FS1:1.60.1.69893:mage:gnome:0/0/0:|guild=Forever:5"},
+	}); err != nil {
+		t.Fatal(err)
+	}
+	var n int
+	if err := h.pool.QueryRow(ctx, `select count(*) from guild_characters`).Scan(&n); err != nil {
+		t.Fatal(err)
+	}
+	if n != 2 {
+		t.Fatalf("guild_characters rows = %d, want 2 (one per character)", n)
+	}
+	var guildID int64
+	h.pool.QueryRow(ctx, `select id from guilds where name = 'Forever'`).Scan(&guildID)
+	var rank string
+	var verified bool
+	if err := h.pool.QueryRow(ctx,
+		`select rank, verified_at is not null from guild_members where guild_id = $1 and user_id = $2`, guildID, h.owner).
+		Scan(&rank, &verified); err != nil {
+		t.Fatal(err)
+	}
+	if rank != "member" || verified {
+		t.Fatalf("guild_members.rank = %q verified = %v, want member/false (neither character is verified; the per-character guild_characters rows above already prove both appear correctly - that's the point of this test, not derived rank)", rank, verified)
+	}
+}
+
+func TestPutExportsAnUnguildedAltLeavesTheMainsRowAlone(t *testing.T) {
+	h := newHarness(t)
+	ctx := context.Background()
+	if err := h.store.PutExports(ctx, h.owner, []Export{
+		{Name: "Baelgrim", Region: "us", Ruleset: "hardcore",
+			Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=Forever:0"},
+	}); err != nil {
+		t.Fatal(err)
+	}
+	if err := h.store.PutExports(ctx, h.owner, []Export{
+		{Name: "Baelalt", Region: "us", Ruleset: "hardcore",
+			Export: "FS1:1.60.1.69893:mage:gnome:0/0/0:|professions=mining"},
+	}); err != nil {
+		t.Fatal(err)
+	}
+	var n int
+	if err := h.pool.QueryRow(ctx,
+		`select count(*) from guild_characters where character_key = 'us/hardcore/baelgrim'`).Scan(&n); err != nil {
+		t.Fatal(err)
+	}
+	if n != 1 {
+		t.Fatalf("the main's row should be untouched by the alt's unguilded sync, got %d rows", n)
+	}
+}
+
+func TestPutExportsATransferMovesOnlyThatCharacter(t *testing.T) {
+	h := newHarness(t)
+	ctx := context.Background()
+	if err := h.store.PutExports(ctx, h.owner, []Export{
+		{Name: "Baelgrim", Region: "us", Ruleset: "hardcore",
+			Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=Guild1:0"},
+		{Name: "Baelalt", Region: "us", Ruleset: "hardcore",
+			Export: "FS1:1.60.1.69893:mage:gnome:0/0/0:|guild=Guild1:0"},
+	}); err != nil {
+		t.Fatal(err)
+	}
+	if err := h.store.PutExports(ctx, h.owner, []Export{
+		{Name: "Baelgrim", Region: "us", Ruleset: "hardcore",
+			Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=Guild2:0"},
+	}); err != nil {
+		t.Fatal(err)
+	}
+	var altGuild, mainGuild string
+	h.pool.QueryRow(ctx, `select g.name from guild_characters gc join guilds g on g.id = gc.guild_id
+		where gc.character_key = 'us/hardcore/baelalt'`).Scan(&altGuild)
+	h.pool.QueryRow(ctx, `select g.name from guild_characters gc join guilds g on g.id = gc.guild_id
+		where gc.character_key = 'us/hardcore/baelgrim'`).Scan(&mainGuild)
+	if altGuild != "Guild1" {
+		t.Fatalf("the alt's guild = %q, want Guild1 (untouched)", altGuild)
+	}
+	if mainGuild != "Guild2" {
+		t.Fatalf("the transferred character's guild = %q, want Guild2", mainGuild)
+	}
+	var n int
+	h.pool.QueryRow(ctx, `select count(*) from guild_members where user_id = $1`, h.owner).Scan(&n)
+	if n != 2 {
+		t.Fatalf("guild_members rows for the account = %d, want 2 (one per guild)", n)
+	}
+}
+
+func TestPutExportsAnUnguildedExportRemovesAPreviousGuildRow(t *testing.T) {
+	h := newHarness(t)
+	ctx := context.Background()
+	if err := h.store.PutExports(ctx, h.owner, []Export{
+		{Name: "Baelgrim", Region: "us", Ruleset: "hardcore",
+			Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=Forever:0"},
+	}); err != nil {
+		t.Fatal(err)
+	}
+	if err := h.store.PutExports(ctx, h.owner, []Export{
+		{Name: "Baelgrim", Region: "us", Ruleset: "hardcore",
+			Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|professions=mining"},
+	}); err != nil {
+		t.Fatal(err)
+	}
+	var n int
+	h.pool.QueryRow(ctx, `select count(*) from guild_characters where character_key = 'us/hardcore/baelgrim'`).Scan(&n)
+	if n != 0 {
+		t.Fatal("the character's row should be gone once the export stops naming a guild")
+	}
+	h.pool.QueryRow(ctx, `select count(*) from guild_members where user_id = $1`, h.owner).Scan(&n)
+	if n != 0 {
+		t.Fatal("guild_members should have no row left for this account")
+	}
+}

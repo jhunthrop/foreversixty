@@ -13,11 +13,13 @@ import (
 	"strings"
 	"time"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/builds"
 	"github.com/jhunthrop/foreversixty/api/internal/character"
+	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/api/internal/trees"
 )
@@ -69,40 +71,173 @@ type queued struct {
 // Store is the addon's two tables.
 type Store struct{ Pool *pgxpool.Pool }
 
-// PutExports replaces a user's exports for the characters named.
+// PutExports replaces a user's exports for the characters named, and syncs
+// each character's guild membership (guild_characters, then the derived
+// guild_members row) from its export's guild= section, all in one
+// transaction per character so a crash between the export write and the
+// guild sync never leaves one without the other.
 //
 // The ruleset is normalised rather than validated: the addon writes
 // whatever the game client gave it, and the companion forwards it
 // untouched, so an unrecognised value goes through the API's single
 // realm-to-ruleset mapping like any other realm segment would.
-//
-// character_key is the table's only key, with no user_id in the
-// conflict target, so a plain upsert would let any device silently
-// reassign and overwrite a row it does not own the moment two real
-// characters collide on the same region/ruleset/name-slug. The WHERE
-// guard only claims a row that is unclaimed or already userID's own -
-// the same shape auth.LinkCharacter uses for the characters table -
-// and a claim that touches no row (RowsAffected() == 0) is refused as
-// ErrCharacterClaimed rather than stealing it.
 func (s *Store) PutExports(ctx context.Context, userID int64, exports []Export) error {
 	for _, e := range exports {
 		ruleset := character.RulesetFromRealm(e.Ruleset, "")
+		region := strings.ToLower(e.Region)
 		key := character.Key(e.Region, ruleset, e.Name)
-		tag, err := s.Pool.Exec(ctx,
-			`insert into addon_exports (character_key, user_id, region, ruleset, name, export, updated_at)
-			 values ($1, $2, $3, $4, $5, $6, now())
-			 on conflict (character_key) do update set
-			   user_id = excluded.user_id, export = excluded.export, updated_at = now()
-			 where addon_exports.user_id = excluded.user_id`,
-			key, userID, strings.ToLower(e.Region), ruleset, e.Name, e.Export)
+
+		tx, err := s.Pool.Begin(ctx)
 		if err != nil {
-			return fmt.Errorf("addon: store export %s: %w", key, err)
+			return fmt.Errorf("addon: store export %s: begin: %w", key, err)
 		}
-		if tag.RowsAffected() == 0 {
-			return fmt.Errorf("%w: %s", ErrCharacterClaimed, key)
+		if err := s.putOneExport(ctx, tx, userID, key, region, ruleset, e); err != nil {
+			_ = tx.Rollback(ctx)
+			return err
+		}
+		if err := tx.Commit(ctx); err != nil {
+			return fmt.Errorf("addon: store export %s: commit: %w", key, err)
 		}
 	}
 	return nil
+}
+
+// putOneExport writes one character's export row — the same claim-guard
+// upsert PutExports always used, now scoped to tx — then syncs its guild
+// membership from the export's guild= section (or clears it) in the same
+// transaction.
+//
+// character_key is the table's only key, with no user_id in the conflict
+// target, so a plain upsert would let any device silently reassign and
+// overwrite a row it does not own the moment two real characters collide
+// on the same region/ruleset/name-slug. The WHERE guard only claims a row
+// that is unclaimed or already userID's own, and a claim that touches no
+// row (RowsAffected() == 0) is refused as ErrCharacterClaimed rather than
+// stealing it.
+func (s *Store) putOneExport(ctx context.Context, tx pgx.Tx, userID int64, key, region, ruleset string, e Export) error {
+	tag, err := tx.Exec(ctx,
+		`insert into addon_exports (character_key, user_id, region, ruleset, name, export, updated_at)
+		 values ($1, $2, $3, $4, $5, $6, now())
+		 on conflict (character_key) do update set
+		   user_id = excluded.user_id, export = excluded.export, updated_at = now()
+		 where addon_exports.user_id = excluded.user_id`,
+		key, userID, region, ruleset, e.Name, e.Export)
+	if err != nil {
+		return fmt.Errorf("addon: store export %s: %w", key, err)
+	}
+	if tag.RowsAffected() == 0 {
+		return fmt.Errorf("%w: %s", ErrCharacterClaimed, key)
+	}
+	return s.syncGuild(ctx, tx, userID, key, region, ruleset, e.Export)
+}
+
+// syncGuild reads the export's guild= section (if any) and makes
+// guild_characters agree with it: a named guild gets an upserted row (a
+// transfer removes the old guild's row first, so the table-wide unique
+// index on character_key is never violated), an unguilded export removes
+// whatever row existed. Either way, every account the change touches gets
+// RecomputeMembership and a lost-claim check, in the same transaction as
+// the character write above — this is the one place the API ever parses
+// an export's contents.
+func (s *Store) syncGuild(ctx context.Context, tx pgx.Tx, userID int64, key, region, ruleset, export string) error {
+	var prevGuildID *int64
+	var prevUserID int64
+	err := tx.QueryRow(ctx,
+		`select guild_id, user_id from guild_characters where character_key = $1`, key).
+		Scan(&prevGuildID, &prevUserID)
+	if err != nil && !errors.Is(err, pgx.ErrNoRows) {
+		return fmt.Errorf("addon: read previous guild for %s: %w", key, err)
+	}
+
+	name, rankIndex, ok := ParseFS1Guild(export)
+	if !ok {
+		if prevGuildID == nil {
+			return nil
+		}
+		if _, err := tx.Exec(ctx, `delete from guild_characters where character_key = $1`, key); err != nil {
+			return fmt.Errorf("addon: clear guild for %s: %w", key, err)
+		}
+		return afterGuildChange(ctx, tx, *prevGuildID, prevUserID)
+	}
+
+	guildID, officerMax, err := resolveGuild(ctx, tx, region, ruleset, name)
+	if err != nil {
+		return err
+	}
+	rank := deriveRank(rankIndex, officerMax)
+
+	if prevGuildID != nil && *prevGuildID != guildID {
+		if _, err := tx.Exec(ctx,
+			`delete from guild_characters where character_key = $1 and guild_id = $2`, key, *prevGuildID); err != nil {
+			return fmt.Errorf("addon: clear previous guild for %s: %w", key, err)
+		}
+	}
+
+	// verified_at is deliberately not in this SET list: a re-sync of the
+	// same character in the same guild keeps whatever verification it
+	// already earned. Only a transfer starts a fresh, unverified row.
+	if _, err := tx.Exec(ctx,
+		`insert into guild_characters (guild_id, character_key, user_id, rank_index, rank, source, refreshed_at)
+		 values ($1, $2, $3, $4, $5, 'export', now())
+		 on conflict (guild_id, character_key) do update set
+		   user_id = excluded.user_id, rank_index = excluded.rank_index, rank = excluded.rank,
+		   refreshed_at = now()`,
+		guildID, key, userID, rankIndex, rank); err != nil {
+		return fmt.Errorf("addon: sync guild membership for %s: %w", key, err)
+	}
+
+	// A rank-0 (guild master) export's effect on a pending officer claim
+	// is wired in a later task (guilds.AutoConfirmClaimIfPending), once
+	// the claim flow exists; nothing here yet depends on rank == "leader"
+	// beyond the row it already wrote above.
+	if err := afterGuildChange(ctx, tx, guildID, userID); err != nil {
+		return err
+	}
+	if prevGuildID != nil && *prevGuildID != guildID {
+		return afterGuildChange(ctx, tx, *prevGuildID, prevUserID)
+	}
+	return nil
+}
+
+// resolveGuild finds or creates the guild an export names, returning its
+// id and its current officer-rank threshold.
+func resolveGuild(ctx context.Context, tx pgx.Tx, region, ruleset, name string) (id int64, officerMax int, err error) {
+	if _, err := tx.Exec(ctx,
+		`insert into guilds (region, ruleset, name) values ($1, $2, $3) on conflict (region, ruleset, name) do nothing`,
+		region, ruleset, name); err != nil {
+		return 0, 0, fmt.Errorf("addon: create guild %s: %w", name, err)
+	}
+	err = tx.QueryRow(ctx,
+		`select id, officer_max_rank_index from guilds where region = $1 and ruleset = $2 and name = $3`,
+		region, ruleset, name).Scan(&id, &officerMax)
+	if err != nil {
+		return 0, 0, fmt.Errorf("addon: read guild %s: %w", name, err)
+	}
+	return id, officerMax, nil
+}
+
+// deriveRank turns a raw GetGuildInfo rank index into the label
+// officer detection uses. Index 0 is always the guild master
+// (server-authoritative, never configurable).
+func deriveRank(rankIndex, officerMax int) string {
+	switch {
+	case rankIndex == 0:
+		return "leader"
+	case rankIndex <= officerMax:
+		return "officer"
+	default:
+		return "member"
+	}
+}
+
+// afterGuildChange runs RecomputeMembership and the lost-claim check for
+// one account in one guild, the pair of calls every branch of syncGuild
+// needs after it changes a guild_characters row.
+func afterGuildChange(ctx context.Context, tx pgx.Tx, guildID, userID int64) error {
+	if err := guilds.RecomputeMembership(ctx, tx, guildID, &userID); err != nil {
+		return err
+	}
+	return guilds.ReleaseClaimIfLost(ctx, tx, guildID, userID)
 }
 
 // Exports lists a user's stored exports, newest first.
