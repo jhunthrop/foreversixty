@@ -23,6 +23,8 @@
     type PairingCode,
   } from '../lib/account/api';
   import { safeNextPath } from '../lib/account/safe-next';
+  import { openPortal } from '../lib/billing/api';
+  import { billingBlockCopy } from '../lib/billing/copy';
   import { characterHref, guildHref, parseCharacterPath, rulesetLabel } from '../lib/characters';
   import { leaveGuild, updateConsent, type GuildConsent } from '../lib/guild/api';
   import { guildConsentCopy } from '../lib/guild/copy';
@@ -47,6 +49,9 @@
 
   const signedIn = $derived(me !== null);
   const displayName = $derived(me?.user.battletag ?? me?.user.email ?? 'Your account');
+  // Optional chaining all the way through: `entitlements` itself may be absent on an
+  // older/stubbed /v1/me response (see the `Me.entitlements` doc comment in account/api.ts).
+  const billing = $derived(me?.entitlements?.billing ?? null);
 
   async function load(): Promise<void> {
     status = 'loading';
@@ -117,6 +122,12 @@
     void run(async () => {
       await signOut();
       window.location.assign('/');
+    });
+
+  const onManageBilling = (): void =>
+    void run(async () => {
+      const result = await openPortal(undefined);
+      window.location.assign(result.portal_url);
     });
 
   const onAnonymize = (event: Event): void => {
@@ -295,6 +306,31 @@
         >
           Sign out
         </button>
+      </section>
+
+      <section class="flex flex-col gap-3">
+        <h2 class="section-title text-[18px]">Billing</h2>
+        {#if billing === null}
+          <p class="text-[14px]">
+            {billingBlockCopy.notSubscribed} <a href="/premium">{billingBlockCopy.seePlans}</a>.
+          </p>
+        {:else}
+          <p class="text-[14px]">
+            {billing.plan} —
+            {billing.cancel_at_period_end ? billingBlockCopy.ends : billingBlockCopy.renews}
+            {billing.current_period_end ? new Date(billing.current_period_end).toLocaleDateString() : ''}
+          </p>
+          {#if billing.status === 'past_due'}
+            <p class="text-strong text-[13px]" role="alert">{billingBlockCopy.pastDueBanner}</p>
+          {/if}
+          <button
+            class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-4"
+            onclick={onManageBilling}
+            disabled={busy}
+          >
+            {billingBlockCopy.manageBilling}
+          </button>
+        {/if}
       </section>
 
       <section class="flex flex-col gap-3">
