@@ -133,4 +133,18 @@ describe("Prefs", function()
 		-- The same table object, not a new one.
 		assert.are.equal(ui, _G.ForeverSixtyDB.ui)
 	end)
+
+	it("shows gear tips and the level-up toast by default", function()
+		assert.is_true(Prefs.DEFAULTS.tooltip)
+		assert.is_true(Prefs.DEFAULTS.toast)
+		assert.is_true(Prefs.flag("tooltip"))
+		assert.is_true(Prefs.flag("toast"))
+	end)
+
+	it("round-trips the tooltip and toast flags, including false", function()
+		Prefs.setFlag("tooltip", false)
+		assert.is_false(Prefs.flag("tooltip"))
+		Prefs.setFlag("toast", false)
+		assert.is_false(Prefs.flag("toast"))
+	end)
 end)

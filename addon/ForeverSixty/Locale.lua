@@ -158,6 +158,24 @@ local L = {
 	settingsAutoSave = "Save my export when I log out",
 	settingsChat = "Print /fs answers in chat too",
 	settingsReset = "Reset positions",
+
+	-- Outside the window (premium pass, 2026-09-21): item tooltips, the
+	-- level-up toast, the tracker's progress bar, the minimap's tooltip
+	-- and compartment, the keybind, and /fs help. Appended, never
+	-- interleaved with the keys above, so a merge with the window lane's
+	-- own edits to this file costs one diff hunk, not a rebase through
+	-- every key.
+	tooltipPlanned = "Planned for your %s",
+	tooltipUpgrade = "Upgrade for %s: %+.0f by our weights",
+	tooltipNotUpgrade = "Not an upgrade",
+	diagTooltipHookFailed = "The item tooltip hook failed once and turned itself off: %s",
+	toastMessage = "Level %d. Take %s, rank %d of %d.",
+	minimapProgress = "%d of %d points",
+	minimapUpgrades = "%d upgrade(s) waiting",
+	bindingHeader = "Forever Sixty",
+	bindingToggle = "Toggle Forever Sixty",
+	settingsTooltip = "Show gear tips on item tooltips",
+	settingsToast = "Show the level-up toast",
 }
 
 ns.L = L
