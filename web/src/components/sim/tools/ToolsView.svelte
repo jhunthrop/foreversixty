@@ -11,7 +11,7 @@
   import activeBuild from '../../../data/active-build.json';
   import { battlenetStartUrl, fetchMe, type Me } from '../../../lib/account/api';
   import { clearCurrent, readCurrent, type CurrentCharacter } from '../../../lib/current-character';
-  import { CHIP_HEIGHT } from '../../../lib/current-character-layout';
+  import { CHIP_HEIGHT, VIEW_GAP } from '../../../lib/current-character-layout';
   import { createLazyComponent, type LazyLoadState } from '../../../lib/report/lazy-component.svelte';
   import { TOOL_SKELETONS } from '../../../lib/sim/bulk-skeleton';
   import { createBulkStore, type SimTool } from '../../../lib/sim/bulk-store.svelte';
@@ -214,7 +214,7 @@
   {/if}
 {/snippet}
 
-<div class="flex flex-col gap-[22px] md:gap-8" data-testid="sim-tools-view">
+<div class={`flex flex-col ${VIEW_GAP}`} data-testid="sim-tools-view">
   <!-- Fix round 1, Task 4's review (Critical): a reserved, always-present slot -- never
        conditionally rendered -- so its height never changes and nothing below it ever
        shifts, whether the chip has a character to show or not. bulk-skeleton.ts's own

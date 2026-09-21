@@ -193,3 +193,25 @@ export async function runBootstrapRestore(
   if (outcome.clearMessage) loaders.setMessage(null);
   return outcome.restored;
 }
+
+/**
+ * Fix round 1, Important #1: SimView.svelte's `LandingState` shows a signed-in member's own
+ * characters, each pickable through `store.loadStored`, which -- like every `adopt()` call
+ * -- has no per-load generation guard (`LandingState.svelte`'s own comment on its button's
+ * `disabled`). Before this, a background restore's own load raced a player's own pick with
+ * nothing to stop it: `store.phase` (which gates `SourceSwitcher`) is set the moment the
+ * restore's loader starts, but `LandingState` never looks at `store.phase` -- it only looks
+ * at its own separately-tracked `busyKey` prop, which the restore never touched. A player
+ * fast enough to click "Sim it" while the restore's own fetch was still in flight could have
+ * their own pick clobbered by whichever load settled last, then mislabelled `restored: true`
+ * or handed the restore's own refusal message.
+ *
+ * Never a bare string literal in the caller: `<region>/<ruleset>/<slug>` (LandingState's
+ * own `busyKey === character.key` check, `pathOf`) always has exactly two `/`s, so this
+ * sentinel -- with none -- can never collide with a real character key. SimView.svelte's
+ * `restoreFromPointer` holds `landingBusyKey` at this value only once `decideBootstrap`
+ * says a restore is actually happening (`.restored` true), and releases it in a `finally`
+ * around `runBootstrapRestore` -- the same decision that function itself runs, so the two
+ * can never disagree about whether one is in flight.
+ */
+export const RESTORE_BUSY_KEY = 'restoring-current-character';

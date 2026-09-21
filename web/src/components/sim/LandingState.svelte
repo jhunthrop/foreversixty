@@ -50,8 +50,14 @@
   }
 
   /** A link that picks the character in place and still opens in a new tab from a middle
-   *  click -- the same pattern MechanicsMode.svelte's own `follow` uses for an in-place link. */
+   *  click -- the same pattern MechanicsMode.svelte's own `follow` uses for an in-place
+   *  link. Fix round 1, Important #1: while anything is busy (the button's own
+   *  `disabled={busyKey !== null}` below, unreachable through an `<a>`), this falls through
+   *  to the link's own plain navigation instead of picking in place -- an anchor has no
+   *  `disabled`, so without this check the row's link was the one entry point that could
+   *  still start a race in-place, busy or not. */
   function follow(event: MouseEvent, path: CharacterPath): void {
+    if (busyKey !== null) return;
     if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
     event.preventDefault();
     onpick(path);

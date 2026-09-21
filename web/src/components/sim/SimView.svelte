@@ -19,7 +19,7 @@
   import type { Summary } from '../../lib/report/types';
   import { fetchSim, fetchSpecs, listMySims } from '../../lib/sim/api';
   import { codeForCharacterSpec } from '../../lib/sim/character';
-  import { runBootstrapRestore } from '../../lib/sim/character-bootstrap';
+  import { decideBootstrap, RESTORE_BUSY_KEY, runBootstrapRestore } from '../../lib/sim/character-bootstrap';
   import { compareSummaries } from '../../lib/sim/compare';
   import { simCopy } from '../../lib/sim/copy';
   import type { KindFilter } from '../../lib/sim/history';
@@ -63,9 +63,8 @@
 
   // True on /sim/<id> -- a saved sim, `sim-island.ts`'s own `simIdFor` already resolved off
   // the mount's data or the path -- and on the prerendered fixture page, which inlines its
-  // result for Lighthouse. Task 17 renders that view; the character strip, the source
-  // switcher and the empty prompt below are /sim's own UI, not /sim/<id>'s, so they stay out
-  // of the way rather than showing a builder under content that has not landed yet.
+  // result. Task 17 renders that view; the character strip, the source switcher and the
+  // empty prompt below stay out of the way rather than showing a builder under it.
   const hasSavedSimId = untrack(() => simId !== '' || inlineResult !== null);
 
   // Read once, like simId and inlineResult above: these are the page's own one-shot
@@ -144,10 +143,8 @@
   let savedResult = $state<SimResult | null>(untrack(() => inlineResult));
   let savedError = $state<string | null>(null);
 
-  // One-time init reads of savedResult and simId, the same reason bootstrap and store
-  // above are wrapped: this runs once, at setup, never again as either changes. The
-  // .then/.catch callbacks below run later, as ordinary reactive writes -- untrack only
-  // covers the synchronous read that kicks the fetch off.
+  // One-time init read, the same reason bootstrap and store above are wrapped: the
+  // .then/.catch callbacks run later, as ordinary reactive writes.
   untrack(() => {
     if (hasSavedSimId && savedResult === null && simId !== '') {
       void fetchSim(simId)
@@ -198,8 +195,8 @@
     if (comparison !== null) compareViewLazy.load();
   });
 
-  // Set from `onMount`'s own `fetchMe` below -- one fetch, read by the history panel
-  // (Task 17), the landing state and the source switcher's signed-in card (Task 18).
+  // Set from `onMount`'s own `fetchMe` below -- read by the history panel, the landing
+  // state and the source switcher's signed-in card.
   let me = $state<Me | null>(null);
   // The history panel (Task 17), for a signed-in player on plain /sim only.
   const signedIn = $derived(me !== null);
@@ -263,8 +260,7 @@
     }
   });
 
-  // The save form under the results (Task 17): `saveOpen`/`saveTitle` are the inline form,
-  // `savedUrl` replaces it on success. Any new run invalidates whatever it was showing.
+  // The save form: `saveOpen`/`saveTitle` are the inline form, `savedUrl` replaces it on success.
   let saveOpen = $state(false);
   let saveTitle = $state('');
   let saving = $state(false);
@@ -375,11 +371,9 @@
     return mergeSpecRows(specRows).find((row) => row.spec === store.character?.spec) ?? null;
   });
 
-  // False until the player explicitly asks for the switcher -- the strip's "Change source",
-  // the landing state's "Sim something else", or the no-characters card's account link.
-  // Design 4.6: a signed-in member with characters opens on the landing state instead, so
-  // defaulting this to `store.character === null` would show the switcher on every first
-  // paint and the landing state would never appear.
+  // False until the player explicitly asks for the switcher. Design 4.6: a signed-in
+  // member with characters opens on the landing state instead, so defaulting this to
+  // `store.character === null` would show the switcher on every first paint instead.
   let switcherOpen = $state(false);
 
   $effect(() => {
@@ -426,23 +420,6 @@
     window.location.href = battlenetStartUrl(`${window.location.pathname}${window.location.search}`);
   }
 
-  // `store.ready` already ran the URL's own bootstrap; `runBootstrapRestore` (shared with
-  // ToolsView.svelte) only fires the stored-pointer fallback once that settled with nothing.
-  async function restoreFromPointer(): Promise<void> {
-    await store.ready;
-    restored = await runBootstrapRestore(
-      store,
-      {
-        code: bootstrap.code,
-        source: bootstrap.source,
-        ref: bootstrap.ref,
-        hasRequest: bootstrap.request !== null,
-      },
-      readCurrent(),
-      () => store.character !== null,
-    );
-  }
-
   // The landing state's own busy key (Task 18): the row a pick is in flight for, so its
   // button reads "Loading…" while every other row disables rather than reads it too.
   let landingBusyKey = $state<string | null>(null);
@@ -451,6 +428,29 @@
     landingBusyKey = `${path.region}/${path.ruleset}/${path.slug}`;
     await store.loadStored(path);
     landingBusyKey = null;
+  }
+
+  // `store.ready` already ran the URL's own bootstrap; `runBootstrapRestore` (shared with
+  // ToolsView.svelte) only fires the stored-pointer fallback once that settled with
+  // nothing. `landingBusyKey` is held for the same window (fix round 1): `LandingState`
+  // disables its picks off that prop alone, never off `store.phase`, and `adopt()` has no
+  // per-load generation guard, so a fast pick could otherwise race this background load.
+  async function restoreFromPointer(): Promise<void> {
+    await store.ready;
+    const url = {
+      code: bootstrap.code,
+      source: bootstrap.source,
+      ref: bootstrap.ref,
+      hasRequest: bootstrap.request !== null,
+    };
+    const stored = readCurrent();
+    if (!decideBootstrap(url, stored).restored) return;
+    landingBusyKey = RESTORE_BUSY_KEY;
+    try {
+      restored = await runBootstrapRestore(store, url, stored, () => store.character !== null);
+    } finally {
+      landingBusyKey = null;
+    }
   }
 
   // The stale-engine banner describes a *settled* result: while either lane is running,

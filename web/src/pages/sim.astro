@@ -3,7 +3,7 @@
 // Static. The island reads ?source= and ?ref= in the browser, because the page is
 // prerendered and has no request to read.
 import Base from '../layouts/Base.astro';
-import { CHIP_HEIGHT } from '../lib/current-character-layout';
+import { CHIP_HEIGHT, VIEW_GAP } from '../lib/current-character-layout';
 import { simCopy } from '../lib/sim/copy';
 import ScopeNote from '../components/sim/ScopeNote.astro';
 import SimTabs from '../components/sim/SimTabs.astro';
@@ -46,17 +46,28 @@ import SimTabs from '../components/sim/SimTabs.astro';
          before the next block (`gap-[22px]` phone, `md:gap-8` desktop) -- +110px phone,
          +76px desktop, on top of the Round 2 figures above. The chip slot sits first,
          above the LCP card, identically in both this shell and SimView.svelte's own
-         render, so the card's own box stays pixel-identical before and after hydration. -->
+         render, so the card's own box stays pixel-identical before and after hydration.
+
+         Fix round 1, Important #2: the chip slot and the LCP card below it are wrapped in
+         `flex flex-col ${VIEW_GAP}`, the identical gap SimView.svelte's own root uses
+         between the same two elements once hydrated. Without this wrapper the two sat
+         directly against each other (0 gap) here but 22px/32px apart after hydration, so
+         the card -- and everything the island renders below it -- painted higher before
+         hydration than after, even though the min-h total above already budgeted for the
+         gap. The wrapper changes no width, only the vertical offset, so the LCP card's own
+         wrap width (the pixel-identical claim above) is unaffected. -->
     <div id="sim" data-sim-mount class="min-h-[1154px] md:min-h-[607px]">
-      <div class={CHIP_HEIGHT} data-testid="sim-chip-slot"></div>
-      <section class="mx-[18px] flex flex-col gap-3 md:mx-0">
-        <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
-          <div class="border-line bg-card-top rounded-panel flex flex-col gap-3 border p-4">
-            <h2 class="section-title text-[15px]">{simCopy.sourceAddonTitle}</h2>
-            <p class="text-muted text-[13px]">{simCopy.sourceAddonBody}</p>
+      <div class={`flex flex-col ${VIEW_GAP}`}>
+        <div class={CHIP_HEIGHT} data-testid="sim-chip-slot"></div>
+        <section class="mx-[18px] flex flex-col gap-3 md:mx-0">
+          <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+            <div class="border-line bg-card-top rounded-panel flex flex-col gap-3 border p-4">
+              <h2 class="section-title text-[15px]">{simCopy.sourceAddonTitle}</h2>
+              <p class="text-muted text-[13px]">{simCopy.sourceAddonBody}</p>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
       <noscript>
         <p class="text-muted px-[18px] text-[14px] md:px-0">
           The simulator needs JavaScript: it runs the engine in your browser rather than on our servers. The{' '}

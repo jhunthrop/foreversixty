@@ -4,6 +4,7 @@ import type { CharacterPath } from '../characters';
 import type { CurrentCharacter } from '../current-character';
 import {
   decideBootstrap,
+  RESTORE_BUSY_KEY,
   runBootstrapRestore,
   settleRestore,
   sourceIdForInstance,
@@ -303,5 +304,13 @@ describe('runBootstrapRestore', () => {
     expect(restored).toBe(false);
     expect(loaders.setMessage).toHaveBeenCalledWith(null);
     expect(storage.getItem('fs.currentCharacter')).toBeNull();
+  });
+});
+
+describe('RESTORE_BUSY_KEY', () => {
+  // The sentinel must never collide with a real LandingState character key
+  // (`<region>/<ruleset>/<slug>`, always exactly two '/'s).
+  it('carries no "/" — never mistakeable for a character key', () => {
+    expect(RESTORE_BUSY_KEY).not.toContain('/');
   });
 });

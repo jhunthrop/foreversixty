@@ -5,7 +5,7 @@
 // the page's own view chunk resolving), so nothing shifts between the two moments.
 //
 // Static markup with no data in it, so it is safe to {@html} and identical every render.
-import { CHIP_HEIGHT } from '../current-character-layout';
+import { CHIP_HEIGHT, VIEW_GAP } from '../current-character-layout';
 import type { SimTool } from './bulk-store.svelte';
 
 // A third verbatim copy of this one-liner (already duplicated between report/skeleton.ts and
@@ -27,11 +27,20 @@ const comboRow = (): string =>
   `${block('h-3 w-4')}${block('h-3 w-40')}${block('ml-auto h-3 w-14')}${block('ml-auto h-3 w-12')}${block('ml-auto h-3 w-8')}` +
   '</li>';
 
+// Fix round 1, Important #2: the inner, visible wrapper uses `VIEW_GAP`, not an
+// independent skeleton-only gap -- it is what stacks against the chip slot below, and
+// `ToolsView.svelte`'s own root uses that exact gap between its chip slot and everything
+// after it. A different gap here would still reserve the right total height (the min-h
+// budget covers that), but it would paint the strip/grid/run-bar block at the wrong
+// vertical offset relative to the chip for the whole window this skeleton is visible --
+// both as gear.astro's own pre-hydration markup and as ToolsView.svelte's own lazy
+// fallback. The *outer* wrapper's gap (between the sr-only status line and this block)
+// is untouched: that text has no visible size, so its gap paints nothing.
 const shell = (label: string, body: string): string =>
   [
     `<div class="flex flex-col gap-4" aria-busy="true">`,
     `<p class="sr-only" role="status">${label}</p>`,
-    '<div aria-hidden="true" class="flex flex-col gap-4">',
+    `<div aria-hidden="true" class="flex flex-col ${VIEW_GAP}">`,
     body,
     '</div></div>',
   ].join('');

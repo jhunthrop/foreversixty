@@ -9,6 +9,7 @@ import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { getContainerRenderer } from '@astrojs/svelte/container-renderer';
 import { loadRenderers } from 'astro:container';
 import { beforeAll, describe, expect, it } from 'vitest';
+import { VIEW_GAP } from '../lib/current-character-layout';
 import Sim from './sim.astro';
 import Specs from './sim/specs.astro';
 
@@ -65,5 +66,26 @@ describe('the spec support shell', () => {
     for (const selector of OG_HOOKS) expect(html, selector).toContain(selector);
     expect(html).toContain('href="https://foreversixty.gg/sim/specs"');
     expect(html).toContain('data-sim-view="specs"');
+  });
+});
+
+// Fix round 1, Important #2: the static shell used to stack the chip slot directly
+// against the next element (0 gap, a plain non-flex #sim), while SimView.svelte's own
+// hydrated root is `flex flex-col gap-[22px] md:gap-8` -- so everything below the chip
+// painted 22px/32px higher before hydration than after. Both shells now wrap the slot and
+// what follows it in that identical gap, ahead of the chip slot in the rendered markup.
+describe('the chip slot’s gap wrapper', () => {
+  it('sim.astro wraps the chip slot and the LCP card in the view’s own flex gap', async () => {
+    const html = await container.renderToString(Sim);
+    const wrapper = `<div class="flex flex-col ${VIEW_GAP}">`;
+    expect(html).toContain(wrapper);
+    expect(html.indexOf(wrapper)).toBeLessThan(html.indexOf('data-testid="sim-chip-slot"'));
+  });
+
+  it('sim/specs.astro wraps the chip slot and the grids in the identical gap', async () => {
+    const html = await container.renderToString(Specs);
+    const wrapper = `<div class="flex flex-col ${VIEW_GAP}">`;
+    expect(html).toContain(wrapper);
+    expect(html.indexOf(wrapper)).toBeLessThan(html.indexOf('data-testid="sim-chip-slot"'));
   });
 });
