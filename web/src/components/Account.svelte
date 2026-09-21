@@ -11,7 +11,7 @@
     ACCOUNT_FAILED,
     EMAIL_SENT,
     battlenetStartUrl,
-    fetchMe,
+    fetchMeOnce,
     listDevices,
     pairDevice,
     revokeDevice,
@@ -25,6 +25,7 @@
   import { characterHref, rulesetLabel } from '../lib/characters';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
   import MyReports from './MyReports.svelte';
+  import SignInPrompt from './SignInPrompt.svelte';
 
   let { mode, next = '/logs' }: { mode: 'nav' | 'login' | 'account' | 'pairing' | 'reports'; next?: string } =
     $props();
@@ -45,7 +46,7 @@
     status = 'loading';
     error = '';
     try {
-      me = await fetchMe();
+      me = await fetchMeOnce();
       if (me !== null && (mode === 'account' || mode === 'pairing')) devices = await listDevices();
       status = 'ready';
     } catch {
@@ -187,16 +188,27 @@
     </div>
   </div>
 {:else if mode === 'reports'}
-  {#if status === 'loading'}
-    <p class="text-muted text-[14px]">Loading your reports.</p>
-  {:else}
-    <MyReports {signedIn} />
-  {/if}
+  <!-- /logs only, inside that page's own "Your reports" panel, which is why MyReports is
+       told to leave its heading off. The floor is one row tall so the panel does not jump
+       when the session answers. -->
+  <div class="min-h-[88px]">
+    {#if status === 'loading'}
+      <p class="text-muted text-[14px]">Loading your reports.</p>
+    {:else}
+      <MyReports {signedIn} heading={false} />
+    {/if}
+  </div>
 {:else if mode === 'pairing'}
-  <div class="flex flex-col gap-3" data-testid="pairing">
-    {#if !signedIn}
-      <p class="text-[14px]"><a href="/login">Sign in</a> to pair the companion.</p>
+  <!-- Signed out and signed in are the same shape on purpose, a line over a button, so the
+       block is the same height either way and the steps under it never move when the
+       session answers. The floor holds that height while it is still being asked for. -->
+  <div class="flex min-h-[110px] flex-col items-start gap-3" data-testid="pairing">
+    {#if status === 'loading'}
+      <p class="text-muted text-[14px]">Checking whether you are signed in.</p>
+    {:else if !signedIn}
+      <SignInPrompt line="Sign in to pair the companion with your account." testid="pairing-signin" />
     {:else if pairing === null}
+      <p class="text-[14px]">Signed in as {displayName}. Show a code, then type it into the companion.</p>
       <button
         class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-4"
         onclick={onPair}

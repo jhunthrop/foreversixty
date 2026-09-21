@@ -187,6 +187,30 @@ export async function fetchMe(apiBase: string = API_BASE_URL): Promise<Me | null
   }
 }
 
+/**
+ * One `/v1/me` per page, shared by every island that needs to know who is signed in: the
+ * header, the pairing block, the upload form and the reports list are separate islands, and
+ * each asking on its own was four identical requests. A failure is not remembered, so the
+ * next caller asks again rather than inheriting a dead promise.
+ */
+const sessions = new Map<string, Promise<Me | null>>();
+
+export function fetchMeOnce(apiBase: string = API_BASE_URL): Promise<Me | null> {
+  const known = sessions.get(apiBase);
+  if (known !== undefined) return known;
+  const pending = fetchMe(apiBase).catch((error: unknown) => {
+    sessions.delete(apiBase);
+    throw error;
+  });
+  sessions.set(apiBase, pending);
+  return pending;
+}
+
+/** Tests only: a fresh page has no remembered session. */
+export function forgetSession(): void {
+  sessions.clear();
+}
+
 export function battlenetStartUrl(next: string, apiBase: string = API_BASE_URL): string {
   return `${apiBase}/v1/auth/battlenet/start?next=${encodeURIComponent(next)}`;
 }

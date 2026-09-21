@@ -4,7 +4,8 @@ interface Props {
   title: string;
   description: string;
   href: string;
-  status: { label: string; kind: ToolStatusKind };
+  /** Omitted where a card is a way into a section rather than a tool with data of its own. */
+  status?: { label: string; kind: ToolStatusKind };
 }
 const { title, description, href, status } = Astro.props;
 ---
@@ -17,7 +18,7 @@ const { title, description, href, status } = Astro.props;
     <span class="text-gold">
       <slot name="icon" />
     </span>
-    <span class={`pill pill-${status.kind}`}>{status.label}</span>
+    {status && <span class={`pill pill-${status.kind}`}>{status.label}</span>}
   </div>
   <span class="font-display text-[15px] font-bold">{title}</span>
   <span class="text-[13px] leading-snug text-muted">{description}</span>

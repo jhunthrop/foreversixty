@@ -7,6 +7,8 @@ import {
   battlenetStartUrl,
   csrfToken,
   fetchMe,
+  fetchMeOnce,
+  forgetSession,
   listDevices,
   pairDevice,
   requestEmailLink,
@@ -196,5 +198,31 @@ describe('listMyReports', () => {
     );
     const { listMyReports } = await import('./api');
     await expect(listMyReports(1, API)).resolves.toEqual({ rows: [], total: 0, page: 1, per_page: 100 });
+  });
+});
+
+describe('fetchMeOnce', () => {
+  afterEach(() => {
+    forgetSession();
+    vi.unstubAllGlobals();
+  });
+
+  it('asks the API once however many islands want the session', async () => {
+    const fetchMock = vi.fn<GlobalFetch>(async () => envelope(ME));
+    vi.stubGlobal('fetch', fetchMock);
+    const [first, second] = await Promise.all([fetchMeOnce(API), fetchMeOnce(API)]);
+    expect(first).toEqual(second);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not remember a failure, so the next caller asks again', async () => {
+    const fetchMock = vi
+      .fn<GlobalFetch>()
+      .mockRejectedValueOnce(new TypeError('offline'))
+      .mockResolvedValueOnce(envelope(ME));
+    vi.stubGlobal('fetch', fetchMock);
+    await expect(fetchMeOnce(API)).rejects.toBeDefined();
+    await expect(fetchMeOnce(API)).resolves.toMatchObject({ user: { id: 7 } });
+    expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 });
