@@ -63,4 +63,22 @@ describe('CurrentCharacterChip', () => {
     expect(body).toContain(currentCharacterCopy.copyAddonCode);
     expect(body).not.toContain(currentCharacterCopy.copiedAddonCode);
   });
+
+  // Fix round 1 (Critical): the loaded chip and the no-character line must share the exact
+  // same fixed height, in every rendered state, or resolving between them moves content
+  // below the chip. Both classes of CHIP_HEIGHT are asserted directly rather than via a
+  // single combined substring, so a change to either one alone still fails this test.
+  it('gives the loaded chip and the no-character line the identical fixed height', () => {
+    const loaded = render(CurrentCharacterChip, { props: { current, onforget: () => {} } }).body;
+    const empty = render(CurrentCharacterChip, { props: { current: null, onforget: () => {} } }).body;
+    for (const body of [loaded, empty]) {
+      expect(body).toContain('h-[88px]');
+      expect(body).toContain('md:h-11');
+    }
+  });
+
+  it('never wraps the loaded chip (no flex-wrap anywhere in its markup)', () => {
+    const { body } = render(CurrentCharacterChip, { props: { current, onforget: () => {} } });
+    expect(body).not.toContain('flex-wrap');
+  });
 });
