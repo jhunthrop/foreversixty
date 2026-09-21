@@ -12,7 +12,7 @@ describe("the TOC", function()
 		"TalentGlow.lua",
 		"views/ExportView.lua", "views/FollowView.lua",
 		"views/GearView.lua", "views/SettingsView.lua",
-		"Tracker.lua", "Minimap.lua", "Window.lua", "Options.lua",
+		"Tracker.lua", "Minimap.lua", "Window.lua", "Toast.lua", "Options.lua",
 	}
 
 	--- The file lines of the TOC, with the client's backslashes turned

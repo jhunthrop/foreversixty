@@ -26,4 +26,5 @@ views\SettingsView.lua
 Tracker.lua
 Minimap.lua
 Window.lua
+Toast.lua
 Options.lua
