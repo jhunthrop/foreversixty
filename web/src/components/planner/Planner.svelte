@@ -509,11 +509,14 @@
        -- and remain as measured; both predate the Task 21 checkbox change and Task 11's tree
        header change before it, and were not re-measured, since neither feeds this min-height
        and re-deriving them needs a gear-mount scenario outside what the checked-in fixture
-       data covers). Each value here is the measured natural rounded up to the whole pixel --
-       1039.5 becomes 1040, and 1379 is already whole. That is the convention the base reserve
-       followed too: its 792 and 1078 were that build's loaded naturals exactly, leaving zero
-       residual travel. Under costs movement; over costs only dead space, so where the
-       measurement is fractional, round up.
+       data covers).
+
+       The op-character lane (2026-09-21) added one more `<ImportBox>` line -- a "Get the
+       addon" link, same non-read-only mount as Task 16's own addition -- growing the
+       naturals from 1039.5/1379 to 1095.5 at 360px and 1435 from md up (the gearless-desktop
+       and read-only figures below sit outside that mount, comfortably under either reserve
+       either way). Rounded up per this comment's own convention: 1095.5 becomes 1096, 1435
+       is already whole; under costs movement, over costs only dead space.
 
        Two things this comment used to have wrong, both settled by measurement. A reserve that
        is *too large* does not haul the footer up in the failed-to-load state: the min-height
@@ -539,9 +542,10 @@
        The phone figure fell from 1412.5 to 728 (predating this lane) when gear became the
        third tab: the gear panel used to stack under the trees there and now takes its turn
        in the same column. What is reserved for is the tab the planner lands on, which is the
-       first tree, and that tab now measures 1039.5 with the import box and addon-code
-       controls counted in -- both sit above the tab content, so they add the same height
-       whichever tab is open. Opening Gear now measures 1516.5 (was 1143 before this lane) and
+       first tree, and that tab then measured 1039.5 (1095.5 as of the op-character lane
+       above) with the import box and addon-code controls counted in -- both sit above the
+       tab content, so they add the same height whichever tab is open. Opening Gear then
+       measured 1516.5 (was 1143 before this lane) and
        pushes the footer down by the difference, and that is deliberate -- it is a tap rather
        than an unprompted shift, the same kind of movement showing the order strip or opening
        an item picker already makes, and none of it is what CLS measures. Reserving the gear
@@ -580,10 +584,9 @@
 
        A class the build ships no item file for loses the gear panel, and with it the Gear
        tab. On a phone that changes nothing: the tree tab is what is reserved for, and it
-       measures the same 1039.5. On desktop the panel leaves the column and the ready planner
-       comes in at 616 (stale, see above -- still comfortably under the 1379 md reserve
-       either way), which is dead space rather than movement and stays the safe direction to
-       err.
+       measures the same 1095.5 (op-character's own figure, above). On desktop the panel
+       leaves the column and the ready planner comes in at 616 (stale, see above -- still
+       comfortably under the 1435 md reserve either way), dead space rather than movement.
 
        Fork replaces Reset and drops the SharePanel section, but only on the read-only mount --
        the editable toolbar this measures is untouched. The read-only mount is the shorter one,
@@ -593,7 +596,7 @@
        tracked `readOnly` would spend that growth shoving the footer down the moment it is
        pressed. /b/:id carries no CLS budget of its own -- it is server-rendered, so the
        island's whole planner arrives after first paint regardless of what this reserves. -->
-  <div class="flex min-h-[1040px] flex-col gap-[22px] md:min-h-[1379px] md:gap-8">
+  <div class="flex min-h-[1096px] flex-col gap-[22px] md:min-h-[1435px] md:gap-8">
     {#if status === 'loading'}
       <!-- The planner's own panel chrome rather than a bare line on a blank reserve: a
            viewport of empty space reads as a broken page, and the frame reads as the planner
