@@ -47,6 +47,10 @@ func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	mux.HandleFunc("POST /v1/guilds/{id}/invite/rotate", auth.RequireSession(s.rotateInvite))
 	accept := httpx.RateLimitPer(inviteAcceptPerHour, time.Hour, trustedProxyHops)
 	mux.Handle("POST /v1/guilds/invite/{token}/accept", accept(auth.RequireSession(s.acceptInvite)))
+	mux.HandleFunc("POST /v1/guilds/{id}/characters/{region}/{ruleset}/{name}/approve", auth.RequireSession(s.approveCharacter))
+	mux.HandleFunc("DELETE /v1/guilds/{id}/characters/{region}/{ruleset}/{name}", auth.RequireSession(s.removeCharacter))
+	mux.HandleFunc("PATCH /v1/guilds/{id}/members/me", auth.RequireSession(s.patchConsent))
+	mux.HandleFunc("DELETE /v1/guilds/{id}/members/me", auth.RequireSession(s.leaveGuild))
 }
 
 func (s *Service) logger() *slog.Logger {
@@ -65,6 +69,19 @@ func (s *Service) fail(w http.ResponseWriter, r *http.Request, op string, err er
 func guildIDFrom(r *http.Request) (int64, bool) {
 	id, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
 	return id, err == nil && id > 0
+}
+
+// verifiedOfficerOrLeader reports whether the actor is a verified
+// officer or leader of guildID — no moderator bypass, unlike
+// verifiedOfficerOrModerator (settings), matching the spec's own auth
+// column for invite rotation and roster approve.
+func (s *Service) verifiedOfficerOrLeader(r *http.Request, guildID int64) (bool, error) {
+	actor := auth.ActorFrom(r.Context())
+	rank, ok, err := s.Accounts.GuildRank(r.Context(), guildID, actor.UserID)
+	if err != nil || !ok {
+		return false, err
+	}
+	return rank == "officer" || rank == "leader", nil
 }
 
 // decodeJSON decodes r's body into v, capped at maxJSONBody, answering 400

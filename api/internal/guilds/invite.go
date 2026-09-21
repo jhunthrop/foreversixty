@@ -123,12 +123,12 @@ func (s *Service) rotateInvite(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	actor := auth.ActorFrom(r.Context())
-	rank, isMember, err := s.Accounts.GuildRank(r.Context(), guildID, actor.UserID)
+	allowed, err := s.verifiedOfficerOrLeader(r, guildID)
 	if err != nil {
 		s.fail(w, r, "rotate_invite", err, "could not rotate that invite just now")
 		return
 	}
-	if !isMember || (rank != "officer" && rank != "leader") {
+	if !allowed {
 		httpx.WriteError(w, r, http.StatusForbidden, "forbidden",
 			"you must be a verified officer of this guild to rotate its invite link", nil)
 		return
