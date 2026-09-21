@@ -102,11 +102,13 @@ type Character struct {
 
 // Guild is a guild the user belongs to.
 type Guild struct {
-	ID      int64  `json:"id"`
-	Region  string `json:"region"`
-	Ruleset string `json:"ruleset"`
-	Name    string `json:"name"`
-	Rank    string `json:"rank,omitempty"`
+	ID       int64  `json:"id"`
+	Region   string `json:"region"`
+	Ruleset  string `json:"ruleset"`
+	Name     string `json:"name"`
+	Rank     string `json:"rank,omitempty"`
+	Consent  string `json:"consent,omitempty"`
+	Verified bool   `json:"verified"`
 }
 
 // Store is every account read and write. One type rather than one per
@@ -387,12 +389,15 @@ func (s *Store) MemberKeys(ctx context.Context, keys []string) (map[string]bool,
 	return out, rows.Err()
 }
 
-// Guilds lists the guilds an account is a member of.
+// Guilds lists the guilds an account is a member of, most recently
+// active membership first — the "My guild" link in the header reads
+// position [0].
 func (s *Store) Guilds(ctx context.Context, userID int64) ([]Guild, error) {
 	rows, err := s.Pool.Query(ctx,
-		`select g.id, g.region, g.ruleset, g.name, m.rank from guilds g
+		`select g.id, g.region, g.ruleset, g.name, m.rank, m.consent, m.verified_at is not null
+		 from guilds g
 		 join guild_members m on m.guild_id = g.id
-		 where m.user_id = $1 order by g.name`, userID)
+		 where m.user_id = $1 order by m.refreshed_at desc`, userID)
 	if err != nil {
 		return nil, fmt.Errorf("auth: list guilds: %w", err)
 	}
@@ -400,7 +405,7 @@ func (s *Store) Guilds(ctx context.Context, userID int64) ([]Guild, error) {
 	out := []Guild{}
 	for rows.Next() {
 		var g Guild
-		if err := rows.Scan(&g.ID, &g.Region, &g.Ruleset, &g.Name, &g.Rank); err != nil {
+		if err := rows.Scan(&g.ID, &g.Region, &g.Ruleset, &g.Name, &g.Rank, &g.Consent, &g.Verified); err != nil {
 			return nil, fmt.Errorf("auth: list guilds: %w", err)
 		}
 		out = append(out, g)
@@ -408,12 +413,15 @@ func (s *Store) Guilds(ctx context.Context, userID int64) ([]Guild, error) {
 	return out, rows.Err()
 }
 
-// GuildRank reports a user's rank in a guild, and whether they are in it
-// at all. The reports handler uses it for the officer check on PATCH.
+// GuildRank reports a user's rank in a guild, and whether they are a
+// *verified* member at all. reports.mayView/mayEdit read this: an
+// unverified guild_characters row (a bare export, possibly forged) must
+// never grant view or edit rights on a guild-visible report.
 func (s *Store) GuildRank(ctx context.Context, guildID, userID int64) (string, bool, error) {
 	var rank string
 	err := s.Pool.QueryRow(ctx,
-		`select rank from guild_members where guild_id = $1 and user_id = $2`, guildID, userID).Scan(&rank)
+		`select rank from guild_members where guild_id = $1 and user_id = $2 and verified_at is not null`,
+		guildID, userID).Scan(&rank)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return "", false, nil
 	}

@@ -11,6 +11,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"strings"
+	"sync"
 	"testing"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -19,6 +20,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/builds"
 	"github.com/jhunthrop/foreversixty/api/internal/character"
 	"github.com/jhunthrop/foreversixty/api/internal/db"
+	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/trees"
 )
 
@@ -464,5 +466,392 @@ func TestEveryRouteAnswers500WhenTheDatabaseIsGone(t *testing.T) {
 	res.Body.Close()
 	if res.StatusCode != http.StatusInternalServerError {
 		t.Errorf("queue = %d, want 500", res.StatusCode)
+	}
+}
+
+func TestPutExportsSyncsGuildMembershipFromTheGuildSection(t *testing.T) {
+	h := newHarness(t)
+	ctx := context.Background()
+	export := "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=Iron%20Vanguard:1"
+	if err := h.store.PutExports(ctx, h.owner, []Export{
+		{Name: "Baelgrim", Region: "us", Ruleset: "hardcore", Export: export},
+	}); err != nil {
+		t.Fatal(err)
+	}
+	var guildID int64
+	var rank string
+	var rankIndex int
+	if err := h.pool.QueryRow(ctx,
+		`select gc.guild_id, gc.rank, gc.rank_index from guild_characters gc
+		 join guilds g on g.id = gc.guild_id where g.name = 'Iron Vanguard'`).
+		Scan(&guildID, &rank, &rankIndex); err != nil {
+		t.Fatal(err)
+	}
+	if rank != "officer" || rankIndex != 1 {
+		t.Fatalf("rank = %q rankIndex = %d, want officer/1 (default officer_max_rank_index is 1)", rank, rankIndex)
+	}
+	var memberRank string
+	var verified bool
+	if err := h.pool.QueryRow(ctx,
+		`select rank, verified_at is not null from guild_members where guild_id = $1 and user_id = $2`, guildID, h.owner).
+		Scan(&memberRank, &verified); err != nil {
+		t.Fatal(err)
+	}
+	if memberRank != "member" || verified {
+		t.Fatalf("guild_members.rank = %q verified = %v, want member/false (an unverified export never grants derived officer rank)", memberRank, verified)
+	}
+}
+
+func TestPutExportsTwoCharactersOfOneAccountInOneGuildBothAppear(t *testing.T) {
+	h := newHarness(t)
+	ctx := context.Background()
+	if err := h.store.PutExports(ctx, h.owner, []Export{
+		{Name: "Baelgrim", Region: "us", Ruleset: "hardcore",
+			Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=Forever:0"},
+		{Name: "Baelalt", Region: "us", Ruleset: "hardcore",
+			Export: "FS1:1.60.1.69893:mage:gnome:0/0/0:|guild=Forever:5"},
+	}); err != nil {
+		t.Fatal(err)
+	}
+	var n int
+	if err := h.pool.QueryRow(ctx, `select count(*) from guild_characters`).Scan(&n); err != nil {
+		t.Fatal(err)
+	}
+	if n != 2 {
+		t.Fatalf("guild_characters rows = %d, want 2 (one per character)", n)
+	}
+	var guildID int64
+	h.pool.QueryRow(ctx, `select id from guilds where name = 'Forever'`).Scan(&guildID)
+	var rank string
+	var verified bool
+	if err := h.pool.QueryRow(ctx,
+		`select rank, verified_at is not null from guild_members where guild_id = $1 and user_id = $2`, guildID, h.owner).
+		Scan(&rank, &verified); err != nil {
+		t.Fatal(err)
+	}
+	if rank != "member" || verified {
+		t.Fatalf("guild_members.rank = %q verified = %v, want member/false (neither character is verified; the per-character guild_characters rows above already prove both appear correctly - that's the point of this test, not derived rank)", rank, verified)
+	}
+}
+
+func TestPutExportsAnUnguildedAltLeavesTheMainsRowAlone(t *testing.T) {
+	h := newHarness(t)
+	ctx := context.Background()
+	if err := h.store.PutExports(ctx, h.owner, []Export{
+		{Name: "Baelgrim", Region: "us", Ruleset: "hardcore",
+			Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=Forever:0"},
+	}); err != nil {
+		t.Fatal(err)
+	}
+	if err := h.store.PutExports(ctx, h.owner, []Export{
+		{Name: "Baelalt", Region: "us", Ruleset: "hardcore",
+			Export: "FS1:1.60.1.69893:mage:gnome:0/0/0:|professions=mining"},
+	}); err != nil {
+		t.Fatal(err)
+	}
+	var n int
+	if err := h.pool.QueryRow(ctx,
+		`select count(*) from guild_characters where character_key = 'us/hardcore/baelgrim'`).Scan(&n); err != nil {
+		t.Fatal(err)
+	}
+	if n != 1 {
+		t.Fatalf("the main's row should be untouched by the alt's unguilded sync, got %d rows", n)
+	}
+}
+
+func TestPutExportsATransferMovesOnlyThatCharacter(t *testing.T) {
+	h := newHarness(t)
+	ctx := context.Background()
+	if err := h.store.PutExports(ctx, h.owner, []Export{
+		{Name: "Baelgrim", Region: "us", Ruleset: "hardcore",
+			Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=Guild1:0"},
+		{Name: "Baelalt", Region: "us", Ruleset: "hardcore",
+			Export: "FS1:1.60.1.69893:mage:gnome:0/0/0:|guild=Guild1:0"},
+	}); err != nil {
+		t.Fatal(err)
+	}
+	if err := h.store.PutExports(ctx, h.owner, []Export{
+		{Name: "Baelgrim", Region: "us", Ruleset: "hardcore",
+			Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=Guild2:0"},
+	}); err != nil {
+		t.Fatal(err)
+	}
+	var altGuild, mainGuild string
+	h.pool.QueryRow(ctx, `select g.name from guild_characters gc join guilds g on g.id = gc.guild_id
+		where gc.character_key = 'us/hardcore/baelalt'`).Scan(&altGuild)
+	h.pool.QueryRow(ctx, `select g.name from guild_characters gc join guilds g on g.id = gc.guild_id
+		where gc.character_key = 'us/hardcore/baelgrim'`).Scan(&mainGuild)
+	if altGuild != "Guild1" {
+		t.Fatalf("the alt's guild = %q, want Guild1 (untouched)", altGuild)
+	}
+	if mainGuild != "Guild2" {
+		t.Fatalf("the transferred character's guild = %q, want Guild2", mainGuild)
+	}
+	var n int
+	h.pool.QueryRow(ctx, `select count(*) from guild_members where user_id = $1`, h.owner).Scan(&n)
+	if n != 2 {
+		t.Fatalf("guild_members rows for the account = %d, want 2 (one per guild)", n)
+	}
+}
+
+func TestPutExportsAnUnguildedExportRemovesAPreviousGuildRow(t *testing.T) {
+	h := newHarness(t)
+	ctx := context.Background()
+	if err := h.store.PutExports(ctx, h.owner, []Export{
+		{Name: "Baelgrim", Region: "us", Ruleset: "hardcore",
+			Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=Forever:0"},
+	}); err != nil {
+		t.Fatal(err)
+	}
+	if err := h.store.PutExports(ctx, h.owner, []Export{
+		{Name: "Baelgrim", Region: "us", Ruleset: "hardcore",
+			Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|professions=mining"},
+	}); err != nil {
+		t.Fatal(err)
+	}
+	var n int
+	h.pool.QueryRow(ctx, `select count(*) from guild_characters where character_key = 'us/hardcore/baelgrim'`).Scan(&n)
+	if n != 0 {
+		t.Fatal("the character's row should be gone once the export stops naming a guild")
+	}
+	h.pool.QueryRow(ctx, `select count(*) from guild_members where user_id = $1`, h.owner).Scan(&n)
+	if n != 0 {
+		t.Fatal("guild_members should have no row left for this account")
+	}
+}
+
+func TestPutExportsAutoConfirmsAPendingClaimWhenTheGuildMastersExportArrives(t *testing.T) {
+	h := newHarness(t)
+	ctx := context.Background()
+	if err := h.store.PutExports(ctx, h.owner, []Export{
+		{Name: "Officer", Region: "us", Ruleset: "hardcore",
+			Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=Forever:1"},
+	}); err != nil {
+		t.Fatal(err)
+	}
+	var guildID int64
+	h.pool.QueryRow(ctx, `select id from guilds where name = 'Forever'`).Scan(&guildID)
+	if _, err := (&guilds.Store{Pool: h.pool}).Claim(ctx, guildID, h.owner, true); err != nil {
+		t.Fatal(err)
+	}
+	var pendingBy *int64
+	h.pool.QueryRow(ctx, `select claim_pending_by from guilds where id = $1`, guildID).Scan(&pendingBy)
+	if pendingBy == nil {
+		t.Fatal("the officer's claim should be pending before the GM's own export arrives")
+	}
+
+	gm := h.owner + 1
+	if _, err := h.pool.Exec(ctx,
+		`insert into users (id, email) values ($1, 'gm-auto@example.com') on conflict (id) do nothing`, gm); err != nil {
+		t.Fatal(err)
+	}
+	if err := h.store.PutExports(ctx, gm, []Export{
+		{Name: "TheGM", Region: "us", Ruleset: "hardcore",
+			Export: "FS1:1.60.1.69893:paladin:human:0/0/0:|guild=Forever:0"},
+	}); err != nil {
+		t.Fatal(err)
+	}
+	var claimedBy *int64
+	h.pool.QueryRow(ctx, `select claimed_by from guilds where id = $1`, guildID).Scan(&claimedBy)
+	if claimedBy == nil || *claimedBy != h.owner {
+		t.Fatalf("claimed_by = %v, want the originally pending officer %d, auto-confirmed by the GM's export", claimedBy, h.owner)
+	}
+}
+
+func TestPutExportsResolvesGuildsCaseInsensitively(t *testing.T) {
+	h := newHarness(t)
+	ctx := context.Background()
+	if err := h.store.PutExports(ctx, h.owner, []Export{
+		{Name: "Baelgrim", Region: "us", Ruleset: "hardcore",
+			Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=Iron%20Vanguard:0"},
+	}); err != nil {
+		t.Fatal(err)
+	}
+	alt := h.owner + 1
+	if _, err := h.pool.Exec(ctx,
+		`insert into users (id, email) values ($1, 'alt-case@example.com') on conflict (id) do nothing`, alt); err != nil {
+		t.Fatal(err)
+	}
+	if err := h.store.PutExports(ctx, alt, []Export{
+		{Name: "Caseshifter", Region: "us", Ruleset: "hardcore",
+			Export: "FS1:1.60.1.69893:mage:gnome:0/0/0:|guild=IRON%20VANGUARD:5"},
+	}); err != nil {
+		t.Fatal(err)
+	}
+	var n int
+	if err := h.pool.QueryRow(ctx, `select count(*) from guilds where region = 'us' and ruleset = 'hardcore'`).Scan(&n); err != nil {
+		t.Fatal(err)
+	}
+	if n != 1 {
+		t.Fatalf("guilds rows = %d, want 1 (case-insensitive match, not a second decoy guild)", n)
+	}
+	var name string
+	if err := h.pool.QueryRow(ctx, `select name from guilds where region = 'us' and ruleset = 'hardcore'`).Scan(&name); err != nil {
+		t.Fatal(err)
+	}
+	if name != "Iron Vanguard" {
+		t.Fatalf("name = %q, want the first writer's casing, Iron Vanguard", name)
+	}
+}
+
+func TestPutExportsRejectsAnOutOfRangeRankIndexAsANoOpNotAnAbort(t *testing.T) {
+	h := newHarness(t)
+	ctx := context.Background()
+	err := h.store.PutExports(ctx, h.owner, []Export{
+		{Name: "Baelgrim", Region: "us", Ruleset: "hardcore",
+			Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=Overflow:99999"},
+	})
+	if err != nil {
+		t.Fatalf("an out-of-range rank index must be a silent no-op, not a batch-aborting error: %v", err)
+	}
+	var n int
+	if err := h.pool.QueryRow(ctx, `select count(*) from guild_characters where character_key = 'us/hardcore/baelgrim'`).Scan(&n); err != nil {
+		t.Fatal(err)
+	}
+	if n != 0 {
+		t.Fatal("no guild_characters row should have been created for the out-of-range rank")
+	}
+	if err := h.pool.QueryRow(ctx, `select count(*) from guilds where name = 'Overflow'`).Scan(&n); err != nil {
+		t.Fatal(err)
+	}
+	if n != 0 {
+		t.Fatal("the guild itself should never have been created from invalid data")
+	}
+}
+
+func TestPutExportsContinuesTheBatchPastOneBadCharacter(t *testing.T) {
+	h := newHarness(t)
+	ctx := context.Background()
+	if err := h.store.PutExports(ctx, h.owner, []Export{
+		{Name: "BadOne", Region: "us", Ruleset: "hardcore",
+			Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=Overflow:99999"},
+		{Name: "GoodTwo", Region: "us", Ruleset: "hardcore",
+			Export: "FS1:1.60.1.69893:mage:gnome:0/0/0:|guild=RealGuild:0"},
+	}); err != nil {
+		t.Fatal(err)
+	}
+	var n int
+	if err := h.pool.QueryRow(ctx, `select count(*) from guild_characters where character_key = 'us/hardcore/goodtwo'`).Scan(&n); err != nil {
+		t.Fatal(err)
+	}
+	if n != 1 {
+		t.Fatal("the second, valid character in the same batch must still sync, even though the first was invalid")
+	}
+}
+
+func TestConcurrentPutExportsAndApproveDoNotLoseAWrite(t *testing.T) {
+	h := newHarness(t)
+	ctx := context.Background()
+	if err := h.store.PutExports(ctx, h.owner, []Export{
+		{Name: "RaceMain", Region: "us", Ruleset: "hardcore",
+			Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=RaceGuild:5"},
+	}); err != nil {
+		t.Fatal(err)
+	}
+	var gid int64
+	if err := h.pool.QueryRow(ctx, `select id from guilds where name = 'RaceGuild'`).Scan(&gid); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := h.pool.Exec(ctx,
+		`insert into guild_characters (guild_id, character_key, user_id, rank) values ($1, 'us/hardcore/racealt', $2, 'member')`,
+		gid, h.owner); err != nil {
+		t.Fatal(err)
+	}
+	guildStore := &guilds.Store{Pool: h.pool}
+
+	var wg sync.WaitGroup
+	var err1, err2 error
+	wg.Add(2)
+	go func() {
+		defer wg.Done()
+		err1 = h.store.PutExports(ctx, h.owner, []Export{
+			{Name: "RaceMain", Region: "us", Ruleset: "hardcore",
+				Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=RaceGuild:5"},
+		})
+	}()
+	go func() {
+		defer wg.Done()
+		err2 = guildStore.ApproveCharacter(ctx, gid, "us/hardcore/racealt")
+	}()
+	wg.Wait()
+	if err1 != nil {
+		t.Fatalf("concurrent PutExports: %v", err1)
+	}
+	if err2 != nil {
+		t.Fatalf("concurrent ApproveCharacter: %v", err2)
+	}
+
+	// The advisory lock in RecomputeMembership serialises the two racing
+	// recomputes; the final guild_members row must reflect BOTH
+	// guild_characters rows correctly, not a lost update from one racing
+	// past the other's stale snapshot.
+	var rank string
+	var verified bool
+	if err := h.pool.QueryRow(ctx,
+		`select rank, verified_at is not null from guild_members where guild_id = $1 and user_id = $2`,
+		gid, h.owner).Scan(&rank, &verified); err != nil {
+		t.Fatal(err)
+	}
+	if !verified {
+		t.Fatal("the approved character's verification must not have been lost to the race")
+	}
+}
+
+// TestPutExportsOppositeTransfersDoNotDeadlock is E's regression test
+// (2026-09-21 second security review response): two accounts, each
+// transferring a character between the same two guilds in opposite
+// directions at the same time, must never deadlock on the guilds'
+// advisory locks - LockGuilds's fixed ascending order rules that out.
+// Before the fix, each transaction locked its own "new" guild first and
+// could block forever waiting for the other's "old" guild; Postgres's
+// own deadlock detector would eventually abort one side with an error,
+// which this test would catch as a non-nil err.
+func TestPutExportsOppositeTransfersDoNotDeadlock(t *testing.T) {
+	h := newHarness(t)
+	ctx := context.Background()
+
+	userB := h.owner + 1
+	if _, err := h.pool.Exec(ctx,
+		`insert into users (id, email) values ($1, 'deadlock-b@example.com') on conflict (id) do nothing`, userB); err != nil {
+		t.Fatal(err)
+	}
+
+	if err := h.store.PutExports(ctx, h.owner, []Export{
+		{Name: "DeadlockA", Region: "us", Ruleset: "hardcore",
+			Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=DeadlockOne:0"},
+	}); err != nil {
+		t.Fatal(err)
+	}
+	if err := h.store.PutExports(ctx, userB, []Export{
+		{Name: "DeadlockB", Region: "us", Ruleset: "hardcore",
+			Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=DeadlockTwo:0"},
+	}); err != nil {
+		t.Fatal(err)
+	}
+
+	var wg sync.WaitGroup
+	var errA, errB error
+	wg.Add(2)
+	go func() {
+		defer wg.Done()
+		errA = h.store.PutExports(ctx, h.owner, []Export{
+			{Name: "DeadlockA", Region: "us", Ruleset: "hardcore",
+				Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=DeadlockTwo:0"},
+		})
+	}()
+	go func() {
+		defer wg.Done()
+		errB = h.store.PutExports(ctx, userB, []Export{
+			{Name: "DeadlockB", Region: "us", Ruleset: "hardcore",
+				Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=DeadlockOne:0"},
+		})
+	}()
+	wg.Wait()
+
+	if errA != nil {
+		t.Fatalf("transfer DeadlockOne->DeadlockTwo concurrent with the opposite transfer: %v", errA)
+	}
+	if errB != nil {
+		t.Fatalf("transfer DeadlockTwo->DeadlockOne concurrent with the opposite transfer: %v", errB)
 	}
 }
