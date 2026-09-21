@@ -15,4 +15,9 @@ describe('GuildClaim', () => {
     expect(body).toContain('data-testid="guild-claim"');
     expect(body).toContain(guildClaimCopy.loading);
   });
+
+  it('still renders the guild-claim testid unaffected by the reconcile', () => {
+    const { body } = render(GuildClaim, { props: { path: PATH } });
+    expect(body).toContain('data-testid="guild-claim"');
+  });
 });

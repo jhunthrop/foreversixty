@@ -16,11 +16,12 @@
   import {
     claimGuild,
     confirmClaim,
+    contestClaim,
     fetchGuildSettings,
     releaseClaim,
     type GuildSettingsData,
   } from '../lib/guild/api';
-  import { guildClaimCopy } from '../lib/guild/copy';
+  import { guildClaimCopy, guildHomeCopy } from '../lib/guild/copy';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
   import { fetchGuild } from '../lib/rankings/api';
   import SignInPrompt from './SignInPrompt.svelte';
@@ -34,7 +35,7 @@
   let status = $state<'loading' | 'ready' | 'failed'>('loading');
   let error = $state('');
   let busy = $state(false);
-  let justClaimedExpiry = $state<string | undefined>(undefined);
+  let showContestConfirm = $state(false);
 
   /**
    * `fetchMeOnce()` is awaited directly rather than `.catch()`-guarded to null:
@@ -89,6 +90,12 @@
   const eligible = $derived(
     membership !== null && (membership.rank === 'officer' || membership.rank === 'leader'),
   );
+  // Contest is deliberately broader than claim/confirm's officer-or-leader gate above: any
+  // signed-in character in this guild, any rank, may open the contest confirm dialog. The
+  // real API's own eligibility check (contest.go's eligibleClaimRank) is stricter than this
+  // UI gate, so a plain member who goes through anyway sees the API's own honest 403
+  // surfaced verbatim by `run()`'s existing catch-and-display pattern below.
+  const canContest = $derived(membership !== null);
 
   async function run(action: () => Promise<void>): Promise<void> {
     busy = true;
@@ -105,8 +112,7 @@
   const onClaim = (): void =>
     void run(async () => {
       if (guildId === null) return;
-      const result = await claimGuild(guildId);
-      justClaimedExpiry = result.expires_at;
+      await claimGuild(guildId);
       settings = await fetchGuildSettings(guildId);
     });
 
@@ -123,6 +129,14 @@
       await releaseClaim(guildId);
       settings = await fetchGuildSettings(guildId);
     });
+
+  const onContest = (): void =>
+    void run(async () => {
+      if (guildId === null) return;
+      await contestClaim(guildId);
+      showContestConfirm = false;
+      settings = await fetchGuildSettings(guildId);
+    });
 </script>
 
 <div class="flex flex-col gap-4" data-testid="guild-claim">
@@ -132,7 +146,17 @@
   {:else if status === 'failed'}
     <p class="text-[14px]" role="alert" data-testid="guild-claim-error">{error}</p>
   {:else if settings !== null}
-    {#if settings.claimed_by !== null}
+    <section class="flex flex-col gap-2" data-testid="guild-claim-rules">
+      <h2 class="section-title text-[16px]">{guildClaimCopy.rulesHeading}</h2>
+      <ul class="text-muted flex flex-col gap-1 text-[13px]">
+        {#each guildClaimCopy.rules as rule (rule)}
+          <li>{rule}</li>
+        {/each}
+      </ul>
+    </section>
+    {#if settings.claim.state === 'contested'}
+      <p class="text-[14px]" data-testid="guild-claim-state">{guildClaimCopy.contested}</p>
+    {:else if settings.claimed_by !== null}
       <p class="text-[14px]" data-testid="guild-claim-state">
         {settings.claimed_by.battletag === myBattletag
           ? guildClaimCopy.claimedByYou
@@ -148,8 +172,53 @@
           {guildClaimCopy.releaseButton}
         </button>
       {/if}
-    {:else if settings.claim_pending}
-      <p class="text-[14px]" data-testid="guild-claim-state">{guildClaimCopy.pending(justClaimedExpiry)}</p>
+      {#if canContest}
+        {#if !showContestConfirm}
+          <button
+            class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-3"
+            onclick={() => (showContestConfirm = true)}
+            disabled={busy}
+            data-testid="guild-claim-contest-button"
+          >
+            {guildHomeCopy.contestButton}
+          </button>
+        {:else}
+          <div
+            class="border-line-soft flex flex-col gap-3 border p-4"
+            data-testid="guild-claim-contest-confirm"
+          >
+            <ul class="flex flex-col gap-1 text-[13px]">
+              {#each guildHomeCopy.contestRules as rule (rule)}
+                <li>{rule}</li>
+              {/each}
+            </ul>
+            <div class="flex gap-3">
+              <button
+                class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-3"
+                onclick={onContest}
+                disabled={busy}
+                data-testid="guild-claim-contest-confirm-button"
+              >
+                {guildHomeCopy.contestConfirmButton}
+              </button>
+              <button
+                class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-3"
+                onclick={() => {
+                  showContestConfirm = false;
+                  error = '';
+                }}
+                disabled={busy}
+              >
+                {guildHomeCopy.cancel}
+              </button>
+            </div>
+          </div>
+        {/if}
+      {/if}
+    {:else if settings.claim_pending !== null}
+      <p class="text-[14px]" data-testid="guild-claim-state">
+        {guildClaimCopy.pending(settings.claim_pending.expires_at)}
+      </p>
       {#if signedIn && eligible}
         <button
           class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4"
@@ -161,6 +230,49 @@
         </button>
       {:else if signedIn}
         <p class="text-[14px]" data-testid="guild-claim-not-eligible">{guildClaimCopy.notEligible}</p>
+      {/if}
+      {#if canContest}
+        {#if !showContestConfirm}
+          <button
+            class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-3"
+            onclick={() => (showContestConfirm = true)}
+            disabled={busy}
+            data-testid="guild-claim-contest-button"
+          >
+            {guildHomeCopy.contestButton}
+          </button>
+        {:else}
+          <div
+            class="border-line-soft flex flex-col gap-3 border p-4"
+            data-testid="guild-claim-contest-confirm"
+          >
+            <ul class="flex flex-col gap-1 text-[13px]">
+              {#each guildHomeCopy.contestRules as rule (rule)}
+                <li>{rule}</li>
+              {/each}
+            </ul>
+            <div class="flex gap-3">
+              <button
+                class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-3"
+                onclick={onContest}
+                disabled={busy}
+                data-testid="guild-claim-contest-confirm-button"
+              >
+                {guildHomeCopy.contestConfirmButton}
+              </button>
+              <button
+                class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-3"
+                onclick={() => {
+                  showContestConfirm = false;
+                  error = '';
+                }}
+                disabled={busy}
+              >
+                {guildHomeCopy.cancel}
+              </button>
+            </div>
+          </div>
+        {/if}
       {/if}
     {:else}
       <p class="text-[14px]" data-testid="guild-claim-state">{guildClaimCopy.unclaimed}</p>
