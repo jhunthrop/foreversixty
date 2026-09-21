@@ -46,28 +46,41 @@
   );
 </script>
 
+<!-- One column, like Level and Points beside it: caption, then the value row, then the line
+     that qualifies it. "Sim this build" sits IN the value row rather than beside the column,
+     and the bar aligns its columns to the top (SummaryBar.svelte), so this column being one
+     line taller than its neighbours leaves every caption and every value on one baseline. -->
 <div class="flex flex-col gap-1">
   <span class="label text-muted">{simCopy.plannerDpsLabel}</span>
-  {#if gate === 'ask'}
-    <!-- The same 44px the figure occupies, so asking moves nothing. -->
-    <button
-      type="button"
-      class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-3"
-      onclick={onshow}
-      data-testid="planner-dps-show"
-    >
-      {simCopy.plannerDpsShow}
-    </button>
-  {:else}
-    <span
-      class={`tabular font-mono text-[20px] leading-11 ${
-        stale || live.state === 'error' || live.estimate.mean === 0 ? 'text-muted' : 'text-gold'
-      }`}
-      data-testid="planner-dps"
-    >
-      {figure}
-    </span>
-  {/if}
+  <div class="flex items-center gap-4">
+    {#if gate === 'ask'}
+      <!-- The same 44px the figure occupies, so asking moves nothing. -->
+      <button
+        type="button"
+        class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-3"
+        onclick={onshow}
+        data-testid="planner-dps-show"
+      >
+        {simCopy.plannerDpsShow}
+      </button>
+    {:else}
+      <span
+        class={`tabular font-mono text-[20px] leading-11 ${
+          stale || live.state === 'error' || live.estimate.mean === 0 ? 'text-muted' : 'text-gold'
+        }`}
+        data-testid="planner-dps"
+      >
+        {figure}
+      </span>
+    {/if}
+    <!-- min-h-11 at every width, the same as GearPanel.svelte's slot buttons: no other
+         control in this lane shrinks its target on desktop, and a summary-bar row is exactly
+         where a mouse-only "it's fine above 44px on desktop" argument would first break the
+         pattern. -->
+    <a class="label text-nav flex min-h-11 items-center underline" {href} data-testid="planner-sim-link">
+      {simCopy.simThisBuild}
+    </a>
+  </div>
   <!-- Always on the page, at a fixed height, even with nothing to say: the band only exists
        once a run is ready, and removing the line while the next run was pending made the
        whole summary bar one line shorter on every talent click, which moved the trees. -->
@@ -76,10 +89,3 @@
     data-testid="planner-dps-error">{note}</span
   >
 </div>
-
-<!-- min-h-11 at every width, the same as GearPanel.svelte's slot buttons: no other control
-     in this lane shrinks its target on desktop, and a summary-bar row is exactly where a
-     mouse-only "it's fine above 44px on desktop" argument would first break the pattern. -->
-<a class="label text-nav flex min-h-11 items-center underline" {href} data-testid="planner-sim-link">
-  {simCopy.simThisBuild}
-</a>

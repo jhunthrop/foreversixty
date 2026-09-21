@@ -110,3 +110,17 @@ test('a phone is asked before anything runs, and the answer holds for the visit'
   await expect(page.getByTestId('planner-dps-show')).toHaveCount(0);
   await expect(page.getByTestId('planner-dps-error')).toHaveText(/^± \d/, { timeout: 3000 });
 });
+
+// The DPS column is one line taller than its neighbours (the ± line). Centring the bar's
+// columns put its caption and figure above everyone else's.
+test('the DPS caption and figure sit on the same lines as the rest of the summary bar', async ({ page }) => {
+  await page.goto(NEARLY_FINISHED_BUILD);
+  const top = (testid: string): Promise<number> =>
+    page.getByTestId(testid).evaluate((el) => Math.round(el.getBoundingClientRect().top));
+  const bottom = (testid: string): Promise<number> =>
+    page.getByTestId(testid).evaluate((el) => Math.round(el.getBoundingClientRect().bottom));
+  // Same row of the bar on both projects: Points and DPS are neighbours.
+  expect(await top('planner-dps')).toBe(await top('planner-spent'));
+  expect(await bottom('planner-dps')).toBe(await bottom('planner-spent'));
+  expect(await top('planner-sim-link')).toBe(await top('planner-dps'));
+});

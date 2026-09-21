@@ -30,7 +30,7 @@
 </script>
 
 <div
-  class="border-line bg-raised md:rounded-panel sticky top-0 z-20 flex flex-wrap items-center gap-3 border-b px-[18px] py-3 md:static md:gap-5 md:border md:px-5"
+  class="border-line bg-raised md:rounded-panel sticky top-0 z-20 flex flex-wrap items-start gap-3 border-b px-[18px] py-3 md:static md:gap-5 md:border md:px-5"
 >
   <label class="flex flex-col gap-1">
     <span class="label text-muted">Class</span>
