@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import type { CurrentCharacter } from '../current-character';
 import type { LootSource } from './loot';
-import { decideToolsBootstrap, sourceIdForInstance } from './tools-bootstrap';
+import { decideToolsBootstrap, settleToolsRestore, sourceIdForInstance } from './tools-bootstrap';
 
 function stored(source: CurrentCharacter['source'], ref: string): CurrentCharacter {
   return {
@@ -145,5 +145,36 @@ describe('sourceIdForInstance', () => {
 
   it('refuses a slug past the bounded length rather than reaching the compare at all', () => {
     expect(sourceIdForInstance(SOURCES, 'a'.repeat(65))).toBeNull();
+  });
+});
+
+describe('settleToolsRestore', () => {
+  it('is inert for a URL-driven load, whether it succeeded or failed', () => {
+    expect(settleToolsRestore(false, true)).toEqual({
+      clearPointer: false,
+      restored: false,
+      clearMessage: false,
+    });
+    expect(settleToolsRestore(false, false)).toEqual({
+      clearPointer: false,
+      restored: false,
+      clearMessage: false,
+    });
+  });
+
+  it('claims restored only once a restore actually produced a character', () => {
+    expect(settleToolsRestore(true, true)).toEqual({
+      clearPointer: false,
+      restored: true,
+      clearMessage: false,
+    });
+  });
+
+  it('forgets a dead or stale pointer and clears the store’s error, rather than showing "Restored" beside it', () => {
+    expect(settleToolsRestore(true, false)).toEqual({
+      clearPointer: true,
+      restored: false,
+      clearMessage: true,
+    });
   });
 });

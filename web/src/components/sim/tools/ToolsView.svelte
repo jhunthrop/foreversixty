@@ -10,17 +10,22 @@
   import { onMount, untrack } from 'svelte';
   import activeBuild from '../../../data/active-build.json';
   import { battlenetStartUrl, fetchMe, type Me } from '../../../lib/account/api';
-  import { clearCurrent, readCurrent } from '../../../lib/current-character';
-  import { currentCharacterCopy } from '../../../lib/current-character-copy';
-  import { rowLink } from '../../../lib/report/format';
+  import { clearCurrent, readCurrent, type CurrentCharacter } from '../../../lib/current-character';
+  import { CHIP_HEIGHT } from '../../../lib/current-character-layout';
   import { createLazyComponent, type LazyLoadState } from '../../../lib/report/lazy-component.svelte';
   import { TOOL_SKELETONS } from '../../../lib/sim/bulk-skeleton';
   import { createBulkStore, type SimTool } from '../../../lib/sim/bulk-store.svelte';
   import type { Origin } from '../../../lib/sim/candidates';
   import { bulkCopy, simCopy } from '../../../lib/sim/copy';
   import { syncTabHrefs } from '../../../lib/sim/tabs';
-  import { decideToolsBootstrap, sourceIdForInstance } from '../../../lib/sim/tools-bootstrap';
+  import {
+    decideToolsBootstrap,
+    settleToolsRestore,
+    sourceIdForInstance,
+    type ToolsBootstrapDecision,
+  } from '../../../lib/sim/tools-bootstrap';
   import { parseSimState } from '../../../lib/sim/url';
+  import CurrentCharacterChip from '../../CurrentCharacterChip.svelte';
   import CharacterStrip from '../CharacterStrip.svelte';
   import SourceSwitcher from '../SourceSwitcher.svelte';
 
@@ -62,9 +67,16 @@
   let pinApplied = false;
   let instanceApplied = false;
   // True once the load this mount kicked off came from the stored current-character
-  // pointer rather than the URL (Task 4, current-character spec section 1) -- drives the
-  // "Restored your last character. Forget" line above the strip.
+  // pointer rather than the URL, AND that load actually produced a character (fix round 1,
+  // Task 4's review, Important: a dead pointer must not claim "restored") -- passed to the
+  // chip below, which shows "Restored your last character" beside the label only then.
   let restored = $state(false);
+  // The chip's own prop (fix round 1, Critical: the chip, not an ad-hoc row here, is what
+  // shows the current-character pointer -- CurrentCharacterChip.svelte's own header
+  // comment). Refreshed from storage inside the tab-sync effect below, the same moment
+  // every loader has already written it (sources.ts's own `recordCurrentCharacter`, called
+  // before `adopt()` assigns `character`).
+  let pointer = $state<CurrentCharacter | null>(null);
 
   $effect(() => {
     if (store.character !== null) switcherOpen = false;
@@ -76,7 +88,10 @@
   // rewritten to carry the same query its own destination can actually bootstrap from --
   // `?source=&ref=`, or `store.characterCode` (bulk-store.svelte.ts) as the fallback
   // `?code=` every tab now reads (Task 4; `SIM_TABS`' own `supportsCode` is `true` on all
-  // six as of the current-character spec, 2026-09-21).
+  // six as of the current-character spec, 2026-09-21). Also refreshes `pointer` (fix round
+  // 1) from the same trigger: every loader writes the stored pointer before `character` is
+  // assigned, so by the time this effect reacts to that change, `readCurrent()` already
+  // reads what the load just wrote.
   $effect(() => {
     const source = store.character === null ? null : store.character.source;
     // `store.characterCode` costs a talent-index rebuild (bulk-store-request.ts's own
@@ -84,6 +99,7 @@
     // fallback to try -- the same guard SimView.svelte's own effect applies.
     const fallbackCode = source !== null && source.ref === '' ? store.characterCode : null;
     syncTabHrefs(source, fallbackCode);
+    pointer = readCurrent();
   });
 
   /**
@@ -99,9 +115,13 @@
    * the window `adopt()` was written to close for `seedRows`, reopened here for the pin.
    * `phase === 'idle'` is the same signal `adopt()` itself waits for before considering a
    * load "settled".
+   *
+   * Never runs on `/sim/drops` (fix round 1, Minor, Task 4's review): that page's own
+   * instance `$effect`, below, rebuilds `rows` wholesale from `pickedBosses`
+   * (`rowsFromPicks`), which would wipe a row this effect just added.
    */
   $effect(() => {
-    if (pinApplied || store.phase !== 'idle' || store.character === null) return;
+    if (pinApplied || store.phase !== 'idle' || store.character === null || tool === 'drops') return;
     pinApplied = true;
     if (bootstrap.pin === '') return;
     const itemId = Number.parseInt(bootstrap.pin, 10);
@@ -126,6 +146,43 @@
     if (matchId !== null) store.toggleSource(matchId);
   });
 
+  /** `decision.kind`'s own loader, or null for `'none'` -- the one place that maps a
+   *  bootstrap decision onto the store's loaders, so `bootstrapCharacter` below reads as
+   *  "decide, load, settle" rather than a second copy of this switch. */
+  function startLoad(decision: ToolsBootstrapDecision): Promise<void> | null {
+    if (decision.kind === 'code') return store.loadCode(decision.code);
+    if (decision.kind === 'addon') return store.loadAddon(decision.code);
+    if (decision.kind === 'build') return store.loadBuild(decision.id);
+    if (decision.kind === 'fight') return store.loadFight(decision.ref);
+    if (decision.kind === 'stored') return store.loadStored(decision.path);
+    return null;
+  }
+
+  /**
+   * The URL's own bootstrap wins over the stored current-character pointer, which wins
+   * over nothing (Task 4, current-character spec section 1) -- `decideToolsBootstrap` is
+   * the one place that precedence lives, so it is testable without mounting this island.
+   *
+   * Fix round 1, Task 4's review (Important): the load this kicks off is awaited, not
+   * `void`-ed, so `restored` is only ever set once it has actually settled --
+   * `settleToolsRestore` (tools-bootstrap.ts) decides what "settled" means: a restore that
+   * produced no character forgets the pointer and clears the store's own refusal message,
+   * rather than showing "Restored your last character" beside an error for a load the
+   * player never asked for. A URL-driven load keeps today's behaviour on failure.
+   */
+  async function bootstrapCharacter(): Promise<void> {
+    const decision = decideToolsBootstrap(
+      { code: bootstrap.code, source: bootstrap.source, ref: bootstrap.ref },
+      readCurrent(),
+    );
+    const load = startLoad(decision);
+    if (load !== null) await load;
+    const outcome = settleToolsRestore(decision.restored, store.character !== null);
+    restored = outcome.restored;
+    if (outcome.clearPointer) clearCurrent();
+    if (outcome.clearMessage) store.setMessage(null);
+  }
+
   onMount(() => {
     void fetchMe()
       .then((result) => {
@@ -134,19 +191,7 @@
       })
       .catch(() => {});
     void store.loadSpecs();
-    // The URL's own bootstrap wins over the stored current-character pointer, which wins
-    // over nothing (Task 4, current-character spec section 1) -- decideToolsBootstrap is
-    // the one place that precedence lives, so it is testable without mounting this island.
-    const decision = decideToolsBootstrap(
-      { code: bootstrap.code, source: bootstrap.source, ref: bootstrap.ref },
-      readCurrent(),
-    );
-    restored = decision.restored;
-    if (decision.kind === 'code') void store.loadCode(decision.code);
-    else if (decision.kind === 'addon') void store.loadAddon(decision.code);
-    else if (decision.kind === 'build') void store.loadBuild(decision.id);
-    else if (decision.kind === 'fight') void store.loadFight(decision.ref);
-    else if (decision.kind === 'stored') void store.loadStored(decision.path);
+    void bootstrapCharacter();
     return () => store.dispose();
   });
 
@@ -154,8 +199,9 @@
     window.location.href = battlenetStartUrl(`${window.location.pathname}${window.location.search}`);
   }
 
-  function onForgetRestored(): void {
+  function onForgetPointer(): void {
     clearCurrent();
+    pointer = null;
     restored = false;
   }
 
@@ -193,22 +239,13 @@
 {/snippet}
 
 <div class="flex flex-col gap-[22px] md:gap-8" data-testid="sim-tools-view">
-  {#if restored}
-    <p
-      class="text-muted flex min-h-11 items-center gap-3 px-[18px] text-[13px] md:px-0"
-      data-testid="sim-restored-note"
-    >
-      {currentCharacterCopy.restoredNote}
-      <button
-        type="button"
-        class={`${rowLink} text-nav`}
-        onclick={onForgetRestored}
-        data-testid="sim-restored-forget"
-      >
-        {currentCharacterCopy.forget}
-      </button>
-    </p>
-  {/if}
+  <!-- Fix round 1, Task 4's review (Critical): a reserved, always-present slot -- never
+       conditionally rendered -- so its height never changes and nothing below it ever
+       shifts, whether the chip has a character to show or not. bulk-skeleton.ts's own
+       `chipSlot` reserves the identical band before hydration. -->
+  <div class={CHIP_HEIGHT} data-testid="sim-chip-slot">
+    <CurrentCharacterChip current={pointer} {restored} hasOwnPasteBox onforget={onForgetPointer} />
+  </div>
   {#if store.character !== null && !switcherOpen}
     <CharacterStrip
       character={store.character}

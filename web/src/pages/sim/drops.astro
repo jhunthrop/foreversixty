@@ -11,6 +11,12 @@
 // The min-h reservation below is measured (Task 21): the fixture character loaded at 360px
 // and 1280px, sim-tools's own rendered height rounded up -- so the mount swap moves nothing
 // and the page holds its CLS budget, exactly as sim/[id].astro's own comment describes.
+//
+// Raised by the current-character chip's own reserved band (fix round 1, Task 4's review):
+// CHIP_HEIGHT (`h-[88px] md:h-11`) plus the view's own gap before the next block
+// (`gap-[22px]` on phone, `md:gap-8` desktop) -- +110px phone, +76px desktop, on top of
+// the Task 21 figures above. `bulk-skeleton.ts`'s own `chipSlot` reserves the identical
+// band, first, in the skeleton this div also renders.
 import Base from '../../layouts/Base.astro';
 import { bulkCopy, simCopy } from '../../lib/sim/copy';
 import { TOOL_SKELETONS } from '../../lib/sim/bulk-skeleton';
@@ -31,7 +37,7 @@ import SimTabs from '../../components/sim/SimTabs.astro';
     <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="sim-tool-intro">
       {bulkCopy.dropsIntro}
     </p>
-    <div id="sim-tools" data-sim-tool="drops" class="min-h-[2116px] md:min-h-[1459px]">
+    <div id="sim-tools" data-sim-tool="drops" class="min-h-[2226px] md:min-h-[1535px]">
       <Fragment set:html={TOOL_SKELETONS.drops} />
       <noscript>
         <p

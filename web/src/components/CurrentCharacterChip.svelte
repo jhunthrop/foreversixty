@@ -16,10 +16,17 @@
      so the mounting page (the planner) passes the already-built string down and this stays
      a pure render. `copied` has no timer, same idiom as SharePanel.svelte's `copiedFrom`:
      it stands until the character changes underneath it, which a fresh `current` prop
-     already does by remounting this component's state from scratch. -->
+     already does by remounting this component's state from scratch.
+
+     `restored` (fix round 1, Task 4's review): true when the mounting page's own load came
+     from the stored pointer rather than a fresh paste or a URL. The tools island reserves
+     a slot for this chip before hydration (`bulk-skeleton.ts`'s own `chipSlot`) rather than
+     rendering its own ad-hoc restored line, so the "Restored your last character" wording
+     lives here, in the one place every /sim* page's chip already renders. -->
 <script lang="ts">
   import { plannerHrefFor, simHrefFor, type CurrentCharacter } from '../lib/current-character';
   import { currentCharacterCopy } from '../lib/current-character-copy';
+  import { CHIP_HEIGHT } from '../lib/current-character-layout';
   import { classColorVar, rowLink } from '../lib/report/format';
 
   let {
@@ -27,6 +34,7 @@
     onforget,
     hasOwnPasteBox = false,
     addonCode = '',
+    restored = false,
   }: {
     current: CurrentCharacter | null;
     onforget: () => void;
@@ -35,6 +43,10 @@
      *  planner has no build to copy -- the chip then renders no copy-addon link at all,
      *  rather than a link that would fail to copy anything. */
     addonCode?: string;
+    /** True once the mounting page's own load came from the stored pointer rather than
+     *  the URL. Only shown alongside a loaded `current` -- a page that passes this true
+     *  with no character loaded (a dead pointer, say) sees the ordinary empty state. */
+    restored?: boolean;
   } = $props();
 
   let copied = $state(false);
@@ -47,10 +59,6 @@
       copied = false;
     }
   }
-
-  /** Two 44px rows on phone, one on desktop -- the one fixed height both rendered states
-   *  share, so resolving between them never moves anything below the chip. */
-  const CHIP_HEIGHT = 'h-[88px] md:h-11';
 
   /** The 44px hit target (`rowLink`) plus the nav link colour, shared by the three
    *  colour-bearing actions -- planner, simulator, copy addon code -- so the two classes
@@ -68,11 +76,15 @@
   >
     <div class="flex h-full flex-col md:flex-row md:items-center md:gap-3">
       <span
-        class="flex h-11 shrink-0 items-center truncate font-semibold md:h-auto"
-        style:color={classColorVar(current.classSlug)}
+        class="flex h-11 shrink-0 items-center gap-1.5 truncate font-semibold md:h-auto"
         data-testid="current-character-label"
       >
-        {current.label}
+        {#if restored}
+          <span class="text-muted font-normal" data-testid="current-character-restored">
+            {currentCharacterCopy.restoredNote}
+          </span>
+        {/if}
+        <span style:color={classColorVar(current.classSlug)}>{current.label}</span>
       </span>
       <div
         class="flex h-11 flex-nowrap items-center gap-3 overflow-x-auto whitespace-nowrap md:h-auto md:flex-1"

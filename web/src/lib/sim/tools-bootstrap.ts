@@ -91,3 +91,31 @@ export function sourceIdForInstance(sources: readonly LootSource[], slug: string
   if (!isInstanceSlug(slug)) return null;
   return sources.find((source) => source.id.endsWith(`:${slug}`))?.id ?? null;
 }
+
+export interface ToolsRestoreSettlement {
+  /** Whether `clearCurrent()` should run: a restore that settled with no character loaded
+   *  -- a dead or stale pointer, not one worth trying again on the next visit. */
+  clearPointer: boolean;
+  /** The `restored` flag `ToolsView.svelte` should show the chip with. */
+  restored: boolean;
+  /** Whether the store's own `message` should be cleared too, so a first-time-looking
+   *  page is shown rather than an error the player did nothing to cause. */
+  clearMessage: boolean;
+}
+
+/**
+ * What to do once the tools island's own bootstrap load has settled (fix round 1, Task 4's
+ * review, Important: a dead stored pointer was showing "Restored" beside an error and
+ * would be retried forever). A URL-driven load (`wasRestore` false) keeps today's
+ * behaviour on failure -- nothing here is cleared, and the store's own message shows,
+ * exactly as it did before this pointer existed. A load that came from the stored pointer
+ * only claims "restored" once it actually produced a character; one that settled with none
+ * is forgotten (`clearPointer`) and its refusal message cleared (`clearMessage`), since the
+ * player never asked for that specific load and should see the ordinary empty state, not
+ * an error for a pointer they cannot see or act on.
+ */
+export function settleToolsRestore(wasRestore: boolean, characterLoaded: boolean): ToolsRestoreSettlement {
+  if (!wasRestore) return { clearPointer: false, restored: false, clearMessage: false };
+  if (characterLoaded) return { clearPointer: false, restored: true, clearMessage: false };
+  return { clearPointer: true, restored: false, clearMessage: true };
+}

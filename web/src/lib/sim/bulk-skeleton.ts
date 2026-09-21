@@ -5,6 +5,7 @@
 // the page's own view chunk resolving), so nothing shifts between the two moments.
 //
 // Static markup with no data in it, so it is safe to {@html} and identical every render.
+import { CHIP_HEIGHT } from '../current-character-layout';
 import type { SimTool } from './bulk-store.svelte';
 
 // A third verbatim copy of this one-liner (already duplicated between report/skeleton.ts and
@@ -35,6 +36,14 @@ const shell = (label: string, body: string): string =>
     '</div></div>',
   ].join('');
 
+/**
+ * The current-character chip's own reserved band (fix round 1, Task 4's review, Critical):
+ * every tool page opens with this, one shared constant rather than four copies, so its
+ * height can never drift from `CHIP_HEIGHT` -- the same constant `ToolsView.svelte`'s own
+ * always-present slot and `CurrentCharacterChip.svelte` itself render with.
+ */
+const chipSlot = (): string => `<div class="${CHIP_HEIGHT}" data-testid="sim-chip-slot"></div>`;
+
 /** The character strip's reserved band, which every tool page opens with. */
 const strip = (): string =>
   '<div class="bg-raised border-line rounded-panel mx-[18px] flex flex-wrap items-center gap-x-6 gap-y-2 border p-4 md:mx-0">' +
@@ -53,8 +62,8 @@ const table = (count: number): string =>
   `<ul class="mx-[18px] flex flex-col md:mx-0">${Array.from({ length: count }, comboRow).join('')}</ul>`;
 
 export const TOOL_SKELETONS: Record<SimTool, string> = {
-  gear: shell('Loading Top Gear.', [strip(), grid(8), runBar()].join('')),
-  talents: shell('Loading talent compare.', [strip(), grid(3), runBar()].join('')),
-  drops: shell('Loading the Droptimizer.', [strip(), grid(6), runBar()].join('')),
-  weights: shell('Loading stat weights.', [strip(), table(6), runBar()].join('')),
+  gear: shell('Loading Top Gear.', [chipSlot(), strip(), grid(8), runBar()].join('')),
+  talents: shell('Loading talent compare.', [chipSlot(), strip(), grid(3), runBar()].join('')),
+  drops: shell('Loading the Droptimizer.', [chipSlot(), strip(), grid(6), runBar()].join('')),
+  weights: shell('Loading stat weights.', [chipSlot(), strip(), table(6), runBar()].join('')),
 };
