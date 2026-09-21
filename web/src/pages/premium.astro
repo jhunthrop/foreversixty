@@ -8,6 +8,9 @@
 import Base from '../layouts/Base.astro';
 import { premiumCopy } from '../lib/billing/copy';
 import type { Interval } from '../lib/billing/plans';
+import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
+
+const buyLinkClass = `${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4`;
 
 function checkoutHref(plan: 'premium' | 'guild', interval: Interval): string {
   return `/premium/checkout?plan=${plan}&interval=${interval}`;
@@ -60,10 +63,7 @@ function checkoutHref(plan: 'premium' | 'guild', interval: Interval): string {
                   ),
                 )}
               </ul>
-              <a
-                href={checkoutHref(plan, 'monthly')}
-                class="border-line-warm rounded-control text-nav label mt-2 inline-flex min-h-11 w-fit items-center border px-4"
-              >
+              <a href={checkoutHref(plan, 'monthly')} class={`${buyLinkClass} mt-2`}>
                 {premiumCopy.buyLabel(plan, 'monthly')}
               </a>
             </article>
@@ -80,10 +80,7 @@ function checkoutHref(plan: 'premium' | 'guild', interval: Interval): string {
                   ),
                 )}
               </ul>
-              <a
-                href={checkoutHref(plan, 'yearly')}
-                class="border-line-warm rounded-control text-nav label mt-2 inline-flex min-h-11 w-fit items-center border px-4"
-              >
+              <a href={checkoutHref(plan, 'yearly')} class={`${buyLinkClass} mt-2`}>
                 {premiumCopy.buyLabel(plan, 'yearly')}
               </a>
             </article>
