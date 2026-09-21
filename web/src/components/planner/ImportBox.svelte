@@ -5,9 +5,11 @@
 <script lang="ts">
   import { addonCopy } from '../../lib/addon/copy';
   import { importFromAddon, type ImportOutcome } from '../../lib/addon/import';
+  import { currentCharacterCopy } from '../../lib/current-character-copy';
   import type { TalentIndex } from '../../lib/planner/rules';
   import { SECONDARY_BUTTON } from '../../lib/planner/styles';
   import type { Gear } from '../../lib/planner/types';
+  import { rowLink } from '../../lib/report/format';
 
   let {
     talents,
@@ -67,4 +69,9 @@
   {#each notes as note (note)}
     <p class="text-muted text-[13px]" data-testid="import-note">{note}</p>
   {/each}
+  <p class="text-muted text-[13px]">
+    <a href="/addon" class="{rowLink} text-nav" data-testid="import-get-addon"
+      >{currentCharacterCopy.getTheAddon}</a
+    >
+  </p>
 </section>
