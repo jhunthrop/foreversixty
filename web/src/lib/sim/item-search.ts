@@ -55,10 +55,32 @@ export function slotOptions(): { slot: Slot; label: string }[] {
 }
 
 /**
+ * A build's item file carries the client's own internal QA fixtures alongside real items
+ * (dps D26): Slot = Main hand, no name filter, used to list `90 Epic Frost Staff`,
+ * `90 Epic Rogue Dagger` and four more before any real weapon, on a level-60 client where
+ * item level tops out around 92 -- but a ceiling check alone cannot tell those apart from
+ * Atiesh, Greatstaff of the Guardian (also item level 90, and real). What every one of
+ * these 687 fixture rows across every class's item file shares, and no real item ever
+ * does, is a name that opens with its own bare item level: "90 Epic Frost Staff", "63 Green
+ * Rogue Dagger". A real item name is never a number -- that is the one rule this needs, and
+ * it is exact (verified against all nine class files on build 1.60.1.69893: 687 matches,
+ * zero false positives against any shipped item), so there is no reason to also stack an
+ * item-level ceiling or a no-source rule on top of it and risk hiding a real, simply
+ * not-yet-sourced item (loot.json's own header: the re-itemised raid tier is thin by
+ * design, not by bug).
+ */
+const DEV_FIXTURE_NAME = /^\d/;
+
+export function isDevFixtureItem(item: Item): boolean {
+  return DEV_FIXTURE_NAME.test(item.name);
+}
+
+/**
  * The one predicate `searchItems` and `matchCount` both filter on, so the two never drift
  * apart into two different definitions of "matches".
  */
 function matchesQuery(item: Item, query: ItemQuery, ctx: SearchContext): boolean {
+  if (isDevFixtureItem(item)) return false;
   const needle = query.text.trim().toLowerCase();
   if (needle !== '' && !item.name.toLowerCase().includes(needle)) return false;
   if (item.item_level < query.minItemLevel) return false;
@@ -97,4 +119,37 @@ export function searchItems(items: readonly Item[], query: ItemQuery, ctx: Searc
  */
 export function matchCount(items: readonly Item[], query: ItemQuery, ctx: SearchContext): number {
   return items.filter((item) => matchesQuery(item, query, ctx)).length;
+}
+
+export interface NoResultsReason {
+  /** Relaxing only the slot filter finds at least one match: the name is real, it is just
+   *  not equippable in the slot currently filtered. */
+  existsElsewhere: boolean;
+  /** Every match `existsElsewhere` found is two-handed -- the specific, nameable reason an
+   *  off-hand search finds nothing for it (dps D27: Ashkandi is two-handed, so excluding it
+   *  from an off-hand search is correct; the page should say why instead of reading like
+   *  the item does not exist). */
+  twoHanded: boolean;
+}
+
+/**
+ * Why a text search under a slot filter came back empty, when it is worth saying more than
+ * `bulkCopy.searchNoResults` -- checked only once a name is typed and a slot is chosen
+ * (an empty query or "any slot" already explains itself). `searchItems`' own slot filter
+ * (`slotsForItem`) never lists `off_hand` for a two-handed weapon, so re-running the same
+ * query with the slot relaxed is the one call this needs: it reuses `matchesQuery`'s own
+ * rules (fixtures still excluded, `usableOnly` unchanged) rather than a second definition
+ * of "matches" that could drift from `searchItems`'.
+ */
+export function noResultsReason(
+  items: readonly Item[],
+  query: ItemQuery,
+  ctx: SearchContext,
+): NoResultsReason {
+  if (query.text.trim() === '' || query.slot === '') return { existsElsewhere: false, twoHanded: false };
+  const elsewhere = searchItems(items, { ...query, slot: '' }, ctx);
+  return {
+    existsElsewhere: elsewhere.length > 0,
+    twoHanded: elsewhere.length > 0 && elsewhere.every((match) => match.two_hand === true),
+  };
 }

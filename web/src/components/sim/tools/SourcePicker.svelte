@@ -9,10 +9,12 @@
   import { bulkCopy, toolFixCopy } from '../../../lib/sim/copy';
   import { sourceGroupVisibility, triedCount } from '../../../lib/sim/drop-picks';
   import {
+    bossName,
     groupSources,
     isOpen,
     itemsOfSource,
     professionSplit,
+    sourceLabel,
     SOURCE_KIND_LABELS,
     type LootFile,
     type LootSource,
@@ -153,7 +155,7 @@
                   checked={isPicked(source.id)}
                   onchange={() => ontoggle(source.id)}
                 />
-                <span class="flex-1">{source.name}</span>
+                <span class="flex-1">{sourceLabel(source)}</span>
                 {#if (source.bosses ?? []).length > 0}
                   <span class="text-muted text-[12px]">{bulkCopy.sourcesWholeRaid}</span>
                 {/if}
@@ -174,9 +176,11 @@
                     onchange={() => ontoggle(source.id, boss.id)}
                   />
                   <!-- Contract 10.4: "a boss with no name in either database is emitted
-                       with an empty name". The id is the honest stand-in; inventing one is
-                       not. -->
-                  <span class="flex-1">{boss.name === '' ? boss.id : boss.name}</span>
+                       with an empty name". dps D35: the id is not a name a player should
+                       read, so an unresolved boss is named by its zone instead
+                       (`loot.ts`'s `bossName`) -- the one thing both databases agree on,
+                       without inventing a kind ("Chest") neither one states. -->
+                  <span class="flex-1">{bossName(source, boss)}</span>
                   <span class="tabular text-muted font-mono text-[12px]">
                     {triedCount(boss.items, items, known)}
                   </span>

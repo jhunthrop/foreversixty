@@ -15,6 +15,7 @@
 import { dataUrl, loadOptional } from '../planner/load';
 import { bulkCopy } from './copy';
 import { hasOpened, type PhaseRow } from './phase';
+import { poolQualityCopy } from './pool-quality-copy';
 
 export const LOOT_KINDS = ['raid', 'dungeon', 'world', 'crafted', 'rep', 'pvp', 'quest'] as const;
 export type LootKind = (typeof LOOT_KINDS)[number];
@@ -125,6 +126,21 @@ export function isOpen(phases: readonly PhaseRow[], source: LootSource, when: Da
 }
 
 /**
+ * A boss's own name, honest about the gap: contract 10.4 lets a boss neither database
+ * names come through with an empty `name` (`data/pipeline/loot/sources.py`'s own header,
+ * "a boss the fork does not name is emitted with an empty name"). The picker used to fall
+ * back to the raw `<source id>:<npc id>` key in that case (dps D35: a
+ * `dungeon:blackrock-spire:175245` row where a boss name belongs) -- a key is not a name a
+ * player should ever read. This names the one thing both databases DO agree on instead --
+ * which zone it is under -- rather than guessing at what kind of thing an unresolved id is:
+ * the fork carries no game-object table this pipeline reads, so "Chest" or any other kind
+ * would be invented, not resolved.
+ */
+export function bossName(source: LootSource, boss: LootBoss): string {
+  return boss.name === '' ? poolQualityCopy.unnamedSourceIn(source.name) : boss.name;
+}
+
+/**
  * A source or boss id as words -- "Molten Core", "Ragnaros" -- for `Candidate.SourceName`
  * (contract 10.1 A6). The page fills it once, when it builds a drops request; every later
  * read is off the result, never a second join.
@@ -132,9 +148,22 @@ export function isOpen(phases: readonly PhaseRow[], source: LootSource, when: Da
 export function sourceNameOf(file: LootFile, id: string): string {
   for (const source of file.sources) {
     if (source.id === id) return source.name;
-    for (const boss of source.bosses ?? []) if (boss.id === id) return boss.name;
+    for (const boss of source.bosses ?? []) if (boss.id === id) return bossName(source, boss);
   }
   return '';
+}
+
+/**
+ * `source.name`, with its reputation standing appended when it has one (dps D30: the
+ * source picker listed the same faction four times, once per standing tier -- "Brood of
+ * Nozdormu" x4 -- with nothing on the row to tell them apart, though `standing` already
+ * travels on every `rep` source). Every other kind is one row per source already and reads
+ * exactly as named.
+ */
+export function sourceLabel(source: LootSource): string {
+  if (source.kind !== 'rep' || source.standing === undefined) return source.name;
+  const standingLabel = poolQualityCopy.standingLabel[source.standing] ?? source.standing;
+  return poolQualityCopy.sourceWithStanding(source.name, standingLabel);
 }
 
 /**
