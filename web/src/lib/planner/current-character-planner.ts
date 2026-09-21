@@ -14,7 +14,7 @@
 // planner could show at all, so only a 'code' or 'addon' pointer -- both an FS1 string --
 // can ever restore here, fed through the exact path `?code=` already takes.
 import { addonCodeFor } from '../addon/build-code';
-import { decodeFS1 } from './fs1';
+import { decodeFS1, type FS1Result } from './fs1';
 import type { TalentIndex } from './rules';
 import type { PlannerStore } from './store.svelte';
 import { readCurrent, writeCurrent, type CurrentCharacter } from '../current-character';
@@ -32,9 +32,14 @@ export function isBarePlannerUrl(search: string): boolean {
 }
 
 export interface PlannerLoadDecision {
-  /** The FS1 code to treat exactly as `?code=` would: `decodeFS1` reads it the same way,
-   *  whichever source it came from. `null` means nothing to decode -- a fresh, empty build. */
+  /** The FS1 code to treat exactly as `?code=` would, whichever source it came from. `null`
+   *  means nothing to decode -- a fresh, empty build. */
   codeParam: string | null;
+  /** `decodeFS1(codeParam)`, decoded once here rather than a second time by the caller --
+   *  the restore path already has to decode `stored.ref` to know whether it is dead, so
+   *  this hands that same result back instead of making `Planner.svelte` redo it. `null`
+   *  exactly when `codeParam` is `null`. */
+  decoded: FS1Result | null;
   /** True when `codeParam` came from the stored pointer rather than the URL -- the caller's
    *  chip shows "Restored your last character" only then. */
   restored: boolean;
@@ -73,26 +78,43 @@ export function decidePlannerLoad(
   stored: CurrentCharacter | null,
 ): PlannerLoadDecision {
   const initialPointer = standalone ? stored : null;
-  if (urlCode !== null)
-    return { codeParam: urlCode, restored: false, deadPointer: false, pointer: initialPointer };
+  if (urlCode !== null) {
+    return {
+      codeParam: urlCode,
+      decoded: decodeFS1(urlCode),
+      restored: false,
+      deadPointer: false,
+      pointer: initialPointer,
+    };
+  }
   const eligible = standalone && !hasRecord && isBare && stored !== null;
   const restorable = eligible && (stored.source === 'code' || stored.source === 'addon');
-  if (!restorable || stored === null) {
-    return { codeParam: null, restored: false, deadPointer: false, pointer: initialPointer };
-  }
+  const notRestoring = {
+    codeParam: null,
+    decoded: null,
+    restored: false,
+    deadPointer: false,
+    pointer: initialPointer,
+  };
+  if (!restorable || stored === null) return notRestoring;
   const decoded = decodeFS1(stored.ref);
   return decoded.ok
-    ? { codeParam: stored.ref, restored: true, deadPointer: false, pointer: initialPointer }
-    : { codeParam: null, restored: false, deadPointer: true, pointer: null };
+    ? { codeParam: stored.ref, decoded, restored: true, deadPointer: false, pointer: initialPointer }
+    : { codeParam: null, decoded: null, restored: false, deadPointer: true, pointer: null };
 }
 
 /**
- * The label a planner load writes to the pointer: the build's own title when it has one
- * (a saved build, `/b/:id`), else the class's display name, joined with the spec label once
- * the spec is derivable from the loaded talent data (`specOf` then `specLabel`, the same
- * two helpers `current-character-bridge.ts` reads a `SimCharacter`'s spec with) --
- * otherwise the class name alone. `className` is the caller's own `store.classRow.name`:
- * this module has no reference data of its own to look it up from a slug.
+ * The label a planner load writes to the pointer. `specLabel` already names the class
+ * ("Fury Warrior"), so it is never joined with `className` a second time -- that redundant
+ * join was fix round 1's Important finding. Four branches:
+ *  - a title and a derivable spec: `"<title> · <specLabel>"`, the spec's own
+ *    "Simfury · Fury Warrior" shape (`current-character-bridge.ts`'s `recordCurrentCharacter`);
+ *  - a title, no derivable spec: the title alone;
+ *  - no title, a derivable spec: `specLabel` alone ("Fury Warrior");
+ *  - neither: `className` alone (the caller's own `store.classRow.name` -- this module has
+ *    no reference data of its own to look one up from a slug).
+ * The spec is derivable once `talentIndex` has loaded (`specOf` then `specLabel`, the same
+ * two helpers the sim side reads a `SimCharacter`'s spec with).
  */
 export function labelForPlannerLoad(
   buildTitle: string | undefined,
@@ -100,9 +122,10 @@ export function labelForPlannerLoad(
   talentIndex: TalentIndex | null,
   order: readonly number[],
 ): string {
-  if (buildTitle !== undefined && buildTitle.trim() !== '') return buildTitle;
-  if (talentIndex === null) return className;
-  return `${className} · ${specLabel(specOf(talentIndex, [...order]))}`;
+  const title = buildTitle !== undefined && buildTitle.trim() !== '' ? buildTitle : null;
+  const spec = talentIndex === null ? null : specLabel(specOf(talentIndex, [...order]));
+  if (title !== null && spec !== null) return `${title} · ${spec}`;
+  return title ?? spec ?? className;
 }
 
 /**

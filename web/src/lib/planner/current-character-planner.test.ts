@@ -35,6 +35,8 @@ function stored(source: CurrentCharacter['source'], ref: string): CurrentCharact
 }
 
 const GOOD_CODE = 'FS1:1:warrior:orc:0/5530515/0:';
+const GOOD_DECODED = decodeFS1(GOOD_CODE);
+const OTHER_DECODED = decodeFS1('FS1:1:warrior:orc:1:');
 
 describe('isBarePlannerUrl', () => {
   it('is true for an empty query', () => {
@@ -57,6 +59,7 @@ describe('decidePlannerLoad', () => {
     const decision = decidePlannerLoad(GOOD_CODE, true, false, true, pointer);
     expect(decision).toEqual<PlannerLoadDecision>({
       codeParam: GOOD_CODE,
+      decoded: GOOD_DECODED,
       restored: false,
       deadPointer: false,
       pointer,
@@ -68,6 +71,7 @@ describe('decidePlannerLoad', () => {
     const decision = decidePlannerLoad(null, true, false, true, pointer);
     expect(decision).toEqual<PlannerLoadDecision>({
       codeParam: GOOD_CODE,
+      decoded: GOOD_DECODED,
       restored: true,
       deadPointer: false,
       pointer,
@@ -79,6 +83,7 @@ describe('decidePlannerLoad', () => {
     const decision = decidePlannerLoad(null, true, false, true, pointer);
     expect(decision).toEqual<PlannerLoadDecision>({
       codeParam: GOOD_CODE,
+      decoded: GOOD_DECODED,
       restored: true,
       deadPointer: false,
       pointer,
@@ -90,6 +95,7 @@ describe('decidePlannerLoad', () => {
     const decision = decidePlannerLoad(null, true, false, true, pointer);
     expect(decision).toEqual<PlannerLoadDecision>({
       codeParam: null,
+      decoded: null,
       restored: false,
       deadPointer: false,
       pointer,
@@ -100,6 +106,7 @@ describe('decidePlannerLoad', () => {
     const fight = stored('fight', 'abc:1');
     expect(decidePlannerLoad(null, true, false, true, fight)).toEqual<PlannerLoadDecision>({
       codeParam: null,
+      decoded: null,
       restored: false,
       deadPointer: false,
       pointer: fight,
@@ -107,6 +114,7 @@ describe('decidePlannerLoad', () => {
     const armory = stored('armory', 'us/normal/simfury');
     expect(decidePlannerLoad(null, true, false, true, armory)).toEqual<PlannerLoadDecision>({
       codeParam: null,
+      decoded: null,
       restored: false,
       deadPointer: false,
       pointer: armory,
@@ -118,6 +126,7 @@ describe('decidePlannerLoad', () => {
     const decision = decidePlannerLoad(null, false, false, true, pointer);
     expect(decision).toEqual<PlannerLoadDecision>({
       codeParam: null,
+      decoded: null,
       restored: false,
       deadPointer: false,
       pointer,
@@ -129,6 +138,7 @@ describe('decidePlannerLoad', () => {
     const decision = decidePlannerLoad(null, true, true, true, pointer);
     expect(decision).toEqual<PlannerLoadDecision>({
       codeParam: null,
+      decoded: null,
       restored: false,
       deadPointer: false,
       pointer,
@@ -139,6 +149,7 @@ describe('decidePlannerLoad', () => {
     const decision = decidePlannerLoad(null, true, false, false, stored('code', GOOD_CODE));
     expect(decision).toEqual<PlannerLoadDecision>({
       codeParam: null,
+      decoded: null,
       restored: false,
       deadPointer: false,
       pointer: null,
@@ -149,6 +160,7 @@ describe('decidePlannerLoad', () => {
     const decision = decidePlannerLoad(null, true, false, true, null);
     expect(decision).toEqual<PlannerLoadDecision>({
       codeParam: null,
+      decoded: null,
       restored: false,
       deadPointer: false,
       pointer: null,
@@ -159,31 +171,46 @@ describe('decidePlannerLoad', () => {
     const decision = decidePlannerLoad(null, true, false, true, stored('code', 'not an fs1 code'));
     expect(decision).toEqual<PlannerLoadDecision>({
       codeParam: null,
+      decoded: null,
       restored: false,
       deadPointer: true,
       pointer: null,
     });
   });
+
+  it('decodes the URL code exactly once, handing the result back rather than making the caller redo it', () => {
+    const decision = decidePlannerLoad('FS1:1:warrior:orc:1:', true, false, true, null);
+    expect(decision.decoded).toEqual(OTHER_DECODED);
+  });
 });
 
 describe('labelForPlannerLoad', () => {
   const index = indexTalents(fixtureTalents as TalentFile);
-  const decoded = decodeFS1(GOOD_CODE);
-  const order = decoded.ok ? orderFromRanks(index, decoded.build.treeRanks).order : [];
+  const order = GOOD_DECODED.ok ? orderFromRanks(index, GOOD_DECODED.build.treeRanks).order : [];
 
-  it('uses the build title when there is one', () => {
-    expect(labelForPlannerLoad('My Fury Build', 'Warrior', index, order)).toBe('My Fury Build');
+  // Fix round 1, Important: specLabel already names the class ("Fury Warrior"), so a title
+  // and a derivable spec join as "<title> · <specLabel>", never "<title> · <className> ·
+  // <specLabel>", and an untitled, spec-derivable load is `specLabel` alone, not
+  // "<className> · <specLabel>".
+  it('joins the title with the spec label when both are present', () => {
+    expect(labelForPlannerLoad('My Fury Build', 'Warrior', index, order)).toBe(
+      'My Fury Build · Fury Warrior',
+    );
   });
 
-  it('ignores a blank title and falls through to the class/spec label', () => {
-    expect(labelForPlannerLoad('   ', 'Warrior', index, order)).toBe('Warrior · Fury Warrior');
+  it('ignores a blank title, same as no title at all', () => {
+    expect(labelForPlannerLoad('   ', 'Warrior', index, order)).toBe('Fury Warrior');
   });
 
-  it('joins the class name with the spec label once talent data has loaded', () => {
-    expect(labelForPlannerLoad(undefined, 'Warrior', index, order)).toBe('Warrior · Fury Warrior');
+  it('is the title alone when the spec is not derivable (no talent data yet)', () => {
+    expect(labelForPlannerLoad('My Fury Build', 'Warrior', null, [])).toBe('My Fury Build');
   });
 
-  it('is the class name alone when talent data has not loaded yet', () => {
+  it('is the spec label alone, with no title and a derivable spec', () => {
+    expect(labelForPlannerLoad(undefined, 'Warrior', index, order)).toBe('Fury Warrior');
+  });
+
+  it('is the class name alone, with no title and no derivable spec', () => {
     expect(labelForPlannerLoad(undefined, 'Warrior', null, [])).toBe('Warrior');
   });
 });
@@ -218,12 +245,25 @@ describe('plannerAddonCode', () => {
     const store = { talentIndex: null } as unknown as Parameters<typeof plannerAddonCode>[0];
     expect(plannerAddonCode(store)).toBe('');
   });
+
+  it('builds the addon export string once talent data has loaded', () => {
+    const index = indexTalents(fixtureTalents as TalentFile);
+    const order = GOOD_DECODED.ok ? orderFromRanks(index, GOOD_DECODED.build.treeRanks).order : [];
+    const store = {
+      talentIndex: index,
+      treeVersion: '1',
+      classSlug: 'warrior',
+      order,
+      gear: {},
+      itemIndex: new Map(),
+    } as unknown as Parameters<typeof plannerAddonCode>[0];
+    expect(plannerAddonCode(store)).toMatch(/^FSB1:1:warrior:/);
+  });
 });
 
 describe('writePlannerPointer', () => {
   const index = indexTalents(fixtureTalents as TalentFile);
-  const decoded = decodeFS1(GOOD_CODE);
-  const order = decoded.ok ? orderFromRanks(index, decoded.build.treeRanks).order : [];
+  const order = GOOD_DECODED.ok ? orderFromRanks(index, GOOD_DECODED.build.treeRanks).order : [];
   const loadedStore = {
     talentIndex: index,
     classRow: { id: 1, slug: 'warrior', name: 'Warrior' },
@@ -234,7 +274,7 @@ describe('writePlannerPointer', () => {
   it('writes and returns the fresh pointer once talent data has loaded, standalone', () => {
     const storage = fakeStorage();
     const result = writePlannerPointer(loadedStore, true, 'code', GOOD_CODE, 'warrior', undefined, storage);
-    expect(result).toMatchObject({ source: 'code', ref: GOOD_CODE, label: 'Warrior · Fury Warrior' });
+    expect(result).toMatchObject({ source: 'code', ref: GOOD_CODE, label: 'Fury Warrior' });
     expect(readCurrent(storage)).toEqual(result);
   });
 

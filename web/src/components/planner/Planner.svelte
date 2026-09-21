@@ -17,7 +17,7 @@
     writePlannerPointer,
   } from '../../lib/planner/current-character-planner';
   import { ranksByTalent } from '../../lib/planner/derive';
-  import { decodeFS1, encodeFS1, orderFromRanks } from '../../lib/planner/fs1';
+  import { encodeFS1, orderFromRanks } from '../../lib/planner/fs1';
   import { createLiveDps } from '../../lib/planner/live-dps.svelte';
   import { isConstrainedDevice, liveGate } from '../../lib/planner/live-gate';
   import {
@@ -88,8 +88,7 @@
     const search = typeof window === 'undefined' ? '' : window.location.search;
     return decidePlannerLoad(urlCode, isBarePlannerUrl(search), record !== null, standalone, readCurrent());
   });
-  const codeParam = plannerLoad.codeParam;
-  const decoded = codeParam === null ? null : decodeFS1(codeParam);
+  const { codeParam, decoded } = plannerLoad;
   let restored = $state(plannerLoad.restored);
   let pointer = $state<CurrentCharacter | null>(plannerLoad.pointer);
   // A dead restored pointer is forgotten, not shown as an error. Runs once, on mount.
@@ -225,11 +224,10 @@
   }
 
   /**
-   * The build's own FS1 code -- the planner's export format, decoded by the same
-   * `decodeFS1` this component reads a code with. Derived once so `simHref` (below) and an
-   * embedder's `oncode` (Top Gear's "add a build") always read the identical encoding of
-   * the identical build, rather than each calling `encodeFS1` with the same arguments a
-   * second time and risking the two drifting apart.
+   * The build's own FS1 code -- the planner's export format. Derived once so `simHref`
+   * (below) and an embedder's `oncode` (Top Gear's "add a build") always read the identical
+   * encoding of the identical build, rather than each calling `encodeFS1` again and risking
+   * the two drifting apart.
    */
   const liveCode = $derived(
     store.talentIndex === null
@@ -771,7 +769,7 @@
           activeBuild={activeBuild.build}
           onimport={(build, pastedCode) => {
             store.loadImported(build);
-            if (decodeFS1(pastedCode).ok) writePointer('addon', pastedCode, build.classSlug);
+            writePointer('addon', pastedCode, build.classSlug);
           }}
         />
       {/if}
