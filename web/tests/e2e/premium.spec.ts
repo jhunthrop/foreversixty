@@ -45,3 +45,18 @@ test('/pricing resolves to /premium', async ({ page }) => {
   await page.goto('/pricing');
   await expect(page).toHaveURL(/\/premium$/);
 });
+
+test('?canceled=1 acknowledges a canceled Stripe Checkout, with zero script requests', async ({ page }) => {
+  const scripts: string[] = [];
+  page.on('request', (r) => {
+    if (r.resourceType() === 'script') scripts.push(r.url());
+  });
+  await page.goto('/premium?canceled=1');
+  await expect(page.getByTestId('premium-canceled-notice')).toContainText(
+    'Checkout was canceled. Nothing was charged.',
+  );
+  expect(scripts).toEqual([]);
+
+  await page.goto('/premium');
+  await expect(page.getByTestId('premium-canceled-notice')).toBeHidden();
+});

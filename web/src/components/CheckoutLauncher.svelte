@@ -32,7 +32,7 @@
     plan: PlanKey;
     interval: Interval;
     guildId?: number;
-    status: 'success' | 'canceled' | null;
+    status: 'success' | null;
   }
 
   const INVALID_LINK_MESSAGE = 'Something is wrong with that link. Start again from the premium page.';
@@ -53,8 +53,7 @@
       rawGuildId !== null && /^[0-9]+$/.test(rawGuildId) ? Number.parseInt(rawGuildId, 10) : undefined;
 
     const rawStatus = params.get('status');
-    const status: 'success' | 'canceled' | null =
-      rawStatus === 'success' || rawStatus === 'canceled' ? rawStatus : null;
+    const status: 'success' | null = rawStatus === 'success' ? rawStatus : null;
 
     if (plan === null || interval === null) return null;
     if (plan === 'guild' && guildId === undefined) return null;

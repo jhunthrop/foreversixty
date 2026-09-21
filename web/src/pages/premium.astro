@@ -6,7 +6,7 @@
 // /premium/checkout, a separate small page that does hydrate (Base.astro's own session
 // contract: a content page carries session=false, /premium/checkout carries session).
 import Base from '../layouts/Base.astro';
-import { premiumCopy } from '../lib/billing/copy';
+import { checkoutCopy, premiumCopy } from '../lib/billing/copy';
 import type { Interval } from '../lib/billing/plans';
 import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
 
@@ -27,6 +27,10 @@ function checkoutHref(plan: 'premium' | 'guild', interval: Interval): string {
     tabindex="-1"
     class="mx-auto flex w-full max-w-[820px] flex-col gap-10 px-[18px] pt-4 pb-16 md:px-12 md:pt-7"
   >
+    <p class="text-[14px]" role="status" data-testid="premium-canceled-notice" hidden>
+      {checkoutCopy.canceled}
+    </p>
+
     <section class="flex flex-col gap-3">
       <h1 class="section-title text-[18px]">{premiumCopy.freeForeverHeading}</h1>
       {premiumCopy.freeForeverBody.map((line) => (
@@ -101,6 +105,19 @@ function checkoutHref(plan: 'premium' | 'guild', interval: Interval): string {
     </section>
   </main>
 
+  <script is:inline>
+    // is:inline, same as Base.astro's own site-wide script: no bundling and no request, so
+    // this page still ships zero client JavaScript files (tests/e2e/premium.spec.ts and
+    // tests/e2e/home.spec.ts both assert this). Plain JavaScript on purpose -- no TypeScript.
+    //
+    // Stripe's cancel_url (docs/superpowers/specs/2026-09-21-entitlements-and-payments-design.md
+    // section 2.2) sends a visitor who backs out of Checkout to this exact page, ?canceled=1,
+    // not to /premium/checkout -- this static page is the only place that can acknowledge it.
+    if (new URLSearchParams(window.location.search).get('canceled') === '1') {
+      const notice = document.querySelector('[data-testid="premium-canceled-notice"]');
+      if (notice) notice.hidden = false;
+    }
+  </script>
   <style slot="head">
     /* Both panels reserve their own layout independently; only visibility toggles, so there
        is no layout shift between them (the coordinator's Lighthouse CLS budget). Yearly is

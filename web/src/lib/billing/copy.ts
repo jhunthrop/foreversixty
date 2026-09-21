@@ -67,6 +67,7 @@ export const premiumCopy = {
 export const checkoutCopy = {
   redirecting: 'Redirecting to secure checkout…',
   signInRequired: 'Sign in to continue.',
+  canceled: 'Checkout was canceled. Nothing was charged.',
   notOpenYet: 'Purchases are not open yet. Check back soon — nothing was charged.',
   guildAlreadyOnPlan: "This guild is already on the plan. Manage its billing from the guild's settings page.",
   genericFailure: 'That did not work; try again.',
