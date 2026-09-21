@@ -585,13 +585,22 @@ remove, settings save, invite rotate, and the claimant's officer-derived edit ri
 other members' reports until a moderator upholds the claim; members keep reading and
 uploading throughout.
 
-**Residual risk, stated plainly:** a contest costs the attacker one linked Battle.net
-account per guild, once every 30 days, and costs the legitimately claimed guild its officer
-tools until a moderator acts. This is deliberately accepted rather than engineered around a
-fourth time - every attempt to distinguish "safe to un-freeze" from "still risky" using
-signal the guild's own claimant or officers can produce has turned out to be producible by
-an attacker who controls that account, so the freeze no longer tries to make that
-distinction at all.
+**Residual risk, stated plainly (corrected by the fifth security review response, below -
+the sentence originally here understated the guild's exposure):** a contest costs the
+attacker one linked Battle.net account, and costs the legitimately claimed guild its
+officer tools until a moderator resolves it. As first shipped, resolving with `uphold`
+imposed no cooldown at all: a fresh Battle.net account could re-contest the instant the
+moderator acted, and since the 30-day rate limit is per account, roughly one new account
+per contest cycle could have kept a legitimately claimed guild frozen for a month
+continuously. The fifth response's fix (below) closes that: an `uphold` now starts a
+30-day, per-guild cooldown during which nobody - not even a fresh account - may contest
+that guild again, unless a moderator explicitly reopens it early. The true bound as of that
+fix: at most one contest-to-resolution cycle's worth of frozen time per 30 days. This is
+deliberately accepted rather than engineered around a fourth time on the freeze rule
+itself - every attempt to distinguish "safe to un-freeze" from "still risky" using signal
+the guild's own claimant or officers can produce has turned out to be producible by an
+attacker who controls that account, so the freeze no longer tries to make that distinction
+at all; the cooldown bounds the *rate* of attempts instead.
 
 The two mechanisms the deleted rule needed, and nothing else used, are gone with it:
 `corroborated()`, `frozen()`, the 14-day `freezeThreshold` constant, and the young-or-
@@ -640,6 +649,34 @@ any user id above 2^31-1. It now splits the id into its high and low 32-bit halv
 into the two-integer lock form, which never collides with the per-guild single-bigint locks
 `LockGuilds`/`RecomputeMembership` take, regardless of numeric value.
 
+#### Fifth amendment, 2026-09-21 (fifth security review response)
+
+A fourth re-review approved the always-freeze invariant itself (verified structurally: it
+no longer depends on any signal the disputed claimant could produce), but found no
+per-guild bound existed on how often a guild could be re-contested after a moderator
+upholds - see the corrected residual-risk paragraph above for the exposure this left.
+
+- **A guild whose most recent resolution is an `uphold` within the last 30 days cannot be
+  contested.** Checked from `guild_claim_resolutions` by guild id alone -
+  `Store.recentlyUpheld` reads the guild's newest `outcome = 'uphold'` row's `resolved_at`,
+  regardless of which account contests next. Answers 409 `conflict` (`ErrGuildRecentlyUpheld`)
+  - the same copy-neutral code every other contest conflict already uses, not a new one.
+- **`POST /v1/guilds/{id}/claim/reopen`** (new) clears the cooldown for that guild once:
+  moderator only, `404` for anyone else (the same hidden-standing pattern
+  `GET /v1/moderation/claims` already uses, checked before the guild id is even parsed), and
+  writes an `Info`-level audit line (`op: "claim_reopen"`). Implemented as
+  `guilds.claim_reopened_at`, set to `now()`; `recentlyUpheld` treats an uphold as cleared
+  only when `claim_reopened_at` is at or after that specific uphold's `resolved_at` - a
+  later, fresh uphold is not retroactively cleared by a stale reopen, so the cooldown
+  re-establishes normally after any subsequent uphold.
+- This is layered under, not instead of, A3's existing permanent per-account bar
+  (`previouslyUpheld`, `ErrContestAlreadyUpheld`): immediately after an uphold, even the
+  account whose contest was just upheld sees the guild-level `ErrGuildRecentlyUpheld` first
+  (it applies to everyone, so it is the more generally useful answer at that exact moment);
+  once the 30-day cooldown has passed or a moderator has reopened it, that same account is
+  still refused, but now specifically by their own permanent bar, while a genuinely fresh
+  account succeeds.
+
 ### 2.5 The invite link
 
 Unchanged mechanics from the first draft (a random 32-byte token, shown once, stored only
@@ -672,8 +709,9 @@ per the existing store style throughout this codebase.
 | `POST /v1/guilds/{id}/claim` | session | — | `{status: "confirmed"\|"pending", expires_at?}` | 403 `forbidden` (no character at rank officer/leader in this guild); 404 `not_found`; 409 `conflict` (already claimed, or already pending) |
 | `POST /v1/guilds/{id}/claim/confirm` | session | — | `{status: "confirmed", claimed_by: {battletag}}` | 403 `forbidden` (no officer/leader character, or same account as the pending claimant); 404 `not_found` (no pending claim, or expired) |
 | `POST /v1/guilds/{id}/claim/release` | session | — | `{status: "released"}` | 403 `forbidden` (not `claimed_by`, not moderator) |
-| `POST /v1/guilds/{id}/claim/contest` (2026-09-21 amendment; hardened by the second amendment) | session, Battle.net identity required, rate-limited per-account (30 days, one open contest) and per-IP (5/hour) | — | `{status: "contested"}` | 403 `forbidden` (no officer/leader-or-rank-0 character, same account as the claimant, or no Battle.net identity); 404 `not_found`; 409 `conflict` (no active claim, already contested, already upheld against this account, or an open contest already exists elsewhere for this account); 429 `rate_limited` |
+| `POST /v1/guilds/{id}/claim/contest` (2026-09-21 amendment; hardened by the second amendment; guild-level cooldown added by the fifth) | session, Battle.net identity required, rate-limited per-account (30 days, one open contest) and per-IP (5/hour) | — | `{status: "contested"}` | 403 `forbidden` (no officer/leader-or-rank-0 character, same account as the claimant, or no Battle.net identity); 404 `not_found`; 409 `conflict` (no active claim, already contested, this guild's claim was upheld within the last 30 days, already upheld against this account, or an open contest already exists elsewhere for this account); 429 `rate_limited` |
 | `POST /v1/guilds/{id}/claim/resolve` (2026-09-21 amendment; records to `guild_claim_resolutions` per the second amendment) | session, moderator only | `{outcome: "uphold"\|"release"\|"transfer"}` | `{status: "resolved", outcome}` | 400 `invalid`; 403 `forbidden` (not a moderator); 404 `not_found`; 409 `conflict` (no contested claim) |
+| `POST /v1/guilds/{id}/claim/reopen` (2026-09-21 fifth amendment) | session, moderator only | — | `{status: "reopened"}` | 404 `not_found` for anyone who is not a moderator (including unauthenticated — the route's existence is not advertised), or no such guild |
 | `GET /v1/guilds/{id}/settings` | session, verified officer/leader or moderator | — | `{default_visibility, officer_max_rank_index, claimed_by, claim_pending, claim: {state, since?, frozen} (`frozen` added by the second amendment), invite: {rotated_at}}` | 403 `forbidden` |
 | `PATCH /v1/guilds/{id}/settings` | session, verified officer/leader or moderator | `{default_visibility?, officer_max_rank_index?}` | updated settings | 400 `invalid` (`default_visibility` must be `public`, `unlisted` or `guild` — never `private` for a guild default); 403 `forbidden`; 409 `claim_contested` (only when the claim is contested AND frozen — second amendment; a moderator bypasses this too) |
 | `POST /v1/guilds/{id}/invite/rotate` | session, verified officer/leader | — | `{token, url, rotated_at}` (token shown once) | 403 `forbidden`; rate-limited; 409 `claim_contested` (contested AND frozen — second amendment) |
@@ -683,7 +721,7 @@ per the existing store style throughout this codebase.
 | `PATCH /v1/guilds/{id}/members/me` | session | `{consent: "roster"\|"gear"\|"gear_bags"}` | updated member row | 400 `invalid`; 404 `not_found` (no membership) |
 | `DELETE /v1/guilds/{id}/members/me` | session | — | `{status: "left"}` (removes every one of the caller's own `guild_characters` rows in this guild) | 404 `not_found` |
 | `GET /v1/guilds/{id}/home` | session, any member (verified or not — §3.2) | — | this week's **verified-or-public-or-own** reports, each carrying `zone` (fourth amendment), character roster with `may_remove` per row (fourth amendment), who-logged (§4.1), `claim: {state, since?, frozen}` (`frozen` is simply `state == "contested"` as of the fourth amendment) | 403 `forbidden` (not a member); 404 `not_found` |
-| `GET /v1/moderation/claims` (2026-09-21 fourth amendment) | session, moderator only | — | `{claims: [{guild, claimant: {battletag, evidence}, contester: {battletag, evidence}, claimed_at, contested_at}], next_cursor?}` where `evidence` is `{rank_index, verified, verified_by?, independent_nights}` | 404 `not_found` for anyone who is not a moderator (including unauthenticated — the route's existence is not advertised); 400 `invalid` (bad cursor) |
+| `GET /v1/moderation/claims` (2026-09-21 fourth amendment; evidence field renamed by the fifth) | session, moderator only | — | `{claims: [{guild, claimant: {battletag, evidence}, contester: {battletag, evidence}, claimed_at, contested_at}], next_cursor?}` where `evidence` is `{rank_index, verified, verified_by?, nights_in_others_reports}` (`nights_in_others_reports`, renamed from `independent_nights` by the fifth amendment: not self-uploaded — it says nothing about who the uploader actually is) | 404 `not_found` for anyone who is not a moderator (including unauthenticated — the route's existence is not advertised); 400 `invalid` (bad cursor) |
 
 Report editing (`api/internal/reports/handler.go`'s `mayEdit`) also observes the contest
 freeze (unconditional as of the fourth amendment): while a guild's claim is contested, the
@@ -984,6 +1022,19 @@ Two access-control-relevant pieces of that response belong here specifically:
   (evidence facts for both sides of every open contest, not just the caller's own guild).
   It answers `404` for a non-moderator specifically so its existence, and the standing it
   requires, is never disclosed the way a `401`/`403` would.
+
+#### Fifth amendment, 2026-09-21 (fifth security review response)
+
+The per-guild contest cooldown and `POST /v1/guilds/{id}/claim/reopen` (full detail in
+§2.4's own fifth amendment, for the same reason the fourth amendment's fix lived there) add
+one more moderator-only, hidden-standing surface alongside `GET /v1/moderation/claims`:
+`reopen` answers `404`, not `403`, for a non-moderator, checked before the guild id itself
+is even parsed. The moderation queue's `evidence.independent_nights` field is renamed to
+`evidence.nights_in_others_reports` - the old name implied more than the fact actually
+proves; read it as "not self-uploaded" only, since it says nothing about who the uploader
+actually is (a squatter's second account can upload a report naming a sockpuppet's
+character just as easily as a genuine third party can, per `VerifyByLogs`'s own accepted
+rule in the fourth amendment above).
 
 ## 4. The web side
 

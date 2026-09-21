@@ -124,3 +124,9 @@ create index if not exists guild_claim_resolutions_guild_contester_idx
 -- guilds_claimed_by_idx already applies to claims.
 create unique index if not exists guilds_claim_contested_by_idx
   on guilds (claim_contested_by) where claim_contested_by is not null;
+
+-- Fifth security review response (2026-09-21): a moderator's
+-- POST .../claim/reopen sets this, clearing the per-guild contest
+-- cooldown (recentlyUpheld) for exactly the uphold(s) resolved at or
+-- before that instant - see the spec's fifth dated amendment in §2.4.
+alter table guilds add column if not exists claim_reopened_at timestamptz;

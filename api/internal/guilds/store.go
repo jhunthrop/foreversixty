@@ -36,8 +36,14 @@ type Guild struct {
 	ClaimRequestedAt      *time.Time
 	ClaimContestedAt      *time.Time
 	ClaimContestedBy      *int64
-	OfficerMaxRankIndex   int
-	InviteTokenRotatedAt  *time.Time
+	// ClaimReopenedAt is set by a moderator's POST .../claim/reopen
+	// (fifth security review response): it clears the per-guild
+	// contest-cooldown recentlyUpheld enforces for exactly the uphold(s)
+	// resolved at or before this instant - a later, fresh uphold is not
+	// retroactively cleared by a stale reopen.
+	ClaimReopenedAt      *time.Time
+	OfficerMaxRankIndex  int
+	InviteTokenRotatedAt *time.Time
 }
 
 // pendingActive reports whether g carries a claim pending within the
@@ -69,11 +75,11 @@ func (s *Store) getGuild(ctx context.Context, id int64) (Guild, error) {
 	var g Guild
 	err := s.Pool.QueryRow(ctx,
 		`select id, region, ruleset, name, default_visibility, claimed_by, claimed_at, claim_pending_by,
-		        claim_requested_at, claim_contested_at, claim_contested_by,
+		        claim_requested_at, claim_contested_at, claim_contested_by, claim_reopened_at,
 		        officer_max_rank_index, invite_token_rotated_at
 		 from guilds where id = $1`, id).
 		Scan(&g.ID, &g.Region, &g.Ruleset, &g.Name, &g.DefaultVisibility, &g.ClaimedBy, &g.ClaimedAt,
-			&g.ClaimPendingBy, &g.ClaimRequestedAt, &g.ClaimContestedAt, &g.ClaimContestedBy,
+			&g.ClaimPendingBy, &g.ClaimRequestedAt, &g.ClaimContestedAt, &g.ClaimContestedBy, &g.ClaimReopenedAt,
 			&g.OfficerMaxRankIndex, &g.InviteTokenRotatedAt)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return Guild{}, ErrNotFound

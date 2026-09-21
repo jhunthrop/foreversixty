@@ -489,3 +489,33 @@ func TestContestClaimSameGuildConcurrentContestersRaceCleanly(t *testing.T) {
 		t.Fatalf("claim_contested_by = %v, want one of the two contesters, not overwritten or lost", contestedBy)
 	}
 }
+
+// TestLockAccountForClaimActivityHandlesAUserIDAboveInt32Max is item 4
+// (fifth security review response): the reviewer's own minor note - an
+// earlier version of lockAccountForClaimActivity cast the user id
+// straight to a single int4 (pg_advisory_xact_lock(0, $1::int)), which
+// Postgres errors "integer out of range" for above 2^31-1. The fix
+// splits the id into its high and low 32-bit halves; this seeds an
+// explicit id above that boundary and proves Claim (which takes the
+// lock via checkClaimRateLimit) no longer errors on it.
+func TestLockAccountForClaimActivityHandlesAUserIDAboveInt32Max(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	ctx := context.Background()
+
+	const bigUserID int64 = 5_000_000_000 // well above 2^31-1 (2147483647)
+	if _, err := pool.Exec(ctx,
+		`insert into users (id, email) values ($1, 'big-user-id@example.com')`, bigUserID); err != nil {
+		t.Fatal(err)
+	}
+	gid := seedGuild(t, pool, "Forever")
+	seedCharacter(t, pool, gid, bigUserID, "us/hardcore/biguserid", "leader", false)
+
+	result, err := s.Claim(ctx, gid, bigUserID, true)
+	if err != nil {
+		t.Fatalf("Claim with a user id above 2^31-1 = %v, want no error (the advisory lock must not overflow)", err)
+	}
+	if result.Status != "confirmed" {
+		t.Fatalf("Claim status = %q, want confirmed", result.Status)
+	}
+}

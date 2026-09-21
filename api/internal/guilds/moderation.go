@@ -27,10 +27,19 @@ const ModerationClaimsPerPage = 20
 // moderator raw signal, never a verdict, since it is the moderator who
 // decides which side is telling the truth.
 type ClaimEvidence struct {
-	RankIndex         *int    `json:"rank_index"`
-	Verified          bool    `json:"verified"`
-	VerifiedBy        *string `json:"verified_by,omitempty"`
-	IndependentNights int     `json:"independent_nights"`
+	RankIndex  *int    `json:"rank_index"`
+	Verified   bool    `json:"verified"`
+	VerifiedBy *string `json:"verified_by,omitempty"`
+	// NightsInOthersReports (fifth security review response - renamed
+	// from independent_nights) is how many distinct raid nights within
+	// 30 days this character appears in a report of this guild's that
+	// it did NOT itself upload. Read it as one input among several, not
+	// a verdict: it says nothing about who the uploader actually is -
+	// a squatter's own second account can upload a report naming a
+	// sockpuppet's character (VerifyByLogs accepts exactly this, see
+	// its own doc comment) - only that the appearance was not
+	// self-reported.
+	NightsInOthersReports int `json:"nights_in_others_reports"`
 }
 
 // ModerationParty is one side of a contested claim as the queue lists it.
@@ -100,7 +109,7 @@ func (s *Store) evidenceFor(ctx context.Context, guildID, userID int64) (ClaimEv
 		where gc.guild_id = $1 and gc.user_id = $2
 		order by (gc.verified_at is not null) desc, gc.rank_index nulls last, gc.refreshed_at desc
 		limit 1
-	`, guildID, userID).Scan(&ev.RankIndex, &ev.Verified, &ev.VerifiedBy, &ev.IndependentNights)
+	`, guildID, userID).Scan(&ev.RankIndex, &ev.Verified, &ev.VerifiedBy, &ev.NightsInOthersReports)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return ClaimEvidence{}, nil
 	}
@@ -169,7 +178,10 @@ func (s *Store) OpenClaims(ctx context.Context, before *moderationCursor) ([]ope
 // concern (item 4, fourth security review response). No RequireSession
 // wrap: an unauthenticated caller hits the same check and the same
 // answer, rather than a 401 that would itself reveal the route needs
-// signing in.
+// signing in. Each side's evidence.nights_in_others_reports (fifth
+// security review response) means only "not self-reported" - it says
+// nothing about who the uploader actually is, so it is one fact among
+// several for a moderator to weigh, never a verdict on its own.
 func (s *Service) moderationClaims(w http.ResponseWriter, r *http.Request) {
 	if !auth.ActorFrom(r.Context()).IsModerator() {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such route", nil)

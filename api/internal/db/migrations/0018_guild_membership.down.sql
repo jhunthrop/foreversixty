@@ -1,4 +1,8 @@
 -- api/internal/db/migrations/0018_guild_membership.down.sql
+-- Fifth security review response additions (2026-09-21), reversed
+-- first, in exact reverse order of the up migration's appended block.
+alter table guilds drop column if exists claim_reopened_at;
+
 -- Third security review response additions (2026-09-21), reversed
 -- first, in exact reverse order of the up migration's appended block.
 drop index if exists guilds_claim_contested_by_idx;

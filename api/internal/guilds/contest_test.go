@@ -207,8 +207,25 @@ func TestContestClaimRefusesARepeatAfterAnUphold(t *testing.T) {
 		t.Fatal("the contester's VERIFIED row must survive the uphold")
 	}
 
+	// Immediately after the uphold, the guild-level cooldown (item 1,
+	// fifth security review response) is what actually fires first -
+	// it applies to anyone, this contester included, and reports the
+	// more generally useful reason at this exact moment.
+	if err := s.ContestClaim(ctx, gid, contester, true); !errors.Is(err, ErrGuildRecentlyUpheld) {
+		t.Fatalf("re-contesting immediately after an uphold = %v, want ErrGuildRecentlyUpheld", err)
+	}
+
+	// Once the guild-level cooldown is past, this account's own
+	// PERMANENT bar (A3, checked independently of the guild-level
+	// cooldown) still refuses them specifically, while a fresh account
+	// would not be.
+	if _, err := pool.Exec(ctx,
+		`update guild_claim_resolutions set resolved_at = now() - interval '31 days'
+		 where guild_id = $1 and outcome = 'uphold'`, gid); err != nil {
+		t.Fatal(err)
+	}
 	if err := s.ContestClaim(ctx, gid, contester, true); !errors.Is(err, ErrContestAlreadyUpheld) {
-		t.Fatalf("re-contesting after an uphold = %v, want ErrContestAlreadyUpheld", err)
+		t.Fatalf("re-contesting after the guild-level cooldown expires = %v, want ErrContestAlreadyUpheld", err)
 	}
 }
 
@@ -580,5 +597,91 @@ func TestAContestFreezesRegardlessOfWhatASquatterManufactures(t *testing.T) {
 	}
 	if !view.Frozen {
 		t.Fatal("a contest must freeze regardless of what the disputed claimant has manufactured in their own guild shell")
+	}
+}
+
+// seedRecentlyUpheldGuild claims a fresh guild, contests it, has a
+// moderator uphold it, then backdates guild_claim_resolutions'
+// resolved_at to daysAgo - item 1's per-guild contest cooldown (fifth
+// security review response) reads that timestamp by guild id alone,
+// regardless of who contests next.
+func seedRecentlyUpheldGuild(t *testing.T, pool *pgxpool.Pool, s *Store, keySuffix string, daysAgo int) int64 {
+	t.Helper()
+	ctx := context.Background()
+	gid := seedGuild(t, pool, "Cooldown"+keySuffix)
+	claimant := seedUser(t, pool, "cooldown-claimant-"+keySuffix+"@example.com")
+	seedCharacter(t, pool, gid, claimant, "us/hardcore/cooldownclaimant"+keySuffix, "leader", false)
+	if _, err := s.Claim(ctx, gid, claimant, true); err != nil {
+		t.Fatal(err)
+	}
+	firstContester := seedUser(t, pool, "cooldown-first-contester-"+keySuffix+"@example.com")
+	seedCharacter(t, pool, gid, firstContester, "us/hardcore/cooldownfirstcontester"+keySuffix, "officer", false)
+	if err := s.ContestClaim(ctx, gid, firstContester, true); err != nil {
+		t.Fatal(err)
+	}
+	moderator := seedUser(t, pool, "cooldown-mod-"+keySuffix+"@example.com")
+	if err := s.ResolveClaim(ctx, gid, moderator, "uphold"); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := pool.Exec(ctx,
+		`update guild_claim_resolutions set resolved_at = now() - ($1::int * interval '1 day')
+		 where guild_id = $2 and outcome = 'uphold'`, daysAgo, gid); err != nil {
+		t.Fatal(err)
+	}
+	return gid
+}
+
+// TestContestClaimRefusesWithinTheGuildUpheldCooldown is item 1 (fifth
+// security review response, MEDIUM): a fresh Battle.net account - not
+// the one whose contest was just upheld - is still refused for 30 days,
+// since the cooldown is checked by guild id alone.
+func TestContestClaimRefusesWithinTheGuildUpheldCooldown(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	ctx := context.Background()
+	gid := seedRecentlyUpheldGuild(t, pool, s, "Within", 5)
+
+	fresh := seedUser(t, pool, "cooldown-fresh-within@example.com")
+	seedCharacter(t, pool, gid, fresh, "us/hardcore/cooldownfreshwithin", "officer", false)
+	if err := s.ContestClaim(ctx, gid, fresh, true); !errors.Is(err, ErrGuildRecentlyUpheld) {
+		t.Fatalf("contesting 5 days after an uphold = %v, want ErrGuildRecentlyUpheld", err)
+	}
+}
+
+// TestContestClaimAllowedAfterTheGuildUpheldCooldownExpires: past 30
+// days, a fresh account may contest normally.
+func TestContestClaimAllowedAfterTheGuildUpheldCooldownExpires(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	ctx := context.Background()
+	gid := seedRecentlyUpheldGuild(t, pool, s, "Expired", 31)
+
+	fresh := seedUser(t, pool, "cooldown-fresh-expired@example.com")
+	seedCharacter(t, pool, gid, fresh, "us/hardcore/cooldownfreshexpired", "officer", false)
+	if err := s.ContestClaim(ctx, gid, fresh, true); err != nil {
+		t.Fatalf("contesting 31 days after an uphold = %v, want no error", err)
+	}
+}
+
+// TestContestClaimAllowedAfterAModeratorReopens: a moderator's
+// POST .../claim/reopen clears the cooldown for that guild once, even
+// while still inside the 30-day window.
+func TestContestClaimAllowedAfterAModeratorReopens(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	ctx := context.Background()
+	gid := seedRecentlyUpheldGuild(t, pool, s, "Reopened", 5)
+
+	fresh := seedUser(t, pool, "cooldown-fresh-reopened@example.com")
+	seedCharacter(t, pool, gid, fresh, "us/hardcore/cooldownfreshreopened", "officer", false)
+	if err := s.ContestClaim(ctx, gid, fresh, true); !errors.Is(err, ErrGuildRecentlyUpheld) {
+		t.Fatalf("contesting 5 days after an uphold, before reopening = %v, want ErrGuildRecentlyUpheld", err)
+	}
+
+	if err := s.ReopenClaimCooldown(ctx, gid); err != nil {
+		t.Fatal(err)
+	}
+	if err := s.ContestClaim(ctx, gid, fresh, true); err != nil {
+		t.Fatalf("contesting after a moderator reopen = %v, want no error", err)
 	}
 }

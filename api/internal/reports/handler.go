@@ -45,10 +45,12 @@ type Accounts interface {
 
 // GuildClaims is the guilds package's freeze hook (D, 2026-09-21 second
 // security review response): whether userID's officer-derived rights
-// over guildID are currently suspended by a contested, uncorroborated
-// claim. *guilds.Store satisfies it. A nil Guilds (as every test that
-// does not care about claim disputes leaves it) makes mayEdit behave
-// exactly as before this hook existed - see its nil check there.
+// over guildID are currently suspended by a contested claim (any
+// contest freezes, unconditionally, as of the fourth security review
+// response - the guild does not need to be "uncorroborated"). *guilds.Store
+// satisfies it. A nil Guilds (as every test that does not care about
+// claim disputes leaves it) makes mayEdit behave exactly as before this
+// hook existed - see its nil check there.
 type GuildClaims interface {
 	FrozenClaimant(ctx context.Context, guildID, userID int64) (bool, error)
 }

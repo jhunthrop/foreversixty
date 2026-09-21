@@ -103,3 +103,19 @@ func TestModerationClaimsListsOpenContestsWithEvidence(t *testing.T) {
 		t.Fatalf("contester evidence = %+v, want unverified", c.Contester.Evidence)
 	}
 }
+
+// TestModerationClaimsRejectsAMalformedCursor is item 4 (fifth
+// security review response): a bad cursor answers 400 invalid, the
+// same shape GET /v1/guilds/{id}/home's own cursor handling already
+// uses, rather than a 500 or a silently-ignored bad value.
+func TestModerationClaimsRejectsAMalformedCursor(t *testing.T) {
+	h := newHTTPHarness(t)
+	moderator := seedUser(t, h.pool, "moderation-bad-cursor@example.com")
+	h.actor = auth.Actor{UserID: moderator, Role: "moderator", Method: "session"}
+
+	res := h.do(http.MethodGet, "/v1/moderation/claims?cursor=not-a-real-cursor", "")
+	res.Body.Close()
+	if res.StatusCode != http.StatusBadRequest {
+		t.Fatalf("a malformed cursor = %d, want 400", res.StatusCode)
+	}
+}

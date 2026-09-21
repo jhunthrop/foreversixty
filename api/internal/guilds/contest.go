@@ -22,7 +22,17 @@ var (
 	ErrContestRateLimited            = errors.New("guilds: only one contest attempt per account every 30 days")
 	ErrAlreadyContestingAnotherGuild = errors.New("guilds: this account already has an open contest on another guild")
 	ErrContestAlreadyUpheld          = errors.New("guilds: this account's contest of this guild's claim has already been upheld")
+	ErrGuildRecentlyUpheld           = errors.New("guilds: this guild's claim was upheld within the last 30 days")
 )
+
+// claimUpheldCooldown is how long after an uphold a guild's claim
+// cannot be re-contested by anyone (fifth security review response,
+// MEDIUM): without it, a fresh Battle.net account could re-contest the
+// instant a moderator upholds, and roughly one fresh account every
+// contest-rate-limit window could keep a legitimately claimed guild
+// frozen indefinitely - about 30 accounts to hold it frozen for a
+// month.
+const claimUpheldCooldown = 30 * 24 * time.Hour
 
 // ClaimStateView is the claim state object GET /v1/guilds/{id}/settings
 // and GET /v1/guilds/{id}/home both expose (2026-09-21 security review
@@ -111,6 +121,51 @@ func (s *Store) previouslyUpheld(ctx context.Context, guildID, contesterID int64
 	return yes, nil
 }
 
+// recentlyUpheld reports whether guildID's most recent uphold
+// resolution (from any contester) fell within claimUpheldCooldown,
+// checked from guild_claim_resolutions by guild id alone - who
+// contests next does not matter, only that this guild was just
+// settled. A moderator's claim_reopened_at (POST .../claim/reopen)
+// clears the cooldown for exactly the uphold(s) resolved at or before
+// it; a later, fresh uphold is not retroactively cleared by a stale
+// reopen (its resolved_at is after g.ClaimReopenedAt).
+func (s *Store) recentlyUpheld(ctx context.Context, g Guild) (bool, error) {
+	var resolvedAt time.Time
+	err := s.Pool.QueryRow(ctx, `
+		select resolved_at from guild_claim_resolutions
+		where guild_id = $1 and outcome = 'uphold'
+		order by resolved_at desc limit 1
+	`, g.ID).Scan(&resolvedAt)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return false, nil
+	}
+	if err != nil {
+		return false, fmt.Errorf("guilds: recently upheld: %w", err)
+	}
+	if time.Since(resolvedAt) >= claimUpheldCooldown {
+		return false, nil
+	}
+	if g.ClaimReopenedAt != nil && !g.ClaimReopenedAt.Before(resolvedAt) {
+		return false, nil
+	}
+	return true, nil
+}
+
+// ReopenClaimCooldown clears guildID's per-guild contest cooldown
+// (recentlyUpheld) once - moderator only (fifth security review
+// response). Idempotent: harmless, and simply a no-op resolution-wise,
+// when no cooldown is currently active.
+func (s *Store) ReopenClaimCooldown(ctx context.Context, guildID int64) error {
+	tag, err := s.Pool.Exec(ctx, `update guilds set claim_reopened_at = now() where id = $1`, guildID)
+	if err != nil {
+		return fmt.Errorf("guilds: reopen claim cooldown for guild %d: %w", guildID, err)
+	}
+	if tag.RowsAffected() == 0 {
+		return ErrNotFound
+	}
+	return nil
+}
+
 // ContestClaim flags guildID's current claim (pending or claimed) as
 // disputed by contesterID, always freezing the claimant's officer
 // powers for this guild until a moderator resolves it (A4, simplified
@@ -140,6 +195,11 @@ func (s *Store) ContestClaim(ctx context.Context, guildID, contesterID int64, ha
 	}
 	if g.ClaimContestedAt != nil {
 		return ErrAlreadyContested
+	}
+	if upheld, err := s.recentlyUpheld(ctx, g); err != nil {
+		return err
+	} else if upheld {
+		return ErrGuildRecentlyUpheld
 	}
 	if claimant == contesterID {
 		return ErrSameAccount
@@ -370,6 +430,9 @@ func (s *Service) contestClaim(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusConflict, "conflict", "there is no claim on this guild to contest", nil)
 	case errors.Is(err, ErrAlreadyContested):
 		httpx.WriteError(w, r, http.StatusConflict, "conflict", "this claim is already contested", nil)
+	case errors.Is(err, ErrGuildRecentlyUpheld):
+		httpx.WriteError(w, r, http.StatusConflict, "conflict",
+			"this guild's claim was upheld within the last 30 days", nil)
 	case errors.Is(err, ErrSameAccount):
 		httpx.WriteError(w, r, http.StatusForbidden, "forbidden", "you cannot contest your own claim", nil)
 	case errors.Is(err, ErrNotEligible):
@@ -435,4 +498,31 @@ func (s *Service) resolveClaim(w http.ResponseWriter, r *http.Request) {
 			"moderator_id", actor.UserID, "outcome", in.Outcome)
 		httpx.WriteOK(w, r, http.StatusOK, map[string]string{"status": "resolved", "outcome": in.Outcome})
 	}
+}
+
+// reopenClaimCooldown answers 404, not 403, for a non-moderator - the
+// same hidden-standing pattern moderationClaims uses (fifth security
+// review response), checked before the guild id is even parsed so a
+// non-moderator learns nothing about whether the guild exists either.
+func (s *Service) reopenClaimCooldown(w http.ResponseWriter, r *http.Request) {
+	if !auth.ActorFrom(r.Context()).IsModerator() {
+		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such route", nil)
+		return
+	}
+	guildID, ok := guildIDFrom(r)
+	if !ok {
+		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such guild", nil)
+		return
+	}
+	actor := auth.ActorFrom(r.Context())
+	if err := s.Store.ReopenClaimCooldown(r.Context(), guildID); err != nil {
+		if errors.Is(err, ErrNotFound) {
+			httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such guild", nil)
+			return
+		}
+		s.fail(w, r, "reopen_claim_cooldown", err, "could not reopen that guild's claim cooldown just now")
+		return
+	}
+	s.logger().Info("guilds", "op", "claim_reopen", "guild_id", guildID, "moderator_id", actor.UserID)
+	httpx.WriteOK(w, r, http.StatusOK, map[string]string{"status": "reopened"})
 }

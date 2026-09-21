@@ -270,3 +270,85 @@ func TestVerifyByLogsVerifiesNobodyInAContestedGuild(t *testing.T) {
 		t.Fatal("VerifyByLogs must verify nobody in a contested guild, even with two genuinely independent qualifying reports")
 	}
 }
+
+// TestVerifyByLogsExcludesTheCharactersOwnAccount is item 2 (fifth
+// security review response, MEDIUM): no earlier test actually proved
+// this exclusion directly - two report nights owned by the SAME
+// account as the character itself must never verify it, even though
+// the date-window logic alone would otherwise be satisfied.
+func TestVerifyByLogsExcludesTheCharactersOwnAccount(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	ctx := context.Background()
+	uid := seedUser(t, pool, "self-owned@example.com")
+	gid := seedGuild(t, pool, "Forever")
+	seedCharacter(t, pool, gid, uid, "us/hardcore/selfowned", "member", false)
+
+	first := time.Now().Add(-20 * 24 * time.Hour)
+	for i, offset := range []time.Duration{0, 5 * 24 * time.Hour} {
+		id := fmt.Sprintf("selfowned%d", i)
+		if _, err := pool.Exec(ctx,
+			`insert into reports (id, owner_id, guild_id, visibility, status, created_at)
+			 values ($1, $2, $3, 'guild', 'complete', $4)`,
+			id, uid, gid, first.Add(offset)); err != nil {
+			t.Fatal(err)
+		}
+		if _, err := pool.Exec(ctx,
+			`insert into fights (report_id, fight_index, players) values ($1, 0, $2)`,
+			id, []string{"us/hardcore/selfowned"}); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if err := s.VerifyByLogs(ctx); err != nil {
+		t.Fatal(err)
+	}
+	var verified bool
+	pool.QueryRow(ctx,
+		`select verified_at is not null from guild_characters where character_key = 'us/hardcore/selfowned'`).
+		Scan(&verified)
+	if verified {
+		t.Fatal("two report nights owned by the character's own account must never verify it, no matter how many distinct dates")
+	}
+}
+
+// TestVerifyByLogsCountsANullOwnerReport documents the intended
+// behaviour (item 2, fifth security review response) for a report with
+// no owner at all (users.id on delete set null, so a deleted uploader's
+// reports end up this way): "r.owner_id is distinct from gc.user_id"
+// treats NULL as distinct from any specific account, so a null-owner
+// report still counts toward verification - it is, definitionally, not
+// owned by the character's own account.
+func TestVerifyByLogsCountsANullOwnerReport(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	ctx := context.Background()
+	uid := seedUser(t, pool, "null-owner-character@example.com")
+	gid := seedGuild(t, pool, "Forever")
+	seedCharacter(t, pool, gid, uid, "us/hardcore/nullownercharacter", "member", false)
+
+	first := time.Now().Add(-20 * 24 * time.Hour)
+	for i, offset := range []time.Duration{0, 5 * 24 * time.Hour} {
+		id := fmt.Sprintf("nullowner%d", i)
+		if _, err := pool.Exec(ctx,
+			`insert into reports (id, owner_id, guild_id, visibility, status, created_at)
+			 values ($1, null, $2, 'guild', 'complete', $3)`,
+			id, gid, first.Add(offset)); err != nil {
+			t.Fatal(err)
+		}
+		if _, err := pool.Exec(ctx,
+			`insert into fights (report_id, fight_index, players) values ($1, 0, $2)`,
+			id, []string{"us/hardcore/nullownercharacter"}); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if err := s.VerifyByLogs(ctx); err != nil {
+		t.Fatal(err)
+	}
+	var verified bool
+	pool.QueryRow(ctx,
+		`select verified_at is not null from guild_characters where character_key = 'us/hardcore/nullownercharacter'`).
+		Scan(&verified)
+	if !verified {
+		t.Fatal("a null-owner report is not owned by the character's own account, and should still count toward verification")
+	}
+}
