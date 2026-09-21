@@ -8,9 +8,11 @@ const footerLinks = [
   ['Changelog', '/changelog'],
   ['Contribute', `${communityLinks.githubRepo}/issues`],
 ] as const;
+
+// Phone: links above the disclaimer (design/Mobile.dc.html); desktop keeps them side by side.
+// A frontmatter comment, not an HTML one: an HTML comment ships in every page.
 ---
 
-<!-- Phone: links above the disclaimer (design/Mobile.dc.html); desktop keeps them side by side. -->
 <footer class="mt-auto flex flex-col-reverse md:flex-row md:items-center md:justify-between gap-4 md:gap-8 px-[18px] md:px-12 py-6 md:py-7 border-t border-line text-[13px]">
   <p class="max-w-[720px] leading-relaxed text-muted">
     Forever Sixty is a fan-run reference. Not affiliated with or endorsed by Blizzard Entertainment. World of
