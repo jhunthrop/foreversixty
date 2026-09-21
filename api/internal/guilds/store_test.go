@@ -3,6 +3,8 @@ package guilds
 
 import (
 	"context"
+	"fmt"
+	"sync"
 	"testing"
 )
 
@@ -130,5 +132,146 @@ func TestReleaseClaimIfLostClearsClaimedByOnlyWhenVerificationIsGone(t *testing.
 	pool.QueryRow(ctx, `select claimed_by from guilds where id = $1`, gid).Scan(&claimedBy)
 	if claimedBy != nil {
 		t.Fatalf("claimed_by = %v, want nil once the claimant has no character left", claimedBy)
+	}
+}
+
+func TestGetGuildReadsContestFields(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	ctx := context.Background()
+	gid := seedGuild(t, pool, "Forever")
+	contester := seedUser(t, pool, "contester@example.com")
+	if _, err := pool.Exec(ctx,
+		`update guilds set claim_contested_at = now(), claim_contested_by = $2 where id = $1`, gid, contester); err != nil {
+		t.Fatal(err)
+	}
+	g, err := s.getGuild(ctx, gid)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if g.ClaimContestedAt == nil || g.ClaimContestedBy == nil || *g.ClaimContestedBy != contester {
+		t.Fatalf("g.ClaimContestedAt/By = %v, %v, want set and %d", g.ClaimContestedAt, g.ClaimContestedBy, contester)
+	}
+}
+
+func TestContestedReportsWhetherAGuildsClaimIsDisputed(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	ctx := context.Background()
+	gid := seedGuild(t, pool, "Forever")
+
+	yes, err := s.contested(ctx, gid)
+	if err != nil || yes {
+		t.Fatalf("contested = %v, %v, want false on a fresh guild", yes, err)
+	}
+	if _, err := pool.Exec(ctx, `update guilds set claim_contested_at = now() where id = $1`, gid); err != nil {
+		t.Fatal(err)
+	}
+	yes, err = s.contested(ctx, gid)
+	if err != nil || !yes {
+		t.Fatalf("contested = %v, %v, want true once claim_contested_at is set", yes, err)
+	}
+}
+
+func TestSetVerifiedForAccountVerifiesEveryRowAndRecordsSource(t *testing.T) {
+	pool := testPool(t)
+	ctx := context.Background()
+	uid := seedUser(t, pool, "multichar@example.com")
+	gid := seedGuild(t, pool, "Forever")
+	seedCharacter(t, pool, gid, uid, "us/hardcore/main", "leader", false)
+	seedCharacter(t, pool, gid, uid, "us/hardcore/alt", "member", false)
+
+	tx, err := pool.Begin(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := setVerifiedForAccount(ctx, tx, gid, uid, "claim"); err != nil {
+		t.Fatal(err)
+	}
+	if err := tx.Commit(ctx); err != nil {
+		t.Fatal(err)
+	}
+
+	rows, err := pool.Query(ctx,
+		`select verified_at is not null, verified_by from guild_characters where guild_id = $1 and user_id = $2`, gid, uid)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer rows.Close()
+	n := 0
+	for rows.Next() {
+		var verified bool
+		var by *string
+		if err := rows.Scan(&verified, &by); err != nil {
+			t.Fatal(err)
+		}
+		if !verified || by == nil || *by != "claim" {
+			t.Fatalf("row: verified = %v, verified_by = %v, want true/claim", verified, by)
+		}
+		n++
+	}
+	if n != 2 {
+		t.Fatalf("verified %d rows, want 2 (both of the account's characters)", n)
+	}
+
+	// A second call with a different source must not reclassify an
+	// already-verified row - the FIRST path that verified it is what a
+	// later release/transfer un-verifies.
+	tx, err = pool.Begin(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := setVerifiedForAccount(ctx, tx, gid, uid, "officer"); err != nil {
+		t.Fatal(err)
+	}
+	if err := tx.Commit(ctx); err != nil {
+		t.Fatal(err)
+	}
+	var by string
+	if err := pool.QueryRow(ctx,
+		`select verified_by from guild_characters where character_key = 'us/hardcore/main'`).Scan(&by); err != nil {
+		t.Fatal(err)
+	}
+	if by != "claim" {
+		t.Fatalf("verified_by = %q after a second call, want it to stay claim (first writer wins)", by)
+	}
+}
+
+func TestRecomputeMembershipSerialisesConcurrentCallersForTheSameGuild(t *testing.T) {
+	pool := testPool(t)
+	ctx := context.Background()
+	gid := seedGuild(t, pool, "Forever")
+	var wg sync.WaitGroup
+	errs := make([]error, 20)
+	for i := 0; i < 20; i++ {
+		wg.Add(1)
+		go func(i int) {
+			defer wg.Done()
+			uid := seedUser(t, pool, fmt.Sprintf("lockrace-%d@example.com", i))
+			seedCharacter(t, pool, gid, uid, fmt.Sprintf("us/hardcore/lockrace%d", i), "member", true)
+			tx, err := pool.Begin(ctx)
+			if err != nil {
+				errs[i] = err
+				return
+			}
+			if err := RecomputeMembership(ctx, tx, gid, &uid); err != nil {
+				errs[i] = err
+				return
+			}
+			errs[i] = tx.Commit(ctx)
+		}(i)
+	}
+	wg.Wait()
+	for i, err := range errs {
+		if err != nil {
+			t.Fatalf("goroutine %d: %v", i, err)
+		}
+	}
+	var n int
+	if err := pool.QueryRow(ctx, `select count(*) from guild_members where guild_id = $1`, gid).Scan(&n); err != nil {
+		t.Fatal(err)
+	}
+	if n != 20 {
+		t.Fatalf("guild_members rows = %d, want 20 (one per concurrently-added account, none lost to the race)", n)
 	}
 }

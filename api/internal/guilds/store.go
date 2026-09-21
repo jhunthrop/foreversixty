@@ -32,6 +32,8 @@ type Guild struct {
 	ClaimedBy             *int64
 	ClaimPendingBy        *int64
 	ClaimRequestedAt      *time.Time
+	ClaimContestedAt      *time.Time
+	ClaimContestedBy      *int64
 	OfficerMaxRankIndex   int
 	InviteTokenRotatedAt  *time.Time
 }
@@ -50,10 +52,12 @@ func (s *Store) getGuild(ctx context.Context, id int64) (Guild, error) {
 	var g Guild
 	err := s.Pool.QueryRow(ctx,
 		`select id, region, ruleset, name, default_visibility, claimed_by, claim_pending_by,
-		        claim_requested_at, officer_max_rank_index, invite_token_rotated_at
+		        claim_requested_at, claim_contested_at, claim_contested_by,
+		        officer_max_rank_index, invite_token_rotated_at
 		 from guilds where id = $1`, id).
 		Scan(&g.ID, &g.Region, &g.Ruleset, &g.Name, &g.DefaultVisibility, &g.ClaimedBy,
-			&g.ClaimPendingBy, &g.ClaimRequestedAt, &g.OfficerMaxRankIndex, &g.InviteTokenRotatedAt)
+			&g.ClaimPendingBy, &g.ClaimRequestedAt, &g.ClaimContestedAt, &g.ClaimContestedBy,
+			&g.OfficerMaxRankIndex, &g.InviteTokenRotatedAt)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return Guild{}, ErrNotFound
 	}
@@ -77,6 +81,23 @@ func (s *Store) IsMember(ctx context.Context, guildID, userID int64) (bool, erro
 	return exists, nil
 }
 
+// contested reports whether guildID's claim is currently disputed - the
+// freeze gate every officer-power route in this package checks before
+// acting, so a disputed claim cannot be used to entrench itself while a
+// moderator investigates.
+func (s *Store) contested(ctx context.Context, guildID int64) (bool, error) {
+	var yes bool
+	err := s.Pool.QueryRow(ctx,
+		`select claim_contested_at is not null from guilds where id = $1`, guildID).Scan(&yes)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return false, ErrNotFound
+	}
+	if err != nil {
+		return false, fmt.Errorf("guilds: contested: %w", err)
+	}
+	return yes, nil
+}
+
 // RecomputeMembership derives the account-level guild_members row for
 // (guildID, userID) from that account's current guild_characters rows,
 // within tx. userID nil recomputes every account in the guild at once
@@ -85,6 +106,20 @@ func (s *Store) IsMember(ctx context.Context, guildID, userID int64) (bool, erro
 // the same transaction as the character write it follows — this is why
 // it takes a pgx.Tx rather than opening its own.
 func RecomputeMembership(ctx context.Context, tx pgx.Tx, guildID int64, userID *int64) error {
+	// Serialises every recompute for this guild against every other -
+	// PutExports, ApproveCharacter, RemoveCharacter, Claim,
+	// UpdateSettings and the sweep jobs can all call this concurrently
+	// from independent transactions; without a lock, two concurrent
+	// SELECT-then-UPSERT passes can each compute from a stale
+	// pre-lock snapshot, and the later-committing transaction's stale
+	// values win, transiently overwriting a just-set verified_at/rank
+	// until the next recompute. Transaction-scoped (released on commit
+	// or rollback) and keyed on the whole guild, not one account, so a
+	// whole-guild recompute (userID nil) and a single-account one still
+	// serialise against each other rather than leaving a gap.
+	if _, err := tx.Exec(ctx, `select pg_advisory_xact_lock($1)`, guildID); err != nil {
+		return fmt.Errorf("guilds: recompute membership: lock guild %d: %w", guildID, err)
+	}
 	if _, err := tx.Exec(ctx, `
 		insert into guild_members (guild_id, user_id, rank, verified_at, refreshed_at)
 		select $1, gc.user_id,
@@ -127,6 +162,23 @@ func ReleaseClaimIfLost(ctx context.Context, tx pgx.Tx, guildID, userID int64) e
 		     where guild_id = $1 and user_id = $2 and verified_at is not null
 		   )`, guildID, userID); err != nil {
 		return fmt.Errorf("guilds: release claim for guild %d: %w", guildID, err)
+	}
+	return nil
+}
+
+// setVerifiedForAccount marks every one of userID's guild_characters
+// rows in guildID verified via source, without overwriting an
+// already-verified row's original source - the claim flow trusts every
+// alt the claiming/confirming account holds in the guild (§2.4), not
+// just the one claiming character, so this is account-wide rather than
+// the single-character scope ApproveCharacter/AcceptInvite/VerifyByLogs
+// each use for their own UPDATE statements.
+func setVerifiedForAccount(ctx context.Context, tx pgx.Tx, guildID, userID int64, source string) error {
+	if _, err := tx.Exec(ctx,
+		`update guild_characters set verified_at = coalesce(verified_at, now()),
+		   verified_by = coalesce(verified_by, $3)
+		 where guild_id = $1 and user_id = $2`, guildID, userID, source); err != nil {
+		return fmt.Errorf("guilds: set verified (%s) for guild %d: %w", source, guildID, err)
 	}
 	return nil
 }
