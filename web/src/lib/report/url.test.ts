@@ -22,10 +22,11 @@ describe('the report URL state', () => {
     expect(reportSearch(withState(defaultState(1), { mode: 'mechanics' }), 1)).toBe('?mode=mechanics');
   });
 
-  it('offers the four views and the twelve tabs in the spec’s order', () => {
+  it('offers the four views and the thirteen tabs in the spec’s order', () => {
     expect(VIEWS.map((v) => v.id)).toEqual(['tables', 'timelines', 'events', 'queries']);
     expect(TABS.map((t) => t.id)).toEqual([
       'summary',
+      'rating',
       'damage-done',
       'damage-taken',
       'healing',
@@ -40,6 +41,7 @@ describe('the report URL state', () => {
     ]);
     expect(TABS.map((t) => t.label)).toEqual([
       'Summary',
+      'Rating',
       'Damage Done',
       'Damage Taken',
       'Healing',
@@ -52,6 +54,11 @@ describe('the report URL state', () => {
       'Resources',
       'Casts',
     ]);
+  });
+
+  it('rating is a real tab: it parses from the url and serialises back', () => {
+    expect(parseReportState('?tab=rating', 1).tab).toBe('rating');
+    expect(reportSearch(withState(defaultState(1), { tab: 'rating' }), 1)).toBe('?tab=rating');
   });
 
   it('defaults to the report’s first fight, analyze, tables, summary, all friendlies', () => {
