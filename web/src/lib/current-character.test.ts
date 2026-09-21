@@ -78,6 +78,25 @@ describe('readCurrent / writeCurrent / clearCurrent', () => {
     };
     expect(() => writeCurrent(sample, storage)).not.toThrow();
   });
+
+  it('is null for a source outside the known enum', () => {
+    const storage = fakeStorage();
+    storage.setItem('fs.currentCharacter', JSON.stringify({ ...sample, source: 'manual' }));
+    expect(readCurrent(storage)).toBeNull();
+  });
+
+  it('is null when a field has the wrong type', () => {
+    const storage = fakeStorage();
+    storage.setItem('fs.currentCharacter', JSON.stringify({ ...sample, ref: 5 }));
+    expect(readCurrent(storage)).toBeNull();
+  });
+
+  it('is null when a required field is missing', () => {
+    const storage = fakeStorage();
+    const { label, ...withoutLabel } = sample;
+    storage.setItem('fs.currentCharacter', JSON.stringify(withoutLabel));
+    expect(readCurrent(storage)).toBeNull();
+  });
 });
 
 describe('plannerHrefFor', () => {

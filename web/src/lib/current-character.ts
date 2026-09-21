@@ -8,7 +8,12 @@
 import { SIM_TABS, tabHref, type SimTabEntry } from './sim/tabs';
 import { defaultSimState, withSimState } from './sim/url';
 
-export type CurrentCharacterSource = 'addon' | 'build' | 'fight' | 'armory' | 'code';
+/** The five kinds a pointer can come from. Defined once so `isCurrentCharacter` can check
+ *  membership against the same list the exported union is derived from, rather than the
+ *  two drifting apart. */
+const CURRENT_CHARACTER_SOURCES = ['addon', 'build', 'fight', 'armory', 'code'] as const;
+
+export type CurrentCharacterSource = (typeof CURRENT_CHARACTER_SOURCES)[number];
 
 export interface CurrentCharacter {
   source: CurrentCharacterSource;
@@ -23,9 +28,10 @@ export interface CurrentCharacter {
 export type SimTabId = SimTabEntry['id'];
 
 const STORAGE_KEY = 'fs.currentCharacter';
-/** An FS1 export with a full bank is several KB; this stays well clear of it while refusing
- *  a pathological write (the spec's own cap). */
-const MAX_STORED_BYTES = 16_384;
+/** Characters of the serialised JSON (`string.length`, UTF-16 code units -- not a byte
+ *  count). An FS1 export with a full bank is several KB; this stays well clear of it while
+ *  refusing a pathological write (the spec's own cap). */
+const MAX_STORED_LENGTH = 16_384;
 
 function storageOf(storage: Storage | undefined): Storage | null {
   if (storage !== undefined) return storage;
@@ -50,11 +56,15 @@ export function readCurrent(storage?: Storage): CurrentCharacter | null {
   }
 }
 
+function isCurrentCharacterSource(value: unknown): value is CurrentCharacterSource {
+  return CURRENT_CHARACTER_SOURCES.includes(value as CurrentCharacterSource);
+}
+
 function isCurrentCharacter(value: unknown): value is CurrentCharacter {
   if (typeof value !== 'object' || value === null) return false;
   const candidate = value as Record<string, unknown>;
   return (
-    typeof candidate.source === 'string' &&
+    isCurrentCharacterSource(candidate.source) &&
     typeof candidate.ref === 'string' &&
     typeof candidate.label === 'string' &&
     typeof candidate.classSlug === 'string' &&
@@ -67,7 +77,7 @@ export function writeCurrent(value: CurrentCharacter, storage?: Storage): void {
   if (target === null) return;
   try {
     const serialised = JSON.stringify(value);
-    if (serialised.length > MAX_STORED_BYTES) return;
+    if (serialised.length > MAX_STORED_LENGTH) return;
     target.setItem(STORAGE_KEY, serialised);
   } catch {
     // Private browsing, quota exceeded, or a disabled storage API: the pointer is a
