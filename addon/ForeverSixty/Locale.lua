@@ -136,6 +136,11 @@ local L = {
 	inboxEmpty = "No builds waiting. Send one from foreversixty.gg.",
 	inboxCount = "%d build(s) waiting from the site.",
 
+	-- Minimap
+	minimapLeftClick = "Left-click: open Forever Sixty",
+	minimapRightClick = "Right-click: settings",
+	minimapNoBuild = "No build loaded",
+
 	-- Settings
 	settingsTitle = "Forever Sixty options",
 	settingsMinimap = "Show the minimap button",

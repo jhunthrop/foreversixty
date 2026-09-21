@@ -22,4 +22,5 @@ views\FollowView.lua
 views\GearView.lua
 views\SettingsView.lua
 Tracker.lua
+Minimap.lua
 Options.lua

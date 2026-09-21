@@ -394,5 +394,19 @@ function Theme.hideTooltip()
 	return true
 end
 
+--- A plain multi-line tooltip, for the minimap button.
+function Theme.showLines(owner, lines)
+	if type(GameTooltip) ~= "table" then
+		return false
+	end
+	GameTooltip:SetOwner(owner, "ANCHOR_LEFT")
+	GameTooltip:ClearLines()
+	for _, line in ipairs(lines) do
+		GameTooltip:AddLine(line)
+	end
+	GameTooltip:Show()
+	return true
+end
+
 ns.Theme = Theme
 return Theme
