@@ -33,9 +33,8 @@ describe('planner.astro', () => {
   });
 
   it('mounts exactly two islands', async () => {
-    // Planner.svelte plus Base's now-universal SessionNav client:load mount (fb4952e):
-    // planner.astro never passed a `session` prop before this branch, so it mounted only
-    // its own island until now.
+    // Planner.svelte, and the header's session link: planner.astro passes Base's `session`
+    // prop, because a page that already runs the planner can afford to show who is signed in.
     const html = await container.renderToString(Planner);
     expect(html.match(/<astro-island/g) ?? []).toHaveLength(2);
   });

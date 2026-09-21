@@ -9,6 +9,7 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { expect, test, type Page } from '@playwright/test';
+import { collectPageErrors } from './support/console';
 import { ACTIVE_BUILD } from './support/active-build';
 import { POINTS_PER_TIER } from '../../src/lib/planner/types';
 
@@ -63,10 +64,7 @@ async function openPlanner(page: Page): Promise<string> {
 }
 
 test('the planner opens on the default class with its three real trees', async ({ page }) => {
-  const errors: string[] = [];
-  page.on('console', (message) => {
-    if (message.type() === 'error') errors.push(message.text());
-  });
+  const errors = collectPageErrors(page);
 
   const slug = await openPlanner(page);
   const expected = syncedTreeNames(slug);

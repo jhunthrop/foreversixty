@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { collectPageErrors } from './support/console';
 
 import { treeSourceNotice } from '../../src/lib/planner/tree-source';
 import { ACTIVE_BUILD } from './support/active-build';
@@ -9,10 +10,7 @@ import { ACTIVE_BUILD } from './support/active-build';
 const ACTIVE_BUILD_NOTICE = treeSourceNotice(ACTIVE_BUILD);
 
 test('the planner opens on the default class with an empty build', async ({ page }) => {
-  const errors: string[] = [];
-  page.on('console', (m) => {
-    if (m.type() === 'error') errors.push(m.text());
-  });
+  const errors = collectPageErrors(page);
   await page.goto('/planner');
   await expect(page.getByTestId('planner-level')).toHaveText('9');
   await expect(page.getByTestId('planner-spent')).toHaveText('0/51');

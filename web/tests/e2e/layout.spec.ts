@@ -25,17 +25,14 @@ test.describe('phone layout', () => {
   });
 });
 
-test('Sign in is in the header with no session prop needed, on a page that never passed one', async ({
+test('Sign in is in the header of a content page that passes no session prop, as plain HTML', async ({
   page,
 }) => {
-  await page.route('**/v1/me', (route) =>
-    route.fulfill({
-      status: 401,
-      contentType: 'application/json',
-      body: '{"ok":false,"data":null,"error":null,"request_id":"r"}',
-    }),
-  );
-  // /classes never passed `session` to Base.astro before this lane's change.
+  // /classes ships no client JavaScript, so its Sign in is a link in the markup rather than
+  // a hydrated island; nav.spec.ts pins that no script is requested for it.
   await page.goto('/classes');
-  await expect(page.getByTestId('session-nav').getByRole('link', { name: 'Sign in' })).toBeVisible();
+  await expect(page.getByRole('banner').getByRole('link', { name: 'Sign in' })).toHaveAttribute(
+    'href',
+    '/login',
+  );
 });

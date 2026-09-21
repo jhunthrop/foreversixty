@@ -98,9 +98,21 @@ test.describe('sign in on every page', () => {
         }),
       );
       await page.goto(path);
-      await expect(page.getByTestId('session-nav').getByRole('link', { name: 'Sign in' })).toBeVisible();
+      // A tool page hydrates the link (it can show a name); a content page carries a plain
+      // one, because content pages ship no client JavaScript. Either way it is there.
+      await expect(page.getByRole('banner').getByRole('link', { name: 'Sign in' })).toBeVisible();
     });
   }
+
+  test('a content page gets its Sign in link without shipping a script for it', async ({ page }) => {
+    const scripts: string[] = [];
+    page.on('request', (request) => {
+      if (request.resourceType() === 'script') scripts.push(request.url());
+    });
+    await page.goto('/classes');
+    await expect(page.getByTestId('session-nav-static')).toHaveAttribute('href', '/login');
+    expect(scripts).toEqual([]);
+  });
 });
 
 test.describe('"/" shortcut', () => {

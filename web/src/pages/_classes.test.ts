@@ -73,11 +73,9 @@ describe('classes.astro', () => {
     expect(html).not.toContain('aria-label="Plan a Human Warrior, new in Forever"');
   });
 
-  it('ships no island of its own', () => {
-    // The one <astro-island> present is Base's now-universal SessionNav client:load mount
-    // (fb4952e), the same header account widget every other page carries -- classes.astro
-    // itself still mounts nothing; before that change this page carried zero islands, so
-    // the assertion counted zero rather than filtering by mount.
-    expect(html.match(/<astro-island/g) ?? []).toHaveLength(1);
+  it('ships no island', () => {
+    // A content page: no client JavaScript at all, the header's Sign in link included
+    // (Base.astro's `session` prop is off here, so that link is plain HTML).
+    expect(html).not.toContain('<astro-island');
   });
 });

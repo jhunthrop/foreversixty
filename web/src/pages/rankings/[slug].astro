@@ -18,6 +18,7 @@ const { slug } = Astro.params;
   title={`${titleize(slug ?? '')} rankings`}
   description="World of Warcraft: Forever rankings by encounter: characters, guilds, specs and phases."
   path={`/rankings/${slug}`}
+  session
 >
   <main
     id="main"

@@ -1,10 +1,8 @@
 import { expect, test } from '@playwright/test';
+import { collectPageErrors } from './support/console';
 
 test('homepage renders the reference layout without a marketing hero', async ({ page }) => {
-  const errors: string[] = [];
-  page.on('console', (m) => {
-    if (m.type() === 'error') errors.push(m.text());
-  });
+  const errors = collectPageErrors(page);
   await page.goto('/');
   const h1 = page.locator('h1');
   await expect(h1).toHaveCount(1);
