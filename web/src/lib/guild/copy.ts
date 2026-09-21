@@ -1,0 +1,72 @@
+// web/src/lib/guild/copy.ts
+// Every visible string the guild home, claim, settings, join and account-consent views
+// use, in the site's own honest-copy voice: no exclamation marks, never a nag inside a
+// tool. Wording quoted directly from the spec is marked as such below.
+export const guildHomeCopy = {
+  loading: 'Loading your guild.',
+  failed: 'Your guild did not load. Reload the page to try again.',
+  reportsHeading: "This week's reports",
+  // Spec section 4.1, exact wording.
+  noReports: 'No reports this week yet.',
+  rosterHeading: 'Roster',
+  // Spec section 4.1, exact wording, officer viewer.
+  emptyRosterOfficer:
+    "You're the only member the site knows about. Share the invite link to bring the rest of the guild in.",
+  emptyRosterMember: "You're the only member the site knows about.",
+  loggedRecently: 'Logged in the last day',
+  unverified: 'Unverified',
+  approve: 'Approve',
+  remove: 'Remove',
+  settingsLink: 'Guild settings',
+  claimLink: 'Claim this guild',
+  openSim: 'Open in simulator',
+  openPlanner: 'Open in planner',
+} as const;
+
+export const guildClaimCopy = {
+  loading: "Checking this guild's claim.",
+  failed: 'That did not load. Reload the page to try again.',
+  unclaimed: 'Nobody has claimed this guild yet.',
+  claimedByYou: 'You claimed this guild.',
+  claimedBySomeoneElse: (battletag: string): string => `Claimed by ${battletag}.`,
+  pending: (expiresAt: string): string =>
+    `A claim is pending, confirmed by a second officer or the guild master. Expires ${expiresAt.slice(0, 10)}.`,
+  claimButton: 'Claim this guild',
+  confirmButton: 'Confirm this claim',
+  releaseButton: 'Release claim',
+  notEligible: 'Only an officer or the guild master of this guild can claim it.',
+  signInLine: 'Sign in to claim this guild.',
+} as const;
+
+export const guildSettingsCopy = {
+  loading: 'Loading settings.',
+  failed: 'Settings did not load. Reload the page to try again.',
+  // Spec section 4.4, exact wording.
+  forbidden: 'You need to be a verified officer of this guild to see its settings.',
+  heading: 'Guild settings',
+  defaultVisibility: 'Default report visibility',
+  officerThreshold: 'Officer rank threshold',
+  inviteHeading: 'Invite link',
+  // Spec section 3.3, exact wording.
+  inviteWarning: 'Anyone with this link can join as a member. Rotate it if it leaks.',
+  rotateButton: 'Rotate invite link',
+  tokenShownOnce: 'This link is shown once. Copy it now.',
+  saved: 'Saved.',
+} as const;
+
+export const guildJoinCopy = {
+  loading: 'Loading this invite.',
+  failed: 'That invite link did not work.',
+  joinButton: 'Join as a member',
+  joined: 'You joined the guild.',
+  signInLine: 'Sign in to join this guild.',
+} as const;
+
+export const guildConsentCopy = {
+  heading: 'My guilds',
+  roster: 'Roster only',
+  gear: 'Gear',
+  gearBags: 'Gear and bags',
+  leave: 'Leave',
+  left: 'Left.',
+} as const;
