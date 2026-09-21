@@ -57,6 +57,13 @@ function Options.readInbox()
 	return #usable
 end
 
+--- Wrap `text` in the client's own colour-escape codes, gold. Used for
+--- /fs help only: every other line the addon prints goes through the
+--- plain chat prefix (chatLine), not a colour.
+function Options.colorGold(text)
+	return string.format("|cff%s%s|r", Theme.HEX.gold, text)
+end
+
 function Options.handle(input)
 	local data = Options.data
 	local command, rest = (input or ""):match("^(%S*)%s*(.*)$")
@@ -92,6 +99,8 @@ function Options.handle(input)
 		-- options panel in this task, so the honest minimum is the same
 		-- header bare /fs already shows.
 		return Window.buildLines(data)
+	elseif command == "help" then
+		return { Options.colorGold(L.slashHint) }
 	elseif command == "diag" then
 		local notes = Theme.diagnostics()
 		if #notes == 0 then

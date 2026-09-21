@@ -98,6 +98,23 @@ describe("Options", function()
 		assert.are.same(Options.handle(""), Options.handle("options"))
 	end)
 
+	it("prints the command hint in gold on /fs help", function()
+		local lines = Options.handle("help")
+		assert.are.equal(Options.colorGold(require("Locale").slashHint), lines[1])
+	end)
+
+	it("colours text with the client's own gold escape codes", function()
+		local Theme = require("Theme")
+		assert.are.equal("|cff" .. Theme.HEX.gold .. "hello|r", Options.colorGold("hello"))
+	end)
+
+	it("always prints /fs help regardless of the chat pref", function()
+		Options.register()
+		require("Prefs").setFlag("chat", false)
+		SlashCmdList["FOREVERSIXTY"]("help")
+		assert.are.equal(1, #state.printed)
+	end)
+
 	it("shows gear lines on /fs gear", function()
 		Options.handle("follow FSB1:1.60.1.69893:paladin:111:")
 		assert.are.same({ require("Locale").gearNone }, Options.handle("gear"))
