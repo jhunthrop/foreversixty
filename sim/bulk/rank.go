@@ -56,7 +56,19 @@ func Rank(req api.SimRequest, stage StageRequests, results []api.SimResult) (*St
 		final := finalResult(req, stage, ranked, equipped, results[0])
 		return nil, &final, nil
 	}
-	kept := applyCut(ranked, ladder.Cuts[stage.Stage-1])
+	kept := ranked
+	if req.Bulk.Mode != api.KindTalents {
+		// dps-minmaxer round 3, finding 5: talents mode submits exactly
+		// the loadouts the player ticked -- a handful of builds chosen
+		// on purpose, never the hundreds of auto-generated combinations
+		// Top Gear's own cut exists to narrow. Fast precision's first
+		// cut keeps a quarter of the field; at two loadouts that rounds
+		// to one, so a comparison build that is simply worse (not
+		// noise) never survives to the final result, and the page
+		// cannot rank a build it was never told the answer for. Every
+		// other mode keeps the cut unchanged.
+		kept = applyCut(ranked, ladder.Cuts[stage.Stage-1])
+	}
 	combos := make([]Combination, 0, len(kept))
 	for _, s := range kept {
 		combos = append(combos, s.Combo)
