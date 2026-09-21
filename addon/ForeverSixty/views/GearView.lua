@@ -16,6 +16,7 @@ local Widgets = ns.Widgets or require("Widgets")
 local Export = ns.Export or require("Export")
 local Gear = ns.Gear or require("Gear")
 local Talents = ns.Talents or require("Talents")
+local Compat = ns.Compat or require("Compat")
 
 local GearView = {}
 
@@ -25,7 +26,7 @@ function GearView.readEquipped()
 		local link = GetInventoryItemLink("player", entry.id)
 		if link ~= nil then
 			equipped[entry.slot] = {
-				itemId = tonumber((GetItemInfoInstant(link))),
+				itemId = tonumber((Compat.itemInfoInstant(link))),
 				link = link,
 				stats = Gear.statsOf(link),
 			}
@@ -37,14 +38,14 @@ end
 --- What the client can tell us about one item. An item the client has
 --- never seen has no name yet; saying so is better than a blank row.
 function GearView.itemInfo(itemId, link)
-	local name, _, quality, _, _, _, _, _, _, icon = GetItemInfo(link or itemId)
+	local name, _, quality, _, _, _, _, _, _, icon = Compat.itemInfo(link or itemId)
 	return {
 		itemId = itemId,
 		link = link,
 		name = name or string.format(L.gearItemUnknown, itemId or 0),
 		cached = name ~= nil,
 		quality = quality,
-		icon = icon or (type(GetItemIcon) == "function" and GetItemIcon(itemId)) or nil,
+		icon = icon or Compat.itemIcon(itemId),
 	}
 end
 

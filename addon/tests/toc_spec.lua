@@ -6,7 +6,7 @@
 -- every spec reaches its module through require, not through the TOC.
 describe("the TOC", function()
 	local EXPECTED = {
-		"Locale.lua", "Data.lua", "Codec.lua", "Talents.lua", "Prefs.lua",
+		"Locale.lua", "Data.lua", "Compat.lua", "Codec.lua", "Talents.lua", "Prefs.lua",
 		"Theme.lua", "Widgets.lua", "Export.lua", "Follow.lua", "Gear.lua",
 		"TalentGlow.lua",
 		"views/ExportView.lua", "views/FollowView.lua",

@@ -8,6 +8,7 @@
 
 Locale.lua
 Data.lua
+Compat.lua
 Codec.lua
 Talents.lua
 Prefs.lua
