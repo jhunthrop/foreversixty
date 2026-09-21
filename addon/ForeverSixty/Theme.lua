@@ -358,6 +358,12 @@ function Theme.hideGlow(button)
 	return "texture"
 end
 
+--- Whether the client has a GameTooltip at all. Shared by every function
+--- below that touches it, so the guard is written once.
+local function hasTooltip()
+	return type(GameTooltip) == "table"
+end
+
 --- The game's own item tooltip. SetHyperlink when there is a link (it
 --- carries enchants and suffixes); SetItemByID for a planned item the
 --- player has never seen, which has no link yet. Each is guarded on its
@@ -365,7 +371,7 @@ end
 --- raises, and SetItemByID in particular is a genuinely open question on
 --- the 1.60 client.
 function Theme.showItemTooltip(owner, itemId, link)
-	if type(GameTooltip) ~= "table" then
+	if not hasTooltip() then
 		return false
 	end
 	GameTooltip:SetOwner(owner, "ANCHOR_RIGHT")
@@ -387,7 +393,7 @@ function Theme.showItemTooltip(owner, itemId, link)
 end
 
 function Theme.hideTooltip()
-	if type(GameTooltip) ~= "table" then
+	if not hasTooltip() then
 		return false
 	end
 	GameTooltip:Hide()
@@ -396,7 +402,7 @@ end
 
 --- A plain multi-line tooltip, for the minimap button.
 function Theme.showLines(owner, lines)
-	if type(GameTooltip) ~= "table" then
+	if not hasTooltip() then
 		return false
 	end
 	GameTooltip:SetOwner(owner, "ANCHOR_LEFT")

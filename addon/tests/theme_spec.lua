@@ -341,6 +341,24 @@ describe("Theme", function()
 		assert.are.equal(1, mock.countCalls(_G.GameTooltip, "Hide"))
 	end)
 
+	it("shows a plain multi-line tooltip, one AddLine per line", function()
+		start()
+		local owner = _G.UIParent
+		local lines = { "ForeverSixty", "Deep Holy", "Left-click", "Right-click" }
+		assert.is_true(Theme.showLines(owner, lines))
+		assert.are.same({ method = "SetOwner", n = 2, owner, "ANCHOR_LEFT" },
+			mock.firstCall(_G.GameTooltip, "SetOwner"))
+		assert.are.equal(1, mock.countCalls(_G.GameTooltip, "ClearLines"))
+		assert.are.equal(#lines, mock.countCalls(_G.GameTooltip, "AddLine"))
+		assert.are.equal(1, mock.countCalls(_G.GameTooltip, "Show"))
+	end)
+
+	it("does nothing for showLines on a client with no GameTooltip at all", function()
+		start()
+		_G.GameTooltip = nil
+		assert.is_false(Theme.showLines(_G.UIParent, { "ForeverSixty" }))
+	end)
+
 	it("forgets what it learned about the client on reset", function()
 		start({ templates = {} })
 		Theme.hasTemplate("Button", "UIPanelButtonTemplate")

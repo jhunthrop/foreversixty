@@ -117,9 +117,8 @@ function MinimapButton.ensure()
 	icon:SetSize(Theme.SIZES.minimapIcon, Theme.SIZES.minimapIcon)
 	icon:SetPoint("CENTER", button, "CENTER", 0, 0)
 	Theme.outline(button, Theme.SIZES.border, "gold")
-	MinimapButton.button, MinimapButton.icon = button, icon
+	MinimapButton.button = button
 	wire(button)
-	MinimapButton.place(Prefs.get("minimap", "angle"))
 	return button
 end
 
