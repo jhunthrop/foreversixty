@@ -107,17 +107,10 @@ test.describe('the simulator tab strip', () => {
     );
   });
 
-  // Fix round 1, Finding A: an addon paste is "the primary path into the product" (the
-  // newcomer persona review) and stamps `source.ref: ''` -- before this fix every tab's
-  // href read `?source=addon`, a query that looks like it restores the character and
-  // silently does not. Quick Sim (SimView.svelte's own store reads `?code=`) gets a working
-  // fallback link; Top Gear (ToolsView.svelte / bulk-store.svelte.ts, which has never read
-  // `?code=`) gets a bare href instead -- never a `?code=` it cannot itself honour, which
-  // would just move the inert-query problem rather than fix it (`SIM_TABS`' own
-  // `supportsCode`).
-  test('an addon-pasted character gets a working ?code= href only where the destination can use it', async ({
-    page,
-  }) => {
+  // An addon-pasted character has no server-side ref, so the tab strip falls back to a fresh
+  // ?code= link. Since the tools island now bootstraps from ?code=, every tab including
+  // Top Gear gets that link and loads the character from it.
+  test('an addon-pasted character gets a working ?code= href on every tab', async ({ page }) => {
     await page.goto('/sim');
     await page.getByTestId('sim-addon-input').fill(FURY);
     await page.getByTestId('sim-addon-load').click();
