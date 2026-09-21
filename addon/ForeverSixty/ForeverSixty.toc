@@ -18,6 +18,7 @@ Cards.lua
 Export.lua
 Follow.lua
 Gear.lua
+Tooltip.lua
 TalentGlow.lua
 views\ExportView.lua
 views\FollowView.lua
@@ -27,4 +28,5 @@ Tracker.lua
 views\OverviewView.lua
 Minimap.lua
 Window.lua
+Toast.lua
 Options.lua

@@ -18,10 +18,14 @@ local Talents = ns.Talents or require("Talents")
 local Tracker = {}
 
 Tracker.FRAME_NAME = "ForeverSixtyTracker"
+--- The fill's own thickness, sized in this file because Theme.SIZES is
+--- off limits in this lane (file ownership) -- new pixel sizes are named
+--- constants in the file that uses them.
+Tracker.BAR_HEIGHT = 4
 
 function Tracker.model(data, build, ranks)
 	if build == nil then
-		return { shown = false, done = false, title = L.followNone, progress = "" }
+		return { shown = false, done = false, title = L.followNone, progress = "", fraction = 0 }
 	end
 	local total = #build.order
 	local point = Follow.nextPoint(build, ranks)
@@ -31,6 +35,7 @@ function Tracker.model(data, build, ranks)
 			done = true,
 			title = L.trackerComplete,
 			progress = string.format(L.trackerProgress, total, total),
+			fraction = 1,
 		}
 	end
 	return {
@@ -38,6 +43,7 @@ function Tracker.model(data, build, ranks)
 		done = false,
 		title = string.format(L.trackerNext, Follow.line(data, build, ranks)),
 		progress = string.format(L.trackerProgress, point.index - 1, total),
+		fraction = total > 0 and (point.index - 1) / total or 0,
 	}
 end
 
@@ -82,6 +88,13 @@ function Tracker.ensure()
 		Theme.SIZES.gap, -Theme.SIZES.gap)
 	Tracker.progress = Widgets.label(frame, "", "muted", "small")
 	Tracker.progress:SetPoint("TOPLEFT", Tracker.title, "BOTTOMLEFT", 0, -Theme.SIZES.gap)
+	Tracker.barWidth = Theme.SIZES.trackerWidth - Theme.SIZES.gap * 2
+	Tracker.barTrack = Theme.texture(frame, "ARTWORK", "border")
+	Tracker.barTrack:SetPoint("TOPLEFT", Tracker.progress, "BOTTOMLEFT", 0, -Theme.SIZES.gap)
+	Tracker.barTrack:SetSize(Tracker.barWidth, Tracker.BAR_HEIGHT)
+	Tracker.barFill = Theme.texture(frame, "OVERLAY", "gold")
+	Tracker.barFill:SetPoint("TOPLEFT", Tracker.barTrack, "TOPLEFT", 0, 0)
+	Tracker.barFill:SetHeight(Tracker.BAR_HEIGHT)
 	Tracker.restorePosition()
 	return frame
 end
@@ -105,6 +118,7 @@ function Tracker.refresh(data)
 	local frame = Tracker.ensure()
 	Tracker.title:SetText(model.title)
 	Tracker.progress:SetText(model.progress)
+	Tracker.barFill:SetWidth(Tracker.barWidth * math.max(0, math.min(1, model.fraction or 0)))
 	frame:Show()
 	if model.done then
 		Theme.after(Theme.SIZES.completeSeconds, Tracker.hide)

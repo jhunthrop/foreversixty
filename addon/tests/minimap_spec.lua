@@ -249,4 +249,82 @@ describe("Minimap", function()
 		assert.are.equal(32, header:byte(15) + header:byte(16) * 256)
 		assert.are.equal(32, header:byte(17))
 	end)
+
+	it("shows build progress in the tooltip once data is wired up", function()
+		start()
+		Button.data = DATA
+		assert(Follow.load(CODE, DATA))
+		local lines = Button.tooltipLines()
+		assert.are.equal(string.format(require("Locale").minimapProgress, 0, 1), lines[3])
+	end)
+
+	it("says nothing about progress before data is wired up", function()
+		start()
+		assert(Follow.load(CODE, DATA))
+		local lines = Button.tooltipLines()
+		assert.are.equal(L.minimapLeftClick, lines[3])
+	end)
+
+	it("names how many upgrades are waiting", function()
+		-- Gear.upgrades is exercised end to end by gear_spec.lua already;
+		-- this only proves tooltipLines() uses what it returns, so the
+		-- example does not have to re-stage a whole bag and stat scenario.
+		start()
+		Button.data = DATA
+		assert(Follow.load(CODE, DATA))
+		local Gear = require("Gear")
+		local real = Gear.upgrades
+		Gear.upgrades = function()
+			return { {}, {} }
+		end
+		local ok, lines = pcall(Button.tooltipLines)
+		Gear.upgrades = real
+		assert.is_true(ok)
+		assert.are.equal(string.format(require("Locale").minimapUpgrades, 2), lines[4])
+	end)
+
+	it("says nothing about upgrades when there are none waiting", function()
+		start()
+		Button.data = DATA
+		assert(Follow.load(CODE, DATA))
+		local Gear = require("Gear")
+		local real = Gear.upgrades
+		Gear.upgrades = function()
+			return {}
+		end
+		local ok, lines = pcall(Button.tooltipLines)
+		Gear.upgrades = real
+		assert.is_true(ok)
+		assert.are.equal(L.minimapLeftClick, lines[4])
+	end)
+
+	it("has no addon compartment on a client that lacks one", function()
+		start()
+		assert.is_false(Button.hasCompartment())
+		assert.is_false(Button.registerCompartment())
+	end)
+
+	it("registers with the addon compartment when the client has one", function()
+		local captured
+		start({ globals = {
+			AddonCompartmentFrame = {
+				RegisterAddon = function(_, info) captured = info end,
+			},
+		} })
+		assert.is_true(Button.hasCompartment())
+		assert.is_true(Button.registerCompartment())
+		assert.are.equal(L.addonName, captured.text)
+	end)
+
+	it("registers with the compartment only once", function()
+		local calls = 0
+		start({ globals = {
+			AddonCompartmentFrame = {
+				RegisterAddon = function() calls = calls + 1 end,
+			},
+		} })
+		Button.registerCompartment()
+		Button.registerCompartment()
+		assert.are.equal(1, calls)
+	end)
 end)

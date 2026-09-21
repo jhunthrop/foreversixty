@@ -54,6 +54,10 @@ change the named constant if it differs from the default.
 | 26 | Talent icons | load a build, open the Talents page: each talent row should show its real icon, not a question mark | `Talents.iconFor` walks `C_Traits.GetNodeInfo`, `GetEntryInfo`, `GetDefinitionInfo` and a spell texture function; a question mark means a link of that chain is missing here. `/dump C_Traits.GetEntryInfo, C_Traits.GetDefinitionInfo, C_Spell and C_Spell.GetSpellTexture, GetSpellTexture` says which |
 | 27 | Window chrome | `/fs`: sidebar with five pages and icons, a gold bar on the active one, the character name in class colour, a data pill at the top right, a close x, a soft shadow, a short fade in and the open sound | `Theme.fadeIn` (`UIFrameFadeIn`), `Theme.playSound` (`SOUNDKIT`), `Theme.desaturate`, `Theme.shadow`: each does nothing, quietly, on a client without its function |
 | 28 | Copy from the Overview | press Copy code on the Overview, then Ctrl+C, and paste into a text editor | The Overview keeps an invisible one-line field so there is a selection to copy; if nothing is copied, the client does not copy from a fully transparent edit box and the field needs to be visible |
+| 24 | Unspent talent points shape | `/dump C_ClassTalents.GetActiveConfigID()` then `/dump C_Traits.GetConfigInfo(<id>).treeIDs` and `/dump C_Traits.GetTreeInfo(<id>, <a treeID>)` — look for a points-remaining field | `Toast.unspentPoints`'s field names; if none match, the toast still fires on PLAYER_LEVEL_UP alone |
+| 25 | Tooltip hook API | `/dump TooltipDataProcessor and TooltipDataProcessor.AddTooltipPostCall ~= nil`, `/dump Enum and Enum.TooltipDataType and Enum.TooltipDataType.Item` | `Tooltip.hasProcessor`; with neither, `OnTooltipSetItem` is hooked instead |
+| 26 | Addon compartment | `/dump AddonCompartmentFrame and AddonCompartmentFrame.RegisterAddon ~= nil` | `Minimap.hasCompartment`; absent just means no compartment entry, no error |
+| 27 | The keybind shows up | Open Key Bindings > AddOns > Forever Sixty; confirm "Toggle Forever Sixty" is listed and toggles the window when bound | `Bindings.xml` |
 
 ## Findings
 
@@ -87,6 +91,16 @@ Run on one character per role and tick here:
 - [ ] The Export tab's export includes a `|guild=` section for a guilded character and
       none for an unguilded one (`/fs diag` or `/dump` the saved string).
 - [ ] `/fs diag` lists nothing unexpected.
+- [ ] Hovering a planned or upgrade-worthy item shows a "Forever Sixty" tooltip line; turning the
+      tooltip setting off removes it.
+- [ ] Levelling up (or gaining a talent point) with a build loaded pops the toast, fades after a
+      few seconds, and clicking it opens the Talents tab; it does not appear mid-combat and shows
+      once combat ends.
+- [ ] The tracker's thin bar fills as points are spent.
+- [ ] The minimap tooltip lists build progress and upgrades waiting; the addon appears in the addon
+      compartment on a client that has one.
+- [ ] The keybind (Key Bindings > AddOns > Forever Sixty) toggles the window.
+- [ ] `/fs help` prints the command list in gold.
 
 Two screenshots close this lane: the window on Follow with a build loaded, and
 the tracker plus the talent glow with the talent window open.

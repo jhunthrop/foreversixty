@@ -8,12 +8,13 @@ describe("the TOC", function()
 	local EXPECTED = {
 		"Locale.lua", "Data.lua", "Compat.lua", "Codec.lua", "Talents.lua", "Prefs.lua",
 		"Theme.lua", "Widgets.lua", "Cards.lua", "Export.lua", "Follow.lua", "Gear.lua",
+		"Tooltip.lua",
 		"TalentGlow.lua",
 		"views/ExportView.lua", "views/FollowView.lua",
 		"views/GearView.lua", "views/SettingsView.lua",
 		-- After Tracker: the Overview reads Tracker.model, and in game a module
 		-- that is not loaded yet is simply nil.
-		"Tracker.lua", "views/OverviewView.lua", "Minimap.lua", "Window.lua", "Options.lua",
+		"Tracker.lua", "views/OverviewView.lua", "Minimap.lua", "Window.lua", "Toast.lua", "Options.lua",
 	}
 
 	--- The file lines of the TOC, with the client's backslashes turned

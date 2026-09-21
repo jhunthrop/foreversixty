@@ -27,6 +27,8 @@ SettingsView.TOGGLES = {
 		group = "settingsGroupScreen" },
 	{ section = "tracker", key = "shown", label = "settingsTracker", hint = "settingsTrackerHint" },
 	{ section = "tracker", key = "locked", label = "settingsTrackerLocked", hint = "settingsTrackerLockedHint" },
+	{ flag = "tooltip", label = "settingsTooltip", hint = "settingsTooltipHint" },
+	{ flag = "toast", label = "settingsToast", hint = "settingsToastHint" },
 	{ flag = "autoSave", label = "settingsAutoSave", hint = "settingsAutoSaveHint",
 		group = "settingsGroupData" },
 	{ flag = "chat", label = "settingsChat", hint = "settingsChatHint" },

@@ -168,6 +168,8 @@ local L = {
 	settingsTrackerLockedHint = "Unlock it to drag it somewhere else.",
 	settingsAutoSaveHint = "The companion app reads this to keep your character on the site current.",
 	settingsChatHint = "Off by default: the window already shows it.",
+	settingsTooltipHint = "On any item: whether your build plans it, and whether it beats what you wear.",
+	settingsToastHint = "A small note when you level or gain a talent point, naming what to take.",
 	settingsMinimap = "Show the minimap button",
 	settingsTracker = "Show the tracker",
 	settingsTrackerLocked = "Lock the tracker in place",
@@ -203,6 +205,27 @@ local L = {
 	statusDataBuild = "Data %s",
 	statusOutOfDate = "Data out of date",
 	addonVersion = "v%s",
+
+	-- Outside the window (premium pass, 2026-09-21): item tooltips, the
+	-- level-up toast, the tracker's progress bar, the minimap's tooltip
+	-- and compartment, the keybind, and /fs help. Appended, never
+	-- interleaved with the keys above, so a merge with the window lane's
+	-- own edits to this file costs one diff hunk, not a rebase through
+	-- every key.
+	tooltipPlanned = "Planned for your %s",
+	tooltipUpgrade = "Upgrade for %s: %+.0f by our weights",
+	tooltipNotUpgrade = "Not an upgrade",
+	diagTooltipHookFailed = "The item tooltip hook failed once and turned itself off: %s",
+	toastMessage = "Level %d. Take %s, rank %d of %d.",
+	minimapProgress = "%d of %d points",
+	minimapUpgrades = "%d upgrade(s) waiting",
+	bindingHeader = "Forever Sixty",
+	bindingToggle = "Toggle Forever Sixty",
+	settingsTooltip = "Show gear tips on item tooltips",
+	settingsToast = "Show the level-up toast",
+	diagNoTooltipHook = "This client has no tooltip hook API; item tooltips will not show Forever Sixty's lines.",
+	diagCompartmentFailed = "This client's addon compartment did not accept Forever Sixty; "
+		.. "the minimap button is used instead.",
 }
 
 ns.L = L

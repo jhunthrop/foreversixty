@@ -453,6 +453,7 @@ function mock.uninstall()
 		"PlayerTalentFrame", "TalentFrame", "GetCursorPosition", "ITEM_QUALITY_COLORS",
 		"ForeverSixtyDB", "ForeverSixtyInbox",
 		"SLASH_FOREVERSIXTY1", "SLASH_FOREVERSIXTY2",
+		"BINDING_HEADER_FOREVERSIXTY", "BINDING_NAME_FOREVERSIXTY_TOGGLE", "FOREVERSIXTY_TOGGLE_WINDOW",
 	}) do
 		_G[name] = nil
 	end

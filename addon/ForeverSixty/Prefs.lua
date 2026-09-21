@@ -24,6 +24,11 @@ Prefs.DEFAULTS = {
 	-- Off by default: the window is the surface now, and printing the same
 	-- answer into chat as well is noise.
 	chat = false,
+	-- On by default: the tooltip line and the toast are what makes the
+	-- platform's value visible outside the window, which is the point of
+	-- this pass (design "Addon premium pass").
+	tooltip = true,
+	toast = true,
 }
 
 --- The sections resetPositions puts back.

@@ -26,6 +26,7 @@ read_globals = {
 	"GetProfessions", "GetProfessionInfo", "GetBuildInfo", "GetGuildInfo",
 	-- UI
 	"CreateFrame", "UIParent", "GameTooltip", "StaticPopupDialogs", "ITEM_QUALITY_COLORS",
+	"TooltipDataProcessor", "Enum",
 	"InterfaceOptions_AddCategory", "Settings",
 	"NUM_BANKGENERIC_SLOTS", "NUM_BANKBAGSLOTS", "BANK_CONTAINER",
 	"TalentFrame", "PlayerTalentFrame",
@@ -33,6 +34,7 @@ read_globals = {
 	"UISpecialFrames", "Minimap", "GetItemIcon", "date",
 	"ActionButton_ShowOverlayGlow", "ActionButton_HideOverlayGlow",
 	"GetCursorPosition", "InterfaceOptionsFrame_OpenToCategory",
+	"AddonCompartmentFrame",
 	-- Saved variables the TOC declares. ForeverSixtyInbox is written by the
 	-- companion and only ever read here; ForeverSixtyDB is the addon's own
 	-- and Export.save writes it, so it is a global, not a read_global.
@@ -46,7 +48,10 @@ read_globals = {
 -- SlashCmdList is a table the client owns; Options.register sets a field on
 -- it (SlashCmdList["FOREVERSIXTY"] = ...), which luacheck flags as writing a
 -- read-only global's field unless it is listed here rather than above.
-globals = { "SLASH_FOREVERSIXTY1", "SLASH_FOREVERSIXTY2", "ForeverSixtyDB", "SlashCmdList" }
+globals = {
+	"SLASH_FOREVERSIXTY1", "SLASH_FOREVERSIXTY2", "ForeverSixtyDB", "SlashCmdList",
+	"BINDING_HEADER_FOREVERSIXTY", "BINDING_NAME_FOREVERSIXTY_TOGGLE", "FOREVERSIXTY_TOGGLE_WINDOW",
+}
 
 files["tests/"] = {
 	-- Explicit "lua54+busted", not the relative "+busted": the base std
@@ -69,8 +74,10 @@ files["tests/"] = {
 		"RAID_CLASS_COLORS", "InCombatLockdown", "IsControlKeyDown", "C_Spell", "GetSpellTexture", "UIFrameFadeIn", "SOUNDKIT", "PlaySound", "UnitRace", "GetAddOnMetadata", "C_AddOns", "EquipItemByName", "C_Item", "C_Timer",
 		"ITEM_QUALITY_COLORS",
 		"UISpecialFrames", "Minimap", "GameTooltip", "GetItemIcon", "date",
+		"TooltipDataProcessor", "Enum",
 		"ActionButton_ShowOverlayGlow", "ActionButton_HideOverlayGlow",
 		"GetCursorPosition", "Settings", "InterfaceOptions_AddCategory",
 		"InterfaceOptionsFrame_OpenToCategory", "PlayerTalentFrame", "TalentFrame",
+		"AddonCompartmentFrame",
 	},
 }
