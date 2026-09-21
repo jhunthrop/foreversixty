@@ -883,3 +883,65 @@ func TestMeShowsGuildPlanOnlyToAVerifiedOfficer(t *testing.T) {
 		t.Fatalf("non-officer must not see Plan: %+v", mBody.Guilds)
 	}
 }
+
+// TestMeWorksWithNoEntitlementsStoreConfigured covers the nil-Entitlements
+// success path: a harness that never sets Service.Entitlements (mirrors
+// the doc comment on Service.Entitlements and reports.Service.Guilds's
+// own nil-safety pattern) must still answer /v1/me with 200 and a
+// zero-valued EntitlementsView, and attachGuildPlans must leave every
+// Guild.Plan nil even for a verified officer of a guild that does have
+// an active plan in the database — the nil check has to short-circuit
+// before ever asking, not merely happen to find nothing.
+func TestMeWorksWithNoEntitlementsStoreConfigured(t *testing.T) {
+	h := newHarness(t)
+	h.svc.Entitlements = nil
+
+	gid := h.seedGuild(t, "me-guild-no-entitlements-store")
+	if _, err := h.svc.Store.Pool.Exec(t.Context(),
+		`insert into entitlements (guild_id, plan, source, status) values ($1, 'guild', 'grant', 'active')`,
+		gid); err != nil {
+		t.Fatal(err)
+	}
+	officer := h.seedUser(t, "me-no-entitlements-store@example.com")
+	h.seedGuildMember(t, gid, officer, "officer", true)
+
+	res := h.sessionRequest(t, http.MethodGet, "/v1/me", officer)
+	if res.StatusCode != http.StatusOK {
+		res.Body.Close()
+		t.Fatalf("status = %d, want 200 with no panic or error even though Entitlements is nil", res.StatusCode)
+	}
+	var body struct {
+		Entitlements struct {
+			ServerSims    bool `json:"server_sims"`
+			Retention     bool `json:"retention"`
+			MultiCompare  bool `json:"multi_compare"`
+			History       bool `json:"history"`
+			Notifications bool `json:"notifications"`
+			OfficerViews  bool `json:"officer_views"`
+			RosterCheck   bool `json:"roster_check"`
+			SupporterMark bool `json:"supporter_mark"`
+			Billing       *struct {
+				Status string `json:"status"`
+			} `json:"billing"`
+		} `json:"entitlements"`
+		Guilds []struct {
+			ID   int64 `json:"id"`
+			Plan *struct {
+				Status string `json:"status"`
+			} `json:"plan,omitempty"`
+		} `json:"guilds"`
+	}
+	h.decode(t, res, &body)
+	ev := body.Entitlements
+	if ev.ServerSims || ev.Retention || ev.MultiCompare || ev.History || ev.Notifications ||
+		ev.OfficerViews || ev.RosterCheck || ev.SupporterMark {
+		t.Fatalf("a nil Entitlements store must answer every feature false: %+v", ev)
+	}
+	if ev.Billing != nil {
+		t.Fatalf("billing should be nil with no Entitlements store, got %+v", ev.Billing)
+	}
+	if len(body.Guilds) != 1 || body.Guilds[0].Plan != nil {
+		t.Fatalf("attachGuildPlans must leave Plan nil with no Entitlements store, even for a "+
+			"verified officer of a guild with an active plan row: %+v", body.Guilds)
+	}
+}
