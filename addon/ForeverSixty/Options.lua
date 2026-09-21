@@ -15,6 +15,7 @@ local Data = ns.Data or require("Data")
 local Export = ns.Export or require("Export")
 local Follow = ns.Follow or require("Follow")
 local Gear = ns.Gear or require("Gear")
+local Tooltip = ns.Tooltip or require("Tooltip")
 local Talents = ns.Talents or require("Talents")
 local Prefs = ns.Prefs or require("Prefs")
 local Theme = ns.Theme or require("Theme")
@@ -159,6 +160,8 @@ function Options.register()
 	SlashCmdList["FOREVERSIXTY"] = Options.run
 
 	Window.data = Options.data
+	Tooltip.data = Options.data
+	Tooltip.register()
 	MinimapButton.open = function()
 		return Window.open()
 	end

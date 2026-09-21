@@ -27,6 +27,8 @@ describe("Tooltip", function()
 		Theme.reset()
 		helper.load("Export")
 		helper.load("Gear")
+		helper.load("Prefs")
+		helper.load("Follow")
 		Tooltip = helper.load("Tooltip")
 		return Tooltip
 	end
@@ -118,5 +120,133 @@ describe("Tooltip", function()
 	it("returns an empty list rather than nil for an item with nothing to say", function()
 		start({ class = { name = "Paladin", token = "PALADIN" } })
 		assert.are.same({}, Tooltip.lines(DATA, nil, "item:999"))
+	end)
+
+	describe("the hook", function()
+		local Prefs, Follow
+
+		local function startHook(install)
+			start(install)
+			-- require, not helper.load: start() already loaded Prefs and
+			-- Follow fresh (in that order, before Tooltip), and Tooltip
+			-- captured those exact instances at its own load time.
+			-- Reloading them here would hand this describe block a second,
+			-- disconnected copy that Tooltip never sees.
+			Prefs = require("Prefs")
+			Follow = require("Follow")
+			return Prefs, Follow
+		end
+
+		it("reads the link GetItem hands back", function()
+			startHook()
+			local tooltip = { GetItem = function() return "Item Name", "item:42" end }
+			assert.are.equal("item:42", Tooltip.itemLinkFrom(tooltip))
+		end)
+
+		it("returns nil rather than erroring when GetItem is missing", function()
+			startHook()
+			assert.is_nil(Tooltip.itemLinkFrom({}))
+		end)
+
+		it("adds a Forever Sixty heading and the lines onto the tooltip", function()
+			startHook({
+				class = { name = "Paladin", token = "PALADIN" },
+				itemStats = {
+					["item:111"] = { __itemId = 111, __slot = "INVTYPE_CHEST", ITEM_MOD_INTELLECT_SHORT = 10 },
+				},
+			})
+			Tooltip.data = DATA
+			Follow.build = BUILD
+			local calls = {}
+			local tooltip = {
+				AddLine = function(_, text) calls[#calls + 1] = text end,
+				Show = function() end,
+			}
+			Tooltip.onTooltip(tooltip, "item:111")
+			assert.are.equal(L.addonName, calls[1])
+			assert.are.equal(string.format(L.tooltipPlanned, "chest"), calls[2])
+		end)
+
+		it("adds nothing when the tooltip pref is off", function()
+			startHook({ class = { name = "Paladin", token = "PALADIN" } })
+			Prefs.setFlag("tooltip", false)
+			local calls = {}
+			Tooltip.onTooltip({ AddLine = function(_, t) calls[#calls + 1] = t end, Show = function() end },
+				"item:111")
+			assert.are.same({}, calls)
+		end)
+
+		it("never recomputes for the same link twice", function()
+			startHook({
+				class = { name = "Paladin", token = "PALADIN" },
+				itemStats = {
+					["item:111"] = { __itemId = 111, __slot = "INVTYPE_CHEST", ITEM_MOD_INTELLECT_SHORT = 10 },
+				},
+			})
+			local tooltip = { AddLine = function() end, Show = function() end }
+			Tooltip.onTooltip(tooltip, "item:111")
+			local before = Tooltip.cache["item:111"]
+			Tooltip.onTooltip(tooltip, "item:111")
+			assert.are.equal(before, Tooltip.cache["item:111"])
+		end)
+
+		it("disables itself after one failure rather than erroring again", function()
+			startHook({ class = { name = "Paladin", token = "PALADIN" } })
+			-- A planned item, so lines is non-empty and addLines actually
+			-- reaches AddLine, which is what this example throws from.
+			Follow.build = BUILD
+			local tooltip = {
+				AddLine = function() error("boom") end,
+				Show = function() end,
+			}
+			Tooltip.onTooltip(tooltip, "item:111")
+			assert.is_true(Tooltip.disabled)
+			assert.are.equal(1, #Theme.diagnostics())
+			local calls = 0
+			tooltip.AddLine = function() calls = calls + 1 end
+			Tooltip.onTooltip(tooltip, "item:111")
+			assert.are.equal(0, calls)
+		end)
+
+		it("prefers the modern processor when the client has both", function()
+			startHook({ globals = {
+				TooltipDataProcessor = { AddTooltipPostCall = function() end },
+				Enum = { TooltipDataType = { Item = 1 } },
+			} })
+			assert.is_true(Tooltip.hasProcessor())
+		end)
+
+		it("has no processor when Enum.TooltipDataType.Item is missing", function()
+			startHook({ globals = { TooltipDataProcessor = { AddTooltipPostCall = function() end } } })
+			assert.is_false(Tooltip.hasProcessor())
+		end)
+
+		it("registers through the processor when the client has one", function()
+			local captured
+			startHook({ globals = {
+				TooltipDataProcessor = {
+					AddTooltipPostCall = function(kind, fn) captured = { kind, fn } end,
+				},
+				Enum = { TooltipDataType = { Item = 1 } },
+			} })
+			assert.are.equal("processor", Tooltip.register())
+			assert.are.equal(1, captured[1])
+			assert.is_function(captured[2])
+		end)
+
+		it("falls back to the legacy hook with no processor", function()
+			startHook({ class = { name = "Paladin", token = "PALADIN" } })
+			assert.are.equal("legacy", Tooltip.register())
+			local call = mock.firstCall(_G.GameTooltip, "HookScript")
+			assert.are.equal("OnTooltipSetItem", call[1])
+			assert.is_function(call[2])
+		end)
+
+		it("registers only once", function()
+			startHook()
+			Tooltip.register()
+			Tooltip.register()
+			assert.are.equal(1, mock.countCalls(_G.GameTooltip, "HookScript"))
+		end)
 	end)
 end)

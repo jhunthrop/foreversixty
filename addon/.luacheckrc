@@ -26,6 +26,7 @@ read_globals = {
 	"GetProfessions", "GetProfessionInfo", "GetBuildInfo", "GetGuildInfo",
 	-- UI
 	"CreateFrame", "UIParent", "GameTooltip", "StaticPopupDialogs", "ITEM_QUALITY_COLORS",
+	"TooltipDataProcessor", "Enum",
 	"InterfaceOptions_AddCategory", "Settings",
 	"NUM_BANKGENERIC_SLOTS", "NUM_BANKBAGSLOTS", "BANK_CONTAINER",
 	"TalentFrame", "PlayerTalentFrame",
@@ -69,6 +70,7 @@ files["tests/"] = {
 		"RAID_CLASS_COLORS", "InCombatLockdown", "IsControlKeyDown", "EquipItemByName", "C_Item", "C_Timer",
 		"ITEM_QUALITY_COLORS",
 		"UISpecialFrames", "Minimap", "GameTooltip", "GetItemIcon", "date",
+		"TooltipDataProcessor", "Enum",
 		"ActionButton_ShowOverlayGlow", "ActionButton_HideOverlayGlow",
 		"GetCursorPosition", "Settings", "InterfaceOptions_AddCategory",
 		"InterfaceOptionsFrame_OpenToCategory", "PlayerTalentFrame", "TalentFrame",

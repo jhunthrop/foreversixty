@@ -13,6 +13,9 @@ local Talents = ns.Talents or require("Talents")
 local Gear = ns.Gear or require("Gear")
 local Export = ns.Export or require("Export")
 local Compat = ns.Compat or require("Compat")
+local Theme = ns.Theme or require("Theme")
+local Prefs = ns.Prefs or require("Prefs")
+local Follow = ns.Follow or require("Follow")
 
 local Tooltip = {}
 
@@ -113,6 +116,103 @@ function Tooltip.lines(data, build, itemLink)
 		lines[#lines + 1] = upgrade
 	end
 	return lines
+end
+
+--- The generated data table, set once by Options.register() exactly like
+--- Window.data and MinimapButton.data -- never required directly, so a
+--- spec can hand the hook a fixture instead of the real Data.lua, and the
+--- hook does nothing (rather than erroring) before login has set it.
+Tooltip.data = nil
+
+--- Computed once per item link for the session: the mouse crossing the
+--- same item repeatedly must not re-run the scoring walk every time.
+Tooltip.cache = {}
+
+function Tooltip.resetCache()
+	Tooltip.cache = {}
+	return Tooltip.cache
+end
+
+local function cachedLines(itemLink)
+	local cached = Tooltip.cache[itemLink]
+	if cached ~= nil then
+		return cached
+	end
+	local lines = Tooltip.lines(Tooltip.data, Follow.build, itemLink)
+	Tooltip.cache[itemLink] = lines
+	return lines
+end
+
+local function addLines(tooltip, itemLink)
+	local lines = cachedLines(itemLink)
+	if #lines == 0 then
+		return
+	end
+	tooltip:AddLine(L.addonName, Theme.rgb(Theme.HEX.gold))
+	for _, line in ipairs(lines) do
+		tooltip:AddLine(line, Theme.rgb(Theme.HEX.body))
+	end
+	tooltip:Show()
+end
+
+--- One guarded body for both hook shapes below. A Lua error inside a
+--- tooltip hook breaks every tooltip in the game (found in game, twice),
+--- so a failure here turns the hook off instead of raising a second time.
+function Tooltip.onTooltip(tooltip, itemLink)
+	if Tooltip.disabled or itemLink == nil or not Prefs.flag("tooltip") then
+		return
+	end
+	local ok, err = pcall(addLines, tooltip, itemLink)
+	if not ok then
+		Tooltip.disabled = true
+		Theme.note(string.format(L.diagTooltipHookFailed, tostring(err)))
+	end
+end
+
+function Tooltip.itemLinkFrom(tooltip)
+	if type(tooltip) ~= "table" or type(tooltip.GetItem) ~= "function" then
+		return nil
+	end
+	local ok, _, link = pcall(tooltip.GetItem, tooltip)
+	if not ok then
+		return nil
+	end
+	return link
+end
+
+function Tooltip.hasProcessor()
+	return type(TooltipDataProcessor) == "table"
+		and type(TooltipDataProcessor.AddTooltipPostCall) == "function"
+		and type(Enum) == "table"
+		and type(Enum.TooltipDataType) == "table"
+		and Enum.TooltipDataType.Item ~= nil
+end
+
+--- Hooks exactly one of the two tooltip shapes, never both: the modern
+--- processor when the client has it, else the legacy script. Idempotent,
+--- so Options.register() can call it plainly every load.
+function Tooltip.register()
+	if Tooltip.registered then
+		return Tooltip.how
+	end
+	Tooltip.registered = true
+	if Tooltip.hasProcessor() then
+		TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(tooltip)
+			Tooltip.onTooltip(tooltip, Tooltip.itemLinkFrom(tooltip))
+		end)
+		Tooltip.how = "processor"
+		return Tooltip.how
+	end
+	if type(GameTooltip) == "table" and type(GameTooltip.HookScript) == "function" then
+		GameTooltip:HookScript("OnTooltipSetItem", function(tooltip)
+			Tooltip.onTooltip(tooltip, Tooltip.itemLinkFrom(tooltip))
+		end)
+		Tooltip.how = "legacy"
+		return Tooltip.how
+	end
+	Theme.note(string.format(L.diagTooltipHookFailed, "no tooltip hook API"))
+	Tooltip.how = nil
+	return nil
 end
 
 ns.Tooltip = Tooltip
