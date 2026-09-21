@@ -2,6 +2,7 @@
 package rating
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/logs/engine/mechanics/weights"
@@ -115,6 +116,20 @@ func TestRound2RoundsToTwoDecimalPlaces(t *testing.T) {
 			t.Errorf("round2(%v) = %v, want %v", c.in, got, c.want)
 		}
 	}
+}
+
+func TestWeightOfPanicsOnAnUnrecognisedComponentName(t *testing.T) {
+	defer func() {
+		r := recover()
+		if r == nil {
+			t.Fatal("weightOf(\"not-a-component\") did not panic, want a panic naming the bad component")
+		}
+		msg, ok := r.(string)
+		if !ok || !strings.Contains(msg, "not-a-component") {
+			t.Fatalf("panic value = %v, want a message naming the unrecognised component", r)
+		}
+	}()
+	weightOf(roleWeights(t, RoleDPS), "not-a-component")
 }
 
 func TestSpecSlugMatchesCuratedSpecsFileFormat(t *testing.T) {

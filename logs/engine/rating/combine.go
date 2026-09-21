@@ -1,10 +1,20 @@
 // logs/engine/rating/combine.go
 package rating
 
-import "github.com/jhunthrop/foreversixty/logs/engine/mechanics/weights"
+import (
+	"fmt"
+
+	"github.com/jhunthrop/foreversixty/logs/engine/mechanics/weights"
+)
 
 // weightOf returns a component's site-default weight for one role's weight
-// row, by name.
+// row, by name. name is always one of the six ComponentName* constants
+// this same package defines and every component scorer sets Component.Name
+// to — never external input — so an unrecognised name is a programming
+// error here, not a data problem, and panics rather than silently reading
+// as Activity's weight (matching how the curated tables already fail fast
+// at build time on a malformed file rather than tolerating one at
+// runtime).
 func weightOf(w weights.RoleWeights, name string) float64 {
 	switch name {
 	case ComponentNameOutput:
@@ -17,8 +27,10 @@ func weightOf(w weights.RoleWeights, name string) float64 {
 		return w.Utility
 	case ComponentNamePreparation:
 		return w.Preparation
-	default:
+	case ComponentNameActivity:
 		return w.Activity
+	default:
+		panic(fmt.Sprintf("rating: weightOf: unrecognised component name %q", name))
 	}
 }
 
