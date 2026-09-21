@@ -129,7 +129,8 @@ function ExportView.apply(view, model)
 	else
 		view.reason:Hide()
 		view.box:Show()
-		Widgets.selectText(view.box, model.code)
+		-- Text only. Focus is taken by the Copy button, never by a redraw.
+		Widgets.setText(view.box, model.code)
 	end
 	Widgets.setEnabled(view.copy, model.code ~= nil)
 	return view

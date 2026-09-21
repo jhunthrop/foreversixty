@@ -280,6 +280,13 @@ function mock.install(state)
 			record(self, "SetFocus")
 			self.focused = true
 		end
+		function frame:ClearFocus()
+			record(self, "ClearFocus")
+			self.focused = false
+		end
+		function frame:HasFocus()
+			return self.focused == true
+		end
 		function frame:SetSize(width, height)
 			record(self, "SetSize", width, height)
 			self.width, self.height = width, height

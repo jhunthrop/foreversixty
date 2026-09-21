@@ -123,15 +123,52 @@ function Widgets.editBox(parent, width, height, readOnly)
 			end
 		end)
 	end
-	box:SetScript("OnEscapePressed", function(self)
+	Widgets.releaseFocusWhenDone(box)
+	return box
+end
+
+--- How long after Ctrl+C the box keeps focus: the client copies the
+--- selection on the key press, so focus can go a moment later.
+Widgets.COPY_FOCUS_RELEASE_SECONDS = 0.2
+
+--- An edit box that holds keyboard focus swallows every keybind: found in
+--- game, where opening the window left movement and action bars dead until
+--- Escape. A box may hold focus only while the player is copying out of it,
+--- so it gives focus back when it is hidden (the tab changed or the window
+--- closed), on Escape, on Enter, and shortly after Ctrl+C.
+function Widgets.releaseFocusWhenDone(box)
+	local function release(self)
 		self:ClearFocus()
+	end
+	box:SetScript("OnHide", release)
+	box:SetScript("OnEscapePressed", release)
+	box:SetScript("OnEnterPressed", release)
+	box:SetScript("OnKeyDown", function(self, key)
+		local copying = key == "C" and type(IsControlKeyDown) == "function" and IsControlKeyDown()
+		if not copying then
+			return
+		end
+		if type(C_Timer) == "table" and type(C_Timer.After) == "function" then
+			C_Timer.After(Widgets.COPY_FOCUS_RELEASE_SECONDS, function()
+				release(self)
+			end)
+		end
 	end)
 	return box
 end
 
-function Widgets.selectText(box, text)
+--- Put text in a box without touching keyboard focus. Drawing a tab uses
+--- this; only an explicit copy uses selectText.
+function Widgets.setText(box, text)
 	box.foreverSixtyValue = text
 	box:SetText(text)
+	return text
+end
+
+--- Select the text and take focus so Ctrl+C copies it. Only ever called
+--- from a click the player made.
+function Widgets.selectText(box, text)
+	Widgets.setText(box, text)
 	box:HighlightText()
 	box:SetFocus()
 	return text

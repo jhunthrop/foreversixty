@@ -265,4 +265,61 @@ describe("Widgets", function()
 		assert.is_nil(mock.firstCall(_G.GameTooltip, "SetOwner"))
 		assert.is_nil(mock.firstCall(_G.GameTooltip, "Show"))
 	end)
+	describe("keyboard focus", function()
+		-- An edit box that holds focus swallows every keybind. It may take
+		-- focus only when the player asks to copy, and must give it back.
+		local function box()
+			start()
+			return Widgets.editBox(_G.CreateFrame("Frame"), 200, 80, true)
+		end
+
+		it("sets text without focus", function()
+			local b = box()
+			Widgets.setText(b, "FS1:code")
+			assert.are.equal("FS1:code", b:GetText())
+			assert.is_false(b.focused)
+		end)
+
+		it("gives focus back when the box is hidden", function()
+			local b = box()
+			Widgets.selectText(b, "FS1:code")
+			assert.is_true(b.focused)
+			b:GetScript("OnHide")(b)
+			assert.is_false(b.focused)
+		end)
+
+		it("gives focus back on Escape and on Enter", function()
+			local b = box()
+			Widgets.selectText(b, "FS1:code")
+			b:GetScript("OnEscapePressed")(b)
+			assert.is_false(b.focused)
+			Widgets.selectText(b, "FS1:code")
+			b:GetScript("OnEnterPressed")(b)
+			assert.is_false(b.focused)
+		end)
+
+		it("gives focus back shortly after the player copies with Ctrl+C", function()
+			local b = box()
+			Widgets.selectText(b, "FS1:code")
+			_G.IsControlKeyDown = function()
+				return true
+			end
+			b:GetScript("OnKeyDown")(b, "C")
+			assert.are.equal(1, mock.runTimers(state))
+			assert.is_false(b.focused)
+			_G.IsControlKeyDown = nil
+		end)
+
+		it("keeps focus for any other key", function()
+			local b = box()
+			Widgets.selectText(b, "FS1:code")
+			_G.IsControlKeyDown = function()
+				return false
+			end
+			b:GetScript("OnKeyDown")(b, "C")
+			mock.runTimers(state)
+			assert.is_true(b.focused)
+			_G.IsControlKeyDown = nil
+		end)
+	end)
 end)

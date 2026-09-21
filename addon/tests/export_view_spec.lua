@@ -135,6 +135,18 @@ describe("ExportView", function()
 			ExportView.summary(DATA).savedLine)
 	end)
 
+	-- Found in game: the box took keyboard focus every time the tab drew,
+	-- so opening the window swallowed every keybind until Escape.
+	it("fills the box without taking keyboard focus when the tab is drawn", function()
+		start()
+		local view = ExportView.mount(_G.CreateFrame("Frame"),
+			{ data = DATA, contentWidth = 520, select = function() end })
+		assert.is_truthy(view.box:GetText():find("FS1:", 1, true))
+		assert.is_false(view.box.focused)
+		ExportView.apply(view, ExportView.summary(DATA))
+		assert.is_false(view.box.focused)
+	end)
+
 	it("fills the box and focuses it when the copy button is clicked", function()
 		local state = start()
 		local view = ExportView.mount(_G.CreateFrame("Frame"),
