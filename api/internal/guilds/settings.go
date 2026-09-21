@@ -60,10 +60,14 @@ func (s *Store) Settings(ctx context.Context, guildID int64) (SettingsView, erro
 	if err != nil {
 		return SettingsView{}, err
 	}
+	claim, err := s.claimView(ctx, g, time.Now())
+	if err != nil {
+		return SettingsView{}, err
+	}
 	return SettingsView{
 		DefaultVisibility: g.DefaultVisibility, OfficerMaxRankIndex: g.OfficerMaxRankIndex,
 		Invite: InviteView{RotatedAt: g.InviteTokenRotatedAt},
-		Claim:  claimState(g, time.Now()),
+		Claim:  claim,
 	}, nil
 }
 
@@ -185,6 +189,7 @@ func (s *Service) patchSettings(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such guild", nil)
 		return
 	}
+	actor := auth.ActorFrom(r.Context())
 	allowed, err := s.verifiedOfficerOrModerator(r, guildID)
 	if err != nil {
 		s.fail(w, r, "patch_settings", err, "could not change those settings just now")
@@ -195,10 +200,10 @@ func (s *Service) patchSettings(w http.ResponseWriter, r *http.Request) {
 			"you must be a verified officer of this guild to change its settings", nil)
 		return
 	}
-	if contested, err := s.Store.contested(r.Context(), guildID); err != nil {
+	if frozen, err := s.freezeCheck(r.Context(), guildID, actor.IsModerator()); err != nil {
 		s.fail(w, r, "patch_settings", err, "could not change those settings just now")
 		return
-	} else if contested {
+	} else if frozen {
 		httpx.WriteError(w, r, http.StatusConflict, "claim_contested",
 			"this guild's claim is contested; officer actions are frozen until a moderator resolves it", nil)
 		return
@@ -222,8 +227,7 @@ func (s *Service) patchSettings(w http.ResponseWriter, r *http.Request) {
 	case err != nil:
 		s.fail(w, r, "patch_settings", err, "could not change those settings just now")
 	default:
-		s.logger().Info("guilds", "op", "settings_update", "guild_id", guildID,
-			"user_id", auth.ActorFrom(r.Context()).UserID)
+		s.logger().Info("guilds", "op", "settings_update", "guild_id", guildID, "user_id", actor.UserID)
 		httpx.WriteOK(w, r, http.StatusOK, view)
 	}
 }

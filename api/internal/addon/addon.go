@@ -191,6 +191,15 @@ func (s *Store) syncGuild(ctx context.Context, tx pgx.Tx, userID int64, key, reg
 	rank := deriveRank(rankIndex, officerMax)
 
 	if prevGuildID != nil && *prevGuildID != guildID {
+		// A transfer touches two guilds; lock both, in a fixed
+		// ascending order, before any mutation on either - two
+		// concurrent opposite-direction transfers between the same
+		// pair of guilds would otherwise each lock their own "new"
+		// guild first and then deadlock waiting for the other's "old"
+		// guild (E, 2026-09-21 second security review response).
+		if err := guilds.LockGuilds(ctx, tx, guildID, *prevGuildID); err != nil {
+			return err
+		}
 		if _, err := tx.Exec(ctx,
 			`delete from guild_characters where character_key = $1 and guild_id = $2`, key, *prevGuildID); err != nil {
 			return fmt.Errorf("addon: clear previous guild for %s: %w", key, err)

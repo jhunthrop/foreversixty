@@ -20,6 +20,17 @@ const maxJSONBody = 8 << 10
 // inviteAcceptPerHour is the contract's redemption rate limit.
 const inviteAcceptPerHour = 20
 
+// contestPerHour is the per-IP cap on claim/contest attempts (A2,
+// 2026-09-21 second security review response): "rate-limited like
+// claim" per the spec, applied here as the same kind of per-IP
+// httpx.RateLimitPer wrap the invite-accept route uses, at a much
+// lower ceiling than invite-accept's 20/hour since a successful
+// contest can freeze a guild's officer tools - a bulk-account attempt
+// against many guilds must be slowed at the IP layer even before the
+// per-account, 30-day DB-level limit (checkContestRateLimit) ever
+// gets involved.
+const contestPerHour = 5
+
 // Accounts is the part of auth.Store the guilds handlers need — the same
 // two methods reports.Accounts already reads.
 type Accounts interface {
@@ -42,7 +53,8 @@ func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	mux.HandleFunc("POST /v1/guilds/{id}/claim", auth.RequireSession(s.claim))
 	mux.HandleFunc("POST /v1/guilds/{id}/claim/confirm", auth.RequireSession(s.confirmClaim))
 	mux.HandleFunc("POST /v1/guilds/{id}/claim/release", auth.RequireSession(s.releaseClaim))
-	mux.HandleFunc("POST /v1/guilds/{id}/claim/contest", auth.RequireSession(s.contestClaim))
+	contest := httpx.RateLimitPer(contestPerHour, time.Hour, trustedProxyHops)
+	mux.Handle("POST /v1/guilds/{id}/claim/contest", contest(auth.RequireSession(s.contestClaim)))
 	mux.HandleFunc("POST /v1/guilds/{id}/claim/resolve", auth.RequireSession(s.resolveClaim))
 	mux.HandleFunc("GET /v1/guilds/{id}/settings", auth.RequireSession(s.getSettings))
 	mux.HandleFunc("PATCH /v1/guilds/{id}/settings", auth.RequireSession(s.patchSettings))
@@ -85,6 +97,32 @@ func (s *Service) verifiedOfficerOrLeader(r *http.Request, guildID int64) (bool,
 		return false, err
 	}
 	return rank == "officer" || rank == "leader", nil
+}
+
+// freezeCheck applies the officer-power freeze gate every officer route
+// in this package shares (A4, 2026-09-21 second security review
+// response): a route is blocked with 409 claim_contested only while the
+// guild's claim is BOTH contested and frozen - an established,
+// independently log-corroborated claim is recorded as contested and
+// queued for a moderator, but nothing freezes. moderatorExempt lets a
+// route that already gave the caller moderator standing (settings) also
+// give them the bypass every moderator implicitly needs to be the one
+// who resolves a freeze in the first place; a route with no moderator
+// standing at all passes false and the freeze (once it applies) blocks
+// everyone the same way.
+func (s *Service) freezeCheck(ctx context.Context, guildID int64, moderatorExempt bool) (bool, error) {
+	if moderatorExempt {
+		return false, nil
+	}
+	g, err := s.Store.getGuild(ctx, guildID)
+	if err != nil {
+		return false, err
+	}
+	view, err := s.Store.claimView(ctx, g, time.Now())
+	if err != nil {
+		return false, err
+	}
+	return view.State == "contested" && view.Frozen, nil
 }
 
 // decodeJSON decodes r's body into v, capped at maxJSONBody, answering 400

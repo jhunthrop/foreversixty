@@ -11,6 +11,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"sort"
 	"time"
 
 	"github.com/jackc/pgx/v5"
@@ -30,6 +31,7 @@ type Guild struct {
 	Region, Ruleset, Name string
 	DefaultVisibility     string
 	ClaimedBy             *int64
+	ClaimedAt             *time.Time
 	ClaimPendingBy        *int64
 	ClaimRequestedAt      *time.Time
 	ClaimContestedAt      *time.Time
@@ -45,17 +47,37 @@ func (g Guild) pendingActive(now time.Time) bool {
 		now.Sub(*g.ClaimRequestedAt) <= ClaimPendingTTL
 }
 
+// activeClaimant reports the account a contest would currently be
+// disputing - the claimed account if one holds the claim, otherwise a
+// still-pending one, otherwise none - and since, when it was
+// established (claimed_at for a held claim, claim_requested_at for a
+// pending one). Claimed takes priority over merely-pending, the same
+// resolution ContestClaim and ResolveClaim both need (2026-09-21
+// second security review response).
+func (g Guild) activeClaimant(now time.Time) (claimant int64, since time.Time, ok bool) {
+	if g.ClaimedBy != nil {
+		if g.ClaimedAt != nil {
+			since = *g.ClaimedAt
+		}
+		return *g.ClaimedBy, since, true
+	}
+	if g.pendingActive(now) {
+		return *g.ClaimPendingBy, *g.ClaimRequestedAt, true
+	}
+	return 0, time.Time{}, false
+}
+
 // Store is every guild-mutation read and write.
 type Store struct{ Pool *pgxpool.Pool }
 
 func (s *Store) getGuild(ctx context.Context, id int64) (Guild, error) {
 	var g Guild
 	err := s.Pool.QueryRow(ctx,
-		`select id, region, ruleset, name, default_visibility, claimed_by, claim_pending_by,
+		`select id, region, ruleset, name, default_visibility, claimed_by, claimed_at, claim_pending_by,
 		        claim_requested_at, claim_contested_at, claim_contested_by,
 		        officer_max_rank_index, invite_token_rotated_at
 		 from guilds where id = $1`, id).
-		Scan(&g.ID, &g.Region, &g.Ruleset, &g.Name, &g.DefaultVisibility, &g.ClaimedBy,
+		Scan(&g.ID, &g.Region, &g.Ruleset, &g.Name, &g.DefaultVisibility, &g.ClaimedBy, &g.ClaimedAt,
 			&g.ClaimPendingBy, &g.ClaimRequestedAt, &g.ClaimContestedAt, &g.ClaimContestedBy,
 			&g.OfficerMaxRankIndex, &g.InviteTokenRotatedAt)
 	if errors.Is(err, pgx.ErrNoRows) {
@@ -79,23 +101,6 @@ func (s *Store) IsMember(ctx context.Context, guildID, userID int64) (bool, erro
 		return false, fmt.Errorf("guilds: is member: %w", err)
 	}
 	return exists, nil
-}
-
-// contested reports whether guildID's claim is currently disputed - the
-// freeze gate every officer-power route in this package checks before
-// acting, so a disputed claim cannot be used to entrench itself while a
-// moderator investigates.
-func (s *Store) contested(ctx context.Context, guildID int64) (bool, error) {
-	var yes bool
-	err := s.Pool.QueryRow(ctx,
-		`select claim_contested_at is not null from guilds where id = $1`, guildID).Scan(&yes)
-	if errors.Is(err, pgx.ErrNoRows) {
-		return false, ErrNotFound
-	}
-	if err != nil {
-		return false, fmt.Errorf("guilds: contested: %w", err)
-	}
-	return yes, nil
 }
 
 // RecomputeMembership derives the account-level guild_members row for
@@ -155,13 +160,42 @@ func RecomputeMembership(ctx context.Context, tx pgx.Tx, guildID int64, userID *
 // it after RecomputeMembership, in the same transaction.
 func ReleaseClaimIfLost(ctx context.Context, tx pgx.Tx, guildID, userID int64) error {
 	if _, err := tx.Exec(ctx,
-		`update guilds set claimed_by = null
+		`update guilds set claimed_by = null, claimed_at = null
 		 where id = $1 and claimed_by = $2
 		   and not exists (
 		     select 1 from guild_members
 		     where guild_id = $1 and user_id = $2 and verified_at is not null
 		   )`, guildID, userID); err != nil {
 		return fmt.Errorf("guilds: release claim for guild %d: %w", guildID, err)
+	}
+	return nil
+}
+
+// LockGuilds takes a transaction-scoped advisory lock on every distinct
+// id in ids, in ascending order, before any per-guild work in tx begins.
+// A single sync that touches two guilds at once (a character's guild
+// transfer) must acquire every lock it will need up front in one fixed
+// global order: without this, two transactions each transferring a
+// character in opposite directions between the same two guilds could
+// each lock their own "new" guild first and then block forever waiting
+// for the other's "old" guild (E, 2026-09-21 second security review
+// response). RecomputeMembership then re-locks whichever guild it acts
+// on; re-acquiring a lock this transaction already holds is safe -
+// Postgres advisory transaction locks are re-entrant per session.
+func LockGuilds(ctx context.Context, tx pgx.Tx, ids ...int64) error {
+	seen := make(map[int64]bool, len(ids))
+	sorted := make([]int64, 0, len(ids))
+	for _, id := range ids {
+		if !seen[id] {
+			seen[id] = true
+			sorted = append(sorted, id)
+		}
+	}
+	sort.Slice(sorted, func(i, j int) bool { return sorted[i] < sorted[j] })
+	for _, id := range sorted {
+		if _, err := tx.Exec(ctx, `select pg_advisory_xact_lock($1)`, id); err != nil {
+			return fmt.Errorf("guilds: lock guild %d: %w", id, err)
+		}
 	}
 	return nil
 }

@@ -442,6 +442,69 @@ not exist yet); it is made rare (30-day, one-guild-at-a-time), attributable (a r
 Battle.net identity, not a disposable one), and reversible (contest + moderator resolve)
 instead.
 
+#### Second amendment, 2026-09-21 (second security review response)
+
+A scoped re-review of the fix round above marked six of seven original findings fixed with
+real tests, but found the contest mechanism *itself* exploitable exactly the way the claim
+flow it hardens against once was: `POST /v1/guilds/{id}/claim/contest` had no Battle.net
+requirement, no rate limit (despite the endpoint table already saying "rate-limited like
+claim"), and an upheld contest left the losing contester free to re-contest at once — a
+free, email-only account with one forged officer-rank export could freeze any legitimately
+claimed guild's officer tools, indefinitely, and many guilds at once. Fixed, mirroring the
+claim flow's own hardening:
+
+- **Contesting needs a linked Battle.net identity**, exactly as a leader claim does
+  (`ErrNoBattleNetIdentity`, checked first).
+- **Contest attempts are rate-limited per account in the database**: one contest per
+  account per rolling 30 days across every guild, and at most one *open* contest per
+  account at a time (`guild_claim_attempts` gained a `kind` column shared with claim
+  attempts, so both share one 30-day-window query shape). The route is also wrapped in the
+  same per-IP `httpx.RateLimitPer` the invite-accept route uses, at a much lower ceiling
+  (5/hour/IP) given how much one successful contest can suspend.
+- **An uphold is final for that `(guild, contesting account)` pair.** Every resolution is
+  recorded in a new `guild_claim_resolutions` table (`guild_id`, `contester_id`, `outcome`,
+  `resolved_at`, `moderator_id`); a repeat contest of the same guild by the same account
+  after an uphold is refused (409); and an uphold **deletes the contester's own unverified**
+  `guild_characters` rows for that guild — a *verified* row of theirs survives, since that
+  account is then understood to be a real member who lost a dispute, not an impostor who
+  needs removing.
+- **A contest freezes officer tools only for a young or uncorroborated claim.** A new
+  `guilds.claimed_at` column (distinct from `claim_requested_at`, which only ever times a
+  *pending* claim) records when the currently active claim was established — by the
+  guild-master-immediate branch, a confirm, an auto-confirm, or a contest `transfer`. A
+  contest freezes officer tools when that claim is **less than 14 days old**, or when the
+  guild has **no character verified by `logs`** other than the claimant's own; otherwise
+  (an established claim with independently log-verified members) the contest is still
+  recorded and queued for a moderator, but nothing freezes. `claim: {state, since, frozen}`
+  (both `GET .../settings` and `GET .../home`) carries the new `frozen` boolean so the web
+  shows the right thing; every freeze check in the codebase now reads "contested AND
+  frozen," extracted into one shared `Service.freezeCheck` helper (it takes the
+  moderator-exemption as a parameter, since `PATCH .../settings`'s moderator bypass must
+  also bypass the freeze, while a route with no moderator standing blocks everyone alike
+  once frozen).
+- **The freeze now also covers report edit rights.** While a guild's claim is contested
+  *and* frozen, the disputed claimant's officer-derived edit right over that guild's
+  reports (`reports.mayEdit`) is suspended too, through a small `GuildClaims.FrozenClaimant`
+  hook `reports.Service` now holds — their own reports, every other verified officer, and
+  every moderator are unaffected. Previously a frozen claimant could still retitle,
+  re-scope, or attach/detach the guild's reports through the one route this spec had left
+  untouched.
+- **Guild name validation now rejects Unicode category Cf** (format characters — zero-width
+  space, zero-width joiner, right-to-left override, the byte-order mark) alongside the
+  pre-existing Cc (control) check, since none of them can appear in a real WoW guild name
+  and a bidi override in particular can make a guild's displayed name misleading about what
+  it actually contains.
+- **A character's guild transfer now locks both guilds it touches, in a fixed ascending
+  order, before any mutation.** Two concurrent transfers moving characters in opposite
+  directions between the same two guilds previously could each lock their own "new" guild
+  first and then deadlock waiting for the other's "old" guild; `guilds.LockGuilds` rules
+  this out and is covered by a concurrent-opposite-transfers regression test.
+
+Guild identity stays `(region, ruleset, lower(name))` rather than adding realm to the key:
+Forever merges each ruleset's original realms into one shared roster and leaderboard, so a
+guild name is only ever ambiguous within a `(region, ruleset)` pair, never within a single
+original realm, and the public guild page (`rankings/guilds.go`) already keys the same way.
+
 ### 2.5 The invite link
 
 Unchanged mechanics from the first draft (a random 32-byte token, shown once, stored only
@@ -474,17 +537,23 @@ per the existing store style throughout this codebase.
 | `POST /v1/guilds/{id}/claim` | session | — | `{status: "confirmed"\|"pending", expires_at?}` | 403 `forbidden` (no character at rank officer/leader in this guild); 404 `not_found`; 409 `conflict` (already claimed, or already pending) |
 | `POST /v1/guilds/{id}/claim/confirm` | session | — | `{status: "confirmed", claimed_by: {battletag}}` | 403 `forbidden` (no officer/leader character, or same account as the pending claimant); 404 `not_found` (no pending claim, or expired) |
 | `POST /v1/guilds/{id}/claim/release` | session | — | `{status: "released"}` | 403 `forbidden` (not `claimed_by`, not moderator) |
-| `POST /v1/guilds/{id}/claim/contest` (2026-09-21 amendment) | session, rate-limited like claim | — | `{status: "contested"}` | 403 `forbidden` (no officer/leader-or-rank-0 character, or same account as the claimant); 404 `not_found`; 409 `conflict` (no active claim to contest, or already contested) |
-| `POST /v1/guilds/{id}/claim/resolve` (2026-09-21 amendment) | session, moderator only | `{outcome: "uphold"\|"release"\|"transfer"}` | `{status: "resolved", outcome}` | 400 `invalid`; 403 `forbidden` (not a moderator); 404 `not_found`; 409 `conflict` (no contested claim) |
-| `GET /v1/guilds/{id}/settings` | session, verified officer/leader or moderator | — | `{default_visibility, officer_max_rank_index, claimed_by, claim_pending, claim: {state, since?} (2026-09-21 amendment), invite: {rotated_at}}` | 403 `forbidden` |
-| `PATCH /v1/guilds/{id}/settings` | session, verified officer/leader or moderator | `{default_visibility?, officer_max_rank_index?}` | updated settings | 400 `invalid` (`default_visibility` must be `public`, `unlisted` or `guild` — never `private` for a guild default); 403 `forbidden`; 409 `claim_contested` (2026-09-21 amendment) |
-| `POST /v1/guilds/{id}/invite/rotate` | session, verified officer/leader | — | `{token, url, rotated_at}` (token shown once) | 403 `forbidden`; rate-limited; 409 `claim_contested` (2026-09-21 amendment) |
+| `POST /v1/guilds/{id}/claim/contest` (2026-09-21 amendment; hardened by the second amendment) | session, Battle.net identity required, rate-limited per-account (30 days, one open contest) and per-IP (5/hour) | — | `{status: "contested"}` | 403 `forbidden` (no officer/leader-or-rank-0 character, same account as the claimant, or no Battle.net identity); 404 `not_found`; 409 `conflict` (no active claim, already contested, already upheld against this account, or an open contest already exists elsewhere for this account); 429 `rate_limited` |
+| `POST /v1/guilds/{id}/claim/resolve` (2026-09-21 amendment; records to `guild_claim_resolutions` per the second amendment) | session, moderator only | `{outcome: "uphold"\|"release"\|"transfer"}` | `{status: "resolved", outcome}` | 400 `invalid`; 403 `forbidden` (not a moderator); 404 `not_found`; 409 `conflict` (no contested claim) |
+| `GET /v1/guilds/{id}/settings` | session, verified officer/leader or moderator | — | `{default_visibility, officer_max_rank_index, claimed_by, claim_pending, claim: {state, since?, frozen} (`frozen` added by the second amendment), invite: {rotated_at}}` | 403 `forbidden` |
+| `PATCH /v1/guilds/{id}/settings` | session, verified officer/leader or moderator | `{default_visibility?, officer_max_rank_index?}` | updated settings | 400 `invalid` (`default_visibility` must be `public`, `unlisted` or `guild` — never `private` for a guild default); 403 `forbidden`; 409 `claim_contested` (only when the claim is contested AND frozen — second amendment; a moderator bypasses this too) |
+| `POST /v1/guilds/{id}/invite/rotate` | session, verified officer/leader | — | `{token, url, rotated_at}` (token shown once) | 403 `forbidden`; rate-limited; 409 `claim_contested` (contested AND frozen — second amendment) |
 | `POST /v1/guilds/invite/{token}/accept` | session | — | `{guild: {...}, rank: "member"}` | 404 `not_found` (unknown or revoked token — never distinguished); rate-limited 20/hour/IP |
-| `POST /v1/guilds/{id}/characters/{character_key}/approve` | session, verified officer/leader | — | updated character row (`verified_at`/`verified_by='officer'` set) | 403 `forbidden`; 404 `not_found` (no such character row); 409 `claim_contested` (2026-09-21 amendment, while the guild's claim is disputed) |
-| `DELETE /v1/guilds/{id}/characters/{character_key}` | session, the character's own account **or** a verified officer/leader — **rank protects rank (2026-09-21 amendment)**: an `officer`-rank row also requires the account currently holding the claim; a `leader`-rank row only its own account or a moderator | — | `{status: "removed"}` | 403 `forbidden`; 404 `not_found`; 409 `claim_contested` (while contested, unless the caller is removing their own row or is a moderator) |
+| `POST /v1/guilds/{id}/characters/{character_key}/approve` | session, verified officer/leader | — | updated character row (`verified_at`/`verified_by='officer'` set) | 403 `forbidden`; 404 `not_found` (no such character row); 409 `claim_contested` (contested AND frozen — second amendment) |
+| `DELETE /v1/guilds/{id}/characters/{character_key}` | session, the character's own account **or** a verified officer/leader — **rank protects rank (2026-09-21 amendment)**: an `officer`-rank row also requires the account currently holding the claim; a `leader`-rank row only its own account or a moderator | — | `{status: "removed"}` | 403 `forbidden`; 404 `not_found`; 409 `claim_contested` (contested AND frozen — second amendment; never on the caller's own row or a moderator's call) |
 | `PATCH /v1/guilds/{id}/members/me` | session | `{consent: "roster"\|"gear"\|"gear_bags"}` | updated member row | 400 `invalid`; 404 `not_found` (no membership) |
 | `DELETE /v1/guilds/{id}/members/me` | session | — | `{status: "left"}` (removes every one of the caller's own `guild_characters` rows in this guild) | 404 `not_found` |
-| `GET /v1/guilds/{id}/home` | session, any member (verified or not — §3.2) | — | this week's **verified-or-public-or-own** reports (2026-09-21 amendment), character roster, who-logged (§4.1), `claim: {state, since?}` (2026-09-21 amendment) | 403 `forbidden` (not a member); 404 `not_found` |
+| `GET /v1/guilds/{id}/home` | session, any member (verified or not — §3.2) | — | this week's **verified-or-public-or-own** reports (2026-09-21 amendment), character roster, who-logged (§4.1), `claim: {state, since?, frozen}` (`frozen` added by the second amendment) | 403 `forbidden` (not a member); 404 `not_found` |
+
+Report editing (`api/internal/reports/handler.go`'s `mayEdit`) also observes the contested-
+AND-frozen freeze now (second amendment): while frozen, the disputed claimant's
+officer-derived edit right over their guild's reports is suspended through a new
+`reports.Service.Guilds` (`GuildClaims.FrozenClaimant`) hook — their own reports, every
+other verified officer, and every moderator are unaffected.
 
 Both new mutating endpoints (`approve`, the officer branch of `DELETE .../characters/...`)
 call `recomputeMembership` for the affected account afterward, same as every other write in
@@ -708,6 +777,24 @@ more gaps, all fixed as part of the same response:
   against each other for that guild, closing the theoretical stale-snapshot race the
   original design left untested (§5's own "concurrent PutExports-plus-approve" case, now
   covered by a real concurrency test).
+
+#### Second amendment, 2026-09-21 (second security review response)
+
+Two further gaps, both fixed as part of the contest-hardening response recorded in §2.4's
+second amendment:
+
+- **A character's guild transfer now locks both guilds it touches** — the new one and the
+  one being left — in a fixed ascending order before either guild's `guild_characters` row
+  is mutated (`guilds.LockGuilds`, called from `addon.Store.syncGuild`). Previously each
+  transfer locked only its "new" guild first (via `RecomputeMembership`'s own per-guild
+  advisory lock) and then its "old" one; two concurrent transfers moving characters in
+  opposite directions between the same two guilds could lock in opposite orders and
+  deadlock each other. Covered by a concurrent-opposite-transfers regression test.
+- **Guild name validation now rejects Unicode category Cf** (format characters), not only
+  Cc (control): zero-width space (U+200B), zero-width joiner (U+200D), the right-to-left
+  override (U+202E), and the byte-order mark (U+FEFF) can none of them appear in a real WoW
+  guild name, and a bidi override in particular can make a guild's displayed name
+  misleading about what it actually contains.
 
 ## 4. The web side
 

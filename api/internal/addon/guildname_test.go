@@ -30,6 +30,30 @@ func TestValidateGuildNameNormalisesAndBounds(t *testing.T) {
 	}
 }
 
+// TestValidateGuildNameRejectsFormatCharacters is B (2026-09-21 second
+// security review response): Cf format characters must be refused
+// alongside the pre-existing Cc control-character check, since none of
+// them can appear in a real WoW guild name and a bidi override in
+// particular can make a displayed name misleading.
+func TestValidateGuildNameRejectsFormatCharacters(t *testing.T) {
+	cases := []struct {
+		name  string
+		input string
+	}{
+		{name: "zero-width space (U+200B)", input: "Iron\u200bVanguard"},
+		{name: "zero-width joiner (U+200D)", input: "Iron\u200dVanguard"},
+		{name: "right-to-left override (U+202E)", input: "Iron\u202eVanguard"},
+		{name: "byte-order mark (U+FEFF)", input: "\ufeffIron Vanguard"},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			if _, ok := validateGuildName(c.input); ok {
+				t.Fatalf("a name containing %s should be refused", c.name)
+			}
+		})
+	}
+}
+
 func TestValidateGuildNameNormalisesToNFC(t *testing.T) {
 	// "e" + combining acute accent (NFD) must normalise to the single
 	// precomposed "é" (NFC) so two exports that differ only in Unicode

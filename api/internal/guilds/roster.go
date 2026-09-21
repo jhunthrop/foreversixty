@@ -188,6 +188,7 @@ func (s *Service) approveCharacter(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such character", nil)
 		return
 	}
+	actor := auth.ActorFrom(r.Context())
 	allowed, err := s.verifiedOfficerOrLeader(r, guildID)
 	if err != nil {
 		s.fail(w, r, "approve", err, "could not approve that character just now")
@@ -198,10 +199,10 @@ func (s *Service) approveCharacter(w http.ResponseWriter, r *http.Request) {
 			"you must be a verified officer of this guild to approve a character", nil)
 		return
 	}
-	if contested, err := s.Store.contested(r.Context(), guildID); err != nil {
+	if frozen, err := s.freezeCheck(r.Context(), guildID, actor.IsModerator()); err != nil {
 		s.fail(w, r, "approve", err, "could not approve that character just now")
 		return
-	} else if contested {
+	} else if frozen {
 		httpx.WriteError(w, r, http.StatusConflict, "claim_contested",
 			"this guild's claim is contested; officer actions are frozen until a moderator resolves it", nil)
 		return
@@ -214,7 +215,7 @@ func (s *Service) approveCharacter(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "approve", err, "could not approve that character just now")
 	default:
 		s.logger().Info("guilds", "op", "character_approve", "guild_id", guildID, "character_key", key,
-			"user_id", auth.ActorFrom(r.Context()).UserID)
+			"user_id", actor.UserID)
 		httpx.WriteOK(w, r, http.StatusOK, map[string]string{"character_key": key, "status": "approved"})
 	}
 }
@@ -263,10 +264,10 @@ func (s *Service) removeCharacter(w http.ResponseWriter, r *http.Request) {
 	// Leaving is never frozen by a contested claim - only another
 	// account's officer action against someone else's row is.
 	if !selfOrModerator {
-		if contested, err := s.Store.contested(r.Context(), guildID); err != nil {
+		if frozen, err := s.freezeCheck(r.Context(), guildID, actor.IsModerator()); err != nil {
 			s.fail(w, r, "remove", err, "could not remove that character just now")
 			return
-		} else if contested {
+		} else if frozen {
 			httpx.WriteError(w, r, http.StatusConflict, "claim_contested",
 				"this guild's claim is contested; officer actions are frozen until a moderator resolves it", nil)
 			return

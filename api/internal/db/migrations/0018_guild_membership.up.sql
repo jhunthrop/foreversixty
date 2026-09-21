@@ -78,3 +78,33 @@ create unique index if not exists guilds_region_ruleset_lower_name_idx
 -- check sees the other) into a safe commit-time unique-violation for
 -- the loser (2026-09-21 whole-round review, round 2).
 create unique index if not exists guilds_claimed_by_idx on guilds (claimed_by) where claimed_by is not null;
+
+-- Second security review response (2026-09-21) - see the spec's second
+-- dated amendment blocks in §2.4 and §3.3.
+
+-- When the current claim was established (leader-instant claim,
+-- officer confirm, auto-confirm, or a contest transfer) - distinct
+-- from claim_requested_at, which only ever times a *pending* claim.
+-- A4's freeze rule reads this to tell a young claim from an
+-- established one.
+alter table guilds add column if not exists claimed_at timestamptz;
+
+-- guild_claim_attempts now records both claim and contest attempts,
+-- so the 30-day rate limit can be checked per kind from one table.
+alter table guild_claim_attempts add column if not exists kind text not null default 'claim'
+  check (kind in ('claim', 'contest'));
+
+-- One durable record per (guild, contesting account) resolution, so a
+-- repeat contest of the same guild by the same account can be refused
+-- once it has already been upheld, and every resolution carries the
+-- moderator who made it.
+create table if not exists guild_claim_resolutions (
+  id           bigserial primary key,
+  guild_id     bigint not null references guilds (id) on delete cascade,
+  contester_id bigint not null references users (id) on delete cascade,
+  outcome      text not null check (outcome in ('uphold', 'release', 'transfer')),
+  resolved_at  timestamptz not null default now(),
+  moderator_id bigint not null references users (id) on delete restrict
+);
+create index if not exists guild_claim_resolutions_guild_contester_idx
+  on guild_claim_resolutions (guild_id, contester_id);

@@ -194,9 +194,13 @@ func (s *Store) Home(ctx context.Context, guildID, userID int64, verified bool, 
 	if err != nil {
 		return HomeView{}, err
 	}
+	claim, err := s.claimView(ctx, g, time.Now())
+	if err != nil {
+		return HomeView{}, err
+	}
 	view := HomeView{
 		Guild:   GuildIdentity{ID: g.ID, Region: g.Region, Ruleset: g.Ruleset, Name: g.Name},
-		Claim:   claimState(g, time.Now()),
+		Claim:   claim,
 		Reports: reports, Roster: roster,
 	}
 	if len(reports) == HomeReportsPerPage {

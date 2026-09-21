@@ -3,7 +3,6 @@ package guilds
 
 import (
 	"context"
-	"errors"
 	"testing"
 	"time"
 )
@@ -154,25 +153,6 @@ func TestGetGuildReadsContestFields(t *testing.T) {
 	}
 }
 
-func TestContestedReportsWhetherAGuildsClaimIsDisputed(t *testing.T) {
-	pool := testPool(t)
-	s := &Store{Pool: pool}
-	ctx := context.Background()
-	gid := seedGuild(t, pool, "Forever")
-
-	yes, err := s.contested(ctx, gid)
-	if err != nil || yes {
-		t.Fatalf("contested = %v, %v, want false on a fresh guild", yes, err)
-	}
-	if _, err := pool.Exec(ctx, `update guilds set claim_contested_at = now() where id = $1`, gid); err != nil {
-		t.Fatal(err)
-	}
-	yes, err = s.contested(ctx, gid)
-	if err != nil || !yes {
-		t.Fatalf("contested = %v, %v, want true once claim_contested_at is set", yes, err)
-	}
-}
-
 func TestSetVerifiedForAccountVerifiesEveryRowAndRecordsSource(t *testing.T) {
 	pool := testPool(t)
 	ctx := context.Background()
@@ -284,14 +264,5 @@ func TestRecomputeMembershipsAdvisoryLockSerialisesConcurrentTransactions(t *tes
 		}
 	case <-time.After(2 * time.Second):
 		t.Fatal("txB never completed after txA committed and released the lock")
-	}
-}
-
-func TestContestedReturnsNotFoundForAnUnknownGuild(t *testing.T) {
-	pool := testPool(t)
-	s := &Store{Pool: pool}
-	ctx := context.Background()
-	if _, err := s.contested(ctx, 999999999); !errors.Is(err, ErrNotFound) {
-		t.Fatalf("contested for an unknown guild id = %v, want ErrNotFound", err)
 	}
 }

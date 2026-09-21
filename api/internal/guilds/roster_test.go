@@ -242,6 +242,39 @@ func TestAContestedClaimFreezesApproveAndRemove(t *testing.T) {
 	}
 }
 
+// TestApproveIsNotFrozenWhileContestedIfClaimIsEstablishedAndCorroborated
+// is A4/A5's positive case at the HTTP layer: an established claim (>=14
+// days old) with an independent log-verified member is recorded as
+// contested and queued for a moderator, but officer tools stay live.
+func TestApproveIsNotFrozenWhileContestedIfClaimIsEstablishedAndCorroborated(t *testing.T) {
+	h := newHTTPHarness(t)
+	ctx := context.Background()
+	gid := seedGuild(t, h.pool, "Forever")
+	claimant := seedUser(t, h.pool, "unfrozen-claimant@example.com")
+	seedCharacter(t, h.pool, gid, claimant, "us/hardcore/unfrozenclaimant", "leader", true)
+	syncMembership(t, h.pool, gid, claimant)
+	logVerified := seedUser(t, h.pool, "unfrozen-logverified@example.com")
+	if _, err := h.pool.Exec(ctx,
+		`insert into guild_characters (guild_id, character_key, user_id, rank, verified_at, verified_by)
+		 values ($1, 'us/hardcore/unfrozenlogverified', $2, 'member', now(), 'logs')`, gid, logVerified); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := h.pool.Exec(ctx,
+		`update guilds set claimed_by = $1, claimed_at = now() - interval '30 days', claim_contested_at = now()
+		 where id = $2`, claimant, gid); err != nil {
+		t.Fatal(err)
+	}
+	unverified := seedUser(t, h.pool, "unfrozen-unverified@example.com")
+	seedCharacter(t, h.pool, gid, unverified, "us/hardcore/unfrozenunverified", "member", false)
+
+	h.actor = auth.Actor{UserID: claimant, Role: "user", Method: "session"}
+	res := h.do(http.MethodPost, fmt.Sprintf("/v1/guilds/%d/characters/us/hardcore/unfrozenunverified/approve", gid), "")
+	res.Body.Close()
+	if res.StatusCode != http.StatusOK {
+		t.Fatalf("approve while contested but established and corroborated = %d, want 200 (not frozen)", res.StatusCode)
+	}
+}
+
 func TestApproveCharacterRecordsVerifiedByOfficer(t *testing.T) {
 	h := newHTTPHarness(t)
 	ctx := context.Background()

@@ -135,10 +135,10 @@ func (s *Service) rotateInvite(w http.ResponseWriter, r *http.Request) {
 			"you must be a verified officer of this guild to rotate its invite link", nil)
 		return
 	}
-	if contested, err := s.Store.contested(r.Context(), guildID); err != nil {
+	if frozen, err := s.freezeCheck(r.Context(), guildID, actor.IsModerator()); err != nil {
 		s.fail(w, r, "rotate_invite", err, "could not rotate that invite just now")
 		return
-	} else if contested {
+	} else if frozen {
 		httpx.WriteError(w, r, http.StatusConflict, "claim_contested",
 			"this guild's claim is contested; officer actions are frozen until a moderator resolves it", nil)
 		return

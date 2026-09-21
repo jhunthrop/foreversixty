@@ -123,7 +123,8 @@ func (s *Store) Claim(ctx context.Context, guildID, userID int64, hasBattleNetId
 	}
 
 	if rank == "leader" {
-		if _, err := tx.Exec(ctx, `update guilds set claimed_by = $2 where id = $1`, guildID, userID); err != nil {
+		if _, err := tx.Exec(ctx,
+			`update guilds set claimed_by = $2, claimed_at = now() where id = $1`, guildID, userID); err != nil {
 			var pgErr *pgconn.PgError
 			if errors.As(err, &pgErr) && pgErr.Code == "23505" {
 				return ClaimResult{}, ErrAlreadyClaimsAnotherGuild
@@ -181,7 +182,8 @@ func (s *Store) ConfirmClaim(ctx context.Context, guildID, confirmerID int64) (i
 	}
 	defer func() { _ = tx.Rollback(ctx) }()
 	if _, err := tx.Exec(ctx,
-		`update guilds set claimed_by = $2, claim_pending_by = null, claim_requested_at = null where id = $1`,
+		`update guilds set claimed_by = $2, claim_pending_by = null, claim_requested_at = null, claimed_at = now()
+		 where id = $1`,
 		guildID, claimant); err != nil {
 		return 0, fmt.Errorf("guilds: confirm claim: %w", err)
 	}
@@ -213,7 +215,8 @@ func (s *Store) ConfirmClaim(ctx context.Context, guildID, confirmerID int64) (i
 func AutoConfirmClaimIfPending(ctx context.Context, tx pgx.Tx, guildID, triggeringUserID int64) error {
 	var claimant int64
 	err := tx.QueryRow(ctx,
-		`update guilds set claimed_by = claim_pending_by, claim_pending_by = null, claim_requested_at = null
+		`update guilds set claimed_by = claim_pending_by, claim_pending_by = null, claim_requested_at = null,
+		   claimed_at = now()
 		 where id = $1 and claim_pending_by is not null and claim_pending_by != $2
 		   and claim_requested_at >= now() - interval '14 days'
 		 returning claimed_by`, guildID, triggeringUserID).Scan(&claimant)
@@ -239,7 +242,8 @@ func (s *Store) ReleaseClaim(ctx context.Context, guildID, userID int64, moderat
 	if !moderator && (g.ClaimedBy == nil || *g.ClaimedBy != userID) {
 		return ErrNotClaimant
 	}
-	if _, err := s.Pool.Exec(ctx, `update guilds set claimed_by = null where id = $1`, guildID); err != nil {
+	if _, err := s.Pool.Exec(ctx,
+		`update guilds set claimed_by = null, claimed_at = null where id = $1`, guildID); err != nil {
 		return fmt.Errorf("guilds: release claim: %w", err)
 	}
 	return nil

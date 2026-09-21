@@ -796,3 +796,62 @@ func TestConcurrentPutExportsAndApproveDoNotLoseAWrite(t *testing.T) {
 		t.Fatal("the approved character's verification must not have been lost to the race")
 	}
 }
+
+// TestPutExportsOppositeTransfersDoNotDeadlock is E's regression test
+// (2026-09-21 second security review response): two accounts, each
+// transferring a character between the same two guilds in opposite
+// directions at the same time, must never deadlock on the guilds'
+// advisory locks - LockGuilds's fixed ascending order rules that out.
+// Before the fix, each transaction locked its own "new" guild first and
+// could block forever waiting for the other's "old" guild; Postgres's
+// own deadlock detector would eventually abort one side with an error,
+// which this test would catch as a non-nil err.
+func TestPutExportsOppositeTransfersDoNotDeadlock(t *testing.T) {
+	h := newHarness(t)
+	ctx := context.Background()
+
+	userB := h.owner + 1
+	if _, err := h.pool.Exec(ctx,
+		`insert into users (id, email) values ($1, 'deadlock-b@example.com') on conflict (id) do nothing`, userB); err != nil {
+		t.Fatal(err)
+	}
+
+	if err := h.store.PutExports(ctx, h.owner, []Export{
+		{Name: "DeadlockA", Region: "us", Ruleset: "hardcore",
+			Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=DeadlockOne:0"},
+	}); err != nil {
+		t.Fatal(err)
+	}
+	if err := h.store.PutExports(ctx, userB, []Export{
+		{Name: "DeadlockB", Region: "us", Ruleset: "hardcore",
+			Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=DeadlockTwo:0"},
+	}); err != nil {
+		t.Fatal(err)
+	}
+
+	var wg sync.WaitGroup
+	var errA, errB error
+	wg.Add(2)
+	go func() {
+		defer wg.Done()
+		errA = h.store.PutExports(ctx, h.owner, []Export{
+			{Name: "DeadlockA", Region: "us", Ruleset: "hardcore",
+				Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=DeadlockTwo:0"},
+		})
+	}()
+	go func() {
+		defer wg.Done()
+		errB = h.store.PutExports(ctx, userB, []Export{
+			{Name: "DeadlockB", Region: "us", Ruleset: "hardcore",
+				Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=DeadlockOne:0"},
+		})
+	}()
+	wg.Wait()
+
+	if errA != nil {
+		t.Fatalf("transfer DeadlockOne->DeadlockTwo concurrent with the opposite transfer: %v", errA)
+	}
+	if errB != nil {
+		t.Fatalf("transfer DeadlockTwo->DeadlockOne concurrent with the opposite transfer: %v", errB)
+	}
+}
