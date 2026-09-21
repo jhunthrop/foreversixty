@@ -109,6 +109,10 @@ test('every tab is visible on a phone without scrolling sideways', async ({ page
 });
 
 test('every interactive control clears 44px', async ({ page }) => {
+  // One round trip per control, for every control, in every state: twenty seconds on a
+  // laptop and past the 45-second default on a two-core CI runner, where it timed out in
+  // the middle of measuring rather than on any control that was too small.
+  test.slow();
   for (const query of STATES) {
     await page.goto(`${REPORT}&${query}`);
     await expect(page.getByTestId('mode-bar')).toBeVisible();
