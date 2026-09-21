@@ -39,6 +39,41 @@ export interface MeGuild {
   /** Spec section 2.6: GET /v1/me gains Consent and Verified per Guild entry. */
   consent?: 'roster' | 'gear' | 'gear_bags';
   verified: boolean;
+  /**
+   * Non-null only for a verified officer/leader of a guild with an active guild-plan
+   * entitlement (spec 1.4) -- billing detail, gated tighter than membership alone. Optional
+   * because the live API does not send it yet (the API lane has not landed); every reader
+   * treats a missing key the same as null.
+   */
+  plan?: GuildBillingView | null;
+}
+
+/** Spec 1.4: every Can() feature pre-resolved for the caller, plus their own billing state. */
+export interface EntitlementsView {
+  server_sims: boolean;
+  retention: boolean;
+  multi_compare: boolean;
+  history: boolean;
+  notifications: boolean;
+  officer_views: boolean;
+  roster_check: boolean;
+  supporter_mark: boolean;
+  billing: BillingView | null;
+}
+
+export interface BillingView {
+  plan: string;
+  status: string;
+  current_period_end: string | null;
+  cancel_at_period_end: boolean;
+}
+
+export interface GuildBillingView {
+  status: string;
+  current_period_end: string | null;
+  cancel_at_period_end: boolean;
+  billed_by: string;
+  you_are_billing_contact: boolean;
 }
 
 export interface Me {
@@ -49,15 +84,29 @@ export interface Me {
     role: string;
     anonymize: boolean;
     /**
-     * The premium flag, set by hand until payments exist (simulator contract). The web
-     * reads it to decide whether to offer the server lane at all, rather than offering
-     * the control and letting POST /v1/sims/run answer 402 -- a button that always fails
-     * is worse than no button.
+     * The premium flag, set by hand until payments exist. Optional and kept only for
+     * backward compatibility with e2e fixtures written before the entitlements API landed
+     * (web lane ruling A, docs/superpowers/plans/2026-09-21-pay-web.md) -- new code reads
+     * `entitlements.server_sims` via `effectiveServerSims`, never this field directly.
      */
-    premium: boolean;
+    premium?: boolean;
   };
   characters: MeCharacter[];
   guilds: MeGuild[];
+  /** Optional: absent until the API lane ships spec 1.4's block. See effectiveServerSims. */
+  entitlements?: EntitlementsView;
+}
+
+/**
+ * Whether server-side sims should be offered, reading the new entitlements shape when the
+ * API sends it and falling back to the legacy `user.premium` boolean otherwise -- one place
+ * for the fallback (web lane ruling A) so SimView.svelte, ToolsView.svelte and RunControl.svelte
+ * never each re-derive it differently.
+ */
+export function effectiveServerSims(me: Me | null): boolean {
+  if (me === null) return false;
+  if (me.entitlements !== undefined) return me.entitlements.server_sims === true;
+  return me.user.premium === true;
 }
 
 export interface Device {
