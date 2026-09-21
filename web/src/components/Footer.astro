@@ -7,8 +7,16 @@ const footerLinks = [
   ['Sources', '/sources'],
   ['Changelog', '/changelog'],
   ['Contribute', `${communityLinks.githubRepo}/issues`],
+  ['Premium', '/premium'],
+  ['Terms', '/terms'],
+  ['Privacy', '/privacy'],
+  ['Refunds', '/refunds'],
 ] as const;
 
+// The short-label set that misses the 44px hit-target floor on text width alone and needs
+// horizontal padding to clear it -- "About" needed this already; "Terms" is exactly as
+// short, so it joins the set rather than growing a chain of per-label equality checks.
+const NEEDS_HIT_TARGET_PADDING = new Set(['About', 'Terms']);
 // Phone: links above the disclaimer (design/Mobile.dc.html); desktop keeps them side by side.
 // A frontmatter comment, not an HTML one: an HTML comment ships in every page.
 ---
@@ -24,11 +32,7 @@ const footerLinks = [
         href={href}
         class:list={[
           'inline-flex items-center min-h-11 md:min-h-0 text-nav hover:text-strong',
-          // "About" is the one label here short enough (34px) to miss the 44px hit-target
-          // floor on its width alone -- the others all clear it on text length. A little
-          // horizontal padding, only on this one link, closes the gap without widening
-          // every other footer entry to match.
-          label === 'About' && 'px-2',
+          NEEDS_HIT_TARGET_PADDING.has(label) && 'px-2',
         ]}
       >
         {label}
